@@ -1,10 +1,10 @@
 const dvaLogger = require('dva-logger');
 
-export default {
+export const dva = {
   config: {
     onError(e) {
       e.preventDefault();
-      // console.error(e.message);
+      console.error(e.message);
     },
   },
   plugins: [dvaLogger()],
