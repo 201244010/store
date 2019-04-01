@@ -9,6 +9,28 @@ let Router = require('dva/router').routerRedux.ConnectedRouter;
 
 let routes = [
   {
+    "path": "/login",
+    "component": _dvaDynamic({
+  
+  component: () => import('../../layouts/UserLayout'),
+  LoadingComponent: require('/Users/maochichen/Workspace/web-sunmi-store/src/components/PageLoading/index').default,
+}),
+    "routes": [
+      {
+        "path": "/login",
+        "component": _dvaDynamic({
+  
+  component: () => import('../Login'),
+  LoadingComponent: require('/Users/maochichen/Workspace/web-sunmi-store/src/components/PageLoading/index').default,
+}),
+        "exact": true
+      },
+      {
+        "component": () => React.createElement(require('/Users/maochichen/Workspace/web-sunmi-store/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+      }
+    ]
+  },
+  {
     "path": "/user",
     "component": _dvaDynamic({
   
