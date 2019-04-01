@@ -14,7 +14,7 @@ app.use(createLoading());
   app.use(plugin);
 });
 
-app.model({ namespace: 'global', ...(require('/Users/et_cow/Works/sunmi/sunmi-store/src/models/global.js').default) });
-app.model({ namespace: 'menu', ...(require('/Users/et_cow/Works/sunmi/sunmi-store/src/models/menu.js').default) });
-app.model({ namespace: 'setting', ...(require('/Users/et_cow/Works/sunmi/sunmi-store/src/models/setting.js').default) });
-app.model({ namespace: 'user', ...(require('/Users/et_cow/Works/sunmi/sunmi-store/src/models/user.js').default) });
+app.model({ namespace: 'global', ...(require('/Users/maochichen/Workspace/web-sunmi-store/src/models/global.js').default) });
+app.model({ namespace: 'menu', ...(require('/Users/maochichen/Workspace/web-sunmi-store/src/models/menu.js').default) });
+app.model({ namespace: 'setting', ...(require('/Users/maochichen/Workspace/web-sunmi-store/src/models/setting.js').default) });
+app.model({ namespace: 'user', ...(require('/Users/maochichen/Workspace/web-sunmi-store/src/models/user.js').default) });

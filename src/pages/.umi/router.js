@@ -2,7 +2,7 @@ import React from 'react';
 import { Router as DefaultRouter, Route, Switch } from 'react-router-dom';
 import dynamic from 'umi/dynamic';
 import renderRoutes from 'umi/_renderRoutes';
-import RendererWrapper0 from '/Users/et_cow/Works/sunmi/sunmi-store/src/pages/.umi/LocaleWrapper.jsx'
+import RendererWrapper0 from '/Users/maochichen/Workspace/web-sunmi-store/src/pages/.umi/LocaleWrapper.jsx'
 import _dvaDynamic from 'dva/dynamic'
 
 let Router = require('dva/router').routerRedux.ConnectedRouter;
@@ -13,7 +13,7 @@ let routes = [
     "component": _dvaDynamic({
   
   component: () => import('../../layouts/UserLayout'),
-  LoadingComponent: require('/Users/et_cow/Works/sunmi/sunmi-store/src/components/PageLoading/index').default,
+  LoadingComponent: require('/Users/maochichen/Workspace/web-sunmi-store/src/components/PageLoading/index').default,
 }),
     "routes": [
       {
@@ -21,12 +21,12 @@ let routes = [
         "component": _dvaDynamic({
   
   component: () => import('../Welcome'),
-  LoadingComponent: require('/Users/et_cow/Works/sunmi/sunmi-store/src/components/PageLoading/index').default,
+  LoadingComponent: require('/Users/maochichen/Workspace/web-sunmi-store/src/components/PageLoading/index').default,
 }),
         "exact": true
       },
       {
-        "component": () => React.createElement(require('/Users/et_cow/Works/sunmi/sunmi-store/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+        "component": () => React.createElement(require('/Users/maochichen/Workspace/web-sunmi-store/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
       }
     ]
   },
@@ -35,7 +35,7 @@ let routes = [
     "component": _dvaDynamic({
   
   component: () => import('../../layouts/BasicLayout'),
-  LoadingComponent: require('/Users/et_cow/Works/sunmi/sunmi-store/src/components/PageLoading/index').default,
+  LoadingComponent: require('/Users/maochichen/Workspace/web-sunmi-store/src/components/PageLoading/index').default,
 }),
     "routes": [
       {
@@ -50,7 +50,7 @@ let routes = [
         "component": _dvaDynamic({
   
   component: () => import('../Welcome'),
-  LoadingComponent: require('/Users/et_cow/Works/sunmi/sunmi-store/src/components/PageLoading/index').default,
+  LoadingComponent: require('/Users/maochichen/Workspace/web-sunmi-store/src/components/PageLoading/index').default,
 }),
         "exact": true
       },
@@ -61,12 +61,12 @@ let routes = [
         "exact": true
       },
       {
-        "component": () => React.createElement(require('/Users/et_cow/Works/sunmi/sunmi-store/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+        "component": () => React.createElement(require('/Users/maochichen/Workspace/web-sunmi-store/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
       }
     ]
   },
   {
-    "component": () => React.createElement(require('/Users/et_cow/Works/sunmi/sunmi-store/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+    "component": () => React.createElement(require('/Users/maochichen/Workspace/web-sunmi-store/node_modules/umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
   }
 ];
 window.g_routes = routes;
