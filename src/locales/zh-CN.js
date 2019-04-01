@@ -9,6 +9,7 @@ export default {
   'layout.user.link.privacy': '隐私',
   'layout.user.link.terms': '条款',
   'app.home.introduce': '介绍',
+  'layout.user.footer': '2019 上海商米科技有限公司',
   ...globalHeader,
   ...menu,
   ...settings,
