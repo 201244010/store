@@ -18,7 +18,8 @@ export default class LoginForm extends Component {
 
   render() {
     const { type } = this.state;
-    console.log(getLocale());
+    const currentLanguage = getLocale();
+    console.log(currentLanguage);
     return (
       <div className="login-warp">
         <Login defaultActiveKey={type} onTabChange={this.onTabChange} onSubmit={this.onSubmit}>
