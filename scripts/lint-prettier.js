@@ -18,7 +18,7 @@ let didWarn = false;
 
 files.forEach(file => {
   const options = prettier.resolveConfig.sync(file, {
-    config: prettierConfigPath,
+    config: prettierConfigPath
   });
   try {
     const fileInfo = prettier.getFileInfo.sync(file);
@@ -28,7 +28,7 @@ files.forEach(file => {
     const input = fs.readFileSync(file, 'utf8');
     const withParserOptions = {
       ...options,
-      parser: fileInfo.inferredParser,
+      parser: fileInfo.inferredParser
     };
     const isPrettier = prettier.check(input, withParserOptions);
     if (!isPrettier) {
