@@ -8,3 +8,4 @@ package.json
 /scripts
 /config
 /src/pages/.umi
+.eslintrc.js

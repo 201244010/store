@@ -15,16 +15,10 @@ export default class SelectLang extends PureComponent {
     const selectedLang = getLocale();
     const langMenu = (
       <Menu className={styles.menu} selectedKeys={[selectedLang]} onClick={this.changeLang}>
-        <Menu.Item key="zh-CN">
-          <span role="img" aria-label="简体中文">
-            🇨🇳
-          </span>{' '}
+        <Menu.Item className={styles['menu-item']} key="zh-CN">
           中国大陆
         </Menu.Item>
-        <Menu.Item key="en-US">
-          <span role="img" aria-label="English">
-            🇬🇧
-          </span>{' '}
+        <Menu.Item className={styles['menu-item']} key="en-US">
           其他地区
         </Menu.Item>
       </Menu>
