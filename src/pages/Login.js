@@ -231,7 +231,7 @@ class LoginForm extends Component {
         </Form>
         <div className={styles['login-footer']}>
           <Link to="/">{formatMessage({ id: 'login.forgot.password' })}</Link>
-          <Link to="/">{formatMessage({ id: 'login.goRegister' })}</Link>
+          <Link to="/register">{formatMessage({ id: 'login.goRegister' })}</Link>
         </div>
       </div>
     );
