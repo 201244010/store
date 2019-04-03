@@ -19,7 +19,10 @@ class UserLayout extends React.PureComponent {
         <div className={styles.lang}>
           <SelectLang />
         </div>
-        <div className={styles.content}>{children}</div>
+        <div className={styles.content}>
+          <div className={styles['title-background']} />
+          {children}
+        </div>
         <GlobalFooter copyright={copyright} />
       </div>
     );

@@ -52,6 +52,11 @@ export default {
       routes: [{ path: '/register', component: './Register' }],
     },
     {
+      path: '/storeRelate',
+      component: '../layouts/UserLayout',
+      routes: [{ path: '/storeRelate', component: './StoreRelate' }],
+    },
+    {
       path: '/',
       component: '../layouts/BasicLayout',
       routes: [

@@ -18,7 +18,7 @@ const VALIDATE_FIELDS = {
 };
 
 @Form.create()
-class LoginForm extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.countdownTimer = null;
@@ -50,10 +50,11 @@ class LoginForm extends Component {
           isCountDown: false,
           countDownSeconds: 60,
         });
+      } else {
+        this.setState({
+          countDownSeconds: countDownSeconds - 1,
+        });
       }
-      this.setState({
-        countDownSeconds: countDownSeconds - 1,
-      });
     }, 1000);
   };
 
@@ -104,7 +105,6 @@ class LoginForm extends Component {
 
     return (
       <div className={styles['login-warp']}>
-        <div className={styles['login-title']} />
         <Form>
           <Tabs
             animated={false}
@@ -214,7 +214,9 @@ class LoginForm extends Component {
                     <Col span={8}>
                       <Button size="large" block disabled={isCountDown} onClick={this.getCode}>
                         {isCountDown
-                          ? `${countDownSeconds}${formatMessage({ id: 'login.countDown.unit' })}`
+                          ? `${countDownSeconds}${formatMessage({
+                              id: 'login.countDown.unit',
+                            })}`
                           : formatMessage({ id: 'login.getCode' })}
                       </Button>
                     </Col>
@@ -238,4 +240,4 @@ class LoginForm extends Component {
   }
 }
 
-export default LoginForm;
+export default Login;
