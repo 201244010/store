@@ -8,6 +8,7 @@ export default {
   'register.registBtn': '注册',
   'register.goLogin': '使用已有账户登录',
   'register.mail.placeholder': '邮箱',
+  'register.password.foreign.placeholder': '6-16位密码，区分大小写',
   'register.mobile.emptyValidate': '请输入手机号',
   'register.mobile.formatValidate': '手机号格式错误',
   'register.code.emptyValidate': '请输入验证码',
