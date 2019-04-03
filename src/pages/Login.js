@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { formatMessage, getLocale } from 'umi/locale';
 import Link from 'umi/link';
-import { Tabs, Form, Input, Button, Icon, Alert, Row, Col, Modal, Divider, List } from 'antd';
+import { Tabs, Form, Input, Button, Icon, Alert, Row, Col, Modal } from 'antd';
 import styles from './Login.less';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
@@ -27,8 +27,6 @@ class Login extends Component {
       countDownSeconds: 60,
       notice: '',
       currentTab: 'tabAccount',
-      step: 'login',
-      relatedStores: 0,
     };
   }
 
@@ -52,10 +50,11 @@ class Login extends Component {
           isCountDown: false,
           countDownSeconds: 60,
         });
+      } else {
+        this.setState({
+          countDownSeconds: countDownSeconds - 1,
+        });
       }
-      this.setState({
-        countDownSeconds: countDownSeconds - 1,
-      });
     }, 1000);
   };
 
@@ -98,7 +97,7 @@ class Login extends Component {
   };
 
   render() {
-    const { notice, isCountDown, countDownSeconds, step, relatedStores } = this.state;
+    const { notice, isCountDown, countDownSeconds } = this.state;
     const {
       form: { getFieldDecorator },
     } = this.props;
@@ -106,176 +105,136 @@ class Login extends Component {
 
     return (
       <div className={styles['login-warp']}>
-        {step === 'login' ? (
-          <>
-            <Form>
-              <Tabs
-                animated={false}
-                defaultActiveKey="tabAccount"
-                tabBarStyle={{ textAlign: 'center' }}
-                onChange={this.onTabChange}
-              >
-                <Tabs.TabPane tab={formatMessage({ id: 'login.useAccount' })} key="tabAccount">
-                  {notice && (
-                    <Form.Item>
-                      <Alert
-                        message={formatMessage({ id: ALERT_NOTICE_MAP[notice] })}
-                        type="error"
-                        showIcon
-                      />
-                    </Form.Item>
+        <Form>
+          <Tabs
+            animated={false}
+            defaultActiveKey="tabAccount"
+            tabBarStyle={{ textAlign: 'center' }}
+            onChange={this.onTabChange}
+          >
+            <Tabs.TabPane tab={formatMessage({ id: 'login.useAccount' })} key="tabAccount">
+              {notice && (
+                <Form.Item>
+                  <Alert
+                    message={formatMessage({ id: ALERT_NOTICE_MAP[notice] })}
+                    type="error"
+                    showIcon
+                  />
+                </Form.Item>
+              )}
+              <Form.Item>
+                {getFieldDecorator('account', {
+                  validateTrigger: 'onBlur',
+                  rules: [
+                    {
+                      required: true,
+                      message: formatMessage({ id: 'login.account.emptyValidate' }),
+                    },
+                  ],
+                })(
+                  <Input
+                    prefix={<Icon type="border" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                    size="large"
+                    placeholder={formatMessage({ id: 'login.account.placeholder' })}
+                  />
+                )}
+              </Form.Item>
+              <Form.Item>
+                {getFieldDecorator('password', {
+                  validateTrigger: 'onBlur',
+                  rules: [
+                    {
+                      required: true,
+                      message: formatMessage({ id: 'login.password.emptyValidate' }),
+                    },
+                  ],
+                })(
+                  <Input
+                    type="password"
+                    prefix={<Icon type="border" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                    size="large"
+                    placeholder={formatMessage({ id: 'login.password.placeholder' })}
+                  />
+                )}
+              </Form.Item>
+            </Tabs.TabPane>
+            {currentLanguage === 'zh-CN' && (
+              <Tabs.TabPane tab={formatMessage({ id: 'login.useMobile' })} key="tabMobile">
+                {notice && (
+                  <Form.Item>
+                    <Alert
+                      message={formatMessage({ id: ALERT_NOTICE_MAP[notice] })}
+                      type="error"
+                      showIcon
+                    />
+                  </Form.Item>
+                )}
+                <Form.Item>
+                  {getFieldDecorator('mobile', {
+                    validateTrigger: 'onBlur',
+                    rules: [
+                      {
+                        required: true,
+                        message: formatMessage({ id: 'login.mobile.emptyValidate' }),
+                      },
+                      {
+                        pattern: /^1\d{10}$/,
+                        message: formatMessage({ id: 'login.mobile.formatValidate' }),
+                      },
+                    ],
+                  })(
+                    <Input
+                      prefix={<Icon type="border" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      size="large"
+                      placeholder={formatMessage({ id: 'login.mobile.placeholder' })}
+                    />
                   )}
-                  <Form.Item>
-                    {getFieldDecorator('account', {
-                      validateTrigger: 'onBlur',
-                      rules: [
-                        {
-                          required: true,
-                          message: formatMessage({ id: 'login.account.emptyValidate' }),
-                        },
-                      ],
-                    })(
-                      <Input
-                        prefix={<Icon type="border" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                        size="large"
-                        placeholder={formatMessage({ id: 'login.account.placeholder' })}
-                      />
-                    )}
-                  </Form.Item>
-                  <Form.Item>
-                    {getFieldDecorator('password', {
-                      validateTrigger: 'onBlur',
-                      rules: [
-                        {
-                          required: true,
-                          message: formatMessage({ id: 'login.password.emptyValidate' }),
-                        },
-                      ],
-                    })(
-                      <Input
-                        type="password"
-                        prefix={<Icon type="border" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                        size="large"
-                        placeholder={formatMessage({ id: 'login.password.placeholder' })}
-                      />
-                    )}
-                  </Form.Item>
-                </Tabs.TabPane>
-                {currentLanguage === 'zh-CN' && (
-                  <Tabs.TabPane tab={formatMessage({ id: 'login.useMobile' })} key="tabMobile">
-                    {notice && (
-                      <Form.Item>
-                        <Alert
-                          message={formatMessage({ id: ALERT_NOTICE_MAP[notice] })}
-                          type="error"
-                          showIcon
-                        />
-                      </Form.Item>
-                    )}
-                    <Form.Item>
-                      {getFieldDecorator('mobile', {
+                </Form.Item>
+                <Form.Item>
+                  <Row gutter={16}>
+                    <Col span={16}>
+                      {getFieldDecorator('code', {
                         validateTrigger: 'onBlur',
                         rules: [
                           {
                             required: true,
-                            message: formatMessage({ id: 'login.mobile.emptyValidate' }),
-                          },
-                          {
-                            pattern: /^1\d{10}$/,
-                            message: formatMessage({ id: 'login.mobile.formatValidate' }),
+                            message: formatMessage({
+                              id: 'login.code.emptyValidate',
+                            }),
                           },
                         ],
                       })(
                         <Input
-                          prefix={<Icon type="border" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                          prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
                           size="large"
-                          placeholder={formatMessage({ id: 'login.mobile.placeholder' })}
+                          placeholder={formatMessage({ id: 'login.code.placeholder' })}
                         />
                       )}
-                    </Form.Item>
-                    <Form.Item>
-                      <Row gutter={16}>
-                        <Col span={16}>
-                          {getFieldDecorator('code', {
-                            validateTrigger: 'onBlur',
-                            rules: [
-                              {
-                                required: true,
-                                message: formatMessage({
-                                  id: 'login.code.emptyValidate',
-                                }),
-                              },
-                            ],
-                          })(
-                            <Input
-                              prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                              size="large"
-                              placeholder={formatMessage({ id: 'login.code.placeholder' })}
-                            />
-                          )}
-                        </Col>
-                        <Col span={8}>
-                          <Button size="large" block disabled={isCountDown} onClick={this.getCode}>
-                            {isCountDown
-                              ? `${countDownSeconds}${formatMessage({
-                                  id: 'login.countDown.unit',
-                                })}`
-                              : formatMessage({ id: 'login.getCode' })}
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Form.Item>
-                  </Tabs.TabPane>
-                )}
-              </Tabs>
-              <Form.Item>
-                <Button type="primary" block onClick={this.onSubmit}>
-                  {formatMessage({ id: 'login.loginBtn' })}
-                </Button>
-              </Form.Item>
-            </Form>
-            <div className={styles['login-footer']}>
-              <Link to="/">{formatMessage({ id: 'login.forgot.password' })}</Link>
-              <Link to="/register">{formatMessage({ id: 'login.goRegister' })}</Link>
-            </div>
-          </>
-        ) : (
-          <div className={styles['store-wrapper']}>
-            {relatedStores > 0 ? (
-              <>
-                <p>{formatMessage({ id: 'login.relatedStore.choose' })}</p>
-                {/* TODO 暂时定义的假列表 */}
-                <List className={styles['store-list']}>
-                  <List.Item>
-                    <List.Item.Meta description="商户A" />
-                    <Link to="/">{formatMessage({ id: 'login.relatedStore.entry' })}</Link>
-                  </List.Item>
-                  <List.Item>
-                    <List.Item.Meta description="商户B" />
-                    <Link to="/">{formatMessage({ id: 'login.relatedStore.entry' })}</Link>
-                  </List.Item>
-                  <List.Item className={styles['last-child']}>
-                    <List.Item.Meta description="商户C" />
-                    <Link to="/">{formatMessage({ id: 'login.relatedStore.entry' })}</Link>
-                  </List.Item>
-                </List>
-              </>
-            ) : (
-              <>
-                <p className={styles['store-content']}>
-                  {formatMessage({ id: 'login.relatedStore.none' })}
-                </p>
-                <Button type="primary" size="large" block>
-                  {formatMessage({ id: 'login.relatedStore.create' })}
-                </Button>
-                <Divider className={styles['store-divider']} />
-                <p className={styles['store-content']}>
-                  {formatMessage({ id: 'login.relatedStore.notice' })}
-                </p>
-              </>
+                    </Col>
+                    <Col span={8}>
+                      <Button size="large" block disabled={isCountDown} onClick={this.getCode}>
+                        {isCountDown
+                          ? `${countDownSeconds}${formatMessage({
+                              id: 'login.countDown.unit',
+                            })}`
+                          : formatMessage({ id: 'login.getCode' })}
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Tabs.TabPane>
             )}
-          </div>
-        )}
+          </Tabs>
+          <Form.Item>
+            <Button type="primary" block onClick={this.onSubmit}>
+              {formatMessage({ id: 'login.loginBtn' })}
+            </Button>
+          </Form.Item>
+        </Form>
+        <div className={styles['login-footer']}>
+          <Link to="/">{formatMessage({ id: 'login.forgot.password' })}</Link>
+          <Link to="/register">{formatMessage({ id: 'login.goRegister' })}</Link>
+        </div>
       </div>
     );
   }
