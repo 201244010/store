@@ -4,7 +4,7 @@ import { Result } from 'ant-design-pro';
 import { formatMessage, getLocale } from 'umi/locale';
 import router from 'umi/router';
 import Link from 'umi/link';
-import * as RegExp from '../constants/regexp';
+import * as RegExp from '../../constants/regexp';
 import styles from './Register.less';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code

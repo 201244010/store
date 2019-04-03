@@ -27,7 +27,5 @@ export default {
   'register.mail.success': '注册成功',
   'register.mail.notice':
     '激活邮件已发送到你的邮箱中，邮件有效期为24小时。请及时登录邮箱，点击邮件中的链接激活帐户。',
-  'register.active.success': '激活成功',
-  'register.success.notice': '秒后将自动登录',
   'register.countDown.unit': '秒',
 };

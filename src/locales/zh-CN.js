@@ -4,6 +4,7 @@ import settings from './zh-CN/settings';
 import login from './zh-CN/login';
 import register from './zh-CN/register';
 import storeRelate from './zh-CN/storeRelate';
+import mailActive from './zh-CN/mailActive';
 
 export default {
   'navBar.lang': '语言',
@@ -18,4 +19,5 @@ export default {
   ...login,
   ...register,
   ...storeRelate,
+  ...mailActive,
 };
