@@ -27,7 +27,6 @@ class Register extends Component {
     const currentLanguage = getLocale();
     return (
       <div className={styles['register-wrapper']}>
-        <div className={styles['register-title']} />
         <h3>{formatMessage({ id: 'register.title' })}</h3>
         <Form className={styles['register-form']}>
           {currentLanguage === 'zh-CN' ? (

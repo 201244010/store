@@ -24,4 +24,9 @@ export default {
   'login.account.merge.confirm': '确定',
   'login.account.merge.cancel': '取消',
   'login.countDown.unit': '秒',
+  'login.relatedStore.none': '您尚未加入任何商户，是否想要创建商户',
+  'login.relatedStore.create': '创建商户',
+  'login.relatedStore.notice': '或者请联系您想加入的商户的管理员，将您加入商户',
+  'login.relatedStore.choose': '请确认你要登录的商户',
+  'login.relatedStore.entry': '进入',
 };
