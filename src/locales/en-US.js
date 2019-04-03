@@ -1,6 +1,8 @@
 import globalHeader from './en-US/globalHeader';
 import menu from './en-US/menu';
 import settings from './en-US/settings';
+import login from '@/locales/en-US/login';
+import register from '@/locales/en-US/register';
 
 export default {
   'navBar.lang': 'Languages',
@@ -11,4 +13,6 @@ export default {
   ...globalHeader,
   ...menu,
   ...settings,
+  ...login,
+  ...register,
 };

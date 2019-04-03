@@ -47,9 +47,9 @@ export default {
       routes: [{ path: '/login', component: './Login' }],
     },
     {
-      path: '/user',
+      path: '/register',
       component: '../layouts/UserLayout',
-      routes: [{ path: '/user', component: './Welcome' }],
+      routes: [{ path: '/register', component: './Register' }],
     },
     {
       path: '/',
