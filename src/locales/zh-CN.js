@@ -5,6 +5,7 @@ import login from './zh-CN/login';
 import register from './zh-CN/register';
 import storeRelate from './zh-CN/storeRelate';
 import mailActive from './zh-CN/mailActive';
+import resetPassword from './zh-CN/resetPassword';
 
 export default {
   'navBar.lang': '语言',
@@ -20,4 +21,5 @@ export default {
   ...register,
   ...storeRelate,
   ...mailActive,
+  ...resetPassword,
 };

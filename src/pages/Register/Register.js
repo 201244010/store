@@ -37,10 +37,10 @@ const MailRegisterSuccess = ({ props }) => {
       actions={
         <div className={styles['result-action-wrapper']}>
           <Button type="primary" size="large">
-            查看邮箱
+            {formatMessage({ id: 'register.mail.check' })}
           </Button>
           <Button type="default" size="large" href="/login">
-            返回首页
+            {formatMessage({ id: 'register.mail.back' })}
           </Button>
         </div>
       }
