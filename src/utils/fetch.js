@@ -42,6 +42,7 @@ export const customizeFetch = (service = 'api') => {
     const opts = {
       method: options.method || 'POST',
       headers: {
+        // TODO 添加通用头部如 token 等
         ...options.headers,
       },
       body: customizedParams,
