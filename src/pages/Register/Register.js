@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Row, Col, Alert } from 'antd';
 import { Result } from 'ant-design-pro';
+import ResultInfo from '@/components/ResultInfo';
 import { formatMessage, getLocale } from 'umi/locale';
-import router from 'umi/router';
 import Link from 'umi/link';
 import * as RegExp from '../../constants/regexp';
 import styles from './Register.less';
@@ -13,25 +13,6 @@ const ALERT_NOTICE_MAP = {
   '001': 'register.mail.existError',
   '002': 'register.code.expired',
   '003': 'register.code.error',
-};
-
-const MobileRegisterSuccess = ({ props }) => {
-  const { count } = props;
-  return (
-    <Result
-      className={styles['result-wrapper']}
-      type="success"
-      title={
-        <div className={styles['result-title']}>{formatMessage({ id: 'register.success' })}</div>
-      }
-      description={
-        <div className={styles['result-content']}>
-          <span className={styles['result-count']}>{`${count}`}</span>
-          {formatMessage({ id: 'register.success.notice' })}
-        </div>
-      }
-    />
-  );
 };
 
 const MailRegisterSuccess = ({ props }) => {
@@ -72,19 +53,16 @@ class Register extends Component {
   constructor(props) {
     super(props);
     this.countdownTimer = null;
-    this.loginCountTimer = null;
     this.state = {
       notice: '',
       registerSuccess: false,
       isCountDown: false,
       countDownSeconds: 60,
-      loginCount: 3,
     };
   }
 
   componentWillUnmount() {
     clearInterval(this.countdownTimer);
-    clearInterval(this.loginCountTimer);
   }
 
   customValidate = (field, rule, value, callback) => {
@@ -126,26 +104,6 @@ class Register extends Component {
     }
   };
 
-  goLogin = () => {
-    clearInterval(this.countdownTimer);
-    clearInterval(this.loginCountTimer);
-    router.push('/');
-  };
-
-  loginCountDown = () => {
-    clearTimeout(this.loginCountTimer);
-    this.loginCountTimer = setInterval(() => {
-      const { loginCount } = this.state;
-      if (loginCount <= 0) {
-        this.goLogin();
-      } else {
-        this.setState({
-          loginCount: loginCount - 1,
-        });
-      }
-    }, 1000);
-  };
-
   resendCountDown = () => {
     clearTimeout(this.countdownTimer);
     this.countdownTimer = setInterval(() => {
@@ -182,14 +140,9 @@ class Register extends Component {
       if (!err) {
         console.log(values);
         // TODO 等待注册提交逻辑
-        this.setState(
-          {
-            registerSuccess: true,
-          },
-          () => {
-            this.loginCountDown();
-          }
-        );
+        this.setState({
+          registerSuccess: true,
+        });
       }
     });
   };
@@ -198,14 +151,20 @@ class Register extends Component {
     const {
       form: { getFieldDecorator },
     } = this.props;
-    const { notice, registerSuccess, isCountDown, countDownSeconds, loginCount } = this.state;
+    const { notice, registerSuccess, isCountDown, countDownSeconds } = this.state;
     const currentLanguage = getLocale();
     return (
       <div className={styles['register-wrapper']}>
         {registerSuccess ? (
           <>
             {currentLanguage === 'zh-CN' ? (
-              <MobileRegisterSuccess props={{ count: loginCount }} />
+              <ResultInfo
+                {...{
+                  title: formatMessage({ id: 'register.success' }),
+                  description: formatMessage({ id: 'register.countDown' }),
+                  countInit: 3,
+                }}
+              />
             ) : (
               <MailRegisterSuccess props={{ mail: 'xxx@sunmi.com' }} />
             )}

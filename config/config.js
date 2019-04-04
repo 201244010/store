@@ -62,6 +62,11 @@ export default {
       routes: [{ path: '/mailActive', component: './MailActive/MailActive' }],
     },
     {
+      path: '/resetPassword',
+      component: '../layouts/UserLayout',
+      routes: [{ path: '/resetPassword', component: './ResetPassword/ResetPassword' }],
+    },
+    {
       path: '/',
       component: '../layouts/BasicLayout',
       routes: [
