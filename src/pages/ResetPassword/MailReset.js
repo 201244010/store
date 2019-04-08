@@ -37,6 +37,7 @@ class MailReset extends Component {
         )}
         <Form.Item>
           {getFieldDecorator('mail', {
+            validateTrigger: 'onBlur',
             rules: [
               { required: true, message: formatMessage({ id: 'mail.validate.isEmpty' }) },
               {
