@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Input, Button, Row, Col, Alert } from 'antd';
 import { Result } from 'ant-design-pro';
 import ResultInfo from '@/components/ResultInfo';
+import Captcha from '@/components/Captcha';
 import { formatMessage, getLocale } from 'umi/locale';
 import Link from 'umi/link';
 import * as RegExp from '../../constants/regexp';
@@ -9,10 +10,10 @@ import styles from './Register.less';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
-  '000': 'register.mobile.existError',
-  '001': 'register.mail.existError',
-  '002': 'register.code.expired',
-  '003': 'register.code.error',
+  '000': 'alert.mobile.existed',
+  '001': 'alert.mail.existed',
+  '002': 'alert.code.error',
+  '003': 'alert.code.expired',
 };
 
 const MailRegisterSuccess = ({ props }) => {
@@ -37,10 +38,10 @@ const MailRegisterSuccess = ({ props }) => {
       actions={
         <div className={styles['result-action-wrapper']}>
           <Button type="primary" size="large">
-            {formatMessage({ id: 'register.mail.check' })}
+            {formatMessage({ id: 'btn.mail.check' })}
           </Button>
           <Button type="default" size="large" href="/login">
-            {formatMessage({ id: 'register.mail.back' })}
+            {formatMessage({ id: 'btn.back.index' })}
           </Button>
         </div>
       }
@@ -52,17 +53,10 @@ const MailRegisterSuccess = ({ props }) => {
 class Register extends Component {
   constructor(props) {
     super(props);
-    this.countdownTimer = null;
     this.state = {
       notice: '',
       registerSuccess: false,
-      isCountDown: false,
-      countDownSeconds: 60,
     };
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.countdownTimer);
   }
 
   customValidate = (field, rule, value, callback) => {
@@ -72,29 +66,29 @@ class Register extends Component {
     switch (field) {
       case 'password':
         if (!value) {
-          callback(formatMessage({ id: 'register.password.emptyValidate' }));
+          callback(formatMessage({ id: 'password.validate.isEmpty' }));
         } else if (value.length < 8) {
-          callback(formatMessage({ id: 'register.password.formatLengthValidate' }));
+          callback(formatMessage({ id: 'password.validate.inLength' }));
         } else if (!RegExp.password.test(value)) {
-          callback(formatMessage({ id: 'register.password.formatContentValidate' }));
+          callback(formatMessage({ id: 'password.validate.isFormatted' }));
         } else {
           callback();
         }
         break;
       case 'confirm':
         if (!value) {
-          callback(formatMessage({ id: 'register.confirm.emptyValidate' }));
+          callback(formatMessage({ id: 'confirm.validate.isEmpty' }));
         } else if (getFieldValue('password') !== value) {
-          callback(formatMessage({ id: 'register.confirm.valueValidate' }));
+          callback(formatMessage({ id: 'confirm.validate.isEqual' }));
         } else {
           callback();
         }
         break;
       case 'mail':
         if (!value) {
-          callback(formatMessage({ id: 'register.mail.emptyValidate' }));
+          callback(formatMessage({ id: 'mail.emptyValidate' }));
         } else if (!RegExp.mail.test(value)) {
-          callback(formatMessage({ id: 'register.mail.formatValidate' }));
+          callback(formatMessage({ id: 'mail.isFormatted' }));
         } else {
           callback();
         }
@@ -104,30 +98,7 @@ class Register extends Component {
     }
   };
 
-  resendCountDown = () => {
-    clearTimeout(this.countdownTimer);
-    this.countdownTimer = setInterval(() => {
-      const { countDownSeconds } = this.state;
-      if (countDownSeconds <= 0) {
-        clearTimeout(this.countdownTimer);
-        this.setState({
-          isCountDown: false,
-          countDownSeconds: 60,
-        });
-      } else {
-        this.setState({
-          countDownSeconds: countDownSeconds - 1,
-        });
-      }
-    }, 1000);
-  };
-
   getCode = () => {
-    this.setState({
-      isCountDown: true,
-    });
-
-    this.resendCountDown();
     // TODO 真正发送验证码的逻辑
   };
 
@@ -151,7 +122,7 @@ class Register extends Component {
     const {
       form: { getFieldDecorator },
     } = this.props;
-    const { notice, registerSuccess, isCountDown, countDownSeconds } = this.state;
+    const { notice, registerSuccess } = this.state;
     const currentLanguage = getLocale();
     return (
       <div className={styles['register-wrapper']}>
@@ -190,11 +161,11 @@ class Register extends Component {
                       rules: [
                         {
                           required: true,
-                          message: formatMessage({ id: 'register.mobile.emptyValidate' }),
+                          message: formatMessage({ id: 'mobile.validate.isEmpty' }),
                         },
                         {
                           pattern: /^1\d{10}$/,
-                          message: formatMessage({ id: 'register.mobile.formatValidate' }),
+                          message: formatMessage({ id: 'mobile.validate.isFormatted' }),
                         },
                       ],
                     })(
@@ -202,38 +173,37 @@ class Register extends Component {
                         addonBefore="+86"
                         size="large"
                         maxLength={11}
-                        placeholder={formatMessage({ id: 'register.mobile.placeholder' })}
+                        placeholder={formatMessage({ id: 'mobile.placeholder' })}
                       />
                     )}
                   </Form.Item>
                   <Form.Item>
-                    <Row gutter={16}>
-                      <Col span={16}>
-                        {getFieldDecorator('code', {
-                          validateTrigger: 'onBlur',
-                          rules: [
-                            {
-                              required: true,
-                              message: formatMessage({ id: 'register.mobile.emptyValidate' }),
-                            },
-                          ],
-                        })(
-                          <Input
-                            size="large"
-                            placeholder={formatMessage({ id: 'register.mobile.code.placeholder' })}
-                          />
-                        )}
-                      </Col>
-                      <Col span={8}>
-                        <Button size="large" block disabled={isCountDown} onClick={this.getCode}>
-                          {isCountDown
-                            ? `${countDownSeconds}${formatMessage({
-                                id: 'register.countDown.unit',
-                              })}`
-                            : formatMessage({ id: 'register.mobile.getCode' })}
-                        </Button>
-                      </Col>
-                    </Row>
+                    {getFieldDecorator('code', {
+                      rules: [
+                        {
+                          required: true,
+                          message: formatMessage({ id: 'code.validate.isEmpty' }),
+                        },
+                      ],
+                    })(
+                      <Captcha
+                        {...{
+                          inputProps: {
+                            size: 'large',
+                            placeholder: formatMessage({ id: 'mobile.code.placeholder' }),
+                          },
+                          buttonProps: {
+                            size: 'large',
+                            block: true,
+                          },
+                          buttonText: {
+                            initText: formatMessage({ id: 'btn.get.code' }),
+                            countText: formatMessage({ id: 'countDown.unit' }),
+                          },
+                          onClick: this.getCode,
+                        }}
+                      />
+                    )}
                   </Form.Item>
                 </>
               ) : (
@@ -247,10 +217,7 @@ class Register extends Component {
                       },
                     ],
                   })(
-                    <Input
-                      size="large"
-                      placeholder={formatMessage({ id: 'register.mail.placeholder' })}
-                    />
+                    <Input size="large" placeholder={formatMessage({ id: 'mail.placeholder' })} />
                   )}
                 </Form.Item>
               )}
@@ -267,7 +234,7 @@ class Register extends Component {
                   <Input
                     type="password"
                     size="large"
-                    placeholder={formatMessage({ id: 'register.password.placeholder' })}
+                    placeholder={formatMessage({ id: 'password.placeholder' })}
                   />
                 )}
               </Form.Item>
@@ -284,7 +251,7 @@ class Register extends Component {
                   <Input
                     type="password"
                     size="large"
-                    placeholder={formatMessage({ id: 'register.confirm.placeholder' })}
+                    placeholder={formatMessage({ id: 'confirm.placeholder' })}
                   />
                 )}
               </Form.Item>
@@ -292,11 +259,11 @@ class Register extends Component {
             <Row type="flex" justify="space-between" align="middle">
               <Col span={10}>
                 <Button type="primary" size="large" block onClick={this.onSubmit}>
-                  {formatMessage({ id: 'register.registBtn' })}
+                  {formatMessage({ id: 'btn.register' })}
                 </Button>
               </Col>
               <Col span={8}>
-                <Link to="/login">{formatMessage({ id: 'register.goLogin' })}</Link>
+                <Link to="/login">{formatMessage({ id: 'link.to.login' })}</Link>
               </Col>
             </Row>
           </>

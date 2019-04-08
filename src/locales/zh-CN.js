@@ -1,8 +1,10 @@
 import globalHeader from './zh-CN/globalHeader';
+import common from './zh-CN/common';
 import menu from './zh-CN/menu';
 import settings from './zh-CN/settings';
-import login from './zh-CN/login';
-import register from './zh-CN/register';
+import message from './zh-CN/message';
+import account from './zh-CN/account';
+import loginRegister from './zh-CN/loginRegister';
 import storeRelate from './zh-CN/storeRelate';
 import mailActive from './zh-CN/mailActive';
 import resetPassword from './zh-CN/resetPassword';
@@ -15,10 +17,12 @@ export default {
   'app.home.introduce': '介绍',
   'layout.user.footer': '2019 上海商米科技有限公司',
   ...globalHeader,
+  ...common,
   ...menu,
   ...settings,
-  ...login,
-  ...register,
+  ...message,
+  ...account,
+  ...loginRegister,
   ...storeRelate,
   ...mailActive,
   ...resetPassword,

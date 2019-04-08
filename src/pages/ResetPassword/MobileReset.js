@@ -1,24 +1,24 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Row, Col } from 'antd';
+import { Form, Input, Button, Alert } from 'antd';
 import { formatMessage } from 'umi/locale';
+import Captcha from '@/components/Captcha';
 import * as RegExp from '@/constants/regexp';
 import styles from '@/pages/Register/Register.less';
 import ResultInfo from '@/pages/Register/Register';
+
+// TODO 根据 error code 显示不同的错误信息，等待 error code
+const ALERT_NOTICE_MAP = {
+  '000': 'alert.mobile.not.registered',
+};
 
 @Form.create()
 class MobileReset extends Component {
   constructor(props) {
     super(props);
-    this.countdownTimer = null;
     this.state = {
       resetSuccess: false,
-      isCountDown: false,
-      countDownSeconds: 60,
+      notice: '',
     };
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.countdownTimer);
   }
 
   customValidate = (field, rule, value, callback) => {
@@ -28,20 +28,20 @@ class MobileReset extends Component {
     switch (field) {
       case 'password':
         if (!value) {
-          callback(formatMessage({ id: 'register.password.emptyValidate' }));
+          callback(formatMessage({ id: 'password.validate.isEmpty' }));
         } else if (value.length < 8) {
-          callback(formatMessage({ id: 'register.password.formatLengthValidate' }));
+          callback(formatMessage({ id: 'password.validate.inLength' }));
         } else if (!RegExp.password.test(value)) {
-          callback(formatMessage({ id: 'register.password.formatContentValidate' }));
+          callback(formatMessage({ id: 'password.validate.isFormatted' }));
         } else {
           callback();
         }
         break;
       case 'confirm':
         if (!value) {
-          callback(formatMessage({ id: 'register.confirm.emptyValidate' }));
+          callback(formatMessage({ id: 'confirm.validate.isEmpty' }));
         } else if (getFieldValue('password') !== value) {
-          callback(formatMessage({ id: 'register.confirm.valueValidate' }));
+          callback(formatMessage({ id: 'confirm.validate.isEqual' }));
         } else {
           callback();
         }
@@ -51,30 +51,7 @@ class MobileReset extends Component {
     }
   };
 
-  resendCountDown = () => {
-    clearTimeout(this.countdownTimer);
-    this.countdownTimer = setInterval(() => {
-      const { countDownSeconds } = this.state;
-      if (countDownSeconds <= 0) {
-        clearTimeout(this.countdownTimer);
-        this.setState({
-          isCountDown: false,
-          countDownSeconds: 60,
-        });
-      } else {
-        this.setState({
-          countDownSeconds: countDownSeconds - 1,
-        });
-      }
-    }, 1000);
-  };
-
   getCode = () => {
-    this.setState({
-      isCountDown: true,
-    });
-
-    this.resendCountDown();
     // TODO 真正发送验证码的逻辑
   };
 
@@ -94,7 +71,7 @@ class MobileReset extends Component {
     const {
       form: { getFieldDecorator },
     } = this.props;
-    const { resetSuccess, isCountDown, countDownSeconds } = this.state;
+    const { resetSuccess, notice } = this.state;
 
     return (
       <div className={styles['register-wrapper']}>
@@ -111,17 +88,26 @@ class MobileReset extends Component {
         ) : (
           <>
             <Form className={styles['register-form']}>
+              {notice && (
+                <Form.Item>
+                  <Alert
+                    message={formatMessage({ id: ALERT_NOTICE_MAP[notice] })}
+                    type="error"
+                    showIcon
+                  />
+                </Form.Item>
+              )}
               <Form.Item>
                 {getFieldDecorator('mobile', {
                   validateTrigger: 'onBlur',
                   rules: [
                     {
                       required: true,
-                      message: formatMessage({ id: 'register.mobile.emptyValidate' }),
+                      message: formatMessage({ id: 'mobile.validate.isEmpty' }),
                     },
                     {
                       pattern: /^1\d{10}$/,
-                      message: formatMessage({ id: 'register.mobile.formatValidate' }),
+                      message: formatMessage({ id: 'mobile.validate.isFormatted' }),
                     },
                   ],
                 })(
@@ -129,38 +115,38 @@ class MobileReset extends Component {
                     addonBefore="+86"
                     size="large"
                     maxLength={11}
-                    placeholder={formatMessage({ id: 'register.mobile.placeholder' })}
+                    placeholder={formatMessage({ id: 'mobile.placeholder' })}
                   />
                 )}
               </Form.Item>
               <Form.Item>
-                <Row gutter={16}>
-                  <Col span={16}>
-                    {getFieldDecorator('code', {
-                      validateTrigger: 'onBlur',
-                      rules: [
-                        {
-                          required: true,
-                          message: formatMessage({ id: 'register.mobile.emptyValidate' }),
-                        },
-                      ],
-                    })(
-                      <Input
-                        size="large"
-                        placeholder={formatMessage({ id: 'register.mobile.code.placeholder' })}
-                      />
-                    )}
-                  </Col>
-                  <Col span={8}>
-                    <Button size="large" block disabled={isCountDown} onClick={this.getCode}>
-                      {isCountDown
-                        ? `${countDownSeconds}${formatMessage({
-                            id: 'register.countDown.unit',
-                          })}`
-                        : formatMessage({ id: 'register.mobile.getCode' })}
-                    </Button>
-                  </Col>
-                </Row>
+                {getFieldDecorator('code', {
+                  validateTrigger: 'onBlur',
+                  rules: [
+                    {
+                      required: true,
+                      message: formatMessage({ id: 'code.validate.isEmpty' }),
+                    },
+                  ],
+                })(
+                  <Captcha
+                    {...{
+                      inputProps: {
+                        size: 'large',
+                        placeholder: formatMessage({ id: 'mobile.code.placeholder' }),
+                      },
+                      buttonProps: {
+                        size: 'large',
+                        block: true,
+                      },
+                      buttonText: {
+                        initText: formatMessage({ id: 'btn.get.code' }),
+                        countText: formatMessage({ id: 'countDown.unit' }),
+                      },
+                      onClick: this.getCode,
+                    }}
+                  />
+                )}
               </Form.Item>
               <Form.Item>
                 {getFieldDecorator('password', {
@@ -175,7 +161,7 @@ class MobileReset extends Component {
                   <Input
                     type="password"
                     size="large"
-                    placeholder={formatMessage({ id: 'register.password.placeholder' })}
+                    placeholder={formatMessage({ id: 'password.placeholder' })}
                   />
                 )}
               </Form.Item>
@@ -192,13 +178,13 @@ class MobileReset extends Component {
                   <Input
                     type="password"
                     size="large"
-                    placeholder={formatMessage({ id: 'register.confirm.placeholder' })}
+                    placeholder={formatMessage({ id: 'confirm.placeholder' })}
                   />
                 )}
               </Form.Item>
               <Form.Item>
                 <Button type="primary" size="large" block onClick={this.onSubmit}>
-                  {formatMessage({ id: 'reset.resetBtn' })}
+                  {formatMessage({ id: 'btn.confirm' })}
                 </Button>
               </Form.Item>
             </Form>

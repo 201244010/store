@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { formatMessage, getLocale } from 'umi/locale';
 import { Divider } from 'antd';
 import BigIcon from '@/components/BigIcon';
-import Register from '../Register/Register';
 import MobileReset from './MobileReset';
+import MailReset from './MailReset';
 import styles from './ResetPassword.less';
 
 const ResetInit = props => {
@@ -33,7 +33,7 @@ const ResetInit = props => {
 
 const RENDER_COMPONENT = {
   toMobile: MobileReset,
-  toMail: '',
+  toMail: MailReset,
   default: () => <div />,
 };
 
@@ -57,7 +57,7 @@ class ResetPassword extends Component {
     let RenderComponent = RENDER_COMPONENT.default;
 
     if (step === 'init') {
-      RenderComponent = currentLanguage === 'zh-CN' ? ResetInit : Register;
+      RenderComponent = currentLanguage === 'zh-CN' ? ResetInit : MailReset;
     } else {
       RenderComponent = RENDER_COMPONENT[step];
     }
