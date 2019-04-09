@@ -64,7 +64,10 @@ export default {
     {
       path: '/resetPassword',
       component: '../layouts/UserLayout',
-      routes: [{ path: '/resetPassword', component: './ResetPassword/ResetPassword' }],
+      routes: [
+        { path: '/resetPassword', component: './ResetPassword/ResetPassword' },
+        { path: '/resetPassword/reset', component: './ResetPassword/PasswordReset' },
+      ],
     },
     {
       path: '/',
