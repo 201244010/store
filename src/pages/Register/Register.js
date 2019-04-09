@@ -5,7 +5,7 @@ import ResultInfo from '@/components/ResultInfo';
 import Captcha from '@/components/Captcha';
 import { formatMessage, getLocale } from 'umi/locale';
 import Link from 'umi/link';
-import * as RegExp from '../../constants/regexp';
+import { customValidate } from '@/utils/customValidate';
 import styles from './Register.less';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
@@ -59,45 +59,6 @@ class Register extends Component {
     };
   }
 
-  customValidate = (field, rule, value, callback) => {
-    const {
-      form: { getFieldValue },
-    } = this.props;
-    switch (field) {
-      case 'password':
-        if (!value) {
-          callback(formatMessage({ id: 'password.validate.isEmpty' }));
-        } else if (value.length < 8) {
-          callback(formatMessage({ id: 'password.validate.inLength' }));
-        } else if (!RegExp.password.test(value)) {
-          callback(formatMessage({ id: 'password.validate.isFormatted' }));
-        } else {
-          callback();
-        }
-        break;
-      case 'confirm':
-        if (!value) {
-          callback(formatMessage({ id: 'confirm.validate.isEmpty' }));
-        } else if (getFieldValue('password') !== value) {
-          callback(formatMessage({ id: 'confirm.validate.isEqual' }));
-        } else {
-          callback();
-        }
-        break;
-      case 'mail':
-        if (!value) {
-          callback(formatMessage({ id: 'mail.emptyValidate' }));
-        } else if (!RegExp.mail.test(value)) {
-          callback(formatMessage({ id: 'mail.isFormatted' }));
-        } else {
-          callback();
-        }
-        break;
-      default:
-        callback();
-    }
-  };
-
   getCode = () => {
     // TODO 真正发送验证码的逻辑
   };
@@ -120,7 +81,7 @@ class Register extends Component {
 
   render() {
     const {
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, getFieldValue },
     } = this.props;
     const { notice, registerSuccess } = this.state;
     const currentLanguage = getLocale();
@@ -179,6 +140,7 @@ class Register extends Component {
                   </Form.Item>
                   <Form.Item>
                     {getFieldDecorator('code', {
+                      validateTrigger: 'onBlur',
                       rules: [
                         {
                           required: true,
@@ -213,7 +175,12 @@ class Register extends Component {
                     rules: [
                       {
                         validator: (rule, value, callback) =>
-                          this.customValidate('mail', rule, value, callback),
+                          customValidate({
+                            field: 'mail',
+                            rule,
+                            value,
+                            callback,
+                          }),
                       },
                     ],
                   })(
@@ -227,7 +194,12 @@ class Register extends Component {
                   rules: [
                     {
                       validator: (rule, value, callback) =>
-                        this.customValidate('password', rule, value, callback),
+                        customValidate({
+                          field: 'password',
+                          rule,
+                          value,
+                          callback,
+                        }),
                     },
                   ],
                 })(
@@ -244,7 +216,15 @@ class Register extends Component {
                   rules: [
                     {
                       validator: (rule, value, callback) =>
-                        this.customValidate('confirm', rule, value, callback),
+                        customValidate({
+                          field: 'confirm',
+                          rule,
+                          value,
+                          callback,
+                          extra: {
+                            getFieldValue,
+                          },
+                        }),
                     },
                   ],
                 })(

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Input, Button } from 'antd';
 import ResultInfo from '@/components/ResultInfo';
-import * as RegExp from '@/constants/regexp';
 import styles from './ResetPassword.less';
+import { customValidate } from '@/utils/customValidate';
 
 @Form.create()
 class PasswordReset extends Component {
@@ -13,36 +13,6 @@ class PasswordReset extends Component {
       resetSuccess: false,
     };
   }
-
-  customValidate = (field, rule, value, callback) => {
-    const {
-      form: { getFieldValue },
-    } = this.props;
-    switch (field) {
-      case 'password':
-        if (!value) {
-          callback(formatMessage({ id: 'password.validate.isEmpty' }));
-        } else if (value.length < 8) {
-          callback(formatMessage({ id: 'password.validate.inLength' }));
-        } else if (!RegExp.password.test(value)) {
-          callback(formatMessage({ id: 'password.validate.isFormatted' }));
-        } else {
-          callback();
-        }
-        break;
-      case 'confirm':
-        if (!value) {
-          callback(formatMessage({ id: 'confirm.validate.isEmpty' }));
-        } else if (getFieldValue('password') !== value) {
-          callback(formatMessage({ id: 'confirm.validate.isEqual' }));
-        } else {
-          callback();
-        }
-        break;
-      default:
-        callback();
-    }
-  };
 
   onSubmit = () => {
     const {
@@ -59,7 +29,7 @@ class PasswordReset extends Component {
   render() {
     const { resetSuccess } = this.state;
     const {
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, getFieldValue },
     } = this.props;
 
     return (
@@ -83,7 +53,12 @@ class PasswordReset extends Component {
                   rules: [
                     {
                       validator: (rule, value, callback) =>
-                        this.customValidate('password', rule, value, callback),
+                        customValidate({
+                          field: 'password',
+                          rule,
+                          value,
+                          callback,
+                        }),
                     },
                   ],
                 })(
@@ -96,7 +71,15 @@ class PasswordReset extends Component {
                   rules: [
                     {
                       validator: (rule, value, callback) =>
-                        this.customValidate('confirm', rule, value, callback),
+                        customValidate({
+                          field: 'confirm',
+                          rule,
+                          value,
+                          callback,
+                          extra: {
+                            getFieldValue,
+                          },
+                        }),
                     },
                   ],
                 })(

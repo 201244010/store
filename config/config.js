@@ -83,7 +83,7 @@ export default {
         },
         {
           path: '/account/center',
-          component: './Account/Center',
+          component: './Account/',
         },
       ],
     },

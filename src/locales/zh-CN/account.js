@@ -28,4 +28,6 @@ export default {
   'mail.validate.isEmpty': '请输入邮箱地址',
   'mail.validate.isFormatted': '邮箱地址格式错误',
   'code.validate.isEmpty': '请输入验证码',
+
+  'avatar.change': '更换头像',
 };

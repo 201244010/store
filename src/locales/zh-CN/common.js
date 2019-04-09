@@ -2,6 +2,8 @@ export default {
   // 按钮文案
   'btn.confirm': '确定',
   'btn.cancel': '取消',
+  'btn.alter': '修改',
+  'btn.bind': '绑定',
   'btn.login': '登录',
   'btn.get.code': '获取验证码',
   'btn.create.store': '创建商户',

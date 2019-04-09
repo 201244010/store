@@ -8,6 +8,7 @@ import loginRegister from './zh-CN/loginRegister';
 import storeRelate from './zh-CN/storeRelate';
 import mailActive from './zh-CN/mailActive';
 import resetPassword from './zh-CN/resetPassword';
+import userCenter from './zh-CN/userCenter';
 
 export default {
   'navBar.lang': '语言',
@@ -26,4 +27,5 @@ export default {
   ...storeRelate,
   ...mailActive,
   ...resetPassword,
+  ...userCenter,
 };

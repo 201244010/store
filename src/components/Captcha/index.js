@@ -54,7 +54,10 @@ class Captcha extends Component {
 
   handleClick = () => {
     const { onClick, countInit = 60 } = this.props;
-    onClick();
+    if (onClick) {
+      onClick();
+    }
+
     this.setState({
       inCounting: true,
       count: countInit,
