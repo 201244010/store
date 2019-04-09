@@ -44,17 +44,30 @@ export default {
     {
       path: '/login',
       component: '../layouts/UserLayout',
-      routes: [{ path: '/login', component: './Login' }],
+      routes: [{ path: '/login', component: './Login/Login' }],
     },
     {
       path: '/register',
       component: '../layouts/UserLayout',
-      routes: [{ path: '/register', component: './Register' }],
+      routes: [{ path: '/register', component: './Register/Register' }],
     },
     {
       path: '/storeRelate',
       component: '../layouts/UserLayout',
-      routes: [{ path: '/storeRelate', component: './StoreRelate' }],
+      routes: [{ path: '/storeRelate', component: './StoreRelate/StoreRelate' }],
+    },
+    {
+      path: '/mailActive',
+      component: '../layouts/UserLayout',
+      routes: [{ path: '/mailActive', component: './MailActive/MailActive' }],
+    },
+    {
+      path: '/resetPassword',
+      component: '../layouts/UserLayout',
+      routes: [
+        { path: '/resetPassword', component: './ResetPassword/ResetPassword' },
+        { path: '/resetPassword/reset', component: './ResetPassword/PasswordReset' },
+      ],
     },
     {
       path: '/',
@@ -69,9 +82,8 @@ export default {
           component: './Welcome',
         },
         {
-          path: 'https://github.com/umijs/umi-blocks/tree/master/ant-design-pro',
-          name: 'more-blocks',
-          icon: 'block',
+          path: '/account/center',
+          component: './Account/',
         },
       ],
     },
