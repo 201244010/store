@@ -1,26 +1,30 @@
 import React, { Component } from 'react';
 import { formatMessage, getLocale } from 'umi/locale';
 import Link from 'umi/link';
+import router from 'umi/router';
 import { connect } from 'dva';
 import { Tabs, Form, Input, Button, Icon, Alert, Modal } from 'antd';
+import { encryption } from '@/utils/utils';
 import Captcha from '@/components/Captcha';
 import styles from './Login.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
-  '000': 'alert.mobile.not.registered',
-  '001': 'alert.account.error',
+  '3603': 'alert.mobile.not.registered',
+  '201': 'alert.account.error',
   '002': 'alert.code.error',
-  '003': 'alert.code.expired',
+  '208': 'alert.code.expired',
 };
 
 const VALIDATE_FIELDS = {
-  tabAccount: ['account', 'password'],
-  tabMobile: ['mobile', 'code'],
+  tabAccount: ['username', 'password'],
+  tabMobile: ['phone', 'code'],
 };
 
 @connect(state => ({
   user: state.user,
+  sso: state.sso,
 }))
 @Form.create()
 class Login extends Component {
@@ -40,7 +44,20 @@ class Login extends Component {
   };
 
   getCode = () => {
-    // TODO 真正发送验证码的逻辑
+    const {
+      form: { getFieldValue },
+      dispatch,
+    } = this.props;
+
+    dispatch({
+      type: 'sso/sendCode',
+      payload: {
+        options: {
+          username: getFieldValue('phone'),
+          type: '2',
+        },
+      },
+    });
   };
 
   showAccountMergeModal = () => {
@@ -61,17 +78,29 @@ class Login extends Component {
       dispatch,
     } = this.props;
     const { currentTab } = this.state;
+    const loginType = currentTab === 'tabAccount' ? 'login' : 'quickLogin';
     validateFields(VALIDATE_FIELDS[currentTab], (err, values) => {
-      dispatch({
-        type: 'user/login',
-        payload: { options: values },
-      });
-      if (!err) {
-        // TODO 通过校验后登录处理
-        console.log('passed');
+      const options = {
+        ...values,
+        password: encryption(values.password),
+      };
 
-        // TODO 根据返回值来判断是否要显示账号合并
-        this.showAccountMergeModal();
+      if (!err) {
+        dispatch({
+          type: 'user/login',
+          payload: { type: loginType, options },
+        }).then(response => {
+          if (response && response.code === ERROR_OK) {
+            // TODO 根据返回值来判断是否要显示账号合并
+            // this.showAccountMergeModal();
+            // TODO 暂时先跳转到首页
+            router.push('/');
+          } else if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
+            this.setState({
+              notice: response.code || '',
+            });
+          }
+        });
       }
     });
   };
@@ -103,7 +132,7 @@ class Login extends Component {
                 </Form.Item>
               )}
               <Form.Item>
-                {getFieldDecorator('account', {
+                {getFieldDecorator('username', {
                   validateTrigger: 'onBlur',
                   rules: [
                     {
@@ -150,7 +179,7 @@ class Login extends Component {
                   </Form.Item>
                 )}
                 <Form.Item>
-                  {getFieldDecorator('mobile', {
+                  {getFieldDecorator('phone', {
                     validateTrigger: 'onBlur',
                     rules: [
                       {

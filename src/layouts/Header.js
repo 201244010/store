@@ -70,7 +70,9 @@ class HeaderView extends PureComponent {
     }
     if (key === 'logout') {
       dispatch({
-        type: 'login/logout',
+        type: 'user/logout',
+      }).then(response => {
+        console.log(response);
       });
     }
   };
@@ -156,4 +158,5 @@ export default connect(({ user, global, setting, loading }) => ({
   fetchingNotices: loading.effects['global/fetchNotices'],
   notices: global.notices,
   setting,
+  user,
 }))(HeaderView);
