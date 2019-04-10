@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { formatMessage, getLocale } from 'umi/locale';
 import Link from 'umi/link';
+import { connect } from 'dva';
 import { Tabs, Form, Input, Button, Icon, Alert, Modal } from 'antd';
 import Captcha from '@/components/Captcha';
 import styles from './Login.less';
@@ -18,6 +19,9 @@ const VALIDATE_FIELDS = {
   tabMobile: ['mobile', 'code'],
 };
 
+@connect(state => ({
+  user: state.user,
+}))
 @Form.create()
 class Login extends Component {
   constructor(props) {
@@ -54,10 +58,14 @@ class Login extends Component {
   onSubmit = () => {
     const {
       form: { validateFields },
+      dispatch,
     } = this.props;
     const { currentTab } = this.state;
     validateFields(VALIDATE_FIELDS[currentTab], (err, values) => {
-      console.log(values);
+      dispatch({
+        type: 'user/login',
+        payload: { options: values },
+      });
       if (!err) {
         // TODO 通过校验后登录处理
         console.log('passed');

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env APP_TYPE=site umi dev",
     "start:no-mock": "cross-env MOCK=none umi dev",
-    "dev": "cross-env APP_TYPE=site umi dev",
+    "dev": "cross-env UMI_ENV=dev APP_TYPE=site umi dev",
     "uat": "cross-env UMI_ENV=uat umi dev",
     "dev:no-mock": "cross-env MOCK=none umi dev",
     "build": "umi build",
@@ -39,6 +39,7 @@
     "react-container-query": "^0.11.0",
     "react-document-title": "^2.0.3",
     "react-media": "^1.8.0",
+    "react-router-breadcrumbs-hoc": "^3.1.1",
     "umi-request": "^1.0.0"
   },
   "devDependencies": {

@@ -14,6 +14,7 @@ import logo from '../assets/menuLogo.png';
 import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
+// import Breadcrumbs from './Breadcrumbs';
 
 import styles from './BasicLayout.less';
 
@@ -151,6 +152,7 @@ class BasicLayout extends React.PureComponent {
       fixedHeader,
     } = this.props;
 
+    console.log(breadcrumbNameMap);
     const isTop = PropsLayout === 'topmenu';
     const routerConfig = this.getRouterAuthority(pathname, routes);
     const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
@@ -179,6 +181,7 @@ class BasicLayout extends React.PureComponent {
             isMobile={isMobile}
             {...this.props}
           />
+          {/* <Breadcrumbs /> */}
           <Content className={styles.content} style={contentStyle}>
             <Authorized authority={routerConfig} noMatch={<p>Exception403</p>}>
               {children}

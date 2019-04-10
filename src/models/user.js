@@ -1,4 +1,5 @@
 import { query as queryUsers, queryCurrent } from '@/services/user';
+import { login } from '@/api/user';
 
 export default {
   namespace: 'user',
@@ -9,6 +10,15 @@ export default {
   },
 
   effects: {
+    *login({ payload }, { call, put }) {
+      const { options } = payload;
+      console.log(options);
+      const response = yield call(login, options);
+      yield put({
+        type: 'login',
+      });
+      return response;
+    },
     *fetch(_, { call, put }) {
       const response = yield call(queryUsers);
       yield put({
@@ -26,6 +36,11 @@ export default {
   },
 
   reducers: {
+    login(state) {
+      return {
+        ...state,
+      };
+    },
     save(state, action) {
       return {
         ...state,

@@ -33,7 +33,7 @@ const formatParams = (options = {}) => {
 };
 
 // TODO 为中间参数处理留下空间，具体等云端接口（如参数加密、sign 等）（参考自 ESL）
-const customizeParams = (options = {}) => formatParams(options.params || {});
+const customizeParams = (options = {}) => formatParams(options.body || {});
 
 export const customizeFetch = (service = 'api') => {
   const baseUrl = API_ADDRESS[env];
@@ -42,13 +42,12 @@ export const customizeFetch = (service = 'api') => {
     const opts = {
       method: options.method || 'POST',
       headers: {
-        // TODO 添加通用头部如 token 等
         ...options.headers,
       },
       body: customizedParams,
     };
 
-    const url = `${baseUrl}/${service}/${api}`;
+    const url = `//${baseUrl}/${service}/${api}`;
     const response = fetch(url, opts);
 
     if (response.status !== 200) {
