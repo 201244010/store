@@ -82,6 +82,18 @@ export default {
           component: './Welcome',
         },
         {
+          path: '/setting',
+          name: '系统设置',
+          icon: 'setting',
+          routes: [
+            {
+              path: '/setting/role',
+              name: '角色管理',
+              component: './Setting/Role',
+            },
+          ],
+        },
+        {
           path: '/account/center',
           component: './Account/',
         },
