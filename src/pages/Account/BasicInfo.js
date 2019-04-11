@@ -6,9 +6,12 @@ import * as styles from './Account.less';
 class BasicInfo extends Component {
   constructor(props) {
     super(props);
+    const {
+      user: { currentUser },
+    } = props;
     this.state = {
       nameEditing: false,
-      username: 'momo.zxy',
+      username: currentUser.username || '',
     };
   }
 

@@ -9,7 +9,7 @@
     "dev": "cross-env UMI_ENV=dev APP_TYPE=site umi dev",
     "uat": "cross-env UMI_ENV=uat umi dev",
     "dev:no-mock": "cross-env MOCK=none umi dev",
-    "build": "umi build",
+    "build-dev": "cross-env UMI_ENV=dev APP_TYPE=site umi build",
     "analyze": "cross-env ANALYZE=1 umi build",
     "lint:style": "stylelint \"src/**/*.less\" --syntax less",
     "lint": "eslint --ext .js src mock tests && npm run lint:style",

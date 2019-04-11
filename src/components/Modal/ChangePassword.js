@@ -43,7 +43,7 @@ class ChangePassword extends Component {
             {...FORM_ITEM_LAYOUT_COMMON}
             label={formatMessage({ id: 'change.password.current' })}
           >
-            {getFieldDecorator('oldPassword', {
+            {getFieldDecorator('old_password', {
               validateTrigger: 'onBlur',
               rules: [
                 {
@@ -62,7 +62,7 @@ class ChangePassword extends Component {
             {...FORM_ITEM_LAYOUT_COMMON}
             label={formatMessage({ id: 'change.password.old' })}
           >
-            {getFieldDecorator('password', {
+            {getFieldDecorator('new_password', {
               validateTrigger: 'onBlur',
               rules: [
                 {
@@ -93,6 +93,7 @@ class ChangePassword extends Component {
                       callback,
                       extra: {
                         getFieldValue,
+                        compareField: 'new_password',
                       },
                     }),
                 },
