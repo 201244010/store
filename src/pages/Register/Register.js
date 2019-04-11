@@ -3,6 +3,7 @@ import { Form, Input, Button, Row, Col, Alert } from 'antd';
 import { Result } from 'ant-design-pro';
 import ResultInfo from '@/components/ResultInfo';
 import Captcha from '@/components/Captcha';
+import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import { formatMessage, getLocale } from 'umi/locale';
 import Link from 'umi/link';
 import { connect } from 'dva';
@@ -76,12 +77,18 @@ class Register extends Component {
     const {
       form: { getFieldValue },
       sendCode,
+      sso: { needImgCaptcha, imgCaptcha },
     } = this.props;
 
     const response = await sendCode({
       options: {
         username: getFieldValue('username'),
         type: '1',
+        imgCode: getFieldValue('vcode') || '',
+        key: needImgCaptcha ? imgCaptcha.key : '',
+        width: 112,
+        height: 40,
+        fontSize: 18,
       },
     });
 
@@ -129,6 +136,7 @@ class Register extends Component {
   render() {
     const {
       form: { getFieldDecorator, getFieldValue },
+      sso: { needImgCaptcha, imgCaptcha },
     } = this.props;
     const { notice, registerSuccess } = this.state;
     const currentLanguage = getLocale();
@@ -185,6 +193,22 @@ class Register extends Component {
                       />
                     )}
                   </Form.Item>
+                  {needImgCaptcha && (
+                    <Form.Item>
+                      {getFieldDecorator('vcode')(
+                        <ImgCaptcha
+                          {...{
+                            imgUrl: imgCaptcha.url,
+                            inputProps: {
+                              size: 'large',
+                            },
+                            initial: false,
+                            getImageCode: () => this.getCode(),
+                          }}
+                        />
+                      )}
+                    </Form.Item>
+                  )}
                   <Form.Item>
                     {getFieldDecorator('code', {
                       validateTrigger: 'onBlur',

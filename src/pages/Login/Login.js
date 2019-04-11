@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import { Tabs, Form, Input, Button, Icon, Alert, Modal } from 'antd';
 import { encryption } from '@/utils/utils';
 import Captcha from '@/components/Captcha';
+import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import styles from './Login.less';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -28,8 +29,10 @@ const VALIDATE_FIELDS = {
   }),
   dispatch => ({
     userLogin: payload => dispatch({ type: 'user/login', payload }),
+    checkImgCode: payload => dispatch({ type: 'user/checkImgCode', payload }),
     checkUser: payload => dispatch({ type: 'sso/checkUser', payload }),
     sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
+    getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
   })
 )
 @Form.create()
@@ -49,16 +52,22 @@ class Login extends Component {
     });
   };
 
-  getCode = () => {
+  getCode = async () => {
     const {
       form: { getFieldValue },
       sendCode,
+      sso: { needImgCaptcha, imgCaptcha },
     } = this.props;
 
-    sendCode({
+    await sendCode({
       options: {
         username: getFieldValue('phone'),
         type: '2',
+        imgCode: getFieldValue('vcode') || '',
+        key: needImgCaptcha ? imgCaptcha.key : '',
+        width: 112,
+        height: 40,
+        fontSize: 18,
       },
     });
   };
@@ -94,25 +103,46 @@ class Login extends Component {
     }
   };
 
+  doLogin = async (loginType, values) => {
+    const { userLogin } = this.props;
+    const options = {
+      ...values,
+      password: encryption(values.password),
+    };
+
+    const response = await userLogin({
+      type: loginType,
+      options,
+    });
+    this.handleResponse(response);
+  };
+
   onSubmit = () => {
     const {
-      form: { validateFields },
-      userLogin,
+      form: { validateFields, getFieldValue },
+      user: { errorTimes },
+      sso: { imgCode },
+      checkImgCode,
     } = this.props;
     const { currentTab } = this.state;
     const loginType = currentTab === 'tabAccount' ? 'login' : 'quickLogin';
+
     validateFields(VALIDATE_FIELDS[currentTab], async (err, values) => {
       if (!err) {
-        const options = {
-          ...values,
-          password: encryption(values.password),
-        };
+        if (errorTimes > 2) {
+          const result = await checkImgCode({
+            options: {
+              code: getFieldValue('vcode') || '',
+              key: imgCode.key || '',
+            },
+          });
 
-        const response = await userLogin({
-          type: loginType,
-          options,
-        });
-        this.handleResponse(response);
+          if (result && result.code === ERROR_OK) {
+            this.doLogin(loginType, values);
+          }
+        } else {
+          this.doLogin(loginType, values);
+        }
       }
     });
   };
@@ -121,6 +151,9 @@ class Login extends Component {
     const { notice } = this.state;
     const {
       form: { getFieldDecorator },
+      getImageCode,
+      sso: { imgCode, imgCaptcha, needImgCaptcha },
+      user: { errorTimes },
     } = this.props;
     const currentLanguage = getLocale();
 
@@ -178,6 +211,21 @@ class Login extends Component {
                   />
                 )}
               </Form.Item>
+              {errorTimes > 2 && (
+                <Form.Item>
+                  {getFieldDecorator('vcode')(
+                    <ImgCaptcha
+                      {...{
+                        imgUrl: imgCode.url,
+                        inputProps: {
+                          size: 'large',
+                        },
+                        getImageCode,
+                      }}
+                    />
+                  )}
+                </Form.Item>
+              )}
             </Tabs.TabPane>
             {currentLanguage === 'zh-CN' && (
               <Tabs.TabPane tab={formatMessage({ id: 'login.useMobile' })} key="tabMobile">
@@ -211,6 +259,22 @@ class Login extends Component {
                     />
                   )}
                 </Form.Item>
+                {needImgCaptcha && (
+                  <Form.Item>
+                    {getFieldDecorator('vcode')(
+                      <ImgCaptcha
+                        {...{
+                          imgUrl: imgCaptcha.url,
+                          inputProps: {
+                            size: 'large',
+                          },
+                          initial: false,
+                          getImageCode: () => this.getCode(),
+                        }}
+                      />
+                    )}
+                  </Form.Item>
+                )}
                 <Form.Item>
                   {getFieldDecorator('code', {
                     validateTrigger: 'onBlur',

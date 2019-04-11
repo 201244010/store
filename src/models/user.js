@@ -9,25 +9,34 @@ export default {
 
   state: {
     userInfo: {},
+    errorTimes: 0,
     list: [],
     currentUser: {},
   },
 
   effects: {
-    *login({ payload }, { call }) {
+    *login({ payload }, { call, put }) {
       const { type, options } = payload;
       const response = yield call(Actions.login, type, options);
 
       if (response && response.code === ERROR_OK) {
         const token = response.data;
         Storage.set({ __token__: token });
+      } else {
+        yield put({
+          type: 'computeErrorTime',
+          payload: 1,
+        });
       }
 
       return response;
     },
 
-    *logout(_, { call }) {
+    *logout(_, { call, put }) {
       yield call(Actions.logout);
+      yield put({
+        type: 'initState',
+      });
       Storage.remove('__token__');
       router.push('/login');
     },
@@ -55,6 +64,12 @@ export default {
       return response;
     },
 
+    *checkImgCode({ payload }, { call }) {
+      const { options } = payload;
+      const response = yield call(Actions.checkImgCode, options);
+      return response;
+    },
+
     *fetch(_, { call, put }) {
       const response = yield call(queryUsers);
       yield put({
@@ -72,10 +87,23 @@ export default {
   },
 
   reducers: {
+    computeErrorTime(state, action) {
+      return {
+        ...state,
+        errorTimes: state.errorTimes + action.payload,
+      };
+    },
     setUserInfo(state, action) {
       return {
         ...state,
         userInfo: action.payload,
+      };
+    },
+    initState(state) {
+      return {
+        ...state,
+        userInfo: {},
+        errorTimes: 0,
       };
     },
     save(state, action) {

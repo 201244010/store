@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Input, Button, Row, Col, Alert } from 'antd';
+import { Form, Input, Button, Alert } from 'antd';
+import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import { Result } from 'ant-design-pro';
 import { connect } from 'dva';
 import * as RegExp from '../../constants/regexp';
@@ -41,8 +42,7 @@ const MailActive = () => (
   dispatch => ({
     getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
     sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
-    verifyCode: payload => dispatch({ type: 'sso/verifyCode', payload }),
-    resetPassword: payload => dispatch({ type: 'user/resetPassword', payload }),
+    checkImgCode: payload => dispatch({ type: 'user/checkImgCode', payload }),
   })
 )
 @Form.create()
@@ -55,26 +55,17 @@ class MailReset extends Component {
     };
   }
 
-  componentDidMount() {
-    this.getImpageCode();
-  }
-
-  getImpageCode = async () => {
-    const { getImageCode } = this.props;
-    await getImageCode();
-  };
-
-  refreshCode = () => {
+  checkImgCode = async values => {
     const {
-      form: { setFieldsValue },
+      checkImgCode,
+      sso: { imgCode },
     } = this.props;
-    setFieldsValue({ code: '' });
-    this.getImpageCode();
-  };
-
-  verifyCode = async values => {
-    const { verifyCode } = this.props;
-    const response = await verifyCode({ options: values });
+    const response = await checkImgCode({
+      options: {
+        ...values,
+        ...imgCode,
+      },
+    });
     return response;
   };
 
@@ -89,14 +80,14 @@ class MailReset extends Component {
   onSubmit = () => {
     const {
       form: { validateFields },
-      resetPassword,
     } = this.props;
     validateFields(async (err, values) => {
       if (!err) {
-        const result = await this.verifyCode(values);
+        const result = await this.checkImgCode(values);
         if (result && result.code === ERROR_OK) {
-          const response = await resetPassword({ options: values });
-          this.handleResponse(response);
+          // TODO 发送重置邮件的接口要等
+          // const response = await resetPassword({ options: values });
+          // this.handleResponse(response);
         }
       }
     });
@@ -106,7 +97,8 @@ class MailReset extends Component {
     const { notice, resetSuccess } = this.state;
     const {
       form: { getFieldDecorator },
-      sso: { imgUrl },
+      sso: { imgCode },
+      getImageCode,
     } = this.props;
 
     return (
@@ -137,16 +129,17 @@ class MailReset extends Component {
               })(<Input size="large" placeholder={formatMessage({ id: 'mail.placeholder' })} />)}
             </Form.Item>
             <Form.Item>
-              <Row gutter={16}>
-                <Col span={16}>
-                  {getFieldDecorator('code')(
-                    <Input size="large" placeholder={formatMessage({ id: 'vcode.placeholder' })} />
-                  )}
-                </Col>
-                <Col span={8}>
-                  <img src={imgUrl} alt="" onClick={this.refreshCode} />
-                </Col>
-              </Row>
+              {getFieldDecorator('code')(
+                <ImgCaptcha
+                  {...{
+                    imgUrl: imgCode.url,
+                    inputProps: {
+                      size: 'large',
+                    },
+                    getImageCode,
+                  }}
+                />
+              )}
             </Form.Item>
             <Form.Item>
               <Button type="primary" size="large" block onClick={this.onSubmit}>

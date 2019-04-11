@@ -34,3 +34,13 @@ export const resetPassword = (options = {}) => {
   };
   return fetchApi('resetPassword', opts).then(response => response.json());
 };
+
+export const checkImgCode = (options = {}) => {
+  const opts = {
+    body: {
+      ...options,
+    },
+  };
+
+  return fetchApi('checkImgCode', opts).then(response => response.json());
+};

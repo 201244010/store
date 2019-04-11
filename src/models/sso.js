@@ -1,18 +1,38 @@
 import * as Actions from '@/api/sso';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 
 export default {
   namespace: 'sso',
   state: {
-    imgUrl: null,
+    needImgCaptcha: false,
+    imgCaptcha: {},
+    imgCode: {},
   },
   effects: {
     *sendCode({ payload }, { call, put }) {
       const { options } = payload;
       const response = yield call(Actions.sendCode, options);
-      yield put({
-        type: 'sendCode',
-      });
+      if (response && response.code === ERROR_OK) {
+        yield put({
+          type: 'setImgCode',
+          payload: {
+            needImgCaptcha: false,
+            imgCaptcha: {},
+          },
+        });
+      } else if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
+        const result = response.data || {};
+        yield put({
+          type: 'setImgCode',
+          payload: {
+            needImgCaptcha: true,
+            imgCaptcha: {
+              key: result.key || '',
+              url: `data:image/png;base64,${result.url}` || '',
+            },
+          },
+        });
+      }
       return response;
     },
 
@@ -31,7 +51,10 @@ export default {
         const result = response.data || {};
         yield put({
           type: 'saveImageCode',
-          payload: `data:image/png;base64,${result.url}` || '',
+          payload: {
+            key: result.key,
+            url: `data:image/png;base64,${result.url}` || '',
+          },
         });
       }
     },
@@ -44,20 +67,24 @@ export default {
   },
 
   reducers: {
-    sendCode(state) {
-      return {
-        ...state,
-      };
-    },
     checkUser(state) {
       return {
         ...state,
       };
     },
+    setImgCode(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
     saveImageCode(state, action) {
       return {
         ...state,
-        imgUrl: action.payload,
+        imgCode: {
+          ...state.imgCode,
+          ...action.payload,
+        },
       };
     },
   },

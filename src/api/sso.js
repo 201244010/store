@@ -5,10 +5,10 @@ const fetchApi = customizeFetch('api/sso/app/sso/1.0/?service=', 'dev.api.sunmi.
 export const sendCode = (options = {}) => {
   const opts = {
     body: {
-      ...options,
       language: 'zh',
       imgCode: '',
       key: '',
+      ...options,
     },
   };
 
@@ -32,8 +32,6 @@ export const checkUser = (options = {}) => {
       language: 'zh_cn',
     },
   };
-
-  console.log(opts);
 
   return fetchApi('checkusername', opts).then(response => response.json());
 };
