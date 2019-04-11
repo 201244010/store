@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import GlobalHeader from '@/components/GlobalHeader';
 import TopNavHeader from '@/components/TopNavHeader';
+// import Storage from '@konata9/storage.js';
 import styles from './Header.less';
 
 const { Header } = Layout;
@@ -54,7 +55,7 @@ class HeaderView extends PureComponent {
     });
   };
 
-  handleMenuClick = ({ key }) => {
+  handleMenuClick = async ({ key }) => {
     const { dispatch } = this.props;
     if (key === 'userCenter') {
       router.push('/account/center');
@@ -70,7 +71,7 @@ class HeaderView extends PureComponent {
     }
     if (key === 'logout') {
       dispatch({
-        type: 'login/logout',
+        type: 'user/logout',
       });
     }
   };
@@ -156,4 +157,5 @@ export default connect(({ user, global, setting, loading }) => ({
   fetchingNotices: loading.effects['global/fetchNotices'],
   notices: global.notices,
   setting,
+  user,
 }))(HeaderView);

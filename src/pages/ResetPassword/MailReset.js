@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Input, Button, Row, Col, Alert } from 'antd';
+import { Form, Input, Button, Alert } from 'antd';
+import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import { Result } from 'ant-design-pro';
+import { connect } from 'dva';
 import * as RegExp from '../../constants/regexp';
 import styles from '@/pages/Register/Register.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
-  '000': 'alert.vcode.error',
+  '208': 'alert.vcode.error',
   '001': 'alert.mail.not.registered',
 };
 
@@ -31,6 +34,17 @@ const MailActive = () => (
   />
 );
 
+@connect(
+  state => ({
+    user: state.user,
+    sso: state.sso,
+  }),
+  dispatch => ({
+    getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
+    sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
+    checkImgCode: payload => dispatch({ type: 'user/checkImgCode', payload }),
+  })
+)
 @Form.create()
 class MailReset extends Component {
   constructor(props) {
@@ -41,18 +55,40 @@ class MailReset extends Component {
     };
   }
 
-  refreshCode = () => {
-    // TODO 刷新图片验证码并清除已填内容
+  checkImgCode = async values => {
+    const {
+      checkImgCode,
+      sso: { imgCode },
+    } = this.props;
+    const response = await checkImgCode({
+      options: {
+        ...values,
+        ...imgCode,
+      },
+    });
+    return response;
+  };
+
+  handleResponse = response => {
+    if (response && response.code === ERROR_OK) {
+      this.setState({
+        resetSuccess: true,
+      });
+    }
   };
 
   onSubmit = () => {
     const {
       form: { validateFields },
     } = this.props;
-    validateFields((err, values) => {
+    validateFields(async (err, values) => {
       if (!err) {
-        // TODO 通过邮件重置密码的逻辑
-        console.log(values);
+        const result = await this.checkImgCode(values);
+        if (result && result.code === ERROR_OK) {
+          // TODO 发送重置邮件的接口要等
+          // const response = await resetPassword({ options: values });
+          // this.handleResponse(response);
+        }
       }
     });
   };
@@ -61,6 +97,8 @@ class MailReset extends Component {
     const { notice, resetSuccess } = this.state;
     const {
       form: { getFieldDecorator },
+      sso: { imgCode },
+      getImageCode,
     } = this.props;
 
     return (
@@ -79,7 +117,7 @@ class MailReset extends Component {
               </Form.Item>
             )}
             <Form.Item>
-              {getFieldDecorator('mail', {
+              {getFieldDecorator('username', {
                 validateTrigger: 'onBlur',
                 rules: [
                   { required: true, message: formatMessage({ id: 'mail.validate.isEmpty' }) },
@@ -91,16 +129,17 @@ class MailReset extends Component {
               })(<Input size="large" placeholder={formatMessage({ id: 'mail.placeholder' })} />)}
             </Form.Item>
             <Form.Item>
-              <Row gutter={16}>
-                <Col span={16}>
-                  {getFieldDecorator('vcode')(
-                    <Input size="large" placeholder={formatMessage({ id: 'vcode.placeholder' })} />
-                  )}
-                </Col>
-                <Col span={8}>
-                  <img style={{ width: '100%', height: '100%' }} src="" alt="" />
-                </Col>
-              </Row>
+              {getFieldDecorator('code')(
+                <ImgCaptcha
+                  {...{
+                    imgUrl: imgCode.url,
+                    inputProps: {
+                      size: 'large',
+                    },
+                    getImageCode,
+                  }}
+                />
+              )}
             </Form.Item>
             <Form.Item>
               <Button type="primary" size="large" block onClick={this.onSubmit}>

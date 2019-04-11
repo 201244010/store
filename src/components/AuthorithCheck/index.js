@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-// import Storage from '@konata9/storage.js';
-// import router from 'umi/router';
+import Storage from '@konata9/storage.js';
+import router from 'umi/router';
 
 function AuthorithCheck(WrappedComponent) {
   return class extends Component {
@@ -9,11 +9,10 @@ function AuthorithCheck(WrappedComponent) {
     }
 
     authorityCheck = () => {
-      // TODO 权限控制逻辑
-      // const userInfo = Storage.get('__USER_INFO__');
-      // if (!userInfo) {
-      //   router.push('/login');
-      // }
+      const userInfo = Storage.get('__token__');
+      if (!userInfo) {
+        router.push('/login');
+      }
     };
 
     render() {

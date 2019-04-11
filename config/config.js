@@ -45,21 +45,25 @@ export default {
       path: '/login',
       component: '../layouts/UserLayout',
       routes: [{ path: '/login', component: './Login/Login' }],
+      breadcrumb: null,
     },
     {
       path: '/register',
       component: '../layouts/UserLayout',
       routes: [{ path: '/register', component: './Register/Register' }],
+      breadcrumb: null,
     },
     {
       path: '/storeRelate',
       component: '../layouts/UserLayout',
       routes: [{ path: '/storeRelate', component: './StoreRelate/StoreRelate' }],
+      breadcrumb: null,
     },
     {
       path: '/mailActive',
       component: '../layouts/UserLayout',
       routes: [{ path: '/mailActive', component: './MailActive/MailActive' }],
+      breadcrumb: null,
     },
     {
       path: '/resetPassword',
@@ -68,6 +72,7 @@ export default {
         { path: '/resetPassword', component: './ResetPassword/ResetPassword' },
         { path: '/resetPassword/reset', component: './ResetPassword/PasswordReset' },
       ],
+      breadcrumb: null,
     },
     {
       path: '/',
@@ -80,6 +85,19 @@ export default {
           name: 'welcome',
           icon: 'smile',
           component: './Welcome',
+          breadcrumb: 'Custom Example',
+        },
+        {
+          path: '/setting',
+          name: 'setting',
+          icon: 'setting',
+          routes: [
+            {
+              path: '/setting/role',
+              name: 'role',
+              component: './Setting/Role',
+            },
+          ],
         },
         {
           path: '/account/center',
@@ -95,6 +113,7 @@ export default {
    */
   define: {
     APP_TYPE: process.env.APP_TYPE || '',
+    'process.env.UMI_ENV': process.env.UMI_ENV,
   },
   // Theme for antd
   // https://ant.design/docs/react/customize-theme-cn

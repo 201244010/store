@@ -3,15 +3,19 @@ import { Form, Input, Button, Row, Col, Alert } from 'antd';
 import { Result } from 'ant-design-pro';
 import ResultInfo from '@/components/ResultInfo';
 import Captcha from '@/components/Captcha';
+import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import { formatMessage, getLocale } from 'umi/locale';
 import Link from 'umi/link';
+import { connect } from 'dva';
 import { customValidate } from '@/utils/customValidate';
+import { encryption } from '@/utils/utils';
 import styles from './Register.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
-  '000': 'alert.mobile.existed',
-  '001': 'alert.mail.existed',
+  '216': 'alert.mobile.existed',
+  '1001': 'alert.mail.existed',
   '002': 'alert.code.error',
   '003': 'alert.code.expired',
 };
@@ -49,6 +53,16 @@ const MailRegisterSuccess = ({ props }) => {
   );
 };
 
+@connect(
+  state => ({
+    user: state.user,
+    sso: state.sso,
+  }),
+  dispatch => ({
+    register: payload => dispatch({ type: 'user/register', payload }),
+    sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
+  })
+)
 @Form.create()
 class Register extends Component {
   constructor(props) {
@@ -59,22 +73,62 @@ class Register extends Component {
     };
   }
 
-  getCode = () => {
-    // TODO 真正发送验证码的逻辑
+  getCode = async () => {
+    const {
+      form: { getFieldValue },
+      sendCode,
+      sso: { needImgCaptcha, imgCaptcha },
+    } = this.props;
+
+    const response = await sendCode({
+      options: {
+        username: getFieldValue('username'),
+        type: '1',
+        imgCode: getFieldValue('vcode') || '',
+        key: needImgCaptcha ? imgCaptcha.key : '',
+        width: 112,
+        height: 40,
+        fontSize: 18,
+      },
+    });
+
+    if (
+      response &&
+      response.code !== ERROR_OK &&
+      Object.keys(ALERT_NOTICE_MAP).includes(response.code)
+    ) {
+      this.setState({
+        notice: response.code,
+      });
+    }
+  };
+
+  handleResponse = response => {
+    if (response && response.code === ERROR_OK) {
+      this.setState({
+        registerSuccess: true,
+      });
+    } else if (response && Object.keys(ALERT_NOTICE_MAP).includes(response.code)) {
+      this.setState({
+        notice: response.code,
+      });
+    }
   };
 
   onSubmit = () => {
     const {
       form: { validateFields },
+      register,
     } = this.props;
-    validateFields((err, values) => {
-      console.log(values);
+    validateFields(async (err, values) => {
       if (!err) {
-        console.log(values);
-        // TODO 等待注册提交逻辑
-        this.setState({
-          registerSuccess: true,
-        });
+        const options = {
+          ...values,
+          password: encryption(values.password),
+        };
+
+        const response = await register({ options });
+        this.handleResponse(response);
       }
     });
   };
@@ -82,6 +136,7 @@ class Register extends Component {
   render() {
     const {
       form: { getFieldDecorator, getFieldValue },
+      sso: { needImgCaptcha, imgCaptcha },
     } = this.props;
     const { notice, registerSuccess } = this.state;
     const currentLanguage = getLocale();
@@ -98,7 +153,7 @@ class Register extends Component {
                 }}
               />
             ) : (
-              <MailRegisterSuccess props={{ mail: 'xxx@sunmi.com' }} />
+              <MailRegisterSuccess props={{ mail: getFieldValue('username') }} />
             )}
           </>
         ) : (
@@ -117,7 +172,7 @@ class Register extends Component {
               {currentLanguage === 'zh-CN' ? (
                 <>
                   <Form.Item>
-                    {getFieldDecorator('mobile', {
+                    {getFieldDecorator('username', {
                       validateTrigger: 'onBlur',
                       rules: [
                         {
@@ -138,6 +193,22 @@ class Register extends Component {
                       />
                     )}
                   </Form.Item>
+                  {needImgCaptcha && (
+                    <Form.Item>
+                      {getFieldDecorator('vcode')(
+                        <ImgCaptcha
+                          {...{
+                            imgUrl: imgCaptcha.url,
+                            inputProps: {
+                              size: 'large',
+                            },
+                            initial: false,
+                            getImageCode: () => this.getCode(),
+                          }}
+                        />
+                      )}
+                    </Form.Item>
+                  )}
                   <Form.Item>
                     {getFieldDecorator('code', {
                       validateTrigger: 'onBlur',
@@ -170,7 +241,7 @@ class Register extends Component {
                 </>
               ) : (
                 <Form.Item>
-                  {getFieldDecorator('mail', {
+                  {getFieldDecorator('username', {
                     validateTrigger: 'onBlur',
                     rules: [
                       {
