@@ -9,6 +9,7 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage } from 'umi/locale';
+import AuthorithCheck from '@/components/AuthorithCheck';
 import Authorized from '@/utils/Authorized';
 import logo from '../assets/menuLogo.png';
 import Header from './Header';
@@ -45,6 +46,7 @@ const query = {
   },
 };
 
+@AuthorithCheck
 class BasicLayout extends React.PureComponent {
   constructor(props) {
     super(props);

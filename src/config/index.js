@@ -1,8 +1,8 @@
 export const env = process.env.UMI_ENV;
 
 export const API_ADDRESS = {
-  dev: '47.96.240.44:30204',
-  // dev: '47.96.240.44:35132',
+  // dev: '47.96.240.44:30204',
+  dev: '47.96.240.44:35132',
 };
 
 export const DES_KEY = {
