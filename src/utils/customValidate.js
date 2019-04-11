@@ -14,10 +14,10 @@ const passwordValidate = (rule, value, callback) => {
 };
 
 const confirmValidate = (rule, value, callback, extra) => {
-  const { getFieldValue } = extra;
+  const { getFieldValue, compareField = 'password' } = extra;
   if (!value) {
     callback(formatMessage({ id: 'confirm.validate.isEmpty' }));
-  } else if (getFieldValue('password') !== value) {
+  } else if (getFieldValue(compareField) !== value) {
     callback(formatMessage({ id: 'confirm.validate.isEqual' }));
   } else {
     callback();

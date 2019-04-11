@@ -4,3 +4,4 @@
 /src/pages/.umi
 .DS_Store
 src/.DS_Store
+dist

@@ -78,7 +78,7 @@ export default {
       path: '/',
       component: '../layouts/BasicLayout',
       routes: [
-        { path: '/', redirect: '/welcome' },
+        { path: '/', redirect: '/login' },
         // dashboard
         {
           path: '/welcome',

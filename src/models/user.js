@@ -96,7 +96,7 @@ export default {
     setUserInfo(state, action) {
       return {
         ...state,
-        userInfo: action.payload,
+        currentUser: action.payload || {},
       };
     },
     initState(state) {
