@@ -5,12 +5,25 @@ import Captcha from '@/components/Captcha';
 import styles from '@/pages/Register/Register.less';
 import ResultInfo from '@/pages/Register/Register';
 import { customValidate } from '@/utils/customValidate';
+import { connect } from 'dva';
+import { encryption } from '@/utils/utils';
+import { ERROR_OK } from '@/constants/errorCode';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
   '000': 'alert.mobile.not.registered',
 };
 
+@connect(
+  state => ({
+    user: state.user,
+    sso: state.sso,
+  }),
+  dispatch => ({
+    resetPassword: payload => dispatch({ type: 'user/resetPassword', payload }),
+    sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
+  })
+)
 @Form.create()
 class MobileReset extends Component {
   constructor(props) {
@@ -21,18 +34,41 @@ class MobileReset extends Component {
     };
   }
 
-  getCode = () => {
-    // TODO 真正发送验证码的逻辑
+  getCode = async () => {
+    const {
+      form: { getFieldValue },
+      sendCode,
+    } = this.props;
+    sendCode({
+      options: {
+        username: getFieldValue('username'),
+        type: '2',
+      },
+    });
+  };
+
+  handleResponse = response => {
+    if (response && response.code === ERROR_OK) {
+      this.setState({
+        resetSuccess: true,
+      });
+    }
   };
 
   onSubmit = () => {
     const {
       form: { validateFields },
+      resetPassword,
     } = this.props;
-    validateFields((err, values) => {
+    validateFields(async (err, values) => {
       if (!err) {
-        // TODO 通过短信重置密码的逻辑
-        console.log(values);
+        const options = {
+          ...values,
+          password: encryption(values.password),
+        };
+
+        const response = await resetPassword({ options });
+        this.handleResponse(response);
       }
     });
   };
@@ -68,7 +104,7 @@ class MobileReset extends Component {
                 </Form.Item>
               )}
               <Form.Item>
-                {getFieldDecorator('mobile', {
+                {getFieldDecorator('username', {
                   validateTrigger: 'onBlur',
                   rules: [
                     {

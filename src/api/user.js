@@ -23,3 +23,14 @@ export const register = (options = {}) => {
 
   return fetchApi('register', opts).then(response => response.json());
 };
+
+export const getUserInfo = () => fetchApi('getUserinfo').then(response => response.json());
+
+export const resetPassword = (options = {}) => {
+  const opts = {
+    body: {
+      ...options,
+    },
+  };
+  return fetchApi('resetPassword', opts).then(response => response.json());
+};

@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import GlobalHeader from '@/components/GlobalHeader';
 import TopNavHeader from '@/components/TopNavHeader';
+import Storage from '@konata9/storage.js';
 import styles from './Header.less';
 
 const { Header } = Layout;
@@ -54,7 +55,7 @@ class HeaderView extends PureComponent {
     });
   };
 
-  handleMenuClick = ({ key }) => {
+  handleMenuClick = async ({ key }) => {
     const { dispatch } = this.props;
     if (key === 'userCenter') {
       router.push('/account/center');
@@ -71,9 +72,10 @@ class HeaderView extends PureComponent {
     if (key === 'logout') {
       dispatch({
         type: 'user/logout',
-      }).then(response => {
-        console.log(response);
       });
+
+      Storage.remove('__token__');
+      router.push('/login');
     }
   };
 

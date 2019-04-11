@@ -67,6 +67,9 @@ class BasicLayout extends React.PureComponent {
       type: 'menu/getMenuData',
       payload: { routes, authority },
     });
+    dispatch({
+      type: 'user/getUserInfo',
+    });
   }
 
   componentDidUpdate(preProps) {
@@ -206,11 +209,12 @@ class BasicLayout extends React.PureComponent {
   }
 }
 
-export default connect(({ global, setting, menu }) => ({
+export default connect(({ global, setting, menu, user }) => ({
   collapsed: global.collapsed,
   layout: setting.layout,
   menuData: menu.menuData,
   breadcrumbNameMap: menu.breadcrumbNameMap,
+  user,
   ...setting,
 }))(props => (
   <Media query="(max-width: 599px)">

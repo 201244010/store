@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Input, Button, Row, Col, Alert } from 'antd';
 import { Result } from 'ant-design-pro';
+import { connect } from 'dva';
 import * as RegExp from '../../constants/regexp';
 import styles from '@/pages/Register/Register.less';
 
@@ -31,6 +32,17 @@ const MailActive = () => (
   />
 );
 
+@connect(
+  state => ({
+    user: state.user,
+    sso: state.sso,
+  }),
+  dispatch => ({
+    getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
+    sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
+    resetPassword: payload => dispatch({ type: 'user/resetPassword', payload }),
+  })
+)
 @Form.create()
 class MailReset extends Component {
   constructor(props) {
@@ -41,18 +53,32 @@ class MailReset extends Component {
     };
   }
 
+  componentDidMount() {
+    this.getImpageCode();
+  }
+
+  getImpageCode = async () => {
+    const { getImageCode } = this.props;
+    await getImageCode();
+  };
+
   refreshCode = () => {
-    // TODO 刷新图片验证码并清除已填内容
+    const {
+      form: { setFieldsValue },
+    } = this.props;
+    setFieldsValue({ code: '' });
+    this.getImpageCode();
   };
 
   onSubmit = () => {
     const {
       form: { validateFields },
+      resetPassword,
     } = this.props;
-    validateFields((err, values) => {
+    validateFields(async (err, values) => {
       if (!err) {
-        // TODO 通过邮件重置密码的逻辑
-        console.log(values);
+        const response = await resetPassword({ options: values });
+        console.log(response);
       }
     });
   };
@@ -61,6 +87,7 @@ class MailReset extends Component {
     const { notice, resetSuccess } = this.state;
     const {
       form: { getFieldDecorator },
+      sso: { imgUrl },
     } = this.props;
 
     return (
@@ -79,7 +106,7 @@ class MailReset extends Component {
               </Form.Item>
             )}
             <Form.Item>
-              {getFieldDecorator('mail', {
+              {getFieldDecorator('username', {
                 validateTrigger: 'onBlur',
                 rules: [
                   { required: true, message: formatMessage({ id: 'mail.validate.isEmpty' }) },
@@ -98,7 +125,7 @@ class MailReset extends Component {
                   )}
                 </Col>
                 <Col span={8}>
-                  <img style={{ width: '100%', height: '100%' }} src="" alt="" />
+                  <img src={imgUrl} alt="" onClick={this.refreshCode} />
                 </Col>
               </Row>
             </Form.Item>

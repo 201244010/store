@@ -55,8 +55,10 @@ const normalizeParams = params => {
     delete tempParams.file;
   }
 
-  formData.params =
+  const formParams =
     Object.keys(tempParams).length === 0 ? '' : paramsEncode(tempParams, formData.isEncrypted);
+
+  formData.params = formParams;
   formData.sign = getParamsSign(formData);
   formData.lang = 'zh';
   return formData;

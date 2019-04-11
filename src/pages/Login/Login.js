@@ -22,10 +22,17 @@ const VALIDATE_FIELDS = {
   tabMobile: ['phone', 'code'],
 };
 
-@connect(state => ({
-  user: state.user,
-  sso: state.sso,
-}))
+@connect(
+  state => ({
+    user: state.user,
+    sso: state.sso,
+  }),
+  dispatch => ({
+    userLogin: payload => dispatch({ type: 'user/login', payload }),
+    checkUser: payload => dispatch({ type: 'sso/checkUser', payload }),
+    sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
+  })
+)
 @Form.create()
 class Login extends Component {
   constructor(props) {
@@ -46,16 +53,13 @@ class Login extends Component {
   getCode = () => {
     const {
       form: { getFieldValue },
-      dispatch,
+      sendCode,
     } = this.props;
 
-    dispatch({
-      type: 'sso/sendCode',
-      payload: {
-        options: {
-          username: getFieldValue('phone'),
-          type: '2',
-        },
+    sendCode({
+      options: {
+        username: getFieldValue('phone'),
+        type: '2',
       },
     });
   };
@@ -72,35 +76,44 @@ class Login extends Component {
     });
   };
 
+  handleResponse = async response => {
+    // const {
+    //   form: { getFieldValue },
+    //   checkUser,
+    // } = this.props;
+
+    if (response && response.code === ERROR_OK) {
+      // const result = await checkUser({ options: { username: getFieldValue('username') } });
+      // console.log(result);
+      // TODO 根据返回值来判断是否要显示账号合并
+      // this.showAccountMergeModal();
+      router.push('/');
+    } else if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
+      this.setState({
+        notice: response.code || '',
+      });
+    }
+  };
+
   onSubmit = () => {
     const {
       form: { validateFields },
-      dispatch,
+      userLogin,
     } = this.props;
     const { currentTab } = this.state;
     const loginType = currentTab === 'tabAccount' ? 'login' : 'quickLogin';
-    validateFields(VALIDATE_FIELDS[currentTab], (err, values) => {
-      const options = {
-        ...values,
-        password: encryption(values.password),
-      };
-
+    validateFields(VALIDATE_FIELDS[currentTab], async (err, values) => {
       if (!err) {
-        dispatch({
-          type: 'user/login',
-          payload: { type: loginType, options },
-        }).then(response => {
-          if (response && response.code === ERROR_OK) {
-            // TODO 根据返回值来判断是否要显示账号合并
-            // this.showAccountMergeModal();
-            // TODO 暂时先跳转到首页
-            router.push('/');
-          } else if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
-            this.setState({
-              notice: response.code || '',
-            });
-          }
+        const options = {
+          ...values,
+          password: encryption(values.password),
+        };
+
+        const response = await userLogin({
+          type: loginType,
+          options,
         });
+        this.handleResponse(response);
       }
     });
   };

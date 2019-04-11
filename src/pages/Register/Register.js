@@ -5,13 +5,16 @@ import ResultInfo from '@/components/ResultInfo';
 import Captcha from '@/components/Captcha';
 import { formatMessage, getLocale } from 'umi/locale';
 import Link from 'umi/link';
+import { connect } from 'dva';
 import { customValidate } from '@/utils/customValidate';
+import { encryption } from '@/utils/utils';
 import styles from './Register.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
-  '000': 'alert.mobile.existed',
-  '001': 'alert.mail.existed',
+  '216': 'alert.mobile.existed',
+  '1001': 'alert.mail.existed',
   '002': 'alert.code.error',
   '003': 'alert.code.expired',
 };
@@ -49,6 +52,16 @@ const MailRegisterSuccess = ({ props }) => {
   );
 };
 
+@connect(
+  state => ({
+    user: state.user,
+    sso: state.sso,
+  }),
+  dispatch => ({
+    register: payload => dispatch({ type: 'user/register', payload }),
+    sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
+  })
+)
 @Form.create()
 class Register extends Component {
   constructor(props) {
@@ -59,22 +72,52 @@ class Register extends Component {
     };
   }
 
-  getCode = () => {
-    // TODO 真正发送验证码的逻辑
+  getCode = async () => {
+    const {
+      form: { getFieldValue },
+      sendCode,
+    } = this.props;
+
+    const response = await sendCode({
+      options: {
+        username: getFieldValue('username'),
+        type: '1',
+      },
+    });
+
+    if (response && response.code !== ERROR_OK) {
+      this.setState({
+        notice: response.code,
+      });
+    }
+  };
+
+  handleResponse = response => {
+    if (response && response.code === ERROR_OK) {
+      this.setState({
+        registerSuccess: true,
+      });
+    } else {
+      this.setState({
+        notice: response.code,
+      });
+    }
   };
 
   onSubmit = () => {
     const {
       form: { validateFields },
+      register,
     } = this.props;
-    validateFields((err, values) => {
-      console.log(values);
+    validateFields(async (err, values) => {
       if (!err) {
-        console.log(values);
-        // TODO 等待注册提交逻辑
-        this.setState({
-          registerSuccess: true,
-        });
+        const options = {
+          ...values,
+          password: encryption(values.password),
+        };
+
+        const response = await register({ options });
+        this.handleResponse(response);
       }
     });
   };
@@ -117,7 +160,7 @@ class Register extends Component {
               {currentLanguage === 'zh-CN' ? (
                 <>
                   <Form.Item>
-                    {getFieldDecorator('mobile', {
+                    {getFieldDecorator('username', {
                       validateTrigger: 'onBlur',
                       rules: [
                         {
@@ -170,7 +213,7 @@ class Register extends Component {
                 </>
               ) : (
                 <Form.Item>
-                  {getFieldDecorator('mail', {
+                  {getFieldDecorator('username', {
                     validateTrigger: 'onBlur',
                     rules: [
                       {
