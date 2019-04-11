@@ -9,7 +9,6 @@ import Captcha from '@/components/Captcha';
 import styles from './Login.less';
 import { ERROR_OK } from '@/constants/errorCode';
 
-// TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
   '3603': 'alert.mobile.not.registered',
   '201': 'alert.account.error',
@@ -83,9 +82,9 @@ class Login extends Component {
     // } = this.props;
 
     if (response && response.code === ERROR_OK) {
+      // TODO 根据返回值来判断是否要显示账号合并 目前有跨域问题
       // const result = await checkUser({ options: { username: getFieldValue('username') } });
-      // console.log(result);
-      // TODO 根据返回值来判断是否要显示账号合并
+      // // console.log(result);
       // this.showAccountMergeModal();
       router.push('/');
     } else if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {

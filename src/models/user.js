@@ -2,6 +2,7 @@ import { query as queryUsers, queryCurrent } from '@/services/user';
 import * as Actions from '@/api/user';
 import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
+import router from 'umi/router';
 
 export default {
   namespace: 'user',
@@ -13,7 +14,7 @@ export default {
   },
 
   effects: {
-    *login({ payload }, { call, put }) {
+    *login({ payload }, { call }) {
       const { type, options } = payload;
       const response = yield call(Actions.login, type, options);
 
@@ -22,37 +23,27 @@ export default {
         Storage.set({ __token__: token });
       }
 
-      yield put({
-        type: 'login',
-      });
-
       return response;
     },
 
-    *logout(_, { call, put }) {
-      const response = yield call(Actions.logout);
-      yield put({
-        type: 'logout',
-      });
-      return response;
+    *logout(_, { call }) {
+      yield call(Actions.logout);
+      Storage.remove('__token__');
+      router.push('/login');
     },
 
-    *register({ payload }, { call, put }) {
+    *register({ payload }, { call }) {
       const { options } = payload;
       const response = yield call(Actions.register, options);
-      yield put({
-        type: 'register',
-      });
       return response;
     },
 
     *getUserInfo(_, { call, put }) {
       const response = yield call(Actions.getUserInfo);
-      console.log(response);
       if (response && response.code === ERROR_OK) {
         const result = response.data || {};
         yield put({
-          type: 'getUserInfoData',
+          type: 'setUserInfo',
           payload: result,
         });
       }
@@ -61,7 +52,6 @@ export default {
     *resetPassword({ payload }, { call }) {
       const { options } = payload;
       const response = yield call(Actions.resetPassword, options);
-      console.log(response);
       return response;
     },
 
@@ -82,30 +72,10 @@ export default {
   },
 
   reducers: {
-    login(state) {
-      return {
-        ...state,
-      };
-    },
-    logout(state) {
-      return {
-        ...state,
-      };
-    },
-    register(state) {
-      return {
-        ...state,
-      };
-    },
-    getUserInfoData(state, action) {
+    setUserInfo(state, action) {
       return {
         ...state,
         userInfo: action.payload,
-      };
-    },
-    resetPassword(state) {
-      return {
-        ...state,
       };
     },
     save(state, action) {

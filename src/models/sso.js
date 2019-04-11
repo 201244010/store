@@ -35,6 +35,12 @@ export default {
         });
       }
     },
+
+    *verifyCode({ payload }, { call }) {
+      const { options } = payload;
+      const response = yield call(Actions.verifyCode, options);
+      return response;
+    },
   },
 
   reducers: {

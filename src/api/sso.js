@@ -33,6 +33,8 @@ export const checkUser = (options = {}) => {
     },
   };
 
+  console.log(opts);
+
   return fetchApi('checkusername', opts).then(response => response.json());
 };
 

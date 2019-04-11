@@ -209,14 +209,19 @@ class BasicLayout extends React.PureComponent {
   }
 }
 
-export default connect(({ global, setting, menu, user }) => ({
-  collapsed: global.collapsed,
-  layout: setting.layout,
-  menuData: menu.menuData,
-  breadcrumbNameMap: menu.breadcrumbNameMap,
-  user,
-  ...setting,
-}))(props => (
+export default connect(
+  ({ global, setting, menu, user }) => ({
+    collapsed: global.collapsed,
+    layout: setting.layout,
+    menuData: menu.menuData,
+    breadcrumbNameMap: menu.breadcrumbNameMap,
+    user,
+    ...setting,
+  }),
+  dispatch => ({
+    dispatch,
+  })
+)(props => (
   <Media query="(max-width: 599px)">
     {isMobile => <BasicLayout {...props} isMobile={isMobile} />}
   </Media>

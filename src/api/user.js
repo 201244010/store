@@ -1,6 +1,6 @@
 import { customizeFetch } from '@/utils/fetch';
 
-const fetchApi = customizeFetch('api/store');
+const fetchApi = customizeFetch('api/user');
 
 export const login = (type, options = {}) => {
   const opts = {

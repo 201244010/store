@@ -5,10 +5,11 @@ import { Result } from 'ant-design-pro';
 import { connect } from 'dva';
 import * as RegExp from '../../constants/regexp';
 import styles from '@/pages/Register/Register.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
-  '000': 'alert.vcode.error',
+  '208': 'alert.vcode.error',
   '001': 'alert.mail.not.registered',
 };
 
@@ -40,6 +41,7 @@ const MailActive = () => (
   dispatch => ({
     getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
     sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
+    verifyCode: payload => dispatch({ type: 'sso/verifyCode', payload }),
     resetPassword: payload => dispatch({ type: 'user/resetPassword', payload }),
   })
 )
@@ -70,6 +72,20 @@ class MailReset extends Component {
     this.getImpageCode();
   };
 
+  verifyCode = async values => {
+    const { verifyCode } = this.props;
+    const response = await verifyCode({ options: values });
+    return response;
+  };
+
+  handleResponse = response => {
+    if (response && response.code === ERROR_OK) {
+      this.setState({
+        resetSuccess: true,
+      });
+    }
+  };
+
   onSubmit = () => {
     const {
       form: { validateFields },
@@ -77,8 +93,11 @@ class MailReset extends Component {
     } = this.props;
     validateFields(async (err, values) => {
       if (!err) {
-        const response = await resetPassword({ options: values });
-        console.log(response);
+        const result = await this.verifyCode(values);
+        if (result && result.code === ERROR_OK) {
+          const response = await resetPassword({ options: values });
+          this.handleResponse(response);
+        }
       }
     });
   };
@@ -120,7 +139,7 @@ class MailReset extends Component {
             <Form.Item>
               <Row gutter={16}>
                 <Col span={16}>
-                  {getFieldDecorator('vcode')(
+                  {getFieldDecorator('code')(
                     <Input size="large" placeholder={formatMessage({ id: 'vcode.placeholder' })} />
                   )}
                 </Col>

@@ -85,7 +85,11 @@ class Register extends Component {
       },
     });
 
-    if (response && response.code !== ERROR_OK) {
+    if (
+      response &&
+      response.code !== ERROR_OK &&
+      Object.keys(ALERT_NOTICE_MAP).includes(response.code)
+    ) {
       this.setState({
         notice: response.code,
       });
@@ -97,7 +101,7 @@ class Register extends Component {
       this.setState({
         registerSuccess: true,
       });
-    } else {
+    } else if (response && Object.keys(ALERT_NOTICE_MAP).includes(response.code)) {
       this.setState({
         notice: response.code,
       });
@@ -141,7 +145,7 @@ class Register extends Component {
                 }}
               />
             ) : (
-              <MailRegisterSuccess props={{ mail: 'xxx@sunmi.com' }} />
+              <MailRegisterSuccess props={{ mail: getFieldValue('username') }} />
             )}
           </>
         ) : (
