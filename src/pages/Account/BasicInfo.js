@@ -11,7 +11,7 @@ class BasicInfo extends Component {
     } = props;
     this.state = {
       nameEditing: false,
-      username: currentUser.username || '',
+      username: currentUser.username,
     };
   }
 
@@ -21,8 +21,10 @@ class BasicInfo extends Component {
     });
   };
 
-  saveUsernameChange = () => {
-    // TODO 保存用户名
+  saveUsernameChange = async () => {
+    const { username } = this.state;
+    const { updateUsername } = this.props;
+    await updateUsername({ options: { username } });
     this.setState({
       nameEditing: false,
     });

@@ -4,6 +4,7 @@ import { Form, Input, Modal } from 'antd';
 import { customValidate } from '@/utils/customValidate';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants';
 import Captcha from '@/components/Captcha';
+import { encryption } from '@/utils/utils';
 
 @Form.create()
 class ChangeMobile extends Component {
@@ -14,7 +15,11 @@ class ChangeMobile extends Component {
     } = this.props;
     validateFields((err, values) => {
       if (!err) {
-        onOk(values);
+        const options = {
+          ...values,
+          password: encryption(values.password),
+        };
+        onOk(options);
       }
     });
   };
@@ -24,7 +29,19 @@ class ChangeMobile extends Component {
     onCancel();
   };
 
-  getCode = () => {};
+  getCode = async () => {
+    const {
+      form: { getFieldValue },
+      sendCode,
+    } = this.props;
+
+    await sendCode({
+      options: {
+        username: getFieldValue('phone'),
+        type: '2',
+      },
+    });
+  };
 
   render() {
     const {
@@ -74,7 +91,7 @@ class ChangeMobile extends Component {
                 : formatMessage({ id: 'change.mobile.number' })
             }
           >
-            {getFieldDecorator('mobole', {
+            {getFieldDecorator('phone', {
               validateTrigger: 'onBlur',
               rules: [
                 {
@@ -90,7 +107,7 @@ class ChangeMobile extends Component {
           </Form.Item>
           <Form.Item
             {...FORM_ITEM_LAYOUT_COMMON}
-            label={formatMessage({ id: 'change.password.confirm' })}
+            label={formatMessage({ id: 'change.mobile.code' })}
           >
             {getFieldDecorator('code', {
               validateTrigger: 'onBlur',

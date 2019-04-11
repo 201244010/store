@@ -8,6 +8,20 @@ export function isUrl(path) {
   return reg.test(path);
 }
 
+export function maskPhone(phone, maskPos) {
+  const { maskStart, maskEnd } = maskPos;
+  return phone
+    .split('')
+    .map((num, index) => {
+      if (index >= maskStart && index <= maskEnd) {
+        return '*';
+      }
+
+      return num;
+    })
+    .join('');
+}
+
 /**
  * DES CBC加密
  * @param source

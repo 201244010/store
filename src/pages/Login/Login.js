@@ -72,7 +72,7 @@ class Login extends Component {
     });
   };
 
-  showAccountMergeModal = () => {
+  showAccountMergeModal = (path = '/') => {
     Modal.confirm({
       icon: 'info-circle',
       title: formatMessage({ id: 'account.merge.title' }),
@@ -80,22 +80,26 @@ class Login extends Component {
       okText: formatMessage({ id: 'btn.confirm' }),
       cancelText: formatMessage({ id: 'btn.cancel' }),
       // TODO 等真正的 URL
-      onOk: () => window.open('/login'),
+      onOk: () => window.open(path),
     });
   };
 
   handleResponse = async response => {
-    // const {
-    //   form: { getFieldValue },
-    //   checkUser,
-    // } = this.props;
+    const {
+      form: { getFieldValue },
+      checkUser,
+    } = this.props;
 
     if (response && response.code === ERROR_OK) {
-      // TODO 根据返回值来判断是否要显示账号合并 目前有跨域问题
-      // const result = await checkUser({ options: { username: getFieldValue('username') } });
-      // // console.log(result);
-      // this.showAccountMergeModal();
-      router.push('/');
+      const result = await checkUser({ options: { username: getFieldValue('username') } });
+      if (result && result.code === ERROR_OK) {
+        const data = result.data || {};
+        if (data.needMerge) {
+          this.showAccountMergeModal(data.url);
+        } else {
+          router.push('/');
+        }
+      }
     } else if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
       this.setState({
         notice: response.code || '',
