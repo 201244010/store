@@ -112,17 +112,17 @@ export default {
             },
           ],
         },
-        {
-          path: '/setting',
-          name: 'setting',
-          routes: [
-            {
-              path: '/setting/role',
-              name: 'role',
-              component: './Setting/Role',
-            },
-          ],
-        },
+        // {
+        //   path: '/setting',
+        //   name: 'setting',
+        //   routes: [
+        //     {
+        //       path: '/setting/role',
+        //       name: 'role',
+        //       component: './Setting/Role',
+        //     },
+        //   ],
+        // },
         {
           path: '/account/center',
           component: './Account/',

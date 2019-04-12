@@ -3,6 +3,7 @@ import Link from 'umi/link';
 import Debounce from 'lodash-decorators/debounce';
 import styles from './index.less';
 import RightContent from './RightContent';
+import Breadcrumbs from './Breadcrumbs';
 
 export default class GlobalHeader extends PureComponent {
   componentWillUnmount() {
@@ -33,6 +34,7 @@ export default class GlobalHeader extends PureComponent {
             <img src={logo} alt="logo" width="32" />
           </Link>
         )}
+        <Breadcrumbs />
         <RightContent {...this.props} />
       </div>
     );
