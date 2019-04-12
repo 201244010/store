@@ -1,9 +1,9 @@
 export default {
-  'menu.welcome': 'Welcome',
-  'menu.more-blocks': 'More Blocks',
+  'menu.welcome': '欢迎',
 
-  'menu.account.center': 'Account Center',
-  'menu.account.settings': 'Account Settings',
-  'menu.account.trigger': 'Trigger Error',
-  'menu.account.logout': 'Logout',
+  'menu.account.center': '个人中心',
+  'menu.account.logout': '退出登录',
+
+  'menu.setting': '系统设置',
+  'menu.setting.role': '角色管理',
 };
