@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Input, Modal } from 'antd';
 import { customValidate } from '@/utils/customValidate';
-import { FORM_ITEM_LAYOUT_COMMON } from '@/constants';
+import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { encryption } from '@/utils/utils';
 
 @Form.create()

@@ -44,14 +44,14 @@ class ImgCaptcha extends Component {
     }
   };
 
-  getImpageCode = async () => {
+  getImageCode = async () => {
     const { getImageCode } = this.props;
     const response = await getImageCode();
     return response;
   };
 
   refreshCode = () => {
-    this.setState({ value: '' }, () => this.getImpageCode());
+    this.setState({ value: '' }, () => this.getImageCode());
   };
 
   render() {

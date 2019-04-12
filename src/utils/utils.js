@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js/crypto-js';
+import moment from 'moment';
 import { env, DES_KEY, DES_IV } from '@/config';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
@@ -21,6 +22,17 @@ export function maskPhone(phone, maskPos) {
     })
     .join('');
 }
+
+export const unixSecondToDate = (second, formatStr = 'YYYY-MM-DD HH:mm:ss') =>
+  moment.unix(second).isValid()
+    ? moment
+        .unix(second)
+        .local()
+        .format(formatStr)
+    : null;
+
+export const dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>
+  date ? moment(date).format(format) : undefined;
 
 /**
  * DES CBC加密
