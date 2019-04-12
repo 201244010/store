@@ -19,4 +19,9 @@ export default {
 
   // 倒数秒数单位
   'countDown.unit': '秒',
+
+  // 列表相关操作
+  'list.action.title': '操作',
+  'list.action.detail': '详情',
+  'list.action.delete': '删除',
 };
