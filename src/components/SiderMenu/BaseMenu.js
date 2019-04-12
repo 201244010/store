@@ -17,8 +17,22 @@ const getIcon = icon => {
   if (typeof icon === 'string' && isUrl(icon)) {
     return <img src={icon} alt="icon" className={styles.icon} />;
   }
-  if (typeof icon === 'string') {
+
+  // 自定义设置 icon 为 blank 来占位
+  if (typeof icon === 'string' && icon !== 'blank') {
     return <Icon type={icon} />;
+  }
+
+  if (icon === 'blank') {
+    return (
+      <div
+        style={{
+          display: 'inline-block',
+          width: '14px',
+          marginRight: '10px',
+        }}
+      />
+    );
   }
   return icon;
 };

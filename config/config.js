@@ -83,11 +83,13 @@ export default {
         {
           path: '/dashBoard',
           name: 'dashBoard',
+          icon: 'blank',
           component: './DashBoard',
         },
         {
           path: '/deviceManagement',
           name: 'deviceManagement',
+          icon: 'blank',
           routes: [
             {
               path: '/deviceManagement/esl',
@@ -105,16 +107,25 @@ export default {
         {
           path: '/basicData',
           name: 'basicData',
+          icon: 'blank',
           routes: [
             {
               path: '/basicData/productManagement',
               name: 'productManagement',
+              routes: [
+                {
+                  path: '/basicData/productManagement/list',
+                  name: 'list',
+                  component: './BasicData/ProductManagement',
+                },
+              ],
             },
           ],
         },
         // {
         //   path: '/setting',
         //   name: 'setting',
+        //   icon: '',
         //   routes: [
         //     {
         //       path: '/setting/role',
