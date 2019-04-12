@@ -1,5 +1,7 @@
 import { customizeFetch } from '@/utils/fetch';
 
+// TODO 等待后端接口
+
 const fetchApi = customizeFetch('device/ap');
 
 export const fetchBaseStations = options => {
