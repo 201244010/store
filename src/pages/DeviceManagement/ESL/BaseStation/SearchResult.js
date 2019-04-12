@@ -8,7 +8,7 @@ import { DURATION_TIME } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 import { STATION_STATES } from '@/constants/mapping';
 
-export default class SearchResult extends Component {
+class SearchResult extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -154,3 +154,5 @@ export default class SearchResult extends Component {
     );
   }
 }
+
+export default SearchResult;
