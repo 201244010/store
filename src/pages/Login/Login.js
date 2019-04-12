@@ -8,13 +8,14 @@ import { encryption } from '@/utils/utils';
 import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import styles from './Login.less';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, SEND_TOO_FAST } from '@/constants/errorCode';
 
 const ALERT_NOTICE_MAP = {
   '3603': 'alert.mobile.not.registered',
   '201': 'alert.account.error',
   '002': 'alert.code.error',
   '208': 'alert.code.expired',
+  '003': 'alert.code.send.fast',
 };
 
 const VALIDATE_FIELDS = {
@@ -59,7 +60,7 @@ class Login extends Component {
       sso: { needImgCaptcha, imgCaptcha },
     } = this.props;
 
-    await sendCode({
+    const response = await sendCode({
       options: {
         username: getFieldValue('phone'),
         type: '2',
@@ -70,6 +71,13 @@ class Login extends Component {
         fontSize: 18,
       },
     });
+
+    if (response && response.code === SEND_TOO_FAST && !response.data) {
+      this.setState({
+        notice: '003',
+      });
+    }
+    return response;
   };
 
   showAccountMergeModal = (path = '/') => {
@@ -79,7 +87,6 @@ class Login extends Component {
       content: formatMessage({ id: 'account.merge.content' }),
       okText: formatMessage({ id: 'btn.confirm' }),
       cancelText: formatMessage({ id: 'btn.cancel' }),
-      // TODO 等真正的 URL
       onOk: () => window.open(path),
     });
   };
@@ -91,7 +98,10 @@ class Login extends Component {
     } = this.props;
 
     if (response && response.code === ERROR_OK) {
-      const result = await checkUser({ options: { username: getFieldValue('username') } });
+      const { currentTab } = this.state;
+      const checkUserName =
+        currentTab === 'tabAccount' ? getFieldValue('username') : getFieldValue('phone');
+      const result = await checkUser({ options: { username: checkUserName } });
       if (result && result.code === ERROR_OK) {
         const data = result.data || {};
         if (data.needMerge) {
@@ -274,6 +284,8 @@ class Login extends Component {
                           },
                           initial: false,
                           getImageCode: () => this.getCode(),
+                          autoCheck: true,
+                          refreshCheck: result => !(result && result.code === ERROR_OK),
                         }}
                       />
                     )}

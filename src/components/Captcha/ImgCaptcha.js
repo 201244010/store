@@ -28,24 +28,30 @@ class ImgCaptcha extends Component {
   };
 
   handleInputBlur = e => {
-    const { onBlur } = this.props;
+    const { onBlur, autoCheck = false } = this.props;
     if (onBlur) {
       onBlur(e.target.value);
+    }
+    if (autoCheck) {
+      const { checkMethod = this.getImpageCode, refreshCheck } = this.props;
+      const response = checkMethod();
+      if (response) {
+        const needRefresh = refreshCheck(response);
+        if (needRefresh) {
+          this.refreshCode();
+        }
+      }
     }
   };
 
   getImpageCode = async () => {
     const { getImageCode } = this.props;
-    await getImageCode();
+    const response = await getImageCode();
+    return response;
   };
 
   refreshCode = () => {
-    this.setState(
-      {
-        value: '',
-      },
-      () => this.getImpageCode()
-    );
+    this.setState({ value: '' }, () => this.getImpageCode());
   };
 
   render() {

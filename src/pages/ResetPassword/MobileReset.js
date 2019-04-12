@@ -8,11 +8,12 @@ import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
 import { connect } from 'dva';
 import { encryption } from '@/utils/utils';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, SEND_TOO_FAST } from '@/constants/errorCode';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
   '000': 'alert.mobile.not.registered',
+  '003': 'alert.code.send.fast',
 };
 
 @connect(
@@ -54,15 +55,12 @@ class MobileReset extends Component {
       },
     });
 
-    if (
-      response &&
-      response.code !== ERROR_OK &&
-      Object.keys(ALERT_NOTICE_MAP).includes(response.code)
-    ) {
+    if (response && response.code === SEND_TOO_FAST && !response.data) {
       this.setState({
-        notice: response.code,
+        notice: '003',
       });
     }
+    return response;
   };
 
   onSubmit = () => {
@@ -149,6 +147,8 @@ class MobileReset extends Component {
                         },
                         initial: false,
                         getImageCode: () => this.getCode(),
+                        autoCheck: true,
+                        refreshCheck: result => !(result && result.code === ERROR_OK),
                       }}
                     />
                   )}
