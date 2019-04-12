@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js/crypto-js';
+import moment from 'moment';
 import { env, DES_KEY, DES_IV } from '@/config';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
@@ -7,6 +8,31 @@ const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(
 export function isUrl(path) {
   return reg.test(path);
 }
+
+export function maskPhone(phone, maskPos) {
+  const { maskStart, maskEnd } = maskPos;
+  return phone
+    .split('')
+    .map((num, index) => {
+      if (index >= maskStart && index <= maskEnd) {
+        return '*';
+      }
+
+      return num;
+    })
+    .join('');
+}
+
+export const unixSecondToDate = (second, formatStr = 'YYYY-MM-DD HH:mm:ss') =>
+  moment.unix(second).isValid()
+    ? moment
+        .unix(second)
+        .local()
+        .format(formatStr)
+    : null;
+
+export const dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>
+  date ? moment(date).format(format) : undefined;
 
 /**
  * DES CBC加密

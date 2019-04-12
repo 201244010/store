@@ -3,7 +3,7 @@ import { formatMessage } from 'umi/locale';
 import { Button, Form, Input, Modal } from 'antd';
 import { Result } from 'ant-design-pro';
 import { customValidate } from '@/utils/customValidate';
-import { FORM_ITEM_LAYOUT_COMMON } from '@/constants';
+import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import styles from '@/pages/Register/Register.less';
 
 const SuccessInfo = props => {

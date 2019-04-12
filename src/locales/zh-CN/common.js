@@ -5,6 +5,8 @@ export default {
   'btn.alter': '修改',
   'btn.bind': '绑定',
   'btn.login': '登录',
+  'btn.query': '查询',
+  'btn.delete': '删除',
   'btn.get.code': '获取验证码',
   'btn.create.store': '创建商户',
   'btn.register': '注册',
@@ -19,4 +21,13 @@ export default {
 
   // 倒数秒数单位
   'countDown.unit': '秒',
+
+  // 列表相关操作
+  'list.action.title': '操作',
+  'list.action.detail': '详情',
+  'list.action.delete': '删除',
+
+  // 选项
+  'select.all': '全部',
+  'select.placeholder': '请选择',
 };

@@ -8,13 +8,14 @@ import { encryption } from '@/utils/utils';
 import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import styles from './Login.less';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, SEND_TOO_FAST } from '@/constants/errorCode';
 
 const ALERT_NOTICE_MAP = {
   '3603': 'alert.mobile.not.registered',
   '201': 'alert.account.error',
   '002': 'alert.code.error',
   '208': 'alert.code.expired',
+  '003': 'alert.code.send.fast',
 };
 
 const VALIDATE_FIELDS = {
@@ -59,7 +60,7 @@ class Login extends Component {
       sso: { needImgCaptcha, imgCaptcha },
     } = this.props;
 
-    await sendCode({
+    const response = await sendCode({
       options: {
         username: getFieldValue('phone'),
         type: '2',
@@ -70,32 +71,45 @@ class Login extends Component {
         fontSize: 18,
       },
     });
+
+    if (response && response.code === SEND_TOO_FAST && !response.data) {
+      this.setState({
+        notice: '003',
+      });
+    }
+    return response;
   };
 
-  showAccountMergeModal = () => {
+  showAccountMergeModal = (path = '/') => {
     Modal.confirm({
       icon: 'info-circle',
       title: formatMessage({ id: 'account.merge.title' }),
       content: formatMessage({ id: 'account.merge.content' }),
       okText: formatMessage({ id: 'btn.confirm' }),
       cancelText: formatMessage({ id: 'btn.cancel' }),
-      // TODO 等真正的 URL
-      onOk: () => window.open('/login'),
+      onOk: () => window.open(path),
     });
   };
 
   handleResponse = async response => {
-    // const {
-    //   form: { getFieldValue },
-    //   checkUser,
-    // } = this.props;
+    const {
+      form: { getFieldValue },
+      checkUser,
+    } = this.props;
 
     if (response && response.code === ERROR_OK) {
-      // TODO 根据返回值来判断是否要显示账号合并 目前有跨域问题
-      // const result = await checkUser({ options: { username: getFieldValue('username') } });
-      // // console.log(result);
-      // this.showAccountMergeModal();
-      router.push('/');
+      const { currentTab } = this.state;
+      const checkUserName =
+        currentTab === 'tabAccount' ? getFieldValue('username') : getFieldValue('phone');
+      const result = await checkUser({ options: { username: checkUserName } });
+      if (result && result.code === ERROR_OK) {
+        const data = result.data || {};
+        if (data.needMerge) {
+          this.showAccountMergeModal(data.url);
+        } else {
+          router.push('/');
+        }
+      }
     } else if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
       this.setState({
         notice: response.code || '',
@@ -270,6 +284,8 @@ class Login extends Component {
                           },
                           initial: false,
                           getImageCode: () => this.getCode(),
+                          autoCheck: true,
+                          refreshCheck: result => !(result && result.code === ERROR_OK),
                         }}
                       />
                     )}

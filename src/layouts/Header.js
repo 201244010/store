@@ -48,25 +48,12 @@ class HeaderView extends PureComponent {
         id: `component.globalHeader.${type}`,
       })}`
     );
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'global/clearNotices',
-      payload: type,
-    });
   };
 
   handleMenuClick = async ({ key }) => {
     const { dispatch } = this.props;
     if (key === 'userCenter') {
       router.push('/account/center');
-      return;
-    }
-    if (key === 'triggerError') {
-      router.push('/exception/trigger');
-      return;
-    }
-    if (key === 'userinfo') {
-      router.push('/account/settings/base');
       return;
     }
     if (key === 'logout') {
@@ -76,13 +63,8 @@ class HeaderView extends PureComponent {
     }
   };
 
-  handleNoticeVisibleChange = visible => {
-    if (visible) {
-      const { dispatch } = this.props;
-      dispatch({
-        type: 'global/fetchNotices',
-      });
-    }
+  handleNoticeVisibleChange = values => {
+    console.log(values);
   };
 
   handScroll = () => {

@@ -111,6 +111,7 @@ class Register extends Component {
     } else if (response && Object.keys(ALERT_NOTICE_MAP).includes(response.code)) {
       this.setState({
         notice: response.code,
+        registerSuccess: false,
       });
     }
   };

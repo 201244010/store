@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Input, Modal } from 'antd';
 import { customValidate } from '@/utils/customValidate';
-import { FORM_ITEM_LAYOUT_COMMON } from '@/constants';
+import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
+import { encryption } from '@/utils/utils';
 
 @Form.create()
 class ChangePassword extends Component {
@@ -13,7 +14,12 @@ class ChangePassword extends Component {
     } = this.props;
     validateFields((err, values) => {
       if (!err) {
-        onOk(values);
+        const options = {
+          ...values,
+          old_password: encryption(values.old_password),
+          new_password: encryption(values.new_password),
+        };
+        onOk(options);
       }
     });
   };

@@ -12,7 +12,7 @@ export const sendCode = (options = {}) => {
     },
   };
 
-  return fetchApi('sendcode', opts).then(response => response.json());
+  return fetchApi('sendcode', opts, false).then(response => response.json());
 };
 
 export const verifyCode = (options = {}) => {
@@ -22,7 +22,7 @@ export const verifyCode = (options = {}) => {
     },
   };
 
-  return fetchApi('verifycode', opts).then(response => response.json());
+  return fetchApi('verifycode', opts, false).then(response => response.json());
 };
 
 export const checkUser = (options = {}) => {
@@ -33,7 +33,7 @@ export const checkUser = (options = {}) => {
     },
   };
 
-  return fetchApi('checkusername', opts).then(response => response.json());
+  return fetchApi('checkusername', opts, false).then(response => response.json());
 };
 
 export const getImageCode = (options = {}) => {
@@ -46,5 +46,5 @@ export const getImageCode = (options = {}) => {
     },
   };
 
-  return fetchApi('getimgcaptcha', opts).then(response => response.json());
+  return fetchApi('getimgcaptcha', opts, false).then(response => response.json());
 };

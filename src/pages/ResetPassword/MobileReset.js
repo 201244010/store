@@ -2,16 +2,18 @@ import React, { Component } from 'react';
 import { Form, Input, Button, Alert } from 'antd';
 import { formatMessage } from 'umi/locale';
 import Captcha from '@/components/Captcha';
+import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import styles from '@/pages/Register/Register.less';
-import ResultInfo from '@/pages/Register/Register';
+import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
 import { connect } from 'dva';
 import { encryption } from '@/utils/utils';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, SEND_TOO_FAST } from '@/constants/errorCode';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
   '000': 'alert.mobile.not.registered',
+  '003': 'alert.code.send.fast',
 };
 
 @connect(
@@ -37,22 +39,28 @@ class MobileReset extends Component {
   getCode = async () => {
     const {
       form: { getFieldValue },
+      sso: { needImgCaptcha, imgCaptcha },
       sendCode,
     } = this.props;
-    sendCode({
+
+    const response = await sendCode({
       options: {
         username: getFieldValue('username'),
         type: '2',
+        imgCode: getFieldValue('vcode') || '',
+        key: needImgCaptcha ? imgCaptcha.key : '',
+        width: 112,
+        height: 40,
+        fontSize: 18,
       },
     });
-  };
 
-  handleResponse = response => {
-    if (response && response.code === ERROR_OK) {
+    if (response && response.code === SEND_TOO_FAST && !response.data) {
       this.setState({
-        resetSuccess: true,
+        notice: '003',
       });
     }
+    return response;
   };
 
   onSubmit = () => {
@@ -68,7 +76,11 @@ class MobileReset extends Component {
         };
 
         const response = await resetPassword({ options });
-        this.handleResponse(response);
+        if (response && response.code === ERROR_OK) {
+          this.setState({
+            resetSuccess: true,
+          });
+        }
       }
     });
   };
@@ -76,21 +88,20 @@ class MobileReset extends Component {
   render() {
     const {
       form: { getFieldDecorator, getFieldValue },
+      sso: { needImgCaptcha, imgCaptcha },
     } = this.props;
     const { resetSuccess, notice } = this.state;
 
     return (
       <div className={styles['register-wrapper']}>
         {resetSuccess ? (
-          <>
-            <ResultInfo
-              {...{
-                title: formatMessage({ id: 'reset.success' }),
-                description: formatMessage({ id: 'reset.countDown' }),
-                countInit: 3,
-              }}
-            />
-          </>
+          <ResultInfo
+            {...{
+              title: formatMessage({ id: 'reset.success' }),
+              description: formatMessage({ id: 'reset.countDown' }),
+              countInit: 3,
+            }}
+          />
         ) : (
           <>
             <Form className={styles['register-form']}>
@@ -125,6 +136,24 @@ class MobileReset extends Component {
                   />
                 )}
               </Form.Item>
+              {needImgCaptcha && (
+                <Form.Item>
+                  {getFieldDecorator('vcode')(
+                    <ImgCaptcha
+                      {...{
+                        imgUrl: imgCaptcha.url,
+                        inputProps: {
+                          size: 'large',
+                        },
+                        initial: false,
+                        getImageCode: () => this.getCode(),
+                        autoCheck: true,
+                        refreshCheck: result => !(result && result.code === ERROR_OK),
+                      }}
+                    />
+                  )}
+                </Form.Item>
+              )}
               <Form.Item>
                 {getFieldDecorator('code', {
                   validateTrigger: 'onBlur',

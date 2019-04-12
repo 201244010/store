@@ -1,4 +1,3 @@
-import { query as queryUsers, queryCurrent } from '@/services/user';
 import * as Actions from '@/api/user';
 import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
@@ -11,7 +10,7 @@ export default {
     userInfo: {},
     errorTimes: 0,
     list: [],
-    currentUser: {},
+    currentUser: Storage.get('__userInfo__') || {},
   },
 
   effects: {
@@ -41,9 +40,19 @@ export default {
       router.push('/login');
     },
 
+    *checkImgCode({ payload }, { call }) {
+      const { options } = payload;
+      const response = yield call(Actions.checkImgCode, options);
+      return response;
+    },
+
     *register({ payload }, { call }) {
       const { options } = payload;
       const response = yield call(Actions.register, options);
+      // TODO 需要后端返回 token
+      // if(response && response.code === ERROR_OK){
+      //
+      // }
       return response;
     },
 
@@ -51,6 +60,7 @@ export default {
       const response = yield call(Actions.getUserInfo);
       if (response && response.code === ERROR_OK) {
         const result = response.data || {};
+        Storage.set({ __userInfo__: result });
         yield put({
           type: 'setUserInfo',
           payload: result,
@@ -64,25 +74,51 @@ export default {
       return response;
     },
 
-    *checkImgCode({ payload }, { call }) {
+    *updateUsername({ payload }, { call, put, select }) {
       const { options } = payload;
-      const response = yield call(Actions.checkImgCode, options);
-      return response;
+      const response = yield call(Actions.updateUsername, options);
+      if (response && response.code === 1) {
+        const { username } = options;
+        const currentUser = yield select(state => state.user.currentUser);
+        const updatedUserInfo = {
+          ...currentUser,
+          username,
+        };
+
+        Storage.set({ __userInfo__: updatedUserInfo });
+        yield put({
+          type: 'setUserInfo',
+          payload: updatedUserInfo,
+        });
+      }
     },
 
-    *fetch(_, { call, put }) {
-      const response = yield call(queryUsers);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+    *changePassword({ payload }, { call }) {
+      const { options } = payload;
+      const response = yield call(Actions.changePassword, options);
+      if (response && response.code === ERROR_OK) {
+        Storage.clear('session');
+        router.push('/login');
+      }
     },
-    *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+
+    *updatePhone({ payload }, { call, put, select }) {
+      const { options } = payload;
+      const response = yield call(Actions.updatePhone, options);
+      if (response && response.code === ERROR_OK) {
+        const { phone } = options;
+        const currentUser = yield select(state => state.user.currentUser);
+        const updatedUserInfo = {
+          ...currentUser,
+          phone,
+        };
+
+        Storage.set({ __userInfo__: updatedUserInfo });
+        yield put({
+          type: 'setUserInfo',
+          payload: updatedUserInfo,
+        });
+      }
     },
   },
 
@@ -104,28 +140,6 @@ export default {
         ...state,
         userInfo: {},
         errorTimes: 0,
-      };
-    },
-    save(state, action) {
-      return {
-        ...state,
-        list: action.payload,
-      };
-    },
-    saveCurrentUser(state, action) {
-      return {
-        ...state,
-        currentUser: action.payload || {},
-      };
-    },
-    changeNotifyCount(state, action) {
-      return {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
-        },
       };
     },
   },

@@ -60,12 +60,6 @@ class BasicLayout extends React.PureComponent {
       route: { routes, authority },
     } = this.props;
     dispatch({
-      type: 'user/fetchCurrent',
-    });
-    dispatch({
-      type: 'setting/getSetting',
-    });
-    dispatch({
       type: 'menu/getMenuData',
       payload: { routes, authority },
     });
@@ -116,14 +110,14 @@ class BasicLayout extends React.PureComponent {
     const currRouterData = this.matchParamsPath(pathname, breadcrumbNameMap);
 
     if (!currRouterData) {
-      return 'Ant Design Pro';
+      return 'SUNMI STORE';
     }
     const pageName = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
 
-    return `${pageName} - Ant Design Pro`;
+    return `${pageName} - SUNMI STORE`;
   };
 
   getLayoutStyle = () => {
@@ -157,7 +151,7 @@ class BasicLayout extends React.PureComponent {
       fixedHeader,
     } = this.props;
 
-    console.log(breadcrumbNameMap);
+    console.log(menuData);
     const isTop = PropsLayout === 'topmenu';
     const routerConfig = this.getRouterAuthority(pathname, routes);
     const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};

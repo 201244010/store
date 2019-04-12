@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Card, List } from 'antd';
 import { ChangePassword, ChangeMobile, ChangeMail } from '@/components/Modal';
+import { maskPhone } from '@/utils/utils';
 import * as styles from './Account.less';
 
 const RENDER_MODAL = {
@@ -27,10 +28,14 @@ class Security extends Component {
     });
   };
 
-  handleModalSubmit = values => {
-    // const { modalType } = this.state;
-    // TODO 根据弹窗的类型进行提交操作
-    console.log(values);
+  handleModalSubmit = async values => {
+    const { modalType } = this.state;
+    const { changePassword, updatePhone } = this.props;
+    if (modalType === 'password') {
+      await changePassword({ options: values });
+    } else if (modalType === 'mobile') {
+      await updatePhone({ options: values });
+    }
   };
 
   closeChangeModal = () => {
@@ -42,7 +47,10 @@ class Security extends Component {
 
   render() {
     const { showChangeModal, modalType } = this.state;
-    const { mobileBinded = true, mailBinded = true } = this.props;
+    const {
+      user: { currentUser },
+      sendCode,
+    } = this.props;
     const RenderModal = RENDER_MODAL[modalType] || RENDER_MODAL.default;
 
     return (
@@ -66,14 +74,19 @@ class Security extends Component {
                 <div className={styles['title-wrapper-between']}>
                   <h4>{formatMessage({ id: 'userCenter.security.mobile' })}</h4>
                   <a href="javascript:void(0);" onClick={() => this.openChangeModal('mobile')}>
-                    {mobileBinded
+                    {currentUser.phone
                       ? formatMessage({ id: 'btn.alter' })
                       : formatMessage({ id: 'btn.bind' })}
                   </a>
                 </div>
                 <div>
                   {formatMessage({ id: 'userCenter.security.mobile.description' })}
-                  <span>138****8293</span>
+                  <span>
+                    {maskPhone(currentUser.phone, {
+                      maskStart: 3,
+                      maskEnd: 6,
+                    }) || ''}
+                  </span>
                 </div>
               </div>
             </List.Item>
@@ -82,7 +95,7 @@ class Security extends Component {
                 <div className={styles['title-wrapper-between']}>
                   <h4>{formatMessage({ id: 'userCenter.security.mail' })}</h4>
                   <a href="javascript:void(0);" onClick={() => this.openChangeModal('mail')}>
-                    {mailBinded
+                    {currentUser.email
                       ? formatMessage({ id: 'btn.alter' })
                       : formatMessage({ id: 'btn.bind' })}
                   </a>
@@ -95,10 +108,11 @@ class Security extends Component {
         <RenderModal
           {...{
             visible: showChangeModal,
-            mobileBinded,
-            mailBinded,
+            mobileBinded: !!currentUser.phone,
+            mailBinded: !!currentUser.email,
             onOk: this.handleModalSubmit,
             onCancel: this.closeChangeModal,
+            sendCode,
           }}
         />
       </>

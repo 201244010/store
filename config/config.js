@@ -78,19 +78,43 @@ export default {
       path: '/',
       component: '../layouts/BasicLayout',
       routes: [
-        { path: '/', redirect: '/Welcome' },
+        { path: '/', redirect: '/dashBoard' },
         // dashboard
         {
-          path: '/welcome',
-          name: 'welcome',
-          icon: 'smile',
-          component: './Welcome',
-          breadcrumb: 'Custom Example',
+          path: '/dashBoard',
+          name: 'dashBoard',
+          component: './DashBoard',
+        },
+        {
+          path: '/deviceManagement',
+          name: 'deviceManagement',
+          routes: [
+            {
+              path: '/deviceManagement/esl',
+              name: 'esl',
+              routes: [
+                {
+                  path: '/deviceManagement/esl/baseStation',
+                  name: 'baseStation',
+                  component: './DeviceManagement/ESL/BaseStation',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          path: '/basicData',
+          name: 'basicData',
+          routes: [
+            {
+              path: '/basicData/productManagement',
+              name: 'productManagement',
+            },
+          ],
         },
         {
           path: '/setting',
           name: 'setting',
-          icon: 'setting',
           routes: [
             {
               path: '/setting/role',
