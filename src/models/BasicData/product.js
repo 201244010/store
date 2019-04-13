@@ -11,6 +11,7 @@ export default {
   state: {
     loading: false,
     searchFormValues: {
+      keyword: '',
       status: -1,
     },
     states: [],
@@ -91,7 +92,7 @@ export default {
       return response;
     },
 
-    *createGoods({ payload }, { call, put }) {
+    *createProduct({ payload }, { call, put }) {
       const { options } = payload;
       yield put({
         type: 'updateState',
@@ -139,7 +140,7 @@ export default {
       return response;
     },
 
-    *deleteGoods({ payload }, { call, put, select }) {
+    *deleteProduct({ payload }, { call, put, select }) {
       const { options } = payload;
       const {
         pagination: { current },

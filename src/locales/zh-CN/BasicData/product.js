@@ -5,10 +5,10 @@ export default {
   'basicData.product.price.add': '新增价格',
 
   'basicData.product.total': '种商品',
-  'basicData.product.selected': '已选中',
+  'basicData.product.selected': '，已选中',
   'basicData.product.pagination.unit': '种',
 
-  'basicData.product.id': '商品编号',
+  'basicData.product.seq_num': '商品编号',
   'basicData.product.name': '商品名称',
   'basicData.product.nickname': '别名',
   'basicData.product.barCode': '商品条码',
@@ -71,4 +71,6 @@ export default {
     '3. 完成对接后，无法在SUNMI Store中修改商品信息，请在ERP中进行修改；',
 
   'basicData.product.delete': '删除商品成功',
+  'basicData.product.delete.confirm': '请确认是否删除商品？',
+  'basicData.product.delete.notice': '商品删除后，与之绑定的价签不会更新图像。',
 };

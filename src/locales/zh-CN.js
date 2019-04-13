@@ -13,6 +13,9 @@ import userCenter from './zh-CN/userCenter';
 // ESL
 import baseStation from './zh-CN/ESL/device';
 
+// BasicData
+import productManagement from './zh-CN/BasicData/product';
+
 export default {
   'navBar.lang': '语言',
   'layout.user.link.help': '帮助',
@@ -32,4 +35,5 @@ export default {
   ...resetPassword,
   ...userCenter,
   ...baseStation,
+  ...productManagement,
 };
