@@ -44,7 +44,7 @@ const MailRegisterSuccess = ({ props }) => {
           <Button type="primary" size="large">
             {formatMessage({ id: 'btn.mail.check' })}
           </Button>
-          <Button type="default" size="large" href="/login">
+          <Button type="default" size="large" href="/user/login">
             {formatMessage({ id: 'btn.back.index' })}
           </Button>
         </div>
@@ -315,7 +315,7 @@ class Register extends Component {
                 </Button>
               </Col>
               <Col span={8}>
-                <Link to="/login">{formatMessage({ id: 'link.to.login' })}</Link>
+                <Link to="/user/login">{formatMessage({ id: 'link.to.login' })}</Link>
               </Col>
             </Row>
           </>

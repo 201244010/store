@@ -32,7 +32,7 @@ class SearchResult extends Component {
   toPath = (name, record = {}) => {
     const encodeID = record.id ? idEncode(record.id) : null;
     const urlMap = {
-      goodDetail: `/good/${encodeID}/detail`,
+      goodDetail: `/basicData/productManagement/list/productInfo/${+new Date()}`,
       createGoods: '/goodCreateOrUpdate/create',
       update: `/goodCreateOrUpdate/update?data=${encodeID}`,
       erpImport: `/basicData/productManagement/list/erpImport`,
@@ -108,7 +108,11 @@ class SearchResult extends Component {
     return (
       <div>
         <div className={styles['table-header']}>
-          <Button className={styles['function-btn']} type="primary">
+          <Button
+            className={styles['function-btn']}
+            type="primary"
+            onClick={() => this.toPath('goodDetail')}
+          >
             {formatMessage({ id: 'btn.create' })}
           </Button>
           <Button className={styles['function-btn']}>{formatMessage({ id: 'btn.import' })}</Button>

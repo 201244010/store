@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Input, Button, Alert } from 'antd';
+import { connect } from 'dva';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import { Result } from 'ant-design-pro';
-import { connect } from 'dva';
-import * as RegExp from '../../constants/regexp';
-import styles from '@/pages/Register/Register.less';
+import * as RegExp from '@/constants/regexp';
+import styles from '../Register/Register.less';
 import { ERROR_OK } from '@/constants/errorCode';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
@@ -26,7 +26,7 @@ const MailActive = () => (
         <Button type="primary" size="large">
           {formatMessage({ id: 'btn.mail.check' })}
         </Button>
-        <Button type="default" size="large" href="/login">
+        <Button type="default" size="large" href="/user/login">
           {formatMessage({ id: 'btn.back.index' })}
         </Button>
       </div>

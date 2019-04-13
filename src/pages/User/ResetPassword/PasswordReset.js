@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Input, Button } from 'antd';
-import ResultInfo from '@/components/ResultInfo';
+import ResultInfo from '../../../components/ResultInfo';
 import styles from './ResetPassword.less';
-import { customValidate } from '@/utils/customValidate';
+import { customValidate } from '../../../utils/customValidate';
 
 @Form.create()
 class PasswordReset extends Component {

@@ -332,8 +332,8 @@ class Login extends Component {
           </Form.Item>
         </Form>
         <div className={styles['login-footer']}>
-          <Link to="/resetPassword">{formatMessage({ id: 'link.forgot.password' })}</Link>
-          <Link to="/register">{formatMessage({ id: 'link.to.register' })}</Link>
+          <Link to="/user/resetPassword">{formatMessage({ id: 'link.forgot.password' })}</Link>
+          <Link to="/user/register">{formatMessage({ id: 'link.to.register' })}</Link>
         </div>
       </div>
     );

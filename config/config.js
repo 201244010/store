@@ -42,37 +42,16 @@ export default {
    */
   routes: [
     {
-      path: '/login',
-      component: '../layouts/UserLayout',
-      routes: [{ path: '/login', component: './Login/Login' }],
-      breadcrumb: null,
-    },
-    {
-      path: '/register',
-      component: '../layouts/UserLayout',
-      routes: [{ path: '/register', component: './Register/Register' }],
-      breadcrumb: null,
-    },
-    {
-      path: '/storeRelate',
-      component: '../layouts/UserLayout',
-      routes: [{ path: '/storeRelate', component: './StoreRelate/StoreRelate' }],
-      breadcrumb: null,
-    },
-    {
-      path: '/mailActive',
-      component: '../layouts/UserLayout',
-      routes: [{ path: '/mailActive', component: './MailActive/MailActive' }],
-      breadcrumb: null,
-    },
-    {
-      path: '/resetPassword',
+      path: '/user',
       component: '../layouts/UserLayout',
       routes: [
-        { path: '/resetPassword', component: './ResetPassword/ResetPassword' },
-        { path: '/resetPassword/reset', component: './ResetPassword/PasswordReset' },
+        { path: '/user/login', component: './User/Login/Login' },
+        { path: '/user/register', component: './User/Register/Register' },
+        { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelate' },
+        { path: '/user/mailActive', component: './User/MailActive/MailActive' },
+        { path: '/user/resetPassword', component: './User/ResetPassword/ResetPassword' },
+        { path: '/user/resetPassword/reset', component: './User/ResetPassword/PasswordReset' },
       ],
-      breadcrumb: null,
     },
     {
       path: '/',
@@ -119,7 +98,21 @@ export default {
                   component: './BasicData/ProductManagement',
                 },
                 {
+                  path: '/basicData/productManagement/list/productInfo',
+                  name: 'productInfo',
+                  hideInMenu: true,
+                  component: './BasicData/ProductManagement/ProductInfo',
+                },
+                {
+                  path: '/basicData/productManagement/list/productInfo/:id',
+                  name: 'productInfo',
+                  hideInMenu: true,
+                  component: './BasicData/ProductManagement/ProductInfo',
+                },
+                {
                   path: '/basicData/productManagement/list/erpImport',
+                  name: 'erpImport',
+                  hideInMenu: true,
                   component: './BasicData/ProductManagement/ERPImport',
                 },
               ],
@@ -141,6 +134,8 @@ export default {
         {
           path: '/account/center',
           component: './Account/',
+          name: 'center',
+          hideInMenu: true,
         },
       ],
     },
