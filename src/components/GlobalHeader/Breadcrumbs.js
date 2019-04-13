@@ -5,12 +5,16 @@ import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 import * as styles from './index.less';
 
 const formatBreadcrumbs = (breadcrumbs, prefix = 'menu') =>
-  breadcrumbs.slice(1).map(breadcrumb => {
-    const formattedBread = { ...breadcrumb };
-    const menuId = breadcrumb.key.slice(1).replace(/\//g, '.');
-    formattedBread.pathName = formatMessage({ id: `${prefix}.${menuId}` });
-    return formattedBread;
-  });
+  breadcrumbs
+    .slice(1)
+    .map(breadcrumb => {
+      const formattedBread = { ...breadcrumb };
+      const menuId = breadcrumb.key.slice(1).replace(/\//g, '.');
+      const pathName = formatMessage({ id: `${prefix}.${menuId}` });
+      formattedBread.pathName = pathName === '__blank__' ? null : pathName;
+      return formattedBread;
+    })
+    .filter(breadcrumb => !!breadcrumb.pathName);
 
 const Breadcrumbs = ({ breadcrumbs }) => {
   const formattedBreadcrumbs = formatBreadcrumbs(breadcrumbs);

@@ -1,6 +1,7 @@
 export default {
   'menu.dashBoard': '工作台',
 
+  'menu.account': '__blank__',
   'menu.account.center': '个人中心',
   'menu.account.logout': '退出登录',
 

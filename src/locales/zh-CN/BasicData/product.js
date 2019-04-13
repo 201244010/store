@@ -69,6 +69,8 @@ export default {
     '2. 初次完成对接，或修改对接平台信息后，原有商品信息将被清空；',
   'basicData.erp.description.list3':
     '3. 完成对接后，无法在SUNMI Store中修改商品信息，请在ERP中进行修改；',
+  'basicData.erp.import.success': '数据导入成功',
+  'basicData.erp.import.fail': '数据导入失败',
 
   'basicData.product.delete': '删除商品成功',
   'basicData.product.delete.confirm': '请确认是否删除商品？',

@@ -83,3 +83,15 @@ export const getERPPlatformList = (options = {}) => {
 
   return fetchApi('', opts).then(response => response.json());
 };
+
+// TODO 进行 ERP 对接并抽取数据
+export const erpImport = (options = {}) => {
+  const opts = {
+    method: 'POST',
+    body: {
+      ...options,
+    },
+  };
+
+  return fetchApi('', opts).then(response => response.json());
+};

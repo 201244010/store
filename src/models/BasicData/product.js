@@ -197,6 +197,28 @@ export default {
         });
       }
     },
+
+    *erpImport({ payload }, { call, put }) {
+      const { options } = payload;
+      yield put({
+        type: 'updateState',
+        payload: { loading: true },
+      });
+
+      const response = yield call(Actions.erpImport, options);
+      if (response && response.code === ERROR_OK) {
+        message.success(formatMessage({ id: 'basicData.erp.import.success' }));
+        yield put({
+          type: 'updateState',
+          payload: { loading: false },
+        });
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: { loading: false },
+        });
+      }
+    },
   },
 
   reducers: {
