@@ -118,6 +118,10 @@ export default {
                   name: 'list',
                   component: './BasicData/ProductManagement',
                 },
+                {
+                  path: '/basicData/productManagement/list/erpImport',
+                  component: './BasicData/ProductManagement/ERPImport',
+                },
               ],
             },
           ],

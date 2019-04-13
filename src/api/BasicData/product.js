@@ -3,7 +3,7 @@ import Storage from '@konata9/storage.js';
 
 const fetchApi = customizeFetch('product');
 
-export const fetchProductList = options => {
+export const fetchProductList = (options = {}) => {
   const opts = {
     method: 'POST',
     body: {
@@ -15,7 +15,7 @@ export const fetchProductList = options => {
   return fetchApi('getList', opts).then(response => response.json());
 };
 
-export const searchGoodsList = options => {
+export const searchGoodsList = (options = {}) => {
   const opts = {
     method: 'POST',
     body: {
@@ -28,7 +28,7 @@ export const searchGoodsList = options => {
   return fetchApi('search', opts).then(response => response.json());
 };
 
-export const getProductDetail = options => {
+export const getProductDetail = (options = {}) => {
   const opts = {
     method: 'POST',
     body: {
@@ -39,7 +39,7 @@ export const getProductDetail = options => {
   return fetchApi('getInfo', opts).then(response => response.json());
 };
 
-export const createProduct = options => {
+export const createProduct = (options = {}) => {
   const opts = {
     method: 'POST',
     body: {
@@ -61,7 +61,7 @@ export const deleteProduct = ({ id }) => {
   return fetchApi('delete', opts).then(response => response.json());
 };
 
-export const updateProduct = options => {
+export const updateProduct = (options = {}) => {
   const opts = {
     method: 'POST',
     body: {
@@ -72,7 +72,8 @@ export const updateProduct = options => {
   return fetchApi('update', opts).then(response => response.json());
 };
 
-export const uploadProducts = options => {
+// TODO 获取 erp 对接平台列表的接口
+export const getERPPlatformList = (options = {}) => {
   const opts = {
     method: 'POST',
     body: {
@@ -80,71 +81,5 @@ export const uploadProducts = options => {
     },
   };
 
-  return fetchApi('uploadProducts', opts).then(response => response.json());
-};
-
-export const bindEsl = options => {
-  const opts = {
-    method: 'POST',
-    body: {
-      ...options,
-    },
-  };
-
-  return fetchApi('bindEsl', opts).then(response => response.json());
-};
-
-export const unbindEsl = options => {
-  const opts = {
-    method: 'POST',
-    body: {
-      ...options,
-    },
-  };
-
-  return fetchApi('unbindEsl', opts).then(response => response.json());
-};
-
-export const getBindEsl = options => {
-  const opts = {
-    method: 'POST',
-    body: {
-      ...options,
-    },
-  };
-
-  return fetchApi('getBindEsl', opts).then(response => response.json());
-};
-
-export const flushEsl = options => {
-  const opts = {
-    method: 'POST',
-    body: {
-      ...options,
-    },
-  };
-
-  return fetchApi('flushEsl', opts).then(response => response.json());
-};
-
-export const changeMode = options => {
-  const opts = {
-    method: 'POST',
-    body: {
-      ...options,
-    },
-  };
-
-  return fetchApi('changeMode', opts).then(response => response.json());
-};
-
-export const importFileCheck = options => {
-  const opts = {
-    method: 'POST',
-    body: {
-      ...options,
-    },
-  };
-
-  return fetchApi('fileImport', opts).then(response => response.json());
+  return fetchApi('', opts).then(response => response.json());
 };

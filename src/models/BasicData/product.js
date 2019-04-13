@@ -17,6 +17,7 @@ export default {
     states: [],
     data: [],
     productInfo: {},
+    erpPlatformList: [],
     bindEsl: [],
     bindEslInfo: {},
     filePath: null,
@@ -31,6 +32,29 @@ export default {
     },
   },
   effects: {
+    *getERPPlatformList(_, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: { loading: true },
+      });
+      const response = yield call(Actions.getERPPlatformList);
+      if (response && response.code === ERROR_OK) {
+        const result = response.data || {};
+        yield put({
+          type: 'updateState',
+          payload: {
+            loading: false,
+            erpPlatformList: result.platformList || [],
+          },
+        });
+      } else {
+        yield put({
+          type: 'updateState',
+          payload: { loading: false },
+        });
+      }
+    },
+
     *fetchProductList({ payload }, { call, put, select }) {
       const { options } = payload;
       const { pagination, searchFormValues } = yield select(state => state.eslBaseStation);

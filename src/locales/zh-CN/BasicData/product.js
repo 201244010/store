@@ -58,7 +58,7 @@ export default {
 
   'basicData.erp.platform': '对接的ERP平台',
   'basicData.erp.store.number': '门店编号',
-  'basicData.erp.api.key': 'API对接Key',
+  'basicData.erp.api.key': '门店密匙',
   'basicData.erp.synchronization.plan': '同步计划',
   'basicData.erp.synchronization.auto': '自动',
   'basicData.erp.synchronization.fixedTime': '定时',

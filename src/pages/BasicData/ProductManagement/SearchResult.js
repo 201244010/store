@@ -35,6 +35,7 @@ class SearchResult extends Component {
       goodDetail: `/good/${encodeID}/detail`,
       createGoods: '/goodCreateOrUpdate/create',
       update: `/goodCreateOrUpdate/update?data=${encodeID}`,
+      erpImport: `/basicData/productManagement/list/erpImport`,
     };
 
     router.push(urlMap[name]);
@@ -111,7 +112,7 @@ class SearchResult extends Component {
             {formatMessage({ id: 'btn.create' })}
           </Button>
           <Button className={styles['function-btn']}>{formatMessage({ id: 'btn.import' })}</Button>
-          <Button className={styles['function-btn']}>
+          <Button className={styles['function-btn']} onClick={() => this.toPath('erpImport')}>
             {formatMessage({ id: 'btn.erp.import' })}
           </Button>
           <Button className={styles['function-btn']}>

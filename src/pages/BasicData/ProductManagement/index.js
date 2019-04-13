@@ -6,13 +6,14 @@ import * as styles from './ProductManagement.less';
 
 @connect(
   state => ({
-    goods: state.basicDataProduct,
+    product: state.basicDataProduct,
   }),
   dispatch => ({
-    fetchProductList: payload => dispatch({ type: 'fetchProductList', payload }),
-    changeSearchFormValue: payload => dispatch({ type: 'changeSearchFormValue', payload }),
-    getProductDetail: payload => dispatch({ type: 'getProductDetail', payload }),
-    deleteProduct: payload => dispatch({ type: 'deleteProduct', payload }),
+    fetchProductList: payload => dispatch({ type: 'basicDataProduct/fetchProductList', payload }),
+    changeSearchFormValue: payload =>
+      dispatch({ type: 'basicDataProduct/changeSearchFormValue', payload }),
+    getProductDetail: payload => dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
+    deleteProduct: payload => dispatch({ type: 'basicDataProduct/deleteProduct', payload }),
   })
 )
 class ProductList extends Component {
@@ -26,7 +27,7 @@ class ProductList extends Component {
 
   render() {
     const {
-      goods: { loading, searchFormValues, data, states, pagination },
+      product: { loading, searchFormValues, data, states, pagination },
       changeSearchFormValue,
       fetchProductList,
       deleteProduct,
