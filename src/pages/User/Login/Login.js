@@ -8,15 +8,7 @@ import { encryption } from '@/utils/utils';
 import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import styles from './Login.less';
-import { ERROR_OK, SEND_TOO_FAST } from '@/constants/errorCode';
-
-const ALERT_NOTICE_MAP = {
-  '3603': 'alert.mobile.not.registered',
-  '201': 'alert.account.error',
-  '002': 'alert.code.error',
-  '208': 'alert.code.expired',
-  '003': 'alert.code.send.fast',
-};
+import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 
 const VALIDATE_FIELDS = {
   tabAccount: ['username', 'password'],
@@ -72,10 +64,12 @@ class Login extends Component {
       },
     });
 
-    if (response && response.code === SEND_TOO_FAST && !response.data) {
-      this.setState({
-        notice: '003',
-      });
+    if (response && !response.data) {
+      if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
+        this.setState({
+          notice: response.code,
+        });
+      }
     }
     return response;
   };
@@ -332,8 +326,8 @@ class Login extends Component {
           </Form.Item>
         </Form>
         <div className={styles['login-footer']}>
-          <Link to="/resetPassword">{formatMessage({ id: 'link.forgot.password' })}</Link>
-          <Link to="/register">{formatMessage({ id: 'link.to.register' })}</Link>
+          <Link to="/user/resetPassword">{formatMessage({ id: 'link.forgot.password' })}</Link>
+          <Link to="/user/register">{formatMessage({ id: 'link.to.register' })}</Link>
         </div>
       </div>
     );

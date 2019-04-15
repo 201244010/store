@@ -20,7 +20,7 @@ import Storage from '@konata9/storage.js';
 
 const unAuthHandler = () => {
   Storage.clear('session');
-  window.location.href = `${window.location.origin}/login?redirect=${encodeURIComponent(
+  window.location.href = `${window.location.origin}/user/login?redirect=${encodeURIComponent(
     window.location.pathname
   )}`;
 };

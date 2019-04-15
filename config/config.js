@@ -42,37 +42,16 @@ export default {
    */
   routes: [
     {
-      path: '/login',
-      component: '../layouts/UserLayout',
-      routes: [{ path: '/login', component: './Login/Login' }],
-      breadcrumb: null,
-    },
-    {
-      path: '/register',
-      component: '../layouts/UserLayout',
-      routes: [{ path: '/register', component: './Register/Register' }],
-      breadcrumb: null,
-    },
-    {
-      path: '/storeRelate',
-      component: '../layouts/UserLayout',
-      routes: [{ path: '/storeRelate', component: './StoreRelate/StoreRelate' }],
-      breadcrumb: null,
-    },
-    {
-      path: '/mailActive',
-      component: '../layouts/UserLayout',
-      routes: [{ path: '/mailActive', component: './MailActive/MailActive' }],
-      breadcrumb: null,
-    },
-    {
-      path: '/resetPassword',
+      path: '/user',
       component: '../layouts/UserLayout',
       routes: [
-        { path: '/resetPassword', component: './ResetPassword/ResetPassword' },
-        { path: '/resetPassword/reset', component: './ResetPassword/PasswordReset' },
+        { path: '/user/login', component: './User/Login/Login' },
+        { path: '/user/register', component: './User/Register/Register' },
+        { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelate' },
+        { path: '/user/mailActive', component: './User/MailActive/MailActive' },
+        { path: '/user/resetPassword', component: './User/ResetPassword/ResetPassword' },
+        { path: '/user/resetPassword/reset', component: './User/ResetPassword/PasswordReset' },
       ],
-      breadcrumb: null,
     },
     {
       path: '/',
@@ -83,11 +62,13 @@ export default {
         {
           path: '/dashBoard',
           name: 'dashBoard',
+          icon: 'blank',
           component: './DashBoard',
         },
         {
           path: '/deviceManagement',
           name: 'deviceManagement',
+          icon: 'blank',
           routes: [
             {
               path: '/deviceManagement/esl',
@@ -105,27 +86,56 @@ export default {
         {
           path: '/basicData',
           name: 'basicData',
+          icon: 'blank',
           routes: [
             {
               path: '/basicData/productManagement',
               name: 'productManagement',
+              routes: [
+                {
+                  path: '/basicData/productManagement/list',
+                  name: 'list',
+                  component: './BasicData/ProductManagement',
+                },
+                {
+                  path: '/basicData/productManagement/list/productCU',
+                  name: 'list',
+                  hideInMenu: true,
+                  component: './BasicData/ProductManagement/ProductCU',
+                },
+                {
+                  path: '/basicData/productManagement/list/productInfo',
+                  name: 'list',
+                  hideInMenu: true,
+                  component: './BasicData/ProductManagement/ProductInfo',
+                },
+                {
+                  path: '/basicData/productManagement/list/erpImport',
+                  name: 'list',
+                  hideInMenu: true,
+                  component: './BasicData/ProductManagement/ERPImport',
+                },
+              ],
             },
           ],
         },
-        {
-          path: '/setting',
-          name: 'setting',
-          routes: [
-            {
-              path: '/setting/role',
-              name: 'role',
-              component: './Setting/Role',
-            },
-          ],
-        },
+        // {
+        //   path: '/setting',
+        //   name: 'setting',
+        //   icon: '',
+        //   routes: [
+        //     {
+        //       path: '/setting/role',
+        //       name: 'role',
+        //       component: './Setting/Role',
+        //     },
+        //   ],
+        // },
         {
           path: '/account/center',
           component: './Account/',
+          name: 'account',
+          hideInMenu: true,
         },
       ],
     },

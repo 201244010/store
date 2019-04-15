@@ -1,4 +1,4 @@
-import * as Actions from '@/api/user';
+import * as Actions from '@/services/user';
 import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
 import router from 'umi/router';
@@ -37,7 +37,7 @@ export default {
         type: 'initState',
       });
       Storage.remove('__token__');
-      router.push('/login');
+      router.push('/user/login');
     },
 
     *checkImgCode({ payload }, { call }) {
@@ -98,7 +98,7 @@ export default {
       const response = yield call(Actions.changePassword, options);
       if (response && response.code === ERROR_OK) {
         Storage.clear('session');
-        router.push('/login');
+        router.push('/user/login');
       }
     },
 

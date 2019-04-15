@@ -3,7 +3,7 @@ export default {
   'reset.by.mobile': '手机号重置',
   'reset.by.mail': '邮箱重置',
   'reset.success': '恭喜，密码重置成功！',
-  'reset.countDown': '秒后将自动登录',
+  'reset.countDown': '秒后将返回登录页',
   'reset.mail.placeholder': '请输入注册／绑定的邮箱',
   'reset.vcode.placeholder': '图形验证码',
   'reset.mail.notice':

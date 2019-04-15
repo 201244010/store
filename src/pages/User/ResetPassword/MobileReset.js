@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Alert } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { connect } from 'dva';
 import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
-import styles from '@/pages/Register/Register.less';
+import styles from '../Register/Register.less';
 import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
-import { connect } from 'dva';
 import { encryption } from '@/utils/utils';
 import { ERROR_OK, SEND_TOO_FAST } from '@/constants/errorCode';
 

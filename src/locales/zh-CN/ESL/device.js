@@ -23,6 +23,8 @@ export default {
     '删除后基站将从该账户中解除绑定，基站连接的价签将无法连接至云端。',
   'esl.device.ap.delete.message2': '解绑后的基站重新注册可恢复使用。',
   'esl.device.ap.delete.notice': '请确认是否删除基站？',
+  'esl.device.ap.delete.success': '删除基站成功',
+  'esl.device.ap.delete.fail': '删除基站失败',
 
   'esl.device.ap.all': '共',
   'esl.device.ap.total': '个基站',

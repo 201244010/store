@@ -2,40 +2,36 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
+import * as styles from './BaseStation.less';
 
-@connect(state => ({
-  baseStation: state.eslBaseStation,
-}))
+@connect(
+  state => ({
+    baseStation: state.eslBaseStation,
+  }),
+  dispatch => ({
+    fetchBaseStationState: payload =>
+      dispatch({ type: 'eslBaseStation/fetchBaseStationState', payload }),
+    fetchBaseStations: payload => dispatch({ type: 'eslBaseStation/fetchBaseStations', payload }),
+    changeSearchFormValue: payload =>
+      dispatch({ type: 'eslBaseStation/changeSearchFormValue', payload }),
+    getBaseStationDetail: payload =>
+      dispatch({ type: 'eslBaseStation/getBaseStationDetail', payload }),
+    deleteBaseStation: payload => dispatch({ type: 'eslBaseStation/deleteBaseStation', payload }),
+  })
+)
 class BaseStation extends Component {
   componentDidMount() {
-    const {
-      changeBreadcrumb,
-      fetchBaseStations,
-      fetchBaseStationState,
-      changeSearchFormValue,
-    } = this.props;
-    changeBreadcrumb({
-      data: [
-        {
-          key: 'system',
-          title: '系统',
-        },
-        {
-          key: 'baseStation',
-          title: '基站管理',
-        },
-      ],
-      config: {
-        hasBack: false,
-      },
-    });
+    const { fetchBaseStationState, fetchBaseStations, changeSearchFormValue } = this.props;
+
     changeSearchFormValue({
       keyword: '',
       status: -1,
     });
+
     fetchBaseStations({
       current: 1,
     });
+
     fetchBaseStationState();
   }
 
@@ -49,7 +45,7 @@ class BaseStation extends Component {
     } = this.props;
 
     return (
-      <div className="content-container">
+      <div className={styles['content-container']}>
         <SearchForm
           {...{
             states,

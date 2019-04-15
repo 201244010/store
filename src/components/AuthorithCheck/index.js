@@ -11,7 +11,7 @@ function AuthorithCheck(WrappedComponent) {
     authorityCheck = () => {
       const userInfo = Storage.get('__token__');
       if (!userInfo) {
-        router.push('/login');
+        router.push('/user/login');
       }
     };
 

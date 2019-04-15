@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { formatMessage, getLocale } from 'umi/locale';
 import { Divider } from 'antd';
-import BigIcon from '@/components/BigIcon';
+import BigIcon from '../../../components/BigIcon';
 import MobileReset from './MobileReset';
 import MailReset from './MailReset';
 import styles from './ResetPassword.less';

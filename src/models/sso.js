@@ -1,4 +1,4 @@
-import * as Actions from '@/api/sso';
+import * as Actions from '@/services/sso';
 import { ERROR_OK, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 
 export default {
