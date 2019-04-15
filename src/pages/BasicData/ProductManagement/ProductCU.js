@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Card, Form, Input, Select, Button, Row, Col } from 'antd';
-// import EditableFormItem from '@/components/EditableFormItem';
+import EditableFormItem from '@/components/EditableFormItem';
 import { getLocationParam } from '@/utils/utils';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
@@ -116,6 +116,7 @@ class ProductCU extends Component {
   render() {
     const {
       form: { getFieldDecorator },
+      form,
     } = this.props;
     const [productTypes, productUnits] = [[], []];
 
@@ -226,22 +227,23 @@ class ProductCU extends Component {
               </Col>
             </Row>
 
-            <Row>{this.renderCustomizeFormItem('label')}</Row>
-
-            <Row>
-              <Col span={12}>
-                <Form.Item label=" " colon={false}>
-                  <Button
-                    type="dashed"
-                    icon="plus"
-                    block
-                    onClick={() => this.addCustomFormItem('label')}
-                  >
-                    {formatMessage({ id: 'basicData.product.label.add' })}
-                  </Button>
-                </Form.Item>
-              </Col>
-            </Row>
+            <EditableFormItem
+              {...{
+                form,
+                labelOption: {
+                  labelPrefix: formatMessage({ id: 'basicData.product.customize' }),
+                  formKey: 'customLabels',
+                  editable: false,
+                },
+                buttonProps: {
+                  span: 12,
+                  icon: 'plus',
+                  type: 'dashed',
+                  block: true,
+                  text: formatMessage({ id: 'basicData.product.label.add' }),
+                },
+              }}
+            />
 
             <Row>
               <Form.Item
@@ -282,22 +284,23 @@ class ProductCU extends Component {
               </Col>
             </Row>
 
-            <Row>{this.renderCustomizeFormItem('price')}</Row>
-
-            <Row>
-              <Col span={12}>
-                <Form.Item label=" " colon={false}>
-                  <Button
-                    type="dashed"
-                    icon="plus"
-                    block
-                    onClick={() => this.addCustomFormItem('price')}
-                  >
-                    {formatMessage({ id: 'basicData.product.price.add' })}
-                  </Button>
-                </Form.Item>
-              </Col>
-            </Row>
+            <EditableFormItem
+              {...{
+                form,
+                labelOption: {
+                  labelPrefix: formatMessage({ id: 'basicData.product.price.customize' }),
+                  formKey: 'customPrices',
+                  editable: false,
+                },
+                buttonProps: {
+                  span: 12,
+                  icon: 'plus',
+                  type: 'dashed',
+                  block: true,
+                  text: formatMessage({ id: 'basicData.product.price.add' }),
+                },
+              }}
+            />
 
             <Row>
               <Col span={12}>

@@ -5,31 +5,25 @@ class EditableLabel extends Component {
   constructor(props) {
     super(props);
     const {
-      labelProps: { label },
+      labelProps: { name },
     } = props;
     this.state = {
       inEditing: false,
-      labelValue: label,
+      labelName: name || '',
     };
   }
 
-  switchMode = (callback, ...rest) => {
-    const { editable = true } = this.props;
+  switchMode = () => {
+    const {
+      labelProps: { editable = true },
+    } = this.props;
     if (!editable) {
       return;
     }
-
     const { inEditing } = this.state;
-    this.setState(
-      {
-        inEditing: !inEditing,
-      },
-      () => {
-        if (callback) {
-          callback(...rest);
-        }
-      }
-    );
+    this.setState({
+      inEditing: !inEditing,
+    });
   };
 
   onChange = e => {
@@ -37,7 +31,7 @@ class EditableLabel extends Component {
       labelProps: { onChange },
     } = this.props;
     this.setState({
-      labelValue: e.target.value || '',
+      labelName: e.target.value || '',
     });
 
     if (onChange) {
@@ -46,37 +40,51 @@ class EditableLabel extends Component {
   };
 
   onBlur = () => {
-    const { labelValue } = this.state;
+    const { labelName, inEditing } = this.state;
     const {
       labelProps: { onBlur },
     } = this.props;
 
     if (onBlur) {
-      this.switchMode(onBlur, labelValue);
+      this.setState(
+        {
+          inEditing: !inEditing,
+        },
+        () => onBlur(labelName)
+      );
     } else {
-      this.switchMode();
+      this.setState({
+        inEditing: !inEditing,
+      });
     }
   };
 
   render() {
-    const { inEditing, labelValue } = this.state;
+    const { inEditing, labelName } = this.state;
     const {
-      labelProps: { label = '', inputProps = {}, style = {} },
+      labelProps: { inputProps = {}, style = {} },
     } = this.props;
 
     return (
       <>
         {inEditing ? (
           <Input
-            value={labelValue}
+            id="1122"
+            value={labelName}
             onChange={e => this.onChange(e)}
             onBlur={this.onBlur}
             {...inputProps}
           />
         ) : (
-          <span style={style} onClick={this.switchMode}>
-            {label}
-          </span>
+          <div
+            style={{
+              textAlign: 'right',
+              ...style,
+            }}
+            onClick={this.switchMode}
+          >
+            {labelName}：
+          </div>
         )}
       </>
     );

@@ -2,39 +2,44 @@ import React, { Component } from 'react';
 import { Form, Row, Col, Input, Button } from 'antd';
 import EditableLabel from './EditableLabel';
 
+const formItemLayout = {
+  wrapperCol: { span: 24 },
+};
+
 class EditableFormItem extends Component {
   constructor(props) {
     super(props);
     this.key = 0;
   }
 
-  addCustomFormItem() {
+  addCustomFormItem = () => {
     const {
       form: { getFieldValue, setFieldsValue },
+      labelOption: { formKey = '' },
     } = this.props;
 
     this.key += 1;
 
-    const keys = getFieldValue('__customItem__');
+    const keys = getFieldValue(`__${formKey}__`);
     const nextId = this.key;
     const nextKeys = keys.concat(nextId);
 
     setFieldsValue({
-      __customItem__: nextKeys,
+      [`__${formKey}__`]: nextKeys,
     });
-  }
+  };
 
   renderCustomizeFormItem = () => {
     const {
       form: { getFieldDecorator, getFieldValue },
       labelOption = {},
-      labelOption: { labelPrefix = '', formKey = '' },
+      labelOption: { labelPrefix = '', formKey = '', span = 12 },
       itemOptions = {},
-      wrapperItem = () => <Input />,
+      wrapperItem = <Input />,
     } = this.props;
 
-    getFieldDecorator('__customItem__', { initialValue: [] });
-    const keys = getFieldValue('__customItem__');
+    getFieldDecorator(`__${formKey}__`, { initialValue: [] });
+    const keys = getFieldValue(`__${formKey}__`);
 
     return keys.map((key, index) => {
       const labelName = `${labelPrefix}${index + 1}`;
@@ -44,11 +49,16 @@ class EditableFormItem extends Component {
         name: labelName,
       };
       return (
-        <Col span={12} key={key}>
-          <Form.Item label={<EditableLabel {...labelProps} />}>
-            {getFieldDecorator(`${formKey}.${index}`, {
-              ...itemOptions,
-            })(wrapperItem)}
+        <Col span={span} key={key}>
+          <Form.Item {...formItemLayout}>
+            <Col span={8}>
+              <EditableLabel {...{ labelProps }} />
+            </Col>
+            <Col span={16}>
+              {getFieldDecorator(`${formKey}.${index}`, {
+                ...itemOptions,
+              })(wrapperItem)}
+            </Col>
           </Form.Item>
         </Col>
       );
@@ -62,7 +72,7 @@ class EditableFormItem extends Component {
     } = this.props;
     return (
       <>
-        {this.renderCustomizeFormItem()}
+        <Row>{this.renderCustomizeFormItem()}</Row>
         <Row>
           <Col span={span}>
             <Form.Item label={label} colon={false}>
