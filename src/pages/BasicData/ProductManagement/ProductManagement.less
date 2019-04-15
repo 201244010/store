@@ -30,3 +30,25 @@
     }
   }
 }
+
+.card-column {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+
+  .card-item {
+    width: 50%;
+    margin-top: 10px;
+
+    .item-label {
+      min-width: 200px;
+      text-align: right;
+      display: inline-block;
+    }
+
+    .item-content {
+      margin-left: 15px;
+    }
+  }
+}

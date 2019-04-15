@@ -31,10 +31,11 @@ class SearchResult extends Component {
 
   toPath = (name, record = {}) => {
     const encodeID = record.id ? idEncode(record.id) : null;
+    console.log(encodeID);
     const urlMap = {
-      goodDetail: `/basicData/productManagement/list/productInfo/${+new Date()}`,
-      createGoods: '/goodCreateOrUpdate/create',
-      update: `/goodCreateOrUpdate/update?data=${encodeID}`,
+      goodDetail: `/basicData/productManagement/list/productInfo?id=123`,
+      createProduct: '/basicData/productManagement/list/productCU?action=create',
+      update: `/basicData/productManagement/list/productCU?action=edit&id=233`,
       erpImport: `/basicData/productManagement/list/erpImport`,
     };
 
@@ -68,7 +69,7 @@ class SearchResult extends Component {
         dataIndex: 'name',
       },
       {
-        title: formatMessage({ id: 'basicData.product.barCode' }),
+        title: formatMessage({ id: 'basicData.product.bar_code' }),
         dataIndex: 'bar_code',
       },
       {
@@ -76,7 +77,7 @@ class SearchResult extends Component {
         dataIndex: 'price',
       },
       {
-        title: formatMessage({ id: 'basicData.product.modifiedTime' }),
+        title: formatMessage({ id: 'basicData.product.modified_time' }),
         dataIndex: 'modified_time',
         render: text => <span>{unixSecondToDate(text)}</span>,
       },
@@ -111,7 +112,7 @@ class SearchResult extends Component {
           <Button
             className={styles['function-btn']}
             type="primary"
-            onClick={() => this.toPath('goodDetail')}
+            onClick={() => this.toPath('createProduct')}
           >
             {formatMessage({ id: 'btn.create' })}
           </Button>
