@@ -12,7 +12,7 @@ export default {
   'menu.deviceManagement.esl.baseStation': '基站管理',
 
   'menu.basicData': '基础数据',
-  'menu.basicData.productManagement': '商品库',
+  'menu.basicData.productManagement': '商品库管理',
   'menu.basicData.productManagement.list': '商品列表',
   'menu.basicData.productManagement.list.productCU': '新建商品',
   'menu.basicData.productManagement.list.productInfo': '商品详情',

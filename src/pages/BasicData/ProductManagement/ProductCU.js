@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Card, Form, Input, Select, Button, Row, Col } from 'antd';
+// import EditableFormItem from '@/components/EditableFormItem';
 import { getLocationParam } from '@/utils/utils';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
@@ -40,6 +41,15 @@ class ProductCU extends Component {
     const path =
       action === 'edit' ? `${pathPrefix}/list/productInfo?id=${id}` : `${pathPrefix}/list`;
     router.push(path);
+  };
+
+  editCustomLabel = labelProps => {
+    console.log(labelProps);
+  };
+
+  customizeLabel = labelProps => {
+    const { name } = labelProps;
+    return <span onClick={() => this.editCustomLabel(labelProps)}>{name}</span>;
   };
 
   addCustomFormItem(type) {
@@ -83,16 +93,24 @@ class ProductCU extends Component {
       rules = [];
     }
 
-    return keys.map((key, index) => (
-      <Col span={12}>
-        <Form.Item label={`${formatMessage({ id: labelMessageId })}${index + 1}`} key={key}>
-          {getFieldDecorator(`${formKey}.${index}`, {
-            initialValue: customItems[index] || '',
-            rules,
-          })(inputItem)}
-        </Form.Item>
-      </Col>
-    ));
+    return keys.map((key, index) => {
+      const labelName = `${formatMessage({ id: labelMessageId })}${index + 1}`;
+      const labelProps = {
+        type,
+        index,
+        name: labelName,
+      };
+      return (
+        <Col span={12} key={key}>
+          <Form.Item label={this.customizeLabel(labelProps)}>
+            {getFieldDecorator(`${formKey}.${index}`, {
+              initialValue: customItems[index] || '',
+              rules,
+            })(inputItem)}
+          </Form.Item>
+        </Col>
+      );
+    });
   };
 
   render() {

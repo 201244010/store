@@ -49,10 +49,6 @@ export default {
     *register({ payload }, { call }) {
       const { options } = payload;
       const response = yield call(Actions.register, options);
-      // TODO 需要后端返回 token
-      // if(response && response.code === ERROR_OK){
-      //
-      // }
       return response;
     },
 
