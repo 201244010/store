@@ -34,7 +34,7 @@ module.exports = {
     'jsx-a11y/anchor-is-valid': 0,
     'linebreak-style': 0,
     'no-script-url': 0,
-    'camelcase': 0,
+    'camelcase': 1,
   },
   settings: {
     polyfills: ['fetch', 'promises', 'url'],

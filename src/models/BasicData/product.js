@@ -1,4 +1,4 @@
-import * as Actions from '@/api/BasicData/product';
+import * as Actions from '@/services/BasicData/product';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';

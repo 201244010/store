@@ -1,4 +1,4 @@
-import * as Actions from '@/api/ESL/baseStation';
+import * as Actions from '@/services/ESL/baseStation';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';

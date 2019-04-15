@@ -1,4 +1,4 @@
-import * as Actions from '@/api/user';
+import * as Actions from '@/services/user';
 import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
 import router from 'umi/router';

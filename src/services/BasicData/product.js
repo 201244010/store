@@ -1,5 +1,5 @@
-import { customizeFetch } from '@/utils/fetch';
 import Storage from '@konata9/storage.js';
+import { customizeFetch } from '@/utils/fetch';
 
 const fetchApi = customizeFetch('product');
 

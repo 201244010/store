@@ -10,15 +10,7 @@ import { connect } from 'dva';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
 import styles from './Register.less';
-import { ERROR_OK } from '@/constants/errorCode';
-
-// TODO 根据 error code 显示不同的错误信息，等待 error code
-const ALERT_NOTICE_MAP = {
-  '216': 'alert.mobile.existed',
-  '1001': 'alert.mail.existed',
-  '002': 'alert.code.error',
-  '003': 'alert.code.expired',
-};
+import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 
 const MailRegisterSuccess = ({ props }) => {
   const { mail } = props;
@@ -95,7 +87,7 @@ class Register extends Component {
     if (
       response &&
       response.code !== ERROR_OK &&
-      Object.keys(ALERT_NOTICE_MAP).includes(response.code)
+      Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)
     ) {
       this.setState({
         notice: response.code,
