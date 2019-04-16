@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { Card, Form, Input, Select, Button, Row, Col } from 'antd';
+import { Card, Form, Input, Select, Button, Row, Col, Upload, Icon, Modal } from 'antd';
 import EditableFormItem from '@/components/EditableFormItem';
 import { getLocationParam } from '@/utils/utils';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import { MAX_LENGTH, FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
 import * as styles from './ProductManagement.less';
+import { customValidate } from '@/utils/customValidate';
+
+const MAX_IMG = 5;
 
 const productTypes = [{ key: 'normal', value: 0 }, { key: 'weight', value: 1 }];
 
@@ -32,8 +35,31 @@ const productUnits = [
   { key: 'branch', value: 19 },
 ];
 
+const uploadButton = (
+  <div>
+    <Icon type="plus" />
+    <div className="ant-upload-text">Upload</div>
+  </div>
+);
+
 @Form.create()
 class ProductCU extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      previewVisible: false,
+      previewImage: '',
+      fileList: [
+        {
+          uid: '-1',
+          name: 'xxx.png',
+          status: 'done',
+          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        },
+      ],
+    };
+  }
+
   componentDidMount() {
     const id = getLocationParam('id');
     if (id) {
@@ -41,6 +67,17 @@ class ProductCU extends Component {
       console.log(id);
     }
   }
+
+  handleCancel = () => this.setState({ previewVisible: false });
+
+  handlePreview = file => {
+    this.setState({
+      previewImage: file.url || file.thumbUrl,
+      previewVisible: true,
+    });
+  };
+
+  handleChange = ({ fileList }) => this.setState({ fileList });
 
   onSubmit = () => {
     const [action = '', id = ''] = [getLocationParam('action'), getLocationParam('id')];
@@ -63,6 +100,7 @@ class ProductCU extends Component {
   };
 
   render() {
+    const { previewVisible, previewImage, fileList } = this.state;
     const {
       form: { getFieldDecorator },
       form,
@@ -81,8 +119,18 @@ class ProductCU extends Component {
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.seq_num' })}>
                   {getFieldDecorator('seq_num', {
+                    validateTrigger: 'onBlur',
                     rules: [
                       { required: true, message: formatMessage({ id: 'product.seq_num.isEmpty' }) },
+                      {
+                        validator: (rule, value, callback) =>
+                          customValidate({
+                            field: 'seq_num',
+                            rule,
+                            value,
+                            callback,
+                          }),
+                      },
                     ],
                   })(<Input maxLength={MAX_LENGTH['20']} />)}
                 </Form.Item>
@@ -90,7 +138,18 @@ class ProductCU extends Component {
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.bar_code' })}>
                   {getFieldDecorator('bar_code', {
-                    rules: [{ pattern: /[a-zA-Z]{0,20}/, message: '' }],
+                    validateTrigger: 'onBlur',
+                    rules: [
+                      {
+                        validator: (rule, value, callback) =>
+                          customValidate({
+                            field: 'bar_code',
+                            rule,
+                            value,
+                            callback,
+                          }),
+                      },
+                    ],
                   })(<Input maxLength={MAX_LENGTH['20']} />)}
                 </Form.Item>
               </Col>
@@ -173,7 +232,20 @@ class ProductCU extends Component {
             <Row>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.production_date' })}>
-                  {getFieldDecorator('production_date')(
+                  {getFieldDecorator('production_date', {
+                    validateTrigger: 'onBlur',
+                    rules: [
+                      {
+                        validator: (rule, value, callback) =>
+                          customValidate({
+                            field: 'production_date',
+                            rule,
+                            value,
+                            callback,
+                          }),
+                      },
+                    ],
+                  })(
                     <Input
                       suffix={formatMessage({ id: 'basicData.product.production_date.day' })}
                       maxLength={MAX_LENGTH['4']}
@@ -228,7 +300,20 @@ class ProductCU extends Component {
                   },
                 }}
                 label={formatMessage({ id: 'basicData.product.image' })}
-              />
+              >
+                <Upload
+                  action="//jsonplaceholder.typicode.com/posts/"
+                  listType="picture-card"
+                  fileList={fileList}
+                  onPreview={this.handlePreview}
+                  onChange={this.handleChange}
+                >
+                  {fileList.length >= MAX_IMG ? null : uploadButton}
+                </Upload>
+                <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Form.Item>
             </Row>
           </Card>
 
@@ -237,15 +322,38 @@ class ProductCU extends Component {
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.price' })}>
                   {getFieldDecorator('price', {
+                    validateTrigger: 'onBlur',
                     rules: [
                       { required: true, message: formatMessage({ id: 'product.price.isEmpty' }) },
+                      {
+                        validator: (rule, value, callback) =>
+                          customValidate({
+                            field: 'price',
+                            rule,
+                            value,
+                            callback,
+                          }),
+                      },
                     ],
-                  })(<Input maxLength={MAX_LENGTH['9']} />)}
+                  })(<Input type="number" />)}
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.promote_price' })}>
-                  {getFieldDecorator('promote_price')(<Input maxLength={MAX_LENGTH['9']} />)}
+                  {getFieldDecorator('promote_price', {
+                    validateTrigger: 'onBlur',
+                    rules: [
+                      {
+                        validator: (rule, value, callback) =>
+                          customValidate({
+                            field: 'promote_price',
+                            rule,
+                            value,
+                            callback,
+                          }),
+                      },
+                    ],
+                  })(<Input type="number" />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -253,7 +361,20 @@ class ProductCU extends Component {
             <Row>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.price.vip' })}>
-                  {getFieldDecorator('vip')(<Input maxLength={MAX_LENGTH['9']} />)}
+                  {getFieldDecorator('vip', {
+                    validateTrigger: 'onBlur',
+                    rules: [
+                      {
+                        validator: (rule, value, callback) =>
+                          customValidate({
+                            field: 'vip',
+                            rule,
+                            value,
+                            callback,
+                          }),
+                      },
+                    ],
+                  })(<Input type="number" />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -262,7 +383,7 @@ class ProductCU extends Component {
               {...{
                 form,
                 max: 1,
-                wrapperItem: <Input maxLength={MAX_LENGTH['9']} />,
+                wrapperItem: <Input type="number" />,
                 itemOptions: {
                   validateTrigger: 'onBlur',
                   rules: [

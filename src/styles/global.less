@@ -2,3 +2,14 @@
   padding: 32px;
   background: #fff;
 }
+
+//火狐下的移除
+input[type='number'] {
+  -moz-appearance:textfield;
+}
+
+//谷歌下的移除
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}

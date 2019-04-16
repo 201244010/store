@@ -106,7 +106,9 @@ export default {
   'basicData.product.unit.branch': '支',
 
   'product.seq_num.isEmpty': '请输入商品编号',
+  'product.seq_num.isFormatted': '请输入正确的商品编号',
   'product.seq_num.isExist': '该商品编号已存在',
+  'product.bar_code.isFormatted': '请输入正确的商品条码',
   'product.name.isEmpty': '请输入商品名称',
   'product.price.isEmpty': '请输入商品价格',
   'product.price.isFormatted': '请输入正确的商品价格',
