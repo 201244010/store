@@ -3,6 +3,9 @@ export const env = process.env.UMI_ENV;
 export const API_ADDRESS = {
   // dev: '47.96.240.44:30204',
   dev: '47.96.240.44:35132',
+  test: '47.99.16.199:30301',
+  uat: 'uat-store.sunmi.com:443',
+  onl: 'store.sunmi.com:443',
 };
 
 export const DES_KEY = {
