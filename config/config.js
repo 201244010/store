@@ -44,24 +44,98 @@ export default {
     {
       path: '/user',
       component: '../layouts/UserLayout',
-      routes: [{ path: '/user', component: './Welcome' }],
+      routes: [
+        { path: '/user/login', component: './User/Login/Login' },
+        { path: '/user/register', component: './User/Register/Register' },
+        { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelate' },
+        { path: '/user/mailActive', component: './User/MailActive/MailActive' },
+        { path: '/user/resetPassword', component: './User/ResetPassword/ResetPassword' },
+        { path: '/user/resetPassword/reset', component: './User/ResetPassword/PasswordReset' },
+      ],
     },
     {
       path: '/',
       component: '../layouts/BasicLayout',
       routes: [
-        { path: '/', redirect: '/welcome' },
+        { path: '/', redirect: '/dashBoard' },
         // dashboard
         {
-          path: '/welcome',
-          name: 'welcome',
-          icon: 'smile',
-          component: './Welcome',
+          path: '/dashBoard',
+          name: 'dashBoard',
+          icon: 'blank',
+          component: './DashBoard',
         },
         {
-          path: 'https://github.com/umijs/umi-blocks/tree/master/ant-design-pro',
-          name: 'more-blocks',
-          icon: 'block',
+          path: '/deviceManagement',
+          name: 'deviceManagement',
+          icon: 'blank',
+          routes: [
+            {
+              path: '/deviceManagement/esl',
+              name: 'esl',
+              routes: [
+                {
+                  path: '/deviceManagement/esl/baseStation',
+                  name: 'baseStation',
+                  component: './DeviceManagement/ESL/BaseStation',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          path: '/basicData',
+          name: 'basicData',
+          icon: 'blank',
+          routes: [
+            {
+              path: '/basicData/productManagement',
+              name: 'productManagement',
+              routes: [
+                {
+                  path: '/basicData/productManagement/list',
+                  name: 'list',
+                  component: './BasicData/ProductManagement',
+                },
+                {
+                  path: '/basicData/productManagement/list/productCU',
+                  name: 'list',
+                  hideInMenu: true,
+                  component: './BasicData/ProductManagement/ProductCU',
+                },
+                {
+                  path: '/basicData/productManagement/list/productInfo',
+                  name: 'list',
+                  hideInMenu: true,
+                  component: './BasicData/ProductManagement/ProductInfo',
+                },
+                {
+                  path: '/basicData/productManagement/list/erpImport',
+                  name: 'list',
+                  hideInMenu: true,
+                  component: './BasicData/ProductManagement/ERPImport',
+                },
+              ],
+            },
+          ],
+        },
+        // {
+        //   path: '/setting',
+        //   name: 'setting',
+        //   icon: '',
+        //   routes: [
+        //     {
+        //       path: '/setting/role',
+        //       name: 'role',
+        //       component: './Setting/Role',
+        //     },
+        //   ],
+        // },
+        {
+          path: '/account/center',
+          component: './Account/',
+          name: 'account',
+          hideInMenu: true,
         },
       ],
     },
@@ -73,6 +147,7 @@ export default {
    */
   define: {
     APP_TYPE: process.env.APP_TYPE || '',
+    'process.env.UMI_ENV': process.env.UMI_ENV,
   },
   // Theme for antd
   // https://ant.design/docs/react/customize-theme-cn

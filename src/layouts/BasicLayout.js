@@ -9,12 +9,13 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage } from 'umi/locale';
+import AuthorithCheck from '@/components/AuthorithCheck';
 import Authorized from '@/utils/Authorized';
-import logo from '../assets/logo.svg';
-import Footer from './Footer';
+import logo from '../assets/menuLogo.png';
 import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
+// import Breadcrumbs from './Breadcrumbs';
 
 import styles from './BasicLayout.less';
 
@@ -45,6 +46,7 @@ const query = {
   },
 };
 
+@AuthorithCheck
 class BasicLayout extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -58,14 +60,11 @@ class BasicLayout extends React.PureComponent {
       route: { routes, authority },
     } = this.props;
     dispatch({
-      type: 'user/fetchCurrent',
-    });
-    dispatch({
-      type: 'setting/getSetting',
-    });
-    dispatch({
       type: 'menu/getMenuData',
       payload: { routes, authority },
+    });
+    dispatch({
+      type: 'user/getUserInfo',
     });
   }
 
@@ -111,14 +110,14 @@ class BasicLayout extends React.PureComponent {
     const currRouterData = this.matchParamsPath(pathname, breadcrumbNameMap);
 
     if (!currRouterData) {
-      return 'Ant Design Pro';
+      return 'SUNMI STORE';
     }
     const pageName = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
 
-    return `${pageName} - Ant Design Pro`;
+    return `${pageName} - SUNMI STORE`;
   };
 
   getLayoutStyle = () => {
@@ -152,6 +151,7 @@ class BasicLayout extends React.PureComponent {
       fixedHeader,
     } = this.props;
 
+    console.log(menuData);
     const isTop = PropsLayout === 'topmenu';
     const routerConfig = this.getRouterAuthority(pathname, routes);
     const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
@@ -180,12 +180,12 @@ class BasicLayout extends React.PureComponent {
             isMobile={isMobile}
             {...this.props}
           />
+          {/* <Breadcrumbs /> */}
           <Content className={styles.content} style={contentStyle}>
             <Authorized authority={routerConfig} noMatch={<p>Exception403</p>}>
               {children}
             </Authorized>
           </Content>
-          <Footer />
         </Layout>
       </Layout>
     );
@@ -205,13 +205,19 @@ class BasicLayout extends React.PureComponent {
   }
 }
 
-export default connect(({ global, setting, menu }) => ({
-  collapsed: global.collapsed,
-  layout: setting.layout,
-  menuData: menu.menuData,
-  breadcrumbNameMap: menu.breadcrumbNameMap,
-  ...setting,
-}))(props => (
+export default connect(
+  ({ global, setting, menu, user }) => ({
+    collapsed: global.collapsed,
+    layout: setting.layout,
+    menuData: menu.menuData,
+    breadcrumbNameMap: menu.breadcrumbNameMap,
+    user,
+    ...setting,
+  }),
+  dispatch => ({
+    dispatch,
+  })
+)(props => (
   <Media query="(max-width: 599px)">
     {isMobile => <BasicLayout {...props} isMobile={isMobile} />}
   </Media>

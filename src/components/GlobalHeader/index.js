@@ -1,14 +1,15 @@
 import React, { PureComponent } from 'react';
-import { Icon } from 'antd';
 import Link from 'umi/link';
 import Debounce from 'lodash-decorators/debounce';
 import styles from './index.less';
 import RightContent from './RightContent';
+import Breadcrumbs from './Breadcrumbs';
 
 export default class GlobalHeader extends PureComponent {
   componentWillUnmount() {
     this.triggerResizeEvent.cancel();
   }
+
   /* eslint-disable*/
   @Debounce(600)
   triggerResizeEvent() {
@@ -17,13 +18,15 @@ export default class GlobalHeader extends PureComponent {
     event.initEvent('resize', true, false);
     window.dispatchEvent(event);
   }
+
   toggle = () => {
     const { collapsed, onCollapse } = this.props;
     onCollapse(!collapsed);
     this.triggerResizeEvent();
   };
+
   render() {
-    const { collapsed, isMobile, logo } = this.props;
+    const { isMobile, logo } = this.props;
     return (
       <div className={styles.header}>
         {isMobile && (
@@ -31,9 +34,7 @@ export default class GlobalHeader extends PureComponent {
             <img src={logo} alt="logo" width="32" />
           </Link>
         )}
-        <span className={styles.trigger} onClick={this.toggle}>
-          <Icon type={collapsed ? 'menu-unfold' : 'menu-fold'} />
-        </span>
+        <Breadcrumbs />
         <RightContent {...this.props} />
       </div>
     );
