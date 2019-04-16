@@ -63,11 +63,10 @@ export default {
 
   'basicData.erp.platform': '对接的ERP平台',
   'basicData.erp.store.number': '门店编号',
-  'basicData.erp.api.key': '门店密匙',
-  'basicData.erp.synchronization.plan': '同步计划',
-  'basicData.erp.synchronization.auto': '自动',
-  'basicData.erp.synchronization.fixedTime': '定时',
-  'basicData.erp.synchronization.last': '上次同步时间：',
+  'basicData.erp.api.key': '门店密钥',
+  'basicData.erp.api.store.num': '门店编号',
+  'basicData.erp.api.account': '账号',
+  'basicData.erp.api.password': '密码',
   'basicData.erp.description': '对接ERP说明',
   'basicData.erp.description.list1': '1. 可以通过对接ERP来新建和更新商品；',
   'basicData.erp.description.list2':
