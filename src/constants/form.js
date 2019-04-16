@@ -1,3 +1,11 @@
+export const MAX_LENGTH = {
+  4: 4,
+  9: 9,
+  20: 20,
+  100: 100,
+  200: 200,
+};
+
 export const FORM_ITEM_LAYOUT_COMMON = {
   labelCol: { span: 5 },
   wrapperCol: { span: 18 },

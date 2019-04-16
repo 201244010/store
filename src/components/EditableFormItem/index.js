@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Row, Col, Input, Button } from 'antd';
+import { Form, Row, Col, Input, Button, Icon } from 'antd';
 import EditableLabel from './EditableLabel';
 
 const formItemLayout = {
@@ -9,8 +9,24 @@ const formItemLayout = {
 class EditableFormItem extends Component {
   constructor(props) {
     super(props);
-    this.key = 0;
+    this.count = 0;
+    this.max = props.max || Infinity;
   }
+
+  remove = k => {
+    const {
+      form: { getFieldValue, setFieldsValue },
+      labelOption: { formKey = '' },
+    } = this.props;
+    const keys = getFieldValue(`__${formKey}__`);
+    if (keys.length === 0) {
+      return;
+    }
+    this.count -= 1;
+    setFieldsValue({
+      [`__${formKey}__`]: keys.filter(key => key !== k),
+    });
+  };
 
   addCustomFormItem = () => {
     const {
@@ -18,15 +34,16 @@ class EditableFormItem extends Component {
       labelOption: { formKey = '' },
     } = this.props;
 
-    this.key += 1;
+    if (this.count < this.max) {
+      this.count += 1;
+      const keys = getFieldValue(`__${formKey}__`);
+      const nextId = +new Date();
+      const nextKeys = keys.concat(nextId);
 
-    const keys = getFieldValue(`__${formKey}__`);
-    const nextId = this.key;
-    const nextKeys = keys.concat(nextId);
-
-    setFieldsValue({
-      [`__${formKey}__`]: nextKeys,
-    });
+      setFieldsValue({
+        [`__${formKey}__`]: nextKeys,
+      });
+    }
   };
 
   renderCustomizeFormItem = () => {
@@ -50,16 +67,29 @@ class EditableFormItem extends Component {
       };
       return (
         <Col span={span} key={key}>
-          <Form.Item {...formItemLayout}>
+          <Row>
             <Col span={8}>
-              <EditableLabel {...{ labelProps }} />
+              <Form.Item {...formItemLayout}>
+                <EditableLabel {...{ labelProps }} />
+              </Form.Item>
             </Col>
-            <Col span={16}>
-              {getFieldDecorator(`${formKey}.${index}`, {
-                ...itemOptions,
-              })(wrapperItem)}
+            <Col span={14}>
+              <Form.Item {...formItemLayout}>
+                {getFieldDecorator(`${formKey}.${index}`, {
+                  ...itemOptions,
+                })(wrapperItem)}
+              </Form.Item>
             </Col>
-          </Form.Item>
+            <Col span={2}>
+              <Form.Item {...formItemLayout}>
+                <Icon
+                  style={{ marginLeft: '20px' }}
+                  type="minus-circle-o"
+                  onClick={() => this.remove(key)}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
         </Col>
       );
     });
@@ -72,8 +102,8 @@ class EditableFormItem extends Component {
     } = this.props;
     return (
       <>
-        <Row>{this.renderCustomizeFormItem()}</Row>
         <Row>
+          {this.renderCustomizeFormItem()}
           <Col span={span}>
             <Form.Item label={label} colon={false}>
               <Button {...buttonProps} onClick={this.addCustomFormItem}>

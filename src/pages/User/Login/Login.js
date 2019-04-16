@@ -35,6 +35,7 @@ class Login extends Component {
     this.state = {
       notice: '',
       currentTab: 'tabAccount',
+      countDown: false,
     };
   }
 
@@ -49,7 +50,7 @@ class Login extends Component {
     const {
       form: { getFieldValue },
       sendCode,
-      sso: { needImgCaptcha, imgCaptcha },
+      sso: { imgCaptcha, needImgCaptcha },
     } = this.props;
 
     const response = await sendCode({
@@ -71,6 +72,7 @@ class Login extends Component {
         });
       }
     }
+
     return response;
   };
 
@@ -137,7 +139,7 @@ class Login extends Component {
 
     validateFields(VALIDATE_FIELDS[currentTab], async (err, values) => {
       if (!err) {
-        if (errorTimes > 2) {
+        if (errorTimes > 2 && currentTab === 'tabAccount') {
           const result = await checkImgCode({
             options: {
               code: getFieldValue('vcode') || '',
@@ -156,7 +158,7 @@ class Login extends Component {
   };
 
   render() {
-    const { notice } = this.state;
+    const { notice, countDown } = this.state;
     const {
       form: { getFieldDecorator },
       getImageCode,
@@ -221,12 +223,18 @@ class Login extends Component {
               </Form.Item>
               {errorTimes > 2 && (
                 <Form.Item>
-                  {getFieldDecorator('vcode')(
+                  {getFieldDecorator('vcode', {
+                    validateTrigger: 'onBlur',
+                    rules: [
+                      { required: true, message: formatMessage({ id: 'code.validate.isEmpty' }) },
+                    ],
+                  })(
                     <ImgCaptcha
                       {...{
                         imgUrl: imgCode.url,
                         inputProps: {
                           size: 'large',
+                          placeholder: formatMessage({ id: 'vcode.placeholder' }),
                         },
                         getImageCode,
                       }}
@@ -269,12 +277,18 @@ class Login extends Component {
                 </Form.Item>
                 {needImgCaptcha && (
                   <Form.Item>
-                    {getFieldDecorator('vcode')(
+                    {getFieldDecorator('vcode', {
+                      validateTrigger: 'onBlur',
+                      rules: [
+                        { required: true, message: formatMessage({ id: 'code.validate.isEmpty' }) },
+                      ],
+                    })(
                       <ImgCaptcha
                         {...{
                           imgUrl: imgCaptcha.url,
                           inputProps: {
                             size: 'large',
+                            placeholder: formatMessage({ id: 'vcode.placeholder' }),
                           },
                           initial: false,
                           getImageCode: () => this.getCode(),
@@ -299,6 +313,7 @@ class Login extends Component {
                   })(
                     <Captcha
                       {...{
+                        countDown,
                         inputProps: {
                           size: 'large',
                           placeholder: formatMessage({ id: 'mobile.code.placeholder' }),

@@ -4,17 +4,36 @@ import EditableFormItem from '@/components/EditableFormItem';
 import { getLocationParam } from '@/utils/utils';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
+import { MAX_LENGTH, FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
 import * as styles from './ProductManagement.less';
+
+const productTypes = [{ key: 'normal', value: 0 }, { key: 'weight', value: 1 }];
+
+const productUnits = [
+  { key: 'box', value: 0 },
+  { key: 'pack', value: 1 },
+  { key: 'bottle', value: 2 },
+  { key: 'can', value: 3 },
+  { key: 'piece', value: 4 },
+  { key: 'case', value: 5 },
+  { key: 'axe', value: 6 },
+  { key: 'kg', value: 7 },
+  { key: 'g', value: 8 },
+  { key: 'each', value: 9 },
+  { key: 'single', value: 10 },
+  { key: 'bag', value: 11 },
+  { key: 'list', value: 12 },
+  { key: 'role', value: 13 },
+  { key: 'pair', value: 14 },
+  { key: 'l', value: 15 },
+  { key: 'ml', value: 16 },
+  { key: 'handle', value: 17 },
+  { key: 'group', value: 18 },
+  { key: 'branch', value: 19 },
+];
 
 @Form.create()
 class ProductCU extends Component {
-  constructor(props) {
-    super(props);
-    this.customLabelId = 0;
-    this.customPriceId = 0;
-  }
-
   componentDidMount() {
     const id = getLocationParam('id');
     if (id) {
@@ -43,82 +62,11 @@ class ProductCU extends Component {
     router.push(path);
   };
 
-  editCustomLabel = labelProps => {
-    console.log(labelProps);
-  };
-
-  customizeLabel = labelProps => {
-    const { name } = labelProps;
-    return <span onClick={() => this.editCustomLabel(labelProps)}>{name}</span>;
-  };
-
-  addCustomFormItem(type) {
-    const {
-      form: { getFieldValue, setFieldsValue },
-    } = this.props;
-    let nextId;
-
-    const keys = getFieldValue(`custom_${type}`);
-    if (type === 'label') {
-      this.customLabelId += 1;
-      nextId = this.customLabelId;
-    } else if (type === 'price') {
-      this.customPriceId += 1;
-      nextId = this.customPriceId;
-    }
-
-    const nextKeys = keys.concat(nextId);
-    setFieldsValue({
-      [`custom_${type}`]: nextKeys,
-    });
-  }
-
-  renderCustomizeFormItem = (type, customItems = []) => {
-    const {
-      form: { getFieldDecorator, getFieldValue },
-    } = this.props;
-    getFieldDecorator(`custom_${type}`, { initialValue: [] });
-    const keys = getFieldValue(`custom_${type}`);
-    let [labelMessageId, formKey, inputItem, rules] = ['', '', null, []];
-
-    if (type === 'label') {
-      labelMessageId = 'basicData.product.customize';
-      formKey = 'customizeLabels';
-      inputItem = <Input />;
-      rules = [];
-    } else if (type === 'price') {
-      labelMessageId = 'basicData.product.price.customize';
-      formKey = 'customizeValues';
-      inputItem = <Input maxLength={10} />;
-      rules = [];
-    }
-
-    return keys.map((key, index) => {
-      const labelName = `${formatMessage({ id: labelMessageId })}${index + 1}`;
-      const labelProps = {
-        type,
-        index,
-        name: labelName,
-      };
-      return (
-        <Col span={12} key={key}>
-          <Form.Item label={this.customizeLabel(labelProps)}>
-            {getFieldDecorator(`${formKey}.${index}`, {
-              initialValue: customItems[index] || '',
-              rules,
-            })(inputItem)}
-          </Form.Item>
-        </Col>
-      );
-    });
-  };
-
   render() {
     const {
       form: { getFieldDecorator },
       form,
     } = this.props;
-    const [productTypes, productUnits] = [[], []];
 
     return (
       <div className={styles['content-container']}>
@@ -133,13 +81,17 @@ class ProductCU extends Component {
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.seq_num' })}>
                   {getFieldDecorator('seq_num', {
-                    rules: [{ required: true, message: '' }],
-                  })(<Input />)}
+                    rules: [
+                      { required: true, message: formatMessage({ id: 'product.seq_num.isEmpty' }) },
+                    ],
+                  })(<Input maxLength={MAX_LENGTH['20']} />)}
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.bar_code' })}>
-                  {getFieldDecorator('bar_code')(<Input />)}
+                  {getFieldDecorator('bar_code', {
+                    rules: [{ pattern: /[a-zA-Z]{0,20}/, message: '' }],
+                  })(<Input maxLength={MAX_LENGTH['20']} />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -148,13 +100,15 @@ class ProductCU extends Component {
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.name' })}>
                   {getFieldDecorator('name', {
-                    rules: [{ required: true, message: '' }],
-                  })(<Input />)}
+                    rules: [
+                      { required: true, message: formatMessage({ id: 'product.name.isEmpty' }) },
+                    ],
+                  })(<Input maxLength={MAX_LENGTH['100']} />)}
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.nickname' })}>
-                  {getFieldDecorator('nickname')(<Input />)}
+                  {getFieldDecorator('nickname')(<Input maxLength={MAX_LENGTH['100']} />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -162,11 +116,13 @@ class ProductCU extends Component {
             <Row>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.type' })}>
-                  {getFieldDecorator('type')(
+                  {getFieldDecorator('type', {
+                    initialValue: 0,
+                  })(
                     <Select>
                       {productTypes.map(type => (
                         <Select.Option key={type.key} value={type.value}>
-                          {type}
+                          {formatMessage({ id: `basicData.product.type.${type.key}` })}
                         </Select.Option>
                       ))}
                     </Select>
@@ -179,7 +135,7 @@ class ProductCU extends Component {
                     <Select>
                       {productUnits.map(unit => (
                         <Select.Option key={unit.key} value={unit.value}>
-                          {unit}
+                          {formatMessage({ id: `basicData.product.unit.${unit.key}` })}
                         </Select.Option>
                       ))}
                     </Select>
@@ -191,12 +147,12 @@ class ProductCU extends Component {
             <Row>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.spec' })}>
-                  {getFieldDecorator('spec')(<Input />)}
+                  {getFieldDecorator('spec')(<Input maxLength={MAX_LENGTH['20']} />)}
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.production_area' })}>
-                  {getFieldDecorator('production_area')(<Input />)}
+                  {getFieldDecorator('production_area')(<Input maxLength={MAX_LENGTH['20']} />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -204,12 +160,12 @@ class ProductCU extends Component {
             <Row>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.level' })}>
-                  {getFieldDecorator('level')(<Input />)}
+                  {getFieldDecorator('level')(<Input maxLength={MAX_LENGTH['20']} />)}
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.brand' })}>
-                  {getFieldDecorator('brand')(<Input />)}
+                  {getFieldDecorator('brand')(<Input maxLength={MAX_LENGTH['20']} />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -217,12 +173,17 @@ class ProductCU extends Component {
             <Row>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.production_date' })}>
-                  {getFieldDecorator('production_date')(<Input />)}
+                  {getFieldDecorator('production_date')(
+                    <Input
+                      suffix={formatMessage({ id: 'basicData.product.production_date.day' })}
+                      maxLength={MAX_LENGTH['4']}
+                    />
+                  )}
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.qrCode.link' })}>
-                  {getFieldDecorator('qrCode.link')(<Input />)}
+                  {getFieldDecorator('qrCode.link')(<Input maxLength={MAX_LENGTH['200']} />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -230,6 +191,17 @@ class ProductCU extends Component {
             <EditableFormItem
               {...{
                 form,
+                max: 3,
+                wrapperItem: <Input maxLength={MAX_LENGTH['100']} />,
+                itemOptions: {
+                  validateTrigger: 'onBlur',
+                  rules: [
+                    {
+                      required: true,
+                      message: formatMessage({ id: 'basicData.product.customize.isEmpty' }),
+                    },
+                  ],
+                },
                 labelOption: {
                   labelPrefix: formatMessage({ id: 'basicData.product.customize' }),
                   formKey: 'customLabels',
@@ -265,13 +237,15 @@ class ProductCU extends Component {
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.price' })}>
                   {getFieldDecorator('price', {
-                    rules: [{ required: true, message: '' }],
-                  })(<Input />)}
+                    rules: [
+                      { required: true, message: formatMessage({ id: 'product.price.isEmpty' }) },
+                    ],
+                  })(<Input maxLength={MAX_LENGTH['9']} />)}
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.promote_price' })}>
-                  {getFieldDecorator('promote_price')(<Input />)}
+                  {getFieldDecorator('promote_price')(<Input maxLength={MAX_LENGTH['9']} />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -279,7 +253,7 @@ class ProductCU extends Component {
             <Row>
               <Col span={12}>
                 <Form.Item label={formatMessage({ id: 'basicData.product.price.vip' })}>
-                  {getFieldDecorator('vip')(<Input />)}
+                  {getFieldDecorator('vip')(<Input maxLength={MAX_LENGTH['9']} />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -287,6 +261,17 @@ class ProductCU extends Component {
             <EditableFormItem
               {...{
                 form,
+                max: 1,
+                wrapperItem: <Input maxLength={MAX_LENGTH['9']} />,
+                itemOptions: {
+                  validateTrigger: 'onBlur',
+                  rules: [
+                    {
+                      required: true,
+                      message: formatMessage({ id: 'basicData.product.price.customize.isEmpty' }),
+                    },
+                  ],
+                },
                 labelOption: {
                   labelPrefix: formatMessage({ id: 'basicData.product.price.customize' }),
                   formKey: 'customPrices',
