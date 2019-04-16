@@ -1,13 +1,15 @@
 import { formatMessage } from 'umi/locale';
 import * as RegExp from '@/constants/regexp';
 
-const passwordValidate = (rule, value, callback) => {
+const passwordValidate = (rule, value, callback, extra) => {
+  const { messageId = {} } = extra;
+  const { isEmpty, inLength, isFormatted } = messageId;
   if (!value) {
-    callback(formatMessage({ id: 'password.validate.isEmpty' }));
+    callback(formatMessage({ id: isEmpty || 'password.validate.isEmpty' }));
   } else if (value.length < 8) {
-    callback(formatMessage({ id: 'password.validate.inLength' }));
+    callback(formatMessage({ id: inLength || 'password.validate.inLength' }));
   } else if (!RegExp.password.test(value)) {
-    callback(formatMessage({ id: 'password.validate.isFormatted' }));
+    callback(formatMessage({ id: isFormatted || 'password.validate.isFormatted' }));
   } else {
     callback();
   }

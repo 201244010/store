@@ -53,13 +53,8 @@ class ChangePassword extends Component {
               validateTrigger: 'onBlur',
               rules: [
                 {
-                  validator: (rule, value, callback) =>
-                    customValidate({
-                      field: 'password',
-                      rule,
-                      value,
-                      callback,
-                    }),
+                  required: true,
+                  message: formatMessage({ id: 'current_password.validate.isEmpty' }),
                 },
               ],
             })(<Input type="password" />)}
@@ -78,6 +73,11 @@ class ChangePassword extends Component {
                       rule,
                       value,
                       callback,
+                      extra: {
+                        messageId: {
+                          isEmpty: 'new_password.validate.isEmpty',
+                        },
+                      },
                     }),
                 },
               ],
