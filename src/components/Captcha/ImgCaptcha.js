@@ -12,7 +12,7 @@ class ImgCaptcha extends Component {
   componentDidMount() {
     const { initial = true } = this.props;
     if (initial) {
-      this.getImpageCode();
+      this.getImageCode();
     }
   }
 
@@ -33,7 +33,7 @@ class ImgCaptcha extends Component {
       onBlur(e.target.value);
     }
     if (autoCheck) {
-      const { checkMethod = this.getImpageCode, refreshCheck } = this.props;
+      const { checkMethod = this.getImageCode, refreshCheck } = this.props;
       const response = checkMethod();
       if (response) {
         const needRefresh = refreshCheck(response);
