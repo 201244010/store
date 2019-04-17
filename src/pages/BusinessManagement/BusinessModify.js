@@ -5,6 +5,7 @@ import { Form, Button, Input } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 // import router from 'umi/router';
+import { customValidate } from '@/utils/customValidate';
 
 import { connect } from 'dva';
 import styles from './Business.less';
@@ -23,20 +24,26 @@ class BusinessModify extends Component {
     super(props);
     const {
       business: {
-        companyList: {
-          contact_email: contactEmail,
-          contact_tel: contactTel,
-          company_name: companyName,
-          contact_person: contactPerson,
-        },
+        companyList: { company_name: companyName, contact_person: contactPerson },
       },
     } = this.props;
     this.state = {
       contactPerson,
       companyName,
-      contactTel,
-      contactEmail,
     };
+  }
+
+  componentDidMount() {
+    const {
+      form: { setFieldsValue },
+      business: {
+        companyList: { contact_email: contactEmail, contact_tel: contactTel },
+      },
+    } = this.props;
+    setFieldsValue({
+      email: contactEmail,
+      phone: contactTel,
+    });
   }
 
   onChange = (e, key) => {
@@ -64,7 +71,7 @@ class BusinessModify extends Component {
   cancel = () => {};
 
   render() {
-    const { companyName, contactTel, contactPerson, contactEmail } = this.state;
+    const { companyName, contactPerson } = this.state;
     const {
       form: { getFieldDecorator },
       business: {
@@ -86,26 +93,31 @@ class BusinessModify extends Component {
           </Form.Item>
           <Form.Item label={formatMessage({ id: 'businessManagement.business.contactPhone' })}>
             {getFieldDecorator('phone', {
-              initialValue: contactTel,
+              validateTrigger: 'onBlur',
               rules: [
                 {
-                  type: 'phone',
-                  message: formatMessage({ id: 'mail.validate.isFormatted' }),
+                  validator: (rule, value, callback) =>
+                    customValidate({
+                      field: 'telphone',
+                      rule,
+                      value,
+                      callback,
+                    }),
                 },
               ],
-            })(<Input value={contactTel} onChange={e => this.onChange(e, 'contactTel')} />)}
+            })(<Input />)}
             {/* <Input value={contactTel} onChange={e => this.onChange(e, 'contactTel')} /> */}
           </Form.Item>
           <Form.Item label={formatMessage({ id: 'businessManagement.business.contactEmail' })}>
             {getFieldDecorator('email', {
-              initialValue: contactEmail,
+              validateTrigger: 'onBlur',
               rules: [
                 {
                   type: 'email',
                   message: formatMessage({ id: 'mail.validate.isFormatted' }),
                 },
               ],
-            })(<Input onChange={e => this.onChange(e, 'contactEmail')} />)}
+            })(<Input />)}
           </Form.Item>
         </Form>
         <div className={styles['button-style']}>

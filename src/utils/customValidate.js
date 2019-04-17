@@ -36,6 +36,16 @@ const mailValidate = (rule, value, callback) => {
   }
 };
 
+const phoneValidate = (rule, value, callback) => {
+  if (RegExp.cellphone.test(value) || RegExp.telephone.test(value)) {
+    callback();
+  } else if (!RegExp.cellphone.test(value) || !RegExp.telephone.test(value)) {
+    callback(formatMessage({ id: 'cellphone.validate.isFormatted' }));
+  } else {
+    callback();
+  }
+};
+
 const productSqeNum = (rule, value, callback) => {
   if (!value) {
     callback();
@@ -86,6 +96,7 @@ const validatorList = {
   price: productPrice,
   promote_price: productPrice,
   vip: productPrice,
+  telphone: phoneValidate,
 };
 
 export function customValidate(params) {

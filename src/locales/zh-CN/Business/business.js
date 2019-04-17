@@ -1,6 +1,5 @@
 // 商户相关文案
 export default {
-  // 基站用
   'businessManagement.business.view': '查看商户',
   'businessManagement.business.modify': '修改商户',
   'businessManagement.business.number': '商户编号',
