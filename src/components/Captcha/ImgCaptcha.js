@@ -56,22 +56,40 @@ class ImgCaptcha extends Component {
 
   render() {
     const { value } = this.state;
-    const { imgUrl, inputProps = {}, imgProps = {} } = this.props;
+    const { imgUrl, inputProps = {}, imgProps = {}, type = 'horizontal' } = this.props;
 
     return (
-      <Row gutter={16}>
-        <Col span={16}>
-          <Input
-            value={value}
-            onChange={this.handleInputChange}
-            onBlur={this.handleInputBlur}
-            {...inputProps}
-          />
-        </Col>
-        <Col span={8}>
-          <img src={imgUrl} alt="" onClick={this.refreshCode} {...imgProps} />
-        </Col>
-      </Row>
+      <>
+        {type === 'horizontal' ? (
+          <Row gutter={16}>
+            <Col span={16}>
+              <Input
+                value={value}
+                onChange={this.handleInputChange}
+                onBlur={this.handleInputBlur}
+                {...inputProps}
+              />
+            </Col>
+            <Col span={8}>
+              <img src={imgUrl} alt="" onClick={this.refreshCode} {...imgProps} />
+            </Col>
+          </Row>
+        ) : (
+          <>
+            <div>
+              <img src={imgUrl} alt="" onClick={this.refreshCode} {...imgProps} />
+            </div>
+            <div>
+              <Input
+                value={value}
+                onChange={this.handleInputChange}
+                onBlur={this.handleInputBlur}
+                {...inputProps}
+              />
+            </div>
+          </>
+        )}
+      </>
     );
   }
 }

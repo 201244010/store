@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Row, Col, Alert } from 'antd';
+import { Form, Input, Button, Row, Col, Alert, Modal } from 'antd';
 import { Result } from 'ant-design-pro';
 import ResultInfo from '@/components/ResultInfo';
 import Captcha from '@/components/Captcha';
@@ -62,10 +62,12 @@ class Register extends Component {
     this.state = {
       notice: '',
       registerSuccess: false,
+      trigger: false,
     };
   }
 
-  getCode = async () => {
+  getCode = async (params = {}) => {
+    const { imageStyle = {} } = params;
     const {
       form: { getFieldValue },
       sendCode,
@@ -81,18 +83,26 @@ class Register extends Component {
         width: 112,
         height: 40,
         fontSize: 18,
+        ...imageStyle,
       },
     });
 
-    if (
-      response &&
-      response.code !== ERROR_OK &&
-      Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)
-    ) {
+    if (response && !response.data) {
+      if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
+        this.setState({
+          trigger: false,
+          notice: response.code,
+        });
+      }
+    }
+
+    if (response && response.code === ERROR_OK) {
       this.setState({
-        notice: response.code,
+        trigger: true,
       });
     }
+
+    return response;
   };
 
   handleResponse = response => {
@@ -131,7 +141,7 @@ class Register extends Component {
       form: { getFieldDecorator, getFieldValue },
       sso: { needImgCaptcha, imgCaptcha },
     } = this.props;
-    const { notice, registerSuccess } = this.state;
+    const { notice, registerSuccess, trigger } = this.state;
     const currentLanguage = getLocale();
     return (
       <div className={styles['register-wrapper']}>
@@ -186,11 +196,13 @@ class Register extends Component {
                       />
                     )}
                   </Form.Item>
-                  {needImgCaptcha && (
+
+                  <Modal visible={needImgCaptcha} footer={null} maskClosable={false}>
                     <Form.Item>
                       {getFieldDecorator('vcode')(
                         <ImgCaptcha
                           {...{
+                            type: 'vertical',
                             imgUrl: imgCaptcha.url,
                             inputProps: {
                               size: 'large',
@@ -201,7 +213,8 @@ class Register extends Component {
                         />
                       )}
                     </Form.Item>
-                  )}
+                  </Modal>
+
                   <Form.Item>
                     {getFieldDecorator('code', {
                       validateTrigger: 'onBlur',
@@ -214,6 +227,7 @@ class Register extends Component {
                     })(
                       <Captcha
                         {...{
+                          trigger,
                           inputProps: {
                             size: 'large',
                             placeholder: formatMessage({ id: 'mobile.code.placeholder' }),
