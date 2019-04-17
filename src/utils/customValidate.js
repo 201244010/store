@@ -1,7 +1,7 @@
 import { formatMessage } from 'umi/locale';
 import * as RegExp from '@/constants/regexp';
 
-const passwordValidate = (rule, value, callback, extra) => {
+const passwordValidate = (rule, value, callback, extra = {}) => {
   const { messageId = {} } = extra;
   const { isEmpty, inLength, isFormatted } = messageId;
   if (!value) {
@@ -15,7 +15,7 @@ const passwordValidate = (rule, value, callback, extra) => {
   }
 };
 
-const confirmValidate = (rule, value, callback, extra) => {
+const confirmValidate = (rule, value, callback, extra = {}) => {
   const { getFieldValue, compareField = 'password' } = extra;
   if (!value) {
     callback(formatMessage({ id: 'confirm.validate.isEmpty' }));
