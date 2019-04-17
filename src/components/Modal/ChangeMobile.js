@@ -14,6 +14,7 @@ class ChangeMobile extends Component {
       onOk,
     } = this.props;
     validateFields((err, values) => {
+      console.log(err);
       if (!err) {
         const options = {
           ...values,

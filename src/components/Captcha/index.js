@@ -15,7 +15,7 @@ class Captcha extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { trigger } = nextProps;
-    const { oldTrigger } = this.props;
+    const { trigger: oldTrigger } = this.props;
     if (trigger && oldTrigger !== trigger) {
       this.countDown();
     }

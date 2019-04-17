@@ -1,6 +1,8 @@
 export default {
   'userCenter.basicInfo.title': '基本设置',
 
+  'userCenter.basicInfo.nameChange.success': '昵称修改成功',
+
   'userCenter.security.title': '安全设置',
   'userCenter.security.password': '登录密码',
   'userCenter.security.password.description': '安全性高的密码可以使帐号更安全，建议您定期更换密码',
@@ -15,8 +17,10 @@ export default {
 
   'change.password.title': '修改密码',
   'change.password.current': '当前密码',
+  'change.password.current.fail': '当前密码错误',
   'change.password.old': '新密码',
   'change.password.confirm': '确认新密码',
+  'change.password.success': '密码修改成功',
 
   'bind.mobile.title': '绑定手机',
   'change.mobile.title': '修改手机',

@@ -67,19 +67,17 @@ class Login extends Component {
       },
     });
 
-    if (response && !response.data) {
+    if (response && response.code === ERROR_OK) {
+      this.setState({
+        trigger: true,
+      });
+    } else if (response && !response.data) {
       if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
         this.setState({
           trigger: false,
           notice: response.code,
         });
       }
-    }
-
-    if (response && response.code === ERROR_OK) {
-      this.setState({
-        trigger: true,
-      });
     }
 
     return response;

@@ -31,11 +31,18 @@ class Security extends Component {
   handleModalSubmit = async values => {
     const { modalType } = this.state;
     const { changePassword, updatePhone } = this.props;
+
     if (modalType === 'password') {
-      await changePassword({ options: values });
-    } else if (modalType === 'mobile') {
-      await updatePhone({ options: values });
+      const response = await changePassword({ options: values });
+      return response;
     }
+
+    if (modalType === 'mobile') {
+      const response = await updatePhone({ options: values });
+      return response;
+    }
+
+    return null;
   };
 
   closeChangeModal = () => {
