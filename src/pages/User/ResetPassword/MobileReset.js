@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Alert } from 'antd';
+import { Form, Input, Button, Alert, Modal } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import Captcha from '@/components/Captcha';
@@ -8,7 +8,7 @@ import styles from '../Register/Register.less';
 import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
-import { ERROR_OK, SEND_TOO_FAST } from '@/constants/errorCode';
+import { ERROR_OK } from '@/constants/errorCode';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
@@ -33,10 +33,12 @@ class MobileReset extends Component {
     this.state = {
       resetSuccess: false,
       notice: '',
+      trigger: false,
     };
   }
 
-  getCode = async () => {
+  getCode = async (params = {}) => {
+    const { imageStyle = {} } = params;
     const {
       form: { getFieldValue },
       sso: { needImgCaptcha, imgCaptcha },
@@ -52,12 +54,22 @@ class MobileReset extends Component {
         width: 112,
         height: 40,
         fontSize: 18,
+        ...imageStyle,
       },
     });
 
-    if (response && response.code === SEND_TOO_FAST && !response.data) {
+    if (response && !response.data) {
+      if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
+        this.setState({
+          trigger: false,
+          notice: response.code,
+        });
+      }
+    }
+
+    if (response && response.code === ERROR_OK) {
       this.setState({
-        notice: '003',
+        trigger: true,
       });
     }
     return response;
@@ -90,7 +102,7 @@ class MobileReset extends Component {
       form: { getFieldDecorator, getFieldValue },
       sso: { needImgCaptcha, imgCaptcha },
     } = this.props;
-    const { resetSuccess, notice } = this.state;
+    const { resetSuccess, notice, trigger } = this.state;
 
     return (
       <div className={styles['register-wrapper']}>
@@ -136,11 +148,12 @@ class MobileReset extends Component {
                   />
                 )}
               </Form.Item>
-              {needImgCaptcha && (
+              <Modal visible={needImgCaptcha} footer={null} maskClosable={false}>
                 <Form.Item>
                   {getFieldDecorator('vcode')(
                     <ImgCaptcha
                       {...{
+                        type: 'vertical',
                         imgUrl: imgCaptcha.url,
                         inputProps: {
                           size: 'large',
@@ -153,7 +166,7 @@ class MobileReset extends Component {
                     />
                   )}
                 </Form.Item>
-              )}
+              </Modal>
               <Form.Item>
                 {getFieldDecorator('code', {
                   validateTrigger: 'onBlur',
@@ -166,6 +179,7 @@ class MobileReset extends Component {
                 })(
                   <Captcha
                     {...{
+                      trigger,
                       inputProps: {
                         size: 'large',
                         placeholder: formatMessage({ id: 'mobile.code.placeholder' }),

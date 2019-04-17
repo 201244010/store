@@ -35,6 +35,7 @@ class Login extends Component {
     this.state = {
       notice: '',
       currentTab: 'tabAccount',
+      trigger: false,
     };
   }
 
@@ -45,11 +46,12 @@ class Login extends Component {
     });
   };
 
-  getCode = async () => {
+  getCode = async (params = {}) => {
+    const { imageStyle = {} } = params;
     const {
       form: { getFieldValue },
       sendCode,
-      sso: { needImgCaptcha, imgCaptcha },
+      sso: { imgCaptcha, needImgCaptcha },
     } = this.props;
 
     const response = await sendCode({
@@ -61,16 +63,25 @@ class Login extends Component {
         width: 112,
         height: 40,
         fontSize: 18,
+        ...imageStyle,
       },
     });
 
     if (response && !response.data) {
       if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
         this.setState({
+          trigger: false,
           notice: response.code,
         });
       }
     }
+
+    if (response && response.code === ERROR_OK) {
+      this.setState({
+        trigger: true,
+      });
+    }
+
     return response;
   };
 
@@ -137,7 +148,7 @@ class Login extends Component {
 
     validateFields(VALIDATE_FIELDS[currentTab], async (err, values) => {
       if (!err) {
-        if (errorTimes > 2) {
+        if (errorTimes > 2 && currentTab === 'tabAccount') {
           const result = await checkImgCode({
             options: {
               code: getFieldValue('vcode') || '',
@@ -156,7 +167,7 @@ class Login extends Component {
   };
 
   render() {
-    const { notice } = this.state;
+    const { notice, trigger } = this.state;
     const {
       form: { getFieldDecorator },
       getImageCode,
@@ -221,12 +232,18 @@ class Login extends Component {
               </Form.Item>
               {errorTimes > 2 && (
                 <Form.Item>
-                  {getFieldDecorator('vcode')(
+                  {getFieldDecorator('vcode', {
+                    validateTrigger: 'onBlur',
+                    rules: [
+                      { required: true, message: formatMessage({ id: 'code.validate.isEmpty' }) },
+                    ],
+                  })(
                     <ImgCaptcha
                       {...{
                         imgUrl: imgCode.url,
                         inputProps: {
                           size: 'large',
+                          placeholder: formatMessage({ id: 'vcode.placeholder' }),
                         },
                         getImageCode,
                       }}
@@ -267,24 +284,38 @@ class Login extends Component {
                     />
                   )}
                 </Form.Item>
-                {needImgCaptcha && (
-                  <Form.Item>
-                    {getFieldDecorator('vcode')(
-                      <ImgCaptcha
-                        {...{
-                          imgUrl: imgCaptcha.url,
-                          inputProps: {
-                            size: 'large',
+
+                <Modal visible={needImgCaptcha} footer={null} maskClosable={false}>
+                  <div>
+                    <Form.Item>
+                      {getFieldDecorator('vcode', {
+                        validateTrigger: 'onBlur',
+                        rules: [
+                          {
+                            required: true,
+                            message: formatMessage({ id: 'code.validate.isEmpty' }),
                           },
-                          initial: false,
-                          getImageCode: () => this.getCode(),
-                          autoCheck: true,
-                          refreshCheck: result => !(result && result.code === ERROR_OK),
-                        }}
-                      />
-                    )}
-                  </Form.Item>
-                )}
+                        ],
+                      })(
+                        <ImgCaptcha
+                          {...{
+                            type: 'vertical',
+                            imgUrl: imgCaptcha.url,
+                            inputProps: {
+                              size: 'large',
+                              placeholder: formatMessage({ id: 'vcode.placeholder' }),
+                            },
+                            initial: false,
+                            getImageCode: () => this.getCode(),
+                            autoCheck: true,
+                            refreshCheck: result => !(result && result.code === ERROR_OK),
+                          }}
+                        />
+                      )}
+                    </Form.Item>
+                  </div>
+                </Modal>
+
                 <Form.Item>
                   {getFieldDecorator('code', {
                     validateTrigger: 'onBlur',
@@ -299,6 +330,7 @@ class Login extends Component {
                   })(
                     <Captcha
                       {...{
+                        trigger,
                         inputProps: {
                           size: 'large',
                           placeholder: formatMessage({ id: 'mobile.code.placeholder' }),

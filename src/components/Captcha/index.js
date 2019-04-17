@@ -13,12 +13,25 @@ class Captcha extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { trigger } = nextProps;
+    const { oldTrigger } = this.props;
+    if (trigger && oldTrigger !== trigger) {
+      this.countDown();
+    }
+  }
+
   componentWillUnmount() {
     clearInterval(this.countDownTimer);
   }
 
   countDown = () => {
-    const { interval = 1000 } = this.props;
+    const { interval = 1000, countInit = 60 } = this.props;
+    this.setState({
+      inCounting: true,
+      count: countInit,
+    });
+
     clearInterval(this.countDownTimer);
     this.countDownTimer = setInterval(() => {
       const { count } = this.state;
@@ -53,16 +66,15 @@ class Captcha extends Component {
   };
 
   handleClick = () => {
-    const { onClick, countInit = 60 } = this.props;
+    const { inCounting } = this.state;
+    const { onClick } = this.props;
     if (onClick) {
       onClick();
     }
 
-    this.setState({
-      inCounting: true,
-      count: countInit,
-    });
-    this.countDown();
+    if (!inCounting) {
+      this.countDown();
+    }
   };
 
   render() {

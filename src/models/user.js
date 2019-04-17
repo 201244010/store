@@ -58,10 +58,14 @@ export default {
         const result = response.data || {};
         Storage.set({ __userInfo__: result });
         yield put({
-          type: 'setUserInfo',
+          type: 'storeUserInfo',
           payload: result,
         });
       }
+    },
+
+    getUserInfoFromStorage() {
+      return Storage.get('__userInfo__') || null;
     },
 
     *resetPassword({ payload }, { call }) {
@@ -83,7 +87,7 @@ export default {
 
         Storage.set({ __userInfo__: updatedUserInfo });
         yield put({
-          type: 'setUserInfo',
+          type: 'storeUserInfo',
           payload: updatedUserInfo,
         });
       }
@@ -111,7 +115,7 @@ export default {
 
         Storage.set({ __userInfo__: updatedUserInfo });
         yield put({
-          type: 'setUserInfo',
+          type: 'storeUserInfo',
           payload: updatedUserInfo,
         });
       }
@@ -125,7 +129,7 @@ export default {
         errorTimes: state.errorTimes + action.payload,
       };
     },
-    setUserInfo(state, action) {
+    storeUserInfo(state, action) {
       return {
         ...state,
         currentUser: action.payload || {},

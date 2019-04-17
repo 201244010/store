@@ -17,7 +17,7 @@ export default {
     states: [],
     data: [],
     productInfo: {},
-    erpPlatformList: [],
+    erpPlatformList: [{ id: 0, name: '康明泰克' }, { id: 1, name: '客无忧' }],
     bindEsl: [],
     bindEslInfo: {},
     filePath: null,

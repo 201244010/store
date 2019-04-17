@@ -21,6 +21,8 @@ export default {
   'mobile.validate.isEmpty': '请输入手机号',
   'mobile.validate.isFormatted': '手机号格式错误',
   'password.validate.isEmpty': '请输入密码',
+  'current_password.validate.isEmpty': '请输入当前密码',
+  'new_password.validate.isEmpty': '请输入新密码',
   'password.validate.inLength': '密码长度应为8-30位',
   'password.validate.isFormatted': '密码必须为<字母、数字、特殊符号>中两种及以上的组合',
   'confirm.validate.isEmpty': '请确认密码',

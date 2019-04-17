@@ -8,6 +8,7 @@ export const SEND_TOO_FAST = 3;
 export const ALERT_NOTICE_MAP = {
   '2': 'alert.code.error',
   '3': 'alert.code.send.fast',
+  '309': 'alert.code.send.fast',
   '1001': 'alert.mail.existed',
   '3603': 'alert.mobile.not.registered',
   '201': 'alert.account.error',
