@@ -2,6 +2,7 @@ export default {
   // 按钮文案
   'btn.register': '注册',
   'btn.login': '登录',
+  'btn.back': '返回',
   'btn.get.code': '获取验证码',
   'btn.create.store': '创建商户',
   'btn.mail.check': '查看邮箱',

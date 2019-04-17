@@ -5,6 +5,7 @@ export default {
   'btn.alter': '修改',
   'btn.bind': '绑定',
   'btn.login': '登录',
+  'btn.back': '返回',
   'btn.get.code': '获取验证码',
   'btn.create.store': '创建商户',
   'btn.register': '注册',

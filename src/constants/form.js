@@ -64,3 +64,8 @@ export const FORM_ITEM_LONGER = {
     md: { span: 18 },
   },
 };
+
+export const FORM_ITEM_LAYOUT_BUSINESS = {
+  labelCol: { span: 2 },
+  wrapperCol: { span: 6 },
+};

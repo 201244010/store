@@ -16,6 +16,8 @@ import baseStation from './zh-CN/ESL/device';
 // BasicData
 import productManagement from './zh-CN/BasicData/product';
 
+import businessManagement from './zh-CN/Business/business';
+
 export default {
   'navBar.lang': '语言',
   'layout.user.link.help': '帮助',
@@ -36,4 +38,5 @@ export default {
   ...userCenter,
   ...baseStation,
   ...productManagement,
+  ...businessManagement,
 };
