@@ -3,7 +3,6 @@ import { Form, Button, Row, Col } from 'antd';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import ProductCUBasic from './ProductCU-Basic';
-import ProductCUWeight from './ProductCU-Weight';
 import ProductCUPrice from './ProductCU-Price';
 import { getLocationParam } from '@/utils/utils';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
@@ -51,8 +50,6 @@ class ProductCU extends Component {
           }}
         >
           <ProductCUBasic {...{ form }} />
-
-          <ProductCUWeight {...{ form }} />
 
           <ProductCUPrice {...{ form }} />
 
