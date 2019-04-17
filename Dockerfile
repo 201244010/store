@@ -6,7 +6,7 @@ COPY ./docker/localtime /etc/
 
 COPY . /app/src
 RUN cd /app/src && npm install
-RUN cd /app/src && npm run build:dev && ls && cp -r /app/src/dist/ /app/80
+RUN cd /app/src && npm run build:test && ls && cp -r /app/src/dist/ /app/80
 RUN rm -r /app/src
 
 EXPOSE 7777
