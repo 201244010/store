@@ -25,9 +25,13 @@ export default {
   'bind.mobile.title': '绑定手机',
   'change.mobile.title': '修改手机',
   'change.loginPassword': '登录密码',
+  'change.loginPassword.isEmpty': '请输入登录密码',
   'change.mobile.number': '手机号',
   'change.mobile.number.new': '新手机号',
   'change.mobile.code': '验证码',
+  'send.mobile.code.success': '短信验证码发送成功',
+  'bind.mobile.success': '手机号绑定成功',
+  'change.mobile.success': '手机号修改成功',
 
   'bind.mail.title': '绑定邮箱',
   'change.mail.title': '修改邮箱',

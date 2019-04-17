@@ -111,6 +111,7 @@ export default {
       const { options } = payload;
       const response = yield call(Actions.updatePhone, options);
       if (response && response.code === ERROR_OK) {
+        message.success(formatMessage({ id: '' }));
         const { phone } = options;
         const currentUser = yield select(state => state.user.currentUser);
         const updatedUserInfo = {

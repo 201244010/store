@@ -1,26 +1,33 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Input, Modal } from 'antd';
-import { customValidate } from '@/utils/customValidate';
+import { Form, Input, Modal, message } from 'antd';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import Captcha from '@/components/Captcha';
 import { encryption } from '@/utils/utils';
+import { ERROR_OK } from '@/constants/errorCode';
 
 @Form.create()
 class ChangeMobile extends Component {
   onOk = () => {
     const {
       form: { validateFields },
+      mobileBinded,
       onOk,
     } = this.props;
-    validateFields((err, values) => {
-      console.log(err);
+    validateFields(async (err, values) => {
       if (!err) {
         const options = {
           ...values,
           password: encryption(values.password),
         };
-        onOk(options);
+        const response = await onOk(options);
+        if (response && response.code === ERROR_OK) {
+          if (mobileBinded) {
+            message.success(formatMessage({ id: 'change.mobile.success' }));
+          } else {
+            message.success(formatMessage({ id: 'bind.mobile.success' }));
+          }
+        }
       }
     });
   };
@@ -36,12 +43,16 @@ class ChangeMobile extends Component {
       sendCode,
     } = this.props;
 
-    await sendCode({
+    const response = await sendCode({
       options: {
         username: getFieldValue('phone'),
         type: '2',
       },
     });
+
+    if (response && response.code === ERROR_OK) {
+      message.success(formatMessage({ id: 'send.mobile.code.success' }));
+    }
   };
 
   render() {
@@ -72,15 +83,7 @@ class ChangeMobile extends Component {
             {getFieldDecorator('password', {
               validateTrigger: 'onBlur',
               rules: [
-                {
-                  validator: (rule, value, callback) =>
-                    customValidate({
-                      field: 'password',
-                      rule,
-                      value,
-                      callback,
-                    }),
-                },
+                { required: true, message: formatMessage({ id: 'change.loginPassword.isEmpty' }) },
               ],
             })(<Input type="password" />)}
           </Form.Item>
