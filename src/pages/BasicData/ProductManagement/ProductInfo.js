@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Card } from 'antd';
-import { formatMessage } from 'umi/locale';
+import ProductInfoBasic from './ProductInfo-Basic';
+import ProductInfoPrice from './ProductInfo-Price';
 import { getLocationParams } from '@/utils/utils';
 import * as styles from './ProductManagement.less';
 
@@ -47,23 +47,8 @@ class ProductInfo extends Component {
 
     return (
       <div className={styles['content-container']}>
-        <Card title={formatMessage({ id: 'basicData.product.detail.title' })} bordered={false}>
-          <div className={styles['card-column']}>
-            {formattedProduct.map(product => (
-              <div className={styles['card-item']} key={product.key}>
-                <span className={styles['item-label']}>
-                  {formatMessage({ id: product.label })}：
-                </span>
-                <span className={styles['item-content']}>{product.value}</span>
-              </div>
-            ))}
-          </div>
-        </Card>
-        <Card title={formatMessage({ id: 'basicData.product.price.title' })} bordered={false}>
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
-        </Card>
+        <ProductInfoBasic {...{ formattedProduct }} />
+        <ProductInfoPrice />
       </div>
     );
   }

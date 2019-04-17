@@ -98,7 +98,6 @@ export const customizeFetch = (service = 'api', base) => {
       };
     }
 
-    console.dir(opts);
     const url = `//${baseUrl}/${service}/${api}`;
     const response = await fetch(url, opts);
 
