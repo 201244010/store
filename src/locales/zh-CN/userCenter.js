@@ -2,6 +2,7 @@ export default {
   'userCenter.basicInfo.title': '基本设置',
 
   'userCenter.basicInfo.nameChange.success': '昵称修改成功',
+  'userCenter.basicInfo.nameChange.fail': '昵称修改失败',
 
   'userCenter.security.title': '安全设置',
   'userCenter.security.password': '登录密码',
@@ -31,6 +32,8 @@ export default {
   'change.mobile.code': '验证码',
   'bind.mobile.success': '手机号绑定成功',
   'change.mobile.success': '手机号修改成功',
+  'mobile.binded': '该手机号已被绑定',
+  'change.mobile.fail': '手机号绑定失败',
 
   'bind.mail.title': '绑定邮箱',
   'change.mail.title': '修改邮箱',

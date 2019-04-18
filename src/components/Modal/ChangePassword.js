@@ -115,6 +115,7 @@ class ChangePassword extends Component {
                         compareField: 'old_password',
                         messageId: {
                           isEmpty: 'new_password.validate.isEmpty',
+                          isFormatted: 'new_password.validate.isFormatted',
                         },
                       },
                     }),

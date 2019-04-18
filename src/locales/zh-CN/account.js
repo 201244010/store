@@ -28,6 +28,7 @@ export default {
   'new_password.validate.isEmpty': '请输入新密码',
   'password.validate.inLength': '密码长度应为8-30位',
   'password.validate.isFormatted': '密码必须为<字母、数字、特殊符号>中两种及以上的组合',
+  'new_password.validate.isFormatted': '密码必须包含字母和数字',
   'password.new.old.isEqual': '新旧密码不能相同',
   'confirm.validate.isEmpty': '请再次输入密码',
   'confirm.validate.isEqual': '两次密码输入不一致',

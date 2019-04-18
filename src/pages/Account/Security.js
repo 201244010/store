@@ -4,6 +4,7 @@ import { Card, List } from 'antd';
 import { ChangePassword, ChangeMobile, ChangeMail } from '@/components/Modal';
 import { maskPhone } from '@/utils/utils';
 import * as styles from './Account.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 const RENDER_MODAL = {
   password: ChangePassword,
@@ -34,11 +35,17 @@ class Security extends Component {
 
     if (modalType === 'password') {
       const response = await changePassword({ options: values });
+      if (response && response.code === ERROR_OK) {
+        this.closeChangeModal();
+      }
       return response;
     }
 
     if (modalType === 'mobile') {
       const response = await updatePhone({ options: values });
+      if (response && response.code === ERROR_OK) {
+        this.closeChangeModal();
+      }
       return response;
     }
 

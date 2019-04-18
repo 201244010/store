@@ -4,7 +4,7 @@ import { Form, Input, Modal, message } from 'antd';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import Captcha from '@/components/Captcha';
 import { encryption } from '@/utils/utils';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, MOBILE_BINDED } from '@/constants/errorCode';
 
 @Form.create()
 class ChangeMobile extends Component {
@@ -27,6 +27,10 @@ class ChangeMobile extends Component {
           } else {
             message.success(formatMessage({ id: 'bind.mobile.success' }));
           }
+        } else if (response && response.code === MOBILE_BINDED) {
+          message.error(formatMessage({ id: 'mobile.binded' }));
+        } else {
+          message.error(formatMessage({ id: 'change.mobile.fail' }));
         }
       }
     });
