@@ -50,4 +50,7 @@ export default {
   // 选项
   'select.all': '全部',
   'select.placeholder': '请选择',
+
+  // title
+  'safety.validate': '安全验证',
 };

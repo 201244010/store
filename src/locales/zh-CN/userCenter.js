@@ -29,7 +29,6 @@ export default {
   'change.mobile.number': '手机号',
   'change.mobile.number.new': '新手机号',
   'change.mobile.code': '验证码',
-  'send.mobile.code.success': '短信验证码发送成功',
   'bind.mobile.success': '手机号绑定成功',
   'change.mobile.success': '手机号修改成功',
 

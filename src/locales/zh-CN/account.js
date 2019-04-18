@@ -17,6 +17,9 @@ export default {
   'mail.placeholder': '邮箱',
   'mail.bind.placeholder': '请输入注册／绑定的邮箱',
   'vcode.placeholder': '图形验证码',
+  'vcode.input.notice': '请填写图中的验证码',
+  'send.mobile.code.success': '短信验证码发送成功',
+  'vcode.input.error': '验证码错误',
 
   'mobile.validate.isEmpty': '请输入手机号',
   'mobile.validate.isFormatted': '手机号格式错误',
