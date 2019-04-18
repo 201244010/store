@@ -54,6 +54,13 @@ export default {
       ],
     },
     {
+      path: '/business',
+      component: '../layouts/BusinessLayout',
+      routes: [
+        { path: '/business/create', component: './BusinessManagement/BusinessCreate' },
+      ],
+    },
+    {
       path: '/',
       component: '../layouts/BasicLayout',
       routes: [
@@ -136,6 +143,28 @@ export default {
           component: './Account/',
           name: 'account',
           hideInMenu: true,
+        },
+        {
+          path: '/businessManagement',
+          name: 'businessManagement',
+          icon: 'blank',
+          routes: [
+            {
+              path: '/businessManagement/center',
+              name: 'businessManagement',
+              component: './BusinessManagement/BusinessCenter',
+            },
+            {
+              path: '/businessManagement/modify',
+              name: 'businessManagement',
+              component: './BusinessManagement/BusinessModify',
+            },
+            {
+              path: '/businessManagement/view',
+              name: 'businessManagement',
+              component: './BusinessManagement/BusinessView',
+            },
+          ],
         },
       ],
     },

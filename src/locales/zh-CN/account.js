@@ -36,5 +36,7 @@ export default {
   'mail.validate.isFormatted': '邮箱地址格式错误',
   'code.validate.isEmpty': '请输入验证码',
 
+  'cellphone.validate.isFormatted': '电话格式错误',
+
   'avatar.change': '更换头像',
 };
