@@ -4,26 +4,26 @@ import { Form, Button, Input } from 'antd';
 
 import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
-// import router from 'umi/router';
+import router from 'umi/router';
 import { customValidate } from '@/utils/customValidate';
 
 import { connect } from 'dva';
-import styles from './Business.less';
+import styles from './Merchant.less';
 
 @connect(
     state => ({
-        business: state.business,
+        merchant: state.merchant,
     }),
     dispatch => ({
-        companyUpdate: payload => dispatch({ type: 'business/companyUpdate', payload }),
+        companyUpdate: payload => dispatch({ type: 'merchant/companyUpdate', payload }),
     })
 )
 @Form.create()
-class BusinessModify extends Component {
+class MerchantModify extends Component {
     constructor(props) {
         super(props);
         const {
-            business: {
+            merchant: {
                 companyList: { company_name: companyName, contact_person: contactPerson },
             },
         } = this.props;
@@ -36,7 +36,7 @@ class BusinessModify extends Component {
     componentDidMount() {
         const {
             form: { setFieldsValue },
-            business: {
+            merchant: {
                 companyList: { contact_email: contactEmail, contact_tel: contactTel },
             },
         } = this.props;
@@ -47,7 +47,6 @@ class BusinessModify extends Component {
     }
 
     onChange = (e, key) => {
-        console.log(key);
         this.setState({
             [key]: e.target.value,
         });
@@ -68,31 +67,33 @@ class BusinessModify extends Component {
         });
     };
 
-    cancel = () => {};
+    cancel = () => {
+        router.push('/basicData/merchantManagement/view');
+    };
 
     render() {
         const { companyName, contactPerson } = this.state;
         const {
             form: { getFieldDecorator },
-            business: {
+            merchant: {
                 companyList: { company_no: companyNo },
             },
         } = this.props;
         return (
             <div className={styles['view-wrapper']}>
-                <h1>{formatMessage({ id: 'businessManagement.business.modify' })}</h1>
+                <h1>{formatMessage({ id: 'merchantManagement.merchant.modify' })}</h1>
                 <Form {...FORM_ITEM_LAYOUT_BUSINESS}>
-                    <Form.Item label={formatMessage({ id: 'businessManagement.business.number' })}>
+                    <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.number' })}>
                         <span>{companyNo}</span>
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'businessManagement.business.name' })}>
+                    <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.name' })}>
                         <Input
                             value={companyName}
                             onChange={e => this.onChange(e, 'companyName')}
                         />
                     </Form.Item>
                     <Form.Item
-                        label={formatMessage({ id: 'businessManagement.business.contactPerson' })}
+                        label={formatMessage({ id: 'merchantManagement.merchant.contactPerson' })}
                     >
                         <Input
                             value={contactPerson}
@@ -100,7 +101,7 @@ class BusinessModify extends Component {
                         />
                     </Form.Item>
                     <Form.Item
-                        label={formatMessage({ id: 'businessManagement.business.contactPhone' })}
+                        label={formatMessage({ id: 'merchantManagement.merchant.contactPhone' })}
                     >
                         {getFieldDecorator('phone', {
                             validateTrigger: 'onBlur',
@@ -119,7 +120,7 @@ class BusinessModify extends Component {
                         {/* <Input value={contactTel} onChange={e => this.onChange(e, 'contactTel')} /> */}
                     </Form.Item>
                     <Form.Item
-                        label={formatMessage({ id: 'businessManagement.business.contactEmail' })}
+                        label={formatMessage({ id: 'merchantManagement.merchant.contactEmail' })}
                     >
                         {getFieldDecorator('email', {
                             validateTrigger: 'onBlur',
@@ -145,4 +146,4 @@ class BusinessModify extends Component {
     }
 }
 
-export default BusinessModify;
+export default MerchantModify;

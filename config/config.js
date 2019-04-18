@@ -54,10 +54,10 @@ export default {
       ],
     },
     {
-      path: '/business',
-      component: '../layouts/BusinessLayout',
+      path: '/merchant',
+      component: '../layouts/MerchantLayout',
       routes: [
-        { path: '/business/create', component: './BusinessManagement/BusinessCreate' },
+        { path: '/merchant/create', component: './MerchantManagement/MerchantCreate' },
       ],
     },
     {
@@ -124,6 +124,17 @@ export default {
                 },
               ],
             },
+            {
+              path: '/basicData/merchantManagement/view',
+              name: 'merchantManagement',
+              component: './MerchantManagement/MerchantView'
+            },
+            {
+              path: '/basicData/merchantManagement/modify',
+              name: 'merchantManagement',
+              hideInMenu: true,
+              component: './MerchantManagement/MerchantModify'
+            },
           ],
         },
         // {
@@ -143,28 +154,6 @@ export default {
           component: './Account/',
           name: 'account',
           hideInMenu: true,
-        },
-        {
-          path: '/businessManagement',
-          name: 'businessManagement',
-          icon: 'blank',
-          routes: [
-            {
-              path: '/businessManagement/center',
-              name: 'businessManagement',
-              component: './BusinessManagement/BusinessCenter',
-            },
-            {
-              path: '/businessManagement/modify',
-              name: 'businessManagement',
-              component: './BusinessManagement/BusinessModify',
-            },
-            {
-              path: '/businessManagement/view',
-              name: 'businessManagement',
-              component: './BusinessManagement/BusinessView',
-            },
-          ],
         },
       ],
     },

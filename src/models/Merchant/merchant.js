@@ -1,9 +1,9 @@
-import * as Actions from '@/services/Business/business';
+import * as Actions from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 // import router from 'umi/router';
 
 export default {
-    namespace: 'business',
+    namespace: 'merchant',
     state: {
         companyList: {
             company_no: '123456',
