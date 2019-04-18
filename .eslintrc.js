@@ -35,6 +35,8 @@ module.exports = {
     'linebreak-style': 0,
     'no-script-url': 0,
     'camelcase': 1,
+    'react/jsx-indent': ['error', 4, { 'props': 4 }],
+    'react/jsx-indent-props': [4, 'tab'],
   },
   settings: {
     polyfills: ['fetch', 'promises', 'url'],
