@@ -38,6 +38,7 @@ class Login extends Component {
       currentTab: 'tabAccount',
       trigger: false,
       vcodeIsError: false,
+      showImgCaptchaModal: false,
     };
   }
 
@@ -46,6 +47,10 @@ class Login extends Component {
       notice: '',
       currentTab: tabName,
     });
+  };
+
+  closeImgCaptchaModal = () => {
+    this.setState({ showImgCaptchaModal: false });
   };
 
   getCode = async (params = {}) => {
@@ -75,6 +80,7 @@ class Login extends Component {
         trigger: true,
         notice: '',
         vcodeIsError: false,
+        showImgCaptchaModal: false,
       });
     } else if (response && !response.data) {
       if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
@@ -83,6 +89,8 @@ class Login extends Component {
           notice: response.code,
         });
       }
+    } else if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
+      this.setState({ showImgCaptchaModal: true });
     }
 
     return response;
@@ -203,11 +211,11 @@ class Login extends Component {
   };
 
   render() {
-    const { notice, trigger, vcodeIsError } = this.state;
+    const { notice, trigger, vcodeIsError, showImgCaptchaModal } = this.state;
     const {
       form: { getFieldDecorator },
       getImageCode,
-      sso: { imgCode, imgCaptcha, needImgCaptcha },
+      sso: { imgCode, imgCaptcha },
       user: { errorTimes },
     } = this.props;
     const currentLanguage = getLocale();
@@ -324,9 +332,10 @@ class Login extends Component {
 
                 <Modal
                   title={formatMessage({ id: 'safety.validate' })}
-                  visible={needImgCaptcha}
+                  visible={showImgCaptchaModal}
                   maskClosable={false}
                   onOk={this.checkVcode}
+                  onCancel={this.closeImgCaptchaModal}
                 >
                   <div>
                     <p>{formatMessage({ id: 'vcode.input.notice' })}</p>
