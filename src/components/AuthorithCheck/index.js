@@ -3,22 +3,22 @@ import Storage from '@konata9/storage.js';
 import router from 'umi/router';
 
 function AuthorithCheck(WrappedComponent) {
-  return class extends Component {
-    componentDidMount() {
-      this.authorityCheck();
-    }
+    return class extends Component {
+        componentDidMount() {
+            this.authorityCheck();
+        }
 
-    authorityCheck = () => {
-      const userInfo = Storage.get('__token__');
-      if (!userInfo) {
-        router.push('/user/login');
-      }
+        authorityCheck = () => {
+            const userInfo = Storage.get('__token__');
+            if (!userInfo) {
+                router.push('/user/login');
+            }
+        };
+
+        render() {
+            return <WrappedComponent {...this.props} />;
+        }
     };
-
-    render() {
-      return <WrappedComponent {...this.props} />;
-    }
-  };
 }
 
 export default AuthorithCheck;
