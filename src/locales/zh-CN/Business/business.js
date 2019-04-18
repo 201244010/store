@@ -10,6 +10,7 @@ export default {
     'businessManagement.business.createTime': '创建时间',
     'businessManagement.business.updateTime': '更新时间',
     'businessManagement.business.viewbusiness': '查看商户',
+    'businessManagement.business.businessMessage': '商户信息',
 
     'businessManagement.business.welcome': '欢迎，请先创建商户',
     'businessManagement.business.createBusiness': '创建商户',

@@ -4,7 +4,7 @@ import { Form, Button, Input } from 'antd';
 
 import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
-// import router from 'umi/router';
+import router from 'umi/router';
 import { customValidate } from '@/utils/customValidate';
 
 import { connect } from 'dva';
@@ -68,7 +68,9 @@ class BusinessModify extends Component {
         });
     };
 
-    cancel = () => {};
+    cancel = () => {
+        router.push('/basicData/businessManagement/view');
+    };
 
     render() {
         const { companyName, contactPerson } = this.state;

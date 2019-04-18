@@ -17,7 +17,7 @@ import styles from './Business.less';
 )
 class BusinessView extends Component {
     update = () => {
-        router.push('/businessManagement/modify');
+        router.push('/basicData/businessManagement/modify');
     };
 
     cancel = () => {};

@@ -18,10 +18,10 @@ export default {
     'menu.basicData.productManagement.list.productInfo': '商品详情',
     'menu.basicData.productManagement.list.erpImport': '对接ERP',
 
-    'menu.businessManagement': '商户管理',
+    'menu.basicData.businessManagement': '商户管理',
     'menu.businessManagement.businessManagement': '商户管理',
-    'menu.businessManagement.view': '查看商户',
-    'menu.businessManagement.modify': '修改商户',
+    'menu.basicData.businessManagement.view': '查看商户',
+    'menu.basicData.businessManagement.modify': '修改商户',
     'menu.setting': '系统设置',
     'menu.setting.role': '角色管理',
 };
