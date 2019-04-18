@@ -16,7 +16,7 @@ import baseStation from './zh-CN/ESL/device';
 // BasicData
 import productManagement from './zh-CN/BasicData/product';
 
-import businessManagement from './zh-CN/Business/business';
+import merchantManagement from './zh-CN/Merchant/merchant';
 
 export default {
     'navBar.lang': '语言',
@@ -38,5 +38,5 @@ export default {
     ...userCenter,
     ...baseStation,
     ...productManagement,
-    ...businessManagement,
+    ...merchantManagement,
 };

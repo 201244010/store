@@ -5,26 +5,26 @@ import { connect } from 'dva';
 import { unixSecondToDate } from '@/utils/utils';
 import router from 'umi/router';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
-import styles from './Business.less';
+import styles from './Merchant.less';
 
 @connect(
     state => ({
-        business: state.business,
+        merchant: state.merchant,
     }),
     dispatch => ({
-        companyUpdate: payload => dispatch({ type: 'business/companyUpdate', payload }),
+        companyUpdate: payload => dispatch({ type: 'merchant/companyUpdate', payload }),
     })
 )
-class BusinessView extends Component {
+class MerchantView extends Component {
     update = () => {
-        router.push('/businessManagement/modify');
+        router.push('/basicData/merchantManagement/modify');
     };
 
     cancel = () => {};
 
     render() {
         const {
-            business: {
+            merchant: {
                 companyList: {
                     company_no: companyNo,
                     contact_email: contactEmail,
@@ -38,36 +38,36 @@ class BusinessView extends Component {
         } = this.props;
         return (
             <div className={styles['view-wrapper']}>
-                <h1>{formatMessage({ id: 'businessManagement.business.view' })}</h1>
+                <h1>{formatMessage({ id: 'merchantManagement.merchant.view' })}</h1>
                 <Form {...FORM_ITEM_LAYOUT_BUSINESS}>
-                    <Form.Item label={formatMessage({ id: 'businessManagement.business.number' })}>
+                    <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.number' })}>
                         <span>{companyNo}</span>
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'businessManagement.business.name' })}>
+                    <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.name' })}>
                         <span>{companyName}</span>
                     </Form.Item>
                     <Form.Item
-                        label={formatMessage({ id: 'businessManagement.business.contactPerson' })}
+                        label={formatMessage({ id: 'merchantManagement.merchant.contactPerson' })}
                     >
                         <span>{contactPerson}</span>
                     </Form.Item>
                     <Form.Item
-                        label={formatMessage({ id: 'businessManagement.business.contactPhone' })}
+                        label={formatMessage({ id: 'merchantManagement.merchant.contactPhone' })}
                     >
                         <span>{contactTel}</span>
                     </Form.Item>
                     <Form.Item
-                        label={formatMessage({ id: 'businessManagement.business.contactEmail' })}
+                        label={formatMessage({ id: 'merchantManagement.merchant.contactEmail' })}
                     >
                         <span>{contactEmail}</span>
                     </Form.Item>
                     <Form.Item
-                        label={formatMessage({ id: 'businessManagement.business.createTime' })}
+                        label={formatMessage({ id: 'merchantManagement.merchant.createTime' })}
                     >
                         <span>{unixSecondToDate(createTime)}</span>
                     </Form.Item>
                     <Form.Item
-                        label={formatMessage({ id: 'businessManagement.business.updateTime' })}
+                        label={formatMessage({ id: 'merchantManagement.merchant.updateTime' })}
                     >
                         <span>{unixSecondToDate(modifyTime)}</span>
                     </Form.Item>
@@ -85,4 +85,4 @@ class BusinessView extends Component {
     }
 }
 
-export default BusinessView;
+export default MerchantView;
