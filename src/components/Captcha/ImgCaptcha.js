@@ -61,7 +61,7 @@ class ImgCaptcha extends Component {
   };
 
   refreshCode = () => {
-    this.setState({ value: '' });
+    this.setState({ value: '' }, () => this.getImageCode());
   };
 
   render() {

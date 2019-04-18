@@ -63,6 +63,7 @@ class Security extends Component {
     const { showChangeModal, modalType } = this.state;
     const {
       user: { currentUser },
+      sso,
       sendCode,
     } = this.props;
     const RenderModal = RENDER_MODAL[modalType] || RENDER_MODAL.default;
@@ -121,6 +122,7 @@ class Security extends Component {
         </Card>
         <RenderModal
           {...{
+            sso,
             visible: showChangeModal,
             mobileBinded: !!currentUser.phone,
             mailBinded: !!currentUser.email,

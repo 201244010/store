@@ -4,10 +4,30 @@ import { Form, Input, Modal, message } from 'antd';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import Captcha from '@/components/Captcha';
 import { encryption } from '@/utils/utils';
-import { ERROR_OK, MOBILE_BINDED } from '@/constants/errorCode';
+import {
+  ALERT_NOTICE_MAP,
+  ERROR_OK,
+  MOBILE_BINDED,
+  SHOW_VCODE,
+  VCODE_ERROR,
+} from '@/constants/errorCode';
+import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 
 @Form.create()
 class ChangeMobile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      trigger: false,
+      vcodeIsError: false,
+      showImgCaptchaModal: false,
+    };
+  }
+
+  closeImgCaptchaModal = () => {
+    this.setState({ showImgCaptchaModal: false });
+  };
+
   onOk = () => {
     const {
       form: { validateFields },
@@ -41,27 +61,68 @@ class ChangeMobile extends Component {
     onCancel();
   };
 
-  getCode = async () => {
+  getCode = async (params = {}) => {
+    const { imageStyle = {} } = params;
     const {
       form: { getFieldValue },
       sendCode,
+      sso: { needImgCaptcha, imgCaptcha },
     } = this.props;
 
     const response = await sendCode({
       options: {
         username: getFieldValue('phone'),
         type: '2',
+        imgCode: getFieldValue('vcode') || '',
+        key: needImgCaptcha ? imgCaptcha.key : '',
+        width: 112,
+        height: 40,
+        fontSize: 18,
+        ...imageStyle,
       },
     });
 
     if (response && response.code === ERROR_OK) {
       message.success(formatMessage({ id: 'send.mobile.code.success' }));
+      this.setState({
+        trigger: true,
+        vcodeIsError: false,
+        showImgCaptchaModal: false,
+      });
+    } else if (response && !response.data) {
+      if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
+        this.setState({
+          trigger: false,
+        });
+      }
+    } else if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
+      this.setState({ showImgCaptchaModal: true });
+    }
+
+    return response;
+  };
+
+  checkVcode = async () => {
+    const {
+      form: { setFieldsValue, validateFields },
+    } = this.props;
+    const response = await this.getCode();
+    if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
+      setFieldsValue({ vcode: '' });
+      this.setState(
+        {
+          vcodeIsError: true,
+        },
+        () => validateFields(['vcode'], { force: true })
+      );
     }
   };
 
   render() {
+    const { trigger, vcodeIsError, showImgCaptchaModal } = this.state;
     const {
       form: { getFieldDecorator },
+      sso: { imgCaptcha },
       visible,
       mobileBinded = true,
     } = this.props;
@@ -113,6 +174,49 @@ class ChangeMobile extends Component {
               ],
             })(<Input addonBefore="+86" maxLength={11} />)}
           </Form.Item>
+
+          <Modal
+            title={formatMessage({ id: 'safety.validate' })}
+            visible={showImgCaptchaModal}
+            maskClosable={false}
+            onOk={this.checkVcode}
+            onCancel={this.closeImgCaptchaModal}
+          >
+            <div>
+              <p>{formatMessage({ id: 'vcode.input.notice' })}</p>
+              <Form.Item>
+                {getFieldDecorator('vcode', {
+                  validateTrigger: 'onBlur',
+                  rules: [
+                    {
+                      validator: (rule, value, callback) => {
+                        if (vcodeIsError) {
+                          callback(formatMessage({ id: 'vcode.input.error' }));
+                        } else if (!vcodeIsError && !value) {
+                          callback(formatMessage({ id: 'code.validate.isEmpty' }));
+                        } else {
+                          callback();
+                        }
+                      },
+                    },
+                  ],
+                })(
+                  <ImgCaptcha
+                    {...{
+                      imgUrl: imgCaptcha.url,
+                      inputProps: {
+                        size: 'large',
+                        placeholder: formatMessage({ id: 'vcode.placeholder' }),
+                      },
+                      initial: false,
+                      onFocus: () => this.setState({ vcodeIsError: false }),
+                    }}
+                  />
+                )}
+              </Form.Item>
+            </div>
+          </Modal>
+
           <Form.Item
             {...FORM_ITEM_LAYOUT_COMMON}
             label={formatMessage({ id: 'change.mobile.code' })}
@@ -128,6 +232,7 @@ class ChangeMobile extends Component {
             })(
               <Captcha
                 {...{
+                  trigger,
                   inputProps: {},
                   buttonProps: {
                     block: true,
