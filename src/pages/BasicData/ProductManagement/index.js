@@ -9,6 +9,7 @@ import * as styles from './ProductManagement.less';
         product: state.basicDataProduct,
     }),
     dispatch => ({
+        getProductOverView: () => dispatch({ type: 'basicDataProduct/getProductOverView' }),
         fetchProductList: payload =>
             dispatch({ type: 'basicDataProduct/fetchProductList', payload }),
         changeSearchFormValue: payload =>
@@ -20,7 +21,8 @@ import * as styles from './ProductManagement.less';
 )
 class ProductList extends Component {
     componentDidMount() {
-        const { fetchProductList } = this.props;
+        const { fetchProductList, getProductOverView } = this.props;
+        getProductOverView();
         fetchProductList({
             current: 1,
             keyword: null,

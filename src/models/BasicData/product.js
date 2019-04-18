@@ -32,6 +32,22 @@ export default {
         },
     },
     effects: {
+        *getProductOverView(_, { call, put }) {
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+            const response = yield call(Actions.getProductOverView);
+            if (response && response.code === ERROR_OK) {
+                console.log(response);
+            }
+
+            yield put({
+                type: 'updateState',
+                payload: { loading: false },
+            });
+        },
+
         *getERPPlatformList(_, { call, put }) {
             yield put({
                 type: 'updateState',

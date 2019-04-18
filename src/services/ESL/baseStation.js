@@ -2,7 +2,7 @@ import { customizeFetch } from '@/utils/fetch';
 
 // TODO 等待后端接口
 
-const fetchApi = customizeFetch('device/ap');
+const fetchApi = customizeFetch('api/device/ap', '47.96.240.44:30301');
 
 export const fetchBaseStations = options => {
     const opts = {
