@@ -209,3 +209,40 @@ export const compareVersion = (base, target) => {
 
   return resultThird;
 };
+
+export const snakeToCamel = snake =>
+  snake
+    .split('_')
+    .filter(word => !!word)
+    .map((word, index) => (index > 0 ? word[0].toUpperCase() + word.slice(1) : word))
+    .join('');
+
+export const camelToSnake = camel => {
+  let snake = camel;
+  camel.match(/[A-Z]/g).forEach(char => {
+    snake = snake.replace(char, `_${char.toLowerCase()}`);
+  });
+  return snake;
+};
+
+export const paramsDeserialization = params => {
+  const deserializedParams = {};
+  Object.keys(params)
+    .map(key => ({ snake: key, camel: snakeToCamel(key) }))
+    .forEach(mapping => {
+      deserializedParams[mapping.camel] = params[mapping.snake];
+    });
+
+  return deserializedParams;
+};
+
+export const paramsSerialization = params => {
+  const serializedParams = {};
+  Object.keys(params)
+    .map(key => ({ snake: camelToSnake(key), camel: key }))
+    .forEach(mapping => {
+      serializedParams[mapping.snake] = params[mapping.camel];
+    });
+
+  return serializedParams;
+};
