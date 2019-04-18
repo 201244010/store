@@ -8,7 +8,7 @@ import { connect } from 'dva';
 import * as styles from './Account.less';
 
 @connect(state => ({
-    business: state.business,
+    merchant: state.merchant,
 }))
 class Store extends Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class Store extends Component {
     };
 
     update = () => {
-        router.push('/basicData/businessManagement/modify');
+        router.push('/basicData/merchantManagement/modify');
     };
 
     cancel = () => {
@@ -42,7 +42,7 @@ class Store extends Component {
     render() {
         const { itemList = [] } = this.props;
         const {
-            business: {
+            merchant: {
                 companyList: {
                     company_no: companyNo,
                     contact_email: contactEmail,
@@ -81,7 +81,7 @@ class Store extends Component {
                 </div>
                 <Modal
                     visible={visible}
-                    title={formatMessage({ id: 'businessManagement.business.businessMessage' })}
+                    title={formatMessage({ id: 'merchantManagement.merchant.merchantMessage' })}
                     onCancel={this.cancel}
                     footer={
                         <div className={styles['button-style']}>
@@ -96,32 +96,32 @@ class Store extends Component {
                 >
                     <Form {...FORM_ITEM_LAYOUT_COMMON}>
                         <Form.Item
-                            label={formatMessage({ id: 'businessManagement.business.number' })}
+                            label={formatMessage({ id: 'merchantManagement.merchant.number' })}
                         >
                             <span>{companyNo}</span>
                         </Form.Item>
                         <Form.Item
-                            label={formatMessage({ id: 'businessManagement.business.name' })}
+                            label={formatMessage({ id: 'merchantManagement.merchant.name' })}
                         >
                             <span>{companyName}</span>
                         </Form.Item>
                         <Form.Item
                             label={formatMessage({
-                                id: 'businessManagement.business.contactPerson',
+                                id: 'merchantManagement.merchant.contactPerson',
                             })}
                         >
                             <span>{contactPerson}</span>
                         </Form.Item>
                         <Form.Item
                             label={formatMessage({
-                                id: 'businessManagement.business.contactPhone',
+                                id: 'merchantManagement.merchant.contactPhone',
                             })}
                         >
                             <span>{contactTel}</span>
                         </Form.Item>
                         <Form.Item
                             label={formatMessage({
-                                id: 'businessManagement.business.contactEmail',
+                                id: 'merchantManagement.merchant.contactEmail',
                             })}
                         >
                             <span>{contactEmail}</span>

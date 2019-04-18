@@ -57,7 +57,7 @@ export default {
       path: '/merchant',
       component: '../layouts/MerchantLayout',
       routes: [
-        { path: '/merchant/create', component: './BusinessManagement/BusinessCreate' },
+        { path: '/merchant/create', component: './MerchantManagement/MerchantCreate' },
       ],
     },
     {
@@ -125,15 +125,15 @@ export default {
               ],
             },
             {
-              path: '/basicData/businessManagement/view',
-              name: 'businessManagement',
-              component: './BusinessManagement/BusinessView'
+              path: '/basicData/merchantManagement/view',
+              name: 'merchantManagement',
+              component: './MerchantManagement/MerchantView'
             },
             {
-              path: '/basicData/businessManagement/modify',
-              name: 'businessManagement',
+              path: '/basicData/merchantManagement/modify',
+              name: 'merchantManagement',
               hideInMenu: true,
-              component: './BusinessManagement/BusinessModify'
+              component: './MerchantManagement/MerchantModify'
             },
           ],
         },
