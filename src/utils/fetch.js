@@ -74,7 +74,13 @@ const formatParams = (options = {}) => {
 };
 
 const customizeParams = (options = {}) => {
-    const formattedParams = normalizeParams(options.body);
+    const opts = {
+        ...options.body,
+        company_id: Storage.get('__company_id__') || '',
+        shop_id: Storage.get('__shop_id__') || '',
+    };
+
+    const formattedParams = normalizeParams(opts);
     return formatParams(formattedParams || {});
 };
 

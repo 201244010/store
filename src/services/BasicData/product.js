@@ -1,7 +1,7 @@
 import Storage from '@konata9/storage.js';
 import { customizeFetch } from '@/utils/fetch';
 
-const fetchApi = customizeFetch('product');
+const fetchApi = customizeFetch('api/product', 'localhost:3000');
 
 export const fetchProductList = (options = {}) => {
     const opts = {
