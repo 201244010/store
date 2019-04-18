@@ -1,8 +1,8 @@
 import { customizeFetch } from '@/utils/fetch';
-
+import { GROCERY_ADDRESS, env } from '@/config';
 // TODO 等待后端接口
 
-const fetchApi = customizeFetch('api/device/ap', '47.96.240.44:30301');
+const fetchApi = customizeFetch('api/device/ap', GROCERY_ADDRESS[env]);
 
 export const fetchBaseStations = options => {
     const opts = {

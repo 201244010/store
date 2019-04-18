@@ -5,6 +5,11 @@ export const SSO_ADDRESS = {
     test: 'test.api.sunmi.com',
 };
 
+export const GROCERY_ADDRESS = {
+    dev: '47.96.240.44:30301',
+    test: '47.96.240.44:30301',
+};
+
 export const API_ADDRESS = {
     // dev: '47.96.240.44:30204',
     dev: '47.96.240.44:35132',
