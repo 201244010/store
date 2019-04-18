@@ -4,13 +4,13 @@ import { GROCERY_ADDRESS, env } from '@/config';
 
 const fetchApi = customizeFetch('api/device/ap', GROCERY_ADDRESS[env]);
 
-export const fetchBaseStations = options => {
+export const fetchBaseStations = (options = {}) => {
     const opts = {
         method: 'POST',
         body: {
             keyword: options.keyword,
             status: options.status || -1,
-            page_num: options.current,
+            page_num: options.current || 1,
             page_size: options.pageSize,
         },
     };

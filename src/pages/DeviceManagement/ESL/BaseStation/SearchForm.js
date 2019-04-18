@@ -10,7 +10,9 @@ class SearchForm extends Component {
     changeFormValues = (inputType, fieldName, e) => {
         const { changeSearchFormValue } = this.props;
         changeSearchFormValue({
-            [fieldName]: inputType === 'input' ? e.target.value : e,
+            options: {
+                [fieldName]: inputType === 'input' ? e.target.value : e,
+            },
         });
     };
 
