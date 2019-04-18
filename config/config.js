@@ -137,6 +137,30 @@ export default {
             },
           ],
         },
+        {
+          path: '/storeManagement',
+          name: 'storeManagement',
+          routes: [
+            {
+              path: '/storeManagement/list',
+              component: './StoreManagement/Index.js'
+            },
+            {
+              path: '/storeManagement/createStore',
+              component: './StoreManagement/CreateStore.js'
+            },
+            {
+              path: '/storeManagement/storeInformation',
+              component: './StoreManagement/StoreInformation.js'
+            },
+            {
+              path: '/storeManagement/alterStore',
+              component: './StoreManagement/AlterStore.js'
+            }
+          ]
+        },
+        
+
         // {
         //   path: '/setting',
         //   name: 'setting',
