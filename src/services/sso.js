@@ -1,6 +1,6 @@
 import { customizeFetch } from '@/utils/fetch';
 
-const fetchApi = customizeFetch('api/sso/app/sso/1.0/?service=', 'dev.api.sunmi.com');
+const fetchApi = customizeFetch('api/sso/app/sso/1.0/?service=', 'test.api.sunmi.com');
 
 export const sendCode = (options = {}) => {
   const opts = {

@@ -1,8 +1,8 @@
 import { formatMessage } from 'umi/locale';
 import * as RegExp from '@/constants/regexp';
 
-const passwordValidate = (rule, value, callback, extra) => {
-  const { messageId = {} } = extra;
+const passwordValidate = (rule, value, callback, extra = {}) => {
+  const { messageId = {}, compare = false } = extra;
   const { isEmpty, inLength, isFormatted } = messageId;
   if (!value) {
     callback(formatMessage({ id: isEmpty || 'password.validate.isEmpty' }));
@@ -10,12 +10,19 @@ const passwordValidate = (rule, value, callback, extra) => {
     callback(formatMessage({ id: inLength || 'password.validate.inLength' }));
   } else if (!RegExp.password.test(value)) {
     callback(formatMessage({ id: isFormatted || 'password.validate.isFormatted' }));
+  } else if (compare) {
+    const { getFieldValue, compareField } = extra;
+    if (getFieldValue(compareField) === value) {
+      callback(formatMessage({ id: 'password.new.old.isEqual' }));
+    } else {
+      callback();
+    }
   } else {
     callback();
   }
 };
 
-const confirmValidate = (rule, value, callback, extra) => {
+const confirmValidate = (rule, value, callback, extra = {}) => {
   const { getFieldValue, compareField = 'password' } = extra;
   if (!value) {
     callback(formatMessage({ id: 'confirm.validate.isEmpty' }));

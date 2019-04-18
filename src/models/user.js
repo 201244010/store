@@ -1,4 +1,6 @@
 import * as Actions from '@/services/user';
+import { message } from 'antd';
+import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
 import router from 'umi/router';
@@ -77,7 +79,8 @@ export default {
     *updateUsername({ payload }, { call, put, select }) {
       const { options } = payload;
       const response = yield call(Actions.updateUsername, options);
-      if (response && response.code === 1) {
+      if (response && response.code === ERROR_OK) {
+        message.success(formatMessage({ id: 'userCenter.basicInfo.nameChange.success' }));
         const { username } = options;
         const currentUser = yield select(state => state.user.currentUser);
         const updatedUserInfo = {
@@ -90,6 +93,8 @@ export default {
           type: 'storeUserInfo',
           payload: updatedUserInfo,
         });
+      } else {
+        message.error(formatMessage({ id: 'userCenter.basicInfo.nameChange.fail' }));
       }
     },
 
@@ -97,9 +102,12 @@ export default {
       const { options } = payload;
       const response = yield call(Actions.changePassword, options);
       if (response && response.code === ERROR_OK) {
-        Storage.clear('session');
-        router.push('/user/login');
+        message.success(formatMessage({ id: 'change.password.success' }));
+        // TODO 是否跳转回首页待定
+        // Storage.clear('session');
+        // router.push('/user/login');
       }
+      return response;
     },
 
     *updatePhone({ payload }, { call, put, select }) {
@@ -119,6 +127,8 @@ export default {
           payload: updatedUserInfo,
         });
       }
+
+      return response;
     },
   },
 

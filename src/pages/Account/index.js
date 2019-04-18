@@ -19,7 +19,7 @@ import * as styles from './Account.less';
 )
 class UserCenter extends Component {
   render() {
-    const { user, updateUsername, changePassword, updatePhone, sendCode } = this.props;
+    const { user, sso, updateUsername, changePassword, updatePhone, sendCode } = this.props;
 
     return (
       <div className={styles['account-wrapper']}>
@@ -32,6 +32,7 @@ class UserCenter extends Component {
         <Security
           {...{
             user,
+            sso,
             changePassword,
             updatePhone,
             sendCode,

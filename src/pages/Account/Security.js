@@ -4,6 +4,7 @@ import { Card, List } from 'antd';
 import { ChangePassword, ChangeMobile, ChangeMail } from '@/components/Modal';
 import { maskPhone } from '@/utils/utils';
 import * as styles from './Account.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 const RENDER_MODAL = {
   password: ChangePassword,
@@ -31,11 +32,24 @@ class Security extends Component {
   handleModalSubmit = async values => {
     const { modalType } = this.state;
     const { changePassword, updatePhone } = this.props;
+
     if (modalType === 'password') {
-      await changePassword({ options: values });
-    } else if (modalType === 'mobile') {
-      await updatePhone({ options: values });
+      const response = await changePassword({ options: values });
+      if (response && response.code === ERROR_OK) {
+        this.closeChangeModal();
+      }
+      return response;
     }
+
+    if (modalType === 'mobile') {
+      const response = await updatePhone({ options: values });
+      if (response && response.code === ERROR_OK) {
+        this.closeChangeModal();
+      }
+      return response;
+    }
+
+    return null;
   };
 
   closeChangeModal = () => {
@@ -49,6 +63,7 @@ class Security extends Component {
     const { showChangeModal, modalType } = this.state;
     const {
       user: { currentUser },
+      sso,
       sendCode,
     } = this.props;
     const RenderModal = RENDER_MODAL[modalType] || RENDER_MODAL.default;
@@ -107,6 +122,7 @@ class Security extends Component {
         </Card>
         <RenderModal
           {...{
+            sso,
             visible: showChangeModal,
             mobileBinded: !!currentUser.phone,
             mailBinded: !!currentUser.email,

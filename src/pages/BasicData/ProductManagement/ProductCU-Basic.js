@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Card, Col, Form, Icon, Input, Modal, Row, Upload } from 'antd';
+import { Card, Col, Form, Icon, Input, Modal, Row, Upload, Select } from 'antd';
 import { customValidate } from '@/utils/customValidate';
 import { formatMessage } from 'umi/locale';
 import { MAX_LENGTH } from '@/constants/form';
-import { Select } from 'antd/lib/select';
-import EditableFormItem from '@/pages/BasicData/ProductManagement/ProductCU';
+import EditableFormItem from '@/components/EditableFormItem';
 
 const MAX_IMG = 5;
 const productTypes = [{ key: 'normal', value: 0 }, { key: 'weight', value: 1 }];

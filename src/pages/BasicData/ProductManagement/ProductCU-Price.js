@@ -2,13 +2,14 @@ import React from 'react';
 import { Card, Col, Form, Input, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { customValidate } from '@/utils/customValidate';
-import EditableFormItem from '@/pages/BasicData/ProductManagement/ProductCU';
+import EditableFormItem from '@/components/EditableFormItem';
 
 const ProductCUPrice = props => {
   const {
+    form = {},
     form: { getFieldDecorator },
-    form,
   } = props;
+
   return (
     <Card title={formatMessage({ id: 'basicData.product.price.title' })} bordered={false}>
       <Row>

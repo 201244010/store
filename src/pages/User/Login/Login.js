@@ -3,12 +3,12 @@ import { formatMessage, getLocale } from 'umi/locale';
 import Link from 'umi/link';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Tabs, Form, Input, Button, Icon, Alert, Modal } from 'antd';
+import { Tabs, Form, Input, Button, Icon, Alert, Modal, message } from 'antd';
 import { encryption } from '@/utils/utils';
 import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import styles from './Login.less';
-import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
+import { ERROR_OK, ALERT_NOTICE_MAP, VCODE_ERROR, SHOW_VCODE } from '@/constants/errorCode';
 
 const VALIDATE_FIELDS = {
   tabAccount: ['username', 'password'],
@@ -32,10 +32,13 @@ const VALIDATE_FIELDS = {
 class Login extends Component {
   constructor(props) {
     super(props);
+    this.inputRef = React.createRef();
     this.state = {
       notice: '',
       currentTab: 'tabAccount',
       trigger: false,
+      vcodeIsError: false,
+      showImgCaptchaModal: false,
     };
   }
 
@@ -44,6 +47,10 @@ class Login extends Component {
       notice: '',
       currentTab: tabName,
     });
+  };
+
+  closeImgCaptchaModal = () => {
+    this.setState({ showImgCaptchaModal: false });
   };
 
   getCode = async (params = {}) => {
@@ -58,7 +65,7 @@ class Login extends Component {
       options: {
         username: getFieldValue('phone'),
         type: '2',
-        imgCode: getFieldValue('vcode') || '',
+        imgCode: getFieldValue('vcode2') || '',
         key: needImgCaptcha ? imgCaptcha.key : '',
         width: 112,
         height: 40,
@@ -67,22 +74,42 @@ class Login extends Component {
       },
     });
 
-    if (response && !response.data) {
+    if (response && response.code === ERROR_OK) {
+      message.success(formatMessage({ id: 'send.mobile.code.success' }));
+      this.setState({
+        trigger: true,
+        notice: '',
+        vcodeIsError: false,
+        showImgCaptchaModal: false,
+      });
+    } else if (response && !response.data) {
       if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
         this.setState({
           trigger: false,
           notice: response.code,
         });
       }
-    }
-
-    if (response && response.code === ERROR_OK) {
-      this.setState({
-        trigger: true,
-      });
+    } else if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
+      this.setState({ showImgCaptchaModal: true });
     }
 
     return response;
+  };
+
+  checkVcode = async () => {
+    const {
+      form: { setFieldsValue, validateFields },
+    } = this.props;
+    const response = await this.getCode();
+    if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
+      setFieldsValue({ vcode2: '' });
+      this.setState(
+        {
+          vcodeIsError: true,
+        },
+        () => validateFields(['vcode2'], { force: true })
+      );
+    }
   };
 
   showAccountMergeModal = (path = '/') => {
@@ -138,10 +165,11 @@ class Login extends Component {
 
   onSubmit = () => {
     const {
-      form: { validateFields, getFieldValue },
+      form: { validateFields, getFieldValue, setFields },
       user: { errorTimes },
       sso: { imgCode },
       checkImgCode,
+      getImageCode,
     } = this.props;
     const { currentTab } = this.state;
     const loginType = currentTab === 'tabAccount' ? 'login' : 'quickLogin';
@@ -149,15 +177,31 @@ class Login extends Component {
     validateFields(VALIDATE_FIELDS[currentTab], async (err, values) => {
       if (!err) {
         if (errorTimes > 2 && currentTab === 'tabAccount') {
-          const result = await checkImgCode({
-            options: {
-              code: getFieldValue('vcode') || '',
-              key: imgCode.key || '',
-            },
-          });
+          const code = getFieldValue('vcode');
+          if (!code) {
+            setFields({
+              vcode: {
+                errors: [new Error(formatMessage({ id: 'code.validate.isEmpty' }))],
+              },
+            });
+          } else {
+            const result = await checkImgCode({
+              options: {
+                code: getFieldValue('vcode') || '',
+                key: imgCode.key || '',
+              },
+            });
 
-          if (result && result.code === ERROR_OK) {
-            this.doLogin(loginType, values);
+            if (result && result.code === ERROR_OK) {
+              this.doLogin(loginType, values);
+            } else {
+              if (Object.keys(ALERT_NOTICE_MAP).includes(`${result.code}`)) {
+                this.setState({
+                  notice: result.code,
+                });
+              }
+              getImageCode();
+            }
           }
         } else {
           this.doLogin(loginType, values);
@@ -167,11 +211,11 @@ class Login extends Component {
   };
 
   render() {
-    const { notice, trigger } = this.state;
+    const { notice, trigger, vcodeIsError, showImgCaptchaModal } = this.state;
     const {
       form: { getFieldDecorator },
       getImageCode,
-      sso: { imgCode, imgCaptcha, needImgCaptcha },
+      sso: { imgCode, imgCaptcha },
       user: { errorTimes },
     } = this.props;
     const currentLanguage = getLocale();
@@ -240,6 +284,7 @@ class Login extends Component {
                   })(
                     <ImgCaptcha
                       {...{
+                        inputRef: this.inputRef,
                         imgUrl: imgCode.url,
                         inputProps: {
                           size: 'large',
@@ -285,30 +330,41 @@ class Login extends Component {
                   )}
                 </Form.Item>
 
-                <Modal visible={needImgCaptcha} footer={null} maskClosable={false}>
+                <Modal
+                  title={formatMessage({ id: 'safety.validate' })}
+                  visible={showImgCaptchaModal}
+                  maskClosable={false}
+                  onOk={this.checkVcode}
+                  onCancel={this.closeImgCaptchaModal}
+                >
                   <div>
+                    <p>{formatMessage({ id: 'vcode.input.notice' })}</p>
                     <Form.Item>
-                      {getFieldDecorator('vcode', {
+                      {getFieldDecorator('vcode2', {
                         validateTrigger: 'onBlur',
                         rules: [
                           {
-                            required: true,
-                            message: formatMessage({ id: 'code.validate.isEmpty' }),
+                            validator: (rule, value, callback) => {
+                              if (vcodeIsError) {
+                                callback(formatMessage({ id: 'vcode.input.error' }));
+                              } else if (!vcodeIsError && !value) {
+                                callback(formatMessage({ id: 'code.validate.isEmpty' }));
+                              } else {
+                                callback();
+                              }
+                            },
                           },
                         ],
                       })(
                         <ImgCaptcha
                           {...{
-                            type: 'vertical',
                             imgUrl: imgCaptcha.url,
                             inputProps: {
                               size: 'large',
                               placeholder: formatMessage({ id: 'vcode.placeholder' }),
                             },
                             initial: false,
-                            getImageCode: () => this.getCode(),
-                            autoCheck: true,
-                            refreshCheck: result => !(result && result.code === ERROR_OK),
+                            onFocus: () => this.setState({ vcodeIsError: false }),
                           }}
                         />
                       )}

@@ -4,22 +4,42 @@ import { Form, Input, Modal } from 'antd';
 import { customValidate } from '@/utils/customValidate';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { encryption } from '@/utils/utils';
+import { ERROR_OK } from '@/constants/errorCode';
 
 @Form.create()
 class ChangePassword extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      resetPasswordSuccess: true,
+    };
+  }
+
   onOk = () => {
     const {
       form: { validateFields },
       onOk,
     } = this.props;
-    validateFields((err, values) => {
+    validateFields(async (err, values) => {
       if (!err) {
         const options = {
           ...values,
           old_password: encryption(values.old_password),
           new_password: encryption(values.new_password),
         };
-        onOk(options);
+        const response = await onOk(options);
+        if (response && response.code !== ERROR_OK) {
+          this.setState(
+            {
+              resetPasswordSuccess: false,
+            },
+            () => validateFields(['old_password'], { force: true })
+          );
+        } else {
+          this.setState({
+            resetPasswordSuccess: true,
+          });
+        }
       }
     });
   };
@@ -29,7 +49,14 @@ class ChangePassword extends Component {
     onCancel();
   };
 
+  inputFocus = () => {
+    this.setState({
+      resetPasswordSuccess: true,
+    });
+  };
+
   render() {
+    const { resetPasswordSuccess } = this.state;
     const {
       form: { getFieldDecorator, getFieldValue },
       visible,
@@ -56,8 +83,17 @@ class ChangePassword extends Component {
                   required: true,
                   message: formatMessage({ id: 'current_password.validate.isEmpty' }),
                 },
+                {
+                  validator: (rule, value, callback) => {
+                    if (resetPasswordSuccess) {
+                      callback();
+                    } else {
+                      callback(formatMessage({ id: 'change.password.current.fail' }));
+                    }
+                  },
+                },
               ],
-            })(<Input type="password" />)}
+            })(<Input type="password" onFocus={this.inputFocus} />)}
           </Form.Item>
           <Form.Item
             {...FORM_ITEM_LAYOUT_COMMON}
@@ -74,8 +110,12 @@ class ChangePassword extends Component {
                       value,
                       callback,
                       extra: {
+                        getFieldValue,
+                        compare: true,
+                        compareField: 'old_password',
                         messageId: {
                           isEmpty: 'new_password.validate.isEmpty',
+                          isFormatted: 'new_password.validate.isFormatted',
                         },
                       },
                     }),

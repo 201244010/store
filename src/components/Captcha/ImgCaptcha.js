@@ -44,10 +44,20 @@ class ImgCaptcha extends Component {
     }
   };
 
+  handleInputFocus = e => {
+    const { onFocus } = this.props;
+    if (onFocus) {
+      onFocus(e.target.value);
+    }
+  };
+
   getImageCode = async () => {
     const { getImageCode } = this.props;
-    const response = await getImageCode();
-    return response;
+    if (getImageCode) {
+      const response = await getImageCode();
+      return response;
+    }
+    return null;
   };
 
   refreshCode = () => {
@@ -55,41 +65,25 @@ class ImgCaptcha extends Component {
   };
 
   render() {
-    const { value } = this.state;
-    const { imgUrl, inputProps = {}, imgProps = {}, type = 'horizontal' } = this.props;
+    const { value = '' } = this.state;
+    const { imgUrl, inputProps = {}, imgProps = {}, inputRef } = this.props;
 
     return (
-      <>
-        {type === 'horizontal' ? (
-          <Row gutter={16}>
-            <Col span={16}>
-              <Input
-                value={value}
-                onChange={this.handleInputChange}
-                onBlur={this.handleInputBlur}
-                {...inputProps}
-              />
-            </Col>
-            <Col span={8}>
-              <img src={imgUrl} alt="" onClick={this.refreshCode} {...imgProps} />
-            </Col>
-          </Row>
-        ) : (
-          <>
-            <div>
-              <img src={imgUrl} alt="" onClick={this.refreshCode} {...imgProps} />
-            </div>
-            <div>
-              <Input
-                value={value}
-                onChange={this.handleInputChange}
-                onBlur={this.handleInputBlur}
-                {...inputProps}
-              />
-            </div>
-          </>
-        )}
-      </>
+      <Row gutter={16}>
+        <Col span={16}>
+          <Input
+            ref={inputRef}
+            value={value}
+            onChange={this.handleInputChange}
+            onBlur={this.handleInputBlur}
+            onFocus={this.handleInputFocus}
+            {...inputProps}
+          />
+        </Col>
+        <Col span={8}>
+          <img src={imgUrl} alt="" onClick={this.refreshCode} {...imgProps} />
+        </Col>
+      </Row>
     );
   }
 }

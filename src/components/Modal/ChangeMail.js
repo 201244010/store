@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Button, Form, Input, Modal } from 'antd';
 import { Result } from 'ant-design-pro';
-import { customValidate } from '@/utils/customValidate';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
+import { customValidate } from '@/utils/customValidate';
 import styles from '@/pages/User/Register/Register.less';
 
 const SuccessInfo = props => {
@@ -107,13 +107,8 @@ class ChangeMail extends Component {
                 validateTrigger: 'onBlur',
                 rules: [
                   {
-                    validator: (rule, value, callback) =>
-                      customValidate({
-                        field: 'password',
-                        rule,
-                        value,
-                        callback,
-                      }),
+                    required: true,
+                    message: formatMessage({ id: 'change.loginPassword.isEmpty' }),
                   },
                 ],
               })(<Input type="password" />)}

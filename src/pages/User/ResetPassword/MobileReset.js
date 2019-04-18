@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Alert, Modal } from 'antd';
+import { Form, Input, Button, Alert, Modal, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import Captcha from '@/components/Captcha';
@@ -8,7 +8,7 @@ import styles from '../Register/Register.less';
 import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 
 // TODO 根据 error code 显示不同的错误信息，等待 error code
 const ALERT_NOTICE_MAP = {
@@ -34,8 +34,14 @@ class MobileReset extends Component {
       resetSuccess: false,
       notice: '',
       trigger: false,
+      vcodeIsError: false,
+      showImgCaptchaModal: false,
     };
   }
+
+  closeImgCaptchaModal = () => {
+    this.setState({ showImgCaptchaModal: false });
+  };
 
   getCode = async (params = {}) => {
     const { imageStyle = {} } = params;
@@ -58,21 +64,41 @@ class MobileReset extends Component {
       },
     });
 
-    if (response && !response.data) {
+    if (response && response.code === ERROR_OK) {
+      message.success(formatMessage({ id: 'send.mobile.code.success' }));
+      this.setState({
+        trigger: true,
+        notice: '',
+        showImgCaptchaModal: false,
+      });
+    } else if (response && !response.data) {
       if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
         this.setState({
           trigger: false,
           notice: response.code,
         });
       }
+    } else if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
+      this.setState({ showImgCaptchaModal: true });
     }
 
-    if (response && response.code === ERROR_OK) {
-      this.setState({
-        trigger: true,
-      });
-    }
     return response;
+  };
+
+  checkVcode = async () => {
+    const {
+      form: { setFieldsValue, validateFields },
+    } = this.props;
+    const response = await this.getCode();
+    if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
+      setFieldsValue({ vcode: '' });
+      this.setState(
+        {
+          vcodeIsError: true,
+        },
+        () => validateFields(['vcode'], { force: true })
+      );
+    }
   };
 
   onSubmit = () => {
@@ -100,9 +126,9 @@ class MobileReset extends Component {
   render() {
     const {
       form: { getFieldDecorator, getFieldValue },
-      sso: { needImgCaptcha, imgCaptcha },
+      sso: { imgCaptcha },
     } = this.props;
-    const { resetSuccess, notice, trigger } = this.state;
+    const { resetSuccess, notice, trigger, vcodeIsError, showImgCaptchaModal } = this.state;
 
     return (
       <div className={styles['register-wrapper']}>
@@ -148,25 +174,49 @@ class MobileReset extends Component {
                   />
                 )}
               </Form.Item>
-              <Modal visible={needImgCaptcha} footer={null} maskClosable={false}>
-                <Form.Item>
-                  {getFieldDecorator('vcode')(
-                    <ImgCaptcha
-                      {...{
-                        type: 'vertical',
-                        imgUrl: imgCaptcha.url,
-                        inputProps: {
-                          size: 'large',
+
+              <Modal
+                title={formatMessage({ id: 'safety.validate' })}
+                visible={showImgCaptchaModal}
+                maskClosable={false}
+                onOk={this.checkVcode}
+                onCancel={this.closeImgCaptchaModal}
+              >
+                <div>
+                  <p>{formatMessage({ id: 'vcode.input.notice' })}</p>
+                  <Form.Item>
+                    {getFieldDecorator('vcode', {
+                      validateTrigger: 'onBlur',
+                      rules: [
+                        {
+                          validator: (rule, value, callback) => {
+                            if (vcodeIsError) {
+                              callback(formatMessage({ id: 'vcode.input.error' }));
+                            } else if (!vcodeIsError && !value) {
+                              callback(formatMessage({ id: 'code.validate.isEmpty' }));
+                            } else {
+                              callback();
+                            }
+                          },
                         },
-                        initial: false,
-                        getImageCode: () => this.getCode(),
-                        autoCheck: true,
-                        refreshCheck: result => !(result && result.code === ERROR_OK),
-                      }}
-                    />
-                  )}
-                </Form.Item>
+                      ],
+                    })(
+                      <ImgCaptcha
+                        {...{
+                          imgUrl: imgCaptcha.url,
+                          inputProps: {
+                            size: 'large',
+                            placeholder: formatMessage({ id: 'vcode.placeholder' }),
+                          },
+                          initial: false,
+                          onFocus: () => this.setState({ vcodeIsError: false }),
+                        }}
+                      />
+                    )}
+                  </Form.Item>
+                </div>
               </Modal>
+
               <Form.Item>
                 {getFieldDecorator('code', {
                   validateTrigger: 'onBlur',
