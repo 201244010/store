@@ -14,12 +14,21 @@ import * as styles from './Account.less';
         updateUsername: payload => dispatch({ type: 'user/updateUsername', payload }),
         changePassword: payload => dispatch({ type: 'user/changePassword', payload }),
         updatePhone: payload => dispatch({ type: 'user/updatePhone', payload }),
+        updateIcon: payload => dispatch({ type: 'user/updateIcon', payload }),
         sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
     })
 )
 class UserCenter extends Component {
     render() {
-        const { user, sso, updateUsername, changePassword, updatePhone, sendCode } = this.props;
+        const {
+            user,
+            sso,
+            updateUsername,
+            changePassword,
+            updatePhone,
+            sendCode,
+            updateIcon,
+        } = this.props;
 
         return (
             <div className={styles['account-wrapper']}>
@@ -27,6 +36,7 @@ class UserCenter extends Component {
                     {...{
                         user,
                         updateUsername,
+                        updateIcon,
                     }}
                 />
                 <Security

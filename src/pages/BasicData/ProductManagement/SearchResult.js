@@ -42,7 +42,8 @@ class SearchResult extends Component {
         router.push(urlMap[name]);
     };
 
-    deleteGoods = record => {
+    deleteProducts = () => {
+        const { selectedRowKeys } = this.state;
         const { deleteProduct } = this.props;
 
         Modal.confirm({
@@ -52,7 +53,9 @@ class SearchResult extends Component {
             okText: formatMessage({ id: 'btn.delete' }),
             onOk() {
                 deleteProduct({
-                    id: record.id,
+                    options: {
+                        product_id_list: selectedRowKeys,
+                    },
                 });
             },
         });
@@ -139,6 +142,7 @@ class SearchResult extends Component {
                     <Button
                         className={styles['function-btn']}
                         disabled={selectedRowKeys.length <= 0}
+                        onClick={this.deleteProducts}
                     >
                         {formatMessage({ id: 'btn.delete' })}
                     </Button>

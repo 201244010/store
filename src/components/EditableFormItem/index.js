@@ -9,14 +9,16 @@ const formItemLayout = {
 class EditableFormItem extends Component {
     constructor(props) {
         super(props);
-        this.count = 0;
-        this.max = props.max || Infinity;
+        const { countStart, max } = props;
+        this.count = countStart || 0;
+        this.max = max || Infinity;
     }
 
-    remove = k => {
+    remove = (k, index) => {
         const {
             form: { getFieldValue, setFieldsValue },
             labelOption: { formKey = '' },
+            onRemove,
         } = this.props;
         const keys = getFieldValue(`__${formKey}__`);
         if (keys.length === 0) {
@@ -26,6 +28,10 @@ class EditableFormItem extends Component {
         setFieldsValue({
             [`__${formKey}__`]: keys.filter(key => key !== k),
         });
+
+        if (onRemove) {
+            onRemove(index);
+        }
     };
 
     addCustomFormItem = () => {
@@ -62,11 +68,11 @@ class EditableFormItem extends Component {
 
         return keys.map((key, index) => {
             const labelName = `${labelPrefix}${index + 1}`;
-            const { name, contenxt } = data[index] || {};
+            const { name, context } = data[index] || {};
             const labelProps = {
                 ...labelOption,
                 index,
-                name: labelName,
+                name: name || labelName,
             };
             return (
                 <Col span={span} key={key}>
@@ -81,7 +87,7 @@ class EditableFormItem extends Component {
                         <Col span={14}>
                             <Form.Item {...formItemLayout}>
                                 {getFieldDecorator(`${formKey}.${index}.context`, {
-                                    initialValue: contenxt || '',
+                                    initialValue: context || '',
                                     ...itemOptions,
                                 })(wrapperItem)}
                             </Form.Item>
@@ -91,7 +97,7 @@ class EditableFormItem extends Component {
                                 <Icon
                                     style={{ marginLeft: '20px' }}
                                     type="minus-circle-o"
-                                    onClick={() => this.remove(key)}
+                                    onClick={() => this.remove(key, index)}
                                 />
                             </Form.Item>
                         </Col>

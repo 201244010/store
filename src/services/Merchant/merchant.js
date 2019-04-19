@@ -28,3 +28,12 @@ export const companyUpdate = (options = {}) => {
     };
     return fetchApi('update', opts).then(response => response.json());
 };
+
+export const getCompanyList = (options = {}) => {
+    const opts = {
+        body: {
+            ...options,
+        },
+    };
+    return fetchApi('getList', opts).then(response => response.json());
+};

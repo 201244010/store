@@ -7,8 +7,9 @@ import { Tabs, Form, Input, Button, Icon, Alert, Modal, message } from 'antd';
 import { encryption } from '@/utils/utils';
 import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
-import styles from './Login.less';
+import Storage from '@konata9/storage.js';
 import { ERROR_OK, ALERT_NOTICE_MAP, VCODE_ERROR, SHOW_VCODE } from '@/constants/errorCode';
+import styles from './Login.less';
 
 const VALIDATE_FIELDS = {
     tabAccount: ['username', 'password'],
@@ -19,6 +20,7 @@ const VALIDATE_FIELDS = {
     state => ({
         user: state.user,
         sso: state.sso,
+        merchant: state.merchant,
     }),
     dispatch => ({
         userLogin: payload => dispatch({ type: 'user/login', payload }),
@@ -26,6 +28,7 @@ const VALIDATE_FIELDS = {
         checkUser: payload => dispatch({ type: 'sso/checkUser', payload }),
         sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
         getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
+        getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
     })
 )
 @Form.create()
@@ -123,6 +126,27 @@ class Login extends Component {
         });
     };
 
+    checkCompanyList = async () => {
+        const { getCompanyList } = this.props;
+        const response = await getCompanyList();
+        if (response && response.code === ERROR_OK) {
+            const data = response.data || {};
+            const companyList = data.company_list || [];
+            const companys = companyList.length;
+            if (companys === 0) {
+                router.push('/merchant/create');
+            } else if (companys === 1) {
+                const companyInfo = companyList[0] || {};
+                Storage.set({ __company_id__: companyInfo.id });
+                router.push('/');
+            } else {
+                router.push('/user/storeRelate');
+            }
+        } else {
+            router.push('/user/login');
+        }
+    };
+
     handleResponse = async response => {
         const {
             form: { getFieldValue },
@@ -139,7 +163,7 @@ class Login extends Component {
                 if (data.needMerge) {
                     this.showAccountMergeModal(data.url);
                 } else {
-                    router.push('/');
+                    this.checkCompanyList();
                 }
             }
         } else if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
