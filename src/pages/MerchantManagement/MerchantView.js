@@ -5,7 +5,6 @@ import { connect } from 'dva';
 import { unixSecondToDate } from '@/utils/utils';
 import router from 'umi/router';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
-import Storage from '@konata9/storage.js';
 import styles from './Merchant.less';
 
 @connect(
@@ -13,25 +12,22 @@ import styles from './Merchant.less';
         merchant: state.merchant,
     }),
     dispatch => ({
-        companyGetInfo: payload => dispatch({ type: 'merchant/companyGetInfo', payload }),
+        companyGetInfo: () => dispatch({ type: 'merchant/companyGetInfo' }),
     })
 )
 class MerchantView extends Component {
     componentDidMount() {
         const { companyGetInfo } = this.props;
-        const payload = {
-            options: {
-                company_id: Storage.get('__company_id__') || '56',
-            },
-        };
-        companyGetInfo(payload);
+        companyGetInfo();
     }
 
-    update = () => {
-        router.push('/basicData/merchantManagement/modify');
+    goNext = target => {
+        const path = {
+            update: '/basicData/merchantManagement/modify',
+            cancel: '/account/center',
+        };
+        router.push(path[target] || '/');
     };
-
-    cancel = () => {};
 
     render() {
         const {
@@ -84,10 +80,10 @@ class MerchantView extends Component {
                     </Form.Item>
                 </Form>
                 <div className={styles['button-style']}>
-                    <Button type="primary" onClick={this.update}>
+                    <Button type="primary" onClick={() => this.goNext('update')}>
                         {formatMessage({ id: 'btn.alter' })}
                     </Button>
-                    <Button style={{ marginLeft: 20 }} onClick={this.cancel}>
+                    <Button style={{ marginLeft: 20 }} onClick={() => this.goNext('cancel')}>
                         {formatMessage({ id: 'btn.back' })}
                     </Button>
                 </div>

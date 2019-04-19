@@ -130,12 +130,13 @@ class Login extends Component {
         const { getCompanyList } = this.props;
         const response = await getCompanyList();
         if (response && response.code === ERROR_OK) {
-            const companyList = response.company_list || [];
+            const data = response.data || {};
+            const companyList = data.company_list || [];
             const companys = companyList.length;
             if (companys === 0) {
                 router.push('/merchant/create');
             } else if (companys === 1) {
-                const companyInfo = companys[0] || {};
+                const companyInfo = companyList[0] || {};
                 Storage.set({ __company_id__: companyInfo.id });
                 router.push('/');
             } else {

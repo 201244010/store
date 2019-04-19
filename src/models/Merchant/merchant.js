@@ -20,8 +20,8 @@ export default {
                 const data = response.data || {};
                 Storage.set({ __company_id__: data.company_id });
                 router.push('/');
-            }else{
-                router.push('/user/login')
+            } else {
+                router.push('/user/login');
             }
         },
 
@@ -41,9 +41,8 @@ export default {
             return response;
         },
 
-        *companyGetInfo({ payload }, { call, put }) {
-            const { options } = payload;
-            const response = yield call(Actions.companyGetInfo, options);
+        *companyGetInfo(_, { call, put }) {
+            const response = yield call(Actions.companyGetInfo);
             if (response && response.code === ERROR_OK) {
                 const result = response.data || {};
                 yield put({
