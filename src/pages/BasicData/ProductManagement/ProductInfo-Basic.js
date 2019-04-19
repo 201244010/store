@@ -5,7 +5,7 @@ import * as styles from './ProductManagement.less';
 
 const ProductInfoBasic = props => {
     const { productBasic = [], productBasicExtra = [] } = props;
-
+    console.log(productBasicExtra);
     return (
         <Card title={formatMessage({ id: 'basicData.product.detail.title' })} bordered={false}>
             <div className={styles['card-column']}>
@@ -20,7 +20,7 @@ const ProductInfoBasic = props => {
             </div>
             <div className={styles['card-column']}>
                 {productBasicExtra.map(extra => (
-                    <div className={styles['card-item']} key={extra.index || +new Date()}>
+                    <div className={styles['card-item']} key={extra.idx || +new Date()}>
                         <span className={styles['item-label']}>{extra.name}：</span>
                         <span className={styles['item-content']}>{extra.context}</span>
                     </div>
