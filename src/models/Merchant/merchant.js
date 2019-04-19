@@ -72,5 +72,11 @@ export default {
                 },
             };
         },
+        updateState(state, action) {
+            return {
+                ...state,
+                ...action.payload,
+            };
+        },
     },
 };
