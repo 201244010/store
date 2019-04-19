@@ -1,8 +1,10 @@
 import * as Services from '@/services/ESL/electricLabel';
 import { hideSinglePageCheck } from '@/utils/utils';
+import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
-import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from "@/constants";
 import { ERROR_OK } from "@/constants/errorCode";
+import { message } from "antd";
 
 export default {
     namespace: 'eslElectricLabel',
@@ -82,6 +84,41 @@ export default {
                 });
             }
             return response;
+        },
+        *deleteESL({ payload = {} }, { call, put, select }) {
+            const { pagination: { current }, data, } = yield select(state => state.eslElectricLabel);
+            const { options = {} } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const targetPage = data.length === 1 ? 1 : current;
+            const response = yield call(Services.deleteESL, options);
+            if (response.code === ERROR_OK) {
+                message.success(
+                    formatMessage({ id: 'esl.device.esl.delete.success' }),
+                    DURATION_TIME
+                );
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+                yield put({
+                    type: 'fetchElectricLabels',
+                    payload: {
+                        options: {
+                            current: targetPage,
+                        },
+                    },
+                });
+            } else {
+                message.error(formatMessage({ id: 'esl.device.esl.delete.fail' }), DURATION_TIME);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            }
         },
     },
     reducers: {

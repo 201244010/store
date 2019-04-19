@@ -15,6 +15,8 @@ import * as styles from './index.less';
             dispatch({ type: 'eslElectricLabel/fetchElectricLabels', payload }),
         fetchESLDetails: payload =>
             dispatch({ type: 'eslElectricLabel/fetchESLDetails', payload }),
+        deleteESL: payload =>
+            dispatch({ type: 'eslElectricLabel/deleteESL', payload }),
     })
 )
 class ElectricLabel extends Component {
@@ -39,6 +41,7 @@ class ElectricLabel extends Component {
             changeSearchFormValue,
             fetchElectricLabels,
             fetchESLDetails,
+            deleteESL,
         } = this.props;
 
         return (
@@ -58,6 +61,7 @@ class ElectricLabel extends Component {
                         detailInfo,
                         fetchElectricLabels,
                         fetchESLDetails,
+                        deleteESL,
                     }}
                 />
             </div>

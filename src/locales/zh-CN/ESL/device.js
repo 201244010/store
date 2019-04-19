@@ -41,5 +41,9 @@ export default {
     'esl.device.esl.battery': '价签电量',
     'esl.device.esl.all': '共',
     'esl.device.esl.total': '个价签',
-    'esl.device.esl.detail': '价签详情'
+    'esl.device.esl.detail': '价签详情',
+    'esl.device.esl.delete.message1': '删除后价签将从该账户中解除绑定。',
+    'esl.device.esl.delete.message2': '解绑后的价签重新绑定商品可恢复使用。',
+    'esl.device.esl.delete.success': '删除价签成功',
+    'esl.device.esl.delete.fail': '删除价签失败',
 };

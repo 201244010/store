@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Divider, message, Modal, Table } from "antd";
+import { Button, Divider, message, Modal, Table, Menu, Dropdown } from "antd";
 import { formatMessage } from 'umi/locale';
 import { DURATION_TIME, ESL_STATES } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
@@ -44,12 +44,12 @@ class SearchResult extends Component {
 
     };
 
-    showDeleteStation = record => {
-        const { deleteBaseStation } = this.props;
+    deleteESL = (record) => {
+        const { deleteESL } = this.props;
         const content = (
             <div>
-                <div>{formatMessage({ id: 'esl.device.ap.delete.message1' })}</div>
-                <div>{formatMessage({ id: 'esl.device.ap.delete.message2' })}</div>
+                <div>{formatMessage({ id: 'esl.device.esl.delete.message1' })}</div>
+                <div>{formatMessage({ id: 'esl.device.esl.delete.message2' })}</div>
             </div>
         );
 
@@ -59,7 +59,9 @@ class SearchResult extends Component {
             content,
             okText: formatMessage({ id: 'btn.delete' }),
             onOk() {
-                deleteBaseStation({ ap_id: record.id });
+                deleteESL({
+                    options: { esl_id: record.id },
+                });
             },
         });
     };
@@ -69,6 +71,14 @@ class SearchResult extends Component {
         this.setState({
             [name]: !modalStatus,
         });
+    };
+
+    handleMoreClick = (e) => {
+        if (e.key === '3') {
+            this.deleteESL({
+                id: e.domEvent.target.dataset.recordId
+            });
+        }
     };
 
     render() {
@@ -131,12 +141,30 @@ class SearchResult extends Component {
                             {formatMessage({ id: 'list.action.push.again' })}
                         </a>
                         <Divider type="vertical" />
-                        <a
-                            href="javascript: void (0);"
-                            onClick={() => this.showDeleteStation(record)}
+                        <Dropdown overlay={
+                            <Menu onClick={this.handleMoreClick}>
+                                <Menu.Item key="0">
+                                    <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">1st menu item</a>
+                                </Menu.Item>
+                                <Menu.Divider />
+                                <Menu.Item key="1">
+                                    <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">2nd menu item</a>
+                                </Menu.Item>
+                                <Menu.Divider />
+                                <Menu.Item key="2">
+                                    <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">2nd menu item</a>
+                                </Menu.Item>
+                                <Menu.Divider />
+                                <Menu.Item key="3">
+                                    <a href="javascript: void (0);" data-record-id={record.id}>删除</a>
+                                </Menu.Item>
+                            </Menu>
+                        }
                         >
-                            {formatMessage({ id: 'list.action.more' })}
-                        </a>
+                            <a className="ant-dropdown-link" href="javascript: void (0)">
+                                {formatMessage({ id: 'list.action.more' })}
+                            </a>
+                        </Dropdown>
                     </span>
                 ),
             },
