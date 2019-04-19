@@ -32,9 +32,10 @@ class SearchResult extends Component {
     toPath = (name, record = {}) => {
         const encodeID = record.id ? idEncode(record.id) : null;
         const urlMap = {
-            productDetail: `/basicData/productManagement/list/productInfo?id=${encodeID}`,
-            createProduct: '/basicData/productManagement/list/productCU?action=create',
-            update: `/basicData/productManagement/list/productCU?action=edit&id=${encodeID}`,
+            productDetail: `/basicData/productManagement/list/productInfo?id=${encodeID}&from=list`,
+            createProduct:
+                '/basicData/productManagement/list/productCreate?action=create&from=list',
+            update: `/basicData/productManagement/list/productUpdate?action=edit&id=${encodeID}&from=list`,
             erpImport: `/basicData/productManagement/list/erpImport`,
         };
 

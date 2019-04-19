@@ -24,15 +24,15 @@ export default {
     'basicData.product.member_price': '会员价',
     'basicData.product.price.customize': '自定义价格',
     'basicData.product.expire_time': '保质期',
-    'basicData.product.production_date.day': '天',
+    'basicData.product.expire_time.day': '天',
     'basicData.product.qrCode.link': '二维码链接',
     'basicData.product.qr_code': '二维码链接',
     'basicData.product.modified_time': '最后修改时间',
     'basicData.product.customize': '自定义',
     'basicData.product.image': '商品图片',
 
-    'basicData.product.customize.isEmpty': '自定义字段不能为空',
-    'basicData.product.price.customize.isEmpty': '自定义价格不能为空',
+    'basicData.product.extraInfo.isEmpty': '自定义字段不能为空',
+    'basicData.product.extraPrice.isEmpty': '自定义价格不能为空',
 
     'basicData.product.detail.title': '基本信息',
     'basicData.product.price.title': '价格信息',

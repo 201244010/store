@@ -20,11 +20,9 @@ const ProductInfoBasic = props => {
             </div>
             <div className={styles['card-column']}>
                 {productBasicExtra.map(extra => (
-                    <div className={styles['card-item']} key={extra.key}>
-                        <span className={styles['item-label']}>
-                            {formatMessage({ id: extra.label })}：
-                        </span>
-                        <span className={styles['item-content']}>{extra.value}</span>
+                    <div className={styles['card-item']} key={extra.index || +new Date()}>
+                        <span className={styles['item-label']}>{extra.name}：</span>
+                        <span className={styles['item-content']}>{extra.context}</span>
                     </div>
                 ))}
             </div>
