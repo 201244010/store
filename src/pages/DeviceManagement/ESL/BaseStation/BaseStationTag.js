@@ -20,7 +20,7 @@ export default ({ record, template }) => {
         <div className="tag-wrapper">
             <Badge
                 status={`${record.status}` === '1' ? 'success' : 'error'}
-                text={template[record.status]}
+                text={formatMessage({ id: template[record.status] })}
             />
             {`${record.status}` !== '1' && (
                 <Tooltip placement="bottomRight" title={title}>

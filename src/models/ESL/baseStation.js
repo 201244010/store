@@ -48,8 +48,8 @@ export default {
             });
         },
 
-        *fetchBaseStations({ payload }, { call, put, select }) {
-            const { options } = payload;
+        *fetchBaseStations({ payload = {} }, { call, put, select }) {
+            const { options = {} } = payload;
             const { pagination, searchFormValues } = yield select(state => state.eslBaseStation);
 
             yield put({
@@ -74,8 +74,8 @@ export default {
             });
         },
 
-        *changeSearchFormValue({ payload }, { put }) {
-            const { options } = payload;
+        *changeSearchFormValue({ payload = {} }, { put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'setSearchFormValue',
                 payload: {
@@ -84,8 +84,8 @@ export default {
             });
         },
 
-        *getBaseStationDetail({ payload }, { call, put }) {
-            const { options } = payload;
+        *getBaseStationDetail({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -110,12 +110,12 @@ export default {
             return response;
         },
 
-        *deleteBaseStation({ payload }, { call, put, select }) {
+        *deleteBaseStation({ payload = {} }, { call, put, select }) {
             const {
                 pagination: { current },
                 data,
             } = yield select(state => state.eslBaseStation);
-            const { options } = payload;
+            const { options = {} } = payload;
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -132,14 +132,14 @@ export default {
                     type: 'updateState',
                     payload: { loading: false },
                 });
-                yield {
+                yield put({
                     type: 'fetchBaseStations',
                     payload: {
                         options: {
                             current: targetPage,
                         },
                     },
-                };
+                });
             } else {
                 message.error(formatMessage({ id: 'esl.device.ap.delete.fail' }), DURATION_TIME);
                 yield put({

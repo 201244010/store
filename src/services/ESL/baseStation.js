@@ -1,16 +1,16 @@
 import { customizeFetch } from '@/utils/fetch';
-
+import { GROCERY_ADDRESS, env } from '@/config';
 // TODO 等待后端接口
 
-const fetchApi = customizeFetch('device/ap');
+const fetchApi = customizeFetch('api/device/ap', GROCERY_ADDRESS[env]);
 
-export const fetchBaseStations = options => {
+export const fetchBaseStations = (options = {}) => {
     const opts = {
         method: 'POST',
         body: {
             keyword: options.keyword,
             status: options.status || -1,
-            page_num: options.current,
+            page_num: options.current || 1,
             page_size: options.pageSize,
         },
     };

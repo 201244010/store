@@ -29,7 +29,9 @@ class SearchResult extends Component {
     showDetailVisible = async record => {
         const { detailVisible } = this.state;
         const { getBaseStationDetail } = this.props;
-        const response = await getBaseStationDetail({ ap_id: record.id });
+        const response = await getBaseStationDetail({
+            options: { ap_id: record.id },
+        });
         if (response && response.code === ERROR_OK) {
             this.setState({
                 detailVisible: !detailVisible,
@@ -69,7 +71,9 @@ class SearchResult extends Component {
             content,
             okText: formatMessage({ id: 'btn.delete' }),
             onOk() {
-                deleteBaseStation({ ap_id: record.id });
+                deleteBaseStation({
+                    options: { ap_id: record.id },
+                });
             },
         });
     };
@@ -77,6 +81,7 @@ class SearchResult extends Component {
     render() {
         const { loading, data, pagination, stationInfo } = this.props;
         const { detailVisible, editVisible, selectedRecord } = this.state;
+
         const columns = [
             {
                 title: formatMessage({ id: 'esl.device.ap.id' }),

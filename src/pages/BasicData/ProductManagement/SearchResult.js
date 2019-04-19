@@ -31,11 +31,10 @@ class SearchResult extends Component {
 
     toPath = (name, record = {}) => {
         const encodeID = record.id ? idEncode(record.id) : null;
-        console.log(encodeID);
         const urlMap = {
-            goodDetail: `/basicData/productManagement/list/productInfo?id=123`,
+            productDetail: `/basicData/productManagement/list/productInfo?id=${encodeID}`,
             createProduct: '/basicData/productManagement/list/productCU?action=create',
-            update: `/basicData/productManagement/list/productCU?action=edit&id=233`,
+            update: `/basicData/productManagement/list/productCU?action=edit&id=${encodeID}`,
             erpImport: `/basicData/productManagement/list/erpImport`,
         };
 
@@ -88,7 +87,7 @@ class SearchResult extends Component {
                     <span>
                         <a
                             href="javascript: void (0);"
-                            onClick={() => this.toPath('goodDetail', record)}
+                            onClick={() => this.toPath('productDetail', record)}
                         >
                             {formatMessage({ id: 'list.action.detail' })}
                         </a>
@@ -97,7 +96,7 @@ class SearchResult extends Component {
                             href="javascript: void (0);"
                             onClick={() => this.toPath('update', record)}
                         >
-                            {formatMessage({ id: 'list.action.delete' })}
+                            {formatMessage({ id: 'list.action.edit' })}
                         </a>
                     </span>
                 ),
