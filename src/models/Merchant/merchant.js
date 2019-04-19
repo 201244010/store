@@ -3,6 +3,7 @@ import { ERROR_OK } from '@/constants/errorCode';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
+import Storage from '@konata9/storage.js';
 
 export default {
     namespace: 'merchant',
@@ -16,6 +17,11 @@ export default {
             const response = yield call(Actions.companyCreate, payload);
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'create.success' }));
+                const data = response.data || {};
+                Storage.set({ __company_id__: data.company_id });
+                router.push('/');
+            }else{
+                router.push('/user/login')
             }
         },
 
