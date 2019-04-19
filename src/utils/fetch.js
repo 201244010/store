@@ -75,9 +75,9 @@ const formatParams = (options = {}) => {
 
 const customizeParams = (options = {}) => {
     const opts = {
-        ...options.body,
         company_id: Storage.get('__company_id__') || 111,
         shop_id: Storage.get('__shop_id__') || 666,
+        ...options.body,
     };
 
     const formattedParams = normalizeParams(opts);
