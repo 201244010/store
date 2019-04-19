@@ -35,10 +35,14 @@ class ProductInfo extends Component {
     }
 
     toPath = target => {
-        const productId = idDecode(getLocationParam('id'));
+        const {
+            product: {
+                productInfo: { id },
+            },
+        } = this.props;
         const path = {
-            edit: `/basicData/productManagement/list/productCU?action=edit&id=${idEncode(
-                productId
+            edit: `/basicData/productManagement/list/productUpdate?action=edit&id=${idEncode(
+                id
             )}&from=detail`,
             back: '/basicData/productManagement/list',
         };

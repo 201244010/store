@@ -73,11 +73,11 @@ const productBarCode = (rule, value, callback) => {
     }
 };
 
-const productionDate = (rule, value, callback) => {
+const expireTime = (rule, value, callback) => {
     if (!value) {
         callback();
     } else if (!RegExp.production_date.test(value)) {
-        callback(formatMessage({ id: 'product.production_date.isFormatted' }));
+        callback(formatMessage({ id: 'product.expire_time.isFormatted' }));
     } else {
         callback();
     }
@@ -99,10 +99,10 @@ const validatorList = {
     mail: mailValidate,
     seq_num: productSqeNum,
     bar_code: productBarCode,
-    production_date: productionDate,
+    expire_time: expireTime,
     price: productPrice,
     promote_price: productPrice,
-    vip: productPrice,
+    member_price: productPrice,
     telphone: phoneValidate,
 };
 

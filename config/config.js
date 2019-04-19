@@ -105,7 +105,13 @@ export default {
                   component: './BasicData/ProductManagement',
                 },
                 {
-                  path: '/basicData/productManagement/list/productCU',
+                  path: '/basicData/productManagement/list/productCreate',
+                  name: 'list',
+                  hideInMenu: true,
+                  component: './BasicData/ProductManagement/ProductCU',
+                },
+                {
+                  path: '/basicData/productManagement/list/productUpdate',
                   name: 'list',
                   hideInMenu: true,
                   component: './BasicData/ProductManagement/ProductCU',

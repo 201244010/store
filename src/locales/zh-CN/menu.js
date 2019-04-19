@@ -14,7 +14,8 @@ export default {
     'menu.basicData': '基础数据',
     'menu.basicData.productManagement': '商品库管理',
     'menu.basicData.productManagement.list': '商品',
-    'menu.basicData.productManagement.list.productCU': '新建商品',
+    'menu.basicData.productManagement.list.productCreate': '新建商品',
+    'menu.basicData.productManagement.list.productUpdate': '编辑商品',
     'menu.basicData.productManagement.list.productInfo': '商品详情',
     'menu.basicData.productManagement.list.erpImport': '对接ERP',
 

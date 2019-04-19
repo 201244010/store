@@ -8,6 +8,7 @@ const ProductCUPrice = props => {
     const {
         form = {},
         form: { getFieldDecorator },
+        productInfo: { price, promote_price, member_price },
     } = props;
 
     return (
@@ -16,6 +17,7 @@ const ProductCUPrice = props => {
                 <Col span={12}>
                     <Form.Item label={formatMessage({ id: 'basicData.product.price' })}>
                         {getFieldDecorator('price', {
+                            initialValue: price,
                             validateTrigger: 'onBlur',
                             rules: [
                                 {
@@ -39,6 +41,7 @@ const ProductCUPrice = props => {
                 <Col span={12}>
                     <Form.Item label={formatMessage({ id: 'basicData.product.promote_price' })}>
                         {getFieldDecorator('promote_price', {
+                            initialValue: promote_price,
                             validateTrigger: 'onBlur',
                             rules: [
                                 {
@@ -58,14 +61,15 @@ const ProductCUPrice = props => {
 
             <Row>
                 <Col span={12}>
-                    <Form.Item label={formatMessage({ id: 'basicData.product.price.vip' })}>
-                        {getFieldDecorator('vip', {
+                    <Form.Item label={formatMessage({ id: 'basicData.product.member_price' })}>
+                        {getFieldDecorator('member_price', {
+                            initialValue: member_price,
                             validateTrigger: 'onBlur',
                             rules: [
                                 {
                                     validator: (rule, value, callback) =>
                                         customValidate({
-                                            field: 'vip',
+                                            field: 'member_price',
                                             rule,
                                             value,
                                             callback,
@@ -88,7 +92,7 @@ const ProductCUPrice = props => {
                             {
                                 required: true,
                                 message: formatMessage({
-                                    id: 'basicData.product.price.customize.isEmpty',
+                                    id: 'basicData.product.extraPrice.isEmpty',
                                 }),
                             },
                         ],

@@ -70,12 +70,14 @@ class EditableFormItem extends Component {
                     <Row>
                         <Col span={8}>
                             <Form.Item {...formItemLayout}>
-                                <EditableLabel {...{ labelProps }} />
+                                {getFieldDecorator(`${formKey}.${index}.name`)(
+                                    <EditableLabel {...{ labelProps }} />
+                                )}
                             </Form.Item>
                         </Col>
                         <Col span={14}>
                             <Form.Item {...formItemLayout}>
-                                {getFieldDecorator(`${formKey}.${index}`, {
+                                {getFieldDecorator(`${formKey}.${index}.context`, {
                                     ...itemOptions,
                                 })(wrapperItem)}
                             </Form.Item>
