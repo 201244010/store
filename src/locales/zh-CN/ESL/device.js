@@ -39,4 +39,7 @@ export default {
     'esl.device.esl.template.name': '模板',
     'esl.device.esl.status': '推送状态',
     'esl.device.esl.battery': '价签电量',
+    'esl.device.esl.all': '共',
+    'esl.device.esl.total': '个价签',
+    'esl.device.esl.detail': '价签详情'
 };

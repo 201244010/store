@@ -2,6 +2,7 @@ import * as Services from '@/services/ESL/electricLabel';
 import { hideSinglePageCheck } from '@/utils/utils';
 import Storage from '@konata9/storage.js';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
+import { ERROR_OK } from "@/constants/errorCode";
 
 export default {
     namespace: 'eslElectricLabel',
@@ -20,6 +21,7 @@ export default {
             showSizeChanger: true,
             showQuickJumper: true,
         },
+        detailInfo: {}
     },
     effects: {
         *changeSearchFormValue({ payload = {} }, { put }) {
@@ -55,6 +57,31 @@ export default {
                     },
                 },
             });
+        },
+        *fetchESLDetails({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(Services.fetchESLDetails, options);
+            const result = response.data || {};
+            if (response.code === ERROR_OK) {
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        loading: false,
+                        detailInfo: result.esl_info || {},
+                    },
+                });
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            }
+            return response;
         },
     },
     reducers: {

@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
-import { Divider, message, Modal, Table } from 'antd';
+import { Button, Divider, message, Modal, Table } from "antd";
 import { formatMessage } from 'umi/locale';
-import { DURATION_TIME } from '@/constants';
+import { DURATION_TIME, ESL_STATES } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
-
-export const STATES = {
-    0: '未激活',
-    1: '正常',
-    2: '通信失败',
-};
+import Detail from './Detail';
 
 class SearchResult extends Component {
     constructor(props) {
@@ -28,10 +23,14 @@ class SearchResult extends Component {
         });
     };
 
-    showDetailVisible = async record => {
+    showDetailVisible = async (record) => {
         const { detailVisible } = this.state;
-        const { getBaseStationDetail } = this.props;
-        const response = await getBaseStationDetail({ ap_id: record.id });
+        const { fetchESLDetails } = this.props;
+        const response = await fetchESLDetails({
+            options: {
+                esl_id: record.id
+            }
+        });
         if (response && response.code === ERROR_OK) {
             this.setState({
                 detailVisible: !detailVisible,
@@ -39,6 +38,10 @@ class SearchResult extends Component {
         } else {
             message.error(formatMessage({ id: 'error.retry' }), DURATION_TIME);
         }
+    };
+
+    pushAgain = async () => {
+
     };
 
     showDeleteStation = record => {
@@ -61,8 +64,16 @@ class SearchResult extends Component {
         });
     };
 
+    closeModal = name => {
+        const { [name]: modalStatus } = this.state;
+        this.setState({
+            [name]: !modalStatus,
+        });
+    };
+
     render() {
-        const { loading, data, pagination } = this.props;
+        const { loading, data, pagination, detailInfo } = this.props;
+        const { detailVisible } = this.state;
         const columns = [
             {
                 title: formatMessage({ id: 'esl.device.esl.id' }),
@@ -87,7 +98,7 @@ class SearchResult extends Component {
             {
                 title: formatMessage({ id: 'esl.device.esl.status' }),
                 dataIndex: 'status',
-                render: text => <span>{STATES[text]}</span>,
+                render: text => <span>{ESL_STATES[text]}</span>,
             },
             {
                 title: formatMessage({ id: 'esl.device.esl.battery' }),
@@ -108,7 +119,7 @@ class SearchResult extends Component {
                         <Divider type="vertical" />
                         <a
                             href="javascript: void (0);"
-                            onClick={() => this.showDetailVisible(record)}
+                            onClick={() => this.pushAgain(record)}
                         >
                             {formatMessage({ id: 'list.action.bind' })}
                         </a>
@@ -141,12 +152,29 @@ class SearchResult extends Component {
                     pagination={{
                         ...pagination,
                         showTotal: total =>
-                            `${formatMessage({ id: 'esl.device.ap.all' })}${total}${formatMessage({
-                                id: 'esl.device.ap.total',
+                            `${formatMessage({ id: 'esl.device.esl.all' })}${total}${formatMessage({
+                                id: 'esl.device.esl.total',
                             })}`,
                     }}
                     onChange={this.onTableChange}
                 />
+                <Modal
+                    title={formatMessage({ id: 'esl.device.esl.detail' })}
+                    visible={detailVisible}
+                    width={650}
+                    onCancel={() => this.closeModal('detailVisible')}
+                    footer={[
+                        <Button
+                            key="submit"
+                            type="primary"
+                            onClick={() => this.closeModal('detailVisible')}
+                        >
+                            {formatMessage({ id: 'btn.confirm' })}
+                        </Button>,
+                    ]}
+                >
+                    <Detail detailInfo={detailInfo} />
+                </Modal>
             </div>
         );
     }

@@ -9,10 +9,12 @@ import * as styles from './index.less';
         eslElectricLabel: state.eslElectricLabel,
     }),
     dispatch => ({
-        fetchElectricLabels: payload =>
-            dispatch({ type: 'eslElectricLabel/fetchElectricLabels', payload }),
         changeSearchFormValue: payload =>
             dispatch({ type: 'eslElectricLabel/changeSearchFormValue', payload }),
+        fetchElectricLabels: payload =>
+            dispatch({ type: 'eslElectricLabel/fetchElectricLabels', payload }),
+        fetchESLDetails: payload =>
+            dispatch({ type: 'eslElectricLabel/fetchESLDetails', payload }),
     })
 )
 class ElectricLabel extends Component {
@@ -33,9 +35,10 @@ class ElectricLabel extends Component {
 
     render() {
         const {
-            eslElectricLabel: { loading, searchFormValues, data, pagination },
-            fetchElectricLabels,
+            eslElectricLabel: { loading, searchFormValues, data, pagination, detailInfo },
             changeSearchFormValue,
+            fetchElectricLabels,
+            fetchESLDetails,
         } = this.props;
 
         return (
@@ -52,7 +55,9 @@ class ElectricLabel extends Component {
                         loading,
                         data,
                         pagination,
+                        detailInfo,
                         fetchElectricLabels,
+                        fetchESLDetails,
                     }}
                 />
             </div>

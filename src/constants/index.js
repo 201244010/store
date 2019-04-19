@@ -4,3 +4,9 @@ export const DEFAULT_PAGE_LIST_SIZE = ['10', '20', '50', '100'];
 export const TABLE_SCROLL_X = 1080;
 export const QUERY_INTERVAL = 1000;
 export const DURATION_TIME = 1;
+
+export const ESL_STATES = {
+    0: '未激活',
+    1: '正常',
+    2: '通信失败',
+};
