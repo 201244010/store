@@ -30,28 +30,43 @@ const productUnits = [
 ];
 
 class ProductCUBasic extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            extraInfo: props.extra_info || [],
+        };
+    }
+
     handleTypeChange = value => {
         console.log(value);
     };
 
+    extraInfoRemove = index => {
+        const { extraInfo } = this.state;
+        const editInfo = [...extraInfo].splice(index, 1);
+        this.setState({
+            extraInfo: editInfo,
+        });
+    };
+
     render() {
+        const { extraInfo } = this.state;
         const {
             form: { getFieldDecorator },
             form,
             productInfo: {
-                seq_num,
-                bar_code,
-                name,
-                alias,
-                Type,
-                unit,
-                spec,
-                area,
-                level,
-                brand,
-                expire_time,
-                qr_code,
-                extra_info,
+                seq_num = '',
+                bar_code = '',
+                name = '',
+                alias = '',
+                Type = 0,
+                unit = '盒',
+                spec = '',
+                area = '',
+                level = '',
+                brand = '',
+                expire_time = '',
+                qr_code = '',
             },
         } = this.props;
         return (
@@ -242,7 +257,9 @@ class ProductCUBasic extends Component {
                     {...{
                         form,
                         max: 3,
-                        data: extra_info,
+                        countStart: extraInfo.length || 0,
+                        data: extraInfo,
+                        onRemove: index => this.extraInfoRemove(index),
                         wrapperItem: <Input maxLength={MAX_LENGTH['100']} />,
                         itemOptions: {
                             validateTrigger: 'onBlur',

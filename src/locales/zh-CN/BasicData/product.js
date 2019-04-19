@@ -76,7 +76,8 @@ export default {
     'basicData.erp.import.success': '数据导入成功',
     'basicData.erp.import.fail': '数据导入失败',
 
-    'basicData.product.delete': '删除商品成功',
+    'basicData.product.delete.success': '删除商品成功',
+    'basicData.product.delete.fail': '删除商品成功',
     'basicData.product.delete.confirm': '请确认是否删除商品？',
     'basicData.product.delete.notice': '商品删除后，与之绑定的价签不会更新图像。',
 

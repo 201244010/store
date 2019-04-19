@@ -1,72 +1,61 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
-import Link from 'umi/link';
-import { Button, Divider, Spin, List } from 'antd';
+import router from 'umi/router';
+import { connect } from 'dva';
+import { Button, Divider, List } from 'antd';
+import Storage from '@konata9/storage.js';
 import styles from './StoreRelate.less';
 
+@connect(state => ({
+    merchant: state.merchant,
+}))
 class StoreRelate extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            spinning: true,
-            relatedStores: 0,
-        };
-    }
-
-    componentDidMount() {
-        this.getRelatedStore();
-    }
-
-    getRelatedStore = () => {
-        // TODO 获取关联店铺
+    enterSystem = company => {
+        Storage.set({ __company_id__: company.id });
+        router.push('/');
     };
 
     render() {
-        const { spinning, relatedStores } = this.state;
+        const {
+            merchant: { companyList },
+        } = this.props;
         return (
-            <Spin spinning={spinning}>
-                <div className={styles['store-wrapper']}>
-                    {relatedStores > 0 ? (
-                        <>
-                            <p>{formatMessage({ id: 'relatedStore.choose' })}</p>
-                            {/* TODO 暂时定义的假列表 */}
-                            <List className={styles['store-list']}>
-                                <List.Item>
-                                    <List.Item.Meta description="商户A" />
-                                    <Link to="/">
+            <div className={styles['store-wrapper']}>
+                {companyList.length > 0 ? (
+                    <>
+                        <p>{formatMessage({ id: 'relatedStore.choose' })}</p>
+                        <List className={styles['store-list']}>
+                            {companyList.map(company => (
+                                <List.Item key={company.id}>
+                                    <List.Item.Meta description={company.full_name} />
+                                    <a onClick={() => this.enterSystem(company)}>
                                         {formatMessage({ id: 'relatedStore.entry' })}
-                                    </Link>
+                                    </a>
                                 </List.Item>
-                                <List.Item>
-                                    <List.Item.Meta description="商户B" />
-                                    <Link to="/">
-                                        {formatMessage({ id: 'relatedStore.entry' })}
-                                    </Link>
-                                </List.Item>
-                                <List.Item className={styles['last-child']}>
-                                    <List.Item.Meta description="商户C" />
-                                    <Link to="/">
-                                        {formatMessage({ id: 'relatedStore.entry' })}
-                                    </Link>
-                                </List.Item>
-                            </List>
-                        </>
-                    ) : (
-                        <>
-                            <p className={styles['store-content']}>
-                                {formatMessage({ id: 'relatedStore.none' })}
-                            </p>
-                            <Button type="primary" size="large" block>
-                                {formatMessage({ id: 'relatedStore.create' })}
-                            </Button>
-                            <Divider className={styles['store-divider']} />
-                            <p className={styles['store-content']}>
-                                {formatMessage({ id: 'relatedStore.notice' })}
-                            </p>
-                        </>
-                    )}
-                </div>
-            </Spin>
+                            ))}
+                        </List>
+                    </>
+                ) : (
+                    <>
+                        <p className={styles['store-content']}>
+                            {formatMessage({ id: 'relatedStore.none' })}
+                        </p>
+                        <Button
+                            type="primary"
+                            size="large"
+                            block
+                            href="/merchant/create"
+                            target="/merchant/create"
+                        >
+                            {formatMessage({ id: 'relatedStore.create' })}
+                        </Button>
+                        <Divider className={styles['store-divider']} />
+                        <p className={styles['store-content']}>
+                            {formatMessage({ id: 'relatedStore.notice' })}
+                        </p>
+                    </>
+                )}
+            </div>
         );
     }
 }

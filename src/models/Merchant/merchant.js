@@ -3,10 +3,12 @@ import { ERROR_OK } from '@/constants/errorCode';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
+import Storage from '@konata9/storage.js';
 
 export default {
     namespace: 'merchant',
     state: {
+        companyList: [],
         companyInfo: {},
     },
 
@@ -15,12 +17,32 @@ export default {
             const response = yield call(Actions.companyCreate, payload);
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'create.success' }));
+                const data = response.data || {};
+                Storage.set({ __company_id__: data.company_id });
+                router.push('/');
+            } else {
+                router.push('/user/login');
             }
         },
 
-        *companyGetInfo({ payload }, { call, put }) {
-            const { options } = payload;
-            const response = yield call(Actions.companyGetInfo, options);
+        *getCompanyList(_, { call, put }) {
+            const response = yield call(Actions.getCompanyList);
+            if (response && response.code === ERROR_OK) {
+                const result = response.data || {};
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        companyList: result.company_list || [],
+                    },
+                });
+            } else {
+                router.push('/user/login');
+            }
+            return response;
+        },
+
+        *companyGetInfo(_, { call, put }) {
+            const response = yield call(Actions.companyGetInfo);
             if (response && response.code === ERROR_OK) {
                 const result = response.data || {};
                 yield put({
@@ -53,6 +75,12 @@ export default {
                 companyInfo: {
                     ...action.payload,
                 },
+            };
+        },
+        updateState(state, action) {
+            return {
+                ...state,
+                ...action.payload,
             };
         },
     },
