@@ -6,6 +6,7 @@ import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import router from 'umi/router';
 import { customValidate } from '@/utils/customValidate';
+import Storage from '@konata9/storage.js';
 
 import { connect } from 'dva';
 import styles from './Merchant.less';
@@ -24,7 +25,7 @@ class MerchantModify extends Component {
         super(props);
         const {
             merchant: {
-                companyList: { company_name: companyName, contact_person: contactPerson },
+                companyInfo: { company_name: companyName, contact_person: contactPerson },
             },
         } = this.props;
         this.state = {
@@ -37,7 +38,7 @@ class MerchantModify extends Component {
         const {
             form: { setFieldsValue },
             merchant: {
-                companyList: { contact_email: contactEmail, contact_tel: contactTel },
+                companyInfo: { contact_email: contactEmail, contact_tel: contactTel },
             },
         } = this.props;
         setFieldsValue({
@@ -55,14 +56,21 @@ class MerchantModify extends Component {
     saveInfo = () => {
         const {
             form: { validateFields },
+            companyUpdate,
         } = this.props;
-
+        const { companyName, contactPerson } = this.state;
         validateFields((err, values) => {
             if (!err) {
-                // const result = await checkImgCode({
-                //     //TODO
-                // });
-                console.log(err, values);
+                const payload = {
+                    options: {
+                        company_id: Storage.get('__company_id__') || '56',
+                        company_name: companyName,
+                        contact_person: contactPerson,
+                        contact_tel: values.phone,
+                        contact_email: values.email,
+                    },
+                };
+                companyUpdate(payload);
             }
         });
     };
@@ -73,10 +81,11 @@ class MerchantModify extends Component {
 
     render() {
         const { companyName, contactPerson } = this.state;
+        console.log(this.props);
         const {
             form: { getFieldDecorator },
             merchant: {
-                companyList: { company_no: companyNo },
+                companyInfo: { company_id: companyId },
             },
         } = this.props;
         return (
@@ -84,7 +93,7 @@ class MerchantModify extends Component {
                 <h1>{formatMessage({ id: 'merchantManagement.merchant.modify' })}</h1>
                 <Form {...FORM_ITEM_LAYOUT_BUSINESS}>
                     <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.number' })}>
-                        <span>{companyNo}</span>
+                        <span>{companyId || '--'}</span>
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.name' })}>
                         <Input

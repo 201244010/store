@@ -1,29 +1,24 @@
 import * as Actions from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
+import { message } from 'antd';
+import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 
 export default {
     namespace: 'merchant',
     state: {
         companyList: [],
-        companyInfo: {
-            company_no: '123456',
-            company_name: '星巴克上海管理有限公司',
-            contact_person: '叶宿',
-            contact_tel: '021-68888888',
-            contact_email: 'admin@Starbucks.com',
-            created_time: 1542952913,
-            modified_time: 1542952913,
-        },
+        companyInfo: {},
     },
 
     effects: {
-        // *companyCreate({ payload }, { call}) {
-        //   const { options } = payload;
-        // //   const response = yield call(Actions.companyCreate, options);
-        // //   if (response && response.code === ERROR_OK) {
-        // //   }
-        // },
+        *companyCreate({ payload }, { call }) {
+            const response = yield call(Actions.companyCreate, payload);
+            if (response && response.code === ERROR_OK) {
+                message.success(formatMessage({ id: 'create.success' }));
+            }
+        },
+
         *getCompanyList(_, { call, put }) {
             const response = yield call(Actions.getCompanyList);
             if (response && response.code === ERROR_OK) {
@@ -47,9 +42,7 @@ export default {
                 const result = response.data || {};
                 yield put({
                     type: 'saveCompanyInfo',
-                    payload: {
-                        data: result,
-                    },
+                    payload: result,
                 });
             }
         },
@@ -58,22 +51,25 @@ export default {
             const { options } = payload;
             const response = yield call(Actions.companyUpdate, options);
             if (response && response.code === ERROR_OK) {
-                // const result = response.data || {};
                 yield put({
                     type: 'saveCompanyInfo',
-                    payload: {
-                        data: options,
-                    },
+                    payload: options,
                 });
+                message.success(formatMessage({ id: 'modify.success' }));
+                router.push('/basicData/merchantManagement/view');
+            } else {
+                message.error(formatMessage({ id: 'modify.fail' }));
             }
         },
     },
 
     reducers: {
-        saveCompanyInfo(state) {
+        saveCompanyInfo(state, action) {
             return {
                 ...state,
-                // ...action.payload,
+                companyInfo: {
+                    ...action.payload,
+                },
             };
         },
     },
