@@ -46,4 +46,8 @@ export default {
     'bind.mail.notice_2': '，有效期为24小时。请及时登录邮箱，点击邮件中的链接继续完成更换。',
 
     'change.success': '操作成功',
+    'modify.success': '修改成功',
+    'modify.fail': '修改失败',
+    'create.success': '创建成功',
+    'create.fail': '创建失败',
 };

@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import { unixSecondToDate } from '@/utils/utils';
 import router from 'umi/router';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
+import Storage from '@konata9/storage.js';
 import styles from './Merchant.less';
 
 @connect(
@@ -12,10 +13,20 @@ import styles from './Merchant.less';
         merchant: state.merchant,
     }),
     dispatch => ({
-        companyUpdate: payload => dispatch({ type: 'merchant/companyUpdate', payload }),
+        companyGetInfo: payload => dispatch({ type: 'merchant/companyGetInfo', payload }),
     })
 )
 class MerchantView extends Component {
+    componentDidMount() {
+        const { companyGetInfo } = this.props;
+        const payload = {
+            options: {
+                company_id: Storage.get('__company_id__') || '56',
+            },
+        };
+        companyGetInfo(payload);
+    }
+
     update = () => {
         router.push('/basicData/merchantManagement/modify');
     };
@@ -25,8 +36,8 @@ class MerchantView extends Component {
     render() {
         const {
             merchant: {
-                companyList: {
-                    company_no: companyNo,
+                companyInfo: {
+                    company_id: companyId,
                     contact_email: contactEmail,
                     contact_tel: contactTel,
                     company_name: companyName,
@@ -41,35 +52,35 @@ class MerchantView extends Component {
                 <h1>{formatMessage({ id: 'merchantManagement.merchant.view' })}</h1>
                 <Form {...FORM_ITEM_LAYOUT_BUSINESS}>
                     <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.number' })}>
-                        <span>{companyNo}</span>
+                        <span>{companyId || '--'}</span>
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.name' })}>
-                        <span>{companyName}</span>
+                        <span>{companyName || '--'}</span>
                     </Form.Item>
                     <Form.Item
                         label={formatMessage({ id: 'merchantManagement.merchant.contactPerson' })}
                     >
-                        <span>{contactPerson}</span>
+                        <span>{contactPerson || '--'}</span>
                     </Form.Item>
                     <Form.Item
                         label={formatMessage({ id: 'merchantManagement.merchant.contactPhone' })}
                     >
-                        <span>{contactTel}</span>
+                        <span>{contactTel || '--'}</span>
                     </Form.Item>
                     <Form.Item
                         label={formatMessage({ id: 'merchantManagement.merchant.contactEmail' })}
                     >
-                        <span>{contactEmail}</span>
+                        <span>{contactEmail || '--'}</span>
                     </Form.Item>
                     <Form.Item
                         label={formatMessage({ id: 'merchantManagement.merchant.createTime' })}
                     >
-                        <span>{unixSecondToDate(createTime)}</span>
+                        <span>{unixSecondToDate(createTime) || '--'}</span>
                     </Form.Item>
                     <Form.Item
                         label={formatMessage({ id: 'merchantManagement.merchant.updateTime' })}
                     >
-                        <span>{unixSecondToDate(modifyTime)}</span>
+                        <span>{unixSecondToDate(modifyTime) || '--'}</span>
                     </Form.Item>
                 </Form>
                 <div className={styles['button-style']}>

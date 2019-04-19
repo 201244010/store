@@ -1,10 +1,21 @@
 import * as Actions from '@/services/BasicData/product';
 import { message } from 'antd';
+import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
-import { hideSinglePageCheck } from '@/utils/utils';
+import { hideSinglePageCheck, idEncode } from '@/utils/utils';
 import Storage from '@konata9/storage.js';
+
+const goNext = (fromPage = 'list', options) => {
+    const { product_id: id } = options;
+    const path = {
+        list: '/basicData/productManagement/list',
+        detail: `/basicData/productManagement/list/productInfo?id=${idEncode(id)}`,
+    };
+
+    router.push(path[fromPage]);
+};
 
 export default {
     namespace: 'basicDataProduct',
@@ -73,7 +84,7 @@ export default {
 
         *fetchProductList({ payload = {} }, { call, put, select }) {
             const { options = {} } = payload;
-            const { pagination, searchFormValues } = yield select(state => state.eslBaseStation);
+            const { pagination, searchFormValues } = yield select(state => state.basicDataProduct);
 
             yield put({
                 type: 'updateState',
@@ -144,6 +155,9 @@ export default {
                     type: 'updateState',
                     payload: { loading: false },
                 });
+                // TODO 等待后端返回 id  逻辑
+                // const encodeID = idEncode(options.productId);
+                router.push(`/basicData/productManagement/list`);
             } else {
                 yield put({
                     type: 'updateState',
@@ -171,6 +185,8 @@ export default {
                         productInfo: response.data || {},
                     },
                 });
+                const { fromPage, product_id } = options;
+                goNext(fromPage, { product_id });
             } else {
                 yield put({
                     type: 'updateState',
