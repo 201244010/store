@@ -96,10 +96,7 @@ export default {
             const targetPage = data.length === 1 ? 1 : current;
             const response = yield call(Services.deleteESL, options);
             if (response.code === ERROR_OK) {
-                message.success(
-                    formatMessage({ id: 'esl.device.esl.delete.success' }),
-                    DURATION_TIME
-                );
+                message.success(formatMessage({ id: 'esl.device.esl.delete.success' }), DURATION_TIME);
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
@@ -114,6 +111,28 @@ export default {
                 });
             } else {
                 message.error(formatMessage({ id: 'esl.device.esl.delete.fail' }), DURATION_TIME);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            }
+        },
+        *flashLed({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(Services.flashLed, options);
+            if (response.code === ERROR_OK) {
+                message.success(formatMessage({ id: 'esl.device.esl.flash.success' }), DURATION_TIME);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            } else {
+                message.error(formatMessage({ id: 'esl.device.esl.flash.fail' }), DURATION_TIME);
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },

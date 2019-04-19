@@ -74,9 +74,19 @@ class SearchResult extends Component {
     };
 
     handleMoreClick = (e) => {
+        const { flashLed } = this.props;
+        const { dataset: {recordId} } = e.domEvent.target;
+        if (e.key === '2') {
+            flashLed({
+                options: {
+                    mode_id: 60019,
+                    esl_id_list: [parseInt(recordId, 10)]
+                }
+            });
+        }
         if (e.key === '3') {
             this.deleteESL({
-                id: e.domEvent.target.dataset.recordId
+                id: recordId
             });
         }
     };
@@ -152,7 +162,7 @@ class SearchResult extends Component {
                                 </Menu.Item>
                                 <Menu.Divider />
                                 <Menu.Item key="2">
-                                    <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">2nd menu item</a>
+                                    <a href="javascript: void (0);" data-record-id={record.id}>闪灯</a>
                                 </Menu.Item>
                                 <Menu.Divider />
                                 <Menu.Item key="3">

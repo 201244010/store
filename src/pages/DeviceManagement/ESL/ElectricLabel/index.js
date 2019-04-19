@@ -15,6 +15,8 @@ import * as styles from './index.less';
             dispatch({ type: 'eslElectricLabel/fetchElectricLabels', payload }),
         fetchESLDetails: payload =>
             dispatch({ type: 'eslElectricLabel/fetchESLDetails', payload }),
+        flashLed: payload =>
+            dispatch({ type: 'eslElectricLabel/flashLed', payload }),
         deleteESL: payload =>
             dispatch({ type: 'eslElectricLabel/deleteESL', payload }),
     })
@@ -41,6 +43,7 @@ class ElectricLabel extends Component {
             changeSearchFormValue,
             fetchElectricLabels,
             fetchESLDetails,
+            flashLed,
             deleteESL,
         } = this.props;
 
@@ -61,6 +64,7 @@ class ElectricLabel extends Component {
                         detailInfo,
                         fetchElectricLabels,
                         fetchESLDetails,
+                        flashLed,
                         deleteESL,
                     }}
                 />

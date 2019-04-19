@@ -46,4 +46,6 @@ export default {
     'esl.device.esl.delete.message2': '解绑后的价签重新绑定商品可恢复使用。',
     'esl.device.esl.delete.success': '删除价签成功',
     'esl.device.esl.delete.fail': '删除价签失败',
+    'esl.device.esl.flash.success': '价签即将开始闪灯',
+    'esl.device.esl.flash.fail': '价签闪灯失败'
 };

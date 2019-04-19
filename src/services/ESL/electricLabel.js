@@ -35,6 +35,15 @@ export const deleteESL = (options) => {
     return fetchApi('delete', opts).then(response => response.json());
 };
 
+export const flashLed = (options) => {
+    const opts = {
+        method: 'POST',
+        body: options
+    };
+
+    return fetchApi('flashLed', opts).then(response => response.json());
+};
+
 export const getBindInfo = (options) => {
     const opts = {
         method: 'POST',
