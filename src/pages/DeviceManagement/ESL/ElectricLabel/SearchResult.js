@@ -4,6 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { DURATION_TIME, ESL_STATES } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 import Detail from './Detail';
+import BindModal from './BindModal';
 
 class SearchResult extends Component {
     constructor(props) {
@@ -11,7 +12,9 @@ class SearchResult extends Component {
         this.state = {
             detailVisible: false,
             templateVisible: false,
-            currentRecord: {}
+            bindVisible: false,
+            currentRecord: {},
+            selectedProduct: {}
         };
     }
 
@@ -25,7 +28,7 @@ class SearchResult extends Component {
         });
     };
 
-    showDetailVisible = async (record) => {
+    showDetail = async (record) => {
         const { detailVisible } = this.state;
         const { fetchESLDetails } = this.props;
         const response = await fetchESLDetails({
@@ -40,6 +43,25 @@ class SearchResult extends Component {
         } else {
             message.error(formatMessage({ id: 'error.retry' }), DURATION_TIME);
         }
+    };
+
+    showBind = async (record) => {
+        const { fetchTemplatesByESLCode, fetchProductList } = this.props;
+        await fetchTemplatesByESLCode({
+            options: {
+                esl_code: record.esl_code
+            }
+        });
+        await fetchProductList({
+            options: {
+                current: 1
+            }
+        });
+
+        this.setState({
+            currentRecord: record,
+            bindVisible: true
+        });
     };
 
     flushESL = async (record) => {
@@ -102,6 +124,22 @@ class SearchResult extends Component {
         });
     };
 
+    selectProduct = (selectedProduct) => {
+        this.setState({
+            selectedProduct
+        });
+    };
+
+    updateProduct = (templateId) => {
+        const { currentRecord } = this.state;
+        this.setState({
+            currentRecord: {
+                ...currentRecord,
+                template_id: templateId
+            }
+        });
+    };
+
     handleMoreClick = async (e) => {
         const { flashLed, fetchTemplatesByESLCode } = this.props;
         const { dataset: {recordId, record} } = e.domEvent.target;
@@ -139,8 +177,8 @@ class SearchResult extends Component {
     };
 
     render() {
-        const { loading, data, pagination, detailInfo, templates4ESL } = this.props;
-        const { detailVisible, templateVisible, currentRecord } = this.state;
+        const { loading, data, pagination, detailInfo, templates4ESL, products, fetchProductList, bindESL } = this.props;
+        const { detailVisible, templateVisible, bindVisible, currentRecord, selectedProduct } = this.state;
         const columns = [
             {
                 title: formatMessage({ id: 'esl.device.esl.id' }),
@@ -179,14 +217,14 @@ class SearchResult extends Component {
                     <span>
                         <a
                             href="javascript: void (0);"
-                            onClick={() => this.showDetailVisible(record)}
+                            onClick={() => this.showDetail(record)}
                         >
                             {formatMessage({ id: 'list.action.detail' })}
                         </a>
                         <Divider type="vertical" />
                         <a
                             href="javascript: void (0);"
-                            onClick={() => this.pushAgain(record)}
+                            onClick={() => this.showBind(record)}
                         >
                             {formatMessage({ id: 'list.action.bind' })}
                         </a>
@@ -308,6 +346,22 @@ class SearchResult extends Component {
                         </Col>
                     </Row>
                 </Modal>
+                <BindModal
+                    {
+                        ...{
+                            bindVisible,
+                            currentRecord,
+                            templates4ESL,
+                            products,
+                            fetchProductList,
+                            selectedProduct,
+                            bindESL,
+                            closeModal: this.closeModal,
+                            selectProduct: this.selectProduct,
+                            updateProduct: this.updateProduct
+                        }
+                    }
+                />
             </div>
         );
     }

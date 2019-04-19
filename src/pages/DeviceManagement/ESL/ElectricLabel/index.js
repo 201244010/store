@@ -7,6 +7,7 @@ import * as styles from './index.less';
 @connect(
     state => ({
         eslElectricLabel: state.eslElectricLabel,
+        basicDataProduct: state.basicDataProduct
     }),
     dispatch => ({
         changeSearchFormValue: payload =>
@@ -17,8 +18,12 @@ import * as styles from './index.less';
             dispatch({ type: 'eslElectricLabel/fetchESLDetails', payload }),
         fetchTemplatesByESLCode: payload =>
             dispatch({ type: 'eslElectricLabel/fetchTemplatesByESLCode', payload }),
+        fetchProductList: payload =>
+            dispatch({ type: 'basicDataProduct/fetchProductList', payload }),
         flushESL: payload =>
             dispatch({ type: 'eslElectricLabel/flushESL', payload }),
+        bindESL: payload =>
+            dispatch({ type: 'eslElectricLabel/bindESL', payload }),
         unbindESL: payload =>
             dispatch({ type: 'eslElectricLabel/unbindESL', payload }),
         flashLed: payload =>
@@ -46,11 +51,14 @@ class ElectricLabel extends Component {
     render() {
         const {
             eslElectricLabel: { loading, searchFormValues, data, pagination, detailInfo, templates4ESL },
+            basicDataProduct: {data: products},
             changeSearchFormValue,
             fetchElectricLabels,
             fetchESLDetails,
             fetchTemplatesByESLCode,
+            fetchProductList,
             flushESL,
+            bindESL,
             unbindESL,
             flashLed,
             deleteESL,
@@ -72,9 +80,12 @@ class ElectricLabel extends Component {
                         pagination,
                         detailInfo,
                         templates4ESL,
+                        products,
                         fetchElectricLabels,
                         fetchESLDetails,
                         fetchTemplatesByESLCode,
+                        fetchProductList,
+                        bindESL,
                         flushESL,
                         unbindESL,
                         flashLed,

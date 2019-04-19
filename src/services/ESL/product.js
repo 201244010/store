@@ -3,6 +3,15 @@ import { env, GROCERY_ADDRESS } from '@/config';
 
 const fetchApi = customizeFetch('esl/api/product', GROCERY_ADDRESS[env]);
 
+export const bindESL = (options) => {
+    const opts = {
+        method: 'POST',
+        body: options,
+    };
+
+    return fetchApi('bindESL', opts).then(response => response.json());
+};
+
 export const unbindESL = (options) => {
     const opts = {
         method: 'POST',
