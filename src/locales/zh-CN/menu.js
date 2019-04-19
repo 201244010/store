@@ -10,6 +10,7 @@ export default {
     'menu.deviceManagement': '设备管理',
     'menu.deviceManagement.esl': '电子价签',
     'menu.deviceManagement.esl.baseStation': '基站管理',
+    'menu.deviceManagement.esl.electricLabel': '价签管理',
 
     'menu.basicData': '基础数据',
     'menu.basicData.productManagement': '商品库管理',

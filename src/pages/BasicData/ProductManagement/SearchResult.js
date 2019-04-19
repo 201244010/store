@@ -46,7 +46,7 @@ class SearchResult extends Component {
         const { deleteProduct } = this.props;
 
         Modal.confirm({
-            iconType: 'info-circle',
+            icon: 'info-circle',
             title: formatMessage({ id: 'basicData.product.delete.confirm' }),
             content: formatMessage({ id: 'basicData.product.delete.notice' }),
             okText: formatMessage({ id: 'btn.delete' }),

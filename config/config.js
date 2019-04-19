@@ -86,6 +86,11 @@ export default {
                   name: 'baseStation',
                   component: './DeviceManagement/ESL/BaseStation',
                 },
+                {
+                  path: '/deviceManagement/esl/electricLabel',
+                  name: 'electricLabel',
+                  component: './DeviceManagement/ESL/ElectricLabel',
+                },
               ],
             },
           ],
