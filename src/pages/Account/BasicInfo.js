@@ -54,7 +54,7 @@ class BasicInfo extends Component {
         const {
             loading = false,
             user: {
-                currentUser: { resize_icon },
+                currentUser: { origin_icon },
             },
         } = this.props;
         const uploadProps = {
@@ -67,7 +67,7 @@ class BasicInfo extends Component {
                 <h2>{formatMessage({ id: 'userCenter.basicInfo.title' })}</h2>
                 <div className={styles['basicInfo-wrapper']}>
                     <div className={styles['avatar-wrapper']}>
-                        <Avatar size={80} icon="user" src={resize_icon} />
+                        <Avatar size={80} icon="user" src={origin_icon} />
                         <div className={styles['avatar-link']}>
                             <Upload {...uploadProps}>
                                 <a href="javascript:void(0);">
