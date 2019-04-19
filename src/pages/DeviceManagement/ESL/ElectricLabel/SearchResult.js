@@ -42,8 +42,35 @@ class SearchResult extends Component {
         }
     };
 
-    pushAgain = async () => {
+    flushESL = async (record) => {
+        const { flushESL } = this.props;
+        flushESL({
+            options: {
+                esl_code: record.esl_code,
+                product_id: record.product_id
+            }
+        });
+    };
 
+    unbindESL = (record) => {
+        const { unbindESL } = this.props;
+        const content = (
+            <div>
+                <div>{formatMessage({ id: 'esl.device.esl.unbind.message' })}</div>
+            </div>
+        );
+
+        Modal.confirm({
+            icon: 'info-circle',
+            title: formatMessage({ id: 'esl.device.esl.unbind.title' }),
+            content,
+            okText: formatMessage({ id: 'btn.unbind' }),
+            onOk() {
+                unbindESL({
+                    options: { esl_code: record.eslCode },
+                });
+            },
+        });
     };
 
     deleteESL = (record) => {
@@ -57,7 +84,7 @@ class SearchResult extends Component {
 
         Modal.confirm({
             icon: 'info-circle',
-            title: formatMessage({ id: 'btn.delete' }),
+            title: formatMessage({ id: 'esl.device.esl.delete.title' }),
             content,
             okText: formatMessage({ id: 'btn.delete' }),
             onOk() {
@@ -79,6 +106,12 @@ class SearchResult extends Component {
         const { flashLed, fetchTemplatesByESLCode } = this.props;
         const { dataset: {recordId, record} } = e.domEvent.target;
         const eslDetail = JSON.parse(record);
+
+        if (e.key === '0') {
+            this.unbindESL({
+                eslCode: eslDetail.esl_code
+            });
+        }
         if (e.key === '1') {
             await fetchTemplatesByESLCode({
                 options: {
@@ -160,17 +193,23 @@ class SearchResult extends Component {
                         <Divider type="vertical" />
                         <a
                             href="javascript: void (0);"
-                            onClick={() => this.showDeleteStation(record)}
+                            onClick={() => this.flushESL(record)}
                         >
                             {formatMessage({ id: 'list.action.push.again' })}
                         </a>
                         <Divider type="vertical" />
                         <Dropdown overlay={
                             <Menu onClick={this.handleMoreClick}>
-                                <Menu.Item key="0">
-                                    <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">1st menu item</a>
-                                </Menu.Item>
-                                <Menu.Divider />
+                                {
+                                    record.product_id ?
+                                        <Menu.Item key="0">
+                                            <a href="javascript: void (0);" data-record={JSON.stringify(record)}>解绑</a>
+                                        </Menu.Item> :
+                                        null
+                                }
+                                {
+                                    record.product_id ? <Menu.Divider /> : null
+                                }
                                 {
                                     record.product_id ?
                                         <Menu.Item key="1">

@@ -1,5 +1,6 @@
 import * as ESLServices from '@/services/ESL/electricLabel';
 import * as TemplateServices from '@/services/ESL/template';
+import * as ProductServices from '@/services/ESL/product';
 import { hideSinglePageCheck } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
@@ -101,6 +102,53 @@ export default {
                 });
             }
             return response;
+        },
+        *flushESL({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(ProductServices.flushESL, options);
+            if (response.code === ERROR_OK) {
+                message.success(formatMessage({ id: 'esl.device.esl.flush.success' }), DURATION_TIME);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+                yield put({
+                    type: 'fetchElectricLabels'
+                });
+            } else {
+                message.error(formatMessage({ id: 'esl.device.esl.flush.fail' }), DURATION_TIME);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            }
+        },
+        *unbindESL({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(ProductServices.unbindESL, options);
+            if (response.code === ERROR_OK) {
+                message.success(formatMessage({ id: 'esl.device.esl.unbind.success' }), DURATION_TIME);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            } else {
+                message.error(formatMessage({ id: 'esl.device.esl.unbind.fail' }), DURATION_TIME);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            }
         },
         *flashLed({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
