@@ -43,8 +43,8 @@ class Store extends Component {
         const { itemList = [] } = this.props;
         const {
             merchant: {
-                companyList: {
-                    company_no: companyNo,
+                companyInfo: {
+                    company_id: companyId,
                     contact_email: contactEmail,
                     contact_tel: contactTel,
                     company_name: companyName,
@@ -98,7 +98,7 @@ class Store extends Component {
                         <Form.Item
                             label={formatMessage({ id: 'merchantManagement.merchant.number' })}
                         >
-                            <span>{companyNo}</span>
+                            <span>{companyId}</span>
                         </Form.Item>
                         <Form.Item
                             label={formatMessage({ id: 'merchantManagement.merchant.name' })}
