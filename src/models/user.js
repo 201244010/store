@@ -130,6 +130,16 @@ export default {
 
             return response;
         },
+
+        *updateIcon({ payload }, { call, put }) {
+            const { options } = payload;
+            const response = yield call(Actions.updateIcon, options);
+            if (response && response.code === ERROR_OK) {
+                yield put({
+                    type: 'getUserInfo',
+                });
+            }
+        },
     },
 
     reducers: {

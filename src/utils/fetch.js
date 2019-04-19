@@ -55,6 +55,11 @@ const normalizeParams = params => {
         delete tempParams.file;
     }
 
+    if (tempParams.icon) {
+        formData.icon = tempParams.icon;
+        delete tempParams.icon;
+    }
+
     const formParams =
         Object.keys(tempParams).length === 0 ? '' : paramsEncode(tempParams, formData.isEncrypted);
 

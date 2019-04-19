@@ -70,3 +70,12 @@ export const updatePhone = (options = {}) => {
     };
     return fetchApi('updatePhone', opts).then(response => response.json());
 };
+
+export const updateIcon = (options = {}) => {
+    const opts = {
+        body: {
+            ...options,
+        },
+    };
+    return fetchApi('updateIcon', opts).then(response => response.json());
+};

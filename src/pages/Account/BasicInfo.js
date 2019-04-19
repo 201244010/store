@@ -36,17 +36,38 @@ class BasicInfo extends Component {
         });
     };
 
+    handleUpload = async file => {
+        const { updateIcon } = this.props;
+        await updateIcon({
+            options: {
+                icon: file,
+            },
+        });
+    };
+
+    customRequest = ({ file }) => {
+        this.handleUpload(file);
+    };
+
     render() {
         const { nameEditing, username } = this.state;
-        const { loading = false } = this.props;
-        const uploadProps = {};
+        const {
+            loading = false,
+            user: {
+                currentUser: { resize_icon },
+            },
+        } = this.props;
+        const uploadProps = {
+            customRequest: this.customRequest,
+            showUploadList: false,
+        };
 
         return (
             <Card loading={loading}>
                 <h2>{formatMessage({ id: 'userCenter.basicInfo.title' })}</h2>
                 <div className={styles['basicInfo-wrapper']}>
                     <div className={styles['avatar-wrapper']}>
-                        <Avatar size={80} icon="user" />
+                        <Avatar size={80} icon="user" src={resize_icon} />
                         <div className={styles['avatar-link']}>
                             <Upload {...uploadProps}>
                                 <a href="javascript:void(0);">
