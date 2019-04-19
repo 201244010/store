@@ -3,7 +3,7 @@ import { env, GROCERY_ADDRESS } from '@/config';
 
 const fetchApi = customizeFetch('esl/api/device/esl', GROCERY_ADDRESS[env]);
 
-export const fetchElectricLabels = options => {
+export const fetchElectricLabels = (options) => {
     const opts = {
         method: 'POST',
         body: {
@@ -17,34 +17,37 @@ export const fetchElectricLabels = options => {
     return fetchApi('getList', opts).then(response => response.json());
 };
 
-export const getESLDetails = options => {
+export const fetchESLDetails = (options) => {
     const opts = {
         method: 'POST',
-        body: {
-            ...options,
-        },
+        body: options
     };
 
     return fetchApi('getInfo', opts).then(response => response.json());
 };
 
-export const deleteESL = options => {
+export const deleteESL = (options) => {
     const opts = {
         method: 'POST',
-        body: {
-            ...options,
-        },
+        body: options
     };
 
     return fetchApi('delete', opts).then(response => response.json());
 };
 
-export const getBindInfo = options => {
+export const flashLed = (options) => {
     const opts = {
         method: 'POST',
-        body: {
-            ...options,
-        },
+        body: options
+    };
+
+    return fetchApi('flashLed', opts).then(response => response.json());
+};
+
+export const getBindInfo = (options) => {
+    const opts = {
+        method: 'POST',
+        body: options
     };
     return fetchApi('getBindInfo', opts).then(response => response.json());
 };

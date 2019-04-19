@@ -24,6 +24,7 @@ export default {
     'btn.save': '保存',
     'btn.import': '导入',
     'btn.multi.edit': '批量修改',
+    'btn.select': '选择',
 
     'btn.erp.import': '对接ERP',
     'btn.erp.import.manage': '对接ERP管理',
