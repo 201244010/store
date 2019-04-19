@@ -29,4 +29,14 @@ export default {
 
     'esl.device.ap.all': '共',
     'esl.device.ap.total': '个基站',
+
+    // 价签用
+    'esl.device.esl.search.placeholder': '价签ID或绑定商品的编号/名称',
+    'esl.device.esl.id': '价签ID',
+    'esl.device.esl.model.name': '价签型号',
+    'esl.device.esl.product.seq.num': '商品编号',
+    'esl.device.esl.product.name': '商品名称',
+    'esl.device.esl.template.name': '模板',
+    'esl.device.esl.status': '推送状态',
+    'esl.device.esl.battery': '价签电量',
 };
