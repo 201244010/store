@@ -47,5 +47,6 @@ export default {
     'esl.device.esl.delete.success': '删除价签成功',
     'esl.device.esl.delete.fail': '删除价签失败',
     'esl.device.esl.flash.success': '价签即将开始闪灯',
-    'esl.device.esl.flash.fail': '价签闪灯失败'
+    'esl.device.esl.flash.fail': '价签闪灯失败',
+    'esl.device.esl.template.edit': '修改模板'
 };

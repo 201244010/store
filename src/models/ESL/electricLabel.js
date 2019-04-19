@@ -1,4 +1,5 @@
-import * as Services from '@/services/ESL/electricLabel';
+import * as ESLServices from '@/services/ESL/electricLabel';
+import * as TemplateServices from '@/services/ESL/template';
 import { hideSinglePageCheck } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
@@ -23,7 +24,8 @@ export default {
             showSizeChanger: true,
             showQuickJumper: true,
         },
-        detailInfo: {}
+        detailInfo: {},
+        templates4ESL: []
     },
     effects: {
         *changeSearchFormValue({ payload = {} }, { put }) {
@@ -45,7 +47,7 @@ export default {
             });
 
             const opts = Object.assign({}, pagination, searchFormValues, options);
-            const response = yield call(Services.fetchElectricLabels, opts);
+            const response = yield call(ESLServices.fetchElectricLabels, opts);
             const result = response.data || {};
             yield put({
                 type: 'updateState',
@@ -67,7 +69,7 @@ export default {
                 payload: { loading: true },
             });
 
-            const response = yield call(Services.fetchESLDetails, options);
+            const response = yield call(ESLServices.fetchESLDetails, options);
             const result = response.data || {};
             if (response.code === ERROR_OK) {
                 yield put({
@@ -85,6 +87,43 @@ export default {
             }
             return response;
         },
+        *fetchTemplatesByESLCode({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
+
+            const response = yield call(TemplateServices.fetchTemplatesByESLCode, options);
+            const result = response.data || {};
+            if (response.code === ERROR_OK) {
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        templates4ESL: result.template_list || [],
+                    },
+                });
+            }
+            return response;
+        },
+        *flashLed({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(ESLServices.flashLed, options);
+            if (response.code === ERROR_OK) {
+                message.success(formatMessage({ id: 'esl.device.esl.flash.success' }), DURATION_TIME);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            } else {
+                message.error(formatMessage({ id: 'esl.device.esl.flash.fail' }), DURATION_TIME);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            }
+        },
         *deleteESL({ payload = {} }, { call, put, select }) {
             const { pagination: { current }, data, } = yield select(state => state.eslElectricLabel);
             const { options = {} } = payload;
@@ -94,7 +133,7 @@ export default {
             });
 
             const targetPage = data.length === 1 ? 1 : current;
-            const response = yield call(Services.deleteESL, options);
+            const response = yield call(ESLServices.deleteESL, options);
             if (response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'esl.device.esl.delete.success' }), DURATION_TIME);
                 yield put({
@@ -111,28 +150,6 @@ export default {
                 });
             } else {
                 message.error(formatMessage({ id: 'esl.device.esl.delete.fail' }), DURATION_TIME);
-                yield put({
-                    type: 'updateState',
-                    payload: { loading: false },
-                });
-            }
-        },
-        *flashLed({ payload = {} }, { call, put }) {
-            const { options = {} } = payload;
-            yield put({
-                type: 'updateState',
-                payload: { loading: true },
-            });
-
-            const response = yield call(Services.flashLed, options);
-            if (response.code === ERROR_OK) {
-                message.success(formatMessage({ id: 'esl.device.esl.flash.success' }), DURATION_TIME);
-                yield put({
-                    type: 'updateState',
-                    payload: { loading: false },
-                });
-            } else {
-                message.error(formatMessage({ id: 'esl.device.esl.flash.fail' }), DURATION_TIME);
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },

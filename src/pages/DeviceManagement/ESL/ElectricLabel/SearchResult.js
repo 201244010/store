@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Divider, message, Modal, Table, Menu, Dropdown } from "antd";
+import { Button, Divider, message, Modal, Table, Menu, Dropdown, Row, Col, Select } from "antd";
 import { formatMessage } from 'umi/locale';
 import { DURATION_TIME, ESL_STATES } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
@@ -10,6 +10,8 @@ class SearchResult extends Component {
         super(props);
         this.state = {
             detailVisible: false,
+            templateVisible: false,
+            currentRecord: {}
         };
     }
 
@@ -73,9 +75,21 @@ class SearchResult extends Component {
         });
     };
 
-    handleMoreClick = (e) => {
-        const { flashLed } = this.props;
-        const { dataset: {recordId} } = e.domEvent.target;
+    handleMoreClick = async (e) => {
+        const { flashLed, fetchTemplatesByESLCode } = this.props;
+        const { dataset: {recordId, record} } = e.domEvent.target;
+        const eslDetail = JSON.parse(record);
+        if (e.key === '1') {
+            await fetchTemplatesByESLCode({
+                options: {
+                    esl_code: eslDetail.esl_code
+                }
+            });
+            this.setState({
+                templateVisible: true,
+                currentRecord: eslDetail
+            });
+        }
         if (e.key === '2') {
             flashLed({
                 options: {
@@ -92,8 +106,8 @@ class SearchResult extends Component {
     };
 
     render() {
-        const { loading, data, pagination, detailInfo } = this.props;
-        const { detailVisible } = this.state;
+        const { loading, data, pagination, detailInfo, templates4ESL } = this.props;
+        const { detailVisible, templateVisible, currentRecord } = this.state;
         const columns = [
             {
                 title: formatMessage({ id: 'esl.device.esl.id' }),
@@ -157,10 +171,16 @@ class SearchResult extends Component {
                                     <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">1st menu item</a>
                                 </Menu.Item>
                                 <Menu.Divider />
-                                <Menu.Item key="1">
-                                    <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">2nd menu item</a>
-                                </Menu.Item>
-                                <Menu.Divider />
+                                {
+                                    record.product_id ?
+                                        <Menu.Item key="1">
+                                            <a href="javascript: void (0);" data-record={JSON.stringify(record)}>修改模板</a>
+                                        </Menu.Item> :
+                                        null
+                                }
+                                {
+                                    record.product_id ? <Menu.Divider /> : null
+                                }
                                 <Menu.Item key="2">
                                     <a href="javascript: void (0);" data-record-id={record.id}>闪灯</a>
                                 </Menu.Item>
@@ -212,6 +232,42 @@ class SearchResult extends Component {
                     ]}
                 >
                     <Detail detailInfo={detailInfo} />
+                </Modal>
+                <Modal
+                    title={formatMessage({ id: 'esl.device.esl.template.edit' })}
+                    visible={templateVisible}
+                    width={500}
+                    onCancel={() => this.closeModal('templateVisible')}
+                    footer={[
+                        <Button
+                            key="submit"
+                            type="primary"
+                            onClick={() => this.closeModal('templateVisible')}
+                        >
+                            {formatMessage({ id: 'btn.confirm' })}
+                        </Button>,
+                    ]}
+                >
+                    <Row>
+                        <Col span={4}>{formatMessage({ id: 'esl.device.esl.id' })}:</Col>
+                        <Col span={20}>{currentRecord.esl_code}</Col>
+                        <Col span={4}>{formatMessage({ id: 'esl.device.esl.product.seq.num' })}:</Col>
+                        <Col span={20}>{currentRecord.product_seq_num}</Col>
+                        <Col span={4}>{formatMessage({ id: 'esl.device.esl.product.name' })}:</Col>
+                        <Col span={20}>{currentRecord.product_name}</Col>
+                        <Col span={4}>{formatMessage({ id: 'esl.device.esl.template.name' })}:</Col>
+                        <Col span={20}>
+                            <Select value={currentRecord.template_id} style={{width: '100%'}}>
+                                {
+                                    templates4ESL.map(template =>
+                                        <Select.Option key={template.id} value={template.id}>
+                                            {template.name}
+                                        </Select.Option>
+                                    )
+                                }
+                            </Select>
+                        </Col>
+                    </Row>
                 </Modal>
             </div>
         );
