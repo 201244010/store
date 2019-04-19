@@ -108,7 +108,6 @@ class SearchResult extends Component {
         const rowSelection = {
             selectedRowKeys,
             onChange: this.onSelectChange,
-            onSelection: this.onSelection,
         };
 
         return (
@@ -130,10 +129,16 @@ class SearchResult extends Component {
                     >
                         {formatMessage({ id: 'btn.erp.import' })}
                     </Button>
-                    <Button className={styles['function-btn']}>
+                    <Button
+                        className={styles['function-btn']}
+                        disabled={selectedRowKeys.length <= 0}
+                    >
                         {formatMessage({ id: 'btn.multi.edit' })}
                     </Button>
-                    <Button className={styles['function-btn']}>
+                    <Button
+                        className={styles['function-btn']}
+                        disabled={selectedRowKeys.length <= 0}
+                    >
                         {formatMessage({ id: 'btn.delete' })}
                     </Button>
                 </div>
