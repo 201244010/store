@@ -196,21 +196,19 @@ export default {
             return response;
         },
 
-        *deleteProduct({ payload = {} }, { call, put, select }) {
+        *deleteProduct({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
-            const {
-                pagination: { current },
-                data,
-            } = yield select(state => state.basicDataProduct);
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
             });
 
-            const targetPage = data.length === 1 ? 1 : current;
             const response = yield call(Actions.deleteProduct, options);
             if (response && response.code === ERROR_OK) {
-                message.success(formatMessage('basicData.product.delete'), DURATION_TIME);
+                message.success(
+                    formatMessage({ id: 'basicData.product.delete.success' }),
+                    DURATION_TIME
+                );
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
@@ -219,10 +217,14 @@ export default {
                 yield put({
                     type: 'fetchProductList',
                     payload: {
-                        current: targetPage,
+                        current: 1,
                     },
                 });
             } else {
+                message.error(
+                    formatMessage({ id: 'basicData.product.delete.fail' }),
+                    DURATION_TIME
+                );
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },

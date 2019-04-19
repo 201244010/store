@@ -49,11 +49,11 @@ export const createProduct = (options = {}) => {
     return fetchApi('create', opts).then(response => response.json());
 };
 
-export const deleteProduct = ({ id }) => {
+export const deleteProduct = ({ product_id_list }) => {
     const opts = {
         method: 'POST',
         body: {
-            product_id: id,
+            product_id_list,
         },
     };
 
