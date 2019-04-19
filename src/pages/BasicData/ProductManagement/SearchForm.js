@@ -5,17 +5,21 @@ import { FORM_FORMAT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
 
 class SearchForm extends Component {
     changeFormValues = (inputType, fieldName, e) => {
-        const { changeGoodsSearchForm } = this.props;
-        changeGoodsSearchForm({
-            [fieldName]: inputType === 'input' ? e.target.value : e,
+        const { changeSearchFormValue } = this.props;
+        changeSearchFormValue({
+            options: {
+                [fieldName]: inputType === 'input' ? e.target.value : e,
+            },
         });
     };
 
     search = () => {
         const { values, fetchProductList } = this.props;
         fetchProductList({
-            ...values,
-            current: 1,
+            options: {
+                ...values,
+                current: 1,
+            },
         });
     };
 

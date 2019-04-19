@@ -58,23 +58,16 @@ class ProductInfo extends Component {
         }));
     };
 
-    formatExtraInfo = (extraInfo = [], type = 'product') => {
-        const prefix = MESSAGE_PREFIX[type] || '';
-        return extraInfo.map(extra => ({
-            ...extra,
-            label: `${prefix}.${extra.index}`,
-        }));
-    };
-
     render() {
         const {
-            product: { productInfo = {} },
+            product: {
+                productInfo = {},
+                productInfo: { extra_info: productBasicExtra, extra_price_info: productPriceExtra },
+            },
         } = this.props;
 
         const productBasic = this.formatProductInfo(productInfo, PRODUCT_BASIC);
-        const productBasicExtra = this.formatExtraInfo(productInfo.extra_info);
         const productPrice = this.formatProductInfo(productInfo, PRODUCT_PRICE);
-        const productPriceExtra = this.formatExtraInfo(productInfo.extra_price_info);
 
         return (
             <div className={styles['content-container']}>

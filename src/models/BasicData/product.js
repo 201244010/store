@@ -8,7 +8,7 @@ import { hideSinglePageCheck, idEncode } from '@/utils/utils';
 import Storage from '@konata9/storage.js';
 
 const goNext = (fromPage = 'list', options) => {
-    const { id } = options;
+    const { product_id: id } = options;
     const path = {
         list: '/basicData/productManagement/list',
         detail: `/basicData/productManagement/list/productInfo?id=${idEncode(id)}`,
@@ -84,7 +84,7 @@ export default {
 
         *fetchProductList({ payload = {} }, { call, put, select }) {
             const { options = {} } = payload;
-            const { pagination, searchFormValues } = yield select(state => state.eslBaseStation);
+            const { pagination, searchFormValues } = yield select(state => state.basicDataProduct);
 
             yield put({
                 type: 'updateState',
@@ -186,7 +186,7 @@ export default {
                     },
                 });
                 const { fromPage, product_id } = options;
-                goNext(fromPage, product_id);
+                goNext(fromPage, { product_id });
             } else {
                 yield put({
                     type: 'updateState',

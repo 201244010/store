@@ -39,7 +39,7 @@ class ProductCU extends Component {
             createProduct,
             updateProduct,
             product: {
-                productInfo: { id },
+                productInfo: { id = idDecode(getLocationParam('id')) },
             },
         } = this.props;
         const [action = '', fromPage = 'list'] = [
@@ -69,7 +69,7 @@ class ProductCU extends Component {
     goBack = () => {
         const {
             product: {
-                productInfo: { id },
+                productInfo: { id = idDecode(getLocationParam('id')) },
             },
         } = this.props;
         const from = getLocationParam('from');

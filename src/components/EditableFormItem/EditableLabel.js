@@ -70,7 +70,6 @@ class EditableLabel extends Component {
                 {inEditing ? (
                     <Input
                         id="1122"
-                        value={labelName}
                         onChange={e => this.onChange(e)}
                         onBlur={this.onBlur}
                         {...inputProps}

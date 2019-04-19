@@ -99,7 +99,7 @@ const ProductCUPrice = props => {
                     },
                     labelOption: {
                         labelPrefix: formatMessage({ id: 'basicData.product.price.customize' }),
-                        formKey: 'customPrices',
+                        formKey: 'extra_price',
                         editable: false,
                     },
                     buttonProps: {

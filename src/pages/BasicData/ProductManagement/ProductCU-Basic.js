@@ -51,6 +51,7 @@ class ProductCUBasic extends Component {
                 brand,
                 expire_time,
                 qr_code,
+                extra_info,
             },
         } = this.props;
         return (
@@ -241,6 +242,7 @@ class ProductCUBasic extends Component {
                     {...{
                         form,
                         max: 3,
+                        data: extra_info,
                         wrapperItem: <Input maxLength={MAX_LENGTH['100']} />,
                         itemOptions: {
                             validateTrigger: 'onBlur',
@@ -255,7 +257,7 @@ class ProductCUBasic extends Component {
                         },
                         labelOption: {
                             labelPrefix: formatMessage({ id: 'basicData.product.customize' }),
-                            formKey: 'customLabels',
+                            formKey: 'extra_info',
                             editable: false,
                         },
                         buttonProps: {
