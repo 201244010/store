@@ -71,8 +71,8 @@ export default {
             }
         },
 
-        *fetchProductList({ payload }, { call, put, select }) {
-            const { options } = payload;
+        *fetchProductList({ payload = {} }, { call, put, select }) {
+            const { options = {} } = payload;
             const { pagination, searchFormValues } = yield select(state => state.eslBaseStation);
 
             yield put({
@@ -97,8 +97,8 @@ export default {
             });
         },
 
-        *changeSearchFormValue({ payload }, { put }) {
-            const { options } = payload;
+        *changeSearchFormValue({ payload = {} }, { put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'setSearchFormValue',
                 payload: {
@@ -107,8 +107,8 @@ export default {
             });
         },
 
-        *getProductDetail({ payload }, { call, put }) {
-            const { options } = payload;
+        *getProductDetail({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -132,8 +132,8 @@ export default {
             return response;
         },
 
-        *createProduct({ payload }, { call, put }) {
-            const { options } = payload;
+        *createProduct({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -156,8 +156,8 @@ export default {
             return response;
         },
 
-        *updateProduct({ payload }, { call, put }) {
-            const { options } = payload;
+        *updateProduct({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -180,8 +180,8 @@ export default {
             return response;
         },
 
-        *deleteProduct({ payload }, { call, put, select }) {
-            const { options } = payload;
+        *deleteProduct({ payload = {} }, { call, put, select }) {
+            const { options = {} } = payload;
             const {
                 pagination: { current },
                 data,
@@ -214,8 +214,8 @@ export default {
             }
         },
 
-        *erpImport({ payload }, { call, put }) {
-            const { options } = payload;
+        *erpImport({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'updateState',
                 payload: { loading: true },

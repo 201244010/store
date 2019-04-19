@@ -19,7 +19,7 @@ export const fetchProductList = (options = {}) => {
         method: 'POST',
         body: {
             page_num: options.current,
-            page_size: options.pageSize || Storage.get('goodsPageSize'),
+            page_size: options.pageSize,
         },
     };
 

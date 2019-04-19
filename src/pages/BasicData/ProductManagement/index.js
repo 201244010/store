@@ -24,8 +24,10 @@ class ProductList extends Component {
         const { fetchProductList, getProductOverView } = this.props;
         getProductOverView();
         fetchProductList({
-            current: 1,
-            keyword: null,
+            options: {
+                current: 1,
+                keyword: null,
+            },
         });
     }
 

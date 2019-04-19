@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'dva';
 import ProductInfoBasic from './ProductInfo-Basic';
 import ProductInfoPrice from './ProductInfo-Price';
-import { getLocationParams } from '@/utils/utils';
+import { getLocationParam, idDecode } from '@/utils/utils';
 import * as styles from './ProductManagement.less';
 
 const MESSAGE_PREFIX = {
@@ -9,26 +10,24 @@ const MESSAGE_PREFIX = {
     weight: 'basicData.weightProduct',
 };
 
-const mockInfo = {
-    seq_num: '18273jsda0991j',
-    bar_code: '1238574019283',
-    brand: 'bilibili',
-    category: '',
-    modified_time: 1554702750,
-    name: '2233娘',
-    price: 123,
-    production_area: '',
-    production_date: '2019-03-14',
-    promote_price: 111,
-    qr_code: '',
-    spec: '',
-    unit: '2',
-};
-
+@connect(
+    state => ({
+        product: state.basicDataProduct,
+    }),
+    dispatch => ({
+        getProductDetail: payload =>
+            dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
+    })
+)
 class ProductInfo extends Component {
     componentDidMount() {
-        console.log(this.props);
-        console.log(getLocationParams());
+        const { getProductDetail = {} } = this.props;
+        const productId = idDecode(getLocationParam('id'));
+        getProductDetail({
+            options: {
+                product_id: productId,
+            },
+        });
     }
 
     formatProductInfo = (productInfo, type = 'product') => {
@@ -41,9 +40,10 @@ class ProductInfo extends Component {
     };
 
     render() {
-        const { productInfo = mockInfo } = this.props;
+        const {
+            product: { productInfo = {} },
+        } = this.props;
         const formattedProduct = this.formatProductInfo(productInfo);
-        console.log(formattedProduct);
 
         return (
             <div className={styles['content-container']}>
