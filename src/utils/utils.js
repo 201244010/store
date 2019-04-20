@@ -78,6 +78,16 @@ export function maskPhone(phone, maskPos) {
         .join('');
 }
 
+export const formatEmpty = (data, blank = '') => {
+    const copyData = Object.assign({}, data);
+    const keys = Object.keys(copyData);
+    keys.forEach((item) => {
+        copyData[item] = copyData[item] || blank;
+    });
+
+    return copyData;
+};
+
 export const unixSecondToDate = (second, formatStr = 'YYYY-MM-DD HH:mm:ss') =>
     moment.unix(second).isValid()
         ? moment

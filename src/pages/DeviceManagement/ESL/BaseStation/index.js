@@ -31,7 +31,7 @@ class BaseStation extends Component {
         });
 
         fetchBaseStations({
-            current: 1,
+            options: { current: 1 },
         });
 
         fetchBaseStationState();

@@ -31,28 +31,31 @@ class SearchResult extends Component {
 
     toPath = (name, record = {}) => {
         const encodeID = record.id ? idEncode(record.id) : null;
-        console.log(encodeID);
         const urlMap = {
-            goodDetail: `/basicData/productManagement/list/productInfo?id=123`,
-            createProduct: '/basicData/productManagement/list/productCU?action=create',
-            update: `/basicData/productManagement/list/productCU?action=edit&id=233`,
+            productDetail: `/basicData/productManagement/list/productInfo?id=${encodeID}&from=list`,
+            createProduct:
+                '/basicData/productManagement/list/productCreate?action=create&from=list',
+            update: `/basicData/productManagement/list/productUpdate?action=edit&id=${encodeID}&from=list`,
             erpImport: `/basicData/productManagement/list/erpImport`,
         };
 
         router.push(urlMap[name]);
     };
 
-    deleteGoods = record => {
+    deleteProducts = () => {
+        const { selectedRowKeys } = this.state;
         const { deleteProduct } = this.props;
 
         Modal.confirm({
-            iconType: 'info-circle',
+            icon: 'info-circle',
             title: formatMessage({ id: 'basicData.product.delete.confirm' }),
             content: formatMessage({ id: 'basicData.product.delete.notice' }),
             okText: formatMessage({ id: 'btn.delete' }),
             onOk() {
                 deleteProduct({
-                    id: record.id,
+                    options: {
+                        product_id_list: selectedRowKeys,
+                    },
                 });
             },
         });
@@ -88,7 +91,7 @@ class SearchResult extends Component {
                     <span>
                         <a
                             href="javascript: void (0);"
-                            onClick={() => this.toPath('goodDetail', record)}
+                            onClick={() => this.toPath('productDetail', record)}
                         >
                             {formatMessage({ id: 'list.action.detail' })}
                         </a>
@@ -97,7 +100,7 @@ class SearchResult extends Component {
                             href="javascript: void (0);"
                             onClick={() => this.toPath('update', record)}
                         >
-                            {formatMessage({ id: 'list.action.delete' })}
+                            {formatMessage({ id: 'list.action.edit' })}
                         </a>
                     </span>
                 ),
@@ -109,7 +112,6 @@ class SearchResult extends Component {
         const rowSelection = {
             selectedRowKeys,
             onChange: this.onSelectChange,
-            onSelection: this.onSelection,
         };
 
         return (
@@ -131,10 +133,17 @@ class SearchResult extends Component {
                     >
                         {formatMessage({ id: 'btn.erp.import' })}
                     </Button>
-                    <Button className={styles['function-btn']}>
+                    <Button
+                        className={styles['function-btn']}
+                        disabled={selectedRowKeys.length <= 0}
+                    >
                         {formatMessage({ id: 'btn.multi.edit' })}
                     </Button>
-                    <Button className={styles['function-btn']}>
+                    <Button
+                        className={styles['function-btn']}
+                        disabled={selectedRowKeys.length <= 0}
+                        onClick={this.deleteProducts}
+                    >
                         {formatMessage({ id: 'btn.delete' })}
                     </Button>
                 </div>

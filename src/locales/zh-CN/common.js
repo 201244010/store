@@ -24,6 +24,7 @@ export default {
     'btn.save': '保存',
     'btn.import': '导入',
     'btn.multi.edit': '批量修改',
+    'btn.select': '选择',
 
     'btn.erp.import': '对接ERP',
     'btn.erp.import.manage': '对接ERP管理',
@@ -44,6 +45,8 @@ export default {
     'list.action.detail': '详情',
     'list.action.delete': '删除',
     'list.action.edit': '编辑',
+    'list.action.bind': '绑定',
+    'list.action.push.again': '重推',
     'list.action.more': '更多',
 
     'pagination.total.prefix': '共',

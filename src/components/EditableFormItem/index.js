@@ -9,14 +9,16 @@ const formItemLayout = {
 class EditableFormItem extends Component {
     constructor(props) {
         super(props);
-        this.count = 0;
-        this.max = props.max || Infinity;
+        const { countStart, max } = props;
+        this.count = countStart || 0;
+        this.max = max || Infinity;
     }
 
-    remove = k => {
+    remove = (k, index) => {
         const {
             form: { getFieldValue, setFieldsValue },
             labelOption: { formKey = '' },
+            onRemove,
         } = this.props;
         const keys = getFieldValue(`__${formKey}__`);
         if (keys.length === 0) {
@@ -26,6 +28,10 @@ class EditableFormItem extends Component {
         setFieldsValue({
             [`__${formKey}__`]: keys.filter(key => key !== k),
         });
+
+        if (onRemove) {
+            onRemove(index);
+        }
     };
 
     addCustomFormItem = () => {
@@ -52,30 +58,36 @@ class EditableFormItem extends Component {
             labelOption = {},
             labelOption: { labelPrefix = '', formKey = '', span = 12 },
             itemOptions = {},
+            data = [],
             wrapperItem = <Input />,
         } = this.props;
 
-        getFieldDecorator(`__${formKey}__`, { initialValue: [] });
+        const countInitial = data.map(() => +new Date() * Math.random());
+        getFieldDecorator(`__${formKey}__`, { initialValue: countInitial });
         const keys = getFieldValue(`__${formKey}__`);
 
         return keys.map((key, index) => {
             const labelName = `${labelPrefix}${index + 1}`;
+            const { name, context } = data[index] || {};
             const labelProps = {
                 ...labelOption,
                 index,
-                name: labelName,
+                name: name || labelName,
             };
             return (
                 <Col span={span} key={key}>
                     <Row>
                         <Col span={8}>
                             <Form.Item {...formItemLayout}>
-                                <EditableLabel {...{ labelProps }} />
+                                {getFieldDecorator(`${formKey}.${index}.name`, {
+                                    initialValue: name || labelName,
+                                })(<EditableLabel {...{ labelProps }} />)}
                             </Form.Item>
                         </Col>
                         <Col span={14}>
                             <Form.Item {...formItemLayout}>
-                                {getFieldDecorator(`${formKey}.${index}`, {
+                                {getFieldDecorator(`${formKey}.${index}.context`, {
+                                    initialValue: context || '',
                                     ...itemOptions,
                                 })(wrapperItem)}
                             </Form.Item>
@@ -85,7 +97,7 @@ class EditableFormItem extends Component {
                                 <Icon
                                     style={{ marginLeft: '20px' }}
                                     type="minus-circle-o"
-                                    onClick={() => this.remove(key)}
+                                    onClick={() => this.remove(key, index)}
                                 />
                             </Form.Item>
                         </Col>

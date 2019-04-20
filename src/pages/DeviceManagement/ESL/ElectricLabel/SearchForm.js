@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT, FORM_FORMAT } from '@/constants/form';
+import { TAIL_FORM_ITEM_LAYOUT, FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
-
-const { Option } = Select;
 
 @Form.create()
 class SearchForm extends Component {
@@ -17,12 +15,12 @@ class SearchForm extends Component {
     };
 
     search = () => {
-        const { fetchBaseStations } = this.props;
-        fetchBaseStations();
+        const { fetchElectricLabels } = this.props;
+        fetchElectricLabels();
     };
 
     render() {
-        const { states, searchFormValues } = this.props;
+        const { searchFormValues } = this.props;
 
         return (
             <Form>
@@ -31,7 +29,7 @@ class SearchForm extends Component {
                         <Form.Item>
                             <Input
                                 placeholder={formatMessage({
-                                    id: 'esl.device.ap.search.placeholder',
+                                    id: 'esl.device.esl.search.placeholder',
                                 })}
                                 maxLength={60}
                                 value={searchFormValues.keyword}
@@ -42,17 +40,15 @@ class SearchForm extends Component {
                     <Col span={6}>
                         <Form.Item
                             {...FORM_ITEM_LAYOUT}
-                            label={formatMessage({ id: 'esl.device.ap.status' })}
+                            label={formatMessage({ id: 'esl.device.esl.status' })}
                         >
                             <Select
                                 placeholder={formatMessage({ id: 'select.placeholder' })}
                                 value={searchFormValues.status}
-                                onChange={value => this.changeFormValues('select', 'status', value)}
                             >
-                                <Option value={-1}>{formatMessage({ id: 'select.all' })}</Option>
-                                {states.map(s => (
-                                    <Option key={s.status_code}>{s.status_desc}</Option>
-                                ))}
+                                <Select.Option value={-1}>
+                                    {formatMessage({ id: 'select.all' })}
+                                </Select.Option>
                             </Select>
                         </Form.Item>
                     </Col>

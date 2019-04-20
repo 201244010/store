@@ -145,6 +145,9 @@ class MailReset extends Component {
                                         imgUrl: imgCode.url,
                                         inputProps: {
                                             size: 'large',
+                                            placeholder: formatMessage({
+                                                id: 'vcode.placeholder',
+                                            }),
                                         },
                                         getImageCode,
                                     }}

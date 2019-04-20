@@ -10,11 +10,31 @@ import styles from './Merchant.less';
         merchant: state.merchant,
     }),
     dispatch => ({
-        companyUpdate: payload => dispatch({ type: 'merchant/companyUpdate', payload }),
+        companyCreate: payload => dispatch({ type: 'merchant/companyCreate', payload }),
     })
 )
 class MerchantCreate extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: '',
+        };
+    }
+
+    createMerchant = async () => {
+        const { companyCreate } = this.props;
+        const { value } = this.state;
+        companyCreate({ company_name: value });
+    };
+
+    onChange = e => {
+        this.setState({
+            value: e.target.value,
+        });
+    };
+
     render() {
+        const { value } = this.state;
         return (
             <div className={styles['create-wrapper']}>
                 <h2>{formatMessage({ id: 'merchantManagement.merchant.welcome' })}</h2>
@@ -25,9 +45,16 @@ class MerchantCreate extends Component {
                             placeholder={formatMessage({
                                 id: 'merchantManagement.merchant.inputMerchant',
                             })}
+                            value={value}
+                            onChange={this.onChange}
                         />
                     </Form.Item>
-                    <Button type="primary" block style={{ height: 42 }}>
+                    <Button
+                        type="primary"
+                        block
+                        onClick={this.createMerchant}
+                        style={{ height: 42 }}
+                    >
                         {formatMessage({ id: 'merchantManagement.merchant.createMerchant' })}
                     </Button>
                 </Form>

@@ -1,31 +1,30 @@
-import Storage from '@konata9/storage.js';
 import { customizeFetch } from '@/utils/fetch';
 
-const fetchApi = customizeFetch('product');
+const fetchApi = customizeFetch('api/product');
+
+export const getProductOverView = (options = {}) => {
+    const opts = {
+        method: 'POST',
+        body: {
+            ...options,
+        },
+    };
+
+    return fetchApi('getOverview', opts).then(response => response.json());
+};
 
 export const fetchProductList = (options = {}) => {
     const opts = {
         method: 'POST',
         body: {
+            keyword: options.keyword,
+            status: options.status || -1,
             page_num: options.current,
-            page_size: options.pageSize || Storage.get('goodsPageSize'),
+            page_size: options.pageSize,
         },
     };
 
     return fetchApi('getList', opts).then(response => response.json());
-};
-
-export const searchGoodsList = (options = {}) => {
-    const opts = {
-        method: 'POST',
-        body: {
-            ...options,
-            page_num: options.current,
-            page_size: options.pageSize || Storage.get('goodsPageSize'),
-        },
-    };
-
-    return fetchApi('search', opts).then(response => response.json());
 };
 
 export const getProductDetail = (options = {}) => {
@@ -50,11 +49,11 @@ export const createProduct = (options = {}) => {
     return fetchApi('create', opts).then(response => response.json());
 };
 
-export const deleteProduct = ({ id }) => {
+export const deleteProduct = ({ product_id_list }) => {
     const opts = {
         method: 'POST',
         body: {
-            product_id: id,
+            product_id_list,
         },
     };
 

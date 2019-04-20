@@ -12,21 +12,28 @@ import styles from './Merchant.less';
         merchant: state.merchant,
     }),
     dispatch => ({
-        companyUpdate: payload => dispatch({ type: 'merchant/companyUpdate', payload }),
+        companyGetInfo: () => dispatch({ type: 'merchant/companyGetInfo' }),
     })
 )
 class MerchantView extends Component {
-    update = () => {
-        router.push('/basicData/merchantManagement/modify');
-    };
+    componentDidMount() {
+        const { companyGetInfo } = this.props;
+        companyGetInfo();
+    }
 
-    cancel = () => {};
+    goNext = target => {
+        const path = {
+            update: '/basicData/merchantManagement/modify',
+            cancel: '/account/center',
+        };
+        router.push(path[target] || '/');
+    };
 
     render() {
         const {
             merchant: {
-                companyList: {
-                    company_no: companyNo,
+                companyInfo: {
+                    company_id: companyId,
                     contact_email: contactEmail,
                     contact_tel: contactTel,
                     company_name: companyName,
@@ -41,42 +48,42 @@ class MerchantView extends Component {
                 <h1>{formatMessage({ id: 'merchantManagement.merchant.view' })}</h1>
                 <Form {...FORM_ITEM_LAYOUT_BUSINESS}>
                     <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.number' })}>
-                        <span>{companyNo}</span>
+                        <span>{companyId || '--'}</span>
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.name' })}>
-                        <span>{companyName}</span>
+                        <span>{companyName || '--'}</span>
                     </Form.Item>
                     <Form.Item
                         label={formatMessage({ id: 'merchantManagement.merchant.contactPerson' })}
                     >
-                        <span>{contactPerson}</span>
+                        <span>{contactPerson || '--'}</span>
                     </Form.Item>
                     <Form.Item
                         label={formatMessage({ id: 'merchantManagement.merchant.contactPhone' })}
                     >
-                        <span>{contactTel}</span>
+                        <span>{contactTel || '--'}</span>
                     </Form.Item>
                     <Form.Item
                         label={formatMessage({ id: 'merchantManagement.merchant.contactEmail' })}
                     >
-                        <span>{contactEmail}</span>
+                        <span>{contactEmail || '--'}</span>
                     </Form.Item>
                     <Form.Item
                         label={formatMessage({ id: 'merchantManagement.merchant.createTime' })}
                     >
-                        <span>{unixSecondToDate(createTime)}</span>
+                        <span>{unixSecondToDate(createTime) || '--'}</span>
                     </Form.Item>
                     <Form.Item
                         label={formatMessage({ id: 'merchantManagement.merchant.updateTime' })}
                     >
-                        <span>{unixSecondToDate(modifyTime)}</span>
+                        <span>{unixSecondToDate(modifyTime) || '--'}</span>
                     </Form.Item>
                 </Form>
                 <div className={styles['button-style']}>
-                    <Button type="primary" onClick={this.update}>
+                    <Button type="primary" onClick={() => this.goNext('update')}>
                         {formatMessage({ id: 'btn.alter' })}
                     </Button>
-                    <Button style={{ marginLeft: 20 }} onClick={this.cancel}>
+                    <Button style={{ marginLeft: 20 }} onClick={() => this.goNext('cancel')}>
                         {formatMessage({ id: 'btn.back' })}
                     </Button>
                 </div>

@@ -1,10 +1,21 @@
 import * as Actions from '@/services/BasicData/product';
 import { message } from 'antd';
+import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
-import { hideSinglePageCheck } from '@/utils/utils';
+import { hideSinglePageCheck, idEncode } from '@/utils/utils';
 import Storage from '@konata9/storage.js';
+
+const goNext = (fromPage = 'list', options) => {
+    const { product_id: id } = options;
+    const path = {
+        list: '/basicData/productManagement/list',
+        detail: `/basicData/productManagement/list/productInfo?id=${idEncode(id)}`,
+    };
+
+    router.push(path[fromPage]);
+};
 
 export default {
     namespace: 'basicDataProduct',
@@ -32,6 +43,22 @@ export default {
         },
     },
     effects: {
+        *getProductOverView(_, { call, put }) {
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+            const response = yield call(Actions.getProductOverView);
+            if (response && response.code === ERROR_OK) {
+                console.log(response);
+            }
+
+            yield put({
+                type: 'updateState',
+                payload: { loading: false },
+            });
+        },
+
         *getERPPlatformList(_, { call, put }) {
             yield put({
                 type: 'updateState',
@@ -55,9 +82,9 @@ export default {
             }
         },
 
-        *fetchProductList({ payload }, { call, put, select }) {
-            const { options } = payload;
-            const { pagination, searchFormValues } = yield select(state => state.eslBaseStation);
+        *fetchProductList({ payload = {} }, { call, put, select }) {
+            const { options = {} } = payload;
+            const { pagination, searchFormValues } = yield select(state => state.basicDataProduct);
 
             yield put({
                 type: 'updateState',
@@ -81,8 +108,8 @@ export default {
             });
         },
 
-        *changeSearchFormValue({ payload }, { put }) {
-            const { options } = payload;
+        *changeSearchFormValue({ payload = {} }, { put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'setSearchFormValue',
                 payload: {
@@ -91,8 +118,8 @@ export default {
             });
         },
 
-        *getProductDetail({ payload }, { call, put }) {
-            const { options } = payload;
+        *getProductDetail({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -116,8 +143,8 @@ export default {
             return response;
         },
 
-        *createProduct({ payload }, { call, put }) {
-            const { options } = payload;
+        *createProduct({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -128,6 +155,9 @@ export default {
                     type: 'updateState',
                     payload: { loading: false },
                 });
+                // TODO 等待后端返回 id  逻辑
+                // const encodeID = idEncode(options.productId);
+                router.push(`/basicData/productManagement/list`);
             } else {
                 yield put({
                     type: 'updateState',
@@ -140,8 +170,8 @@ export default {
             return response;
         },
 
-        *updateProduct({ payload }, { call, put }) {
-            const { options } = payload;
+        *updateProduct({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -155,6 +185,8 @@ export default {
                         productInfo: response.data || {},
                     },
                 });
+                const { fromPage, product_id } = options;
+                goNext(fromPage, { product_id });
             } else {
                 yield put({
                     type: 'updateState',
@@ -164,21 +196,19 @@ export default {
             return response;
         },
 
-        *deleteProduct({ payload }, { call, put, select }) {
-            const { options } = payload;
-            const {
-                pagination: { current },
-                data,
-            } = yield select(state => state.basicDataProduct);
+        *deleteProduct({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
             });
 
-            const targetPage = data.length === 1 ? 1 : current;
             const response = yield call(Actions.deleteProduct, options);
             if (response && response.code === ERROR_OK) {
-                message.success(formatMessage('basicData.product.delete'), DURATION_TIME);
+                message.success(
+                    formatMessage({ id: 'basicData.product.delete.success' }),
+                    DURATION_TIME
+                );
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
@@ -187,10 +217,14 @@ export default {
                 yield put({
                     type: 'fetchProductList',
                     payload: {
-                        current: targetPage,
+                        current: 1,
                     },
                 });
             } else {
+                message.error(
+                    formatMessage({ id: 'basicData.product.delete.fail' }),
+                    DURATION_TIME
+                );
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
@@ -198,8 +232,8 @@ export default {
             }
         },
 
-        *erpImport({ payload }, { call, put }) {
-            const { options } = payload;
+        *erpImport({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
             yield put({
                 type: 'updateState',
                 payload: { loading: true },

@@ -55,6 +55,11 @@ const normalizeParams = params => {
         delete tempParams.file;
     }
 
+    if (tempParams.icon) {
+        formData.icon = tempParams.icon;
+        delete tempParams.icon;
+    }
+
     const formParams =
         Object.keys(tempParams).length === 0 ? '' : paramsEncode(tempParams, formData.isEncrypted);
 
@@ -74,7 +79,13 @@ const formatParams = (options = {}) => {
 };
 
 const customizeParams = (options = {}) => {
-    const formattedParams = normalizeParams(options.body);
+    const opts = {
+        company_id: Storage.get('__company_id__') || 111,
+        shop_id: Storage.get('__shop_id__') || 666,
+        ...options.body,
+    };
+
+    const formattedParams = normalizeParams(opts);
     return formatParams(formattedParams || {});
 };
 

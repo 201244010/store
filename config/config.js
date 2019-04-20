@@ -86,6 +86,11 @@ export default {
                   name: 'baseStation',
                   component: './DeviceManagement/ESL/BaseStation',
                 },
+                {
+                  path: '/deviceManagement/esl/electricLabel',
+                  name: 'electricLabel',
+                  component: './DeviceManagement/ESL/ElectricLabel',
+                },
               ],
             },
           ],
@@ -105,7 +110,13 @@ export default {
                   component: './BasicData/ProductManagement',
                 },
                 {
-                  path: '/basicData/productManagement/list/productCU',
+                  path: '/basicData/productManagement/list/productCreate',
+                  name: 'list',
+                  hideInMenu: true,
+                  component: './BasicData/ProductManagement/ProductCU',
+                },
+                {
+                  path: '/basicData/productManagement/list/productUpdate',
                   name: 'list',
                   hideInMenu: true,
                   component: './BasicData/ProductManagement/ProductCU',

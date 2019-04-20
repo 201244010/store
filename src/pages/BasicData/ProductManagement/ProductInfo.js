@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
+import { Button } from 'antd';
+import router from 'umi/router';
+import { connect } from 'dva';
+import { formatMessage } from 'umi/locale';
 import ProductInfoBasic from './ProductInfo-Basic';
 import ProductInfoPrice from './ProductInfo-Price';
-import { getLocationParams } from '@/utils/utils';
+import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
+import { PRODUCT_BASIC, PRODUCT_PRICE } from '@/constants/mapping';
 import * as styles from './ProductManagement.less';
 
 const MESSAGE_PREFIX = {
@@ -9,31 +14,44 @@ const MESSAGE_PREFIX = {
     weight: 'basicData.weightProduct',
 };
 
-const mockInfo = {
-    seq_num: '18273jsda0991j',
-    bar_code: '1238574019283',
-    brand: 'bilibili',
-    category: '',
-    modified_time: 1554702750,
-    name: '2233娘',
-    price: 123,
-    production_area: '',
-    production_date: '2019-03-14',
-    promote_price: 111,
-    qr_code: '',
-    spec: '',
-    unit: '2',
-};
-
+@connect(
+    state => ({
+        product: state.basicDataProduct,
+    }),
+    dispatch => ({
+        getProductDetail: payload =>
+            dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
+    })
+)
 class ProductInfo extends Component {
     componentDidMount() {
-        console.log(this.props);
-        console.log(getLocationParams());
+        const { getProductDetail = {} } = this.props;
+        const productId = idDecode(getLocationParam('id'));
+        getProductDetail({
+            options: {
+                product_id: productId,
+            },
+        });
     }
 
-    formatProductInfo = (productInfo, type = 'product') => {
+    toPath = target => {
+        const {
+            product: {
+                productInfo: { id },
+            },
+        } = this.props;
+        const path = {
+            edit: `/basicData/productManagement/list/productUpdate?action=edit&id=${idEncode(
+                id
+            )}&from=detail`,
+            back: '/basicData/productManagement/list',
+        };
+        router.push(path[target] || '/');
+    };
+
+    formatProductInfo = (productInfo = [], template = {}, type = 'product') => {
         const prefix = MESSAGE_PREFIX[type] || '';
-        return Object.keys(productInfo).map(key => ({
+        return Object.keys(template).map(key => ({
             key,
             value: productInfo[key],
             label: `${prefix}.${key}`,
@@ -41,14 +59,42 @@ class ProductInfo extends Component {
     };
 
     render() {
-        const { productInfo = mockInfo } = this.props;
-        const formattedProduct = this.formatProductInfo(productInfo);
-        console.log(formattedProduct);
+        const {
+            product: {
+                productInfo = {},
+                productInfo: { extra_info: productBasicExtra, extra_price_info: productPriceExtra },
+            },
+        } = this.props;
+
+        const productBasic = this.formatProductInfo(productInfo, PRODUCT_BASIC);
+        const productPrice = this.formatProductInfo(productInfo, PRODUCT_PRICE);
 
         return (
             <div className={styles['content-container']}>
-                <ProductInfoBasic {...{ formattedProduct }} />
-                <ProductInfoPrice />
+                <ProductInfoBasic
+                    {...{
+                        productBasic,
+                        productBasicExtra,
+                    }}
+                />
+                <ProductInfoPrice
+                    {...{
+                        productPrice,
+                        productPriceExtra,
+                    }}
+                />
+                <div className={styles.footer}>
+                    <Button
+                        className={styles.btn}
+                        type="primary"
+                        onClick={() => this.toPath('edit')}
+                    >
+                        {formatMessage({ id: 'btn.alter' })}
+                    </Button>
+                    <Button className={styles.btn} onClick={() => this.toPath('back')}>
+                        {formatMessage({ id: 'btn.back' })}
+                    </Button>
+                </div>
             </div>
         );
     }
