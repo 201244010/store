@@ -1,103 +1,108 @@
 import React from 'react';
 import { Form, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { connect } from 'dva';
 import router from 'umi/router';
-// import { storeInformation } from '@/services/storeManagement/storeList';
 import styles from './StoreManagement.less';
 
+@connect(
+    state => ({
+        info: state.store,
+    }),
+    dispatch => ({
+        getStoreInformation: payload => dispatch({ type: 'store/getStoreInformation', payload }),
+    })
+)
 class StoreInformation extends React.Component {
-  state = {
-    obj: {
-      shopNo: '',
-      shopName: '',
-      typeOne: '',
-      typeTwo: '',
-      typeName: '',
-      businessStatus: '',
-      province: '',
-      city: '',
-      area: '',
-      region: '',
-      address: '',
-      businessHours: '',
-      contactTel: '',
-      contactEmail: '',
-      createdTime: '',
-      modifiedTime: '',
-    },
-  };
+    state = {
+        shopId: '',
+    };
 
-  componentDidMount() {
-    // 请求数据，并把数据放在state上进行展示
-    // const data = storeInformation({
-    //   shop_no: '1001' // 门店编号
-    // });
-    // if(data.code === 1) {
-    //   const obj = data.data;
-    //   // 对数据进行处理
-    //   this.setState({obj});
-    // }
-  }
+    componentDidMount() {
+        this.initFetch();
+    }
 
-  handleSubmit = () => {
-    window.location = '/storeManagement/alterStore';
-  };
+    initFetch = () => {
+        const { getStoreInformation } = this.props;
+        const url = window.location.href;
+        const array = url.split('=');
+        const shopId = array[1];
+        const payload = {
+            options: {
+                shop_id: shopId,
+            },
+        };
+        this.setState({ shopId });
+        getStoreInformation(payload);
+    };
 
-  handleCancel = () => {
-    router.push('/storeManagement/list');
-  };
+    handleSubmit = () => {
+        const { shopId } = this.state;
+        router.push(`/storeManagement/alterStore?shopId=${shopId}`);
+    };
 
-  render() {
-    const { obj } = this.state;
+    handleCancel = () => {
+        router.push('/storeManagement/list');
+    };
 
-    return (
-        <div className={styles.storeList}>
-            <h3>{formatMessage({ id: 'storeManagement.info.title' })}</h3>
-            <Form labelCol={{ span: 2 }} wrapperCol={{ span: 9 }}>
-                <Form.Item label={formatMessage({ id: 'storeManagement.create.id' })}>
-                    {obj.shopNo}
-                </Form.Item>
-                <Form.Item label={formatMessage({ id: 'storeManagement.create.nameLabel' })}>
-                    {obj.shopName}
-                </Form.Item>
-                <Form.Item label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
-                    {obj.typeOne}
-                </Form.Item>
-                <Form.Item label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
-                    {obj.businessStatus}
-                </Form.Item>
-                <Form.Item label={formatMessage({ id: 'storeManagement.create.address' })}>
-                    {obj.address}
-                </Form.Item>
-                {/* <Form.Item label={formatMessage({id: 'storeManagement.create.daysLabel'})}> */}
-                {/**/}
-                {/* </Form.Item> */}
-                {/* <Form.Item label={formatMessage({id: 'storeManagement.create.pic'})}> */}
+    render() {
+        const {
+            info: { alter },
+        } = this.props;
 
-                {/* </Form.Item> */}
-                <Form.Item label={formatMessage({ id: 'storeManagement.create.contactName' })} />
-                <Form.Item label={formatMessage({ id: 'storeManagement.create.contactPhone' })}>
-                    {obj.contactTel}
-                </Form.Item>
-                <Form.Item label={formatMessage({ id: 'storeManagement.create.contactMail' })}>
-                    {obj.contactEmail}
-                </Form.Item>
-                <Form.Item label={formatMessage({ id: 'storeManagement.info.create' })}>
-                    {obj.createdTime}
-                </Form.Item>
-                <Form.Item label={formatMessage({ id: 'storeManagement.info.update' })}>
-                    {obj.modifiedTime}
-                </Form.Item>
-            </Form>
-            <Button type="primary" onClick={this.handleSubmit}>
-                {formatMessage({ id: 'storeManagement.info.modify' })}
-            </Button>
-            <Button type="default" onClick={this.handleCancel}>
-                {formatMessage({ id: 'storeManagement.info.cancel' })}
-            </Button>
-        </div>
-    );
-  }
+        return (
+            <div className={styles.storeList}>
+                <h3 className={styles.informationText}>
+                    {formatMessage({ id: 'storeManagement.info.title' })}
+                </h3>
+                <Form labelCol={{ span: 3 }} wrapperCol={{ span: 9 }}>
+                    <Form.Item label={formatMessage({ id: 'storeManagement.create.id' })}>
+                        {alter.shopId}
+                    </Form.Item>
+                    <Form.Item label={formatMessage({ id: 'storeManagement.create.nameLabel' })}>
+                        {alter.name}
+                    </Form.Item>
+                    <Form.Item label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
+                        {alter.type}
+                    </Form.Item>
+                    <Form.Item label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
+                        {alter.status === 0
+                            ? formatMessage({ id: 'storeManagement.create.statusValue1' })
+                            : formatMessage({ id: 'storeManagement.create.statusValue2' })}
+                    </Form.Item>
+                    <Form.Item label={formatMessage({ id: 'storeManagement.create.address' })}>
+                        {alter.address}
+                    </Form.Item>
+                    <Form.Item label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>
+                        {alter.time}
+                    </Form.Item>
+                    <Form.Item label={formatMessage({ id: 'storeManagement.create.contactName' })}>
+                        {alter.contactPerson}
+                    </Form.Item>
+                    <Form.Item label={formatMessage({ id: 'storeManagement.create.contactPhone' })}>
+                        {alter.contactPhone}
+                    </Form.Item>
+                    <Form.Item label={formatMessage({ id: 'storeManagement.info.create' })}>
+                        {alter.createdTime}
+                    </Form.Item>
+                    <Form.Item label={formatMessage({ id: 'storeManagement.info.update' })}>
+                        {alter.modifiedTime}
+                    </Form.Item>
+                </Form>
+                <Button type="primary" onClick={this.handleSubmit} className={styles.submitButton}>
+                    {formatMessage({ id: 'storeManagement.info.modify' })}
+                </Button>
+                <Button
+                    type="default"
+                    onClick={this.handleCancel}
+                    className={styles.submitButton2}
+                    style={{ marginBottom: 40 }}
+                >
+                    {formatMessage({ id: 'storeManagement.info.cancel' })}
+                </Button>
+            </div>
+        );
+    }
 }
 
 export default StoreInformation;

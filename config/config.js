@@ -140,14 +140,19 @@ export default {
         {
           path: '/storeManagement',
           name: 'storeManagement',
+          icon: 'blank',
           routes: [
             {
               path: '/storeManagement/list',
-              component: './StoreManagement/Index.js'
+              component: './StoreManagement/Index.js',
+              hideInMenu: false,
+              name: 'list'
             },
             {
               path: '/storeManagement/createStore',
-              component: './StoreManagement/CreateStore.js'
+              component: './StoreManagement/CreateStore.js',
+              name: 'createStore',
+              hideInMenu: false
             },
             {
               path: '/storeManagement/storeInformation',
