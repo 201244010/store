@@ -56,8 +56,9 @@ class EditableFormItem extends Component {
         const {
             form: { getFieldDecorator, getFieldValue },
             labelOption = {},
-            labelOption: { labelPrefix = '', formKey = '', span = 12 },
+            labelOption: { labelPrefix = '', formKey = '', span = 12, labelDecorator = 'name' },
             itemOptions = {},
+            itemOptions: { itemDecorator = 'context' },
             data = [],
             wrapperItem = <Input />,
         } = this.props;
@@ -79,14 +80,14 @@ class EditableFormItem extends Component {
                     <Row>
                         <Col span={8}>
                             <Form.Item {...formItemLayout}>
-                                {getFieldDecorator(`${formKey}.${index}.name`, {
+                                {getFieldDecorator(`${formKey}.${index}.${labelDecorator}`, {
                                     initialValue: name || labelName,
                                 })(<EditableLabel {...{ labelProps }} />)}
                             </Form.Item>
                         </Col>
                         <Col span={14}>
                             <Form.Item {...formItemLayout}>
-                                {getFieldDecorator(`${formKey}.${index}.context`, {
+                                {getFieldDecorator(`${formKey}.${index}.${itemDecorator}`, {
                                     initialValue: context || '',
                                     ...itemOptions,
                                 })(wrapperItem)}

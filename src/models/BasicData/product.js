@@ -232,6 +232,15 @@ export default {
             }
         },
 
+        *clearState(_, { put }) {
+            yield put({
+                type: 'updateState',
+                payload: {
+                    productInfo: {},
+                },
+            });
+        },
+
         *erpImport({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({

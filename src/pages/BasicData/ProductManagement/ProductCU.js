@@ -18,15 +18,17 @@ import * as styles from './ProductManagement.less';
             dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
         createProduct: payload => dispatch({ type: 'basicDataProduct/createProduct', payload }),
         updateProduct: payload => dispatch({ type: 'basicDataProduct/updateProduct', payload }),
+        clearState: () => dispatch({ type: 'basicDataProduct/clearState' }),
     })
 )
 @Form.create()
 class ProductCU extends Component {
     componentDidMount() {
-        const { getProductDetail } = this.props;
+        const { getProductDetail, clearState } = this.props;
         const [action = 'create', id = ''] = [getLocationParam('action'), getLocationParam('id')];
-        console.log(id);
-        if (action === 'edit') {
+        if (action === 'create') {
+            clearState();
+        } else if (action === 'edit') {
             const productId = idDecode(id);
             getProductDetail({
                 options: { product_id: productId },
@@ -39,7 +41,7 @@ class ProductCU extends Component {
             createProduct,
             updateProduct,
             product: {
-                productInfo: { id = idDecode(getLocationParam('id')) },
+                productInfo: { id = null },
             },
         } = this.props;
         const [action = '', fromPage = 'list'] = [
