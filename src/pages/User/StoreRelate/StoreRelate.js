@@ -11,7 +11,7 @@ import styles from './StoreRelate.less';
 }))
 class StoreRelate extends Component {
     enterSystem = company => {
-        Storage.set({ __company_id__: company.id });
+        Storage.set({ __company_id__: company.company_id });
         router.push('/');
     };
 
@@ -26,8 +26,8 @@ class StoreRelate extends Component {
                         <p>{formatMessage({ id: 'relatedStore.choose' })}</p>
                         <List className={styles['store-list']}>
                             {companyList.map(company => (
-                                <List.Item key={company.id}>
-                                    <List.Item.Meta description={company.full_name} />
+                                <List.Item key={company.company_id}>
+                                    <List.Item.Meta description={company.company_name} />
                                     <a onClick={() => this.enterSystem(company)}>
                                         {formatMessage({ id: 'relatedStore.entry' })}
                                     </a>
