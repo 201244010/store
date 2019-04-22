@@ -52,7 +52,9 @@ const columns = [
             <span>
                 <a
                     onClick={() => {
-                        router.push(`storeInformation?shopId=${record.shopId}`);
+                        router.push(
+                            `/basicData/storeManagement/storeInformation?shopId=${record.shopId}`
+                        );
                     }}
                     className={styles.infoAnchor}
                 >
@@ -60,7 +62,9 @@ const columns = [
                 </a>
                 <a
                     onClick={() => {
-                        router.push(`alterStore?shopId=${record.shopId}`);
+                        router.push(
+                            `/basicData/storeManagement/alterStore?shopId=${record.shopId}`
+                        );
                     }}
                     className={styles.infoAnchor}
                 >
