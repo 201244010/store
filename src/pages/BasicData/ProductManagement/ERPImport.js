@@ -5,7 +5,7 @@ import { formatMessage } from 'umi/locale';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT, FORM_ITEM_LONGER } from '@/constants/form';
 import * as styles from './ProductManagement.less';
 
-const KMTK = props => {
+const SDNM = props => {
     const { getFieldDecorator } = props;
     return (
         <Form.Item label={formatMessage({ id: 'basicData.erp.api.key' })}>
@@ -14,7 +14,7 @@ const KMTK = props => {
     );
 };
 
-const KEWUYOU = props => {
+const KWYLS = props => {
     const { getFieldDecorator } = props;
     return (
         <>
@@ -32,8 +32,8 @@ const KEWUYOU = props => {
 };
 
 const RenderFormItem = {
-    0: KMTK,
-    1: KEWUYOU,
+    'SAAS-KWYLS': KWYLS,
+    'SAAS-SDNM': SDNM,
 };
 
 @connect(
@@ -49,7 +49,7 @@ class ERPImport extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            RenderItem: KMTK,
+            RenderItem: KWYLS,
         };
     }
 
@@ -59,7 +59,6 @@ class ERPImport extends Component {
     }
 
     handlePlatformChange = value => {
-        console.log(value);
         this.setState({
             RenderItem: RenderFormItem[value],
         });
@@ -69,7 +68,7 @@ class ERPImport extends Component {
         const { RenderItem } = this.state;
         const {
             form: { getFieldDecorator },
-            product: { erpPlatformList },
+            product: { sassInfoList },
         } = this.props;
 
         return (
@@ -85,9 +84,9 @@ class ERPImport extends Component {
                         <Form.Item label={formatMessage({ id: 'basicData.erp.platform' })}>
                             {getFieldDecorator('erp_platform')(
                                 <Select onChange={this.handlePlatformChange}>
-                                    {erpPlatformList.map(platform => (
-                                        <Select.Option key={platform.id} value={platform.id}>
-                                            {platform.name || ''}
+                                    {sassInfoList.map(platform => (
+                                        <Select.Option key={platform.id} value={platform.name}>
+                                            {platform.fullName || ''}
                                         </Select.Option>
                                     ))}
                                 </Select>

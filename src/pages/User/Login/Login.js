@@ -137,7 +137,7 @@ class Login extends Component {
                 router.push('/merchant/create');
             } else if (companys === 1) {
                 const companyInfo = companyList[0] || {};
-                Storage.set({ __company_id__: companyInfo.id });
+                Storage.set({ __company_id__: companyInfo.company_id });
                 router.push('/');
             } else {
                 router.push('/user/storeRelate');
