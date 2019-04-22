@@ -184,6 +184,31 @@ export default {
                 });
             }
         },
+        *changeTemplate({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(ESLServices.changeTemplate, options);
+            if (response.code === ERROR_OK) {
+                message.success(formatMessage({ id: 'esl.device.esl.change.template.success' }), DURATION_TIME);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+                yield put({
+                    type: 'fetchElectricLabels'
+                });
+            } else {
+                message.error(formatMessage({ id: 'esl.device.esl.change.template.fail' }), DURATION_TIME);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            }
+        },
         *flashLed({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
