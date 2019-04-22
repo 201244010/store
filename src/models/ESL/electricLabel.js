@@ -4,9 +4,9 @@ import * as ProductServices from '@/services/ESL/product';
 import { hideSinglePageCheck } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
-import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from "@/constants";
-import { ERROR_OK } from "@/constants/errorCode";
-import { message } from "antd";
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
+import { ERROR_OK } from '@/constants/errorCode';
+import { message } from 'antd';
 
 export default {
     namespace: 'eslElectricLabel',
@@ -26,7 +26,7 @@ export default {
             showQuickJumper: true,
         },
         detailInfo: {},
-        templates4ESL: []
+        templates4ESL: [],
     },
     effects: {
         *changeSearchFormValue({ payload = {} }, { put }) {
@@ -112,13 +112,16 @@ export default {
 
             const response = yield call(ProductServices.flushESL, options);
             if (response.code === ERROR_OK) {
-                message.success(formatMessage({ id: 'esl.device.esl.flush.success' }), DURATION_TIME);
+                message.success(
+                    formatMessage({ id: 'esl.device.esl.flush.success' }),
+                    DURATION_TIME
+                );
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
                 });
                 yield put({
-                    type: 'fetchElectricLabels'
+                    type: 'fetchElectricLabels',
                 });
             } else {
                 message.error(formatMessage({ id: 'esl.device.esl.flush.fail' }), DURATION_TIME);
@@ -137,13 +140,16 @@ export default {
 
             const response = yield call(ProductServices.bindESL, options);
             if (response.code === ERROR_OK) {
-                message.success(formatMessage({ id: 'esl.device.esl.bind.success' }), DURATION_TIME);
+                message.success(
+                    formatMessage({ id: 'esl.device.esl.bind.success' }),
+                    DURATION_TIME
+                );
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
                 });
                 yield put({
-                    type: 'fetchElectricLabels'
+                    type: 'fetchElectricLabels',
                 });
             } else {
                 message.error(formatMessage({ id: 'esl.device.esl.bind.fail' }), DURATION_TIME);
@@ -162,7 +168,10 @@ export default {
 
             const response = yield call(ProductServices.unbindESL, options);
             if (response.code === ERROR_OK) {
-                message.success(formatMessage({ id: 'esl.device.esl.unbind.success' }), DURATION_TIME);
+                message.success(
+                    formatMessage({ id: 'esl.device.esl.unbind.success' }),
+                    DURATION_TIME
+                );
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
@@ -184,7 +193,10 @@ export default {
 
             const response = yield call(ESLServices.flashLed, options);
             if (response.code === ERROR_OK) {
-                message.success(formatMessage({ id: 'esl.device.esl.flash.success' }), DURATION_TIME);
+                message.success(
+                    formatMessage({ id: 'esl.device.esl.flash.success' }),
+                    DURATION_TIME
+                );
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
@@ -198,7 +210,10 @@ export default {
             }
         },
         *deleteESL({ payload = {} }, { call, put, select }) {
-            const { pagination: { current }, data, } = yield select(state => state.eslElectricLabel);
+            const {
+                pagination: { current },
+                data,
+            } = yield select(state => state.eslElectricLabel);
             const { options = {} } = payload;
             yield put({
                 type: 'updateState',
@@ -208,7 +223,10 @@ export default {
             const targetPage = data.length === 1 ? 1 : current;
             const response = yield call(ESLServices.deleteESL, options);
             if (response.code === ERROR_OK) {
-                message.success(formatMessage({ id: 'esl.device.esl.delete.success' }), DURATION_TIME);
+                message.success(
+                    formatMessage({ id: 'esl.device.esl.delete.success' }),
+                    DURATION_TIME
+                );
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
