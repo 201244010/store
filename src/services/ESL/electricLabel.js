@@ -1,7 +1,6 @@
 import { customizeFetch } from '@/utils/fetch';
-import { env, GROCERY_ADDRESS } from '@/config';
 
-const fetchApi = customizeFetch('esl/api/device/esl', GROCERY_ADDRESS[env]);
+const fetchApi = customizeFetch('esl/api/device/esl');
 
 export const fetchElectricLabels = options => {
     const opts = {
