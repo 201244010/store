@@ -1,5 +1,6 @@
 import * as Action from '@/services/storeManagement/storeList';
 import { ERROR_OK } from '@/constants/errorCode';
+import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
 
 export default {
@@ -42,7 +43,7 @@ export default {
             const { options } = payload;
             const response = yield call(Action.createStore, options);
             if (response && response.code === ERROR_OK) {
-                message.success('创建成功');
+                message.success(formatMessage({ id: 'storeManagement.message.createSuccess' }));
                 yield put({
                     type: 'alterNewStore',
                     payload: {
@@ -69,7 +70,7 @@ export default {
             const { options } = payload;
             const response = yield call(Action.alterStore, options);
             if (response && response.code === ERROR_OK) {
-                message.success('修改成功');
+                message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
                 yield put({
                     type: 'alterStore',
                     payload: {
@@ -89,9 +90,9 @@ export default {
             let array = [];
             array = arrayList.map(value => ({
                 address: value.address,
-                status: value.status,
-                shopId: value.id,
-                name: value.name,
+                status: value.business_status,
+                shopId: value.shop_id,
+                name: value.shop_name,
                 type: value.type_name,
                 contactPerson: value.contact_person,
                 key: value.id,

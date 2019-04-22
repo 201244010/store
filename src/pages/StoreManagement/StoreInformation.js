@@ -3,6 +3,7 @@ import { Form, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
+import { getLocationParam } from '@/utils/utils';
 import styles from './StoreManagement.less';
 
 @connect(
@@ -24,9 +25,7 @@ class StoreInformation extends React.Component {
 
     initFetch = () => {
         const { getStoreInformation } = this.props;
-        const url = window.location.href;
-        const array = url.split('=');
-        const shopId = array[1];
+        const shopId = getLocationParam('shopId');
         const payload = {
             options: {
                 shop_id: shopId,

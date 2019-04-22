@@ -63,4 +63,11 @@ export default {
     'storeManagement.info.update': '更新时间',
     'storeManagement.info.modify': '修改',
     'storeManagement.info.cancel': '返回',
+    'storeManagement.info.fullTypes': '全部品类',
+
+    // toast提示
+    'storeManagement.message.alterSuccess': '修改成功',
+    'storeManagement.message.alterFailed': '请输入正确的表单信息',
+    'storeManagement.message.createFailed': '创建失败',
+    'storeManagement.message.createSuccess': '创建成功',
 };

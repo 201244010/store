@@ -156,22 +156,23 @@ export default {
             {
               path: '/storeManagement/list',
               component: './StoreManagement/Index.js',
-              hideInMenu: false,
               name: 'list'
             },
             {
               path: '/storeManagement/createStore',
               component: './StoreManagement/CreateStore.js',
               name: 'createStore',
-              hideInMenu: false
+              hideInMenu: true
             },
             {
               path: '/storeManagement/storeInformation',
-              component: './StoreManagement/StoreInformation.js'
+              component: './StoreManagement/StoreInformation.js',
+              hideInMenu: true
             },
             {
               path: '/storeManagement/alterStore',
-              component: './StoreManagement/AlterStore.js'
+              component: './StoreManagement/AlterStore.js',
+              hideInMenu: true
             }
           ]
         },

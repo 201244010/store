@@ -22,7 +22,13 @@ const columns = [
         title: formatMessage({ id: 'storeManagement.list.columnStatus' }),
         dataIndex: 'status',
         key: 'status',
-        render: (text, record) => <span>{record.status === '0' ? '营业' : '停业'}</span>,
+        render: (text, record) => (
+            <span>
+                {record.status === 0
+                    ? formatMessage({ id: 'storeManagement.create.statusValue1' })
+                    : formatMessage({ id: 'storeManagement.create.statusValue2' })}
+            </span>
+        ),
     },
     {
         title: formatMessage({ id: 'storeManagement.list.columnAddress' }),
@@ -78,7 +84,7 @@ class StoreManagement extends Component {
     state = {
         currentPage: 1,
         pageSize: 100,
-        optionArray: ['全部品类'],
+        optionArray: [formatMessage({ id: 'storeManagement.info.fullTypes' })],
         companyId: '',
     };
 
@@ -123,7 +129,10 @@ class StoreManagement extends Component {
             },
         };
         const { options } = payload;
-        if (formValue.types === '全部品类' || formValue.types === '') {
+        if (
+            formValue.types === formatMessage({ id: 'storeManagement.info.fullTypes' }) ||
+            formValue.types === ''
+        ) {
             // 不对种类进行筛选
         } else {
             options.type_one = formValue.types;
@@ -161,7 +170,9 @@ class StoreManagement extends Component {
                         </FormItem>
                         <FormItem label={formatMessage({ id: 'storeManagement.list.selectLabel' })}>
                             {getFieldDecorator('types', {
-                                initialValue: '全部品类',
+                                initialValue: formatMessage({
+                                    id: 'storeManagement.info.fullTypes',
+                                }),
                             })(
                                 <Select
                                     placeholder={formatMessage({

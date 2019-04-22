@@ -4,6 +4,7 @@ import { Form, Select, Button, Input, Radio, message } from 'antd';
 import router from 'umi/router';
 import { connect } from 'dva';
 import storage from '@konata9/storage.js/src/storage';
+import { getLocationParam } from '@/utils/utils';
 import styles from './StoreManagement.less';
 
 const { Option } = Select;
@@ -31,9 +32,7 @@ class AlterStore extends React.Component {
 
     initFetch = () => {
         const { getStoreInformation } = this.props;
-        const url = window.location.href;
-        const array = url.split('=');
-        const shopId = array[1];
+        const shopId = getLocationParam('shopId');
         const payload = {
             options: {
                 shop_id: shopId,
@@ -56,14 +55,18 @@ class AlterStore extends React.Component {
             (formValue.contactPhone !== /^0{0,1}(13[0-9]|15[0-9])[0-9]{8}$/ &&
                 formValue.contactPhone !== '')
         ) {
-            message.warning('请输入正确的表单信息');
+            message.warning(formatMessage({ id: 'storeManagement.message.alterFailed' }));
         } else {
             const payload = {
                 options: {
                     company_id: companyId,
                     shop_id: shopId,
                     shop_name: formValue.storeName,
-                    business_status: formValue.status === '营业' ? 0 : 1,
+                    business_status:
+                        formValue.status ===
+                        formatMessage({ id: 'storeManagement.create.statusValue1' })
+                            ? 0
+                            : 1,
                     address: formValue.detailAddress,
                     business_hours: formValue.time,
                     contact_person: formValue.contactName,

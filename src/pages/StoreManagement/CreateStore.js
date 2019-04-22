@@ -34,7 +34,7 @@ class CreateStore extends React.Component {
             (formValue.contactPhone !== /^0{0,1}(13[0-9]|15[0-9])[0-9]{8}$/ &&
                 formValue.contactPhone !== '')
         ) {
-            message.warning('请输入正确的表单信息');
+            message.warning(formatMessage({ id: 'storeManagement.message.alterFailed' }));
         } else {
             const payload = {
                 options: {
