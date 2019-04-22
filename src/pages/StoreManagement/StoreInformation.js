@@ -32,11 +32,11 @@ class StoreInformation extends React.Component {
 
     handleSubmit = () => {
         const shopId = getLocationParam('shopId');
-        router.push(`/storeManagement/alterStore?shopId=${shopId}`);
+        router.push(`/basicData/storeManagement/alterStore?shopId=${shopId}`);
     };
 
     handleCancel = () => {
-        router.push('/storeManagement/list');
+        router.push('/basicData/storeManagement/list');
     };
 
     render() {
