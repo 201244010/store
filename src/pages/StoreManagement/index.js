@@ -3,8 +3,11 @@ import { Table, Form, Input, Select, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
-import Storage from '@konata9/storage.js/src/storage';
+import storage from '@konata9/storage.js/src/storage';
 import styles from './StoreManagement.less';
+
+const FormItem = Form.Item;
+const { Option } = Select;
 
 const columns = [
     {
@@ -96,7 +99,7 @@ class StoreManagement extends Component {
     }
 
     initFetch = () => {
-        const companyId = Storage.get('__company_id__');
+        const companyId = storage.get('__company_id__');
         this.setState({ companyId });
         const { getArray } = this.props;
         const payload = {
@@ -149,11 +152,11 @@ class StoreManagement extends Component {
     };
 
     render() {
-        const { form, list } = this.props;
+        const {
+            form: { getFieldDecorator },
+            list,
+        } = this.props;
         const { optionArray } = this.state;
-        const { getFieldDecorator } = form;
-        const FormItem = Form.Item;
-        const { Option } = Select;
 
         return (
             <div className={styles.storeList}>
@@ -201,16 +204,17 @@ class StoreManagement extends Component {
                         </a>
                     </Form>
                 </div>
-                <a
+                <Button
+                    type="primary"
+                    icon="plus"
                     onClick={() => {
                         router.push('/basicData/storeManagement/createStore');
                     }}
-                    className={styles.link}
                 >
                     {formatMessage({ id: 'storeManagement.list.newBuiltStore' })}
-                </a>
+                </Button>
                 <div className={styles.table}>
-                    <Table dataSource={list.data} columns={columns} />
+                    <Table rowKey="shopId" dataSource={list.data} columns={columns} />
                 </div>
             </div>
         );

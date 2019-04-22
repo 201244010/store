@@ -157,7 +157,7 @@ export default {
                                 { path: '/basicData/storeManagement', redirect: '/basicData/storeManagement/list' },
                                 {
                                     path: '/basicData/storeManagement/list',
-                                    component: './StoreManagement/Index.js',
+                                    component: './StoreManagement/index.js',
                                     name: 'list',
                                 },
                                 {
