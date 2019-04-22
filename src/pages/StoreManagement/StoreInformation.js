@@ -15,10 +15,6 @@ import styles from './StoreManagement.less';
     })
 )
 class StoreInformation extends React.Component {
-    state = {
-        shopId: '',
-    };
-
     componentDidMount() {
         this.initFetch();
     }
@@ -31,12 +27,11 @@ class StoreInformation extends React.Component {
                 shop_id: shopId,
             },
         };
-        this.setState({ shopId });
         getStoreInformation(payload);
     };
 
     handleSubmit = () => {
-        const { shopId } = this.state;
+        const shopId = getLocationParam('shopId');
         router.push(`/storeManagement/alterStore?shopId=${shopId}`);
     };
 
