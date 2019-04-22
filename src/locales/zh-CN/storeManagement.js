@@ -6,7 +6,7 @@ export default {
     'storeManagement.list.selectPlaceHolder': '请选择',
     'storeManagement.list.buttonSubmit': '查询',
     'storeManagement.list.buttonReset': '重置',
-    'storeManagement.list.newBuiltStore': '+新建门店',
+    'storeManagement.list.newBuiltStore': '新建门店',
     'storeManagement.list.columnId': '门店编号',
     'storeManagement.list.columnName': '门店名称',
     'storeManagement.list.columnStatus': '状态',
@@ -44,7 +44,7 @@ export default {
     'storeManagement.create.fullDay': '全天',
     'storeManagement.create.pic': '门店平面图',
     'storeManagement.create.upload': '上传附件',
-    'storeManagement.create.supportTypes': '支持JPEG、PNG、gif、dwg、dxf',
+    'storeManagement.create.supportType s': '支持JPEG、PNG、gif、dwg、dxf',
     'storeManagement.create.contactName': '联系人',
     'storeManagement.create.contactPhone': '联系人电话',
     'storeManagement.create.contactMail': '联系人邮箱',
@@ -68,6 +68,8 @@ export default {
     // toast提示
     'storeManagement.message.alterSuccess': '修改成功',
     'storeManagement.message.alterFailed': '请输入正确的表单信息',
+    'storeManagement.message.name.error': '请输入正确的门店名称',
+    'storeManagement.message.cellphone.error': '请输入正确的联系人电话',
     'storeManagement.message.createFailed': '创建失败',
     'storeManagement.message.createSuccess': '创建成功',
 };

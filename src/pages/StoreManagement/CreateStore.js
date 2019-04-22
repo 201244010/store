@@ -4,7 +4,10 @@ import { Form, Select, Button, Input, Radio, message } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
 import storage from '@konata9/storage.js/src/storage';
+import { cellphone }  from '@/constants/regexp';
 import styles from './StoreManagement.less';
+
+const FormItem = Form.Item;
 
 @connect(
     state => ({
@@ -29,32 +32,39 @@ class CreateStore extends React.Component {
             createNewStore,
         } = this.props;
         const formValue = getFieldsValue();
-        if (
-            formValue.name === '' ||
-            (formValue.contactPhone !== /^0{0,1}(13[0-9]|15[0-9])[0-9]{8}$/ &&
-                formValue.contactPhone !== '')
-        ) {
-            message.warning(formatMessage({ id: 'storeManagement.message.alterFailed' }));
-        } else {
-            const payload = {
-                options: {
-                    company_id: companyId,
-                    shop_name: formValue.name,
-                    type_one: 0,
-                    type_two: 0,
-                    business_status:
-                        formValue.status ===
-                        formatMessage({ id: 'storeManagement.create.statusValue1' })
-                            ? 0
-                            : 1,
-                    address: formValue.detailAddress,
-                    business_hours: formValue.time,
-                    contact_person: formValue.contactName,
-                    contact_tel: formValue.contactPhone,
-                },
-            };
-            createNewStore(payload);
+        if (!this.validFormValue(formValue)) {
+            return;
         }
+        const payload = {
+            options: {
+                company_id: companyId,
+                shop_name: formValue.name,
+                type_one: 0,
+                type_two: 0,
+                business_status:
+                    formValue.status ===
+                    formatMessage({ id: 'storeManagement.create.statusValue1' })
+                        ? 0
+                        : 1,
+                address: formValue.detailAddress,
+                business_hours: formValue.time,
+                contact_person: formValue.contactName,
+                contact_tel: formValue.contactPhone,
+            },
+        };
+        createNewStore(payload);
+    };
+
+    validFormValue = (formValue) => {
+        if (!formValue.name) {
+            message.warning(formatMessage({ id: 'storeManagement.message.name.error' }));
+            return false;
+        }
+        if (formValue.contactPhone && !cellphone.test(formValue.contactPhone)) {
+            message.warning(formatMessage({ id: 'storeManagement.message.cellphone.error' }));
+            return false;
+        }
+        return true;
     };
 
     handleOnChange = e => {
@@ -62,28 +72,13 @@ class CreateStore extends React.Component {
     };
 
     render() {
-        const FormItem = Form.Item;
         const { status, optionArray } = this.state;
-        const { form } = this.props;
-        const { getFieldDecorator } = form;
-        const { Option } = Select;
+        const { form: { getFieldDecorator } } = this.props;
 
         return (
             <div className={styles.storeList}>
                 <h2>{formatMessage({ id: 'storeManagement.create.title' })}</h2>
                 <Form onSubmit={this.handleSubmit} labelCol={{ span: 2 }} wrapperCol={{ span: 9 }}>
-                    {/* <FormItem label={formatMessage({ id: 'storeManagement.create.id' })}> */}
-                    {/* { */}
-                    {/* getFieldDecorator('storeId', { */}
-                    {/* rules: [ */}
-                    {/* { */}
-                    {/* required: true, */}
-                    {/* message: formatMessage({ id: 'storeManagement.create.idMessage' }), */}
-                    {/* }, */}
-                    {/* ], */}
-                    {/* initialValue: '', */}
-                    {/* })(<Input style={{ width: 300 }} />)} */}
-                    {/* </FormItem> */}
                     <FormItem label={formatMessage({ id: 'storeManagement.create.nameLabel' })}>
                         {getFieldDecorator('name', {
                             rules: [
@@ -115,9 +110,9 @@ class CreateStore extends React.Component {
                                 })}
                             >
                                 {optionArray.map(value => (
-                                    <Option value={value} key={value}>
+                                    <Select.Option value={value} key={value}>
                                         {value}
-                                    </Option>
+                                    </Select.Option>
                                 ))}
                             </Select>
                         )}
@@ -145,16 +140,6 @@ class CreateStore extends React.Component {
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.address' })}>
-                        {/* {getFieldDecorator('address', { */}
-                        {/* initialValue: '', */}
-                        {/* })( */}
-                        {/* <Cascader */}
-                        {/* style={{ width: 300 }} */}
-                        {/* placeholder={formatMessage({ */}
-                        {/* id: 'storeManagement.create.addressPlaceHolder1', */}
-                        {/* })} */}
-                        {/* /> */}
-                        {/* )} */}
                         {getFieldDecorator('detailAddress', {
                             initialValue: '',
                         })(
@@ -166,7 +151,6 @@ class CreateStore extends React.Component {
                             />
                         )}
                     </FormItem>
-
                     <FormItem label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>
                         {getFieldDecorator('time', {
                             initialValue: '',
@@ -184,12 +168,12 @@ class CreateStore extends React.Component {
                                     message: formatMessage({
                                         id: 'storeManagement.create.phoneMessage',
                                     }),
-                                    pattern: /^0{0,1}(13[0-9]|15[0-9])[0-9]{8}$/,
+                                    pattern: cellphone,
                                 },
                             ],
                             validateTrigger: 'onBlur',
                             initialValue: '',
-                        })(<Input style={{ width: 300 }} />)}
+                        })(<Input style={{ width: 300 }} maxLength={11} />)}
                     </FormItem>
                     <FormItem>
                         <Button htmlType="submit" className={styles.submitButton}>
