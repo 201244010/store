@@ -3,7 +3,6 @@ import { Table, Form, Input, Select, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
-// import { paramsDeserialization, paramsSerialization } from '@/utils/utils';
 import storage from '@konata9/storage.js/src/storage';
 import styles from './StoreManagement.less';
 
@@ -207,27 +206,8 @@ class StoreManagement extends Component {
                     {formatMessage({ id: 'storeManagement.list.newBuiltStore' })}
                 </a>
                 <div className={styles.table}>
-                    <Table dataSource={list.data} columns={columns} pagination={false} />
+                    <Table dataSource={list.data} columns={columns} />
                 </div>
-                {/* <Pagination */}
-                {/* showSizeChanger */}
-                {/* showQuickJumper */}
-                {/* onChange={ */}
-                {/* a => {this.setState({ currentPage: a }); */}
-                {/* }} */}
-                {/* onShowSizeChange={ */}
-                {/* (a, b) => {this.setState({ currentPage: a, pageSize: b }); */}
-                {/* }} */}
-                {/* /> */}
-                {/* <p className={styles.pageText} onClick={()=>{console.log(list)}}> */}
-                {/* 共{totalData}条记录 第{currentPage}/ */}
-                {/* { */}
-                {/* totalData % pageSize === 0 */}
-                {/* ? totalData / pageSize */}
-                {/* : parseInt(totalData / pageSize + 1, 10) */}
-                {/* } */}
-                {/* 页 */}
-                {/* </p> */}
             </div>
         );
     }

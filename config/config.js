@@ -151,28 +151,27 @@ export default {
                             component: './MerchantManagement/MerchantModify',
                         },
                         {
-                            path: '/storeManagement',
+                            path: '/basicData/storeManagement',
                             name: 'storeManagement',
-                            icon: 'blank',
                             routes: [
                                 {
-                                    path: '/storeManagement/list',
+                                    path: '/basicData/storeManagement/list',
                                     component: './StoreManagement/Index.js',
                                     name: 'list',
                                 },
                                 {
-                                    path: '/storeManagement/createStore',
+                                    path: '/basicData/storeManagement/createStore',
                                     component: './StoreManagement/CreateStore.js',
                                     name: 'createStore',
                                     hideInMenu: true,
                                 },
                                 {
-                                    path: '/storeManagement/storeInformation',
+                                    path: '/basicData/storeManagement/storeInformation',
                                     component: './StoreManagement/StoreInformation.js',
                                     hideInMenu: true,
                                 },
                                 {
-                                    path: '/storeManagement/alterStore',
+                                    path: '/basicData/storeManagement/alterStore',
                                     component: './StoreManagement/AlterStore.js',
                                     hideInMenu: true,
                                 },
