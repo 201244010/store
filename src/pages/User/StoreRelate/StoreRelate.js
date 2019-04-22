@@ -6,13 +6,34 @@ import { Button, Divider, List } from 'antd';
 import Storage from '@konata9/storage.js';
 import styles from './StoreRelate.less';
 
-@connect(state => ({
-    merchant: state.merchant,
-}))
+@connect(
+    state => ({
+        merchant: state.merchant,
+        store: state.store,
+    }),
+    dispatch => ({
+        getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+    })
+)
 class StoreRelate extends Component {
+    checkStoreExist = async () => {
+        const {
+            getStoreList,
+            store: { storeList },
+        } = this.props;
+        await getStoreList({});
+        if (storeList.length === 0) {
+            router.push('/basicData/storeManagement/createStore');
+        } else {
+            const defaultStore = storeList[0] || {};
+            Storage.set({ __shop_id__: defaultStore.shop_id });
+            router.push('/');
+        }
+    };
+
     enterSystem = company => {
         Storage.set({ __company_id__: company.company_id });
-        router.push('/');
+        this.checkStoreExist();
     };
 
     render() {

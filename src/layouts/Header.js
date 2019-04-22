@@ -26,7 +26,10 @@ class HeaderView extends PureComponent {
     }
 
     componentDidMount() {
+        const { getStoreList } = this.props;
         document.addEventListener('scroll', this.handScroll, { passive: true });
+        console.log(1);
+        getStoreList({});
     }
 
     componentWillUnmount() {
@@ -133,11 +136,18 @@ class HeaderView extends PureComponent {
     }
 }
 
-export default connect(({ user, global, setting, loading }) => ({
-    currentUser: user.currentUser,
-    collapsed: global.collapsed,
-    fetchingNotices: loading.effects['global/fetchNotices'],
-    notices: global.notices,
-    setting,
-    user,
-}))(HeaderView);
+export default connect(
+    ({ user, global, setting, loading, store }) => ({
+        currentUser: user.currentUser,
+        collapsed: global.collapsed,
+        fetchingNotices: loading.effects['global/fetchNotices'],
+        notices: global.notices,
+        setting,
+        user,
+        store,
+    }),
+    dispatch => ({
+        getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+        dispatch,
+    })
+)(HeaderView);

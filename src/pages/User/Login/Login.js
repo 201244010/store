@@ -128,7 +128,7 @@ class Login extends Component {
 
     checkCompanyList = async () => {
         const { getCompanyList } = this.props;
-        const response = await getCompanyList();
+        const response = await getCompanyList({});
         if (response && response.code === ERROR_OK) {
             const data = response.data || {};
             const companyList = data.company_list || [];

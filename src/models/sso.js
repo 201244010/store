@@ -40,7 +40,7 @@ export default {
             const { options } = payload;
             const response = yield call(Actions.checkUser, options);
             yield put({
-                type: 'checkUser',
+                type: 'checkUserStatus',
             });
             return response;
         },
@@ -67,7 +67,7 @@ export default {
     },
 
     reducers: {
-        checkUser(state) {
+        checkUserStatus(state) {
             return {
                 ...state,
             };

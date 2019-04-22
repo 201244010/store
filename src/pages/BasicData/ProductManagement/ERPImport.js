@@ -34,6 +34,7 @@ const KWYLS = props => {
 const RenderFormItem = {
     'SAAS-KWYLS': KWYLS,
     'SAAS-SDNM': SDNM,
+    default: () => <div />,
 };
 
 @connect(
@@ -51,7 +52,7 @@ class ERPImport extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            RenderItem: KWYLS,
+            RenderItem: () => <div />,
         };
     }
 
@@ -62,7 +63,7 @@ class ERPImport extends Component {
 
     handlePlatformChange = value => {
         this.setState({
-            RenderItem: RenderFormItem[value],
+            RenderItem: RenderFormItem[value] || RenderFormItem.default,
         });
     };
 
@@ -86,8 +87,11 @@ class ERPImport extends Component {
                         <Form.Item label={formatMessage({ id: 'basicData.erp.platform' })}>
                             {getFieldDecorator('erp_platform')(
                                 <Select onChange={this.handlePlatformChange}>
-                                    {sassInfoList.map(platform => (
-                                        <Select.Option key={platform.id} value={platform.name}>
+                                    {sassInfoList.map((platform, index) => (
+                                        <Select.Option
+                                            key={platform.id || index}
+                                            value={platform.name}
+                                        >
                                             {platform.fullName || ''}
                                         </Select.Option>
                                     ))}
