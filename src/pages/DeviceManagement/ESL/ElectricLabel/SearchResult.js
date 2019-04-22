@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Divider, message, Modal, Table, Menu, Dropdown, Row, Col, Select } from 'antd';
+import { Button, Divider, message, Modal, Table, Menu, Dropdown, Row, Col, Select } from "antd";
 import { formatMessage } from 'umi/locale';
 import { DURATION_TIME, ESL_STATES } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
@@ -14,7 +14,7 @@ class SearchResult extends Component {
             templateVisible: false,
             bindVisible: false,
             currentRecord: {},
-            selectedProduct: {},
+            selectedProduct: {}
         };
     }
 
@@ -28,13 +28,13 @@ class SearchResult extends Component {
         });
     };
 
-    showDetail = async record => {
+    showDetail = async (record) => {
         const { detailVisible } = this.state;
         const { fetchESLDetails } = this.props;
         const response = await fetchESLDetails({
             options: {
-                esl_id: record.id,
-            },
+                esl_id: record.id
+            }
         });
         if (response && response.code === ERROR_OK) {
             this.setState({
@@ -45,36 +45,36 @@ class SearchResult extends Component {
         }
     };
 
-    showBind = async record => {
+    showBind = async (record) => {
         const { fetchTemplatesByESLCode, fetchProductList } = this.props;
         await fetchTemplatesByESLCode({
             options: {
-                esl_code: record.esl_code,
-            },
+                esl_code: record.esl_code
+            }
         });
         await fetchProductList({
             options: {
-                current: 1,
-            },
+                current: 1
+            }
         });
 
         this.setState({
             currentRecord: record,
-            bindVisible: true,
+            bindVisible: true
         });
     };
 
-    flushESL = async record => {
+    flushESL = async (record) => {
         const { flushESL } = this.props;
         flushESL({
             options: {
                 esl_code: record.esl_code,
-                product_id: record.product_id,
-            },
+                product_id: record.product_id
+            }
         });
     };
 
-    unbindESL = record => {
+    unbindESL = (record) => {
         const { unbindESL } = this.props;
         const content = (
             <div>
@@ -95,7 +95,7 @@ class SearchResult extends Component {
         });
     };
 
-    deleteESL = record => {
+    deleteESL = (record) => {
         const { deleteESL } = this.props;
         const content = (
             <div>
@@ -124,78 +124,77 @@ class SearchResult extends Component {
         });
     };
 
-    selectProduct = selectedProduct => {
+    selectProduct = (selectedProduct) => {
         this.setState({
-            selectedProduct,
+            selectedProduct
         });
     };
 
-    updateProduct = templateId => {
+    updateProduct = (templateId) => {
         const { currentRecord } = this.state;
         this.setState({
             currentRecord: {
                 ...currentRecord,
-                template_id: templateId,
-            },
+                template_id: templateId
+            }
         });
     };
 
-    handleMoreClick = async e => {
+    handleMoreClick = async (e) => {
         const { flashLed, fetchTemplatesByESLCode } = this.props;
-        const {
-            dataset: { recordId, record },
-        } = e.domEvent.target;
-        const eslDetail = JSON.parse(record);
+        const { dataset: {recordId, record} } = e.domEvent.target;
 
         if (e.key === '0') {
+            const eslDetail = JSON.parse(record);
             this.unbindESL({
-                eslCode: eslDetail.esl_code,
+                eslCode: eslDetail.esl_code
             });
         }
         if (e.key === '1') {
+            const eslDetail = JSON.parse(record);
             await fetchTemplatesByESLCode({
                 options: {
-                    esl_code: eslDetail.esl_code,
-                },
+                    esl_code: eslDetail.esl_code
+                }
             });
             this.setState({
                 templateVisible: true,
-                currentRecord: eslDetail,
+                currentRecord: eslDetail
             });
         }
         if (e.key === '2') {
             flashLed({
                 options: {
                     mode_id: 60019,
-                    esl_id_list: [parseInt(recordId, 10)],
-                },
+                    esl_id_list: [parseInt(recordId, 10)]
+                }
             });
         }
         if (e.key === '3') {
             this.deleteESL({
-                id: recordId,
+                id: recordId
             });
         }
     };
 
+    confirmBind = () => {
+        const { changeTemplate } = this.props;
+        const { currentRecord } = this.state;
+
+        changeTemplate({
+            options: {
+                template_id: currentRecord.template_id,
+                esl_code: currentRecord.esl_code
+            }
+        });
+        this.closeModal('templateVisible');
+    };
+
     render() {
         const {
-            loading,
-            data,
-            pagination,
-            detailInfo,
-            templates4ESL,
-            products,
-            fetchProductList,
-            bindESL,
+            loading, data, pagination, detailInfo, templates4ESL, products, productPagination, fetchProductList, bindESL
         } = this.props;
-        const {
-            detailVisible,
-            templateVisible,
-            bindVisible,
-            currentRecord,
-            selectedProduct,
-        } = this.state;
+        const { detailVisible, templateVisible, bindVisible, currentRecord, selectedProduct } = this.state;
         const columns = [
             {
                 title: formatMessage({ id: 'esl.device.esl.id' }),
@@ -232,56 +231,58 @@ class SearchResult extends Component {
                 key: 'action',
                 render: (_, record) => (
                     <span>
-                        <a href="javascript: void (0);" onClick={() => this.showDetail(record)}>
+                        <a
+                            href="javascript: void (0);"
+                            onClick={() => this.showDetail(record)}
+                        >
                             {formatMessage({ id: 'list.action.detail' })}
                         </a>
                         <Divider type="vertical" />
-                        <a href="javascript: void (0);" onClick={() => this.showBind(record)}>
+                        <a
+                            href="javascript: void (0);"
+                            onClick={() => this.showBind(record)}
+                        >
                             {formatMessage({ id: 'list.action.bind' })}
                         </a>
                         <Divider type="vertical" />
-                        <a href="javascript: void (0);" onClick={() => this.flushESL(record)}>
+                        <a
+                            href="javascript: void (0);"
+                            onClick={() => this.flushESL(record)}
+                        >
                             {formatMessage({ id: 'list.action.push.again' })}
                         </a>
                         <Divider type="vertical" />
-                        <Dropdown
-                            overlay={
-                                <Menu onClick={this.handleMoreClick}>
-                                    {record.product_id ? (
+                        <Dropdown overlay={
+                            <Menu onClick={this.handleMoreClick}>
+                                {
+                                    record.product_id ?
                                         <Menu.Item key="0">
-                                            <a
-                                                href="javascript: void (0);"
-                                                data-record={JSON.stringify(record)}
-                                            >
-                                                解绑
-                                            </a>
-                                        </Menu.Item>
-                                    ) : null}
-                                    {record.product_id ? <Menu.Divider /> : null}
-                                    {record.product_id ? (
+                                            <a href="javascript: void (0);" data-record={JSON.stringify(record)}>解绑</a>
+                                        </Menu.Item> :
+                                        null
+                                }
+                                {
+                                    record.product_id ? <Menu.Divider /> : null
+                                }
+                                {
+                                    record.product_id ?
                                         <Menu.Item key="1">
-                                            <a
-                                                href="javascript: void (0);"
-                                                data-record={JSON.stringify(record)}
-                                            >
-                                                修改模板
-                                            </a>
-                                        </Menu.Item>
-                                    ) : null}
-                                    {record.product_id ? <Menu.Divider /> : null}
-                                    <Menu.Item key="2">
-                                        <a href="javascript: void (0);" data-record-id={record.id}>
-                                            闪灯
-                                        </a>
-                                    </Menu.Item>
-                                    <Menu.Divider />
-                                    <Menu.Item key="3">
-                                        <a href="javascript: void (0);" data-record-id={record.id}>
-                                            删除
-                                        </a>
-                                    </Menu.Item>
-                                </Menu>
-                            }
+                                            <a href="javascript: void (0);" data-record={JSON.stringify(record)}>修改模板</a>
+                                        </Menu.Item> :
+                                        null
+                                }
+                                {
+                                    record.product_id ? <Menu.Divider /> : null
+                                }
+                                <Menu.Item key="2">
+                                    <a href="javascript: void (0);" data-record-id={record.id}>闪灯</a>
+                                </Menu.Item>
+                                <Menu.Divider />
+                                <Menu.Item key="3">
+                                    <a href="javascript: void (0);" data-record-id={record.id}>删除</a>
+                                </Menu.Item>
+                            </Menu>
+                        }
                         >
                             <a className="ant-dropdown-link" href="javascript: void (0)">
                                 {formatMessage({ id: 'list.action.more' })}
@@ -332,9 +333,16 @@ class SearchResult extends Component {
                     onCancel={() => this.closeModal('templateVisible')}
                     footer={[
                         <Button
+                            key="cancel"
+                            type="default"
+                            onClick={() => this.closeModal('templateVisible')}
+                        >
+                            {formatMessage({ id: 'btn.cancel' })}
+                        </Button>,
+                        <Button
                             key="submit"
                             type="primary"
-                            onClick={() => this.closeModal('templateVisible')}
+                            onClick={this.confirmBind}
                         >
                             {formatMessage({ id: 'btn.confirm' })}
                         </Button>,
@@ -343,37 +351,44 @@ class SearchResult extends Component {
                     <Row>
                         <Col span={4}>{formatMessage({ id: 'esl.device.esl.id' })}:</Col>
                         <Col span={20}>{currentRecord.esl_code}</Col>
-                        <Col span={4}>
-                            {formatMessage({ id: 'esl.device.esl.product.seq.num' })}:
-                        </Col>
+                        <Col span={4}>{formatMessage({ id: 'esl.device.esl.product.seq.num' })}:</Col>
                         <Col span={20}>{currentRecord.product_seq_num}</Col>
                         <Col span={4}>{formatMessage({ id: 'esl.device.esl.product.name' })}:</Col>
                         <Col span={20}>{currentRecord.product_name}</Col>
                         <Col span={4}>{formatMessage({ id: 'esl.device.esl.template.name' })}:</Col>
                         <Col span={20}>
-                            <Select value={currentRecord.template_id} style={{ width: '100%' }}>
-                                {templates4ESL.map(template => (
-                                    <Select.Option key={template.id} value={template.id}>
-                                        {template.name}
-                                    </Select.Option>
-                                ))}
+                            <Select
+                                style={{width: '100%'}}
+                                value={currentRecord.template_id}
+                                onChange={(id) => this.updateProduct(id)}
+                            >
+                                {
+                                    templates4ESL.map(template =>
+                                        <Select.Option key={template.id} value={template.id}>
+                                            {template.name}
+                                        </Select.Option>
+                                    )
+                                }
                             </Select>
                         </Col>
                     </Row>
                 </Modal>
                 <BindModal
-                    {...{
-                        bindVisible,
-                        currentRecord,
-                        templates4ESL,
-                        products,
-                        fetchProductList,
-                        selectedProduct,
-                        bindESL,
-                        closeModal: this.closeModal,
-                        selectProduct: this.selectProduct,
-                        updateProduct: this.updateProduct,
-                    }}
+                    {
+                        ...{
+                            bindVisible,
+                            currentRecord,
+                            templates4ESL,
+                            products,
+                            productPagination,
+                            fetchProductList,
+                            selectedProduct,
+                            bindESL,
+                            closeModal: this.closeModal,
+                            selectProduct: this.selectProduct,
+                            updateProduct: this.updateProduct
+                        }
+                    }
                 />
             </div>
         );
