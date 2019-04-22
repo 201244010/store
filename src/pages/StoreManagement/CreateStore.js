@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Select, Button, Input, Radio, message } from 'antd';
+import { Form, Button, Input, Radio, message, Cascader } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
 import storage from '@konata9/storage.js/src/storage';
@@ -8,18 +8,23 @@ import styles from './StoreManagement.less';
 
 @connect(
     state => ({
-        newStore: state.store,
+        store: state.store,
     }),
     dispatch => ({
         createNewStore: payload => dispatch({ type: 'store/createNewStore', payload }),
+        getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
     })
 )
 class CreateStore extends React.Component {
     state = {
         status: formatMessage({ id: 'storeManagement.create.statusValue1' }),
-        optionArray: [],
         companyId: storage.get('__company_id__'),
     };
+
+    componentDidMount() {
+        const { getShopTypeList } = this.props;
+        getShopTypeList();
+    }
 
     handleSubmit = e => {
         e.preventDefault();
@@ -63,10 +68,11 @@ class CreateStore extends React.Component {
 
     render() {
         const FormItem = Form.Item;
-        const { status, optionArray } = this.state;
-        const { form } = this.props;
-        const { getFieldDecorator } = form;
-        const { Option } = Select;
+        const { status } = this.state;
+        const {
+            form: { getFieldDecorator },
+            store: { shopType_list },
+        } = this.props;
 
         return (
             <div className={styles.storeList}>
@@ -108,18 +114,13 @@ class CreateStore extends React.Component {
                         {getFieldDecorator('type', {
                             initialValue: '',
                         })(
-                            <Select
+                            <Cascader
                                 style={{ width: 300 }}
                                 placeholder={formatMessage({
                                     id: 'storeManagement.create.typePlaceHolder',
                                 })}
-                            >
-                                {optionArray.map(value => (
-                                    <Option value={value} key={value}>
-                                        {value}
-                                    </Option>
-                                ))}
-                            </Select>
+                                options={shopType_list}
+                            />
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>

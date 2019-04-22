@@ -61,3 +61,12 @@ export const alterStore = (options = {}) => {
     };
     return fetchApi('update', opt).then(response => response.json());
 };
+
+export const getShopTypeList = (options = {}) => {
+    const opt = {
+        body: {
+            ...options,
+        },
+    };
+    return fetchApi('getShopTypeList', opt).then(response => response.json());
+};

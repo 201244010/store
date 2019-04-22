@@ -3,7 +3,26 @@ import { ERROR_OK } from '@/constants/errorCode';
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
 import router from 'umi/router';
+import typecheck from '@konata9/typecheck.js';
 import Storage from '@konata9/storage.js';
+
+const cascaderDataWash = (data, mapping) => {
+    const formatData = [...data];
+    return formatData.map(item => {
+        const temp = { ...item };
+        mapping.forEach(map => {
+            if (temp[map.from]) {
+                if (typecheck(temp[map.from]) === 'array') {
+                    temp[map.to] = cascaderDataWash(temp[map.from], mapping);
+                } else {
+                    temp[map.to] = temp[map.from];
+                }
+            }
+        });
+
+        return temp;
+    });
+};
 
 export default {
     namespace: 'store',
@@ -15,6 +34,7 @@ export default {
         },
         loading: false,
         getOption: {},
+        shopType_list: [],
         alter: {
             name: '',
             type: '',
@@ -40,7 +60,6 @@ export default {
             if (response && response.code === ERROR_OK) {
                 const data = response.data || {};
                 Storage.set({ __shop_list__: data.shop_list || [] });
-                console.log(response);
                 yield put({
                     type: 'updateState',
                     payload: {
@@ -105,6 +124,25 @@ export default {
                     type: 'alterStore',
                     payload: {
                         data: response,
+                    },
+                });
+            }
+        },
+
+        *getShopTypeList(_, { call, put }) {
+            const response = yield call(Action.getShopTypeList);
+            if (response && response.code === ERROR_OK) {
+                const data = response.data || {};
+                const shopType_list = data.shopType_list || [];
+                const formattedShopType = cascaderDataWash(shopType_list, [
+                    { from: 'id', to: 'value' },
+                    { from: 'name', to: 'label' },
+                    { from: 'child', to: 'children' },
+                ]);
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        shopType_list: formattedShopType,
                     },
                 });
             }
