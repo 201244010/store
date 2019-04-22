@@ -1,5 +1,6 @@
 import * as Action from '@/services/storeManagement/storeList';
 import { ERROR_OK } from '@/constants/errorCode';
+import { message } from 'antd';
 
 export default {
     namespace: 'store',
@@ -41,9 +42,9 @@ export default {
             const { options } = payload;
             const response = yield call(Action.createStore, options);
             if (response && response.code === ERROR_OK) {
-                alert('创建成功');
+                message.success('创建成功');
                 yield put({
-                    type: 'saveNewStore',
+                    type: 'alterNewStore',
                     payload: {
                         data: options,
                     },
@@ -68,7 +69,7 @@ export default {
             const { options } = payload;
             const response = yield call(Action.alterStore, options);
             if (response && response.code === ERROR_OK) {
-                alert('修改成功');
+                message.success('修改成功');
                 yield put({
                     type: 'alterStore',
                     payload: {

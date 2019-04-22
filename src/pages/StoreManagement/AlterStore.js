@@ -1,8 +1,9 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Select, Button, Input, Radio, Cascader } from 'antd';
+import { Form, Select, Button, Input, Radio, message } from 'antd';
 import router from 'umi/router';
 import { connect } from 'dva';
+import storage from '@konata9/storage.js/src/storage';
 import styles from './StoreManagement.less';
 
 const { Option } = Select;
@@ -21,6 +22,7 @@ class AlterStore extends React.Component {
     state = {
         option: [],
         shopId: '',
+        companyId: storage.get('__company_id__'),
     };
 
     componentDidMount() {
@@ -43,7 +45,7 @@ class AlterStore extends React.Component {
 
     handleSubmit = e => {
         e.preventDefault();
-        const { shopId } = this.state;
+        const { shopId, companyId } = this.state;
         const {
             form: { getFieldsValue },
             alterStoreInformation,
@@ -54,11 +56,11 @@ class AlterStore extends React.Component {
             (formValue.contactPhone !== /^0{0,1}(13[0-9]|15[0-9])[0-9]{8}$/ &&
                 formValue.contactPhone !== '')
         ) {
-            alert('请输入正确的表单信息');
+            message.warning('请输入正确的表单信息');
         } else {
             const payload = {
                 options: {
-                    company_id: '56',
+                    company_id: companyId,
                     shop_id: shopId,
                     shop_name: formValue.storeName,
                     business_status: formValue.status === '营业' ? 0 : 1,
@@ -130,14 +132,14 @@ class AlterStore extends React.Component {
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.address' })}>
-                        {getFieldDecorator('address')(
-                            <Cascader
-                                style={{ width: 300 }}
-                                placeholder={formatMessage({
-                                    id: 'storeManagement.create.addressPlaceHolder1',
-                                })}
-                            />
-                        )}
+                        {/* {getFieldDecorator('address')( */}
+                        {/* <Cascader */}
+                        {/* style={{ width: 300 }} */}
+                        {/* placeholder={formatMessage({ */}
+                        {/* id: 'storeManagement.create.addressPlaceHolder1', */}
+                        {/* })} */}
+                        {/* /> */}
+                        {/* )} */}
                         {getFieldDecorator('detailAddress', {
                             initialValue: alter.address,
                         })(

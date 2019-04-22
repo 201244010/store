@@ -1,15 +1,15 @@
-import React from "react";
-import { Col, Row } from "antd";
-import { ESL_STATES } from "@/constants";
-import { unixSecondToDate, formatEmpty } from "@/utils/utils";
-import "./index.less";
+import React from 'react';
+import { Col, Row } from 'antd';
+import { ESL_STATES } from '@/constants';
+import { unixSecondToDate, formatEmpty } from '@/utils/utils';
+import './index.less';
 
 const ROW_GUTTER = 16;
 const COL_SPAN = 12;
 
 export default function detail(props) {
     const { detailInfo } = props;
-    const eslInfo = formatEmpty(detailInfo, "--");
+    const eslInfo = formatEmpty(detailInfo, '--');
     console.log(eslInfo);
 
     return (
@@ -33,7 +33,9 @@ export default function detail(props) {
                 </div>
                 <div className="detail-info-item">
                     <span className="detail-info-label">固件版本：</span>
-                    <span className="detail-info-content">{eslInfo.status === 0 ? "-" : eslInfo.bin_version}</span>
+                    <span className="detail-info-content">
+                        {eslInfo.status === 0 ? '-' : eslInfo.bin_version}
+                    </span>
                 </div>
                 <div className="detail-info-item">
                     <span className="detail-info-label">电量：</span>
@@ -45,7 +47,11 @@ export default function detail(props) {
                 </div>
                 <div className="detail-info-item">
                     <span className="detail-info-label">最后通信时间：</span>
-                    <span className="detail-info-content">{eslInfo.connect_time ? unixSecondToDate(eslInfo.connect_time, "YYYY-MM-DD HH:mm") : "--"}</span>
+                    <span className="detail-info-content">
+                        {eslInfo.connect_time
+                            ? unixSecondToDate(eslInfo.connect_time, 'YYYY-MM-DD HH:mm')
+                            : '--'}
+                    </span>
                 </div>
             </Col>
             <Col span={COL_SPAN}>

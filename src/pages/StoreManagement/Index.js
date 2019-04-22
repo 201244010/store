@@ -4,6 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
 // import { paramsDeserialization, paramsSerialization } from '@/utils/utils';
+import storage from '@konata9/storage.js/src/storage';
 import styles from './StoreManagement.less';
 
 const columns = [
@@ -76,8 +77,9 @@ const columns = [
 class StoreManagement extends Component {
     state = {
         currentPage: 1,
-        pageSize: 10,
+        pageSize: 100,
         optionArray: ['全部品类'],
+        companyId: '',
     };
 
     componentDidMount() {
@@ -85,12 +87,14 @@ class StoreManagement extends Component {
     }
 
     initFetch = () => {
+        const companyId = storage.get('__company_id__');
+        this.setState({ companyId });
         const { getArray } = this.props;
         const payload = {
             options: {
-                company_id: '56',
+                company_id: companyId,
                 page_num: 1,
-                page_size: 10,
+                page_size: 100,
             },
         };
         getArray(payload);
@@ -105,7 +109,7 @@ class StoreManagement extends Component {
 
     handleSubmit = e => {
         e.preventDefault();
-        const { currentPage, pageSize } = this.state;
+        const { currentPage, pageSize, companyId } = this.state;
         const {
             form: { getFieldsValue },
             getArray,
@@ -113,7 +117,7 @@ class StoreManagement extends Component {
         const formValue = getFieldsValue();
         const payload = {
             options: {
-                company_id: '56',
+                company_id: companyId,
                 page_num: currentPage,
                 page_size: pageSize,
             },

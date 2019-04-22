@@ -7,29 +7,23 @@ import * as styles from './index.less';
 @connect(
     state => ({
         eslElectricLabel: state.eslElectricLabel,
-        basicDataProduct: state.basicDataProduct
+        basicDataProduct: state.basicDataProduct,
     }),
     dispatch => ({
         changeSearchFormValue: payload =>
             dispatch({ type: 'eslElectricLabel/changeSearchFormValue', payload }),
         fetchElectricLabels: payload =>
             dispatch({ type: 'eslElectricLabel/fetchElectricLabels', payload }),
-        fetchESLDetails: payload =>
-            dispatch({ type: 'eslElectricLabel/fetchESLDetails', payload }),
+        fetchESLDetails: payload => dispatch({ type: 'eslElectricLabel/fetchESLDetails', payload }),
         fetchTemplatesByESLCode: payload =>
             dispatch({ type: 'eslElectricLabel/fetchTemplatesByESLCode', payload }),
         fetchProductList: payload =>
             dispatch({ type: 'basicDataProduct/fetchProductList', payload }),
-        flushESL: payload =>
-            dispatch({ type: 'eslElectricLabel/flushESL', payload }),
-        bindESL: payload =>
-            dispatch({ type: 'eslElectricLabel/bindESL', payload }),
-        unbindESL: payload =>
-            dispatch({ type: 'eslElectricLabel/unbindESL', payload }),
-        flashLed: payload =>
-            dispatch({ type: 'eslElectricLabel/flashLed', payload }),
-        deleteESL: payload =>
-            dispatch({ type: 'eslElectricLabel/deleteESL', payload }),
+        flushESL: payload => dispatch({ type: 'eslElectricLabel/flushESL', payload }),
+        bindESL: payload => dispatch({ type: 'eslElectricLabel/bindESL', payload }),
+        unbindESL: payload => dispatch({ type: 'eslElectricLabel/unbindESL', payload }),
+        flashLed: payload => dispatch({ type: 'eslElectricLabel/flashLed', payload }),
+        deleteESL: payload => dispatch({ type: 'eslElectricLabel/deleteESL', payload }),
     })
 )
 class ElectricLabel extends Component {
@@ -50,8 +44,15 @@ class ElectricLabel extends Component {
 
     render() {
         const {
-            eslElectricLabel: { loading, searchFormValues, data, pagination, detailInfo, templates4ESL },
-            basicDataProduct: {data: products},
+            eslElectricLabel: {
+                loading,
+                searchFormValues,
+                data,
+                pagination,
+                detailInfo,
+                templates4ESL,
+            },
+            basicDataProduct: { data: products },
             changeSearchFormValue,
             fetchElectricLabels,
             fetchESLDetails,
