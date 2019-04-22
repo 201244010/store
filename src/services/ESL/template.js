@@ -3,7 +3,7 @@ import { env, GROCERY_ADDRESS } from '@/config';
 
 const fetchApi = customizeFetch('esl/api/template', GROCERY_ADDRESS[env]);
 
-export const fetchTemplatesByESLCode = (options) => {
+export const fetchTemplatesByESLCode = options => {
     const opts = {
         method: 'POST',
         body: options,

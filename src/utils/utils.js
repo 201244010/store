@@ -81,7 +81,7 @@ export function maskPhone(phone, maskPos) {
 export const formatEmpty = (data, blank = '') => {
     const copyData = Object.assign({}, data);
     const keys = Object.keys(copyData);
-    keys.forEach((item) => {
+    keys.forEach(item => {
         copyData[item] = copyData[item] || blank;
     });
 

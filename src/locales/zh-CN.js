@@ -9,6 +9,7 @@ import storeRelate from './zh-CN/storeRelate';
 import mailActive from './zh-CN/mailActive';
 import resetPassword from './zh-CN/resetPassword';
 import userCenter from './zh-CN/userCenter';
+import storeManagement from './zh-CN/storeManagement';
 
 // ESL
 import baseStation from './zh-CN/ESL/device';
@@ -39,4 +40,5 @@ export default {
     ...baseStation,
     ...productManagement,
     ...merchantManagement,
+    ...storeManagement,
 };
