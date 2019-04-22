@@ -143,14 +143,15 @@ class SearchResult extends Component {
     handleMoreClick = async (e) => {
         const { flashLed, fetchTemplatesByESLCode } = this.props;
         const { dataset: {recordId, record} } = e.domEvent.target;
-        const eslDetail = JSON.parse(record);
 
         if (e.key === '0') {
+            const eslDetail = JSON.parse(record);
             this.unbindESL({
                 eslCode: eslDetail.esl_code
             });
         }
         if (e.key === '1') {
+            const eslDetail = JSON.parse(record);
             await fetchTemplatesByESLCode({
                 options: {
                     esl_code: eslDetail.esl_code
