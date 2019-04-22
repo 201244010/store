@@ -242,6 +242,23 @@ export default {
             });
         },
 
+        *erpAuthCheck({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(Actions.checkSaasInfo, options);
+            if (response && response.code === ERROR_OK) {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            }
+            return response;
+        },
+
         *erpImport({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({

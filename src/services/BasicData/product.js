@@ -82,7 +82,16 @@ export const getERPPlatformList = (options = {}) => {
     return fetchApi('getSaasList', opts).then(response => response.json());
 };
 
-// TODO 进行 ERP 对接并抽取数据
+export const checkSaasInfo = (options = {}) => {
+    const opts = {
+        method: 'POST',
+        body: {
+            ...options,
+        },
+    };
+    return fetchApi('checkSaasInfoAvailable', opts).then(response => response.json());
+};
+
 export const erpImport = (options = {}) => {
     const opts = {
         method: 'POST',
@@ -91,5 +100,5 @@ export const erpImport = (options = {}) => {
         },
     };
 
-    return fetchApi('', opts).then(response => response.json());
+    return fetchApi('import', opts).then(response => response.json());
 };

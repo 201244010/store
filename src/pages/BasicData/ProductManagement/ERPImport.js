@@ -9,7 +9,7 @@ const SDNM = props => {
     const { getFieldDecorator } = props;
     return (
         <Form.Item label={formatMessage({ id: 'basicData.erp.api.key' })}>
-            {getFieldDecorator('key')(<Input />)}
+            {getFieldDecorator('saas_info.key')(<Input />)}
         </Form.Item>
     );
 };
@@ -19,13 +19,13 @@ const KWYLS = props => {
     return (
         <>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.store.num' })}>
-                {getFieldDecorator('store_num')(<Input />)}
+                {getFieldDecorator('saas_info.store_num')(<Input />)}
             </Form.Item>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.account' })}>
-                {getFieldDecorator('store_account')(<Input />)}
+                {getFieldDecorator('saas_info.store_account')(<Input />)}
             </Form.Item>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
-                {getFieldDecorator('store_password')(<Input type="password" />)}
+                {getFieldDecorator('saas_info.store_password')(<Input type="password" />)}
             </Form.Item>
         </>
     );
@@ -42,6 +42,8 @@ const RenderFormItem = {
     }),
     dispatch => ({
         getERPPlatformList: () => dispatch({ type: 'basicDataProduct/getERPPlatformList' }),
+        erpAuthCheck: payload => dispatch({ type: 'basicDataProduct/erpAuthCheck', payload }),
+        erpImport: payload => dispatch({ type: 'basicDataProduct/erpImport', payload }),
     })
 )
 @Form.create()
