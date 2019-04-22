@@ -27,9 +27,9 @@ export default {
     'menu.setting': '系统设置',
     'menu.setting.role': '角色管理',
 
-    'menu.storeManagement': '门店管理',
-    'menu.storeManagement.alterStore': '门店编辑',
-    'menu.storeManagement.createStore': '新建门店',
-    'menu.storeManagement.storeInformation': '查看门店',
-    'menu.storeManagement.list': '门店列表',
+    'menu.basicData.storeManagement': '门店管理',
+    'menu.basicData.storeManagement.list': '门店列表',
+    'menu.basicData.storeManagement.alterStore': '门店编辑',
+    'menu.basicData.storeManagement.createStore': '新建门店',
+    'menu.basicData.storeManagement.storeInformation': '查看门店',
 };

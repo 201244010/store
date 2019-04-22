@@ -14,18 +14,25 @@ class Store extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            selectedCompany: {},
             visible: false,
         };
     }
 
-    viewStore = () => {
+    viewStore = company => {
         this.setState({
+            selectedCompany: company,
             visible: true,
         });
     };
 
-    update = () => {
-        router.push('/basicData/merchantManagement/modify');
+    toPath = target => {
+        const path = {
+            update: '/basicData/merchantManagement/modify',
+            create: '/merchant/create',
+        };
+
+        router.push(path[target] || '/');
     };
 
     cancel = () => {
@@ -34,48 +41,47 @@ class Store extends Component {
         });
     };
 
-    createStore = () => {
-        // TODO 创建新商户逻辑
-        router.push('/merchant/create');
-    };
-
     render() {
-        const { itemList = [] } = this.props;
         const {
-            merchant: {
-                companyInfo: {
-                    company_id: companyId,
-                    contact_email: contactEmail,
-                    contact_tel: contactTel,
-                    company_name: companyName,
-                    contact_person: contactPerson,
-                },
-            },
+            merchant: { companyList = [] },
         } = this.props;
-        const { visible } = this.state;
-        console.log(itemList);
+        const {
+            visible,
+            selectedCompany: {
+                company_id: companyId,
+                contact_email: contactEmail,
+                contact_tel: contactTel,
+                company_name: companyName,
+                contact_person: contactPerson,
+            },
+        } = this.state;
 
         return (
             <Card style={{ marginTop: '15px' }}>
                 <h2>{formatMessage({ id: 'userCenter.store.title' })}</h2>
                 <List className={styles['list-wrapper']}>
-                    <List.Item>
-                        <div className={styles['list-item']}>
-                            <div className={styles['title-wrapper-start']}>
-                                <div className={styles['title-wrapper-icon']}>
-                                    <h4>{formatMessage({ id: 'userCenter.store.name' })}</h4>
-                                    <Icon type="property-safety" />
+                    {companyList.map(company => (
+                        <List.Item key={company.company_id}>
+                            <div className={styles['list-item']}>
+                                <div className={styles['title-wrapper-start']}>
+                                    <div className={styles['title-wrapper-icon']}>
+                                        <h4>{formatMessage({ id: 'userCenter.store.name' })}</h4>
+                                        <Icon type="property-safety" />
+                                    </div>
+                                    <div
+                                        onClick={() => this.viewStore(company)}
+                                        className={styles['button-more']}
+                                    >
+                                        {formatMessage({ id: 'list.action.detail' })}
+                                    </div>
                                 </div>
-                                <div onClick={this.viewStore} className={styles['button-more']}>
-                                    {formatMessage({ id: 'list.action.detail' })}
-                                </div>
+                                <div>{company.company_name}</div>
                             </div>
-                            <div>{companyName}</div>
-                        </div>
-                    </List.Item>
+                        </List.Item>
+                    ))}
                 </List>
                 <div>
-                    <Button type="dashed" icon="plus" block onClick={this.createStore}>
+                    <Button type="dashed" icon="plus" block onClick={() => this.toPath('create')}>
                         {formatMessage({ id: 'userCenter.store.create' })}
                     </Button>
                 </div>
@@ -88,7 +94,7 @@ class Store extends Component {
                             <Button style={{ marginLeft: 20 }} onClick={this.cancel}>
                                 {formatMessage({ id: 'btn.back' })}
                             </Button>
-                            <Button type="primary" onClick={this.update}>
+                            <Button type="primary" onClick={() => this.toPath('update')}>
                                 {formatMessage({ id: 'btn.alter' })}
                             </Button>
                         </div>

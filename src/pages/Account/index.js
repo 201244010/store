@@ -9,6 +9,7 @@ import * as styles from './Account.less';
     state => ({
         user: state.user,
         sso: state.sso,
+        merchant: state.merchant,
     }),
     dispatch => ({
         updateUsername: payload => dispatch({ type: 'user/updateUsername', payload }),
@@ -16,13 +17,20 @@ import * as styles from './Account.less';
         updatePhone: payload => dispatch({ type: 'user/updatePhone', payload }),
         updateIcon: payload => dispatch({ type: 'user/updateIcon', payload }),
         sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
+        getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
     })
 )
 class UserCenter extends Component {
+    componentDidMount() {
+        const { getCompanyList } = this.props;
+        getCompanyList();
+    }
+
     render() {
         const {
             user,
             sso,
+            merchant,
             updateUsername,
             changePassword,
             updatePhone,
@@ -48,7 +56,11 @@ class UserCenter extends Component {
                         sendCode,
                     }}
                 />
-                <Store />
+                <Store
+                    {...{
+                        merchant,
+                    }}
+                />
             </div>
         );
     }

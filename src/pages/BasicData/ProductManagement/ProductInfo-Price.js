@@ -14,7 +14,9 @@ const ProductInfoPrice = props => {
                         <span className={styles['item-label']}>
                             {formatMessage({ id: product.label })}：
                         </span>
-                        <span className={styles['item-content']}>{product.value}</span>
+                        <span className={styles['item-content']}>
+                            {product.value >= 0 ? product.value : ''}
+                        </span>
                     </div>
                 ))}
             </div>
@@ -22,7 +24,7 @@ const ProductInfoPrice = props => {
                 {productPriceExtra.map(extra => (
                     <div className={styles['card-item']} key={extra.idx || +new Date()}>
                         <span className={styles['item-label']}>{extra.name}：</span>
-                        <span className={styles['item-content']}>{extra.context}</span>
+                        <span className={styles['item-content']}>{extra.price}</span>
                     </div>
                 ))}
             </div>

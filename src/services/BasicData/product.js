@@ -71,7 +71,6 @@ export const updateProduct = (options = {}) => {
     return fetchApi('update', opts).then(response => response.json());
 };
 
-// TODO 获取 erp 对接平台列表的接口
 export const getERPPlatformList = (options = {}) => {
     const opts = {
         method: 'POST',
@@ -80,10 +79,19 @@ export const getERPPlatformList = (options = {}) => {
         },
     };
 
-    return fetchApi('', opts).then(response => response.json());
+    return fetchApi('getSaasList', opts).then(response => response.json());
 };
 
-// TODO 进行 ERP 对接并抽取数据
+export const checkSaasInfo = (options = {}) => {
+    const opts = {
+        method: 'POST',
+        body: {
+            ...options,
+        },
+    };
+    return fetchApi('checkSaasInfoAvailable', opts).then(response => response.json());
+};
+
 export const erpImport = (options = {}) => {
     const opts = {
         method: 'POST',
@@ -92,5 +100,5 @@ export const erpImport = (options = {}) => {
         },
     };
 
-    return fetchApi('', opts).then(response => response.json());
+    return fetchApi('import', opts).then(response => response.json());
 };

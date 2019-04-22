@@ -28,7 +28,7 @@ export default {
         states: [],
         data: [],
         productInfo: {},
-        erpPlatformList: [{ id: 0, name: '康明泰克' }, { id: 1, name: '客无忧' }],
+        sassInfoList: [],
         bindEsl: [],
         bindEslInfo: {},
         filePath: null,
@@ -71,7 +71,7 @@ export default {
                     type: 'updateState',
                     payload: {
                         loading: false,
-                        erpPlatformList: result.platformList || [],
+                        sassInfoList: result.saas_info_list || [],
                     },
                 });
             } else {
@@ -80,6 +80,7 @@ export default {
                     payload: { loading: false },
                 });
             }
+            return response;
         },
 
         *fetchProductList({ payload = {} }, { call, put, select }) {
@@ -231,6 +232,32 @@ export default {
                     payload: { loading: false },
                 });
             }
+        },
+
+        *clearState(_, { put }) {
+            yield put({
+                type: 'updateState',
+                payload: {
+                    productInfo: {},
+                },
+            });
+        },
+
+        *erpAuthCheck({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(Actions.checkSaasInfo, options);
+            if (response && response.code === ERROR_OK) {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            }
+            return response;
         },
 
         *erpImport({ payload = {} }, { call, put }) {

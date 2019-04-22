@@ -16,10 +16,12 @@ class SearchResult extends Component {
 
     onTableChange = pagination => {
         const { fetchProductList } = this.props;
-        Storage.set('goodsPageSize', pagination.pageSize);
+        Storage.set({ goodsPageSize: pagination.pageSize });
         fetchProductList({
-            pageSize: pagination.pageSize,
-            current: pagination.current,
+            options: {
+                pageSize: pagination.pageSize,
+                current: pagination.current,
+            },
         });
     };
 

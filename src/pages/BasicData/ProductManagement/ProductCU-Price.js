@@ -87,6 +87,7 @@ const ProductCUPrice = props => {
                     max: 1,
                     wrapperItem: <Input type="number" />,
                     itemOptions: {
+                        itemDecorator: 'price',
                         validateTrigger: 'onBlur',
                         rules: [
                             {
@@ -99,7 +100,7 @@ const ProductCUPrice = props => {
                     },
                     labelOption: {
                         labelPrefix: formatMessage({ id: 'basicData.product.price.customize' }),
-                        formKey: 'extra_price',
+                        formKey: 'extra_price_info',
                         editable: false,
                     },
                     buttonProps: {

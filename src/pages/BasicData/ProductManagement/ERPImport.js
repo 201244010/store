@@ -5,35 +5,35 @@ import { formatMessage } from 'umi/locale';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT, FORM_ITEM_LONGER } from '@/constants/form';
 import * as styles from './ProductManagement.less';
 
-const KMTK = props => {
+const SDNM = props => {
     const { getFieldDecorator } = props;
     return (
         <Form.Item label={formatMessage({ id: 'basicData.erp.api.key' })}>
-            {getFieldDecorator('key')(<Input />)}
+            {getFieldDecorator('saas_info.key')(<Input />)}
         </Form.Item>
     );
 };
 
-const KEWUYOU = props => {
+const KWYLS = props => {
     const { getFieldDecorator } = props;
     return (
         <>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.store.num' })}>
-                {getFieldDecorator('store_num')(<Input />)}
+                {getFieldDecorator('saas_info.store_num')(<Input />)}
             </Form.Item>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.account' })}>
-                {getFieldDecorator('store_account')(<Input />)}
+                {getFieldDecorator('saas_info.store_account')(<Input />)}
             </Form.Item>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
-                {getFieldDecorator('store_password')(<Input type="password" />)}
+                {getFieldDecorator('saas_info.store_password')(<Input type="password" />)}
             </Form.Item>
         </>
     );
 };
 
 const RenderFormItem = {
-    0: KMTK,
-    1: KEWUYOU,
+    'SAAS-KWYLS': KWYLS,
+    'SAAS-SDNM': SDNM,
 };
 
 @connect(
@@ -42,6 +42,8 @@ const RenderFormItem = {
     }),
     dispatch => ({
         getERPPlatformList: () => dispatch({ type: 'basicDataProduct/getERPPlatformList' }),
+        erpAuthCheck: payload => dispatch({ type: 'basicDataProduct/erpAuthCheck', payload }),
+        erpImport: payload => dispatch({ type: 'basicDataProduct/erpImport', payload }),
     })
 )
 @Form.create()
@@ -49,7 +51,7 @@ class ERPImport extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            RenderItem: KMTK,
+            RenderItem: KWYLS,
         };
     }
 
@@ -59,7 +61,6 @@ class ERPImport extends Component {
     }
 
     handlePlatformChange = value => {
-        console.log(value);
         this.setState({
             RenderItem: RenderFormItem[value],
         });
@@ -69,7 +70,7 @@ class ERPImport extends Component {
         const { RenderItem } = this.state;
         const {
             form: { getFieldDecorator },
-            product: { erpPlatformList },
+            product: { sassInfoList },
         } = this.props;
 
         return (
@@ -85,9 +86,9 @@ class ERPImport extends Component {
                         <Form.Item label={formatMessage({ id: 'basicData.erp.platform' })}>
                             {getFieldDecorator('erp_platform')(
                                 <Select onChange={this.handlePlatformChange}>
-                                    {erpPlatformList.map(platform => (
-                                        <Select.Option key={platform.id} value={platform.id}>
-                                            {platform.name || ''}
+                                    {sassInfoList.map(platform => (
+                                        <Select.Option key={platform.id} value={platform.name}>
+                                            {platform.fullName || ''}
                                         </Select.Option>
                                     ))}
                                 </Select>
