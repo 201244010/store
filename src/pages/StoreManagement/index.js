@@ -6,6 +6,9 @@ import router from 'umi/router';
 import storage from '@konata9/storage.js/src/storage';
 import styles from './StoreManagement.less';
 
+const FormItem = Form.Item;
+const { Option } = Select;
+
 const columns = [
     {
         title: formatMessage({ id: 'storeManagement.list.columnId' }),
@@ -145,11 +148,8 @@ class StoreManagement extends Component {
     };
 
     render() {
-        const { form, list } = this.props;
+        const { form: { getFieldDecorator }, list } = this.props;
         const { optionArray } = this.state;
-        const { getFieldDecorator } = form;
-        const FormItem = Form.Item;
-        const { Option } = Select;
 
         return (
             <div className={styles.storeList}>
@@ -197,16 +197,15 @@ class StoreManagement extends Component {
                         </a>
                     </Form>
                 </div>
-                <a
-                    onClick={() => {
-                        router.push('/storeManagement/createStore');
-                    }}
-                    className={styles.link}
+                <Button
+                    type="primary"
+                    icon="plus"
+                    onClick={() => { router.push('/basicData/storeManagement/createStore');}}
                 >
                     {formatMessage({ id: 'storeManagement.list.newBuiltStore' })}
-                </a>
+                </Button>
                 <div className={styles.table}>
-                    <Table dataSource={list.data} columns={columns} />
+                    <Table rowKey="shopId" dataSource={list.data} columns={columns} />
                 </div>
             </div>
         );
