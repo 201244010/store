@@ -20,10 +20,20 @@ export default class BindModal extends Component {
         closeModal('bindVisible');
     };
 
+    onTableChange = (pagination) => {
+        const { fetchProductList } = this.props;
+
+        fetchProductList({
+            options: {
+                current: pagination.current
+            }
+        });
+    };
+
     render() {
         const {
-            bindVisible, currentRecord, templates4ESL, products, selectedProduct, closeModal, selectProduct,
-            fetchProductList
+            bindVisible, currentRecord, templates4ESL, products, productPagination,
+            selectedProduct, closeModal, selectProduct, fetchProductList
         } = this.props;
         const columns = [{
             title: formatMessage({ id: 'esl.device.esl.product.seq.num' }),
@@ -42,13 +52,15 @@ export default class BindModal extends Component {
             key: 'action',
             render: (_, record) => (
                 <span>
-                    <a href="javascript: void (0);" onClick={() => {selectProduct(record)}}>
-                        {
-                            record.id === selectedProduct.id ?
-                                formatMessage({ id: 'btn.cancel' }) :
-                                formatMessage({ id: 'btn.select' })
-                        }
-                    </a>
+                    {
+                        record.id !== selectedProduct.id ?
+                            <a href="javascript: void (0);" onClick={() => {selectProduct(record)}}>
+                                {formatMessage({ id: 'btn.select' })}
+                            </a> :
+                            <a href="javascript: void (0);" onClick={() => {selectProduct({})}}>
+                                {formatMessage({ id: 'btn.cancel' })}
+                            </a>
+                    }
                 </span>
             ),
         }];
@@ -56,7 +68,8 @@ export default class BindModal extends Component {
         return (
             <Modal
                 title={formatMessage({ id: 'esl.device.esl.bind.title' })}
-                width="80%"
+                style={{ top: 40 }}
+                width={1000}
                 visible={bindVisible}
                 onCancel={() => closeModal('bindVisible')}
                 footer={[
@@ -110,7 +123,13 @@ export default class BindModal extends Component {
                     </Row>
                     <Row>
                         <Col span={24}>
-                            <Table rowKey="id" columns={columns} dataSource={products} />
+                            <Table
+                                rowKey="id"
+                                columns={columns}
+                                dataSource={products}
+                                pagination={productPagination}
+                                onChange={this.onTableChange}
+                            />
                         </Col>
                     </Row>
                 </Row>

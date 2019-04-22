@@ -94,6 +94,7 @@ export default {
             const opts = Object.assign({}, pagination, searchFormValues, options);
             const response = yield call(Actions.fetchProductList, opts);
             const result = response.data || {};
+            console.log('result', result);
             yield put({
                 type: 'updateState',
                 payload: {

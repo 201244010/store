@@ -177,7 +177,7 @@ class SearchResult extends Component {
     };
 
     render() {
-        const { loading, data, pagination, detailInfo, templates4ESL, products, fetchProductList, bindESL } = this.props;
+        const { loading, data, pagination, detailInfo, templates4ESL, products, productPagination, fetchProductList, bindESL } = this.props;
         const { detailVisible, templateVisible, bindVisible, currentRecord, selectedProduct } = this.state;
         const columns = [
             {
@@ -353,6 +353,7 @@ class SearchResult extends Component {
                             currentRecord,
                             templates4ESL,
                             products,
+                            productPagination,
                             fetchProductList,
                             selectedProduct,
                             bindESL,

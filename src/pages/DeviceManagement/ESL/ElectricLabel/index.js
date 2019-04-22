@@ -51,7 +51,7 @@ class ElectricLabel extends Component {
     render() {
         const {
             eslElectricLabel: { loading, searchFormValues, data, pagination, detailInfo, templates4ESL },
-            basicDataProduct: {data: products},
+            basicDataProduct: {data: products, pagination: productPagination},
             changeSearchFormValue,
             fetchElectricLabels,
             fetchESLDetails,
@@ -81,6 +81,7 @@ class ElectricLabel extends Component {
                         detailInfo,
                         templates4ESL,
                         products,
+                        productPagination,
                         fetchElectricLabels,
                         fetchESLDetails,
                         fetchTemplatesByESLCode,
