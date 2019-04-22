@@ -19,10 +19,10 @@ export default {
                 message.success(formatMessage({ id: 'create.success' }));
                 const data = response.data || {};
                 Storage.set({ __company_id__: data.company_id });
-                router.push('/');
             } else {
                 router.push('/user/login');
             }
+            return response;
         },
 
         *getCompanyList(_, { call, put }) {

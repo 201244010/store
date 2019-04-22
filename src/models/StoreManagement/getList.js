@@ -2,13 +2,18 @@ import * as Action from '@/services/storeManagement/storeList';
 import { ERROR_OK } from '@/constants/errorCode';
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
+import router from 'umi/router';
+import Storage from '@konata9/storage.js';
 
 export default {
     namespace: 'store',
     state: {
+        storeList: Storage.get('__shop_list__') || [],
+        // TODO 下一个准备修改
         getList: {
             data: [],
         },
+        loading: false,
         getOption: {},
         alter: {
             name: '',
@@ -25,12 +30,34 @@ export default {
     },
 
     effects: {
+        *getStoreList({ payload }, { call, put }) {
+            const { options } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+            const response = yield call(Action.getList, options);
+            if (response && response.code === ERROR_OK) {
+                const data = response.data || {};
+                Storage.set({ __shop_list__: data.shop_list || [] });
+                console.log(response);
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        loading: false,
+                        storeList: data.shop_list || [],
+                    },
+                });
+            }
+            return response;
+        },
+
         *getArray({ payload }, { call, put }) {
             const { options } = payload;
             const response = yield call(Action.getList, options);
             if (response && response.code === ERROR_OK) {
                 yield put({
-                    type: 'getStoreList',
+                    type: 'saveStoreList',
                     payload: {
                         data: response,
                         request: options,
@@ -44,12 +71,15 @@ export default {
             const response = yield call(Action.createStore, options);
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'storeManagement.message.createSuccess' }));
+                const data = response.data || {};
+                Storage.set({ __shop_id__: data.shop_id });
                 yield put({
                     type: 'alterNewStore',
                     payload: {
-                        data: options,
+                        data,
                     },
                 });
+                router.push('/');
             }
         },
 
@@ -82,7 +112,14 @@ export default {
     },
 
     reducers: {
-        getStoreList(state, action) {
+        updateState(state, action) {
+            return {
+                ...state,
+                ...action.payload,
+            };
+        },
+
+        saveStoreList(state, action) {
             const {
                 payload: { data },
             } = action;

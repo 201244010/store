@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, formatMessage } from 'umi/locale';
-import { Spin, Tag, Menu, Icon, Avatar } from 'antd';
+import { Spin, Tag, Menu, Icon, Avatar, Select } from 'antd';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import { NoticeIcon } from 'ant-design-pro';
+import Storage from '@konata9/storage.js';
 import HeaderSearch from '../HeaderSearch';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
@@ -62,6 +63,11 @@ export default class GlobalHeaderRight extends PureComponent {
         });
     };
 
+    handleStoreChange = storeId => {
+        Storage.set({ __shop_id__: storeId });
+        window.location.reload();
+    };
+
     render() {
         const {
             currentUser,
@@ -70,6 +76,7 @@ export default class GlobalHeaderRight extends PureComponent {
             onMenuClick,
             onNoticeClear,
             theme,
+            store: { storeList },
         } = this.props;
         const menu = (
             <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
@@ -90,8 +97,21 @@ export default class GlobalHeaderRight extends PureComponent {
         if (theme === 'dark') {
             className = `${styles.right}  ${styles.dark}`;
         }
+        const firstShop = storeList[0] || {};
+
         return (
             <div className={className}>
+                <Select
+                    defaultValue={firstShop.shop_id}
+                    style={{ minWidth: '200px' }}
+                    onChange={this.handleStoreChange}
+                >
+                    {storeList.map(store => (
+                        <Select.Option key={store.shop_id} value={store.shop_id}>
+                            {store.shop_name || ''}
+                        </Select.Option>
+                    ))}
+                </Select>
                 <HeaderSearch
                     className={`${styles.action} ${styles.search}`}
                     placeholder={formatMessage({ id: 'component.globalHeader.search' })}

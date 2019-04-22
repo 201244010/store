@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
-
 import { formatMessage } from 'umi/locale';
 import { Form, Button, Input } from 'antd';
 import { connect } from 'dva';
+import Storage from '@konata9/storage.js';
+import router from 'umi/router';
 import styles from './Merchant.less';
 
 @connect(
     state => ({
         merchant: state.merchant,
+        store: state.store,
     }),
     dispatch => ({
         companyCreate: payload => dispatch({ type: 'merchant/companyCreate', payload }),
+        getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
     })
 )
 class MerchantCreate extends Component {
@@ -21,10 +24,26 @@ class MerchantCreate extends Component {
         };
     }
 
+    checkStoreExist = async () => {
+        const {
+            getStoreList,
+            store: { storeList },
+        } = this.props;
+        await getStoreList({});
+        if (storeList.length === 0) {
+            router.push('/basicData/storeManagement/createStore');
+        } else {
+            const defaultStore = storeList[0] || {};
+            Storage.set({ __shop_id__: defaultStore.shop_id });
+            router.push('/');
+        }
+    };
+
     createMerchant = async () => {
         const { companyCreate } = this.props;
         const { value } = this.state;
-        companyCreate({ company_name: value });
+        await companyCreate({ company_name: value });
+        this.checkStoreExist();
     };
 
     onChange = e => {
