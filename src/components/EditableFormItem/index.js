@@ -1,90 +1,133 @@
 import React, { Component } from 'react';
-import { Form, Row, Col, Input, Button } from 'antd';
+import { Form, Row, Col, Input, Button, Icon } from 'antd';
 import EditableLabel from './EditableLabel';
 
 const formItemLayout = {
-  wrapperCol: { span: 24 },
+    wrapperCol: { span: 24 },
 };
 
 class EditableFormItem extends Component {
-  constructor(props) {
-    super(props);
-    this.key = 0;
-  }
+    constructor(props) {
+        super(props);
+        const { countStart, max } = props;
+        this.count = countStart || 0;
+        this.max = max || Infinity;
+    }
 
-  addCustomFormItem = () => {
-    const {
-      form: { getFieldValue, setFieldsValue },
-      labelOption: { formKey = '' },
-    } = this.props;
+    remove = (k, index) => {
+        const {
+            form: { getFieldValue, setFieldsValue },
+            labelOption: { formKey = '' },
+            onRemove,
+        } = this.props;
+        const keys = getFieldValue(`__${formKey}__`);
+        if (keys.length === 0) {
+            return;
+        }
+        this.count -= 1;
+        setFieldsValue({
+            [`__${formKey}__`]: keys.filter(key => key !== k),
+        });
 
-    this.key += 1;
+        if (onRemove) {
+            onRemove(index);
+        }
+    };
 
-    const keys = getFieldValue(`__${formKey}__`);
-    const nextId = this.key;
-    const nextKeys = keys.concat(nextId);
+    addCustomFormItem = () => {
+        const {
+            form: { getFieldValue, setFieldsValue },
+            labelOption: { formKey = '' },
+        } = this.props;
 
-    setFieldsValue({
-      [`__${formKey}__`]: nextKeys,
-    });
-  };
+        if (this.count < this.max) {
+            this.count += 1;
+            const keys = getFieldValue(`__${formKey}__`);
+            const nextId = +new Date();
+            const nextKeys = keys.concat(nextId);
 
-  renderCustomizeFormItem = () => {
-    const {
-      form: { getFieldDecorator, getFieldValue },
-      labelOption = {},
-      labelOption: { labelPrefix = '', formKey = '', span = 12 },
-      itemOptions = {},
-      wrapperItem = <Input />,
-    } = this.props;
+            setFieldsValue({
+                [`__${formKey}__`]: nextKeys,
+            });
+        }
+    };
 
-    getFieldDecorator(`__${formKey}__`, { initialValue: [] });
-    const keys = getFieldValue(`__${formKey}__`);
+    renderCustomizeFormItem = () => {
+        const {
+            form: { getFieldDecorator, getFieldValue },
+            labelOption = {},
+            labelOption: { labelPrefix = '', formKey = '', span = 12, labelDecorator = 'name' },
+            itemOptions = {},
+            itemOptions: { itemDecorator = 'context' },
+            data = [],
+            wrapperItem = <Input />,
+        } = this.props;
 
-    return keys.map((key, index) => {
-      const labelName = `${labelPrefix}${index + 1}`;
-      const labelProps = {
-        ...labelOption,
-        index,
-        name: labelName,
-      };
-      return (
-        <Col span={span} key={key}>
-          <Form.Item {...formItemLayout}>
-            <Col span={8}>
-              <EditableLabel {...{ labelProps }} />
-            </Col>
-            <Col span={16}>
-              {getFieldDecorator(`${formKey}.${index}`, {
-                ...itemOptions,
-              })(wrapperItem)}
-            </Col>
-          </Form.Item>
-        </Col>
-      );
-    });
-  };
+        const countInitial = data.map(() => +new Date() * Math.random());
+        getFieldDecorator(`__${formKey}__`, { initialValue: countInitial });
+        const keys = getFieldValue(`__${formKey}__`);
 
-  render() {
-    const {
-      buttonProps = {},
-      buttonProps: { span = 24, label = ' ', text = '' },
-    } = this.props;
-    return (
-      <>
-        <Row>{this.renderCustomizeFormItem()}</Row>
-        <Row>
-          <Col span={span}>
-            <Form.Item label={label} colon={false}>
-              <Button {...buttonProps} onClick={this.addCustomFormItem}>
-                {text}
-              </Button>
-            </Form.Item>
-          </Col>
-        </Row>
-      </>
-    );
-  }
+        return keys.map((key, index) => {
+            const labelName = `${labelPrefix}${index + 1}`;
+            const { name, context } = data[index] || {};
+            const labelProps = {
+                ...labelOption,
+                index,
+                name: name || labelName,
+            };
+            return (
+                <Col span={span} key={key}>
+                    <Row>
+                        <Col span={8}>
+                            <Form.Item {...formItemLayout}>
+                                {getFieldDecorator(`${formKey}.${index}.${labelDecorator}`, {
+                                    initialValue: name || labelName,
+                                })(<EditableLabel {...{ labelProps }} />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={14}>
+                            <Form.Item {...formItemLayout}>
+                                {getFieldDecorator(`${formKey}.${index}.${itemDecorator}`, {
+                                    initialValue: context || '',
+                                    ...itemOptions,
+                                })(wrapperItem)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={2}>
+                            <Form.Item {...formItemLayout}>
+                                <Icon
+                                    style={{ marginLeft: '20px' }}
+                                    type="minus-circle-o"
+                                    onClick={() => this.remove(key, index)}
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Col>
+            );
+        });
+    };
+
+    render() {
+        const {
+            buttonProps = {},
+            buttonProps: { span = 24, label = ' ', text = '' },
+        } = this.props;
+        return (
+            <>
+                <Row>
+                    {this.renderCustomizeFormItem()}
+                    <Col span={span}>
+                        <Form.Item label={label} colon={false}>
+                            <Button {...buttonProps} onClick={this.addCustomFormItem}>
+                                {text}
+                            </Button>
+                        </Form.Item>
+                    </Col>
+                </Row>
+            </>
+        );
+    }
 }
 
 export default EditableFormItem;

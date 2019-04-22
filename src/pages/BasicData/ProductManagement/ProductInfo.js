@@ -1,72 +1,103 @@
 import React, { Component } from 'react';
-import { Card } from 'antd';
+import { Button } from 'antd';
+import router from 'umi/router';
+import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { getLocationParams } from '@/utils/utils';
+import ProductInfoBasic from './ProductInfo-Basic';
+import ProductInfoPrice from './ProductInfo-Price';
+import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
+import { PRODUCT_BASIC, PRODUCT_PRICE } from '@/constants/mapping';
 import * as styles from './ProductManagement.less';
 
 const MESSAGE_PREFIX = {
-  product: 'basicData.product',
-  weight: 'basicData.weightProduct',
+    product: 'basicData.product',
+    weight: 'basicData.weightProduct',
 };
 
-const mockInfo = {
-  seq_num: '18273jsda0991j',
-  bar_code: '1238574019283',
-  brand: 'bilibili',
-  category: '',
-  modified_time: 1554702750,
-  name: '2233娘',
-  price: 123,
-  production_area: '',
-  production_date: '2019-03-14',
-  promote_price: 111,
-  qr_code: '',
-  spec: '',
-  unit: '2',
-};
-
+@connect(
+    state => ({
+        product: state.basicDataProduct,
+    }),
+    dispatch => ({
+        getProductDetail: payload =>
+            dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
+    })
+)
 class ProductInfo extends Component {
-  componentDidMount() {
-    console.log(this.props);
-    console.log(getLocationParams());
-  }
+    componentDidMount() {
+        const { getProductDetail = {} } = this.props;
+        const productId = idDecode(getLocationParam('id'));
+        getProductDetail({
+            options: {
+                product_id: productId,
+            },
+        });
+    }
 
-  formatProductInfo = (productInfo, type = 'product') => {
-    const prefix = MESSAGE_PREFIX[type] || '';
-    return Object.keys(productInfo).map(key => ({
-      key,
-      value: productInfo[key],
-      label: `${prefix}.${key}`,
-    }));
-  };
+    toPath = target => {
+        const {
+            product: {
+                productInfo: { id },
+            },
+        } = this.props;
+        const path = {
+            edit: `/basicData/productManagement/list/productUpdate?action=edit&id=${idEncode(
+                id
+            )}&from=detail`,
+            back: '/basicData/productManagement/list',
+        };
+        router.push(path[target] || '/');
+    };
 
-  render() {
-    const { productInfo = mockInfo } = this.props;
-    const formattedProduct = this.formatProductInfo(productInfo);
-    console.log(formattedProduct);
+    formatProductInfo = (productInfo = [], template = {}, type = 'product') => {
+        const prefix = MESSAGE_PREFIX[type] || '';
+        return Object.keys(template).map(key => ({
+            key,
+            value: productInfo[key],
+            label: `${prefix}.${key}`,
+        }));
+    };
 
-    return (
-      <div className={styles['content-container']}>
-        <Card title={formatMessage({ id: 'basicData.product.detail.title' })} bordered={false}>
-          <div className={styles['card-column']}>
-            {formattedProduct.map(product => (
-              <div className={styles['card-item']} key={product.key}>
-                <span className={styles['item-label']}>
-                  {formatMessage({ id: product.label })}：
-                </span>
-                <span className={styles['item-content']}>{product.value}</span>
-              </div>
-            ))}
-          </div>
-        </Card>
-        <Card title={formatMessage({ id: 'basicData.product.price.title' })} bordered={false}>
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
-        </Card>
-      </div>
-    );
-  }
+    render() {
+        const {
+            product: {
+                productInfo = {},
+                productInfo: { extra_info: productBasicExtra, extra_price_info: productPriceExtra },
+            },
+        } = this.props;
+
+        const productBasic = this.formatProductInfo(productInfo, PRODUCT_BASIC);
+        const productPrice = this.formatProductInfo(productInfo, PRODUCT_PRICE);
+
+        return (
+            <div className={styles['content-container']}>
+                <ProductInfoBasic
+                    {...{
+                        productBasic,
+                        productBasicExtra,
+                    }}
+                />
+                <ProductInfoPrice
+                    {...{
+                        productPrice,
+                        productPriceExtra,
+                    }}
+                />
+                <div className={styles.footer}>
+                    <Button
+                        className={styles.btn}
+                        type="primary"
+                        onClick={() => this.toPath('edit')}
+                    >
+                        {formatMessage({ id: 'btn.alter' })}
+                    </Button>
+                    <Button className={styles.btn} onClick={() => this.toPath('back')}>
+                        {formatMessage({ id: 'btn.back' })}
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default ProductInfo;

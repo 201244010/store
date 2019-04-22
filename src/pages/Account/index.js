@@ -6,41 +6,64 @@ import Store from './Store';
 import * as styles from './Account.less';
 
 @connect(
-  state => ({
-    user: state.user,
-    sso: state.sso,
-  }),
-  dispatch => ({
-    updateUsername: payload => dispatch({ type: 'user/updateUsername', payload }),
-    changePassword: payload => dispatch({ type: 'user/changePassword', payload }),
-    updatePhone: payload => dispatch({ type: 'user/updatePhone', payload }),
-    sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
-  })
+    state => ({
+        user: state.user,
+        sso: state.sso,
+        merchant: state.merchant,
+    }),
+    dispatch => ({
+        updateUsername: payload => dispatch({ type: 'user/updateUsername', payload }),
+        changePassword: payload => dispatch({ type: 'user/changePassword', payload }),
+        updatePhone: payload => dispatch({ type: 'user/updatePhone', payload }),
+        updateIcon: payload => dispatch({ type: 'user/updateIcon', payload }),
+        sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
+        getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
+    })
 )
 class UserCenter extends Component {
-  render() {
-    const { user, updateUsername, changePassword, updatePhone, sendCode } = this.props;
+    componentDidMount() {
+        const { getCompanyList } = this.props;
+        getCompanyList();
+    }
 
-    return (
-      <div className={styles['account-wrapper']}>
-        <BasicInfo
-          {...{
+    render() {
+        const {
             user,
+            sso,
+            merchant,
             updateUsername,
-          }}
-        />
-        <Security
-          {...{
-            user,
             changePassword,
             updatePhone,
             sendCode,
-          }}
-        />
-        <Store />
-      </div>
-    );
-  }
+            updateIcon,
+        } = this.props;
+
+        return (
+            <div className={styles['account-wrapper']}>
+                <BasicInfo
+                    {...{
+                        user,
+                        updateUsername,
+                        updateIcon,
+                    }}
+                />
+                <Security
+                    {...{
+                        user,
+                        sso,
+                        changePassword,
+                        updatePhone,
+                        sendCode,
+                    }}
+                />
+                <Store
+                    {...{
+                        merchant,
+                    }}
+                />
+            </div>
+        );
+    }
 }
 
 export default UserCenter;

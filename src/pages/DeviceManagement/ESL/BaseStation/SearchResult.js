@@ -9,150 +9,165 @@ import { ERROR_OK } from '@/constants/errorCode';
 import { STATION_STATES } from '@/constants/mapping';
 
 class SearchResult extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      detailVisible: false,
-      editVisible: false,
-      selectedRecord: '',
-    };
-  }
-
-  onTableChange = pagination => {
-    const { fetchBaseStations } = this.props;
-
-    fetchBaseStations({
-      current: pagination.current,
-    });
-  };
-
-  showDetailVisible = async record => {
-    const { detailVisible } = this.state;
-    const { getBaseStationDetail } = this.props;
-    const response = await getBaseStationDetail({ ap_id: record.id });
-    if (response && response.code === ERROR_OK) {
-      this.setState({
-        detailVisible: !detailVisible,
-      });
-    } else {
-      message.error(formatMessage({ id: 'error.retry' }), DURATION_TIME);
+    constructor(props) {
+        super(props);
+        this.state = {
+            detailVisible: false,
+            editVisible: false,
+            selectedRecord: '',
+        };
     }
-  };
 
-  showEditVisible = record => {
-    const { editVisible } = this.state;
-    this.setState({
-      selectedRecord: record,
-      editVisible: !editVisible,
-    });
-  };
+    onTableChange = pagination => {
+        const { fetchBaseStations } = this.props;
 
-  closeModal = name => {
-    const { [name]: modalStatus } = this.state;
-    this.setState({
-      [name]: !modalStatus,
-    });
-  };
+        fetchBaseStations({
+            current: pagination.current,
+        });
+    };
 
-  showDeleteStation = record => {
-    const { deleteBaseStation } = this.props;
-    const content = (
-      <div>
-        <div>{formatMessage({ id: 'esl.device.ap.delete.message1' })}</div>
-        <div>{formatMessage({ id: 'esl.device.ap.delete.message2' })}</div>
-      </div>
-    );
+    showDetailVisible = async record => {
+        const { detailVisible } = this.state;
+        const { getBaseStationDetail } = this.props;
+        const response = await getBaseStationDetail({
+            options: { ap_id: record.id },
+        });
+        if (response && response.code === ERROR_OK) {
+            this.setState({
+                detailVisible: !detailVisible,
+            });
+        } else {
+            message.error(formatMessage({ id: 'error.retry' }), DURATION_TIME);
+        }
+    };
 
-    Modal.confirm({
-      iconType: 'info-circle',
-      title: formatMessage({ id: 'btn.delete' }),
-      content,
-      okText: formatMessage({ id: 'btn.delete' }),
-      onOk() {
-        deleteBaseStation({ ap_id: record.id });
-      },
-    });
-  };
+    showEditVisible = record => {
+        const { editVisible } = this.state;
+        this.setState({
+            selectedRecord: record,
+            editVisible: !editVisible,
+        });
+    };
 
-  render() {
-    const { loading, data, pagination, stationInfo } = this.props;
-    const { detailVisible, editVisible, selectedRecord } = this.state;
-    const columns = [
-      {
-        title: formatMessage({ id: 'esl.device.ap.id' }),
-        dataIndex: 'ap_code',
-      },
-      {
-        title: formatMessage({ id: 'esl.device.ap.name' }),
-        dataIndex: 'name',
-      },
-      {
-        title: formatMessage({ id: 'esl.device.ap.esl_num' }),
-        dataIndex: 'esl_number',
-      },
-      {
-        title: formatMessage({ id: 'esl.device.ap.status' }),
-        dataIndex: 'status',
-        render: (_, record) => <BaseStationTag record={record} template={STATION_STATES} />,
-      },
-      {
-        title: formatMessage({ id: 'list.action.title' }),
-        key: 'action',
-        render: (_, record) => (
-          <span>
-            <a href="javascript: void (0);" onClick={() => this.showDetailVisible(record)}>
-              {formatMessage({ id: 'list.action.detail' })}
-            </a>
-            <Divider type="vertical" />
-            <a href="javascript: void (0);" onClick={() => this.showDeleteStation(record)}>
-              {formatMessage({ id: 'list.action.delete' })}
-            </a>
-          </span>
-        ),
-      },
-    ];
+    closeModal = name => {
+        const { [name]: modalStatus } = this.state;
+        this.setState({
+            [name]: !modalStatus,
+        });
+    };
 
-    return (
-      <div>
-        <Table
-          rowKey="id"
-          loading={loading}
-          columns={columns}
-          dataSource={data}
-          pagination={{
-            ...pagination,
-            showTotal: total =>
-              `${formatMessage({ id: 'esl.device.ap.all' })}${total}${formatMessage({
-                id: 'esl.device.ap.total',
-              })}`,
-          }}
-          onChange={this.onTableChange}
-        />
-        <Modal
-          title={formatMessage({ id: 'esl.device.ap.detail' })}
-          visible={detailVisible}
-          width={650}
-          onCancel={() => this.closeModal('detailVisible')}
-          footer={[
-            <Button key="submit" type="primary" onClick={() => this.closeModal('detailVisible')}>
-              {formatMessage({ id: 'btn.confirm' })}
-            </Button>,
-          ]}
-        >
-          <BaseStationDetail {...{ stationInfo }} />
-        </Modal>
-        <Modal
-          title={formatMessage({ id: 'esl.device.ap.edit' })}
-          visible={editVisible}
-          onOk={() => this.closeModal('editVisible')}
-          onCancel={() => this.closeModal('editVisible')}
-          destroyOnClose
-        >
-          <BaseStationEdit record={selectedRecord} />
-        </Modal>
-      </div>
-    );
-  }
+    showDeleteStation = record => {
+        const { deleteBaseStation } = this.props;
+        const content = (
+            <div>
+                <div>{formatMessage({ id: 'esl.device.ap.delete.message1' })}</div>
+                <div>{formatMessage({ id: 'esl.device.ap.delete.message2' })}</div>
+            </div>
+        );
+
+        Modal.confirm({
+            icon: 'info-circle',
+            title: formatMessage({ id: 'btn.delete' }),
+            content,
+            okText: formatMessage({ id: 'btn.delete' }),
+            onOk() {
+                deleteBaseStation({
+                    options: { ap_id: record.id },
+                });
+            },
+        });
+    };
+
+    render() {
+        const { loading, data, pagination, stationInfo } = this.props;
+        const { detailVisible, editVisible, selectedRecord } = this.state;
+
+        const columns = [
+            {
+                title: formatMessage({ id: 'esl.device.ap.id' }),
+                dataIndex: 'ap_code',
+            },
+            {
+                title: formatMessage({ id: 'esl.device.ap.name' }),
+                dataIndex: 'name',
+            },
+            {
+                title: formatMessage({ id: 'esl.device.ap.esl_num' }),
+                dataIndex: 'esl_number',
+            },
+            {
+                title: formatMessage({ id: 'esl.device.ap.status' }),
+                dataIndex: 'status',
+                render: (_, record) => <BaseStationTag record={record} template={STATION_STATES} />,
+            },
+            {
+                title: formatMessage({ id: 'list.action.title' }),
+                key: 'action',
+                render: (_, record) => (
+                    <span>
+                        <a
+                            href="javascript: void (0);"
+                            onClick={() => this.showDetailVisible(record)}
+                        >
+                            {formatMessage({ id: 'list.action.detail' })}
+                        </a>
+                        <Divider type="vertical" />
+                        <a
+                            href="javascript: void (0);"
+                            onClick={() => this.showDeleteStation(record)}
+                        >
+                            {formatMessage({ id: 'list.action.delete' })}
+                        </a>
+                    </span>
+                ),
+            },
+        ];
+
+        return (
+            <div>
+                <Table
+                    rowKey="id"
+                    loading={loading}
+                    columns={columns}
+                    dataSource={data}
+                    pagination={{
+                        ...pagination,
+                        showTotal: total =>
+                            `${formatMessage({ id: 'esl.device.ap.all' })}${total}${formatMessage({
+                                id: 'esl.device.ap.total',
+                            })}`,
+                    }}
+                    onChange={this.onTableChange}
+                />
+                <Modal
+                    title={formatMessage({ id: 'esl.device.ap.detail' })}
+                    visible={detailVisible}
+                    width={650}
+                    onCancel={() => this.closeModal('detailVisible')}
+                    footer={[
+                        <Button
+                            key="submit"
+                            type="primary"
+                            onClick={() => this.closeModal('detailVisible')}
+                        >
+                            {formatMessage({ id: 'btn.confirm' })}
+                        </Button>,
+                    ]}
+                >
+                    <BaseStationDetail {...{ stationInfo }} />
+                </Modal>
+                <Modal
+                    title={formatMessage({ id: 'esl.device.ap.edit' })}
+                    visible={editVisible}
+                    onOk={() => this.closeModal('editVisible')}
+                    onCancel={() => this.closeModal('editVisible')}
+                    destroyOnClose
+                >
+                    <BaseStationEdit record={selectedRecord} />
+                </Modal>
+            </div>
+        );
+    }
 }
 
 export default SearchResult;
