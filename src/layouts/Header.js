@@ -28,7 +28,6 @@ class HeaderView extends PureComponent {
     componentDidMount() {
         const { getStoreList } = this.props;
         document.addEventListener('scroll', this.handScroll, { passive: true });
-        console.log(1);
         getStoreList({});
     }
 

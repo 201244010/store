@@ -3,7 +3,7 @@ import { formatMessage } from 'umi/locale';
 import { Form, Button, Input, Radio, message, Cascader } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
-import storage from '@konata9/storage.js/src/storage';
+import Storage from '@konata9/storage.js/src/storage';
 import { cellphone } from '@/constants/regexp';
 import styles from './StoreManagement.less';
 
@@ -16,17 +16,24 @@ const FormItem = Form.Item;
     dispatch => ({
         createNewStore: payload => dispatch({ type: 'store/createNewStore', payload }),
         getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
+        getRegionList: () => dispatch({ type: 'store/getRegionList' }),
     })
 )
 class CreateStore extends React.Component {
     state = {
         status: formatMessage({ id: 'storeManagement.create.statusValue1' }),
-        companyId: storage.get('__company_id__'),
+        companyId: Storage.get('__company_id__'),
     };
 
     componentDidMount() {
-        const { getShopTypeList } = this.props;
-        getShopTypeList();
+        const { getShopTypeList, getRegionList } = this.props;
+        if (!Storage.get('__shopTypeList__', 'local')) {
+            getShopTypeList();
+        }
+
+        if (!Storage.get('__regionList__', 'local')) {
+            getRegionList();
+        }
     }
 
     handleSubmit = e => {
@@ -44,13 +51,16 @@ class CreateStore extends React.Component {
             options: {
                 company_id: companyId,
                 shop_name: formValue.name,
-                type_one: 0,
-                type_two: 0,
+                type_one: formValue.shopType[0],
+                type_two: formValue.shopType[1],
                 business_status:
                     formValue.status ===
                     formatMessage({ id: 'storeManagement.create.statusValue1' })
                         ? 0
                         : 1,
+                province: formValue.region[0],
+                city: formValue.region[1],
+                area: formValue.region[2],
                 address: formValue.detailAddress,
                 business_hours: formValue.time,
                 contact_person: formValue.contactName,
@@ -80,7 +90,7 @@ class CreateStore extends React.Component {
         const { status } = this.state;
         const {
             form: { getFieldDecorator },
-            store: { shopType_list },
+            store: { shopType_list, regionList },
         } = this.props;
 
         return (
@@ -108,7 +118,7 @@ class CreateStore extends React.Component {
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
-                        {getFieldDecorator('type', {
+                        {getFieldDecorator('shopType', {
                             initialValue: '',
                         })(
                             <Cascader
@@ -143,6 +153,19 @@ class CreateStore extends React.Component {
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.address' })}>
+                        {getFieldDecorator('region', {
+                            initialValue: '',
+                        })(
+                            <Cascader
+                                options={regionList}
+                                placeholder={formatMessage({
+                                    id: 'storeManagement.create.addressPlaceHolder2',
+                                })}
+                                style={{ width: 300 }}
+                            />
+                        )}
+                    </FormItem>
+                    <FormItem label=" " colon={false}>
                         {getFieldDecorator('detailAddress', {
                             initialValue: '',
                         })(

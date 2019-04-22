@@ -34,7 +34,8 @@ export default {
         },
         loading: false,
         getOption: {},
-        shopType_list: [],
+        shopType_list: Storage.get('__shopTypeList__', 'local') || [],
+        regionList: Storage.get('__regionList__', 'local') || [],
         alter: {
             name: '',
             type: '',
@@ -139,10 +140,33 @@ export default {
                     { from: 'name', to: 'label' },
                     { from: 'child', to: 'children' },
                 ]);
+                Storage.set({ __shopTypeList__: formattedShopType }, 'local');
                 yield put({
                     type: 'updateState',
                     payload: {
                         shopType_list: formattedShopType,
+                    },
+                });
+            }
+        },
+
+        *getRegionList(_, { call, put }) {
+            const response = yield call(Action.getRegionList);
+            if (response && response.code === ERROR_OK) {
+                const data = response.data || {};
+                const region_list = data.region_list || [];
+                const formattedRegionList = cascaderDataWash(region_list, [
+                    { from: 'name', to: 'label' },
+                    { from: 'children', to: 'children' },
+                    { from: 'province', to: 'value' },
+                    { from: 'city', to: 'value' },
+                    { from: 'county', to: 'value' },
+                ]);
+                Storage.set({ __regionList__: formattedRegionList }, 'local');
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        regionList: formattedRegionList,
                     },
                 });
             }

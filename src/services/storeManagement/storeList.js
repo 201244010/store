@@ -70,3 +70,10 @@ export const getShopTypeList = (options = {}) => {
     };
     return fetchApi('getShopTypeList', opt).then(response => response.json());
 };
+
+export const getRegionList = (options = {}) => {
+    const opt = {
+        body: { ...options },
+    };
+    return fetchApi('getRegionList', opt).then(response => response.json());
+};
