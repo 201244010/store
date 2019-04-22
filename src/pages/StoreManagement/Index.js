@@ -3,7 +3,7 @@ import { Table, Form, Input, Select, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
-import storage from '@konata9/storage.js/src/storage';
+import Storage from '@konata9/storage.js/src/storage';
 import styles from './StoreManagement.less';
 
 const columns = [
@@ -92,7 +92,7 @@ class StoreManagement extends Component {
     }
 
     initFetch = () => {
-        const companyId = storage.get('__company_id__');
+        const companyId = Storage.get('__company_id__');
         this.setState({ companyId });
         const { getArray } = this.props;
         const payload = {
@@ -199,7 +199,7 @@ class StoreManagement extends Component {
                 </div>
                 <a
                     onClick={() => {
-                        router.push('/storeManagement/createStore');
+                        router.push('/basicData/storeManagement/createStore');
                     }}
                     className={styles.link}
                 >
