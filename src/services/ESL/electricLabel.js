@@ -26,6 +26,15 @@ export const fetchESLDetails = (options) => {
     return fetchApi('getInfo', opts).then(response => response.json());
 };
 
+export const changeTemplate = (options) => {
+    const opts = {
+        method: 'POST',
+        body: options
+    };
+
+    return fetchApi('changeTemplate', opts).then(response => response.json());
+};
+
 export const deleteESL = (options) => {
     const opts = {
         method: 'POST',

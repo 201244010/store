@@ -18,6 +18,8 @@ import * as styles from './index.less';
             dispatch({ type: 'eslElectricLabel/fetchESLDetails', payload }),
         fetchTemplatesByESLCode: payload =>
             dispatch({ type: 'eslElectricLabel/fetchTemplatesByESLCode', payload }),
+        changeTemplate: payload =>
+            dispatch({ type: 'eslElectricLabel/changeTemplate', payload }),
         fetchProductList: payload =>
             dispatch({ type: 'basicDataProduct/fetchProductList', payload }),
         flushESL: payload =>
@@ -56,6 +58,7 @@ class ElectricLabel extends Component {
             fetchElectricLabels,
             fetchESLDetails,
             fetchTemplatesByESLCode,
+            changeTemplate,
             fetchProductList,
             flushESL,
             bindESL,
@@ -85,6 +88,7 @@ class ElectricLabel extends Component {
                         fetchElectricLabels,
                         fetchESLDetails,
                         fetchTemplatesByESLCode,
+                        changeTemplate,
                         fetchProductList,
                         bindESL,
                         flushESL,

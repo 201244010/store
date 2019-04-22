@@ -176,8 +176,23 @@ class SearchResult extends Component {
         }
     };
 
+    confirmBind = () => {
+        const { changeTemplate } = this.props;
+        const { currentRecord } = this.state;
+
+        changeTemplate({
+            options: {
+                template_id: currentRecord.template_id,
+                esl_code: currentRecord.esl_code
+            }
+        });
+        this.closeModal('templateVisible');
+    };
+
     render() {
-        const { loading, data, pagination, detailInfo, templates4ESL, products, productPagination, fetchProductList, bindESL } = this.props;
+        const {
+            loading, data, pagination, detailInfo, templates4ESL, products, productPagination, fetchProductList, bindESL
+        } = this.props;
         const { detailVisible, templateVisible, bindVisible, currentRecord, selectedProduct } = this.state;
         const columns = [
             {
@@ -317,9 +332,16 @@ class SearchResult extends Component {
                     onCancel={() => this.closeModal('templateVisible')}
                     footer={[
                         <Button
+                            key="cancel"
+                            type="default"
+                            onClick={() => this.closeModal('templateVisible')}
+                        >
+                            {formatMessage({ id: 'btn.cancel' })}
+                        </Button>,
+                        <Button
                             key="submit"
                             type="primary"
-                            onClick={() => this.closeModal('templateVisible')}
+                            onClick={this.confirmBind}
                         >
                             {formatMessage({ id: 'btn.confirm' })}
                         </Button>,
@@ -334,7 +356,11 @@ class SearchResult extends Component {
                         <Col span={20}>{currentRecord.product_name}</Col>
                         <Col span={4}>{formatMessage({ id: 'esl.device.esl.template.name' })}:</Col>
                         <Col span={20}>
-                            <Select value={currentRecord.template_id} style={{width: '100%'}}>
+                            <Select
+                                style={{width: '100%'}}
+                                value={currentRecord.template_id}
+                                onChange={(id) => this.updateProduct(id)}
+                            >
                                 {
                                     templates4ESL.map(template =>
                                         <Select.Option key={template.id} value={template.id}>
