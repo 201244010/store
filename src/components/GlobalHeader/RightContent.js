@@ -4,9 +4,9 @@ import { Spin, Tag, Menu, Icon, Avatar, Select } from 'antd';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 import { NoticeIcon } from 'ant-design-pro';
+import Storage from '@konata9/storage.js';
 import HeaderSearch from '../HeaderSearch';
 import HeaderDropdown from '../HeaderDropdown';
-import Storage from '@konata9/storage.js';
 import styles from './index.less';
 
 export default class GlobalHeaderRight extends PureComponent {
