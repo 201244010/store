@@ -150,6 +150,34 @@ export default {
                             hideInMenu: true,
                             component: './MerchantManagement/MerchantModify',
                         },
+                        {
+                            path: '/storeManagement',
+                            name: 'storeManagement',
+                            icon: 'blank',
+                            routes: [
+                                {
+                                    path: '/storeManagement/list',
+                                    component: './StoreManagement/Index.js',
+                                    name: 'list',
+                                },
+                                {
+                                    path: '/storeManagement/createStore',
+                                    component: './StoreManagement/CreateStore.js',
+                                    name: 'createStore',
+                                    hideInMenu: true,
+                                },
+                                {
+                                    path: '/storeManagement/storeInformation',
+                                    component: './StoreManagement/StoreInformation.js',
+                                    hideInMenu: true,
+                                },
+                                {
+                                    path: '/storeManagement/alterStore',
+                                    component: './StoreManagement/AlterStore.js',
+                                    hideInMenu: true,
+                                },
+                            ],
+                        },
                     ],
                 },
                 // {
