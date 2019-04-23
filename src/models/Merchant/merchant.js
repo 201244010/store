@@ -13,6 +13,11 @@ export default {
     },
 
     effects: {
+        *initialCompany({ payload = {} }, { call }) {
+            const { options = {} } = payload;
+            yield call(Actions.initialCompany, options);
+        },
+
         *companyCreate({ payload }, { call }) {
             const response = yield call(Actions.companyCreate, payload);
             if (response && response.code === ERROR_OK) {
@@ -33,6 +38,12 @@ export default {
                     type: 'updateState',
                     payload: {
                         companyList: result.company_list || [],
+                    },
+                });
+                yield put({
+                    type: 'initialCompany',
+                    payload: {
+                        options: { company_list: result.company_list },
                     },
                 });
             } else {
