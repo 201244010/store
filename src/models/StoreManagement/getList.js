@@ -61,12 +61,13 @@ export default {
             const response = yield call(Action.getList, options);
             if (response && response.code === ERROR_OK) {
                 const data = response.data || {};
-                Storage.set({ __shop_list__: data.shop_list || [] });
+                const shopList = data.shop_list || [];
+                Storage.set({ __shop_list__: shopList });
                 yield put({
                     type: 'updateState',
                     payload: {
                         loading: false,
-                        storeList: data.shop_list || [],
+                        storeList: shopList,
                     },
                 });
             }

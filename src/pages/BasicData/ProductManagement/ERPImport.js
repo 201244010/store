@@ -122,8 +122,13 @@ class ERPImport extends Component {
         } = this.props;
         validateFields(async (err, values) => {
             if (!err) {
+                console.log(values);
                 const response = await erpAuthCheck({
-                    options: { ...values, saas_id: this.saasKey },
+                    options: {
+                        ...values,
+                        saas_id: this.saasKey,
+                        saas_info: JSON.stringify(values.saas_info),
+                    },
                 });
                 if (response && response.code !== ERROR_OK) {
                     setFields({
@@ -152,6 +157,7 @@ class ERPImport extends Component {
                     options: {
                         ...values,
                         saas_id: this.saasKey,
+                        saas_info: JSON.stringify(values.saas_info),
                     },
                 });
             }

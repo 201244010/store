@@ -38,7 +38,7 @@ export default {
             yield put({
                 type: 'initState',
             });
-            Storage.remove('__token__');
+            Storage.clear('session');
             router.push('/user/login');
         },
 
