@@ -27,7 +27,7 @@ export default {
         },
         detailInfo: {},
         templates4ESL: [],
-        flashModes: []
+        flashModes: [],
     },
     effects: {
         *changeSearchFormValue({ payload = {} }, { put }) {

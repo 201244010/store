@@ -1,5 +1,6 @@
 export default {
-    'basicData.product.search.placeholder': '请输入商品名称、编号、条码',
+    'basicData.product.search.product': '商品信息',
+    'basicData.product.search.placeholder': '商品名称/编号/条码',
 
     'basicData.product.label.add': '新增字段',
     'basicData.product.price.add': '新增价格',

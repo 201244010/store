@@ -169,7 +169,7 @@ class ERPImport extends Component {
         const { RenderItem } = this.state;
         const {
             form: { getFieldDecorator },
-            product: { sassInfoList },
+            product: { sassInfoList, erpEnable },
         } = this.props;
 
         return (
@@ -223,6 +223,7 @@ class ERPImport extends Component {
                         <Form.Item label=" " colon={false}>
                             <div className={styles['form-btn-wrapper']}>
                                 <Button
+                                    disabled={!erpEnable}
                                     className={styles['form-btn']}
                                     type="primary"
                                     onClick={this.handleSubmit}

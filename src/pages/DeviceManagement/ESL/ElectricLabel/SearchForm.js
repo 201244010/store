@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import { TAIL_FORM_ITEM_LAYOUT, FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
+import { TAIL_FORM_ITEM_LAYOUT, FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 
 @Form.create()
@@ -23,10 +23,10 @@ class SearchForm extends Component {
         const { searchFormValues } = this.props;
 
         return (
-            <Form>
+            <Form {...FORM_ITEM_LAYOUT_COMMON}>
                 <Row gutter={FORM_FORMAT.gutter}>
-                    <Col span={6}>
-                        <Form.Item>
+                    <Col span={10}>
+                        <Form.Item label={formatMessage({ id: 'esl.device.esl.search.info' })}>
                             <Input
                                 placeholder={formatMessage({
                                     id: 'esl.device.esl.search.placeholder',
@@ -37,11 +37,8 @@ class SearchForm extends Component {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            {...FORM_ITEM_LAYOUT}
-                            label={formatMessage({ id: 'esl.device.esl.status' })}
-                        >
+                    <Col span={10}>
+                        <Form.Item label={formatMessage({ id: 'esl.device.esl.status' })}>
                             <Select
                                 placeholder={formatMessage({ id: 'select.placeholder' })}
                                 value={searchFormValues.status}

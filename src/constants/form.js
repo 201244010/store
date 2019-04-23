@@ -12,7 +12,7 @@ export const FORM_ITEM_LAYOUT_COMMON = {
 };
 
 export const FORM_FORMAT = {
-    gutter: 72,
+    gutter: 36,
     cols: 12,
 };
 

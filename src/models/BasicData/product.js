@@ -27,6 +27,7 @@ export default {
         },
         states: [],
         data: [],
+        erpEnable: false,
         productInfo: {},
         sassInfoList: [],
         bindEsl: [],
@@ -62,7 +63,7 @@ export default {
         *getERPPlatformList(_, { call, put }) {
             yield put({
                 type: 'updateState',
-                payload: { loading: true },
+                payload: { loading: true, erpEnable: false },
             });
             const response = yield call(Actions.getERPPlatformList);
             if (response && response.code === ERROR_OK) {
@@ -95,7 +96,6 @@ export default {
             const opts = Object.assign({}, pagination, searchFormValues, options);
             const response = yield call(Actions.fetchProductList, opts);
             const result = response.data || {};
-            console.log('result', result);
             yield put({
                 type: 'updateState',
                 payload: {
@@ -147,18 +147,22 @@ export default {
 
         *createProduct({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
+            const opts = {
+                ...options,
+                price: options.price || -1,
+                promote_price: options.promote_price || -1,
+                member_price: options.member_price || -1,
+            };
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
             });
-            const response = yield call(Actions.createProduct, options);
+            const response = yield call(Actions.createProduct, opts);
             if (response && response.code === ERROR_OK) {
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
                 });
-                // TODO 等待后端返回 id  逻辑
-                // const encodeID = idEncode(options.productId);
                 router.push(`/basicData/productManagement/list`);
             } else {
                 yield put({
@@ -174,11 +178,17 @@ export default {
 
         *updateProduct({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
+            const opts = {
+                ...options,
+                price: options.price || -1,
+                promote_price: options.promote_price || -1,
+                member_price: options.member_price || -1,
+            };
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
             });
-            const response = yield call(Actions.updateProduct, options);
+            const response = yield call(Actions.updateProduct, opts);
             if (response && response.code === ERROR_OK) {
                 yield put({
                     type: 'updateState',
@@ -245,16 +255,11 @@ export default {
 
         *erpAuthCheck({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
-            yield put({
-                type: 'updateState',
-                payload: { loading: true },
-            });
-
             const response = yield call(Actions.checkSaasInfo, options);
             if (response && response.code === ERROR_OK) {
                 yield put({
                     type: 'updateState',
-                    payload: { loading: false },
+                    payload: { erpEnable: true },
                 });
             }
             return response;

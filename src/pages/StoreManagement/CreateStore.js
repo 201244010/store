@@ -148,7 +148,7 @@ class CreateStore extends React.Component {
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
                         {getFieldDecorator('business_status', {
-                            initialValue: business_status,
+                            initialValue: business_status || 0,
                         })(
                             <Radio.Group>
                                 <Radio value={0}>
