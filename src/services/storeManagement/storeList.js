@@ -12,16 +12,6 @@ export const getList = (options = {}) => {
     return fetchApi('getList', opt).then(response => response.json());
 };
 
-// 获得列表下拉框选项
-export const getListSelectOption = (options = {}) => {
-    const opt = {
-        body: {
-            ...options,
-        },
-    };
-    return fetchApi('getListSelection', opt).then(response => response.json());
-};
-
 // 提交新建门店接口
 export const createStore = (options = {}) => {
     const opt = {
@@ -30,16 +20,6 @@ export const createStore = (options = {}) => {
         },
     };
     return fetchApi('create', opt).then(response => response.json());
-};
-
-// 省市区下拉框的接口
-export const createStoreSelection = (options = {}) => {
-    const opt = {
-        body: {
-            ...options,
-        },
-    };
-    return fetchApi('selection', opt).then(response => response.json());
 };
 
 // 查看门店信息

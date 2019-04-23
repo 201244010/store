@@ -19,10 +19,10 @@ const FormItem = Form.Item;
         getRegionList: () => dispatch({ type: 'store/getRegionList' }),
     })
 )
+@Form.create()
 class CreateStore extends React.Component {
     state = {
         status: formatMessage({ id: 'storeManagement.create.statusValue1' }),
-        companyId: Storage.get('__company_id__'),
     };
 
     componentDidMount() {
@@ -38,7 +38,7 @@ class CreateStore extends React.Component {
 
     handleSubmit = e => {
         e.preventDefault();
-        const { companyId } = this.state;
+        const companyId = Storage.get('__company_id__');
         const {
             form: { getFieldsValue },
             createNewStore,
@@ -221,18 +221,4 @@ class CreateStore extends React.Component {
     }
 }
 
-const CreateStoreForm = Form.create({
-    mapPropsToFields: () => ({
-        storeId: Form.createFormField(''),
-        name: Form.createFormField(''),
-        type: Form.createFormField(''),
-        status: Form.createFormField(''),
-        address: Form.createFormField(''),
-        detailAddress: Form.createFormField(''),
-        time: Form.createFormField(''),
-        pic: Form.createFormField(''),
-        contactName: Form.createFormField(''),
-        contactPhone: Form.createFormField(''),
-    }),
-})(CreateStore);
-export default CreateStoreForm;
+export default CreateStore;

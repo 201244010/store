@@ -97,7 +97,7 @@ export default class GlobalHeaderRight extends PureComponent {
         if (theme === 'dark') {
             className = `${styles.right}  ${styles.dark}`;
         }
-        const defaultShop = Storage.get('__shop_id__') || storeList[0].shop_id;
+        const defaultShop = Storage.get('__shop_id__');
 
         return (
             <div className={className}>
