@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Table, Form, Input, Select, Button } from 'antd';
+import { Table, Form, Input, Select, Button, Row, Col } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
 import storage from '@konata9/storage.js/src/storage';
 import styles from './StoreManagement.less';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -163,47 +164,61 @@ class StoreManagement extends Component {
         return (
             <div className={styles.storeList}>
                 <div className={styles.top}>
-                    <Form layout="inline" onSubmit={this.handleSubmit}>
-                        <FormItem label={formatMessage({ id: 'storeManagement.list.inputLabel' })}>
-                            {getFieldDecorator('storeName', {
-                                initialValue: '',
-                            })(
-                                <Input
-                                    placeholder={formatMessage({
-                                        id: 'storeManagement.list.inputPlaceHolder',
-                                    })}
-                                    style={{ width: '220px' }}
-                                />
-                            )}
-                        </FormItem>
-                        <FormItem label={formatMessage({ id: 'storeManagement.list.selectLabel' })}>
-                            {getFieldDecorator('types', {
-                                initialValue: formatMessage({
-                                    id: 'storeManagement.info.fullTypes',
-                                }),
-                            })(
-                                <Select
-                                    placeholder={formatMessage({
-                                        id: 'storeManagement.list.selectPlaceHolder',
-                                    })}
-                                    style={{ width: '220px' }}
+                    <Form {...FORM_ITEM_LAYOUT_COMMON} onSubmit={this.handleSubmit}>
+                        <Row {...FORM_FORMAT.gutter}>
+                            <Col span={8}>
+                                <FormItem
+                                    label={formatMessage({ id: 'storeManagement.list.inputLabel' })}
                                 >
-                                    {optionArray.map(value => (
-                                        <Option value={value} key={value}>
-                                            {value}
-                                        </Option>
-                                    ))}
-                                </Select>
-                            )}
-                        </FormItem>
-                        <FormItem>
-                            <Button htmlType="submit">
-                                {formatMessage({ id: 'storeManagement.list.buttonSubmit' })}
-                            </Button>
-                        </FormItem>
-                        <a onClick={this.handleReset}>
-                            {formatMessage({ id: 'storeManagement.list.buttonReset' })}
-                        </a>
+                                    {getFieldDecorator('storeName', {
+                                        initialValue: '',
+                                    })(
+                                        <Input
+                                            placeholder={formatMessage({
+                                                id: 'storeManagement.list.inputPlaceHolder',
+                                            })}
+                                        />
+                                    )}
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem
+                                    label={formatMessage({
+                                        id: 'storeManagement.list.selectLabel',
+                                    })}
+                                >
+                                    {getFieldDecorator('types', {
+                                        initialValue: formatMessage({
+                                            id: 'storeManagement.info.fullTypes',
+                                        }),
+                                    })(
+                                        <Select
+                                            placeholder={formatMessage({
+                                                id: 'storeManagement.list.selectPlaceHolder',
+                                            })}
+                                        >
+                                            {optionArray.map(value => (
+                                                <Option value={value} key={value}>
+                                                    {value}
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    )}
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <Button htmlType="submit">
+                                    {formatMessage({ id: 'storeManagement.list.buttonSubmit' })}
+                                </Button>
+                                <a
+                                    href="javascript:void(0)"
+                                    style={{ marginLeft: '20px' }}
+                                    onClick={this.handleReset}
+                                >
+                                    {formatMessage({ id: 'storeManagement.list.buttonReset' })}
+                                </a>
+                            </Col>
+                        </Row>
                     </Form>
                 </div>
                 <Button

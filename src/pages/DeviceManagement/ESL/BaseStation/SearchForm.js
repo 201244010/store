@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT, FORM_FORMAT } from '@/constants/form';
+import { TAIL_FORM_ITEM_LAYOUT, FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 
 const { Option } = Select;
@@ -18,17 +18,17 @@ class SearchForm extends Component {
 
     search = () => {
         const { fetchBaseStations } = this.props;
-        fetchBaseStations();
+        fetchBaseStations({});
     };
 
     render() {
         const { states, searchFormValues } = this.props;
 
         return (
-            <Form>
+            <Form {...FORM_ITEM_LAYOUT_COMMON}>
                 <Row gutter={FORM_FORMAT.gutter}>
-                    <Col span={6}>
-                        <Form.Item>
+                    <Col span={10}>
+                        <Form.Item label={formatMessage({ id: 'esl.device.ap.search.ap.info' })}>
                             <Input
                                 placeholder={formatMessage({
                                     id: 'esl.device.ap.search.placeholder',
@@ -39,11 +39,8 @@ class SearchForm extends Component {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
-                        <Form.Item
-                            {...FORM_ITEM_LAYOUT}
-                            label={formatMessage({ id: 'esl.device.ap.status' })}
-                        >
+                    <Col span={10}>
+                        <Form.Item label={formatMessage({ id: 'esl.device.ap.status' })}>
                             <Select
                                 placeholder={formatMessage({ id: 'select.placeholder' })}
                                 value={searchFormValues.status}
