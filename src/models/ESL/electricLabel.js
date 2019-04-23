@@ -192,6 +192,9 @@ export default {
                     type: 'updateState',
                     payload: { loading: false },
                 });
+                yield put({
+                    type: 'fetchElectricLabels',
+                });
             } else {
                 message.error(formatMessage({ id: 'esl.device.esl.unbind.fail' }), DURATION_TIME);
                 yield put({
