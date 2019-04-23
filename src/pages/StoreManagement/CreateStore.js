@@ -1,11 +1,12 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Button, Input, Radio, message, Cascader } from 'antd';
+import { Form, Button, Input, Radio, Cascader } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js/src/storage';
 import { cellphone } from '@/constants/regexp';
 import styles from './StoreManagement.less';
+import { getLocationParam } from '@/utils/utils';
 
 const FormItem = Form.Item;
 
@@ -15,18 +16,28 @@ const FormItem = Form.Item;
     }),
     dispatch => ({
         createNewStore: payload => dispatch({ type: 'store/createNewStore', payload }),
+        updateStore: payload => dispatch({ type: 'store/updateStore', payload }),
         getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
         getRegionList: () => dispatch({ type: 'store/getRegionList' }),
+        getStoreDetail: payload => dispatch({ type: 'store/getStoreDetail', payload }),
+        clearState: () => dispatch({ type: 'store/clearState' }),
     })
 )
 @Form.create()
 class CreateStore extends React.Component {
-    state = {
-        status: formatMessage({ id: 'storeManagement.create.statusValue1' }),
-    };
-
     componentDidMount() {
-        const { getShopTypeList, getRegionList } = this.props;
+        const { getShopTypeList, getRegionList, getStoreDetail, clearState } = this.props;
+        const [action = 'create', shopId] = [
+            getLocationParam('action'),
+            getLocationParam('shopId'),
+        ];
+
+        if (action === 'create') {
+            clearState();
+        } else if (action === 'edit') {
+            getStoreDetail({ options: { shop_id: shopId } });
+        }
+
         if (!Storage.get('__shopTypeList__', 'local')) {
             getShopTypeList();
         }
@@ -36,61 +47,59 @@ class CreateStore extends React.Component {
         }
     }
 
-    handleSubmit = e => {
-        e.preventDefault();
+    handleSubmit = () => {
+        const [action = 'create', shopId] = [getLocationParam('action'), getLocationParam('id')];
         const companyId = Storage.get('__company_id__');
         const {
-            form: { getFieldsValue },
+            form: { validateFields },
             createNewStore,
+            updateStore,
         } = this.props;
-        const formValue = getFieldsValue();
-        if (!this.validFormValue(formValue)) {
-            return;
-        }
-        const payload = {
-            options: {
-                company_id: companyId,
-                shop_name: formValue.name,
-                type_one: formValue.shopType[0],
-                type_two: formValue.shopType[1],
-                business_status:
-                    formValue.status ===
-                    formatMessage({ id: 'storeManagement.create.statusValue1' })
-                        ? 0
-                        : 1,
-                province: formValue.region[0],
-                city: formValue.region[1],
-                area: formValue.region[2],
-                address: formValue.detailAddress,
-                business_hours: formValue.time,
-                contact_person: formValue.contactName,
-                contact_tel: formValue.contactPhone,
-            },
-        };
-        createNewStore(payload);
-    };
 
-    validFormValue = formValue => {
-        if (!formValue.name) {
-            message.warning(formatMessage({ id: 'storeManagement.message.name.error' }));
-            return false;
-        }
-        if (formValue.contactPhone && !cellphone.test(formValue.contactPhone)) {
-            message.warning(formatMessage({ id: 'storeManagement.message.cellphone.error' }));
-            return false;
-        }
-        return true;
-    };
+        validateFields((err, values) => {
+            if (!err) {
+                const options = {
+                    ...values,
+                    shop_id: shopId,
+                    company_id: companyId,
+                    type_one: values.shopType[0],
+                    type_two: values.shopType[1],
+                    province: values.region[0],
+                    city: values.region[1],
+                    area: values.region[2],
+                };
 
-    handleOnChange = e => {
-        this.setState({ status: e.target.value });
+                if (action === 'create') {
+                    createNewStore({ options });
+                } else if (action === 'update') {
+                    updateStore({ options });
+                } else {
+                    createNewStore({ options });
+                }
+            }
+        });
     };
 
     render() {
-        const { status } = this.state;
         const {
             form: { getFieldDecorator },
-            store: { shopType_list, regionList },
+            store: {
+                shopType_list,
+                regionList,
+                storeInfo: {
+                    shop_name,
+                    type_one,
+                    type_two,
+                    business_status,
+                    province,
+                    city,
+                    area,
+                    address,
+                    business_hours,
+                    contact_person,
+                    contact_tel,
+                },
+            },
         } = this.props;
 
         return (
@@ -98,7 +107,9 @@ class CreateStore extends React.Component {
                 <h2>{formatMessage({ id: 'storeManagement.create.title' })}</h2>
                 <Form onSubmit={this.handleSubmit} labelCol={{ span: 2 }} wrapperCol={{ span: 9 }}>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.nameLabel' })}>
-                        {getFieldDecorator('name', {
+                        {getFieldDecorator('shop_name', {
+                            initialValue: shop_name,
+                            validateTrigger: 'onBlur',
                             rules: [
                                 {
                                     required: true,
@@ -107,10 +118,8 @@ class CreateStore extends React.Component {
                                     }),
                                 },
                             ],
-                            initialValue: '',
                         })(
                             <Input
-                                style={{ width: 300 }}
                                 placeholder={formatMessage({
                                     id: 'storeManagement.create.namePlaceHolder',
                                 })}
@@ -119,10 +128,9 @@ class CreateStore extends React.Component {
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
                         {getFieldDecorator('shopType', {
-                            initialValue: '',
+                            initialValue: [type_one, type_two],
                         })(
                             <Cascader
-                                style={{ width: 300 }}
                                 placeholder={formatMessage({
                                     id: 'storeManagement.create.typePlaceHolder',
                                 })}
@@ -131,88 +139,78 @@ class CreateStore extends React.Component {
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
-                        {getFieldDecorator('status', {
-                            initialValue: status,
+                        {getFieldDecorator('business_status', {
+                            initialValue: business_status,
                         })(
-                            <Radio.Group onChange={this.handleOnChange}>
-                                <Radio
-                                    value={formatMessage({
-                                        id: 'storeManagement.create.statusValue1',
-                                    })}
-                                >
-                                    {formatMessage({ id: 'storeManagement.create.statusValue1' })}
+                            <Radio.Group>
+                                <Radio value={0}>
+                                    {formatMessage({ id: 'storeManagement.create.status.open' })}
                                 </Radio>
-                                <Radio
-                                    value={formatMessage({
-                                        id: 'storeManagement.create.statusValue2',
-                                    })}
-                                >
-                                    {formatMessage({ id: 'storeManagement.create.statusValue2' })}
+                                <Radio value={1}>
+                                    {formatMessage({ id: 'storeManagement.create.status.closed' })}
                                 </Radio>
                             </Radio.Group>
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.address' })}>
                         {getFieldDecorator('region', {
-                            initialValue: '',
+                            initialValue: [province, city, area],
                         })(
                             <Cascader
                                 options={regionList}
                                 placeholder={formatMessage({
-                                    id: 'storeManagement.create.addressPlaceHolder2',
+                                    id: 'storeManagement.create.address.region',
                                 })}
-                                style={{ width: 300 }}
                             />
                         )}
                     </FormItem>
                     <FormItem label=" " colon={false}>
-                        {getFieldDecorator('detailAddress', {
-                            initialValue: '',
+                        {getFieldDecorator('address', {
+                            initialValue: address,
                         })(
                             <Input
                                 placeholder={formatMessage({
-                                    id: 'storeManagement.create.addressPlaceHolder2',
+                                    id: 'storeManagement.create.address.detail',
                                 })}
-                                style={{ width: 300 }}
                             />
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>
-                        {getFieldDecorator('time', {
-                            initialValue: '',
-                        })(<Input style={{ width: 300 }} />)}
+                        {getFieldDecorator('business_hours', {
+                            initialValue: business_hours,
+                        })(<Input />)}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.contactName' })}>
-                        {getFieldDecorator('contactName', {
-                            initialValue: '',
-                        })(<Input style={{ width: 300 }} />)}
+                        {getFieldDecorator('contact_person', {
+                            initialValue: contact_person,
+                        })(<Input />)}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.contactPhone' })}>
-                        {getFieldDecorator('contactPhone', {
+                        {getFieldDecorator('contact_tel', {
+                            initialValue: contact_tel,
+                            validateTrigger: 'onBlur',
                             rules: [
                                 {
+                                    pattern: cellphone,
                                     message: formatMessage({
                                         id: 'storeManagement.create.phoneMessage',
                                     }),
-                                    pattern: cellphone,
                                 },
                             ],
-                            validateTrigger: 'onBlur',
-                            initialValue: '',
-                        })(<Input style={{ width: 300 }} maxLength={11} />)}
+                        })(<Input maxLength={11} />)}
                     </FormItem>
-                    <FormItem>
-                        <Button htmlType="submit" className={styles.submitButton}>
-                            {formatMessage({ id: 'storeManagement.create.buttonConfirm' })}
+                    <FormItem label=" " colon={false}>
+                        <Button type="primary" onClick={this.handleSubmit}>
+                            {formatMessage({ id: 'btn.save' })}
                         </Button>
                         <Button
+                            style={{ marginLeft: '20px' }}
                             htmlType="button"
-                            className={styles.submitButton2}
                             onClick={() => {
                                 router.push('list');
                             }}
                         >
-                            {formatMessage({ id: 'storeManagement.create.buttonCancel' })}
+                            {formatMessage({ id: 'btn.cancel' })}
                         </Button>
                     </FormItem>
                 </Form>

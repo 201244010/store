@@ -27,8 +27,8 @@ const columns = [
         render: (text, record) => (
             <span>
                 {record.status === 0
-                    ? formatMessage({ id: 'storeManagement.create.statusValue1' })
-                    : formatMessage({ id: 'storeManagement.create.statusValue2' })}
+                    ? formatMessage({ id: 'storeManagement.create.status.open' })
+                    : formatMessage({ id: 'storeManagement.create.status.closed' })}
             </span>
         ),
     },
@@ -66,7 +66,9 @@ const columns = [
                 <a
                     onClick={() => {
                         router.push(
-                            `/basicData/storeManagement/alterStore?shopId=${record.shopId}`
+                            `/basicData/storeManagement/createStore?shopId=${
+                                record.shopId
+                            }&action=edit`
                         );
                     }}
                     className={styles.infoAnchor}
@@ -208,7 +210,7 @@ class StoreManagement extends Component {
                     type="primary"
                     icon="plus"
                     onClick={() => {
-                        router.push('/basicData/storeManagement/createStore');
+                        router.push('/basicData/storeManagement/createStore?action=create');
                     }}
                 >
                     {formatMessage({ id: 'storeManagement.list.newBuiltStore' })}

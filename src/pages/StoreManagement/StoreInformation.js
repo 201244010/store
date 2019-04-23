@@ -3,45 +3,51 @@ import { Form, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { getLocationParam } from '@/utils/utils';
+import { getLocationParam, unixSecondToDate } from '@/utils/utils';
 import styles from './StoreManagement.less';
 
 @connect(
     state => ({
-        info: state.store,
+        store: state.store,
     }),
     dispatch => ({
-        getStoreInformation: payload => dispatch({ type: 'store/getStoreInformation', payload }),
+        getStoreDetail: payload => dispatch({ type: 'store/getStoreDetail', payload }),
     })
 )
 class StoreInformation extends React.Component {
     componentDidMount() {
-        this.initFetch();
+        const shopId = getLocationParam('shopId');
+        const { getStoreDetail } = this.props;
+
+        getStoreDetail({ options: { shop_id: shopId } });
     }
 
-    initFetch = () => {
-        const { getStoreInformation } = this.props;
+    toPath = target => {
         const shopId = getLocationParam('shopId');
-        const payload = {
-            options: {
-                shop_id: shopId,
-            },
+        const path = {
+            edit: `/basicData/storeManagement/createStore?shopId=${shopId}&action=edit`,
+            back: '/basicData/storeManagement/list',
         };
-        getStoreInformation(payload);
-    };
 
-    handleSubmit = () => {
-        const shopId = getLocationParam('shopId');
-        router.push(`/basicData/storeManagement/alterStore?shopId=${shopId}`);
-    };
-
-    handleCancel = () => {
-        router.push('/basicData/storeManagement/list');
+        router.push(path[target] || path.back);
     };
 
     render() {
         const {
-            info: { alter },
+            store: {
+                storeInfo: {
+                    shop_id,
+                    shop_name,
+                    type_name,
+                    business_status,
+                    address,
+                    business_hours,
+                    contact_person,
+                    contact_tel,
+                    created_time,
+                    modified_time,
+                },
+            },
         } = this.props;
 
         return (
@@ -51,49 +57,50 @@ class StoreInformation extends React.Component {
                 </h3>
                 <Form labelCol={{ span: 3 }} wrapperCol={{ span: 9 }}>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.id' })}>
-                        {alter.shopId}
+                        {shop_id}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.nameLabel' })}>
-                        {alter.name}
+                        {shop_name}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
-                        {alter.type}
+                        {type_name}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
-                        {alter.status === 0
-                            ? formatMessage({ id: 'storeManagement.create.statusValue1' })
-                            : formatMessage({ id: 'storeManagement.create.statusValue2' })}
+                        {business_status === 0
+                            ? formatMessage({ id: 'storeManagement.create.status.open' })
+                            : formatMessage({ id: 'storeManagement.create.status.closed' })}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.address' })}>
-                        {alter.address}
+                        {address}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>
-                        {alter.time}
+                        {business_hours}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.contactName' })}>
-                        {alter.contactPerson}
+                        {contact_person}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.contactPhone' })}>
-                        {alter.contactPhone}
+                        {contact_tel}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.info.create' })}>
-                        {alter.createdTime}
+                        {unixSecondToDate(created_time)}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.info.update' })}>
-                        {alter.modifiedTime}
+                        {unixSecondToDate(modified_time)}
+                    </Form.Item>
+                    <Form.Item label=" " colon={false}>
+                        <Button type="primary" onClick={() => this.toPath('edit')}>
+                            {formatMessage({ id: 'storeManagement.info.modify' })}
+                        </Button>
+                        <Button
+                            style={{ marginLeft: '20px' }}
+                            type="default"
+                            onClick={() => this.toPath('back')}
+                        >
+                            {formatMessage({ id: 'storeManagement.info.cancel' })}
+                        </Button>
                     </Form.Item>
                 </Form>
-                <Button type="primary" onClick={this.handleSubmit} className={styles.submitButton}>
-                    {formatMessage({ id: 'storeManagement.info.modify' })}
-                </Button>
-                <Button
-                    type="default"
-                    onClick={this.handleCancel}
-                    className={styles.submitButton2}
-                    style={{ marginBottom: 40 }}
-                >
-                    {formatMessage({ id: 'storeManagement.info.cancel' })}
-                </Button>
             </div>
         );
     }

@@ -36,6 +36,7 @@ export default {
         getOption: {},
         shopType_list: Storage.get('__shopTypeList__', 'local') || [],
         regionList: Storage.get('__regionList__', 'local') || [],
+        storeInfo: {},
         alter: {
             name: '',
             type: '',
@@ -86,20 +87,39 @@ export default {
             }
         },
 
-        *createNewStore({ payload }, { call, put }) {
+        *createNewStore({ payload }, { call }) {
             const { options } = payload;
             const response = yield call(Action.createStore, options);
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'storeManagement.message.createSuccess' }));
                 const data = response.data || {};
-                Storage.set({ __shop_id__: data.shop_id });
+                if (!Storage.get('__shop_id__')) {
+                    Storage.set({ __shop_id__: data.shop_id });
+                }
+                router.push('/basicData/storeManagement/list');
+            }
+        },
+
+        *updateStore({ payload }, { call }) {
+            const { options } = payload;
+            const response = yield call(Action.alterStore, options);
+            if (response && response.code === ERROR_OK) {
+                message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
+                router.push('/basicData/storeManagement/list');
+            }
+        },
+
+        *getStoreDetail({ payload }, { call, put }) {
+            const { options } = payload;
+            const response = yield call(Action.storeInformation, options);
+            if (response && response.code === ERROR_OK) {
+                const data = response.data || {};
                 yield put({
-                    type: 'alterNewStore',
+                    type: 'updateState',
                     payload: {
-                        data,
+                        storeInfo: data,
                     },
                 });
-                router.push('/');
             }
         },
 
@@ -170,6 +190,15 @@ export default {
                     },
                 });
             }
+        },
+
+        *clearState(_, { put }) {
+            yield put({
+                type: 'updateState',
+                payload: {
+                    storeInfo: {},
+                },
+            });
         },
     },
 
