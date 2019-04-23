@@ -97,12 +97,12 @@ export default class GlobalHeaderRight extends PureComponent {
         if (theme === 'dark') {
             className = `${styles.right}  ${styles.dark}`;
         }
-        const firstShop = storeList[0] || {};
+        const defaultShop = Storage.get('__shop_id__');
 
         return (
             <div className={className}>
                 <Select
-                    defaultValue={firstShop.shop_id}
+                    defaultValue={defaultShop}
                     style={{ minWidth: '200px' }}
                     onChange={this.handleStoreChange}
                 >

@@ -55,7 +55,9 @@ const columns = [
             <span>
                 <a
                     onClick={() => {
-                        router.push(`storeInformation?shopId=${record.shopId}`);
+                        router.push(
+                            `/basicData/storeManagement/storeInformation?shopId=${record.shopId}`
+                        );
                     }}
                     className={styles.infoAnchor}
                 >
@@ -63,7 +65,9 @@ const columns = [
                 </a>
                 <a
                     onClick={() => {
-                        router.push(`alterStore?shopId=${record.shopId}`);
+                        router.push(
+                            `/basicData/storeManagement/alterStore?shopId=${record.shopId}`
+                        );
                     }}
                     className={styles.infoAnchor}
                 >
@@ -148,7 +152,10 @@ class StoreManagement extends Component {
     };
 
     render() {
-        const { form: { getFieldDecorator }, list } = this.props;
+        const {
+            form: { getFieldDecorator },
+            list,
+        } = this.props;
         const { optionArray } = this.state;
 
         return (
@@ -200,7 +207,9 @@ class StoreManagement extends Component {
                 <Button
                     type="primary"
                     icon="plus"
-                    onClick={() => { router.push('/basicData/storeManagement/createStore');}}
+                    onClick={() => {
+                        router.push('/basicData/storeManagement/createStore');
+                    }}
                 >
                     {formatMessage({ id: 'storeManagement.list.newBuiltStore' })}
                 </Button>
