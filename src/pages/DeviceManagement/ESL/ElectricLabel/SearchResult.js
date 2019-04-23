@@ -141,7 +141,7 @@ class SearchResult extends Component {
     };
 
     handleMoreClick = async e => {
-        const { flashLed, fetchTemplatesByESLCode } = this.props;
+        const { flashModes, flashLed, fetchTemplatesByESLCode } = this.props;
         const {
             dataset: { recordId, record },
         } = e.domEvent.target;
@@ -165,12 +165,16 @@ class SearchResult extends Component {
             });
         }
         if (e.key === '2') {
-            flashLed({
-                options: {
-                    mode_id: 60019,
-                    esl_id_list: [parseInt(recordId, 10)],
-                },
-            });
+            if (flashModes[0]) {
+                flashLed({
+                    options: {
+                        mode_id: flashModes[0].id,
+                        esl_id_list: [parseInt(recordId, 10)],
+                    },
+                });
+            } else {
+                message.error(formatMessage({ id: 'esl.device.esl.flash.mode.error' }));
+            }
         }
         if (e.key === '3') {
             this.deleteESL({
