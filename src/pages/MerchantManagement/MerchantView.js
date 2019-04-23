@@ -46,46 +46,61 @@ class MerchantView extends Component {
         return (
             <div className={styles['view-wrapper']}>
                 <h1>{formatMessage({ id: 'merchantManagement.merchant.view' })}</h1>
-                <Form {...FORM_ITEM_LAYOUT_BUSINESS}>
-                    <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.number' })}>
-                        <span>{companyId || '--'}</span>
-                    </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.name' })}>
-                        <span>{companyName || '--'}</span>
-                    </Form.Item>
-                    <Form.Item
-                        label={formatMessage({ id: 'merchantManagement.merchant.contactPerson' })}
-                    >
-                        <span>{contactPerson || '--'}</span>
-                    </Form.Item>
-                    <Form.Item
-                        label={formatMessage({ id: 'merchantManagement.merchant.contactPhone' })}
-                    >
-                        <span>{contactTel || '--'}</span>
-                    </Form.Item>
-                    <Form.Item
-                        label={formatMessage({ id: 'merchantManagement.merchant.contactEmail' })}
-                    >
-                        <span>{contactEmail || '--'}</span>
-                    </Form.Item>
-                    <Form.Item
-                        label={formatMessage({ id: 'merchantManagement.merchant.createTime' })}
-                    >
-                        <span>{unixSecondToDate(createTime) || '--'}</span>
-                    </Form.Item>
-                    <Form.Item
-                        label={formatMessage({ id: 'merchantManagement.merchant.updateTime' })}
-                    >
-                        <span>{unixSecondToDate(modifyTime) || '--'}</span>
-                    </Form.Item>
-                </Form>
-                <div className={styles['button-style']}>
-                    <Button type="primary" onClick={() => this.goNext('update')}>
-                        {formatMessage({ id: 'btn.alter' })}
-                    </Button>
-                    <Button style={{ marginLeft: 20 }} onClick={() => this.goNext('cancel')}>
-                        {formatMessage({ id: 'btn.back' })}
-                    </Button>
+                <div className={styles['form-content']}>
+                    <Form {...FORM_ITEM_LAYOUT_BUSINESS}>
+                        <Form.Item
+                            label={formatMessage({ id: 'merchantManagement.merchant.number' })}
+                        >
+                            <span>{companyId || '--'}</span>
+                        </Form.Item>
+                        <Form.Item
+                            label={formatMessage({ id: 'merchantManagement.merchant.name' })}
+                        >
+                            <span>{companyName || '--'}</span>
+                        </Form.Item>
+                        <Form.Item
+                            label={formatMessage({
+                                id: 'merchantManagement.merchant.contactPerson',
+                            })}
+                        >
+                            <span>{contactPerson || '--'}</span>
+                        </Form.Item>
+                        <Form.Item
+                            label={formatMessage({
+                                id: 'merchantManagement.merchant.contactPhone',
+                            })}
+                        >
+                            <span>{contactTel || '--'}</span>
+                        </Form.Item>
+                        <Form.Item
+                            label={formatMessage({
+                                id: 'merchantManagement.merchant.contactEmail',
+                            })}
+                        >
+                            <span>{contactEmail || '--'}</span>
+                        </Form.Item>
+                        <Form.Item
+                            label={formatMessage({ id: 'merchantManagement.merchant.createTime' })}
+                        >
+                            <span>{unixSecondToDate(createTime) || '--'}</span>
+                        </Form.Item>
+                        <Form.Item
+                            label={formatMessage({ id: 'merchantManagement.merchant.updateTime' })}
+                        >
+                            <span>{unixSecondToDate(modifyTime) || '--'}</span>
+                        </Form.Item>
+                        <Form.Item label=" " colon={false}>
+                            <Button type="primary" onClick={() => this.goNext('update')}>
+                                {formatMessage({ id: 'btn.alter' })}
+                            </Button>
+                            <Button
+                                style={{ marginLeft: 20 }}
+                                onClick={() => this.goNext('cancel')}
+                            >
+                                {formatMessage({ id: 'btn.back' })}
+                            </Button>
+                        </Form.Item>
+                    </Form>
                 </div>
             </div>
         );
