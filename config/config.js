@@ -64,14 +64,14 @@ export default {
             path: '/',
             component: '../layouts/BasicLayout',
             routes: [
-                { path: '/', redirect: '/dashBoard' },
+                { path: '/', redirect: '/deviceManagement' },
                 // dashboard
-                {
-                    path: '/dashBoard',
-                    name: 'dashBoard',
-                    icon: 'blank',
-                    component: './DashBoard',
-                },
+                // {
+                //     path: '/dashBoard',
+                //     name: 'dashBoard',
+                //     icon: 'blank',
+                //     component: './DashBoard',
+                // },
                 {
                     path: '/deviceManagement',
                     name: 'deviceManagement',

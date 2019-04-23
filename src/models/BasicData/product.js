@@ -27,6 +27,7 @@ export default {
         },
         states: [],
         data: [],
+        erpEnable: false,
         productInfo: {},
         sassInfoList: [],
         bindEsl: [],
@@ -62,7 +63,7 @@ export default {
         *getERPPlatformList(_, { call, put }) {
             yield put({
                 type: 'updateState',
-                payload: { loading: true },
+                payload: { loading: true, erpEnable: false },
             });
             const response = yield call(Actions.getERPPlatformList);
             if (response && response.code === ERROR_OK) {
@@ -254,16 +255,11 @@ export default {
 
         *erpAuthCheck({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
-            yield put({
-                type: 'updateState',
-                payload: { loading: true },
-            });
-
             const response = yield call(Actions.checkSaasInfo, options);
             if (response && response.code === ERROR_OK) {
                 yield put({
                     type: 'updateState',
-                    payload: { loading: false },
+                    payload: { erpEnable: true },
                 });
             }
             return response;
