@@ -43,6 +43,15 @@ export const deleteESL = options => {
     return fetchApi('delete', opts).then(response => response.json());
 };
 
+export const fetchFlashModes = options => {
+    const opts = {
+        method: 'POST',
+        body: options,
+    };
+
+    return fetchApi('getFlashModeList', opts).then(response => response.json());
+};
+
 export const flashLed = options => {
     const opts = {
         method: 'POST',

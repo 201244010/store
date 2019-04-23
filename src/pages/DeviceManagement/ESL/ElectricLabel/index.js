@@ -20,6 +20,8 @@ import * as styles from './index.less';
         changeTemplate: payload => dispatch({ type: 'eslElectricLabel/changeTemplate', payload }),
         fetchProductList: payload =>
             dispatch({ type: 'basicDataProduct/fetchProductList', payload }),
+        fetchFlashModes: payload =>
+            dispatch({ type: 'eslElectricLabel/fetchFlashModes', payload }),
         flushESL: payload => dispatch({ type: 'eslElectricLabel/flushESL', payload }),
         bindESL: payload => dispatch({ type: 'eslElectricLabel/bindESL', payload }),
         unbindESL: payload => dispatch({ type: 'eslElectricLabel/unbindESL', payload }),
@@ -29,7 +31,7 @@ import * as styles from './index.less';
 )
 class ElectricLabel extends Component {
     componentDidMount() {
-        const { fetchElectricLabels, changeSearchFormValue } = this.props;
+        const { fetchElectricLabels, changeSearchFormValue, fetchFlashModes } = this.props;
 
         changeSearchFormValue({
             keyword: '',
@@ -41,6 +43,8 @@ class ElectricLabel extends Component {
                 current: 1,
             },
         });
+
+        fetchFlashModes();
     }
 
     render() {
@@ -52,6 +56,7 @@ class ElectricLabel extends Component {
                 pagination,
                 detailInfo,
                 templates4ESL,
+                flashModes,
             },
             basicDataProduct: { data: products, pagination: productPagination },
             changeSearchFormValue,
@@ -83,6 +88,7 @@ class ElectricLabel extends Component {
                         pagination,
                         detailInfo,
                         templates4ESL,
+                        flashModes,
                         products,
                         productPagination,
                         fetchElectricLabels,
