@@ -24,7 +24,7 @@ class MerchantLayout extends React.PureComponent {
 
     matchParamsPath = (pathname, breadcrumbNameMap) => {
         const pathKey = Object.keys(breadcrumbNameMap).find(key =>
-            pathToRegexp(key).test(pathname),
+            pathToRegexp(key).test(pathname)
         );
         return breadcrumbNameMap[pathKey];
     };
@@ -83,7 +83,9 @@ class MerchantLayout extends React.PureComponent {
                                                 src={currentUser.avatar}
                                                 alt="avatar"
                                             />
-                                            <span className={styles.name}>{currentUser.username}</span>
+                                            <span className={styles.name}>
+                                                {currentUser.username}
+                                            </span>
                                         </span>
                                     </HeaderDropdown>
                                 ) : (
