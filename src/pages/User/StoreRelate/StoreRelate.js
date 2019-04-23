@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import { Button, Divider, List } from 'antd';
 import Storage from '@konata9/storage.js';
 import styles from './StoreRelate.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 @connect(
     state => ({
@@ -17,17 +18,18 @@ import styles from './StoreRelate.less';
 )
 class StoreRelate extends Component {
     checkStoreExist = async () => {
-        const {
-            getStoreList,
-            store: { storeList },
-        } = this.props;
-        await getStoreList({});
-        if (storeList.length === 0) {
-            router.push('/basicData/storeManagement/createStore');
-        } else {
-            const defaultStore = storeList[0] || {};
-            Storage.set({ __shop_id__: defaultStore.shop_id });
-            router.push('/');
+        const { getStoreList } = this.props;
+        const response = await getStoreList({});
+        if (response && response.code === ERROR_OK) {
+            const result = response.data || {};
+            const storeList = result.shop_list || [];
+            if (storeList.length === 0) {
+                router.push('/basicData/storeManagement/createStore');
+            } else {
+                const defaultStore = storeList[0] || {};
+                Storage.set({ __shop_id__: defaultStore.shop_id });
+                router.push('/');
+            }
         }
     };
 
