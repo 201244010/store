@@ -27,6 +27,7 @@ export default {
         },
         detailInfo: {},
         templates4ESL: [],
+        flashModes: []
     },
     effects: {
         *changeSearchFormValue({ payload = {} }, { put }) {
@@ -84,6 +85,21 @@ export default {
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
+                });
+            }
+            return response;
+        },
+        *fetchFlashModes({ payload = {} }, { call, put }) {
+            const { options = {} } = payload;
+
+            const response = yield call(ESLServices.fetchFlashModes, options);
+            const result = response.data || {};
+            if (response.code === ERROR_OK) {
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        flashModes: result.esl_flash_mode_list || [],
+                    },
                 });
             }
             return response;

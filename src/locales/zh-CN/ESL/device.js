@@ -73,4 +73,5 @@ export default {
     'esl.device.esl.bind.input.placeholder': '请输入商品编号/名称/条码',
     'esl.device.esl.change.template.success': '修改模板成功',
     'esl.device.esl.change.template.fail': '修改模板失败',
+    'esl.device.esl.flash.mode.error': '没有匹配的闪灯模式'
 };
