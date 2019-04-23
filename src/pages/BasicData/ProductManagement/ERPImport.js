@@ -122,7 +122,6 @@ class ERPImport extends Component {
         } = this.props;
         validateFields(async (err, values) => {
             if (!err) {
-                console.log(values);
                 const response = await erpAuthCheck({
                     options: {
                         ...values,

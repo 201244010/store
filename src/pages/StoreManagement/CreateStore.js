@@ -48,7 +48,10 @@ class CreateStore extends React.Component {
     }
 
     handleSubmit = () => {
-        const [action = 'create', shopId] = [getLocationParam('action'), getLocationParam('id')];
+        const [action = 'create', shopId] = [
+            getLocationParam('action'),
+            getLocationParam('shopId'),
+        ];
         const companyId = Storage.get('__company_id__');
         const {
             form: { validateFields },
@@ -71,7 +74,7 @@ class CreateStore extends React.Component {
 
                 if (action === 'create') {
                     createNewStore({ options });
-                } else if (action === 'update') {
+                } else if (action === 'edit') {
                     updateStore({ options });
                 } else {
                     createNewStore({ options });
@@ -101,10 +104,15 @@ class CreateStore extends React.Component {
                 },
             },
         } = this.props;
+        const [action = 'create'] = [getLocationParam('action')];
 
         return (
             <div className={styles.storeList}>
-                <h2>{formatMessage({ id: 'storeManagement.create.title' })}</h2>
+                <h2>
+                    {action === 'create'
+                        ? formatMessage({ id: 'storeManagement.create.title' })
+                        : formatMessage({ id: 'storeManagement.alter.title' })}
+                </h2>
                 <Form onSubmit={this.handleSubmit} labelCol={{ span: 2 }} wrapperCol={{ span: 9 }}>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.nameLabel' })}>
                         {getFieldDecorator('shop_name', {
