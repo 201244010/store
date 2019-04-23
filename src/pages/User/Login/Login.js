@@ -138,6 +138,7 @@ class Login extends Component {
             router.push('/basicData/storeManagement/createStore');
         } else {
             const defaultStore = storeList[0] || {};
+            console.log(defaultStore);
             Storage.set({ __shop_id__: defaultStore.shop_id });
             router.push('/');
         }
