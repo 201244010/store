@@ -53,6 +53,7 @@ class SearchResult extends Component {
             title: formatMessage({ id: 'basicData.product.delete.confirm' }),
             content: formatMessage({ id: 'basicData.product.delete.notice' }),
             okText: formatMessage({ id: 'btn.delete' }),
+            cancelText: formatMessage({ id: 'btn.cancel' }),
             onOk() {
                 deleteProduct({
                     options: {

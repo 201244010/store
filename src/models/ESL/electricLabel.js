@@ -27,7 +27,7 @@ export default {
         },
         detailInfo: {},
         templates4ESL: [],
-        flashModes: []
+        flashModes: [],
     },
     effects: {
         *changeSearchFormValue({ payload = {} }, { put }) {
@@ -191,6 +191,9 @@ export default {
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
+                });
+                yield put({
+                    type: 'fetchElectricLabels',
                 });
             } else {
                 message.error(formatMessage({ id: 'esl.device.esl.unbind.fail' }), DURATION_TIME);

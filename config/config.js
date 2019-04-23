@@ -64,14 +64,14 @@ export default {
             path: '/',
             component: '../layouts/BasicLayout',
             routes: [
-                { path: '/', redirect: '/dashBoard' },
+                { path: '/', redirect: '/deviceManagement' },
                 // dashboard
-                {
-                    path: '/dashBoard',
-                    name: 'dashBoard',
-                    icon: 'blank',
-                    component: './DashBoard',
-                },
+                // {
+                //     path: '/dashBoard',
+                //     name: 'dashBoard',
+                //     icon: 'blank',
+                //     component: './DashBoard',
+                // },
                 {
                     path: '/deviceManagement',
                     name: 'deviceManagement',
@@ -82,16 +82,16 @@ export default {
                             path: '/deviceManagement/esl',
                             name: 'esl',
                             routes: [
-                                { path: '/deviceManagement/esl', redirect: '/deviceManagement/esl/baseStation' },
-                                {
-                                    path: '/deviceManagement/esl/baseStation',
-                                    name: 'baseStation',
-                                    component: './DeviceManagement/ESL/BaseStation',
-                                },
+                                { path: '/deviceManagement/esl', redirect: '/deviceManagement/esl/electricLabel' },
                                 {
                                     path: '/deviceManagement/esl/electricLabel',
                                     name: 'electricLabel',
                                     component: './DeviceManagement/ESL/ElectricLabel',
+                                },
+                                {
+                                    path: '/deviceManagement/esl/baseStation',
+                                    name: 'baseStation',
+                                    component: './DeviceManagement/ESL/BaseStation',
                                 },
                             ],
                         },

@@ -20,8 +20,7 @@ import * as styles from './index.less';
         changeTemplate: payload => dispatch({ type: 'eslElectricLabel/changeTemplate', payload }),
         fetchProductList: payload =>
             dispatch({ type: 'basicDataProduct/fetchProductList', payload }),
-        fetchFlashModes: payload =>
-            dispatch({ type: 'eslElectricLabel/fetchFlashModes', payload }),
+        fetchFlashModes: payload => dispatch({ type: 'eslElectricLabel/fetchFlashModes', payload }),
         flushESL: payload => dispatch({ type: 'eslElectricLabel/flushESL', payload }),
         bindESL: payload => dispatch({ type: 'eslElectricLabel/bindESL', payload }),
         unbindESL: payload => dispatch({ type: 'eslElectricLabel/unbindESL', payload }),

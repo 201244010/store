@@ -1,7 +1,8 @@
 // ESL 设备价签 文案
 export default {
     // 基站用
-    'esl.device.ap.search.placeholder': '请输入基站ID、基站名称',
+    'esl.device.ap.search.placeholder': '基站ID/SN/名称',
+    'esl.device.ap.search.ap.info': '基站信息',
 
     'esl.device.ap.id': '基站ID',
     'esl.device.ap.name': '基站名称',
@@ -32,6 +33,7 @@ export default {
 
     // 价签用
     'esl.device.esl.search.placeholder': '价签ID或绑定商品的编号/名称',
+    'esl.device.esl.search.info': '价签信息',
     'esl.device.esl.id': '价签ID',
     'esl.device.esl.sn': '价签SN',
     'esl.device.esl.model.name': '价签型号',
@@ -73,5 +75,5 @@ export default {
     'esl.device.esl.bind.input.placeholder': '请输入商品编号/名称/条码',
     'esl.device.esl.change.template.success': '修改模板成功',
     'esl.device.esl.change.template.fail': '修改模板失败',
-    'esl.device.esl.flash.mode.error': '没有匹配的闪灯模式'
+    'esl.device.esl.flash.mode.error': '没有匹配的闪灯模式',
 };

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { FORM_FORMAT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 
 class SearchForm extends Component {
     changeFormValues = (inputType, fieldName, e) => {
@@ -27,10 +27,12 @@ class SearchForm extends Component {
         const { values } = this.props;
 
         return (
-            <Form>
+            <Form {...FORM_ITEM_LAYOUT_COMMON}>
                 <Row gutter={FORM_FORMAT.gutter}>
                     <Col span={8}>
-                        <Form.Item>
+                        <Form.Item
+                            label={formatMessage({ id: 'basicData.product.search.product' })}
+                        >
                             <Input
                                 placeholder={formatMessage({
                                     id: 'basicData.product.search.placeholder',
@@ -42,7 +44,7 @@ class SearchForm extends Component {
                         </Form.Item>
                     </Col>
                     <Col span={2}>
-                        <Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
+                        <Form.Item>
                             <Button type="primary" onClick={this.search}>
                                 {formatMessage({ id: 'btn.query' })}
                             </Button>

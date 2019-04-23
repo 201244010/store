@@ -91,64 +91,76 @@ class MerchantModify extends Component {
         return (
             <div className={styles['view-wrapper']}>
                 <h1>{formatMessage({ id: 'merchantManagement.merchant.modify' })}</h1>
-                <Form {...FORM_ITEM_LAYOUT_BUSINESS}>
-                    <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.number' })}>
-                        <span>{companyId || '--'}</span>
-                    </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'merchantManagement.merchant.name' })}>
-                        <Input
-                            value={companyName}
-                            onChange={e => this.onChange(e, 'companyName')}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label={formatMessage({ id: 'merchantManagement.merchant.contactPerson' })}
-                    >
-                        <Input
-                            value={contactPerson}
-                            onChange={e => this.onChange(e, 'contactPerson')}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label={formatMessage({ id: 'merchantManagement.merchant.contactPhone' })}
-                    >
-                        {getFieldDecorator('phone', {
-                            validateTrigger: 'onBlur',
-                            rules: [
-                                {
-                                    validator: (rule, value, callback) =>
-                                        customValidate({
-                                            field: 'telphone',
-                                            rule,
-                                            value,
-                                            callback,
-                                        }),
-                                },
-                            ],
-                        })(<Input />)}
-                        {/* <Input value={contactTel} onChange={e => this.onChange(e, 'contactTel')} /> */}
-                    </Form.Item>
-                    <Form.Item
-                        label={formatMessage({ id: 'merchantManagement.merchant.contactEmail' })}
-                    >
-                        {getFieldDecorator('email', {
-                            validateTrigger: 'onBlur',
-                            rules: [
-                                {
-                                    type: 'email',
-                                    message: formatMessage({ id: 'mail.validate.isFormatted' }),
-                                },
-                            ],
-                        })(<Input />)}
-                    </Form.Item>
-                </Form>
-                <div className={styles['button-style']}>
-                    <Button type="primary" onClick={this.saveInfo}>
-                        {formatMessage({ id: 'btn.save' })}
-                    </Button>
-                    <Button style={{ marginLeft: 20 }} onClick={this.cancel}>
-                        {formatMessage({ id: 'btn.cancel' })}
-                    </Button>
+                <div className={styles['form-content']}>
+                    <Form {...FORM_ITEM_LAYOUT_BUSINESS}>
+                        <Form.Item
+                            label={formatMessage({ id: 'merchantManagement.merchant.number' })}
+                        >
+                            <span>{companyId || '--'}</span>
+                        </Form.Item>
+                        <Form.Item
+                            label={formatMessage({ id: 'merchantManagement.merchant.name' })}
+                        >
+                            <Input
+                                value={companyName}
+                                onChange={e => this.onChange(e, 'companyName')}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label={formatMessage({
+                                id: 'merchantManagement.merchant.contactPerson',
+                            })}
+                        >
+                            <Input
+                                value={contactPerson}
+                                onChange={e => this.onChange(e, 'contactPerson')}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label={formatMessage({
+                                id: 'merchantManagement.merchant.contactPhone',
+                            })}
+                        >
+                            {getFieldDecorator('phone', {
+                                validateTrigger: 'onBlur',
+                                rules: [
+                                    {
+                                        validator: (rule, value, callback) =>
+                                            customValidate({
+                                                field: 'telphone',
+                                                rule,
+                                                value,
+                                                callback,
+                                            }),
+                                    },
+                                ],
+                            })(<Input />)}
+                            {/* <Input value={contactTel} onChange={e => this.onChange(e, 'contactTel')} /> */}
+                        </Form.Item>
+                        <Form.Item
+                            label={formatMessage({
+                                id: 'merchantManagement.merchant.contactEmail',
+                            })}
+                        >
+                            {getFieldDecorator('email', {
+                                validateTrigger: 'onBlur',
+                                rules: [
+                                    {
+                                        type: 'email',
+                                        message: formatMessage({ id: 'mail.validate.isFormatted' }),
+                                    },
+                                ],
+                            })(<Input />)}
+                        </Form.Item>
+                        <Form.Item label=" " colon={false}>
+                            <Button type="primary" onClick={this.saveInfo}>
+                                {formatMessage({ id: 'btn.save' })}
+                            </Button>
+                            <Button style={{ marginLeft: 20 }} onClick={this.cancel}>
+                                {formatMessage({ id: 'btn.cancel' })}
+                            </Button>
+                        </Form.Item>
+                    </Form>
                 </div>
             </div>
         );
