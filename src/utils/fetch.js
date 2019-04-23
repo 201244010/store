@@ -80,8 +80,8 @@ const formatParams = (options = {}) => {
 
 const customizeParams = (options = {}) => {
     const opts = {
-        company_id: Storage.get('__company_id__') || 111,
-        shop_id: Storage.get('__shop_id__') || 666,
+        company_id: Storage.get('__company_id__'),
+        shop_id: Storage.get('__shop_id__'),
         ...options.body,
     };
 

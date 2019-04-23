@@ -17,7 +17,7 @@ const ProductCUPrice = props => {
                 <Col span={12}>
                     <Form.Item label={formatMessage({ id: 'basicData.product.price' })}>
                         {getFieldDecorator('price', {
-                            initialValue: price,
+                            initialValue: price >= 0 ? price : '',
                             validateTrigger: 'onBlur',
                             rules: [
                                 {
@@ -41,7 +41,7 @@ const ProductCUPrice = props => {
                 <Col span={12}>
                     <Form.Item label={formatMessage({ id: 'basicData.product.promote_price' })}>
                         {getFieldDecorator('promote_price', {
-                            initialValue: promote_price,
+                            initialValue: promote_price >= 0 ? promote_price : '',
                             validateTrigger: 'onBlur',
                             rules: [
                                 {
@@ -63,7 +63,7 @@ const ProductCUPrice = props => {
                 <Col span={12}>
                     <Form.Item label={formatMessage({ id: 'basicData.product.member_price' })}>
                         {getFieldDecorator('member_price', {
-                            initialValue: member_price,
+                            initialValue: member_price >= 0 ? member_price : '',
                             validateTrigger: 'onBlur',
                             rules: [
                                 {

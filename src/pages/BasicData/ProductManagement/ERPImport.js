@@ -1,31 +1,84 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Select } from 'antd';
+import router from 'umi/router';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT, FORM_ITEM_LONGER } from '@/constants/form';
 import * as styles from './ProductManagement.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 const SDNM = props => {
-    const { getFieldDecorator } = props;
+    const { getFieldDecorator, checkSaasInfo } = props;
     return (
         <Form.Item label={formatMessage({ id: 'basicData.erp.api.key' })}>
-            {getFieldDecorator('saas_info.key')(<Input />)}
+            {getFieldDecorator('saas_info.app_key', {
+                validateTrigger: 'onBlur',
+                rules: [
+                    {
+                        required: true,
+                        message: formatMessage({ id: 'basicData.erp.sdnm.key.isEmpty' }),
+                    },
+                ],
+            })(
+                <Input
+                    onBlur={() =>
+                        checkSaasInfo(
+                            'saas_info.app_key',
+                            formatMessage({ id: 'basicData.erp.sdnm.key.error' })
+                        )
+                    }
+                />
+            )}
         </Form.Item>
     );
 };
 
 const KWYLS = props => {
-    const { getFieldDecorator } = props;
+    const { getFieldDecorator, checkSaasInfo } = props;
     return (
         <>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.store.num' })}>
-                {getFieldDecorator('saas_info.store_num')(<Input />)}
+                {getFieldDecorator('saas_info.store_num', {
+                    validateTrigger: 'onBlur',
+                    rules: [
+                        {
+                            required: true,
+                            message: formatMessage({ id: 'basicData.erp.kwyls.shopId.isEmpty' }),
+                        },
+                    ],
+                })(<Input />)}
             </Form.Item>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.account' })}>
-                {getFieldDecorator('saas_info.store_account')(<Input />)}
+                {getFieldDecorator('saas_info.store_account', {
+                    validateTrigger: 'onBlur',
+                    rules: [
+                        {
+                            required: true,
+                            message: formatMessage({ id: 'basicData.erp.kwyls.account.isEmpty' }),
+                        },
+                    ],
+                })(<Input />)}
             </Form.Item>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
-                {getFieldDecorator('saas_info.store_password')(<Input type="password" />)}
+                {getFieldDecorator('saas_info.store_password', {
+                    validateTrigger: 'onBlur',
+                    rules: [
+                        {
+                            required: true,
+                            message: formatMessage({ id: 'basicData.erp.kwyls.password.isEmpty' }),
+                        },
+                    ],
+                })(
+                    <Input
+                        type="password"
+                        onBlur={() =>
+                            checkSaasInfo(
+                                'saas_info.store_password',
+                                formatMessage({ id: 'basicData.erp.kwyls.key.error' })
+                            )
+                        }
+                    />
+                )}
             </Form.Item>
         </>
     );
@@ -51,6 +104,7 @@ const RenderFormItem = {
 class ERPImport extends Component {
     constructor(props) {
         super(props);
+        this.saasKey = null;
         this.state = {
             RenderItem: () => <div />,
         };
@@ -61,11 +115,50 @@ class ERPImport extends Component {
         getERPPlatformList();
     }
 
-    handlePlatformChange = value => {
+    checkSaasInfo = (field, errMsg) => {
+        const {
+            erpAuthCheck,
+            form: { validateFields, setFields, getFieldValue },
+        } = this.props;
+        validateFields(async (err, values) => {
+            if (!err) {
+                const response = await erpAuthCheck({
+                    options: { ...values, saas_id: this.saasKey },
+                });
+                if (response && response.code !== ERROR_OK) {
+                    setFields({
+                        [field]: { value: getFieldValue(field), errors: [new Error(errMsg)] },
+                    });
+                }
+            }
+        });
+    };
+
+    handlePlatformSelect = (value, options) => {
+        this.saasKey = parseInt(options.key, 10);
         this.setState({
             RenderItem: RenderFormItem[value] || RenderFormItem.default,
         });
     };
+
+    handleSubmit = () => {
+        const {
+            erpImport,
+            form: { validateFields },
+        } = this.props;
+        validateFields(async (err, values) => {
+            if (!err) {
+                await erpImport({
+                    options: {
+                        ...values,
+                        saas_id: this.saasKey,
+                    },
+                });
+            }
+        });
+    };
+
+    goBack = () => router.push('/basicData/productManagement/list');
 
     render() {
         const { RenderItem } = this.state;
@@ -85,21 +178,26 @@ class ERPImport extends Component {
                         }}
                     >
                         <Form.Item label={formatMessage({ id: 'basicData.erp.platform' })}>
-                            {getFieldDecorator('erp_platform')(
-                                <Select onChange={this.handlePlatformChange}>
+                            {getFieldDecorator('saas_id')(
+                                <Select onSelect={this.handlePlatformSelect}>
                                     {sassInfoList.map((platform, index) => (
                                         <Select.Option
                                             key={platform.id || index}
                                             value={platform.name}
                                         >
-                                            {platform.fullName || ''}
+                                            {platform.full_name || ''}
                                         </Select.Option>
                                     ))}
                                 </Select>
                             )}
                         </Form.Item>
 
-                        <RenderItem {...{ getFieldDecorator }} />
+                        <RenderItem
+                            {...{
+                                getFieldDecorator,
+                                checkSaasInfo: this.checkSaasInfo,
+                            }}
+                        />
 
                         <Form.Item
                             {...FORM_ITEM_LONGER}
@@ -119,10 +217,14 @@ class ERPImport extends Component {
                         </Form.Item>
                         <Form.Item label=" " colon={false}>
                             <div className={styles['form-btn-wrapper']}>
-                                <Button className={styles['form-btn']} type="primary">
+                                <Button
+                                    className={styles['form-btn']}
+                                    type="primary"
+                                    onClick={this.handleSubmit}
+                                >
                                     {formatMessage({ id: 'btn.save' })}
                                 </Button>
-                                <Button className={styles['form-btn']}>
+                                <Button className={styles['form-btn']} onClick={this.goBack}>
                                     {formatMessage({ id: 'btn.cancel' })}
                                 </Button>
                             </div>

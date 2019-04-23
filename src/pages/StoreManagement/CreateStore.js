@@ -1,32 +1,44 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Select, Button, Input, Radio, message } from 'antd';
+import { Form, Button, Input, Radio, message, Cascader } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
-import storage from '@konata9/storage.js/src/storage';
-import { cellphone }  from '@/constants/regexp';
+import Storage from '@konata9/storage.js/src/storage';
+import { cellphone } from '@/constants/regexp';
 import styles from './StoreManagement.less';
 
 const FormItem = Form.Item;
 
 @connect(
     state => ({
-        newStore: state.store,
+        store: state.store,
     }),
     dispatch => ({
         createNewStore: payload => dispatch({ type: 'store/createNewStore', payload }),
+        getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
+        getRegionList: () => dispatch({ type: 'store/getRegionList' }),
     })
 )
+@Form.create()
 class CreateStore extends React.Component {
     state = {
         status: formatMessage({ id: 'storeManagement.create.statusValue1' }),
-        optionArray: [],
-        companyId: storage.get('__company_id__'),
     };
+
+    componentDidMount() {
+        const { getShopTypeList, getRegionList } = this.props;
+        if (!Storage.get('__shopTypeList__', 'local')) {
+            getShopTypeList();
+        }
+
+        if (!Storage.get('__regionList__', 'local')) {
+            getRegionList();
+        }
+    }
 
     handleSubmit = e => {
         e.preventDefault();
-        const { companyId } = this.state;
+        const companyId = Storage.get('__company_id__');
         const {
             form: { getFieldsValue },
             createNewStore,
@@ -39,13 +51,16 @@ class CreateStore extends React.Component {
             options: {
                 company_id: companyId,
                 shop_name: formValue.name,
-                type_one: 0,
-                type_two: 0,
+                type_one: formValue.shopType[0],
+                type_two: formValue.shopType[1],
                 business_status:
                     formValue.status ===
                     formatMessage({ id: 'storeManagement.create.statusValue1' })
                         ? 0
                         : 1,
+                province: formValue.region[0],
+                city: formValue.region[1],
+                area: formValue.region[2],
                 address: formValue.detailAddress,
                 business_hours: formValue.time,
                 contact_person: formValue.contactName,
@@ -55,7 +70,7 @@ class CreateStore extends React.Component {
         createNewStore(payload);
     };
 
-    validFormValue = (formValue) => {
+    validFormValue = formValue => {
         if (!formValue.name) {
             message.warning(formatMessage({ id: 'storeManagement.message.name.error' }));
             return false;
@@ -72,8 +87,11 @@ class CreateStore extends React.Component {
     };
 
     render() {
-        const { status, optionArray } = this.state;
-        const { form: { getFieldDecorator } } = this.props;
+        const { status } = this.state;
+        const {
+            form: { getFieldDecorator },
+            store: { shopType_list, regionList },
+        } = this.props;
 
         return (
             <div className={styles.storeList}>
@@ -100,21 +118,16 @@ class CreateStore extends React.Component {
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
-                        {getFieldDecorator('type', {
+                        {getFieldDecorator('shopType', {
                             initialValue: '',
                         })(
-                            <Select
+                            <Cascader
                                 style={{ width: 300 }}
                                 placeholder={formatMessage({
                                     id: 'storeManagement.create.typePlaceHolder',
                                 })}
-                            >
-                                {optionArray.map(value => (
-                                    <Select.Option value={value} key={value}>
-                                        {value}
-                                    </Select.Option>
-                                ))}
-                            </Select>
+                                options={shopType_list}
+                            />
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
@@ -140,6 +153,19 @@ class CreateStore extends React.Component {
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.address' })}>
+                        {getFieldDecorator('region', {
+                            initialValue: '',
+                        })(
+                            <Cascader
+                                options={regionList}
+                                placeholder={formatMessage({
+                                    id: 'storeManagement.create.addressPlaceHolder2',
+                                })}
+                                style={{ width: 300 }}
+                            />
+                        )}
+                    </FormItem>
+                    <FormItem label=" " colon={false}>
                         {getFieldDecorator('detailAddress', {
                             initialValue: '',
                         })(
@@ -195,18 +221,4 @@ class CreateStore extends React.Component {
     }
 }
 
-const CreateStoreForm = Form.create({
-    mapPropsToFields: () => ({
-        storeId: Form.createFormField(''),
-        name: Form.createFormField(''),
-        type: Form.createFormField(''),
-        status: Form.createFormField(''),
-        address: Form.createFormField(''),
-        detailAddress: Form.createFormField(''),
-        time: Form.createFormField(''),
-        pic: Form.createFormField(''),
-        contactName: Form.createFormField(''),
-        contactPhone: Form.createFormField(''),
-    }),
-})(CreateStore);
-export default CreateStoreForm;
+export default CreateStore;

@@ -187,7 +187,7 @@ class AlterStore extends React.Component {
                         <Button
                             className={styles.submitButton2}
                             onClick={() => {
-                                router.push('/storeManagement/list');
+                                router.push('/basicData/storeManagement/list');
                             }}
                         >
                             {formatMessage({ id: 'storeManagement.create.buttonCancel' })}

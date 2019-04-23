@@ -15,10 +15,6 @@ import styles from './StoreManagement.less';
     })
 )
 class StoreInformation extends React.Component {
-    state = {
-        shopId: '',
-    };
-
     componentDidMount() {
         this.initFetch();
     }
@@ -31,17 +27,16 @@ class StoreInformation extends React.Component {
                 shop_id: shopId,
             },
         };
-        this.setState({ shopId });
         getStoreInformation(payload);
     };
 
     handleSubmit = () => {
-        const { shopId } = this.state;
-        router.push(`/storeManagement/alterStore?shopId=${shopId}`);
+        const shopId = getLocationParam('shopId');
+        router.push(`/basicData/storeManagement/alterStore?shopId=${shopId}`);
     };
 
     handleCancel = () => {
-        router.push('/storeManagement/list');
+        router.push('/basicData/storeManagement/list');
     };
 
     render() {

@@ -21,6 +21,7 @@ const VALIDATE_FIELDS = {
         user: state.user,
         sso: state.sso,
         merchant: state.merchant,
+        store: state.store,
     }),
     dispatch => ({
         userLogin: payload => dispatch({ type: 'user/login', payload }),
@@ -29,6 +30,7 @@ const VALIDATE_FIELDS = {
         sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
         getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
         getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
+        getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
     })
 )
 @Form.create()
@@ -126,6 +128,21 @@ class Login extends Component {
         });
     };
 
+    checkStoreExist = async () => {
+        const {
+            getStoreList,
+            store: { storeList },
+        } = this.props;
+        await getStoreList({});
+        if (storeList.length === 0) {
+            router.push('/basicData/storeManagement/createStore');
+        } else {
+            const defaultStore = storeList[0] || {};
+            Storage.set({ __shop_id__: defaultStore.shop_id });
+            router.push('/');
+        }
+    };
+
     checkCompanyList = async () => {
         const { getCompanyList } = this.props;
         const response = await getCompanyList({});
@@ -138,7 +155,7 @@ class Login extends Component {
             } else if (companys === 1) {
                 const companyInfo = companyList[0] || {};
                 Storage.set({ __company_id__: companyInfo.company_id });
-                router.push('/');
+                this.checkStoreExist();
             } else {
                 router.push('/user/storeRelate');
             }

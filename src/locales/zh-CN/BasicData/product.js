@@ -76,6 +76,13 @@ export default {
     'basicData.erp.import.success': '数据导入成功',
     'basicData.erp.import.fail': '数据导入失败',
 
+    'basicData.erp.sdnm.key.isEmpty': '请输入门店密钥',
+    'basicData.erp.sdnm.key.error': '门店密钥错误，请重新输入',
+    'basicData.erp.kwyls.shopId.isEmpty': '请输入门店编号',
+    'basicData.erp.kwyls.account.isEmpty': '请输入账号',
+    'basicData.erp.kwyls.password.isEmpty': '请输入密码',
+    'basicData.erp.kwyls.key.error': '账号或密码错误，请重新输入',
+
     'basicData.product.delete.success': '删除商品成功',
     'basicData.product.delete.fail': '删除商品成功',
     'basicData.product.delete.confirm': '请确认是否删除商品？',
