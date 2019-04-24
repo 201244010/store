@@ -4,6 +4,11 @@ export const STATION_STATES = {
     2: 'esl.device.ap.status.offline',
 };
 
+export const PRODUCT_TYPE = {
+    0: 'basicData.product.type.normal',
+    1: 'basicData.product.type.weight',
+};
+
 export const PRODUCT_BASIC = {
     seq_num: null,
     bar_code: null,
