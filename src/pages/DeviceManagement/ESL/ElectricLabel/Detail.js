@@ -73,12 +73,6 @@ export default function detail(props) {
             <Col span={COL_SPAN}>
                 <div className="detail-info-item">
                     <span className="detail-info-label">
-                        {formatMessage({ id: 'esl.device.esl.belong.store' })}：
-                    </span>
-                    <span className="detail-info-content">{eslInfo.shop_name}</span>
-                </div>
-                <div className="detail-info-item">
-                    <span className="detail-info-label">
                         {formatMessage({ id: 'esl.device.esl.station.name' })}：
                     </span>
                     <span className="detail-info-content">{eslInfo.ap_name}</span>
