@@ -3,15 +3,15 @@ import { message } from 'antd';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
-import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME, MENU_PREFIX } from '@/constants';
 import { hideSinglePageCheck, idEncode } from '@/utils/utils';
 import Storage from '@konata9/storage.js';
 
 const goNext = (fromPage = 'list', options) => {
     const { product_id: id } = options;
     const path = {
-        list: '/basicData/productManagement/list',
-        detail: `/basicData/productManagement/list/productInfo?id=${idEncode(id)}`,
+        list: `${MENU_PREFIX.PRODUCT}`,
+        detail: `${MENU_PREFIX.PRODUCT}/productInfo?id=${idEncode(id)}`,
     };
 
     router.push(path[fromPage]);
@@ -42,7 +42,7 @@ export default {
             showSizeChanger: true,
             showQuickJumper: true,
         },
-        overview: {}
+        overview: {},
     },
     effects: {
         *fetchProductOverview(_, { call, put }) {
@@ -56,7 +56,7 @@ export default {
                     type: 'updateState',
                     payload: {
                         loading: false,
-                        overview: response.data
+                        overview: response.data,
                     },
                 });
             }
@@ -170,7 +170,7 @@ export default {
                     type: 'updateState',
                     payload: { loading: false },
                 });
-                router.push(`/basicData/productManagement/list`);
+                router.push(`${MENU_PREFIX.PRODUCT}`);
             } else {
                 yield put({
                     type: 'updateState',

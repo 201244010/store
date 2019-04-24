@@ -6,13 +6,7 @@ import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import { Result } from 'ant-design-pro';
 import * as RegExp from '@/constants/regexp';
 import styles from '../Register/Register.less';
-import { ERROR_OK } from '@/constants/errorCode';
-
-// TODO 根据 error code 显示不同的错误信息，等待 error code
-const ALERT_NOTICE_MAP = {
-    '208': 'alert.vcode.error',
-    '001': 'alert.mail.not.registered',
-};
+import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 
 const MailActive = () => (
     <Result

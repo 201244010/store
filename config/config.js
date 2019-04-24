@@ -65,6 +65,107 @@ export default {
             component: '../layouts/BasicLayout',
             routes: [
                 { path: '/', redirect: '/deviceManagement' },
+                // TODO 万有集市 临时菜单 START
+                {
+                    path: '/esl',
+                    name: 'esl',
+                    icon: 'blank',
+                    routes: [
+                        { path: '/esl', redirect: '/esl/electricLabel' },
+                        {
+                            path: '/esl/electricLabel',
+                            name: 'electricLabel',
+                            component: './DeviceManagement/ESL/ElectricLabel',
+                        },
+                        {
+                            path: '/esl/baseStation',
+                            name: 'baseStation',
+                            component: './DeviceManagement/ESL/BaseStation',
+                        },
+                    ],
+                },
+                {
+                    path: '/product',
+                    name: 'product',
+                    icon: 'blank',
+                    routes: [
+                        { path: '/product', redirect: '/product/list' },
+                        {
+                            path: '/product/list',
+                            name: 'list',
+                            hideInMenu: true,
+                            component: './BasicData/ProductManagement',
+                        },
+                        {
+                            path: '/product/list/productCreate',
+                            name: 'list',
+                            hideInMenu: true,
+                            component: './BasicData/ProductManagement/ProductCU',
+                        },
+                        {
+                            path: '/product/list/productUpdate',
+                            name: 'list',
+                            hideInMenu: true,
+                            component: './BasicData/ProductManagement/ProductCU',
+                        },
+                        {
+                            path: '/product/list/productInfo',
+                            name: 'list',
+                            hideInMenu: true,
+                            component: './BasicData/ProductManagement/ProductInfo',
+                        },
+                        {
+                            path: '/product/list/erpImport',
+                            name: 'list',
+                            hideInMenu: true,
+                            component: './BasicData/ProductManagement/ERPImport',
+                        },
+                    ],
+                },
+                {
+                    path: '/company',
+                    name: 'company',
+                    icon: 'blank',
+                    routes: [
+                        { path: '/company', redirect: '/merchantManagement/view' },
+                        {
+                            path: '/company/merchantManagement/view',
+                            name: 'merchantManagement',
+                            component: './MerchantManagement/MerchantView',
+                        },
+                        {
+                            path: '/company/merchantManagement/modify',
+                            name: 'merchantManagement',
+                            hideInMenu: true,
+                            component: './MerchantManagement/MerchantModify',
+                        },
+                        {
+                            path: '/company/storeManagement/list',
+                            name: 'storeManagement',
+                            component: './StoreManagement',
+                        },
+                        {
+                            path: '/company/storeManagement/createStore',
+                            component: './StoreManagement/CreateStore.js',
+                            name: 'storeManagement',
+                            hideInMenu: true,
+                        },
+                        {
+                            path: '/company/storeManagement/storeInformation',
+                            component: './StoreManagement/StoreInformation.js',
+                            name: 'storeManagement',
+                            hideInMenu: true,
+                        },
+                        {
+                            path: '/company/storeManagement/alterStore',
+                            component: './StoreManagement/AlterStore.js',
+                            name: 'storeManagement',
+                            hideInMenu: true,
+                        },
+                    ],
+                },
+                // TODO 万有集市 临时菜单 END
+
                 // dashboard
                 // {
                 //     path: '/dashBoard',
@@ -76,6 +177,8 @@ export default {
                     path: '/deviceManagement',
                     name: 'deviceManagement',
                     icon: 'blank',
+                    // TODO 万有集市临时用菜单隐藏
+                    hideInMenu: true,
                     routes: [
                         { path: '/deviceManagement', redirect: '/deviceManagement/esl' },
                         {
@@ -101,6 +204,7 @@ export default {
                     path: '/basicData',
                     name: 'basicData',
                     icon: 'blank',
+                    hideInMenu: true,
                     routes: [
                         { path: '/basicData', redirect: '/basicData/productManagement' },
                         {

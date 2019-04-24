@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import { getLocationParam, unixSecondToDate } from '@/utils/utils';
 import styles from './StoreManagement.less';
+import { MENU_PREFIX } from '@/constants';
 
 @connect(
     state => ({
@@ -25,8 +26,8 @@ class StoreInformation extends React.Component {
     toPath = target => {
         const shopId = getLocationParam('shopId');
         const path = {
-            edit: `/basicData/storeManagement/createStore?shopId=${shopId}&action=edit`,
-            back: '/basicData/storeManagement/list',
+            edit: `${MENU_PREFIX.STORE}/createStore?shopId=${shopId}&action=edit`,
+            back: `${MENU_PREFIX.STORE}/list`,
         };
 
         router.push(path[target] || path.back);

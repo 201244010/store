@@ -8,6 +8,7 @@ import ProductInfoPrice from './ProductInfo-Price';
 import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
 import { PRODUCT_BASIC, PRODUCT_PRICE } from '@/constants/mapping';
 import * as styles from './ProductManagement.less';
+import { MENU_PREFIX } from '@/constants';
 
 const MESSAGE_PREFIX = {
     product: 'basicData.product',
@@ -41,10 +42,8 @@ class ProductInfo extends Component {
             },
         } = this.props;
         const path = {
-            edit: `/basicData/productManagement/list/productUpdate?action=edit&id=${idEncode(
-                id
-            )}&from=detail`,
-            back: '/basicData/productManagement/list',
+            edit: `${MENU_PREFIX.PRODUCT}/productUpdate?action=edit&id=${idEncode(id)}&from=detail`,
+            back: `${MENU_PREFIX.PRODUCT}`,
         };
         router.push(path[target] || '/');
     };

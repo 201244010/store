@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import { unixSecondToDate } from '@/utils/utils';
 import router from 'umi/router';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
+import { MENU_PREFIX } from '@/constants';
 import styles from './Merchant.less';
 
 @connect(
@@ -23,7 +24,7 @@ class MerchantView extends Component {
 
     goNext = target => {
         const path = {
-            update: '/basicData/merchantManagement/modify',
+            update: `${MENU_PREFIX.MERCHANT}/modify`,
             cancel: '/account/center',
         };
         router.push(path[target] || '/');

@@ -4,6 +4,7 @@ import { idEncode, unixSecondToDate } from '@/utils/utils';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import { formatMessage } from 'umi/locale';
+import { MENU_PREFIX } from '@/constants';
 import * as styles from './ProductManagement.less';
 
 class SearchResult extends Component {
@@ -34,11 +35,10 @@ class SearchResult extends Component {
     toPath = (name, record = {}) => {
         const encodeID = record.id ? idEncode(record.id) : null;
         const urlMap = {
-            productDetail: `/basicData/productManagement/list/productInfo?id=${encodeID}&from=list`,
-            createProduct:
-                '/basicData/productManagement/list/productCreate?action=create&from=list',
-            update: `/basicData/productManagement/list/productUpdate?action=edit&id=${encodeID}&from=list`,
-            erpImport: `/basicData/productManagement/list/erpImport`,
+            productDetail: `${MENU_PREFIX.PRODUCT}/productInfo?id=${encodeID}&from=list`,
+            createProduct: `${MENU_PREFIX.PRODUCT}/productCreate?action=create&from=list`,
+            update: `${MENU_PREFIX.PRODUCT}/productUpdate?action=edit&id=${encodeID}&from=list`,
+            erpImport: `${MENU_PREFIX.PRODUCT}/erpImport`,
         };
 
         router.push(urlMap[name]);
@@ -127,21 +127,21 @@ class SearchResult extends Component {
                     >
                         {formatMessage({ id: 'btn.create' })}
                     </Button>
-                    <Button className={styles['function-btn']}>
-                        {formatMessage({ id: 'btn.import' })}
-                    </Button>
+                    {/* <Button className={styles['function-btn']}> */}
+                    {/* {formatMessage({ id: 'btn.import' })} */}
+                    {/* </Button> */}
                     <Button
                         className={styles['function-btn']}
                         onClick={() => this.toPath('erpImport')}
                     >
                         {formatMessage({ id: 'btn.erp.import' })}
                     </Button>
-                    <Button
-                        className={styles['function-btn']}
-                        disabled={selectedRowKeys.length <= 0}
-                    >
-                        {formatMessage({ id: 'btn.multi.edit' })}
-                    </Button>
+                    {/* <Button */}
+                    {/* className={styles['function-btn']} */}
+                    {/* disabled={selectedRowKeys.length <= 0} */}
+                    {/* > */}
+                    {/* {formatMessage({ id: 'btn.multi.edit' })} */}
+                    {/* </Button> */}
                     <Button
                         className={styles['function-btn']}
                         disabled={selectedRowKeys.length <= 0}

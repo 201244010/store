@@ -6,6 +6,7 @@ import { Button, Divider, List } from 'antd';
 import Storage from '@konata9/storage.js';
 import styles from './StoreRelate.less';
 import { ERROR_OK } from '@/constants/errorCode';
+import { MENU_PREFIX } from '@/constants';
 
 @connect(
     state => ({
@@ -24,7 +25,7 @@ class StoreRelate extends Component {
             const result = response.data || {};
             const storeList = result.shop_list || [];
             if (storeList.length === 0) {
-                router.push('/basicData/storeManagement/createStore');
+                router.push(`${MENU_PREFIX.STORE}/createStore`);
             } else {
                 const defaultStore = storeList[0] || {};
                 Storage.set({ __shop_id__: defaultStore.shop_id });

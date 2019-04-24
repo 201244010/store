@@ -10,3 +10,16 @@ export const ESL_STATES = {
     1: '正常',
     2: '通信失败',
 };
+
+export const MENU_PREFIX = {
+    USER: '',
+    ESL: '',
+    ESL_ELECTRIC_LABEL: '',
+    ESL_BASE_STATION: '',
+    // PRODUCT: '/basicData/productManagement/list',
+    PRODUCT: '/product/list',
+    // MERCHANT: '/basicData/merchantManagement',
+    MERCHANT: '/company/merchantManagement',
+    // STORE: '/basicData/storeManagement',
+    STORE: '/company/storeManagement',
+};

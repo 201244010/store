@@ -4,6 +4,7 @@ import { Form, Button, Input } from 'antd';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import router from 'umi/router';
+import { MENU_PREFIX } from '@/constants';
 import styles from './Merchant.less';
 
 @connect(
@@ -31,7 +32,7 @@ class MerchantCreate extends Component {
         } = this.props;
         await getStoreList({});
         if (storeList.length === 0) {
-            router.push('/basicData/storeManagement/createStore');
+            router.push(`${MENU_PREFIX.STORE}/createStore`);
         } else {
             const defaultStore = storeList[0] || {};
             Storage.set({ __shop_id__: defaultStore.shop_id });

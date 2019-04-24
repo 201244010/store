@@ -5,6 +5,7 @@ import { message } from 'antd';
 import router from 'umi/router';
 import typecheck from '@konata9/typecheck.js';
 import Storage from '@konata9/storage.js';
+import { MENU_PREFIX } from '@/constants';
 
 const cascaderDataWash = (data, mapping) => {
     const formatData = [...data];
@@ -97,7 +98,7 @@ export default {
                 if (!Storage.get('__shop_id__')) {
                     Storage.set({ __shop_id__: data.shop_id });
                 }
-                router.push('/basicData/storeManagement/list');
+                router.push('/list');
             }
         },
 
@@ -106,7 +107,7 @@ export default {
             const response = yield call(Action.alterStore, options);
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
-                router.push('/basicData/storeManagement/list');
+                router.push(`${MENU_PREFIX.STORE}/list`);
             }
         },
 
