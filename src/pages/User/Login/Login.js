@@ -331,6 +331,7 @@ class Login extends Component {
                                                 style={{ color: 'rgba(0,0,0,.25)' }}
                                             />
                                         }
+                                        maxLength={30}
                                         size="large"
                                         placeholder={formatMessage({
                                             id: 'account.password.placeholder',
@@ -409,6 +410,7 @@ class Login extends Component {
                                                     style={{ color: 'rgba(0,0,0,.25)' }}
                                                 />
                                             }
+                                            maxLength={11}
                                             size="large"
                                             placeholder={formatMessage({
                                                 id: 'mobile.placeholder',
@@ -455,6 +457,7 @@ class Login extends Component {
                                                     {...{
                                                         imgUrl: imgCaptcha.url,
                                                         inputProps: {
+                                                            maxLength: 4,
                                                             size: 'large',
                                                             placeholder: formatMessage({
                                                                 id: 'vcode.placeholder',
@@ -486,6 +489,7 @@ class Login extends Component {
                                             {...{
                                                 trigger,
                                                 inputProps: {
+                                                    maxLength: 4,
                                                     size: 'large',
                                                     placeholder: formatMessage({
                                                         id: 'mobile.code.placeholder',

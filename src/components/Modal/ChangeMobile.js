@@ -171,7 +171,7 @@ class ChangeMobile extends Component {
                                     message: formatMessage({ id: 'change.loginPassword.isEmpty' }),
                                 },
                             ],
-                        })(<Input type="password" />)}
+                        })(<Input type="password" maxLength={30} />)}
                     </Form.Item>
                     <Form.Item
                         {...FORM_ITEM_LAYOUT_COMMON}
@@ -232,6 +232,7 @@ class ChangeMobile extends Component {
                                         {...{
                                             imgUrl: imgCaptcha.url,
                                             inputProps: {
+                                                maxLength: 4,
                                                 size: 'large',
                                                 placeholder: formatMessage({
                                                     id: 'vcode.placeholder',
@@ -262,7 +263,9 @@ class ChangeMobile extends Component {
                             <Captcha
                                 {...{
                                     trigger,
-                                    inputProps: {},
+                                    inputProps: {
+                                        maxLength: 4,
+                                    },
                                     buttonProps: {
                                         block: true,
                                     },
