@@ -271,6 +271,7 @@ class Register extends Component {
                                                         {...{
                                                             imgUrl: imgCaptcha.url,
                                                             inputProps: {
+                                                                maxLength: 4,
                                                                 size: 'large',
                                                                 placeholder: formatMessage({
                                                                     id: 'vcode.placeholder',
@@ -304,6 +305,7 @@ class Register extends Component {
                                                 {...{
                                                     trigger,
                                                     inputProps: {
+                                                        maxLength: 4,
                                                         size: 'large',
                                                         placeholder: formatMessage({
                                                             id: 'mobile.code.placeholder',
@@ -366,6 +368,7 @@ class Register extends Component {
                                     ],
                                 })(
                                     <Input
+                                        maxLength={30}
                                         type="password"
                                         size="large"
                                         placeholder={formatMessage({ id: 'password.placeholder' })}
@@ -391,6 +394,7 @@ class Register extends Component {
                                     ],
                                 })(
                                     <Input
+                                        maxLength={30}
                                         type="password"
                                         size="large"
                                         placeholder={formatMessage({ id: 'confirm.placeholder' })}

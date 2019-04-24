@@ -10,7 +10,7 @@ export const login = (type, options = {}) => {
             app_type: 2,
         },
     };
-    return fetchApi(type, opts).then(response => response.json());
+    return fetchApi(type, opts, false).then(response => response.json());
 };
 
 export const logout = () => fetchApi('logout').then(response => response.json());

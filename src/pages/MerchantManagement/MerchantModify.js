@@ -1,77 +1,62 @@
 import React, { Component } from 'react';
-
 import { Form, Button, Input } from 'antd';
-
 import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import router from 'umi/router';
 import { customValidate } from '@/utils/customValidate';
 import Storage from '@konata9/storage.js';
-
 import { connect } from 'dva';
 import styles from './Merchant.less';
 import { MENU_PREFIX } from '@/constants';
+import { ERROR_OK } from '@/constants/errorCode';
 
 @connect(
     state => ({
         merchant: state.merchant,
     }),
     dispatch => ({
+        companyGetInfo: () => dispatch({ type: 'merchant/companyGetInfo' }),
         companyUpdate: payload => dispatch({ type: 'merchant/companyUpdate', payload }),
     })
 )
 @Form.create()
 class MerchantModify extends Component {
-    constructor(props) {
-        super(props);
-        const {
-            merchant: {
-                companyInfo: { company_name: companyName, contact_person: contactPerson },
-            },
-        } = this.props;
-        this.state = {
-            contactPerson,
-            companyName,
-        };
-    }
-
     componentDidMount() {
-        const {
-            form: { setFieldsValue },
-            merchant: {
-                companyInfo: { contact_email: contactEmail, contact_tel: contactTel },
-            },
-        } = this.props;
-        setFieldsValue({
-            email: contactEmail,
-            phone: contactTel,
-        });
+        const { companyGetInfo } = this.props;
+        companyGetInfo();
     }
-
-    onChange = (e, key) => {
-        this.setState({
-            [key]: e.target.value,
-        });
-    };
 
     saveInfo = () => {
         const {
-            form: { validateFields },
+            form: { validateFields, setFields },
             companyUpdate,
         } = this.props;
-        const { companyName, contactPerson } = this.state;
-        validateFields((err, values) => {
+        validateFields(async (err, values) => {
             if (!err) {
                 const payload = {
                     options: {
-                        company_id: Storage.get('__company_id__') || '56',
-                        company_name: companyName,
-                        contact_person: contactPerson,
-                        contact_tel: values.phone,
-                        contact_email: values.email,
+                        company_id: Storage.get('__company_id__'),
+                        company_name: values.companyName,
+                        contact_person: values.contactPerson,
+                        contact_tel: values.contactTel,
+                        contact_email: values.contactEmail,
                     },
                 };
-                companyUpdate(payload);
+                const response = await companyUpdate(payload);
+                if (response && response.code !== ERROR_OK) {
+                    setFields({
+                        companyName: {
+                            value: values.companyName,
+                            errors: [
+                                new Error(
+                                    formatMessage({
+                                        id: 'merchantManagement.merchant.existed.error',
+                                    })
+                                ),
+                            ],
+                        },
+                    });
+                }
             }
         });
     };
@@ -81,12 +66,16 @@ class MerchantModify extends Component {
     };
 
     render() {
-        const { companyName, contactPerson } = this.state;
-        console.log(this.props);
         const {
             form: { getFieldDecorator },
             merchant: {
-                companyInfo: { company_id: companyId },
+                companyInfo: {
+                    company_id,
+                    company_name,
+                    contact_person,
+                    contact_tel,
+                    contact_email,
+                },
             },
         } = this.props;
         return (
@@ -97,32 +86,40 @@ class MerchantModify extends Component {
                         <Form.Item
                             label={formatMessage({ id: 'merchantManagement.merchant.number' })}
                         >
-                            <span>{companyId || '--'}</span>
+                            <span>{company_id || '--'}</span>
                         </Form.Item>
                         <Form.Item
                             label={formatMessage({ id: 'merchantManagement.merchant.name' })}
                         >
-                            <Input
-                                value={companyName}
-                                onChange={e => this.onChange(e, 'companyName')}
-                            />
+                            {getFieldDecorator('companyName', {
+                                initialValue: company_name,
+                                validateTrigger: 'onBlur',
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: formatMessage({
+                                            id: 'merchantManagement.merchant.inputMerchant',
+                                        }),
+                                    },
+                                ],
+                            })(<Input />)}
                         </Form.Item>
                         <Form.Item
                             label={formatMessage({
                                 id: 'merchantManagement.merchant.contactPerson',
                             })}
                         >
-                            <Input
-                                value={contactPerson}
-                                onChange={e => this.onChange(e, 'contactPerson')}
-                            />
+                            {getFieldDecorator('contactPerson', {
+                                initialValue: contact_person,
+                            })(<Input />)}
                         </Form.Item>
                         <Form.Item
                             label={formatMessage({
                                 id: 'merchantManagement.merchant.contactPhone',
                             })}
                         >
-                            {getFieldDecorator('phone', {
+                            {getFieldDecorator('contactTel', {
+                                initialValue: contact_tel,
                                 validateTrigger: 'onBlur',
                                 rules: [
                                     {
@@ -136,14 +133,14 @@ class MerchantModify extends Component {
                                     },
                                 ],
                             })(<Input />)}
-                            {/* <Input value={contactTel} onChange={e => this.onChange(e, 'contactTel')} /> */}
                         </Form.Item>
                         <Form.Item
                             label={formatMessage({
                                 id: 'merchantManagement.merchant.contactEmail',
                             })}
                         >
-                            {getFieldDecorator('email', {
+                            {getFieldDecorator('contactEmail', {
+                                initialValue: contact_email,
                                 validateTrigger: 'onBlur',
                                 rules: [
                                     {

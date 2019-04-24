@@ -256,7 +256,7 @@ class ProductCUBasic extends Component {
                 <EditableFormItem
                     {...{
                         form,
-                        max: 3,
+                        max: 30,
                         countStart: extraInfo.length || 0,
                         data: extraInfo,
                         onRemove: index => this.extraInfoRemove(index),
