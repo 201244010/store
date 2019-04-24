@@ -156,6 +156,7 @@ export default {
             const { options = {} } = payload;
             const opts = {
                 ...options,
+                expire_time: options.expire_time || -1,
                 price: options.price || -1,
                 promote_price: options.promote_price || -1,
                 member_price: options.member_price || -1,
@@ -187,6 +188,7 @@ export default {
             const { options = {} } = payload;
             const opts = {
                 ...options,
+                expire_time: options.expire_time || -1,
                 price: options.price || -1,
                 promote_price: options.promote_price || -1,
                 member_price: options.member_price || -1,
