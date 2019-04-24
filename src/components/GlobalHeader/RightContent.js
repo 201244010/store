@@ -170,7 +170,7 @@ export default class GlobalHeaderRight extends PureComponent {
                         emptyImage="https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg"
                     />
                 </NoticeIcon>
-                {currentUser.username ? (
+                {Object.keys(currentUser).length > 0 ? (
                     <HeaderDropdown overlay={menu}>
                         <span className={`${styles.action} ${styles.account}`}>
                             <Avatar
