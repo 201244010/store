@@ -26,7 +26,7 @@ class ResultInfo extends Component {
     };
 
     countDown = () => {
-        const { tick = 1000, path = '/' } = this.props;
+        const { tick = 1000, path = '/user/login' } = this.props;
         clearInterval(this.countDownTimer);
         this.countDownTimer = setInterval(() => {
             const { count } = this.state;

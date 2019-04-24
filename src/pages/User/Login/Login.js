@@ -9,6 +9,7 @@ import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import Storage from '@konata9/storage.js';
 import { ERROR_OK, ALERT_NOTICE_MAP, VCODE_ERROR, SHOW_VCODE } from '@/constants/errorCode';
+import { MENU_PREFIX } from '@/constants';
 import styles from './Login.less';
 
 const VALIDATE_FIELDS = {
@@ -135,7 +136,7 @@ class Login extends Component {
             const result = response.data || {};
             const storeList = result.shop_list || [];
             if (storeList.length === 0) {
-                router.push('/basicData/storeManagement/createStore');
+                router.push(`${MENU_PREFIX.STORE}/createStore`);
             } else {
                 const defaultStore = storeList[0] || {};
                 Storage.set({ __shop_id__: defaultStore.shop_id });
