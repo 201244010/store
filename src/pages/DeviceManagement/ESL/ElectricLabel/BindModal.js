@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Row, Col, Select, Button, Input, Table } from 'antd';
 import { formatMessage } from 'umi/locale';
+import * as styles from './index.less';
 
 export default class BindModal extends Component {
     handleTemplateChange = templateId => {
@@ -108,10 +109,11 @@ export default class BindModal extends Component {
                         <Col span={4}>{formatMessage({ id: 'esl.device.esl.id' })}:</Col>
                         <Col span={20}>{currentRecord.esl_code}</Col>
                     </Row>
-                    <Row>
+                    <Row className={styles["form-row"]}>
                         <Col span={4}>{formatMessage({ id: 'esl.device.esl.template.name' })}:</Col>
                         <Col span={20}>
                             <Select
+                                placeholder="请选择模板"
                                 value={currentRecord.template_id}
                                 style={{ width: '100%' }}
                                 onChange={this.handleTemplateChange}
@@ -124,7 +126,7 @@ export default class BindModal extends Component {
                             </Select>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className={styles["form-row"]}>
                         <Col span={4}>
                             {formatMessage({ id: 'esl.device.esl.select.product' })}:
                         </Col>
@@ -138,10 +140,11 @@ export default class BindModal extends Component {
                             />
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className={styles["form-row"]}>
                         <Col span={24}>
                             <Table
                                 rowKey="id"
+                                rowClassName={(record) => record.id === selectedProduct.id ? styles.selected : ''}
                                 columns={columns}
                                 dataSource={products}
                                 pagination={productPagination}
