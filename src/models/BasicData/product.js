@@ -42,16 +42,23 @@ export default {
             showSizeChanger: true,
             showQuickJumper: true,
         },
+        overview: {}
     },
     effects: {
-        *getProductOverView(_, { call, put }) {
+        *fetchProductOverview(_, { call, put }) {
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
             });
-            const response = yield call(Actions.getProductOverView);
+            const response = yield call(Actions.fetchProductOverview);
             if (response && response.code === ERROR_OK) {
-                console.log(response);
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        loading: false,
+                        overview: response.data
+                    },
+                });
             }
 
             yield put({

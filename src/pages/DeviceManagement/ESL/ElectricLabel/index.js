@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import Overview from './Overview';
 import SearchResult from './SearchResult';
 import SearchForm from './SearchForm';
 import * as styles from './index.less';
 
 @connect(
     state => ({
+        product: state.basicDataProduct,
         eslElectricLabel: state.eslElectricLabel,
         basicDataProduct: state.basicDataProduct,
     }),
     dispatch => ({
         changeSearchFormValue: payload =>
             dispatch({ type: 'eslElectricLabel/changeSearchFormValue', payload }),
+        fetchProductOverview: payload =>
+            dispatch({ type: 'basicDataProduct/fetchProductOverview', payload }),
+        fetchDeviceOverview: payload =>
+            dispatch({ type: 'eslElectricLabel/fetchDeviceOverview', payload }),
         fetchElectricLabels: payload =>
             dispatch({ type: 'eslElectricLabel/fetchElectricLabels', payload }),
         fetchESLDetails: payload => dispatch({ type: 'eslElectricLabel/fetchESLDetails', payload }),
@@ -30,19 +36,22 @@ import * as styles from './index.less';
 )
 class ElectricLabel extends Component {
     componentDidMount() {
-        const { fetchElectricLabels, changeSearchFormValue, fetchFlashModes } = this.props;
+        const {
+            fetchProductOverview, fetchDeviceOverview, fetchElectricLabels, changeSearchFormValue, fetchFlashModes
+        } = this.props;
+
+        fetchProductOverview();
+        fetchDeviceOverview();
 
         changeSearchFormValue({
             keyword: '',
             status: -1,
         });
-
         fetchElectricLabels({
             options: {
                 current: 1,
             },
         });
-
         fetchFlashModes();
     }
 
@@ -56,8 +65,13 @@ class ElectricLabel extends Component {
                 detailInfo,
                 templates4ESL,
                 flashModes,
+                overview: deviceOverview
             },
-            basicDataProduct: { data: products, pagination: productPagination },
+            basicDataProduct: {
+                data: products,
+                pagination: productPagination,
+                overview: productOverview
+            },
             changeSearchFormValue,
             fetchElectricLabels,
             fetchESLDetails,
@@ -72,36 +86,42 @@ class ElectricLabel extends Component {
         } = this.props;
 
         return (
-            <div className={styles['content-container']}>
-                <SearchForm
-                    {...{
-                        searchFormValues,
-                        changeSearchFormValue,
-                        fetchElectricLabels,
-                    }}
+            <div>
+                <Overview
+                    deviceOverview={deviceOverview}
+                    productOverview={productOverview}
                 />
-                <SearchResult
-                    {...{
-                        loading,
-                        data,
-                        pagination,
-                        detailInfo,
-                        templates4ESL,
-                        flashModes,
-                        products,
-                        productPagination,
-                        fetchElectricLabels,
-                        fetchESLDetails,
-                        fetchTemplatesByESLCode,
-                        changeTemplate,
-                        fetchProductList,
-                        bindESL,
-                        flushESL,
-                        unbindESL,
-                        flashLed,
-                        deleteESL,
-                    }}
-                />
+                <div className={styles['content-container']}>
+                    <SearchForm
+                        {...{
+                            searchFormValues,
+                            changeSearchFormValue,
+                            fetchElectricLabels,
+                        }}
+                    />
+                    <SearchResult
+                        {...{
+                            loading,
+                            data,
+                            pagination,
+                            detailInfo,
+                            templates4ESL,
+                            flashModes,
+                            products,
+                            productPagination,
+                            fetchElectricLabels,
+                            fetchESLDetails,
+                            fetchTemplatesByESLCode,
+                            changeTemplate,
+                            fetchProductList,
+                            bindESL,
+                            flushESL,
+                            unbindESL,
+                            flashLed,
+                            deleteESL,
+                        }}
+                    />
+                </div>
             </div>
         );
     }

@@ -2,7 +2,7 @@ import { customizeFetch } from '@/utils/fetch';
 
 const fetchApi = customizeFetch('api/product');
 
-export const getProductOverView = (options = {}) => {
+export const fetchProductOverview = (options = {}) => {
     const opts = {
         method: 'POST',
         body: {
