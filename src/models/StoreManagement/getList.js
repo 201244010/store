@@ -100,6 +100,7 @@ export default {
                 }
                 router.push(`${MENU_PREFIX.STORE}/list`);
             }
+            return response;
         },
 
         *updateStore({ payload }, { call }) {
@@ -109,6 +110,7 @@ export default {
                 message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
                 router.push(`${MENU_PREFIX.STORE}/list`);
             }
+            return response;
         },
 
         *getStoreDetail({ payload }, { call, put }) {

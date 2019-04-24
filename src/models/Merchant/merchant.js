@@ -75,9 +75,8 @@ export default {
                 });
                 message.success(formatMessage({ id: 'modify.success' }));
                 router.push(`${MENU_PREFIX.MERCHANT}/view`);
-            } else {
-                message.error(formatMessage({ id: 'modify.fail' }));
             }
+            return response;
         },
     },
 

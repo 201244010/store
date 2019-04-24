@@ -8,6 +8,7 @@ import Storage from '@konata9/storage.js';
 import { connect } from 'dva';
 import styles from './Merchant.less';
 import { MENU_PREFIX } from '@/constants';
+import { ERROR_OK } from '@/constants/errorCode';
 
 @connect(
     state => ({
@@ -27,7 +28,7 @@ class MerchantModify extends Component {
 
     saveInfo = () => {
         const {
-            form: { validateFields },
+            form: { validateFields, setFields },
             companyUpdate,
         } = this.props;
         validateFields(async (err, values) => {
@@ -41,7 +42,21 @@ class MerchantModify extends Component {
                         contact_email: values.contactEmail,
                     },
                 };
-                await companyUpdate(payload);
+                const response = await companyUpdate(payload);
+                if (response && response.code !== ERROR_OK) {
+                    setFields({
+                        companyName: {
+                            value: values.companyName,
+                            errors: [
+                                new Error(
+                                    formatMessage({
+                                        id: 'merchantManagement.merchant.existed.error',
+                                    })
+                                ),
+                            ],
+                        },
+                    });
+                }
             }
         });
     };
@@ -78,6 +93,15 @@ class MerchantModify extends Component {
                         >
                             {getFieldDecorator('companyName', {
                                 initialValue: company_name,
+                                validateTrigger: 'onBlur',
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: formatMessage({
+                                            id: 'merchantManagement.merchant.inputMerchant',
+                                        }),
+                                    },
+                                ],
                             })(<Input />)}
                         </Form.Item>
                         <Form.Item
