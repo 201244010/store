@@ -64,7 +64,8 @@ export default {
 
     'basicData.erp.platform': '对接的ERP平台',
     'basicData.erp.store.number': '门店编号',
-    'basicData.erp.api.key': '门店密钥',
+    'basicData.erp.api.key': '市场key',
+    'basicData.erp.api.secret': '市场secret',
     'basicData.erp.api.store.num': '门店编号',
     'basicData.erp.api.account': '账号',
     'basicData.erp.api.password': '密码',
@@ -77,8 +78,9 @@ export default {
     'basicData.erp.import.success': '数据导入成功',
     'basicData.erp.import.fail': '数据导入失败',
 
-    'basicData.erp.sdnm.key.isEmpty': '请输入门店密钥',
-    'basicData.erp.sdnm.key.error': '门店密钥错误，请重新输入',
+    'basicData.erp.sdnm.key.isEmpty': '请输入市场key',
+    'basicData.erp.sdnm.secret.isEmpty': '请输入市场secret',
+    'basicData.erp.sdnm.key.error': '市场key或者市场secret错误，请重新输入',
     'basicData.erp.kwyls.shopId.isEmpty': '请输入门店编号',
     'basicData.erp.kwyls.account.isEmpty': '请输入账号',
     'basicData.erp.kwyls.password.isEmpty': '请输入密码',

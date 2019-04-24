@@ -37,3 +37,10 @@ export const getCompanyList = (options = {}) => {
     };
     return fetchApi('getList', opts).then(response => response.json());
 };
+
+export const initialCompany = (options = {}) => {
+    const opts = {
+        body: { ...options },
+    };
+    return fetchApi('initSetup', opts).then(response => response.json());
+};
