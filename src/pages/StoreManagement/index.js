@@ -4,8 +4,9 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
 import storage from '@konata9/storage.js/src/storage';
-import styles from './StoreManagement.less';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
+import { MENU_PREFIX } from '@/constants';
+import styles from './StoreManagement.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -57,7 +58,7 @@ const columns = [
                 <a
                     onClick={() => {
                         router.push(
-                            `/basicData/storeManagement/storeInformation?shopId=${record.shopId}`
+                            `${MENU_PREFIX.STORE}/storeInformation?shopId=${record.shopId}`
                         );
                     }}
                     className={styles.infoAnchor}
@@ -67,9 +68,7 @@ const columns = [
                 <a
                     onClick={() => {
                         router.push(
-                            `/basicData/storeManagement/createStore?shopId=${
-                                record.shopId
-                            }&action=edit`
+                            `${MENU_PREFIX.STORE}/createStore?shopId=${record.shopId}&action=edit`
                         );
                     }}
                     className={styles.infoAnchor}
@@ -225,7 +224,7 @@ class StoreManagement extends Component {
                     type="primary"
                     icon="plus"
                     onClick={() => {
-                        router.push('/basicData/storeManagement/createStore?action=create');
+                        router.push(`${MENU_PREFIX.STORE}/createStore?action=create`);
                     }}
                 >
                     {formatMessage({ id: 'storeManagement.list.newBuiltStore' })}

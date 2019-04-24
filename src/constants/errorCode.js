@@ -15,6 +15,7 @@ export const ALERT_NOTICE_MAP = {
     '309': 'alert.code.send.fast',
     '1001': 'alert.mail.existed',
     '2000': 'alert.code.error',
+    '2003': 'alert.code.error',
     '3603': 'alert.mobile.not.registered',
     '201': 'alert.account.error',
     '208': 'alert.code.expired',

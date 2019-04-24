@@ -10,6 +10,7 @@ import Storage from '@konata9/storage.js';
 
 import { connect } from 'dva';
 import styles from './Merchant.less';
+import { MENU_PREFIX } from '@/constants';
 
 @connect(
     state => ({
@@ -76,7 +77,7 @@ class MerchantModify extends Component {
     };
 
     cancel = () => {
-        router.push('/basicData/merchantManagement/view');
+        router.push(`${MENU_PREFIX.MERCHANT}/view`);
     };
 
     render() {

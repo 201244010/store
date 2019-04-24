@@ -4,6 +4,7 @@ import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
+import { MENU_PREFIX } from '@/constants';
 
 export default {
     namespace: 'merchant',
@@ -72,7 +73,7 @@ export default {
                     payload: options,
                 });
                 message.success(formatMessage({ id: 'modify.success' }));
-                router.push('/basicData/merchantManagement/view');
+                router.push(`${MENU_PREFIX.MERCHANT}/view`);
             } else {
                 message.error(formatMessage({ id: 'modify.fail' }));
             }

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
-import { Card, List, Icon, Button, Modal, Form } from 'antd';
+import { Card, List, Button, Modal, Form } from 'antd';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { connect } from 'dva';
-
+import { MENU_PREFIX } from '@/constants';
 import * as styles from './Account.less';
 
 @connect(state => ({
@@ -29,8 +29,8 @@ class Store extends Component {
 
     toPath = target => {
         const path = {
-            update: '/basicData/merchantManagement/modify',
-            create: '/merchant/create',
+            update: `${MENU_PREFIX.MERCHANT}/modify`,
+            create: `${MENU_PREFIX.MERCHANT}/create`,
         };
 
         router.push(path[target] || '/');
@@ -66,8 +66,7 @@ class Store extends Component {
                             <div className={styles['list-item']}>
                                 <div className={styles['title-wrapper-start']}>
                                     <div className={styles['title-wrapper-icon']}>
-                                        <h4>{formatMessage({ id: 'userCenter.store.name' })}</h4>
-                                        <Icon type="property-safety" />
+                                        <h4>{company.company_name}</h4>
                                     </div>
                                     <div
                                         onClick={() => this.viewStore(company)}
@@ -76,7 +75,6 @@ class Store extends Component {
                                         {formatMessage({ id: 'list.action.detail' })}
                                     </div>
                                 </div>
-                                <div>{company.company_name}</div>
                             </div>
                         </List.Item>
                     ))}

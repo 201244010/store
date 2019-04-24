@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import storage from '@konata9/storage.js/src/storage';
 import { getLocationParam } from '@/utils/utils';
 import styles from './StoreManagement.less';
+import { MENU_PREFIX } from '@/constants';
 
 const { Option } = Select;
 
@@ -187,7 +188,7 @@ class AlterStore extends React.Component {
                         <Button
                             className={styles.submitButton2}
                             onClick={() => {
-                                router.push('/basicData/storeManagement/list');
+                                router.push(`${MENU_PREFIX.STORE}/list`);
                             }}
                         >
                             {formatMessage({ id: 'storeManagement.create.buttonCancel' })}

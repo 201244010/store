@@ -6,6 +6,7 @@ import { formatMessage } from 'umi/locale';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT, FORM_ITEM_LONGER } from '@/constants/form';
 import * as styles from './ProductManagement.less';
 import { ERROR_OK } from '@/constants/errorCode';
+import { MENU_PREFIX } from '@/constants';
 
 const SDNM = props => {
     const { getFieldDecorator, checkSaasInfo } = props;
@@ -176,7 +177,7 @@ class ERPImport extends Component {
         });
     };
 
-    goBack = () => router.push('/basicData/productManagement/list');
+    goBack = () => router.push(`${MENU_PREFIX.PRODUCT}`);
 
     render() {
         const { RenderItem } = this.state;
