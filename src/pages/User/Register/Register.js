@@ -9,12 +9,19 @@ import Link from 'umi/link';
 import { connect } from 'dva';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
-import styles from './Register.less';
 import { ERROR_OK, ALERT_NOTICE_MAP, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
+import { MAIL_LIST } from '@/constants/mailList';
+import styles from './Register.less';
 
 const MailRegisterSuccess = ({ props }) => {
     const { mail } = props;
-    // TODO 需要增加一个 mail 是否跳转的判断
+    const mailTail =
+        mail
+            .split('@')
+            .slice(1)
+            .toString() || '';
+    const existedMail = Object.keys(MAIL_LIST).find(mailKey => mailKey === mailTail);
+
     return (
         <Result
             className={styles['result-wrapper']}
@@ -33,9 +40,16 @@ const MailRegisterSuccess = ({ props }) => {
             }
             actions={
                 <div className={styles['result-action-wrapper']}>
-                    <Button type="primary" size="large">
-                        {formatMessage({ id: 'btn.mail.check' })}
-                    </Button>
+                    {existedMail.length > 0 && (
+                        <Button
+                            type="primary"
+                            size="large"
+                            href={MAIL_LIST[mailTail]}
+                            target="_blank"
+                        >
+                            {formatMessage({ id: 'btn.mail.check' })}
+                        </Button>
+                    )}
                     <Button type="default" size="large" href="/user/login">
                         {formatMessage({ id: 'btn.back.index' })}
                     </Button>
