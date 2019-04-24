@@ -98,7 +98,7 @@ export default {
                 if (!Storage.get('__shop_id__')) {
                     Storage.set({ __shop_id__: data.shop_id });
                 }
-                router.push('/list');
+                router.push(`${MENU_PREFIX.STORE}/list`);
             }
         },
 

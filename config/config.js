@@ -127,7 +127,8 @@ export default {
                     name: 'company',
                     icon: 'blank',
                     routes: [
-                        { path: '/company', redirect: '/merchantManagement/view' },
+                        { path: '/company', redirect: '/company/merchantManagement' },
+                        { path: '/company/merchantManagement', redirect: '/company/merchantManagement/view' },
                         {
                             path: '/company/merchantManagement/view',
                             name: 'merchantManagement',
@@ -138,6 +139,10 @@ export default {
                             name: 'merchantManagement',
                             hideInMenu: true,
                             component: './MerchantManagement/MerchantModify',
+                        },
+                        {
+                            path: '/company/storeManagement',
+                            redirect: '/company/storeManagement/list',
                         },
                         {
                             path: '/company/storeManagement/list',

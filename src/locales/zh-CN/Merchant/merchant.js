@@ -15,5 +15,6 @@ export default {
     'merchantManagement.merchant.welcome': '欢迎，请先创建商户',
     'merchantManagement.merchant.createMerchant': '创建商户',
     'merchantManagement.merchant.inputMerchant': '请输入企业或商户名称',
+    'merchantManagement.merchant.existed': '商户名称已存在，请重新输入或联系管理员加入商户',
     'merchantManagement.merchant.joinMerchant': '或联系您要加入的商户的管理员，将您加入商户',
 };

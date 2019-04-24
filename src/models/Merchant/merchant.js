@@ -26,8 +26,6 @@ export default {
                 message.success(formatMessage({ id: 'create.success' }));
                 const data = response.data || {};
                 Storage.set({ __company_id__: data.company_id });
-            } else {
-                router.push('/user/login');
             }
             return response;
         },
