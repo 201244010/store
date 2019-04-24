@@ -130,7 +130,7 @@ export default {
                     type: 'updateState',
                     payload: {
                         loading: false,
-                        overview: response.data
+                        overview: response.data,
                     },
                 });
             }

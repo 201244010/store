@@ -73,7 +73,7 @@ export const getBindInfo = options => {
 export const fetchDeviceOverview = () => {
     const opts = {
         method: 'POST',
-        body: {}
+        body: {},
     };
 
     return fetchDeviceApi('getOverview', opts).then(response => response.json());

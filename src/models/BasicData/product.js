@@ -42,7 +42,7 @@ export default {
             showSizeChanger: true,
             showQuickJumper: true,
         },
-        overview: {}
+        overview: {},
     },
     effects: {
         *fetchProductOverview(_, { call, put }) {
@@ -56,7 +56,7 @@ export default {
                     type: 'updateState',
                     payload: {
                         loading: false,
-                        overview: response.data
+                        overview: response.data,
                     },
                 });
             }

@@ -106,7 +106,11 @@ class MobileReset extends Component {
             form: { validateFields },
             resetPassword,
         } = this.props;
-        validateFields(async (err, values) => {
+        const { showImgCaptchaModal } = this.state;
+        const fields = ['username', 'code', 'password', 'confirm'];
+        const fieldList = showImgCaptchaModal ? [...fields, 'vcode'] : fields;
+
+        validateFields(fieldList, async (err, values) => {
             if (!err) {
                 const options = {
                     ...values,

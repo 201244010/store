@@ -37,7 +37,11 @@ import * as styles from './index.less';
 class ElectricLabel extends Component {
     componentDidMount() {
         const {
-            fetchProductOverview, fetchDeviceOverview, fetchElectricLabels, changeSearchFormValue, fetchFlashModes
+            fetchProductOverview,
+            fetchDeviceOverview,
+            fetchElectricLabels,
+            changeSearchFormValue,
+            fetchFlashModes,
         } = this.props;
 
         fetchProductOverview();
@@ -65,12 +69,12 @@ class ElectricLabel extends Component {
                 detailInfo,
                 templates4ESL,
                 flashModes,
-                overview: deviceOverview
+                overview: deviceOverview,
             },
             basicDataProduct: {
                 data: products,
                 pagination: productPagination,
-                overview: productOverview
+                overview: productOverview,
             },
             changeSearchFormValue,
             fetchElectricLabels,
@@ -87,10 +91,7 @@ class ElectricLabel extends Component {
 
         return (
             <div>
-                <Overview
-                    deviceOverview={deviceOverview}
-                    productOverview={productOverview}
-                />
+                <Overview deviceOverview={deviceOverview} productOverview={productOverview} />
                 <div className={styles['content-container']}>
                     <SearchForm
                         {...{
