@@ -221,7 +221,7 @@ class ProductCUBasic extends Component {
                     <Col span={12}>
                         <Form.Item label={formatMessage({ id: 'basicData.product.expire_time' })}>
                             {getFieldDecorator('expire_time', {
-                                initialValue: expire_time,
+                                initialValue: expire_time > 0 ? expire_time : '',
                                 validateTrigger: 'onBlur',
                                 rules: [
                                     {
