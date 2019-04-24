@@ -9,6 +9,8 @@ import {
     ERROR_OK,
     MOBILE_BINDED,
     SHOW_VCODE,
+    USER_EXIST,
+    USER_NOT_EXIST,
     VCODE_ERROR,
 } from '@/constants/errorCode';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
@@ -66,13 +68,27 @@ class ChangeMobile extends Component {
         const {
             form: { getFieldValue },
             sendCode,
+            checkUserExist,
             sso: { needImgCaptcha, imgCaptcha },
         } = this.props;
+
+        const checkUserResult = await checkUserExist({
+            username: getFieldValue('phone'),
+        });
+
+        let optionType = '';
+        if (checkUserResult && checkUserResult.code === USER_EXIST) {
+            optionType = '2';
+        } else if (checkUserResult && checkUserResult.code === USER_NOT_EXIST) {
+            optionType = '1';
+        } else {
+            message.error(formatMessage({ id: 'change.mobile.number.error' }));
+        }
 
         const response = await sendCode({
             options: {
                 username: getFieldValue('phone'),
-                type: '2',
+                type: optionType,
                 imgCode: getFieldValue('vcode') || '',
                 key: needImgCaptcha ? imgCaptcha.key : '',
                 width: 112,

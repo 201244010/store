@@ -65,6 +65,7 @@ class Security extends Component {
             user: { currentUser },
             sso,
             sendCode,
+            checkUserExist,
         } = this.props;
         const RenderModal = RENDER_MODAL[modalType] || RENDER_MODAL.default;
 
@@ -146,6 +147,7 @@ class Security extends Component {
                         onOk: this.handleModalSubmit,
                         onCancel: this.closeChangeModal,
                         sendCode,
+                        checkUserExist,
                     }}
                 />
             </>

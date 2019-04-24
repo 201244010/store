@@ -61,7 +61,7 @@ class SearchResult extends Component {
         this.setState({
             currentRecord: record,
             selectedProduct: {
-                id: record.product_id
+                id: record.product_id,
             },
             bindVisible: true,
         });
@@ -395,7 +395,7 @@ class SearchResult extends Component {
                         bindVisible,
                         currentRecord: {
                             ...currentRecord,
-                            template_id: currentRecord.template_id || undefined
+                            template_id: currentRecord.template_id || undefined,
                         },
                         templates4ESL,
                         products,

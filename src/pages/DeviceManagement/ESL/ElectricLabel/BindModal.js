@@ -109,7 +109,7 @@ export default class BindModal extends Component {
                         <Col span={4}>{formatMessage({ id: 'esl.device.esl.id' })}:</Col>
                         <Col span={20}>{currentRecord.esl_code}</Col>
                     </Row>
-                    <Row className={styles["form-row"]}>
+                    <Row className={styles['form-row']}>
                         <Col span={4}>{formatMessage({ id: 'esl.device.esl.template.name' })}:</Col>
                         <Col span={20}>
                             <Select
@@ -126,7 +126,7 @@ export default class BindModal extends Component {
                             </Select>
                         </Col>
                     </Row>
-                    <Row className={styles["form-row"]}>
+                    <Row className={styles['form-row']}>
                         <Col span={4}>
                             {formatMessage({ id: 'esl.device.esl.select.product' })}:
                         </Col>
@@ -140,11 +140,13 @@ export default class BindModal extends Component {
                             />
                         </Col>
                     </Row>
-                    <Row className={styles["form-row"]}>
+                    <Row className={styles['form-row']}>
                         <Col span={24}>
                             <Table
                                 rowKey="id"
-                                rowClassName={(record) => record.id === selectedProduct.id ? styles.selected : ''}
+                                rowClassName={record =>
+                                    record.id === selectedProduct.id ? styles.selected : ''
+                                }
                                 columns={columns}
                                 dataSource={products}
                                 pagination={productPagination}
