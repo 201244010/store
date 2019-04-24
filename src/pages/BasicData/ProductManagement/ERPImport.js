@@ -10,26 +10,39 @@ import { ERROR_OK } from '@/constants/errorCode';
 const SDNM = props => {
     const { getFieldDecorator, checkSaasInfo } = props;
     return (
-        <Form.Item label={formatMessage({ id: 'basicData.erp.api.key' })}>
-            {getFieldDecorator('saas_info.app_key', {
-                validateTrigger: 'onBlur',
-                rules: [
-                    {
-                        required: true,
-                        message: formatMessage({ id: 'basicData.erp.sdnm.key.isEmpty' }),
-                    },
-                ],
-            })(
-                <Input
-                    onBlur={() =>
-                        checkSaasInfo(
-                            'saas_info.app_key',
-                            formatMessage({ id: 'basicData.erp.sdnm.key.error' })
-                        )
-                    }
-                />
-            )}
-        </Form.Item>
+        <>
+            <Form.Item label={formatMessage({ id: 'basicData.erp.api.key' })}>
+                {getFieldDecorator('saas_info.app_key', {
+                    validateTrigger: 'onBlur',
+                    rules: [
+                        {
+                            required: true,
+                            message: formatMessage({ id: 'basicData.erp.sdnm.key.isEmpty' }),
+                        },
+                    ],
+                })(<Input />)}
+            </Form.Item>
+            <Form.Item label={formatMessage({ id: 'basicData.erp.api.secret' })}>
+                {getFieldDecorator('saas_info.secret', {
+                    validateTrigger: 'onBlur',
+                    rules: [
+                        {
+                            required: true,
+                            message: formatMessage({ id: 'basicData.erp.sdnm.secret.isEmpty' }),
+                        },
+                    ],
+                })(
+                    <Input
+                        onBlur={() =>
+                            checkSaasInfo(
+                                'saas_info.secret',
+                                formatMessage({ id: 'basicData.erp.sdnm.key.error' })
+                            )
+                        }
+                    />
+                )}
+            </Form.Item>
+        </>
     );
 };
 

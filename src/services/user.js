@@ -79,3 +79,8 @@ export const updateIcon = (options = {}) => {
     };
     return fetchApi('updateIcon', opts).then(response => response.json());
 };
+
+export const checkUserExist = (options = {}) => {
+    const opts = { body: { ...options } };
+    return fetchApi('isUserExist', opts).then(response => response.json());
+};

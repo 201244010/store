@@ -1,6 +1,7 @@
 import { customizeFetch } from '@/utils/fetch';
 
 const fetchApi = customizeFetch('esl/api/device/esl');
+const fetchDeviceApi = customizeFetch('esl/api/device');
 
 export const fetchElectricLabels = options => {
     const opts = {
@@ -67,4 +68,13 @@ export const getBindInfo = options => {
         body: options,
     };
     return fetchApi('getBindInfo', opts).then(response => response.json());
+};
+
+export const fetchDeviceOverview = () => {
+    const opts = {
+        method: 'POST',
+        body: {}
+    };
+
+    return fetchDeviceApi('getOverview', opts).then(response => response.json());
 };

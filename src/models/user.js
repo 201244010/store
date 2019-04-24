@@ -140,6 +140,12 @@ export default {
                 });
             }
         },
+
+        *checkUserExist({ payload }, { call }) {
+            const { options } = payload;
+            const response = yield call(Actions.checkUserExist, options);
+            return response;
+        },
     },
 
     reducers: {

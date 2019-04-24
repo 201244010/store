@@ -6,6 +6,9 @@ export const VCODE_ERROR = 3;
 export const SEND_TOO_FAST = 3;
 export const MOBILE_BINDED = 204;
 
+export const USER_EXIST = 1;
+export const USER_NOT_EXIST = 3603;
+
 export const ALERT_NOTICE_MAP = {
     '2': 'alert.code.error',
     '3': 'alert.code.send.fast',
