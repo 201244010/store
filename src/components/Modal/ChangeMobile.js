@@ -73,7 +73,9 @@ class ChangeMobile extends Component {
         } = this.props;
 
         const checkUserResult = await checkUserExist({
-            username: getFieldValue('phone'),
+            options: {
+                username: getFieldValue('phone'),
+            },
         });
 
         let optionType = '';
