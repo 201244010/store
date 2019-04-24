@@ -84,7 +84,7 @@ const ProductCUPrice = props => {
             <EditableFormItem
                 {...{
                     form,
-                    max: 1,
+                    max: 7,
                     wrapperItem: <Input type="number" />,
                     itemOptions: {
                         itemDecorator: 'price',

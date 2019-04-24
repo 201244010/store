@@ -9,6 +9,7 @@ import { MENU_PREFIX } from '@/constants';
 export default {
     namespace: 'merchant',
     state: {
+        currentCompanyId: Storage.get('__company_id__'),
         companyList: [],
         companyInfo: {},
     },
@@ -25,8 +26,6 @@ export default {
                 message.success(formatMessage({ id: 'create.success' }));
                 const data = response.data || {};
                 Storage.set({ __company_id__: data.company_id });
-            } else {
-                router.push('/user/login');
             }
             return response;
         },
@@ -60,8 +59,8 @@ export default {
             if (response && response.code === ERROR_OK) {
                 const result = response.data || {};
                 yield put({
-                    type: 'saveCompanyInfo',
-                    payload: result,
+                    type: 'updateState',
+                    payload: { companyInfo: result },
                 });
             }
         },
@@ -71,26 +70,17 @@ export default {
             const response = yield call(Actions.companyUpdate, options);
             if (response && response.code === ERROR_OK) {
                 yield put({
-                    type: 'saveCompanyInfo',
-                    payload: options,
+                    type: 'updateState',
+                    payload: { companyInfo: options },
                 });
                 message.success(formatMessage({ id: 'modify.success' }));
                 router.push(`${MENU_PREFIX.MERCHANT}/view`);
-            } else {
-                message.error(formatMessage({ id: 'modify.fail' }));
             }
+            return response;
         },
     },
 
     reducers: {
-        saveCompanyInfo(state, action) {
-            return {
-                ...state,
-                companyInfo: {
-                    ...action.payload,
-                },
-            };
-        },
         updateState(state, action) {
             return {
                 ...state,

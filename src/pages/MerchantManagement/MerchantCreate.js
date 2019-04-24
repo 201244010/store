@@ -6,6 +6,7 @@ import Storage from '@konata9/storage.js';
 import router from 'umi/router';
 import { MENU_PREFIX } from '@/constants';
 import styles from './Merchant.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 @connect(
     state => ({
@@ -17,14 +18,8 @@ import styles from './Merchant.less';
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
     })
 )
+@Form.create()
 class MerchantCreate extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: '',
-        };
-    }
-
     checkStoreExist = async () => {
         const {
             getStoreList,
@@ -40,34 +35,59 @@ class MerchantCreate extends Component {
         }
     };
 
-    createMerchant = async () => {
-        const { companyCreate } = this.props;
-        const { value } = this.state;
-        await companyCreate({ company_name: value });
-        this.checkStoreExist();
-    };
-
-    onChange = e => {
-        this.setState({
-            value: e.target.value,
+    createMerchant = () => {
+        const {
+            form: { validateFields, setFields },
+            companyCreate,
+        } = this.props;
+        validateFields(async (err, values) => {
+            if (!err) {
+                const response = await companyCreate({ ...values });
+                if (response && response.code !== ERROR_OK) {
+                    setFields({
+                        company_name: {
+                            value: values.company_name || '',
+                            errors: [
+                                new Error(
+                                    formatMessage({ id: 'merchantManagement.merchant.existed' })
+                                ),
+                            ],
+                        },
+                    });
+                } else {
+                    this.checkStoreExist();
+                }
+            }
         });
     };
 
     render() {
-        const { value } = this.state;
+        const {
+            form: { getFieldDecorator },
+        } = this.props;
         return (
             <div className={styles['create-wrapper']}>
                 <h2>{formatMessage({ id: 'merchantManagement.merchant.welcome' })}</h2>
                 <Form>
                     <Form.Item>
-                        <Input
-                            style={{ height: 42 }}
-                            placeholder={formatMessage({
-                                id: 'merchantManagement.merchant.inputMerchant',
-                            })}
-                            value={value}
-                            onChange={this.onChange}
-                        />
+                        {getFieldDecorator('company_name', {
+                            validateTrigger: 'onBlur',
+                            rules: [
+                                {
+                                    required: true,
+                                    message: formatMessage({
+                                        id: 'merchantManagement.merchant.inputMerchant',
+                                    }),
+                                },
+                            ],
+                        })(
+                            <Input
+                                style={{ height: 42 }}
+                                placeholder={formatMessage({
+                                    id: 'merchantManagement.merchant.inputMerchant',
+                                })}
+                            />
+                        )}
                     </Form.Item>
                     <Button
                         type="primary"

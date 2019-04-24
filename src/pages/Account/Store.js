@@ -30,7 +30,7 @@ class Store extends Component {
     toPath = target => {
         const path = {
             update: `${MENU_PREFIX.MERCHANT}/modify`,
-            create: `${MENU_PREFIX.MERCHANT}/create`,
+            create: '/merchant/create',
         };
 
         router.push(path[target] || '/');

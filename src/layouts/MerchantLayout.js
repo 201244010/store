@@ -5,7 +5,7 @@ import HeaderDropdown from '@/components/HeaderDropdown';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { connect } from 'dva';
-import pathToRegexp from '@/layouts/BasicLayout';
+import pathToRegexp from 'path-to-regexp';
 import styles from './MerchantLayout.less';
 
 class MerchantLayout extends React.PureComponent {
@@ -106,6 +106,6 @@ export default connect(({ user, global, setting, loading, menu }) => ({
     fetchingNotices: loading.effects['global/fetchNotices'],
     notices: global.notices,
     breadcrumbNameMap: menu.breadcrumbNameMap,
-    setting,
+    ...setting,
     user,
 }))(MerchantLayout);

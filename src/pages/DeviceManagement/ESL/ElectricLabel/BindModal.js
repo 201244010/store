@@ -11,13 +11,15 @@ export default class BindModal extends Component {
 
     bindESL = () => {
         const { selectedProduct, currentRecord, bindESL, closeModal } = this.props;
-        bindESL({
-            options: {
-                product_id: selectedProduct.id,
-                esl_code: currentRecord.esl_code,
-                template_id: currentRecord.template_id,
-            },
-        });
+        if (selectedProduct && selectedProduct.id) {
+            bindESL({
+                options: {
+                    product_id: selectedProduct.id,
+                    esl_code: currentRecord.esl_code,
+                    template_id: currentRecord.template_id,
+                },
+            });
+        }
         closeModal('bindVisible');
     };
 

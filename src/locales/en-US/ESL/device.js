@@ -32,7 +32,6 @@ export default {
     'esl.device.ap.total': '个基站',
 
     // 价签用
-    'esl.device.esl.list': '价签列表',
     'esl.device.esl.search.placeholder': '价签ID或绑定商品的编号/名称',
     'esl.device.esl.search.info': '价签信息',
     'esl.device.esl.id': '价签ID',
