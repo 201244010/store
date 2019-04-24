@@ -30,6 +30,7 @@ export default {
     'change.loginPassword.isEmpty': '请输入登录密码',
     'change.mobile.number': '手机号',
     'change.mobile.number.new': '新手机号',
+    'change.mobile.number.error': '手机号校验失败',
     'change.mobile.code': '验证码',
     'bind.mobile.success': '手机号绑定成功',
     'change.mobile.success': '手机号修改成功',
