@@ -47,13 +47,11 @@ class ElectricLabel extends Component {
             keyword: '',
             status: -1,
         });
-
         fetchElectricLabels({
             options: {
                 current: 1,
             },
         });
-
         fetchFlashModes();
     }
 
