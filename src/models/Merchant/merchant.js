@@ -44,7 +44,9 @@ export default {
                 yield put({
                     type: 'initialCompany',
                     payload: {
-                        options: { company_list: result.company_list },
+                        options: {
+                            company_id_list: result.company_list.map(company => company.company_id),
+                        },
                     },
                 });
             } else {

@@ -8,13 +8,7 @@ import styles from '../Register/Register.less';
 import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
-import { ERROR_OK, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
-
-// TODO 根据 error code 显示不同的错误信息，等待 error code
-const ALERT_NOTICE_MAP = {
-    '000': 'alert.mobile.not.registered',
-    '003': 'alert.code.send.fast',
-};
+import { ERROR_OK, SHOW_VCODE, VCODE_ERROR, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 
 @connect(
     state => ({
@@ -106,11 +100,9 @@ class MobileReset extends Component {
             form: { validateFields },
             resetPassword,
         } = this.props;
-        const { showImgCaptchaModal } = this.state;
         const fields = ['username', 'code', 'password', 'confirm'];
-        const fieldList = showImgCaptchaModal ? [...fields, 'vcode'] : fields;
 
-        validateFields(fieldList, async (err, values) => {
+        validateFields(fields, async (err, values) => {
             if (!err) {
                 const options = {
                     ...values,
@@ -121,6 +113,10 @@ class MobileReset extends Component {
                 if (response && response.code === ERROR_OK) {
                     this.setState({
                         resetSuccess: true,
+                    });
+                } else if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
+                    this.setState({
+                        notice: response.code,
                     });
                 }
             }
