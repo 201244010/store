@@ -173,6 +173,7 @@ export default {
                 });
                 router.push(`${MENU_PREFIX.PRODUCT}`);
             } else {
+                message.error(formatMessage({ id: 'product.create.error' }));
                 yield put({
                     type: 'updateState',
                     payload: {
@@ -209,6 +210,7 @@ export default {
                 const { fromPage, product_id } = options;
                 goNext(fromPage, { product_id });
             } else {
+                message.error(formatMessage({ id: 'product.update.error' }));
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
