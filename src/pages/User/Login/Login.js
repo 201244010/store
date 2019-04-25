@@ -9,7 +9,7 @@ import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import Storage from '@konata9/storage.js';
 import { ERROR_OK, ALERT_NOTICE_MAP, VCODE_ERROR, SHOW_VCODE } from '@/constants/errorCode';
-import { MENU_PREFIX } from '@/constants';
+import { MENU_PREFIX, KEY } from '@/constants';
 import styles from './Login.less';
 
 const VALIDATE_FIELDS = {
@@ -46,6 +46,14 @@ class Login extends Component {
             vcodeIsError: false,
             showImgCaptchaModal: false,
         };
+    }
+
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyDown);
     }
 
     onTabChange = tabName => {
@@ -252,6 +260,12 @@ class Login extends Component {
                 }
             }
         });
+    };
+
+    handleKeyDown = e => {
+        if (e.keyCode === KEY.ENTER) {
+            this.onSubmit();
+        }
     };
 
     render() {

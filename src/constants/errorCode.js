@@ -10,6 +10,8 @@ export const USER_EXIST = 1;
 export const USER_NOT_EXIST = 3603;
 export const USER_NOT_LOGIN = 5028;
 
+export const PRODUCT_SEQ_EXIST = 5051;
+
 export const ALERT_NOTICE_MAP = {
     '2': 'alert.code.error',
     '3': 'alert.code.send.fast',

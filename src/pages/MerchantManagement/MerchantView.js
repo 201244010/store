@@ -94,12 +94,6 @@ class MerchantView extends Component {
                             <Button type="primary" onClick={() => this.goNext('update')}>
                                 {formatMessage({ id: 'btn.alter' })}
                             </Button>
-                            <Button
-                                style={{ marginLeft: 20 }}
-                                onClick={() => this.goNext('cancel')}
-                            >
-                                {formatMessage({ id: 'btn.back' })}
-                            </Button>
                         </Form.Item>
                     </Form>
                 </div>
