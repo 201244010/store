@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { Button, Divider, message, Modal, Table, Menu, Dropdown, Row, Col, Select } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { DURATION_TIME, ESL_STATES } from '@/constants';
+import { DURATION_TIME } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 import Detail from './Detail';
 import BindModal from './BindModal';
+
+const ESL_STATES = {
+    0: formatMessage({ id: 'esl.device.esl.push.wait' }),
+    1: formatMessage({ id: 'esl.device.esl.push.success' }),
+    2: formatMessage({ id: 'esl.device.esl.push.fail' }),
+};
 
 class SearchResult extends Component {
     constructor(props) {
