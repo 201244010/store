@@ -24,6 +24,7 @@ class SearchResult extends Component {
         fetchElectricLabels({
             options: {
                 current: pagination.current,
+                pageSize: pagination.pageSize
             },
         });
     };
