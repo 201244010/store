@@ -23,7 +23,7 @@ class SearchResult extends Component {
 
         fetchBaseStations({
             current: pagination.current,
-            pageSize: pagination.pageSize
+            pageSize: pagination.pageSize,
         });
     };
 

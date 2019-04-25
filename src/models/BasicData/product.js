@@ -109,6 +109,7 @@ export default {
                     loading: false,
                     data: result.product_list || [],
                     pagination: {
+                        ...pagination,
                         current: options.current,
                         total: Number(result.total_count) || 0,
                         hideOnSinglePage: hideSinglePageCheck(result.total_count) || true,
