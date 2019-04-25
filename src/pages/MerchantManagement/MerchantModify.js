@@ -125,14 +125,14 @@ class MerchantModify extends Component {
                                     {
                                         validator: (rule, value, callback) =>
                                             customValidate({
-                                                field: 'telphone',
+                                                field: 'telephone',
                                                 rule,
                                                 value,
                                                 callback,
                                             }),
                                     },
                                 ],
-                            })(<Input />)}
+                            })(<Input maxLength={11} />)}
                         </Form.Item>
                         <Form.Item
                             label={formatMessage({
