@@ -57,6 +57,7 @@ export default {
                     loading: false,
                     data: result.esl_list || [],
                     pagination: {
+                        ...pagination,
                         current: opts.current,
                         total: Number(result.total_count) || 0,
                         hideOnSinglePage: hideSinglePageCheck(result.total_count) || true,
