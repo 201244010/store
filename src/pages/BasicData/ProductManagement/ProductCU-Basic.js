@@ -3,7 +3,7 @@ import { Card, Col, Form, Input, Row, Select } from 'antd';
 import { customValidate } from '@/utils/customValidate';
 import { formatMessage } from 'umi/locale';
 import { MAX_LENGTH } from '@/constants/form';
-import EditableFormItem from '@/components/EditableFormItem';
+// import EditableFormItem from '@/components/EditableFormItem';
 
 const productTypes = [{ key: 'normal', value: 0 }];
 const productUnits = [
@@ -32,7 +32,7 @@ const productUnits = [
 const ProductCUBasic = props => {
     const {
         form: { getFieldDecorator },
-        form,
+        // form,
         productInfo: {
             seq_num = '',
             bar_code = '',
@@ -47,8 +47,8 @@ const ProductCUBasic = props => {
             expire_time = '',
             qr_code = '',
         },
-        productBasicExtra,
-        remove,
+        // productBasicExtra,
+        // remove,
     } = props;
     return (
         <Card title={formatMessage({ id: 'basicData.product.detail.title' })} bordered={false}>
@@ -102,6 +102,7 @@ const ProductCUBasic = props => {
                     <Form.Item label={formatMessage({ id: 'basicData.product.name' })}>
                         {getFieldDecorator('name', {
                             initialValue: name,
+                            validateTrigger: 'onBlur',
                             rules: [
                                 {
                                     required: true,
@@ -227,39 +228,39 @@ const ProductCUBasic = props => {
                 </Col>
             </Row>
 
-            <EditableFormItem
-                {...{
-                    form,
-                    max: 30,
-                    countStart: productBasicExtra.length || 0,
-                    data: productBasicExtra,
-                    onRemove: index => remove(index, 'info'),
-                    wrapperItem: <Input maxLength={MAX_LENGTH['100']} />,
-                    itemOptions: {
-                        validateTrigger: 'onBlur',
-                        rules: [
-                            {
-                                required: true,
-                                message: formatMessage({
-                                    id: 'basicData.product.extraInfo.isEmpty',
-                                }),
-                            },
-                        ],
-                    },
-                    labelOption: {
-                        labelPrefix: formatMessage({ id: 'basicData.product.customize' }),
-                        formKey: 'extra_info',
-                        editable: false,
-                    },
-                    buttonProps: {
-                        span: 12,
-                        icon: 'plus',
-                        type: 'dashed',
-                        block: true,
-                        text: formatMessage({ id: 'basicData.product.label.add' }),
-                    },
-                }}
-            />
+            {/* <EditableFormItem */}
+            {/* {...{ */}
+            {/* form, */}
+            {/* max: 30, */}
+            {/* countStart: productBasicExtra.length || 0, */}
+            {/* data: productBasicExtra, */}
+            {/* onRemove: index => remove(index, 'info'), */}
+            {/* wrapperItem: <Input maxLength={MAX_LENGTH['100']} />, */}
+            {/* itemOptions: { */}
+            {/* validateTrigger: 'onBlur', */}
+            {/* rules: [ */}
+            {/* { */}
+            {/* required: true, */}
+            {/* message: formatMessage({ */}
+            {/* id: 'basicData.product.extraInfo.isEmpty', */}
+            {/* }), */}
+            {/* }, */}
+            {/* ], */}
+            {/* }, */}
+            {/* labelOption: { */}
+            {/* labelPrefix: formatMessage({ id: 'basicData.product.customize' }), */}
+            {/* formKey: 'extra_info', */}
+            {/* editable: false, */}
+            {/* }, */}
+            {/* buttonProps: { */}
+            {/* span: 12, */}
+            {/* icon: 'plus', */}
+            {/* type: 'dashed', */}
+            {/* block: true, */}
+            {/* text: formatMessage({ id: 'basicData.product.label.add' }), */}
+            {/* }, */}
+            {/* }} */}
+            {/* /> */}
         </Card>
     );
 };

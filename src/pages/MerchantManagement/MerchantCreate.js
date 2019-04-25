@@ -24,12 +24,13 @@ class MerchantCreate extends Component {
         const { getStoreList } = this.props;
         const response = await getStoreList({});
         const result = response.data || {};
-        const storeList = result.shop_list || [];
-        if (storeList.length === 0) {
+        const shopList = result.shop_list || [];
+        Storage.set({ __shop_list__: shopList });
+        if (shopList.length === 0) {
             Storage.remove('__shop_id__');
             router.push(`${MENU_PREFIX.STORE}/createStore`);
         } else {
-            const defaultStore = storeList[0] || {};
+            const defaultStore = shopList[0] || {};
             Storage.set({ __shop_id__: defaultStore.shop_id });
             router.push('/');
         }

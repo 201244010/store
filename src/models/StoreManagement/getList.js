@@ -28,16 +28,21 @@ const cascaderDataWash = (data, mapping) => {
 export default {
     namespace: 'store',
     state: {
+        searchFormValue: {
+            keyword: '',
+            type_one: 0,
+            type_two: 0,
+        },
         storeList: Storage.get('__shop_list__') || [],
+        shopType_list: Storage.get('__shopTypeList__', 'local') || [],
+        regionList: Storage.get('__regionList__', 'local') || [],
+        storeInfo: {},
+        loading: false,
         // TODO 下一个准备修改
         getList: {
             data: [],
         },
-        loading: false,
         getOption: {},
-        shopType_list: Storage.get('__shopTypeList__', 'local') || [],
-        regionList: Storage.get('__regionList__', 'local') || [],
-        storeInfo: {},
         alter: {
             name: '',
             type: '',
@@ -53,17 +58,35 @@ export default {
     },
 
     effects: {
-        *getStoreList({ payload }, { call, put }) {
+        *changeSearchFormValue({ payload }, { put, select }) {
+            const { options = {} } = payload;
+            const { searchFormValue } = yield select(state => state.store);
+            yield put({
+                type: 'updateState',
+                payload: {
+                    searchFormValue: {
+                        ...searchFormValue,
+                        ...options,
+                    },
+                },
+            });
+        },
+
+        *getStoreList({ payload }, { call, put, select }) {
             const { options } = payload;
+            const { searchFormValue } = yield select(state => state.store);
+            const opts = {
+                ...searchFormValue,
+                ...options,
+            };
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
             });
-            const response = yield call(Action.getList, options);
+            const response = yield call(Action.getList, opts);
             if (response && response.code === ERROR_OK) {
                 const data = response.data || {};
                 const shopList = data.shop_list || [];
-                Storage.set({ __shop_list__: shopList });
                 yield put({
                     type: 'updateState',
                     payload: {
@@ -73,20 +96,6 @@ export default {
                 });
             }
             return response;
-        },
-
-        *getArray({ payload }, { call, put }) {
-            const { options } = payload;
-            const response = yield call(Action.getList, options);
-            if (response && response.code === ERROR_OK) {
-                yield put({
-                    type: 'saveStoreList',
-                    payload: {
-                        data: response,
-                        request: options,
-                    },
-                });
-            }
         },
 
         *createNewStore({ payload }, { call, put }) {
@@ -209,6 +218,19 @@ export default {
                 type: 'updateState',
                 payload: {
                     storeInfo: {},
+                },
+            });
+        },
+
+        *clearSearch(_, { put }) {
+            yield put({
+                type: 'updateState',
+                payload: {
+                    searchFormValue: {
+                        keyword: '',
+                        type_one: 0,
+                        type_two: 0,
+                    },
                 },
             });
         },

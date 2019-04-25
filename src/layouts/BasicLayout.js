@@ -17,6 +17,7 @@ import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
 import { MENU_PREFIX } from '@/constants';
+// import Storage from '@konata9/storage.js';
 import styles from './BasicLayout.less';
 
 const { Content } = Layout;
@@ -72,6 +73,7 @@ class BasicLayout extends React.PureComponent {
         const {
             location: { pathname },
         } = window;
+
         if (pathname !== `${MENU_PREFIX.STORE}/createStore`) {
             this.checkStore();
         }
@@ -150,10 +152,8 @@ class BasicLayout extends React.PureComponent {
     };
 
     checkStore = () => {
-        const {
-            storeData: { storeList },
-        } = this.props;
-        if (storeList.length === 0) {
+        const shopList = Storage.get('__shop_list__') || [];
+        if (shopList.length === 0) {
             message.warning(formatMessage({ id: 'alert.store.is.none' }));
             router.push(`${MENU_PREFIX.STORE}/createStore?action=create`);
         }
@@ -235,6 +235,7 @@ export default connect(
         ...setting,
     }),
     dispatch => ({
+        getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
         dispatch,
     })
 )(props => (

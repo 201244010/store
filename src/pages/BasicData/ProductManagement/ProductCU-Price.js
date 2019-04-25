@@ -2,15 +2,15 @@ import React from 'react';
 import { Card, Col, Form, Input, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { customValidate } from '@/utils/customValidate';
-import EditableFormItem from '@/components/EditableFormItem';
+// import EditableFormItem from '@/components/EditableFormItem';
 
 const ProductCUPrice = props => {
     const {
-        form = {},
+        // form = {},
         form: { getFieldDecorator },
         productInfo: { price, promote_price, member_price },
-        productPriceExtra,
-        remove,
+        // productPriceExtra,
+        // remove,
     } = props;
 
     return (
@@ -83,40 +83,40 @@ const ProductCUPrice = props => {
                 </Col>
             </Row>
 
-            <EditableFormItem
-                {...{
-                    form,
-                    max: 7,
-                    wrapperItem: <Input type="number" />,
-                    countStart: productPriceExtra.length || 0,
-                    data: productPriceExtra,
-                    onRemove: index => remove(index, 'price'),
-                    itemOptions: {
-                        itemDecorator: 'price',
-                        validateTrigger: 'onBlur',
-                        rules: [
-                            {
-                                required: true,
-                                message: formatMessage({
-                                    id: 'basicData.product.extraPrice.isEmpty',
-                                }),
-                            },
-                        ],
-                    },
-                    labelOption: {
-                        labelPrefix: formatMessage({ id: 'basicData.product.price.customize' }),
-                        formKey: 'extra_price_info',
-                        editable: false,
-                    },
-                    buttonProps: {
-                        span: 12,
-                        icon: 'plus',
-                        type: 'dashed',
-                        block: true,
-                        text: formatMessage({ id: 'basicData.product.price.add' }),
-                    },
-                }}
-            />
+            {/* <EditableFormItem */}
+            {/* {...{ */}
+            {/* form, */}
+            {/* max: 7, */}
+            {/* wrapperItem: <Input type="number" />, */}
+            {/* countStart: productPriceExtra.length || 0, */}
+            {/* data: productPriceExtra, */}
+            {/* onRemove: index => remove(index, 'price'), */}
+            {/* itemOptions: { */}
+            {/* itemDecorator: 'price', */}
+            {/* validateTrigger: 'onBlur', */}
+            {/* rules: [ */}
+            {/* { */}
+            {/* required: true, */}
+            {/* message: formatMessage({ */}
+            {/* id: 'basicData.product.extraPrice.isEmpty', */}
+            {/* }), */}
+            {/* }, */}
+            {/* ], */}
+            {/* }, */}
+            {/* labelOption: { */}
+            {/* labelPrefix: formatMessage({ id: 'basicData.product.price.customize' }), */}
+            {/* formKey: 'extra_price_info', */}
+            {/* editable: false, */}
+            {/* }, */}
+            {/* buttonProps: { */}
+            {/* span: 12, */}
+            {/* icon: 'plus', */}
+            {/* type: 'dashed', */}
+            {/* block: true, */}
+            {/* text: formatMessage({ id: 'basicData.product.price.add' }), */}
+            {/* }, */}
+            {/* }} */}
+            {/* /> */}
         </Card>
     );
 };

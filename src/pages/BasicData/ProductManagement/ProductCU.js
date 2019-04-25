@@ -5,7 +5,7 @@ import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import ProductCUBasic from './ProductCU-Basic';
 import ProductCUPrice from './ProductCU-Price';
-import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
+import { getLocationParam, idDecode } from '@/utils/utils';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK, PRODUCT_SEQ_EXIST } from '@/constants/errorCode';
 import { MENU_PREFIX } from '@/constants';
@@ -110,14 +110,10 @@ class ProductCU extends Component {
     };
 
     goBack = () => {
-        const {
-            product: {
-                productInfo: { id = idDecode(getLocationParam('id')) },
-            },
-        } = this.props;
         const from = getLocationParam('from');
+        const id = getLocationParam('id');
         const path = {
-            detail: `${MENU_PREFIX.PRODUCT}/productInfo?id=${idEncode(id)}`,
+            detail: `${MENU_PREFIX.PRODUCT}/productInfo?id=${id}`,
             list: `${MENU_PREFIX.PRODUCT}`,
         };
 
