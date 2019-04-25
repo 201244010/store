@@ -45,9 +45,19 @@ class SearchForm extends Component {
                             <Select
                                 placeholder={formatMessage({ id: 'select.placeholder' })}
                                 value={searchFormValues.status}
+                                onChange={val => this.changeFormValues('select', 'status', val)}
                             >
                                 <Select.Option value={-1}>
                                     {formatMessage({ id: 'select.all' })}
+                                </Select.Option>
+                                <Select.Option value={0}>
+                                    {formatMessage({ id: 'esl.device.esl.push.wait' })}
+                                </Select.Option>
+                                <Select.Option value={1}>
+                                    {formatMessage({ id: 'esl.device.esl.push.success' })}
+                                </Select.Option>
+                                <Select.Option value={2}>
+                                    {formatMessage({ id: 'esl.device.esl.push.fail' })}
                                 </Select.Option>
                             </Select>
                         </Form.Item>

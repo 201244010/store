@@ -7,7 +7,7 @@ export const fetchBaseStations = (options = {}) => {
         method: 'POST',
         body: {
             keyword: options.keyword,
-            status: options.status || -1,
+            status: options.status,
             page_num: options.current || 1,
             page_size: options.pageSize,
         },

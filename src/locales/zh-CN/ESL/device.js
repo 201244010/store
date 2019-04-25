@@ -77,4 +77,7 @@ export default {
     'esl.device.esl.change.template.success': '修改模板成功',
     'esl.device.esl.change.template.fail': '修改模板失败',
     'esl.device.esl.flash.mode.error': '没有匹配的闪灯模式',
+    'esl.device.esl.push.wait': '待推送',
+    'esl.device.esl.push.success': '推送成功',
+    'esl.device.esl.push.fail': '推送失败',
 };

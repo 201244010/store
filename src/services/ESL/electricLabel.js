@@ -10,7 +10,7 @@ export const fetchElectricLabels = options => {
             page_num: options.current,
             page_size: options.pageSize,
             keyword: options.keyword,
-            status: options.status || -1,
+            status: options.status,
         },
     };
 
