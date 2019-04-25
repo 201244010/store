@@ -46,7 +46,7 @@ const mailValidate = (rule, value, callback) => {
 const phoneValidate = (rule, value, callback) => {
     if (!value) {
         callback();
-    } else if (!RegExp.cellphone.test(value) || !RegExp.telephone.test(value)) {
+    } else if (!RegExp.cellphone.test(value) && !RegExp.telephone.test(value)) {
         callback(formatMessage({ id: 'cellphone.validate.isFormatted' }));
     } else {
         callback();
@@ -103,7 +103,7 @@ const validatorList = {
     price: productPrice,
     promote_price: productPrice,
     member_price: productPrice,
-    telphone: phoneValidate,
+    telephone: phoneValidate,
 };
 
 export function customValidate(params) {
