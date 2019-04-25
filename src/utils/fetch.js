@@ -81,10 +81,6 @@ const customizeParams = (options = {}) => {
     const companyId = Storage.get('__company_id__');
     const shopId = Storage.get('__shop_id__');
 
-    if (!companyId || !shopId) {
-        unAuthHandler();
-    }
-
     const opts = {
         company_id: companyId,
         shop_id: shopId,
