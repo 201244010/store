@@ -136,7 +136,7 @@ class CreateStore extends React.Component {
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
                         {getFieldDecorator('shopType', {
-                            initialValue: [type_one, type_two],
+                            initialValue: [`${type_one}`, `${type_two}`],
                         })(
                             <Cascader
                                 placeholder={formatMessage({
@@ -154,7 +154,7 @@ class CreateStore extends React.Component {
                                 <Radio value={0}>
                                     {formatMessage({ id: 'storeManagement.create.status.open' })}
                                 </Radio>
-                                <Radio value={1}>
+                                <Radio value={1} disabled={action === 'create'}>
                                     {formatMessage({ id: 'storeManagement.create.status.closed' })}
                                 </Radio>
                             </Radio.Group>
@@ -162,7 +162,7 @@ class CreateStore extends React.Component {
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.address' })}>
                         {getFieldDecorator('region', {
-                            initialValue: [province, city, area],
+                            initialValue: [`${province}`, `${city}`, `${area}`],
                         })(
                             <Cascader
                                 options={regionList}

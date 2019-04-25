@@ -111,7 +111,7 @@ export default {
                     pagination: {
                         current: options.current,
                         total: Number(result.total_count) || 0,
-                        hideOnSinglePage: hideSinglePageCheck(result.total_count),
+                        hideOnSinglePage: hideSinglePageCheck(result.total_count) || true,
                     },
                 },
             });

@@ -12,6 +12,7 @@ export default {
         currentCompanyId: Storage.get('__company_id__'),
         companyList: Storage.get('__company_list__') || [],
         companyInfo: {},
+        loading: false,
     },
 
     effects: {
@@ -58,25 +59,43 @@ export default {
 
         *companyGetInfo(_, { call, put }) {
             const response = yield call(Actions.companyGetInfo);
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
             if (response && response.code === ERROR_OK) {
                 const result = response.data || {};
                 yield put({
                     type: 'updateState',
-                    payload: { companyInfo: result },
+                    payload: { companyInfo: result, loading: false },
+                });
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
                 });
             }
         },
 
         *companyUpdate({ payload }, { call, put }) {
             const { options } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
             const response = yield call(Actions.companyUpdate, options);
             if (response && response.code === ERROR_OK) {
                 yield put({
                     type: 'updateState',
-                    payload: { companyInfo: options },
+                    payload: { companyInfo: options, loading: false },
                 });
                 message.success(formatMessage({ id: 'modify.success' }));
                 router.push(`${MENU_PREFIX.MERCHANT}/view`);
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
             }
             return response;
         },

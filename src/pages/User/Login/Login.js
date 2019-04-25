@@ -187,9 +187,12 @@ class Login extends Component {
                 currentTab === 'tabAccount' ? getFieldValue('username') : getFieldValue('phone');
             const result = await checkUser({ options: { username: checkUserName } });
             if (result && result.code === ERROR_OK) {
+                const {
+                    location: { origin },
+                } = window;
                 const data = result.data || {};
                 if (data.needMerge) {
-                    this.showAccountMergeModal(data.url);
+                    this.showAccountMergeModal(`${data.url}&from=${origin}/user/login`);
                 } else {
                     this.checkCompanyList();
                 }

@@ -44,7 +44,7 @@ const mailValidate = (rule, value, callback) => {
 };
 
 const phoneValidate = (rule, value, callback) => {
-    if (RegExp.cellphone.test(value) || RegExp.telephone.test(value)) {
+    if (!value) {
         callback();
     } else if (!RegExp.cellphone.test(value) || !RegExp.telephone.test(value)) {
         callback(formatMessage({ id: 'cellphone.validate.isFormatted' }));

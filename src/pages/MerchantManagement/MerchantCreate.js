@@ -21,12 +21,12 @@ import { ERROR_OK } from '@/constants/errorCode';
 @Form.create()
 class MerchantCreate extends Component {
     checkStoreExist = async () => {
-        const {
-            getStoreList,
-            store: { storeList },
-        } = this.props;
-        await getStoreList({});
+        const { getStoreList } = this.props;
+        const response = await getStoreList({});
+        const result = response.data || {};
+        const storeList = result.shop_list || [];
         if (storeList.length === 0) {
+            Storage.remove('__shop_id__');
             router.push(`${MENU_PREFIX.STORE}/createStore`);
         } else {
             const defaultStore = storeList[0] || {};
