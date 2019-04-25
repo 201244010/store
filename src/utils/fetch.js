@@ -1,7 +1,7 @@
 // import { message } from 'antd';
 import { env, API_ADDRESS, MD5_TOKEN } from '@/config';
 import { cbcEncryption, md5Encryption } from '@/utils/utils';
-import { USER_NOT_LOGIN } from '@/constants/errorCode'
+import { USER_NOT_LOGIN } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
 
 // const codeMessage = {
