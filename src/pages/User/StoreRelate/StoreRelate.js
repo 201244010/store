@@ -27,7 +27,8 @@ class StoreRelate extends Component {
             if (storeList.length === 0) {
                 router.push(`${MENU_PREFIX.STORE}/createStore`);
             } else {
-                const defaultStore = storeList[0] || {};
+                const lastStore = storeList.length;
+                const defaultStore = storeList[lastStore - 1] || {};
                 Storage.set({ __shop_id__: defaultStore.shop_id });
                 router.push('/');
             }

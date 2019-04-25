@@ -221,7 +221,7 @@ class ProductCUBasic extends Component {
                     <Col span={12}>
                         <Form.Item label={formatMessage({ id: 'basicData.product.expire_time' })}>
                             {getFieldDecorator('expire_time', {
-                                initialValue: expire_time,
+                                initialValue: expire_time > 0 ? expire_time : '',
                                 validateTrigger: 'onBlur',
                                 rules: [
                                     {
@@ -256,7 +256,7 @@ class ProductCUBasic extends Component {
                 <EditableFormItem
                     {...{
                         form,
-                        max: 3,
+                        max: 30,
                         countStart: extraInfo.length || 0,
                         data: extraInfo,
                         onRemove: index => this.extraInfoRemove(index),

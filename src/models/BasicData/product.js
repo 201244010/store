@@ -156,6 +156,7 @@ export default {
             const { options = {} } = payload;
             const opts = {
                 ...options,
+                expire_time: options.expire_time || -1,
                 price: options.price || -1,
                 promote_price: options.promote_price || -1,
                 member_price: options.member_price || -1,
@@ -172,6 +173,7 @@ export default {
                 });
                 router.push(`${MENU_PREFIX.PRODUCT}`);
             } else {
+                message.error(formatMessage({ id: 'product.create.error' }));
                 yield put({
                     type: 'updateState',
                     payload: {
@@ -187,6 +189,7 @@ export default {
             const { options = {} } = payload;
             const opts = {
                 ...options,
+                expire_time: options.expire_time || -1,
                 price: options.price || -1,
                 promote_price: options.promote_price || -1,
                 member_price: options.member_price || -1,
@@ -207,6 +210,7 @@ export default {
                 const { fromPage, product_id } = options;
                 goNext(fromPage, { product_id });
             } else {
+                message.error(formatMessage({ id: 'product.update.error' }));
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },

@@ -25,7 +25,7 @@ class SearchForm extends Component {
         return (
             <Form {...FORM_ITEM_LAYOUT_COMMON}>
                 <Row gutter={FORM_FORMAT.gutter}>
-                    <Col span={10} style={{fontSize: 18, fontWeight: 800}}>
+                    <Col span={10} style={{ fontSize: 18, fontWeight: 800 }}>
                         {formatMessage({ id: 'esl.device.esl.list' })}
                     </Col>
                     <Col span={6}>

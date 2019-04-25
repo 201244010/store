@@ -9,7 +9,8 @@ import { MENU_PREFIX } from '@/constants';
 export default {
     namespace: 'merchant',
     state: {
-        companyList: [],
+        currentCompanyId: Storage.get('__company_id__'),
+        companyList: Storage.get('__company_list__') || [],
         companyInfo: {},
     },
 
@@ -25,8 +26,6 @@ export default {
                 message.success(formatMessage({ id: 'create.success' }));
                 const data = response.data || {};
                 Storage.set({ __company_id__: data.company_id });
-            } else {
-                router.push('/user/login');
             }
             return response;
         },
@@ -35,17 +34,19 @@ export default {
             const response = yield call(Actions.getCompanyList);
             if (response && response.code === ERROR_OK) {
                 const result = response.data || {};
+                const companyList = result.company_list || [];
+                Storage.set({ __company_list__: companyList });
                 yield put({
                     type: 'updateState',
                     payload: {
-                        companyList: result.company_list || [],
+                        companyList,
                     },
                 });
                 yield put({
                     type: 'initialCompany',
                     payload: {
                         options: {
-                            company_id_list: result.company_list.map(company => company.company_id),
+                            company_id_list: companyList.map(company => company.company_id),
                         },
                     },
                 });
@@ -60,8 +61,8 @@ export default {
             if (response && response.code === ERROR_OK) {
                 const result = response.data || {};
                 yield put({
-                    type: 'saveCompanyInfo',
-                    payload: result,
+                    type: 'updateState',
+                    payload: { companyInfo: result },
                 });
             }
         },
@@ -71,26 +72,17 @@ export default {
             const response = yield call(Actions.companyUpdate, options);
             if (response && response.code === ERROR_OK) {
                 yield put({
-                    type: 'saveCompanyInfo',
-                    payload: options,
+                    type: 'updateState',
+                    payload: { companyInfo: options },
                 });
                 message.success(formatMessage({ id: 'modify.success' }));
                 router.push(`${MENU_PREFIX.MERCHANT}/view`);
-            } else {
-                message.error(formatMessage({ id: 'modify.fail' }));
             }
+            return response;
         },
     },
 
     reducers: {
-        saveCompanyInfo(state, action) {
-            return {
-                ...state,
-                companyInfo: {
-                    ...action.payload,
-                },
-            };
-        },
         updateState(state, action) {
             return {
                 ...state,

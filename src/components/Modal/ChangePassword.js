@@ -99,7 +99,7 @@ class ChangePassword extends Component {
                                     },
                                 },
                             ],
-                        })(<Input type="password" onFocus={this.inputFocus} />)}
+                        })(<Input type="password" maxLength={30} onFocus={this.inputFocus} />)}
                     </Form.Item>
                     <Form.Item
                         {...FORM_ITEM_LAYOUT_COMMON}
@@ -128,7 +128,7 @@ class ChangePassword extends Component {
                                         }),
                                 },
                             ],
-                        })(<Input type="password" />)}
+                        })(<Input type="password" maxLength={30} />)}
                     </Form.Item>
                     <Form.Item
                         {...FORM_ITEM_LAYOUT_COMMON}
@@ -151,7 +151,7 @@ class ChangePassword extends Component {
                                         }),
                                 },
                             ],
-                        })(<Input type="password" />)}
+                        })(<Input type="password" maxLength={30} />)}
                     </Form.Item>
                 </Form>
             </Modal>

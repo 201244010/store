@@ -138,7 +138,8 @@ class Login extends Component {
             if (storeList.length === 0) {
                 router.push(`${MENU_PREFIX.STORE}/createStore`);
             } else {
-                const defaultStore = storeList[0] || {};
+                const lastStore = storeList.length;
+                const defaultStore = storeList[lastStore - 1] || {};
                 Storage.set({ __shop_id__: defaultStore.shop_id });
                 router.push('/');
             }
@@ -331,6 +332,7 @@ class Login extends Component {
                                                 style={{ color: 'rgba(0,0,0,.25)' }}
                                             />
                                         }
+                                        maxLength={30}
                                         size="large"
                                         placeholder={formatMessage({
                                             id: 'account.password.placeholder',
@@ -409,6 +411,7 @@ class Login extends Component {
                                                     style={{ color: 'rgba(0,0,0,.25)' }}
                                                 />
                                             }
+                                            maxLength={11}
                                             size="large"
                                             placeholder={formatMessage({
                                                 id: 'mobile.placeholder',
@@ -455,6 +458,7 @@ class Login extends Component {
                                                     {...{
                                                         imgUrl: imgCaptcha.url,
                                                         inputProps: {
+                                                            maxLength: 4,
                                                             size: 'large',
                                                             placeholder: formatMessage({
                                                                 id: 'vcode.placeholder',
@@ -486,6 +490,7 @@ class Login extends Component {
                                             {...{
                                                 trigger,
                                                 inputProps: {
+                                                    maxLength: 4,
                                                     size: 'large',
                                                     placeholder: formatMessage({
                                                         id: 'mobile.code.placeholder',

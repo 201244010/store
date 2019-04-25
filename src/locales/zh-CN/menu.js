@@ -10,7 +10,7 @@ export default {
     // TODO 万有集市临时用菜单
     'menu.esl': '电子价签',
     'menu.esl.electricLabel': '价签管理',
-    'menu.esl.baseStation': '基站价签',
+    'menu.esl.baseStation': '基站管理',
 
     'menu.product': '商品库',
     'menu.product.list': '商品库',
