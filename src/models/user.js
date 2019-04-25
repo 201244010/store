@@ -32,7 +32,6 @@ export default {
 
             return response;
         },
-
         *logout(_, { call, put }) {
             yield call(Actions.logout);
             yield put({
@@ -41,19 +40,14 @@ export default {
             Storage.clear('session');
             router.push('/user/login');
         },
-
         *checkImgCode({ payload }, { call }) {
             const { options } = payload;
-            const response = yield call(Actions.checkImgCode, options);
-            return response;
+            return yield call(Actions.checkImgCode, options);
         },
-
         *register({ payload }, { call }) {
             const { options } = payload;
-            const response = yield call(Actions.register, options);
-            return response;
+            return yield call(Actions.register, options);
         },
-
         *getUserInfo(_, { call, put }) {
             const response = yield call(Actions.getUserInfo);
             if (response && response.code === ERROR_OK) {
@@ -65,17 +59,13 @@ export default {
                 });
             }
         },
-
         getUserInfoFromStorage() {
             return Storage.get('__userInfo__') || null;
         },
-
         *resetPassword({ payload }, { call }) {
             const { options } = payload;
-            const response = yield call(Actions.resetPassword, options);
-            return response;
+            return yield call(Actions.resetPassword, options);
         },
-
         *updateUsername({ payload }, { call, put, select }) {
             const { options } = payload;
             const response = yield call(Actions.updateUsername, options);
@@ -97,7 +87,6 @@ export default {
                 message.error(formatMessage({ id: 'userCenter.basicInfo.nameChange.fail' }));
             }
         },
-
         *changePassword({ payload }, { call }) {
             const { options } = payload;
             const response = yield call(Actions.changePassword, options);
@@ -109,7 +98,6 @@ export default {
             }
             return response;
         },
-
         *updatePhone({ payload }, { call, put, select }) {
             const { options } = payload;
             const response = yield call(Actions.updatePhone, options);
@@ -130,7 +118,6 @@ export default {
 
             return response;
         },
-
         *updateIcon({ payload }, { call, put }) {
             const { options } = payload;
             const response = yield call(Actions.updateIcon, options);
@@ -140,14 +127,12 @@ export default {
                 });
             }
         },
-
         *checkUserExist({ payload }, { call }) {
             const { options } = payload;
             const response = yield call(Actions.checkUserExist, options);
             return response;
         },
     },
-
     reducers: {
         computeErrorTime(state, action) {
             return {

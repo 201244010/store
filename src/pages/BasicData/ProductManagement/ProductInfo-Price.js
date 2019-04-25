@@ -21,8 +21,8 @@ const ProductInfoPrice = props => {
                 ))}
             </div>
             <div className={styles['card-column']}>
-                {productPriceExtra.map(extra => (
-                    <div className={styles['card-item']} key={extra.idx || +new Date()}>
+                {productPriceExtra.map((extra, index) => (
+                    <div className={styles['card-item']} key={index}>
                         <span className={styles['item-label']}>{extra.name}：</span>
                         <span className={styles['item-content']}>{extra.price}</span>
                     </div>

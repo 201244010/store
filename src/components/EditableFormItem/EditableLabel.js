@@ -68,12 +68,7 @@ class EditableLabel extends Component {
         return (
             <>
                 {inEditing ? (
-                    <Input
-                        id="1122"
-                        onChange={e => this.onChange(e)}
-                        onBlur={this.onBlur}
-                        {...inputProps}
-                    />
+                    <Input onChange={e => this.onChange(e)} onBlur={this.onBlur} {...inputProps} />
                 ) : (
                     <div
                         style={{
