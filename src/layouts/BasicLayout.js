@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout } from 'antd';
+import { Layout, message } from 'antd';
 import DocumentTitle from 'react-document-title';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
@@ -11,12 +11,12 @@ import Media from 'react-media';
 import { formatMessage } from 'umi/locale';
 import AuthorithCheck from '@/components/AuthorithCheck';
 import Authorized from '@/utils/Authorized';
+import router from 'umi/router';
 import logo from '../assets/menuLogo.png';
 import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
-// import Breadcrumbs from './Breadcrumbs';
-
+import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 
 const { Content } = Layout;
@@ -66,6 +66,15 @@ class BasicLayout extends React.PureComponent {
         dispatch({
             type: 'user/getUserInfo',
         });
+    }
+
+    componentWillReceiveProps() {
+        const {
+            location: { pathname },
+        } = window;
+        if (pathname !== `${MENU_PREFIX.STORE}/createStore`) {
+            this.checkStore();
+        }
     }
 
     componentDidUpdate(preProps) {
@@ -140,6 +149,16 @@ class BasicLayout extends React.PureComponent {
         });
     };
 
+    checkStore = () => {
+        const {
+            storeData: { storeList },
+        } = this.props;
+        if (storeList.length === 0) {
+            message.warning(formatMessage({ id: 'alert.store.is.none' }));
+            router.push(`${MENU_PREFIX.STORE}/createStore?action=create`);
+        }
+    };
+
     render() {
         const {
             navTheme,
@@ -152,7 +171,6 @@ class BasicLayout extends React.PureComponent {
             route: { routes },
             fixedHeader,
         } = this.props;
-
         const isTop = PropsLayout === 'topmenu';
         const routerConfig = this.getRouterAuthority(pathname, routes);
         const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
@@ -207,12 +225,13 @@ class BasicLayout extends React.PureComponent {
 }
 
 export default connect(
-    ({ global, setting, menu, user }) => ({
+    ({ global, setting, menu, user, store: storeData }) => ({
         collapsed: global.collapsed,
         layout: setting.layout,
         menuData: menu.menuData,
         breadcrumbNameMap: menu.breadcrumbNameMap,
         user,
+        storeData,
         ...setting,
     }),
     dispatch => ({

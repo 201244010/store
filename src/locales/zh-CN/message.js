@@ -10,6 +10,8 @@ export default {
     'alert.vcode.error': '图形验证码错误，请重新输入',
     'alert.code.send.fast': '验证码发送太快，请稍作等待后再次发送',
 
+    'alert.store.is.none': '您尚未创建门店，请先创建门店后再进行操作',
+
     // error 用 message
     'error.retry': '发生错误，请重试',
 };
