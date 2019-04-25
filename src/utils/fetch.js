@@ -1,6 +1,7 @@
 // import { message } from 'antd';
 import { env, API_ADDRESS, MD5_TOKEN } from '@/config';
 import { cbcEncryption, md5Encryption } from '@/utils/utils';
+import { USER_NOT_LOGIN } from '@/constants/errorCode'
 import Storage from '@konata9/storage.js';
 
 // const codeMessage = {
@@ -60,10 +61,8 @@ const normalizeParams = params => {
         delete tempParams.icon;
     }
 
-    const formParams =
+    formData.params =
         Object.keys(tempParams).length === 0 ? '' : paramsEncode(tempParams, formData.isEncrypted);
-
-    formData.params = formParams;
     formData.sign = getParamsSign(formData);
     formData.lang = 'zh';
     return formData;
@@ -79,9 +78,16 @@ const formatParams = (options = {}) => {
 };
 
 const customizeParams = (options = {}) => {
+    const companyId = Storage.get('__company_id__');
+    const shopId = Storage.get('__shop_id__');
+
+    if (!companyId || !shopId) {
+        unAuthHandler();
+    }
+
     const opts = {
-        company_id: Storage.get('__company_id__'),
-        shop_id: Storage.get('__shop_id__'),
+        company_id: companyId,
+        shop_id: shopId,
         ...options.body,
     };
 
@@ -117,6 +123,11 @@ export const customizeFetch = (service = 'api', base) => {
             // const errMessage = codeMessage[response.status] || codeMessage.default;
             // message.error(errMessage);
             // errHandler();
+            unAuthHandler();
+        }
+
+        const result = await response.clone().json();
+        if (result.code === USER_NOT_LOGIN) {
             unAuthHandler();
         }
 
