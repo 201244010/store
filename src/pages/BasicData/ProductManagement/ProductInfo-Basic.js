@@ -39,8 +39,8 @@ const ProductInfoBasic = props => {
                 ))}
             </div>
             <div className={styles['card-column']}>
-                {productBasicExtra.map(extra => (
-                    <div className={styles['card-item']} key={extra.idx || +new Date()}>
+                {productBasicExtra.map((extra, index) => (
+                    <div className={styles['card-item']} key={index}>
                         <span className={styles['item-label']}>{extra.name}：</span>
                         <span className={styles['item-content']}>{extra.context}</span>
                     </div>
