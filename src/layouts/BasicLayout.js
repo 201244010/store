@@ -12,13 +12,13 @@ import { formatMessage } from 'umi/locale';
 import AuthorithCheck from '@/components/AuthorithCheck';
 import Authorized from '@/utils/Authorized';
 import router from 'umi/router';
-import logo from '../assets/menuLogo.png';
+import Storage from '@konata9/storage.js';
 import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
 import { MENU_PREFIX } from '@/constants';
-// import Storage from '@konata9/storage.js';
 import styles from './BasicLayout.less';
+import logo from '../assets/menuLogo.png';
 
 const { Content } = Layout;
 
