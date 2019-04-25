@@ -89,7 +89,7 @@ export default {
             }
         },
 
-        *createNewStore({ payload }, { call }) {
+        *createNewStore({ payload }, { call, put }) {
             const { options } = payload;
             const response = yield call(Action.createStore, options);
             if (response && response.code === ERROR_OK) {
@@ -98,16 +98,24 @@ export default {
                 if (!Storage.get('__shop_id__')) {
                     Storage.set({ __shop_id__: data.shop_id });
                 }
+                yield put({
+                    type: 'getStoreList',
+                    payload: {},
+                });
                 router.push(`${MENU_PREFIX.STORE}/list`);
             }
             return response;
         },
 
-        *updateStore({ payload }, { call }) {
+        *updateStore({ payload }, { call, put }) {
             const { options } = payload;
             const response = yield call(Action.alterStore, options);
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
+                yield put({
+                    type: 'getStoreList',
+                    payload: {},
+                });
                 router.push(`${MENU_PREFIX.STORE}/list`);
             }
             return response;

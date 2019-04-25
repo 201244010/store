@@ -38,9 +38,15 @@ class BasicInfo extends Component {
 
     handleUpload = async file => {
         const { updateIcon } = this.props;
+        const fileType =
+            file.name
+                .split('.')
+                .reverse()[0]
+                .toString() || 'png';
+        const icon = new File([file], `i.${fileType}`);
         await updateIcon({
             options: {
-                icon: file,
+                icon,
             },
         });
     };

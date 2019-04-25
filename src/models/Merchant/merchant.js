@@ -10,7 +10,7 @@ export default {
     namespace: 'merchant',
     state: {
         currentCompanyId: Storage.get('__company_id__'),
-        companyList: [],
+        companyList: Storage.get('__company_list__') || [],
         companyInfo: {},
     },
 
@@ -34,17 +34,19 @@ export default {
             const response = yield call(Actions.getCompanyList);
             if (response && response.code === ERROR_OK) {
                 const result = response.data || {};
+                const companyList = result.company_list || [];
+                Storage.set({ __company_list__: companyList });
                 yield put({
                     type: 'updateState',
                     payload: {
-                        companyList: result.company_list || [],
+                        companyList,
                     },
                 });
                 yield put({
                     type: 'initialCompany',
                     payload: {
                         options: {
-                            company_id_list: result.company_list.map(company => company.company_id),
+                            company_id_list: companyList.map(company => company.company_id),
                         },
                     },
                 });

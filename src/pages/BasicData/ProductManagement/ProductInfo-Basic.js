@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { PRODUCT_TYPE } from '@/constants/mapping';
 import * as styles from './ProductManagement.less';
 
 const ProductInfoBasic = props => {
@@ -14,7 +15,25 @@ const ProductInfoBasic = props => {
                             {formatMessage({ id: product.label })}：
                         </span>
                         <span className={styles['item-content']}>
-                            {product.value < 0 ? '' : product.value}
+                            {!['expire_time', 'Type'].includes(product.key) && product.value}
+                            {product.key === 'expire_time' &&
+                                (product.value < 0 ? (
+                                    ''
+                                ) : (
+                                    <span>
+                                        {product.value}{' '}
+                                        {formatMessage({ id: 'basicData.product.expire_time.day' })}
+                                    </span>
+                                ))}
+                            {product.key === 'Type' && (
+                                <span>
+                                    {formatMessage({
+                                        id:
+                                            PRODUCT_TYPE[`${product.value}`] ||
+                                            'basicData.product.type.normal',
+                                    })}
+                                </span>
+                            )}
                         </span>
                     </div>
                 ))}
