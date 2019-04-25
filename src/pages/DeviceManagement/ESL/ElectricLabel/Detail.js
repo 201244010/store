@@ -1,12 +1,16 @@
 import React from 'react';
 import { Col, Row } from 'antd';
-import { ESL_STATES } from '@/constants';
 import { unixSecondToDate, formatEmpty } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import './index.less';
 
 const ROW_GUTTER = 16;
 const COL_SPAN = 12;
+const ESL_STATES = {
+    0: formatMessage({ id: 'esl.device.esl.push.wait' }),
+    1: formatMessage({ id: 'esl.device.esl.push.success' }),
+    2: formatMessage({ id: 'esl.device.esl.push.fail' }),
+};
 
 export default function detail(props) {
     const { detailInfo } = props;
@@ -55,7 +59,7 @@ export default function detail(props) {
                 </div>
                 <div className="detail-info-item">
                     <span className="detail-info-label">
-                        {formatMessage({ id: 'esl.device.esl.device.status' })}：
+                        {formatMessage({ id: 'esl.device.esl.status' })}：
                     </span>
                     <span className="detail-info-content">{ESL_STATES[eslInfo.status]}</span>
                 </div>
