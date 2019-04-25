@@ -69,7 +69,7 @@ class EditableFormItem extends Component {
 
         return keys.map((key, index) => {
             const labelName = `${labelPrefix}${index + 1}`;
-            const { name, context } = data[index] || {};
+            const { name, [itemDecorator]: value } = data[index] || {};
             const labelProps = {
                 ...labelOption,
                 index,
@@ -88,7 +88,7 @@ class EditableFormItem extends Component {
                         <Col span={14}>
                             <Form.Item {...formItemLayout}>
                                 {getFieldDecorator(`${formKey}.${index}.${itemDecorator}`, {
-                                    initialValue: context || '',
+                                    initialValue: value || '',
                                     ...itemOptions,
                                 })(wrapperItem)}
                             </Form.Item>

@@ -23,3 +23,7 @@ export const MENU_PREFIX = {
     // STORE: '/basicData/storeManagement',
     STORE: '/company/storeManagement',
 };
+
+export const KEY = {
+    ENTER: 13,
+};

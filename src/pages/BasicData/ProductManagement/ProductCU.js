@@ -8,6 +8,7 @@ import ProductCUPrice from './ProductCU-Price';
 import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
 import * as styles from './ProductManagement.less';
+import { PRODUCT_SEQ_EXIST } from '@/constants/errorCode';
 
 @connect(
     state => ({
@@ -53,17 +54,25 @@ class ProductCU extends Component {
             edit: updateProduct,
         };
         const {
-            form: { validateFields },
+            form: { validateFields, setFields },
         } = this.props;
         validateFields(async (err, values) => {
             if (!err) {
-                await submitFunction[action]({
+                const response = await submitFunction[action]({
                     options: {
                         ...values,
                         fromPage,
                         product_id: id,
                     },
                 });
+                if (response && response.code === PRODUCT_SEQ_EXIST) {
+                    setFields({
+                        seq_num: {
+                            values: values.seq_num,
+                            errors: [new Error(formatMessage({ id: 'product.seq_num.isExist' }))],
+                        },
+                    });
+                }
             }
         });
     };

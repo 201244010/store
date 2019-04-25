@@ -32,14 +32,11 @@ const productUnits = [
 class ProductCUBasic extends Component {
     constructor(props) {
         super(props);
+        const { productInfo } = props || {};
         this.state = {
-            extraInfo: props.extra_info || [],
+            extraInfo: productInfo.extra_info || [],
         };
     }
-
-    handleTypeChange = value => {
-        console.log(value);
-    };
 
     extraInfoRemove = index => {
         const { extraInfo } = this.state;
@@ -147,11 +144,7 @@ class ProductCUBasic extends Component {
                             })(
                                 <Select>
                                     {productTypes.map(type => (
-                                        <Select.Option
-                                            key={type.key}
-                                            value={type.value}
-                                            onChange={this.handleTypeChange}
-                                        >
+                                        <Select.Option key={type.key} value={type.value}>
                                             {formatMessage({
                                                 id: `basicData.product.type.${type.key}`,
                                             })}
