@@ -5,12 +5,13 @@ import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { MENU_PREFIX } from '@/constants';
 import * as CookieUtil from '@/utils/cookies';
+import Storage from '@konata9/storage.js';
 
 export default {
     namespace: 'merchant',
     state: {
         currentCompanyId: CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY),
-        companyList: CookieUtil.getCookieByKey(CookieUtil.COMPANY_LIST_KEY) || [],
+        companyList: Storage.get(CookieUtil.COMPANY_LIST_KEY, 'local') || [],
         companyInfo: {},
         loading: false,
     },
@@ -36,7 +37,7 @@ export default {
             if (response && response.code === ERROR_OK) {
                 const result = response.data || {};
                 const companyList = result.company_list || [];
-                CookieUtil.setCookieByKey(CookieUtil.COMPANY_LIST_KEY, companyList);
+                Storage.set({ [CookieUtil.COMPANY_LIST_KEY]: companyList }, 'local');
                 yield put({
                     type: 'updateState',
                     payload: {

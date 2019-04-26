@@ -4,9 +4,10 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import { Button, Divider, List } from 'antd';
 import * as CookieUtil from '@/utils/cookies';
-import styles from './StoreRelate.less';
 import { ERROR_OK } from '@/constants/errorCode';
 import { MENU_PREFIX } from '@/constants';
+import Storage from '@konata9/storage.js';
+import styles from './StoreRelate.less';
 
 @connect(
     state => ({
@@ -24,7 +25,7 @@ class StoreRelate extends Component {
         if (response && response.code === ERROR_OK) {
             const result = response.data || {};
             const shopList = result.shop_list || [];
-            CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, shopList);
+            Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
             if (shopList.length === 0) {
                 router.push(`${MENU_PREFIX.STORE}/createStore`);
             } else {

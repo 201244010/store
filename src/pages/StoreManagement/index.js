@@ -7,6 +7,7 @@ import Storage from '@konata9/storage.js';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { MENU_PREFIX } from '@/constants';
 import styles from './StoreManagement.less';
+import { formatEmpty } from '@/utils/utils';
 
 const FormItem = Form.Item;
 
@@ -37,6 +38,13 @@ const columns = [
         title: formatMessage({ id: 'storeManagement.list.columnAddress' }),
         dataIndex: 'address',
         key: 'address',
+        render: (text, record) => (
+            <>
+                <span>{record ? record.region.split(',').join('/') : ''}</span>
+                <br />
+                <span>{text}</span>
+            </>
+        ),
     },
     {
         title: formatMessage({ id: 'storeManagement.list.columnTypes' }),
@@ -134,11 +142,15 @@ class StoreManagement extends Component {
                 await changeSearchFormValue({
                     options: {
                         keyword: values.keyword,
-                        type_one: values.shopType[0] || 0,
-                        type_two: values.shopType[1] || 0,
+                        type_one: (values.shopType || [])[0] || 0,
+                        type_two: (values.shopType || [])[1] || 0,
                     },
                 });
-                await getStoreList({});
+                await getStoreList({
+                    options: {
+                        type: 'search',
+                    },
+                });
             }
         });
     };
@@ -152,6 +164,8 @@ class StoreManagement extends Component {
                 searchFormValue: { keyword, type_one, type_two },
             },
         } = this.props;
+
+        const formattedList = storeList.map(store => formatEmpty(store, '--'));
 
         return (
             <div className={styles.storeList}>
@@ -216,7 +230,7 @@ class StoreManagement extends Component {
                     {formatMessage({ id: 'storeManagement.list.newBuiltStore' })}
                 </Button>
                 <div className={styles.table}>
-                    <Table rowKey="shop_id" dataSource={storeList} columns={columns} />
+                    <Table rowKey="shop_id" dataSource={formattedList} columns={columns} />
                 </div>
             </div>
         );

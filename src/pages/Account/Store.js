@@ -6,6 +6,7 @@ import * as CookieUtil from '@/utils/cookies';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { connect } from 'dva';
 import { MENU_PREFIX } from '@/constants';
+import { formatEmpty } from '@/utils/utils';
 import * as styles from './Account.less';
 
 @connect(state => ({
@@ -22,7 +23,7 @@ class Store extends Component {
 
     viewStore = company => {
         this.setState({
-            selectedCompany: company,
+            selectedCompany: formatEmpty(company, '--'),
             visible: true,
         });
     };
@@ -103,16 +104,19 @@ class Store extends Component {
                 >
                     <Form {...FORM_ITEM_LAYOUT_COMMON}>
                         <Form.Item
+                            className={styles['margin-clear']}
                             label={formatMessage({ id: 'merchantManagement.merchant.number' })}
                         >
                             <span>{companyId}</span>
                         </Form.Item>
                         <Form.Item
+                            className={styles['margin-clear']}
                             label={formatMessage({ id: 'merchantManagement.merchant.name' })}
                         >
                             <span>{companyName}</span>
                         </Form.Item>
                         <Form.Item
+                            className={styles['margin-clear']}
                             label={formatMessage({
                                 id: 'merchantManagement.merchant.contactPerson',
                             })}
@@ -120,6 +124,7 @@ class Store extends Component {
                             <span>{contactPerson}</span>
                         </Form.Item>
                         <Form.Item
+                            className={styles['margin-clear']}
                             label={formatMessage({
                                 id: 'merchantManagement.merchant.contactPhone',
                             })}
@@ -127,6 +132,7 @@ class Store extends Component {
                             <span>{contactTel}</span>
                         </Form.Item>
                         <Form.Item
+                            className={styles['margin-clear']}
                             label={formatMessage({
                                 id: 'merchantManagement.merchant.contactEmail',
                             })}
