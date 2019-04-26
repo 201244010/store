@@ -111,8 +111,10 @@ export default {
                     type: 'getStoreList',
                     payload: {},
                 });
-                result.then(res => Storage.set({ __shop_list__: res.data.shop_list }));
-                router.push(`${MENU_PREFIX.STORE}/list`);
+                result.then(res => {
+                    Storage.set({ __shop_list__: res.data.shop_list });
+                    router.push(`${MENU_PREFIX.STORE}/list`);
+                });
             }
             return response;
         },
@@ -126,8 +128,10 @@ export default {
                     type: 'getStoreList',
                     payload: {},
                 });
-                result.then(res => Storage.set({ __shop_list__: res.data.shop_list }));
-                router.push(`${MENU_PREFIX.STORE}/list`);
+                result.then(res => {
+                    Storage.set({ __shop_list__: res.data.shop_list });
+                    router.push(`${MENU_PREFIX.STORE}/list`);
+                });
             }
             return response;
         },
