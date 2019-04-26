@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Button, Input } from 'antd';
 import { connect } from 'dva';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import router from 'umi/router';
 import { MENU_PREFIX } from '@/constants';
 import styles from './Merchant.less';
@@ -25,13 +25,13 @@ class MerchantCreate extends Component {
         const response = await getStoreList({});
         const result = response.data || {};
         const shopList = result.shop_list || [];
-        Storage.set({ __shop_list__: shopList });
+        CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, shopList);
         if (shopList.length === 0) {
-            Storage.remove('__shop_id__');
+            CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
             router.push(`${MENU_PREFIX.STORE}/createStore`);
         } else {
             const defaultStore = shopList[0] || {};
-            Storage.set({ __shop_id__: defaultStore.shop_id });
+            CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
             router.push('/');
         }
     };

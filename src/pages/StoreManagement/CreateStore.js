@@ -3,10 +3,11 @@ import { formatMessage } from 'umi/locale';
 import { Form, Button, Input, Radio, Cascader } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
-import Storage from '@konata9/storage.js/src/storage';
-import { cellphone } from '@/constants/regexp';
+import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import styles from './StoreManagement.less';
 import { getLocationParam } from '@/utils/utils';
+import { customValidate } from '@/utils/customValidate';
 
 const FormItem = Form.Item;
 
@@ -52,7 +53,7 @@ class CreateStore extends React.Component {
             getLocationParam('action'),
             getLocationParam('shopId'),
         ];
-        const companyId = Storage.get('__company_id__');
+        const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY);
         const {
             form: { validateFields },
             createNewStore,
@@ -207,13 +208,16 @@ class CreateStore extends React.Component {
                             validateTrigger: 'onBlur',
                             rules: [
                                 {
-                                    pattern: cellphone,
-                                    message: formatMessage({
-                                        id: 'storeManagement.create.phoneMessage',
-                                    }),
+                                    validator: (rule, value, callback) =>
+                                        customValidate({
+                                            field: 'telephone',
+                                            rule,
+                                            value,
+                                            callback,
+                                        }),
                                 },
                             ],
-                        })(<Input maxLength={11} />)}
+                        })(<Input />)}
                     </FormItem>
                     <FormItem label=" " colon={false}>
                         <Button type="primary" onClick={this.handleSubmit}>

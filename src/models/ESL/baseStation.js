@@ -4,7 +4,6 @@ import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { hideSinglePageCheck } from '@/utils/utils';
-import Storage from '@konata9/storage.js';
 
 export default {
     namespace: 'eslBaseStation',
@@ -20,7 +19,7 @@ export default {
         deviceInfoList: [],
         pagination: {
             current: 1,
-            pageSize: Storage.get('deviceStationPageSize') || DEFAULT_PAGE_SIZE,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: 0,
             pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
             showSizeChanger: true,

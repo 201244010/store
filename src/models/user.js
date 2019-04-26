@@ -2,7 +2,7 @@ import * as Actions from '@/services/user';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import router from 'umi/router';
 
 export default {
@@ -12,7 +12,7 @@ export default {
         userInfo: {},
         errorTimes: 0,
         list: [],
-        currentUser: Storage.get('__userInfo__') || {},
+        currentUser: CookieUtil.getCookieByKey(CookieUtil.USER_INFO_KEY) || {},
     },
 
     effects: {
@@ -22,7 +22,7 @@ export default {
 
             if (response && response.code === ERROR_OK) {
                 const token = response.data;
-                Storage.set({ __token__: token });
+                CookieUtil.setCookieByKey(CookieUtil.TOKEN_KEY, token);
             } else {
                 yield put({
                     type: 'computeErrorTime',
@@ -37,7 +37,7 @@ export default {
             yield put({
                 type: 'initState',
             });
-            Storage.clear('session');
+            CookieUtil.clearCookies();
             router.push('/user/login');
         },
         *checkImgCode({ payload }, { call }) {
@@ -52,7 +52,7 @@ export default {
             const response = yield call(Actions.getUserInfo);
             if (response && response.code === ERROR_OK) {
                 const result = response.data || {};
-                Storage.set({ __userInfo__: result });
+                CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, result);
                 yield put({
                     type: 'storeUserInfo',
                     payload: result,
@@ -60,7 +60,7 @@ export default {
             }
         },
         getUserInfoFromStorage() {
-            return Storage.get('__userInfo__') || null;
+            return CookieUtil.getCookieByKey(CookieUtil.USER_INFO_KEY) || null;
         },
         *resetPassword({ payload }, { call }) {
             const { options } = payload;
@@ -78,7 +78,7 @@ export default {
                     username,
                 };
 
-                Storage.set({ __userInfo__: updatedUserInfo });
+                CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, updatedUserInfo);
                 yield put({
                     type: 'storeUserInfo',
                     payload: updatedUserInfo,
@@ -93,7 +93,7 @@ export default {
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'change.password.success' }));
                 // TODO 是否跳转回首页待定
-                // Storage.clear('session');
+                CookieUtil.clearCookies();
                 // router.push('/user/login');
             }
             return response;
@@ -109,7 +109,7 @@ export default {
                     phone,
                 };
 
-                Storage.set({ __userInfo__: updatedUserInfo });
+                CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, updatedUserInfo);
                 yield put({
                     type: 'storeUserInfo',
                     payload: updatedUserInfo,

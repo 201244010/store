@@ -3,14 +3,14 @@ import { ERROR_OK } from '@/constants/errorCode';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
-import Storage from '@konata9/storage.js';
 import { MENU_PREFIX } from '@/constants';
+import * as CookieUtil from '@/utils/cookies';
 
 export default {
     namespace: 'merchant',
     state: {
-        currentCompanyId: Storage.get('__company_id__'),
-        companyList: Storage.get('__company_list__') || [],
+        currentCompanyId: CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY),
+        companyList: CookieUtil.getCookieByKey(CookieUtil.COMPANY_LIST_KEY) || [],
         companyInfo: {},
         loading: false,
     },
@@ -26,7 +26,7 @@ export default {
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'create.success' }));
                 const data = response.data || {};
-                Storage.set({ __company_id__: data.company_id });
+                CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, data.company_id);
             }
             return response;
         },
@@ -36,7 +36,7 @@ export default {
             if (response && response.code === ERROR_OK) {
                 const result = response.data || {};
                 const companyList = result.company_list || [];
-                Storage.set({ __company_list__: companyList });
+                CookieUtil.setCookieByKey(CookieUtil.COMPANY_LIST_KEY, companyList);
                 yield put({
                     type: 'updateState',
                     payload: {

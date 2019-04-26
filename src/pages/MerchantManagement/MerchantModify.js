@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import router from 'umi/router';
 import { customValidate } from '@/utils/customValidate';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import { connect } from 'dva';
 import styles from './Merchant.less';
 import { MENU_PREFIX } from '@/constants';
@@ -35,7 +35,7 @@ class MerchantModify extends Component {
             if (!err) {
                 const payload = {
                     options: {
-                        company_id: Storage.get('__company_id__'),
+                        company_id: CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY),
                         company_name: values.companyName,
                         contact_person: values.contactPerson,
                         contact_tel: values.contactTel,

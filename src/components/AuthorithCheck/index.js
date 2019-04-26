@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import router from 'umi/router';
 
 function AuthorithCheck(WrappedComponent) {
@@ -9,8 +9,8 @@ function AuthorithCheck(WrappedComponent) {
         }
 
         authorityCheck = () => {
-            const userInfo = Storage.get('__token__');
-            if (!userInfo) {
+            const token = CookieUtil.getCookieByKey(CookieUtil.TOKEN_KEY);
+            if (!token) {
                 router.push('/user/login');
             }
         };

@@ -5,6 +5,7 @@ import { message } from 'antd';
 import router from 'umi/router';
 import typecheck from '@konata9/typecheck.js';
 import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import { MENU_PREFIX } from '@/constants';
 
 const cascaderDataWash = (data, mapping) => {
@@ -28,21 +29,21 @@ const cascaderDataWash = (data, mapping) => {
 export default {
     namespace: 'store',
     state: {
+        storeList: CookieUtil.getCookieByKey(CookieUtil.SHOP_LIST_KEY) || [],
         searchFormValue: {
             keyword: '',
             type_one: 0,
             type_two: 0,
         },
-        storeList: Storage.get('__shop_list__') || [],
-        shopType_list: Storage.get('__shopTypeList__', 'local') || [],
-        regionList: Storage.get('__regionList__', 'local') || [],
-        storeInfo: {},
-        loading: false,
         // TODO 下一个准备修改
         getList: {
             data: [],
         },
+        loading: false,
         getOption: {},
+        shopType_list: Storage.get('__shopTypeList__', 'local') || [],
+        regionList: Storage.get('__regionList__', 'local') || [],
+        storeInfo: {},
         alter: {
             name: '',
             type: '',
@@ -104,15 +105,15 @@ export default {
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'storeManagement.message.createSuccess' }));
                 const data = response.data || {};
-                if (!Storage.get('__shop_id__')) {
-                    Storage.set({ __shop_id__: data.shop_id });
+                if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
+                    CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.shop_id);
                 }
                 const result = yield put({
                     type: 'getStoreList',
                     payload: {},
                 });
                 result.then(res => {
-                    Storage.set({ __shop_list__: res.data.shop_list });
+                    CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, res.data.shop_list);
                     router.push(`${MENU_PREFIX.STORE}/list`);
                 });
             }
@@ -129,7 +130,7 @@ export default {
                     payload: {},
                 });
                 result.then(res => {
-                    Storage.set({ __shop_list__: res.data.shop_list });
+                    CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, res.data.shop_list);
                     router.push(`${MENU_PREFIX.STORE}/list`);
                 });
             }

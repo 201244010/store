@@ -70,6 +70,7 @@ class MerchantView extends Component {
                             <span>{contactPerson || '--'}</span>
                         </Form.Item>
                         <Form.Item
+                            className={styles['clear-margin']}
                             label={formatMessage({
                                 id: 'merchantManagement.merchant.contactPhone',
                             })}

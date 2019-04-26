@@ -2,7 +2,7 @@
 import { env, API_ADDRESS, MD5_TOKEN } from '@/config';
 import { cbcEncryption, md5Encryption } from '@/utils/utils';
 import { USER_NOT_LOGIN } from '@/constants/errorCode';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 
 // const codeMessage = {
 //   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
@@ -20,7 +20,7 @@ import Storage from '@konata9/storage.js';
 // };
 
 const unAuthHandler = () => {
-    Storage.clear('session');
+    CookieUtil.clearCookies();
     window.location.href = `${window.location.origin}/user/login?redirect=${encodeURIComponent(
         window.location.pathname
     )}`;
@@ -78,8 +78,8 @@ const formatParams = (options = {}) => {
 };
 
 const customizeParams = (options = {}) => {
-    const companyId = Storage.get('__company_id__');
-    const shopId = Storage.get('__shop_id__');
+    const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY) || '';
+    const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || '';
 
     const opts = {
         company_id: companyId,
@@ -95,7 +95,7 @@ export const customizeFetch = (service = 'api', base) => {
     const baseUrl = base || API_ADDRESS[env];
     return async (api, options = {}, withAuth = true) => {
         const customizedParams = customizeParams(options);
-        const token = Storage.get('__token__') || '';
+        const token = CookieUtil.getCookieByKey(CookieUtil.TOKEN_KEY) || '';
         const opts = {
             method: options.method || 'POST',
             headers: {

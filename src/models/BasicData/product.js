@@ -5,7 +5,7 @@ import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME, MENU_PREFIX } from '@/constants';
 import { hideSinglePageCheck, idEncode } from '@/utils/utils';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 
 const goNext = (fromPage = 'list', options) => {
     const { product_id: id } = options;
@@ -36,7 +36,8 @@ export default {
         importResult: {},
         pagination: {
             current: 1,
-            pageSize: Storage.get('goodsPageSize') || DEFAULT_PAGE_SIZE,
+            pageSize:
+                CookieUtil.getCookieByKey(CookieUtil.GOODS_PAGE_SIZE_KEY) || DEFAULT_PAGE_SIZE,
             total: 0,
             pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
             showSizeChanger: true,
