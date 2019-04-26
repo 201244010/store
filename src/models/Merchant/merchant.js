@@ -22,17 +22,36 @@ export default {
             yield call(Actions.initialCompany, options);
         },
 
-        *companyCreate({ payload }, { call }) {
+        *companyCreate({ payload }, { put, call }) {
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
             const response = yield call(Actions.companyCreate, payload);
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'create.success' }));
                 const data = response.data || {};
                 CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, data.company_id);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
             }
             return response;
         },
 
         *getCompanyList(_, { call, put }) {
+            yield put({
+                type: 'updateState',
+                payload: {
+                    loading: true,
+                },
+            });
             const response = yield call(Actions.getCompanyList);
             if (response && response.code === ERROR_OK) {
                 const result = response.data || {};
@@ -42,6 +61,7 @@ export default {
                     type: 'updateState',
                     payload: {
                         companyList,
+                        loading: false,
                     },
                 });
                 yield put({
@@ -53,6 +73,12 @@ export default {
                     },
                 });
             } else {
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        loading: false,
+                    },
+                });
                 router.push('/user/login');
             }
             return response;

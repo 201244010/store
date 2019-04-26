@@ -88,6 +88,15 @@ export const formatEmpty = (data, blank = '') => {
     return copyData;
 };
 
+export const formatEmptyWithoutZero = (data, blank = '') => {
+    const copyData = Object.assign({}, data);
+    const keys = Object.keys(copyData);
+    keys.forEach(item => {
+        copyData[item] = !copyData[item] && copyData[item] !== 0 ? blank : copyData[item];
+    });
+    return copyData;
+};
+
 export const unixSecondToDate = (second, formatStr = 'YYYY-MM-DD HH:mm:ss') =>
     moment.unix(second).isValid()
         ? moment

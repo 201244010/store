@@ -7,7 +7,7 @@ import Storage from '@konata9/storage.js';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { MENU_PREFIX } from '@/constants';
 import styles from './StoreManagement.less';
-import { formatEmpty } from '@/utils/utils';
+import { formatEmptyWithoutZero } from '@/utils/utils';
 
 const FormItem = Form.Item;
 
@@ -162,10 +162,11 @@ class StoreManagement extends Component {
                 storeList,
                 shopType_list,
                 searchFormValue: { keyword, type_one, type_two },
+                loading,
             },
         } = this.props;
 
-        const formattedList = storeList.map(store => formatEmpty(store, '--'));
+        const formattedList = storeList.map(store => formatEmptyWithoutZero(store, '--'));
 
         return (
             <div className={styles.storeList}>
@@ -221,6 +222,7 @@ class StoreManagement extends Component {
                     </Form>
                 </div>
                 <Button
+                    loading={loading}
                     type="primary"
                     icon="plus"
                     onClick={() => {

@@ -66,6 +66,7 @@ class MerchantCreate extends Component {
     render() {
         const {
             form: { getFieldDecorator },
+            merchant: { loading },
         } = this.props;
         return (
             <div className={styles['create-wrapper']}>
@@ -93,6 +94,7 @@ class MerchantCreate extends Component {
                         )}
                     </Form.Item>
                     <Button
+                        loading={loading}
                         type="primary"
                         block
                         onClick={this.createMerchant}

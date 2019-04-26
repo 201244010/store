@@ -80,7 +80,7 @@ export default {
 
     'basicData.erp.sdnm.key.isEmpty': '请输入市场key',
     'basicData.erp.sdnm.secret.isEmpty': '请输入市场secret',
-    'basicData.erp.sdnm.key.error': '市场key或者市场secret错误，请重新输入',
+    'basicData.erp.sdnm.key.error': '市场key或者市场secret已被使用，请重新输入',
     'basicData.erp.kwyls.shopId.isEmpty': '请输入门店编号',
     'basicData.erp.kwyls.account.isEmpty': '请输入账号',
     'basicData.erp.kwyls.password.isEmpty': '请输入密码',

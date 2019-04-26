@@ -69,6 +69,7 @@ class MerchantModify extends Component {
         const {
             form: { getFieldDecorator },
             merchant: {
+                loading,
                 companyInfo: {
                     company_id,
                     company_name,
@@ -151,7 +152,7 @@ class MerchantModify extends Component {
                             })(<Input />)}
                         </Form.Item>
                         <Form.Item label=" " colon={false}>
-                            <Button type="primary" onClick={this.saveInfo}>
+                            <Button type="primary" loading={loading} onClick={this.saveInfo}>
                                 {formatMessage({ id: 'btn.save' })}
                             </Button>
                             <Button style={{ marginLeft: 20 }} onClick={this.cancel}>
