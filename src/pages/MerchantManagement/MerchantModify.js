@@ -102,7 +102,7 @@ class MerchantModify extends Component {
                                         }),
                                     },
                                 ],
-                            })(<Input />)}
+                            })(<Input maxLength={40} />)}
                         </Form.Item>
                         <Form.Item
                             label={formatMessage({
@@ -132,7 +132,7 @@ class MerchantModify extends Component {
                                             }),
                                     },
                                 ],
-                            })(<Input maxLength={11} />)}
+                            })(<Input />)}
                         </Form.Item>
                         <Form.Item
                             label={formatMessage({

@@ -5,10 +5,11 @@ import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import ProductCUBasic from './ProductCU-Basic';
 import ProductCUPrice from './ProductCU-Price';
-import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
+import { getLocationParam, idDecode } from '@/utils/utils';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
+import { ERROR_OK, PRODUCT_SEQ_EXIST } from '@/constants/errorCode';
+import { MENU_PREFIX } from '@/constants';
 import * as styles from './ProductManagement.less';
-import { PRODUCT_SEQ_EXIST } from '@/constants/errorCode';
 
 @connect(
     state => ({
@@ -24,18 +25,49 @@ import { PRODUCT_SEQ_EXIST } from '@/constants/errorCode';
 )
 @Form.create()
 class ProductCU extends Component {
-    componentDidMount() {
+    constructor(props) {
+        super(props);
+        this.state = {
+            productBasicExtra: [],
+            productPriceExtra: [],
+        };
+    }
+
+    async componentDidMount() {
         const { getProductDetail, clearState } = this.props;
         const [action = 'create', id = ''] = [getLocationParam('action'), getLocationParam('id')];
         if (action === 'create') {
             clearState();
         } else if (action === 'edit') {
             const productId = idDecode(id);
-            getProductDetail({
+            const response = await getProductDetail({
                 options: { product_id: productId },
             });
+            if (response && response.code === ERROR_OK) {
+                const result = response.data || {};
+                this.setState({
+                    productBasicExtra: result.extra_info,
+                    productPriceExtra: result.extra_price_info,
+                });
+            }
         }
     }
+
+    extraInfoRemove = (index, type) => {
+        const { productBasicExtra, productPriceExtra } = this.state;
+        let [editInfo, field] = [[], 'productBasicExtra'];
+        if (type === 'info') {
+            editInfo = [...productBasicExtra];
+            field = 'productBasicExtra';
+        } else {
+            editInfo = [...productPriceExtra];
+            field = 'productPriceExtra';
+        }
+        editInfo.splice(index, 1);
+        this.setState({
+            [field]: editInfo,
+        });
+    };
 
     onSubmit = () => {
         const {
@@ -78,22 +110,18 @@ class ProductCU extends Component {
     };
 
     goBack = () => {
-        const {
-            product: {
-                productInfo: { id = idDecode(getLocationParam('id')) },
-            },
-        } = this.props;
         const from = getLocationParam('from');
-        const pathPrefix = '/basicData/productManagement';
+        const id = getLocationParam('id');
         const path = {
-            detail: `${pathPrefix}/list/productInfo?id=${idEncode(id)}`,
-            list: `${pathPrefix}/list`,
+            detail: `${MENU_PREFIX.PRODUCT}/productInfo?id=${id}`,
+            list: `${MENU_PREFIX.PRODUCT}`,
         };
 
         router.push(path[from] || path.list);
     };
 
     render() {
+        const { productBasicExtra, productPriceExtra } = this.state;
         const {
             form,
             product: { productInfo },
@@ -108,9 +136,23 @@ class ProductCU extends Component {
                         ...FORM_ITEM_LAYOUT,
                     }}
                 >
-                    <ProductCUBasic {...{ form, productInfo }} />
+                    <ProductCUBasic
+                        {...{
+                            form,
+                            productInfo,
+                            productBasicExtra,
+                            remove: this.extraInfoRemove,
+                        }}
+                    />
 
-                    <ProductCUPrice {...{ form, productInfo }} />
+                    <ProductCUPrice
+                        {...{
+                            form,
+                            productInfo,
+                            productPriceExtra,
+                            remove: this.extraInfoRemove,
+                        }}
+                    />
 
                     <Row>
                         <Col span={12}>

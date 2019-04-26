@@ -7,6 +7,7 @@ export const getList = (options = {}) => {
     const opt = {
         body: {
             ...options,
+            page_size: 999,
         },
     };
     return fetchApi('getList', opt).then(response => response.json());

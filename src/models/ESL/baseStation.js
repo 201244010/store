@@ -47,7 +47,6 @@ export default {
                 ],
             });
         },
-
         *fetchBaseStations({ payload = {} }, { call, put, select }) {
             const { options = {} } = payload;
             const { pagination, searchFormValues } = yield select(state => state.eslBaseStation);
@@ -67,14 +66,14 @@ export default {
                     data: result.ap_list || [],
                     pagination: {
                         ...pagination,
-                        current: options.current,
+                        current: opts.current,
+                        pageSize: opts.pageSize,
                         total: Number(result.total_count) || 0,
                         hideOnSinglePage: hideSinglePageCheck(result.total_count),
                     },
                 },
             });
         },
-
         *changeSearchFormValue({ payload = {} }, { put }) {
             const { options = {} } = payload;
             yield put({
@@ -84,7 +83,6 @@ export default {
                 },
             });
         },
-
         *getBaseStationDetail({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
@@ -110,7 +108,6 @@ export default {
             }
             return response;
         },
-
         *deleteBaseStation({ payload = {} }, { call, put, select }) {
             const {
                 pagination: { current },
@@ -150,7 +147,6 @@ export default {
             }
         },
     },
-
     reducers: {
         updateState(state, action) {
             return {

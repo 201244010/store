@@ -59,6 +59,7 @@ export default {
                     pagination: {
                         ...pagination,
                         current: opts.current,
+                        pageSize: opts.pageSize,
                         total: Number(result.total_count) || 0,
                         hideOnSinglePage: hideSinglePageCheck(result.total_count) || true,
                     },
