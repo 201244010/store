@@ -162,6 +162,7 @@ class StoreManagement extends Component {
                 storeList,
                 shopType_list,
                 searchFormValue: { keyword, type_one, type_two },
+                loading,
             },
         } = this.props;
 
@@ -221,6 +222,7 @@ class StoreManagement extends Component {
                     </Form>
                 </div>
                 <Button
+                    loading={loading}
                     type="primary"
                     icon="plus"
                     onClick={() => {
