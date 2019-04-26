@@ -3,7 +3,7 @@ import { Table, Form, Input, Button, Row, Col, Cascader } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
-import Storage from '@konata9/storage.js/src/storage';
+import Storage from '@konata9/storage.js';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { MENU_PREFIX } from '@/constants';
 import styles from './StoreManagement.less';
@@ -180,7 +180,7 @@ class StoreManagement extends Component {
                                     })}
                                 >
                                     {getFieldDecorator('shopType', {
-                                        initialValue: [type_one, type_two],
+                                        initialValue: type_one ? [type_one, type_two] : undefined,
                                     })(
                                         <Cascader
                                             placeholder={formatMessage({

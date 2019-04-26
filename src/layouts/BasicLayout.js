@@ -12,7 +12,7 @@ import { formatMessage } from 'umi/locale';
 import AuthorithCheck from '@/components/AuthorithCheck';
 import Authorized from '@/utils/Authorized';
 import router from 'umi/router';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
@@ -152,7 +152,7 @@ class BasicLayout extends React.PureComponent {
     };
 
     checkStore = () => {
-        const shopList = Storage.get('__shop_list__') || [];
+        const shopList = CookieUtil.getCookieByKey(CookieUtil.SHOP_LIST_KEY);
         if (shopList.length === 0) {
             message.warning(formatMessage({ id: 'alert.store.is.none' }));
             router.push(`${MENU_PREFIX.STORE}/createStore?action=create`);

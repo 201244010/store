@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Card, List, Button, Modal, Form } from 'antd';
 import router from 'umi/router';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { connect } from 'dva';
 import { MENU_PREFIX } from '@/constants';
@@ -93,7 +93,7 @@ class Store extends Component {
                             <Button style={{ marginLeft: 20 }} onClick={this.cancel}>
                                 {formatMessage({ id: 'btn.back' })}
                             </Button>
-                            {companyId === Storage.get('__company_id__') && (
+                            {companyId === CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY) && (
                                 <Button type="primary" onClick={() => this.toPath('update')}>
                                     {formatMessage({ id: 'btn.alter' })}
                                 </Button>

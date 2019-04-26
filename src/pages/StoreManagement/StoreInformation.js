@@ -58,42 +58,72 @@ class StoreInformation extends React.Component {
                     {formatMessage({ id: 'storeManagement.info.title' })}
                 </h3>
                 <Form labelCol={{ span: 3 }} wrapperCol={{ span: 9 }}>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.id' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.id' })}
+                    >
                         {shop_id}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.nameLabel' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.nameLabel' })}
+                    >
                         {shop_name}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.typeLabel' })}
+                    >
                         {type_name}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.statusLabel' })}
+                    >
                         {business_status === 0
                             ? formatMessage({ id: 'storeManagement.create.status.open' })
                             : formatMessage({ id: 'storeManagement.create.status.closed' })}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.address' })}>
-                        {region.replace(/,/g, ' / ')}
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.address' })}
+                    >
+                        {region ? region.split(',').join('/') : '--'}
                     </Form.Item>
-                    <Form.Item label=" " colon={false}>
+                    <Form.Item className={styles['clear-margin']} label=" " colon={false}>
                         {address}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.daysLabel' })}
+                    >
                         {business_hours}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.contactName' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.contactName' })}
+                    >
                         {contact_person || '--'}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.contactPhone' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.contactPhone' })}
+                    >
                         {contact_tel}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.info.create' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.info.create' })}
+                    >
                         {unixSecondToDate(created_time)}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.info.update' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.info.update' })}
+                    >
                         {unixSecondToDate(modified_time)}
                     </Form.Item>
-                    <Form.Item label=" " colon={false}>
+                    <Form.Item className={styles['clear-margin']} label=" " colon={false}>
                         <Button type="primary" onClick={() => this.toPath('edit')}>
                             {formatMessage({ id: 'storeManagement.info.modify' })}
                         </Button>

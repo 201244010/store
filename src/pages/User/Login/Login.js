@@ -7,7 +7,7 @@ import { Tabs, Form, Input, Button, Icon, Alert, Modal, message } from 'antd';
 import { encryption } from '@/utils/utils';
 import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK, ALERT_NOTICE_MAP, VCODE_ERROR, SHOW_VCODE } from '@/constants/errorCode';
 import { MENU_PREFIX, KEY } from '@/constants';
 import styles from './Login.less';
@@ -143,13 +143,13 @@ class Login extends Component {
         if (response && response.code === ERROR_OK) {
             const result = response.data || {};
             const shopList = result.shop_list || [];
-            Storage.set({ __shop_list__: shopList });
+            CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, shopList);
             if (shopList.length === 0) {
                 router.push(`${MENU_PREFIX.STORE}/createStore`);
             } else {
                 const lastStore = shopList.length;
                 const defaultStore = shopList[lastStore - 1] || {};
-                Storage.set({ __shop_id__: defaultStore.shop_id });
+                CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
                 router.push('/');
             }
         }
@@ -166,7 +166,7 @@ class Login extends Component {
                 router.push('/merchant/create');
             } else if (companys === 1) {
                 const companyInfo = companyList[0] || {};
-                Storage.set({ __company_id__: companyInfo.company_id });
+                CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, companyInfo.company_id);
                 this.checkStoreExist();
             } else {
                 router.push('/user/storeRelate');
