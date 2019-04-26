@@ -117,8 +117,12 @@ export default {
                     type: 'getStoreList',
                     payload: {},
                 });
-                result.then(res => {
+                result.then(async res => {
                     Storage.set({ [CookieUtil.SHOP_LIST_KEY]: res.data.shop_list }, 'local');
+                    await put({
+                        type: 'getStoreList',
+                        payload: {},
+                    });
                     router.push(`${MENU_PREFIX.STORE}/list`);
                 });
             }
@@ -134,8 +138,12 @@ export default {
                     type: 'getStoreList',
                     payload: {},
                 });
-                result.then(res => {
+                result.then(async res => {
                     Storage.set({ [CookieUtil.SHOP_LIST_KEY]: res.data.shop_list }, 'local');
+                    await put({
+                        type: 'getStoreList',
+                        payload: {},
+                    });
                     router.push(`${MENU_PREFIX.STORE}/list`);
                 });
             }
