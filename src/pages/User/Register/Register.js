@@ -163,7 +163,8 @@ class Register extends Component {
             form: { validateFields },
             register,
         } = this.props;
-        validateFields(async (err, values) => {
+        const fields = ['username', 'code', 'password', 'confirm'];
+        validateFields(fields, async (err, values) => {
             if (!err) {
                 const options = {
                     ...values,
