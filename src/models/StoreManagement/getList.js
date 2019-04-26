@@ -5,6 +5,7 @@ import { message } from 'antd';
 import router from 'umi/router';
 import typecheck from '@konata9/typecheck.js';
 import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import { MENU_PREFIX } from '@/constants';
 
 const cascaderDataWash = (data, mapping) => {
@@ -28,7 +29,7 @@ const cascaderDataWash = (data, mapping) => {
 export default {
     namespace: 'store',
     state: {
-        storeList: Storage.get('__shop_list__') || [],
+        storeList: CookieUtil.getCookieByKey(CookieUtil.SHOP_LIST_KEY) || [],
         // TODO 下一个准备修改
         getList: {
             data: [],
@@ -63,7 +64,7 @@ export default {
             if (response && response.code === ERROR_OK) {
                 const data = response.data || {};
                 const shopList = data.shop_list || [];
-                Storage.set({ __shop_list__: shopList });
+                CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, shopList);
                 yield put({
                     type: 'updateState',
                     payload: {
@@ -95,8 +96,8 @@ export default {
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'storeManagement.message.createSuccess' }));
                 const data = response.data || {};
-                if (!Storage.get('__shop_id__')) {
-                    Storage.set({ __shop_id__: data.shop_id });
+                if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
+                    CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.shop_id);
                 }
                 yield put({
                     type: 'getStoreList',

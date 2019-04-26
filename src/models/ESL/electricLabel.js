@@ -3,7 +3,6 @@ import * as TemplateServices from '@/services/ESL/template';
 import * as ProductServices from '@/services/ESL/product';
 import { hideSinglePageCheck } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
-import Storage from '@konata9/storage.js';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 import { message } from 'antd';
@@ -19,7 +18,7 @@ export default {
         },
         pagination: {
             current: 1,
-            pageSize: Storage.get('deviceStationPageSize') || DEFAULT_PAGE_SIZE,
+            pageSize: DEFAULT_PAGE_SIZE,
             total: 0,
             pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
             showSizeChanger: true,

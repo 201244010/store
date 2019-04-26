@@ -4,7 +4,7 @@ import { Spin, Tag, Menu, Icon, Avatar, Select } from 'antd';
 import moment from 'moment';
 import groupBy from 'lodash/groupBy';
 // import { NoticeIcon } from 'ant-design-pro';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 // import HeaderSearch from '../HeaderSearch';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
@@ -64,7 +64,7 @@ export default class GlobalHeaderRight extends PureComponent {
     };
 
     handleStoreChange = storeId => {
-        Storage.set({ __shop_id__: storeId });
+        CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeId);
         window.location.reload();
     };
 
@@ -97,7 +97,7 @@ export default class GlobalHeaderRight extends PureComponent {
         if (theme === 'dark') {
             className = `${styles.right}  ${styles.dark}`;
         }
-        const defaultShop = Storage.get('__shop_id__');
+        const defaultShop = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
 
         return (
             <div className={className}>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Divider, Modal, Table, Button } from 'antd';
 import { idEncode, unixSecondToDate } from '@/utils/utils';
 import router from 'umi/router';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import { formatMessage } from 'umi/locale';
 import { MENU_PREFIX } from '@/constants';
 import * as styles from './ProductManagement.less';
@@ -17,7 +17,7 @@ class SearchResult extends Component {
 
     onTableChange = pagination => {
         const { fetchProductList } = this.props;
-        Storage.set({ goodsPageSize: pagination.pageSize });
+        CookieUtil.setCookieByKey(CookieUtil.GOODS_PAGE_SIZE_KEY, pagination.pageSize);
         fetchProductList({
             options: {
                 pageSize: pagination.pageSize,

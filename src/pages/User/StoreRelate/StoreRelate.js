@@ -3,7 +3,7 @@ import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { connect } from 'dva';
 import { Button, Divider, List } from 'antd';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import styles from './StoreRelate.less';
 import { ERROR_OK } from '@/constants/errorCode';
 import { MENU_PREFIX } from '@/constants';
@@ -29,14 +29,14 @@ class StoreRelate extends Component {
             } else {
                 const lastStore = storeList.length;
                 const defaultStore = storeList[lastStore - 1] || {};
-                Storage.set({ __shop_id__: defaultStore.shop_id });
+                CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
                 router.push('/');
             }
         }
     };
 
     enterSystem = company => {
-        Storage.set({ __company_id__: company.company_id });
+        CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, company.company_id);
         this.checkStoreExist();
     };
 

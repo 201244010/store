@@ -3,7 +3,7 @@ import { formatMessage } from 'umi/locale';
 import { Form, Select, Button, Input, Radio, message } from 'antd';
 import router from 'umi/router';
 import { connect } from 'dva';
-import storage from '@konata9/storage.js/src/storage';
+import * as CookieUtil from '@/utils/cookies';
 import { getLocationParam } from '@/utils/utils';
 import styles from './StoreManagement.less';
 import { MENU_PREFIX } from '@/constants';
@@ -24,7 +24,7 @@ class AlterStore extends React.Component {
     state = {
         option: [],
         shopId: '',
-        companyId: storage.get('__company_id__'),
+        companyId: CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY),
     };
 
     componentDidMount() {

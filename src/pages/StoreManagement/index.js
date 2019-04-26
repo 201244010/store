@@ -3,7 +3,7 @@ import { Table, Form, Input, Select, Button, Row, Col } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
-import storage from '@konata9/storage.js/src/storage';
+import * as CookieUtil from '@/utils/cookies';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { MENU_PREFIX } from '@/constants';
 import styles from './StoreManagement.less';
@@ -101,7 +101,7 @@ class StoreManagement extends Component {
     }
 
     initFetch = () => {
-        const companyId = storage.get('__company_id__');
+        const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY);
         this.setState({ companyId });
         const { getArray } = this.props;
         const payload = {
