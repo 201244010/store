@@ -43,6 +43,7 @@ class StoreInformation extends React.Component {
             shop_name = '--',
             type_name = '--',
             business_status = '--',
+            region,
             address = '--',
             business_hours = '--',
             contact_person = '--',
@@ -72,6 +73,9 @@ class StoreInformation extends React.Component {
                             : formatMessage({ id: 'storeManagement.create.status.closed' })}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.address' })}>
+                        {region.replace(/,/g, ' / ')}
+                    </Form.Item>
+                    <Form.Item label=" " colon={false}>
                         {address}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>
