@@ -73,7 +73,7 @@ class StoreInformation extends React.Component {
                             : formatMessage({ id: 'storeManagement.create.status.closed' })}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.address' })}>
-                        {region.replace(/,/g, ' / ')}
+                        {region ? region.split(',').join('/') : '--'}
                     </Form.Item>
                     <Form.Item label=" " colon={false}>
                         {address}
