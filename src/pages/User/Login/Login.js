@@ -8,6 +8,7 @@ import { encryption } from '@/utils/utils';
 import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import * as CookieUtil from '@/utils/cookies';
+import Storage from '@konata9/storage.js';
 import { ERROR_OK, ALERT_NOTICE_MAP, VCODE_ERROR, SHOW_VCODE } from '@/constants/errorCode';
 import { MENU_PREFIX, KEY } from '@/constants';
 import styles from './Login.less';
@@ -143,7 +144,7 @@ class Login extends Component {
         if (response && response.code === ERROR_OK) {
             const result = response.data || {};
             const shopList = result.shop_list || [];
-            CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, shopList);
+            Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
             if (shopList.length === 0) {
                 router.push(`${MENU_PREFIX.STORE}/createStore`);
             } else {
