@@ -83,6 +83,7 @@ class MerchantCreate extends Component {
                             ],
                         })(
                             <Input
+                                maxLength={40}
                                 style={{ height: 42 }}
                                 placeholder={formatMessage({
                                     id: 'merchantManagement.merchant.inputMerchant',

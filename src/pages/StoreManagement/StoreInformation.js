@@ -3,7 +3,7 @@ import { Form, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { getLocationParam, unixSecondToDate } from '@/utils/utils';
+import { formatEmpty, getLocationParam, unixSecondToDate } from '@/utils/utils';
 import styles from './StoreManagement.less';
 import { MENU_PREFIX } from '@/constants';
 
@@ -35,21 +35,21 @@ class StoreInformation extends React.Component {
 
     render() {
         const {
-            store: {
-                storeInfo: {
-                    shop_id,
-                    shop_name,
-                    type_name,
-                    business_status,
-                    address,
-                    business_hours,
-                    contact_person,
-                    contact_tel,
-                    created_time,
-                    modified_time,
-                },
-            },
+            store: { storeInfo },
         } = this.props;
+
+        const {
+            shop_id = '--',
+            shop_name = '--',
+            type_name = '--',
+            business_status = '--',
+            address = '--',
+            business_hours = '--',
+            contact_person = '--',
+            contact_tel = '--',
+            created_time = '--',
+            modified_time = '--',
+        } = formatEmpty(storeInfo, '--');
 
         return (
             <div className={styles.storeList}>
@@ -78,7 +78,7 @@ class StoreInformation extends React.Component {
                         {business_hours}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.contactName' })}>
-                        {contact_person}
+                        {contact_person || '--'}
                     </Form.Item>
                     <Form.Item label={formatMessage({ id: 'storeManagement.create.contactPhone' })}>
                         {contact_tel}

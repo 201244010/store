@@ -128,6 +128,7 @@ class CreateStore extends React.Component {
                             ],
                         })(
                             <Input
+                                maxLength={20}
                                 placeholder={formatMessage({
                                     id: 'storeManagement.create.namePlaceHolder',
                                 })}

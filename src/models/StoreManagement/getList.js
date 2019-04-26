@@ -107,10 +107,11 @@ export default {
                 if (!Storage.get('__shop_id__')) {
                     Storage.set({ __shop_id__: data.shop_id });
                 }
-                yield put({
+                const result = yield put({
                     type: 'getStoreList',
                     payload: {},
                 });
+                result.then(res => Storage.set({ __shop_list__: res.data.shop_list }));
                 router.push(`${MENU_PREFIX.STORE}/list`);
             }
             return response;
@@ -121,10 +122,11 @@ export default {
             const response = yield call(Action.alterStore, options);
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
-                yield put({
+                const result = yield put({
                     type: 'getStoreList',
                     payload: {},
                 });
+                result.then(res => Storage.set({ __shop_list__: res.data.shop_list }));
                 router.push(`${MENU_PREFIX.STORE}/list`);
             }
             return response;
