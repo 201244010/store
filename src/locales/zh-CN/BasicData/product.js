@@ -125,7 +125,7 @@ export default {
     'product.name.isEmpty': '请输入商品名称',
     'product.price.isEmpty': '请输入商品价格',
     'product.price.isFormatted': '请输入正确的商品价格',
-    'product.production_date.isFormatted': '请输入正确的保质期',
+    'product.expire_time.isFormatted': '请输入正确的保质期',
     'product.create.error': '商品创建失败',
     'product.update.error': '商品更新失败',
 };

@@ -3,6 +3,7 @@ import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
+import Storage from '@konata9/storage.js';
 import router from 'umi/router';
 
 export default {
@@ -38,6 +39,7 @@ export default {
                 type: 'initState',
             });
             CookieUtil.clearCookies();
+            Storage.remove([CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY], 'local');
             router.push('/user/login');
         },
         *checkImgCode({ payload }, { call }) {
