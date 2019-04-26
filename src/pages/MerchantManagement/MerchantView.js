@@ -50,16 +50,19 @@ class MerchantView extends Component {
                 <div className={styles['form-content']}>
                     <Form {...FORM_ITEM_LAYOUT_BUSINESS}>
                         <Form.Item
+                            className={styles['clear-margin']}
                             label={formatMessage({ id: 'merchantManagement.merchant.number' })}
                         >
                             <span>{companyId || '--'}</span>
                         </Form.Item>
                         <Form.Item
+                            className={styles['clear-margin']}
                             label={formatMessage({ id: 'merchantManagement.merchant.name' })}
                         >
                             <span>{companyName || '--'}</span>
                         </Form.Item>
                         <Form.Item
+                            className={styles['clear-margin']}
                             label={formatMessage({
                                 id: 'merchantManagement.merchant.contactPerson',
                             })}
@@ -74,6 +77,7 @@ class MerchantView extends Component {
                             <span>{contactTel || '--'}</span>
                         </Form.Item>
                         <Form.Item
+                            className={styles['clear-margin']}
                             label={formatMessage({
                                 id: 'merchantManagement.merchant.contactEmail',
                             })}
@@ -81,16 +85,18 @@ class MerchantView extends Component {
                             <span>{contactEmail || '--'}</span>
                         </Form.Item>
                         <Form.Item
+                            className={styles['clear-margin']}
                             label={formatMessage({ id: 'merchantManagement.merchant.createTime' })}
                         >
                             <span>{unixSecondToDate(createTime) || '--'}</span>
                         </Form.Item>
                         <Form.Item
+                            className={styles['clear-margin']}
                             label={formatMessage({ id: 'merchantManagement.merchant.updateTime' })}
                         >
                             <span>{unixSecondToDate(modifyTime) || '--'}</span>
                         </Form.Item>
-                        <Form.Item label=" " colon={false}>
+                        <Form.Item className={styles['clear-margin']} label=" " colon={false}>
                             <Button type="primary" onClick={() => this.goNext('update')}>
                                 {formatMessage({ id: 'btn.alter' })}
                             </Button>
