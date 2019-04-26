@@ -17,7 +17,7 @@ const keyMap = {
     [TOKEN_KEY]: TOKEN_KEY,
     [GOODS_PAGE_SIZE_KEY]: GOODS_PAGE_SIZE_KEY,
     [COMPANY_LIST_KEY]: COMPANY_LIST_KEY,
-    [SHOP_LIST_KEY]: SHOP_LIST_KEY
+    [SHOP_LIST_KEY]: SHOP_LIST_KEY,
 };
 
 export const setCookieByKey = (key, value) => {
@@ -28,7 +28,7 @@ export const setCookieByKey = (key, value) => {
     }
 };
 
-export const getCookieByKey = (key) => {
+export const getCookieByKey = key => {
     const value = Cookies.get(keyMap[key]);
     let ret;
     try {
@@ -40,7 +40,7 @@ export const getCookieByKey = (key) => {
     return ret;
 };
 
-export const removeCookieByKey = (key) => {
+export const removeCookieByKey = key => {
     Cookies.remove(key);
 };
 

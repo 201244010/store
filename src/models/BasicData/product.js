@@ -36,7 +36,8 @@ export default {
         importResult: {},
         pagination: {
             current: 1,
-            pageSize: CookieUtil.getCookieByKey(CookieUtil.GOODS_PAGE_SIZE_KEY) || DEFAULT_PAGE_SIZE,
+            pageSize:
+                CookieUtil.getCookieByKey(CookieUtil.GOODS_PAGE_SIZE_KEY) || DEFAULT_PAGE_SIZE,
             total: 0,
             pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
             showSizeChanger: true,

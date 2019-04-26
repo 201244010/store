@@ -4,7 +4,7 @@ import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { MENU_PREFIX } from '@/constants';
-import * as CookieUtil from '@/utils/cookies'
+import * as CookieUtil from '@/utils/cookies';
 
 export default {
     namespace: 'merchant',

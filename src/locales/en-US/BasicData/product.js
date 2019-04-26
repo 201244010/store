@@ -75,7 +75,7 @@ export default {
         '2. 初次完成对接，或修改对接平台信息后，原有商品信息将被清空；',
     'basicData.erp.description.list3':
         '3. 完成对接后，无法在SUNMI Store中修改商品信息，请在ERP中进行修改；',
-    'basicData.erp.import.success': '数据导入成功',
+    'basicData.erp.import.success': '对接成功，正在同步商品信息...',
     'basicData.erp.import.fail': '数据导入失败',
 
     'basicData.erp.sdnm.key.isEmpty': '请输入市场key',
@@ -85,6 +85,9 @@ export default {
     'basicData.erp.kwyls.account.isEmpty': '请输入账号',
     'basicData.erp.kwyls.password.isEmpty': '请输入密码',
     'basicData.erp.kwyls.key.error': '账号或密码错误，请重新输入',
+
+    'basicData.erp.confirm.title': '确定要保存设置，开始同步商品？',
+    'basicData.erp.confirm.content': '保存后，原有商品信息将被清空，并开始同步ERP中的商品。',
 
     'basicData.product.delete.success': '删除商品成功',
     'basicData.product.delete.fail': '删除商品成功',
@@ -123,4 +126,6 @@ export default {
     'product.price.isEmpty': '请输入商品价格',
     'product.price.isFormatted': '请输入正确的商品价格',
     'product.production_date.isFormatted': '请输入正确的保质期',
+    'product.create.error': '商品创建失败',
+    'product.update.error': '商品更新失败',
 };

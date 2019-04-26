@@ -3,7 +3,7 @@ import { Form, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { getLocationParam, unixSecondToDate } from '@/utils/utils';
+import { formatEmpty, getLocationParam, unixSecondToDate } from '@/utils/utils';
 import styles from './StoreManagement.less';
 import { MENU_PREFIX } from '@/constants';
 
@@ -35,21 +35,22 @@ class StoreInformation extends React.Component {
 
     render() {
         const {
-            store: {
-                storeInfo: {
-                    shop_id,
-                    shop_name,
-                    type_name,
-                    business_status,
-                    address,
-                    business_hours,
-                    contact_person,
-                    contact_tel,
-                    created_time,
-                    modified_time,
-                },
-            },
+            store: { storeInfo },
         } = this.props;
+
+        const {
+            shop_id = '--',
+            shop_name = '--',
+            type_name = '--',
+            business_status = '--',
+            region,
+            address = '--',
+            business_hours = '--',
+            contact_person = '--',
+            contact_tel = '--',
+            created_time = '--',
+            modified_time = '--',
+        } = formatEmpty(storeInfo, '--');
 
         return (
             <div className={styles.storeList}>
@@ -57,39 +58,72 @@ class StoreInformation extends React.Component {
                     {formatMessage({ id: 'storeManagement.info.title' })}
                 </h3>
                 <Form labelCol={{ span: 3 }} wrapperCol={{ span: 9 }}>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.id' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.id' })}
+                    >
                         {shop_id}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.nameLabel' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.nameLabel' })}
+                    >
                         {shop_name}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.typeLabel' })}
+                    >
                         {type_name}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.statusLabel' })}
+                    >
                         {business_status === 0
                             ? formatMessage({ id: 'storeManagement.create.status.open' })
                             : formatMessage({ id: 'storeManagement.create.status.closed' })}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.address' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.address' })}
+                    >
+                        {region ? region.split(',').join('/') : '--'}
+                    </Form.Item>
+                    <Form.Item className={styles['clear-margin']} label=" " colon={false}>
                         {address}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.daysLabel' })}
+                    >
                         {business_hours}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.contactName' })}>
-                        {contact_person}
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.contactName' })}
+                    >
+                        {contact_person || '--'}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.create.contactPhone' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.create.contactPhone' })}
+                    >
                         {contact_tel}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.info.create' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.info.create' })}
+                    >
                         {unixSecondToDate(created_time)}
                     </Form.Item>
-                    <Form.Item label={formatMessage({ id: 'storeManagement.info.update' })}>
+                    <Form.Item
+                        className={styles['clear-margin']}
+                        label={formatMessage({ id: 'storeManagement.info.update' })}
+                    >
                         {unixSecondToDate(modified_time)}
                     </Form.Item>
-                    <Form.Item label=" " colon={false}>
+                    <Form.Item className={styles['clear-margin']} label=" " colon={false}>
                         <Button type="primary" onClick={() => this.toPath('edit')}>
                             {formatMessage({ id: 'storeManagement.info.modify' })}
                         </Button>

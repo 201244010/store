@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Select } from 'antd';
+import { Form, Input, Button, Select, Modal } from 'antd';
 import router from 'umi/router';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
@@ -177,6 +177,17 @@ class ERPImport extends Component {
         });
     };
 
+    showConfirmModal = () => {
+        Modal.confirm({
+            icon: 'info-circle',
+            title: formatMessage({ id: 'basicData.erp.confirm.title' }),
+            content: formatMessage({ id: 'basicData.erp.confirm.content' }),
+            okText: formatMessage({ id: 'btn.confirm' }),
+            cancelText: formatMessage({ id: 'btn.cancel' }),
+            onOk: this.handleSubmit,
+        });
+    };
+
     goBack = () => router.push(`${MENU_PREFIX.PRODUCT}`);
 
     render() {
@@ -240,7 +251,7 @@ class ERPImport extends Component {
                                     disabled={!erpEnable}
                                     className={styles['form-btn']}
                                     type="primary"
-                                    onClick={this.handleSubmit}
+                                    onClick={this.showConfirmModal}
                                 >
                                     {formatMessage({ id: 'btn.save' })}
                                 </Button>

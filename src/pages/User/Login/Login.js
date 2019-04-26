@@ -142,12 +142,13 @@ class Login extends Component {
         const response = await getStoreList({});
         if (response && response.code === ERROR_OK) {
             const result = response.data || {};
-            const storeList = result.shop_list || [];
-            if (storeList.length === 0) {
+            const shopList = result.shop_list || [];
+            CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, shopList);
+            if (shopList.length === 0) {
                 router.push(`${MENU_PREFIX.STORE}/createStore`);
             } else {
-                const lastStore = storeList.length;
-                const defaultStore = storeList[lastStore - 1] || {};
+                const lastStore = shopList.length;
+                const defaultStore = shopList[lastStore - 1] || {};
                 CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
                 router.push('/');
             }

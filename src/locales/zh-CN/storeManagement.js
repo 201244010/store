@@ -23,7 +23,7 @@ export default {
     'storeManagement.create.nameLabel': '门店名称',
     'storeManagement.create.namePlaceHolder': '例如：星巴克杨浦店',
     'storeManagement.create.typeLabel': '经营品类',
-    'storeManagement.create.typePlaceHolder': '请选择',
+    'storeManagement.create.typePlaceHolder': '经营品类',
     'storeManagement.create.statusLabel': '状态',
     'storeManagement.create.status.open': '营业',
     'storeManagement.create.status.closed': '停业',

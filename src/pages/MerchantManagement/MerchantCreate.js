@@ -24,12 +24,13 @@ class MerchantCreate extends Component {
         const { getStoreList } = this.props;
         const response = await getStoreList({});
         const result = response.data || {};
-        const storeList = result.shop_list || [];
-        if (storeList.length === 0) {
+        const shopList = result.shop_list || [];
+        CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, shopList);
+        if (shopList.length === 0) {
             CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
             router.push(`${MENU_PREFIX.STORE}/createStore`);
         } else {
-            const defaultStore = storeList[0] || {};
+            const defaultStore = shopList[0] || {};
             CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
             router.push('/');
         }
@@ -82,6 +83,7 @@ class MerchantCreate extends Component {
                             ],
                         })(
                             <Input
+                                maxLength={40}
                                 style={{ height: 42 }}
                                 placeholder={formatMessage({
                                     id: 'merchantManagement.merchant.inputMerchant',

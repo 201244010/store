@@ -1,34 +1,33 @@
 import React, { Component } from 'react';
-import { Table, Form, Input, Select, Button, Row, Col } from 'antd';
+import { Table, Form, Input, Button, Row, Col, Cascader } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
-import * as CookieUtil from '@/utils/cookies';
+import Storage from '@konata9/storage.js';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { MENU_PREFIX } from '@/constants';
 import styles from './StoreManagement.less';
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
 const columns = [
     {
         title: formatMessage({ id: 'storeManagement.list.columnId' }),
-        dataIndex: 'shopId',
-        key: 'shopId',
+        dataIndex: 'shop_id',
+        key: 'shop_id',
     },
     {
         title: formatMessage({ id: 'storeManagement.list.columnName' }),
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'shop_name',
+        key: 'shop_name',
     },
     {
         title: formatMessage({ id: 'storeManagement.list.columnStatus' }),
-        dataIndex: 'status',
-        key: 'status',
-        render: (text, record) => (
+        dataIndex: 'business_status',
+        key: 'business_status',
+        render: text => (
             <span>
-                {record.status === 0
+                {text === 0
                     ? formatMessage({ id: 'storeManagement.create.status.open' })
                     : formatMessage({ id: 'storeManagement.create.status.closed' })}
             </span>
@@ -41,13 +40,13 @@ const columns = [
     },
     {
         title: formatMessage({ id: 'storeManagement.list.columnTypes' }),
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'type_name',
+        key: 'type_name',
     },
     {
         title: formatMessage({ id: 'storeManagement.list.columnContacts' }),
-        dataIndex: 'contactPerson',
-        key: 'contactPerson',
+        dataIndex: 'contact_person',
+        key: 'contact_person',
     },
     {
         title: formatMessage({ id: 'storeManagement.list.columnOperation' }),
@@ -58,7 +57,7 @@ const columns = [
                 <a
                     onClick={() => {
                         router.push(
-                            `${MENU_PREFIX.STORE}/storeInformation?shopId=${record.shopId}`
+                            `${MENU_PREFIX.STORE}/storeInformation?shopId=${record.shop_id}`
                         );
                     }}
                     className={styles.infoAnchor}
@@ -68,7 +67,7 @@ const columns = [
                 <a
                     onClick={() => {
                         router.push(
-                            `${MENU_PREFIX.STORE}/createStore?shopId=${record.shopId}&action=edit`
+                            `${MENU_PREFIX.STORE}/createStore?shopId=${record.shop_id}&action=edit`
                         );
                     }}
                     className={styles.infoAnchor}
@@ -82,95 +81,89 @@ const columns = [
 
 @connect(
     state => ({
-        list: state.store.getList,
+        store: state.store,
     }),
     dispatch => ({
-        getArray: payload => dispatch({ type: 'store/getArray', payload }),
+        changeSearchFormValue: payload =>
+            dispatch({ type: 'store/changeSearchFormValue', payload }),
+        clearSearch: () => dispatch({ type: 'store/clearSearch' }),
+        getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+        getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
+        getRegionList: () => dispatch({ type: 'store/getRegionList' }),
     })
 )
 class StoreManagement extends Component {
-    state = {
-        currentPage: 1,
-        pageSize: 100,
-        optionArray: [formatMessage({ id: 'storeManagement.info.fullTypes' })],
-        companyId: '',
-    };
-
     componentDidMount() {
-        this.initFetch();
+        const { getShopTypeList, getRegionList, getStoreList, clearSearch } = this.props;
+        if (!Storage.get('__shopTypeList__', 'local')) {
+            getShopTypeList();
+        }
+
+        if (!Storage.get('__regionList__', 'local')) {
+            getRegionList();
+        }
+        clearSearch();
+        getStoreList({});
     }
 
-    initFetch = () => {
-        const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY);
-        this.setState({ companyId });
-        const { getArray } = this.props;
-        const payload = {
-            options: {
-                company_id: companyId,
-                page_num: 1,
-                page_size: 100,
-            },
-        };
-        getArray(payload);
-    };
+    componentWillUnmount() {
+        const { clearSearch } = this.props;
+        clearSearch();
+    }
 
-    handleReset = () => {
+    handleReset = async () => {
         const {
             form: { resetFields },
+            clearSearch,
+            getStoreList,
         } = this.props;
         resetFields();
+        await clearSearch();
+        await getStoreList({});
     };
 
-    handleSubmit = e => {
-        e.preventDefault();
-        const { currentPage, pageSize, companyId } = this.state;
+    handleSubmit = () => {
         const {
-            form: { getFieldsValue },
-            getArray,
+            form: { validateFields },
+            changeSearchFormValue,
+            getStoreList,
         } = this.props;
-        const formValue = getFieldsValue();
-        const payload = {
-            options: {
-                company_id: companyId,
-                page_num: currentPage,
-                page_size: pageSize,
-            },
-        };
-        const { options } = payload;
-        if (
-            formValue.types === formatMessage({ id: 'storeManagement.info.fullTypes' }) ||
-            formValue.types === ''
-        ) {
-            // 不对种类进行筛选
-        } else {
-            options.type_one = formValue.types;
-        }
 
-        if (formValue.storeName !== '') {
-            options.keyword = formValue.storeName;
-        }
-
-        getArray(payload);
+        validateFields(async (err, values) => {
+            if (!err) {
+                await changeSearchFormValue({
+                    options: {
+                        keyword: values.keyword,
+                        type_one: values.shopType[0] || 0,
+                        type_two: values.shopType[1] || 0,
+                    },
+                });
+                await getStoreList({});
+            }
+        });
     };
 
     render() {
         const {
             form: { getFieldDecorator },
-            list,
+            store: {
+                storeList,
+                shopType_list,
+                searchFormValue: { keyword, type_one, type_two },
+            },
         } = this.props;
-        const { optionArray } = this.state;
 
         return (
             <div className={styles.storeList}>
                 <div className={styles.top}>
-                    <Form {...FORM_ITEM_LAYOUT_COMMON} onSubmit={this.handleSubmit}>
+                    <Form {...FORM_ITEM_LAYOUT_COMMON}>
                         <Row {...FORM_FORMAT.gutter}>
                             <Col span={8}>
                                 <FormItem
                                     label={formatMessage({ id: 'storeManagement.list.inputLabel' })}
                                 >
-                                    {getFieldDecorator('storeName', {
-                                        initialValue: '',
+                                    {getFieldDecorator('keyword', {
+                                        initialValue: keyword,
                                     })(
                                         <Input
                                             placeholder={formatMessage({
@@ -186,27 +179,20 @@ class StoreManagement extends Component {
                                         id: 'storeManagement.list.selectLabel',
                                     })}
                                 >
-                                    {getFieldDecorator('types', {
-                                        initialValue: formatMessage({
-                                            id: 'storeManagement.info.fullTypes',
-                                        }),
+                                    {getFieldDecorator('shopType', {
+                                        initialValue: type_one ? [type_one, type_two] : undefined,
                                     })(
-                                        <Select
+                                        <Cascader
                                             placeholder={formatMessage({
-                                                id: 'storeManagement.list.selectPlaceHolder',
+                                                id: 'storeManagement.create.typePlaceHolder',
                                             })}
-                                        >
-                                            {optionArray.map(value => (
-                                                <Option value={value} key={value}>
-                                                    {value}
-                                                </Option>
-                                            ))}
-                                        </Select>
+                                            options={shopType_list}
+                                        />
                                     )}
                                 </FormItem>
                             </Col>
                             <Col span={8}>
-                                <Button htmlType="submit">
+                                <Button onClick={this.handleSubmit}>
                                     {formatMessage({ id: 'storeManagement.list.buttonSubmit' })}
                                 </Button>
                                 <a
@@ -230,7 +216,7 @@ class StoreManagement extends Component {
                     {formatMessage({ id: 'storeManagement.list.newBuiltStore' })}
                 </Button>
                 <div className={styles.table}>
-                    <Table rowKey="shopId" dataSource={list.data} columns={columns} />
+                    <Table rowKey="shop_id" dataSource={storeList} columns={columns} />
                 </div>
             </div>
         );

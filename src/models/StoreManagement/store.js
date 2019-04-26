@@ -30,6 +30,11 @@ export default {
     namespace: 'store',
     state: {
         storeList: CookieUtil.getCookieByKey(CookieUtil.SHOP_LIST_KEY) || [],
+        searchFormValue: {
+            keyword: '',
+            type_one: 0,
+            type_two: 0,
+        },
         // TODO 下一个准备修改
         getList: {
             data: [],
@@ -54,17 +59,35 @@ export default {
     },
 
     effects: {
-        *getStoreList({ payload }, { call, put }) {
+        *changeSearchFormValue({ payload }, { put, select }) {
+            const { options = {} } = payload;
+            const { searchFormValue } = yield select(state => state.store);
+            yield put({
+                type: 'updateState',
+                payload: {
+                    searchFormValue: {
+                        ...searchFormValue,
+                        ...options,
+                    },
+                },
+            });
+        },
+
+        *getStoreList({ payload }, { call, put, select }) {
             const { options } = payload;
+            const { searchFormValue } = yield select(state => state.store);
+            const opts = {
+                ...searchFormValue,
+                ...options,
+            };
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
             });
-            const response = yield call(Action.getList, options);
+            const response = yield call(Action.getList, opts);
             if (response && response.code === ERROR_OK) {
                 const data = response.data || {};
                 const shopList = data.shop_list || [];
-                CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, shopList);
                 yield put({
                     type: 'updateState',
                     payload: {
@@ -76,20 +99,6 @@ export default {
             return response;
         },
 
-        *getArray({ payload }, { call, put }) {
-            const { options } = payload;
-            const response = yield call(Action.getList, options);
-            if (response && response.code === ERROR_OK) {
-                yield put({
-                    type: 'saveStoreList',
-                    payload: {
-                        data: response,
-                        request: options,
-                    },
-                });
-            }
-        },
-
         *createNewStore({ payload }, { call, put }) {
             const { options } = payload;
             const response = yield call(Action.createStore, options);
@@ -99,11 +108,14 @@ export default {
                 if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
                     CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.shop_id);
                 }
-                yield put({
+                const result = yield put({
                     type: 'getStoreList',
                     payload: {},
                 });
-                router.push(`${MENU_PREFIX.STORE}/list`);
+                result.then(res => {
+                    CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, res.data.shop_list);
+                    router.push(`${MENU_PREFIX.STORE}/list`);
+                });
             }
             return response;
         },
@@ -113,11 +125,14 @@ export default {
             const response = yield call(Action.alterStore, options);
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
-                yield put({
+                const result = yield put({
                     type: 'getStoreList',
                     payload: {},
                 });
-                router.push(`${MENU_PREFIX.STORE}/list`);
+                result.then(res => {
+                    CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, res.data.shop_list);
+                    router.push(`${MENU_PREFIX.STORE}/list`);
+                });
             }
             return response;
         },
@@ -210,6 +225,19 @@ export default {
                 type: 'updateState',
                 payload: {
                     storeInfo: {},
+                },
+            });
+        },
+
+        *clearSearch(_, { put }) {
+            yield put({
+                type: 'updateState',
+                payload: {
+                    searchFormValue: {
+                        keyword: '',
+                        type_one: 0,
+                        type_two: 0,
+                    },
                 },
             });
         },

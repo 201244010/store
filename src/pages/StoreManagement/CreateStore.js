@@ -7,7 +7,7 @@ import Storage from '@konata9/storage.js';
 import * as CookieUtil from '@/utils/cookies';
 import styles from './StoreManagement.less';
 import { getLocationParam } from '@/utils/utils';
-import { customValidate } from "@/utils/customValidate";
+import { customValidate } from '@/utils/customValidate';
 
 const FormItem = Form.Item;
 
@@ -66,11 +66,11 @@ class CreateStore extends React.Component {
                     ...values,
                     shop_id: shopId,
                     company_id: companyId,
-                    type_one: values.shopType[0],
-                    type_two: values.shopType[1],
-                    province: values.region[0],
-                    city: values.region[1],
-                    area: values.region[2],
+                    type_one: values.shopType[0] || null,
+                    type_two: values.shopType[1] || null,
+                    province: values.region[0] || null,
+                    city: values.region[1] || null,
+                    area: values.region[2] || null,
                 };
 
                 if (action === 'create') {
@@ -92,12 +92,12 @@ class CreateStore extends React.Component {
                 regionList,
                 storeInfo: {
                     shop_name,
-                    type_one,
-                    type_two,
+                    type_one = null,
+                    type_two = null,
                     business_status,
-                    province,
-                    city,
-                    area,
+                    province = null,
+                    city = null,
+                    area = null,
                     address,
                     business_hours,
                     contact_person,
@@ -129,6 +129,7 @@ class CreateStore extends React.Component {
                             ],
                         })(
                             <Input
+                                maxLength={20}
                                 placeholder={formatMessage({
                                     id: 'storeManagement.create.namePlaceHolder',
                                 })}
@@ -137,7 +138,10 @@ class CreateStore extends React.Component {
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
                         {getFieldDecorator('shopType', {
-                            initialValue: [`${type_one}`, `${type_two}`],
+                            initialValue: [
+                                type_one ? `${type_one}` : null,
+                                type_two ? `${type_two}` : null,
+                            ],
                         })(
                             <Cascader
                                 placeholder={formatMessage({
@@ -163,7 +167,11 @@ class CreateStore extends React.Component {
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.address' })}>
                         {getFieldDecorator('region', {
-                            initialValue: [`${province}`, `${city}`, `${area}`],
+                            initialValue: [
+                                province ? `${province}` : null,
+                                city ? `${city}` : null,
+                                area ? `${area}` : null,
+                            ],
                         })(
                             <Cascader
                                 options={regionList}
