@@ -117,7 +117,6 @@ class SearchResult extends Component {
             selectedRowKeys,
             onChange: this.onSelectChange,
         };
-
         return (
             <div>
                 <div className={styles['table-header']}>
