@@ -65,8 +65,9 @@ export default {
             path: '/',
             component: '../layouts/BasicLayout',
             routes: [
-                { path: '/', redirect: '/deviceManagement' },
+                // { path: '/', redirect: '/deviceManagement' },
                 // TODO 万有集市 临时菜单 START
+                { path: '/', redirect: '/esl' },
                 {
                     path: '/esl',
                     name: 'esl',

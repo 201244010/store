@@ -15,7 +15,7 @@ const ProductInfoPrice = props => {
                             {formatMessage({ id: product.label })}：
                         </span>
                         <span className={styles['item-content']}>
-                            {product.value >= 0 ? product.value : ''}
+                            {product.value >= 0 ? parseFloat(product.value).toFixed(2) : ''}
                         </span>
                     </div>
                 ))}
@@ -24,7 +24,9 @@ const ProductInfoPrice = props => {
                 {productPriceExtra.map((extra, index) => (
                     <div className={styles['card-item']} key={index}>
                         <span className={styles['item-label']}>{extra.name}：</span>
-                        <span className={styles['item-content']}>{extra.price}</span>
+                        <span className={styles['item-content']}>
+                            {parseFloat(extra.price).toFixed(2)}
+                        </span>
                     </div>
                 ))}
             </div>
