@@ -77,7 +77,9 @@ export default class GlobalHeaderRight extends PureComponent {
             // onNoticeClear,
             theme,
             store: { allStores: storeList },
+            selectedStore,
         } = this.props;
+
         const menu = (
             <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
                 <Menu.Item key="userCenter">
@@ -97,12 +99,11 @@ export default class GlobalHeaderRight extends PureComponent {
         if (theme === 'dark') {
             className = `${styles.right}  ${styles.dark}`;
         }
-        const defaultShop = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
 
         return (
             <div className={className}>
                 <Select
-                    defaultValue={defaultShop}
+                    value={selectedStore}
                     style={{ width: '250px' }}
                     onChange={this.handleStoreChange}
                 >
