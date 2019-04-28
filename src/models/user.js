@@ -152,6 +152,7 @@ export default {
             return {
                 ...state,
                 userInfo: {},
+                currentUser: {},
                 errorTimes: 0,
             };
         },
