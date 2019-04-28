@@ -43,12 +43,18 @@ export default {
      */
     routes: [
         {
+            path: '/tempLogin',
+            component: '../layouts/SunmiLayout',
+            routes: [
+                { path: '/tempLogin/login', component: './User/Login/Login2' },
+            ],
+        },
+        {
             path: '/user',
             component: '../layouts/UserLayout',
             routes: [
                 { path: '/user', redirect: '/user/login' },
                 { path: '/user/login', component: './User/Login/Login' },
-                { path: '/user/login2', component: './User/Login/Login2' },
                 { path: '/user/register', component: './User/Register/Register' },
                 { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelate' },
                 { path: '/user/mailActive', component: './User/MailActive/MailActive' },
