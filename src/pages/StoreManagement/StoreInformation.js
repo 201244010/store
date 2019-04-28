@@ -3,7 +3,7 @@ import { Form, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { formatEmpty, getLocationParam, unixSecondToDate } from '@/utils/utils';
+import { formatEmptyWithoutZero, getLocationParam, unixSecondToDate } from '@/utils/utils';
 import styles from './StoreManagement.less';
 import { MENU_PREFIX } from '@/constants';
 
@@ -42,7 +42,7 @@ class StoreInformation extends React.Component {
             shop_id = '--',
             shop_name = '--',
             type_name = '--',
-            business_status = '--',
+            business_status = 0,
             region,
             address = '--',
             business_hours = '--',
@@ -50,7 +50,7 @@ class StoreInformation extends React.Component {
             contact_tel = '--',
             created_time = '--',
             modified_time = '--',
-        } = formatEmpty(storeInfo, '--');
+        } = formatEmptyWithoutZero(storeInfo, '--');
 
         return (
             <div className={styles.storeList}>

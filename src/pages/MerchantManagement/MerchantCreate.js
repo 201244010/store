@@ -3,6 +3,7 @@ import { formatMessage } from 'umi/locale';
 import { Form, Button, Input } from 'antd';
 import { connect } from 'dva';
 import * as CookieUtil from '@/utils/cookies';
+import Storage from '@konata9/storage.js';
 import router from 'umi/router';
 import { MENU_PREFIX } from '@/constants';
 import styles from './Merchant.less';
@@ -25,7 +26,7 @@ class MerchantCreate extends Component {
         const response = await getStoreList({});
         const result = response.data || {};
         const shopList = result.shop_list || [];
-        CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, shopList);
+        Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
         if (shopList.length === 0) {
             CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
             router.push(`${MENU_PREFIX.STORE}/createStore`);
@@ -65,6 +66,7 @@ class MerchantCreate extends Component {
     render() {
         const {
             form: { getFieldDecorator },
+            merchant: { loading },
         } = this.props;
         return (
             <div className={styles['create-wrapper']}>
@@ -92,6 +94,7 @@ class MerchantCreate extends Component {
                         )}
                     </Form.Item>
                     <Button
+                        loading={loading}
                         type="primary"
                         block
                         onClick={this.createMerchant}

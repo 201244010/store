@@ -29,7 +29,8 @@ const cascaderDataWash = (data, mapping) => {
 export default {
     namespace: 'store',
     state: {
-        storeList: CookieUtil.getCookieByKey(CookieUtil.SHOP_LIST_KEY) || [],
+        storeList: Storage.get(CookieUtil.SHOP_LIST_KEY, 'local') || [],
+        allStores: Storage.get(CookieUtil.SHOP_LIST_KEY, 'local') || [],
         searchFormValue: {
             keyword: '',
             type_one: 0,
@@ -88,12 +89,16 @@ export default {
             if (response && response.code === ERROR_OK) {
                 const data = response.data || {};
                 const shopList = data.shop_list || [];
+                const newPayload = {
+                    loading: false,
+                    storeList: shopList,
+                };
+                if (opts.type !== 'search') {
+                    newPayload.allStores = shopList;
+                }
                 yield put({
                     type: 'updateState',
-                    payload: {
-                        loading: false,
-                        storeList: shopList,
-                    },
+                    payload: newPayload,
                 });
             }
             return response;
@@ -112,8 +117,12 @@ export default {
                     type: 'getStoreList',
                     payload: {},
                 });
-                result.then(res => {
-                    CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, res.data.shop_list);
+                result.then(async res => {
+                    Storage.set({ [CookieUtil.SHOP_LIST_KEY]: res.data.shop_list }, 'local');
+                    await put({
+                        type: 'getStoreList',
+                        payload: {},
+                    });
                     router.push(`${MENU_PREFIX.STORE}/list`);
                 });
             }
@@ -129,8 +138,12 @@ export default {
                     type: 'getStoreList',
                     payload: {},
                 });
-                result.then(res => {
-                    CookieUtil.setCookieByKey(CookieUtil.SHOP_LIST_KEY, res.data.shop_list);
+                result.then(async res => {
+                    Storage.set({ [CookieUtil.SHOP_LIST_KEY]: res.data.shop_list }, 'local');
+                    await put({
+                        type: 'getStoreList',
+                        payload: {},
+                    });
                     router.push(`${MENU_PREFIX.STORE}/list`);
                 });
             }

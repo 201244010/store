@@ -90,6 +90,7 @@ class CreateStore extends React.Component {
             store: {
                 shopType_list,
                 regionList,
+                loading,
                 storeInfo: {
                     shop_name,
                     type_one = null,
@@ -220,7 +221,7 @@ class CreateStore extends React.Component {
                         })(<Input />)}
                     </FormItem>
                     <FormItem label=" " colon={false}>
-                        <Button type="primary" onClick={this.handleSubmit}>
+                        <Button loading={loading} type="primary" onClick={this.handleSubmit}>
                             {formatMessage({ id: 'btn.save' })}
                         </Button>
                         <Button
