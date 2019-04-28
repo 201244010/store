@@ -40,8 +40,7 @@ const columns = [
         key: 'address',
         render: (text, record) => (
             <>
-                <span>{record ? record.region.split(',').join('/') : ''}</span>
-                <br />
+                <span>{record ? record.region.split(',').join(' ') : ''} </span>
                 <span>{text}</span>
             </>
         ),

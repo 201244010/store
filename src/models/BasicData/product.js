@@ -95,7 +95,6 @@ export default {
         *fetchProductList({ payload = {} }, { call, put, select }) {
             const { options = {} } = payload;
             const { pagination, searchFormValues } = yield select(state => state.basicDataProduct);
-
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -111,7 +110,8 @@ export default {
                     data: result.product_list || [],
                     pagination: {
                         ...pagination,
-                        current: options.current,
+                        pageSize: opts.pageSize,
+                        current: opts.current,
                         total: Number(result.total_count) || 0,
                         hideOnSinglePage: hideSinglePageCheck(result.total_count) || true,
                     },

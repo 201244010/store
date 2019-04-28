@@ -75,7 +75,7 @@ class BasicLayout extends React.PureComponent {
             location: { pathname },
         } = window;
 
-        if (pathname !== `${MENU_PREFIX.STORE}/createStore`) {
+        if (![`${MENU_PREFIX.STORE}/createStore`, '/account/center'].includes(pathname)) {
             this.checkStore();
         }
     }

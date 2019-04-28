@@ -103,7 +103,7 @@ export default class GlobalHeaderRight extends PureComponent {
             <div className={className}>
                 <Select
                     defaultValue={defaultShop}
-                    style={{ minWidth: '200px' }}
+                    style={{ width: '250px' }}
                     onChange={this.handleStoreChange}
                 >
                     {storeList.map(store => (
