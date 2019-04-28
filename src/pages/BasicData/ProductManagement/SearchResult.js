@@ -81,6 +81,7 @@ class SearchResult extends Component {
             {
                 title: formatMessage({ id: 'basicData.product.price' }),
                 dataIndex: 'price',
+                render: text => <span>{parseFloat(text).toFixed(2)}</span>,
             },
             {
                 title: formatMessage({ id: 'basicData.product.modified_time' }),
