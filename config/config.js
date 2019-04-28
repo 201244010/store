@@ -2,7 +2,7 @@
 import { primaryColor } from '../src/defaultSettings';
 
 export default {
-    hash:true,
+    hash: true,
     plugins: [
         [
             'umi-plugin-react',
@@ -46,6 +46,7 @@ export default {
             path: '/user',
             component: '../layouts/UserLayout',
             routes: [
+                { path: '/user', redirect: '/user/login' },
                 { path: '/user/login', component: './User/Login/Login' },
                 { path: '/user/register', component: './User/Register/Register' },
                 { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelate' },
