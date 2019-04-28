@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Icon, Avatar, Spin } from 'antd';
+import { Menu, Icon, Avatar } from 'antd';
 import DocumentTitle from 'react-document-title';
 import HeaderDropdown from '@/components/HeaderDropdown';
 import { FormattedMessage, formatMessage } from 'umi/locale';
@@ -70,7 +70,7 @@ class MerchantLayout extends React.PureComponent {
                         <div className={styles.content}>
                             <div className={styles['content-inline']}>
                                 <div className={styles['title-background']} />
-                                {currentUser.username ? (
+                                {Object.keys(currentUser).length > 0 && (
                                     <HeaderDropdown overlay={menu}>
                                         <span
                                             className={`${styles.action} ${styles.account}`}
@@ -88,8 +88,6 @@ class MerchantLayout extends React.PureComponent {
                                             </span>
                                         </span>
                                     </HeaderDropdown>
-                                ) : (
-                                    <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
                                 )}
                             </div>
                             {children}

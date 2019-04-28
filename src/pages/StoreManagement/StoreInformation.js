@@ -88,10 +88,7 @@ class StoreInformation extends React.Component {
                         className={styles['clear-margin']}
                         label={formatMessage({ id: 'storeManagement.create.address' })}
                     >
-                        {region ? region.split(',').join('/') : '--'}
-                    </Form.Item>
-                    <Form.Item className={styles['clear-margin']} label=" " colon={false}>
-                        {address}
+                        {region ? region.split(',').join(' ') : '--'} {address}
                     </Form.Item>
                     <Form.Item
                         className={styles['clear-margin']}

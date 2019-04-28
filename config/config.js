@@ -2,6 +2,7 @@
 import { primaryColor } from '../src/defaultSettings';
 
 export default {
+    hash: true,
     plugins: [
         [
             'umi-plugin-react',
@@ -45,6 +46,7 @@ export default {
             path: '/user',
             component: '../layouts/UserLayout',
             routes: [
+                { path: '/user', redirect: '/user/login' },
                 { path: '/user/login', component: './User/Login/Login' },
                 { path: '/user/login2', component: './User/Login/Login2' },
                 { path: '/user/register', component: './User/Register/Register' },
@@ -65,8 +67,9 @@ export default {
             path: '/',
             component: '../layouts/BasicLayout',
             routes: [
-                { path: '/', redirect: '/deviceManagement' },
+                // { path: '/', redirect: '/deviceManagement' },
                 // TODO 万有集市 临时菜单 START
+                { path: '/', redirect: '/esl' },
                 {
                     path: '/esl',
                     name: 'esl',

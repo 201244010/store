@@ -54,6 +54,9 @@ class BasicLayout extends React.PureComponent {
         super(props);
         this.getPageTitle = memoizeOne(this.getPageTitle);
         this.matchParamsPath = memoizeOne(this.matchParamsPath, isEqual);
+        this.state = {
+            selectedStore: CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY),
+        };
     }
 
     componentDidMount() {
@@ -75,7 +78,7 @@ class BasicLayout extends React.PureComponent {
             location: { pathname },
         } = window;
 
-        if (pathname !== `${MENU_PREFIX.STORE}/createStore`) {
+        if (![`${MENU_PREFIX.STORE}/createStore`, '/account/center'].includes(pathname)) {
             this.checkStore();
         }
     }
@@ -84,6 +87,10 @@ class BasicLayout extends React.PureComponent {
         // After changing to phone mode,
         // if collapsed is true, you need to click twice to display
         const { collapsed, isMobile } = this.props;
+        this.setState({
+            selectedStore: CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY),
+        });
+
         if (isMobile && !preProps.isMobile && !collapsed) {
             this.handleMenuCollapse(false);
         }
@@ -161,6 +168,7 @@ class BasicLayout extends React.PureComponent {
     };
 
     render() {
+        const { selectedStore } = this.state;
         const {
             navTheme,
             layout: PropsLayout,
@@ -198,6 +206,7 @@ class BasicLayout extends React.PureComponent {
                         handleMenuCollapse={this.handleMenuCollapse}
                         logo={logo}
                         isMobile={isMobile}
+                        selectedStore={selectedStore}
                         {...this.props}
                     />
                     {/* <Breadcrumbs /> */}
