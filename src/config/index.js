@@ -3,6 +3,8 @@ export const env = process.env.UMI_ENV;
 export const SSO_ADDRESS = {
     dev: 'test.api.sunmi.com',
     test: 'test.api.sunmi.com',
+    uat: 'uat.api.sunmi.com',
+    onl: 'api.sunmi.com',
 };
 
 export const API_ADDRESS = {
