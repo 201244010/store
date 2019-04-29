@@ -36,7 +36,8 @@ class ChangeMobile extends Component {
             mobileBinded,
             onOk,
         } = this.props;
-        validateFields(async (err, values) => {
+        const fields = ['password', 'phone', 'code'];
+        validateFields(fields, async (err, values) => {
             if (!err) {
                 const options = {
                     ...values,
