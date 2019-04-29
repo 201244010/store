@@ -80,4 +80,16 @@ export default {
     'esl.device.esl.push.wait': '待推送',
     'esl.device.esl.push.success': '推送成功',
     'esl.device.esl.push.fail': '推送失败',
+
+    // 模板用
+    'esl.device.template.id': '模板ID',
+    'esl.device.template.name': '模板名',
+    'esl.device.template.size': '模板尺寸',
+    'esl.device.template.color': '模板颜色',
+    'esl.device.template.status': '模板状态',
+    'esl.device.template.is.default': '默认模板',
+    'esl.device.template.status.draft': '草稿',
+    'esl.device.template.status.apply': '应用',
+    'esl.device.template.is.default.yes': '是',
+    'esl.device.template.is.default.no': '否',
 };

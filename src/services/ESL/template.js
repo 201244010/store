@@ -10,3 +10,12 @@ export const fetchTemplatesByESLCode = options => {
 
     return fetchApi('getNameList', opts).then(response => response.json());
 };
+
+export const fetchTemplates = options => {
+    const opts = {
+        method: 'POST',
+        body: options,
+    };
+
+    return fetchApi('getList', opts).then(response => response.json());
+};

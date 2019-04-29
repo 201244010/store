@@ -30,6 +30,9 @@ export default {
     'menu.company.storeManagement.createStore': '新建门店',
     'menu.company.storeManagement.storeInformation': '查看门店',
 
+    'menu.template': '模板管理',
+    'menu.template.list': '模板列表',
+
     'menu.deviceManagement': '设备管理',
     'menu.deviceManagement.esl': '电子价签',
     'menu.deviceManagement.esl.baseStation': '基站管理',
