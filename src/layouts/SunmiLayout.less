@@ -1,8 +1,25 @@
 @import "../common";
 
+.login-bg {
+  background: url("./../assets/login-min.jpg") no-repeat;
+}
+
+.login-gaos-bg {
+  background: url("./../assets/login-gaos-min.jpg") no-repeat;
+}
+
+.drop-down {
+  color: @font-color-common;
+
+  &:hover {
+    color: @font-color-primary;
+  }
+}
+
 .wrapper {
   height: 100%;
   position: relative;
+  background-size: cover;
 
   .header-bar {
     width: 100%;
@@ -10,21 +27,23 @@
     line-height: 64px;
     display: flex;
     justify-content: space-between;
+    border-bottom: 1px solid #F0F0F0;
 
     .logo {
       width: 256px;
       height: 64px;
+      background: url("./../assets/Logo.png") no-repeat;
     }
 
     .lang-wrapper {
-      //color: #FFF;
-      font-size: 24px;
+      color: #FFF;
       margin-right: 30px;
     }
   }
 
   .content {
     width: 100%;
+    margin-top: calc(20vh - 64px);
   }
 
   .footer-bar {

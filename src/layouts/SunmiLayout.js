@@ -6,7 +6,19 @@ import SelectLang from '@/components/SelectLang';
 import pathToRegexp from 'path-to-regexp';
 import * as styles from './SunmiLayout.less';
 
-class UserLayout extends React.PureComponent {
+class SunmiLayout extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = {
+            bgClass: 'login-bg',
+        };
+    }
+
+    componentDidMount() {
+        const { location } = window;
+        console.log(location);
+    }
+
     matchParamsPath = (pathname, breadcrumbNameMap) => {
         const pathKey = Object.keys(breadcrumbNameMap).find(key =>
             pathToRegexp(key).test(pathname)
@@ -29,6 +41,7 @@ class UserLayout extends React.PureComponent {
     };
 
     render() {
+        const { bgClass } = this.state;
         const {
             location: { pathname },
             children,
@@ -38,11 +51,11 @@ class UserLayout extends React.PureComponent {
         return (
             <>
                 <DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
-                    <div className={styles.wrapper}>
+                    <div className={`${styles.wrapper} ${styles[bgClass]}`}>
                         <div className={styles['header-bar']}>
-                            <div className={styles.logo}>SUNMI</div>
+                            <div className={styles.logo} />
                             <div className={styles['lang-wrapper']}>
-                                <SelectLang />
+                                <SelectLang className={styles['drop-down']} />
                             </div>
                         </div>
                         <div className={styles.content}>{children}</div>
@@ -58,4 +71,4 @@ class UserLayout extends React.PureComponent {
 
 export default connect(({ menu }) => ({
     breadcrumbNameMap: menu.breadcrumbNameMap,
-}))(UserLayout);
+}))(SunmiLayout);
