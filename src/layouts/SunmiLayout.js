@@ -58,6 +58,7 @@ class SunmiLayout extends React.PureComponent {
                                 <SelectLang className={styles['drop-down']} />
                             </div>
                         </div>
+                        <div className={styles.divider} />
                         <div className={styles.content}>{children}</div>
                         <div className={styles['footer-bar']}>
                             <span>{formatMessage({ id: 'layout.user.footer' })}</span>

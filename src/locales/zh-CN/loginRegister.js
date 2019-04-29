@@ -1,6 +1,6 @@
 export default {
-    'login.useAccount': '账户密码登录',
-    'login.useMobile': '手机验证码登录',
+    'login.useAccount': '账号密码登录',
+    'login.useMobile': '验证码登录',
 
     'register.title': '注册',
     'register.success': '恭喜，注册成功!',

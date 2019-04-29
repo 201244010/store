@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Col, Input, Row } from 'antd';
+import { Input, Divider, Icon } from 'antd';
+import styles from './captcha.less';
 
 class ImgCaptcha extends Component {
     constructor(props) {
@@ -51,6 +52,15 @@ class ImgCaptcha extends Component {
         }
     };
 
+    handleImgClick = () => {
+        const { refreshBtn = true } = this.props;
+        if (!refreshBtn) {
+            this.refreshCode();
+        }
+    };
+
+    handleRefeshBtn = () => this.refreshCode();
+
     getImageCode = async () => {
         const { getImageCode } = this.props;
         if (getImageCode) {
@@ -66,11 +76,11 @@ class ImgCaptcha extends Component {
 
     render() {
         const { value = '' } = this.state;
-        const { imgUrl, inputProps = {}, imgProps = {}, inputRef } = this.props;
+        const { imgUrl, inputProps = {}, imgProps = {}, inputRef, refreshBtn = true } = this.props;
 
         return (
-            <Row gutter={16}>
-                <Col span={16}>
+            <div className={styles['imgCaptcha-wrapper']}>
+                <div className={styles['imgCaptcha-input']}>
                     <Input
                         ref={inputRef}
                         value={value}
@@ -79,11 +89,27 @@ class ImgCaptcha extends Component {
                         onFocus={this.handleInputFocus}
                         {...inputProps}
                     />
-                </Col>
-                <Col span={8}>
-                    <img src={imgUrl} alt="" onClick={this.refreshCode} {...imgProps} />
-                </Col>
-            </Row>
+                </div>
+                <div className={styles['imgCaptcha-img']}>
+                    <img
+                        className={styles['code-img']}
+                        src={imgUrl}
+                        alt=""
+                        onClick={this.handleImgClick}
+                        {...imgProps}
+                    />
+                    {refreshBtn && (
+                        <>
+                            <Divider type="vertical" />
+                            <Icon
+                                onClick={this.handleRefeshBtn}
+                                type="reload"
+                                className={styles['refresh-btn']}
+                            />
+                        </>
+                    )}
+                </div>
+            </div>
         );
     }
 }

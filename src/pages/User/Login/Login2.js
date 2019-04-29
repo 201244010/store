@@ -5,10 +5,11 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import { Tabs, Form, Input, Button, Icon, Alert, Modal, message } from 'antd';
 import { encryption } from '@/utils/utils';
+import Storage from '@konata9/storage.js';
+import AccountLogin from './AccountLogin';
 import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import * as CookieUtil from '@/utils/cookies';
-import Storage from '@konata9/storage.js';
 import { ERROR_OK, ALERT_NOTICE_MAP, VCODE_ERROR, SHOW_VCODE } from '@/constants/errorCode';
 import { MENU_PREFIX, KEY } from '@/constants';
 import styles from './Login.less';
@@ -16,6 +17,13 @@ import styles from './Login.less';
 const VALIDATE_FIELDS = {
     tabAccount: ['username', 'password'],
     tabMobile: ['phone', 'code'],
+};
+
+const tabBarStyle = {
+    fontSize: '16px',
+    color: '#525866',
+    textAlign: 'center',
+    border: 'none',
 };
 
 @connect(
@@ -277,6 +285,7 @@ class Login extends Component {
         const { notice, trigger, vcodeIsError, showImgCaptchaModal } = this.state;
         const {
             form: { getFieldDecorator },
+            form,
             getImageCode,
             sso: { imgCode, imgCaptcha },
             user: { errorTimes },
@@ -289,105 +298,23 @@ class Login extends Component {
                     <Tabs
                         animated={false}
                         defaultActiveKey="tabAccount"
-                        tabBarStyle={{ textAlign: 'center' }}
+                        tabBarGutter={64}
+                        tabBarStyle={tabBarStyle}
                         onChange={this.onTabChange}
                     >
                         <Tabs.TabPane
                             tab={formatMessage({ id: 'login.useAccount' })}
                             key="tabAccount"
                         >
-                            {notice && (
-                                <Form.Item>
-                                    <Alert
-                                        message={formatMessage({ id: ALERT_NOTICE_MAP[notice] })}
-                                        type="error"
-                                        showIcon
-                                    />
-                                </Form.Item>
-                            )}
-                            <Form.Item>
-                                {getFieldDecorator('username', {
-                                    validateTrigger: 'onBlur',
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: formatMessage({
-                                                id: 'account.validate.isEmpty',
-                                            }),
-                                        },
-                                    ],
-                                })(
-                                    <Input
-                                        prefix={
-                                            <Icon
-                                                type="border"
-                                                style={{ color: 'rgba(0,0,0,.25)' }}
-                                            />
-                                        }
-                                        size="large"
-                                        placeholder={formatMessage({
-                                            id: 'account.account.placeholder',
-                                        })}
-                                    />
-                                )}
-                            </Form.Item>
-                            <Form.Item>
-                                {getFieldDecorator('password', {
-                                    validateTrigger: 'onBlur',
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: formatMessage({
-                                                id: 'account.password.validate.isEmpty',
-                                            }),
-                                        },
-                                    ],
-                                })(
-                                    <Input
-                                        type="password"
-                                        prefix={
-                                            <Icon
-                                                type="border"
-                                                style={{ color: 'rgba(0,0,0,.25)' }}
-                                            />
-                                        }
-                                        maxLength={30}
-                                        size="large"
-                                        placeholder={formatMessage({
-                                            id: 'account.password.placeholder',
-                                        })}
-                                    />
-                                )}
-                            </Form.Item>
-                            {errorTimes > 2 && (
-                                <Form.Item>
-                                    {getFieldDecorator('vcode', {
-                                        validateTrigger: 'onBlur',
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: formatMessage({
-                                                    id: 'code.validate.isEmpty',
-                                                }),
-                                            },
-                                        ],
-                                    })(
-                                        <ImgCaptcha
-                                            {...{
-                                                inputRef: this.inputRef,
-                                                imgUrl: imgCode.url,
-                                                inputProps: {
-                                                    size: 'large',
-                                                    placeholder: formatMessage({
-                                                        id: 'vcode.placeholder',
-                                                    }),
-                                                },
-                                                getImageCode,
-                                            }}
-                                        />
-                                    )}
-                                </Form.Item>
-                            )}
+                            <AccountLogin
+                                {...{
+                                    form,
+                                    getImageCode,
+                                    imgCode,
+                                    notice,
+                                    errorTimes,
+                                }}
+                            />
                         </Tabs.TabPane>
                         {currentLanguage === 'zh-CN' && (
                             <Tabs.TabPane
@@ -533,17 +460,24 @@ class Login extends Component {
                             </Tabs.TabPane>
                         )}
                     </Tabs>
-                    <Form.Item>
-                        <Button size="large" type="primary" block onClick={this.onSubmit}>
+                    <Form.Item className={styles['formItem-margin-clear']}>
+                        <Button
+                            className={styles['login-primary-button']}
+                            size="large"
+                            block
+                            onClick={this.onSubmit}
+                        >
                             {formatMessage({ id: 'btn.login' })}
                         </Button>
                     </Form.Item>
                 </Form>
                 <div className={styles['login-footer']}>
-                    <Link to="/user/resetPassword">
+                    <Link className={styles['link-common']} to="/user/resetPassword">
                         {formatMessage({ id: 'link.forgot.password' })}
                     </Link>
-                    <Link to="/user/register">{formatMessage({ id: 'link.to.register' })}</Link>
+                    <Link className={`${styles['link-active']}`} to="/user/register">
+                        {formatMessage({ id: 'link.to.register' })}
+                    </Link>
                 </div>
             </div>
         );

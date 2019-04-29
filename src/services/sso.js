@@ -40,9 +40,9 @@ export const checkUser = (options = {}) => {
 export const getImageCode = (options = {}) => {
     const opts = {
         body: {
-            width: '112',
-            height: '40',
-            fontSize: '18',
+            width: '76',
+            height: '30',
+            fontSize: '16',
             ...options,
         },
     };
