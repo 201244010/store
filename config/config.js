@@ -15,7 +15,6 @@ export default {
                     ie: 11,
                 },
                 locale: {
-                    enable: true, // default false
                     default: 'zh-CN', // default zh-CN
                     baseNavigator: false, // default true, when it is true, will use `navigator.language` overwrite default
                     // TODO 暂时强制限定中文
