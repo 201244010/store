@@ -23,13 +23,30 @@ class SearchForm extends Component {
         });
     };
 
+    handleReset = async () => {
+        const {
+            form,
+            clearSearch,
+            fetchProductList,
+        } = this.props;
+        if (form) {
+            form.resetFields();
+        }
+        await clearSearch();
+        await fetchProductList({
+            options: {
+                current: 1
+            }
+        });
+    };
+
     render() {
         const { values } = this.props;
 
         return (
             <Form {...FORM_ITEM_LAYOUT}>
                 <Row gutter={FORM_FORMAT.gutter}>
-                    <Col xl={10} lg={12} md={24}>
+                    <Col xl={9} lg={12} md={24}>
                         <Form.Item
                             label={formatMessage({ id: 'basicData.product.search.product' })}
                         >
@@ -43,11 +60,18 @@ class SearchForm extends Component {
                             />
                         </Form.Item>
                     </Col>
-                    <Col xl={4} lg={12} md={24}>
+                    <Col xl={6} lg={12} md={24}>
                         <Form.Item>
-                            <Button type="primary" onClick={this.search}>
+                            <Button onClick={this.search}>
                                 {formatMessage({ id: 'btn.query' })}
                             </Button>
+                            <a
+                                href="javascript:void(0)"
+                                style={{ marginLeft: '20px' }}
+                                onClick={this.handleReset}
+                            >
+                                {formatMessage({ id: 'storeManagement.list.buttonReset' })}
+                            </a>
                         </Form.Item>
                     </Col>
                 </Row>

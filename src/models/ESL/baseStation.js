@@ -27,6 +27,27 @@ export default {
         },
     },
     effects: {
+        *changeSearchFormValue({ payload = {} }, { put }) {
+            const { options = {} } = payload;
+            yield put({
+                type: 'setSearchFormValue',
+                payload: {
+                    ...options,
+                },
+            });
+        },
+        *clearSearch(_, { put }) {
+            yield put({
+                type: 'updateState',
+                payload: {
+                    searchFormValues: {
+                        keyword: '',
+                        baseStationID: null,
+                        status: -1,
+                    },
+                },
+            });
+        },
         *fetchBaseStationState(_, { put }) {
             yield put({
                 type: 'setBaseStationState',
@@ -70,15 +91,6 @@ export default {
                         total: Number(result.total_count) || 0,
                         hideOnSinglePage: hideSinglePageCheck(result.total_count),
                     },
-                },
-            });
-        },
-        *changeSearchFormValue({ payload = {} }, { put }) {
-            const { options = {} } = payload;
-            yield put({
-                type: 'setSearchFormValue',
-                payload: {
-                    ...options,
                 },
             });
         },
