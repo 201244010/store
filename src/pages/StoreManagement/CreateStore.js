@@ -160,7 +160,7 @@ class CreateStore extends React.Component {
                                 <Radio value={0}>
                                     {formatMessage({ id: 'storeManagement.create.status.open' })}
                                 </Radio>
-                                <Radio value={1} disabled={action === 'create'}>
+                                <Radio value={1} disabled>
                                     {formatMessage({ id: 'storeManagement.create.status.closed' })}
                                 </Radio>
                             </Radio.Group>
