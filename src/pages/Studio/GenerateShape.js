@@ -1,0 +1,271 @@
+import React, {Fragment} from 'react';
+import {Group, Rect, Text, Line, Image} from 'react-konva';
+import {SHAPE_TYPES, SIZES, MAPS} from '@/constants/studio';
+
+export default function generateShape(option) {
+    let shape;
+
+    switch (option.type) {
+        case SHAPE_TYPES.RECT:
+            shape = (
+                <Rect
+                    {
+                        ...{
+                            name: option.name,
+                            x: option.x,
+                            y: option.y,
+                            width: option.width,
+                            height: option.height,
+                            scaleX: option.scaleX,
+                            scaleY: option.scaleY,
+                            fill: option.fill,
+                            stroke: option.strokeWidth ? option.stroke : 'rgba(0, 0, 0, 0)',
+                            strokeWidth: option.strokeWidth,
+                            cornerRadius: option.cornerRadius,
+                            strokeScaleEnabled: false,
+                            draggable: true,
+                            onTransform: option.onTransform,
+                            onMouseOver: () => {
+                                document.body.style.cursor = 'pointer';
+                            },
+                            onMouseOut: () => {
+                                document.body.style.cursor = 'default';
+                            }
+                        }
+                    }
+                />
+            );
+            break;
+        case SHAPE_TYPES.TEXT:
+            shape = (
+                <Group>
+                    <Rect
+                        {
+                            ...{
+                                name: option.name,
+                                x: option.x,
+                                y: option.y,
+                                width: MAPS.containerWidth[SHAPE_TYPES.TEXT],
+                                height: MAPS.containerHeight[SHAPE_TYPES.TEXT],
+                                scaleX: option.scaleX,
+                                scaleY: option.scaleY,
+                                fill: option.textBg,
+                                opacity: option.textBg === 'opacity' ? 0 : 1,
+                                draggable: true,
+                                onTransform: option.onTransform,
+                                onDblClick: option.onDblClick
+                            }
+                        }
+                    />
+                    <Text
+                        {
+                            ...{
+                                name: option.name,
+                                x: option.x,
+                                y: option.y,
+                                text: option.text,
+                                fontFamily: option.fontFamily,
+                                fontSize: option.fontSize,
+                                fontStyle: option.fontStyle,
+                                textDecoration: option.textDecoration,
+                                fill: option.fill,
+                                align: option.align,
+                                letterSpacing: option.letterSpacing,
+                                width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX,
+                                height: MAPS.containerHeight[SHAPE_TYPES.TEXT],
+                                lineHeight: option.height * option.scaleY / option.fontSize,
+                                draggable: true,
+                                onDblClick: option.onDblClick
+                            }
+                        }
+                    />
+                </Group>
+            );
+            break;
+        case SHAPE_TYPES.HLine:
+            shape = (
+                <Line
+                    {
+                        ...{
+                            name: option.name,
+                            x: option.x,
+                            y: option.y,
+                            stroke: option.stroke,
+                            strokeWidth: option.strokeWidth || SIZES.DEFAULT_LINE_STROKE_WIDTH,
+                            scaleX: option.scaleX,
+                            scaleY: option.scaleY,
+                            points: [0, 0, SIZES.DEFAULT_H_LINE_WIDTH, 0],
+                            draggable: true,
+                            onTransform: option.onTransform,
+                            onMouseOver: () => {
+                                document.body.style.cursor = 'pointer';
+                            },
+                            onMouseOut: () => {
+                                document.body.style.cursor = 'default';
+                            }
+                        }
+                    }
+                />
+            );
+            break;
+        case SHAPE_TYPES.VLine:
+            shape = (
+                <Line
+                    {
+                        ...{
+                            name: option.name,
+                            x: option.x,
+                            y: option.y,
+                            stroke: option.stroke,
+                            strokeWidth: option.strokeWidth || SIZES.DEFAULT_LINE_STROKE_WIDTH,
+                            scaleX: option.scaleX,
+                            scaleY: option.scaleY,
+                            points: [0, 0, 0, SIZES.DEFAULT_V_LINE_HEIGHT],
+                            draggable: true,
+                            onTransform: option.onTransform,
+                            onMouseOver: () => {
+                                document.body.style.cursor = 'pointer';
+                            },
+                            onMouseOut: () => {
+                                document.body.style.cursor = 'default';
+                            }
+                        }
+                    }
+                />
+            );
+            break;
+        case SHAPE_TYPES.IMAGE:
+            if (option.imageType === 'default') {
+                shape = (
+                    <Group>
+                        <Rect
+                            {
+                                ...{
+                                    name: option.name,
+                                    x: option.x,
+                                    y: option.y,
+                                    width: MAPS.containerWidth[SHAPE_TYPES.IMAGE],
+                                    height: MAPS.containerHeight[SHAPE_TYPES.IMAGE],
+                                    scaleX: option.scaleX,
+                                    scaleY: option.scaleY,
+                                    fill: '#d9d9d9',
+                                    draggable: true,
+                                    onTransform: option.onTransform,
+                                    onDblClick: option.onDblClick
+                                }
+                            }
+                        />
+                        <Image
+                            {
+                                ...{
+                                    x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - SIZES.DEFAULT_IMAGE_WIDTH) / 2,
+                                    y: option.y + (SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT * option.scaleY - SIZES.DEFAULT_IMAGE_HEIGHT) / 2,
+                                    width: SIZES.DEFAULT_IMAGE_WIDTH,
+                                    height: SIZES.DEFAULT_IMAGE_HEIGHT,
+                                    image: option.image,
+                                }
+                            }
+                        />
+                        {
+                            option.selected ?
+                                <Fragment>
+                                    <Rect
+                                        {
+                                            ...{
+                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - 180) / 2,
+                                                y: option.y - 50,
+                                                width: 180,
+                                                height: 32,
+                                                fill: '#5085E3',
+                                                cornerRadius: 16
+                                            }
+                                        }
+                                    />
+                                    <Text
+                                        {
+                                            ...{
+                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - 180) / 2,
+                                                y: option.y - 50,
+                                                width: 180,
+                                                height: 32,
+                                                lineHeight: 2.5,
+                                                align: 'center',
+                                                fontSize: 14,
+                                                fill: '#fff',
+                                                text: '双击更换图片'
+                                            }
+                                        }
+                                    />
+                                </Fragment> :
+                                null
+                        }
+                    </Group>
+                );
+            } else {
+                shape = (
+                    <Group>
+                        <Image
+                            {
+                                ...{
+                                    name: option.name,
+                                    x: option.x,
+                                    y: option.y,
+                                    width: SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH,
+                                    height: SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.ratio,
+                                    scaleX: option.scaleX,
+                                    scaleY: option.scaleY,
+                                    image: option.image,
+                                    ratio: option.ratio,
+                                    draggable: true,
+                                    onTransform: option.onTransform,
+                                    onDblClick: option.onDblClick
+                                }
+                            }
+                        />
+                        {
+                            option.selected ?
+                                <Fragment>
+                                    <Rect
+                                        {
+                                            ...{
+                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - 180) / 2,
+                                                y: option.y - 50,
+                                                width: 180,
+                                                height: 32,
+                                                fill: '#5085E3',
+                                                cornerRadius: 16
+                                            }
+                                        }
+                                    />
+                                    <Text
+                                        {
+                                            ...{
+                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - 180) / 2,
+                                                y: option.y - 50,
+                                                width: 180,
+                                                height: 32,
+                                                lineHeight: 2.5,
+                                                align: 'center',
+                                                fontSize: 14,
+                                                fill: '#fff',
+                                                text: '双击更换图片'
+                                            }
+                                        }
+                                    />
+                                </Fragment> :
+                                null
+                        }
+                    </Group>
+                );
+            }
+            break;
+        default:
+            throw new Error('没有匹配的Shape');
+    }
+
+    return (
+        <Fragment key={option.key}>
+            {shape}
+        </Fragment>
+    )
+}

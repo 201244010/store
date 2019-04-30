@@ -323,7 +323,14 @@ export default {
                     hideInMenu: true
                 }
             ]
-        }
+        },
+        {
+            path: "/template/studio",
+            component: "../layouts/BlankLayout",
+            routes: [
+                { path: "/template/studio", component: "./Studio" }
+            ]
+        },
     ],
     disableRedirectHoist: true,
 
