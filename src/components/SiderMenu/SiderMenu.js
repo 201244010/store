@@ -70,7 +70,7 @@ export default class SiderMenu extends PureComponent {
                         <img
                             src={logo}
                             alt="SUNMI STORE"
-                            style={{ width: '70%', height: 'auto' }}
+                            style={{ width: '60%', height: 'auto' }}
                         />
                     </Link>
                 </div>
