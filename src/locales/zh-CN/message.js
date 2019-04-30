@@ -2,6 +2,7 @@ export default {
     // alert 用 message
     'alert.mobile.not.registered': '该手机号未注册，请先注册',
     'alert.mail.not.registered': '该邮箱地址未注册，请先注册',
+    'alert.other.not.registered': '该账号未注册，请先注册',
     'alert.mobile.existed': '该手机号已经注册，可直接登录',
     'alert.mail.existed': '该邮箱地址已经注册，可直接登录',
     'alert.account.error': '账号或密码错误，请重新输入',

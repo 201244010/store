@@ -67,7 +67,11 @@ export default class SiderMenu extends PureComponent {
             >
                 <div className={styles.logo} id="logo">
                     <Link to="/">
-                        <img src={logo} alt="SUNMI STORE" style={{ width: '70%', height: '70%' }} />
+                        <img
+                            src={logo}
+                            alt="SUNMI STORE"
+                            style={{ width: '60%', height: 'auto' }}
+                        />
                     </Link>
                 </div>
                 <Suspense fallback={<PageLoading />}>
