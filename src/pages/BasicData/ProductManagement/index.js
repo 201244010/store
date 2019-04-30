@@ -9,10 +9,11 @@ import * as styles from './ProductManagement.less';
         product: state.basicDataProduct,
     }),
     dispatch => ({
-        fetchProductList: payload =>
-            dispatch({ type: 'basicDataProduct/fetchProductList', payload }),
         changeSearchFormValue: payload =>
             dispatch({ type: 'basicDataProduct/changeSearchFormValue', payload }),
+        clearSearch: payload => dispatch({ type: 'basicDataProduct/clearSearch', payload }),
+        fetchProductList: payload =>
+            dispatch({ type: 'basicDataProduct/fetchProductList', payload }),
         getProductDetail: payload =>
             dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
         deleteProduct: payload => dispatch({ type: 'basicDataProduct/deleteProduct', payload }),
@@ -33,6 +34,7 @@ class ProductList extends Component {
         const {
             product: { loading, searchFormValues, data, states, pagination },
             changeSearchFormValue,
+            clearSearch,
             fetchProductList,
             deleteProduct,
         } = this.props;
@@ -44,6 +46,7 @@ class ProductList extends Component {
                         states,
                         values: searchFormValues,
                         changeSearchFormValue,
+                        clearSearch,
                         fetchProductList,
                     }}
                 />

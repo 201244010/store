@@ -65,7 +65,7 @@ const BaseStationDetail = props => {
                     </span>
                     <span className={styles['detail-info-content']}>
                         {stationInfo.connect_time
-                            ? unixSecondToDate(stationInfo.connect_time)
+                            ? unixSecondToDate(stationInfo.disconnect_time)
                             : '--'}
                     </span>
                 </div>

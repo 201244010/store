@@ -64,7 +64,7 @@ export function isUrl(path) {
     return reg.test(path);
 }
 
-export function maskPhone(phone, maskPos) {
+export function maskPhone(phone = '', maskPos) {
     const { maskStart, maskEnd } = maskPos;
     return phone
         .split('')

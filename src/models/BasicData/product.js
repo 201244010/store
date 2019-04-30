@@ -46,6 +46,26 @@ export default {
         overview: {},
     },
     effects: {
+        *changeSearchFormValue({ payload = {} }, { put }) {
+            const { options = {} } = payload;
+            yield put({
+                type: 'setSearchFormValue',
+                payload: {
+                    ...options,
+                },
+            });
+        },
+        *clearSearch(_, { put }) {
+            yield put({
+                type: 'updateState',
+                payload: {
+                    searchFormValues: {
+                        keyword: '',
+                        status: -1,
+                    },
+                },
+            });
+        },
         *fetchProductOverview(_, { call, put }) {
             yield put({
                 type: 'updateState',
@@ -67,7 +87,6 @@ export default {
                 payload: { loading: false },
             });
         },
-
         *getERPPlatformList(_, { call, put }) {
             yield put({
                 type: 'updateState',
@@ -91,7 +110,6 @@ export default {
             }
             return response;
         },
-
         *fetchProductList({ payload = {} }, { call, put, select }) {
             const { options = {} } = payload;
             const { pagination, searchFormValues } = yield select(state => state.basicDataProduct);
@@ -118,17 +136,6 @@ export default {
                 },
             });
         },
-
-        *changeSearchFormValue({ payload = {} }, { put }) {
-            const { options = {} } = payload;
-            yield put({
-                type: 'setSearchFormValue',
-                payload: {
-                    ...options,
-                },
-            });
-        },
-
         *getProductDetail({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
@@ -153,7 +160,6 @@ export default {
             }
             return response;
         },
-
         *createProduct({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             const opts = {
@@ -186,7 +192,6 @@ export default {
             }
             return response;
         },
-
         *updateProduct({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             const opts = {
@@ -220,7 +225,6 @@ export default {
             }
             return response;
         },
-
         *deleteProduct({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
@@ -256,7 +260,6 @@ export default {
                 });
             }
         },
-
         *clearState(_, { put }) {
             yield put({
                 type: 'updateState',
@@ -265,7 +268,6 @@ export default {
                 },
             });
         },
-
         *erpAuthCheck({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             const response = yield call(Actions.checkSaasInfo, options);
@@ -277,7 +279,6 @@ export default {
             }
             return response;
         },
-
         *erpImport({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
@@ -300,7 +301,6 @@ export default {
             }
         },
     },
-
     reducers: {
         updateState(state, action) {
             return {

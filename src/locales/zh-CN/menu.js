@@ -15,7 +15,7 @@ export default {
     'menu.product': '商品库',
     'menu.product.list': '商品库',
     'menu.product.list.productCreate': '新建商品',
-    'menu.product.list.productUpdate': '编辑商品',
+    'menu.product.list.productUpdate': '修改商品',
     'menu.product.list.productInfo': '商品详情',
     'menu.product.list.erpImport': '对接ERP',
 
@@ -26,7 +26,7 @@ export default {
 
     'menu.company.storeManagement': '门店管理',
     'menu.company.storeManagement.list': '门店列表',
-    'menu.company.storeManagement.alterStore': '门店编辑',
+    'menu.company.storeManagement.alterStore': '修改门店',
     'menu.company.storeManagement.createStore': '新建门店',
     'menu.company.storeManagement.storeInformation': '查看门店',
 
@@ -39,7 +39,7 @@ export default {
     'menu.basicData.productManagement': '商品库管理',
     'menu.basicData.productManagement.list': '商品',
     'menu.basicData.productManagement.list.productCreate': '新建商品',
-    'menu.basicData.productManagement.list.productUpdate': '编辑商品',
+    'menu.basicData.productManagement.list.productUpdate': '修改商品',
     'menu.basicData.productManagement.list.productInfo': '商品详情',
     'menu.basicData.productManagement.list.erpImport': '对接ERP',
 
@@ -52,7 +52,7 @@ export default {
 
     'menu.basicData.storeManagement': '门店管理',
     'menu.basicData.storeManagement.list': '门店列表',
-    'menu.basicData.storeManagement.alterStore': '门店编辑',
+    'menu.basicData.storeManagement.alterStore': '修改门店',
     'menu.basicData.storeManagement.createStore': '新建门店',
     'menu.basicData.storeManagement.storeInformation': '查看门店',
 };

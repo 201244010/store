@@ -249,7 +249,11 @@ class SearchResult extends Component {
             {
                 title: formatMessage({ id: 'esl.device.esl.status' }),
                 dataIndex: 'status',
-                render: text => <span>{ESL_STATES[text]}</span>,
+                render: text => (
+                    <span style={{ color: `${text}` === '2' ? 'red' : 'rgba(0, 0, 0, 0.65)' }}>
+                        {ESL_STATES[text]}
+                    </span>
+                ),
             },
             {
                 title: formatMessage({ id: 'esl.device.esl.battery' }),

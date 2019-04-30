@@ -118,6 +118,29 @@ class Login extends Component {
         return response;
     };
 
+    refreshCode = async (params = {}) => {
+        const { imageStyle = {} } = params;
+        const {
+            form: { getFieldValue },
+            sendCode,
+        } = this.props;
+
+        const response = await sendCode({
+            options: {
+                username: getFieldValue('phone'),
+                type: '2',
+                imgCode: '',
+                key: '',
+                width: 112,
+                height: 40,
+                fontSize: 18,
+                ...imageStyle,
+            },
+        });
+
+        return response;
+    };
+
     checkVcode = async () => {
         const {
             form: { setFieldsValue, validateFields },
@@ -298,7 +321,7 @@ class Login extends Component {
             form: { getFieldDecorator },
             getImageCode,
             sso: { imgCode, imgCaptcha },
-            user: { errorTimes },
+            user: { errorTimes, loading },
         } = this.props;
         const currentLanguage = getLocale();
 
@@ -503,6 +526,7 @@ class Login extends Component {
                                                             }),
                                                         },
                                                         initial: false,
+                                                        refreshCode: this.refreshCode,
                                                         onFocus: () =>
                                                             this.setState({ vcodeIsError: false }),
                                                     }}
@@ -553,7 +577,13 @@ class Login extends Component {
                         )}
                     </Tabs>
                     <Form.Item>
-                        <Button size="large" type="primary" block onClick={this.onSubmit}>
+                        <Button
+                            disabled={loading}
+                            size="large"
+                            type="primary"
+                            block
+                            onClick={this.onSubmit}
+                        >
                             {formatMessage({ id: 'btn.login' })}
                         </Button>
                     </Form.Item>
