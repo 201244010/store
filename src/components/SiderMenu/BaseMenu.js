@@ -29,7 +29,6 @@ const getIcon = icon => {
                 style={{
                     display: 'inline-block',
                     width: '14px',
-                    marginRight: '10px',
                 }}
             />
         );
