@@ -110,7 +110,7 @@ class Security extends Component {
                                         id: 'userCenter.security.mobile.description',
                                     })}
                                     <span>
-                                        {maskPhone(currentUser.phone, {
+                                        {maskPhone(currentUser.phone || '', {
                                             maskStart: 3,
                                             maskEnd: 6,
                                         }) || ''}
