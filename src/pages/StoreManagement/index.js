@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
 import { MENU_PREFIX } from '@/constants';
 import styles from './StoreManagement.less';
 import { formatEmptyWithoutZero } from '@/utils/utils';
@@ -170,9 +170,9 @@ class StoreManagement extends Component {
         return (
             <div className={styles.storeList}>
                 <div className={styles.top}>
-                    <Form {...FORM_ITEM_LAYOUT_COMMON}>
-                        <Row {...FORM_FORMAT.gutter}>
-                            <Col span={8}>
+                    <Form {...FORM_ITEM_LAYOUT}>
+                        <Row gutter={FORM_FORMAT.gutter}>
+                            <Col xl={10} lg={12} md={24}>
                                 <FormItem
                                     label={formatMessage({ id: 'storeManagement.list.inputLabel' })}
                                 >
@@ -187,7 +187,7 @@ class StoreManagement extends Component {
                                     )}
                                 </FormItem>
                             </Col>
-                            <Col span={8}>
+                            <Col xl={10} lg={12} md={24}>
                                 <FormItem
                                     label={formatMessage({
                                         id: 'storeManagement.list.selectLabel',
@@ -205,8 +205,8 @@ class StoreManagement extends Component {
                                     )}
                                 </FormItem>
                             </Col>
-                            <Col span={8}>
-                                <Button onClick={this.handleSubmit}>
+                            <Col xl={4} lg={12} md={24}>
+                                <Button onClick={this.handleSubmit} type="primary">
                                     {formatMessage({ id: 'storeManagement.list.buttonSubmit' })}
                                 </Button>
                                 <a
