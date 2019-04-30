@@ -21,13 +21,30 @@ class SearchForm extends Component {
         fetchBaseStations({});
     };
 
+    handleReset = async () => {
+        const {
+            form ,
+            clearSearch,
+            fetchBaseStations,
+        } = this.props;
+        if (form) {
+            form.resetFields();
+        }
+        await clearSearch();
+        await fetchBaseStations({
+            options: {
+                current: 1
+            }
+        });
+    };
+
     render() {
         const { states, searchFormValues } = this.props;
 
         return (
             <Form {...FORM_ITEM_LAYOUT}>
                 <Row gutter={FORM_FORMAT.gutter}>
-                    <Col xl={10} lg={12} md={24}>
+                    <Col xl={9} lg={12} md={24}>
                         <Form.Item label={formatMessage({ id: 'esl.device.ap.search.ap.info' })}>
                             <Input
                                 placeholder={formatMessage({
@@ -39,7 +56,7 @@ class SearchForm extends Component {
                             />
                         </Form.Item>
                     </Col>
-                    <Col xl={10} lg={12} md={24}>
+                    <Col xl={9} lg={12} md={24}>
                         <Form.Item label={formatMessage({ id: 'esl.device.ap.status' })}>
                             <Select
                                 placeholder={formatMessage({ id: 'select.placeholder' })}
@@ -53,11 +70,18 @@ class SearchForm extends Component {
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col xl={4} lg={12} md={24}>
+                    <Col xl={6} lg={12} md={24}>
                         <Form.Item>
-                            <Button type="primary" onClick={this.search}>
+                            <Button onClick={this.search}>
                                 {formatMessage({ id: 'btn.query' })}
                             </Button>
+                            <a
+                                href="javascript:void(0)"
+                                style={{ marginLeft: '20px' }}
+                                onClick={this.handleReset}
+                            >
+                                {formatMessage({ id: 'storeManagement.list.buttonReset' })}
+                            </a>
                         </Form.Item>
                     </Col>
                 </Row>
