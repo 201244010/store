@@ -16,6 +16,7 @@ import {
     SHOW_VCODE,
     USER_NOT_EXIST,
 } from '@/constants/errorCode';
+import * as Regexp from '@/constants/regexp';
 import { MENU_PREFIX, KEY } from '@/constants';
 import styles from './Login.less';
 
@@ -208,7 +209,12 @@ class Login extends Component {
         } else if (response.code === USER_NOT_EXIST) {
             const checkUserName =
                 currentTab === 'tabAccount' ? getFieldValue('username') : getFieldValue('phone');
-            const type = checkUserName.indexOf('@') > -1 ? 'mail' : 'mobile';
+            let type = 'other';
+            if (Regexp.mail.test(checkUserName)) {
+                type = 'mail';
+            } else if (Regexp.cellphone.test(checkUserName)) {
+                type = 'mobile';
+            }
             this.setState({
                 notice: `${response.code}-${type}` || '',
             });

@@ -22,6 +22,7 @@ export const ALERT_NOTICE_MAP = {
     '3603': 'alert.mobile.not.registered',
     '3603-mail': 'alert.mail.not.registered',
     '3603-mobile': 'alert.mobile.not.registered',
+    '3603-other': 'alert.other.not.registered',
     '201': 'alert.account.error',
     '208': 'alert.code.expired',
     '216': 'alert.mobile.existed',
