@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { formatMessage, getLocale } from 'umi/locale';
-import { Modal } from 'antd';
+import { Icon, Modal } from 'antd';
 // import { Divider } from 'antd';
 // import BigIcon from '../../../components/BigIcon';
 import MobileReset from './MobileReset';
@@ -72,14 +72,30 @@ class ResetPassword extends Component {
 
     render() {
         const RenderComponent = this.getRenderComponent();
+        const { visible, onCancel } = this.props;
 
         return (
-            <Modal>
-                <div className={styles['reset-wrapper']}>
-                    <h4 className={styles['reset-title']}>
-                        {formatMessage({ id: 'reset.title' })}
-                    </h4>
-                    <RenderComponent switchStep={this.switchStep} />
+            <Modal
+                visible={visible}
+                width={400}
+                closable={false}
+                maskClosable={false}
+                title={null}
+                footer={null}
+                onCancel={onCancel}
+            >
+                <div className={styles['custom-modal-wrapper']}>
+                    <div className={styles['custom-modal-header']}>
+                        <div className={styles['close-icon']} onClick={onCancel}>
+                            <Icon type="close" />
+                        </div>
+                    </div>
+                    <div className={styles['custom-modal-content']}>
+                        <h1 className={styles['reset-title']}>
+                            {formatMessage({ id: 'reset.title' })}
+                        </h1>
+                        <RenderComponent switchStep={this.switchStep} />
+                    </div>
                 </div>
             </Modal>
         );

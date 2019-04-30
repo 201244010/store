@@ -2,7 +2,7 @@ import React from 'react';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import DocumentTitle from 'react-document-title';
-import SelectLang from '@/components/SelectLang';
+// import SelectLang from '@/components/SelectLang';
 import pathToRegexp from 'path-to-regexp';
 import * as styles from './SunmiLayout.less';
 
@@ -54,9 +54,9 @@ class SunmiLayout extends React.PureComponent {
                     <div className={`${styles.wrapper} ${styles[bgClass]}`}>
                         <div className={styles['header-bar']}>
                             <div className={styles.logo} />
-                            <div className={styles['lang-wrapper']}>
-                                <SelectLang className={styles['drop-down']} />
-                            </div>
+                            {/* <div className={styles['lang-wrapper']}> */}
+                            {/* <SelectLang className={styles['drop-down']} /> */}
+                            {/* </div> */}
                         </div>
                         <div className={styles.divider} />
                         <div className={styles.content}>{children}</div>

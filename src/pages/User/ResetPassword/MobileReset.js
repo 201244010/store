@@ -4,11 +4,11 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
-import styles from '../Register/Register.less';
 import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
 import { ERROR_OK, SHOW_VCODE, VCODE_ERROR, ALERT_NOTICE_MAP } from '@/constants/errorCode';
+import styles from './ResetPassword.less';
 
 @connect(
     state => ({
@@ -311,12 +311,21 @@ class MobileReset extends Component {
                                     />
                                 )}
                             </Form.Item>
-                            <Form.Item>
-                                <Button type="primary" size="large" block onClick={this.onSubmit}>
-                                    {formatMessage({ id: 'btn.confirm' })}
-                                </Button>
-                            </Form.Item>
+                            <Form.Item />
                         </Form>
+                        <div className={styles['reset-footer']}>
+                            <Button
+                                className={`${styles['primary-btn']} ${
+                                    styles['reset-confirm-btn']
+                                }`}
+                                type="primary"
+                                size="large"
+                                block
+                                onClick={this.onSubmit}
+                            >
+                                {formatMessage({ id: 'btn.confirm' })}
+                            </Button>
+                        </div>
                     </>
                 )}
             </div>
