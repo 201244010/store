@@ -7,6 +7,7 @@ import { encryption } from '@/utils/utils';
 import {
     ALERT_NOTICE_MAP,
     ERROR_OK,
+    MOBILE_ERROR,
     MOBILE_BINDED,
     SHOW_VCODE,
     USER_EXIST,
@@ -32,7 +33,7 @@ class ChangeMobile extends Component {
 
     onOk = () => {
         const {
-            form: { validateFields },
+            form: { validateFields, setFields },
             mobileBinded,
             onOk,
         } = this.props;
@@ -52,6 +53,13 @@ class ChangeMobile extends Component {
                     }
                 } else if (response && response.code === MOBILE_BINDED) {
                     message.error(formatMessage({ id: 'mobile.binded' }));
+                } else if (response && response.code === MOBILE_ERROR) {
+                    setFields({
+                        password: {
+                            value: values.password,
+                            errors: [new Error(formatMessage({ id: 'password.input.error' }))],
+                        },
+                    });
                 } else {
                     message.error(formatMessage({ id: 'change.mobile.fail' }));
                 }

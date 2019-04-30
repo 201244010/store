@@ -13,6 +13,7 @@ export default {
     'mobile.placeholder': '11位手机号',
     'mobile.code.placeholder': '短信验证码',
     'password.placeholder': '8-30位密码，区分大小写',
+    'password.input.error': '登录密码错误',
     'confirm.placeholder': '确认密码',
     'mail.placeholder': '邮箱',
     'mail.bind.placeholder': '请输入注册／绑定的邮箱',
