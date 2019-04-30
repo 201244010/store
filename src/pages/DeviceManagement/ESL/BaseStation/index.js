@@ -9,12 +9,14 @@ import * as styles from './BaseStation.less';
         baseStation: state.eslBaseStation,
     }),
     dispatch => ({
+        changeSearchFormValue: payload =>
+            dispatch({ type: 'eslBaseStation/changeSearchFormValue', payload }),
+        clearSearch: payload =>
+            dispatch({ type: 'eslBaseStation/clearSearch', payload }),
         fetchBaseStationState: payload =>
             dispatch({ type: 'eslBaseStation/fetchBaseStationState', payload }),
         fetchBaseStations: payload =>
             dispatch({ type: 'eslBaseStation/fetchBaseStations', payload }),
-        changeSearchFormValue: payload =>
-            dispatch({ type: 'eslBaseStation/changeSearchFormValue', payload }),
         getBaseStationDetail: payload =>
             dispatch({ type: 'eslBaseStation/getBaseStationDetail', payload }),
         deleteBaseStation: payload =>
@@ -44,6 +46,7 @@ class BaseStation extends Component {
             getBaseStationDetail,
             deleteBaseStation,
             changeSearchFormValue,
+            clearSearch
         } = this.props;
 
         return (
@@ -53,6 +56,7 @@ class BaseStation extends Component {
                         states,
                         searchFormValues,
                         changeSearchFormValue,
+                        clearSearch,
                         fetchBaseStations,
                     }}
                 />

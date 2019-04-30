@@ -38,6 +38,17 @@ export default {
                 },
             });
         },
+        *clearSearch(_, { put }) {
+            yield put({
+                type: 'updateState',
+                payload: {
+                    searchFormValues: {
+                        keyword: '',
+                        status: -1,
+                    },
+                },
+            });
+        },
         *fetchElectricLabels({ payload = {} }, { call, put, select }) {
             const { options = {} } = payload;
             const { pagination, searchFormValues } = yield select(state => state.eslElectricLabel);

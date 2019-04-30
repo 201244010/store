@@ -46,6 +46,28 @@ export default {
         overview: {},
     },
     effects: {
+        *changeSearchFormValue({ payload = {} }, { put }) {
+            const { options = {} } = payload;
+            yield put({
+                type: 'setSearchFormValue',
+                payload: {
+                    ...options,
+                },
+            });
+        },
+
+        *clearSearch(_, { put }) {
+            yield put({
+                type: 'updateState',
+                payload: {
+                    searchFormValues: {
+                        keyword: '',
+                        status: -1,
+                    },
+                },
+            });
+        },
+
         *fetchProductOverview(_, { call, put }) {
             yield put({
                 type: 'updateState',
@@ -115,16 +137,6 @@ export default {
                         total: Number(result.total_count) || 0,
                         hideOnSinglePage: hideSinglePageCheck(result.total_count) || true,
                     },
-                },
-            });
-        },
-
-        *changeSearchFormValue({ payload = {} }, { put }) {
-            const { options = {} } = payload;
-            yield put({
-                type: 'setSearchFormValue',
-                payload: {
-                    ...options,
                 },
             });
         },
