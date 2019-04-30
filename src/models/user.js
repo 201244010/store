@@ -11,6 +11,7 @@ export default {
 
     state: {
         userInfo: {},
+        loading: false,
         errorTimes: 0,
         list: [],
         currentUser: CookieUtil.getCookieByKey(CookieUtil.USER_INFO_KEY) || {},
@@ -19,12 +20,26 @@ export default {
     effects: {
         *login({ payload }, { call, put }) {
             const { type, options } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
             const response = yield call(Actions.login, type, options);
 
             if (response && response.code === ERROR_OK) {
                 const token = response.data;
                 CookieUtil.setCookieByKey(CookieUtil.TOKEN_KEY, token);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
             } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+
                 yield put({
                     type: 'computeErrorTime',
                     payload: 1,
@@ -136,6 +151,12 @@ export default {
         },
     },
     reducers: {
+        updateState(state, action) {
+            return {
+                ...state,
+                ...action.payload,
+            };
+        },
         computeErrorTime(state, action) {
             return {
                 ...state,

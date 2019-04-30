@@ -26,7 +26,7 @@ class StoreInformation extends React.Component {
     toPath = target => {
         const shopId = getLocationParam('shopId');
         const path = {
-            edit: `${MENU_PREFIX.STORE}/createStore?shopId=${shopId}&action=edit`,
+            edit: `${MENU_PREFIX.STORE}/alterStore?shopId=${shopId}&action=edit`,
             back: `${MENU_PREFIX.STORE}/list`,
         };
 

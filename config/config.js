@@ -167,7 +167,7 @@ export default {
                         },
                         {
                             path: '/company/storeManagement/alterStore',
-                            component: './StoreManagement/AlterStore.js',
+                            component: './StoreManagement/CreateStore.js',
                             name: 'storeManagement',
                             hideInMenu: true,
                         },

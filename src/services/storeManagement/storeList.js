@@ -6,8 +6,8 @@ const fetchApi = customizeFetch('api/shop');
 export const getList = (options = {}) => {
     const opt = {
         body: {
-            ...options,
             page_size: 999,
+            ...options,
         },
     };
     return fetchApi('getList', opt).then(response => response.json());

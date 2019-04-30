@@ -32,6 +32,7 @@ export const companyUpdate = (options = {}) => {
 export const getCompanyList = (options = {}) => {
     const opts = {
         body: {
+            page_size: 99,
             ...options,
         },
     };
