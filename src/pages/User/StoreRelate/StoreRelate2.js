@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Button, Divider, Icon } from 'antd';
+import { Button, Form, Icon, Input } from 'antd';
 import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
 import { MENU_PREFIX } from '@/constants';
@@ -16,8 +16,10 @@ import styles from './StoreRelate.less';
     }),
     dispatch => ({
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+        companyCreate: payload => dispatch({ type: 'merchant/companyCreate', payload }),
     })
 )
+@Form.create()
 class StoreRelate extends Component {
     checkStoreExist = async () => {
         const { getStoreList } = this.props;
@@ -27,6 +29,7 @@ class StoreRelate extends Component {
             const shopList = result.shop_list || [];
             Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
             if (shopList.length === 0) {
+                CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
                 router.push(`${MENU_PREFIX.STORE}/createStore`);
             } else {
                 const lastStore = shopList.length;
@@ -42,9 +45,36 @@ class StoreRelate extends Component {
         this.checkStoreExist();
     };
 
+    createMerchant = () => {
+        const {
+            form: { validateFields, setFields },
+            companyCreate,
+        } = this.props;
+        validateFields(async (err, values) => {
+            if (!err) {
+                const response = await companyCreate({ ...values });
+                if (response && response.code !== ERROR_OK) {
+                    setFields({
+                        company_name: {
+                            value: values.company_name || '',
+                            errors: [
+                                new Error(
+                                    formatMessage({ id: 'merchantManagement.merchant.existed' })
+                                ),
+                            ],
+                        },
+                    });
+                } else {
+                    this.checkStoreExist();
+                }
+            }
+        });
+    };
+
     render() {
         const {
-            merchant: { companyList },
+            form: { getFieldDecorator },
+            merchant: { companyList, loading },
         } = this.props;
         return (
             <div className={styles['store-wrapper']}>
@@ -72,24 +102,51 @@ class StoreRelate extends Component {
                 ) : (
                     <>
                         <h1 className={styles['store-title']}>
-                            {formatMessage({ id: 'relatedStore.choose' })}
+                            {formatMessage({ id: 'merchantManagement.merchant.welcome' })}
                         </h1>
-                        <p className={styles['store-content']}>
-                            {formatMessage({ id: 'relatedStore.none' })}
-                        </p>
-                        <Button
-                            type="primary"
-                            size="large"
-                            block
-                            href="/merchant/create"
-                            target="/merchant/create"
-                        >
-                            {formatMessage({ id: 'relatedStore.create' })}
-                        </Button>
-                        <Divider className={styles['store-divider']} />
-                        <p className={styles['store-content']}>
-                            {formatMessage({ id: 'relatedStore.notice' })}
-                        </p>
+                        <div className={styles['store-content']}>
+                            <Form>
+                                <Form.Item>
+                                    {getFieldDecorator('company_name', {
+                                        validateTrigger: 'onBlur',
+                                        rules: [
+                                            {
+                                                required: true,
+                                                message: formatMessage({
+                                                    id: 'merchantManagement.merchant.inputMerchant',
+                                                }),
+                                            },
+                                        ],
+                                    })(
+                                        <Input
+                                            maxLength={40}
+                                            style={{ height: 42 }}
+                                            placeholder={formatMessage({
+                                                id: 'merchantManagement.merchant.inputMerchant',
+                                            })}
+                                        />
+                                    )}
+                                </Form.Item>
+                                <div>
+                                    <Button
+                                        className={`${styles['primary-btn']} ${
+                                            styles['create-brn']
+                                        }`}
+                                        loading={loading}
+                                        type="primary"
+                                        block
+                                        onClick={this.createMerchant}
+                                    >
+                                        {formatMessage({
+                                            id: 'merchantManagement.merchant.createMerchant',
+                                        })}
+                                    </Button>
+                                </div>
+                            </Form>
+                            <p className={styles['mechant-description']}>
+                                {formatMessage({ id: 'merchantManagement.merchant.joinMerchant' })}
+                            </p>
+                        </div>
                     </>
                 )}
             </div>

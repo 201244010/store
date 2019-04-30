@@ -18,7 +18,7 @@ class SunmiLayout extends React.PureComponent {
         const {
             location: { pathname },
         } = window;
-        if (pathname === '/tempLogin/storeRelate') {
+        if (pathname.indexOf('storeRelate') > -1) {
             this.setState({
                 bgClass: 'login-gaos-bg',
             });
