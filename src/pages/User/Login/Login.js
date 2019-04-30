@@ -321,7 +321,7 @@ class Login extends Component {
             form: { getFieldDecorator },
             getImageCode,
             sso: { imgCode, imgCaptcha },
-            user: { errorTimes },
+            user: { errorTimes, loading },
         } = this.props;
         const currentLanguage = getLocale();
 
@@ -577,7 +577,13 @@ class Login extends Component {
                         )}
                     </Tabs>
                     <Form.Item>
-                        <Button size="large" type="primary" block onClick={this.onSubmit}>
+                        <Button
+                            disabled={loading}
+                            size="large"
+                            type="primary"
+                            block
+                            onClick={this.onSubmit}
+                        >
                             {formatMessage({ id: 'btn.login' })}
                         </Button>
                     </Form.Item>

@@ -74,7 +74,7 @@ const columns = [
                 <a
                     onClick={() => {
                         router.push(
-                            `${MENU_PREFIX.STORE}/createStore?shopId=${record.shop_id}&action=edit`
+                            `${MENU_PREFIX.STORE}/alterStore?shopId=${record.shop_id}&action=edit`
                         );
                     }}
                     className={styles.infoAnchor}
