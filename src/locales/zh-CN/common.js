@@ -45,6 +45,7 @@ export default {
     'list.action.detail': '详情',
     'list.action.delete': '删除',
     'list.action.edit': '编辑',
+    'list.action.alter': '修改',
     'list.action.bind': '绑定',
     'list.action.push.again': '重推',
     'list.action.more': '更多',

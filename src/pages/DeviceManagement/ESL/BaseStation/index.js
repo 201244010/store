@@ -11,8 +11,7 @@ import * as styles from './BaseStation.less';
     dispatch => ({
         changeSearchFormValue: payload =>
             dispatch({ type: 'eslBaseStation/changeSearchFormValue', payload }),
-        clearSearch: payload =>
-            dispatch({ type: 'eslBaseStation/clearSearch', payload }),
+        clearSearch: payload => dispatch({ type: 'eslBaseStation/clearSearch', payload }),
         fetchBaseStationState: payload =>
             dispatch({ type: 'eslBaseStation/fetchBaseStationState', payload }),
         fetchBaseStations: payload =>
@@ -46,7 +45,7 @@ class BaseStation extends Component {
             getBaseStationDetail,
             deleteBaseStation,
             changeSearchFormValue,
-            clearSearch
+            clearSearch,
         } = this.props;
 
         return (

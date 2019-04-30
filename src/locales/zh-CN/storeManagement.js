@@ -55,7 +55,7 @@ export default {
     'storeManagement.create.phoneMessage': '请输入正确的电话号码',
 
     // 修改门店
-    'storeManagement.alter.title': '门店信息',
+    'storeManagement.alter.title': '修改门店',
 
     // 查看门店
     'storeManagement.info.title': '查看门店',
