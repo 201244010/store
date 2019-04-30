@@ -3,14 +3,13 @@ import { formatMessage, getLocale } from 'umi/locale';
 import Link from 'umi/link';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Tabs, Form, Input, Button, Icon, Alert, Modal, message } from 'antd';
+import { Tabs, Form, Button, Modal } from 'antd';
 import { encryption } from '@/utils/utils';
 import Storage from '@konata9/storage.js';
 import AccountLogin from './AccountLogin';
-import Captcha from '@/components/Captcha';
-import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
+import MobileLogin from './MobileLogin';
 import * as CookieUtil from '@/utils/cookies';
-import { ERROR_OK, ALERT_NOTICE_MAP, VCODE_ERROR, SHOW_VCODE } from '@/constants/errorCode';
+import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 import { MENU_PREFIX, KEY } from '@/constants';
 import styles from './Login.less';
 
@@ -47,13 +46,9 @@ const tabBarStyle = {
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.inputRef = React.createRef();
         this.state = {
             notice: '',
             currentTab: 'tabAccount',
-            trigger: false,
-            vcodeIsError: false,
-            showImgCaptchaModal: false,
         };
     }
 
@@ -70,69 +65,6 @@ class Login extends Component {
             notice: '',
             currentTab: tabName,
         });
-    };
-
-    closeImgCaptchaModal = () => {
-        this.setState({ showImgCaptchaModal: false });
-    };
-
-    getCode = async (params = {}) => {
-        const { imageStyle = {} } = params;
-        const {
-            form: { getFieldValue },
-            sendCode,
-            sso: { imgCaptcha, needImgCaptcha },
-        } = this.props;
-
-        const response = await sendCode({
-            options: {
-                username: getFieldValue('phone'),
-                type: '2',
-                imgCode: getFieldValue('vcode2') || '',
-                key: needImgCaptcha ? imgCaptcha.key : '',
-                width: 112,
-                height: 40,
-                fontSize: 18,
-                ...imageStyle,
-            },
-        });
-
-        if (response && response.code === ERROR_OK) {
-            message.success(formatMessage({ id: 'send.mobile.code.success' }));
-            this.setState({
-                trigger: true,
-                notice: '',
-                vcodeIsError: false,
-                showImgCaptchaModal: false,
-            });
-        } else if (response && !response.data) {
-            if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
-                this.setState({
-                    trigger: false,
-                    notice: response.code,
-                });
-            }
-        } else if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
-            this.setState({ showImgCaptchaModal: true });
-        }
-
-        return response;
-    };
-
-    checkVcode = async () => {
-        const {
-            form: { setFieldsValue, validateFields },
-        } = this.props;
-        const response = await this.getCode();
-        if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
-            setFieldsValue({ vcode2: '' });
-            this.setState(
-                {
-                    vcodeIsError: true,
-                },
-                () => validateFields(['vcode2'], { force: true })
-            );
-        }
     };
 
     showAccountMergeModal = (path = '/') => {
@@ -282,12 +214,12 @@ class Login extends Component {
     };
 
     render() {
-        const { notice, trigger, vcodeIsError, showImgCaptchaModal } = this.state;
+        const { notice } = this.state;
         const {
-            form: { getFieldDecorator },
             form,
             getImageCode,
-            sso: { imgCode, imgCaptcha },
+            sendCode,
+            sso: { imgCode, imgCaptcha, needImgCaptcha },
             user: { errorTimes },
         } = this.props;
         const currentLanguage = getLocale();
@@ -298,7 +230,7 @@ class Login extends Component {
                     <Tabs
                         animated={false}
                         defaultActiveKey="tabAccount"
-                        tabBarGutter={64}
+                        tabBarGutter={currentLanguage === 'zh-CN' ? 64 : 0}
                         tabBarStyle={tabBarStyle}
                         onChange={this.onTabChange}
                     >
@@ -321,142 +253,15 @@ class Login extends Component {
                                 tab={formatMessage({ id: 'login.useMobile' })}
                                 key="tabMobile"
                             >
-                                {notice && (
-                                    <Form.Item>
-                                        <Alert
-                                            message={formatMessage({
-                                                id: ALERT_NOTICE_MAP[notice],
-                                            })}
-                                            type="error"
-                                            showIcon
-                                        />
-                                    </Form.Item>
-                                )}
-                                <Form.Item>
-                                    {getFieldDecorator('phone', {
-                                        validateTrigger: 'onBlur',
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: formatMessage({
-                                                    id: 'mobile.validate.isEmpty',
-                                                }),
-                                            },
-                                            {
-                                                pattern: /^1\d{10}$/,
-                                                message: formatMessage({
-                                                    id: 'mobile.validate.isFormatted',
-                                                }),
-                                            },
-                                        ],
-                                    })(
-                                        <Input
-                                            prefix={
-                                                <Icon
-                                                    type="border"
-                                                    style={{ color: 'rgba(0,0,0,.25)' }}
-                                                />
-                                            }
-                                            maxLength={11}
-                                            size="large"
-                                            placeholder={formatMessage({
-                                                id: 'mobile.placeholder',
-                                            })}
-                                        />
-                                    )}
-                                </Form.Item>
-
-                                <Modal
-                                    title={formatMessage({ id: 'safety.validate' })}
-                                    visible={showImgCaptchaModal}
-                                    maskClosable={false}
-                                    onOk={this.checkVcode}
-                                    onCancel={this.closeImgCaptchaModal}
-                                >
-                                    <div>
-                                        <p>{formatMessage({ id: 'vcode.input.notice' })}</p>
-                                        <Form.Item>
-                                            {getFieldDecorator('vcode2', {
-                                                validateTrigger: 'onBlur',
-                                                rules: [
-                                                    {
-                                                        validator: (rule, value, callback) => {
-                                                            if (vcodeIsError) {
-                                                                callback(
-                                                                    formatMessage({
-                                                                        id: 'vcode.input.error',
-                                                                    })
-                                                                );
-                                                            } else if (!vcodeIsError && !value) {
-                                                                callback(
-                                                                    formatMessage({
-                                                                        id: 'code.validate.isEmpty',
-                                                                    })
-                                                                );
-                                                            } else {
-                                                                callback();
-                                                            }
-                                                        },
-                                                    },
-                                                ],
-                                            })(
-                                                <ImgCaptcha
-                                                    {...{
-                                                        imgUrl: imgCaptcha.url,
-                                                        inputProps: {
-                                                            maxLength: 4,
-                                                            size: 'large',
-                                                            placeholder: formatMessage({
-                                                                id: 'vcode.placeholder',
-                                                            }),
-                                                        },
-                                                        initial: false,
-                                                        onFocus: () =>
-                                                            this.setState({ vcodeIsError: false }),
-                                                    }}
-                                                />
-                                            )}
-                                        </Form.Item>
-                                    </div>
-                                </Modal>
-
-                                <Form.Item>
-                                    {getFieldDecorator('code', {
-                                        validateTrigger: 'onBlur',
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: formatMessage({
-                                                    id: 'code.validate.isEmpty',
-                                                }),
-                                            },
-                                        ],
-                                    })(
-                                        <Captcha
-                                            {...{
-                                                trigger,
-                                                inputProps: {
-                                                    maxLength: 4,
-                                                    size: 'large',
-                                                    placeholder: formatMessage({
-                                                        id: 'mobile.code.placeholder',
-                                                    }),
-                                                },
-                                                buttonProps: {
-                                                    size: 'large',
-                                                    block: true,
-                                                },
-                                                buttonText: {
-                                                    initText: formatMessage({ id: 'btn.get.code' }),
-                                                    countText: formatMessage({
-                                                        id: 'countDown.unit',
-                                                    }),
-                                                },
-                                                onClick: this.getCode,
-                                            }}
-                                        />
-                                    )}
-                                </Form.Item>
+                                <MobileLogin
+                                    {...{
+                                        form,
+                                        sendCode,
+                                        imgCaptcha,
+                                        needImgCaptcha,
+                                        notice,
+                                    }}
+                                />
                             </Tabs.TabPane>
                         )}
                     </Tabs>

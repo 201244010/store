@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button } from 'antd';
+import { Icon, Input } from 'antd';
+import styles from './captcha.less';
 
 class Captcha extends Component {
     constructor(props) {
@@ -82,25 +83,23 @@ class Captcha extends Component {
         const {
             buttonText: { initText, countText },
             inputProps = {},
-            buttonProps = {},
         } = this.props;
 
+        const StatusBtn = (
+            <div className={styles['status-btn']} onClick={this.handleClick}>
+                {inCounting ? `${count}${countText}` : initText}
+            </div>
+        );
+
         return (
-            <Row gutter={16}>
-                <Col span={16}>
-                    <Input
-                        value={value}
-                        onChange={this.handleInputChange}
-                        onBlur={this.handleInputBlur}
-                        {...inputProps}
-                    />
-                </Col>
-                <Col span={8}>
-                    <Button {...buttonProps} disabled={inCounting} onClick={this.handleClick}>
-                        {inCounting ? `${count}${countText}` : initText}
-                    </Button>
-                </Col>
-            </Row>
+            <Input
+                value={value}
+                onChange={this.handleInputChange}
+                onBlur={this.handleInputBlur}
+                prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                suffix={StatusBtn}
+                {...inputProps}
+            />
         );
     }
 }
