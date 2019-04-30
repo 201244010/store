@@ -24,19 +24,15 @@ class SearchForm extends Component {
     };
 
     handleReset = async () => {
-        const {
-            form,
-            clearSearch,
-            fetchProductList,
-        } = this.props;
+        const { form, clearSearch, fetchProductList } = this.props;
         if (form) {
             form.resetFields();
         }
         await clearSearch();
         await fetchProductList({
             options: {
-                current: 1
-            }
+                current: 1,
+            },
         });
     };
 

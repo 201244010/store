@@ -11,8 +11,7 @@ import * as styles from './ProductManagement.less';
     dispatch => ({
         changeSearchFormValue: payload =>
             dispatch({ type: 'basicDataProduct/changeSearchFormValue', payload }),
-        clearSearch: payload =>
-            dispatch({ type: 'basicDataProduct/clearSearch', payload }),
+        clearSearch: payload => dispatch({ type: 'basicDataProduct/clearSearch', payload }),
         fetchProductList: payload =>
             dispatch({ type: 'basicDataProduct/fetchProductList', payload }),
         getProductDetail: payload =>

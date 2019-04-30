@@ -110,11 +110,11 @@ class CreateStore extends React.Component {
 
         return (
             <div className={styles.storeList}>
-                <h2>
+                <h3>
                     {action === 'create'
                         ? formatMessage({ id: 'storeManagement.create.title' })
                         : formatMessage({ id: 'storeManagement.alter.title' })}
-                </h2>
+                </h3>
                 <Form onSubmit={this.handleSubmit} labelCol={{ span: 2 }} wrapperCol={{ span: 9 }}>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.nameLabel' })}>
                         {getFieldDecorator('shop_name', {
@@ -160,7 +160,7 @@ class CreateStore extends React.Component {
                                 <Radio value={0}>
                                     {formatMessage({ id: 'storeManagement.create.status.open' })}
                                 </Radio>
-                                <Radio value={1} disabled>
+                                <Radio value={1} disabled={action === 'create'}>
                                     {formatMessage({ id: 'storeManagement.create.status.closed' })}
                                 </Radio>
                             </Radio.Group>
