@@ -14,6 +14,7 @@ import * as styles from './index.less';
     dispatch => ({
         changeSearchFormValue: payload =>
             dispatch({ type: 'eslElectricLabel/changeSearchFormValue', payload }),
+        clearSearch: () => dispatch({ type: 'eslElectricLabel/clearSearch' }),
         fetchProductOverview: payload =>
             dispatch({ type: 'basicDataProduct/fetchProductOverview', payload }),
         fetchDeviceOverview: payload =>
@@ -77,6 +78,7 @@ class ElectricLabel extends Component {
                 overview: productOverview,
             },
             changeSearchFormValue,
+            clearSearch,
             fetchElectricLabels,
             fetchESLDetails,
             fetchTemplatesByESLCode,
@@ -97,6 +99,7 @@ class ElectricLabel extends Component {
                         {...{
                             searchFormValues,
                             changeSearchFormValue,
+                            clearSearch,
                             fetchElectricLabels,
                         }}
                     />

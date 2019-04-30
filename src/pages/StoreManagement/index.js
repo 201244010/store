@@ -120,13 +120,19 @@ class StoreManagement extends Component {
 
     handleReset = async () => {
         const {
-            form: { resetFields },
+            form,
             clearSearch,
             getStoreList,
         } = this.props;
-        resetFields();
+        if (form) {
+            form.resetFields();
+        }
         await clearSearch();
-        await getStoreList({});
+        await getStoreList({
+            options: {
+                current: 1
+            }
+        });
     };
 
     handleSubmit = () => {
@@ -172,7 +178,7 @@ class StoreManagement extends Component {
                 <div className={styles.top}>
                     <Form {...FORM_ITEM_LAYOUT}>
                         <Row gutter={FORM_FORMAT.gutter}>
-                            <Col xl={10} lg={12} md={24}>
+                            <Col xl={9} lg={12} md={24}>
                                 <FormItem
                                     label={formatMessage({ id: 'storeManagement.list.inputLabel' })}
                                 >
@@ -187,7 +193,7 @@ class StoreManagement extends Component {
                                     )}
                                 </FormItem>
                             </Col>
-                            <Col xl={10} lg={12} md={24}>
+                            <Col xl={9} lg={12} md={24}>
                                 <FormItem
                                     label={formatMessage({
                                         id: 'storeManagement.list.selectLabel',
@@ -205,8 +211,8 @@ class StoreManagement extends Component {
                                     )}
                                 </FormItem>
                             </Col>
-                            <Col xl={4} lg={12} md={24}>
-                                <Button onClick={this.handleSubmit} type="primary">
+                            <Col xl={6} lg={12} md={24}>
+                                <Button onClick={this.handleSubmit}>
                                     {formatMessage({ id: 'storeManagement.list.buttonSubmit' })}
                                 </Button>
                                 <a

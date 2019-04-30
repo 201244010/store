@@ -280,6 +280,7 @@ class MobileReset extends Component {
                                     ],
                                 })(
                                     <Input
+                                        maxLength={30}
                                         type="password"
                                         size="large"
                                         placeholder={formatMessage({ id: 'password.placeholder' })}
@@ -305,6 +306,7 @@ class MobileReset extends Component {
                                     ],
                                 })(
                                     <Input
+                                        maxLength={30}
                                         type="password"
                                         size="large"
                                         placeholder={formatMessage({ id: 'confirm.placeholder' })}
