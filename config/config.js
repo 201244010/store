@@ -62,6 +62,13 @@ export default {
             ]
         },
         {
+            path: "/studio",
+            component: "../layouts/BlankLayout",
+            routes: [
+                { path: "/studio", component: "./Studio" }
+            ]
+        },
+        {
             path: "/",
             component: "../layouts/BasicLayout",
             routes: [
@@ -322,13 +329,6 @@ export default {
                     name: "account",
                     hideInMenu: true
                 }
-            ]
-        },
-        {
-            path: "/template/studio",
-            component: "../layouts/BlankLayout",
-            routes: [
-                { path: "/template/studio", component: "./Studio" }
             ]
         },
     ],

@@ -46,9 +46,7 @@ class Studio extends Component {
     componentDidMount() {
         const {fetchTemplateDetail} = this.props;
         fetchTemplateDetail({
-            company_id: 222,
-            shop_id: 777,
-            template_id: 24,
+            template_id: 111,
         })
     }
 
@@ -162,9 +160,7 @@ class Studio extends Component {
         });
 
         saveAsDraft({
-            company_id: 222,
-            shop_id: 777,
-            template_id: 24,
+            template_id: 111,
             draft: JSON.stringify(newDetails)
         });
     };

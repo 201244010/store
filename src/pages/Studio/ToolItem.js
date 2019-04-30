@@ -49,7 +49,7 @@ export default class ToolItem extends Component {
                                 imageType: 'default'
                             });
                         };
-                        image.src = require('./icon/image.svg');
+                        image.src = require('@/assets/studio/image.svg');
                     } else {
                         dragAndDropComponent({
                             x,

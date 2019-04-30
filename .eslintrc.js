@@ -43,6 +43,7 @@ module.exports = {
         'camelcase': 1,
         'react/jsx-indent': ['error', 4, { 'props': 4 }],
         'react/jsx-indent-props': [4, 'tab'],
+        'react/prefer-stateless-function': 0
     },
     settings: {
         polyfills: ['fetch', 'promises', 'url'],

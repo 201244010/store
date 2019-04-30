@@ -1,29 +1,31 @@
-import React, {Fragment} from 'react';
+import React, {Component, Fragment} from 'react';
 import ButtonIcon from './ButtonIcon';
 import ZoomIcon from './ZoomIcon';
 import * as styles from './index.less';
 
-export default function BoardHeader(props) {
-    const {templateInfo, saveAsDraft} = props;
+export default class BoardHeader extends Component {
+    render() {
+        const {templateInfo = {}, saveAsDraft} = this.props;
 
-    return (
-        <Fragment>
-            <div className={styles["left-actions"]}>
-                <ButtonIcon name="save" onClick={saveAsDraft} />
-                <ButtonIcon name="check" />
-                <ButtonIcon name="preStep" />
-                <ButtonIcon name="nextStep" />
-            </div>
-            <div className={styles["title-edit"]}>
-                {templateInfo.name}
-                <img src={require('@/assets/studio/edit.svg')} alt="" />
-            </div>
-            <div className="right-actions">
-                <ZoomIcon />
-                <ButtonIcon name="wrapper" />
-                <ButtonIcon name="view" />
-                <ButtonIcon name="history" />
-            </div>
-        </Fragment>
-    )
+        return (
+            <Fragment>
+                <div className={styles["left-actions"]}>
+                    <ButtonIcon name="save" onClick={saveAsDraft} />
+                    <ButtonIcon name="check" />
+                    <ButtonIcon name="preStep" />
+                    <ButtonIcon name="nextStep" />
+                </div>
+                <div className={styles["title-edit"]}>
+                    {templateInfo.name}
+                    <img src={require('@/assets/studio/edit.svg')} alt="" />
+                </div>
+                <div className={styles["right-actions"]}>
+                    <ZoomIcon />
+                    <ButtonIcon name="wrapper" />
+                    <ButtonIcon name="view" />
+                    <ButtonIcon name="history" />
+                </div>
+            </Fragment>
+        )
+    }
 }
