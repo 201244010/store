@@ -49,6 +49,7 @@ export default {
             component: '../layouts/SunmiLayout',
             routes: [
                 { path: '/tempLogin/login', component: './User/Login/Login2' },
+                { path: '/tempLogin/storeRelate', component: './User/StoreRelate/StoreRelate2' },
             ],
         },
         {

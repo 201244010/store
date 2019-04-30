@@ -15,8 +15,14 @@ class SunmiLayout extends React.PureComponent {
     }
 
     componentDidMount() {
-        const { location } = window;
-        console.log(location);
+        const {
+            location: { pathname },
+        } = window;
+        if (pathname === '/tempLogin/storeRelate') {
+            this.setState({
+                bgClass: 'login-gaos-bg',
+            });
+        }
     }
 
     matchParamsPath = (pathname, breadcrumbNameMap) => {
