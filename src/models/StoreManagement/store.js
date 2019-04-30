@@ -100,6 +100,11 @@ export default {
                     type: 'updateState',
                     payload: newPayload,
                 });
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
             }
             return response;
         },
@@ -180,6 +185,7 @@ export default {
                 yield put({
                     type: 'updateState',
                     payload: {
+                        loading: false,
                         storeInfo: data,
                     },
                 });
