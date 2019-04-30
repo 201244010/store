@@ -9,7 +9,14 @@ import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
-import { ERROR_OK, ALERT_NOTICE_MAP, VCODE_ERROR, SHOW_VCODE } from '@/constants/errorCode';
+import {
+    ERROR_OK,
+    ALERT_NOTICE_MAP,
+    VCODE_ERROR,
+    SHOW_VCODE,
+    USER_NOT_EXIST,
+} from '@/constants/errorCode';
+import * as Regexp from '@/constants/regexp';
 import { MENU_PREFIX, KEY } from '@/constants';
 import styles from './Login.less';
 
@@ -178,13 +185,13 @@ class Login extends Component {
     };
 
     handleResponse = async response => {
+        const { currentTab } = this.state;
         const {
             form: { getFieldValue },
             checkUser,
         } = this.props;
 
         if (response && response.code === ERROR_OK) {
-            const { currentTab } = this.state;
             const checkUserName =
                 currentTab === 'tabAccount' ? getFieldValue('username') : getFieldValue('phone');
             const result = await checkUser({ options: { username: checkUserName } });
@@ -199,6 +206,18 @@ class Login extends Component {
                     this.checkCompanyList();
                 }
             }
+        } else if (response.code === USER_NOT_EXIST) {
+            const checkUserName =
+                currentTab === 'tabAccount' ? getFieldValue('username') : getFieldValue('phone');
+            let type = 'other';
+            if (Regexp.mail.test(checkUserName)) {
+                type = 'mail';
+            } else if (Regexp.cellphone.test(checkUserName)) {
+                type = 'mobile';
+            }
+            this.setState({
+                notice: `${response.code}-${type}` || '',
+            });
         } else if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
             this.setState({
                 notice: response.code || '',

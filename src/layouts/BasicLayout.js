@@ -21,6 +21,10 @@ import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/menuLogo.png';
 
+message.config({
+    maxCount: 1,
+});
+
 const { Content } = Layout;
 
 const query = {
