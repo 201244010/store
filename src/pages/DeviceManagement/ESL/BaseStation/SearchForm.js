@@ -22,19 +22,15 @@ class SearchForm extends Component {
     };
 
     handleReset = async () => {
-        const {
-            form ,
-            clearSearch,
-            fetchBaseStations,
-        } = this.props;
+        const { form, clearSearch, fetchBaseStations } = this.props;
         if (form) {
             form.resetFields();
         }
         await clearSearch();
         await fetchBaseStations({
             options: {
-                current: 1
-            }
+                current: 1,
+            },
         });
     };
 
