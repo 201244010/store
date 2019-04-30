@@ -160,7 +160,7 @@ class ProductCU extends Component {
                                 <Button type="primary" onClick={this.onSubmit}>
                                     {action === 'create'
                                         ? formatMessage({ id: 'btn.create' })
-                                        : formatMessage({ id: 'btn.alter' })}
+                                        : formatMessage({ id: 'btn.save' })}
                                 </Button>
                                 <Button style={{ marginLeft: '20px' }} onClick={this.goBack}>
                                     {formatMessage({ id: 'btn.cancel' })}
