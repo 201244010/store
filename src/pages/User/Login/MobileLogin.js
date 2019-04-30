@@ -141,7 +141,6 @@ class MobileLogin extends Component {
                         getCode: this.getCode,
                         refreshCode: this.refreshCode,
                         imgCaptcha,
-                        onOk: this.checkVcode,
                         onCancel: this.closeImgCaptchaModal,
                     }}
                 />

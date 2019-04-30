@@ -91,6 +91,7 @@ const AccountLogin = props => {
                                         id: 'vcode.placeholder',
                                     }),
                                 },
+                                refreshCode: getImageCode,
                                 getImageCode,
                             }}
                         />
