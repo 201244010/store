@@ -71,6 +71,9 @@ class StoreRelate extends Component {
                     </>
                 ) : (
                     <>
+                        <h1 className={styles['store-title']}>
+                            {formatMessage({ id: 'relatedStore.choose' })}
+                        </h1>
                         <p className={styles['store-content']}>
                             {formatMessage({ id: 'relatedStore.none' })}
                         </p>
