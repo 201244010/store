@@ -56,6 +56,29 @@ class MobileLogin extends Component {
         return response;
     };
 
+    refreshCode = async (params = {}) => {
+        const { imageStyle = {} } = params;
+        const {
+            form: { getFieldValue },
+            sendCode,
+        } = this.props;
+
+        const response = await sendCode({
+            options: {
+                username: getFieldValue('phone'),
+                type: '2',
+                imgCode: '',
+                key: '',
+                width: 76,
+                height: 30,
+                fontSize: 16,
+                ...imageStyle,
+            },
+        });
+
+        return response;
+    };
+
     closeImgCaptchaModal = () => {
         this.setState({ showImgCaptchaModal: false });
     };
@@ -116,6 +139,7 @@ class MobileLogin extends Component {
                         form,
                         visible: showImgCaptchaModal,
                         getCode: this.getCode,
+                        refreshCode: this.refreshCode,
                         imgCaptcha,
                         onOk: this.checkVcode,
                         onCancel: this.closeImgCaptchaModal,

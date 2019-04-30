@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { formatMessage, getLocale } from 'umi/locale';
-import Link from 'umi/link';
 import router from 'umi/router';
 import { connect } from 'dva';
 import { Tabs, Form, Button, Modal } from 'antd';
@@ -8,6 +7,8 @@ import { encryption } from '@/utils/utils';
 import Storage from '@konata9/storage.js';
 import AccountLogin from './AccountLogin';
 import MobileLogin from './MobileLogin';
+import RegisterModal from '@/pages/User/Register/RegisterModal';
+import ResetModal from '@/pages/User/ResetPassword/ResetModal';
 import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 import { MENU_PREFIX, KEY } from '@/constants';
@@ -49,6 +50,8 @@ class Login extends Component {
         this.state = {
             notice: '',
             currentTab: 'tabAccount',
+            showRegisterModal: false,
+            showResetModal: false,
         };
     }
 
@@ -64,6 +67,20 @@ class Login extends Component {
         this.setState({
             notice: '',
             currentTab: tabName,
+        });
+    };
+
+    openModalForm = (name = 'register') => {
+        const modalName = name === 'register' ? 'showRegisterModal' : 'showResetModal';
+        this.setState({
+            [modalName]: true,
+        });
+    };
+
+    closeModalForm = (name = 'register') => {
+        const modalName = name === 'register' ? 'showRegisterModal' : 'showResetModal';
+        this.setState({
+            [modalName]: false,
         });
     };
 
@@ -214,7 +231,7 @@ class Login extends Component {
     };
 
     render() {
-        const { notice } = this.state;
+        const { notice, showRegisterModal, showResetModal } = this.state;
         const {
             form,
             getImageCode,
@@ -277,13 +294,35 @@ class Login extends Component {
                     </Form.Item>
                 </Form>
                 <div className={styles['login-footer']}>
-                    <Link className={styles['link-common']} to="/user/resetPassword">
+                    <a
+                        onClick={() => this.openModalForm('reset')}
+                        href="javascript:void(0);"
+                        className={`${styles['link-common']}`}
+                    >
                         {formatMessage({ id: 'link.forgot.password' })}
-                    </Link>
-                    <Link className={`${styles['link-active']}`} to="/user/register">
+                    </a>
+                    <a
+                        onClick={() => this.openModalForm('register')}
+                        href="javascript:void(0);"
+                        className={`${styles['link-active']}`}
+                    >
                         {formatMessage({ id: 'link.to.register' })}
-                    </Link>
+                    </a>
                 </div>
+
+                <RegisterModal
+                    {...{
+                        visible: showRegisterModal,
+                        onCancel: () => this.closeModalForm('register'),
+                    }}
+                />
+
+                <ResetModal
+                    {...{
+                        visible: showResetModal,
+                        onCancel: () => this.closeModalForm('reset'),
+                    }}
+                />
             </div>
         );
     }

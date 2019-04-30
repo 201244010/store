@@ -7,6 +7,11 @@ import { SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 
 @Form.create()
 class ImgCaptchaModal extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { inErrorStatus: false };
+    }
+
     checkVcode = async () => {
         const {
             form: { setFields },
@@ -20,15 +25,34 @@ class ImgCaptchaModal extends Component {
                     errors: [new Error(formatMessage({ id: 'vcode.input.error' }))],
                 },
             });
+            this.setState({ inErrorStatus: true });
+        } else {
+            this.setState({ inErrorStatus: false });
         }
     };
 
+    handleOnBlur = () => {
+        const {
+            form: { validateFields },
+        } = this.props;
+
+        validateFields(['vcode2'], err => {
+            if (err) {
+                this.setState({ inErrorStatus: true });
+            } else {
+                this.setState({ inErrorStatus: false });
+            }
+        });
+    };
+
     render() {
+        const { inErrorStatus } = this.state;
         const {
             form: { getFieldDecorator },
             imgCaptcha,
             visible,
             getCode,
+            refreshCode,
             onCancel,
         } = this.props;
         return (
@@ -54,7 +78,11 @@ class ImgCaptchaModal extends Component {
                             {formatMessage({ id: 'vcode.description' })}
                         </div>
                         <Form>
-                            <Form.Item className={styles['vcode-item']}>
+                            <Form.Item
+                                className={`${styles['vcode-item']} ${styles['ant-form-item']}  ${
+                                    inErrorStatus ? styles['ant-form-item-with-help'] : ''
+                                }`}
+                            >
                                 {getFieldDecorator('vcode2', {
                                     validateTrigger: 'onBlur',
                                     rules: [
@@ -70,6 +98,8 @@ class ImgCaptchaModal extends Component {
                                         {...{
                                             imgUrl: imgCaptcha.url,
                                             getImageCode: getCode,
+                                            onBlur: this.handleOnBlur,
+                                            refreshCode,
                                             inputProps: {
                                                 maxLength: 4,
                                                 size: 'large',
