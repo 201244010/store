@@ -144,7 +144,7 @@ class MobileReset extends Component {
                     <>
                         <Form className={styles['register-form']}>
                             {notice && (
-                                <Form.Item>
+                                <Form.Item className={styles['formItem-margin-clear']}>
                                     <Alert
                                         message={formatMessage({ id: ALERT_NOTICE_MAP[notice] })}
                                         type="error"
@@ -152,7 +152,9 @@ class MobileReset extends Component {
                                     />
                                 </Form.Item>
                             )}
-                            <Form.Item>
+                            <Form.Item
+                                className={notice ? '' : `${styles['formItem-with-margin']}`}
+                            >
                                 {getFieldDecorator('username', {
                                     validateTrigger: 'onBlur',
                                     rules: [
@@ -171,7 +173,6 @@ class MobileReset extends Component {
                                     ],
                                 })(
                                     <Input
-                                        addonBefore="+86"
                                         size="large"
                                         maxLength={11}
                                         placeholder={formatMessage({ id: 'mobile.placeholder' })}

@@ -223,7 +223,7 @@ class Register extends Component {
                             </h1>
                             <Form className={styles['register-form']}>
                                 {notice && (
-                                    <Form.Item>
+                                    <Form.Item className={styles['formItem-margin-clear']}>
                                         <Alert
                                             message={formatMessage({
                                                 id: ALERT_NOTICE_MAP[notice],
@@ -235,7 +235,11 @@ class Register extends Component {
                                 )}
                                 {currentLanguage === 'zh-CN' ? (
                                     <>
-                                        <Form.Item>
+                                        <Form.Item
+                                            className={
+                                                notice ? '' : `${styles['formItem-with-margin']}`
+                                            }
+                                        >
                                             {getFieldDecorator('username', {
                                                 validateTrigger: 'onBlur',
                                                 rules: [
@@ -254,7 +258,6 @@ class Register extends Component {
                                                 ],
                                             })(
                                                 <Input
-                                                    addonBefore="+86"
                                                     size="large"
                                                     maxLength={11}
                                                     placeholder={formatMessage({
@@ -370,7 +373,11 @@ class Register extends Component {
                                         </Form.Item>
                                     </>
                                 ) : (
-                                    <Form.Item>
+                                    <Form.Item
+                                        className={
+                                            notice ? '' : `${styles['formItem-with-margin']}`
+                                        }
+                                    >
                                         {getFieldDecorator('username', {
                                             validateTrigger: 'onBlur',
                                             rules: [
