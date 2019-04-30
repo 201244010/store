@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Result } from 'ant-design-pro';
+import { Button } from 'antd';
+import BigIcon from '@/components/BigIcon';
 import router from 'umi/router';
 import styles from './index.less';
 
@@ -21,17 +22,18 @@ class ResultInfo extends Component {
         clearInterval(this.countDownTimer);
     }
 
-    goNext = path => {
+    goNext = () => {
+        const { path = '/user/login' } = this.props;
         router.push(path);
     };
 
     countDown = () => {
-        const { tick = 1000, path = '/user/login' } = this.props;
+        const { tick = 1000 } = this.props;
         clearInterval(this.countDownTimer);
         this.countDownTimer = setInterval(() => {
             const { count } = this.state;
             if (count <= 0) {
-                this.goNext(path);
+                this.goNext();
             } else {
                 this.setState({
                     count: count - 1,
@@ -42,19 +44,33 @@ class ResultInfo extends Component {
 
     render() {
         const { count } = this.state;
-        const { title, description } = this.props;
+        const { title, description, wrapperStyle = {}, iconStyle = {} } = this.props;
         return (
-            <Result
-                className={styles['result-wrapper']}
-                type="success"
-                title={<div className={styles['result-title']}>{title}</div>}
-                description={
-                    <div className={styles['result-content']}>
-                        <span className={styles['result-count']}>{`${count}`}</span>
+            <div className={styles['result-wrapper']}>
+                <BigIcon
+                    {...{
+                        type: 'check',
+                        wrapperStyle: {
+                            width: '80px',
+                            height: '80px',
+                            border: '100%',
+                            margin: '0 auto',
+                            backgroundImage: 'linear-gradient(-180deg, #CDF76A 0%, #6DD13B 100%)',
+                            ...wrapperStyle,
+                        },
+                        iconStyle: {
+                            ...iconStyle,
+                        },
+                    }}
+                />
+                <div className={styles['result-title']}>{title}</div>
+                <div className={styles['result-action-wrapper']}>
+                    <Button className={styles['action-btn']} block onClick={this.goNext}>
+                        {`${count}`}
                         {description}
-                    </div>
-                }
-            />
+                    </Button>
+                </div>
+            </div>
         );
     }
 }

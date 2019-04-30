@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { formatMessage, getLocale } from 'umi/locale';
+import { getLocale } from 'umi/locale';
 import { Icon, Modal } from 'antd';
 // import { Divider } from 'antd';
 // import BigIcon from '../../../components/BigIcon';
@@ -91,9 +91,6 @@ class ResetPassword extends Component {
                         </div>
                     </div>
                     <div className={styles['custom-modal-content']}>
-                        <h1 className={styles['reset-title']}>
-                            {formatMessage({ id: 'reset.title' })}
-                        </h1>
                         <RenderComponent switchStep={this.switchStep} />
                     </div>
                 </div>

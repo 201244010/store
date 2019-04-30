@@ -142,6 +142,7 @@ class MobileReset extends Component {
                 {resetSuccess ? (
                     <ResultInfo
                         {...{
+                            status: 'success',
                             title: formatMessage({ id: 'reset.success' }),
                             description: formatMessage({ id: 'reset.countDown' }),
                             countInit: 3,
@@ -149,6 +150,9 @@ class MobileReset extends Component {
                     />
                 ) : (
                     <>
+                        <h1 className={styles['reset-title']}>
+                            {formatMessage({ id: 'reset.title' })}
+                        </h1>
                         <Form className={styles['register-form']}>
                             {notice && (
                                 <Form.Item className={styles['formItem-margin-clear']}>
