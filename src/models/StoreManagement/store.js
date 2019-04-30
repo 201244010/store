@@ -100,12 +100,21 @@ export default {
                     type: 'updateState',
                     payload: newPayload,
                 });
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
             }
             return response;
         },
 
         *createNewStore({ payload }, { call, put }) {
             const { options } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
             const response = yield call(Action.createStore, options);
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'storeManagement.message.createSuccess' }));
@@ -125,12 +134,21 @@ export default {
                     });
                     router.push(`${MENU_PREFIX.STORE}/list`);
                 });
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
             }
             return response;
         },
 
         *updateStore({ payload }, { call, put }) {
             const { options } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
             const response = yield call(Action.alterStore, options);
             if (response && response.code === ERROR_OK) {
                 message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
@@ -146,20 +164,35 @@ export default {
                     });
                     router.push(`${MENU_PREFIX.STORE}/list`);
                 });
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
             }
             return response;
         },
 
         *getStoreDetail({ payload }, { call, put }) {
             const { options } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
             const response = yield call(Action.storeInformation, options);
             if (response && response.code === ERROR_OK) {
                 const data = response.data || {};
                 yield put({
                     type: 'updateState',
                     payload: {
+                        loading: false,
                         storeInfo: data,
                     },
+                });
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
                 });
             }
         },
