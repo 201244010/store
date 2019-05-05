@@ -18,7 +18,23 @@ class SunmiLayout extends React.PureComponent {
         const {
             location: { pathname },
         } = window;
-        if (pathname.indexOf('storeRelate') > -1) {
+        const gaosBg = ['storeRelate', 'merchantCreate'];
+
+        if (gaosBg.some(path => pathname.indexOf(path) > -1)) {
+            this.setState({
+                bgClass: 'login-gaos-bg',
+            });
+        }
+    }
+
+    componentWillReceiveProps() {
+        const {
+            location: { pathname },
+        } = window;
+
+        const gaosBg = ['storeRelate', 'merchantCreate'];
+
+        if (gaosBg.some(path => pathname.indexOf(path) > -1)) {
             this.setState({
                 bgClass: 'login-gaos-bg',
             });

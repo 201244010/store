@@ -216,6 +216,7 @@ class Register extends Component {
                                         title: formatMessage({ id: 'register.success' }),
                                         description: formatMessage({ id: 'register.countDown' }),
                                         countInit: 3,
+                                        countDone: () => onCancel(),
                                     }}
                                 />
                             ) : (

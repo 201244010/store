@@ -146,6 +146,7 @@ class MobileReset extends Component {
                             title: formatMessage({ id: 'reset.success' }),
                             description: formatMessage({ id: 'reset.countDown' }),
                             countInit: 3,
+                            countDone: () => this.closeImgCaptchaModal,
                         }}
                     />
                 ) : (

@@ -40,6 +40,7 @@ const AccountLogin = props => {
                     <Input
                         prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                         size="large"
+                        autoComplete="off"
                         placeholder={formatMessage({
                             id: 'account.account.placeholder',
                         })}
@@ -63,6 +64,7 @@ const AccountLogin = props => {
                         prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                         maxLength={30}
                         size="large"
+                        autoComplete="off"
                         placeholder={formatMessage({
                             id: 'account.password.placeholder',
                         })}

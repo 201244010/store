@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'antd';
 import BigIcon from '@/components/BigIcon';
-import router from 'umi/router';
 import styles from './index.less';
 
 class ResultInfo extends Component {
@@ -22,9 +21,11 @@ class ResultInfo extends Component {
         clearInterval(this.countDownTimer);
     }
 
-    goNext = () => {
-        const { path = '/user/login' } = this.props;
-        router.push(path);
+    countComplete = () => {
+        const { countDone = null } = this.props;
+        if (countDone) {
+            countDone();
+        }
     };
 
     countDown = () => {
@@ -33,7 +34,8 @@ class ResultInfo extends Component {
         this.countDownTimer = setInterval(() => {
             const { count } = this.state;
             if (count <= 0) {
-                this.goNext();
+                clearInterval(this.countDownTimer);
+                this.countComplete();
             } else {
                 this.setState({
                     count: count - 1,
@@ -65,7 +67,7 @@ class ResultInfo extends Component {
                 />
                 <div className={styles['result-title']}>{title}</div>
                 <div className={styles['result-action-wrapper']}>
-                    <Button className={styles['action-btn']} block onClick={this.goNext}>
+                    <Button className={styles['action-btn']} block onClick={this.countComplete}>
                         {`${count}`}
                         {description}
                     </Button>
