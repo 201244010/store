@@ -267,6 +267,7 @@ class Login extends Component {
                         <Tabs.TabPane
                             tab={formatMessage({ id: 'login.useAccount' })}
                             key="tabAccount"
+                            style={{ padding: '0 2px' }}
                         >
                             <AccountLogin
                                 {...{
@@ -282,6 +283,7 @@ class Login extends Component {
                             <Tabs.TabPane
                                 tab={formatMessage({ id: 'login.useMobile' })}
                                 key="tabMobile"
+                                style={{ padding: '0 2px' }}
                             >
                                 <MobileLogin
                                     {...{
