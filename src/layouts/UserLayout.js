@@ -4,7 +4,7 @@ import { Icon } from 'antd';
 import { connect } from 'dva';
 import { GlobalFooter } from 'ant-design-pro';
 import DocumentTitle from 'react-document-title';
-// import SelectLang from '@/components/SelectLang';
+import SelectLang from '@/components/SelectLang';
 import pathToRegexp from 'path-to-regexp';
 import styles from './UserLayout.less';
 
@@ -48,9 +48,9 @@ class UserLayout extends React.PureComponent {
                 <DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
                     <div className={styles.container}>
                         {/* TODO 暂时隐去语言选择 */}
-                        {/* <div className={styles.lang}> */}
-                        {/* <SelectLang /> */}
-                        {/* </div> */}
+                        <div className={styles.lang}>
+                            <SelectLang />
+                        </div>
                         <div className={styles.content}>
                             <div className={styles['title-background']} />
                             {children}
