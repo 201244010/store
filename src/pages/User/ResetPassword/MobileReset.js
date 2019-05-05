@@ -134,8 +134,8 @@ class MobileReset extends Component {
             form,
             form: { getFieldDecorator, getFieldValue },
             sso: { imgCaptcha },
-            onCancel,
         } = this.props;
+        const { location } = window;
         const { resetSuccess, notice, trigger, showImgCaptchaModal } = this.state;
 
         return (
@@ -147,7 +147,7 @@ class MobileReset extends Component {
                             title: formatMessage({ id: 'reset.success' }),
                             description: formatMessage({ id: 'reset.countDown' }),
                             countInit: 3,
-                            countDone: onCancel,
+                            countDone: () => location.reload(),
                             CustomIcon: () => (
                                 <div
                                     className={styles['success-icon']}
@@ -228,6 +228,7 @@ class MobileReset extends Component {
                                     <Captcha
                                         {...{
                                             trigger,
+                                            validateTarget: getFieldValue('username') || '',
                                             inputProps: {
                                                 size: 'large',
                                                 placeholder: formatMessage({

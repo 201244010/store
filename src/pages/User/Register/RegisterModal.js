@@ -189,6 +189,7 @@ class Register extends Component {
             visible,
             onCancel,
         } = this.props;
+        const { location } = window;
         const { notice, registerSuccess, trigger, showImgCaptchaModal } = this.state;
         const currentLanguage = getLocale();
 
@@ -218,7 +219,7 @@ class Register extends Component {
                                                 id: 'register.countDown',
                                             }),
                                             countInit: 3,
-                                            countDone: () => onCancel(),
+                                            countDone: () => location.reload(),
                                             CustomIcon: () => (
                                                 <div
                                                     className={styles['success-icon']}
@@ -317,6 +318,8 @@ class Register extends Component {
                                                     <Captcha
                                                         {...{
                                                             trigger,
+                                                            validateTarget:
+                                                                getFieldValue('username') || '',
                                                             inputProps: {
                                                                 maxLength: 4,
                                                                 size: 'large',

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Icon, Input } from 'antd';
+import * as Regexp from '@/constants/regexp';
 import styles from './captcha.less';
 
 class Captcha extends Component {
@@ -68,13 +69,15 @@ class Captcha extends Component {
 
     handleClick = () => {
         const { inCounting } = this.state;
-        const { onClick } = this.props;
+        const { onClick, validateTarget = '' } = this.props;
 
-        if (!inCounting) {
-            if (onClick) {
-                onClick();
+        if (validateTarget && Regexp.cellphone.test(validateTarget)) {
+            if (!inCounting) {
+                if (onClick) {
+                    onClick();
+                }
+                this.countDown();
             }
-            this.countDown();
         }
     };
 
