@@ -136,7 +136,7 @@ class ChangeMobile extends Component {
         const { trigger, showImgCaptchaModal } = this.state;
         const {
             form,
-            form: { getFieldDecorator },
+            form: { getFieldDecorator, getFieldValue },
             sso: { imgCaptcha },
             visible,
             mobileBinded = true,
@@ -220,6 +220,7 @@ class ChangeMobile extends Component {
                             <Captcha
                                 {...{
                                     trigger,
+                                    validateTarget: getFieldValue('phone') || '',
                                     inputProps: {
                                         maxLength: 4,
                                     },

@@ -18,7 +18,7 @@ import styles from './ResetPassword.less';
     dispatch => ({
         resetPassword: payload => dispatch({ type: 'user/resetPassword', payload }),
         sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
-    })
+    }),
 )
 @Form.create()
 class MobileReset extends Component {
@@ -134,8 +134,8 @@ class MobileReset extends Component {
             form,
             form: { getFieldDecorator, getFieldValue },
             sso: { imgCaptcha },
-            onCancel,
         } = this.props;
+        const { location } = window;
         const { resetSuccess, notice, trigger, showImgCaptchaModal } = this.state;
 
         return (
@@ -147,7 +147,7 @@ class MobileReset extends Component {
                             title: formatMessage({ id: 'reset.success' }),
                             description: formatMessage({ id: 'reset.countDown' }),
                             countInit: 3,
-                            countDone: onCancel,
+                            countDone: () => location.reload(),
                             CustomIcon: () => (
                                 <div
                                     className={styles['success-icon']}
@@ -200,7 +200,7 @@ class MobileReset extends Component {
                                         maxLength={11}
                                         autoComplete="off"
                                         placeholder={formatMessage({ id: 'mobile.placeholder' })}
-                                    />
+                                    />,
                                 )}
                             </Form.Item>
 
@@ -228,6 +228,7 @@ class MobileReset extends Component {
                                     <Captcha
                                         {...{
                                             trigger,
+                                            validateTarget: getFieldValue('username') || '',
                                             inputProps: {
                                                 size: 'large',
                                                 placeholder: formatMessage({
@@ -244,7 +245,7 @@ class MobileReset extends Component {
                                             },
                                             onClick: this.getCode,
                                         }}
-                                    />
+                                    />,
                                 )}
                             </Form.Item>
                             <Form.Item>
@@ -267,7 +268,7 @@ class MobileReset extends Component {
                                         type="password"
                                         size="large"
                                         placeholder={formatMessage({ id: 'password.placeholder' })}
-                                    />
+                                    />,
                                 )}
                             </Form.Item>
                             <Form.Item>
@@ -293,7 +294,7 @@ class MobileReset extends Component {
                                         type="password"
                                         size="large"
                                         placeholder={formatMessage({ id: 'confirm.placeholder' })}
-                                    />
+                                    />,
                                 )}
                             </Form.Item>
                             <Form.Item />
@@ -302,7 +303,7 @@ class MobileReset extends Component {
                             <Button
                                 className={`${styles['primary-btn']} ${
                                     styles['reset-confirm-btn']
-                                }`}
+                                    }`}
                                 type="primary"
                                 size="large"
                                 block

@@ -87,7 +87,7 @@ class MobileLogin extends Component {
         const { trigger, showImgCaptchaModal } = this.state;
         const {
             form,
-            form: { getFieldDecorator },
+            form: { getFieldDecorator, getFieldValue },
             imgCaptcha,
             notice,
         } = this.props;
@@ -131,7 +131,7 @@ class MobileLogin extends Component {
                             placeholder={formatMessage({
                                 id: 'mobile.placeholder',
                             })}
-                        />
+                        />,
                     )}
                 </Form.Item>
 
@@ -161,6 +161,7 @@ class MobileLogin extends Component {
                         <Captcha
                             {...{
                                 trigger,
+                                validateTarget: getFieldValue('phone') || '',
                                 inputProps: {
                                     maxLength: 4,
                                     size: 'large',
@@ -176,7 +177,7 @@ class MobileLogin extends Component {
                                 },
                                 onClick: this.getCode,
                             }}
-                        />
+                        />,
                     )}
                 </Form.Item>
             </>

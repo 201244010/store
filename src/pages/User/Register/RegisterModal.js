@@ -66,7 +66,7 @@ const MailRegisterSuccess = ({ props }) => {
     dispatch => ({
         register: payload => dispatch({ type: 'user/register', payload }),
         sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
-    })
+    }),
 )
 @Form.create()
 class Register extends Component {
@@ -189,6 +189,7 @@ class Register extends Component {
             visible,
             onCancel,
         } = this.props;
+        const { location } = window;
         const { notice, registerSuccess, trigger, showImgCaptchaModal } = this.state;
         const currentLanguage = getLocale();
 
@@ -218,7 +219,7 @@ class Register extends Component {
                                                 id: 'register.countDown',
                                             }),
                                             countInit: 3,
-                                            countDone: () => onCancel(),
+                                            countDone: () => location.reload(),
                                             CustomIcon: () => (
                                                 <div
                                                     className={styles['success-icon']}
@@ -287,7 +288,7 @@ class Register extends Component {
                                                         placeholder={formatMessage({
                                                             id: 'mobile.placeholder',
                                                         })}
-                                                    />
+                                                    />,
                                                 )}
                                             </Form.Item>
 
@@ -317,6 +318,7 @@ class Register extends Component {
                                                     <Captcha
                                                         {...{
                                                             trigger,
+                                                            validateTarget: getFieldValue('username') || '',
                                                             inputProps: {
                                                                 maxLength: 4,
                                                                 size: 'large',
@@ -338,7 +340,7 @@ class Register extends Component {
                                                             },
                                                             onClick: this.getCode,
                                                         }}
-                                                    />
+                                                    />,
                                                 )}
                                             </Form.Item>
                                         </>
@@ -367,7 +369,7 @@ class Register extends Component {
                                                     placeholder={formatMessage({
                                                         id: 'mail.placeholder',
                                                     })}
-                                                />
+                                                />,
                                             )}
                                         </Form.Item>
                                     )}
@@ -393,7 +395,7 @@ class Register extends Component {
                                                 placeholder={formatMessage({
                                                     id: 'password.placeholder',
                                                 })}
-                                            />
+                                            />,
                                         )}
                                     </Form.Item>
                                     <Form.Item>
@@ -421,7 +423,7 @@ class Register extends Component {
                                                 placeholder={formatMessage({
                                                     id: 'confirm.placeholder',
                                                 })}
-                                            />
+                                            />,
                                         )}
                                     </Form.Item>
                                 </Form>
@@ -429,7 +431,7 @@ class Register extends Component {
                                     <Button
                                         className={`${styles['primary-btn']} ${
                                             styles['footer-btn']
-                                        }`}
+                                            }`}
                                         size="large"
                                         block
                                         onClick={this.onSubmit}
