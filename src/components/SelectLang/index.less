@@ -1,12 +1,28 @@
 @import '~antd/lib/style/themes/default.less';
+@import "./../../common";
 
 .menu {
+  margin-top: 12px;
   :global(.anticon) {
     margin-right: 8px;
   }
 
   :global(.ant-dropdown-menu-item) {
-    min-width: 160px;
+    width: 130px;
+    height: 48px;
+    line-height: 48px;
+    padding: 0;
+    color: @font-color-common;
+
+    &:hover {
+      color: @font-color-primary;
+      background: #F0F0F0;
+    }
+  }
+
+  :global(.ant-dropdown-menu-item-selected) {
+    color: @font-color-primary;
+    background: #F0F0F0;
   }
 
   .menu-item {
@@ -20,7 +36,6 @@
   line-height: @layout-header-height;
 
   > i {
-    font-size: 14px !important;
     transform: none !important;
 
     svg {
