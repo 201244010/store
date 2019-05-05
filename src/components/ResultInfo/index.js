@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Result } from 'ant-design-pro';
-import router from 'umi/router';
+import { Button } from 'antd';
+import BigIcon from '@/components/BigIcon';
 import styles from './index.less';
 
 class ResultInfo extends Component {
@@ -21,17 +21,21 @@ class ResultInfo extends Component {
         clearInterval(this.countDownTimer);
     }
 
-    goNext = path => {
-        router.push(path);
+    countComplete = () => {
+        const { countDone = null } = this.props;
+        if (countDone) {
+            countDone();
+        }
     };
 
     countDown = () => {
-        const { tick = 1000, path = '/user/login' } = this.props;
+        const { tick = 1000 } = this.props;
         clearInterval(this.countDownTimer);
         this.countDownTimer = setInterval(() => {
             const { count } = this.state;
             if (count <= 0) {
-                this.goNext(path);
+                clearInterval(this.countDownTimer);
+                this.countComplete();
             } else {
                 this.setState({
                     count: count - 1,
@@ -42,19 +46,28 @@ class ResultInfo extends Component {
 
     render() {
         const { count } = this.state;
-        const { title, description } = this.props;
+        const { title, description, wrapperStyle = {}, CustomIcon = null } = this.props;
         return (
-            <Result
-                className={styles['result-wrapper']}
-                type="success"
-                title={<div className={styles['result-title']}>{title}</div>}
-                description={
-                    <div className={styles['result-content']}>
-                        <span className={styles['result-count']}>{`${count}`}</span>
+            <div className={styles['result-wrapper']}>
+                <BigIcon
+                    {...{
+                        type: 'check',
+                        wrapperStyle: {
+                            border: '100%',
+                            margin: '0 auto',
+                            ...wrapperStyle,
+                        },
+                        CustomIcon,
+                    }}
+                />
+                <div className={styles['result-title']}>{title}</div>
+                <div className={styles['result-action-wrapper']}>
+                    <Button className={styles['action-btn']} block onClick={this.countComplete}>
+                        {`${count}`}
                         {description}
-                    </div>
-                }
-            />
+                    </Button>
+                </div>
+            </div>
         );
     }
 }
