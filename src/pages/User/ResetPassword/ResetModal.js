@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { getLocale } from 'umi/locale';
-import { Icon, Modal } from 'antd';
+import { Modal } from 'antd';
 // import { Divider } from 'antd';
 // import BigIcon from '../../../components/BigIcon';
 import MobileReset from './MobileReset';
@@ -83,12 +83,11 @@ class ResetPassword extends Component {
                 title={null}
                 footer={null}
                 onCancel={onCancel}
+                destroyOnClose
             >
                 <div className={styles['custom-modal-wrapper']}>
                     <div className={styles['custom-modal-header']}>
-                        <div className={styles['close-icon']} onClick={onCancel}>
-                            <Icon type="close" />
-                        </div>
+                        <div className={styles['close-icon']} onClick={onCancel} />
                     </div>
                     <div className={styles['custom-modal-content']}>
                         <RenderComponent switchStep={this.switchStep} />

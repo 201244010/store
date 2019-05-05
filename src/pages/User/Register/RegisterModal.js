@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Alert, Modal, message, Icon } from 'antd';
+import { Form, Input, Button, Alert, Modal, message } from 'antd';
 import { Result } from 'ant-design-pro';
 import ResultInfo from '@/components/ResultInfo';
 import Captcha from '@/components/Captcha';
@@ -201,12 +201,11 @@ class Register extends Component {
                 title={null}
                 footer={null}
                 onCancel={onCancel}
+                destroyOnClose
             >
                 <div className={styles['custom-modal-wrapper']}>
                     <div className={styles['custom-modal-header']}>
-                        <div className={styles['close-icon']} onClick={onCancel}>
-                            <Icon type="close" />
-                        </div>
+                        <div className={styles['close-icon']} onClick={onCancel} />
                     </div>
                     {registerSuccess ? (
                         <>
@@ -217,6 +216,16 @@ class Register extends Component {
                                         description: formatMessage({ id: 'register.countDown' }),
                                         countInit: 3,
                                         countDone: () => onCancel(),
+                                        CustomIcon: () => (
+                                            <div
+                                                className={styles['success-icon']}
+                                                style={{
+                                                    width: '48px',
+                                                    height: '28px',
+                                                    margin: '0 auto',
+                                                }}
+                                            />
+                                        ),
                                     }}
                                 />
                             ) : (
@@ -267,6 +276,7 @@ class Register extends Component {
                                                 <Input
                                                     size="large"
                                                     maxLength={11}
+                                                    autoComplete="off"
                                                     placeholder={formatMessage({
                                                         id: 'mobile.placeholder',
                                                     })}

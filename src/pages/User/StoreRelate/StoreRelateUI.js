@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Button, Form, Icon, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
 import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
 import { MENU_PREFIX } from '@/constants';
@@ -62,7 +62,17 @@ const MerchantCreate = props => {
 };
 
 const MerchantInfo = props => {
-    const { getFieldDecorator, companyList, loading, createMerchant, enterSystem } = props;
+    const {
+        getFieldDecorator,
+        companyList,
+        hoverIndex,
+        iconStyle,
+        loading,
+        changeButtonStyles,
+        createMerchant,
+        enterSystem,
+    } = props;
+
     return (
         <>
             {companyList.length > 0 ? (
@@ -70,18 +80,29 @@ const MerchantInfo = props => {
                     <h1 className={styles['store-title']}>
                         {formatMessage({ id: 'relatedStore.choose' })}
                     </h1>
-                    <div className={styles['store-list']}>
-                        {companyList.map(company => (
-                            <Button
-                                key={company.company_id}
-                                onClick={() => enterSystem(company)}
-                                className={styles['list-btn']}
-                                block
-                            >
-                                <span className={styles['btn-name']}>{company.company_name}</span>
-                                <Icon className={styles['btn-icon']} type="right" />
-                            </Button>
-                        ))}
+                    <div className={styles['store-list-wrapper']}>
+                        <div className={styles['store-list']}>
+                            {companyList.map((company, index) => (
+                                <Button
+                                    key={company.company_id}
+                                    onMouseOver={() => changeButtonStyles('add', index)}
+                                    onMouseLeave={() => changeButtonStyles('remove', index)}
+                                    onClick={() => enterSystem(company)}
+                                    className={styles['list-btn']}
+                                    block
+                                >
+                                    <span className={styles['btn-name']}>
+                                        {company.company_name}
+                                    </span>
+                                    <span
+                                        className={`${styles['btn-icon']}
+                                            ${iconStyle === 'hover' &&
+                                                hoverIndex === index &&
+                                                styles['btn-icon-hover']}`}
+                                    />
+                                </Button>
+                            ))}
+                        </div>
                     </div>
                 </>
             ) : (
@@ -103,6 +124,14 @@ const MerchantInfo = props => {
 )
 @Form.create()
 class StoreRelate extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            onHoverIndex: -1,
+            iconStyle: '',
+        };
+    }
+
     checkStoreExist = async () => {
         const { getStoreList } = this.props;
         const response = await getStoreList({});
@@ -120,6 +149,13 @@ class StoreRelate extends Component {
                 router.push('/');
             }
         }
+    };
+
+    changeButtonStyles = (type, index) => {
+        this.setState({
+            onHoverIndex: type === 'add' ? index : -1,
+            iconStyle: type === 'add' ? 'hover' : '',
+        });
     };
 
     enterSystem = company => {
@@ -154,6 +190,7 @@ class StoreRelate extends Component {
     };
 
     render() {
+        const { iconStyle, onHoverIndex } = this.state;
         const {
             form: { getFieldDecorator },
             merchant: { companyList, loading },
@@ -174,7 +211,10 @@ class StoreRelate extends Component {
                         {...{
                             getFieldDecorator,
                             companyList,
+                            hoverIndex: onHoverIndex,
+                            iconStyle,
                             loading,
+                            changeButtonStyles: this.changeButtonStyles,
                             createMerchant: this.createMerchant,
                             enterSystem: this.enterSystem,
                         }}

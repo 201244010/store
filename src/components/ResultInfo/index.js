@@ -46,7 +46,7 @@ class ResultInfo extends Component {
 
     render() {
         const { count } = this.state;
-        const { title, description, wrapperStyle = {}, iconStyle = {} } = this.props;
+        const { title, description, wrapperStyle = {}, CustomIcon = null } = this.props;
         return (
             <div className={styles['result-wrapper']}>
                 <BigIcon
@@ -60,9 +60,7 @@ class ResultInfo extends Component {
                             backgroundImage: 'linear-gradient(-180deg, #CDF76A 0%, #6DD13B 100%)',
                             ...wrapperStyle,
                         },
-                        iconStyle: {
-                            ...iconStyle,
-                        },
+                        CustomIcon,
                     }}
                 />
                 <div className={styles['result-title']}>{title}</div>

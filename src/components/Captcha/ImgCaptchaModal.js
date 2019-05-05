@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Modal, Icon, Button } from 'antd';
+import { Form, Modal, Button } from 'antd';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import styles from './captcha.less';
 import { SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
@@ -68,9 +68,7 @@ class ImgCaptchaModal extends Component {
             >
                 <div className={styles['custom-modal-wrapper']}>
                     <div className={styles['custom-modal-header']}>
-                        <div className={styles['close-icon']} onClick={onCancel}>
-                            <Icon type="close" />
-                        </div>
+                        <div className={styles['close-icon']} onClick={onCancel} />
                     </div>
                     <div className={styles['custom-modal-content']}>
                         <h1 className={styles.title}>{formatMessage({ id: 'vcode.title' })}</h1>

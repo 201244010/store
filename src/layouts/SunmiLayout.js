@@ -1,9 +1,13 @@
 import React from 'react';
-import { formatMessage } from 'umi/locale';
+import { FormattedMessage, formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import DocumentTitle from 'react-document-title';
 // import SelectLang from '@/components/SelectLang';
 import pathToRegexp from 'path-to-regexp';
+import HeaderDropdown from '@/components/HeaderDropdown';
+import { Menu, Avatar, Icon } from 'antd';
+import router from 'umi/router';
+import { getLocationParam } from '@/utils/utils';
 import * as styles from './SunmiLayout.less';
 
 class SunmiLayout extends React.PureComponent {
@@ -15,19 +19,14 @@ class SunmiLayout extends React.PureComponent {
     }
 
     componentDidMount() {
-        const {
-            location: { pathname },
-        } = window;
-        const gaosBg = ['storeRelate', 'merchantCreate'];
-
-        if (gaosBg.some(path => pathname.indexOf(path) > -1)) {
-            this.setState({
-                bgClass: 'login-gaos-bg',
-            });
-        }
+        this.changeBgClass();
     }
 
     componentWillReceiveProps() {
+        this.changeBgClass();
+    }
+
+    changeBgClass = () => {
         const {
             location: { pathname },
         } = window;
@@ -38,8 +37,25 @@ class SunmiLayout extends React.PureComponent {
             this.setState({
                 bgClass: 'login-gaos-bg',
             });
+        } else {
+            this.setState({
+                bgClass: 'login-bg',
+            });
         }
-    }
+    };
+
+    onMenuClick = async ({ key }) => {
+        const { dispatch } = this.props;
+        if (key === 'userCenter') {
+            router.push('/account/center');
+            return;
+        }
+        if (key === 'logout') {
+            dispatch({
+                type: 'user/logout',
+            });
+        }
+    };
 
     matchParamsPath = (pathname, breadcrumbNameMap) => {
         const pathKey = Object.keys(breadcrumbNameMap).find(key =>
@@ -65,10 +81,31 @@ class SunmiLayout extends React.PureComponent {
     render() {
         const { bgClass } = this.state;
         const {
+            currentUser,
             location: { pathname },
             children,
             breadcrumbNameMap,
         } = this.props;
+
+        const from = getLocationParam('from') || null;
+
+        const menu = (
+            <Menu
+                className={`${styles['drop-down-menu']} ${styles['drop-down']}`}
+                selectedKeys={[]}
+                onClick={this.onMenuClick}
+            >
+                <Menu.Item key="userCenter">
+                    <Icon type="user" />
+                    <FormattedMessage id="menu.account.center" defaultMessage="account center" />
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item key="logout">
+                    <Icon type="logout" />
+                    <FormattedMessage id="menu.account.logout" defaultMessage="logout" />
+                </Menu.Item>
+            </Menu>
+        );
 
         return (
             <>
@@ -79,6 +116,29 @@ class SunmiLayout extends React.PureComponent {
                             {/* <div className={styles['lang-wrapper']}> */}
                             {/* <SelectLang className={styles['drop-down']} /> */}
                             {/* </div> */}
+                            {from === 'accountCenter' && (
+                                <div className={styles['avater-wrapper']}>
+                                    {Object.keys(currentUser).length > 0 && (
+                                        <HeaderDropdown overlay={menu}>
+                                            <span
+                                                className={`${styles.action} ${styles.account}`}
+                                                style={{ marginRight: 10 }}
+                                            >
+                                                <Avatar
+                                                    size="small"
+                                                    className={styles.avatar}
+                                                    icon="user"
+                                                    src={currentUser.resize_icon}
+                                                    alt="avatar"
+                                                />
+                                                <span className={styles.name}>
+                                                    {currentUser.username}
+                                                </span>
+                                            </span>
+                                        </HeaderDropdown>
+                                    )}
+                                </div>
+                            )}
                         </div>
                         <div className={styles.divider} />
                         <div className={styles.content}>{children}</div>
@@ -92,6 +152,7 @@ class SunmiLayout extends React.PureComponent {
     }
 }
 
-export default connect(({ menu }) => ({
+export default connect(({ user, menu }) => ({
+    currentUser: user.currentUser,
     breadcrumbNameMap: menu.breadcrumbNameMap,
 }))(SunmiLayout);

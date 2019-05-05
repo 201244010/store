@@ -187,6 +187,7 @@ class MobileReset extends Component {
                                     <Input
                                         size="large"
                                         maxLength={11}
+                                        autoComplete="off"
                                         placeholder={formatMessage({ id: 'mobile.placeholder' })}
                                     />
                                 )}

@@ -127,6 +127,7 @@ class MobileLogin extends Component {
                             prefix={<Icon type="mobile" style={{ color: 'rgba(0,0,0,.25)' }} />}
                             maxLength={11}
                             size="large"
+                            autoComplete="off"
                             placeholder={formatMessage({
                                 id: 'mobile.placeholder',
                             })}
