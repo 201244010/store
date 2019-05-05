@@ -51,6 +51,7 @@ export default {
                 { path: '/user/login', component: './User/Login/LoginUI' },
                 { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelateUI' },
                 { path: '/user/merchantCreate', component: './User/StoreRelate/StoreRelateUI' },
+                { path: '/user/*', redirect: '/user/login' },
             ],
         },
         // {
@@ -66,13 +67,13 @@ export default {
         //         { path: '/user/resetPassword/reset', component: './User/ResetPassword/PasswordReset' },
         //     ],
         // },
-        {
-            path: '/merchant',
-            component: '../layouts/MerchantLayout',
-            routes: [
-                { path: '/merchant/create', component: './MerchantManagement/MerchantCreate' },
-            ],
-        },
+        // {
+        //     path: '/merchant',
+        //     component: '../layouts/MerchantLayout',
+        //     routes: [
+        //         { path: '/merchant/create', component: './MerchantManagement/MerchantCreate' },
+        //     ],
+        // },
         {
             path: '/',
             component: '../layouts/BasicLayout',
