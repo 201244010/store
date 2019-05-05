@@ -42,7 +42,7 @@ const tabBarStyle = {
         getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
         getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
-    })
+    }),
 )
 @Form.create()
 class Login extends Component {
@@ -122,7 +122,7 @@ class Login extends Component {
             const companyList = data.company_list || [];
             const companys = companyList.length;
             if (companys === 0) {
-                router.push('/merchant/create');
+                router.push('/user/merchantCreate');
             } else if (companys === 1) {
                 const companyInfo = companyList[0] || {};
                 CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, companyInfo.company_id);
