@@ -134,6 +134,7 @@ class MobileReset extends Component {
             form,
             form: { getFieldDecorator, getFieldValue },
             sso: { imgCaptcha },
+            onCancel,
         } = this.props;
         const { resetSuccess, notice, trigger, showImgCaptchaModal } = this.state;
 
@@ -146,7 +147,17 @@ class MobileReset extends Component {
                             title: formatMessage({ id: 'reset.success' }),
                             description: formatMessage({ id: 'reset.countDown' }),
                             countInit: 3,
-                            countDone: () => this.closeImgCaptchaModal,
+                            countDone: onCancel,
+                            CustomIcon: () => (
+                                <div
+                                    className={styles['success-icon']}
+                                    style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        margin: '0 auto',
+                                    }}
+                                />
+                            ),
                         }}
                     />
                 ) : (

@@ -207,50 +207,142 @@ class Register extends Component {
                     <div className={styles['custom-modal-header']}>
                         <div className={styles['close-icon']} onClick={onCancel} />
                     </div>
-                    {registerSuccess ? (
-                        <>
-                            {currentLanguage === 'zh-CN' ? (
-                                <ResultInfo
-                                    {...{
-                                        title: formatMessage({ id: 'register.success' }),
-                                        description: formatMessage({ id: 'register.countDown' }),
-                                        countInit: 3,
-                                        countDone: () => onCancel(),
-                                        CustomIcon: () => (
-                                            <div
-                                                className={styles['success-icon']}
-                                                style={{
-                                                    width: '48px',
-                                                    height: '28px',
-                                                    margin: '0 auto',
+                    <div className={styles['custom-modal-content']}>
+                        {registerSuccess ? (
+                            <>
+                                {currentLanguage === 'zh-CN' ? (
+                                    <ResultInfo
+                                        {...{
+                                            title: formatMessage({ id: 'register.success' }),
+                                            description: formatMessage({
+                                                id: 'register.countDown',
+                                            }),
+                                            countInit: 3,
+                                            countDone: () => onCancel(),
+                                            CustomIcon: () => (
+                                                <div
+                                                    className={styles['success-icon']}
+                                                    style={{
+                                                        width: '80px',
+                                                        height: '80px',
+                                                        margin: '0 auto',
+                                                    }}
+                                                />
+                                            ),
+                                        }}
+                                    />
+                                ) : (
+                                    <MailRegisterSuccess
+                                        props={{ mail: getFieldValue('username') }}
+                                    />
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <h1 className={styles['register-title']}>
+                                    {formatMessage({ id: 'register.title' })}
+                                </h1>
+                                <Form className={styles['register-form']}>
+                                    {notice && (
+                                        <Form.Item className={styles['formItem-margin-clear']}>
+                                            <Alert
+                                                message={formatMessage({
+                                                    id: ALERT_NOTICE_MAP[notice],
+                                                })}
+                                                type="error"
+                                                showIcon
+                                            />
+                                        </Form.Item>
+                                    )}
+                                    {currentLanguage === 'zh-CN' ? (
+                                        <>
+                                            <Form.Item
+                                                className={
+                                                    notice
+                                                        ? ''
+                                                        : `${styles['formItem-with-margin']}`
+                                                }
+                                            >
+                                                {getFieldDecorator('username', {
+                                                    validateTrigger: 'onBlur',
+                                                    rules: [
+                                                        {
+                                                            required: true,
+                                                            message: formatMessage({
+                                                                id: 'mobile.validate.isEmpty',
+                                                            }),
+                                                        },
+                                                        {
+                                                            pattern: /^1\d{10}$/,
+                                                            message: formatMessage({
+                                                                id: 'mobile.validate.isFormatted',
+                                                            }),
+                                                        },
+                                                    ],
+                                                })(
+                                                    <Input
+                                                        size="large"
+                                                        maxLength={11}
+                                                        autoComplete="off"
+                                                        placeholder={formatMessage({
+                                                            id: 'mobile.placeholder',
+                                                        })}
+                                                    />
+                                                )}
+                                            </Form.Item>
+
+                                            <ImgCaptchaModal
+                                                {...{
+                                                    form,
+                                                    visible: showImgCaptchaModal,
+                                                    getCode: this.getCode,
+                                                    refreshCode: this.refreshCode,
+                                                    imgCaptcha,
+                                                    onCancel: this.closeImgCaptchaModal,
                                                 }}
                                             />
-                                        ),
-                                    }}
-                                />
-                            ) : (
-                                <MailRegisterSuccess props={{ mail: getFieldValue('username') }} />
-                            )}
-                        </>
-                    ) : (
-                        <div className={styles['custom-modal-content']}>
-                            <h1 className={styles['register-title']}>
-                                {formatMessage({ id: 'register.title' })}
-                            </h1>
-                            <Form className={styles['register-form']}>
-                                {notice && (
-                                    <Form.Item className={styles['formItem-margin-clear']}>
-                                        <Alert
-                                            message={formatMessage({
-                                                id: ALERT_NOTICE_MAP[notice],
-                                            })}
-                                            type="error"
-                                            showIcon
-                                        />
-                                    </Form.Item>
-                                )}
-                                {currentLanguage === 'zh-CN' ? (
-                                    <>
+
+                                            <Form.Item>
+                                                {getFieldDecorator('code', {
+                                                    validateTrigger: 'onBlur',
+                                                    rules: [
+                                                        {
+                                                            required: true,
+                                                            message: formatMessage({
+                                                                id: 'code.validate.isEmpty',
+                                                            }),
+                                                        },
+                                                    ],
+                                                })(
+                                                    <Captcha
+                                                        {...{
+                                                            trigger,
+                                                            inputProps: {
+                                                                maxLength: 4,
+                                                                size: 'large',
+                                                                placeholder: formatMessage({
+                                                                    id: 'mobile.code.placeholder',
+                                                                }),
+                                                            },
+                                                            buttonProps: {
+                                                                size: 'large',
+                                                                block: true,
+                                                            },
+                                                            buttonText: {
+                                                                initText: formatMessage({
+                                                                    id: 'btn.get.code',
+                                                                }),
+                                                                countText: formatMessage({
+                                                                    id: 'countDown.unit',
+                                                                }),
+                                                            },
+                                                            onClick: this.getCode,
+                                                        }}
+                                                    />
+                                                )}
+                                            </Form.Item>
+                                        </>
+                                    ) : (
                                         <Form.Item
                                             className={
                                                 notice ? '' : `${styles['formItem-with-margin']}`
@@ -260,94 +352,33 @@ class Register extends Component {
                                                 validateTrigger: 'onBlur',
                                                 rules: [
                                                     {
-                                                        required: true,
-                                                        message: formatMessage({
-                                                            id: 'mobile.validate.isEmpty',
-                                                        }),
-                                                    },
-                                                    {
-                                                        pattern: /^1\d{10}$/,
-                                                        message: formatMessage({
-                                                            id: 'mobile.validate.isFormatted',
-                                                        }),
+                                                        validator: (rule, value, callback) =>
+                                                            customValidate({
+                                                                field: 'mail',
+                                                                rule,
+                                                                value,
+                                                                callback,
+                                                            }),
                                                     },
                                                 ],
                                             })(
                                                 <Input
                                                     size="large"
-                                                    maxLength={11}
-                                                    autoComplete="off"
                                                     placeholder={formatMessage({
-                                                        id: 'mobile.placeholder',
+                                                        id: 'mail.placeholder',
                                                     })}
                                                 />
                                             )}
                                         </Form.Item>
-
-                                        <ImgCaptchaModal
-                                            {...{
-                                                form,
-                                                visible: showImgCaptchaModal,
-                                                getCode: this.getCode,
-                                                refreshCode: this.refreshCode,
-                                                imgCaptcha,
-                                                onCancel: this.closeImgCaptchaModal,
-                                            }}
-                                        />
-
-                                        <Form.Item>
-                                            {getFieldDecorator('code', {
-                                                validateTrigger: 'onBlur',
-                                                rules: [
-                                                    {
-                                                        required: true,
-                                                        message: formatMessage({
-                                                            id: 'code.validate.isEmpty',
-                                                        }),
-                                                    },
-                                                ],
-                                            })(
-                                                <Captcha
-                                                    {...{
-                                                        trigger,
-                                                        inputProps: {
-                                                            maxLength: 4,
-                                                            size: 'large',
-                                                            placeholder: formatMessage({
-                                                                id: 'mobile.code.placeholder',
-                                                            }),
-                                                        },
-                                                        buttonProps: {
-                                                            size: 'large',
-                                                            block: true,
-                                                        },
-                                                        buttonText: {
-                                                            initText: formatMessage({
-                                                                id: 'btn.get.code',
-                                                            }),
-                                                            countText: formatMessage({
-                                                                id: 'countDown.unit',
-                                                            }),
-                                                        },
-                                                        onClick: this.getCode,
-                                                    }}
-                                                />
-                                            )}
-                                        </Form.Item>
-                                    </>
-                                ) : (
-                                    <Form.Item
-                                        className={
-                                            notice ? '' : `${styles['formItem-with-margin']}`
-                                        }
-                                    >
-                                        {getFieldDecorator('username', {
+                                    )}
+                                    <Form.Item>
+                                        {getFieldDecorator('password', {
                                             validateTrigger: 'onBlur',
                                             rules: [
                                                 {
                                                     validator: (rule, value, callback) =>
                                                         customValidate({
-                                                            field: 'mail',
+                                                            field: 'password',
                                                             rule,
                                                             value,
                                                             callback,
@@ -356,89 +387,68 @@ class Register extends Component {
                                             ],
                                         })(
                                             <Input
+                                                maxLength={30}
+                                                type="password"
                                                 size="large"
                                                 placeholder={formatMessage({
-                                                    id: 'mail.placeholder',
+                                                    id: 'password.placeholder',
                                                 })}
                                             />
                                         )}
                                     </Form.Item>
-                                )}
-                                <Form.Item>
-                                    {getFieldDecorator('password', {
-                                        validateTrigger: 'onBlur',
-                                        rules: [
-                                            {
-                                                validator: (rule, value, callback) =>
-                                                    customValidate({
-                                                        field: 'password',
-                                                        rule,
-                                                        value,
-                                                        callback,
-                                                    }),
-                                            },
-                                        ],
-                                    })(
-                                        <Input
-                                            maxLength={30}
-                                            type="password"
-                                            size="large"
-                                            placeholder={formatMessage({
-                                                id: 'password.placeholder',
-                                            })}
-                                        />
-                                    )}
-                                </Form.Item>
-                                <Form.Item>
-                                    {getFieldDecorator('confirm', {
-                                        validateTrigger: 'onBlur',
-                                        rules: [
-                                            {
-                                                validator: (rule, value, callback) =>
-                                                    customValidate({
-                                                        field: 'confirm',
-                                                        rule,
-                                                        value,
-                                                        callback,
-                                                        extra: {
-                                                            getFieldValue,
-                                                        },
-                                                    }),
-                                            },
-                                        ],
-                                    })(
-                                        <Input
-                                            maxLength={30}
-                                            type="password"
-                                            size="large"
-                                            placeholder={formatMessage({
-                                                id: 'confirm.placeholder',
-                                            })}
-                                        />
-                                    )}
-                                </Form.Item>
-                            </Form>
-                            <div className={styles['register-footer']}>
-                                <Button
-                                    className={`${styles['primary-btn']} ${styles['footer-btn']}`}
-                                    size="large"
-                                    block
-                                    onClick={this.onSubmit}
-                                >
-                                    {formatMessage({ id: 'btn.register' })}
-                                </Button>
-                                <div className={styles['footer-link']}>
-                                    <a
-                                        className={styles['footer-link']}
-                                        href="javascript:void(0);"
-                                        onClick={onCancel}
+                                    <Form.Item>
+                                        {getFieldDecorator('confirm', {
+                                            validateTrigger: 'onBlur',
+                                            rules: [
+                                                {
+                                                    validator: (rule, value, callback) =>
+                                                        customValidate({
+                                                            field: 'confirm',
+                                                            rule,
+                                                            value,
+                                                            callback,
+                                                            extra: {
+                                                                getFieldValue,
+                                                            },
+                                                        }),
+                                                },
+                                            ],
+                                        })(
+                                            <Input
+                                                maxLength={30}
+                                                type="password"
+                                                size="large"
+                                                placeholder={formatMessage({
+                                                    id: 'confirm.placeholder',
+                                                })}
+                                            />
+                                        )}
+                                    </Form.Item>
+                                </Form>
+                                <div className={styles['register-footer']}>
+                                    <Button
+                                        className={`${styles['primary-btn']} ${
+                                            styles['footer-btn']
+                                        }`}
+                                        size="large"
+                                        block
+                                        onClick={this.onSubmit}
                                     >
-                                        {formatMessage({ id: 'link.to.login' })}
-                                    </a>
+                                        {formatMessage({ id: 'btn.register' })}
+                                    </Button>
+                                    <div className={styles['footer-link']}>
+                                        <a
+                                            className={styles['footer-link']}
+                                            href="javascript:void(0);"
+                                            onClick={onCancel}
+                                        >
+                                            {formatMessage({ id: 'link.to.login' })}
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    )}
+                            </>
+                        )}
+                    </div>
                 </div>
             </Modal>
         );

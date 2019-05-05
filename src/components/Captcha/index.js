@@ -69,11 +69,11 @@ class Captcha extends Component {
     handleClick = () => {
         const { inCounting } = this.state;
         const { onClick } = this.props;
-        if (onClick) {
-            onClick();
-        }
 
         if (!inCounting) {
+            if (onClick) {
+                onClick();
+            }
             this.countDown();
         }
     };

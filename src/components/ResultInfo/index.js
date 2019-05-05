@@ -53,11 +53,8 @@ class ResultInfo extends Component {
                     {...{
                         type: 'check',
                         wrapperStyle: {
-                            width: '80px',
-                            height: '80px',
                             border: '100%',
                             margin: '0 auto',
-                            backgroundImage: 'linear-gradient(-180deg, #CDF76A 0%, #6DD13B 100%)',
                             ...wrapperStyle,
                         },
                         CustomIcon,

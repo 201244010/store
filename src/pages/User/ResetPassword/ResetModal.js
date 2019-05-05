@@ -90,7 +90,12 @@ class ResetPassword extends Component {
                         <div className={styles['close-icon']} onClick={onCancel} />
                     </div>
                     <div className={styles['custom-modal-content']}>
-                        <RenderComponent switchStep={this.switchStep} />
+                        <RenderComponent
+                            {...{
+                                onCancel,
+                                switchStep: this.switchStep,
+                            }}
+                        />
                     </div>
                 </div>
             </Modal>

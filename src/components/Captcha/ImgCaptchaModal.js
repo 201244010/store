@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Modal, Button } from 'antd';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
-import styles from './captcha.less';
 import { SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
+import styles from './captcha.less';
 
 @Form.create()
 class ImgCaptchaModal extends Component {
