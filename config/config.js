@@ -45,17 +45,27 @@ export default {
     routes: [
         {
             path: '/user',
-            component: '../layouts/UserLayout',
+            component: '../layouts/SunmiLayout',
             routes: [
                 { path: '/user', redirect: '/user/login' },
-                { path: '/user/login', component: './User/Login/Login' },
-                { path: '/user/register', component: './User/Register/Register' },
-                { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelate' },
-                { path: '/user/mailActive', component: './User/MailActive/MailActive' },
-                { path: '/user/resetPassword', component: './User/ResetPassword/ResetPassword' },
-                { path: '/user/resetPassword/reset', component: './User/ResetPassword/PasswordReset' },
+                { path: '/user/login', component: './User/Login/LoginUI' },
+                { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelateUI' },
+                { path: '/user/merchantCreate', component: './User/StoreRelate/StoreRelateUI' },
             ],
         },
+        // {
+        //     path: '/user',
+        //     component: '../layouts/UserLayout',
+        //     routes: [
+        //         { path: '/user', redirect: '/user/login' },
+        //         { path: '/user/login', component: './User/Login/Login' },
+        //         { path: '/user/register', component: './User/Register/Register' },
+        //         { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelate' },
+        //         { path: '/user/mailActive', component: './User/MailActive/MailActive' },
+        //         { path: '/user/resetPassword', component: './User/ResetPassword/ResetPassword' },
+        //         { path: '/user/resetPassword/reset', component: './User/ResetPassword/PasswordReset' },
+        //     ],
+        // },
         {
             path: '/merchant',
             component: '../layouts/MerchantLayout',
