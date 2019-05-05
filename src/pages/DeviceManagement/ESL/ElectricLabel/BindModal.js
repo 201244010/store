@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Row, Col, Select, Button, Input, Table } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { ERROR_OK } from '@/constants/errorCode';
 import * as styles from './index.less';
 
 export default class BindModal extends Component {
@@ -9,18 +10,21 @@ export default class BindModal extends Component {
         updateProduct(templateId);
     };
 
-    bindESL = () => {
+    bindESL = async () => {
         const { selectedProduct, currentRecord, bindESL, closeModal } = this.props;
         if (selectedProduct && selectedProduct.id) {
-            bindESL({
+            const response = await bindESL({
                 options: {
                     product_id: selectedProduct.id,
                     esl_code: currentRecord.esl_code,
                     template_id: currentRecord.template_id,
                 },
             });
+
+            if (response && response.code === ERROR_OK) {
+                closeModal('bindVisible');
+            }
         }
-        closeModal('bindVisible');
     };
 
     onTableChange = pagination => {
@@ -106,57 +110,61 @@ export default class BindModal extends Component {
                     </Button>,
                 ]}
             >
-                <Row>
+                <div className={styles['custom-modal-wrapper']}>
                     <Row>
-                        <Col span={4}>{formatMessage({ id: 'esl.device.esl.id' })}:</Col>
-                        <Col span={20}>{currentRecord.esl_code}</Col>
+                        <Row>
+                            <Col span={4}>{formatMessage({ id: 'esl.device.esl.id' })}:</Col>
+                            <Col span={20}>{currentRecord.esl_code}</Col>
+                        </Row>
+                        <Row className={styles['form-row']}>
+                            <Col span={4}>
+                                {formatMessage({ id: 'esl.device.esl.template.name' })}:
+                            </Col>
+                            <Col span={20}>
+                                <Select
+                                    placeholder="请选择模板"
+                                    value={currentRecord.template_id}
+                                    style={{ width: '100%' }}
+                                    onChange={this.handleTemplateChange}
+                                >
+                                    {templates4ESL.map(template => (
+                                        <Select.Option key={template.id} value={template.id}>
+                                            {template.name}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Col>
+                        </Row>
+                        <Row className={styles['form-row']}>
+                            <Col span={4}>
+                                {formatMessage({ id: 'esl.device.esl.select.product' })}:
+                            </Col>
+                            <Col span={20}>
+                                <Input.Search
+                                    placeholder={formatMessage({
+                                        id: 'esl.device.esl.bind.input.placeholder',
+                                    })}
+                                    onSearch={keyword => fetchProductList({ options: { keyword } })}
+                                    enterButton
+                                />
+                            </Col>
+                        </Row>
+                        <Row className={styles['form-row']}>
+                            <Col span={24}>
+                                <Table
+                                    rowKey="id"
+                                    rowClassName={record =>
+                                        record.id === selectedProduct.id ? styles.selected : ''
+                                    }
+                                    columns={columns}
+                                    dataSource={products}
+                                    pagination={productPagination}
+                                    onChange={this.onTableChange}
+                                />
+                            </Col>
+                        </Row>
                     </Row>
-                    <Row className={styles['form-row']}>
-                        <Col span={4}>{formatMessage({ id: 'esl.device.esl.template.name' })}:</Col>
-                        <Col span={20}>
-                            <Select
-                                placeholder="请选择模板"
-                                value={currentRecord.template_id}
-                                style={{ width: '100%' }}
-                                onChange={this.handleTemplateChange}
-                            >
-                                {templates4ESL.map(template => (
-                                    <Select.Option key={template.id} value={template.id}>
-                                        {template.name}
-                                    </Select.Option>
-                                ))}
-                            </Select>
-                        </Col>
-                    </Row>
-                    <Row className={styles['form-row']}>
-                        <Col span={4}>
-                            {formatMessage({ id: 'esl.device.esl.select.product' })}:
-                        </Col>
-                        <Col span={20}>
-                            <Input.Search
-                                placeholder={formatMessage({
-                                    id: 'esl.device.esl.bind.input.placeholder',
-                                })}
-                                onSearch={keyword => fetchProductList({ options: { keyword } })}
-                                enterButton
-                            />
-                        </Col>
-                    </Row>
-                    <Row className={styles['form-row']}>
-                        <Col span={24}>
-                            <Table
-                                rowKey="id"
-                                rowClassName={record =>
-                                    record.id === selectedProduct.id ? styles.selected : ''
-                                }
-                                columns={columns}
-                                dataSource={products}
-                                pagination={productPagination}
-                                onChange={this.onTableChange}
-                            />
-                        </Col>
-                    </Row>
-                </Row>
+                </div>
             </Modal>
         );
     }

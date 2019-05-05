@@ -42,7 +42,7 @@ const tabBarStyle = {
         getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
         getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
-    }),
+    })
 )
 @Form.create()
 class Login extends Component {
