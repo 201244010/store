@@ -67,13 +67,13 @@ export default {
         //         { path: '/user/resetPassword/reset', component: './User/ResetPassword/PasswordReset' },
         //     ],
         // },
-        {
-            path: '/merchant',
-            component: '../layouts/MerchantLayout',
-            routes: [
-                { path: '/merchant/create', component: './MerchantManagement/MerchantCreate' },
-            ],
-        },
+        // {
+        //     path: '/merchant',
+        //     component: '../layouts/MerchantLayout',
+        //     routes: [
+        //         { path: '/merchant/create', component: './MerchantManagement/MerchantCreate' },
+        //     ],
+        // },
         {
             path: '/',
             component: '../layouts/BasicLayout',
