@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {Col, Icon, Input, Row, Switch, Select, Radio, Slider, InputNumber} from 'antd';
 import {SHAPE_TYPES, SIZES} from '@/constants/studio';
+import * as styles from './index.less';
 
 export default class RightToolBox extends Component {
     handleDetail = (key, value) => {
@@ -47,7 +48,7 @@ export default class RightToolBox extends Component {
             <Fragment>
                 {
                     menuMap.hasBindData ?
-                        <div className="tool-box-block">
+                        <div className={styles["tool-box-block"]}>
                             <h4>绑定数据</h4>
                             <Select defaultValue="price" style={{width: 220}}>
                                 <Select.Option value="price">价格</Select.Option>
@@ -57,7 +58,7 @@ export default class RightToolBox extends Component {
                         </div> :
                         null
                 }
-                <div className="tool-box-block">
+                <div className={styles["tool-box-block"]}>
                     <Row gutter={20} style={{marginBottom: 10}}>
                         <Col span={12}>
                             <Input
@@ -107,7 +108,7 @@ export default class RightToolBox extends Component {
                 </div>
                 {
                     menuMap.isRect ?
-                        <div className="tool-box-block">
+                        <div className={styles["tool-box-block"]}>
                             <h4>样式</h4>
                             <Row style={{marginBottom: 10}} gutter={20}>
                                 <Col span={24}>
@@ -185,7 +186,7 @@ export default class RightToolBox extends Component {
                 }
                 {
                     menuMap.isText ?
-                        <div className="tool-box-block">
+                        <div className={styles["tool-box-block"]}>
                             <h4>文本</h4>
                             <Row style={{marginBottom: 10}}>
                                 <Col span={24}>
@@ -198,7 +199,7 @@ export default class RightToolBox extends Component {
                             </Row>
                             <Row style={{marginBottom: 10}}>
                                 <Col span={4}>
-                                    <span className="title">字体</span>
+                                    <span className={styles.title}>字体</span>
                                 </Col>
                                 <Col span={20}>
                                     <Select
@@ -213,7 +214,7 @@ export default class RightToolBox extends Component {
                             </Row>
                             <Row style={{marginBottom: 10}}>
                                 <Col span={4}>
-                                    <span className="title">字号</span>
+                                    <span className={styles.title}>字号</span>
                                 </Col>
                                 <Col span={7}>
                                     <InputNumber
@@ -225,7 +226,7 @@ export default class RightToolBox extends Component {
                                 </Col>
                                 <Col span={2} />
                                 <Col span={4}>
-                                    <span className="title">间距</span>
+                                    <span className={styles.title}>间距</span>
                                 </Col>
                                 <Col span={7}>
                                     <InputNumber
@@ -237,25 +238,25 @@ export default class RightToolBox extends Component {
                                 </Col>
                             </Row>
                             <Row style={{marginBottom: 10}} gutter={20}>
-                                <Col span={6} className={`formatter ${detail.fontStyle === 'bold' ? 'active' : ''}`}>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'bold' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="bold"
                                         onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'bold' ? 'normal' : 'bold')}}
                                     />
                                 </Col>
-                                <Col span={6} className={`formatter ${detail.fontStyle === 'italic' ? 'active' : ''}`}>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'italic' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="italic"
                                         onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'italic' ? 'normal' : 'italic')}}
                                     />
                                 </Col>
-                                <Col span={6} className={`formatter ${detail.textDecoration === 'underline' ? 'active' : ''}`}>
+                                <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="underline"
                                         onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'underline' ? 'normal' : 'underline')}}
                                     />
                                 </Col>
-                                <Col span={6} className={`formatter ${detail.textDecoration === 'line-through' ? 'active' : ''}`}>
+                                <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="strikethrough"
                                         onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'line-through' ? 'normal' : 'line-through')}}
@@ -330,7 +331,7 @@ export default class RightToolBox extends Component {
                 }
                 {
                     menuMap.isLine ?
-                        <div className="tool-box-block">
+                        <div className={styles["tool-box-block"]}>
                             <h4>样式</h4>
                             <Row style={{marginBottom: 10}} gutter={20}>
                                 <Col span={24}>
@@ -369,7 +370,7 @@ export default class RightToolBox extends Component {
                 }
                 {
                     menuMap.isImage ?
-                        <div className="tool-box-block">
+                        <div className={styles["tool-box-block"]}>
                             <h4>样式</h4>
                             <Row style={{marginBottom: 10}} gutter={20}>
                                 <Col span={24}>

@@ -1,6 +1,6 @@
 import { SHAPE_TYPES } from '@/constants/studio';
 
-const NEAR_GAP = 5;
+const NEAR_GAP = 10;
 
 export const getTypeByName = (name) => name.replace(/\d+/g,'');
 

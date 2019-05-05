@@ -4,27 +4,22 @@ import * as styles from './index.less';
 
 export default class ContextMenu extends Component {
     handleCopy = () => {
-        const {componentsDetail, selectedShapeName, copySelectedComponent} = this.props;
-        copySelectedComponent({
-            copiedComponent: componentsDetail[selectedShapeName]
-        });
+        const {
+            componentsDetail, selectedShapeName, copySelectedComponent
+        } = this.props;
+        this.hideRightToolBox();
+        copySelectedComponent(componentsDetail[selectedShapeName]);
     };
 
     handlePaste = () => {
         const {
-            copiedComponent, position, showRightToolBox, dragAndDropComponent, toggleRightToolBox
+            copiedComponent, position, showRightToolBox, addComponent
         } = this.props;
         if (showRightToolBox) {
-            toggleRightToolBox({
-                showRightToolBox: false,
-                rightToolBoxPos: {
-                    left: -9999,
-                    top: -9999
-                }
-            });
+            this.hideRightToolBox();
         }
         if (copiedComponent.name) {
-            dragAndDropComponent({
+            addComponent({
                 ...copiedComponent,
                 x: position.left - SIZES.TOOL_BOX_WIDTH,
                 y: position.top - SIZES.HEADER_HEIGHT,
@@ -33,10 +28,14 @@ export default class ContextMenu extends Component {
     };
 
     handleDelete = () => {
-        const {selectedShapeName, deleteSelectedComponent, toggleRightToolBox} = this.props;
-        deleteSelectedComponent({
-             name:selectedShapeName
-        });
+        const {selectedShapeName, deleteSelectedComponent} = this.props;
+        deleteSelectedComponent(selectedShapeName);
+        this.hideRightToolBox();
+    };
+
+    hideRightToolBox = () => {
+        const { toggleRightToolBox } = this.props;
+
         toggleRightToolBox({
             showRightToolBox: false,
             rightToolBoxPos: {

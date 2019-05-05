@@ -51,7 +51,7 @@ export default {
                 }
             };
         },
-        addComponentDetail(state, action) {
+        addComponentsDetail(state, action) {
             return {
                 ...state,
                 componentsDetail: {
@@ -61,21 +61,21 @@ export default {
             };
         },
         updateComponentsDetail(state, action) {
-            const { componentsDetail } = action.payload;
-            let { selectedShapeName } = action.payload;
+            const { selectedShapeName, ...componentsDetail } = action.payload;
             const chooseShapeName = state.selectedShapeName;
+            let targetShapeName = selectedShapeName;
             if (selectedShapeName === undefined) {
-                selectedShapeName = chooseShapeName;
+                targetShapeName = chooseShapeName;
             }
 
             return {
                 ...state,
-                selectedShapeName,
+                selectedShapeName: targetShapeName,
                 componentsDetail: {
                     ...state.componentsDetail,
-                    [selectedShapeName]: {
-                        ...state.componentsDetail[selectedShapeName],
-                        ...filterObject(componentsDetail[selectedShapeName] || {})
+                    [targetShapeName]: {
+                        ...state.componentsDetail[targetShapeName],
+                        ...filterObject(componentsDetail[targetShapeName] || {})
                     }
                 }
             };

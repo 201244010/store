@@ -67,8 +67,25 @@ export default {
                 type: 'updateState',
                 payload: { loading: true },
             });
+            const draft = {
+                name: 'Promote Template',
+                background_color: 'white',
+                encoding: 'UTF-8',
+                fill_fields: ['product_name', 'product_price'],
+                layer_count: 0,
+                notes: 'This is promote template for ESL',
+                type: 'BWR-2.13',
+                layers: []
+            };
+            const layers = [];
+            Object.keys(payload.draft).map(key => layers.push(payload.draft[key]));
+            draft.layers = layers;
+            draft.layer_count = layers.length;
 
-            const response = yield call(TemplateService.saveAsDraft, payload);
+            const response = yield call(TemplateService.saveAsDraft, {
+                ...payload,
+                draft: JSON.stringify(draft)
+            });
             if (response && response.code === ERROR_OK) {
                 yield put({
                     type: 'updateState',
@@ -96,29 +113,30 @@ export default {
                         curTemplate: response.data.template_info
                     },
                 });
-                const componentsDetail = JSON.parse(response.data.template_info.studio_info);
-                const detailKeys = Object.keys(componentsDetail);
-
-                const hasImage = detailKeys.filter(key => key.indexOf(SHAPE_TYPES.IMAGE) > -1);
+                const { layers } = JSON.parse(response.data.template_info.studio_info) || {};
+                const componentsDetail = {};
+                let hasImage = false;
+                layers.map(layer => {
+                    componentsDetail[layer.name] = layer;
+                    hasImage = hasImage || layer.type === SHAPE_TYPES.IMAGE;
+                });
 
                 if (hasImage) {
-                    Promise.all(detailKeys.map(key => {
-                        if (componentsDetail[key].type === SHAPE_TYPES.IMAGE) {
-                            return getImagePromise(componentsDetail[key])
+                    (yield Promise.all(layers.map(layer => {
+                        if (layer.type === SHAPE_TYPES.IMAGE) {
+                            return getImagePromise(layer)
                         }
                         return undefined;
-                    }).filter(item => item)).then(function *it (values) {
-                        values.forEach(value => {
-                            componentsDetail[value.name].image = value.image;
-                        });
-                        yield put({
-                            type: 'studio/addComponentDetail',
-                            payload: response.data.template_info
-                        });
+                    }).filter(item => item))).forEach(value => {
+                        componentsDetail[value.name].image = value.image;
+                    });
+                    yield put({
+                        type: 'studio/addComponentsDetail',
+                        payload: componentsDetail
                     });
                 } else {
                     yield put({
-                        type: 'studio/addComponentDetail',
+                        type: 'studio/addComponentsDetail',
                         payload: componentsDetail
                     });
                 }
@@ -128,6 +146,27 @@ export default {
                     payload: { loading: false },
                 });
             }
+        },
+        *uploadImage({ payload = {} }, { call, put }) {
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+            const response = yield call(TemplateService.uploadImage, payload);
+            if (response && response.code === ERROR_OK) {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+                message.success('上传成功');
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+                message.error('上传失败');
+            }
+            return response;
         },
     },
     reducers: {

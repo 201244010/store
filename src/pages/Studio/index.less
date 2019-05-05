@@ -3,15 +3,18 @@
 .board {
   background: #efefef;
   height: 100%;
-  .ant-spin {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    z-index: 10000;
-    padding: 400px;
-    box-sizing: border-box;
+  overflow: hidden;
+  :global {
+    .ant-spin {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      z-index: 10000;
+      padding: 400px;
+      box-sizing: border-box;
+    }
   }
   .board-header {
     width: 100%;

@@ -8,6 +8,7 @@ import BoardTools from './BoardTools';
 import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import generateShape from './GenerateShape';
+import { getLocationParam } from '@/utils/utils';
 import { getTypeByName, getNearLines } from '@/utils/studio';
 import { SIZES, SHAPE_TYPES } from '@/constants/studio';
 import * as styles from './index.less';
@@ -44,9 +45,9 @@ class Studio extends Component {
     }
 
     componentDidMount() {
-        const {fetchTemplateDetail} = this.props;
+        const { fetchTemplateDetail } = this.props;
         fetchTemplateDetail({
-            template_id: 111,
+            template_id: getLocationParam('id'),
         })
     }
 
@@ -160,8 +161,8 @@ class Studio extends Component {
         });
 
         saveAsDraft({
-            template_id: 111,
-            draft: JSON.stringify(newDetails)
+            template_id: getLocationParam('id'),
+            draft: newDetails
         });
     };
 
@@ -190,10 +191,9 @@ class Studio extends Component {
 
         const fileChangeHandler = async (changeEvent) => {
             const response = await uploadImage({
-                company_id: 222,
-                shop_id: 777,
                 file: changeEvent.target.files[0]
             });
+            console.log(response);
             const detail = componentsDetail[selectedShapeName];
             const imageUrl = response.data.template_image_info.address;
 
@@ -351,13 +351,13 @@ class Studio extends Component {
         const {
             stageWidth, stageHeight,
             props: {
-                updateComponentsDetail, copySelectedComponent, deleteSelectedComponent, dragAndDropComponent,
+                updateComponentsDetail, copySelectedComponent, deleteSelectedComponent, addComponent,
                 toggleRightToolBox,
                 studio: {
                     selectedShapeName, componentsDetail, showRightToolBox,
                     rightToolBoxPos, copiedComponent
                 },
-                template: {templateInfo}
+                template: {curTemplate}
             }
         } = this;
 
@@ -381,7 +381,7 @@ class Studio extends Component {
                     <BoardHeader
                         {
                             ...{
-                                templateInfo,
+                                templateInfo: curTemplate,
                                 saveAsDraft: this.handleSaveAsDraft
                             }
                         }
@@ -389,7 +389,7 @@ class Studio extends Component {
                 </div>
                 <div className={styles["board-content"]}>
                     <div className={styles["board-tools"]}>
-                        <BoardTools />
+                        <BoardTools addComponent={addComponent} />
                     </div>
                     <div className={styles["board-stage"]}>
                         <Stage
@@ -419,7 +419,7 @@ class Studio extends Component {
                                                 onDblClick: this.handleShapeDblClick
                                             });
                                         }
-                                        return <noscript />
+                                        return undefined;
                                     })
                                 }
                                 <MTransformer selectedShapeName={selectedShapeName} />
@@ -439,7 +439,7 @@ class Studio extends Component {
                     </div>
                     {
                         selectedShapeName ?
-                            <div className="tool-box">
+                            <div className={styles["tool-box"]}>
                                 <RightToolBox
                                     {
                                         ...{
@@ -469,7 +469,7 @@ class Studio extends Component {
                                     updateComponentsDetail,
                                     deleteSelectedComponent,
                                     copySelectedComponent,
-                                    dragAndDropComponent,
+                                    addComponent,
                                     toggleRightToolBox
                                 }
                             }

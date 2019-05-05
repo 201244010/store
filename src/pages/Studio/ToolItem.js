@@ -1,10 +1,9 @@
 import React, {Component, Fragment} from 'react';
 import {SIZES, SHAPE_TYPES, MAPS} from '@/constants/studio';
-import * as styles from './index.less';
 
 export default class ToolItem extends Component {
     componentDidMount() {
-        const {id, type, dragAndDropComponent} = this.props;
+        const {id, type, addComponent} = this.props;
         const element = document.getElementById(id);
 
         element.onmousedown = (ev) => {
@@ -41,7 +40,7 @@ export default class ToolItem extends Component {
                     if (type === SHAPE_TYPES.IMAGE) {
                         const image = new Image();
                         image.onload = () => {
-                            dragAndDropComponent({
+                            addComponent({
                                 x,
                                 y,
                                 type,
@@ -51,7 +50,7 @@ export default class ToolItem extends Component {
                         };
                         image.src = require('@/assets/studio/image.svg');
                     } else {
-                        dragAndDropComponent({
+                        addComponent({
                             x,
                             y,
                             type,
@@ -85,10 +84,10 @@ export default class ToolItem extends Component {
 
         return (
             <Fragment>
-                <div className={styles[className]}>
+                <div className={className}>
                     {children}
                 </div>
-                <div className={styles[className]} id={id}>
+                <div className={className} id={id}>
                     {children}
                 </div>
             </Fragment>
