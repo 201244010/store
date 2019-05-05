@@ -51,6 +51,7 @@ export default {
                 { path: '/user/login', component: './User/Login/LoginUI' },
                 { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelateUI' },
                 { path: '/user/merchantCreate', component: './User/StoreRelate/StoreRelateUI' },
+                { path: '/user/*', redirect: '/user/login' },
             ],
         },
         // {
