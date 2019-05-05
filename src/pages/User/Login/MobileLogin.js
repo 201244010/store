@@ -131,7 +131,7 @@ class MobileLogin extends Component {
                             placeholder={formatMessage({
                                 id: 'mobile.placeholder',
                             })}
-                        />,
+                        />
                     )}
                 </Form.Item>
 
@@ -177,7 +177,7 @@ class MobileLogin extends Component {
                                 },
                                 onClick: this.getCode,
                             }}
-                        />,
+                        />
                     )}
                 </Form.Item>
             </>

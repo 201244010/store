@@ -206,6 +206,7 @@ export default {
                     payload: { loading: false },
                 });
             }
+            return response;
         },
         *unbindESL({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
