@@ -64,7 +64,7 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{width: 100}}
                                 addonAfter={<span>X</span>}
-                                value={detail.x}
+                                value={detail.x.toFixed()}
                                 onChange={(e) => {this.handleDetail('x', parseInt(e.target.value, 10))}}
                             />
                         </Col>
@@ -72,7 +72,7 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{width: 100}}
                                 addonAfter={<span>Y</span>}
-                                value={detail.y}
+                                value={detail.y.toFixed()}
                                 onChange={(e) => {this.handleDetail('y', parseInt(e.target.value, 10))}}
                             />
                         </Col>
@@ -256,7 +256,7 @@ export default class RightToolBox extends Component {
                                         onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'underline' ? 'normal' : 'underline')}}
                                     />
                                 </Col>
-                                <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
+                                <Col span={6} className={`formatter ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="strikethrough"
                                         onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'line-through' ? 'normal' : 'line-through')}}

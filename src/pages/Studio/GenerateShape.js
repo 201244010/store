@@ -14,8 +14,8 @@ export default function generateShape(option) {
                             name: option.name,
                             x: option.x,
                             y: option.y,
-                            width: option.width,
-                            height: option.height,
+                            width: MAPS.width[SHAPE_TYPES.RECT] * option.zoomScale,
+                            height: MAPS.height[SHAPE_TYPES.RECT] * option.zoomScale,
                             scaleX: option.scaleX,
                             scaleY: option.scaleY,
                             fill: option.fill,
@@ -45,8 +45,8 @@ export default function generateShape(option) {
                                 name: option.name,
                                 x: option.x,
                                 y: option.y,
-                                width: MAPS.containerWidth[SHAPE_TYPES.TEXT],
-                                height: MAPS.containerHeight[SHAPE_TYPES.TEXT],
+                                width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.zoomScale,
+                                height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
                                 scaleX: option.scaleX,
                                 scaleY: option.scaleY,
                                 fill: option.textBg,
@@ -65,15 +65,15 @@ export default function generateShape(option) {
                                 y: option.y,
                                 text: option.text,
                                 fontFamily: option.fontFamily,
-                                fontSize: option.fontSize,
+                                fontSize: option.fontSize * option.zoomScale,
                                 fontStyle: option.fontStyle,
                                 textDecoration: option.textDecoration,
                                 fill: option.fill,
                                 align: option.align,
                                 letterSpacing: option.letterSpacing,
-                                width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX,
-                                height: MAPS.containerHeight[SHAPE_TYPES.TEXT],
-                                lineHeight: option.height * option.scaleY / option.fontSize,
+                                width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX * option.zoomScale,
+                                height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
+                                lineHeight: MAPS.containerHeight[SHAPE_TYPES.TEXT] / option.fontSize,
                                 draggable: true,
                                 onDblClick: option.onDblClick
                             }
@@ -91,7 +91,7 @@ export default function generateShape(option) {
                             x: option.x,
                             y: option.y,
                             stroke: option.stroke,
-                            strokeWidth: option.strokeWidth || SIZES.DEFAULT_LINE_STROKE_WIDTH,
+                            strokeWidth: option.strokeWidth * option.zoomScale,
                             scaleX: option.scaleX,
                             scaleY: option.scaleY,
                             points: [0, 0, SIZES.DEFAULT_H_LINE_WIDTH, 0],
@@ -117,7 +117,7 @@ export default function generateShape(option) {
                             x: option.x,
                             y: option.y,
                             stroke: option.stroke,
-                            strokeWidth: option.strokeWidth || SIZES.DEFAULT_LINE_STROKE_WIDTH,
+                            strokeWidth: option.strokeWidth * option.zoomScale,
                             scaleX: option.scaleX,
                             scaleY: option.scaleY,
                             points: [0, 0, 0, SIZES.DEFAULT_V_LINE_HEIGHT],
@@ -144,8 +144,8 @@ export default function generateShape(option) {
                                     name: option.name,
                                     x: option.x,
                                     y: option.y,
-                                    width: MAPS.containerWidth[SHAPE_TYPES.IMAGE],
-                                    height: MAPS.containerHeight[SHAPE_TYPES.IMAGE],
+                                    width: MAPS.containerWidth[SHAPE_TYPES.IMAGE] * option.zoomScale,
+                                    height: MAPS.containerHeight[SHAPE_TYPES.IMAGE] * option.zoomScale,
                                     scaleX: option.scaleX,
                                     scaleY: option.scaleY,
                                     fill: '#d9d9d9',
@@ -158,10 +158,10 @@ export default function generateShape(option) {
                         <Image
                             {
                                 ...{
-                                    x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - SIZES.DEFAULT_IMAGE_WIDTH) / 2,
-                                    y: option.y + (SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT * option.scaleY - SIZES.DEFAULT_IMAGE_HEIGHT) / 2,
-                                    width: SIZES.DEFAULT_IMAGE_WIDTH,
-                                    height: SIZES.DEFAULT_IMAGE_HEIGHT,
+                                    x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - SIZES.DEFAULT_IMAGE_WIDTH) / 2,
+                                    y: option.y + (SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT * option.scaleY * option.zoomScale - SIZES.DEFAULT_IMAGE_HEIGHT) / 2,
+                                    width: SIZES.DEFAULT_IMAGE_WIDTH * option.zoomScale,
+                                    height: SIZES.DEFAULT_IMAGE_HEIGHT * option.zoomScale,
                                     image: option.image,
                                 }
                             }
@@ -172,7 +172,7 @@ export default function generateShape(option) {
                                     <Rect
                                         {
                                             ...{
-                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - 180) / 2,
+                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
                                                 y: option.y - 50,
                                                 width: 180,
                                                 height: 32,
@@ -184,7 +184,7 @@ export default function generateShape(option) {
                                     <Text
                                         {
                                             ...{
-                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - 180) / 2,
+                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
                                                 y: option.y - 50,
                                                 width: 180,
                                                 height: 32,
@@ -210,8 +210,8 @@ export default function generateShape(option) {
                                     name: option.name,
                                     x: option.x,
                                     y: option.y,
-                                    width: SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH,
-                                    height: SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.ratio,
+                                    width: SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.zoomScale,
+                                    height: SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.ratio * option.zoomScale,
                                     scaleX: option.scaleX,
                                     scaleY: option.scaleY,
                                     image: option.image,
@@ -228,7 +228,7 @@ export default function generateShape(option) {
                                     <Rect
                                         {
                                             ...{
-                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - 180) / 2,
+                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
                                                 y: option.y - 50,
                                                 width: 180,
                                                 height: 32,
@@ -240,7 +240,7 @@ export default function generateShape(option) {
                                     <Text
                                         {
                                             ...{
-                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - 180) / 2,
+                                                x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
                                                 y: option.y - 50,
                                                 width: 180,
                                                 height: 32,
@@ -264,7 +264,7 @@ export default function generateShape(option) {
     }
 
     return (
-        <Fragment key={option.key}>
+        <Fragment key={option.name}>
             {shape}
         </Fragment>
     )

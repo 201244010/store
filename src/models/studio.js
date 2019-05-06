@@ -11,7 +11,8 @@ export default {
             left: -9999,
             top: -9999
         },
-        copiedComponent: {}
+        copiedComponent: {},
+        zoomScale: 1
     },
     reducers: {
         updateState(state, action) {

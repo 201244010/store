@@ -29,6 +29,8 @@ import * as styles from './index.less';
             dispatch({ type: 'studio/deleteSelectedComponent', payload }),
         addComponent: payload =>
             dispatch({ type: 'studio/addComponent', payload }),
+        updateState: payload =>
+            dispatch({ type: 'studio/updateState', payload }),
         saveAsDraft: payload =>
             dispatch({ type: 'template/saveAsDraft', payload }),
         fetchTemplateDetail: payload =>
@@ -193,7 +195,6 @@ class Studio extends Component {
             const response = await uploadImage({
                 file: changeEvent.target.files[0]
             });
-            console.log(response);
             const detail = componentsDetail[selectedShapeName];
             const imageUrl = response.data.template_image_info.address;
 
@@ -282,7 +283,7 @@ class Studio extends Component {
 
     createInput = (e) => {
         const targetName = e.target.name();
-        const {studio: {componentsDetail}, updateComponentsDetail} = this.props;
+        const {studio: {componentsDetail, zoomScale}, updateComponentsDetail} = this.props;
         const targetDetail = componentsDetail[targetName];
 
         const textPosition = e.target.getAbsolutePosition();
@@ -296,7 +297,7 @@ class Studio extends Component {
         document.body.appendChild(inputEle);
         inputEle.setAttribute('id', 'textInput');
         inputEle.value = e.target.parent.children[1].text();
-        inputEle.style.fontSize = `${targetDetail.fontSize}px`;
+        inputEle.style.fontSize = `${targetDetail.fontSize * zoomScale}px`;
         inputEle.style.fontFamily = targetDetail.fontFamily;
         inputEle.style.color = e.target.parent.children[1].attrs.fill;
         inputEle.style.position = 'absolute';
@@ -352,12 +353,12 @@ class Studio extends Component {
             stageWidth, stageHeight,
             props: {
                 updateComponentsDetail, copySelectedComponent, deleteSelectedComponent, addComponent,
-                toggleRightToolBox,
+                toggleRightToolBox, updateState,
                 studio: {
                     selectedShapeName, componentsDetail, showRightToolBox,
-                    rightToolBoxPos, copiedComponent
+                    rightToolBoxPos, copiedComponent, zoomScale
                 },
-                template: {curTemplate}
+                template: { curTemplate }
             }
         } = this;
 
@@ -382,7 +383,9 @@ class Studio extends Component {
                         {
                             ...{
                                 templateInfo: curTemplate,
-                                saveAsDraft: this.handleSaveAsDraft
+                                zoomScale,
+                                saveAsDraft: this.handleSaveAsDraft,
+                                updateState
                             }
                         }
                     />
@@ -413,6 +416,7 @@ class Studio extends Component {
                                                 stageHeight,
                                                 scaleX: targetDetail.scaleX || 1,
                                                 scaleY: targetDetail.scaleY || 1,
+                                                zoomScale,
                                                 ratio: targetDetail.ratio || 1,
                                                 selected: selectedShapeName === targetDetail.name,
                                                 onTransform: this.handleShapeTransform,

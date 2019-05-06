@@ -5,7 +5,7 @@ import * as styles from './index.less';
 
 export default class BoardHeader extends Component {
     render() {
-        const {templateInfo = {}, saveAsDraft} = this.props;
+        const {templateInfo = {}, zoomScale, saveAsDraft, updateState} = this.props;
 
         return (
             <Fragment>
@@ -20,7 +20,7 @@ export default class BoardHeader extends Component {
                     <img src={require('@/assets/studio/edit.svg')} alt="" />
                 </div>
                 <div className={styles["right-actions"]}>
-                    <ZoomIcon />
+                    <ZoomIcon zoomScale={zoomScale} updateState={updateState} />
                     <ButtonIcon name="wrapper" />
                     <ButtonIcon name="view" />
                     <ButtonIcon name="history" />
