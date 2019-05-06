@@ -1,5 +1,5 @@
 import * as Actions from '@/services/mqtt';
-// import moment from 'moment';
+import moment from 'moment';
 import { ERROR_OK, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 
 export default {
@@ -22,6 +22,40 @@ export default {
         },
     },
     effects: {
+        *getServerInfo(action, { call, put }) {
+            const userInfo = yield put.resolve({
+                type: 'user/getUserInfoFromStorage',
+            });
+
+            if (userInfo) {
+                const { id } = userInfo;
+                const response = yield call(Actions.getServerInfo, { user_id: id });
+
+                if (response.code === ERROR_OK) {
+                    // TODO 参数名等待
+                    const { data = {} } = response;
+                    const { server_address: address, username, password } = data;
+                    const clientId = `${username}_${moment().format('X')}`;
+                    const clientOpts = {
+                        clientId,
+                        address,
+                        username,
+                        password,
+                        created: true,
+                    };
+                    yield put({
+                        type: 'updateState',
+                        payload: { clientOpts },
+                    });
+                    return clientOpts;
+                }
+            }
+            return {};
+        },
+        // * createClient(_, { call, select }) {
+        //     const { clientOpts } = yield select(state => state.mqtt);
+        //
+        // },
         *sendCode({ payload }, { call, put }) {
             const { options } = payload;
             const response = yield call(Actions.sendCode, options);
