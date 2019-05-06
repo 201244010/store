@@ -1,8 +1,10 @@
 // import { message } from 'antd';
-import { env, API_ADDRESS, MD5_TOKEN } from '@/config';
+import CONFIG from '@/config';
 import { cbcEncryption, md5Encryption } from '@/utils/utils';
 import { USER_NOT_LOGIN } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
+
+const { API_ADDRESS, MD5_TOKEN } = CONFIG;
 
 // const codeMessage = {
 //   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
@@ -37,7 +39,7 @@ export function paramsEncode(params, encryption) {
 }
 
 export function getParamsSign(formData) {
-    const md5Key = md5Encryption(MD5_TOKEN[env]);
+    const md5Key = md5Encryption(MD5_TOKEN);
     const { params, isEncrypted, timeStamp, randomNum } = formData;
     const signString = params + isEncrypted + timeStamp + randomNum + md5Key;
     return md5Encryption(signString);
@@ -92,7 +94,7 @@ const customizeParams = (options = {}) => {
 };
 
 export const customizeFetch = (service = 'api', base) => {
-    const baseUrl = base || API_ADDRESS[env];
+    const baseUrl = base || API_ADDRESS;
     return async (api, options = {}, withAuth = true) => {
         const customizedParams = customizeParams(options);
         const token = CookieUtil.getCookieByKey(CookieUtil.TOKEN_KEY) || '';

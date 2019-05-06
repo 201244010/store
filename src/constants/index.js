@@ -21,3 +21,9 @@ export const MENU_PREFIX = {
 export const KEY = {
     ENTER: 13,
 };
+
+export const MESSAGE_TYPE = {
+    EVENT: 'event',
+    REQUEST: 'request',
+    RESPONSE: 'response',
+};

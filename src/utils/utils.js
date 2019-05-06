@@ -1,6 +1,8 @@
 import CryptoJS from 'crypto-js/crypto-js';
 import moment from 'moment';
-import { env, DES_KEY, DES_IV } from '@/config';
+import CONFIG from '@/config';
+
+const { DES_KEY, DES_IV } = CONFIG;
 
 const STR_BASE = [
     'a',
@@ -115,8 +117,8 @@ export const dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>
  */
 export const encryption = source => {
     const message = CryptoJS.enc.Utf8.parse(source);
-    const keyHex = CryptoJS.enc.Utf8.parse(DES_KEY[env]);
-    const iv = CryptoJS.enc.Utf8.parse(DES_IV[env]);
+    const keyHex = CryptoJS.enc.Utf8.parse(DES_KEY);
+    const iv = CryptoJS.enc.Utf8.parse(DES_IV);
     const encrypted = CryptoJS.DES.encrypt(message, keyHex, {
         iv,
         mode: CryptoJS.mode.CBC,
@@ -127,8 +129,8 @@ export const encryption = source => {
 
 export const cbcEncryption = source => {
     const message = CryptoJS.enc.Utf8.parse(source);
-    const keyHex = CryptoJS.enc.Utf8.parse(DES_KEY[env]);
-    const ivHex = CryptoJS.enc.Utf8.parse(DES_IV[env]);
+    const keyHex = CryptoJS.enc.Utf8.parse(DES_KEY);
+    const ivHex = CryptoJS.enc.Utf8.parse(DES_IV);
     return CryptoJS.DES.encrypt(message, keyHex, {
         iv: ivHex,
         mode: CryptoJS.mode.CBC,

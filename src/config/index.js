@@ -1,20 +1,20 @@
-export const env = process.env.UMI_ENV;
+const env = process.env.UMI_ENV;
 
-export const SSO_ADDRESS = {
+const SSO_ADDRESS = {
     dev: 'test.api.sunmi.com',
     test: 'test.api.sunmi.com',
     uat: 'uat.api.sunmi.com',
     onl: 'api.sunmi.com',
 };
 
-export const API_ADDRESS = {
+const API_ADDRESS = {
     dev: 'dev-store.sunmi.com:30301',
     test: 'test-store.sunmi.com:30301',
     uat: 'uat-store.sunmi.com:443',
     onl: 'store.sunmi.com:443',
 };
 
-export const DES_KEY = {
+const DES_KEY = {
     development: 'wywmxxkj',
     dev: 'wywmxxkj',
     test: 'wywmxxkj',
@@ -24,7 +24,7 @@ export const DES_KEY = {
     uat: 'jihexxkj',
 };
 
-export const DES_IV = {
+const DES_IV = {
     development: '12345678',
     dev: '12345678',
     test: '12345678',
@@ -34,7 +34,7 @@ export const DES_IV = {
     uat: '98765432',
 };
 
-export const MD5_TOKEN = {
+const MD5_TOKEN = {
     development: 'Woyouxinxi666',
     dev: 'Woyouxinxi666',
     test: 'Woyouxinxi666',
@@ -42,4 +42,12 @@ export const MD5_TOKEN = {
     production: 'Jihewobox15',
     onl: 'Jihewobox15',
     uat: 'Jihewobox15',
+};
+
+export default {
+    SSO_ADDRESS: SSO_ADDRESS[env],
+    API_ADDRESS: API_ADDRESS[env],
+    DES_KEY: DES_KEY[env],
+    DES_IV: DES_IV[env],
+    MD5_TOKEN: MD5_TOKEN[env],
 };
