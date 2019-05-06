@@ -16,6 +16,12 @@
       box-sizing: border-box;
     }
   }
+  .price-input {
+    position: fixed;
+    left: 600px;
+    top: 250px;
+    z-index: 1000;
+  }
   .board-header {
     width: 100%;
     box-sizing: border-box;
@@ -80,12 +86,17 @@
           color: #333;
           position: absolute;
           left: 20px;
-          top: 20px;
+          transform: translateY(20px);
         }
       }
       .tools-block {
-        height: 212px;
         border-bottom: 1px solid #d9d9d9;
+        &.basic {
+          height: @TOOL_BASIC_TOTAL_HEIGHT;
+        }
+        &.price {
+          height: @TOOL_PRICE_TOTAL_HEIGHT;
+        }
       }
       .item {
         width: @TOOL_BASIC_ITEM_WIDTH;
@@ -129,6 +140,31 @@
       .item-image {
         top: @TOOL_BASIC_ITEM_HEIGHT * 2 + 72px;
         left: 20px;
+      }
+      .item-price {
+        width: @TOOL_PRICE_ITEM_WIDTH;
+        height: @TOOL_PRICE_ITEM_HEIGHT;
+        line-height: @TOOL_PRICE_ITEM_HEIGHT;
+        text-align: center;
+        font-size: 16px;
+        background: #595959;
+        color: #fff;
+        border-radius: 4px;
+        box-sizing: border-box;
+        cursor: pointer;
+        position: absolute;
+      }
+      .item-price-normal {
+        top: @TOOL_BASIC_TOTAL_HEIGHT + 52px;
+        left: 20px;
+      }
+      .item-price-super {
+        top: @TOOL_BASIC_TOTAL_HEIGHT + 52px;
+        left: @TOOL_PRICE_ITEM_WIDTH + 40px;
+      }
+      .item-price-sub {
+        top: @TOOL_BASIC_TOTAL_HEIGHT + 52px;
+        left: @TOOL_PRICE_ITEM_WIDTH * 2 + 60px;
       }
     }
     .board-stage {

@@ -259,6 +259,74 @@ export default function generateShape(option) {
                 );
             }
             break;
+        case SHAPE_TYPES.PRICE_NORMAL:
+            shape = (
+                <Group>
+                    <Rect
+                        {
+                            ...{
+                                name: option.name,
+                                x: option.x,
+                                y: option.y,
+                                width: MAPS.containerWidth[option.type] * option.zoomScale,
+                                height: MAPS.containerHeight[option.type] * option.zoomScale,
+                                scaleX: option.scaleX,
+                                scaleY: option.scaleY,
+                                fill: option.textBg,
+                                opacity: option.textBg === 'opacity' ? 0 : 1,
+                                draggable: true,
+                                onTransform: option.onTransform,
+                                onDblClick: option.onDblClick
+                            }
+                        }
+                    />
+                    <Text
+                        {
+                            ...{
+                                name: option.name,
+                                x: option.x,
+                                y: option.y,
+                                text: '111111111.',
+                                fontFamily: option.fontFamily,
+                                fontSize: option.fontSize * option.zoomScale,
+                                fontStyle: option.fontStyle,
+                                textDecoration: option.textDecoration,
+                                fill: option.fill,
+                                align: option.align,
+                                letterSpacing: option.letterSpacing,
+                                width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
+                                height: MAPS.containerHeight[option.type] * option.zoomScale,
+                                lineHeight: MAPS.containerHeight[option.type] / option.fontSize,
+                                draggable: true,
+                                onDblClick: option.onDblClick
+                            }
+                        }
+                    />
+                    <Text
+                        {
+                            ...{
+                                name: option.name,
+                                x: option.x + 88,
+                                y: option.y + 7,
+                                text: '00',
+                                fontFamily: option.fontFamily,
+                                fontSize: 12 * option.zoomScale,
+                                fontStyle: option.fontStyle,
+                                textDecoration: option.textDecoration,
+                                fill: option.fill,
+                                align: option.align,
+                                letterSpacing: option.letterSpacing,
+                                width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
+                                height: MAPS.containerHeight[option.type] * option.zoomScale,
+                                lineHeight: MAPS.containerHeight[option.type] / option.fontSize,
+                                draggable: true,
+                                onDblClick: option.onDblClick
+                            }
+                        }
+                    />
+                </Group>
+            );
+            break;
         default:
             throw new Error('没有匹配的Shape');
     }

@@ -1,6 +1,11 @@
 import React, {Component, Fragment} from 'react';
 import {SIZES, SHAPE_TYPES, MAPS} from '@/constants/studio';
 
+const textMap = {
+    [SHAPE_TYPES.TEXT]: '双击编辑文本',
+    [SHAPE_TYPES.PRICE_NORMAL]: '99.00'
+};
+
 export default class ToolItem extends Component {
     componentDidMount() {
         const {id, type, addComponent} = this.props;
@@ -55,7 +60,7 @@ export default class ToolItem extends Component {
                             y,
                             type,
                             fill: MAPS.fill[type],
-                            text: type === SHAPE_TYPES.TEXT ? '双击编辑文本' : undefined,
+                            text: textMap[type],
                             width: MAPS.width[type],
                             cornerRadius: MAPS.cornerRadius[type],
                             fontSize: MAPS.fontSize[type],
