@@ -35,11 +35,12 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
 
   .card-item {
     width: 50%;
     margin-top: 10px;
+    display: flex;
+    flex-wrap: nowrap;
 
     .item-label {
       min-width: 200px;
@@ -49,6 +50,8 @@
 
     .item-content {
       margin-left: 15px;
+      overflow: hidden;
+      overflow-wrap: break-word;
     }
   }
 }
