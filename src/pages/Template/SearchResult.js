@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
-import { Table, Switch, Divider, Modal } from "antd";
+import { Table, Switch, Divider, Modal, Button, Form, Input, Select } from "antd";
 import { formatMessage } from 'umi/locale';
+import { ERROR_OK } from "@/constants/errorCode";
+
+const {Option} = Select;
 
 const TEMPLATE_STATES = {
     0: formatMessage({ id: 'esl.device.template.status.draft' }),
     1: formatMessage({ id: 'esl.device.template.status.apply' }),
 };
 
+@Form.create()
 class SearchResult extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            newVisible: false
+        }
+    }
+
     onTableChange = pagination => {
         const { fetchTemplates } = this.props;
 
@@ -40,12 +51,39 @@ class SearchResult extends Component {
         });
     };
 
+    showNew = () => {
+        this.setState({
+            newVisible: true
+        });
+    };
+
+    handleOkNew = () => {
+        const {
+            props: { form: {validateFields}, createTemplate },
+        } = this;
+        validateFields(async (errors, values) => {
+            if (!errors) {
+                const response = await createTemplate(values);
+                if (response && response.code === ERROR_OK) {
+                    this.setState({
+                        newVisible: false
+                    });
+                }
+            }
+        });
+    };
+
+    handleCancelNew = () => {
+        this.setState({
+            newVisible: false
+        });
+    };
+
     render() {
         const {
-            loading,
-            data,
-            pagination,
-        } = this.props;
+            props: { screenTypes, colors, loading, data, pagination, form: {getFieldDecorator}, fetchColors },
+            state: { newVisible }
+        } = this;
         const columns = [
             {
                 title: formatMessage({ id: 'esl.device.template.id' }),
@@ -93,13 +131,37 @@ class SearchResult extends Component {
                         <a href="javascript: void (0);" onClick={() => this.deleteTemplate(record)}>
                             {formatMessage({ id: 'list.action.delete' })}
                         </a>
+                        <Divider type="vertical" />
+                        <a href="javascript: void (0);" onClick={() => this.editDetail(record)}>
+                            {formatMessage({ id: 'list.action.apply' })}
+                        </a>
                     </span>
                 ),
             },
         ];
+        const formItemLayout = {
+            labelCol: {
+                xs: { span: 24 },
+                sm: { span: 4 },
+            },
+            wrapperCol: {
+                xs: { span: 24 },
+                sm: { span: 20 },
+            },
+        };
 
         return (
             <div>
+                <div style={{marginBottom: 20}}>
+                    <Button
+                        loading={loading}
+                        type="primary"
+                        icon="plus"
+                        onClick={this.showNew}
+                    >
+                        {formatMessage({ id: 'esl.device.template.new' })}
+                    </Button>
+                </div>
                 <Table
                     rowKey="id"
                     loading={loading}
@@ -114,6 +176,53 @@ class SearchResult extends Component {
                     }}
                     onChange={this.onTableChange}
                 />
+                <Modal
+                    title={formatMessage({ id: 'esl.device.template.new' })}
+                    visible={newVisible}
+                    onOk={this.handleOkNew}
+                    onCancel={this.handleCancelNew}
+                >
+                    <Form {...formItemLayout}>
+                        <Form.Item label={formatMessage({ id: 'esl.device.template.name' })}>
+                            {getFieldDecorator('name', {
+                                rules: [{
+                                    required: true, message: formatMessage({ id: 'esl.device.template.name.require' }),
+                                }],
+                            })(
+                                <Input placeholder={formatMessage({ id: 'esl.device.template.name.require' })} />
+                            )}
+                        </Form.Item>
+                        <Form.Item label={formatMessage({ id: 'esl.device.template.size' })}>
+                            {getFieldDecorator('screen_type', {
+                                rules: [{
+                                    required: true, message: formatMessage({ id: 'esl.device.template.size.require' }),
+                                }],
+                            })(
+                                <Select
+                                    placeholder={formatMessage({ id: 'esl.device.template.size.require' })}
+                                    onChange={(type) => {fetchColors({ screen_type: type })}}
+                                >
+                                    {
+                                        screenTypes.map(type => <Option key={type.id} value={type.id}>{type.name}</Option>)
+                                    }
+                                </Select>
+                            )}
+                        </Form.Item>
+                        <Form.Item label={formatMessage({ id: 'esl.device.template.color' })}>
+                            {getFieldDecorator('colour', {
+                                rules: [{
+                                    required: true, message: formatMessage({ id: 'esl.device.template.color.require' }),
+                                }],
+                            })(
+                                <Select placeholder={formatMessage({ id: 'esl.device.template.color.require' })}>
+                                    {
+                                        colors.map(type => <Option key={type.id} value={type.id}>{type.name}</Option>)
+                                    }
+                                </Select>
+                            )}
+                        </Form.Item>
+                    </Form>
+                </Modal>
             </div>
         );
     }

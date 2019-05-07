@@ -82,8 +82,9 @@ export default {
     'esl.device.esl.push.fail': '推送失败',
 
     // 模板用
+    'esl.device.template.new': '新建模板',
     'esl.device.template.id': '模板ID',
-    'esl.device.template.name': '模板名',
+    'esl.device.template.name': '模板名称',
     'esl.device.template.size': '模板尺寸',
     'esl.device.template.color': '模板颜色',
     'esl.device.template.status': '模板状态',
@@ -96,4 +97,7 @@ export default {
     'esl.device.template.delete.confirm.content': '确认删除该模板吗？',
     'esl.device.template.delete.confirm.ok.text': '确认',
     'esl.device.template.delete.confirm.cancel.text': '取消',
+    'esl.device.template.name.require': '请输入模板名称',
+    'esl.device.template.size.require': '请选择模板尺寸',
+    'esl.device.template.color.require': '请选择模板颜色',
 };

@@ -10,6 +10,8 @@ export default {
     namespace: 'template',
     state: {
         loading: false,
+        screenTypes: [],
+        colors: [],
         data: [],
         searchFormValues: {
             keyword: '',
@@ -34,6 +36,55 @@ export default {
                     ...options,
                 },
             });
+        },
+        * fetchScreenTypes({ payload = {} }, { call, put }) {
+            const response = yield call(TemplateService.fetchScreenTypes, payload);
+            yield put({
+                type: 'updateState',
+                payload: {
+                    screenTypes: response.data.screen_type_list || [],
+                },
+            });
+        },
+        * fetchColors({ payload = {} }, { call, put }) {
+            const response = yield call(TemplateService.fetchColors, payload);
+            yield put({
+                type: 'updateState',
+                payload: {
+                    colors: response.data.colour_list || [],
+                },
+            });
+        },
+        * createTemplate({ payload = {} }, { call, put }) {
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(TemplateService.createTemplate, payload);
+            if (response && response.code === ERROR_OK) {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+                yield put({
+                    type: 'fetchTemplates',
+                    payload: {
+                        options: {
+                            screen_type: -1,
+                            colour: -1
+                        }
+                    }
+                });
+                message.success('新建模板成功');
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: true },
+                });
+                message.error('新建模板失败');
+            }
+            return response;
         },
         * fetchTemplates({ payload = {} }, { call, put, select }) {
             const { options = {} } = payload;
@@ -179,6 +230,15 @@ export default {
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
+                });
+                yield put({
+                    type: 'fetchTemplates',
+                    payload: {
+                        options: {
+                            screen_type: -1,
+                            colour: -1
+                        }
+                    }
                 });
                 message.success('删除成功');
             } else {

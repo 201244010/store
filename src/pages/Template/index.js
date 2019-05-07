@@ -8,6 +8,9 @@ import * as styles from './index.less';
         template: state.template,
     }),
     dispatch => ({
+        fetchScreenTypes: payload => dispatch({ type: 'template/fetchScreenTypes', payload }),
+        fetchColors: payload => dispatch({ type: 'template/fetchColors', payload }),
+        createTemplate: payload => dispatch({ type: 'template/createTemplate', payload }),
         fetchTemplates: payload => dispatch({ type: 'template/fetchTemplates', payload }),
         deleteTemplate: payload => dispatch({ type: 'template/deleteTemplate', payload })
     })
@@ -15,9 +18,11 @@ import * as styles from './index.less';
 class Template extends Component {
     componentDidMount() {
         const {
+            fetchScreenTypes,
             fetchTemplates,
         } = this.props;
 
+        fetchScreenTypes();
         fetchTemplates({
             options: {
                 current: 1,
@@ -29,9 +34,13 @@ class Template extends Component {
 
     render() {
         const {
+            fetchColors,
             fetchTemplates,
+            createTemplate,
             deleteTemplate,
             template: {
+                screenTypes,
+                colors,
                 loading,
                 data,
                 pagination
@@ -43,9 +52,13 @@ class Template extends Component {
                 <SearchResult
                     {
                         ...{
+                            screenTypes,
+                            colors,
                             loading,
                             data,
                             pagination,
+                            fetchColors,
+                            createTemplate,
                             fetchTemplates,
                             deleteTemplate
                         }

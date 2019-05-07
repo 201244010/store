@@ -2,6 +2,25 @@ import { customizeFetch } from '@/utils/fetch';
 
 const fetchApi = customizeFetch('esl/api/template');
 
+export const fetchScreenTypes = options => {
+    const opts = {
+        method: 'POST',
+        body: options,
+    };
+
+    return fetchApi('getScreenTypeList', opts).then(response => response.json());
+};
+
+export const fetchColors = options => {
+    const opts = {
+        method: 'POST',
+        body: options,
+    };
+
+    return fetchApi('getColourList', opts).then(response => response.json());
+};
+
+
 export const fetchTemplatesByESLCode = options => {
     const opts = {
         method: 'POST',
@@ -9,6 +28,15 @@ export const fetchTemplatesByESLCode = options => {
     };
 
     return fetchApi('getNameList', opts).then(response => response.json());
+};
+
+export const createTemplate = options => {
+    const opts = {
+        method: 'POST',
+        body: options,
+    };
+
+    return fetchApi('create', opts).then(response => response.json());
 };
 
 export const fetchTemplates = options => {
