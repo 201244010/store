@@ -275,12 +275,13 @@ class Studio extends Component {
     };
 
     handlePriceDblClick = (e) => {
-        const textPosition = e.target.getAbsolutePosition();
-        const stageBox = e.target.getStage().getContainer().getBoundingClientRect();
-        this.setState({
-            priceInputPosition: {
-                left: stageBox.left + textPosition.x,
-                top: stageBox.top + textPosition.y
+        const {updateComponentsDetail} = this.props;
+        const targetName = e.target.name();
+        this.createInput(e);
+        updateComponentsDetail({
+            selectedShapeName: targetName,
+            [targetName]: {
+                text: ''
             }
         });
     };

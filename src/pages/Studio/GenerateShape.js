@@ -187,8 +187,8 @@ export default function generateShape(option) {
                         <Image
                             {
                                 ...{
-                                    x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - SIZES.DEFAULT_IMAGE_WIDTH) / 2,
-                                    y: option.y + (SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT * option.scaleY * option.zoomScale - SIZES.DEFAULT_IMAGE_HEIGHT) / 2,
+                                    x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - SIZES.DEFAULT_IMAGE_WIDTH) * option.zoomScale / 2,
+                                    y: option.y + (SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT * option.scaleY - SIZES.DEFAULT_IMAGE_HEIGHT) * option.zoomScale  / 2,
                                     width: SIZES.DEFAULT_IMAGE_WIDTH * option.zoomScale,
                                     height: SIZES.DEFAULT_IMAGE_HEIGHT * option.zoomScale,
                                     image: option.image,
@@ -335,8 +335,8 @@ export default function generateShape(option) {
                         {
                             ...{
                                 name: option.name,
-                                x: option.x + 88,
-                                y: option.y + 7,
+                                x: option.x + 88 * option.zoomScale,
+                                y: option.y + 7 * option.zoomScale,
                                 text: '00',
                                 fontFamily: option.fontFamily,
                                 fontSize: 12 * option.zoomScale,
