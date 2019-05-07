@@ -1,9 +1,13 @@
-import { MAPS, SIZES } from '@/constants/studio';
+import { MAPS, SHAPE_TYPES, SIZES } from "@/constants/studio";
 import { filterObject } from '@/utils/utils';
 
 export default {
     namespace: 'studio',
     state: {
+        stage: {
+            width: 0,
+            height: 0
+        },
         selectedShapeName: '',
         componentsDetail: {},
         showRightToolBox: false,
@@ -112,6 +116,40 @@ export default {
                     ...componentsDetail
                 }
             };
+        },
+        zoomOutOrIn(state, action) {
+            const { stage: {width, height}, zoomScale: originZoomScale, componentsDetail } = state;
+            const { zoomScale, screenType } = action.payload;
+
+            const originFixRect = {};
+            Object.keys(componentsDetail).map(key => {
+                const componentDetail = componentsDetail[key];
+                if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
+                    originFixRect.x = componentDetail.x;
+                    originFixRect.y = componentDetail.y;
+                }
+            });
+            Object.keys(componentsDetail).map(key => {
+                const componentDetail = componentsDetail[key];
+                const fixRectWidth = MAPS.screen[screenType].width * zoomScale;
+                const fixRectHeight = MAPS.screen[screenType].height * zoomScale;
+                if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
+                    componentDetail.width = fixRectWidth;
+                    componentDetail.height = fixRectHeight;
+                    componentDetail.x = (width - fixRectWidth) / 2;
+                    componentDetail.y = (height - fixRectHeight) / 2;
+                } else {
+                    componentDetail.x = (width - fixRectWidth) / 2 + (componentDetail.x - originFixRect.x) * zoomScale / originZoomScale;
+                    componentDetail.y = (height - fixRectHeight) / 2 + (componentDetail.y - originFixRect.y) * zoomScale / originZoomScale;
+                }
+            });
+
+            return {
+                ...state,
+                selectedShapeName: '',
+                zoomScale,
+                componentsDetail
+            }
         }
     },
 };

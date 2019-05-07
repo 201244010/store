@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Icon } from 'antd';
 import * as styles from './index.less';
+import { getLocationParam } from "@/utils/utils";
 
 export default class ZoomIcon extends Component {
     handleZoom = (type) => {
-        const { zoomScale, updateState } = this.props;
+        const { zoomScale, zoomOutOrIn } = this.props;
         let realZoomScale = zoomScale + ( type === 'out' ? 0.1 : -0.1);
         if (realZoomScale > 3) {
             realZoomScale = 3;
@@ -12,8 +13,9 @@ export default class ZoomIcon extends Component {
             realZoomScale = 0.5
         }
 
-        updateState({
+        zoomOutOrIn({
             zoomScale: realZoomScale,
+            screenType: getLocationParam('screen'),
             selectedShapeName: ''
         });
     };

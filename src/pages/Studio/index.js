@@ -33,6 +33,8 @@ import * as styles from './index.less';
             dispatch({ type: 'studio/addComponent', payload }),
         updateState: payload =>
             dispatch({ type: 'studio/updateState', payload }),
+        zoomOutOrIn: payload =>
+            dispatch({ type: 'studio/zoomOutOrIn', payload }),
         saveAsDraft: payload =>
             dispatch({ type: 'template/saveAsDraft', payload }),
         fetchTemplateDetail: payload =>
@@ -66,6 +68,13 @@ class Studio extends Component {
         });
         const screenType = getLocationParam('screen');
         const { width, height, zoomScale } = MAPS.screen[screenType];
+        updateState({
+            zoomScale,
+            stage: {
+                width: stageWidth,
+                height: stageHeight
+            }
+        });
         if (response && response.code === ERROR_OK) {
             const studioInfo = JSON.parse(response.data.template_info.studio_info);
             if (!studioInfo.layers || !studioInfo.layers.length) {
@@ -84,9 +93,6 @@ class Studio extends Component {
                     scaleX: 1,
                     scaleY: 1,
                     rotation: 0
-                });
-                updateState({
-                    zoomScale
                 });
             }
         }
@@ -412,7 +418,7 @@ class Studio extends Component {
             state: { priceInputPosition: { left, top } },
             props: {
                 updateComponentsDetail, copySelectedComponent, deleteSelectedComponent, addComponent,
-                toggleRightToolBox, updateState,
+                toggleRightToolBox, zoomOutOrIn,
                 studio: {
                     selectedShapeName, componentsDetail, showRightToolBox,
                     rightToolBoxPos, copiedComponent, zoomScale
@@ -450,7 +456,7 @@ class Studio extends Component {
                                 templateInfo: curTemplate,
                                 zoomScale,
                                 saveAsDraft: this.handleSaveAsDraft,
-                                updateState
+                                zoomOutOrIn
                             }
                         }
                     />

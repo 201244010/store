@@ -20,7 +20,7 @@ class Template extends Component {
         fetchTemplates({
             options: {
                 current: 1,
-                'screen_type': -1,
+                screen_type: -1,
                 colour: -1
             },
         });
