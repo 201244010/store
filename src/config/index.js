@@ -1,4 +1,4 @@
-const env = process.env.UMI_ENV;
+export const env = process.env.UMI_ENV;
 
 const SSO_ADDRESS = {
     dev: 'test.api.sunmi.com',
