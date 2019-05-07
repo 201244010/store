@@ -39,6 +39,8 @@ import * as styles from './index.less';
             dispatch({ type: 'template/saveAsDraft', payload }),
         fetchTemplateDetail: payload =>
             dispatch({ type: 'template/fetchTemplateDetail', payload }),
+        renameTemplate: payload =>
+            dispatch({ type: 'template/renameTemplate', payload }),
         uploadImage: payload =>
             dispatch({ type: 'template/uploadImage', payload }),
     }),
@@ -418,7 +420,7 @@ class Studio extends Component {
             state: { priceInputPosition: { left, top } },
             props: {
                 updateComponentsDetail, copySelectedComponent, deleteSelectedComponent, addComponent,
-                toggleRightToolBox, zoomOutOrIn,
+                toggleRightToolBox, zoomOutOrIn, renameTemplate, fetchTemplateDetail,
                 studio: {
                     selectedShapeName, componentsDetail, showRightToolBox,
                     rightToolBoxPos, copiedComponent, zoomScale
@@ -456,7 +458,9 @@ class Studio extends Component {
                                 templateInfo: curTemplate,
                                 zoomScale,
                                 saveAsDraft: this.handleSaveAsDraft,
-                                zoomOutOrIn
+                                zoomOutOrIn,
+                                renameTemplate,
+                                fetchTemplateDetail
                             }
                         }
                     />

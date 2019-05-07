@@ -55,3 +55,12 @@ export const deleteTemplate = (options) => {
 
     return fetchApi('delete', opts).then(response => response.json());
 };
+
+export const renameTemplate = (options) => {
+    const opts = {
+        method: 'POST',
+        body: options
+    };
+
+    return fetchApi('rename', opts).then(response => response.json());
+};
