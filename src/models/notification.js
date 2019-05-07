@@ -64,7 +64,51 @@ export default {
             }
         },
 
-        // *getNotificationList(payload = {}, { put, call }) {},
+        *updateSearchValue(payload, { put }) {
+            const { modelId, statusCode } = payload;
+            yield put({
+                type: 'updateState',
+                payload: {
+                    searchFormValues: {
+                        modelId,
+                        statusCode,
+                    },
+                },
+            });
+        },
+
+        *getNotificationList(payload = {}, { put, call, select }) {
+            yield switchLoadingStatus(true, put);
+            const { pagination, searchFormValues } = yield select(state => state.notification);
+            const options = {
+                ...searchFormValues,
+                ...pagination,
+                ...payload,
+            };
+            const {
+                modelId: model_id,
+                statusCode: status_code,
+                pageNum: page_num,
+                pageSize: page_size,
+            } = options;
+            const response = yield call(Actions.handleNotifiCation, 'getMessageList', {
+                model_id,
+                status_code,
+                page_num,
+                page_size,
+            });
+            if (response && response.code === ERROR_OK) {
+                const { data = {} } = response;
+                const { msg_list = [] } = data;
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        notificationList: msg_list,
+                    },
+                });
+            }
+            yield switchLoadingStatus(true, put);
+        },
 
         *getNotificationCount(_, { put, call }) {
             yield switchLoadingStatus(true, put);
@@ -77,12 +121,10 @@ export default {
                     type: 'updateState',
                     payload: {
                         count: { total, unread },
-                        loading: false,
                     },
                 });
-            } else {
-                yield switchLoadingStatus(false, put);
             }
+            yield switchLoadingStatus(false, put);
         },
 
         *getNotificationInfo(payload = {}, { put, call }) {
@@ -122,21 +164,53 @@ export default {
                             receiveTime,
                             receiveStatus,
                         },
-                        loading: false,
                     },
                 });
-            } else {
-                yield switchLoadingStatus(false, put);
             }
+            yield switchLoadingStatus(false, put);
         },
 
-        // *createNotification(payload = {}, { put, call }) {
-        //     yield switchLoadingStatus(true, put);
-        // },
-        //
-        // *deleteNotification(payload = {}, { put, call }) {},
-        //
-        // *updateNotificationStatus(payload = {}, { put, call }) {},
+        *createNotification(payload = {}, { put, call }) {
+            yield switchLoadingStatus(true, put);
+            const { modelId: model_id, level, title, description, content } = payload;
+            const opts = {
+                model_id,
+                level,
+                title,
+                description,
+                content,
+            };
+            const response = yield call(Actions.handleNotifiCation, 'createMessage', opts);
+            if (response && response.code === ERROR_OK) {
+                // TODO 创建成功逻辑补充
+            }
+            yield switchLoadingStatus(false, put);
+        },
+
+        *deleteNotification(payload = {}, { put, call }) {
+            yield switchLoadingStatus(true, put);
+            const { msgIdList: msg_id_list } = payload;
+            const response = yield call(Actions.handleNotifiCation, 'deleteMessage', {
+                msg_id_list,
+            });
+            if (response && response.code === ERROR_OK) {
+                // TODO 删除成功逻辑补充
+            }
+            yield switchLoadingStatus(false, put);
+        },
+
+        *updateNotificationStatus(payload = {}, { put, call }) {
+            yield switchLoadingStatus(true, put);
+            const { msgIdList: msg_id_list, statusCode: status_code } = payload;
+            const response = yield call(Actions.handleNotifiCation, 'updateReceiveStatus', {
+                msg_id_list,
+                status_code,
+            });
+            if (response && response.code === ERROR_OK) {
+                // TODO 更新状态成功逻辑补充
+            }
+            yield switchLoadingStatus(false, put);
+        },
 
         *clearSearchValue(_, { put }) {
             yield put({
