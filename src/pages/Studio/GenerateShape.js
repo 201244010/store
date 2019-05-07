@@ -36,6 +36,35 @@ export default function generateShape(option) {
                 />
             );
             break;
+        case SHAPE_TYPES.RECT_FIX:
+            shape = (
+                <Rect
+                    {
+                        ...{
+                            name: option.name,
+                            x: option.x,
+                            y: option.y,
+                            width: MAPS.screen[option.screenType].width * option.zoomScale,
+                            height: MAPS.screen[option.screenType].height * option.zoomScale,
+                            scaleX: option.scaleX,
+                            scaleY: option.scaleY,
+                            fill: option.fill,
+                            stroke: option.strokeWidth ? option.stroke : 'rgba(0, 0, 0, 0)',
+                            strokeWidth: option.strokeWidth,
+                            cornerRadius: option.cornerRadius,
+                            strokeScaleEnabled: false,
+                            onTransform: option.onTransform,
+                            onMouseOver: () => {
+                                document.body.style.cursor = 'pointer';
+                            },
+                            onMouseOut: () => {
+                                document.body.style.cursor = 'default';
+                            }
+                        }
+                    }
+                />
+            );
+            break;
         case SHAPE_TYPES.TEXT:
             shape = (
                 <Group>

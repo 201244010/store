@@ -20,7 +20,7 @@ class SearchResult extends Component {
     };
 
     editDetail = (record) => {
-        window.open(`/studio?id=${record.id}`);
+        window.open(`/studio?id=${record.id}&screen=1`);
     };
 
     render() {

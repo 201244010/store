@@ -79,6 +79,20 @@ export default class MTransformer extends Component {
                 />
             );
         }
+        if ([SHAPE_TYPES.RECT_FIX].includes(type)) {
+            return (
+                <Transformer
+                    ref={node => {
+                        this.transformer = node;
+                    }}
+                    anchorSize={6}
+                    anchorCornerRadius={3}
+                    rotateAnchorOffset={20}
+                    rotateEnabled={false}
+                    enabledAnchors={[]}
+                />
+            );
+        }
         return (
             <Transformer
                 ref={node => {

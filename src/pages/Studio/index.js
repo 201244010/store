@@ -11,7 +11,8 @@ import PriceInput from './PriceInput';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
 import { getTypeByName, getNearLines } from '@/utils/studio';
-import { SIZES, SHAPE_TYPES } from '@/constants/studio';
+import { SIZES, SHAPE_TYPES, MAPS } from "@/constants/studio";
+import { ERROR_OK } from "@/constants/errorCode";
 import * as styles from './index.less';
 
 @connect(
@@ -53,11 +54,42 @@ class Studio extends Component {
         }
     }
 
-    componentDidMount() {
-        const { fetchTemplateDetail } = this.props;
-        fetchTemplateDetail({
+    async componentDidMount() {
+        const {
+            stageWidth, stageHeight,
+            props: {
+                fetchTemplateDetail, addComponent, updateState
+            }
+        } = this;
+        const response = await fetchTemplateDetail({
             template_id: getLocationParam('id'),
-        })
+        });
+        const screenType = getLocationParam('screen');
+        const { width, height, zoomScale } = MAPS.screen[screenType];
+        if (response && response.code === ERROR_OK) {
+            const studioInfo = JSON.parse(response.data.template_info.studio_info);
+            if (!studioInfo.layers || !studioInfo.layers.length) {
+                const type = SHAPE_TYPES.RECT_FIX;
+                addComponent({
+                    x: (stageWidth - width * zoomScale) / 2,
+                    y: (stageHeight - height * zoomScale) / 2,
+                    screenType,
+                    type,
+                    fill: '#fff',
+                    width,
+                    height,
+                    cornerRadius: MAPS.cornerRadius[type],
+                    strokeWidth: MAPS.strokeWidth[type],
+                    stroke: MAPS.stroke[type],
+                    scaleX: 1,
+                    scaleY: 1,
+                    rotation: 0
+                });
+                updateState({
+                    zoomScale
+                });
+            }
+        }
     }
 
     handleStageMouseDown = (e) => {

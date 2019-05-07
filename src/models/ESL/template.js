@@ -146,6 +146,7 @@ export default {
                     payload: { loading: false },
                 });
             }
+            return response;
         },
         *uploadImage({ payload = {} }, { call, put }) {
             yield put({

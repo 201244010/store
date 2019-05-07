@@ -1,5 +1,6 @@
 export const SHAPE_TYPES = {
     RECT: 'Rect',
+    RECT_FIX: 'Rect@Fix',
     CIRCLE: 'Circle',
     TRIANGLE: 'Triangle',
     TEXT: 'Text',
@@ -113,6 +114,13 @@ const textDecorationMap = {
     [SHAPE_TYPES.TEXT]: FORMATS.DEFAULT_TEXT_DECORATION,
     [SHAPE_TYPES.PRICE_NORMAL]: FORMATS.DEFAULT_TEXT_DECORATION,
 };
+const screenMap = {
+    1: {
+        width: 212,
+        height: 104,
+        zoomScale: 3
+    }
+};
 
 export const MAPS = {
     fill: fillMap,
@@ -129,5 +137,6 @@ export const MAPS = {
     fontSize: fontSizeMap,
     fontStyle: fontStyleMap,
     textBg: textBgMap,
-    textDecoration: textDecorationMap
+    textDecoration: textDecorationMap,
+    screen: screenMap
 };
