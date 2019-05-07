@@ -46,3 +46,12 @@ export const uploadImage = (options) => {
 
     return fetchApi('uploadImage', opts).then(response => response.json());
 };
+
+export const deleteTemplate = (options) => {
+    const opts = {
+        method: 'POST',
+        body: options
+    };
+
+    return fetchApi('delete', opts).then(response => response.json());
+};

@@ -169,6 +169,27 @@ export default {
             }
             return response;
         },
+        *deleteTemplate({ payload = {} }, { call, put }) {
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+            const response = yield call(TemplateService.deleteTemplate, payload);
+            if (response && response.code === ERROR_OK) {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+                message.success('删除成功');
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+                message.error('删除失败');
+            }
+            return response;
+        },
     },
     reducers: {
         updateState(state, action) {

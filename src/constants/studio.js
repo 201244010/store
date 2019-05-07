@@ -119,6 +119,16 @@ const screenMap = {
         width: 212,
         height: 104,
         zoomScale: 3
+    },
+    2: {
+        width: 296,
+        height: 152,
+        zoomScale: 2
+    },
+    3: {
+        width: 400,
+        height: 300,
+        zoomScale: 1.5
     }
 };
 

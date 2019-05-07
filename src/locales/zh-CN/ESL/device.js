@@ -92,4 +92,8 @@ export default {
     'esl.device.template.status.apply': '应用',
     'esl.device.template.is.default.yes': '是',
     'esl.device.template.is.default.no': '否',
+    'esl.device.template.delete.confirm.title': '删除',
+    'esl.device.template.delete.confirm.content': '确认删除该模板吗？',
+    'esl.device.template.delete.confirm.ok.text': '确认',
+    'esl.device.template.delete.confirm.cancel.text': '取消',
 };

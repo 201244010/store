@@ -8,7 +8,8 @@ import * as styles from './index.less';
         template: state.template,
     }),
     dispatch => ({
-        fetchTemplates: payload => dispatch({ type: 'template/fetchTemplates', payload })
+        fetchTemplates: payload => dispatch({ type: 'template/fetchTemplates', payload }),
+        deleteTemplate: payload => dispatch({ type: 'template/deleteTemplate', payload })
     })
 )
 class Template extends Component {
@@ -29,6 +30,7 @@ class Template extends Component {
     render() {
         const {
             fetchTemplates,
+            deleteTemplate,
             template: {
                 loading,
                 data,
@@ -44,7 +46,8 @@ class Template extends Component {
                             loading,
                             data,
                             pagination,
-                            fetchTemplates
+                            fetchTemplates,
+                            deleteTemplate
                         }
                     }
                 />

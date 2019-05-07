@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Switch } from "antd";
+import { Table, Switch, Divider, Modal } from "antd";
 import { formatMessage } from 'umi/locale';
 
 const TEMPLATE_STATES = {
@@ -20,7 +20,24 @@ class SearchResult extends Component {
     };
 
     editDetail = (record) => {
-        window.open(`/studio?id=${record.id}&screen=1`);
+        window.open(`/studio?id=${record.id}&screen=${record.screen_type}`);
+    };
+
+    deleteTemplate = (record) => {
+        const {deleteTemplate} = this.props;
+
+        Modal.confirm({
+            title: formatMessage({ id: 'esl.device.template.delete.confirm.title' }),
+            content: formatMessage({ id: 'esl.device.template.delete.confirm.content' }),
+            okText: formatMessage({ id: 'esl.device.template.delete.confirm.ok.text' }),
+            okType: 'danger',
+            cancelText: formatMessage({ id: 'esl.device.template.delete.confirm.cancel.text' }),
+            onOk() {
+                deleteTemplate({
+                    template_id_list: [record.id]
+                });
+            }
+        });
     };
 
     render() {
@@ -71,6 +88,10 @@ class SearchResult extends Component {
                     <span>
                         <a href="javascript: void (0);" onClick={() => this.editDetail(record)}>
                             {formatMessage({ id: 'list.action.edit' })}
+                        </a>
+                        <Divider type="vertical" />
+                        <a href="javascript: void (0);" onClick={() => this.deleteTemplate(record)}>
+                            {formatMessage({ id: 'list.action.delete' })}
                         </a>
                     </span>
                 ),
