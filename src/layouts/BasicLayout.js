@@ -64,21 +64,7 @@ class BasicLayout extends React.PureComponent {
     }
 
     componentDidMount() {
-        const {
-            authorityCheck,
-            dispatch,
-            route: { routes, authority },
-        } = this.props;
-
-        if (authorityCheck()) {
-            dispatch({
-                type: 'menu/getMenuData',
-                payload: { routes, authority },
-            });
-            dispatch({
-                type: 'user/getUserInfo',
-            });
-        }
+        this.dataInitial();
     }
 
     componentWillReceiveProps() {
@@ -89,16 +75,16 @@ class BasicLayout extends React.PureComponent {
         if (![`${MENU_PREFIX.STORE}/createStore`, '/account/center'].includes(pathname)) {
             this.checkStore();
         }
+
+        this.setState({
+            selectedStore: CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY),
+        });
     }
 
     componentDidUpdate(preProps) {
         // After changing to phone mode,
         // if collapsed is true, you need to click twice to display
         const { collapsed, isMobile } = this.props;
-        this.setState({
-            selectedStore: CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY),
-        });
-
         if (isMobile && !preProps.isMobile && !collapsed) {
             this.handleMenuCollapse(false);
         }
@@ -111,6 +97,23 @@ class BasicLayout extends React.PureComponent {
             breadcrumbNameMap,
         };
     }
+
+    dataInitial = async () => {
+        // TODO 等待 token 接口上线
+        const {
+            authorityCheck,
+            getUserInfo,
+            // getMqttToken,
+            getMenuData,
+            route: { routes, authority },
+        } = this.props;
+
+        if (authorityCheck()) {
+            getMenuData({ routes, authority });
+            getUserInfo();
+            // getMqttToken();
+        }
+    };
 
     matchParamsPath = (pathname, breadcrumbNameMap) => {
         const pathKey = Object.keys(breadcrumbNameMap).find(key =>
@@ -253,6 +256,9 @@ export default connect(
         ...setting,
     }),
     dispatch => ({
+        getUserInfo: () => dispatch({ type: 'user/getUserInfo' }),
+        getMqttToken: () => dispatch({ type: 'user/getMqttToken' }),
+        getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
         dispatch,
     })

@@ -15,6 +15,11 @@ export default {
         errorTimes: 0,
         list: [],
         currentUser: CookieUtil.getCookieByKey(CookieUtil.USER_INFO_KEY) || {},
+        mqttToken: {
+            username: null,
+            password: null,
+            serverAddress: null,
+        },
     },
 
     effects: {
@@ -147,6 +152,25 @@ export default {
         *checkUserExist({ payload }, { call }) {
             const { options } = payload;
             const response = yield call(Actions.checkUserExist, options);
+            return response;
+        },
+
+        *getMqttToken(_, { call, put }) {
+            const response = yield call(Actions.getMqttToken);
+            if (response && response.code === ERROR_OK) {
+                const { data = {} } = response;
+                const { username, password, server_address: serverAddress } = data;
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        mqttToken: {
+                            username,
+                            password,
+                            serverAddress,
+                        },
+                    },
+                });
+            }
             return response;
         },
     },
