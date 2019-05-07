@@ -127,9 +127,9 @@ const handleMessage = (data, opcode, errcode, messageType, deviceType, topic) =>
     });
 };
 
-export const registerMessageHandler = () => {
+export const registMessageHandler = () => {
     // 被model监听入口
-    console.log('registerMessageHandler');
+    console.log('regist message handler');
     if (client.on) {
         // 若init请求失败，则无法被初始化client
         client.on('message', (topic, message) => {
