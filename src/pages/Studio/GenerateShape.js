@@ -4,6 +4,16 @@ import {SHAPE_TYPES, SIZES, MAPS, LENGTH_MAP} from '@/constants/studio';
 
 export default function generateShape(option) {
     let shape;
+    const PRICE_FONT_SIZE = {
+        [SHAPE_TYPES.PRICE_NORMAL]: option.fontSize,
+        [SHAPE_TYPES.PRICE_SUPER]: 12,
+        [SHAPE_TYPES.PRICE_SUB]: 12,
+    };
+    const OFFSET_Y = {
+        [SHAPE_TYPES.PRICE_NORMAL]: 0,
+        [SHAPE_TYPES.PRICE_SUPER]: 3,
+        [SHAPE_TYPES.PRICE_SUB]: 7,
+    };
 
     switch (option.type) {
         case SHAPE_TYPES.RECT:
@@ -289,6 +299,8 @@ export default function generateShape(option) {
             }
             break;
         case SHAPE_TYPES.PRICE_NORMAL:
+        case SHAPE_TYPES.PRICE_SUPER:
+        case SHAPE_TYPES.PRICE_SUB:
             shape = (
                 <Group>
                     <Rect
@@ -344,10 +356,10 @@ export default function generateShape(option) {
                                         x: option.x,
                                         y: option.y,
                                         offsetX: - LENGTH_MAP[option.text.split('.')[0].length] * option.zoomScale,
-                                        offsetY: - 7 * option.zoomScale,
+                                        offsetY: - OFFSET_Y[option.type] * option.zoomScale,
                                         text: `${option.text.split('.')[1] || '00'}`,
                                         fontFamily: option.fontFamily,
-                                        fontSize: 12 * option.zoomScale,
+                                        fontSize: PRICE_FONT_SIZE[option.type] * option.zoomScale,
                                         fontStyle: option.fontStyle,
                                         textDecoration: option.textDecoration,
                                         fill: option.fill,

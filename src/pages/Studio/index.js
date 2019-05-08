@@ -7,7 +7,6 @@ import BoardHeader from './BoardHeader';
 import BoardTools from './BoardTools';
 import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
-import PriceInput from './PriceInput';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
 import { getTypeByName, getNearLines } from '@/utils/studio';
@@ -51,12 +50,6 @@ class Studio extends Component {
         super(props);
         this.stageWidth = window.innerWidth - SIZES.TOOL_BOX_WIDTH * 2;
         this.stageHeight = window.innerHeight - SIZES.HEADER_HEIGHT;
-        this.state = {
-            priceInputPosition: {
-                left: -9999,
-                top: -9999
-            }
-        }
     }
 
     async componentDidMount() {
@@ -106,12 +99,6 @@ class Studio extends Component {
 
         // 点击stage，取消选择正在编辑图形
         if (e.target === e.target.getStage()) {
-            this.setState({
-                priceInputPosition: {
-                    left: -9999,
-                    top: -9999
-                }
-            });
             if (selectedShapeName) {
                 this.updateSelectedShapeName('');
             }
@@ -136,7 +123,11 @@ class Studio extends Component {
         if (shape) {
             // 鼠标左键取消右侧工具框
             if (e.evt.button === 0) {
-                this.updateComponentsDetail(e.target, name);
+                const target =
+                    name.indexOf(SHAPE_TYPES.PRICE) !== -1 ?
+                        e.target.parent.children[0] :
+                        e.target;
+                this.updateComponentsDetail(target, name);
                 if (showRightToolBox) {
                     this.toggleRightToolBox({
                         showRightToolBox: false,
@@ -166,7 +157,7 @@ class Studio extends Component {
             this.handleTextDblClick(e, SHAPE_TYPES.TEXT);
         } else if (targetName.indexOf(SHAPE_TYPES.IMAGE) !== -1) {
             this.handleImageDblClick(e);
-        } else if (targetName.indexOf(SHAPE_TYPES.PRICE_NORMAL) !== -1) {
+        } else if (targetName.indexOf(SHAPE_TYPES.PRICE) !== -1) {
             this.handlePriceDblClick(e, SHAPE_TYPES.PRICE);
         }
     };
@@ -432,7 +423,6 @@ class Studio extends Component {
     render() {
         const {
             stageWidth, stageHeight,
-            state: { priceInputPosition: { left, top } },
             props: {
                 updateComponentsDetail, copySelectedComponent, deleteSelectedComponent, addComponent,
                 toggleRightToolBox, zoomOutOrIn, renameTemplate, fetchTemplateDetail,
@@ -460,12 +450,6 @@ class Studio extends Component {
         return (
             <div className={styles.board}>
                 <Spin tip="拼命加载中" spinning={false} />
-                <PriceInput
-                    className={styles["price-input"]}
-                    left={left}
-                    top={top}
-                    componentDetail={componentsDetail[selectedShapeName]}
-                />
                 <div className={styles["board-header"]}>
                     <BoardHeader
                         {

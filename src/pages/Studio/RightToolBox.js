@@ -30,6 +30,10 @@ export default class RightToolBox extends Component {
         if (this.hasSubString(SHAPE_TYPES.IMAGE)) {
             menuMap.isImage = true;
         }
+        if (this.hasSubString(SHAPE_TYPES.PRICE)) {
+            menuMap.hasBindData = true;
+            menuMap.isPrice = true;
+        }
 
         return menuMap;
     };
@@ -381,6 +385,194 @@ export default class RightToolBox extends Component {
                                         <Radio.Button style={{width: '33.33%'}} value="black">黑</Radio.Button>
                                         <Radio.Button style={{width: '33.33%'}} value="white">白</Radio.Button>
                                         <Radio.Button style={{width: '33.33%'}} value="red">红</Radio.Button>
+                                    </Radio.Group>
+                                </Col>
+                            </Row>
+                        </div> :
+                        null
+                }
+                {
+                    menuMap.isPrice ?
+                        <div className={styles["tool-box-block"]}>
+                            <h4>样式</h4>
+                            <Row style={{marginBottom: 10}}>
+                                <Col span={24}>
+                                    <Input
+                                        placeholder="价格"
+                                        value={detail.text}
+                                        onChange={(e) => {this.handleDetail('text', e.target.value)}}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row style={{marginBottom: 10}}>
+                                <Col span={4}>
+                                    <span className={styles.title}>字体</span>
+                                </Col>
+                                <Col span={20}>
+                                    <Select
+                                        style={{width: '100%'}}
+                                        value={detail.fontFamily}
+                                        onChange={(value) => {this.handleDetail('fontFamily', value)}}
+                                    >
+                                        <Select.Option value="Zfull-GB">Zfull-GB</Select.Option>
+                                        <Select.Option value="Arial">Arial</Select.Option>
+                                    </Select>
+                                </Col>
+                            </Row>
+                            <Row style={{marginBottom: 10}} gutter={10}>
+                                <Col span={12}>
+                                    <Row>
+                                        <Col span={24}>
+                                            <span className={styles.title}>整数字号</span>
+                                        </Col>
+                                        <Col span={24}>
+                                            <InputNumber
+                                                style={{width: '100%'}}
+                                                placeholder="字号"
+                                                value={detail.fontSize}
+                                                onChange={(value) => {this.handleDetail('fontSize', value)}}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col span={12}>
+                                    <Row>
+                                        <Col span={24}>
+                                            <span className={styles.title}>小数字号</span>
+                                        </Col>
+                                        <Col span={24}>
+                                            <InputNumber
+                                                style={{width: '100%'}}
+                                                placeholder="间距"
+                                                value={detail.letterSpacing}
+                                                onChange={(value) => {this.handleDetail('letterSpacing', value)}}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                            <Row style={{marginBottom: 10}} gutter={20}>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'bold' ? `${styles.active}` : ''}`}>
+                                    <Icon
+                                        type="bold"
+                                        onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'bold' ? 'normal' : 'bold')}}
+                                    />
+                                </Col>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'italic' ? `${styles.active}` : ''}`}>
+                                    <Icon
+                                        type="italic"
+                                        onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'italic' ? 'normal' : 'italic')}}
+                                    />
+                                </Col>
+                                <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
+                                    <Icon
+                                        type="underline"
+                                        onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'underline' ? 'normal' : 'underline')}}
+                                    />
+                                </Col>
+                                <Col span={6} className={`formatter ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
+                                    <Icon
+                                        type="strikethrough"
+                                        onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'line-through' ? 'normal' : 'line-through')}}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row style={{marginBottom: 10}} gutter={20}>
+                                <Col span={24}>
+                                    字体颜色
+                                </Col>
+                                <Col span={24}>
+                                    <Radio.Group
+                                        style={{width: '100%'}}
+                                        value={detail.fill}
+                                        onChange={(e) => {this.handleDetail('fill', e.target.value)}}
+                                    >
+                                        <Radio.Button style={{width: '33.33%'}} value="black">黑</Radio.Button>
+                                        <Radio.Button style={{width: '33.33%'}} value="white">白</Radio.Button>
+                                        <Radio.Button style={{width: '33.33%'}} value="red">红</Radio.Button>
+                                    </Radio.Group>
+                                </Col>
+                            </Row>
+                            <Row style={{marginBottom: 10}} gutter={20}>
+                                <Col span={24}>
+                                    背景颜色
+                                </Col>
+                                <Col span={24}>
+                                    <Radio.Group
+                                        style={{width: '100%'}}
+                                        value={detail.textBg}
+                                        onChange={(e) => {this.handleDetail('textBg', e.target.value)}}
+                                    >
+                                        <Radio.Button style={{width: '25%'}} value="opacity">透</Radio.Button>
+                                        <Radio.Button style={{width: '25%'}} value="black">黑</Radio.Button>
+                                        <Radio.Button style={{width: '25%'}} value="white">白</Radio.Button>
+                                        <Radio.Button style={{width: '25%'}} value="red">红</Radio.Button>
+                                    </Radio.Group>
+                                </Col>
+                            </Row>
+                            <Row style={{marginBottom: 10}} gutter={20}>
+                                <Col span={24}>
+                                    小数显示类型
+                                </Col>
+                                <Col span={24}>
+                                    <Radio.Group
+                                        style={{width: '100%'}}
+                                        value={detail.align}
+                                        onChange={(e) => {this.handleDetail('align', e.target.value)}}
+                                    >
+                                        <Radio.Button style={{width: '33.33%'}} value="PRICE_NORMAL">
+                                            <span style={{fontSize: 16}}>99.00</span>
+                                        </Radio.Button>
+                                        <Radio.Button style={{width: '33.33%'}} value="PRICE_SUPER">
+                                            <span style={{fontSize: 16}}>99.<sup>00</sup></span>
+                                        </Radio.Button>
+                                        <Radio.Button style={{width: '33.33%'}} value="PRICE_SUB">
+                                            <span style={{fontSize: 16}}>99.<sub>00</sub></span>
+                                        </Radio.Button>
+                                    </Radio.Group>
+                                </Col>
+                            </Row>
+                            <Row style={{marginBottom: 10}} gutter={20}>
+                                <Col span={24}>
+                                    小数位数
+                                </Col>
+                                <Col span={24}>
+                                    <Radio.Group
+                                        style={{width: '100%'}}
+                                        value={detail.align}
+                                        onChange={(e) => {this.handleDetail('align', e.target.value)}}
+                                    >
+                                        <Radio.Button style={{width: '33.33%'}} value={0}>
+                                            0
+                                        </Radio.Button>
+                                        <Radio.Button style={{width: '33.33%'}} value={1}>
+                                            1
+                                        </Radio.Button>
+                                        <Radio.Button style={{width: '33.33%'}} value={2}>
+                                            2
+                                        </Radio.Button>
+                                    </Radio.Group>
+                                </Col>
+                            </Row>
+                            <Row style={{marginBottom: 10}} gutter={20}>
+                                <Col span={24}>
+                                    对齐
+                                </Col>
+                                <Col span={24}>
+                                    <Radio.Group
+                                        style={{width: '100%'}}
+                                        value={detail.align}
+                                        onChange={(e) => {this.handleDetail('align', e.target.value)}}
+                                    >
+                                        <Radio.Button style={{width: '33.33%'}} value="left">
+                                            <Icon type="align-left" />
+                                        </Radio.Button>
+                                        <Radio.Button style={{width: '33.33%'}} value="center">
+                                            <Icon type="align-center" />
+                                        </Radio.Button>
+                                        <Radio.Button style={{width: '33.33%'}} value="right">
+                                            <Icon type="align-right" />
+                                        </Radio.Button>
                                     </Radio.Group>
                                 </Col>
                             </Row>

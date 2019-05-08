@@ -3,7 +3,9 @@ import {SIZES, SHAPE_TYPES, MAPS} from '@/constants/studio';
 
 const textMap = {
     [SHAPE_TYPES.TEXT]: '双击编辑文本',
-    [SHAPE_TYPES.PRICE_NORMAL]: '99.00'
+    [SHAPE_TYPES.PRICE_NORMAL]: '99.00',
+    [SHAPE_TYPES.PRICE_SUPER]: '99.00',
+    [SHAPE_TYPES.PRICE_SUB]: '99.00',
 };
 
 export default class ToolItem extends Component {
