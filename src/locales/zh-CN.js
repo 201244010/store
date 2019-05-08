@@ -26,7 +26,7 @@ export default {
     'layout.user.link.privacy': '隐私',
     'layout.user.link.terms': '条款',
     'app.home.introduce': '介绍',
-    'layout.user.footer': '2019 上海商米科技有限公司',
+    'layout.user.footer': '2019 上海商米科技有限公司 版权所有 沪ICP备16006543',
     ...globalHeader,
     ...common,
     ...menu,

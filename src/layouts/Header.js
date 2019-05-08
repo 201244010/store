@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import GlobalHeader from '@/components/GlobalHeader';
 import TopNavHeader from '@/components/TopNavHeader';
+import * as CookieUtil from '@/utils/cookies';
 import styles from './Header.less';
 
 const { Header } = Layout;
@@ -27,7 +28,10 @@ class HeaderView extends PureComponent {
     componentDidMount() {
         const { getStoreList } = this.props;
         document.addEventListener('scroll', this.handScroll, { passive: true });
-        getStoreList({});
+        const token = CookieUtil.getCookieByKey(CookieUtil.TOKEN_KEY);
+        if (token) {
+            getStoreList({});
+        }
     }
 
     componentWillUnmount() {

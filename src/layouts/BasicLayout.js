@@ -65,16 +65,20 @@ class BasicLayout extends React.PureComponent {
 
     componentDidMount() {
         const {
+            authorityCheck,
             dispatch,
             route: { routes, authority },
         } = this.props;
-        dispatch({
-            type: 'menu/getMenuData',
-            payload: { routes, authority },
-        });
-        dispatch({
-            type: 'user/getUserInfo',
-        });
+
+        if (authorityCheck()) {
+            dispatch({
+                type: 'menu/getMenuData',
+                payload: { routes, authority },
+            });
+            dispatch({
+                type: 'user/getUserInfo',
+            });
+        }
     }
 
     componentWillReceiveProps() {
