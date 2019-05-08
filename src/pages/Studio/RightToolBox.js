@@ -3,6 +3,8 @@ import {Col, Icon, Input, Row, Switch, Select, Radio, Slider, InputNumber} from 
 import {SHAPE_TYPES, SIZES} from '@/constants/studio';
 import * as styles from './index.less';
 
+const { Option } = Select;
+
 export default class RightToolBox extends Component {
     handleDetail = (key, value) => {
         const {
@@ -59,7 +61,7 @@ export default class RightToolBox extends Component {
     };
 
     render() {
-        const {componentsDetail, selectedShapeName} = this.props;
+        const {bindFields, componentsDetail, selectedShapeName} = this.props;
         const menuMap = this.getMenuMap();
         const detail = componentsDetail[selectedShapeName];
 
@@ -69,10 +71,15 @@ export default class RightToolBox extends Component {
                     menuMap.hasBindData ?
                         <div className={styles["tool-box-block"]}>
                             <h4>绑定数据</h4>
-                            <Select defaultValue="price" style={{width: 220}}>
-                                <Select.Option value="price">价格</Select.Option>
-                                <Select.Option value="size">大小</Select.Option>
-                                <Select.Option value="place">产地</Select.Option>
+                            <Select
+                                placeholder="请选择绑定的字段"
+                                value={detail.bindField}
+                                style={{width: 220}}
+                                onChange={(value) => {this.handleDetail('bindField', value)}}
+                            >
+                                {
+                                    bindFields.map(field => <Option key={field} value={field}>{field}</Option>)
+                                }
                             </Select>
                         </div> :
                         null
@@ -226,8 +233,8 @@ export default class RightToolBox extends Component {
                                         value={detail.fontFamily}
                                         onChange={(value) => {this.handleDetail('fontFamily', value)}}
                                     >
-                                        <Select.Option value="Zfull-GB">Zfull-GB</Select.Option>
-                                        <Select.Option value="Arial">Arial</Select.Option>
+                                        <Option value="Zfull-GB">Zfull-GB</Option>
+                                        <Option value="Arial">Arial</Option>
                                     </Select>
                                 </Col>
                             </Row>
@@ -429,8 +436,8 @@ export default class RightToolBox extends Component {
                                         value={detail.fontFamily}
                                         onChange={(value) => {this.handleDetail('fontFamily', value)}}
                                     >
-                                        <Select.Option value="Zfull-GB">Zfull-GB</Select.Option>
-                                        <Select.Option value="Arial">Arial</Select.Option>
+                                        <Option value="Zfull-GB">Zfull-GB</Option>
+                                        <Option value="Arial">Arial</Option>
                                     </Select>
                                 </Col>
                             </Row>

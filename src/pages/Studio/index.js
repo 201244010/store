@@ -35,6 +35,8 @@ import * as styles from './index.less';
             dispatch({ type: 'studio/updateState', payload }),
         zoomOutOrIn: payload =>
             dispatch({ type: 'studio/zoomOutOrIn', payload }),
+        fetchBindFields: payload =>
+            dispatch({ type: 'template/fetchBindFields', payload }),
         saveAsDraft: payload =>
             dispatch({ type: 'template/saveAsDraft', payload }),
         fetchTemplateDetail: payload =>
@@ -56,9 +58,10 @@ class Studio extends Component {
         const {
             stageWidth, stageHeight,
             props: {
-                fetchTemplateDetail, addComponent, updateState
+                fetchTemplateDetail, addComponent, fetchBindFields, updateState
             }
         } = this;
+        fetchBindFields();
         const response = await fetchTemplateDetail({
             template_id: getLocationParam('id'),
         });
@@ -431,7 +434,7 @@ class Studio extends Component {
                     selectedShapeName, componentsDetail, showRightToolBox,
                     rightToolBoxPos, copiedComponent, zoomScale
                 },
-                template: { curTemplate }
+                template: { bindFields, curTemplate }
             }
         } = this;
 
@@ -522,6 +525,7 @@ class Studio extends Component {
                                 <RightToolBox
                                     {
                                         ...{
+                                            bindFields,
                                             selectedShapeName,
                                             componentsDetail,
                                             updateComponentsDetail,

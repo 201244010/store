@@ -12,6 +12,7 @@ export default {
         loading: false,
         screenTypes: [],
         colors: [],
+        bindFields: [],
         data: [],
         searchFormValues: {
             keyword: '',
@@ -43,6 +44,15 @@ export default {
                 type: 'updateState',
                 payload: {
                     screenTypes: response.data.screen_type_list || [],
+                },
+            });
+        },
+        * fetchBindFields({ payload = {} }, { call, put }) {
+            const response = yield call(TemplateService.fetchBindFields, payload);
+            yield put({
+                type: 'updateState',
+                payload: {
+                    bindFields: response.data.bindable_product_field_list || [],
                 },
             });
         },

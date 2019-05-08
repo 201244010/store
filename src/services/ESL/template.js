@@ -20,6 +20,15 @@ export const fetchColors = options => {
     return fetchApi('getColourList', opts).then(response => response.json());
 };
 
+export const fetchBindFields = options => {
+    const opts = {
+        method: 'POST',
+        body: options,
+    };
+
+    return fetchApi('getBindableProductFieldList', opts).then(response => response.json());
+};
+
 
 export const fetchTemplatesByESLCode = options => {
     const opts = {
