@@ -35,10 +35,10 @@ const SDNM = props => {
                 })(
                     <Input
                         onBlur={() =>
-                            checkSaasInfo(
-                                'saas_info.secret',
-                                formatMessage({ id: 'basicData.erp.sdnm.key.error' })
-                            )
+                            checkSaasInfo('saas_info.secret', {
+                                5020: formatMessage({ id: 'basicData.erp.sdnm.key.existed' }),
+                                default: formatMessage({ id: 'basicData.erp.sdnm.key.error' }),
+                            })
                         }
                     />
                 )}
@@ -86,10 +86,9 @@ const KWYLS = props => {
                     <Input
                         type="password"
                         onBlur={() =>
-                            checkSaasInfo(
-                                'saas_info.store_password',
-                                formatMessage({ id: 'basicData.erp.kwyls.key.error' })
-                            )
+                            checkSaasInfo('saas_info.store_password', {
+                                default: formatMessage({ id: 'basicData.erp.kwyls.key.error' }),
+                            })
                         }
                     />
                 )}
@@ -144,8 +143,9 @@ class ERPImport extends Component {
                     },
                 });
                 if (response && response.code !== ERROR_OK) {
+                    const msg = errMsg[`${response.code}`] || errMsg.default;
                     setFields({
-                        [field]: { value: getFieldValue(field), errors: [new Error(errMsg)] },
+                        [field]: { value: getFieldValue(field), errors: [new Error(msg)] },
                     });
                 }
             }
