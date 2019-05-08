@@ -443,7 +443,7 @@ export default class RightToolBox extends Component {
                                         <Col span={24}>
                                             <InputNumber
                                                 style={{width: '100%'}}
-                                                placeholder="字号"
+                                                placeholder="整数字号"
                                                 value={detail.fontSize}
                                                 onChange={(value) => {this.handleDetail('fontSize', value)}}
                                             />
@@ -458,9 +458,9 @@ export default class RightToolBox extends Component {
                                         <Col span={24}>
                                             <InputNumber
                                                 style={{width: '100%'}}
-                                                placeholder="间距"
-                                                value={detail.letterSpacing}
-                                                onChange={(value) => {this.handleDetail('letterSpacing', value)}}
+                                                placeholder="小数字号"
+                                                value={detail.smallFontSize}
+                                                onChange={(value) => {this.handleDetail('smallFontSize', value)}}
                                             />
                                         </Col>
                                     </Row>

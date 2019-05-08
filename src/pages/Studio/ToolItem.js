@@ -69,6 +69,7 @@ export default class ToolItem extends Component {
                             width: MAPS.width[type],
                             cornerRadius: MAPS.cornerRadius[type],
                             fontSize: MAPS.fontSize[type],
+                            smallFontSize: MAPS.smallFontSize[type],
                             fontStyle: MAPS.fontStyle[type],
                             textDecoration: MAPS.textDecoration[type],
                             strokeWidth: MAPS.strokeWidth[type],
