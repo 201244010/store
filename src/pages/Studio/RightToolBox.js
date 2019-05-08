@@ -23,7 +23,7 @@ export default class RightToolBox extends Component {
             deleteSelectedComponent(selectedShapeName);
             addComponent({
                 ...detail,
-                type: value,
+                type: `${value}@${detail.type.split('@')[2] || ''}`,
                 name: newName
             });
         }
@@ -532,7 +532,7 @@ export default class RightToolBox extends Component {
                                 <Col span={24}>
                                     <Radio.Group
                                         style={{width: '100%'}}
-                                        value={detail.type}
+                                        value={`${detail.type.split('@')[0]}@${detail.type.split('@')[1]}`}
                                         onChange={(e) => {this.handleDetail('type', e.target.value)}}
                                     >
                                         <Radio.Button style={{width: '33.33%'}} value="PRICE@NORMAL">

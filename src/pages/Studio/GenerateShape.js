@@ -5,14 +5,20 @@ import {SHAPE_TYPES, SIZES, MAPS, LENGTH_MAP} from '@/constants/studio';
 export default function generateShape(option) {
     let shape;
     const PRICE_FONT_SIZE = {
-        [SHAPE_TYPES.PRICE_NORMAL]: option.fontSize,
-        [SHAPE_TYPES.PRICE_SUPER]: 12,
-        [SHAPE_TYPES.PRICE_SUB]: 12,
+        [SHAPE_TYPES.PRICE_NORMAL_WHITE]: option.fontSize,
+        [SHAPE_TYPES.PRICE_SUPER_WHITE]: 12,
+        [SHAPE_TYPES.PRICE_SUB_WHITE]: 12,
+        [SHAPE_TYPES.PRICE_NORMAL_BLACK]: option.fontSize,
+        [SHAPE_TYPES.PRICE_SUPER_BLACK]: 12,
+        [SHAPE_TYPES.PRICE_SUB_BLACK]: 12,
     };
     const OFFSET_Y = {
-        [SHAPE_TYPES.PRICE_NORMAL]: 0,
-        [SHAPE_TYPES.PRICE_SUPER]: 3,
-        [SHAPE_TYPES.PRICE_SUB]: 7,
+        [SHAPE_TYPES.PRICE_NORMAL_WHITE]: 0,
+        [SHAPE_TYPES.PRICE_SUPER_WHITE]: 1,
+        [SHAPE_TYPES.PRICE_SUB_WHITE]: 5,
+        [SHAPE_TYPES.PRICE_NORMAL_BLACK]: 0,
+        [SHAPE_TYPES.PRICE_SUPER_BLACK]: 1,
+        [SHAPE_TYPES.PRICE_SUB_BLACK]: 5,
     };
 
     switch (option.type) {
@@ -298,9 +304,12 @@ export default function generateShape(option) {
                 );
             }
             break;
-        case SHAPE_TYPES.PRICE_NORMAL:
-        case SHAPE_TYPES.PRICE_SUPER:
-        case SHAPE_TYPES.PRICE_SUB:
+        case SHAPE_TYPES.PRICE_NORMAL_WHITE:
+        case SHAPE_TYPES.PRICE_SUPER_WHITE:
+        case SHAPE_TYPES.PRICE_SUB_WHITE:
+        case SHAPE_TYPES.PRICE_NORMAL_BLACK:
+        case SHAPE_TYPES.PRICE_SUPER_BLACK:
+        case SHAPE_TYPES.PRICE_SUB_BLACK:
             shape = (
                 <Group>
                     <Rect
