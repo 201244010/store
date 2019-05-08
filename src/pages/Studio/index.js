@@ -523,7 +523,9 @@ class Studio extends Component {
                                         ...{
                                             selectedShapeName,
                                             componentsDetail,
-                                            updateComponentsDetail
+                                            updateComponentsDetail,
+                                            deleteSelectedComponent,
+                                            addComponent
                                         }
                                     }
                                 />

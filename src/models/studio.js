@@ -25,20 +25,25 @@ export default {
                 ...action.payload,
             };
         },
-        addComponent(state, action) {
+        addComponent(state, action) { // name为组件名，若被原始定义，则用，否则，则生成
             const { componentsDetail } = state;
-            const { x, y, type } = action.payload;
+            const { x, y, type, name: preName } = action.payload;
             let maxIndex = 0;
+            let name = preName;
 
-            Object.keys(componentsDetail).forEach(name => {
-                const index = parseInt(name.replace(/[^0-9]/ig, ''), 10);
-                if (index >= maxIndex) {
-                    maxIndex = index;
-                }
-            });
-            const name = `${type}${maxIndex + 1}`;
+            if (!name) {
+                Object.keys(componentsDetail).forEach(key => {
+                    const index = parseInt(key.replace(/[^0-9]/ig, ''), 10);
+                    if (index >= maxIndex) {
+                        maxIndex = index;
+                    }
+                });
+                name = `${type}${maxIndex + 1}`;
+            }
+
             return {
                 ...state,
+                selectedShapeName: name,
                 componentsDetail: {
                     ...state.componentsDetail,
                     [name]: {
@@ -48,9 +53,9 @@ export default {
                         height: MAPS.height[type],
                         lines: [
                             [x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
-                            [x + MAPS.width[type], 0, x + MAPS.width[type], SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+                            [x + MAPS.width[type] * state.zoomScale, 0, x + MAPS.width[type] * state.zoomScale, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
                             [0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
-                            [0, y + MAPS.height[type], SIZES.DEFAULT_MAX_CANVAS_LENGTH, y + MAPS.height[type]]
+                            [0, y + MAPS.height[type] * state.zoomScale, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y + MAPS.height[type] * state.zoomScale]
                         ]
                     }
                 }

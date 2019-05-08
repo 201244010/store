@@ -5,13 +5,28 @@ import * as styles from './index.less';
 
 export default class RightToolBox extends Component {
     handleDetail = (key, value) => {
-        const {selectedShapeName, updateComponentsDetail} = this.props;
+        const {
+            componentsDetail, selectedShapeName, updateComponentsDetail, deleteSelectedComponent,
+            addComponent
+        } = this.props;
 
-        updateComponentsDetail({
-            [selectedShapeName]: {
-                [key]:  value
-            }
-        });
+        if (key !== 'type') {
+            updateComponentsDetail({
+                [selectedShapeName]: {
+                    [key]: value
+                }
+            });
+        } else {
+            const detail = componentsDetail[selectedShapeName];
+            const oldNameIndex = detail.name.replace(/[^0-9]/ig, '');
+            const newName = `${value}${oldNameIndex}`;
+            deleteSelectedComponent(selectedShapeName);
+            addComponent({
+                ...detail,
+                type: value,
+                name: newName
+            });
+        }
     };
 
     getMenuMap = () => {
@@ -260,7 +275,7 @@ export default class RightToolBox extends Component {
                                         onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'underline' ? 'normal' : 'underline')}}
                                     />
                                 </Col>
-                                <Col span={6} className={`formatter ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
+                                <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="strikethrough"
                                         onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'line-through' ? 'normal' : 'line-through')}}
@@ -470,7 +485,7 @@ export default class RightToolBox extends Component {
                                         onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'underline' ? 'normal' : 'underline')}}
                                     />
                                 </Col>
-                                <Col span={6} className={`formatter ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
+                                <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="strikethrough"
                                         onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'line-through' ? 'normal' : 'line-through')}}
@@ -517,16 +532,16 @@ export default class RightToolBox extends Component {
                                 <Col span={24}>
                                     <Radio.Group
                                         style={{width: '100%'}}
-                                        value={detail.align}
-                                        onChange={(e) => {this.handleDetail('align', e.target.value)}}
+                                        value={detail.type}
+                                        onChange={(e) => {this.handleDetail('type', e.target.value)}}
                                     >
-                                        <Radio.Button style={{width: '33.33%'}} value="PRICE_NORMAL">
+                                        <Radio.Button style={{width: '33.33%'}} value="PRICE@NORMAL">
                                             <span style={{fontSize: 16}}>99.00</span>
                                         </Radio.Button>
-                                        <Radio.Button style={{width: '33.33%'}} value="PRICE_SUPER">
+                                        <Radio.Button style={{width: '33.33%'}} value="PRICE@SUPER">
                                             <span style={{fontSize: 16}}>99.<sup>00</sup></span>
                                         </Radio.Button>
-                                        <Radio.Button style={{width: '33.33%'}} value="PRICE_SUB">
+                                        <Radio.Button style={{width: '33.33%'}} value="PRICE@SUB">
                                             <span style={{fontSize: 16}}>99.<sub>00</sub></span>
                                         </Radio.Button>
                                     </Radio.Group>
