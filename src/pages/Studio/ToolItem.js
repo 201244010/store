@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {SIZES, SHAPE_TYPES, MAPS} from '@/constants/studio';
+import {SIZES, SHAPE_TYPES, IMAGE_TYPES, MAPS} from '@/constants/studio';
 
 const textMap = {
     [SHAPE_TYPES.TEXT]: '双击编辑文本',
@@ -47,7 +47,7 @@ export default class ToolItem extends Component {
                     const x = this.newLeft - SIZES.TOOL_BOX_WIDTH;
                     const y = this.newTop;
 
-                    if (type === SHAPE_TYPES.IMAGE) {
+                    if (IMAGE_TYPES.includes(type)) {
                         const image = new Image();
                         image.onload = () => {
                             addComponent({
@@ -58,7 +58,7 @@ export default class ToolItem extends Component {
                                 imageType: 'default'
                             });
                         };
-                        image.src = require('@/assets/studio/image.svg');
+                        image.src = MAPS.imageUrl[type];
                     } else {
                         addComponent({
                             x,

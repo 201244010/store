@@ -4,7 +4,7 @@ import { getImagePromise } from "@/utils/studio";
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from "@/constants";
 import * as TemplateService from '@/services/ESL/template';
 import { ERROR_OK } from '@/constants/errorCode';
-import { SHAPE_TYPES } from '@/constants/studio';
+import { SHAPE_TYPES, IMAGE_TYPES } from '@/constants/studio';
 
 export default {
     namespace: 'template',
@@ -185,7 +185,7 @@ export default {
 
                 if (hasImage) {
                     (yield Promise.all(layers.map(layer => {
-                        if (layer.type === SHAPE_TYPES.IMAGE) {
+                        if (IMAGE_TYPES.includes(layer.type)) {
                             return getImagePromise(layer)
                         }
                         return undefined;

@@ -1,4 +1,4 @@
-import { SHAPE_TYPES } from '@/constants/studio';
+import { SHAPE_TYPES, MAPS } from '@/constants/studio';
 
 const NEAR_GAP = 10;
 
@@ -60,5 +60,5 @@ export const getImagePromise = (componentDetail) =>
         image.onerror = (error) => {
             reject(error);
         };
-        image.src = componentDetail.imageUrl || require('@/assets/studio/image.svg');
+        image.src = componentDetail.imageUrl || MAPS.imageUrl[componentDetail.type];
     });

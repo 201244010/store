@@ -17,7 +17,7 @@ export default function BoardTools(props) {
                     addComponent={addComponent}
                 >
                     <Fragment>
-                        <img src={require("@/assets/studio/rect.svg")} alt="" />
+                        <img src={require("@/assets/studio/rect.svg")} />
                         <span>矩形</span>
                     </Fragment>
                 </ToolItem>
@@ -28,7 +28,7 @@ export default function BoardTools(props) {
                     addComponent={addComponent}
                 >
                     <Fragment>
-                        <img src={require("@/assets/studio/text.svg")} alt="" />
+                        <img src={require("@/assets/studio/text.svg")} />
                         <span>文本</span>
                     </Fragment>
                 </ToolItem>
@@ -39,7 +39,7 @@ export default function BoardTools(props) {
                     addComponent={addComponent}
                 >
                     <Fragment>
-                        <img src={require("@/assets/studio/hLine.svg")} alt="" />
+                        <img src={require("@/assets/studio/hLine.svg")} />
                         <span>横向直线</span>
                     </Fragment>
                 </ToolItem>
@@ -50,7 +50,7 @@ export default function BoardTools(props) {
                     addComponent={addComponent}
                 >
                     <Fragment>
-                        <img src={require("@/assets/studio/vLine.svg")} alt="" />
+                        <img src={require("@/assets/studio/vLine.svg")} />
                         <span>竖向直线</span>
                     </Fragment>
                 </ToolItem>
@@ -61,7 +61,7 @@ export default function BoardTools(props) {
                     addComponent={addComponent}
                 >
                     <Fragment>
-                        <img src={require("@/assets/studio/image.svg")} alt="" />
+                        <img src={require("@/assets/studio/image.svg")} />
                         <span>图片</span>
                     </Fragment>
                 </ToolItem>
@@ -115,6 +115,42 @@ export default function BoardTools(props) {
                     addComponent={addComponent}
                 >
                     <span>99.<sub>00</sub></span>
+                </ToolItem>
+            </div>
+            <div className={`${styles["tools-block"]} ${styles.code}`}>
+                <h4>条码/二维码</h4>
+                <ToolItem
+                    className={`${styles.item} ${styles["item-h-code"]}`}
+                    type={SHAPE_TYPES.CODE_H}
+                    id={generatorId(SHAPE_TYPES.CODE_H)}
+                    addComponent={addComponent}
+                >
+                    <Fragment>
+                        <img src={require("@/assets/studio/code_h.svg")} />
+                        <span>横向条码</span>
+                    </Fragment>
+                </ToolItem>
+                <ToolItem
+                    className={`${styles.item} ${styles["item-v-code"]}`}
+                    type={SHAPE_TYPES.CODE_V}
+                    id={generatorId(SHAPE_TYPES.CODE_V)}
+                    addComponent={addComponent}
+                >
+                    <Fragment>
+                        <img src={require("@/assets/studio/code_v.svg")} />
+                        <span>竖向条码</span>
+                    </Fragment>
+                </ToolItem>
+                <ToolItem
+                    className={`${styles.item} ${styles["item-qr-code"]}`}
+                    type={SHAPE_TYPES.CODE_QR}
+                    id={generatorId(SHAPE_TYPES.CODE_QR)}
+                    addComponent={addComponent}
+                >
+                    <Fragment>
+                        <img src={require("@/assets/studio/code_qr.svg")} />
+                        <span>二维码</span>
+                    </Fragment>
                 </ToolItem>
             </div>
         </Fragment>

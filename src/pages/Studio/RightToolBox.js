@@ -51,6 +51,10 @@ export default class RightToolBox extends Component {
             menuMap.hasBindData = true;
             menuMap.isPrice = true;
         }
+        if (this.hasSubString(SHAPE_TYPES.CODE)) {
+            menuMap.hasBindData = true;
+            menuMap.isCode = true;
+        }
 
         return menuMap;
     };

@@ -387,6 +387,28 @@ export default function generateShape(option) {
                 </Group>
             );
             break;
+        case SHAPE_TYPES.CODE_H:
+        case SHAPE_TYPES.CODE_V:
+        case SHAPE_TYPES.CODE_QR:
+            shape = (
+                <Image
+                    {
+                        ...{
+                            name: option.name,
+                            x: option.x,
+                            y: option.y,
+                            width: MAPS.containerWidth[option.type] * option.zoomScale,
+                            height: MAPS.containerHeight[option.type] * option.zoomScale,
+                            scaleX: option.scaleX,
+                            scaleY: option.scaleY,
+                            image: option.image,
+                            draggable: true,
+                            onTransform: option.onTransform,
+                        }
+                    }
+                />
+            );
+            break;
         default:
             throw new Error('没有匹配的Shape');
     }
