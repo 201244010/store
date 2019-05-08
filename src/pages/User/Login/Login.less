@@ -1,10 +1,82 @@
+@import '../../../common';
+
 .login-warp {
-  width: 368px;
-  margin: 0 auto;
+  width: 400px;
+  padding: 46px;
+  background: #FFF;
+  border-radius: 8px;
+  position: absolute;
+  right: 30px;
+
+  :global {
+    .ant-tabs-tab {
+      font-size: 16px;
+      margin: 0;
+      padding: 0;
+
+      &:hover {
+        color: @font-color-primary;
+      }
+    }
+
+    .ant-tabs-tab-active {
+      color: @font-color-primary;
+    }
+
+    .ant-tabs-ink-bar {
+      display: none !important;
+    }
+
+    .ant-form-item {
+      margin-bottom: 32px;
+      background: @formItem-bg-color;
+    }
+
+    .ant-form-item-with-help {
+      margin-bottom: 13px;
+    }
+
+    .ant-form-explain {
+      font-size: 12px;
+      color: @font-color-explain;
+    }
+
+    .ant-input {
+      background: @formItem-bg-color;
+    }
+  }
+
+  .formItem-margin-clear {
+    margin-bottom: 8px;
+    padding: 0 2px;
+  }
+
+  .formItem-with-margin {
+    margin-top: 40px;
+  }
+
+  .login-primary-button {
+    width: 100%;
+    height: 48px;
+    line-height: 48px;
+    margin-top: 16px;
+    padding: 0 2px;
+    font-size: 16px;
+    color: #fff;
+    border: none;
+  }
 
   .login-footer {
-    margin-top: 20px;
+    color: @font-color-common;
     display: flex;
     justify-content: space-between;
+
+    .link-common {
+      color: @font-color-common;
+    }
+
+    .link-active {
+      color: @font-color-primary;
+    }
   }
 }

@@ -16,7 +16,7 @@ export const PRODUCT_SEQ_EXIST = 5051;
 export const ALERT_NOTICE_MAP = {
     '2': 'alert.code.error',
     '3': 'alert.code.send.fast',
-    '309': 'alert.code.send.fast',
+    // '309': 'alert.code.send.fast',
     '1001': 'alert.mail.existed',
     '2000': 'alert.code.error',
     '2003': 'alert.code.error',

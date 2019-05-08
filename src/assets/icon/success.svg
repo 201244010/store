@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>icon/成功</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="-29.3834339%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#CDF76A" offset="0%"></stop>
+            <stop stop-color="#6DD13B" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="icon/成功" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon">
+            <circle id="Oval-2" fill="url(#linearGradient-1)" cx="40" cy="40" r="40"></circle>
+            <polyline id="成功" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" points="21 37.5683285 36.7197266 52 61 28"></polyline>
+        </g>
+    </g>
+</svg>
