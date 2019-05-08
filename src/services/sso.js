@@ -1,7 +1,9 @@
 import { customizeFetch } from '@/utils/fetch';
-import { SSO_ADDRESS, env } from '@/config/index';
+import CONFIG from '@/config';
 
-const fetchApi = customizeFetch('api/sso/app/sso/1.0/?service=', SSO_ADDRESS[env]);
+const { SSO_ADDRESS } = CONFIG;
+
+const fetchApi = customizeFetch('api/sso/app/sso/1.0/?service=', SSO_ADDRESS);
 
 export const sendCode = (options = {}) => {
     const opts = {
