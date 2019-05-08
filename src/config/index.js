@@ -15,33 +15,24 @@ const API_ADDRESS = {
 };
 
 const DES_KEY = {
-    development: 'wywmxxkj',
-    dev: 'wywmxxkj',
-    test: 'wywmxxkj',
-    demo: 'wywmxxkj',
-    production: 'jihexxkj',
-    onl: 'jihexxkj',
-    uat: 'jihexxkj',
+    dev: 'NzI3MjQyNzEyMjI3d3l3bXh4a2oyNTI4MjIwMjE0OTIwMA==',
+    test: 'NzI3MjQyNzEyMjI3d3l3bXh4a2oyNTI4MjIwMjE0OTIwMA',
+    onl: 'NzEyNTUyNTIzMTFqaWhleHhrajEwMjExMjE0MjE5',
+    uat: 'NzEyNTUyNTIzMTFqaWhleHhrajEwMjExMjE0MjE5',
 };
 
 const DES_IV = {
-    development: '12345678',
-    dev: '12345678',
-    test: '12345678',
-    demo: '12345678',
-    production: '98765432',
-    onl: '98765432',
-    uat: '98765432',
+    dev: 'Q0dZU0lrMTIzNDU2NzhqS01MV051eg==',
+    test: 'Q0dZU0lrMTIzNDU2NzhqS01MV051eg==',
+    onl: 'VGZNamFOeGY5ODc2NTQzMnpWbEV5aWFY',
+    uat: 'VGZNamFOeGY5ODc2NTQzMnpWbEV5aWFY',
 };
 
 const MD5_TOKEN = {
-    development: 'Woyouxinxi666',
-    dev: 'Woyouxinxi666',
-    test: 'Woyouxinxi666',
-    demo: 'Woyouxinxi666',
-    production: 'Jihewobox15',
-    onl: 'Jihewobox15',
-    uat: 'Jihewobox15',
+    dev: 'QCItLCJ7J1dveW91eGlueGk2NjYhK14rOi0j',
+    test: 'QCItLCJ7J1dveW91eGlueGk2NjYhK14rOi0j',
+    onl: 'fX06fD8kYEppaGV3b2JveDE1fDtgKSZ+YCks',
+    uat: 'fX06fD8kYEppaGV3b2JveDE1fDtgKSZ+YCks',
 };
 
 export default {

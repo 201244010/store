@@ -115,10 +115,10 @@ export default {
             const { options } = payload;
             const response = yield call(Actions.changePassword, options);
             if (response && response.code === ERROR_OK) {
-                message.success(formatMessage({ id: 'change.password.success' }));
-                // TODO 是否跳转回首页待定
-                CookieUtil.clearCookies();
-                // router.push('/user/login');
+                message.success(formatMessage({ id: 'change.password.success' }), 1.5, () => {
+                    CookieUtil.clearCookies();
+                    router.push('/user/login');
+                });
             }
             return response;
         },
