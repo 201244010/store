@@ -14,23 +14,20 @@ export default {
         },
     },
     effects: {
-        * createClient(_, { call, select }) {
-            const { mqttToken } = yield select(state => state.user);
-            const client = yield call(Actions.createClient, mqttToken);
-
-            console.log(client);
+        *initializeMqttClients(_, { call }) {
+            yield call(Actions.initializeMqttClients);
         },
 
-        * connectClient(_, { call, select }) {
-            const { connectStatus } = yield select(state => state.mqtt);
-            yield call(Actions.connectClient, connectStatus);
+        *connectClient(payload, { call }) {
+            const { category } = payload;
+            yield call(Actions.connectClient, category);
         },
 
-        * generateTopic(
+        *generateTopic(
             {
                 payload: { deviceType, messageType, method },
             },
-            { select, take },
+            { select, take }
         ) {
             const { userId, clientId, created } = yield select(state => ({
                 userId: state.user.id,
@@ -47,7 +44,7 @@ export default {
             return `/WEB/${userId}/${clientId}/${deviceType}/${messageType}/${method}`;
         },
 
-        * getClientId(_, { select, take }) {
+        *getClientId(_, { select, take }) {
             const { clientId, created } = yield select(state => ({
                 created: state.mqtt.created,
                 clientId: state.mqtt.clientId,
@@ -63,25 +60,21 @@ export default {
             return newClient;
         },
 
-        * subscribe(
-            {
-                payload: { topic },
-            },
-            { call },
-        ) {
+        *subscribe({ payload }, { call }) {
+            const { topic, category } = payload;
+            console.log(payload);
             console.log('subscribe');
-            yield call(Actions.subscribe, topic);
+            yield call(Actions.subscribe, topic, category);
         },
-        * publish(
-            {
-                payload: { topic, message },
-            },
-            { call },
-        ) {
-            yield call(Actions.publish, topic, message);
+
+        *publish({ payload }, { call }) {
+            const { topic, message, category } = payload;
+            yield call(Actions.publish, topic, message, category);
         },
-        * initListener(state, { call }) {
-            yield call(Actions.registMessageHandler);
+
+        *initListener({ payload }, { call }) {
+            const { category } = payload;
+            yield call(Actions.registMessageHandler, category);
         },
     },
 
@@ -101,11 +94,11 @@ export default {
     },
 
     subscriptions: {
-        handleError() {
-            Actions.registErrorHandler(error => {
-                console.log('do in error handler', error);
-                // TODO 对于错误时的处理
-            });
-        },
+        // handleError() {
+        //     Actions.registErrorHandler(error => {
+        //         console.log('do in error handler', error);
+        //         // TODO 对于错误时的处理
+        //     }, 'store');
+        // },
     },
 };

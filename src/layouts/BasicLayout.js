@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage } from 'umi/locale';
-import AuthorithCheck from '@/components/AuthorithCheck';
+import MQTTWrapper from '@/components/MQTT';
 import Authorized from '@/utils/Authorized';
 import router from 'umi/router';
 import * as CookieUtil from '@/utils/cookies';
@@ -52,7 +52,7 @@ const query = {
     },
 };
 
-@AuthorithCheck
+@MQTTWrapper
 class BasicLayout extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -101,18 +101,13 @@ class BasicLayout extends React.PureComponent {
     dataInitial = async () => {
         // TODO 等待 token 接口上线
         const {
-            authorityCheck,
             getUserInfo,
-            // getMqttToken,
             getMenuData,
             route: { routes, authority },
         } = this.props;
 
-        if (authorityCheck()) {
-            getMenuData({ routes, authority });
-            getUserInfo();
-            // getMqttToken();
-        }
+        await getMenuData({ routes, authority });
+        await getUserInfo();
     };
 
     matchParamsPath = (pathname, breadcrumbNameMap) => {
@@ -257,7 +252,6 @@ export default connect(
     }),
     dispatch => ({
         getUserInfo: () => dispatch({ type: 'user/getUserInfo' }),
-        getMqttToken: () => dispatch({ type: 'user/getMqttToken' }),
         getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
         dispatch,
