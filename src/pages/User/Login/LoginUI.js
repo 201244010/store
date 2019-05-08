@@ -299,7 +299,7 @@ class Login extends Component {
                     </Tabs>
                     <Form.Item className={styles['formItem-margin-clear']}>
                         <Button
-                            className={styles['login-primary-button']}
+                            className={`${styles['primary-btn']} ${styles['login-primary-button']}`}
                             size="large"
                             block
                             onClick={this.onSubmit}

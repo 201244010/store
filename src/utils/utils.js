@@ -59,6 +59,71 @@ const STR_BASE = [
     'Z',
 ];
 
+const NUM_BASE = [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+];
+const SYMBOL_BASE = [
+    '~',
+    '`',
+    '!',
+    '@',
+    '#',
+    '$',
+    '%',
+    '^',
+    '&',
+    '*',
+    '(',
+    ')',
+    '-',
+    '+',
+    '=',
+    '{',
+    '}',
+    '|',
+    '\\',
+    ':',
+    ';',
+    '"',
+    '\'',
+    '<',
+    '>',
+    ',',
+    '.',
+    '?',
+    '/',
+];
+
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
 
@@ -102,42 +167,13 @@ export const formatEmptyWithoutZero = (data, blank = '') => {
 export const unixSecondToDate = (second, formatStr = 'YYYY-MM-DD HH:mm:ss') =>
     moment.unix(second).isValid()
         ? moment
-              .unix(second)
-              .local()
-              .format(formatStr)
+            .unix(second)
+            .local()
+            .format(formatStr)
         : null;
 
 export const dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>
     date ? moment(date).format(format) : undefined;
-
-/**
- * DES CBC加密
- * @param source
- * @returns {*|string}
- */
-export const encryption = source => {
-    const message = CryptoJS.enc.Utf8.parse(source);
-    const keyHex = CryptoJS.enc.Utf8.parse(DES_KEY);
-    const iv = CryptoJS.enc.Utf8.parse(DES_IV);
-    const encrypted = CryptoJS.DES.encrypt(message, keyHex, {
-        iv,
-        mode: CryptoJS.mode.CBC,
-    });
-
-    return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
-};
-
-export const cbcEncryption = source => {
-    const message = CryptoJS.enc.Utf8.parse(source);
-    const keyHex = CryptoJS.enc.Utf8.parse(DES_KEY);
-    const ivHex = CryptoJS.enc.Utf8.parse(DES_IV);
-    return CryptoJS.DES.encrypt(message, keyHex, {
-        iv: ivHex,
-        mode: CryptoJS.mode.CBC,
-    }).toString();
-};
-
-export const md5Encryption = message => CryptoJS.MD5(message).toString();
 
 export const typeCheck = obj => {
     const typeStr = Object.prototype.toString.call(obj);
@@ -172,22 +208,41 @@ export const getLocationParam = key => {
     return params[key];
 };
 
-export const getMixBase = (min = 5, max = 10) => {
+const mixBaseStore = {
+    alphabet: STR_BASE,
+    number: NUM_BASE,
+    symbol: SYMBOL_BASE,
+};
+
+export const getMixBase = (min = 5, max = 10, base = 'alphabet') => {
     const range = Math.round(Math.random() * (max - min)) + min;
+    const mixBase = mixBaseStore[base];
     let result = '';
     for (let i = 0; i < range; i += 1) {
-        const pos = Math.round(Math.random() * STR_BASE.length - 1);
-        result += STR_BASE[pos];
+        const pos = Math.round(Math.random() * mixBase.length - 1);
+        result += mixBase[pos];
     }
     return result;
 };
 
-export const idEncode = id => {
-    const [leftPad, rightPad] = [getMixBase(), getMixBase()];
+export const idEncode = (id, min = 5, max = 10, base = 'alphabet') => {
+    const [leftPad, rightPad] = [getMixBase(min, max, base), getMixBase(min, max, base)];
     return window.btoa(leftPad + id + rightPad);
 };
 
-export const idDecode = encodeStr => window.atob(encodeStr).match(/(\d+)/g)[0];
+export const idDecode = (encodeStr, seed = 'alphabet') => {
+    const decodeStr = window.atob(encodeStr);
+
+    if (seed === 'alphabet') {
+        return decodeStr.match(/(\d+)/g)[0];
+    }
+
+    if (seed === 'number') {
+        return decodeStr.match(/([a-zA-Z]+)/g)[0];
+    }
+
+    return decodeStr.match(/([a-zA-Z0-9]+)/g)[0];
+};
 
 export const hideSinglePageCheck = (totalCount, hideLimit = 10) =>
     parseInt(totalCount, 10) <= hideLimit;
@@ -267,3 +322,36 @@ export const paramsSerialization = params => {
 
     return serializedParams;
 };
+
+/**
+ * DES CBC加密
+ * @param source
+ * @returns {*|string}
+ */
+export const encryption = source => {
+    const desKey = idDecode(DES_KEY, 'number');
+    const desIv = idDecode(DES_IV, 'alphabet');
+    const message = CryptoJS.enc.Utf8.parse(source);
+    const keyHex = CryptoJS.enc.Utf8.parse(desKey);
+    const iv = CryptoJS.enc.Utf8.parse(desIv);
+    const encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+        iv,
+        mode: CryptoJS.mode.CBC,
+    });
+
+    return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+};
+
+export const cbcEncryption = source => {
+    const desKey = idDecode(DES_KEY, 'number');
+    const desIv = idDecode(DES_IV, 'alphabet');
+    const message = CryptoJS.enc.Utf8.parse(source);
+    const keyHex = CryptoJS.enc.Utf8.parse(desKey);
+    const ivHex = CryptoJS.enc.Utf8.parse(desIv);
+    return CryptoJS.DES.encrypt(message, keyHex, {
+        iv: ivHex,
+        mode: CryptoJS.mode.CBC,
+    }).toString();
+};
+
+export const md5Encryption = message => CryptoJS.MD5(message).toString();

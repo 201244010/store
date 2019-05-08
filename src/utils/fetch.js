@@ -1,6 +1,6 @@
 // import { message } from 'antd';
 import CONFIG from '@/config';
-import { cbcEncryption, md5Encryption } from '@/utils/utils';
+import { cbcEncryption, idDecode, md5Encryption } from '@/utils/utils';
 import { USER_NOT_LOGIN } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
 
@@ -39,7 +39,8 @@ export function paramsEncode(params, encryption) {
 }
 
 export function getParamsSign(formData) {
-    const md5Key = md5Encryption(MD5_TOKEN);
+    const md5Token = idDecode(MD5_TOKEN, 'symbol');
+    const md5Key = md5Encryption(md5Token);
     const { params, isEncrypted, timeStamp, randomNum } = formData;
     const signString = params + isEncrypted + timeStamp + randomNum + md5Key;
     return md5Encryption(signString);
