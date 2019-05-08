@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import {Group, Rect, Text, Line, Image} from 'react-konva';
-import {SHAPE_TYPES, SIZES, MAPS} from '@/constants/studio';
+import {SHAPE_TYPES, SIZES, MAPS, LENGTH_MAP} from '@/constants/studio';
 
 export default function generateShape(option) {
     let shape;
@@ -309,50 +309,60 @@ export default function generateShape(option) {
                             }
                         }
                     />
-                    <Text
-                        {
-                            ...{
-                                name: option.name,
-                                x: option.x,
-                                y: option.y,
-                                text: '111111111.',
-                                fontFamily: option.fontFamily,
-                                fontSize: option.fontSize * option.zoomScale,
-                                fontStyle: option.fontStyle,
-                                textDecoration: option.textDecoration,
-                                fill: option.fill,
-                                align: option.align,
-                                letterSpacing: option.letterSpacing,
-                                width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
-                                height: MAPS.containerHeight[option.type] * option.zoomScale,
-                                lineHeight: MAPS.containerHeight[option.type] / option.fontSize,
-                                draggable: true,
-                                onDblClick: option.onDblClick
-                            }
-                        }
-                    />
-                    <Text
-                        {
-                            ...{
-                                name: option.name,
-                                x: option.x + 88 * option.zoomScale,
-                                y: option.y + 7 * option.zoomScale,
-                                text: '00',
-                                fontFamily: option.fontFamily,
-                                fontSize: 12 * option.zoomScale,
-                                fontStyle: option.fontStyle,
-                                textDecoration: option.textDecoration,
-                                fill: option.fill,
-                                align: option.align,
-                                letterSpacing: option.letterSpacing,
-                                width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
-                                height: MAPS.containerHeight[option.type] * option.zoomScale,
-                                lineHeight: MAPS.containerHeight[option.type] / option.fontSize,
-                                draggable: true,
-                                onDblClick: option.onDblClick
-                            }
-                        }
-                    />
+                    {
+                        option.text ?
+                            <Text
+                                {
+                                    ...{
+                                        name: option.name,
+                                        x: option.x,
+                                        y: option.y,
+                                        text: `${option.text.split('.')[0]}.`,
+                                        fontFamily: option.fontFamily,
+                                        fontSize: option.fontSize * option.zoomScale,
+                                        fontStyle: option.fontStyle,
+                                        textDecoration: option.textDecoration,
+                                        fill: option.fill,
+                                        align: option.align,
+                                        letterSpacing: option.letterSpacing,
+                                        width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
+                                        height: MAPS.containerHeight[option.type] * option.zoomScale,
+                                        lineHeight: MAPS.containerHeight[option.type] / option.fontSize,
+                                        draggable: true,
+                                        onDblClick: option.onDblClick
+                                    }
+                                }
+                            /> :
+                            null
+                    }
+                    {
+                        option.text ?
+                            <Text
+                                {
+                                    ...{
+                                        name: option.name,
+                                        x: option.x,
+                                        y: option.y,
+                                        offsetX: - LENGTH_MAP[option.text.split('.')[0].length] * option.zoomScale,
+                                        offsetY: - 7 * option.zoomScale,
+                                        text: `${option.text.split('.')[1] || '00'}`,
+                                        fontFamily: option.fontFamily,
+                                        fontSize: 12 * option.zoomScale,
+                                        fontStyle: option.fontStyle,
+                                        textDecoration: option.textDecoration,
+                                        fill: option.fill,
+                                        align: option.align,
+                                        letterSpacing: option.letterSpacing,
+                                        width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
+                                        height: MAPS.containerHeight[option.type] * option.zoomScale,
+                                        lineHeight: MAPS.containerHeight[option.type] / option.fontSize,
+                                        draggable: true,
+                                        onDblClick: option.onDblClick
+                                    }
+                                }
+                            /> :
+                            null
+                    }
                 </Group>
             );
             break;

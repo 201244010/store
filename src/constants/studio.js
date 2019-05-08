@@ -7,9 +7,22 @@ export const SHAPE_TYPES = {
     HLine: 'HLine',
     VLine: 'VLine',
     IMAGE: 'IMAGE',
+    PRICE: 'PRICE',
     PRICE_NORMAL: 'PRICE@NORMAL',
     PRICE_SUPER: 'PRICE@SUPER',
     PRICE_SUB: 'PRICE@SUB',
+};
+
+export const LENGTH_MAP = {
+    1: 14,
+    2: 25,
+    3: 34,
+    4: 42,
+    5: 51,
+    6: 60,
+    7: 69,
+    8: 78,
+    9: 87
 };
 
 export const SIZES = {

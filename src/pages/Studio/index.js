@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Stage, Layer, Line} from 'react-konva';
 import { connect } from 'dva';
-import { Spin } from 'antd';
+import { Spin, message } from 'antd';
 import MTransformer from './MTransformer';
 import BoardHeader from './BoardHeader';
 import BoardTools from './BoardTools';
@@ -12,6 +12,7 @@ import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
 import { getTypeByName, getNearLines } from '@/utils/studio';
 import { SIZES, SHAPE_TYPES, MAPS } from "@/constants/studio";
+import * as RegExp from '@/constants/regexp';
 import { ERROR_OK } from "@/constants/errorCode";
 import * as styles from './index.less';
 
@@ -162,11 +163,11 @@ class Studio extends Component {
     handleShapeDblClick = (e) => {
         const targetName = e.target.name();
         if (targetName.indexOf(SHAPE_TYPES.TEXT) !== -1) {
-            this.handleTextDblClick(e);
+            this.handleTextDblClick(e, SHAPE_TYPES.TEXT);
         } else if (targetName.indexOf(SHAPE_TYPES.IMAGE) !== -1) {
             this.handleImageDblClick(e);
         } else if (targetName.indexOf(SHAPE_TYPES.PRICE_NORMAL) !== -1) {
-            this.handlePriceDblClick(e);
+            this.handlePriceDblClick(e, SHAPE_TYPES.PRICE);
         }
     };
 
@@ -274,10 +275,10 @@ class Studio extends Component {
 
     };
 
-    handlePriceDblClick = (e) => {
+    handlePriceDblClick = (e, type) => {
         const {updateComponentsDetail} = this.props;
         const targetName = e.target.name();
-        this.createInput(e);
+        this.createInput(e, type);
         updateComponentsDetail({
             selectedShapeName: targetName,
             [targetName]: {
@@ -348,7 +349,7 @@ class Studio extends Component {
         }
     };
 
-    createInput = (e) => {
+    createInput = (e, type) => { // type是为了区分价格组件、文本组件及其他
         const targetName = e.target.name();
         const {studio: {componentsDetail, zoomScale}, updateComponentsDetail} = this.props;
         const targetDetail = componentsDetail[targetName];
@@ -363,7 +364,14 @@ class Studio extends Component {
         const inputEle = document.createElement('input');
         document.body.appendChild(inputEle);
         inputEle.setAttribute('id', 'textInput');
-        inputEle.value = e.target.parent.children[1].text();
+        if (type === SHAPE_TYPES.PRICE) {
+            inputEle.value = `${e.target.parent.children[1].text()}${e.target.parent.children[2].text()}`;
+        } else {
+            inputEle.value = e.target.parent.children[1].text();
+        }
+        inputEle.style.backgroundColor = 'transparent';
+        inputEle.style.border = '1px solid #ccc';
+        inputEle.style.borderRadius = '5px';
         inputEle.style.fontSize = `${targetDetail.fontSize * zoomScale}px`;
         inputEle.style.fontFamily = targetDetail.fontFamily;
         inputEle.style.color = e.target.parent.children[1].attrs.fill;
@@ -378,12 +386,18 @@ class Studio extends Component {
         inputEle.focus();
 
         const saveToLocal = () => {
+            const inputValue = inputEle.value;
+            if (type === SHAPE_TYPES.PRICE && !RegExp.money.test(inputValue)) {
+                message.warning('输入价格不正确');
+                inputEle.value = '';
+                return;
+            }
             try {
                 document.body.removeChild(inputEle);
                 updateComponentsDetail({
                     selectedShapeName: targetName,
                     [targetName]: {
-                        text: inputEle.value || '双击编辑文本'
+                        text: inputValue || '双击编辑文本'
                     }
                 });
             } catch (evt) {
