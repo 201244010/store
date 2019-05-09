@@ -10,6 +10,7 @@ import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage } from 'umi/locale';
 import MQTTWrapper from '@/components/MQTT';
+import { ShadowNotification } from '@/components/Notification';
 import Authorized from '@/utils/Authorized';
 import router from 'umi/router';
 import * as CookieUtil from '@/utils/cookies';
@@ -185,7 +186,10 @@ class BasicLayout extends React.PureComponent {
             breadcrumbNameMap,
             route: { routes },
             fixedHeader,
+            mqtt: { emit },
         } = this.props;
+        console.log('in basic', emit);
+
         const isTop = PropsLayout === 'topmenu';
         const routerConfig = this.getRouterAuthority(pathname, routes);
         const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
@@ -222,6 +226,7 @@ class BasicLayout extends React.PureComponent {
                         </Authorized>
                     </Content>
                 </Layout>
+                <ShadowNotification {...{ emit }} />
             </Layout>
         );
         return (

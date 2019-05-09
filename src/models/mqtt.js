@@ -1,9 +1,11 @@
 import * as Actions from '@/services/mqtt';
+// import { notification } from 'antd';
 // import { ERROR_OK, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 
 export default {
     namespace: 'mqtt',
     state: {
+        emit: false,
         connectStatus: {
             connecting: false,
             connected: true,
@@ -72,9 +74,21 @@ export default {
             yield call(Actions.publish, topic, message, category);
         },
 
-        *initListener({ payload }, { call }) {
+        *initListener({ payload }, { call, put }) {
             const { category } = payload;
-            yield call(Actions.registMessageHandler, category);
+            const client = yield call(Actions.registMessageHandler, category);
+            client.on('message', (topic, message) => {
+                console.log('in model', topic, message.toString());
+
+                put({
+                    type: 'updateState',
+                    payload: {
+                        emit: true,
+                    },
+                });
+
+                console.log('updated');
+            });
         },
     },
 

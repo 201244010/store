@@ -38,7 +38,7 @@ const mqttToken = {
     clientId: 'mqttjs_9469ba8e65',
     username: 'WEB_6666',
     password: '123456',
-    address: 'ws://47.96.240.44:35132',
+    address: 'ws://47.96.240.44:30214',
 };
 
 const createClient = (category = 'store') => {
@@ -56,7 +56,7 @@ const createClient = (category = 'store') => {
                 password,
                 clean: true,
                 path: '/mqtt',
-            }
+            },
         );
         return clientMap.set(category, { ...CLIENT_TEMPLATE, category, client });
     }
@@ -89,12 +89,12 @@ const initializeClientInfo = async (category = 'store') => {
     return clientInfoMap.set(category, { ...CLIENT_INFO_TEMPLATE });
 };
 
-export const initializeMqttClients = async () => {
-    await initializeClientInfo('store');
-    console.log('client info: ', clientInfoMap);
-    await createClient('store');
-    console.log('client: ', clientMap);
+export const initializeMqttClients = async (categorys = ['store']) => {
+    await Promise.all([...categorys.map(category => initializeClientInfo(category))]);
+    await Promise.all([...categorys.map(category => createClient(category))]);
 };
+
+export const getClient = (category = 'store') => clientMap.get(category);
 
 export const subscribe = (topic, category = 'store') => {
     const [clientInfo, clientData] = [clientInfoMap.get(category), clientMap.get(category)];
@@ -135,10 +135,11 @@ export const publish = (topic, message, category = 'store') => {
     }
 };
 
-export const connectClient = (category = 'store') => {
+export const connectClient = async (category = 'store') => {
+    console.log('in connect');
     const [clientInfo, clientData] = [clientInfoMap.get(category), clientMap.get(category)];
     const { subscribeStack, publishStack } = clientInfo;
-    const { client, reconnectTimes } = clientData;
+    const { client } = clientData;
 
     return new Promise(resolve => {
         console.log('before connect');
@@ -169,20 +170,24 @@ export const connectClient = (category = 'store') => {
         });
 
         client.on('reconnect', () => {
+            const currentClientData = clientMap.get(category);
+            const { reconnectTimes: currentReconnectTimes } = currentClientData;
             console.log('mqtt reconnect');
             clientMap.set(category, {
                 ...clientData,
-                reconnectTimes: reconnectTimes + 1,
+                reconnectTimes: currentReconnectTimes + 1,
             });
         });
 
         client.on('close', () => {
-            console.log('mqtt connection close. times: ', reconnectTimes);
-            if (reconnectTimes > RECONNECT_LIMIT) {
+            const currentClientData = clientMap.get(category);
+            const { reconnectTimes: currentReconnectTimes } = currentClientData;
+            console.log('mqtt connection close. times: ', currentReconnectTimes);
+            if (currentReconnectTimes > RECONNECT_LIMIT) {
                 // 重连10次终止
                 client.end(true);
                 clientMap.set(category, {
-                    ...clientData,
+                    ...currentClientData,
                     reconnectTimes: 0,
                 });
             }
@@ -198,7 +203,7 @@ export const connectClient = (category = 'store') => {
                 'mqtt message received: topic: ',
                 topic,
                 ' - message: ',
-                message.toString()
+                message.toString(),
             );
         });
     });
@@ -223,7 +228,7 @@ const handleMessage = (
     messageType,
     deviceType,
     topic,
-    category = 'store'
+    category = 'store',
 ) => {
     const clientInfo = clientInfoMap.get(category);
     const { listenerStack } = clientInfo;
@@ -251,9 +256,8 @@ export const registMessageHandler = (category = 'store') => {
     if (client.on) {
         // 若init请求失败，则无法被初始化client
         client.on('message', (topic, message) => {
-            console.log('in message read handler');
             const msg = JSON.parse(message.toString());
-
+            console.log('in message read handler', msg);
             // TODO 等待实际返回结果来修改
             const messageType = topic.split('/')[5];
             const deviceType = topic.split('/')[4];
@@ -270,7 +274,7 @@ export const registMessageHandler = (category = 'store') => {
                             messageType,
                             deviceType,
                             topic,
-                            category
+                            category,
                         );
                     });
                     break;
@@ -283,14 +287,17 @@ export const registMessageHandler = (category = 'store') => {
                             messageType,
                             deviceType,
                             topic,
-                            category
+                            category,
                         );
                     });
                     break;
                 default:
             }
+            console.log('in promise ready to model');
         });
     }
+
+    return client;
 };
 
 export const listen = (listeners, category = 'store') => {
