@@ -75,6 +75,13 @@ export default {
         //     ],
         // },
         {
+            path: "/studio",
+            component: "../layouts/BlankLayout",
+            routes: [
+                { path: "/studio", component: "./Studio" }
+            ]
+        },
+        {
             path: '/',
             component: '../layouts/BasicLayout',
             routes: [
