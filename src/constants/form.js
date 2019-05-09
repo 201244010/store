@@ -1,3 +1,4 @@
+
 export const MAX_LENGTH = {
     4: 4,
     9: 9,
@@ -16,18 +17,55 @@ export const FORM_FORMAT = {
     cols: 12,
 };
 
+export const FORM_LABEL_LEFT = {
+    labelAlign: 'left',
+};
+
+export const COL_THREE_NORMAL = {
+    sm: 24,
+    md: 24,
+    lg: 12,
+    xl: 9,
+    xxl: 8,
+};
+
+export const COL_THREE_SMALL = {
+    sm: 24,
+    md: 24,
+    lg: 12,
+    xl: 6,
+    xxl: 8,
+};
+
 export const FORM_ITEM_LAYOUT = {
     labelCol: {
         sm: { span: 24 },
         md: { span: 6 },
-        lg: { span: 6 },
-        xl: { span: 6 },
+        lg: { span: 5 },
+        xl: { span: 5 },
         xxl: { span: 4 },
     },
     wrapperCol: {
         sm: { span: 24 },
         md: { span: 18 },
-        lg: { span: 18 },
+        lg: { span: 19 },
+        xl: { span: 19 },
+        xxl: { sapn: 20 },
+    },
+};
+
+export const FORM_SEARCH_LAYOUT = {
+    labelCol: {
+        sm: { span: 24 },
+        md: { span: 3 },
+        lg: { span: 5 },
+        xl: { span: 6 },
+        xxl: { span: 4 },
+    },
+    wrapperCol: {
+        sm: { span: 24 },
+        md: { span: 21 },
+        lg: { span: 19 },
         xl: { span: 18 },
         xxl: { sapn: 20 },
     },

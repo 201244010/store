@@ -4,7 +4,7 @@ import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME, MENU_PREFIX } from '@/constants';
-import { hideSinglePageCheck, idEncode } from '@/utils/utils';
+import { idEncode } from '@/utils/utils';
 import * as CookieUtil from '@/utils/cookies';
 
 const goNext = (fromPage = 'list', options) => {
@@ -46,7 +46,7 @@ export default {
         overview: {},
     },
     effects: {
-        *changeSearchFormValue({ payload = {} }, { put }) {
+        * changeSearchFormValue({ payload = {} }, { put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'setSearchFormValue',
@@ -55,7 +55,7 @@ export default {
                 },
             });
         },
-        *clearSearch(_, { put }) {
+        * clearSearch(_, { put }) {
             yield put({
                 type: 'updateState',
                 payload: {
@@ -66,7 +66,7 @@ export default {
                 },
             });
         },
-        *fetchProductOverview(_, { call, put }) {
+        * fetchProductOverview(_, { call, put }) {
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -87,7 +87,7 @@ export default {
                 payload: { loading: false },
             });
         },
-        *getERPPlatformList(_, { call, put }) {
+        * getERPPlatformList(_, { call, put }) {
             yield put({
                 type: 'updateState',
                 payload: { loading: true, erpEnable: false },
@@ -110,7 +110,7 @@ export default {
             }
             return response;
         },
-        *fetchProductList({ payload = {} }, { call, put, select }) {
+        * fetchProductList({ payload = {} }, { call, put, select }) {
             const { options = {} } = payload;
             const { pagination, searchFormValues } = yield select(state => state.basicDataProduct);
             yield put({
@@ -130,13 +130,12 @@ export default {
                         ...pagination,
                         pageSize: opts.pageSize,
                         current: opts.current,
-                        total: Number(result.total_count) || 0,
-                        hideOnSinglePage: hideSinglePageCheck(result.total_count) || true,
+                        total: Number(result.total_count) || 0
                     },
                 },
             });
         },
-        *getProductDetail({ payload = {} }, { call, put }) {
+        * getProductDetail({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'updateState',
@@ -160,7 +159,7 @@ export default {
             }
             return response;
         },
-        *createProduct({ payload = {} }, { call, put }) {
+        * createProduct({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             const opts = {
                 ...options,
@@ -192,7 +191,7 @@ export default {
             }
             return response;
         },
-        *updateProduct({ payload = {} }, { call, put }) {
+        * updateProduct({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             const opts = {
                 ...options,
@@ -225,7 +224,7 @@ export default {
             }
             return response;
         },
-        *deleteProduct({ payload = {} }, { call, put }) {
+        * deleteProduct({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'updateState',
@@ -236,7 +235,7 @@ export default {
             if (response && response.code === ERROR_OK) {
                 message.success(
                     formatMessage({ id: 'basicData.product.delete.success' }),
-                    DURATION_TIME
+                    DURATION_TIME,
                 );
                 yield put({
                     type: 'updateState',
@@ -252,7 +251,7 @@ export default {
             } else {
                 message.error(
                     formatMessage({ id: 'basicData.product.delete.fail' }),
-                    DURATION_TIME
+                    DURATION_TIME,
                 );
                 yield put({
                     type: 'updateState',
@@ -260,7 +259,7 @@ export default {
                 });
             }
         },
-        *clearState(_, { put }) {
+        * clearState(_, { put }) {
             yield put({
                 type: 'updateState',
                 payload: {
@@ -268,7 +267,7 @@ export default {
                 },
             });
         },
-        *erpAuthCheck({ payload = {} }, { call, put }) {
+        * erpAuthCheck({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'updateState',
@@ -285,7 +284,7 @@ export default {
 
             return response;
         },
-        *erpImport({ payload = {} }, { call, put }) {
+        * erpImport({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'updateState',
