@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import { FORM_FORMAT, FORM_SEARCH_LAYOUT, FORM_LABEL_LEFT, COL_THREE_NORMAL, COL_THREE_SMALL } from '@/constants/form';
+import {
+    FORM_FORMAT,
+    FORM_SEARCH_LAYOUT,
+    FORM_LABEL_LEFT,
+    COL_THREE_NORMAL,
+    COL_THREE_SMALL,
+} from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 
 @Form.create()

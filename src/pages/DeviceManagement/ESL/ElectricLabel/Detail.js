@@ -62,7 +62,9 @@ export default function detail(props) {
                         <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.status' })}：
                         </span>
-                        <span className={styles['detail-info-content']}>{ESL_STATES[eslInfo.status]}</span>
+                        <span className={styles['detail-info-content']}>
+                            {ESL_STATES[eslInfo.status]}
+                        </span>
                     </div>
                     <div className={styles['detail-info-item']}>
                         <span className={styles['detail-info-label']}>
@@ -86,13 +88,17 @@ export default function detail(props) {
                         <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.bind.product.code' })}：
                         </span>
-                        <span className={styles['detail-info-content']}>{eslInfo.product_seq_num}</span>
+                        <span className={styles['detail-info-content']}>
+                            {eslInfo.product_seq_num}
+                        </span>
                     </div>
                     <div className={styles['detail-info-item']}>
                         <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.bind.product.name' })}：
                         </span>
-                        <span className={styles['detail-info-content']}>{eslInfo.product_name}</span>
+                        <span className={styles['detail-info-content']}>
+                            {eslInfo.product_name}
+                        </span>
                     </div>
                 </Col>
             </Row>

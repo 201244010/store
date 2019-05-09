@@ -23,7 +23,7 @@ const FormItem = Form.Item;
         getRegionList: () => dispatch({ type: 'store/getRegionList' }),
         getStoreDetail: payload => dispatch({ type: 'store/getStoreDetail', payload }),
         clearState: () => dispatch({ type: 'store/clearState' }),
-    }),
+    })
 )
 @Form.create()
 class CreateStore extends React.Component {
@@ -140,7 +140,7 @@ class CreateStore extends React.Component {
                                 placeholder={formatMessage({
                                     id: 'storeManagement.create.namePlaceHolder',
                                 })}
-                            />,
+                            />
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
@@ -155,7 +155,7 @@ class CreateStore extends React.Component {
                                     id: 'storeManagement.create.typePlaceHolder',
                                 })}
                                 options={shopType_list}
-                            />,
+                            />
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
@@ -169,7 +169,7 @@ class CreateStore extends React.Component {
                                 <Radio value={1} disabled={action === 'create'}>
                                     {formatMessage({ id: 'storeManagement.create.status.closed' })}
                                 </Radio>
-                            </Radio.Group>,
+                            </Radio.Group>
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.address' })}>
@@ -185,7 +185,7 @@ class CreateStore extends React.Component {
                                 placeholder={formatMessage({
                                     id: 'storeManagement.create.address.region',
                                 })}
-                            />,
+                            />
                         )}
                     </FormItem>
                     <FormItem label=" " colon={false}>
@@ -196,7 +196,7 @@ class CreateStore extends React.Component {
                                 placeholder={formatMessage({
                                     id: 'storeManagement.create.address.detail',
                                 })}
-                            />,
+                            />
                         )}
                     </FormItem>
                     <FormItem label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>

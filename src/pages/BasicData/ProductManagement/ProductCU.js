@@ -21,7 +21,7 @@ import * as styles from './ProductManagement.less';
         createProduct: payload => dispatch({ type: 'basicDataProduct/createProduct', payload }),
         updateProduct: payload => dispatch({ type: 'basicDataProduct/updateProduct', payload }),
         clearState: () => dispatch({ type: 'basicDataProduct/clearState' }),
-    }),
+    })
 )
 @Form.create()
 class ProductCU extends Component {
