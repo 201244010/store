@@ -50,6 +50,7 @@ export default {
     'list.action.bind': '绑定',
     'list.action.push.again': '重推',
     'list.action.more': '更多',
+    'list.action.apply': '应用',
 
     'pagination.total.prefix': '共',
 

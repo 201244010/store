@@ -5,10 +5,7 @@ class BusinessLayout extends React.PureComponent {
         const { children } = this.props;
         return (
             <div>
-                <div>
-                    <div />
-                    {children}
-                </div>
+                {children}
             </div>
         );
     }
