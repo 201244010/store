@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button } from 'antd';
+import { Icon, Input } from 'antd';
+import * as Regexp from '@/constants/regexp';
+import styles from './captcha.less';
 
 class Captcha extends Component {
     constructor(props) {
@@ -67,13 +69,15 @@ class Captcha extends Component {
 
     handleClick = () => {
         const { inCounting } = this.state;
-        const { onClick } = this.props;
-        if (onClick) {
-            onClick();
-        }
+        const { onClick, validateTarget = '' } = this.props;
 
-        if (!inCounting) {
-            this.countDown();
+        if (validateTarget && Regexp.cellphone.test(validateTarget)) {
+            if (!inCounting) {
+                if (onClick) {
+                    onClick();
+                }
+                this.countDown();
+            }
         }
     };
 
@@ -82,25 +86,23 @@ class Captcha extends Component {
         const {
             buttonText: { initText, countText },
             inputProps = {},
-            buttonProps = {},
         } = this.props;
 
+        const StatusBtn = (
+            <div className={styles['status-btn']} onClick={this.handleClick}>
+                {inCounting ? `${count}${countText}` : initText}
+            </div>
+        );
+
         return (
-            <Row gutter={16}>
-                <Col span={16}>
-                    <Input
-                        value={value}
-                        onChange={this.handleInputChange}
-                        onBlur={this.handleInputBlur}
-                        {...inputProps}
-                    />
-                </Col>
-                <Col span={8}>
-                    <Button {...buttonProps} disabled={inCounting} onClick={this.handleClick}>
-                        {inCounting ? `${count}${countText}` : initText}
-                    </Button>
-                </Col>
-            </Row>
+            <Input
+                value={value}
+                onChange={this.handleInputChange}
+                onBlur={this.handleInputBlur}
+                prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                suffix={StatusBtn}
+                {...inputProps}
+            />
         );
     }
 }

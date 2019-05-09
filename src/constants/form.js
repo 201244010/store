@@ -12,20 +12,18 @@ export const FORM_ITEM_LAYOUT_COMMON = {
 };
 
 export const FORM_FORMAT = {
-    gutter: 36,
+    gutter: { md: 8, lg: 24, xl: 48 },
     cols: 12,
 };
 
 export const FORM_ITEM_LAYOUT = {
     labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-        md: { span: 8 },
+        sm: { span: 24 },
+        md: { span: 6 },
     },
     wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-        md: { span: 16 },
+        sm: { span: 24 },
+        md: { span: 18 },
     },
 };
 

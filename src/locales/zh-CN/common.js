@@ -39,12 +39,14 @@ export default {
 
     // 倒数秒数单位
     'countDown.unit': '秒',
+    'countDown.unit.second': 's',
 
     // 列表相关操作
     'list.action.title': '操作',
     'list.action.detail': '详情',
     'list.action.delete': '删除',
     'list.action.edit': '编辑',
+    'list.action.alter': '修改',
     'list.action.bind': '绑定',
     'list.action.push.again': '重推',
     'list.action.more': '更多',

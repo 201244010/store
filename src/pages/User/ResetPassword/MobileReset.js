@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Alert, Modal, message } from 'antd';
+import { Form, Input, Button, Alert, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import Captcha from '@/components/Captcha';
-import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
-import styles from '../Register/Register.less';
+import ImgCaptchaModal from '@/components/Captcha/ImgCaptchaModal';
 import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
 import { ERROR_OK, SHOW_VCODE, VCODE_ERROR, ALERT_NOTICE_MAP } from '@/constants/errorCode';
+import styles from './ResetPassword.less';
 
 @connect(
     state => ({
@@ -28,7 +28,6 @@ class MobileReset extends Component {
             resetSuccess: false,
             notice: '',
             trigger: false,
-            vcodeIsError: false,
             showImgCaptchaModal: false,
         };
     }
@@ -49,11 +48,11 @@ class MobileReset extends Component {
             options: {
                 username: getFieldValue('username'),
                 type: '2',
-                imgCode: getFieldValue('vcode') || '',
+                imgCode: getFieldValue('vcode2') || '',
                 key: needImgCaptcha ? imgCaptcha.key : '',
-                width: 112,
-                height: 40,
-                fontSize: 18,
+                width: 76,
+                height: 30,
+                fontSize: 16,
                 ...imageStyle,
             },
         });
@@ -79,20 +78,27 @@ class MobileReset extends Component {
         return response;
     };
 
-    checkVcode = async () => {
+    refreshCode = async (params = {}) => {
+        const { imageStyle = {} } = params;
         const {
-            form: { setFieldsValue, validateFields },
+            form: { getFieldValue },
+            sendCode,
         } = this.props;
-        const response = await this.getCode();
-        if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
-            setFieldsValue({ vcode: '' });
-            this.setState(
-                {
-                    vcodeIsError: true,
-                },
-                () => validateFields(['vcode'], { force: true })
-            );
-        }
+
+        const response = await sendCode({
+            options: {
+                username: getFieldValue('username'),
+                type: '2',
+                imgCode: '',
+                key: '',
+                width: 76,
+                height: 30,
+                fontSize: 16,
+                ...imageStyle,
+            },
+        });
+
+        return response;
     };
 
     onSubmit = () => {
@@ -125,26 +131,43 @@ class MobileReset extends Component {
 
     render() {
         const {
+            form,
             form: { getFieldDecorator, getFieldValue },
             sso: { imgCaptcha },
         } = this.props;
-        const { resetSuccess, notice, trigger, vcodeIsError, showImgCaptchaModal } = this.state;
+        const { location } = window;
+        const { resetSuccess, notice, trigger, showImgCaptchaModal } = this.state;
 
         return (
             <div className={styles['register-wrapper']}>
                 {resetSuccess ? (
                     <ResultInfo
                         {...{
+                            status: 'success',
                             title: formatMessage({ id: 'reset.success' }),
                             description: formatMessage({ id: 'reset.countDown' }),
                             countInit: 3,
+                            countDone: () => location.reload(),
+                            CustomIcon: () => (
+                                <div
+                                    className={styles['success-icon']}
+                                    style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        margin: '0 auto',
+                                    }}
+                                />
+                            ),
                         }}
                     />
                 ) : (
                     <>
+                        <h1 className={styles['reset-title']}>
+                            {formatMessage({ id: 'reset.title' })}
+                        </h1>
                         <Form className={styles['register-form']}>
                             {notice && (
-                                <Form.Item>
+                                <Form.Item className={styles['formItem-margin-clear']}>
                                     <Alert
                                         message={formatMessage({ id: ALERT_NOTICE_MAP[notice] })}
                                         type="error"
@@ -152,7 +175,9 @@ class MobileReset extends Component {
                                     />
                                 </Form.Item>
                             )}
-                            <Form.Item>
+                            <Form.Item
+                                className={notice ? '' : `${styles['formItem-with-margin']}`}
+                            >
                                 {getFieldDecorator('username', {
                                     validateTrigger: 'onBlur',
                                     rules: [
@@ -171,66 +196,24 @@ class MobileReset extends Component {
                                     ],
                                 })(
                                     <Input
-                                        addonBefore="+86"
                                         size="large"
                                         maxLength={11}
+                                        autoComplete="off"
                                         placeholder={formatMessage({ id: 'mobile.placeholder' })}
                                     />
                                 )}
                             </Form.Item>
 
-                            <Modal
-                                title={formatMessage({ id: 'safety.validate' })}
-                                visible={showImgCaptchaModal}
-                                maskClosable={false}
-                                onOk={this.checkVcode}
-                                onCancel={this.closeImgCaptchaModal}
-                            >
-                                <div>
-                                    <p>{formatMessage({ id: 'vcode.input.notice' })}</p>
-                                    <Form.Item>
-                                        {getFieldDecorator('vcode', {
-                                            validateTrigger: 'onBlur',
-                                            rules: [
-                                                {
-                                                    validator: (rule, value, callback) => {
-                                                        if (vcodeIsError) {
-                                                            callback(
-                                                                formatMessage({
-                                                                    id: 'vcode.input.error',
-                                                                })
-                                                            );
-                                                        } else if (!vcodeIsError && !value) {
-                                                            callback(
-                                                                formatMessage({
-                                                                    id: 'code.validate.isEmpty',
-                                                                })
-                                                            );
-                                                        } else {
-                                                            callback();
-                                                        }
-                                                    },
-                                                },
-                                            ],
-                                        })(
-                                            <ImgCaptcha
-                                                {...{
-                                                    imgUrl: imgCaptcha.url,
-                                                    inputProps: {
-                                                        size: 'large',
-                                                        placeholder: formatMessage({
-                                                            id: 'vcode.placeholder',
-                                                        }),
-                                                    },
-                                                    initial: false,
-                                                    onFocus: () =>
-                                                        this.setState({ vcodeIsError: false }),
-                                                }}
-                                            />
-                                        )}
-                                    </Form.Item>
-                                </div>
-                            </Modal>
+                            <ImgCaptchaModal
+                                {...{
+                                    form,
+                                    visible: showImgCaptchaModal,
+                                    getCode: this.getCode,
+                                    refreshCode: this.refreshCode,
+                                    imgCaptcha,
+                                    onCancel: this.closeImgCaptchaModal,
+                                }}
+                            />
 
                             <Form.Item>
                                 {getFieldDecorator('code', {
@@ -245,6 +228,7 @@ class MobileReset extends Component {
                                     <Captcha
                                         {...{
                                             trigger,
+                                            validateTarget: getFieldValue('username') || '',
                                             inputProps: {
                                                 size: 'large',
                                                 placeholder: formatMessage({
@@ -280,6 +264,7 @@ class MobileReset extends Component {
                                     ],
                                 })(
                                     <Input
+                                        maxLength={30}
                                         type="password"
                                         size="large"
                                         placeholder={formatMessage({ id: 'password.placeholder' })}
@@ -305,18 +290,28 @@ class MobileReset extends Component {
                                     ],
                                 })(
                                     <Input
+                                        maxLength={30}
                                         type="password"
                                         size="large"
                                         placeholder={formatMessage({ id: 'confirm.placeholder' })}
                                     />
                                 )}
                             </Form.Item>
-                            <Form.Item>
-                                <Button type="primary" size="large" block onClick={this.onSubmit}>
-                                    {formatMessage({ id: 'btn.confirm' })}
-                                </Button>
-                            </Form.Item>
+                            <Form.Item />
                         </Form>
+                        <div className={styles['reset-footer']}>
+                            <Button
+                                className={`${styles['primary-btn']} ${
+                                    styles['reset-confirm-btn']
+                                }`}
+                                type="primary"
+                                size="large"
+                                block
+                                onClick={this.onSubmit}
+                            >
+                                {formatMessage({ id: 'btn.confirm' })}
+                            </Button>
+                        </div>
                     </>
                 )}
             </div>

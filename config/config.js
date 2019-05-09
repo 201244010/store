@@ -1,41 +1,42 @@
 // ref: https://umijs.org/config/
-import { primaryColor } from "../src/defaultSettings";
+import { primaryColor } from '../src/defaultSettings';
 
 export default {
     hash: true,
     plugins: [
         [
-            "umi-plugin-react",
+            'umi-plugin-react',
             {
                 antd: true,
                 dva: {
-                    hmr: true
+                    hmr: true,
                 },
                 targets: {
-                    ie: 11
+                    ie: 11,
                 },
                 locale: {
-                    enable: true, // default false
-                    default: "zh-CN", // default zh-CN
-                    baseNavigator: true // default true, when it is true, will use `navigator.language` overwrite default
+                    default: 'zh-CN', // default zh-CN
+                    baseNavigator: false, // default true, when it is true, will use `navigator.language` overwrite default
+                    // TODO 暂时强制限定中文
+                    // baseNavigator: true, // default true, when it is true, will use `navigator.language` overwrite default
                 },
                 dynamicImport: {
-                    loadingComponent: "./components/PageLoading/index"
-                }
-            }
+                    loadingComponent: './components/PageLoading/index',
+                },
+            },
         ],
         [
-            "umi-plugin-pro-block",
+            'umi-plugin-pro-block',
             {
                 moveMock: false,
                 moveService: false,
                 modifyRequest: true,
-                autoAddMenu: true
-            }
-        ]
+                autoAddMenu: true,
+            },
+        ],
     ],
     targets: {
-        ie: 11
+        ie: 11,
     },
 
     /**
@@ -43,132 +44,137 @@ export default {
      */
     routes: [
         {
-            path: "/user",
-            component: "../layouts/UserLayout",
+            path: '/user',
+            component: '../layouts/SunmiLayout',
             routes: [
-                { path: "/user/login", component: "./User/Login/Login" },
-                { path: "/user/register", component: "./User/Register/Register" },
-                { path: "/user/storeRelate", component: "./User/StoreRelate/StoreRelate" },
-                { path: "/user/mailActive", component: "./User/MailActive/MailActive" },
-                { path: "/user/resetPassword", component: "./User/ResetPassword/ResetPassword" },
-                { path: "/user/resetPassword/reset", component: "./User/ResetPassword/PasswordReset" }
-            ]
+                { path: '/user', redirect: '/user/login' },
+                { path: '/user/login', component: './User/Login/LoginUI' },
+                { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelateUI' },
+                { path: '/user/merchantCreate', component: './User/StoreRelate/StoreRelateUI' },
+                { path: '/user/*', redirect: '/user/login' },
+            ],
         },
+        // {
+        //     path: '/user',
+        //     component: '../layouts/UserLayout',
+        //     routes: [
+        //         { path: '/user', redirect: '/user/login' },
+        //         { path: '/user/login', component: './User/Login/Login' },
+        //         { path: '/user/register', component: './User/Register/Register' },
+        //         { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelate' },
+        //         { path: '/user/mailActive', component: './User/MailActive/MailActive' },
+        //         { path: '/user/resetPassword', component: './User/ResetPassword/ResetPassword' },
+        //         { path: '/user/resetPassword/reset', component: './User/ResetPassword/PasswordReset' },
+        //     ],
+        // },
+        // {
+        //     path: '/merchant',
+        //     component: '../layouts/MerchantLayout',
+        //     routes: [
+        //         { path: '/merchant/create', component: './MerchantManagement/MerchantCreate' },
+        //     ],
+        // },
         {
-            path: "/merchant",
-            component: "../layouts/MerchantLayout",
-            routes: [
-                { path: "/merchant/create", component: "./MerchantManagement/MerchantCreate" }
-            ]
-        },
-        {
-            path: "/studio",
-            component: "../layouts/BlankLayout",
-            routes: [
-                { path: "/studio", component: "./Studio" }
-            ]
-        },
-        {
-            path: "/",
-            component: "../layouts/BasicLayout",
+            path: '/',
+            component: '../layouts/BasicLayout',
             routes: [
                 // { path: '/', redirect: '/deviceManagement' },
                 // TODO 万有集市 临时菜单 START
-                { path: "/", redirect: "/esl" },
+                { path: '/', redirect: '/esl' },
                 {
-                    path: "/esl",
-                    name: "esl",
-                    icon: "blank",
+                    path: '/esl',
+                    name: 'esl',
+                    icon: 'blank',
                     routes: [
-                        { path: "/esl", redirect: "/esl/electricLabel" },
+                        { path: '/esl', redirect: '/esl/electricLabel' },
                         {
-                            path: "/esl/electricLabel",
-                            name: "electricLabel",
-                            component: "./DeviceManagement/ESL/ElectricLabel"
+                            path: '/esl/electricLabel',
+                            name: 'electricLabel',
+                            component: './DeviceManagement/ESL/ElectricLabel',
                         },
                         {
-                            path: "/esl/baseStation",
-                            name: "baseStation",
-                            component: "./DeviceManagement/ESL/BaseStation"
-                        }
-                    ]
+                            path: '/esl/baseStation',
+                            name: 'baseStation',
+                            component: './DeviceManagement/ESL/BaseStation',
+                        },
+                    ],
                 },
                 {
-                    path: "/product",
-                    name: "product",
-                    icon: "blank",
+                    path: '/product',
+                    name: 'product',
+                    icon: 'blank',
                     routes: [
-                        { path: "/product", redirect: "/product/list" },
+                        { path: '/product', redirect: '/product/list' },
                         {
-                            path: "/product/list",
-                            name: "list",
+                            path: '/product/list',
+                            name: 'list',
                             hideInMenu: true,
-                            component: "./BasicData/ProductManagement"
+                            component: './BasicData/ProductManagement',
                         },
                         {
-                            path: "/product/list/productCreate",
-                            name: "list",
+                            path: '/product/list/productCreate',
+                            name: 'list',
                             hideInMenu: true,
-                            component: "./BasicData/ProductManagement/ProductCU"
+                            component: './BasicData/ProductManagement/ProductCU',
                         },
                         {
-                            path: "/product/list/productUpdate",
-                            name: "list",
+                            path: '/product/list/productUpdate',
+                            name: 'list',
                             hideInMenu: true,
-                            component: "./BasicData/ProductManagement/ProductCU"
+                            component: './BasicData/ProductManagement/ProductCU',
                         },
                         {
-                            path: "/product/list/productInfo",
-                            name: "list",
+                            path: '/product/list/productInfo',
+                            name: 'list',
                             hideInMenu: true,
-                            component: "./BasicData/ProductManagement/ProductInfo"
+                            component: './BasicData/ProductManagement/ProductInfo',
                         },
                         {
-                            path: "/product/list/erpImport",
-                            name: "list",
+                            path: '/product/list/erpImport',
+                            name: 'list',
                             hideInMenu: true,
-                            component: "./BasicData/ProductManagement/ERPImport"
-                        }
-                    ]
+                            component: './BasicData/ProductManagement/ERPImport',
+                        },
+                    ],
                 },
                 {
-                    path: "/company",
-                    name: "company",
-                    icon: "blank",
+                    path: '/company',
+                    name: 'company',
+                    icon: 'blank',
                     routes: [
-                        { path: "/company", redirect: "/company/merchantManagement" },
-                        { path: "/company/merchantManagement", redirect: "/company/merchantManagement/view" },
+                        { path: '/company', redirect: '/company/merchantManagement' },
+                        { path: '/company/merchantManagement', redirect: '/company/merchantManagement/view' },
                         {
-                            path: "/company/merchantManagement/view",
-                            name: "merchantManagement",
-                            component: "./MerchantManagement/MerchantView"
+                            path: '/company/merchantManagement/view',
+                            name: 'merchantManagement',
+                            component: './MerchantManagement/MerchantView',
                         },
                         {
-                            path: "/company/merchantManagement/modify",
-                            name: "merchantManagement",
+                            path: '/company/merchantManagement/modify',
+                            name: 'merchantManagement',
                             hideInMenu: true,
-                            component: "./MerchantManagement/MerchantModify"
+                            component: './MerchantManagement/MerchantModify',
                         },
                         {
-                            path: "/company/storeManagement",
-                            redirect: "/company/storeManagement/list"
+                            path: '/company/storeManagement',
+                            redirect: '/company/storeManagement/list',
                         },
                         {
-                            path: "/company/storeManagement/list",
-                            name: "storeManagement",
-                            component: "./StoreManagement"
+                            path: '/company/storeManagement/list',
+                            name: 'storeManagement',
+                            component: './StoreManagement',
                         },
                         {
-                            path: "/company/storeManagement/createStore",
-                            component: "./StoreManagement/CreateStore.js",
-                            name: "storeManagement",
-                            hideInMenu: true
+                            path: '/company/storeManagement/createStore',
+                            component: './StoreManagement/CreateStore.js',
+                            name: 'storeManagement',
+                            hideInMenu: true,
                         },
                         {
-                            path: "/company/storeManagement/storeInformation",
-                            component: "./StoreManagement/StoreInformation.js",
-                            name: "storeManagement",
-                            hideInMenu: true
+                            path: '/company/storeManagement/storeInformation',
+                            component: './StoreManagement/StoreInformation.js',
+                            name: 'storeManagement',
+                            hideInMenu: true,
                         },
                         {
                             path: "/company/storeManagement/alterStore",
@@ -201,115 +207,115 @@ export default {
                 //     component: './DashBoard',
                 // },
                 {
-                    path: "/deviceManagement",
-                    name: "deviceManagement",
-                    icon: "blank",
+                    path: '/deviceManagement',
+                    name: 'deviceManagement',
+                    icon: 'blank',
                     // TODO 万有集市临时用菜单隐藏
                     hideInMenu: true,
                     routes: [
-                        { path: "/deviceManagement", redirect: "/deviceManagement/esl" },
+                        { path: '/deviceManagement', redirect: '/deviceManagement/esl' },
                         {
-                            path: "/deviceManagement/esl",
-                            name: "esl",
+                            path: '/deviceManagement/esl',
+                            name: 'esl',
                             routes: [
-                                { path: "/deviceManagement/esl", redirect: "/deviceManagement/esl/electricLabel" },
+                                { path: '/deviceManagement/esl', redirect: '/deviceManagement/esl/electricLabel' },
                                 {
-                                    path: "/deviceManagement/esl/electricLabel",
-                                    name: "electricLabel",
-                                    component: "./DeviceManagement/ESL/ElectricLabel"
+                                    path: '/deviceManagement/esl/electricLabel',
+                                    name: 'electricLabel',
+                                    component: './DeviceManagement/ESL/ElectricLabel',
                                 },
                                 {
-                                    path: "/deviceManagement/esl/baseStation",
-                                    name: "baseStation",
-                                    component: "./DeviceManagement/ESL/BaseStation"
-                                }
-                            ]
-                        }
-                    ]
+                                    path: '/deviceManagement/esl/baseStation',
+                                    name: 'baseStation',
+                                    component: './DeviceManagement/ESL/BaseStation',
+                                },
+                            ],
+                        },
+                    ],
                 },
                 {
-                    path: "/basicData",
-                    name: "basicData",
-                    icon: "blank",
+                    path: '/basicData',
+                    name: 'basicData',
+                    icon: 'blank',
                     hideInMenu: true,
                     routes: [
-                        { path: "/basicData", redirect: "/basicData/productManagement" },
+                        { path: '/basicData', redirect: '/basicData/productManagement' },
                         {
-                            path: "/basicData/productManagement",
-                            name: "productManagement",
+                            path: '/basicData/productManagement',
+                            name: 'productManagement',
                             routes: [
-                                { path: "/basicData/productManagement", redirect: "/basicData/productManagement/list" },
+                                { path: '/basicData/productManagement', redirect: '/basicData/productManagement/list' },
                                 {
-                                    path: "/basicData/productManagement/list",
-                                    name: "list",
-                                    component: "./BasicData/ProductManagement"
+                                    path: '/basicData/productManagement/list',
+                                    name: 'list',
+                                    component: './BasicData/ProductManagement',
                                 },
                                 {
-                                    path: "/basicData/productManagement/list/productCreate",
-                                    name: "list",
+                                    path: '/basicData/productManagement/list/productCreate',
+                                    name: 'list',
                                     hideInMenu: true,
-                                    component: "./BasicData/ProductManagement/ProductCU"
+                                    component: './BasicData/ProductManagement/ProductCU',
                                 },
                                 {
-                                    path: "/basicData/productManagement/list/productUpdate",
-                                    name: "list",
+                                    path: '/basicData/productManagement/list/productUpdate',
+                                    name: 'list',
                                     hideInMenu: true,
-                                    component: "./BasicData/ProductManagement/ProductCU"
+                                    component: './BasicData/ProductManagement/ProductCU',
                                 },
                                 {
-                                    path: "/basicData/productManagement/list/productInfo",
-                                    name: "list",
+                                    path: '/basicData/productManagement/list/productInfo',
+                                    name: 'list',
                                     hideInMenu: true,
-                                    component: "./BasicData/ProductManagement/ProductInfo"
+                                    component: './BasicData/ProductManagement/ProductInfo',
                                 },
                                 {
-                                    path: "/basicData/productManagement/list/erpImport",
-                                    name: "list",
+                                    path: '/basicData/productManagement/list/erpImport',
+                                    name: 'list',
                                     hideInMenu: true,
-                                    component: "./BasicData/ProductManagement/ERPImport"
-                                }
-                            ]
+                                    component: './BasicData/ProductManagement/ERPImport',
+                                },
+                            ],
                         },
                         {
-                            path: "/basicData/merchantManagement/view",
-                            name: "merchantManagement",
-                            component: "./MerchantManagement/MerchantView"
+                            path: '/basicData/merchantManagement/view',
+                            name: 'merchantManagement',
+                            component: './MerchantManagement/MerchantView',
                         },
                         {
-                            path: "/basicData/merchantManagement/modify",
-                            name: "merchantManagement",
+                            path: '/basicData/merchantManagement/modify',
+                            name: 'merchantManagement',
                             hideInMenu: true,
-                            component: "./MerchantManagement/MerchantModify"
+                            component: './MerchantManagement/MerchantModify',
                         },
                         {
-                            path: "/basicData/storeManagement",
-                            name: "storeManagement",
+                            path: '/basicData/storeManagement',
+                            name: 'storeManagement',
                             routes: [
-                                { path: "/basicData/storeManagement", redirect: "/basicData/storeManagement/list" },
+                                { path: '/basicData/storeManagement', redirect: '/basicData/storeManagement/list' },
                                 {
-                                    path: "/basicData/storeManagement/list",
-                                    component: "./StoreManagement/index.js",
-                                    name: "list"
+                                    path: '/basicData/storeManagement/list',
+                                    component: './StoreManagement/index.js',
+                                    name: 'list',
                                 },
                                 {
-                                    path: "/basicData/storeManagement/createStore",
-                                    component: "./StoreManagement/CreateStore.js",
-                                    name: "createStore",
-                                    hideInMenu: true
+                                    path: '/basicData/storeManagement/createStore',
+                                    component: './StoreManagement/CreateStore.js',
+                                    name: 'createStore',
+                                    hideInMenu: true,
                                 },
                                 {
-                                    path: "/basicData/storeManagement/storeInformation",
-                                    component: "./StoreManagement/StoreInformation.js",
-                                    hideInMenu: true
+                                    path: '/basicData/storeManagement/storeInformation',
+                                    component: './StoreManagement/StoreInformation.js',
+                                    hideInMenu: true,
                                 },
                                 {
-                                    path: "/basicData/storeManagement/alterStore",
-                                    component: "./StoreManagement/AlterStore.js",
-                                    hideInMenu: true
-                                }
-                            ]
-                        }
-                    ]
+                                    path: '/basicData/storeManagement/alterStore',
+                                    component: './StoreManagement/AlterStore.js',
+                                    hideInMenu: true,
+                                },
+                            ],
+                        },
+                    ],
                 },
                 // {
                 //   path: '/setting',
@@ -324,12 +330,12 @@ export default {
                 //   ],
                 // },
                 {
-                    path: "/account/center",
-                    component: "./Account/",
-                    name: "account",
-                    hideInMenu: true
-                }
-            ]
+                    path: '/account/center',
+                    component: './Account/',
+                    name: 'account',
+                    hideInMenu: true,
+                },
+            ],
         },
     ],
     disableRedirectHoist: true,
@@ -338,19 +344,19 @@ export default {
      * webpack 相关配置
      */
     define: {
-        APP_TYPE: process.env.APP_TYPE || "",
-        "process.env.UMI_ENV": process.env.UMI_ENV
+        APP_TYPE: process.env.APP_TYPE || '',
+        'process.env.UMI_ENV': process.env.UMI_ENV,
     },
     // Theme for antd
     // https://ant.design/docs/react/customize-theme-cn
     theme: {
-        "primary-color": primaryColor
+        'primary-color': primaryColor,
     },
     externals: {
-        "@antv/data-set": "DataSet"
+        '@antv/data-set': 'DataSet',
     },
     ignoreMomentLocale: true,
     lessLoaderOptions: {
-        javascriptEnabled: true
-    }
+        javascriptEnabled: true,
+    },
 };

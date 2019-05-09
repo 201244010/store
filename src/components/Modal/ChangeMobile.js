@@ -3,17 +3,18 @@ import { formatMessage } from 'umi/locale';
 import { Form, Input, Modal, message } from 'antd';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import Captcha from '@/components/Captcha';
+import ImgCaptchaModal from '@/components/Captcha/ImgCaptchaModal';
 import { encryption } from '@/utils/utils';
 import {
     ALERT_NOTICE_MAP,
     ERROR_OK,
+    MOBILE_ERROR,
     MOBILE_BINDED,
     SHOW_VCODE,
     USER_EXIST,
     USER_NOT_EXIST,
     VCODE_ERROR,
 } from '@/constants/errorCode';
-import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 
 @Form.create()
 class ChangeMobile extends Component {
@@ -21,7 +22,6 @@ class ChangeMobile extends Component {
         super(props);
         this.state = {
             trigger: false,
-            vcodeIsError: false,
             showImgCaptchaModal: false,
         };
     }
@@ -32,11 +32,12 @@ class ChangeMobile extends Component {
 
     onOk = () => {
         const {
-            form: { validateFields },
+            form: { validateFields, setFields },
             mobileBinded,
             onOk,
         } = this.props;
-        validateFields(async (err, values) => {
+        const fields = ['password', 'phone', 'code'];
+        validateFields(fields, async (err, values) => {
             if (!err) {
                 const options = {
                     ...values,
@@ -51,6 +52,13 @@ class ChangeMobile extends Component {
                     }
                 } else if (response && response.code === MOBILE_BINDED) {
                     message.error(formatMessage({ id: 'mobile.binded' }));
+                } else if (response && response.code === MOBILE_ERROR) {
+                    setFields({
+                        password: {
+                            value: values.password,
+                            errors: [new Error(formatMessage({ id: 'password.input.error' }))],
+                        },
+                    });
                 } else {
                     message.error(formatMessage({ id: 'change.mobile.fail' }));
                 }
@@ -91,11 +99,11 @@ class ChangeMobile extends Component {
             options: {
                 username: getFieldValue('phone'),
                 type: optionType,
-                imgCode: getFieldValue('vcode') || '',
+                imgCode: getFieldValue('vcode2') || '',
                 key: needImgCaptcha ? imgCaptcha.key : '',
-                width: 112,
-                height: 40,
-                fontSize: 18,
+                width: 76,
+                height: 30,
+                fontSize: 16,
                 ...imageStyle,
             },
         });
@@ -104,7 +112,6 @@ class ChangeMobile extends Component {
             message.success(formatMessage({ id: 'send.mobile.code.success' }));
             this.setState({
                 trigger: true,
-                vcodeIsError: false,
                 showImgCaptchaModal: false,
             });
         } else if (response && !response.data) {
@@ -120,26 +127,16 @@ class ChangeMobile extends Component {
         return response;
     };
 
-    checkVcode = async () => {
-        const {
-            form: { setFieldsValue, validateFields },
-        } = this.props;
+    refreshCode = async () => {
         const response = await this.getCode();
-        if (response && [SHOW_VCODE, VCODE_ERROR].includes(response.code)) {
-            setFieldsValue({ vcode: '' });
-            this.setState(
-                {
-                    vcodeIsError: true,
-                },
-                () => validateFields(['vcode'], { force: true })
-            );
-        }
+        return response;
     };
 
     render() {
-        const { trigger, vcodeIsError, showImgCaptchaModal } = this.state;
+        const { trigger, showImgCaptchaModal } = this.state;
         const {
-            form: { getFieldDecorator },
+            form,
+            form: { getFieldDecorator, getFieldValue },
             sso: { imgCaptcha },
             visible,
             mobileBinded = true,
@@ -196,56 +193,16 @@ class ChangeMobile extends Component {
                         })(<Input addonBefore="+86" maxLength={11} />)}
                     </Form.Item>
 
-                    <Modal
-                        title={formatMessage({ id: 'safety.validate' })}
-                        visible={showImgCaptchaModal}
-                        maskClosable={false}
-                        onOk={this.checkVcode}
-                        onCancel={this.closeImgCaptchaModal}
-                    >
-                        <div>
-                            <p>{formatMessage({ id: 'vcode.input.notice' })}</p>
-                            <Form.Item>
-                                {getFieldDecorator('vcode', {
-                                    validateTrigger: 'onBlur',
-                                    rules: [
-                                        {
-                                            validator: (rule, value, callback) => {
-                                                if (vcodeIsError) {
-                                                    callback(
-                                                        formatMessage({ id: 'vcode.input.error' })
-                                                    );
-                                                } else if (!vcodeIsError && !value) {
-                                                    callback(
-                                                        formatMessage({
-                                                            id: 'code.validate.isEmpty',
-                                                        })
-                                                    );
-                                                } else {
-                                                    callback();
-                                                }
-                                            },
-                                        },
-                                    ],
-                                })(
-                                    <ImgCaptcha
-                                        {...{
-                                            imgUrl: imgCaptcha.url,
-                                            inputProps: {
-                                                maxLength: 4,
-                                                size: 'large',
-                                                placeholder: formatMessage({
-                                                    id: 'vcode.placeholder',
-                                                }),
-                                            },
-                                            initial: false,
-                                            onFocus: () => this.setState({ vcodeIsError: false }),
-                                        }}
-                                    />
-                                )}
-                            </Form.Item>
-                        </div>
-                    </Modal>
+                    <ImgCaptchaModal
+                        {...{
+                            form,
+                            visible: showImgCaptchaModal,
+                            getCode: this.getCode,
+                            refreshCode: this.refreshCode,
+                            imgCaptcha,
+                            onCancel: this.closeImgCaptchaModal,
+                        }}
+                    />
 
                     <Form.Item
                         {...FORM_ITEM_LAYOUT_COMMON}
@@ -263,6 +220,7 @@ class ChangeMobile extends Component {
                             <Captcha
                                 {...{
                                     trigger,
+                                    validateTarget: getFieldValue('phone') || '',
                                     inputProps: {
                                         maxLength: 4,
                                     },

@@ -11,6 +11,7 @@ export default {
 
     state: {
         userInfo: {},
+        loading: false,
         errorTimes: 0,
         list: [],
         currentUser: CookieUtil.getCookieByKey(CookieUtil.USER_INFO_KEY) || {},
@@ -19,12 +20,26 @@ export default {
     effects: {
         *login({ payload }, { call, put }) {
             const { type, options } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
             const response = yield call(Actions.login, type, options);
 
             if (response && response.code === ERROR_OK) {
                 const token = response.data;
                 CookieUtil.setCookieByKey(CookieUtil.TOKEN_KEY, token);
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
             } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+
                 yield put({
                     type: 'computeErrorTime',
                     payload: 1,
@@ -34,7 +49,7 @@ export default {
             return response;
         },
         *logout(_, { call, put }) {
-            yield call(Actions.logout);
+            call(Actions.logout);
             yield put({
                 type: 'initState',
             });
@@ -93,10 +108,10 @@ export default {
             const { options } = payload;
             const response = yield call(Actions.changePassword, options);
             if (response && response.code === ERROR_OK) {
-                message.success(formatMessage({ id: 'change.password.success' }));
-                // TODO 是否跳转回首页待定
-                CookieUtil.clearCookies();
-                // router.push('/user/login');
+                message.success(formatMessage({ id: 'change.password.success' }), 1.5, () => {
+                    CookieUtil.clearCookies();
+                    router.push('/user/login');
+                });
             }
             return response;
         },
@@ -136,6 +151,12 @@ export default {
         },
     },
     reducers: {
+        updateState(state, action) {
+            return {
+                ...state,
+                ...action.payload,
+            };
+        },
         computeErrorTime(state, action) {
             return {
                 ...state,
@@ -152,6 +173,7 @@ export default {
             return {
                 ...state,
                 userInfo: {},
+                currentUser: {},
                 errorTimes: 0,
             };
         },

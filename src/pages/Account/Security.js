@@ -110,7 +110,7 @@ class Security extends Component {
                                         id: 'userCenter.security.mobile.description',
                                     })}
                                     <span>
-                                        {maskPhone(currentUser.phone, {
+                                        {maskPhone(currentUser.phone || '', {
                                             maskStart: 3,
                                             maskEnd: 6,
                                         }) || ''}
@@ -118,24 +118,25 @@ class Security extends Component {
                                 </div>
                             </div>
                         </List.Item>
-                        <List.Item>
-                            <div className={styles['list-item']}>
-                                <div className={styles['title-wrapper-between']}>
-                                    <h4>{formatMessage({ id: 'userCenter.security.mail' })}</h4>
-                                    <a
-                                        href="javascript:void(0);"
-                                        onClick={() => this.openChangeModal('mail')}
-                                    >
-                                        {currentUser.email
-                                            ? formatMessage({ id: 'btn.alter' })
-                                            : formatMessage({ id: 'btn.bind' })}
-                                    </a>
-                                </div>
-                                <div>
-                                    {formatMessage({ id: 'userCenter.security.mail.description' })}
-                                </div>
-                            </div>
-                        </List.Item>
+                        {/* TODO 暂时隐去邮箱找回功能 */}
+                        {/* <List.Item> */}
+                        {/* <div className={styles['list-item']}> */}
+                        {/* <div className={styles['title-wrapper-between']}> */}
+                        {/* <h4>{formatMessage({ id: 'userCenter.security.mail' })}</h4> */}
+                        {/* <a */}
+                        {/* href="javascript:void(0);" */}
+                        {/* onClick={() => this.openChangeModal('mail')} */}
+                        {/* > */}
+                        {/* {currentUser.email */}
+                        {/* ? formatMessage({ id: 'btn.alter' }) */}
+                        {/* : formatMessage({ id: 'btn.bind' })} */}
+                        {/* </a> */}
+                        {/* </div> */}
+                        {/* <div> */}
+                        {/* {formatMessage({ id: 'userCenter.security.mail.description' })} */}
+                        {/* </div> */}
+                        {/* </div> */}
+                        {/* </List.Item> */}
                     </List>
                 </Card>
                 <RenderModal

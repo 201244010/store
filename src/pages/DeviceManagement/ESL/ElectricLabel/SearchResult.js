@@ -5,6 +5,7 @@ import { DURATION_TIME } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 import Detail from './Detail';
 import BindModal from './BindModal';
+import styles from './index.less';
 
 const ESL_STATES = {
     0: formatMessage({ id: 'esl.device.esl.push.wait' }),
@@ -249,7 +250,11 @@ class SearchResult extends Component {
             {
                 title: formatMessage({ id: 'esl.device.esl.status' }),
                 dataIndex: 'status',
-                render: text => <span>{ESL_STATES[text]}</span>,
+                render: text => (
+                    <span style={{ color: `${text}` === '2' ? 'red' : 'rgba(0, 0, 0, 0.65)' }}>
+                        {ESL_STATES[text]}
+                    </span>
+                ),
             },
             {
                 title: formatMessage({ id: 'esl.device.esl.battery' }),
@@ -372,30 +377,36 @@ class SearchResult extends Component {
                         </Button>,
                     ]}
                 >
-                    <Row>
-                        <Col span={4}>{formatMessage({ id: 'esl.device.esl.id' })}:</Col>
-                        <Col span={20}>{currentRecord.esl_code}</Col>
-                        <Col span={4}>
-                            {formatMessage({ id: 'esl.device.esl.product.seq.num' })}:
-                        </Col>
-                        <Col span={20}>{currentRecord.product_seq_num}</Col>
-                        <Col span={4}>{formatMessage({ id: 'esl.device.esl.product.name' })}:</Col>
-                        <Col span={20}>{currentRecord.product_name}</Col>
-                        <Col span={4}>{formatMessage({ id: 'esl.device.esl.template.name' })}:</Col>
-                        <Col span={20}>
-                            <Select
-                                style={{ width: '100%' }}
-                                value={currentRecord.template_id}
-                                onChange={id => this.updateProduct(id)}
-                            >
-                                {templates4ESL.map(template => (
-                                    <Select.Option key={template.id} value={template.id}>
-                                        {template.name}
-                                    </Select.Option>
-                                ))}
-                            </Select>
-                        </Col>
-                    </Row>
+                    <div className={styles['custom-modal-wrapper']}>
+                        <Row>
+                            <Col span={4}>{formatMessage({ id: 'esl.device.esl.id' })}:</Col>
+                            <Col span={20}>{currentRecord.esl_code}</Col>
+                            <Col span={4}>
+                                {formatMessage({ id: 'esl.device.esl.product.seq.num' })}:
+                            </Col>
+                            <Col span={20}>{currentRecord.product_seq_num}</Col>
+                            <Col span={4}>
+                                {formatMessage({ id: 'esl.device.esl.product.name' })}:
+                            </Col>
+                            <Col span={20}>{currentRecord.product_name}</Col>
+                            <Col span={4}>
+                                {formatMessage({ id: 'esl.device.esl.template.name' })}:
+                            </Col>
+                            <Col span={20}>
+                                <Select
+                                    style={{ width: '100%' }}
+                                    value={currentRecord.template_id}
+                                    onChange={id => this.updateProduct(id)}
+                                >
+                                    {templates4ESL.map(template => (
+                                        <Select.Option key={template.id} value={template.id}>
+                                            {template.name}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Col>
+                        </Row>
+                    </div>
                 </Modal>
                 <BindModal
                     {...{

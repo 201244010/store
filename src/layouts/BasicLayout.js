@@ -21,6 +21,10 @@ import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/menuLogo.png';
 
+message.config({
+    maxCount: 1,
+});
+
 const { Content } = Layout;
 
 const query = {
@@ -54,20 +58,27 @@ class BasicLayout extends React.PureComponent {
         super(props);
         this.getPageTitle = memoizeOne(this.getPageTitle);
         this.matchParamsPath = memoizeOne(this.matchParamsPath, isEqual);
+        this.state = {
+            selectedStore: CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY),
+        };
     }
 
     componentDidMount() {
         const {
+            authorityCheck,
             dispatch,
             route: { routes, authority },
         } = this.props;
-        dispatch({
-            type: 'menu/getMenuData',
-            payload: { routes, authority },
-        });
-        dispatch({
-            type: 'user/getUserInfo',
-        });
+
+        if (authorityCheck()) {
+            dispatch({
+                type: 'menu/getMenuData',
+                payload: { routes, authority },
+            });
+            dispatch({
+                type: 'user/getUserInfo',
+            });
+        }
     }
 
     componentWillReceiveProps() {
@@ -84,6 +95,10 @@ class BasicLayout extends React.PureComponent {
         // After changing to phone mode,
         // if collapsed is true, you need to click twice to display
         const { collapsed, isMobile } = this.props;
+        this.setState({
+            selectedStore: CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY),
+        });
+
         if (isMobile && !preProps.isMobile && !collapsed) {
             this.handleMenuCollapse(false);
         }
@@ -161,6 +176,7 @@ class BasicLayout extends React.PureComponent {
     };
 
     render() {
+        const { selectedStore } = this.state;
         const {
             navTheme,
             layout: PropsLayout,
@@ -198,6 +214,7 @@ class BasicLayout extends React.PureComponent {
                         handleMenuCollapse={this.handleMenuCollapse}
                         logo={logo}
                         isMobile={isMobile}
+                        selectedStore={selectedStore}
                         {...this.props}
                     />
                     {/* <Breadcrumbs /> */}

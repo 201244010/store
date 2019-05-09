@@ -47,6 +47,7 @@ class UserLayout extends React.PureComponent {
             <>
                 <DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
                     <div className={styles.container}>
+                        {/* TODO 暂时隐去语言选择 */}
                         <div className={styles.lang}>
                             <SelectLang />
                         </div>

@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
 import { MENU_PREFIX } from '@/constants';
 import styles from './StoreManagement.less';
 import { formatEmptyWithoutZero } from '@/utils/utils';
@@ -74,7 +74,7 @@ const columns = [
                 <a
                     onClick={() => {
                         router.push(
-                            `${MENU_PREFIX.STORE}/createStore?shopId=${record.shop_id}&action=edit`
+                            `${MENU_PREFIX.STORE}/alterStore?shopId=${record.shop_id}&action=edit`
                         );
                     }}
                     className={styles.infoAnchor}
@@ -119,14 +119,16 @@ class StoreManagement extends Component {
     }
 
     handleReset = async () => {
-        const {
-            form: { resetFields },
-            clearSearch,
-            getStoreList,
-        } = this.props;
-        resetFields();
+        const { form, clearSearch, getStoreList } = this.props;
+        if (form) {
+            form.resetFields();
+        }
         await clearSearch();
-        await getStoreList({});
+        await getStoreList({
+            options: {
+                current: 1,
+            },
+        });
     };
 
     handleSubmit = () => {
@@ -170,9 +172,9 @@ class StoreManagement extends Component {
         return (
             <div className={styles.storeList}>
                 <div className={styles.top}>
-                    <Form {...FORM_ITEM_LAYOUT_COMMON}>
-                        <Row {...FORM_FORMAT.gutter}>
-                            <Col span={8}>
+                    <Form {...FORM_ITEM_LAYOUT}>
+                        <Row gutter={FORM_FORMAT.gutter}>
+                            <Col xl={9} lg={12} md={24}>
                                 <FormItem
                                     label={formatMessage({ id: 'storeManagement.list.inputLabel' })}
                                 >
@@ -187,7 +189,7 @@ class StoreManagement extends Component {
                                     )}
                                 </FormItem>
                             </Col>
-                            <Col span={8}>
+                            <Col xl={9} lg={12} md={24}>
                                 <FormItem
                                     label={formatMessage({
                                         id: 'storeManagement.list.selectLabel',
@@ -205,7 +207,7 @@ class StoreManagement extends Component {
                                     )}
                                 </FormItem>
                             </Col>
-                            <Col span={8}>
+                            <Col xl={6} lg={12} md={24}>
                                 <Button onClick={this.handleSubmit}>
                                     {formatMessage({ id: 'storeManagement.list.buttonSubmit' })}
                                 </Button>

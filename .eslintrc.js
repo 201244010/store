@@ -20,6 +20,8 @@ module.exports = {
         'react/forbid-prop-types': 0,
         'react/jsx-one-expression-per-line': 0,
         'react/no-array-index-key': 0,
+        'react/no-did-update-set-state': 0,
+        'jsx-a11y/mouse-events-have-key-events': 0,
         'import/prefer-default-export': 0,
         'import/no-unresolved': [2, { ignore: ['^@/', '^umi/'] }],
         'import/no-extraneous-dependencies': [

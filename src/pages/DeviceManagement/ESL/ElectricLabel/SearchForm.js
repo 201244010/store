@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import { TAIL_FORM_ITEM_LAYOUT, FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 
 @Form.create()
@@ -19,16 +19,26 @@ class SearchForm extends Component {
         fetchElectricLabels();
     };
 
+    handleReset = async () => {
+        const { form, clearSearch, fetchElectricLabels } = this.props;
+        if (form) {
+            form.resetFields();
+        }
+        await clearSearch();
+        await fetchElectricLabels({
+            options: {
+                current: 1,
+            },
+        });
+    };
+
     render() {
         const { searchFormValues } = this.props;
 
         return (
-            <Form {...FORM_ITEM_LAYOUT_COMMON}>
+            <Form {...FORM_ITEM_LAYOUT}>
                 <Row gutter={FORM_FORMAT.gutter}>
-                    <Col span={10} style={{ fontSize: 18, fontWeight: 800 }}>
-                        {formatMessage({ id: 'esl.device.esl.list' })}
-                    </Col>
-                    <Col span={6}>
+                    <Col xl={9} lg={12} md={24}>
                         <Form.Item label={formatMessage({ id: 'esl.device.esl.search.info' })}>
                             <Input
                                 placeholder={formatMessage({
@@ -40,7 +50,7 @@ class SearchForm extends Component {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={6}>
+                    <Col xl={9} lg={12} md={24}>
                         <Form.Item label={formatMessage({ id: 'esl.device.esl.status' })}>
                             <Select
                                 placeholder={formatMessage({ id: 'select.placeholder' })}
@@ -62,11 +72,18 @@ class SearchForm extends Component {
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col span={2}>
-                        <Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
-                            <Button type="primary" onClick={this.search}>
+                    <Col xl={6} lg={12} md={24}>
+                        <Form.Item>
+                            <Button onClick={this.search}>
                                 {formatMessage({ id: 'btn.query' })}
                             </Button>
+                            <a
+                                href="javascript:void(0)"
+                                style={{ marginLeft: '20px' }}
+                                onClick={this.handleReset}
+                            >
+                                {formatMessage({ id: 'storeManagement.list.buttonReset' })}
+                            </a>
                         </Form.Item>
                     </Col>
                 </Row>

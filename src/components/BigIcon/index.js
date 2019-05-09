@@ -3,10 +3,14 @@ import { Icon } from 'antd';
 import styles from './index.less';
 
 const BigIcon = props => {
-    const { type, wrapperStyle = {}, iconStyle = {} } = props;
+    const { type, wrapperStyle = {}, iconStyle = {}, CustomIcon = null } = props;
     return (
         <div className={styles['icon-wrapper']} style={wrapperStyle}>
-            <Icon className={styles['icon-default']} type={type} style={iconStyle} />
+            {CustomIcon ? (
+                <CustomIcon />
+            ) : (
+                <Icon className={styles['icon-default']} type={type} style={iconStyle} />
+            )}
         </div>
     );
 };

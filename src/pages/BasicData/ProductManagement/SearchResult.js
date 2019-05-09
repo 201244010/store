@@ -104,7 +104,7 @@ class SearchResult extends Component {
                             href="javascript: void (0);"
                             onClick={() => this.toPath('update', record)}
                         >
-                            {formatMessage({ id: 'list.action.edit' })}
+                            {formatMessage({ id: 'list.action.alter' })}
                         </a>
                     </span>
                 ),
