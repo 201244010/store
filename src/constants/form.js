@@ -20,10 +20,16 @@ export const FORM_ITEM_LAYOUT = {
     labelCol: {
         sm: { span: 24 },
         md: { span: 6 },
+        lg: { span: 6 },
+        xl: { span: 6 },
+        xxl: { span: 4 },
     },
     wrapperCol: {
         sm: { span: 24 },
         md: { span: 18 },
+        lg: { span: 18 },
+        xl: { span: 18 },
+        xxl: { sapn: 20 },
     },
 };
 

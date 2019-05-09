@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Form, Input, Button, Row, Col, Cascader } from 'antd';
+import { Table, Form, Input, Button, Row, Col, Cascader, Divider } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
@@ -40,8 +40,16 @@ const columns = [
         key: 'address',
         render: (text, record) => (
             <>
-                <span>{record ? record.region.split(',').join(' ') : ''} </span>
-                <span>{text}</span>
+                {
+                    (text === '--' && record.region === '--')
+                        ? (<span>--</span>)
+                        : (
+                            <>
+                                <span>{record.region !== '--' ? record.region.split(',').join(' ') : ''} </span>
+                                <span>{text !== '--' ? text : ''}</span>
+                            </>
+                        )
+                }
             </>
         ),
     },
@@ -59,22 +67,24 @@ const columns = [
         title: formatMessage({ id: 'storeManagement.list.columnOperation' }),
         dataIndex: 'operation',
         key: 'operation',
+        width: 120,
         render: (text, record) => (
             <span>
                 <a
                     onClick={() => {
                         router.push(
-                            `${MENU_PREFIX.STORE}/storeInformation?shopId=${record.shop_id}`
+                            `${MENU_PREFIX.STORE}/storeInformation?shopId=${record.shop_id}`,
                         );
                     }}
                     className={styles.infoAnchor}
                 >
                     {formatMessage({ id: 'storeManagement.list.operation1' })}
                 </a>
+                <Divider type="vertical" />
                 <a
                     onClick={() => {
                         router.push(
-                            `${MENU_PREFIX.STORE}/alterStore?shopId=${record.shop_id}&action=edit`
+                            `${MENU_PREFIX.STORE}/alterStore?shopId=${record.shop_id}&action=edit`,
                         );
                     }}
                     className={styles.infoAnchor}
@@ -97,7 +107,7 @@ const columns = [
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
         getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
         getRegionList: () => dispatch({ type: 'store/getRegionList' }),
-    })
+    }),
 )
 class StoreManagement extends Component {
     componentDidMount() {
@@ -185,7 +195,7 @@ class StoreManagement extends Component {
                                             placeholder={formatMessage({
                                                 id: 'storeManagement.list.inputPlaceHolder',
                                             })}
-                                        />
+                                        />,
                                     )}
                                 </FormItem>
                             </Col>
@@ -203,7 +213,7 @@ class StoreManagement extends Component {
                                                 id: 'storeManagement.create.typePlaceHolder',
                                             })}
                                             options={shopType_list}
-                                        />
+                                        />,
                                     )}
                                 </FormItem>
                             </Col>

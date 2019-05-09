@@ -24,7 +24,7 @@ export default ({ record, template }) => {
             />
             {`${record.status}` !== '1' && (
                 <Tooltip placement="bottomRight" title={title}>
-                    <Icon type="question-circle" style={{ cursor: 'pointer' }} />
+                    <Icon type="question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
                 </Tooltip>
             )}
         </div>
