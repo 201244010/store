@@ -56,7 +56,7 @@ const createClient = (category = 'store') => {
                 password,
                 clean: true,
                 path: '/mqtt',
-            },
+            }
         );
         return clientMap.set(category, { ...CLIENT_TEMPLATE, category, client });
     }
@@ -203,7 +203,7 @@ export const connectClient = async (category = 'store') => {
                 'mqtt message received: topic: ',
                 topic,
                 ' - message: ',
-                message.toString(),
+                message.toString()
             );
         });
     });
@@ -228,7 +228,7 @@ const handleMessage = (
     messageType,
     deviceType,
     topic,
-    category = 'store',
+    category = 'store'
 ) => {
     const clientInfo = clientInfoMap.get(category);
     const { listenerStack } = clientInfo;
@@ -274,7 +274,7 @@ export const registMessageHandler = (category = 'store') => {
                             messageType,
                             deviceType,
                             topic,
-                            category,
+                            category
                         );
                     });
                     break;
@@ -287,7 +287,7 @@ export const registMessageHandler = (category = 'store') => {
                             messageType,
                             deviceType,
                             topic,
-                            category,
+                            category
                         );
                     });
                     break;

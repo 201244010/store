@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 
-import {
-    initializeMqttClients,
-    connectClient,
-    registMessageHandler,
-    subscribe,
-    publish,
-} from '@/services/mqtt';
-
 function MQTTWrapper(WrapperedComponent) {
-    @connect(state => ({
-        mqtt: state.mqtt,
-    }))
+    @connect(
+        state => ({
+            mqtt: state.mqttStore,
+        }),
+        dispatch => ({
+            connectClient: () => dispatch({ type: 'mqttStore/connectClient' }),
+            subscribe: payload => dispatch({ type: 'mqttStore/subscribe', payload }),
+            publish: payload => dispatch({ type: 'mqttStore/publish', payload }),
+            setMessageHandler: payload =>
+                dispatch({ type: 'mqttStore/setMessageHandler', payload }),
+            setErrorHandler: payload => dispatch({ type: 'mqttStore/setErrorHandler', payload }),
+        })
+    )
     class Wrapper extends Component {
         componentDidMount() {
             // TODO 在这里进行 mqtt client 的初始化工作
@@ -20,11 +22,23 @@ function MQTTWrapper(WrapperedComponent) {
         }
 
         initClient = async () => {
-            await initializeMqttClients(['store']);
-            await connectClient('store');
-            await registMessageHandler('store');
-            await subscribe('/World', 'store');
-            await publish('/World', 'helllo', 'store');
+            const {
+                connectClient,
+                subscribe,
+                publish,
+                setMessageHandler,
+                setErrorHandler,
+            } = this.props;
+            await connectClient();
+            await setErrorHandler({
+                handler: err => console.log('socket error:', err),
+            });
+            await setMessageHandler({
+                handler: (topic, message) =>
+                    console.log('topic is ', topic, 'message is ', message),
+            });
+            await subscribe({ topic: '/World' });
+            await publish({ topic: '/World', message: 'hello' });
         };
 
         render() {
