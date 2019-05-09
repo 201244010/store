@@ -55,7 +55,10 @@ export default class ToolItem extends Component {
                                 y,
                                 type,
                                 image,
-                                imageType: 'default'
+                                imageType: 'default',
+                                scaleX: 1,
+                                scaleY: 1,
+                                rotation: 0
                             });
                         };
                         image.src = MAPS.imageUrl[type];

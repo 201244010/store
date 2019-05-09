@@ -32,39 +32,43 @@ export default function BoardTools(props) {
                         <span>文本</span>
                     </Fragment>
                 </ToolItem>
-                <ToolItem
-                    className={`${styles.item} ${styles["item-circle"]}`}
-                    type={SHAPE_TYPES.HLine}
-                    id={generatorId(SHAPE_TYPES.HLine)}
-                    addComponent={addComponent}
-                >
-                    <Fragment>
-                        <img src={require("@/assets/studio/hLine.svg")} />
-                        <span>横向直线</span>
-                    </Fragment>
-                </ToolItem>
-                <ToolItem
-                    className={`${styles.item} ${styles["item-v-line"]}`}
-                    type={SHAPE_TYPES.VLine}
-                    id={generatorId(SHAPE_TYPES.VLine)}
-                    addComponent={addComponent}
-                >
-                    <Fragment>
-                        <img src={require("@/assets/studio/vLine.svg")} />
-                        <span>竖向直线</span>
-                    </Fragment>
-                </ToolItem>
-                <ToolItem
-                    className={`${styles.item} ${styles["item-image"]}`}
-                    type={SHAPE_TYPES.IMAGE}
-                    id={generatorId(SHAPE_TYPES.IMAGE)}
-                    addComponent={addComponent}
-                >
-                    <Fragment>
-                        <img src={require("@/assets/studio/image.svg")} />
-                        <span>图片</span>
-                    </Fragment>
-                </ToolItem>
+                {
+                    /*
+                        <ToolItem
+                            className={`${styles.item} ${styles["item-circle"]}`}
+                            type={SHAPE_TYPES.HLine}
+                            id={generatorId(SHAPE_TYPES.HLine)}
+                            addComponent={addComponent}
+                        >
+                            <Fragment>
+                                <img src={require("@/assets/studio/hLine.svg")} />
+                                <span>横向直线</span>
+                            </Fragment>
+                        </ToolItem>
+                        <ToolItem
+                            className={`${styles.item} ${styles["item-v-line"]}`}
+                            type={SHAPE_TYPES.VLine}
+                            id={generatorId(SHAPE_TYPES.VLine)}
+                            addComponent={addComponent}
+                        >
+                            <Fragment>
+                                <img src={require("@/assets/studio/vLine.svg")} />
+                                <span>竖向直线</span>
+                            </Fragment>
+                        </ToolItem>
+                        <ToolItem
+                            className={`${styles.item} ${styles["item-image"]}`}
+                            type={SHAPE_TYPES.IMAGE}
+                            id={generatorId(SHAPE_TYPES.IMAGE)}
+                            addComponent={addComponent}
+                        >
+                            <Fragment>
+                                <img src={require("@/assets/studio/image.svg")} />
+                                <span>图片</span>
+                            </Fragment>
+                        </ToolItem>
+                     */
+                }
             </div>
             <div className={`${styles["tools-block"]} ${styles.price}`}>
                 <h4>价格</h4>

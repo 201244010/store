@@ -12,7 +12,8 @@ import * as styles from './index.less';
         fetchColors: payload => dispatch({ type: 'template/fetchColors', payload }),
         createTemplate: payload => dispatch({ type: 'template/createTemplate', payload }),
         fetchTemplates: payload => dispatch({ type: 'template/fetchTemplates', payload }),
-        deleteTemplate: payload => dispatch({ type: 'template/deleteTemplate', payload })
+        deleteTemplate: payload => dispatch({ type: 'template/deleteTemplate', payload }),
+        applyTemplate: payload => dispatch({ type: 'template/applyTemplate', payload }),
     })
 )
 class Template extends Component {
@@ -38,6 +39,7 @@ class Template extends Component {
             fetchTemplates,
             createTemplate,
             deleteTemplate,
+            applyTemplate,
             template: {
                 screenTypes,
                 colors,
@@ -60,7 +62,8 @@ class Template extends Component {
                             fetchColors,
                             createTemplate,
                             fetchTemplates,
-                            deleteTemplate
+                            deleteTemplate,
+                            applyTemplate
                         }
                     }
                 />

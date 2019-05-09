@@ -69,9 +69,13 @@ export default class BoardHeader extends Component {
             <Fragment>
                 <div className={styles["left-actions"]}>
                     <ButtonIcon name="save" onClick={saveAsDraft} />
-                    <ButtonIcon name="check" />
-                    <ButtonIcon name="preStep" />
-                    <ButtonIcon name="nextStep" />
+                    {
+                        /*
+                        <ButtonIcon name="check" />
+                        <ButtonIcon name="preStep" />
+                        <ButtonIcon name="nextStep" />
+                        */
+                    }
                 </div>
                 <div className={styles["title-edit"]}>
                     {
@@ -95,9 +99,13 @@ export default class BoardHeader extends Component {
                 </div>
                 <div className={styles["right-actions"]}>
                     <ZoomIcon zoomScale={zoomScale} zoomOutOrIn={zoomOutOrIn} />
-                    <ButtonIcon name="wrapper" />
-                    <ButtonIcon name="view" />
-                    <ButtonIcon name="history" />
+                    {
+                        /*
+                        <ButtonIcon name="wrapper" />
+                        <ButtonIcon name="view" />
+                        <ButtonIcon name="history" />
+                         */
+                    }
                 </div>
             </Fragment>
         )

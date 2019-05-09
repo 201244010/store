@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Table, Switch, Divider, Modal, Button, Form, Input, Select } from "antd";
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from "@/constants/errorCode";
+import * as styles from './index.less';
 
 const {Option} = Select;
 
@@ -48,6 +49,14 @@ class SearchResult extends Component {
                     template_id_list: [record.id]
                 });
             }
+        });
+    };
+
+    applyTemplate = (record) => {
+        const {applyTemplate} = this.props;
+
+        applyTemplate({
+            template_id: record.id
         });
     };
 
@@ -112,7 +121,7 @@ class SearchResult extends Component {
                 render: value => (
                     <div>
                         <Switch
-                            checked={value === 0}
+                            checked={value === 1}
                             checkedChildren={formatMessage({ id: 'esl.device.template.is.default.yes' })}
                             unCheckedChildren={formatMessage({ id: 'esl.device.template.is.default.no' })}
                         />
@@ -128,13 +137,25 @@ class SearchResult extends Component {
                             {formatMessage({ id: 'list.action.edit' })}
                         </a>
                         <Divider type="vertical" />
-                        <a href="javascript: void (0);" onClick={() => this.deleteTemplate(record)}>
-                            {formatMessage({ id: 'list.action.delete' })}
-                        </a>
+                        {
+                            record.is_default === 1 ?
+                                <a href="javascript: void (0);" className={styles.disabled}>
+                                    {formatMessage({ id: 'list.action.delete' })}
+                                </a> :
+                                <a href="javascript: void (0);" onClick={() => this.deleteTemplate(record)}>
+                                    {formatMessage({ id: 'list.action.delete' })}
+                                </a>
+                        }
                         <Divider type="vertical" />
-                        <a href="javascript: void (0);" onClick={() => this.editDetail(record)}>
-                            {formatMessage({ id: 'list.action.apply' })}
-                        </a>
+                        {
+                            record.status === 1 ?
+                                <a href="javascript: void (0);" className={styles.disabled}>
+                                    {formatMessage({ id: 'list.action.apply' })}
+                                </a> :
+                                <a href="javascript: void (0);" onClick={() => this.applyTemplate(record)}>
+                                    {formatMessage({ id: 'list.action.apply' })}
+                                </a>
+                        }
                     </span>
                 ),
             },

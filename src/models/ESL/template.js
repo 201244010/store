@@ -280,6 +280,25 @@ export default {
             }
             return response;
         },
+        *applyTemplate({ payload = {} }, { call, put }) {
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+            const response = yield call(TemplateService.applyTemplate, payload);
+            if (response && response.code === ERROR_OK) {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            } else {
+                yield put({
+                    type: 'updateState',
+                    payload: { loading: false },
+                });
+            }
+            return response;
+        },
     },
     reducers: {
         updateState(state, action) {

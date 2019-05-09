@@ -101,3 +101,13 @@ export const renameTemplate = (options) => {
 
     return fetchApi('rename', opts).then(response => response.json());
 };
+
+export const applyTemplate = (options) => {
+    const opts = {
+        method: 'POST',
+        body: options
+    };
+
+    return fetchApi('apply', opts).then(response => response.json());
+};
+
