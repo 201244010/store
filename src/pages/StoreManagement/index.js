@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Form, Input, Button, Row, Col, Cascader } from 'antd';
+import { Table, Form, Input, Button, Row, Col, Cascader, Divider } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
@@ -40,8 +40,16 @@ const columns = [
         key: 'address',
         render: (text, record) => (
             <>
-                <span>{record ? record.region.split(',').join(' ') : ''} </span>
-                <span>{text}</span>
+                {text === '--' && record.region === '--' ? (
+                    <span>--</span>
+                ) : (
+                    <>
+                        <span>
+                            {record.region !== '--' ? record.region.split(',').join(' ') : ''}{' '}
+                        </span>
+                        <span>{text !== '--' ? text : ''}</span>
+                    </>
+                )}
             </>
         ),
     },
@@ -59,6 +67,7 @@ const columns = [
         title: formatMessage({ id: 'storeManagement.list.columnOperation' }),
         dataIndex: 'operation',
         key: 'operation',
+        width: 120,
         render: (text, record) => (
             <span>
                 <a
@@ -71,6 +80,7 @@ const columns = [
                 >
                     {formatMessage({ id: 'storeManagement.list.operation1' })}
                 </a>
+                <Divider type="vertical" />
                 <a
                     onClick={() => {
                         router.push(

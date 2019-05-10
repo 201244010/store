@@ -51,7 +51,7 @@ export default {
                 { path: '/user/login', component: './User/Login/LoginUI' },
                 { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelateUI' },
                 { path: '/user/merchantCreate', component: './User/StoreRelate/StoreRelateUI' },
-                { path: '/user/*', redirect: '/user/login' },
+                { path: '/user/*', component: '404' },
             ],
         },
         // {
@@ -77,6 +77,7 @@ export default {
         {
             path: '/',
             component: '../layouts/BasicLayout',
+            Routes: ['/src/components/AuthorithCheck'],
             routes: [
                 // { path: '/', redirect: '/deviceManagement' },
                 // TODO 万有集市 临时菜单 START
@@ -330,6 +331,7 @@ export default {
                     name: 'account',
                     hideInMenu: true,
                 },
+                { component: '404' },
             ],
         },
     ],

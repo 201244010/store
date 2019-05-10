@@ -1,7 +1,6 @@
 import * as ESLServices from '@/services/ESL/electricLabel';
 import * as TemplateServices from '@/services/ESL/template';
 import * as ProductServices from '@/services/ESL/product';
-import { hideSinglePageCheck } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
@@ -71,7 +70,6 @@ export default {
                         current: opts.current,
                         pageSize: opts.pageSize,
                         total: Number(result.total_count) || 0,
-                        hideOnSinglePage: hideSinglePageCheck(result.total_count) || true,
                     },
                 },
             });

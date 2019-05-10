@@ -15,16 +15,17 @@
   border-radius: 4px;
   background: @font-color-primary;
 
+
+  &:visited, &:focus {
+    background: @font-color-primary;
+  }
+
   &:hover {
     background: @font-color-primary-hover;
   }
 
   &:active {
     background: @font-color-primary-active;
-  }
-
-  &:visited, &:focus {
-    background: @font-color-primary;
   }
 }
 
@@ -105,4 +106,8 @@
       }
     }
   }
+}
+
+.default-model-body {
+  padding: 24px;
 }

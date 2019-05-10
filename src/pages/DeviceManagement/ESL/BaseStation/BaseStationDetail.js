@@ -2,12 +2,12 @@ import React from 'react';
 import { STATION_STATES } from '@/constants/mapping';
 import { unixSecondToDate } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
-import * as styles from './BaseStation.less';
+import styles from './BaseStation.less';
 
 const BaseStationDetail = props => {
     const { stationInfo } = props;
     return (
-        <div className="detail-info">
+        <div className={styles['detail-info']}>
             <div className={styles['detail-info-item']}>
                 <span className={styles['detail-info-label']}>
                     {formatMessage({ id: 'esl.device.ap.id' })}：

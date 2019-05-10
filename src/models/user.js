@@ -3,7 +3,6 @@ import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
-import moment from 'moment';
 import Storage from '@konata9/storage.js';
 import router from 'umi/router';
 
@@ -16,12 +15,6 @@ export default {
         errorTimes: 0,
         list: [],
         currentUser: CookieUtil.getCookieByKey(CookieUtil.USER_INFO_KEY) || {},
-        mqttToken: {
-            clientId: null,
-            username: null,
-            password: null,
-            serverAddress: null,
-        },
     },
 
     effects: {
@@ -157,25 +150,13 @@ export default {
             return response;
         },
 
-        *getMqttToken(_, { call, put }) {
-            const response = yield call(Actions.getMqttToken);
+        *createEmqToken(_, { call }) {
+            const response = yield call(Actions.createEmqToken);
             if (response && response.code === ERROR_OK) {
                 const { data = {} } = response;
-                const { username, password, server_address: serverAddress } = data;
-                const clientId = `${username}_${moment().format('X')}`;
-                yield put({
-                    type: 'updateState',
-                    payload: {
-                        mqttToken: {
-                            clientId,
-                            username,
-                            password,
-                            serverAddress,
-                        },
-                    },
-                });
+                return data;
             }
-            return response;
+            return null;
         },
     },
     reducers: {

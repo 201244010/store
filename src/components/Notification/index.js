@@ -1,13 +1,13 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Button, notification } from 'antd';
 import styles from './notification.less';
 
-const Title = props => {
+export const Title = props => {
     const { title = '' } = props;
     return <div>{title}</div>;
 };
 
-const Description = props => {
+export const Description = props => {
     const { description = '', btnOptions = {} } = props;
     const { mainBtn = null, subBtn = null } = btnOptions;
     return (
@@ -27,7 +27,15 @@ const Description = props => {
     );
 };
 
-export default {
-    Title,
-    Description,
+export const ShadowNotification = props => {
+    const { emit } = props;
+    console.log(emit);
+    if (emit) {
+        notification.success({
+            message: 'Notification Title',
+            description:
+                'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+        });
+    }
+    return <></>;
 };
