@@ -360,7 +360,8 @@ class Studio extends Component {
         document.body.appendChild(inputEle);
         inputEle.setAttribute('id', 'textInput');
         if (type === SHAPE_TYPES.PRICE) {
-            inputEle.value = `${e.target.parent.children[1].text()}${e.target.parent.children[2].text()}`;
+            // inputEle.value = `${e.target.parent.children[1].text()}${e.target.parent.children[2].text()}`;
+            inputEle.value = e.target.parent.children[1].text();
         } else {
             inputEle.value = e.target.parent.children[1].text();
         }
