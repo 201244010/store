@@ -92,6 +92,7 @@ export default class GlobalHeaderRight extends PureComponent {
             currentUser,
             notification,
             fetchingNotices,
+            getNotificationList,
             onNoticeVisibleChange,
             onMenuClick,
             onNoticeClear,
@@ -213,6 +214,7 @@ export default class GlobalHeaderRight extends PureComponent {
                         window.open('/notificationCenter');
                         // router.push('/notificationCenter');
                     }}
+                    getNotificationList={getNotificationList}
                     clearClose
                 >
                     <NoticeIcon.Tab

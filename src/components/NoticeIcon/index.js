@@ -61,25 +61,17 @@ export default class NoticeIcon extends PureComponent {
     };
 
     getNotificationBox() {
-        const { children, loading, locale } = this.props;
+        const { children, loading, locale, count } = this.props;
         if (!children) {
             return null;
         }
         const panes = React.Children.map(children, child => {
-            const {
-                list,
-                title,
-                count,
-                emptyText,
-                emptyImage,
-                showClear,
-                showViewMore,
-            } = child.props;
-            const len = list && list.length ? list.length : 0;
-            const msgCount = count || count === 0 ? count : len;
+            const { list, title, emptyText, emptyImage, showClear, showViewMore } = child.props;
+            // const len = list && list.length ? list.length : 0;
+            // const msgCount = count || count === 0 ? count : len;
             const localeTitle = locale[title] || title;
             // const tabTitle = msgCount > 0 ? `${localeTitle} (${msgCount})` : localeTitle;
-            const tabTitle = `${localeTitle} (${msgCount})`;
+            const tabTitle = `${localeTitle} (${count})`;
             return (
                 <TabPane tab={tabTitle} key={title}>
                     <List
@@ -115,13 +107,16 @@ export default class NoticeIcon extends PureComponent {
     };
 
     render() {
-        const { className, count, popupVisible, bell } = this.props;
+        const { className, count, popupVisible, bell, getNotificationList } = this.props;
         const { visible } = this.state;
         const noticeButtonClass = classNames(className, styles.noticeButton);
         const notificationBox = this.getNotificationBox();
         const NoticeBellIcon = bell || <Icon type="bell" className={styles.icon} />;
         const trigger = (
-            <span className={classNames(noticeButtonClass, { opened: visible })}>
+            <span
+                className={classNames(noticeButtonClass, { opened: visible })}
+                onClick={getNotificationList}
+            >
                 <Badge count={count} style={{ boxShadow: 'none' }} className={styles.badge}>
                     {NoticeBellIcon}
                 </Badge>

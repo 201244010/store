@@ -16,6 +16,7 @@ function MQTTWrapper(WrapperedComponent) {
             setTopicListener: payload => dispatch({ type: 'mqttStore/setTopicListener', payload }),
             setMessageHandler: payload =>
                 dispatch({ type: 'mqttStore/setMessageHandler', payload }),
+            getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
         })
     )
     class Wrapper extends Component {
@@ -24,10 +25,14 @@ function MQTTWrapper(WrapperedComponent) {
         }
 
         showNotification = (topic, data) => {
+            const { getNotificationCount } = this.props;
             const messageData = JSON.parse(data.toString()) || {};
             const { params = [] } = messageData;
-            const { param = {} } = params[0] || {};
-            displayNotification({ data: param });
+            params.forEach(item => {
+                const { param = {} } = item;
+                displayNotification({ data: param });
+            });
+            getNotificationCount();
         };
 
         initClient = async () => {
