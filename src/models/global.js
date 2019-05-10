@@ -1,5 +1,4 @@
 import { queryNotices } from '@/services/user';
-import * as CookieUtil from '@/utils/cookies';
 
 export default {
     namespace: 'global',
@@ -10,18 +9,6 @@ export default {
     },
 
     effects: {
-        getUserInfoFromStorage() {
-            return CookieUtil.getCookieByKey(CookieUtil.USER_INFO_KEY) || null;
-        },
-
-        getCompanyIdFromStorage() {
-            return CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY) || null;
-        },
-
-        getShopIdFromStorage() {
-            return CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || null;
-        },
-
         *fetchNotices(_, { call, put, select }) {
             const data = yield call(queryNotices);
             yield put({

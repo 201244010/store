@@ -57,3 +57,18 @@ export const MAIL_LIST = {
     'foxmail.com': 'http://mail.qq.com/cgi-bin/loginpage?t=fox_loginpage',
     'sunmi.com': 'http://mail.sunmi.com/',
 };
+
+export const AVATA_IMG = {
+    0: {
+        icon: 'check-circle',
+        color: 'green',
+    },
+    1: {
+        icon: 'info-circle',
+        color: 'blue',
+    },
+    2: {
+        icon: 'close-circle',
+        color: 'red',
+    },
+};
