@@ -21,12 +21,12 @@ export default class RightToolBox extends Component {
         } else {
             const detail = componentsDetail[selectedShapeName];
             const oldNameIndex = detail.name.replace(/[^0-9]/ig, '');
-            const newName = `${value}${oldNameIndex}`;
+            const newType = `${value}@${detail.type.split('@')[2] || ''}`;
             deleteSelectedComponent(selectedShapeName);
             addComponent({
                 ...detail,
-                type: `${value}@${detail.type.split('@')[2] || ''}`,
-                name: newName
+                type: newType,
+                name: `${newType}${oldNameIndex}`
             });
         }
     };

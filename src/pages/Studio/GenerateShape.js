@@ -118,7 +118,7 @@ export default function generateShape(option) {
                                 letterSpacing: option.letterSpacing,
                                 width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX * option.zoomScale,
                                 height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
-                                lineHeight: MAPS.containerHeight[SHAPE_TYPES.TEXT] / option.fontSize,
+                                lineHeight: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.scaleY / option.fontSize,
                                 draggable: true,
                                 onDblClick: option.onDblClick
                             }
@@ -305,9 +305,54 @@ export default function generateShape(option) {
             }
             break;
         case SHAPE_TYPES.PRICE_NORMAL_WHITE:
+        case SHAPE_TYPES.PRICE_NORMAL_BLACK:
+            shape = (
+                <Group>
+                    <Rect
+                        {
+                            ...{
+                                name: option.name,
+                                x: option.x,
+                                y: option.y,
+                                width: MAPS.containerWidth[option.type] * option.zoomScale,
+                                height: MAPS.containerHeight[option.type] * option.zoomScale,
+                                scaleX: option.scaleX,
+                                scaleY: option.scaleY,
+                                fill: option.textBg,
+                                opacity: option.textBg === 'opacity' ? 0 : 1,
+                                draggable: true,
+                                onTransform: option.onTransform,
+                                onDblClick: option.onDblClick
+                            }
+                        }
+                    />
+                    <Text
+                        {
+                            ...{
+                                name: option.name,
+                                x: option.x,
+                                y: option.y,
+                                text: option.text,
+                                fontFamily: option.fontFamily,
+                                fontSize: option.fontSize * option.zoomScale,
+                                fontStyle: option.fontStyle,
+                                textDecoration: option.textDecoration,
+                                fill: option.fill,
+                                align: option.align,
+                                letterSpacing: option.letterSpacing,
+                                width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
+                                height: MAPS.containerHeight[option.type] * option.scaleY * option.zoomScale,
+                                lineHeight: MAPS.containerHeight[option.type] * option.scaleY / option.fontSize,
+                                draggable: true,
+                                onDblClick: option.onDblClick
+                            }
+                        }
+                    />
+                </Group>
+            );
+            break;
         case SHAPE_TYPES.PRICE_SUPER_WHITE:
         case SHAPE_TYPES.PRICE_SUB_WHITE:
-        case SHAPE_TYPES.PRICE_NORMAL_BLACK:
         case SHAPE_TYPES.PRICE_SUPER_BLACK:
         case SHAPE_TYPES.PRICE_SUB_BLACK:
             shape = (
@@ -347,8 +392,8 @@ export default function generateShape(option) {
                                         align: option.align,
                                         letterSpacing: option.letterSpacing,
                                         width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
-                                        height: MAPS.containerHeight[option.type] * option.zoomScale,
-                                        lineHeight: MAPS.containerHeight[option.type] / option.fontSize,
+                                        height: MAPS.containerHeight[option.type] * option.scaleY * option.zoomScale,
+                                        lineHeight: MAPS.containerHeight[option.type] * option.scaleY / option.fontSize,
                                         draggable: true,
                                         onDblClick: option.onDblClick
                                     }
@@ -375,8 +420,8 @@ export default function generateShape(option) {
                                         align: option.align,
                                         letterSpacing: option.letterSpacing,
                                         width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
-                                        height: MAPS.containerHeight[option.type] * option.zoomScale,
-                                        lineHeight: MAPS.containerHeight[option.type] / option.fontSize,
+                                        height: MAPS.containerHeight[option.type] * option.scaleY * option.zoomScale,
+                                        lineHeight: MAPS.containerHeight[option.type] * option.scaleY / option.fontSize,
                                         draggable: true,
                                         onDblClick: option.onDblClick
                                     }
@@ -410,7 +455,7 @@ export default function generateShape(option) {
             );
             break;
         default:
-            throw new Error('没有匹配的Shape');
+            throw new Error(`Do not have shape of ${option.type}.`);
     }
 
     return (
