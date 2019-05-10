@@ -107,6 +107,7 @@ export default {
             topicPromise.then(topic => {
                 if (mqttClient) {
                     mqttClient.setTopicListener(topic, handler);
+                    console.log('topic: ', topic, ' listener is ready');
                 }
             });
         },

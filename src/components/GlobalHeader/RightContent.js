@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 import { Spin, Tag, Menu, Icon, Avatar, Select } from 'antd';
 // import moment from 'moment';
-import router from 'umi/router';
+// import router from 'umi/router';
 import groupBy from 'lodash/groupBy';
 import NoticeIcon from '../NoticeIcon';
 import * as CookieUtil from '@/utils/cookies';
@@ -78,7 +78,8 @@ export default class GlobalHeaderRight extends PureComponent {
                 statusCode: 1,
             },
         });
-        router.push(`/notificationInfo?msgId=${msg_id}`);
+        window.open(`/notificationInfo?msgId=${msg_id}`);
+        // router.push(`/notificationInfo?msgId=${msg_id}`);
     };
 
     handleStoreChange = storeId => {
@@ -209,7 +210,8 @@ export default class GlobalHeaderRight extends PureComponent {
                     onClear={onNoticeClear}
                     onPopupVisibleChange={onNoticeVisibleChange}
                     onViewMore={() => {
-                        router.push('/notificationCenter');
+                        window.open('/notificationCenter');
+                        // router.push('/notificationCenter');
                     }}
                     clearClose
                 >

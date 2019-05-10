@@ -86,7 +86,9 @@ class NotificationCenter extends Component {
         const {
             notification: { notificationList, modelList, pagination },
         } = this.props;
-        const filterList = modelList.map(item =>  Object.assign({}, { text: item.model_name, value: item.model_name }));
+        const filterList = modelList.map(item =>
+            Object.assign({}, { text: item.model_name, value: item.model_name })
+        );
         const columns = [
             {
                 title: formatMessage({ id: 'basicData.product.seq_num' }),
@@ -126,7 +128,9 @@ class NotificationCenter extends Component {
         return (
             <div className={styles.wrapper}>
                 <div className={styles.title}>
-                    <span className={styles['message-title']}>{formatMessage({ id: 'notification.notificationCenter' })}</span>
+                    <span className={styles['message-title']}>
+                        {formatMessage({ id: 'notification.notificationCenter' })}
+                    </span>
                     <Checkbox onChange={this.onChange}>
                         {formatMessage({ id: 'notification.unreadmessage' })}
                         <span className={styles.number}>（{unreadCount}）</span>
