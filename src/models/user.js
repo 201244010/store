@@ -149,15 +149,6 @@ export default {
             const response = yield call(Actions.checkUserExist, options);
             return response;
         },
-
-        *createEmqToken(_, { call }) {
-            const response = yield call(Actions.createEmqToken);
-            if (response && response.code === ERROR_OK) {
-                const { data = {} } = response;
-                return data;
-            }
-            return null;
-        },
     },
     reducers: {
         updateState(state, action) {

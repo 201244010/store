@@ -1,6 +1,8 @@
 // import * as Actions from '@/services/mqtt';
 import moment from 'moment';
 import MqttClient from '@/services/Mqtt/MqttClient';
+import { createEmqToken } from '@/services/user';
+import { ERROR_OK } from '@/constants/errorCode';
 // import { notification } from 'antd';
 // import { ERROR_OK, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 
@@ -12,6 +14,15 @@ export default {
         emit: false,
     },
     effects: {
+        *createEmqToken(_, { call }) {
+            const response = yield call(createEmqToken);
+            if (response && response.code === ERROR_OK) {
+                const { data = {} } = response;
+                return data;
+            }
+            return null;
+        },
+
         *generateTopic({ payload }, { select }) {
             const { service, action } = payload;
             const { currentUser } = yield select(state => state.user);
@@ -25,9 +36,10 @@ export default {
         },
 
         *subscribe({ payload }, { put }) {
+            const { service, action = 'sub' } = payload;
             const topicPromise = yield put({
                 type: 'generateTopic',
-                payload,
+                payload: { service, action },
             });
 
             topicPromise.then(async topic => {
@@ -40,9 +52,11 @@ export default {
 
         *publish({ payload }, { put }) {
             const { message, ...rest } = payload;
+            const { service, action = 'pub' } = rest;
+
             const topicPromise = yield put({
                 type: 'generateTopic',
-                payload: { ...rest },
+                payload: { service, action },
             });
 
             topicPromise.then(async topic => {
@@ -52,6 +66,7 @@ export default {
             });
         },
 
+        // 全局 message handler
         setMessageHandler({ payload }) {
             const { handler } = payload;
             if (mqttClient) {
@@ -62,6 +77,20 @@ export default {
                     handler(topic, data);
                 });
             }
+        },
+
+        *setTopicListener({ payload }, { put }) {
+            const { service, action = 'sub', handler } = payload;
+            const topicPromise = yield put({
+                type: 'generateTopic',
+                payload: { service, action },
+            });
+
+            topicPromise.then(topic => {
+                if (mqttClient) {
+                    mqttClient.setTopicListener(topic, handler);
+                }
+            });
         },
 
         setErrorHandler({ payload }) {
@@ -84,7 +113,7 @@ export default {
     subscriptions: {
         async initialize({ dispatch }) {
             const token = await dispatch({
-                type: 'user/createEmqToken',
+                type: 'createEmqToken',
             });
 
             const { username, server_address: address } = token;

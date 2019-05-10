@@ -162,6 +162,17 @@ class MqttClient {
         }
     }
 
+    setTopicListener(target, handler) {
+        const { client } = this;
+        if (client.on) {
+            client.on('message', (topic, message) => {
+                if (topic === target) {
+                    handler(topic, message);
+                }
+            });
+        }
+    }
+
     setErrorHandler(action) {
         const { client } = this;
         console.log('regist error handler');

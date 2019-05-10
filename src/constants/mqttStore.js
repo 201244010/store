@@ -1,8 +1,9 @@
 const OPCODE = {
     MESSAGE: '0x1001',
+    NOTIFICATION: '0x1011',
 };
 
-export const RESISTER_PUB_MSG = {
+export const REGISTER_PUB_MSG = {
     opcode: OPCODE.MESSAGE,
     param: {
         source: 'WEB',

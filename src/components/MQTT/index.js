@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { ShadowNotification } from '@/components/Notification';
-import { RESISTER_PUB_MSG } from '@/constants/mqttStore';
+import { displayNotification } from '@/components/Notification';
+import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
 import { ERROR_OK } from '@/constants/errorCode';
 
 function MQTTWrapper(WrapperedComponent) {
     @connect(
-        state => ({
-            mqtt: state.mqttStore,
-        }),
+        null,
         dispatch => ({
             generateTopic: payload => dispatch({ type: 'mqttStore/generateTopic', payload }),
             subscribe: payload => dispatch({ type: 'mqttStore/subscribe', payload }),
@@ -18,13 +16,7 @@ function MQTTWrapper(WrapperedComponent) {
         })
     )
     class Wrapper extends Component {
-        constructor(props) {
-            super(props);
-            this.state = { emit: false };
-        }
-
         componentDidMount() {
-            // TODO 在这里进行 mqtt client 的初始化工作
             this.initClient();
         }
 
@@ -35,23 +27,18 @@ function MQTTWrapper(WrapperedComponent) {
                 handler: (topic, data) => {
                     console.log(data);
                     if (data[0].errcode === ERROR_OK) {
-                        this.setState({ emit: true });
+                        displayNotification();
                     }
                 },
             });
 
-            await subscribe({ service: 'register', action: 'sub' });
-            await publish({ service: 'register', action: 'pub', message: RESISTER_PUB_MSG });
+            await subscribe({ service: 'register' });
+            await subscribe({ service: 'notification' });
+            await publish({ service: 'register', message: REGISTER_PUB_MSG });
         };
 
         render() {
-            const { emit } = this.state;
-            return (
-                <>
-                    <WrapperedComponent {...this.props} />;
-                    <ShadowNotification {...{ emit }} />
-                </>
-            );
+            return <WrapperedComponent {...this.props} />;
         }
     }
 

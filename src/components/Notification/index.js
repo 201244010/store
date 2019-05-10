@@ -27,15 +27,10 @@ export const Description = props => {
     );
 };
 
-export const ShadowNotification = props => {
-    const { emit } = props;
-    console.log(emit);
-    if (emit) {
-        notification.success({
-            message: 'Notification Title',
-            description:
-                'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-        });
-    }
-    return <></>;
+export const displayNotification = () => {
+    notification.success({
+        message: 'Notification Title',
+        description:
+            'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+    });
 };

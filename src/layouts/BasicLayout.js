@@ -185,9 +185,7 @@ class BasicLayout extends React.PureComponent {
             breadcrumbNameMap,
             route: { routes },
             fixedHeader,
-            mqtt: { emit },
         } = this.props;
-        console.log('in basic', emit);
 
         const isTop = PropsLayout === 'topmenu';
         const routerConfig = this.getRouterAuthority(pathname, routes);
