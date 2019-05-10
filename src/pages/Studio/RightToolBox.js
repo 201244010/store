@@ -423,10 +423,12 @@ export default class RightToolBox extends Component {
                             <h4>样式</h4>
                             <Row style={{marginBottom: 10}}>
                                 <Col span={24}>
-                                    <Input
+                                    <InputNumber
+                                        style={{width: '100%'}}
                                         placeholder="价格"
                                         value={detail.text}
-                                        onChange={(e) => {this.handleDetail('text', e.target.value)}}
+                                        precision={2}
+                                        onChange={(value) => {this.handleDetail('text', value)}}
                                     />
                                 </Col>
                             </Row>
@@ -536,50 +538,54 @@ export default class RightToolBox extends Component {
                                     </Radio.Group>
                                 </Col>
                             </Row>
-                            <Row style={{marginBottom: 10}} gutter={20}>
-                                <Col span={24}>
-                                    小数显示类型
-                                </Col>
-                                <Col span={24}>
-                                    <Radio.Group
-                                        style={{width: '100%'}}
-                                        value={`${detail.type.split('@')[0]}@${detail.type.split('@')[1]}`}
-                                        onChange={(e) => {this.handleDetail('type', e.target.value)}}
-                                    >
-                                        <Radio.Button style={{width: '33.33%'}} value="PRICE@NORMAL">
-                                            <span style={{fontSize: 16}}>99.00</span>
-                                        </Radio.Button>
-                                        <Radio.Button style={{width: '33.33%'}} value="PRICE@SUPER">
-                                            <span style={{fontSize: 16}}>99.<sup>00</sup></span>
-                                        </Radio.Button>
-                                        <Radio.Button style={{width: '33.33%'}} value="PRICE@SUB">
-                                            <span style={{fontSize: 16}}>99.<sub>00</sub></span>
-                                        </Radio.Button>
-                                    </Radio.Group>
-                                </Col>
-                            </Row>
-                            <Row style={{marginBottom: 10}} gutter={20}>
-                                <Col span={24}>
-                                    小数位数
-                                </Col>
-                                <Col span={24}>
-                                    <Radio.Group
-                                        style={{width: '100%'}}
-                                        value={detail.align}
-                                        onChange={(e) => {this.handleDetail('align', e.target.value)}}
-                                    >
-                                        <Radio.Button style={{width: '33.33%'}} value={0}>
-                                            0
-                                        </Radio.Button>
-                                        <Radio.Button style={{width: '33.33%'}} value={1}>
-                                            1
-                                        </Radio.Button>
-                                        <Radio.Button style={{width: '33.33%'}} value={2}>
-                                            2
-                                        </Radio.Button>
-                                    </Radio.Group>
-                                </Col>
-                            </Row>
+                            {
+                                /*
+                                <Row style={{marginBottom: 10}} gutter={20}>
+                                    <Col span={24}>
+                                        小数显示类型
+                                    </Col>
+                                    <Col span={24}>
+                                        <Radio.Group
+                                            style={{width: '100%'}}
+                                            value={`${detail.type.split('@')[0]}@${detail.type.split('@')[1]}`}
+                                            onChange={(e) => {this.handleDetail('type', e.target.value)}}
+                                        >
+                                            <Radio.Button style={{width: '33.33%'}} value="price@normal">
+                                                <span style={{fontSize: 16}}>99.00</span>
+                                            </Radio.Button>
+                                            <Radio.Button style={{width: '33.33%'}} value="price@super">
+                                                <span style={{fontSize: 16}}>99.<sup>00</sup></span>
+                                            </Radio.Button>
+                                            <Radio.Button style={{width: '33.33%'}} value="price@sub">
+                                                <span style={{fontSize: 16}}>99.<sub>00</sub></span>
+                                            </Radio.Button>
+                                        </Radio.Group>
+                                    </Col>
+                                </Row>
+                                <Row style={{marginBottom: 10}} gutter={20}>
+                                    <Col span={24}>
+                                        小数位数
+                                    </Col>
+                                    <Col span={24}>
+                                        <Radio.Group
+                                            style={{width: '100%'}}
+                                            value={detail.align}
+                                            onChange={(e) => {this.handleDetail('align', e.target.value)}}
+                                        >
+                                            <Radio.Button style={{width: '33.33%'}} value={0}>
+                                                0
+                                            </Radio.Button>
+                                            <Radio.Button style={{width: '33.33%'}} value={1}>
+                                                1
+                                            </Radio.Button>
+                                            <Radio.Button style={{width: '33.33%'}} value={2}>
+                                                2
+                                            </Radio.Button>
+                                        </Radio.Group>
+                                    </Col>
+                                </Row>
+                                 */
+                            }
                             <Row style={{marginBottom: 10}} gutter={20}>
                                 <Col span={24}>
                                     对齐
