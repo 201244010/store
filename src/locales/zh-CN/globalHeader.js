@@ -5,6 +5,7 @@ export default {
     'component.globalHeader.search.example3': '搜索提示三',
     'component.globalHeader.help': '使用文档',
     'component.globalHeader.notification': '通知',
+    'component.globalHeader.unread': '未读消息',
     'component.globalHeader.notification.empty': '你已查看所有通知',
     'component.globalHeader.message': '消息',
     'component.globalHeader.message.empty': '您已读完所有消息',
@@ -13,4 +14,5 @@ export default {
     'component.noticeIcon.clear': '清空',
     'component.noticeIcon.cleared': '清空了',
     'component.noticeIcon.empty': '暂无数据',
+    'component.noticeIcon.view-more': '查看全部',
 };

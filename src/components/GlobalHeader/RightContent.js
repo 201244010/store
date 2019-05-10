@@ -1,27 +1,41 @@
 import React, { PureComponent } from 'react';
-import { FormattedMessage } from 'umi/locale';
+import { FormattedMessage, formatMessage } from 'umi/locale';
 import { Spin, Tag, Menu, Icon, Avatar, Select } from 'antd';
-import moment from 'moment';
+// import moment from 'moment';
+import router from 'umi/router';
 import groupBy from 'lodash/groupBy';
-// import { NoticeIcon } from 'ant-design-pro';
+import NoticeIcon from '../NoticeIcon';
 import * as CookieUtil from '@/utils/cookies';
+import { formatTimeMessage } from '@/utils/utils';
 // import HeaderSearch from '../HeaderSearch';
 import HeaderDropdown from '../HeaderDropdown';
+
 import styles from './index.less';
 
 export default class GlobalHeaderRight extends PureComponent {
+    componentDidMount() {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'notification/getNotificationList',
+            payload: {},
+        });
+    }
+
     getNoticeData() {
-        const { notices = [] } = this.props;
+        const { notification = {} } = this.props;
+        const notices = notification.notificationList
+            .filter(item => item.receive_status === 0)
+            .filter((item, index) => index < 5);
         if (notices.length === 0) {
             return {};
         }
         const newNotices = notices.map(notice => {
             const newNotice = { ...notice };
-            if (newNotice.datetime) {
-                newNotice.datetime = moment(notice.datetime).fromNow();
+            if (newNotice.receive_time) {
+                newNotice.receive_time = formatTimeMessage(notice.receive_time);
             }
-            if (newNotice.id) {
-                newNotice.key = newNotice.id;
+            if (newNotice.msg_id) {
+                newNotice.key = newNotice.msg_id;
             }
             if (newNotice.extra && newNotice.status) {
                 const color = {
@@ -38,7 +52,7 @@ export default class GlobalHeaderRight extends PureComponent {
             }
             return newNotice;
         });
-        return groupBy(newNotices, 'type');
+        return groupBy(newNotices, 'receive_status');
     }
 
     getUnreadData = noticeData => {
@@ -48,19 +62,23 @@ export default class GlobalHeaderRight extends PureComponent {
                 unreadMsg[key] = 0;
             }
             if (Array.isArray(value)) {
-                unreadMsg[key] = value.filter(item => !item.read).length;
+                unreadMsg[key] = value.filter(item => !item.receive_status).length;
             }
         });
         return unreadMsg;
     };
 
     changeReadState = clickedItem => {
-        const { id } = clickedItem;
+        const { msg_id } = clickedItem;
         const { dispatch } = this.props;
         dispatch({
-            type: 'global/changeNoticeReadState',
-            payload: id,
+            type: 'notification/updateNotificationStatus',
+            payload: {
+                msgIdList: [msg_id],
+                statusCode: 1,
+            },
         });
+        router.push(`/notificationInfo?msgId=${msg_id}`);
     };
 
     handleStoreChange = storeId => {
@@ -71,10 +89,11 @@ export default class GlobalHeaderRight extends PureComponent {
     render() {
         const {
             currentUser,
-            // fetchingNotices,
-            // onNoticeVisibleChange,
+            notification,
+            fetchingNotices,
+            onNoticeVisibleChange,
             onMenuClick,
-            // onNoticeClear,
+            onNoticeClear,
             theme,
             store: { allStores: storeList },
             selectedStore,
@@ -93,8 +112,8 @@ export default class GlobalHeaderRight extends PureComponent {
                 </Menu.Item>
             </Menu>
         );
-        // const noticeData = this.getNoticeData();
-        // const unreadMsg = this.getUnreadData(noticeData);
+        const noticeData = this.getNoticeData();
+        const unreadMsg = this.getUnreadData(noticeData);
         let className = styles.right;
         if (theme === 'dark') {
             className = `${styles.right}  ${styles.dark}`;
@@ -171,6 +190,40 @@ export default class GlobalHeaderRight extends PureComponent {
                 {/* emptyImage="https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg" */}
                 {/* /> */}
                 {/* </NoticeIcon> */}
+                <NoticeIcon
+                    className={styles.action}
+                    count={notification.count.unread}
+                    onItemClick={(item, tabProps) => {
+                        // console.log(item, tabProps); // eslint-disable-line
+                        this.changeReadState(item, tabProps);
+                    }}
+                    loading={fetchingNotices}
+                    locale={{
+                        emptyText: formatMessage({ id: 'component.noticeIcon.empty' }),
+                        clear: formatMessage({ id: 'component.noticeIcon.clear' }),
+                        viewMore: formatMessage({ id: 'component.noticeIcon.view-more' }),
+                        unread: formatMessage({ id: 'component.globalHeader.unread' }),
+                        message: formatMessage({ id: 'component.globalHeader.message' }),
+                        event: formatMessage({ id: 'component.globalHeader.event' }),
+                    }}
+                    onClear={onNoticeClear}
+                    onPopupVisibleChange={onNoticeVisibleChange}
+                    onViewMore={() => {
+                        router.push('/notificationCenter');
+                    }}
+                    clearClose
+                >
+                    <NoticeIcon.Tab
+                        count={unreadMsg['0']}
+                        list={noticeData['0']}
+                        title="unread"
+                        emptyText={formatMessage({
+                            id: 'component.globalHeader.notification.empty',
+                        })}
+                        emptyImage="https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg"
+                        showViewMore
+                    />
+                </NoticeIcon>
                 {Object.keys(currentUser).length > 0 ? (
                     <HeaderDropdown overlay={menu}>
                         <span className={`${styles.action} ${styles.account}`}>

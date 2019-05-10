@@ -1,5 +1,6 @@
 import * as Actions from '@/services/notification';
 import { ERROR_OK } from '@/constants/errorCode';
+import { message } from 'antd';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 
 function* switchLoadingStatus(status, put) {
@@ -77,7 +78,7 @@ export default {
             });
         },
 
-        *getNotificationList(payload = {}, { put, call, select }) {
+        *getNotificationList({ payload = {} }, { put, call, select }) {
             yield switchLoadingStatus(true, put);
             const { pagination, searchFormValues } = yield select(state => state.notification);
             const options = {
@@ -91,7 +92,7 @@ export default {
                 pageNum: page_num,
                 pageSize: page_size,
             } = options;
-            const response = yield call(Actions.handleNotifiCation, 'getMessageList', {
+            const response = yield call(Actions.handleNotifiCation, 'mailbox/getMessageList', {
                 model_id,
                 status_code,
                 page_num,
@@ -99,12 +100,22 @@ export default {
             });
             if (response && response.code === ERROR_OK) {
                 const { data = {} } = response;
-                const { msg_list = [] } = data;
+                const { msg_list = [], total_count } = data;
                 yield put({
                     type: 'updateState',
                     payload: {
                         notificationList: msg_list,
+                        pagination: {
+                            ...pagination,
+                            total: total_count,
+                            current: page_num,
+                            pageSize: page_size,
+                        },
                     },
+                });
+                yield put({
+                    type: 'getNotificationCount',
+                    payload: {},
                 });
             }
             yield switchLoadingStatus(true, put);
@@ -113,7 +124,7 @@ export default {
         *getNotificationCount(_, { put, call }) {
             yield switchLoadingStatus(true, put);
 
-            const response = yield call(Actions.handleNotifiCation, 'getMessageCount');
+            const response = yield call(Actions.handleNotifiCation, 'mailbox/getMessageCount');
             if (response && response.code === ERROR_OK) {
                 const { data = {} } = response;
                 const { total_count: total = 0, unread_count: unread = 0 } = data;
@@ -127,14 +138,14 @@ export default {
             yield switchLoadingStatus(false, put);
         },
 
-        *getNotificationInfo(payload = {}, { put, call }) {
+        *getNotificationInfo({ payload = {} }, { put, call }) {
             const { msgId: msg_id } = payload;
             const opts = {
                 msg_id,
             };
             yield switchLoadingStatus(true, put);
 
-            const response = yield call(Actions.handleNotifiCation, 'getMessageInfo', opts);
+            const response = yield call(Actions.handleNotifiCation, 'mailbox/getMessageInfo', opts);
             if (response && response.code === ERROR_OK) {
                 const { data = {} } = response;
                 const {
@@ -187,27 +198,36 @@ export default {
             yield switchLoadingStatus(false, put);
         },
 
-        *deleteNotification(payload = {}, { put, call }) {
+        *deleteNotification({ payload = {} }, { put, call }) {
             yield switchLoadingStatus(true, put);
             const { msgIdList: msg_id_list } = payload;
-            const response = yield call(Actions.handleNotifiCation, 'deleteMessage', {
+            const response = yield call(Actions.handleNotifiCation, 'mailbox/deleteMessage', {
                 msg_id_list,
             });
             if (response && response.code === ERROR_OK) {
                 // TODO 删除成功逻辑补充
+                message.success('删除成功');
+                yield put({
+                    type: 'getNotificationList',
+                    payload: {},
+                });
             }
             yield switchLoadingStatus(false, put);
         },
 
-        *updateNotificationStatus(payload = {}, { put, call }) {
+        *updateNotificationStatus({ payload = {} }, { put, call }) {
             yield switchLoadingStatus(true, put);
             const { msgIdList: msg_id_list, statusCode: status_code } = payload;
-            const response = yield call(Actions.handleNotifiCation, 'updateReceiveStatus', {
+            const response = yield call(Actions.handleNotifiCation, 'mailbox/updateReceiveStatus', {
                 msg_id_list,
                 status_code,
             });
             if (response && response.code === ERROR_OK) {
                 // TODO 更新状态成功逻辑补充
+                yield put({
+                    type: 'getNotificationList',
+                    payload: {},
+                });
             }
             yield switchLoadingStatus(false, put);
         },
