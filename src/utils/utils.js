@@ -115,7 +115,7 @@ const SYMBOL_BASE = [
     ':',
     ';',
     '"',
-    '\'',
+    "'",
     '<',
     '>',
     ',',
@@ -167,9 +167,9 @@ export const formatEmptyWithoutZero = (data, blank = '') => {
 export const unixSecondToDate = (second, formatStr = 'YYYY-MM-DD HH:mm:ss') =>
     moment.unix(second).isValid()
         ? moment
-            .unix(second)
-            .local()
-            .format(formatStr)
+              .unix(second)
+              .local()
+              .format(formatStr)
         : null;
 
 export const dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>
@@ -355,3 +355,24 @@ export const cbcEncryption = source => {
 };
 
 export const md5Encryption = message => CryptoJS.MD5(message).toString();
+
+export const formatTimeMessage = datetime => {
+    const currentStamp = Math.round(new Date() / 1000);
+    const momentNow = moment.unix(currentStamp);
+    const timeDiff = currentStamp - datetime;
+    const momentTime = moment.unix(datetime);
+    let currentTime = '';
+    if (momentNow.isSame(momentTime, 'year')) {
+        if (timeDiff < 3600) {
+            currentTime = momentTime.fromNow();
+        } else if (momentNow.isSame(momentTime, 'day')) {
+            currentTime = momentTime.format('a h:mm');
+        } else {
+            currentTime = momentTime.format('MM/DD a h:mm');
+        }
+    } else {
+        currentTime = momentTime.format('YY/MM/DD');
+    }
+
+    return currentTime;
+};

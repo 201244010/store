@@ -82,6 +82,14 @@ export default {
                 // TODO 万有集市 临时菜单 START
                 { path: '/', redirect: '/esl' },
                 {
+                    path: '/notificationCenter',
+                    component: './NotificationCenter/NotificationCenter',
+                },
+                {
+                    path: '/notificationInfo',
+                    component: './NotificationCenter/NotificationInfo',
+                },
+                {
                     path: '/esl',
                     name: 'esl',
                     icon: 'blank',

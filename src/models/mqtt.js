@@ -14,23 +14,23 @@ export default {
         },
     },
     effects: {
-        * createClient(_, { call, select }) {
+        *createClient(_, { call, select }) {
             const { mqttToken } = yield select(state => state.user);
             const client = yield call(Actions.createClient, mqttToken);
 
             console.log(client);
         },
 
-        * connectClient(_, { call, select }) {
+        *connectClient(_, { call, select }) {
             const { connectStatus } = yield select(state => state.mqtt);
             yield call(Actions.connectClient, connectStatus);
         },
 
-        * generateTopic(
+        *generateTopic(
             {
                 payload: { deviceType, messageType, method },
             },
-            { select, take },
+            { select, take }
         ) {
             const { userId, clientId, created } = yield select(state => ({
                 userId: state.user.id,
@@ -47,7 +47,7 @@ export default {
             return `/WEB/${userId}/${clientId}/${deviceType}/${messageType}/${method}`;
         },
 
-        * getClientId(_, { select, take }) {
+        *getClientId(_, { select, take }) {
             const { clientId, created } = yield select(state => ({
                 created: state.mqtt.created,
                 clientId: state.mqtt.clientId,
@@ -63,24 +63,24 @@ export default {
             return newClient;
         },
 
-        * subscribe(
+        *subscribe(
             {
                 payload: { topic },
             },
-            { call },
+            { call }
         ) {
             console.log('subscribe');
             yield call(Actions.subscribe, topic);
         },
-        * publish(
+        *publish(
             {
                 payload: { topic, message },
             },
-            { call },
+            { call }
         ) {
             yield call(Actions.publish, topic, message);
         },
-        * initListener(state, { call }) {
+        *initListener(state, { call }) {
             yield call(Actions.registMessageHandler);
         },
     },
