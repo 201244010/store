@@ -29,6 +29,7 @@ export default {
             });
 
             return tokenPromise.then(token => {
+                console.log(token);
                 const { username, server_address: address } = token;
                 const clientId = `${username}_${moment().format('X')}`;
                 mqttClient = new MqttClient({
@@ -54,18 +55,12 @@ export default {
             return '';
         },
 
-        *subscribe({ payload }, { put }) {
-            const { service, action = 'sub' } = payload;
-            const topicPromise = yield put({
-                type: 'generateTopic',
-                payload: { service, action },
-            });
+        subscribe({ payload }) {
+            const { topic } = payload;
 
-            return topicPromise.then(async topic => {
-                if (mqttClient && topic) {
-                    await mqttClient.subscribe(topic);
-                }
-            });
+            if (mqttClient && topic) {
+                mqttClient.subscribe(topic);
+            }
         },
 
         *publish({ payload }, { put }) {
@@ -77,9 +72,9 @@ export default {
                 payload: { service, action },
             });
 
-            return topicPromise.then(async topic => {
+            topicPromise.then(async topic => {
                 if (mqttClient && topic) {
-                    await mqttClient.publish(topic, message);
+                    mqttClient.publish(topic, message);
                 }
             });
         },

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { displayNotification } from '@/components/Notification';
 import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
+
 // import { ERROR_OK } from '@/constants/errorCode';
 
 function MQTTWrapper(WrapperedComponent) {
@@ -22,19 +23,32 @@ function MQTTWrapper(WrapperedComponent) {
             this.initClient();
         }
 
-        displayNotification = (topic, data) => {
-            console.log(data);
+        showNotification = (topic, data) => {
+            const messageData = JSON.parse(data.toString()) || {};
+            const { params = [] } = messageData;
+            const { param = {} } = params[0] || {};
+            displayNotification({ data: param });
         };
 
         initClient = async () => {
-            const { initializeClient, setTopicListener, subscribe, publish } = this.props;
+            const {
+                initializeClient,
+                generateTopic,
+                setTopicListener,
+                subscribe,
+                publish,
+            } = this.props;
 
             await initializeClient();
+            const registerTopic = await generateTopic({ service: 'register', action: 'sub' });
+            const notificationTopic = await generateTopic({
+                service: 'notification',
+                action: 'sub',
+            });
 
-            await setTopicListener({ service: 'notification', handler: displayNotification });
+            await setTopicListener({ service: 'notification', handler: this.showNotification });
 
-            await subscribe({ service: 'register' });
-            await subscribe({ service: 'notification' });
+            subscribe({ topic: [registerTopic, notificationTopic] });
             await publish({ service: 'register', message: REGISTER_PUB_MSG });
         };
 

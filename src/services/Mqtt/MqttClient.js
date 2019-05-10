@@ -106,22 +106,19 @@ class MqttClient {
 
     subscribe(topic) {
         const { client, subscribeStack } = this;
-        return new Promise((resolve, reject) => {
-            if (client.connected) {
-                console.log('before subscribe, topic: ', topic);
-                client.subscribe(topic, this.config, err => {
-                    if (err) {
-                        reject(err);
-                    }
-                    console.log('topic: ', topic, ' is subscribed');
-                    resolve(true);
-                });
-            } else {
-                subscribeStack.push(topic);
-                this.subscribeStack = [...new Set(subscribeStack)];
-                resolve(true);
-            }
-        });
+        if (client.connected) {
+            console.log(topic);
+            console.log('before subscribe, topic: ', topic);
+            client.subscribe(topic, this.config, err => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log('topic: ', topic, ' is subscribed');
+            });
+        } else {
+            subscribeStack.push(topic);
+            this.subscribeStack = [...new Set(subscribeStack)];
+        }
     }
 
     publish(topic, message) {
@@ -137,21 +134,17 @@ class MqttClient {
             params: Array.isArray(message) ? [...message] : [message],
         });
 
-        return new Promise((resolve, reject) => {
-            if (client.connected) {
-                client.publish(topic, msg, this.config, err => {
-                    if (err) {
-                        reject(err);
-                    }
-                    console.log('publish', topic, msg);
-                    resolve(true);
-                });
-            } else {
-                publishStack.push(JSON.stringify({ topic, message }));
-                this.publishStack = [...new Set(publishStack)];
-                resolve(true);
-            }
-        });
+        if (client.connected) {
+            client.publish(topic, msg, this.config, err => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log('publish', topic, msg);
+            });
+        } else {
+            publishStack.push(JSON.stringify({ topic, message }));
+            this.publishStack = [...new Set(publishStack)];
+        }
     }
 
     setMessageHandler(handler) {
