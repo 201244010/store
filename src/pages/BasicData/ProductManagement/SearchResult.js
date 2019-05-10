@@ -112,7 +112,12 @@ class SearchResult extends Component {
         ];
 
         const { selectedRowKeys } = this.state;
-        const { loading, data, pagination } = this.props;
+        const {
+            loading,
+            data,
+            pagination,
+            saasBindInfo: { isBind },
+        } = this.props;
         const rowSelection = {
             selectedRowKeys,
             onChange: this.onSelectChange,
@@ -120,13 +125,16 @@ class SearchResult extends Component {
         return (
             <div>
                 <div className={styles['table-header']}>
-                    <Button
-                        className={styles['function-btn']}
-                        type="primary"
-                        onClick={() => this.toPath('createProduct')}
-                    >
-                        {formatMessage({ id: 'btn.create' })}
-                    </Button>
+                    {!isBind && (
+                        <Button
+                            className={styles['function-btn']}
+                            type="primary"
+                            onClick={() => this.toPath('createProduct')}
+                        >
+                            {formatMessage({ id: 'btn.create' })}
+                        </Button>
+                    )}
+
                     {/* <Button className={styles['function-btn']}> */}
                     {/* {formatMessage({ id: 'btn.import' })} */}
                     {/* </Button> */}
@@ -142,13 +150,15 @@ class SearchResult extends Component {
                     {/* > */}
                     {/* {formatMessage({ id: 'btn.multi.edit' })} */}
                     {/* </Button> */}
-                    <Button
-                        className={styles['function-btn']}
-                        disabled={selectedRowKeys.length <= 0}
-                        onClick={this.deleteProducts}
-                    >
-                        {formatMessage({ id: 'btn.delete' })}
-                    </Button>
+                    {!isBind && (
+                        <Button
+                            className={styles['function-btn']}
+                            disabled={selectedRowKeys.length <= 0}
+                            onClick={this.deleteProducts}
+                        >
+                            {formatMessage({ id: 'btn.delete' })}
+                        </Button>
+                    )}
                 </div>
                 <div className="table-content">
                     <Table
