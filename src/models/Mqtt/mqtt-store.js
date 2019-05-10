@@ -1,7 +1,6 @@
 // import * as Actions from '@/services/mqtt';
 import moment from 'moment';
 import MqttClient from '@/services/Mqtt/MqttClient';
-
 // import { notification } from 'antd';
 // import { ERROR_OK, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 
@@ -13,31 +12,55 @@ export default {
         emit: false,
     },
     effects: {
-        connectClient() {
+        *generateTopic({ payload }, { select }) {
+            const { service, action } = payload;
+            const { currentUser } = yield select(state => state.user);
+            const { id } = currentUser;
             if (mqttClient) {
-                mqttClient.connect();
-                console.log(mqttClient);
+                const { info } = mqttClient.getClient();
+                const { clientId } = info;
+                return `/USER/${id}/${clientId}/${service}/${action}`;
             }
+            return '';
         },
 
-        subscribe({ payload }) {
-            const { topic } = payload;
-            if (mqttClient) {
-                mqttClient.subscribe(topic);
-            }
+        *subscribe({ payload }, { put }) {
+            const topicPromise = yield put({
+                type: 'generateTopic',
+                payload,
+            });
+
+            topicPromise.then(async topic => {
+                console.log(topic);
+                if (mqttClient && topic) {
+                    await mqttClient.subscribe(topic);
+                }
+            });
         },
 
-        publish({ payload }) {
-            const { topic, message } = payload;
-            if (mqttClient) {
-                mqttClient.publish(topic, message);
-            }
+        *publish({ payload }, { put }) {
+            const { message, ...rest } = payload;
+            const topicPromise = yield put({
+                type: 'generateTopic',
+                payload: { ...rest },
+            });
+
+            topicPromise.then(async topic => {
+                if (mqttClient && topic) {
+                    await mqttClient.publish(topic, message);
+                }
+            });
         },
 
         setMessageHandler({ payload }) {
             const { handler } = payload;
             if (mqttClient) {
-                mqttClient.setMessageHandler(handler);
+                mqttClient.setMessageHandler((topic, message) => {
+                    const messageData = JSON.parse(message.toString());
+                    const { data = [] } = messageData;
+                    console.log('data in handler: ', data);
+                    handler(topic, data);
+                });
             }
         },
 
@@ -64,14 +87,16 @@ export default {
                 type: 'user/createEmqToken',
             });
 
-            console.log(token);
             const { username, server_address: address } = token;
             const clientId = `${username}_${moment().format('X')}`;
             mqttClient = new MqttClient({
                 clientId,
                 ...token,
-                address: address || 'ws://47.96.240.44:30214',
+                address,
             });
+
+            mqttClient.connect();
+            mqttClient.setErrorHandler(err => console.log(err));
         },
     },
 };

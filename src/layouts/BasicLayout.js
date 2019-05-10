@@ -10,7 +10,6 @@ import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage } from 'umi/locale';
 import MQTTWrapper from '@/components/MQTT';
-import { ShadowNotification } from '@/components/Notification';
 import Authorized from '@/utils/Authorized';
 import router from 'umi/router';
 import * as CookieUtil from '@/utils/cookies';
@@ -226,7 +225,6 @@ class BasicLayout extends React.PureComponent {
                         </Authorized>
                     </Content>
                 </Layout>
-                <ShadowNotification {...{ emit }} />
             </Layout>
         );
         return (

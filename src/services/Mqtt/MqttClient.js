@@ -30,7 +30,7 @@ class MqttClient {
 
     initial() {
         this.client = MQTT.connect(
-            this.address,
+            `ws://${this.address}`,
             {
                 ...this.clientInfo,
                 clean: true,
@@ -40,7 +40,10 @@ class MqttClient {
     }
 
     getClient() {
-        return this.client;
+        return {
+            client: this.client,
+            info: this.clientInfo,
+        };
     }
 
     connect() {
@@ -102,14 +105,21 @@ class MqttClient {
 
     subscribe(topic) {
         const { client, subscribeStack } = this;
-        if (client.connected) {
-            console.log('before subscribe, topic: ', topic);
-            client.subscribe(topic, this.config, () => {
-                console.log('topic: ', topic, ' is subscribed');
-            });
-        } else {
-            this.subscribeStack = [...new Set(subscribeStack.push(JSON.stringify(topic)))];
-        }
+        return new Promise((resolve, reject) => {
+            if (client.connected) {
+                console.log('before subscribe, topic: ', topic);
+                client.subscribe(topic, this.config, err => {
+                    if (err) {
+                        reject(err);
+                    }
+                    console.log('topic: ', topic, ' is subscribed');
+                    resolve(true);
+                });
+            } else {
+                this.subscribeStack = [...new Set(subscribeStack.push(JSON.stringify(topic)))];
+                resolve(true);
+            }
+        });
     }
 
     publish(topic, message) {
@@ -125,13 +135,22 @@ class MqttClient {
             params: Array.isArray(message) ? [...message] : [message],
         });
 
-        if (client.connected) {
-            client.publish(topic, msg, this.config, () => {
-                console.log('publish', topic, msg);
-            });
-        } else {
-            this.publishStack = [...new Set(publishStack.push(JSON.stringify({ topic, message })))];
-        }
+        return new Promise((resolve, reject) => {
+            if (client.connected) {
+                client.publish(topic, msg, this.config, err => {
+                    if (err) {
+                        reject(err);
+                    }
+                    console.log('publish', topic, msg);
+                    resolve(true);
+                });
+            } else {
+                this.publishStack = [
+                    ...new Set(publishStack.push(JSON.stringify({ topic, message }))),
+                ];
+                resolve(true);
+            }
+        });
     }
 
     setMessageHandler(handler) {
@@ -139,9 +158,7 @@ class MqttClient {
         console.log('regist message handler');
         if (client.on) {
             // 若init请求失败，则无法被初始化client
-            client.on('message', (topic, message) => {
-                handler(topic, message);
-            });
+            client.on('message', handler);
         }
     }
 
@@ -149,9 +166,7 @@ class MqttClient {
         const { client } = this;
         console.log('regist error handler');
         if (client && client.on) {
-            client.on('error', error => {
-                action(error);
-            });
+            client.on('error', action);
         }
     }
 }
