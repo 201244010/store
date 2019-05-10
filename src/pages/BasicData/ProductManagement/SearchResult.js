@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Divider, Modal, Table, Button } from 'antd';
+import { CustomSkeleton } from '@/components/Skeleton';
 import { idEncode, unixSecondToDate } from '@/utils/utils';
 import router from 'umi/router';
 import * as CookieUtil from '@/utils/cookies';
@@ -125,39 +126,45 @@ class SearchResult extends Component {
         return (
             <div>
                 <div className={styles['table-header']}>
-                    {!isBind && (
-                        <Button
-                            className={styles['function-btn']}
-                            type="primary"
-                            onClick={() => this.toPath('createProduct')}
-                        >
-                            {formatMessage({ id: 'btn.create' })}
-                        </Button>
-                    )}
+                    {loading ? (
+                        <CustomSkeleton />
+                    ) : (
+                        <>
+                            {!isBind && (
+                                <Button
+                                    className={styles['function-btn']}
+                                    type="primary"
+                                    onClick={() => this.toPath('createProduct')}
+                                >
+                                    {formatMessage({ id: 'btn.create' })}
+                                </Button>
+                            )}
 
-                    {/* <Button className={styles['function-btn']}> */}
-                    {/* {formatMessage({ id: 'btn.import' })} */}
-                    {/* </Button> */}
-                    <Button
-                        className={styles['function-btn']}
-                        onClick={() => this.toPath('erpImport')}
-                    >
-                        {formatMessage({ id: 'btn.erp.import' })}
-                    </Button>
-                    {/* <Button */}
-                    {/* className={styles['function-btn']} */}
-                    {/* disabled={selectedRowKeys.length <= 0} */}
-                    {/* > */}
-                    {/* {formatMessage({ id: 'btn.multi.edit' })} */}
-                    {/* </Button> */}
-                    {!isBind && (
-                        <Button
-                            className={styles['function-btn']}
-                            disabled={selectedRowKeys.length <= 0}
-                            onClick={this.deleteProducts}
-                        >
-                            {formatMessage({ id: 'btn.delete' })}
-                        </Button>
+                            {/* <Button className={styles['function-btn']}> */}
+                            {/* {formatMessage({ id: 'btn.import' })} */}
+                            {/* </Button> */}
+                            <Button
+                                className={styles['function-btn']}
+                                onClick={() => this.toPath('erpImport')}
+                            >
+                                {formatMessage({ id: 'btn.erp.import' })}
+                            </Button>
+                            {/* <Button */}
+                            {/* className={styles['function-btn']} */}
+                            {/* disabled={selectedRowKeys.length <= 0} */}
+                            {/* > */}
+                            {/* {formatMessage({ id: 'btn.multi.edit' })} */}
+                            {/* </Button> */}
+                            {!isBind && (
+                                <Button
+                                    className={styles['function-btn']}
+                                    disabled={selectedRowKeys.length <= 0}
+                                    onClick={this.deleteProducts}
+                                >
+                                    {formatMessage({ id: 'btn.delete' })}
+                                </Button>
+                            )}
+                        </>
                     )}
                 </div>
                 <div className="table-content">

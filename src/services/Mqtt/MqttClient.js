@@ -55,11 +55,11 @@ class MqttClient {
                 this.reconnectTimes = 0;
 
                 if (subscribeStack.length > 0) {
-                    subscribeStack.forEach(itemStr => {
-                        const item = JSON.parse(itemStr);
-                        this.subscribe(item.topic);
+                    subscribeStack.forEach(topic => {
+                        this.subscribe(topic);
                     });
                     subscribeStack.splice(0, subscribeStack.length);
+                    this.subscribeStack = subscribeStack;
                 }
 
                 if (publishStack.length > 0) {
@@ -68,6 +68,7 @@ class MqttClient {
                         this.publish(item.topic, item.message);
                     });
                     publishStack.splice(0, publishStack.length);
+                    this.publishStack = publishStack;
                 }
 
                 resolve(true);
@@ -116,7 +117,8 @@ class MqttClient {
                     resolve(true);
                 });
             } else {
-                this.subscribeStack = [...new Set(subscribeStack.push(JSON.stringify(topic)))];
+                subscribeStack.push(topic);
+                this.subscribeStack = [...new Set(subscribeStack)];
                 resolve(true);
             }
         });
@@ -145,9 +147,8 @@ class MqttClient {
                     resolve(true);
                 });
             } else {
-                this.publishStack = [
-                    ...new Set(publishStack.push(JSON.stringify({ topic, message }))),
-                ];
+                publishStack.push(JSON.stringify({ topic, message }));
+                this.publishStack = [...new Set(publishStack)];
                 resolve(true);
             }
         });

@@ -23,6 +23,25 @@ export default {
             return null;
         },
 
+        *initializeClient(_, { put }) {
+            const tokenPromise = yield put({
+                type: 'createEmqToken',
+            });
+
+            return tokenPromise.then(token => {
+                const { username, server_address: address } = token;
+                const clientId = `${username}_${moment().format('X')}`;
+                mqttClient = new MqttClient({
+                    clientId,
+                    ...token,
+                    address,
+                });
+
+                mqttClient.connect();
+                mqttClient.setErrorHandler(err => console.log(err));
+            });
+        },
+
         *generateTopic({ payload }, { select }) {
             const { service, action } = payload;
             const { currentUser } = yield select(state => state.user);
@@ -42,8 +61,7 @@ export default {
                 payload: { service, action },
             });
 
-            topicPromise.then(async topic => {
-                console.log(topic);
+            return topicPromise.then(async topic => {
                 if (mqttClient && topic) {
                     await mqttClient.subscribe(topic);
                 }
@@ -59,7 +77,7 @@ export default {
                 payload: { service, action },
             });
 
-            topicPromise.then(async topic => {
+            return topicPromise.then(async topic => {
                 if (mqttClient && topic) {
                     await mqttClient.publish(topic, message);
                 }
@@ -110,22 +128,5 @@ export default {
         },
     },
 
-    subscriptions: {
-        async initialize({ dispatch }) {
-            const token = await dispatch({
-                type: 'createEmqToken',
-            });
-
-            const { username, server_address: address } = token;
-            const clientId = `${username}_${moment().format('X')}`;
-            mqttClient = new MqttClient({
-                clientId,
-                ...token,
-                address,
-            });
-
-            mqttClient.connect();
-            mqttClient.setErrorHandler(err => console.log(err));
-        },
-    },
+    subscriptions: {},
 };

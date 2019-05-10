@@ -8,6 +8,7 @@ function MQTTWrapper(WrapperedComponent) {
     @connect(
         null,
         dispatch => ({
+            initializeClient: () => dispatch({ type: 'mqttStore/initializeClient' }),
             generateTopic: payload => dispatch({ type: 'mqttStore/generateTopic', payload }),
             subscribe: payload => dispatch({ type: 'mqttStore/subscribe', payload }),
             publish: payload => dispatch({ type: 'mqttStore/publish', payload }),
@@ -21,8 +22,9 @@ function MQTTWrapper(WrapperedComponent) {
         }
 
         initClient = async () => {
-            const { setMessageHandler, subscribe, publish } = this.props;
+            const { initializeClient, setMessageHandler, subscribe, publish } = this.props;
 
+            await initializeClient();
             await setMessageHandler({
                 handler: (topic, data) => {
                     console.log(data);
