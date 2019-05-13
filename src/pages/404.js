@@ -3,7 +3,7 @@ import Link from 'umi/link';
 import { formatMessage } from 'umi/locale';
 import Exception from '@/components/Exception';
 
-export default (props) => {
+export default props => {
     const { customStyle = {} } = props;
     return (
         <Exception
@@ -14,4 +14,4 @@ export default (props) => {
             backText={formatMessage({ id: 'app.exception.back' })}
         />
     );
-}
+};

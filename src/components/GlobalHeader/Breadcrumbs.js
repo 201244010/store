@@ -9,7 +9,9 @@ const formatBreadcrumbs = (breadcrumbs, prefix = 'menu') =>
         .slice(1)
         .map(breadcrumb => {
             const formattedBread = { ...breadcrumb };
-            const { match: { path } } = breadcrumb;
+            const {
+                match: { path },
+            } = breadcrumb;
             const menuId = breadcrumb.key.slice(1).replace(/\//g, '.');
             const formattedPath = path.slice(1).replace(/\//g, '.');
             const pathName = formatMessage({ id: `${prefix}.${menuId}` });

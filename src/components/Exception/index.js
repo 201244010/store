@@ -41,17 +41,19 @@ class Exception extends React.PureComponent {
                 </div>
                 <div className={styles.content}>
                     <h1 style={{ ...customStyle }}>{title || config[pageType].title}</h1>
-                    <div className={styles.desc} style={{ ...customStyle }}>{desc || config[pageType].desc}</div>
+                    <div className={styles.desc} style={{ ...customStyle }}>
+                        {desc || config[pageType].desc}
+                    </div>
                     <div className={styles.actions}>
                         {actions ||
-                        createElement(
-                            linkElement,
-                            {
-                                to: redirect,
-                                href: redirect,
-                            },
-                            <Button type="primary">{backText}</Button>,
-                        )}
+                            createElement(
+                                linkElement,
+                                {
+                                    to: redirect,
+                                    href: redirect,
+                                },
+                                <Button type="primary">{backText}</Button>
+                            )}
                     </div>
                 </div>
             </div>

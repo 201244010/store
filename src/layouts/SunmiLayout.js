@@ -113,9 +113,11 @@ class SunmiLayout extends React.PureComponent {
                     <div className={`${styles.wrapper} ${styles[bgClass]}`}>
                         <div className={styles['header-bar']}>
                             <div className={styles.logo} />
+                            {/* {from !== 'accountCenter' && ( */}
                             {/* <div className={styles['lang-wrapper']}> */}
                             {/* <SelectLang className={styles['drop-down']} /> */}
                             {/* </div> */}
+                            {/* )} */}
                             {from === 'accountCenter' && (
                                 <div className={styles['avater-wrapper']}>
                                     {Object.keys(currentUser).length > 0 && (

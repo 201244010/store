@@ -110,7 +110,7 @@ class BasicLayout extends React.PureComponent {
 
     matchParamsPath = (pathname, breadcrumbNameMap) => {
         const pathKey = Object.keys(breadcrumbNameMap).find(key =>
-            pathToRegexp(key).test(pathname),
+            pathToRegexp(key).test(pathname)
         );
         return breadcrumbNameMap[pathKey];
     };
@@ -256,7 +256,7 @@ export default connect(
         getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
         dispatch,
-    }),
+    })
 )(props => (
     <Media query="(max-width: 599px)">
         {isMobile => <BasicLayout {...props} isMobile={isMobile} />}
