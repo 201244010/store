@@ -14,7 +14,7 @@ export default {
         emit: false,
     },
     effects: {
-        * createEmqToken(_, { call }) {
+        *createEmqToken(_, { call }) {
             const response = yield call(createEmqToken);
             if (response && response.code === ERROR_OK) {
                 const { data = {} } = response;
@@ -23,7 +23,7 @@ export default {
             return null;
         },
 
-        * initializeClient(_, { put }) {
+        *initializeClient(_, { put }) {
             const tokenPromise = yield put({
                 type: 'createEmqToken',
             });
@@ -43,7 +43,7 @@ export default {
             });
         },
 
-        * generateTopic({ payload }, { select }) {
+        *generateTopic({ payload }, { select }) {
             const { service, action } = payload;
             const { currentUser } = yield select(state => state.user);
             const { id } = currentUser;
@@ -63,7 +63,7 @@ export default {
             }
         },
 
-        * publish({ payload }, { put }) {
+        *publish({ payload }, { put }) {
             const { message, ...rest } = payload;
             const { service, action = 'pub' } = rest;
 
@@ -92,7 +92,7 @@ export default {
             }
         },
 
-        * setTopicListener({ payload }, { put }) {
+        *setTopicListener({ payload }, { put }) {
             const { service, action = 'sub', handler } = payload;
             const topicPromise = yield put({
                 type: 'generateTopic',
