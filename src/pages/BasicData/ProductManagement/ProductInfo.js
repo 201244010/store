@@ -18,6 +18,7 @@ const MESSAGE_PREFIX = {
 @connect(
     state => ({
         product: state.basicDataProduct,
+        store: state.store,
     }),
     dispatch => ({
         getProductDetail: payload =>
@@ -59,6 +60,9 @@ class ProductInfo extends Component {
 
     render() {
         const {
+            store: {
+                saasBindInfo: { isBind = false },
+            },
             product: {
                 productInfo = {},
                 productInfo: { extra_info: productBasicExtra, extra_price_info: productPriceExtra },
@@ -83,13 +87,15 @@ class ProductInfo extends Component {
                     }}
                 />
                 <div className={styles.footer}>
-                    <Button
-                        className={styles.btn}
-                        type="primary"
-                        onClick={() => this.toPath('edit')}
-                    >
-                        {formatMessage({ id: 'btn.alter' })}
-                    </Button>
+                    {!isBind && (
+                        <Button
+                            className={styles.btn}
+                            type="primary"
+                            onClick={() => this.toPath('edit')}
+                        >
+                            {formatMessage({ id: 'btn.alter' })}
+                        </Button>
+                    )}
                     <Button className={styles.btn} onClick={() => this.toPath('back')}>
                         {formatMessage({ id: 'btn.back' })}
                     </Button>

@@ -66,6 +66,17 @@ class SearchResult extends Component {
     };
 
     render() {
+        const { selectedRowKeys } = this.state;
+        const {
+            loading,
+            data,
+            pagination,
+            saasBindInfo: { isBind },
+        } = this.props;
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: this.onSelectChange,
+        };
         const columns = [
             {
                 title: formatMessage({ id: 'basicData.product.seq_num' }),
@@ -102,29 +113,21 @@ class SearchResult extends Component {
                         >
                             {formatMessage({ id: 'list.action.detail' })}
                         </a>
-                        <Divider type="vertical" />
-                        <a
-                            href="javascript: void (0);"
-                            onClick={() => this.toPath('update', record)}
-                        >
-                            {formatMessage({ id: 'list.action.alter' })}
-                        </a>
+                        {!isBind && (
+                            <>
+                                <Divider type="vertical" />
+                                <a
+                                    href="javascript: void (0);"
+                                    onClick={() => this.toPath('update', record)}
+                                >
+                                    {formatMessage({ id: 'list.action.alter' })}
+                                </a>
+                            </>
+                        )}
                     </span>
                 ),
             },
         ];
-
-        const { selectedRowKeys } = this.state;
-        const {
-            loading,
-            data,
-            pagination,
-            saasBindInfo: { isBind },
-        } = this.props;
-        const rowSelection = {
-            selectedRowKeys,
-            onChange: this.onSelectChange,
-        };
         return (
             <div>
                 <div className={styles['table-header']}>
