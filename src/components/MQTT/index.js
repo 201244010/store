@@ -3,8 +3,6 @@ import { connect } from 'dva';
 import { displayNotification } from '@/components/Notification';
 import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
 
-// import { ERROR_OK } from '@/constants/errorCode';
-
 function MQTTWrapper(WrapperedComponent) {
     @connect(
         null,
@@ -19,7 +17,7 @@ function MQTTWrapper(WrapperedComponent) {
                 dispatch({ type: 'mqttStore/setMessageHandler', payload }),
             destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
             getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
-        }),
+        })
     )
     class Wrapper extends Component {
         componentDidMount() {
@@ -59,10 +57,20 @@ function MQTTWrapper(WrapperedComponent) {
                 service: 'notification',
                 action: 'sub',
             });
+            const companyNotificationTopic = await generateTopic({
+                service: 'notification',
+                action: 'sub',
+                withCompany: true,
+            });
 
             await setTopicListener({ service: 'notification', handler: this.showNotification });
+            await setTopicListener({
+                service: 'notification',
+                withCompany: true,
+                handler: this.showNotification,
+            });
 
-            subscribe({ topic: [registerTopic, notificationTopic] });
+            subscribe({ topic: [registerTopic, notificationTopic, companyNotificationTopic] });
             await publish({ service: 'register', message: REGISTER_PUB_MSG });
         };
 

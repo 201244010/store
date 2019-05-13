@@ -44,12 +44,18 @@ export default {
         },
 
         *generateTopic({ payload }, { select }) {
-            const { service, action, prefix = 'WEB' } = payload;
+            const { service, action, prefix = 'WEB', withCompany = false } = payload;
             const { currentUser } = yield select(state => state.user);
+
             const { id } = currentUser;
             if (mqttClient) {
                 const { info } = mqttClient.getClient();
                 const { clientId } = info;
+
+                if (withCompany) {
+                    const { currentCompanyId } = yield select(state => state.merchant);
+                    return `/${prefix}/${id}/${clientId}/${currentCompanyId}/${service}/${action}`;
+                }
                 return `/${prefix}/${id}/${clientId}/${service}/${action}`;
             }
             return '';
@@ -93,10 +99,16 @@ export default {
         },
 
         *setTopicListener({ payload }, { put }) {
-            const { service, action = 'sub', handler } = payload;
+            const {
+                service,
+                action = 'sub',
+                prefix = 'WEB',
+                withCompany = false,
+                handler,
+            } = payload;
             const topicPromise = yield put({
                 type: 'generateTopic',
-                payload: { service, action },
+                payload: { service, action, prefix, withCompany },
             });
 
             topicPromise.then(topic => {
