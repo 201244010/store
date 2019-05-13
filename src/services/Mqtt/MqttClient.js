@@ -174,6 +174,14 @@ class MqttClient {
             client.on('error', action);
         }
     }
+
+    destroyClient() {
+        const { client } = this;
+        console.log('close client');
+        if (client) {
+            client.end(true);
+        }
+    }
 }
 
 export default MqttClient;

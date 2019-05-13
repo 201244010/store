@@ -99,15 +99,12 @@ class BasicLayout extends React.PureComponent {
     }
 
     dataInitial = async () => {
-        // TODO 等待 token 接口上线
         const {
-            getUserInfo,
             getMenuData,
             route: { routes, authority },
         } = this.props;
 
         await getMenuData({ routes, authority });
-        await getUserInfo();
     };
 
     matchParamsPath = (pathname, breadcrumbNameMap) => {
@@ -252,7 +249,6 @@ export default connect(
         ...setting,
     }),
     dispatch => ({
-        getUserInfo: () => dispatch({ type: 'user/getUserInfo' }),
         getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
         dispatch,
