@@ -58,6 +58,7 @@ function MQTTWrapper(WrapperedComponent) {
             const notificationTopic = await generateTopic({
                 service: 'notification',
                 action: 'sub',
+                prefix: 'WEB',
             });
 
             await setTopicListener({ service: 'notification', handler: this.showNotification });

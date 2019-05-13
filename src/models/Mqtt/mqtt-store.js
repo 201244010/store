@@ -44,13 +44,13 @@ export default {
         },
 
         *generateTopic({ payload }, { select }) {
-            const { service, action } = payload;
+            const { service, action, prefix = 'USER' } = payload;
             const { currentUser } = yield select(state => state.user);
             const { id } = currentUser;
             if (mqttClient) {
                 const { info } = mqttClient.getClient();
                 const { clientId } = info;
-                return `/USER/${id}/${clientId}/${service}/${action}`;
+                return `/${prefix}/${id}/${clientId}/${service}/${action}`;
             }
             return '';
         },
