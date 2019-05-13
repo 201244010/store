@@ -19,7 +19,7 @@ function MQTTWrapper(WrapperedComponent) {
                 dispatch({ type: 'mqttStore/setMessageHandler', payload }),
             destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
             getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
-        })
+        }),
     )
     class Wrapper extends Component {
         componentDidMount() {
@@ -58,7 +58,6 @@ function MQTTWrapper(WrapperedComponent) {
             const notificationTopic = await generateTopic({
                 service: 'notification',
                 action: 'sub',
-                prefix: 'WEB',
             });
 
             await setTopicListener({ service: 'notification', handler: this.showNotification });

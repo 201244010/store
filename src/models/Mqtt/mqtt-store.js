@@ -44,7 +44,7 @@ export default {
         },
 
         *generateTopic({ payload }, { select }) {
-            const { service, action, prefix = 'USER' } = payload;
+            const { service, action, prefix = 'WEB' } = payload;
             const { currentUser } = yield select(state => state.user);
             const { id } = currentUser;
             if (mqttClient) {
