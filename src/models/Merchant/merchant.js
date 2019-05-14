@@ -22,6 +22,14 @@ export default {
             yield call(Actions.initialCompany, options);
         },
 
+        *setCurrentCompany({ payload }, { put }) {
+            const { companyId } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { currentCompanyId: companyId },
+            });
+        },
+
         *companyCreate({ payload }, { put, call }) {
             yield put({
                 type: 'updateState',

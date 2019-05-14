@@ -30,6 +30,7 @@ export default {
             const { currentUser } = yield select(state => state.user);
             const { id } = currentUser;
             const { currentCompanyId } = yield select(state => state.merchant);
+            // console.log('mqtt init', currentCompanyId);
 
             return tokenPromise.then(token => {
                 console.log(token);

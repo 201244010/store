@@ -547,8 +547,10 @@ class Studio extends Component {
                                     }
                                     return undefined;
                                 })}
-                                {selectedShapeName && componentsDetail[selectedShapeName].type !== SHAPE_TYPES.RECT_FIX ? (
-                                    <MTransformer selectedShapeName={selectedShapeName} />
+                                {selectedShapeName &&
+                                componentsDetail[selectedShapeName].type !==
+                                    SHAPE_TYPES.RECT_FIX ? (
+                                        <MTransformer selectedShapeName={selectedShapeName} />
                                 ) : null}
                             </Layer>
                             {lines && !showRightToolBox ? (
