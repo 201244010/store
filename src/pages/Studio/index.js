@@ -10,7 +10,7 @@ import RightToolBox from './RightToolBox';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
 import { getTypeByName, getNearLines } from '@/utils/studio';
-import { SIZES, SHAPE_TYPES, MAPS } from "@/constants/studio";
+import { SIZES, SHAPE_TYPES, PRICE_TYPES, MAPS } from "@/constants/studio";
 import * as RegExp from '@/constants/regexp';
 import { ERROR_OK } from "@/constants/errorCode";
 import * as styles from './index.less';
@@ -307,7 +307,7 @@ class Studio extends Component {
 
         if (name && name.indexOf('_') === -1) {
             const type = getTypeByName(name);
-            if (type === SHAPE_TYPES.TEXT) { // TEXT组件放大的是同层的RECT组件
+            if ([...PRICE_TYPES, SHAPE_TYPES.TEXT].includes(type)) { // TEXT组件放大的是同层的RECT组件
                 realW = target.parent.children[0].attrs.width;
                 realScaleX = target.parent.children[0].attrs.scaleX || 1;
                 realScaleY = target.parent.children[0].attrs.scaleY || 1;
