@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from "dva";
+import { connect } from 'dva';
 import SearchResult from './SearchResult';
 import * as styles from './index.less';
 
@@ -18,17 +18,14 @@ import * as styles from './index.less';
 )
 class Template extends Component {
     componentDidMount() {
-        const {
-            fetchScreenTypes,
-            fetchTemplates,
-        } = this.props;
+        const { fetchScreenTypes, fetchTemplates } = this.props;
 
         fetchScreenTypes();
         fetchTemplates({
             options: {
                 current: 1,
                 screen_type: -1,
-                colour: -1
+                colour: -1,
             },
         });
     }
@@ -40,35 +37,27 @@ class Template extends Component {
             createTemplate,
             deleteTemplate,
             applyTemplate,
-            template: {
-                screenTypes,
-                colors,
-                loading,
-                data,
-                pagination
-            }
+            template: { screenTypes, colors, loading, data, pagination },
         } = this.props;
 
         return (
             <div className={styles['content-container']}>
                 <SearchResult
-                    {
-                        ...{
-                            screenTypes,
-                            colors,
-                            loading,
-                            data,
-                            pagination,
-                            fetchColors,
-                            createTemplate,
-                            fetchTemplates,
-                            deleteTemplate,
-                            applyTemplate
-                        }
-                    }
+                    {...{
+                        screenTypes,
+                        colors,
+                        loading,
+                        data,
+                        pagination,
+                        fetchColors,
+                        createTemplate,
+                        fetchTemplates,
+                        deleteTemplate,
+                        applyTemplate,
+                    }}
                 />
             </div>
-        )
+        );
     }
 }
 

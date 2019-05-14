@@ -1,10 +1,10 @@
 import { message } from 'antd';
-import { hideSinglePageCheck } from "@/utils/utils";
-import { getImagePromise } from "@/utils/studio";
-import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from "@/constants";
+import { hideSinglePageCheck } from '@/utils/utils';
+import { getImagePromise } from '@/utils/studio';
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import * as TemplateService from '@/services/ESL/template';
 import { ERROR_OK } from '@/constants/errorCode';
-import { IMAGE_TYPES, SHAPE_TYPES, BARCODE_TYPES, PRICE_TYPES } from "@/constants/studio";
+import { IMAGE_TYPES, SHAPE_TYPES, BARCODE_TYPES, PRICE_TYPES } from '@/constants/studio';
 
 export default {
     namespace: 'template',
@@ -26,10 +26,10 @@ export default {
             showSizeChanger: true,
             showQuickJumper: true,
         },
-        curTemplate: {}
+        curTemplate: {},
     },
     effects: {
-        * changeSearchFormValue({ payload = {} }, { put }) {
+        *changeSearchFormValue({ payload = {} }, { put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'setSearchFormValue',
@@ -38,7 +38,7 @@ export default {
                 },
             });
         },
-        * fetchScreenTypes({ payload = {} }, { call, put }) {
+        *fetchScreenTypes({ payload = {} }, { call, put }) {
             const response = yield call(TemplateService.fetchScreenTypes, payload);
             yield put({
                 type: 'updateState',
@@ -47,7 +47,7 @@ export default {
                 },
             });
         },
-        * fetchBindFields({ payload = {} }, { call, put }) {
+        *fetchBindFields({ payload = {} }, { call, put }) {
             const response = yield call(TemplateService.fetchBindFields, payload);
             yield put({
                 type: 'updateState',
@@ -56,7 +56,7 @@ export default {
                 },
             });
         },
-        * fetchColors({ payload = {} }, { call, put }) {
+        *fetchColors({ payload = {} }, { call, put }) {
             const response = yield call(TemplateService.fetchColors, payload);
             yield put({
                 type: 'updateState',
@@ -65,7 +65,7 @@ export default {
                 },
             });
         },
-        * createTemplate({ payload = {} }, { call, put }) {
+        *createTemplate({ payload = {} }, { call, put }) {
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -82,9 +82,9 @@ export default {
                     payload: {
                         options: {
                             screen_type: -1,
-                            colour: -1
-                        }
-                    }
+                            colour: -1,
+                        },
+                    },
                 });
                 message.success('新建模板成功');
             } else {
@@ -96,7 +96,7 @@ export default {
             }
             return response;
         },
-        * fetchTemplates({ payload = {} }, { call, put, select }) {
+        *fetchTemplates({ payload = {} }, { call, put, select }) {
             const { options = {} } = payload;
             const { pagination, searchFormValues } = yield select(state => state.template);
 
@@ -123,7 +123,7 @@ export default {
                 },
             });
         },
-        * saveAsDraft({ payload = {} }, { call, put, select }) {
+        *saveAsDraft({ payload = {} }, { call, put, select }) {
             const { bindFields, curTemplate } = yield select(state => state.template);
             yield put({
                 type: 'updateState',
@@ -150,38 +150,47 @@ export default {
             Object.keys(payload.draft).map(key => {
                 const componentDetail = payload.draft[key];
                 Object.keys(componentDetail).map(detailKey => {
-                    componentDetail.content = componentDetail.bindField ? `{{${componentDetail.bindField}}}` : '';
-                    if (["height", "width"].includes(detailKey)) {
+                    componentDetail.content = componentDetail.bindField
+                        ? `{{${componentDetail.bindField}}}`
+                        : '';
+                    if (['height', 'width'].includes(detailKey)) {
                         const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
                         const scale = {
                             width: componentDetail.scaleX,
-                            height: componentDetail.scaleY
+                            height: componentDetail.scaleY,
                         };
-                        componentDetail[realKey] =
-                            (componentDetail[detailKey] * scale[detailKey] / componentDetail.zoomScale).toFixed();
+                        componentDetail[realKey] = (
+                            (componentDetail[detailKey] * scale[detailKey]) /
+                            componentDetail.zoomScale
+                        ).toFixed();
                     }
-                    if (["x", "y"].includes(detailKey)) {
+                    if (['x', 'y'].includes(detailKey)) {
                         if (componentDetail.type !== SHAPE_TYPES.RECT_FIX) {
-                            componentDetail.backStartX =
-                                ((componentDetail.x - originOffset.x) / componentDetail.zoomScale).toFixed();
-                            componentDetail.backStartY =
-                                ((componentDetail.y - originOffset.y) / componentDetail.zoomScale).toFixed();
+                            componentDetail.backStartX = (
+                                (componentDetail.x - originOffset.x) /
+                                componentDetail.zoomScale
+                            ).toFixed();
+                            componentDetail.backStartY = (
+                                (componentDetail.y - originOffset.y) /
+                                componentDetail.zoomScale
+                            ).toFixed();
                         }
                     }
-                    if (["type"].includes(detailKey)) {
+                    if (['type'].includes(detailKey)) {
                         const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
                         if ([...PRICE_TYPES, SHAPE_TYPES.RECT].includes(componentDetail.type)) {
                             componentDetail[realKey] = SHAPE_TYPES.TEXT;
                         }
                         if (BARCODE_TYPES.includes(componentDetail.type)) {
                             componentDetail[realKey] = SHAPE_TYPES.CODE;
-                            componentDetail.codec = componentDetail.type === SHAPE_TYPES.CODE_QR ? 'qrcode' : 'ean13';
+                            componentDetail.codec =
+                                componentDetail.type === SHAPE_TYPES.CODE_QR ? 'qrcode' : 'ean13';
                         }
                         if ([SHAPE_TYPES.TEXT].includes(componentDetail.type)) {
                             componentDetail[realKey] = SHAPE_TYPES.TEXT;
                         }
                     }
-                    if (["fill"].includes(detailKey)) {
+                    if (['fill'].includes(detailKey)) {
                         if ([...PRICE_TYPES, SHAPE_TYPES.TEXT].includes(componentDetail.type)) {
                             componentDetail.backBg = componentDetail.textBg;
                         }
@@ -199,7 +208,7 @@ export default {
 
             const response = yield call(TemplateService.saveAsDraft, {
                 ...payload,
-                draft: JSON.stringify(draft)
+                draft: JSON.stringify(draft),
             });
             if (response && response.code === ERROR_OK) {
                 yield put({
@@ -215,7 +224,7 @@ export default {
                 message.error('保存模板草稿失败');
             }
         },
-        * fetchTemplateDetail({ payload = {} }, { call, put }) {
+        *fetchTemplateDetail({ payload = {} }, { call, put }) {
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -225,7 +234,7 @@ export default {
                 yield put({
                     type: 'updateState',
                     payload: {
-                        curTemplate: response.data.template_info
+                        curTemplate: response.data.template_info,
                     },
                 });
                 let { layers } = JSON.parse(response.data.template_info.studio_info) || {};
@@ -238,22 +247,26 @@ export default {
                 });
 
                 if (hasImage) {
-                    (yield Promise.all(layers.map(layer => {
-                        if (IMAGE_TYPES.includes(layer.type)) {
-                            return getImagePromise(layer)
-                        }
-                        return undefined;
-                    }).filter(item => item))).forEach(value => {
+                    (yield Promise.all(
+                        layers
+                            .map(layer => {
+                                if (IMAGE_TYPES.includes(layer.type)) {
+                                    return getImagePromise(layer);
+                                }
+                                return undefined;
+                            })
+                            .filter(item => item)
+                    )).forEach(value => {
                         componentsDetail[value.name].image = value.image;
                     });
                     yield put({
                         type: 'studio/addComponentsDetail',
-                        payload: componentsDetail
+                        payload: componentsDetail,
                     });
                 } else {
                     yield put({
                         type: 'studio/addComponentsDetail',
-                        payload: componentsDetail
+                        payload: componentsDetail,
                     });
                 }
             } else {
@@ -301,9 +314,9 @@ export default {
                     payload: {
                         options: {
                             screen_type: -1,
-                            colour: -1
-                        }
-                    }
+                            colour: -1,
+                        },
+                    },
                 });
                 message.success('删除成功');
             } else {

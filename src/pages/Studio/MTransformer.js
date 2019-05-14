@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {Transformer} from 'react-konva';
-import {getTypeByName} from '@/utils/studio';
-import {SHAPE_TYPES} from '@/constants/studio';
+import React, { Component } from 'react';
+import { Transformer } from 'react-konva';
+import { getTypeByName } from '@/utils/studio';
+import { SHAPE_TYPES } from '@/constants/studio';
 
 export default class MTransformer extends Component {
     componentDidMount() {
@@ -15,7 +15,7 @@ export default class MTransformer extends Component {
     checkNode() {
         // here need to manually attach or detach Transformer node
         const stage = this.transformer.getStage();
-        const {selectedShapeName} = this.props;
+        const { selectedShapeName } = this.props;
 
         const selectedNode = stage.findOne(`.${selectedShapeName}`);
         // do nothing if selected node is already attached
@@ -34,7 +34,7 @@ export default class MTransformer extends Component {
     }
 
     render() {
-        const {selectedShapeName} = this.props;
+        const { selectedShapeName } = this.props;
         const type = getTypeByName(selectedShapeName);
 
         if ([SHAPE_TYPES.IMAGE].includes(type)) {

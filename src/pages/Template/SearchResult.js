@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Table, Switch, Divider, Modal, Button, Form, Input, Select } from "antd";
+import { Table, Switch, Divider, Modal, Button, Form, Input, Select } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { ERROR_OK } from "@/constants/errorCode";
+import { ERROR_OK } from '@/constants/errorCode';
 import * as styles from './index.less';
 
-const {Option} = Select;
+const { Option } = Select;
 
 const TEMPLATE_STATES = {
     0: formatMessage({ id: 'esl.device.template.status.draft' }),
@@ -16,8 +16,8 @@ class SearchResult extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            newVisible: false
-        }
+            newVisible: false,
+        };
     }
 
     onTableChange = pagination => {
@@ -31,12 +31,12 @@ class SearchResult extends Component {
         });
     };
 
-    editDetail = (record) => {
+    editDetail = record => {
         window.open(`/studio?id=${record.id}&screen=${record.screen_type}`);
     };
 
-    deleteTemplate = (record) => {
-        const {deleteTemplate} = this.props;
+    deleteTemplate = record => {
+        const { deleteTemplate } = this.props;
 
         Modal.confirm({
             title: formatMessage({ id: 'esl.device.template.delete.confirm.title' }),
@@ -46,39 +46,49 @@ class SearchResult extends Component {
             cancelText: formatMessage({ id: 'esl.device.template.delete.confirm.cancel.text' }),
             onOk() {
                 deleteTemplate({
-                    template_id_list: [record.id]
+                    template_id_list: [record.id],
                 });
-            }
+            },
         });
     };
 
-    applyTemplate = (record) => {
-        const {applyTemplate} = this.props;
+    applyTemplate = record => {
+        const { applyTemplate } = this.props;
 
         applyTemplate({
-            template_id: record.id
+            template_id: record.id,
         });
     };
 
     showNew = () => {
         this.setState({
-            newVisible: true
+            newVisible: true,
         });
     };
 
     handleOkNew = () => {
         const {
-            props: { form: {validateFields}, createTemplate },
+            props: {
+                form: { validateFields },
+                createTemplate,
+            },
         } = this;
         validateFields(async (errors, values) => {
             if (!errors) {
                 const response = await createTemplate(values);
                 if (response && response.code === ERROR_OK) {
-                    this.setState({
-                        newVisible: false
-                    }, () => {
-                        window.open(`/studio?id=${response.data.template_id}&screen=${values.screen_type}`);
-                    });
+                    this.setState(
+                        {
+                            newVisible: false,
+                        },
+                        () => {
+                            window.open(
+                                `/studio?id=${response.data.template_id}&screen=${
+                                    values.screen_type
+                                }`
+                            );
+                        }
+                    );
                 }
             }
         });
@@ -86,14 +96,22 @@ class SearchResult extends Component {
 
     handleCancelNew = () => {
         this.setState({
-            newVisible: false
+            newVisible: false,
         });
     };
 
     render() {
         const {
-            props: { screenTypes, colors, loading, data, pagination, form: {getFieldDecorator}, fetchColors },
-            state: { newVisible }
+            props: {
+                screenTypes,
+                colors,
+                loading,
+                data,
+                pagination,
+                form: { getFieldDecorator },
+                fetchColors,
+            },
+            state: { newVisible },
         } = this;
         const columns = [
             {
@@ -124,8 +142,12 @@ class SearchResult extends Component {
                     <div>
                         <Switch
                             checked={value === 1}
-                            checkedChildren={formatMessage({ id: 'esl.device.template.is.default.yes' })}
-                            unCheckedChildren={formatMessage({ id: 'esl.device.template.is.default.no' })}
+                            checkedChildren={formatMessage({
+                                id: 'esl.device.template.is.default.yes',
+                            })}
+                            unCheckedChildren={formatMessage({
+                                id: 'esl.device.template.is.default.no',
+                            })}
                         />
                     </div>
                 ),
@@ -139,25 +161,31 @@ class SearchResult extends Component {
                             {formatMessage({ id: 'list.action.edit' })}
                         </a>
                         <Divider type="vertical" />
-                        {
-                            record.is_default === 1 ?
-                                <a href="javascript: void (0);" className={styles.disabled}>
-                                    {formatMessage({ id: 'list.action.delete' })}
-                                </a> :
-                                <a href="javascript: void (0);" onClick={() => this.deleteTemplate(record)}>
-                                    {formatMessage({ id: 'list.action.delete' })}
-                                </a>
-                        }
+                        {record.is_default === 1 ? (
+                            <a href="javascript: void (0);" className={styles.disabled}>
+                                {formatMessage({ id: 'list.action.delete' })}
+                            </a>
+                        ) : (
+                            <a
+                                href="javascript: void (0);"
+                                onClick={() => this.deleteTemplate(record)}
+                            >
+                                {formatMessage({ id: 'list.action.delete' })}
+                            </a>
+                        )}
                         <Divider type="vertical" />
-                        {
-                            record.status === 1 ?
-                                <a href="javascript: void (0);" className={styles.disabled}>
-                                    {formatMessage({ id: 'list.action.apply' })}
-                                </a> :
-                                <a href="javascript: void (0);" onClick={() => this.applyTemplate(record)}>
-                                    {formatMessage({ id: 'list.action.apply' })}
-                                </a>
-                        }
+                        {record.status === 1 ? (
+                            <a href="javascript: void (0);" className={styles.disabled}>
+                                {formatMessage({ id: 'list.action.apply' })}
+                            </a>
+                        ) : (
+                            <a
+                                href="javascript: void (0);"
+                                onClick={() => this.applyTemplate(record)}
+                            >
+                                {formatMessage({ id: 'list.action.apply' })}
+                            </a>
+                        )}
                     </span>
                 ),
             },
@@ -175,13 +203,8 @@ class SearchResult extends Component {
 
         return (
             <div>
-                <div style={{marginBottom: 20}}>
-                    <Button
-                        loading={loading}
-                        type="primary"
-                        icon="plus"
-                        onClick={this.showNew}
-                    >
+                <div style={{ marginBottom: 20 }}>
+                    <Button loading={loading} type="primary" icon="plus" onClick={this.showNew}>
                         {formatMessage({ id: 'esl.device.template.new' })}
                     </Button>
                 </div>
@@ -205,42 +228,73 @@ class SearchResult extends Component {
                     onOk={this.handleOkNew}
                     onCancel={this.handleCancelNew}
                 >
-                    <Form {...formItemLayout} style={{padding: 24}}>
+                    <Form {...formItemLayout} style={{ padding: 24 }}>
                         <Form.Item label={formatMessage({ id: 'esl.device.template.name' })}>
                             {getFieldDecorator('name', {
-                                rules: [{
-                                    required: true, message: formatMessage({ id: 'esl.device.template.name.require' }),
-                                }],
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: formatMessage({
+                                            id: 'esl.device.template.name.require',
+                                        }),
+                                    },
+                                ],
                             })(
-                                <Input placeholder={formatMessage({ id: 'esl.device.template.name.require' })} />
+                                <Input
+                                    placeholder={formatMessage({
+                                        id: 'esl.device.template.name.require',
+                                    })}
+                                />
                             )}
                         </Form.Item>
                         <Form.Item label={formatMessage({ id: 'esl.device.template.size' })}>
                             {getFieldDecorator('screen_type', {
-                                rules: [{
-                                    required: true, message: formatMessage({ id: 'esl.device.template.size.require' }),
-                                }],
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: formatMessage({
+                                            id: 'esl.device.template.size.require',
+                                        }),
+                                    },
+                                ],
                             })(
                                 <Select
-                                    placeholder={formatMessage({ id: 'esl.device.template.size.require' })}
-                                    onChange={(type) => {fetchColors({ screen_type: type })}}
+                                    placeholder={formatMessage({
+                                        id: 'esl.device.template.size.require',
+                                    })}
+                                    onChange={type => {
+                                        fetchColors({ screen_type: type });
+                                    }}
                                 >
-                                    {
-                                        screenTypes.map(type => <Option key={type.id} value={type.id}>{type.name}</Option>)
-                                    }
+                                    {screenTypes.map(type => (
+                                        <Option key={type.id} value={type.id}>
+                                            {type.name}
+                                        </Option>
+                                    ))}
                                 </Select>
                             )}
                         </Form.Item>
                         <Form.Item label={formatMessage({ id: 'esl.device.template.color' })}>
                             {getFieldDecorator('colour', {
-                                rules: [{
-                                    required: true, message: formatMessage({ id: 'esl.device.template.color.require' }),
-                                }],
-                            })(
-                                <Select placeholder={formatMessage({ id: 'esl.device.template.color.require' })}>
+                                rules: [
                                     {
-                                        colors.map(type => <Option key={type.id} value={type.id}>{type.name}</Option>)
-                                    }
+                                        required: true,
+                                        message: formatMessage({
+                                            id: 'esl.device.template.color.require',
+                                        }),
+                                    },
+                                ],
+                            })(
+                                <Select
+                                    placeholder={formatMessage({
+                                        id: 'esl.device.template.color.require',
+                                    })}
+                                >
+                                    {colors.map(type => (
+                                        <Option key={type.id} value={type.id}>
+                                            {type.name}
+                                        </Option>
+                                    ))}
                                 </Select>
                             )}
                         </Form.Item>
