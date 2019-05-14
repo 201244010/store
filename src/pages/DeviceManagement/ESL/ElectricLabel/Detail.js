@@ -61,7 +61,9 @@ export default function detail(props) {
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.status' })}：
                         </span>
-                        <span className="detail-info-content">{ESL_STATES[eslInfo.status] || '--'}</span>
+                        <span className="detail-info-content">
+                            {ESL_STATES[eslInfo.status] || '--'}
+                        </span>
                     </div>
                     <div className="detail-info-item">
                         <span className="detail-info-label">
@@ -91,7 +93,9 @@ export default function detail(props) {
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.bind.product.code' })}：
                         </span>
-                        <span className="detail-info-content">{eslInfo.product_seq_num || '--'}</span>
+                        <span className="detail-info-content">
+                            {eslInfo.product_seq_num || '--'}
+                        </span>
                     </div>
                     <div className="detail-info-item">
                         <span className="detail-info-label">
