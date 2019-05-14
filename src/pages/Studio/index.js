@@ -545,6 +545,7 @@ class Studio extends Component {
                                             bindFields,
                                             selectedShapeName,
                                             componentsDetail,
+                                            zoomScale,
                                             updateComponentsDetail,
                                             deleteSelectedComponent,
                                             addComponent

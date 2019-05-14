@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {Col, Icon, Input, Row, Switch, Select, Radio, Slider, InputNumber} from 'antd';
-import {SHAPE_TYPES, SIZES} from '@/constants/studio';
+import {SHAPE_TYPES, SIZES, MAPS} from '@/constants/studio';
 import * as styles from './index.less';
 
 const { Option } = Select;
@@ -44,6 +44,24 @@ export default class RightToolBox extends Component {
         updateComponentsDetail({
             [selectedShapeName]: {
                 [key]: originFix[key] + parseInt(e.target.value || 0, 10)
+            }
+        });
+    };
+
+    handleWidth = (detail, e) => {
+        const {selectedShapeName, updateComponentsDetail} = this.props;
+        updateComponentsDetail({
+            [selectedShapeName]: {
+                scaleX: (e.target.value || 0) / MAPS.containerWidth[detail.type]
+            }
+        });
+    };
+
+    handleHeight = (detail, e) => {
+        const {selectedShapeName, updateComponentsDetail} = this.props;
+        updateComponentsDetail({
+            [selectedShapeName]: {
+                scaleY: (e.target.value || 0) / MAPS.containerHeight[detail.type]
             }
         });
     };
@@ -153,7 +171,7 @@ export default class RightToolBox extends Component {
     };
 
     render() {
-        const {bindFields, componentsDetail, selectedShapeName} = this.props;
+        const {bindFields, zoomScale, componentsDetail, selectedShapeName} = this.props;
         const menuMap = this.getMenuMap();
         const detail = componentsDetail[selectedShapeName];
         const originFix = {};
@@ -208,16 +226,16 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{width: 100}}
                                 addonAfter={<span>宽</span>}
-                                value={Math.round(detail.width * detail.scaleX)}
-                                onChange={(e) => {this.handleDetail('width', e.target.value / detail.scaleX)}}
+                                value={Math.round(detail.width * detail.scaleX / zoomScale)}
+                                onChange={(e) => {this.handleWidth(detail, e)}}
                             />
                         </Col>
                         <Col span={12}>
                             <Input
                                 style={{width: 100}}
                                 addonAfter={<span>高</span>}
-                                value={Math.round(detail.height * detail.scaleY)}
-                                onChange={(e) => {this.handleDetail('height', e.target.value / detail.scaleY)}}
+                                value={Math.round(detail.height * detail.scaleY/ zoomScale)}
+                                onChange={(e) => {this.handleHeight(detail, e)}}
                             />
                         </Col>
                     </Row>
