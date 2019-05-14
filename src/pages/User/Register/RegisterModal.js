@@ -10,6 +10,7 @@ import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
 import { ERROR_OK, ALERT_NOTICE_MAP, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 import { MAIL_LIST } from '@/constants';
+import { env } from '@/config';
 import styles from './Register.less';
 
 const MailRegisterSuccess = ({ props }) => {
@@ -292,58 +293,63 @@ class Register extends Component {
                                                 )}
                                             </Form.Item>
 
-                                            <ImgCaptchaModal
-                                                {...{
-                                                    form,
-                                                    visible: showImgCaptchaModal,
-                                                    getCode: this.getCode,
-                                                    refreshCode: this.refreshCode,
-                                                    imgCaptcha,
-                                                    onCancel: this.closeImgCaptchaModal,
-                                                }}
-                                            />
-
-                                            <Form.Item>
-                                                {getFieldDecorator('code', {
-                                                    validateTrigger: 'onBlur',
-                                                    rules: [
-                                                        {
-                                                            required: true,
-                                                            message: formatMessage({
-                                                                id: 'code.validate.isEmpty',
-                                                            }),
-                                                        },
-                                                    ],
-                                                })(
-                                                    <Captcha
+                                            {env !== 'local' && (
+                                                <>
+                                                    <ImgCaptchaModal
                                                         {...{
-                                                            trigger,
-                                                            validateTarget:
-                                                                getFieldValue('username') || '',
-                                                            inputProps: {
-                                                                maxLength: 4,
-                                                                size: 'large',
-                                                                placeholder: formatMessage({
-                                                                    id: 'mobile.code.placeholder',
-                                                                }),
-                                                            },
-                                                            buttonProps: {
-                                                                size: 'large',
-                                                                block: true,
-                                                            },
-                                                            buttonText: {
-                                                                initText: formatMessage({
-                                                                    id: 'btn.get.code',
-                                                                }),
-                                                                countText: formatMessage({
-                                                                    id: 'countDown.unit',
-                                                                }),
-                                                            },
-                                                            onClick: this.getCode,
+                                                            form,
+                                                            visible: showImgCaptchaModal,
+                                                            getCode: this.getCode,
+                                                            refreshCode: this.refreshCode,
+                                                            imgCaptcha,
+                                                            onCancel: this.closeImgCaptchaModal,
                                                         }}
                                                     />
-                                                )}
-                                            </Form.Item>
+                                                    <Form.Item>
+                                                        {getFieldDecorator('code', {
+                                                            validateTrigger: 'onBlur',
+                                                            rules: [
+                                                                {
+                                                                    required: true,
+                                                                    message: formatMessage({
+                                                                        id: 'code.validate.isEmpty',
+                                                                    }),
+                                                                },
+                                                            ],
+                                                        })(
+                                                            <Captcha
+                                                                {...{
+                                                                    trigger,
+                                                                    validateTarget:
+                                                                        getFieldValue('username') ||
+                                                                        '',
+                                                                    inputProps: {
+                                                                        maxLength: 4,
+                                                                        size: 'large',
+                                                                        placeholder: formatMessage({
+                                                                            id:
+                                                                                'mobile.code.placeholder',
+                                                                        }),
+                                                                    },
+                                                                    buttonProps: {
+                                                                        size: 'large',
+                                                                        block: true,
+                                                                    },
+                                                                    buttonText: {
+                                                                        initText: formatMessage({
+                                                                            id: 'btn.get.code',
+                                                                        }),
+                                                                        countText: formatMessage({
+                                                                            id: 'countDown.unit',
+                                                                        }),
+                                                                    },
+                                                                    onClick: this.getCode,
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </Form.Item>
+                                                </>
+                                            )}
                                         </>
                                     ) : (
                                         <Form.Item

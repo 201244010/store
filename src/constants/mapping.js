@@ -43,6 +43,6 @@ export const PRODUCT_PRICE_EXTRA = {
 export const NOTIFICATION_TYPE = {
     ACTION: '',
     LINK: {
-        'toBaseStationList': '/esl/baseStation',
+        toBaseStationList: '/esl/baseStation',
     },
 };

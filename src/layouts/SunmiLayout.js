@@ -47,7 +47,7 @@ class SunmiLayout extends React.PureComponent {
     onMenuClick = async ({ key }) => {
         const { dispatch } = this.props;
         if (key === 'userCenter') {
-            router.push('/account/center');
+            router.push('/account');
             return;
         }
         if (key === 'logout') {
@@ -97,7 +97,7 @@ class SunmiLayout extends React.PureComponent {
             >
                 <Menu.Item key="userCenter">
                     <Icon type="user" />
-                    <FormattedMessage id="menu.account.center" defaultMessage="account center" />
+                    <FormattedMessage id="menu.account" defaultMessage="account center" />
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item key="logout">

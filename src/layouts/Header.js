@@ -58,7 +58,7 @@ class HeaderView extends PureComponent {
     handleMenuClick = async ({ key }) => {
         const { dispatch } = this.props;
         if (key === 'userCenter') {
-            router.push('/account/center');
+            router.push('/account');
             return;
         }
         if (key === 'logout') {

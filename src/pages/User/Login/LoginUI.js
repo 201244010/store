@@ -13,6 +13,7 @@ import * as CookieUtil from '@/utils/cookies';
 import * as Regexp from '@/constants/regexp';
 import { ERROR_OK, ALERT_NOTICE_MAP, USER_NOT_EXIST } from '@/constants/errorCode';
 import { MENU_PREFIX, KEY } from '@/constants';
+import { env } from '@/config';
 import styles from './Login.less';
 
 const VALIDATE_FIELDS = {
@@ -279,7 +280,7 @@ class Login extends Component {
                                 }}
                             />
                         </Tabs.TabPane>
-                        {currentLanguage === 'zh-CN' && (
+                        {currentLanguage === 'zh-CN' && env !== 'local' && (
                             <Tabs.TabPane
                                 tab={formatMessage({ id: 'login.useMobile' })}
                                 key="tabMobile"

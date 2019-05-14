@@ -14,7 +14,7 @@ export default {
         emit: false,
     },
     effects: {
-        * createEmqToken(_, { call }) {
+        *createEmqToken(_, { call }) {
             const response = yield call(createEmqToken);
             if (response && response.code === ERROR_OK) {
                 const { data = {} } = response;
@@ -23,7 +23,7 @@ export default {
             return null;
         },
 
-        * initializeClient(_, { put, select }) {
+        *initializeClient(_, { put, select }) {
             const tokenPromise = yield put({
                 type: 'createEmqToken',
             });
@@ -46,7 +46,7 @@ export default {
             });
         },
 
-        * generateTopic({ payload }, { select }) {
+        *generateTopic({ payload }, { select }) {
             const { service, action, prefix = 'WEB' } = payload;
             const { currentUser } = yield select(state => state.user);
 
@@ -68,7 +68,7 @@ export default {
             }
         },
 
-        * publish({ payload }, { put, select }) {
+        *publish({ payload }, { put, select }) {
             const { message, ...rest } = payload;
             const { service, action = 'pub' } = rest;
             const { currentCompanyId } = yield select(state => state.merchant);
@@ -108,13 +108,8 @@ export default {
             }
         },
 
-        * setTopicListener({ payload }, { put }) {
-            const {
-                service,
-                action = 'sub',
-                prefix = 'WEB',
-                handler,
-            } = payload;
+        *setTopicListener({ payload }, { put }) {
+            const { service, action = 'sub', prefix = 'WEB', handler } = payload;
             const topicPromise = yield put({
                 type: 'generateTopic',
                 payload: { service, action, prefix },

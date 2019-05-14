@@ -330,7 +330,7 @@ export default {
                     hideInMenu: true,
                     routes: [
                         {
-                            path: '/account/center',
+                            path: '/account',
                             component: './Account/',
                         },
                         { component: '404' },
