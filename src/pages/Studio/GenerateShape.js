@@ -70,6 +70,10 @@ export default function generateShape(option) {
                             cornerRadius: option.cornerRadius,
                             strokeScaleEnabled: false,
                             onTransform: option.onTransform,
+                            shadowColor: 'rgba(0, 0, 0, 0.1)',
+                            shadowBlur: 1,
+                            shadowOffset: { x: 0, y: 2 },
+                            shadowOpacity: 0.5,
                             onMouseOver: () => {
                                 document.body.style.cursor = 'pointer';
                             },
@@ -236,7 +240,7 @@ export default function generateShape(option) {
                                                 lineHeight: 2.5,
                                                 align: 'center',
                                                 fontSize: 14,
-                                                fill: '#fff',
+                                                fill: 'white',
                                                 text: '双击更换图片'
                                             }
                                         }
@@ -292,7 +296,7 @@ export default function generateShape(option) {
                                                 lineHeight: 2.5,
                                                 align: 'center',
                                                 fontSize: 14,
-                                                fill: '#fff',
+                                                fill: 'white',
                                                 text: '双击更换图片'
                                             }
                                         }

@@ -5,7 +5,7 @@ import styles from './BlankLayout.less';
 export default props => {
     const { staticContext, computedMatch, ...rest } = props;
     return (
-        <DocumentTitle title="STUDIO">
+        <DocumentTitle title="Studio">
             <div {...rest} className={styles.content} />
         </DocumentTitle>
     );

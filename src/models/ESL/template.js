@@ -4,7 +4,7 @@ import { getImagePromise } from "@/utils/studio";
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from "@/constants";
 import * as TemplateService from '@/services/ESL/template';
 import { ERROR_OK } from '@/constants/errorCode';
-import { IMAGE_TYPES } from '@/constants/studio';
+import { IMAGE_TYPES, SHAPE_TYPES, BARCODE_TYPES, PRICE_TYPES } from "@/constants/studio";
 
 export default {
     namespace: 'template',
@@ -123,23 +123,77 @@ export default {
                 },
             });
         },
-        * saveAsDraft({ payload = {} }, { call, put }) {
+        * saveAsDraft({ payload = {} }, { call, put, select }) {
+            const { bindFields, curTemplate } = yield select(state => state.template);
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
             });
             const draft = {
-                name: 'Promote Template',
-                background_color: 'white',
                 encoding: 'UTF-8',
-                fill_fields: ['product_name', 'product_price'],
+                type: curTemplate.type,
+                background_color: '',
+                fill_fields: bindFields,
+                layers: [],
                 layer_count: 0,
-                notes: 'This is promote template for ESL',
-                type: 'BWR-2.13',
-                layers: []
             };
             const layers = [];
-            Object.keys(payload.draft).map(key => layers.push(payload.draft[key]));
+            const originOffset = {};
+            Object.keys(payload.draft).map(key => {
+                const componentDetail = payload.draft[key];
+                if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
+                    originOffset.x = componentDetail.x;
+                    originOffset.y = componentDetail.y;
+                    draft.background_color = componentDetail.fill;
+                }
+            });
+            Object.keys(payload.draft).map(key => {
+                const componentDetail = payload.draft[key];
+                Object.keys(componentDetail).map(detailKey => {
+                    componentDetail.content = componentDetail.bindField ? `{{${componentDetail.bindField}}}` : '';
+                    if (["height", "width"].includes(detailKey)) {
+                        const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
+                        const scale = {
+                            width: componentDetail.scaleX,
+                            height: componentDetail.scaleY
+                        };
+                        componentDetail[realKey] =
+                            (componentDetail[detailKey] * scale[detailKey] / componentDetail.zoomScale).toFixed();
+                    }
+                    if (["x", "y"].includes(detailKey)) {
+                        if (componentDetail.type !== SHAPE_TYPES.RECT_FIX) {
+                            componentDetail.backStartX =
+                                ((componentDetail.x - originOffset.x) / componentDetail.zoomScale).toFixed();
+                            componentDetail.backStartY =
+                                ((componentDetail.y - originOffset.y) / componentDetail.zoomScale).toFixed();
+                        }
+                    }
+                    if (["type"].includes(detailKey)) {
+                        const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
+                        if ([...PRICE_TYPES, SHAPE_TYPES.RECT].includes(componentDetail.type)) {
+                            componentDetail[realKey] = SHAPE_TYPES.TEXT;
+                        }
+                        if (BARCODE_TYPES.includes(componentDetail.type)) {
+                            componentDetail[realKey] = SHAPE_TYPES.CODE;
+                            componentDetail.codec = componentDetail.type === SHAPE_TYPES.CODE_QR ? 'qrcode' : 'ean13';
+                        }
+                        if ([SHAPE_TYPES.TEXT].includes(componentDetail.type)) {
+                            componentDetail[realKey] = SHAPE_TYPES.TEXT;
+                        }
+                    }
+                    if (["fill"].includes(detailKey)) {
+                        if ([...PRICE_TYPES, SHAPE_TYPES.TEXT].includes(componentDetail.type)) {
+                            componentDetail.backBg = componentDetail.textBg;
+                        }
+                        if ([SHAPE_TYPES.RECT].includes(componentDetail.type)) {
+                            componentDetail.backBg = componentDetail.fill;
+                            componentDetail.fontFamily = '';
+                            componentDetail.fontSize = '';
+                        }
+                    }
+                });
+                layers.push(payload.draft[key]);
+            });
             draft.layers = layers;
             draft.layer_count = layers.length;
 

@@ -31,6 +31,77 @@ export default class RightToolBox extends Component {
         }
     };
 
+    handleFontStyle = (detail, style) => {
+        const {
+            selectedShapeName, updateComponentsDetail
+        } = this.props;
+        let newFontStyle;
+        if (!detail.fontStyle || detail.fontStyle === 'normal') {
+            newFontStyle = style;
+        }
+        if (detail.fontStyle === 'bold') {
+            if (style === 'bold') {
+                newFontStyle = ''
+            }
+            if (style === "italic") {
+                newFontStyle = 'bold italic';
+            }
+        }
+        if (detail.fontStyle === 'italic') {
+            if (style === 'italic') {
+                newFontStyle = ''
+            }
+            if (style === "bold") {
+                newFontStyle = 'bold italic';
+            }
+        }
+        if (detail.fontStyle === 'bold italic') {
+            if (style === 'bold') {
+                newFontStyle = 'italic'
+            }
+            if (style === "italic") {
+                newFontStyle = 'bold';
+            }
+        }
+
+        updateComponentsDetail({
+            [selectedShapeName]: {
+                fontStyle: newFontStyle
+            }
+        });
+    };
+
+    handleTextDecoration = (detail, textDecoration) => {
+        const {
+            selectedShapeName, updateComponentsDetail
+        } = this.props;
+        let newTextDecoration;
+        if (!detail.textDecoration || detail.textDecoration === 'normal') {
+            newTextDecoration = textDecoration;
+        }
+        if (detail.textDecoration === 'underline') {
+            if (textDecoration === 'underline') {
+                newTextDecoration = ''
+            }
+            if (textDecoration === 'line-through') {
+                newTextDecoration = 'line-through';
+            }
+        }
+        if (detail.textDecoration === 'line-through') {
+            if (textDecoration === 'line-through') {
+                newTextDecoration = ''
+            }
+            if (textDecoration === 'underline') {
+                newTextDecoration = 'underline';
+            }
+        }
+        updateComponentsDetail({
+            [selectedShapeName]: {
+                textDecoration: newTextDecoration
+            }
+        });
+    };
+
     getMenuMap = () => {
         const menuMap = {};
 
@@ -250,6 +321,7 @@ export default class RightToolBox extends Component {
                                     <InputNumber
                                         style={{width: '100%'}}
                                         placeholder="字号"
+                                        min={8}
                                         value={detail.fontSize}
                                         onChange={(value) => {this.handleDetail('fontSize', value)}}
                                     />
@@ -262,34 +334,35 @@ export default class RightToolBox extends Component {
                                     <InputNumber
                                         style={{width: '100%'}}
                                         placeholder="间距"
+                                        min={0}
                                         value={detail.letterSpacing}
                                         onChange={(value) => {this.handleDetail('letterSpacing', value)}}
                                     />
                                 </Col>
                             </Row>
                             <Row style={{marginBottom: 10}} gutter={20}>
-                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'bold' ? `${styles.active}` : ''}`}>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('bold') > -1 ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="bold"
-                                        onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'bold' ? 'normal' : 'bold')}}
+                                        onClick={() => {this.handleFontStyle(detail, 'bold')}}
                                     />
                                 </Col>
-                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'italic' ? `${styles.active}` : ''}`}>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('italic') > -1 ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="italic"
-                                        onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'italic' ? 'normal' : 'italic')}}
+                                        onClick={() => {this.handleFontStyle(detail, 'italic')}}
                                     />
                                 </Col>
                                 <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="underline"
-                                        onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'underline' ? 'normal' : 'underline')}}
+                                        onClick={() => {this.handleTextDecoration(detail, 'underline')}}
                                     />
                                 </Col>
                                 <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="strikethrough"
-                                        onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'line-through' ? 'normal' : 'line-through')}}
+                                        onClick={() => {this.handleTextDecoration(detail, 'line-through')}}
                                     />
                                 </Col>
                             </Row>
@@ -448,60 +521,76 @@ export default class RightToolBox extends Component {
                                 </Col>
                             </Row>
                             <Row style={{marginBottom: 10}} gutter={10}>
-                                <Col span={12}>
-                                    <Row>
-                                        <Col span={24}>
-                                            <span className={styles.title}>整数字号</span>
-                                        </Col>
-                                        <Col span={24}>
-                                            <InputNumber
-                                                style={{width: '100%'}}
-                                                placeholder="整数字号"
-                                                value={detail.fontSize}
-                                                onChange={(value) => {this.handleDetail('fontSize', value)}}
-                                            />
-                                        </Col>
-                                    </Row>
+                                <Col span={4}>
+                                    <span className={styles.title}>字号</span>
                                 </Col>
-                                <Col span={12}>
-                                    <Row>
-                                        <Col span={24}>
-                                            <span className={styles.title}>小数字号</span>
-                                        </Col>
-                                        <Col span={24}>
-                                            <InputNumber
-                                                style={{width: '100%'}}
-                                                placeholder="小数字号"
-                                                value={detail.smallFontSize}
-                                                onChange={(value) => {this.handleDetail('smallFontSize', value)}}
-                                            />
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                            <Row style={{marginBottom: 10}} gutter={20}>
-                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'bold' ? `${styles.active}` : ''}`}>
-                                    <Icon
-                                        type="bold"
-                                        onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'bold' ? 'normal' : 'bold')}}
+                                <Col span={20}>
+                                    <InputNumber
+                                        style={{width: '100%'}}
+                                        placeholder="字号"
+                                        min={8}
+                                        value={detail.fontSize}
+                                        onChange={(value) => {this.handleDetail('fontSize', value)}}
                                     />
                                 </Col>
-                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'italic' ? `${styles.active}` : ''}`}>
+                                {
+                                    /*
+                                    <Col span={12}>
+                                        <Row>
+                                            <Col span={24}>
+                                                <span className={styles.title}>整数字号</span>
+                                            </Col>
+                                            <Col span={24}>
+                                                <InputNumber
+                                                    style={{width: '100%'}}
+                                                    placeholder="整数字号"
+                                                    value={detail.fontSize}
+                                                    onChange={(value) => {this.handleDetail('fontSize', value)}}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Row>
+                                            <Col span={24}>
+                                                <span className={styles.title}>小数字号</span>
+                                            </Col>
+                                            <Col span={24}>
+                                                <InputNumber
+                                                    style={{width: '100%'}}
+                                                    placeholder="小数字号"
+                                                    value={detail.smallFontSize}
+                                                    onChange={(value) => {this.handleDetail('smallFontSize', value)}}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                     */
+                                }
+                            </Row>
+                            <Row style={{marginBottom: 10}} gutter={20}>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('bold') > -1 ? `${styles.active}` : ''}`}>
+                                    <Icon
+                                        type="bold"
+                                        onClick={() => {this.handleFontStyle(detail, 'bold')}}
+                                    />
+                                </Col>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('italic') > -1 ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="italic"
-                                        onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'italic' ? 'normal' : 'italic')}}
+                                        onClick={() => {this.handleFontStyle(detail, 'italic')}}
                                     />
                                 </Col>
                                 <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="underline"
-                                        onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'underline' ? 'normal' : 'underline')}}
+                                        onClick={() => {this.handleTextDecoration(detail, 'underline')}}
                                     />
                                 </Col>
                                 <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="strikethrough"
-                                        onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'line-through' ? 'normal' : 'line-through')}}
+                                        onClick={() => {this.handleTextDecoration(detail, 'line-through')}}
                                     />
                                 </Col>
                             </Row>

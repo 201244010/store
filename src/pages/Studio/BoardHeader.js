@@ -1,9 +1,9 @@
 import React, {Component, Fragment} from 'react';
 import ButtonIcon from './ButtonIcon';
 import ZoomIcon from './ZoomIcon';
-import * as styles from './index.less';
 import { getLocationParam } from "@/utils/utils";
 import { ERROR_OK } from "@/constants/errorCode";
+import * as styles from './index.less';
 
 export default class BoardHeader extends Component {
     constructor(props) {
@@ -88,7 +88,7 @@ export default class BoardHeader extends Component {
                                 onBlur={this.handleConfirmChangeName}
                             /> :
                             <Fragment>
-                                {templateInfo.name}
+                                <span className={styles["edit-content"]}>{templateInfo.name}</span>
                                 <img
                                     className={styles["edit-img"]}
                                     src={require('@/assets/studio/edit.svg')}

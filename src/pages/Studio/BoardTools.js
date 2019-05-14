@@ -11,17 +11,6 @@ export default function BoardTools(props) {
             <div className={`${styles["tools-block"]} ${styles.basic}`}>
                 <h4>基本元件</h4>
                 <ToolItem
-                    className={`${styles.item} ${styles["item-rect"]}`}
-                    type={SHAPE_TYPES.RECT}
-                    id={generatorId(SHAPE_TYPES.RECT)}
-                    addComponent={addComponent}
-                >
-                    <Fragment>
-                        <img src={require("@/assets/studio/rect.svg")} />
-                        <span>矩形</span>
-                    </Fragment>
-                </ToolItem>
-                <ToolItem
                     className={`${styles.item} ${styles["item-text"]}`}
                     type={SHAPE_TYPES.TEXT}
                     id={generatorId(SHAPE_TYPES.TEXT)}
@@ -30,6 +19,17 @@ export default function BoardTools(props) {
                     <Fragment>
                         <img src={require("@/assets/studio/text.svg")} />
                         <span>文本</span>
+                    </Fragment>
+                </ToolItem>
+                <ToolItem
+                    className={`${styles.item} ${styles["item-rect"]}`}
+                    type={SHAPE_TYPES.RECT}
+                    id={generatorId(SHAPE_TYPES.RECT)}
+                    addComponent={addComponent}
+                >
+                    <Fragment>
+                        <img src={require("@/assets/studio/rect.svg")} />
+                        <span>矩形</span>
                     </Fragment>
                 </ToolItem>
                 {
