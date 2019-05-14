@@ -58,3 +58,10 @@ export const getRegionList = (options = {}) => {
     };
     return fetchApi('getRegionList', opt).then(response => response.json());
 };
+
+export const getSaasBindInfo = (options = {}) => {
+    const opt = {
+        body: { ...options },
+    };
+    return fetchApi('getSaasBindInfo', opt).then(response => response.json());
+};

@@ -8,6 +8,7 @@ import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
 import { ERROR_OK, SHOW_VCODE, VCODE_ERROR, ALERT_NOTICE_MAP } from '@/constants/errorCode';
+import { env } from '@/config';
 import styles from './ResetPassword.less';
 
 @connect(
@@ -203,51 +204,60 @@ class MobileReset extends Component {
                                     />
                                 )}
                             </Form.Item>
-
-                            <ImgCaptchaModal
-                                {...{
-                                    form,
-                                    visible: showImgCaptchaModal,
-                                    getCode: this.getCode,
-                                    refreshCode: this.refreshCode,
-                                    imgCaptcha,
-                                    onCancel: this.closeImgCaptchaModal,
-                                }}
-                            />
-
-                            <Form.Item>
-                                {getFieldDecorator('code', {
-                                    validateTrigger: 'onBlur',
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: formatMessage({ id: 'code.validate.isEmpty' }),
-                                        },
-                                    ],
-                                })(
-                                    <Captcha
+                            {env !== 'local' && (
+                                <>
+                                    <ImgCaptchaModal
                                         {...{
-                                            trigger,
-                                            validateTarget: getFieldValue('username') || '',
-                                            inputProps: {
-                                                size: 'large',
-                                                placeholder: formatMessage({
-                                                    id: 'mobile.code.placeholder',
-                                                }),
-                                            },
-                                            buttonProps: {
-                                                size: 'large',
-                                                block: true,
-                                            },
-                                            buttonText: {
-                                                initText: formatMessage({ id: 'btn.get.code' }),
-                                                countText: formatMessage({ id: 'countDown.unit' }),
-                                            },
-                                            onClick: this.getCode,
+                                            form,
+                                            visible: showImgCaptchaModal,
+                                            getCode: this.getCode,
+                                            refreshCode: this.refreshCode,
+                                            imgCaptcha,
+                                            onCancel: this.closeImgCaptchaModal,
                                         }}
                                     />
-                                )}
-                            </Form.Item>
+                                    <Form.Item>
+                                        {getFieldDecorator('code', {
+                                            validateTrigger: 'onBlur',
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message: formatMessage({
+                                                        id: 'code.validate.isEmpty',
+                                                    }),
+                                                },
+                                            ],
+                                        })(
+                                            <Captcha
+                                                {...{
+                                                    trigger,
+                                                    validateTarget: getFieldValue('username') || '',
+                                                    inputProps: {
+                                                        size: 'large',
+                                                        placeholder: formatMessage({
+                                                            id: 'mobile.code.placeholder',
+                                                        }),
+                                                    },
+                                                    buttonProps: {
+                                                        size: 'large',
+                                                        block: true,
+                                                    },
+                                                    buttonText: {
+                                                        initText: formatMessage({
+                                                            id: 'btn.get.code',
+                                                        }),
+                                                        countText: formatMessage({
+                                                            id: 'countDown.unit',
+                                                        }),
+                                                    },
+                                                    onClick: this.getCode,
+                                                }}
+                                            />
+                                        )}
+                                    </Form.Item>
+                                </>
+                            )}
+
                             <Form.Item>
                                 {getFieldDecorator('password', {
                                     validateTrigger: 'onBlur',

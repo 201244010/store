@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Divider, Modal, Table, Button } from 'antd';
+import { CustomSkeleton } from '@/components/Skeleton';
 import { idEncode, unixSecondToDate } from '@/utils/utils';
 import router from 'umi/router';
 import * as CookieUtil from '@/utils/cookies';
@@ -65,6 +66,17 @@ class SearchResult extends Component {
     };
 
     render() {
+        const { selectedRowKeys } = this.state;
+        const {
+            loading,
+            data,
+            pagination,
+            saasBindInfo: { isBind },
+        } = this.props;
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: this.onSelectChange,
+        };
         const columns = [
             {
                 title: formatMessage({ id: 'basicData.product.seq_num' }),
@@ -81,7 +93,9 @@ class SearchResult extends Component {
             {
                 title: formatMessage({ id: 'basicData.product.price' }),
                 dataIndex: 'price',
-                render: text => <span>{parseInt(text,10) < 0? '' :  parseFloat(text).toFixed(2)}</span>,
+                render: text => (
+                    <span>{parseInt(text, 10) < 0 ? '' : parseFloat(text).toFixed(2)}</span>
+                ),
             },
             {
                 title: formatMessage({ id: 'basicData.product.modified_time' }),
@@ -99,56 +113,64 @@ class SearchResult extends Component {
                         >
                             {formatMessage({ id: 'list.action.detail' })}
                         </a>
-                        <Divider type="vertical" />
-                        <a
-                            href="javascript: void (0);"
-                            onClick={() => this.toPath('update', record)}
-                        >
-                            {formatMessage({ id: 'list.action.alter' })}
-                        </a>
+                        {!isBind && (
+                            <>
+                                <Divider type="vertical" />
+                                <a
+                                    href="javascript: void (0);"
+                                    onClick={() => this.toPath('update', record)}
+                                >
+                                    {formatMessage({ id: 'list.action.alter' })}
+                                </a>
+                            </>
+                        )}
                     </span>
                 ),
             },
         ];
-
-        const { selectedRowKeys } = this.state;
-        const { loading, data, pagination } = this.props;
-        const rowSelection = {
-            selectedRowKeys,
-            onChange: this.onSelectChange,
-        };
         return (
             <div>
                 <div className={styles['table-header']}>
-                    <Button
-                        className={styles['function-btn']}
-                        type="primary"
-                        onClick={() => this.toPath('createProduct')}
-                    >
-                        {formatMessage({ id: 'btn.create' })}
-                    </Button>
-                    {/* <Button className={styles['function-btn']}> */}
-                    {/* {formatMessage({ id: 'btn.import' })} */}
-                    {/* </Button> */}
-                    <Button
-                        className={styles['function-btn']}
-                        onClick={() => this.toPath('erpImport')}
-                    >
-                        {formatMessage({ id: 'btn.erp.import' })}
-                    </Button>
-                    {/* <Button */}
-                    {/* className={styles['function-btn']} */}
-                    {/* disabled={selectedRowKeys.length <= 0} */}
-                    {/* > */}
-                    {/* {formatMessage({ id: 'btn.multi.edit' })} */}
-                    {/* </Button> */}
-                    <Button
-                        className={styles['function-btn']}
-                        disabled={selectedRowKeys.length <= 0}
-                        onClick={this.deleteProducts}
-                    >
-                        {formatMessage({ id: 'btn.delete' })}
-                    </Button>
+                    {loading ? (
+                        <CustomSkeleton />
+                    ) : (
+                        <>
+                            {!isBind && (
+                                <Button
+                                    className={styles['function-btn']}
+                                    type="primary"
+                                    onClick={() => this.toPath('createProduct')}
+                                >
+                                    {formatMessage({ id: 'btn.create' })}
+                                </Button>
+                            )}
+
+                            {/* <Button className={styles['function-btn']}> */}
+                            {/* {formatMessage({ id: 'btn.import' })} */}
+                            {/* </Button> */}
+                            <Button
+                                className={styles['function-btn']}
+                                onClick={() => this.toPath('erpImport')}
+                            >
+                                {formatMessage({ id: 'btn.erp.import' })}
+                            </Button>
+                            {/* <Button */}
+                            {/* className={styles['function-btn']} */}
+                            {/* disabled={selectedRowKeys.length <= 0} */}
+                            {/* > */}
+                            {/* {formatMessage({ id: 'btn.multi.edit' })} */}
+                            {/* </Button> */}
+                            {!isBind && (
+                                <Button
+                                    className={styles['function-btn']}
+                                    disabled={selectedRowKeys.length <= 0}
+                                    onClick={this.deleteProducts}
+                                >
+                                    {formatMessage({ id: 'btn.delete' })}
+                                </Button>
+                            )}
+                        </>
+                    )}
                 </div>
                 <div className="table-content">
                     <Table

@@ -8,6 +8,7 @@ import * as CookieUtil from '@/utils/cookies';
 import styles from './StoreManagement.less';
 import { getLocationParam } from '@/utils/utils';
 import { customValidate } from '@/utils/customValidate';
+import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
 
 const FormItem = Form.Item;
 
@@ -115,7 +116,12 @@ class CreateStore extends React.Component {
                         ? formatMessage({ id: 'storeManagement.create.title' })
                         : formatMessage({ id: 'storeManagement.alter.title' })}
                 </h3>
-                <Form onSubmit={this.handleSubmit} labelCol={{ span: 2 }} wrapperCol={{ span: 9 }}>
+                <Form
+                    {...{
+                        ...FORM_FORMAT,
+                        ...HEAD_FORM_ITEM_LAYOUT,
+                    }}
+                >
                     <FormItem label={formatMessage({ id: 'storeManagement.create.nameLabel' })}>
                         {getFieldDecorator('shop_name', {
                             initialValue: shop_name,

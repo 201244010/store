@@ -5,8 +5,8 @@ import { connect } from 'dva';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import { Result } from 'ant-design-pro';
 import * as RegExp from '@/constants/regexp';
-import styles from '../Register/Register.less';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
+import styles from './ResetPassword.less';
 
 const MailActive = () => (
     <Result
@@ -102,58 +102,75 @@ class MailReset extends Component {
                 {resetSuccess ? (
                     <MailActive />
                 ) : (
-                    <Form>
-                        {notice && (
-                            <Form.Item>
-                                <Alert
-                                    message={formatMessage({ id: ALERT_NOTICE_MAP[notice] })}
-                                    type="error"
-                                    showIcon
-                                />
-                            </Form.Item>
-                        )}
-                        <Form.Item>
-                            {getFieldDecorator('username', {
-                                validateTrigger: 'onBlur',
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: formatMessage({ id: 'mail.validate.isEmpty' }),
-                                    },
-                                    {
-                                        pattern: RegExp.mail,
-                                        message: formatMessage({ id: 'mail.validate.isFormatted' }),
-                                    },
-                                ],
-                            })(
-                                <Input
-                                    size="large"
-                                    placeholder={formatMessage({ id: 'mail.placeholder' })}
-                                />
+                    <>
+                        <h1 className={styles['reset-title']}>
+                            {formatMessage({ id: 'reset.title' })}
+                        </h1>
+                        <Form className={styles['register-form']}>
+                            {notice && (
+                                <Form.Item className={styles['formItem-margin-clear']}>
+                                    <Alert
+                                        message={formatMessage({ id: ALERT_NOTICE_MAP[notice] })}
+                                        type="error"
+                                        showIcon
+                                    />
+                                </Form.Item>
                             )}
-                        </Form.Item>
-                        <Form.Item>
-                            {getFieldDecorator('code')(
-                                <ImgCaptcha
-                                    {...{
-                                        imgUrl: imgCode.url,
-                                        inputProps: {
-                                            size: 'large',
-                                            placeholder: formatMessage({
-                                                id: 'vcode.placeholder',
+                            <Form.Item
+                                className={notice ? '' : `${styles['formItem-with-margin']}`}
+                            >
+                                {getFieldDecorator('username', {
+                                    validateTrigger: 'onBlur',
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: formatMessage({ id: 'mail.validate.isEmpty' }),
+                                        },
+                                        {
+                                            pattern: RegExp.mail,
+                                            message: formatMessage({
+                                                id: 'mail.validate.isFormatted',
                                             }),
                                         },
-                                        getImageCode,
-                                    }}
-                                />
-                            )}
-                        </Form.Item>
-                        <Form.Item>
-                            <Button type="primary" size="large" block onClick={this.onSubmit}>
+                                    ],
+                                })(
+                                    <Input
+                                        size="large"
+                                        placeholder={formatMessage({ id: 'mail.placeholder' })}
+                                    />
+                                )}
+                            </Form.Item>
+                            <Form.Item>
+                                {getFieldDecorator('code')(
+                                    <ImgCaptcha
+                                        {...{
+                                            imgUrl: imgCode.url,
+                                            inputProps: {
+                                                size: 'large',
+                                                placeholder: formatMessage({
+                                                    id: 'vcode.placeholder',
+                                                }),
+                                            },
+                                            getImageCode,
+                                        }}
+                                    />
+                                )}
+                            </Form.Item>
+                        </Form>
+                        <div className={styles['reset-footer']}>
+                            <Button
+                                className={`${styles['primary-btn']} ${
+                                    styles['reset-confirm-btn']
+                                }`}
+                                type="primary"
+                                size="large"
+                                block
+                                onClick={this.onSubmit}
+                            >
                                 {formatMessage({ id: 'btn.confirm' })}
                             </Button>
-                        </Form.Item>
-                    </Form>
+                        </div>
+                    </>
                 )}
             </>
         );

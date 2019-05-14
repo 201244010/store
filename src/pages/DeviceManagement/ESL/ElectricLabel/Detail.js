@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col, Row } from 'antd';
-import { unixSecondToDate, formatEmpty } from '@/utils/utils';
+import { unixSecondToDate } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import styles from './index.less';
 
@@ -13,8 +13,7 @@ const ESL_STATES = {
 };
 
 export default function detail(props) {
-    const { detailInfo } = props;
-    const eslInfo = formatEmpty(detailInfo, '--');
+    const { detailInfo: eslInfo } = props;
 
     return (
         <div className={styles['custom-modal-wrapper']}>
@@ -24,32 +23,32 @@ export default function detail(props) {
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.id' })}：
                         </span>
-                        <span className="detail-info-content">{eslInfo.esl_code}</span>
+                        <span className="detail-info-content">{eslInfo.esl_code || '--'}</span>
                     </div>
                     <div className="detail-info-item">
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.sn' })}：
                         </span>
-                        <span className="detail-info-content">{eslInfo.sn}</span>
+                        <span className="detail-info-content">{eslInfo.sn || '--'}</span>
                     </div>
                     <div className="detail-info-item">
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.model.name' })}：
                         </span>
-                        <span className="detail-info-content">{eslInfo.model}</span>
+                        <span className="detail-info-content">{eslInfo.model || '--'}</span>
                     </div>
                     <div className="detail-info-item">
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.screen.size' })}：
                         </span>
-                        <span className="detail-info-content">{eslInfo.screen_size}</span>
+                        <span className="detail-info-content">{eslInfo.screen_size || '--'}</span>
                     </div>
                     <div className="detail-info-item">
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.ware.version' })}：
                         </span>
                         <span className="detail-info-content">
-                            {eslInfo.status === 0 ? '-' : eslInfo.bin_version}
+                            {eslInfo.status === 0 ? '-' : eslInfo.bin_version || '--'}
                         </span>
                     </div>
                     <div className="detail-info-item">
@@ -62,16 +61,24 @@ export default function detail(props) {
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.status' })}：
                         </span>
-                        <span className="detail-info-content">{ESL_STATES[eslInfo.status]}</span>
+                        <span className="detail-info-content">
+                            {ESL_STATES[eslInfo.status] || '--'}
+                        </span>
                     </div>
                     <div className="detail-info-item">
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.last.comm.time' })}：
                         </span>
                         <span className="detail-info-content">
-                            {eslInfo.connect_time
-                                ? unixSecondToDate(eslInfo.connect_time, 'YYYY-MM-DD HH:mm')
-                                : '--'}
+                            {eslInfo.connect_time ? unixSecondToDate(eslInfo.connect_time) : '--'}
+                        </span>
+                    </div>
+                    <div className="detail-info-item">
+                        <span className="detail-info-label">
+                            {formatMessage({ id: 'esl.device.esl.push.time' })}：
+                        </span>
+                        <span className="detail-info-content">
+                            {eslInfo.push_time ? unixSecondToDate(eslInfo.push_time) : '--'}
                         </span>
                     </div>
                 </Col>
@@ -80,19 +87,21 @@ export default function detail(props) {
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.station.name' })}：
                         </span>
-                        <span className="detail-info-content">{eslInfo.ap_name}</span>
+                        <span className="detail-info-content">{eslInfo.ap_name || '--'}</span>
                     </div>
                     <div className="detail-info-item">
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.bind.product.code' })}：
                         </span>
-                        <span className="detail-info-content">{eslInfo.product_seq_num}</span>
+                        <span className="detail-info-content">
+                            {eslInfo.product_seq_num || '--'}
+                        </span>
                     </div>
                     <div className="detail-info-item">
                         <span className="detail-info-label">
                             {formatMessage({ id: 'esl.device.esl.bind.product.name' })}：
                         </span>
-                        <span className="detail-info-content">{eslInfo.product_name}</span>
+                        <span className="detail-info-content">{eslInfo.product_name || '--'}</span>
                     </div>
                 </Col>
             </Row>

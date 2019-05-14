@@ -355,3 +355,34 @@ export const cbcEncryption = source => {
 };
 
 export const md5Encryption = message => CryptoJS.MD5(message).toString();
+
+export const formatTimeMessage = datetime => {
+    const currentStamp = Math.round(new Date() / 1000);
+    const momentNow = moment.unix(currentStamp);
+    const timeDiff = currentStamp - datetime;
+    const momentTime = moment.unix(datetime);
+    let currentTime = '';
+    if (momentNow.isSame(momentTime, 'year')) {
+        if (timeDiff < 3600) {
+            currentTime = momentTime.fromNow();
+        } else if (momentNow.isSame(momentTime, 'day')) {
+            currentTime = momentTime.format('a h:mm');
+        } else {
+            currentTime = momentTime.format('MM/DD a h:mm');
+        }
+    } else {
+        currentTime = momentTime.format('YY/MM/DD');
+    }
+
+    return currentTime;
+};
+
+export const filterObject = obj => {
+    const ret = {};
+    Object.keys(obj)
+        .filter(key => obj[key] !== undefined)
+        .forEach(key => {
+            ret[key] = obj[key];
+        });
+    return ret;
+};

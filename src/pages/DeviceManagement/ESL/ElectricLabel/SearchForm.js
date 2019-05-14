@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
+import {
+    FORM_FORMAT,
+    FORM_SEARCH_LAYOUT,
+    FORM_LABEL_LEFT,
+    COL_THREE_NORMAL,
+    COL_THREE_SMALL,
+} from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 
 @Form.create()
@@ -36,9 +42,9 @@ class SearchForm extends Component {
         const { searchFormValues } = this.props;
 
         return (
-            <Form {...FORM_ITEM_LAYOUT}>
+            <Form {...{ ...FORM_SEARCH_LAYOUT, ...FORM_LABEL_LEFT }}>
                 <Row gutter={FORM_FORMAT.gutter}>
-                    <Col xl={9} lg={12} md={24}>
+                    <Col {...COL_THREE_NORMAL}>
                         <Form.Item label={formatMessage({ id: 'esl.device.esl.search.info' })}>
                             <Input
                                 placeholder={formatMessage({
@@ -50,7 +56,7 @@ class SearchForm extends Component {
                             />
                         </Form.Item>
                     </Col>
-                    <Col xl={9} lg={12} md={24}>
+                    <Col {...COL_THREE_NORMAL}>
                         <Form.Item label={formatMessage({ id: 'esl.device.esl.status' })}>
                             <Select
                                 placeholder={formatMessage({ id: 'select.placeholder' })}
@@ -72,7 +78,7 @@ class SearchForm extends Component {
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col xl={6} lg={12} md={24}>
+                    <Col {...COL_THREE_SMALL}>
                         <Form.Item>
                             <Button onClick={this.search}>
                                 {formatMessage({ id: 'btn.query' })}

@@ -1,8 +1,7 @@
 export default {
     'menu.dashBoard': '工作台',
 
-    'menu.account': '__blank__',
-    'menu.account.center': '个人中心',
+    'menu.account': '个人中心',
     'menu.account.logout': '退出登录',
 
     'menu.serviceApplication': '服务应用',
@@ -30,6 +29,10 @@ export default {
     'menu.company.storeManagement.createStore': '新建门店',
     'menu.company.storeManagement.storeInformation': '查看门店',
 
+    'menu.template': '模板管理',
+    'menu.template.list': '模板列表',
+    'menu.studio': 'Studio',
+
     'menu.deviceManagement': '设备管理',
     'menu.deviceManagement.esl': '电子价签',
     'menu.deviceManagement.esl.baseStation': '基站管理',
@@ -55,4 +58,7 @@ export default {
     'menu.basicData.storeManagement.alterStore': '修改门店',
     'menu.basicData.storeManagement.createStore': '新建门店',
     'menu.basicData.storeManagement.storeInformation': '查看门店',
+
+    'menu.notificationCenter': '消息中心',
+    'menu.notificationInfo': '消息详情',
 };

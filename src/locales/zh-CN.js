@@ -10,6 +10,7 @@ import mailActive from './zh-CN/mailActive';
 import resetPassword from './zh-CN/resetPassword';
 import userCenter from './zh-CN/userCenter';
 import storeManagement from './zh-CN/storeManagement';
+import notification from './zh-CN/notification';
 
 // ESL
 import baseStation from './zh-CN/ESL/device';
@@ -27,6 +28,8 @@ export default {
     'layout.user.link.terms': '条款',
     'app.home.introduce': '介绍',
     'layout.user.footer': '2019 上海商米科技有限公司 版权所有 沪ICP备16006543',
+    'app.exception.description.404': '您所访问的页面不存在',
+    'app.exception.back': '返回首页',
     ...globalHeader,
     ...common,
     ...menu,
@@ -42,4 +45,5 @@ export default {
     ...productManagement,
     ...merchantManagement,
     ...storeManagement,
+    ...notification,
 };

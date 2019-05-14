@@ -177,5 +177,15 @@ export default {
                 errorTimes: 0,
             };
         },
+        changeNotifyCount(state, action) {
+            return {
+                ...state,
+                currentUser: {
+                    ...state.currentUser,
+                    notifyCount: action.payload.totalCount,
+                    unreadCount: action.payload.unreadCount,
+                },
+            };
+        },
     },
 };

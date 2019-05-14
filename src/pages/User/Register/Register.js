@@ -10,7 +10,7 @@ import { connect } from 'dva';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
 import { ERROR_OK, ALERT_NOTICE_MAP, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
-import { MAIL_LIST } from '@/constants/mailList';
+import { MAIL_LIST } from '@/constants';
 import styles from './Register.less';
 
 const MailRegisterSuccess = ({ props }) => {
