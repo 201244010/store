@@ -6,6 +6,7 @@ import { Tabs, Form, Button, Modal } from 'antd';
 import { encryption } from '@/utils/utils';
 import Storage from '@konata9/storage.js';
 import AccountLogin from './AccountLogin';
+import AccountLoginLocal from './AccountLoginLocal';
 import MobileLogin from './MobileLogin';
 import RegisterModal from '@/pages/User/Register/RegisterModal';
 import ResetModal from '@/pages/User/ResetPassword/ResetModal';
@@ -43,7 +44,7 @@ const tabBarStyle = {
         getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
         getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
-    })
+    }),
 )
 @Form.create()
 class Login extends Component {
@@ -270,15 +271,24 @@ class Login extends Component {
                             key="tabAccount"
                             style={{ padding: '0 2px' }}
                         >
-                            <AccountLogin
-                                {...{
-                                    form,
-                                    getImageCode,
-                                    imgCode,
-                                    notice,
-                                    errorTimes,
-                                }}
-                            />
+                            {env !== 'local' ? (
+                                <AccountLogin
+                                    {...{
+                                        form,
+                                        getImageCode,
+                                        imgCode,
+                                        notice,
+                                        errorTimes,
+                                    }}
+                                />
+                            ) : (
+                                <AccountLoginLocal
+                                    {...{
+                                        form,
+                                        notice,
+                                    }}
+                                />
+                            )}
                         </Tabs.TabPane>
                         {currentLanguage === 'zh-CN' && env !== 'local' && (
                             <Tabs.TabPane
