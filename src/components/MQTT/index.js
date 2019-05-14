@@ -17,7 +17,7 @@ function MQTTWrapper(WrapperedComponent) {
                 dispatch({ type: 'mqttStore/setMessageHandler', payload }),
             destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
             getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
-        })
+        }),
     )
     class Wrapper extends Component {
         componentDidMount() {
@@ -57,20 +57,10 @@ function MQTTWrapper(WrapperedComponent) {
                 service: 'notification',
                 action: 'sub',
             });
-            const companyNotificationTopic = await generateTopic({
-                service: 'notification',
-                action: 'sub',
-                withCompany: true,
-            });
 
             await setTopicListener({ service: 'notification', handler: this.showNotification });
-            await setTopicListener({
-                service: 'notification',
-                withCompany: true,
-                handler: this.showNotification,
-            });
 
-            subscribe({ topic: [registerTopic, notificationTopic, companyNotificationTopic] });
+            subscribe({ topic: [registerTopic, notificationTopic] });
             await publish({ service: 'register', message: REGISTER_PUB_MSG });
         };
 

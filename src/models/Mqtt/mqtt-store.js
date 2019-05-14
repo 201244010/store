@@ -14,7 +14,7 @@ export default {
         emit: false,
     },
     effects: {
-        *createEmqToken(_, { call }) {
+        * createEmqToken(_, { call }) {
             const response = yield call(createEmqToken);
             if (response && response.code === ERROR_OK) {
                 const { data = {} } = response;
@@ -23,15 +23,18 @@ export default {
             return null;
         },
 
-        *initializeClient(_, { put }) {
+        * initializeClient(_, { put, select }) {
             const tokenPromise = yield put({
                 type: 'createEmqToken',
             });
+            const { currentUser } = yield select(state => state.user);
+            const { id } = currentUser;
+            const { currentCompanyId } = yield select(state => state.merchant);
 
             return tokenPromise.then(token => {
                 console.log(token);
-                const { username, server_address: address } = token;
-                const clientId = `${username}_${moment().format('X')}`;
+                const { server_address: address } = token;
+                const clientId = `${currentCompanyId}_${id}_${moment().format('X')}`;
                 mqttClient = new MqttClient({
                     clientId,
                     ...token,
@@ -43,19 +46,15 @@ export default {
             });
         },
 
-        *generateTopic({ payload }, { select }) {
-            const { service, action, prefix = 'WEB', withCompany = false } = payload;
+        * generateTopic({ payload }, { select }) {
+            const { service, action, prefix = 'WEB' } = payload;
             const { currentUser } = yield select(state => state.user);
-            const { currentCompanyId } = yield select(state => state.merchant);
 
             const { id } = currentUser;
             if (mqttClient) {
                 const { info } = mqttClient.getClient();
                 const { clientId } = info;
 
-                if (withCompany) {
-                    return `/${prefix}/${id}/${clientId}/${currentCompanyId}/${service}/${action}`;
-                }
                 return `/${prefix}/${id}/${clientId}/${service}/${action}`;
             }
             return '';
@@ -69,7 +68,7 @@ export default {
             }
         },
 
-        *publish({ payload }, { put }) {
+        * publish({ payload }, { put }) {
             const { message, ...rest } = payload;
             const { service, action = 'pub' } = rest;
 
@@ -98,17 +97,16 @@ export default {
             }
         },
 
-        *setTopicListener({ payload }, { put }) {
+        * setTopicListener({ payload }, { put }) {
             const {
                 service,
                 action = 'sub',
                 prefix = 'WEB',
-                withCompany = false,
                 handler,
             } = payload;
             const topicPromise = yield put({
                 type: 'generateTopic',
-                payload: { service, action, prefix, withCompany },
+                payload: { service, action, prefix },
             });
 
             topicPromise.then(topic => {
