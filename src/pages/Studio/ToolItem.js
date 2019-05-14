@@ -1,5 +1,5 @@
-import React, {Component, Fragment} from 'react';
-import {SIZES, SHAPE_TYPES, IMAGE_TYPES, MAPS} from '@/constants/studio';
+import React, { Component, Fragment } from 'react';
+import { SIZES, SHAPE_TYPES, IMAGE_TYPES, MAPS } from '@/constants/studio';
 
 const textMap = {
     [SHAPE_TYPES.TEXT]: '双击编辑文本',
@@ -13,13 +13,13 @@ const textMap = {
 
 export default class ToolItem extends Component {
     componentDidMount() {
-        const {id, type, addComponent} = this.props;
+        const { id, type, addComponent } = this.props;
         const element = document.getElementById(id);
 
-        element.onmousedown = (ev) => {
+        element.onmousedown = ev => {
             ev.preventDefault();
 
-            const { clientX, clientY} = ev;
+            const { clientX, clientY } = ev;
             const disX = clientX - element.offsetLeft;
             const disY = clientY - element.offsetTop;
             const elementInfo = getComputedStyle(element);
@@ -27,9 +27,9 @@ export default class ToolItem extends Component {
             const originInfo = {
                 left: elementInfo.left,
                 top: elementInfo.top,
-                zIndex: elementInfo.zIndex
+                zIndex: elementInfo.zIndex,
             };
-            document.onmousemove = (evt) => {
+            document.onmousemove = evt => {
                 this.newLeft = evt.clientX - disX;
                 this.newTop = evt.clientY - disY;
                 element.style.position = 'absolute';
@@ -58,7 +58,7 @@ export default class ToolItem extends Component {
                                 imageType: 'default',
                                 scaleX: 1,
                                 scaleY: 1,
-                                rotation: 0
+                                rotation: 0,
                             });
                         };
                         image.src = MAPS.imageUrl[type];
@@ -83,7 +83,7 @@ export default class ToolItem extends Component {
                             textBg: MAPS.textBg[type],
                             scaleX: 1,
                             scaleY: 1,
-                            rotation: 0
+                            rotation: 0,
                         });
                     }
                     this.newLeft = 0;
@@ -94,13 +94,11 @@ export default class ToolItem extends Component {
     }
 
     render() {
-        const {id, className, children} = this.props;
+        const { id, className, children } = this.props;
 
         return (
             <Fragment>
-                <div className={className}>
-                    {children}
-                </div>
+                <div className={className}>{children}</div>
                 <div className={className} id={id}>
                     {children}
                 </div>

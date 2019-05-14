@@ -29,7 +29,6 @@ export const fetchBindFields = options => {
     return fetchApi('getBindableProductFieldList', opts).then(response => response.json());
 };
 
-
 export const fetchTemplatesByESLCode = options => {
     const opts = {
         method: 'POST',
@@ -57,57 +56,56 @@ export const fetchTemplates = options => {
     return fetchApi('getList', opts).then(response => response.json());
 };
 
-export const saveAsDraft = (options) => {
+export const saveAsDraft = options => {
     const opts = {
         method: 'POST',
-        body: options
+        body: options,
     };
 
     return fetchApi('saveAsDraft', opts).then(response => response.json());
 };
 
-export const fetchTemplateDetail = (options) => {
+export const fetchTemplateDetail = options => {
     const opts = {
         method: 'POST',
-        body: options
+        body: options,
     };
 
     return fetchApi('getInfo', opts).then(response => response.json());
 };
 
-export const uploadImage = (options) => {
+export const uploadImage = options => {
     const opts = {
         method: 'POST',
-        body: options
+        body: options,
     };
 
     return fetchApi('uploadImage', opts).then(response => response.json());
 };
 
-export const deleteTemplate = (options) => {
+export const deleteTemplate = options => {
     const opts = {
         method: 'POST',
-        body: options
+        body: options,
     };
 
     return fetchApi('delete', opts).then(response => response.json());
 };
 
-export const renameTemplate = (options) => {
+export const renameTemplate = options => {
     const opts = {
         method: 'POST',
-        body: options
+        body: options,
     };
 
     return fetchApi('rename', opts).then(response => response.json());
 };
 
-export const applyTemplate = (options) => {
+export const applyTemplate = options => {
     const opts = {
         method: 'POST',
-        body: options
+        body: options,
     };
 
     return fetchApi('apply', opts).then(response => response.json());
 };
-

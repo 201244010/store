@@ -20,7 +20,12 @@ export const SHAPE_TYPES = {
     CODE_QR: 'barcode@qr',
 };
 
-export const IMAGE_TYPES = [SHAPE_TYPES.IMAGE, SHAPE_TYPES.CODE_H, SHAPE_TYPES.CODE_V, SHAPE_TYPES.CODE_QR];
+export const IMAGE_TYPES = [
+    SHAPE_TYPES.IMAGE,
+    SHAPE_TYPES.CODE_H,
+    SHAPE_TYPES.CODE_V,
+    SHAPE_TYPES.CODE_QR,
+];
 export const BARCODE_TYPES = [SHAPE_TYPES.CODE_H, SHAPE_TYPES.CODE_V, SHAPE_TYPES.CODE_QR];
 export const PRICE_TYPES = [SHAPE_TYPES.PRICE_NORMAL_WHITE, SHAPE_TYPES.PRICE_NORMAL_BLACK];
 
@@ -33,7 +38,7 @@ export const LENGTH_MAP = {
     6: 60,
     7: 69,
     8: 78,
-    9: 87
+    9: 87,
 };
 
 export const SIZES = {
@@ -242,18 +247,18 @@ const screenMap = {
     1: {
         width: 212,
         height: 104,
-        zoomScale: 3
+        zoomScale: 3,
     },
     2: {
         width: 296,
         height: 152,
-        zoomScale: 2
+        zoomScale: 2,
     },
     3: {
         width: 400,
         height: 300,
-        zoomScale: 1.5
-    }
+        zoomScale: 1.5,
+    },
 };
 const imageUrlMap = {
     [SHAPE_TYPES.IMAGE]: require('@/assets/studio/image.svg'),
@@ -280,5 +285,5 @@ export const MAPS = {
     textBg: textBgMap,
     textDecoration: textDecorationMap,
     screen: screenMap,
-    imageUrl: imageUrlMap
+    imageUrl: imageUrlMap,
 };

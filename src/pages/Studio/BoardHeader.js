@@ -1,8 +1,8 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import ButtonIcon from './ButtonIcon';
 import ZoomIcon from './ZoomIcon';
-import { getLocationParam } from "@/utils/utils";
-import { ERROR_OK } from "@/constants/errorCode";
+import { getLocationParam } from '@/utils/utils';
+import { ERROR_OK } from '@/constants/errorCode';
 import * as styles from './index.less';
 
 export default class BoardHeader extends Component {
@@ -10,35 +10,35 @@ export default class BoardHeader extends Component {
         super(props);
         this.state = {
             editing: false,
-            templateName: ''
-        }
+            templateName: '',
+        };
     }
 
     toChangeName = () => {
-        const {templateInfo} = this.props;
+        const { templateInfo } = this.props;
 
         this.setState({
             editing: true,
-            templateName: templateInfo.name
+            templateName: templateInfo.name,
         });
     };
 
-    handleChangeName = (e) => {
+    handleChangeName = e => {
         e.persist();
         this.setState({
-            templateName: e.target.value
+            templateName: e.target.value,
         });
     };
 
     handleConfirmChangeName = async () => {
         const {
-            props: {templateInfo, renameTemplate, fetchTemplateDetail},
-            state: {templateName}
+            props: { templateInfo, renameTemplate, fetchTemplateDetail },
+            state: { templateName },
         } = this;
         if (templateInfo.name !== templateName) {
             const response = await renameTemplate({
                 template_id: getLocationParam('id'),
-                name: templateName
+                name: templateName,
             });
             if (response && response.code === ERROR_OK) {
                 fetchTemplateDetail({
@@ -46,68 +46,62 @@ export default class BoardHeader extends Component {
                 });
                 this.setState({
                     editing: false,
-                    templateName: ''
+                    templateName: '',
                 });
             }
         } else {
             this.setState({
                 editing: false,
-                templateName: ''
+                templateName: '',
             });
         }
     };
 
     render() {
         const {
-            state: {editing, templateName},
-            props: {
-                templateInfo = {}, zoomScale, saveAsDraft, zoomOutOrIn
-            }
+            state: { editing, templateName },
+            props: { templateInfo = {}, zoomScale, saveAsDraft, zoomOutOrIn },
         } = this;
 
         return (
             <Fragment>
-                <div className={styles["left-actions"]}>
+                <div className={styles['left-actions']}>
                     <ButtonIcon name="save" onClick={saveAsDraft} />
-                    {
-                        /*
+                    {/*
                         <ButtonIcon name="check" />
                         <ButtonIcon name="preStep" />
                         <ButtonIcon name="nextStep" />
-                        */
-                    }
+                        */}
                 </div>
-                <div className={styles["title-edit"]}>
-                    {
-                        editing ?
-                            <input
-                                type="text"
-                                className={styles["edit-input"]}
-                                value={templateName}
-                                onChange={(e) => this.handleChangeName(e)}
-                                onBlur={this.handleConfirmChangeName}
-                            /> :
-                            <Fragment>
-                                <span className={styles["edit-content"]}>{templateInfo.name}</span>
-                                <img
-                                    className={styles["edit-img"]}
-                                    src={require('@/assets/studio/edit.svg')}
-                                    onClick={this.toChangeName}
-                                />
-                            </Fragment>
-                    }
+                <div className={styles['title-edit']}>
+                    {editing ? (
+                        <input
+                            type="text"
+                            className={styles['edit-input']}
+                            value={templateName}
+                            onChange={e => this.handleChangeName(e)}
+                            onBlur={this.handleConfirmChangeName}
+                        />
+                    ) : (
+                        <Fragment>
+                            <span className={styles['edit-content']}>{templateInfo.name}</span>
+                            <img
+                                className={styles['edit-img']}
+                                src={require('@/assets/studio/edit.svg')}
+                                onClick={this.toChangeName}
+                            />
+                        </Fragment>
+                    )}
                 </div>
-                <div className={styles["right-actions"]}>
+                <div className={styles['right-actions']}>
                     <ZoomIcon zoomScale={zoomScale} zoomOutOrIn={zoomOutOrIn} />
-                    {
-                        /*
+                    {/*
                         <ButtonIcon name="wrapper" />
                         <ButtonIcon name="view" />
                         <ButtonIcon name="history" />
-                         */
-                    }
+                         */}
                 </div>
             </Fragment>
-        )
+        );
     }
 }

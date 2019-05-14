@@ -356,10 +356,12 @@ export const cbcEncryption = source => {
 
 export const md5Encryption = message => CryptoJS.MD5(message).toString();
 
-export const filterObject = (obj) => {
+export const filterObject = obj => {
     const ret = {};
-    Object.keys(obj).filter((key) => obj[key] !== undefined).forEach((key) => {
-        ret[key] = obj[key]
-    });
+    Object.keys(obj)
+        .filter(key => obj[key] !== undefined)
+        .forEach(key => {
+            ret[key] = obj[key];
+        });
     return ret;
 };
