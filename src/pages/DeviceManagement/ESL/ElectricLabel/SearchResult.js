@@ -3,14 +3,16 @@ import { Button, Divider, message, Modal, Table, Menu, Dropdown, Row, Col, Selec
 import { formatMessage } from 'umi/locale';
 import { DURATION_TIME } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
+import { unixSecondToDate } from '@/utils/utils';
 import Detail from './Detail';
 import BindModal from './BindModal';
 import styles from './index.less';
 
 const ESL_STATES = {
-    0: formatMessage({ id: 'esl.device.esl.push.wait' }),
-    1: formatMessage({ id: 'esl.device.esl.push.success' }),
-    2: formatMessage({ id: 'esl.device.esl.push.fail' }),
+    1: formatMessage({ id: 'esl.device.esl.push.wait.bind' }),
+    2: formatMessage({ id: 'esl.device.esl.push.wait' }),
+    3: formatMessage({ id: 'esl.device.esl.push.success' }),
+    4: formatMessage({ id: 'esl.device.esl.push.fail' }),
 };
 
 class SearchResult extends Component {
@@ -192,6 +194,14 @@ class SearchResult extends Component {
                 id: recordId,
             });
         }
+        if (e.key === '4') {
+            const eslDetail = JSON.parse(record);
+            this.showBind(eslDetail);
+        }
+        if (e.key === '5') {
+            const eslDetail = JSON.parse(record);
+            this.flushESL(eslDetail);
+        }
     };
 
     confirmBind = () => {
@@ -236,6 +246,11 @@ class SearchResult extends Component {
                 dataIndex: 'model_name',
             },
             {
+                title: formatMessage({ id: 'esl.device.esl.battery' }),
+                dataIndex: 'battery',
+                render: text => <span>{text}%</span>,
+            },
+            {
                 title: formatMessage({ id: 'esl.device.esl.product.seq.num' }),
                 dataIndex: 'product_seq_num',
             },
@@ -257,9 +272,9 @@ class SearchResult extends Component {
                 ),
             },
             {
-                title: formatMessage({ id: 'esl.device.esl.battery' }),
-                dataIndex: 'battery',
-                render: text => <span>{text}%</span>,
+                title: formatMessage({ id: 'esl.device.esl.push.time' }),
+                dataIndex: 'push_time',
+                render: text => text !== 0 ? <span>{unixSecondToDate(text)}</span> : <noscript />,
             },
             {
                 title: formatMessage({ id: 'list.action.title' }),
@@ -270,17 +285,21 @@ class SearchResult extends Component {
                             {formatMessage({ id: 'list.action.detail' })}
                         </a>
                         <Divider type="vertical" />
-                        <a href="javascript: void (0);" onClick={() => this.showBind(record)}>
-                            {formatMessage({ id: 'list.action.bind' })}
-                        </a>
-                        <Divider type="vertical" />
-                        <a href="javascript: void (0);" onClick={() => this.flushESL(record)}>
-                            {formatMessage({ id: 'list.action.push.again' })}
-                        </a>
-                        <Divider type="vertical" />
                         <Dropdown
                             overlay={
                                 <Menu onClick={this.handleMoreClick}>
+                                    <Menu.Item key="4">
+                                        <a href="javascript: void (0);" data-record={JSON.stringify(record)}>
+                                            {formatMessage({ id: 'list.action.bind' })}
+                                        </a>
+                                    </Menu.Item>
+                                    <Menu.Divider />
+                                    <Menu.Item key="5">
+                                        <a href="javascript: void (0);" data-record={JSON.stringify(record)}>
+                                            {formatMessage({ id: 'list.action.push.again' })}
+                                        </a>
+                                    </Menu.Item>
+                                    <Menu.Divider />
                                     {record.product_id ? (
                                         <Menu.Item key="0">
                                             <a
