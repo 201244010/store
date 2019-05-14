@@ -7,6 +7,7 @@ import * as styles from './ProductManagement.less';
 @connect(
     state => ({
         product: state.basicDataProduct,
+        store: state.store,
     }),
     dispatch => ({
         changeSearchFormValue: payload =>
@@ -17,22 +18,25 @@ import * as styles from './ProductManagement.less';
         getProductDetail: payload =>
             dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
         deleteProduct: payload => dispatch({ type: 'basicDataProduct/deleteProduct', payload }),
+        getSaasBindInfo: () => dispatch({ type: 'store/getSaasBindInfo' }),
     })
 )
 class ProductList extends Component {
     componentDidMount() {
-        const { fetchProductList } = this.props;
+        const { fetchProductList, getSaasBindInfo } = this.props;
         fetchProductList({
             options: {
                 current: 1,
                 keyword: null,
             },
         });
+        getSaasBindInfo();
     }
 
     render() {
         const {
             product: { loading, searchFormValues, data, states, pagination },
+            store: { saasBindInfo },
             changeSearchFormValue,
             clearSearch,
             fetchProductList,
@@ -54,6 +58,7 @@ class ProductList extends Component {
                     {...{
                         loading,
                         data,
+                        saasBindInfo,
                         pagination,
                         fetchProductList,
                         deleteProduct,

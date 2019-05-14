@@ -24,18 +24,17 @@ import * as styles from './BaseStation.less';
 )
 class BaseStation extends Component {
     componentDidMount() {
-        const { fetchBaseStationState, fetchBaseStations, changeSearchFormValue } = this.props;
-
-        changeSearchFormValue({
-            keyword: '',
-            status: -1,
-        });
-
+        const { fetchBaseStationState, fetchBaseStations } = this.props;
         fetchBaseStations({
             options: { current: 1 },
         });
 
         fetchBaseStationState();
+    }
+
+    componentWillUnmount() {
+        const { clearSearch } = this.props;
+        clearSearch();
     }
 
     render() {

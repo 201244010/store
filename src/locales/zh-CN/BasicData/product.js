@@ -21,7 +21,7 @@ export default {
     'basicData.product.spec': '规格',
     'basicData.product.level': '等级',
     'basicData.product.price': '价格',
-    'basicData.product.promote_price': '促销价格',
+    'basicData.product.promote_price': '促销价',
     'basicData.product.member_price': '会员价',
     'basicData.product.price.customize': '自定义价格',
     'basicData.product.expire_time': '保质期',

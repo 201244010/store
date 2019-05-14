@@ -3,8 +3,9 @@ import { formatMessage } from 'umi/locale';
 import { Card, List } from 'antd';
 import { ChangePassword, ChangeMobile, ChangeMail } from '@/components/Modal';
 import { maskPhone } from '@/utils/utils';
-import * as styles from './Account.less';
 import { ERROR_OK } from '@/constants/errorCode';
+import { env } from '@/config';
+import * as styles from './Account.less';
 
 const RENDER_MODAL = {
     password: ChangePassword,
@@ -92,32 +93,36 @@ class Security extends Component {
                                 </div>
                             </div>
                         </List.Item>
-                        <List.Item>
-                            <div className={styles['list-item']}>
-                                <div className={styles['title-wrapper-between']}>
-                                    <h4>{formatMessage({ id: 'userCenter.security.mobile' })}</h4>
-                                    <a
-                                        href="javascript:void(0);"
-                                        onClick={() => this.openChangeModal('mobile')}
-                                    >
-                                        {currentUser.phone
-                                            ? formatMessage({ id: 'btn.alter' })
-                                            : formatMessage({ id: 'btn.bind' })}
-                                    </a>
+                        {env !== 'local' && (
+                            <List.Item>
+                                <div className={styles['list-item']}>
+                                    <div className={styles['title-wrapper-between']}>
+                                        <h4>
+                                            {formatMessage({ id: 'userCenter.security.mobile' })}
+                                        </h4>
+                                        <a
+                                            href="javascript:void(0);"
+                                            onClick={() => this.openChangeModal('mobile')}
+                                        >
+                                            {currentUser.phone
+                                                ? formatMessage({ id: 'btn.alter' })
+                                                : formatMessage({ id: 'btn.bind' })}
+                                        </a>
+                                    </div>
+                                    <div>
+                                        {formatMessage({
+                                            id: 'userCenter.security.mobile.description',
+                                        })}
+                                        <span>
+                                            {maskPhone(currentUser.phone || '', {
+                                                maskStart: 3,
+                                                maskEnd: 6,
+                                            }) || ''}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div>
-                                    {formatMessage({
-                                        id: 'userCenter.security.mobile.description',
-                                    })}
-                                    <span>
-                                        {maskPhone(currentUser.phone || '', {
-                                            maskStart: 3,
-                                            maskEnd: 6,
-                                        }) || ''}
-                                    </span>
-                                </div>
-                            </div>
-                        </List.Item>
+                            </List.Item>
+                        )}
                         {/* TODO 暂时隐去邮箱找回功能 */}
                         {/* <List.Item> */}
                         {/* <div className={styles['list-item']}> */}

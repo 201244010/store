@@ -44,7 +44,9 @@ const ProductCUPrice = props => {
                     <Form.Item label={formatMessage({ id: 'basicData.product.promote_price' })}>
                         {getFieldDecorator('promote_price', {
                             initialValue:
-                                promote_price >= 0 ? parseFloat(promote_price).toFixed(2) : '',
+                                parseInt(promote_price, 10) < 0
+                                    ? ''
+                                    : parseFloat(promote_price).toFixed(2),
                             validateTrigger: 'onBlur',
                             rules: [
                                 {

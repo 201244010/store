@@ -9,8 +9,9 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage } from 'umi/locale';
-import AuthorithCheck from '@/components/AuthorithCheck';
+import MQTTWrapper from '@/components/MQTT';
 import Authorized from '@/utils/Authorized';
+import NotFountPage from '@/pages/404';
 import router from 'umi/router';
 import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
@@ -52,7 +53,7 @@ const query = {
     },
 };
 
-@AuthorithCheck
+@MQTTWrapper
 class BasicLayout extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -64,21 +65,7 @@ class BasicLayout extends React.PureComponent {
     }
 
     componentDidMount() {
-        const {
-            authorityCheck,
-            dispatch,
-            route: { routes, authority },
-        } = this.props;
-
-        if (authorityCheck()) {
-            dispatch({
-                type: 'menu/getMenuData',
-                payload: { routes, authority },
-            });
-            dispatch({
-                type: 'user/getUserInfo',
-            });
-        }
+        this.dataInitial();
     }
 
     componentWillReceiveProps() {
@@ -86,19 +73,19 @@ class BasicLayout extends React.PureComponent {
             location: { pathname },
         } = window;
 
-        if (![`${MENU_PREFIX.STORE}/createStore`, '/account/center'].includes(pathname)) {
+        if (![`${MENU_PREFIX.STORE}/createStore`, '/account'].includes(pathname)) {
             this.checkStore();
         }
+
+        this.setState({
+            selectedStore: CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY),
+        });
     }
 
     componentDidUpdate(preProps) {
         // After changing to phone mode,
         // if collapsed is true, you need to click twice to display
         const { collapsed, isMobile } = this.props;
-        this.setState({
-            selectedStore: CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY),
-        });
-
         if (isMobile && !preProps.isMobile && !collapsed) {
             this.handleMenuCollapse(false);
         }
@@ -111,6 +98,15 @@ class BasicLayout extends React.PureComponent {
             breadcrumbNameMap,
         };
     }
+
+    dataInitial = async () => {
+        const {
+            getMenuData,
+            route: { routes, authority },
+        } = this.props;
+
+        await getMenuData({ routes, authority });
+    };
 
     matchParamsPath = (pathname, breadcrumbNameMap) => {
         const pathKey = Object.keys(breadcrumbNameMap).find(key =>
@@ -188,6 +184,7 @@ class BasicLayout extends React.PureComponent {
             route: { routes },
             fixedHeader,
         } = this.props;
+
         const isTop = PropsLayout === 'topmenu';
         const routerConfig = this.getRouterAuthority(pathname, routes);
         const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
@@ -219,7 +216,10 @@ class BasicLayout extends React.PureComponent {
                     />
                     {/* <Breadcrumbs /> */}
                     <Content className={styles.content} style={contentStyle}>
-                        <Authorized authority={routerConfig} noMatch={<p>Exception403</p>}>
+                        <Authorized
+                            authority={routerConfig}
+                            noMatch={<NotFountPage customStyle={{ color: '#434E59' }} />}
+                        >
                             {children}
                         </Authorized>
                     </Content>
@@ -253,6 +253,7 @@ export default connect(
         ...setting,
     }),
     dispatch => ({
+        getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
         dispatch,
     })

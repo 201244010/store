@@ -4,7 +4,7 @@ import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME, MENU_PREFIX } from '@/constants';
-import { hideSinglePageCheck, idEncode } from '@/utils/utils';
+import { idEncode } from '@/utils/utils';
 import * as CookieUtil from '@/utils/cookies';
 
 const goNext = (fromPage = 'list', options) => {
@@ -131,7 +131,6 @@ export default {
                         pageSize: opts.pageSize,
                         current: opts.current,
                         total: Number(result.total_count) || 0,
-                        hideOnSinglePage: hideSinglePageCheck(result.total_count) || true,
                     },
                 },
             });

@@ -40,6 +40,7 @@ export default {
         getList: {
             data: [],
         },
+        saasBindInfo: {},
         loading: false,
         getOption: {},
         shopType_list: Storage.get('__shopTypeList__', 'local') || [],
@@ -264,6 +265,33 @@ export default {
                     },
                 });
             }
+        },
+
+        *getSaasBindInfo(_, { call, put }) {
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(Action.getSaasBindInfo);
+            if (response && response.code === ERROR_OK) {
+                const data = response.data || {};
+                const { is_bind: isBind = false, saas_info: saasInfo } = data;
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        saasBindInfo: {
+                            isBind,
+                            saasInfo,
+                        },
+                    },
+                });
+            }
+
+            yield put({
+                type: 'updateState',
+                payload: { loading: false },
+            });
         },
 
         *clearState(_, { put }) {
