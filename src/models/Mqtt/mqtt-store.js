@@ -68,9 +68,10 @@ export default {
             }
         },
 
-        * publish({ payload }, { put }) {
+        * publish({ payload }, { put, select }) {
             const { message, ...rest } = payload;
             const { service, action = 'pub' } = rest;
+            const { currentCompanyId } = yield select(state => state.merchant);
 
             const topicPromise = yield put({
                 type: 'generateTopic',
@@ -79,7 +80,17 @@ export default {
 
             topicPromise.then(async topic => {
                 if (mqttClient && topic) {
-                    mqttClient.publish(topic, message);
+                    const { info } = mqttClient.getClient();
+                    const publishMessage = {
+                        ...message,
+                        param: {
+                            ...message.param,
+                            company_id: currentCompanyId,
+                            client_id: info.clientId,
+                        },
+                    };
+
+                    mqttClient.publish(topic, publishMessage);
                 }
             });
         },
