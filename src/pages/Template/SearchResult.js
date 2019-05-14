@@ -76,6 +76,8 @@ class SearchResult extends Component {
                 if (response && response.code === ERROR_OK) {
                     this.setState({
                         newVisible: false
+                    }, () => {
+                        window.open(`/studio?id=${response.data.template_id}&screen=${values.screen_type}`);
                     });
                 }
             }
@@ -203,7 +205,7 @@ class SearchResult extends Component {
                     onOk={this.handleOkNew}
                     onCancel={this.handleCancelNew}
                 >
-                    <Form {...formItemLayout}>
+                    <Form {...formItemLayout} style={{padding: 24}}>
                         <Form.Item label={formatMessage({ id: 'esl.device.template.name' })}>
                             {getFieldDecorator('name', {
                                 rules: [{

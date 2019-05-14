@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {Col, Icon, Input, Row, Switch, Select, Radio, Slider, InputNumber} from 'antd';
-import {SHAPE_TYPES, SIZES} from '@/constants/studio';
+import {SHAPE_TYPES, SIZES, MAPS} from '@/constants/studio';
 import * as styles from './index.less';
 
 const { Option } = Select;
@@ -29,6 +29,112 @@ export default class RightToolBox extends Component {
                 name: `${newType}${oldNameIndex}`
             });
         }
+    };
+
+    handleXY = (detail, key, e) => {
+        const {componentsDetail, selectedShapeName, updateComponentsDetail} = this.props;
+        const originFix = {};
+        Object.keys(componentsDetail).map(detailKey => {
+            const componentDetail = componentsDetail[detailKey];
+            if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
+                originFix.x = componentDetail.x;
+                originFix.y = componentDetail.y;
+            }
+        });
+        updateComponentsDetail({
+            [selectedShapeName]: {
+                [key]: originFix[key] + parseInt(e.target.value || 0, 10)
+            }
+        });
+    };
+
+    handleWidth = (detail, e) => {
+        const {selectedShapeName, updateComponentsDetail} = this.props;
+        updateComponentsDetail({
+            [selectedShapeName]: {
+                scaleX: (e.target.value || 0) / MAPS.containerWidth[detail.type]
+            }
+        });
+    };
+
+    handleHeight = (detail, e) => {
+        const {selectedShapeName, updateComponentsDetail} = this.props;
+        updateComponentsDetail({
+            [selectedShapeName]: {
+                scaleY: (e.target.value || 0) / MAPS.containerHeight[detail.type]
+            }
+        });
+    };
+
+    handleFontStyle = (detail, style) => {
+        const {
+            selectedShapeName, updateComponentsDetail
+        } = this.props;
+        let newFontStyle;
+        if (!detail.fontStyle || detail.fontStyle === 'normal') {
+            newFontStyle = style;
+        }
+        if (detail.fontStyle === 'bold') {
+            if (style === 'bold') {
+                newFontStyle = ''
+            }
+            if (style === "italic") {
+                newFontStyle = 'bold italic';
+            }
+        }
+        if (detail.fontStyle === 'italic') {
+            if (style === 'italic') {
+                newFontStyle = ''
+            }
+            if (style === "bold") {
+                newFontStyle = 'bold italic';
+            }
+        }
+        if (detail.fontStyle === 'bold italic') {
+            if (style === 'bold') {
+                newFontStyle = 'italic'
+            }
+            if (style === "italic") {
+                newFontStyle = 'bold';
+            }
+        }
+
+        updateComponentsDetail({
+            [selectedShapeName]: {
+                fontStyle: newFontStyle
+            }
+        });
+    };
+
+    handleTextDecoration = (detail, textDecoration) => {
+        const {
+            selectedShapeName, updateComponentsDetail
+        } = this.props;
+        let newTextDecoration;
+        if (!detail.textDecoration || detail.textDecoration === 'normal') {
+            newTextDecoration = textDecoration;
+        }
+        if (detail.textDecoration === 'underline') {
+            if (textDecoration === 'underline') {
+                newTextDecoration = ''
+            }
+            if (textDecoration === 'line-through') {
+                newTextDecoration = 'line-through';
+            }
+        }
+        if (detail.textDecoration === 'line-through') {
+            if (textDecoration === 'line-through') {
+                newTextDecoration = ''
+            }
+            if (textDecoration === 'underline') {
+                newTextDecoration = 'underline';
+            }
+        }
+        updateComponentsDetail({
+            [selectedShapeName]: {
+                textDecoration: newTextDecoration
+            }
+        });
     };
 
     getMenuMap = () => {
@@ -65,9 +171,17 @@ export default class RightToolBox extends Component {
     };
 
     render() {
-        const {bindFields, componentsDetail, selectedShapeName} = this.props;
+        const {bindFields, zoomScale, componentsDetail, selectedShapeName} = this.props;
         const menuMap = this.getMenuMap();
         const detail = componentsDetail[selectedShapeName];
+        const originFix = {};
+        Object.keys(componentsDetail).map(key => {
+            const componentDetail = componentsDetail[key];
+            if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
+                originFix.x = componentDetail.x;
+                originFix.y = componentDetail.y;
+            }
+        });
 
         return (
             <Fragment>
@@ -94,16 +208,16 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{width: 100}}
                                 addonAfter={<span>X</span>}
-                                value={detail.x.toFixed()}
-                                onChange={(e) => {this.handleDetail('x', parseInt(e.target.value, 10))}}
+                                value={(detail.x - originFix.x).toFixed()}
+                                onChange={(e) => {this.handleXY(detail, 'x', e)}}
                             />
                         </Col>
                         <Col span={12}>
                             <Input
                                 style={{width: 100}}
                                 addonAfter={<span>Y</span>}
-                                value={detail.y.toFixed()}
-                                onChange={(e) => {this.handleDetail('y', parseInt(e.target.value, 10))}}
+                                value={(detail.y - originFix.y).toFixed()}
+                                onChange={(e) => {this.handleXY(detail, 'y', e)}}
                             />
                         </Col>
                     </Row>
@@ -112,16 +226,16 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{width: 100}}
                                 addonAfter={<span>宽</span>}
-                                value={Math.round(detail.width * detail.scaleX)}
-                                onChange={(e) => {this.handleDetail('width', e.target.value / detail.scaleX)}}
+                                value={Math.round(detail.width * detail.scaleX / zoomScale)}
+                                onChange={(e) => {this.handleWidth(detail, e)}}
                             />
                         </Col>
                         <Col span={12}>
                             <Input
                                 style={{width: 100}}
                                 addonAfter={<span>高</span>}
-                                value={Math.round(detail.height * detail.scaleY)}
-                                onChange={(e) => {this.handleDetail('height', e.target.value / detail.scaleY)}}
+                                value={Math.round(detail.height * detail.scaleY/ zoomScale)}
+                                onChange={(e) => {this.handleHeight(detail, e)}}
                             />
                         </Col>
                     </Row>
@@ -250,6 +364,7 @@ export default class RightToolBox extends Component {
                                     <InputNumber
                                         style={{width: '100%'}}
                                         placeholder="字号"
+                                        min={8}
                                         value={detail.fontSize}
                                         onChange={(value) => {this.handleDetail('fontSize', value)}}
                                     />
@@ -262,34 +377,35 @@ export default class RightToolBox extends Component {
                                     <InputNumber
                                         style={{width: '100%'}}
                                         placeholder="间距"
+                                        min={0}
                                         value={detail.letterSpacing}
                                         onChange={(value) => {this.handleDetail('letterSpacing', value)}}
                                     />
                                 </Col>
                             </Row>
                             <Row style={{marginBottom: 10}} gutter={20}>
-                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'bold' ? `${styles.active}` : ''}`}>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('bold') > -1 ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="bold"
-                                        onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'bold' ? 'normal' : 'bold')}}
+                                        onClick={() => {this.handleFontStyle(detail, 'bold')}}
                                     />
                                 </Col>
-                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'italic' ? `${styles.active}` : ''}`}>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('italic') > -1 ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="italic"
-                                        onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'italic' ? 'normal' : 'italic')}}
+                                        onClick={() => {this.handleFontStyle(detail, 'italic')}}
                                     />
                                 </Col>
                                 <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="underline"
-                                        onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'underline' ? 'normal' : 'underline')}}
+                                        onClick={() => {this.handleTextDecoration(detail, 'underline')}}
                                     />
                                 </Col>
                                 <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="strikethrough"
-                                        onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'line-through' ? 'normal' : 'line-through')}}
+                                        onClick={() => {this.handleTextDecoration(detail, 'line-through')}}
                                     />
                                 </Col>
                             </Row>
@@ -448,60 +564,76 @@ export default class RightToolBox extends Component {
                                 </Col>
                             </Row>
                             <Row style={{marginBottom: 10}} gutter={10}>
-                                <Col span={12}>
-                                    <Row>
-                                        <Col span={24}>
-                                            <span className={styles.title}>整数字号</span>
-                                        </Col>
-                                        <Col span={24}>
-                                            <InputNumber
-                                                style={{width: '100%'}}
-                                                placeholder="整数字号"
-                                                value={detail.fontSize}
-                                                onChange={(value) => {this.handleDetail('fontSize', value)}}
-                                            />
-                                        </Col>
-                                    </Row>
+                                <Col span={4}>
+                                    <span className={styles.title}>字号</span>
                                 </Col>
-                                <Col span={12}>
-                                    <Row>
-                                        <Col span={24}>
-                                            <span className={styles.title}>小数字号</span>
-                                        </Col>
-                                        <Col span={24}>
-                                            <InputNumber
-                                                style={{width: '100%'}}
-                                                placeholder="小数字号"
-                                                value={detail.smallFontSize}
-                                                onChange={(value) => {this.handleDetail('smallFontSize', value)}}
-                                            />
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                            <Row style={{marginBottom: 10}} gutter={20}>
-                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'bold' ? `${styles.active}` : ''}`}>
-                                    <Icon
-                                        type="bold"
-                                        onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'bold' ? 'normal' : 'bold')}}
+                                <Col span={20}>
+                                    <InputNumber
+                                        style={{width: '100%'}}
+                                        placeholder="字号"
+                                        min={8}
+                                        value={detail.fontSize}
+                                        onChange={(value) => {this.handleDetail('fontSize', value)}}
                                     />
                                 </Col>
-                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle === 'italic' ? `${styles.active}` : ''}`}>
+                                {
+                                    /*
+                                    <Col span={12}>
+                                        <Row>
+                                            <Col span={24}>
+                                                <span className={styles.title}>整数字号</span>
+                                            </Col>
+                                            <Col span={24}>
+                                                <InputNumber
+                                                    style={{width: '100%'}}
+                                                    placeholder="整数字号"
+                                                    value={detail.fontSize}
+                                                    onChange={(value) => {this.handleDetail('fontSize', value)}}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Row>
+                                            <Col span={24}>
+                                                <span className={styles.title}>小数字号</span>
+                                            </Col>
+                                            <Col span={24}>
+                                                <InputNumber
+                                                    style={{width: '100%'}}
+                                                    placeholder="小数字号"
+                                                    value={detail.smallFontSize}
+                                                    onChange={(value) => {this.handleDetail('smallFontSize', value)}}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Col>
+                                     */
+                                }
+                            </Row>
+                            <Row style={{marginBottom: 10}} gutter={20}>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('bold') > -1 ? `${styles.active}` : ''}`}>
+                                    <Icon
+                                        type="bold"
+                                        onClick={() => {this.handleFontStyle(detail, 'bold')}}
+                                    />
+                                </Col>
+                                <Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('italic') > -1 ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="italic"
-                                        onClick={() => {this.handleDetail('fontStyle', detail.fontStyle === 'italic' ? 'normal' : 'italic')}}
+                                        onClick={() => {this.handleFontStyle(detail, 'italic')}}
                                     />
                                 </Col>
                                 <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="underline"
-                                        onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'underline' ? 'normal' : 'underline')}}
+                                        onClick={() => {this.handleTextDecoration(detail, 'underline')}}
                                     />
                                 </Col>
                                 <Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
                                     <Icon
                                         type="strikethrough"
-                                        onClick={() => {this.handleDetail('textDecoration', detail.fontStyle === 'line-through' ? 'normal' : 'line-through')}}
+                                        onClick={() => {this.handleTextDecoration(detail, 'line-through')}}
                                     />
                                 </Col>
                             </Row>

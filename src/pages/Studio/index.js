@@ -83,7 +83,7 @@ class Studio extends Component {
                     y: (stageHeight - height * zoomScale) / 2,
                     screenType,
                     type,
-                    fill: '#fff',
+                    fill: 'white',
                     width,
                     height,
                     cornerRadius: MAPS.cornerRadius[type],
@@ -96,7 +96,16 @@ class Studio extends Component {
                 this.updateSelectedShapeName('');
             }
         }
+        document.addEventListener('keydown', this.handleDeleteComponent);
     }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleDeleteComponent);
+    }
+
+    handleDeleteComponent = (e) => {
+        console.log(e);
+    };
 
     handleStageMouseDown = (e) => {
         const {studio: {selectedShapeName, componentsDetail, showRightToolBox}} = this.props;
@@ -202,13 +211,14 @@ class Studio extends Component {
     };
 
     handleSaveAsDraft = () => {
-        const {studio: {componentsDetail}, saveAsDraft} = this.props;
+        const {studio: {componentsDetail, zoomScale}, saveAsDraft} = this.props;
         const newDetails = {};
         Object.keys(componentsDetail).forEach(key => {
             const detail = componentsDetail[key];
             if (detail.name) {
                 newDetails[key] = {
-                    ...detail
+                    ...detail,
+                    zoomScale
                 }
             }
         });
@@ -443,7 +453,9 @@ class Studio extends Component {
         if (selectedShapeName) {
             Object.keys(componentsDetail).forEach(key => {
                 if (key === selectedShapeName) {
-                    lines = lines.concat(componentsDetail[key].lines);
+                    if (componentsDetail[key].type !== SHAPE_TYPES.RECT_FIX) {
+                        lines = lines.concat(componentsDetail[key].lines);
+                    }
                 } else {
                     lines = lines.concat(
                         getNearLines(componentsDetail[selectedShapeName], componentsDetail[key])
@@ -505,7 +517,11 @@ class Studio extends Component {
                                         return undefined;
                                     })
                                 }
-                                <MTransformer selectedShapeName={selectedShapeName} />
+                                {
+                                    selectedShapeName && componentsDetail[selectedShapeName].type !== SHAPE_TYPES.RECT_FIX ?
+                                        <MTransformer selectedShapeName={selectedShapeName} /> :
+                                        null
+                                }
                             </Layer>
                             {
                                 (lines && !showRightToolBox) ? (
@@ -529,6 +545,7 @@ class Studio extends Component {
                                             bindFields,
                                             selectedShapeName,
                                             componentsDetail,
+                                            zoomScale,
                                             updateComponentsDetail,
                                             deleteSelectedComponent,
                                             addComponent
