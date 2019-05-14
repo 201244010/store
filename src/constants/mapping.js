@@ -38,11 +38,3 @@ export const PRODUCT_PRICE = {
 export const PRODUCT_PRICE_EXTRA = {
     extra_price_info: null,
 };
-
-// TODO 映射关系暂定
-export const NOTIFICATION_TYPE = {
-    ACTION: '',
-    LINK: {
-        toBaseStationList: '/esl/baseStation',
-    },
-};

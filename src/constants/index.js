@@ -8,8 +8,8 @@ export const DURATION_TIME = 1;
 export const MENU_PREFIX = {
     USER: '',
     ESL: '',
-    ESL_ELECTRIC_LABEL: '',
-    ESL_BASE_STATION: '',
+    ESL_ELECTRIC_LABEL: '/esl/electricLabel',
+    ESL_BASE_STATION: '/esl/baseStation',
     // PRODUCT: '/basicData/productManagement/list',
     PRODUCT: '/product/list',
     // MERCHANT: '/basicData/merchantManagement',

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { displayNotification } from '@/components/Notification';
 import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
+import { ACTION_MAP } from '@/constants/mqttActionMap';
 
 function MQTTWrapper(WrapperedComponent) {
     @connect(
@@ -29,13 +30,24 @@ function MQTTWrapper(WrapperedComponent) {
             destroyClient();
         }
 
+        handleAction = action => {
+            if (action) {
+                const handler = ACTION_MAP[action] || (() => null);
+                handler();
+            }
+        };
+
         showNotification = (topic, data) => {
             const { getNotificationCount } = this.props;
             const messageData = JSON.parse(data.toString()) || {};
             const { params = [] } = messageData;
             params.forEach(item => {
                 const { param = {} } = item;
-                displayNotification({ data: param });
+                displayNotification({
+                    data: param,
+                    mainAction: this.handleAction,
+                    subAction: this.handleAction,
+                });
             });
             getNotificationCount();
         };

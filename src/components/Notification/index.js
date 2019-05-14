@@ -17,10 +17,16 @@ export const Description = props => {
     } = btnOptions;
 
     const handleMainBtnAction = action => {
-        console.log(action);
+        const { mainAction = null } = props;
+        if (mainAction) {
+            mainAction(action);
+        }
     };
     const handleSubBtnAction = action => {
-        console.log(action);
+        const { subAction = null } = props;
+        if (subAction) {
+            subAction(action);
+        }
     };
 
     return (
@@ -56,18 +62,18 @@ const notificationType = {
 };
 
 export const displayNotification = props => {
-    const { data = {} } = props;
+    const { data = {}, mainAction, subAction } = props;
     const {
         title,
         description,
-        template_type: templateType,
+        level,
         major_button_name: majorButtonName,
         major_button_link: majorButtonLink,
         minor_button_name: minorButtonName,
         minor_button_link: minorButtonLink,
     } = data;
 
-    const status = notificationType[templateType] || 'info';
+    const status = notificationType[level] || 'info';
 
     notification[status]({
         message: <Title {...{ title }} />,
@@ -75,6 +81,8 @@ export const displayNotification = props => {
             <Description
                 {...{
                     description,
+                    mainAction,
+                    subAction,
                     btnOptions: {
                         majorButtonName,
                         majorButtonLink,
