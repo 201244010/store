@@ -40,7 +40,7 @@ const AccountLoginLocal = props => {
                         placeholder={formatMessage({
                             id: 'account.account.placeholder',
                         })}
-                    />,
+                    />
                 )}
             </Form.Item>
             <Form.Item>
@@ -64,7 +64,7 @@ const AccountLoginLocal = props => {
                         placeholder={formatMessage({
                             id: 'account.password.placeholder',
                         })}
-                    />,
+                    />
                 )}
             </Form.Item>
         </>
