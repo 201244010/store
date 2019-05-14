@@ -46,6 +46,7 @@ export default {
         *generateTopic({ payload }, { select }) {
             const { service, action, prefix = 'WEB', withCompany = false } = payload;
             const { currentUser } = yield select(state => state.user);
+            const { currentCompanyId } = yield select(state => state.merchant);
 
             const { id } = currentUser;
             if (mqttClient) {
@@ -53,7 +54,6 @@ export default {
                 const { clientId } = info;
 
                 if (withCompany) {
-                    const { currentCompanyId } = yield select(state => state.merchant);
                     return `/${prefix}/${id}/${clientId}/${currentCompanyId}/${service}/${action}`;
                 }
                 return `/${prefix}/${id}/${clientId}/${service}/${action}`;
