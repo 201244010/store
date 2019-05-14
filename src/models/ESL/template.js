@@ -132,10 +132,10 @@ export default {
             const draft = {
                 encoding: 'UTF-8',
                 type: curTemplate.type,
-                background_color: '',
-                fill_fields: bindFields,
+                backgroundColor: '',
+                fillFields: bindFields,
                 layers: [],
-                layer_count: 0,
+                layerCount: 0,
             };
             const layers = [];
             const originOffset = {};
@@ -144,7 +144,7 @@ export default {
                 if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
                     originOffset.x = componentDetail.x;
                     originOffset.y = componentDetail.y;
-                    draft.background_color = componentDetail.fill;
+                    draft.backgroundColor = componentDetail.fill;
                 }
             });
             Object.keys(payload.draft).map(key => {
@@ -195,7 +195,7 @@ export default {
                 layers.push(payload.draft[key]);
             });
             draft.layers = layers;
-            draft.layer_count = layers.length;
+            draft.layerCount = layers.length;
 
             const response = yield call(TemplateService.saveAsDraft, {
                 ...payload,

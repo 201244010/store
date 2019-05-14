@@ -77,6 +77,7 @@ export default {
             if (selectedShapeName === undefined) {
                 targetShapeName = chooseShapeName;
             }
+            console.log(action);
 
             return {
                 ...state,

@@ -31,6 +31,23 @@ export default class RightToolBox extends Component {
         }
     };
 
+    handleXY = (detail, key, e) => {
+        const {componentsDetail, selectedShapeName, updateComponentsDetail} = this.props;
+        const originFix = {};
+        Object.keys(componentsDetail).map(detailKey => {
+            const componentDetail = componentsDetail[detailKey];
+            if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
+                originFix.x = componentDetail.x;
+                originFix.y = componentDetail.y;
+            }
+        });
+        updateComponentsDetail({
+            [selectedShapeName]: {
+                [key]: originFix[key] + parseInt(e.target.value || 0, 10)
+            }
+        });
+    };
+
     handleFontStyle = (detail, style) => {
         const {
             selectedShapeName, updateComponentsDetail
@@ -139,6 +156,14 @@ export default class RightToolBox extends Component {
         const {bindFields, componentsDetail, selectedShapeName} = this.props;
         const menuMap = this.getMenuMap();
         const detail = componentsDetail[selectedShapeName];
+        const originFix = {};
+        Object.keys(componentsDetail).map(key => {
+            const componentDetail = componentsDetail[key];
+            if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
+                originFix.x = componentDetail.x;
+                originFix.y = componentDetail.y;
+            }
+        });
 
         return (
             <Fragment>
@@ -165,16 +190,16 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{width: 100}}
                                 addonAfter={<span>X</span>}
-                                value={detail.x.toFixed()}
-                                onChange={(e) => {this.handleDetail('x', parseInt(e.target.value, 10))}}
+                                value={(detail.x - originFix.x).toFixed()}
+                                onChange={(e) => {this.handleXY(detail, 'x', e)}}
                             />
                         </Col>
                         <Col span={12}>
                             <Input
                                 style={{width: 100}}
                                 addonAfter={<span>Y</span>}
-                                value={detail.y.toFixed()}
-                                onChange={(e) => {this.handleDetail('y', parseInt(e.target.value, 10))}}
+                                value={(detail.y - originFix.y).toFixed()}
+                                onChange={(e) => {this.handleXY(detail, 'y', e)}}
                             />
                         </Col>
                     </Row>
