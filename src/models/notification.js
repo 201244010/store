@@ -14,7 +14,7 @@ export default {
     namespace: 'notification',
     state: {
         searchFormValues: {
-            modleId: null,
+            modleId: -1,
             statusCode: -1,
         },
         loading: false,
@@ -66,7 +66,7 @@ export default {
         },
 
         *updateSearchValue(payload, { put }) {
-            const { modelId, statusCode } = payload;
+            const { modelId = -1, statusCode = -1 } = payload;
             yield put({
                 type: 'updateState',
                 payload: {
@@ -237,7 +237,7 @@ export default {
                 type: 'updateState',
                 payload: {
                     searchFormValues: {
-                        modleId: null,
+                        modleId: -1,
                         statusCode: -1,
                     },
                 },

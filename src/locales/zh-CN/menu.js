@@ -59,6 +59,7 @@ export default {
     'menu.basicData.storeManagement.createStore': '新建门店',
     'menu.basicData.storeManagement.storeInformation': '查看门店',
 
-    'menu.notificationCenter': '消息中心',
-    'menu.notificationInfo': '消息详情',
+    'menu.notification': '系统消息',
+    'menu.notification.center': '消息中心',
+    'menu.notification.info': '消息详情',
 };

@@ -78,3 +78,11 @@ export const fetchDeviceOverview = () => {
 
     return fetchDeviceApi('getOverview', opts).then(response => response.json());
 };
+
+export const refreshFailedImage = () => {
+    const opts = {
+        method: 'POST',
+        body: {},
+    };
+    return fetchApi('refreshFailedImage', opts).then(response => response.json());
+};
