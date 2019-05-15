@@ -129,7 +129,7 @@ class SearchResult extends Component {
                         >
                             {formatMessage({ id: 'list.action.detail' })}
                         </a>
-                        {`${record.status}` === '2' && (
+                        {`${record.status}` === '1' && (
                             <>
                                 <Divider type="vertical" />
                                 <a
