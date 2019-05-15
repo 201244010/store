@@ -57,13 +57,7 @@ class Studio extends Component {
         });
         const screenType = getLocationParam('screen');
         const { width, height, zoomScale } = MAPS.screen[screenType];
-        updateState({
-            zoomScale,
-            stage: {
-                width: stageWidth,
-                height: stageHeight,
-            },
-        });
+        let realZoomScale = zoomScale;
         if (response && response.code === ERROR_OK) {
             const studioInfo = JSON.parse(response.data.template_info.studio_info || '{}');
             if (!studioInfo.layers || !studioInfo.layers.length) {
@@ -84,8 +78,17 @@ class Studio extends Component {
                     rotation: 0,
                 });
                 this.updateSelectedShapeName('');
+            } else {
+                realZoomScale = studioInfo.layers[0].zoomScale;
             }
         }
+        updateState({
+            zoomScale: realZoomScale,
+            stage: {
+                width: stageWidth,
+                height: stageHeight,
+            },
+        });
         document.addEventListener('keydown', this.handleDeleteComponent);
     }
 
