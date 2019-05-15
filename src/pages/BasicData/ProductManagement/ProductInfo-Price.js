@@ -15,7 +15,9 @@ const ProductInfoPrice = props => {
                             {formatMessage({ id: product.label })}：
                         </span>
                         <span className={styles['item-content']}>
-                            {parseInt(product.value, 10) < 0 ? '' : parseFloat(product.value).toFixed(2)}
+                            {parseInt(product.value, 10) < 0
+                                ? ''
+                                : parseFloat(product.value).toFixed(2)}
                         </span>
                     </div>
                 ))}
