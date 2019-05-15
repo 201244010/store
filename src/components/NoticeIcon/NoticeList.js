@@ -14,7 +14,6 @@ export default function NoticeList({
     emptyImage,
     onViewMore = null,
     showClear = false,
-    showViewMore = false,
 }) {
     if (data.length === 0) {
         return (
@@ -76,7 +75,7 @@ export default function NoticeList({
                         {locale.clear} {locale[title] || title}
                     </div>
                 ) : null}
-                {showViewMore ? <div onClick={onViewMore}>{locale.viewMore}</div> : null}
+                <div onClick={onViewMore}>{locale.viewMore}</div>
             </div>
         </div>
     );

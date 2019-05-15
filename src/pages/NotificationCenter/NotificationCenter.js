@@ -4,6 +4,7 @@ import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
+import { MENU_PREFIX } from '@/constants';
 import styles from './Notification.less';
 
 @connect(
@@ -63,7 +64,7 @@ class NotificationCenter extends Component {
             msgIdList: [msgId],
             statusCode: 1,
         });
-        router.push(`/notificationInfo?msgId=${msgId}`);
+        router.push(`${MENU_PREFIX.NOTIFICATION}/info?msgId=${msgId}`);
     };
 
     dealMessage = type => {
@@ -91,7 +92,7 @@ class NotificationCenter extends Component {
         );
         const columns = [
             {
-                title: formatMessage({ id: 'basicData.product.seq_num' }),
+                title: formatMessage({ id: 'notification.title' }),
                 dataIndex: 'title',
                 render: (content, record) => (
                     <div
@@ -107,12 +108,12 @@ class NotificationCenter extends Component {
                 ),
             },
             {
-                title: formatMessage({ id: 'basicData.product.name' }),
+                title: formatMessage({ id: 'notification.receiveTime' }),
                 dataIndex: 'receive_time',
                 render: time => <div>{moment.unix(time).format('YYYY-MM-DD hh:mm:ss')}</div>,
             },
             {
-                title: formatMessage({ id: 'basicData.product.bar_code' }),
+                title: formatMessage({ id: 'notification.type' }),
                 dataIndex: 'model_name',
                 filters: filterList,
                 onFilter: (value, record) => record.model_name.indexOf(value) === 0,

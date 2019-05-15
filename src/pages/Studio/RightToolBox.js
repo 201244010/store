@@ -234,7 +234,11 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{ width: 100 }}
                                 addonAfter={<span>宽</span>}
-                                value={detail.scaleX ? Math.round((detail.width * detail.scaleX) / zoomScale) : ''}
+                                value={
+                                    detail.scaleX
+                                        ? Math.round((detail.width * detail.scaleX) / zoomScale)
+                                        : ''
+                                }
                                 onChange={e => {
                                     this.handleWidth(detail, e);
                                 }}
@@ -245,7 +249,11 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{ width: 100 }}
                                 addonAfter={<span>高</span>}
-                                value={detail.scaleY ? Math.round((detail.height * detail.scaleY) / zoomScale) : ''}
+                                value={
+                                    detail.scaleY
+                                        ? Math.round((detail.height * detail.scaleY) / zoomScale)
+                                        : ''
+                                }
                                 onChange={e => {
                                     this.handleHeight(detail, e);
                                 }}
