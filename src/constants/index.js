@@ -68,6 +68,10 @@ export const AVATA_IMG = {
         color: 'blue',
     },
     2: {
+        icon: 'info-circle',
+        color: '#faad14',
+    },
+    3: {
         icon: 'close-circle',
         color: 'red',
     },

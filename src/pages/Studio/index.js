@@ -36,7 +36,7 @@ import * as styles from './index.less';
         fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
         renameTemplate: payload => dispatch({ type: 'template/renameTemplate', payload }),
         uploadImage: payload => dispatch({ type: 'template/uploadImage', payload }),
-    })
+    }),
 )
 class Studio extends Component {
     constructor(props) {
@@ -492,7 +492,7 @@ class Studio extends Component {
                     }
                 } else {
                     lines = lines.concat(
-                        getNearLines(componentsDetail[selectedShapeName], componentsDetail[key])
+                        getNearLines(componentsDetail[selectedShapeName], componentsDetail[key]),
                     );
                 }
             });
@@ -548,9 +548,8 @@ class Studio extends Component {
                                     return undefined;
                                 })}
                                 {selectedShapeName &&
-                                componentsDetail[selectedShapeName].type !==
-                                    SHAPE_TYPES.RECT_FIX ? (
-                                        <MTransformer selectedShapeName={selectedShapeName} />
+                                componentsDetail[selectedShapeName].type !== SHAPE_TYPES.RECT_FIX ? (
+                                    <MTransformer selectedShapeName={selectedShapeName} />
                                 ) : null}
                             </Layer>
                             {lines && !showRightToolBox ? (

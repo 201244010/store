@@ -68,11 +68,28 @@ class SearchResult extends Component {
 
         Modal.confirm({
             icon: 'info-circle',
-            title: formatMessage({ id: 'btn.delete' }),
+            title: formatMessage({ id: 'esl.device.ap.delete.notice' }),
             content,
             okText: formatMessage({ id: 'btn.delete' }),
+            cancelText: formatMessage({ id: 'btn.cancel' }),
             onOk() {
                 deleteBaseStation({
+                    options: { ap_id: record.id },
+                });
+            },
+        });
+    };
+
+    showRestartStation = record => {
+        const { restartBaseStation } = this.props;
+
+        Modal.confirm({
+            icon: 'info-circle',
+            title: formatMessage({ id: 'esl.device.ap.restart.notice' }),
+            okText: formatMessage({ id: 'btn.restart' }),
+            cancelText: formatMessage({ id: 'btn.cancel' }),
+            onOk() {
+                restartBaseStation({
                     options: { ap_id: record.id },
                 });
             },
@@ -112,6 +129,17 @@ class SearchResult extends Component {
                         >
                             {formatMessage({ id: 'list.action.detail' })}
                         </a>
+                        {`${record.status}` === '2' && (
+                            <>
+                                <Divider type="vertical" />
+                                <a
+                                    href="javascript: void (0);"
+                                    onClick={() => this.showRestartStation(record)}
+                                >
+                                    {formatMessage({ id: 'list.action.restart' })}
+                                </a>
+                            </>
+                        )}
                         <Divider type="vertical" />
                         <a
                             href="javascript: void (0);"

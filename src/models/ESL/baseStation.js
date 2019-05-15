@@ -155,6 +155,29 @@ export default {
                 });
             }
         },
+
+        *restartBaseStation({ payload }, { put, call }) {
+            // TODO 等待后端逻辑
+            const { options } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(Actions.restartBaseStation, options);
+            if (response.code === ERROR_OK) {
+                message.success(formatMessage({ id: 'esl.device.ap.restart.loading' }));
+                yield put({
+                    type: 'fetchBaseStations',
+                    payload: { options: {} },
+                });
+            }
+
+            yield put({
+                type: 'updateState',
+                payload: { loading: false },
+            });
+        },
     },
     reducers: {
         updateState(state, action) {
