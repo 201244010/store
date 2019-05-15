@@ -16,10 +16,13 @@ import styles from './Notification.less';
             dispatch({ type: 'notification/getNotificationModels', payload }),
         getNotificationList: payload =>
             dispatch({ type: 'notification/getNotificationList', payload }),
+        getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
+        updateSearchValue: payload => dispatch({ type: 'notification/updateSearchValue', payload }),
         updateNotificationStatus: payload =>
             dispatch({ type: 'notification/updateNotificationStatus', payload }),
         deleteNotification: payload =>
             dispatch({ type: 'notification/deleteNotification', payload }),
+        clearSearchValue: () => dispatch({ type: 'notification/clearSearchValue' }),
     })
 )
 class NotificationCenter extends Component {
@@ -31,10 +34,20 @@ class NotificationCenter extends Component {
     }
 
     componentDidMount() {
-        const { getNotificationModels, getNotificationList } = this.props;
-        getNotificationModels();
-        getNotificationList();
+        this.init();
     }
+
+    componentWillUnmount() {
+        const { clearSearchValue } = this.props;
+        clearSearchValue();
+    }
+
+    init = async () => {
+        const { getNotificationModels, getNotificationList, getNotificationCount } = this.props;
+        await getNotificationCount();
+        await getNotificationModels();
+        await getNotificationList();
+    };
 
     onTableChange = pagination => {
         const { getNotificationList } = this.props;
@@ -44,11 +57,12 @@ class NotificationCenter extends Component {
         });
     };
 
-    onChange = e => {
-        const { getNotificationList } = this.props;
-        getNotificationList({
+    onChange = async e => {
+        const { getNotificationList, updateSearchValue } = this.props;
+        await updateSearchValue({
             statusCode: e.target.checked ? 0 : -1,
         });
+        await getNotificationList();
     };
 
     onSelectChange = selectedRowKeys => {
@@ -85,7 +99,13 @@ class NotificationCenter extends Component {
 
     render() {
         const {
-            notification: { notificationList, modelList, pagination },
+            notification: {
+                notificationList,
+                modelList,
+                pagination,
+                loading,
+                count: { unread },
+            },
         } = this.props;
         const filterList = modelList.map(item =>
             Object.assign({}, { text: item.model_name, value: item.model_name })
@@ -125,7 +145,6 @@ class NotificationCenter extends Component {
             onChange: this.onSelectChange,
         };
         const hasSelected = selectedRowKeys.length > 0;
-        const unreadCount = notificationList.filter(item => item.receive_status === 0).length;
         return (
             <div className={styles.wrapper}>
                 <div className={styles.title}>
@@ -134,7 +153,7 @@ class NotificationCenter extends Component {
                     </span>
                     <Checkbox onChange={this.onChange}>
                         {formatMessage({ id: 'notification.unreadmessage' })}
-                        <span className={styles.number}>（{unreadCount}）</span>
+                        <span className={styles.number}>（{unread}）</span>
                     </Checkbox>
                 </div>
                 <div className={styles['function-button']}>
@@ -149,17 +168,15 @@ class NotificationCenter extends Component {
                         {formatMessage({ id: 'notification.allread' })}
                     </Button>
                 </div>
-                <div>
-                    <Table
-                        rowKey="msg_id"
-                        // loading={loading}
-                        rowSelection={rowSelection}
-                        columns={columns}
-                        dataSource={notificationList}
-                        pagination={{ ...pagination }}
-                        onChange={this.onTableChange}
-                    />
-                </div>
+                <Table
+                    rowKey="msg_id"
+                    loading={loading}
+                    rowSelection={rowSelection}
+                    columns={columns}
+                    dataSource={notificationList}
+                    pagination={{ ...pagination }}
+                    onChange={this.onTableChange}
+                />
             </div>
         );
     }
