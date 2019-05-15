@@ -131,7 +131,7 @@ export default {
             });
             const draft = {
                 encoding: 'UTF-8',
-                type: curTemplate.type,
+                type: curTemplate.model_name,
                 backgroundColor: '',
                 fillFields: bindFields,
                 layers: [],
@@ -358,11 +358,13 @@ export default {
                     type: 'updateState',
                     payload: { loading: false },
                 });
+                message.success('应用成功');
             } else {
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
                 });
+                message.error('应用成功');
             }
             return response;
         },
