@@ -85,6 +85,10 @@ export default {
     'esl.device.esl.push.success': '推送成功',
     'esl.device.esl.push.fail': '推送失败',
 
+    'esl.device.esl.week.fail': '近一周推送失败',
+    'esl.device.esl.push.all': '立即重推',
+    'esl.device.esl.push.all.success': '正在重推失败价签...',
+
     // 模板用
     'esl.device.template.new': '新建模板',
     'esl.device.template.id': '模板ID',
