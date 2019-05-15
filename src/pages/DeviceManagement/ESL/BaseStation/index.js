@@ -20,6 +20,8 @@ import * as styles from './BaseStation.less';
             dispatch({ type: 'eslBaseStation/getBaseStationDetail', payload }),
         deleteBaseStation: payload =>
             dispatch({ type: 'eslBaseStation/deleteBaseStation', payload }),
+        restartBaseStation: payload =>
+            dispatch({ type: 'eslBaseStation/restartBaseStation', payload }),
     })
 )
 class BaseStation extends Component {
@@ -43,6 +45,7 @@ class BaseStation extends Component {
             fetchBaseStations,
             getBaseStationDetail,
             deleteBaseStation,
+            restartBaseStation,
             changeSearchFormValue,
             clearSearch,
         } = this.props;
@@ -67,6 +70,7 @@ class BaseStation extends Component {
                         fetchBaseStations,
                         getBaseStationDetail,
                         deleteBaseStation,
+                        restartBaseStation,
                     }}
                 />
             </div>

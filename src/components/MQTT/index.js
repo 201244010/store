@@ -37,7 +37,7 @@ function MQTTWrapper(WrapperedComponent) {
             }
         };
 
-        showNotification = (topic, data) => {
+        showNotification = data => {
             const { getNotificationCount } = this.props;
             const messageData = JSON.parse(data.toString()) || {};
             const { params = [] } = messageData;
@@ -65,6 +65,7 @@ function MQTTWrapper(WrapperedComponent) {
             await getUserInfo();
             await initializeClient();
             const registerTopic = await generateTopic({ service: 'register', action: 'sub' });
+            const registerTopicPub = await generateTopic({ service: 'register', action: 'pub' });
             const notificationTopic = await generateTopic({
                 service: 'notification',
                 action: 'sub',
@@ -72,8 +73,9 @@ function MQTTWrapper(WrapperedComponent) {
 
             await setTopicListener({ service: 'notification', handler: this.showNotification });
 
-            subscribe({ topic: [registerTopic, notificationTopic] });
-            await publish({ service: 'register', message: REGISTER_PUB_MSG });
+            await subscribe({ topic: [registerTopic, notificationTopic] });
+            console.log('subscribed');
+            await publish({ topic: registerTopicPub, message: REGISTER_PUB_MSG });
         };
 
         render() {
