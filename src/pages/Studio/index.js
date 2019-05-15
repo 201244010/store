@@ -568,7 +568,7 @@ class Studio extends Component {
                             ) : null}
                         </Stage>
                     </div>
-                    {selectedShapeName ? (
+                    {(selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1) ? (
                         <div className={styles['tool-box']}>
                             <RightToolBox
                                 {...{
