@@ -107,6 +107,8 @@ class MqttClient {
 
         client.on('message', (messageTopic, message) => {
             if (messageTopic === topic) {
+                console.log(messageTopic, ': received.');
+                console.log('data: ', message.toString());
                 topicHandler(message);
             }
         });
