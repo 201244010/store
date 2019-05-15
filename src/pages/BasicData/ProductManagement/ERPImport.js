@@ -24,7 +24,7 @@ const RenderFormItem = {
         getERPPlatformList: () => dispatch({ type: 'basicDataProduct/getERPPlatformList' }),
         erpAuthCheck: payload => dispatch({ type: 'basicDataProduct/erpAuthCheck', payload }),
         erpImport: payload => dispatch({ type: 'basicDataProduct/erpImport', payload }),
-    })
+    }),
 )
 @Form.create()
 class ERPImport extends Component {
@@ -140,7 +140,7 @@ class ERPImport extends Component {
                                             {platform.full_name || ''}
                                         </Select.Option>
                                     ))}
-                                </Select>
+                                </Select>,
                             )}
                         </Form.Item>
 
