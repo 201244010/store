@@ -9,6 +9,9 @@ export let currentId = 1;
 export const generatorId = type => `${type}-${currentId++}`;
 
 export const getNearLines = (source, target) => {
+    if (source.type === SHAPE_TYPES.RECT_FIX || target.type === SHAPE_TYPES.RECT_FIX) {
+        return [];
+    }
     const ret = [];
     if (source.type === SHAPE_TYPES.CIRCLE) {
         source.left = source.x - source.radius * source.scaleX;

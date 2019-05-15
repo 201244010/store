@@ -65,7 +65,7 @@ class Studio extends Component {
             },
         });
         if (response && response.code === ERROR_OK) {
-            const studioInfo = JSON.parse(response.data.template_info.studio_info);
+            const studioInfo = JSON.parse(response.data.template_info.studio_info || '{}');
             if (!studioInfo.layers || !studioInfo.layers.length) {
                 const type = SHAPE_TYPES.RECT_FIX;
                 addComponent({
@@ -490,7 +490,7 @@ class Studio extends Component {
                     if (componentsDetail[key].type !== SHAPE_TYPES.RECT_FIX) {
                         lines = lines.concat(componentsDetail[key].lines);
                     }
-                } else {
+                } else if (componentsDetail[key].type !== SHAPE_TYPES.RECT_FIX) {
                     lines = lines.concat(
                         getNearLines(componentsDetail[selectedShapeName], componentsDetail[key])
                     );

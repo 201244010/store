@@ -237,7 +237,7 @@ export default {
                         curTemplate: response.data.template_info,
                     },
                 });
-                let { layers } = JSON.parse(response.data.template_info.studio_info) || {};
+                let { layers } = JSON.parse(response.data.template_info.studio_info || '{}') || {};
                 layers = layers || [];
                 const componentsDetail = {};
                 let hasImage = false;
