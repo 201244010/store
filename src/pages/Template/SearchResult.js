@@ -27,6 +27,8 @@ class SearchResult extends Component {
             options: {
                 current: pagination.current,
                 pageSize: pagination.pageSize,
+                screen_type: -1,
+                colour: -1
             },
         });
     };
@@ -69,7 +71,7 @@ class SearchResult extends Component {
     handleOkNew = () => {
         const {
             props: {
-                form: { validateFields },
+                form: { validateFields, resetFields },
                 createTemplate,
             },
         } = this;
@@ -82,6 +84,7 @@ class SearchResult extends Component {
                             newVisible: false,
                         },
                         () => {
+                            resetFields();
                             window.open(
                                 `/studio?id=${response.data.template_id}&screen=${
                                     values.screen_type

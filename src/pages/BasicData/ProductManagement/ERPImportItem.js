@@ -11,7 +11,7 @@ export const ERROR_FILEDS = {
         },
     },
     'SAAS-KWYLS': {
-        field: 'saas_info.store_password',
+        field: 'saas_info.password',
         errMsg: {
             5020: formatMessage({ id: 'basicData.erp.kwyls.account.used' }),
             5021: formatMessage({ id: 'basicData.erp.kwyls.account.frequently' }),
@@ -62,7 +62,7 @@ export const KWYLS = props => {
     return (
         <>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.store.num' })}>
-                {getFieldDecorator('saas_info.store_num', {
+                {getFieldDecorator('saas_info.mchid', {
                     validateTrigger: 'onBlur',
                     rules: [
                         {
@@ -73,7 +73,7 @@ export const KWYLS = props => {
                 })(<Input />)}
             </Form.Item>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.account' })}>
-                {getFieldDecorator('saas_info.store_account', {
+                {getFieldDecorator('saas_info.account', {
                     validateTrigger: 'onBlur',
                     rules: [
                         {
@@ -84,7 +84,7 @@ export const KWYLS = props => {
                 })(<Input />)}
             </Form.Item>
             <Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
-                {getFieldDecorator('saas_info.store_password', {
+                {getFieldDecorator('saas_info.password', {
                     validateTrigger: 'onBlur',
                     rules: [
                         {

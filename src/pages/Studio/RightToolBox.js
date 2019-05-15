@@ -181,6 +181,7 @@ export default class RightToolBox extends Component {
                 originFix.y = componentDetail.y;
             }
         });
+        const disabled = selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) > -1;
 
         return (
             <Fragment>
@@ -213,6 +214,7 @@ export default class RightToolBox extends Component {
                                 onChange={e => {
                                     this.handleXY(detail, 'x', e);
                                 }}
+                                disabled={disabled}
                             />
                         </Col>
                         <Col span={12}>
@@ -223,6 +225,7 @@ export default class RightToolBox extends Component {
                                 onChange={e => {
                                     this.handleXY(detail, 'y', e);
                                 }}
+                                disabled={disabled}
                             />
                         </Col>
                     </Row>
@@ -231,20 +234,30 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{ width: 100 }}
                                 addonAfter={<span>宽</span>}
-                                value={Math.round((detail.width * detail.scaleX) / zoomScale)}
+                                value={
+                                    detail.scaleX
+                                        ? Math.round((detail.width * detail.scaleX) / zoomScale)
+                                        : ''
+                                }
                                 onChange={e => {
                                     this.handleWidth(detail, e);
                                 }}
+                                disabled={disabled}
                             />
                         </Col>
                         <Col span={12}>
                             <Input
                                 style={{ width: 100 }}
                                 addonAfter={<span>高</span>}
-                                value={Math.round((detail.height * detail.scaleY) / zoomScale)}
+                                value={
+                                    detail.scaleY
+                                        ? Math.round((detail.height * detail.scaleY) / zoomScale)
+                                        : ''
+                                }
                                 onChange={e => {
                                     this.handleHeight(detail, e);
                                 }}
+                                disabled={disabled}
                             />
                         </Col>
                     </Row>
@@ -511,7 +524,7 @@ export default class RightToolBox extends Component {
                                     }}
                                 >
                                     <Radio.Button style={{ width: '25%' }} value="opacity">
-                                        透
+                                        无
                                     </Radio.Button>
                                     <Radio.Button style={{ width: '25%' }} value="black">
                                         黑
@@ -797,7 +810,7 @@ export default class RightToolBox extends Component {
                                     }}
                                 >
                                     <Radio.Button style={{ width: '25%' }} value="opacity">
-                                        透
+                                        无
                                     </Radio.Button>
                                     <Radio.Button style={{ width: '25%' }} value="black">
                                         黑

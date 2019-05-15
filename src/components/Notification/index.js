@@ -2,6 +2,10 @@ import React from 'react';
 import { Button, notification } from 'antd';
 import styles from './notification.less';
 
+notification.config({
+    top: 65,
+});
+
 export const Title = props => {
     const { title = '' } = props;
     return <div className={styles.title}>{title}</div>;

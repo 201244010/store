@@ -10,6 +10,7 @@ export const MENU_PREFIX = {
     ESL: '',
     ESL_ELECTRIC_LABEL: '/esl/electricLabel',
     ESL_BASE_STATION: '/esl/baseStation',
+    NOTIFICATION: '/notification',
     // PRODUCT: '/basicData/productManagement/list',
     PRODUCT: '/product/list',
     // MERCHANT: '/basicData/merchantManagement',
@@ -68,6 +69,10 @@ export const AVATA_IMG = {
         color: 'blue',
     },
     2: {
+        icon: 'info-circle',
+        color: '#faad14',
+    },
+    3: {
         icon: 'close-circle',
         color: 'red',
     },

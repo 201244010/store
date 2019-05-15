@@ -89,6 +89,7 @@ class ProductCU extends Component {
             form: { validateFields, setFields },
         } = this.props;
         validateFields(async (err, values) => {
+            // console.log(values);
             if (!err) {
                 const response = await submitFunction[action]({
                     options: {

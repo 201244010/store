@@ -33,6 +33,7 @@ import * as styles from './index.less';
         unbindESL: payload => dispatch({ type: 'eslElectricLabel/unbindESL', payload }),
         flashLed: payload => dispatch({ type: 'eslElectricLabel/flashLed', payload }),
         deleteESL: payload => dispatch({ type: 'eslElectricLabel/deleteESL', payload }),
+        refreshFailedImage: () => dispatch({ type: 'eslElectricLabel/refreshFailedImage' }),
     })
 )
 class ElectricLabel extends Component {
@@ -89,11 +90,16 @@ class ElectricLabel extends Component {
             unbindESL,
             flashLed,
             deleteESL,
+            refreshFailedImage,
         } = this.props;
 
         return (
             <div>
-                <Overview deviceOverview={deviceOverview} productOverview={productOverview} />
+                <Overview
+                    deviceOverview={deviceOverview}
+                    productOverview={productOverview}
+                    refreshFailedImage={refreshFailedImage}
+                />
                 <div className={styles['content-container']}>
                     <SearchForm
                         {...{

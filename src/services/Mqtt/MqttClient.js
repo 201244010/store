@@ -1,183 +1,136 @@
 import MQTT from 'mqtt';
-import { RECONNECT_LIMIT } from '@/constants';
 
 class MqttClient {
-    constructor(token, config = {}, category = 'store') {
-        const { address, ...rest } = token;
-
+    constructor(config) {
         this.client = null;
-        this.category = category;
-        this.address = address;
-        this.clientInfo = {
-            ...rest,
+
+        this.messages = {
+            id: 0,
         };
-        this.subscribeStack = [];
-        this.publishStack = [];
-        this.listenerStack = [];
-        this.reconnectTimes = 0;
 
         this.config = {
             qos: 0,
             ...config,
         };
 
-        this.messages = {
-            id: 0,
-        };
+        // this._subscribeStack = [];
+        // this._publishStack = [];
 
-        this.initial();
+        this.listenerStack = [];
+
+        this.reconnectTimes = 0;
+
+        this.connect = this.connect.bind(this);
+        this.subscribe = this.subscribe.bind(this);
+        this.publish = this.publish.bind(this);
+        this.destroy = this.destroy.bind(this);
+
+        this.registerMessageHandler = this.registerMessageHandler.bind(this);
+        this.registerTopicHandler = this.registerTopicHandler.bind(this);
+        this.registerErrorHandler = this.registerErrorHandler.bind(this);
     }
 
-    initial() {
-        this.client = MQTT.connect(
-            `ws://${this.address}`,
-            {
-                ...this.clientInfo,
-                clean: true,
-                path: '/mqtt',
-            }
-        );
-    }
+    connect({ address, username, password, clientId, path = '/mqtt' }) {
+        return new Promise((resolve, reject) => {
+            const client = MQTT.connect(
+                `ws://${address}`,
+                {
+                    clientId,
+                    username,
+                    password,
+                    path,
+                }
+            );
 
-    getClient() {
-        return {
-            client: this.client,
-            info: this.clientInfo,
-        };
-    }
-
-    connect() {
-        const { client, subscribeStack, publishStack } = this;
-
-        return new Promise(resolve => {
             client.on('connect', () => {
                 console.log('mqtt connect');
                 this.reconnectTimes = 0;
-
-                if (subscribeStack.length > 0) {
-                    subscribeStack.forEach(topic => {
-                        this.subscribe(topic);
-                    });
-                    subscribeStack.splice(0, subscribeStack.length);
-                    this.subscribeStack = subscribeStack;
-                }
-
-                if (publishStack.length > 0) {
-                    publishStack.forEach(itemStr => {
-                        const item = JSON.parse(itemStr);
-                        this.publish(item.topic, item.message);
-                    });
-                    publishStack.splice(0, publishStack.length);
-                    this.publishStack = publishStack;
-                }
-
-                resolve(true);
+                resolve(client);
             });
 
             client.on('reconnect', () => {
-                console.log('mqtt reconnect');
-                this.reconnectTimes += 1;
+                console.log('mqtt reconnect', this.reconnectTimes);
+                this.reconnectTimes = this.reconnectTimes + 1;
             });
 
             client.on('close', () => {
-                console.log('mqtt connection close. times: ', this.reconnectTimes);
-                if (this.reconnectTimes > RECONNECT_LIMIT) {
-                    // 重连10次终止
+                console.log('mqtt close');
+                if (this.reconnectTimes > 10) {
                     client.end(true);
-                    this.reconnectTimes = 0;
                 }
             });
 
+            client.on('error', () => {
+                console.log('mqtt error');
+            });
+
             client.on('end', () => {
-                console.log('mqtt connection end');
-                resolve(false);
+                console.log('mqtt end');
+                reject(client);
             });
 
             client.on('message', (topic, message) => {
-                console.log(
-                    'mqtt message received: topic: ',
-                    topic,
-                    ' - message: ',
-                    message.toString()
-                );
+                console.log('mqtt message', topic, message.toString());
             });
+
+            this.client = client;
         });
     }
 
     subscribe(topic) {
-        const { client, subscribeStack } = this;
-        if (client.connected) {
-            console.log(topic);
-            console.log('before subscribe, topic: ', topic);
-            client.subscribe(topic, this.config, err => {
-                if (err) {
-                    console.log(err);
-                }
-                console.log('topic: ', topic, ' is subscribed');
-            });
-        } else {
-            subscribeStack.push(topic);
-            this.subscribeStack = [...new Set(subscribeStack)];
-        }
+        const { client } = this;
+        const { config } = this;
+
+        client.subscribe(topic, config, () => {
+            console.log('subscribe', topic);
+        });
     }
 
     publish(topic, message) {
-        const {
-            client,
-            publishStack,
-            messages: { id },
-        } = this;
-        this.messages.id = id + 1;
+        const { messages } = this;
+        const { client } = this;
+        const { config } = this;
 
+        messages.id += 1;
         const msg = JSON.stringify({
-            msg_id: this.messages.id,
+            msg_id: messages.id,
             params: Array.isArray(message) ? [...message] : [message],
         });
 
-        if (client.connected) {
-            client.publish(topic, msg, this.config, err => {
-                if (err) {
-                    console.log(err);
-                }
-                console.log('publish', topic, msg);
-            });
-        } else {
-            publishStack.push(JSON.stringify({ topic, message }));
-            this.publishStack = [...new Set(publishStack)];
-        }
+        client.publish(topic, msg, config, () => {
+            console.log('publish', topic, msg);
+        });
     }
 
-    setMessageHandler(handler) {
+    registerTopicHandler(topic, topicHandler) {
         const { client } = this;
-        console.log('regist message handler');
-        if (client.on) {
-            // 若init请求失败，则无法被初始化client
-            client.on('message', handler);
-        }
+
+        client.on('message', (messageTopic, message) => {
+            if (messageTopic === topic) {
+                console.log(messageTopic, ': received.');
+                console.log('data: ', message.toString());
+                topicHandler(message);
+            }
+        });
     }
 
-    setTopicListener(target, handler) {
+    registerMessageHandler(messageHandler) {
         const { client } = this;
-        if (client.on) {
-            client.on('message', (topic, message) => {
-                if (topic === target) {
-                    handler(topic, message);
-                }
-            });
-        }
+        const { listenerStack } = this;
+
+        client.on('message', (topic, message) => {
+            messageHandler(topic, message, listenerStack);
+        });
     }
 
-    setErrorHandler(action) {
+    registerErrorHandler(errorHandler) {
         const { client } = this;
-        console.log('regist error handler');
-        if (client && client.on) {
-            client.on('error', action);
-        }
+
+        client.on('error', errorHandler);
     }
 
-    destroyClient() {
+    destroy() {
         const { client } = this;
-        console.log('close client');
         if (client) {
             client.end(true);
         }

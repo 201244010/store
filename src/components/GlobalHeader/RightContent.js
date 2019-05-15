@@ -9,6 +9,7 @@ import * as CookieUtil from '@/utils/cookies';
 import { formatTimeMessage } from '@/utils/utils';
 // import HeaderSearch from '../HeaderSearch';
 import HeaderDropdown from '../HeaderDropdown';
+import { MENU_PREFIX } from '@/constants';
 
 import styles from './index.less';
 
@@ -78,7 +79,7 @@ export default class GlobalHeaderRight extends PureComponent {
                 statusCode: 1,
             },
         });
-        window.open(`/notificationInfo?msgId=${msg_id}`);
+        window.open(`${MENU_PREFIX.NOTIFICATION}/info?msgId=${msg_id}`);
         // router.push(`/notificationInfo?msgId=${msg_id}`);
     };
 
@@ -211,7 +212,7 @@ export default class GlobalHeaderRight extends PureComponent {
                     onClear={onNoticeClear}
                     onPopupVisibleChange={onNoticeVisibleChange}
                     onViewMore={() => {
-                        window.open('/notificationCenter');
+                        window.open(`${MENU_PREFIX.NOTIFICATION}/center`);
                         // router.push('/notificationCenter');
                     }}
                     getNotificationList={getNotificationList}

@@ -27,6 +27,8 @@ export default {
     'esl.device.ap.delete.notice': '请确认是否删除基站？',
     'esl.device.ap.delete.success': '删除基站成功',
     'esl.device.ap.delete.fail': '删除基站失败',
+    'esl.device.ap.restart.notice': '确定要删除基站？',
+    'esl.device.ap.restart.loading': '基站正在重启，请稍等',
 
     'esl.device.ap.all': '共',
     'esl.device.ap.total': '个基站',
@@ -82,6 +84,10 @@ export default {
     'esl.device.esl.push.wait': '待推送',
     'esl.device.esl.push.success': '推送成功',
     'esl.device.esl.push.fail': '推送失败',
+
+    'esl.device.esl.week.fail': '近一周推送失败',
+    'esl.device.esl.push.all': '立即重推',
+    'esl.device.esl.push.all.success': '正在重推失败价签...',
 
     // 模板用
     'esl.device.template.new': '新建模板',

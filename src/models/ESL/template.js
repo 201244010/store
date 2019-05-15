@@ -106,7 +106,11 @@ export default {
             });
 
             const opts = Object.assign({}, pagination, searchFormValues, options);
-            const response = yield call(TemplateService.fetchTemplates, opts);
+            const response = yield call(TemplateService.fetchTemplates, {
+                ...opts,
+                page_num: opts.current,
+                page_size: opts.pageSize
+            });
             const result = response.data || {};
             yield put({
                 type: 'updateState',
@@ -131,11 +135,12 @@ export default {
             });
             const draft = {
                 encoding: 'UTF-8',
-                type: curTemplate.type,
+                type: curTemplate.model_name,
                 backgroundColor: '',
                 fillFields: bindFields,
                 layers: [],
                 layerCount: 0,
+                zoomScale: 1,
             };
             const layers = [];
             const originOffset = {};
@@ -237,7 +242,7 @@ export default {
                         curTemplate: response.data.template_info,
                     },
                 });
-                let { layers } = JSON.parse(response.data.template_info.studio_info) || {};
+                let { layers } = JSON.parse(response.data.template_info.studio_info || '{}') || {};
                 layers = layers || [];
                 const componentsDetail = {};
                 let hasImage = false;
@@ -358,11 +363,13 @@ export default {
                     type: 'updateState',
                     payload: { loading: false },
                 });
+                message.success('应用成功');
             } else {
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
                 });
+                message.error('应用成功');
             }
             return response;
         },

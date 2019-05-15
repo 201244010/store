@@ -57,15 +57,9 @@ class Studio extends Component {
         });
         const screenType = getLocationParam('screen');
         const { width, height, zoomScale } = MAPS.screen[screenType];
-        updateState({
-            zoomScale,
-            stage: {
-                width: stageWidth,
-                height: stageHeight,
-            },
-        });
+        let realZoomScale = zoomScale;
         if (response && response.code === ERROR_OK) {
-            const studioInfo = JSON.parse(response.data.template_info.studio_info);
+            const studioInfo = JSON.parse(response.data.template_info.studio_info || '{}');
             if (!studioInfo.layers || !studioInfo.layers.length) {
                 const type = SHAPE_TYPES.RECT_FIX;
                 addComponent({
@@ -84,8 +78,17 @@ class Studio extends Component {
                     rotation: 0,
                 });
                 this.updateSelectedShapeName('');
+            } else {
+                realZoomScale = studioInfo.layers[0].zoomScale;
             }
         }
+        updateState({
+            zoomScale: realZoomScale,
+            stage: {
+                width: stageWidth,
+                height: stageHeight,
+            },
+        });
         document.addEventListener('keydown', this.handleDeleteComponent);
     }
 
@@ -490,7 +493,7 @@ class Studio extends Component {
                     if (componentsDetail[key].type !== SHAPE_TYPES.RECT_FIX) {
                         lines = lines.concat(componentsDetail[key].lines);
                     }
-                } else {
+                } else if (componentsDetail[key].type !== SHAPE_TYPES.RECT_FIX) {
                     lines = lines.concat(
                         getNearLines(componentsDetail[selectedShapeName], componentsDetail[key])
                     );
@@ -568,7 +571,7 @@ class Studio extends Component {
                             ) : null}
                         </Stage>
                     </div>
-                    {selectedShapeName ? (
+                    {(selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1) ? (
                         <div className={styles['tool-box']}>
                             <RightToolBox
                                 {...{
