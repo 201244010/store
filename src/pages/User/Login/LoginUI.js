@@ -6,6 +6,7 @@ import { Tabs, Form, Button, Modal } from 'antd';
 import { encryption } from '@/utils/utils';
 import Storage from '@konata9/storage.js';
 import AccountLogin from './AccountLogin';
+import AccountLoginLocal from './AccountLoginLocal';
 import MobileLogin from './MobileLogin';
 import RegisterModal from '@/pages/User/Register/RegisterModal';
 import ResetModal from '@/pages/User/ResetPassword/ResetModal';
@@ -13,6 +14,7 @@ import * as CookieUtil from '@/utils/cookies';
 import * as Regexp from '@/constants/regexp';
 import { ERROR_OK, ALERT_NOTICE_MAP, USER_NOT_EXIST } from '@/constants/errorCode';
 import { MENU_PREFIX, KEY } from '@/constants';
+import { env } from '@/config';
 import styles from './Login.less';
 
 const VALIDATE_FIELDS = {
@@ -145,17 +147,21 @@ class Login extends Component {
         if (response && response.code === ERROR_OK) {
             const checkUserName =
                 currentTab === 'tabAccount' ? getFieldValue('username') : getFieldValue('phone');
-            const result = await checkUser({ options: { username: checkUserName } });
-            if (result && result.code === ERROR_OK) {
-                const {
-                    location: { origin },
-                } = window;
-                const data = result.data || {};
-                if (data.needMerge) {
-                    this.showAccountMergeModal(`${data.url}&from=${origin}/user/login`);
-                } else {
-                    this.checkCompanyList();
+            if (env !== 'local') {
+                const result = await checkUser({ options: { username: checkUserName } });
+                if (result && result.code === ERROR_OK) {
+                    const {
+                        location: { origin },
+                    } = window;
+                    const data = result.data || {};
+                    if (data.needMerge) {
+                        this.showAccountMergeModal(`${data.url}&from=${origin}/user/login`);
+                    } else {
+                        this.checkCompanyList();
+                    }
                 }
+            } else {
+                this.checkCompanyList();
             }
         } else if (response.code === USER_NOT_EXIST) {
             const checkUserName =
@@ -260,7 +266,7 @@ class Login extends Component {
                     <Tabs
                         animated={false}
                         defaultActiveKey="tabAccount"
-                        tabBarGutter={currentLanguage === 'zh-CN' ? 64 : 0}
+                        tabBarGutter={currentLanguage === 'zh-CN' && env !== 'local' ? 64 : 0}
                         tabBarStyle={tabBarStyle}
                         onChange={this.onTabChange}
                     >
@@ -269,17 +275,26 @@ class Login extends Component {
                             key="tabAccount"
                             style={{ padding: '0 2px' }}
                         >
-                            <AccountLogin
-                                {...{
-                                    form,
-                                    getImageCode,
-                                    imgCode,
-                                    notice,
-                                    errorTimes,
-                                }}
-                            />
+                            {env !== 'local' ? (
+                                <AccountLogin
+                                    {...{
+                                        form,
+                                        getImageCode,
+                                        imgCode,
+                                        notice,
+                                        errorTimes,
+                                    }}
+                                />
+                            ) : (
+                                <AccountLoginLocal
+                                    {...{
+                                        form,
+                                        notice,
+                                    }}
+                                />
+                            )}
                         </Tabs.TabPane>
-                        {currentLanguage === 'zh-CN' && (
+                        {currentLanguage === 'zh-CN' && env !== 'local' && (
                             <Tabs.TabPane
                                 tab={formatMessage({ id: 'login.useMobile' })}
                                 key="tabMobile"
