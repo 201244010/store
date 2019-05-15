@@ -157,7 +157,6 @@ export default {
         },
 
         *restartBaseStation({ payload }, { put, call }) {
-            // TODO 等待后端逻辑
             const { options } = payload;
             yield put({
                 type: 'updateState',

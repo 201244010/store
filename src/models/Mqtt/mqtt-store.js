@@ -37,7 +37,9 @@ export default {
             const { server_address: address } = token;
             const clientId = `${currentCompanyId}_${id}_${moment().format('X')}`;
 
-            yield put.resolve({
+            console.log(token);
+
+            yield put({
                 type: 'updateInfo',
                 payload: {
                     clientId,
@@ -46,7 +48,7 @@ export default {
                 },
             });
 
-            yield put.resolve({
+            yield put({
                 type: 'connect',
             });
         },

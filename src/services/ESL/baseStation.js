@@ -39,10 +39,9 @@ export const deleteBaseStation = options => {
 };
 
 export const restartBaseStation = options => {
-    // TODO 等待后端逻辑
     const opts = {
         method: 'POST',
         body: { ...options },
     };
-    return fetchApi('restart', opts).then(response => response.json());
+    return fetchApi('reboot', opts).then(response => response.json());
 };

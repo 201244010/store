@@ -62,9 +62,18 @@ class MqttModel {
                 {
                     payload: { topic, message },
                 },
-                { call }
+                { call, select }
             ) {
-                yield call(me.client.publish, topic, message);
+                const { currentCompanyId } = yield select(state => state.merchant);
+                const sendMessage = {
+                    ...message,
+                    param: {
+                        ...message.param,
+                        company_id: currentCompanyId,
+                    },
+                };
+
+                yield call(me.client.publish, topic, sendMessage);
             },
 
             *destroy(_, { call }) {
