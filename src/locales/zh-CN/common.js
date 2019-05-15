@@ -25,6 +25,7 @@ export default {
     'btn.import': '导入',
     'btn.multi.edit': '批量修改',
     'btn.select': '选择',
+    'btn.restart': '重启',
 
     'btn.erp.import': '对接ERP',
     'btn.erp.import.manage': '对接ERP管理',
@@ -50,6 +51,8 @@ export default {
     'list.action.bind': '绑定',
     'list.action.push.again': '重推',
     'list.action.more': '更多',
+    'list.action.apply': '应用',
+    'list.action.restart': '重启',
 
     'pagination.total.prefix': '共',
 
