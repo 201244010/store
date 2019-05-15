@@ -516,7 +516,7 @@ export default class RightToolBox extends Component {
                                     }}
                                 >
                                     <Radio.Button style={{ width: '25%' }} value="opacity">
-                                        透
+                                        无
                                     </Radio.Button>
                                     <Radio.Button style={{ width: '25%' }} value="black">
                                         黑
@@ -802,7 +802,7 @@ export default class RightToolBox extends Component {
                                     }}
                                 >
                                     <Radio.Button style={{ width: '25%' }} value="opacity">
-                                        透
+                                        无
                                     </Radio.Button>
                                     <Radio.Button style={{ width: '25%' }} value="black">
                                         黑

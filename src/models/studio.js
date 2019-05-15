@@ -32,16 +32,14 @@ export default {
             let maxIndex = 0;
             let name = preName;
 
-            if (!name) {
-                Object.keys(componentsDetail).forEach(key => {
-                    const index = parseInt(key.replace(/[^0-9]/gi, ''), 10);
-                    if (index >= maxIndex) {
-                        maxIndex = index;
-                    }
-                });
-                name = `${type}${maxIndex + 1}`;
-            }
-
+            Object.keys(componentsDetail).forEach(key => {
+                const index = parseInt(key.replace(/[^0-9]/gi, ''), 10);
+                if (index >= maxIndex) {
+                    maxIndex = index;
+                }
+            });
+            name = `${type}${maxIndex + 1}`;
+            const { scaleX, scaleY } = action.payload;
             return {
                 ...state,
                 selectedShapeName: name,
@@ -55,17 +53,17 @@ export default {
                         lines: [
                             [x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
                             [
-                                x + MAPS.width[type] * state.zoomScale,
+                                x + MAPS.width[type] * scaleX * state.zoomScale,
                                 0,
-                                x + MAPS.width[type] * state.zoomScale,
+                                x + MAPS.width[type] * scaleX * state.zoomScale,
                                 SIZES.DEFAULT_MAX_CANVAS_LENGTH,
                             ],
                             [0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
                             [
                                 0,
-                                y + MAPS.height[type] * state.zoomScale,
+                                y + MAPS.height[type] * scaleY * state.zoomScale,
                                 SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-                                y + MAPS.height[type] * state.zoomScale,
+                                y + MAPS.height[type] * scaleY * state.zoomScale,
                             ],
                         ],
                     },

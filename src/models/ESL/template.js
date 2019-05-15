@@ -106,7 +106,11 @@ export default {
             });
 
             const opts = Object.assign({}, pagination, searchFormValues, options);
-            const response = yield call(TemplateService.fetchTemplates, opts);
+            const response = yield call(TemplateService.fetchTemplates, {
+                ...opts,
+                page_num: opts.current,
+                page_size: opts.pageSize
+            });
             const result = response.data || {};
             yield put({
                 type: 'updateState',
@@ -136,6 +140,7 @@ export default {
                 fillFields: bindFields,
                 layers: [],
                 layerCount: 0,
+                zoomScale: 1,
             };
             const layers = [];
             const originOffset = {};
