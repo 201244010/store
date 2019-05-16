@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Col, Icon, Input, Row, Switch, Select, Radio, Slider, InputNumber } from 'antd';
+import { Col, Icon, Input, Row, Select, Radio, Slider, InputNumber } from 'antd';
 import { SHAPE_TYPES, SIZES, MAPS } from '@/constants/studio';
 import * as styles from './index.less';
 
@@ -552,12 +552,16 @@ export default class RightToolBox extends Component {
                                 </Radio.Group>
                             </Col>
                         </Row>
-                        <Row style={{ marginBottom: 10 }} gutter={40}>
-                            <Col span={16}>自动对齐宽度</Col>
-                            <Col span={8}>
-                                <Switch defaultChecked />
-                            </Col>
-                        </Row>
+                        {
+                            /*
+                            <Row style={{ marginBottom: 10 }} gutter={40}>
+                                <Col span={16}>自动对齐宽度</Col>
+                                <Col span={8}>
+                                    <Switch defaultChecked />
+                                </Col>
+                            </Row>
+                            */
+                        }
                     </div>
                 ) : null}
                 {menuMap.isLine ? (
