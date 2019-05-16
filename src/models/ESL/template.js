@@ -158,7 +158,7 @@ export default {
                 Object.keys(componentDetail).map(detailKey => {
                     componentDetail.content = componentDetail.bindField
                         ? `{{${componentDetail.bindField}}}`
-                        : '';
+                        : componentDetail.text;
                     if (['height', 'width'].includes(detailKey)) {
                         const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
                         const scale = {

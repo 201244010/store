@@ -196,6 +196,7 @@ export default class RightToolBox extends Component {
                                 this.handleDetail('bindField', value);
                             }}
                         >
+                            <Option key='' value=''>不绑定</Option>
                             {bindFields.map(field => (
                                 <Option key={field} value={field}>
                                     {field}
