@@ -58,8 +58,9 @@ class NotificationCenter extends Component {
     };
 
     onChange = async e => {
-        const { getNotificationList, updateSearchValue } = this.props;
+        const { getNotificationList, updateSearchValue, notification: { searchFormValues } } = this.props;
         await updateSearchValue({
+            ...searchFormValues,
             statusCode: e.target.checked ? 0 : -1,
         });
         await getNotificationList();
@@ -139,6 +140,7 @@ class NotificationCenter extends Component {
                 dataIndex: 'model_name',
                 filterIcon: () => <Icon type="filter" style={{ left: '60px' }} />,
                 filters: filterList,
+                // onFilter: (value) => this.handleFilterChange(value),
                 onFilter: (value, record) => record.model_name.indexOf(value) === 0,
             },
         ];
