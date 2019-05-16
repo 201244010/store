@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>icon/关闭</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/关闭" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Close" fill="#F5F7FA">
+            <circle id="Oval" cx="12" cy="12" r="12"></circle>
+        </g>
+        <g id="分组" transform="translate(8.000000, 8.000000)" stroke="#A1A7B3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+            <path d="M9.50350909e-14,0 L8,8" id="路径-2"></path>
+            <path d="M7.99360578e-14,1.77635684e-15 L8,8" id="路径-2" transform="translate(4.000000, 4.000000) rotate(90.000000) translate(-4.000000, -4.000000) "></path>
+        </g>
+    </g>
+</svg>
