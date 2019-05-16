@@ -71,6 +71,8 @@ export default {
 	'menu.faceidLibrary.list': '人脸库列表',
 	'menu.faceidLibrary.faceidLibraryList': '人脸库列表',
 	'menu.devices.ipcManagement':'摄像头设置',
-    'menu.notificationCenter': '消息中心',
-    'menu.notificationInfo': '消息详情',
+
+	'menu.notification': '系统消息',
+	'menu.notificationCenter': '消息中心',
+	'menu.notificationInfo': '消息详情',
 };
