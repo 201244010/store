@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Checkbox, Table, Button } from 'antd';
+import { Checkbox, Table, Button, Icon } from 'antd';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import router from 'umi/router';
@@ -23,7 +23,7 @@ import styles from './Notification.less';
         deleteNotification: payload =>
             dispatch({ type: 'notification/deleteNotification', payload }),
         clearSearchValue: () => dispatch({ type: 'notification/clearSearchValue' }),
-    })
+    }),
 )
 class NotificationCenter extends Component {
     constructor(props) {
@@ -108,7 +108,7 @@ class NotificationCenter extends Component {
             },
         } = this.props;
         const filterList = modelList.map(item =>
-            Object.assign({}, { text: item.model_name, value: item.model_name })
+            Object.assign({}, { text: item.model_name, value: item.model_name }),
         );
         const columns = [
             {
@@ -120,9 +120,11 @@ class NotificationCenter extends Component {
                         className={styles['title-content']}
                     >
                         {record.receive_status ? (
-                            <span className={styles.read}>{record.title}</span>
+                            <span key={record.mes_id} className={styles.read}>{record.title}</span>
                         ) : (
-                            [<i />, <span className={styles.unread}>{record.title}</span>]
+                            <div key={record.msg_id}>
+                                <i /><span className={styles.unread}>{record.title}</span>
+                            </div>
                         )}
                     </div>
                 ),
@@ -135,6 +137,7 @@ class NotificationCenter extends Component {
             {
                 title: formatMessage({ id: 'notification.type' }),
                 dataIndex: 'model_name',
+                filterIcon: () => <Icon type="filter" style={{ left: '60px' }} />,
                 filters: filterList,
                 onFilter: (value, record) => record.model_name.indexOf(value) === 0,
             },
