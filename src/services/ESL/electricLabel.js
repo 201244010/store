@@ -84,5 +84,5 @@ export const refreshFailedImage = () => {
         method: 'POST',
         body: {},
     };
-    return fetchApi('refreshFailedImage', opts).then(response => response.json());
+    return fetchApi('repushFailedImage', opts).then(response => response.json());
 };
