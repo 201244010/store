@@ -9,9 +9,14 @@ const formatBreadcrumbs = (breadcrumbs, prefix = 'menu') =>
         .slice(1)
         .map(breadcrumb => {
             const formattedBread = { ...breadcrumb };
+            const {
+                match: { path },
+            } = breadcrumb;
             const menuId = breadcrumb.key.slice(1).replace(/\//g, '.');
+            const formattedPath = path.slice(1).replace(/\//g, '.');
             const pathName = formatMessage({ id: `${prefix}.${menuId}` });
-            formattedBread.pathName = pathName === '__blank__' ? null : pathName;
+
+            formattedBread.pathName = pathName === `${prefix}.${formattedPath}` ? null : pathName;
             return formattedBread;
         })
         .filter(breadcrumb => !!breadcrumb.pathName);

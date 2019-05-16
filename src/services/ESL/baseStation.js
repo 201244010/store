@@ -37,3 +37,11 @@ export const deleteBaseStation = options => {
 
     return fetchApi('delete', opts).then(response => response.json());
 };
+
+export const restartBaseStation = options => {
+    const opts = {
+        method: 'POST',
+        body: { ...options },
+    };
+    return fetchApi('reboot', opts).then(response => response.json());
+};

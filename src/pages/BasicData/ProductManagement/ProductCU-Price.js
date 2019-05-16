@@ -8,7 +8,7 @@ const ProductCUPrice = props => {
     const {
         // form = {},
         form: { getFieldDecorator },
-        productInfo: { price, promote_price, member_price },
+        productInfo: { price = -1, promote_price = -1, member_price = -1 },
         // productPriceExtra,
         // remove,
     } = props;
@@ -19,7 +19,8 @@ const ProductCUPrice = props => {
                 <Col span={12}>
                     <Form.Item label={formatMessage({ id: 'basicData.product.price' })}>
                         {getFieldDecorator('price', {
-                            initialValue: price >= 0 ? parseFloat(price).toFixed(2) : '',
+                            initialValue:
+                                parseInt(price, 10) < 0 ? null : parseFloat(price).toFixed(2),
                             validateTrigger: 'onBlur',
                             rules: [
                                 {
@@ -44,7 +45,9 @@ const ProductCUPrice = props => {
                     <Form.Item label={formatMessage({ id: 'basicData.product.promote_price' })}>
                         {getFieldDecorator('promote_price', {
                             initialValue:
-                                promote_price >= 0 ? parseFloat(promote_price).toFixed(2) : '',
+                                parseInt(promote_price, 10) < 0
+                                    ? null
+                                    : parseFloat(promote_price).toFixed(2),
                             validateTrigger: 'onBlur',
                             rules: [
                                 {
@@ -67,7 +70,9 @@ const ProductCUPrice = props => {
                     <Form.Item label={formatMessage({ id: 'basicData.product.member_price' })}>
                         {getFieldDecorator('member_price', {
                             initialValue:
-                                member_price >= 0 ? parseFloat(member_price).toFixed(2) : '',
+                                parseInt(member_price, 10) < 0
+                                    ? null
+                                    : parseFloat(member_price).toFixed(2),
                             validateTrigger: 'onBlur',
                             rules: [
                                 {

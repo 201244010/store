@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button, Row, Col } from 'antd';
+import { Form, Button, Row, Col, Card } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
@@ -89,6 +89,7 @@ class ProductCU extends Component {
             form: { validateFields, setFields },
         } = this.props;
         validateFields(async (err, values) => {
+            // console.log(values);
             if (!err) {
                 const response = await submitFunction[action]({
                     options: {
@@ -129,7 +130,7 @@ class ProductCU extends Component {
         const action = getLocationParam('action');
 
         return (
-            <div className={styles['content-container']}>
+            <Card className={styles['content-container']}>
                 <Form
                     {...{
                         ...FORM_FORMAT,
@@ -154,22 +155,24 @@ class ProductCU extends Component {
                         }}
                     />
 
-                    <Row>
-                        <Col span={12}>
-                            <Form.Item label=" " colon={false}>
-                                <Button type="primary" onClick={this.onSubmit}>
-                                    {action === 'create'
-                                        ? formatMessage({ id: 'btn.create' })
-                                        : formatMessage({ id: 'btn.save' })}
-                                </Button>
-                                <Button style={{ marginLeft: '20px' }} onClick={this.goBack}>
-                                    {formatMessage({ id: 'btn.cancel' })}
-                                </Button>
-                            </Form.Item>
-                        </Col>
-                    </Row>
+                    <Card title={null} bordered={false}>
+                        <Row>
+                            <Col span={12}>
+                                <Form.Item label=" " colon={false}>
+                                    <Button type="primary" onClick={this.onSubmit}>
+                                        {action === 'create'
+                                            ? formatMessage({ id: 'btn.create' })
+                                            : formatMessage({ id: 'btn.save' })}
+                                    </Button>
+                                    <Button style={{ marginLeft: '20px' }} onClick={this.goBack}>
+                                        {formatMessage({ id: 'btn.cancel' })}
+                                    </Button>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </Card>
                 </Form>
-            </div>
+            </Card>
         );
     }
 }

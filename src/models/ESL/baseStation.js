@@ -3,7 +3,6 @@ import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
-import { hideSinglePageCheck } from '@/utils/utils';
 
 export default {
     namespace: 'eslBaseStation',
@@ -89,7 +88,6 @@ export default {
                         current: opts.current,
                         pageSize: opts.pageSize,
                         total: Number(result.total_count) || 0,
-                        hideOnSinglePage: hideSinglePageCheck(result.total_count),
                     },
                 },
             });
@@ -156,6 +154,28 @@ export default {
                     payload: { loading: false },
                 });
             }
+        },
+
+        *restartBaseStation({ payload }, { put, call }) {
+            const { options } = payload;
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(Actions.restartBaseStation, options);
+            if (response.code === ERROR_OK) {
+                message.success(formatMessage({ id: 'esl.device.ap.restart.loading' }));
+                yield put({
+                    type: 'fetchBaseStations',
+                    payload: { options: {} },
+                });
+            }
+
+            yield put({
+                type: 'updateState',
+                payload: { loading: false },
+            });
         },
     },
     reducers: {

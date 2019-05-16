@@ -93,6 +93,14 @@ const productPrice = (rule, value, callback) => {
     }
 };
 
+const otherPrice = (rule, value, callback) => {
+    if (value && !RegExp.productPrice.test(value)) {
+        callback(formatMessage({ id: 'product.price.isFormatted' }));
+    } else {
+        callback();
+    }
+};
+
 const validatorList = {
     password: passwordValidate,
     confirm: confirmValidate,
@@ -101,8 +109,8 @@ const validatorList = {
     bar_code: productBarCode,
     expire_time: expireTime,
     price: productPrice,
-    promote_price: productPrice,
-    member_price: productPrice,
+    promote_price: otherPrice,
+    member_price: otherPrice,
     telephone: phoneValidate,
 };
 

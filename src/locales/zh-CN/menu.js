@@ -1,8 +1,7 @@
 export default {
     'menu.dashBoard': '工作台',
 
-    'menu.account': '__blank__',
-    'menu.account.center': '个人中心',
+    'menu.account': '个人中心',
     'menu.account.logout': '退出登录',
 
     'menu.serviceApplication': '服务应用',
@@ -59,4 +58,8 @@ export default {
     'menu.basicData.storeManagement.alterStore': '修改门店',
     'menu.basicData.storeManagement.createStore': '新建门店',
     'menu.basicData.storeManagement.storeInformation': '查看门店',
+
+    'menu.notification': '系统消息',
+    'menu.notification.center': '消息中心',
+    'menu.notification.info': '消息详情',
 };

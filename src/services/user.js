@@ -84,3 +84,8 @@ export const checkUserExist = (options = {}) => {
     const opts = { body: { ...options } };
     return fetchApi('isUserExist', opts).then(response => response.json());
 };
+
+export const createEmqToken = () => {
+    const opts = { body: { source: 'WEB' } };
+    return fetchApi('createEmqToken', opts).then(response => response.json());
+};

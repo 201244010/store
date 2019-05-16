@@ -120,6 +120,7 @@ const MerchantInfo = props => {
     dispatch => ({
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
         companyCreate: payload => dispatch({ type: 'merchant/companyCreate', payload }),
+        setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
     })
 )
 @Form.create()
@@ -159,7 +160,9 @@ class StoreRelate extends Component {
     };
 
     enterSystem = company => {
+        const { setCurrentCompany } = this.props;
         CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, company.company_id);
+        setCurrentCompany({ companyId: company.company_id });
         this.checkStoreExist();
     };
 

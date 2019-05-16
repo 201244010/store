@@ -25,7 +25,7 @@ class MerchantView extends Component {
     goNext = target => {
         const path = {
             update: `${MENU_PREFIX.MERCHANT}/modify`,
-            cancel: '/account/center',
+            cancel: '/account',
         };
         router.push(path[target] || '/');
     };

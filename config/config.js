@@ -51,7 +51,7 @@ export default {
                 { path: '/user/login', component: './User/Login/LoginUI' },
                 { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelateUI' },
                 { path: '/user/merchantCreate', component: './User/StoreRelate/StoreRelateUI' },
-                { path: '/user/*', redirect: '/user/login' },
+                { path: '/user/*', component: '404' },
             ],
         },
         // {
@@ -75,25 +75,43 @@ export default {
         //     ],
         // },
         {
-            path: "/studio",
-            component: "../layouts/BlankLayout",
+            path: '/studio',
+            component: '../layouts/BlankLayout',
             routes: [
-                { path: "/studio", component: "./Studio" }
-            ]
+                { path: '/studio', component: './Studio' },
+            ],
         },
         {
             path: '/',
             component: '../layouts/BasicLayout',
+            Routes: ['/src/components/AuthorithCheck'],
             routes: [
                 // { path: '/', redirect: '/deviceManagement' },
                 // TODO 万有集市 临时菜单 START
-                { path: '/', redirect: '/esl' },
+                {
+                    path: '/notification',
+                    routes: [
+                        {
+                            path: '/notification/center',
+                            name: 'notification',
+                            component: './NotificationCenter/NotificationCenter',
+                        },
+                        {
+                            path: '/notification/info',
+                            name: 'notification',
+                            component: './NotificationCenter/NotificationInfo',
+                        },
+                        {
+                            path: '/notification',
+                            redirect: '/notification/center',
+                        },
+                    ],
+                },
                 {
                     path: '/esl',
                     name: 'esl',
                     icon: 'blank',
                     routes: [
-                        { path: '/esl', redirect: '/esl/electricLabel' },
                         {
                             path: '/esl/electricLabel',
                             name: 'electricLabel',
@@ -104,6 +122,7 @@ export default {
                             name: 'baseStation',
                             component: './DeviceManagement/ESL/BaseStation',
                         },
+                        { path: '/esl', redirect: '/esl/electricLabel' },
                     ],
                 },
                 {
@@ -111,7 +130,6 @@ export default {
                     name: 'product',
                     icon: 'blank',
                     routes: [
-                        { path: '/product', redirect: '/product/list' },
                         {
                             path: '/product/list',
                             name: 'list',
@@ -142,6 +160,7 @@ export default {
                             hideInMenu: true,
                             component: './BasicData/ProductManagement/ERPImport',
                         },
+                        { path: '/product', redirect: '/product/list' },
                     ],
                 },
                 {
@@ -149,7 +168,6 @@ export default {
                     name: 'company',
                     icon: 'blank',
                     routes: [
-                        { path: '/company', redirect: '/company/merchantManagement' },
                         { path: '/company/merchantManagement', redirect: '/company/merchantManagement/view' },
                         {
                             path: '/company/merchantManagement/view',
@@ -184,25 +202,26 @@ export default {
                             hideInMenu: true,
                         },
                         {
-                            path: "/company/storeManagement/alterStore",
-                            component: "./StoreManagement/AlterStore.js",
-                            name: "storeManagement",
-                            hideInMenu: true
-                        }
-                    ]
+                            path: '/company/storeManagement/alterStore',
+                            component: './StoreManagement/CreateStore.js',
+                            name: 'storeManagement',
+                            hideInMenu: true,
+                        },
+                        { path: '/company', redirect: '/company/merchantManagement' },
+                    ],
                 },
                 {
-                    path: "/template",
-                    name: "template",
-                    icon: "blank",
+                    path: '/template',
+                    name: 'template',
+                    icon: 'blank',
                     routes: [
-                        { path: "/template", redirect: "/template/list" },
+                        { path: '/template', redirect: '/template/list' },
                         {
-                            path: "/template/list",
-                            name: "list",
-                            component: "./Template"
-                        }
-                    ]
+                            path: '/template/list',
+                            name: 'list',
+                            component: './Template',
+                        },
+                    ],
                 },
                 // TODO 万有集市 临时菜单 END
 
@@ -220,7 +239,6 @@ export default {
                     // TODO 万有集市临时用菜单隐藏
                     hideInMenu: true,
                     routes: [
-                        { path: '/deviceManagement', redirect: '/deviceManagement/esl' },
                         {
                             path: '/deviceManagement/esl',
                             name: 'esl',
@@ -236,6 +254,7 @@ export default {
                                     name: 'baseStation',
                                     component: './DeviceManagement/ESL/BaseStation',
                                 },
+                                { path: '/deviceManagement', redirect: '/deviceManagement/esl' },
                             ],
                         },
                     ],
@@ -246,7 +265,6 @@ export default {
                     icon: 'blank',
                     hideInMenu: true,
                     routes: [
-                        { path: '/basicData', redirect: '/basicData/productManagement' },
                         {
                             path: '/basicData/productManagement',
                             name: 'productManagement',
@@ -281,6 +299,7 @@ export default {
                                     hideInMenu: true,
                                     component: './BasicData/ProductManagement/ERPImport',
                                 },
+                                { path: '/basicData', redirect: '/basicData/productManagement' },
                             ],
                         },
                         {
@@ -298,7 +317,6 @@ export default {
                             path: '/basicData/storeManagement',
                             name: 'storeManagement',
                             routes: [
-                                { path: '/basicData/storeManagement', redirect: '/basicData/storeManagement/list' },
                                 {
                                     path: '/basicData/storeManagement/list',
                                     component: './StoreManagement/index.js',
@@ -320,6 +338,7 @@ export default {
                                     component: './StoreManagement/AlterStore.js',
                                     hideInMenu: true,
                                 },
+                                { path: '/basicData/storeManagement', redirect: '/basicData/storeManagement/list' },
                             ],
                         },
                     ],
@@ -337,11 +356,18 @@ export default {
                 //   ],
                 // },
                 {
-                    path: '/account/center',
-                    component: './Account/',
+                    path: '/account',
                     name: 'account',
                     hideInMenu: true,
+                    routes: [
+                        {
+                            path: '/account',
+                            component: './Account/',
+                        },
+                        { component: '404' },
+                    ],
                 },
+                { path: '/', redirect: '/esl' },
             ],
         },
     ],

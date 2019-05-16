@@ -20,22 +20,23 @@ import * as styles from './BaseStation.less';
             dispatch({ type: 'eslBaseStation/getBaseStationDetail', payload }),
         deleteBaseStation: payload =>
             dispatch({ type: 'eslBaseStation/deleteBaseStation', payload }),
+        restartBaseStation: payload =>
+            dispatch({ type: 'eslBaseStation/restartBaseStation', payload }),
     })
 )
 class BaseStation extends Component {
     componentDidMount() {
-        const { fetchBaseStationState, fetchBaseStations, changeSearchFormValue } = this.props;
-
-        changeSearchFormValue({
-            keyword: '',
-            status: -1,
-        });
-
+        const { fetchBaseStationState, fetchBaseStations } = this.props;
         fetchBaseStations({
             options: { current: 1 },
         });
 
         fetchBaseStationState();
+    }
+
+    componentWillUnmount() {
+        const { clearSearch } = this.props;
+        clearSearch();
     }
 
     render() {
@@ -44,6 +45,7 @@ class BaseStation extends Component {
             fetchBaseStations,
             getBaseStationDetail,
             deleteBaseStation,
+            restartBaseStation,
             changeSearchFormValue,
             clearSearch,
         } = this.props;
@@ -68,6 +70,7 @@ class BaseStation extends Component {
                         fetchBaseStations,
                         getBaseStationDetail,
                         deleteBaseStation,
+                        restartBaseStation,
                     }}
                 />
             </div>
