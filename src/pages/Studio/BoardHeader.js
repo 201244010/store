@@ -14,7 +14,26 @@ export default class BoardHeader extends Component {
         };
     }
 
-    toChangeName = () => {
+    componentDidMount() {
+        document.addEventListener('click', this.handleConfirm);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', this.handleConfirm);
+    }
+
+    handleConfirm = (e) => {
+        const { editing } = this.state;
+        if (editing) {
+            if (e.target.tagName.toUpperCase() !== 'INPUT') {
+                this.handleConfirmChangeName();
+            }
+        }
+    };
+
+    toChangeName = (e) => {
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
         const { templateInfo } = this.props;
 
         this.setState({
