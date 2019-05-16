@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Table, Switch, Divider, Modal, Button, Form, Input, Select } from 'antd';
+import { Table, Divider, Modal, Button, Form, Input, Select } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
+import { unixSecondToDate } from '@/utils/utils';
 import * as styles from './index.less';
 
 const { Option } = Select;
@@ -118,10 +119,6 @@ class SearchResult extends Component {
         } = this;
         const columns = [
             {
-                title: formatMessage({ id: 'esl.device.template.id' }),
-                dataIndex: 'id',
-            },
-            {
                 title: formatMessage({ id: 'esl.device.template.name' }),
                 dataIndex: 'name',
             },
@@ -134,26 +131,18 @@ class SearchResult extends Component {
                 dataIndex: 'colour_name',
             },
             {
+                title: formatMessage({ id: 'esl.device.template.esl.num' }),
+                dataIndex: 'esl_num',
+            },
+            {
                 title: formatMessage({ id: 'esl.device.esl.status' }),
                 dataIndex: 'status',
                 render: text => <span>{TEMPLATE_STATES[text]}</span>,
             },
             {
-                title: formatMessage({ id: 'esl.device.template.is.default' }),
-                dataIndex: 'is_default',
-                render: value => (
-                    <div>
-                        <Switch
-                            checked={value === 1}
-                            checkedChildren={formatMessage({
-                                id: 'esl.device.template.is.default.yes',
-                            })}
-                            unCheckedChildren={formatMessage({
-                                id: 'esl.device.template.is.default.no',
-                            })}
-                        />
-                    </div>
-                ),
+                title: formatMessage({ id: 'esl.device.template.last.modify.time' }),
+                dataIndex: 'modify_time',
+                render: text => <span>{unixSecondToDate(text)}</span>,
             },
             {
                 title: formatMessage({ id: 'list.action.title' }),
@@ -164,7 +153,7 @@ class SearchResult extends Component {
                             {formatMessage({ id: 'list.action.edit' })}
                         </a>
                         <Divider type="vertical" />
-                        {record.is_default === 1 ? (
+                        {record.is_default === 1 || record.esl_num > 1 ? (
                             <a href="javascript: void (0);" className={styles.disabled}>
                                 {formatMessage({ id: 'list.action.delete' })}
                             </a>
