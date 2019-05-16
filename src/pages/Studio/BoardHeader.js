@@ -1,4 +1,6 @@
 import React, { Component, Fragment } from 'react';
+import { message } from 'antd';
+import { formatMessage } from 'umi/locale';
 import ButtonIcon from './ButtonIcon';
 import ZoomIcon from './ZoomIcon';
 import { getLocationParam } from '@/utils/utils';
@@ -22,7 +24,7 @@ export default class BoardHeader extends Component {
         document.removeEventListener('click', this.handleConfirm);
     }
 
-    handleConfirm = (e) => {
+    handleConfirm = e => {
         const { editing } = this.state;
         if (editing) {
             if (e.target.tagName.toUpperCase() !== 'INPUT') {
@@ -31,7 +33,7 @@ export default class BoardHeader extends Component {
         }
     };
 
-    toChangeName = (e) => {
+    toChangeName = e => {
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
         const { templateInfo } = this.props;
@@ -54,6 +56,10 @@ export default class BoardHeader extends Component {
             props: { templateInfo, renameTemplate, fetchTemplateDetail },
             state: { templateName },
         } = this;
+        if (!templateName) {
+            message.warning(formatMessage({ id: 'alert.template.name.not.empty' }));
+            return;
+        }
         if (templateInfo.name !== templateName) {
             const response = await renameTemplate({
                 template_id: getLocationParam('id'),

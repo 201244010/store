@@ -10,6 +10,9 @@ export default {
     'alert.code.expired': '验证码已过期，请重新获取',
     'alert.vcode.error': '图形验证码错误，请重新输入',
     'alert.code.send.fast': '验证码发送太快，请稍作等待后再次发送',
+    'alert.template.name.used': '模板名字已存在',
+    'alert.template.name.not.empty': '模板名称不能为空',
+    'alert.template.bound.esl': '模板有绑定价签，不可删除',
 
     'alert.store.is.none': '您尚未创建门店，请先创建门店后再进行操作',
 
