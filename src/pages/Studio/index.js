@@ -43,6 +43,9 @@ class Studio extends Component {
         super(props);
         this.stageWidth = window.innerWidth - SIZES.TOOL_BOX_WIDTH * 2;
         this.stageHeight = window.innerHeight - SIZES.HEADER_HEIGHT;
+        this.state = {
+            dragging: false,
+        };
     }
 
     async componentDidMount() {
@@ -57,13 +60,7 @@ class Studio extends Component {
         });
         const screenType = getLocationParam('screen');
         const { width, height, zoomScale } = MAPS.screen[screenType];
-        updateState({
-            zoomScale,
-            stage: {
-                width: stageWidth,
-                height: stageHeight,
-            },
-        });
+        let realZoomScale = zoomScale;
         if (response && response.code === ERROR_OK) {
             const studioInfo = JSON.parse(response.data.template_info.studio_info || '{}');
             if (!studioInfo.layers || !studioInfo.layers.length) {
@@ -84,8 +81,17 @@ class Studio extends Component {
                     rotation: 0,
                 });
                 this.updateSelectedShapeName('');
+            } else {
+                realZoomScale = studioInfo.layers[0].zoomScale;
             }
         }
+        updateState({
+            zoomScale: realZoomScale,
+            stage: {
+                width: stageWidth,
+                height: stageHeight,
+            },
+        });
         document.addEventListener('keydown', this.handleDeleteComponent);
     }
 
@@ -146,8 +152,20 @@ class Studio extends Component {
         }
     };
 
+    handleStageShapeStart = () => {
+        this.setState({
+            dragging: true,
+        });
+    };
+
     handleStageShapeMove = e => {
         this.updateComponentsDetail(e.target);
+    };
+
+    handleStageShapeEnd = () => {
+        this.setState({
+            dragging: false,
+        });
     };
 
     handleShapeTransform = e => {
@@ -481,6 +499,7 @@ class Studio extends Component {
                 },
                 template: { bindFields, curTemplate },
             },
+            state: { dragging },
         } = this;
 
         let lines = [];
@@ -522,7 +541,9 @@ class Studio extends Component {
                             width={stageWidth}
                             height={stageHeight}
                             onMouseDown={this.handleStageMouseDown}
+                            onDragStart={this.handleStageShapeStart}
                             onDragMove={this.handleStageShapeMove}
+                            onDragEnd={this.handleStageShapeEnd}
                             onTransform={this.handleShapeTransform}
                             onContextMenu={this.handleContextMenu}
                             onWheel={this.handleWheel}
@@ -547,13 +568,13 @@ class Studio extends Component {
                                     }
                                     return undefined;
                                 })}
-                                {selectedShapeName &&
-                                componentsDetail[selectedShapeName].type !==
-                                    SHAPE_TYPES.RECT_FIX ? (
-                                        <MTransformer selectedShapeName={selectedShapeName} />
+                                {!dragging &&
+                                selectedShapeName &&
+                                componentsDetail[selectedShapeName].type !== SHAPE_TYPES.RECT_FIX ? (
+                                    <MTransformer selectedShapeName={selectedShapeName} />
                                 ) : null}
                             </Layer>
-                            {lines && !showRightToolBox ? (
+                            {dragging && lines && !showRightToolBox ? (
                                 <Layer x={0} y={0} width={stageWidth} height={stageHeight}>
                                     {lines.map((line, index) => (
                                         <Line
@@ -568,7 +589,7 @@ class Studio extends Component {
                             ) : null}
                         </Stage>
                     </div>
-                    {selectedShapeName ? (
+                    {selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1 ? (
                         <div className={styles['tool-box']}>
                             <RightToolBox
                                 {...{

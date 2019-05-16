@@ -328,6 +328,23 @@ export default {
                 });
             }
         },
+
+        *refreshFailedImage(_, { call, put }) {
+            yield put({
+                type: 'updateState',
+                payload: { loading: true },
+            });
+
+            const response = yield call(ESLServices.refreshFailedImage);
+            if (response.code === ERROR_OK) {
+                message.success(formatMessage({ id: 'esl.device.esl.push.all.success' }));
+            }
+
+            yield put({
+                type: 'updateState',
+                payload: { loading: false },
+            });
+        },
     },
     reducers: {
         updateState(state, action) {

@@ -39,14 +39,14 @@ export default {
     'esl.device.esl.search.info': '价签信息',
     'esl.device.esl.id': '价签ID',
     'esl.device.esl.sn': '价签SN',
-    'esl.device.esl.model.name': '价签型号',
+    'esl.device.esl.model.name': '型号',
     'esl.device.esl.product.seq.num': '商品编号',
     'esl.device.esl.product.name': '商品名称',
     'esl.device.esl.product.code': '条码',
     'esl.device.esl.template.name': '模板',
     'esl.device.esl.status': '推送状态',
     'esl.device.esl.push.time': '最后推送时间',
-    'esl.device.esl.battery': '价签电量',
+    'esl.device.esl.battery': '电量',
     'esl.device.esl.screen.size': '屏幕尺寸',
     'esl.device.esl.ware.version': '固件版本',
     'esl.device.esl.device.status': '设备状态',
@@ -84,6 +84,10 @@ export default {
     'esl.device.esl.push.wait': '待推送',
     'esl.device.esl.push.success': '推送成功',
     'esl.device.esl.push.fail': '推送失败',
+
+    'esl.device.esl.week.fail': '推送失败',
+    'esl.device.esl.push.all': '重推',
+    'esl.device.esl.push.all.success': '正在重推失败价签...',
 
     // 模板用
     'esl.device.template.new': '新建模板',

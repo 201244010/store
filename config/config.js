@@ -87,11 +87,11 @@ export default {
         //     ],
         // },
         {
-            path: "/studio",
-            component: "../layouts/BlankLayout",
+            path: '/studio',
+            component: '../layouts/BlankLayout',
             routes: [
-                { path: "/studio", component: "./Studio" }
-            ]
+                { path: '/studio', component: './Studio' },
+            ],
         },
         {
             path: '/',
@@ -101,12 +101,23 @@ export default {
                 // { path: '/', redirect: '/deviceManagement' },
                 // TODO 万有集市 临时菜单 START
                 {
-                    path: '/notificationCenter',
-                    component: './NotificationCenter/NotificationCenter',
-                },
-                {
-                    path: '/notificationInfo',
-                    component: './NotificationCenter/NotificationInfo',
+                    path: '/notification',
+                    routes: [
+                        {
+                            path: '/notification/center',
+                            name: 'notification',
+                            component: './NotificationCenter/NotificationCenter',
+                        },
+                        {
+                            path: '/notification/info',
+                            name: 'notification',
+                            component: './NotificationCenter/NotificationInfo',
+                        },
+                        {
+                            path: '/notification',
+                            redirect: '/notification/center',
+                        },
+                    ],
                 },
                 {
                     path: '/esl',
@@ -209,20 +220,20 @@ export default {
                             hideInMenu: true,
                         },
                         { path: '/company', redirect: '/company/merchantManagement' },
-                    ]
+                    ],
                 },
                 {
-                    path: "/template",
-                    name: "template",
-                    icon: "blank",
+                    path: '/template',
+                    name: 'template',
+                    icon: 'blank',
                     routes: [
-                        { path: "/template", redirect: "/template/list" },
+                        { path: '/template', redirect: '/template/list' },
                         {
-                            path: "/template/list",
-                            name: "list",
-                            component: "./Template"
-                        }
-                    ]
+                            path: '/template/list',
+                            name: 'list',
+                            component: './Template',
+                        },
+                    ],
                 },
                 // TODO 万有集市 临时菜单 END
 

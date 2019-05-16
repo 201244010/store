@@ -1,9 +1,10 @@
 import { message } from 'antd';
+import { formatMessage } from 'umi/locale';
 import { hideSinglePageCheck } from '@/utils/utils';
 import { getImagePromise } from '@/utils/studio';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import * as TemplateService from '@/services/ESL/template';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 import { IMAGE_TYPES, SHAPE_TYPES, BARCODE_TYPES, PRICE_TYPES } from '@/constants/studio';
 
 export default {
@@ -106,7 +107,11 @@ export default {
             });
 
             const opts = Object.assign({}, pagination, searchFormValues, options);
-            const response = yield call(TemplateService.fetchTemplates, opts);
+            const response = yield call(TemplateService.fetchTemplates, {
+                ...opts,
+                page_num: opts.current,
+                page_size: opts.pageSize,
+            });
             const result = response.data || {};
             yield put({
                 type: 'updateState',
@@ -131,11 +136,12 @@ export default {
             });
             const draft = {
                 encoding: 'UTF-8',
-                type: curTemplate.type,
+                type: curTemplate.model_name,
                 backgroundColor: '',
                 fillFields: bindFields,
                 layers: [],
                 layerCount: 0,
+                zoomScale: 1,
             };
             const layers = [];
             const originOffset = {};
@@ -152,7 +158,7 @@ export default {
                 Object.keys(componentDetail).map(detailKey => {
                     componentDetail.content = componentDetail.bindField
                         ? `{{${componentDetail.bindField}}}`
-                        : '';
+                        : componentDetail.text;
                     if (['height', 'width'].includes(detailKey)) {
                         const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
                         const scale = {
@@ -298,7 +304,11 @@ export default {
             }
             return response;
         },
-        *deleteTemplate({ payload = {} }, { call, put }) {
+        *deleteTemplate({ payload = {} }, { call, put, select }) {
+            const {
+                data,
+                pagination: { current },
+            } = yield select(state => state.template);
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -315,6 +325,7 @@ export default {
                         options: {
                             screen_type: -1,
                             colour: -1,
+                            current: data.length > 1 ? current : current - 1,
                         },
                     },
                 });
@@ -324,7 +335,11 @@ export default {
                     type: 'updateState',
                     payload: { loading: false },
                 });
-                message.error('删除失败');
+                if (ALERT_NOTICE_MAP[response.code]) {
+                    message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
+                } else {
+                    message.error('删除失败');
+                }
             }
             return response;
         },
@@ -344,6 +359,11 @@ export default {
                     type: 'updateState',
                     payload: { loading: false },
                 });
+                if (ALERT_NOTICE_MAP[response.code]) {
+                    message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
+                } else {
+                    message.error('修改模板名称失败');
+                }
             }
             return response;
         },
@@ -358,11 +378,13 @@ export default {
                     type: 'updateState',
                     payload: { loading: false },
                 });
+                message.success('应用成功');
             } else {
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
                 });
+                message.error('应用成功');
             }
             return response;
         },
