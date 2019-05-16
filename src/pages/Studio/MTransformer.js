@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Transformer } from 'react-konva';
 import { getTypeByName } from '@/utils/studio';
-import { SHAPE_TYPES } from '@/constants/studio';
+import { SHAPE_TYPES, IMAGE_TYPES } from '@/constants/studio';
 
 export default class MTransformer extends Component {
     componentDidMount() {
@@ -37,7 +37,7 @@ export default class MTransformer extends Component {
         const { selectedShapeName } = this.props;
         const type = getTypeByName(selectedShapeName);
 
-        if ([SHAPE_TYPES.IMAGE].includes(type)) {
+        if (IMAGE_TYPES.includes(type)) {
             return (
                 <Transformer
                     ref={node => {

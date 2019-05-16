@@ -28,7 +28,7 @@ class SearchResult extends Component {
                 current: pagination.current,
                 pageSize: pagination.pageSize,
                 screen_type: -1,
-                colour: -1
+                colour: -1,
             },
         });
     };
