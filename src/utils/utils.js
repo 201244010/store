@@ -115,7 +115,7 @@ const SYMBOL_BASE = [
     ':',
     ';',
     '"',
-    "'",
+    '\'',
     '<',
     '>',
     ',',
@@ -167,9 +167,9 @@ export const formatEmptyWithoutZero = (data, blank = '') => {
 export const unixSecondToDate = (second, formatStr = 'YYYY-MM-DD HH:mm:ss') =>
     moment.unix(second).isValid()
         ? moment
-              .unix(second)
-              .local()
-              .format(formatStr)
+            .unix(second)
+            .local()
+            .format(formatStr)
         : null;
 
 export const dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>
@@ -366,12 +366,12 @@ export const formatTimeMessage = datetime => {
         if (timeDiff < 3600) {
             currentTime = momentTime.fromNow();
         } else if (momentNow.isSame(momentTime, 'day')) {
-            currentTime = momentTime.format('a h:mm');
+            currentTime = momentTime.format('a hh:mm');
         } else {
-            currentTime = momentTime.format('MM/DD a h:mm');
+            currentTime = momentTime.format('MM/DD a hh:mm');
         }
     } else {
-        currentTime = momentTime.format('YY/MM/DD');
+        currentTime = momentTime.format('YYYY/MM/DD');
     }
 
     return currentTime;
