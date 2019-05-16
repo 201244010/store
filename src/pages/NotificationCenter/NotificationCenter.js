@@ -130,7 +130,7 @@ class NotificationCenter extends Component {
             {
                 title: formatMessage({ id: 'notification.receiveTime' }),
                 dataIndex: 'receive_time',
-                render: time => <div>{moment.unix(time).format('YYYY-MM-DD hh:mm:ss')}</div>,
+                render: time => <div>{moment.unix(time).format('YYYY-MM-DD HH:mm:ss')}</div>,
             },
             {
                 title: formatMessage({ id: 'notification.type' }),
