@@ -10,6 +10,8 @@ export const MOBILE_BINDED = 204;
 export const USER_EXIST = 1;
 export const USER_NOT_EXIST = 3603;
 export const USER_NOT_LOGIN = 5028;
+export const TEMPLATE_BOUND_ESL = 5340;
+export const TEMPLATE_NAME_USED = 5346;
 
 export const PRODUCT_SEQ_EXIST = 5051;
 
@@ -27,4 +29,6 @@ export const ALERT_NOTICE_MAP = {
     '201': 'alert.account.error',
     '208': 'alert.code.expired',
     '216': 'alert.mobile.existed',
+    [TEMPLATE_BOUND_ESL]: 'alert.template.bound.esl',
+    [TEMPLATE_NAME_USED]: 'alert.template.name.used',
 };

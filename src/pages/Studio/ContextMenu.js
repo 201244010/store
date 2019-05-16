@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SIZES } from '@/constants/studio';
+import { SHAPE_TYPES, SIZES } from '@/constants/studio';
 import * as styles from './index.less';
 
 export default class ContextMenu extends Component {
@@ -43,26 +43,44 @@ export default class ContextMenu extends Component {
 
     render() {
         const {
-            props: { position },
+            props: { position, selectedShapeName, copiedComponent },
         } = this;
+        const canCopyOrDelete =
+            selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
 
         return (
             <div
                 className={styles['right-tool-box']}
                 style={{ left: position.left, top: position.top }}
             >
-                <div className={styles['context-item']} onClick={this.handleCopy}>
-                    复制
-                </div>
-                <div className={styles['context-item']} onClick={this.handlePaste}>
-                    粘贴
-                </div>
-                <div
-                    className={`${styles['context-item']} ${styles['last-item']}`}
-                    onClick={this.handleDelete}
-                >
-                    删除
-                </div>
+                {canCopyOrDelete ? (
+                    <div className={styles['context-item']} onClick={this.handleCopy}>
+                        复制
+                    </div>
+                ) : (
+                    <div className={`${styles['context-item']} ${styles.disabled}`}>复制</div>
+                )}
+                {copiedComponent && copiedComponent.type ? (
+                    <div className={styles['context-item']} onClick={this.handlePaste}>
+                        粘贴
+                    </div>
+                ) : null}
+                {canCopyOrDelete ? (
+                    <div
+                        className={`${styles['context-item']} ${styles['last-item']}`}
+                        onClick={this.handleDelete}
+                    >
+                        删除
+                    </div>
+                ) : (
+                    <div
+                        className={`${styles['context-item']} ${styles['last-item']} ${
+                            styles.disabled
+                        }`}
+                    >
+                        删除
+                    </div>
+                )}
             </div>
         );
     }

@@ -210,7 +210,7 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{ width: 100 }}
                                 addonAfter={<span>X</span>}
-                                value={(detail.x - originFix.x).toFixed()}
+                                value={Math.round(detail.x - originFix.x)}
                                 onChange={e => {
                                     this.handleXY(detail, 'x', e);
                                 }}
@@ -221,7 +221,7 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{ width: 100 }}
                                 addonAfter={<span>Y</span>}
-                                value={(detail.y - originFix.y).toFixed()}
+                                value={Math.round(detail.y - originFix.y)}
                                 onChange={e => {
                                     this.handleXY(detail, 'y', e);
                                 }}
@@ -234,7 +234,11 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{ width: 100 }}
                                 addonAfter={<span>宽</span>}
-                                value={detail.scaleX ? Math.round((detail.width * detail.scaleX) / zoomScale) : ''}
+                                value={
+                                    detail.scaleX
+                                        ? Math.round((detail.width * detail.scaleX) / zoomScale)
+                                        : ''
+                                }
                                 onChange={e => {
                                     this.handleWidth(detail, e);
                                 }}
@@ -245,7 +249,11 @@ export default class RightToolBox extends Component {
                             <Input
                                 style={{ width: 100 }}
                                 addonAfter={<span>高</span>}
-                                value={detail.scaleY ? Math.round((detail.height * detail.scaleY) / zoomScale) : ''}
+                                value={
+                                    detail.scaleY
+                                        ? Math.round((detail.height * detail.scaleY) / zoomScale)
+                                        : ''
+                                }
                                 onChange={e => {
                                     this.handleHeight(detail, e);
                                 }}
@@ -552,16 +560,14 @@ export default class RightToolBox extends Component {
                                 </Radio.Group>
                             </Col>
                         </Row>
-                        {
-                            /*
+                        {/*
                             <Row style={{ marginBottom: 10 }} gutter={40}>
                                 <Col span={16}>自动对齐宽度</Col>
                                 <Col span={8}>
                                     <Switch defaultChecked />
                                 </Col>
                             </Row>
-                            */
-                        }
+                            */}
                     </div>
                 ) : null}
                 {menuMap.isLine ? (
