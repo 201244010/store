@@ -46,7 +46,7 @@ export default {
         },
     },
     effects: {
-        * getNotificationModels(_, { put, call }) {
+        *getNotificationModels(_, { put, call }) {
             yield switchLoadingStatus(true, put);
 
             const response = yield call(Actions.handleNotifiCation, 'getModelList');
@@ -65,7 +65,7 @@ export default {
             }
         },
 
-        * updateSearchValue({ payload }, { put }) {
+        *updateSearchValue({ payload }, { put }) {
             const { modelId = -1, statusCode = -1 } = payload;
             yield put({
                 type: 'updateState',
@@ -78,7 +78,7 @@ export default {
             });
         },
 
-        * getNotificationList({ payload = {} }, { put, call, select }) {
+        *getNotificationList({ payload = {} }, { put, call, select }) {
             yield switchLoadingStatus(true, put);
             const { pagination, searchFormValues } = yield select(state => state.notification);
             const options = {
@@ -121,7 +121,7 @@ export default {
             yield switchLoadingStatus(true, put);
         },
 
-        * getNotificationCount(_, { put, call }) {
+        *getNotificationCount(_, { put, call }) {
             yield switchLoadingStatus(true, put);
 
             const response = yield call(Actions.handleNotifiCation, 'mailbox/getMessageCount');
@@ -138,7 +138,7 @@ export default {
             yield switchLoadingStatus(false, put);
         },
 
-        * getNotificationInfo({ payload = {} }, { put, call }) {
+        *getNotificationInfo({ payload = {} }, { put, call }) {
             const { msgId: msg_id } = payload;
             const opts = {
                 msg_id,
@@ -181,7 +181,7 @@ export default {
             yield switchLoadingStatus(false, put);
         },
 
-        * createNotification(payload = {}, { put, call }) {
+        *createNotification(payload = {}, { put, call }) {
             yield switchLoadingStatus(true, put);
             const { modelId: model_id, level, title, description, content } = payload;
             const opts = {
@@ -198,7 +198,7 @@ export default {
             yield switchLoadingStatus(false, put);
         },
 
-        * deleteNotification({ payload = {} }, { put, call }) {
+        *deleteNotification({ payload = {} }, { put, call }) {
             yield switchLoadingStatus(true, put);
             const { msgIdList: msg_id_list } = payload;
             const response = yield call(Actions.handleNotifiCation, 'mailbox/deleteMessage', {
@@ -215,7 +215,7 @@ export default {
             yield switchLoadingStatus(false, put);
         },
 
-        * updateNotificationStatus({ payload = {} }, { put, call }) {
+        *updateNotificationStatus({ payload = {} }, { put, call }) {
             yield switchLoadingStatus(true, put);
             const { msgIdList: msg_id_list, statusCode: status_code } = payload;
             const response = yield call(Actions.handleNotifiCation, 'mailbox/updateReceiveStatus', {
@@ -232,7 +232,7 @@ export default {
             yield switchLoadingStatus(false, put);
         },
 
-        * clearSearchValue(_, { put }) {
+        *clearSearchValue(_, { put }) {
             yield put({
                 type: 'updateState',
                 payload: {

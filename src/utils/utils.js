@@ -115,7 +115,7 @@ const SYMBOL_BASE = [
     ':',
     ';',
     '"',
-    '\'',
+    "'",
     '<',
     '>',
     ',',
@@ -167,9 +167,9 @@ export const formatEmptyWithoutZero = (data, blank = '') => {
 export const unixSecondToDate = (second, formatStr = 'YYYY-MM-DD HH:mm:ss') =>
     moment.unix(second).isValid()
         ? moment
-            .unix(second)
-            .local()
-            .format(formatStr)
+              .unix(second)
+              .local()
+              .format(formatStr)
         : null;
 
 export const dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>

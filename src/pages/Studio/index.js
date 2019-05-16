@@ -570,8 +570,9 @@ class Studio extends Component {
                                 })}
                                 {!dragging &&
                                 selectedShapeName &&
-                                componentsDetail[selectedShapeName].type !== SHAPE_TYPES.RECT_FIX ? (
-                                    <MTransformer selectedShapeName={selectedShapeName} />
+                                componentsDetail[selectedShapeName].type !==
+                                    SHAPE_TYPES.RECT_FIX ? (
+                                        <MTransformer selectedShapeName={selectedShapeName} />
                                 ) : null}
                             </Layer>
                             {dragging && lines && !showRightToolBox ? (
