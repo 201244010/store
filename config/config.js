@@ -386,7 +386,7 @@ export default {
                 },
                 {
           path: '/live',
-          component: './ipc/Live/Live.js',
+          component: './IPC/Live/Live.js',
         },
         {
           path: '/devices',
@@ -396,12 +396,12 @@ export default {
             {
               path: '/devices/list',
               name: 'list',
-              component: './ipc/IPCList/IPCList.js',
+              component: './IPC/IPCList/IPCList.js',
             },
             {
               path: '/devices/motionMessage',
               name: 'motionMessage',
-              component: './ipc/MotionList/MotionList.js',
+              component: './IPC/MotionList/MotionList.js',
             },
             // component: './index.js'
             // component: './index.js'
@@ -414,7 +414,7 @@ export default {
             {
               path: '/devices/ipcManagement',
               // name: 'devices.camara',
-              component: './ipc/IPCManagement/IPCManagement.js',
+              component: './IPC/IPCManagement/IPCManagement.js',
             },
           ],
         },
@@ -427,12 +427,12 @@ export default {
             {
               path: '/faceidLibrary/faceidLibraryList',
               name: 'list',
-              component: './ipc/FaceidLibrary/LibraryList.js',
+              component: './IPC/FaceidLibrary/LibraryList.js',
             },
             {
               path: '/faceidLibrary/createLibrary',
               // name: 'faceidLibrary.create',
-              component: './ipc/FaceidLibrary/createLibrary.js',
+              component: './IPC/FaceidLibrary/createLibrary.js',
             },
           ],
         },
