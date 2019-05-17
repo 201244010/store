@@ -176,7 +176,7 @@ class SearchResult extends Component {
                     <Table
                         rowKey="id"
                         loading={loading}
-                        rowSelection={rowSelection}
+                        rowSelection={!isBind ? rowSelection : null}
                         columns={columns}
                         dataSource={data}
                         pagination={{
@@ -184,19 +184,19 @@ class SearchResult extends Component {
                             showTotal: total =>
                                 selectedRowKeys.length === 0
                                     ? `${formatMessage({
-                                          id: 'pagination.total.prefix',
-                                      })}${total}${formatMessage({
-                                          id: 'basicData.product.total',
-                                      })}`
+                                        id: 'pagination.total.prefix',
+                                    })}${total}${formatMessage({
+                                        id: 'basicData.product.total',
+                                    })}`
                                     : `${formatMessage({
-                                          id: 'pagination.total.prefix',
-                                      })}${total}${formatMessage({
-                                          id: 'basicData.product.total',
-                                      })}${formatMessage({ id: 'basicData.product.selected' })}${
-                                          selectedRowKeys.length
-                                      }${formatMessage({
-                                          id: 'basicData.product.pagination.unit',
-                                      })}`,
+                                        id: 'pagination.total.prefix',
+                                    })}${total}${formatMessage({
+                                        id: 'basicData.product.total',
+                                    })}${formatMessage({ id: 'basicData.product.selected' })}${
+                                        selectedRowKeys.length
+                                        }${formatMessage({
+                                        id: 'basicData.product.pagination.unit',
+                                    })}`,
                         }}
                         onChange={this.onTableChange}
                     />
