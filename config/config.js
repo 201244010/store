@@ -122,6 +122,11 @@ export default {
                             name: 'baseStation',
                             component: './DeviceManagement/ESL/BaseStation',
                         },
+                        {
+                            path: '/esl/deviceUpgrade',
+                            name: 'deviceUpgrade',
+                            component: './DeviceManagement/ESL/DeviceUpgrade',
+                        },
                         { path: '/esl', redirect: '/esl/electricLabel' },
                     ],
                 },

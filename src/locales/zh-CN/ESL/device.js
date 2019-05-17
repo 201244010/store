@@ -110,4 +110,12 @@ export default {
     'esl.device.template.name.require': '请输入模板名称',
     'esl.device.template.size.require': '请选择模板尺寸',
     'esl.device.template.color.require': '请选择模板颜色',
+
+    // 设备升级
+    'esl.device.upgrade.tab.esl': '电子价签',
+    'esl.device.upgrade.tab.ap': '无线基站',
+    'esl.device.upgrade.model.group': '型号分组',
+    'esl.device.upgrade.version.last': '最新版本',
+    'esl.device.upgrade.updated.total': '已升级/总数',
+    'esl.device.upgrade.auto.upgrade': '自动升级',
 };
