@@ -21,6 +21,7 @@ export const MENU_PREFIX = {
 
 export const KEY = {
     ENTER: 13,
+    DELETE: 8
 };
 
 export const MESSAGE_TYPE = {

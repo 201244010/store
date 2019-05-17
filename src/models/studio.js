@@ -140,15 +140,8 @@ export default {
             };
         },
         deleteSelectedComponent(state, action) {
-            const { componentsDetail } = state;
-            delete componentsDetail[action.payload];
-            return {
-                ...state,
-                selectedShapeName: '',
-                componentsDetail: {
-                    ...componentsDetail,
-                },
-            };
+            state.selectedShapeName = '';
+            delete state.componentsDetail[action.payload];
         },
         zoomOutOrIn(state, action) {
             const {
@@ -185,12 +178,9 @@ export default {
                 }
             });
 
-            return {
-                ...state,
-                selectedShapeName: '',
-                zoomScale,
-                componentsDetail,
-            };
+            state.selectedShapeName = '';
+            state.zoomScale = zoomScale;
+            state.componentsDetail = componentsDetail;
         },
     },
 };

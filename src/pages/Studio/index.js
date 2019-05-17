@@ -10,6 +10,7 @@ import RightToolBox from './RightToolBox';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
 import { getTypeByName, getNearLines } from '@/utils/studio';
+import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, PRICE_TYPES, MAPS } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
 import { ERROR_OK } from '@/constants/errorCode';
@@ -100,7 +101,20 @@ class Studio extends Component {
     }
 
     handleDeleteComponent = e => {
-        console.log(e);
+        if (e.keyCode === KEY.DELETE) {
+            const { studio: { selectedShapeName }, deleteSelectedComponent, toggleRightToolBox } = this.props;
+
+            if (selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1) {
+                deleteSelectedComponent(selectedShapeName);
+                toggleRightToolBox({
+                    showRightToolBox: false,
+                    rightToolBoxPos: {
+                        left: -9999,
+                        top: -9999,
+                    },
+                });
+            }
+        }
     };
 
     handleStageMouseDown = e => {

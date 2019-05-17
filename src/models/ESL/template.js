@@ -377,13 +377,22 @@ export default {
                     type: 'updateState',
                     payload: { loading: false },
                 });
+                yield put({
+                    type: 'fetchTemplates',
+                    payload: {
+                        options: {
+                            screen_type: -1,
+                            colour: -1,
+                        },
+                    },
+                });
                 message.success('应用成功');
             } else {
                 yield put({
                     type: 'updateState',
                     payload: { loading: false },
                 });
-                message.error('应用成功');
+                message.error('应用失败');
             }
             return response;
         },
