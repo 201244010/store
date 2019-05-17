@@ -23,7 +23,7 @@ import styles from './Notification.less';
         deleteNotification: payload =>
             dispatch({ type: 'notification/deleteNotification', payload }),
         clearSearchValue: () => dispatch({ type: 'notification/clearSearchValue' }),
-    }),
+    })
 )
 class NotificationCenter extends Component {
     constructor(props) {
@@ -58,8 +58,13 @@ class NotificationCenter extends Component {
     };
 
     onChange = async e => {
-        const { getNotificationList, updateSearchValue } = this.props;
+        const {
+            getNotificationList,
+            updateSearchValue,
+            notification: { searchFormValues },
+        } = this.props;
         await updateSearchValue({
+            ...searchFormValues,
             statusCode: e.target.checked ? 0 : -1,
         });
         await getNotificationList();
@@ -108,7 +113,7 @@ class NotificationCenter extends Component {
             },
         } = this.props;
         const filterList = modelList.map(item =>
-            Object.assign({}, { text: item.model_name, value: item.model_name }),
+            Object.assign({}, { text: item.model_name, value: item.model_name })
         );
         const columns = [
             {
@@ -120,10 +125,13 @@ class NotificationCenter extends Component {
                         className={styles['title-content']}
                     >
                         {record.receive_status ? (
-                            <span key={record.mes_id} className={styles.read}>{record.title}</span>
+                            <span key={record.mes_id} className={styles.read}>
+                                {record.title}
+                            </span>
                         ) : (
                             <div key={record.msg_id}>
-                                <i /><span className={styles.unread}>{record.title}</span>
+                                <i />
+                                <span className={styles.unread}>{record.title}</span>
                             </div>
                         )}
                     </div>
@@ -139,6 +147,7 @@ class NotificationCenter extends Component {
                 dataIndex: 'model_name',
                 filterIcon: () => <Icon type="filter" style={{ left: '60px' }} />,
                 filters: filterList,
+                // onFilter: (value) => this.handleFilterChange(value),
                 onFilter: (value, record) => record.model_name.indexOf(value) === 0,
             },
         ];

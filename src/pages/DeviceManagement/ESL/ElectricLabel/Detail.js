@@ -20,31 +20,37 @@ export default function detail(props) {
             <Row gutter={ROW_GUTTER}>
                 <Col span={COL_SPAN}>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.id' })}：
                         </span>
-                        <span className={styles['detail-info-content']}>{eslInfo.esl_code || '--'}</span>
+                        <span className={styles['detail-info-content']}>
+                            {eslInfo.esl_code || '--'}
+                        </span>
                     </div>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.sn' })}：
                         </span>
                         <span className={styles['detail-info-content']}>{eslInfo.sn || '--'}</span>
                     </div>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.model.name' })}：
                         </span>
-                        <span className={styles['detail-info-content']}>{eslInfo.model || '--'}</span>
+                        <span className={styles['detail-info-content']}>
+                            {eslInfo.model || '--'}
+                        </span>
                     </div>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.screen.size' })}：
                         </span>
-                        <span className={styles['detail-info-content']}>{eslInfo.screen_size || '--'}</span>
+                        <span className={styles['detail-info-content']}>
+                            {eslInfo.screen_size || '--'}
+                        </span>
                     </div>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.ware.version' })}：
                         </span>
                         <span className={styles['detail-info-content']}>
@@ -52,13 +58,13 @@ export default function detail(props) {
                         </span>
                     </div>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.battery' })}：
                         </span>
                         <span className={styles['detail-info-content']}>{eslInfo.battery}%</span>
                     </div>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.status' })}：
                         </span>
                         <span className={styles['detail-info-content']}>
@@ -66,7 +72,7 @@ export default function detail(props) {
                         </span>
                     </div>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.last.comm.time' })}：
                         </span>
                         <span className={styles['detail-info-content']}>
@@ -74,7 +80,7 @@ export default function detail(props) {
                         </span>
                     </div>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.push.time' })}：
                         </span>
                         <span className={styles['detail-info-content']}>
@@ -84,13 +90,15 @@ export default function detail(props) {
                 </Col>
                 <Col span={COL_SPAN}>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.station.name' })}：
                         </span>
-                        <span className={styles['detail-info-content']}>{eslInfo.ap_name || '--'}</span>
+                        <span className={styles['detail-info-content']}>
+                            {eslInfo.ap_name || '--'}
+                        </span>
                     </div>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.bind.product.code' })}：
                         </span>
                         <span className={styles['detail-info-content']}>
@@ -98,10 +106,12 @@ export default function detail(props) {
                         </span>
                     </div>
                     <div className={styles['detail-info-item']}>
-                        <span className="detail-info-label">
+                        <span className={styles['detail-info-label']}>
                             {formatMessage({ id: 'esl.device.esl.bind.product.name' })}：
                         </span>
-                        <span className={styles['detail-info-content']}>{eslInfo.product_name || '--'}</span>
+                        <span className={styles['detail-info-content']}>
+                            {eslInfo.product_name || '--'}
+                        </span>
                     </div>
                 </Col>
             </Row>
