@@ -12,6 +12,16 @@ export default class MTransformer extends Component {
         this.checkNode();
     }
 
+    boundBoxFunc = (oldBoundBox, newBoundBox) => {
+        if (newBoundBox.width < 10) {
+            newBoundBox.width = 10;
+        }
+        if (newBoundBox.height < 10) {
+            newBoundBox.height = 10;
+        }
+        return newBoundBox;
+    };
+
     checkNode() {
         // here need to manually attach or detach Transformer node
         const stage = this.transformer.getStage();
@@ -103,6 +113,7 @@ export default class MTransformer extends Component {
                 rotateAnchorOffset={20}
                 rotateEnabled={false}
                 ignoreStroke
+                boundBoxFunc={this.boundBoxFunc}
             />
         );
     }

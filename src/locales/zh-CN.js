@@ -12,6 +12,8 @@ import userCenter from './zh-CN/userCenter';
 import storeManagement from './zh-CN/storeManagement';
 import notification from './zh-CN/notification';
 
+import VideoPlayer from './zh-CN/videoPlayer';
+
 // ESL
 import baseStation from './zh-CN/ESL/device';
 
@@ -45,5 +47,6 @@ export default {
     ...productManagement,
     ...merchantManagement,
     ...storeManagement,
-    ...notification,
+	...notification,
+	...VideoPlayer,
 };
