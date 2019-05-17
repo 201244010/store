@@ -26,12 +26,16 @@ export default {
 				type: 'global/getShopIdFromStorage'
 			});
 			
-			// console.log(`ipcList: companyId:${companyId} shopId${shopId}`);
-
+			// console.log(companyId, shopId);
+			if (!companyId || !shopId) {
+				return [];
+			}
+			
 			const response = yield getDeviceList({
 				companyId,
 				shopId
 			});
+
 			const result = response.data;
 			if (response.code === ERROR_OK) {
 				yield put({
@@ -40,6 +44,7 @@ export default {
 				});
 			}
 			return result;
+			
 		},
 		*getList(action,{ put }){
 			const companyId = yield put.resolve({
