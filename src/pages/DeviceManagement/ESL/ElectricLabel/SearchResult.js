@@ -248,7 +248,11 @@ class SearchResult extends Component {
             {
                 title: formatMessage({ id: 'esl.device.esl.battery' }),
                 dataIndex: 'battery',
-                render: text => <span>{text}%</span>,
+                render: text => (
+                    <span className={text < 10 ? styles['low-battery'] : ''}>{text}%</span>
+                ),
+                sorter: (a, b) => a.battery - b.battery,
+                sortDirections: ['descend', 'ascend'],
             },
             {
                 title: formatMessage({ id: 'esl.device.esl.product.seq.num' }),

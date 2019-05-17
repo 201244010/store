@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT } from '@/constants/form';
 import { MENU_PREFIX } from '@/constants';
 import styles from './StoreManagement.less';
 import { formatEmptyWithoutZero } from '@/utils/utils';
@@ -182,7 +182,7 @@ class StoreManagement extends Component {
         return (
             <div className={styles.storeList}>
                 <div className={styles.top}>
-                    <Form {...FORM_ITEM_LAYOUT}>
+                    <Form {...{ ...FORM_ITEM_LAYOUT, ...FORM_LABEL_LEFT }}>
                         <Row gutter={FORM_FORMAT.gutter}>
                             <Col xl={9} lg={12} md={24}>
                                 <FormItem

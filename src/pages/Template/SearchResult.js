@@ -153,6 +153,10 @@ class SearchResult extends Component {
                             {formatMessage({ id: 'list.action.edit' })}
                         </a>
                         <Divider type="vertical" />
+                        <a href="javascript: void (0);" onClick={() => this.applyTemplate(record)}>
+                            {formatMessage({ id: 'list.action.apply' })}
+                        </a>
+                        <Divider type="vertical" />
                         {record.is_default === 1 || record.esl_num > 1 ? (
                             <a href="javascript: void (0);" className={styles.disabled}>
                                 {formatMessage({ id: 'list.action.delete' })}
@@ -163,19 +167,6 @@ class SearchResult extends Component {
                                 onClick={() => this.deleteTemplate(record)}
                             >
                                 {formatMessage({ id: 'list.action.delete' })}
-                            </a>
-                        )}
-                        <Divider type="vertical" />
-                        {record.status === 1 ? (
-                            <a href="javascript: void (0);" className={styles.disabled}>
-                                {formatMessage({ id: 'list.action.apply' })}
-                            </a>
-                        ) : (
-                            <a
-                                href="javascript: void (0);"
-                                onClick={() => this.applyTemplate(record)}
-                            >
-                                {formatMessage({ id: 'list.action.apply' })}
                             </a>
                         )}
                     </span>
