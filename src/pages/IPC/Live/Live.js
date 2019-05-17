@@ -163,6 +163,7 @@ class Live extends React.Component{
 		// console.log('live: ', liveUrl, streamId);
 
 		const { type } = this.state;
+		const hasFaceId = type === 'FS1';
 
 		const genders = {
 			0: '未知',
@@ -174,7 +175,7 @@ class Live extends React.Component{
 			<div className={styles['live-wrapper']}>
 				<InitStatusSDCard sn={sn} />
 				<SDCard />
-				<div className={styles['video-player-container']}>
+				<div className={`${styles['video-player-container']} ${hasFaceId ? styles['has-faceid'] : ''}`}>
 					<VideoPlayer
 
 						pixelRatio={pixelRatioMap[type] || '16:9'}
@@ -186,58 +187,64 @@ class Live extends React.Component{
 						sources={sources}
 						url={liveUrl}
 
-						faceidRects={faceidRects}
+						faceidRects={
+							hasFaceId ? faceidRects : null
+						}
 
 						onTimeChange={this.onTimeChange}
-
 					/>
 				</div>
-				<div className={styles['faceid-list-container']}>
-					<PerfectScrollbar>
-						<List
-							dataSource={
-								faceidList
-							}
-							renderItem={
-								(item) => (
-									<List.Item key={item.id}>
-										<Card
-											title={
-												<div className={styles['avatar-container']}>
-													<div className={styles.type}>{ item.libraryName }</div>
-													<Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic}`} />
-												</div>
-											}
-											bordered={false}
 
-											className={styles.infos}
-										>
-											<p className={styles.name}>{ item.name }</p>
-											<p>
-												{/* { `(${ item.gender === 0 ? '未知' : item.gender === 1 ? '男' : '女' } ${ item.age }岁)` } */}
-												{ `(${ genders[item.gender] } ${ item.age }岁)` }
-											</p>
-											<p>
-												<span>进店时间：</span>
-												<span>
-													{
-														moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
+				{
+					hasFaceId ?
+						<div className={styles['faceid-list-container']}>
+							<PerfectScrollbar>
+								<List
+									dataSource={
+										faceidList
+									}
+									renderItem={
+										(item) => (
+											<List.Item key={item.id}>
+												<Card
+													title={
+														<div className={styles['avatar-container']}>
+															<div className={styles.type}>{ item.libraryName }</div>
+															<Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic}`} />
+														</div>
 													}
-												</span>
-											</p>
+													bordered={false}
 
-											{/* <Button>会员详情</Button> */}
+													className={styles.infos}
+												>
+													<p className={styles.name}>{ item.name }</p>
+													<p>
+														{/* { `(${ item.gender === 0 ? '未知' : item.gender === 1 ? '男' : '女' } ${ item.age }岁)` } */}
+														{ `(${ genders[item.gender] } ${ item.age }岁)` }
+													</p>
+													<p>
+														<span>进店时间：</span>
+														<span>
+															{
+																moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
+															}
+														</span>
+													</p>
 
-											<p>
-												<Link className={styles['button-infos']} to='./userinfo'>会员详情</Link>
-											</p>
-										</Card>
-									</List.Item>
-									)
-							}
-						/>
-					</PerfectScrollbar>
-				</div>
+													{/* <Button>会员详情</Button> */}
+
+													<p>
+														<Link className={styles['button-infos']} to='./userinfo'>会员详情</Link>
+													</p>
+												</Card>
+											</List.Item>
+											)
+									}
+								/>
+							</PerfectScrollbar>
+						</div>
+					: ''
+				}
 			</div>
 
 		);
