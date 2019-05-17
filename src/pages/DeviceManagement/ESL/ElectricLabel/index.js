@@ -34,7 +34,8 @@ import * as styles from './index.less';
         flashLed: payload => dispatch({ type: 'eslElectricLabel/flashLed', payload }),
         deleteESL: payload => dispatch({ type: 'eslElectricLabel/deleteESL', payload }),
         refreshFailedImage: () => dispatch({ type: 'eslElectricLabel/refreshFailedImage' }),
-    })
+        clearSearchValue: () => dispatch({ type: 'eslElectricLabel/clearSearchValue' }),
+    }),
 )
 class ElectricLabel extends Component {
     componentDidMount() {
@@ -59,6 +60,11 @@ class ElectricLabel extends Component {
             },
         });
         fetchFlashModes();
+    }
+
+    componentWillUnmount() {
+        const { clearSearchValue } = this.props;
+        clearSearchValue();
     }
 
     render() {
