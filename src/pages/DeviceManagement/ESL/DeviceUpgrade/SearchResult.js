@@ -41,7 +41,6 @@ class SearchResult extends Component {
         const { firmwareUpload } = this.props;
         const { currentRecord } = this.state;
         this.uploadStatus('uploading');
-
         const response = await firmwareUpload({
             group_id: currentRecord.id,
             bin_version: values.version,

@@ -100,9 +100,9 @@ export default {
             yield switchLoadingStatus(false, put);
         },
 
-        *uploadAPFirmware({ paylaod }, { put, call }) {
+        *uploadAPFirmware({ payload }, { put, call }) {
             yield switchLoadingStatus(true, put);
-            const response = yield call(handleESLAction, 'upload', paylaod);
+            const response = yield call(handleESLAction, 'upload', payload);
             if (response.code === ERROR_OK) {
                 yield put({
                     type: 'getAPGroupList',

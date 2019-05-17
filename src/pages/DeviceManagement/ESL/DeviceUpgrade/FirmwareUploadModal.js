@@ -1,26 +1,25 @@
 import React, { Component } from 'react';
 import { Modal, Form, Input, Upload, Button, Icon, Row, Col, Spin } from 'antd';
 import { formatMessage } from 'umi/locale';
-
-// import { headFormItemLayout } from '../../constants/form.js';
-// import '../../scss/deviceUpdrage.scss';
+import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
+import styles from './DeviceUpgrade.less';
 
 const UploadingInfo = () => (
-    <div className="info-content">
-        <h3>{formatMessage({ id: 'esl.device.upgrade.uploading' })}</h3>
-        <div className="spin-wrapper">
+    <div className={styles['info-content']}>
+        <h3>{formatMessage({ id: 'esl.device.upload.uploading' })}</h3>
+        <div className={styles['spin-wrapper']}>
             <Spin />
         </div>
     </div>
 );
 
 const UploadCommonError = ({ onCancel }) => (
-    <div className="info-content">
+    <div className={styles['info-content']}>
         <h3>
             {formatMessage({ id: 'esl.device.upload.fail' })}
             {formatMessage({ id: 'esl.device.upload.retry' })}
         </h3>
-        <div className="info-btn">
+        <div>
             <Button type="primary" onClick={onCancel}>
                 {formatMessage({ id: 'btn.know' })}
             </Button>
@@ -29,10 +28,10 @@ const UploadCommonError = ({ onCancel }) => (
 );
 
 const UploadVersionLowerError = ({ uploadStatus }) => (
-    <div className="info-content">
+    <div className={styles['info-content']}>
         <h3>{formatMessage({ id: 'esl.device.upload.fail' })}</h3>
         <h3>{formatMessage({ id: 'esl.device.upload.version.low' })}</h3>
-        <div className="info-btn">
+        <div>
             <Button type="primary" onClick={() => uploadStatus('init')}>
                 {formatMessage({ id: 'btn.know' })}
             </Button>
@@ -41,10 +40,10 @@ const UploadVersionLowerError = ({ uploadStatus }) => (
 );
 
 const UploadVersionExistError = ({ uploadStatus }) => (
-    <div className="info-content">
+    <div className={styles['info-content']}>
         <h3>{formatMessage({ id: 'esl.device.upload.fail' })}</h3>
         <h3>{formatMessage({ id: 'esl.device.upload.version.exist' })}</h3>
-        <div className="info-btn">
+        <div>
             <Button type="primary" onClick={() => uploadStatus('init')}>
                 {formatMessage({ id: 'btn.know' })}
             </Button>
@@ -53,7 +52,7 @@ const UploadVersionExistError = ({ uploadStatus }) => (
 );
 
 const UploadSuccess = ({ onCancel }) => (
-    <div className="info-content">
+    <div className={styles['info-content']}>
         <h3>{formatMessage({ id: 'esl.device.upload.success' })}</h3>
         <div className="info-btn">
             <Button type="primary" onClick={onCancel}>
@@ -167,109 +166,116 @@ class FirmwareUploadModal extends Component {
                 onCancel={this.onCancel}
                 destroyOnClose
             >
-                {status === 'init' ? (
-                    <Form>
-                        <Form.Item label={formatMessage({ id: 'esl.device.upload.device.model' })}>
-                            <span>{data.model}</span>
-                        </Form.Item>
-                        <Form.Item
-                            label={formatMessage({ id: 'esl.device.upload.device.version' })}
-                        >
-                            <Row gutter={5}>
-                                <Col span={8}>
-                                    {getFieldDecorator('version', {
-                                        initialValue: version,
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: formatMessage({
-                                                    id: 'esl.device.upload.device.version.require',
-                                                }),
-                                            },
-                                            {
-                                                pattern: /^(0{1}|[1-9][0-9]{0,2})\.(0{1}|[1-9][0-9]{0,2})\.(0{1}|[1-9][0-9]{0,2})$/,
-                                                message: formatMessage({
-                                                    id:
-                                                        'esl.device.upload.device.version.formatError',
-                                                }),
-                                            },
-                                        ],
-                                    })(
-                                        <Input
-                                            placeholder={formatMessage({
-                                                id: 'esl.device.upload.device.version.input',
+                <div className={styles['custom-modal-wrapper']}>
+                    {status === 'init' ? (
+                        <Form {...{ ...FORM_ITEM_LAYOUT_COMMON }}>
+                            <Form.Item
+                                label={formatMessage({ id: 'esl.device.upload.device.model' })}
+                            >
+                                <span>{data.model}</span>
+                            </Form.Item>
+                            <Form.Item
+                                label={formatMessage({ id: 'esl.device.upload.device.version' })}
+                            >
+                                <Row gutter={5}>
+                                    <Col span={8}>
+                                        {getFieldDecorator('version', {
+                                            initialValue: version,
+                                            rules: [
+                                                {
+                                                    required: true,
+                                                    message: formatMessage({
+                                                        id:
+                                                            'esl.device.upload.device.version.require',
+                                                    }),
+                                                },
+                                                {
+                                                    pattern: /^(0{1}|[1-9][0-9]{0,2})\.(0{1}|[1-9][0-9]{0,2})\.(0{1}|[1-9][0-9]{0,2})$/,
+                                                    message: formatMessage({
+                                                        id:
+                                                            'esl.device.upload.device.version.formatError',
+                                                    }),
+                                                },
+                                            ],
+                                        })(
+                                            <Input
+                                                placeholder={formatMessage({
+                                                    id: 'esl.device.upload.device.version.input',
+                                                })}
+                                                maxLength={11}
+                                            />
+                                        )}
+                                    </Col>
+                                    <Col span={12}>
+                                        <span className={styles['form-description']}>
+                                            {formatMessage({
+                                                id: 'esl.device.upload.device.version.notice',
                                             })}
-                                            maxLength={11}
-                                        />
-                                    )}
-                                </Col>
-                                <Col span={12}>
-                                    <span className="form-description">
-                                        {formatMessage({
-                                            id: 'esl.device.upload.device.version.notice',
-                                        })}
-                                    </span>
-                                </Col>
-                            </Row>
-                        </Form.Item>
-                        <Form.Item
-                            label={formatMessage({ id: 'esl.device.upload.device.bin.choice' })}
-                        >
-                            {getFieldDecorator('firmware', {
-                                initialValue: { file, fileList },
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: formatMessage({
-                                            id: 'esl.device.upload.device.bin.require',
-                                        }),
-                                    },
-                                    {
-                                        validator: (rule, value, callback) => {
-                                            if (Object.keys(value.file).length === 0) {
-                                                callback(
-                                                    formatMessage({
-                                                        id: 'esl.device.upload.device.bin.require',
-                                                    })
-                                                );
-                                            } else {
-                                                const { name } = value.file;
-                                                const fileType = `.${name.split('.').pop()}` || '';
-                                                const typeList = acceptFileType.split(',');
-                                                if (typeList.includes(fileType)) {
-                                                    callback();
-                                                } else {
+                                        </span>
+                                    </Col>
+                                </Row>
+                            </Form.Item>
+                            <Form.Item
+                                label={formatMessage({ id: 'esl.device.upload.device.bin.choice' })}
+                            >
+                                {getFieldDecorator('firmware', {
+                                    initialValue: { file, fileList },
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: formatMessage({
+                                                id: 'esl.device.upload.device.bin.require',
+                                            }),
+                                        },
+                                        {
+                                            validator: (rule, value, callback) => {
+                                                if (Object.keys(value.file).length === 0) {
                                                     callback(
                                                         formatMessage({
                                                             id:
-                                                                'esl.device.upload.device.bin.error',
+                                                                'esl.device.upload.device.bin.require',
                                                         })
                                                     );
+                                                } else {
+                                                    const { name } = value.file;
+                                                    const fileType =
+                                                        `.${name.split('.').pop()}` || '';
+                                                    const typeList = acceptFileType.split(',');
+                                                    if (typeList.includes(fileType)) {
+                                                        callback();
+                                                    } else {
+                                                        callback(
+                                                            formatMessage({
+                                                                id:
+                                                                    'esl.device.upload.device.bin.error',
+                                                            })
+                                                        );
+                                                    }
                                                 }
-                                            }
+                                            },
                                         },
-                                    },
-                                ],
-                            })(
-                                <Upload {...uploadProps}>
-                                    <Button>
-                                        <Icon type="upload" />
-                                        {formatMessage({
-                                            id: 'esl.device.upload.device.bin.notice',
-                                        })}
-                                    </Button>
-                                </Upload>
-                            )}
-                        </Form.Item>
-                    </Form>
-                ) : (
-                    <RenderComponent
-                        {...{
-                            onCancel: this.onCancel,
-                            uploadStatus,
-                        }}
-                    />
-                )}
+                                    ],
+                                })(
+                                    <Upload {...uploadProps}>
+                                        <Button>
+                                            <Icon type="upload" />
+                                            {formatMessage({
+                                                id: 'esl.device.upload.device.bin.notice',
+                                            })}
+                                        </Button>
+                                    </Upload>
+                                )}
+                            </Form.Item>
+                        </Form>
+                    ) : (
+                        <RenderComponent
+                            {...{
+                                onCancel: this.onCancel,
+                                uploadStatus,
+                            }}
+                        />
+                    )}
+                </div>
             </Modal>
         );
     }

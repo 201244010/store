@@ -17,7 +17,7 @@ import SearchResult from './SearchResult';
         getAPGroupList: () => dispatch({ type: 'deviceAP/getAPGroupList' }),
         updateAPAutoUpgradeStatus: payload =>
             dispatch({ type: 'deviceAP/updateAPAutoUpgradeStatus', payload }),
-        uploadAPFirmware: payload => dispatch({ type: 'deviceESL/uploadAPFirmware', payload }),
+        uploadAPFirmware: payload => dispatch({ type: 'deviceAP/uploadAPFirmware', payload }),
     })
 )
 class DeviceUpgrade extends Component {

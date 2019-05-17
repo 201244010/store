@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import { Icon, Tabs, Badge, Spin } from 'antd';
 import classNames from 'classnames';
 import HeaderDropdown from '../HeaderDropdown';
@@ -138,7 +138,7 @@ export default class NoticeIcon extends PureComponent {
                 visible={visible}
                 onVisibleChange={this.handleVisibleChange}
                 {...popoverProps}
-                ref={node => (this.popover = ReactDOM.findDOMNode(node))} // eslint-disable-line
+                // ref={node => (this.popover = ReactDOM.findDOMNode(node))}
             >
                 {trigger}
             </HeaderDropdown>

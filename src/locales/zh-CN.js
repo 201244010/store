@@ -47,6 +47,6 @@ export default {
     ...productManagement,
     ...merchantManagement,
     ...storeManagement,
-	...notification,
-	...VideoPlayer,
+    ...notification,
+    ...VideoPlayer,
 };

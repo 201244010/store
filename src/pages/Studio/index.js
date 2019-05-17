@@ -102,7 +102,11 @@ class Studio extends Component {
 
     handleDeleteComponent = e => {
         if (e.keyCode === KEY.DELETE) {
-            const { studio: { selectedShapeName }, deleteSelectedComponent, toggleRightToolBox } = this.props;
+            const {
+                studio: { selectedShapeName },
+                deleteSelectedComponent,
+                toggleRightToolBox,
+            } = this.props;
 
             if (selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1) {
                 deleteSelectedComponent(selectedShapeName);
@@ -586,7 +590,7 @@ class Studio extends Component {
                                 selectedShapeName &&
                                 componentsDetail[selectedShapeName].type !==
                                     SHAPE_TYPES.RECT_FIX ? (
-                                        <MTransformer selectedShapeName={selectedShapeName} />
+                                    <MTransformer selectedShapeName={selectedShapeName} />
                                 ) : null}
                             </Layer>
                             {dragging && lines && !showRightToolBox ? (
