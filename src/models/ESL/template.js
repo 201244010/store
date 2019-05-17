@@ -91,9 +91,8 @@ export default {
             } else {
                 yield put({
                     type: 'updateState',
-                    payload: { loading: true },
+                    payload: { loading: false },
                 });
-                message.error('新建模板失败');
             }
             return response;
         },
@@ -225,7 +224,7 @@ export default {
             } else {
                 yield put({
                     type: 'updateState',
-                    payload: { loading: true },
+                    payload: { loading: false },
                 });
                 message.error('保存模板草稿失败');
             }
