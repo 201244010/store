@@ -110,4 +110,6 @@ export default {
     'esl.device.template.name.require': '请输入模板名称',
     'esl.device.template.size.require': '请选择模板尺寸',
     'esl.device.template.color.require': '请选择模板颜色',
+
+    // 设备升级
 };

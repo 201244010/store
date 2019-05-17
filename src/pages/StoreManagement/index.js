@@ -73,7 +73,7 @@ const columns = [
                 <a
                     onClick={() => {
                         router.push(
-                            `${MENU_PREFIX.STORE}/storeInformation?shopId=${record.shop_id}`,
+                            `${MENU_PREFIX.STORE}/storeInformation?shopId=${record.shop_id}`
                         );
                     }}
                     className={styles.infoAnchor}
@@ -84,7 +84,7 @@ const columns = [
                 <a
                     onClick={() => {
                         router.push(
-                            `${MENU_PREFIX.STORE}/alterStore?shopId=${record.shop_id}&action=edit`,
+                            `${MENU_PREFIX.STORE}/alterStore?shopId=${record.shop_id}&action=edit`
                         );
                     }}
                     className={styles.infoAnchor}
@@ -107,7 +107,7 @@ const columns = [
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
         getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
         getRegionList: () => dispatch({ type: 'store/getRegionList' }),
-    }),
+    })
 )
 class StoreManagement extends Component {
     componentDidMount() {
@@ -195,7 +195,7 @@ class StoreManagement extends Component {
                                             placeholder={formatMessage({
                                                 id: 'storeManagement.list.inputPlaceHolder',
                                             })}
-                                        />,
+                                        />
                                     )}
                                 </FormItem>
                             </Col>
@@ -213,7 +213,7 @@ class StoreManagement extends Component {
                                                 id: 'storeManagement.create.typePlaceHolder',
                                             })}
                                             options={shopType_list}
-                                        />,
+                                        />
                                     )}
                                 </FormItem>
                             </Col>
