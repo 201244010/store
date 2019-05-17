@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT } from '@/constants/form';
 
 class SearchForm extends Component {
     changeFormValues = (inputType, fieldName, e) => {
@@ -40,7 +40,7 @@ class SearchForm extends Component {
         const { values } = this.props;
 
         return (
-            <Form {...FORM_ITEM_LAYOUT}>
+            <Form {...{ ...FORM_ITEM_LAYOUT, ...FORM_LABEL_LEFT }}>
                 <Row gutter={FORM_FORMAT.gutter}>
                     <Col xl={9} lg={12} md={24}>
                         <Form.Item

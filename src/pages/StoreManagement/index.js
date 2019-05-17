@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT } from '@/constants/form';
 import { MENU_PREFIX } from '@/constants';
 import styles from './StoreManagement.less';
 import { formatEmptyWithoutZero } from '@/utils/utils';
@@ -73,7 +73,7 @@ const columns = [
                 <a
                     onClick={() => {
                         router.push(
-                            `${MENU_PREFIX.STORE}/storeInformation?shopId=${record.shop_id}`
+                            `${MENU_PREFIX.STORE}/storeInformation?shopId=${record.shop_id}`,
                         );
                     }}
                     className={styles.infoAnchor}
@@ -84,7 +84,7 @@ const columns = [
                 <a
                     onClick={() => {
                         router.push(
-                            `${MENU_PREFIX.STORE}/alterStore?shopId=${record.shop_id}&action=edit`
+                            `${MENU_PREFIX.STORE}/alterStore?shopId=${record.shop_id}&action=edit`,
                         );
                     }}
                     className={styles.infoAnchor}
@@ -107,7 +107,7 @@ const columns = [
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
         getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
         getRegionList: () => dispatch({ type: 'store/getRegionList' }),
-    })
+    }),
 )
 class StoreManagement extends Component {
     componentDidMount() {
@@ -182,7 +182,7 @@ class StoreManagement extends Component {
         return (
             <div className={styles.storeList}>
                 <div className={styles.top}>
-                    <Form {...FORM_ITEM_LAYOUT}>
+                    <Form {...{ ...FORM_ITEM_LAYOUT, ...FORM_LABEL_LEFT }}>
                         <Row gutter={FORM_FORMAT.gutter}>
                             <Col xl={9} lg={12} md={24}>
                                 <FormItem
@@ -195,7 +195,7 @@ class StoreManagement extends Component {
                                             placeholder={formatMessage({
                                                 id: 'storeManagement.list.inputPlaceHolder',
                                             })}
-                                        />
+                                        />,
                                     )}
                                 </FormItem>
                             </Col>
@@ -213,7 +213,7 @@ class StoreManagement extends Component {
                                                 id: 'storeManagement.create.typePlaceHolder',
                                             })}
                                             options={shopType_list}
-                                        />
+                                        />,
                                     )}
                                 </FormItem>
                             </Col>

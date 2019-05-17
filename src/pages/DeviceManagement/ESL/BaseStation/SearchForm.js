@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 
 const { Option } = Select;
@@ -38,7 +38,7 @@ class SearchForm extends Component {
         const { states, searchFormValues } = this.props;
 
         return (
-            <Form {...FORM_ITEM_LAYOUT}>
+            <Form {...{ ...FORM_ITEM_LAYOUT, ...FORM_LABEL_LEFT }}>
                 <Row gutter={FORM_FORMAT.gutter}>
                     <Col xl={9} lg={12} md={24}>
                         <Form.Item label={formatMessage({ id: 'esl.device.ap.search.ap.info' })}>
