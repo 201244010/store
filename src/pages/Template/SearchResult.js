@@ -153,10 +153,7 @@ class SearchResult extends Component {
                             {formatMessage({ id: 'list.action.edit' })}
                         </a>
                         <Divider type="vertical" />
-                        <a
-                            href="javascript: void (0);"
-                            onClick={() => this.applyTemplate(record)}
-                        >
+                        <a href="javascript: void (0);" onClick={() => this.applyTemplate(record)}>
                             {formatMessage({ id: 'list.action.apply' })}
                         </a>
                         <Divider type="vertical" />

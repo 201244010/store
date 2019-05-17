@@ -196,7 +196,9 @@ export default class RightToolBox extends Component {
                                 this.handleDetail('bindField', value);
                             }}
                         >
-                            <Option key='' value=''>不绑定</Option>
+                            <Option key="" value="">
+                                不绑定
+                            </Option>
                             {bindFields.map(field => (
                                 <Option key={field} value={field}>
                                     {field}
@@ -346,8 +348,7 @@ export default class RightToolBox extends Component {
                                 </Radio.Group>
                             </Col>
                         </Row>
-                        {
-                            /*
+                        {/*
                                 <Row style={{ marginBottom: 10 }} gutter={20}>
                                     <Col span={24}>圆角直径</Col>
                                     <Col span={16}>
@@ -372,8 +373,7 @@ export default class RightToolBox extends Component {
                                         />
                                     </Col>
                                 </Row>
-                            */
-                        }
+                            */}
                     </div>
                 ) : null}
                 {menuMap.isText ? (
