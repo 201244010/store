@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import { Col, Icon, Input, Row, Select, Radio, Slider, InputNumber } from 'antd';
-import { SHAPE_TYPES, SIZES, MAPS } from '@/constants/studio';
+import { Col, Icon, Input, Row, Select, Radio, InputNumber } from 'antd';
+import { SHAPE_TYPES, MAPS } from '@/constants/studio';
 import * as styles from './index.less';
 
 const { Option } = Select;
@@ -348,30 +348,32 @@ export default class RightToolBox extends Component {
                                 </Radio.Group>
                             </Col>
                         </Row>
-                        <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>圆角直径</Col>
-                            <Col span={16}>
-                                <Slider
-                                    min={0}
-                                    max={SIZES.DEFAULT_RECT_WIDTH / 2}
-                                    value={detail.cornerRadius}
-                                    onChange={value => {
-                                        this.handleDetail('cornerRadius', value);
-                                    }}
-                                />
-                            </Col>
-                            <Col span={8}>
-                                <InputNumber
-                                    style={{ width: '100%' }}
-                                    min={0}
-                                    max={SIZES.DEFAULT_RECT_WIDTH / 2}
-                                    value={detail.cornerRadius}
-                                    onChange={value => {
-                                        this.handleDetail('cornerRadius', value);
-                                    }}
-                                />
-                            </Col>
-                        </Row>
+                        {/*
+                                <Row style={{ marginBottom: 10 }} gutter={20}>
+                                    <Col span={24}>圆角直径</Col>
+                                    <Col span={16}>
+                                        <Slider
+                                            min={0}
+                                            max={SIZES.DEFAULT_RECT_WIDTH / 2}
+                                            value={detail.cornerRadius}
+                                            onChange={value => {
+                                                this.handleDetail('cornerRadius', value);
+                                            }}
+                                        />
+                                    </Col>
+                                    <Col span={8}>
+                                        <InputNumber
+                                            style={{ width: '100%' }}
+                                            min={0}
+                                            max={SIZES.DEFAULT_RECT_WIDTH / 2}
+                                            value={detail.cornerRadius}
+                                            onChange={value => {
+                                                this.handleDetail('cornerRadius', value);
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                            */}
                     </div>
                 ) : null}
                 {menuMap.isText ? (
