@@ -10,7 +10,7 @@ export default {
                 antd: true,
                 dva: {
                     hmr: true,
-					immer: true,
+                    immer: true,
                 },
                 targets: {
                     ie: 11,
@@ -36,21 +36,21 @@ export default {
             },
         ],
     ],
-  copy: [
-    {
-      from: 'src/libs',
-      to: 'libs',
-    },
-    {
-      from: 'src/assets/swf',
-      to: 'swf',
-    },
-    {
-      from: 'src/assets/css',
-      to: 'css',
-    },
-  ],
-  targets: { ie: 11 },
+    copy: [
+        {
+            from: 'src/libs',
+            to: 'libs',
+        },
+        {
+            from: 'src/assets/swf',
+            to: 'swf',
+        },
+        {
+            from: 'src/assets/css',
+            to: 'css',
+        },
+    ],
+    targets: { ie: 11 },
     /**
      * 路由相关配置
      */
@@ -385,57 +385,57 @@ export default {
                     ],
                 },
                 {
-          path: '/live',
-          component: './ipc/Live/Live.js',
-        },
-        {
-          path: '/devices',
-          icon: 'blank',
-          name: 'devices',
-          routes: [
-            {
-              path: '/devices/list',
-              name: 'list',
-              component: './ipc/IPCList/IPCList.js',
-            },
-            {
-              path: '/devices/motionMessage',
-              name: 'motionMessage',
-              component: './ipc/MotionList/MotionList.js',
-            },
-            // component: './index.js'
-            // component: './index.js'
-            // {
-            // 	path: '/devices/motionMessage',
-            // 	name: 'devices.motionMessage',
-            // 	component: './MotionList/MotionList.js'
-            // 	// component: './index.js'
-            // },
-            {
-              path: '/devices/ipcManagement',
-              // name: 'devices.camara',
-              component: './ipc/IPCManagement/IPCManagement.js',
-            },
-          ],
-        },
-        {
-          path: '/faceidLibrary',
-          name: 'faceidLibrary',
-          icon: 'blank',
-          // component: './index.js',
-          routes: [
-            {
-              path: '/faceidLibrary/faceidLibraryList',
-              name: 'list',
-              component: './ipc/FaceidLibrary/LibraryList.js',
-            },
-            {
-              path: '/faceidLibrary/createLibrary',
-              // name: 'faceidLibrary.create',
-              component: './ipc/FaceidLibrary/createLibrary.js',
-            },
-          ],
-        },
+                    path: '/live',
+                    component: './ipc/Live/Live.js',
+                },
+                {
+                    path: '/devices',
+                    icon: 'blank',
+                    name: 'devices',
+                    routes: [
+                        {
+                            path: '/devices/list',
+                            name: 'list',
+                            component: './IPC/IPCList/IPCList.js',
+                        },
+                        {
+                            path: '/devices/motionMessage',
+                            name: 'motionMessage',
+                            component: './IPC/MotionList/MotionList.js',
+                        },
+                        // component: './index.js'
+                        // component: './index.js'
+                        // {
+                        // 	path: '/devices/motionMessage',
+                        // 	name: 'devices.motionMessage',
+                        // 	component: './MotionList/MotionList.js'
+                        // 	// component: './index.js'
+                        // },
+                        {
+                            path: '/devices/ipcManagement',
+                            // name: 'devices.camara',
+                            component: './IPC/IPCManagement/IPCManagement.js',
+                        },
+                    ],
+                },
+                {
+                    path: '/faceidLibrary',
+                    name: 'faceidLibrary',
+                    icon: 'blank',
+                    // component: './index.js',
+                    routes: [
+                        {
+                            path: '/faceidLibrary/faceidLibraryList',
+                            name: 'list',
+                            component: './IPC/FaceidLibrary/LibraryList.js',
+                        },
+                        {
+                            path: '/faceidLibrary/createLibrary',
+                            // name: 'faceidLibrary.create',
+                            component: './IPC/FaceidLibrary/createLibrary.js',
+                        },
+                    ],
+                },
                 { path: '/', redirect: '/esl' },
             ],
         },
