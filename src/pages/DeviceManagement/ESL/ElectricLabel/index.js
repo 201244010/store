@@ -35,7 +35,7 @@ import * as styles from './index.less';
         deleteESL: payload => dispatch({ type: 'eslElectricLabel/deleteESL', payload }),
         refreshFailedImage: () => dispatch({ type: 'eslElectricLabel/refreshFailedImage' }),
         clearSearchValue: () => dispatch({ type: 'eslElectricLabel/clearSearchValue' }),
-    }),
+    })
 )
 class ElectricLabel extends Component {
     componentDidMount() {

@@ -118,4 +118,23 @@ export default {
     'esl.device.upgrade.version.last': '最新版本',
     'esl.device.upgrade.updated.total': '已升级/总数',
     'esl.device.upgrade.auto.upgrade': '自动升级',
+
+    'esl.device.upgrade.auto.fail': '自动更新设置失败',
+
+    'esl.device.upload.uploading': '固件上传中......',
+    'esl.device.upload.fail': '上传失败',
+    'esl.device.upload.success': '上传成功',
+    'esl.device.upload.retry': '请重试',
+    'esl.device.upload.version.low': '上传版本低于云端最高版本',
+    'esl.device.upload.version.exist': '上传版本云端已存在',
+    'esl.device.upload.device.model': '设备型号',
+    'esl.device.upload.device.version': '版本号',
+    'esl.device.upload.device.version.input': '请输入',
+    'esl.device.upload.device.version.notice': '版本号格式为X.X.X',
+    'esl.device.upload.device.version.require': '版本号',
+    'esl.device.upload.device.version.formatError': '版本号',
+    'esl.device.upload.device.bin.choice': '选择固件',
+    'esl.device.upload.device.bin.notice': '请选择',
+    'esl.device.upload.device.bin.require': '请选择需要上传的固件',
+    'esl.device.upload.device.bin.error': '上传固件的文件格式错误',
 };

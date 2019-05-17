@@ -32,6 +32,7 @@ export default {
 
     'btn.detail': '详情',
     'btn.more': '更多',
+    'btn.know': '知道了',
 
     // 链接文案
     'link.forgot.password': '忘记密码',

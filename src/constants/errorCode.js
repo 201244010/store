@@ -15,6 +15,9 @@ export const TEMPLATE_NAME_USED = 5346;
 
 export const PRODUCT_SEQ_EXIST = 5051;
 
+export const ERR_FIRMWARE_EXIST = 5801;
+export const ERR_FIRMWARE_VERSION_LOWER = 5802;
+
 export const ALERT_NOTICE_MAP = {
     '2': 'alert.code.error',
     '3': 'alert.code.send.fast',
