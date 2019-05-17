@@ -150,6 +150,12 @@ export default {
 									hideInMenu: true,
 									component: './DeviceManagement/ESL/DeviceESL',
 								},
+								{
+									path: '/esl/deviceUpgrade/deviceAP',
+									name: 'deviceAP',
+									hideInMenu: true,
+									component: './DeviceManagement/ESL/DeviceAP',
+								},
 							],
 						},
 						{ path: '/esl', redirect: '/esl/electricLabel' },

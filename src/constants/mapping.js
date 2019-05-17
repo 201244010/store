@@ -1,3 +1,9 @@
+export const STATES = {
+    0: 'esl.device.ap.status.inactivated',
+    1: 'esl.device.ap.status.normal',
+    2: 'esl.device.ap.status.fail',
+};
+
 export const STATION_STATES = {
     0: 'esl.device.ap.status.inactivated',
     1: 'esl.device.ap.status.online',

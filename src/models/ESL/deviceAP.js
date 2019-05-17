@@ -1,4 +1,4 @@
-import { handleAPAction, handleESLAction } from '@/services/ESL/deviceUpgrade';
+import { handleAPAction } from '@/services/ESL/deviceUpgrade';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
@@ -16,10 +16,26 @@ export default {
     state: {
         loading: false,
         searchFormValues: {
-            baseStationId: null,
-            status: -1,
+            keyword: '',
         },
-        states: [],
+        states: [
+            {
+                status_code: '0',
+                status_desc: '未升级',
+            },
+            {
+                status_code: '1',
+                status_desc: '已升级',
+            },
+            {
+                status_code: '2',
+                status_desc: '升级失败',
+            },
+            {
+                status_code: '3',
+                status_desc: '无法升级',
+            },
+        ],
         apGroupList: [],
         apInfoList: [],
         pagination: {
@@ -48,20 +64,18 @@ export default {
         },
 
         *updateSearchValue({ payload }, { put }) {
-            const { baseStationId = null, status = -1 } = payload;
+            const { keyword = '' } = payload;
             yield put({
                 type: 'updateState',
                 payload: {
                     searchFormValues: {
-                        baseStationId,
-                        status,
+                        keyword,
                     },
                 },
             });
         },
 
         *getAPGroupInfo({ payload }, { call, put, select }) {
-            console.log(payload);
             yield switchLoadingStatus(true, put);
             const { pagination, searchFormValues } = yield select(state => state.deviceAP);
             const options = {
@@ -70,13 +84,13 @@ export default {
                 ...payload,
             };
 
-            const response = yield call(handleESLAction, 'getInfo', options);
+            const response = yield call(handleAPAction, 'getInfo', options);
             if (response && response.code === ERROR_OK) {
                 const { data = {} } = response;
                 yield put({
                     type: 'updateState',
                     payload: {
-                        eslInfoList: data.ap_firmware_group_info_list || [],
+                        apInfoList: data.ap_firmware_group_info_list || [],
                         pagination: {
                             ...pagination,
                             total: data.total_count || 0,
@@ -89,7 +103,7 @@ export default {
 
         *updateAPAutoUpgradeStatus({ payload }, { put, call }) {
             yield switchLoadingStatus(true, put);
-            const response = yield call(handleESLAction, 'updateAutoUpgradeStatus', payload);
+            const response = yield call(handleAPAction, 'updateAutoUpgradeStatus', payload);
             if (response.code === ERROR_OK) {
                 yield put({
                     type: 'getAPGroupList',
@@ -102,7 +116,7 @@ export default {
 
         *uploadAPFirmware({ payload }, { put, call }) {
             yield switchLoadingStatus(true, put);
-            const response = yield call(handleESLAction, 'upload', payload);
+            const response = yield call(handleAPAction, 'upload', payload);
             if (response.code === ERROR_OK) {
                 yield put({
                     type: 'getAPGroupList',
@@ -117,8 +131,7 @@ export default {
                 type: 'updateState',
                 payload: {
                     searchFormValues: {
-                        baseStationId: null,
-                        status: -1,
+                        keyword: '',
                     },
                 },
             });

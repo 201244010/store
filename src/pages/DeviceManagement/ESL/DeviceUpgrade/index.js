@@ -53,7 +53,7 @@ class DeviceUpgrade extends Component {
                     >
                         <SearchResult
                             {...{
-                                type: 'Esl',
+                                type: 'ESL',
                                 data: eslGroupList,
                                 loading: eslLoading,
                                 updateAutoUpgradeStatus: updateESLAutoUpgradeStatus,
@@ -67,7 +67,7 @@ class DeviceUpgrade extends Component {
                     >
                         <SearchResult
                             {...{
-                                type: 'Station',
+                                type: 'AP',
                                 data: apGroupList,
                                 loading: apLoading,
                                 updateAutoUpgradeStatus: updateAPAutoUpgradeStatus,

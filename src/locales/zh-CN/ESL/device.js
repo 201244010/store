@@ -13,6 +13,8 @@ export default {
     'esl.device.ap.status.online': '在线',
     'esl.device.ap.status.offline': '离线',
     'esl.device.ap.status.inactivated': '未激活',
+    'esl.device.ap.status.normal': '正常',
+    'esl.device.ap.status.fail': '通信失败',
     'esl.device.ap.inactivated.notice':
         '未激活，该设备添加后从未连接到云端，请检查设备的网络状况。',
     'esl.device.ap.esl_num': '连接价签数量',
@@ -146,4 +148,5 @@ export default {
     'esl.device.upload.device.bin.error': '上传固件的文件格式错误',
 
     'esl.device.upgrade.esl.query.input': '请输入价签ID',
+    'esl.device.upgrade.ap.query.input': '请输入基站ID',
 };

@@ -17,8 +17,9 @@ class SearchResult extends Component {
     }
 
     toPath = record => {
+        const { type } = this.props;
         router.push(
-            `${MENU_PREFIX.DEVICE_UPGRADE}/deviceESL?model=${record.model}&version=${
+            `${MENU_PREFIX.DEVICE_UPGRADE}/device${type}?model=${record.model}&version=${
                 record.bin_version
             }&groupId=${record.id}&upgraded=${record.upgraded_num}`
         );
