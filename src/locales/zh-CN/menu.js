@@ -11,6 +11,9 @@ export default {
     'menu.esl.electricLabel': '价签管理',
     'menu.esl.baseStation': '基站管理',
     'menu.esl.deviceUpgrade': '设备升级',
+    'menu.esl.deviceUpgrade.overview': '设备升级',
+    'menu.esl.deviceUpgrade.deviceESL': '价签分组详情',
+    'menu.esl.deviceUpgrade.deviceAP': '基站分组详情',
 
     'menu.product': '商品库',
     'menu.product.list': '商品库',

@@ -1,5 +1,8 @@
 // ESL 设备价签 文案
 export default {
+    'esl.device.ap.title': '基站',
+    'esl.device.esl.title': '价签',
+
     // 基站用
     'esl.device.ap.search.placeholder': '基站ID/SN/名称',
     'esl.device.ap.search.ap.info': '基站信息',
@@ -49,6 +52,7 @@ export default {
     'esl.device.esl.battery': '电量',
     'esl.device.esl.screen.size': '屏幕尺寸',
     'esl.device.esl.ware.version': '固件版本',
+    'esl.device.esl.ware.version.now': '当前固件版本',
     'esl.device.esl.device.status': '设备状态',
     'esl.device.esl.last.comm.time': '最后通信时间',
     'esl.device.esl.belong.store': '所属门店',
@@ -85,6 +89,8 @@ export default {
     'esl.device.esl.push.success': '推送成功',
     'esl.device.esl.push.fail': '推送失败',
 
+    'esl.device.esl.inactivated': '未激活',
+
     'esl.device.esl.week.fail': '推送失败',
     'esl.device.esl.push.all': '重推',
     'esl.device.esl.push.all.success': '正在重推失败价签...',
@@ -114,6 +120,7 @@ export default {
     // 设备升级
     'esl.device.upgrade.tab.esl': '电子价签',
     'esl.device.upgrade.tab.ap': '无线基站',
+    'esl.device.upgrade.group.detail': '分组详情',
     'esl.device.upgrade.model.group': '型号分组',
     'esl.device.upgrade.version.last': '最新版本',
     'esl.device.upgrade.updated.total': '已升级/总数',
@@ -137,4 +144,6 @@ export default {
     'esl.device.upload.device.bin.notice': '请选择',
     'esl.device.upload.device.bin.require': '请选择需要上传的固件',
     'esl.device.upload.device.bin.error': '上传固件的文件格式错误',
+
+    'esl.device.upgrade.esl.query.input': '请输入价签ID',
 };

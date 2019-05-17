@@ -10,6 +10,7 @@ export const MENU_PREFIX = {
     ESL: '',
     ESL_ELECTRIC_LABEL: '/esl/electricLabel',
     ESL_BASE_STATION: '/esl/baseStation',
+    DEVICE_UPGRADE: '/esl/deviceUpgrade',
     NOTIFICATION: '/notification',
     // PRODUCT: '/basicData/productManagement/list',
     PRODUCT: '/product/list',

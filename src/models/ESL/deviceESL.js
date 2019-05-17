@@ -16,10 +16,26 @@ export default {
     state: {
         loading: false,
         searchFormValues: {
-            elsId: null,
-            status: -1,
+            keyword: '',
         },
-        states: [],
+        states: [
+            {
+                status_code: '0',
+                status_desc: '未升级',
+            },
+            {
+                status_code: '1',
+                status_desc: '已升级',
+            },
+            {
+                status_code: '2',
+                status_desc: '升级失败',
+            },
+            {
+                status_code: '3',
+                status_desc: '无法升级',
+            },
+        ],
         eslGroupList: [],
         eslInfoList: [],
         pagination: {
@@ -48,20 +64,18 @@ export default {
         },
 
         *updateSearchValue({ payload }, { put }) {
-            const { elsId = null, status = -1 } = payload;
+            const { keyword = '' } = payload;
             yield put({
                 type: 'updateState',
                 payload: {
                     searchFormValues: {
-                        elsId,
-                        status,
+                        keyword,
                     },
                 },
             });
         },
 
         *getESLGroupInfo({ payload }, { call, put, select }) {
-            console.log(payload);
             yield switchLoadingStatus(true, put);
             const { pagination, searchFormValues } = yield select(state => state.deviceESL);
             const options = {
@@ -117,8 +131,7 @@ export default {
                 type: 'updateState',
                 payload: {
                     searchFormValues: {
-                        elsId: null,
-                        status: -1,
+                        keyword: '',
                     },
                 },
             });
