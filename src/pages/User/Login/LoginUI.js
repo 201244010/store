@@ -324,13 +324,17 @@ class Login extends Component {
                     </Form.Item>
                 </Form>
                 <div className={styles['login-footer']}>
-                    <a
-                        onClick={() => this.openModalForm('reset')}
-                        href="javascript:void(0);"
-                        className={`${styles['link-common']}`}
-                    >
-                        {formatMessage({ id: 'link.forgot.password' })}
-                    </a>
+                    {currentLanguage === 'zh-CN' ? (
+                        <a
+                            onClick={() => this.openModalForm('reset')}
+                            href="javascript:void(0);"
+                            className={`${styles['link-common']}`}
+                        >
+                            {formatMessage({ id: 'link.forgot.password' })}
+                        </a>
+                    ) : (
+                        <div />
+                    )}
                     <a
                         onClick={() => this.openModalForm('register')}
                         href="javascript:void(0);"

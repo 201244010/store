@@ -32,6 +32,7 @@ export default {
 
     'btn.detail': '详情',
     'btn.more': '更多',
+    'btn.know': '知道了',
 
     // 链接文案
     'link.forgot.password': '忘记密码',
@@ -53,6 +54,7 @@ export default {
     'list.action.more': '更多',
     'list.action.apply': '应用',
     'list.action.restart': '重启',
+    'list.action.upload.firmware': '上传固件',
 
     'pagination.total.prefix': '共',
 
