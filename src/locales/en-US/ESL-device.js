@@ -71,4 +71,10 @@ export default {
     'esl.device.esl.push.wait': 'Updating',
     'esl.device.esl.push.success': 'Update Success',
     'esl.device.esl.push.fail': 'Update Failed',
+    'esl.device.esl.unbind': 'unbind',
+    'esl.device.esl.template.alter': 'alter template',
+    'esl.device.esl.flash': 'flash',
+    'esl.overview.product.total': 'product total',
+    'esl.overview.esl.total': 'esl total',
+    'esl.overview.ap.total': 'ap total',
 };

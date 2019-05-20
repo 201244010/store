@@ -287,7 +287,7 @@ class SearchResult extends Component {
                                                 href="javascript: void (0);"
                                                 data-record={JSON.stringify(record)}
                                             >
-                                                解绑
+                                                {formatMessage({ id: 'esl.device.esl.unbind' })}
                                             </a>
                                         </Menu.Item>
                                     ) : null}
@@ -298,20 +298,22 @@ class SearchResult extends Component {
                                                 href="javascript: void (0);"
                                                 data-record={JSON.stringify(record)}
                                             >
-                                                修改模板
+                                                {formatMessage({
+                                                    id: 'esl.device.esl.template.alter',
+                                                })}
                                             </a>
                                         </Menu.Item>
                                     ) : null}
                                     {record.product_id ? <Menu.Divider /> : null}
                                     <Menu.Item key="2">
                                         <a href="javascript: void (0);" data-record-id={record.id}>
-                                            闪灯
+                                            {formatMessage({ id: 'esl.device.esl.flash' })}
                                         </a>
                                     </Menu.Item>
                                     <Menu.Divider />
                                     <Menu.Item key="3">
                                         <a href="javascript: void (0);" data-record-id={record.id}>
-                                            删除
+                                            {formatMessage({ id: 'btn.delete' })}
                                         </a>
                                     </Menu.Item>
                                 </Menu>
