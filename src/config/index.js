@@ -5,7 +5,8 @@ const SSO_ADDRESS = {
     test: 'test.api.sunmi.com',
     uat: 'uat.api.sunmi.com',
     onl: 'api.sunmi.com',
-    local: '127.0.0.1:30001',
+    // local: '127.0.0.1:30001',
+    local: '10.10.168.228:30001',
 };
 
 const API_ADDRESS = {
@@ -13,7 +14,8 @@ const API_ADDRESS = {
     test: 'test-store.sunmi.com:30301',
     uat: 'uat-store.sunmi.com:443',
     onl: 'store.sunmi.com:443',
-    local: '127.0.0.1:30001',
+    // local: '127.0.0.1:30001',
+    local: '10.10.168.228:30001',
 };
 
 const DES_KEY = {
