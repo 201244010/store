@@ -58,7 +58,7 @@ class SearchForm extends Component {
                     </Col>
                     <Col xl={6} lg={12} md={24}>
                         <Form.Item>
-                            <Button onClick={this.search}>
+                            <Button type="primary" onClick={this.search}>
                                 {formatMessage({ id: 'btn.query' })}
                             </Button>
                             <a

@@ -218,8 +218,8 @@ class StoreManagement extends Component {
                                 </FormItem>
                             </Col>
                             <Col xl={6} lg={12} md={24}>
-                                <Button onClick={this.handleSubmit}>
-                                    {formatMessage({ id: 'storeManagement.list.buttonSubmit' })}
+                                <Button type="primary" onClick={this.handleSubmit}>
+                                    {formatMessage({ id: 'btn.query' })}
                                 </Button>
                                 <a
                                     href="javascript:void(0)"
