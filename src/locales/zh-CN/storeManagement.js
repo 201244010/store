@@ -1,5 +1,4 @@
 export default {
-    // 门店列表
     'storeManagement.list.inputLabel': '门店',
     'storeManagement.list.inputPlaceHolder': '门店名称',
     'storeManagement.list.selectLabel': '经营品类',
@@ -17,7 +16,6 @@ export default {
     'storeManagement.list.operation1': '查看',
     'storeManagement.list.operation2': '修改',
     'storeManagement.list.operation3': '删除',
-    // 新建门店
     'storeManagement.create.title': '新建门店',
     'storeManagement.create.id': '门店编号',
     'storeManagement.create.nameLabel': '门店名称',
@@ -44,7 +42,7 @@ export default {
     'storeManagement.create.fullDay': '全天',
     'storeManagement.create.pic': '门店平面图',
     'storeManagement.create.upload': '上传附件',
-    'storeManagement.create.supportType s': '支持JPEG、PNG、gif、dwg、dxf',
+    'storeManagement.create.supportType': 's',
     'storeManagement.create.contactName': '联系人',
     'storeManagement.create.contactPhone': '联系人电话',
     'storeManagement.create.contactMail': '联系人邮箱',
@@ -53,19 +51,13 @@ export default {
     'storeManagement.create.idMessage': '请输入门店编号',
     'storeManagement.create.nameMessage': '请输入门店名称',
     'storeManagement.create.phoneMessage': '请输入正确的电话号码',
-
-    // 修改门店
     'storeManagement.alter.title': '修改门店',
-
-    // 查看门店
     'storeManagement.info.title': '查看门店',
     'storeManagement.info.create': '创建时间',
     'storeManagement.info.update': '更新时间',
     'storeManagement.info.modify': '修改',
     'storeManagement.info.cancel': '返回',
     'storeManagement.info.fullTypes': '全部品类',
-
-    // toast提示
     'storeManagement.message.alterSuccess': '修改成功',
     'storeManagement.message.alterFailed': '请输入正确的表单信息',
     'storeManagement.message.name.error': '请输入正确的门店名称',
