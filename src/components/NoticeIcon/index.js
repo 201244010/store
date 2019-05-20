@@ -37,7 +37,7 @@ export default class NoticeIcon extends PureComponent {
         // const { clickClose } = item;
         onItemClick(item, tabProps);
         // if (clickClose) {
-        this.popover.click();
+        // this.popover.click();
         // }
     };
 
@@ -45,7 +45,7 @@ export default class NoticeIcon extends PureComponent {
         const { onClear, clearClose } = this.props;
         onClear(name);
         if (clearClose) {
-            this.popover.click();
+            // this.popover.click();
         }
     };
 
@@ -57,7 +57,7 @@ export default class NoticeIcon extends PureComponent {
     onViewMore = (tabProps, event) => {
         const { onViewMore } = this.props;
         onViewMore(tabProps, event);
-        this.popover.click();
+        // this.popover.click();
     };
 
     getNotificationBox() {
