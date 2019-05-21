@@ -5,7 +5,14 @@ import { getImagePromise } from '@/utils/studio';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import * as TemplateService from '@/services/ESL/template';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
-import { IMAGE_TYPES, SHAPE_TYPES, BARCODE_TYPES, NORMAL_PRICE_TYPES, NON_NORMAL_PRICE_TYPES, MAPS } from "@/constants/studio";
+import {
+    IMAGE_TYPES,
+    SHAPE_TYPES,
+    BARCODE_TYPES,
+    NORMAL_PRICE_TYPES,
+    NON_NORMAL_PRICE_TYPES,
+    MAPS,
+} from '@/constants/studio';
 
 export default {
     namespace: 'template',
@@ -167,7 +174,9 @@ export default {
                             width: MAPS.containerWidth,
                             height: MAPS.containerHeight,
                         };
-                        componentDetail[realKey] = Math.round(size[detailKey][componentDetail.type] * scale[detailKey]);
+                        componentDetail[realKey] = Math.round(
+                            size[detailKey][componentDetail.type] * scale[detailKey]
+                        );
                     }
                     if (['x', 'y'].includes(detailKey)) {
                         if (componentDetail.type !== SHAPE_TYPES.RECT_FIX) {
@@ -181,35 +190,61 @@ export default {
                             ).toFixed();
                             if (NON_NORMAL_PRICE_TYPES.includes(componentDetail.type)) {
                                 const intPriceText = `${componentDetail.text}`.split('.')[0];
-                                const smallPriceText = `${componentDetail.text}`.split('.')[1] || '';
+                                const smallPriceText =
+                                    `${componentDetail.text}`.split('.')[1] || '';
                                 let backSmallStartY = 0;
                                 if (componentDetail.type.indexOf(SHAPE_TYPES.PRICE_SUPER)) {
-                                    backSmallStartY = (MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY - componentDetail.fontSize) / 2;
+                                    backSmallStartY =
+                                        (MAPS.containerHeight[componentDetail.type] *
+                                            componentDetail.scaleY -
+                                            componentDetail.fontSize) /
+                                        2;
                                 }
-                                const intTextWidth = componentDetail.fontSize / 2 * (intPriceText.length + (smallPriceText ? 0.7 : 0));
-                                const textWidth = intTextWidth + smallPriceText.length * componentDetail.smallFontSize / 2;
+                                const intTextWidth =
+                                    (componentDetail.fontSize / 2) *
+                                    (intPriceText.length + (smallPriceText ? 0.7 : 0));
+                                const textWidth =
+                                    intTextWidth +
+                                    (smallPriceText.length * componentDetail.smallFontSize) / 2;
                                 let intXPosition = 0;
-                                if (componentDetail.align === "center") {
-                                    intXPosition = (MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX - textWidth) / 2;
+                                if (componentDetail.align === 'center') {
+                                    intXPosition =
+                                        (MAPS.containerWidth[componentDetail.type] *
+                                            componentDetail.scaleX -
+                                            textWidth) /
+                                        2;
                                 }
                                 if (componentDetail.align === 'right') {
-                                    intXPosition = MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX - textWidth;
+                                    intXPosition =
+                                        MAPS.containerWidth[componentDetail.type] *
+                                            componentDetail.scaleX -
+                                        textWidth;
                                 }
                                 componentDetail.backType = SHAPE_TYPES.PRICE;
-                                componentDetail.backIntStartX = Math.round(componentDetail.backStartX) + Math.round(intXPosition);
-                                componentDetail.backIntStartY = Math.round(componentDetail.backStartY) + Math.round(backSmallStartY);
-                                componentDetail.backSmallStartX = componentDetail.backIntStartX + Math.round(intTextWidth);
+                                componentDetail.backIntStartX =
+                                    Math.round(componentDetail.backStartX) +
+                                    Math.round(intXPosition);
+                                componentDetail.backIntStartY =
+                                    Math.round(componentDetail.backStartY) +
+                                    Math.round(backSmallStartY);
+                                componentDetail.backSmallStartX =
+                                    componentDetail.backIntStartX + Math.round(intTextWidth);
                                 if (componentDetail.type.indexOf(SHAPE_TYPES.PRICE_SUPER) > -1) {
                                     componentDetail.backSmallStartY = componentDetail.backIntStartY;
                                 } else {
-                                    componentDetail.backSmallStartY = componentDetail.backIntStartY + componentDetail.fontSize - componentDetail.smallFontSize;
+                                    componentDetail.backSmallStartY =
+                                        componentDetail.backIntStartY +
+                                        componentDetail.fontSize -
+                                        componentDetail.smallFontSize;
                                 }
                             }
                         }
                     }
                     if (['type'].includes(detailKey)) {
                         const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
-                        if ([...NORMAL_PRICE_TYPES, SHAPE_TYPES.RECT].includes(componentDetail.type)) {
+                        if (
+                            [...NORMAL_PRICE_TYPES, SHAPE_TYPES.RECT].includes(componentDetail.type)
+                        ) {
                             componentDetail[realKey] = SHAPE_TYPES.TEXT;
                         }
                         if (BARCODE_TYPES.includes(componentDetail.type)) {
@@ -222,7 +257,13 @@ export default {
                         }
                     }
                     if (['fill'].includes(detailKey)) {
-                        if ([...NORMAL_PRICE_TYPES, ...NON_NORMAL_PRICE_TYPES, SHAPE_TYPES.TEXT].includes(componentDetail.type)) {
+                        if (
+                            [
+                                ...NORMAL_PRICE_TYPES,
+                                ...NON_NORMAL_PRICE_TYPES,
+                                SHAPE_TYPES.TEXT,
+                            ].includes(componentDetail.type)
+                        ) {
                             componentDetail.backBg = componentDetail.textBg;
                         }
                         if ([SHAPE_TYPES.RECT].includes(componentDetail.type)) {

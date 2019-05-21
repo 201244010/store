@@ -79,20 +79,24 @@ export default function BoardTools(props) {
                     <span>99.00</span>
                 </ToolItem>
                 <ToolItem
-                    className={`${styles["item-price"]} ${styles["item-price-white-super"]}`}
+                    className={`${styles['item-price']} ${styles['item-price-white-super']}`}
                     type={SHAPE_TYPES.PRICE_SUPER_WHITE}
                     id={generatorId(SHAPE_TYPES.PRICE_SUPER_WHITE)}
                     addComponent={addComponent}
                 >
-                    <span>99.<sup>00</sup></span>
+                    <span>
+                        99.<sup>00</sup>
+                    </span>
                 </ToolItem>
                 <ToolItem
-                    className={`${styles["item-price"]} ${styles["item-price-white-sub"]}`}
+                    className={`${styles['item-price']} ${styles['item-price-white-sub']}`}
                     type={SHAPE_TYPES.PRICE_SUB_WHITE}
                     id={generatorId(SHAPE_TYPES.PRICE_SUB_WHITE)}
                     addComponent={addComponent}
                 >
-                    <span>99.<sub>00</sub></span>
+                    <span>
+                        99.<sub>00</sub>
+                    </span>
                 </ToolItem>
                 <ToolItem
                     className={`${styles['item-price']} ${styles['item-price-normal']}`}
@@ -108,7 +112,9 @@ export default function BoardTools(props) {
                     id={generatorId(SHAPE_TYPES.PRICE_SUPER_BLACK)}
                     addComponent={addComponent}
                 >
-                    <span>99.<sup>00</sup></span>
+                    <span>
+                        99.<sup>00</sup>
+                    </span>
                 </ToolItem>
                 <ToolItem
                     className={`${styles['item-price']} ${styles['item-price-sub']}`}
@@ -116,7 +122,9 @@ export default function BoardTools(props) {
                     id={generatorId(SHAPE_TYPES.PRICE_SUB_BLACK)}
                     addComponent={addComponent}
                 >
-                    <span>99.<sub>00</sub></span>
+                    <span>
+                        99.<sub>00</sub>
+                    </span>
                 </ToolItem>
             </div>
             <div className={`${styles['tools-block']} ${styles.code}`}>
