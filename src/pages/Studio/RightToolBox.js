@@ -415,7 +415,7 @@ export default class RightToolBox extends Component {
                             <Col span={4}>
                                 <span className={styles.title}>字号</span>
                             </Col>
-                            <Col span={7}>
+                            <Col span={20}>
                                 <InputNumber
                                     style={{ width: "100%" }}
                                     placeholder="字号"
@@ -426,7 +426,9 @@ export default class RightToolBox extends Component {
                                     }}
                                 />
                             </Col>
-                            <Col span={2} />
+                            {
+                                /*
+                                <Col span={2} />
                             <Col span={4}>
                                 <span className={styles.title}>间距</span>
                             </Col>
@@ -441,6 +443,8 @@ export default class RightToolBox extends Component {
                                     }}
                                 />
                             </Col>
+                                */
+                            }
                         </Row>
                         <Row style={{ marginBottom: 10 }} gutter={20}>
                             <Col
@@ -456,7 +460,9 @@ export default class RightToolBox extends Component {
                                     }}
                                 />
                             </Col>
-                            <Col
+                            {
+                                /*
+                                * <Col
                                 span={6}
                                 className={`${styles.formatter} ${
                                     detail.fontStyle.indexOf("italic") > -1
@@ -471,6 +477,8 @@ export default class RightToolBox extends Component {
                                     }}
                                 />
                             </Col>
+                                */
+                            }
                             <Col
                                 span={6}
                                 className={`${styles.formatter} ${
@@ -669,7 +677,7 @@ export default class RightToolBox extends Component {
                             <Col span={4}>
                                 <span className={styles.title}>字体</span>
                             </Col>
-                            <Col span={20}>
+                            <Col span={14}>
                                 <Select
                                     style={{ width: "100%" }}
                                     value={detail.fontFamily}
@@ -680,6 +688,20 @@ export default class RightToolBox extends Component {
                                     <Option value="Zfull-GB">Zfull-GB</Option>
                                     <Option value="Arial">Arial</Option>
                                 </Select>
+                            </Col>
+                            <Col
+                                span={6}
+                                style={{textAlign: 'right'}}
+                                className={`${styles.formatter} ${
+                                    detail.fontStyle.indexOf("bold") > -1 ? `${styles.active}` : ""
+                                }`}
+                            >
+                                <Icon
+                                    type="bold"
+                                    onClick={() => {
+                                        this.handleFontStyle(detail, "bold");
+                                    }}
+                                />
                             </Col>
                         </Row>
                         <Row style={{ marginBottom: 10 }} gutter={10}>
@@ -714,64 +736,58 @@ export default class RightToolBox extends Component {
                                 </Row>
                             </Col>
                         </Row>
-                        <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col
-                                span={6}
-                                className={`${styles.formatter} ${
-                                    detail.fontStyle.indexOf("bold") > -1 ? `${styles.active}` : ""
-                                    }`}
-                            >
-                                <Icon
-                                    type="bold"
-                                    onClick={() => {
-                                        this.handleFontStyle(detail, "bold");
-                                    }}
-                                />
-                            </Col>
-                            <Col
-                                span={6}
-                                className={`${styles.formatter} ${
-                                    detail.fontStyle.indexOf("italic") > -1
-                                        ? `${styles.active}`
-                                        : ""
-                                    }`}
-                            >
-                                <Icon
-                                    type="italic"
-                                    onClick={() => {
-                                        this.handleFontStyle(detail, "italic");
-                                    }}
-                                />
-                            </Col>
-                            <Col
-                                span={6}
-                                className={`${styles.formatter} ${
-                                    detail.textDecoration === "underline" ? `${styles.active}` : ""
-                                    }`}
-                            >
-                                <Icon
-                                    type="underline"
-                                    onClick={() => {
-                                        this.handleTextDecoration(detail, "underline");
-                                    }}
-                                />
-                            </Col>
-                            <Col
-                                span={6}
-                                className={`${styles.formatter} ${
-                                    detail.textDecoration === "line-through"
-                                        ? `${styles.active}`
-                                        : ""
-                                    }`}
-                            >
-                                <Icon
-                                    type="strikethrough"
-                                    onClick={() => {
-                                        this.handleTextDecoration(detail, "line-through");
-                                    }}
-                                />
-                            </Col>
+                        {
+                            /*
+                            <Row style={{ marginBottom: 10 }} gutter={20}>
+
+                            * <Col
+                            span={6}
+                            className={`${styles.formatter} ${
+                                detail.fontStyle.indexOf("italic") > -1
+                                    ? `${styles.active}`
+                                    : ""
+                                }`}
+                        >
+                            <Icon
+                                type="italic"
+                                onClick={() => {
+                                    this.handleFontStyle(detail, "italic");
+                                }}
+                            />
+                        </Col>
+                        <Col
+                            span={6}
+                            className={`${styles.formatter} ${
+                                detail.textDecoration === "underline" ? `${styles.active}` : ""
+                                }`}
+                        >
+                            <Icon
+                                type="underline"
+                                onClick={() => {
+                                    this.handleTextDecoration(detail, "underline");
+                                }}
+                            />
+                        </Col>
+                        <Col
+                            span={6}
+                            className={`${styles.formatter} ${
+                                detail.textDecoration === "line-through"
+                                    ? `${styles.active}`
+                                    : ""
+                                }`}
+                        >
+                            <Icon
+                                type="strikethrough"
+                                onClick={() => {
+                                    this.handleTextDecoration(detail, "line-through");
+                                }}
+                            />
+                        </Col>
+
+                            }
                         </Row>
+                        * */
+                        }
                         <Row style={{ marginBottom: 10 }} gutter={20}>
                             <Col span={24}>字体颜色</Col>
                             <Col span={24}>
@@ -819,29 +835,29 @@ export default class RightToolBox extends Component {
                                 </Radio.Group>
                             </Col>
                         </Row>
+                        <Row style={{marginBottom: 10}} gutter={20}>
+                            <Col span={24}>
+                                小数显示类型
+                            </Col>
+                            <Col span={24}>
+                                <Radio.Group
+                                    style={{width: '100%'}}
+                                    value={`${detail.type.split('@')[0]}@${detail.type.split('@')[1]}`}
+                                    onChange={(e) => {this.handleDetail('type', e.target.value);}}
+                                >
+                                    <Radio.Button style={{width: '33.33%'}} value="price@normal">
+                                        <span style={{fontSize: 16}}>99.00</span>
+                                    </Radio.Button>
+                                    <Radio.Button style={{width: '33.33%'}} value="price@super">
+                                        <span style={{fontSize: 16}}>99.<sup>00</sup></span>
+                                    </Radio.Button>
+                                    <Radio.Button style={{width: '33.33%'}} value="price@sub">
+                                        <span style={{fontSize: 16}}>99.<sub>00</sub></span>
+                                    </Radio.Button>
+                                </Radio.Group>
+                            </Col>
+                        </Row>
                         {/*
-                                <Row style={{marginBottom: 10}} gutter={20}>
-                                    <Col span={24}>
-                                        小数显示类型
-                                    </Col>
-                                    <Col span={24}>
-                                        <Radio.Group
-                                            style={{width: '100%'}}
-                                            value={`${detail.type.split('@')[0]}@${detail.type.split('@')[1]}`}
-                                            onChange={(e) => {this.handleDetail('type', e.target.value)}}
-                                        >
-                                            <Radio.Button style={{width: '33.33%'}} value="price@normal">
-                                                <span style={{fontSize: 16}}>99.00</span>
-                                            </Radio.Button>
-                                            <Radio.Button style={{width: '33.33%'}} value="price@super">
-                                                <span style={{fontSize: 16}}>99.<sup>00</sup></span>
-                                            </Radio.Button>
-                                            <Radio.Button style={{width: '33.33%'}} value="price@sub">
-                                                <span style={{fontSize: 16}}>99.<sub>00</sub></span>
-                                            </Radio.Button>
-                                        </Radio.Group>
-                                    </Col>
-                                </Row>
                                 <Row style={{marginBottom: 10}} gutter={20}>
                                     <Col span={24}>
                                         小数位数
