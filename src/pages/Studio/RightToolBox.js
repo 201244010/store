@@ -39,10 +39,17 @@ export default class RightToolBox extends Component {
                 name: `${newType}${oldNameIndex}`
             });
         } else {
-            updateComponentsDetail({
-                [selectedShapeName]: {
-                    [key]: value
+            const newDetail = {
+                [key]: value
+            };
+            if (key === "fontSize") {
+                const detail = componentsDetail[selectedShapeName];
+                if (MAPS.containerHeight[detail.type] * detail.scaleY < value) {
+                    newDetail.scaleY = value / MAPS.containerHeight[detail.type];
                 }
+            }
+            updateComponentsDetail({
+                [selectedShapeName]: newDetail
             });
         }
     };
@@ -168,6 +175,9 @@ export default class RightToolBox extends Component {
         if (this.hasSubString(SHAPE_TYPES.PRICE)) {
             menuMap.hasBindData = true;
             menuMap.isPrice = true;
+            if (this.hasSubString(SHAPE_TYPES.PRICE_SUPER) || this.hasSubString(SHAPE_TYPES.PRICE_SUB)) {
+                menuMap.isNonNormalPrice = true;
+            }
         }
         if (this.hasSubString(SHAPE_TYPES.CODE)) {
             menuMap.hasBindData = true;
@@ -738,36 +748,59 @@ export default class RightToolBox extends Component {
                             </Col>
                         </Row>
                         <Row style={{ marginBottom: 10 }} gutter={10}>
-                            <Col span={12}>
-                                <Row>
-                                    <Col span={24}>
-                                        <span className={styles.title}>{formatMessage({ id: 'studio.tool.label.font.size.int' })}</span>
-                                    </Col>
-                                    <Col span={24}>
-                                        <InputNumber
-                                            style={{width: '100%'}}
-                                            placeholder={formatMessage({ id: 'studio.tool.label.font.size.int' })}
-                                            value={detail.fontSize}
-                                            onChange={(value) => {this.handleDetail('fontSize', value);}}
-                                        />
-                                    </Col>
-                                </Row>
-                            </Col>
-                            <Col span={12}>
-                                <Row>
-                                    <Col span={24}>
-                                        <span className={styles.title}>{formatMessage({ id: 'studio.tool.label.font.size.small' })}</span>
-                                    </Col>
-                                    <Col span={24}>
-                                        <InputNumber
-                                            style={{width: '100%'}}
-                                            placeholder={formatMessage({ id: 'studio.tool.label.font.size.small' })}
-                                            value={detail.smallFontSize}
-                                            onChange={(value) => {this.handleDetail('smallFontSize', value);}}
-                                        />
-                                    </Col>
-                                </Row>
-                            </Col>
+                            {
+                                menuMap.isNonNormalPrice ?
+                                    <Fragment>
+                                        <Col span={12}>
+                                            <Row>
+                                                <Col span={24}>
+                                                    <span className={styles.title}>{formatMessage({ id: 'studio.tool.label.font.size.int' })}</span>
+                                                </Col>
+                                                <Col span={24}>
+                                                    <InputNumber
+                                                        style={{width: '100%'}}
+                                                        placeholder={formatMessage({ id: 'studio.tool.label.font.size.int' })}
+                                                        min={detail.smallFontSize}
+                                                        value={detail.fontSize}
+                                                        onChange={(value) => {this.handleDetail('fontSize', value);}}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                        <Col span={12}>
+                                            <Row>
+                                                <Col span={24}>
+                                                    <span className={styles.title}>{formatMessage({ id: 'studio.tool.label.font.size.small' })}</span>
+                                                </Col>
+                                                <Col span={24}>
+                                                    <InputNumber
+                                                        style={{width: '100%'}}
+                                                        placeholder={formatMessage({ id: 'studio.tool.label.font.size.small' })}
+                                                        max={detail.fontSize}
+                                                        value={detail.smallFontSize}
+                                                        onChange={(value) => {this.handleDetail('smallFontSize', value);}}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                    </Fragment> :
+                                    <Fragment>
+                                        <Col span={4}>
+                                            <span className={styles.title}>{formatMessage({ id: 'studio.tool.label.font.size' })}</span>
+                                        </Col>
+                                        <Col span={20}>
+                                            <InputNumber
+                                                style={{ width: "100%" }}
+                                                placeholder={formatMessage({ id: 'studio.tool.label.font.size' })}
+                                                min={8}
+                                                value={detail.fontSize}
+                                                onChange={value => {
+                                                    this.handleDetail("fontSize", value);
+                                                }}
+                                            />
+                                        </Col>
+                                    </Fragment>
+                            }
                         </Row>
                         {
                             /*
