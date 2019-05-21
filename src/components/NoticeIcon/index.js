@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import { Icon, Tabs, Badge, Spin } from 'antd';
 import classNames from 'classnames';
 import HeaderDropdown from '../HeaderDropdown';
@@ -37,7 +37,7 @@ export default class NoticeIcon extends PureComponent {
         // const { clickClose } = item;
         onItemClick(item, tabProps);
         // if (clickClose) {
-        this.popover.click();
+        // this.popover.click();
         // }
     };
 
@@ -45,7 +45,7 @@ export default class NoticeIcon extends PureComponent {
         const { onClear, clearClose } = this.props;
         onClear(name);
         if (clearClose) {
-            this.popover.click();
+            // this.popover.click();
         }
     };
 
@@ -57,7 +57,7 @@ export default class NoticeIcon extends PureComponent {
     onViewMore = (tabProps, event) => {
         const { onViewMore } = this.props;
         onViewMore(tabProps, event);
-        this.popover.click();
+        // this.popover.click();
     };
 
     getNotificationBox() {
@@ -138,7 +138,7 @@ export default class NoticeIcon extends PureComponent {
                 visible={visible}
                 onVisibleChange={this.handleVisibleChange}
                 {...popoverProps}
-                ref={node => (this.popover = ReactDOM.findDOMNode(node))} // eslint-disable-line
+                // ref={node => (this.popover = ReactDOM.findDOMNode(node))}
             >
                 {trigger}
             </HeaderDropdown>

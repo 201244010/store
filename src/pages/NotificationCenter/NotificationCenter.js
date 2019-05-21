@@ -49,9 +49,21 @@ class NotificationCenter extends Component {
         await getNotificationList();
     };
 
-    onTableChange = pagination => {
-        const { getNotificationList } = this.props;
-        getNotificationList({
+    onTableChange = async (pagination, filters) => {
+        const {
+            getNotificationList,
+            updateSearchValue,
+            notification: { modelList, searchFormValues },
+        } = this.props;
+
+        const modelIdList = modelList
+            .filter(item => (filters.model_name || []).includes(item.model_name))
+            .map(item => item.model_id);
+        await updateSearchValue({
+            ...searchFormValues,
+            modelIdList,
+        });
+        await getNotificationList({
             pageSize: pagination.pageSize,
             pageNum: pagination.current,
         });
@@ -112,9 +124,10 @@ class NotificationCenter extends Component {
                 count: { unread },
             },
         } = this.props;
-        const filterList = modelList.map(item =>
-            Object.assign({}, { text: item.model_name, value: item.model_name })
-        );
+        const filterList = modelList.map(item => ({
+            text: item.model_name,
+            value: item.model_name,
+        }));
         const columns = [
             {
                 title: formatMessage({ id: 'notification.title' }),
@@ -147,8 +160,7 @@ class NotificationCenter extends Component {
                 dataIndex: 'model_name',
                 filterIcon: () => <Icon type="filter" style={{ left: '60px' }} />,
                 filters: filterList,
-                // onFilter: (value) => this.handleFilterChange(value),
-                onFilter: (value, record) => record.model_name.indexOf(value) === 0,
+                onFilter: (value, record) => record.model_name === value,
             },
         ];
         const { selectedRowKeys } = this.state;

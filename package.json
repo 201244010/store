@@ -14,6 +14,7 @@
     "build:uat": "cross-env UMI_ENV=uat APP_TYPE=site umi build",
     "build:onl": "cross-env UMI_ENV=onl APP_TYPE=site umi build",
     "build:local": "cross-env UMI_ENV=local APP_TYPE=site umi build",
+    "build:demo": "cross-env UMI_ENV=local APP_TYPE=site umi build",
     "analyze": "cross-env ANALYZE=1 umi build",
     "lint:style": "stylelint \"src/**/*.less\" --syntax less",
     "lint": "eslint --ext .js src mock tests && npm run lint:style",

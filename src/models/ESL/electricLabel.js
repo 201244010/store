@@ -28,7 +28,7 @@ export default {
         flashModes: [],
     },
     effects: {
-        * changeSearchFormValue({ payload = {} }, { put }) {
+        *changeSearchFormValue({ payload = {} }, { put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'setSearchFormValue',
@@ -37,7 +37,7 @@ export default {
                 },
             });
         },
-        * clearSearch(_, { put }) {
+        *clearSearch(_, { put }) {
             yield put({
                 type: 'updateState',
                 payload: {
@@ -48,7 +48,7 @@ export default {
                 },
             });
         },
-        * fetchElectricLabels({ payload = {} }, { call, put, select }) {
+        *fetchElectricLabels({ payload = {} }, { call, put, select }) {
             const { options = {} } = payload;
             const { pagination, searchFormValues } = yield select(state => state.eslElectricLabel);
 
@@ -74,7 +74,7 @@ export default {
                 },
             });
         },
-        * fetchESLDetails({ payload = {} }, { call, put }) {
+        *fetchESLDetails({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'updateState',
@@ -99,7 +99,7 @@ export default {
             }
             return response;
         },
-        * fetchFlashModes({ payload = {} }, { call, put }) {
+        *fetchFlashModes({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
 
             const response = yield call(ESLServices.fetchFlashModes, options);
@@ -114,7 +114,7 @@ export default {
             }
             return response;
         },
-        * fetchTemplatesByESLCode({ payload = {} }, { call, put }) {
+        *fetchTemplatesByESLCode({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
 
             const response = yield call(TemplateServices.fetchTemplatesByESLCode, options);
@@ -129,7 +129,7 @@ export default {
             }
             return response;
         },
-        * fetchDeviceOverview(_, { call, put }) {
+        *fetchDeviceOverview(_, { call, put }) {
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -149,7 +149,7 @@ export default {
                 payload: { loading: false },
             });
         },
-        * flushESL({ payload = {} }, { call, put }) {
+        *flushESL({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'updateState',
@@ -160,7 +160,7 @@ export default {
             if (response.code === ERROR_OK) {
                 message.success(
                     formatMessage({ id: 'esl.device.esl.flush.success' }),
-                    DURATION_TIME,
+                    DURATION_TIME
                 );
                 yield put({
                     type: 'updateState',
@@ -177,7 +177,7 @@ export default {
                 });
             }
         },
-        * bindESL({ payload = {} }, { call, put }) {
+        *bindESL({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'updateState',
@@ -188,7 +188,7 @@ export default {
             if (response.code === ERROR_OK) {
                 message.success(
                     formatMessage({ id: 'esl.device.esl.bind.success' }),
-                    DURATION_TIME,
+                    DURATION_TIME
                 );
                 yield put({
                     type: 'updateState',
@@ -206,7 +206,7 @@ export default {
             }
             return response;
         },
-        * unbindESL({ payload = {} }, { call, put }) {
+        *unbindESL({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'updateState',
@@ -217,7 +217,7 @@ export default {
             if (response.code === ERROR_OK) {
                 message.success(
                     formatMessage({ id: 'esl.device.esl.unbind.success' }),
-                    DURATION_TIME,
+                    DURATION_TIME
                 );
                 yield put({
                     type: 'updateState',
@@ -234,7 +234,7 @@ export default {
                 });
             }
         },
-        * changeTemplate({ payload = {} }, { call, put }) {
+        *changeTemplate({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'updateState',
@@ -245,7 +245,7 @@ export default {
             if (response.code === ERROR_OK) {
                 message.success(
                     formatMessage({ id: 'esl.device.esl.change.template.success' }),
-                    DURATION_TIME,
+                    DURATION_TIME
                 );
                 yield put({
                     type: 'updateState',
@@ -257,7 +257,7 @@ export default {
             } else {
                 message.error(
                     formatMessage({ id: 'esl.device.esl.change.template.fail' }),
-                    DURATION_TIME,
+                    DURATION_TIME
                 );
                 yield put({
                     type: 'updateState',
@@ -265,7 +265,7 @@ export default {
                 });
             }
         },
-        * flashLed({ payload = {} }, { call, put }) {
+        *flashLed({ payload = {} }, { call, put }) {
             const { options = {} } = payload;
             yield put({
                 type: 'updateState',
@@ -276,7 +276,7 @@ export default {
             if (response.code === ERROR_OK) {
                 message.success(
                     formatMessage({ id: 'esl.device.esl.flash.success' }),
-                    DURATION_TIME,
+                    DURATION_TIME
                 );
                 yield put({
                     type: 'updateState',
@@ -290,7 +290,7 @@ export default {
                 });
             }
         },
-        * deleteESL({ payload = {} }, { call, put, select }) {
+        *deleteESL({ payload = {} }, { call, put, select }) {
             const {
                 pagination: { current },
                 data,
@@ -306,7 +306,7 @@ export default {
             if (response.code === ERROR_OK) {
                 message.success(
                     formatMessage({ id: 'esl.device.esl.delete.success' }),
-                    DURATION_TIME,
+                    DURATION_TIME
                 );
                 yield put({
                     type: 'updateState',
@@ -329,7 +329,7 @@ export default {
             }
         },
 
-        * refreshFailedImage(_, { call, put }) {
+        *refreshFailedImage(_, { call, put }) {
             yield put({
                 type: 'updateState',
                 payload: { loading: true },
@@ -346,7 +346,7 @@ export default {
             });
         },
 
-        * clearSearchValue(_, { put }) {
+        *clearSearchValue(_, { put }) {
             yield put({
                 type: 'updateState',
                 payload: {
