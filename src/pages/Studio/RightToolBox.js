@@ -298,56 +298,60 @@ export default class RightToolBox extends Component {
                                 </Radio.Group>
                             </Col>
                         </Row>
-                        <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>边框宽度</Col>
-                            <Col span={24}>
-                                <Radio.Group
-                                    style={{ width: "100%" }}
-                                    value={detail.strokeWidth}
-                                    onChange={e => {
-                                        this.handleDetail(
-                                            "strokeWidth",
-                                            parseInt(e.target.value, 10)
-                                        );
-                                    }}
-                                >
-                                    <Radio.Button style={{ width: "25%" }} value={0}>
-                                        无
-                                    </Radio.Button>
-                                    <Radio.Button style={{ width: "25%" }} value={1}>
-                                        1px
-                                    </Radio.Button>
-                                    <Radio.Button style={{ width: "25%" }} value={3}>
-                                        3px
-                                    </Radio.Button>
-                                    <Radio.Button style={{ width: "25%" }} value={5}>
-                                        5px
-                                    </Radio.Button>
-                                </Radio.Group>
-                            </Col>
-                        </Row>
-                        <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>边框颜色</Col>
-                            <Col span={24}>
-                                <Radio.Group
-                                    style={{ width: "100%" }}
-                                    value={detail.stroke}
-                                    onChange={e => {
-                                        this.handleDetail("stroke", e.target.value);
-                                    }}
-                                >
-                                    <Radio.Button style={{ width: "33.33%" }} value="black">
-                                        黑
-                                    </Radio.Button>
-                                    <Radio.Button style={{ width: "33.33%" }} value="white">
-                                        白
-                                    </Radio.Button>
-                                    <Radio.Button style={{ width: "33.33%" }} value="red">
-                                        红
-                                    </Radio.Button>
-                                </Radio.Group>
-                            </Col>
-                        </Row>
+                        {
+                            /*
+                             <Row style={{ marginBottom: 10 }} gutter={20}>
+                                    <Col span={24}>边框宽度</Col>
+                                    <Col span={24}>
+                                        <Radio.Group
+                                            style={{ width: "100%" }}
+                                            value={detail.strokeWidth}
+                                            onChange={e => {
+                                                this.handleDetail(
+                                                    "strokeWidth",
+                                                    parseInt(e.target.value, 10)
+                                                );
+                                            }}
+                                        >
+                                            <Radio.Button style={{ width: "25%" }} value={0}>
+                                                无
+                                            </Radio.Button>
+                                            <Radio.Button style={{ width: "25%" }} value={1}>
+                                                1px
+                                            </Radio.Button>
+                                            <Radio.Button style={{ width: "25%" }} value={3}>
+                                                3px
+                                            </Radio.Button>
+                                            <Radio.Button style={{ width: "25%" }} value={5}>
+                                                5px
+                                            </Radio.Button>
+                                        </Radio.Group>
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginBottom: 10 }} gutter={20}>
+                                    <Col span={24}>边框颜色</Col>
+                                    <Col span={24}>
+                                        <Radio.Group
+                                            style={{ width: "100%" }}
+                                            value={detail.stroke}
+                                            onChange={e => {
+                                                this.handleDetail("stroke", e.target.value);
+                                            }}
+                                        >
+                                            <Radio.Button style={{ width: "33.33%" }} value="black">
+                                                黑
+                                            </Radio.Button>
+                                            <Radio.Button style={{ width: "33.33%" }} value="white">
+                                                白
+                                            </Radio.Button>
+                                            <Radio.Button style={{ width: "33.33%" }} value="red">
+                                                红
+                                            </Radio.Button>
+                                        </Radio.Group>
+                                    </Col>
+                                </Row>
+                            */
+                        }
                         {/*
                                 <Row style={{ marginBottom: 10 }} gutter={20}>
                                     <Col span={24}>圆角直径</Col>
@@ -679,52 +683,36 @@ export default class RightToolBox extends Component {
                             </Col>
                         </Row>
                         <Row style={{ marginBottom: 10 }} gutter={10}>
-                            <Col span={4}>
-                                <span className={styles.title}>字号</span>
-                            </Col>
-                            <Col span={20}>
-                                <InputNumber
-                                    style={{ width: "100%" }}
-                                    placeholder="字号"
-                                    min={8}
-                                    value={detail.fontSize}
-                                    onChange={value => {
-                                        this.handleDetail("fontSize", value);
-                                    }}
-                                />
-                            </Col>
-                            {/*
-                                    <Col span={12}>
-                                        <Row>
-                                            <Col span={24}>
-                                                <span className={styles.title}>整数字号</span>
-                                            </Col>
-                                            <Col span={24}>
-                                                <InputNumber
-                                                    style={{width: '100%'}}
-                                                    placeholder="整数字号"
-                                                    value={detail.fontSize}
-                                                    onChange={(value) => {this.handleDetail('fontSize', value)}}
-                                                />
-                                            </Col>
-                                        </Row>
+                            <Col span={12}>
+                                <Row>
+                                    <Col span={24}>
+                                        <span className={styles.title}>整数字号</span>
                                     </Col>
-                                    <Col span={12}>
-                                        <Row>
-                                            <Col span={24}>
-                                                <span className={styles.title}>小数字号</span>
-                                            </Col>
-                                            <Col span={24}>
-                                                <InputNumber
-                                                    style={{width: '100%'}}
-                                                    placeholder="小数字号"
-                                                    value={detail.smallFontSize}
-                                                    onChange={(value) => {this.handleDetail('smallFontSize', value)}}
-                                                />
-                                            </Col>
-                                        </Row>
+                                    <Col span={24}>
+                                        <InputNumber
+                                            style={{width: '100%'}}
+                                            placeholder="整数字号"
+                                            value={detail.fontSize}
+                                            onChange={(value) => {this.handleDetail('fontSize', value);}}
+                                        />
                                     </Col>
-                                     */}
+                                </Row>
+                            </Col>
+                            <Col span={12}>
+                                <Row>
+                                    <Col span={24}>
+                                        <span className={styles.title}>小数字号</span>
+                                    </Col>
+                                    <Col span={24}>
+                                        <InputNumber
+                                            style={{width: '100%'}}
+                                            placeholder="小数字号"
+                                            value={detail.smallFontSize}
+                                            onChange={(value) => {this.handleDetail('smallFontSize', value);}}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Col>
                         </Row>
                         <Row style={{ marginBottom: 10 }} gutter={20}>
                             <Col
