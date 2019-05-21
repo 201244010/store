@@ -11,6 +11,7 @@ import resetPassword from './zh-CN/resetPassword';
 import userCenter from './zh-CN/userCenter';
 import storeManagement from './zh-CN/storeManagement';
 import notification from './zh-CN/notification';
+import studio from './zh-CN/studio';
 
 import VideoPlayer from './zh-CN/videoPlayer';
 
@@ -49,4 +50,5 @@ export default {
     ...storeManagement,
     ...notification,
     ...VideoPlayer,
+    ...studio
 };
