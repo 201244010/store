@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import { connect } from 'dva';
 import { Spin, message } from 'antd';
+import { formatMessage } from 'umi/locale';
 import MTransformer from './MTransformer';
 import BoardHeader from './BoardHeader';
 import BoardTools from './BoardTools';
@@ -542,7 +543,7 @@ class Studio extends Component {
 
         return (
             <div className={styles.board}>
-                <Spin tip="拼命加载中" spinning={false} />
+                <Spin tip={formatMessage({ id: "studio.loading" })} spinning={false} />
                 <div className={styles['board-header']}>
                     <BoardHeader
                         {...{
@@ -620,6 +621,7 @@ class Studio extends Component {
                                     selectedShapeName,
                                     componentsDetail,
                                     zoomScale,
+                                    templateInfo: curTemplate,
                                     updateComponentsDetail,
                                     deleteSelectedComponent,
                                     addComponent,

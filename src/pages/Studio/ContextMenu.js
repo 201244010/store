@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { formatMessage } from 'umi/locale';
 import { SHAPE_TYPES, SIZES } from '@/constants/studio';
 import * as styles from './index.less';
 
@@ -55,14 +56,14 @@ export default class ContextMenu extends Component {
             >
                 {canCopyOrDelete ? (
                     <div className={styles['context-item']} onClick={this.handleCopy}>
-                        复制
+                        {formatMessage({ id: 'studio.action.copy' })}
                     </div>
                 ) : (
                     <div className={`${styles['context-item']} ${styles.disabled}`}>复制</div>
                 )}
                 {copiedComponent && copiedComponent.type ? (
                     <div className={styles['context-item']} onClick={this.handlePaste}>
-                        粘贴
+                        {formatMessage({ id: 'studio.action.paste' })}
                     </div>
                 ) : null}
                 {canCopyOrDelete ? (
@@ -70,7 +71,7 @@ export default class ContextMenu extends Component {
                         className={`${styles['context-item']} ${styles['last-item']}`}
                         onClick={this.handleDelete}
                     >
-                        删除
+                        {formatMessage({ id: 'studio.action.delete' })}
                     </div>
                 ) : (
                     <div
@@ -78,7 +79,7 @@ export default class ContextMenu extends Component {
                             styles.disabled
                         }`}
                     >
-                        删除
+                        {formatMessage({ id: 'studio.action.delete' })}
                     </div>
                 )}
             </div>
