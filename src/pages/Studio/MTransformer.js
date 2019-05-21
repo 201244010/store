@@ -13,11 +13,11 @@ export default class MTransformer extends Component {
     }
 
     boundBoxFunc = (oldBoundBox, newBoundBox) => {
-        if (newBoundBox.width < 10) {
-            newBoundBox.width = 10;
+        if (newBoundBox.width < 3) {
+            newBoundBox.width = 3;
         }
-        if (newBoundBox.height < 10) {
-            newBoundBox.height = 10;
+        if (newBoundBox.height < 3) {
+            newBoundBox.height = 3;
         }
         return newBoundBox;
     };
