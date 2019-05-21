@@ -1,4 +1,5 @@
 export default {
+    'basicData.product.not.bind': 'No Bind',
     'basicData.product.search.product': 'Product Detail',
     'basicData.product.search.placeholder': 'Product Name/ID/Barcode',
     'basicData.product.label.add': 'Add Info',

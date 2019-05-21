@@ -620,6 +620,7 @@ class Studio extends Component {
                                     selectedShapeName,
                                     componentsDetail,
                                     zoomScale,
+                                    templateInfo: curTemplate,
                                     updateComponentsDetail,
                                     deleteSelectedComponent,
                                     addComponent,
