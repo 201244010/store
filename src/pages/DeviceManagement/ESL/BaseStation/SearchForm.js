@@ -72,11 +72,11 @@ class SearchForm extends Component {
                                 {formatMessage({ id: 'btn.query' })}
                             </Button>
                             {/* <a */}
-                                {/* href="javascript:void(0)" */}
-                                {/* style={{ marginLeft: '20px' }} */}
-                                {/* onClick={this.handleReset} */}
+                            {/* href="javascript:void(0)" */}
+                            {/* style={{ marginLeft: '20px' }} */}
+                            {/* onClick={this.handleReset} */}
                             {/* > */}
-                                {/* {formatMessage({ id: 'storeManagement.list.buttonReset' })} */}
+                            {/* {formatMessage({ id: 'storeManagement.list.buttonReset' })} */}
                             {/* </a> */}
                         </Form.Item>
                     </Col>

@@ -5,7 +5,8 @@ const SSO_ADDRESS = {
     test: 'test.api.sunmi.com',
     uat: 'uat.api.sunmi.com',
     onl: 'api.sunmi.com',
-    local: '',
+    local: '127.0.0.1:30001',
+    // local: '10.10.168.228:30001',
 };
 
 const API_ADDRESS = {
@@ -13,7 +14,8 @@ const API_ADDRESS = {
     test: 'test-store.sunmi.com:30301',
     uat: 'uat-store.sunmi.com:443',
     onl: 'store.sunmi.com:443',
-    local: '',
+    local: '127.0.0.1:30001',
+    // local: '10.10.168.228:30001',
 };
 
 // ipc专用的测试和开发地址
@@ -24,10 +26,10 @@ const IPC_ADDRESS = {
 
 const DES_KEY = {
     dev: 'NzI3MjQyNzEyMjI3d3l3bXh4a2oyNTI4MjIwMjE0OTIwMA==',
-    test: 'NzI3MjQyNzEyMjI3d3l3bXh4a2oyNTI4MjIwMjE0OTIwMA',
+    test: 'NzI3MjQyNzEyMjI3d3l3bXh4a2oyNTI4MjIwMjE0OTIwMA==',
     onl: 'NzEyNTUyNTIzMTFqaWhleHhrajEwMjExMjE0MjE5',
     uat: 'NzEyNTUyNTIzMTFqaWhleHhrajEwMjExMjE0MjE5',
-    local: '',
+    local: 'NzEyNTUyNTIzMTFqaWhleHhrajEwMjExMjE0MjE5',
 };
 
 const DES_IV = {
@@ -35,7 +37,7 @@ const DES_IV = {
     test: 'Q0dZU0lrMTIzNDU2NzhqS01MV051eg==',
     onl: 'VGZNamFOeGY5ODc2NTQzMnpWbEV5aWFY',
     uat: 'VGZNamFOeGY5ODc2NTQzMnpWbEV5aWFY',
-    local: '',
+    local: 'VGZNamFOeGY5ODc2NTQzMnpWbEV5aWFY',
 };
 
 const MD5_TOKEN = {
@@ -43,7 +45,7 @@ const MD5_TOKEN = {
     test: 'QCItLCJ7J1dveW91eGlueGk2NjYhK14rOi0j',
     onl: 'fX06fD8kYEppaGV3b2JveDE1fDtgKSZ+YCks',
     uat: 'fX06fD8kYEppaGV3b2JveDE1fDtgKSZ+YCks',
-    local: '',
+    local: 'fX06fD8kYEppaGV3b2JveDE1fDtgKSZ+YCks',
 };
 
 export default {

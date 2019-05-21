@@ -147,17 +147,21 @@ class Login extends Component {
         if (response && response.code === ERROR_OK) {
             const checkUserName =
                 currentTab === 'tabAccount' ? getFieldValue('username') : getFieldValue('phone');
-            const result = await checkUser({ options: { username: checkUserName } });
-            if (result && result.code === ERROR_OK) {
-                const {
-                    location: { origin },
-                } = window;
-                const data = result.data || {};
-                if (data.needMerge) {
-                    this.showAccountMergeModal(`${data.url}&from=${origin}/user/login`);
-                } else {
-                    this.checkCompanyList();
+            if (env !== 'local') {
+                const result = await checkUser({ options: { username: checkUserName } });
+                if (result && result.code === ERROR_OK) {
+                    const {
+                        location: { origin },
+                    } = window;
+                    const data = result.data || {};
+                    if (data.needMerge) {
+                        this.showAccountMergeModal(`${data.url}&from=${origin}/user/login`);
+                    } else {
+                        this.checkCompanyList();
+                    }
                 }
+            } else {
+                this.checkCompanyList();
             }
         } else if (response.code === USER_NOT_EXIST) {
             const checkUserName =
@@ -262,7 +266,7 @@ class Login extends Component {
                     <Tabs
                         animated={false}
                         defaultActiveKey="tabAccount"
-                        tabBarGutter={currentLanguage === 'zh-CN' ? 64 : 0}
+                        tabBarGutter={currentLanguage === 'zh-CN' && env !== 'local' ? 64 : 0}
                         tabBarStyle={tabBarStyle}
                         onChange={this.onTabChange}
                     >
@@ -320,13 +324,17 @@ class Login extends Component {
                     </Form.Item>
                 </Form>
                 <div className={styles['login-footer']}>
-                    <a
-                        onClick={() => this.openModalForm('reset')}
-                        href="javascript:void(0);"
-                        className={`${styles['link-common']}`}
-                    >
-                        {formatMessage({ id: 'link.forgot.password' })}
-                    </a>
+                    {currentLanguage === 'zh-CN' ? (
+                        <a
+                            onClick={() => this.openModalForm('reset')}
+                            href="javascript:void(0);"
+                            className={`${styles['link-common']}`}
+                        >
+                            {formatMessage({ id: 'link.forgot.password' })}
+                        </a>
+                    ) : (
+                        <div />
+                    )}
                     <a
                         onClick={() => this.openModalForm('register')}
                         href="javascript:void(0);"

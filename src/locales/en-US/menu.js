@@ -1,6 +1,6 @@
 export default {
     'menu.dashBoard': 'Dashboard',
-    'menu.account': '__blank__',
+    'menu.account': 'Account',
     'menu.account.center': 'Account',
     'menu.account.logout': 'Logout',
     'menu.serviceApplication': 'Application',
