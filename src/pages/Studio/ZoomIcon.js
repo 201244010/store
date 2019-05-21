@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Icon } from 'antd';
+import { formatMessage } from 'umi/locale';
 import * as styles from './index.less';
 import { getLocationParam } from '@/utils/utils';
 
@@ -30,7 +31,7 @@ export default class ZoomIcon extends Component {
                     <span>{(zoomScale * 100).toFixed()}%</span>
                     <Icon type="minus" onClick={() => this.handleZoom('in')} />
                 </div>
-                <span className={styles.name}>缩放</span>
+                <span className={styles.name}>{formatMessage({ id: 'studio.action.zoom' })}</span>
             </div>
         );
     }
