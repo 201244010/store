@@ -66,13 +66,13 @@ class SearchForm extends Component {
                                 <Select.Option value={-1}>
                                     {formatMessage({ id: 'select.all' })}
                                 </Select.Option>
-                                <Select.Option value={0}>
+                                <Select.Option value={2}>
                                     {formatMessage({ id: 'esl.device.esl.push.wait' })}
                                 </Select.Option>
-                                <Select.Option value={1}>
+                                <Select.Option value={3}>
                                     {formatMessage({ id: 'esl.device.esl.push.success' })}
                                 </Select.Option>
-                                <Select.Option value={2}>
+                                <Select.Option value={4}>
                                     {formatMessage({ id: 'esl.device.esl.push.fail' })}
                                 </Select.Option>
                             </Select>

@@ -14,7 +14,7 @@ export default {
     namespace: 'notification',
     state: {
         searchFormValues: {
-            modleId: -1,
+            modelIdList: [],
             statusCode: -1,
         },
         loading: false,
@@ -66,12 +66,12 @@ export default {
         },
 
         *updateSearchValue({ payload }, { put }) {
-            const { modelId = -1, statusCode = -1 } = payload;
+            const { modelIdList = [], statusCode = -1 } = payload;
             yield put({
                 type: 'updateState',
                 payload: {
                     searchFormValues: {
-                        modelId,
+                        modelIdList,
                         statusCode,
                     },
                 },
@@ -87,13 +87,13 @@ export default {
                 ...payload,
             };
             const {
-                modelId: model_id,
+                modelIdList: model_id_list,
                 statusCode: status_code,
-                pageNum: page_num,
+                current: page_num,
                 pageSize: page_size,
             } = options;
             const response = yield call(Actions.handleNotifiCation, 'mailbox/getMessageList', {
-                model_id,
+                model_id_list,
                 status_code,
                 page_num,
                 page_size,
@@ -198,19 +198,29 @@ export default {
             yield switchLoadingStatus(false, put);
         },
 
-        *deleteNotification({ payload = {} }, { put, call }) {
+        *deleteNotification({ payload = {} }, { put, call, select }) {
             yield switchLoadingStatus(true, put);
+            const {
+                notificationList,
+                pagination: { current },
+            } = yield select(state => state.notification);
             const { msgIdList: msg_id_list } = payload;
             const response = yield call(Actions.handleNotifiCation, 'mailbox/deleteMessage', {
                 msg_id_list,
             });
             if (response && response.code === ERROR_OK) {
-                // TODO 删除成功逻辑补充
                 message.success('删除成功');
-                yield put({
-                    type: 'getNotificationList',
-                    payload: {},
-                });
+                if (notificationList.length === msg_id_list.length) {
+                    yield put({
+                        type: 'getNotificationList',
+                        payload: { current: current - 1 },
+                    });
+                } else {
+                    yield put({
+                        type: 'getNotificationList',
+                        payload: {},
+                    });
+                }
             }
             yield switchLoadingStatus(false, put);
         },
@@ -223,7 +233,6 @@ export default {
                 status_code,
             });
             if (response && response.code === ERROR_OK) {
-                // TODO 更新状态成功逻辑补充
                 yield put({
                     type: 'getNotificationList',
                     payload: {},
@@ -237,7 +246,7 @@ export default {
                 type: 'updateState',
                 payload: {
                     searchFormValues: {
-                        modleId: -1,
+                        modelIdList: [],
                         statusCode: -1,
                     },
                 },

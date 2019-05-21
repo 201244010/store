@@ -11,7 +11,7 @@ import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
 import { getTypeByName, getNearLines } from '@/utils/studio';
 import { KEY } from '@/constants';
-import { SIZES, SHAPE_TYPES, PRICE_TYPES, MAPS } from '@/constants/studio';
+import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as styles from './index.less';
@@ -46,6 +46,7 @@ class Studio extends Component {
         this.stageHeight = window.innerHeight - SIZES.HEADER_HEIGHT;
         this.state = {
             dragging: false,
+            editing: false,
         };
     }
 
@@ -101,8 +102,14 @@ class Studio extends Component {
     }
 
     handleDeleteComponent = e => {
-        if (e.keyCode === KEY.DELETE) {
-            const { studio: { selectedShapeName }, deleteSelectedComponent, toggleRightToolBox } = this.props;
+        const { editing } = this.state;
+        // 编辑文本状态下 及 操作输入框时 无法删除
+        if (!editing && e.keyCode === KEY.DELETE && e.target.tagName.toUpperCase() !== 'INPUT') {
+            const {
+                studio: { selectedShapeName },
+                deleteSelectedComponent,
+                toggleRightToolBox,
+            } = this.props;
 
             if (selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1) {
                 deleteSelectedComponent(selectedShapeName);
@@ -192,8 +199,12 @@ class Studio extends Component {
             this.handleTextDblClick(e, SHAPE_TYPES.TEXT);
         } else if (targetName.indexOf(SHAPE_TYPES.IMAGE) !== -1) {
             this.handleImageDblClick(e);
-        } else if (targetName.indexOf(SHAPE_TYPES.PRICE) !== -1) {
-            this.handlePriceDblClick(e, SHAPE_TYPES.PRICE);
+        } else if (targetName.indexOf(SHAPE_TYPES.PRICE_NORMAL) !== -1) {
+            this.handlePriceDblClick(e, SHAPE_TYPES.PRICE_NORMAL);
+        } else if (targetName.indexOf(SHAPE_TYPES.PRICE_SUPER) !== -1) {
+            this.handlePriceDblClick(e, SHAPE_TYPES.PRICE_SUPER);
+        } else if (targetName.indexOf(SHAPE_TYPES.PRICE_SUB) !== -1) {
+            this.handlePriceDblClick(e, SHAPE_TYPES.PRICE_SUB);
         }
     };
 
@@ -228,10 +239,6 @@ class Studio extends Component {
         });
     };
 
-    handleWheel = e => {
-        console.log(e);
-    };
-
     handleSaveAsDraft = () => {
         const {
             studio: { componentsDetail, zoomScale },
@@ -257,7 +264,7 @@ class Studio extends Component {
     handleTextDblClick = e => {
         const { updateComponentsDetail } = this.props;
         const targetName = e.target.name();
-        this.createInput(e);
+        this.createInput(e, SHAPE_TYPES.TEXT);
         updateComponentsDetail({
             selectedShapeName: targetName,
             [targetName]: {
@@ -340,7 +347,7 @@ class Studio extends Component {
 
         if (name && name.indexOf('_') === -1) {
             const type = getTypeByName(name);
-            if ([...PRICE_TYPES, SHAPE_TYPES.TEXT].includes(type)) {
+            if ([...NORMAL_PRICE_TYPES, SHAPE_TYPES.TEXT].includes(type)) {
                 // TEXT组件放大的是同层的RECT组件
                 realW = target.parent.children[0].attrs.width;
                 realScaleX = target.parent.children[0].attrs.scaleX || 1;
@@ -422,18 +429,13 @@ class Studio extends Component {
         const inputEle = document.createElement('input');
         document.body.appendChild(inputEle);
         inputEle.setAttribute('id', 'textInput');
-        if (type === SHAPE_TYPES.PRICE) {
-            // inputEle.value = `${e.target.parent.children[1].text()}${e.target.parent.children[2].text()}`;
-            inputEle.value = e.target.parent.children[1].text();
-        } else {
-            inputEle.value = e.target.parent.children[1].text();
-        }
+        inputEle.value = targetDetail.text;
         inputEle.style.backgroundColor = 'transparent';
         inputEle.style.border = '1px solid #ccc';
         inputEle.style.borderRadius = '5px';
         inputEle.style.fontSize = `${targetDetail.fontSize * zoomScale}px`;
         inputEle.style.fontFamily = targetDetail.fontFamily;
-        inputEle.style.color = e.target.parent.children[1].attrs.fill;
+        inputEle.style.color = targetDetail.fill;
         inputEle.style.position = 'absolute';
         inputEle.style.left = `${inputPosition.x}px`;
         inputEle.style.top = `${inputPosition.y}px`;
@@ -443,14 +445,20 @@ class Studio extends Component {
         inputEle.style.letterSpacing = `${targetDetail.letterSpacing}px`;
         inputEle.style.textAlign = targetDetail.align;
         inputEle.focus();
+        this.setState({
+            editing: true,
+        });
 
         const saveToLocal = () => {
             const inputValue = inputEle.value;
-            if (type === SHAPE_TYPES.PRICE && !RegExp.money.test(inputValue)) {
+            if (type.indexOf(SHAPE_TYPES.PRICE) > -1 && !RegExp.money.test(inputValue)) {
                 message.warning('输入价格不正确');
                 inputEle.value = '';
                 return;
             }
+            this.setState({
+                editing: false,
+            });
             try {
                 document.body.removeChild(inputEle);
                 updateComponentsDetail({
@@ -466,6 +474,7 @@ class Studio extends Component {
 
         inputEle.addEventListener('keydown', evt => {
             // 按下enter保存
+            evt.stopImmediatePropagation();
             if (evt.keyCode === 13) {
                 saveToLocal();
             }
@@ -560,7 +569,6 @@ class Studio extends Component {
                             onDragEnd={this.handleStageShapeEnd}
                             onTransform={this.handleShapeTransform}
                             onContextMenu={this.handleContextMenu}
-                            onWheel={this.handleWheel}
                         >
                             <Layer x={0} y={0} width={stageWidth} height={stageHeight}>
                                 {Object.keys(componentsDetail).map(key => {
@@ -584,7 +592,8 @@ class Studio extends Component {
                                 })}
                                 {!dragging &&
                                 selectedShapeName &&
-                                componentsDetail[selectedShapeName].type !== SHAPE_TYPES.RECT_FIX ? (
+                                componentsDetail[selectedShapeName].type !==
+                                    SHAPE_TYPES.RECT_FIX ? (
                                     <MTransformer selectedShapeName={selectedShapeName} />
                                 ) : null}
                             </Layer>
@@ -611,6 +620,7 @@ class Studio extends Component {
                                     selectedShapeName,
                                     componentsDetail,
                                     zoomScale,
+                                    templateInfo: curTemplate,
                                     updateComponentsDetail,
                                     deleteSelectedComponent,
                                     addComponent,
