@@ -33,10 +33,10 @@ class ProductList extends Component {
 		getSaasBindInfo();
 	}
 
-	componentWillUnmount() {
-		const { clearSearch } = this.props;
-		clearSearch();
-	}
+	// componentWillUnmount() {
+	// 	const { clearSearch } = this.props;
+	// 	clearSearch();
+	// }
 
 	render() {
 		const {
