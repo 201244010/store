@@ -6,27 +6,24 @@ import ActiveDetection from './ActiveDetection';
 // import CloudService from './CloudService';
 // import SoftwareUpdate from './SoftwareUpdate';
 
-
-
 class IPCManagement extends Component {
-
-	render() {
-		// console.log(this.props);
-		const { location } = this.props;
-		const { query: {sn} } = location;
-		return (
-			<div>
-				{/* <DeviceBasicInfo sn={sn}/> */}
-				<ActiveDetection sn={sn} />
-				{/* <BasicParams sn={sn}/>
+    render() {
+        // console.log(this.props);
+        const { location } = this.props;
+        const {
+            query: { sn },
+        } = location;
+        return (
+            <div>
+                {/* <DeviceBasicInfo sn={sn}/> */}
+                <ActiveDetection sn={sn} />
+                {/* <BasicParams sn={sn}/>
 				<NetworkSetting sn={sn}/>
 				<CloudService sn={sn}/> */}
-				{/* <SoftwareUpdate sn={sn}/> */}
-			</div>
-
-		);
-	}
+                {/* <SoftwareUpdate sn={sn}/> */}
+            </div>
+        );
+    }
 }
-
 
 export default IPCManagement;

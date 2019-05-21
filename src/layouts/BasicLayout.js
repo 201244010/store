@@ -8,7 +8,8 @@ import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
-import { formatMessage } from 'umi/locale';
+import { formatMessage, getLocale } from 'umi/locale';
+// import AuthorithCheck from '@/components/AuthorithCheck';
 import MQTTWrapper from '@/components/MQTT';
 import Authorized from '@/utils/Authorized';
 import NotFountPage from '@/pages/404';
@@ -21,6 +22,7 @@ import SiderMenu from '@/components/SiderMenu';
 import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/menuLogo.png';
+import logoEN from '../assets/menuLogoEN.png';
 
 message.config({
     maxCount: 1,
@@ -184,7 +186,7 @@ class BasicLayout extends React.PureComponent {
             route: { routes },
             fixedHeader,
         } = this.props;
-
+        const currentLanguage = getLocale();
         const isTop = PropsLayout === 'topmenu';
         const routerConfig = this.getRouterAuthority(pathname, routes);
         const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
@@ -192,7 +194,7 @@ class BasicLayout extends React.PureComponent {
             <Layout>
                 {isTop && !isMobile ? null : (
                     <SiderMenu
-                        logo={logo}
+                        logo={currentLanguage === 'zh-CN' ? logo : logoEN}
                         theme={navTheme}
                         onCollapse={this.handleMenuCollapse}
                         menuData={menuData}

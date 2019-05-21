@@ -176,7 +176,7 @@ class SearchResult extends Component {
                     <Table
                         rowKey="id"
                         loading={loading}
-                        rowSelection={rowSelection}
+                        rowSelection={!isBind ? rowSelection : null}
                         columns={columns}
                         dataSource={data}
                         pagination={{

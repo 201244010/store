@@ -12,12 +12,12 @@ import userCenter from './en-US/userCenter';
 import storeManagement from './en-US/storeManagement';
 
 // ESL
-import baseStation from './en-US/ESL/device';
+import baseStation from './en-US/ESL-device';
 
 // BasicData
-import productManagement from './en-US/BasicData/product';
+import productManagement from './en-US/BasicData-product';
 
-import merchantManagement from './en-US/Merchant/merchant';
+import merchantManagement from './en-US/merchant';
 
 export default {
     'navBar.lang': '语言',

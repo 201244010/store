@@ -1,14 +1,11 @@
 export default {
     'basicData.product.search.product': '商品信息',
     'basicData.product.search.placeholder': '商品名称/编号/条码',
-
     'basicData.product.label.add': '新增字段',
     'basicData.product.price.add': '新增价格',
-
     'basicData.product.total': '种商品',
-    'basicData.product.selected': '，已选中',
+    'basicData.product.selected': '已选中',
     'basicData.product.pagination.unit': '种',
-
     'basicData.product.seq_num': '商品编号',
     'basicData.product.name': '商品名称',
     'basicData.product.alias': '别名',
@@ -31,14 +28,11 @@ export default {
     'basicData.product.modified_time': '最后修改时间',
     'basicData.product.customize': '自定义',
     'basicData.product.image': '商品图片',
-
     'basicData.product.extraInfo.isEmpty': '自定义字段不能为空',
     'basicData.product.extraPrice.isEmpty': '自定义价格不能为空',
-
     'basicData.product.detail.title': '基本信息',
     'basicData.product.price.title': '价格信息',
     'basicData.weightProduct.detail.title': '称重商品信息',
-
     'basicData.weightProduct.PLU': 'PLU号',
     'basicData.weightProduct.priceChange.admit': '允许变价',
     'basicData.weightProduct.discount.admit': '允许打折',
@@ -61,7 +55,6 @@ export default {
     'basicData.weightProduct.bestBeforeDate.enable': '启用保质期',
     'basicData.weightProduct.bestBeforeDate.type': '保质期类型',
     'basicData.weightProduct.bestBeforeDate.date': '保质期数',
-
     'basicData.erp.platform': '对接的ERP平台',
     'basicData.erp.store.number': '门店编号',
     'basicData.erp.api.key': '市场key',
@@ -71,13 +64,12 @@ export default {
     'basicData.erp.api.password': '密码',
     'basicData.erp.description': '对接ERP说明',
     'basicData.erp.description.list1': '1. 可以通过对接ERP来新建和更新商品；',
-    'basicData.erp.description.list2':
+    'basicData.erp.description.list2:':
         '2. 初次完成对接，或修改对接平台信息后，原有商品信息将被清空；',
-    'basicData.erp.description.list3':
+    'basicData.erp.description.list3:':
         '3. 完成对接后，无法在SUNMI Store中修改商品信息，请在ERP中进行修改；',
-    'basicData.erp.import.success': '对接成功，正在同步商品信息...',
+    'basicData.erp.import.success': '对接成功，正在同步商品信息…',
     'basicData.erp.import.fail': '数据导入失败',
-
     'basicData.erp.common.key.error': 'key或者secret错误，请重新输入',
     'basicData.erp.common.key.existed': '该key和secret已被使用，请重新输入',
     'basicData.erp.sdnm.key.isEmpty': '请输入key',
@@ -91,18 +83,14 @@ export default {
     'basicData.erp.zzsy.id.isEmpty': '请输入id',
     'basicData.erp.zzsy.secret.error': 'id或者secret错误，请重新输入',
     'basicData.erp.zzsy.secret.existed': '该id和secret已被使用，请重新输入',
-
     'basicData.erp.confirm.title': '确定要保存设置，开始同步商品？',
     'basicData.erp.confirm.content': '保存后，原有商品信息将被清空，并开始同步ERP中的商品。',
-
     'basicData.product.delete.success': '删除商品成功',
-    'basicData.product.delete.fail': '删除商品成功',
+    'basicData.product.delete.fail': '删除商品失败',
     'basicData.product.delete.confirm': '请确认是否删除商品？',
     'basicData.product.delete.notice': '商品删除后，与之绑定的价签不会更新图像。',
-
     'basicData.product.type.normal': '普通商品',
     'basicData.product.type.weight': '称重商品',
-
     'basicData.product.unit.box': '盒',
     'basicData.product.unit.pack': '袋',
     'basicData.product.unit.bottle': '瓶',
@@ -123,7 +111,6 @@ export default {
     'basicData.product.unit.handle': '把',
     'basicData.product.unit.group': '组',
     'basicData.product.unit.branch': '支',
-
     'product.seq_num.isEmpty': '请输入商品编号',
     'product.seq_num.isFormatted': '请输入正确的商品编号',
     'product.seq_num.isExist': '该商品编号已存在',

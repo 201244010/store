@@ -15,12 +15,12 @@ import notification from './zh-CN/notification';
 import VideoPlayer from './zh-CN/videoPlayer';
 
 // ESL
-import baseStation from './zh-CN/ESL/device';
+import baseStation from './zh-CN/ESL-device';
 
 // BasicData
-import productManagement from './zh-CN/BasicData/product';
+import productManagement from './zh-CN/BasicData-product';
 
-import merchantManagement from './zh-CN/Merchant/merchant';
+import merchantManagement from './zh-CN/merchant';
 
 export default {
     'navBar.lang': '语言',
@@ -47,6 +47,6 @@ export default {
     ...productManagement,
     ...merchantManagement,
     ...storeManagement,
-	...notification,
-	...VideoPlayer,
+    ...notification,
+    ...VideoPlayer,
 };

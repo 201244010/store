@@ -12,20 +12,18 @@ import sdcard from './zh-CN/sdcard';
 import common from './zh-CN/common';
 import motionList from './zh-CN/motionList';
 
-
 export default {
-	
-	...common,
-	...faceidLibrary,
-	...videoPlayer,
-	...deviceBasicInfo,
-	...activeDetection,
-	...basicParams,
-	...networkSetting,
-	...softwareUpdate,
-	...cloudService,
-	...menu,
-	...sdcard,
-	...ipcList,
-	...motionList
+    ...common,
+    ...faceidLibrary,
+    ...videoPlayer,
+    ...deviceBasicInfo,
+    ...activeDetection,
+    ...basicParams,
+    ...networkSetting,
+    ...softwareUpdate,
+    ...cloudService,
+    ...menu,
+    ...sdcard,
+    ...ipcList,
+    ...motionList,
 };
