@@ -375,36 +375,67 @@ export default function generateShape(option) {
                         }}
                     />
                     <Shape
-                        {
-                            ...{
-                                name: option.name,
-                                x: option.x,
-                                y: option.y,
-                                onDblClick: option.onDblClick,
-                                sceneFunc (context) {
-                                    const intPriceText = `${option.text}`.split('.')[0];
-                                    const smallPriceText = `${option.text}`.split('.')[1] || '';
-                                    const yPosition = (MAPS.containerHeight[option.type] * option.scaleY - option.fontSize) * option.zoomScale / 2;
-                                    const intTextWidth = option.fontSize / 2 * (intPriceText.length + (smallPriceText ? 0.6 : 0)) * option.zoomScale;
-                                    const textWidth = intTextWidth + smallPriceText.length * option.smallFontSize / 2 * option.zoomScale;
-                                    let intXPosition = 0;
-                                    if (option.align === "center") {
-                                        intXPosition = (MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth) / 2;
-                                    }
-                                    if (option.align === 'right') {
-                                        intXPosition = MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth;
-                                    }
-                                    const smallXPosition = intXPosition + intTextWidth;
+                        {...{
+                            name: option.name,
+                            x: option.x,
+                            y: option.y,
+                            onDblClick: option.onDblClick,
+                            sceneFunc(context) {
+                                const intPriceText = `${option.text}`.split('.')[0];
+                                const smallPriceText = `${option.text}`.split('.')[1] || '';
+                                const yPosition =
+                                    ((MAPS.containerHeight[option.type] * option.scaleY -
+                                        option.fontSize) *
+                                        option.zoomScale) /
+                                    2;
+                                const intTextWidth =
+                                    (option.fontSize / 2) *
+                                    (intPriceText.length + (smallPriceText ? 0.6 : 0)) *
+                                    option.zoomScale;
+                                const textWidth =
+                                    intTextWidth +
+                                    ((smallPriceText.length * option.smallFontSize) / 2) *
+                                        option.zoomScale;
+                                let intXPosition = 0;
+                                if (option.align === 'center') {
+                                    intXPosition =
+                                        (MAPS.containerWidth[option.type] *
+                                            option.scaleX *
+                                            option.zoomScale -
+                                            textWidth) /
+                                        2;
+                                }
+                                if (option.align === 'right') {
+                                    intXPosition =
+                                        MAPS.containerWidth[option.type] *
+                                            option.scaleX *
+                                            option.zoomScale -
+                                        textWidth;
+                                }
+                                const smallXPosition = intXPosition + intTextWidth;
 
-                                    context.font = `${option.fontStyle} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
-                                    context.textBaseline = 'top';
-                                    context.fillStyle = option.fill;
-                                    context.fillText(`${option.text ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
-                                    context.font = `${option.fontStyle} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
-                                    context.fillText(`${option.text ? smallPriceText : ''}`, smallXPosition, yPosition);
-                                },
-                            }
-                        }
+                                context.font = `${option.fontStyle} ${option.fontSize *
+                                    option.zoomScale}px ${option.fontFamily}`;
+                                context.textBaseline = 'top';
+                                context.fillStyle = option.fill;
+                                context.fillText(
+                                    `${
+                                        option.text
+                                            ? `${intPriceText}${smallPriceText ? '.' : ''}`
+                                            : ''
+                                    }`,
+                                    intXPosition,
+                                    yPosition
+                                );
+                                context.font = `${option.fontStyle} ${option.smallFontSize *
+                                    option.zoomScale}px ${option.fontFamily}`;
+                                context.fillText(
+                                    `${option.text ? smallPriceText : ''}`,
+                                    smallXPosition,
+                                    yPosition
+                                );
+                            },
+                        }}
                     />
                 </Group>
             );
@@ -430,36 +461,67 @@ export default function generateShape(option) {
                         }}
                     />
                     <Shape
-                        {
-                            ...{
-                                name: option.name,
-                                x: option.x,
-                                y: option.y,
-                                onDblClick: option.onDblClick,
-                                sceneFunc (context) {
-                                    const intPriceText = `${option.text}`.split('.')[0];
-                                    const smallPriceText = `${option.text}`.split('.')[1] || '';
-                                    const yPosition = (MAPS.containerHeight[option.type] * option.scaleY + option.fontSize) * option.zoomScale / 2;
-                                    const intTextWidth = option.fontSize / 2 * (intPriceText.length + (smallPriceText ? 0.6 : 0)) * option.zoomScale;
-                                    const textWidth = intTextWidth + smallPriceText.length * option.smallFontSize / 2 * option.zoomScale;
-                                    let intXPosition = 0;
-                                    if (option.align === "center") {
-                                        intXPosition = (MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth) / 2;
-                                    }
-                                    if (option.align === 'right') {
-                                        intXPosition = MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth;
-                                    }
-                                    const smallXPosition = intXPosition + intTextWidth;
+                        {...{
+                            name: option.name,
+                            x: option.x,
+                            y: option.y,
+                            onDblClick: option.onDblClick,
+                            sceneFunc(context) {
+                                const intPriceText = `${option.text}`.split('.')[0];
+                                const smallPriceText = `${option.text}`.split('.')[1] || '';
+                                const yPosition =
+                                    ((MAPS.containerHeight[option.type] * option.scaleY +
+                                        option.fontSize) *
+                                        option.zoomScale) /
+                                    2;
+                                const intTextWidth =
+                                    (option.fontSize / 2) *
+                                    (intPriceText.length + (smallPriceText ? 0.6 : 0)) *
+                                    option.zoomScale;
+                                const textWidth =
+                                    intTextWidth +
+                                    ((smallPriceText.length * option.smallFontSize) / 2) *
+                                        option.zoomScale;
+                                let intXPosition = 0;
+                                if (option.align === 'center') {
+                                    intXPosition =
+                                        (MAPS.containerWidth[option.type] *
+                                            option.scaleX *
+                                            option.zoomScale -
+                                            textWidth) /
+                                        2;
+                                }
+                                if (option.align === 'right') {
+                                    intXPosition =
+                                        MAPS.containerWidth[option.type] *
+                                            option.scaleX *
+                                            option.zoomScale -
+                                        textWidth;
+                                }
+                                const smallXPosition = intXPosition + intTextWidth;
 
-                                    context.font = `${option.fontStyle} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
-                                    context.textBaseline = 'bottom';
-                                    context.fillStyle = option.fill;
-                                    context.fillText(`${option.text ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
-                                    context.font = `${option.fontStyle} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
-                                    context.fillText(`${option.text ? smallPriceText : ''}`, smallXPosition, yPosition);
-                                },
-                            }
-                        }
+                                context.font = `${option.fontStyle} ${option.fontSize *
+                                    option.zoomScale}px ${option.fontFamily}`;
+                                context.textBaseline = 'bottom';
+                                context.fillStyle = option.fill;
+                                context.fillText(
+                                    `${
+                                        option.text
+                                            ? `${intPriceText}${smallPriceText ? '.' : ''}`
+                                            : ''
+                                    }`,
+                                    intXPosition,
+                                    yPosition
+                                );
+                                context.font = `${option.fontStyle} ${option.smallFontSize *
+                                    option.zoomScale}px ${option.fontFamily}`;
+                                context.fillText(
+                                    `${option.text ? smallPriceText : ''}`,
+                                    smallXPosition,
+                                    yPosition
+                                );
+                            },
+                        }}
                     />
                 </Group>
             );

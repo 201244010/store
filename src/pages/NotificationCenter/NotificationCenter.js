@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Checkbox, Table, Button, Icon } from 'antd';
+import { Checkbox, Table, Button, Icon, Modal } from 'antd';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import router from 'umi/router';
@@ -65,7 +65,11 @@ class NotificationCenter extends Component {
         });
         await getNotificationList({
             pageSize: pagination.pageSize,
-            pageNum: pagination.current,
+            current: pagination.current,
+        });
+
+        this.setState({
+            selectedRowKeys: [],
         });
     };
 
@@ -105,12 +109,28 @@ class NotificationCenter extends Component {
             delete: deleteNotification,
             read: updateNotificationStatus,
         };
-        dealList[type]({
-            msgIdList: selectedRowKeys,
-            statusCode: 1,
-        });
-        this.setState({
-            selectedRowKeys: [],
+        const titleList = {
+            delete: `${formatMessage({ id: 'notification.delete.confirm.prefix' })}${
+                selectedRowKeys.length
+            }${formatMessage({ id: 'notification.delete.confirm.suffix' })}`,
+            read: `${formatMessage({ id: 'notification.read.confirm.prefix' })}${
+                selectedRowKeys.length
+            }${formatMessage({ id: 'notification.read.confirm.suffix' })}`,
+        };
+
+        Modal.confirm({
+            title: titleList[type],
+            cancelText: formatMessage({ id: 'btn.cancel' }),
+            okText: formatMessage({ id: 'btn.confirm' }),
+            onOk: () => {
+                dealList[type]({
+                    msgIdList: selectedRowKeys,
+                    statusCode: 1,
+                });
+                this.setState({
+                    selectedRowKeys: [],
+                });
+            },
         });
     };
 

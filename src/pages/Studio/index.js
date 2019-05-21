@@ -46,7 +46,7 @@ class Studio extends Component {
         this.stageHeight = window.innerHeight - SIZES.HEADER_HEIGHT;
         this.state = {
             dragging: false,
-            editing: false
+            editing: false,
         };
     }
 
@@ -105,7 +105,11 @@ class Studio extends Component {
         const { editing } = this.state;
         // 编辑文本状态下 及 操作输入框时 无法删除
         if (!editing && e.keyCode === KEY.DELETE && e.target.tagName.toUpperCase() !== 'INPUT') {
-            const { studio: { selectedShapeName }, deleteSelectedComponent, toggleRightToolBox } = this.props;
+            const {
+                studio: { selectedShapeName },
+                deleteSelectedComponent,
+                toggleRightToolBox,
+            } = this.props;
 
             if (selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1) {
                 deleteSelectedComponent(selectedShapeName);
@@ -442,7 +446,7 @@ class Studio extends Component {
         inputEle.style.textAlign = targetDetail.align;
         inputEle.focus();
         this.setState({
-            editing: true
+            editing: true,
         });
 
         const saveToLocal = () => {
@@ -453,7 +457,7 @@ class Studio extends Component {
                 return;
             }
             this.setState({
-                editing: false
+                editing: false,
             });
             try {
                 document.body.removeChild(inputEle);
@@ -588,7 +592,8 @@ class Studio extends Component {
                                 })}
                                 {!dragging &&
                                 selectedShapeName &&
-                                componentsDetail[selectedShapeName].type !== SHAPE_TYPES.RECT_FIX ? (
+                                componentsDetail[selectedShapeName].type !==
+                                    SHAPE_TYPES.RECT_FIX ? (
                                     <MTransformer selectedShapeName={selectedShapeName} />
                                 ) : null}
                             </Layer>

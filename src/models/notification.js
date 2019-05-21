@@ -89,7 +89,7 @@ export default {
             const {
                 modelIdList: model_id_list,
                 statusCode: status_code,
-                pageNum: page_num,
+                current: page_num,
                 pageSize: page_size,
             } = options;
             const response = yield call(Actions.handleNotifiCation, 'mailbox/getMessageList', {
@@ -198,19 +198,29 @@ export default {
             yield switchLoadingStatus(false, put);
         },
 
-        *deleteNotification({ payload = {} }, { put, call }) {
+        *deleteNotification({ payload = {} }, { put, call, select }) {
             yield switchLoadingStatus(true, put);
+            const {
+                notificationList,
+                pagination: { current },
+            } = yield select(state => state.notification);
             const { msgIdList: msg_id_list } = payload;
             const response = yield call(Actions.handleNotifiCation, 'mailbox/deleteMessage', {
                 msg_id_list,
             });
             if (response && response.code === ERROR_OK) {
-                // TODO 删除成功逻辑补充
                 message.success('删除成功');
-                yield put({
-                    type: 'getNotificationList',
-                    payload: {},
-                });
+                if (notificationList.length === msg_id_list.length) {
+                    yield put({
+                        type: 'getNotificationList',
+                        payload: { current: current - 1 },
+                    });
+                } else {
+                    yield put({
+                        type: 'getNotificationList',
+                        payload: {},
+                    });
+                }
             }
             yield switchLoadingStatus(false, put);
         },
