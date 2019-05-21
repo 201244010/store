@@ -24,9 +24,8 @@ export default class GlobalHeaderRight extends PureComponent {
 
     getNoticeData() {
         const { notification = {} } = this.props;
-        const notices = notification.notificationList
-            .filter(item => item.receive_status === 0)
-            .filter((item, index) => index < 5);
+        const notices = notification.unreadList;
+
         if (notices.length === 0) {
             return {};
         }
@@ -93,7 +92,7 @@ export default class GlobalHeaderRight extends PureComponent {
             currentUser,
             notification,
             fetchingNotices,
-            getNotificationList,
+            getUnreadNotification,
             onNoticeVisibleChange,
             onMenuClick,
             onNoticeClear,
@@ -215,7 +214,7 @@ export default class GlobalHeaderRight extends PureComponent {
                         window.open(`${MENU_PREFIX.NOTIFICATION}/center`);
                         // router.push('/notificationCenter');
                     }}
-                    getNotificationList={getNotificationList}
+                    getUnreadNotification={getUnreadNotification}
                     clearClose
                 >
                     <NoticeIcon.Tab

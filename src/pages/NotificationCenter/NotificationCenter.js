@@ -83,7 +83,9 @@ class NotificationCenter extends Component {
             ...searchFormValues,
             statusCode: e.target.checked ? 0 : -1,
         });
-        await getNotificationList();
+        await getNotificationList({
+            current: 1,
+        });
     };
 
     onSelectChange = selectedRowKeys => {

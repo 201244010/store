@@ -106,8 +106,13 @@ export default class NoticeIcon extends PureComponent {
         onPopupVisibleChange(visible);
     };
 
+    getUnreadNotice = async () => {
+        const { getUnreadNotification } = this.props;
+        await getUnreadNotification();
+    };
+
     render() {
-        const { className, count, popupVisible, bell, getNotificationList } = this.props;
+        const { className, count, popupVisible, bell } = this.props;
         const { visible } = this.state;
         const noticeButtonClass = classNames(className, styles.noticeButton);
         const notificationBox = this.getNotificationBox();
@@ -115,7 +120,7 @@ export default class NoticeIcon extends PureComponent {
         const trigger = (
             <span
                 className={classNames(noticeButtonClass, { opened: visible })}
-                onClick={getNotificationList}
+                onClick={this.getUnreadNotice}
             >
                 <Badge count={count} style={{ boxShadow: 'none' }} className={styles.badge}>
                     {NoticeBellIcon}
