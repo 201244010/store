@@ -102,7 +102,7 @@ class HeaderView extends PureComponent {
     };
 
     render() {
-        const { isMobile, handleMenuCollapse, setting, getNotificationList } = this.props;
+        const { isMobile, handleMenuCollapse, setting, getUnreadNotification } = this.props;
         const { navTheme, layout, fixedHeader } = setting;
         const { visible } = this.state;
         const isTop = layout === 'topmenu';
@@ -114,7 +114,7 @@ class HeaderView extends PureComponent {
                         theme={navTheme}
                         mode="horizontal"
                         onCollapse={handleMenuCollapse}
-                        getNotificationList={getNotificationList}
+                        getUnreadNotification={getUnreadNotification}
                         onNoticeClear={this.handleNoticeClear}
                         onMenuClick={this.handleMenuClick}
                         onNoticeVisibleChange={this.handleNoticeVisibleChange}
@@ -122,7 +122,7 @@ class HeaderView extends PureComponent {
                     />
                 ) : (
                     <GlobalHeader
-                        getNotificationList={getNotificationList}
+                        getUnreadNotification={getUnreadNotification}
                         onCollapse={handleMenuCollapse}
                         onNoticeClear={this.handleNoticeClear}
                         onMenuClick={this.handleMenuClick}
@@ -152,7 +152,7 @@ export default connect(
     }),
     dispatch => ({
         getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
-        getNotificationList: () => dispatch({ type: 'notification/getNotificationList' }),
+        getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
         dispatch,
     })
 )(HeaderView);
