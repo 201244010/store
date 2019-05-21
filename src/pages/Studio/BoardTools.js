@@ -79,57 +79,45 @@ export default function BoardTools(props) {
                     <span>99.00</span>
                 </ToolItem>
                 <ToolItem
-                    className={`${styles['item-price']} ${styles['fake-item-price-super']}`}
+                    className={`${styles["item-price"]} ${styles["item-price-white-super"]}`}
+                    type={SHAPE_TYPES.PRICE_SUPER_WHITE}
+                    id={generatorId(SHAPE_TYPES.PRICE_SUPER_WHITE)}
+                    addComponent={addComponent}
+                >
+                    <span>99.<sup>00</sup></span>
+                </ToolItem>
+                <ToolItem
+                    className={`${styles["item-price"]} ${styles["item-price-white-sub"]}`}
+                    type={SHAPE_TYPES.PRICE_SUB_WHITE}
+                    id={generatorId(SHAPE_TYPES.PRICE_SUB_WHITE)}
+                    addComponent={addComponent}
+                >
+                    <span>99.<sub>00</sub></span>
+                </ToolItem>
+                <ToolItem
+                    className={`${styles['item-price']} ${styles['item-price-normal']}`}
                     type={SHAPE_TYPES.PRICE_NORMAL_BLACK}
                     id={generatorId(SHAPE_TYPES.PRICE_NORMAL_BLACK)}
                     addComponent={addComponent}
                 >
                     <span>99.00</span>
                 </ToolItem>
-                {/*
-                     <ToolItem
-                        className={`${styles["item-price"]} ${styles["item-price-white-super"]}`}
-                        type={SHAPE_TYPES.PRICE_SUPER_WHITE}
-                        id={generatorId(SHAPE_TYPES.PRICE_SUPER_WHITE)}
-                        addComponent={addComponent}
-                    >
-                        <span>99.<sup>00</sup></span>
-                    </ToolItem>
-                    <ToolItem
-                        className={`${styles["item-price"]} ${styles["item-price-white-sub"]}`}
-                        type={SHAPE_TYPES.PRICE_SUB_WHITE}
-                        id={generatorId(SHAPE_TYPES.PRICE_SUB_WHITE)}
-                        addComponent={addComponent}
-                    >
-                        <span>99.<sub>00</sub></span>
-                    </ToolItem>
-                     */}
-                {/*
-                    <ToolItem
-                        className={`${styles["item-price"]} ${styles["item-price-normal"]}`}
-                        type={SHAPE_TYPES.PRICE_NORMAL_BLACK}
-                        id={generatorId(SHAPE_TYPES.PRICE_NORMAL_BLACK)}
-                        addComponent={addComponent}
-                    >
-                        <span>99.00</span>
-                    </ToolItem>
-                    <ToolItem
-                        className={`${styles["item-price"]} ${styles["item-price-super"]}`}
-                        type={SHAPE_TYPES.PRICE_SUPER_BLACK}
-                        id={generatorId(SHAPE_TYPES.PRICE_SUPER_BLACK)}
-                        addComponent={addComponent}
-                    >
-                        <span>99.<sup>00</sup></span>
-                    </ToolItem>
-                    <ToolItem
-                        className={`${styles["item-price"]} ${styles["item-price-sub"]}`}
-                        type={SHAPE_TYPES.PRICE_SUB_BLACK}
-                        id={generatorId(SHAPE_TYPES.PRICE_SUB_BLACK)}
-                        addComponent={addComponent}
-                    >
-                        <span>99.<sub>00</sub></span>
-                    </ToolItem>
-                     */}
+                <ToolItem
+                    className={`${styles['item-price']} ${styles['item-price-super']}`}
+                    type={SHAPE_TYPES.PRICE_SUPER_BLACK}
+                    id={generatorId(SHAPE_TYPES.PRICE_SUPER_BLACK)}
+                    addComponent={addComponent}
+                >
+                    <span>99.<sup>00</sup></span>
+                </ToolItem>
+                <ToolItem
+                    className={`${styles['item-price']} ${styles['item-price-sub']}`}
+                    type={SHAPE_TYPES.PRICE_SUB_BLACK}
+                    id={generatorId(SHAPE_TYPES.PRICE_SUB_BLACK)}
+                    addComponent={addComponent}
+                >
+                    <span>99.<sub>00</sub></span>
+                </ToolItem>
             </div>
             <div className={`${styles['tools-block']} ${styles.code}`}>
                 <h4>条码/二维码</h4>

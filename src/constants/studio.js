@@ -8,6 +8,9 @@ export const SHAPE_TYPES = {
     VLine: 'VLine',
     IMAGE: 'IMAGE',
     PRICE: 'price',
+    PRICE_NORMAL: 'price@normal',
+    PRICE_SUPER: 'price@super',
+    PRICE_SUB: 'price@sub',
     PRICE_NORMAL_WHITE: 'price@normal@white',
     PRICE_SUPER_WHITE: 'price@super@white',
     PRICE_SUB_WHITE: 'price@sub@white',
@@ -27,19 +30,13 @@ export const IMAGE_TYPES = [
     SHAPE_TYPES.CODE_QR,
 ];
 export const BARCODE_TYPES = [SHAPE_TYPES.CODE_H, SHAPE_TYPES.CODE_V, SHAPE_TYPES.CODE_QR];
-export const PRICE_TYPES = [SHAPE_TYPES.PRICE_NORMAL_WHITE, SHAPE_TYPES.PRICE_NORMAL_BLACK];
-
-export const LENGTH_MAP = {
-    1: 14,
-    2: 25,
-    3: 34,
-    4: 42,
-    5: 51,
-    6: 60,
-    7: 69,
-    8: 78,
-    9: 87,
-};
+export const NORMAL_PRICE_TYPES = [SHAPE_TYPES.PRICE_NORMAL_WHITE, SHAPE_TYPES.PRICE_NORMAL_BLACK];
+export const NON_NORMAL_PRICE_TYPES = [
+    SHAPE_TYPES.PRICE_SUPER_WHITE,
+    SHAPE_TYPES.PRICE_SUB_WHITE,
+    SHAPE_TYPES.PRICE_SUPER_BLACK,
+    SHAPE_TYPES.PRICE_SUB_BLACK
+];
 
 export const SIZES = {
     HEADER_HEIGHT: 60,
