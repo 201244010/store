@@ -140,8 +140,7 @@ export default function BoardTools(props) {
                         <span>横向条码</span>
                     </Fragment>
                 </ToolItem>
-                {
-                    /*
+                {/*
                     * <ToolItem
                     className={`${styles.item} ${styles['item-v-code']}`}
                     type={SHAPE_TYPES.CODE_V}
@@ -153,8 +152,7 @@ export default function BoardTools(props) {
                         <span>竖向条码</span>
                     </Fragment>
                 </ToolItem>
-                    * */
-                }
+                    * */}
                 <ToolItem
                     className={`${styles.item} ${styles['item-qr-code']}`}
                     type={SHAPE_TYPES.CODE_QR}
