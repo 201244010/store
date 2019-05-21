@@ -171,7 +171,9 @@ export default class RightToolBox extends Component {
         }
         if (this.hasSubString(SHAPE_TYPES.CODE)) {
             menuMap.hasBindData = true;
-            menuMap.isCode = true;
+            if (this.hasSubString(SHAPE_TYPES.CODE_V) || this.hasSubString(SHAPE_TYPES.CODE_H)) {
+                menuMap.isCode = true;
+            }
         }
 
         return menuMap;
@@ -188,7 +190,7 @@ export default class RightToolBox extends Component {
     };
 
     render() {
-        const { bindFields, zoomScale, componentsDetail, selectedShapeName } = this.props;
+        const { bindFields, componentsDetail, selectedShapeName } = this.props;
         const menuMap = this.getMenuMap();
         const detail = componentsDetail[selectedShapeName];
         const originFix = {};
@@ -206,9 +208,9 @@ export default class RightToolBox extends Component {
             <Fragment>
                 {menuMap.hasBindData ? (
                     <div className={styles["tool-box-block"]}>
-                        <h4>绑定数据</h4>
+                        <h4>{formatMessage({ id: 'studio.tool.title.bind.field' })}</h4>
                         <Select
-                            placeholder="请选择绑定的字段"
+                            placeholder={formatMessage({ id: 'studio.placeholder.bind.field' })}
                             value={detail.bindField}
                             style={{ width: 220 }}
                             onChange={value => {
@@ -255,10 +257,10 @@ export default class RightToolBox extends Component {
                         <Col span={12}>
                             <Input
                                 style={{ width: 100 }}
-                                addonAfter={<span>宽</span>}
+                                addonAfter={<span>{formatMessage({id: 'studio.tool.label.width'})}</span>}
                                 value={
                                     detail.scaleX
-                                        ? Math.round((detail.width * detail.scaleX) / zoomScale)
+                                        ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX)
                                         : ""
                                 }
                                 onChange={e => {
@@ -270,10 +272,10 @@ export default class RightToolBox extends Component {
                         <Col span={12}>
                             <Input
                                 style={{ width: 100 }}
-                                addonAfter={<span>高</span>}
+                                addonAfter={<span>{formatMessage({id: 'studio.tool.label.height'})}</span>}
                                 value={
                                     detail.scaleY
-                                        ? Math.round((detail.height * detail.scaleY) / zoomScale)
+                                        ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleX)
                                         : ""
                                 }
                                 onChange={e => {
@@ -294,9 +296,9 @@ export default class RightToolBox extends Component {
                 </div>
                 {menuMap.isRect ? (
                     <div className={styles["tool-box-block"]}>
-                        <h4>样式</h4>
+                        <h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
                         <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>填充颜色</Col>
+                            <Col span={24}>{formatMessage({ id: 'studio.tool.title.fill.color' })}</Col>
                             <Col span={24}>
                                 <Radio.Group
                                     style={{ width: "100%" }}
@@ -306,15 +308,15 @@ export default class RightToolBox extends Component {
                                     }}
                                 >
                                     <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="black">
-                                        黑
+                                        {formatMessage({ id: 'studio.tool.label.black' })}
                                     </Radio.Button>
                                     <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="white">
-                                        白
+                                        {formatMessage({ id: 'studio.tool.label.white' })}
                                     </Radio.Button>
                                     {
                                         hasRed ?
                                             <Radio.Button style={{ width: "33.33%" }} value="red">
-                                                红
+                                                {formatMessage({ id: 'studio.tool.label.red' })}
                                             </Radio.Button> :
                                             null
                                     }
@@ -405,7 +407,7 @@ export default class RightToolBox extends Component {
                 ) : null}
                 {menuMap.isText ? (
                     <div className={styles["tool-box-block"]}>
-                        <h4>文本</h4>
+                        <h4>{formatMessage({ id: 'studio.tool.title.text' })}</h4>
                         <Row style={{ marginBottom: 10 }}>
                             <Col span={24}>
                                 <Input
@@ -419,7 +421,7 @@ export default class RightToolBox extends Component {
                         </Row>
                         <Row style={{ marginBottom: 10 }}>
                             <Col span={4}>
-                                <span className={styles.title}>字体</span>
+                                <span className={styles.title}>{formatMessage({ id: 'studio.tool.label.font.family' })}</span>
                             </Col>
                             <Col span={20}>
                                 <Select
@@ -436,12 +438,12 @@ export default class RightToolBox extends Component {
                         </Row>
                         <Row style={{ marginBottom: 10 }}>
                             <Col span={4}>
-                                <span className={styles.title}>字号</span>
+                                <span className={styles.title}>{formatMessage({ id: 'studio.tool.label.font.size' })}</span>
                             </Col>
                             <Col span={20}>
                                 <InputNumber
                                     style={{ width: "100%" }}
-                                    placeholder="字号"
+                                    placeholder={formatMessage({ id: 'studio.tool.label.font.size' })}
                                     min={8}
                                     value={detail.fontSize}
                                     onChange={value => {
@@ -532,7 +534,7 @@ export default class RightToolBox extends Component {
                             </Col>
                         </Row>
                         <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>字体颜色</Col>
+                            <Col span={24}>{formatMessage({id: 'studio.tool.label.font.color'})}</Col>
                             <Col span={24}>
                                 <Radio.Group
                                     style={{ width: "100%" }}
@@ -542,15 +544,15 @@ export default class RightToolBox extends Component {
                                     }}
                                 >
                                     <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="black">
-                                        黑
+                                        {formatMessage({id: 'studio.tool.label.black'})}
                                     </Radio.Button>
                                     <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="white">
-                                        白
+                                        {formatMessage({id: 'studio.tool.label.white'})}
                                     </Radio.Button>
                                     {
                                         hasRed ?
                                             <Radio.Button style={{ width: "33.33%" }} value="red">
-                                                红
+                                                {formatMessage({id: 'studio.tool.label.red'})}
                                             </Radio.Button> :
                                             null
                                     }
@@ -558,7 +560,7 @@ export default class RightToolBox extends Component {
                             </Col>
                         </Row>
                         <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>背景颜色</Col>
+                            <Col span={24}>{formatMessage({ id: 'studio.tool.title.bg.color' })}</Col>
                             <Col span={24}>
                                 <Radio.Group
                                     style={{ width: "100%" }}
@@ -568,18 +570,18 @@ export default class RightToolBox extends Component {
                                     }}
                                 >
                                     <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="opacity">
-                                        无
+                                        {formatMessage({ id: 'studio.tool.label.opacity' })}
                                     </Radio.Button>
                                     <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="black">
-                                        黑
+                                        {formatMessage({ id: 'studio.tool.label.black' })}
                                     </Radio.Button>
                                     <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="white">
-                                        白
+                                        {formatMessage({ id: 'studio.tool.label.white' })}
                                     </Radio.Button>
                                     {
                                         hasRed ?
                                             <Radio.Button style={{ width: "25%" }} value="red">
-                                                红
+                                                {formatMessage({ id: 'studio.tool.label.red' })}
                                             </Radio.Button> :
                                             null
                                     }
@@ -587,7 +589,7 @@ export default class RightToolBox extends Component {
                             </Col>
                         </Row>
                         <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>对齐</Col>
+                            <Col span={24}>{formatMessage({ id: 'studio.tool.title.align' })}</Col>
                             <Col span={24}>
                                 <Radio.Group
                                     style={{ width: "100%" }}
@@ -620,9 +622,9 @@ export default class RightToolBox extends Component {
                 ) : null}
                 {menuMap.isLine ? (
                     <div className={styles["tool-box-block"]}>
-                        <h4>样式</h4>
+                        <h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
                         <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>颜色</Col>
+                            <Col span={24}>{formatMessage({ id: 'studio.tool.title.color' })}</Col>
                             <Col span={24}>
                                 <Radio.Group
                                     style={{ width: "100%" }}
@@ -632,19 +634,19 @@ export default class RightToolBox extends Component {
                                     }}
                                 >
                                     <Radio.Button style={{ width: "33.33%" }} value="black">
-                                        黑
+                                        {formatMessage({ id: 'studio.tool.label.black' })}
                                     </Radio.Button>
                                     <Radio.Button style={{ width: "33.33%" }} value="white">
-                                        白
+                                        {formatMessage({ id: 'studio.tool.label.white' })}
                                     </Radio.Button>
                                     <Radio.Button style={{ width: "33.33%" }} value="red">
-                                        红
+                                        {formatMessage({ id: 'studio.tool.label.red' })}
                                     </Radio.Button>
                                 </Radio.Group>
                             </Col>
                         </Row>
                         <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>宽度</Col>
+                            <Col span={24}>{formatMessage({ id: 'studio.tool.label.stroke.width' })}</Col>
                             <Col span={24}>
                                 <Radio.Group
                                     style={{ width: "100%" }}
@@ -669,9 +671,9 @@ export default class RightToolBox extends Component {
                 ) : null}
                 {menuMap.isImage ? (
                     <div className={styles["tool-box-block"]}>
-                        <h4>样式</h4>
+                        <h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
                         <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>颜色</Col>
+                            <Col span={24}>{formatMessage({ id: 'studio.tool.title.color' })}</Col>
                             <Col span={24}>
                                 <Radio.Group style={{ width: "100%" }} value="black">
                                     <Radio.Button style={{ width: "33.33%" }} value="black">
@@ -690,7 +692,7 @@ export default class RightToolBox extends Component {
                 ) : null}
                 {menuMap.isPrice ? (
                     <div className={styles["tool-box-block"]}>
-                        <h4>样式</h4>
+                        <h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
                         <Row style={{ marginBottom: 10 }}>
                             <Col span={24}>
                                 <InputNumber
@@ -706,7 +708,7 @@ export default class RightToolBox extends Component {
                         </Row>
                         <Row style={{ marginBottom: 10 }}>
                             <Col span={4}>
-                                <span className={styles.title}>字体</span>
+                                <span className={styles.title}>{formatMessage({ id: 'studio.tool.label.font.family' })}</span>
                             </Col>
                             <Col span={14}>
                                 <Select
@@ -739,12 +741,12 @@ export default class RightToolBox extends Component {
                             <Col span={12}>
                                 <Row>
                                     <Col span={24}>
-                                        <span className={styles.title}>整数字号</span>
+                                        <span className={styles.title}>{formatMessage({ id: 'studio.tool.label.font.size.int' })}</span>
                                     </Col>
                                     <Col span={24}>
                                         <InputNumber
                                             style={{width: '100%'}}
-                                            placeholder="整数字号"
+                                            placeholder={formatMessage({ id: 'studio.tool.label.font.size.int' })}
                                             value={detail.fontSize}
                                             onChange={(value) => {this.handleDetail('fontSize', value);}}
                                         />
@@ -754,12 +756,12 @@ export default class RightToolBox extends Component {
                             <Col span={12}>
                                 <Row>
                                     <Col span={24}>
-                                        <span className={styles.title}>小数字号</span>
+                                        <span className={styles.title}>{formatMessage({ id: 'studio.tool.label.font.size.small' })}</span>
                                     </Col>
                                     <Col span={24}>
                                         <InputNumber
                                             style={{width: '100%'}}
-                                            placeholder="小数字号"
+                                            placeholder={formatMessage({ id: 'studio.tool.label.font.size.small' })}
                                             value={detail.smallFontSize}
                                             onChange={(value) => {this.handleDetail('smallFontSize', value);}}
                                         />
@@ -820,7 +822,7 @@ export default class RightToolBox extends Component {
                         * */
                         }
                         <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>字体颜色</Col>
+                            <Col span={24}>{formatMessage({ id: 'studio.tool.label.font.color' })}</Col>
                             <Col span={24}>
                                 <Radio.Group
                                     style={{ width: "100%" }}
@@ -830,15 +832,15 @@ export default class RightToolBox extends Component {
                                     }}
                                 >
                                     <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="black">
-                                        黑
+                                        {formatMessage({ id: 'studio.tool.label.black' })}
                                     </Radio.Button>
                                     <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="white">
-                                        白
+                                        {formatMessage({ id: 'studio.tool.label.white' })}
                                     </Radio.Button>
                                     {
                                         hasRed ?
                                             <Radio.Button style={{ width: "33.33%" }} value="red">
-                                                红
+                                                {formatMessage({ id: 'studio.tool.label.red' })}
                                             </Radio.Button> :
                                             null
                                     }
@@ -846,7 +848,7 @@ export default class RightToolBox extends Component {
                             </Col>
                         </Row>
                         <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>背景颜色</Col>
+                            <Col span={24}>{formatMessage({ id: 'studio.tool.title.bg.color' })}</Col>
                             <Col span={24}>
                                 <Radio.Group
                                     style={{ width: "100%" }}
@@ -856,18 +858,18 @@ export default class RightToolBox extends Component {
                                     }}
                                 >
                                     <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="opacity">
-                                        无
+                                        {formatMessage({ id: 'studio.tool.label.opacity' })}
                                     </Radio.Button>
                                     <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="black">
-                                        黑
+                                        {formatMessage({ id: 'studio.tool.label.black' })}
                                     </Radio.Button>
                                     <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="white">
-                                        白
+                                        {formatMessage({ id: 'studio.tool.label.white' })}
                                     </Radio.Button>
                                     {
                                         hasRed ?
                                             <Radio.Button style={{ width: "25%" }} value="red">
-                                                红
+                                                {formatMessage({ id: 'studio.tool.label.red' })}
                                             </Radio.Button> :
                                             null
                                     }
@@ -876,7 +878,7 @@ export default class RightToolBox extends Component {
                         </Row>
                         <Row style={{marginBottom: 10}} gutter={20}>
                             <Col span={24}>
-                                小数显示类型
+                                {formatMessage({ id: 'studio.tool.label.small.type' })}
                             </Col>
                             <Col span={24}>
                                 <Radio.Group
@@ -921,7 +923,7 @@ export default class RightToolBox extends Component {
                                 </Row>
                                  */}
                         <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>对齐</Col>
+                            <Col span={24}>{formatMessage({ id: 'studio.tool.title.align' })}</Col>
                             <Col span={24}>
                                 <Radio.Group
                                     style={{ width: "100%" }}
@@ -946,9 +948,9 @@ export default class RightToolBox extends Component {
                 ) : null}
                 {menuMap.isCode ?
                     <div className={styles["tool-box-block"]}>
-                        <h4>样式</h4>
+                        <h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
                         <Row style={{ marginBottom: 10 }} gutter={20}>
-                            <Col span={24}>编码类型</Col>
+                            <Col span={24}>{formatMessage({ id: 'studio.tool.label.codec' })}</Col>
                             <Col span={24}>
                                 <Select
                                     style={{ width: "100%" }}

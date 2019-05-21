@@ -70,7 +70,7 @@ export const SIZES = {
 
 export const COLORS = {
     DEFAULT_STROKE_COLOR: 'black',
-    DEFAULT_RECT_BG_COLOR: 'red',
+    DEFAULT_RECT_BG_COLOR: 'black',
     DEFAULT_RECT_STROKE_COLOR: 'black',
     DEFAULT_TEXT_COLOR: 'black',
     DEFAULT_TEXT_BG_COLOR: 'white',

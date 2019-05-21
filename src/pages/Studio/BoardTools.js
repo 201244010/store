@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { formatMessage } from 'umi/locale';
 import ToolItem from './ToolItem';
 import { SHAPE_TYPES } from '@/constants/studio';
 import { generatorId } from '@/utils/studio';
@@ -9,7 +10,7 @@ export default function BoardTools(props) {
     return (
         <Fragment>
             <div className={`${styles['tools-block']} ${styles.basic}`}>
-                <h4>基本元件</h4>
+                <h4>{formatMessage({ id: 'studio.basic.component' })}</h4>
                 <ToolItem
                     className={`${styles.item} ${styles['item-text']}`}
                     type={SHAPE_TYPES.TEXT}
@@ -18,7 +19,7 @@ export default function BoardTools(props) {
                 >
                     <Fragment>
                         <img src={require('@/assets/studio/text.svg')} />
-                        <span>文本</span>
+                        <span>{formatMessage({ id: 'studio.component.text' })}</span>
                     </Fragment>
                 </ToolItem>
                 <ToolItem
@@ -29,7 +30,7 @@ export default function BoardTools(props) {
                 >
                     <Fragment>
                         <img src={require('@/assets/studio/rect.svg')} />
-                        <span>矩形</span>
+                        <span>{formatMessage({ id: 'studio.component.rect' })}</span>
                     </Fragment>
                 </ToolItem>
                 {/*
@@ -69,7 +70,7 @@ export default function BoardTools(props) {
                      */}
             </div>
             <div className={`${styles['tools-block']} ${styles.price}`}>
-                <h4>价格</h4>
+                <h4>{formatMessage({ id: 'studio.price.component' })}</h4>
                 <ToolItem
                     className={`${styles['item-price']} ${styles['item-price-white-normal']}`}
                     type={SHAPE_TYPES.PRICE_NORMAL_WHITE}
@@ -128,7 +129,7 @@ export default function BoardTools(props) {
                 </ToolItem>
             </div>
             <div className={`${styles['tools-block']} ${styles.code}`}>
-                <h4>条码/二维码</h4>
+                <h4>{formatMessage({ id: 'studio.code.component' })}</h4>
                 <ToolItem
                     className={`${styles.item} ${styles['item-h-code']}`}
                     type={SHAPE_TYPES.CODE_H}
@@ -137,7 +138,7 @@ export default function BoardTools(props) {
                 >
                     <Fragment>
                         <img src={require('@/assets/studio/code_h.svg')} />
-                        <span>横向条码</span>
+                        <span>{formatMessage({ id: 'studio.component.barcode' })}</span>
                     </Fragment>
                 </ToolItem>
                 {
@@ -163,7 +164,7 @@ export default function BoardTools(props) {
                 >
                     <Fragment>
                         <img src={require('@/assets/studio/code_qr.svg')} />
-                        <span>二维码</span>
+                        <span>{formatMessage({ id: 'studio.component.qrcode' })}</span>
                     </Fragment>
                 </ToolItem>
             </div>
