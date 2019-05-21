@@ -22,6 +22,7 @@ export default {
             total: 0,
             unread: 0,
         },
+        unreadList: [],
         notificationList: [],
         notificationInfo: {
             msgId: '',
@@ -78,6 +79,27 @@ export default {
             });
         },
 
+        *getUnreadNotification(_, { put, call }) {
+            yield switchLoadingStatus(true, put);
+            const response = yield call(Actions.handleNotifiCation, 'mailbox/getMessageList', {
+                model_id_list: [],
+                status_code: 0,
+                page_num: 1,
+                page_size: 5,
+            });
+            if (response && response.code === ERROR_OK) {
+                const { data = {} } = response;
+                const { msg_list = [] } = data;
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        unreadList: msg_list,
+                    },
+                });
+            }
+            yield switchLoadingStatus(false, put);
+        },
+
         *getNotificationList({ payload = {} }, { put, call, select }) {
             yield switchLoadingStatus(true, put);
             const { pagination, searchFormValues } = yield select(state => state.notification);
@@ -86,6 +108,7 @@ export default {
                 ...pagination,
                 ...payload,
             };
+            console.log(payload);
             const {
                 modelIdList: model_id_list,
                 statusCode: status_code,
