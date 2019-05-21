@@ -7,15 +7,21 @@ import * as styles from "./index.less";
 const { Option } = Select;
 
 const bindFieldsLocaleMap = {
+    productSeqNum: 'basicData.product.seq_num',
     productName: 'basicData.product.name',
-    productPrice: "basicData.product.price",
-    productUnit: "basicData.product.unit",
-    productSpec: "basicData.product.spec",
-    productLevel: "basicData.product.level",
-    productProductionArea: "basicData.product.area",
-    productBarCode: "basicData.product.bar_code",
-    productQrCode: "basicData.product.qr_code",
-    productPicture: "basicData.product.image",
+    productSpec: 'basicData.product.spec',
+    productLevel: 'basicData.product.level',
+    productExpireTime: 'basicData.product.expire_time',
+    productBarCode: 'basicData.product.bar_code',
+    productAlias: 'basicData.product.alias',
+    productUnit: 'basicData.product.unit',
+    productProductionArea: 'basicData.product.area',
+    productBrand: 'basicData.product.brand',
+    productQrCode: 'basicData.product.qr_code',
+    productPrice: 'basicData.product.price',
+    productPromotePrice: 'basicData.product.promote_price',
+    productMemberPrice: 'basicData.product.member_price',
+    productPicture: 'basicData.product.image',
 };
 
 export default class RightToolBox extends Component {
@@ -189,6 +195,25 @@ export default class RightToolBox extends Component {
         return menuMap;
     };
 
+    getRealBindFields = () => {
+        const { bindFields } = this.props;
+        let ret = [];
+        if (this.hasSubString(SHAPE_TYPES.PRICE)) {
+            ret = bindFields.filter(item => item.indexOf('Price') > -1);
+        }
+        if (this.hasSubString(SHAPE_TYPES.CODE_V) || this.hasSubString(SHAPE_TYPES.CODE_H)) {
+            ret = bindFields.filter(item => item.indexOf('BarCode') > -1);
+        }
+        if (this.hasSubString(SHAPE_TYPES.CODE_QR)) {
+            ret = bindFields.filter(item => item.indexOf('QrCode') > -1);
+        }
+        if (this.hasSubString(SHAPE_TYPES.TEXT)) {
+            ret = bindFields.filter(item => item.indexOf('Price') === -1 && item.indexOf('Code') === -1);
+        }
+
+        return ret;
+    };
+
     hasSubString = type => {
         const { selectedShapeName } = this.props;
         return selectedShapeName.indexOf(type) > -1;
@@ -200,7 +225,7 @@ export default class RightToolBox extends Component {
     };
 
     render() {
-        const { bindFields, componentsDetail, selectedShapeName } = this.props;
+        const { componentsDetail, selectedShapeName } = this.props;
         const menuMap = this.getMenuMap();
         const detail = componentsDetail[selectedShapeName];
         const originFix = {};
@@ -213,6 +238,7 @@ export default class RightToolBox extends Component {
         });
         const disabled = selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) > -1;
         const hasRed = this.hasRed();
+        const bindFields = this.getRealBindFields();
 
         return (
             <Fragment>
