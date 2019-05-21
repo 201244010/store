@@ -85,7 +85,7 @@ export default {
                 model_id_list: [],
                 status_code: 0,
                 page_num: 1,
-                page_size: 10,
+                page_size: 5,
             });
             if (response && response.code === ERROR_OK) {
                 const { data = {} } = response;
