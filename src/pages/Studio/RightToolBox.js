@@ -1,9 +1,22 @@
 import React, { Component, Fragment } from "react";
 import { Col, Icon, Input, Row, Select, Radio, InputNumber } from "antd";
+import { formatMessage } from 'umi/locale';
 import { SHAPE_TYPES, MAPS } from "@/constants/studio";
 import * as styles from "./index.less";
 
 const { Option } = Select;
+
+const bindFieldsLocaleMap = {
+    productName: 'basicData.product.name',
+    productPrice: "basicData.product.price",
+    productUnit: "basicData.product.unit",
+    productSpec: "basicData.product.spec",
+    productLevel: "basicData.product.level",
+    productProductionArea: "basicData.product.area",
+    productBarCode: "basicData.product.bar_code",
+    productQrCode: "basicData.product.qr_code",
+    productPicture: "basicData.product.image",
+};
 
 export default class RightToolBox extends Component {
     handleDetail = (key, value) => {
@@ -168,6 +181,11 @@ export default class RightToolBox extends Component {
         const { selectedShapeName } = this.props;
         return selectedShapeName.indexOf(type) > -1;
     };
+    
+    hasRed = () => {
+        const { templateInfo } = this.props;
+        return templateInfo.model_name.toUpperCase().indexOf('R') > -1;
+    };
 
     render() {
         const { bindFields, zoomScale, componentsDetail, selectedShapeName } = this.props;
@@ -182,6 +200,7 @@ export default class RightToolBox extends Component {
             }
         });
         const disabled = selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) > -1;
+        const hasRed = this.hasRed();
 
         return (
             <Fragment>
@@ -197,11 +216,11 @@ export default class RightToolBox extends Component {
                             }}
                         >
                             <Option key="" value="">
-                                不绑定
+                                {formatMessage({ id: 'basicData.product.not.bind' })}
                             </Option>
                             {bindFields.map(field => (
                                 <Option key={field} value={field}>
-                                    {field}
+                                    {formatMessage({ id: bindFieldsLocaleMap[field] })}
                                 </Option>
                             ))}
                         </Select>
@@ -286,15 +305,19 @@ export default class RightToolBox extends Component {
                                         this.handleDetail("fill", e.target.value);
                                     }}
                                 >
-                                    <Radio.Button style={{ width: "33.33%" }} value="black">
+                                    <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="black">
                                         黑
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "33.33%" }} value="white">
+                                    <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="white">
                                         白
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "33.33%" }} value="red">
-                                        红
-                                    </Radio.Button>
+                                    {
+                                        hasRed ?
+                                            <Radio.Button style={{ width: "33.33%" }} value="red">
+                                                红
+                                            </Radio.Button> :
+                                            null
+                                    }
                                 </Radio.Group>
                             </Col>
                         </Row>
@@ -518,15 +541,19 @@ export default class RightToolBox extends Component {
                                         this.handleDetail("fill", e.target.value);
                                     }}
                                 >
-                                    <Radio.Button style={{ width: "33.33%" }} value="black">
+                                    <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="black">
                                         黑
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "33.33%" }} value="white">
+                                    <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="white">
                                         白
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "33.33%" }} value="red">
-                                        红
-                                    </Radio.Button>
+                                    {
+                                        hasRed ?
+                                            <Radio.Button style={{ width: "33.33%" }} value="red">
+                                                红
+                                            </Radio.Button> :
+                                            null
+                                    }
                                 </Radio.Group>
                             </Col>
                         </Row>
@@ -540,18 +567,22 @@ export default class RightToolBox extends Component {
                                         this.handleDetail("textBg", e.target.value);
                                     }}
                                 >
-                                    <Radio.Button style={{ width: "25%" }} value="opacity">
+                                    <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="opacity">
                                         无
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "25%" }} value="black">
+                                    <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="black">
                                         黑
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "25%" }} value="white">
+                                    <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="white">
                                         白
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "25%" }} value="red">
-                                        红
-                                    </Radio.Button>
+                                    {
+                                        hasRed ?
+                                            <Radio.Button style={{ width: "25%" }} value="red">
+                                                红
+                                            </Radio.Button> :
+                                            null
+                                    }
                                 </Radio.Group>
                             </Col>
                         </Row>
@@ -798,15 +829,19 @@ export default class RightToolBox extends Component {
                                         this.handleDetail("fill", e.target.value);
                                     }}
                                 >
-                                    <Radio.Button style={{ width: "33.33%" }} value="black">
+                                    <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="black">
                                         黑
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "33.33%" }} value="white">
+                                    <Radio.Button style={{ width: hasRed ? "33.33%" : "50%" }} value="white">
                                         白
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "33.33%" }} value="red">
-                                        红
-                                    </Radio.Button>
+                                    {
+                                        hasRed ?
+                                            <Radio.Button style={{ width: "33.33%" }} value="red">
+                                                红
+                                            </Radio.Button> :
+                                            null
+                                    }
                                 </Radio.Group>
                             </Col>
                         </Row>
@@ -820,18 +855,22 @@ export default class RightToolBox extends Component {
                                         this.handleDetail("textBg", e.target.value);
                                     }}
                                 >
-                                    <Radio.Button style={{ width: "25%" }} value="opacity">
+                                    <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="opacity">
                                         无
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "25%" }} value="black">
+                                    <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="black">
                                         黑
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "25%" }} value="white">
+                                    <Radio.Button style={{ width: hasRed ? "25%" : "33.33%" }} value="white">
                                         白
                                     </Radio.Button>
-                                    <Radio.Button style={{ width: "25%" }} value="red">
-                                        红
-                                    </Radio.Button>
+                                    {
+                                        hasRed ?
+                                            <Radio.Button style={{ width: "25%" }} value="red">
+                                                红
+                                            </Radio.Button> :
+                                            null
+                                    }
                                 </Radio.Group>
                             </Col>
                         </Row>
@@ -905,6 +944,27 @@ export default class RightToolBox extends Component {
                         </Row>
                     </div>
                 ) : null}
+                {menuMap.isCode ?
+                    <div className={styles["tool-box-block"]}>
+                        <h4>样式</h4>
+                        <Row style={{ marginBottom: 10 }} gutter={20}>
+                            <Col span={24}>编码类型</Col>
+                            <Col span={24}>
+                                <Select
+                                    style={{ width: "100%" }}
+                                    value={detail.codec}
+                                    onChange={value => {
+                                        this.handleDetail("codec", value);
+                                    }}
+                                >
+                                    <Option value="ean8">ean8</Option>
+                                    <Option value="ean13">ean13</Option>
+                                    <Option value="code128">code128</Option>
+                                </Select>
+                            </Col>
+                        </Row>
+                    </div> : null
+                }
             </Fragment>
         );
     }

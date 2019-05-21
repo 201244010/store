@@ -59,6 +59,7 @@ export default class ToolItem extends Component {
                                 scaleX: 1,
                                 scaleY: 1,
                                 rotation: 0,
+                                codec: 'ean13'
                             });
                         };
                         image.src = MAPS.imageUrl[type];
