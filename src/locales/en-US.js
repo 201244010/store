@@ -20,13 +20,13 @@ import productManagement from './en-US/BasicData-product';
 import merchantManagement from './en-US/merchant';
 
 export default {
-    'navBar.lang': '语言',
-    'navBar.area': '地区',
-    'layout.user.link.help': '帮助',
-    'layout.user.link.privacy': '隐私',
-    'layout.user.link.terms': '条款',
-    'app.home.introduce': '介绍',
-    'layout.user.footer': '2019 上海商米科技有限公司',
+    'navBar.lang': 'language',
+    'navBar.area': 'area',
+    'layout.user.link.help': 'help',
+    'layout.user.link.privacy': 'privacy',
+    'layout.user.link.terms': 'policy',
+    'app.home.introduce': 'introduce',
+    'layout.user.footer': '2019 Shanghai SUNMI Technology Co',
     ...globalHeader,
     ...common,
     ...menu,
