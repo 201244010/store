@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage, formatMessage } from 'umi/locale';
+import { FormattedMessage, formatMessage, getLocale } from 'umi/locale';
 import { connect } from 'dva';
 import DocumentTitle from 'react-document-title';
 import SelectLang from '@/components/SelectLang';
@@ -88,6 +88,7 @@ class SunmiLayout extends React.PureComponent {
         } = this.props;
 
         const from = getLocationParam('from') || null;
+        const currentLanguage = getLocale();
 
         const menu = (
             <Menu
@@ -112,7 +113,11 @@ class SunmiLayout extends React.PureComponent {
                 <DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
                     <div className={`${styles.wrapper} ${styles[bgClass]}`}>
                         <div className={styles['header-bar']}>
-                            <div className={styles.logo} />
+                            <div
+                                className={
+                                    currentLanguage === 'zh-CN' ? styles.logo : styles['logo-en']
+                                }
+                            />
                             {from !== 'accountCenter' && (
                                 <div className={styles['lang-wrapper']}>
                                     <SelectLang className={styles['drop-down']} />
