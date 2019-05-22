@@ -324,7 +324,7 @@ export default class RightToolBox extends Component {
                                 value={
                                     detail.scaleY
                                         ? Math.round(
-                                              MAPS.containerHeight[detail.type] * detail.scaleX
+                                              MAPS.containerHeight[detail.type] * detail.scaleY
                                           )
                                         : ''
                                 }
