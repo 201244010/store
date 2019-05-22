@@ -105,7 +105,6 @@ export default class BoardHeader extends Component {
                             className={styles['edit-input']}
                             value={templateName}
                             onChange={e => this.handleChangeName(e)}
-                            onBlur={this.handleConfirmChangeName}
                         />
                     ) : (
                         <Fragment>
