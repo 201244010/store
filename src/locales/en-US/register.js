@@ -1,5 +1,5 @@
 export default {
-    'reset.title': '重置密码',
+    'reset.title': 'Reset password',
     'reset.by.mobile': '手机号重置',
     'reset.by.mail': '邮箱重置',
     'reset.success': '恭喜，密码重置成功！',

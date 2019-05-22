@@ -250,7 +250,9 @@ export default {
                         if (BARCODE_TYPES.includes(componentDetail.type)) {
                             componentDetail[realKey] = SHAPE_TYPES.CODE;
                             componentDetail.codec =
-                                componentDetail.type === SHAPE_TYPES.CODE_QR ? 'qrcode' : componentDetail.codec;
+                                componentDetail.type === SHAPE_TYPES.CODE_QR
+                                    ? 'qrcode'
+                                    : componentDetail.codec;
                         }
                         if ([SHAPE_TYPES.TEXT].includes(componentDetail.type)) {
                             componentDetail[realKey] = SHAPE_TYPES.TEXT;

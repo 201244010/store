@@ -1,12 +1,8 @@
-// ESL 设备价签 文案
 export default {
     'esl.device.ap.title': '基站',
     'esl.device.esl.title': '价签',
-
-    // 基站用
     'esl.device.ap.search.placeholder': '基站ID/SN/名称',
     'esl.device.ap.search.ap.info': '基站信息',
-
     'esl.device.ap.id': '基站ID',
     'esl.device.ap.name': '基站名称',
     'esl.device.ap.status': '设备状态',
@@ -18,12 +14,10 @@ export default {
     'esl.device.ap.inactivated.notice':
         '未激活，该设备添加后从未连接到云端，请检查设备的网络状况。',
     'esl.device.ap.esl_num': '连接价签数量',
-
     'esl.device.ap.sn': '基站SN',
     'esl.device.ap.model': '基站型号',
     'esl.device.ap.version': '固件版本',
     'esl.device.ap.disconnect_time': '最后通信时间',
-
     'esl.device.ap.detail': '基站详情',
     'esl.device.ap.edit': '编辑基站信息',
     'esl.device.ap.delete.message1':
@@ -34,11 +28,8 @@ export default {
     'esl.device.ap.delete.fail': '删除基站失败',
     'esl.device.ap.restart.notice': '确定要重启基站？',
     'esl.device.ap.restart.loading': '基站正在重启，请稍等',
-
     'esl.device.ap.all': '共',
     'esl.device.ap.total': '个基站',
-
-    // 价签用
     'esl.device.esl.list': '价签列表',
     'esl.device.esl.search.placeholder': '价签ID或绑定商品的编号/名称',
     'esl.device.esl.search.info': '价签信息',
@@ -91,14 +82,10 @@ export default {
     'esl.device.esl.push.wait': '待推送',
     'esl.device.esl.push.success': '推送成功',
     'esl.device.esl.push.fail': '推送失败',
-
     'esl.device.esl.inactivated': '未激活',
-
     'esl.device.esl.week.fail': '推送失败',
     'esl.device.esl.push.all': '重推',
     'esl.device.esl.push.all.success': '正在重推失败价签...',
-
-    // 模板用
     'esl.device.template.new': '新建模板',
     'esl.device.template.id': '模板ID',
     'esl.device.template.name': '模板名称',
@@ -119,8 +106,6 @@ export default {
     'esl.device.template.name.require': '请输入模板名称',
     'esl.device.template.size.require': '请选择模板尺寸',
     'esl.device.template.color.require': '请选择模板颜色',
-
-    // 设备升级
     'esl.device.upgrade.tab.esl': '电子价签',
     'esl.device.upgrade.tab.ap': '无线基站',
     'esl.device.upgrade.group.detail': '分组详情',
@@ -128,9 +113,7 @@ export default {
     'esl.device.upgrade.version.last': '最新版本',
     'esl.device.upgrade.updated.total': '已升级/总数',
     'esl.device.upgrade.auto.upgrade': '自动升级',
-
     'esl.device.upgrade.auto.fail': '自动更新设置失败',
-
     'esl.device.upload.uploading': '固件上传中......',
     'esl.device.upload.fail': '上传失败',
     'esl.device.upload.success': '上传成功',
@@ -147,7 +130,9 @@ export default {
     'esl.device.upload.device.bin.notice': '请选择',
     'esl.device.upload.device.bin.require': '请选择需要上传的固件',
     'esl.device.upload.device.bin.error': '上传固件的文件格式错误',
-
     'esl.device.upgrade.esl.query.input': '请输入价签ID',
     'esl.device.upgrade.ap.query.input': '请输入基站ID',
+    'esl.overview.product.total': '商品总数',
+    'esl.overview.esl.total': '价签总数',
+    'esl.overview.ap.total': '基站总数',
 };
