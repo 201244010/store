@@ -131,4 +131,7 @@ export default {
     'esl.device.upload.device.bin.error': '上传固件的文件格式错误',
     'esl.device.upgrade.esl.query.input': '请输入价签ID',
     'esl.device.upgrade.ap.query.input': '请输入基站ID',
+    'esl.overview.product.total': 'Proudct Total',
+    'esl.overview.esl.total': 'ESL Total',
+    'esl.overview.ap.total': 'AP Total',
 };
