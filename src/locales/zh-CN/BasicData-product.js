@@ -1,4 +1,5 @@
 export default {
+    'basicData.product.not.bind': '不绑定',
     'basicData.product.search.product': '商品信息',
     'basicData.product.search.placeholder': '商品名称/编号/条码',
     'basicData.product.label.add': '新增字段',
