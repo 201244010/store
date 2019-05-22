@@ -13,11 +13,14 @@ export default class MTransformer extends Component {
     }
 
     boundBoxFunc = (oldBoundBox, newBoundBox) => {
+        const { componentsDetail, selectedShapeName } = this.props;
+        const detail = componentsDetail[selectedShapeName];
+
         if (newBoundBox.width < 3) {
             newBoundBox.width = 3;
         }
-        if (newBoundBox.height < 3) {
-            newBoundBox.height = 3;
+        if (newBoundBox.height < detail.fontSize * detail.zoomScale) {
+            newBoundBox.height = detail.fontSize * detail.zoomScale;
         }
         return newBoundBox;
     };

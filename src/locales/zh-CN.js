@@ -50,5 +50,5 @@ export default {
     ...storeManagement,
     ...notification,
     ...VideoPlayer,
-    ...studio
+    ...studio,
 };

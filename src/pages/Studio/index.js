@@ -543,7 +543,7 @@ class Studio extends Component {
 
         return (
             <div className={styles.board}>
-                <Spin tip={formatMessage({ id: "studio.loading" })} spinning={false} />
+                <Spin tip={formatMessage({ id: 'studio.loading' })} spinning={false} />
                 <div className={styles['board-header']}>
                     <BoardHeader
                         {...{
@@ -595,7 +595,7 @@ class Studio extends Component {
                                 selectedShapeName &&
                                 componentsDetail[selectedShapeName].type !==
                                     SHAPE_TYPES.RECT_FIX ? (
-                                    <MTransformer selectedShapeName={selectedShapeName} />
+                                    <MTransformer selectedShapeName={selectedShapeName} componentsDetail={componentsDetail} />
                                 ) : null}
                             </Layer>
                             {dragging && lines && !showRightToolBox ? (
