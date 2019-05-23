@@ -11,42 +11,44 @@ import resetPassword from './zh-CN/resetPassword';
 import userCenter from './zh-CN/userCenter';
 import storeManagement from './zh-CN/storeManagement';
 import notification from './zh-CN/notification';
+import studio from './zh-CN/studio';
 
 import VideoPlayer from './zh-CN/videoPlayer';
 
 // ESL
-import baseStation from './zh-CN/ESL/device';
+import baseStation from './zh-CN/ESL-device';
 
 // BasicData
-import productManagement from './zh-CN/BasicData/product';
+import productManagement from './zh-CN/BasicData-product';
 
-import merchantManagement from './zh-CN/Merchant/merchant';
+import merchantManagement from './zh-CN/merchant';
 
 export default {
-    'navBar.lang': '语言',
-    'navBar.area': '地区',
-    'layout.user.link.help': '帮助',
-    'layout.user.link.privacy': '隐私',
-    'layout.user.link.terms': '条款',
-    'app.home.introduce': '介绍',
-    'layout.user.footer': '2019 上海商米科技有限公司 版权所有 沪ICP备16006543',
-    'app.exception.description.404': '您所访问的页面不存在',
-    'app.exception.back': '返回首页',
-    ...globalHeader,
-    ...common,
-    ...menu,
-    ...settings,
-    ...message,
-    ...account,
-    ...loginRegister,
-    ...storeRelate,
-    ...mailActive,
-    ...resetPassword,
-    ...userCenter,
-    ...baseStation,
-    ...productManagement,
-    ...merchantManagement,
-    ...storeManagement,
+	'navBar.lang': '语言',
+	'navBar.area': '地区',
+	'layout.user.link.help': '帮助',
+	'layout.user.link.privacy': '隐私',
+	'layout.user.link.terms': '条款',
+	'app.home.introduce': '介绍',
+	'layout.user.footer': '2019 上海商米科技有限公司 版权所有 沪ICP备16006543',
+	'app.exception.description.404': '您所访问的页面不存在',
+	'app.exception.back': '返回首页',
+	...globalHeader,
+	...common,
+	...menu,
+	...settings,
+	...message,
+	...account,
+	...loginRegister,
+	...storeRelate,
+	...mailActive,
+	...resetPassword,
+	...userCenter,
+	...baseStation,
+	...productManagement,
+	...merchantManagement,
+	...storeManagement,
 	...notification,
 	...VideoPlayer,
+	...studio,
 };

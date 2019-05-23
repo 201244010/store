@@ -193,7 +193,8 @@ class CreateLibraryList extends React.Component{
 									<LibraryForm wrappedComponentRef={(form) => { this.forms[index] = form; }} {...item} libraries={[...faceIdLibrary, ...libraryList]} restCapacity={restCapacity} />
 									{/* changeFields={ this.changeFields } */}
 									{
-											item.isDefault || index === 0 ? '' : 
+										item.isDefault || index === 0 ? 
+											'' : 
 											<Button 
 												className='btn-create-library-remove'
 												type='danger'
@@ -203,12 +204,12 @@ class CreateLibraryList extends React.Component{
 													this.removeForm(item.id);
 												}} 
 											/>
-										}
+									}
 									{
-											index >= list.length - 1 ? '' : <Divider />
-										}
+										index >= list.length - 1 ? '' : <Divider />
+									}
 								</div>
-								))
+							))
 						}
 					</div>
 					<Form.Item {...FORM_ITEM_LAYOUT_COMMON}>
@@ -244,29 +245,29 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-		loadLibrary: () => {
+	loadLibrary: () => {
+		dispatch({
+			type: 'faceIdLibrary/read'
+		});
+	},
+	createLibrary: (list) => {
+		dispatch({
+			type: 'faceIdLibrary/create',
+			payload: {
+				faceidList: list
+			}
+		});
+	},
+	updateLibrary: (list) => {
+		list.forEach(item => {
 			dispatch({
-				type: 'faceIdLibrary/read'
-			});
-		},
-		createLibrary: (list) => {
-			dispatch({
-				type: 'faceIdLibrary/create',
+				type: 'faceIdLibrary/update',
 				payload: {
-					faceidList: list
+					library: item
 				}
 			});
-		},
-		updateLibrary: (list) => {
-			list.forEach(item => {
-				dispatch({
-					type: 'faceIdLibrary/update',
-					payload: {
-						library: item
-					}
-				});
-			});
-		}
-	});
+		});
+	}
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateLibraryList);

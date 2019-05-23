@@ -138,19 +138,19 @@ class InitStatusSDCard extends React.Component {
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch) => ({
-		formatSdCard: (sn) => {
-			dispatch({
-				type: 'initStatusSDCard/formatSdCard',
-				sn
-			});
-		},
-		getSdStatus: async (sn) => {
-			const status = await dispatch({
-				type: 'initStatusSDCard/getSdStatus',
-				sn
-			});
-			return status;
-		}
-	});
+	formatSdCard: (sn) => {
+		dispatch({
+			type: 'initStatusSDCard/formatSdCard',
+			sn
+		});
+	},
+	getSdStatus: async (sn) => {
+		const status = await dispatch({
+			type: 'initStatusSDCard/getSdStatus',
+			sn
+		});
+		return status;
+	}
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(InitStatusSDCard);

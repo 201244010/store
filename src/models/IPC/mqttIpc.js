@@ -6,7 +6,7 @@ import { IPC_SERVER } from '@/config';
 export const MESSAGE_TYPE = {
 	EVENT: 'event',
 	REQUEST: 'request',
-	RESPONSE: 'response'
+	RESPONSE: 'response',
 };
 
 const fetchApi = customizeFetch('ipc/api/mqtt/token', IPC_SERVER);
@@ -17,20 +17,20 @@ const model = new MqttModel(namespace);
 const createApi = async () => {
 	const response = await fetchApi('create', {
 		body: {
-			source: 'WEB'
-		}
+			source: 'WEB',
+		},
 	});
 
 	const result = response.json();
 
-	return result.then((d) => {
-		if (d.code === 1){
+	return result.then(d => {
+		if (d.code === 1) {
 			const { data } = d;
 			return {
 				username: data.username,
 				address: data.server_address,
 				password: data.password,
-				clientId: `${data.username  }_${  moment().format('X')}`
+				clientId: `${data.username}_${moment().format('X')}`,
 			};
 		}
 		return {};
@@ -41,22 +41,22 @@ export default {
 	namespace,
 	state: {},
 	reducers: {
-		...model.reducers()
+		...model.reducers(),
 	},
 	effects: {
 		...model.effects(),
-		*create( _, { call, put }) {
+		*create(_, { call, put }) {
 			const response = yield call(createApi);
 			// console.log(response);
 			yield put({
 				type: 'updateInfo',
-				payload: response
+				payload: response,
 			});
 		},
-		* getClientId(_, { select,take }) {
-			const { clientId,created } = yield select((state) => ({
+		*getClientId(_, { select, take }) {
+			const { clientId, created } = yield select(state => ({
 				created: state[namespace].created,
-				clientId: state[namespace].clientId
+				clientId: state[namespace].clientId,
 			}));
 			let id = '';
 			if (created) {
@@ -64,28 +64,33 @@ export default {
 			} else {
 				const { payload } = yield take('updateInfo');
 				id = payload.clientId;
-			};
+			}
 			return id;
 		},
-		*generateTopic({ payload: { deviceType, messageType, method }}, { select, take, put }) {
+		*generateTopic(
+			{
+				payload: { deviceType, messageType, method },
+			},
+			{ select, take, put }
+		) {
 			const userInfo = yield put.resolve({
-				type: 'user/getUserInfoFromStorage'
+				type: 'user/getUserInfoFromStorage',
 			});
 
 			const { id } = userInfo;
 
-			const { userId, clientId, created } = yield select((state) => ({
+			const { userId, clientId, created } = yield select(state => ({
 				// userId: state.user.id,
 				userId: id,
 				created: state[namespace].created,
-				clientId: state[namespace].clientId
+				clientId: state[namespace].clientId,
 			}));
 			// console.log(userId, created, clientId);
 			if (!created) {
 				const { payload } = yield take('updateInfo');
-				return `/WEB/${ userId }/${payload.clientId}/${deviceType}/${messageType}/${method}`;
-			};
-			return `/WEB/${ userId }/${clientId}/${deviceType}/${messageType}/${method}`;
+				return `/WEB/${userId}/${payload.clientId}/${deviceType}/${messageType}/${method}`;
+			}
+			return `/WEB/${userId}/${clientId}/${deviceType}/${messageType}/${method}`;
 		},
 
 		registerMessageHandler() {
@@ -98,13 +103,17 @@ export default {
 				const handler = (data, opcode, errcode, msgType, dvcType) => {
 					const listeners = listenerStack.filter(item => {
 						const models = Array.isArray(item.models) ? item.models : [item.models];
-						return item.type === msgType && item.opcode === opcode && models.indexOf(dvcType) >= 0;
+						return (
+							item.type === msgType &&
+							item.opcode === opcode &&
+							models.indexOf(dvcType) >= 0
+						);
 					});
 
 					listeners.forEach(listener => {
 						listener.handler(topic, {
 							errcode,
-							data
+							data,
 						});
 					});
 				};
@@ -140,14 +149,18 @@ export default {
 				let deviceType = [];
 				if (models === undefined) {
 					deviceType = [];
-				}else{
+				} else {
 					deviceType = Array.isArray(models) ? models : [models];
-				};
+				}
 
-				const hasNotAdded = listenerStack.every((listener) => {
+				const hasNotAdded = listenerStack.every(listener => {
 					listener.models.sort();
 					deviceType.sort();
-					if (listener.opcode === opcode && listener.type === type && JSON.stringify(listener.models) === JSON.stringify(deviceType)){
+					if (
+						listener.opcode === opcode &&
+						listener.type === type &&
+						JSON.stringify(listener.models) === JSON.stringify(deviceType)
+					) {
 						listener.handler = handler;
 						return false;
 					}
@@ -159,10 +172,10 @@ export default {
 						models: deviceType,
 						type,
 						opcode,
-						handler
+						handler,
 					});
-				};
+				}
 			});
-		}
-	}
+		},
+	},
 };

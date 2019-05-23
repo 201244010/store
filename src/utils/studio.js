@@ -9,71 +9,73 @@ export let currentId = 1;
 export const generatorId = type => `${type}-${currentId++}`;
 
 export const getNearLines = (source, target) => {
-    if (source.type === SHAPE_TYPES.RECT_FIX || target.type === SHAPE_TYPES.RECT_FIX) {
-        return [];
-    }
-    const ret = [];
-    if (source.type === SHAPE_TYPES.CIRCLE) {
-        source.left = source.x - source.radius * source.scaleX;
-        source.top = source.y - source.radius * source.scaleY;
-        source.right = source.x + source.radius * source.scaleX;
-        source.bottom = source.y + source.radius * source.scaleY;
-    } else {
-        source.left = source.x;
-        source.top = source.y;
-        source.right = source.x + source.width * source.scaleX;
-        source.bottom = source.y + source.height * source.scaleY;
-    }
-    if (target.type === SHAPE_TYPES.CIRCLE) {
-        target.left = target.x - target.radius * target.scaleX;
-        target.top = target.y - target.radius * target.scaleY;
-        target.right = target.x + target.radius * target.scaleX;
-        target.bottom = target.y + target.radius * target.scaleY;
-    } else {
-        target.left = target.x;
-        target.top = target.y;
-        target.right = target.x + target.width * target.scaleX;
-        target.bottom = target.y + target.height * target.scaleY;
-    }
+	const newSource = { ...source };
+	const newTarget = { ...target };
+	if (newSource.type === SHAPE_TYPES.RECT_FIX || newTarget.type === SHAPE_TYPES.RECT_FIX) {
+		return [];
+	}
+	const ret = [];
+	if (newSource.type === SHAPE_TYPES.CIRCLE) {
+		newSource.left = newSource.x - newSource.radius * newSource.scaleX;
+		newSource.top = newSource.y - newSource.radius * newSource.scaleY;
+		newSource.right = newSource.x + newSource.radius * newSource.scaleX;
+		newSource.bottom = newSource.y + newSource.radius * newSource.scaleY;
+	} else {
+		newSource.left = newSource.x;
+		newSource.top = newSource.y;
+		newSource.right = newSource.x + newSource.width * newSource.scaleX;
+		newSource.bottom = newSource.y + newSource.height * newSource.scaleY;
+	}
+	if (newTarget.type === SHAPE_TYPES.CIRCLE) {
+		newTarget.left = newTarget.x - newTarget.radius * newTarget.scaleX;
+		newTarget.top = newTarget.y - newTarget.radius * newTarget.scaleY;
+		newTarget.right = newTarget.x + newTarget.radius * newTarget.scaleX;
+		newTarget.bottom = newTarget.y + newTarget.radius * newTarget.scaleY;
+	} else {
+		newTarget.left = newTarget.x;
+		newTarget.top = newTarget.y;
+		newTarget.right = newTarget.x + newTarget.width * newTarget.scaleX;
+		newTarget.bottom = newTarget.y + newTarget.height * newTarget.scaleY;
+	}
 
-    if (
-        Math.abs(target.left - source.left) < NEAR_GAP ||
-        Math.abs(target.left - source.right) < NEAR_GAP
-    ) {
-        ret.push([target.left, 0, target.left, 10000]);
-    }
-    if (
-        Math.abs(target.right - source.left) < NEAR_GAP ||
-        Math.abs(target.right - source.right) < NEAR_GAP
-    ) {
-        ret.push([target.right, 0, target.right, 10000]);
-    }
+	if (
+		Math.abs(newTarget.left - newSource.left) < NEAR_GAP ||
+		Math.abs(newTarget.left - newSource.right) < NEAR_GAP
+	) {
+		ret.push([newTarget.left, 0, newTarget.left, 10000]);
+	}
+	if (
+		Math.abs(newTarget.right - newSource.left) < NEAR_GAP ||
+		Math.abs(newTarget.right - newSource.right) < NEAR_GAP
+	) {
+		ret.push([newTarget.right, 0, newTarget.right, 10000]);
+	}
 
-    if (
-        Math.abs(target.top - source.top) < NEAR_GAP ||
-        Math.abs(target.top - source.bottom) < NEAR_GAP
-    ) {
-        ret.push([0, target.top, 10000, target.top]);
-    }
-    if (
-        Math.abs(target.bottom - source.top) < NEAR_GAP ||
-        Math.abs(target.bottom - source.bottom) < NEAR_GAP
-    ) {
-        ret.push([0, target.bottom, 10000, target.bottom]);
-    }
+	if (
+		Math.abs(newTarget.top - newSource.top) < NEAR_GAP ||
+		Math.abs(newTarget.top - newSource.bottom) < NEAR_GAP
+	) {
+		ret.push([0, newTarget.top, 10000, newTarget.top]);
+	}
+	if (
+		Math.abs(newTarget.bottom - newSource.top) < NEAR_GAP ||
+		Math.abs(newTarget.bottom - newSource.bottom) < NEAR_GAP
+	) {
+		ret.push([0, newTarget.bottom, 10000, newTarget.bottom]);
+	}
 
-    return ret;
+	return ret;
 };
 
 export const getImagePromise = componentDetail =>
-    new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => {
-            componentDetail.image = image;
-            resolve(componentDetail);
-        };
-        image.onerror = error => {
-            reject(error);
-        };
-        image.src = componentDetail.imageUrl || MAPS.imageUrl[componentDetail.type];
-    });
+	new Promise((resolve, reject) => {
+		const image = new Image();
+		image.onload = () => {
+			componentDetail.image = image;
+			resolve(componentDetail);
+		};
+		image.onerror = error => {
+			reject(error);
+		};
+		image.src = componentDetail.imageUrl || MAPS.imageUrl[componentDetail.type];
+	});

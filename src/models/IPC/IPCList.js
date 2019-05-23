@@ -1,4 +1,4 @@
-import { getDeviceList } from '../../pages/IPC/IPCList/services/IPCList';
+import { getDeviceList } from '@/pages/IPC/services/IPCList';
 import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
@@ -9,68 +9,66 @@ export default {
 			const { payload } = action;
 			// console.log(payload);
 			return [...payload];
-		}
+		},
 	},
 	effects: {
-		*read(action,{ put }) {
-
+		*read(action, { put }) {
 			// const userInfo = yield put.resolve({
 			// 	type: 'user/getUserInfoFromStorage'
 			// });
 			// const userId = userInfo.id;
 			const companyId = yield put.resolve({
-				type: 'global/getCompanyIdFromStorage'
+				type: 'global/getCompanyIdFromStorage',
 			});
 
 			const shopId = yield put.resolve({
-				type: 'global/getShopIdFromStorage'
+				type: 'global/getShopIdFromStorage',
 			});
-			
+
 			// console.log(companyId, shopId);
 			if (!companyId || !shopId) {
 				return [];
 			}
-			
+
 			const response = yield getDeviceList({
 				companyId,
-				shopId
+				shopId,
 			});
 
 			const result = response.data;
 			if (response.code === ERROR_OK) {
 				yield put({
 					type: 'readData',
-					payload: result
+					payload: result,
 				});
 			}
 			return result;
-			
 		},
-		*getList(action,{ put }){
+		*getList(action, { put }) {
 			const companyId = yield put.resolve({
-				type: 'global/getCompanyIdFromStorage'
+				type: 'global/getCompanyIdFromStorage',
 			});
 
 			const shopId = put.resolve({
-				type: 'global/getShopIdFromStorage'
+				type: 'global/getShopIdFromStorage',
 			});
 
 			const response = yield getDeviceList({
 				companyId,
-				shopId
+				shopId,
 			});
 			const result = response.data;
 			if (response.code === ERROR_OK) {
 				yield put({
 					type: 'readData',
-					payload: result
+					payload: result,
 				});
 			}
 		},
-		*getIpcList(_, { select, take}) {
-			let ipcList  = yield select((state) => state.ipcList);
+		*getIpcList(_, { select, take }) {
+			let ipcList = yield select(state => state.ipcList);
 
-			if (ipcList.length === 0){
+			if (ipcList.length === 0) {
 				// console.log(ipcList.length);
 				const { payload } = yield take('readData');
 				ipcList = payload;
@@ -78,23 +76,33 @@ export default {
 
 			return ipcList;
 		},
-		*getDeviceInfo({ payload: { sn }}, { put }) {
+		*getDeviceInfo(
+			{
+				payload: { sn },
+			},
+			{ put }
+		) {
 			const ipcList = yield put.resolve({
-				type: 'getIpcList'
+				type: 'getIpcList',
 			});
 
-			if(ipcList){
-				for(let i=0;i <ipcList.length; i++){
-					if(ipcList[i].sn === sn){
-						return(ipcList[i]);
+			if (ipcList) {
+				for (let i = 0; i < ipcList.length; i++) {
+					if (ipcList[i].sn === sn) {
+						return ipcList[i];
 					}
 				}
 			}
 			return {};
 		},
-		*getDeviceType({ payload: { sn }},{ put }){
+		*getDeviceType(
+			{
+				payload: { sn },
+			},
+			{ put }
+		) {
 			const ipcList = yield put.resolve({
-				type: 'getIpcList'
+				type: 'getIpcList',
 			});
 
 			for (let i = 0; i < ipcList.length; i++) {
@@ -104,9 +112,14 @@ export default {
 			}
 			return '';
 		},
-		*getDeviceId({ payload: { sn }},{ put }){
+		*getDeviceId(
+			{
+				payload: { sn },
+			},
+			{ put }
+		) {
 			const ipcList = yield put.resolve({
-				type: 'getIpcList'
+				type: 'getIpcList',
 			});
 			for (let i = 0; i < ipcList.length; i++) {
 				if (ipcList[i].sn === sn) {
@@ -115,9 +128,14 @@ export default {
 			}
 			return '';
 		},
-		*getDeviceSn({ payload: { deviceId }}, { put}) {
+		*getDeviceSn(
+			{
+				payload: { deviceId },
+			},
+			{ put }
+		) {
 			const ipcList = yield put.resolve({
-				type: 'getIpcList'
+				type: 'getIpcList',
 			});
 
 			for (let i = 0; i < ipcList.length; i++) {
@@ -128,6 +146,5 @@ export default {
 
 			return '';
 		},
-
-	}
+	},
 };
