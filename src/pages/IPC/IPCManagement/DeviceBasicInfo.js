@@ -1,210 +1,335 @@
 import React from 'react';
-import styles from './DeviceBasicInfo.less';
-import { Card, Icon, Button, Form, Input, Modal, Spin, Radio } from 'antd';
+import { Card, Icon, Button, Form, Input, Modal, Spin, /* Radio, */ message } from 'antd';
 import { connect } from 'dva';
 // import PropTypes from 'prop-types';
-import { FormattedMessage, formatMessage } from 'umi/locale';
+import { formatMessage } from 'umi/locale';
 import defaultImage from '@/assets/imgs/default.jpeg';
-import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
+import router from 'umi/router';
 
-const RadioGroup = Radio.Group;
+import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
+
+import styles from './DeviceBasicInfo.less';
+
+// const FORM_ITEM_LAYOUT = {
+// 	labelCol: {
+// 		span: 8
+// 	},
+// 	wrapperCol: {
+// 		span: 12
+// 	}
+// };
+
+// const TAIL_FORM_ITEM_LAYOUT = {
+// 	wrapperCol: {
+// 		span: 12,
+// 		offset: 8
+// 	}
+// };
+
+
+// const RadioGroup = Radio.Group;
 const mapStateToProps = (state) => {
-	const { deviceBasicInfo, loading } = state;
+	const { ipcBasicInfo: basicInfo, loading } = state;
 	return {
-		deviceBasicInfo,
+		basicInfo,
 		loading
 	};
 };
 const mapDispatchToProps = (dispatch) => ({
-		getDeviceType(sn) {
-			return dispatch({
-				type: 'ipcList/getDeviceType',
-				payload: sn
-			});
-		},
-		save: (value) => {
-			dispatch({
-				type: 'deviceBasicInfo/update',
-				payload: {
-					name: value
-				}
-			});
-		},
-		loadInfo: (sn) => {
-			dispatch({
-				type: 'deviceBasicInfo/read',
-				payload: sn
-			});
-		},
-		deleteDevice: () => {
-			dispatch({
-				type: 'deviceBasicInfo/delete'
-			});
-		}
-	});
-let disabledControl = true;
+	getDeviceType(sn) {
+		return dispatch({
+			type: 'ipcList/getDeviceType',
+			payload: sn
+		});
+	},
+	update: (value, sn) => {
+		const data = dispatch({
+			type: 'ipcBasicInfo/update',
+			payload: {
+				name: value,
+				sn
+			}
+		}).then((result) => {
+			// console.log('result: ', result);
+			if (result) {
+				message.success(formatMessage({ id: 'ipcManagement.success'}));
+			}else{
+				message.error(formatMessage({ id: 'ipcManagement.failed'}));
+			}
+			return result;
+		});
 
+		return data;
+	},
+	loadInfo: (sn) => {
+		dispatch({
+			type: 'ipcBasicInfo/read',
+			payload: {
+				sn
+			}
+		});
+	},
+	deleteDevice: (sn) => {
+		dispatch({
+			type: 'ipcBasicInfo/delete',
+			payload: {
+				sn
+			}
+		}).then((result) => {
+			// console.log('result: ', result);
+			if (result) {
+				message.success(formatMessage({ id: 'ipcManagement.deleteSuccess'}));
+
+				setTimeout(() => {
+					router.push('/devices/ipcList');
+				}, 800);
+			}else{
+				message.error(formatMessage({ id: 'ipcManagement.deleteFailed'}));
+			}
+		});
+	}
+});
+// let disabledControl = true;
 @connect(mapStateToProps, mapDispatchToProps)
+@Form.create({
+	name: 'ipc-device-basic-info',
+	mapPropsToFields: (props) => {
+		const { basicInfo } = props;
+		return {
+			deviceName: Form.createFormField({
+				value: basicInfo.name,
+			})
+		};
+
+	}
+})
 class DeviceBasicInfo extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const { deviceBasicInfo } = props;
 		this.state = {
-			name: deviceBasicInfo.name,
 			isEdit: false,
-			// isChange: false,
 		};
-		// console.log(this.state);
 	}
 
 	componentDidMount = async () => {
 		const { loadInfo, sn } = this.props;
+
 		loadInfo(sn);
 	}
 
-	onSave = () => {
-		const { save } = this.props;
-		const { name } = this.state;
-		save(name);
-		disabledControl = true;
-		// const { status } = this.props.deviceBasicInfo;
-    	/*
-		if (status === 'success') {
-			message.success('修改成功');
-		} else if (status === 'error') {
-			message.error('修改失败，请检查网络或重新设置');
+	onSave = async () => {
+		const { update, sn, form } = this.props;
+
+		const { getFieldValue } = form;
+		const name = getFieldValue('deviceName');
+
+		const result = await update( name, sn );
+
+		if (result) {
+			this.setState({
+				isEdit: false
+			});
 		}
-		*/
 	}
 
 	onShowModal = () => {
-		const ref = this;
+		const { deleteDevice, sn, loading } = this.props;
 		Modal.confirm({
 			title: formatMessage({ id: 'deviceBasicInfo.delete' }),
 			content: (
 				<p>
-					<span className={styles['warning-text']}><FormattedMessage id='deviceBasicInfo.deleteConfirmPre' /></span>
-					<span><FormattedMessage id='deviceBasicInfo.deleteConfirmSuf' /></span>
+					<span className={styles['warning-text']}>
+						{ formatMessage({id: 'deviceBasicInfo.deleteConfirmPre'}) }
+					</span>
+					<span>
+						{ formatMessage({id: 'deviceBasicInfo.deleteConfirmSuf'}) }
+					</span>
 				</p>),
 			okText: formatMessage({ id: 'deviceBasicInfo.contine' }),
 			cancelText: formatMessage({ id: 'deviceBasicInfo.cancel' }),
+
+			okButtonProps: {
+				loading: loading.effects['ipcBasicInfo/delete']
+			},
 			onOk() {
-				// console.log(this)
-				const { deleteDevice } = ref.props;
-				deleteDevice();
+				deleteDevice(sn);
 			}
 		});
 	}
-	
+
 	onClick = () => {
 		this.setState({
 			isEdit: true
 		});
+
+		setTimeout(() => {
+			// this.input.select();
+			this.input.focus();
+		}, 0);
+
 	}
 
-	onChange = (e) => {
-		this.setState({
-			name: e.target.value
-		});
-	}
+	// onChange = (e) => {
+	// 	const { form } = this.props;
+	// 	form.setFieldsValue({
+	// 		deviceName: e.target.value
+	// 	});
+	// 	// this.setState({
+	// 	// 	name: e.target.value
+	// 	// });
+	// }
 
-	onPressEnter = () => {
-		// console.log(this.state.name);
-		const { name } = this.state;
-		const { deviceBasicInfo } = this.props;
+	// onPressEnter = () => {
+	// 	// console.log(this.state.name);
+	// 	// const { name } = this.state;
+	// 	// const { deviceBasicInfo } = this.props;
 
-		if (deviceBasicInfo.name !== name) {
-			disabledControl = false;
-			// this.setState({
-			// 	isChange: true
-			// });
-		} else {
-			disabledControl = true;
-			// this.setState({
-			// 	isChange: false
-			// });
+	// 	// if (deviceBasicInfo.name !== name) {
+	// 		// disabledControl = false;
+	// 		// this.setState({
+	// 		// 	isChange: true
+	// 		// });
+	// 	// } else {
+	// 		// disabledControl = true;
+	// 		// this.setState({
+	// 		// 	isChange: false
+	// 		// });
+	// 	// }
+
+	// 	this.setState({
+	// 		isEdit: false
+	// 	});
+	// }
+
+	// componentWillReceiveProps = (props) => {
+	// 	const { basicInfo: { status } } = props;
+
+	// 	if (status === 'success') {
+	// 		this.setState({
+	// 			isEdit: false
+	// 		});
+	// 	}
+	// }
+
+	// componentDidUpdate = () => {
+	// 	const { basicInfo: { status } } = this.props;
+
+	// 	if (status === 'success') {
+	// 		message.success('修改成功！');
+	// 	} else if (status === 'failed') {
+	// 		message.error('修改失败！请检查网络或重新设置。');
+	// 	}
+	// }
+
+	exitEditName = () => {
+		const { form } = this.props;
+		const { isFieldTouched } = form;
+
+		if (!isFieldTouched('deviceName')) {
+			this.setState({
+				isEdit: false
+			});
 		}
-
-		this.setState({
-			isEdit: false
-		});
 	}
 
 	render() {
-		const { isEdit, name: nameState } = this.state;
-		const { deviceBasicInfo }  = this.props;
-		const { name, type, sn, img, mode, status } = deviceBasicInfo;
+		const { isEdit } = this.state;
+		const { basicInfo, form, loading }  = this.props;
+		const { name, type, sn, img, /* mode, */ status } = basicInfo;
 
-		if (status === 'error') {
-			disabledControl = false;
-		}
-		const { loading } = this.props;
+		const { isFieldTouched, getFieldDecorator } = form;
+
 		const image = img || defaultImage;
 
+		// console.log(loading);
+
 		return (
-			<Spin spinning={loading.effects['deviceBasicInfo/read']}>
+			<Spin spinning={status === 'loading'}>
 				<Card
-					title={<FormattedMessage id="deviceBasicInfo.title" />}
+					title={formatMessage({id: 'deviceBasicInfo.title'})}
 					className={styles['main-card']}
 				>
 					<img src={image} alt="镜头显示图" className={styles['main-image']} />
 					<Form {...FORM_ITEM_LAYOUT} className={styles['info-form']}>
-						<Form.Item label={<FormattedMessage id="deviceBasicInfo.name" />}>
-							{!isEdit ? (
-								<span>
-									{nameState || name}
-									<Icon type="edit" onClick={this.onClick} />
-								</span>
-							) : (
-								<Input
-									onPressEnter={this.onPressEnter}
-									value={nameState}
-									className={styles['name-input']}
-									onChange={this.onChange}
-								/>
-							)}
+
+						<Form.Item
+							className={!isEdit ? styles.hidden : ''}
+							label={formatMessage({id: 'deviceBasicInfo.name'})}
+						>
+							{
+								getFieldDecorator('deviceName', {
+									rules: [
+										{ required: true }
+									]
+								})(
+									<Input
+										ref={input => this.input = input}
+										// onPressEnter={this.onPressEnter}
+										onBlur={this.exitEditName}
+									/>
+								)
+							}
 						</Form.Item>
-						<Form.Item label={<FormattedMessage id="deviceBasicInfo.type" />}>
+
+						<Form.Item
+							required='true'
+							label={formatMessage({id: 'deviceBasicInfo.name'})}
+							className={isEdit ? styles.hidden : ''}
+						>
+							<div>
+								<span className={styles.text}>{ name }</span>
+								<Icon type="edit" onClick={this.onClick} />
+							</div>
+						</Form.Item>
+
+
+						<Form.Item label={formatMessage({id: 'deviceBasicInfo.type'})}>
 							<span>{type}</span>
 						</Form.Item>
-						<Form.Item label={<FormattedMessage id="deviceBasicInfo.sn" />}>
+						<Form.Item label={formatMessage({id: 'deviceBasicInfo.sn'})}>
 							<span>{sn}</span>
 						</Form.Item>
-						{type === 'FS1' ? (
+
+						{/* {type === 'SS1' ? (
 							<Form.Item
 								{...TAIL_FORM_ITEM_LAYOUT}
 								className={styles['radio-item']}
 							>
 								<RadioGroup value={mode}>
 									<Radio value={1}>
-										<FormattedMessage id="deviceBasicInfo.directionForward" />
+										{ formatMessage({id: 'deviceBasicInfo.directionForward'}) }
+
 									</Radio>
 									<Radio value={2}>
-										<FormattedMessage id="deviceBasicInfo.directionBack" />
+										{ formatMessage({id: 'deviceBasicInfo.directionBack'}) }
 									</Radio>
 								</RadioGroup>
 							</Form.Item>
 						) : (
 							''
-						)}
+						)} */}
+
 						<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
-							{deviceBasicInfo.status ? '' : ''}
+							{status ? '' : ''}
 							<div className={styles['btn-block']}>
 								<Button
 									type="primary"
 									onClick={this.onSave}
-									disabled={disabledControl}
+									// disabled={disabledControl}
+									disabled={!isFieldTouched('deviceName')}
 									className={styles['save-btn']}
+
+									loading={loading.effects['ipcBasicInfo/update']}
 								>
-									<FormattedMessage id="deviceBasicInfo.save" />
+									{ formatMessage({id: 'deviceBasicInfo.save'}) }
 								</Button>
 								<Button
 									type="danger"
 									onClick={this.onShowModal}
 									className={styles['delete-btn']}
 								>
-									<FormattedMessage id="deviceBasicInfo.delete" />
+									{ formatMessage({id: 'deviceBasicInfo.delete'}) }
 								</Button>
 							</div>
 						</Form.Item>

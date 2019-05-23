@@ -140,9 +140,8 @@ const paramSerializer = (item) => {
 	} else if (item.isAuto === 2) {
 		// object.start_time = item.startTime.unix() - moment().startOf('day').unix();
 		// object.end_time = item.endTime.unix() - moment().startOf('day').unix();
-
-		item.days.forEach(() => {
-			arr[item - 1] = '1';
+		item.days.forEach((index) => {
+			arr[index - 1] = '1';
 		});
 	};
 

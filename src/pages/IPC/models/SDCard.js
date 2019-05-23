@@ -33,7 +33,7 @@ export default {
 			state.forEach((item) => {
 				if (item.sn === sn) {
 					item.status = status;
-					};
+				};
 			});
 		},
 		formatResponse(state, action) {
@@ -70,9 +70,9 @@ export default {
 				type: 'init',
 				payload:ipcList
 			});
-			
+
 		},
-		*formatSdCard(action, { put }) {			
+		*formatSdCard(action, { put }) {
 			const { sn } = action;
 
 			const topicPublish = yield put.resolve({
@@ -113,7 +113,7 @@ export default {
 							type: 'changeStatus',
 							sn,
 							status
-						});		
+						});
 					}
 				},{
 					opcode:formatCode,
@@ -126,9 +126,9 @@ export default {
 							type: 'formatResponse',
 							sn,
 							status
-						});	
+						});
 					}
-				}	
+				}
 			];
 			dispatch({
 				type: 'mqttIpc/addListener',

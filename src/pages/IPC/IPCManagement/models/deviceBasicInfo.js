@@ -1,83 +1,195 @@
-const dataFormatter = (item) => ({
-		name: item.name,
-		type: item.type,
-		sn: item.sn,
-		img: item.img,
-		mode: item.mode || 1
-	});
-export default {
-	namespace: 'deviceBasicInfo',
-	state: {},
-	reducers: {
+// import { MESSAGE_TYPE } from '@/constants';
+import { ERROR_OK } from '@/constants/errorCode';
 
-		// updateData(state, action) {
-		// 	// const { payload } = action;
-		// 	// if(payload.errcode === 0){
-		// 	// 	message.success('修改成功');
-		// 	// 	return {
-		// 	// 		...payload,
-		// 	// 		status:'success'
-		// 	// 	};
-		// 	// } else {
-		// 	// 	message.error('修改失败，请检查网络或重新设置');
-		// 	// 	return {
-		// 	// 		...payload,
-		// 	// 		status:'error'
-		// 	// 	};
-		// 	// }
-		// },
+import { unbind, updateIPCName } from '../../services/IPCList';
+
+// const OPCODE = {
+// 	READ: '0x305b'
+// };
+
+// const dataFormatter = (item) => ({
+// 	name: item.name,
+// 	type: item.type,
+// 	sn: item.sn,
+// 	img: item.img,
+// 	mode: item.mode || 1
+// });
+
+export default {
+	namespace: 'ipcBasicInfo',
+	state: {
+		name: '',
+		img: '',
+		sn: '',
+		type: '',
+		status: 'loading'
+	},
+	reducers: {
 		readData(state, action) {
-			const { payload } = action;
+			const { payload: { name, img, type, sn } } = action;
 			// console.log(payload);
 			return {
-				...payload,
-				status:''
+				name,
+				img,
+				type,
+				sn,
+				status: 'normal'
 			};
-		}
+		},
+		updateData(state, { payload: { name } }) {
+			state.name = name;
+		},
+		// setStatus(state, {payload: { status }}) {
+		// 	state.status = status;
+		// }
 	},
 	effects: {
-		*read({ payload: sn }, { put }) {
+		*read({ payload: { sn } }, { put }) {
 
-			const deviceInfo = yield put.resolve({
+			const { name, img, type } = yield put.resolve({
 				type:'ipcList/getDeviceInfo',
 				payload: {
 					sn
 				}
 			});
-			// console.log(deviceInfo)
+
 			yield put({
 				type:'readData',
-				payload: dataFormatter(deviceInfo)
+				payload: {
+					name,
+					img,
+					type,
+					sn
+				}
 			});
 
 		},
-		// *update(action, { put, select}) {
-		// 	const { payload } = action;
+		*update({ payload: { sn, name }}, { put, call }) {
+			// const type = yield put.resolve({
+			// 	type:'ipcList/getDeviceType',
+			// 	payload:{
+			// 		sn
+			// 	}
+			// });
 
-		// 	const cameraId = yield select((state) => {
-		// 		//return state.id
-		// 		return '1';
-		// 	});
-		// 	/*
-		// 	const response = yield updateCameraInfo({
-		// 		cameraId,
-		// 		payload
-		// 	});
-		// 	if(!response.errcode){
-		// 		yield put({
-		// 			type: 'updateData',
-		// 			payload: response
-		// 		});
-		// 	}
-		// 	*/
-		// 	yield put({
-		// 		type:'updateData',
-		// 		payload:{
-		// 			...payload,
-		// 			errcode:0
-		// 		}
-		// 	});
+			const deviceId = yield put.resolve({
+				type: 'ipcList/getDeviceId',
+				payload:{
+					sn
+				}
+			});
 
-		// }
-	}
+			// const shopId = yield put.resolve({
+			// 	type: 'global/getShopIdFromStorage'
+			// });
+
+			// const companyId = yield put.resolve({
+			// 	type: 'global/getCompanyIdFromStorage'
+			// });
+
+			// const topicPublish = yield put.resolve({
+			// 	type:'mqttIpc/generateTopic',
+			// 	payload:{
+			// 		deviceType: type,
+			// 		messageType: 'request',
+			// 		method: 'pub'
+			// 	}
+			// });
+
+			// yield put({
+			// 	type:'mqttIpc/publish',
+			// 	payload:{
+			// 		topic: topicPublish,
+			// 		message: {
+			// 			opcode: OPCODE.READ,
+			// 			param: {
+			// 				// sn,
+			// 				company_id: companyId,
+			// 				shop_id: shopId,
+			// 				device_id: deviceId,
+			// 				device_name: name
+			// 			}
+			// 		}
+			// 	}
+			// });
+
+			const { code } = yield call(updateIPCName, {
+				deviceId,
+				deviceName: name
+			});
+
+			if (code === ERROR_OK) {
+				yield put({
+					type: 'updateData',
+					payload: {
+						name
+					}
+				});
+				return true;
+			}
+			return false;
+		},
+		*delete({ payload: { sn }}, { put, call }) {
+			const deviceId = yield put.resolve({
+				type: 'ipcList/getDeviceId',
+				payload: {
+					sn
+				}
+			});
+
+			const { code } = yield call(unbind, {
+				deviceId
+			});
+
+			if (code === ERROR_OK) {
+				return true;
+			}
+			return false;
+		}
+	},
+	// subscriptions: {
+	// 	setup({ dispatch }) {
+	// 		const listeners = [
+	// 			{
+	// 				opcode: OPCODE.READ,
+	// 				models: ['FS1', 'SS1'],
+	// 				type: MESSAGE_TYPE.RESPONSE,
+	// 				handler: (topic, messages) => {
+	// 					const msg = JSON.parse(JSON.stringify(messages));
+	// 					// console.log(msg);
+	// 					if (msg.errcode === ERROR_OK) {
+	// 						const { data } = msg;
+	// 						dispatch({
+	// 							type: 'readData',
+	// 							payload: {
+	// 								name: data.ipc_name
+	// 							}
+	// 						});
+
+	// 						dispatch({
+	// 							type: 'setStatus',
+	// 							payload: {
+	// 								status: 'success'
+	// 							}
+	// 						}).then(() => {
+	// 							setTimeout(() => {
+	// 								// console.log('ccc');
+	// 								dispatch({
+	// 									type: 'setStatus',
+	// 									payload: {
+	// 										status: 'normal'
+	// 									}
+	// 								});
+	// 							}, 300);
+	// 						});
+	// 					}
+	// 				}
+	// 			}
+	// 		];
+	// 		dispatch({
+	// 			type: 'mqttIpc/addListener',
+	// 			payload: listeners
+	// 		});
+	// 	}
+	// }
 };

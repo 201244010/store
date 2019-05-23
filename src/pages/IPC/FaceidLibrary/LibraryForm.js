@@ -69,21 +69,21 @@ class LibraryForm extends React.Component {
 		// console.log('form')
 		// console.log(this.props);
 		return (
-			<div className={styles["faceid-library-form"]}>
+			<div className={styles['faceid-library-form']}>
 				<Form className={styles['form-wrapper']} title={<FormattedMessage id="faceid.createLibrary" />}>
 					<Form.Item label={<FormattedMessage id="faceid.libraryName" />} extra={<FormattedMessage id="faceid.libraryNameFormat" />}>
-						{getFieldDecorator("name", {
+						{getFieldDecorator('name', {
 							rules: [
 								{
 									required: true,
 									message: formatMessage({
-										id: "faceid.libraryNameMsg",
+										id: 'faceid.libraryNameMsg',
 									}),
 								},
 								{
 									max: 20,
 									message: formatMessage({
-										id: "faceid.libraryNameFormat",
+										id: 'faceid.libraryNameFormat',
 									}),
 								},
 								{
@@ -101,21 +101,21 @@ class LibraryForm extends React.Component {
 										});
 
 										if (confictFlag) {
-											callback("library-name-confict");
+											callback('library-name-confict');
 										} else {
 											callback();
 										}
 									},
 									message: formatMessage({
-										id: "faceid.libraryNameRule",
+										id: 'faceid.libraryNameRule',
 									}),
 								},
 							],
 						})(
-							<Input 
+							<Input
 								disabled={isDefault}
 								placeholder={formatMessage({
-									id: "faceid.libraryNameMsg",
+									id: 'faceid.libraryNameMsg',
 								})}
 							/>
 						)}
@@ -133,34 +133,30 @@ class LibraryForm extends React.Component {
 							</span>
 						}
 					>
-						{getFieldDecorator("capacity", {
+						{getFieldDecorator('capacity', {
 							rules: [
 								{
 									required: true,
 									message: formatMessage({
-										id: "faceid.photosAmountMsg",
+										id: 'faceid.photosAmountMsg',
 									}),
 								},
 								{
 									validator: (rule, value, callback) => {
 										if (value < amount || value > restCapacity) {
-											callback("photo-amount-error");
+											callback('photo-amount-error');
 										} else {
 											callback();
 										}
 									},
-									message:
-										`${formatMessage({
-											id: "faceid.photosAmountNote-error",
-										}) 
-										}${amount || 1}~${restCapacity}${ 
-										formatMessage({
-											id: "faceid.photosAmountNote-suf",
-										})}`,
+									message: `${formatMessage({id: 'faceid.photosAmountNote-error'})}
+										${amount || 1}~
+										${restCapacity}
+										${formatMessage({id: 'faceid.photosAmountNote-suf'})}`,
 								},
 							],
 						})(<Input placeholder={formatMessage({
-							id: "faceid.photosAmountMsg",
+							id: 'faceid.photosAmountMsg',
 						})}
 						/>)}
 					</Form.Item>
@@ -174,12 +170,12 @@ class LibraryForm extends React.Component {
 						</span>}
 					>
 						{
-							getFieldDecorator("remarks")(
-								<Input.TextArea 
-									disabled={isDefault} 
-									autosize={{ minRows: 2, maxRows: 6 }} 
+							getFieldDecorator('remarks')(
+								<Input.TextArea
+									disabled={isDefault}
+									autosize={{ minRows: 2, maxRows: 6 }}
 									placeholder={formatMessage(
-										{ id: "faceid.remarkMsg" },
+										{ id: 'faceid.remarkMsg' },
 									)}
 								/>
 							)

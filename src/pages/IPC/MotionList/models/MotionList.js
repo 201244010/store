@@ -1,5 +1,5 @@
 
-import { getMotionList,getIpcList } from '../services/MotionList';
+import { getMotionList, getIpcList } from '../../services/MotionList';
 import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
@@ -47,7 +47,7 @@ export default {
 				endTime,
 				deviceId,
 				source
-			});	
+			});
 			if (response.code === ERROR_OK) {
 				const result = response.data;
 				yield put({
@@ -74,7 +74,7 @@ export default {
 			// 	return state.shops.currentShopId;
 			// });
 			// console.log(`motionList: companyId:${companyId} shopId${shopId}`);
-			const response = yield getIpcList();	
+			const response = yield getIpcList();
 			if (response.code === ERROR_OK) {
 				const result = response.data;
 				// console.log(result);

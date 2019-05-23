@@ -150,8 +150,10 @@ class VideoPlayer extends React.Component{
 		// console.log('did update:', url, oldProps.url);
 		if (url && oldProps.url !== url) {
 			this.updateUrl(url);
-			this.updateSources(sources);
 		}
+		// if (1) {
+		this.updateSources(sources);
+		// }
 	}
 
 	// shouldComponentUpdate(newProps, newState) {
@@ -230,6 +232,7 @@ class VideoPlayer extends React.Component{
 			// 当前不是最后一个视频
 			const nextIndex = player.playlist.nextIndex();
 			const nextSource = sources[nextIndex];
+			console.log(nextIndex, currentTimestamp, nextSource.timeStart);
 			if (currentTimestamp < nextSource.timeStart){
 				// 还未到下一段视频点
 				this.showNoMediaCover();
@@ -240,16 +243,18 @@ class VideoPlayer extends React.Component{
 	}
 
 	startClock() {
-		const { playing, currentTimestamp } = this.state;
+		const { playing } = this.state;
 		clearInterval(this.interval);
+
 		this.interval = setInterval(() => {
+			const { currentTimestamp } = this.state;
 			this.setState({
 				currentTimestamp: currentTimestamp + 1,
 				playing: true
 			});
 
 			// this.currentTimestamp = this.currentTimestamp + 1;
-			// console.log(moment.unix(this.state.currentTimestamp).format('YYYY-MM-DD HH:mm:ss'));
+			// console.log(moment.unix(currentTimestamp).format('YYYY-MM-DD HH:mm:ss'));
 
 			// 如果当前不再播放，则需要判断是否开始播放下一秒
 			if (!playing){
@@ -286,7 +291,7 @@ class VideoPlayer extends React.Component{
 		player.playlist.last();
 		// this.play();
 		player.on('canplay', () => {
-		this.play();
+			this.play();
 		});
 
 		player.on('play', () => {
@@ -330,7 +335,7 @@ class VideoPlayer extends React.Component{
 		});
 
 		player.on('play', () => {
-			console.log('play');
+			// console.log('play');
 			this.setState({
 				liveTimestamp: moment().valueOf()/1000,
 				// liveStartTime: moment().valueOf()/1000,
@@ -361,6 +366,7 @@ class VideoPlayer extends React.Component{
 	}
 
 	playlistAtTimestamp(timestamp){
+		// console.log('timestamp', timestamp, moment.unix(timestamp).format('YYYY-MM-DD hh:mm:ss'));
 		// 当是回放功能时，playlist到特定片段；
 		const {player} = this;
 
@@ -377,15 +383,15 @@ class VideoPlayer extends React.Component{
 					return true;
 				}
 				return false;
-				
 			});
+			// console.log('target', target, this.list);
 
 			if (target.length > 0) {
 				// 播放条目
 				player.playlist(this.list);
-
+				// console.log('src', src);
 				const index = player.playlist.indexOf(src);
-
+				// console.log(index);
 				player.playlist.currentItem(index);
 				this.removeNoMediaCover();
 				this.play();
@@ -736,7 +742,7 @@ class VideoPlayer extends React.Component{
 												return this.player.currentTime();
 											}
 											return 0;
-											
+
 										})()
 									}
 									duration={(() => {
@@ -749,7 +755,7 @@ class VideoPlayer extends React.Component{
 											return duration;
 										}
 										return 0;
-										
+
 									})()}
 									onChange={this.playTrackAtTimestamp}
 								/> :
@@ -762,9 +768,10 @@ class VideoPlayer extends React.Component{
 									// }}
 									onChange={(timestamp) => {
 										this.playlistAtTimestamp(timestamp);
+										onTimeChange(timestamp);
 									}}
 
-									onTimeChange={onTimeChange}
+									// onTimeChange={onTimeChange}
 								/>
 						}
 					/>

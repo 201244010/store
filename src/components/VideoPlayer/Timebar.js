@@ -30,7 +30,7 @@ class VideoPlayerProgressBar extends React.Component{
 
 		this.generateTime = this.generateTime.bind(this);
 	}
-	
+
 	componentWillMount() {
 		const { current } = this.props;
 
@@ -93,7 +93,7 @@ class VideoPlayerProgressBar extends React.Component{
 	}
 
 	generateTime() {
-		const { onTimeChange } = this.props;
+		// const { onTimeChange } = this.props;
 		const { days } = this;
 		// console.log('generateTime', days);
 		// 标尺左侧更长的时间线；
@@ -118,10 +118,13 @@ class VideoPlayerProgressBar extends React.Component{
 			timeEnd
 		});
 
-		onTimeChange({
-			timeStart,
-			timeEnd
-		});
+		// onTimeChange({
+		// 	timeStart,
+		// 	timeEnd
+		// });
+
+		const { onChange, current } = this.props;
+		onChange(current);
 	}
 
 
@@ -131,6 +134,7 @@ class VideoPlayerProgressBar extends React.Component{
 		const { dragging, timestamp, direction, timeStart, timeEnd, position } = this.state;
 
 		sources = sources || [];
+		// console.log('timebar sources: ', sources);
 
 		const { oneHourWidth } = this;
 
@@ -139,7 +143,7 @@ class VideoPlayerProgressBar extends React.Component{
 		return(
 			<div className={styles['timebar-container']}>
 
-				<div className={styles.container}>
+				<div className={`${styles.container} ${dragging ? styles.dragging : ''}`}>
 					<div
 						className={styles.wrapper}
 						ref={(wrapper) => {
@@ -206,7 +210,7 @@ class VideoPlayerProgressBar extends React.Component{
 										dragging: false
 									});
 
-									console.log('onStop: ', time, dragger.x, this.days);
+									// console.log('onStop: ', time, dragger.x, this.days);
 
 									if (dragger.x === 0 && this.days < 31){
 
@@ -222,7 +226,6 @@ class VideoPlayerProgressBar extends React.Component{
 									}else{
 										this.setPosition(time);
 									}
-
 								}
 							}
 						>
@@ -230,7 +233,7 @@ class VideoPlayerProgressBar extends React.Component{
 								<Scaleplate
 									timeStart={timeStart}
 									timeEnd={timeEnd}
-
+									dragging={dragging}
 									sources={sources}
 									current={current}
 								/>

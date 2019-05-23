@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, Switch, Row, Col, Slider, Radio, TimePicker, Checkbox, Button, Form, Spin, message } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-import { TAIL_FORM_ITEM_LAYOUT } from "@/constants/form";
+import { TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
 // import PropTypes, { object } from 'prop-types';
 import moment from 'moment';
 import styles from './ActiveDetection.less';
@@ -19,6 +19,7 @@ const LAYOUT = {
 		sm: { span: 16 },
 	},
 };
+
 const mapStateToProps = (state) => {
 	const { activeDetection, loading } = state;
 	return {
@@ -142,7 +143,7 @@ class ActiveDetection extends React.Component {
 	}
 
 	// componentDidUpdate() {
-		
+
 	// }
 
 	handleSubmit = (e) => {
@@ -246,13 +247,13 @@ class ActiveDetection extends React.Component {
 		return (
 			<Spin spinning={spinning}>
 				<Card title={<FormattedMessage id="activeDetection.title" />}>
-					<Form {...LAYOUT} onSubmit={this.handleSubmit} hideRequiredMark className={styles["main-form"]}>
+					<Form {...LAYOUT} onSubmit={this.handleSubmit} hideRequiredMark className={styles['main-form']}>
 						<Form.Item
 							label={<FormattedMessage id="activeDetection.soundDetection" />}
 						>
 							{
-								getFieldDecorator("isSound", {
-									valuePropName: "checked",
+								getFieldDecorator('isSound', {
+									valuePropName: 'checked',
 									initialValue: true,
 								})(
 									<Switch checkedChildren={<FormattedMessage id="activeDetection.label.open" />} unCheckedChildren={<FormattedMessage id="activeDetection.label.close" />} />
@@ -260,21 +261,21 @@ class ActiveDetection extends React.Component {
 							}
 						</Form.Item>
 						{
-							getFieldValue("isSound") ?
+							getFieldValue('isSound') ?
 								<Form.Item label={<FormattedMessage id="activeDetection.sensitivity" />}>
 									{
-										getFieldDecorator("sSensitivity", {
+										getFieldDecorator('sSensitivity', {
 											initialValue: 0,
 										})(
-											<Slider marks={marks} className={styles["form-slider"]} step={null} tooltipVisible={false} />
+											<Slider marks={marks} className={styles['form-slider']} step={null} tooltipVisible={false} />
 										)
 									}
-								</Form.Item> : ""
+								</Form.Item> : ''
 						}
 						<Form.Item label={<FormattedMessage id="activeDetection.motionDetection" />}>
 							{
-								getFieldDecorator("isDynamic", {
-									valuePropName: "checked",
+								getFieldDecorator('isDynamic', {
+									valuePropName: 'checked',
 									initialValue: true,
 								})(
 									<Switch checkedChildren={<FormattedMessage id="activeDetection.label.open" />} unCheckedChildren={<FormattedMessage id="activeDetection.label.close" />} />
@@ -282,20 +283,20 @@ class ActiveDetection extends React.Component {
 							}
 						</Form.Item>
 						{
-							getFieldValue("isDynamic") ?
+							getFieldValue('isDynamic') ?
 								<Form.Item label={<FormattedMessage id="activeDetection.sensitivity" />}>
 									{
-										getFieldDecorator("mSensitivity", {
+										getFieldDecorator('mSensitivity', {
 											initialValue: 50,
 										})(
-											<Slider marks={marks} className={styles["form-slider"]} step={null} tooltipVisible={false} />
+											<Slider marks={marks} className={styles['form-slider']} step={null} tooltipVisible={false} />
 										)
 									}
-								</Form.Item> : ""
+								</Form.Item> : ''
 						}
 						<Form.Item label={<FormattedMessage id="activeDetection.timeDetection" />}>
 							{
-								getFieldDecorator("isAuto", {
+								getFieldDecorator('isAuto', {
 									getValueFromEvent: this.onAutoChange,
 								})(
 									<RadioGroup inChange={this.onAutoChange}>
@@ -311,12 +312,12 @@ class ActiveDetection extends React.Component {
 						</Form.Item>
 						<Form.Item label={<FormattedMessage id="activeDetection.days" />}>
 							{
-								getFieldDecorator("all", {
+								getFieldDecorator('all', {
 									initialValue: true,
-									valuePropName: "checked",
+									valuePropName: 'checked',
 									getValueFromEvent: this.onSelectAll,
 								})(
-									<Checkbox disabled={getFieldValue("isAuto") !== 2}>
+									<Checkbox disabled={getFieldValue('isAuto') !== 2}>
 										<FormattedMessage id="activeDetection.all" />
 									</Checkbox>
 								)
@@ -324,11 +325,11 @@ class ActiveDetection extends React.Component {
 						</Form.Item>
 						<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
 							{
-								getFieldDecorator("days", {
-									initialValue: ["1", "2", "3", "4", "5", "6", "7"],
+								getFieldDecorator('days', {
+									initialValue: ['1', '2', '3', '4', '5', '6', '7'],
 									getValueFromEvent: this.dayControl,
 								})(
-									<Checkbox.Group className={styles["form-checkbox-group"]} disabled={getFieldValue("isAuto") !== 2}>
+									<Checkbox.Group className={styles['form-checkbox-group']} disabled={getFieldValue('isAuto') !== 2}>
 										<Row gutter={8}>
 											<Col span={3}><Checkbox value="1"><FormattedMessage id="activeDetection.mon" /></Checkbox></Col>
 											<Col span={3}><Checkbox value="2"><FormattedMessage id="activeDetection.tue" /></Checkbox></Col>
@@ -342,7 +343,7 @@ class ActiveDetection extends React.Component {
 								)
 							}
 							{
-								getFieldValue("days").length === 0 && getFieldValue("isAuto") === 2 && daysError ?
+								getFieldValue('days').length === 0 && getFieldValue('isAuto') === 2 && daysError ?
 									// <p onClick={() => {
 									// 	const { isFieldsTouched } = form;
 									// 	const a = isFieldsTouched(["isSound"]);
@@ -350,60 +351,60 @@ class ActiveDetection extends React.Component {
 									// }}>
 									<p>
 										<FormattedMessage id="activeDetection.daysRule" />
-									</p> : ""
+									</p> : ''
 							}
 						</Form.Item>
 						<Form.Item label={<FormattedMessage id="activeDetection.open" />}>
 							{
-								getFieldDecorator("startTime", {
-									initialValue: moment("1970-01-01").add(0, "s"),
+								getFieldDecorator('startTime', {
+									initialValue: moment('1970-01-01').add(0, 's'),
 									rules: [
 										{
 											required: true,
 											message: formatMessage({
-												id: "activeDetection.startTimeMsg",
+												id: 'activeDetection.startTimeMsg',
 											}),
 										},
 									],
 								})(
-									<TimePicker disabled={getFieldValue("isAuto") !== 2} format="HH:mm" allowClear={getFieldValue("isAuto") === 2} />
+									<TimePicker disabled={getFieldValue('isAuto') !== 2} format="HH:mm" allowClear={getFieldValue('isAuto') === 2} />
 								)
 							}
 						</Form.Item>
 						<Form.Item label={<FormattedMessage id="activeDetection.close" />}>
 							{
-								getFieldDecorator("endTime", {
-									initialValue: moment("1970-01-01").add(0, "s"),
+								getFieldDecorator('endTime', {
+									initialValue: moment('1970-01-01').add(0, 's'),
 									rules: [
 										{
 											required: true,
 											message: formatMessage({
-												id: "activeDetection.endTimeMsg",
+												id: 'activeDetection.endTimeMsg',
 											}),
 										},
 									],
 								})(
-									<TimePicker disabled={getFieldValue("isAuto") !== 2} format="HH:mm" allowClear={getFieldValue("isAuto") === 2} />
+									<TimePicker disabled={getFieldValue('isAuto') !== 2} format="HH:mm" allowClear={getFieldValue('isAuto') === 2} />
 								)
 							}
 						</Form.Item>
 						<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
-							{activeDetection.status ? "" : ""}
-							<Button 
-								type="primary" 
-								htmlType="submit" 
-								loading={loading.effects["activeDetection/update"]} 
+							{activeDetection.status ? '' : ''}
+							<Button
+								type="primary"
+								htmlType="submit"
+								loading={loading.effects['activeDetection/update']}
 								disabled={!form.isFieldsTouched(
 									[
-										"isSound",
-										"sSensitivity",
-										"isDynamic",
-										"mSensitivity",
-										"isAuto",
-										"startTime",
-										"endTime",
-										"all",
-										"days",
+										'isSound',
+										'sSensitivity',
+										'isDynamic',
+										'mSensitivity',
+										'isAuto',
+										'startTime',
+										'endTime',
+										'all',
+										'days',
 									],
 								)}
 							>

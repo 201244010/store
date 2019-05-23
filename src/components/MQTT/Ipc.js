@@ -28,6 +28,10 @@ const MqttWrapper = (WrappedComponent) => {
 			return list;
 		},
 		async subscribeIPCTopics (list) {
+			// console.log(list);
+			if (!list) {
+				return;
+			};
 
 			const typeList = [];
 			list.forEach((item) => {

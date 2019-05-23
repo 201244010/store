@@ -1,7 +1,7 @@
 import React from 'react';
 import CreateLibraryList from './CreateLibraryList';
 
-const totalCapacity = 1000000;
+const totalCapacity = 40000;
 const maxLength = 10;
 
 const CreateLibrary = () => (

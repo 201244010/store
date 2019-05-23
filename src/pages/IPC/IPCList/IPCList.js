@@ -11,15 +11,19 @@ import styles from './IPCList.less';
 
 
 class IPCList extends React.Component {
-	
+
 	async componentWillMount() {
-		
+
 		const { loadList } = this.props;
 		await loadList();
 	}
 
 	render() {
-		const { ipcList, loading } = this.props;
+		const { ipcList: list, loading } = this.props;
+		const ipcList = [
+			...list
+		];
+
 		if (ipcList.length <= 4) {
 			switch (ipcList.length) {
 				case 1:
@@ -44,7 +48,7 @@ class IPCList extends React.Component {
 					loading.effects['ipcList/getList'] ? <Spin /> : ''
 				}
 				{
-					ipcList && ipcList.length !== 0 ? 
+					ipcList && ipcList.length !== 0 ?
 						<div>
 							<Button type="dashed" block>{<FormattedMessage id='ipcList.addIPC' />}</Button>
 
@@ -73,7 +77,7 @@ class IPCList extends React.Component {
 													<Link to={`/live?sn=${item.sn}`}>
 														<div className={styles.play} />
 													</Link>
-													
+
 													<div
 														className={styles['ipc-name-type']}
 													>
@@ -82,8 +86,8 @@ class IPCList extends React.Component {
 												</Col>
 											</div>
 										);
-									} 
-									if(item.type !== 'empty'&&!item.isOnline) {	
+									}
+									if(item.type !== 'empty'&&!item.isOnline) {
 										return(
 											<div key={index}>
 												<Col span={ipcList.length <= 4 ? 12 : 6} className={styles.col}>
@@ -116,8 +120,8 @@ class IPCList extends React.Component {
 									);
 								})}
 							</Row>
-						</div> : 
-						
+						</div> :
+
 						<div className={styles['no-device']}>
 							<h2>{<FormattedMessage id='ipcList.noDevice.addIPC.tips' />}</h2>
 							<div className={styles.tips}>
@@ -149,9 +153,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-		loadList: () => dispatch({
-				type:'ipcList/getList'
-			})
-	});
+	loadList: () => dispatch({
+		type:'ipcList/getList'
+	})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(IPCList);

@@ -91,7 +91,7 @@ class Toolbar extends React.Component{
 									})
 								}
 							</Select> */}
-							<div 
+							<div
 								className={styles.wrapper}
 								ref={(wrapper) => {
 									this.ppisWrapper = wrapper;
@@ -105,8 +105,8 @@ class Toolbar extends React.Component{
 												ppis.map((item) => (
 													<Menu.Item
 														onClick={() => {
-														ppiChange(item.value);
-													}} 
+															ppiChange(item.value);
+														}}
 														key={item.value}
 													>
 														{ item.name }
@@ -140,7 +140,7 @@ class Toolbar extends React.Component{
 
 					!isTrack ?
 						<div className={styles['calendar-control']}>
-							<div 
+							<div
 								className={styles.wrapper}
 								ref={(wrapper) => {
 									this.calendarWrapper = wrapper;
@@ -157,7 +157,7 @@ class Toolbar extends React.Component{
 
 													defaultValue={moment.unix(today)}
 
-																	getCalendarContainer={() => this.calendarPopupWrapper}
+													getCalendarContainer={() => this.calendarPopupWrapper}
 
 													disabledDate={(current) => current > moment().endOf('day') || current < moment().subtract(30, 'days')}
 
@@ -168,8 +168,8 @@ class Toolbar extends React.Component{
 															second: 0,
 															millisecond: 0
 														});
-																		this.changeDatePicker(false);
-																		onDatePickerChange(date.unix());
+														this.changeDatePicker(false);
+														onDatePickerChange(date.unix());
 													}}
 													open
 													// onOpenChange={ this.changeDatePicker }
@@ -213,32 +213,33 @@ class Toolbar extends React.Component{
 				}
 
 				{
-					!canScreenShot ? '' :
-					<div className={styles['screenshot-control']}>
-						<div className={styles.wrapper} ref={(wrapper) => this.screenshotTooltip = wrapper} />
-						<Tooltip
-							overlayClassName={styles.tooltip}
-							placement='top'
-							getPopupContainer={() => this.screenshotTooltip}
-							title={
-								formatMessage({ id: 'videoPlayer.videoScreenShot' })
-							}
-						>
-							<a className={styles['button-screenshot']} onClick={screenShot} href='javascript:void(0);'>
-								{
-									formatMessage({ id: 'vidoePlayer.screenShot' })
+					canScreenShot ?
+						<div className={styles['screenshot-control']}>
+							<div className={styles.wrapper} ref={(wrapper) => this.screenshotTooltip = wrapper} />
+							<Tooltip
+								overlayClassName={styles.tooltip}
+								placement='top'
+								getPopupContainer={() => this.screenshotTooltip}
+								title={
+									formatMessage({ id: 'videoPlayer.videoScreenShot' })
 								}
-							</a>
-						</Tooltip>
-					</div>
+							>
+								<a className={styles['button-screenshot']} onClick={screenShot} href='javascript:void(0);'>
+									{
+										formatMessage({ id: 'vidoePlayer.screenShot' })
+									}
+								</a>
+							</Tooltip>
+						</div>
+						: ''
 				}
 
 				<div className={styles['volume-control']}>
 					<div
-						className={styles.wrapper} 
+						className={styles.wrapper}
 						ref={(wrapper) => {
 							this.volumeDropdown = wrapper;
-						}} 
+						}}
 					/>
 
 					<Dropdown

@@ -1,4 +1,4 @@
-import { getSdStatus } from '../InitStatusSDCard/services/InitStatusSDCard';
+import { getSdStatus } from '../services/InitStatusSDCard';
 import { ERROR_OK } from '@/constants/errorCode';
 
 
@@ -44,7 +44,7 @@ export default {
 			}
 			return response.status;
 		},
-		
+
 		*formatSdCard(action, { put }) {
 			const { sn } = action;
 

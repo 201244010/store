@@ -5,7 +5,7 @@ import {
 	readLibrary,
 	updateLibrary,
 	deleteLibrary,
-} from '../services/faceIdLibrary';
+} from '../../services/faceIdLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
 
@@ -51,7 +51,7 @@ export default {
 		deleteData(state, action) {
 			const { payload } = action;
 			const { id } = payload;
-			
+
 			let target = -1;
 			state.every((item, index) => {
 				if (item.id === id) {
@@ -69,11 +69,11 @@ export default {
 	effects: {
 		*create({payload: { library } }, { put }) {
 
-            const faceidList = [library];
-            // const userInfo = yield put.resolve({
-            //     type: 'user/getUserInfoFromStorage'
-            // });
-            // const userId = userInfo.id;
+			const faceidList = [library];
+			// const userInfo = yield put.resolve({
+			//     type: 'user/getUserInfoFromStorage'
+			// });
+			// const userId = userInfo.id;
 
 			// const userId = yield select(state => {
 			// 	return state.user.id;
@@ -81,14 +81,14 @@ export default {
 
 			// const shopId = yield select(state => {
 			// 	return state.shops.currentShopId;
-            // });
-            // const companyId = yield put.resolve({
+			// });
+			// const companyId = yield put.resolve({
 			// 	type: 'global/getCompanyIdFromStorage'
 			// });
 			// console.log(faceidList);
 			const response = yield createLibrary({
 				faceidList,
-                // companyId,
+				// companyId,
 				// // userId,
 				// shopId,
 			});
@@ -98,7 +98,7 @@ export default {
 				// 	type: 'createData',
 				// 	payload: faceidList.map(dataFormatter)
 				// });
-				
+
 				yield put({
 					type: 'read'
 				});
@@ -113,16 +113,16 @@ export default {
 		*read(action, { put }) {
 			// console.log(action);
 
-            // const userInfo = yield put.resolve({
-            //     type: 'user/getUserInfoFromStorage'
-            // });
-            // const userId = userInfo.id;
+			// const userInfo = yield put.resolve({
+			//     type: 'user/getUserInfoFromStorage'
+			// });
+			// const userId = userInfo.id;
 
 			// const userId = yield select(state => {
 			// 	return state.user.id;
-            // });
-            
-            // const companyId = yield put.resolve({
+			// });
+
+			// const companyId = yield put.resolve({
 			// 	type: 'global/getCompanyIdFromStorage'
 			// });
 			// const shopId = yield select(state => {
@@ -130,8 +130,8 @@ export default {
 			// });
 
 			const response = yield readLibrary({
-                // userId,
-                // companyId,
+				// userId,
+				// companyId,
 				// shopId,
 			});
 			if (response.code === ERROR_OK) {
@@ -148,13 +148,13 @@ export default {
 			// console.log(action);
 			const { payload } = action;
 			const { library } = payload;
-            // const companyId = yield put.resolve({
+			// const companyId = yield put.resolve({
 			// 	type: 'global/getCompanyIdFromStorage'
 			// });
-            // const userInfo = yield put.resolve({
-            //     type: 'user/getUserInfoFromStorage'
-            // });
-            // const userId = userInfo.id;
+			// const userInfo = yield put.resolve({
+			//     type: 'user/getUserInfoFromStorage'
+			// });
+			// const userId = userInfo.id;
 			// // const userId = yield select(state => {
 			// // 	return state.user.id;
 			// // });
@@ -162,10 +162,10 @@ export default {
 			// const shopId = yield select(state => {
 			// 	return state.shops.currentShopId;
 			// });
-            
+
 			const response = yield updateLibrary({
 				// userId,
-                // companyId,
+				// companyId,
 				// shopId,
 				library,
 			});
@@ -183,24 +183,24 @@ export default {
 		*delete(action, { put }) {
 			const { payload } = action;
 			const { id } = payload;
-            // const companyId = yield put.resolve({
+			// const companyId = yield put.resolve({
 			// 	type: 'global/getCompanyIdFromStorage'
 			// });
-            // const userInfo = yield put.resolve({
-            //     type: 'user/getUserInfoFromStorage'
-            // });
-            // const userId = userInfo.id;
+			// const userInfo = yield put.resolve({
+			//     type: 'user/getUserInfoFromStorage'
+			// });
+			// const userId = userInfo.id;
 			// const userId = yield select(state => {
 			// 	return state.user.id;
 			// });
-           
+
 			// const shopId = yield select(state => {
 			// 	return state.shops.currentShopId;
 			// });
 
 			const response = yield deleteLibrary({
 				// userId,
-                // companyId,
+				// companyId,
 				// shopId,
 				libraryId: id,
 			});

@@ -30,9 +30,9 @@ class LibraryList extends React.Component {
 				render: (rules) => {
 					if(!rules){
 						return '--';
-					} 
-						return rules;
-					
+					}
+					return rules;
+
 				}
 			},
 			{
@@ -41,9 +41,9 @@ class LibraryList extends React.Component {
 				render: (remark) => {
 					if(!remark) {
 						return '--';
-					} 
-						return remark;
-					
+					}
+					return remark;
+
 				}
 			},
 			{
@@ -57,10 +57,10 @@ class LibraryList extends React.Component {
 				render: lastupdate => {
 					if (!lastupdate) {
 						return '--';
-					} 
-						const d = moment(lastupdate * 1000);
-						return d.format('YYYY-MM-DD h:mm:ss');
-					
+					}
+					const d = moment(lastupdate * 1000);
+					return d.format('YYYY-MM-DD h:mm:ss');
+
 				},
 			},
 			{
@@ -178,7 +178,7 @@ class LibraryList extends React.Component {
 	// 		onOk: () => removeLibrary(id),
 	// 	});
 	// }
-	
+
 
 	createLibrary = () => {
 		const { createLibrary } = this.props;
@@ -206,9 +206,9 @@ class LibraryList extends React.Component {
 		const target = faceIdLibrary.filter(item => {
 			if(item.id === id){
 				return true;
-			} 
-				return false;
-			
+			}
+			return false;
+
 		});
 		// console.log(target);
 		if(target[0].amount !== 0){
@@ -255,9 +255,9 @@ class LibraryList extends React.Component {
 		const row = faceIdLibrary.filter(item => {
 			if (id === item.id) {
 				return true;
-			} 
-				return false;
-			
+			}
+			return false;
+
 		});
 
 		this.setState({
@@ -276,7 +276,7 @@ class LibraryList extends React.Component {
 		// console.log(this.props);
 		const { createFormShown, editFormShown, selectedRow } = this.state;
 		const { faceIdLibrary } = this.props;
-		const totalCapacity = 100000;
+		const totalCapacity = 40000;
 		// const noCustom = list.every((item) => {
 		// 	return item.isDefault === true;
 		// });
@@ -285,11 +285,11 @@ class LibraryList extends React.Component {
 			totalCapacity -
 			faceIdLibrary.reduce((total, item) => {
 				if (item.isDefault !== true) {
-				this.noCustomized = false;
+					this.noCustomized = false;
 				}
 				// console.log(total, '+', item.capacity, '=', total + item.capacity);
-			return total + item.capacity;
-		}, 0);
+				return total + item.capacity;
+			}, 0);
 		// console.log(this.props);
 		const list = faceIdLibrary;
 		// console.log(restCapacity);
@@ -316,9 +316,9 @@ class LibraryList extends React.Component {
 							rowClassName={(record, index) => {
 								if(index % 2 === 0){
 									return styles['table-row-light'];
-								} 
-									return styles['table-row-dark'];
-											
+								}
+								return styles['table-row-dark'];
+
 							}}
 							// expandedRowRender={record => {
 							// 	return <p>{record.remarks}</p>;
@@ -390,41 +390,41 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-		loadLibrary: () => {
-			dispatch({
-				type: 'faceIdLibrary/read'
-			});
-		},
-		managePhotos: (key) => {
-			// console.log('managePhotos', key);
-			const temp = key;
-			return temp;
-		},
-		createLibrary: (form) => {
-			dispatch({
-				type:'faceIdLibrary/create',
-				payload :{
-					library:form
-				}
-			});
-		},
-		editLibrary: (row) => {
-			dispatch({
-				type: 'faceIdLibrary/update',
-				payload: {
-					library: row
-				}
-			});
-		},
-		removeLibrary: (id) => {
-			
-			dispatch({
-				type: 'faceIdLibrary/delete',
-				payload: {
-					id
-				}
-			});
-		}
-	});
+	loadLibrary: () => {
+		dispatch({
+			type: 'faceIdLibrary/read'
+		});
+	},
+	managePhotos: (key) => {
+		// console.log('managePhotos', key);
+		const temp = key;
+		return temp;
+	},
+	createLibrary: (form) => {
+		dispatch({
+			type:'faceIdLibrary/create',
+			payload :{
+				library:form
+			}
+		});
+	},
+	editLibrary: (row) => {
+		dispatch({
+			type: 'faceIdLibrary/update',
+			payload: {
+				library: row
+			}
+		});
+	},
+	removeLibrary: (id) => {
+
+		dispatch({
+			type: 'faceIdLibrary/delete',
+			payload: {
+				id
+			}
+		});
+	}
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(LibraryList));

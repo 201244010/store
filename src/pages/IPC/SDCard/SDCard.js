@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import SDCardChild from './SDCardChild';
 
 class SDCard extends React.Component {
-	
+
 	async componentDidMount() {
 		const { init, getList } = this.props;
 		await getList();
@@ -36,32 +36,32 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-		getList:() => dispatch({
-			type:'ipcList/read'
-		}),
-		init:()=>{
-			dispatch({
-				type:'sdcard/read'
-			});
-		},
-		formatSdCard: (sn) => {
-			dispatch({
-				type: 'sdcard/formatSdCard',
-				sn
-			});
-		},
-		resetformatResponse:(sn) =>{
-			dispatch({
-				type: 'sdcard/resetformatResponse',
-				sn
-			});
-		},
-		resetStatus:(sn) =>{
-			dispatch({
-				type: 'sdcard/resetStatus',
-				sn
-			});
-		}
-	});
+	getList:() => dispatch({
+		type:'ipcList/read'
+	}),
+	init:()=>{
+		dispatch({
+			type:'sdcard/read'
+		});
+	},
+	formatSdCard: (sn) => {
+		dispatch({
+			type: 'sdcard/formatSdCard',
+			sn
+		});
+	},
+	resetformatResponse:(sn) =>{
+		dispatch({
+			type: 'sdcard/resetformatResponse',
+			sn
+		});
+	},
+	resetStatus:(sn) =>{
+		dispatch({
+			type: 'sdcard/resetStatus',
+			sn
+		});
+	}
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(SDCard);

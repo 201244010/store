@@ -21,7 +21,7 @@ const pixelRatioMap = {
 
 @connect((state) => {
 	const { faceid: { rectangles, list }, live: { url, ppi, streamId }, videoSources } = state;
-	// console.log(faceid, live, videoSources);
+
 	// console.log('rectangles: ', rectangles);
 	return {
 		liveUrl: url,
@@ -32,51 +32,51 @@ const pixelRatioMap = {
 		faceidList: list || []
 	};
 }, (dispatch) => ({
-		loadVideoSources({sn, timeStart, timeEnd}) {
-			dispatch({
-				type: 'videoSources/read',
-				payload: {
-					sn,
-					timeStart,
-					timeEnd
-				}
-			});
-		},
-		startLive({ sn }) {
-			dispatch({
-				type: 'live/startLive',
-				payload: {
-					sn
-				}
-			});
-		},
-		stopLive({ sn, streamId }) {
-			dispatch({
-				type: 'live/stopLive',
-				payload: {
-					sn,
-					streamId
-				}
-			});
-		},
-		getDeviceType({ sn }) {
-			return dispatch({
-				type: 'ipcList/getDeviceType',
-				payload: {
-					sn
-				}
-			}).then(type => type);
-		},
-		changePPI({ ppi, sn }) {
-			dispatch({
-				type: 'live/changePPI',
-				payload: {
-					ppi,
-					sn
-				}
-			});
-		}
-	}))
+	loadVideoSources({sn, timeStart, timeEnd}) {
+		dispatch({
+			type: 'videoSources/read',
+			payload: {
+				sn,
+				timeStart,
+				timeEnd
+			}
+		});
+	},
+	startLive({ sn }) {
+		dispatch({
+			type: 'live/startLive',
+			payload: {
+				sn
+			}
+		});
+	},
+	stopLive({ sn, streamId }) {
+		dispatch({
+			type: 'live/stopLive',
+			payload: {
+				sn,
+				streamId
+			}
+		});
+	},
+	getDeviceType({ sn }) {
+		return dispatch({
+			type: 'ipcList/getDeviceType',
+			payload: {
+				sn
+			}
+		}).then(type => type);
+	},
+	changePPI({ ppi, sn }) {
+		dispatch({
+			type: 'live/changePPI',
+			payload: {
+				ppi,
+				sn
+			}
+		});
+	}
+}))
 class Live extends React.Component{
 	constructor(props) {
 		super(props);
@@ -134,9 +134,24 @@ class Live extends React.Component{
 		}
 	}
 
-	onTimeChange({ timeStart, timeEnd }) {
+	onTimeChange(timestamp) {
 		const { loadVideoSources, location: { query } } = this.props;
 		const {sn} = query;
+
+		const timeStart = moment.unix(timestamp).subtract(24, 'hours').set({
+			minute: 0,
+			second: 0,
+			millisecond: 0
+		}).unix(); // .subtract(1, 'day');
+
+		// 标尺右侧的时间终点；
+		// 无论从输入的当前时间是什么时候，始终需要渲染到从现在到未来24小时后的时间；
+		const timeEnd = moment.unix(timestamp).add(24, 'hours').set({
+			minute: 0,
+			second: 0,
+			millisecond: 0
+		}).unix();
+
 
 		loadVideoSources({
 			sn,
@@ -238,12 +253,12 @@ class Live extends React.Component{
 													</p>
 												</Card>
 											</List.Item>
-											)
+										)
 									}
 								/>
 							</PerfectScrollbar>
 						</div>
-					: ''
+						: ''
 				}
 			</div>
 

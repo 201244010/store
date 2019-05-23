@@ -12,20 +12,21 @@ class Scaleplate extends React.Component{
 
 	}
 
-	shouldComponentUpdate(nextProps) {
-		// console.log(this.renderedTimestamp, nextProps.timeStart);
-		// return this.renderedTimestamp - nextProps.timeStart >= 24*60*60;
-		return this.renderedTimestamp !== nextProps.timeStart;
-	}
+	// shouldComponentUpdate(nextProps) {
+	// 	// console.log(this.renderedTimestamp, nextProps.timeStart);
+	// 	// return this.renderedTimestamp - nextProps.timeStart >= 24*60*60;
+	// 	const { sources } = this.props;
+	// 	return this.renderedTimestamp !== nextProps.timeStart || sources.length === 0;
+	// }
 	// componentDidUpdate() {
 	// 	console.log('scale updated.');
 	// }
 
 	render () {
-		const { sources, timeStart, timeEnd } = this.props;
+		const { sources, timeStart, timeEnd, dragging } = this.props;
 		// const { timeArray } = this.state;
 		const len = Math.ceil((timeEnd - timeStart)/(60*60));
-
+		// console.log('scaleplate sources: ', sources);
 		const timeArray = [];
 		for (let index = 0; index < len; index++){
 			const timestamp = timeEnd - 60*60*index;
@@ -43,9 +44,35 @@ class Scaleplate extends React.Component{
 		const oneHourWidth = 60;
 		const lineWidth = oneHourWidth*timeArray.length+1;
 
+		const blocks = [];
+		sources.reduce((target, item) => {
+
+			const { timeStart: start, timeEnd: end } = item;
+			if (!target.timeStart) {
+				return {
+					timeStart: start,
+					timeEnd: end
+				};
+			};
+
+			if (start - target.timeEnd < 60 ) {
+				// 小于一分钟就认为是连续的
+				target.timeEnd = end;
+			}else{
+				blocks.push(target);
+				return {
+					timeStart: start,
+					timeEnd: end
+				};
+			};
+			return target;
+		}, {});
+
+		// console.log('blocks', blocks);
+
 		return (
 			<div
-				className={styles['time-line']}
+				className={`${styles['time-line']} ${dragging ? styles.dragging : ''}`}
 				style={{
 					width: lineWidth
 				}}
@@ -53,7 +80,7 @@ class Scaleplate extends React.Component{
 				<div className={styles['timeline-wrapper']}>
 					{
 
-						timeArray.map((item, index) => 
+						timeArray.map((item, index) =>
 							// console.log('run map.');
 							(
 								<div key={item.timestamp || index} className={[ styles['hour-block'] , moment.unix(item.timestamp).format('YYYY-MM-DD_HH:mm')].join(' ')}>
@@ -80,17 +107,17 @@ class Scaleplate extends React.Component{
 
 				<div className={styles.sources}>
 					{
-						sources.map((source, index) => (
-							<div 
+						blocks.map((source, index) => (
+							<div
 								key={source.name || index}
 								className={styles.block}
-								style={(() => 
+								style={(() =>
 									// console.log(moment.unix(source.timeEnd).format('YYYY-MM-DD HH:mm:ss'));
 									 ({
-										// left: Math.ceil((source.timeStart - timeOriginal)*oneHourWidth/3600)+'px',
+										// left: `${Math.ceil((timeEnd - source.timeStart)*oneHourWidth/3600)}px`,
 										right: `${Math.ceil((timeEnd - source.timeEnd)*oneHourWidth/3600)}px`,
 										// right: Math.ceil((timeEnd - source.timeEnd)*oneHourWidth/3600)+'px',
-										width: `${Math.ceil(1*oneHourWidth/3600)}px`
+										width: `${Math.ceil((source.timeEnd - source.timeStart)*oneHourWidth/3600)}px`
 									})
 								)()}
 							/>

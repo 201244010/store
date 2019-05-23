@@ -12,24 +12,23 @@ const request = customizeFetch('ipc/api/device',IPC_SERVER);
 // const fetchApi = customizeFetch('ipc/api/device',IPC_SERVER);
 
 const dataFormatter = (item) => ({
-		deviceId: item.id,
-		name: item.device_name,
-		isOnline: item.active_status !== 0,
-		type: item.model,
-		img:item.cdn_address,
-		sn:item.sn
-	});
+	deviceId: item.id,
+	name: item.device_name,
+	isOnline: item.active_status !== 0,
+	type: item.model,
+	img:item.cdn_address,
+	sn:item.sn
+});
 // return fetchApi('getList', opts).then(response => response.json());
-export const getDeviceList = async () =>  
+export const getDeviceList = async () => {
 	// const { shopId } = params;
-	 request('getDetailList',{
+	const list = request('getDetailList',{
 		// body:{
 		// 	company_id: companyId,
 		// 	shop_id: shopId
 		// }
-	
-	}).then(async (response) => {
 
+	}).then(async (response) => {
 		const { data, code } = await response.json();
 		if (code === ERROR_OK){
 			// 获取到的list处理成统一格式输出。
@@ -37,7 +36,7 @@ export const getDeviceList = async () =>
 
 			// console.log(data);
 			const lists = Object.keys(data);
-			
+
 			lists.forEach(prop => {
 				ipcList = ipcList.concat(data[prop]);
 			});
@@ -49,8 +48,36 @@ export const getDeviceList = async () =>
 				data: result
 			};
 		}
-			return response;
-		
-	})
-;
+		return response;
+
+	});
+	return list;
+};
+
+export const updateIPCName = ({ deviceId, deviceName }) => {
+	const result = request('updateBaseInfo', {
+		body: {
+			device_id: deviceId,
+			device_name: deviceName
+		}
+	}).then(response => {
+		const data = response.json();
+		return data;
+	});
+
+	return result;
+};
+
+export const unbind = ({ deviceId }) => {
+	const result = request('unbind', {
+		body: {
+			device_id: deviceId
+		}
+	}).then(response => {
+		const data = response.json();
+		return data;
+	});
+
+	return result;
+};
 

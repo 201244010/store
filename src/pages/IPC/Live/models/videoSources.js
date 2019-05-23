@@ -6,8 +6,13 @@ export default {
 	namespace: 'videoSources',
 	state: [],
 	reducers:{
-		readData(_, { payload }) {
-			return payload;
+		readData(state, { payload }) {
+			return [
+				...new Set([
+					...state,
+					...payload
+				])
+			];
 		}
 	},
 	effects: {
@@ -23,6 +28,7 @@ export default {
 					sn
 				}
 			});
+
 			const response = yield call(readVideoSources, {
 				userId,
 				timeStart,
@@ -32,9 +38,20 @@ export default {
 
 			if (response.code === ERROR_OK){
 				const { data } = response;
+				const list = data.video_list.map((item) => {
+					const d = {
+						timeEnd: item.end_time,
+						timeStart: item.start_time,
+						url: item.url,
+						deviceId: item.device_id
+						// device_id: 2237, start_time: 1558511993, end_time: 1558512001
+					};
+					return d;
+				});
+
 				yield put({
 					type: 'readData',
-					payload: data.video_list
+					payload: list
 				});
 			}
 
