@@ -66,7 +66,7 @@ const notificationType = {
 };
 
 export const displayNotification = props => {
-    const { data = {}, mainAction, subAction } = props;
+    const { data = {}, key, mainAction, subAction, closeAction } = props;
     const {
         title,
         description,
@@ -80,6 +80,7 @@ export const displayNotification = props => {
     const status = notificationType[level] || 'info';
 
     notification[status]({
+        key,
         message: <Title {...{ title }} />,
         description: (
             <Description
@@ -96,6 +97,7 @@ export const displayNotification = props => {
                 }}
             />
         ),
+        onClose: () => closeAction(key),
 
         // 测试时用
         // duration: 0,
