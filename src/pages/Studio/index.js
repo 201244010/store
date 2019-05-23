@@ -104,8 +104,9 @@ class Studio extends Component {
 
     handleDeleteComponent = e => {
         const { editing } = this.state;
+        const { keyCode, target: { tagName } } = e;
         // 编辑文本状态下 及 操作输入框时 无法删除
-        if (!editing && e.keyCode === KEY.DELETE && e.target.tagName.toUpperCase() !== 'INPUT') {
+        if (!editing && [KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT') {
             const {
                 studio: { selectedShapeName },
                 deleteSelectedComponent,
