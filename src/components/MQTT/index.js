@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { notification } from 'antd';
 import { connect } from 'dva';
 import { displayNotification } from '@/components/Notification';
 import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
 import { ACTION_MAP } from '@/constants/mqttActionMap';
+import { getRandomString } from '@/utils/utils';
 
 import Ipc from './Ipc';
 
@@ -24,6 +26,13 @@ function MQTTWrapper(WrapperedComponent) {
     )
     @Ipc
     class Wrapper extends Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                notificationList: [],
+            };
+        }
+
         componentDidMount() {
             this.initClient();
         }
@@ -33,6 +42,16 @@ function MQTTWrapper(WrapperedComponent) {
             destroyClient();
         }
 
+        removeNotification = key => {
+            const { notificationList } = this.state;
+            const keyList = [...notificationList];
+            keyList.splice(keyList.indexOf(key), 1);
+            notification.close(key);
+            this.setState({
+                notificationList: keyList,
+            });
+        };
+
         handleAction = action => {
             if (action) {
                 const handler = ACTION_MAP[action] || (() => null);
@@ -41,15 +60,27 @@ function MQTTWrapper(WrapperedComponent) {
         };
 
         showNotification = data => {
+            const { notificationList } = this.state;
             const { getNotificationCount } = this.props;
             const messageData = JSON.parse(data.toString()) || {};
+            const uniqueKey = getRandomString();
+
+            if (notificationList.length >= 3) {
+                this.removeNotification(notificationList.shift());
+            }
+
+            this.setState({
+                notificationList: [...notificationList, uniqueKey],
+            });
             const { params = [] } = messageData;
             params.forEach(item => {
                 const { param = {} } = item;
                 displayNotification({
                     data: param,
+                    key: uniqueKey,
                     mainAction: this.handleAction,
                     subAction: this.handleAction,
+                    closeAction: this.removeNotification,
                 });
             });
             getNotificationCount();
