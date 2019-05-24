@@ -1,29 +1,39 @@
 .timebar-container{
-	position: relative;
-	padding: 8px 0;
+	height: 60px;
+	padding: 20px 0;
 
-	.container{
+	transition: all 0.3s;
 
-		overflow: hidden;
+	.timebar-wrapper{
 		position: relative;
+		padding: 8px 0;
 
-		border-radius: 2px;
-		transition: all 0.3s;
-		background-color: rgba(255, 255, 255, 0.40);
+		.container{
 
-		&:hover,
-		&.dragging{
-			z-index: 1;
+			overflow: hidden;
+			position: relative;
 
-			background-color: transparent;
+			border-radius: 2px;
 
-			+ .pointer{
-				top: 8px;
-			}
+			background-color: rgba(255, 255, 255, 0.40);
 		}
 	}
 
+	// &:hover,
+	&.hover{
+		padding: 0;
 
+		.timebar-wrapper{
+			.container{
+				// z-index: 1;
+				background-color: transparent;
+				+ .pointer{
+					top: 8px;
+				}
+			}
+		}
+
+	}
 }
 
 
@@ -58,7 +68,7 @@
 }
 
 .tips{
-	width: 120px;
+	width: 100px;
 
 	span{
 		display: inline-block;

@@ -74,7 +74,7 @@ class IPCList extends React.Component {
 															</Link>
 														</Button>
 													}
-													<Link to={`/live?sn=${item.sn}`}>
+													<Link to={`/devices/list/live?sn=${item.sn}`}>
 														<div className={styles.play} />
 													</Link>
 

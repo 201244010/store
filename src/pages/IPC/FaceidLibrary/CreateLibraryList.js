@@ -193,16 +193,16 @@ class CreateLibraryList extends React.Component{
 									<LibraryForm wrappedComponentRef={(form) => { this.forms[index] = form; }} {...item} libraries={[...faceIdLibrary, ...libraryList]} restCapacity={restCapacity} />
 									{/* changeFields={ this.changeFields } */}
 									{
-										item.isDefault || index === 0 ? 
-											'' : 
-											<Button 
+										item.isDefault || index === 0 ?
+											'' :
+											<Button
 												className='btn-create-library-remove'
 												type='danger'
-												shape='circle' 
-												icon='delete' 
+												shape='circle'
+												icon='delete'
 												onClick={() => {
 													this.removeForm(item.id);
-												}} 
+												}}
 											/>
 									}
 									{

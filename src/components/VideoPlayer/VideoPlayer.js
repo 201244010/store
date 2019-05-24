@@ -105,11 +105,11 @@ class VideoPlayer extends React.Component{
 		const { url } = this.props;
 		sources = sources || [];
 
-		if ( url ) {
+		if ( url && this.player ) {
 			this.updateUrl(url);
 			this.updateSources(sources);
 		}
-
+		console.log('componentDidMount');
 	}
 
 	componentDidUpdate(oldProps) {
@@ -309,8 +309,11 @@ class VideoPlayer extends React.Component{
 		if (!url) {
 			return;
 		}
+		const { player } = this;
 
-		const {player} = this;
+		if (!player) {
+			return;
+		}
 		player.pause();
 
 		player.playlist([{
@@ -330,7 +333,7 @@ class VideoPlayer extends React.Component{
 
 		// this.play();	//移除autoplay，不然flvjs会报错；
 		player.on('canplay', () => {
-			// console.log('can play.');
+			console.log('can play.');
 			this.play();
 		});
 
@@ -728,7 +731,13 @@ class VideoPlayer extends React.Component{
 						onDatePickerChange={this.dateChange}
 
 						backToLive={() => {
+							const { player } = this;
 							this.playlive();
+							if (player) {
+								setTimeout(() => {
+									player.play();
+								}, 0);
+							}
 						}}
 
 						progressbar={
