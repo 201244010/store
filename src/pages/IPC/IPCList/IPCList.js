@@ -69,7 +69,7 @@ class IPCList extends React.Component {
 															className={styles['setting-btn']}
 															size='small'
 														>
-															<Link to={`./ipcManagement?sn=${item.sn}`}>
+															<Link to={`/devices/list/ipcManagement?sn=${item.sn}`}>
 																{<FormattedMessage id='ipcList.setting' />}
 															</Link>
 														</Button>
