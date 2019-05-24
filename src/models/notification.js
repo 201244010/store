@@ -35,6 +35,10 @@ export default {
 			content: '',
 			receiveTime: '',
 			receiveStatus: '',
+			majorButtonLink:'',
+			majorButtonName:'',
+			minorButtonLink:'',
+			minorButtonName:'',
 		},
 		modelList: [],
 		pagination: {
@@ -108,7 +112,7 @@ export default {
 				...pagination,
 				...payload,
 			};
-			console.log(payload);
+			// console.log(payload);
 			const {
 				modelIdList: model_id_list,
 				statusCode: status_code,
@@ -182,6 +186,10 @@ export default {
 					content,
 					receive_time: receiveTime,
 					receive_status: receiveStatus,
+					major_button_link:majorButtonLink,
+					major_button_name:majorButtonName,
+					minor_button_link:minorButtonLink,
+					minor_button_name:minorButtonName,
 				} = data;
 				yield put({
 					type: 'updateState',
@@ -197,6 +205,10 @@ export default {
 							content,
 							receiveTime,
 							receiveStatus,
+							majorButtonLink,
+							majorButtonName,
+							minorButtonLink,
+							minorButtonName,
 						},
 					},
 				});
