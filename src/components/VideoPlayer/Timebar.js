@@ -142,7 +142,7 @@ class VideoPlayerProgressBar extends React.Component{
 
 		return(
 			<div
-				className={`${styles['timebar-container']} ${hover ? styles.hover : ''}`}
+				className={`${styles['timebar-container']} ${hover || dragging ? styles.hover : ''}`}
 				onMouseOver={() => {
 					this.setState({
 						hover: true
@@ -156,7 +156,7 @@ class VideoPlayerProgressBar extends React.Component{
 				}}
 			>
 				<div className={styles['timebar-wrapper']}>
-					<div className={`${styles.container} ${dragging ? styles.hover : ''}`}>
+					<div className={`${styles.container} ${hover || dragging ? styles.hover : ''}`}>
 						<div
 							className={styles.wrapper}
 							ref={(wrapper) => {
