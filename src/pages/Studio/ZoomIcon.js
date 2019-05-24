@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Icon } from 'antd';
 import { formatMessage } from 'umi/locale';
-import * as styles from './index.less';
 import { getLocationParam } from '@/utils/utils';
+import * as styles from './index.less';
 
 export default class ZoomIcon extends Component {
 	handleZoom = type => {
