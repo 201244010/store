@@ -1,7 +1,7 @@
 export default {
 	'esl.device.ap.title': '基站',
 	'esl.device.esl.title': '价签',
-	'esl.device.ap.search.placeholder': '基站ID/SN/名称',
+	'esl.device.ap.search.placeholder': '基站ID/名称',
 	'esl.device.ap.search.ap.info': '基站信息',
 	'esl.device.ap.id': '基站ID',
 	'esl.device.ap.name': '基站名称',
