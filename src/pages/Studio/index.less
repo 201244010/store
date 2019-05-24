@@ -85,21 +85,15 @@
 
 		.right-actions {
 			width: 340px;
-			//.fake-rect {
-			//  display: inline-block;
-			//  width: 100px;
-			//  height: 40px;
-			//  background: #13c2c2;
-			//}
-			//.button-icon:nth-of-type(2) {
-			//  margin-left: 60px;
-			//}
-			//.button-icon:nth-of-type(3) {
-			//  margin-left: 30px;
-			//}
-			//.button-icon:nth-of-type(4) {
-			//  margin-left: 30px;
-			//}
+			.button-icon:nth-of-type(2) {
+				margin-left: 60px;
+			}
+			.button-icon:nth-of-type(3) {
+				margin-left: 30px;
+			}
+			.button-icon:nth-of-type(4) {
+				margin-left: 30px;
+			}
 		}
 	}
 
@@ -236,17 +230,17 @@
 				color: #595959;
 			}
 
-			.item-price-normal {
+			.item-price-black-normal {
 				top: @TOOL_BASIC_TOTAL_HEIGHT + 93px;
 				left: 20px;
 			}
 
-			.item-price-super {
+			.item-price-black-super {
 				top: @TOOL_BASIC_TOTAL_HEIGHT + 93px;
 				left: @TOOL_PRICE_ITEM_WIDTH + 40px;
 			}
 
-			.item-price-sub {
+			.item-price-black-sub {
 				top: @TOOL_BASIC_TOTAL_HEIGHT + 93px;
 				left: @TOOL_PRICE_ITEM_WIDTH * 2 + 60px;
 			}
@@ -256,20 +250,15 @@
 				left: 20px;
 			}
 
-			//.item-v-code {
-			//  top: @TOOL_BASIC_TOTAL_HEIGHT + @TOOL_PRICE_TOTAL_HEIGHT + 52px;;
-			//  left: @TOOL_BASIC_ITEM_WIDTH + 40px;
-			//}
-			.item-qr-code {
+			.item-v-code {
 				top: @TOOL_BASIC_TOTAL_HEIGHT + @TOOL_PRICE_TOTAL_HEIGHT + 52px;
-				;
 				left: @TOOL_BASIC_ITEM_WIDTH + 40px;
 			}
 
-			//.item-qr-code {
-			//  top: @TOOL_BASIC_TOTAL_HEIGHT + @TOOL_PRICE_TOTAL_HEIGHT + 102px;
-			//  left: 20px;
-			//}
+			.item-qr-code {
+				top: @TOOL_BASIC_TOTAL_HEIGHT + @TOOL_PRICE_TOTAL_HEIGHT + 102px;
+				left: 20px;
+			}
 		}
 
 		.board-stage {
@@ -403,7 +392,6 @@
 	text-align: center;
 	cursor: pointer;
 	user-select: none;
-	float: right;
 
 	.zoom-icon {
 		width: 100px;
