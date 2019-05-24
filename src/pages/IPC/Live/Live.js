@@ -178,7 +178,7 @@ class Live extends React.Component{
 		// console.log('live: ', liveUrl, streamId);
 
 		const { type } = this.state;
-		const hasFaceId = type === 'FS1';
+		const hasFaceId = (type === 'FS1');
 
 		const genders = {
 			0: '未知',
