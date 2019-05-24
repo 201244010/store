@@ -403,19 +403,25 @@ export default {
 						{ component: '404' },
 					],
 				},
-				{
-					path: '/live',
-					component: './IPC/Live/Live.js',
-				},
+				// {
+				// 	path: '/live',
+				// 	component: './IPC/Live/Live.js',
+				// },
 				{
 					path: '/devices',
 					icon: 'blank',
 					name: 'devices',
 					routes: [
 						{
-							path: '/devices/list',
+							path: '/devices/list/list',
 							name: 'list',
 							component: './IPC/IPCList/IPCList.js',
+						},
+						{
+							path: '/devices/list/live',
+							name: 'live',
+							hideInMenu: true,
+							component: './IPC/Live/Live.js',
 						},
 						{
 							path: '/devices/motionMessage',
@@ -434,6 +440,10 @@ export default {
 							path: '/devices/ipcManagement',
 							// name: 'devices.camara',
 							component: './IPC/IPCManagement/IPCManagement.js',
+						},
+						{
+							path: '/devices/list',
+							redirect: '/devices/list/list'
 						},
 					],
 				},
