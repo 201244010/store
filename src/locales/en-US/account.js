@@ -4,8 +4,7 @@ export default {
 	'account.validate.isEmpty': 'Please input phone number or Email address',
 	'account.password.validate.isEmpty': 'Please input password',
 	'account.merge.title': 'Tips',
-	'account.merge.content':
-		'检测到您在商米不同平台中注册了多个账户，为了更好的维护账户安全，需要对您的账户进行合并，点击确定前往合并',
+	'account.merge.content': '检测到您在商米不同平台中注册了多个账户，为了更好的维护账户安全，需要对您的账户进行合并，点击确定前往合并',
 	'mobile.placeholder': 'Phone Number',
 	'mobile.code.placeholder': 'SMS Code',
 	'password.placeholder': 'Password',
@@ -32,5 +31,5 @@ export default {
 	'mail.validate.isFormatted': 'Invalid mail address',
 	'code.validate.isEmpty': 'Please enter the valid code',
 	'cellphone.validate.isFormatted': 'Invalid phone number',
-	'avatar.change': 'Change avatar',
+	'avatar.change': 'Change avatar'
 };

@@ -19,8 +19,7 @@ export default {
 	'esl.device.ap.disconnect_time': 'Last Connected Time',
 	'esl.device.ap.detail': 'AP Detail',
 	'esl.device.ap.edit': 'Edit',
-	'esl.device.ap.delete.message1':
-		'After deleted, the AP will unbind from current account, and the ESLs will lose connection with the server.',
+	'esl.device.ap.delete.message1': 'After deleted, the AP will unbind from current account, and the ESLs will lose connection with the server.',
 	'esl.device.ap.delete.message2': 'The deleted AP can be add again.',
 	'esl.device.ap.delete.notice': 'Are you sure to delete the AP?',
 	'esl.device.ap.delete.success': 'Success',
@@ -134,4 +133,5 @@ export default {
 	'esl.overview.product.total': 'Proudct Total',
 	'esl.overview.esl.total': 'ESL Total',
 	'esl.overview.ap.total': 'AP Total',
+	'esl.device.esl.unbind': 'Unbind'
 };

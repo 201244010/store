@@ -45,5 +45,5 @@ export default {
 	'pagination.total.prefix': '共',
 	'select.all': '全部',
 	'select.placeholder': '请选择',
-	'safety.validate': '安全验证',
+	'safety.validate': '安全验证'
 };

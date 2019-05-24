@@ -4,8 +4,7 @@ export default {
 	'account.validate.isEmpty': '请输入手机号或邮箱',
 	'account.password.validate.isEmpty': '请输入密码',
 	'account.merge.title': '提示',
-	'account.merge.content':
-		'检测到您在商米不同平台中注册了多个账户，为了更好的维护账户安全，需要对您的账户进行合并，点击确定前往合并',
+	'account.merge.content': '检测到您在商米不同平台中注册了多个账户，为了更好的维护账户安全，需要对您的账户进行合并，点击确定前往合并',
 	'mobile.placeholder': '11位手机号',
 	'mobile.code.placeholder': '短信验证码',
 	'password.placeholder': '8-30位密码，区分大小写',
@@ -32,5 +31,5 @@ export default {
 	'mail.validate.isFormatted': '邮箱地址格式错误',
 	'code.validate.isEmpty': '请输入验证码',
 	'cellphone.validate.isFormatted': '电话格式错误',
-	'avatar.change': '更换头像',
+	'avatar.change': '更换头像'
 };

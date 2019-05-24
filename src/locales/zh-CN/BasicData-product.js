@@ -65,10 +65,8 @@ export default {
 	'basicData.erp.api.password': '密码',
 	'basicData.erp.description': '对接ERP说明',
 	'basicData.erp.description.list1': '1. 可以通过对接ERP来新建和更新商品；',
-	'basicData.erp.description.list2:':
-		'2. 初次完成对接，或修改对接平台信息后，原有商品信息将被清空；',
-	'basicData.erp.description.list3:':
-		'3. 完成对接后，无法在SUNMI Store中修改商品信息，请在ERP中进行修改；',
+	'basicData.erp.description.list2:': '2. 初次完成对接，或修改对接平台信息后，原有商品信息将被清空；',
+	'basicData.erp.description.list3:': '3. 完成对接后，无法在SUNMI Store中修改商品信息，请在ERP中进行修改；',
 	'basicData.erp.import.success': '对接成功，正在同步商品信息…',
 	'basicData.erp.import.fail': '数据导入失败',
 	'basicData.erp.common.key.error': 'key或者secret错误，请重新输入',
@@ -121,5 +119,5 @@ export default {
 	'product.price.isFormatted': '请输入正确的商品价格',
 	'product.expire_time.isFormatted': '请输入正确的保质期',
 	'product.create.error': '商品创建失败',
-	'product.update.error': '商品更新失败',
+	'product.update.error': '商品更新失败'
 };

@@ -4,8 +4,7 @@ export default {
 	'userCenter.basicInfo.nameChange.fail': '昵称修改失败',
 	'userCenter.security.title': '安全设置',
 	'userCenter.security.password': '登录密码',
-	'userCenter.security.password.description':
-		'安全性高的密码可以使帐号更安全，建议您定期更换密码',
+	'userCenter.security.password.description': '安全性高的密码可以使帐号更安全，建议您定期更换密码',
 	'userCenter.security.mobile': '手机绑定',
 	'userCenter.security.mobile.description': '已绑定手机：',
 	'userCenter.security.mail': '邮箱绑定',
@@ -43,5 +42,5 @@ export default {
 	'modify.success': '修改成功',
 	'modify.fail': '修改失败',
 	'create.success': '创建成功',
-	'create.fail': '创建失败',
+	'create.fail': '创建失败'
 };

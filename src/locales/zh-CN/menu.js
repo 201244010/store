@@ -63,5 +63,5 @@ export default {
 	'menu.devices.ipcManagement': '摄像头设置',
 	'menu.notification': '系统消息',
 	'menu.notification.center': '消息中心',
-	'menu.notification.info': '消息详情',
+	'menu.notification.info': '消息详情'
 };
