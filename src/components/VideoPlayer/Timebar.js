@@ -131,7 +131,7 @@ class VideoPlayerProgressBar extends React.Component{
 	render() {
 		let { sources } = this.props;
 		const { onChange, current } = this.props;
-		const { dragging, timestamp, direction, timeStart, timeEnd, position } = this.state;
+		const { dragging, timestamp, direction, timeStart, timeEnd, position, hover } = this.state;
 
 		sources = sources || [];
 		// console.log('timebar sources: ', sources);
@@ -141,126 +141,139 @@ class VideoPlayerProgressBar extends React.Component{
 		// console.log('current: ', moment.unix(current).format('YYYY-MM-DD HH:mm:ss'));
 
 		return(
-			<div className={styles['timebar-container']}>
+			<div
+				className={`${styles['timebar-container']} ${hover || dragging ? styles.hover : ''}`}
+				onMouseOver={() => {
+					this.setState({
+						hover: true
+					});
+				}}
 
-				<div className={`${styles.container} ${dragging ? styles.dragging : ''}`}>
-					<div
-						className={styles.wrapper}
-						ref={(wrapper) => {
-							this.wrapper = wrapper;
-						}}
-					>
-						<Draggable
-							axis="x"
-							position={
-								position
-							}
-							bounds={
-								(() => {
-									if (this.wrapper){
-										const left = Math.ceil((timeStart - moment().unix())*oneHourWidth/(60*60))+this.wrapper.offsetWidth/2;
+				onMouseLeave={() => {
+					this.setState({
+						hover: false
+					});
+				}}
+			>
+				<div className={styles['timebar-wrapper']}>
+					<div className={`${styles.container} ${hover || dragging ? styles.hover : ''}`}>
+						<div
+							className={styles.wrapper}
+							ref={(wrapper) => {
+								this.wrapper = wrapper;
+							}}
+						>
+							<Draggable
+								axis="x"
+								position={
+									position
+								}
+								bounds={
+									(() => {
+										if (this.wrapper){
+											const left = Math.ceil((timeStart - moment().unix())*oneHourWidth/(60*60))+this.wrapper.offsetWidth/2;
+
+											return {
+												right: 0,
+												left
+											};
+										};
 
 										return {
-											right: 0,
-											left
+											left: 0,
+											right: 0
 										};
-									};
-
-									return {
-										left: 0,
-										right: 0
-									};
-								})()
-							}
-							onStart={
-								(e, dragger) => {
-									// console.log('dragger.x: ',dragger.x);
-									const time = ((Math.abs(dragger.x) + this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60 + timeStart;
-									this.setState({
-										dragging: true,
-										timestamp: time
-									});
+									})()
 								}
-							}
-							onDrag={
-								(e, dragger) => {
-									const { x, lastX, deltaX } = dragger;
-									if (Math.abs(deltaX) > 0 ) {
-
-										const time = ((Math.abs(x) + this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60 + timeStart;
-										let drct = 'left';
-										if ( x <= lastX){
-											drct = 'right';
-										};
-										this.firstTime = false;
-
+								onStart={
+									(e, dragger) => {
+										// console.log('dragger.x: ',dragger.x);
+										const time = ((Math.abs(dragger.x) + this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60 + timeStart;
 										this.setState({
-											timestamp: time,
-											direction: drct
+											dragging: true,
+											timestamp: time
 										});
 									}
 								}
-							}
-							onStop={
-								(e, dragger) => {
-									const time = ((Math.abs(dragger.x) + this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60 + timeStart;
+								onDrag={
+									(e, dragger) => {
+										const { x, lastX, deltaX } = dragger;
+										if (Math.abs(deltaX) > 0 ) {
 
-									this.setState({
-										timestamp: time,
-										dragging: false
-									});
+											const time = ((Math.abs(x) + this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60 + timeStart;
+											let drct = 'left';
+											if ( x <= lastX){
+												drct = 'right';
+											};
+											this.firstTime = false;
 
-									// console.log('onStop: ', time, dragger.x, this.days);
-
-									if (dragger.x === 0 && this.days < 31){
-
-										// 到左侧尽头了，需要判断是否渲染前面的时间
-										this.days++;
-										this.generateTime();
-
-									}
-
-									// 因为设置了position，所以需要手动确定位置；
-									if (onChange){
-										onChange(time);
-									}else{
-										this.setPosition(time);
+											this.setState({
+												timestamp: time,
+												direction: drct
+											});
+										}
 									}
 								}
-							}
-						>
-							<div>
-								<Scaleplate
-									timeStart={timeStart}
-									timeEnd={timeEnd}
-									dragging={dragging}
-									sources={sources}
-									current={current}
-								/>
-							</div>
+								onStop={
+									(e, dragger) => {
+										const time = ((Math.abs(dragger.x) + this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60 + timeStart;
 
-						</Draggable>
+										this.setState({
+											timestamp: time,
+											dragging: false
+										});
+
+										// console.log('onStop: ', time, dragger.x, this.days);
+
+										if (dragger.x === 0 && this.days < 31){
+
+											// 到左侧尽头了，需要判断是否渲染前面的时间
+											this.days++;
+											this.generateTime();
+
+										}
+
+										// 因为设置了position，所以需要手动确定位置；
+										if (onChange){
+											onChange(time);
+										}else{
+											this.setPosition(time);
+										}
+									}
+								}
+							>
+								<div>
+									<Scaleplate
+										timeStart={timeStart}
+										timeEnd={timeEnd}
+										dragging={dragging || hover}
+										sources={sources}
+										current={current}
+									/>
+								</div>
+
+							</Draggable>
+						</div>
 					</div>
+
+
+					<Tooltip
+						overlayClassName={styles.tips}
+						visible={dragging}
+						getPopupContainer={() => this.pointerWrapper}
+						placement='top'
+						title={
+							<>
+								<span className={`${styles.icon} ${ direction === 'left' ? styles.backward : ''} }`} />
+								<span>{ moment.unix(timestamp).format('HH:mm') }</span>
+							</>
+						}
+					>
+						<div className={styles.pointer}>
+							<div className={styles['pointer-wrapper']} ref={(wrapper) => { this.pointerWrapper = wrapper; }} />
+						</div>
+					</Tooltip>
 				</div>
-
-
-				<Tooltip
-					overlayClassName={styles.tips}
-					visible={dragging}
-					getPopupContainer={() => this.pointerWrapper}
-					placement='top'
-					title={
-						<>
-							<span className={`${styles.icon} ${ direction === 'left' ? styles.backward : ''} }`} />
-							<span>{ moment.unix(timestamp).format('HH:mm:ss') }</span>
-						</>
-					}
-				>
-					<div className={styles.pointer}>
-						<div className={styles['pointer-wrapper']} ref={(wrapper) => { this.pointerWrapper = wrapper; }} />
-					</div>
-				</Tooltip>
-
 			</div>
 
 		);

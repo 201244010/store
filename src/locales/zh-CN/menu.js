@@ -50,13 +50,16 @@ export default {
 	'menu.basicData.storeManagement.alterStore': '修改门店',
 	'menu.basicData.storeManagement.createStore': '新建门店',
 	'menu.basicData.storeManagement.storeInformation': '查看门店',
-	'menu.live': '直播',
+
 	'menu.devices': '设备管理',
 	'menu.devices.list': '设备列表',
+	'menu.devices.list.live': '直播',
+	'menu.devices.list.ipcManagement': '摄像头设置',
 	'menu.devices.motionMessage': '消息提醒',
+
 	'menu.faceidLabrary.management': '人脸库管理',
 	'menu.faceidLabrary.list': '人脸库列表',
-	'menu.devices.camara': '摄像头设置',
+
 	'menu.faceidLibrary': '人脸库管理',
 	'menu.faceidLibrary.list': '人脸库列表',
 	'menu.faceidLibrary.faceidLibraryList': '人脸库列表',
