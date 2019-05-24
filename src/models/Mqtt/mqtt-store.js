@@ -8,109 +8,109 @@ const namespace = 'mqttStore';
 const model = new MqttModel(namespace);
 
 export default {
-    namespace,
-    state: {
-        emit: false,
-    },
-    reducers: {
-        ...model.reducers(),
-    },
-    effects: {
-        ...model.effects(),
-        *createEmqToken(_, { call }) {
-            const response = yield call(createEmqToken);
-            if (response && response.code === ERROR_OK) {
-                const { data = {} } = response;
-                return data;
-            }
-            return null;
-        },
+	namespace,
+	state: {
+		emit: false,
+	},
+	reducers: {
+		...model.reducers(),
+	},
+	effects: {
+		...model.effects(),
+		*createEmqToken(_, { call }) {
+			const response = yield call(createEmqToken);
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				return data;
+			}
+			return null;
+		},
 
-        *initializeClient(_, { put, select }) {
-            const token = yield put.resolve({
-                type: 'createEmqToken',
-            });
+		*initializeClient(_, { put, select }) {
+			const token = yield put.resolve({
+				type: 'createEmqToken',
+			});
 
-            const { currentUser } = yield select(state => state.user);
-            const { currentCompanyId } = yield select(state => state.merchant);
-            const { id } = currentUser;
-            const { server_address: address } = token;
-            const clientId = `${currentCompanyId}_${id}_${moment().format('X')}`;
+			const { currentUser } = yield select(state => state.user);
+			const { currentCompanyId } = yield select(state => state.merchant);
+			const { id } = currentUser;
+			const { server_address: address } = token;
+			const clientId = `${currentCompanyId}_${id}_${moment().format('X')}`;
 
-            console.log(token);
+			console.log(token);
 
-            yield put({
-                type: 'updateInfo',
-                payload: {
-                    clientId,
-                    ...token,
-                    address,
-                },
-            });
+			yield put({
+				type: 'updateInfo',
+				payload: {
+					clientId,
+					...token,
+					address,
+				},
+			});
 
-            yield put({
-                type: 'connect',
-            });
-        },
+			yield put({
+				type: 'connect',
+			});
+		},
 
-        *generateTopic({ payload }, { select }) {
-            const { service, action = 'pub', prefix = 'WEB' } = payload;
-            const { currentUser, clientId } = yield select(state => ({
-                currentUser: state.user.currentUser,
-                clientId: state.mqttStore.clientId,
-            }));
+		*generateTopic({ payload }, { select }) {
+			const { service, action = 'pub', prefix = 'WEB' } = payload;
+			const { currentUser, clientId } = yield select(state => ({
+				currentUser: state.user.currentUser,
+				clientId: state.mqttStore.clientId,
+			}));
 
-            const { id } = currentUser;
-            return `/${prefix}/${id}/${clientId}/${service}/${action}`;
-        },
+			const { id } = currentUser;
+			return `/${prefix}/${id}/${clientId}/${service}/${action}`;
+		},
 
-        *setMessageHandler({ payload }, { put }) {
-            const { handler } = payload;
+		*setMessageHandler({ payload }, { put }) {
+			const { handler } = payload;
 
-            yield put({
-                type: 'registerMessageHandler',
-                payload: {
-                    handler: (topic, message) => {
-                        const messageData = JSON.parse(message.toString());
-                        const { data = [] } = messageData;
-                        // console.log('data in handler: ', data);
-                        handler(topic, data);
-                    },
-                },
-            });
-        },
+			yield put({
+				type: 'registerMessageHandler',
+				payload: {
+					handler: (topic, message) => {
+						const messageData = JSON.parse(message.toString());
+						const { data = [] } = messageData;
+						// console.log('data in handler: ', data);
+						handler(topic, data);
+					},
+				},
+			});
+		},
 
-        *setTopicListener({ payload }, { put }) {
-            const { service, action = 'sub', handler } = payload;
-            const topic = yield put.resolve({
-                type: 'generateTopic',
-                payload: { service, action },
-            });
+		*setTopicListener({ payload }, { put }) {
+			const { service, action = 'sub', handler } = payload;
+			const topic = yield put.resolve({
+				type: 'generateTopic',
+				payload: { service, action },
+			});
 
-            yield put({
-                type: 'registerTopicHandler',
-                payload: {
-                    topic,
-                    handler,
-                },
-            });
-        },
+			yield put({
+				type: 'registerTopicHandler',
+				payload: {
+					topic,
+					handler,
+				},
+			});
+		},
 
-        *setErrorHandler({ payload }, { put }) {
-            const { handler } = payload;
+		*setErrorHandler({ payload }, { put }) {
+			const { handler } = payload;
 
-            yield put({
-                type: 'registerErrorHandler',
-                payload: {
-                    handler,
-                },
-            });
-        },
+			yield put({
+				type: 'registerErrorHandler',
+				payload: {
+					handler,
+				},
+			});
+		},
 
-        *destroyClient(_, { put }) {
-            yield put({
-                type: 'destroy',
-            });
-        },
-    },
+		*destroyClient(_, { put }) {
+			yield put({
+				type: 'destroy',
+			});
+		},
+	},
 };
