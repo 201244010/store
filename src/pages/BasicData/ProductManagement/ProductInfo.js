@@ -11,98 +11,98 @@ import * as styles from './ProductManagement.less';
 import { MENU_PREFIX } from '@/constants';
 
 const MESSAGE_PREFIX = {
-    product: 'basicData.product',
-    weight: 'basicData.weightProduct',
+	product: 'basicData.product',
+	weight: 'basicData.weightProduct',
 };
 
 @connect(
-    state => ({
-        product: state.basicDataProduct,
-        store: state.store,
-    }),
-    dispatch => ({
-        getProductDetail: payload =>
-            dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
-    })
+	state => ({
+		product: state.basicDataProduct,
+		store: state.store,
+	}),
+	dispatch => ({
+		getProductDetail: payload =>
+			dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
+	})
 )
 class ProductInfo extends Component {
-    componentDidMount() {
-        const { getProductDetail = {} } = this.props;
-        const productId = idDecode(getLocationParam('id'));
-        getProductDetail({
-            options: {
-                product_id: productId,
-            },
-        });
-    }
+	componentDidMount() {
+		const { getProductDetail = {} } = this.props;
+		const productId = idDecode(getLocationParam('id'));
+		getProductDetail({
+			options: {
+				product_id: productId,
+			},
+		});
+	}
 
-    toPath = target => {
-        const {
-            product: {
-                productInfo: { id },
-            },
-        } = this.props;
-        const path = {
-            edit: `${MENU_PREFIX.PRODUCT}/productUpdate?action=edit&id=${idEncode(id)}&from=detail`,
-            back: `${MENU_PREFIX.PRODUCT}`,
-        };
-        router.push(path[target] || '/');
-    };
+	toPath = target => {
+		const {
+			product: {
+				productInfo: { id },
+			},
+		} = this.props;
+		const path = {
+			edit: `${MENU_PREFIX.PRODUCT}/productUpdate?action=edit&id=${idEncode(id)}&from=detail`,
+			back: `${MENU_PREFIX.PRODUCT}`,
+		};
+		router.push(path[target] || '/');
+	};
 
-    formatProductInfo = (productInfo = [], template = {}, type = 'product') => {
-        const prefix = MESSAGE_PREFIX[type] || '';
-        return Object.keys(template).map(key => ({
-            key,
-            value: productInfo[key],
-            label: `${prefix}.${key}`,
-        }));
-    };
+	formatProductInfo = (productInfo = [], template = {}, type = 'product') => {
+		const prefix = MESSAGE_PREFIX[type] || '';
+		return Object.keys(template).map(key => ({
+			key,
+			value: productInfo[key],
+			label: `${prefix}.${key}`,
+		}));
+	};
 
-    render() {
-        const {
-            store: {
-                saasBindInfo: { isBind = false },
-            },
-            product: {
-                productInfo = {},
-                productInfo: { extra_info: productBasicExtra, extra_price_info: productPriceExtra },
-            },
-        } = this.props;
+	render() {
+		const {
+			store: {
+				saasBindInfo: { isBind = false },
+			},
+			product: {
+				productInfo = {},
+				productInfo: { extra_info: productBasicExtra, extra_price_info: productPriceExtra },
+			},
+		} = this.props;
 
-        const productBasic = this.formatProductInfo(productInfo, PRODUCT_BASIC);
-        const productPrice = this.formatProductInfo(productInfo, PRODUCT_PRICE);
+		const productBasic = this.formatProductInfo(productInfo, PRODUCT_BASIC);
+		const productPrice = this.formatProductInfo(productInfo, PRODUCT_PRICE);
 
-        return (
-            <div className={styles['content-container']}>
-                <ProductInfoBasic
-                    {...{
-                        productBasic,
-                        productBasicExtra,
-                    }}
-                />
-                <ProductInfoPrice
-                    {...{
-                        productPrice,
-                        productPriceExtra,
-                    }}
-                />
-                <div className={styles.footer}>
-                    {!isBind && (
-                        <Button
-                            className={styles.btn}
-                            type="primary"
-                            onClick={() => this.toPath('edit')}
-                        >
-                            {formatMessage({ id: 'btn.alter' })}
-                        </Button>
-                    )}
-                    <Button className={styles.btn} onClick={() => this.toPath('back')}>
-                        {formatMessage({ id: 'btn.back' })}
-                    </Button>
-                </div>
-            </div>
-        );
-    }
+		return (
+			<div className={styles['content-container']}>
+				<ProductInfoBasic
+					{...{
+						productBasic,
+						productBasicExtra,
+					}}
+				/>
+				<ProductInfoPrice
+					{...{
+						productPrice,
+						productPriceExtra,
+					}}
+				/>
+				<div className={styles.footer}>
+					{!isBind && (
+						<Button
+							className={styles.btn}
+							type="primary"
+							onClick={() => this.toPath('edit')}
+						>
+							{formatMessage({ id: 'btn.alter' })}
+						</Button>
+					)}
+					<Button className={styles.btn} onClick={() => this.toPath('back')}>
+						{formatMessage({ id: 'btn.back' })}
+					</Button>
+				</div>
+			</div>
+		);
+	}
 }
 
 export default ProductInfo;

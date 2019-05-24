@@ -4,14 +4,15 @@
 
 	.container{
 
-	overflow: hidden;
-	position: relative;
+		overflow: hidden;
+		position: relative;
 
-	border-radius: 2px;
+		border-radius: 2px;
 		transition: all 0.3s;
 		background-color: rgba(255, 255, 255, 0.40);
 
-		&:hover{
+		&:hover,
+		&.dragging{
 			z-index: 1;
 
 			background-color: transparent;

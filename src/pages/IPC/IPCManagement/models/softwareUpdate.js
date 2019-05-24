@@ -1,20 +1,20 @@
 export default {
-    namespace: 'softwareUpdate',
-    state: {},
-    // reducers: {
-    // 	readData: () => {
+	namespace: 'softwareUpdate',
+	state: {},
+	// reducers: {
+	// 	readData: () => {
 
-    // 	},
-    // 	updateData: () => {
+	// 	},
+	// 	updateData: () => {
 
-    // 	}
-    // },
-    // effects: {
-    // 	*read(action, { put, select }) {
+	// 	}
+	// },
+	// effects: {
+	// 	*read(action, { put, select }) {
 
-    // 	},
-    // 	*update(action, { put, select }) {
+	// 	},
+	// 	*update(action, { put, select }) {
 
-    // 	}
-    // }
+	// 	}
+	// }
 };

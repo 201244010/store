@@ -4,115 +4,108 @@ import browser from 'browser-detect';
 
 import styles from './ReVideo.less';
 
-class ReVideojs extends React.Component {
-    componentDidMount() {
-        const { getVideojsPlayer, onPlay, onPause, onError, onEnd, onTimeUpdate } = this.props;
+class ReVideojs extends React.Component{
+	
 
-        const { videojs } = window;
-        videojs.options.flash.swf = './swf/video-js.swf';
-        const currentbrowser = browser();
-        // console.log(currentbrowser);
+	componentDidMount() {
+		const { getVideojsPlayer, onPlay, onPause, onError, onEnd, onTimeUpdate } = this.props;
 
-        const techOrder =
-            currentbrowser.name === 'ie' ? ['flash', 'html5'] : ['flvjs', 'flash', 'html5'];
-        const player = videojs(this.videojsPlayer, {
-            techOrder,
-            preload: 'auto',
-            // autoplay: 'muted',
-            aspectRatio: '4:3',
-            fluid: false,
-            loop: false,
-            controls: false,
-            language: 'cn',
-            flvjs: {
-                mediaDataSource: {
-                    type: 'flv',
-                    isLive: true,
-                    cors: true,
-                    // withCredentials: true,
-                    enableStashBuffer: false,
-                },
-            },
-        });
+		const { videojs } = window;
+		videojs.options.flash.swf = './swf/video-js.swf';
+		const currentbrowser = browser();
+		// console.log(currentbrowser);
 
-        player.muted(true);
+		const techOrder = (currentbrowser.name === 'ie') ? [ 'flash', 'html5' ] : [ 'flvjs', 'flash', 'html5' ];
+		const player = videojs(this.videojsPlayer, {
+			techOrder,
+			preload: 'auto',
+			// autoplay: 'muted',
+			aspectRatio: '4:3',
+			fluid: false,
+			loop: false,
+			controls : false,
+			language: 'cn',
+			flvjs: {
+				mediaDataSource: {
+					type: 'flv',
+					isLive: true,
+					cors: true,
+					// withCredentials: true,
+					enableStashBuffer: false
+				}
+			}
+		});
 
-        // 测试是否可以监听到这个时间
-        player.on('timeupdate', () => {
-            onTimeUpdate(player.currentTime());
-        });
+		player.muted(true);
 
-        // player.on('durationchange', () => {
-        // 	console.log('durationchange', e);
-        // });
+		// 测试是否可以监听到这个时间
+		player.on('timeupdate', () => {
+			onTimeUpdate(player.currentTime());
+		});
 
-        // player.on('metadata_arrived', () => {
-        // 	console.log('player metadata_arrived', e);
-        // });
+		// player.on('durationchange', () => {
+		// 	console.log('durationchange', e);
+		// });
 
-        // player.on('loadedmetadata', () => {
-        // 	// console.log('player loadedmetadata', e);
-        // 	onMetaData(e, player);
-        // });
+		// player.on('metadata_arrived', () => {
+		// 	console.log('player metadata_arrived', e);
+		// });
 
-        // player.on('timeupdate', () => {
-        // 	console.log('timeupdate');
-        // });
+		// player.on('loadedmetadata', () => {
+		// 	// console.log('player loadedmetadata', e);
+		// 	onMetaData(e, player);
+		// });
 
-        player.on('play', () => {
-            onPlay(player);
-        });
+		// player.on('timeupdate', () => {
+		// 	console.log('timeupdate');
+		// });
 
-        player.on('pause', () => {
-            onPause(player);
-        });
+		player.on('play', () => {
+			onPlay(player);
+		});
 
-        player.on('error', () => {
-            // console.log('error', e);
-            onError(player);
-        });
+		player.on('pause', () => {
+			onPause(player);
+		});
 
-        player.on('ended', () => {
-            // console.log('end: ', e);
-            onEnd(player);
-        });
+		player.on('error', () => {
+			// console.log('error', e);
+			onError(player);
+		});
 
-        getVideojsPlayer(player);
-        this.player = player;
-    }
+		player.on('ended', () => {
+			// console.log('end: ', e);
+			onEnd(player);
+		});
 
-    componentWillUnmount() {
-        if (this.player) {
-            this.player.dispose();
-        }
-    }
+		getVideojsPlayer(player);
+		this.player = player;
+	}
 
-    render() {
-        const { fullScreen, pixelRatio } = this.props;
+	componentWillUnmount() {
+		if (this.player) {
+			this.player.dispose();
+		}
+	}
 
-        // console.log(pixelRatio);
-        const p = pixelRatio.split(':');
-        let isWide = false;
-        if (p[0] / p[1] > 4 / 3) {
-            // 宽
-            isWide = true;
-        }
-        return (
-            <div
-                className={`${styles['video-player-container']} ${
-                    fullScreen ? styles['full-screen'] : ''
-                }`}
-            >
-                <video
-                    className={isWide ? styles.wide : styles.high}
-                    crossOrigin="anonymous"
-                    ref={player => (this.videojsPlayer = player)}
-                >
-                    <track kind="captions" />
-                </video>
-            </div>
-        );
-    }
+	render() {
+		const { fullScreen, pixelRatio } = this.props;
+
+		// console.log(pixelRatio);
+		const p = pixelRatio.split(':');
+		let isWide = false;
+		if (p[0]/p[1] > 4/3){
+			// 宽
+			isWide = true;
+		}
+		return (
+			<div className={`${ styles['video-player-container'] } ${ fullScreen ? styles['full-screen'] : '' }`}>
+				<video className={isWide ? styles.wide : styles.high} crossOrigin='anonymous' ref={(player) => this.videojsPlayer = player}>
+					<track kind='captions' />
+				</video>
+			</div>
+		);
+	}
 }
 
 // ReVideojs.propTypes = {
@@ -122,5 +115,7 @@ class ReVideojs extends React.Component {
 // 	onEnd: PropTypes.func,
 // 	onError: PropTypes.func
 // };
+
+
 
 export default ReVideojs;

@@ -6,67 +6,67 @@ import SearchResult from './SearchResult';
 import { getLocationParam } from '@/utils/utils';
 
 @connect(
-    state => ({
-        deviceESL: state.deviceESL,
-    }),
-    dispatch => ({
-        getESLGroupInfo: payload => dispatch({ type: 'deviceESL/getESLGroupInfo', payload }),
-        updateSearchValue: payload => dispatch({ type: 'deviceESL/updateSearchValue', payload }),
-        clearSearchValue: () => dispatch({ type: 'deviceESL/clearSearchValue' }),
-    })
+	state => ({
+		deviceESL: state.deviceESL,
+	}),
+	dispatch => ({
+		getESLGroupInfo: payload => dispatch({ type: 'deviceESL/getESLGroupInfo', payload }),
+		updateSearchValue: payload => dispatch({ type: 'deviceESL/updateSearchValue', payload }),
+		clearSearchValue: () => dispatch({ type: 'deviceESL/clearSearchValue' }),
+	})
 )
 class DeviceESL extends Component {
-    componentDidMount() {
-        const { getESLGroupInfo } = this.props;
-        const groupId = parseInt(getLocationParam('groupId'), 10);
+	componentDidMount() {
+		const { getESLGroupInfo } = this.props;
+		const groupId = parseInt(getLocationParam('groupId'), 10);
 
-        getESLGroupInfo({
-            group_id: groupId,
-        });
-    }
+		getESLGroupInfo({
+			group_id: groupId,
+		});
+	}
 
-    componentWillUnmount() {
-        const { clearSearchValue } = this.props;
-        clearSearchValue();
-    }
+	componentWillUnmount() {
+		const { clearSearchValue } = this.props;
+		clearSearchValue();
+	}
 
-    render() {
-        const {
-            deviceESL: { states, eslInfoList, pagination, loading },
-            getESLGroupInfo,
-            updateSearchValue,
-        } = this.props;
-        const [model, version, groupId] = [
-            getLocationParam('model'),
-            getLocationParam('version'),
-            parseInt(getLocationParam('groupId'), 10),
-        ];
+	render() {
+		const {
+			deviceESL: { states, eslInfoList, pagination, loading },
+			getESLGroupInfo,
+			updateSearchValue,
+		} = this.props;
+		const [model, version, groupId] = [
+			getLocationParam('model'),
+			getLocationParam('version'),
+			parseInt(getLocationParam('groupId'), 10),
+		];
 
-        return (
-            <div className="content-container">
-                <PanelHeader model={model} type="esl" version={version} />
-                <SearchForm
-                    {...{
-                        states,
-                        groupId,
-                        updateSearchValue,
-                        getESLGroupInfo,
-                    }}
-                />
-                <SearchResult
-                    {...{
-                        states,
-                        data: eslInfoList,
-                        loading,
-                        pagination,
-                        version,
-                        groupId,
-                        getESLGroupInfo,
-                    }}
-                />
-            </div>
-        );
-    }
+		return (
+			<div className="content-container">
+				<PanelHeader model={model} type="esl" version={version} />
+				<SearchForm
+					{...{
+						states,
+						groupId,
+						updateSearchValue,
+						getESLGroupInfo,
+					}}
+				/>
+				<SearchResult
+					{...{
+						states,
+						data: eslInfoList,
+						loading,
+						pagination,
+						version,
+						groupId,
+						getESLGroupInfo,
+					}}
+				/>
+			</div>
+		);
+	}
 }
 
 export default DeviceESL;

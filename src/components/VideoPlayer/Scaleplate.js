@@ -3,97 +3,130 @@ import moment from 'moment';
 // import _ from 'lodash';
 import styles from './Scaleplate.less';
 
-class Scaleplate extends React.Component {
-    constructor(props) {
-        super(props);
+class Scaleplate extends React.Component{
 
-        this.renderedTimestamp = 0; // 记录上次绘制时的左侧时间戳
-    }
+	constructor(props) {
+		super(props);
 
-    shouldComponentUpdate(nextProps) {
-        // console.log(this.renderedTimestamp, nextProps.timeStart);
-        // return this.renderedTimestamp - nextProps.timeStart >= 24*60*60;
-        return this.renderedTimestamp !== nextProps.timeStart;
-    }
-    // componentDidUpdate() {
-    // 	console.log('scale updated.');
-    // }
+		this.renderedTimestamp = 0;	// 记录上次绘制时的左侧时间戳
 
-    render() {
-        const { sources, timeStart, timeEnd } = this.props;
-        // const { timeArray } = this.state;
-        const len = Math.ceil((timeEnd - timeStart) / (60 * 60));
+	}
 
-        const timeArray = [];
-        for (let index = 0; index < len; index++) {
-            const timestamp = timeEnd - 60 * 60 * index;
+	// shouldComponentUpdate(nextProps) {
+	// 	// console.log(this.renderedTimestamp, nextProps.timeStart);
+	// 	// return this.renderedTimestamp - nextProps.timeStart >= 24*60*60;
+	// 	const { sources } = this.props;
+	// 	return this.renderedTimestamp !== nextProps.timeStart || sources.length === 0;
+	// }
+	// componentDidUpdate() {
+	// 	console.log('scale updated.');
+	// }
 
-            timeArray.push({
-                timestamp,
-                dragging: true,
-            });
-        }
+	render () {
+		const { sources, timeStart, timeEnd, dragging } = this.props;
+		// const { timeArray } = this.state;
+		const len = Math.ceil((timeEnd - timeStart)/(60*60));
+		// console.log('scaleplate sources: ', sources);
+		const timeArray = [];
+		for (let index = 0; index < len; index++){
+			const timestamp = timeEnd - 60*60*index;
 
-        timeArray.sort((a, b) => a.timestamp - b.timestamp);
+			timeArray.push({
+				timestamp,
+				dragging: true
+			});
+		};
 
-        this.renderedTimestamp = timeStart;
+		timeArray.sort((a, b ) => a.timestamp - b.timestamp);
 
-        const oneHourWidth = 60;
-        const lineWidth = oneHourWidth * timeArray.length + 1;
+		this.renderedTimestamp = timeStart;
 
-        return (
-            <div
-                className={styles['time-line']}
-                style={{
-                    width: lineWidth,
-                }}
-            >
-                <div className={styles['timeline-wrapper']}>
-                    {timeArray.map((item, index) => (
-                        // console.log('run map.');
-                        <div
-                            key={item.timestamp || index}
-                            className={[
-                                styles['hour-block'],
-                                moment.unix(item.timestamp).format('YYYY-MM-DD_HH:mm'),
-                            ].join(' ')}
-                        >
-                            <div className={styles.short} />
-                            <div className={styles.short} />
-                            <div className={styles.short} />
-                            <div className={styles.short} />
-                            <div className={styles.short} />
+		const oneHourWidth = 60;
+		const lineWidth = oneHourWidth*timeArray.length+1;
 
-                            <div className={styles.high}>
-                                <div className={styles.tag}>
-                                    {moment.unix(item.timestamp).format('HH:mm')}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+		const blocks = [];
+		sources.reduce((target, item) => {
 
-                <div className={styles.sources}>
-                    {sources.map((source, index) => (
-                        <div
-                            key={source.name || index}
-                            className={styles.block}
-                            style={(() =>
-                                // console.log(moment.unix(source.timeEnd).format('YYYY-MM-DD HH:mm:ss'));
-                                ({
-                                    // left: Math.ceil((source.timeStart - timeOriginal)*oneHourWidth/3600)+'px',
-                                    right: `${Math.ceil(
-                                        ((timeEnd - source.timeEnd) * oneHourWidth) / 3600
-                                    )}px`,
-                                    // right: Math.ceil((timeEnd - source.timeEnd)*oneHourWidth/3600)+'px',
-                                    width: `${Math.ceil((1 * oneHourWidth) / 3600)}px`,
-                                }))()}
-                        />
-                    ))}
-                </div>
-            </div>
-        );
-    }
+			const { timeStart: start, timeEnd: end } = item;
+			if (!target.timeStart) {
+				return {
+					timeStart: start,
+					timeEnd: end
+				};
+			};
+
+			if (start - target.timeEnd < 60 ) {
+				// 小于一分钟就认为是连续的
+				target.timeEnd = end;
+			}else{
+				blocks.push(target);
+				return {
+					timeStart: start,
+					timeEnd: end
+				};
+			};
+			return target;
+		}, {});
+
+		// console.log('blocks', blocks);
+
+		return (
+			<div
+				className={`${styles['time-line']} ${dragging ? styles.dragging : ''}`}
+				style={{
+					width: lineWidth
+				}}
+			>
+				<div className={styles['timeline-wrapper']}>
+					{
+
+						timeArray.map((item, index) =>
+							// console.log('run map.');
+							(
+								<div key={item.timestamp || index} className={[ styles['hour-block'] , moment.unix(item.timestamp).format('YYYY-MM-DD_HH:mm')].join(' ')}>
+
+									<div className={styles.short} />
+									<div className={styles.short} />
+									<div className={styles.short} />
+									<div className={styles.short} />
+									<div className={styles.short} />
+
+									<div className={styles.high}>
+										<div className={styles.tag}>
+											{
+												moment.unix(item.timestamp).format('HH:mm')
+											}
+										</div>
+									</div>
+
+								</div>
+							)
+						)
+					}
+				</div>
+
+				<div className={styles.sources}>
+					{
+						blocks.map((source, index) => (
+							<div
+								key={source.name || index}
+								className={styles.block}
+								style={(() =>
+									// console.log(moment.unix(source.timeEnd).format('YYYY-MM-DD HH:mm:ss'));
+									 ({
+										// left: `${Math.ceil((timeEnd - source.timeStart)*oneHourWidth/3600)}px`,
+										right: `${Math.ceil((timeEnd - source.timeEnd)*oneHourWidth/3600)}px`,
+										// right: Math.ceil((timeEnd - source.timeEnd)*oneHourWidth/3600)+'px',
+										width: `${Math.ceil((source.timeEnd - source.timeStart)*oneHourWidth/3600)}px`
+									})
+								)()}
+							/>
+						))
+					}
+				</div>
+			</div>
+		);
+	}
 }
 
 export default Scaleplate;
