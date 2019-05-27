@@ -9,6 +9,7 @@ import BindModal from './BindModal';
 import styles from './index.less';
 
 const ESL_STATES = {
+	0: formatMessage({id:'esl.device.esl.inactivated'}),
 	1: formatMessage({ id: 'esl.device.esl.push.wait.bind' }),
 	2: formatMessage({ id: 'esl.device.esl.push.wait' }),
 	3: formatMessage({ id: 'esl.device.esl.push.success' }),

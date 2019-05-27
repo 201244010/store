@@ -1,4 +1,7 @@
 import MQTT from 'mqtt';
+import CONFIG from '@/config';
+
+const { WEB_SOCKET_PREFIX } = CONFIG;
 
 class MqttClient {
 	constructor(config) {
@@ -33,13 +36,13 @@ class MqttClient {
 	connect({ address, username, password, clientId, path = '/mqtt' }) {
 		return new Promise((resolve, reject) => {
 			const client = MQTT.connect(
-				`ws://${address}`,
+				`${WEB_SOCKET_PREFIX}://${address}`,
 				{
 					clientId,
 					username,
 					password,
 					path,
-				}
+				},
 			);
 
 			client.on('connect', () => {
@@ -74,7 +77,8 @@ class MqttClient {
 			});
 
 			this.client = client;
-		});
+		},
+		);
 	}
 
 	subscribe(topic) {
