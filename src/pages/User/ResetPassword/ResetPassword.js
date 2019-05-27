@@ -34,51 +34,51 @@ import styles from './ResetPassword.less';
 // };
 
 const RENDER_COMPONENT = {
-    toMobile: MobileReset,
-    toMail: MailReset,
-    default: () => <div />,
+	toMobile: MobileReset,
+	toMail: MailReset,
+	default: () => <div />,
 };
 
 class ResetPassword extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            step: 'init',
-        };
-    }
+	constructor(props) {
+		super(props);
+		this.state = {
+			step: 'init',
+		};
+	}
 
-    switchStep = step => {
-        this.setState({
-            step,
-        });
-    };
+	switchStep = step => {
+		this.setState({
+			step,
+		});
+	};
 
-    getRenderComponent = () => {
-        const { step } = this.state;
-        const currentLanguage = getLocale();
-        let RenderComponent = RENDER_COMPONENT.default;
+	getRenderComponent = () => {
+		const { step } = this.state;
+		const currentLanguage = getLocale();
+		let RenderComponent = RENDER_COMPONENT.default;
 
-        if (step === 'init') {
-            // TODO 暂时隐去邮箱找回功能
-            // RenderComponent = currentLanguage === 'zh-CN' ? ResetInit : MailReset;
-            RenderComponent = currentLanguage === 'zh-CN' ? MobileReset : MailReset;
-        } else {
-            RenderComponent = RENDER_COMPONENT[step];
-        }
+		if (step === 'init') {
+			// TODO 暂时隐去邮箱找回功能
+			// RenderComponent = currentLanguage === 'zh-CN' ? ResetInit : MailReset;
+			RenderComponent = currentLanguage === 'zh-CN' ? MobileReset : MailReset;
+		} else {
+			RenderComponent = RENDER_COMPONENT[step];
+		}
 
-        return RenderComponent;
-    };
+		return RenderComponent;
+	};
 
-    render() {
-        const RenderComponent = this.getRenderComponent();
+	render() {
+		const RenderComponent = this.getRenderComponent();
 
-        return (
-            <div className={styles['reset-wrapper']}>
-                <h4 className={styles['reset-title']}>{formatMessage({ id: 'reset.title' })}</h4>
-                <RenderComponent switchStep={this.switchStep} />
-            </div>
-        );
-    }
+		return (
+			<div className={styles['reset-wrapper']}>
+				<h4 className={styles['reset-title']}>{formatMessage({ id: 'reset.title' })}</h4>
+				<RenderComponent switchStep={this.switchStep} />
+			</div>
+		);
+	}
 }
 
 export default ResetPassword;

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/竖向条码</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/竖向条码" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="矩形" fill="#595959" transform="translate(10.000000, 18.500000) rotate(-90.000000) translate(-10.000000, -18.500000) " x="9.5" y="10.5" width="1" height="16" rx="0.5"></rect>
+        <rect id="矩形" fill="#595959" transform="translate(10.000000, 14.500000) rotate(-90.000000) translate(-10.000000, -14.500000) " x="8.5" y="6.5" width="3" height="16" rx="1.5"></rect>
+        <rect id="矩形" fill="#595959" transform="translate(10.000000, 10.000000) rotate(-90.000000) translate(-10.000000, -10.000000) " x="9" y="2" width="2" height="16" rx="1"></rect>
+        <rect id="矩形" fill="#595959" transform="translate(10.000000, 1.500000) rotate(-90.000000) translate(-10.000000, -1.500000) " x="9.5" y="-6.5" width="1" height="16" rx="0.5"></rect>
+        <rect id="矩形" fill="#595959" transform="translate(10.000000, 5.500000) rotate(-90.000000) translate(-10.000000, -5.500000) " x="8.5" y="-2.5" width="3" height="16" rx="1.5"></rect>
+    </g>
+</svg>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/外壳</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/外壳" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M1.5,4 L18.5,4 C19.0522847,4 19.5,4.44771525 19.5,5 L19.5,15 C19.5,15.5522847 19.0522847,16 18.5,16 L2.85714286,16 C2.30485811,16 1.85714286,15.5522847 1.85714286,15 L1.85714286,10.3852423 C1.85714286,10.1372955 1.76502945,9.89819045 1.59867864,9.71432902 L0.758464221,8.78567098 C0.592113402,8.60180955 0.5,8.36270447 0.5,8.11475766 L0.5,5 C0.5,4.44771525 0.94771525,4 1.5,4 Z" id="矩形" stroke="#595959"></path>
+        <rect id="矩形" stroke="#595959" stroke-linecap="square" stroke-linejoin="round" x="3.5" y="6.5" width="14" height="7"></rect>
+    </g>
+</svg>
