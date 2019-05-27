@@ -93,9 +93,9 @@ class CreateStore extends React.Component {
 				if (action === 'create') {
 					response = await createNewStore({ options });
 				} else if (action === 'edit') {
-					response = updateStore({ options });
+					response = await updateStore({ options });
 				} else {
-					response = createNewStore({ options });
+					response = await createNewStore({ options });
 				}
 
 				this.handleResponse(response);
