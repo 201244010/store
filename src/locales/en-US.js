@@ -10,6 +10,10 @@ import mailActive from './en-US/mailActive';
 import resetPassword from './en-US/resetPassword';
 import userCenter from './en-US/userCenter';
 import storeManagement from './en-US/storeManagement';
+import notification from './en-US/notification';
+import studio from './en-US/studio';
+
+import VideoPlayer from './en-US/videoPlayer';
 
 // ESL
 import baseStation from './en-US/ESL-device';
@@ -27,6 +31,8 @@ export default {
 	'layout.user.link.terms': 'policy',
 	'app.home.introduce': 'introduce',
 	'layout.user.footer': '2019 Shanghai SUNMI Technology Co',
+	'app.exception.description.404': 'The visited page does not exist.',
+	'app.exception.back': 'Back To Home',
 	...globalHeader,
 	...common,
 	...menu,
@@ -42,4 +48,7 @@ export default {
 	...productManagement,
 	...merchantManagement,
 	...storeManagement,
+	...notification,
+	...VideoPlayer,
+	...studio,
 };
