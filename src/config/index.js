@@ -1,5 +1,13 @@
 export const env = process.env.UMI_ENV;
 
+const WEB_SOCKET_PREFIX = {
+	'dev': 'ws',
+	'test': 'ws',
+	'uat': 'wss',
+	'onl': 'wss',
+	'local': 'ws',
+};
+
 const SSO_ADDRESS = {
 	dev: 'test.api.sunmi.com',
 	test: 'test.api.sunmi.com',
@@ -55,4 +63,5 @@ export default {
 	DES_IV: DES_IV[env],
 	MD5_TOKEN: MD5_TOKEN[env],
 	IPC_SERVER: IPC_ADDRESS[env],
+	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[env],
 };
