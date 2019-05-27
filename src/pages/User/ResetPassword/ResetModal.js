@@ -35,72 +35,72 @@ import styles from './ResetPassword.less';
 // };
 
 const RENDER_COMPONENT = {
-    toMobile: MobileReset,
-    toMail: MailReset,
-    default: () => <div />,
+	toMobile: MobileReset,
+	toMail: MailReset,
+	default: () => <div />,
 };
 
 class ResetPassword extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            step: 'init',
-        };
-    }
+	constructor(props) {
+		super(props);
+		this.state = {
+			step: 'init',
+		};
+	}
 
-    switchStep = step => {
-        this.setState({
-            step,
-        });
-    };
+	switchStep = step => {
+		this.setState({
+			step,
+		});
+	};
 
-    getRenderComponent = () => {
-        const { step } = this.state;
-        const currentLanguage = getLocale();
-        let RenderComponent = RENDER_COMPONENT.default;
+	getRenderComponent = () => {
+		const { step } = this.state;
+		const currentLanguage = getLocale();
+		let RenderComponent = RENDER_COMPONENT.default;
 
-        if (step === 'init') {
-            // TODO 暂时隐去邮箱找回功能
-            // RenderComponent = currentLanguage === 'zh-CN' ? ResetInit : MailReset;
-            RenderComponent = currentLanguage === 'zh-CN' ? MobileReset : MailReset;
-        } else {
-            RenderComponent = RENDER_COMPONENT[step];
-        }
+		if (step === 'init') {
+			// TODO 暂时隐去邮箱找回功能
+			// RenderComponent = currentLanguage === 'zh-CN' ? ResetInit : MailReset;
+			RenderComponent = currentLanguage === 'zh-CN' ? MobileReset : MailReset;
+		} else {
+			RenderComponent = RENDER_COMPONENT[step];
+		}
 
-        return RenderComponent;
-    };
+		return RenderComponent;
+	};
 
-    render() {
-        const RenderComponent = this.getRenderComponent();
-        const { visible, onCancel } = this.props;
+	render() {
+		const RenderComponent = this.getRenderComponent();
+		const { visible, onCancel } = this.props;
 
-        return (
-            <Modal
-                visible={visible}
-                width={400}
-                closable={false}
-                maskClosable={false}
-                title={null}
-                footer={null}
-                onCancel={onCancel}
-                destroyOnClose
-            >
-                <div className={styles['custom-modal-wrapper']}>
-                    <div className={styles['custom-modal-header']}>
-                        <div className={styles['close-icon']} onClick={onCancel} />
-                    </div>
-                    <div className={styles['custom-modal-content']}>
-                        <RenderComponent
-                            {...{
-                                onCancel,
-                                switchStep: this.switchStep,
-                            }}
-                        />
-                    </div>
-                </div>
-            </Modal>
-        );
-    }
+		return (
+			<Modal
+				visible={visible}
+				width={400}
+				closable={false}
+				maskClosable={false}
+				title={null}
+				footer={null}
+				onCancel={onCancel}
+				destroyOnClose
+			>
+				<div className={styles['custom-modal-wrapper']}>
+					<div className={styles['custom-modal-header']}>
+						<div className={styles['close-icon']} onClick={onCancel} />
+					</div>
+					<div className={styles['custom-modal-content']}>
+						<RenderComponent
+							{...{
+								onCancel,
+								switchStep: this.switchStep,
+							}}
+						/>
+					</div>
+				</div>
+			</Modal>
+		);
+	}
 }
 
 export default ResetPassword;

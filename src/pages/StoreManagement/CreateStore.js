@@ -9,6 +9,7 @@ import styles from './StoreManagement.less';
 import { getLocationParam } from '@/utils/utils';
 import { customValidate } from '@/utils/customValidate';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
+import { STORE_EXIST } from '@/constants/errorCode';
 
 const FormItem = Form.Item;
 
@@ -23,7 +24,7 @@ const FormItem = Form.Item;
 		getRegionList: () => dispatch({ type: 'store/getRegionList' }),
 		getStoreDetail: payload => dispatch({ type: 'store/getStoreDetail', payload }),
 		clearState: () => dispatch({ type: 'store/clearState' }),
-	})
+	}),
 )
 @Form.create()
 class CreateStore extends React.Component {
@@ -49,6 +50,20 @@ class CreateStore extends React.Component {
 		}
 	}
 
+	handleResponse = (response) => {
+		const { form: { setFields, getFieldValue } } = this.props;
+
+		if (response && response.code === STORE_EXIST) {
+			const storeName = getFieldValue('shop_name');
+			setFields({
+				'shop_name': {
+					value: storeName,
+					errors: [new Error(formatMessage({ id: 'storeManagement.message.name.exist' }))],
+				},
+			});
+		}
+	};
+
 	handleSubmit = () => {
 		const [action = 'create', shopId] = [
 			getLocationParam('action'),
@@ -61,7 +76,7 @@ class CreateStore extends React.Component {
 			updateStore,
 		} = this.props;
 
-		validateFields((err, values) => {
+		validateFields(async (err, values) => {
 			if (!err) {
 				const options = {
 					...values,
@@ -74,13 +89,16 @@ class CreateStore extends React.Component {
 					area: values.region[2] || null,
 				};
 
+				let response = null;
 				if (action === 'create') {
-					createNewStore({ options });
+					response = await createNewStore({ options });
 				} else if (action === 'edit') {
-					updateStore({ options });
+					response = updateStore({ options });
 				} else {
-					createNewStore({ options });
+					response = createNewStore({ options });
 				}
+
+				this.handleResponse(response);
 			}
 		});
 	};
@@ -140,7 +158,7 @@ class CreateStore extends React.Component {
 								placeholder={formatMessage({
 									id: 'storeManagement.create.namePlaceHolder',
 								})}
-							/>
+							/>,
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
@@ -155,7 +173,7 @@ class CreateStore extends React.Component {
 									id: 'storeManagement.create.typePlaceHolder',
 								})}
 								options={shopType_list}
-							/>
+							/>,
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
@@ -169,7 +187,7 @@ class CreateStore extends React.Component {
 								<Radio value={1} disabled={action === 'create'}>
 									{formatMessage({ id: 'storeManagement.create.status.closed' })}
 								</Radio>
-							</Radio.Group>
+							</Radio.Group>,
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.address' })}>
@@ -185,7 +203,7 @@ class CreateStore extends React.Component {
 								placeholder={formatMessage({
 									id: 'storeManagement.create.address.region',
 								})}
-							/>
+							/>,
 						)}
 					</FormItem>
 					<FormItem label=" " colon={false}>
@@ -196,7 +214,7 @@ class CreateStore extends React.Component {
 								placeholder={formatMessage({
 									id: 'storeManagement.create.address.detail',
 								})}
-							/>
+							/>,
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>

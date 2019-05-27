@@ -65,10 +65,8 @@ export default {
 	'basicData.erp.api.password': 'Password',
 	'basicData.erp.description': 'ERP Description',
 	'basicData.erp.description.list1': '1. Create and update product by ERP Import',
-	'basicData.erp.description.list2:':
-		'2. After import or change the ERP, the data imported before will be remove',
-	'basicData.erp.description.list3:':
-		'3. After import you can not change the product info in SUNMI Store',
+	'basicData.erp.description.list2:': '2. After import or change the ERP, the data imported before will be remove',
+	'basicData.erp.description.list3:': '3. After import you can not change the product info in SUNMI Store',
 	'basicData.erp.import.success': 'Import success, now synchronizing…',
 	'basicData.erp.import.fail': 'Data import failed',
 	'basicData.erp.common.key.error': 'Key or secrect was invalid',
@@ -85,13 +83,11 @@ export default {
 	'basicData.erp.zzsy.secret.error': 'ID or secret was invalid',
 	'basicData.erp.zzsy.secret.existed': 'ID or secret was used',
 	'basicData.erp.confirm.title': 'Are you sure to synchornizing the Product?',
-	'basicData.erp.confirm.content':
-		'After saved the product info will be clear and synchornize the ERP',
+	'basicData.erp.confirm.content': 'After saved the product info will be clear and synchornize the ERP',
 	'basicData.product.delete.success': 'Success',
 	'basicData.product.delete.fail': 'Fail',
 	'basicData.product.delete.confirm': 'Are you sure to delete the Product?',
-	'basicData.product.delete.notice':
-		'After deleted, the ESL bound to the product will not update.',
+	'basicData.product.delete.notice': 'After deleted, the ESL bound to the product will not update.',
 	'basicData.product.type.normal': 'Normal Product',
 	'basicData.product.type.weight': 'Weighted Product',
 	'basicData.product.unit.box': 'Box',
@@ -123,5 +119,5 @@ export default {
 	'product.price.isFormatted': 'Please input the right product price.',
 	'product.expire_time.isFormatted': 'Please input the right shelf life.',
 	'product.create.error': 'Fail to add the product.',
-	'product.update.error': 'Fail to update the product.',
+	'product.update.error': 'Fail to update the product.'
 };

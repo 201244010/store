@@ -173,8 +173,8 @@ class SDCardChild extends React.Component {
 			message:`IPC-${ sn }-${ title }`,
 			description: content,
 			btn,
-		key,
-		onClose:resetStatus(sn)
+			key,
+			onClose:resetStatus(sn)
 		});
 	}
 
