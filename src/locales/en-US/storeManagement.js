@@ -64,4 +64,5 @@ export default {
 	'storeManagement.message.cellphone.error': 'Please input valid phone number',
 	'storeManagement.message.createFailed': 'Failed',
 	'storeManagement.message.createSuccess': 'Success',
+	'storeManagement.message.name.exist':'Store existed'
 };

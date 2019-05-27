@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'dva';
 import { getLocationParam, unixSecondToDate } from '@/utils/utils';
-import { Divider } from 'antd';
+import { Button, Divider } from 'antd';
 import styles from './Notification.less';
+import { ACTION_MAP } from '@/constants/mqttActionMap';
 
 @connect(
 	state => ({
@@ -11,7 +12,7 @@ import styles from './Notification.less';
 	dispatch => ({
 		getNotificationInfo: payload =>
 			dispatch({ type: 'notification/getNotificationInfo', payload }),
-	})
+	}),
 )
 class Notification extends React.Component {
 	componentDidMount() {
@@ -22,10 +23,23 @@ class Notification extends React.Component {
 		});
 	}
 
+	handleAction = (action) => {
+		if (action) {
+			const handler = ACTION_MAP[action] || (() => null);
+			handler();
+		}
+	};
+
 	render() {
 		const {
 			notification: {
-				notificationInfo: { title, description, receiveTime },
+				notificationInfo: {
+					title, description, receiveTime,
+					majorButtonLink,
+					majorButtonName,
+					minorButtonLink,
+					minorButtonName,
+				},
 			},
 		} = this.props;
 		return (
@@ -37,6 +51,20 @@ class Notification extends React.Component {
 				<Divider />
 				<div className={styles['content-wrapper']}>
 					<p>{description}</p>
+				</div>
+				<div className={styles['button-bar']}>
+					{minorButtonName && (
+						<Button onClick={() => this.handleAction(minorButtonLink)}>{minorButtonName}</Button>
+					)}
+					{majorButtonName && (
+						<Button
+							style={{ marginLeft: minorButtonName ? '20px' : '0' }}
+							type="primary"
+							onClick={() => this.handleAction(majorButtonLink)}
+						>
+							{majorButtonName}
+						</Button>
+					)}
 				</div>
 			</div>
 		);
