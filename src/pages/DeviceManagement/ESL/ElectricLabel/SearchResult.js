@@ -322,19 +322,19 @@ class SearchResult extends Component {
 										</Menu.Item>
 									) : null}
 									{record.product_id ? <Menu.Divider /> : null}
-									{/* {record.product_id ? ( */}
-									{/* <Menu.Item key="1"> */}
-									{/* <a */}
-									{/* href="javascript: void (0);" */}
-									{/* data-record={JSON.stringify(record)} */}
-									{/* > */}
-									{/* {formatMessage({ */}
-									{/* id: 'esl.device.esl.template.edit', */}
-									{/* })} */}
-									{/* </a> */}
-									{/* </Menu.Item> */}
-									{/* ) : null} */}
-									{/* {record.product_id ? <Menu.Divider /> : null} */}
+									{record.product_id ? (
+										<Menu.Item key="1">
+											<a
+												href="javascript: void (0);"
+												data-record={JSON.stringify(record)}
+											>
+												{formatMessage({
+													id: 'esl.device.esl.template.edit',
+												})}
+											</a>
+										</Menu.Item>
+									) : null}
+									{record.product_id ? <Menu.Divider /> : null}
 									<Menu.Item key="2">
 										<a href="javascript: void (0);" data-record-id={record.id}>
 											{formatMessage({ id: 'esl.device.esl.flash' })}
