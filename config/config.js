@@ -134,30 +134,30 @@ export default {
 							name: 'baseStation',
 							component: './DeviceManagement/ESL/BaseStation',
 						},
-						{
-							path: '/esl/deviceUpgrade',
-							name: 'deviceUpgrade',
-							routes: [
-								{
-									path: '/esl/deviceUpgrade',
-									name: 'overview',
-									hideInMenu: true,
-									component: './DeviceManagement/ESL/DeviceUpgrade',
-								},
-								{
-									path: '/esl/deviceUpgrade/deviceESL',
-									name: 'deviceESL',
-									hideInMenu: true,
-									component: './DeviceManagement/ESL/DeviceESL',
-								},
-								{
-									path: '/esl/deviceUpgrade/deviceAP',
-									name: 'deviceAP',
-									hideInMenu: true,
-									component: './DeviceManagement/ESL/DeviceAP',
-								},
-							],
-						},
+						// {
+						// 	path: '/esl/deviceUpgrade',
+						// 	name: 'deviceUpgrade',
+						// 	routes: [
+						// 		{
+						// 			path: '/esl/deviceUpgrade',
+						// 			name: 'overview',
+						// 			hideInMenu: true,
+						// 			component: './DeviceManagement/ESL/DeviceUpgrade',
+						// 		},
+						// 		{
+						// 			path: '/esl/deviceUpgrade/deviceESL',
+						// 			name: 'deviceESL',
+						// 			hideInMenu: true,
+						// 			component: './DeviceManagement/ESL/DeviceESL',
+						// 		},
+						// 		{
+						// 			path: '/esl/deviceUpgrade/deviceAP',
+						// 			name: 'deviceAP',
+						// 			hideInMenu: true,
+						// 			component: './DeviceManagement/ESL/DeviceAP',
+						// 		},
+						// 	],
+						// },
 						{ path: '/esl', redirect: '/esl/electricLabel' },
 					],
 				},
@@ -246,19 +246,19 @@ export default {
 						{ path: '/company', redirect: '/company/merchantManagement' },
 					],
 				},
-				{
-					path: '/template',
-					name: 'template',
-					icon: 'blank',
-					routes: [
-						{ path: '/template', redirect: '/template/list' },
-						{
-							path: '/template/list',
-							name: 'list',
-							component: './Template',
-						},
-					],
-				},
+				// {
+				// 	path: '/template',
+				// 	name: 'template',
+				// 	icon: 'blank',
+				// 	routes: [
+				// 		{ path: '/template', redirect: '/template/list' },
+				// 		{
+				// 			path: '/template/list',
+				// 			name: 'list',
+				// 			component: './Template',
+				// 		},
+				// 	],
+				// },
 				// TODO 万有集市 临时菜单 END
 
 				// dashboard
@@ -407,60 +407,60 @@ export default {
 				// 	path: '/live',
 				// 	component: './IPC/Live/Live.js',
 				// },
-				{
-					path: '/devices',
-					icon: 'blank',
-					name: 'devices',
-					routes: [
-						{
-							path: '/devices/list',
-							name: 'list',
-							routes: [
-								{
-									path: '/devices/list/live',
-									name: 'live',
-									hideInMenu: true,
-									component: './IPC/Live/Live.js',
-								},
-								{
-									path: '/devices/list/ipcManagement',
-									name: 'ipcManagement',
-									hideInMenu: true,
-									component: './IPC/IPCManagement/IPCManagement.js',
-								},
-								{
-									path: '/devices/list',
-									// name: 'list',
-									component: './IPC/IPCList/IPCList.js',
-								},
-							]
-						},
-						{
-							path: '/devices/motionMessage',
-							name: 'motionMessage',
-							component: './IPC/MotionList/MotionList.js',
-						},
-
-					],
-				},
-				{
-					path: '/faceidLibrary',
-					name: 'faceidLibrary',
-					icon: 'blank',
-					// component: './index.js',
-					routes: [
-						{
-							path: '/faceidLibrary/faceidLibraryList',
-							name: 'list',
-							component: './IPC/FaceidLibrary/LibraryList.js',
-						},
-						{
-							path: '/faceidLibrary/createLibrary',
-							// name: 'faceidLibrary.create',
-							component: './IPC/FaceidLibrary/CreateLibrary.js',
-						},
-					],
-				},
+				// {
+				// 	path: '/devices',
+				// 	icon: 'blank',
+				// 	name: 'devices',
+				// 	routes: [
+				// 		{
+				// 			path: '/devices/list',
+				// 			name: 'list',
+				// 			routes: [
+				// 				{
+				// 					path: '/devices/list/live',
+				// 					name: 'live',
+				// 					hideInMenu: true,
+				// 					component: './IPC/Live/Live.js',
+				// 				},
+				// 				{
+				// 					path: '/devices/list/ipcManagement',
+				// 					name: 'ipcManagement',
+				// 					hideInMenu: true,
+				// 					component: './IPC/IPCManagement/IPCManagement.js',
+				// 				},
+				// 				{
+				// 					path: '/devices/list',
+				// 					// name: 'list',
+				// 					component: './IPC/IPCList/IPCList.js',
+				// 				},
+				// 			]
+				// 		},
+				// 		{
+				// 			path: '/devices/motionMessage',
+				// 			name: 'motionMessage',
+				// 			component: './IPC/MotionList/MotionList.js',
+				// 		},
+				//
+				// 	],
+				// },
+				// {
+				// 	path: '/faceidLibrary',
+				// 	name: 'faceidLibrary',
+				// 	icon: 'blank',
+				// 	// component: './index.js',
+				// 	routes: [
+				// 		{
+				// 			path: '/faceidLibrary/faceidLibraryList',
+				// 			name: 'list',
+				// 			component: './IPC/FaceidLibrary/LibraryList.js',
+				// 		},
+				// 		{
+				// 			path: '/faceidLibrary/createLibrary',
+				// 			// name: 'faceidLibrary.create',
+				// 			component: './IPC/FaceidLibrary/CreateLibrary.js',
+				// 		},
+				// 	],
+				// },
 				{ path: '/', redirect: '/esl' },
 			],
 		},
