@@ -15,5 +15,5 @@ export default {
 	'merchantManagement.merchant.inputMerchant': 'Please enter the name',
 	'merchantManagement.merchant.existed': 'The name was existed, please contact your admin ',
 	'merchantManagement.merchant.joinMerchant': 'Or please contact your admin',
-	'merchantManagement.merchant.existed.error': 'The name was existed',
+	'merchantManagement.merchant.existed.error': 'The name was existed'
 };

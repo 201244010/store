@@ -130,11 +130,12 @@ export const customizeFetch = (service = 'api', base) => {
 		if (result.code === USER_NOT_LOGIN) {
 			unAuthHandler();
 		}
+
 		if (result.code !== ERROR_OK) {
 			if (ALERT_NOTICE_MAP[result.code]) {
 				message.error(formatMessage({ id: ALERT_NOTICE_MAP[result.code] }));
 			} else {
-				message.error('操作错误');
+				// message.error('操作错误');
 			}
 		}
 

@@ -39,5 +39,5 @@ export default {
 	'studio.tool.label.font.color': 'FontColor',
 	'studio.tool.label.stroke.width': 'White',
 	'studio.tool.label.small.type': 'Small Type',
-	'studio.tool.label.codec': 'Codec',
+	'studio.tool.label.codec': 'Codec'
 };

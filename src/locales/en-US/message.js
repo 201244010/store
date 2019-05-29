@@ -10,5 +10,8 @@ export default {
 	'alert.vcode.error': 'Input code error',
 	'alert.code.send.fast': 'Code send too frequently, please wait a moment',
 	'alert.store.is.none': 'You must create a shop before use the system',
-	'error.retry': 'Something was wrong, please retry',
+	'alert.template.name.not.empty': '模板名称不能为空',
+	'alert.template.bound.esl': '模板上有绑定价签',
+	'alert.template.name.used': '模板名已被占用',
+	'error.retry': 'Something was wrong, please retry'
 };

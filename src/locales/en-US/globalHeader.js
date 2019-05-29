@@ -14,5 +14,5 @@ export default {
 	'component.noticeIcon.clear': 'Clear',
 	'component.noticeIcon.cleared': 'Cleared',
 	'component.noticeIcon.empty': 'Empty',
-	'component.noticeIcon.view-more': 'All',
+	'component.noticeIcon.view-more': 'All'
 };

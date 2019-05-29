@@ -39,5 +39,5 @@ export default {
 	'studio.tool.label.font.color': '字体颜色',
 	'studio.tool.label.stroke.width': '宽度',
 	'studio.tool.label.small.type': '小数显示类型',
-	'studio.tool.label.codec': '编码类型',
+	'studio.tool.label.codec': '编码类型'
 };

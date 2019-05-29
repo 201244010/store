@@ -11,5 +11,5 @@ export default {
 	'videoPlayer.volume': '音量',
 	'videoPlayer.play': '播放',
 	'videoPlayer.enterFullscreen': '进入全屏',
-	'videoPlayer.exitFullscreen': '退出全屏',
+	'videoPlayer.exitFullscreen': '退出全屏'
 };

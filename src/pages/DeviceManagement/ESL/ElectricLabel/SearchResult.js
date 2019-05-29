@@ -9,6 +9,7 @@ import BindModal from './BindModal';
 import styles from './index.less';
 
 const ESL_STATES = {
+	0: formatMessage({id:'esl.device.esl.inactivated'}),
 	1: formatMessage({ id: 'esl.device.esl.push.wait.bind' }),
 	2: formatMessage({ id: 'esl.device.esl.push.wait' }),
 	3: formatMessage({ id: 'esl.device.esl.push.success' }),
@@ -251,8 +252,8 @@ class SearchResult extends Component {
 				render: text => (
 					<span className={text < 10 ? styles['low-battery'] : ''}>{text}%</span>
 				),
-				sorter: (a, b) => a.battery - b.battery,
-				sortDirections: ['descend', 'ascend'],
+				// sorter: (a, b) => a.battery - b.battery,
+				// sortDirections: ['descend', 'ascend'],
 			},
 			{
 				title: formatMessage({ id: 'esl.device.esl.product.seq.num' }),

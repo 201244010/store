@@ -45,5 +45,5 @@ export default {
 	'pagination.total.prefix': 'total',
 	'select.all': 'Select All',
 	'select.placeholder': 'Select',
-	'safety.validate': 'Verification',
+	'safety.validate': 'Verification'
 };
