@@ -66,5 +66,10 @@ export default {
 	'menu.devices.ipcManagement': '摄像头设置',
 	'menu.notification': '系统消息',
 	'menu.notification.center': '消息中心',
-	'menu.notification.info': '消息详情'
+	'menu.notification.info': '消息详情',
+
+	'menu.cashVerify': '收银审计',
+	'menu.cashVerify.posList': '设备绑定列表',
+	'menu.cashVerify.bindPOSDevice': '绑定收银设备',
+	'menu.cashVerify.videos': '交易视频'
 };

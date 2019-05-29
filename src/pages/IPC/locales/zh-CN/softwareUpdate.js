@@ -5,9 +5,11 @@ export default {
 	'softwareUpdate.checkWaitingMsg': '正在检查你的设备版本，请稍后',
 	'softwareUpdate.checkDate': '上次检查时间：',
 	'softwareUpdate.update': '现在更新',
-	'softwareUpdate.checkMsg': '你的设备有更新可用',
+	'softwareUpdate.hasUpdate': '您的设备有更新可用',
+	'softwareUpdate.noUpdate': '您的设备已经安装了最新的软件。',
 	'softwareUpdate.updateDate': '上次更新时间',
-	'softwareUpdate.downloadMsg': '正在下载固件，请保持设备在线，请勿断电',
-	'softwareUpdate.verificationMsg': '正在验证版本包，请耐心等待并保持设备在线，切勿断电',
-	'softwareUpdate.restartMsg': '验证完成，后续安装过程IPC会执行重启操作，请耐心等待'
+	'softwareUpdate.updating': '正在更新最新软件，请保持设备在线，请耐心等待。'
+	// 'softwareUpdate.downloadMsg': '正在下载固件，请保持设备在线，请勿断电',
+	// 'softwareUpdate.verificationMsg': '正在验证版本包，请耐心等待并保持设备在线，切勿断电',
+	// 'softwareUpdate.restartMsg': '验证完成，后续安装过程IPC会执行重启操作，请耐心等待'
 };
