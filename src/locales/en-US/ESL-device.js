@@ -3,7 +3,7 @@ export default {
 	'esl.device.esl.title': 'ESL',
 	'esl.device.ap.search.placeholder': 'AP ID/Name',
 	'esl.device.ap.search.ap.info': 'AP Detail',
-	'esl.device.ap.id': 'AP ID',
+	'esl.device.ap.id': 'AP SN',
 	'esl.device.ap.name': 'AP Name',
 	'esl.device.ap.status': 'Status',
 	'esl.device.ap.status.online': 'Online',
