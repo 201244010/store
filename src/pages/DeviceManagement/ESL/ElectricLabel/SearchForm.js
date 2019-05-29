@@ -66,6 +66,9 @@ class SearchForm extends Component {
 								<Select.Option value={-1}>
 									{formatMessage({ id: 'select.all' })}
 								</Select.Option>
+								<Select.Option value={1}>
+									{formatMessage({ id: 'esl.device.esl.push.wait.bind' })}
+								</Select.Option>
 								<Select.Option value={2}>
 									{formatMessage({ id: 'esl.device.esl.push.wait' })}
 								</Select.Option>
