@@ -242,6 +242,11 @@ export default class RightToolBox extends Component {
 				originFix.y = componentDetail.y;
 			}
 		});
+		const realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
+		let realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
+		if (SHAPE_TYPES.IMAGE === detail.type) {
+			realHeight = realWidth * detail.ratio;
+		}
 		const disabled = selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) > -1;
 		const hasRed = this.hasRed();
 		const bindFields = this.getRealBindFields();
@@ -302,13 +307,7 @@ export default class RightToolBox extends Component {
 								addonAfter={
 									<span>{formatMessage({ id: 'studio.tool.label.width' })}</span>
 								}
-								value={
-									detail.scaleX
-										? Math.round(
-											MAPS.containerWidth[detail.type] * detail.scaleX
-										)
-										: ''
-								}
+								value={realWidth}
 								onChange={e => {
 									this.handleWidth(detail, e);
 								}}
@@ -321,13 +320,7 @@ export default class RightToolBox extends Component {
 								addonAfter={
 									<span>{formatMessage({ id: 'studio.tool.label.height' })}</span>
 								}
-								value={
-									detail.scaleY
-										? Math.round(
-											MAPS.containerHeight[detail.type] * detail.scaleY
-										)
-										: ''
-								}
+								value={realHeight}
 								onChange={e => {
 									this.handleHeight(detail, e);
 								}}

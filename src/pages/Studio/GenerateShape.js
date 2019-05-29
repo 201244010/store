@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Group, Rect, Text, Line, Image, Shape } from 'react-konva';
+import { Group, Rect, Text, Image, Shape } from 'react-konva';
 import { SHAPE_TYPES, SIZES, MAPS } from '@/constants/studio';
 
 export default function generateShape(option) {
@@ -114,16 +114,16 @@ export default function generateShape(option) {
 			break;
 		case SHAPE_TYPES.HLine:
 			shape = (
-				<Line
+				<Rect
 					{...{
 						name: option.name,
 						x: option.x,
 						y: option.y,
-						stroke: option.stroke,
-						strokeWidth: option.strokeWidth * option.zoomScale,
+						width: MAPS.width[SHAPE_TYPES.HLine] * option.zoomScale,
+						height: option.strokeWidth * option.zoomScale,
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
-						points: [0, 0, SIZES.DEFAULT_H_LINE_WIDTH, 0],
+						fill: option.stroke,
 						draggable: true,
 						onTransform: option.onTransform,
 						onMouseOver: () => {
@@ -138,16 +138,16 @@ export default function generateShape(option) {
 			break;
 		case SHAPE_TYPES.VLine:
 			shape = (
-				<Line
+				<Rect
 					{...{
 						name: option.name,
 						x: option.x,
 						y: option.y,
-						stroke: option.stroke,
-						strokeWidth: option.strokeWidth * option.zoomScale,
+						width: MAPS.width[SHAPE_TYPES.VLine] * option.zoomScale,
+						height: MAPS.height[SHAPE_TYPES.VLine] * option.zoomScale,
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
-						points: [0, 0, 0, SIZES.DEFAULT_V_LINE_HEIGHT],
+						fill: option.stroke,
 						draggable: true,
 						onTransform: option.onTransform,
 						onMouseOver: () => {

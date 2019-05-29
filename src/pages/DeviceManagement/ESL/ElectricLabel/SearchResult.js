@@ -270,7 +270,7 @@ class SearchResult extends Component {
 				title: formatMessage({ id: 'esl.device.esl.status' }),
 				dataIndex: 'status',
 				render: text => (
-					<span style={{ color: `${text}` === '2' ? 'red' : 'rgba(0, 0, 0, 0.65)' }}>
+					<span style={{ color: `${text}` === '4' ? 'red' : 'rgba(0, 0, 0, 0.65)' }}>
 						{ESL_STATES[text]}
 					</span>
 				),

@@ -15,28 +15,14 @@ export const getNearLines = (source, target) => {
 		return [];
 	}
 	const ret = [];
-	if (newSource.type === SHAPE_TYPES.CIRCLE) {
-		newSource.left = newSource.x - newSource.radius * newSource.scaleX;
-		newSource.top = newSource.y - newSource.radius * newSource.scaleY;
-		newSource.right = newSource.x + newSource.radius * newSource.scaleX;
-		newSource.bottom = newSource.y + newSource.radius * newSource.scaleY;
-	} else {
-		newSource.left = newSource.x;
-		newSource.top = newSource.y;
-		newSource.right = newSource.x + newSource.width * newSource.scaleX;
-		newSource.bottom = newSource.y + newSource.height * newSource.scaleY;
-	}
-	if (newTarget.type === SHAPE_TYPES.CIRCLE) {
-		newTarget.left = newTarget.x - newTarget.radius * newTarget.scaleX;
-		newTarget.top = newTarget.y - newTarget.radius * newTarget.scaleY;
-		newTarget.right = newTarget.x + newTarget.radius * newTarget.scaleX;
-		newTarget.bottom = newTarget.y + newTarget.radius * newTarget.scaleY;
-	} else {
-		newTarget.left = newTarget.x;
-		newTarget.top = newTarget.y;
-		newTarget.right = newTarget.x + newTarget.width * newTarget.scaleX;
-		newTarget.bottom = newTarget.y + newTarget.height * newTarget.scaleY;
-	}
+	newSource.left = newSource.x;
+	newSource.top = newSource.y;
+	newSource.right = newSource.x + newSource.width * newSource.scaleX;
+	newSource.bottom = newSource.y + newSource.height * newSource.scaleY;
+	newTarget.left = newTarget.x;
+	newTarget.top = newTarget.y;
+	newTarget.right = newTarget.x + newTarget.width * newTarget.scaleX;
+	newTarget.bottom = newTarget.y + newTarget.height * newTarget.scaleY;
 
 	if (
 		Math.abs(newTarget.left - newSource.left) < NEAR_GAP ||
@@ -77,5 +63,5 @@ export const getImagePromise = componentDetail =>
 		image.onerror = error => {
 			reject(error);
 		};
-		image.src = componentDetail.imageUrl || MAPS.imageUrl[componentDetail.type];
+		image.src = componentDetail.imgPath || MAPS.imgPath[componentDetail.type];
 	});
