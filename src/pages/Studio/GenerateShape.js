@@ -143,7 +143,7 @@ export default function generateShape(option) {
 						name: option.name,
 						x: option.x,
 						y: option.y,
-						width: MAPS.width[SHAPE_TYPES.VLine] * option.zoomScale,
+						width: option.strokeWidth * option.zoomScale,
 						height: MAPS.height[SHAPE_TYPES.VLine] * option.zoomScale,
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
