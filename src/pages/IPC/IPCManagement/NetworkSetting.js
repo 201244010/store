@@ -214,7 +214,7 @@ class NetworkSetting extends Component {
 							</Button>,
 							<Button
 								type='primary'
-								disabled={getFieldValue('ssid') === ''}
+								disabled={getFieldValue('ssid') === '' || loadingWifiList === true}
 								key='btn-connect'
 								onClick={this.handleConnect}
 							>
@@ -249,7 +249,7 @@ class NetworkSetting extends Component {
 										{
 											getFieldDecorator('ssid', {
 												rules: [
-													{ required: true }
+													{ required: true, message: formatMessage({id: 'networkSetting.noSsid'}) }
 												]
 											})(
 												<Select
@@ -280,7 +280,7 @@ class NetworkSetting extends Component {
 												{
 													getFieldDecorator('password', {
 														rules: [
-															{ required: true }
+															{ required: true, message: formatMessage({id: 'networkSetting.noPassword'}) }
 														]
 													})(
 														<Input suffix={<Icon type='lock' />} type='password' />

@@ -1,31 +1,43 @@
 import React, { Component } from 'react';
 import { Card, Button, Modal, Spin, Progress, Icon } from 'antd';
-import { FormattedMessage } from 'umi/locale';
+import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
+import moment from 'moment';
 
 import styles from './SoftwareUpdate.less';
 
 
+
 const mapStateToProps = (state) => {
-	const { softwareUpdate } = state;
+	const { ipcSoftwareUpdate: info, loading } = state;
 	return {
-		softwareUpdate
+		info,
+		loading
 	};
 };
 const mapDispatchToProps = (dispatch) => ({
-	load: () => {
+	load: (sn) => {
 		dispatch({
-			type: 'softwareUpdate/read'
+			type: 'ipcSoftwareUpdate/load',
+			payload: {
+				sn
+			}
 		});
 	},
-	checkVersion: () => {
+	checkVersion: (sn) => {
 		dispatch({
-			type: 'softwareUpdate/check'
+			type: 'ipcSoftwareUpdate/detect',
+			payload: {
+				sn
+			}
 		});
 	},
-	update: () => {
+	update: (sn) => {
 		dispatch({
-			type: 'softwareUpdate/update'
+			type: 'ipcSoftwareUpdate/update',
+			payload: {
+				sn
+			}
 		});
 	}
 });
@@ -33,34 +45,54 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class SoftwareUpdate extends Component {
 	state = {
-		version: 'V1.0.20',
+		// version: 'V1.0.20',
 		// isLatest: true,
 		visible: false,
+		percent: 0,
 		// proVisible: false,
-		isUpdate: false,
-		isCheck: false
+		// isUpdate: false,
+		// isCheck: false
 	}
 
+	interval = 0
+
 	componentDidMount = () => {
-		const { load } = this.props;
-		load();
+		const { load, sn } = this.props;
+		// console.log(sn);
+		load(sn);
 	}
 
 	showModal = () => {
-		const { checkVersion } = this.props;
-		checkVersion();
+		const { checkVersion, sn } = this.props;
+		checkVersion(sn);
+
 		this.setState({
 			visible: true
 		});
 	}
 
+
 	updateSoftware = () => {
-		const { update } = this.props;
-		update();
-		this.setState({
-			isCheck: false,
-			isUpdate: true
-		});
+		const { update, sn } = this.props;
+		update(sn);
+
+		const time = 60*1000;
+
+		clearInterval(this.interval);
+		this.interval = setInterval(() => {
+
+			const { percent } = this.state;
+			if (percent < 90) {
+				this.setState({
+					percent: percent+1
+				});
+			}
+		}, time/100);
+
+		// this.setState({
+		// 	isCheck: false,
+		// 	isUpdate: true
+		// });
 	}
 
 	hideModal = () => {
@@ -69,94 +101,131 @@ class SoftwareUpdate extends Component {
 		});
 	}
 
-	hideInfo = () => {
-		this.setState({
-			isCheck: false
-		});
-	}
+	// hideInfo = () => {
+	// 	this.setState({
+	// 		isCheck: false
+	// 	});
+	// }
 
-	showInfo = () => {
-		this.setState({
-			isCheck: true,
-			visible: false
-		});
-	}
+	// showInfo = () => {
+	// 	this.setState({
+	// 		isCheck: true,
+	// 		visible: false
+	// 	});
+	// }
 
 	render() {
-		// const { version } = this.props;
-		const { version, updateDate, checkDate, isCheck, percent, visible, isUpdate } = this.state;
-		// this.showInfo();
+		const { info: { currentVersion, needUpdate, updating }, loading } = this.props;
+		const { updateDate, checkDate, percent, visible } = this.state;
+
+		const detecting = loading.effects['ipcSoftwareUpdate/detect'];
+
 		return (
 			<div>
 				<Card
 					className={styles['main-card']}
-					title={<FormattedMessage id="softwareUpdate.title" />}
+					title={formatMessage({ id: 'softwareUpdate.title' })}
 				>
 					<div className={styles['main-block']}>
-						<span className={styles.tips}>
-							{<FormattedMessage id="softwareUpdate.currentVersion" />}
-							{version}
-						</span>
-						<Button type="default" onClick={this.showModal}>
-							<FormattedMessage id="softwareUpdate.check" />
-						</Button>
+						<p className={styles.tips}>
+							{ `${formatMessage({ id: 'softwareUpdate.currentVersion' })}: ${currentVersion}` }
+						</p>
+						<p className={styles.center}>
+							<Button type="default" onClick={this.showModal}>
+								{formatMessage({ id: 'softwareUpdate.check' })}
+							</Button>
+						</p>
+
 					</div>
 				</Card>
 
 				<Modal
 					visible={visible}
-					// footer={null}
-					footer={null}
+					closable={!updating}
+					footer={
+
+						detecting || updating || !needUpdate ?
+							'' :
+							<Button type="primary" onClick={this.updateSoftware}>
+								{formatMessage({ id: 'softwareUpdate.update' })}
+							</Button>
+
+					}
 					onCancel={this.hideModal}
-					destroyOnClose
 				>
-					<h3>
-						<Spin />
-						<FormattedMessage id="softwareUpdate.checkWaitingMsg" />
-					</h3>
-					<span>
-						<FormattedMessage id="softwareUpdate.checkDate" />
-						{checkDate}
-					</span>
+					{
+						(() => {
+							if (detecting) {
+								return (
+									<div className={styles.info}>
+										<h3>
+											<Spin className={styles.spin} />
+											<span>{formatMessage({ id: 'softwareUpdate.checkWaitingMsg' })}</span>
+										</h3>
+										<p>
+											{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${checkDate}`}
+										</p>
+									</div>
+								);
+							}
+
+							if (updating) {
+								return (
+									<div className={styles.info}>
+										<Progress className={styles.progress} percent={percent} status='active' />
+										<p>
+											{ formatMessage({ id: 'softwareUpdate.updating' }) }
+											{/* {percent <= 66 ? (
+												formatMessage({ id: 'softwareUpdate.downloadMsg' })
+											) : (
+												''
+											)}
+											{percent > 66 && percent < 100 ? (
+												formatMessage({ id: 'softwareUpdate.verificationMsg' })
+											) : (
+												''
+											)}
+											{percent === 100 ? (
+												formatMessage({id: 'softwareUpdate.restartMsg'})
+											) : (
+												''
+											)} */}
+										</p>
+									</div>
+								);
+							}
+
+							if (needUpdate) {
+								return (
+									<div className={styles.info}>
+										<h3>
+											<Icon className={`${styles.icon} ${styles.warning}`} type="info-circle" />
+											<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.hasUpdate' })}</span>
+										</h3>
+										<p>
+											{`${formatMessage({ id: 'softwareUpdate.updateDate' })}: ${updateDate}`}
+										</p>
+									</div>
+								);
+							}
+
+							return (
+								<div className={styles.info}>
+									<h3>
+										<Icon className={`${styles.icon} ${styles.success}`} type="check-circle" />
+										<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.noUpdate' })}</span>
+									</h3>
+									<p>
+										{`${formatMessage({ id: 'softwareUpdate.updateDate' })}: ${moment().format('YYYY-MM-DD')}`}
+									</p>
+								</div>
+							);
+
+						})()
+
+					}
 				</Modal>
 
-				<Modal
-					visible={isCheck}
-					footer={
-						<Button type="primary" onClick={this.updateSoftware}>
-							<FormattedMessage id="softwareUpdate.update" />
-						</Button>
-					}
-					onCancel={this.hideInfo}
-					destroyOnClose
-				>
-					<h3>
-						<Icon type="info-circle" />
-						<FormattedMessage id="softwareUpdate.checkMsg" />
-					</h3>
-					<span>
-						<FormattedMessage id="softwareUpdate.updateDate" />
-						{updateDate}
-					</span>
-				</Modal>
-				<Modal visible={isUpdate} footer={null} closable={false}>
-					<Progress percent={percent} />
-					{percent <= 66 ? (
-						<FormattedMessage id="softwareUpdate.downloadMsg" />
-					) : (
-						''
-					)}
-					{percent > 66 && percent < 100 ? (
-						<FormattedMessage id="softwareUpdate.verificationMsg" />
-					) : (
-						''
-					)}
-					{percent === 100 ? (
-						<FormattedMessage id="softwareUpdate.restartMsg" />
-					) : (
-						''
-					)}
-				</Modal>
 			</div>
 		);
 	}
