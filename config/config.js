@@ -444,6 +444,31 @@ export default {
 					],
 				},
 				{
+					path: '/cashVerify',
+					icon: 'blank',
+					name: 'cashVerify',
+					routes: [
+						{
+							path: '/cashVerify/posList',
+							name: 'bindPOSDevice',
+							// hideInMenu: true,
+							component: './IPC/POSManagement/POSList.js'
+						},
+						{
+							path: '/cashVerify/bindPOSDevice',
+							name: 'bindPOSDevice',
+							hideInMenu: true,
+							component: './IPC/POSManagement/BindPOS.js'
+						},
+						{
+							path: '/cashVerify/videos',
+							name: 'videos',
+							hideInMenu: true,
+							component: './IPC/TradeVideos/TradeVideos.js',
+						}
+					]
+				},
+				{
 					path: '/faceidLibrary',
 					name: 'faceidLibrary',
 					icon: 'blank',

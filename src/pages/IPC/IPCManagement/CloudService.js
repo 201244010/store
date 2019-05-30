@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Card,Button} from 'antd';
-import { FormattedMessage } from 'umi/locale';
+import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import styles from './CloudService.less';
 
@@ -21,25 +21,31 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class CloudService extends Component {
-	state={
+	state = {
 
 	}
 
 	render() {
 		// console.log(this.props)
 		const { cloudService } = this.props;
-		const { isOpen, isExpired, deadline } = cloudService;
+		const { isMember, isExpired, deadline } = cloudService;
 		return (
-			<Card className={styles.card} title={<FormattedMessage id='cloudService.title' />}>
-				<div className="tips" style={{fontSize:18,fontWeight:400,marginTop:40,marginLeft:100}}>
-					{isOpen && isExpired ? <FormattedMessage id='cloudService.renewalMsg' />:''}
-					{isOpen && !isExpired ? <span><FormattedMessage id='cloudService.openMsg' />{deadline}</span>:''}
-					{!isOpen ? <FormattedMessage id='cloudService.closeMsg' />:''}
-				</div>
-				<Button type="default">
-					{isOpen ? <FormattedMessage id='cloudService.renewal' />
-						: <FormattedMessage id='cloudService.open' />}
-				</Button>
+			<Card className={styles.card} title={formatMessage({ id: 'cloudService.title' })}>
+
+
+				<p className={styles.tips}>
+					{isMember && isExpired ? formatMessage({ id: 'cloudService.renewalMsg' }):''}
+					{isMember && !isExpired ? <span>{formatMessage({ id: 'cloudService.openMsg' })}{deadline}</span>:''}
+					{!isMember ? formatMessage({ id: 'cloudService.closeMsg' }) :''}
+				</p>
+
+				<p className={styles.center}>
+					<Button type="default">
+						{isMember ? formatMessage({ id: 'cloudService.renewal' })
+							: formatMessage({ id: 'cloudService.open' })}
+					</Button>
+				</p>
+
 			</Card>
 		);
 	}
