@@ -83,6 +83,7 @@ class ResetPassword extends Component {
 				title={null}
 				footer={null}
 				onCancel={onCancel}
+				wrapClassName={styles['reset-modal-wrapper']}
 				destroyOnClose
 			>
 				<div className={styles['custom-modal-wrapper']}>
