@@ -1,18 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Cache-Control" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SUNMI STORE</title>
-  <link rel="icon" href="/favicon.png" type="image/x-icon">
-  <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.9.6/dist/data-set.min.js"></script>
-</head>
-<body>
-  <noscript>Sorry, we need js to run correctly!</noscript>
-  <div id="root"></div>
-</body>
+    <head>
+		<meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Cache-Control" content="no-cache">
+        <meta http-equiv="Expires" content="0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>SUNMI STORE</title>
+        <link rel="icon" href="/favicon.png" type="image/x-icon">
+
+        <link rel="stylesheet" type="text/css" href="<%= context.base %>/css/video-js.min.css">
+        <!-- Polyfills -->
+        <!--[if lt IE 10]>
+        <script src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,es5-shim/4.5.7/es5-shim.min.js,es5-shim/4.5.7/es5-sham.min.js,es6-shim/0.35.1/es6-sham.min.js,es6-shim/0.35.1/es6-shim.min.js,html5shiv/3.7.2/html5shiv.min.js,media-match/2.0.2/media.match.min.js"></script>
+        <![endif]-->
+        <!--[if lte IE 11]>
+        <script src="https://as.alipayobjects.com/g/component/??es6-shim/0.35.1/es6-sham.min.js,es6-shim/0.35.1/es6-shim.min.js"></script>
+        <![endif]-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser-polyfill.min.js"></script>
+        <script src="https://cdn.bootcss.com/fetch/2.0.4/fetch.min.js"></script>
+        <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.9.6/dist/data-set.min.js"></script>
+    </head>
+
+    <body>
+        <noscript>Sorry, we need js to run correctly!</noscript>
+
+        <div id="root"></div>
+
+		<script type="text/javascript" src="<%= context.base %>/libs/video.min.js"></script>
+
+
+
+		<!--[if gte IE 11]>
+			<script type="text/javascript" src="<%= context.base %>/libs/flv.min.js"></script>
+			<script type="text/javascript" src="<%= context.base %>/libs/videojs-flvjs.min.js"></script>
+		<![endif]-->
+
+		<!--[if !IE]> <!-->
+			<script type="text/javascript" src="<%= context.base %>/libs/flv.min.js"></script>
+			<script type="text/javascript" src="<%= context.base %>/libs/videojs-flvjs.min.js"></script>
+		<!-- <![endif]-->
+
+		<script type="text/javascript" src="<%= context.base %>/libs/videojs-flash.min.js"></script>
+		<script type="text/javascript" src="<%= context.base %>/libs/videojs-playlist.min.js"></script>
+
+    </body>
 </html>

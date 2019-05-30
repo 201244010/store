@@ -1,65 +1,82 @@
+@import '~antd/dist/antd.min.css';
+
 html,
 body,
 #root {
-  height: 100%;
+	height: 100%;
 }
 
 .colorWeak {
-  filter: invert(80%);
+	filter: invert(80%);
 }
 
 .ant-layout {
-  min-height: 100vh;
+	min-height: 100vh;
 }
 
 canvas {
-  display: block;
+	display: block;
 }
 
 body {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .globalSpin {
-  width: 100%;
-  margin: 40px 0 !important;
+	width: 100%;
+	margin: 40px 0 !important;
 }
 
 ul,
 ol {
-  list-style: none;
+	list-style: none;
+}
+
+input {
+	outline: none;
+	border: none;
+}
+
+sup {
+	font-size: 10px;
+	top: -.25em;
+}
+
+sub {
+	font-size: 10px;
+	bottom: 0;
 }
 
 .content-container {
-  padding: 32px;
-  background: #fff;
+	padding: 32px;
+	background: #fff;
 }
 
 //火狐下的移除
 input[type='number'] {
-  -moz-appearance: textfield;
+	-moz-appearance: textfield;
 }
 
 //谷歌下的移除
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
+	-webkit-appearance: none;
 }
 
 
 :global {
-  .ant-input-lg {
-    font-size: 14px;
-  }
+	.ant-input-lg {
+		font-size: 14px;
+	}
 
-  .ant-table-pagination.ant-pagination {
-    float: none !important;
-    text-align: right !important;
+	.ant-table-pagination.ant-pagination {
+		float: none !important;
+		text-align: right !important;
 
-    .ant-pagination-total-text {
-      float: left !important;
-    }
-  }
+		.ant-pagination-total-text {
+			float: left !important;
+		}
+	}
 }
