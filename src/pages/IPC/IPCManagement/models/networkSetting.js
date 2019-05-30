@@ -1,8 +1,10 @@
 import { MESSAGE_TYPE } from '@/constants';
+import { ERROR_OK } from '@/constants/errorCode';
 
 const opCode = {
-	read: '0x0000',
-	wifiList: '0x0001'
+	read: '0x3060',
+	wifiList: '0x3061',
+	connect: '0x3062'
 };
 
 export default {
@@ -22,7 +24,7 @@ export default {
 			state.loadingSsid = status;
 		},
 		changeLoadingWifiStatus: (state, {payload: { status }}) => {
-			console.log(status);
+			// console.log(status);
 			state.loadingWifiList = status;
 		},
 		updateWifiList: (state, {payload: { list }}) => {
@@ -72,10 +74,10 @@ export default {
 			yield put({
 				type: 'changeLoadingSsidStatus',
 				payload: {
-					status: false // 临时先改成false，方便调试
+					status: true
 				}
 			});
-			console.log(topic);
+			// console.log(topic);
 		},
 		// *update(action, { put, select }) {
 
@@ -113,26 +115,10 @@ export default {
 			yield put({
 				type: 'changeLoadingWifiStatus',
 				payload: {
-					status: false
+					status: true
 				}
 			});
 
-			// 临时代码
-			yield put({
-				type: 'updateWifiList',
-				payload: {
-					list: [
-						{
-							ssid: '测试1',
-							isEncrypted: true
-						},
-						{
-							ssid: '测试2',
-							isEncrypted: false
-						}
-					]
-				}
-			});
 		},
 		*connect({ payload: { sn, ssid, password }}, { put }){
 			const deviceType = yield put.resolve({
@@ -156,21 +142,13 @@ export default {
 				payload: {
 					topic,
 					message: {
-						opcode: opCode.wifiList,
+						opcode: opCode.connect,
 						param: {
 							sn,
 							ssid,
-							password
+							pin: password
 						}
 					}
-				}
-			});
-
-			// 临时代码
-			yield put({
-				type: 'connectWifiFailed',
-				payload: {
-					ssid
 				}
 			});
 
@@ -184,25 +162,86 @@ export default {
 					models: ['FS1', 'SS1'],
 					type: MESSAGE_TYPE.RESPONSE,
 					handler: (topic, messages) => {
-						console.log(topic, messages);
+						const msg = JSON.parse(JSON.stringify(messages));
 
-						const ssid = messages;
+						if (msg.errcode === ERROR_OK) {
+							const { data } = msg;
 
-						dispatch({
-							type: 'readSsid',
-							payload: {
-								ssid
-							}
-						});
+							const { ssid } = data;
 
-						dispatch({
-							type: 'changeLoadingSsidStatus',
-							payload: {
-								status: false
-							}
-						});
+							dispatch({
+								type: 'readSsid',
+								payload: {
+									ssid
+								}
+							});
+
+							dispatch({
+								type: 'changeLoadingSsidStatus',
+								payload: {
+									status: false
+								}
+							});
+						}
 					}
-				}
+				},
+				{
+					opcode: opCode.wifiList,
+					models: ['FS1', 'SS1'],
+					type: MESSAGE_TYPE.RESPONSE,
+					handler: (topic, messages) => {
+						const msg = JSON.parse(JSON.stringify(messages));
+
+						if (msg.errcode === ERROR_OK) {
+							const { data } = msg;
+
+							const { wifi_list: wifiList } = data;
+
+							const list = wifiList.map(item => ({
+								ssid: item.ssid,
+								isEncrypted: item.pin_required === 1
+							}));
+
+							dispatch({
+								type: 'updateWifiList',
+								payload: {
+									list
+								}
+							});
+
+							dispatch({
+								type: 'changeLoadingWifiStatus',
+								payload: {
+									status: false
+								}
+							});
+						}
+					}
+				},
+				{
+					opcode: opCode.connect,
+					models: ['FS1', 'SS1'],
+					type: MESSAGE_TYPE.RESPONSE,
+					handler: (topic, messages) => {
+						const msg = JSON.parse(JSON.stringify(messages));
+
+						if (msg.errcode === ERROR_OK) {
+							dispatch({
+								type: 'connectWifiSucceed',
+								payload: {
+									status: false
+								}
+							});
+						}else{
+							dispatch({
+								type: 'connectWifiFailed',
+								payload: {
+									status: false
+								}
+							});
+						}
+					}
+				},
 			];
 
 			dispatch({

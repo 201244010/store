@@ -12,6 +12,8 @@ import ipcList from './zh-CN/ipcList';
 import sdcard from './zh-CN/sdcard';
 import common from './zh-CN/common';
 import motionList from './zh-CN/motionList';
+import posList from './zh-CN/posList';
+import tradeVideos from './zh-CN/tradeVideos';
 
 
 export default {
@@ -29,5 +31,7 @@ export default {
 	...menu,
 	...sdcard,
 	...ipcList,
-	...motionList
+	...motionList,
+	...posList,
+	...tradeVideos
 };
