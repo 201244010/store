@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/二维码</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon/二维码" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="矩形" stroke="#595959" stroke-width="2" x="2" y="2" width="6" height="6" rx="1"></rect>
+        <rect id="矩形" stroke="#595959" stroke-width="2" x="2" y="12" width="6" height="6" rx="1"></rect>
+        <rect id="矩形" stroke="#595959" stroke-width="2" x="12" y="2" width="6" height="6" rx="1"></rect>
+        <rect id="矩形" fill="#595959" x="14" y="17" width="2" height="2"></rect>
+        <rect id="矩形" fill="#595959" x="17" y="17" width="2" height="2"></rect>
+        <polyline id="路径-5" stroke="#595959" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="12 18 12 12 15 12 15 15 18 15 18 12"></polyline>
+        <rect id="矩形" fill="#595959" x="4" y="4" width="2" height="2"></rect>
+        <rect id="矩形-copy" fill="#595959" x="14" y="4" width="2" height="2"></rect>
+        <rect id="矩形-copy-2" fill="#595959" x="4" y="14" width="2" height="2"></rect>
+    </g>
+</svg>

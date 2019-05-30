@@ -1,57 +1,71 @@
 @import "../../../../global";
 
-.detail-info-item {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
+.low-battery {
+	color: red;
+}
 
-  .detail-info-label {
-    width: 120px;
-    text-align: right;
-  }
+.detail-info {
+	padding: 24px;
 
-  .detail-input-wrapper {
-    width: 250px;
-  }
+	.detail-info-item {
+		margin-top: 10px;
+		display: flex;
+		align-items: center;
+
+		.detail-info-label {
+			width: 120px;
+			text-align: right;
+		}
+
+		.detail-input-wrapper {
+			width: 250px;
+		}
+	}
 }
 
 .selected {
-  background: #e6f7ff;
+	background: #e6f7ff;
 }
 
 .form-row {
-  margin-top: 10px;
+	margin-top: 10px;
 }
 
 .custom-modal-wrapper {
-  padding: 24px;
+	padding: 24px;
 }
 
 .overview {
-  margin-bottom: 20px;
+	margin-bottom: 20px;
 
-  .card-title {
-    color: #999;
-  }
+	.card-title {
+		color: #999;
+	}
 
-  .overview-count {
-    font-size: 32px;
-    color: #000;
-    margin-top: 5px;
-  }
+	.overview-count {
+		font-size: 32px;
+		color: #000;
+		margin-top: 5px;
+	}
 
-  .overview-divider {
-    margin: 10px 0;
-  }
+	.overview-divider {
+		margin: 10px 0;
+		border-bottom: 1px solid #EBEDF0;
+	}
 
-  .overview-fail-count {
-    margin-left: 10px;
-    color: red;
-  }
+	.overview-btn-bar {
+		display: flex;
+		justify-content: space-between;
+	}
 
-  .overview-push-again {
-    margin-left: 10px;
-    color: #1890FF;
-  }
+	.overview-fail-count {
+		margin-left: 10px;
+		color: red;
+	}
+
+	.overview-push-again {
+		margin-left: 10px;
+		color: #1890FF;
+	}
 
 }
