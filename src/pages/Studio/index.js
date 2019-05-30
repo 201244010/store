@@ -10,7 +10,7 @@ import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
-import { getTypeByName, getNearLines } from '@/utils/studio';
+import { getTypeByName, getNearestLines } from '@/utils/studio';
 import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
@@ -515,20 +515,7 @@ class Studio extends Component {
 			state: { dragging },
 		} = this;
 
-		let lines = [];
-		if (selectedShapeName) {
-			Object.keys(componentsDetail).forEach(key => {
-				if (key === selectedShapeName) {
-					if (componentsDetail[key].type !== SHAPE_TYPES.RECT_FIX) {
-						lines = lines.concat(componentsDetail[key].lines);
-					}
-				} else if (componentsDetail[key].type !== SHAPE_TYPES.RECT_FIX) {
-					lines = lines.concat(
-						getNearLines(componentsDetail[selectedShapeName], componentsDetail[key])
-					);
-				}
-			});
-		}
+		const lines = getNearestLines(componentsDetail, selectedShapeName);
 
 		return (
 			<div className={styles.board}>
