@@ -203,6 +203,7 @@ class Register extends Component {
 				title={null}
 				footer={null}
 				onCancel={onCancel}
+				wrapClassName={styles['register-modal-wrapper']}
 				destroyOnClose
 			>
 				<div className={styles['custom-modal-wrapper']}>
