@@ -18,11 +18,13 @@ export default {
 			state.every((item) => {
 				if (item.sn === ipcSN) {
 					const { posList } = item;
-					posList.filter((pos) => {
-						if (pos.sn === posSN) {
-							pos.status = 1;
+					const target = [];
+					posList.forEach((pos) => {
+						if (pos.sn !== posSN) {
+							target.push(pos);
 						}
 					});
+					item.posList = target;
 					return false;
 				}
 				return true;
@@ -32,11 +34,13 @@ export default {
 			state.every((item) => {
 				if (item.sn === ipcSN) {
 					const { posList } = item;
-					posList.filter((pos, index) => {
-						if (pos.sn === posSN) {
-							posList.splice(index, 1);
+					const target = [];
+					posList.forEach((pos) => {
+						if (pos.sn !== posSN) {
+							target.push(pos);
 						}
 					});
+					item.posList = target;
 					return false;
 				}
 				return true;

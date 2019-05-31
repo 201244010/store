@@ -16,5 +16,4 @@ export default {
 	'tradeVideos.query': '查询',
 	'tradeVideos.chooseCamera': '请选择摄像头',
 	'tradeVideos.choosePos': '请选择收银设备',
-
 };

@@ -35,7 +35,7 @@ const dataFormater = (data) => {
 };
 
 export const getPOSList = async () => {
-	const list = request('getList').then(async (response) => {
+	const list = request('getIpcList').then(async (response) => {
 		const { data, code } = await response.json();
 
 		if(code === ERROR_OK){
@@ -115,10 +115,10 @@ export const addPos = async ({ ipcId, snList }) => {
 const serializePosInfo = (posList) => {
 	const result = posList.map((pos) => ({
 		sn: pos.sn,
-		height: pos.height || 1080,
-		width: pos.width || 1080,
-		x_coor: pos.left || 0,
-		y_coor: pos.top || 0
+		height: pos.height,
+		width: pos.width,
+		x_coor: pos.left,
+		y_coor: pos.top
 	}));
 	// console.log('serializePosInfo', result);
 	return result;
@@ -133,12 +133,27 @@ export const bindPos = async ({ ipcId, posList }) => {
 		}
 	}).then(async (response) => {
 		const { code } = await response.json();
-		if(code === ERROR_OK){
-			return {
-				code: ERROR_OK,
-			};
+		// console.log(code);
+		return {
+			code
+		};
+	});
+	return result;
+};
+
+export const adjustPos = async ({ ipcId, posList }) => {
+	// console.log('bindPos: ', ipcId, posList);
+	const result = request('adjustScreen', {
+		body: {
+			ipc_device_id: ipcId,
+			bind_info_list: serializePosInfo(posList)
 		}
-		return response;
+	}).then(async (response) => {
+		const { code } = await response.json();
+		// console.log(code);
+		return {
+			code
+		};
 	});
 	return result;
 };

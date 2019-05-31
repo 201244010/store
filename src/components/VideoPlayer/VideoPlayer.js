@@ -242,6 +242,14 @@ class VideoPlayer extends React.Component{
 		}
 	}
 
+	setCurrentTime(time) {
+		const {player} = this;
+		// console.log(player);
+		if (player) {
+			player.currentTime(time);
+		}
+	}
+
 	startClock() {
 		const { playing } = this.state;
 		clearInterval(this.interval);

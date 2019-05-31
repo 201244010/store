@@ -16,7 +16,7 @@ const { RangePicker } = DatePicker;
 
 @connect((state) => {
 	const { tradeVideos,loading } = state;
-
+	// console.log(tradeVideos);
 	return {
 		tradeVideos,
 		loading
@@ -181,7 +181,7 @@ class TradeVideos extends React.Component {
 		// console.log(type);
 
 		const url = await getTradeVideo(orderId);
-		console.log(url);
+		// console.log(url);
 
 		if (url) {
 			this.setState({

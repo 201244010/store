@@ -156,7 +156,7 @@ class POSBinder extends React.Component {
 
 
 	renderBlocks(posList) {
-		const { editing } = this.props;
+		const { editing, getPosition } = this.props;
 		const { list } = this.state;
 		const tList = posList || list;
 
@@ -174,6 +174,8 @@ class POSBinder extends React.Component {
 		this.setState({
 			list: elist
 		});
+
+		getPosition(list);
 	}
 
 	render() {
@@ -263,6 +265,7 @@ class POSBinder extends React.Component {
 										}
 									>
 										<div
+											title={pos.sn}
 											className={
 												// `${styles['pos-block']} ${list.length === 1 ? styles.single : ''}`
 												styles['pos-block']
@@ -285,6 +288,7 @@ class POSBinder extends React.Component {
 							return (
 								<div
 									key={pos.sn}
+									title={pos.sn}
 									className={
 										`${styles['pos-block']} ${styles['no-editing']}`
 									}
