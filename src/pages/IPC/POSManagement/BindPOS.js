@@ -10,6 +10,7 @@ import POSBinder from '@/components/POSBinder/POSBinder';
 
 import styles from './BindPOS.less';
 
+
 const mapStateToProps = (state) => {
 	const { routing: { location }, bindingPosList: POSList, loading, bindedPosList, ipcList } = state;
 	const { query: { sn, posList: posSNList, edit }} = location;
@@ -84,6 +85,17 @@ const mapDispatchToProps = (dispatch) => ({
 		// console.log(posList);
 		const result = dispatch({
 			type: 'bindingPosList/bind',
+			payload: {
+				ipcSN: sn,
+				posList
+			}
+		});
+		return result;
+	},
+	adjust: (sn, posList) => {
+		// console.log(posList);
+		const result = dispatch({
+			type: 'bindingPosList/adjust',
 			payload: {
 				ipcSN: sn,
 				posList
@@ -174,7 +186,7 @@ class AddPOS extends Component {
 				title: formatMessage({id: 'posList.verifyCode'}), // '验证码',
 				dataIndex: 'sn',
 				key: 'code',
-				width: 300,
+				// width: 300,
 				render: (sn, record) => {
 					const { loading } = this.props;
 					const { codeStatus } = this.state;
@@ -195,6 +207,7 @@ class AddPOS extends Component {
 									>
 										<Input
 											className={styles['code-input']}
+											maxLength={4}
 											onChange={(e) => {
 												const { value } = e.target;
 												if (value.length >= 4) {
@@ -218,6 +231,7 @@ class AddPOS extends Component {
 				title: formatMessage({id: 'posList.operation'}), // '操作',
 				dataIndex: 'verified',
 				key: 'operataion',
+				// width: 150,
 				render: (verified, record) => {
 					// console.log(record);
 					const { codeStatus } = this.state;
@@ -242,7 +256,7 @@ class AddPOS extends Component {
 												onClick={() => {
 													const temp = {};
 													temp[record.sn] = {
-														time: 60
+														time: 120
 													};
 
 													this.setState({
@@ -287,8 +301,21 @@ class AddPOS extends Component {
 	async componentDidMount() {
 		const { sn, getList, isEdit, poses, getBindedList } = this.props;
 		const list = await getList(sn);
+
+		const verifiedArray = [];
+		list.forEach((item) => {
+			if (item.verified === 0) {
+				verifiedArray.push(item.sn);
+			}
+		});
+
+		this.setState({
+			selectedRowKeys: verifiedArray
+		});
+
 		await getBindedList(sn);
-		// console.log(list);
+
+
 		if (isEdit) {
 			// console.log(isEdit);
 			const posSN = poses[0];
@@ -308,16 +335,14 @@ class AddPOS extends Component {
 	// componentWillReceiveProps (props) {
 	// 	const { POSList } = props;
 
-	// 	const codeStatus = {};
-
+	// 	// const codeStatus = {};
+	// 	const list = [];
 	// 	POSList.forEach(item => {
-	// 		codeStatus[item.sn] = {
-	// 			time: 0
-	// 		};
+	// 		list.push(item.sn);
 	// 	});
 
 	// 	this.setState({
-	// 		codeStatus
+	// 		selectedRowKeys: list
 	// 	});
 	// }
 
@@ -426,29 +451,13 @@ class AddPOS extends Component {
 
 	}
 
-	complete = async () => {
-		const { bind, sn, isEdit } = this.props;
+	bindDevice = async () => {
+		const { bind, sn } = this.props;
 		const { chooseList } = this.state;
 
 		const result = await bind(sn, chooseList);
-
-		if (isEdit) {
-			// 编辑的逻辑
-			if (result) {
-				// message.success('修改成功！');
-				message.success(formatMessage({id: 'posList.modifySuccess'}));
-
-				setTimeout(() => {
-					this.goToPosList();
-				}, 500);
-			}else{
-				// message.error('修改失败，请检查网络连接并重试。');
-				message.error(formatMessage({id: 'posList.modifyFailed'}));
-			}
-			return;
-		}
-		// 首次绑定逻辑
-		if (result) {
+		// console.log(result);
+		if (result === 1) {
 			// this.showInfoModal();
 			// message.success('绑定成功！');
 			message.success(formatMessage({id: 'posList.bindSuccess'}));
@@ -459,7 +468,52 @@ class AddPOS extends Component {
 
 		}else{
 			// message.error('绑定失败，请重试！');
-			message.error(formatMessage({id: 'posList.bindFailed'}));
+			switch (result) {
+				case 5511:
+					message.error(formatMessage({id: 'posList.notVerified'}));
+					break;
+				default:
+					message.error(formatMessage({id: 'posList.bindFailed'}));
+			}
+
+		}
+	}
+
+	adjustDevice = async () => {
+		const { adjust, sn } = this.props;
+		const { chooseList } = this.state;
+
+		// todo 需要调整为ajust接口
+		const result = await adjust(sn, chooseList);
+		// console.log(result);
+		if (result === 1) {
+			// message.success('修改成功！');
+			message.success(formatMessage({id: 'posList.modifySuccess'}));
+
+			setTimeout(() => {
+				this.goToPosList();
+			}, 500);
+		}else{
+			// message.error('修改失败，请检查网络连接并重试。');
+			switch (result){
+				// case 5511:
+				// 	message.error(formatMessage({id: 'posList.notVerified'}));
+				// 	break;
+				default:
+					message.error(formatMessage({id: 'posList.modifyFailed'}));
+			}
+		}
+	}
+
+	complete = async () => {
+		const { isEdit } = this.props;
+
+		if (isEdit) {
+			// 编辑的逻辑
+			this.adjustDevice();
+		}else {
+			// 首次绑定逻辑
+			this.bindDevice();
 		}
 	}
 

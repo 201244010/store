@@ -8,7 +8,7 @@ const { IPC_SERVER } = CONFIG;
 // console.log(IPC_SERVER);
 // console.log(CONFIG);
 const request = customizeFetch('ipc/api/device', IPC_SERVER);
-const requestT = customizeFetch('ipc/api/device', 'localhost:8000');
+// const requestT = customizeFetch('ipc/api/device', 'localhost:8000');
 // const request = customizeFetch('api/device/ipc');
 // const fetchApi = customizeFetch('ipc/api/device',IPC_SERVER);
 
@@ -17,9 +17,12 @@ const dataFormatter = (item) => ({
 	name: item.device_name,
 	isOnline: item.active_status !== 0,
 	type: item.model,
-	img:item.cdn_address,
-	sn:item.sn
+	img: item.cdn_address,
+	sn: item.sn,
+	binVersion: item.bin_version,
+	checkTime: item.check_version_time
 });
+
 // return fetchApi('getList', opts).then(response => response.json());
 export const getDeviceList = async () => {
 	// const { shopId } = params;
@@ -83,7 +86,7 @@ export const unbind = ({ deviceId }) => {
 };
 
 export const detectUpdate = ({ deviceId }) => {
-	const result = requestT('firmware/detect', {
+	const result = request('firmware/detect', {
 		body: {
 			device_id: deviceId
 		}
@@ -93,8 +96,9 @@ export const detectUpdate = ({ deviceId }) => {
 			return {
 				code,
 				data:{
-					version: data.lastest_bin_version,
-					needUpdate: data.upgrade_required === 1
+					version: data.latest_bin_version,
+					needUpdate: data.upgrade_required === 1,
+					url: data.url
 				}
 
 			};

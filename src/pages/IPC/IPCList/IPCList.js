@@ -3,7 +3,7 @@ import { Card, Button, Row, Col,Spin } from 'antd';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 
-import { FormattedMessage } from 'umi/locale';
+import { FormattedMessage, formatMessage } from 'umi/locale';
 
 import styles from './IPCList.less';
 
@@ -81,7 +81,8 @@ class IPCList extends React.Component {
 													<div
 														className={styles['ipc-name-type']}
 													>
-														{item.name||<FormattedMessage id='ipcList.noIPCName' />} ({item.type||<FormattedMessage id='ipcList.noIPCType' />})
+														{/* {item.name||<FormattedMessage id='ipcList.noIPCName' />} ({item.type||<FormattedMessage id='ipcList.noIPCType' />}) */}
+														{`${item.name || formatMessage({id: 'ipcList.noIPCName'})} (${ item.type || formatMessage({id: 'ipcList.noIPCType'})})`}
 													</div>
 												</Col>
 											</div>

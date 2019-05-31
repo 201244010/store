@@ -15,6 +15,8 @@ class VideoPlayComponent extends React.Component {
 	componentDidUpdate () {
 		const { playing } = this.props;
 		if (playing) {
+			// this.child.currentTime(0);
+			this.child.setCurrentTime(0);
 			this.child.play();
 		}
 	}

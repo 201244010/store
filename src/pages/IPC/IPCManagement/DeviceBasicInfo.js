@@ -26,6 +26,24 @@ import styles from './DeviceBasicInfo.less';
 // 	}
 // };
 
+const mbStringLength = (s) => {
+	let totalLength = 0;
+	let i;
+	let charCode;
+	for (i = 0; i < s.length; i++) {
+		charCode = s.charCodeAt(i);
+		if (charCode < 0x007f) {
+			totalLength += 1;
+		} else if ((charCode >= 0x0080) && (charCode <= 0x07ff)) {
+			totalLength += 2;
+		} else if ((charCode >= 0x0800) && (charCode <= 0xffff)) {
+			totalLength += 3;
+		}
+	}
+	// alert(totalLength);
+	return totalLength;
+};
+
 
 // const RadioGroup = Radio.Group;
 const mapStateToProps = (state) => {
@@ -118,19 +136,25 @@ class DeviceBasicInfo extends React.Component {
 		loadInfo(sn);
 	}
 
-	onSave = async () => {
+	onSave = () => {
 		const { update, sn, form } = this.props;
 
-		const { getFieldValue } = form;
-		const name = getFieldValue('deviceName');
+		const { getFieldValue, validateFields } = form;
 
-		const result = await update( name, sn );
+		validateFields(async (errors) => {
+			if (!errors){
+				const name = getFieldValue('deviceName');
 
-		if (result) {
-			this.setState({
-				isEdit: false
-			});
-		}
+				const result = await update( name, sn );
+
+				if (result) {
+					this.setState({
+						isEdit: false
+					});
+				}
+			}
+		});
+
 	}
 
 	onShowModal = () => {
@@ -260,7 +284,18 @@ class DeviceBasicInfo extends React.Component {
 							{
 								getFieldDecorator('deviceName', {
 									rules: [
-										{ required: true }
+										{ required: true, message: formatMessage({id: 'deviceBasicInfo.enterName'}) },
+										{
+											validator: (rule, value, callback) => {
+												const len = mbStringLength(value);
+												if (len < 36) {
+													callback();
+												}else{
+													callback(false);
+												}
+											},
+											message: formatMessage({ id: 'deviceBasicInfo.maxLength'})// '设备名称不可以超过36字节'
+										}
 									]
 								})(
 									<Input
