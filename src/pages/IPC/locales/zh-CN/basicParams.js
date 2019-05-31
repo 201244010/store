@@ -7,6 +7,6 @@ export default{
 	'basicParams.statusIndicator': '状态指示灯',
 	'basicParams.label.open': '开',
 	'basicParams.label.close': '关',
-	'basicParams.rotation':'画面旋转180',
+	'basicParams.rotation':'画面旋转180度',
 	'basicParams.save':'保存'
 };

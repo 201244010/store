@@ -4,42 +4,64 @@ import { ERROR_OK } from '@/constants/errorCode';
 
 
 const OPCODE = {
-	UPDATE: '0x3140'
+	START_UPDATE: '0x3140',
+	// END_UPDATE: '0x31xx'
 };
 
 export default {
 	namespace: 'ipcSoftwareUpdate',
 	state: {
 		needUpdate: false,
-		currentVersion: '1.0.0',
+		currentVersion: '0.0.0',
+		lastCheckTime: 0,
 		newVersion: '',
-		updating: false
+		updating: 'normal',
+		url: ''
 	},
 	reducers: {
 		setCurrentVersion (state, { payload: { version }}) {
+			// console.log('inn: ', version);
 			state.currentVersion = version;
 		},
-		updateStatus (state, { payload: { needUpdate, version }}) {
+		setLastCheckTime (state, { payload: { time }}) {
+			state.lastCheckTime = time;
+		},
+		updateStatus (state, { payload: { needUpdate, version, url }}) {
 			state.needUpdate = needUpdate;
 			state.newVersion = version;
+			state.url = url;
 		},
 		setUpdatingStatus (state, { payload: { status }}) {
+			// console.log(status);
 			state.updating = status;
 		}
 	},
 	effects: {
 		*load ({ payload: { sn }}, { put }) {
-			console.log('load: ', sn);
-			// todo 更新接口后，从ipcList读取；
+			const ipcInfo = yield put.resolve({
+				type: 'ipcList/getDeviceInfo',
+				payload: {
+					sn
+				}
+			});
+
 			yield put({
 				type: 'setCurrentVersion',
 				payload: {
-					version: '1.1.0'
+					version: ipcInfo.binVersion
 				}
 			});
+
+			yield put({
+				type: 'setLastCheckTime',
+				payload: {
+					time: ipcInfo.checkTime
+				}
+			});
+
 		},
 		*detect ({ payload: { sn }}, { put, call }) {
-			console.log('detect: ', sn);
+			// console.log('detect: ', sn);
 			const deviceId = yield put.resolve({
 				type: 'ipcList/getDeviceId',
 				payload: {
@@ -53,19 +75,20 @@ export default {
 
 			if (response.code === ERROR_OK) {
 				const { data } = response;
-				const { needUpdate, version } = data;
-
+				const { needUpdate, version, url } = data;
+				// console.log(needUpdate, version, url);
 				yield put({
 					type: 'updateStatus',
 					payload: {
 						needUpdate,
-						version
+						version,
+						url
 					}
 				});
 			}
 		},
 		*update ({ payload: { sn }}, { put, select }) {
-			const newVersion = yield select(state => state.ipcSoftwareUpdate.newVersion);
+			const {newVersion, url} = yield select(state => state.ipcSoftwareUpdate);
 
 			const type = yield put.resolve({
 				type:'ipcList/getDeviceType',
@@ -88,10 +111,11 @@ export default {
 				payload:{
 					topic: topicPublish,
 					message: {
-						opcode: OPCODE.UPDATE,
+						opcode: OPCODE.START_UPDATE,
 						param: {
 							sn,
-							bin_version: newVersion
+							bin_version: newVersion,
+							url
 						}
 					}
 				}
@@ -100,29 +124,64 @@ export default {
 			yield put({
 				type: 'setUpdatingStatus',
 				payload: {
-					status: true
+					status: 'loading'
 				}
 			});
+		},
+		*getNewVersion (_, { select }) {
+			const newVersion = yield select(state =>
+				// console.log(state, state.ipcSoftwareUpdate);
+				 state.ipcSoftwareUpdate.newVersion
+			);
+			// console.log('newVersion: ', newVersion);
+			return newVersion;
 		}
 	},
 	subscriptions: {
 		setup({ dispatch }) {
 			const listeners = [
 				{
-					opcode: OPCODE.UPDATE,
+					opcode: OPCODE.START_UPDATE,
 					models: ['FS1', 'SS1'],
 					type: MESSAGE_TYPE.RESPONSE,
 					handler: (topic, messages) => {
+						// IPC返回开始升级
 						const msg = JSON.parse(JSON.stringify(messages));
 
 						if (msg.errcode === ERROR_OK) {
+							const status = 'success';
+							dispatch({
+								type: 'getNewVersion'
+							}).then((version) => {
+								// console.log('version: ', version);
+								dispatch({
+									type: 'setUpdatingStatus',
+									payload: {
+										status
+									}
+								});
+
+								dispatch({
+									type: 'setCurrentVersion',
+									payload: {
+										version
+									}
+								});
+							});
+
+						}else{
+							const status = 'failed';
+
 							dispatch({
 								type: 'setUpdatingStatus',
 								payload: {
-									status: false
+									status
 								}
 							});
 						}
+
+
+
 					}
 				}
 			];

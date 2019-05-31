@@ -1,4 +1,4 @@
-import { addPos, checkSN, sendCode, verifyCode, bindPos, getVerifyStatusList, /* getBoundList */ } from '../../services/posList';
+import { addPos, checkSN, sendCode, verifyCode, bindPos, adjustPos, getVerifyStatusList, /* getBoundList */ } from '../../services/posList';
 import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
@@ -20,7 +20,7 @@ export default {
 		updateStatus(state, { payload: { posSN }}) {
 			state.every((item) => {
 				if (item.sn === posSN) {
-					item.status = 0;
+					item.verified = 0;
 					return false;
 				}
 				return true;
@@ -113,10 +113,31 @@ export default {
 				posList
 			});
 
-			if (response.code === ERROR_OK) {
-				return true;
-			}
-			return false;
+			// if (response.code === ERROR_OK) {
+			// 	return true;
+			// }
+			// return false;
+			return response.code;
+		},
+		*adjust({ payload: { ipcSN, posList }}, { put, call }) {
+			// console.log('bind: ', ipcSN, posList);
+			const ipcId = yield put.resolve({
+				type: 'ipcList/getDeviceId',
+				payload: {
+					sn: ipcSN
+				}
+			});
+
+			const response = yield call(adjustPos, {
+				ipcId,
+				posList
+			});
+
+			// if (response.code === ERROR_OK) {
+			// 	return true;
+			// }
+			// return false;
+			return response.code;
 		},
 		*getPosListByIpcSN ({ payload: { ipcSN }} , { put, call }) {
 			// const list = yield put.resolve({

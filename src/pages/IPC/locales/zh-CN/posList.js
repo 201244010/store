@@ -9,7 +9,9 @@ export default {
 	'posList.next':'下一步',
 	'posList.forward': '上一步',
 	'posList.cancel': '取消',
+	'posList.confirm': '确定',
 	'posList.complete': '完成',
+	'posList.continueAdd': '连续添加',
 	'posList.inputLabel': '设备SN号 ',
 	'posList.modalTitle': '添加新收银设备',
 	'posList.inputMsg': '请输入设备SN号',
@@ -51,11 +53,15 @@ export default {
 	'posList.rebind': '重新绑定',
 	'posList.removeDevice': '删除设备',
 	'posList.enterSN': '请输入需要绑定设备的SN码。',
-	'posList.posBinded': '该收银设备已绑定其它IPC设备，请重新输入。',
+	'posList.posBinded': '该收银设备已被摄像机绑定，请重新输入。',
 	'posList.posNotBelong': '该收银设备不属于当前店铺，请重新输入。',
 	'posList.posNoSN': '无法查询到该SN号，请重新输入。',
 	'posList.addFailed': '设备添加失败。',
 
+	'posList.deleteConfirm': '你确定要删除该设备吗？',
+	'posList.deleteMsg': '删除设备后，需要重新进行验证。',
+	'posList.delete': '删除',
 
+	'posList.notVerified': '您的设备尚未进行验证，请验证后重新绑定！',
 
 };

@@ -16,15 +16,15 @@ const dataFormatter = (item) => {
 
 	const purchaseTime = moment.unix(item.purchase_time).format('YYYY-MM-DD HH:mm');
 	// const purchaseTime = moment.unix(item.start_time).format('YYYY-MM-DD HH:mm');
-
+	const totalPrice = (Math.floor(item.amount*100)/100).toFixed(2);
 	// 后面取或的都是现在接口还没有的，但是页面已经使用上了。
 	return {
 		key: item.id,
 		ipcName: item.ipc_device_name,
 		paymentDeviceName: item.payment_device_name,
 		purchaseTime,
-		totalPrice: item.amount,
-		paymentMethod: item.payment_method,
+		totalPrice,
+		paymentMethod: item.purchase_type || '',
 		orderId: item.id,
 		orderNo: item.order_no,
 		paymentDeviceSn: item.payment_device_sn,
@@ -105,7 +105,7 @@ export const getVideo = async ({ orderNo }) => {
 	}).then(async(response) => {
 		const { data, code } = await response.json();
 		if (code === ERROR_OK){
-			console.log(data);
+			// console.log(data);
 			return {
 				code: ERROR_OK,
 				data: {

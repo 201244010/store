@@ -39,6 +39,14 @@ const mapDispatchToProps = (dispatch) => ({
 				sn
 			}
 		});
+	},
+	setUpdatingStatus: (status) => {
+		dispatch({
+			type: 'ipcSoftwareUpdate/setUpdatingStatus',
+			payload: {
+				status
+			}
+		});
 	}
 });
 
@@ -73,14 +81,12 @@ class SoftwareUpdate extends Component {
 
 
 	updateSoftware = () => {
-		const { update, sn } = this.props;
+		const { update,  sn } = this.props;
 		update(sn);
 
-		const time = 60*1000;
-
+		const time = 120*1000;
 		clearInterval(this.interval);
 		this.interval = setInterval(() => {
-
 			const { percent } = this.state;
 			if (percent < 90) {
 				this.setState({
@@ -88,6 +94,14 @@ class SoftwareUpdate extends Component {
 				});
 			}
 		}, time/100);
+
+		setTimeout(() => {
+			const { info: { updating } } = this.props;
+			// console.log('timeout', updating);
+			if (updating === 'loading') {
+				this.setUpdatingStatus('failed');
+			}
+		}, 150*1000);
 
 		// this.setState({
 		// 	isCheck: false,
@@ -99,6 +113,13 @@ class SoftwareUpdate extends Component {
 		this.setState({
 			visible: false
 		});
+
+		this.setUpdatingStatus('normal');
+	}
+
+	setUpdatingStatus = (status) => {
+		const {setUpdatingStatus} = this.props;
+		setUpdatingStatus(status);
 	}
 
 	// hideInfo = () => {
@@ -115,8 +136,8 @@ class SoftwareUpdate extends Component {
 	// }
 
 	render() {
-		const { info: { currentVersion, needUpdate, updating }, loading } = this.props;
-		const { updateDate, checkDate, percent, visible } = this.state;
+		const { info: { currentVersion, needUpdate, lastCheckTime, updating }, loading } = this.props;
+		const { percent, visible } = this.state;
 
 		const detecting = loading.effects['ipcSoftwareUpdate/detect'];
 
@@ -141,15 +162,38 @@ class SoftwareUpdate extends Component {
 
 				<Modal
 					visible={visible}
-					closable={!updating}
+					closable={updating !== 'loading'}
+					maskClosable={false}
 					footer={
+						(() => {
+							// console.log(updating);
+							if (updating === 'success' || updating === 'failed') {
+								clearInterval(this.interval);
+								return (
+									<Button
+										type="primary"
+										onClick={() => {
+											this.setUpdatingStatus('normal');
 
-						detecting || updating || !needUpdate ?
-							'' :
-							<Button type="primary" onClick={this.updateSoftware}>
-								{formatMessage({ id: 'softwareUpdate.update' })}
-							</Button>
-
+											this.setState({
+												visible: false
+											});
+										}}
+									>
+										{formatMessage({ id: 'softwareUpdate.confirm' })}
+									</Button>
+								);
+							}
+							// console.log(lo)
+							if (needUpdate && updating === 'normal') {
+								return (
+									<Button type="primary" onClick={this.updateSoftware}>
+										{formatMessage({ id: 'softwareUpdate.update' })}
+									</Button>
+								);
+							}
+							return '';
+						})()
 					}
 					onCancel={this.hideModal}
 				>
@@ -163,34 +207,55 @@ class SoftwareUpdate extends Component {
 											<span>{formatMessage({ id: 'softwareUpdate.checkWaitingMsg' })}</span>
 										</h3>
 										<p>
-											{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${checkDate}`}
+											{
+												lastCheckTime === 0 ?
+													'您尚未检查过固件更新' :
+													`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment.unix(lastCheckTime).format('YYYY-MM-DD')}`
+											}
+
 										</p>
 									</div>
 								);
 							}
 
-							if (updating) {
+							if (updating !== 'normal') {
 								return (
 									<div className={styles.info}>
-										<Progress className={styles.progress} percent={percent} status='active' />
-										<p>
-											{ formatMessage({ id: 'softwareUpdate.updating' }) }
-											{/* {percent <= 66 ? (
-												formatMessage({ id: 'softwareUpdate.downloadMsg' })
-											) : (
-												''
-											)}
-											{percent > 66 && percent < 100 ? (
-												formatMessage({ id: 'softwareUpdate.verificationMsg' })
-											) : (
-												''
-											)}
-											{percent === 100 ? (
-												formatMessage({id: 'softwareUpdate.restartMsg'})
-											) : (
-												''
-											)} */}
-										</p>
+
+										{
+											updating === 'failed' ?
+												'' :
+												<Progress
+													className={styles.progress}
+													percent={updating === 'loading' ? percent : 100}
+													status='active'
+												/>
+										}
+										{
+											(() => {
+												// console.log(loading);
+												let text = '';
+												switch (updating) {
+													case 'success':
+														text = (
+															<p>{formatMessage({ id: 'softwareUpdate.updateSuccess' })}</p>
+														);
+														break;
+													case 'failed':
+														text = (
+															<p>{ formatMessage({ id: 'softwareUpdate.updateFailed' }) }</p>
+														);
+														break;
+													case 'loading':
+													default:
+														text = (
+															<p>{formatMessage({ id: 'softwareUpdate.updating' })}</p>
+														);
+														break;
+												}
+												return text;
+											})()
+										}
 									</div>
 								);
 							}
@@ -203,7 +268,7 @@ class SoftwareUpdate extends Component {
 											<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.hasUpdate' })}</span>
 										</h3>
 										<p>
-											{`${formatMessage({ id: 'softwareUpdate.updateDate' })}: ${updateDate}`}
+											{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment().format('YYYY-MM-DD')}`}
 										</p>
 									</div>
 								);

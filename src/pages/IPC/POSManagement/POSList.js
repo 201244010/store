@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Table,  Popconfirm, Icon, message, Modal, Form, Input } from 'antd';
+import { Card, Table,  Popconfirm, Icon, message, Modal, Form, Input, Button } from 'antd';
 import { Link } from 'dva/router';
 import router from 'umi/router';
 
@@ -274,16 +274,37 @@ class POSList extends React.Component {
 								{formatMessage({id: 'posList.rebind'})}
 							</Link>
 
-							<a
-								href="javascript:void(0);"
-								className={styles['row-operation']}
-								onClick={() => {
+							<Popconfirm
+								icon={
+									<Icon type="close-circle" theme="filled" style={{color: 'red'}} />
+								}
+								title={
+									<div>
+										<span>{ formatMessage({id: 'posList.deleteConfirm'}) }</span>
+										<p>
+											{ formatMessage({id: 'posList.deleteMsg'}) }
+										</p>
+									</div>
+								}
+								okText={formatMessage({id: 'posList.delete'})}
+								okType='danger'
+								onConfirm={() => {
 									this.deleteUnbindedPos(ipcSN, sn);
 								}}
 							>
-								{/* 删除设备 */}
-								{formatMessage({id: 'posList.removeDevice'})}
-							</a>
+								<a
+									href="javascript:void(0);"
+									className={styles['row-operation']}
+									// onClick={() => {
+									// 	this.deleteUnbindedPos(ipcSN, sn);
+									// }}
+								>
+									{/* 删除设备 */}
+									{formatMessage({id: 'posList.removeDevice'})}
+								</a>
+							</Popconfirm>
+
+
 						</div>
 					);
 
@@ -303,14 +324,13 @@ class POSList extends React.Component {
 		});
 	}
 
-	validateSN = async (ipcSN, index) => {
+	validateSN = async (posSN, ipcSN) => {
 		// const posSN = value;
 		const {checkSN} = this.props;
 
-		const { snList } = this.state;
-		const target = snList[index]; // snList.filter((item) => item.sn === posSN)[0];
-
-		const posSN = target.sn;
+		const target = {
+			sn: posSN
+		}; // snList[index]; // snList.filter((item) => item.sn === posSN)[0];
 
 		if (posSN === '') {
 			target.error = true;
@@ -339,8 +359,17 @@ class POSList extends React.Component {
 			}
 		}
 
+
+		const { snList } = this.state;
+		const o = [];
+		snList.forEach((item) => {
+			if (item.sn === posSN) {
+				item = target;
+			}
+			o.push(item);
+		});
 		this.setState({
-			snList
+			snList: o
 		});
 
 		return target.error;
@@ -354,22 +383,24 @@ class POSList extends React.Component {
 		const ipcSN = this.currentIpcSN;
 
 		let flag = false;
-		// console.log(snList);
-		snList.forEach(async (item, index) => {
-			if (item.error === true || item.error === undefined) {
+
+		await Promise.all(snList.map(async (item) => {
+			if (item.error === true) {
 				flag = true;
 			}
+
 			if (item.error === undefined) {
-				const result = await this.validateSN(ipcSN, index);
-				flag = !result;
+				const result = await this.validateSN(item.sn, ipcSN);
+
+				if (result === true) {
+					flag = true;
+				}
 			}
-			return item.sn;
-		});
+		}));
 
 		if (flag) {
 			return;
 		}
-
 
 		const list = snList.map(item => item.sn);
 		const result = await addPOS({
@@ -398,10 +429,15 @@ class POSList extends React.Component {
 	};
 
 	render() {
-		const { posList } = this.props;
+		const { posList: list } = this.props;
 		const { snList, inputVisible } = this.state;
 
+		const posList = [
+			...list
+		];
+
 		posList.sort((a, b) => {
+			// console.log(a, b);
 			if (a.name.localeCompare) {
 				return a.name.localeCompare(b.name);
 			}
@@ -441,6 +477,11 @@ class POSList extends React.Component {
 									onClick={() => {
 										this.currentIpcSN = item.sn;
 										this.setState({
+											snList: [
+												{
+													sn: ''
+												}
+											],
 											inputVisible: true,
 										});
 									}}
@@ -470,6 +511,43 @@ class POSList extends React.Component {
 							inputVisible: false
 						});
 					}}
+
+					footer={[
+						<Button
+							key="back"
+							onClick={() => {
+								this.setState({
+									inputVisible: false
+								});
+							}}
+						>
+							{formatMessage({id: 'posList.cancel'})}
+						</Button>,
+						<Button
+							key="add"
+							onClick={
+								() => {
+									this.setState({
+										snList: [
+											...snList,
+											{
+												sn: ''
+											}
+										]
+									});
+								}
+							}
+						>
+							{formatMessage({id: 'posList.continueAdd'})}
+						</Button>,
+						<Button
+							key="submit"
+							type="primary"
+							onClick={this.onAddPos}
+						>
+							{formatMessage({id: 'posList.confirm'})}
+						</Button>,
+					]}
 				>
 					<Form>
 						{
@@ -502,36 +580,37 @@ class POSList extends React.Component {
 													}
 												}
 												onBlur={
-													() => {
+													(e) => {
 														// console.log('blur')
-														// const { value } = e.target;
-														this.validateSN(this.currentIpcSN, index);
+														const { value } = e.target;
+														this.validateSN(value, this.currentIpcSN);
 													}
 												}
 												value={item.sn}
 											/>
 											<>
 												{
-													index === snList.length - 1 ?
-														<a
-															className={`${styles['btn-sn']} ${styles['btn-add']}`}
-															href='javascript:void(0);'
-															onClick={
-																() => {
-																	this.setState({
-																		snList: [
-																			...snList,
-																			{
-																				sn: ''
-																			}
-																		]
-																	});
-																}
-															}
-														>
-															+
-														</a>
-														:
+													// index === snList.length - 1 ?
+													// 	<a
+													// 		className={`${styles['btn-sn']} ${styles['btn-add']}`}
+													// 		href='javascript:void(0);'
+													// 		onClick={
+													// 			() => {
+													// 				this.setState({
+													// 					snList: [
+													// 						...snList,
+													// 						{
+													// 							sn: ''
+													// 						}
+													// 					]
+													// 				});
+													// 			}
+													// 		}
+													// 	>
+													// 		+
+													// 	</a>
+													snList.length === 1 ?
+														'' :
 														<a
 															className={`${styles['btn-sn']} ${styles['btn-remove']}`}
 															href='javascript:void(0);'
