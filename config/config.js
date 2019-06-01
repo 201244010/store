@@ -413,26 +413,26 @@ export default {
 					name: 'devices',
 					routes: [
 						{
-							path: '/devices/list',
+							path: '/devices/ipcList',
 							name: 'list',
 							routes: [
 								{
-									path: '/devices/list/live',
+									path: '/devices/ipcList/live',
 									name: 'live',
 									hideInMenu: true,
 									component: './IPC/Live/Live.js',
 								},
 								{
-									path: '/devices/list/ipcManagement',
+									path: '/devices/ipcList/ipcManagement',
 									name: 'ipcManagement',
 									hideInMenu: true,
 									component: './IPC/IPCManagement/IPCManagement.js',
 								},
 								{
-									path: '/devices/list',
+									path: '/devices/ipcList',
 									// name: 'list',
 									component: './IPC/IPCList/IPCList.js',
-								},
+								}
 							]
 						},
 						{
@@ -440,7 +440,10 @@ export default {
 							name: 'motionMessage',
 							component: './IPC/MotionList/MotionList.js',
 						},
-
+						{
+							path: '/devices',
+							redirect: '/devices/ipcList'
+						}
 					],
 				},
 				{
@@ -465,6 +468,10 @@ export default {
 							name: 'videos',
 							hideInMenu: true,
 							component: './IPC/TradeVideos/TradeVideos.js',
+						},
+						{
+							path: '/cashVerify',
+							redirect: '/cashVerify/posList'
 						}
 					]
 				},
@@ -484,6 +491,10 @@ export default {
 							// name: 'faceidLibrary.create',
 							component: './IPC/FaceidLibrary/CreateLibrary.js',
 						},
+						{
+							path: '/faceidLibrary',
+							redirect: '/faceidLibrary/faceidLibraryList'
+						}
 					],
 				},
 				{ path: '/', redirect: '/esl' },

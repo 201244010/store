@@ -447,6 +447,13 @@ class POSList extends React.Component {
 		return (
 			<>
 				{
+					posList.length === 0 ?
+						<Card className={styles['no-ipc']}>
+							您还未绑定任何摄像机设备，请在手机端下载“商米助手”APP进行绑定。
+						</Card>
+						: ''
+				}
+				{
 					posList.map((item) => (
 						<Card
 							className={styles['pos-list-block']}

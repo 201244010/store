@@ -341,8 +341,10 @@ class LibraryList extends React.Component {
 						</p>
 					)}
 				</Card>
+
 				<Modal
 					title={<FormattedMessage id='faceid.createLibrary' />}
+					maskClosable={false}
 					visible={createFormShown}
 					onCancel={this.closeCreateForm}
 					onOk={this.createLibrary}

@@ -45,7 +45,11 @@ export const getPOSList = async () => {
 				data: result
 			};
 		}
-		return response;
+
+		return {
+			code
+		};
+
 	});
 
 	return list;
@@ -64,10 +68,12 @@ export const checkSN = async ({ ipcId, posSN }) => {
 				code: ERROR_OK,
 			};
 		}
+
 		return {
 			code,
 			msg
 		};
+
 	});
 
 	return result;
@@ -171,7 +177,11 @@ export const unbindPos = async ({ ipcId, posSN }) => {
 				code: ERROR_OK,
 			};
 		}
-		return response;
+
+		return {
+			code
+		};
+
 	});
 	return result;
 };
@@ -189,7 +199,11 @@ export const updatePos = async ({ ipcId, posInfo }) => {
 				code: ERROR_OK,
 			};
 		}
-		return response;
+
+		return {
+			code
+		};
+
 	});
 	return result;
 };
@@ -207,7 +221,11 @@ export const deletePos = async ({ ipcId, posSN }) => {
 				code: ERROR_OK,
 			};
 		}
-		return response;
+
+		return {
+			code
+		};
+
 	});
 	return result;
 };
@@ -225,7 +243,11 @@ export const sendCode = ({posSN}) => {
 				code: ERROR_OK,
 			};
 		}
-		return response;
+
+		return {
+			code
+		};
+
 	});
 	return result;
 };
@@ -272,7 +294,10 @@ export const getPaymentDeviceList = ({ ipcId }) => {
 			};
 		}
 
-		return response;
+		return {
+			code
+		};
+
 	});
 	return list;
 };
@@ -293,7 +318,11 @@ export const getVerifyStatusList = async ({ipcId}) => {
 				data: posFormater(result)
 			};
 		}
-		return response;
+
+		return {
+			code
+		};
+
 	});
 	return list;
 };
@@ -323,9 +352,11 @@ export const getBoundList = async ({ipcId}) => {
 				data: bindedFormater(result)
 			};
 		}
+
 		return {
 			code
 		};
+
 	});
 	return list;
 };

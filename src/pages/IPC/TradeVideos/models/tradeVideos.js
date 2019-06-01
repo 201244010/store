@@ -1,5 +1,6 @@
 
 import { getTradeVideos, getVideo , getPaymentDetailList } from '../../services/tradeVideos';
+import { getPOSList } from '../../services/posList';
 import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
@@ -69,9 +70,17 @@ export default {
 				});
 			}
 		},
+		*getPOSList(_, { call }) {
+			const response = yield call(getPOSList);
+			if(response.code === ERROR_OK){
+				const posList = response.data;
+				return posList;
+			}
+			return [];
+		},
 		*getPaymentDeviceList({ payload: { ipcId } },{ put }){
 			const posList = yield put.resolve({
-				type: 'posList/read'
+				type: 'getPOSList'
 			});
 
 			// console.log(posList);

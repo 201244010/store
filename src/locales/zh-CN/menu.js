@@ -52,9 +52,9 @@ export default {
 	'menu.basicData.storeManagement.storeInformation': '查看门店',
 
 	'menu.devices': '设备管理',
-	'menu.devices.list': '设备列表',
-	'menu.devices.list.live': '直播',
-	'menu.devices.list.ipcManagement': '摄像头设置',
+	'menu.devices.ipcList': '设备列表',
+	'menu.devices.ipcList.live': '直播',
+	'menu.devices.ipcList.ipcManagement': '摄像头设置',
 	'menu.devices.motionMessage': '消息提醒',
 
 	'menu.faceidLabrary.management': '人脸库管理',
