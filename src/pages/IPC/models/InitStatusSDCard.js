@@ -21,7 +21,7 @@ export default {
 	},
 	reducers: {
 		changeStatus(state, action) {
-			console.log(state);
+			// console.log(state);
 			const { payload } = action;
 			state.status = payload;
 		}

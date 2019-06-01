@@ -107,7 +107,7 @@ export default {
 			});
 
 			const topic = yield put.resolve({
-				type: 'mqtt/generateTopic',
+				type: 'mqttIpc/generateTopic',
 				payload: {
 					deviceType,
 					messageType: 'request',
@@ -118,7 +118,7 @@ export default {
 			const streamId = yield select((state) => state.live.streamId);
 
 			yield put({
-				type: 'mqtt/publish',
+				type: 'mqttIpc/publish',
 				payload: {
 					topic,
 					message: {
