@@ -165,10 +165,8 @@ export default {
 		},
 		*getIpcTypeByPosSN({ payload: { sn }}, { put }) {
 			const posList = yield put.resolve({
-				type: 'posList/read'
+				type: 'getPOSList'
 			});
-			// const posList = yield select(state => state.posList);
-			// console.log(posList);
 
 			const targetIpc = posList.filter((ipc) => {
 				const { posList: list } = ipc;
