@@ -315,19 +315,28 @@ class AddPOS extends Component {
 
 		await getBindedList(sn);
 
-		const posSN = poses[0];
-
-		if (posSN) {
-			// console.log(posSN);
-			const chooseList = list.filter((item) => item.sn === posSN);
-			this.setState({
-				chooseList
+		let chooseList = [];
+		if (poses.length > 0) {
+			chooseList = list.filter((item) => {
+				const hasQueried = poses.includes(item.sn);
+				const hasVerified = verifiedArray.includes(item.sn);
+				return hasQueried && hasVerified;
+			});
+		}else{
+			chooseList = list.filter((item) => {
+				const hasVerified = verifiedArray.includes(item.sn);
+				return hasVerified;
 			});
 		}
-
+		// console.log(chooseList);
 		if (isEdit) {
 			this.setState({
+				chooseList,
 				isClick: true
+			});
+		}else{
+			this.setState({
+				chooseList
 			});
 		}
 	}
