@@ -102,8 +102,8 @@ class SearchResult extends Component {
 
 		const columns = [
 			{
-				title: formatMessage({ id: 'esl.device.ap.id' }),
-				dataIndex: 'ap_code',
+				title: formatMessage({ id: 'esl.device.ap.sn' }),
+				dataIndex: 'sn',
 			},
 			{
 				title: formatMessage({ id: 'esl.device.ap.name' }),
