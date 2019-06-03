@@ -313,15 +313,27 @@ class AddPOS extends Component {
 			selectedRowKeys: verifiedArray
 		});
 
-		await getBindedList(sn);
-
+		const bindedList = await getBindedList(sn);
+		// console.log(bindedList);
 		let chooseList = [];
 		if (poses.length > 0) {
-			chooseList = list.filter((item) => {
-				const hasQueried = poses.includes(item.sn);
-				const hasVerified = verifiedArray.includes(item.sn);
-				return hasQueried && hasVerified;
-			});
+			if (isEdit) {
+				// 当为编辑状态时，只需要验证sn是否已经处于绑定状态，无需验证是否已经验证；
+				chooseList = list.filter((item) => {
+					const hasQueried = poses.includes(item.sn);
+					// const hasVerified = verifiedArray.includes(item.sn);
+					const t = bindedList.filter((target) => item.sn === target.sn);
+					const hasBinded = t.length > 0;
+					return hasQueried && hasBinded;
+				});
+			}else{
+				chooseList = list.filter((item) => {
+					const hasQueried = poses.includes(item.sn);
+					const hasVerified = verifiedArray.includes(item.sn);
+					return hasQueried && hasVerified;
+				});
+			}
+
 		}else{
 			chooseList = list.filter((item) => {
 				const hasVerified = verifiedArray.includes(item.sn);
