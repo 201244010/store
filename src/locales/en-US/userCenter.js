@@ -4,8 +4,7 @@ export default {
 	'userCenter.basicInfo.nameChange.fail': 'Failed',
 	'userCenter.security.title': 'Security Setting',
 	'userCenter.security.password': 'Password',
-	'userCenter.security.password.description':
-		'A highly secure password can make your account more secure. We recommend that you change your password periodically.',
+	'userCenter.security.password.description': 'A highly secure password can make your account more secure. We recommend that you change your password periodically.',
 	'userCenter.security.mobile': 'Phone',
 	'userCenter.security.mobile.description': 'Phone Number',
 	'userCenter.security.mail': 'Email',
@@ -43,5 +42,5 @@ export default {
 	'modify.success': 'Success',
 	'modify.fail': 'Failed',
 	'create.success': 'Success',
-	'create.fail': 'Failed',
+	'create.fail': 'Failed'
 };

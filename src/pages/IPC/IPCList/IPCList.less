@@ -45,16 +45,17 @@
 		}
 
 		.setting-btn {
-				position: absolute;
-				bottom: 10px;
-				right: 10px;
-				margin-right: 10px;
-				background-color: transparent ; 
-				border-color: #ffffff ;
-				color: #ffffff ;
-				font-size: 12px;
-			}
-		
+			position: absolute;
+			bottom: 10px;
+			right: 10px;
+			margin-right: 10px;
+			background-color: transparent ;
+			border-color: #ffffff ;
+			color: #ffffff ;
+			font-size: 12px;
+			z-index: 1;
+		}
+
 
 		.play {
 			width: 50px;
@@ -113,8 +114,16 @@
 		.ipc-name-type {
 			position: absolute;
 			color: #FFFFFF;
-			bottom: 10px;
-			left: 20px;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 22px;
+			margin: 0 70px 10px 20px;
+
+			white-space: nowrap;
+
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 
 		.empty {

@@ -3,7 +3,7 @@ import { Card, Button, Row, Col,Spin } from 'antd';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 
-import { FormattedMessage } from 'umi/locale';
+import { FormattedMessage, formatMessage } from 'umi/locale';
 
 import styles from './IPCList.less';
 
@@ -69,19 +69,20 @@ class IPCList extends React.Component {
 															className={styles['setting-btn']}
 															size='small'
 														>
-															<Link to={`./ipcManagement?sn=${item.sn}`}>
+															<Link to={`/devices/ipcList/ipcManagement?sn=${item.sn}`}>
 																{<FormattedMessage id='ipcList.setting' />}
 															</Link>
 														</Button>
 													}
-													<Link to={`/devices/list/live?sn=${item.sn}`}>
+													<Link to={`/devices/ipcList/live?sn=${item.sn}`}>
 														<div className={styles.play} />
 													</Link>
 
 													<div
 														className={styles['ipc-name-type']}
 													>
-														{item.name||<FormattedMessage id='ipcList.noIPCName' />} ({item.type||<FormattedMessage id='ipcList.noIPCType' />})
+														{/* {item.name||<FormattedMessage id='ipcList.noIPCName' />} ({item.type||<FormattedMessage id='ipcList.noIPCType' />}) */}
+														{`${item.name || formatMessage({id: 'ipcList.noIPCName'})} (${ item.type || formatMessage({id: 'ipcList.noIPCType'})})`}
 													</div>
 												</Col>
 											</div>

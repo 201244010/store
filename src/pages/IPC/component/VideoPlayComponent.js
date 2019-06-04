@@ -5,19 +5,27 @@ import VideoPlayer from '@/components/VideoPlayer/VideoPlayer';
 // import { formatMessage } from 'umi/locale';
 
 class VideoPlayComponent extends React.Component {
-	
+
 	// componentDidMount(){
 	// 	// console.log('come in');
 	// 	const { videoUrl,ipcType } = this.props;
 	// 	// console.log(videoUrl,ipcType);
 	// }
 
+	componentDidUpdate () {
+		const { playing } = this.props;
+		if (playing) {
+			// this.child.currentTime(0);
+			this.child.setCurrentTime(0);
+			this.child.play();
+		}
+	}
+
 	closeWindow = () => {
 		const { watchVideoClose } = this.props;
 		this.child.pause();
-		// console.log('!!!!!!!!!!!!!!!!!!!!!!');
-		watchVideoClose('');
-		
+
+		watchVideoClose();
 	}
 
 	onRef = (ref) => {
@@ -52,7 +60,7 @@ class VideoPlayComponent extends React.Component {
 						// pixelRatio= '16:9'
 						type='track'
 						url={videoUrl}
-						// onRef={this.onRef} 
+						// onRef={this.onRef}
 						ref={playler => this.child = playler}
 					/>
 				</div>

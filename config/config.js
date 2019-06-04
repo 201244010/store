@@ -413,39 +413,67 @@ export default {
 					name: 'devices',
 					routes: [
 						{
-							path: '/devices/list/list',
+							path: '/devices/ipcList',
 							name: 'list',
-							component: './IPC/IPCList/IPCList.js',
-						},
-						{
-							path: '/devices/list/live',
-							name: 'live',
-							hideInMenu: true,
-							component: './IPC/Live/Live.js',
+							routes: [
+								{
+									path: '/devices/ipcList/live',
+									name: 'live',
+									hideInMenu: true,
+									component: './IPC/Live/Live.js',
+								},
+								{
+									path: '/devices/ipcList/ipcManagement',
+									name: 'ipcManagement',
+									hideInMenu: true,
+									component: './IPC/IPCManagement/IPCManagement.js',
+								},
+								{
+									path: '/devices/ipcList',
+									// name: 'list',
+									component: './IPC/IPCList/IPCList.js',
+								}
+							]
 						},
 						{
 							path: '/devices/motionMessage',
 							name: 'motionMessage',
 							component: './IPC/MotionList/MotionList.js',
 						},
-						// component: './index.js'
-						// component: './index.js'
-						// {
-						// 	path: '/devices/motionMessage',
-						// 	name: 'devices.motionMessage',
-						// 	component: './MotionList/MotionList.js'
-						// 	// component: './index.js'
-						// },
 						{
-							path: '/devices/ipcManagement',
-							// name: 'devices.camara',
-							component: './IPC/IPCManagement/IPCManagement.js',
-						},
-						{
-							path: '/devices/list',
-							redirect: '/devices/list/list'
-						},
+							path: '/devices',
+							redirect: '/devices/ipcList'
+						}
 					],
+				},
+				{
+					path: '/cashVerify',
+					icon: 'blank',
+					name: 'cashVerify',
+					routes: [
+						{
+							path: '/cashVerify/posList',
+							name: 'bindPOSDevice',
+							// hideInMenu: true,
+							component: './IPC/POSManagement/POSList.js'
+						},
+						{
+							path: '/cashVerify/bindPOSDevice',
+							name: 'bindPOSDevice',
+							hideInMenu: true,
+							component: './IPC/POSManagement/BindPOS.js'
+						},
+						{
+							path: '/cashVerify/videos',
+							name: 'videos',
+							hideInMenu: true,
+							component: './IPC/TradeVideos/TradeVideos.js',
+						},
+						{
+							path: '/cashVerify',
+							redirect: '/cashVerify/posList'
+						}
+					]
 				},
 				{
 					path: '/faceidLibrary',
@@ -463,6 +491,10 @@ export default {
 							// name: 'faceidLibrary.create',
 							component: './IPC/FaceidLibrary/CreateLibrary.js',
 						},
+						{
+							path: '/faceidLibrary',
+							redirect: '/faceidLibrary/faceidLibraryList'
+						}
 					],
 				},
 				{ path: '/', redirect: '/esl' },

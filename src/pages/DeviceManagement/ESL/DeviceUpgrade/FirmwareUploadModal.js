@@ -125,7 +125,7 @@ class FirmwareUploadModal extends Component {
 		};
 
 		const modalProps = status === 'init' ? modalInit : modalUpload;
-		const acceptFileType = type === 'Esl' ? '.bin' : '.gz';
+		const acceptFileType = type === 'ESL' ? '.bin' : '.gz';
 		const uploadProps = {
 			accept: acceptFileType,
 			beforeUpload: (uploadFile, uploadFileList) => {
