@@ -10,7 +10,7 @@ import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
-import { getTypeByName, getNearestLines } from '@/utils/studio';
+import { getTypeByName, getNearestLines, getNearestPosition } from '@/utils/studio';
 import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
@@ -186,8 +186,16 @@ class Studio extends Component {
 	};
 
 	handleStageShapeEnd = () => {
+		const { studio: { selectedShapeName, componentsDetail }, updateComponentsDetail } = this.props;
 		this.setState({
 			dragging: false,
+		});
+		const scope = getNearestPosition(componentsDetail, selectedShapeName);
+		updateComponentsDetail({
+			[selectedShapeName]: {
+				x: scope.x,
+				y: scope.y
+			},
 		});
 	};
 
@@ -242,10 +250,7 @@ class Studio extends Component {
 	};
 
 	handleSaveAsDraft = () => {
-		const {
-			studio: { componentsDetail, zoomScale },
-			saveAsDraft,
-		} = this.props;
+		const { studio: { componentsDetail, zoomScale }, saveAsDraft} = this.props;
 		const newDetails = {};
 		Object.keys(componentsDetail).forEach(key => {
 			const detail = componentsDetail[key];
