@@ -7,9 +7,11 @@ import styles from './index.less';
 const ROW_GUTTER = 16;
 const COL_SPAN = 12;
 const ESL_STATES = {
-	0: formatMessage({ id: 'esl.device.esl.push.wait' }),
-	1: formatMessage({ id: 'esl.device.esl.push.success' }),
-	2: formatMessage({ id: 'esl.device.esl.push.fail' }),
+	0: formatMessage({ id:'esl.device.esl.inactivated' }),
+	1: formatMessage({ id: 'esl.device.esl.push.wait.bind' }),
+	2: formatMessage({ id: 'esl.device.esl.push.wait' }),
+	3: formatMessage({ id: 'esl.device.esl.push.success' }),
+	4: formatMessage({ id: 'esl.device.esl.push.fail' }),
 };
 
 export default function detail(props) {
@@ -31,7 +33,7 @@ export default function detail(props) {
 						<span className={styles['detail-info-label']}>
 							{formatMessage({ id: 'esl.device.esl.sn' })}：
 						</span>
-						<span className={styles['detail-info-content']}>{eslInfo.sn || '--'}</span>
+						<span className={styles['detail-info-content']}>{eslInfo.name || '--'}</span>
 					</div>
 					<div className={styles['detail-info-item']}>
 						<span className={styles['detail-info-label']}>

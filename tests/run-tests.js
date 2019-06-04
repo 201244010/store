@@ -9,12 +9,12 @@ env.TEST = true;
 let once = false;
 
 const startServer = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['start'], {
-	env,
+	env
 });
 
 startServer.stderr.on('data', data => {
 	// eslint-disable-next-line
-  console.log(data.toString());
+	console.log(data.toString());
 });
 
 startServer.on('exit', () => {
@@ -26,13 +26,13 @@ startServer.stdout.on('data', data => {
 	console.log(data.toString());
 	if (!once && data.toString().indexOf('Compiled successfully') >= 0) {
 		// eslint-disable-next-line
-    once = true;
+		once = true;
 		console.log('Development server is started, ready to run tests.');
 		const testCmd = spawn(
 			/^win/.test(process.platform) ? 'npm.cmd' : 'npm',
 			['test', '--', '--maxWorkers=1', '--runInBand'],
 			{
-				stdio: 'inherit',
+				stdio: 'inherit'
 			}
 		);
 		testCmd.on('exit', code => {
