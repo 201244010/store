@@ -12,9 +12,6 @@ export default {
 					hmr: true,
 					immer: true,
 				},
-				targets: {
-					ie: 11,
-				},
 				locale: {
 					default: 'zh-CN', // default zh-CN
 					baseNavigator: false, // default true, when it is true, will use `navigator.language` overwrite default
@@ -50,7 +47,8 @@ export default {
 			to: 'css',
 		},
 	],
-	targets: { ie: 11 },
+	targets: { ie: 9 },
+	treeShaking: true,
 	/**
 	 * 路由相关配置
 	 */
