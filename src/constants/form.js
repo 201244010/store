@@ -22,8 +22,7 @@ export const FORM_LABEL_LEFT = {
 
 export const COL_THREE_NORMAL = {
 	sm: 24,
-	md: 24,
-	lg: 8,
+	md: 8,
 };
 
 export const FORM_ITEM_LAYOUT = {
