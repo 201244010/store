@@ -1,7 +1,7 @@
 export default {
 	'esl.device.ap.title': '基站',
 	'esl.device.esl.title': '价签',
-	'esl.device.ap.search.placeholder': '基站ID/名称',
+	'esl.device.ap.search.placeholder': '基站SN/名称',
 	'esl.device.ap.search.ap.info': '基站信息',
 	'esl.device.ap.id': '基站ID',
 	'esl.device.ap.name': '基站名称',
@@ -26,6 +26,7 @@ export default {
 	'esl.device.ap.delete.fail': '删除基站失败',
 	'esl.device.ap.restart.notice': '确定要重启基站？',
 	'esl.device.ap.restart.loading': '基站正在重启，请稍等',
+	'esl.device.ap.change.name': '基站名修改成功',
 	'esl.device.ap.all': '共',
 	'esl.device.ap.total': '个基站',
 	'esl.device.esl.list': '价签列表',
