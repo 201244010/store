@@ -1,3 +1,4 @@
+import localForage from 'localforage';
 import { SHAPE_TYPES, MAPS } from '@/constants/studio';
 
 const NEAR_GAP = 10;
@@ -215,3 +216,41 @@ export const getImagePromise = componentDetail =>
 		};
 		image.src = componentDetail.imgPath || MAPS.imgPath[componentDetail.type];
 	});
+
+export const STEP_KEYS = {};
+export const NOW_KEYS = {};
+
+export const clearSteps = () => {
+	localForage.clear();
+};
+
+export const saveNowStep = (templateId, componentsDetail) => {
+	let nowKey;
+	if (!STEP_KEYS[templateId]) {
+		STEP_KEYS[templateId] = [];
+		nowKey = templateId * 1000 + 1;
+	} else {
+		nowKey = Number(STEP_KEYS[templateId][STEP_KEYS[templateId].length - 1]) + 1;
+	}
+	STEP_KEYS[templateId].push(nowKey);
+	NOW_KEYS[templateId] = nowKey;
+	localForage.setItem(nowKey, JSON.stringify(componentsDetail));
+};
+
+export const preStep = async (templateId) => {
+	const nowKey = NOW_KEYS[templateId];
+	const result = await localForage.getItem(nowKey - 1);
+	if (result) {
+		NOW_KEYS[templateId] = nowKey - 1;
+	}
+	return result;
+};
+
+export const nextStep = async (templateId) => {
+	const nowKey = NOW_KEYS[templateId];
+	const result = await localForage.getItem(nowKey + 1);
+	if (result) {
+		NOW_KEYS[templateId] = nowKey + 1;
+	}
+	return result;
+};
