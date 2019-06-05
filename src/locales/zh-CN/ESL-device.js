@@ -26,6 +26,7 @@ export default {
 	'esl.device.ap.delete.fail': '删除基站失败',
 	'esl.device.ap.restart.notice': '确定要重启基站？',
 	'esl.device.ap.restart.loading': '基站正在重启，请稍等',
+	'esl.device.ap.change.name': '基站名修改成功',
 	'esl.device.ap.all': '共',
 	'esl.device.ap.total': '个基站',
 	'esl.device.esl.list': '价签列表',

@@ -10,13 +10,7 @@ const BaseStationDetail = props => {
 		<div className={styles['detail-info']}>
 			<div className={styles['detail-info-item']}>
 				<span className={styles['detail-info-label']}>
-					{formatMessage({ id: 'esl.device.ap.id' })}：
-				</span>
-				<span className={styles['detail-info-content']}>{stationInfo.ap_code}</span>
-			</div>
-			<div className={styles['detail-info-item']}>
-				<span className={styles['detail-info-label']}>
-					{formatMessage({ id: 'esl.device.ap.name' })}：
+					{formatMessage({ id: 'esl.device.ap.sn' })}：
 				</span>
 				<span className={styles['detail-info-content']}>{stationInfo.sn}</span>
 			</div>
