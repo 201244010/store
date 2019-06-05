@@ -23,17 +23,7 @@ export const FORM_LABEL_LEFT = {
 export const COL_THREE_NORMAL = {
 	sm: 24,
 	md: 24,
-	lg: 12,
-	xl: 9,
-	xxl: 8,
-};
-
-export const COL_THREE_SMALL = {
-	sm: 24,
-	md: 24,
-	lg: 12,
-	xl: 6,
-	xxl: 8,
+	lg: 8,
 };
 
 export const FORM_ITEM_LAYOUT = {
