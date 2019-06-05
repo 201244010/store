@@ -8,6 +8,7 @@
     "start:no-mock": "cross-env MOCK=none umi dev",
     "dev": "cross-env UMI_ENV=dev APP_TYPE=site umi dev",
     "dev:local": "cross-env UMI_ENV=local APP_TYPE=site umi dev",
+    "dev:uat": "cross-env UMI_ENV=uat APP_TYPE=site umi dev",
     "dev:no-mock": "cross-env MOCK=none umi dev",
     "build:dev": "cross-env UMI_ENV=dev APP_TYPE=site umi build",
     "build:test": "cross-env UMI_ENV=test APP_TYPE=site umi build",

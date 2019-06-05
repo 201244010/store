@@ -1,7 +1,7 @@
 export default {
 	'esl.device.ap.title': 'AP',
 	'esl.device.esl.title': 'ESL',
-	'esl.device.ap.search.placeholder': 'AP ID/Name',
+	'esl.device.ap.search.placeholder': 'AP SN/Name',
 	'esl.device.ap.search.ap.info': 'AP Detail',
 	'esl.device.ap.id': 'AP ID',
 	'esl.device.ap.name': 'AP Name',
@@ -26,6 +26,7 @@ export default {
 	'esl.device.ap.delete.fail': 'Fail',
 	'esl.device.ap.restart.notice': 'Are you sure to restart the AP?',
 	'esl.device.ap.restart.loading': 'AP is restarting, please wait…',
+	'esl.device.ap.change.name': 'Changing name successfully.',
 	'esl.device.ap.all': 'total',
 	'esl.device.ap.total': 'in total',
 	'esl.device.esl.list': 'ESL',
