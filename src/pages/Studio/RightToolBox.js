@@ -39,7 +39,10 @@ export default class RightToolBox extends Component {
 			const detail = componentsDetail[selectedShapeName];
 			const oldNameIndex = detail.name.replace(/[^0-9]/gi, '');
 			const newType = `${value}@${detail.type.split('@')[2] || ''}`;
-			deleteSelectedComponent(selectedShapeName);
+			deleteSelectedComponent({
+				selectedShapeName,
+				isStep: false
+			});
 			addComponent({
 				...detail,
 				type: newType,
@@ -56,6 +59,7 @@ export default class RightToolBox extends Component {
 				}
 			}
 			updateComponentsDetail({
+				isStep: true,
 				[selectedShapeName]: newDetail,
 			});
 		}
@@ -72,6 +76,7 @@ export default class RightToolBox extends Component {
 			}
 		});
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				[key]: originFix[key] + parseInt(e.target.value || 0, 10),
 			},
@@ -81,6 +86,7 @@ export default class RightToolBox extends Component {
 	handleWidth = (detail, e) => {
 		const { selectedShapeName, updateComponentsDetail } = this.props;
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				scaleX: (e.target.value || 0) / MAPS.containerWidth[detail.type],
 			},
@@ -90,6 +96,7 @@ export default class RightToolBox extends Component {
 	handleHeight = (detail, e) => {
 		const { selectedShapeName, updateComponentsDetail } = this.props;
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				scaleY: (e.target.value || 0) / MAPS.containerHeight[detail.type],
 			},
@@ -128,6 +135,7 @@ export default class RightToolBox extends Component {
 		}
 
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				fontStyle: newFontStyle,
 			},
@@ -157,6 +165,7 @@ export default class RightToolBox extends Component {
 			}
 		}
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				textDecoration: newTextDecoration,
 			},
