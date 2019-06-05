@@ -25,6 +25,8 @@ export default {
 		searchFormValues: {
 			keyword: '',
 			status: -1,
+			screen_type: -1,
+			colour: -1,
 		},
 		pagination: {
 			current: 1,
