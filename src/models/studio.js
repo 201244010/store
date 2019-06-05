@@ -80,7 +80,7 @@ export default {
 			};
 		},
 		updateComponentsDetail(state, action) {
-			const { selectedShapeName, ...componentsDetail } = action.payload;
+			const { noUpdateLines, selectedShapeName, ...componentsDetail } = action.payload;
 			const chooseShapeName = state.selectedShapeName;
 			let targetShapeName = selectedShapeName;
 			if (selectedShapeName === undefined) {
@@ -91,23 +91,24 @@ export default {
 				...filterObject(componentsDetail[targetShapeName] || {}),
 			};
 			const { x, y, type } = detail;
-			// TODO 是否需要做判断不更新lines？
-			detail.lines = [
-				[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
-				[
-					x + MAPS.width[type] * detail.scaleX * state.zoomScale,
-					0,
-					x + MAPS.width[type] * detail.scaleX * state.zoomScale,
-					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-				],
-				[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
-				[
-					0,
-					y + MAPS.height[type] * detail.scaleY * state.zoomScale,
-					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-					y + MAPS.height[type] * detail.scaleY * state.zoomScale,
-				],
-			];
+			if (!noUpdateLines) {
+				detail.lines = [
+					[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+					[
+						x + MAPS.width[type] * detail.scaleX * state.zoomScale,
+						0,
+						x + MAPS.width[type] * detail.scaleX * state.zoomScale,
+						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+					],
+					[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
+					[
+						0,
+						y + MAPS.height[type] * detail.scaleY * state.zoomScale,
+						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+						y + MAPS.height[type] * detail.scaleY * state.zoomScale,
+					],
+				];
+			}
 
 			return {
 				...state,

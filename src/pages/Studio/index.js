@@ -10,7 +10,7 @@ import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
-import { getTypeByName, getNearLines } from '@/utils/studio';
+import { getTypeByName, getNearestLines, getNearestPosition } from '@/utils/studio';
 import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
@@ -186,8 +186,16 @@ class Studio extends Component {
 	};
 
 	handleStageShapeEnd = () => {
+		const { studio: { selectedShapeName, componentsDetail }, updateComponentsDetail } = this.props;
 		this.setState({
 			dragging: false,
+		});
+		const scope = getNearestPosition(componentsDetail, selectedShapeName);
+		updateComponentsDetail({
+			[selectedShapeName]: {
+				x: scope.x,
+				y: scope.y
+			},
 		});
 	};
 
@@ -242,10 +250,7 @@ class Studio extends Component {
 	};
 
 	handleSaveAsDraft = () => {
-		const {
-			studio: { componentsDetail, zoomScale },
-			saveAsDraft,
-		} = this.props;
+		const { studio: { componentsDetail, zoomScale }, saveAsDraft} = this.props;
 		const newDetails = {};
 		Object.keys(componentsDetail).forEach(key => {
 			const detail = componentsDetail[key];
@@ -295,7 +300,7 @@ class Studio extends Component {
 				file: changeEvent.target.files[0],
 			});
 			const detail = componentsDetail[selectedShapeName];
-			const imageUrl = response.data.template_image_info.address;
+			const imgPath = response.data.template_image_info.address;
 
 			const image = new Image();
 			image.onload = () => {
@@ -303,7 +308,7 @@ class Studio extends Component {
 					selectedShapeName: targetName,
 					[targetName]: {
 						image,
-						imageUrl,
+						imgPath,
 						imageType: 'selected',
 						ratio: image.height / image.width,
 						height: (detail.width * image.height) / image.width,
@@ -312,7 +317,7 @@ class Studio extends Component {
 				inputObj.removeEventListener('change', fileChangeHandler);
 				inputObj.parentNode.removeChild(inputObj);
 			};
-			image.src = imageUrl;
+			image.src = imgPath;
 		};
 		inputObj.addEventListener('change', fileChangeHandler);
 	};
@@ -339,13 +344,10 @@ class Studio extends Component {
 
 	updateComponentsDetail = (target, selectedShapeName, updateInput) => {
 		const { updateComponentsDetail } = this.props;
-		const { x, y, name, width, height, scaleX, scaleY, rotation, strokeWidth } = target.attrs;
+		const { x, y, name, width, height, scaleX, scaleY, rotation } = target.attrs;
 		let realW = width;
-		let realH = height;
 		let realScaleX = scaleX;
 		let realScaleY = scaleY;
-		let adjustX = 0;
-		let adjustY = 0;
 
 		if (name && name.indexOf('_') === -1) {
 			const type = getTypeByName(name);
@@ -354,16 +356,6 @@ class Studio extends Component {
 				realW = target.parent.children[0].attrs.width;
 				realScaleX = target.parent.children[0].attrs.scaleX || 1;
 				realScaleY = target.parent.children[0].attrs.scaleY || 1;
-			} else if (type === SHAPE_TYPES.HLine) {
-				// HLine组件特殊处理
-				realW = SIZES.DEFAULT_H_LINE_WIDTH;
-				realH = strokeWidth;
-				adjustY = strokeWidth / 2;
-			} else if (type === SHAPE_TYPES.VLine) {
-				// VLine组件特殊处理
-				realW = strokeWidth;
-				realH = SIZES.DEFAULT_V_LINE_HEIGHT;
-				adjustX = strokeWidth / 2;
 			}
 
 			if (updateInput) {
@@ -376,6 +368,7 @@ class Studio extends Component {
 			}
 
 			const componentDetail = {
+				noUpdateLines: true,
 				selectedShapeName,
 				[name]: {
 					type,
@@ -383,26 +376,26 @@ class Studio extends Component {
 					x,
 					y,
 					width: realW,
-					height: realH,
+					height,
 					scaleX: realScaleX,
 					scaleY: realScaleY,
 					rotation,
 				},
 			};
 			componentDetail[name].lines = [
-				[x - adjustX, 0, x - adjustX, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+				[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
 				[
-					x + realW * realScaleX - adjustX,
+					x + realW * realScaleX,
 					0,
-					x + realW * realScaleX - adjustX,
+					x + realW * realScaleX,
 					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
 				],
-				[0, y - adjustY, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y - adjustY],
+				[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
 				[
 					0,
-					y + realH * realScaleY - adjustY,
+					y + height * realScaleY,
 					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-					y + realH * realScaleY - adjustY,
+					y + height * realScaleY,
 				],
 			];
 			updateComponentsDetail(componentDetail);
@@ -527,20 +520,7 @@ class Studio extends Component {
 			state: { dragging },
 		} = this;
 
-		let lines = [];
-		if (selectedShapeName) {
-			Object.keys(componentsDetail).forEach(key => {
-				if (key === selectedShapeName) {
-					if (componentsDetail[key].type !== SHAPE_TYPES.RECT_FIX) {
-						lines = lines.concat(componentsDetail[key].lines);
-					}
-				} else if (componentsDetail[key].type !== SHAPE_TYPES.RECT_FIX) {
-					lines = lines.concat(
-						getNearLines(componentsDetail[selectedShapeName], componentsDetail[key])
-					);
-				}
-			});
-		}
+		const lines = getNearestLines(componentsDetail, selectedShapeName);
 
 		return (
 			<div className={styles.board}>
