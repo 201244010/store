@@ -24,6 +24,7 @@ export default function generateShape(option) {
 						strokeScaleEnabled: false,
 						draggable: true,
 						onTransform: option.onTransform,
+						onTransformEnd: option.onTransformEnd,
 						onMouseOver: () => {
 							document.body.style.cursor = 'pointer';
 						},
@@ -51,6 +52,7 @@ export default function generateShape(option) {
 						cornerRadius: option.cornerRadius,
 						strokeScaleEnabled: false,
 						onTransform: option.onTransform,
+						onTransformEnd: option.onTransformEnd,
 						shadowColor: 'rgba(0, 0, 0, 0.1)',
 						shadowBlur: 1,
 						shadowOffset: { x: 0, y: 2 },
@@ -81,6 +83,7 @@ export default function generateShape(option) {
 							opacity: option.textBg === 'opacity' ? 0 : 1,
 							draggable: true,
 							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
 						}}
 					/>
@@ -126,6 +129,7 @@ export default function generateShape(option) {
 						fill: option.stroke,
 						draggable: true,
 						onTransform: option.onTransform,
+						onTransformEnd: option.onTransformEnd,
 						onMouseOver: () => {
 							document.body.style.cursor = 'pointer';
 						},
@@ -150,6 +154,7 @@ export default function generateShape(option) {
 						fill: option.stroke,
 						draggable: true,
 						onTransform: option.onTransform,
+						onTransformEnd: option.onTransformEnd,
 						onMouseOver: () => {
 							document.body.style.cursor = 'pointer';
 						},
@@ -176,6 +181,7 @@ export default function generateShape(option) {
 								fill: '#d9d9d9',
 								draggable: true,
 								onTransform: option.onTransform,
+								onTransformEnd: option.onTransformEnd,
 								onDblClick: option.onDblClick,
 							}}
 						/>
@@ -185,14 +191,12 @@ export default function generateShape(option) {
 									option.x +
 									((SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX -
 										SIZES.DEFAULT_IMAGE_WIDTH) *
-										option.zoomScale) /
-									2,
+										option.zoomScale) / 2,
 								y:
 									option.y +
 									((SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT * option.scaleY -
 										SIZES.DEFAULT_IMAGE_HEIGHT) *
-										option.zoomScale) /
-									2,
+										option.zoomScale) / 2,
 								width: SIZES.DEFAULT_IMAGE_WIDTH * option.zoomScale,
 								height: SIZES.DEFAULT_IMAGE_HEIGHT * option.zoomScale,
 								image: option.image,
@@ -258,6 +262,7 @@ export default function generateShape(option) {
 								ratio: option.ratio,
 								draggable: true,
 								onTransform: option.onTransform,
+								onTransformEnd: option.onTransformEnd,
 								onDblClick: option.onDblClick,
 							}}
 						/>
@@ -321,6 +326,7 @@ export default function generateShape(option) {
 							opacity: option.textBg === 'opacity' ? 0 : 1,
 							draggable: true,
 							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
 						}}
 					/>
@@ -371,6 +377,7 @@ export default function generateShape(option) {
 							text: option.text,
 							draggable: true,
 							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
 						}}
 					/>
@@ -457,6 +464,7 @@ export default function generateShape(option) {
 							opacity: option.textBg === 'opacity' ? 0 : 1,
 							draggable: true,
 							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
 						}}
 					/>
@@ -542,6 +550,7 @@ export default function generateShape(option) {
 						image: option.image,
 						draggable: true,
 						onTransform: option.onTransform,
+						onTransformEnd: option.onTransformEnd,
 					}}
 				/>
 			);

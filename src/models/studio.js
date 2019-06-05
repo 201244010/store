@@ -1,28 +1,61 @@
-import { MAPS, SHAPE_TYPES, SIZES } from '@/constants/studio';
-import { filterObject } from '@/utils/utils';
+import { IMAGE_TYPES, MAPS, SHAPE_TYPES, SIZES } from '@/constants/studio';
+import { filterObject, getLocationParam } from '@/utils/utils';
+import { getImagePromise, saveNowStep } from '@/utils/studio';
 
 export default {
 	namespace: 'studio',
 	state: {
 		stage: {
 			width: 0,
-			height: 0,
+			height: 0
 		},
 		selectedShapeName: '',
 		componentsDetail: {},
 		showRightToolBox: false,
 		rightToolBoxPos: {
 			left: -9999,
-			top: -9999,
+			top: -9999
 		},
 		copiedComponent: {},
-		zoomScale: 1,
+		zoomScale: 1
+	},
+	effects: {
+		* changeOneStep({ payload = {} }, { put }) {
+			const componentsDetail = {};
+			let hasImage = false;
+			Object.keys(payload).map(key => {
+				componentsDetail[key] = payload[key];
+				hasImage = hasImage || IMAGE_TYPES.includes(payload[key].type);
+			});
+
+			if (hasImage) {
+				(yield Promise.all(
+					Object.keys(payload).map(key => {
+						if (IMAGE_TYPES.includes(payload[key].type)) {
+							return getImagePromise(payload[key]);
+						}
+						return undefined;
+					}).filter(item => item)
+				)).forEach(value => {
+					componentsDetail[value.name].image = value.image;
+				});
+				yield put({
+					type: 'changeStep',
+					payload: componentsDetail
+				});
+			} else {
+				yield put({
+					type: 'changeStep',
+					payload: componentsDetail
+				});
+			}
+		}
 	},
 	reducers: {
 		updateState(state, action) {
 			return {
 				...state,
-				...action.payload,
+				...action.payload
 			};
 		},
 		addComponent(state, action) {
@@ -40,47 +73,60 @@ export default {
 			});
 			name = `${type}${maxIndex + 1}`;
 			const { scaleX, scaleY } = action.payload;
+			const newComponentsDetail = {
+				...state.componentsDetail,
+				[name]: {
+					...action.payload,
+					name,
+					width: MAPS.width[type],
+					height: MAPS.height[type],
+					lines: [
+						[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+						[
+							x + MAPS.width[type] * scaleX * state.zoomScale,
+							0,
+							x + MAPS.width[type] * scaleX * state.zoomScale,
+							SIZES.DEFAULT_MAX_CANVAS_LENGTH
+						],
+						[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
+						[
+							0,
+							y + MAPS.height[type] * scaleY * state.zoomScale,
+							SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+							y + MAPS.height[type] * scaleY * state.zoomScale
+						]
+					]
+				}
+			};
+			saveNowStep(getLocationParam('id'), newComponentsDetail);
 			return {
 				...state,
 				selectedShapeName: name,
-				componentsDetail: {
-					...state.componentsDetail,
-					[name]: {
-						...action.payload,
-						name,
-						width: MAPS.width[type],
-						height: MAPS.height[type],
-						lines: [
-							[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
-							[
-								x + MAPS.width[type] * scaleX * state.zoomScale,
-								0,
-								x + MAPS.width[type] * scaleX * state.zoomScale,
-								SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-							],
-							[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
-							[
-								0,
-								y + MAPS.height[type] * scaleY * state.zoomScale,
-								SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-								y + MAPS.height[type] * scaleY * state.zoomScale,
-							],
-						],
-					},
-				},
+				componentsDetail: newComponentsDetail
 			};
 		},
 		addComponentsDetail(state, action) {
+			const newComponentsDetail = {
+				...state.componentsDetail,
+				...action.payload
+			};
+			saveNowStep(getLocationParam('id'), newComponentsDetail);
 			return {
 				...state,
+				componentsDetail: newComponentsDetail
+			};
+		},
+		changeStep(state, action) {
+			return {
+				...state,
+				selectedShapeName: '',
 				componentsDetail: {
-					...state.componentsDetail,
-					...action.payload,
-				},
+					...action.payload
+				}
 			};
 		},
 		updateComponentsDetail(state, action) {
-			const { noUpdateLines, selectedShapeName, ...componentsDetail } = action.payload;
+			const { noUpdateLines, selectedShapeName, isStep = false, ...componentsDetail } = action.payload;
 			const chooseShapeName = state.selectedShapeName;
 			let targetShapeName = selectedShapeName;
 			if (selectedShapeName === undefined) {
@@ -88,7 +134,7 @@ export default {
 			}
 			const detail = {
 				...state.componentsDetail[targetShapeName],
-				...filterObject(componentsDetail[targetShapeName] || {}),
+				...filterObject(componentsDetail[targetShapeName] || {})
 			};
 			const { x, y, type } = detail;
 			if (!noUpdateLines) {
@@ -98,25 +144,29 @@ export default {
 						x + MAPS.width[type] * detail.scaleX * state.zoomScale,
 						0,
 						x + MAPS.width[type] * detail.scaleX * state.zoomScale,
-						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+						SIZES.DEFAULT_MAX_CANVAS_LENGTH
 					],
 					[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
 					[
 						0,
 						y + MAPS.height[type] * detail.scaleY * state.zoomScale,
 						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-						y + MAPS.height[type] * detail.scaleY * state.zoomScale,
-					],
+						y + MAPS.height[type] * detail.scaleY * state.zoomScale
+					]
 				];
+			}
+			const newComponentsDetail = {
+				...state.componentsDetail,
+				[targetShapeName]: detail
+			};
+			if (isStep) {
+				saveNowStep(getLocationParam('id'), newComponentsDetail);
 			}
 
 			return {
 				...state,
 				selectedShapeName: targetShapeName,
-				componentsDetail: {
-					...state.componentsDetail,
-					[targetShapeName]: detail,
-				},
+				componentsDetail: newComponentsDetail
 			};
 		},
 		toggleRightToolBox(state, action) {
@@ -131,24 +181,28 @@ export default {
 				...state,
 				selectedShapeName,
 				showRightToolBox,
-				rightToolBoxPos,
+				rightToolBoxPos
 			};
 		},
 		copySelectedComponent(state, action) {
 			return {
 				...state,
-				copiedComponent: action.payload,
+				copiedComponent: action.payload
 			};
 		},
 		deleteSelectedComponent(state, action) {
 			state.selectedShapeName = '';
-			delete state.componentsDetail[action.payload];
+			const { selectedShapeName, isStep = true } = action.payload;
+			delete state.componentsDetail[selectedShapeName || action.payload];
+			if (isStep) {
+				saveNowStep(getLocationParam('id'), state.componentsDetail);
+			}
 		},
 		zoomOutOrIn(state, action) {
 			const {
 				stage: { width, height },
 				zoomScale: originZoomScale,
-				componentsDetail,
+				componentsDetail
 			} = state;
 			const { zoomScale, screenType } = action.payload;
 
@@ -182,6 +236,6 @@ export default {
 			state.selectedShapeName = '';
 			state.zoomScale = zoomScale;
 			state.componentsDetail = componentsDetail;
-		},
-	},
+		}
+	}
 };

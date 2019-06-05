@@ -4,6 +4,7 @@ import { formatMessage } from 'umi/locale';
 import ButtonIcon from './ButtonIcon';
 import ZoomIcon from './ZoomIcon';
 import { getLocationParam } from '@/utils/utils';
+import { preStep, nextStep } from '@/utils/studio';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as styles from './index.less';
 
@@ -82,6 +83,22 @@ export default class BoardHeader extends Component {
 		}
 	};
 
+	preStep = async () => {
+		const { props: { changeOneStep } } = this;
+		const result = await preStep(getLocationParam('id'));
+		if (result) {
+			changeOneStep(JSON.parse(result));
+		}
+	};
+
+	nextStep = async () => {
+		const { props: { changeOneStep } } = this;
+		const result = await nextStep(getLocationParam('id'));
+		if (result) {
+			changeOneStep(JSON.parse(result));
+		}
+	};
+
 	render() {
 		const {
 			state: { editing, templateName },
@@ -93,8 +110,8 @@ export default class BoardHeader extends Component {
 				<div className={styles['left-actions']}>
 					<ButtonIcon name="save" onClick={saveAsDraft} />
 					<ButtonIcon name="check" />
-					<ButtonIcon name="preStep" />
-					<ButtonIcon name="nextStep" />
+					<ButtonIcon name="preStep" onClick={this.preStep} />
+					<ButtonIcon name="nextStep" onClick={this.nextStep} />
 				</div>
 				<div className={styles['title-edit']}>
 					{editing ? (
