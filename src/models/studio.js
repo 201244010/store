@@ -106,12 +106,14 @@ export default {
 			};
 		},
 		addComponentsDetail(state, action) {
+			const newComponentsDetail = {
+				...state.componentsDetail,
+				...action.payload
+			};
+			saveNowStep(getLocationParam('id'), newComponentsDetail);
 			return {
 				...state,
-				componentsDetail: {
-					...state.componentsDetail,
-					...action.payload
-				}
+				componentsDetail: newComponentsDetail
 			};
 		},
 		changeStep(state, action) {
