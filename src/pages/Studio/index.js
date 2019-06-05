@@ -10,7 +10,7 @@ import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
-import { getTypeByName, getNearestLines, getNearestPosition } from '@/utils/studio';
+import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep } from '@/utils/studio';
 import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
@@ -33,6 +33,7 @@ import * as styles from './index.less';
 		addComponent: payload => dispatch({ type: 'studio/addComponent', payload }),
 		updateState: payload => dispatch({ type: 'studio/updateState', payload }),
 		zoomOutOrIn: payload => dispatch({ type: 'studio/zoomOutOrIn', payload }),
+		changeOneStep: payload => dispatch({ type: 'studio/changeOneStep', payload }),
 		fetchBindFields: payload => dispatch({ type: 'template/fetchBindFields', payload }),
 		saveAsDraft: payload => dispatch({ type: 'template/saveAsDraft', payload }),
 		fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
@@ -49,14 +50,11 @@ class Studio extends Component {
 			dragging: false,
 			editing: false,
 		};
+		clearSteps();
 	}
 
 	async componentDidMount() {
-		const {
-			stageWidth,
-			stageHeight,
-			props: { fetchTemplateDetail, addComponent, fetchBindFields, updateState },
-		} = this;
+		const {stageWidth, stageHeight, props: {fetchTemplateDetail, addComponent, fetchBindFields, updateState}} = this;
 		fetchBindFields();
 		const response = await fetchTemplateDetail({
 			template_id: getLocationParam('id'),
@@ -157,9 +155,11 @@ class Studio extends Component {
 		if (shape) {
 			// 鼠标左键取消右侧工具框
 			if (e.evt.button === 0) {
-				const target =
-					name.indexOf(SHAPE_TYPES.PRICE) !== -1 ? e.target.parent.children[0] : e.target;
-				this.updateComponentsDetail(target, name);
+				const target = name.indexOf(SHAPE_TYPES.PRICE) !== -1 ? e.target.parent.children[0] : e.target;
+				this.updateComponentsDetail({
+					target,
+					selectedShapeName: name
+				});
 				if (showRightToolBox) {
 					this.toggleRightToolBox({
 						showRightToolBox: false,
@@ -182,7 +182,9 @@ class Studio extends Component {
 	};
 
 	handleStageShapeMove = e => {
-		this.updateComponentsDetail(e.target);
+		this.updateComponentsDetail({
+			target: e.target
+		});
 	};
 
 	handleStageShapeEnd = () => {
@@ -192,15 +194,31 @@ class Studio extends Component {
 		});
 		const scope = getNearestPosition(componentsDetail, selectedShapeName);
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				x: scope.x,
 				y: scope.y
 			},
 		});
+		// if (scope.x || scope.x === 0) {
+		// 	componentsDetail[selectedShapeName].x = scope.x;
+		// }
+		// if (scope.y || scope.y === 0) {
+		// 	componentsDetail[selectedShapeName].y = scope.y;
+		// }
+		// saveNowStep(getLocationParam('id'), componentsDetail);
 	};
 
 	handleShapeTransform = e => {
-		this.updateComponentsDetail(e.currentTarget, undefined, true);
+		this.updateComponentsDetail({
+			target: e.currentTarget,
+			updateInput: true
+		});
+	};
+
+	handleShapeTransformEnd = () => {
+		const { studio: { componentsDetail } } = this.props;
+		saveNowStep(getLocationParam('id'), componentsDetail);
 	};
 
 	handleShapeDblClick = e => {
@@ -342,7 +360,7 @@ class Studio extends Component {
 		});
 	};
 
-	updateComponentsDetail = (target, selectedShapeName, updateInput) => {
+	updateComponentsDetail = ({ target, selectedShapeName, updateInput, isStep }) => {
 		const { updateComponentsDetail } = this.props;
 		const { x, y, name, width, height, scaleX, scaleY, rotation } = target.attrs;
 		let realW = width;
@@ -368,6 +386,7 @@ class Studio extends Component {
 			}
 
 			const componentDetail = {
+				isStep,
 				noUpdateLines: true,
 				selectedShapeName,
 				[name]: {
@@ -505,6 +524,7 @@ class Studio extends Component {
 				addComponent,
 				toggleRightToolBox,
 				zoomOutOrIn,
+				changeOneStep,
 				renameTemplate,
 				fetchTemplateDetail,
 				studio: {
@@ -532,6 +552,7 @@ class Studio extends Component {
 							zoomScale,
 							saveAsDraft: this.handleSaveAsDraft,
 							zoomOutOrIn,
+							changeOneStep,
 							renameTemplate,
 							fetchTemplateDetail,
 						}}
@@ -550,6 +571,7 @@ class Studio extends Component {
 							onDragMove={this.handleStageShapeMove}
 							onDragEnd={this.handleStageShapeEnd}
 							onTransform={this.handleShapeTransform}
+							onTransformEnd={this.handleShapeTransformEnd}
 							onContextMenu={this.handleContextMenu}
 						>
 							<Layer x={0} y={0} width={stageWidth} height={stageHeight}>
@@ -567,6 +589,7 @@ class Studio extends Component {
 											ratio: targetDetail.ratio || 1,
 											selected: selectedShapeName === targetDetail.name,
 											onTransform: this.handleShapeTransform,
+											onTransformEnd: this.handleShapeTransformEnd,
 											onDblClick: this.handleShapeDblClick,
 										});
 									}

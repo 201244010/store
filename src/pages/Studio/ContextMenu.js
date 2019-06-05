@@ -43,11 +43,8 @@ export default class ContextMenu extends Component {
 	};
 
 	render() {
-		const {
-			props: { position, selectedShapeName, copiedComponent },
-		} = this;
-		const canCopyOrDelete =
-			selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
+		const { props: { position, selectedShapeName, copiedComponent } } = this;
+		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
 
 		return (
 			<div
