@@ -8,6 +8,7 @@ export default {
 	'studio.component.barcode': 'BarCode',
 	'studio.component.qrcode': 'QrCode',
 	'studio.action.copy': 'Copy',
+	'studio.action.cut': 'Cut',
 	'studio.action.paste': 'Paste',
 	'studio.action.delete': 'Delete',
 	'studio.action.save': 'SAVE',

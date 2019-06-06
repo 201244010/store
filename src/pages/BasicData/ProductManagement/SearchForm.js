@@ -44,7 +44,7 @@ class SearchForm extends Component {
 			<div className={styles['search-bar']}>
 				<Form layout="inline">
 					<Row gutter={FORM_FORMAT.gutter}>
-						<Col span={16}>
+						<Col {...COL_THREE_NORMAL}>
 							<Form.Item
 								label={formatMessage({ id: 'basicData.product.search.product' })}
 							>
@@ -63,13 +63,12 @@ class SearchForm extends Component {
 								<Button type="primary" onClick={this.search}>
 									{formatMessage({ id: 'btn.query' })}
 								</Button>
-								<a
-									href="javascript:void(0)"
+								<Button
 									style={{ marginLeft: '20px' }}
 									onClick={this.handleReset}
 								>
 									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
-								</a>
+								</Button>
 							</Form.Item>
 						</Col>
 					</Row>
