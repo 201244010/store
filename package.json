@@ -25,7 +25,7 @@
     "prettier": "node ./scripts/prettier.js"
   },
   "dependencies": {
-    "@konata9/storage.js": "^1.1.2",
+    "@konata9/storage.js": "^1.2.3",
     "@konata9/typecheck.js": "^1.1.0",
     "ant-design-pro": "^2.1.1",
     "antd": "^3.15.2",

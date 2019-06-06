@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT } from '@/constants/form';
+import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
+import styles from './ProductManagement.less';
 
 class SearchForm extends Component {
 	changeFormValues = (inputType, fieldName, e) => {
@@ -40,38 +41,39 @@ class SearchForm extends Component {
 		const { values } = this.props;
 
 		return (
-			<Form {...{ ...FORM_ITEM_LAYOUT, ...FORM_LABEL_LEFT }}>
-				<Row gutter={FORM_FORMAT.gutter}>
-					<Col xl={9} lg={12} md={24}>
-						<Form.Item
-							label={formatMessage({ id: 'basicData.product.search.product' })}
-						>
-							<Input
-								placeholder={formatMessage({
-									id: 'basicData.product.search.placeholder',
-								})}
-								value={values.keyword}
-								maxLength={60}
-								onChange={e => this.changeFormValues('input', 'keyword', e)}
-							/>
-						</Form.Item>
-					</Col>
-					<Col xl={6} lg={12} md={24}>
-						<Form.Item>
-							<Button type="primary" onClick={this.search}>
-								{formatMessage({ id: 'btn.query' })}
-							</Button>
-							<a
-								href="javascript:void(0)"
-								style={{ marginLeft: '20px' }}
-								onClick={this.handleReset}
+			<div className={styles['search-bar']}>
+				<Form layout="inline">
+					<Row gutter={FORM_FORMAT.gutter}>
+						<Col {...COL_THREE_NORMAL}>
+							<Form.Item
+								label={formatMessage({ id: 'basicData.product.search.product' })}
 							>
-								{formatMessage({ id: 'storeManagement.list.buttonReset' })}
-							</a>
-						</Form.Item>
-					</Col>
-				</Row>
-			</Form>
+								<Input
+									placeholder={formatMessage({
+										id: 'basicData.product.search.placeholder',
+									})}
+									value={values.keyword}
+									maxLength={60}
+									onChange={e => this.changeFormValues('input', 'keyword', e)}
+								/>
+							</Form.Item>
+						</Col>
+						<Col {...COL_THREE_NORMAL}>
+							<Form.Item>
+								<Button type="primary" onClick={this.search}>
+									{formatMessage({ id: 'btn.query' })}
+								</Button>
+								<Button
+									style={{ marginLeft: '20px' }}
+									onClick={this.handleReset}
+								>
+									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
+								</Button>
+							</Form.Item>
+						</Col>
+					</Row>
+				</Form>
+			</div>
 		);
 	}
 }

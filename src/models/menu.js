@@ -2,6 +2,8 @@ import memoizeOne from 'memoize-one';
 import isEqual from 'lodash/isEqual';
 import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
+import * as MenuAction from '@/services/Merchant/merchant';
+import { ERROR_OK } from '@/constants/errorCode';
 
 const { check } = Authorized;
 
@@ -87,6 +89,9 @@ const getBreadcrumbNameMap = menuData => {
 
 const memoizeOneGetBreadcrumbNameMap = memoizeOne(getBreadcrumbNameMap, isEqual);
 
+const checkMenuAuth = (menuData, authMenuList = []) =>
+	menuData.filter(menu => authMenuList.includes(menu.path.slice(1)));
+
 export default {
 	namespace: 'menu',
 
@@ -96,13 +101,23 @@ export default {
 	},
 
 	effects: {
-		*getMenuData({ payload }, { put }) {
+		* getMenuData({ payload }, { put, call }) {
 			const { routes, authority } = payload;
 			const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
 			const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
+
+			let filteredMenuData = menuData;
+			const response = yield call(MenuAction.getAuthMenu);
+			if (response && response.code === ERROR_OK) {
+				const { menu_list: menuList = [] } = response.data || {};
+				if (menuList && menuList.length > 0) {
+					filteredMenuData = checkMenuAuth(menuData, menuList);
+				}
+			}
+
 			yield put({
 				type: 'save',
-				payload: { menuData, breadcrumbNameMap },
+				payload: { menuData: filteredMenuData, breadcrumbNameMap },
 			});
 		},
 	},

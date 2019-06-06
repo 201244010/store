@@ -22,7 +22,7 @@ function MQTTWrapper(WrapperedComponent) {
 				dispatch({ type: 'mqttStore/setMessageHandler', payload }),
 			destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
 			getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
-		})
+		}),
 	)
 	@Ipc
 	class Wrapper extends Component {
@@ -97,19 +97,21 @@ function MQTTWrapper(WrapperedComponent) {
 			} = this.props;
 
 			await getUserInfo();
-			await initializeClient();
-			const registerTopic = await generateTopic({ service: 'register', action: 'sub' });
-			const registerTopicPub = await generateTopic({ service: 'register', action: 'pub' });
-			const notificationTopic = await generateTopic({
-				service: 'notification',
-				action: 'sub',
-			});
+			const initializeStatus = await initializeClient();
+			if (initializeStatus === 'success') {
+				const registerTopic = await generateTopic({ service: 'register', action: 'sub' });
+				const registerTopicPub = await generateTopic({ service: 'register', action: 'pub' });
+				const notificationTopic = await generateTopic({
+					service: 'notification',
+					action: 'sub',
+				});
 
-			await setTopicListener({ service: 'notification', handler: this.showNotification });
+				await setTopicListener({ service: 'notification', handler: this.showNotification });
 
-			await subscribe({ topic: [registerTopic, notificationTopic] });
-			// console.log('subscribed');
-			await publish({ topic: registerTopicPub, message: REGISTER_PUB_MSG });
+				await subscribe({ topic: [registerTopic, notificationTopic] });
+				// console.log('subscribed');
+				await publish({ topic: registerTopicPub, message: REGISTER_PUB_MSG });
+			}
 		};
 
 		render() {

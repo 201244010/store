@@ -13,5 +13,6 @@ export default {
 	'alert.template.name.not.empty': '模板名称不能为空',
 	'alert.template.bound.esl': '模板上有绑定价签',
 	'alert.template.name.used': '模板名已被占用',
-	'error.retry': '发生错误，请重试'
+	'error.retry': '发生错误，请重试',
+	'error.network.error': '网络异常，请检查网络连接',
 };
