@@ -93,33 +93,66 @@ class Studio extends Component {
 				height: stageHeight,
 			},
 		});
-		document.addEventListener('keydown', this.handleDeleteComponent);
+		document.addEventListener('keydown', this.handleComponentActions);
 	}
 
 	componentWillUnmount() {
-		document.removeEventListener('keydown', this.handleDeleteComponent);
+		document.removeEventListener('keydown', this.handleComponentActions);
 	}
 
-	handleDeleteComponent = e => {
+	handleComponentActions = e => {
 		const { editing } = this.state;
-		const { keyCode, target: { tagName } } = e;
-		// 编辑文本状态下 及 操作输入框时 无法删除
-		if (!editing && [KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT') {
-			const {
-				studio: { selectedShapeName },
-				deleteSelectedComponent,
-				toggleRightToolBox,
-			} = this.props;
-
-			if (selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1) {
+		const { keyCode, ctrlKey, target: { tagName } } = e;
+		// 编辑文本状态下无法操作
+		if (editing) {
+			return;
+		}
+		const {
+			studio: { selectedShapeName, componentsDetail, copiedComponent, zoomScale },
+			deleteSelectedComponent,
+			copySelectedComponent,
+			addComponent
+		} = this.props;
+		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
+		// 操作输入框时 无法删除
+		if ([KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT') {
+			if (canCopyOrDelete) {
 				deleteSelectedComponent(selectedShapeName);
-				toggleRightToolBox({
-					showRightToolBox: false,
-					rightToolBoxPos: {
-						left: -9999,
-						top: -9999,
-					},
-				});
+			}
+		}
+		if (ctrlKey) {
+			// Ctrl + X
+			if (keyCode === KEY.KEY_X) {
+				if (canCopyOrDelete) {
+					copySelectedComponent(componentsDetail[selectedShapeName]);
+					deleteSelectedComponent(selectedShapeName);
+				}
+			}
+			// Ctrl + C
+			if (keyCode === KEY.KEY_C) {
+				if (canCopyOrDelete) {
+					copySelectedComponent(componentsDetail[selectedShapeName]);
+				}
+			}
+			// Ctrl + V
+			if (keyCode === KEY.KEY_V) {
+				if (copiedComponent.name) {
+					const newPosition = {};
+					if (canCopyOrDelete) {
+						const selectedComponent = componentsDetail[selectedShapeName];
+						const {x, y, scaleY} = selectedComponent;
+						newPosition.x = x;
+						newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
+					} else {
+						newPosition.x = copiedComponent.x;
+						newPosition.y = copiedComponent.y;
+					}
+					addComponent({
+						...copiedComponent,
+						x: newPosition.x,
+						y: newPosition.y,
+					});
+				}
 			}
 		}
 	};
@@ -265,6 +298,25 @@ class Studio extends Component {
 				top: e.evt.clientY,
 			},
 		});
+	};
+
+	handleWheel = (e) => {
+		const {ctrlKey, deltaY} = e.evt;
+		if (ctrlKey) {
+			const { studio: {zoomScale}, zoomOutOrIn } = this.props;
+			let realZoomScale = zoomScale + (deltaY > 0 ? 0.1 : -0.1);
+			if (realZoomScale > 3) {
+				realZoomScale = 3;
+			} else if (realZoomScale < 0.5) {
+				realZoomScale = 0.5;
+			}
+
+			zoomOutOrIn({
+				zoomScale: realZoomScale,
+				screenType: getLocationParam('screen'),
+				selectedShapeName: '',
+			});
+		}
 	};
 
 	handleSaveAsDraft = () => {
@@ -573,6 +625,7 @@ class Studio extends Component {
 							onTransform={this.handleShapeTransform}
 							onTransformEnd={this.handleShapeTransformEnd}
 							onContextMenu={this.handleContextMenu}
+							onWheel={this.handleWheel}
 						>
 							<Layer x={0} y={0} width={stageWidth} height={stageHeight}>
 								{Object.keys(componentsDetail).map(key => {
