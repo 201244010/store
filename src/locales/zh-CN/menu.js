@@ -5,6 +5,8 @@ export default {
 	'menu.serviceApplication': '服务应用',
 	'menu.esl': '电子价签',
 	'menu.esl.electricLabel': '价签管理',
+	'menu.esl.commRecord': '通信记录',
+	'menu.esl.systemConfig': '系统配置',
 	'menu.esl.baseStation': '基站管理',
 	'menu.esl.deviceUpgrade': '设备升级',
 	'menu.esl.deviceUpgrade.overview': '设备升级',

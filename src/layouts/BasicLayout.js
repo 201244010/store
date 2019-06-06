@@ -106,7 +106,6 @@ class BasicLayout extends React.PureComponent {
 			getMenuData,
 			route: { routes, authority },
 		} = this.props;
-
 		await getMenuData({ routes, authority });
 	};
 

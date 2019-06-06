@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
-import * as styles from './BaseStation.less';
+import styles from './BaseStation.less';
 
 @connect(
 	state => ({
@@ -22,6 +22,8 @@ import * as styles from './BaseStation.less';
 			dispatch({ type: 'eslBaseStation/deleteBaseStation', payload }),
 		restartBaseStation: payload =>
 			dispatch({ type: 'eslBaseStation/restartBaseStation', payload }),
+		changeBaseStationName: payload =>
+			dispatch({ type: 'eslBaseStation/changeBaseStationName', payload }),
 	})
 )
 class BaseStation extends Component {
@@ -46,6 +48,7 @@ class BaseStation extends Component {
 			getBaseStationDetail,
 			deleteBaseStation,
 			restartBaseStation,
+			changeBaseStationName,
 			changeSearchFormValue,
 			clearSearch,
 		} = this.props;
@@ -71,6 +74,7 @@ class BaseStation extends Component {
 						getBaseStationDetail,
 						deleteBaseStation,
 						restartBaseStation,
+						changeBaseStationName
 					}}
 				/>
 			</div>

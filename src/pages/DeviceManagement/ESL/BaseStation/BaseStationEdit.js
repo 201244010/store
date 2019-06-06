@@ -3,22 +3,22 @@ import { Input } from 'antd';
 import { formatMessage } from 'umi/locale';
 
 const BaseStationEdit = props => {
-	const { record } = props;
+	const { record, onChange } = props;
 
 	return (
 		<div className="detail-info">
 			<div className="detail-info-item">
 				<span className="detail-info-label">
-					{formatMessage({ id: 'esl.device.ap.id' })}：
+					{formatMessage({ id: 'esl.device.ap.sn' })}：
 				</span>
-				<span className="detail-info-content">{record.ap_code}</span>
+				<span className="detail-info-content">{record.sn}</span>
 			</div>
 			<div className="detail-info-item">
 				<span className="detail-info-label">
 					{formatMessage({ id: 'esl.device.ap.name' })}：
 				</span>
 				<div className="detail-input-wrapper">
-					<Input defaultValue={record.name} />
+					<Input value={record.name} onChange={(e) => onChange(e.target.value)} />
 				</div>
 			</div>
 		</div>

@@ -12,9 +12,6 @@ export default {
 					hmr: true,
 					immer: true,
 				},
-				targets: {
-					ie: 11,
-				},
 				locale: {
 					default: 'zh-CN', // default zh-CN
 					baseNavigator: false, // default true, when it is true, will use `navigator.language` overwrite default
@@ -49,8 +46,13 @@ export default {
 			from: 'src/assets/css',
 			to: 'css',
 		},
+		{
+			from: 'src/assets/favicon.ico',
+			to:'static/favicon.ico'
+		}
 	],
-	targets: { ie: 11 },
+	targets: { ie: 9 },
+	treeShaking: true,
 	/**
 	 * 路由相关配置
 	 */
@@ -129,6 +131,11 @@ export default {
 							name: 'electricLabel',
 							component: './DeviceManagement/ESL/ElectricLabel',
 						},
+						// {
+						// 	path: '/esl/commRecord',
+						// 	name: 'commRecord',
+						// 	component: './DeviceManagement/ESL/CommRecord',
+						// },
 						{
 							path: '/esl/baseStation',
 							name: 'baseStation',
@@ -159,6 +166,11 @@ export default {
 							],
 						},
 						{ path: '/esl', redirect: '/esl/electricLabel' },
+						// {
+						// 	path: '/esl/systemConfig',
+						// 	name: 'systemConfig',
+						// 	component: './DeviceManagement/ESL/SystemConfig',
+						// },
 					],
 				},
 				{

@@ -9,6 +9,7 @@ export default {
 	'studio.component.qrcode': '二维码',
 	'studio.action.copy': '复制',
 	'studio.action.paste': '粘贴',
+	'studio.action.cut': '剪切',
 	'studio.action.delete': '删除',
 	'studio.action.save': '保存',
 	'studio.action.check': '检查',

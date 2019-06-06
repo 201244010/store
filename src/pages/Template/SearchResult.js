@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Table, Divider, Modal, Button, Form, Input, Select } from 'antd';
+import { Table, Divider, Modal, Button, Form, Input, Select, Row, Col } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { unixSecondToDate } from '@/utils/utils';
 import * as styles from './index.less';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT } from '@/constants/form';
 
 const { Option } = Select;
 
@@ -20,6 +21,25 @@ class SearchResult extends Component {
 			newVisible: false,
 		};
 	}
+
+	changeFormValues = (inputType, fieldName, e) => {
+		const { changeSearchFormValue } = this.props;
+		changeSearchFormValue({
+			options: {
+				[fieldName]: inputType === 'input' ? e.target.value : e,
+			},
+		});
+	};
+
+	onFormChange = async (type, value) => {
+		const { changeSearchFormValue } = this.props;
+		await changeSearchFormValue({
+			options: {
+				[type]: value
+			}
+		});
+		this.search();
+	};
 
 	onTableChange = pagination => {
 		const { fetchTemplates } = this.props;
@@ -104,9 +124,15 @@ class SearchResult extends Component {
 		});
 	};
 
+	search = () => {
+		const { fetchTemplates } = this.props;
+		fetchTemplates();
+	};
+
 	render() {
 		const {
 			props: {
+				searchFormValues,
 				screenTypes,
 				colors,
 				loading,
@@ -187,9 +213,75 @@ class SearchResult extends Component {
 		return (
 			<div>
 				<div style={{ marginBottom: 20 }}>
-					<Button loading={loading} type="primary" icon="plus" onClick={this.showNew}>
-						{formatMessage({ id: 'esl.device.template.new' })}
-					</Button>
+					<Form {...{ ...FORM_ITEM_LAYOUT, ...FORM_LABEL_LEFT }}>
+						<Row gutter={FORM_FORMAT.gutter}>
+							<Col xl={6} lg={6} md={24}>
+								<Form.Item>
+									<Input
+										style={{width: '100%'}}
+										placeholder={formatMessage({
+											id: 'esl.device.template.name.require',
+										})}
+										maxLength={60}
+										value={searchFormValues.keyword}
+										onChange={e => this.changeFormValues('input', 'keyword', e)}
+									/>
+								</Form.Item>
+							</Col>
+							<Col xl={6} lg={6} md={24}>
+								<Button loading={loading} type="primary" onClick={this.search}>{formatMessage({id: 'btn.query'})}</Button>
+							</Col>
+							<Col xl={12} lg={12} md={24} style={{textAlign: 'right'}}>
+								<Button loading={loading} type="primary" icon="plus" onClick={this.showNew}>
+									{formatMessage({ id: 'esl.device.template.new' })}
+								</Button>
+							</Col>
+						</Row>
+						<div style={{ marginBottom: 20 }}>
+							<span style={{marginRight: 30}}>{formatMessage({ id: 'esl.device.template.size' })}:</span>
+							<Button
+								type={searchFormValues.screen_type === -1 ? 'primary' : 'default'}
+								style={{marginRight: 30}}
+								onClick={() => {this.onFormChange('screen_type', -1);}}
+							>
+								{formatMessage({ id: 'select.all' })}
+							</Button>
+							{
+								screenTypes.map(type =>
+									<Button
+										type={searchFormValues.screen_type === type.id ? 'primary' : 'default'}
+										style={{marginRight: 30}}
+										key={type.id}
+										onClick={() => {this.onFormChange('screen_type', type.id);}}
+									>
+										{type.name}
+									</Button>
+								)
+							}
+						</div>
+						<div>
+							<span style={{marginRight: 30}}>{formatMessage({ id: 'esl.device.template.color.support' })}:</span>
+							<Button
+								type={searchFormValues.colour === -1 ? 'primary' : 'default'}
+								style={{marginRight: 30}}
+								onClick={() => {this.onFormChange('colour', -1);}}
+							>
+								{formatMessage({ id: 'select.all' })}
+							</Button>
+							{
+								colors.map(color =>
+									<Button
+										type={searchFormValues.colour === color.id ? 'primary' : 'default'}
+										style={{marginRight: 30}}
+										key={color.id}
+										onClick={() => {this.onFormChange('colour', color.id);}}
+									>
+										{color.name}
+									</Button>
+								)
+							}
+						</div>
+					</Form>
 				</div>
 				<Table
 					rowKey="id"

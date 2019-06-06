@@ -50,6 +50,18 @@ class SearchResult extends Component {
 		});
 	};
 
+	saveStationName = () => {
+		const {selectedRecord} = this.state;
+		const {changeBaseStationName} = this.props;
+ 		changeBaseStationName({
+			options: {
+				ap_id: selectedRecord.id,
+				name: selectedRecord.name
+			},
+		});
+		this.closeModal('editVisible');
+	};
+
 	closeModal = name => {
 		const { [name]: modalStatus } = this.state;
 		this.setState({
@@ -96,14 +108,24 @@ class SearchResult extends Component {
 		});
 	};
 
+	onChangeName = (name) => {
+		const {selectedRecord} = this.state;
+		this.setState({
+			selectedRecord: {
+				...selectedRecord,
+				name
+			}
+		});
+	};
+
 	render() {
 		const { loading, data, pagination, stationInfo } = this.props;
 		const { detailVisible, editVisible, selectedRecord } = this.state;
 
 		const columns = [
 			{
-				title: formatMessage({ id: 'esl.device.ap.id' }),
-				dataIndex: 'ap_code',
+				title: formatMessage({ id: 'esl.device.ap.sn' }),
+				dataIndex: 'sn',
 			},
 			{
 				title: formatMessage({ id: 'esl.device.ap.name' }),
@@ -140,6 +162,13 @@ class SearchResult extends Component {
 								</a>
 							</>
 						)}
+						<Divider type="vertical" />
+						<a
+							href="javascript: void (0);"
+							onClick={() => this.showEditVisible(record)}
+						>
+							{formatMessage({ id: 'list.action.edit' })}
+						</a>
 						<Divider type="vertical" />
 						<a
 							href="javascript: void (0);"
@@ -188,11 +217,11 @@ class SearchResult extends Component {
 				<Modal
 					title={formatMessage({ id: 'esl.device.ap.edit' })}
 					visible={editVisible}
-					onOk={() => this.closeModal('editVisible')}
+					onOk={() => this.saveStationName('editVisible')}
 					onCancel={() => this.closeModal('editVisible')}
 					destroyOnClose
 				>
-					<BaseStationEdit record={selectedRecord} />
+					<BaseStationEdit record={selectedRecord} onChange={this.onChangeName} />
 				</Modal>
 			</div>
 		);
