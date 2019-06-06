@@ -89,7 +89,7 @@ const getBreadcrumbNameMap = menuData => {
 
 const memoizeOneGetBreadcrumbNameMap = memoizeOne(getBreadcrumbNameMap, isEqual);
 
-const checkMenuAuth = (menuData, authMenuList) =>
+const checkMenuAuth = (menuData, authMenuList = []) =>
 	menuData.filter(menu => authMenuList.includes(menu.path.slice(1)));
 
 export default {
@@ -109,8 +109,10 @@ export default {
 			let filteredMenuData = menuData;
 			const response = yield call(MenuAction.getAuthMenu);
 			if (response && response.code === ERROR_OK) {
-				const { menu_list: menuList = [] } = response || {};
-				filteredMenuData = checkMenuAuth(menuData, menuList);
+				const { menu_list: menuList = [] } = response.data || {};
+				if (menuList && menuList.length > 0) {
+					filteredMenuData = checkMenuAuth(menuData, menuList);
+				}
 			}
 
 			yield put({
