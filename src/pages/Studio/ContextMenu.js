@@ -30,6 +30,15 @@ export default class ContextMenu extends Component {
 		this.hideRightToolBox();
 	};
 
+	handleCut = () => {
+		const {
+			selectedShapeName, componentsDetail, copySelectedComponent, deleteSelectedComponent
+		} = this.props;
+		copySelectedComponent(componentsDetail[selectedShapeName]);
+		deleteSelectedComponent(selectedShapeName);
+		this.hideRightToolBox();
+	};
+
 	hideRightToolBox = () => {
 		const { toggleRightToolBox } = this.props;
 
@@ -51,12 +60,23 @@ export default class ContextMenu extends Component {
 				className={styles['right-tool-box']}
 				style={{ left: position.left, top: position.top }}
 			>
+				{
+					canCopyOrDelete ?
+						<div className={styles['context-item']} onClick={this.handleCut}>
+							{formatMessage({ id: 'studio.action.cut' })}
+						</div> :
+						<div className={`${styles['context-item']} ${styles.disabled}`}>
+							{formatMessage({ id: 'studio.action.cut' })}
+						</div>
+				}
 				{canCopyOrDelete ? (
 					<div className={styles['context-item']} onClick={this.handleCopy}>
 						{formatMessage({ id: 'studio.action.copy' })}
 					</div>
 				) : (
-					<div className={`${styles['context-item']} ${styles.disabled}`}>复制</div>
+					<div className={`${styles['context-item']} ${styles.disabled}`}>
+						{formatMessage({ id: 'studio.action.copy' })}
+					</div>
 				)}
 				{copiedComponent && copiedComponent.type ? (
 					<div className={styles['context-item']} onClick={this.handlePaste}>
