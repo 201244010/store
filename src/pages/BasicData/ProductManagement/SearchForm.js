@@ -44,7 +44,7 @@ class SearchForm extends Component {
 			<div className={styles['search-bar']}>
 				<Form layout="inline">
 					<Row gutter={FORM_FORMAT.gutter}>
-						<Col span={16}>
+						<Col {...COL_THREE_NORMAL}>
 							<Form.Item
 								label={formatMessage({ id: 'basicData.product.search.product' })}
 							>

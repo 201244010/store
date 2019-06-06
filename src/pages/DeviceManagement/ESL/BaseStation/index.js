@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
-import * as styles from './BaseStation.less';
+import styles from './BaseStation.less';
 
 @connect(
 	state => ({
