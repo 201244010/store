@@ -54,7 +54,8 @@
     "react-media": "^1.8.0",
     "react-perfect-scrollbar": "^1.5.2",
     "react-router-breadcrumbs-hoc": "^3.1.1",
-    "umi-request": "^1.0.0"
+    "umi-request": "^1.0.0",
+    "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
