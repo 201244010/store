@@ -251,10 +251,16 @@ export default class RightToolBox extends Component {
 				originFix.y = componentDetail.y;
 			}
 		});
-		const realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
+		let realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
 		let realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
 		if (SHAPE_TYPES.IMAGE === detail.type) {
 			realHeight = realWidth * detail.ratio;
+		}
+		if (SHAPE_TYPES.HLine === detail.type) {
+			realHeight = detail.strokeWidth;
+		}
+		if (SHAPE_TYPES.VLine === detail.type) {
+			realWidth = detail.strokeWidth;
 		}
 		const disabled = selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) > -1;
 		const hasRed = this.hasRed();

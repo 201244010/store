@@ -47,8 +47,21 @@ export default class BoardHeader extends Component {
 
 	handleChangeName = e => {
 		e.persist();
+		const newName = e.target.value;
+		let len = 0;
+		for (let i=0; i < newName.length; i++) {
+			if (newName.charCodeAt(i) > 127 || newName.charCodeAt(i) === 94) {
+				len += 2;
+			} else {
+				len++;
+			}
+		}
+		if (len > 40) {
+			message.warning(formatMessage({id: 'alert.template.name.too.long' }));
+			return;
+		}
 		this.setState({
-			templateName: e.target.value,
+			templateName: newName,
 		});
 	};
 
