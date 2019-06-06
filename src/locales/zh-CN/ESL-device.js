@@ -140,5 +140,9 @@ export default {
 	'esl.overview.product.total': '商品总数',
 	'esl.overview.esl.total': '价签总数',
 	'esl.overview.ap.total': '基站总数',
-	'esl.device.esl.unbind': '解绑'
+	'esl.device.esl.unbind': '解绑',
+	'esl.device.esl.comm.cause': '通信原因',
+	'esl.device.esl.comm.result': '通信结果',
+	'esl.device.esl.comm.time': '通信下发时间',
+	'esl.device.esl.comm.date': '通信日期',
 };
