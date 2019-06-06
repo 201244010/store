@@ -221,13 +221,12 @@ class StoreManagement extends Component {
 								<Button type="primary" onClick={this.handleSubmit}>
 									{formatMessage({ id: 'btn.query' })}
 								</Button>
-								<a
-									href="javascript:void(0)"
+								<Button
 									style={{ marginLeft: '20px' }}
 									onClick={this.handleReset}
 								>
 									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
-								</a>
+								</Button>
 							</Col>
 						</Row>
 					</Form>

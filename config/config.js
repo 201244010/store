@@ -46,6 +46,10 @@ export default {
 			from: 'src/assets/css',
 			to: 'css',
 		},
+		{
+			from: 'src/assets/favicon.ico',
+			to:'static/favicon.ico'
+		}
 	],
 	targets: { ie: 9 },
 	treeShaking: true,

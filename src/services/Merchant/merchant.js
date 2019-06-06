@@ -46,22 +46,9 @@ export const initialCompany = (options = {}) => {
 	return fetchApi('initSetup', opts).then(response => response.json());
 };
 
-// TODO 暂时为 mock
-export const getAuthMenu = () =>
-	// const opts = {
-	// 	body: { ...options },
-	// };
-	// return fetchApi('menu/getList', opts).then(response => response.json());
-	({
-		code: 1,
-		'menu_list': [
-			'notification',
-			'esl',
-			'product',
-			'company',
-			'template',
-			'devices',
-			'faceidLibrary',
-		],
-	})
-;
+export const getAuthMenu = (options = {}) => {
+	const opts = {
+		body: { ...options },
+	};
+	return fetchApi('menu/getList', opts).then(response => response.json());
+};
