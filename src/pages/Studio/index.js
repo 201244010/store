@@ -301,10 +301,11 @@ class Studio extends Component {
 	};
 
 	handleWheel = (e) => {
+		e.evt.preventDefault();
 		const {ctrlKey, deltaY} = e.evt;
 		if (ctrlKey) {
 			const { studio: {zoomScale}, zoomOutOrIn } = this.props;
-			let realZoomScale = zoomScale + (deltaY > 0 ? 0.1 : -0.1);
+			let realZoomScale = zoomScale + (deltaY < 0 ? 0.1 : -0.1);
 			if (realZoomScale > 3) {
 				realZoomScale = 3;
 			} else if (realZoomScale < 0.5) {
