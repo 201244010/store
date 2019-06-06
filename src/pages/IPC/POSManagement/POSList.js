@@ -338,7 +338,6 @@ class POSList extends React.Component {
 		}else{
 			const code = await checkSN(ipcSN, posSN);
 			if (code !== 1) {
-
 				target.error = true;
 
 				switch (code) {
@@ -368,6 +367,7 @@ class POSList extends React.Component {
 			}
 			o.push(item);
 		});
+
 		this.setState({
 			snList: o
 		});
@@ -391,13 +391,13 @@ class POSList extends React.Component {
 
 			if (item.error === undefined) {
 				const result = await this.validateSN(item.sn, ipcSN);
-
+				// console.log('result: ', result);
 				if (result === true) {
 					flag = true;
 				}
 			}
 		}));
-
+		// console.log('flag: ', flag);
 		if (flag) {
 			return;
 		}
@@ -581,6 +581,8 @@ class POSList extends React.Component {
 												onChange={
 													(e) => {
 														snList[index].sn = e.target.value;
+														snList[index].error = undefined;
+
 														this.setState({
 															snList
 														});

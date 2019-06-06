@@ -12,4 +12,5 @@ export default {
 	'videoPlayer.play': '播放',
 	'videoPlayer.enterFullscreen': '进入全屏',
 	'videoPlayer.exitFullscreen': '退出全屏',
+	'videoPlayer.ppiChanged': '当前播放画面已切换为%mode%模式'
 };

@@ -288,7 +288,7 @@ class DeviceBasicInfo extends React.Component {
 										{
 											validator: (rule, value, callback) => {
 												const len = mbStringLength(value);
-												if (len < 36) {
+												if (len <= 36) {
 													callback();
 												}else{
 													callback(false);
