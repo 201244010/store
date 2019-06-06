@@ -63,13 +63,12 @@ class SearchForm extends Component {
 								<Button type="primary" onClick={this.search}>
 									{formatMessage({ id: 'btn.query' })}
 								</Button>
-								<a
-									href="javascript:void(0)"
+								<Button
 									style={{ marginLeft: '20px' }}
 									onClick={this.handleReset}
 								>
 									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
-								</a>
+								</Button>
 							</Form.Item>
 						</Col>
 					</Row>
