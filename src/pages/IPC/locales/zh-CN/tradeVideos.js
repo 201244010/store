@@ -10,7 +10,7 @@ export default {
 	'tradeVideos.unknown': '未知',
 	'tradeVideos.getVideoFailed': '获取审计视频失败，请稍候重试。',
 	'tradeVideos.all': '所有',
-	'tradeVideos.keywords': '请输入关键字进行筛选',
+	'tradeVideos.keywords': '请输入商品名称',
 	'tradeVideos.product': '商品',
 	'tradeVideos.amount': '数量',
 	'tradeVideos.query': '查询',

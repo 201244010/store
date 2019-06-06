@@ -31,6 +31,7 @@ class ReVideojs extends React.Component{
 					isLive: true,
 					cors: true,
 					// withCredentials: true,
+					autoCleanupSourceBuffer: true,
 					enableStashBuffer: false
 				}
 			}
