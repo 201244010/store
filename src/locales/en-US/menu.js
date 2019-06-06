@@ -5,6 +5,8 @@ export default {
 	'menu.serviceApplication': 'Application',
 	'menu.esl': 'ESL',
 	'menu.esl.electricLabel': 'ESL Management',
+	'menu.esl.commRecord': 'Comm Record',
+	'menu.esl.systemConfig': 'System Config',
 	'menu.esl.baseStation': 'AP Management',
 	'menu.esl.deviceUpgrade': 'OTA Update',
 	'menu.esl.deviceUpgrade.overview': 'OTA Update',
