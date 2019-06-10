@@ -258,19 +258,19 @@ export default {
 						{ path: '/company', redirect: '/company/merchantManagement' },
 					],
 				},
-				// {
-				// 	path: '/template',
-				// 	name: 'template',
-				// 	icon: 'blank',
-				// 	routes: [
-				// 		{ path: '/template', redirect: '/template/list' },
-				// 		{
-				// 			path: '/template/list',
-				// 			name: 'list',
-				// 			component: './Template',
-				// 		},
-				// 	],
-				// },
+				{
+					path: '/template',
+					name: 'template',
+					icon: 'blank',
+					routes: [
+						{ path: '/template', redirect: '/template/list' },
+						{
+							path: '/template/list',
+							name: 'list',
+							component: './Template',
+						},
+					],
+				},
 				// TODO 万有集市 临时菜单 END
 
 				// dashboard
