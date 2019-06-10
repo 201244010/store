@@ -85,6 +85,7 @@ export default class ToolItem extends Component {
 							scaleX: 1,
 							scaleY: 1,
 							rotation: 0,
+							precision: 2
 						});
 					}
 					this.newLeft = 0;
