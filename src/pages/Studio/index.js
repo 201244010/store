@@ -484,10 +484,7 @@ class Studio extends Component {
 		const targetDetail = componentsDetail[targetName];
 
 		const textPosition = e.target.getAbsolutePosition();
-		const stageBox = e.target
-			.getStage()
-			.getContainer()
-			.getBoundingClientRect();
+		const stageBox = e.target.getStage().getContainer().getBoundingClientRect();
 		const inputPosition = {
 			x: stageBox.left + textPosition.x,
 			y: stageBox.top + textPosition.y,
@@ -519,7 +516,7 @@ class Studio extends Component {
 		const saveToLocal = () => {
 			const inputValue = inputEle.value;
 			if (type.indexOf(SHAPE_TYPES.PRICE) > -1 && !RegExp.money.test(inputValue)) {
-				message.warning('输入价格不正确');
+				message.warning(formatMessage({ id: 'studio.tool.error.price.format' }));
 				inputEle.value = '';
 				return;
 			}
