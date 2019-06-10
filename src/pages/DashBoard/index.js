@@ -1,5 +1,12 @@
 import React from 'react';
+import SearchBar from './SearchBar';
 
-const DashBoard = () => <div>工作台</div>;
+import styles from './DashBoard.less';
+
+const DashBoard = () => (
+	<div className={styles['dashboard-wrapper']}>
+		<SearchBar />
+	</div>
+);
 
 export default DashBoard;
