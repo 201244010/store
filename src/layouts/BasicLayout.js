@@ -13,6 +13,7 @@ import { formatMessage, getLocale } from 'umi/locale';
 import MQTTWrapper from '@/components/MQTT';
 import Authorized from '@/utils/Authorized';
 import NotFountPage from '@/pages/404';
+import MenuCheck from '@/components/AuthorithCheck/MenuCheck';
 import router from 'umi/router';
 import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
@@ -111,7 +112,7 @@ class BasicLayout extends React.PureComponent {
 
 	matchParamsPath = (pathname, breadcrumbNameMap) => {
 		const pathKey = Object.keys(breadcrumbNameMap).find(key =>
-			pathToRegexp(key).test(pathname)
+			pathToRegexp(key).test(pathname),
 		);
 		return breadcrumbNameMap[pathKey];
 	};
@@ -220,15 +221,15 @@ class BasicLayout extends React.PureComponent {
 						<Authorized
 							authority={routerConfig}
 							noMatch={<NotFountPage customStyle={{ color: '#434E59' }} />}
-						>
-							{children}
-						</Authorized>
+						/>
+						{children}
 					</Content>
 				</Layout>
 			</Layout>
 		);
 		return (
 			<React.Fragment>
+				<MenuCheck menuData={menuData} />
 				<DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
 					<ContainerQuery query={query}>
 						{params => (
@@ -257,7 +258,7 @@ export default connect(
 		getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		dispatch,
-	})
+	}),
 )(props => (
 	<Media query="(max-width: 599px)">
 		{isMobile => <BasicLayout {...props} isMobile={isMobile} />}

@@ -1,7 +1,9 @@
 import MqttModel from '@/services/Mqtt/MqttModel';
 import moment from 'moment';
 import { customizeFetch } from '@/utils/fetch';
-import { IPC_SERVER } from '@/config';
+import CONFIG from '@/config';
+
+const { IPC_SERVER } = CONFIG;
 
 export const MESSAGE_TYPE = {
 	EVENT: 'event',
