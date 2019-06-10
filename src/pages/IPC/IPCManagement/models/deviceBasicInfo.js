@@ -65,12 +65,6 @@ export default {
 
 		},
 		*update({ payload: { sn, name }}, { put, call }) {
-			// const type = yield put.resolve({
-			// 	type:'ipcList/getDeviceType',
-			// 	payload:{
-			// 		sn
-			// 	}
-			// });
 
 			const deviceId = yield put.resolve({
 				type: 'ipcList/getDeviceId',
@@ -78,40 +72,6 @@ export default {
 					sn
 				}
 			});
-
-			// const shopId = yield put.resolve({
-			// 	type: 'global/getShopIdFromStorage'
-			// });
-
-			// const companyId = yield put.resolve({
-			// 	type: 'global/getCompanyIdFromStorage'
-			// });
-
-			// const topicPublish = yield put.resolve({
-			// 	type:'mqttIpc/generateTopic',
-			// 	payload:{
-			// 		deviceType: type,
-			// 		messageType: 'request',
-			// 		method: 'pub'
-			// 	}
-			// });
-
-			// yield put({
-			// 	type:'mqttIpc/publish',
-			// 	payload:{
-			// 		topic: topicPublish,
-			// 		message: {
-			// 			opcode: OPCODE.READ,
-			// 			param: {
-			// 				// sn,
-			// 				company_id: companyId,
-			// 				shop_id: shopId,
-			// 				device_id: deviceId,
-			// 				device_name: name
-			// 			}
-			// 		}
-			// 	}
-			// });
 
 			const { code } = yield call(updateIPCName, {
 				deviceId,

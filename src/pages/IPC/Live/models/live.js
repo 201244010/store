@@ -6,12 +6,17 @@ const PPIS = {
 	'720': 1
 };
 
+const OPCODE = {
+	CHANGE_PPI: '0x3125'
+};
+
 export default {
 	namespace: 'live',
 	state: {
 		streamId: '',
 		url: '',
-		ppi: ''
+		ppi: '',
+		ppiChanged: false
 	},
 	reducers: {
 		updateUrl(state, { payload: { url, streamId, ppi }}) {
@@ -33,6 +38,11 @@ export default {
 			// 	...state,
 			// 	ppi
 			// };
+		},
+		ppiChanged(state, { payload: { streamId, isChanged }}) {
+			if (state.streamId === streamId) {
+				state.ppiChanged = isChanged;
+			}
 		}
 	},
 	effects: {
@@ -107,7 +117,7 @@ export default {
 			});
 
 			const topic = yield put.resolve({
-				type: 'mqtt/generateTopic',
+				type: 'mqttIpc/generateTopic',
 				payload: {
 					deviceType,
 					messageType: 'request',
@@ -118,11 +128,11 @@ export default {
 			const streamId = yield select((state) => state.live.streamId);
 
 			yield put({
-				type: 'mqtt/publish',
+				type: 'mqttIpc/publish',
 				payload: {
 					topic,
 					message: {
-						opcode: '0x3125',
+						opcode: OPCODE.CHANGE_PPI, // '0x3125',
 						param: {
 							stream_id: streamId,
 							sn,
@@ -137,6 +147,44 @@ export default {
 				payload: {
 					ppi
 				}
+			});
+		}
+	},
+	subscriptions: {
+		setup ({ dispatch }) {
+			const listeners = [
+				{
+					opcode: OPCODE.CHANGE_PPI,
+					models: ['FS1', 'SS1'],
+					type: 'response',
+					handler: (topic, message) => {
+						const { data } = message;
+
+						dispatch({
+							type: 'ppiChanged',
+							payload: {
+								streamId: data.stream_id,
+								isChanged: true
+							}
+						});
+
+						setTimeout(() => {
+							dispatch({
+								type: 'ppiChanged',
+								payload: {
+									streamId: data.stream_id,
+									isChanged: false
+								}
+							});
+						}, 3*1000);
+					}
+				}
+			];
+
+
+			dispatch({
+				type: 'mqttIpc/addListener',
+				payload: listeners
 			});
 		}
 	}

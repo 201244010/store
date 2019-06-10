@@ -6,7 +6,7 @@ import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
 import { ACTION_MAP } from '@/constants/mqttActionMap';
 import { getRandomString } from '@/utils/utils';
 
-// import Ipc from './Ipc';
+import Ipc from './Ipc';
 
 function MQTTWrapper(WrapperedComponent) {
 	@connect(
@@ -22,9 +22,9 @@ function MQTTWrapper(WrapperedComponent) {
 				dispatch({ type: 'mqttStore/setMessageHandler', payload }),
 			destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
 			getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
-		})
+		}),
 	)
-	// @Ipc
+	@Ipc
 	class Wrapper extends Component {
 		constructor(props) {
 			super(props);
@@ -97,19 +97,21 @@ function MQTTWrapper(WrapperedComponent) {
 			} = this.props;
 
 			await getUserInfo();
-			await initializeClient();
-			const registerTopic = await generateTopic({ service: 'register', action: 'sub' });
-			const registerTopicPub = await generateTopic({ service: 'register', action: 'pub' });
-			const notificationTopic = await generateTopic({
-				service: 'notification',
-				action: 'sub',
-			});
+			const initializeStatus = await initializeClient();
+			if (initializeStatus === 'success') {
+				const registerTopic = await generateTopic({ service: 'register', action: 'sub' });
+				const registerTopicPub = await generateTopic({ service: 'register', action: 'pub' });
+				const notificationTopic = await generateTopic({
+					service: 'notification',
+					action: 'sub',
+				});
 
-			await setTopicListener({ service: 'notification', handler: this.showNotification });
+				await setTopicListener({ service: 'notification', handler: this.showNotification });
 
-			await subscribe({ topic: [registerTopic, notificationTopic] });
-			// console.log('subscribed');
-			await publish({ topic: registerTopicPub, message: REGISTER_PUB_MSG });
+				await subscribe({ topic: [registerTopic, notificationTopic] });
+				// console.log('subscribed');
+				await publish({ topic: registerTopicPub, message: REGISTER_PUB_MSG });
+			}
 		};
 
 		render() {

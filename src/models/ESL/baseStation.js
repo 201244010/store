@@ -177,6 +177,28 @@ export default {
 				payload: { loading: false },
 			});
 		},
+
+		*changeBaseStationName({ payload }, { put, call }) {
+			const { options } = payload;
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+
+			const response = yield call(Actions.changeBaseStationName, options);
+			if (response.code === ERROR_OK) {
+				message.success(formatMessage({ id: 'esl.device.ap.change.name' }));
+				yield put({
+					type: 'fetchBaseStations',
+					payload: { options: {} },
+				});
+			}
+
+			yield put({
+				type: 'updateState',
+				payload: { loading: false },
+			});
+		},
 	},
 	reducers: {
 		updateState(state, action) {

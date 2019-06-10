@@ -12,9 +12,6 @@ export default {
 					hmr: true,
 					immer: true,
 				},
-				targets: {
-					ie: 11,
-				},
 				locale: {
 					default: 'zh-CN', // default zh-CN
 					baseNavigator: false, // default true, when it is true, will use `navigator.language` overwrite default
@@ -49,8 +46,13 @@ export default {
 			from: 'src/assets/css',
 			to: 'css',
 		},
+		{
+			from: 'src/assets/favicon.ico',
+			to:'static/favicon.ico'
+		}
 	],
-	targets: { ie: 11 },
+	targets: { ie: 9 },
+	treeShaking: true,
 	/**
 	 * 路由相关配置
 	 */
@@ -129,6 +131,11 @@ export default {
 							name: 'electricLabel',
 							component: './DeviceManagement/ESL/ElectricLabel',
 						},
+						// {
+						// 	path: '/esl/commRecord',
+						// 	name: 'commRecord',
+						// 	component: './DeviceManagement/ESL/CommRecord',
+						// },
 						{
 							path: '/esl/baseStation',
 							name: 'baseStation',
@@ -159,6 +166,11 @@ export default {
 						// 	],
 						// },
 						{ path: '/esl', redirect: '/esl/electricLabel' },
+						// {
+						// 	path: '/esl/systemConfig',
+						// 	name: 'systemConfig',
+						// 	component: './DeviceManagement/ESL/SystemConfig',
+						// },
 					],
 				},
 				{
@@ -407,60 +419,96 @@ export default {
 				// 	path: '/live',
 				// 	component: './IPC/Live/Live.js',
 				// },
-				// {
-				// 	path: '/devices',
-				// 	icon: 'blank',
-				// 	name: 'devices',
-				// 	routes: [
-				// 		{
-				// 			path: '/devices/list',
-				// 			name: 'list',
-				// 			routes: [
-				// 				{
-				// 					path: '/devices/list/live',
-				// 					name: 'live',
-				// 					hideInMenu: true,
-				// 					component: './IPC/Live/Live.js',
-				// 				},
-				// 				{
-				// 					path: '/devices/list/ipcManagement',
-				// 					name: 'ipcManagement',
-				// 					hideInMenu: true,
-				// 					component: './IPC/IPCManagement/IPCManagement.js',
-				// 				},
-				// 				{
-				// 					path: '/devices/list',
-				// 					// name: 'list',
-				// 					component: './IPC/IPCList/IPCList.js',
-				// 				},
-				// 			]
-				// 		},
-				// 		{
-				// 			path: '/devices/motionMessage',
-				// 			name: 'motionMessage',
-				// 			component: './IPC/MotionList/MotionList.js',
-				// 		},
-				//
-				// 	],
-				// },
-				// {
-				// 	path: '/faceidLibrary',
-				// 	name: 'faceidLibrary',
-				// 	icon: 'blank',
-				// 	// component: './index.js',
-				// 	routes: [
-				// 		{
-				// 			path: '/faceidLibrary/faceidLibraryList',
-				// 			name: 'list',
-				// 			component: './IPC/FaceidLibrary/LibraryList.js',
-				// 		},
-				// 		{
-				// 			path: '/faceidLibrary/createLibrary',
-				// 			// name: 'faceidLibrary.create',
-				// 			component: './IPC/FaceidLibrary/CreateLibrary.js',
-				// 		},
-				// 	],
-				// },
+				{
+					path: '/devices',
+					icon: 'blank',
+					name: 'devices',
+					routes: [
+						{
+							path: '/devices/ipcList',
+							name: 'list',
+							routes: [
+								{
+									path: '/devices/ipcList/live',
+									name: 'live',
+									hideInMenu: true,
+									component: './IPC/Live/Live.js',
+								},
+								{
+									path: '/devices/ipcList/ipcManagement',
+									name: 'ipcManagement',
+									hideInMenu: true,
+									component: './IPC/IPCManagement/IPCManagement.js',
+								},
+								{
+									path: '/devices/ipcList',
+									// name: 'list',
+									component: './IPC/IPCList/IPCList.js',
+								}
+							]
+						},
+						{
+							path: '/devices/motionMessage',
+							name: 'motionMessage',
+							component: './IPC/MotionList/MotionList.js',
+						},
+						{
+							path: '/devices',
+							redirect: '/devices/ipcList'
+						}
+					],
+				},
+				{
+					path: '/cashVerify',
+					icon: 'blank',
+					name: 'cashVerify',
+					routes: [
+						{
+							path: '/cashVerify/posList',
+							name: 'bindPOSDevice',
+							// hideInMenu: true,
+							component: './IPC/POSManagement/POSList.js'
+						},
+						{
+							path: '/cashVerify/bindPOSDevice',
+							name: 'bindPOSDevice',
+							hideInMenu: true,
+							component: './IPC/POSManagement/BindPOS.js'
+						},
+						{
+							path: '/cashVerify/videos',
+							name: 'videos',
+							hideInMenu: true,
+							component: './IPC/TradeVideos/TradeVideos.js',
+						},
+						{
+							path: '/cashVerify',
+							redirect: '/cashVerify/posList'
+						}
+					]
+				},
+				{
+					path: '/faceidLibrary',
+					name: 'faceidLibrary',
+					icon: 'blank',
+					// component: './index.js',
+					routes: [
+						{
+							path: '/faceidLibrary/faceidLibraryList',
+							name: 'list',
+							component: './IPC/FaceidLibrary/LibraryList.js',
+						},
+						{
+							path: '/faceidLibrary/createLibrary',
+							// name: 'faceidLibrary.create',
+							component: './IPC/FaceidLibrary/CreateLibrary.js',
+						},
+						{
+							path: '/faceidLibrary',
+							redirect: '/faceidLibrary/faceidLibraryList'
+						}
+					],
+				},
 				{ path: '/', redirect: '/esl' },
 			],
 		},

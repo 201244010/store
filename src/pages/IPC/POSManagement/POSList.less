@@ -1,0 +1,144 @@
+// .add-reactangle{
+// 	border-style: dotted;
+// 	border-width: 1px;
+// 	border-color: #D8D8D8;
+// 	height: 70px;
+// 	width: 100%;
+// 	// text-align: center;
+// 	// vertical-align: middle;
+// 	display: flex;
+// 	justify-content: center;
+// 	align-items: center;
+// }
+.no-ipc{
+	text-align: center;
+}
+.row-operation{
+	// margin: 0 3px;
+	padding: 0 8px;
+	border-right: 1px #CED2D9 solid;
+
+	&:last-child{
+		border-right: 0 none;
+	}
+}
+
+.pos-list-block{
+	margin: 20px 0;
+
+	h3{
+		font-size: 16px;
+		font-weight: normal;
+		margin-bottom: 24px;
+	}
+
+	:global{
+		.ant-table-placeholder{
+			display: none;
+		}
+	}
+
+	.add-reactangle{
+		border: 1px dashed #CED2D9;
+		border-radius: 4px;
+
+		text-align: center;
+
+
+		padding: 12px;
+
+
+		margin-top: 16px;
+		margin-bottom: 8px;
+
+		a{
+			font-size: 16px;
+			color: #525866;
+			line-height: 1;
+		}
+	}
+}
+
+.status-block {
+	.text{
+		display: inline-block;
+		vertical-align: middle;
+	}
+	.icon{
+		display:inline-block;
+		vertical-align: middle;
+		width: 6px;
+		height: 6px;
+		margin-right: 8px;
+
+		border-radius: 50%;
+
+		&.success-icon{
+			background-color: #6DD13B;
+		}
+
+		&.error-icon {
+			background-color: #FF3838;
+		}
+	}
+
+}
+// .error-icon{
+// 	display:inline-block;
+// 	width: 14px;
+// 	height: 14px;
+// 	background: url('@/assets/imgs/error.png') no-repeat center center transparent;
+// }
+
+.shortcut{
+	width: 100px;
+	height: 56px;
+	border-radius: 4px;
+	overflow: hidden;
+	background-color: #000000;
+
+	.image{
+		max-width: 100%;
+		max-height: 100%;
+		display: block;
+		margin: 0 auto;
+	}
+}
+
+.input-line-block{
+	position: relative;
+	padding-right: 40px;
+
+	.info-input{
+		display: inline-block;
+		margin-right: 32px;
+	}
+
+	.btn-sn{
+		position: absolute;
+		display: block;
+
+		font-size: 0;
+		margin: 8px 0;
+
+		width: 24px;
+		height: 24px;
+
+		top: 0;
+		right: 0;
+
+		background: none no-repeat center center transparent;
+		background-size: contain;
+
+		&:hover{
+			opacity: 0.8;
+		}
+
+		&.btn-add{
+			background-image: url(@/assets/imgs/btn-bind-pos-add.svg);
+		}
+		&.btn-remove{
+			background-image: url(@/assets/imgs/btn-bind-pos-remove.svg);
+		}
+	}
+}
