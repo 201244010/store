@@ -4,6 +4,7 @@ import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
 import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
+import Storage from '@konata9/storage.js';
 
 const { check } = Authorized;
 
@@ -96,7 +97,7 @@ export default {
 	namespace: 'menu',
 
 	state: {
-		menuData: [],
+		menuData: Storage.get('FILTERED_MENU', 'session') || [],
 		breadcrumbNameMap: {},
 	},
 
@@ -112,12 +113,16 @@ export default {
 				const { menu_list: menuList = [] } = response.data || {};
 				if (menuList && menuList.length > 0) {
 					filteredMenuData = checkMenuAuth(menuData, menuList);
+					Storage.set({ FILTERED_MENU: filteredMenuData }, 'session');
 				}
 			}
 
 			yield put({
 				type: 'save',
-				payload: { menuData: filteredMenuData, breadcrumbNameMap },
+				payload: {
+					menuData: filteredMenuData,
+					breadcrumbNameMap,
+				},
 			});
 		},
 	},
