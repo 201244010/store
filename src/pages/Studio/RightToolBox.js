@@ -222,7 +222,7 @@ export default class RightToolBox extends Component {
 		}
 		if (this.hasSubString(SHAPE_TYPES.TEXT)) {
 			ret = bindFields.filter(
-				item => item.indexOf('Price') === -1 && item.indexOf('Code') === -1
+				item => item.indexOf('Price') === -1 && item.indexOf('QrCode') === -1
 			);
 		}
 
@@ -778,9 +778,9 @@ export default class RightToolBox extends Component {
 							<Col span={24}>
 								<InputNumber
 									style={{ width: '100%' }}
-									placeholder="价格"
+									placeholder={formatMessage({ id: 'studio.price.component' })}
 									value={detail.text}
-									precision={2}
+									precision={detail.precision}
 									onChange={value => {
 										this.handleDetail('text', value);
 									}}
@@ -895,56 +895,40 @@ export default class RightToolBox extends Component {
 								</Fragment>
 							)}
 						</Row>
-						{/*
-                            <Row style={{ marginBottom: 10 }} gutter={20}>
-
-                            * <Col
-                            span={6}
-                            className={`${styles.formatter} ${
-                                detail.fontStyle.indexOf("italic") > -1
-                                    ? `${styles.active}`
-                                    : ""
-                                }`}
-                        >
-                            <Icon
-                                type="italic"
-                                onClick={() => {
-                                    this.handleFontStyle(detail, "italic");
-                                }}
-                            />
-                        </Col>
-                        <Col
-                            span={6}
-                            className={`${styles.formatter} ${
-                                detail.textDecoration === "underline" ? `${styles.active}` : ""
-                                }`}
-                        >
-                            <Icon
-                                type="underline"
-                                onClick={() => {
-                                    this.handleTextDecoration(detail, "underline");
-                                }}
-                            />
-                        </Col>
-                        <Col
-                            span={6}
-                            className={`${styles.formatter} ${
-                                detail.textDecoration === "line-through"
-                                    ? `${styles.active}`
-                                    : ""
-                                }`}
-                        >
-                            <Icon
-                                type="strikethrough"
-                                onClick={() => {
-                                    this.handleTextDecoration(detail, "line-through");
-                                }}
-                            />
-                        </Col>
-
-                            }
-                        </Row>
-                        * */}
+						<Row style={{ marginBottom: 10 }} gutter={20}>
+							<Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('bold') > -1 ? `${styles.active}` : ''}`}>
+								<Icon
+									type="bold"
+									onClick={() => {
+										this.handleFontStyle(detail, 'bold');
+									}}
+								/>
+							</Col>
+							<Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('italic') > -1 ? `${styles.active}` : ''}`}>
+								<Icon
+									type="italic"
+									onClick={() => {
+										this.handleFontStyle(detail, 'italic');
+									}}
+								/>
+							</Col>
+							<Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
+								<Icon
+									type="underline"
+									onClick={() => {
+										this.handleTextDecoration(detail, 'underline');
+									}}
+								/>
+							</Col>
+							<Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
+								<Icon
+									type="strikethrough"
+									onClick={() => {
+										this.handleTextDecoration(detail, 'line-through');
+									}}
+								/>
+							</Col>
+						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
 							<Col span={24}>
 								{formatMessage({ id: 'studio.tool.label.font.color' })}
@@ -1015,60 +999,60 @@ export default class RightToolBox extends Component {
 								</Radio.Group>
 							</Col>
 						</Row>
-						<Row style={{ marginBottom: 10 }} gutter={20}>
+						{
+							detail.precision ?
+								<Row style={{ marginBottom: 10 }} gutter={20}>
+									<Col span={24}>
+										{formatMessage({ id: 'studio.tool.label.small.type' })}
+									</Col>
+									<Col span={24}>
+										<Radio.Group
+											style={{ width: '100%' }}
+											value={`${detail.type.split('@')[0]}@${detail.type.split('@')[1]}`}
+											onChange={e => {
+												this.handleDetail('type', e.target.value);
+											}}
+										>
+											<Radio.Button style={{ width: '33.33%' }} value="price@normal">
+												<span style={{ fontSize: 16 }}>99.{detail.precision === 1 ? '0' : '00'}</span>
+											</Radio.Button>
+											<Radio.Button style={{ width: '33.33%' }} value="price@super">
+												<span style={{ fontSize: 16 }}>
+													99.<sup>{detail.precision === 1 ? '0' : '00'}</sup>
+												</span>
+											</Radio.Button>
+											<Radio.Button style={{ width: '33.33%' }} value="price@sub">
+												<span style={{ fontSize: 16 }}>
+													99.<sub>{detail.precision === 1 ? '0' : '00'}</sub>
+												</span>
+											</Radio.Button>
+										</Radio.Group>
+									</Col>
+								</Row> :
+								null
+						}
+						<Row style={{marginBottom: 10}} gutter={20}>
 							<Col span={24}>
-								{formatMessage({ id: 'studio.tool.label.small.type' })}
+								{formatMessage({ id: 'studio.tool.title.precision' })}
 							</Col>
 							<Col span={24}>
 								<Radio.Group
-									style={{ width: '100%' }}
-									value={`${detail.type.split('@')[0]}@${
-										detail.type.split('@')[1]
-									}`}
-									onChange={e => {
-										this.handleDetail('type', e.target.value);
-									}}
+									style={{width: '100%'}}
+									value={detail.precision}
+									onChange={(e) => {this.handleDetail('precision', e.target.value);}}
 								>
-									<Radio.Button style={{ width: '33.33%' }} value="price@normal">
-										<span style={{ fontSize: 16 }}>99.00</span>
+									<Radio.Button style={{width: '33.33%'}} value={0}>
+										0
 									</Radio.Button>
-									<Radio.Button style={{ width: '33.33%' }} value="price@super">
-										<span style={{ fontSize: 16 }}>
-											99.<sup>00</sup>
-										</span>
+									<Radio.Button style={{width: '33.33%'}} value={1}>
+										1
 									</Radio.Button>
-									<Radio.Button style={{ width: '33.33%' }} value="price@sub">
-										<span style={{ fontSize: 16 }}>
-											99.<sub>00</sub>
-										</span>
+									<Radio.Button style={{width: '33.33%'}} value={2}>
+										2
 									</Radio.Button>
 								</Radio.Group>
 							</Col>
 						</Row>
-						{/*
-                                <Row style={{marginBottom: 10}} gutter={20}>
-                                    <Col span={24}>
-                                        小数位数
-                                    </Col>
-                                    <Col span={24}>
-                                        <Radio.Group
-                                            style={{width: '100%'}}
-                                            value={detail.align}
-                                            onChange={(e) => {this.handleDetail('align', e.target.value)}}
-                                        >
-                                            <Radio.Button style={{width: '33.33%'}} value={0}>
-                                                0
-                                            </Radio.Button>
-                                            <Radio.Button style={{width: '33.33%'}} value={1}>
-                                                1
-                                            </Radio.Button>
-                                            <Radio.Button style={{width: '33.33%'}} value={2}>
-                                                2
-                                            </Radio.Button>
-                                        </Radio.Group>
-                                    </Col>
-                                </Row>
-                                 */}
 						<Row style={{ marginBottom: 10 }} gutter={20}>
 							<Col span={24}>{formatMessage({ id: 'studio.tool.title.align' })}</Col>
 							<Col span={24}>

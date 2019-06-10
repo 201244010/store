@@ -362,6 +362,11 @@ export default function generateShape(option) {
 								context.fillText(`${option.text ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
 								context.font = `${option.fontStyle} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
 								context.fillText(`${option.text ? smallPriceText : ''}`, smallXPosition, yPosition);
+								if (option.textDecoration === 'line-through') {
+									context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale / 2, textWidth, 1 * option.zoomScale);
+								} else if (option.textDecoration === 'underline') {
+									context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale, textWidth, 1 * option.zoomScale);
+								}
 							},
 						}}
 					/>
@@ -416,6 +421,11 @@ export default function generateShape(option) {
 								context.fillText(`${option.text ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
 								context.font = `${option.fontStyle} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
 								context.fillText(`${option.text ? smallPriceText : ''}`, smallXPosition, yPosition);
+								if (option.textDecoration === 'line-through') {
+									context.fillRect(intXPosition, yPosition - option.fontSize * option.zoomScale / 2, textWidth, 1 * option.zoomScale);
+								} else if (option.textDecoration === 'underline') {
+									context.fillRect(intXPosition, yPosition, textWidth, 1 * option.zoomScale);
+								}
 							},
 						}}
 					/>
