@@ -141,30 +141,30 @@ export default {
 							name: 'baseStation',
 							component: './DeviceManagement/ESL/BaseStation',
 						},
-						{
-							path: '/esl/deviceUpgrade',
-							name: 'deviceUpgrade',
-							routes: [
-								{
-									path: '/esl/deviceUpgrade',
-									name: 'overview',
-									hideInMenu: true,
-									component: './DeviceManagement/ESL/DeviceUpgrade',
-								},
-								{
-									path: '/esl/deviceUpgrade/deviceESL',
-									name: 'deviceESL',
-									hideInMenu: true,
-									component: './DeviceManagement/ESL/DeviceESL',
-								},
-								{
-									path: '/esl/deviceUpgrade/deviceAP',
-									name: 'deviceAP',
-									hideInMenu: true,
-									component: './DeviceManagement/ESL/DeviceAP',
-								},
-							],
-						},
+						// {
+						// 	path: '/esl/deviceUpgrade',
+						// 	name: 'deviceUpgrade',
+						// 	routes: [
+						// 		{
+						// 			path: '/esl/deviceUpgrade',
+						// 			name: 'overview',
+						// 			hideInMenu: true,
+						// 			component: './DeviceManagement/ESL/DeviceUpgrade',
+						// 		},
+						// 		{
+						// 			path: '/esl/deviceUpgrade/deviceESL',
+						// 			name: 'deviceESL',
+						// 			hideInMenu: true,
+						// 			component: './DeviceManagement/ESL/DeviceESL',
+						// 		},
+						// 		{
+						// 			path: '/esl/deviceUpgrade/deviceAP',
+						// 			name: 'deviceAP',
+						// 			hideInMenu: true,
+						// 			component: './DeviceManagement/ESL/DeviceAP',
+						// 		},
+						// 	],
+						// },
 						{ path: '/esl', redirect: '/esl/electricLabel' },
 						// {
 						// 	path: '/esl/systemConfig',
@@ -258,19 +258,19 @@ export default {
 						{ path: '/company', redirect: '/company/merchantManagement' },
 					],
 				},
-				{
-					path: '/template',
-					name: 'template',
-					icon: 'blank',
-					routes: [
-						{ path: '/template', redirect: '/template/list' },
-						{
-							path: '/template/list',
-							name: 'list',
-							component: './Template',
-						},
-					],
-				},
+				// {
+				// 	path: '/template',
+				// 	name: 'template',
+				// 	icon: 'blank',
+				// 	routes: [
+				// 		{ path: '/template', redirect: '/template/list' },
+				// 		{
+				// 			path: '/template/list',
+				// 			name: 'list',
+				// 			component: './Template',
+				// 		},
+				// 	],
+				// },
 				// TODO 万有集市 临时菜单 END
 
 				// dashboard

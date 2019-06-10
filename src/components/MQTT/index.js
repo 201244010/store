@@ -6,7 +6,7 @@ import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
 import { ACTION_MAP } from '@/constants/mqttActionMap';
 import { getRandomString } from '@/utils/utils';
 
-import Ipc from './Ipc';
+// import Ipc from './Ipc';
 
 function MQTTWrapper(WrapperedComponent) {
 	@connect(
@@ -24,7 +24,7 @@ function MQTTWrapper(WrapperedComponent) {
 			getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
 		}),
 	)
-	@Ipc
+	// @Ipc
 	class Wrapper extends Component {
 		constructor(props) {
 			super(props);
