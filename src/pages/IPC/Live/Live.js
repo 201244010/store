@@ -20,12 +20,13 @@ const pixelRatioMap = {
 };
 
 @connect((state) => {
-	const { faceid: { rectangles, list }, live: { url, ppi, streamId }, videoSources } = state;
+	const { faceid: { rectangles, list }, live: { url, ppi, streamId, ppiChanged }, videoSources } = state;
 
 	// console.log('rectangles: ', rectangles);
 	return {
 		liveUrl: url,
 		streamId,
+		ppiChanged,
 		currentPPI: ppi || '1080',
 		sources: videoSources || [],
 		faceidRects: rectangles || [],
@@ -172,7 +173,7 @@ class Live extends React.Component{
 	}
 
 	render() {
-		const { sources, liveUrl, faceidRects, faceidList, currentPPI,location: { query } } = this.props;
+		const { sources, liveUrl, faceidRects, faceidList, currentPPI, ppiChanged, location: { query } } = this.props;
 		const {sn} = query;
 		// console.log(this.props);
 		// console.log('live: ', liveUrl, streamId);
@@ -198,6 +199,7 @@ class Live extends React.Component{
 
 						currentPPI={currentPPI}
 						changePPI={this.changePPI}
+						ppiChanged={ppiChanged}
 
 						sources={sources}
 						url={liveUrl}

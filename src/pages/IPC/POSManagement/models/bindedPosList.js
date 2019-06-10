@@ -31,7 +31,9 @@ export default {
 						list: data
 					}
 				});
+				return data;
 			}
+			return [];
 		}
 	}
 };
