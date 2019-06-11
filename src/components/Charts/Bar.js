@@ -3,6 +3,10 @@ import { Chart, Geom, Axis, Tooltip } from 'bizcharts';
 
 class Bar extends Component {
 	render() {
+		// const { chartStyle = {}, dataSource = [], axis = {}, barStyle = {} } = this.props;
+		// const { x = null, y = null } = axis;
+		// const { height = 400 } = chartStyle;
+
 		const data = [
 			{
 				year: '1951 年',
@@ -39,9 +43,11 @@ class Bar extends Component {
 		];
 		const cols = {
 			sales: {
-				tickInterval: 20,
+				min: 0,
+				tickCount: 6,
 			},
 		};
+
 		return (
 			<div>
 				<Chart height={400} data={data} scale={cols} forceFit>
@@ -52,7 +58,21 @@ class Bar extends Component {
 							type: 'y',
 						}}
 					/>
-					<Geom type="interval" position="year*sales" />
+					<Geom
+						active={[
+							true,
+							{
+								style: {
+									fill: 'black', // 柱子颜色，继续默哀
+									shadowColor: 'red', // 整体阴影颜色，包括边缘
+									shadowBlur: 1, // 阴影的透明度
+									opacity: 0, // 柱子颜色透明度
+								},
+							},
+						]}
+						type="interval"
+						position="year*sales"
+					/>
 				</Chart>
 			</div>
 		);
