@@ -97,12 +97,12 @@ export default {
 	namespace: 'menu',
 
 	state: {
-		menuData: Storage.get('FILTERED_MENU', 'session') || [],
+		menuData: Storage.get('FILTERED_MENU', 'local') || [],
 		breadcrumbNameMap: {},
 	},
 
 	effects: {
-		* getMenuData({ payload }, { put, call }) {
+		*getMenuData({ payload }, { put, call }) {
 			const { routes, authority } = payload;
 			const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
 			const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
@@ -113,7 +113,7 @@ export default {
 				const { menu_list: menuList = [] } = response.data || {};
 				if (menuList && menuList.length > 0) {
 					filteredMenuData = checkMenuAuth(menuData, menuList);
-					Storage.set({ FILTERED_MENU: filteredMenuData }, 'session');
+					Storage.set({ FILTERED_MENU: filteredMenuData }, 'local');
 				}
 			}
 
