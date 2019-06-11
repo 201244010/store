@@ -162,13 +162,13 @@ class SearchResult extends Component {
 								</a>
 							</>
 						)}
-						<Divider type="vertical" />
-						<a
-							href="javascript: void (0);"
-							onClick={() => this.showEditVisible(record)}
-						>
-							{formatMessage({ id: 'list.action.edit' })}
-						</a>
+						{/* <Divider type="vertical" /> */}
+						{/* <a */}
+						{/* href="javascript: void (0);" */}
+						{/* onClick={() => this.showEditVisible(record)} */}
+						{/* > */}
+						{/* {formatMessage({ id: 'list.action.edit' })} */}
+						{/* </a> */}
 						<Divider type="vertical" />
 						<a
 							href="javascript: void (0);"
