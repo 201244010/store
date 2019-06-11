@@ -537,9 +537,9 @@ export default {
 	theme: {
 		'primary-color': primaryColor,
 	},
-	externals: {
-		'@antv/data-set': 'DataSet',
-	},
+	// externals: {
+	// 	'@antv/data-set': 'DataSet',
+	// },
 	ignoreMomentLocale: true,
 	lessLoaderOptions: {
 		javascriptEnabled: true,

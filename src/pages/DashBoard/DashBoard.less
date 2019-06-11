@@ -10,7 +10,7 @@
 	height: 64px;
 	padding: 16px 24px;
 	background: #ffffff;
-	border-top: 1px solid #EFF1F2;
+	border-top: 1px solid #eff1f2;
 
 	display: flex;
 	justify-content: space-between;
@@ -19,11 +19,6 @@
 	:global {
 		.ant-radio-button-wrapper-checked {
 			box-shadow: -1px 0 0 0 @font-color-primary;
-		}
-
-		.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-			background-color: @font-color-primary;
-			border-color: @font-color-primary;
 		}
 	}
 
@@ -42,6 +37,62 @@
 	}
 }
 
-.display-content{
+.display-content {
 	margin: 24px;
+}
+
+.content-chart {
+	margin-top: 24px;
+	border-radius: 8px;
+
+	.bar-wrapper,
+	.list-wrapper {
+		border-radius: 8px;
+		background: #ffffff;
+	}
+
+	.list-wrapper-top {
+		margin-top: 24px;
+	}
+}
+
+.footer-chart-wrapper {
+	background: #ffffff;
+
+	margin-top: 24px;
+	border-radius: 8px;
+
+	.title-wrapper {
+		padding: 16px 24px;
+		border-bottom: 1px solid #eff1f2;
+
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		.chart-title {
+			font-size: 16px;
+			font-weight: bold;
+			color: #303540;
+			line-height: 24px;
+		}
+
+		.title-btn-bar {
+			:global {
+				.ant-radio-button-wrapper-checked {
+					color: @font-color-primary;
+					border-color: @font-color-primary;
+					box-shadow: -1px 0 0 0 @font-color-primary;
+				}
+
+				.ant-radio-button-wrapper:hover {
+					color: @font-color-primary;
+				}
+			}
+		}
+	}
+
+	.content-wrapper {
+		padding: 32px 84px 24px 84px;
+	}
 }
