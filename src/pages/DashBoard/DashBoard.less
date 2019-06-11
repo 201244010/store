@@ -65,6 +65,72 @@
 	.list-wrapper-top {
 		margin-top: 24px;
 	}
+
+	.list-wrapper {
+		.list-title {
+			height: 56px;
+			padding: 16px 0 16px 24px;
+			border-bottom: 1px solid #f0f2f5;
+
+			font-weight: bold;
+			font-size: 16px;
+			color: #303540;
+			line-height: 24px;
+
+			box-sizing: border-box;
+		}
+
+		.content-list {
+			padding: 16px 24px 22px 24px;
+		}
+
+		.list-item {
+			padding: 8px 0;
+			font-size: 14px;
+			color: #525866;
+			line-height: 22px;
+
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			.label-wrapper {
+				display: flex;
+
+				.rank {
+					width: 20px;
+					height: 20px;
+
+					color: #525866;
+					font-size: 12px;
+					line-height: 20px;
+					text-align: center;
+
+					background: #e6e6e6;
+					border-radius: 100%;
+				}
+
+				.rank-primary {
+					color: #ffffff;
+					background: @font-color-primary;
+				}
+
+				.label {
+					margin-left: 24px;
+					font-size: 14px;
+					color: #525866;
+					line-height: 22px;
+				}
+			}
+
+			.number-content {
+				font-size: 14px;
+				color: #525866;
+				text-align: center;
+				line-height: 22px;
+			}
+		}
+	}
 }
 
 .footer-chart-wrapper {

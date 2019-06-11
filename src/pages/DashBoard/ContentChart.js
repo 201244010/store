@@ -1,11 +1,26 @@
 import React, { Component } from 'react';
+import { formatMessage } from 'umi/locale';
 import Media from 'react-media';
 import { Row, Col } from 'antd';
 import Charts from '@/components/Charts';
-import ContentList from '@/components/ContentList';
+import { priceFormat } from '@/utils/utils';
+
 import styles from './DashBoard.less';
 
 const { Bar } = Charts;
+
+const data = [
+	{ name: '可口可乐', count: 23333 },
+	{ name: '可口可乐', count: 23333 },
+	{ name: '可口可乐', count: 23333 },
+	{ name: '可口可乐', count: 23333 },
+	{ name: '可口可乐', count: 23333 },
+	{ name: '可口可乐', count: 23333 },
+	{ name: '可口可乐', count: 23333 },
+	{ name: '可口可乐', count: 23333 },
+	{ name: '可口可乐', count: 23333 },
+	{ name: '可口可乐', count: 23333 },
+];
 
 class ContentChart extends Component {
 	render() {
@@ -25,7 +40,28 @@ class ContentChart extends Component {
 										result ? styles['list-wrapper-top'] : ''
 									}`}
 								>
-									<ContentList />
+									<div className={styles['list-title']}>
+										{formatMessage({ id: 'dashBoard.sku.rate' })}
+									</div>
+									<ul className={styles['content-list']}>
+										{data.map((item, index) => (
+											<li className={styles['list-item']}>
+												<div className={styles['label-wrapper']}>
+													<div
+														className={`${styles.rank} ${
+															index < 3 ? styles['rank-primary'] : ''
+														}`}
+													>
+														{index + 1}
+													</div>
+													<div className={styles.label}>{item.name}</div>
+												</div>
+												<div className={styles['number-content']}>
+													{priceFormat(item.count)}
+												</div>
+											</li>
+										))}
+									</ul>
 								</div>
 							</Col>
 						</Row>
