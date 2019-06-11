@@ -20,9 +20,9 @@ export default class SearchResult extends Component {
 		const upgraded = getLocationParam('upgraded');
 		const columns = [
 			{
-				title: formatMessage({ id: 'esl.device.ap.id' }),
-				dataIndex: 'ap_code',
-				key: 'ap_code',
+				title: formatMessage({ id: 'esl.device.ap.sn' }),
+				dataIndex: 'sn',
+				key: 'sn',
 			},
 			{
 				title: formatMessage({ id: 'esl.device.esl.ware.version.now' }),

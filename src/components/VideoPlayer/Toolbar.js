@@ -28,7 +28,7 @@ class Toolbar extends React.Component{
 
 	render () {
 		const {
-			play, progressbar, ppis, currentPPI, ppiChange,
+			play, progressbar, ppis, currentPPI, ppiChange, ppiChanged,
 			today, volume, playing, screenShot, isLive,
 			isTrack, onDatePickerChange, canScreenShot,
 			fullScreenStatus, backToLive,
@@ -49,6 +49,14 @@ class Toolbar extends React.Component{
 			buttonNumber += 2;
 		}
 
+
+		const t = ppis.filter((item) => item.value === currentPPI);
+		let modeText = '';
+		if (t.length > 0) {
+			modeText = t[0].name;
+		}
+
+
 		return(
 			<div
 				className={styles.toolbar}
@@ -59,9 +67,23 @@ class Toolbar extends React.Component{
 				}}
 			>
 				{
+					// 当前处于直播状态的提示
 					<div className={`${ styles['this-is-live'] } ${ isLive && !clicked ? '' : styles.hidden }`}>
 						<div className={styles.text}>{ formatMessage({ id: 'videoPlayer.thisIsLive'}) }</div>
 					</div>
+				}
+
+				{
+					!isTrack ?
+						// 分辨率切换成功提示；
+						<div className={`${ styles['this-is-live'] } ${ isLive && ppiChanged ? '' : styles.hidden }`}>
+							<div className={styles.text}>
+								{
+									formatMessage({id: 'videoPlayer.ppiChanged'}).replace('%mode%', modeText)
+								}
+							</div>
+						</div>
+						: ''
 				}
 
 				<div className={styles['play-control']}>

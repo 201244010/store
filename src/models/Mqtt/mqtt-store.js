@@ -17,7 +17,7 @@ export default {
 	},
 	effects: {
 		...model.effects(),
-		*createEmqToken(_, { call }) {
+		* createEmqToken(_, { call }) {
 			const response = yield call(createEmqToken);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
@@ -26,34 +26,39 @@ export default {
 			return null;
 		},
 
-		*initializeClient(_, { put, select }) {
+		* initializeClient(_, { put, select }) {
 			const token = yield put.resolve({
 				type: 'createEmqToken',
 			});
 
-			const { currentUser } = yield select(state => state.user);
-			const { currentCompanyId } = yield select(state => state.merchant);
-			const { id } = currentUser;
-			const { server_address: address } = token;
-			const clientId = `${currentCompanyId}_${id}_${moment().format('X')}`;
+			if (token) {
+				const { currentUser } = yield select(state => state.user);
+				const { currentCompanyId } = yield select(state => state.merchant);
+				const { id } = currentUser;
+				const { server_address: address } = token;
+				const clientId = `${currentCompanyId}_${id}_${moment().format('X')}`;
 
-			console.log(token);
+				console.log(token);
 
-			yield put({
-				type: 'updateInfo',
-				payload: {
-					clientId,
-					...token,
-					address,
-				},
-			});
+				yield put({
+					type: 'updateInfo',
+					payload: {
+						clientId,
+						...token,
+						address,
+					},
+				});
 
-			yield put({
-				type: 'connect',
-			});
+				yield put({
+					type: 'connect',
+				});
+				return 'success';
+			}
+
+			return 'failed';
 		},
 
-		*generateTopic({ payload }, { select }) {
+		* generateTopic({ payload }, { select }) {
 			const { service, action = 'pub', prefix = 'WEB' } = payload;
 			const { currentUser, clientId } = yield select(state => ({
 				currentUser: state.user.currentUser,
@@ -64,7 +69,7 @@ export default {
 			return `/${prefix}/${id}/${clientId}/${service}/${action}`;
 		},
 
-		*setMessageHandler({ payload }, { put }) {
+		* setMessageHandler({ payload }, { put }) {
 			const { handler } = payload;
 
 			yield put({
@@ -80,7 +85,7 @@ export default {
 			});
 		},
 
-		*setTopicListener({ payload }, { put }) {
+		* setTopicListener({ payload }, { put }) {
 			const { service, action = 'sub', handler } = payload;
 			const topic = yield put.resolve({
 				type: 'generateTopic',
@@ -96,7 +101,7 @@ export default {
 			});
 		},
 
-		*setErrorHandler({ payload }, { put }) {
+		* setErrorHandler({ payload }, { put }) {
 			const { handler } = payload;
 
 			yield put({
@@ -107,7 +112,7 @@ export default {
 			});
 		},
 
-		*destroyClient(_, { put }) {
+		* destroyClient(_, { put }) {
 			yield put({
 				type: 'destroy',
 			});

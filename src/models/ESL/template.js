@@ -25,6 +25,8 @@ export default {
 		searchFormValues: {
 			keyword: '',
 			status: -1,
+			screen_type: -1,
+			colour: -1,
 		},
 		pagination: {
 			current: 1,
@@ -161,13 +163,19 @@ export default {
 			Object.keys(payload.draft).map(key => {
 				const componentDetail = payload.draft[key];
 				Object.keys(componentDetail).map(detailKey => {
-					componentDetail.content = componentDetail.bindField ? `{{${componentDetail.bindField}}}` : componentDetail.text;
+					componentDetail.content = componentDetail.bindField ? `{{${componentDetail.bindField}}}` : (componentDetail.text || '');
 					if (['height', 'width'].includes(detailKey)) {
 						const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
 						if (SHAPE_TYPES.IMAGE === componentDetail.type) {
 							const backWidth = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 							componentDetail.backWidth = backWidth;
 							componentDetail.backHeight = backWidth * componentDetail.ratio;
+						} else if (SHAPE_TYPES.HLine === componentDetail.type) {
+							componentDetail.backWidth = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
+							componentDetail.backHeight = componentDetail.strokeWidth;
+						} else if (SHAPE_TYPES.VLine === componentDetail.type) {
+							componentDetail.backWidth = componentDetail.strokeWidth;
+							componentDetail.backHeight = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
 						} else {
 							const scale = {
 								width: componentDetail.scaleX,

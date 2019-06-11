@@ -10,7 +10,7 @@ import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
-import { getTypeByName, getNearestLines, getNearestPosition } from '@/utils/studio';
+import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep } from '@/utils/studio';
 import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
@@ -33,6 +33,7 @@ import * as styles from './index.less';
 		addComponent: payload => dispatch({ type: 'studio/addComponent', payload }),
 		updateState: payload => dispatch({ type: 'studio/updateState', payload }),
 		zoomOutOrIn: payload => dispatch({ type: 'studio/zoomOutOrIn', payload }),
+		changeOneStep: payload => dispatch({ type: 'studio/changeOneStep', payload }),
 		fetchBindFields: payload => dispatch({ type: 'template/fetchBindFields', payload }),
 		saveAsDraft: payload => dispatch({ type: 'template/saveAsDraft', payload }),
 		fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
@@ -49,14 +50,11 @@ class Studio extends Component {
 			dragging: false,
 			editing: false,
 		};
+		clearSteps();
 	}
 
 	async componentDidMount() {
-		const {
-			stageWidth,
-			stageHeight,
-			props: { fetchTemplateDetail, addComponent, fetchBindFields, updateState },
-		} = this;
+		const {stageWidth, stageHeight, props: {fetchTemplateDetail, addComponent, fetchBindFields, updateState}} = this;
 		fetchBindFields();
 		const response = await fetchTemplateDetail({
 			template_id: getLocationParam('id'),
@@ -95,33 +93,66 @@ class Studio extends Component {
 				height: stageHeight,
 			},
 		});
-		document.addEventListener('keydown', this.handleDeleteComponent);
+		document.addEventListener('keydown', this.handleComponentActions);
 	}
 
 	componentWillUnmount() {
-		document.removeEventListener('keydown', this.handleDeleteComponent);
+		document.removeEventListener('keydown', this.handleComponentActions);
 	}
 
-	handleDeleteComponent = e => {
+	handleComponentActions = e => {
 		const { editing } = this.state;
-		const { keyCode, target: { tagName } } = e;
-		// 编辑文本状态下 及 操作输入框时 无法删除
-		if (!editing && [KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT') {
-			const {
-				studio: { selectedShapeName },
-				deleteSelectedComponent,
-				toggleRightToolBox,
-			} = this.props;
-
-			if (selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1) {
+		const { keyCode, ctrlKey, target: { tagName } } = e;
+		// 编辑文本状态下无法操作
+		if (editing) {
+			return;
+		}
+		const {
+			studio: { selectedShapeName, componentsDetail, copiedComponent, zoomScale },
+			deleteSelectedComponent,
+			copySelectedComponent,
+			addComponent
+		} = this.props;
+		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
+		// 操作输入框时 无法删除
+		if ([KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT') {
+			if (canCopyOrDelete) {
 				deleteSelectedComponent(selectedShapeName);
-				toggleRightToolBox({
-					showRightToolBox: false,
-					rightToolBoxPos: {
-						left: -9999,
-						top: -9999,
-					},
-				});
+			}
+		}
+		if (ctrlKey) {
+			// Ctrl + X
+			if (keyCode === KEY.KEY_X) {
+				if (canCopyOrDelete) {
+					copySelectedComponent(componentsDetail[selectedShapeName]);
+					deleteSelectedComponent(selectedShapeName);
+				}
+			}
+			// Ctrl + C
+			if (keyCode === KEY.KEY_C) {
+				if (canCopyOrDelete) {
+					copySelectedComponent(componentsDetail[selectedShapeName]);
+				}
+			}
+			// Ctrl + V
+			if (keyCode === KEY.KEY_V) {
+				if (copiedComponent.name) {
+					const newPosition = {};
+					if (canCopyOrDelete) {
+						const selectedComponent = componentsDetail[selectedShapeName];
+						const {x, y, scaleY} = selectedComponent;
+						newPosition.x = x;
+						newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
+					} else {
+						newPosition.x = copiedComponent.x;
+						newPosition.y = copiedComponent.y;
+					}
+					addComponent({
+						...copiedComponent,
+						x: newPosition.x,
+						y: newPosition.y,
+					});
+				}
 			}
 		}
 	};
@@ -157,9 +188,11 @@ class Studio extends Component {
 		if (shape) {
 			// 鼠标左键取消右侧工具框
 			if (e.evt.button === 0) {
-				const target =
-					name.indexOf(SHAPE_TYPES.PRICE) !== -1 ? e.target.parent.children[0] : e.target;
-				this.updateComponentsDetail(target, name);
+				const target = name.indexOf(SHAPE_TYPES.PRICE) !== -1 ? e.target.parent.children[0] : e.target;
+				this.updateComponentsDetail({
+					target,
+					selectedShapeName: name
+				});
 				if (showRightToolBox) {
 					this.toggleRightToolBox({
 						showRightToolBox: false,
@@ -182,7 +215,9 @@ class Studio extends Component {
 	};
 
 	handleStageShapeMove = e => {
-		this.updateComponentsDetail(e.target);
+		this.updateComponentsDetail({
+			target: e.target
+		});
 	};
 
 	handleStageShapeEnd = () => {
@@ -192,15 +227,31 @@ class Studio extends Component {
 		});
 		const scope = getNearestPosition(componentsDetail, selectedShapeName);
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				x: scope.x,
 				y: scope.y
 			},
 		});
+		// if (scope.x || scope.x === 0) {
+		// 	componentsDetail[selectedShapeName].x = scope.x;
+		// }
+		// if (scope.y || scope.y === 0) {
+		// 	componentsDetail[selectedShapeName].y = scope.y;
+		// }
+		// saveNowStep(getLocationParam('id'), componentsDetail);
 	};
 
 	handleShapeTransform = e => {
-		this.updateComponentsDetail(e.currentTarget, undefined, true);
+		this.updateComponentsDetail({
+			target: e.currentTarget,
+			updateInput: true
+		});
+	};
+
+	handleShapeTransformEnd = () => {
+		const { studio: { componentsDetail } } = this.props;
+		saveNowStep(getLocationParam('id'), componentsDetail);
 	};
 
 	handleShapeDblClick = e => {
@@ -247,6 +298,26 @@ class Studio extends Component {
 				top: e.evt.clientY,
 			},
 		});
+	};
+
+	handleWheel = (e) => {
+		e.evt.preventDefault();
+		const {ctrlKey, deltaY} = e.evt;
+		if (ctrlKey) {
+			const { studio: {zoomScale}, zoomOutOrIn } = this.props;
+			let realZoomScale = zoomScale + (deltaY < 0 ? 0.1 : -0.1);
+			if (realZoomScale > 3) {
+				realZoomScale = 3;
+			} else if (realZoomScale < 0.5) {
+				realZoomScale = 0.5;
+			}
+
+			zoomOutOrIn({
+				zoomScale: realZoomScale,
+				screenType: getLocationParam('screen'),
+				selectedShapeName: '',
+			});
+		}
 	};
 
 	handleSaveAsDraft = () => {
@@ -342,7 +413,7 @@ class Studio extends Component {
 		});
 	};
 
-	updateComponentsDetail = (target, selectedShapeName, updateInput) => {
+	updateComponentsDetail = ({ target, selectedShapeName, updateInput, isStep }) => {
 		const { updateComponentsDetail } = this.props;
 		const { x, y, name, width, height, scaleX, scaleY, rotation } = target.attrs;
 		let realW = width;
@@ -368,6 +439,7 @@ class Studio extends Component {
 			}
 
 			const componentDetail = {
+				isStep,
 				noUpdateLines: true,
 				selectedShapeName,
 				[name]: {
@@ -412,10 +484,7 @@ class Studio extends Component {
 		const targetDetail = componentsDetail[targetName];
 
 		const textPosition = e.target.getAbsolutePosition();
-		const stageBox = e.target
-			.getStage()
-			.getContainer()
-			.getBoundingClientRect();
+		const stageBox = e.target.getStage().getContainer().getBoundingClientRect();
 		const inputPosition = {
 			x: stageBox.left + textPosition.x,
 			y: stageBox.top + textPosition.y,
@@ -447,7 +516,7 @@ class Studio extends Component {
 		const saveToLocal = () => {
 			const inputValue = inputEle.value;
 			if (type.indexOf(SHAPE_TYPES.PRICE) > -1 && !RegExp.money.test(inputValue)) {
-				message.warning('输入价格不正确');
+				message.warning(formatMessage({ id: 'studio.tool.error.price.format' }));
 				inputEle.value = '';
 				return;
 			}
@@ -505,6 +574,7 @@ class Studio extends Component {
 				addComponent,
 				toggleRightToolBox,
 				zoomOutOrIn,
+				changeOneStep,
 				renameTemplate,
 				fetchTemplateDetail,
 				studio: {
@@ -532,6 +602,7 @@ class Studio extends Component {
 							zoomScale,
 							saveAsDraft: this.handleSaveAsDraft,
 							zoomOutOrIn,
+							changeOneStep,
 							renameTemplate,
 							fetchTemplateDetail,
 						}}
@@ -550,7 +621,9 @@ class Studio extends Component {
 							onDragMove={this.handleStageShapeMove}
 							onDragEnd={this.handleStageShapeEnd}
 							onTransform={this.handleShapeTransform}
+							onTransformEnd={this.handleShapeTransformEnd}
 							onContextMenu={this.handleContextMenu}
+							onWheel={this.handleWheel}
 						>
 							<Layer x={0} y={0} width={stageWidth} height={stageHeight}>
 								{Object.keys(componentsDetail).map(key => {
@@ -567,6 +640,7 @@ class Studio extends Component {
 											ratio: targetDetail.ratio || 1,
 											selected: selectedShapeName === targetDetail.name,
 											onTransform: this.handleShapeTransform,
+											onTransformEnd: this.handleShapeTransformEnd,
 											onDblClick: this.handleShapeDblClick,
 										});
 									}

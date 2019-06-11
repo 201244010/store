@@ -8,6 +8,7 @@
     "start:no-mock": "cross-env MOCK=none umi dev",
     "dev": "cross-env UMI_ENV=dev APP_TYPE=site umi dev",
     "dev:local": "cross-env UMI_ENV=local APP_TYPE=site umi dev",
+    "dev:uat": "cross-env UMI_ENV=uat APP_TYPE=site umi dev",
     "dev:no-mock": "cross-env MOCK=none umi dev",
     "build:dev": "cross-env UMI_ENV=dev APP_TYPE=site umi build",
     "build:test": "cross-env UMI_ENV=test APP_TYPE=site umi build",
@@ -25,7 +26,7 @@
   },
   "dependencies": {
     "@konata9/milk-shake": "^2.0.0",
-    "@konata9/storage.js": "^1.1.2",
+    "@konata9/storage.js": "^1.2.3",
     "@konata9/typecheck.js": "^1.1.0",
     "ant-design-pro": "^2.1.1",
     "antd": "^3.15.2",
@@ -36,6 +37,7 @@
     "dva-logger": "^1.0.0",
     "js-cookie": "^2.2.0",
     "konva": "^3.2.5",
+    "localforage": "^1.7.3",
     "lodash": "^4.17.10",
     "lodash-decorators": "^6.0.0",
     "memoize-one": "^4.0.0",
@@ -53,7 +55,8 @@
     "react-media": "^1.8.0",
     "react-perfect-scrollbar": "^1.5.2",
     "react-router-breadcrumbs-hoc": "^3.1.1",
-    "umi-request": "^1.0.0"
+    "umi-request": "^1.0.0",
+    "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

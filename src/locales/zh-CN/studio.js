@@ -9,6 +9,7 @@ export default {
 	'studio.component.qrcode': '二维码',
 	'studio.action.copy': '复制',
 	'studio.action.paste': '粘贴',
+	'studio.action.cut': '剪切',
 	'studio.action.delete': '删除',
 	'studio.action.save': '保存',
 	'studio.action.check': '检查',
@@ -26,6 +27,7 @@ export default {
 	'studio.tool.title.bg.color': '背景颜色',
 	'studio.tool.title.align': '对齐',
 	'studio.tool.title.color': '颜色',
+	'studio.tool.title.precision': '小数位数',
 	'studio.tool.label.width': '宽',
 	'studio.tool.label.height': '高',
 	'studio.tool.label.red': '红',
@@ -39,5 +41,6 @@ export default {
 	'studio.tool.label.font.color': '字体颜色',
 	'studio.tool.label.stroke.width': '宽度',
 	'studio.tool.label.small.type': '小数显示类型',
-	'studio.tool.label.codec': '编码类型'
+	'studio.tool.label.codec': '编码类型',
+	'studio.tool.error.price.format': '输入价格不正确',
 };

@@ -45,3 +45,11 @@ export const restartBaseStation = options => {
 	};
 	return fetchApi('reboot', opts).then(response => response.json());
 };
+
+export const changeBaseStationName = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...options },
+	};
+	return fetchApi('updateName', opts).then(response => response.json());
+};

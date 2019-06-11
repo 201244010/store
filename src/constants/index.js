@@ -24,7 +24,10 @@ export const MENU_PREFIX = {
 export const KEY = {
 	ENTER: 13,
 	BACKSPACE: 8,
-	DELETE: 46
+	DELETE: 46,
+	KEY_C: 67,
+	KEY_V: 86,
+	KEY_X: 88
 };
 
 export const MESSAGE_TYPE = {
