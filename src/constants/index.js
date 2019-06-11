@@ -18,6 +18,7 @@ export const MENU_PREFIX = {
 	MERCHANT: '/company/merchantManagement',
 	// STORE: '/basicData/storeManagement',
 	STORE: '/company/storeManagement',
+	ROLE: '/roleManagement'
 };
 
 export const KEY = {

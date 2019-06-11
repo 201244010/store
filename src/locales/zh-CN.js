@@ -23,6 +23,8 @@ import productManagement from './zh-CN/BasicData-product';
 
 import merchantManagement from './zh-CN/merchant';
 
+import roleManagement from './zh-CN/role';
+
 export default {
 	'navBar.lang': '语言',
 	'navBar.area': '地区',
@@ -51,4 +53,5 @@ export default {
 	...notification,
 	...VideoPlayer,
 	...studio,
+	...roleManagement
 };

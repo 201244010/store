@@ -259,6 +259,37 @@ export default {
 						},
 					],
 				},
+				{
+					path: '/roleManagement',
+					name: 'roleManagement',
+					icon: 'blank',
+					routes: [
+						{ path: '/roleManagement', redirect: '/roleManagement/roleList' },
+						{
+							path: '/roleManagement/roleList',
+							name: 'roleList',
+							component: './RoleManagement/RoleList',
+						},
+						{
+							path: '/roleManagement/create',
+							name: 'create',
+							component: './RoleManagement/RoleCreate',
+							hideInMenu: true,							
+						},						
+						{
+							path: '/roleManagement/modify',
+							name: 'modify',
+							component: './RoleManagement/RoleModify',
+							hideInMenu: true,
+						},
+						{
+							path: '/roleManagement/view',
+							name: 'view',
+							component: './RoleManagement/RoleView',
+							hideInMenu: true,
+						},
+					],
+				},
 				// TODO 万有集市 临时菜单 END
 
 				// dashboard
