@@ -15,6 +15,7 @@ const FormItem = Form.Item;
 @connect(
 	state => ({
 		role: state.role,
+		loading: state.loading.models.role
 	}),
 	dispatch => ({
 		getRoleList: payload => dispatch({ type: 'role/getRoleList', payload }),
@@ -136,8 +137,9 @@ class RoleList extends React.Component {
 
 	render() {
 		const {
-			role: { loading, roleList, pagination },
+			role: { roleList, pagination },
 			form: { getFieldDecorator },
+			loading
 		} = this.props;
 		return (
 			<div className={styles.wrapper}>

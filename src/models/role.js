@@ -3,13 +3,6 @@ import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { map } from '@konata9/milk-shake';
 
-function* switchLoadingStatus(status, put) {
-	yield put({
-		type: 'updateState',
-		payload: { loading: status },
-	});
-}
-
 const getInitStatus = (permissionList, roleInfo) => {
 	const rolePermissionList = roleInfo.permission_list;
 	const initResult = {};
@@ -41,7 +34,6 @@ const formatData = (data) => {
 export default {
 	namespace: 'role',
 	state: {
-		loading: false,
 		pagination: {
 			current: 1,
 			pageSize: DEFAULT_PAGE_SIZE,
@@ -58,7 +50,6 @@ export default {
 	},
 	effects: {
 		*getRoleList({payload = {}}, { put, call, select }) {
-			yield switchLoadingStatus(true, put);
 			const { pagination } = yield select(state => state.role);
 			const { keyword, current, pageSize } = payload;
 			const opts = {
@@ -80,16 +71,12 @@ export default {
 							current,
 							pageSize
 						},
-						loading: false,
 					},
 				});
-			} else {
-				yield switchLoadingStatus(false, put);
 			}
 		},
 
 		*getRoleInfo({ payload = {} }, { put, call }) {
-			yield switchLoadingStatus(true, put);
 			const { roleId: role_id } = payload;
 			const opts = {
 				role_id,
@@ -115,7 +102,6 @@ export default {
 					type: 'updateState',
 					payload: {
 						roleInfo: data,
-						loading: false,
 					},
 				});
 				yield put({
@@ -124,13 +110,10 @@ export default {
 						type: 'modify'
 					}
 				});
-			} else {
-				yield switchLoadingStatus(false, put);
 			}
 		},
 
 		*getPermissionList({payload = {}}, { put, call, select }) {
-			yield switchLoadingStatus(true, put);
 			const { type } = payload;
 			const response = yield call(Actions.handleRoleManagement, 'getPermissionList');
 			if (response && response.code === ERROR_OK) {
@@ -158,16 +141,12 @@ export default {
 					type: 'updateState',
 					payload: {
 						permissionList: tmpList,
-						loading: false,
 					},
 				});
-			} else {
-				yield switchLoadingStatus(false, put);
 			}
 		},
 
-		*creatRole({ payload = {} }, { put, call }) {
-			yield switchLoadingStatus(true, put);
+		*creatRole({ payload = {} }, { call }) {
 			const { name, permissionIdList: permission_id_list, username } = payload;
 			const opts = {
 				name,
@@ -175,12 +154,10 @@ export default {
 				username,
 			};
 			const response = yield call(Actions.handleRoleManagement, 'create', opts);
-			yield switchLoadingStatus(false, put);
 			return response;
 		},
 
-		*updateRole({payload = {}}, { put, call }) {
-			yield switchLoadingStatus(true, put);
+		*updateRole({payload = {}}, { call }) {
 			const { name, roleId: role_id, permissionIdList: permission_id_list } = payload;
 			const opts = {
 				name,
@@ -188,18 +165,15 @@ export default {
 				permission_id_list,
 			};
 			const response = yield call(Actions.handleRoleManagement, 'update', opts);
-			yield switchLoadingStatus(false, put);
 			return response;
 		},
 
-		*deleteRole({ payload = {} }, { put, call }) {
-			yield switchLoadingStatus(true, put);
+		*deleteRole({ payload = {} }, { call }) {
 			const { roleId: role_id } = payload;
 			const opts = {
 				role_id,
 			};
 			const response = yield call(Actions.handleRoleManagement, 'delete', opts);
-			yield switchLoadingStatus(false, put);
 			return response;
 		},
 
@@ -208,7 +182,6 @@ export default {
 				type: 'updateState',
 				payload: {
 					payload,
-					loading: false,
 				},
 			});
 		},

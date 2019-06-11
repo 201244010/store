@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Checkbox, Button, Form, message } from 'antd';
+import { Input, Checkbox, Button, Form, message, Spin } from 'antd';
 import { connect } from 'dva';
 import { getLocationParam, idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
@@ -16,6 +16,7 @@ const CheckboxGroup = Checkbox.Group;
 	state => ({
 		role: state.role,
 		user: state.user,
+		loading: state.loading.models.role,
 	}),
 	dispatch => ({
 		getPermissionList: payload => dispatch({ type: 'role/getPermissionList', payload }),
@@ -73,7 +74,10 @@ class RoleModify extends React.Component {
 						message.success(formatMessage({ id: 'roleManagement.role.modifySuccess' }));
 						router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
-						message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) || formatMessage({ id: 'roleManagement.role.modifyFail' }));
+						message.error(
+							formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
+								formatMessage({ id: 'roleManagement.role.modifyFail' })
+						);
 					}
 				} else {
 					const response = await creatRole({
@@ -85,7 +89,10 @@ class RoleModify extends React.Component {
 						message.success(formatMessage({ id: 'roleManagement.role.createSuccess' }));
 						router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
-						message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) || formatMessage({ id: 'roleManagement.role.createFail' }));
+						message.error(
+							formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
+								formatMessage({ id: 'roleManagement.role.createFail' })
+						);
 					}
 				}
 			}
@@ -142,70 +149,79 @@ class RoleModify extends React.Component {
 				permissionList,
 				roleInfo: { name },
 			},
+			loading,
 			form: { getFieldDecorator },
 		} = this.props;
 		const action = getLocationParam('action');
 		return (
-			<div className={styles.wrapper}>
-				<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
-					<Form.Item label={formatMessage({ id: 'roleManagement.role.roleName' })}>
-						{getFieldDecorator('name', {
-							initialValue: action === 'modify' ? name : '',
-							validateTrigger: 'onBlur',
-							rules: [
-								{
-									required: true,
-									message: formatMessage({
-										id: 'roleManagement.role.roleNameEmpty',
-									}),
-								},
-							],
-						})(<Input maxLength={40} />)}
-					</Form.Item>
-					<Form.Item label={formatMessage({ id: 'roleManagement.role.roleRoot' })}>
-						{getFieldDecorator('content', {
-							initialValue: ['content'],
-							rules: [
-								{
-									required: true,
-								},
-							],
-						})(
-							<div>
-								{permissionList.map((item, key) => (
-									<div key={key} style={{ marginBottom: '30px' }}>
-										<Checkbox
-											onChange={e => this.onCheckAllChange(e, item.group)}
-											indeterminate={item.indeterminate}
-											defaultChecked={item.checkAll}
-											checked={item.checkAll}
-										>
-											{item.checkedList.label}
-										</Checkbox>
-										<div>
-											{item.checkedList.permission_list && (
-												<CheckboxGroup
-													onChange={e =>
-														this.handleGroupChange(e, item.group)
-													}
-													options={item.checkedList.permission_list}
-													value={item.valueList}
-												/>
-											)}
+			<Spin spinning={loading}>
+				<div className={styles.wrapper}>
+					<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
+						<Form.Item label={formatMessage({ id: 'roleManagement.role.roleName' })}>
+							{getFieldDecorator('name', {
+								initialValue: action === 'modify' ? name : '',
+								validateTrigger: 'onBlur',
+								rules: [
+									{
+										required: true,
+										message: formatMessage({
+											id: 'roleManagement.role.roleNameEmpty',
+										}),
+									},
+								],
+							})(<Input maxLength={40} />)}
+						</Form.Item>
+						<Form.Item label={formatMessage({ id: 'roleManagement.role.roleRoot' })}>
+							{getFieldDecorator('content', {
+								initialValue: ['content'],
+								rules: [
+									{
+										required: true,
+									},
+								],
+							})(
+								<div>
+									{permissionList.map((item, key) => (
+										<div key={key} style={{ marginBottom: '30px' }}>
+											<Checkbox
+												onChange={e => this.onCheckAllChange(e, item.group)}
+												indeterminate={item.indeterminate}
+												defaultChecked={item.checkAll}
+												checked={item.checkAll}
+											>
+												{item.checkedList.label}
+											</Checkbox>
+											<div>
+												{item.checkedList.permission_list && (
+													<CheckboxGroup
+														onChange={e =>
+															this.handleGroupChange(e, item.group)
+														}
+														options={item.checkedList.permission_list}
+														value={item.valueList}
+													/>
+												)}
+											</div>
 										</div>
-									</div>
-								))}
-							</div>
-						)}
-					</Form.Item>
-					<Form.Item label=" " colon={false}>
-						<Button type="primary" onClick={this.editRole} className={styles.submit}>
-							{formatMessage({ id: 'btn.submit' })}
-						</Button>
-						<Button onClick={this.cancel}>{formatMessage({ id: 'btn.cancel' })}</Button>
-					</Form.Item>
-				</Form>
-			</div>
+									))}
+								</div>
+							)}
+						</Form.Item>
+						<Form.Item label=" " colon={false}>
+							<Button
+								type="primary"
+								onClick={this.editRole}
+								className={styles.submit}
+							>
+								{formatMessage({ id: 'btn.submit' })}
+							</Button>
+							<Button onClick={this.cancel}>
+								{formatMessage({ id: 'btn.cancel' })}
+							</Button>
+						</Form.Item>
+					</Form>
+				</div>
+			</Spin>
 		);
 	}
 }
