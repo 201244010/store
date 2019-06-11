@@ -1,7 +1,8 @@
 import * as Actions from '@/services/role';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 import { message } from 'antd';
 import { DEFAULT_PAGE_SIZE, MENU_PREFIX } from '@/constants';
+import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { map } from '@konata9/milk-shake';
 
@@ -180,8 +181,11 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				message.success('创建成功');
 				router.push(`${MENU_PREFIX.ROLE}/roleList`);
+			} else {
+				message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) || '创建失败');
 			}
 			yield switchLoadingStatus(false, put);
+			return response;
 		},
 
 		*updateRole({payload = {}}, { put, call }) {
@@ -194,10 +198,12 @@ export default {
 			};
 			const response = yield call(Actions.handleRoleManagement, 'update', opts);
 			if (response && response.code === ERROR_OK) {
-				message.success('更新成功');
+				message.success('编辑修改成功');
 				router.push(`${MENU_PREFIX.ROLE}/roleList`);
+			} else {
+				message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) || '编辑修改失败');
 			}
-
+			yield switchLoadingStatus(false, put);
 			return response;
 		},
 
@@ -214,7 +220,7 @@ export default {
 				});
 				message.success('删除成功');
 			} else {
-				message.success('删除失败');
+				message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) || '删除失败');
 			}
 			yield switchLoadingStatus(false, put);
 		},

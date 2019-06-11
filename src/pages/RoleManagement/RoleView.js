@@ -1,7 +1,7 @@
 import React from 'react';
 import { Checkbox, Button, Form } from 'antd';
 import { connect } from 'dva';
-import { getLocationParam, idDecode } from '@/utils/utils';
+import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import router from 'umi/router';
@@ -28,8 +28,14 @@ class RoleView extends React.Component {
 	}
 
 	confirm = () => {
-		router.push(`${MENU_PREFIX.ROLE}/roleList`);
+		const roleId = idDecode(getLocationParam('id'));
+		const encodeID = idEncode(roleId);
+		router.push(`${MENU_PREFIX.ROLE}/modify?action=modify&id=${encodeID}`);
 	};
+
+	cancel = () => {
+		router.push(`${MENU_PREFIX.ROLE}/roleList`);
+	}
 
 	render() {
 		const {
@@ -69,11 +75,11 @@ class RoleView extends React.Component {
 						</div>
 					</Form.Item>
 					<Form.Item label=" " colon={false}>
-						<Button type="primary" onClick={this.confirm}>
-							{formatMessage({ id: 'btn.confirm' })}
+						<Button className={styles.submit} type="primary" onClick={this.confirm}>
+							{formatMessage({ id: 'btn.alter' })}
 						</Button>
 						<Button onClick={this.cancel}>
-							{formatMessage({ id: 'btn.confirm' })}
+							{formatMessage({ id: 'btn.cancel' })}
 						</Button>
 					</Form.Item>
 				</Form>

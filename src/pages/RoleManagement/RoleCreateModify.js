@@ -5,7 +5,7 @@ import { getLocationParam, idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
-import { ERROR_OK } from '@/constants/errorCode';
+// import { ERROR_OK } from '@/constants/errorCode';
 import { MENU_PREFIX } from '@/constants';
 
 import styles from './Role.less';
@@ -41,7 +41,7 @@ class RoleModify extends React.Component {
 	editRole = () => {
 		const {
 			updateRole,
-			form: { validateFields, setFields },
+			form: { validateFields },
 			role: { permissionList },
 			user: {
 				currentUser: { username },
@@ -62,33 +62,18 @@ class RoleModify extends React.Component {
 		}
 		validateFields(async (err, values) => {
 			if (!err) {
-				let response;
 				if (action === 'modify') {
 					const roleId = idDecode(getLocationParam('id'));
-					response = await updateRole({
+					await updateRole({
 						name: values.name,
 						roleId,
 						permissionIdList: valueList,
 					});
 				} else {
-					response = await creatRole({
+					await creatRole({
 						name: values.name,
 						permissionIdList: valueList,
 						username,
-					});
-				}
-				if (response && response.code !== ERROR_OK) {
-					setFields({
-						name: {
-							value: values.name,
-							errors: [
-								new Error(
-									formatMessage({
-										id: 'merchantManagement.merchant.existed.error',
-									})
-								),
-							],
-						},
 					});
 				}
 			}
@@ -148,7 +133,6 @@ class RoleModify extends React.Component {
 			form: { getFieldDecorator },
 		} = this.props;
 		const action = getLocationParam('action');
-		console.log(action);
 		return (
 			<div className={styles.wrapper}>
 				<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
@@ -168,6 +152,7 @@ class RoleModify extends React.Component {
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'roleManagement.role.roleRoot' })}>
 						{getFieldDecorator('content', {
+							initialValue: ['content'],
 							rules: [
 								{
 									required: true,
