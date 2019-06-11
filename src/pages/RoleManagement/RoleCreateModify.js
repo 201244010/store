@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Checkbox, Button, Form, message} from 'antd';
+import { Input, Checkbox, Button, Form, message } from 'antd';
 import { connect } from 'dva';
 import { getLocationParam, idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
@@ -15,20 +15,27 @@ const CheckboxGroup = Checkbox.Group;
 @connect(
 	state => ({
 		role: state.role,
+		user: state.user,
 	}),
 	dispatch => ({
 		getPermissionList: payload => dispatch({ type: 'role/getPermissionList', payload }),
 		getRoleInfo: payload => dispatch({ type: 'role/getRoleInfo', payload }),
 		updateRole: payload => dispatch({ type: 'role/updateRole', payload }),
+		creatRole: payload => dispatch({ type: 'role/creatRole', payload }),
 		updatePermissionList: payload => dispatch({ type: 'role/updatePermissionList', payload }),
 	})
 )
 @Form.create()
 class RoleModify extends React.Component {
 	componentDidMount() {
-		const roleId = idDecode(getLocationParam('id'));
-		const { getRoleInfo } = this.props;
-		getRoleInfo({ roleId });
+		const action = getLocationParam('action');
+		const { getRoleInfo, getPermissionList } = this.props;
+		if (action === 'modify') {
+			const roleId = idDecode(getLocationParam('id'));
+			getRoleInfo({ roleId });
+		} else {
+			getPermissionList();
+		}
 	}
 
 	editRole = () => {
@@ -36,8 +43,12 @@ class RoleModify extends React.Component {
 			updateRole,
 			form: { validateFields, setFields },
 			role: { permissionList },
+			user: {
+				currentUser: { username },
+			},
+			creatRole,
 		} = this.props;
-		const roleId = idDecode(getLocationParam('id'));
+		const action = getLocationParam('action');
 		let valueList = [];
 		permissionList.map(item => {
 			if (typeof item.valueList !== 'undefined') {
@@ -46,16 +57,26 @@ class RoleModify extends React.Component {
 		});
 
 		if (valueList.length === 0) {
-			message.error(formatMessage({ id: 'roleManagement.role.roleRootEmpty' }),);
+			message.error(formatMessage({ id: 'roleManagement.role.roleRootEmpty' }));
 			return;
 		}
 		validateFields(async (err, values) => {
 			if (!err) {
-				const response = await updateRole({
-					name: values.name,
-					roleId,
-					permissionIdList: valueList,
-				});
+				let response;
+				if (action === 'modify') {
+					const roleId = idDecode(getLocationParam('id'));
+					response = await updateRole({
+						name: values.name,
+						roleId,
+						permissionIdList: valueList,
+					});
+				} else {
+					response = await creatRole({
+						name: values.name,
+						permissionIdList: valueList,
+						username,
+					});
+				}
 				if (response && response.code !== ERROR_OK) {
 					setFields({
 						name: {
@@ -72,7 +93,6 @@ class RoleModify extends React.Component {
 				}
 			}
 		});
-		// updateRole();
 	};
 
 	cancel = () => {
@@ -127,27 +147,30 @@ class RoleModify extends React.Component {
 			},
 			form: { getFieldDecorator },
 		} = this.props;
+		const action = getLocationParam('action');
+		console.log(action);
 		return (
 			<div className={styles.wrapper}>
 				<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
 					<Form.Item label={formatMessage({ id: 'roleManagement.role.roleName' })}>
 						{getFieldDecorator('name', {
-							initialValue: name,
+							initialValue: action === 'modify' ? name : '',
 							validateTrigger: 'onBlur',
 							rules: [
 								{
 									required: true,
-									message: formatMessage({ id: 'roleManagement.role.roleNameEmpty' }),
+									message: formatMessage({
+										id: 'roleManagement.role.roleNameEmpty',
+									}),
 								},
 							],
 						})(<Input maxLength={40} />)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'roleManagement.role.roleRoot' })}>
 						{getFieldDecorator('content', {
-							// initialValue: this.valueList.length === ,
 							rules: [
 								{
-									required: true
+									required: true,
 								},
 							],
 						})(

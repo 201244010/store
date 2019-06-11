@@ -5,8 +5,10 @@ export default {
 	'roleManagement.role.creator': '创建人',
 	'roleManagement.role.createTime': '创建时间',
 	'roleManagement.role.operation': '操作',
+	'roleManagement.role.addRole': '添加角色',
 
 	'roleManagement.role.roleNameEmpty': '角色名称不能为空',
 	'roleManagement.role.roleRootEmpty': '角色权限不能为空',
+	'roleManagement.role.deleteRole': '你确定要删除这角色吗？',
 	
 };

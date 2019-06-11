@@ -1,12 +1,15 @@
 import React from 'react';
-import { Input, Button, Table, Popconfirm, Icon, Divider } from 'antd';
+import { Input, Button, Table, Popconfirm, Icon, Divider, Form, Row, Col } from 'antd';
 import { unixSecondToDate, idEncode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
+import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
 import router from 'umi/router';
 import { MENU_PREFIX } from '@/constants';
 import { connect } from 'dva';
 
 import styles from './Role.less';
+
+const FormItem = Form.Item;
 
 @connect(
 	state => ({
@@ -17,14 +20,8 @@ import styles from './Role.less';
 		deleteRole: payload => dispatch({ type: 'role/deleteRole', payload }),
 	})
 )
+@Form.create()
 class RoleList extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			keyword: '',
-		};
-	}
-
 	componentDidMount() {
 		const { getRoleList } = this.props;
 		getRoleList();
@@ -38,22 +35,23 @@ class RoleList extends React.Component {
 	goPath = (rowDetail, path) => {
 		const encodeID = rowDetail.id ? idEncode(rowDetail.id) : null;
 		const urlMap = {
-			modify: `${MENU_PREFIX.ROLE}/modify?id=${encodeID}`,
+			modify: `${MENU_PREFIX.ROLE}/modify?action=modify&id=${encodeID}`,
 			view: `${MENU_PREFIX.ROLE}/view?id=${encodeID}`,
-			create: `${MENU_PREFIX.ROLE}/create`,
+			create: `${MENU_PREFIX.ROLE}/create?action=create`,
 		};
 		router.push(`${urlMap[path]}`);
 	};
 
-	search = () => {
-		const { keyword } = this.state;
-		const { getRoleList } = this.props;
-		getRoleList({ keyword });
-	};
+	handleSubmit = () => {
+		const {
+			getRoleList,
+			form: { validateFields },
+		} = this.props;
 
-	changeKeyword = e => {
-		this.setState({
-			keyword: e.target.value,
+		validateFields(async (err, values) => {
+			if (!err) {
+				await getRoleList({ keyword: values.keyword });
+			}
 		});
 	};
 
@@ -68,6 +66,7 @@ class RoleList extends React.Component {
 	render() {
 		const {
 			role: { loading, roleList, pagination },
+			form: { getFieldDecorator },
 		} = this.props;
 		const columns = [
 			{
@@ -114,7 +113,7 @@ class RoleList extends React.Component {
 							</span>
 							<Divider type="vertical" />
 							<Popconfirm
-								title="你确定要删除该角色吗"
+								title={formatMessage({ id: 'roleManagement.role.deleteRole' })}
 								icon={
 									<Icon
 										theme="filled"
@@ -134,20 +133,33 @@ class RoleList extends React.Component {
 		];
 		return (
 			<div className={styles.wrapper}>
-				<div className={styles.search}>
-					<span>角色名称：</span>
-					<Input
-						onChange={this.changeKeyword}
-						style={{ width: 320, marginRight: 20 }}
-						placeholder="请输入"
-					/>
-					<Button onClick={this.search} type="primary">
-						查询
-					</Button>
+				<div className={styles['search-bar']}>
+					<Form layout="inline">
+						<Row gutter={FORM_FORMAT.gutter}>
+							<Col {...COL_THREE_NORMAL}>
+								<FormItem
+									label={formatMessage({ id: 'roleManagement.role.roleName' })}
+								>
+									{getFieldDecorator('keyword', {})(
+										<Input
+											placeholder={formatMessage({
+												id: 'esl.device.upload.device.version.input',
+											})}
+										/>
+									)}
+								</FormItem>
+							</Col>
+							<Col {...COL_THREE_NORMAL}>
+								<Button type="primary" onClick={this.handleSubmit}>
+									{formatMessage({ id: 'btn.query' })}
+								</Button>
+							</Col>
+						</Row>
+					</Form>
 				</div>
 				<div className={styles['add-role']}>
 					<Button type="primary" icon="plus" onClick={() => this.goPath({}, 'create')}>
-						添加角色
+						{formatMessage({ id: 'roleManagement.role.addRole' })}
 					</Button>
 				</div>
 				<Table

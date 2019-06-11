@@ -285,13 +285,13 @@ export default {
 						{
 							path: '/roleManagement/create',
 							name: 'create',
-							component: './RoleManagement/RoleCreate',
+							component: './RoleManagement/RoleCreateModify',
 							hideInMenu: true,							
 						},						
 						{
 							path: '/roleManagement/modify',
 							name: 'modify',
-							component: './RoleManagement/RoleModify',
+							component: './RoleManagement/RoleCreateModify',
 							hideInMenu: true,
 						},
 						{

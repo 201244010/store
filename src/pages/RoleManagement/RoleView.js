@@ -72,6 +72,9 @@ class RoleView extends React.Component {
 						<Button type="primary" onClick={this.confirm}>
 							{formatMessage({ id: 'btn.confirm' })}
 						</Button>
+						<Button onClick={this.cancel}>
+							{formatMessage({ id: 'btn.confirm' })}
+						</Button>
 					</Form.Item>
 				</Form>
 			</div>

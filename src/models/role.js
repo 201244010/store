@@ -15,7 +15,6 @@ function* switchLoadingStatus(status, put) {
 const getInitStatus = (permissionList, roleInfo) => {
 	const rolePermissionList = roleInfo.permission_list;
 	const initResult = {};
-	console.log(permissionList, roleInfo);
 	rolePermissionList.map(item => {
 		if (item.group === permissionList.label) {
 			initResult.valueList = item.valueList;
@@ -30,7 +29,6 @@ const formatData = (data) => {
 	tmp = tmp.map(item =>
 		map([{ from: 'id', to: 'value' }, { from: 'name', to: 'label' }])(item)
 	);
-
 	tmp = tmp.map(item => {
 		if (item.permission_list) {
 			item.permission_list = item.permission_list.map(items =>
@@ -39,7 +37,6 @@ const formatData = (data) => {
 		}
 		return item;
 	});
-
 	return tmp;
 };
 
@@ -65,7 +62,6 @@ export default {
 		*getRoleList({payload = {}}, { put, call, select }) {
 			yield switchLoadingStatus(true, put);
 			const { pagination } = yield select(state => state.role);
-
 			const { keyword, current, pageSize } = payload;
 			const opts = {
 				keyword,
@@ -103,7 +99,6 @@ export default {
 			const response = yield call(Actions.handleRoleManagement, 'getInfo', opts);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-
 				data.permission_list = formatData(data.permission_list).map(item =>
 					Object.assign(
 						{},
@@ -118,8 +113,6 @@ export default {
 						}
 					)
 				);
-				console.log('time');
-
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -127,14 +120,12 @@ export default {
 						loading: false,
 					},
 				});
-
 				yield put({
 					type: 'getPermissionList',
 					payload: {
 						type: 'modify'
 					}
 				});
-				
 			} else {
 				yield switchLoadingStatus(false, put);
 			}
@@ -240,7 +231,6 @@ export default {
 	},
 	reducers: {
 		updateState(state, action) {
-			console.log(action);
 			return {
 				...state,
 				...action.payload,
