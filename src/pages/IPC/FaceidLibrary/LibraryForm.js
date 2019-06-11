@@ -6,7 +6,7 @@ import { Form, Input } from 'antd';
 //   FORM_ITEM_LAYOUT,
 //   FORM_ITEM_LAYOUT_COMMON,
 // } from "@/constants/form";
-import { FormattedMessage, formatMessage } from 'umi/locale';
+import { formatMessage } from 'umi/locale';
 import * as styles from './FaceidLibrary.less';
 
 const FaceIdLibraryForm = Form.create({
@@ -62,115 +62,130 @@ class LibraryForm extends React.Component {
 	}
 
 	render() {
-		const { id, isDefault, restCapacity, libraries, amount, form } = this.props;
+		const { id, isDefault, isEdit, restCapacity, libraries, capacity, amount, form } = this.props;
 
 		const { getFieldDecorator } = form;
 
 		// console.log('form')
 		// console.log(this.props);
+		const maxCapacity = isEdit ? capacity + restCapacity : restCapacity;
 		return (
 			<div className={styles['faceid-library-form']}>
-				<Form className={styles['form-wrapper']} title={<FormattedMessage id="faceid.createLibrary" />}>
-					<Form.Item label={<FormattedMessage id="faceid.libraryName" />} extra={<FormattedMessage id="faceid.libraryNameFormat" />}>
-						{getFieldDecorator('name', {
-							rules: [
-								{
-									required: true,
-									message: formatMessage({
-										id: 'faceid.libraryNameMsg',
-									}),
-								},
-								{
-									max: 20,
-									message: formatMessage({
-										id: 'faceid.libraryNameFormat',
-									}),
-								},
-								{
-									validator: (rule, value, callback) => {
-										let confictFlag = false;
-										libraries.every(item => {
-											if (item.id !== id) {
-												if (item.name === value) {
-													confictFlag = true;
-													return false;
+				<Form
+					className={styles['form-wrapper']}
+					title={formatMessage({id: 'faceid.createLibrary'})}
+				>
+					<Form.Item
+						label={formatMessage({id: 'faceid.libraryName'})}
+						extra={formatMessage({id: 'faceid.libraryNameFormat'})}
+					>
+						{
+							getFieldDecorator('name', {
+								rules: [
+									{
+										required: true,
+										message: formatMessage({
+											id: 'faceid.libraryNameRequired',
+										}),
+									},
+									{
+										max: 20,
+										message: formatMessage({
+											id: 'faceid.libraryNameFormat',
+										}),
+									},
+									{
+										validator: (rule, value, callback) => {
+											let confictFlag = false;
+											libraries.every(item => {
+												if (item.id !== id) {
+													if (item.name === value) {
+														confictFlag = true;
+														return false;
+													}
+													return true;
 												}
 												return true;
-											}
-											return true;
-										});
+											});
 
-										if (confictFlag) {
-											callback('library-name-confict');
-										} else {
-											callback();
-										}
+											if (confictFlag) {
+												callback('library-name-confict');
+											} else {
+												callback();
+											}
+										},
+										message: formatMessage({
+											id: 'faceid.libraryNameRule',
+										}),
 									},
-									message: formatMessage({
-										id: 'faceid.libraryNameRule',
-									}),
-								},
-							],
-						})(
-							<Input
-								disabled={isDefault}
-								placeholder={formatMessage({
-									id: 'faceid.libraryNameMsg',
-								})}
-							/>
-						)}
+								],
+							})(
+								<Input
+									disabled={isDefault}
+									placeholder={formatMessage({
+										id: 'faceid.libraryNameMsg',
+									})}
+								/>
+							)}
 					</Form.Item>
 
 					<Form.Item
-						label={<FormattedMessage id="faceid.photosAmountLimit" />}
+						label={formatMessage({id: 'faceid.photosAmountLimit'})}
 						extra={
 							<span>
-								<FormattedMessage id="faceid.photosAmountNote-pre" />
-								{restCapacity}
-								<FormattedMessage id="faceid.photosAmountNote-mid" />
-								{amount || 1}~{restCapacity}
-								<FormattedMessage id="faceid.photosAmountNote-suf" />
+								{
+									`${formatMessage({id: 'faceid.photosAmountNote'}).replace('%min%', (amount || 1)).replace('%max%', maxCapacity).replace('%total%', maxCapacity) }`
+								}
 							</span>
 						}
 					>
-						{getFieldDecorator('capacity', {
-							rules: [
-								{
-									required: true,
-									message: formatMessage({
-										id: 'faceid.photosAmountMsg',
-									}),
-								},
-								{
-									validator: (rule, value, callback) => {
-										if (value < amount || value > restCapacity) {
-											callback('photo-amount-error');
-										} else {
-											callback();
-										}
+						{
+							getFieldDecorator('capacity', {
+								rules: [
+									{
+										required: true,
+										message: formatMessage({id: 'faceid.photosAmountRequired'}),
+									}, {
+										validator: (rule, value, callback) => {
+											// console.log(isEdit)
+											if (value === '') {
+												callback();
+											}else if (value <= 0 || value < amount || value > maxCapacity) {
+												callback('photo-amount-error');
+											}else{
+												callback();
+											}
+										},
+										message: `${formatMessage({id: 'faceid.photosAmountNoteError'}).replace('%min%', (amount || 1)).replace('%max%', maxCapacity)}`,
 									},
-									message: `${formatMessage({id: 'faceid.photosAmountNote-error'})}
-										${amount || 1}~
-										${restCapacity}
-										${formatMessage({id: 'faceid.photosAmountNote-suf'})}`,
-								},
-							],
-						})(<Input placeholder={formatMessage({
-							id: 'faceid.photosAmountMsg',
-						})}
-						/>)}
+								],
+							})(
+								<Input
+									placeholder={formatMessage({id: 'faceid.photosAmountPlaceHolder'})}
+								/>
+							)
+						}
 					</Form.Item>
 
 					<Form.Item label={
 						<span>
-							<FormattedMessage id="faceid.remark" />
+							<span>
+								{formatMessage({id: 'faceid.remark'})}
+							</span>
 							<span className="light">
-								<FormattedMessage id="faceid.remarkNote" />
+								{formatMessage({id: 'faceid.remarkNote'})}
 							</span>
 						</span>}
 					>
 						{
-							getFieldDecorator('remarks')(
+							getFieldDecorator('remarks', {
+								rules: [
+									{
+										max: 255,
+										message: '备注不得超过255个字符'
+									}
+								]
+							})(
 								<Input.TextArea
 									disabled={isDefault}
 									autosize={{ minRows: 2, maxRows: 6 }}

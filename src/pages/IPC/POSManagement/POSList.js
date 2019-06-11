@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Table,  Popconfirm, Icon, message, Modal, Form, Input, Button } from 'antd';
+import { Card, Table,  Popconfirm, Icon, message, Modal, Form, Input, Button, Divider } from 'antd';
 import { Link } from 'dva/router';
 import router from 'umi/router';
 
@@ -212,7 +212,7 @@ class POSList extends React.Component {
 								>
 									{ formatMessage({id: 'posList.video'}) }
 								</Link>
-
+								<Divider type="veritcal" />
 								<Link
 									className={styles['row-operation']}
 									to={`/cashVerify/bindPOSDevice?sn=${ipcSN}&posList=${sn}&edit=1`}
@@ -225,7 +225,7 @@ class POSList extends React.Component {
 								>
 									{ formatMessage({id: 'posList.adjustScreen'}) }
 								</a> */}
-
+								<Divider type="veritcal" />
 								<Popconfirm
 									icon={
 										<Icon type="close-circle" theme="filled" style={{color: 'red'}} />
@@ -273,7 +273,7 @@ class POSList extends React.Component {
 								{/* 重新绑定 */}
 								{formatMessage({id: 'posList.rebind'})}
 							</Link>
-
+							<Divider type="veritcal" />
 							<Popconfirm
 								icon={
 									<Icon type="close-circle" theme="filled" style={{color: 'red'}} />

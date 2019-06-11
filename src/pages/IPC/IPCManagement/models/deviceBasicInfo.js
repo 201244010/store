@@ -65,7 +65,6 @@ export default {
 
 		},
 		*update({ payload: { sn, name }}, { put, call }) {
-
 			const deviceId = yield put.resolve({
 				type: 'ipcList/getDeviceId',
 				payload:{
