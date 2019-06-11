@@ -5,7 +5,7 @@ import browser from 'browser-detect';
 import styles from './ReVideo.less';
 
 class ReVideojs extends React.Component{
-	
+
 
 	componentDidMount() {
 		const { getVideojsPlayer, onPlay, onPause, onError, onEnd, onTimeUpdate } = this.props;

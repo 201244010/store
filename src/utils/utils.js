@@ -391,3 +391,27 @@ export const getRandomString = () =>
 	Math.random()
 		.toString(36)
 		.substring(2);
+
+export const priceFormat = (price, dotPos = 3) => {
+	const priceStr = price.toString();
+	const [round, decimal] = priceStr.split('.');
+	if (round.length < 4) {
+		return priceStr;
+	}
+
+	const reverseRound = round.split('').reverse();
+	const reversedRound = reverseRound.reduce((prev, cur, index) => {
+		if (index % dotPos === 0) {
+			return (cur = `${cur},${prev}`);
+		}
+
+		return (cur += prev);
+	});
+
+	const formattedRound = reversedRound
+		.split('.')
+		.reverse()
+		.join('');
+
+	return decimal ? `${formattedRound}.${decimal}` : formattedRound;
+};

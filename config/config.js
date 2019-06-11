@@ -49,6 +49,10 @@ export default {
 		{
 			from: 'src/assets/favicon.ico',
 			to:'static/favicon.ico'
+		},
+		{
+			from: 'src/assets/favicon.ico',
+			to:'favicon.ico'
 		}
 	],
 	targets: { ie: 9 },
@@ -120,6 +124,12 @@ export default {
 							redirect: '/notification/center',
 						},
 					],
+				},
+				{
+					path:'/dashBoard',
+					name:'dashBoard',
+					icon: 'blank',
+					component:'./DashBoard'
 				},
 				{
 					path: '/esl',
@@ -540,7 +550,7 @@ export default {
 						}
 					],
 				},
-				{ path: '/', redirect: '/esl' },
+				{ path: '/', redirect: '/dashBoard' },
 			],
 		},
 	],
@@ -558,9 +568,9 @@ export default {
 	theme: {
 		'primary-color': primaryColor,
 	},
-	externals: {
-		'@antv/data-set': 'DataSet',
-	},
+	// externals: {
+	// 	'@antv/data-set': 'DataSet',
+	// },
 	ignoreMomentLocale: true,
 	lessLoaderOptions: {
 		javascriptEnabled: true,
