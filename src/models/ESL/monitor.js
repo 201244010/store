@@ -1,4 +1,4 @@
-import { fetchCommunications } from '@/services/ESL/monitor';
+import * as Services from '@/services/ESL/monitor';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 
@@ -36,7 +36,7 @@ export default {
 				...payload,
 			};
 
-			const response = yield call(fetchCommunications, 'getCommList', options);
+			const response = yield call(Services.fetchCommunications, options);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				yield put({

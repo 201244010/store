@@ -387,58 +387,53 @@ export default class RightToolBox extends Component {
 								</Radio.Group>
 							</Col>
 						</Row>
-						{/*
-							<Row style={{ marginBottom: 10 }} gutter={20}>
-								<Col span={24}>边框宽度</Col>
-								<Col span={24}>
-									<Radio.Group
-										style={{ width: "100%" }}
-										value={detail.strokeWidth}
-										onChange={e => {
-											this.handleDetail(
-												"strokeWidth",
-												parseInt(e.target.value, 10)
-											);
-										}}
-									>
-										<Radio.Button style={{ width: "25%" }} value={0}>
-											无
-										</Radio.Button>
-										<Radio.Button style={{ width: "25%" }} value={1}>
-											1px
-										</Radio.Button>
-										<Radio.Button style={{ width: "25%" }} value={3}>
-											3px
-										</Radio.Button>
-										<Radio.Button style={{ width: "25%" }} value={5}>
-											5px
-										</Radio.Button>
-									</Radio.Group>
-								</Col>
-							</Row>
-							<Row style={{ marginBottom: 10 }} gutter={20}>
-								<Col span={24}>边框颜色</Col>
-								<Col span={24}>
-									<Radio.Group
-										style={{ width: "100%" }}
-										value={detail.stroke}
-										onChange={e => {
-											this.handleDetail("stroke", e.target.value);
-										}}
-									>
-										<Radio.Button style={{ width: "33.33%" }} value="black">
-											黑
-										</Radio.Button>
-										<Radio.Button style={{ width: "33.33%" }} value="white">
-											白
-										</Radio.Button>
-										<Radio.Button style={{ width: "33.33%" }} value="red">
-											红
-										</Radio.Button>
-									</Radio.Group>
-								</Col>
-							</Row>
-						*/}
+						<Row style={{ marginBottom: 10 }} gutter={20}>
+							<Col span={24}>边框宽度</Col>
+							<Col span={24}>
+								<Radio.Group
+									style={{ width: '100%' }}
+									value={detail.strokeWidth}
+									onChange={e => {
+										this.handleDetail('strokeWidth', parseInt(e.target.value, 10));
+									}}
+								>
+									<Radio.Button style={{ width: '25%' }} value={0}>
+										无
+									</Radio.Button>
+									<Radio.Button style={{ width: '25%' }} value={1}>
+										1px
+									</Radio.Button>
+									<Radio.Button style={{ width: '25%' }} value={3}>
+										3px
+									</Radio.Button>
+									<Radio.Button style={{ width: '25%' }} value={5}>
+										5px
+									</Radio.Button>
+								</Radio.Group>
+							</Col>
+						</Row>
+						<Row style={{ marginBottom: 10 }} gutter={20}>
+							<Col span={24}>边框颜色</Col>
+							<Col span={24}>
+								<Radio.Group
+									style={{ width: '100%' }}
+									value={detail.stroke}
+									onChange={e => {
+										this.handleDetail('stroke', e.target.value);
+									}}
+								>
+									<Radio.Button style={{ width: '33.33%' }} value="black">
+										黑
+									</Radio.Button>
+									<Radio.Button style={{ width: '33.33% ' }} value="white">
+										白
+									</Radio.Button>
+									<Radio.Button style={{ width: '33.33%' }} value="red">
+										红
+									</Radio.Button>
+								</Radio.Group>
+							</Col>
+						</Row>
 						{/*
 							<Row style={{ marginBottom: 10 }} gutter={20}>
 								<Col span={24}>圆角直径</Col>
@@ -793,7 +788,7 @@ export default class RightToolBox extends Component {
 									{formatMessage({ id: 'studio.tool.label.font.family' })}
 								</span>
 							</Col>
-							<Col span={14}>
+							<Col span={20}>
 								<Select
 									style={{ width: '100%' }}
 									value={detail.fontFamily}
@@ -804,20 +799,6 @@ export default class RightToolBox extends Component {
 									<Option value="Zfull-GB">Zfull-GB</Option>
 									<Option value="Arial">Arial</Option>
 								</Select>
-							</Col>
-							<Col
-								span={6}
-								style={{ textAlign: 'right' }}
-								className={`${styles.formatter} ${
-									detail.fontStyle.indexOf('bold') > -1 ? `${styles.active}` : ''
-								}`}
-							>
-								<Icon
-									type="bold"
-									onClick={() => {
-										this.handleFontStyle(detail, 'bold');
-									}}
-								/>
 							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={10}>
