@@ -13,5 +13,5 @@ export const fetchCommunications = (options = {}) => {
 		},
 	};
 
-	return fetchApi('getList', opts).then(response => response.json());
+	return fetchApi('getCommList', opts).then(response => response.json());
 };
