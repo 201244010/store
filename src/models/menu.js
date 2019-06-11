@@ -102,7 +102,7 @@ export default {
 	},
 
 	effects: {
-		* getMenuData({ payload }, { put, call }) {
+		*getMenuData({ payload }, { put, call }) {
 			const { routes, authority } = payload;
 			const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
 			const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
