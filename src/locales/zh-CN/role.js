@@ -11,4 +11,10 @@ export default {
 	'roleManagement.role.roleRootEmpty': '角色权限不能为空',
 	'roleManagement.role.deleteRole': '你确定要删除这角色吗？',
 	
+	'roleManagement.role.createSuccess': '角色创建成功',
+	'roleManagement.role.createFail': '角色创建失败',
+	'roleManagement.role.modifySuccess': '角色修改成功',
+	'roleManagement.role.modifyFail': '角色修改失败',
+	'roleManagement.role.deleteSuccess': '角色删除成功',
+	'roleManagement.role.deleteFail': '角色删除失败',
 };

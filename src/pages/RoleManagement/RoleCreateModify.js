@@ -5,7 +5,7 @@ import { getLocationParam, idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
-// import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 import { MENU_PREFIX } from '@/constants';
 
 import styles from './Role.less';
@@ -64,17 +64,29 @@ class RoleModify extends React.Component {
 			if (!err) {
 				if (action === 'modify') {
 					const roleId = idDecode(getLocationParam('id'));
-					await updateRole({
+					const response = await updateRole({
 						name: values.name,
 						roleId,
 						permissionIdList: valueList,
 					});
+					if (response && response.code === ERROR_OK) {
+						message.success(formatMessage({ id: 'roleManagement.role.modifySuccess' }));
+						router.push(`${MENU_PREFIX.ROLE}/roleList`);
+					} else {
+						message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) || formatMessage({ id: 'roleManagement.role.modifyFail' }));
+					}
 				} else {
-					await creatRole({
+					const response = await creatRole({
 						name: values.name,
 						permissionIdList: valueList,
 						username,
 					});
+					if (response && response.code === ERROR_OK) {
+						message.success(formatMessage({ id: 'roleManagement.role.createSuccess' }));
+						router.push(`${MENU_PREFIX.ROLE}/roleList`);
+					} else {
+						message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) || formatMessage({ id: 'roleManagement.role.createFail' }));
+					}
 				}
 			}
 		});
