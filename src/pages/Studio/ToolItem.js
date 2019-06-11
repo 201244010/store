@@ -62,7 +62,7 @@ export default class ToolItem extends Component {
 								codec: 'ean13',
 							});
 						};
-						image.src = MAPS.imageUrl[type];
+						image.src = MAPS.imgPath[type];
 					} else {
 						addComponent({
 							x,

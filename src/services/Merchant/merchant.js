@@ -45,3 +45,10 @@ export const initialCompany = (options = {}) => {
 	};
 	return fetchApi('initSetup', opts).then(response => response.json());
 };
+
+export const getAuthMenu = (options = {}) => {
+	const opts = {
+		body: { ...options },
+	};
+	return fetchApi('menu/getList', opts).then(response => response.json());
+};

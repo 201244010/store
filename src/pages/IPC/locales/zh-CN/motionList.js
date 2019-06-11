@@ -13,7 +13,7 @@ export default{
 	'motionList.select.detectedSource':'请选择侦测来源',
 	'motionList.all': '所有',
 	'motionList.sound.detect': '声音侦测',
-	'motionList.image.detect': '画面侦测',
+	'motionList.image.detect': '图像侦测',
 	'motionList.soundAndImage.detect': '声音和图像侦测',
 	'motionList.time': '时间',
 	'motionList.search': '查询',

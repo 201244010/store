@@ -1,21 +1,37 @@
+import { getMemberStatus } from '../../services/member';
+import { ERROR_OK } from '@/constants/errorCode';
+
 export default {
 	namespace: 'cloudService',
-	state: {},
+	state: {
+		isMember: true
+	},
 	reducers: {
-		readData: () => ({
-			isOpen:true,
-			expiredDate:'2019-12-30',
-			isExpired:false
-		}),
-		updateData: () => {
-
+		updateMember (state, { payload: { isMember }}) {
+			state.isMember = isMember;
 		}
 	},
 	effects: {
-		*read(action, { put }) {
-			yield put({
-				type:'readData'
-			});
+		*read(action, { put, call }) {
+			const response = yield call(getMemberStatus);
+
+			if (response.code === ERROR_OK) {
+				yield put({
+					type:'updateMember',
+					payload: {
+						isMember: true
+					}
+				});
+			}else {
+				yield put({
+					type:'updateMember',
+					payload: {
+						isMember: false
+					}
+				});
+			}
+
+
 		},
 		// *update(action, { put, select }) {
 

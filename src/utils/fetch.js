@@ -5,6 +5,8 @@ import { cbcEncryption, idDecode, md5Encryption } from '@/utils/utils';
 import { ALERT_NOTICE_MAP, ERROR_OK, USER_NOT_LOGIN } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
 
+import 'whatwg-fetch';
+
 const { API_ADDRESS, MD5_TOKEN } = CONFIG;
 
 // const codeMessage = {
@@ -25,7 +27,7 @@ const { API_ADDRESS, MD5_TOKEN } = CONFIG;
 const unAuthHandler = () => {
 	CookieUtil.clearCookies();
 	window.location.href = `${window.location.origin}/user/login?redirect=${encodeURIComponent(
-		window.location.pathname
+		window.location.pathname,
 	)}`;
 };
 

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import DeviceBasicInfo from './DeviceBasicInfo';
 import ActiveDetection from './ActiveDetection';
 import BasicParams from './BasicParams';
-import NetworkSetting from './NetworkSetting';
+// import NetworkSetting from './NetworkSetting';
 // import CloudService from './CloudService';
-// import SoftwareUpdate from './SoftwareUpdate';
+import SoftwareUpdate from './SoftwareUpdate';
 
 import styles from './IPCManagement.less';
 
@@ -19,9 +19,9 @@ class IPCManagement extends Component {
 				<DeviceBasicInfo sn={sn} />
 				<ActiveDetection sn={sn} />
 				<BasicParams sn={sn} />
-				<NetworkSetting sn={sn} />
-				{/* <CloudService sn={sn}/> */}
-				{/* <SoftwareUpdate sn={sn}/> */}
+				{/* <NetworkSetting sn={sn} /> */}
+				{/* <CloudService sn={sn} /> */}
+				<SoftwareUpdate sn={sn} />
 			</div>
 
 		);

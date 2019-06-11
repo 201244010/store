@@ -232,13 +232,21 @@ class VideoPlayer extends React.Component{
 			// 当前不是最后一个视频
 			const nextIndex = player.playlist.nextIndex();
 			const nextSource = sources[nextIndex];
-			console.log(nextIndex, currentTimestamp, nextSource.timeStart);
+			// console.log(nextIndex, currentTimestamp, nextSource.timeStart);
 			if (currentTimestamp < nextSource.timeStart){
 				// 还未到下一段视频点
 				this.showNoMediaCover();
 			}else{
 				player.playlist.next();
 			}
+		}
+	}
+
+	setCurrentTime(time) {
+		const {player} = this;
+		// console.log(player);
+		if (player) {
+			player.currentTime(time);
 		}
 	}
 
@@ -617,7 +625,7 @@ class VideoPlayer extends React.Component{
 	}
 
 	render() {
-		const { type, faceidRects, pixelRatio, currentPPI, onTimeChange } = this.props;
+		const { type, faceidRects, pixelRatio, currentPPI,ppiChanged, onTimeChange } = this.props;
 		let { sources } = this.props;
 		sources = sources || [];
 		const { playing, isLive, ppis, noMedia, volume, maxVolume, fullScreen, canScreenShot, currentTimestamp, liveTimestamp } = this.state;
@@ -727,6 +735,7 @@ class VideoPlayer extends React.Component{
 
 						fullScreenStatus={fullScreen}
 						ppiChange={this.ppiChange}
+						ppiChanged={ppiChanged}
 
 						onDatePickerChange={this.dateChange}
 

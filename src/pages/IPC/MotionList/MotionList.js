@@ -58,7 +58,7 @@ function getTimestamp(time){
 }))
 class MotionList extends React.Component {
 
-	state = { 
+	state = {
 		selectedStartTime:'',
 		selectedEndTime:'',
 		isWatchVideo:false,
@@ -108,14 +108,14 @@ class MotionList extends React.Component {
 		const { getIpcList } = this.props;
 		await getIpcList();
 		const { getMotionList } = this.props;
-		const currentTime = getTimestamp(moment().subtract(1, 'days'));	
+		const currentTime = getTimestamp(moment().subtract(1, 'days'));
 		const lastDayTime = getTimestamp(moment());
 		getMotionList(currentTime,lastDayTime);
 		this.setState({
 			selectedStartTime:moment().subtract(1, 'days'),
 			selectedEndTime:moment()
 		});
-		
+
 	}
 
 	watchVideoHandler = async (item) =>{
@@ -129,7 +129,7 @@ class MotionList extends React.Component {
 	}
 
 	watchVideoClose =()=>{
-		this.setState({ 
+		this.setState({
 			videoUrl:'',
 			isWatchVideo:false
 		});
@@ -159,7 +159,7 @@ class MotionList extends React.Component {
 			selectedEndTime:dateStrings[1]
 		});
 	}
-	
+
 	searchHandler(){
 		const { getMotionList } = this.props;
 		const { ipcSelected, detectedSourceSelected, selectedStartTime, selectedEndTime } = this.state;
@@ -177,11 +177,11 @@ class MotionList extends React.Component {
 		message.warning(warningMessage);
 
 	}
-	
+
 	render() {
 		const { motionList: motionObj, loading } = this.props;
 		const { isWatchVideo, videoUrl, ipcType } = this.state;
-		
+
 		const { motionList, ipcList } = motionObj;
 		// const ipcList = this.props.motionList.ipcList;
 		// console.log(ipcList);
@@ -236,9 +236,9 @@ class MotionList extends React.Component {
 					<Table columns={this.columns} dataSource={motionList} loading={loading.effects['motionList/read']} />
 				</div>
 				<div className={isWatchVideo ? styles['video-player'] : styles['display-none']}>
-					<VideoPlayComponent watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} ipcType={ipcType} />
+					<VideoPlayComponent playing={isWatchVideo} watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} ipcType={ipcType} />
 				</div>
-				
+
 			</Card>
 		);
 	}

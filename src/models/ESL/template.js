@@ -25,6 +25,8 @@ export default {
 		searchFormValues: {
 			keyword: '',
 			status: -1,
+			screen_type: -1,
+			colour: -1,
 		},
 		pagination: {
 			current: 1,
@@ -161,81 +163,60 @@ export default {
 			Object.keys(payload.draft).map(key => {
 				const componentDetail = payload.draft[key];
 				Object.keys(componentDetail).map(detailKey => {
-					componentDetail.content = componentDetail.bindField
-						? `{{${componentDetail.bindField}}}`
-						: componentDetail.text;
+					componentDetail.content = componentDetail.bindField ? `{{${componentDetail.bindField}}}` : (componentDetail.text || '');
 					if (['height', 'width'].includes(detailKey)) {
 						const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
-						const scale = {
-							width: componentDetail.scaleX,
-							height: componentDetail.scaleY,
-						};
-						const size = {
-							width: MAPS.containerWidth,
-							height: MAPS.containerHeight,
-						};
-						componentDetail[realKey] = Math.round(
-							size[detailKey][componentDetail.type] * scale[detailKey]
-						);
+						if (SHAPE_TYPES.IMAGE === componentDetail.type) {
+							const backWidth = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
+							componentDetail.backWidth = backWidth;
+							componentDetail.backHeight = backWidth * componentDetail.ratio;
+						} else if (SHAPE_TYPES.HLine === componentDetail.type) {
+							componentDetail.backWidth = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
+							componentDetail.backHeight = componentDetail.strokeWidth;
+						} else if (SHAPE_TYPES.VLine === componentDetail.type) {
+							componentDetail.backWidth = componentDetail.strokeWidth;
+							componentDetail.backHeight = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
+						} else {
+							const scale = {
+								width: componentDetail.scaleX,
+								height: componentDetail.scaleY,
+							};
+							const size = {
+								width: MAPS.containerWidth,
+								height: MAPS.containerHeight,
+							};
+							componentDetail[realKey] = Math.round(size[detailKey][componentDetail.type] * scale[detailKey]);
+						}
 					}
 					if (['x', 'y'].includes(detailKey)) {
 						if (componentDetail.type !== SHAPE_TYPES.RECT_FIX) {
-							componentDetail.backStartX = (
-								(componentDetail.x - originOffset.x) /
-								componentDetail.zoomScale
-							).toFixed();
-							componentDetail.backStartY = (
-								(componentDetail.y - originOffset.y) /
-								componentDetail.zoomScale
-							).toFixed();
+							componentDetail.backStartX = ((componentDetail.x - originOffset.x) / componentDetail.zoomScale).toFixed();
+							componentDetail.backStartY = ((componentDetail.y - originOffset.y) / componentDetail.zoomScale).toFixed();
 							if (NON_NORMAL_PRICE_TYPES.includes(componentDetail.type)) {
 								const intPriceText = `${componentDetail.text}`.split('.')[0];
-								const smallPriceText =
-									`${componentDetail.text}`.split('.')[1] || '';
+								const smallPriceText = `${componentDetail.text}`.split('.')[1] || '';
 								let backSmallStartY = 0;
 								if (componentDetail.type.indexOf(SHAPE_TYPES.PRICE_SUPER)) {
 									backSmallStartY =
-										(MAPS.containerHeight[componentDetail.type] *
-											componentDetail.scaleY -
-											componentDetail.fontSize) /
-										2;
+										(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY - componentDetail.fontSize) / 2;
 								}
-								const intTextWidth =
-									(componentDetail.fontSize / 2) *
-									(intPriceText.length + (smallPriceText ? 0.7 : 0));
-								const textWidth =
-									intTextWidth +
-									(smallPriceText.length * componentDetail.smallFontSize) / 2;
+								const intTextWidth = (componentDetail.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0));
+								const textWidth = intTextWidth + (smallPriceText.length * componentDetail.smallFontSize) / 2;
 								let intXPosition = 0;
 								if (componentDetail.align === 'center') {
-									intXPosition =
-										(MAPS.containerWidth[componentDetail.type] *
-											componentDetail.scaleX -
-											textWidth) /
-										2;
+									intXPosition = (MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX - textWidth) / 2;
 								}
 								if (componentDetail.align === 'right') {
-									intXPosition =
-										MAPS.containerWidth[componentDetail.type] *
-										componentDetail.scaleX -
-										textWidth;
+									intXPosition = MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX - textWidth;
 								}
 								componentDetail.backType = SHAPE_TYPES.PRICE;
-								componentDetail.backIntStartX =
-									Math.round(componentDetail.backStartX) +
-									Math.round(intXPosition);
-								componentDetail.backIntStartY =
-									Math.round(componentDetail.backStartY) +
-									Math.round(backSmallStartY);
-								componentDetail.backSmallStartX =
-									componentDetail.backIntStartX + Math.round(intTextWidth);
+								componentDetail.backIntStartX = Math.round(componentDetail.backStartX) + Math.round(intXPosition);
+								componentDetail.backIntStartY = Math.round(componentDetail.backStartY) + Math.round(backSmallStartY);
+								componentDetail.backSmallStartX = componentDetail.backIntStartX + Math.round(intTextWidth);
 								if (componentDetail.type.indexOf(SHAPE_TYPES.PRICE_SUPER) > -1) {
 									componentDetail.backSmallStartY = componentDetail.backIntStartY;
 								} else {
-									componentDetail.backSmallStartY =
-										componentDetail.backIntStartY +
-										componentDetail.fontSize -
-										componentDetail.smallFontSize;
+									componentDetail.backSmallStartY = componentDetail.backIntStartY + componentDetail.fontSize - componentDetail.smallFontSize;
 								}
 							}
 						}
@@ -243,33 +224,36 @@ export default {
 					if (['type'].includes(detailKey)) {
 						const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
 						if (
-							[...NORMAL_PRICE_TYPES, SHAPE_TYPES.RECT].includes(componentDetail.type)
+							[...NORMAL_PRICE_TYPES, SHAPE_TYPES.RECT, SHAPE_TYPES.HLine, SHAPE_TYPES.VLine].includes(componentDetail.type)
 						) {
 							componentDetail[realKey] = SHAPE_TYPES.TEXT;
 						}
 						if (BARCODE_TYPES.includes(componentDetail.type)) {
 							componentDetail[realKey] = SHAPE_TYPES.CODE;
-							componentDetail.codec =
-								componentDetail.type === SHAPE_TYPES.CODE_QR
-									? 'qrcode'
-									: componentDetail.codec;
+							componentDetail.codec = componentDetail.type === SHAPE_TYPES.CODE_QR ? 'qrcode' : componentDetail.codec;
 						}
 						if ([SHAPE_TYPES.TEXT].includes(componentDetail.type)) {
 							componentDetail[realKey] = SHAPE_TYPES.TEXT;
 						}
+						if ([SHAPE_TYPES.IMAGE].includes(componentDetail.type)) {
+							componentDetail[realKey] = 'picture';
+							componentDetail.codec = 'jpeg';
+						}
 					}
 					if (['fill'].includes(detailKey)) {
-						if (
-							[
-								...NORMAL_PRICE_TYPES,
-								...NON_NORMAL_PRICE_TYPES,
-								SHAPE_TYPES.TEXT,
-							].includes(componentDetail.type)
-						) {
+						if ([...NORMAL_PRICE_TYPES, ...NON_NORMAL_PRICE_TYPES, SHAPE_TYPES.TEXT].includes(componentDetail.type)) {
 							componentDetail.backBg = componentDetail.textBg;
 						}
 						if ([SHAPE_TYPES.RECT].includes(componentDetail.type)) {
 							componentDetail.backBg = componentDetail.fill;
+							componentDetail.fontFamily = '';
+							componentDetail.fontSize = '';
+						}
+					}
+					if (['stroke'].includes(detailKey)) {
+						if ([SHAPE_TYPES.HLine, SHAPE_TYPES.VLine].includes(componentDetail.type)) {
+							componentDetail.backBg = componentDetail.stroke;
+							componentDetail.fill = componentDetail.stroke;
 							componentDetail.fontFamily = '';
 							componentDetail.fontSize = '';
 						}

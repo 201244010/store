@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Group, Rect, Text, Line, Image, Shape } from 'react-konva';
+import { Group, Rect, Text, Image, Shape } from 'react-konva';
 import { SHAPE_TYPES, SIZES, MAPS } from '@/constants/studio';
 
 export default function generateShape(option) {
@@ -24,6 +24,7 @@ export default function generateShape(option) {
 						strokeScaleEnabled: false,
 						draggable: true,
 						onTransform: option.onTransform,
+						onTransformEnd: option.onTransformEnd,
 						onMouseOver: () => {
 							document.body.style.cursor = 'pointer';
 						},
@@ -51,6 +52,7 @@ export default function generateShape(option) {
 						cornerRadius: option.cornerRadius,
 						strokeScaleEnabled: false,
 						onTransform: option.onTransform,
+						onTransformEnd: option.onTransformEnd,
 						shadowColor: 'rgba(0, 0, 0, 0.1)',
 						shadowBlur: 1,
 						shadowOffset: { x: 0, y: 2 },
@@ -81,6 +83,7 @@ export default function generateShape(option) {
 							opacity: option.textBg === 'opacity' ? 0 : 1,
 							draggable: true,
 							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
 						}}
 					/>
@@ -97,14 +100,9 @@ export default function generateShape(option) {
 							fill: option.fill,
 							align: option.align,
 							letterSpacing: option.letterSpacing,
-							width:
-								MAPS.containerWidth[SHAPE_TYPES.TEXT] *
-								option.scaleX *
-								option.zoomScale,
+							width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX * option.zoomScale,
 							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
-							lineHeight:
-								(MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.scaleY) /
-								option.fontSize,
+							lineHeight: (MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.scaleY) / option.fontSize,
 							draggable: true,
 							onDblClick: option.onDblClick,
 						}}
@@ -114,18 +112,19 @@ export default function generateShape(option) {
 			break;
 		case SHAPE_TYPES.HLine:
 			shape = (
-				<Line
+				<Rect
 					{...{
 						name: option.name,
 						x: option.x,
 						y: option.y,
-						stroke: option.stroke,
-						strokeWidth: option.strokeWidth * option.zoomScale,
+						width: MAPS.width[SHAPE_TYPES.HLine] * option.zoomScale,
+						height: option.strokeWidth * option.zoomScale,
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
-						points: [0, 0, SIZES.DEFAULT_H_LINE_WIDTH, 0],
+						fill: option.stroke,
 						draggable: true,
 						onTransform: option.onTransform,
+						onTransformEnd: option.onTransformEnd,
 						onMouseOver: () => {
 							document.body.style.cursor = 'pointer';
 						},
@@ -138,18 +137,19 @@ export default function generateShape(option) {
 			break;
 		case SHAPE_TYPES.VLine:
 			shape = (
-				<Line
+				<Rect
 					{...{
 						name: option.name,
 						x: option.x,
 						y: option.y,
-						stroke: option.stroke,
-						strokeWidth: option.strokeWidth * option.zoomScale,
+						width: option.strokeWidth * option.zoomScale,
+						height: MAPS.height[SHAPE_TYPES.VLine] * option.zoomScale,
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
-						points: [0, 0, 0, SIZES.DEFAULT_V_LINE_HEIGHT],
+						fill: option.stroke,
 						draggable: true,
 						onTransform: option.onTransform,
+						onTransformEnd: option.onTransformEnd,
 						onMouseOver: () => {
 							document.body.style.cursor = 'pointer';
 						},
@@ -176,23 +176,14 @@ export default function generateShape(option) {
 								fill: '#d9d9d9',
 								draggable: true,
 								onTransform: option.onTransform,
+								onTransformEnd: option.onTransformEnd,
 								onDblClick: option.onDblClick,
 							}}
 						/>
 						<Image
 							{...{
-								x:
-									option.x +
-									((SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX -
-										SIZES.DEFAULT_IMAGE_WIDTH) *
-										option.zoomScale) /
-									2,
-								y:
-									option.y +
-									((SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT * option.scaleY -
-										SIZES.DEFAULT_IMAGE_HEIGHT) *
-										option.zoomScale) /
-									2,
+								x: option.x + ((SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - SIZES.DEFAULT_IMAGE_WIDTH) * option.zoomScale) / 2,
+								y: option.y + ((SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT * option.scaleY - SIZES.DEFAULT_IMAGE_HEIGHT) * option.zoomScale) / 2,
 								width: SIZES.DEFAULT_IMAGE_WIDTH * option.zoomScale,
 								height: SIZES.DEFAULT_IMAGE_HEIGHT * option.zoomScale,
 								image: option.image,
@@ -202,13 +193,7 @@ export default function generateShape(option) {
 							<Fragment>
 								<Rect
 									{...{
-										x:
-											option.x +
-											(SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH *
-												option.scaleX *
-												option.zoomScale -
-												180) /
-											2,
+										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
 										y: option.y - 50,
 										width: 180,
 										height: 32,
@@ -218,13 +203,7 @@ export default function generateShape(option) {
 								/>
 								<Text
 									{...{
-										x:
-											option.x +
-											(SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH *
-												option.scaleX *
-												option.zoomScale -
-												180) /
-											2,
+										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
 										y: option.y - 50,
 										width: 180,
 										height: 32,
@@ -248,16 +227,14 @@ export default function generateShape(option) {
 								x: option.x,
 								y: option.y,
 								width: SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.zoomScale,
-								height:
-									SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH *
-									option.ratio *
-									option.zoomScale,
+								height: SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.ratio * option.zoomScale,
 								scaleX: option.scaleX,
 								scaleY: option.scaleY,
 								image: option.image,
 								ratio: option.ratio,
 								draggable: true,
 								onTransform: option.onTransform,
+								onTransformEnd: option.onTransformEnd,
 								onDblClick: option.onDblClick,
 							}}
 						/>
@@ -265,13 +242,7 @@ export default function generateShape(option) {
 							<Fragment>
 								<Rect
 									{...{
-										x:
-											option.x +
-											(SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH *
-												option.scaleX *
-												option.zoomScale -
-												180) /
-											2,
+										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
 										y: option.y - 50,
 										width: 180,
 										height: 32,
@@ -281,13 +252,7 @@ export default function generateShape(option) {
 								/>
 								<Text
 									{...{
-										x:
-											option.x +
-											(SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH *
-												option.scaleX *
-												option.zoomScale -
-												180) /
-											2,
+										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
 										y: option.y - 50,
 										width: 180,
 										height: 32,
@@ -321,6 +286,7 @@ export default function generateShape(option) {
 							opacity: option.textBg === 'opacity' ? 0 : 1,
 							draggable: true,
 							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
 						}}
 					/>
@@ -337,15 +303,9 @@ export default function generateShape(option) {
 							fill: option.fill,
 							align: option.align,
 							letterSpacing: option.letterSpacing,
-							width:
-								MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
-							height:
-								MAPS.containerHeight[option.type] *
-								option.scaleY *
-								option.zoomScale,
-							lineHeight:
-								(MAPS.containerHeight[option.type] * option.scaleY) /
-								option.fontSize,
+							width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
+							height: MAPS.containerHeight[option.type] * option.scaleY * option.zoomScale,
+							lineHeight: (MAPS.containerHeight[option.type] * option.scaleY) / option.fontSize,
 							draggable: true,
 							onDblClick: option.onDblClick,
 						}}
@@ -371,6 +331,7 @@ export default function generateShape(option) {
 							text: option.text,
 							draggable: true,
 							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
 						}}
 					/>
@@ -383,57 +344,24 @@ export default function generateShape(option) {
 							sceneFunc(context) {
 								const intPriceText = `${option.text}`.split('.')[0];
 								const smallPriceText = `${option.text}`.split('.')[1] || '';
-								const yPosition =
-									((MAPS.containerHeight[option.type] * option.scaleY -
-										option.fontSize) *
-										option.zoomScale) /
-									2;
-								const intTextWidth =
-									(option.fontSize / 2) *
-									(intPriceText.length + (smallPriceText ? 0.6 : 0)) *
-									option.zoomScale;
-								const textWidth =
-									intTextWidth +
-									((smallPriceText.length * option.smallFontSize) / 2) *
-									option.zoomScale;
+								const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY - option.fontSize) * option.zoomScale) / 2;
+								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
+								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
 								if (option.align === 'center') {
-									intXPosition =
-										(MAPS.containerWidth[option.type] *
-											option.scaleX *
-											option.zoomScale -
-											textWidth) /
-										2;
+									intXPosition = (MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth) / 2;
 								}
 								if (option.align === 'right') {
-									intXPosition =
-										MAPS.containerWidth[option.type] *
-										option.scaleX *
-										option.zoomScale -
-										textWidth;
+									intXPosition = MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth;
 								}
 								const smallXPosition = intXPosition + intTextWidth;
 
-								context.font = `${option.fontStyle} ${option.fontSize *
-									option.zoomScale}px ${option.fontFamily}`;
+								context.font = `${option.fontStyle} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
 								context.textBaseline = 'top';
 								context.fillStyle = option.fill;
-								context.fillText(
-									`${
-										option.text
-											? `${intPriceText}${smallPriceText ? '.' : ''}`
-											: ''
-									}`,
-									intXPosition,
-									yPosition
-								);
-								context.font = `${option.fontStyle} ${option.smallFontSize *
-									option.zoomScale}px ${option.fontFamily}`;
-								context.fillText(
-									`${option.text ? smallPriceText : ''}`,
-									smallXPosition,
-									yPosition
-								);
+								context.fillText(`${option.text ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+								context.font = `${option.fontStyle} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+								context.fillText(`${option.text ? smallPriceText : ''}`, smallXPosition, yPosition);
 							},
 						}}
 					/>
@@ -457,6 +385,7 @@ export default function generateShape(option) {
 							opacity: option.textBg === 'opacity' ? 0 : 1,
 							draggable: true,
 							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
 						}}
 					/>
@@ -469,57 +398,24 @@ export default function generateShape(option) {
 							sceneFunc(context) {
 								const intPriceText = `${option.text}`.split('.')[0];
 								const smallPriceText = `${option.text}`.split('.')[1] || '';
-								const yPosition =
-									((MAPS.containerHeight[option.type] * option.scaleY +
-										option.fontSize) *
-										option.zoomScale) /
-									2;
-								const intTextWidth =
-									(option.fontSize / 2) *
-									(intPriceText.length + (smallPriceText ? 0.6 : 0)) *
-									option.zoomScale;
-								const textWidth =
-									intTextWidth +
-									((smallPriceText.length * option.smallFontSize) / 2) *
-									option.zoomScale;
+								const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY + option.fontSize) * option.zoomScale) / 2;
+								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
+								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
 								if (option.align === 'center') {
-									intXPosition =
-										(MAPS.containerWidth[option.type] *
-											option.scaleX *
-											option.zoomScale -
-											textWidth) /
-										2;
+									intXPosition = (MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth) / 2;
 								}
 								if (option.align === 'right') {
-									intXPosition =
-										MAPS.containerWidth[option.type] *
-										option.scaleX *
-										option.zoomScale -
-										textWidth;
+									intXPosition = MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth;
 								}
 								const smallXPosition = intXPosition + intTextWidth;
 
-								context.font = `${option.fontStyle} ${option.fontSize *
-									option.zoomScale}px ${option.fontFamily}`;
+								context.font = `${option.fontStyle} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
 								context.textBaseline = 'bottom';
 								context.fillStyle = option.fill;
-								context.fillText(
-									`${
-										option.text
-											? `${intPriceText}${smallPriceText ? '.' : ''}`
-											: ''
-									}`,
-									intXPosition,
-									yPosition
-								);
-								context.font = `${option.fontStyle} ${option.smallFontSize *
-									option.zoomScale}px ${option.fontFamily}`;
-								context.fillText(
-									`${option.text ? smallPriceText : ''}`,
-									smallXPosition,
-									yPosition
-								);
+								context.fillText(`${option.text ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+								context.font = `${option.fontStyle} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+								context.fillText(`${option.text ? smallPriceText : ''}`, smallXPosition, yPosition);
 							},
 						}}
 					/>
@@ -542,6 +438,7 @@ export default function generateShape(option) {
 						image: option.image,
 						draggable: true,
 						onTransform: option.onTransform,
+						onTransformEnd: option.onTransformEnd,
 					}}
 				/>
 			);

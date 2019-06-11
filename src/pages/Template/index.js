@@ -8,6 +8,7 @@ import * as styles from './index.less';
 		template: state.template,
 	}),
 	dispatch => ({
+		changeSearchFormValue: payload => dispatch({ type: 'template/changeSearchFormValue', payload }),
 		fetchScreenTypes: payload => dispatch({ type: 'template/fetchScreenTypes', payload }),
 		fetchColors: payload => dispatch({ type: 'template/fetchColors', payload }),
 		createTemplate: payload => dispatch({ type: 'template/createTemplate', payload }),
@@ -18,9 +19,16 @@ import * as styles from './index.less';
 )
 class Template extends Component {
 	componentDidMount() {
-		const { fetchScreenTypes, fetchTemplates } = this.props;
+		const { fetchScreenTypes, fetchColors, fetchTemplates, changeSearchFormValue } = this.props;
 
+		changeSearchFormValue({
+			keyword: '',
+			status: -1,
+			colour: -1,
+			screen_type: -1
+		});
 		fetchScreenTypes();
+		fetchColors({ screen_type: -1 });
 		fetchTemplates({
 			options: {
 				current: 1,
@@ -33,23 +41,26 @@ class Template extends Component {
 	render() {
 		const {
 			fetchColors,
+			changeSearchFormValue,
 			fetchTemplates,
 			createTemplate,
 			deleteTemplate,
 			applyTemplate,
-			template: { screenTypes, colors, loading, data, pagination },
+			template: { searchFormValues, screenTypes, colors, loading, data, pagination },
 		} = this.props;
 
 		return (
 			<div className={styles['content-container']}>
 				<SearchResult
 					{...{
+						searchFormValues,
 						screenTypes,
 						colors,
 						loading,
 						data,
 						pagination,
 						fetchColors,
+						changeSearchFormValue,
 						createTemplate,
 						fetchTemplates,
 						deleteTemplate,

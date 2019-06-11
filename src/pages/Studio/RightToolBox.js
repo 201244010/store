@@ -39,7 +39,10 @@ export default class RightToolBox extends Component {
 			const detail = componentsDetail[selectedShapeName];
 			const oldNameIndex = detail.name.replace(/[^0-9]/gi, '');
 			const newType = `${value}@${detail.type.split('@')[2] || ''}`;
-			deleteSelectedComponent(selectedShapeName);
+			deleteSelectedComponent({
+				selectedShapeName,
+				isStep: false
+			});
 			addComponent({
 				...detail,
 				type: newType,
@@ -56,6 +59,7 @@ export default class RightToolBox extends Component {
 				}
 			}
 			updateComponentsDetail({
+				isStep: true,
 				[selectedShapeName]: newDetail,
 			});
 		}
@@ -72,6 +76,7 @@ export default class RightToolBox extends Component {
 			}
 		});
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				[key]: originFix[key] + parseInt(e.target.value || 0, 10),
 			},
@@ -81,6 +86,7 @@ export default class RightToolBox extends Component {
 	handleWidth = (detail, e) => {
 		const { selectedShapeName, updateComponentsDetail } = this.props;
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				scaleX: (e.target.value || 0) / MAPS.containerWidth[detail.type],
 			},
@@ -90,6 +96,7 @@ export default class RightToolBox extends Component {
 	handleHeight = (detail, e) => {
 		const { selectedShapeName, updateComponentsDetail } = this.props;
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				scaleY: (e.target.value || 0) / MAPS.containerHeight[detail.type],
 			},
@@ -128,6 +135,7 @@ export default class RightToolBox extends Component {
 		}
 
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				fontStyle: newFontStyle,
 			},
@@ -157,6 +165,7 @@ export default class RightToolBox extends Component {
 			}
 		}
 		updateComponentsDetail({
+			isStep: true,
 			[selectedShapeName]: {
 				textDecoration: newTextDecoration,
 			},
@@ -242,6 +251,17 @@ export default class RightToolBox extends Component {
 				originFix.y = componentDetail.y;
 			}
 		});
+		let realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
+		let realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
+		if (SHAPE_TYPES.IMAGE === detail.type) {
+			realHeight = realWidth * detail.ratio;
+		}
+		if (SHAPE_TYPES.HLine === detail.type) {
+			realHeight = detail.strokeWidth;
+		}
+		if (SHAPE_TYPES.VLine === detail.type) {
+			realWidth = detail.strokeWidth;
+		}
 		const disabled = selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) > -1;
 		const hasRed = this.hasRed();
 		const bindFields = this.getRealBindFields();
@@ -302,13 +322,7 @@ export default class RightToolBox extends Component {
 								addonAfter={
 									<span>{formatMessage({ id: 'studio.tool.label.width' })}</span>
 								}
-								value={
-									detail.scaleX
-										? Math.round(
-											MAPS.containerWidth[detail.type] * detail.scaleX
-										)
-										: ''
-								}
+								value={realWidth}
 								onChange={e => {
 									this.handleWidth(detail, e);
 								}}
@@ -321,13 +335,7 @@ export default class RightToolBox extends Component {
 								addonAfter={
 									<span>{formatMessage({ id: 'studio.tool.label.height' })}</span>
 								}
-								value={
-									detail.scaleY
-										? Math.round(
-											MAPS.containerHeight[detail.type] * detail.scaleY
-										)
-										: ''
-								}
+								value={realHeight}
 								onChange={e => {
 									this.handleHeight(detail, e);
 								}}
