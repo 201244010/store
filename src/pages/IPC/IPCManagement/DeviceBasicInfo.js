@@ -47,10 +47,10 @@ const mbStringLength = (s) => {
 
 // const RadioGroup = Radio.Group;
 const mapStateToProps = (state) => {
-	const { ipcBasicInfo: basicInfo, loading } = state;
+	const { ipcBasicInfo: basicInfo } = state;
 	return {
 		basicInfo,
-		loading
+		// loading
 	};
 };
 const mapDispatchToProps = (dispatch) => ({
@@ -88,23 +88,25 @@ const mapDispatchToProps = (dispatch) => ({
 		});
 	},
 	deleteDevice: (sn) => {
-		dispatch({
+		const result = dispatch({
 			type: 'ipcBasicInfo/delete',
 			payload: {
 				sn
 			}
-		}).then((result) => {
-			// console.log('result: ', result);
-			if (result) {
+		}).then((data) => {
+			// console.log('data: ', data);
+			if (data) {
 				message.success(formatMessage({ id: 'ipcManagement.deleteSuccess'}));
 
 				setTimeout(() => {
 					router.push('/devices/ipcList');
 				}, 800);
+
 			}else{
 				message.error(formatMessage({ id: 'ipcManagement.deleteFailed'}));
 			}
 		});
+		return result;
 	}
 });
 // let disabledControl = true;
@@ -118,7 +120,6 @@ const mapDispatchToProps = (dispatch) => ({
 				value: basicInfo.name,
 			})
 		};
-
 	}
 })
 class DeviceBasicInfo extends React.Component {
@@ -127,6 +128,7 @@ class DeviceBasicInfo extends React.Component {
 
 		this.state = {
 			isEdit: false,
+			saving: false
 		};
 	}
 
@@ -144,12 +146,16 @@ class DeviceBasicInfo extends React.Component {
 		validateFields(async (errors) => {
 			if (!errors){
 				const name = getFieldValue('deviceName');
+				this.setState({
+					saving: true
+				});
 
 				const result = await update( name, sn );
 
 				if (result) {
 					this.setState({
-						isEdit: false
+						isEdit: false,
+						saving: false
 					});
 				}
 			}
@@ -158,8 +164,9 @@ class DeviceBasicInfo extends React.Component {
 	}
 
 	onShowModal = () => {
-		const { deleteDevice, sn, loading } = this.props;
-		Modal.confirm({
+		const { deleteDevice, sn } = this.props;
+
+		const modal = Modal.confirm({
 			title: formatMessage({ id: 'deviceBasicInfo.delete' }),
 			content: (
 				<p>
@@ -169,15 +176,30 @@ class DeviceBasicInfo extends React.Component {
 					<span>
 						{ formatMessage({id: 'deviceBasicInfo.deleteConfirmSuf'}) }
 					</span>
-				</p>),
+				</p>
+			),
+			destroyOnClose: true,
 			okText: formatMessage({ id: 'deviceBasicInfo.contine' }),
 			cancelText: formatMessage({ id: 'deviceBasicInfo.cancel' }),
 
 			okButtonProps: {
-				loading: loading.effects['ipcBasicInfo/delete']
+				loading: false
 			},
-			onOk() {
-				deleteDevice(sn);
+
+			async onOk() {
+				modal.update({
+					okButtonProps:{
+						loading: true
+					}
+				});
+
+				await deleteDevice(sn);
+
+				modal.update({
+					okButtonProps:{
+						loading: false
+					}
+				});
 			}
 		});
 	}
@@ -258,15 +280,13 @@ class DeviceBasicInfo extends React.Component {
 	}
 
 	render() {
-		const { isEdit } = this.state;
-		const { basicInfo, form, loading }  = this.props;
+		const { isEdit, saving } = this.state;
+		const { basicInfo, form }  = this.props;
 		const { name, type, sn, img, /* mode, */ status } = basicInfo;
 
 		const { isFieldTouched, getFieldDecorator } = form;
 
 		const image = img || defaultImage;
-
-		// console.log(loading);
 
 		return (
 			<Spin spinning={status === 'loading'}>
@@ -355,7 +375,8 @@ class DeviceBasicInfo extends React.Component {
 									disabled={!isFieldTouched('deviceName')}
 									className={styles['save-btn']}
 
-									loading={loading.effects['ipcBasicInfo/update']}
+									// loading={loading.effects['ipcBasicInfo/update']}
+									loading={saving}
 								>
 									{ formatMessage({id: 'deviceBasicInfo.save'}) }
 								</Button>
@@ -369,6 +390,7 @@ class DeviceBasicInfo extends React.Component {
 							</div>
 						</Form.Item>
 					</Form>
+
 				</Card>
 			</Spin>
 		);
