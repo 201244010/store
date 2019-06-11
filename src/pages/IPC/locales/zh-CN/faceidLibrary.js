@@ -8,15 +8,24 @@ export default {
 	'faceid.createNote': '您还未建立自己的人脸库，现在就去',
 	'faceid.addButton': '新增库',
 	'faceid.createButton': '创建',
-	'faceid.libraryNameMsg': '请输入人脸库名称,如会员',
-	'faceid.libraryNameFormat': '不超过20个字符',
-	'faceid.libraryNameRule': '人脸库名称不可以重复',
+	'faceid.libraryNameMsg': '请输入人脸库名称，如会员',
+	'faceid.libraryNameRequired': '请输入人脸库名称。',
+	'faceid.libraryNameFormat': '不超过20个字符。',
+	'faceid.libraryNameRule': '人脸库名称不可以重复。',
+
 	'faceid.photosAmountLimit': '照片数量限制',
-	'faceid.photosAmountMsg': '请输入照片数量限制，如1000',
-	'faceid.photosAmountNote-pre': '人脸照片数量预估剩余量为',
-	'faceid.photosAmountNote-mid': '  ，请输入',
-	'faceid.photosAmountNote-suf': '之间任意数字',
-	'faceid.photosAmountNote-error': '违背预估可分配人脸照片的数量，请输入',
+
+	'faceid.photosAmountPlaceHolder': '请输入照片数量限制，如1000',
+	'faceid.photosAmountRequired': '请输入照片数量限制。',
+
+	'faceid.photosAmountNote': '人脸照片数量预估剩余量为%total%，请输入%min%~%max%之间任意数字。',
+
+	// 'faceid.photosAmountNote-pre': '人脸照片数量预估剩余量为',
+	// 'faceid.photosAmountNote-mid': '  ，请输入',
+	// 'faceid.photosAmountNote-suf': '之间任意数字',
+
+	'faceid.photosAmountNoteError': '违背预估可分配人脸照片数量，请输入%min%~%max%之间的任意数字。',
+
 	'faceid.remark': '备注',
 	'faceid.remarkNote': '(可选)',
 	'faceid.remarkMsg': '请输入备注。',
