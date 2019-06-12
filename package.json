@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@antv/data-set": "^0.9.6",
+    "@konata9/milk-shake": "^2.0.0",
     "@konata9/storage.js": "^1.2.3",
     "@konata9/typecheck.js": "^1.1.0",
     "ant-design-pro": "^2.1.1",
