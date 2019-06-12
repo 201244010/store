@@ -73,5 +73,11 @@ export default {
 	'menu.cashVerify': '收银审计',
 	'menu.cashVerify.posList': '设备绑定列表',
 	'menu.cashVerify.bindPOSDevice': '绑定收银设备',
-	'menu.cashVerify.videos': '交易视频'
+	'menu.cashVerify.videos': '交易视频',
+
+	'menu.roleManagement': '角色管理',
+	'menu.roleManagement.create': '添加角色',
+	'menu.roleManagement.view': '查看',
+	'menu.roleManagement.modify': '编辑',
+	'menu.roleManagement.roleList': '角色管理',
 };

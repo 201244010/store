@@ -14,6 +14,8 @@ export default {
 	'alert.template.name.too.long': '模板名称超出长度',
 	'alert.template.bound.esl': '模板上有绑定价签',
 	'alert.template.name.used': '模板名已被占用',
+	'alert.role.name.exist': '角色名称已存在',
+	'alert.role.used': '角色名已被使用',
 	'error.retry': '发生错误，请重试',
 	'error.network.error': '网络异常，请检查网络连接',
 };
