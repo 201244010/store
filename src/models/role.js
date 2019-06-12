@@ -1,7 +1,7 @@
 import * as Actions from '@/services/role';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
-import { map } from '@konata9/milk-shake';
+import { map, format } from '@konata9/milk-shake';
 
 const getInitStatus = (permissionList, roleInfo) => {
 	const rolePermissionList = roleInfo.permission_list;
@@ -61,10 +61,11 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { role_list: roleList, total_count: totalCount } = data;
+				const formatList = roleList.map(item => format('toCamel')(item));
 				yield put({
 					type: 'updateState',
 					payload: {
-						roleList,
+						roleList: formatList,
 						pagination: {
 							...pagination,
 							total: totalCount,
