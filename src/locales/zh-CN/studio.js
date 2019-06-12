@@ -43,4 +43,5 @@ export default {
 	'studio.tool.label.small.type': '小数显示类型',
 	'studio.tool.label.codec': '编码类型',
 	'studio.tool.error.price.format': '输入价格不正确',
+	'studio.tool.error.image.format': '上次图片支持格式支持jpg/jpeg/png',
 };
