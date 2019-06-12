@@ -141,11 +141,11 @@ export default {
 							name: 'electricLabel',
 							component: './DeviceManagement/ESL/ElectricLabel',
 						},
-						// {
-						// 	path: '/esl/commRecord',
-						// 	name: 'commRecord',
-						// 	component: './DeviceManagement/ESL/CommRecord',
-						// },
+						{
+							path: '/esl/commRecord',
+							name: 'commRecord',
+							component: './DeviceManagement/ESL/CommRecord',
+						},
 						{
 							path: '/esl/baseStation',
 							name: 'baseStation',

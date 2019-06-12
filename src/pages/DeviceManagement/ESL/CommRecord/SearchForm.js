@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Button, Col, Form, Input, Row, Select } from 'antd';
+import { Button, Col, Form, Input, Row, Select, DatePicker } from 'antd';
 import { FORM_FORMAT, COL_THREE_NORMAL } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 import styles from './index.less';
+
+const { RangePicker } = DatePicker;
 
 @Form.create()
 class SearchForm extends Component {
@@ -15,18 +17,28 @@ class SearchForm extends Component {
 		});
 	};
 
+	changeTimeRange = (dates) => {
+		const { changeSearchFormValue } = this.props;
+		changeSearchFormValue({
+			options: {
+				startTime: dates[0],
+				endTime: dates[1]
+			},
+		});
+	};
+
 	search = () => {
-		const { fetchElectricLabels } = this.props;
-		fetchElectricLabels();
+		const { fetchCommunications } = this.props;
+		fetchCommunications();
 	};
 
 	handleReset = async () => {
-		const { form, clearSearch, fetchElectricLabels } = this.props;
+		const { form, clearSearch, fetchCommunications } = this.props;
 		if (form) {
 			form.resetFields();
 		}
 		await clearSearch();
-		await fetchElectricLabels({
+		await fetchCommunications({
 			options: {
 				current: 1,
 			},
@@ -34,7 +46,7 @@ class SearchForm extends Component {
 	};
 
 	render() {
-		const { searchFormValues = {} } = this.props;
+		const { searchFormValues }  = this.props;
 
 		return (
 			<div className={styles['search-bar']}>
@@ -54,52 +66,46 @@ class SearchForm extends Component {
 						</Col>
 						<Col {...COL_THREE_NORMAL}>
 							<Form.Item label={formatMessage({ id: 'esl.device.esl.comm.date' })}>
-								<Select
-									placeholder={formatMessage({ id: 'select.placeholder' })}
-									value={searchFormValues.status}
-									onChange={val => this.changeFormValues('select', 'status', val)}
-								>
-									<Select.Option value={-1}>
-										{formatMessage({ id: 'select.all' })}
-									</Select.Option>
-									<Select.Option value={1}>
-										{formatMessage({ id: 'esl.device.esl.push.wait.bind' })}
-									</Select.Option>
-									<Select.Option value={2}>
-										{formatMessage({ id: 'esl.device.esl.push.wait' })}
-									</Select.Option>
-									<Select.Option value={3}>
-										{formatMessage({ id: 'esl.device.esl.push.success' })}
-									</Select.Option>
-									<Select.Option value={4}>
-										{formatMessage({ id: 'esl.device.esl.push.fail' })}
-									</Select.Option>
-								</Select>
+								<RangePicker
+									format="YYYY-MM-DD"
+									style={{ width: '100%' }}
+									value={[searchFormValues.startTime, searchFormValues.endTime]}
+									onChange={this.changeTimeRange}
+								/>
 							</Form.Item>
 						</Col>
 					</Row>
 					<Row gutter={FORM_FORMAT.gutter}>
 						<Col {...COL_THREE_NORMAL}>
-							<Form.Item label={formatMessage({ id: 'esl.device.esl.comm.cause' })}>
+							<Form.Item label={formatMessage({ id: 'esl.device.esl.comm.reason' })}>
 								<Select
 									placeholder={formatMessage({ id: 'select.placeholder' })}
-									value={searchFormValues.status}
-									onChange={val => this.changeFormValues('select', 'status', val)}
+									value={searchFormValues.reason}
+									onChange={val => this.changeFormValues('select', 'reason', val)}
 								>
 									<Select.Option value={-1}>
 										{formatMessage({ id: 'select.all' })}
 									</Select.Option>
 									<Select.Option value={1}>
-										{formatMessage({ id: 'esl.device.esl.push.wait.bind' })}
+										{formatMessage({ id: 'esl.device.esl.comm.reason1' })}
 									</Select.Option>
 									<Select.Option value={2}>
-										{formatMessage({ id: 'esl.device.esl.push.wait' })}
+										{formatMessage({ id: 'esl.device.esl.comm.reason2'})}
 									</Select.Option>
 									<Select.Option value={3}>
-										{formatMessage({ id: 'esl.device.esl.push.success' })}
+										{formatMessage({ id: 'esl.device.esl.comm.reason3' })}
 									</Select.Option>
 									<Select.Option value={4}>
-										{formatMessage({ id: 'esl.device.esl.push.fail' })}
+										{formatMessage({ id: 'esl.device.esl.comm.reason4' })}
+									</Select.Option>
+									<Select.Option value={5}>
+										{formatMessage({ id: 'esl.device.esl.comm.reason5' })}
+									</Select.Option>
+									<Select.Option value={6}>
+										{formatMessage({ id: 'esl.device.esl.comm.reason6' })}
+									</Select.Option>
+									<Select.Option value={7}>
+										{formatMessage({ id: 'esl.device.esl.comm.reason7' })}
 									</Select.Option>
 								</Select>
 							</Form.Item>
@@ -108,23 +114,20 @@ class SearchForm extends Component {
 							<Form.Item label={formatMessage({ id: 'esl.device.esl.comm.result' })}>
 								<Select
 									placeholder={formatMessage({ id: 'select.placeholder' })}
-									value={searchFormValues.status}
-									onChange={val => this.changeFormValues('select', 'status', val)}
+									value={searchFormValues.result}
+									onChange={val => this.changeFormValues('select', 'result', val)}
 								>
 									<Select.Option value={-1}>
 										{formatMessage({ id: 'select.all' })}
 									</Select.Option>
+									<Select.Option value={0}>
+										{formatMessage({ id: 'esl.device.esl.comm.result1' })}
+									</Select.Option>
 									<Select.Option value={1}>
-										{formatMessage({ id: 'esl.device.esl.push.wait.bind' })}
+										{formatMessage({ id: 'esl.device.esl.comm.result2' })}
 									</Select.Option>
 									<Select.Option value={2}>
-										{formatMessage({ id: 'esl.device.esl.push.wait' })}
-									</Select.Option>
-									<Select.Option value={3}>
-										{formatMessage({ id: 'esl.device.esl.push.success' })}
-									</Select.Option>
-									<Select.Option value={4}>
-										{formatMessage({ id: 'esl.device.esl.push.fail' })}
+										{formatMessage({ id: 'esl.device.esl.comm.result3' })}
 									</Select.Option>
 								</Select>
 							</Form.Item>
@@ -134,9 +137,13 @@ class SearchForm extends Component {
 								<Button type="primary" onClick={this.search}>
 									{formatMessage({ id: 'btn.query' })}
 								</Button>
-								 <a href="javascript:void(0)" style={{ marginLeft: '20px' }} onClick={this.handleReset}>
+								{
+									/*
+									 <a href="javascript:void(0)" style={{ marginLeft: '20px' }} onClick={this.handleReset}>
 									 {formatMessage({ id: 'storeManagement.list.buttonReset' })}
 								 </a>
+									 */
+								}
 							</Form.Item>
 						</Col>
 					</Row>

@@ -254,7 +254,7 @@ export default class RightToolBox extends Component {
 		let realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
 		let realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
 		if (SHAPE_TYPES.IMAGE === detail.type) {
-			realHeight = realWidth * detail.ratio;
+			realHeight = detail.ratio ? realWidth * detail.ratio : realHeight;
 		}
 		if (SHAPE_TYPES.HLine === detail.type) {
 			realHeight = detail.strokeWidth;

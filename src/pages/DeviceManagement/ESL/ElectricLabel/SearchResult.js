@@ -329,7 +329,7 @@ class SearchResult extends Component {
 												data-record={JSON.stringify(record)}
 											>
 												{formatMessage({
-													id: 'esl.device.esl.template.alter',
+													id: 'esl.device.esl.template.edit',
 												})}
 											</a>
 										</Menu.Item>
