@@ -1,100 +1,110 @@
 import React, { Component } from 'react';
+import ReactFitText from 'react-fittext';
+import { Chart, Geom, Tooltip, Coord } from 'bizcharts';
+import { DataView } from '@antv/data-set';
+import autoHeight from './autoHeight';
 
-import { Chart, Geom, Axis, Tooltip, Coord, Label, Legend, Guide } from 'bizcharts';
-import { DataSet } from '@antv/data-set';
-
+@autoHeight()
 class Pie extends Component {
 	render() {
-		const { DataView } = DataSet;
-		const { Html } = Guide;
-		const data = [
-			{
-				item: '事例一',
-				count: 40,
+		const {
+			height,
+			forceFit = true,
+			percent,
+			color,
+			inner = 0.75,
+			animate = true,
+			colors,
+			lineWidth = 1,
+		} = this.props;
+
+		const {
+			data: propsData,
+			selected: propsSelected = true,
+			tooltip: propsTooltip = true,
+		} = this.props;
+
+		const defaultColors = colors;
+		let data = propsData || [];
+		let selected = propsSelected;
+		let tooltip = propsTooltip;
+
+		let formatColor;
+
+		const scale = {
+			x: {
+				type: 'cat',
+				range: [0, 1],
 			},
-			{
-				item: '事例二',
-				count: 21,
+			y: {
+				min: 0,
 			},
-			{
-				item: '事例三',
-				count: 17,
-			},
-			{
-				item: '事例四',
-				count: 13,
-			},
-			{
-				item: '事例五',
-				count: 9,
-			},
+		};
+
+		if (percent || percent === 0) {
+			selected = false;
+			tooltip = false;
+			formatColor = value => {
+				if (value === '占比') {
+					return color || 'rgba(24, 144, 255, 0.85)';
+				}
+				return '#F0F2F5';
+			};
+
+			data = [
+				{
+					x: '占比',
+					y: parseFloat(percent),
+				},
+				{
+					x: '反比',
+					y: 100 - parseFloat(percent),
+				},
+			];
+		}
+
+		const tooltipFormat = [
+			'x*percent',
+			(x, p) => ({
+				name: x,
+				value: `${(p * 100).toFixed(2)}%`,
+			}),
 		];
+
+		const padding = [12, 0, 12, 0];
 		const dv = new DataView();
 		dv.source(data).transform({
 			type: 'percent',
-			field: 'count',
-			dimension: 'item',
+			field: 'y',
+			dimension: 'x',
 			as: 'percent',
 		});
-		const cols = {
-			percent: {
-				formatter: val => `${val * 100}%`,
-			},
-		};
+
 		return (
-			<div>
-				<Chart
-					height={window.innerHeight}
-					data={dv}
-					scale={cols}
-					padding={[80, 100, 80, 80]}
-					forceFit
-				>
-					<Coord type="theta" radius={0.75} innerRadius={0.6} />
-					<Axis name="percent" />
-					<Legend
-						position="right"
-						offsetY={-window.innerHeight / 2 + 120}
-						offsetX={-100}
-					/>
-					<Tooltip
-						showTitle={false}
-						itemTpl='<li><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>'
-					/>
-					<Guide>
-						<Html
-							position={['50%', '50%']}
-							html='<div style="color:#8c8c8c;font-size:1.16em;text-align: center;width: 10em;">主机<br><span style="color:#262626;font-size:2.5em">200</span>台</div>'
-							alignX="middle"
-							alignY="middle"
-						/>
-					</Guide>
-					<Geom
-						type="intervalStack"
-						position="percent"
-						color="item"
-						tooltip={[
-							'item*percent',
-							(item, percent) => {
-								percent = `${percent * 100}%`;
-								return {
-									name: item,
-									value: percent,
-								};
-							},
-						]}
-						style={{
-							lineWidth: 1,
-							stroke: '#fff',
-						}}
+			<ReactFitText maxFontSize={25}>
+				<div>
+					<Chart
+						scale={scale}
+						height={height}
+						forceFit={forceFit}
+						data={dv}
+						padding={padding}
+						animate={animate}
+						onGetG2Instance={this.getG2Instance}
 					>
-						<Label
-							content="percent"
-							formatter={(val, item) => `${item.point.item}: ${val}`}
+						{!!tooltip && <Tooltip showTitle={false} />}
+						<Coord type="theta" innerRadius={inner} />
+						<Geom
+							style={{ lineWidth, stroke: '#fff' }}
+							tooltip={tooltip && tooltipFormat}
+							type="intervalStack"
+							position="percent"
+							color={['x', percent || percent === 0 ? formatColor : defaultColors]}
+							selected={selected}
 						/>
-					</Geom>
-				</Chart>
-			</div>
+					</Chart>
+				</div>
+			</ReactFitText>
 		);
 	}
 }

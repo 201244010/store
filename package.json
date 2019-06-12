@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@antv/data-set": "^0.9.6",
+    "@konata9/milk-shake": "^2.0.0",
     "@konata9/storage.js": "^1.2.3",
     "@konata9/typecheck.js": "^1.1.0",
     "ant-design-pro": "^2.1.1",
@@ -54,6 +55,7 @@
     "react-document-title": "^2.0.3",
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0",
+    "react-fittext": "^1.0.0",
     "react-konva": "^16.8.6",
     "react-media": "^1.8.0",
     "react-perfect-scrollbar": "^1.5.2",
