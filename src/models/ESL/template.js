@@ -289,15 +289,18 @@ export default {
 			});
 			const response = yield call(TemplateService.fetchTemplateDetail, payload);
 			if (response && response.code === ERROR_OK) {
+				const templateInfo = response.data.template_info;
 				yield put({
 					type: 'updateState',
 					payload: {
 						curTemplate: response.data.template_info,
 					},
 				});
-				let { layers } = JSON.parse(response.data.template_info.studio_info || '{}') || {};
+				let { layers } = JSON.parse(templateInfo.studio_info || '{}') || {};
 				layers = layers || [];
-				const componentsDetail = {};
+				const componentsDetail = {
+					isStep: !!templateInfo.studio_info
+				};
 				let hasImage = false;
 				layers.map(layer => {
 					componentsDetail[layer.name] = layer;

@@ -141,11 +141,11 @@ export default {
 							name: 'electricLabel',
 							component: './DeviceManagement/ESL/ElectricLabel',
 						},
-						// {
-						// 	path: '/esl/commRecord',
-						// 	name: 'commRecord',
-						// 	component: './DeviceManagement/ESL/CommRecord',
-						// },
+						{
+							path: '/esl/commRecord',
+							name: 'commRecord',
+							component: './DeviceManagement/ESL/CommRecord',
+						},
 						{
 							path: '/esl/baseStation',
 							name: 'baseStation',
@@ -296,8 +296,8 @@ export default {
 							path: '/roleManagement/create',
 							name: 'create',
 							component: './RoleManagement/RoleCreateModify',
-							hideInMenu: true,							
-						},						
+							hideInMenu: true,
+						},
 						{
 							path: '/roleManagement/modify',
 							name: 'modify',

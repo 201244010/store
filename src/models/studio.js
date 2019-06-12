@@ -61,7 +61,7 @@ export default {
 		addComponent(state, action) {
 			// name为组件名，若被原始定义，则用，否则，则生成
 			const { componentsDetail } = state;
-			const { x, y, type, name: preName } = action.payload;
+			const { x, y, type, name: preName, scaleX, scaleY} = action.payload;
 			let maxIndex = 0;
 			let name = preName;
 
@@ -72,7 +72,6 @@ export default {
 				}
 			});
 			name = `${type}${maxIndex + 1}`;
-			const { scaleX, scaleY } = action.payload;
 			const newComponentsDetail = {
 				...state.componentsDetail,
 				[name]: {
@@ -106,11 +105,14 @@ export default {
 			};
 		},
 		addComponentsDetail(state, action) {
+			const { isStep, ...payload } = action.payload;
 			const newComponentsDetail = {
 				...state.componentsDetail,
-				...action.payload
+				...payload
 			};
-			saveNowStep(getLocationParam('id'), newComponentsDetail);
+			if (isStep) {
+				saveNowStep(getLocationParam('id'), newComponentsDetail);
+			}
 			return {
 				...state,
 				componentsDetail: newComponentsDetail
