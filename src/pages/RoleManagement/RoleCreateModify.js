@@ -16,7 +16,7 @@ const CheckboxGroup = Checkbox.Group;
 	state => ({
 		role: state.role,
 		user: state.user,
-		loading: state.loading.models.role,
+		loading: state.loading,
 	}),
 	dispatch => ({
 		getPermissionList: payload => dispatch({ type: 'role/getPermissionList', payload }),
@@ -155,7 +155,13 @@ class RoleModify extends React.Component {
 		const action = getLocationParam('action');
 		return (
 			<Card>
-				<Spin spinning={loading}>
+				<Spin
+					spinning={
+						action === 'modify'
+							? loading.effects['role/getRoleInfo']
+							: loading.effects['role/getPermissionList']
+					}
+				>
 					<div className={styles.wrapper}>
 						<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
 							<Form.Item
@@ -224,6 +230,11 @@ class RoleModify extends React.Component {
 									type="primary"
 									onClick={this.editRole}
 									className={styles.submit}
+									loading={
+										action === 'modify'
+											? loading.effects['role/updateRole']
+											: loading.effects['role/creatRole']
+									}
 								>
 									{formatMessage({ id: 'btn.submit' })}
 								</Button>

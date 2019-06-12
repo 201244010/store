@@ -27,7 +27,7 @@ const FormItem = Form.Item;
 @connect(
 	state => ({
 		role: state.role,
-		loading: state.loading.models.role,
+		loading: state.loading,
 	}),
 	dispatch => ({
 		getRoleList: payload => dispatch({ type: 'role/getRoleList', payload }),
@@ -36,59 +36,76 @@ const FormItem = Form.Item;
 )
 @Form.create()
 class RoleList extends React.Component {
-	columns = [
-		{
-			title: formatMessage({ id: 'roleManagement.role.roleName' }),
-			dataIndex: 'name',
-			render: (_, record) => <div>{record.name || '--'}</div>,
-		},
-		{
-			title: formatMessage({ id: 'roleManagement.role.userCount' }),
-			dataIndex: 'user_count',
-			render: (_, record) => <div className={styles.view}>{record.user_count}</div>,
-		},
-		{
-			title: formatMessage({ id: 'roleManagement.role.creator' }),
-			dataIndex: 'creator_name',
-			render: (_, record) => <div>{record.creator_name || '--'}</div>,
-		},
-		{
-			title: formatMessage({ id: 'roleManagement.role.createTime' }),
-			dataIndex: 'create_time',
-			render: (_, record) => <div>{unixSecondToDate(record.create_time) || '--'}</div>,
-		},
-		{
-			title: formatMessage({ id: 'list.action.title' }),
-			render: (_, record) =>
-				record.isDefault ? (
-					<span className={styles.view} onClick={this.viewRole}>
-						{formatMessage({ id: 'list.action.view' })}
-					</span>
-				) : (
-					<div>
-						<span className={styles.view} onClick={() => this.goPath(record, 'view')}>
+	constructor(props) {
+		super(props);
+		const {loading} = this.props;
+		this.columns = [
+			{
+				title: formatMessage({ id: 'roleManagement.role.roleName' }),
+				dataIndex: 'name',
+				render: (_, record) => <div>{record.name || '--'}</div>,
+			},
+			{
+				title: formatMessage({ id: 'roleManagement.role.userCount' }),
+				dataIndex: 'user_count',
+				render: (_, record) => <div className={styles.view}>{record.user_count}</div>,
+			},
+			{
+				title: formatMessage({ id: 'roleManagement.role.creator' }),
+				dataIndex: 'creator_name',
+				render: (_, record) => <div>{record.creator_name || '--'}</div>,
+			},
+			{
+				title: formatMessage({ id: 'roleManagement.role.createTime' }),
+				dataIndex: 'create_time',
+				render: (_, record) => <div>{unixSecondToDate(record.create_time) || '--'}</div>,
+			},
+			{
+				title: formatMessage({ id: 'list.action.title' }),
+				render: (_, record) =>
+					record.isDefault ? (
+						<span className={styles.view} onClick={this.viewRole}>
 							{formatMessage({ id: 'list.action.view' })}
 						</span>
-						<Divider type="vertical" />
-						<span className={styles.view} onClick={() => this.goPath(record, 'modify')}>
-							{formatMessage({ id: 'list.action.edit' })}
-						</span>
-						<Divider type="vertical" />
-						<Popconfirm
-							title={formatMessage({ id: 'roleManagement.role.deleteRole' })}
-							icon={
-								<Icon theme="filled" style={{ color: 'red' }} type="close-circle" />
-							}
-							onConfirm={() => this.deleteRole(record)}
-						>
-							<span className={styles.view}>
-								{formatMessage({ id: 'list.action.delete' })}
+					) : (
+						<div>
+							<span
+								className={styles.view}
+								onClick={() => this.goPath(record, 'view')}
+							>
+								{formatMessage({ id: 'list.action.view' })}
 							</span>
-						</Popconfirm>
-					</div>
-				),
-		},
-	];
+							<Divider type="vertical" />
+							<span
+								className={styles.view}
+								onClick={() => this.goPath(record, 'modify')}
+							>
+								{formatMessage({ id: 'list.action.edit' })}
+							</span>
+							<Divider type="vertical" />
+							<Popconfirm
+								title={formatMessage({ id: 'roleManagement.role.deleteRole' })}
+								icon={
+									<Icon
+										theme="filled"
+										style={{ color: 'red' }}
+										type="close-circle"
+									/>
+								}
+								onConfirm={() => this.deleteRole(record)}
+								okButtonProps={{
+									loading: loading.effects['role/deleteRole'],
+								}}
+							>
+								<span className={styles.view}>
+									{formatMessage({ id: 'list.action.delete' })}
+								</span>
+							</Popconfirm>
+						</div>
+					),
+			},
+		];
+	}
 
 	componentDidMount() {
 		const { getRoleList } = this.props;
@@ -96,11 +113,11 @@ class RoleList extends React.Component {
 	}
 
 	deleteRole = async rowDetail => {
-		const { deleteRole } = this.props;
+		const { deleteRole, getRoleList } = this.props;
 		const response = await deleteRole({ roleId: rowDetail.id });
 		if (response && response.code === ERROR_OK) {
 			message.success(formatMessage({ id: 'roleManagement.role.deleteSuccess' }));
-			router.push(`${MENU_PREFIX.ROLE}/roleList`);
+			getRoleList();
 		} else {
 			message.error(
 				formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
@@ -186,7 +203,7 @@ class RoleList extends React.Component {
 					</div>
 					<Table
 						rowKey="id"
-						loading={loading}
+						loading={loading.effects['role/getRoleList']}
 						columns={this.columns}
 						dataSource={roleList}
 						pagination={{ ...pagination }}

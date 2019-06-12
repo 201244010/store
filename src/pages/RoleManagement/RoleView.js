@@ -14,7 +14,7 @@ const CheckboxGroup = Checkbox.Group;
 @connect(
 	state => ({
 		role: state.role,
-		loading: state.loading.models.role,
+		loading: state.loading,
 	}),
 	dispatch => ({
 		getRoleInfo: payload => dispatch({ type: 'role/getRoleInfo', payload }),
@@ -47,7 +47,7 @@ class RoleView extends React.Component {
 		} = this.props;
 		return (
 			<Card>
-				<Spin spinning={loading}>
+				<Spin spinning={loading.effects['role/getRoleInfo']}>
 					<div className={styles.wrapper}>
 						<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
 							<Form.Item
