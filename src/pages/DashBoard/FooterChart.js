@@ -28,7 +28,21 @@ class FooterChart extends Component {
 				</div>
 
 				<div className={styles['content-wrapper']}>
-					<Pie />
+					<div className={styles['chart-item']}>
+						<Pie animate={false} percent={28} total="28%" height={128} lineWidth={2} />
+					</div>
+					<div className={styles['chart-item']}>
+						<Pie animate={false} percent={28} total="28%" height={128} lineWidth={2} />
+					</div>
+					<div className={styles['chart-item']}>
+						<Pie animate={false} percent={28} total="28%" height={128} lineWidth={2} />
+					</div>
+					<div className={styles['chart-item']}>
+						<Pie animate={false} percent={28} total="28%" height={128} lineWidth={2} />
+					</div>
+					<div className={styles['chart-item']}>
+						<Pie animate={false} percent={28} total="28%" height={128} lineWidth={2} />
+					</div>
 				</div>
 			</div>
 		);

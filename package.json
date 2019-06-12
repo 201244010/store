@@ -54,6 +54,7 @@
     "react-document-title": "^2.0.3",
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0",
+    "react-fittext": "^1.0.0",
     "react-konva": "^16.8.6",
     "react-media": "^1.8.0",
     "react-perfect-scrollbar": "^1.5.2",

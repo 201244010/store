@@ -17,12 +17,12 @@ const RingRate = props => {
 	return (
 		<>
 			<Media
-				query={{ maxWidth: 1280 }}
+				query={{ maxWidth: 1439 }}
 				render={() => <RiseDownTag label={d2d.label} content={d2d.content} />}
 			/>
 
 			<Media
-				query={{ maxWidth: 1440, minWidth: 1281 }}
+				query={{ minWidth: 1440, maxWidth: 1919 }}
 				render={() => (
 					<div style={ringRateStyle}>
 						<RiseDownTag label={d2d.label} content={d2d.content} />
@@ -32,7 +32,7 @@ const RingRate = props => {
 			/>
 
 			<Media
-				query={{ minWidth: 1441 }}
+				query={{ minWidth: 1920 }}
 				render={() => (
 					<div style={ringRateStyle}>
 						<RiseDownTag label={d2d.label} content={d2d.content} />
