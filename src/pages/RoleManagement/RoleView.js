@@ -1,7 +1,7 @@
 import React from 'react';
 import { Checkbox, Button, Form, Spin, Card } from 'antd';
 import { connect } from 'dva';
-import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
+import { idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import router from 'umi/router';
@@ -15,6 +15,7 @@ const CheckboxGroup = Checkbox.Group;
 	state => ({
 		role: state.role,
 		loading: state.loading,
+		query: state.routing.location.query,
 	}),
 	dispatch => ({
 		getRoleInfo: payload => dispatch({ type: 'role/getRoleInfo', payload }),
@@ -23,15 +24,14 @@ const CheckboxGroup = Checkbox.Group;
 @Form.create()
 class RoleView extends React.Component {
 	componentDidMount() {
-		const roleId = idDecode(getLocationParam('id'));
-		const { getRoleInfo } = this.props;
+		const { getRoleInfo, query: {id}} = this.props;
+		const roleId = idDecode(id);
 		getRoleInfo({ roleId });
 	}
 
 	confirm = () => {
-		const roleId = idDecode(getLocationParam('id'));
-		const encodeID = idEncode(roleId);
-		router.push(`${MENU_PREFIX.ROLE}/modify?action=modify&id=${encodeID}`);
+		const {query: {id}} = this.props;
+		router.push(`${MENU_PREFIX.ROLE}/modify?action=modify&id=${id}`);
 	};
 
 	cancel = () => {

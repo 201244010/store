@@ -47,18 +47,18 @@ class RoleList extends React.Component {
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.userCount' }),
-				dataIndex: 'user_count',
-				render: (_, record) => <div className={styles.view}>{record.user_count}</div>,
+				dataIndex: 'userCount',
+				render: (_, record) => <div className={styles.view}>{record.userCount}</div>,
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.creator' }),
-				dataIndex: 'creator_name',
-				render: (_, record) => <div>{record.creator_name || '--'}</div>,
+				dataIndex: 'creatorName',
+				render: (_, record) => <div>{record.creatorName || '--'}</div>,
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.createTime' }),
-				dataIndex: 'create_time',
-				render: (_, record) => <div>{unixSecondToDate(record.create_time) || '--'}</div>,
+				dataIndex: 'createTime',
+				render: (_, record) => <div>{unixSecondToDate(record.createTime) || '--'}</div>,
 			},
 			{
 				title: formatMessage({ id: 'list.action.title' }),

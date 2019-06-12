@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input, Checkbox, Button, Form, message, Spin, Card } from 'antd';
 import { connect } from 'dva';
-import { getLocationParam, idDecode } from '@/utils/utils';
+import { idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
@@ -15,6 +15,7 @@ const CheckboxGroup = Checkbox.Group;
 @connect(
 	state => ({
 		role: state.role,
+		query: state.routing.location.query,
 		user: state.user,
 		loading: state.loading,
 	}),
@@ -29,10 +30,13 @@ const CheckboxGroup = Checkbox.Group;
 @Form.create()
 class RoleModify extends React.Component {
 	componentDidMount() {
-		const action = getLocationParam('action');
-		const { getRoleInfo, getPermissionList } = this.props;
+		const {
+			getRoleInfo,
+			getPermissionList,
+			query: { action, id },
+		} = this.props;
 		if (action === 'modify') {
-			const roleId = idDecode(getLocationParam('id'));
+			const roleId = idDecode(id);
 			getRoleInfo({ roleId });
 		} else {
 			getPermissionList();
@@ -48,8 +52,8 @@ class RoleModify extends React.Component {
 				currentUser: { username },
 			},
 			creatRole,
+			query: { action, id },
 		} = this.props;
-		const action = getLocationParam('action');
 		let valueList = [];
 		permissionList.map(item => {
 			if (typeof item.valueList !== 'undefined') {
@@ -64,7 +68,7 @@ class RoleModify extends React.Component {
 		validateFields(async (err, values) => {
 			if (!err) {
 				if (action === 'modify') {
-					const roleId = idDecode(getLocationParam('id'));
+					const roleId = idDecode(id);
 					const response = await updateRole({
 						name: values.name,
 						roleId,
@@ -151,8 +155,8 @@ class RoleModify extends React.Component {
 			},
 			loading,
 			form: { getFieldDecorator },
+			query: { action },
 		} = this.props;
-		const action = getLocationParam('action');
 		return (
 			<Card>
 				<Spin
