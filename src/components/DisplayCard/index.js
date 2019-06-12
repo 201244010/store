@@ -3,7 +3,7 @@ import { Card, Tooltip, Icon } from 'antd';
 
 import styles from './DisplayCard.less';
 
-const DisplayCard = (props) => {
+const DisplayCard = props => {
 	const { title = null, infoContent = null, content = null, footer = null } = props;
 
 	return (
@@ -16,13 +16,9 @@ const DisplayCard = (props) => {
 					</Tooltip>
 				</div>
 
-				<div className={styles['card-content']}>
-					{content}
-				</div>
+				<div className={styles['card-content']}>{content}</div>
 
-				<div className={styles['card-footer']}>
-					{footer}
-				</div>
+				<div className={styles['card-footer']}>{footer}</div>
 			</Card>
 		</div>
 	);

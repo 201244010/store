@@ -315,6 +315,11 @@ export default {
 				},
 			});
 		},
+
+		*getImportedErpInfo(_, { call }) {
+			const response = yield call(Action.getImportedErpInfo, {});
+			return response;
+		},
 	},
 
 	reducers: {
