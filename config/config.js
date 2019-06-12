@@ -49,6 +49,10 @@ export default {
 		{
 			from: 'src/assets/favicon.ico',
 			to:'static/favicon.ico'
+		},
+		{
+			from: 'src/assets/favicon.ico',
+			to:'favicon.ico'
 		}
 	],
 	targets: { ie: 9 },
@@ -122,6 +126,12 @@ export default {
 					],
 				},
 				{
+					path:'/dashBoard',
+					name:'dashBoard',
+					icon: 'blank',
+					component:'./DashBoard'
+				},
+				{
 					path: '/esl',
 					name: 'esl',
 					icon: 'blank',
@@ -131,40 +141,40 @@ export default {
 							name: 'electricLabel',
 							component: './DeviceManagement/ESL/ElectricLabel',
 						},
-						// {
-						// 	path: '/esl/commRecord',
-						// 	name: 'commRecord',
-						// 	component: './DeviceManagement/ESL/CommRecord',
-						// },
+						{
+							path: '/esl/commRecord',
+							name: 'commRecord',
+							component: './DeviceManagement/ESL/CommRecord',
+						},
 						{
 							path: '/esl/baseStation',
 							name: 'baseStation',
 							component: './DeviceManagement/ESL/BaseStation',
 						},
-						// {
-						// 	path: '/esl/deviceUpgrade',
-						// 	name: 'deviceUpgrade',
-						// 	routes: [
-						// 		{
-						// 			path: '/esl/deviceUpgrade',
-						// 			name: 'overview',
-						// 			hideInMenu: true,
-						// 			component: './DeviceManagement/ESL/DeviceUpgrade',
-						// 		},
-						// 		{
-						// 			path: '/esl/deviceUpgrade/deviceESL',
-						// 			name: 'deviceESL',
-						// 			hideInMenu: true,
-						// 			component: './DeviceManagement/ESL/DeviceESL',
-						// 		},
-						// 		{
-						// 			path: '/esl/deviceUpgrade/deviceAP',
-						// 			name: 'deviceAP',
-						// 			hideInMenu: true,
-						// 			component: './DeviceManagement/ESL/DeviceAP',
-						// 		},
-						// 	],
-						// },
+						{
+							path: '/esl/deviceUpgrade',
+							name: 'deviceUpgrade',
+							routes: [
+								{
+									path: '/esl/deviceUpgrade',
+									name: 'overview',
+									hideInMenu: true,
+									component: './DeviceManagement/ESL/DeviceUpgrade',
+								},
+								{
+									path: '/esl/deviceUpgrade/deviceESL',
+									name: 'deviceESL',
+									hideInMenu: true,
+									component: './DeviceManagement/ESL/DeviceESL',
+								},
+								{
+									path: '/esl/deviceUpgrade/deviceAP',
+									name: 'deviceAP',
+									hideInMenu: true,
+									component: './DeviceManagement/ESL/DeviceAP',
+								},
+							],
+						},
 						{ path: '/esl', redirect: '/esl/electricLabel' },
 						// {
 						// 	path: '/esl/systemConfig',
@@ -268,6 +278,37 @@ export default {
 							path: '/template/list',
 							name: 'list',
 							component: './Template',
+						},
+					],
+				},
+				{
+					path: '/roleManagement',
+					name: 'roleManagement',
+					icon: 'blank',
+					routes: [
+						{ path: '/roleManagement', redirect: '/roleManagement/roleList' },
+						{
+							path: '/roleManagement/roleList',
+							name: 'roleList',
+							component: './RoleManagement/RoleList',
+						},
+						{
+							path: '/roleManagement/create',
+							name: 'create',
+							component: './RoleManagement/RoleCreateModify',
+							hideInMenu: true,
+						},
+						{
+							path: '/roleManagement/modify',
+							name: 'modify',
+							component: './RoleManagement/RoleCreateModify',
+							hideInMenu: true,
+						},
+						{
+							path: '/roleManagement/view',
+							name: 'view',
+							component: './RoleManagement/RoleView',
+							hideInMenu: true,
 						},
 					],
 				},
@@ -509,7 +550,7 @@ export default {
 						}
 					],
 				},
-				{ path: '/', redirect: '/esl' },
+				{ path: '/', redirect: '/dashBoard' },
 			],
 		},
 	],
@@ -527,9 +568,9 @@ export default {
 	theme: {
 		'primary-color': primaryColor,
 	},
-	externals: {
-		'@antv/data-set': 'DataSet',
-	},
+	// externals: {
+	// 	'@antv/data-set': 'DataSet',
+	// },
 	ignoreMomentLocale: true,
 	lessLoaderOptions: {
 		javascriptEnabled: true,

@@ -99,9 +99,9 @@ class MerchantLayout extends React.PureComponent {
 	}
 }
 
-export default connect(({ user, global, setting, loading, menu }) => ({
+export default connect(({ user, global, setting, menu }) => ({
 	currentUser: user.currentUser,
-	fetchingNotices: loading.effects['global/fetchNotices'],
+	// fetchingNotices: loading.effects['global/fetchNotices'],
 	notices: global.notices,
 	breadcrumbNameMap: menu.breadcrumbNameMap,
 	...setting,

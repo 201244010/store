@@ -12,6 +12,7 @@ import userCenter from './zh-CN/userCenter';
 import storeManagement from './zh-CN/storeManagement';
 import notification from './zh-CN/notification';
 import studio from './zh-CN/studio';
+import dashBoard from './zh-CN/dashBoard';
 
 import VideoPlayer from './zh-CN/videoPlayer';
 
@@ -22,6 +23,8 @@ import baseStation from './zh-CN/ESL-device';
 import productManagement from './zh-CN/BasicData-product';
 
 import merchantManagement from './zh-CN/merchant';
+
+import roleManagement from './zh-CN/role';
 
 export default {
 	'navBar.lang': '语言',
@@ -51,4 +54,6 @@ export default {
 	...notification,
 	...VideoPlayer,
 	...studio,
+	...roleManagement,
+	...dashBoard,
 };

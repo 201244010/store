@@ -42,7 +42,7 @@ class MqttClient {
 					username,
 					password,
 					path,
-				},
+				}
 			);
 
 			client.on('connect', () => {
@@ -77,8 +77,7 @@ class MqttClient {
 			});
 
 			this.client = client;
-		},
-		);
+		});
 	}
 
 	subscribe(topic) {
