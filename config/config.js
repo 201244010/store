@@ -296,8 +296,8 @@ export default {
 							path: '/roleManagement/create',
 							name: 'create',
 							component: './RoleManagement/RoleCreateModify',
-							hideInMenu: true,							
-						},						
+							hideInMenu: true,
+						},
 						{
 							path: '/roleManagement/modify',
 							name: 'modify',

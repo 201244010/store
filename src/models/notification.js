@@ -248,7 +248,7 @@ export default {
 				if (notificationList.length === msg_id_list.length) {
 					yield put({
 						type: 'getNotificationList',
-						payload: { current: current - 1 },
+						payload: { current: current > 1 ? current - 1 : 1 },
 					});
 				} else {
 					yield put({
