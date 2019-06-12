@@ -50,7 +50,7 @@ class Bar extends Component {
 
 		return (
 			<div>
-				<Chart height={400} data={data} scale={cols} forceFit>
+				<Chart height={418} data={data} scale={cols} forceFit>
 					<Axis name="year" />
 					<Axis name="sales" />
 					<Tooltip
