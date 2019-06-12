@@ -18,6 +18,9 @@ export const STORE_EXIST = 5034;
 export const ERR_FIRMWARE_EXIST = 5801;
 export const ERR_FIRMWARE_VERSION_LOWER = 5802;
 
+export const ERR_ROLE_NAME_EXIST = 5036;
+export const ERR_ROLE_USED = 5037;
+
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',
 	'3': 'alert.code.send.fast',
@@ -34,4 +37,6 @@ export const ALERT_NOTICE_MAP = {
 	'216': 'alert.mobile.existed',
 	[TEMPLATE_BOUND_ESL]: 'alert.template.bound.esl',
 	[TEMPLATE_NAME_USED]: 'alert.template.name.used',
+	[ERR_ROLE_NAME_EXIST]: 'alert.role.name.exist',
+	[ERR_ROLE_USED]: 'alert.role.used'
 };
