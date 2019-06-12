@@ -151,30 +151,30 @@ export default {
 							name: 'baseStation',
 							component: './DeviceManagement/ESL/BaseStation',
 						},
-						{
-							path: '/esl/deviceUpgrade',
-							name: 'deviceUpgrade',
-							routes: [
-								{
-									path: '/esl/deviceUpgrade',
-									name: 'overview',
-									hideInMenu: true,
-									component: './DeviceManagement/ESL/DeviceUpgrade',
-								},
-								{
-									path: '/esl/deviceUpgrade/deviceESL',
-									name: 'deviceESL',
-									hideInMenu: true,
-									component: './DeviceManagement/ESL/DeviceESL',
-								},
-								{
-									path: '/esl/deviceUpgrade/deviceAP',
-									name: 'deviceAP',
-									hideInMenu: true,
-									component: './DeviceManagement/ESL/DeviceAP',
-								},
-							],
-						},
+						// {
+						// 	path: '/esl/deviceUpgrade',
+						// 	name: 'deviceUpgrade',
+						// 	routes: [
+						// 		{
+						// 			path: '/esl/deviceUpgrade',
+						// 			name: 'overview',
+						// 			hideInMenu: true,
+						// 			component: './DeviceManagement/ESL/DeviceUpgrade',
+						// 		},
+						// 		{
+						// 			path: '/esl/deviceUpgrade/deviceESL',
+						// 			name: 'deviceESL',
+						// 			hideInMenu: true,
+						// 			component: './DeviceManagement/ESL/DeviceESL',
+						// 		},
+						// 		{
+						// 			path: '/esl/deviceUpgrade/deviceAP',
+						// 			name: 'deviceAP',
+						// 			hideInMenu: true,
+						// 			component: './DeviceManagement/ESL/DeviceAP',
+						// 		},
+						// 	],
+						// },
 						{ path: '/esl', redirect: '/esl/electricLabel' },
 						// {
 						// 	path: '/esl/systemConfig',
