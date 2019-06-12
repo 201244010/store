@@ -49,6 +49,10 @@ export default {
 		{
 			from: 'src/assets/favicon.ico',
 			to:'static/favicon.ico'
+		},
+		{
+			from: 'src/assets/favicon.ico',
+			to:'favicon.ico'
 		}
 	],
 	targets: { ie: 9 },
@@ -120,6 +124,12 @@ export default {
 							redirect: '/notification/center',
 						},
 					],
+				},
+				{
+					path:'/dashBoard',
+					name:'dashBoard',
+					icon: 'blank',
+					component:'./DashBoard'
 				},
 				{
 					path: '/esl',
@@ -268,6 +278,37 @@ export default {
 							path: '/template/list',
 							name: 'list',
 							component: './Template',
+						},
+					],
+				},
+				{
+					path: '/roleManagement',
+					name: 'roleManagement',
+					icon: 'blank',
+					routes: [
+						{ path: '/roleManagement', redirect: '/roleManagement/roleList' },
+						{
+							path: '/roleManagement/roleList',
+							name: 'roleList',
+							component: './RoleManagement/RoleList',
+						},
+						{
+							path: '/roleManagement/create',
+							name: 'create',
+							component: './RoleManagement/RoleCreateModify',
+							hideInMenu: true,							
+						},						
+						{
+							path: '/roleManagement/modify',
+							name: 'modify',
+							component: './RoleManagement/RoleCreateModify',
+							hideInMenu: true,
+						},
+						{
+							path: '/roleManagement/view',
+							name: 'view',
+							component: './RoleManagement/RoleView',
+							hideInMenu: true,
 						},
 					],
 				},
@@ -509,7 +550,7 @@ export default {
 						}
 					],
 				},
-				{ path: '/', redirect: '/esl' },
+				{ path: '/', redirect: '/dashBoard' },
 			],
 		},
 	],
@@ -527,9 +568,9 @@ export default {
 	theme: {
 		'primary-color': primaryColor,
 	},
-	externals: {
-		'@antv/data-set': 'DataSet',
-	},
+	// externals: {
+	// 	'@antv/data-set': 'DataSet',
+	// },
 	ignoreMomentLocale: true,
 	lessLoaderOptions: {
 		javascriptEnabled: true,
