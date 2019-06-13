@@ -61,7 +61,7 @@ class CardBar extends Component {
 			loading: totalLoading,
 			title: formatMessage({ id: 'dashBoard.total.sales' }),
 			infoContent: formatMessage({ id: 'dashBoard.total.sales.info' }),
-			content: amount ? priceFormat(parseFloat(amount).toFixed(2)) : '--',
+			content: amount || amount === 0 ? priceFormat(parseFloat(amount).toFixed(2)) : '--',
 			footer: (
 				<RingRate
 					d2d={{
@@ -93,7 +93,7 @@ class CardBar extends Component {
 			loading: totalLoading,
 			title: formatMessage({ id: 'dashBoard.total.count' }),
 			infoContent: formatMessage({ id: 'dashBoard.total.count.info' }),
-			content: totalCount,
+			content: totalCount !== '' ? totalCount : '--',
 			footer: (
 				<RingRate
 					d2d={{
@@ -125,7 +125,7 @@ class CardBar extends Component {
 			loading: totalLoading,
 			title: formatMessage({ id: 'dashBoard.customer.unit.price' }),
 			infoContent: formatMessage({ id: 'dashBoard.customer.unit.price.info' }),
-			content: aus ? parseFloat(aus).toFixed(2) : '--',
+			content: aus || aus === 0 ? parseFloat(aus).toFixed(2) : '--',
 			footer: (
 				<RingRate
 					d2d={{
@@ -157,7 +157,7 @@ class CardBar extends Component {
 			loading: totalLoading,
 			title: formatMessage({ id: 'dashBoard.total.refund.count' }),
 			infoContent: formatMessage({ id: 'dashBoard.total.refund.count.info' }),
-			content: refundCount || '--',
+			content: refundCount !== '' ? refundCount : '--',
 			footer: (
 				<RingRate
 					d2d={{

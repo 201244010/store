@@ -9,80 +9,50 @@ class Bar extends Component {
 	}
 
 	render() {
-		// const { chartStyle = {}, dataSource = [], axis = {}, barStyle = {} } = this.props;
-		// const { x = null, y = null } = axis;
-		// const { height = 400 } = chartStyle;
-
-		const data = [
-			{
-				year: '1951 年',
-				sales: 38,
-			},
-			{
-				year: '1952 年',
-				sales: 52,
-			},
-			{
-				year: '1956 年',
-				sales: 61,
-			},
-			{
-				year: '1957 年',
-				sales: 145,
-			},
-			{
-				year: '1958 年',
-				sales: 48,
-			},
-			{
-				year: '1959 年',
-				sales: 38,
-			},
-			{
-				year: '1960 年',
-				sales: 38,
-			},
-			{
-				year: '1962 年',
-				sales: 38,
-			},
-		];
-
-		const cols = {
-			sales: {
+		const { chartStyle = {}, dataSource = [], axis = {}, barStyle = {} } = this.props;
+		const { x = null, y = null } = axis;
+		const chartOptions = {
+			height: 418,
+			forceFit: true,
+			scale: {
 				min: 0,
 				tickCount: 6,
 			},
+			...chartStyle,
 		};
 
-		this.dv.source(data);
+		const barOptions = {
+			type: 'interval',
+			color: '#FFAA60',
+			active: [
+				true,
+				{
+					style: {
+						fill: '#FF8133',
+						shadowColor: 'red',
+						shadowBlur: 1,
+						opacity: 0,
+						...(barStyle.activeStyle || {}),
+					},
+				},
+			],
+			position: 'year*sales',
+			...barStyle,
+		};
+
+		this.dv.source(dataSource);
 
 		return (
 			<div>
-				<Chart height={418} data={this.dv} scale={cols} forceFit>
-					<Axis name="year" />
-					<Axis name="sales" />
+				<Chart {...chartOptions} data={this.dv}>
+					<Axis name={x} />
+					<Axis name={y} />
 					<Tooltip
 						crosshairs={{
 							type: 'y',
 						}}
 					/>
-					<Geom
-						color="#FFAA60"
-						active={[
-							true,
-							{
-								style: {
-									fill: '#FF8133',
-									shadowColor: 'red',
-									shadowBlur: 1,
-									opacity: 0,
-								},
-							},
-						]}
-						type="interval"
-						position="year*sales"
-					/>
+					<Geom {...barOptions} />
 				</Chart>
 			</div>
 		);

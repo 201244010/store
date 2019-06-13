@@ -86,7 +86,7 @@ class ContentChart extends Component {
 	render() {
 		const {
 			searchValue: { tradeTime },
-			// orderList,
+			orderList,
 			skuRankList,
 			barLoading,
 			skuLoading,
@@ -122,7 +122,15 @@ class ContentChart extends Component {
 												</Radio.Group>
 											</div>
 										</div>
-										<Bar />
+										<Bar
+											{...{
+												dataSource: orderList.map(data => ({
+													time: data.time,
+													[tradeTime]: data[tradeTime],
+												})),
+												axis: { x: 'time', y: tradeTime },
+											}}
+										/>
 									</Spin>
 								</div>
 							</Col>
