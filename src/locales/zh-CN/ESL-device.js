@@ -27,6 +27,7 @@ export default {
 	'esl.device.ap.restart.notice': '确定要重启基站？',
 	'esl.device.ap.restart.loading': '基站正在重启，请稍等',
 	'esl.device.ap.change.name': '基站名修改成功',
+	'esl.device.ap.name.limit': '基站名长度超过限制(20个中英文字符)',
 	'esl.device.ap.all': '共',
 	'esl.device.ap.total': '个基站',
 	'esl.device.esl.list': '价签列表',
