@@ -27,6 +27,7 @@ export default {
 	'esl.device.ap.restart.notice': 'Are you sure to restart the AP?',
 	'esl.device.ap.restart.loading': 'AP is restarting, please wait…',
 	'esl.device.ap.change.name': 'Changing name successfully.',
+	'esl.device.ap.name.limit': '基站名长度超过限制(20个中英文字符)',
 	'esl.device.ap.all': 'total',
 	'esl.device.ap.total': 'in total',
 	'esl.device.esl.list': 'ESL',

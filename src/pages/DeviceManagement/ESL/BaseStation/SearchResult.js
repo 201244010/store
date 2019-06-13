@@ -52,6 +52,10 @@ class SearchResult extends Component {
 
 	saveStationName = () => {
 		const {selectedRecord} = this.state;
+		if (selectedRecord.name.length > 20) {
+			message.warning(formatMessage({ id: 'esl.device.ap.name.limit' }));
+			return;
+		}
 		const {changeBaseStationName} = this.props;
  		changeBaseStationName({
 			options: {
@@ -109,6 +113,9 @@ class SearchResult extends Component {
 	};
 
 	onChangeName = (name) => {
+		if (name && name.length > 20) {
+			message.warning(formatMessage({ id: 'esl.device.ap.name.limit' }));
+		}
 		const {selectedRecord} = this.state;
 		this.setState({
 			selectedRecord: {
@@ -217,6 +224,7 @@ class SearchResult extends Component {
 				<Modal
 					title={formatMessage({ id: 'esl.device.ap.edit' })}
 					visible={editVisible}
+					confirmLoading={loading}
 					onOk={() => this.saveStationName('editVisible')}
 					onCancel={() => this.closeModal('editVisible')}
 					destroyOnClose
