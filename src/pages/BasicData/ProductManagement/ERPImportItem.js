@@ -2,6 +2,11 @@ import React from 'react';
 import { Form, Input } from 'antd';
 import { formatMessage } from 'umi/locale';
 
+const MODE = {
+	VIEW: 'view',
+	MODIFY: 'modify',
+};
+
 export const ERROR_FILEDS = {
 	'SAAS-SDNM': {
 		field: 'saas_info.secret',
@@ -28,101 +33,162 @@ export const ERROR_FILEDS = {
 };
 
 export const SDNM = props => {
-	const { getFieldDecorator } = props;
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasShopKey = null, saasExtraKey1 = null } = saasInfo;
 	return (
 		<>
 			<Form.Item label="appKey">
-				{getFieldDecorator('saas_info.app_key', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.sdnm.key.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.app_key', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.sdnm.key.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
 			<Form.Item label="secret">
-				{getFieldDecorator('saas_info.secret', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.sdnm.secret.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.secret', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.sdnm.secret.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
 		</>
 	);
 };
 
 export const KWYLS = props => {
-	const { getFieldDecorator } = props;
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasShopKey = null, saasExtraKey1 = null, saasExtraKey2 = null } = saasInfo;
+
 	return (
 		<>
 			<Form.Item label={formatMessage({ id: 'basicData.erp.api.store.num' })}>
-				{getFieldDecorator('saas_info.mchid', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.kwyls.shopId.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.mchid', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.kwyls.shopId.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
 			<Form.Item label={formatMessage({ id: 'basicData.erp.api.account' })}>
-				{getFieldDecorator('saas_info.account', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.kwyls.account.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.account', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.kwyls.account.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
-			<Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
-				{getFieldDecorator('saas_info.password', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.kwyls.password.isEmpty' }),
-						},
-					],
-				})(<Input type="password" />)}
-			</Form.Item>
+			{mode === MODE.MODIFY && (
+				<Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
+					{getFieldDecorator('saas_info.password', {
+						initialValue: saasExtraKey2,
+						validateTrigger: 'onBlur',
+						rules: [
+							{
+								required: true,
+								message: formatMessage({
+									id: 'basicData.erp.kwyls.password.isEmpty',
+								}),
+							},
+						],
+					})(<Input type="password" />)}
+				</Form.Item>
+			)}
 		</>
 	);
 };
 
 export const ZZSY = props => {
-	const { getFieldDecorator } = props;
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasShopKey = null, saasExtraKey1 = null } = saasInfo;
 	return (
 		<>
 			<Form.Item label="appid">
-				{getFieldDecorator('saas_info.app_id', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.zzsy.id.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.app_id', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({ id: 'basicData.erp.zzsy.id.isEmpty' }),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
 			<Form.Item label="secret">
-				{getFieldDecorator('saas_info.secret', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.sdnm.secret.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.secret', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.sdnm.secret.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
 		</>
 	);

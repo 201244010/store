@@ -305,7 +305,7 @@ export default {
 				});
 			}
 			return response;
-		},
+		}
 	},
 	reducers: {
 		updateState(state, action) {

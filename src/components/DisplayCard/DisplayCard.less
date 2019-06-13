@@ -1,12 +1,18 @@
 .card-wrapper {
 	min-height: 160px;
 	border-radius: 8px;
-	background: #FFFFFF;
+	background: #ffffff;
+
+	:global {
+		.ant-card-hoverable {
+			border-radius: 8px;
+		}
+	}
 
 	.card-title {
 		font-size: 14px;
 		line-height: 22px;
-		color: #777E8C;
+		color: #777e8c;
 
 		display: flex;
 		justify-content: space-between;
@@ -18,7 +24,7 @@
 
 		font-size: 30px;
 		font-weight: bold;
-		color: #FF6000;
+		color: #ff6000;
 	}
 
 	.card-footer {
