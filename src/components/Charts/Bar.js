@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { Chart, Geom, Axis, Tooltip } from 'bizcharts';
+import { DataView } from '@antv/data-set';
 
 class Bar extends Component {
+	constructor(props) {
+		super(props);
+		this.dv = new DataView();
+	}
+
 	render() {
 		// const { chartStyle = {}, dataSource = [], axis = {}, barStyle = {} } = this.props;
 		// const { x = null, y = null } = axis;
@@ -41,6 +47,7 @@ class Bar extends Component {
 				sales: 38,
 			},
 		];
+
 		const cols = {
 			sales: {
 				min: 0,
@@ -48,9 +55,11 @@ class Bar extends Component {
 			},
 		};
 
+		this.dv.source(data);
+
 		return (
 			<div>
-				<Chart height={418} data={data} scale={cols} forceFit>
+				<Chart height={418} data={this.dv} scale={cols} forceFit>
 					<Axis name="year" />
 					<Axis name="sales" />
 					<Tooltip
@@ -59,14 +68,15 @@ class Bar extends Component {
 						}}
 					/>
 					<Geom
+						color="#FFAA60"
 						active={[
 							true,
 							{
 								style: {
-									fill: 'black', // 柱子颜色，继续默哀
-									shadowColor: 'red', // 整体阴影颜色，包括边缘
-									shadowBlur: 1, // 阴影的透明度
-									opacity: 0, // 柱子颜色透明度
+									fill: '#FF8133',
+									shadowColor: 'red',
+									shadowBlur: 1,
+									opacity: 0,
 								},
 							},
 						]}

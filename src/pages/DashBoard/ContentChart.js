@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import Media from 'react-media';
-import { Row, Col, Radio, Skeleton } from 'antd';
+import { Row, Col, Radio, Skeleton, Spin } from 'antd';
 import Charts from '@/components/Charts';
 import { priceFormat } from '@/utils/utils';
+import { DASHBOARD } from './constants';
 
 import styles from './DashBoard.less';
+
+const {
+	SEARCH_TYPE: { TRADE_TIME },
+} = DASHBOARD;
 
 const { Bar } = Charts;
 
@@ -67,8 +72,26 @@ const SingleList = props => {
 };
 
 class ContentChart extends Component {
+	handleRadioChange = e => {
+		const { setSearchValue } = this.props;
+		const {
+			target: { value },
+		} = e;
+
+		setSearchValue({
+			tradeTime: value,
+		});
+	};
+
 	render() {
-		const { skuRankList, loading } = this.props;
+		const {
+			searchValue: { tradeTime },
+			// orderList,
+			skuRankList,
+			loading,
+		} = this.props;
+
+		const barLoading = loading.effects['dashBoard/fetchTimeDistribution'];
 		const rankLoading = loading.effects['dashBoard/fetchSKURankList'];
 
 		return (
@@ -78,22 +101,31 @@ class ContentChart extends Component {
 						<Row gutter={result ? 0 : 24}>
 							<Col span={result ? 24 : 18}>
 								<div className={styles['bar-wrapper']}>
-									<div className={styles['title-wrapper']}>
-										<div className={styles['bar-title']}>
-											{formatMessage({ id: 'dashBoard.trade.time' })}
+									<Spin spinning={barLoading}>
+										<div className={styles['title-wrapper']}>
+											<div className={styles['bar-title']}>
+												{formatMessage({ id: 'dashBoard.trade.time' })}
+											</div>
+											<div className={styles['bar-radio']}>
+												<Radio.Group
+													value={tradeTime}
+													onChange={this.handleRadioChange}
+												>
+													<Radio.Button value={TRADE_TIME.AMOUNT}>
+														{formatMessage({
+															id: 'dashBoard.order.sales',
+														})}
+													</Radio.Button>
+													<Radio.Button value={TRADE_TIME.COUNT}>
+														{formatMessage({
+															id: 'dashBoard.order.count',
+														})}
+													</Radio.Button>
+												</Radio.Group>
+											</div>
 										</div>
-										<div className={styles['bar-radio']}>
-											<Radio.Group defaultValue={0}>
-												<Radio.Button value={0}>
-													{formatMessage({ id: 'dashBoard.order.sales' })}
-												</Radio.Button>
-												<Radio.Button value={1}>
-													{formatMessage({ id: 'dashBoard.order.count' })}
-												</Radio.Button>
-											</Radio.Group>
-										</div>
-									</div>
-									<Bar />
+										<Bar />
+									</Spin>
 								</div>
 							</Col>
 							<Col span={result ? 24 : 6}>

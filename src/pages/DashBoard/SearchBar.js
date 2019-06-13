@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { Radio, DatePicker, Icon, message } from 'antd';
-import { DASHBOARD } from '@/constants';
+import { DASHBOARD } from './constants';
 
 import styles from './DashBoard.less';
 

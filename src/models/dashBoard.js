@@ -3,11 +3,12 @@ import moment from 'moment';
 import { ERROR_OK } from '@/constants/errorCode';
 import { format } from '@konata9/milk-shake';
 
-import { DASHBOARD } from '@/constants';
+import { DASHBOARD } from '@/pages/DashBoard/constants';
 
 const {
 	QUERY_TYPE,
 	SEARCH_TYPE: { RANGE, TRADE_TIME, PAYMENT_TYPE },
+	TIME_INTERVAL,
 } = DASHBOARD;
 
 const stateFields = {
@@ -32,6 +33,24 @@ const getQueryDate = rangeType => {
 			.endOf(range[rangeType])
 			.unix(),
 	];
+};
+
+const getQueryTimeRange = (searchValue = {}) => {
+	const { rangeType, timeRangeStart, timeRangeEnd } = searchValue;
+
+	let startTime;
+	let endTime;
+
+	if (rangeType !== RANGE.FREE) {
+		[startTime, endTime] = getQueryDate(rangeType);
+	} else {
+		[startTime, endTime] = [
+			timeRangeStart.startOf('day').unix(),
+			timeRangeEnd.endOf('day').unix(),
+		];
+	}
+
+	return [startTime, endTime];
 };
 
 const fullfuillSKURankList = (rankList = []) => {
@@ -63,7 +82,9 @@ export default {
 		totalCount: {},
 		totalRefund: {},
 		avgUnitSale: {},
+		orderList: [],
 		skuRankList: [],
+		purchaseInfo: [],
 	},
 	effects: {
 		*fetchAllData(_, { all, put }) {
@@ -85,9 +106,17 @@ export default {
 					type: 'fetchTotalInfo',
 					payload: { queryType: QUERY_TYPE.AVG_UNIT },
 				}),
+				// time duration
+				put({
+					type: 'fetchTimeDistribution',
+				}),
 				// sku rank
 				put({
 					type: 'fetchSKURankList',
+				}),
+				// payment
+				put({
+					type: 'fetchPurchaseTypeStatistics',
 				}),
 			]);
 
@@ -100,20 +129,11 @@ export default {
 		},
 
 		*fetchTotalInfo({ payload }, { select, call, put }) {
-			const { searchValue } = yield select(state => state.dashBoard);
-			const { rangeType, timeRangeStart, timeRangeEnd } = searchValue;
-
-			let startTime;
-			let endTime;
-
-			if (rangeType !== RANGE.FREE) {
-				[startTime, endTime] = getQueryDate(rangeType);
-			} else {
-				[startTime, endTime] = [
-					timeRangeStart.startOf('day').unix(),
-					timeRangeEnd.endOf('day').unix(),
-				];
-			}
+			const {
+				searchValue,
+				searchValue: { rangeType },
+			} = yield select(state => state.dashBoard);
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
 
 			const { queryType = null } = payload;
 			const stateField = stateFields[queryType];
@@ -142,19 +162,7 @@ export default {
 
 		*fetchSKURankList(_, { select, put, call }) {
 			const { searchValue } = yield select(state => state.dashBoard);
-			const { rangeType, timeRangeStart, timeRangeEnd } = searchValue;
-
-			let startTime;
-			let endTime;
-
-			if (rangeType !== RANGE.FREE) {
-				[startTime, endTime] = getQueryDate(rangeType);
-			} else {
-				[startTime, endTime] = [
-					timeRangeStart.startOf('day').unix(),
-					timeRangeEnd.endOf('day').unix(),
-				];
-			}
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
 
 			const options = {
 				timeRangeStart: startTime,
@@ -177,6 +185,64 @@ export default {
 			}
 
 			return response;
+		},
+
+		*fetchTimeDistribution(_, { select, put, call }) {
+			const {
+				searchValue,
+				searchValue: { rangeType },
+			} = yield select(state => state.dashBoard);
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
+
+			const options = {
+				startTime,
+				endTime,
+				timeInterval: rangeType === RANGE.TODAY ? TIME_INTERVAL.HOUR : TIME_INTERVAL.DAY,
+			};
+
+			const response = yield call(
+				Action.handleDashBoard,
+				'getTimeDistribution',
+				format('toSnake')(options)
+			);
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { orderList } = format('toCamel')(data);
+				yield put({
+					type: 'updateState',
+					payload: { orderList },
+				});
+			}
+		},
+
+		*fetchPurchaseTypeStatistics(_, { select, put, call }) {
+			const {
+				searchValue,
+				searchValue: { rangeType },
+			} = yield select(state => state.dashBoard);
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
+
+			const options = {
+				startTime,
+				endTime,
+				timeInterval: rangeType === RANGE.TODAY ? TIME_INTERVAL.HOUR : TIME_INTERVAL.DAY,
+			};
+
+			const response = yield call(
+				Action.handleDashBoard,
+				'getPurchaseTypeStatistics',
+				format('toSnake')(options)
+			);
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				
+				yield put({
+					type: 'updateState',
+					payload: { purchaseInfo: format('toCamel')(data) },
+				});
+			}
 		},
 
 		*setSearchValue({ payload }, { select, put }) {
