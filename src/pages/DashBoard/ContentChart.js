@@ -129,6 +129,9 @@ class ContentChart extends Component {
 													[tradeTime]: data[tradeTime],
 												})),
 												axis: { x: 'time', y: tradeTime },
+												barStyle: {
+													position: `time*${tradeTime}`,
+												},
 											}}
 										/>
 									</Spin>

@@ -36,11 +36,13 @@ class Bar extends Component {
 					},
 				},
 			],
-			position: 'year*sales',
+			position: '',
 			...barStyle,
 		};
 
 		this.dv.source(dataSource);
+		console.log(this.dv);
+		console.log(axis);
 
 		return (
 			<div>
