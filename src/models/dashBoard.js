@@ -52,7 +52,6 @@ export default {
 	},
 	effects: {
 		*fetchAllData(_, { all, put }) {
-			// TODO 全部查询
 			yield all([
 				put({
 					type: 'fetchTotalInfo',
