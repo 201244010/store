@@ -1,26 +1,13 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import Media from 'react-media';
-import { Row, Col, Radio } from 'antd';
+import { Row, Col, Radio, Skeleton } from 'antd';
 import Charts from '@/components/Charts';
 import { priceFormat } from '@/utils/utils';
 
 import styles from './DashBoard.less';
 
 const { Bar } = Charts;
-
-const dataSource = [
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-];
 
 const TwinList = props => {
 	const { leftList, rightList } = props;
@@ -39,7 +26,7 @@ const TwinList = props => {
 							</div>
 							<div className={styles.label}>{item.name}</div>
 						</div>
-						<div className={styles['number-content']}>{priceFormat(item.count)}</div>
+						<div className={styles['number-content']}>{priceFormat(item.quantity)}</div>
 					</li>
 				))}
 			</ul>
@@ -50,7 +37,7 @@ const TwinList = props => {
 							<div className={styles.rank}>{index + 6}</div>
 							<div className={styles.label}>{item.name}</div>
 						</div>
-						<div className={styles['number-content']}>{priceFormat(item.count)}</div>
+						<div className={styles['number-content']}>{priceFormat(item.quantity)}</div>
 					</li>
 				))}
 			</ul>
@@ -72,7 +59,7 @@ const SingleList = props => {
 						</div>
 						<div className={styles.label}>{item.name}</div>
 					</div>
-					<div className={styles['number-content']}>{priceFormat(item.count)}</div>
+					<div className={styles['number-content']}>{priceFormat(item.quantity)}</div>
 				</li>
 			))}
 		</ul>
@@ -81,6 +68,9 @@ const SingleList = props => {
 
 class ContentChart extends Component {
 	render() {
+		const { skuRankList, loading } = this.props;
+		const rankLoading = loading.effects['dashBoard/fetchSKURankList'];
+
 		return (
 			<div className={styles['content-chart']}>
 				<Media query={{ maxWidth: 1439 }}>
@@ -111,18 +101,21 @@ class ContentChart extends Component {
 									className={`${styles['list-wrapper']} ${
 										result ? styles['list-wrapper-top'] : ''
 									}`}
+									style={rankLoading ? { padding: '24px' } : {}}
 								>
-									<div className={styles['list-title']}>
-										{formatMessage({ id: 'dashBoard.sku.rate' })}
-									</div>
-									{result ? (
-										<TwinList
-											leftList={dataSource.slice(0, 5)}
-											rightList={dataSource.slice(5)}
-										/>
-									) : (
-										<SingleList data={dataSource} />
-									)}
+									<Skeleton active loading={rankLoading}>
+										<div className={styles['list-title']}>
+											{formatMessage({ id: 'dashBoard.sku.rate' })}
+										</div>
+										{result ? (
+											<TwinList
+												leftList={skuRankList.slice(0, 5)}
+												rightList={skuRankList.slice(5)}
+											/>
+										) : (
+											<SingleList data={skuRankList} />
+										)}
+									</Skeleton>
 								</div>
 							</Col>
 						</Row>

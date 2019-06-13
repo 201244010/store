@@ -33,6 +33,7 @@ class DashBoard extends Component {
 				avgUnitSale,
 				searchValue,
 				lastModifyTime,
+				skuRankList,
 			},
 			fetchAllData,
 			setSearchValue,
@@ -43,7 +44,7 @@ class DashBoard extends Component {
 				<SearchBar {...{ searchValue, lastModifyTime, fetchAllData, setSearchValue }} />
 				<div className={styles['display-content']}>
 					<CardBar {...{ totalAmount, totalCount, totalRefund, avgUnitSale, loading }} />
-					<ContentChart />
+					<ContentChart {...{ skuRankList, loading }} />
 					<FooterChart />
 				</div>
 			</div>

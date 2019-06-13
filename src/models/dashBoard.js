@@ -34,6 +34,20 @@ const getQueryDate = rangeType => {
 	];
 };
 
+const fullfuillSKURankList = (rankList = []) => {
+	const len = rankList.length;
+	const fullfillLen = 10 - len;
+
+	if (fullfillLen > 0) {
+		const filledList = [...rankList];
+		for (let i = 0; i < fullfillLen; i++) {
+			filledList.push({ name: '--', quantity: '--' });
+		}
+		return filledList;
+	}
+	return rankList;
+};
+
 export default {
 	namespace: 'dashBoard',
 	state: {
@@ -49,10 +63,12 @@ export default {
 		totalCount: {},
 		totalRefund: {},
 		avgUnitSale: {},
+		skuRankList: [],
 	},
 	effects: {
 		*fetchAllData(_, { all, put }) {
 			yield all([
+				// total card
 				put({
 					type: 'fetchTotalInfo',
 					payload: { queryType: QUERY_TYPE.TOTAL_AMOUNT },
@@ -68,6 +84,10 @@ export default {
 				put({
 					type: 'fetchTotalInfo',
 					payload: { queryType: QUERY_TYPE.AVG_UNIT },
+				}),
+				// sku rank
+				put({
+					type: 'fetchSKURankList',
 				}),
 			]);
 
@@ -114,6 +134,45 @@ export default {
 				yield put({
 					type: 'updateState',
 					payload: { [stateField]: format('toCamel')(data) },
+				});
+			}
+
+			return response;
+		},
+
+		*fetchSKURankList(_, { select, put, call }) {
+			const { searchValue } = yield select(state => state.dashBoard);
+			const { rangeType, timeRangeStart, timeRangeEnd } = searchValue;
+
+			let startTime;
+			let endTime;
+
+			if (rangeType !== RANGE.FREE) {
+				[startTime, endTime] = getQueryDate(rangeType);
+			} else {
+				[startTime, endTime] = [
+					timeRangeStart.startOf('day').unix(),
+					timeRangeEnd.endOf('day').unix(),
+				];
+			}
+
+			const options = {
+				timeRangeStart: startTime,
+				timeRangeEnd: endTime,
+			};
+
+			const response = yield call(
+				Action.handleDashBoard,
+				'getQuantityRank',
+				format('toSnake')(options)
+			);
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { quantityRank = [] } = format('toCamel')(data);
+				yield put({
+					type: 'updateState',
+					payload: { skuRankList: fullfuillSKURankList(quantityRank) },
 				});
 			}
 
