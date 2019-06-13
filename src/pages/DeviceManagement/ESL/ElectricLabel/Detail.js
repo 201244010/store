@@ -33,7 +33,7 @@ export default function detail(props) {
 						<span className={styles['detail-info-label']}>
 							{formatMessage({ id: 'esl.device.esl.sn' })}：
 						</span>
-						<span className={styles['detail-info-content']}>{eslInfo.name || '--'}</span>
+						<span className={styles['detail-info-content']}>{eslInfo.sn || '--'}</span>
 					</div>
 					<div className={styles['detail-info-item']}>
 						<span className={styles['detail-info-label']}>

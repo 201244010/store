@@ -693,7 +693,7 @@ class Studio extends Component {
 								}}
 							/>
 						</div>
-					) : null}
+					) : <div className={styles['tool-box']} />}
 				</div>
 				{showRightToolBox ? (
 					<ContextMenu
