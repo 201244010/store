@@ -88,6 +88,10 @@ export default {
 				payload: {
 					searchFormValues: {
 						keyword: '',
+						startTime: moment().subtract(7, 'days'),
+						endTime: moment(),
+						reason: -1,
+						result: -1
 					},
 				},
 			});
