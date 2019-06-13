@@ -6,6 +6,7 @@ export default {
 	'dashBoard.search.range.end': '结束日期',
 	'dashBoard.search.range.overflow': '时间跨度最大为 60 个自然日',
 	'dashBoard.last.modify.date': '最后更新时间',
+	'dashBoard.refresh.too.fast': '刷新过于频繁，请稍后再试',
 
 	'dashBoard.order.sales': '按金额',
 	'dashBoard.order.count': '按笔数',

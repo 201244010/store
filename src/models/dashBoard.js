@@ -77,6 +77,12 @@ export default {
 			tradeTime: TRADE_TIME.AMOUNT,
 			paymentType: PAYMENT_TYPE.AMOUNT,
 		},
+
+		totalLoading: false,
+		barLoading: false,
+		skuLoading: false,
+		chartLoading: false,
+
 		lastModifyTime: moment().format('YYYY-MM-DD HH:mm:ss'),
 		totalAmount: {},
 		totalCount: {},
@@ -87,36 +93,51 @@ export default {
 		purchaseInfo: [],
 	},
 	effects: {
-		*fetchAllData(_, { all, put }) {
+		*switchLoading({ payload }, { put }) {
+			const { loadingType, loadingStatus } = payload;
+			yield put({
+				type: 'updateState',
+				payload: {
+					[loadingType]: loadingStatus,
+				},
+			});
+		},
+
+		*fetchAllData({ payload }, { all, put }) {
+			const { needLoading = false } = payload;
+
 			yield all([
 				// total card
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.TOTAL_AMOUNT },
+					payload: { queryType: QUERY_TYPE.TOTAL_AMOUNT, needLoading },
 				}),
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.TOTAL_COUNT },
+					payload: { queryType: QUERY_TYPE.TOTAL_COUNT, needLoading },
 				}),
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.TOTAL_REFUND },
+					payload: { queryType: QUERY_TYPE.TOTAL_REFUND, needLoading },
 				}),
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.AVG_UNIT },
+					payload: { queryType: QUERY_TYPE.AVG_UNIT, needLoading },
 				}),
 				// time duration
 				put({
 					type: 'fetchTimeDistribution',
+					payload: { needLoading },
 				}),
 				// sku rank
 				put({
 					type: 'fetchSKURankList',
+					payload: { needLoading },
 				}),
 				// payment
 				put({
 					type: 'fetchPurchaseTypeStatistics',
+					payload: { needLoading },
 				}),
 			]);
 
@@ -135,13 +156,23 @@ export default {
 			} = yield select(state => state.dashBoard);
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 
-			const { queryType = null } = payload;
+			const { queryType = null, needLoading } = payload;
 			const stateField = stateFields[queryType];
 			const options = {
 				rateRequired: rangeType === RANGE.FREE ? 1 : 0,
 				timeRangeStart: startTime,
 				timeRangeEnd: endTime,
 			};
+
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'totalLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 
 			const response = yield call(
 				Action.handleDashBoard,
@@ -157,10 +188,18 @@ export default {
 				});
 			}
 
+			yield put({
+				type: 'switchLoading',
+				payload: {
+					loadingType: 'totalLoading',
+					loadingStatus: false,
+				},
+			});
+
 			return response;
 		},
 
-		*fetchSKURankList(_, { select, put, call }) {
+		*fetchSKURankList({ payload }, { select, put, call }) {
 			const { searchValue } = yield select(state => state.dashBoard);
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 
@@ -168,6 +207,17 @@ export default {
 				timeRangeStart: startTime,
 				timeRangeEnd: endTime,
 			};
+
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'skuLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 
 			const response = yield call(
 				Action.handleDashBoard,
@@ -184,10 +234,18 @@ export default {
 				});
 			}
 
+			yield put({
+				type: 'switchLoading',
+				payload: {
+					loadingType: 'skuLoading',
+					loadingStatus: false,
+				},
+			});
+
 			return response;
 		},
 
-		*fetchTimeDistribution(_, { select, put, call }) {
+		*fetchTimeDistribution({ payload }, { select, put, call }) {
 			const {
 				searchValue,
 				searchValue: { rangeType },
@@ -199,6 +257,17 @@ export default {
 				endTime,
 				timeInterval: rangeType === RANGE.TODAY ? TIME_INTERVAL.HOUR : TIME_INTERVAL.DAY,
 			};
+
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'barLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 
 			const response = yield call(
 				Action.handleDashBoard,
@@ -214,9 +283,17 @@ export default {
 					payload: { orderList },
 				});
 			}
+
+			yield put({
+				type: 'switchLoading',
+				payload: {
+					loadingType: 'barLoading',
+					loadingStatus: false,
+				},
+			});
 		},
 
-		*fetchPurchaseTypeStatistics(_, { select, put, call }) {
+		*fetchPurchaseTypeStatistics({payload}, { select, put, call }) {
 			const {
 				searchValue,
 				searchValue: { rangeType },
@@ -229,6 +306,17 @@ export default {
 				timeInterval: rangeType === RANGE.TODAY ? TIME_INTERVAL.HOUR : TIME_INTERVAL.DAY,
 			};
 
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'chartLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+
 			const response = yield call(
 				Action.handleDashBoard,
 				'getPurchaseTypeStatistics',
@@ -237,12 +325,20 @@ export default {
 
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-				
+
 				yield put({
 					type: 'updateState',
 					payload: { purchaseInfo: format('toCamel')(data) },
 				});
 			}
+
+			yield put({
+				type: 'switchLoading',
+				payload: {
+					loadingType: 'chartLoading',
+					loadingStatus: false,
+				},
+			});
 		},
 
 		*setSearchValue({ payload }, { select, put }) {

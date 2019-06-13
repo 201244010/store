@@ -14,9 +14,8 @@ class FooterChart extends Component {
 	render() {
 		const {
 			searchValue: { paymentType },
-			loading,
+			chartLoading,
 		} = this.props;
-		const chartLoading = loading.effects['dashBoard/fetchPurchaseTypeStatistics'];
 
 		return (
 			<div className={styles['footer-chart-wrapper']}>

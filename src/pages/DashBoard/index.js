@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import Storage from '@konata9/storage.js';
+import moment from 'moment';
+import { formatMessage } from 'umi/locale';
+import { message } from 'antd';
 import SearchBar from './SearchBar';
 import CardBar from './CardBar';
 import ContentChart from './ContentChart';
 import FooterChart from './FooterChart';
 
+import { DASHBOARD } from './constants';
+
 import styles from './DashBoard.less';
+
+const { LAST_HAND_REFRESH_TIME } = DASHBOARD;
 
 @connect(
 	state => ({
@@ -13,20 +21,57 @@ import styles from './DashBoard.less';
 		dashBoard: state.dashBoard,
 	}),
 	dispatch => ({
-		fetchAllData: () => dispatch({ type: 'dashBoard/fetchAllData' }),
+		fetchAllData: ({ needLoading }) =>
+			dispatch({ type: 'dashBoard/fetchAllData', payload: { needLoading } }),
 		setSearchValue: payload => dispatch({ type: 'dashBoard/setSearchValue', payload }),
 	})
 )
 class DashBoard extends Component {
 	componentDidMount() {
 		const { fetchAllData } = this.props;
-		fetchAllData();
+		fetchAllData({ needLoading: true });
+		this.startAutoRefresh();
 	}
+
+	componentWillUnmount() {
+		clearTimeout(this.timer);
+	}
+
+	startAutoRefresh = () => {
+		const { fetchAllData } = this.props;
+		clearTimeout(this.timer);
+		this.timer = setTimeout(() => {
+			console.log('refreshed');
+			fetchAllData({ needLoading: false });
+			this.startAutoRefresh();
+		}, 1000 * 60 * 2);
+	};
+
+	doHandRefresh = () => {
+		clearTimeout(this.timer);
+		const lastHandRefreshTime = Storage.get(LAST_HAND_REFRESH_TIME);
+		if (
+			!lastHandRefreshTime ||
+			moment()
+				.subtract(60, 'seconds')
+				.isAfter(moment(lastHandRefreshTime))
+		) {
+			Storage.set({ [LAST_HAND_REFRESH_TIME]: moment().format('YYYY-MM-DD HH:mm:ss') });
+			window.location.reload();
+		} else {
+			message.warning(formatMessage({ id: 'dashBoard.refresh.too.fast' }));
+			this.startAutoRefresh();
+		}
+	};
 
 	render() {
 		const {
-			loading,
 			dashBoard: {
+				totalLoading,
+				barLoading,
+				skuLoading,
+				chartLoading,
+
 				totalAmount,
 				totalCount,
 				totalRefund,
@@ -42,13 +87,30 @@ class DashBoard extends Component {
 
 		return (
 			<div className={styles['dashboard-wrapper']}>
-				<SearchBar {...{ searchValue, lastModifyTime, fetchAllData, setSearchValue }} />
+				<SearchBar
+					{...{
+						searchValue,
+						lastModifyTime,
+						fetchAllData,
+						setSearchValue,
+						doHandRefresh: this.doHandRefresh,
+					}}
+				/>
 				<div className={styles['display-content']}>
-					<CardBar {...{ totalAmount, totalCount, totalRefund, avgUnitSale, loading }} />
-					<ContentChart
-						{...{ searchValue, orderList, skuRankList, loading, setSearchValue }}
+					<CardBar
+						{...{ totalAmount, totalCount, totalRefund, avgUnitSale, totalLoading }}
 					/>
-					<FooterChart {...{ searchValue, loading, setSearchValue }} />
+					<ContentChart
+						{...{
+							searchValue,
+							orderList,
+							skuRankList,
+							barLoading,
+							skuLoading,
+							setSearchValue,
+						}}
+					/>
+					<FooterChart {...{ searchValue, chartLoading, setSearchValue }} />
 				</div>
 			</div>
 		);

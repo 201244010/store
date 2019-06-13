@@ -47,9 +47,7 @@ const RingRate = props => {
 
 class CardBar extends Component {
 	render() {
-		const { loading } = this.props;
-		const totalLoading = loading.effects['dashBoard/fetchTotalInfo'];
-
+		const { totalLoading } = this.props;
 		const {
 			totalAmount: {
 				totalAmount: amount,

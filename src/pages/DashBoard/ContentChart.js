@@ -88,11 +88,9 @@ class ContentChart extends Component {
 			searchValue: { tradeTime },
 			// orderList,
 			skuRankList,
-			loading,
+			barLoading,
+			skuLoading,
 		} = this.props;
-
-		const barLoading = loading.effects['dashBoard/fetchTimeDistribution'];
-		const rankLoading = loading.effects['dashBoard/fetchSKURankList'];
 
 		return (
 			<div className={styles['content-chart']}>
@@ -133,9 +131,9 @@ class ContentChart extends Component {
 									className={`${styles['list-wrapper']} ${
 										result ? styles['list-wrapper-top'] : ''
 									}`}
-									style={rankLoading ? { padding: '24px' } : {}}
+									style={skuLoading ? { padding: '24px' } : {}}
 								>
-									<Skeleton active loading={rankLoading}>
+									<Skeleton active loading={skuLoading}>
 										<div className={styles['list-title']}>
 											{formatMessage({ id: 'dashBoard.sku.rate' })}
 										</div>

@@ -1,4 +1,5 @@
 export const DASHBOARD = {
+	LAST_HAND_REFRESH_TIME: 'lastHandRefreshTime',
 	QUERY_TYPE: {
 		TOTAL_AMOUNT: 'getTotalAmount',
 		TOTAL_COUNT: 'getTotalCount',
