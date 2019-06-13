@@ -154,10 +154,14 @@ class ERPImport extends Component {
 			router.push(`${MENU_PREFIX.PRODUCT}`);
 		} else if (mode === MODE.MODIFY) {
 			const { saasId } = erpSaasInfo;
-			this.saasKey = parseInt(saasId, 10);
-			this.setState({
-				mode: MODE.VIEW,
-			});
+			if (saasId) {
+				this.saasKey = parseInt(saasId, 10);
+				this.setState({
+					mode: MODE.VIEW,
+				});
+			} else {
+				router.push(`${MENU_PREFIX.PRODUCT}`);
+			}
 		}
 	};
 

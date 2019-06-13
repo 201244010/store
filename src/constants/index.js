@@ -18,7 +18,7 @@ export const MENU_PREFIX = {
 	MERCHANT: '/company/merchantManagement',
 	// STORE: '/basicData/storeManagement',
 	STORE: '/company/storeManagement',
-	ROLE: '/roleManagement'
+	ROLE: '/roleManagement',
 };
 
 export const KEY = {
@@ -27,7 +27,7 @@ export const KEY = {
 	DELETE: 46,
 	KEY_C: 67,
 	KEY_V: 86,
-	KEY_X: 88
+	KEY_X: 88,
 };
 
 export const MESSAGE_TYPE = {
@@ -82,5 +82,30 @@ export const AVATA_IMG = {
 	3: {
 		icon: 'close-circle',
 		color: 'red',
+	},
+};
+
+export const DASHBOARD = {
+	QUERY_TYPE: {
+		totalAmount: 'getTotalAmount',
+		totalCount: 'getTotalCount',
+		totalRefund: 'getRefundCount',
+		avgUnitSale: 'getAvgUnitSale',
+	},
+	SEARCH_TYPE: {
+		RANGE: {
+			FREE: 'free',
+			TODAY: 'today',
+			WEEK: 'week',
+			MONTH: 'month',
+		},
+		TRADE_TIME: {
+			AMOUNT: 'amount',
+			COUNT: 'count',
+		},
+		PAYMENT_TYPE: {
+			AMOUNT: 'amount',
+			COUNT: 'count',
+		},
 	},
 };
