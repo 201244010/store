@@ -59,7 +59,7 @@ export default class SearchResult extends Component {
 		return (
 			<div>
 				<Table
-					rowKey="transmission_time"
+					rowKey={() => Math.random()}
 					columns={columns}
 					dataSource={data}
 					loading={loading}
