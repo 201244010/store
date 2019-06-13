@@ -87,10 +87,10 @@ export const AVATA_IMG = {
 
 export const DASHBOARD = {
 	QUERY_TYPE: {
-		totalAmount: 'getTotalAmount',
-		totalCount: 'getTotalCount',
-		totalRefund: 'getRefundCount',
-		avgUnitSale: 'getAvgUnitSale',
+		TOTAL_AMOUNT: 'getTotalAmount',
+		TOTAL_COUNT: 'getTotalCount',
+		TOTAL_REFUND: 'getRefundCount',
+		AVG_UNIT: 'getAvgUnitSale',
 	},
 	SEARCH_TYPE: {
 		RANGE: {

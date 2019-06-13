@@ -14,7 +14,7 @@ class SearchBar extends Component {
 	disabledDate = current => current && current > moment().endOf('day');
 
 	handleRadioChange = async e => {
-		const { setSearchValue } = this.props;
+		const { setSearchValue, fetchAllData } = this.props;
 		const {
 			target: { value },
 		} = e;
@@ -24,11 +24,11 @@ class SearchBar extends Component {
 			timeRangeStart: null,
 			timeRangeEnd: null,
 		});
-		// TODO 进行数据获取
+		fetchAllData();
 	};
 
 	handleTimeRangeChange = async dates => {
-		const { setSearchValue } = this.props;
+		const { setSearchValue, fetchAllData } = this.props;
 		const [startTime, endTime] = dates;
 
 		if (endTime.subtract(60, 'days').isAfter(startTime)) {
@@ -41,7 +41,7 @@ class SearchBar extends Component {
 			timeRangeStart: startTime,
 			timeRangeEnd: endTime,
 		});
-		// TODO 进行数据获取
+		fetchAllData();
 	};
 
 	refreshData = () => {

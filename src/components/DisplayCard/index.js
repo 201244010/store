@@ -4,11 +4,17 @@ import { Card, Tooltip, Icon } from 'antd';
 import styles from './DisplayCard.less';
 
 const DisplayCard = props => {
-	const { title = null, infoContent = null, content = null, footer = null } = props;
+	const {
+		title = null,
+		infoContent = null,
+		content = null,
+		footer = null,
+		loading = false,
+	} = props;
 
 	return (
 		<div className={styles['card-wrapper']}>
-			<Card title={null} bordered={false} hoverable>
+			<Card title={null} bordered={false} hoverable loading={loading}>
 				<div className={styles['card-title']}>
 					<div>{title}</div>
 					<Tooltip title={infoContent}>
