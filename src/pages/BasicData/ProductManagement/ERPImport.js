@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { Form, Button, Select, Modal } from 'antd';
 import { format } from '@konata9/milk-shake';
-import { SDNM, KWYLS, ZZSY, ERROR_FILEDS } from './ERPImportItem';
+import { SDNM, KWYLS, ZZSY, HBB, ERROR_FILEDS } from './ERPImportItem';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT, FORM_ITEM_LONGER } from '@/constants/form';
 import { ERROR_OK } from '@/constants/errorCode';
 import { MENU_PREFIX } from '@/constants';
@@ -20,6 +20,7 @@ const RenderFormItem = {
 	'SAAS-KWYLS': props => <KWYLS {...props} />,
 	'SAAS-SDNM': props => <SDNM {...props} />,
 	'SAAS-ZZSY': props => <ZZSY {...props} />,
+	'SAAS-HBB': props => <HBB {...props} />,
 	default: () => <div />,
 };
 

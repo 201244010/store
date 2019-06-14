@@ -72,26 +72,6 @@ export default {
 				{ path: '/user/*', component: '404' },
 			],
 		},
-		// {
-		//     path: '/user',
-		//     component: '../layouts/UserLayout',
-		//     routes: [
-		//         { path: '/user', redirect: '/user/login' },
-		//         { path: '/user/login', component: './User/Login/Login' },
-		//         { path: '/user/register', component: './User/Register/Register' },
-		//         { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelate' },
-		//         { path: '/user/mailActive', component: './User/MailActive/MailActive' },
-		//         { path: '/user/resetPassword', component: './User/ResetPassword/ResetPassword' },
-		//         { path: '/user/resetPassword/reset', component: './User/ResetPassword/PasswordReset' },
-		//     ],
-		// },
-		// {
-		//     path: '/merchant',
-		//     component: '../layouts/MerchantLayout',
-		//     routes: [
-		//         { path: '/merchant/create', component: './MerchantManagement/MerchantCreate' },
-		//     ],
-		// },
 		{
 			path: '/studio',
 			component: '../layouts/BlankLayout',
@@ -104,33 +84,54 @@ export default {
 			component: '../layouts/BasicLayout',
 			Routes: ['/src/components/AuthorithCheck'],
 			routes: [
-				// { path: '/', redirect: '/deviceManagement' },
 				// TODO 万有集市 临时菜单 START
-				{
-					path: '/notification',
-					routes: [
-						{
-							path: '/notification/center',
-							name: 'notification',
-							component: './NotificationCenter/NotificationCenter',
-						},
-						{
-							path: '/notification/info',
-							name: 'notification',
-							component: './NotificationCenter/NotificationInfo',
-						},
-						{
-							path: '/notification',
-							redirect: '/notification/center',
-						},
-					],
-				},
+
 				{
 					path:'/dashBoard',
 					name:'dashBoard',
 					icon: 'blank',
 					component:'./DashBoard'
 				},
+				// todo 新增 应用服务
+				// {
+				// 	path: '/application',
+				// 	name: 'application',
+				// 	icon: 'blank',
+				// 	routes:[
+				// 		{
+				// 			path: '/cashVerify',
+				// 			icon: 'blank',
+				// 			name: 'cashVerify',
+				// 			routes: [
+				// 				{
+				// 					path: '/cashVerify/posList',
+				// 					name: 'bindPOSDevice',
+				// 					// hideInMenu: true,
+				// 					component: './IPC/POSManagement/POSList.js'
+				// 				},
+				// 				{
+				// 					path: '/cashVerify/bindPOSDevice',
+				// 					name: 'bindPOSDevice',
+				// 					hideInMenu: true,
+				// 					component: './IPC/POSManagement/BindPOS.js'
+				// 				},
+				// 				{
+				// 					path: '/cashVerify/videos',
+				// 					name: 'videos',
+				// 					hideInMenu: true,
+				// 					component: './IPC/TradeVideos/TradeVideos.js',
+				// 				},
+				// 				{
+				// 					path: '/cashVerify',
+				// 					redirect: '/cashVerify/posList'
+				// 				}
+				// 			]
+				// 		},
+				// 	]
+				// },
+
+				
+
 				{
 					path: '/esl',
 					name: 'esl',
@@ -444,6 +445,8 @@ export default {
 				//     },
 				//   ],
 				// },
+				
+				// 不在 menu 中显示的路由
 				{
 					path: '/account',
 					name: 'account',
@@ -456,6 +459,30 @@ export default {
 						{ component: '404' },
 					],
 				},
+
+				{
+					path: '/notification',
+					hideInMenu: true,
+					routes: [
+						{
+							path: '/notification/center',
+							name: 'notification',
+							component: './NotificationCenter/NotificationCenter',
+						},
+						{
+							path: '/notification/info',
+							name: 'notification',
+							component: './NotificationCenter/NotificationInfo',
+						},
+						{
+							path: '/notification',
+							redirect: '/notification/center',
+						},
+					],
+				},
+				
+				// 不在 menu 中显示的路由 end
+
 				// {
 				// 	path: '/live',
 				// 	component: './IPC/Live/Live.js',
