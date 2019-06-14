@@ -68,7 +68,45 @@ const router = [
       	]
       },
 
-      
+      {
+        path: '/devices',
+        icon: 'blank',
+        name: 'devices',
+        routes: [
+          {
+            path: '/devices/ipcList',
+            name: 'list',
+            routes: [
+              {
+                path: '/devices/ipcList/live',
+                name: 'live',
+                hideInMenu: true,
+                component: './IPC/Live/Live.js',
+              },
+              {
+                path: '/devices/ipcList/ipcManagement',
+                name: 'ipcManagement',
+                hideInMenu: true,
+                component: './IPC/IPCManagement/IPCManagement.js',
+              },
+              {
+                path: '/devices/ipcList',
+                // name: 'list',
+                component: './IPC/IPCList/IPCList.js',
+              }
+            ]
+          },
+          {
+            path: '/devices/motionMessage',
+            name: 'motionMessage',
+            component: './IPC/MotionList/MotionList.js',
+          },
+          {
+            path: '/devices',
+            redirect: '/devices/ipcList'
+          }
+        ],
+      },
 
       {
         path: '/esl',
@@ -81,7 +119,13 @@ const router = [
             component: './DeviceManagement/ESL/ElectricLabel',
           },
           {
+            path: '/esl/template',
+            name: 'template',
+            component: './Template',
+          },
+          {
             path: '/esl/commRecord',
+            hideInMenu: true,
             name: 'commRecord',
             component: './DeviceManagement/ESL/CommRecord',
           },
@@ -115,221 +159,15 @@ const router = [
             ],
           },
           { path: '/esl', redirect: '/esl/electricLabel' },
-          // {
-          // 	path: '/esl/systemConfig',
-          // 	name: 'systemConfig',
-          // 	component: './DeviceManagement/ESL/SystemConfig',
-          // },
         ],
       },
-      {
-        path: '/product',
-        name: 'product',
-        icon: 'blank',
-        routes: [
-          {
-            path: '/product/list',
-            name: 'list',
-            hideInMenu: true,
-            component: './BasicData/ProductManagement',
-          },
-          {
-            path: '/product/list/productCreate',
-            name: 'list',
-            hideInMenu: true,
-            component: './BasicData/ProductManagement/ProductCU',
-          },
-          {
-            path: '/product/list/productUpdate',
-            name: 'list',
-            hideInMenu: true,
-            component: './BasicData/ProductManagement/ProductCU',
-          },
-          {
-            path: '/product/list/productInfo',
-            name: 'list',
-            hideInMenu: true,
-            component: './BasicData/ProductManagement/ProductInfo',
-          },
-          {
-            path: '/product/list/erpImport',
-            name: 'list',
-            hideInMenu: true,
-            component: './BasicData/ProductManagement/ERPImport',
-          },
-          { path: '/product', redirect: '/product/list' },
-        ],
-      },
-      {
-        path: '/company',
-        name: 'company',
-        icon: 'blank',
-        routes: [
-          { path: '/company/merchantManagement', redirect: '/company/merchantManagement/view' },
-          {
-            path: '/company/merchantManagement/view',
-            name: 'merchantManagement',
-            component: './MerchantManagement/MerchantView',
-          },
-          {
-            path: '/company/merchantManagement/modify',
-            name: 'merchantManagement',
-            hideInMenu: true,
-            component: './MerchantManagement/MerchantModify',
-          },
-          {
-            path: '/company/storeManagement',
-            redirect: '/company/storeManagement/list',
-          },
-          {
-            path: '/company/storeManagement/list',
-            name: 'storeManagement',
-            component: './StoreManagement',
-          },
-          {
-            path: '/company/storeManagement/createStore',
-            component: './StoreManagement/CreateStore.js',
-            name: 'storeManagement',
-            hideInMenu: true,
-          },
-          {
-            path: '/company/storeManagement/storeInformation',
-            component: './StoreManagement/StoreInformation.js',
-            name: 'storeManagement',
-            hideInMenu: true,
-          },
-          {
-            path: '/company/storeManagement/alterStore',
-            component: './StoreManagement/CreateStore.js',
-            name: 'storeManagement',
-            hideInMenu: true,
-          },
-          { path: '/company', redirect: '/company/merchantManagement' },
-        ],
-      },
-      {
-        path: '/template',
-        name: 'template',
-        icon: 'blank',
-        routes: [
-          { path: '/template', redirect: '/template/list' },
-          {
-            path: '/template/list',
-            name: 'list',
-            component: './Template',
-          },
-        ],
-      },
-      {
-        path: '/roleManagement',
-        name: 'roleManagement',
-        icon: 'blank',
-        routes: [
-          { path: '/roleManagement', redirect: '/roleManagement/roleList' },
-          {
-            path: '/roleManagement/roleList',
-            name: 'roleList',
-            component: './RoleManagement/RoleList',
-          },
-          {
-            path: '/roleManagement/create',
-            name: 'create',
-            component: './RoleManagement/RoleCreateModify',
-            hideInMenu: true,
-          },
-          {
-            path: '/roleManagement/modify',
-            name: 'modify',
-            component: './RoleManagement/RoleCreateModify',
-            hideInMenu: true,
-          },
-          {
-            path: '/roleManagement/view',
-            name: 'view',
-            component: './RoleManagement/RoleView',
-            hideInMenu: true,
-          },
-        ],
-      },
-      // TODO 万有集市 临时菜单 END
 
-      // dashboard
-      // {
-      //     path: '/dashBoard',
-      //     name: 'dashBoard',
-      //     icon: 'blank',
-      //     component: './DashBoard',
-      // },
-      {
-        path: '/deviceManagement',
-        name: 'deviceManagement',
-        icon: 'blank',
-        // TODO 万有集市临时用菜单隐藏
-        hideInMenu: true,
-        routes: [
-          {
-            path: '/deviceManagement/esl',
-            name: 'esl',
-            routes: [
-              { path: '/deviceManagement/esl', redirect: '/deviceManagement/esl/electricLabel' },
-              {
-                path: '/deviceManagement/esl/electricLabel',
-                name: 'electricLabel',
-                component: './DeviceManagement/ESL/ElectricLabel',
-              },
-              {
-                path: '/deviceManagement/esl/baseStation',
-                name: 'baseStation',
-                component: './DeviceManagement/ESL/BaseStation',
-              },
-              { path: '/deviceManagement', redirect: '/deviceManagement/esl' },
-            ],
-          },
-        ],
-      },
       {
         path: '/basicData',
         name: 'basicData',
         icon: 'blank',
         hideInMenu: true,
         routes: [
-          {
-            path: '/basicData/productManagement',
-            name: 'productManagement',
-            routes: [
-              { path: '/basicData/productManagement', redirect: '/basicData/productManagement/list' },
-              {
-                path: '/basicData/productManagement/list',
-                name: 'list',
-                component: './BasicData/ProductManagement',
-              },
-              {
-                path: '/basicData/productManagement/list/productCreate',
-                name: 'list',
-                hideInMenu: true,
-                component: './BasicData/ProductManagement/ProductCU',
-              },
-              {
-                path: '/basicData/productManagement/list/productUpdate',
-                name: 'list',
-                hideInMenu: true,
-                component: './BasicData/ProductManagement/ProductCU',
-              },
-              {
-                path: '/basicData/productManagement/list/productInfo',
-                name: 'list',
-                hideInMenu: true,
-                component: './BasicData/ProductManagement/ProductInfo',
-              },
-              {
-                path: '/basicData/productManagement/list/erpImport',
-                name: 'list',
-                hideInMenu: true,
-                component: './BasicData/ProductManagement/ERPImport',
-              },
-              { path: '/basicData', redirect: '/basicData/productManagement' },
-            ],
-          },
           {
             path: '/basicData/merchantManagement/view',
             name: 'merchantManagement',
@@ -369,20 +207,76 @@ const router = [
               { path: '/basicData/storeManagement', redirect: '/basicData/storeManagement/list' },
             ],
           },
+          {
+            path: '/roleManagement',
+            name: 'roleManagement',
+            icon: 'blank',
+            routes: [
+              { path: '/roleManagement', redirect: '/roleManagement/roleList' },
+              {
+                path: '/roleManagement/roleList',
+                name: 'roleList',
+                component: './RoleManagement/RoleList',
+              },
+              {
+                path: '/roleManagement/create',
+                name: 'create',
+                component: './RoleManagement/RoleCreateModify',
+                hideInMenu: true,
+              },
+              {
+                path: '/roleManagement/modify',
+                name: 'modify',
+                component: './RoleManagement/RoleCreateModify',
+                hideInMenu: true,
+              },
+              {
+                path: '/roleManagement/view',
+                name: 'view',
+                component: './RoleManagement/RoleView',
+                hideInMenu: true,
+              },
+            ],
+          },
+          {
+            path: '/basicData/productManagement',
+            name: 'productManagement',
+            routes: [
+              { path: '/basicData/productManagement', redirect: '/basicData/productManagement/list' },
+              {
+                path: '/basicData/productManagement/list',
+                name: 'list',
+                component: './BasicData/ProductManagement',
+              },
+              {
+                path: '/basicData/productManagement/list/productCreate',
+                name: 'list',
+                hideInMenu: true,
+                component: './BasicData/ProductManagement/ProductCU',
+              },
+              {
+                path: '/basicData/productManagement/list/productUpdate',
+                name: 'list',
+                hideInMenu: true,
+                component: './BasicData/ProductManagement/ProductCU',
+              },
+              {
+                path: '/basicData/productManagement/list/productInfo',
+                name: 'list',
+                hideInMenu: true,
+                component: './BasicData/ProductManagement/ProductInfo',
+              },
+              {
+                path: '/basicData/productManagement/list/erpImport',
+                name: 'list',
+                hideInMenu: true,
+                component: './BasicData/ProductManagement/ERPImport',
+              },
+              { path: '/basicData', redirect: '/basicData/productManagement' },
+            ],
+          },
         ],
       },
-      // {
-      //   path: '/setting',
-      //   name: 'setting',
-      //   icon: '',
-      //   routes: [
-      //     {
-      //       path: '/setting/role',
-      //       name: 'role',
-      //       component: './Setting/Role',
-      //     },
-      //   ],
-      // },
       
       // 不在 menu 中显示的路由
       {
@@ -425,46 +319,7 @@ const router = [
       // 	path: '/live',
       // 	component: './IPC/Live/Live.js',
       // },
-      {
-        path: '/devices',
-        icon: 'blank',
-        name: 'devices',
-        routes: [
-          {
-            path: '/devices/ipcList',
-            name: 'list',
-            routes: [
-              {
-                path: '/devices/ipcList/live',
-                name: 'live',
-                hideInMenu: true,
-                component: './IPC/Live/Live.js',
-              },
-              {
-                path: '/devices/ipcList/ipcManagement',
-                name: 'ipcManagement',
-                hideInMenu: true,
-                component: './IPC/IPCManagement/IPCManagement.js',
-              },
-              {
-                path: '/devices/ipcList',
-                // name: 'list',
-                component: './IPC/IPCList/IPCList.js',
-              }
-            ]
-          },
-          {
-            path: '/devices/motionMessage',
-            name: 'motionMessage',
-            component: './IPC/MotionList/MotionList.js',
-          },
-          {
-            path: '/devices',
-            redirect: '/devices/ipcList'
-          }
-        ],
-      },
-      
+
       {
         path: '/faceidLibrary',
         name: 'faceidLibrary',
@@ -487,6 +342,7 @@ const router = [
           }
         ],
       },
+      
       { path: '/', redirect: '/dashBoard' },
     ],
   },
