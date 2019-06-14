@@ -4,10 +4,15 @@ import { Chart, Geom, Tooltip, Coord } from 'bizcharts';
 import { DataView } from '@antv/data-set';
 import autoHeight from './autoHeight';
 
+import styles from './pie.less';
+
 @autoHeight()
 class Pie extends Component {
 	render() {
 		const {
+			hasLegend = true,
+			subTitle,
+			total,
 			height,
 			forceFit = true,
 			percent,
@@ -81,30 +86,47 @@ class Pie extends Component {
 		});
 
 		return (
-			<ReactFitText maxFontSize={25}>
-				<div>
-					<Chart
-						scale={scale}
-						height={height}
-						forceFit={forceFit}
-						data={dv}
-						padding={padding}
-						animate={animate}
-						onGetG2Instance={this.getG2Instance}
-					>
-						{!!tooltip && <Tooltip showTitle={false} />}
-						<Coord type="theta" innerRadius={inner} />
-						<Geom
-							style={{ lineWidth, stroke: '#fff' }}
-							tooltip={tooltip && tooltipFormat}
-							type="intervalStack"
-							position="percent"
-							color={['x', percent || percent === 0 ? formatColor : defaultColors]}
-							selected={selected}
-						/>
-					</Chart>
-				</div>
-			</ReactFitText>
+			<div className={styles['chart-wrapper']}>
+				<ReactFitText maxFontSize={25}>
+					<div className={styles.chart}>
+						<Chart
+							scale={scale}
+							height={height}
+							forceFit={forceFit}
+							data={dv}
+							padding={padding}
+							animate={animate}
+							onGetG2Instance={this.getG2Instance}
+						>
+							{!!tooltip && <Tooltip showTitle={false} />}
+							<Coord type="theta" innerRadius={inner} />
+							<Geom
+								style={{ lineWidth, stroke: '#fff' }}
+								tooltip={tooltip && tooltipFormat}
+								type="intervalStack"
+								position="percent"
+								color={[
+									'x',
+									percent || percent === 0 ? formatColor : defaultColors,
+								]}
+								selected={selected}
+							/>
+						</Chart>
+
+						{(subTitle || total) && (
+							<div className={styles.total}>
+								{subTitle && <h4 className="pie-sub-title">{subTitle}</h4>}
+								{total && (
+									<div className="pie-stat">
+										{typeof total === 'function' ? total() : total}
+									</div>
+								)}
+							</div>
+						)}
+					</div>
+				</ReactFitText>
+				{hasLegend && <div className={styles.legend}>1234</div>}
+			</div>
 		);
 	}
 }

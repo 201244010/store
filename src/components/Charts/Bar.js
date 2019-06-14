@@ -9,15 +9,11 @@ class Bar extends Component {
 	}
 
 	render() {
-		const { chartStyle = {}, dataSource = [], axis = {}, barStyle = {} } = this.props;
-		const { x = null, y = null } = axis;
+		const { chartStyle = {}, dataSource = [], barStyle = {} } = this.props;
 		const chartOptions = {
 			height: 418,
 			forceFit: true,
-			scale: {
-				min: 0,
-				tickCount: 6,
-			},
+			padding: 'auto',
 			...chartStyle,
 		};
 
@@ -41,19 +37,13 @@ class Bar extends Component {
 		};
 
 		this.dv.source(dataSource);
-		console.log(this.dv);
-		console.log(axis);
 
 		return (
 			<div>
 				<Chart {...chartOptions} data={this.dv}>
-					<Axis name={x} />
-					<Axis name={y} />
-					<Tooltip
-						crosshairs={{
-							type: 'y',
-						}}
-					/>
+					<Axis name="x" />
+					<Axis name="y" />
+					<Tooltip crosshairs={false} />
 					<Geom {...barOptions} />
 				</Chart>
 			</div>

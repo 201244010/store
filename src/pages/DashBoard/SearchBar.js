@@ -31,7 +31,7 @@ class SearchBar extends Component {
 		const { setSearchValue, fetchAllData } = this.props;
 		const [startTime, endTime] = dates;
 
-		if (endTime.subtract(60, 'days').isAfter(startTime)) {
+		if (moment(endTime).subtract(60, 'days').isAfter(startTime)) {
 			message.error(formatMessage({ id: 'dashBoard.search.range.overflow' }));
 			return;
 		}

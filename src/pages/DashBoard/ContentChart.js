@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
+import moment from 'moment';
 import Media from 'react-media';
 import { Row, Col, Radio, Skeleton, Spin } from 'antd';
 import Charts from '@/components/Charts';
@@ -9,10 +10,16 @@ import { DASHBOARD } from './constants';
 import styles from './DashBoard.less';
 
 const {
-	SEARCH_TYPE: { TRADE_TIME },
+	SEARCH_TYPE: { TRADE_TIME, RANGE },
 } = DASHBOARD;
 
 const { Bar } = Charts;
+
+const barTick = {
+	[RANGE.TODAY]: 12,
+	[RANGE.WEEK]: 7,
+	[RANGE.MONTH]: 10,
+};
 
 const TwinList = props => {
 	const { leftList, rightList } = props;
@@ -85,12 +92,14 @@ class ContentChart extends Component {
 
 	render() {
 		const {
-			searchValue: { tradeTime },
+			searchValue: { tradeTime, rangeType },
 			orderList,
 			skuRankList,
 			barLoading,
 			skuLoading,
 		} = this.props;
+
+		const tickCount = barTick[rangeType] || orderList.length;
 
 		return (
 			<div className={styles['content-chart']}>
@@ -124,11 +133,31 @@ class ContentChart extends Component {
 										</div>
 										<Bar
 											{...{
+												chartStyle: {
+													scale: {
+														type: 'time',
+														time: {
+															tickCount,
+															formatter: value => {
+																if (rangeType === RANGE.TODAY) {
+																	return moment
+																		.unix(value)
+																		.local()
+																		.format('HH:mm');
+																}
+
+																return moment
+																	.unix(value)
+																	.local()
+																	.format('DD');
+															},
+														},
+													},
+												},
 												dataSource: orderList.map(data => ({
 													time: data.time,
 													[tradeTime]: data[tradeTime],
 												})),
-												axis: { x: 'time', y: tradeTime },
 												barStyle: {
 													position: `time*${tradeTime}`,
 												},
