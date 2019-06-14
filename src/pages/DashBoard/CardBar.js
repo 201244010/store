@@ -47,54 +47,133 @@ const RingRate = props => {
 
 class CardBar extends Component {
 	render() {
-		const totalSalse = {
+		const { loading } = this.props;
+		const totalLoading = loading.effects['dashBoard/fetchTotalInfo'];
+
+		const {
+			totalAmount: {
+				totalAmount: amount,
+				dayRate: dayRateAmount,
+				weekRage: weekRateAmount,
+				monthRate: monthRateAmount,
+			},
+		} = this.props;
+
+		const totalAmountCard = {
+			loading: totalLoading,
 			title: formatMessage({ id: 'dashBoard.total.sales' }),
 			infoContent: formatMessage({ id: 'dashBoard.total.sales.info' }),
-			content: priceFormat(parseFloat(126560).toFixed(2)),
+			content: amount ? priceFormat(parseFloat(amount).toFixed(2)) : '--',
 			footer: (
 				<RingRate
-					d2d={{ label: formatMessage({ id: 'dashBoard.order.d2d' }), content: -0.5 }}
-					w2w={{ label: formatMessage({ id: 'dashBoard.order.w2w' }), content: 0.65 }}
-					m2m={{ label: formatMessage({ id: 'dashBoard.order.m2m' }), content: 0.31 }}
+					d2d={{
+						label: formatMessage({ id: 'dashBoard.order.d2d' }),
+						content: dayRateAmount,
+					}}
+					w2w={{
+						label: formatMessage({ id: 'dashBoard.order.w2w' }),
+						content: weekRateAmount,
+					}}
+					m2m={{
+						label: formatMessage({ id: 'dashBoard.order.m2m' }),
+						content: monthRateAmount,
+					}}
 				/>
 			),
 		};
 
-		const totalCount = {
+		const {
+			totalCount: {
+				totalCount,
+				dayRate: dayRateCount,
+				weekRage: weekRateCount,
+				monthRate: monthRateCount,
+			},
+		} = this.props;
+
+		const totalCountCard = {
+			loading: totalLoading,
 			title: formatMessage({ id: 'dashBoard.total.count' }),
 			infoContent: formatMessage({ id: 'dashBoard.total.count.info' }),
-			content: 189,
+			content: totalCount,
 			footer: (
 				<RingRate
-					d2d={{ label: formatMessage({ id: 'dashBoard.order.d2d' }), content: -0.5 }}
-					w2w={{ label: formatMessage({ id: 'dashBoard.order.w2w' }), content: 0.65 }}
-					m2m={{ label: formatMessage({ id: 'dashBoard.order.m2m' }), content: 0.31 }}
+					d2d={{
+						label: formatMessage({ id: 'dashBoard.order.d2d' }),
+						content: dayRateCount,
+					}}
+					w2w={{
+						label: formatMessage({ id: 'dashBoard.order.w2w' }),
+						content: weekRateCount,
+					}}
+					m2m={{
+						label: formatMessage({ id: 'dashBoard.order.m2m' }),
+						content: monthRateCount,
+					}}
 				/>
 			),
 		};
 
-		const totalUnit = {
+		const {
+			avgUnitSale: {
+				aus,
+				dayRate: dayRateAvg,
+				weekRage: weekRateAvg,
+				monthRate: monthRateAvg,
+			},
+		} = this.props;
+
+		const avgUnitSaleCard = {
+			loading: totalLoading,
 			title: formatMessage({ id: 'dashBoard.customer.unit.price' }),
 			infoContent: formatMessage({ id: 'dashBoard.customer.unit.price.info' }),
-			content: parseFloat(34.7).toFixed(2),
+			content: aus ? parseFloat(aus).toFixed(2) : '--',
 			footer: (
 				<RingRate
-					d2d={{ label: formatMessage({ id: 'dashBoard.order.d2d' }), content: -0.5 }}
-					w2w={{ label: formatMessage({ id: 'dashBoard.order.w2w' }), content: 0.65 }}
-					m2m={{ label: formatMessage({ id: 'dashBoard.order.m2m' }), content: 0.31 }}
+					d2d={{
+						label: formatMessage({ id: 'dashBoard.order.d2d' }),
+						content: dayRateAvg,
+					}}
+					w2w={{
+						label: formatMessage({ id: 'dashBoard.order.w2w' }),
+						content: weekRateAvg,
+					}}
+					m2m={{
+						label: formatMessage({ id: 'dashBoard.order.m2m' }),
+						content: monthRateAvg,
+					}}
 				/>
 			),
 		};
 
-		const totalRefund = {
+		const {
+			totalRefund: {
+				refundCount,
+				dayRate: dayRateRefund,
+				weekRage: weekRateRefund,
+				monthRate: monthRateRefund,
+			},
+		} = this.props;
+
+		const totalRefundCard = {
+			loading: totalLoading,
 			title: formatMessage({ id: 'dashBoard.total.refund.count' }),
 			infoContent: formatMessage({ id: 'dashBoard.total.refund.count.info' }),
-			content: 2,
+			content: refundCount || '--',
 			footer: (
 				<RingRate
-					d2d={{ label: formatMessage({ id: 'dashBoard.order.d2d' }), content: -0.5 }}
-					w2w={{ label: formatMessage({ id: 'dashBoard.order.w2w' }), content: 0.65 }}
-					m2m={{ label: formatMessage({ id: 'dashBoard.order.m2m' }), content: 0.31 }}
+					d2d={{
+						label: formatMessage({ id: 'dashBoard.order.d2d' }),
+						content: dayRateRefund,
+					}}
+					w2w={{
+						label: formatMessage({ id: 'dashBoard.order.w2w' }),
+						content: weekRateRefund,
+					}}
+					m2m={{
+						label: formatMessage({ id: 'dashBoard.order.m2m' }),
+						content: monthRateRefund,
+					}}
 				/>
 			),
 		};
@@ -103,16 +182,16 @@ class CardBar extends Component {
 			<div>
 				<Row gutter={24}>
 					<Col span={6}>
-						<DisplayCard {...totalSalse} />
+						<DisplayCard {...totalAmountCard} />
 					</Col>
 					<Col span={6}>
-						<DisplayCard {...totalCount} />
+						<DisplayCard {...totalCountCard} />
 					</Col>
 					<Col span={6}>
-						<DisplayCard {...totalUnit} />
+						<DisplayCard {...avgUnitSaleCard} />
 					</Col>
 					<Col span={6}>
-						<DisplayCard {...totalRefund} />
+						<DisplayCard {...totalRefundCard} />
 					</Col>
 				</Row>
 			</div>

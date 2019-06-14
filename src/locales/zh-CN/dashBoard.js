@@ -4,6 +4,7 @@ export default {
 	'dashBoard.search.month': '本月',
 	'dashBoard.search.range.start': '开始日期',
 	'dashBoard.search.range.end': '结束日期',
+	'dashBoard.search.range.overflow': '时间跨度最大为 60 个自然日',
 	'dashBoard.last.modify.date': '最后更新时间',
 
 	'dashBoard.order.sales': '按金额',

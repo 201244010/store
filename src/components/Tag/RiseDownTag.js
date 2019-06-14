@@ -33,7 +33,9 @@ const RiseDownTag = props => {
 
 			<div className={`${styles['rise-down-content']} ${contentClass}`} style={contentStyle}>
 				<StatusIcon />
-				<div style={{ marginLeft: '2px' }}>{`${Math.abs(content) * 100}%`}</div>
+				<div style={{ marginLeft: '2px' }}>
+					{`${content ? `${Math.abs(content) * 100}%` : '--'}`}
+				</div>
 			</div>
 		</div>
 	);
