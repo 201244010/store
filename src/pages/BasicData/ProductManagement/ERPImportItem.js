@@ -30,6 +30,12 @@ export const ERROR_FILEDS = {
 			default: formatMessage({ id: 'basicData.erp.zzsy.secret.error' }),
 		},
 	},
+	'SAAS-HBB': {
+		field: 'saas_info.shop_number',
+		errMsg: {
+			default: formatMessage({ id: 'basicData.erp.hbb.error' }),
+		},
+	},
 };
 
 export const SDNM = props => {
@@ -183,6 +189,76 @@ export const ZZSY = props => {
 									required: true,
 									message: formatMessage({
 										id: 'basicData.erp.sdnm.secret.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+		</>
+	);
+};
+
+export const HBB = props => {
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasShopKey = null, saasExtraKey1 = null, saasExtraKey2 = null } = saasInfo;
+
+	return (
+		<>
+			<Form.Item label={formatMessage({ id: 'basicData.erp.api.company.number' })}>
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.company_number', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hbb.company.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+			<Form.Item label={formatMessage({ id: 'basicData.erp.api.user.number' })}>
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.user_number', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hbb.user.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+			<Form.Item label={formatMessage({ id: 'basicData.erp.api.shop.number' })}>
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey2}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.shop_number', {
+							initialValue: saasExtraKey2,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hbb.shop.isEmpty',
 									}),
 								},
 							],

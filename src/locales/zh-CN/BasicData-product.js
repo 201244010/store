@@ -64,9 +64,14 @@ export default {
 	'basicData.erp.api.account': '账号',
 	'basicData.erp.api.password': '密码',
 	'basicData.erp.description': '对接ERP说明',
+	'basicData.erp.api.company.number': '企业编号',
+	'basicData.erp.api.user.number': '用户编号',
+	'basicData.erp.api.shop.number': '店铺号',
 	'basicData.erp.description.list1': '1. 可以通过对接ERP来新建和更新商品；',
-	'basicData.erp.description.list2': '2. 初次完成对接，或修改对接平台信息后，原有商品信息将被清空；',
-	'basicData.erp.description.list3': '3. 完成对接后，无法在SUNMI Store中修改商品信息，请在ERP中进行修改；',
+	'basicData.erp.description.list2':
+		'2. 初次完成对接，或修改对接平台信息后，原有商品信息将被清空；',
+	'basicData.erp.description.list3':
+		'3. 完成对接后，无法在SUNMI Store中修改商品信息，请在ERP中进行修改；',
 	'basicData.erp.import.success': '对接成功，正在同步商品信息…',
 	'basicData.erp.import.fail': '数据导入失败',
 	'basicData.erp.common.key.error': 'key或者secret错误，请重新输入',
@@ -82,6 +87,10 @@ export default {
 	'basicData.erp.zzsy.id.isEmpty': '请输入id',
 	'basicData.erp.zzsy.secret.error': 'id或者secret错误，请重新输入',
 	'basicData.erp.zzsy.secret.existed': '该id和secret已被使用，请重新输入',
+	'basicData.erp.hbb.company.isEmpty': '请输入企业编号',
+	'basicData.erp.hbb.user.isEmpty': '请输入用户编号',
+	'basicData.erp.hbb.shop.isEmpty': '请输入店铺号',
+	'basicData.erp.hbb.error': '对接信息错误，请检查',
 	'basicData.erp.confirm.title': '确定要保存设置，开始同步商品？',
 	'basicData.erp.confirm.content': '保存后，原有商品信息将被清空，并开始同步ERP中的商品。',
 	'basicData.product.delete.success': '删除商品成功',
@@ -119,5 +128,5 @@ export default {
 	'product.price.isFormatted': '请输入正确的商品价格',
 	'product.expire_time.isFormatted': '请输入正确的保质期',
 	'product.create.error': '商品创建失败',
-	'product.update.error': '商品更新失败'
+	'product.update.error': '商品更新失败',
 };
