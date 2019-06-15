@@ -515,6 +515,19 @@ export default [
           }
         ],
       },
+      {
+        name: 'exception',
+        icon: 'warning',
+        path: '/exception',
+        routes: [
+          // exception
+          {
+            path: '/exception/403',
+            name: 'not-permission',
+            component: './Exception/403',
+          },
+        ]
+      },
       { path: '/', redirect: '/dashBoard' },
     ],
   },

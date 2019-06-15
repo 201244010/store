@@ -31,6 +31,9 @@ const unAuthHandler = () => {
 	)}`;
 };
 
+const noAuthhandler =() => {
+
+};
 // const errHandlerList = {
 //   401: unAuthHandler,
 //   default: () => null,
@@ -121,11 +124,9 @@ export const customizeFetch = (service = 'api', base) => {
 		const response = await fetch(url, opts);
 
 		if (response.status === 401) {
-			// const errHandler = errHandlerList[`${response.status}`] || errHandlerList.default;
-			// const errMessage = codeMessage[response.status] || codeMessage.default;
-			// message.error(errMessage);
-			// errHandler();
 			unAuthHandler();
+		}else if(response.status === 403){
+			noAuthhandler();
 		}
 
 		const result = await response.clone().json();
