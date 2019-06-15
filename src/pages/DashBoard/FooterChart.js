@@ -11,6 +11,17 @@ const {
 } = DASHBOARD;
 
 class FooterChart extends Component {
+	handleRadioChange = e => {
+		const { setSearchValue } = this.props;
+		const {
+			target: { value },
+		} = e;
+
+		setSearchValue({
+			paymentType: value,
+		});
+	};
+
 	render() {
 		const {
 			searchValue: { paymentType },
@@ -28,7 +39,7 @@ class FooterChart extends Component {
 						{formatMessage({ id: 'dashBoard.payment' })}
 					</div>
 					<div className={styles['title-btn-bar']}>
-						<Radio.Group value={paymentType}>
+						<Radio.Group value={paymentType} onChange={this.handleRadioChange}>
 							<Radio.Button value={PAYMENT_TYPE.AMOUNT}>
 								{formatMessage({ id: 'dashBoard.order.sales' })}
 							</Radio.Button>
@@ -43,6 +54,19 @@ class FooterChart extends Component {
 					<div className={styles['content-wrapper']}>
 						{purchaseTypeList.map((info, index) => {
 							const percent = Math.ceil(info[paymentType] / (divideBase || 1)) * 100;
+							const pieLegend = (
+								<>
+									<div className={styles['chart-title']}>
+										{info.purchaseTypeName}
+									</div>
+									<div className={styles['chart-data']}>
+										{paymentType === PAYMENT_TYPE.AMOUNT
+											? `¥${info[paymentType]}`
+											: info[paymentType]}
+									</div>
+								</>
+							);
+
 							return (
 								<div
 									className={styles['chart-item']}
@@ -53,7 +77,12 @@ class FooterChart extends Component {
 										)}%`,
 									}}
 								>
-									<Pie percent={percent} total={`${percent}%`} />
+									<Pie
+										percent={percent}
+										total={percent}
+										hasLegend
+										legend={pieLegend}
+									/>
 								</div>
 							);
 						})}

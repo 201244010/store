@@ -9,6 +9,7 @@ const {
 	QUERY_TYPE,
 	SEARCH_TYPE: { RANGE, TRADE_TIME, PAYMENT_TYPE },
 	TIME_INTERVAL,
+	PURCHASE_ORDER,
 } = DASHBOARD;
 
 const stateFields = {
@@ -65,6 +66,20 @@ const fullfuillSKURankList = (rankList = []) => {
 		return filledList;
 	}
 	return rankList;
+};
+
+const sortPurchaseOrder = purchaseInfo => {
+	const { purchaseTypeList = [] } = purchaseInfo;
+	const orderedList = [];
+
+	PURCHASE_ORDER.forEach(type => {
+		orderedList.push(purchaseTypeList.find(info => info.purchaseTypeName === type));
+	});
+
+	return {
+		...purchaseInfo,
+		purchaseTypeList: orderedList,
+	};
 };
 
 export default {
@@ -293,7 +308,7 @@ export default {
 			});
 		},
 
-		*fetchPurchaseTypeStatistics({payload}, { select, put, call }) {
+		*fetchPurchaseTypeStatistics({ payload }, { select, put, call }) {
 			const {
 				searchValue,
 				searchValue: { rangeType },
@@ -328,7 +343,7 @@ export default {
 
 				yield put({
 					type: 'updateState',
-					payload: { purchaseInfo: format('toCamel')(data) },
+					payload: { purchaseInfo: sortPurchaseOrder(format('toCamel')(data)) },
 				});
 			}
 

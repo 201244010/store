@@ -10,13 +10,13 @@ import styles from './pie.less';
 class Pie extends Component {
 	render() {
 		const {
-			hasLegend = true,
-			subTitle,
 			total,
 			percent,
 			inner = 0.75,
 			chartStyle = {},
 			pieStyle = {},
+			hasLegend = false,
+			legend = <div />,
 		} = this.props;
 
 		const {
@@ -69,20 +69,11 @@ class Pie extends Component {
 							/>
 						</Chart>
 
-						{(subTitle || total) && (
-							<div className={styles.total}>
-								{subTitle && <h4 className="pie-sub-title">{subTitle}</h4>}
-								{total && (
-									<div className="pie-stat">
-										{typeof total === 'function' ? total() : total}
-									</div>
-								)}
-							</div>
-						)}
+						<div className={styles.total}>{total}</div>
 					</div>
 				</ReactFitText>
 
-				{hasLegend && <div className={styles.legend}>1234</div>}
+				{hasLegend && <div className={styles.legend}>{legend}</div>}
 			</div>
 		);
 	}

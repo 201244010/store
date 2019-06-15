@@ -1,4 +1,5 @@
 export const DASHBOARD = {
+	PURCHASE_ORDER: ['支付宝', '微信', '银联二维码', '银行卡刷卡', '现金', '其他'],
 	LAST_HAND_REFRESH_TIME: 'lastHandRefreshTime',
 	QUERY_TYPE: {
 		TOTAL_AMOUNT: 'getTotalAmount',
