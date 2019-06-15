@@ -11,7 +11,6 @@ import styles from './DashBoard.less';
 
 const {
 	SEARCH_TYPE: { TRADE_TIME, RANGE },
-	TIME_INTERVAL,
 } = DASHBOARD;
 
 const { Bar } = Charts;
@@ -73,6 +72,15 @@ const SingleList = props => {
 	);
 };
 
+const getTimeTick = type => {
+	const timeTick = {
+		[RANGE.TODAY]: 12,
+		[RANGE.WEEK]: 7,
+		[RANGE.MONTH]: 10,
+	};
+	return timeTick[type];
+};
+
 const formatTime = (time, rangeType) => {
 	if (rangeType === RANGE.TODAY) {
 		return moment
@@ -117,9 +125,9 @@ class ContentChart extends Component {
 
 		const chartScale = {
 			time: {
-				nice: false,
-				tickInterval: rangeType === RANGE.TODAY ? TIME_INTERVAL.HOUR * 2 : TIME_INTERVAL.DAY,
-				formatter: (time) => formatTime(time, rangeType),
+				// tickInterval: getTimeTick(rangeType),
+				// formatter: time => formatTime(time, rangeType),
+				tickCount: getTimeTick(rangeType)
 			},
 			[TRADE_TIME.AMOUNT]: {
 				min: 0,
@@ -161,6 +169,11 @@ class ContentChart extends Component {
 			},
 		};
 
+		const dataList = orderList.map(data => ({
+			time: formatTime(data.time, rangeType),
+			[tradeTime]: data[tradeTime],
+		}));
+
 		return (
 			<div className={styles['content-chart']}>
 				<Media query={{ maxWidth: 1439 }}>
@@ -198,12 +211,9 @@ class ContentChart extends Component {
 														scale: chartScale,
 													},
 													axis: { x: 'time', y: tradeTime },
-													dataSource: orderList.map(data => ({
-														time: data.time,
-														[tradeTime]: data[tradeTime],
-													})),
+													dataSource: dataList,
 													barStyle: {
-														barActive:[
+														barActive: [
 															true,
 															{
 																style: {
@@ -211,7 +221,7 @@ class ContentChart extends Component {
 																	shadowColor: 'red',
 																	shadowBlur: 1,
 																	opacity: 0,
-																}
+																},
 															},
 														],
 														position: `time*${tradeTime}`,

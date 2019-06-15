@@ -36,6 +36,7 @@ class Bar extends Component {
 					<Axis name={y} />
 					<Tooltip crosshairs={false} {...toolTipStyle} />
 					<Geom
+						adjust="stack"
 						type="interval"
 						color={barColor}
 						active={barActive}

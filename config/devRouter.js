@@ -418,6 +418,20 @@ export default [
           },
         ],
       },
+
+      {
+        name: 'exception',
+        icon: 'warning',
+        path: '/exception',
+        hideInMenu:true,
+        routes: [
+          {
+            path: '/exception/403',
+            name: 'not-permission',
+            component: './Exception/403',
+          },
+        ]
+      },
       
       // 不在 menu 中显示的路由 end
 
@@ -515,19 +529,7 @@ export default [
           }
         ],
       },
-      {
-        name: 'exception',
-        icon: 'warning',
-        path: '/exception',
-        routes: [
-          // exception
-          {
-            path: '/exception/403',
-            name: 'not-permission',
-            component: './Exception/403',
-          },
-        ]
-      },
+
       { path: '/', redirect: '/dashBoard' },
     ],
   },
