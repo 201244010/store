@@ -2,49 +2,46 @@ import React, { Component } from 'react';
 import { Chart, Geom, Axis, Tooltip } from 'bizcharts';
 import { DataView } from '@antv/data-set';
 
+import styles from './bar.less';
+
+const dv = new DataView();
+
 class Bar extends Component {
-	constructor(props) {
-		super(props);
-		this.dv = new DataView();
-	}
-
 	render() {
-		const { chartStyle = {}, dataSource = [], barStyle = {} } = this.props;
-		const chartOptions = {
-			height: 418,
-			forceFit: true,
-			padding: 'auto',
-			...chartStyle,
-		};
+		const {
+			chartStyle = {},
+			dataSource = [],
+			barStyle = {},
+			toolTipStyle = {},
+			axis = {},
+		} = this.props;
 
-		const barOptions = {
-			type: 'interval',
-			color: '#FFAA60',
-			active: [
-				true,
-				{
-					style: {
-						fill: '#FF8133',
-						shadowColor: 'red',
-						shadowBlur: 1,
-						opacity: 0,
-						...(barStyle.activeStyle || {}),
-					},
-				},
-			],
-			position: '',
-			...barStyle,
-		};
+		const { x = 'xAxis', y = 'yAxis' } = axis;
+		const { height = 388, forceFit = true, padding = 'auto', scale = {} } = chartStyle;
 
-		this.dv.source(dataSource);
+		const { barColor = '#FFAA60', barActive = false, position = '', tooltip = {} } = barStyle;
+
+		dv.source(dataSource);
 
 		return (
-			<div>
-				<Chart {...chartOptions} data={this.dv}>
-					<Axis name="x" />
-					<Axis name="y" />
-					<Tooltip crosshairs={false} />
-					<Geom {...barOptions} />
+			<div className={styles.chart}>
+				<Chart
+					height={height}
+					padding={padding}
+					scale={scale}
+					data={dv}
+					forceFit={forceFit}
+				>
+					<Axis name={x} />
+					<Axis name={y} />
+					<Tooltip crosshairs={false} {...toolTipStyle} />
+					<Geom
+						type="interval"
+						color={barColor}
+						active={barActive}
+						position={position}
+						tooltip={tooltip}
+					/>
 				</Chart>
 			</div>
 		);

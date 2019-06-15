@@ -15,7 +15,11 @@ class FooterChart extends Component {
 		const {
 			searchValue: { paymentType },
 			chartLoading,
+			purchaseInfo,
 		} = this.props;
+
+		const { purchaseTypeList = [], totalAmount = 0, totalCount = 0 } = purchaseInfo;
+		const divideBase = PAYMENT_TYPE.AMOUNT ? totalAmount : totalCount;
 
 		return (
 			<div className={styles['footer-chart-wrapper']}>
@@ -37,51 +41,22 @@ class FooterChart extends Component {
 
 				<Spin spinning={chartLoading}>
 					<div className={styles['content-wrapper']}>
-						<div className={styles['chart-item']}>
-							<Pie
-								animate={false}
-								percent={28}
-								total="28%"
-								height={128}
-								lineWidth={2}
-							/>
-						</div>
-						<div className={styles['chart-item']}>
-							<Pie
-								animate={false}
-								percent={28}
-								total="28%"
-								height={128}
-								lineWidth={2}
-							/>
-						</div>
-						<div className={styles['chart-item']}>
-							<Pie
-								animate={false}
-								percent={28}
-								total="28%"
-								height={128}
-								lineWidth={2}
-							/>
-						</div>
-						<div className={styles['chart-item']}>
-							<Pie
-								animate={false}
-								percent={28}
-								total="28%"
-								height={128}
-								lineWidth={2}
-							/>
-						</div>
-						<div className={styles['chart-item']}>
-							<Pie
-								animate={false}
-								percent={28}
-								total="28%"
-								height={128}
-								lineWidth={2}
-							/>
-						</div>
+						{purchaseTypeList.map((info, index) => {
+							const percent = Math.ceil(info[paymentType] / (divideBase || 1)) * 100;
+							return (
+								<div
+									className={styles['chart-item']}
+									key={index}
+									style={{
+										width: `${Math.floor(
+											100 / (purchaseTypeList.length || 1)
+										)}%`,
+									}}
+								>
+									<Pie percent={percent} total={`${percent}%`} />
+								</div>
+							);
+						})}
 					</div>
 				</Spin>
 			</div>

@@ -90,7 +90,7 @@ export default {
 		avgUnitSale: {},
 		orderList: [],
 		skuRankList: [],
-		purchaseInfo: [],
+		purchaseInfo: {},
 	},
 	effects: {
 		*switchLoading({ payload }, { put }) {

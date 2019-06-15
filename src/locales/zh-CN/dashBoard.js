@@ -27,4 +27,8 @@ export default {
 
 	'dashBoard.sku.rate': 'SKU排行榜',
 	'dashBoard.payment': '支付方式',
+
+	'dashBoard.trade.date': '交易日期',
+	'dashBoard.trade.amount': '交易金额',
+	'dashBoard.trade.count': '交易笔数',
 };
