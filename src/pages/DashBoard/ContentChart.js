@@ -91,24 +91,21 @@ const timeScales = {
 // };
 
 const formatTime = (time, rangeType) => {
+	const timeData = moment.unix(time).local();
+
 	if (rangeType === RANGE.TODAY) {
-		return moment
-			.unix(time)
-			.local()
-			.format('HH:mm');
+		return timeData.format('HH:mm');
 	}
 
 	if (rangeType === RANGE.WEEK) {
-		return moment
-			.unix(time)
-			.local()
-			.format('ddd');
+		return timeData.format('ddd');
 	}
 
-	return moment
-		.unix(time)
-		.local()
-		.format('D');
+	if(rangeType === RANGE.MONTH){
+		return timeData.format('D');
+	}
+
+	return timeData.format('M/D');
 };
 
 class ContentChart extends Component {
