@@ -8,6 +8,7 @@ import styles from './DashBoard.less';
 const { Pie } = Charts;
 const {
 	SEARCH_TYPE: { PAYMENT_TYPE },
+	PIE_COLOR,
 } = DASHBOARD;
 
 class FooterChart extends Component {
@@ -82,6 +83,7 @@ class FooterChart extends Component {
 										total={percent}
 										hasLegend
 										legend={pieLegend}
+										pieStyle={{ color: PIE_COLOR[index] }}
 									/>
 								</div>
 							);

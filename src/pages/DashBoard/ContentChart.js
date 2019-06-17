@@ -93,7 +93,7 @@ const formatTime = (time, rangeType) => {
 		return moment
 			.unix(time)
 			.local()
-			.format('dd');
+			.format('ddd');
 	}
 
 	return moment
@@ -125,16 +125,14 @@ class ContentChart extends Component {
 
 		const chartScale = {
 			time: {
-				// tickInterval: getTimeTick(rangeType),
-				// formatter: time => formatTime(time, rangeType),
 				tickCount: getTimeTick(rangeType)
 			},
 			[TRADE_TIME.AMOUNT]: {
-				min: 0,
+				minLimit: 0,
 				tickCount: 6,
 			},
 			[TRADE_TIME.COUNT]: {
-				min: 0,
+				minLimit: 0,
 				tickCount: 6,
 			},
 		};
@@ -144,7 +142,7 @@ class ContentChart extends Component {
 			(time, value) => ({
 				title: `${formatMessage({
 					id: 'dashBoard.trade.date',
-				})}: ${formatTime(time, rangeType)}`,
+				})}: ${time}`,
 				name: `${
 					tradeTime === TRADE_TIME.AMOUNT
 						? formatMessage({
