@@ -31,7 +31,7 @@ class FooterChart extends Component {
 		} = this.props;
 
 		const { purchaseTypeList = [], totalAmount = 0, totalCount = 0 } = purchaseInfo;
-		const divideBase = PAYMENT_TYPE.AMOUNT ? totalAmount : totalCount;
+		const divideBase = paymentType === PAYMENT_TYPE.AMOUNT ? totalAmount : totalCount;
 
 		return (
 			<div className={styles['footer-chart-wrapper']}>

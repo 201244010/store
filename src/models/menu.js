@@ -6,8 +6,6 @@ import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
 
-import { env } from '@/config';
-
 const { check } = Authorized;
 
 // Conversion router to menu.
@@ -111,15 +109,12 @@ export default {
 			const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
 
 			let filteredMenuData = menuData;
-
-			if (env !== 'dev') {
-				const response = yield call(MenuAction.getAuthMenu);
-				if (response && response.code === ERROR_OK) {
-					const { menu_list: menuList = [] } = response.data || {};
-					if (menuList && menuList.length > 0) {
-						filteredMenuData = checkMenuAuth(menuData, menuList);
-						Storage.set({ FILTERED_MENU: filteredMenuData }, 'local');
-					}
+			const response = yield call(MenuAction.getAuthMenu);
+			if (response && response.code === ERROR_OK) {
+				const { menu_list: menuList = [] } = response.data || {};
+				if (menuList && menuList.length > 0) {
+					filteredMenuData = checkMenuAuth(menuData, menuList);
+					Storage.set({ FILTERED_MENU: filteredMenuData }, 'session');
 				}
 			}
 

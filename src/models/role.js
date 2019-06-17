@@ -5,7 +5,7 @@ import { map, format } from '@konata9/milk-shake';
 import Storage from '@konata9/storage.js';
 
 const getInitStatus = (permissionList, roleInfo) => {
-	const rolePermissionList = roleInfo.permission_list;
+	const rolePermissionList = roleInfo.permissionList;
 	const initResult = {};
 	rolePermissionList.map(item => {
 		if (item.group === permissionList.label) {
@@ -20,8 +20,8 @@ const formatData = data => {
 	let tmp = [...data];
 	tmp = tmp.map(item => map([{ from: 'id', to: 'value' }, { from: 'name', to: 'label' }])(item));
 	tmp = tmp.map(item => {
-		if (item.permission_list) {
-			item.permission_list = item.permission_list.map(items =>
+		if (item.permissionList) {
+			item.permissionList = item.permissionList.map(items =>
 				map([{ from: 'id', to: 'value' }, { from: 'name', to: 'label' }])(items)
 			);
 		}
@@ -43,7 +43,7 @@ export default {
 		roleList: [],
 		roleInfo: {
 			name: '',
-			permission_list: [],
+			permissionList: [],
 		},
 		permissionList: [],
 		userPermissionList: Storage.get(USER_PERMISSION_LIST, 'local') || [],
@@ -85,16 +85,17 @@ export default {
 			const response = yield call(Actions.handleRoleManagement, 'getInfo', opts);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-				data.permission_list = formatData(data.permission_list).map(item =>
+				const forData = format('toCamel')(data);
+				forData.permissionList = formatData(forData.permissionList).map(item =>
 					Object.assign(
 						{},
 						{
 							checkedList: item,
-							indeterminate: item.permission_list && true,
+							indeterminate: item.permissionList && true,
 							checkAll: true,
 							group: item.label,
-							valueList: item.permission_list
-								? item.permission_list.map(items => items.value)
+							valueList: item.permissionList
+								? item.permissionList.map(items => items.value)
 								: [item.value],
 						}
 					)
@@ -102,7 +103,7 @@ export default {
 				yield put({
 					type: 'updateState',
 					payload: {
-						roleInfo: data,
+						roleInfo: forData,
 					},
 				});
 				yield put({
@@ -121,14 +122,14 @@ export default {
 				const roleInfo = yield select(state => state.role.roleInfo);
 
 				const { data = {} } = response;
-				const { permission_list: permissionList } = data;
+				const forData = format('toCamel')(data);
 
-				const tmpList = formatData(permissionList).map(item =>
+				const tmpList = formatData(forData.permissionList).map(item =>
 					Object.assign(
 						{},
 						{
 							checkedList: item,
-							indeterminate: item.permission_list && true,
+							indeterminate: item.permissionList && true,
 							checkAll:
 								type === 'modify' ? getInitStatus(item, roleInfo).checkAll : false,
 							group: item.label,
@@ -137,7 +138,6 @@ export default {
 						}
 					)
 				);
-
 				yield put({
 					type: 'updateState',
 					payload: {
