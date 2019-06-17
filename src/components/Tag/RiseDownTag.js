@@ -5,13 +5,13 @@ import styles from './Tag.less';
 
 const RiseDownTag = props => {
 	const {
-		wrapperStyle = {},
+		wrapperStyle = { display: 'flex' },
 		label = null,
 		labelClass = '',
 		labelStyle = {},
 		content = null,
 		contentClass = '',
-		contentStyle = {},
+		contentStyle = { marginLeft: '12px', display: 'flex', alignItems: 'center' },
 	} = props;
 
 	const IconUp = () => (
@@ -101,7 +101,11 @@ const RiseDownTag = props => {
 			<div className={`${styles['rise-down-content']} ${contentClass}`} style={contentStyle}>
 				<StatusIcon />
 				<div style={{ marginLeft: '2px' }}>
-					{`${content || content === 0 ? `${Math.abs(content) * 100}%` : '--'}`}
+					{`${
+						content || content === 0
+							? `${parseFloat(Math.abs(content) * 100).toFixed(2)}%`
+							: '--'
+					}`}
 				</div>
 			</div>
 		</div>

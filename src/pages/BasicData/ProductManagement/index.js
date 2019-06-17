@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { Card } from 'antd';
 import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
-import styles from './ProductManagement.less';
 
 @connect(
 	state => ({
@@ -49,7 +49,7 @@ class ProductList extends Component {
 		} = this.props;
 
 		return (
-			<div className={styles['content-container']}>
+			<Card bordered={false}>
 				<SearchForm
 					{...{
 						states,
@@ -69,7 +69,7 @@ class ProductList extends Component {
 						deleteProduct,
 					}}
 				/>
-			</div>
+			</Card>
 		);
 	}
 }

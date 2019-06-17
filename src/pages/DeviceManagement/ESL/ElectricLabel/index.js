@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { Card } from 'antd';
 import Overview from './Overview';
 import SearchResult from './SearchResult';
 import SearchForm from './SearchForm';
-import * as styles from './index.less';
 
 @connect(
 	state => ({
@@ -106,7 +106,7 @@ class ElectricLabel extends Component {
 					productOverview={productOverview}
 					refreshFailedImage={refreshFailedImage}
 				/>
-				<div className={styles['content-container']}>
+				<Card bordered={false}>
 					<SearchForm
 						{...{
 							searchFormValues,
@@ -137,7 +137,7 @@ class ElectricLabel extends Component {
 							deleteESL,
 						}}
 					/>
-				</div>
+				</Card>
 			</div>
 		);
 	}

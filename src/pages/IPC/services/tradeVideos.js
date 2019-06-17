@@ -51,8 +51,9 @@ const paymemtDetailFormatter = (item) => ({
 	quantity: item.quantity,
 	// promotePrice: item.promote_price
 });
+
 export const getTradeVideos = async (params) => {
-	const { keyword, ipcId, startTime, endTime, paymentDeviceSN } = params;
+	const { keyword, ipcId, startTime, endTime, posSN, currentPage, pageSize } = params;
 
 	return request('getList',{
 		body:{
@@ -60,16 +61,22 @@ export const getTradeVideos = async (params) => {
 			time_range_end: endTime,
 			ipc_device_id: ipcId,
 			// payment_device_id: paymentDeviceId,
-			payment_device_sn: paymentDeviceSN,
-			keyword
+			payment_device_sn: posSN,
+			keyword,
+			page_num: currentPage,
+			page_size: pageSize
 		}
 	}).then(async(response) => {
 		const { data, code } = await response.json();
 		if (code === ERROR_OK){
-			const result = data.order_list.map(dataFormatter);
+			const list = data.order_list.map(dataFormatter);
+			const total = data.total_count;
 			return {
 				code: ERROR_OK,
-				data: result
+				data: {
+					list,
+					total
+				}
 			};
 		}
 		return response;
@@ -97,10 +104,42 @@ export const getPaymentDetailList = async (params) => {
 };
 
 
-export const getVideo = async ({ orderNo }) => {
+// export const getVideo = async ({ orderNo }) => {
+// 	const info = requestVideo('getVideo',{
+// 		body:{
+// 			order_no: orderNo
+// 		}
+// 	}).then(async(response) => {
+// 		const { data, code } = await response.json();
+// 		if (code === ERROR_OK){
+// 			// console.log(data);
+// 			return {
+// 				code: ERROR_OK,
+// 				data: {
+// 					address: data.address,
+// 					id: data.video_id
+// 				}
+// 			};
+// 		}
+// 		return {
+// 			code
+// 		};
+// 	});
+
+// 	return info;
+// };
+const videoInfoFormatter = (list) => {
+	const data = list.map(item => ({
+		orderNo: item.order_no,
+		url: item.address
+	}));
+	return data;
+};
+
+export const getVideo = async ({ orderNoList }) => {
 	const info = requestVideo('getVideo',{
 		body:{
-			order_no: orderNo
+			order_no_list: orderNoList
 		}
 	}).then(async(response) => {
 		const { data, code } = await response.json();
@@ -109,8 +148,7 @@ export const getVideo = async ({ orderNo }) => {
 			return {
 				code: ERROR_OK,
 				data: {
-					address: data.address,
-					id: data.video_id
+					list: videoInfoFormatter(data)
 				}
 			};
 		}

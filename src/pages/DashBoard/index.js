@@ -73,7 +73,11 @@ class DashBoard extends Component {
 	render() {
 		const {
 			dashBoard: {
-				totalLoading,
+				totalAmountLoading,
+				totalCountLoading,
+				totalRefundLoading,
+				avgUnitLoading,
+
 				barLoading,
 				skuLoading,
 				chartLoading,
@@ -106,7 +110,16 @@ class DashBoard extends Component {
 				/>
 				<div className={styles['display-content']}>
 					<CardBar
-						{...{ totalAmount, totalCount, totalRefund, avgUnitSale, totalLoading }}
+						{...{
+							totalAmount,
+							totalCount,
+							totalRefund,
+							avgUnitSale,
+							totalAmountLoading,
+							totalCountLoading,
+							totalRefundLoading,
+							avgUnitLoading,
+						}}
 					/>
 					<ContentChart
 						{...{

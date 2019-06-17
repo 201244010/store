@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'antd';
+import { Button, Card } from 'antd';
 import router from 'umi/router';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
@@ -73,7 +73,7 @@ class ProductInfo extends Component {
 		const productPrice = this.formatProductInfo(productInfo, PRODUCT_PRICE);
 
 		return (
-			<div className={styles['content-container']}>
+			<Card bordered={false}>
 				<ProductInfoBasic
 					{...{
 						productBasic,
@@ -100,7 +100,7 @@ class ProductInfo extends Component {
 						{formatMessage({ id: 'btn.back' })}
 					</Button>
 				</div>
-			</div>
+			</Card>
 		);
 	}
 }

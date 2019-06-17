@@ -26,5 +26,6 @@ export default {
 	'activeDetection.daysRule':'至少选择一天',
 	'activeDetection.startTimeMsg':'请输入起始时间',
 	'activeDetection.endTimeMsg':'请输入停止时间',
-	
+	'activeDetection.nextDay':'(次日)',
+
 };

@@ -152,8 +152,8 @@ class BasicParams extends Component {
 
 		const { getFieldDecorator } = form;
 		return (
-			<Spin spinning={isReading}>
-				<Card className={styles.card} title={formatMessage({id: 'basicParams.title'})}>
+			<Spin spinning={isReading || isSaving === 'saving'}>
+				<Card bordered={false} className={styles.card} title={formatMessage({id: 'basicParams.title'})}>
 					<Form>
 						<Form.Item {...FORM_ITEM_LAYOUT} label={formatMessage({id: 'basicParams.nightMode'})}>
 							{

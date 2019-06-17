@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { Card } from 'antd';
 import PanelHeader from '@/pages/DeviceManagement/ESL/DeviceUpgrade/PanelHeader';
 import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
@@ -43,7 +44,7 @@ class DeviceESL extends Component {
 		];
 
 		return (
-			<div className="content-container">
+			<Card bordered={false}>
 				<PanelHeader model={model} type="esl" version={version} />
 				<SearchForm
 					{...{
@@ -64,7 +65,7 @@ class DeviceESL extends Component {
 						getESLGroupInfo,
 					}}
 				/>
-			</div>
+			</Card>
 		);
 	}
 }

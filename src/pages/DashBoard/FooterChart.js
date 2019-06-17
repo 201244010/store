@@ -31,7 +31,7 @@ class FooterChart extends Component {
 		} = this.props;
 
 		const { purchaseTypeList = [], totalAmount = 0, totalCount = 0 } = purchaseInfo;
-		const divideBase = PAYMENT_TYPE.AMOUNT ? totalAmount : totalCount;
+		const divideBase = paymentType === PAYMENT_TYPE.AMOUNT ? totalAmount : totalCount;
 
 		return (
 			<div className={styles['footer-chart-wrapper']}>
@@ -54,7 +54,9 @@ class FooterChart extends Component {
 				<Spin spinning={chartLoading}>
 					<div className={styles['content-wrapper']}>
 						{purchaseTypeList.map((info, index) => {
-							const percent = Math.ceil(info[paymentType] / (divideBase || 1)) * 100;
+							const percent = Math.round(
+								(info[paymentType] / (divideBase || 1)) * 100
+							);
 							const pieLegend = (
 								<>
 									<div className={styles['chart-title']}>

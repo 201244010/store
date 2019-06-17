@@ -64,24 +64,26 @@ class RoleList extends React.Component {
 				title: formatMessage({ id: 'list.action.title' }),
 				render: (_, record) =>
 					record.isDefault ? (
-						<span className={styles.view} onClick={this.viewRole}>
+						<a href="javascript:void(0);" className={styles.view} onClick={() => this.goPath(record, 'view')}>
 							{formatMessage({ id: 'list.action.view' })}
-						</span>
+						</a>
 					) : (
 						<div>
-							<span
+							<a
+								href="javascript:void(0);"
 								className={styles.view}
 								onClick={() => this.goPath(record, 'view')}
 							>
 								{formatMessage({ id: 'list.action.view' })}
-							</span>
+							</a>
 							<Divider type="vertical" />
-							<span
+							<a
+								href="javascript:void(0);"
 								className={styles.view}
 								onClick={() => this.goPath(record, 'modify')}
 							>
 								{formatMessage({ id: 'list.action.edit' })}
-							</span>
+							</a>
 							<Divider type="vertical" />
 							<Popconfirm
 								title={formatMessage({ id: 'roleManagement.role.deleteRole' })}
@@ -97,9 +99,9 @@ class RoleList extends React.Component {
 									loading: loading.effects['role/deleteRole'],
 								}}
 							>
-								<span className={styles.view}>
+								<a href="javascript:void(0);" className={styles.view}>
 									{formatMessage({ id: 'list.action.delete' })}
-								</span>
+								</a>
 							</Popconfirm>
 						</div>
 					),
@@ -127,6 +129,7 @@ class RoleList extends React.Component {
 	};
 
 	goPath = (rowDetail, path) => {
+		console.log('goPath');
 		const encodeID = rowDetail.id ? idEncode(rowDetail.id) : null;
 		const urlMap = {
 			modify: `${MENU_PREFIX.ROLE}/modify?action=modify&id=${encodeID}`,
@@ -164,7 +167,7 @@ class RoleList extends React.Component {
 			loading,
 		} = this.props;
 		return (
-			<Card>
+			<Card bordered={false}>
 				<div className={styles.wrapper}>
 					<div className={styles['search-bar']}>
 						<Form layout="inline">

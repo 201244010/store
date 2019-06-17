@@ -11,6 +11,7 @@ import styles from './DashBoard.less';
 
 const {
 	SEARCH_TYPE: { TRADE_TIME, RANGE },
+	TIME_TICKS,
 } = DASHBOARD;
 
 const { Bar } = Charts;
@@ -72,34 +73,30 @@ const SingleList = props => {
 	);
 };
 
-const getTimeTick = type => {
-	const timeTick = {
-		[RANGE.TODAY]: 12,
-		[RANGE.WEEK]: 7,
-		[RANGE.MONTH]: 10,
-	};
-	return timeTick[type];
+const timeScales = {
+	[RANGE.TODAY]: {
+		ticks: TIME_TICKS.HOUR,
+	},
+	[RANGE.WEEK]: { tickCount: 7 },
+	[RANGE.MONTH]: { ticks: TIME_TICKS.MONTH },
 };
 
 const formatTime = (time, rangeType) => {
+	const timeData = moment.unix(time).local();
+
 	if (rangeType === RANGE.TODAY) {
-		return moment
-			.unix(time)
-			.local()
-			.format('HH:mm');
+		return timeData.format('HH:mm');
 	}
 
 	if (rangeType === RANGE.WEEK) {
-		return moment
-			.unix(time)
-			.local()
-			.format('ddd');
+		return timeData.format('ddd');
 	}
 
-	return moment
-		.unix(time)
-		.local()
-		.format('D');
+	if(rangeType === RANGE.MONTH){
+		return timeData.format('D');
+	}
+
+	return timeData.format('M/D');
 };
 
 class ContentChart extends Component {
@@ -124,9 +121,7 @@ class ContentChart extends Component {
 		} = this.props;
 
 		const chartScale = {
-			time: {
-				tickCount: getTimeTick(rangeType)
-			},
+			time: timeScales[rangeType] || {},
 			[TRADE_TIME.AMOUNT]: {
 				minLimit: 0,
 				tickCount: 6,
@@ -142,7 +137,11 @@ class ContentChart extends Component {
 			(time, value) => ({
 				title: `${formatMessage({
 					id: 'dashBoard.trade.date',
-				})}: ${time}`,
+				})}: ${time} ${
+					[RANGE.MONTH, RANGE.FREE].includes(rangeType)
+						? formatMessage({ id: 'dashBoard.trade.date.unit' })
+						: ''
+				}`,
 				name: `${
 					tradeTime === TRADE_TIME.AMOUNT
 						? formatMessage({
