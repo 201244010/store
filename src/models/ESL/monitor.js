@@ -1,3 +1,4 @@
+import moment from 'moment';
 import * as Services from '@/services/ESL/monitor';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
@@ -15,6 +16,10 @@ export default {
 		loading: false,
 		searchFormValues: {
 			keyword: '',
+			startTime: moment().subtract(7, 'days'),
+			endTime: moment(),
+			reason: -1,
+			result: -1
 		},
 		data: [],
 		pagination: {
@@ -27,9 +32,19 @@ export default {
 		},
 	},
 	effects: {
+		*changeSearchFormValue({ payload = {} }, { put }) {
+			const { options = {} } = payload;
+			yield put({
+				type: 'setSearchFormValue',
+				payload: {
+					...options,
+				},
+			});
+		},
+
 		*fetchCommunications({ payload }, { call, put, select }) {
 			yield switchLoadingStatus(true, put);
-			const { pagination, searchFormValues } = yield select(state => state.deviceAP);
+			const { pagination, searchFormValues } = yield select(state => state.monitor);
 			const options = {
 				...pagination,
 				...searchFormValues,
@@ -42,9 +57,11 @@ export default {
 				yield put({
 					type: 'updateState',
 					payload: {
-						data: data.esl_comm_list || [],
+						data: data.esl_communication_history_list || [],
 						pagination: {
 							...pagination,
+							current: options.current,
+							pageSize: options.pageSize,
 							total: data.total_count || 0,
 						},
 					},
@@ -71,6 +88,10 @@ export default {
 				payload: {
 					searchFormValues: {
 						keyword: '',
+						startTime: moment().subtract(7, 'days'),
+						endTime: moment(),
+						reason: -1,
+						result: -1
 					},
 				},
 			});
@@ -81,6 +102,15 @@ export default {
 			return {
 				...state,
 				...action.payload,
+			};
+		},
+		setSearchFormValue(state, action) {
+			return {
+				...state,
+				searchFormValues: {
+					...state.searchFormValues,
+					...action.payload,
+				},
 			};
 		},
 	},

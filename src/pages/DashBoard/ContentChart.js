@@ -1,26 +1,19 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
+import moment from 'moment';
 import Media from 'react-media';
-import { Row, Col, Radio } from 'antd';
+import { Row, Col, Radio, Skeleton, Spin } from 'antd';
 import Charts from '@/components/Charts';
 import { priceFormat } from '@/utils/utils';
+import { DASHBOARD } from './constants';
 
 import styles from './DashBoard.less';
 
-const { Bar } = Charts;
+const {
+	SEARCH_TYPE: { TRADE_TIME, RANGE },
+} = DASHBOARD;
 
-const dataSource = [
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-	{ name: '可口可乐', count: 23333 },
-];
+const { Bar } = Charts;
 
 const TwinList = props => {
 	const { leftList, rightList } = props;
@@ -39,7 +32,7 @@ const TwinList = props => {
 							</div>
 							<div className={styles.label}>{item.name}</div>
 						</div>
-						<div className={styles['number-content']}>{priceFormat(item.count)}</div>
+						<div className={styles['number-content']}>{priceFormat(item.quantity)}</div>
 					</li>
 				))}
 			</ul>
@@ -50,7 +43,7 @@ const TwinList = props => {
 							<div className={styles.rank}>{index + 6}</div>
 							<div className={styles.label}>{item.name}</div>
 						</div>
-						<div className={styles['number-content']}>{priceFormat(item.count)}</div>
+						<div className={styles['number-content']}>{priceFormat(item.quantity)}</div>
 					</li>
 				))}
 			</ul>
@@ -72,15 +65,113 @@ const SingleList = props => {
 						</div>
 						<div className={styles.label}>{item.name}</div>
 					</div>
-					<div className={styles['number-content']}>{priceFormat(item.count)}</div>
+					<div className={styles['number-content']}>{priceFormat(item.quantity)}</div>
 				</li>
 			))}
 		</ul>
 	);
 };
 
+const getTimeTick = type => {
+	const timeTick = {
+		[RANGE.TODAY]: 12,
+		[RANGE.WEEK]: 7,
+		[RANGE.MONTH]: 10,
+	};
+	return timeTick[type];
+};
+
+const formatTime = (time, rangeType) => {
+	if (rangeType === RANGE.TODAY) {
+		return moment
+			.unix(time)
+			.local()
+			.format('HH:mm');
+	}
+
+	if (rangeType === RANGE.WEEK) {
+		return moment
+			.unix(time)
+			.local()
+			.format('ddd');
+	}
+
+	return moment
+		.unix(time)
+		.local()
+		.format('D');
+};
+
 class ContentChart extends Component {
+	handleRadioChange = e => {
+		const { setSearchValue } = this.props;
+		const {
+			target: { value },
+		} = e;
+
+		setSearchValue({
+			tradeTime: value,
+		});
+	};
+
 	render() {
+		const {
+			searchValue: { tradeTime, rangeType },
+			orderList,
+			skuRankList,
+			barLoading,
+			skuLoading,
+		} = this.props;
+
+		const chartScale = {
+			time: {
+				tickCount: getTimeTick(rangeType)
+			},
+			[TRADE_TIME.AMOUNT]: {
+				minLimit: 0,
+				tickCount: 6,
+			},
+			[TRADE_TIME.COUNT]: {
+				minLimit: 0,
+				tickCount: 6,
+			},
+		};
+
+		const chartToolTip = [
+			`time*${tradeTime}`,
+			(time, value) => ({
+				title: `${formatMessage({
+					id: 'dashBoard.trade.date',
+				})}: ${time}`,
+				name: `${
+					tradeTime === TRADE_TIME.AMOUNT
+						? formatMessage({
+							id: 'dashBoard.trade.amount',
+						  })
+						: formatMessage({
+							id: 'dashBoard.trade.count',
+						  })
+				}: ${value}`,
+			}),
+		];
+
+		const toolTipStyle = {
+			'g2-tooltip': {
+				background: 'rgba(48,53,64,0.70)',
+				'box-shadow': '0 2px 8px 0 rgba(0,0,0,0.15)',
+				'border-radius': '2px',
+				color: '#ffffff',
+			},
+			'g2-tooltip-marker': {
+				display: 'none',
+			},
+		};
+
+		const dataList = orderList.map(data => ({
+			time: formatTime(data.time, rangeType),
+			[tradeTime]: data[tradeTime],
+		}));
+
 		return (
 			<div className={styles['content-chart']}>
 				<Media query={{ maxWidth: 1439 }}>
@@ -88,22 +179,57 @@ class ContentChart extends Component {
 						<Row gutter={result ? 0 : 24}>
 							<Col span={result ? 24 : 18}>
 								<div className={styles['bar-wrapper']}>
-									<div className={styles['title-wrapper']}>
-										<div className={styles['bar-title']}>
-											{formatMessage({ id: 'dashBoard.trade.time' })}
+									<Spin spinning={barLoading}>
+										<div className={styles['title-wrapper']}>
+											<div className={styles['bar-title']}>
+												{formatMessage({ id: 'dashBoard.trade.time' })}
+											</div>
+											<div className={styles['bar-radio']}>
+												<Radio.Group
+													value={tradeTime}
+													onChange={this.handleRadioChange}
+												>
+													<Radio.Button value={TRADE_TIME.AMOUNT}>
+														{formatMessage({
+															id: 'dashBoard.order.sales',
+														})}
+													</Radio.Button>
+													<Radio.Button value={TRADE_TIME.COUNT}>
+														{formatMessage({
+															id: 'dashBoard.order.count',
+														})}
+													</Radio.Button>
+												</Radio.Group>
+											</div>
 										</div>
-										<div className={styles['bar-radio']}>
-											<Radio.Group defaultValue={0}>
-												<Radio.Button value={0}>
-													{formatMessage({ id: 'dashBoard.order.sales' })}
-												</Radio.Button>
-												<Radio.Button value={1}>
-													{formatMessage({ id: 'dashBoard.order.count' })}
-												</Radio.Button>
-											</Radio.Group>
+										<div className={styles['bar-wrapper']}>
+											<Bar
+												{...{
+													chartStyle: {
+														scale: chartScale,
+													},
+													axis: { x: 'time', y: tradeTime },
+													dataSource: dataList,
+													barStyle: {
+														barActive: [
+															true,
+															{
+																style: {
+																	fill: '#FF8133',
+																	shadowColor: 'red',
+																	shadowBlur: 1,
+																	opacity: 0,
+																},
+															},
+														],
+														position: `time*${tradeTime}`,
+														tooltip: chartToolTip,
+													},
+													toolTipStyle,
+												}}
+											/>
 										</div>
-									</div>
-									<Bar />
+									</Spin>
 								</div>
 							</Col>
 							<Col span={result ? 24 : 6}>
@@ -111,18 +237,21 @@ class ContentChart extends Component {
 									className={`${styles['list-wrapper']} ${
 										result ? styles['list-wrapper-top'] : ''
 									}`}
+									style={skuLoading ? { padding: '24px' } : {}}
 								>
-									<div className={styles['list-title']}>
-										{formatMessage({ id: 'dashBoard.sku.rate' })}
-									</div>
-									{result ? (
-										<TwinList
-											leftList={dataSource.slice(0, 5)}
-											rightList={dataSource.slice(5)}
-										/>
-									) : (
-										<SingleList data={dataSource} />
-									)}
+									<Skeleton active loading={skuLoading}>
+										<div className={styles['list-title']}>
+											{formatMessage({ id: 'dashBoard.sku.rate' })}
+										</div>
+										{result ? (
+											<TwinList
+												leftList={skuRankList.slice(0, 5)}
+												rightList={skuRankList.slice(5)}
+											/>
+										) : (
+											<SingleList data={skuRankList} />
+										)}
+									</Skeleton>
 								</div>
 							</Col>
 						</Row>

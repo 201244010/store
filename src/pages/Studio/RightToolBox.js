@@ -254,7 +254,7 @@ export default class RightToolBox extends Component {
 		let realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
 		let realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
 		if (SHAPE_TYPES.IMAGE === detail.type) {
-			realHeight = realWidth * detail.ratio;
+			realHeight = detail.ratio ? realWidth * detail.ratio : realHeight;
 		}
 		if (SHAPE_TYPES.HLine === detail.type) {
 			realHeight = detail.strokeWidth;
@@ -535,9 +535,7 @@ export default class RightToolBox extends Component {
 						<Row style={{ marginBottom: 10 }} gutter={20}>
 							<Col
 								span={6}
-								className={`${styles.formatter} ${
-									detail.fontStyle.indexOf('bold') > -1 ? `${styles.active}` : ''
-								}`}
+								className={`${styles.formatter} ${detail.fontStyle.indexOf('bold') > -1 ? `${styles.active}` : ''}`}
 							>
 								<Icon
 									type="bold"
@@ -546,29 +544,13 @@ export default class RightToolBox extends Component {
 									}}
 								/>
 							</Col>
-							{/*
-									* <Col
-									span={6}
-									className={`${styles.formatter} ${
-										detail.fontStyle.indexOf("italic") > -1
-											? `${styles.active}`
-											: ""
-										}`}
-								>
-									<Icon
-										type="italic"
-										onClick={() => {
-											this.handleFontStyle(detail, "italic");
-										}}
-									/>
-								</Col>
-									*/}
 							<Col
 								span={6}
-								className={`${styles.formatter} ${
-									detail.textDecoration === 'underline' ? `${styles.active}` : ''
-								}`}
+								className={`${styles.formatter} ${detail.fontStyle.indexOf('italic') > -1 ? `${styles.active}` : ''}`}
 							>
+								<Icon type="italic" onClick={() => {this.handleFontStyle(detail, 'italic');}} />
+							</Col>
+							<Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
 								<Icon
 									type="underline"
 									onClick={() => {
@@ -578,11 +560,7 @@ export default class RightToolBox extends Component {
 							</Col>
 							<Col
 								span={6}
-								className={`${styles.formatter} ${
-									detail.textDecoration === 'line-through'
-										? `${styles.active}`
-										: ''
-								}`}
+								className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}
 							>
 								<Icon
 									type="strikethrough"

@@ -80,4 +80,7 @@ export default {
 	'menu.roleManagement.view': '查看',
 	'menu.roleManagement.modify': '编辑',
 	'menu.roleManagement.roleList': '角色管理',
+
+	'menu.exception': '错误处理',
+	'menu.exception.not-permission': '403',
 };

@@ -4,6 +4,7 @@ import CONFIG from '@/config';
 import { cbcEncryption, idDecode, md5Encryption } from '@/utils/utils';
 import { ALERT_NOTICE_MAP, ERROR_OK, USER_NOT_LOGIN } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
+import router from 'umi/router';
 
 import 'whatwg-fetch';
 
@@ -27,10 +28,13 @@ const { API_ADDRESS, MD5_TOKEN } = CONFIG;
 const unAuthHandler = () => {
 	CookieUtil.clearCookies();
 	window.location.href = `${window.location.origin}/user/login?redirect=${encodeURIComponent(
-		window.location.pathname,
+		window.location.pathname
 	)}`;
 };
 
+const noAuthhandler = () => {
+	router.push('/exception/403');
+};
 // const errHandlerList = {
 //   401: unAuthHandler,
 //   default: () => null,
@@ -121,11 +125,9 @@ export const customizeFetch = (service = 'api', base) => {
 		const response = await fetch(url, opts);
 
 		if (response.status === 401) {
-			// const errHandler = errHandlerList[`${response.status}`] || errHandlerList.default;
-			// const errMessage = codeMessage[response.status] || codeMessage.default;
-			// message.error(errMessage);
-			// errHandler();
 			unAuthHandler();
+		} else if (response.status === 403) {
+			noAuthhandler();
 		}
 
 		const result = await response.clone().json();

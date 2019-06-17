@@ -65,3 +65,11 @@ export const getSaasBindInfo = (options = {}) => {
 	};
 	return fetchApi('getSaasBindInfo', opt).then(response => response.json());
 };
+
+export const getImportedErpInfo = (options = {}) => {
+	const opt = {
+		body: { ...options },
+	};
+
+	return fetchApi('getSaasDetailInfo', opt).then(response => response.json());
+};

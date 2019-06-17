@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import router from 'umi/router';
 
+import { env } from '@/config';
+
 class MenuCheck extends Component {
 	componentDidMount() {
 		const {
@@ -8,7 +10,7 @@ class MenuCheck extends Component {
 		} = window;
 		const { menuData } = this.props;
 
-		if (pathname !== '/') {
+		if (pathname !== '/' && env !== 'dev') {
 			const visitPath = pathname.slice(1).split('/')[0];
 			const isAccessable = menuData.some(menu => menu.path.slice(1) === visitPath);
 			if (!isAccessable) {
