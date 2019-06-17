@@ -12,7 +12,7 @@ export default {
 	'dashBoard.order.count': '按笔数',
 	'dashBoard.order.d2d': '日环比',
 	'dashBoard.order.w2w': '周环比',
-	'dashBoard.order.m2m': '月环比',
+	'dashBoard.order.m2m': '月同比',
 
 	'dashBoard.total.sales': '总销售额',
 	'dashBoard.total.sales.info': '总销售额说明',
@@ -27,4 +27,8 @@ export default {
 
 	'dashBoard.sku.rate': 'SKU排行榜',
 	'dashBoard.payment': '支付方式',
+
+	'dashBoard.trade.date': '交易日期',
+	'dashBoard.trade.amount': '交易金额',
+	'dashBoard.trade.count': '交易笔数',
 };

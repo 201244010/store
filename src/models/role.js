@@ -1,7 +1,8 @@
 import * as Actions from '@/services/role';
 import { ERROR_OK } from '@/constants/errorCode';
-import { DEFAULT_PAGE_SIZE } from '@/constants';
+import { DEFAULT_PAGE_SIZE, USER_PERMISSION_LIST } from '@/constants';
 import { map, format } from '@konata9/milk-shake';
+import Storage from '@konata9/storage.js';
 
 const getInitStatus = (permissionList, roleInfo) => {
 	const rolePermissionList = roleInfo.permission_list;
@@ -15,11 +16,9 @@ const getInitStatus = (permissionList, roleInfo) => {
 	return initResult;
 };
 
-const formatData = (data) => {
+const formatData = data => {
 	let tmp = [...data];
-	tmp = tmp.map(item =>
-		map([{ from: 'id', to: 'value' }, { from: 'name', to: 'label' }])(item)
-	);
+	tmp = tmp.map(item => map([{ from: 'id', to: 'value' }, { from: 'name', to: 'label' }])(item));
 	tmp = tmp.map(item => {
 		if (item.permission_list) {
 			item.permission_list = item.permission_list.map(items =>
@@ -47,15 +46,16 @@ export default {
 			permission_list: [],
 		},
 		permissionList: [],
+		userPermissionList: Storage.get(USER_PERMISSION_LIST, 'local') || [],
 	},
 	effects: {
-		*getRoleList({payload = {}}, { put, call, select }) {
+		*getRoleList({ payload = {} }, { put, call, select }) {
 			const { pagination } = yield select(state => state.role);
 			const { keyword, current, pageSize } = payload;
 			const opts = {
 				keyword,
 				page_num: current,
-				page_size: pageSize
+				page_size: pageSize,
 			};
 			const response = yield call(Actions.handleRoleManagement, 'getList', opts);
 			if (response && response.code === ERROR_OK) {
@@ -70,7 +70,7 @@ export default {
 							...pagination,
 							total: totalCount,
 							current,
-							pageSize
+							pageSize,
 						},
 					},
 				});
@@ -108,19 +108,17 @@ export default {
 				yield put({
 					type: 'getPermissionList',
 					payload: {
-						type: 'modify'
-					}
+						type: 'modify',
+					},
 				});
 			}
 		},
 
-		*getPermissionList({payload = {}}, { put, call, select }) {
+		*getPermissionList({ payload = {} }, { put, call, select }) {
 			const { type } = payload;
 			const response = yield call(Actions.handleRoleManagement, 'getPermissionList');
 			if (response && response.code === ERROR_OK) {
-				const roleInfo = yield select(
-					state => state.role.roleInfo
-				);
+				const roleInfo = yield select(state => state.role.roleInfo);
 
 				const { data = {} } = response;
 				const { permission_list: permissionList } = data;
@@ -131,9 +129,11 @@ export default {
 						{
 							checkedList: item,
 							indeterminate: item.permission_list && true,
-							checkAll: type === 'modify' ?getInitStatus(item, roleInfo).checkAll : false,
+							checkAll:
+								type === 'modify' ? getInitStatus(item, roleInfo).checkAll : false,
 							group: item.label,
-							valueList: type === 'modify' ?  getInitStatus(item, roleInfo).valueList : [],
+							valueList:
+								type === 'modify' ? getInitStatus(item, roleInfo).valueList : [],
 						}
 					)
 				);
@@ -158,7 +158,7 @@ export default {
 			return response;
 		},
 
-		*updateRole({payload = {}}, { call }) {
+		*updateRole({ payload = {} }, { call }) {
 			const { name, roleId: role_id, permissionIdList: permission_id_list } = payload;
 			const opts = {
 				name,
@@ -185,6 +185,26 @@ export default {
 					payload,
 				},
 			});
+		},
+
+		*getUserPermissionList(_, { call, put }) {
+			const response = yield call(Actions.handleRoleManagement, 'getPermissionListByUser');
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { permissionList } = format('toCamel')(data);
+				Storage.set(
+					{
+						[USER_PERMISSION_LIST]: permissionList,
+					},
+					'local'
+				);
+				yield put({
+					type: 'updateState',
+					payload: {
+						userPermissionList: permissionList,
+					},
+				});
+			}
 		},
 	},
 	reducers: {

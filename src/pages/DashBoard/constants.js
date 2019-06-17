@@ -1,4 +1,6 @@
 export const DASHBOARD = {
+	PURCHASE_ORDER: ['支付宝', '微信', '银联二维码', '银行卡刷卡', '现金', '其他'],
+	PIE_COLOR: ['#4DBBFF', '#9BEB5E', '#FF9C66', '#FF6000', '#FF80B9', '#BB7CF7'],
 	LAST_HAND_REFRESH_TIME: 'lastHandRefreshTime',
 	QUERY_TYPE: {
 		TOTAL_AMOUNT: 'getTotalAmount',

@@ -27,10 +27,11 @@ const { LAST_HAND_REFRESH_TIME } = DASHBOARD;
 	})
 )
 class DashBoard extends Component {
-	componentDidMount() {
+	async componentDidMount() {
 		const { fetchAllData } = this.props;
-		fetchAllData({ needLoading: true });
+		await fetchAllData({ needLoading: true });
 		this.startAutoRefresh();
+		console.log('done');
 	}
 
 	componentWillUnmount() {
@@ -40,11 +41,16 @@ class DashBoard extends Component {
 	startAutoRefresh = () => {
 		const { fetchAllData } = this.props;
 		clearTimeout(this.timer);
-		this.timer = setTimeout(() => {
-			console.log('refreshed');
-			fetchAllData({ needLoading: false });
+		this.timer = setTimeout(async () => {
+			await fetchAllData({ needLoading: false });
 			this.startAutoRefresh();
+			console.log('refreshed');
 		}, 1000 * 60 * 2);
+	};
+
+	onSearchChanged = () => {
+		clearTimeout(this.timer);
+		this.startAutoRefresh();
 	};
 
 	doHandRefresh = () => {
@@ -80,6 +86,7 @@ class DashBoard extends Component {
 				lastModifyTime,
 				orderList,
 				skuRankList,
+				purchaseInfo,
 			},
 			fetchAllData,
 			setSearchValue,
@@ -94,6 +101,7 @@ class DashBoard extends Component {
 						fetchAllData,
 						setSearchValue,
 						doHandRefresh: this.doHandRefresh,
+						onSearchChanged: this.onSearchChanged,
 					}}
 				/>
 				<div className={styles['display-content']}>
@@ -110,7 +118,7 @@ class DashBoard extends Component {
 							setSearchValue,
 						}}
 					/>
-					<FooterChart {...{ searchValue, chartLoading, setSearchValue }} />
+					<FooterChart {...{ searchValue, chartLoading, purchaseInfo, setSearchValue }} />
 				</div>
 			</div>
 		);

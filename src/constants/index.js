@@ -84,3 +84,5 @@ export const AVATA_IMG = {
 		color: 'red',
 	},
 };
+
+export const USER_PERMISSION_LIST = '__user_permission_list__';

@@ -14,7 +14,7 @@ class SearchBar extends Component {
 	disabledDate = current => current && current > moment().endOf('day');
 
 	handleRadioChange = async e => {
-		const { setSearchValue, fetchAllData } = this.props;
+		const { setSearchValue, fetchAllData, onSearchChanged } = this.props;
 		const {
 			target: { value },
 		} = e;
@@ -24,14 +24,19 @@ class SearchBar extends Component {
 			timeRangeStart: null,
 			timeRangeEnd: null,
 		});
-		fetchAllData({ needLoading: true });
+		await fetchAllData({ needLoading: true });
+		onSearchChanged();
 	};
 
 	handleTimeRangeChange = async dates => {
-		const { setSearchValue, fetchAllData } = this.props;
+		const { setSearchValue, fetchAllData, onSearchChanged } = this.props;
 		const [startTime, endTime] = dates;
 
-		if (moment(endTime).subtract(60, 'days').isAfter(startTime)) {
+		if (
+			moment(endTime)
+				.subtract(60, 'days')
+				.isAfter(startTime)
+		) {
 			message.error(formatMessage({ id: 'dashBoard.search.range.overflow' }));
 			return;
 		}
@@ -41,7 +46,8 @@ class SearchBar extends Component {
 			timeRangeStart: startTime,
 			timeRangeEnd: endTime,
 		});
-		fetchAllData({ needLoading: true });
+		await fetchAllData({ needLoading: true });
+		onSearchChanged();
 	};
 
 	render() {

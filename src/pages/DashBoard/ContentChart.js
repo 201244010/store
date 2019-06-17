@@ -15,12 +15,6 @@ const {
 
 const { Bar } = Charts;
 
-const barTick = {
-	[RANGE.TODAY]: 12,
-	[RANGE.WEEK]: 7,
-	[RANGE.MONTH]: 10,
-};
-
 const TwinList = props => {
 	const { leftList, rightList } = props;
 	return (
@@ -78,6 +72,36 @@ const SingleList = props => {
 	);
 };
 
+const getTimeTick = type => {
+	const timeTick = {
+		[RANGE.TODAY]: 12,
+		[RANGE.WEEK]: 7,
+		[RANGE.MONTH]: 10,
+	};
+	return timeTick[type];
+};
+
+const formatTime = (time, rangeType) => {
+	if (rangeType === RANGE.TODAY) {
+		return moment
+			.unix(time)
+			.local()
+			.format('HH:mm');
+	}
+
+	if (rangeType === RANGE.WEEK) {
+		return moment
+			.unix(time)
+			.local()
+			.format('ddd');
+	}
+
+	return moment
+		.unix(time)
+		.local()
+		.format('D');
+};
+
 class ContentChart extends Component {
 	handleRadioChange = e => {
 		const { setSearchValue } = this.props;
@@ -99,7 +123,54 @@ class ContentChart extends Component {
 			skuLoading,
 		} = this.props;
 
-		const tickCount = barTick[rangeType] || orderList.length;
+		const chartScale = {
+			time: {
+				tickCount: getTimeTick(rangeType)
+			},
+			[TRADE_TIME.AMOUNT]: {
+				minLimit: 0,
+				tickCount: 6,
+			},
+			[TRADE_TIME.COUNT]: {
+				minLimit: 0,
+				tickCount: 6,
+			},
+		};
+
+		const chartToolTip = [
+			`time*${tradeTime}`,
+			(time, value) => ({
+				title: `${formatMessage({
+					id: 'dashBoard.trade.date',
+				})}: ${time}`,
+				name: `${
+					tradeTime === TRADE_TIME.AMOUNT
+						? formatMessage({
+							id: 'dashBoard.trade.amount',
+						  })
+						: formatMessage({
+							id: 'dashBoard.trade.count',
+						  })
+				}: ${value}`,
+			}),
+		];
+
+		const toolTipStyle = {
+			'g2-tooltip': {
+				background: 'rgba(48,53,64,0.70)',
+				'box-shadow': '0 2px 8px 0 rgba(0,0,0,0.15)',
+				'border-radius': '2px',
+				color: '#ffffff',
+			},
+			'g2-tooltip-marker': {
+				display: 'none',
+			},
+		};
+
+		const dataList = orderList.map(data => ({
+			time: formatTime(data.time, rangeType),
+			[tradeTime]: data[tradeTime],
+		}));
 
 		return (
 			<div className={styles['content-chart']}>
@@ -131,38 +202,33 @@ class ContentChart extends Component {
 												</Radio.Group>
 											</div>
 										</div>
-										<Bar
-											{...{
-												chartStyle: {
-													scale: {
-														type: 'time',
-														time: {
-															tickCount,
-															formatter: value => {
-																if (rangeType === RANGE.TODAY) {
-																	return moment
-																		.unix(value)
-																		.local()
-																		.format('HH:mm');
-																}
-
-																return moment
-																	.unix(value)
-																	.local()
-																	.format('DD');
-															},
-														},
+										<div className={styles['bar-wrapper']}>
+											<Bar
+												{...{
+													chartStyle: {
+														scale: chartScale,
 													},
-												},
-												dataSource: orderList.map(data => ({
-													time: data.time,
-													[tradeTime]: data[tradeTime],
-												})),
-												barStyle: {
-													position: `time*${tradeTime}`,
-												},
-											}}
-										/>
+													axis: { x: 'time', y: tradeTime },
+													dataSource: dataList,
+													barStyle: {
+														barActive: [
+															true,
+															{
+																style: {
+																	fill: '#FF8133',
+																	shadowColor: 'red',
+																	shadowBlur: 1,
+																	opacity: 0,
+																},
+															},
+														],
+														position: `time*${tradeTime}`,
+														tooltip: chartToolTip,
+													},
+													toolTipStyle,
+												}}
+											/>
+										</div>
 									</Spin>
 								</div>
 							</Col>

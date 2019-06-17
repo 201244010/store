@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactFitText from 'react-fittext';
-import { Chart, Geom, Tooltip, Coord } from 'bizcharts';
+import { Chart, Geom, Coord } from 'bizcharts';
 import { DataView } from '@antv/data-set';
 import autoHeight from './autoHeight';
 
@@ -10,73 +10,34 @@ import styles from './pie.less';
 class Pie extends Component {
 	render() {
 		const {
-			hasLegend = true,
-			subTitle,
 			total,
-			height,
-			forceFit = true,
 			percent,
-			color,
 			inner = 0.75,
-			animate = true,
-			colors,
-			lineWidth = 1,
+			chartStyle = {},
+			pieStyle = {},
+			hasLegend = false,
+			legend = <div />,
 		} = this.props;
 
 		const {
-			data: propsData,
-			selected: propsSelected = true,
-			tooltip: propsTooltip = true,
-		} = this.props;
-
-		const defaultColors = colors;
-		let data = propsData || [];
-		let selected = propsSelected;
-		let tooltip = propsTooltip;
-
-		let formatColor;
-
-		const scale = {
-			x: {
-				type: 'cat',
-				range: [0, 1],
-			},
-			y: {
-				min: 0,
-			},
-		};
-
-		if (percent || percent === 0) {
-			selected = false;
-			tooltip = false;
-			formatColor = value => {
-				if (value === '占比') {
-					return color || 'rgba(24, 144, 255, 0.85)';
-				}
-				return '#F0F2F5';
-			};
-
-			data = [
-				{
-					x: '占比',
-					y: parseFloat(percent),
+			height = 128,
+			scale = {
+				x: {
+					type: 'cat',
+					range: [0, 1],
 				},
-				{
-					x: '反比',
-					y: 100 - parseFloat(percent),
+				y: {
+					min: 0,
 				},
-			];
-		}
+			},
+			padding = 'auto',
+			forceFit = true,
+			animate = true,
+		} = chartStyle;
 
-		const tooltipFormat = [
-			'x*percent',
-			(x, p) => ({
-				name: x,
-				value: `${(p * 100).toFixed(2)}%`,
-			}),
-		];
+		const { color = '#4DBBFF', active = false } = pieStyle;
+		const data = [{ x: 'direct', y: percent }, { x: 'inverse', y: 100 - percent }];
 
-		const padding = [12, 0, 12, 0];
 		const dv = new DataView();
 		dv.source(data).transform({
 			type: 'percent',
@@ -96,36 +57,23 @@ class Pie extends Component {
 							data={dv}
 							padding={padding}
 							animate={animate}
-							onGetG2Instance={this.getG2Instance}
 						>
-							{!!tooltip && <Tooltip showTitle={false} />}
 							<Coord type="theta" innerRadius={inner} />
 							<Geom
-								style={{ lineWidth, stroke: '#fff' }}
-								tooltip={tooltip && tooltipFormat}
 								type="intervalStack"
 								position="percent"
-								color={[
-									'x',
-									percent || percent === 0 ? formatColor : defaultColors,
-								]}
-								selected={selected}
+								color={['x', x => (x === 'direct' ? color : '#F0F2F5')]}
+								style={{ lineWidth: 2, stroke: '#fff' }}
+								active={active}
+								select={false}
 							/>
 						</Chart>
 
-						{(subTitle || total) && (
-							<div className={styles.total}>
-								{subTitle && <h4 className="pie-sub-title">{subTitle}</h4>}
-								{total && (
-									<div className="pie-stat">
-										{typeof total === 'function' ? total() : total}
-									</div>
-								)}
-							</div>
-						)}
+						<div className={styles.total}>{total}</div>
 					</div>
 				</ReactFitText>
-				{hasLegend && <div className={styles.legend}>1234</div>}
+
+				{hasLegend && <div className={styles.legend}>{legend}</div>}
 			</div>
 		);
 	}

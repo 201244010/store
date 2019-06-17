@@ -9,6 +9,7 @@ export const TOKEN_KEY = '__token__';
 export const GOODS_PAGE_SIZE_KEY = '__goods_page_size__';
 export const COMPANY_LIST_KEY = '__company_list__';
 export const SHOP_LIST_KEY = '__shop_list__';
+export const USER_PERMISSION = '__user_permission__';
 
 const keyMap = {
 	[SHOP_ID_KEY]: SHOP_ID_KEY,
@@ -18,6 +19,7 @@ const keyMap = {
 	[GOODS_PAGE_SIZE_KEY]: GOODS_PAGE_SIZE_KEY,
 	[COMPANY_LIST_KEY]: COMPANY_LIST_KEY,
 	[SHOP_LIST_KEY]: SHOP_LIST_KEY,
+	[USER_PERMISSION]: USER_PERMISSION,
 };
 
 export const setCookieByKey = (key, value) => {
