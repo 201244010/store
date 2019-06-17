@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button, Input } from 'antd';
+import { Form, Button, Input, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import router from 'umi/router';
@@ -80,7 +80,7 @@ class MerchantModify extends Component {
 			},
 		} = this.props;
 		return (
-			<div className={styles['view-wrapper']}>
+			<Card bordered={false}>
 				<h1>{formatMessage({ id: 'merchantManagement.merchant.modify' })}</h1>
 				<div className={styles['form-content']}>
 					<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
@@ -161,7 +161,7 @@ class MerchantModify extends Component {
 						</Form.Item>
 					</Form>
 				</div>
-			</div>
+			</Card>
 		);
 	}
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Form, Input, Button, Row, Col, Cascader, Divider } from 'antd';
+import { Table, Form, Input, Button, Row, Col, Cascader, Divider, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import router from 'umi/router';
@@ -73,7 +73,7 @@ const columns = [
 				<a
 					onClick={() => {
 						router.push(
-							`${MENU_PREFIX.STORE}/storeInformation?shopId=${record.shop_id}`,
+							`${MENU_PREFIX.STORE}/storeInformation?shopId=${record.shop_id}`
 						);
 					}}
 					className={styles.infoAnchor}
@@ -84,7 +84,7 @@ const columns = [
 				<a
 					onClick={() => {
 						router.push(
-							`${MENU_PREFIX.STORE}/alterStore?shopId=${record.shop_id}&action=edit`,
+							`${MENU_PREFIX.STORE}/alterStore?shopId=${record.shop_id}&action=edit`
 						);
 					}}
 					className={styles.infoAnchor}
@@ -107,7 +107,7 @@ const columns = [
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
 		getRegionList: () => dispatch({ type: 'store/getRegionList' }),
-	}),
+	})
 )
 class StoreManagement extends Component {
 	componentDidMount() {
@@ -180,7 +180,7 @@ class StoreManagement extends Component {
 		const formattedList = storeList.map(store => formatEmptyWithoutZero(store, '--'));
 
 		return (
-			<div className={styles.storeList}>
+			<Card bordered={false}>
 				<div className={styles['search-bar']}>
 					<Form layout="inline">
 						<Row gutter={FORM_FORMAT.gutter}>
@@ -195,7 +195,7 @@ class StoreManagement extends Component {
 											placeholder={formatMessage({
 												id: 'storeManagement.list.inputPlaceHolder',
 											})}
-										/>,
+										/>
 									)}
 								</FormItem>
 							</Col>
@@ -213,7 +213,7 @@ class StoreManagement extends Component {
 												id: 'storeManagement.create.typePlaceHolder',
 											})}
 											options={shopType_list}
-										/>,
+										/>
 									)}
 								</FormItem>
 							</Col>
@@ -221,10 +221,7 @@ class StoreManagement extends Component {
 								<Button type="primary" onClick={this.handleSubmit}>
 									{formatMessage({ id: 'btn.query' })}
 								</Button>
-								<Button
-									style={{ marginLeft: '20px' }}
-									onClick={this.handleReset}
-								>
+								<Button style={{ marginLeft: '20px' }} onClick={this.handleReset}>
 									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
 								</Button>
 							</Col>
@@ -244,7 +241,7 @@ class StoreManagement extends Component {
 				<div className={styles.table}>
 					<Table rowKey="shop_id" dataSource={formattedList} columns={columns} />
 				</div>
-			</div>
+			</Card>
 		);
 	}
 }

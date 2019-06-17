@@ -87,6 +87,7 @@ export default {
 	'basicData.erp.zzsy.id.isEmpty': '请输入id',
 	'basicData.erp.zzsy.secret.error': 'id或者secret错误，请重新输入',
 	'basicData.erp.zzsy.secret.existed': '该id和secret已被使用，请重新输入',
+	'basicData.erp.zzsy.shop.error': '门店号为空',
 	'basicData.erp.hbb.company.isEmpty': '请输入企业编号',
 	'basicData.erp.hbb.user.isEmpty': '请输入用户编号',
 	'basicData.erp.hbb.shop.isEmpty': '请输入店铺号',

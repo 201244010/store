@@ -81,15 +81,6 @@ const timeScales = {
 	[RANGE.MONTH]: { ticks: TIME_TICKS.MONTH },
 };
 
-// const getTimeTick = type => {
-// 	const timeTick = {
-// 		[RANGE.TODAY]: 12,
-// 		[RANGE.WEEK]: 7,
-// 		[RANGE.MONTH]: 13,
-// 	};
-// 	return timeTick[type];
-// };
-
 const formatTime = (time, rangeType) => {
 	const timeData = moment.unix(time).local();
 

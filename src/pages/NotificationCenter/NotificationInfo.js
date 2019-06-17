@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { getLocationParam, unixSecondToDate } from '@/utils/utils';
-import { Button, Divider } from 'antd';
+import { Button, Divider, Card } from 'antd';
 import styles from './Notification.less';
 import { ACTION_MAP } from '@/constants/mqttActionMap';
 
@@ -12,7 +12,7 @@ import { ACTION_MAP } from '@/constants/mqttActionMap';
 	dispatch => ({
 		getNotificationInfo: payload =>
 			dispatch({ type: 'notification/getNotificationInfo', payload }),
-	}),
+	})
 )
 class Notification extends React.Component {
 	componentDidMount() {
@@ -23,7 +23,7 @@ class Notification extends React.Component {
 		});
 	}
 
-	handleAction = (action) => {
+	handleAction = action => {
 		if (action) {
 			const handler = ACTION_MAP[action] || (() => null);
 			handler();
@@ -34,7 +34,9 @@ class Notification extends React.Component {
 		const {
 			notification: {
 				notificationInfo: {
-					title, description, receiveTime,
+					title,
+					description,
+					receiveTime,
 					majorButtonLink,
 					majorButtonName,
 					minorButtonLink,
@@ -43,7 +45,7 @@ class Notification extends React.Component {
 			},
 		} = this.props;
 		return (
-			<div className={styles['info-wrapper']}>
+			<Card bordered={false}>
 				<div className={styles['title-wrapper']}>
 					<h1 className={styles['info-title']}>{title}</h1>
 					<div className={styles['info-time']}>{unixSecondToDate(receiveTime)}</div>
@@ -54,7 +56,9 @@ class Notification extends React.Component {
 				</div>
 				<div className={styles['button-bar']}>
 					{minorButtonName && (
-						<Button onClick={() => this.handleAction(minorButtonLink)}>{minorButtonName}</Button>
+						<Button onClick={() => this.handleAction(minorButtonLink)}>
+							{minorButtonName}
+						</Button>
 					)}
 					{majorButtonName && (
 						<Button
@@ -66,7 +70,7 @@ class Notification extends React.Component {
 						</Button>
 					)}
 				</div>
-			</div>
+			</Card>
 		);
 	}
 }
