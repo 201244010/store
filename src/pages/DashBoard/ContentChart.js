@@ -11,6 +11,7 @@ import styles from './DashBoard.less';
 
 const {
 	SEARCH_TYPE: { TRADE_TIME, RANGE },
+	TIME_TICKS,
 } = DASHBOARD;
 
 const { Bar } = Charts;
@@ -72,14 +73,22 @@ const SingleList = props => {
 	);
 };
 
-const getTimeTick = type => {
-	const timeTick = {
-		[RANGE.TODAY]: 12,
-		[RANGE.WEEK]: 7,
-		[RANGE.MONTH]: 13,
-	};
-	return timeTick[type];
+const timeScales = {
+	[RANGE.TODAY]: {
+		ticks: TIME_TICKS.HOUR,
+	},
+	[RANGE.WEEK]: { tickCount: 7 },
+	[RANGE.MONTH]: { ticks: TIME_TICKS.MONTH },
 };
+
+// const getTimeTick = type => {
+// 	const timeTick = {
+// 		[RANGE.TODAY]: 12,
+// 		[RANGE.WEEK]: 7,
+// 		[RANGE.MONTH]: 13,
+// 	};
+// 	return timeTick[type];
+// };
 
 const formatTime = (time, rangeType) => {
 	if (rangeType === RANGE.TODAY) {
@@ -124,9 +133,7 @@ class ContentChart extends Component {
 		} = this.props;
 
 		const chartScale = {
-			time: {
-				tickCount: getTimeTick(rangeType)
-			},
+			time: timeScales[rangeType] || {},
 			[TRADE_TIME.AMOUNT]: {
 				minLimit: 0,
 				tickCount: 6,
