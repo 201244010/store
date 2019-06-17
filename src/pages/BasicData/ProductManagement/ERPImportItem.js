@@ -27,6 +27,8 @@ export const ERROR_FILEDS = {
 		field: 'saas_info.secret',
 		errMsg: {
 			5020: formatMessage({ id: 'basicData.erp.zzsy.secret.existed' }),
+			// TODO 等待 error code
+			9999: formatMessage({ id: 'basicData.erp.zzsy.shop.error' }),
 			default: formatMessage({ id: 'basicData.erp.zzsy.secret.error' }),
 		},
 	},
