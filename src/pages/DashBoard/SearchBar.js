@@ -46,8 +46,11 @@ class SearchBar extends Component {
 			timeRangeStart: startTime,
 			timeRangeEnd: endTime,
 		});
-		await fetchAllData({ needLoading: true });
-		onSearchChanged();
+
+		if (startTime && endTime) {
+			await fetchAllData({ needLoading: true });
+			onSearchChanged();
+		}
 	};
 
 	render() {
