@@ -4,8 +4,6 @@ import { DataView } from '@antv/data-set';
 
 import styles from './bar.less';
 
-const dv = new DataView();
-
 class Bar extends Component {
 	render() {
 		const {
@@ -21,6 +19,7 @@ class Bar extends Component {
 
 		const { barColor = '#FFAA60', barActive = false, position = '', tooltip = {} } = barStyle;
 
+		const dv = new DataView();
 		dv.source(dataSource);
 
 		return (
@@ -29,7 +28,7 @@ class Bar extends Component {
 					height={height}
 					padding={padding}
 					scale={scale}
-					data={dv}
+					data={dataSource}
 					forceFit={forceFit}
 				>
 					<Axis name={x} />

@@ -6,7 +6,7 @@ import CONFIG from '@/config';
 const { IPC_SERVER } = CONFIG;
 
 const request = customizeFetch('ipc/api/device/motion', IPC_SERVER);
-const fetch = customizeFetch('ipc/api/device', IPC_SERVER);
+// const fetch = customizeFetch('ipc/api/device', IPC_SERVER);
 
 const dataFormatter = (item) => {
 	const detectedTime = moment.unix(item.detect_time).format('YYYY-MM-DD HH:mm:ss');
@@ -22,13 +22,13 @@ const dataFormatter = (item) => {
 	};
 };
 
-const deviceDataFormatter = (item) => ({
-	deviceId: item.id,
-	deviceName: item.device_name
-});
+// const deviceDataFormatter = (item) => ({
+// 	deviceId: item.id,
+// 	deviceName: item.device_name
+// });
 
 export const getMotionList = async (params) => {
-	const { startTime, endTime, deviceId, source } = params;
+	const { startTime, endTime, deviceId, source, currentPage, pageSize } = params;
 	return request('getList', {
 		body: {
 			// company_id:companyId,
@@ -36,7 +36,9 @@ export const getMotionList = async (params) => {
 			time_range_start: startTime,
 			time_range_end: endTime,
 			id: deviceId,
-			source
+			source,
+			page_num: currentPage,
+			page_size: pageSize
 		}
 
 	}).then(async (response) => {
@@ -45,7 +47,10 @@ export const getMotionList = async (params) => {
 			const result = data.motion_list.map(dataFormatter);
 			return {
 				code: ERROR_OK,
-				data: result
+				data: {
+					list: result,
+					total: data.count
+				}
 			};
 		}
 		return response;
@@ -53,24 +58,24 @@ export const getMotionList = async (params) => {
 	});
 };
 
-export const getIpcList = async () => {
-	const list = fetch('getList').then(async (response) => {
-		const { code, data } = await response.json();
-		console.log(data);
-		if (code === ERROR_OK) {
-			const result = data.device_list.map(deviceDataFormatter);
-			console.log(result);
-			return {
-				code: ERROR_OK,
-				data: result
-			};
-		}
-		return response;
+// export const getIpcList = async () => {
+// 	const list = fetch('getList').then(async (response) => {
+// 		const { code, data } = await response.json();
+// 		console.log(data);
+// 		if (code === ERROR_OK) {
+// 			const result = data.device_list.map(deviceDataFormatter);
+// 			console.log(result);
+// 			return {
+// 				code: ERROR_OK,
+// 				data: result
+// 			};
+// 		}
+// 		return response;
 
-	});
+// 	});
 
-	return list;
-};
+// 	return list;
+// };
 
 
 

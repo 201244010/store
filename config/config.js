@@ -1,6 +1,7 @@
 // ref: https://umijs.org/config/
 import { primaryColor } from '../src/defaultSettings';
 import routers from './devRouter';
+// import routers from './router';
 
 export default {
 	hash: true,

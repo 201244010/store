@@ -629,7 +629,7 @@ class AddPOS extends Component {
 
 		return (
 			<>
-				<Card>
+				<Card bordered={false}>
 					{!isClick ? (
 						<div className={styles['device-list-block']}>
 

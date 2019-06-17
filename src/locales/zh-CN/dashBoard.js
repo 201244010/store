@@ -29,6 +29,7 @@ export default {
 	'dashBoard.payment': '支付方式',
 
 	'dashBoard.trade.date': '交易日期',
+	'dashBoard.trade.date.unit': '日',
 	'dashBoard.trade.amount': '交易金额',
 	'dashBoard.trade.count': '交易笔数',
 };

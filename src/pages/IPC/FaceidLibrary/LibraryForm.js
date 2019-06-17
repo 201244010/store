@@ -126,7 +126,8 @@ class LibraryForm extends React.Component {
 										id: 'faceid.libraryNameMsg',
 									})}
 								/>
-							)}
+							)
+						}
 					</Form.Item>
 
 					<Form.Item

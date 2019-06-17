@@ -30,7 +30,7 @@ class CloudService extends Component {
 		const { cloudService } = this.props;
 		const { isMember, isExpired, deadline } = cloudService;
 		return (
-			<Card className={styles.card} title={formatMessage({ id: 'cloudService.title' })}>
+			<Card bordered={false} className={styles.card} title={formatMessage({ id: 'cloudService.title' })}>
 
 
 				<p className={styles.tips}>
