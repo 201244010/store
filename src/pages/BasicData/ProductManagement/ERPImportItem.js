@@ -89,7 +89,7 @@ export const SDNM = props => {
 
 export const KWYLS = props => {
 	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
-	const { saasShopKey = null, saasExtraKey1 = null, saasExtraKey2 = null } = saasInfo;
+	const { saasShopKey = null, saasExtraKey1 = null } = saasInfo;
 
 	return (
 		<>
@@ -136,7 +136,6 @@ export const KWYLS = props => {
 			{mode === MODE.MODIFY && (
 				<Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
 					{getFieldDecorator('saas_info.password', {
-						initialValue: saasExtraKey2,
 						validateTrigger: 'onBlur',
 						rules: [
 							{
