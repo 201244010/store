@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { Radio, DatePicker, Icon, message } from 'antd';
-import { DASHBOARD } from '@/constants';
+import { DASHBOARD } from './constants';
 
 import styles from './DashBoard.less';
 
@@ -14,7 +14,7 @@ class SearchBar extends Component {
 	disabledDate = current => current && current > moment().endOf('day');
 
 	handleRadioChange = async e => {
-		const { setSearchValue, fetchAllData } = this.props;
+		const { setSearchValue, fetchAllData, onSearchChanged } = this.props;
 		const {
 			target: { value },
 		} = e;
@@ -24,14 +24,19 @@ class SearchBar extends Component {
 			timeRangeStart: null,
 			timeRangeEnd: null,
 		});
-		fetchAllData();
+		await fetchAllData({ needLoading: true });
+		onSearchChanged();
 	};
 
 	handleTimeRangeChange = async dates => {
-		const { setSearchValue, fetchAllData } = this.props;
+		const { setSearchValue, fetchAllData, onSearchChanged } = this.props;
 		const [startTime, endTime] = dates;
 
-		if (endTime.subtract(60, 'days').isAfter(startTime)) {
+		if (
+			moment(endTime)
+				.subtract(60, 'days')
+				.isAfter(startTime)
+		) {
 			message.error(formatMessage({ id: 'dashBoard.search.range.overflow' }));
 			return;
 		}
@@ -41,17 +46,15 @@ class SearchBar extends Component {
 			timeRangeStart: startTime,
 			timeRangeEnd: endTime,
 		});
-		fetchAllData();
-	};
-
-	refreshData = () => {
-		window.location.reload();
+		await fetchAllData({ needLoading: true });
+		onSearchChanged();
 	};
 
 	render() {
 		const {
 			searchValue: { rangeType, timeRangeStart, timeRangeEnd },
 			lastModifyTime,
+			doHandRefresh,
 		} = this.props;
 
 		return (
@@ -89,7 +92,7 @@ class SearchBar extends Component {
 					<span>
 						{formatMessage({ id: 'dashBoard.last.modify.date' })}: {lastModifyTime}
 					</span>
-					<div className={styles['icon-wrapper']} onClick={this.refreshData}>
+					<div className={styles['icon-wrapper']} onClick={doHandRefresh}>
 						<Icon type="redo" style={{ fontSize: '24px' }} />
 					</div>
 				</div>
