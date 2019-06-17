@@ -149,7 +149,11 @@ class ContentChart extends Component {
 			(time, value) => ({
 				title: `${formatMessage({
 					id: 'dashBoard.trade.date',
-				})}: ${time}`,
+				})}: ${time} ${
+					[RANGE.MONTH, RANGE.FREE].includes(rangeType)
+						? formatMessage({ id: 'dashBoard.trade.date.unit' })
+						: ''
+				}`,
 				name: `${
 					tradeTime === TRADE_TIME.AMOUNT
 						? formatMessage({
