@@ -7,6 +7,11 @@ import DisplayCard from '@/components/DisplayCard';
 
 import { priceFormat } from '@/utils/utils';
 
+const ringRateStyle = {
+	display: 'flex',
+	justifyContent: 'space-between',
+};
+
 const RingRate = props => {
 	const { d2d = {}, w2w = {}, m2m = {} } = props;
 	return (
@@ -19,7 +24,7 @@ const RingRate = props => {
 			<Media
 				query={{ minWidth: 1440, maxWidth: 1919 }}
 				render={() => (
-					<div>
+					<div style={ringRateStyle}>
 						<RiseDownTag label={d2d.label} content={d2d.content} />
 						<RiseDownTag label={w2w.label} content={w2w.content} />
 					</div>
@@ -29,7 +34,7 @@ const RingRate = props => {
 			<Media
 				query={{ minWidth: 1920 }}
 				render={() => (
-					<div>
+					<div style={ringRateStyle}>
 						<RiseDownTag label={d2d.label} content={d2d.content} />
 						<RiseDownTag label={w2w.label} content={w2w.content} />
 						<RiseDownTag label={m2m.label} content={m2m.content} />
