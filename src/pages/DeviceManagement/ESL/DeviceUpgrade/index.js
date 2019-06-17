@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Card } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import SearchResult from './SearchResult';
@@ -45,7 +45,7 @@ class DeviceUpgrade extends Component {
 			uploadAPFirmware,
 		} = this.props;
 		return (
-			<div className="content-container">
+			<Card bordered={false}>
 				<Tabs defaultActiveKey="esl" onChange={this.tabChange} animated={false}>
 					<Tabs.TabPane
 						tab={formatMessage({ id: 'esl.device.upgrade.tab.esl' })}
@@ -76,7 +76,7 @@ class DeviceUpgrade extends Component {
 						/>
 					</Tabs.TabPane>
 				</Tabs>
-			</div>
+			</Card>
 		);
 	}
 }

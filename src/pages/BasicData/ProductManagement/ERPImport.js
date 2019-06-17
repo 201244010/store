@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-import { Form, Button, Select, Modal } from 'antd';
+import { Form, Button, Select, Modal, Card } from 'antd';
 import { format } from '@konata9/milk-shake';
 import { SDNM, KWYLS, ZZSY, HBB, ERROR_FILEDS } from './ERPImportItem';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT, FORM_ITEM_LONGER } from '@/constants/form';
@@ -180,7 +180,7 @@ class ERPImport extends Component {
 		} = this.props;
 
 		return (
-			<div className={styles['content-container']}>
+			<Card bordered={false}>
 				<h3>{formatMessage({ id: 'btn.erp.import' })}</h3>
 				<div className={styles['form-wrapper']}>
 					<Form
@@ -260,7 +260,7 @@ class ERPImport extends Component {
 						</Form.Item>
 					</Form>
 				</div>
-			</div>
+			</Card>
 		);
 	}
 }

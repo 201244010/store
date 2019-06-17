@@ -164,7 +164,7 @@ class RoleList extends React.Component {
 			loading,
 		} = this.props;
 		return (
-			<Card>
+			<Card bordered={false}>
 				<div className={styles.wrapper}>
 					<div className={styles['search-bar']}>
 						<Form layout="inline">

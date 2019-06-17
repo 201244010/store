@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button } from 'antd';
+import { Form, Button, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { unixSecondToDate } from '@/utils/utils';
@@ -45,7 +45,7 @@ class MerchantView extends Component {
 			},
 		} = this.props;
 		return (
-			<div className={styles['view-wrapper']}>
+			<Card bordered={false}>
 				<h1>{formatMessage({ id: 'merchantManagement.merchant.view' })}</h1>
 				<div className={styles['form-content']}>
 					<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
@@ -104,7 +104,7 @@ class MerchantView extends Component {
 						</Form.Item>
 					</Form>
 				</div>
-			</div>
+			</Card>
 		);
 	}
 }

@@ -229,11 +229,11 @@ export const HBB = props => {
 			</Form.Item>
 			<Form.Item label={formatMessage({ id: 'basicData.erp.api.user.number' })}>
 				{mode === MODE.VIEW ? (
-					<span>{saasShopKey}</span>
+					<span>{saasExtraKey1}</span>
 				) : (
 					<>
 						{getFieldDecorator('saas_info.user_number', {
-							initialValue: saasShopKey,
+							initialValue: saasExtraKey1,
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -249,11 +249,11 @@ export const HBB = props => {
 			</Form.Item>
 			<Form.Item label={formatMessage({ id: 'basicData.erp.api.shop.number' })}>
 				{mode === MODE.VIEW ? (
-					<span>{saasExtraKey1}</span>
+					<span>{saasShopKey}</span>
 				) : (
 					<>
 						{getFieldDecorator('saas_info.shop_number', {
-							initialValue: saasExtraKey1,
+							initialValue: saasShopKey,
 							validateTrigger: 'onBlur',
 							rules: [
 								{
