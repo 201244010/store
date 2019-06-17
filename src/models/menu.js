@@ -101,6 +101,7 @@ export default {
 	state: {
 		menuData: Storage.get('FILTERED_MENU', 'local') || [],
 		breadcrumbNameMap: {},
+		routes: [],
 	},
 
 	effects: {
@@ -127,6 +128,7 @@ export default {
 				payload: {
 					menuData: filteredMenuData,
 					breadcrumbNameMap,
+					routes,
 				},
 			});
 		},
