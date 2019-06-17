@@ -176,7 +176,7 @@ class NetworkSetting extends Component {
 		return (
 			<>
 				<Spin spinning={loadingSsid}>
-					<Card className={styles.card} title={formatMessage({ id: 'networkSetting.title' })}>
+					<Card bordered={false} className={styles.card} title={formatMessage({ id: 'networkSetting.title' })}>
 						<Form>
 							<Form.Item {...FORM_ITEM_LAYOUT} label={formatMessage({id: 'networkSetting.wifi'})}>
 								<span className={styles.ssid}>{ssid}</span>

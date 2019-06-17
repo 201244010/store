@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Card, Switch, Row, Col, Slider, Radio, TimePicker, Checkbox, Button, Form, Spin, message } from 'antd';
-import { FormattedMessage, formatMessage } from 'umi/locale';
+import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
 // import PropTypes, { object } from 'prop-types';
@@ -22,6 +22,7 @@ const LAYOUT = {
 
 const mapStateToProps = (state) => {
 	const { activeDetection, loading } = state;
+	// console.log(activeDetection);
 	return {
 		activeDetection,
 		loading
@@ -44,6 +45,7 @@ const mapDispatchToProps = (dispatch) => ({
 		});
 	},
 	saveSetting: (sn, setting) => {
+		// console.log(setting);
 		dispatch({
 			type: 'activeDetection/update',
 			payload: {
@@ -135,7 +137,6 @@ class ActiveDetection extends React.Component {
 		}
 		if (getFieldValue('isAuto') === 1 && getFieldValue('endTime') === null) {
 			setFieldsValue({ endTime: moment('1970-01-01').add(activeDetection.endTime, 's') });
-
 		}
 		if (getFieldValue('days').length !== 0 && daysError === true) {
 			this.setState({ daysError: false });
@@ -154,14 +155,13 @@ class ActiveDetection extends React.Component {
 			this.setState({ daysError: true }); // days为空，显示提示项
 		} else if (getFieldValue('startTime') === null || getFieldValue('endTime') === null) {
 			// 开始或者结束的时间任一为空
-
 		} else {
 			// 暂时不知道sn如何获取，大概率由上层在用户选择特定设备时传递
 			// const sn = 'FS101D8BS00084';
 			// const sn = this.props.params.sn;
 			const { saveSetting, sn } = this.props;
 			const values = form.getFieldsValue();
-			// console.log(values);
+
 			const startTime = values.startTime.format('X') - moment('1970-01-01').format('X');
 			const endTime = values.endTime.format('X') - moment('1970-01-01').format('X');
 			const params = {
@@ -178,13 +178,14 @@ class ActiveDetection extends React.Component {
 		const { form } = this.props;
 
 		if (e.target.value === 2) {
-			const startTime = moment('1970-01-01').add(75600, 's');
-			const endTime = moment('1970-01-01').add(32400, 's');
+			// const startTime = moment('1970-01-01').add(75600, 's');
+			// const endTime = moment('1970-01-01').add(32400, 's');
+
 			form.setFieldsValue({
 				'all': true,
 				'days': ['1', '2', '3', '4', '5', '6', '7'],
-				'startTime': startTime,
-				'endTime': endTime
+				// 'startTime': startTime,
+				// 'endTime': endTime
 			});
 		}
 
@@ -230,6 +231,31 @@ class ActiveDetection extends React.Component {
 		return e.target.checked;
 	};
 
+	isNextDay = () => {
+		const { form } = this.props;
+		const { getFieldValue } = form;
+		const startTime = getFieldValue('startTime');
+		const endTime = getFieldValue('endTime');
+		// console.log(startTime, endTime);
+		if (startTime.isAfter(endTime) || startTime.isSame(endTime)){
+			return `HH:mm ${formatMessage({id: 'activeDetection.nextDay'})}`;
+		}
+		return 'HH:mm';
+	}
+
+	// soundDetectSwitchChange = () => {
+	// 	const { form: { getFieldValue } } = this.props;
+	// 	const isSound = getFieldValue('isSound');
+	// 	const sSensitivity = getFieldValue('sSensitivity');
+
+	// 	console.log(isSound, sSensitivity);
+
+	// 	// if (isSound == false) {
+	// 	// 	sSensitivity =
+	// 	// }
+
+	// }
+
 
 	render() {
 		// const { status } = this.props.activeDetection;  //undefined意义不明
@@ -246,71 +272,92 @@ class ActiveDetection extends React.Component {
 
 		return (
 			<Spin spinning={spinning}>
-				<Card title={<FormattedMessage id="activeDetection.title" />}>
+				<Card bordered={false} title={formatMessage({id: 'activeDetection.title' })}>
 					<Form {...LAYOUT} onSubmit={this.handleSubmit} hideRequiredMark className={styles['main-form']}>
 						<Form.Item
-							label={<FormattedMessage id="activeDetection.soundDetection" />}
+							label={formatMessage({id: 'activeDetection.soundDetection'})}
 						>
 							{
 								getFieldDecorator('isSound', {
 									valuePropName: 'checked',
 									initialValue: true,
 								})(
-									<Switch checkedChildren={<FormattedMessage id="activeDetection.label.open" />} unCheckedChildren={<FormattedMessage id="activeDetection.label.close" />} />
+									<Switch
+										// onChange={this.soundDetectSwitchChange}
+										checkedChildren={formatMessage({id: 'activeDetection.label.open' })}
+										unCheckedChildren={formatMessage({id:'activeDetection.label.close'})}
+									/>
 								)
 							}
 						</Form.Item>
-						{
-							getFieldValue('isSound') ?
-								<Form.Item label={<FormattedMessage id="activeDetection.sensitivity" />}>
-									{
-										getFieldDecorator('sSensitivity', {
-											initialValue: 0,
-										})(
-											<Slider marks={marks} className={styles['form-slider']} step={null} tooltipVisible={false} />
-										)
-									}
-								</Form.Item> : ''
-						}
-						<Form.Item label={<FormattedMessage id="activeDetection.motionDetection" />}>
+
+						<Form.Item
+							label={formatMessage({id: 'activeDetection.sensitivity'})}
+							className={getFieldValue('isSound') ? '' : styles.hidden}
+						>
+							{
+								getFieldDecorator('sSensitivity', {
+									initialValue: 50
+								})(
+									<Slider
+										marks={marks}
+										className={styles['form-slider']}
+										step={null}
+										tooltipVisible={false}
+									/>
+								)
+							}
+						</Form.Item>
+
+						<Form.Item label={formatMessage({id: 'activeDetection.motionDetection' })}>
 							{
 								getFieldDecorator('isDynamic', {
 									valuePropName: 'checked',
 									initialValue: true,
 								})(
-									<Switch checkedChildren={<FormattedMessage id="activeDetection.label.open" />} unCheckedChildren={<FormattedMessage id="activeDetection.label.close" />} />
+									<Switch
+										checkedChildren={formatMessage({id: 'activeDetection.label.open'})}
+										unCheckedChildren={formatMessage({id: 'activeDetection.label.close' })}
+									/>
 								)
 							}
 						</Form.Item>
-						{
-							getFieldValue('isDynamic') ?
-								<Form.Item label={<FormattedMessage id="activeDetection.sensitivity" />}>
-									{
-										getFieldDecorator('mSensitivity', {
-											initialValue: 50,
-										})(
-											<Slider marks={marks} className={styles['form-slider']} step={null} tooltipVisible={false} />
-										)
-									}
-								</Form.Item> : ''
-						}
-						<Form.Item label={<FormattedMessage id="activeDetection.timeDetection" />}>
+
+						<Form.Item
+							label={formatMessage({id: 'activeDetection.sensitivity'})}
+							className={getFieldValue('isDynamic') ? '' : styles.hidden}
+						>
+							{
+								getFieldDecorator('mSensitivity', {
+									initialValue: 50
+								})(
+									<Slider
+										marks={marks}
+										className={styles['form-slider']}
+										step={null}
+										tooltipVisible={false}
+									/>
+								)
+							}
+						</Form.Item>
+
+						<Form.Item label={formatMessage({id: 'activeDetection.timeDetection' })}>
 							{
 								getFieldDecorator('isAuto', {
 									getValueFromEvent: this.onAutoChange,
 								})(
 									<RadioGroup inChange={this.onAutoChange}>
 										<Radio value={1}>
-											<FormattedMessage id="activeDetection.auto" />
+											{formatMessage({id: 'activeDetection.auto' })}
 										</Radio>
 										<Radio value={2}>
-											<FormattedMessage id="activeDetection.custom" />
+											{formatMessage({id: 'activeDetection.custom' })}
 										</Radio>
 									</RadioGroup>
 								)
 							}
 						</Form.Item>
-						<Form.Item label={<FormattedMessage id="activeDetection.days" />}>
+						<Form.Item label={formatMessage({id: 'activeDetection.days'})}>
 							{
 								getFieldDecorator('all', {
 									initialValue: true,
@@ -318,7 +365,7 @@ class ActiveDetection extends React.Component {
 									getValueFromEvent: this.onSelectAll,
 								})(
 									<Checkbox disabled={getFieldValue('isAuto') !== 2}>
-										<FormattedMessage id="activeDetection.all" />
+										{formatMessage({id: 'activeDetection.all' })}
 									</Checkbox>
 								)
 							}
@@ -331,13 +378,41 @@ class ActiveDetection extends React.Component {
 								})(
 									<Checkbox.Group className={styles['form-checkbox-group']} disabled={getFieldValue('isAuto') !== 2}>
 										<Row gutter={8}>
-											<Col span={3}><Checkbox value="1"><FormattedMessage id="activeDetection.mon" /></Checkbox></Col>
-											<Col span={3}><Checkbox value="2"><FormattedMessage id="activeDetection.tue" /></Checkbox></Col>
-											<Col span={3}><Checkbox value="3"><FormattedMessage id="activeDetection.wed" /></Checkbox></Col>
-											<Col span={3}><Checkbox value="4"><FormattedMessage id="activeDetection.thu" /></Checkbox></Col>
-											<Col span={3}><Checkbox value="5"><FormattedMessage id="activeDetection.fri" /></Checkbox></Col>
-											<Col span={3}><Checkbox value="6"><FormattedMessage id="activeDetection.sat" /></Checkbox></Col>
-											<Col span={3}><Checkbox value="7"><FormattedMessage id="activeDetection.sun" /></Checkbox></Col>
+											<Col span={3}>
+												<Checkbox value="1">
+													{formatMessage({id: 'activeDetection.mon'})}
+												</Checkbox>
+											</Col>
+											<Col span={3}>
+												<Checkbox value="2">
+													{formatMessage({id: 'activeDetection.tue' })}
+												</Checkbox>
+											</Col>
+											<Col span={3}>
+												<Checkbox value="3">
+													{formatMessage({id: 'activeDetection.wed' })}
+												</Checkbox>
+											</Col>
+											<Col span={3}>
+												<Checkbox value="4">
+													{formatMessage({id: 'activeDetection.thu'})}
+												</Checkbox>
+											</Col>
+											<Col span={3}>
+												<Checkbox value="5">
+													{formatMessage({id: 'activeDetection.fri' })}
+												</Checkbox>
+											</Col>
+											<Col span={3}>
+												<Checkbox value="6">
+													{formatMessage({id: 'activeDetection.sat'})}
+												</Checkbox>
+											</Col>
+											<Col span={3}>
+												<Checkbox value="7">
+													{formatMessage({id: 'activeDetection.sun'})}
+												</Checkbox>
+											</Col>
 										</Row>
 									</Checkbox.Group>
 								)
@@ -350,11 +425,11 @@ class ActiveDetection extends React.Component {
 									// 	// console.log(a);
 									// }}>
 									<p>
-										<FormattedMessage id="activeDetection.daysRule" />
+										{formatMessage({id: 'activeDetection.daysRule'})}
 									</p> : ''
 							}
 						</Form.Item>
-						<Form.Item label={<FormattedMessage id="activeDetection.open" />}>
+						<Form.Item label={formatMessage({id: 'activeDetection.open'})}>
 							{
 								getFieldDecorator('startTime', {
 									initialValue: moment('1970-01-01').add(0, 's'),
@@ -367,11 +442,15 @@ class ActiveDetection extends React.Component {
 										},
 									],
 								})(
-									<TimePicker disabled={getFieldValue('isAuto') !== 2} format="HH:mm" allowClear={getFieldValue('isAuto') === 2} />
+									<TimePicker
+										disabled={getFieldValue('isAuto') !== 2}
+										format="HH:mm"
+										allowClear={getFieldValue('isAuto') === 2}
+									/>
 								)
 							}
 						</Form.Item>
-						<Form.Item label={<FormattedMessage id="activeDetection.close" />}>
+						<Form.Item label={formatMessage({id: 'activeDetection.close'})}>
 							{
 								getFieldDecorator('endTime', {
 									initialValue: moment('1970-01-01').add(0, 's'),
@@ -384,7 +463,11 @@ class ActiveDetection extends React.Component {
 										},
 									],
 								})(
-									<TimePicker disabled={getFieldValue('isAuto') !== 2} format="HH:mm" allowClear={getFieldValue('isAuto') === 2} />
+									<TimePicker
+										disabled={getFieldValue('isAuto') !== 2}
+										format={this.isNextDay()}
+										allowClear={getFieldValue('isAuto') === 2}
+									/>
 								)
 							}
 						</Form.Item>
@@ -408,7 +491,7 @@ class ActiveDetection extends React.Component {
 									],
 								)}
 							>
-								<FormattedMessage id="activeDetection.save" />
+								{formatMessage({id: 'activeDetection.save'})}
 							</Button>
 						</Form.Item>
 					</Form>
