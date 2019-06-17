@@ -144,6 +144,7 @@ class SoftwareUpdate extends Component {
 		return (
 			<div>
 				<Card
+					bordered={false}
 					className={styles['main-card']}
 					title={formatMessage({ id: 'softwareUpdate.title' })}
 				>

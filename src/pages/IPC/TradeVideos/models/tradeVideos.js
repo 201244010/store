@@ -6,17 +6,19 @@ import { ERROR_OK } from '@/constants/errorCode';
 export default {
 	namespace: 'tradeVideos',
 	state: {
+		total: 0,
 		tradeVideos:[],
 		paymentDeviceList:[],
 		// paymentDetailList:[],
-		ipcList:[]
+		// ipcList:[]
 	},
 	reducers: {
 		readData(state, action){
-			const { payload } = action;
+			const { payload: { list, total} } = action;
 			// console.log(payload);
-			payload.sort((a,b) => Date.parse(b.purchaseTime)-Date.parse(a.purchaseTime));
-			state.tradeVideos = [...payload];
+			list.sort((a,b) => Date.parse(b.purchaseTime)-Date.parse(a.purchaseTime));
+			state.tradeVideos = [...list];
+			state.total = total;
 		},
 		readPaymentDeviceList(state, { payload: { posList }}){
 			state.paymentDeviceList = [
@@ -38,35 +40,61 @@ export default {
 			});
 			// state.paymentDetailList.push(payload);
 		},
-		readIpcList(state, { payload: { ipcList }}){
-			state.ipcList = [
-				...ipcList
-			];
-		}
+		// readIpcList(state, { payload: { ipcList }}){
+		// 	state.ipcList = [
+		// 		...ipcList
+		// 	];
+		// }
 	},
 	effects: {
-		*read({ payload }, { put }){
-			const { startTime, endTime } = payload;
+		*read({ payload }, { put, call }){
+			const { startTime, endTime, currentPage, pageSize } = payload;
 
-			let {ipcSelected: ipcId, paymentDeviceSN, keyword } = payload;
+			let {ipcId, posSN, keyword } = payload;
 
 			keyword = keyword === '' ? undefined : keyword;
-			paymentDeviceSN = paymentDeviceSN === '0' ? undefined : paymentDeviceSN;
-			ipcId = ipcId === '0' ? undefined : ipcId;
+			posSN = posSN === 0 ? undefined : posSN;
+			ipcId = ipcId === 0 ? undefined : ipcId;
 
-			const response = yield getTradeVideos({
+			const response = yield call(getTradeVideos, {
 				keyword,
 				ipcId,
 				startTime,
 				endTime,
-				paymentDeviceSN
+				posSN,
+				currentPage,
+				pageSize
 			});
 
 			if (response.code === ERROR_OK) {
-				const result = response.data;
+				const { data: { list, total } } = response;
+
+				const orderNoList = list.map(item => item.orderNo);
+				// console.log(orderNoList);
+
+				if (orderNoList.length > 0) {
+					const { code, data } = yield call(getVideo, {orderNoList});
+
+					if (code === ERROR_OK) {
+						const vList = data.list;
+						list.forEach(item => {
+							vList.every(videoInfo => {
+								if (item.orderNo === videoInfo.orderNo) {
+									item.url = videoInfo.url;
+									return false;
+								}
+								return true;
+							});
+						});
+					}
+				}
+
 				yield put({
 					type: 'readData',
-					payload: result
+					payload: {
+						list,
+						total
+					}
 				});
 			}
 		},
@@ -126,43 +154,43 @@ export default {
 			}
 			return [];
 		},
-		*getIpcList(_,{ put }) {
-			const ipcList = yield put.resolve({
-				type: 'ipcList/getIpcList'
-			});
+		// *getIpcList(_,{ put }) {
+		// 	const ipcList = yield put.resolve({
+		// 		type: 'ipcList/getIpcList'
+		// 	});
 
-			yield put({
-				type: 'readIpcList',
-				payload: {
-					ipcList
-				}
-			});
+		// 	yield put({
+		// 		type: 'readIpcList',
+		// 		payload: {
+		// 			ipcList
+		// 		}
+		// 	});
 
-			return ipcList;
-		},
-		*getVideo({ payload: { orderId } }, { call, select }) {
+		// 	return ipcList;
+		// },
+		// *getVideo({ payload: { orderId } }, { call, select }) {
 
-			const tradeVideos = yield select(state => state.tradeVideos.tradeVideos);
-			// console.log(tradeVideos);
-			let no = '';
-			tradeVideos.every((item) => {
-				if (item.orderId === orderId){
-					no = item.orderNo;
-					return false;
-				}
-				return true;
-			});
+		// 	const tradeVideos = yield select(state => state.tradeVideos.tradeVideos);
+		// 	// console.log(tradeVideos);
+		// 	let no = '';
+		// 	tradeVideos.every((item) => {
+		// 		if (item.orderId === orderId){
+		// 			no = item.orderNo;
+		// 			return false;
+		// 		}
+		// 		return true;
+		// 	});
 
-			const response = yield call(getVideo, {
-				orderNo: no
-			});
+		// 	const response = yield call(getVideo, {
+		// 		orderNo: no
+		// 	});
 
-			const { code, data } = response;
-			if (code === ERROR_OK) {
-				return data.address;
-			}
-			return '';
-		},
+		// 	const { code, data } = response;
+		// 	if (code === ERROR_OK) {
+		// 		return data.address;
+		// 	}
+		// 	return '';
+		// },
 		*getIpcTypeByPosSN({ payload: { sn }}, { put }) {
 			const posList = yield put.resolve({
 				type: 'getPOSList'
