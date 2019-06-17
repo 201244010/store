@@ -54,7 +54,9 @@ class FooterChart extends Component {
 				<Spin spinning={chartLoading}>
 					<div className={styles['content-wrapper']}>
 						{purchaseTypeList.map((info, index) => {
-							const percent = Math.ceil(info[paymentType] / (divideBase || 1)) * 100;
+							const percent = Math.round(
+								(info[paymentType] / (divideBase || 1)) * 100
+							);
 							const pieLegend = (
 								<>
 									<div className={styles['chart-title']}>
