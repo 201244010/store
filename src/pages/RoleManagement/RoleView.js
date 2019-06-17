@@ -41,7 +41,7 @@ class RoleView extends React.Component {
 	render() {
 		const {
 			role: {
-				roleInfo: { name, permission_list: checkIdList },
+				roleInfo: { name, isDefault, permission_list: checkIdList },
 			},
 			loading,
 		} = this.props;
@@ -82,18 +82,24 @@ class RoleView extends React.Component {
 									))}
 								</div>
 							</Form.Item>
-							<Form.Item label=" " colon={false}>
-								<Button
-									className={styles.submit}
-									type="primary"
-									onClick={this.confirm}
-								>
-									{formatMessage({ id: 'btn.alter' })}
-								</Button>
-								<Button onClick={this.cancel}>
-									{formatMessage({ id: 'btn.cancel' })}
-								</Button>
-							</Form.Item>
+
+							{
+								isDefault ?
+									'' :
+									<Form.Item label=" " colon={false}>
+										<Button
+											className={styles.submit}
+											type="primary"
+											onClick={this.confirm}
+										>
+											{formatMessage({ id: 'btn.alter' })}
+										</Button>
+										<Button onClick={this.cancel}>
+											{formatMessage({ id: 'btn.cancel' })}
+										</Button>
+									</Form.Item>
+							}
+
 						</Form>
 					</div>
 				</Spin>
