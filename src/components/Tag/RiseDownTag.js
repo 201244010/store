@@ -5,13 +5,13 @@ import styles from './Tag.less';
 
 const RiseDownTag = props => {
 	const {
-		wrapperStyle = {},
+		wrapperStyle = { display: 'flex' },
 		label = null,
 		labelClass = '',
 		labelStyle = {},
 		content = null,
 		contentClass = '',
-		contentStyle = {},
+		contentStyle = { marginLeft: '12px', display: 'flex', alignItems: 'center' },
 	} = props;
 
 	const IconUp = () => (
