@@ -1,146 +1,191 @@
-import * as Actions from '@/api/user';
+import * as Actions from '@/services/user';
+import { message } from 'antd';
+import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
+import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
 import router from 'umi/router';
 
 export default {
-  namespace: 'user',
+	namespace: 'user',
 
-  state: {
-    userInfo: {},
-    errorTimes: 0,
-    list: [],
-    currentUser: Storage.get('__userInfo__') || {},
-  },
+	state: {
+		userInfo: {},
+		loading: false,
+		errorTimes: 0,
+		list: [],
+		currentUser: CookieUtil.getCookieByKey(CookieUtil.USER_INFO_KEY) || {},
+	},
 
-  effects: {
-    *login({ payload }, { call, put }) {
-      const { type, options } = payload;
-      const response = yield call(Actions.login, type, options);
+	effects: {
+		*login({ payload }, { call, put }) {
+			const { type, options } = payload;
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
 
-      if (response && response.code === ERROR_OK) {
-        const token = response.data;
-        Storage.set({ __token__: token });
-      } else {
-        yield put({
-          type: 'computeErrorTime',
-          payload: 1,
-        });
-      }
+			const response = yield call(Actions.login, type, options);
 
-      return response;
-    },
+			if (response && response.code === ERROR_OK) {
+				const token = response.data;
+				CookieUtil.setCookieByKey(CookieUtil.TOKEN_KEY, token);
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+			} else {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
 
-    *logout(_, { call, put }) {
-      yield call(Actions.logout);
-      yield put({
-        type: 'initState',
-      });
-      Storage.remove('__token__');
-      router.push('/login');
-    },
+				yield put({
+					type: 'computeErrorTime',
+					payload: 1,
+				});
+			}
 
-    *checkImgCode({ payload }, { call }) {
-      const { options } = payload;
-      const response = yield call(Actions.checkImgCode, options);
-      return response;
-    },
+			return response;
+		},
+		*logout(_, { call, put }) {
+			call(Actions.logout);
+			yield put({
+				type: 'initState',
+			});
+			CookieUtil.clearCookies();
+			Storage.remove([CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY], 'local');
+			router.push('/user/login');
+		},
+		*checkImgCode({ payload }, { call }) {
+			const { options } = payload;
+			return yield call(Actions.checkImgCode, options);
+		},
+		*register({ payload }, { call }) {
+			const { options } = payload;
+			return yield call(Actions.register, options);
+		},
+		*getUserInfo(_, { call, put }) {
+			const response = yield call(Actions.getUserInfo);
+			if (response && response.code === ERROR_OK) {
+				const result = response.data || {};
+				CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, result);
+				yield put({
+					type: 'storeUserInfo',
+					payload: result,
+				});
+			}
+		},
+		getUserInfoFromStorage() {
+			return CookieUtil.getCookieByKey(CookieUtil.USER_INFO_KEY) || null;
+		},
+		*resetPassword({ payload }, { call }) {
+			const { options } = payload;
+			return yield call(Actions.resetPassword, options);
+		},
+		*updateUsername({ payload }, { call, put, select }) {
+			const { options } = payload;
+			const response = yield call(Actions.updateUsername, options);
+			if (response && response.code === ERROR_OK) {
+				message.success(formatMessage({ id: 'userCenter.basicInfo.nameChange.success' }));
+				const { username } = options;
+				const currentUser = yield select(state => state.user.currentUser);
+				const updatedUserInfo = {
+					...currentUser,
+					username,
+				};
 
-    *register({ payload }, { call }) {
-      const { options } = payload;
-      const response = yield call(Actions.register, options);
-      // TODO 需要后端返回 token
-      // if(response && response.code === ERROR_OK){
-      //
-      // }
-      return response;
-    },
+				CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, updatedUserInfo);
+				yield put({
+					type: 'storeUserInfo',
+					payload: updatedUserInfo,
+				});
+			} else {
+				message.error(formatMessage({ id: 'userCenter.basicInfo.nameChange.fail' }));
+			}
+		},
+		*changePassword({ payload }, { call }) {
+			const { options } = payload;
+			const response = yield call(Actions.changePassword, options);
+			if (response && response.code === ERROR_OK) {
+				message.success(formatMessage({ id: 'change.password.success' }), 1.5, () => {
+					CookieUtil.clearCookies();
+					router.push('/user/login');
+				});
+			}
+			return response;
+		},
+		*updatePhone({ payload }, { call, put, select }) {
+			const { options } = payload;
+			const response = yield call(Actions.updatePhone, options);
+			if (response && response.code === ERROR_OK) {
+				const { phone } = options;
+				const currentUser = yield select(state => state.user.currentUser);
+				const updatedUserInfo = {
+					...currentUser,
+					phone,
+				};
 
-    *getUserInfo(_, { call, put }) {
-      const response = yield call(Actions.getUserInfo);
-      if (response && response.code === ERROR_OK) {
-        const result = response.data || {};
-        Storage.set({ __userInfo__: result });
-        yield put({
-          type: 'setUserInfo',
-          payload: result,
-        });
-      }
-    },
+				CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, updatedUserInfo);
+				yield put({
+					type: 'storeUserInfo',
+					payload: updatedUserInfo,
+				});
+			}
 
-    *resetPassword({ payload }, { call }) {
-      const { options } = payload;
-      const response = yield call(Actions.resetPassword, options);
-      return response;
-    },
-
-    *updateUsername({ payload }, { call, put, select }) {
-      const { options } = payload;
-      const response = yield call(Actions.updateUsername, options);
-      if (response && response.code === 1) {
-        const { username } = options;
-        const currentUser = yield select(state => state.user.currentUser);
-        const updatedUserInfo = {
-          ...currentUser,
-          username,
-        };
-
-        Storage.set({ __userInfo__: updatedUserInfo });
-        yield put({
-          type: 'setUserInfo',
-          payload: updatedUserInfo,
-        });
-      }
-    },
-
-    *changePassword({ payload }, { call }) {
-      const { options } = payload;
-      const response = yield call(Actions.changePassword, options);
-      if (response && response.code === ERROR_OK) {
-        Storage.clear('session');
-        router.push('/login');
-      }
-    },
-
-    *updatePhone({ payload }, { call, put, select }) {
-      const { options } = payload;
-      const response = yield call(Actions.updatePhone, options);
-      if (response && response.code === ERROR_OK) {
-        const { phone } = options;
-        const currentUser = yield select(state => state.user.currentUser);
-        const updatedUserInfo = {
-          ...currentUser,
-          phone,
-        };
-
-        Storage.set({ __userInfo__: updatedUserInfo });
-        yield put({
-          type: 'setUserInfo',
-          payload: updatedUserInfo,
-        });
-      }
-    },
-  },
-
-  reducers: {
-    computeErrorTime(state, action) {
-      return {
-        ...state,
-        errorTimes: state.errorTimes + action.payload,
-      };
-    },
-    setUserInfo(state, action) {
-      return {
-        ...state,
-        currentUser: action.payload || {},
-      };
-    },
-    initState(state) {
-      return {
-        ...state,
-        userInfo: {},
-        errorTimes: 0,
-      };
-    },
-  },
+			return response;
+		},
+		*updateIcon({ payload }, { call, put }) {
+			const { options } = payload;
+			const response = yield call(Actions.updateIcon, options);
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'getUserInfo',
+				});
+			}
+		},
+		*checkUserExist({ payload }, { call }) {
+			const { options } = payload;
+			const response = yield call(Actions.checkUserExist, options);
+			return response;
+		},
+	},
+	reducers: {
+		updateState(state, action) {
+			return {
+				...state,
+				...action.payload,
+			};
+		},
+		computeErrorTime(state, action) {
+			return {
+				...state,
+				errorTimes: state.errorTimes + action.payload,
+			};
+		},
+		storeUserInfo(state, action) {
+			return {
+				...state,
+				currentUser: action.payload || {},
+			};
+		},
+		initState(state) {
+			return {
+				...state,
+				userInfo: {},
+				currentUser: {},
+				errorTimes: 0,
+			};
+		},
+		changeNotifyCount(state, action) {
+			return {
+				...state,
+				currentUser: {
+					...state.currentUser,
+					notifyCount: action.payload.totalCount,
+					unreadCount: action.payload.unreadCount,
+				},
+			};
+		},
+	},
 };

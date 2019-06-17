@@ -1,62 +1,75 @@
 import React, { Component } from 'react';
-import { Result } from 'ant-design-pro';
-import router from 'umi/router';
+import { Button } from 'antd';
+import BigIcon from '@/components/BigIcon';
 import styles from './index.less';
 
 class ResultInfo extends Component {
-  constructor(props) {
-    super(props);
-    const { countInit } = this.props;
-    this.countDownTimer = null;
-    this.state = {
-      count: countInit,
-    };
-  }
+	constructor(props) {
+		super(props);
+		const { countInit } = this.props;
+		this.countDownTimer = null;
+		this.state = {
+			count: countInit,
+		};
+	}
 
-  componentDidMount() {
-    this.countDown();
-  }
+	componentDidMount() {
+		this.countDown();
+	}
 
-  componentWillUnmount() {
-    clearInterval(this.countDownTimer);
-  }
+	componentWillUnmount() {
+		clearInterval(this.countDownTimer);
+	}
 
-  goNext = path => {
-    router.push(path);
-  };
+	countComplete = () => {
+		const { countDone = null } = this.props;
+		if (countDone) {
+			countDone();
+		}
+	};
 
-  countDown = () => {
-    const { tick = 1000, path = '/' } = this.props;
-    clearInterval(this.countDownTimer);
-    this.countDownTimer = setInterval(() => {
-      const { count } = this.state;
-      if (count <= 0) {
-        this.goNext(path);
-      } else {
-        this.setState({
-          count: count - 1,
-        });
-      }
-    }, tick);
-  };
+	countDown = () => {
+		const { tick = 1000 } = this.props;
+		clearInterval(this.countDownTimer);
+		this.countDownTimer = setInterval(() => {
+			const { count } = this.state;
+			if (count <= 0) {
+				clearInterval(this.countDownTimer);
+				this.countComplete();
+			} else {
+				this.setState({
+					count: count - 1,
+				});
+			}
+		}, tick);
+	};
 
-  render() {
-    const { count } = this.state;
-    const { title, description } = this.props;
-    return (
-      <Result
-        className={styles['result-wrapper']}
-        type="success"
-        title={<div className={styles['result-title']}>{title}</div>}
-        description={
-          <div className={styles['result-content']}>
-            <span className={styles['result-count']}>{`${count}`}</span>
-            {description}
-          </div>
-        }
-      />
-    );
-  }
+	render() {
+		const { count } = this.state;
+		const { title, description, wrapperStyle = {}, CustomIcon = null } = this.props;
+		return (
+			<div className={styles['result-wrapper']}>
+				<BigIcon
+					{...{
+						type: 'check',
+						wrapperStyle: {
+							border: '100%',
+							margin: '0 auto',
+							...wrapperStyle,
+						},
+						CustomIcon,
+					}}
+				/>
+				<div className={styles['result-title']}>{title}</div>
+				<div className={styles['result-action-wrapper']}>
+					<Button className={styles['action-btn']} block onClick={this.countComplete}>
+						{`${count}`}
+						{description}
+					</Button>
+				</div>
+			</div>
+		);
+	}
 }
 
 export default ResultInfo;

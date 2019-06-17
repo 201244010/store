@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
-import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import router from 'umi/router';
 
-function AuthorithCheck(WrappedComponent) {
-  return class extends Component {
-    componentDidMount() {
-      this.authorityCheck();
-    }
+class AuthorithCheck extends Component {
+	componentDidMount() {
+		this.authorityCheck();
+	}
 
-    authorityCheck = () => {
-      const userInfo = Storage.get('__token__');
-      if (!userInfo) {
-        router.push('/login');
-      }
-    };
+	authorityCheck = () => {
+		const token = CookieUtil.getCookieByKey(CookieUtil.TOKEN_KEY);
+		if (!token) {
+			router.push('/user/login');
+			return false;
+		}
+		return true;
+	};
 
-    render() {
-      return <WrappedComponent {...this.props} />;
-    }
-  };
+	render() {
+		const { children } = this.props;
+		return <>{children}</>;
+	}
 }
 
 export default AuthorithCheck;

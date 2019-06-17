@@ -1,96 +1,110 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button } from 'antd';
+import { Icon, Input } from 'antd';
+import * as Regexp from '@/constants/regexp';
+import styles from './captcha.less';
 
 class Captcha extends Component {
-  constructor(props) {
-    super(props);
-    const { countInit = 60, value = '' } = props;
-    this.countDownTimer = null;
-    this.state = {
-      value,
-      inCounting: false,
-      count: countInit,
-    };
-  }
+	constructor(props) {
+		super(props);
+		const { countInit = 60, value = '' } = props;
+		this.countDownTimer = null;
+		this.state = {
+			value,
+			inCounting: false,
+			count: countInit,
+		};
+	}
 
-  componentWillUnmount() {
-    clearInterval(this.countDownTimer);
-  }
+	componentWillReceiveProps(nextProps) {
+		const { trigger } = nextProps;
+		const { trigger: oldTrigger } = this.props;
+		if (trigger && oldTrigger !== trigger) {
+			this.countDown();
+		}
+	}
 
-  countDown = () => {
-    const { interval = 1000 } = this.props;
-    clearInterval(this.countDownTimer);
-    this.countDownTimer = setInterval(() => {
-      const { count } = this.state;
-      if (count <= 0) {
-        this.setState({
-          inCounting: false,
-        });
-      } else {
-        this.setState({
-          count: count - 1,
-        });
-      }
-    }, interval);
-  };
+	componentWillUnmount() {
+		clearInterval(this.countDownTimer);
+	}
 
-  handleInputChange = e => {
-    const { onChange } = this.props;
-    const value = e.target.value || '';
-    this.setState({
-      value,
-    });
-    if (onChange) {
-      onChange(value);
-    }
-  };
+	countDown = () => {
+		const { interval = 1000, countInit = 60 } = this.props;
+		this.setState({
+			inCounting: true,
+			count: countInit,
+		});
 
-  handleInputBlur = e => {
-    const { onBlur } = this.props;
-    if (onBlur) {
-      onBlur(e.target.value);
-    }
-  };
+		clearInterval(this.countDownTimer);
+		this.countDownTimer = setInterval(() => {
+			const { count } = this.state;
+			if (count <= 0) {
+				this.setState({
+					inCounting: false,
+				});
+			} else {
+				this.setState({
+					count: count - 1,
+				});
+			}
+		}, interval);
+	};
 
-  handleClick = () => {
-    const { onClick, countInit = 60 } = this.props;
-    if (onClick) {
-      onClick();
-    }
+	handleInputChange = e => {
+		const { onChange } = this.props;
+		const value = e.target.value || '';
+		this.setState({
+			value,
+		});
+		if (onChange) {
+			onChange(value);
+		}
+	};
 
-    this.setState({
-      inCounting: true,
-      count: countInit,
-    });
-    this.countDown();
-  };
+	handleInputBlur = e => {
+		const { onBlur } = this.props;
+		if (onBlur) {
+			onBlur(e.target.value);
+		}
+	};
 
-  render() {
-    const { inCounting, count, value } = this.state;
-    const {
-      buttonText: { initText, countText },
-      inputProps = {},
-      buttonProps = {},
-    } = this.props;
+	handleClick = () => {
+		const { inCounting } = this.state;
+		const { onClick, validateTarget = '' } = this.props;
 
-    return (
-      <Row gutter={16}>
-        <Col span={16}>
-          <Input
-            value={value}
-            onChange={this.handleInputChange}
-            onBlur={this.handleInputBlur}
-            {...inputProps}
-          />
-        </Col>
-        <Col span={8}>
-          <Button {...buttonProps} disabled={inCounting} onClick={this.handleClick}>
-            {inCounting ? `${count}${countText}` : initText}
-          </Button>
-        </Col>
-      </Row>
-    );
-  }
+		if (validateTarget && Regexp.cellphone.test(validateTarget)) {
+			if (!inCounting) {
+				if (onClick) {
+					onClick();
+				}
+				this.countDown();
+			}
+		}
+	};
+
+	render() {
+		const { inCounting, count, value } = this.state;
+		const {
+			buttonText: { initText, countText },
+			inputProps = {},
+		} = this.props;
+
+		const StatusBtn = (
+			<div className={styles['status-btn']} onClick={this.handleClick}>
+				{inCounting ? `${count}${countText}` : initText}
+			</div>
+		);
+
+		return (
+			<Input
+				value={value}
+				onChange={this.handleInputChange}
+				onBlur={this.handleInputBlur}
+				prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+				suffix={StatusBtn}
+				{...inputProps}
+			/>
+		);
+	}
 }
 
 export default Captcha;

@@ -4,9 +4,9 @@
  */
 
 module.exports = {
-  resolve: {
-    alias: {
-      '@': require('path').resolve(__dirname, 'src'), // eslint-disable-line
-    },
-  },
+	resolve: {
+		alias: {
+			"@": require("path").resolve(__dirname, "src") // eslint-disable-line
+		}
+	}
 };
