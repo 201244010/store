@@ -8,9 +8,8 @@ import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
 import LibraryForm from './LibraryForm';
 
 import styles from './FaceidLibrary.less';
-import global from '@/global.less';
+import global from '@/styles/common.less';
 
-// console.log(global);
 
 class LibraryList extends React.Component {
 	constructor(props) {
@@ -304,7 +303,7 @@ class LibraryList extends React.Component {
 		// console.log(list);
 		return (
 			<div className="faceid-library-list">
-				<Card>
+				<Card bordered={false}>
 					<div className={global['search-bar']}>
 						<Form layout="inline">
 							<Row gutter={FORM_FORMAT.gutter}>

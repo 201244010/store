@@ -99,3 +99,44 @@ export const FORM_ITEM_LAYOUT_BUSINESS = {
 	labelCol: { span: 2 },
 	wrapperCol: { span: 6 },
 };
+
+
+
+
+
+
+export const SEARCH_FORM_GUTTER = {
+	SMALL: {
+		md: 4, lg: 8, xl: 12
+	},
+	NORMAL: {
+		md: 8, lg: 24, xl: 48
+	}
+};
+
+export const SEARCH_FORM_COL = {
+	ONE_HALF: {
+		sm: 24, md: 12
+	},
+	ONE_THIRD: {
+		sm: 24, md: 8
+	},
+	ONE_FOURTH: {
+		sm: 24, md: 6
+	},
+	ONE_SIXTH: {
+		sm: 24, md: 4
+	},
+	ONE_EIGHTH: {
+		sm: 24, md: 3
+	},
+	ONE_12TH: {
+		sm: 24, md: 2
+	},
+	ONE_24TH: {
+		sm: 24, md: 1
+	},
+	TWO_THIRD: {
+		sm: 24, md: 16
+	}
+};

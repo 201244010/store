@@ -88,14 +88,14 @@ const mapDispatchToProps = (dispatch) => ({
 		});
 	},
 	deleteDevice: (sn) => {
-		const result = dispatch({
+		dispatch({
 			type: 'ipcBasicInfo/delete',
 			payload: {
 				sn
 			}
-		}).then((data) => {
-			// console.log('data: ', data);
-			if (data) {
+		}).then((response) => {
+			// console.log('result: ', result);
+			if (response) {
 				message.success(formatMessage({ id: 'ipcManagement.deleteSuccess'}));
 
 				setTimeout(() => {
@@ -106,7 +106,6 @@ const mapDispatchToProps = (dispatch) => ({
 				message.error(formatMessage({ id: 'ipcManagement.deleteFailed'}));
 			}
 		});
-		return result;
 	}
 });
 // let disabledControl = true;
@@ -291,6 +290,7 @@ class DeviceBasicInfo extends React.Component {
 		return (
 			<Spin spinning={status === 'loading'}>
 				<Card
+					bordered={false}
 					title={formatMessage({id: 'deviceBasicInfo.title'})}
 					className={styles['main-card']}
 				>

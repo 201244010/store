@@ -1,43 +1,54 @@
 
 import React from 'react';
-import { Select,DatePicker,message,Button,Table,Row,Col,Card } from 'antd';
+import { Select, DatePicker, Button, Table, Row, Col, Card, Form } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
-import { FormattedMessage,formatMessage } from 'umi/locale';
+import { formatMessage } from 'umi/locale';
+
+import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
+
 import VideoPlayComponent from '../component/VideoPlayComponent';
 
 
 import styles from './MotionList.less';
+import global from '@/styles/common.less';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-function getTimestamp(time){
-	if(typeof(time) === 'string'){
-		return Math.round(moment(time).valueOf()/ 1000);
-	}
-	if( time instanceof moment ){
-		 return Math.round(time.valueOf()/ 1000);
-	}
-	return '';
-}
+// function getTimestamp(time){
+// 	if(typeof(time) === 'string'){
+// 		return Math.round(moment(time).valueOf()/ 1000);
+// 	}
+
+// 	if( time instanceof moment ){
+// 		 return Math.round(time.valueOf()/ 1000);
+// 	}
+// 	return '';
+// }
 
 
 @connect((state) => {
-	const { motionList,loading } = state;
+	const { motionList: { motionList, total }, ipcList, loading } = state;
+	// console.log(motionList, ipcList);
 	return {
 		motionList,
+		total,
+		ipcList,
 		loading
 	};
 },(dispatch) => ({
-	getMotionList( startTime, endTime,ipcSelected,detectedSourceSelected ){
+	getMotionList({ startTime, endTime, ipcSelected, detectedSourceSelected, currentPage, pageSize }){
 		dispatch({
 			type: 'motionList/read',
 			payload: {
 				startTime,
 				endTime,
 				ipcSelected,
-				detectedSourceSelected
+				detectedSourceSelected,
+				currentPage,
+				pageSize
 			}
 		});
 	},
@@ -50,77 +61,90 @@ function getTimestamp(time){
 		});
 		return result;
 	},
-	getIpcList(){
-		return dispatch({
-			type: 'motionList/getIpcList'
-		});
-	}
+	// getIpcList(){
+	// 	return dispatch({
+	// 		type: 'motionList/getIpcList'
+	// 	});
+	// }
 }))
+@Form.create()
 class MotionList extends React.Component {
 
 	state = {
-		selectedStartTime:'',
-		selectedEndTime:'',
-		isWatchVideo:false,
-		videoUrl:'',
-		ipcSelected:'',
-		detectedSourceSelected:'',
-		ipcType:''
+		// selectedStartTime: '',
+		// selectedEndTime: '',
+		isWatchVideo: false,
+		videoUrl: '',
+		// ipcSelected: '',
+		// detectedSourceSelected: '',
+		ipcType: '',
+
+		currentPage: 1,
+		pageSize: DEFAULT_PAGE_SIZE
 	};
 
 	columns = [{
-		title: <FormattedMessage id='motionList.ipcName' />,
+		title: formatMessage({id: 'motionList.ipcName'}),
 		dataIndex: 'name',
 		key: 'name'
 	}, {
-		title: <FormattedMessage id='motionList.detectedSource' />,
+		title: formatMessage({id: 'motionList.detectedSource'}),
 		dataIndex: 'detectedSource',
 		key: 'detectedSource',
 		render: (item) => {
 			switch(item){
 				case 1:
-					return <FormattedMessage id='motionList.image' />;
+					return formatMessage({id: 'motionList.image'});
 				case 2:
-					return <FormattedMessage id='motionList.sound' /> ;
+					return formatMessage({id: 'motionList.sound'});
 				case 3:
-					return  <FormattedMessage id='motionList.soundAndImage' />;
+					return formatMessage({id: 'motionList.soundAndImage'});
 				default:
-					return  <FormattedMessage id='motionList.else' />;
+					return formatMessage({id: 'motionList.else'});
 			}
 		}
 	}, {
-		title: <FormattedMessage id='motionList.detectedTime' />,
+		title: formatMessage({id: 'motionList.detectedTime'}),
 		dataIndex: 'detectedTime',
 		key: 'detectedTime',
 	}, {
-		title: <FormattedMessage id='motionList.action' />,
+		title: formatMessage({id: 'motionList.action'}),
 		dataIndex:'video',
 		key: 'action',
 		render: (item) => (
 			<span className={styles['video-watch']} onClick={()=>this.watchVideoHandler(item)}>
-				{<FormattedMessage id='motionList.watch' />}
+				{formatMessage({id: 'motionList.watch'})}
 			</span>
 		)
 	}];
 
 
 	async componentDidMount(){
-		const { getIpcList } = this.props;
-		await getIpcList();
 		const { getMotionList } = this.props;
-		const currentTime = getTimestamp(moment().subtract(1, 'days'));
-		const lastDayTime = getTimestamp(moment());
-		getMotionList(currentTime,lastDayTime);
-		this.setState({
-			selectedStartTime:moment().subtract(1, 'days'),
-			selectedEndTime:moment()
+		const { currentPage, pageSize } = this.state;
+
+		const startTime = moment().subtract(1, 'days');
+		const endTime = moment();
+		// getMotionList(currentTime,lastDayTime);
+		getMotionList({
+			startTime: startTime.unix(),
+			endTime: endTime.unix(),
+			currentPage,
+			pageSize
 		});
+
+
+		// this.setState({
+		// 	selectedStartTime: startTime,
+		// 	selectedEndTime: endTime
+		// });
 
 	}
 
 	watchVideoHandler = async (item) =>{
 		const { getIpcType } = this.props;
 		const ipcType = await getIpcType(item.sn);
+
 		this.setState({
 			videoUrl:item.video,
 			isWatchVideo:true,
@@ -135,106 +159,205 @@ class MotionList extends React.Component {
 		});
 	}
 
-	ipcSelectHandler = (value) => {
-		if(value === 0) return;
-		this.setState({
-			ipcSelected:value
-		});
-	}
+	// ipcSelectHandler = (value) => {
+	// 	if(value === 0) return;
+	// 	this.setState({
+	// 		ipcSelected:value
+	// 	});
+	// }
 
-	sourceSelectHandler = (value) => {
-		this.setState({
-			detectedSourceSelected:value
-		});
-	}
+	// sourceSelectHandler = (value) => {
+	// 	this.setState({
+	// 		detectedSourceSelected: value
+	// 	});
+	// }
 
 	disabledDate = (value) =>{
 		if(!value) return false;
-		return value.valueOf()>moment().valueOf();
+		return value.valueOf() > moment().valueOf();
 	}
 
-	changeHandler = (dates, dateStrings) =>{
+	// changeHandler = (dates, dateStrings) =>{
+	// 	this.setState({
+	// 		selectedStartTime: dateStrings[0],
+	// 		selectedEndTime: dateStrings[1]
+	// 	});
+	// }
+
+	onShowSizeChange = (currentPage, pageSize) => {
+		this.getMotionList(currentPage, pageSize);
+
 		this.setState({
-			selectedStartTime:dateStrings[0],
-			selectedEndTime:dateStrings[1]
+			currentPage,
+			pageSize
 		});
+
+		console.log('onShowSizeChange', currentPage, pageSize);
 	}
 
-	searchHandler(){
-		const { getMotionList } = this.props;
-		const { ipcSelected, detectedSourceSelected, selectedStartTime, selectedEndTime } = this.state;
-		// const ipcSelected = this.state.ipcSelected;
-		// const detectedSourceSelected = this.state.detectedSourceSelected;
-		const startTime = selectedStartTime;
-		const endTime = moment(selectedEndTime).add(1,'days');
+	onPaginationChange = (currentPage, pageSize) => {
+		this.getMotionList(currentPage, pageSize);
 
-		if(!Number.isNaN(getTimestamp(startTime)) && !Number.isNaN(getTimestamp(endTime))){
-			getMotionList(getTimestamp(startTime),getTimestamp(endTime),ipcSelected,detectedSourceSelected);
-			return;
-		}
+		this.setState({
+			currentPage,
+			pageSize
+		});
 
-		const warningMessage = formatMessage({id: 'motionList.select.detectedTime'});
-		message.warning(warningMessage);
+		console.log('onPaginationChange', currentPage, pageSize);
+	}
 
+	getMotionList = (currentPage, pageSize) => {
+		const { getMotionList, form: { getFieldValue } } = this.props;
+
+		const [startTime, endTime] = getFieldValue('dateRange');
+		const ipcId = getFieldValue('ipcId');
+		const detectedSource = getFieldValue('detectedSource');
+
+		console.log(startTime, endTime, ipcId, detectedSource, currentPage, pageSize);
+
+		getMotionList({
+			startTime: startTime.unix(),
+			endTime: endTime.unix(),
+			ipcSelected: ipcId,
+			detectedSourceSelected: detectedSource,
+			currentPage,
+			pageSize
+		});
+
+	}
+
+	searchHandler = () => {
+		const { currentPage , pageSize } = this.state;
+
+		this.getMotionList(currentPage , pageSize);
 	}
 
 	render() {
-		const { motionList: motionObj, loading } = this.props;
-		const { isWatchVideo, videoUrl, ipcType } = this.state;
-
-		const { motionList, ipcList } = motionObj;
-		// const ipcList = this.props.motionList.ipcList;
-		// console.log(ipcList);
+		const { motionList, ipcList, total, loading, form } = this.props;
+		const { isWatchVideo, videoUrl, ipcType, currentPage, pageSize } = this.state;
+		const { getFieldDecorator } = form;
 		const dateFormat = 'YYYY-MM-DD';
+
 		return (
-			<Card>
-				<div className={!isWatchVideo ? styles['motion-list-container']:styles['display-none']}>
-					<Row gutter={24} style={{marginLeft:'10px'}}>
-						<Col lg={20} xl={8} xxl={6} style={{marginTop:'10px'}}>
-							<FormattedMessage id='motionList.ipcName' />:&nbsp;&nbsp;
-							<Select defaultValue='0' placeholder={<FormattedMessage id='motionList.select.ipcName' />} style={{ width: '68%' }} onChange={this.ipcSelectHandler}>
-								<Option value='0'><FormattedMessage id='motionList.all' /></Option>
+			<Card bordered={false}>
+				<div className={!isWatchVideo ? styles['motion-list-container'] : styles['display-none']}>
+					<div className={global['search-bar']}>
+						<Form layout="inline">
+							<Row gutter={SEARCH_FORM_GUTTER.NORMAL}>
+								<Col {...SEARCH_FORM_COL.ONE_FOURTH}>
+									<Form.Item
+										label={formatMessage({id: 'motionList.ipcName'})}
+									>
+										{
+											getFieldDecorator('ipcId', {
+												initialValue: 0
+											})(
+												<Select
+													// defaultValue='0'
+													placeholder={formatMessage({id: 'motionList.select.ipcName'})}
+													// onChange={this.ipcSelectHandler}
+												>
+													<Option value={0}>
+														{formatMessage({ id: 'motionList.all' })}
+													</Option>
+
+													{
+														ipcList && ipcList.map((item,index)=> (
+															<Option key={`ipc-selector${index}`} value={item.deviceId}>{item.name}</Option>
+														))
+													}
+
+												</Select>
+											)
+										}
+									</Form.Item>
+								</Col>
+								<Col {...SEARCH_FORM_COL.ONE_FOURTH}>
+									<Form.Item
+										label={formatMessage({id: 'motionList.detectedSource'})}
+									>
+										{
+											getFieldDecorator('detectedSource', {
+												initialValue: 0
+											})(
+												<Select
+													// defaultValue='0'
+													placeholder={formatMessage({id: 'motionList.select.detectedSource'})}
+													// onChange={this.sourceSelectHandler}
+												>
+													<Option value={0}>
+														{formatMessage({id: 'motionList.all'})}
+													</Option>
+													<Option value={1}>
+														{formatMessage({id: 'motionList.image.detect'})}
+													</Option>
+													<Option value={2}>
+														{formatMessage({id: 'motionList.sound.detect'})}
+													</Option>
+													<Option value={3}>
+														{formatMessage({id: 'motionList.soundAndImage.detect'})}
+													</Option>
+												</Select>
+											)
+										}
+
+									</Form.Item>
+
+								</Col>
+								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+									<Form.Item
+										label={formatMessage({id: 'motionList.time'})}
+									>
+										{
+											getFieldDecorator('dateRange', {
+												initialValue: [
+													moment().subtract(1, 'days'),
+													moment()
+												]
+											})(
+												<RangePicker
+													// defaultValue={[moment().subtract(1, 'days'), moment()]}
+													disabledDate={this.disabledDate}
+													// onChange={this.changeHandler}
+													format={dateFormat}
+												/>
+											)
+										}
+									</Form.Item>
+								</Col>
+								<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
+									<Button
+										type="primary"
+										onClick={()=>this.searchHandler()}
+									>
+										{formatMessage({id: 'motionList.search'})}
+									</Button>
+								</Col>
+							</Row>
+						</Form>
+					</div>
+					<div className={styles['table-wrapper']}>
+						<Table
+							columns={this.columns}
+							dataSource={motionList}
+							loading={loading.effects['motionList/read']}
+							pagination={
 								{
-									ipcList && ipcList.map((item,index)=> (
-										<Option key={`ipc-selector${index}`} value={item.deviceId}>{item.deviceName}</Option>
-									))
+									current: currentPage,
+									total,
+									pageSize,
+									showQuickJumper: true,
+									showSizeChanger: true,
+									pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
+									defaultPageSize: DEFAULT_PAGE_SIZE,
+									onShowSizeChange: this.onShowSizeChange,
+									onChange: this.onPaginationChange
 								}
-							</Select>
-						</Col>
-						<Col lg={20} xl={7} xxl={6} style={{marginTop:'10px'}}>
-							<FormattedMessage id='motionList.detectedSource' />:&nbsp;&nbsp;
-							<Select defaultValue='0' placeholder={<FormattedMessage id='motionList.select.detectedSource' />} style={{ width: '70%' }} onChange={this.sourceSelectHandler}>
-								<Option value='0'>
-									<FormattedMessage id='motionList.all' />
-								</Option>
-								<Option value='1'>
-									<FormattedMessage id='motionList.image.detect' />
-								</Option>
-								<Option value='2'>
-									<FormattedMessage id='motionList.sound.detect' />
-								</Option>
-								<Option value='3'>
-									<FormattedMessage id='motionList.soundAndImage.detect' />
-								</Option>
-							</Select>
-						</Col>
-						<Col lg={20} xl={9} xxl={7} style={{marginTop:'10px'}}>
-							<FormattedMessage id='motionList.time' />:&nbsp;&nbsp;
-							<RangePicker
-								defaultValue={[moment().subtract(1, 'days'), moment()]}
-								style={{ width: '74%' }}
-								disabledDate={this.disabledDate}
-								onChange={this.changeHandler}
-								format={dateFormat}
-							/>
-						</Col>
-						<Col lg={16} xl={3} xxl={2} style={{marginTop:'10px'}}>
-							<Button type="primary" style={{ width: '100%' }} onClick={()=>this.searchHandler()}><FormattedMessage id='motionList.search' /></Button>
-						</Col>
-					</Row>
-					<br />
-					<Table columns={this.columns} dataSource={motionList} loading={loading.effects['motionList/read']} />
+							}
+						/>
+					</div>
 				</div>
+
 				<div className={isWatchVideo ? styles['video-player'] : styles['display-none']}>
 					<VideoPlayComponent playing={isWatchVideo} watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} ipcType={ipcType} />
 				</div>
