@@ -202,17 +202,17 @@ export const ZZSY = props => {
 
 export const HBB = props => {
 	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
-	const { saasShopKey = null, saasExtraKey1 = null, saasExtraKey2 = null } = saasInfo;
+	const { saasCompanyKey = null, saasShopKey = null, saasExtraKey1 = null } = saasInfo;
 
 	return (
 		<>
 			<Form.Item label={formatMessage({ id: 'basicData.erp.api.company.number' })}>
 				{mode === MODE.VIEW ? (
-					<span>{saasShopKey}</span>
+					<span>{saasCompanyKey}</span>
 				) : (
 					<>
 						{getFieldDecorator('saas_info.company_number', {
-							initialValue: saasShopKey,
+							initialValue: saasCompanyKey,
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -228,11 +228,11 @@ export const HBB = props => {
 			</Form.Item>
 			<Form.Item label={formatMessage({ id: 'basicData.erp.api.user.number' })}>
 				{mode === MODE.VIEW ? (
-					<span>{saasExtraKey1}</span>
+					<span>{saasShopKey}</span>
 				) : (
 					<>
 						{getFieldDecorator('saas_info.user_number', {
-							initialValue: saasExtraKey1,
+							initialValue: saasShopKey,
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -248,11 +248,11 @@ export const HBB = props => {
 			</Form.Item>
 			<Form.Item label={formatMessage({ id: 'basicData.erp.api.shop.number' })}>
 				{mode === MODE.VIEW ? (
-					<span>{saasExtraKey2}</span>
+					<span>{saasExtraKey1}</span>
 				) : (
 					<>
 						{getFieldDecorator('saas_info.shop_number', {
-							initialValue: saasExtraKey2,
+							initialValue: saasExtraKey1,
 							validateTrigger: 'onBlur',
 							rules: [
 								{
