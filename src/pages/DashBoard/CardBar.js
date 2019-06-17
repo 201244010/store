@@ -47,7 +47,13 @@ const RingRate = props => {
 
 class CardBar extends Component {
 	render() {
-		const { totalLoading } = this.props;
+		const {
+			totalAmountLoading,
+			totalCountLoading,
+			totalRefundLoading,
+			avgUnitLoading,
+		} = this.props;
+
 		const {
 			totalAmount: {
 				totalAmount: amount,
@@ -58,7 +64,7 @@ class CardBar extends Component {
 		} = this.props;
 
 		const totalAmountCard = {
-			loading: totalLoading,
+			loading: totalAmountLoading,
 			title: formatMessage({ id: 'dashBoard.total.sales' }),
 			infoContent: formatMessage({ id: 'dashBoard.total.sales.info' }),
 			content: amount || amount === 0 ? priceFormat(parseFloat(amount).toFixed(2)) : '--',
@@ -90,7 +96,7 @@ class CardBar extends Component {
 		} = this.props;
 
 		const totalCountCard = {
-			loading: totalLoading,
+			loading: totalCountLoading,
 			title: formatMessage({ id: 'dashBoard.total.count' }),
 			infoContent: formatMessage({ id: 'dashBoard.total.count.info' }),
 			content: totalCount !== '' ? totalCount : '--',
@@ -122,7 +128,7 @@ class CardBar extends Component {
 		} = this.props;
 
 		const avgUnitSaleCard = {
-			loading: totalLoading,
+			loading: avgUnitLoading,
 			title: formatMessage({ id: 'dashBoard.customer.unit.price' }),
 			infoContent: formatMessage({ id: 'dashBoard.customer.unit.price.info' }),
 			content: aus || aus === 0 ? parseFloat(aus).toFixed(2) : '--',
@@ -154,7 +160,7 @@ class CardBar extends Component {
 		} = this.props;
 
 		const totalRefundCard = {
-			loading: totalLoading,
+			loading: totalRefundLoading,
 			title: formatMessage({ id: 'dashBoard.total.refund.count' }),
 			infoContent: formatMessage({ id: 'dashBoard.total.refund.count.info' }),
 			content: refundCount !== '' ? refundCount : '--',

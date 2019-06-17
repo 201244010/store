@@ -93,7 +93,11 @@ export default {
 			paymentType: PAYMENT_TYPE.AMOUNT,
 		},
 
-		totalLoading: false,
+		totalAmountLoading: false,
+		totalCountLoading: false,
+		totalRefundLoading: false,
+		avgUnitLoading: false,
+
 		barLoading: false,
 		skuLoading: false,
 		chartLoading: false,
@@ -125,19 +129,35 @@ export default {
 				// total card
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.TOTAL_AMOUNT, needLoading },
+					payload: {
+						queryType: QUERY_TYPE.TOTAL_AMOUNT,
+						needLoading,
+						loadingType: 'totalAmountLoading',
+					},
 				}),
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.TOTAL_COUNT, needLoading },
+					payload: {
+						queryType: QUERY_TYPE.TOTAL_COUNT,
+						needLoading,
+						loadingType: 'totalCountLoading',
+					},
 				}),
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.TOTAL_REFUND, needLoading },
+					payload: {
+						queryType: QUERY_TYPE.TOTAL_REFUND,
+						needLoading,
+						loadingType: 'totalRefundLoading',
+					},
 				}),
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.AVG_UNIT, needLoading },
+					payload: {
+						queryType: QUERY_TYPE.AVG_UNIT,
+						needLoading,
+						loadingType: 'avgUnitLoading',
+					},
 				}),
 				// time duration
 				put({
@@ -171,10 +191,10 @@ export default {
 			} = yield select(state => state.dashBoard);
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 
-			const { queryType = null, needLoading } = payload;
+			const { queryType = null, needLoading, loadingType } = payload;
 			const stateField = stateFields[queryType];
 			const options = {
-				rateRequired: rangeType === RANGE.FREE ? 1 : 0,
+				rateRequired: rangeType === RANGE.FREE ? 0 : 1,
 				timeRangeStart: startTime,
 				timeRangeEnd: endTime,
 			};
@@ -183,7 +203,7 @@ export default {
 				yield put({
 					type: 'switchLoading',
 					payload: {
-						loadingType: 'totalLoading',
+						loadingType,
 						loadingStatus: true,
 					},
 				});
@@ -206,7 +226,7 @@ export default {
 			yield put({
 				type: 'switchLoading',
 				payload: {
-					loadingType: 'totalLoading',
+					loadingType,
 					loadingStatus: false,
 				},
 			});
