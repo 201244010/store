@@ -76,7 +76,7 @@ const getTimeTick = type => {
 	const timeTick = {
 		[RANGE.TODAY]: 12,
 		[RANGE.WEEK]: 7,
-		[RANGE.MONTH]: 10,
+		[RANGE.MONTH]: 13,
 	};
 	return timeTick[type];
 };
