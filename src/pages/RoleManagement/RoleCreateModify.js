@@ -115,7 +115,7 @@ class RoleModify extends React.Component {
 
 		const tmpList = permissionList.map(item => {
 			if (item.group === group) {
-				const plainLength = item.checkedList.permission_list.length;
+				const plainLength = item.checkedList.permissionList.length;
 				item.checkAll = checklist.length === plainLength;
 				item.indeterminate = !!checklist.length && checklist.length < plainLength;
 				item.valueList = checklist;
@@ -133,7 +133,7 @@ class RoleModify extends React.Component {
 		} = this.props;
 		const tmpList = permissionList.map(item => {
 			if (item.group === group) {
-				const permission = item.checkedList.permission_list;
+				const permission = item.checkedList.permissionList;
 				const totalList = permission
 					? permission.map(items => items.value)
 					: [item.checkedList.value];
@@ -209,7 +209,7 @@ class RoleModify extends React.Component {
 													{item.checkedList.label}
 												</Checkbox>
 												<div>
-													{item.checkedList.permission_list && (
+													{item.checkedList.permissionList && (
 														<CheckboxGroup
 															onChange={e =>
 																this.handleGroupChange(
@@ -218,7 +218,7 @@ class RoleModify extends React.Component {
 																)
 															}
 															options={
-																item.checkedList.permission_list
+																item.checkedList.permissionList
 															}
 															value={item.valueList}
 														/>
