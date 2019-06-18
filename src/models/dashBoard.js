@@ -372,10 +372,10 @@ export default {
 								return list.map(item => ({
 									...item,
 									amountPercent: parseFloat(
-										(item.amount / (totalAmount || 1)) * 100
+										Math.abs(item.amount / (totalAmount || 1)) * 100
 									).toFixed(2),
 									countPercent: parseFloat(
-										(item.count / (totalCount || 1)) * 100
+										Math.abs(item.count / (totalCount || 1)) * 100
 									).toFixed(2),
 								}));
 							},
