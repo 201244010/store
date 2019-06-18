@@ -8,8 +8,8 @@ export default {
 	'dashBoard.last.modify.date': '最后更新时间',
 	'dashBoard.refresh.too.fast': '刷新过于频繁，请稍后再试',
 
-	'dashBoard.order.sales': '按金额',
-	'dashBoard.order.count': '按笔数',
+	'dashBoard.order.sales': '按销售额',
+	'dashBoard.order.count': '按订单数',
 	'dashBoard.order.d2d': '日环比',
 	'dashBoard.order.w2w': '周环比',
 	'dashBoard.order.m2m': '月同比',
@@ -25,7 +25,7 @@ export default {
 
 	'dashBoard.trade.time': '交易时间分布',
 
-	'dashBoard.sku.rate': 'SKU排行榜',
+	'dashBoard.sku.rate': '商品销量排行',
 	'dashBoard.payment': '支付方式',
 
 	'dashBoard.trade.date': '交易日期',

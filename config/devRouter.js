@@ -2,17 +2,19 @@ export default [
   {
     path: '/user',
     component: '../layouts/SunmiLayout',
+    id:'user',
     routes: [
       { path: '/user', redirect: '/user/login' },
-      { path: '/user/login', component: './User/Login/LoginUI' },
-      { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelateUI' },
-      { path: '/user/merchantCreate', component: './User/StoreRelate/StoreRelateUI' },
+      { path: '/user/login', component: './User/Login/LoginUI', id: 'userLogin' },
+      { path: '/user/storeRelate', component: './User/StoreRelate/StoreRelateUI', id:'userStore' },
+      { path: '/user/merchantCreate', component: './User/StoreRelate/StoreRelateUI', id: 'userMerchant' },
       { path: '/user/*', component: '404' },
     ],
   },
   {
     path: '/studio',
     component: '../layouts/BlankLayout',
+    id: 'studio',
     routes: [
       { path: '/studio', component: './Studio' },
     ],
@@ -20,6 +22,7 @@ export default [
   {
     path: '/',
     component: '../layouts/BasicLayout',
+    id: 'root',
     Routes: ['/src/components/AuthorithCheck'],
     routes: [
       // TODO 万有集市 临时菜单 START
@@ -28,7 +31,8 @@ export default [
         path:'/dashBoard',
         name:'dashBoard',
         icon: 'blank',
-        component:'./DashBoard'
+        component:'./DashBoard',
+        id: 'dashBoard'
       },
       // todo 新增 应用服务
       // {
@@ -73,42 +77,50 @@ export default [
       {
         path: '/esl',
         name: 'esl',
+        id: 'esl',
         icon: 'blank',
         routes: [
           {
             path: '/esl/electricLabel',
             name: 'electricLabel',
+            id: 'electricLabel',
             component: './DeviceManagement/ESL/ElectricLabel',
           },
           {
             path: '/esl/commRecord',
             name: 'commRecord',
+            id: 'commRecord',
             component: './DeviceManagement/ESL/CommRecord',
           },
           {
             path: '/esl/baseStation',
             name: 'baseStation',
+            id: 'baseStation',
             component: './DeviceManagement/ESL/BaseStation',
           },
           {
             path: '/esl/deviceUpgrade',
             name: 'deviceUpgrade',
+            id: 'deviceUpgrade',
             routes: [
               {
                 path: '/esl/deviceUpgrade',
                 name: 'overview',
+                id: 'deviceUpgradeOverview',
                 hideInMenu: true,
                 component: './DeviceManagement/ESL/DeviceUpgrade',
               },
               {
                 path: '/esl/deviceUpgrade/deviceESL',
                 name: 'deviceESL',
+                id: 'deviceESL',
                 hideInMenu: true,
                 component: './DeviceManagement/ESL/DeviceESL',
               },
               {
                 path: '/esl/deviceUpgrade/deviceAP',
                 name: 'deviceAP',
+                id: 'deviceAP',
                 hideInMenu: true,
                 component: './DeviceManagement/ESL/DeviceAP',
               },
@@ -125,35 +137,41 @@ export default [
       {
         path: '/product',
         name: 'product',
+        id: 'product',
         icon: 'blank',
         routes: [
           {
             path: '/product/list',
             name: 'list',
+            id: 'productList',
             hideInMenu: true,
             component: './BasicData/ProductManagement',
           },
           {
             path: '/product/list/productCreate',
             name: 'list',
+            id: 'productCreate',
             hideInMenu: true,
             component: './BasicData/ProductManagement/ProductCU',
           },
           {
             path: '/product/list/productUpdate',
             name: 'list',
+            id: 'productUpdate',
             hideInMenu: true,
             component: './BasicData/ProductManagement/ProductCU',
           },
           {
             path: '/product/list/productInfo',
             name: 'list',
+            id: 'productInfo',
             hideInMenu: true,
             component: './BasicData/ProductManagement/ProductInfo',
           },
           {
             path: '/product/list/erpImport',
             name: 'list',
+            id: 'erpImport',
             hideInMenu: true,
             component: './BasicData/ProductManagement/ERPImport',
           },
@@ -163,17 +181,20 @@ export default [
       {
         path: '/company',
         name: 'company',
+        id: 'company',
         icon: 'blank',
         routes: [
           { path: '/company/merchantManagement', redirect: '/company/merchantManagement/view' },
           {
             path: '/company/merchantManagement/view',
             name: 'merchantManagement',
+            id: 'merchantView',
             component: './MerchantManagement/MerchantView',
           },
           {
             path: '/company/merchantManagement/modify',
             name: 'merchantManagement',
+            id: 'merchantModify',
             hideInMenu: true,
             component: './MerchantManagement/MerchantModify',
           },
@@ -184,24 +205,28 @@ export default [
           {
             path: '/company/storeManagement/list',
             name: 'storeManagement',
+            id: 'storeList',
             component: './StoreManagement',
           },
           {
             path: '/company/storeManagement/createStore',
             component: './StoreManagement/CreateStore.js',
             name: 'storeManagement',
+            id: 'storeCreate',
             hideInMenu: true,
           },
           {
             path: '/company/storeManagement/storeInformation',
             component: './StoreManagement/StoreInformation.js',
             name: 'storeManagement',
+            id: 'storeInfo',
             hideInMenu: true,
           },
           {
             path: '/company/storeManagement/alterStore',
             component: './StoreManagement/CreateStore.js',
             name: 'storeManagement',
+            id: 'storeUpdate',
             hideInMenu: true,
           },
           { path: '/company', redirect: '/company/merchantManagement' },
@@ -210,12 +235,14 @@ export default [
       {
         path: '/template',
         name: 'template',
+        id: 'template',
         icon: 'blank',
         routes: [
           { path: '/template', redirect: '/template/list' },
           {
             path: '/template/list',
             name: 'list',
+            id: 'templateList',
             component: './Template',
           },
         ],
@@ -223,29 +250,34 @@ export default [
       {
         path: '/roleManagement',
         name: 'roleManagement',
+        id: 'roleManagement',
         icon: 'blank',
         routes: [
           { path: '/roleManagement', redirect: '/roleManagement/roleList' },
           {
             path: '/roleManagement/roleList',
             name: 'roleList',
+            id: 'roleList',
             component: './RoleManagement/RoleList',
           },
           {
             path: '/roleManagement/create',
             name: 'create',
+            id: 'roleCreate',
             component: './RoleManagement/RoleCreateModify',
             hideInMenu: true,
           },
           {
             path: '/roleManagement/modify',
             name: 'modify',
+            id: 'roleModify',
             component: './RoleManagement/RoleCreateModify',
             hideInMenu: true,
           },
           {
             path: '/roleManagement/view',
             name: 'view',
+            id: 'roleInfo',
             component: './RoleManagement/RoleView',
             hideInMenu: true,
           },
@@ -263,6 +295,7 @@ export default [
       {
         path: '/deviceManagement',
         name: 'deviceManagement',
+        id: 'deviceManagement',
         icon: 'blank',
         // TODO 万有集市临时用菜单隐藏
         hideInMenu: true,
@@ -387,7 +420,7 @@ export default [
       // 不在 menu 中显示的路由
       {
         path: '/account',
-        name: 'account',
+        id: 'account',
         hideInMenu: true,
         routes: [
           {
@@ -400,16 +433,19 @@ export default [
 
       {
         path: '/notification',
+        id: 'notification',
         hideInMenu: true,
         routes: [
           {
             path: '/notification/center',
             name: 'notification',
+            id: 'notificationList',
             component: './NotificationCenter/NotificationCenter',
           },
           {
             path: '/notification/info',
             name: 'notification',
+            id: 'notificationInfo',
             component: './NotificationCenter/NotificationInfo',
           },
           {
@@ -428,6 +464,7 @@ export default [
           {
             path: '/exception/403',
             name: 'not-permission',
+            id: 'noPermission',
             component: './Exception/403',
           },
         ]

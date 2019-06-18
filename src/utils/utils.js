@@ -393,10 +393,13 @@ export const getRandomString = () =>
 		.substring(2);
 
 export const priceFormat = (price, dotPos = 3) => {
-	const priceStr = price.toString();
+	const isNagtive = Number(price) < 0;
+	const priceString = `${price}`;
+	const priceStr = isNagtive ? priceString.slice(1) : priceString;
+
 	const [round, decimal] = priceStr.split('.');
 	if (round.length < 4) {
-		return priceStr;
+		return `${isNagtive ? '-' : ''}${priceStr}`;
 	}
 
 	const reverseRound = round.split('').reverse();
@@ -408,10 +411,7 @@ export const priceFormat = (price, dotPos = 3) => {
 		return (cur += prev);
 	});
 
-	const formattedRound = reversedRound
-		.split('.')
-		.reverse()
-		.join('');
-
-	return decimal ? `${formattedRound}.${decimal}` : formattedRound;
+	return decimal
+		? `${isNagtive ? '-' : ''}${reversedRound}.${decimal}`
+		: `${isNagtive ? '-' : ''}${reversedRound}`;
 };
