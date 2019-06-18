@@ -467,6 +467,12 @@ export default [
             id: 'noPermission',
             component: './Exception/403',
           },
+          {
+            path: '/exception/404',
+            name: 'no-rescourse',
+            id: 'noRescourse',
+            component: './Exception/403',
+          },
         ]
       },
       

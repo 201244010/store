@@ -153,11 +153,22 @@ export default {
 			});
 		},
 
-		*goToMenu({ pathId = 'root' }, { select }) {
+		*goToMenu({ pathId = null, urlParams = {} }, { select }) {
 			const { flattedRoutes } = yield select(state => state.menu);
 			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
 
-			router.push(path);
+			if (!path) {
+				router.push('/exception/404');
+			}
+
+			const keyList = Object.keys(urlParams);
+			if (keyList.length > 0) {
+				const query = keyList.map(key => `${key}=${urlParams[key]}`).join('&');
+
+				router.push(`${path}?${query}`);
+			} else {
+				router.push(path);
+			}
 		},
 	},
 
