@@ -38,7 +38,7 @@ const FormItem = Form.Item;
 class RoleList extends React.Component {
 	constructor(props) {
 		super(props);
-		const {loading} = this.props;
+		const { loading } = this.props;
 		this.columns = [
 			{
 				title: formatMessage({ id: 'roleManagement.role.roleName' }),
@@ -62,49 +62,48 @@ class RoleList extends React.Component {
 			},
 			{
 				title: formatMessage({ id: 'list.action.title' }),
-				render: (_, record) =>
-					record.isDefault ? (
-						<a href="javascript:void(0);" className={styles.view} onClick={() => this.goPath(record, 'view')}>
+				render: (_, record) => (
+					<div>
+						<a
+							href="javascript:void(0);"
+							className={styles.view}
+							onClick={() => this.goPath(record, 'view')}
+						>
 							{formatMessage({ id: 'list.action.view' })}
 						</a>
-					) : (
-						<div>
-							<a
-								href="javascript:void(0);"
-								className={styles.view}
-								onClick={() => this.goPath(record, 'view')}
-							>
-								{formatMessage({ id: 'list.action.view' })}
-							</a>
-							<Divider type="vertical" />
-							<a
-								href="javascript:void(0);"
-								className={styles.view}
-								onClick={() => this.goPath(record, 'modify')}
-							>
-								{formatMessage({ id: 'list.action.edit' })}
-							</a>
-							<Divider type="vertical" />
-							<Popconfirm
-								title={formatMessage({ id: 'roleManagement.role.deleteRole' })}
-								icon={
-									<Icon
-										theme="filled"
-										style={{ color: 'red' }}
-										type="close-circle"
-									/>
-								}
-								onConfirm={() => this.deleteRole(record)}
-								okButtonProps={{
-									loading: loading.effects['role/deleteRole'],
-								}}
-							>
-								<a href="javascript:void(0);" className={styles.view}>
-									{formatMessage({ id: 'list.action.delete' })}
+						{!record.isDefault && (
+							<span>
+								<Divider type="vertical" />
+								<a
+									href="javascript:void(0);"
+									className={styles.view}
+									onClick={() => this.goPath(record, 'modify')}
+								>
+									{formatMessage({ id: 'list.action.edit' })}
 								</a>
-							</Popconfirm>
-						</div>
-					),
+								<Divider type="vertical" />
+								<Popconfirm
+									title={formatMessage({ id: 'roleManagement.role.deleteRole' })}
+									icon={
+										<Icon
+											theme="filled"
+											style={{ color: 'red' }}
+											type="close-circle"
+										/>
+									}
+									onConfirm={() => this.deleteRole(record)}
+									okButtonProps={{
+										loading: loading.effects['role/deleteRole'],
+									}}
+								>
+									<a href="javascript:void(0);" className={styles.view}>
+										{formatMessage({ id: 'list.action.delete' })}
+									</a>
+								</Popconfirm>
+							</span>
+						)}
+					</div>
+				),
 			},
 		];
 	}
@@ -129,7 +128,6 @@ class RoleList extends React.Component {
 	};
 
 	goPath = (rowDetail, path) => {
-		console.log('goPath');
 		const encodeID = rowDetail.id ? idEncode(rowDetail.id) : null;
 		const urlMap = {
 			modify: `${MENU_PREFIX.ROLE}/modify?action=modify&id=${encodeID}`,

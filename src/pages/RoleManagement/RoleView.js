@@ -41,10 +41,11 @@ class RoleView extends React.Component {
 	render() {
 		const {
 			role: {
-				roleInfo: { name, isDefault, permission_list: checkIdList },
+				roleInfo: { name, isDefault, permissionList },
 			},
 			loading,
 		} = this.props;
+	
 		return (
 			<Card>
 				<Spin spinning={loading.effects['role/getRoleInfo']}>
@@ -59,7 +60,7 @@ class RoleView extends React.Component {
 								label={formatMessage({ id: 'roleManagement.role.roleRoot' })}
 							>
 								<div>
-									{checkIdList.map((item, key) => (
+									{permissionList.map((item, key) => (
 										<div key={key} style={{ marginBottom: '30px' }}>
 											<Checkbox
 												indeterminate={item.indeterminate}
@@ -70,10 +71,10 @@ class RoleView extends React.Component {
 												{item.checkedList.label}
 											</Checkbox>
 											<div>
-												{item.checkedList.permission_list && (
+												{item.checkedList.permissionList && (
 													<CheckboxGroup
 														disabled
-														options={item.checkedList.permission_list}
+														options={item.checkedList.permissionList}
 														value={item.valueList}
 													/>
 												)}
