@@ -1,7 +1,7 @@
 import * as Action from '@/services/dashBoard';
 import moment from 'moment';
 import { ERROR_OK } from '@/constants/errorCode';
-import { format } from '@konata9/milk-shake';
+import { shake, format, map } from '@konata9/milk-shake';
 
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 
@@ -361,9 +361,49 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 
+				const formattedData = shake(data)(
+					format('toCamel'),
+					map([
+						{
+							from: 'purchaseTypeList',
+							to: 'purchaseTypeList',
+							rule: (list, params) => {
+								const { totalAmount, totalCount } = params;
+								return list.map(item => ({
+									...item,
+									amountPercent: parseFloat(
+										(item.amount / (totalAmount || 1)) * 100
+									).toFixed(2),
+									countPercent: parseFloat(
+										(item.count / (totalCount || 1)) * 100
+									).toFixed(2),
+								}));
+							},
+						},
+					])
+				);
+
+				const sortedData = sortPurchaseOrder(formattedData);
+				const { purchaseTypeList = [] } = sortedData;
+				const total = purchaseTypeList.slice(0, 5).reduce((prev, cur) => ({
+					amountPercent: parseFloat(
+						1 * prev.amountPercent + 1 * cur.amountPercent
+					).toFixed(2),
+					countPercent: parseFloat(1 * prev.countPercent + 1 * cur.countPercent).toFixed(
+						2
+					),
+				}));
+
+				const [rest] = purchaseTypeList.slice(5);
+				rest.amountPercent = parseFloat(100 - (1 * total.amountPercent || 100)).toFixed(2);
+
+				rest.countPercent = parseFloat(100 - (1 * total.countPercent || 100)).toFixed(2);
+
+				sortedData.purchaseTypeList = [...purchaseTypeList.slice(0, 5), rest];
+
 				yield put({
 					type: 'updateState',
-					payload: { purchaseInfo: sortPurchaseOrder(format('toCamel')(data)) },
+					payload: { purchaseInfo: sortedData },
 				});
 			}
 

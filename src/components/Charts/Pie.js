@@ -36,7 +36,10 @@ class Pie extends Component {
 		} = chartStyle;
 
 		const { color = '#4DBBFF', active = false } = pieStyle;
-		const data = [{ x: 'direct', y: percent }, { x: 'inverse', y: 100 - percent }];
+		const data = [
+			{ x: 'direct', y: parseInt(percent, 10) },
+			{ x: 'inverse', y: 100 - parseInt(percent, 10) },
+		];
 
 		const dv = new DataView();
 		dv.source(data).transform({
