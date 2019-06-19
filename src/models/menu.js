@@ -1,10 +1,13 @@
 import memoizeOne from 'memoize-one';
 import isEqual from 'lodash/isEqual';
 import { formatMessage } from 'umi/locale';
+import router from 'umi/router';
 import Authorized from '@/utils/Authorized';
 import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
+
+import routeConfig from '@/config/devRouter';
 
 import { env } from '@/config';
 
@@ -95,6 +98,25 @@ const memoizeOneGetBreadcrumbNameMap = memoizeOne(getBreadcrumbNameMap, isEqual)
 const checkMenuAuth = (menuData, authMenuList = []) =>
 	menuData.filter(menu => authMenuList.includes(menu.path.slice(1)));
 
+const flatRoutes = routesList => {
+	let result = [];
+	routesList.forEach(route => {
+		const { routes, id, path, name } = route;
+		if (id) {
+			result = [...result, { id, path, name }];
+		}
+
+		if (routes && routes.length > 0) {
+			const childRoutes = flatRoutes(routes);
+			result = [...result, ...childRoutes];
+		}
+	});
+
+	return result;
+};
+
+const flattedRoutes = flatRoutes(routeConfig);
+
 export default {
 	namespace: 'menu',
 
@@ -131,6 +153,32 @@ export default {
 					routes,
 				},
 			});
+		},
+
+		goToPath({ payload = {} }) {
+			const { pathId = null, urlParams = {}, open = false } = payload;
+
+			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
+
+			// console.log('input id:', pathId, '   matched path:', path);
+			// console.log(flattedRoutes);
+
+			if (!path) {
+				router.push('/exception/404');
+			}
+
+			const keyList = Object.keys(urlParams);
+			let targetPath = path;
+			if (keyList.length > 0) {
+				const query = keyList.map(key => `${key}=${urlParams[key]}`).join('&');
+				targetPath = `${path}?${query}`;
+			}
+
+			if (open) {
+				window.open(targetPath);
+			} else {
+				router.push(targetPath);
+			}
 		},
 	},
 

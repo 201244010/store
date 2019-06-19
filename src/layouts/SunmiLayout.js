@@ -6,7 +6,6 @@ import DocumentTitle from 'react-document-title';
 import pathToRegexp from 'path-to-regexp';
 import HeaderDropdown from '@/components/HeaderDropdown';
 import { Menu, Avatar, Icon } from 'antd';
-import router from 'umi/router';
 import { getLocationParam } from '@/utils/utils';
 import * as styles from './SunmiLayout.less';
 
@@ -45,15 +44,13 @@ class SunmiLayout extends React.PureComponent {
 	};
 
 	onMenuClick = async ({ key }) => {
-		const { dispatch } = this.props;
+		const { logout, goToPath } = this.props;
 		if (key === 'userCenter') {
-			router.push('/account');
+			goToPath('account');
 			return;
 		}
 		if (key === 'logout') {
-			dispatch({
-				type: 'user/logout',
-			});
+			logout();
 		}
 	};
 
@@ -159,7 +156,14 @@ class SunmiLayout extends React.PureComponent {
 	}
 }
 
-export default connect(({ user, menu }) => ({
-	currentUser: user.currentUser,
-	breadcrumbNameMap: menu.breadcrumbNameMap,
-}))(SunmiLayout);
+export default connect(
+	({ user, menu }) => ({
+		currentUser: user.currentUser,
+		breadcrumbNameMap: menu.breadcrumbNameMap,
+	}),
+	dispatch => ({
+		logout: () => dispatch({ type: 'user/logout' }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+	})
+)(SunmiLayout);

@@ -19,6 +19,8 @@ import * as styles from './Account.less';
 		sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
 		checkUserExist: payload => dispatch({ type: 'user/checkUserExist', payload }),
 		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 class UserCenter extends Component {
@@ -38,6 +40,7 @@ class UserCenter extends Component {
 			sendCode,
 			updateIcon,
 			checkUserExist,
+			goToPath,
 		} = this.props;
 
 		return (
@@ -57,6 +60,7 @@ class UserCenter extends Component {
 						updatePhone,
 						sendCode,
 						checkUserExist,
+						goToPath,
 					}}
 				/>
 				<Store

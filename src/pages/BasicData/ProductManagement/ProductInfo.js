@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button, Card } from 'antd';
-import router from 'umi/router';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import ProductInfoBasic from './ProductInfo-Basic';
@@ -8,7 +7,6 @@ import ProductInfoPrice from './ProductInfo-Price';
 import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
 import { PRODUCT_BASIC, PRODUCT_PRICE } from '@/constants/mapping';
 import * as styles from './ProductManagement.less';
-import { MENU_PREFIX } from '@/constants';
 
 const MESSAGE_PREFIX = {
 	product: 'basicData.product',
@@ -23,6 +21,8 @@ const MESSAGE_PREFIX = {
 	dispatch => ({
 		getProductDetail: payload =>
 			dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 class ProductInfo extends Component {
@@ -41,12 +41,27 @@ class ProductInfo extends Component {
 			product: {
 				productInfo: { id },
 			},
+			goToPath,
 		} = this.props;
+
 		const path = {
-			edit: `${MENU_PREFIX.PRODUCT}/productUpdate?action=edit&id=${idEncode(id)}&from=detail`,
-			back: `${MENU_PREFIX.PRODUCT}`,
+			edit: {
+				pathId: 'productUpdate',
+				urlParams: {
+					action: 'edit',
+					id: idEncode(id),
+					from: 'detail',
+				},
+			},
+			back: {
+				pathId: 'productList',
+			},
 		};
-		router.push(path[target] || '/');
+
+		const { pathId, urlParams = {} } = path[target] || {};
+
+		goToPath(pathId, urlParams);
+		// router.push(path[target] || '/');
 	};
 
 	formatProductInfo = (productInfo = [], template = {}, type = 'product') => {

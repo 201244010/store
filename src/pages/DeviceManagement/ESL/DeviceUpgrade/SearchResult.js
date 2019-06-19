@@ -3,8 +3,6 @@ import { Divider, Table, Switch } from 'antd';
 import { formatMessage } from 'umi/locale';
 import FirmwareUploadModal from './FirmwareUploadModal';
 import { ERROR_OK, ERR_FIRMWARE_VERSION_LOWER, ERR_FIRMWARE_EXIST } from '@/constants/errorCode';
-import router from 'umi/router';
-import { MENU_PREFIX } from '@/constants';
 
 class SearchResult extends Component {
 	constructor(props) {
@@ -17,12 +15,16 @@ class SearchResult extends Component {
 	}
 
 	toPath = record => {
-		const { type } = this.props;
-		router.push(
-			`${MENU_PREFIX.DEVICE_UPGRADE}/device${type}?model=${record.model}&version=${
-				record.bin_version
-			}&groupId=${record.id}&upgraded=${record.upgraded_num}`
-		);
+		const { type, goToPath } = this.props;
+
+		const pathId = type === 'ESL' ? 'deviceESL' : 'deviceAP';
+
+		goToPath(pathId, {
+			model: record.model,
+			version: record.bin_version,
+			groupId: record.id,
+			upgraded: record.upgraded_num,
+		});
 	};
 
 	autoUpdateChange = (checked, record) => {

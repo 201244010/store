@@ -1,21 +1,10 @@
 import * as Actions from '@/services/BasicData/product';
 import { message } from 'antd';
-import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
-import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME, MENU_PREFIX } from '@/constants';
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { idEncode } from '@/utils/utils';
 import * as CookieUtil from '@/utils/cookies';
-
-const goNext = (fromPage = 'list', options) => {
-	const { product_id: id } = options;
-	const path = {
-		list: `${MENU_PREFIX.PRODUCT}`,
-		detail: `${MENU_PREFIX.PRODUCT}/productInfo?id=${idEncode(id)}`,
-	};
-
-	router.push(path[fromPage]);
-};
 
 export default {
 	namespace: 'basicDataProduct',
@@ -178,7 +167,13 @@ export default {
 					type: 'updateState',
 					payload: { loading: false },
 				});
-				router.push(`${MENU_PREFIX.PRODUCT}`);
+				yield put({
+					type: 'menu/goToPath',
+					payload:{
+						pathId: 'productList'
+					}
+				});
+				// router.push(`${MENU_PREFIX.PRODUCT}`);
 			} else {
 				message.error(formatMessage({ id: 'product.create.error' }));
 				yield put({
@@ -214,7 +209,23 @@ export default {
 					},
 				});
 				const { fromPage, product_id } = options;
-				goNext(fromPage, { product_id });
+				const pagePath = {
+					list: {
+						pathId: 'productList'
+					},
+					detail:{
+						pathId: 'productInfo',
+						urlParams: {
+							id: idEncode(product_id)
+						}
+					}
+				};
+				
+				yield put({
+					type: 'menu/goToPath',
+					payload: pagePath[fromPage]
+				});
+
 			} else {
 				message.error(formatMessage({ id: 'product.update.error' }));
 				yield put({
