@@ -19,6 +19,12 @@ class SunmiLayout extends React.PureComponent {
 	}
 
 	componentDidMount() {
+		const {
+			setFlatRoutes,
+			route: { routes },
+		} = this.props;
+
+		setFlatRoutes(routes);
 		this.changeBgClass();
 	}
 
@@ -159,7 +165,12 @@ class SunmiLayout extends React.PureComponent {
 	}
 }
 
-export default connect(({ user, menu }) => ({
-	currentUser: user.currentUser,
-	breadcrumbNameMap: menu.breadcrumbNameMap,
-}))(SunmiLayout);
+export default connect(
+	({ user, menu }) => ({
+		currentUser: user.currentUser,
+		breadcrumbNameMap: menu.breadcrumbNameMap,
+	}),
+	dispatch => ({
+		setFlatRoutes: routes => dispatch({ type: 'menu/setFlatRoutes', payload: { routes } }),
+	})
+)(SunmiLayout);

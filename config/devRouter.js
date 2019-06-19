@@ -25,8 +25,6 @@ export default [
     id: 'root',
     Routes: ['/src/components/AuthorithCheck'],
     routes: [
-      // TODO 万有集市 临时菜单 START
-
       {
         path:'/dashBoard',
         name:'dashBoard',
@@ -34,46 +32,6 @@ export default [
         component:'./DashBoard',
         id: 'dashBoard'
       },
-      // todo 新增 应用服务
-      // {
-      // 	path: '/application',
-      // 	name: 'application',
-      // 	icon: 'blank',
-      // 	routes:[
-      // 		{
-      // 			path: '/cashVerify',
-      // 			icon: 'blank',
-      // 			name: 'cashVerify',
-      // 			routes: [
-      // 				{
-      // 					path: '/cashVerify/posList',
-      // 					name: 'bindPOSDevice',
-      // 					// hideInMenu: true,
-      // 					component: './IPC/POSManagement/POSList.js'
-      // 				},
-      // 				{
-      // 					path: '/cashVerify/bindPOSDevice',
-      // 					name: 'bindPOSDevice',
-      // 					hideInMenu: true,
-      // 					component: './IPC/POSManagement/BindPOS.js'
-      // 				},
-      // 				{
-      // 					path: '/cashVerify/videos',
-      // 					name: 'videos',
-      // 					hideInMenu: true,
-      // 					component: './IPC/TradeVideos/TradeVideos.js',
-      // 				},
-      // 				{
-      // 					path: '/cashVerify',
-      // 					redirect: '/cashVerify/posList'
-      // 				}
-      // 			]
-      // 		},
-      // 	]
-      // },
-
-      
-
       {
         path: '/esl',
         name: 'esl',
@@ -127,11 +85,6 @@ export default [
             ],
           },
           { path: '/esl', redirect: '/esl/electricLabel' },
-          // {
-          // 	path: '/esl/systemConfig',
-          // 	name: 'systemConfig',
-          // 	component: './DeviceManagement/ESL/SystemConfig',
-          // },
         ],
       },
       {
@@ -284,139 +237,6 @@ export default [
         ],
       },
       // TODO 万有集市 临时菜单 END
-
-      // dashboard
-      // {
-      //     path: '/dashBoard',
-      //     name: 'dashBoard',
-      //     icon: 'blank',
-      //     component: './DashBoard',
-      // },
-      {
-        path: '/deviceManagement',
-        name: 'deviceManagement',
-        id: 'deviceManagement',
-        icon: 'blank',
-        // TODO 万有集市临时用菜单隐藏
-        hideInMenu: true,
-        routes: [
-          {
-            path: '/deviceManagement/esl',
-            name: 'esl',
-            routes: [
-              { path: '/deviceManagement/esl', redirect: '/deviceManagement/esl/electricLabel' },
-              {
-                path: '/deviceManagement/esl/electricLabel',
-                name: 'electricLabel',
-                component: './DeviceManagement/ESL/ElectricLabel',
-              },
-              {
-                path: '/deviceManagement/esl/baseStation',
-                name: 'baseStation',
-                component: './DeviceManagement/ESL/BaseStation',
-              },
-              { path: '/deviceManagement', redirect: '/deviceManagement/esl' },
-            ],
-          },
-        ],
-      },
-      {
-        path: '/basicData',
-        name: 'basicData',
-        icon: 'blank',
-        hideInMenu: true,
-        routes: [
-          {
-            path: '/basicData/productManagement',
-            name: 'productManagement',
-            routes: [
-              { path: '/basicData/productManagement', redirect: '/basicData/productManagement/list' },
-              {
-                path: '/basicData/productManagement/list',
-                name: 'list',
-                component: './BasicData/ProductManagement',
-              },
-              {
-                path: '/basicData/productManagement/list/productCreate',
-                name: 'list',
-                hideInMenu: true,
-                component: './BasicData/ProductManagement/ProductCU',
-              },
-              {
-                path: '/basicData/productManagement/list/productUpdate',
-                name: 'list',
-                hideInMenu: true,
-                component: './BasicData/ProductManagement/ProductCU',
-              },
-              {
-                path: '/basicData/productManagement/list/productInfo',
-                name: 'list',
-                hideInMenu: true,
-                component: './BasicData/ProductManagement/ProductInfo',
-              },
-              {
-                path: '/basicData/productManagement/list/erpImport',
-                name: 'list',
-                hideInMenu: true,
-                component: './BasicData/ProductManagement/ERPImport',
-              },
-              { path: '/basicData', redirect: '/basicData/productManagement' },
-            ],
-          },
-          {
-            path: '/basicData/merchantManagement/view',
-            name: 'merchantManagement',
-            component: './MerchantManagement/MerchantView',
-          },
-          {
-            path: '/basicData/merchantManagement/modify',
-            name: 'merchantManagement',
-            hideInMenu: true,
-            component: './MerchantManagement/MerchantModify',
-          },
-          {
-            path: '/basicData/storeManagement',
-            name: 'storeManagement',
-            routes: [
-              {
-                path: '/basicData/storeManagement/list',
-                component: './StoreManagement/index.js',
-                name: 'list',
-              },
-              {
-                path: '/basicData/storeManagement/createStore',
-                component: './StoreManagement/CreateStore.js',
-                name: 'createStore',
-                hideInMenu: true,
-              },
-              {
-                path: '/basicData/storeManagement/storeInformation',
-                component: './StoreManagement/StoreInformation.js',
-                hideInMenu: true,
-              },
-              {
-                path: '/basicData/storeManagement/alterStore',
-                component: './StoreManagement/AlterStore.js',
-                hideInMenu: true,
-              },
-              { path: '/basicData/storeManagement', redirect: '/basicData/storeManagement/list' },
-            ],
-          },
-        ],
-      },
-      // {
-      //   path: '/setting',
-      //   name: 'setting',
-      //   icon: '',
-      //   routes: [
-      //     {
-      //       path: '/setting/role',
-      //       name: 'role',
-      //       component: './Setting/Role',
-      //     },
-      //   ],
-      // },
-      
       // 不在 menu 中显示的路由
       {
         path: '/account',

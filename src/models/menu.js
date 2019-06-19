@@ -124,6 +124,22 @@ export default {
 	},
 
 	effects: {
+		*setFlatRoutes({ payload = {} }, { select, put }) {
+			const { routes = [] } = payload;
+			const { flattedRoutes } = yield select(state => state.menu);
+
+			const routesSet = new Set([
+				...flattedRoutes.map(route => JSON.stringify(route)),
+				...flatRoutes(routes).map(route => JSON.stringify(route)),
+			]);
+
+			yield put({
+				type: 'save',
+				payload: {
+					flattedRoutes: [...routesSet].map(route => JSON.parse(route)),
+				},
+			});
+		},
 		*getMenuData({ payload }, { put, call }) {
 			const { routes, authority } = payload;
 			const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
@@ -148,13 +164,14 @@ export default {
 					menuData: filteredMenuData,
 					breadcrumbNameMap,
 					routes,
-					flattedRoutes: flatRoutes(routes),
 				},
 			});
 		},
 
-		*goToMenu({ pathId = null, urlParams = {} }, { select }) {
+		*goToPath({ payload = {} }, { select }) {
+			const { pathId = null, urlParams = {} } = payload;
 			const { flattedRoutes } = yield select(state => state.menu);
+
 			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
 
 			if (!path) {
