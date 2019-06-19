@@ -18,6 +18,8 @@ import SearchResult from './SearchResult';
 		updateAPAutoUpgradeStatus: payload =>
 			dispatch({ type: 'deviceAP/updateAPAutoUpgradeStatus', payload }),
 		uploadAPFirmware: payload => dispatch({ type: 'deviceAP/uploadAPFirmware', payload }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 class DeviceUpgrade extends Component {
@@ -43,6 +45,7 @@ class DeviceUpgrade extends Component {
 			updateAPAutoUpgradeStatus,
 			uploadESLFirmware,
 			uploadAPFirmware,
+			goToPath,
 		} = this.props;
 		return (
 			<Card bordered={false}>
@@ -58,6 +61,7 @@ class DeviceUpgrade extends Component {
 								loading: eslLoading,
 								updateAutoUpgradeStatus: updateESLAutoUpgradeStatus,
 								firmwareUpload: uploadESLFirmware,
+								goToPath,
 							}}
 						/>
 					</Tabs.TabPane>
@@ -72,6 +76,7 @@ class DeviceUpgrade extends Component {
 								loading: apLoading,
 								updateAutoUpgradeStatus: updateAPAutoUpgradeStatus,
 								firmwareUpload: uploadAPFirmware,
+								goToPath,
 							}}
 						/>
 					</Tabs.TabPane>

@@ -14,7 +14,7 @@ const DisplayCard = props => {
 
 	return (
 		<div className={styles['card-wrapper']}>
-			<Card title={null} bordered={false} hoverable loading={loading}>
+			<Card title={null} bordered={false} loading={loading}>
 				<div className={styles['card-title']}>
 					<div>{title}</div>
 					<Tooltip title={infoContent}>

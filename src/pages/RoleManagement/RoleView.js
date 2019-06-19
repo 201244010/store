@@ -4,8 +4,6 @@ import { connect } from 'dva';
 import { idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
-import router from 'umi/router';
-import { MENU_PREFIX } from '@/constants';
 
 import styles from './Role.less';
 
@@ -19,6 +17,8 @@ const CheckboxGroup = Checkbox.Group;
 	}),
 	dispatch => ({
 		getRoleInfo: payload => dispatch({ type: 'role/getRoleInfo', payload }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 @Form.create()
@@ -35,12 +35,17 @@ class RoleView extends React.Component {
 	confirm = () => {
 		const {
 			query: { id },
+			goToPath,
 		} = this.props;
-		router.push(`${MENU_PREFIX.ROLE}/modify?action=modify&id=${id}`);
+
+		goToPath('roleModify', { action: 'modify', id });
+		// router.push(`${MENU_PREFIX.ROLE}/modify?action=modify&id=${id}`);
 	};
 
 	cancel = () => {
-		router.push(`${MENU_PREFIX.ROLE}/roleList`);
+		const { goToPath } = this.props;
+		goToPath('roleList');
+		// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 	};
 
 	render() {

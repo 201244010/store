@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import { Divider, Modal, Table, Button } from 'antd';
 import { CustomSkeleton } from '@/components/Skeleton';
 import { idEncode, unixSecondToDate } from '@/utils/utils';
-import router from 'umi/router';
 import * as CookieUtil from '@/utils/cookies';
 import { formatMessage } from 'umi/locale';
-import { MENU_PREFIX } from '@/constants';
 import * as styles from './ProductManagement.less';
 
 class SearchResult extends Component {
@@ -34,15 +32,37 @@ class SearchResult extends Component {
 	};
 
 	toPath = (name, record = {}) => {
+		const { goToPath } = this.props;
 		const encodeID = record.id ? idEncode(record.id) : null;
 		const urlMap = {
-			productDetail: `${MENU_PREFIX.PRODUCT}/productInfo?id=${encodeID}&from=list`,
-			createProduct: `${MENU_PREFIX.PRODUCT}/productCreate?action=create&from=list`,
-			update: `${MENU_PREFIX.PRODUCT}/productUpdate?action=edit&id=${encodeID}&from=list`,
-			erpImport: `${MENU_PREFIX.PRODUCT}/erpImport`,
+			productDetail: {
+				pathId: 'productInfo',
+				urlParams: { id: encodeID, from: 'list' },
+			},
+			createProduct: {
+				pathId: 'productCreate',
+				urlParams: {
+					action: 'create',
+					from: 'list',
+				},
+			},
+			update: {
+				pathId: 'productUpdate',
+				urlParams: {
+					action: 'edit',
+					id: encodeID,
+					from: 'list',
+				},
+			},
+			erpImport: {
+				pathId: 'erpImport',
+				urlParams: {},
+			},
 		};
 
-		router.push(urlMap[name]);
+		const { pathId, urlParams = {} } = urlMap[name] || {};
+		goToPath(pathId, urlParams);
+		// router.push(urlMap[name]);
 	};
 
 	deleteProducts = () => {
@@ -185,18 +205,18 @@ class SearchResult extends Component {
 								selectedRowKeys.length === 0
 									? `${formatMessage({
 										id: 'pagination.total.prefix',
-									})}${total}${formatMessage({
+									  })}${total}${formatMessage({
 										id: 'basicData.product.total',
-									})}`
+									  })}`
 									: `${formatMessage({
 										id: 'pagination.total.prefix',
-									})}${total}${formatMessage({
+									  })}${total}${formatMessage({
 										id: 'basicData.product.total',
-									})}${formatMessage({ id: 'basicData.product.selected' })}${
+									  })}${formatMessage({ id: 'basicData.product.selected' })}${
 										selectedRowKeys.length
-									}${formatMessage({
+									  }${formatMessage({
 										id: 'basicData.product.pagination.unit',
-									})}`,
+									  })}`,
 						}}
 						onChange={this.onTableChange}
 					/>
