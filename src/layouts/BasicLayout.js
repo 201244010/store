@@ -67,12 +67,6 @@ class BasicLayout extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		const {
-			setFlatRoutes,
-			route: { routes },
-		} = this.props;
-
-		setFlatRoutes(routes);
 		this.dataInitial();
 	}
 
@@ -264,7 +258,6 @@ export default connect(
 	dispatch => ({
 		getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
-		setFlatRoutes: routes => dispatch({ type: 'menu/setFlatRoutes', payload: { routes } }),
 		goToPath: (pathId, urlParams = {}, open = false) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 		dispatch,

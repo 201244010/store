@@ -3,9 +3,7 @@ import { Form, Button, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { unixSecondToDate } from '@/utils/utils';
-import router from 'umi/router';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
-import { MENU_PREFIX } from '@/constants';
 import styles from './Merchant.less';
 
 @connect(
@@ -14,6 +12,8 @@ import styles from './Merchant.less';
 	}),
 	dispatch => ({
 		companyGetInfo: () => dispatch({ type: 'merchant/companyGetInfo' }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 class MerchantView extends Component {
@@ -23,11 +23,16 @@ class MerchantView extends Component {
 	}
 
 	goNext = target => {
+		const { goToPath } = this.props;
 		const path = {
-			update: `${MENU_PREFIX.MERCHANT}/modify`,
-			cancel: '/account',
+			update: { pathId: 'merchantModify' },
+			cancel: { pathId: 'account' },
 		};
-		router.push(path[target] || '/');
+
+		const { pathId } = path[target] || {};
+
+		goToPath(pathId);
+		// router.push(path[target] || '/');
 	};
 
 	render() {

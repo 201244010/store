@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { Form, Button, Select, Modal, Card } from 'antd';
@@ -7,7 +6,6 @@ import { format } from '@konata9/milk-shake';
 import { SDNM, KWYLS, ZZSY, HBB, ERROR_FILEDS } from './ERPImportItem';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT, FORM_ITEM_LONGER } from '@/constants/form';
 import { ERROR_OK } from '@/constants/errorCode';
-import { MENU_PREFIX } from '@/constants';
 
 import * as styles from './ProductManagement.less';
 
@@ -33,6 +31,8 @@ const RenderFormItem = {
 		erpAuthCheck: payload => dispatch({ type: 'basicDataProduct/erpAuthCheck', payload }),
 		erpImport: payload => dispatch({ type: 'basicDataProduct/erpImport', payload }),
 		getImportedErpInfo: () => dispatch({ type: 'store/getImportedErpInfo' }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 @Form.create()
@@ -150,9 +150,11 @@ class ERPImport extends Component {
 	};
 
 	goBack = () => {
+		const { goToPath } = this.props;
 		const { mode, erpSaasInfo } = this.state;
 		if (mode === MODE.VIEW) {
-			router.push(`${MENU_PREFIX.PRODUCT}`);
+			goToPath('productList');
+			// router.push(`${MENU_PREFIX.PRODUCT}`);
 		} else if (mode === MODE.MODIFY) {
 			const { saasId } = erpSaasInfo;
 			if (saasId) {
@@ -161,7 +163,8 @@ class ERPImport extends Component {
 					mode: MODE.VIEW,
 				});
 			} else {
-				router.push(`${MENU_PREFIX.PRODUCT}`);
+				goToPath('productList');
+				// router.push(`${MENU_PREFIX.PRODUCT}`);
 			}
 		}
 	};

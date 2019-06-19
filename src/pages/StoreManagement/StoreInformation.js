@@ -1,11 +1,9 @@
 import React from 'react';
-import { Form, Button } from 'antd';
+import { Form, Button, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-import router from 'umi/router';
 import { formatEmptyWithoutZero, getLocationParam, unixSecondToDate } from '@/utils/utils';
 import styles from './StoreManagement.less';
-import { MENU_PREFIX } from '@/constants';
 
 @connect(
 	state => ({
@@ -13,6 +11,8 @@ import { MENU_PREFIX } from '@/constants';
 	}),
 	dispatch => ({
 		getStoreDetail: payload => dispatch({ type: 'store/getStoreDetail', payload }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 class StoreInformation extends React.Component {
@@ -24,13 +24,21 @@ class StoreInformation extends React.Component {
 	}
 
 	toPath = target => {
+		const { goToPath } = this.props;
 		const shopId = getLocationParam('shopId');
 		const path = {
-			edit: `${MENU_PREFIX.STORE}/alterStore?shopId=${shopId}&action=edit`,
-			back: `${MENU_PREFIX.STORE}/list`,
+			edit: {
+				pathId: 'storeUpdate',
+				urlParams: { shopId, action: 'edit' },
+			},
+			back: {
+				pathId: 'storeList',
+			},
 		};
 
-		router.push(path[target] || path.back);
+		const { pathId, urlParams = {} } = path[target] || {};
+		goToPath(pathId, urlParams);
+		// router.push(path[target] || path.back);
 	};
 
 	render() {
@@ -53,7 +61,7 @@ class StoreInformation extends React.Component {
 		} = formatEmptyWithoutZero(storeInfo, '--');
 
 		return (
-			<div className={styles.storeList}>
+			<Card bordered={false}>
 				<h3 className={styles.informationText}>
 					{formatMessage({ id: 'storeManagement.info.title' })}
 				</h3>
@@ -133,7 +141,7 @@ class StoreInformation extends React.Component {
 						</Button>
 					</Form.Item>
 				</Form>
-			</div>
+			</Card>
 		);
 	}
 }

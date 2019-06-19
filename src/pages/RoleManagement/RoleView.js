@@ -4,8 +4,6 @@ import { connect } from 'dva';
 import { idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
-import router from 'umi/router';
-import { MENU_PREFIX } from '@/constants';
 
 import styles from './Role.less';
 
@@ -19,23 +17,35 @@ const CheckboxGroup = Checkbox.Group;
 	}),
 	dispatch => ({
 		getRoleInfo: payload => dispatch({ type: 'role/getRoleInfo', payload }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 @Form.create()
 class RoleView extends React.Component {
 	componentDidMount() {
-		const { getRoleInfo, query: {id}} = this.props;
+		const {
+			getRoleInfo,
+			query: { id },
+		} = this.props;
 		const roleId = idDecode(id);
 		getRoleInfo({ roleId });
 	}
 
 	confirm = () => {
-		const {query: {id}} = this.props;
-		router.push(`${MENU_PREFIX.ROLE}/modify?action=modify&id=${id}`);
+		const {
+			query: { id },
+			goToPath,
+		} = this.props;
+
+		goToPath('roleModify', { action: 'modify', id });
+		// router.push(`${MENU_PREFIX.ROLE}/modify?action=modify&id=${id}`);
 	};
 
 	cancel = () => {
-		router.push(`${MENU_PREFIX.ROLE}/roleList`);
+		const { goToPath } = this.props;
+		goToPath('roleList');
+		// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 	};
 
 	render() {
@@ -45,7 +55,7 @@ class RoleView extends React.Component {
 			},
 			loading,
 		} = this.props;
-	
+
 		return (
 			<Card>
 				<Spin spinning={loading.effects['role/getRoleInfo']}>
@@ -84,23 +94,22 @@ class RoleView extends React.Component {
 								</div>
 							</Form.Item>
 
-							{
-								isDefault ?
-									'' :
-									<Form.Item label=" " colon={false}>
-										<Button
-											className={styles.submit}
-											type="primary"
-											onClick={this.confirm}
-										>
-											{formatMessage({ id: 'btn.alter' })}
-										</Button>
-										<Button onClick={this.cancel}>
-											{formatMessage({ id: 'btn.cancel' })}
-										</Button>
-									</Form.Item>
-							}
-
+							{isDefault ? (
+								''
+							) : (
+								<Form.Item label=" " colon={false}>
+									<Button
+										className={styles.submit}
+										type="primary"
+										onClick={this.confirm}
+									>
+										{formatMessage({ id: 'btn.alter' })}
+									</Button>
+									<Button onClick={this.cancel}>
+										{formatMessage({ id: 'btn.cancel' })}
+									</Button>
+								</Form.Item>
+							)}
 						</Form>
 					</div>
 				</Spin>

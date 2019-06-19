@@ -1,4 +1,4 @@
-const router = [
+export default [
 	{
 		path: '/user',
 		component: '../layouts/SunmiLayout',
@@ -6,8 +6,16 @@ const router = [
 		routes: [
 			{ path: '/user', redirect: '/user/login' },
 			{ path: '/user/login', component: './User/Login/LoginUI', id: 'userLogin' },
-			{ path: '/user/storeRelate', component: './User/StoreRelate/StoreRelateUI', id: 'userStore' },
-			{ path: '/user/merchantCreate', component: './User/StoreRelate/StoreRelateUI', id: 'userMerchant' },
+			{
+				path: '/user/storeRelate',
+				component: './User/StoreRelate/StoreRelateUI',
+				id: 'userStore',
+			},
+			{
+				path: '/user/merchantCreate',
+				component: './User/StoreRelate/StoreRelateUI',
+				id: 'userMerchant',
+			},
 			{ path: '/user/*', component: '404' },
 		],
 	},
@@ -15,9 +23,7 @@ const router = [
 		path: '/studio',
 		component: '../layouts/BlankLayout',
 		id: 'studio',
-		routes: [
-			{ path: '/studio', component: './Studio' },
-		],
+		routes: [{ path: '/studio', component: './Studio' }],
 	},
 	{
 		path: '/',
@@ -30,7 +36,7 @@ const router = [
 				name: 'dashBoard',
 				icon: 'blank',
 				component: './DashBoard',
-				id: 'dashBoard'
+				id: 'dashBoard',
 			},
 			{
 				path: '/esl',
@@ -137,7 +143,10 @@ const router = [
 				id: 'company',
 				icon: 'blank',
 				routes: [
-					{ path: '/company/merchantManagement', redirect: '/company/merchantManagement/view' },
+					{
+						path: '/company/merchantManagement',
+						redirect: '/company/merchantManagement/view',
+					},
 					{
 						path: '/company/merchantManagement/view',
 						name: 'merchantManagement',
@@ -240,11 +249,11 @@ const router = [
 			// 不在 menu 中显示的路由
 			{
 				path: '/account',
+				id: 'account',
 				hideInMenu: true,
 				routes: [
 					{
 						path: '/account',
-						id: 'account',
 						component: './Account/',
 					},
 					{ component: '404' },
@@ -293,7 +302,7 @@ const router = [
 						id: 'noRescourse',
 						component: './Exception/403',
 					},
-				]
+				],
 			},
 
 			// 不在 menu 中显示的路由 end
@@ -327,8 +336,8 @@ const router = [
 								path: '/devices/ipcList',
 								// name: 'list',
 								component: './IPC/IPCList/IPCList.js',
-							}
-						]
+							},
+						],
 					},
 					{
 						path: '/devices/motionMessage',
@@ -337,8 +346,8 @@ const router = [
 					},
 					{
 						path: '/devices',
-						redirect: '/devices/ipcList'
-					}
+						redirect: '/devices/ipcList',
+					},
 				],
 			},
 			{
@@ -350,13 +359,13 @@ const router = [
 						path: '/cashVerify/posList',
 						name: 'bindPOSDevice',
 						// hideInMenu: true,
-						component: './IPC/POSManagement/POSList.js'
+						component: './IPC/POSManagement/POSList.js',
 					},
 					{
 						path: '/cashVerify/bindPOSDevice',
 						name: 'bindPOSDevice',
 						hideInMenu: true,
-						component: './IPC/POSManagement/BindPOS.js'
+						component: './IPC/POSManagement/BindPOS.js',
 					},
 					{
 						path: '/cashVerify/videos',
@@ -366,9 +375,9 @@ const router = [
 					},
 					{
 						path: '/cashVerify',
-						redirect: '/cashVerify/posList'
-					}
-				]
+						redirect: '/cashVerify/posList',
+					},
+				],
 			},
 			{
 				path: '/faceidLibrary',
@@ -388,8 +397,8 @@ const router = [
 					},
 					{
 						path: '/faceidLibrary',
-						redirect: '/faceidLibrary/faceidLibraryList'
-					}
+						redirect: '/faceidLibrary/faceidLibraryList',
+					},
 				],
 			},
 
@@ -397,5 +406,3 @@ const router = [
 		],
 	},
 ];
-
-export default router;

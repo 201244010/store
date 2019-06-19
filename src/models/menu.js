@@ -7,6 +7,8 @@ import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
 
+import routeConfig from '@/config/devRouter';
+
 import { env } from '@/config';
 
 const { check } = Authorized;
@@ -113,6 +115,8 @@ const flatRoutes = routesList => {
 	return result;
 };
 
+const flattedRoutes = flatRoutes(routeConfig);
+
 export default {
 	namespace: 'menu',
 
@@ -120,26 +124,9 @@ export default {
 		menuData: Storage.get('FILTERED_MENU', 'local') || [],
 		breadcrumbNameMap: {},
 		routes: [],
-		flattedRoutes: [],
 	},
 
 	effects: {
-		*setFlatRoutes({ payload = {} }, { select, put }) {
-			const { routes = [] } = payload;
-			const { flattedRoutes } = yield select(state => state.menu);
-
-			const routesSet = new Set([
-				...flattedRoutes.map(route => JSON.stringify(route)),
-				...flatRoutes(routes).map(route => JSON.stringify(route)),
-			]);
-
-			yield put({
-				type: 'save',
-				payload: {
-					flattedRoutes: [...routesSet].map(route => JSON.parse(route)),
-				},
-			});
-		},
 		*getMenuData({ payload }, { put, call }) {
 			const { routes, authority } = payload;
 			const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
@@ -168,13 +155,13 @@ export default {
 			});
 		},
 
-		*goToPath({ payload = {} }, { select }) {
+		goToPath({ payload = {} }) {
 			const { pathId = null, urlParams = {}, open = false } = payload;
-			const { flattedRoutes } = yield select(state => state.menu);
 
 			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
 
-			console.log('input id:', pathId, '   matched path:', path);
+			// console.log('input id:', pathId, '   matched path:', path);
+			// console.log(flattedRoutes);
 
 			if (!path) {
 				router.push('/exception/404');

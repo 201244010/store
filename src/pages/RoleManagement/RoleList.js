@@ -15,8 +15,6 @@ import {
 import { unixSecondToDate, idEncode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
-import router from 'umi/router';
-import { MENU_PREFIX } from '@/constants';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 import { connect } from 'dva';
 
@@ -32,6 +30,8 @@ const FormItem = Form.Item;
 	dispatch => ({
 		getRoleList: payload => dispatch({ type: 'role/getRoleList', payload }),
 		deleteRole: payload => dispatch({ type: 'role/deleteRole', payload }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 @Form.create()
@@ -128,13 +128,31 @@ class RoleList extends React.Component {
 	};
 
 	goPath = (rowDetail, path) => {
+		const { goToPath } = this.props;
 		const encodeID = rowDetail.id ? idEncode(rowDetail.id) : null;
 		const urlMap = {
-			modify: `${MENU_PREFIX.ROLE}/modify?action=modify&id=${encodeID}`,
-			view: `${MENU_PREFIX.ROLE}/view?id=${encodeID}`,
-			create: `${MENU_PREFIX.ROLE}/create?action=create`,
+			modify: {
+				pathId: 'roleModify',
+				urlParams: {
+					action: 'modify',
+					id: encodeID,
+				},
+			},
+			view: {
+				pathId: 'roleInfo',
+				urlParams: { id: encodeID },
+			},
+			create: {
+				pathId: 'roleCreate',
+				urlParams: {
+					action: 'create',
+				},
+			},
 		};
-		router.push(`${urlMap[path]}`);
+
+		const { pathId, urlParams = {} } = urlMap[path] || {};
+		goToPath(pathId, urlParams);
+		// router.push(`${urlMap[path]}`);
 	};
 
 	handleSubmit = () => {

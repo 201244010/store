@@ -19,6 +19,8 @@ import SearchResult from './SearchResult';
 			dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
 		deleteProduct: payload => dispatch({ type: 'basicDataProduct/deleteProduct', payload }),
 		getSaasBindInfo: () => dispatch({ type: 'store/getSaasBindInfo' }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 class ProductList extends Component {
@@ -46,6 +48,7 @@ class ProductList extends Component {
 			clearSearch,
 			fetchProductList,
 			deleteProduct,
+			goToPath,
 		} = this.props;
 
 		return (
@@ -67,6 +70,7 @@ class ProductList extends Component {
 						pagination,
 						fetchProductList,
 						deleteProduct,
+						goToPath,
 					}}
 				/>
 			</Card>

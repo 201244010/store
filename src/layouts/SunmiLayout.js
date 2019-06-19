@@ -18,12 +18,6 @@ class SunmiLayout extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		const {
-			setFlatRoutes,
-			route: { routes },
-		} = this.props;
-
-		setFlatRoutes(routes);
 		this.changeBgClass();
 	}
 
@@ -169,7 +163,6 @@ export default connect(
 	}),
 	dispatch => ({
 		logout: () => dispatch({ type: 'user/logout' }),
-		setFlatRoutes: routes => dispatch({ type: 'menu/setFlatRoutes', payload: { routes } }),
 		goToPath: (pathId, urlParams = {}, open = false) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})

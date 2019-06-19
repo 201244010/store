@@ -47,7 +47,7 @@ class Store extends Component {
 			},
 		};
 
-		const { pathId, urlParams } = path[target];
+		const { pathId, urlParams = {} } = path[target] || {};
 		goToPath(pathId, urlParams);
 		// router.push(path[target] || '/');
 	};

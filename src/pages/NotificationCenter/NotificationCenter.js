@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { Checkbox, Table, Button, Icon, Modal } from 'antd';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
-import router from 'umi/router';
 import { connect } from 'dva';
-import { MENU_PREFIX } from '@/constants';
 import styles from './Notification.less';
 
 @connect(
@@ -23,6 +21,8 @@ import styles from './Notification.less';
 		deleteNotification: payload =>
 			dispatch({ type: 'notification/deleteNotification', payload }),
 		clearSearchValue: () => dispatch({ type: 'notification/clearSearchValue' }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 class NotificationCenter extends Component {
@@ -96,12 +96,13 @@ class NotificationCenter extends Component {
 
 	goNotificationInfo = record => {
 		const msgId = record.msg_id;
-		const { updateNotificationStatus } = this.props;
+		const { updateNotificationStatus, goToPath } = this.props;
 		updateNotificationStatus({
 			msgIdList: [msgId],
 			statusCode: 1,
 		});
-		router.push(`${MENU_PREFIX.NOTIFICATION}/info?msgId=${msgId}`);
+		goToPath('notificationInfo', { msgId });
+		// router.push(`${MENU_PREFIX.NOTIFICATION}/info?msgId=${msgId}`);
 	};
 
 	dealMessage = type => {
