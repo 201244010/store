@@ -169,22 +169,28 @@ export default {
 		},
 
 		*goToPath({ payload = {} }, { select }) {
-			const { pathId = null, urlParams = {} } = payload;
+			const { pathId = null, urlParams = {}, open = false } = payload;
 			const { flattedRoutes } = yield select(state => state.menu);
 
 			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
+
+			console.log('input id:', pathId, '   matched path:', path);
 
 			if (!path) {
 				router.push('/exception/404');
 			}
 
 			const keyList = Object.keys(urlParams);
+			let targetPath = path;
 			if (keyList.length > 0) {
 				const query = keyList.map(key => `${key}=${urlParams[key]}`).join('&');
+				targetPath = `${path}?${query}`;
+			}
 
-				router.push(`${path}?${query}`);
+			if (open) {
+				window.open(targetPath);
 			} else {
-				router.push(path);
+				router.push(targetPath);
 			}
 		},
 	},

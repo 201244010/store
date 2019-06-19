@@ -43,7 +43,7 @@ const tabBarStyle = {
 		getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
 		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
-		goToPath: (pathId, urlParams = {}) => dispatch({type:'menu/goToPath', payload:{pathId, urlParams}})
+		goToPath: (pathId, urlParams = {}, open=false) => dispatch({type:'menu/goToPath', payload:{pathId, urlParams, open}})
 	})
 )
 @Form.create()

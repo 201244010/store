@@ -2,8 +2,6 @@ import * as Actions from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
-import router from 'umi/router';
-import { MENU_PREFIX } from '@/constants';
 import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
 
@@ -87,7 +85,14 @@ export default {
 						loading: false,
 					},
 				});
-				router.push('/user/login');
+
+				yield put({
+					type: 'menu/goToPath',
+					payload: {
+						pathId: 'userLogin',
+					},
+				});
+				// router.push('/user/login');
 			}
 			return response;
 		},
@@ -125,7 +130,14 @@ export default {
 					payload: { companyInfo: options, loading: false },
 				});
 				message.success(formatMessage({ id: 'modify.success' }));
-				router.push(`${MENU_PREFIX.MERCHANT}/view`);
+
+				yield put({
+					type: 'menu/goToPath',
+					payload: {
+						pathId: 'merchantView',
+					},
+				});
+				// router.push(`${MENU_PREFIX.MERCHANT}/view`);
 			} else {
 				yield put({
 					type: 'updateState',
