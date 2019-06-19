@@ -93,23 +93,26 @@ class RoleView extends React.Component {
 									))}
 								</div>
 							</Form.Item>
-
-							{isDefault ? (
-								''
-							) : (
-								<Form.Item label=" " colon={false}>
-									<Button
-										className={styles.submit}
-										type="primary"
-										onClick={this.confirm}
-									>
-										{formatMessage({ id: 'btn.alter' })}
-									</Button>
+							<Form.Item label=" " colon={false}>
+								{isDefault ? (
 									<Button onClick={this.cancel}>
-										{formatMessage({ id: 'btn.cancel' })}
+										{formatMessage({ id: 'btn.back' })}
 									</Button>
-								</Form.Item>
-							)}
+								) : (
+									<div>
+										<Button
+											className={styles.submit}
+											type="primary"
+											onClick={this.confirm}
+										>
+											{formatMessage({ id: 'btn.alter' })}
+										</Button>
+										<Button onClick={this.cancel}>
+											{formatMessage({ id: 'btn.cancel' })}
+										</Button>
+									</div>
+								)}
+							</Form.Item>
 						</Form>
 					</div>
 				</Spin>
