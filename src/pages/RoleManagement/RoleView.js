@@ -24,13 +24,18 @@ const CheckboxGroup = Checkbox.Group;
 @Form.create()
 class RoleView extends React.Component {
 	componentDidMount() {
-		const { getRoleInfo, query: {id}} = this.props;
+		const {
+			getRoleInfo,
+			query: { id },
+		} = this.props;
 		const roleId = idDecode(id);
 		getRoleInfo({ roleId });
 	}
 
 	confirm = () => {
-		const {query: {id}} = this.props;
+		const {
+			query: { id },
+		} = this.props;
 		router.push(`${MENU_PREFIX.ROLE}/modify?action=modify&id=${id}`);
 	};
 
@@ -45,7 +50,7 @@ class RoleView extends React.Component {
 			},
 			loading,
 		} = this.props;
-	
+
 		return (
 			<Card>
 				<Spin spinning={loading.effects['role/getRoleInfo']}>
@@ -83,11 +88,13 @@ class RoleView extends React.Component {
 									))}
 								</div>
 							</Form.Item>
-
-							{
-								isDefault ?
-									'' :
-									<Form.Item label=" " colon={false}>
+							<Form.Item label=" " colon={false}>
+								{isDefault ? (
+									<Button onClick={this.cancel}>
+										{formatMessage({ id: 'btn.back' })}
+									</Button>
+								) : (
+									<div>
 										<Button
 											className={styles.submit}
 											type="primary"
@@ -98,9 +105,9 @@ class RoleView extends React.Component {
 										<Button onClick={this.cancel}>
 											{formatMessage({ id: 'btn.cancel' })}
 										</Button>
-									</Form.Item>
-							}
-
+									</div>
+								)}
+							</Form.Item>
 						</Form>
 					</div>
 				</Spin>
