@@ -1,4 +1,4 @@
-export default [
+const router = [
 	{
 		path: '/user',
 		component: '../layouts/SunmiLayout',
@@ -249,11 +249,11 @@ export default [
 			// 不在 menu 中显示的路由
 			{
 				path: '/account',
-				id: 'account',
 				hideInMenu: true,
 				routes: [
 					{
 						path: '/account',
+						id: 'account',
 						component: './Account/',
 					},
 					{ component: '404' },
@@ -406,3 +406,5 @@ export default [
 		],
 	},
 ];
+
+export default router;
