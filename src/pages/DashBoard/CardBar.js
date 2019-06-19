@@ -58,7 +58,7 @@ class CardBar extends Component {
 			totalAmount: {
 				totalAmount: amount,
 				dayRate: dayRateAmount,
-				weekRage: weekRateAmount,
+				weekRate: weekRateAmount,
 				monthRate: monthRateAmount,
 			},
 		} = this.props;
@@ -90,7 +90,7 @@ class CardBar extends Component {
 			totalCount: {
 				totalCount,
 				dayRate: dayRateCount,
-				weekRage: weekRateCount,
+				weekRate: weekRateCount,
 				monthRate: monthRateCount,
 			},
 		} = this.props;
@@ -122,7 +122,7 @@ class CardBar extends Component {
 			avgUnitSale: {
 				aus,
 				dayRate: dayRateAvg,
-				weekRage: weekRateAvg,
+				weekRate: weekRateAvg,
 				monthRate: monthRateAvg,
 			},
 		} = this.props;
@@ -154,7 +154,7 @@ class CardBar extends Component {
 			totalRefund: {
 				refundCount,
 				dayRate: dayRateRefund,
-				weekRage: weekRateRefund,
+				weekRate: weekRateRefund,
 				monthRate: monthRateRefund,
 			},
 		} = this.props;

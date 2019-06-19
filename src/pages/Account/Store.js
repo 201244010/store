@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Card, List, Button, Modal, Form } from 'antd';
-import router from 'umi/router';
 import * as CookieUtil from '@/utils/cookies';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { connect } from 'dva';
-import { MENU_PREFIX } from '@/constants';
 import { formatEmpty } from '@/utils/utils';
 import * as styles from './Account.less';
 
-@connect(state => ({
-	merchant: state.merchant,
-}))
+@connect(
+	state => ({
+		merchant: state.merchant,
+	}),
+	dispatch => ({
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+	})
+)
 class Store extends Component {
 	constructor(props) {
 		super(props);
@@ -29,12 +33,23 @@ class Store extends Component {
 	};
 
 	toPath = target => {
+		const { goToPath } = this.props;
 		const path = {
-			update: `${MENU_PREFIX.MERCHANT}/modify`,
-			create: '/user/merchantCreate?from=accountCenter',
+			update: {
+				pathId: 'merchantModify',
+				urlParams: {},
+			},
+			create: {
+				pathId: 'userMerchant',
+				urlParams: {
+					from: 'accountCenter',
+				},
+			},
 		};
 
-		router.push(path[target] || '/');
+		const { pathId, urlParams } = path[target];
+		goToPath(pathId, urlParams);
+		// router.push(path[target] || '/');
 	};
 
 	cancel = () => {
