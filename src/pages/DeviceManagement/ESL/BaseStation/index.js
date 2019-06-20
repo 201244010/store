@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { Card } from 'antd';
 import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
-import styles from './BaseStation.less';
 
 @connect(
 	state => ({
@@ -54,7 +54,7 @@ class BaseStation extends Component {
 		} = this.props;
 
 		return (
-			<div className={styles['content-container']}>
+			<Card bordered={false}>
 				<SearchForm
 					{...{
 						states,
@@ -74,10 +74,10 @@ class BaseStation extends Component {
 						getBaseStationDetail,
 						deleteBaseStation,
 						restartBaseStation,
-						changeBaseStationName
+						changeBaseStationName,
 					}}
 				/>
-			</div>
+			</Card>
 		);
 	}
 }

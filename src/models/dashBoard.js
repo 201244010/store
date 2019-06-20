@@ -1,7 +1,7 @@
 import * as Action from '@/services/dashBoard';
 import moment from 'moment';
 import { ERROR_OK } from '@/constants/errorCode';
-import { format } from '@konata9/milk-shake';
+import { shake, format, map } from '@konata9/milk-shake';
 
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 
@@ -93,7 +93,11 @@ export default {
 			paymentType: PAYMENT_TYPE.AMOUNT,
 		},
 
-		totalLoading: false,
+		totalAmountLoading: false,
+		totalCountLoading: false,
+		totalRefundLoading: false,
+		avgUnitLoading: false,
+
 		barLoading: false,
 		skuLoading: false,
 		chartLoading: false,
@@ -125,19 +129,35 @@ export default {
 				// total card
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.TOTAL_AMOUNT, needLoading },
+					payload: {
+						queryType: QUERY_TYPE.TOTAL_AMOUNT,
+						needLoading,
+						loadingType: 'totalAmountLoading',
+					},
 				}),
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.TOTAL_COUNT, needLoading },
+					payload: {
+						queryType: QUERY_TYPE.TOTAL_COUNT,
+						needLoading,
+						loadingType: 'totalCountLoading',
+					},
 				}),
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.TOTAL_REFUND, needLoading },
+					payload: {
+						queryType: QUERY_TYPE.TOTAL_REFUND,
+						needLoading,
+						loadingType: 'totalRefundLoading',
+					},
 				}),
 				put({
 					type: 'fetchTotalInfo',
-					payload: { queryType: QUERY_TYPE.AVG_UNIT, needLoading },
+					payload: {
+						queryType: QUERY_TYPE.AVG_UNIT,
+						needLoading,
+						loadingType: 'avgUnitLoading',
+					},
 				}),
 				// time duration
 				put({
@@ -171,10 +191,10 @@ export default {
 			} = yield select(state => state.dashBoard);
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 
-			const { queryType = null, needLoading } = payload;
+			const { queryType = null, needLoading, loadingType } = payload;
 			const stateField = stateFields[queryType];
 			const options = {
-				rateRequired: rangeType === RANGE.FREE ? 1 : 0,
+				rateRequired: rangeType === RANGE.FREE ? 0 : 1,
 				timeRangeStart: startTime,
 				timeRangeEnd: endTime,
 			};
@@ -183,7 +203,7 @@ export default {
 				yield put({
 					type: 'switchLoading',
 					payload: {
-						loadingType: 'totalLoading',
+						loadingType,
 						loadingStatus: true,
 					},
 				});
@@ -199,17 +219,12 @@ export default {
 				const { data = {} } = response;
 				yield put({
 					type: 'updateState',
-					payload: { [stateField]: format('toCamel')(data) },
+					payload: {
+						[stateField]: format('toCamel')(data),
+						[loadingType]: false,
+					},
 				});
 			}
-
-			yield put({
-				type: 'switchLoading',
-				payload: {
-					loadingType: 'totalLoading',
-					loadingStatus: false,
-				},
-			});
 
 			return response;
 		},
@@ -341,19 +356,54 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 
+				const formattedData = shake(data)(
+					format('toCamel'),
+					map([
+						{
+							from: 'purchaseTypeList',
+							to: 'purchaseTypeList',
+							rule: (list, params) => {
+								const { totalAmount, totalCount } = params;
+								return list.map(item => ({
+									...item,
+									amountPercent: parseFloat(
+										Math.abs(item.amount / (totalAmount || 1)) * 100
+									).toFixed(2),
+									countPercent: parseFloat(
+										Math.abs(item.count / (totalCount || 1)) * 100
+									).toFixed(2),
+								}));
+							},
+						},
+					])
+				);
+
+				const sortedData = sortPurchaseOrder(formattedData);
+				const { purchaseTypeList = [] } = sortedData;
+				const total = purchaseTypeList.slice(0, 5).reduce((prev, cur) => ({
+					amountPercent: parseFloat(
+						1 * prev.amountPercent + 1 * cur.amountPercent
+					).toFixed(2),
+					countPercent: parseFloat(1 * prev.countPercent + 1 * cur.countPercent).toFixed(
+						2
+					),
+				}));
+
+				const [rest] = purchaseTypeList.slice(5);
+				rest.amountPercent = parseFloat(100 - (1 * total.amountPercent || 100)).toFixed(2);
+
+				rest.countPercent = parseFloat(100 - (1 * total.countPercent || 100)).toFixed(2);
+
+				sortedData.purchaseTypeList = [...purchaseTypeList.slice(0, 5), rest];
+
 				yield put({
 					type: 'updateState',
-					payload: { purchaseInfo: sortPurchaseOrder(format('toCamel')(data)) },
+					payload: {
+						purchaseInfo: sortedData,
+						chartLoading: false,
+					},
 				});
 			}
-
-			yield put({
-				type: 'switchLoading',
-				payload: {
-					loadingType: 'chartLoading',
-					loadingStatus: false,
-				},
-			});
 		},
 
 		*setSearchValue({ payload }, { select, put }) {

@@ -3,10 +3,8 @@ import { Input, Checkbox, Button, Form, message, Spin, Card } from 'antd';
 import { connect } from 'dva';
 import { idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
-import router from 'umi/router';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
-import { MENU_PREFIX } from '@/constants';
 
 import styles from './Role.less';
 
@@ -25,6 +23,8 @@ const CheckboxGroup = Checkbox.Group;
 		updateRole: payload => dispatch({ type: 'role/updateRole', payload }),
 		creatRole: payload => dispatch({ type: 'role/creatRole', payload }),
 		updatePermissionList: payload => dispatch({ type: 'role/updatePermissionList', payload }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 @Form.create()
@@ -53,6 +53,7 @@ class RoleModify extends React.Component {
 			},
 			creatRole,
 			query: { action, id },
+			goToPath,
 		} = this.props;
 		let valueList = [];
 		permissionList.map(item => {
@@ -76,7 +77,8 @@ class RoleModify extends React.Component {
 					});
 					if (response && response.code === ERROR_OK) {
 						message.success(formatMessage({ id: 'roleManagement.role.modifySuccess' }));
-						router.push(`${MENU_PREFIX.ROLE}/roleList`);
+						goToPath('roleList');
+						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
 						message.error(
 							formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
@@ -91,7 +93,8 @@ class RoleModify extends React.Component {
 					});
 					if (response && response.code === ERROR_OK) {
 						message.success(formatMessage({ id: 'roleManagement.role.createSuccess' }));
-						router.push(`${MENU_PREFIX.ROLE}/roleList`);
+						goToPath('roleList');
+						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
 						message.error(
 							formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
@@ -104,7 +107,9 @@ class RoleModify extends React.Component {
 	};
 
 	cancel = () => {
-		router.push(`${MENU_PREFIX.ROLE}/roleList`);
+		const { goToPath } = this.props;
+		goToPath('roleList');
+		// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 	};
 
 	handleGroupChange = (checklist, group) => {
@@ -115,7 +120,7 @@ class RoleModify extends React.Component {
 
 		const tmpList = permissionList.map(item => {
 			if (item.group === group) {
-				const plainLength = item.checkedList.permission_list.length;
+				const plainLength = item.checkedList.permissionList.length;
 				item.checkAll = checklist.length === plainLength;
 				item.indeterminate = !!checklist.length && checklist.length < plainLength;
 				item.valueList = checklist;
@@ -133,7 +138,7 @@ class RoleModify extends React.Component {
 		} = this.props;
 		const tmpList = permissionList.map(item => {
 			if (item.group === group) {
-				const permission = item.checkedList.permission_list;
+				const permission = item.checkedList.permissionList;
 				const totalList = permission
 					? permission.map(items => items.value)
 					: [item.checkedList.value];
@@ -209,7 +214,7 @@ class RoleModify extends React.Component {
 													{item.checkedList.label}
 												</Checkbox>
 												<div>
-													{item.checkedList.permission_list && (
+													{item.checkedList.permissionList && (
 														<CheckboxGroup
 															onChange={e =>
 																this.handleGroupChange(
@@ -218,7 +223,7 @@ class RoleModify extends React.Component {
 																)
 															}
 															options={
-																item.checkedList.permission_list
+																item.checkedList.permissionList
 															}
 															value={item.valueList}
 														/>

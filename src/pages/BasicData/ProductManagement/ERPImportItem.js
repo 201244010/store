@@ -27,6 +27,8 @@ export const ERROR_FILEDS = {
 		field: 'saas_info.secret',
 		errMsg: {
 			5020: formatMessage({ id: 'basicData.erp.zzsy.secret.existed' }),
+			// TODO 等待 error code
+			9999: formatMessage({ id: 'basicData.erp.zzsy.shop.error' }),
 			default: formatMessage({ id: 'basicData.erp.zzsy.secret.error' }),
 		},
 	},
@@ -89,7 +91,7 @@ export const SDNM = props => {
 
 export const KWYLS = props => {
 	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
-	const { saasShopKey = null, saasExtraKey1 = null, saasExtraKey2 = null } = saasInfo;
+	const { saasShopKey = null, saasExtraKey1 = null } = saasInfo;
 
 	return (
 		<>
@@ -136,7 +138,6 @@ export const KWYLS = props => {
 			{mode === MODE.MODIFY && (
 				<Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
 					{getFieldDecorator('saas_info.password', {
-						initialValue: saasExtraKey2,
 						validateTrigger: 'onBlur',
 						rules: [
 							{
@@ -228,11 +229,11 @@ export const HBB = props => {
 			</Form.Item>
 			<Form.Item label={formatMessage({ id: 'basicData.erp.api.user.number' })}>
 				{mode === MODE.VIEW ? (
-					<span>{saasShopKey}</span>
+					<span>{saasExtraKey1}</span>
 				) : (
 					<>
 						{getFieldDecorator('saas_info.user_number', {
-							initialValue: saasShopKey,
+							initialValue: saasExtraKey1,
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -248,11 +249,11 @@ export const HBB = props => {
 			</Form.Item>
 			<Form.Item label={formatMessage({ id: 'basicData.erp.api.shop.number' })}>
 				{mode === MODE.VIEW ? (
-					<span>{saasExtraKey1}</span>
+					<span>{saasShopKey}</span>
 				) : (
 					<>
 						{getFieldDecorator('saas_info.shop_number', {
-							initialValue: saasExtraKey1,
+							initialValue: saasShopKey,
 							validateTrigger: 'onBlur',
 							rules: [
 								{

@@ -15,8 +15,6 @@ import {
 import { unixSecondToDate, idEncode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
-import router from 'umi/router';
-import { MENU_PREFIX } from '@/constants';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 import { connect } from 'dva';
 
@@ -32,13 +30,15 @@ const FormItem = Form.Item;
 	dispatch => ({
 		getRoleList: payload => dispatch({ type: 'role/getRoleList', payload }),
 		deleteRole: payload => dispatch({ type: 'role/deleteRole', payload }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 @Form.create()
 class RoleList extends React.Component {
 	constructor(props) {
 		super(props);
-		const {loading} = this.props;
+		const { loading } = this.props;
 		this.columns = [
 			{
 				title: formatMessage({ id: 'roleManagement.role.roleName' }),
@@ -62,47 +62,48 @@ class RoleList extends React.Component {
 			},
 			{
 				title: formatMessage({ id: 'list.action.title' }),
-				render: (_, record) =>
-					record.isDefault ? (
-						<span className={styles.view} onClick={this.viewRole}>
+				render: (_, record) => (
+					<div>
+						<a
+							href="javascript:void(0);"
+							className={styles.view}
+							onClick={() => this.goPath(record, 'view')}
+						>
 							{formatMessage({ id: 'list.action.view' })}
-						</span>
-					) : (
-						<div>
-							<span
-								className={styles.view}
-								onClick={() => this.goPath(record, 'view')}
-							>
-								{formatMessage({ id: 'list.action.view' })}
+						</a>
+						{!record.isDefault && (
+							<span>
+								<Divider type="vertical" />
+								<a
+									href="javascript:void(0);"
+									className={styles.view}
+									onClick={() => this.goPath(record, 'modify')}
+								>
+									{formatMessage({ id: 'list.action.edit' })}
+								</a>
+								<Divider type="vertical" />
+								<Popconfirm
+									title={formatMessage({ id: 'roleManagement.role.deleteRole' })}
+									icon={
+										<Icon
+											theme="filled"
+											style={{ color: 'red' }}
+											type="close-circle"
+										/>
+									}
+									onConfirm={() => this.deleteRole(record)}
+									okButtonProps={{
+										loading: loading.effects['role/deleteRole'],
+									}}
+								>
+									<a href="javascript:void(0);" className={styles.view}>
+										{formatMessage({ id: 'list.action.delete' })}
+									</a>
+								</Popconfirm>
 							</span>
-							<Divider type="vertical" />
-							<span
-								className={styles.view}
-								onClick={() => this.goPath(record, 'modify')}
-							>
-								{formatMessage({ id: 'list.action.edit' })}
-							</span>
-							<Divider type="vertical" />
-							<Popconfirm
-								title={formatMessage({ id: 'roleManagement.role.deleteRole' })}
-								icon={
-									<Icon
-										theme="filled"
-										style={{ color: 'red' }}
-										type="close-circle"
-									/>
-								}
-								onConfirm={() => this.deleteRole(record)}
-								okButtonProps={{
-									loading: loading.effects['role/deleteRole'],
-								}}
-							>
-								<span className={styles.view}>
-									{formatMessage({ id: 'list.action.delete' })}
-								</span>
-							</Popconfirm>
-						</div>
-					),
+						)}
+					</div>
+				),
 			},
 		];
 	}
@@ -127,13 +128,31 @@ class RoleList extends React.Component {
 	};
 
 	goPath = (rowDetail, path) => {
+		const { goToPath } = this.props;
 		const encodeID = rowDetail.id ? idEncode(rowDetail.id) : null;
 		const urlMap = {
-			modify: `${MENU_PREFIX.ROLE}/modify?action=modify&id=${encodeID}`,
-			view: `${MENU_PREFIX.ROLE}/view?id=${encodeID}`,
-			create: `${MENU_PREFIX.ROLE}/create?action=create`,
+			modify: {
+				pathId: 'roleModify',
+				urlParams: {
+					action: 'modify',
+					id: encodeID,
+				},
+			},
+			view: {
+				pathId: 'roleInfo',
+				urlParams: { id: encodeID },
+			},
+			create: {
+				pathId: 'roleCreate',
+				urlParams: {
+					action: 'create',
+				},
+			},
 		};
-		router.push(`${urlMap[path]}`);
+
+		const { pathId, urlParams = {} } = urlMap[path] || {};
+		goToPath(pathId, urlParams);
+		// router.push(`${urlMap[path]}`);
 	};
 
 	handleSubmit = () => {
@@ -164,7 +183,7 @@ class RoleList extends React.Component {
 			loading,
 		} = this.props;
 		return (
-			<Card>
+			<Card bordered={false}>
 				<div className={styles.wrapper}>
 					<div className={styles['search-bar']}>
 						<Form layout="inline">

@@ -22,7 +22,7 @@ function MQTTWrapper(WrapperedComponent) {
 				dispatch({ type: 'mqttStore/setMessageHandler', payload }),
 			destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
 			getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
-		}),
+		})
 	)
 	@Ipc
 	class Wrapper extends Component {
@@ -100,7 +100,10 @@ function MQTTWrapper(WrapperedComponent) {
 			const initializeStatus = await initializeClient();
 			if (initializeStatus === 'success') {
 				const registerTopic = await generateTopic({ service: 'register', action: 'sub' });
-				const registerTopicPub = await generateTopic({ service: 'register', action: 'pub' });
+				const registerTopicPub = await generateTopic({
+					service: 'register',
+					action: 'pub',
+				});
 				const notificationTopic = await generateTopic({
 					service: 'notification',
 					action: 'sub',

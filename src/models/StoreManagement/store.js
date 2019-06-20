@@ -2,11 +2,9 @@ import * as Action from '@/services/storeManagement/storeList';
 import { ERROR_OK } from '@/constants/errorCode';
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
-import router from 'umi/router';
 import typecheck from '@konata9/typecheck.js';
 import Storage from '@konata9/storage.js';
 import * as CookieUtil from '@/utils/cookies';
-import { MENU_PREFIX } from '@/constants';
 
 const cascaderDataWash = (data, mapping) => {
 	const formatData = [...data];
@@ -110,7 +108,7 @@ export default {
 			return response;
 		},
 
-		*createNewStore({ payload }, { call, put }) {
+		*createNewStore({ payload }, { select, call, put }) {
 			const { options } = payload;
 			yield put({
 				type: 'updateState',
@@ -123,17 +121,20 @@ export default {
 				if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
 					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.shop_id);
 				}
-				const result = yield put({
+				 
+				yield put({
 					type: 'getStoreList',
 					payload: {},
 				});
-				result.then(async res => {
-					Storage.set({ [CookieUtil.SHOP_LIST_KEY]: res.data.shop_list }, 'local');
-					await put({
-						type: 'getStoreList',
-						payload: {},
-					});
-					router.push(`${MENU_PREFIX.STORE}/list`);
+
+				const { storeList } = yield select(state => state.store);
+				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: storeList }, 'local');
+
+				yield put({
+					type: 'menu/goToPath',
+					payload: {
+						pathId: 'storeList',
+					},
 				});
 			} else {
 				yield put({
@@ -144,7 +145,7 @@ export default {
 			return response;
 		},
 
-		*updateStore({ payload }, { call, put }) {
+		*updateStore({ payload }, { select, call, put }) {
 			const { options } = payload;
 			yield put({
 				type: 'updateState',
@@ -153,18 +154,21 @@ export default {
 			const response = yield call(Action.alterStore, options);
 			if (response && response.code === ERROR_OK) {
 				message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
-				const result = yield put({
+
+				yield put({
 					type: 'getStoreList',
 					payload: {},
 				});
-				result.then(async res => {
-					Storage.set({ [CookieUtil.SHOP_LIST_KEY]: res.data.shop_list }, 'local');
-					await put({
-						type: 'getStoreList',
-						payload: {},
-					});
-					router.push(`${MENU_PREFIX.STORE}/list`);
+				const { storeList } = yield select(state => state.store);
+				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: storeList }, 'local');
+
+				yield put({
+					type: 'menu/goToPath',
+					payload: {
+						pathId: 'storeList',
+					},
 				});
+				// router.push(`${MENU_PREFIX.STORE}/list`);
 			} else {
 				yield put({
 					type: 'updateState',
