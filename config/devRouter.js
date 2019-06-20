@@ -283,15 +283,15 @@ const router = [
 				routes: [
 					{
 						path: '/exception/403',
-						name: 'not-permission',
+						name: '403',
 						id: 'noPermission',
 						component: './Exception/403',
 					},
 					{
 						path: '/exception/404',
-						name: 'no-rescourse',
+						name: '404',
 						id: 'noRescourse',
-						component: './Exception/403',
+						component: './Exception/404',
 					},
 				]
 			},

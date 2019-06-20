@@ -42,8 +42,10 @@ const tabBarStyle = {
 		sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
 		getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
 		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
+		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
-		goToPath: (pathId, urlParams = {}, open=false) => dispatch({type:'menu/goToPath', payload:{pathId, urlParams, open}})
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 @Form.create()
@@ -119,7 +121,7 @@ class Login extends Component {
 	};
 
 	checkCompanyList = async () => {
-		const { getCompanyList, goToPath } = this.props;
+		const { getCompanyList, goToPath, setCurrentCompany } = this.props;
 		const response = await getCompanyList({});
 		if (response && response.code === ERROR_OK) {
 			const data = response.data || {};
@@ -131,6 +133,7 @@ class Login extends Component {
 			} else if (companys === 1) {
 				const companyInfo = companyList[0] || {};
 				CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, companyInfo.company_id);
+				setCurrentCompany({ companyId: companyInfo.company_id });
 				this.checkStoreExist();
 			} else {
 				goToPath('userStore');
