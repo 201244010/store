@@ -64,5 +64,5 @@ export default {
 	'storeManagement.message.cellphone.error': '请输入正确的联系人电话',
 	'storeManagement.message.createFailed': '创建失败',
 	'storeManagement.message.createSuccess': '创建成功',
-	'storeManagement.message.name.exist':'门店名称已存在'
+	'storeManagement.message.name.exist': '门店名称已存在',
 };

@@ -219,17 +219,12 @@ export default {
 				const { data = {} } = response;
 				yield put({
 					type: 'updateState',
-					payload: { [stateField]: format('toCamel')(data) },
+					payload: {
+						[stateField]: format('toCamel')(data),
+						[loadingType]: false,
+					},
 				});
 			}
-
-			yield put({
-				type: 'switchLoading',
-				payload: {
-					loadingType,
-					loadingStatus: false,
-				},
-			});
 
 			return response;
 		},
@@ -372,10 +367,10 @@ export default {
 								return list.map(item => ({
 									...item,
 									amountPercent: parseFloat(
-										(item.amount / (totalAmount || 1)) * 100
+										Math.abs(item.amount / (totalAmount || 1)) * 100
 									).toFixed(2),
 									countPercent: parseFloat(
-										(item.count / (totalCount || 1)) * 100
+										Math.abs(item.count / (totalCount || 1)) * 100
 									).toFixed(2),
 								}));
 							},
@@ -403,17 +398,12 @@ export default {
 
 				yield put({
 					type: 'updateState',
-					payload: { purchaseInfo: sortedData },
+					payload: {
+						purchaseInfo: sortedData,
+						chartLoading: false,
+					},
 				});
 			}
-
-			yield put({
-				type: 'switchLoading',
-				payload: {
-					loadingType: 'chartLoading',
-					loadingStatus: false,
-				},
-			});
 		},
 
 		*setSearchValue({ payload }, { select, put }) {

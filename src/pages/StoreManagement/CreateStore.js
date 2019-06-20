@@ -2,7 +2,6 @@ import React from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Button, Input, Radio, Cascader, Card } from 'antd';
 import { connect } from 'dva';
-import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import * as CookieUtil from '@/utils/cookies';
 import { getLocationParam } from '@/utils/utils';
@@ -23,6 +22,8 @@ const FormItem = Form.Item;
 		getRegionList: () => dispatch({ type: 'store/getRegionList' }),
 		getStoreDetail: payload => dispatch({ type: 'store/getStoreDetail', payload }),
 		clearState: () => dispatch({ type: 'store/clearState' }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 	})
 )
 @Form.create()
@@ -127,6 +128,7 @@ class CreateStore extends React.Component {
 					contact_tel,
 				},
 			},
+			goToPath,
 		} = this.props;
 		const [action = 'create'] = [getLocationParam('action')];
 
@@ -254,9 +256,7 @@ class CreateStore extends React.Component {
 						<Button
 							style={{ marginLeft: '20px' }}
 							htmlType="button"
-							onClick={() => {
-								router.push('list');
-							}}
+							onClick={() => goToPath('storeList')}
 						>
 							{formatMessage({ id: 'btn.cancel' })}
 						</Button>

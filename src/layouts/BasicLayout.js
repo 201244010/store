@@ -14,7 +14,6 @@ import MQTTWrapper from '@/components/MQTT';
 import Authorized from '@/utils/Authorized';
 import NotFountPage from '@/pages/404';
 import MenuCheck from '@/components/AuthorithCheck/MenuCheck';
-import router from 'umi/router';
 import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
 import Header from './Header';
@@ -112,7 +111,7 @@ class BasicLayout extends React.PureComponent {
 
 	matchParamsPath = (pathname, breadcrumbNameMap) => {
 		const pathKey = Object.keys(breadcrumbNameMap).find(key =>
-			pathToRegexp(key).test(pathname),
+			pathToRegexp(key).test(pathname)
 		);
 		return breadcrumbNameMap[pathKey];
 	};
@@ -166,10 +165,12 @@ class BasicLayout extends React.PureComponent {
 	};
 
 	checkStore = () => {
+		const { goToPath } = this.props;
 		const shopList = Storage.get(CookieUtil.SHOP_LIST_KEY, 'local') || [];
 		if (shopList.length === 0) {
 			message.warning(formatMessage({ id: 'alert.store.is.none' }));
-			router.push(`${MENU_PREFIX.STORE}/createStore?action=create`);
+			goToPath('storeCreate', { action: 'create' });
+			// router.push(`${MENU_PREFIX.STORE}/createStore?action=create`);
 		}
 	};
 
@@ -257,8 +258,10 @@ export default connect(
 	dispatch => ({
 		getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		goToPath: (pathId, urlParams = {}, open = false) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
 		dispatch,
-	}),
+	})
 )(props => (
 	<Media query="(max-width: 599px)">
 		{isMobile => <BasicLayout {...props} isMobile={isMobile} />}
