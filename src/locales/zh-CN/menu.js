@@ -82,5 +82,6 @@ export default {
 	'menu.roleManagement.roleList': '角色管理',
 
 	'menu.exception': '错误处理',
-	'menu.exception.not-permission': '403',
+	'menu.exception.403': '403',
+	'menu.exception.404': '404',
 };
