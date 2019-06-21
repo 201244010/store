@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Button, Row, Col,Spin } from 'antd';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
+// import { Link } from 'dva/router';
 
 import { FormattedMessage, formatMessage } from 'umi/locale';
 
@@ -9,13 +9,21 @@ import styles from './IPCList.less';
 
 
 
-
 class IPCList extends React.Component {
 
 	async componentWillMount() {
-
 		const { loadList } = this.props;
 		await loadList();
+	}
+
+	onClickSetting = (sn) => {
+		const { navigateTo } = this.props;
+		navigateTo('ipcManagement', {sn});
+	}
+
+	onClickPlay = (sn) => {
+		const { navigateTo } = this.props;
+		navigateTo('live', {sn});
 	}
 
 	render() {
@@ -81,13 +89,28 @@ class IPCList extends React.Component {
 															<Button
 																className={styles['setting-btn']}
 																size='small'
+																onClick={() => {
+																	this.onClickSetting(item.sn);
+																}}
 															>
-																<Link to={`/devices/ipcList/ipcManagement?sn=${item.sn}`}>
+																{<FormattedMessage id='ipcList.setting' />}
+																{/* <Link to={`/devices/ipcList/ipcManagement?sn=${item.sn}`}>
 																	{<FormattedMessage id='ipcList.setting' />}
-																</Link>
+																</Link> */}
 															</Button>
 														}
-														<Link className={styles.play} to={`/devices/ipcList/live?sn=${item.sn}`} />
+
+														{/* <Link className={styles.play} to={`/devices/ipcList/live?sn=${item.sn}`} /> */}
+
+														<a
+															className={styles.play}
+															href='javascript:void(0);'
+															onClick={() => {
+																this.onClickPlay(item.sn);
+															}}
+														>
+															play
+														</a>
 
 														<div
 															className={styles['ipc-name-type']}
@@ -154,6 +177,13 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
 	loadList: () => dispatch({
 		type:'ipcList/getList'
+	}),
+	navigateTo: (pathId, urlParams) => dispatch({
+		type: 'menu/goToPath',
+		payload: {
+			pathId,
+			urlParams
+		}
 	})
 });
 

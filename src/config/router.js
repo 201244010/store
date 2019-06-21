@@ -45,32 +45,37 @@ const router = [
 				name: 'application',
 				icon: 'blank',
 				routes: [
+					{ path: '/application', redirect: '/application/cashVerify' },
 					{
-						path: '/cashVerify',
+						path: '/application/cashVerify',
 						icon: 'blank',
 						name: 'cashVerify',
+						id: 'cashVerify',
 						routes: [
 							{
-								path: '/cashVerify/posList',
+								path: '/application/cashVerify/posList',
 								name: 'bindPOSDevice',
+								id: 'posList',
 								// hideInMenu: true,
 								component: './IPC/POSManagement/POSList.js',
 							},
 							{
-								path: '/cashVerify/bindPOSDevice',
+								path: '/application/cashVerify/bindPOSDevice',
 								name: 'bindPOSDevice',
+								id: 'bindPOSDevice',
 								hideInMenu: true,
 								component: './IPC/POSManagement/BindPOS.js',
 							},
 							{
-								path: '/cashVerify/videos',
+								path: '/application/cashVerify/videos',
 								name: 'videos',
+								id: 'videos',
 								hideInMenu: true,
 								component: './IPC/TradeVideos/TradeVideos.js',
 							},
 							{
-								path: '/cashVerify',
-								redirect: '/cashVerify/posList',
+								path: '/application/cashVerify',
+								redirect: '/application/cashVerify/posList',
 							},
 						],
 					},
@@ -81,6 +86,7 @@ const router = [
 				path: '/devices',
 				icon: 'blank',
 				name: 'devices',
+				id: 'devices',
 				routes: [
 					{
 						path: '/devices/ipcList',
@@ -89,18 +95,21 @@ const router = [
 							{
 								path: '/devices/ipcList/live',
 								name: 'live',
+								id: 'live',
 								hideInMenu: true,
 								component: './IPC/Live/Live.js',
 							},
 							{
 								path: '/devices/ipcList/ipcManagement',
 								name: 'ipcManagement',
+								id: 'ipcManagement',
 								hideInMenu: true,
 								component: './IPC/IPCManagement/IPCManagement.js',
 							},
 							{
 								path: '/devices/ipcList',
 								// name: 'list',
+								id: 'deviceList',
 								component: './IPC/IPCList/IPCList.js',
 							},
 						],
@@ -108,6 +117,7 @@ const router = [
 					{
 						path: '/devices/motionMessage',
 						name: 'motionMessage',
+						id: 'motionMessage',
 						component: './IPC/MotionList/MotionList.js',
 					},
 					{
@@ -255,7 +265,7 @@ const router = [
 								name: 'roleList',
 								id: 'roleList',
 								component: './RoleManagement/RoleList',
-								hideInMenu: true,
+								hideInMenu: true
 							},
 							{
 								path: '/basicData/roleManagement/create',
@@ -397,17 +407,20 @@ const router = [
 			{
 				path: '/faceidLibrary',
 				name: 'faceidLibrary',
+				id: 'faceidLibrary',
 				icon: 'blank',
 				// component: './index.js',
 				routes: [
 					{
 						path: '/faceidLibrary/faceidLibraryList',
 						name: 'list',
+						id: 'faceidLibraryList',
 						component: './IPC/FaceidLibrary/LibraryList.js',
 					},
 					{
 						path: '/faceidLibrary/createLibrary',
 						// name: 'faceidLibrary.create',
+						id: 'createLibrary',
 						component: './IPC/FaceidLibrary/CreateLibrary.js',
 					},
 					{

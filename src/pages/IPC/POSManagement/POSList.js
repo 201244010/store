@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, Table,  Popconfirm, Icon, message, Modal, Form, Input, Button, Divider } from 'antd';
-import { Link } from 'dva/router';
-import router from 'umi/router';
+import { Card, Table, Popconfirm, Icon, message, Modal, Form, Input, Button, Divider } from 'antd';
+// import { Link } from 'dva/router';
+// import router from 'umi/router';
 
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
@@ -10,7 +10,7 @@ import styles from './POSList.less';
 // import AddPOS from './AddPOS';
 
 const mapStateToProps = (state) => {
-	const {  posList } = state;
+	const { posList } = state;
 	return {
 		posList
 	};
@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch) => ({
 			type: 'posList/read'
 		});
 	},
-	delete: ({ ipcSN, posSN}) => {
+	delete: ({ ipcSN, posSN }) => {
 		dispatch({
 			type: 'posList/delete',
 			payload: {
@@ -38,10 +38,10 @@ const mapDispatchToProps = (dispatch) => ({
 		}).then((result) => {
 			if (result) {
 				// message.success('删除成功！');
-				message.success(formatMessage({id: 'posList.deleteSuccess'}));
-			}else{
+				message.success(formatMessage({ id: 'posList.deleteSuccess' }));
+			} else {
 				// message.error('删除失败，请检查网络连接并重试。');
-				message.error(formatMessage({id: 'posList.deleteFailed'}));
+				message.error(formatMessage({ id: 'posList.deleteFailed' }));
 			}
 		});
 	},
@@ -55,10 +55,10 @@ const mapDispatchToProps = (dispatch) => ({
 		}).then((result) => {
 			if (result) {
 				// message.success('解绑成功！');
-				message.success(formatMessage({id: 'posList.unbindSuccess'}));
-			}else{
+				message.success(formatMessage({ id: 'posList.unbindSuccess' }));
+			} else {
 				// message.error('解绑失败，请检查网络连接并重试。');
-				message.error(formatMessage({id: 'posList.unbindFailed'}));
+				message.error(formatMessage({ id: 'posList.unbindFailed' }));
 			}
 		});
 	},
@@ -72,7 +72,7 @@ const mapDispatchToProps = (dispatch) => ({
 		});
 		return result;
 	},
-	addPOS: ({ipcSN, snList}) => {
+	addPOS: ({ ipcSN, snList }) => {
 		const result = dispatch({
 			type: 'bindingPosList/addSN',
 			payload: {
@@ -82,6 +82,13 @@ const mapDispatchToProps = (dispatch) => ({
 		});
 		return result;
 	},
+	navigateTo: (pathId, urlParams) => dispatch({
+		type: 'menu/goToPath',
+		payload: {
+			pathId,
+			urlParams
+		}
+	})
 });
 
 
@@ -133,16 +140,49 @@ class POSList extends React.Component {
 
 	}
 
+	toPath = (target, {sn, ipcId, ipcSN}) => {
+		const {navigateTo} = this.props;
+		const path = {
+			videos:{
+				pathId:'videos',
+				urlParams:{
+					posSN: sn,
+					ipcId
+				}
+			},
+			bindPOSDevice: {
+				pathId: 'bindPOSDevice',
+				urlParams:{
+					sn: ipcSN,
+					posList: sn,
+					edit: 1
+				}
+			},
+			rebindPOSDevice:{
+				pathId: 'bindPOSDevice',
+				urlParams:{
+					sn: ipcSN,
+					posList: sn,
+				}
+			}
+		};
+
+		const {pathId, urlParams = {}} = path[target] || {};
+		console.log('topath', pathId);
+		navigateTo(pathId, urlParams);
+
+	}
+
 	generateColumns = (ipcSN, ipcId) => {
 		const columns = [
 			{
-				title: formatMessage({ id: 'posList.monitorBlock'}),
+				title: formatMessage({ id: 'posList.monitorBlock' }),
 				dataIndex: 'src',
 				key: 'image',
 				render: src => (
 					src ?
 						<div className={styles.shortcut}>
-							<img className={styles.image} src={src} alt={formatMessage({ id: 'posList.monitorBlock'})} />
+							<img className={styles.image} src={src} alt={formatMessage({ id: 'posList.monitorBlock' })} />
 						</div>
 						: ''
 				)
@@ -185,10 +225,10 @@ class POSList extends React.Component {
 								(() => {
 									switch (status) {
 										case 0:
-											return formatMessage({id: 'posList.unbindSucceed'}); // '绑定成功';
+											return formatMessage({ id: 'posList.unbindSucceed' }); // '绑定成功';
 										case 1:
 										default:
-											return formatMessage({id: 'posList.unbindFail'}); // '绑定失败';
+											return formatMessage({ id: 'posList.unbindFail' }); // '绑定失败';
 									}
 								})()
 							}
@@ -197,28 +237,34 @@ class POSList extends React.Component {
 				),
 			},
 			{
-				title: formatMessage({ id: 'posList.operation'}),
+				title: formatMessage({ id: 'posList.operation' }),
 				dataIndex: 'sn',
 				key: 'operation',
 				render: (sn, record) => {
 					// console.log(record);
-					if(record.status === 0){
+					if (record.status === 0) {
 						return (
 							<div>
-								<Link
+								{/* <Link
 									className={styles['row-operation']}
 									// href="javascript:void(0);"
 									to={`/cashVerify/videos?posSN=${sn}&ipcId=${ipcId}`}
 								>
-									{ formatMessage({id: 'posList.video'}) }
-								</Link>
+									{formatMessage({ id: 'posList.video' })}
+								</Link> */}
+								<a href="javascript:void(0)" onClick={() => this.toPath('videos', {sn, ipcId})}>
+									{formatMessage({ id: 'posList.video' })}
+								</a>
 								<Divider type="veritcal" />
-								<Link
+								{/* <Link
 									className={styles['row-operation']}
 									to={`/cashVerify/bindPOSDevice?sn=${ipcSN}&posList=${sn}&edit=1`}
 								>
-									{ formatMessage({id: 'posList.adjustScreen'}) }
-								</Link>
+									{formatMessage({ id: 'posList.adjustScreen' })}
+								</Link> */}
+								<a href="javascript:void(0)" onClick={() => this.toPath('bindPOSDevice', {ipcSN, sn})}>
+									{formatMessage({ id: 'posList.adjustScreen' })}
+								</a>
 								{/* <a
 									className={styles['row-operation']}
 									href="javascript:void(0);"
@@ -228,13 +274,13 @@ class POSList extends React.Component {
 								<Divider type="veritcal" />
 								<Popconfirm
 									icon={
-										<Icon type="close-circle" theme="filled" style={{color: 'red'}} />
+										<Icon type="close-circle" theme="filled" style={{ color: 'red' }} />
 									}
 									title={
 										<div>
-											<span>{ formatMessage({id: 'posList.unbindConfirm'}) }</span>
+											<span>{formatMessage({ id: 'posList.unbindConfirm' })}</span>
 											<p>
-												{ formatMessage({id: 'posList.unbindMsg'}) }
+												{formatMessage({ id: 'posList.unbindMsg' })}
 											</p>
 										</div>
 									}
@@ -248,9 +294,9 @@ class POSList extends React.Component {
 									<a
 										className={styles['row-operation']}
 										href="javascript:void(0);"
-										// onClick={this.showPopover}
+									// onClick={this.showPopover}
 									>
-										{ formatMessage({id: 'posList.unbind'}) }
+										{formatMessage({ id: 'posList.unbind' })}
 									</a>
 								</Popconfirm>
 							</div>
@@ -265,28 +311,32 @@ class POSList extends React.Component {
 								重新绑定
 							</a> */}
 
-							<Link
+							{/* <Link
 								className={styles['row-operation']}
 								// href="javascript:void(0);"
 								to={`/cashVerify/bindPOSDevice?sn=${ipcSN}&posList=${sn}`}
 							>
 								{/* 重新绑定 */}
-								{formatMessage({id: 'posList.rebind'})}
-							</Link>
+							{/* {formatMessage({ id: 'posList.rebind' })}
+							</Link> */}
+
+							<a href="javascript:void(0);" onClick={() => this.toPath('rebindPOSDevice', {ipcSN, sn})}>
+								{formatMessage({ id: 'posList.rebind' })}
+							</a>
 							<Divider type="veritcal" />
 							<Popconfirm
 								icon={
-									<Icon type="close-circle" theme="filled" style={{color: 'red'}} />
+									<Icon type="close-circle" theme="filled" style={{ color: 'red' }} />
 								}
 								title={
 									<div>
-										<span>{ formatMessage({id: 'posList.deleteConfirm'}) }</span>
+										<span>{formatMessage({ id: 'posList.deleteConfirm' })}</span>
 										<p>
-											{ formatMessage({id: 'posList.deleteMsg'}) }
+											{formatMessage({ id: 'posList.deleteMsg' })}
 										</p>
 									</div>
 								}
-								okText={formatMessage({id: 'posList.delete'})}
+								okText={formatMessage({ id: 'posList.delete' })}
 								okType='danger'
 								onConfirm={() => {
 									this.deleteUnbindedPos(ipcSN, sn);
@@ -295,12 +345,12 @@ class POSList extends React.Component {
 								<a
 									href="javascript:void(0);"
 									className={styles['row-operation']}
-									// onClick={() => {
-									// 	this.deleteUnbindedPos(ipcSN, sn);
-									// }}
+								// onClick={() => {
+								// 	this.deleteUnbindedPos(ipcSN, sn);
+								// }}
 								>
 									{/* 删除设备 */}
-									{formatMessage({id: 'posList.removeDevice'})}
+									{formatMessage({ id: 'posList.removeDevice' })}
 								</a>
 							</Popconfirm>
 
@@ -326,7 +376,7 @@ class POSList extends React.Component {
 
 	validateSN = async (posSN, ipcSN) => {
 		// const posSN = value;
-		const {checkSN} = this.props;
+		const { checkSN } = this.props;
 
 		const target = {
 			sn: posSN
@@ -334,26 +384,26 @@ class POSList extends React.Component {
 
 		if (posSN === '') {
 			target.error = true;
-			target.message = formatMessage({id: 'posList.enterSN'}); // '请输入需要绑定设备的SN码。';
-		}else{
+			target.message = formatMessage({ id: 'posList.enterSN' }); // '请输入需要绑定设备的SN码。';
+		} else {
 			const code = await checkSN(ipcSN, posSN);
 			if (code !== 1) {
 				target.error = true;
 
 				switch (code) {
 					case 5510:
-						target.message = formatMessage({id: 'posList.posBinded'}); // '该收银设备已绑定其它IPC设备，请重新输入。';
+						target.message = formatMessage({ id: 'posList.posBinded' }); // '该收银设备已绑定其它IPC设备，请重新输入。';
 						break;
 					case 5509:
-						target.message = formatMessage({id: 'posList.posNotBelong'}); // '该收银设备不属于当前店铺，请重新输入。';
+						target.message = formatMessage({ id: 'posList.posNotBelong' }); // '该收银设备不属于当前店铺，请重新输入。';
 						break;
 					case 5508:
 					default:
-						target.message = formatMessage({id: 'posList.posNoSN'}); // '无法查询到该SN号，请重新输入。';
+						target.message = formatMessage({ id: 'posList.posNoSN' }); // '无法查询到该SN号，请重新输入。';
 						break;
 				}
 
-			}else{
+			} else {
 				target.error = false;
 			}
 		}
@@ -378,7 +428,7 @@ class POSList extends React.Component {
 
 	onAddPos = async () => {
 		// 添加收银设备
-		const { addPOS } = this.props;
+		const { addPOS, navigateTo } = this.props;
 		const { snList } = this.state;
 		const ipcSN = this.currentIpcSN;
 
@@ -412,11 +462,15 @@ class POSList extends React.Component {
 			// this.setState({
 			// 	inputVisible: false,
 			// });
-			router.push(`/cashVerify/bindPOSDevice?sn=${ipcSN}&posList=${list.join('|')}`);
+			navigateTo('bindPOSDevice', {
+				sn: ipcSN,
+				posList: list.join('|')
+			});
+			// router.push(`/cashVerify/bindPOSDevice?sn=${ipcSN}&posList=${list.join('|')}`);
 
-		}else{
+		} else {
 			// message.error('设备添加失败。');
-			message.error(formatMessage({id: 'posList.addFailed'}));
+			message.error(formatMessage({ id: 'posList.addFailed' }));
 		};
 		// console.log('done',device);
 		// this.setState({
@@ -460,7 +514,7 @@ class POSList extends React.Component {
 							key={item.sn}
 							bordered={false}
 						>
-							<h3>{ item.name }</h3>
+							<h3>{item.name}</h3>
 
 							{
 								item.posList.length === 0 ?
@@ -494,7 +548,7 @@ class POSList extends React.Component {
 										});
 									}}
 								>
-									{ `+ ${formatMessage({id: 'posList.addPOS'})}` }
+									{`+ ${formatMessage({ id: 'posList.addPOS' })}`}
 								</a>
 								{/* <Link
 									to={`/cashVerify/bindPOSDevice?sn=${item.sn}`}
@@ -512,7 +566,7 @@ class POSList extends React.Component {
 				<Modal
 					visible={inputVisible}
 					maskClosable={false}
-					title={formatMessage({id: 'posList.modalTitle'})}
+					title={formatMessage({ id: 'posList.modalTitle' })}
 					onOk={this.onAddPos}
 					onCancel={() => {
 						this.setState({
@@ -529,7 +583,7 @@ class POSList extends React.Component {
 								});
 							}}
 						>
-							{formatMessage({id: 'posList.cancel'})}
+							{formatMessage({ id: 'posList.cancel' })}
 						</Button>,
 						<Button
 							key="add"
@@ -546,14 +600,14 @@ class POSList extends React.Component {
 								}
 							}
 						>
-							{formatMessage({id: 'posList.continueAdd'})}
+							{formatMessage({ id: 'posList.continueAdd' })}
 						</Button>,
 						<Button
 							key="submit"
 							type="primary"
 							onClick={this.onAddPos}
 						>
-							{formatMessage({id: 'posList.confirm'})}
+							{formatMessage({ id: 'posList.confirm' })}
 						</Button>,
 					]}
 				>
@@ -578,7 +632,7 @@ class POSList extends React.Component {
 										<div className={styles['input-line-block']}>
 											<Input
 												className={styles['info-input']}
-												placeholder={formatMessage({ id: 'posList.inputMsg'})}
+												placeholder={formatMessage({ id: 'posList.inputMsg' })}
 												onChange={
 													(e) => {
 														snList[index].sn = e.target.value;
