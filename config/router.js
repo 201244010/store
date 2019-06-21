@@ -45,7 +45,7 @@ const router = [
 				name: 'application',
 				icon: 'blank',
 				routes: [
-					{path:'/application', redirect: '/application/cashVerify'},
+					{ path: '/application', redirect: '/application/cashVerify' },
 					{
 						path: '/application/cashVerify',
 						icon: 'blank',
@@ -56,7 +56,7 @@ const router = [
 								path: '/application/cashVerify/posList',
 								name: 'bindPOSDevice',
 								id: 'posList',
-								// hideInMenu: true,
+								hideInMenu: true,
 								component: './IPC/POSManagement/POSList.js',
 							},
 							{
@@ -108,7 +108,7 @@ const router = [
 							},
 							{
 								path: '/devices/ipcList',
-								// name: 'list',
+								name: 'list',
 								id: 'deviceList',
 								component: './IPC/IPCList/IPCList.js',
 							},
@@ -225,8 +225,8 @@ const router = [
 								path: '/basicData/storeManagement/list',
 								name: 'list',
 								id: 'storeList',
-                component: './StoreManagement',
-                hideInMenu: true,
+								component: './StoreManagement',
+								hideInMenu: true,
 							},
 							{
 								path: '/basicData/storeManagement/createStore',
@@ -243,11 +243,11 @@ const router = [
 								hideInMenu: true,
 							},
 							{
-                path: '/basicData/storeManagement/alterStore',
-                component: './StoreManagement/CreateStore.js',
-                name: 'storeManagement',
-                id: 'storeUpdate',
-                hideInMenu: true,
+								path: '/basicData/storeManagement/alterStore',
+								component: './StoreManagement/CreateStore.js',
+								name: 'storeManagement',
+								id: 'storeUpdate',
+								hideInMenu: true,
 							},
 						],
 					},
@@ -264,8 +264,8 @@ const router = [
 								path: '/basicData/roleManagement/roleList',
 								name: 'roleList',
 								id: 'roleList',
-                component: './RoleManagement/RoleList',
-                hideInMenu: true
+								component: './RoleManagement/RoleList',
+								hideInMenu: true,
 							},
 							{
 								path: '/basicData/roleManagement/create',
