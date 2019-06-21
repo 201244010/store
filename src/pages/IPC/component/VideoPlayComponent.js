@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './VideoPlayComponent.less';
-import { Icon } from 'antd';
+import { Icon, Modal } from 'antd';
 import VideoPlayer from '@/components/VideoPlayer/VideoPlayer';
 // import { formatMessage } from 'umi/locale';
 
@@ -14,7 +14,7 @@ class VideoPlayComponent extends React.Component {
 
 	componentDidUpdate () {
 		const { playing } = this.props;
-		if (playing) {
+		if (playing && this.child) {
 			// this.child.currentTime(0);
 			this.child.setCurrentTime(0);
 			this.child.play();
@@ -33,7 +33,7 @@ class VideoPlayComponent extends React.Component {
 	}
 
 	render() {
-		const { videoUrl,ipcType } = this.props;
+		const { videoUrl, ipcType, playing } = this.props;
 		// let pixelRatio;
 		// switch(ipcType){
 		// 	case 'FS1':
@@ -52,19 +52,29 @@ class VideoPlayComponent extends React.Component {
 		};
 		// console.log(pixelRatio[ipcType]);
 		return (
-			<div className={styles['live-wrapper']}>
-				<Icon className={styles.close} type="close" onClick={this.closeWindow} />
-				<div className={styles['video-player-container']}>
-					<VideoPlayer
-						pixelRatio={pixelRatio[ipcType]?pixelRatio[ipcType]:'16:9'}
-						// pixelRatio= '16:9'
-						type='track'
-						url={videoUrl}
-						// onRef={this.onRef}
-						ref={playler => this.child = playler}
-					/>
+			<Modal
+				className={styles['video-player']}
+				visible={playing}
+				footer={null}
+				closable={false}
+				maskClosable={false}
+				width='1024'
+				height='1024'
+			>
+				<div className={styles['live-wrapper']}>
+					<Icon className={styles.close} type="close" onClick={this.closeWindow} />
+					<div className={styles['video-player-container']}>
+						<VideoPlayer
+							pixelRatio={pixelRatio[ipcType]?pixelRatio[ipcType]:'16:9'}
+							// pixelRatio= '16:9'
+							type='track'
+							url={videoUrl}
+							// onRef={this.onRef}
+							ref={playler => this.child = playler}
+						/>
+					</div>
 				</div>
-			</div>
+			</Modal>
 		);
 	}
 

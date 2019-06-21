@@ -358,9 +358,9 @@ class MotionList extends React.Component {
 					</div>
 				</div>
 
-				<div className={isWatchVideo ? styles['video-player'] : styles['display-none']}>
-					<VideoPlayComponent playing={isWatchVideo} watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} ipcType={ipcType} />
-				</div>
+				{/* <div className={isWatchVideo ? styles['video-player'] : styles['display-none']}> */}
+				<VideoPlayComponent playing={isWatchVideo} watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} ipcType={ipcType} />
+				{/* </div> */}
 
 			</Card>
 		);
