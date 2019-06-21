@@ -316,7 +316,10 @@ class TradeVideos extends React.Component {
 
 		return (
 			<Card bordered={false}>
-				<div className={!isWatchVideo ? styles['motion-list-container'] : styles['display-none']}>
+				<div
+					// className={!isWatchVideo ? styles['motion-list-container'] : styles['display-none']}
+					className={styles['motion-list-container']}
+				>
 					<div className={global['search-bar']}>
 						<Form layout="inline">
 							<Row gutter={SEARCH_FORM_GUTTER.SMALL}>
@@ -475,9 +478,12 @@ class TradeVideos extends React.Component {
 					/>
 				</div>
 
-				<div className={isWatchVideo ? styles['video-player']:styles['display-none']}>
-					<VideoPlayComponent className={styles.video} playing={isWatchVideo} watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} ipcType={ipcType} />
-				</div>
+				{/* <div
+					className={isWatchVideo ? styles['video-player'] : styles['display-none']}
+				> */}
+				<VideoPlayComponent className={styles.video} playing={isWatchVideo} watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} ipcType={ipcType} />
+
+				{/* </div> */}
 
 			</Card>
 		);
