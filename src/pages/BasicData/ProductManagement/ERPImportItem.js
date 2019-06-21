@@ -135,6 +135,8 @@ export const KWYLS = props => {
 					</>
 				)}
 			</Form.Item>
+			{/* 解决浏览器自动填充问题 */}
+			<input type="password" style={{ display: 'none' }} />
 			{mode === MODE.MODIFY && (
 				<Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
 					{getFieldDecorator('saas_info.password', {
@@ -147,7 +149,7 @@ export const KWYLS = props => {
 								}),
 							},
 						],
-					})(<Input type="password" />)}
+					})(<Input type="password" autoComplete="new-password" />)}
 				</Form.Item>
 			)}
 		</>
