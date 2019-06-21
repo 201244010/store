@@ -56,7 +56,7 @@ const router = [
 								path: '/application/cashVerify/posList',
 								name: 'bindPOSDevice',
 								id: 'posList',
-								// hideInMenu: true,
+								hideInMenu: true,
 								component: './IPC/POSManagement/POSList.js',
 							},
 							{
@@ -265,7 +265,7 @@ const router = [
 								name: 'roleList',
 								id: 'roleList',
 								component: './RoleManagement/RoleList',
-								hideInMenu: true
+								hideInMenu: true,
 							},
 							{
 								path: '/basicData/roleManagement/create',
@@ -435,4 +435,5 @@ const router = [
 	},
 ];
 
-export default router;
+// export default router;
+module.exports = router;
