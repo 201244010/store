@@ -12,6 +12,7 @@ import * as styles from './Account.less';
 		merchant: state.merchant,
 	}),
 	dispatch => ({
+		logout: () => dispatch({ type: 'user/logout' }),
 		updateUsername: payload => dispatch({ type: 'user/updateUsername', payload }),
 		changePassword: payload => dispatch({ type: 'user/changePassword', payload }),
 		updatePhone: payload => dispatch({ type: 'user/updatePhone', payload }),
@@ -19,8 +20,8 @@ import * as styles from './Account.less';
 		sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
 		checkUserExist: payload => dispatch({ type: 'user/checkUserExist', payload }),
 		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
-		goToPath: (pathId, urlParams = {}) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		goToPath: (pathId, urlParams = {}, linkType = null) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, linkType } }),
 	})
 )
 class UserCenter extends Component {
@@ -41,6 +42,7 @@ class UserCenter extends Component {
 			updateIcon,
 			checkUserExist,
 			goToPath,
+			logout,
 		} = this.props;
 
 		return (
@@ -61,6 +63,7 @@ class UserCenter extends Component {
 						sendCode,
 						checkUserExist,
 						goToPath,
+						logout,
 					}}
 				/>
 				<Store
