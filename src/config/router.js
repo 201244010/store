@@ -48,7 +48,6 @@ const router = [
 					{ path: '/application', redirect: '/application/cashVerify' },
 					{
 						path: '/application/cashVerify',
-						icon: 'blank',
 						name: 'cashVerify',
 						id: 'cashVerify',
 						routes: [
