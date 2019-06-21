@@ -19,8 +19,8 @@ import * as styles from './ProductManagement.less';
 		createProduct: payload => dispatch({ type: 'basicDataProduct/createProduct', payload }),
 		updateProduct: payload => dispatch({ type: 'basicDataProduct/updateProduct', payload }),
 		clearState: () => dispatch({ type: 'basicDataProduct/clearState' }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()

@@ -31,8 +31,8 @@ const RenderFormItem = {
 		erpAuthCheck: payload => dispatch({ type: 'basicDataProduct/erpAuthCheck', payload }),
 		erpImport: payload => dispatch({ type: 'basicDataProduct/erpImport', payload }),
 		getImportedErpInfo: () => dispatch({ type: 'store/getImportedErpInfo' }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()

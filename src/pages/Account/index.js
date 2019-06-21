@@ -19,8 +19,8 @@ import * as styles from './Account.less';
 		sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
 		checkUserExist: payload => dispatch({ type: 'user/checkUserExist', payload }),
 		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class UserCenter extends Component {

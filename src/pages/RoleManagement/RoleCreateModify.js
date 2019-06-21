@@ -23,8 +23,8 @@ const CheckboxGroup = Checkbox.Group;
 		updateRole: payload => dispatch({ type: 'role/updateRole', payload }),
 		creatRole: payload => dispatch({ type: 'role/creatRole', payload }),
 		updatePermissionList: payload => dispatch({ type: 'role/updatePermissionList', payload }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()

@@ -44,8 +44,8 @@ const tabBarStyle = {
 		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
 		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {},  ) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams,  } }),
 	})
 )
 @Form.create()

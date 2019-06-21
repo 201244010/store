@@ -16,8 +16,8 @@ const { Option } = Select;
 		getStoreInformation: payload => dispatch({ type: 'store/getStoreInformation', payload }),
 		alterStoreInformation: payload =>
 			dispatch({ type: 'store/alterStoreInformation', payload }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class AlterStore extends React.Component {

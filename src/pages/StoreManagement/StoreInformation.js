@@ -11,8 +11,8 @@ import styles from './StoreManagement.less';
 	}),
 	dispatch => ({
 		getStoreDetail: payload => dispatch({ type: 'store/getStoreDetail', payload }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class StoreInformation extends React.Component {
