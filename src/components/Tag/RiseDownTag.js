@@ -11,7 +11,7 @@ const RiseDownTag = props => {
 		labelStyle = {},
 		content = null,
 		contentClass = '',
-		contentStyle = { marginLeft: '12px', display: 'flex', alignItems: 'center' },
+		contentStyle = {},
 	} = props;
 
 	const IconUp = () => (
@@ -102,9 +102,7 @@ const RiseDownTag = props => {
 				<StatusIcon />
 				<div style={{ marginLeft: '2px' }}>
 					{`${
-						content || content === 0
-							? `${Math.round(Math.abs(content) * 100)}%`
-							: '--'
+						content || content === 0 ? `${Math.round(Math.abs(content) * 100)}%` : '--'
 					}`}
 				</div>
 			</div>

@@ -34,6 +34,7 @@ const tabBarStyle = {
 		sso: state.sso,
 		merchant: state.merchant,
 		store: state.store,
+		loading: state.loading,
 	}),
 	dispatch => ({
 		userLogin: payload => dispatch({ type: 'user/login', payload }),
@@ -44,8 +45,8 @@ const tabBarStyle = {
 		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
 		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
-		goToPath: (pathId, urlParams = {},  ) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams,  } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()
@@ -265,6 +266,7 @@ class Login extends Component {
 			sendCode,
 			sso: { imgCode, imgCaptcha, needImgCaptcha },
 			user: { errorTimes },
+			loading,
 		} = this.props;
 		const currentLanguage = getLocale();
 
@@ -324,6 +326,11 @@ class Login extends Component {
 						<Button
 							className={`${styles['primary-btn']} ${styles['login-primary-button']}`}
 							size="large"
+							loading={
+								loading.effects['user/login'] ||
+								loading.effects['sso/checkUser'] ||
+								loading.effects['merchant/getCompanyList']
+							}
 							block
 							onClick={this.onSubmit}
 						>
