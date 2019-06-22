@@ -3,7 +3,7 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { Form, Button, Select, Modal, Card } from 'antd';
 import { format } from '@konata9/milk-shake';
-import { SDNM, KWYLS, ZZSY, HBB, ERROR_FILEDS } from './ERPImportItem';
+import { SDNM, KWYLS, ZZSY, HBB, HDQF, ERROR_FILEDS } from './ERPImportItem';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT, FORM_ITEM_LONGER } from '@/constants/form';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -19,6 +19,7 @@ const RenderFormItem = {
 	'SAAS-SDNM': props => <SDNM {...props} />,
 	'SAAS-ZZSY': props => <ZZSY {...props} />,
 	'SAAS-HBB': props => <HBB {...props} />,
+	'SAAS-HDQF': props => <HDQF {...props} />,
 	default: () => <div />,
 };
 
@@ -31,8 +32,8 @@ const RenderFormItem = {
 		erpAuthCheck: payload => dispatch({ type: 'basicDataProduct/erpAuthCheck', payload }),
 		erpImport: payload => dispatch({ type: 'basicDataProduct/erpImport', payload }),
 		getImportedErpInfo: () => dispatch({ type: 'store/getImportedErpInfo' }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()

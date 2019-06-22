@@ -63,6 +63,7 @@ const MailRegisterSuccess = ({ props }) => {
 	state => ({
 		user: state.user,
 		sso: state.sso,
+		loading: state.loading
 	}),
 	dispatch => ({
 		register: payload => dispatch({ type: 'user/register', payload }),
@@ -188,6 +189,7 @@ class Register extends Component {
 			form: { getFieldDecorator, getFieldValue },
 			sso: { imgCaptcha },
 			visible,
+			loading,
 			onCancel,
 		} = this.props;
 		const { location } = window;
@@ -441,8 +443,10 @@ class Register extends Component {
 											`${styles['primary-btn']}
 											${styles['footer-btn']}`
 										}
+										type="primary"
 										size="large"
 										block
+										loading={loading.effects['user/register']}
 										onClick={this.onSubmit}
 									>
 										{formatMessage({ id: 'btn.register' })}

@@ -32,4 +32,16 @@ export default {
 	'dashBoard.trade.date.unit': '日',
 	'dashBoard.trade.amount': '交易金额',
 	'dashBoard.trade.count': '交易笔数',
+
+	// 订单类型
+	'payment-order-type-normal': '正常销售',
+	'payment-order-type-refund': '退款',
+
+	// 支付类型
+	'payment-purchase-type-cash': '现金',
+	'payment-purchase-type-alipay': '支付宝',
+	'payment-purchase-type-wechat': '微信',
+	'payment-purchase-type-card': '银行卡刷卡',
+	'payment-purchase-type-unionpayqr': '银联二维码',
+	'payment-purchase-type-other': '其他',
 };

@@ -18,8 +18,8 @@ import SearchResult from './SearchResult';
 		updateAPAutoUpgradeStatus: payload =>
 			dispatch({ type: 'deviceAP/updateAPAutoUpgradeStatus', payload }),
 		uploadAPFirmware: payload => dispatch({ type: 'deviceAP/uploadAPFirmware', payload }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class DeviceUpgrade extends Component {

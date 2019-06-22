@@ -1,0 +1,45 @@
+:global {
+	.ant-layout-sider {
+		position: relative;
+		min-width: 0;
+		background: #303540;
+		-webkit-transition: all 0.2s;
+		transition: all 0.2s;
+	}
+	.ant-menu-dark,
+	.ant-menu-dark .ant-menu-sub {
+		color: rgba(255, 255, 255, 0.65);
+		background: #303540;
+	}
+	.ant-menu-dark .ant-menu-inline.ant-menu-sub {
+		background: rgba(0, 0, 0, 0.2);
+		-webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45) inset;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45) inset;
+	}
+	.ant-menu.ant-menu-dark .ant-menu-item-selected,
+	.ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+		background-color: #ff8133;
+	}
+	.ant-menu-dark .ant-menu-item,
+	.ant-menu-dark .ant-menu-item-group-title,
+	.ant-menu-dark .ant-menu-item > a {
+		color: rgba(255, 255, 255, 0.6);
+	}
+	.ant-menu-vertical .ant-menu-item,
+	.ant-menu-vertical-left .ant-menu-item,
+	.ant-menu-vertical-right .ant-menu-item,
+	.ant-menu-inline .ant-menu-item,
+	.ant-menu-vertical .ant-menu-submenu-title,
+	.ant-menu-vertical-left .ant-menu-submenu-title,
+	.ant-menu-vertical-right .ant-menu-submenu-title,
+	.ant-menu-inline .ant-menu-submenu-title {
+		height: 40px;
+		margin-top: 0;
+		margin-bottom: 0;
+		padding: 0 16px;
+		overflow: hidden;
+		font-size: 14px;
+		line-height: 40px;
+		text-overflow: ellipsis;
+	}
+}

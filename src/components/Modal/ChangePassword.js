@@ -12,7 +12,7 @@ class ChangePassword extends Component {
 		const {
 			form: { validateFields, setFields },
 			onOk,
-			goToPath,
+			logout,
 		} = this.props;
 		validateFields(async (err, values) => {
 			if (!err) {
@@ -36,7 +36,7 @@ class ChangePassword extends Component {
 						},
 					});
 				} else {
-					goToPath('userLogin');
+					logout();
 				}
 			}
 		});

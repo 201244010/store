@@ -163,7 +163,7 @@ export default connect(
 	}),
 	dispatch => ({
 		logout: () => dispatch({ type: 'user/logout' }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )(SunmiLayout);
