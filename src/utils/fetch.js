@@ -6,7 +6,8 @@ import { ALERT_NOTICE_MAP, ERROR_OK, USER_NOT_LOGIN } from '@/constants/errorCod
 import * as CookieUtil from '@/utils/cookies';
 import router from 'umi/router';
 
-import 'whatwg-fetch';
+// import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
+import { fetch } from 'whatwg-fetch';
 
 const { API_ADDRESS, MD5_TOKEN } = CONFIG;
 
@@ -24,6 +25,9 @@ const { API_ADDRESS, MD5_TOKEN } = CONFIG;
 //   504: '网关超时。',
 //   default: '未知错误，请联系网站管理员',
 // };
+
+// const abortableFetch = ('signal' in new Request('')) ? window.fetch : fetch;
+// export const controller = new AbortController();
 
 const unAuthHandler = () => {
 	CookieUtil.clearCookies();

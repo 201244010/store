@@ -66,7 +66,6 @@ class RoleList extends React.Component {
 					<div>
 						<a
 							href="javascript:void(0);"
-							className={styles.view}
 							onClick={() => this.goPath(record, 'view')}
 						>
 							{formatMessage({ id: 'list.action.view' })}
@@ -76,7 +75,6 @@ class RoleList extends React.Component {
 								<Divider type="vertical" />
 								<a
 									href="javascript:void(0);"
-									className={styles.view}
 									onClick={() => this.goPath(record, 'modify')}
 								>
 									{formatMessage({ id: 'list.action.edit' })}
@@ -96,7 +94,7 @@ class RoleList extends React.Component {
 										loading: loading.effects['role/deleteRole'],
 									}}
 								>
-									<a href="javascript:void(0);" className={styles.view}>
+									<a href="javascript:void(0);">
 										{formatMessage({ id: 'list.action.delete' })}
 									</a>
 								</Popconfirm>

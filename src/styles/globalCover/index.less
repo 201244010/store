@@ -1,3 +1,35 @@
 @import './Button.less';
 @import './Layout.less';
 @import './Navigation/Navigation.less';
+
+@button-background-primary: #FF8133;
+@button-background-hover:#FFA05C;
+@button-color-active:#CC4C00;
+
+:global{
+	--antd-wave-shadow-color: @button-background-primary;
+
+	a:hover{
+		color: @button-background-hover;
+	}
+
+	.ant-spin-dot-item{
+		background-color: @button-background-primary;
+	}
+
+	.ant-switch-checked{
+		background-color: @button-background-primary;
+	}
+
+	.ant-tabs-nav .ant-tabs-tab-active{
+		color: @button-background-primary;
+	}
+
+	.ant-tabs-nav .ant-tabs-tab:hover{
+		color: @button-background-hover;
+	}
+
+	.ant-tabs-ink-bar{
+		background-color: @button-background-primary;
+	}
+}
