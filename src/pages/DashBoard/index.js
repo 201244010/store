@@ -24,18 +24,21 @@ const { LAST_HAND_REFRESH_TIME } = DASHBOARD;
 		fetchAllData: ({ needLoading }) =>
 			dispatch({ type: 'dashBoard/fetchAllData', payload: { needLoading } }),
 		setSearchValue: payload => dispatch({ type: 'dashBoard/setSearchValue', payload }),
-		clearSearch: () => dispatch({type:'dashBoard/clearSearch'})
+		clearSearch: () => dispatch({ type: 'dashBoard/clearSearch' }),
 	})
 )
 class DashBoard extends Component {
-	async componentDidMount() {
+	componentWillMount() {
 		const { fetchAllData } = this.props;
-		await fetchAllData({ needLoading: true });
+		fetchAllData({ needLoading: true });
+	}
+
+	componentDidMount() {
 		this.startAutoRefresh();
 	}
 
 	componentWillUnmount() {
-		const {clearSearch} = this.props;
+		const { clearSearch } = this.props;
 		clearTimeout(this.timer);
 		clearSearch();
 	}
@@ -50,13 +53,15 @@ class DashBoard extends Component {
 		}, 1000 * 60 * 2);
 	};
 
-	onSearchChanged = () => {
+	onSearchChanged = async () => {
+		const { fetchAllData } = this.props;
 		clearTimeout(this.timer);
+		await fetchAllData({ needLoading: true });
 		this.startAutoRefresh();
 	};
 
 	doHandRefresh = async () => {
-		const {fetchAllData} = this.props;
+		const { fetchAllData } = this.props;
 		clearTimeout(this.timer);
 		const lastHandRefreshTime = Storage.get(LAST_HAND_REFRESH_TIME);
 		if (
@@ -66,7 +71,7 @@ class DashBoard extends Component {
 				.isAfter(moment(lastHandRefreshTime))
 		) {
 			Storage.set({ [LAST_HAND_REFRESH_TIME]: moment().format('YYYY-MM-DD HH:mm:ss') });
-			await fetchAllData({needLoading:true});
+			await fetchAllData({ needLoading: true });
 			this.startAutoRefresh();
 		} else {
 			message.warning(formatMessage({ id: 'dashBoard.refresh.too.fast' }));
