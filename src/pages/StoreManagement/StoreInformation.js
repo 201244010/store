@@ -51,7 +51,7 @@ class StoreInformation extends React.Component {
 			shop_name = '--',
 			type_name = '--',
 			business_status = 0,
-			region,
+			region = '--',
 			address = '--',
 			business_hours = '--',
 			contact_person = '--',
@@ -96,7 +96,14 @@ class StoreInformation extends React.Component {
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.address' })}
 					>
-						{region ? region.split(',').join(' ') : '--'} {address}
+						{region === '--' && address === '--' ? (
+							<span>--</span>
+						) : (
+							<>
+								<span>{region !== '--' ? region.split(',').join(' ') : ''}</span>
+								<span>{address !== '--' ? address : ''}</span>
+							</>
+						)}
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
