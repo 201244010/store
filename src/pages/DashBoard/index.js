@@ -55,7 +55,8 @@ class DashBoard extends Component {
 		this.startAutoRefresh();
 	};
 
-	doHandRefresh = () => {
+	doHandRefresh = async () => {
+		const {fetchAllData} = this.props;
 		clearTimeout(this.timer);
 		const lastHandRefreshTime = Storage.get(LAST_HAND_REFRESH_TIME);
 		if (
@@ -65,7 +66,8 @@ class DashBoard extends Component {
 				.isAfter(moment(lastHandRefreshTime))
 		) {
 			Storage.set({ [LAST_HAND_REFRESH_TIME]: moment().format('YYYY-MM-DD HH:mm:ss') });
-			window.location.reload();
+			await fetchAllData({needLoading:true});
+			this.startAutoRefresh();
 		} else {
 			message.warning(formatMessage({ id: 'dashBoard.refresh.too.fast' }));
 			this.startAutoRefresh();
