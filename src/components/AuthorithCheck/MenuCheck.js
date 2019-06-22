@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
+import { Spin } from 'antd';
 import router from 'umi/router';
 
 import { env } from '@/config';
 
 class MenuCheck extends Component {
-	componentDidMount() {
+	constructor(props) {
+		super(props);
+		this.state = {
+			inChecking: true,
+		};
+	}
+
+	componentWillMount() {
 		const {
 			location: { pathname },
 		} = window;
@@ -19,8 +27,17 @@ class MenuCheck extends Component {
 		}
 	}
 
+	componentDidMount(){
+		this.setState({
+			inChecking: false,
+		});
+	}
+
 	render() {
-		return <></>;
+		const { inChecking } = this.state;
+		const { children } = this.props;
+
+		return <>{inChecking ? <Spin spinning /> : <>{children}</>}</>;
 	}
 }
 

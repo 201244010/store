@@ -54,14 +54,15 @@ export default {
 			});
 			CookieUtil.clearCookies();
 			Storage.remove([CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY], 'local');
-
-			yield put({
-				type: 'menu/goToPath',
-				payload: {
-					pathId: 'userLogin',
-					linkType: 'replace',
-				},
-			});
+			
+			window.location.reload();
+			// yield put({
+			// 	type: 'menu/goToPath',
+			// 	payload: {
+			// 		pathId: 'userLogin',
+			// 		linkType: 'replace',
+			// 	},
+			// });
 			// router.push('/user/login');
 		},
 		*checkImgCode({ payload }, { call }) {
