@@ -56,12 +56,12 @@ class IPCList extends React.Component {
 					{
 						ipcList.length === 0 && !loading.effects['ipcList/getList'] ?
 							<div className={styles['no-device']}>
+								<div className={styles['ipc-pic']} />
 								<h2>{<FormattedMessage id='ipcList.noDevice.addIPC.tips' />}</h2>
 								<div className={styles.tips}>
 									<div className={styles['tips-item']}><span className={styles.num}>1</span>{<FormattedMessage id='ipcList.noDevice.addIPC.first.step' />}<span className={styles['blue-span']}>{<FormattedMessage id='ipcList.noDevice.addIPC.first.step.blue' />}</span></div>
 									<div className={styles['tips-item']}><span className={styles.num}>2</span>{<FormattedMessage id='ipcList.noDevice.addIPC.second.step' />}</div>
 								</div>
-								<div className={styles['ipc-pic']} />
 								<Button
 									className={styles['device-link']}
 									type="primary"

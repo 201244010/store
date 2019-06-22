@@ -119,8 +119,8 @@ const MerchantInfo = props => {
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		companyCreate: payload => dispatch({ type: 'merchant/companyCreate', payload }),
 		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()

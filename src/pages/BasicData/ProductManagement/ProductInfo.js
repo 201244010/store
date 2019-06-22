@@ -21,8 +21,8 @@ const MESSAGE_PREFIX = {
 	dispatch => ({
 		getProductDetail: payload =>
 			dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class ProductInfo extends Component {

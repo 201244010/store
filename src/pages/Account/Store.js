@@ -12,8 +12,8 @@ import * as styles from './Account.less';
 		merchant: state.merchant,
 	}),
 	dispatch => ({
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class Store extends Component {

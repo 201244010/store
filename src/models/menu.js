@@ -157,7 +157,7 @@ export default {
 		},
 
 		goToPath({ payload = {} }) {
-			const { pathId = null, urlParams = {}, open = false } = payload;
+			const { pathId = null, urlParams = {}, linkType = null } = payload;
 
 			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
 
@@ -175,8 +175,14 @@ export default {
 				targetPath = `${path}?${query}`;
 			}
 
-			if (open) {
-				window.open(targetPath);
+			const { open, location, origin } = window;
+
+			if (linkType === 'open') {
+				open(targetPath);
+			} else if (linkType === 'replace') {
+				location.replace(targetPath);
+			} else if (linkType === 'href') {
+				location.href = `${origin}${targetPath}`;
 			} else {
 				router.push(targetPath);
 			}

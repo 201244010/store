@@ -19,8 +19,8 @@ import SearchResult from './SearchResult';
 			dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
 		deleteProduct: payload => dispatch({ type: 'basicDataProduct/deleteProduct', payload }),
 		getSaasBindInfo: () => dispatch({ type: 'store/getSaasBindInfo' }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class ProductList extends Component {

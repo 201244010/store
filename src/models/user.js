@@ -59,6 +59,7 @@ export default {
 				type: 'menu/goToPath',
 				payload: {
 					pathId: 'userLogin',
+					linkType: 'replace',
 				},
 			});
 			// router.push('/user/login');

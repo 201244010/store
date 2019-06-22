@@ -8,6 +8,7 @@ import DisplayCard from '@/components/DisplayCard';
 import { priceFormat } from '@/utils/utils';
 
 const ringRateStyle = {
+	width: '100%',
 	display: 'flex',
 	justifyContent: 'space-between',
 };

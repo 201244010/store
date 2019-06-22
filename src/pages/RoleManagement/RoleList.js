@@ -30,8 +30,8 @@ const FormItem = Form.Item;
 	dispatch => ({
 		getRoleList: payload => dispatch({ type: 'role/getRoleList', payload }),
 		deleteRole: payload => dispatch({ type: 'role/deleteRole', payload }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()

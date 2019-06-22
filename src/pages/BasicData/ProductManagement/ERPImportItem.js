@@ -38,6 +38,12 @@ export const ERROR_FILEDS = {
 			default: formatMessage({ id: 'basicData.erp.hbb.error' }),
 		},
 	},
+	'SAAS-HDQF': {
+		field: 'saas_info.secret_key',
+		errMsg: {
+			default: formatMessage({ id: 'basicData.erp.hdqf.error' }),
+		},
+	},
 };
 
 export const SDNM = props => {
@@ -135,6 +141,8 @@ export const KWYLS = props => {
 					</>
 				)}
 			</Form.Item>
+			{/* 解决浏览器自动填充问题 */}
+			<input type="password" style={{ display: 'none' }} />
 			{mode === MODE.MODIFY && (
 				<Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
 					{getFieldDecorator('saas_info.password', {
@@ -147,7 +155,7 @@ export const KWYLS = props => {
 								}),
 							},
 						],
-					})(<Input type="password" />)}
+					})(<Input type="password" autoComplete="new-password" />)}
 				</Form.Item>
 			)}
 		</>
@@ -260,6 +268,55 @@ export const HBB = props => {
 									required: true,
 									message: formatMessage({
 										id: 'basicData.erp.hbb.shop.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+		</>
+	);
+};
+
+export const HDQF = props => {
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasShopKey = null, saasExtraKey1 = null } = saasInfo;
+	return (
+		<>
+			<Form.Item label="app_id">
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.app_id', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hdqf.key.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+			<Form.Item label="secret_key">
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.secret_key', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hdqf.secret.isEmpty',
 									}),
 								},
 							],

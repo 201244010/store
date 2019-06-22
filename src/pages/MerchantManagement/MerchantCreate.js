@@ -15,8 +15,8 @@ import { ERROR_OK } from '@/constants/errorCode';
 	dispatch => ({
 		companyCreate: payload => dispatch({ type: 'merchant/companyCreate', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()

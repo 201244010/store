@@ -23,7 +23,6 @@ const DisplayCard = props => {
 				</div>
 
 				<div className={styles['card-content']}>{content}</div>
-
 				<div className={styles['card-footer']}>{footer}</div>
 			</Card>
 		</div>
