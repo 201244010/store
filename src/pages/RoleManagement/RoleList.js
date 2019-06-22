@@ -48,7 +48,7 @@ class RoleList extends React.Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.userCount' }),
 				dataIndex: 'userCount',
-				render: (_, record) => <div className={styles.view}>{record.userCount}</div>,
+				render: (_, record) => <a href="javascript:void(0);">{record.userCount}</a>,
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.creator' }),
