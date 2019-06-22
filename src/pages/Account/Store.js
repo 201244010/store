@@ -84,12 +84,12 @@ class Store extends Component {
 									<div className={styles['title-wrapper-icon']}>
 										<h4>{company.company_name}</h4>
 									</div>
-									<div
+									<a
+										href="javascript:void(0);"
 										onClick={() => this.viewStore(company)}
-										className={styles['button-more']}
 									>
 										{formatMessage({ id: 'list.action.detail' })}
-									</div>
+									</a>
 								</div>
 							</div>
 						</List.Item>

@@ -11,8 +11,6 @@ import Media from 'react-media';
 import { formatMessage, getLocale } from 'umi/locale';
 // import AuthorithCheck from '@/components/AuthorithCheck';
 import MQTTWrapper from '@/components/MQTT';
-import Authorized from '@/utils/Authorized';
-import NotFountPage from '@/pages/404';
 import MenuCheck from '@/components/AuthorithCheck/MenuCheck';
 import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
@@ -184,12 +182,10 @@ class BasicLayout extends React.PureComponent {
 			isMobile,
 			menuData,
 			breadcrumbNameMap,
-			route: { routes },
 			fixedHeader,
 		} = this.props;
 		const currentLanguage = getLocale();
 		const isTop = PropsLayout === 'topmenu';
-		const routerConfig = this.getRouterAuthority(pathname, routes);
 		const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
 		const layout = (
 			<Layout>
@@ -219,10 +215,6 @@ class BasicLayout extends React.PureComponent {
 					/>
 					{/* <Breadcrumbs /> */}
 					<Content className={styles.content} style={contentStyle}>
-						<Authorized
-							authority={routerConfig}
-							noMatch={<NotFountPage customStyle={{ color: '#434E59' }} />}
-						/>
 						{children}
 					</Content>
 				</Layout>
@@ -230,15 +222,16 @@ class BasicLayout extends React.PureComponent {
 		);
 		return (
 			<React.Fragment>
-				<MenuCheck menuData={menuData} />
 				<DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
-					<ContainerQuery query={query}>
-						{params => (
-							<Context.Provider value={this.getContext()}>
-								<div className={classNames(params)}>{layout}</div>
-							</Context.Provider>
-						)}
-					</ContainerQuery>
+					<MenuCheck menuData={menuData}>
+						<ContainerQuery query={query}>
+							{params => (
+								<Context.Provider value={this.getContext()}>
+									<div className={classNames(params)}>{layout}</div>
+								</Context.Provider>
+							)}
+						</ContainerQuery>
+					</MenuCheck>
 				</DocumentTitle>
 			</React.Fragment>
 		);
