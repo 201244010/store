@@ -12,8 +12,8 @@ import styles from './Merchant.less';
 	}),
 	dispatch => ({
 		companyGetInfo: () => dispatch({ type: 'merchant/companyGetInfo' }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class MerchantView extends Component {

@@ -24,6 +24,7 @@ const { LAST_HAND_REFRESH_TIME } = DASHBOARD;
 		fetchAllData: ({ needLoading }) =>
 			dispatch({ type: 'dashBoard/fetchAllData', payload: { needLoading } }),
 		setSearchValue: payload => dispatch({ type: 'dashBoard/setSearchValue', payload }),
+		clearSearch: () => dispatch({type:'dashBoard/clearSearch'})
 	})
 )
 class DashBoard extends Component {
@@ -31,11 +32,12 @@ class DashBoard extends Component {
 		const { fetchAllData } = this.props;
 		await fetchAllData({ needLoading: true });
 		this.startAutoRefresh();
-		console.log('done');
 	}
 
 	componentWillUnmount() {
+		const {clearSearch} = this.props;
 		clearTimeout(this.timer);
+		clearSearch();
 	}
 
 	startAutoRefresh = () => {

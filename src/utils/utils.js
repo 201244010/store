@@ -1,6 +1,7 @@
 import CryptoJS from 'crypto-js/crypto-js';
 import moment from 'moment';
 import CONFIG from '@/config';
+import { formatMessage } from 'umi/locale';
 
 const { DES_KEY, DES_IV } = CONFIG;
 
@@ -415,3 +416,36 @@ export const priceFormat = (price, dotPos = 3) => {
 		? `${isNagtive ? '-' : ''}${reversedRound}.${decimal}`
 		: `${isNagtive ? '-' : ''}${reversedRound}`;
 };
+
+export const analyzeMessageTemplate = message => {
+	const [messageId, values] = message.split(':');
+	let valueList = [];
+
+	if (values) {
+		valueList = values.split('&').map(item => {
+			const value = item.split('=')[1];
+			return value;
+		});
+	}
+
+	return {
+		messageId,
+		valueList,
+	};
+};
+
+export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
+	if (!messageId) {
+		console.error('messageId can not be null.');
+		return null;
+	}
+
+	const message = formatMessage(messageId);
+	if (valueList.length === 0) {
+		return message;
+	}
+
+	return valueList.reduce((prev, cur) => prev.replace('%s', cur), message);
+};
+
+export const formatMessageTemplate = (message) =>  replaceTemplateWithValue(analyzeMessageTemplate(message));

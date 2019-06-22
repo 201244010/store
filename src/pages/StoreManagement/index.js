@@ -20,8 +20,8 @@ const FormItem = Form.Item;
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
 		getRegionList: () => dispatch({ type: 'store/getRegionList' }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class StoreManagement extends Component {

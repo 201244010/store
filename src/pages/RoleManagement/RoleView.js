@@ -17,8 +17,8 @@ const CheckboxGroup = Checkbox.Group;
 	}),
 	dispatch => ({
 		getRoleInfo: payload => dispatch({ type: 'role/getRoleInfo', payload }),
-		goToPath: (pathId, urlParams = {}, open = false) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, open } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()
