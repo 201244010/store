@@ -103,7 +103,7 @@ const RiseDownTag = props => {
 				<div style={{ marginLeft: '2px' }}>
 					{`${
 						content || content === 0
-							? `${parseFloat(Math.abs(content) * 100).toFixed(2)}%`
+							? `${Math.round(Math.abs(content) * 100)}%`
 							: '--'
 					}`}
 				</div>
