@@ -18,7 +18,7 @@ const SSO_ADDRESS = {
 };
 
 const API_ADDRESS = {
-	dev: 'test-store.sunmi.com:30301',
+	dev: 'dev-store.sunmi.com:30301',
 	test: 'test-store.sunmi.com:30301',
 	uat: 'uat-store.sunmi.com:443',
 	onl: 'store.sunmi.com:443',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, message } from 'antd';
+import { Layout, message, Spin } from 'antd';
 import DocumentTitle from 'react-document-title';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
@@ -9,10 +9,9 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage, getLocale } from 'umi/locale';
-// import AuthorithCheck from '@/components/AuthorithCheck';
 import MQTTWrapper from '@/components/MQTT';
-import MenuCheck from '@/components/AuthorithCheck/MenuCheck';
 import * as CookieUtil from '@/utils/cookies';
+import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import Header from './Header';
 import Context from './MenuContext';
@@ -21,6 +20,7 @@ import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/menuLogo.png';
 import logoEN from '../assets/menuLogoEN.png';
+import { env } from '@/config';
 
 message.config({
 	maxCount: 1,
@@ -53,6 +53,8 @@ const query = {
 	},
 };
 
+const UNAUTH_PATH = ['account', 'notification'];
+
 @MQTTWrapper
 class BasicLayout extends React.PureComponent {
 	constructor(props) {
@@ -61,6 +63,7 @@ class BasicLayout extends React.PureComponent {
 		this.matchParamsPath = memoizeOne(this.matchParamsPath, isEqual);
 		this.state = {
 			selectedStore: CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY),
+			inMenuChecking: true,
 		};
 	}
 
@@ -99,12 +102,46 @@ class BasicLayout extends React.PureComponent {
 		};
 	}
 
+	checkMenuAuth = menuData => {
+		const {
+			location: { pathname },
+		} = window;
+		const { goToPath } = this.props;
+
+		const visitPath = pathname.slice(1).split('/')[0];
+		if (env === 'dev' || UNAUTH_PATH.includes(visitPath)) {
+			this.setState({
+				inMenuChecking: false,
+			});
+		} else if (pathname === '/') {
+			const { path } = menuData[0] || {};
+			if (!path) {
+				goToPath('account');
+			} else {
+				router.push(path);
+			}
+			this.setState({
+				inMenuChecking: false,
+			});
+		} else {
+			const isAccessable = menuData.some(menu => menu.path.slice(1) === visitPath);
+			if (isAccessable) {
+				this.setState({
+					inMenuChecking: false,
+				});
+			} else {
+				router.goBack();
+			}
+		}
+	};
+
 	dataInitial = async () => {
 		const {
 			getMenuData,
 			route: { routes, authority },
 		} = this.props;
-		await getMenuData({ routes, authority });
+		const menuData = await getMenuData({ routes, authority });
+		this.checkMenuAuth(menuData);
 	};
 
 	matchParamsPath = (pathname, breadcrumbNameMap) => {
@@ -112,22 +149,6 @@ class BasicLayout extends React.PureComponent {
 			pathToRegexp(key).test(pathname)
 		);
 		return breadcrumbNameMap[pathKey];
-	};
-
-	getRouterAuthority = (pathname, routeData) => {
-		let routeAuthority = ['noAuthority'];
-		const getAuthority = (key, routes) => {
-			routes.map(route => {
-				if (route.path === key) {
-					routeAuthority = route.authority;
-				} else if (route.routes) {
-					routeAuthority = getAuthority(key, route.routes);
-				}
-				return route;
-			});
-			return routeAuthority;
-		};
-		return getAuthority(pathname, routeData);
 	};
 
 	getPageTitle = (pathname, breadcrumbNameMap) => {
@@ -173,7 +194,7 @@ class BasicLayout extends React.PureComponent {
 	};
 
 	render() {
-		const { selectedStore } = this.state;
+		const { selectedStore, inMenuChecking } = this.state;
 		const {
 			navTheme,
 			layout: PropsLayout,
@@ -223,7 +244,9 @@ class BasicLayout extends React.PureComponent {
 		return (
 			<React.Fragment>
 				<DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
-					<MenuCheck menuData={menuData}>
+					{inMenuChecking ? (
+						<Spin spinning />
+					) : (
 						<ContainerQuery query={query}>
 							{params => (
 								<Context.Provider value={this.getContext()}>
@@ -231,7 +254,7 @@ class BasicLayout extends React.PureComponent {
 								</Context.Provider>
 							)}
 						</ContainerQuery>
-					</MenuCheck>
+					)}
 				</DocumentTitle>
 			</React.Fragment>
 		);

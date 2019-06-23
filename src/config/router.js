@@ -428,8 +428,6 @@ const router = [
 					},
 				],
 			},
-
-			{ path: '/', redirect: '/dashBoard' },
 		],
 	},
 ];

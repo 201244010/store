@@ -6,13 +6,21 @@ import Authorized from '@/utils/Authorized';
 import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
-
 // import routeConfig from '@/config/devRouter';
 import routeConfig from '@/config/router';
 
 import { env } from '@/config';
 
 const { check } = Authorized;
+
+const FIRST_MENU_ORDER = [
+	'dashBoard',
+	'application',
+	'devices',
+	'esl',
+	'basicData',
+	'faceidLibrary',
+];
 
 // Conversion router to menu.
 function formatter(data, parentAuthority, parentName) {
@@ -140,7 +148,10 @@ export default {
 				if (response && response.code === ERROR_OK) {
 					const { menu_list: menuList = [] } = response.data || {};
 					if (menuList && menuList.length > 0) {
-						filteredMenuData = checkMenuAuth(menuData, menuList);
+						filteredMenuData = checkMenuAuth(
+							menuData,
+							FIRST_MENU_ORDER.filter(menu => menuList.includes(menu))
+						);
 						Storage.set({ FILTERED_MENU: filteredMenuData }, 'local');
 					}
 				}
@@ -154,6 +165,8 @@ export default {
 					routes,
 				},
 			});
+
+			return filteredMenuData;
 		},
 
 		goToPath({ payload = {} }) {
