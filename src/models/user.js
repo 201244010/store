@@ -24,6 +24,12 @@ export default {
 				payload: { loading: true },
 			});
 
+			CookieUtil.clearCookies();
+			Storage.remove(
+				[CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY, 'FILTERED_MENU'],
+				'local'
+			);
+
 			const response = yield call(Actions.login, type, options);
 
 			if (response && response.code === ERROR_OK) {
@@ -53,8 +59,11 @@ export default {
 				type: 'initState',
 			});
 			CookieUtil.clearCookies();
-			Storage.remove([CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY], 'local');
-			
+			Storage.remove(
+				[CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY, 'FILTERED_MENU'],
+				'local'
+			);
+
 			window.location.reload();
 			// yield put({
 			// 	type: 'menu/goToPath',
