@@ -1,7 +1,7 @@
 import React, { PureComponent, Suspense } from 'react';
 import { Layout } from 'antd';
 import classNames from 'classnames';
-import Link from 'umi/link';
+// import Link from 'umi/link';
 import styles from './index.less';
 import PageLoading from '../PageLoading';
 import { getDefaultCollapsedSubMenus } from './SiderMenuUtils';
@@ -66,13 +66,13 @@ export default class SiderMenu extends PureComponent {
 				className={siderClassName}
 			>
 				<div className={styles.logo} id="logo">
-					<Link to="/">
+					<a href="/">
 						<img
 							src={logo}
 							alt="SUNMI STORE"
 							style={{ width: '60%', height: 'auto' }}
 						/>
-					</Link>
+					</a>
 				</div>
 				<Suspense fallback={<PageLoading />}>
 					<BaseMenu

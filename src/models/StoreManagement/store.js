@@ -108,7 +108,7 @@ export default {
 			return response;
 		},
 
-		*createNewStore({ payload }, { select, call, put }) {
+		*createNewStore({ payload }, { call, put }) {
 			const { options } = payload;
 			yield put({
 				type: 'updateState',
@@ -121,14 +121,15 @@ export default {
 				if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
 					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.shop_id);
 				}
-				 
-				yield put({
+
+				const res = yield put.resolve({
 					type: 'getStoreList',
 					payload: {},
 				});
 
-				const { storeList } = yield select(state => state.store);
-				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: storeList }, 'local');
+				const { data: { shop_list } = {} } = res || {};
+				// const { storeList } = yield select(state => state.store);
+				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shop_list }, 'local');
 
 				yield put({
 					type: 'menu/goToPath',
