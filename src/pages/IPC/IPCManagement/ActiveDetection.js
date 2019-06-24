@@ -263,7 +263,7 @@ class ActiveDetection extends React.Component {
 		// 	this.resetChange();
 		// }
 		// console.log(this.props);
-		const { form, activeDetection, loading } = this.props;
+		const { form, activeDetection /* , loading */ } = this.props;
 
 		const { getFieldDecorator, getFieldValue } = form;
 		const { readFlag, updateFlag } = activeDetection;
@@ -476,7 +476,7 @@ class ActiveDetection extends React.Component {
 							<Button
 								type="primary"
 								htmlType="submit"
-								loading={loading.effects['activeDetection/update']}
+								loading={updateFlag}
 								disabled={!form.isFieldsTouched(
 									[
 										'isSound',
