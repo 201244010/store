@@ -1,7 +1,7 @@
-@import "../../styles/common.less";
+@import "./common.less";
 
 .board {
-	background: #efefef;
+	background: #ebedf0;
 	height: 100%;
 	overflow: hidden;
 
@@ -295,6 +295,15 @@
 
 					.ant-input {
 						border-right: none;
+						&:hover {
+							border-color: #d9d9d9;
+							border-right-width: 0;
+						}
+						&:focus {
+							border-color: #d9d9d9;
+							border-right-width: 0;
+							box-shadow: none;
+						}
 					}
 
 					.ant-radio-button-wrapper {
@@ -410,6 +419,10 @@
 				padding: 3px;
 				background: #d9d9d9;
 				border-radius: 50%;
+				&.active {
+					background: #5085e3;
+					color: #fff;
+				}
 			}
 		}
 	}

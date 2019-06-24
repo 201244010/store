@@ -1,11 +1,9 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Button, Input, Radio, Cascader } from 'antd';
+import { Form, Button, Input, Radio, Cascader, Card } from 'antd';
 import { connect } from 'dva';
-import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import * as CookieUtil from '@/utils/cookies';
-import styles from './StoreManagement.less';
 import { getLocationParam } from '@/utils/utils';
 import { customValidate } from '@/utils/customValidate';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
@@ -24,7 +22,9 @@ const FormItem = Form.Item;
 		getRegionList: () => dispatch({ type: 'store/getRegionList' }),
 		getStoreDetail: payload => dispatch({ type: 'store/getStoreDetail', payload }),
 		clearState: () => dispatch({ type: 'store/clearState' }),
-	}),
+		goToPath: (pathId, urlParams = {},) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams,  } }),
+	})
 )
 @Form.create()
 class CreateStore extends React.Component {
@@ -50,15 +50,19 @@ class CreateStore extends React.Component {
 		}
 	}
 
-	handleResponse = (response) => {
-		const { form: { setFields, getFieldValue } } = this.props;
+	handleResponse = response => {
+		const {
+			form: { setFields, getFieldValue },
+		} = this.props;
 
 		if (response && response.code === STORE_EXIST) {
 			const storeName = getFieldValue('shop_name');
 			setFields({
-				'shop_name': {
+				shop_name: {
 					value: storeName,
-					errors: [new Error(formatMessage({ id: 'storeManagement.message.name.exist' }))],
+					errors: [
+						new Error(formatMessage({ id: 'storeManagement.message.name.exist' })),
+					],
 				},
 			});
 		}
@@ -124,11 +128,12 @@ class CreateStore extends React.Component {
 					contact_tel,
 				},
 			},
+			goToPath,
 		} = this.props;
 		const [action = 'create'] = [getLocationParam('action')];
 
 		return (
-			<div className={styles.storeList}>
+			<Card bordered={false}>
 				<h3>
 					{action === 'create'
 						? formatMessage({ id: 'storeManagement.create.title' })
@@ -158,7 +163,7 @@ class CreateStore extends React.Component {
 								placeholder={formatMessage({
 									id: 'storeManagement.create.namePlaceHolder',
 								})}
-							/>,
+							/>
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
@@ -173,7 +178,7 @@ class CreateStore extends React.Component {
 									id: 'storeManagement.create.typePlaceHolder',
 								})}
 								options={shopType_list}
-							/>,
+							/>
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
@@ -187,7 +192,7 @@ class CreateStore extends React.Component {
 								<Radio value={1} disabled={action === 'create'}>
 									{formatMessage({ id: 'storeManagement.create.status.closed' })}
 								</Radio>
-							</Radio.Group>,
+							</Radio.Group>
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.address' })}>
@@ -203,7 +208,7 @@ class CreateStore extends React.Component {
 								placeholder={formatMessage({
 									id: 'storeManagement.create.address.region',
 								})}
-							/>,
+							/>
 						)}
 					</FormItem>
 					<FormItem label=" " colon={false}>
@@ -214,7 +219,7 @@ class CreateStore extends React.Component {
 								placeholder={formatMessage({
 									id: 'storeManagement.create.address.detail',
 								})}
-							/>,
+							/>
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>
@@ -251,15 +256,13 @@ class CreateStore extends React.Component {
 						<Button
 							style={{ marginLeft: '20px' }}
 							htmlType="button"
-							onClick={() => {
-								router.push('list');
-							}}
+							onClick={() => goToPath('storeList')}
 						>
 							{formatMessage({ id: 'btn.cancel' })}
 						</Button>
 					</FormItem>
 				</Form>
-			</div>
+			</Card>
 		);
 	}
 }

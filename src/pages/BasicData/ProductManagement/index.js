@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { Card } from 'antd';
 import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
-import styles from './ProductManagement.less';
 
 @connect(
 	state => ({
@@ -19,6 +19,8 @@ import styles from './ProductManagement.less';
 			dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
 		deleteProduct: payload => dispatch({ type: 'basicDataProduct/deleteProduct', payload }),
 		getSaasBindInfo: () => dispatch({ type: 'store/getSaasBindInfo' }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class ProductList extends Component {
@@ -46,10 +48,11 @@ class ProductList extends Component {
 			clearSearch,
 			fetchProductList,
 			deleteProduct,
+			goToPath,
 		} = this.props;
 
 		return (
-			<div className={styles['content-container']}>
+			<Card bordered={false}>
 				<SearchForm
 					{...{
 						states,
@@ -67,9 +70,10 @@ class ProductList extends Component {
 						pagination,
 						fetchProductList,
 						deleteProduct,
+						goToPath,
 					}}
 				/>
-			</div>
+			</Card>
 		);
 	}
 }

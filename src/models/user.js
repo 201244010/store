@@ -4,7 +4,6 @@ import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
-import router from 'umi/router';
 
 export default {
 	namespace: 'user',
@@ -24,6 +23,12 @@ export default {
 				type: 'updateState',
 				payload: { loading: true },
 			});
+
+			CookieUtil.clearCookies();
+			Storage.remove(
+				[CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY, 'FILTERED_MENU'],
+				'local'
+			);
 
 			const response = yield call(Actions.login, type, options);
 
@@ -54,8 +59,20 @@ export default {
 				type: 'initState',
 			});
 			CookieUtil.clearCookies();
-			Storage.remove([CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY], 'local');
-			router.push('/user/login');
+			Storage.remove(
+				[CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY, 'FILTERED_MENU'],
+				'local'
+			);
+
+			window.location.reload();
+			// yield put({
+			// 	type: 'menu/goToPath',
+			// 	payload: {
+			// 		pathId: 'userLogin',
+			// 		linkType: 'replace',
+			// 	},
+			// });
+			// router.push('/user/login');
 		},
 		*checkImgCode({ payload }, { call }) {
 			const { options } = payload;
@@ -108,10 +125,8 @@ export default {
 			const { options } = payload;
 			const response = yield call(Actions.changePassword, options);
 			if (response && response.code === ERROR_OK) {
-				message.success(formatMessage({ id: 'change.password.success' }), 1.5, () => {
-					CookieUtil.clearCookies();
-					router.push('/user/login');
-				});
+				message.success(formatMessage({ id: 'change.password.success' }));
+				CookieUtil.clearCookies();
 			}
 			return response;
 		},

@@ -80,6 +80,7 @@ class Studio extends Component {
 					scaleX: 1,
 					scaleY: 1,
 					rotation: 0,
+					isStep: false
 				});
 				this.updateSelectedShapeName('');
 			} else {
@@ -367,8 +368,13 @@ class Studio extends Component {
 		inputObj.click();
 
 		const fileChangeHandler = async changeEvent => {
+			const file = changeEvent.target.files[0];
+			if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
+				message.warning(formatMessage({ id: 'studio.tool.error.image.format' }));
+				return;
+			}
 			const response = await uploadImage({
-				file: changeEvent.target.files[0],
+				file
 			});
 			const detail = componentsDetail[selectedShapeName];
 			const imgPath = response.data.template_image_info.address;
@@ -484,10 +490,7 @@ class Studio extends Component {
 		const targetDetail = componentsDetail[targetName];
 
 		const textPosition = e.target.getAbsolutePosition();
-		const stageBox = e.target
-			.getStage()
-			.getContainer()
-			.getBoundingClientRect();
+		const stageBox = e.target.getStage().getContainer().getBoundingClientRect();
 		const inputPosition = {
 			x: stageBox.left + textPosition.x,
 			y: stageBox.top + textPosition.y,
@@ -519,7 +522,7 @@ class Studio extends Component {
 		const saveToLocal = () => {
 			const inputValue = inputEle.value;
 			if (type.indexOf(SHAPE_TYPES.PRICE) > -1 && !RegExp.money.test(inputValue)) {
-				message.warning('输入价格不正确');
+				message.warning(formatMessage({ id: 'studio.tool.error.price.format' }));
 				inputEle.value = '';
 				return;
 			}
@@ -690,7 +693,7 @@ class Studio extends Component {
 								}}
 							/>
 						</div>
-					) : null}
+					) : <div className={styles['tool-box']} />}
 				</div>
 				{showRightToolBox ? (
 					<ContextMenu

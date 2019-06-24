@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { Form, Button, Input } from 'antd';
+import { Form, Button, Input, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
-import router from 'umi/router';
 import { customValidate } from '@/utils/customValidate';
 import * as CookieUtil from '@/utils/cookies';
 import { connect } from 'dva';
 import styles from './Merchant.less';
-import { MENU_PREFIX } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 
 @connect(
@@ -17,6 +15,8 @@ import { ERROR_OK } from '@/constants/errorCode';
 	dispatch => ({
 		companyGetInfo: () => dispatch({ type: 'merchant/companyGetInfo' }),
 		companyUpdate: payload => dispatch({ type: 'merchant/companyUpdate', payload }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()
@@ -62,7 +62,9 @@ class MerchantModify extends Component {
 	};
 
 	cancel = () => {
-		router.push(`${MENU_PREFIX.MERCHANT}/view`);
+		const { goToPath } = this.props;
+		goToPath('merchantView');
+		// router.push(`${MENU_PREFIX.MERCHANT}/view`);
 	};
 
 	render() {
@@ -80,7 +82,7 @@ class MerchantModify extends Component {
 			},
 		} = this.props;
 		return (
-			<div className={styles['view-wrapper']}>
+			<Card bordered={false}>
 				<h1>{formatMessage({ id: 'merchantManagement.merchant.modify' })}</h1>
 				<div className={styles['form-content']}>
 					<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
@@ -161,7 +163,7 @@ class MerchantModify extends Component {
 						</Form.Item>
 					</Form>
 				</div>
-			</div>
+			</Card>
 		);
 	}
 }

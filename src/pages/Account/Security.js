@@ -67,6 +67,8 @@ class Security extends Component {
 			sso,
 			sendCode,
 			checkUserExist,
+			goToPath,
+			logout,
 		} = this.props;
 		const RenderModal = RENDER_MODAL[modalType] || RENDER_MODAL.default;
 
@@ -154,6 +156,8 @@ class Security extends Component {
 						onCancel: this.closeChangeModal,
 						sendCode,
 						checkUserExist,
+						goToPath,
+						logout,
 					}}
 				/>
 			</>

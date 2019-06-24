@@ -1,13 +1,16 @@
 import React from 'react';
 
-import { Select, DatePicker, Button, Table, Row, Col, Card, Input, message } from 'antd';
+import { Select, DatePicker, Button, Table, Row, Col, Card, Input, Form } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 
+import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import VideoPlayComponent from '../component/VideoPlayComponent';
 
 import styles from './TradeVideos.less';
+import global from '@/styles/common.less';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -15,23 +18,26 @@ const { RangePicker } = DatePicker;
 
 
 @connect((state) => {
-	const { tradeVideos,loading } = state;
+	const { tradeVideos, ipcList, loading } = state;
 	// console.log(tradeVideos);
 	return {
 		tradeVideos,
+		ipcList,
 		loading
 	};
 }, (dispatch) => (
 	{
-		getTradeVideos ( startTime, endTime, ipcSelected, paymentDeviceSN, keyword ){
+		getTradeVideos({ startTime, endTime, ipcId, posSN, keyword, currentPage, pageSize }){
 			dispatch({
 				type: 'tradeVideos/read',
 				payload: {
 					startTime,
 					endTime,
-					ipcSelected,
-					paymentDeviceSN,
-					keyword
+					ipcId,
+					posSN,
+					keyword,
+					currentPage,
+					pageSize
 				}
 			});
 		},
@@ -51,11 +57,11 @@ const { RangePicker } = DatePicker;
 				}
 			});
 		},
-		getIpcList() {
-			return dispatch({
-				type: 'tradeVideos/getIpcList'
-			});
-		},
+		// getIpcList() {
+		// 	return dispatch({
+		// 		type: 'tradeVideos/getIpcList'
+		// 	});
+		// },
 
 		getIpcTypeByPosSN (sn) {
 			const type = dispatch({
@@ -79,20 +85,23 @@ const { RangePicker } = DatePicker;
 		}
 	}
 ))
-
+@Form.create()
 class TradeVideos extends React.Component {
 
 	state = {
-		selectedStartTime:'',
-		selectedEndTime:'',
+		// selectedStartTime:'',
+		// selectedEndTime:'',
 		isWatchVideo: false,
 		// videoUrl: '',
-		ipcSelected: '0',
-		paymentDeviceSelected:'0',
+		// ipcSelected: '0',
+		// paymentDeviceSelected:'0',
 		ipcType: '',
-		keyWord: '',
-		// expandedRowKeys:[],
+		// keyWord: '',
+		expandedRowKeys:[],
 		// currentPaymentDetailList:[]
+
+		currentPage : 1,
+		pageSize: DEFAULT_PAGE_SIZE
 	};
 
 	columns = [{
@@ -105,6 +114,7 @@ class TradeVideos extends React.Component {
 		dataIndex: 'paymentDeviceName',
 		key: 'paymentDeviceName',
 		sorter: (a, b) => a.paymentDeviceName.localeCompare(b.paymentDeviceName),
+		render: item => item || formatMessage({id: 'tradeVideos.unknownDevice'})
 	}, {
 		title: formatMessage({id: 'tradeVideos.sn'}),// '设备SN',
 		dataIndex: 'paymentDeviceSn',
@@ -141,49 +151,58 @@ class TradeVideos extends React.Component {
 		dataIndex:'key',
 		key: 'action',
 		render: (item, record) => (
-			<span className={styles['video-watch']} onClick={() => this.watchVideoHandler(item, record.paymentDeviceSn)}>
+			<a
+				className={`${styles['video-watch']} ${record.url ? '' : styles.disabled}`}
+				href='javascript:void(0);'
+				onClick={() => this.watchVideoHandler(record.paymentDeviceSn, record.url)}
+			>
 				{/* 查看视频 */}
 				{formatMessage({id: 'tradeVideos.viewVideo'})}
-			</span>
+			</a>
 		)
 	}];
 
 
 	async componentDidMount(){
-		const { getIpcList, getTradeVideos, getPaymentDeviceList, location: { query } } = this.props;
+		const {  /* getIpcList, */ getPaymentDeviceList, location: { query }, form } = this.props;
+		const { setFieldsValue } = form;
 		let { ipcId, posSN } = query;
-		await getIpcList();
+		// await getIpcList();
 
-		ipcId = ipcId || '0';
-		posSN = posSN || '0';
+		ipcId = ipcId || 0;
+		posSN = posSN || 0;
 
-		if (ipcId !== '0'){
-			await getPaymentDeviceList(ipcId);
-		}
-
-		const currentTime = moment().subtract(1, 'days').unix();
-		const lastWeekTime = moment().unix();
-
-		this.setState({
-			ipcSelected: ipcId,
-			paymentDeviceSelected: posSN,
-			selectedStartTime: moment().subtract(1, 'days'),
-			selectedEndTime: moment()
+		setFieldsValue({
+			camera: ipcId
 		});
 
-		getTradeVideos(currentTime,lastWeekTime, ipcId, posSN);
+		if (ipcId !== 0){
+			await getPaymentDeviceList(ipcId);
+			setFieldsValue({
+				pos : posSN
+			});
+		}
+
+
+
+		// const startTime = moment().subtract(1, 'days').unix();
+		// const endTime = moment().unix();
+
+		const { currentPage, pageSize } = this.state;
+
+		this.getTradeVideos(currentPage, pageSize);
 	}
 
-	watchVideoHandler = async (orderId, sn) => {
-
-		const { getIpcTypeByPosSN, getTradeVideo } = this.props;
-		const type = await getIpcTypeByPosSN(sn);
-		// console.log(type);
-
-		const url = await getTradeVideo(orderId);
-		// console.log(url);
+	watchVideoHandler = async (sn, url) => {
 
 		if (url) {
+			const { getIpcTypeByPosSN/* , getTradeVideo */} = this.props;
+			const type = await getIpcTypeByPosSN(sn);
+			// console.log(type);
+
+			// const url = await getTradeVideo(orderId);
+			// console.log(url);
+
 			this.setState({
 				videoUrl: url,
 				isWatchVideo: true,
@@ -191,9 +210,6 @@ class TradeVideos extends React.Component {
 			// 	paymentDeviceSelected: item.paymentDeviceId,
 			// 	ipcSelected: item.ipcId
 			});
-		}else{
-			// message.error('获取审计视频失败，请稍候重试。');
-			message.error(formatMessage({id: 'tradeVideos.getVideoFailed'}));
 		}
 
 	}
@@ -209,33 +225,33 @@ class TradeVideos extends React.Component {
 		return value.valueOf() > moment().valueOf();
 	}
 
-	changeHandler = (dates) => {
-		this.setState({
-			selectedStartTime: dates[0],
-			selectedEndTime: dates[1]
-		});
-	}
+	// changeHandler = (dates) => {
+	// 	this.setState({
+	// 		selectedStartTime: dates[0],
+	// 		selectedEndTime: dates[1]
+	// 	});
+	// }
 
 	ipcSelectHandler = async (value) => {
 		const { getPaymentDeviceList } = this.props;
 		await getPaymentDeviceList(value);
 
-		this.setState({
-			ipcSelected: value
-		});
+	// 	this.setState({
+	// 		ipcSelected: value
+	// 	});
 	}
 
-	paymentDeviceSelectHandler = (value) => {
-		this.setState({
-			paymentDeviceSelected: value
-		});
-	}
+	// paymentDeviceSelectHandler = (value) => {
+	// 	this.setState({
+	// 		paymentDeviceSelected: value
+	// 	});
+	// }
 
-	keyWordHandler = (e) => {
-		this.setState({
-			keyWord: e.target.value
-		});
-	}
+	// keyWordHandler = (e) => {
+	// 	this.setState({
+	// 		keyWord: e.target.value
+	// 	});
+	// }
 
 	getPaymentDetailList = (orderId) => {
 		const { getPaymentDetailList } = this.props;
@@ -243,74 +259,187 @@ class TradeVideos extends React.Component {
 	}
 
 	searchHandler = () => {
-		const { getTradeVideos } = this.props;
-		const { ipcSelected, paymentDeviceSelected, selectedStartTime: startTime, selectedEndTime: endTime, keyWord } = this.state;
+		const { pageSize } = this.state;
+		this.getTradeVideos(1, pageSize);
+	}
 
-		getTradeVideos(startTime.unix(), endTime.unix(), ipcSelected, paymentDeviceSelected, keyWord);
+	getTradeVideos = (currentPage, pageSize) => {
+		const { getTradeVideos, form } = this.props;
+		const { getFieldsValue } = form;
 
+		const { tradeDate, camera: ipcId, pos: posSN, keywords } = getFieldsValue(['tradeDate', 'camera', 'pos', 'keywords']);
+
+		const [startTime, endTime] = tradeDate;
+		// console.log(currentPage, pageSize);
+
+		getTradeVideos({
+			startTime: startTime.set({
+				hour: 0,
+				minute: 0,
+				second: 0,
+				millisecond: 0
+			}).unix(),
+			endTime: endTime.set({
+				hour: 23,
+				minute: 59,
+				second: 59,
+				millisecond: 999
+			}).unix(),
+			ipcId,
+			posSN,
+			keyword: keywords,
+			currentPage,
+			pageSize
+		});
+
+		this.setState({
+			currentPage,
+			pageSize,
+			expandedRowKeys: []
+		});
+	}
+
+	onPaginationChange = (currentPage, pageSize) => {
+		this.getTradeVideos(currentPage, pageSize);
+	}
+
+	onShowSizeChange = (currentPage, pageSize) => {
+		this.getTradeVideos(currentPage, pageSize);
+	}
+
+	onExpand = (expanded, record) => {
+		if (expanded) {
+			const { expandedRowKeys } = this.state;
+			this.getPaymentDetailList(record.key);
+			// console.log([...expandedRowKeys, record.key]);
+			this.setState({
+				expandedRowKeys: Array.from(new Set([...expandedRowKeys, record.key]))
+			});
+		}
 	}
 
 	render() {
 
-		const { tradeVideos: { tradeVideos, paymentDeviceList, ipcList }, loading} = this.props;
-		const { isWatchVideo, ipcSelected, paymentDeviceSelected, ipcType, videoUrl } = this.state;
+		const { tradeVideos: { tradeVideos, paymentDeviceList, total }, ipcList, loading, form } = this.props;
+		const { isWatchVideo, /* ipcSelected, paymentDeviceSelected, */ ipcType, videoUrl, currentPage, pageSize, expandedRowKeys } = this.state;
+		const { getFieldDecorator } = form;
 
 		return (
-			<Card>
-				<div className={!isWatchVideo ? styles['motion-list-container'] : styles['display-none']}>
-					<div className={styles['search-container']}>
-						<Row gutter={16}>
-							<Col span={4}>
-								<Select defaultValue='0' value={ipcSelected} className={styles['input-item']} placeholder={formatMessage({id: 'tradeVideos.chooseCamera'}) /* '请选择摄像头' */} onChange={this.ipcSelectHandler}>
-									<Option value='0'>
-										{/* 所有 */}
-										{formatMessage({id: 'tradeVideos.all'})}
-									</Option>
-									{
-										ipcList.map((item,index) => (
-											<Option key={`ipc-selector-${index}`} value={`${item.deviceId}`}>{item.name}</Option>
-										))
-									}
-								</Select>
-							</Col>
-							<Col span={4}>
-								<Select defaultValue='0' value={paymentDeviceSelected} className={styles['input-item']} placeholder={formatMessage({id: 'tradeVideos.choosePos'}) /* '请选择收银设备' */} onChange={this.paymentDeviceSelectHandler}>
-									<Option value='0'>
-										{/* 所有 */}
-										{formatMessage({id: 'tradeVideos.all'})}
-									</Option>
-									{
-										paymentDeviceList && paymentDeviceList.map((item, index) => (
-											<Option key={`payment-selector-${index}`} value={`${item.sn}`}>{item.name}</Option>
-										))
-									}
-								</Select>
-							</Col>
-							<Col span={6}>
-								<RangePicker
-									defaultValue={[moment().subtract(1, 'days'), moment()]}
-									className={styles['input-item']}
-									disabledDate={this.disabledDate}
-									onChange={this.changeHandler}
-									format="YYYY-MM-DD"
-								/>
-							</Col>
-							<Col span={4} />
-							<Col span={4}>
-								<Search
-									placeholder={formatMessage({id: 'tradeVideos.keywords'}) /* '请输入关键字进行筛选' */}
-									onChange={this.keyWordHandler}
-									className={styles['input-item']}
-								/>
-							</Col>
+			<Card bordered={false}>
+				<div
+					// className={!isWatchVideo ? styles['motion-list-container'] : styles['display-none']}
+					className={styles['motion-list-container']}
+				>
+					<div className={global['search-bar']}>
+						<Form layout="inline">
+							<Row gutter={SEARCH_FORM_GUTTER.SMALL}>
+								<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
+									<Form.Item
+										label={formatMessage({id: 'tradeVideos.camera'})}// '摄像机'
+									>
+										{
+											getFieldDecorator('camera', {
+												initialValue: 0
+											})(
+												<Select
+													// defaultValue={0}
+													// value={ipcSelected}
+													className={styles['input-item']}
+													placeholder={formatMessage({id: 'tradeVideos.chooseCamera'}) /* '请选择摄像头' */}
+													onChange={this.ipcSelectHandler}
+												>
+													<Option value={0}>
+														{/* 所有 */}
+														{formatMessage({id: 'tradeVideos.all'})}
+													</Option>
+													{
+														ipcList.map((item,index) => (
+															<Option key={`ipc-selector-${index}`} value={`${item.deviceId}`}>{item.name}</Option>
+														))
+													}
+												</Select>
+											)
+										}
 
-							<Col span={2}>
-								<Button type="primary" className={styles['input-item']} onClick={this.searchHandler}>
-									{/* 查询 */}
-									{formatMessage({id: 'tradeVideos.query'})}
-								</Button>
-							</Col>
-						</Row>
+									</Form.Item>
+								</Col>
+								<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
+									<Form.Item
+										label={formatMessage({id: 'tradeVideos.pos'})}// '收银设备'
+									>
+										{
+											getFieldDecorator('pos', {
+												initialValue: 0
+											})(
+												<Select
+													// defaultValue={0}
+													// value={paymentDeviceSelected}
+													className={styles['input-item']}
+													placeholder={formatMessage({id: 'tradeVideos.choosePos'}) /* '请选择收银设备' */}
+													// onChange={this.paymentDeviceSelectHandler}
+												>
+													<Option value={0}>
+														{/* 所有 */}
+														{formatMessage({id: 'tradeVideos.all'})}
+													</Option>
+													{
+														paymentDeviceList && paymentDeviceList.map((item, index) => (
+															<Option key={`payment-selector-${index}`} value={`${item.sn}`}>{item.name || formatMessage({id: 'tradeVideos.unknownDevice'})}</Option>
+														))
+													}
+												</Select>
+											)
+										}
+									</Form.Item>
+
+								</Col>
+								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+									<Form.Item
+										label={formatMessage({id: 'tradeVideos.tradeDate'})} // '交易日期'
+									>
+										{
+											getFieldDecorator('tradeDate', {
+												initialValue: [moment(), moment()]
+											})(
+												<RangePicker
+													// defaultValue={[moment().subtract(1, 'days'), moment()]}
+													className={styles['input-item']}
+													disabledDate={this.disabledDate}
+													// onChange={this.changeHandler}
+													format="YYYY-MM-DD"
+												/>
+											)
+										}
+									</Form.Item>
+
+								</Col>
+								<Col {...SEARCH_FORM_COL.ONE_FOURTH}>
+									<Form.Item>
+										{
+											getFieldDecorator('keywords')(
+												<Search
+													placeholder={formatMessage({id: 'tradeVideos.keywords'}) /* '请输入关键字进行筛选' */}
+													// onChange={this.keyWordHandler}
+													className={styles['input-item']}
+												/>
+											)
+										}
+									</Form.Item>
+								</Col>
+
+								<Col {...SEARCH_FORM_COL.ONE_12TH}>
+									<Button
+										type="primary"
+										className={styles['input-item']}
+										onClick={this.searchHandler}
+										loading={loading.effects['tradeVideos/read']}
+									>
+										{/* 查询 */}
+										{formatMessage({id: 'tradeVideos.query'})}
+									</Button>
+								</Col>
+							</Row>
+						</Form>
 					</div>
 
 					<Table
@@ -319,11 +448,20 @@ class TradeVideos extends React.Component {
 						loading={loading.effects['tradeVideos/read']}
 
 						defaultExpandedRowKeys={['details']}
-						onExpand={
-							(expanded, record) => {
-								if (expanded) {
-									this.getPaymentDetailList(record.key);
-								}
+						expandedRowKeys={expandedRowKeys}
+						onExpand={this.onExpand}
+						pagination={
+							{
+								current: currentPage,
+								pageSize,
+								total,
+								defaultCurrent: 1,
+								showSizeChanger: true,
+								showQuickJumper: true,
+								defaultPageSize: DEFAULT_PAGE_SIZE,
+								pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
+								onShowSizeChange: this.onShowSizeChange,
+								onChange: this.onPaginationChange
 							}
 						}
 						expandedRowRender={
@@ -355,9 +493,12 @@ class TradeVideos extends React.Component {
 					/>
 				</div>
 
-				<div className={isWatchVideo ? styles['video-player']:styles['display-none']}>
-					<VideoPlayComponent className={styles.video} playing={isWatchVideo} watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} ipcType={ipcType} />
-				</div>
+				{/* <div
+					className={isWatchVideo ? styles['video-player'] : styles['display-none']}
+				> */}
+				<VideoPlayComponent className={styles.video} playing={isWatchVideo} watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} ipcType={ipcType} />
+
+				{/* </div> */}
 
 			</Card>
 		);

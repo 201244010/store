@@ -2,6 +2,11 @@ import React from 'react';
 import { Form, Input } from 'antd';
 import { formatMessage } from 'umi/locale';
 
+const MODE = {
+	VIEW: 'view',
+	MODIFY: 'modify',
+};
+
 export const ERROR_FILEDS = {
 	'SAAS-SDNM': {
 		field: 'saas_info.secret',
@@ -22,107 +27,302 @@ export const ERROR_FILEDS = {
 		field: 'saas_info.secret',
 		errMsg: {
 			5020: formatMessage({ id: 'basicData.erp.zzsy.secret.existed' }),
+			// TODO 等待 error code
+			9999: formatMessage({ id: 'basicData.erp.zzsy.shop.error' }),
 			default: formatMessage({ id: 'basicData.erp.zzsy.secret.error' }),
+		},
+	},
+	'SAAS-HBB': {
+		field: 'saas_info.shop_number',
+		errMsg: {
+			default: formatMessage({ id: 'basicData.erp.hbb.error' }),
+		},
+	},
+	'SAAS-HDQF': {
+		field: 'saas_info.secret_key',
+		errMsg: {
+			default: formatMessage({ id: 'basicData.erp.hdqf.error' }),
 		},
 	},
 };
 
 export const SDNM = props => {
-	const { getFieldDecorator } = props;
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasShopKey = null, saasExtraKey1 = null } = saasInfo;
 	return (
 		<>
 			<Form.Item label="appKey">
-				{getFieldDecorator('saas_info.app_key', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.sdnm.key.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.app_key', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.sdnm.key.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
 			<Form.Item label="secret">
-				{getFieldDecorator('saas_info.secret', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.sdnm.secret.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.secret', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.sdnm.secret.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
 		</>
 	);
 };
 
 export const KWYLS = props => {
-	const { getFieldDecorator } = props;
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasShopKey = null, saasExtraKey1 = null } = saasInfo;
+
 	return (
 		<>
 			<Form.Item label={formatMessage({ id: 'basicData.erp.api.store.num' })}>
-				{getFieldDecorator('saas_info.mchid', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.kwyls.shopId.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.mchid', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.kwyls.shopId.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
 			<Form.Item label={formatMessage({ id: 'basicData.erp.api.account' })}>
-				{getFieldDecorator('saas_info.account', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.kwyls.account.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.account', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.kwyls.account.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
-			<Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
-				{getFieldDecorator('saas_info.password', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.kwyls.password.isEmpty' }),
-						},
-					],
-				})(<Input type="password" />)}
-			</Form.Item>
+			{/* 解决浏览器自动填充问题 */}
+			<input type="password" style={{ display: 'none' }} />
+			{mode === MODE.MODIFY && (
+				<Form.Item label={formatMessage({ id: 'basicData.erp.api.password' })}>
+					{getFieldDecorator('saas_info.password', {
+						validateTrigger: 'onBlur',
+						rules: [
+							{
+								required: true,
+								message: formatMessage({
+									id: 'basicData.erp.kwyls.password.isEmpty',
+								}),
+							},
+						],
+					})(<Input type="password" autoComplete="new-password" />)}
+				</Form.Item>
+			)}
 		</>
 	);
 };
 
 export const ZZSY = props => {
-	const { getFieldDecorator } = props;
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasShopKey = null, saasExtraKey1 = null } = saasInfo;
 	return (
 		<>
 			<Form.Item label="appid">
-				{getFieldDecorator('saas_info.app_id', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.zzsy.id.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.app_id', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({ id: 'basicData.erp.zzsy.id.isEmpty' }),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
 			<Form.Item label="secret">
-				{getFieldDecorator('saas_info.secret', {
-					validateTrigger: 'onBlur',
-					rules: [
-						{
-							required: true,
-							message: formatMessage({ id: 'basicData.erp.sdnm.secret.isEmpty' }),
-						},
-					],
-				})(<Input />)}
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.secret', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.sdnm.secret.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+		</>
+	);
+};
+
+export const HBB = props => {
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasCompanyKey = null, saasShopKey = null, saasExtraKey1 = null } = saasInfo;
+
+	return (
+		<>
+			<Form.Item label={formatMessage({ id: 'basicData.erp.api.company.number' })}>
+				{mode === MODE.VIEW ? (
+					<span>{saasCompanyKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.company_number', {
+							initialValue: saasCompanyKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hbb.company.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+			<Form.Item label={formatMessage({ id: 'basicData.erp.api.user.number' })}>
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.user_number', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hbb.user.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+			<Form.Item label={formatMessage({ id: 'basicData.erp.api.shop.number' })}>
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.shop_number', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hbb.shop.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+		</>
+	);
+};
+
+export const HDQF = props => {
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasShopKey = null, saasExtraKey1 = null } = saasInfo;
+	return (
+		<>
+			<Form.Item label="app_id">
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.app_id', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hdqf.key.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+			<Form.Item label="secret_key">
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.secret_key', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hdqf.secret.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
 			</Form.Item>
 		</>
 	);

@@ -13,7 +13,7 @@ const dataSerializer = (item) => {
 		case 0:
 		{
 			object.isSound = false;
-			object.sSensitivity = 0;
+			object.sSensitivity = 50;
 			break;
 		}
 		case 1: {
@@ -39,7 +39,7 @@ const dataSerializer = (item) => {
 		case 0:
 		{
 			object.isDynamic = false;
-			object.mSensitivity = 0;
+			object.mSensitivity = 50;
 			break;
 		}
 		case 1: {
@@ -102,11 +102,12 @@ const dataSerializer = (item) => {
 
 const paramSerializer = (item) => {
 	const object = {};
-	if (!item.isSound) {
+	if (item.isSound === false) {
 		object.audio_level = 0;
 	} else {
 		switch (item.sSensitivity) {
 			case 0:
+			default:
 				object.audio_level = 1;
 				break;
 			case 50:
@@ -115,21 +116,21 @@ const paramSerializer = (item) => {
 			case 100:
 				object.audio_level = 3;
 				break;
-			default:
 		}
 	}
-	if (!item.isDynamic) {
+
+	if (item.isDynamic === false) {
 		object.motion_level = 0;
 	} else {
 		switch (item.mSensitivity) {
 			case 0:
+			default:
 				object.motion_level = 1;
 				break;
 			case 50: object.motion_level = 2;
 				break;
 			case 100: object.motion_level = 3;
 				break;
-			default:
 		}
 	}
 

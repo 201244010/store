@@ -1,12 +1,10 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Select, Button, Input, Radio, message } from 'antd';
-import router from 'umi/router';
 import { connect } from 'dva';
 import * as CookieUtil from '@/utils/cookies';
 import { getLocationParam } from '@/utils/utils';
 import styles from './StoreManagement.less';
-import { MENU_PREFIX } from '@/constants';
 
 const { Option } = Select;
 
@@ -18,6 +16,8 @@ const { Option } = Select;
 		getStoreInformation: payload => dispatch({ type: 'store/getStoreInformation', payload }),
 		alterStoreInformation: payload =>
 			dispatch({ type: 'store/alterStoreInformation', payload }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class AlterStore extends React.Component {
@@ -65,7 +65,7 @@ class AlterStore extends React.Component {
 					shop_name: formValue.storeName,
 					business_status:
 						formValue.status ===
-							formatMessage({ id: 'storeManagement.create.statusValue1' })
+						formatMessage({ id: 'storeManagement.create.statusValue1' })
 							? 0
 							: 1,
 					address: formValue.detailAddress,
@@ -84,6 +84,7 @@ class AlterStore extends React.Component {
 		const {
 			form: { getFieldDecorator },
 			alter: { alter },
+			goToPath,
 		} = this.props;
 
 		return (
@@ -187,9 +188,7 @@ class AlterStore extends React.Component {
 						</Button>
 						<Button
 							className={styles.submitButton2}
-							onClick={() => {
-								router.push(`${MENU_PREFIX.STORE}/list`);
-							}}
+							onClick={() => goToPath('storeList')}
 						>
 							{formatMessage({ id: 'storeManagement.create.buttonCancel' })}
 						</Button>

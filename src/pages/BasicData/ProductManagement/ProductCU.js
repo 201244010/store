@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { Form, Button, Row, Col, Card } from 'antd';
 import { connect } from 'dva';
-import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import ProductCUBasic from './ProductCU-Basic';
 import ProductCUPrice from './ProductCU-Price';
 import { getLocationParam, idDecode } from '@/utils/utils';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK, PRODUCT_SEQ_EXIST } from '@/constants/errorCode';
-import { MENU_PREFIX } from '@/constants';
 import * as styles from './ProductManagement.less';
 
 @connect(
@@ -21,6 +19,8 @@ import * as styles from './ProductManagement.less';
 		createProduct: payload => dispatch({ type: 'basicDataProduct/createProduct', payload }),
 		updateProduct: payload => dispatch({ type: 'basicDataProduct/updateProduct', payload }),
 		clearState: () => dispatch({ type: 'basicDataProduct/clearState' }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()
@@ -111,14 +111,22 @@ class ProductCU extends Component {
 	};
 
 	goBack = () => {
+		const { goToPath } = this.props;
 		const from = getLocationParam('from');
 		const id = getLocationParam('id');
+
 		const path = {
-			detail: `${MENU_PREFIX.PRODUCT}/productInfo?id=${id}`,
-			list: `${MENU_PREFIX.PRODUCT}`,
+			detail: {
+				pathId: 'productInfo',
+				urlParams: { id },
+			},
+			list: { pathId: 'productList', urlParams: {} },
 		};
 
-		router.push(path[from] || path.list);
+		const { pathId, urlParams = {} } = path[from] || {};
+		goToPath(pathId, urlParams);
+
+		// router.push(path[from] || path.list);
 	};
 
 	render() {

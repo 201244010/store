@@ -25,6 +25,8 @@ const AccountLogin = props => {
 					/>
 				</Form.Item>
 			)}
+			{/* 解决密码自动填充的问题 */}
+			<input type="password" style={{ display: 'none' }} />
 			<Form.Item className={notice ? '' : `${styles['formItem-with-margin']}`}>
 				{getFieldDecorator('username', {
 					validateTrigger: 'onBlur',
@@ -64,7 +66,7 @@ const AccountLogin = props => {
 						prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
 						maxLength={30}
 						size="large"
-						autoComplete="off"
+						autoComplete="new-password"
 						placeholder={formatMessage({
 							id: 'account.password.placeholder',
 						})}

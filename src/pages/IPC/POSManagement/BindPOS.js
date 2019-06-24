@@ -3,7 +3,7 @@ import { Card, Form, Input, Table, Button, message, Icon } from 'antd';
 // import { Exception } from 'ant-design-pro';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import router from 'umi/router';
+// import router from 'umi/router';
 // import { Link } from 'dva/router';
 
 import POSBinder from '@/components/POSBinder/POSBinder';
@@ -102,7 +102,14 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		});
 		return result;
-	}
+	},
+	navigateTo: (pathId, urlParams) => dispatch({
+		type: 'menu/goToPath',
+		payload: {
+			pathId,
+			urlParams
+		}
+	})
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -555,7 +562,9 @@ class AddPOS extends Component {
 	// }
 
 	goToPosList = () => {
-		router.push('/cashVerify/posList');
+		const {navigateTo} = this.props;
+		navigateTo('posList');
+		// router.push('/cashVerify/posList');
 	}
 
 	render() {
@@ -629,7 +638,7 @@ class AddPOS extends Component {
 
 		return (
 			<>
-				<Card>
+				<Card bordered={false}>
 					{!isClick ? (
 						<div className={styles['device-list-block']}>
 

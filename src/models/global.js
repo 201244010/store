@@ -1,4 +1,4 @@
-import { queryNotices } from '@/services/user';
+// import { queryNotices } from '@/services/user';
 import * as CookieUtil from '@/utils/cookies';
 
 export default {
@@ -22,23 +22,23 @@ export default {
 			return CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || null;
 		},
 
-		*fetchNotices(_, { call, put, select }) {
-			const data = yield call(queryNotices);
-			yield put({
-				type: 'saveNotices',
-				payload: data,
-			});
-			const unreadCount = yield select(
-				state => state.global.notices.filter(item => !item.read).length
-			);
-			yield put({
-				type: 'user/changeNotifyCount',
-				payload: {
-					totalCount: data.length,
-					unreadCount,
-				},
-			});
-		},
+		// *fetchNotices(_, { call, put, select }) {
+		// 	const data = yield call(queryNotices);
+		// 	yield put({
+		// 		type: 'saveNotices',
+		// 		payload: data,
+		// 	});
+		// 	const unreadCount = yield select(
+		// 		state => state.global.notices.filter(item => !item.read).length
+		// 	);
+		// 	yield put({
+		// 		type: 'user/changeNotifyCount',
+		// 		payload: {
+		// 			totalCount: data.length,
+		// 			unreadCount,
+		// 		},
+		// 	});
+		// },
 		*clearNotices({ payload }, { put, select }) {
 			yield put({
 				type: 'saveClearedNotices',

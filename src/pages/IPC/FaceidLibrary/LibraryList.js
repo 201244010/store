@@ -1,17 +1,21 @@
 import React from 'react';
-import { Button, Table, Card, Modal } from 'antd';
+import { Form, Button, Row, Col, Table, Card, Modal, Divider } from 'antd';
 // import { Link } from 'dva/router';
 import moment from 'moment';
 import { connect } from 'dva';
-import { injectIntl, FormattedMessage } from 'umi/locale';
-import styles from './FaceidLibrary.less';
+import { formatMessage } from 'umi/locale';
+import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
 import LibraryForm from './LibraryForm';
+
+import styles from './FaceidLibrary.less';
+import global from '@/styles/common.less';
+
 
 class LibraryList extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const { intl, managePhotos} = this.props;
+		const { managePhotos} = this.props;
 
 		this.state = {
 			editFormShown: false,
@@ -21,11 +25,11 @@ class LibraryList extends React.Component {
 
 		this.columns = [
 			{
-				title: intl.formatMessage({ id: 'faceid.libraryName' }),
+				title: formatMessage({ id: 'faceid.libraryName' }),
 				dataIndex: 'name',
 			},
 			{
-				title: intl.formatMessage({ id: 'facied.rules' }),
+				title: formatMessage({ id: 'facied.rules' }),
 				dataIndex: 'rule',
 				render: (rules) => {
 					if(!rules){
@@ -36,7 +40,7 @@ class LibraryList extends React.Component {
 				}
 			},
 			{
-				title: intl.formatMessage({ id: 'faceid.remark' }),
+				title: formatMessage({ id: 'faceid.remark' }),
 				dataIndex: 'remarks',
 				render: (remark) => {
 					if(!remark) {
@@ -47,12 +51,12 @@ class LibraryList extends React.Component {
 				}
 			},
 			{
-				title: intl.formatMessage({ id: 'faceid.photosAmount' }),
+				title: formatMessage({ id: 'faceid.photosAmount' }),
 				dataIndex: 'amount',
 				render: (amount, row) => `${amount  }/${  row.capacity}`,
 			},
 			{
-				title: intl.formatMessage({ id: 'faceid.updateTime' }),
+				title: formatMessage({ id: 'faceid.updateTime' }),
 				dataIndex: 'lastupdate',
 				render: lastupdate => {
 					if (!lastupdate) {
@@ -64,7 +68,7 @@ class LibraryList extends React.Component {
 				},
 			},
 			{
-				title: intl.formatMessage({ id: 'common.operation' }),
+				title: formatMessage({ id: 'common.operation' }),
 				dataIndex: 'isDefault',
 				render: (isDefault, row) => (
 					<div>
@@ -75,8 +79,9 @@ class LibraryList extends React.Component {
 								managePhotos(row.id);
 							}}
 						>
-							<FormattedMessage id="faceid.managePhoto" />
+							{formatMessage({ id: 'faceid.managePhoto' })}
 						</a>
+						<Divider type="veritcal" />
 						<a
 							className={styles['btn-operation']}
 							href="javascript:void(0);"
@@ -84,21 +89,24 @@ class LibraryList extends React.Component {
 								this.showEditForm(row.id);
 							}}
 						>
-							<FormattedMessage id="common.edit" />
+							{formatMessage({id: 'common.edit' })}
 						</a>
 						{isDefault ? (
 							''
 						) : (
-							<a
-								className={styles['btn-operation']}
-								href="javascript:void(0);"
-								onClick={() => {
-									// console.log(row);
-									this.removeLibrary(row.id);
-								}}
-							>
-								<FormattedMessage id="common.delete" />
-							</a>
+							<>
+								<Divider type="veritcal" />
+								<a
+									className={styles['btn-operation']}
+									href="javascript:void(0);"
+									onClick={() => {
+										// console.log(row);
+										this.removeLibrary(row.id);
+									}}
+								>
+									{formatMessage({id: 'common.delete'})}
+								</a>
+							</>
 						)}
 					</div>
 				),
@@ -200,7 +208,6 @@ class LibraryList extends React.Component {
 	}
 
 	removeLibrary = (id) => {
-		const { intl } = this.props;
 		// console.log('remove',id);
 		const { faceIdLibrary, removeLibrary } = this.props;
 		const target = faceIdLibrary.filter(item => {
@@ -213,15 +220,15 @@ class LibraryList extends React.Component {
 		// console.log(target);
 		if(target[0].amount !== 0){
 			Modal.error({
-				title: intl.formatMessage({ id: 'faceid.deleteError' }),
-				content: intl.formatMessage({ id: 'faceid.deleteErrorMsg' }),
+				title: formatMessage({ id: 'faceid.deleteError' }),
+				content: formatMessage({ id: 'faceid.deleteErrorMsg' }),
 			});
 		} else {
 			Modal.confirm({
-				title: intl.formatMessage({ id: 'faceid.deleteLibrary' }),
-				content: intl.formatMessage({ id: 'faceid.deleteInfo' }),
-				okText: intl.formatMessage({ id: 'faceid.confirm' }),
-				cancelText: intl.formatMessage({ id: 'faceid.cancel' }),
+				title: formatMessage({ id: 'faceid.deleteLibrary' }),
+				content: formatMessage({ id: 'faceid.deleteInfo' }),
+				okText: formatMessage({ id: 'faceid.confirm' }),
+				cancelText: formatMessage({ id: 'faceid.cancel' }),
 				onOk: () => removeLibrary(id),
 			});
 		}
@@ -297,17 +304,24 @@ class LibraryList extends React.Component {
 		return (
 			<div className="faceid-library-list">
 				<Card bordered={false}>
-					<div>
-						<Button
-							type="primary"
-							disabled={list.length >= this.maxLength}
-							onClick={this.showCreateForm}
-						>
-							{/* <Link to="./createLibrary"> */}
-							<FormattedMessage id="common.create" />
-							{/* </Link> */}
-						</Button>
+					<div className={global['search-bar']}>
+						<Form layout="inline">
+							<Row gutter={FORM_FORMAT.gutter}>
+								<Col {...COL_THREE_NORMAL}>
+									<Form.Item>
+										<Button
+											type="primary"
+											disabled={list.length >= this.maxLength || restCapacity <= 0}
+											onClick={this.showCreateForm}
+										>
+											{formatMessage({ id: 'common.create' })}
+										</Button>
+									</Form.Item>
+								</Col>
+							</Row>
+						</Form>
 					</div>
+
 					<div>
 						<Table
 							columns={this.columns}
@@ -333,17 +347,17 @@ class LibraryList extends React.Component {
 					) : (
 						<p>
 							<span>
-								<FormattedMessage id="faceid.createNote" />
+								{formatMessage({ id: 'faceid.createNote' })}
 							</span>
 							<a href="javascript:void(0);" onClick={this.showCreateForm}>
-								<FormattedMessage id="faceid.createLibrary" />
+								{formatMessage({ id: 'faceid.createLibrary' })}
 							</a>
 						</p>
 					)}
 				</Card>
 
 				<Modal
-					title={<FormattedMessage id='faceid.createLibrary' />}
+					title={formatMessage({id: 'faceid.createLibrary'})}
 					maskClosable={false}
 					visible={createFormShown}
 					onCancel={this.closeCreateForm}
@@ -352,9 +366,10 @@ class LibraryList extends React.Component {
 					<LibraryForm
 						restCapacity={restCapacity}
 						libraries={list}
-						id={parseInt(Math.random() * 1000 * 1000, 10)}
+						// id={parseInt(Math.random() * 1000 * 1000, 10)}
 						isDefault={false}
-						name=''
+						isEdit={false}
+						// name=''
 						wrappedComponentRef={form => {
 							this.createForm = form;
 						}}
@@ -362,7 +377,7 @@ class LibraryList extends React.Component {
 				</Modal>
 
 				<Modal
-					title={<FormattedMessage id="faceid.editLibrary" />}
+					title={formatMessage({id: 'faceid.editLibrary' })}
 					maskClosable={false}
 					visible={editFormShown}
 					onCancel={this.closeEditForm}
@@ -372,6 +387,7 @@ class LibraryList extends React.Component {
 						wrappedComponentRef={form => {
 							this.editForm = form;
 						}}
+						isEdit
 						{...selectedRow}
 						libraries={list}
 						restCapacity={restCapacity}
@@ -429,4 +445,4 @@ const mapDispatchToProps = (dispatch) => ({
 	}
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(LibraryList));
+export default connect(mapStateToProps, mapDispatchToProps)(LibraryList);
