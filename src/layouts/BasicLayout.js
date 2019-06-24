@@ -109,17 +109,12 @@ class BasicLayout extends React.PureComponent {
 		const { goToPath } = this.props;
 
 		const visitPath = pathname.slice(1).split('/')[0];
-		if (env === 'dev' || UNAUTH_PATH.includes(visitPath)) {
+		if (UNAUTH_PATH.includes(visitPath)) {
 			this.setState({
 				inMenuChecking: false,
 			});
 		} else if (pathname === '/') {
-			const { path } = menuData[0] || {};
-			if (!path) {
-				goToPath('account');
-			} else {
-				router.push(path);
-			}
+			goToPath('root');
 			this.setState({
 				inMenuChecking: false,
 			});
@@ -140,8 +135,15 @@ class BasicLayout extends React.PureComponent {
 			getMenuData,
 			route: { routes, authority },
 		} = this.props;
+
 		const menuData = await getMenuData({ routes, authority });
-		this.checkMenuAuth(menuData);
+		if (env === 'dev') {
+			this.setState({
+				inMenuChecking: false,
+			});
+		} else {
+			this.checkMenuAuth(menuData);
+		}
 	};
 
 	matchParamsPath = (pathname, breadcrumbNameMap) => {
