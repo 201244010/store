@@ -147,6 +147,7 @@ const router = [
 					{
 						path: '/esl/template',
 						name: 'template',
+						hideInMenu: true,
 						id: 'template',
 						component: './Template',
 					},
@@ -166,6 +167,7 @@ const router = [
 					{
 						path: '/esl/deviceUpgrade',
 						name: 'deviceUpgrade',
+						hideInMenu: true,
 						id: 'deviceUpgrade',
 						routes: [
 							{
