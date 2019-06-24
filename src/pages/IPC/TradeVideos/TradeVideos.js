@@ -273,8 +273,18 @@ class TradeVideos extends React.Component {
 		// console.log(currentPage, pageSize);
 
 		getTradeVideos({
-			startTime: startTime.unix(),
-			endTime: endTime.unix(),
+			startTime: startTime.set({
+				hour: 0,
+				minute: 0,
+				second: 0,
+				millisecond: 0
+			}).unix(),
+			endTime: endTime.set({
+				hour: 23,
+				minute: 59,
+				second: 59,
+				millisecond: 999
+			}).unix(),
 			ipcId,
 			posSN,
 			keyword: keywords,
