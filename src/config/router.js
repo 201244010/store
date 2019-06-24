@@ -32,6 +32,12 @@ const router = [
 		id: 'root',
 		Routes: ['/src/components/AuthorithCheck'],
 		routes: [
+			{ path: '/', redirect: '/index' },
+			{
+				path: '/index',
+				hideInMenu: true,
+				component: './Index'
+			},
 			{
 				path: '/dashBoard',
 				name: 'dashBoard',

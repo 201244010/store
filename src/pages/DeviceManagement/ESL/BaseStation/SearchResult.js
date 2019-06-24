@@ -51,16 +51,16 @@ class SearchResult extends Component {
 	};
 
 	saveStationName = () => {
-		const {selectedRecord} = this.state;
+		const { selectedRecord } = this.state;
 		if (selectedRecord.name.length > 20) {
 			message.warning(formatMessage({ id: 'esl.device.ap.name.limit' }));
 			return;
 		}
-		const {changeBaseStationName} = this.props;
- 		changeBaseStationName({
+		const { changeBaseStationName } = this.props;
+		changeBaseStationName({
 			options: {
 				ap_id: selectedRecord.id,
-				name: selectedRecord.name
+				name: selectedRecord.name,
 			},
 		});
 		this.closeModal('editVisible');
@@ -112,16 +112,16 @@ class SearchResult extends Component {
 		});
 	};
 
-	onChangeName = (name) => {
+	onChangeName = name => {
 		if (name && name.length > 20) {
 			message.warning(formatMessage({ id: 'esl.device.ap.name.limit' }));
 		}
-		const {selectedRecord} = this.state;
+		const { selectedRecord } = this.state;
 		this.setState({
 			selectedRecord: {
 				...selectedRecord,
-				name
-			}
+				name,
+			},
 		});
 	};
 
