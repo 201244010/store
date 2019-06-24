@@ -389,9 +389,15 @@ export default {
 				}));
 
 				const [rest] = purchaseTypeList.slice(5);
-				rest.amountPercent = parseFloat(100 - (1 * total.amountPercent || 100)).toFixed(2);
+				const { amount = 0, count = 0 } = rest;
 
-				rest.countPercent = parseFloat(100 - (1 * total.countPercent || 100)).toFixed(2);
+				rest.amountPercent = amount
+					? parseFloat(100 - 1 * total.amountPercent).toFixed(2)
+					: parseFloat(amount).toFixed(2);
+
+				rest.countPercent = count
+					? parseFloat(100 - 1 * total.countPercent).toFixed(2)
+					: parseFloat(count).toFixed(2);
 
 				sortedData.purchaseTypeList = [...purchaseTypeList.slice(0, 5), rest];
 
