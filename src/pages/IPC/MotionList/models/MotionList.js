@@ -29,9 +29,9 @@ export default {
 			// const shopId = yield select((state) => {
 			// 	return state.shops.currentShopId;
 			// });
-			const { startTime, endTime, ipcSelected, detectedSourceSelected, currentPage, pageSize } = payload;
+			const { startTime, endTime, ipcSelected, detectedSourceSelected /* , currentPage, pageSize */ } = payload;
 
-			console.log(currentPage, pageSize);
+			// console.log(currentPage, pageSize);
 			let deviceId;
 			let source;
 			if(ipcSelected){

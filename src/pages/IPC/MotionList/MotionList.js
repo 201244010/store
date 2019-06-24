@@ -192,7 +192,7 @@ class MotionList extends React.Component {
 			pageSize
 		});
 
-		console.log('onShowSizeChange', currentPage, pageSize);
+		// console.log('onShowSizeChange', currentPage, pageSize);
 	}
 
 	onPaginationChange = (currentPage, pageSize) => {
@@ -203,7 +203,7 @@ class MotionList extends React.Component {
 			pageSize
 		});
 
-		console.log('onPaginationChange', currentPage, pageSize);
+		// console.log('onPaginationChange', currentPage, pageSize);
 	}
 
 	getMotionList = (currentPage, pageSize) => {
@@ -213,11 +213,21 @@ class MotionList extends React.Component {
 		const ipcId = getFieldValue('ipcId');
 		const detectedSource = getFieldValue('detectedSource');
 
-		console.log(startTime, endTime, ipcId, detectedSource, currentPage, pageSize);
+		// console.log(startTime, endTime, ipcId, detectedSource, currentPage, pageSize);
 
 		getMotionList({
-			startTime: startTime.unix(),
-			endTime: endTime.unix(),
+			startTime: startTime.set({
+				hour: 0,
+				minute: 0,
+				second: 0,
+				millisecond: 0
+			}).unix(),
+			endTime: endTime.set({
+				hour: 23,
+				minute: 59,
+				second: 59,
+				millisecond: 999
+			}).unix(),
 			ipcSelected: ipcId,
 			detectedSourceSelected: detectedSource,
 			currentPage,
@@ -329,6 +339,7 @@ class MotionList extends React.Component {
 									<Button
 										type="primary"
 										onClick={()=>this.searchHandler()}
+										loading={loading.effects['motionList/read']}
 									>
 										{formatMessage({id: 'motionList.search'})}
 									</Button>
