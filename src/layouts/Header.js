@@ -3,7 +3,6 @@ import { formatMessage } from 'umi/locale';
 import { Layout, message } from 'antd';
 import Animate from 'rc-animate';
 import { connect } from 'dva';
-import router from 'umi/router';
 import GlobalHeader from '@/components/GlobalHeader';
 import TopNavHeader from '@/components/TopNavHeader';
 import * as CookieUtil from '@/utils/cookies';
@@ -56,15 +55,14 @@ class HeaderView extends PureComponent {
 	};
 
 	handleMenuClick = async ({ key }) => {
-		const { dispatch } = this.props;
+		const { logout, goToPath } = this.props;
 		if (key === 'userCenter') {
-			router.push('/account');
+			goToPath('account');
+			// router.push('/account');
 			return;
 		}
 		if (key === 'logout') {
-			dispatch({
-				type: 'user/logout',
-			});
+			logout();
 		}
 	};
 
@@ -151,8 +149,11 @@ export default connect(
 		store,
 	}),
 	dispatch => ({
+		logout: () => dispatch({ type: 'user/logout' }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		dispatch,
 	})
 )(HeaderView);

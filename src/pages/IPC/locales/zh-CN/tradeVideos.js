@@ -1,5 +1,5 @@
 export default {
-	'tradeVideos.camera': '摄像头',
+	'tradeVideos.camera': '摄像机',
 	'tradeVideos.pos': '收银设备',
 	'tradeVideos.sn': '设备SN',
 	'tradeVideos.totalPrice': '交易金额',
@@ -16,4 +16,7 @@ export default {
 	'tradeVideos.query': '查询',
 	'tradeVideos.chooseCamera': '请选择摄像头',
 	'tradeVideos.choosePos': '请选择收银设备',
+	'tradeVideos.tradeDate': '交易日期',
+	'tradeVideos.unknownDevice': '未知设备',
+
 };

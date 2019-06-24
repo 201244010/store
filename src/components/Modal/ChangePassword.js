@@ -8,17 +8,11 @@ import { ERROR_OK } from '@/constants/errorCode';
 
 @Form.create()
 class ChangePassword extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			resetPasswordSuccess: true,
-		};
-	}
-
 	onOk = () => {
 		const {
-			form: { validateFields },
+			form: { validateFields, setFields },
 			onOk,
+			logout,
 		} = this.props;
 		validateFields(async (err, values) => {
 			if (!err) {
@@ -29,16 +23,20 @@ class ChangePassword extends Component {
 				};
 				const response = await onOk(options);
 				if (response && response.code !== ERROR_OK) {
-					this.setState(
-						{
-							resetPasswordSuccess: false,
+					setFields({
+						old_password: {
+							value: values.old_password,
+							errors: [
+								new Error(
+									formatMessage({
+										id: 'change.password.current.fail',
+									})
+								),
+							],
 						},
-						() => validateFields(['old_password'], { force: true })
-					);
-				} else {
-					this.setState({
-						resetPasswordSuccess: true,
 					});
+				} else {
+					logout();
 				}
 			}
 		});
@@ -49,14 +47,7 @@ class ChangePassword extends Component {
 		onCancel();
 	};
 
-	inputFocus = () => {
-		this.setState({
-			resetPasswordSuccess: true,
-		});
-	};
-
 	render() {
-		const { resetPasswordSuccess } = this.state;
 		const {
 			form: { getFieldDecorator, getFieldValue },
 			visible,
@@ -85,21 +76,8 @@ class ChangePassword extends Component {
 										id: 'current_password.validate.isEmpty',
 									}),
 								},
-								{
-									validator: (rule, value, callback) => {
-										if (resetPasswordSuccess) {
-											callback();
-										} else {
-											callback(
-												formatMessage({
-													id: 'change.password.current.fail',
-												})
-											);
-										}
-									},
-								},
 							],
-						})(<Input type="password" maxLength={30} onFocus={this.inputFocus} />)}
+						})(<Input type="password" maxLength={30} />)}
 					</Form.Item>
 					<Form.Item
 						{...FORM_ITEM_LAYOUT_COMMON}

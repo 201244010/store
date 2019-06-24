@@ -1,27 +1,39 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { formatMessage } from 'umi/locale';
 import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
-import { getLocationParam } from '@/utils/utils';
+
+const REASONS = {
+	1: formatMessage({ id: 'esl.device.esl.comm.reason1' }),
+	2: formatMessage({ id: 'esl.device.esl.comm.reason2' }),
+	3: formatMessage({ id: 'esl.device.esl.comm.reason3' }),
+	4: formatMessage({ id: 'esl.device.esl.comm.reason4' }),
+	5: formatMessage({ id: 'esl.device.esl.comm.reason5' }),
+	6: formatMessage({ id: 'esl.device.esl.comm.reason6' }),
+	7: formatMessage({ id: 'esl.device.esl.comm.reason7' }),
+};
+const RESULTS = {
+	0: formatMessage({ id: 'esl.device.esl.comm.result1' }),
+	1: formatMessage({ id: 'esl.device.esl.comm.result2' }),
+	2: formatMessage({ id: 'esl.device.esl.comm.result3' }),
+};
 
 @connect(
 	state => ({
-		deviceESL: state.deviceESL,
+		monitor: state.monitor,
 	}),
 	dispatch => ({
-		getESLGroupInfo: payload => dispatch({ type: 'deviceESL/getESLGroupInfo', payload }),
-		updateSearchValue: payload => dispatch({ type: 'deviceESL/updateSearchValue', payload }),
-		clearSearchValue: () => dispatch({ type: 'deviceESL/clearSearchValue' }),
+		fetchCommunications: payload => dispatch({ type: 'monitor/fetchCommunications', payload }),
+		updateSearchValue: payload => dispatch({ type: 'monitor/updateSearchValue', payload }),
+		changeSearchFormValue: payload => dispatch({ type: 'monitor/changeSearchFormValue', payload }),
+		clearSearchValue: () => dispatch({ type: 'monitor/clearSearchValue' }),
 	})
 )
 class DeviceESL extends Component {
 	componentDidMount() {
-		const { getESLGroupInfo } = this.props;
-		const groupId = parseInt(getLocationParam('groupId'), 10);
-
-		getESLGroupInfo({
-			group_id: groupId,
-		});
+		const { fetchCommunications } = this.props;
+		fetchCommunications();
 	}
 
 	componentWillUnmount() {
@@ -31,35 +43,30 @@ class DeviceESL extends Component {
 
 	render() {
 		const {
-			deviceESL: { states, eslInfoList, pagination, loading },
-			getESLGroupInfo,
+			monitor: { data, pagination, loading, searchFormValues },
+			fetchCommunications,
 			updateSearchValue,
+			changeSearchFormValue
 		} = this.props;
-		const [version, groupId] = [
-			getLocationParam('model'),
-			getLocationParam('version'),
-			parseInt(getLocationParam('groupId'), 10),
-		];
 
 		return (
 			<div className="content-container">
 				<SearchForm
 					{...{
-						states,
-						groupId,
+						searchFormValues,
 						updateSearchValue,
-						getESLGroupInfo,
+						changeSearchFormValue,
+						fetchCommunications,
 					}}
 				/>
 				<SearchResult
 					{...{
-						states,
-						data: eslInfoList,
+						reasons: REASONS,
+						results: RESULTS,
+						data,
 						loading,
 						pagination,
-						version,
-						groupId,
-						getESLGroupInfo,
+						fetchCommunications,
 					}}
 				/>
 			</div>

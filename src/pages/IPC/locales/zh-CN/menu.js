@@ -5,7 +5,7 @@ export default {
 	'menu.devices.list': '设备列表',
 	'menu.devices.list.live': '直播',
 	'menu.devices.list.ipcManagement': '摄像头设置',
-	'menu.devices.motionMessage': '消息提醒',
+	'menu.devices.motionMessage': '活动侦测',
 
 	'menu.faceidLabrary.management': '人脸库管理',
 	'menu.faceidLabrary.list': '人脸库列表',

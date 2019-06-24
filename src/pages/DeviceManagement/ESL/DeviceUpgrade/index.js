@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Card } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import SearchResult from './SearchResult';
@@ -18,6 +18,8 @@ import SearchResult from './SearchResult';
 		updateAPAutoUpgradeStatus: payload =>
 			dispatch({ type: 'deviceAP/updateAPAutoUpgradeStatus', payload }),
 		uploadAPFirmware: payload => dispatch({ type: 'deviceAP/uploadAPFirmware', payload }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class DeviceUpgrade extends Component {
@@ -43,9 +45,10 @@ class DeviceUpgrade extends Component {
 			updateAPAutoUpgradeStatus,
 			uploadESLFirmware,
 			uploadAPFirmware,
+			goToPath,
 		} = this.props;
 		return (
-			<div className="content-container">
+			<Card bordered={false}>
 				<Tabs defaultActiveKey="esl" onChange={this.tabChange} animated={false}>
 					<Tabs.TabPane
 						tab={formatMessage({ id: 'esl.device.upgrade.tab.esl' })}
@@ -58,6 +61,7 @@ class DeviceUpgrade extends Component {
 								loading: eslLoading,
 								updateAutoUpgradeStatus: updateESLAutoUpgradeStatus,
 								firmwareUpload: uploadESLFirmware,
+								goToPath,
 							}}
 						/>
 					</Tabs.TabPane>
@@ -72,11 +76,12 @@ class DeviceUpgrade extends Component {
 								loading: apLoading,
 								updateAutoUpgradeStatus: updateAPAutoUpgradeStatus,
 								firmwareUpload: uploadAPFirmware,
+								goToPath,
 							}}
 						/>
 					</Tabs.TabPane>
 				</Tabs>
-			</div>
+			</Card>
 		);
 	}
 }

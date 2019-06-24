@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, message } from 'antd';
+import { Layout, message, Spin } from 'antd';
 import DocumentTitle from 'react-document-title';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
@@ -9,13 +9,9 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage, getLocale } from 'umi/locale';
-// import AuthorithCheck from '@/components/AuthorithCheck';
 import MQTTWrapper from '@/components/MQTT';
-import Authorized from '@/utils/Authorized';
-import NotFountPage from '@/pages/404';
-import MenuCheck from '@/components/AuthorithCheck/MenuCheck';
-import router from 'umi/router';
 import * as CookieUtil from '@/utils/cookies';
+import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import Header from './Header';
 import Context from './MenuContext';
@@ -24,6 +20,7 @@ import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/menuLogo.png';
 import logoEN from '../assets/menuLogoEN.png';
+import { env } from '@/config';
 
 message.config({
 	maxCount: 1,
@@ -56,6 +53,8 @@ const query = {
 	},
 };
 
+const UNAUTH_PATH = ['account', 'notification'];
+
 @MQTTWrapper
 class BasicLayout extends React.PureComponent {
 	constructor(props) {
@@ -64,6 +63,7 @@ class BasicLayout extends React.PureComponent {
 		this.matchParamsPath = memoizeOne(this.matchParamsPath, isEqual);
 		this.state = {
 			selectedStore: CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY),
+			inMenuChecking: true,
 		};
 	}
 
@@ -102,35 +102,55 @@ class BasicLayout extends React.PureComponent {
 		};
 	}
 
+	checkMenuAuth = menuData => {
+		const {
+			location: { pathname },
+		} = window;
+		const { goToPath } = this.props;
+
+		const visitPath = pathname.slice(1).split('/')[0];
+		if (UNAUTH_PATH.includes(visitPath)) {
+			this.setState({
+				inMenuChecking: false,
+			});
+		} else if (pathname === '/') {
+			goToPath('root');
+			this.setState({
+				inMenuChecking: false,
+			});
+		} else {
+			const isAccessable = menuData.some(menu => menu.path.slice(1) === visitPath);
+			if (isAccessable) {
+				this.setState({
+					inMenuChecking: false,
+				});
+			} else {
+				router.goBack();
+			}
+		}
+	};
+
 	dataInitial = async () => {
 		const {
 			getMenuData,
 			route: { routes, authority },
 		} = this.props;
-		await getMenuData({ routes, authority });
+
+		const menuData = await getMenuData({ routes, authority });
+		if (env === 'dev') {
+			this.setState({
+				inMenuChecking: false,
+			});
+		} else {
+			this.checkMenuAuth(menuData);
+		}
 	};
 
 	matchParamsPath = (pathname, breadcrumbNameMap) => {
 		const pathKey = Object.keys(breadcrumbNameMap).find(key =>
-			pathToRegexp(key).test(pathname),
+			pathToRegexp(key).test(pathname)
 		);
 		return breadcrumbNameMap[pathKey];
-	};
-
-	getRouterAuthority = (pathname, routeData) => {
-		let routeAuthority = ['noAuthority'];
-		const getAuthority = (key, routes) => {
-			routes.map(route => {
-				if (route.path === key) {
-					routeAuthority = route.authority;
-				} else if (route.routes) {
-					routeAuthority = getAuthority(key, route.routes);
-				}
-				return route;
-			});
-			return routeAuthority;
-		};
-		return getAuthority(pathname, routeData);
 	};
 
 	getPageTitle = (pathname, breadcrumbNameMap) => {
@@ -166,15 +186,17 @@ class BasicLayout extends React.PureComponent {
 	};
 
 	checkStore = () => {
+		const { goToPath } = this.props;
 		const shopList = Storage.get(CookieUtil.SHOP_LIST_KEY, 'local') || [];
 		if (shopList.length === 0) {
 			message.warning(formatMessage({ id: 'alert.store.is.none' }));
-			router.push(`${MENU_PREFIX.STORE}/createStore?action=create`);
+			goToPath('storeCreate', { action: 'create' });
+			// router.push(`${MENU_PREFIX.STORE}/createStore?action=create`);
 		}
 	};
 
 	render() {
-		const { selectedStore } = this.state;
+		const { selectedStore, inMenuChecking } = this.state;
 		const {
 			navTheme,
 			layout: PropsLayout,
@@ -183,12 +205,10 @@ class BasicLayout extends React.PureComponent {
 			isMobile,
 			menuData,
 			breadcrumbNameMap,
-			route: { routes },
 			fixedHeader,
 		} = this.props;
 		const currentLanguage = getLocale();
 		const isTop = PropsLayout === 'topmenu';
-		const routerConfig = this.getRouterAuthority(pathname, routes);
 		const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
 		const layout = (
 			<Layout>
@@ -218,10 +238,6 @@ class BasicLayout extends React.PureComponent {
 					/>
 					{/* <Breadcrumbs /> */}
 					<Content className={styles.content} style={contentStyle}>
-						<Authorized
-							authority={routerConfig}
-							noMatch={<NotFountPage customStyle={{ color: '#434E59' }} />}
-						/>
 						{children}
 					</Content>
 				</Layout>
@@ -229,15 +245,18 @@ class BasicLayout extends React.PureComponent {
 		);
 		return (
 			<React.Fragment>
-				<MenuCheck menuData={menuData} />
 				<DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
-					<ContainerQuery query={query}>
-						{params => (
-							<Context.Provider value={this.getContext()}>
-								<div className={classNames(params)}>{layout}</div>
-							</Context.Provider>
-						)}
-					</ContainerQuery>
+					{inMenuChecking ? (
+						<Spin spinning />
+					) : (
+						<ContainerQuery query={query}>
+							{params => (
+								<Context.Provider value={this.getContext()}>
+									<div className={classNames(params)}>{layout}</div>
+								</Context.Provider>
+							)}
+						</ContainerQuery>
+					)}
 				</DocumentTitle>
 			</React.Fragment>
 		);
@@ -257,8 +276,10 @@ export default connect(
 	dispatch => ({
 		getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		dispatch,
-	}),
+	})
 )(props => (
 	<Media query="(max-width: 599px)">
 		{isMobile => <BasicLayout {...props} isMobile={isMobile} />}

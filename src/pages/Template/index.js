@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
+import { Card } from 'antd';
 import { connect } from 'dva';
 import SearchResult from './SearchResult';
-import * as styles from './index.less';
 
 @connect(
 	state => ({
 		template: state.template,
 	}),
 	dispatch => ({
-		changeSearchFormValue: payload => dispatch({ type: 'template/changeSearchFormValue', payload }),
+		changeSearchFormValue: payload =>
+			dispatch({ type: 'template/changeSearchFormValue', payload }),
 		fetchScreenTypes: payload => dispatch({ type: 'template/fetchScreenTypes', payload }),
 		fetchColors: payload => dispatch({ type: 'template/fetchColors', payload }),
 		createTemplate: payload => dispatch({ type: 'template/createTemplate', payload }),
@@ -25,7 +26,7 @@ class Template extends Component {
 			keyword: '',
 			status: -1,
 			colour: -1,
-			screen_type: -1
+			screen_type: -1,
 		});
 		fetchScreenTypes();
 		fetchColors({ screen_type: -1 });
@@ -50,7 +51,7 @@ class Template extends Component {
 		} = this.props;
 
 		return (
-			<div className={styles['content-container']}>
+			<Card bordered={false}>
 				<SearchResult
 					{...{
 						searchFormValues,
@@ -67,7 +68,7 @@ class Template extends Component {
 						applyTemplate,
 					}}
 				/>
-			</div>
+			</Card>
 		);
 	}
 }

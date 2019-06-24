@@ -1,11 +1,9 @@
 import React from 'react';
-import { Form, Button } from 'antd';
+import { Form, Button, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-import router from 'umi/router';
 import { formatEmptyWithoutZero, getLocationParam, unixSecondToDate } from '@/utils/utils';
 import styles from './StoreManagement.less';
-import { MENU_PREFIX } from '@/constants';
 
 @connect(
 	state => ({
@@ -13,6 +11,8 @@ import { MENU_PREFIX } from '@/constants';
 	}),
 	dispatch => ({
 		getStoreDetail: payload => dispatch({ type: 'store/getStoreDetail', payload }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class StoreInformation extends React.Component {
@@ -24,13 +24,21 @@ class StoreInformation extends React.Component {
 	}
 
 	toPath = target => {
+		const { goToPath } = this.props;
 		const shopId = getLocationParam('shopId');
 		const path = {
-			edit: `${MENU_PREFIX.STORE}/alterStore?shopId=${shopId}&action=edit`,
-			back: `${MENU_PREFIX.STORE}/list`,
+			edit: {
+				pathId: 'storeUpdate',
+				urlParams: { shopId, action: 'edit' },
+			},
+			back: {
+				pathId: 'storeList',
+			},
 		};
 
-		router.push(path[target] || path.back);
+		const { pathId, urlParams = {} } = path[target] || {};
+		goToPath(pathId, urlParams);
+		// router.push(path[target] || path.back);
 	};
 
 	render() {
@@ -43,7 +51,7 @@ class StoreInformation extends React.Component {
 			shop_name = '--',
 			type_name = '--',
 			business_status = 0,
-			region,
+			region = '--',
 			address = '--',
 			business_hours = '--',
 			contact_person = '--',
@@ -53,7 +61,7 @@ class StoreInformation extends React.Component {
 		} = formatEmptyWithoutZero(storeInfo, '--');
 
 		return (
-			<div className={styles.storeList}>
+			<Card bordered={false}>
 				<h3 className={styles.informationText}>
 					{formatMessage({ id: 'storeManagement.info.title' })}
 				</h3>
@@ -88,7 +96,14 @@ class StoreInformation extends React.Component {
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.address' })}
 					>
-						{region ? region.split(',').join(' ') : '--'} {address}
+						{region === '--' && address === '--' ? (
+							<span>--</span>
+						) : (
+							<>
+								<span>{region !== '--' ? region.split(',').join(' ') : ''}</span>
+								<span>{address !== '--' ? address : ''}</span>
+							</>
+						)}
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
@@ -133,7 +148,7 @@ class StoreInformation extends React.Component {
 						</Button>
 					</Form.Item>
 				</Form>
-			</div>
+			</Card>
 		);
 	}
 }

@@ -12,6 +12,7 @@ import userCenter from './en-US/userCenter';
 import storeManagement from './en-US/storeManagement';
 import notification from './en-US/notification';
 import studio from './en-US/studio';
+import dashBoard from './en-US/dashBoard';
 
 import VideoPlayer from './en-US/videoPlayer';
 
@@ -51,4 +52,5 @@ export default {
 	...notification,
 	...VideoPlayer,
 	...studio,
+	...dashBoard,
 };

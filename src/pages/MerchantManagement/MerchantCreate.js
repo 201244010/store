@@ -4,8 +4,6 @@ import { Form, Button, Input } from 'antd';
 import { connect } from 'dva';
 import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
-import router from 'umi/router';
-import { MENU_PREFIX } from '@/constants';
 import styles from './Merchant.less';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -17,23 +15,27 @@ import { ERROR_OK } from '@/constants/errorCode';
 	dispatch => ({
 		companyCreate: payload => dispatch({ type: 'merchant/companyCreate', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()
 class MerchantCreate extends Component {
 	checkStoreExist = async () => {
-		const { getStoreList } = this.props;
+		const { getStoreList, goToPath } = this.props;
 		const response = await getStoreList({});
 		const result = response.data || {};
 		const shopList = result.shop_list || [];
 		Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 		if (shopList.length === 0) {
 			CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
-			router.push(`${MENU_PREFIX.STORE}/createStore`);
+			goToPath('storeCreate');
+			// router.push(`${MENU_PREFIX.STORE}/createStore`);
 		} else {
 			const defaultStore = shopList[0] || {};
 			CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
-			router.push('/');
+			goToPath('root');
+			// router.push('/');
 		}
 	};
 

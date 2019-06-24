@@ -51,12 +51,16 @@ class SearchResult extends Component {
 	};
 
 	saveStationName = () => {
-		const {selectedRecord} = this.state;
-		const {changeBaseStationName} = this.props;
- 		changeBaseStationName({
+		const { selectedRecord } = this.state;
+		if (selectedRecord.name.length > 20) {
+			message.warning(formatMessage({ id: 'esl.device.ap.name.limit' }));
+			return;
+		}
+		const { changeBaseStationName } = this.props;
+		changeBaseStationName({
 			options: {
 				ap_id: selectedRecord.id,
-				name: selectedRecord.name
+				name: selectedRecord.name,
 			},
 		});
 		this.closeModal('editVisible');
@@ -108,13 +112,16 @@ class SearchResult extends Component {
 		});
 	};
 
-	onChangeName = (name) => {
-		const {selectedRecord} = this.state;
+	onChangeName = name => {
+		if (name && name.length > 20) {
+			message.warning(formatMessage({ id: 'esl.device.ap.name.limit' }));
+		}
+		const { selectedRecord } = this.state;
 		this.setState({
 			selectedRecord: {
 				...selectedRecord,
-				name
-			}
+				name,
+			},
 		});
 	};
 
@@ -162,13 +169,13 @@ class SearchResult extends Component {
 								</a>
 							</>
 						)}
-						{/* <Divider type="vertical" /> */}
-						{/* <a */}
-						{/* href="javascript: void (0);" */}
-						{/* onClick={() => this.showEditVisible(record)} */}
-						{/* > */}
-						{/* {formatMessage({ id: 'list.action.edit' })} */}
-						{/* </a> */}
+						<Divider type="vertical" />
+						<a
+							href="javascript: void (0);"
+							onClick={() => this.showEditVisible(record)}
+						>
+							{formatMessage({ id: 'list.action.edit' })}
+						</a>
 						<Divider type="vertical" />
 						<a
 							href="javascript: void (0);"
@@ -217,6 +224,7 @@ class SearchResult extends Component {
 				<Modal
 					title={formatMessage({ id: 'esl.device.ap.edit' })}
 					visible={editVisible}
+					confirmLoading={loading}
 					onOk={() => this.saveStationName('editVisible')}
 					onCancel={() => this.closeModal('editVisible')}
 					destroyOnClose

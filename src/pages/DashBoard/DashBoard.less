@@ -1,0 +1,245 @@
+@import '~@/styles/common.less';
+// @import '~@/styles/global.less';
+
+.dashboard-wrapper {
+	margin: -24px;
+}
+
+.search-bar {
+	width: 100%;
+	height: 64px;
+	padding: 16px 24px;
+	background: #ffffff;
+	border-top: 1px solid #eff1f2;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	:global {
+		.ant-radio-button-wrapper-checked {
+			box-shadow: -1px 0 0 0 @font-color-primary;
+		}
+
+		.ant-radio-button-wrapper:hover {
+			color: @font-color-primary;
+		}
+
+		.ant-radio-group-solid {
+			.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+				background: @font-color-primary;
+				border-color: @font-color-primary;
+			}
+		}
+	}
+
+	.right-content {
+		display: flex;
+		align-items: center;
+	}
+
+	.icon-wrapper {
+		width: 24px;
+		height: 24px;
+		margin-left: 24px;
+
+		text-align: center;
+		cursor: pointer;
+	}
+}
+
+.display-content {
+	margin: 24px;
+}
+
+.content-chart {
+	margin-top: 24px;
+	border-radius: 8px;
+
+	.bar-wrapper,
+	.list-wrapper {
+		border-radius: 8px;
+		background: #ffffff;
+	}
+
+	.bar-wrapper {
+		overflow: hidden;
+		.bar-wrapper {
+			padding: 0 24px 30px 24px;
+		}
+
+		.title-wrapper {
+			height: 56px;
+			padding: 12px 24px;
+			border-bottom: 1px solid #e6e6e6;
+
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			.bar-title {
+				font-weight: bold;
+				font-size: 16px;
+				color: #303540;
+				line-height: 24px;
+			}
+
+			.bar-radio {
+				:global {
+					.ant-radio-button-wrapper-checked {
+						color: @font-color-primary;
+						border-color: @font-color-primary;
+						box-shadow: -1px 0 0 0 @font-color-primary;
+					}
+
+					.ant-radio-button-wrapper:hover {
+						color: @font-color-primary;
+					}
+				}
+			}
+		}
+	}
+
+	.list-wrapper-top {
+		margin-top: 24px;
+	}
+
+	.list-wrapper {
+		.twin-list-wrapper {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			.content-list {
+				width: 50%;
+			}
+		}
+
+		.list-title {
+			height: 56px;
+			padding: 16px 0 16px 24px;
+			border-bottom: 1px solid #f0f2f5;
+
+			font-weight: bold;
+			font-size: 16px;
+			color: #303540;
+			line-height: 24px;
+
+			box-sizing: border-box;
+		}
+
+		.content-list {
+			padding: 16px 24px 22px 24px;
+			margin-bottom: 0;
+		}
+
+		.list-item {
+			padding: 8px 0;
+			font-size: 14px;
+			color: #525866;
+			line-height: 22px;
+
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			.label-wrapper {
+				display: flex;
+
+				.rank {
+					width: 20px;
+					height: 20px;
+
+					color: #525866;
+					font-size: 12px;
+					line-height: 20px;
+					text-align: center;
+
+					background: #e6e6e6;
+					border-radius: 100%;
+				}
+
+				.rank-primary {
+					color: #ffffff;
+					background: @font-color-primary;
+				}
+
+				.label {
+					margin-left: 24px;
+					font-size: 14px;
+					color: #525866;
+					line-height: 22px;
+				}
+			}
+
+			.number-content {
+				font-size: 14px;
+				color: #525866;
+				text-align: center;
+				line-height: 22px;
+			}
+		}
+	}
+}
+
+.footer-chart-wrapper {
+	background: #ffffff;
+
+	margin-top: 24px;
+	border-radius: 8px;
+
+	.title-wrapper {
+		padding: 16px 24px;
+		border-bottom: 1px solid #eff1f2;
+
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		.chart-title {
+			font-size: 16px;
+			font-weight: bold;
+			color: #303540;
+			line-height: 24px;
+		}
+
+		.title-btn-bar {
+			:global {
+				.ant-radio-button-wrapper-checked {
+					color: @font-color-primary;
+					border-color: @font-color-primary;
+					box-shadow: -1px 0 0 0 @font-color-primary;
+				}
+
+				.ant-radio-button-wrapper:hover {
+					color: @font-color-primary;
+				}
+			}
+		}
+	}
+
+	.content-wrapper {
+		padding: 32px 56px 24px 56px;
+
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		.chart-item {
+			width: 20%;
+			position: relative;
+
+			.chart-title {
+				font-size: 14px;
+				color: #303540;
+				line-height: 24px;
+			}
+
+			.chart-data {
+				font-size: 12px;
+				color: #777e8c;
+				line-height: 22px;
+			}
+		}
+	}
+}

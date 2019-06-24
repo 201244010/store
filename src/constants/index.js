@@ -16,8 +16,9 @@ export const MENU_PREFIX = {
 	PRODUCT: '/product/list',
 	// MERCHANT: '/basicData/merchantManagement',
 	MERCHANT: '/company/merchantManagement',
-	// STORE: '/basicData/storeManagement',
-	STORE: '/company/storeManagement',
+	STORE: '/basicData/storeManagement',
+	// STORE: '/company/storeManagement',
+	ROLE: '/roleManagement',
 };
 
 export const KEY = {
@@ -26,7 +27,7 @@ export const KEY = {
 	DELETE: 46,
 	KEY_C: 67,
 	KEY_V: 86,
-	KEY_X: 88
+	KEY_X: 88,
 };
 
 export const MESSAGE_TYPE = {
@@ -83,3 +84,5 @@ export const AVATA_IMG = {
 		color: 'red',
 	},
 };
+
+export const USER_PERMISSION_LIST = '__user_permission_list__';

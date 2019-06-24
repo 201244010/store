@@ -63,6 +63,7 @@ const MailRegisterSuccess = ({ props }) => {
 	state => ({
 		user: state.user,
 		sso: state.sso,
+		loading: state.loading,
 	}),
 	dispatch => ({
 		register: payload => dispatch({ type: 'user/register', payload }),
@@ -181,6 +182,7 @@ class Register extends Component {
 		const {
 			form: { getFieldDecorator, getFieldValue },
 			sso: { imgCaptcha },
+			loading
 		} = this.props;
 		const { notice, registerSuccess, trigger, vcodeIsError, showImgCaptchaModal } = this.state;
 		const currentLanguage = getLocale();
@@ -267,12 +269,12 @@ class Register extends Component {
 																	);
 																} else if (
 																	!vcodeIsError &&
-																		!value
+																	!value
 																) {
 																	callback(
 																		formatMessage({
 																			id:
-																					'code.validate.isEmpty',
+																				'code.validate.isEmpty',
 																		})
 																	);
 																} else {
@@ -419,7 +421,13 @@ class Register extends Component {
 						</Form>
 						<Row type="flex" justify="space-between" align="middle">
 							<Col span={10}>
-								<Button type="primary" size="large" block onClick={this.onSubmit}>
+								<Button
+									type="primary"
+									loading={loading.effects['user/register']}
+									size="large"
+									block
+									onClick={this.onSubmit}
+								>
 									{formatMessage({ id: 'btn.register' })}
 								</Button>
 							</Col>

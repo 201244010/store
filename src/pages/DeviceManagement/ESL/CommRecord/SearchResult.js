@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { getLocationParam } from '@/utils/utils';
+import { unixSecondToDate } from '@/utils/utils';
 
 export default class SearchResult extends Component {
 	onTableChange = pagination => {
-		const { getESLGroupInfo, groupId } = this.props;
-		getESLGroupInfo({
-			group_id: groupId,
+		const { fetchCommunications } = this.props;
+		fetchCommunications({
 			pageSize: pagination.pageSize,
 			current: pagination.current,
 		});
 	};
 
 	render() {
-		const { data, loading, pagination } = this.props;
-		const upgraded = getLocationParam('upgraded');
+		const { data, loading, pagination, reasons, results } = this.props;
 
 		const columns = [
 			{
@@ -25,49 +23,49 @@ export default class SearchResult extends Component {
 			},
 			{
 				title: formatMessage({ id: 'esl.device.esl.product.seq.num' }),
-				dataIndex: 'bin_version',
-				key: 'bin_version'
+				dataIndex: 'product_seq_num',
+				key: 'product_seq_num'
 			},
 			{
 				title: formatMessage({ id: 'esl.device.esl.product.name' }),
-				dataIndex: 'bin_version',
-				key: 'bin_version'
+				dataIndex: 'product_name',
+				key: 'product_name'
 			},
 			{
 				title: formatMessage({ id: 'esl.device.esl.template.name' }),
-				dataIndex: 'bin_version',
-				key: 'bin_version'
+				dataIndex: 'template_name',
+				key: 'template_name'
 			},
 			{
-				title: formatMessage({ id: 'esl.device.esl.comm.cause' }),
-				dataIndex: 'bin_version',
-				key: 'bin_version'
+				title: formatMessage({ id: 'esl.device.esl.comm.reason' }),
+				dataIndex: 'reason',
+				key: 'reason',
+				render: text => <span>{reasons[text]}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.esl.comm.result' }),
-				dataIndex: 'bin_version',
-				key: 'bin_version'
+				dataIndex: 'result',
+				key: 'result',
+				render: text => <span>{results[text]}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.esl.comm.time' }),
-				dataIndex: 'bin_version',
-				key: 'bin_version'
-			}
+				dataIndex: 'transmission_time',
+				key: 'transmission_time',
+				render: text => (text !== 0 ? <span>{unixSecondToDate(text)}</span> : <noscript />),
+			},
 		];
 
 		return (
 			<div>
 				<Table
-					rowKey="esl_code"
+					rowKey={() => Math.random()}
 					columns={columns}
 					dataSource={data}
 					loading={loading}
 					pagination={{
 						...pagination,
-						showTotal: total =>
-							`${formatMessage({
-								id: 'esl.device.upgrade.updated.total',
-							})}: ${upgraded}/${total}`,
+						showTotal: total => `${formatMessage({ id: 'esl.device.esl.all' })}${total}${formatMessage({ id: 'esl.device.esl.comm.history.total', })}`,
 					}}
 					onChange={this.onTableChange}
 				/>

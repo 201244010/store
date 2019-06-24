@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { Card } from 'antd';
 import PanelHeader from '@/pages/DeviceManagement/ESL/DeviceUpgrade/PanelHeader';
 import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
@@ -42,7 +43,7 @@ class DeviceAP extends Component {
 			parseInt(getLocationParam('groupId'), 10),
 		];
 		return (
-			<div className="content-container">
+			<Card bordered={false}>
 				<PanelHeader model={model} type="station" version={version} />
 				<SearchForm
 					{...{
@@ -63,7 +64,7 @@ class DeviceAP extends Component {
 						getAPGroupInfo,
 					}}
 				/>
-			</div>
+			</Card>
 		);
 	}
 }

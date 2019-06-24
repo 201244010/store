@@ -109,7 +109,7 @@ class VideoPlayer extends React.Component{
 			this.updateUrl(url);
 			this.updateSources(sources);
 		}
-		console.log('componentDidMount');
+		// console.log('componentDidMount');
 	}
 
 	componentDidUpdate(oldProps) {
@@ -553,13 +553,25 @@ class VideoPlayer extends React.Component{
 		const {player} = this;
 		const video = player.el_.firstChild;
 		// console.log(video);
-		const { pixelRatio } = this.props;
+		const { pixelRatio, currentPPI: ppi } = this.props;
 		const pr = pixelRatio.split(':').map(item => parseInt(item, 10));
 
 		const canvas = document.createElement('canvas');
 
-
-		const height = 720;	// 只给720p的图，否则内存不够导致下载失败；
+		const currentPPI = parseInt(ppi, 10);
+		// console.log(currentPPI, currentPPI === 1080);
+		let height = 720;
+		switch(currentPPI) {
+			case 1080:
+				height = 800;
+				break;
+			case 720:
+			default:
+				height = 640;
+				break;
+		}
+		// console.log(height);
+		// 只给720p的图，否则内存不够导致下载失败；
 		const width = parseInt(height/pr[1]*pr[0], 10);
 
 		canvas.width = width;

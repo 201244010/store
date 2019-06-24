@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
-import router from 'umi/router';
 import { connect } from 'dva';
 import { Button, Form, Input } from 'antd';
 import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
-import { MENU_PREFIX } from '@/constants';
 import Storage from '@konata9/storage.js';
 import styles from './StoreRelate.less';
 
@@ -36,7 +34,7 @@ const MerchantCreate = props => {
 								placeholder={formatMessage({
 									id: 'merchantManagement.merchant.inputMerchant',
 								})}
-							/>,
+							/>
 						)}
 					</Form.Item>
 					<div>
@@ -97,8 +95,8 @@ const MerchantInfo = props => {
 									<span
 										className={`${styles['btn-icon']}
                                             ${iconStyle === 'hover' &&
-										hoverIndex === index &&
-										styles['btn-icon-hover']}`}
+												hoverIndex === index &&
+												styles['btn-icon-hover']}`}
 									/>
 								</Button>
 							))}
@@ -121,7 +119,9 @@ const MerchantInfo = props => {
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		companyCreate: payload => dispatch({ type: 'merchant/companyCreate', payload }),
 		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
-	}),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+	})
 )
 @Form.create()
 class StoreRelate extends Component {
@@ -134,7 +134,7 @@ class StoreRelate extends Component {
 	}
 
 	checkStoreExist = async () => {
-		const { getStoreList } = this.props;
+		const { getStoreList, goToPath } = this.props;
 		const response = await getStoreList({});
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
@@ -142,12 +142,14 @@ class StoreRelate extends Component {
 			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
 				CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
-				router.push(`${MENU_PREFIX.STORE}/createStore`);
+				goToPath('storeCreate');
+				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
 				const lastStore = shopList.length;
 				const defaultStore = shopList[lastStore - 1] || {};
 				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
-				router.push('/');
+				goToPath('root');
+				// router.push('/');
 			}
 		}
 	};
@@ -180,7 +182,7 @@ class StoreRelate extends Component {
 							value: values.company_name || '',
 							errors: [
 								new Error(
-									formatMessage({ id: 'merchantManagement.merchant.existed' }),
+									formatMessage({ id: 'merchantManagement.merchant.existed' })
 								),
 							],
 						},

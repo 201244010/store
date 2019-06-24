@@ -1,11 +1,11 @@
 export const env = process.env.UMI_ENV;
 
 const WEB_SOCKET_PREFIX = {
-	'dev': 'ws',
-	'test': 'ws',
-	'uat': 'wss',
-	'onl': 'wss',
-	'local': 'ws',
+	dev: 'ws',
+	test: 'ws',
+	uat: 'wss',
+	onl: 'wss',
+	local: 'ws',
 };
 
 const SSO_ADDRESS = {
