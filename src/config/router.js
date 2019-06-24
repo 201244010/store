@@ -32,6 +32,12 @@ const router = [
 		id: 'root',
 		Routes: ['/src/components/AuthorithCheck'],
 		routes: [
+			{ path: '/', redirect: '/index' },
+			{
+				path: '/index',
+				hideInMenu: true,
+				component: './Index'
+			},
 			{
 				path: '/dashBoard',
 				name: 'dashBoard',
@@ -89,7 +95,7 @@ const router = [
 				routes: [
 					{
 						path: '/devices/ipcList',
-						name: 'list',
+						name: 'ipcList',
 						routes: [
 							{
 								path: '/devices/ipcList/live',
@@ -107,7 +113,7 @@ const router = [
 							},
 							{
 								path: '/devices/ipcList',
-								// name: 'list',
+								// name: 'ipcList',
 								id: 'deviceList',
 								component: './IPC/IPCList/IPCList.js',
 							},
@@ -407,6 +413,7 @@ const router = [
 				path: '/faceidLibrary',
 				name: 'faceidLibrary',
 				id: 'faceidLibrary',
+				hideInMenu: true,
 				icon: 'blank',
 				// component: './index.js',
 				routes: [
@@ -428,8 +435,6 @@ const router = [
 					},
 				],
 			},
-
-			{ path: '/', redirect: '/dashBoard' },
 		],
 	},
 ];

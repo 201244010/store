@@ -16,8 +16,6 @@ const RiseDownTag = props => {
 
 	const IconUp = () => (
 		<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
-			<title>ic_up</title>
-			<desc>Created with Sketch.</desc>
 			<g id="组件" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
 				<g id="Data/上次比" transform="translate(-78.000000, -7.000000)">
 					<g id="ic_up" transform="translate(78.000000, 7.000000)">
@@ -53,8 +51,6 @@ const RiseDownTag = props => {
 			version="1.1"
 			xmlns="http://www.w3.org/2000/svg"
 		>
-			<title>ic_down</title>
-			<desc>Created with Sketch.</desc>
 			<g id="组件" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
 				<g id="Data/环比" transform="translate(-50.000000, -7.000000)">
 					<g id="ic_down" transform="translate(50.000000, 7.000000)">
