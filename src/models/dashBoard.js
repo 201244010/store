@@ -124,7 +124,6 @@ export default {
 
 		*fetchAllData({ payload }, { all, put }) {
 			const { needLoading = false } = payload;
-
 			yield all([
 				// total card
 				put({

@@ -27,25 +27,35 @@ const Refresh = () => (
 );
 
 class SearchBar extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			tempSelected: RANGE.TODAY,
+		};
+	}
+
 	disabledDate = current => current && current > moment().endOf('day');
 
-	handleRadioChange = async e => {
-		const { setSearchValue, fetchAllData, onSearchChanged } = this.props;
+	handleRadioChange = e => {
+		const { setSearchValue, onSearchChanged } = this.props;
 		const {
 			target: { value },
 		} = e;
 
-		await setSearchValue({
+		this.setState({
+			tempSelected: value,
+		});
+
+		setSearchValue({
 			rangeType: value,
 			timeRangeStart: null,
 			timeRangeEnd: null,
 		});
-		await fetchAllData({ needLoading: true });
 		onSearchChanged();
 	};
 
-	handleTimeRangeChange = async dates => {
-		const { setSearchValue, fetchAllData, onSearchChanged } = this.props;
+	handleTimeRangeChange = dates => {
+		const { setSearchValue, onSearchChanged } = this.props;
 		const [startTime, endTime] = dates;
 
 		if (
@@ -57,21 +67,25 @@ class SearchBar extends Component {
 			return;
 		}
 
-		await setSearchValue({
+		this.setState({
+			tempSelected: RANGE.FREE,
+		});
+
+		setSearchValue({
 			rangeType: RANGE.FREE,
 			timeRangeStart: startTime,
 			timeRangeEnd: endTime,
 		});
 
 		if (startTime && endTime) {
-			await fetchAllData({ needLoading: true });
 			onSearchChanged();
 		}
 	};
 
 	render() {
+		const { tempSelected } = this.state;
 		const {
-			searchValue: { rangeType, timeRangeStart, timeRangeEnd },
+			searchValue: { timeRangeStart, timeRangeEnd },
 			lastModifyTime,
 			doHandRefresh,
 		} = this.props;
@@ -80,7 +94,7 @@ class SearchBar extends Component {
 			<div className={styles['search-bar']}>
 				<div>
 					<Radio.Group
-						value={rangeType}
+						value={tempSelected}
 						buttonStyle="solid"
 						onChange={this.handleRadioChange}
 					>

@@ -112,9 +112,9 @@ class MotionList extends React.Component {
 		dataIndex:'video',
 		key: 'action',
 		render: (item) => (
-			<span className={styles['video-watch']} onClick={()=>this.watchVideoHandler(item)}>
+			<a href="javascript:void(0);" onClick={()=>this.watchVideoHandler(item)}>
 				{formatMessage({id: 'motionList.watch'})}
-			</span>
+			</a>
 		)
 	}];
 
