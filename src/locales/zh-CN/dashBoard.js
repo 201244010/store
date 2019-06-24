@@ -15,13 +15,13 @@ export default {
 	'dashBoard.order.m2m': '月同比',
 
 	'dashBoard.total.sales': '总销售额',
-	'dashBoard.total.sales.info': '总销售额说明',
+	'dashBoard.total.sales.info': '详情及规则说明',
 	'dashBoard.total.count': '总笔数',
-	'dashBoard.total.count.info': '总笔数说明',
+	'dashBoard.total.count.info': '详情及规则说明',
 	'dashBoard.customer.unit.price': '客单价',
-	'dashBoard.customer.unit.price.info': '客单价说明',
+	'dashBoard.customer.unit.price.info': '详情及规则说明',
 	'dashBoard.total.refund.count': '退款笔数',
-	'dashBoard.total.refund.count.info': '退款笔数说明',
+	'dashBoard.total.refund.count.info': '详情及规则说明',
 
 	'dashBoard.trade.time': '交易时间分布',
 
