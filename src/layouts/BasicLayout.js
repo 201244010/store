@@ -136,8 +136,12 @@ class BasicLayout extends React.PureComponent {
 			route: { routes, authority },
 		} = this.props;
 
-		if (env !== 'dev'){
-			const menuData = await getMenuData({ routes, authority });
+		const menuData = await getMenuData({ routes, authority });
+		if (env === 'dev') {
+			this.setState({
+				inMenuChecking: false,
+			});
+		} else {
 			this.checkMenuAuth(menuData);
 		}
 	};
