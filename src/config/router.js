@@ -259,6 +259,7 @@ const router = [
 					{
 						path: '/basicData/roleManagement',
 						name: 'roleManagement',
+						hideInMenu: true,
 						id: 'roleManagement',
 						routes: [
 							{
