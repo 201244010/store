@@ -120,18 +120,13 @@ class MotionList extends React.Component {
 
 
 	async componentDidMount(){
-		const { getMotionList } = this.props;
+		// const { getMotionList } = this.props;
 		const { currentPage, pageSize } = this.state;
 
-		const startTime = moment().subtract(1, 'days');
-		const endTime = moment();
+		// const startTime = moment().subtract(1, 'days');
+		// const endTime = moment();
 		// getMotionList(currentTime,lastDayTime);
-		getMotionList({
-			startTime: startTime.unix(),
-			endTime: endTime.unix(),
-			currentPage,
-			pageSize
-		});
+		this.getMotionList(currentPage, pageSize);
 
 
 		// this.setState({
@@ -321,7 +316,7 @@ class MotionList extends React.Component {
 										{
 											getFieldDecorator('dateRange', {
 												initialValue: [
-													moment().subtract(1, 'days'),
+													moment(),
 													moment()
 												]
 											})(
