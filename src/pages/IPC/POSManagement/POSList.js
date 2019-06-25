@@ -261,7 +261,13 @@ class POSList extends React.Component {
 				title: formatMessage({ id: 'posList.todayAmount' }),
 				dataIndex: 'amount',
 				key: 'amount',
-				render: (amount, record) => `${amount} (${record.count})`
+				// render: (amount, record) => `${amount} (${record.count})`
+			},
+			{
+				title: formatMessage({ id: 'posList.todayCount' }),
+				dataIndex: 'count',
+				key: 'count',
+				// render: (amount, record) => `${amount} (${record.count})`
 			},
 			{
 				title: formatMessage({ id: 'posList.operation' }),
