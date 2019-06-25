@@ -16,6 +16,7 @@ const TEXT = {
 
 const overviewCardStyle = {
 	minHeight: '140px',
+	cursor: 'pointer',
 };
 
 const descriptionStyle = {
@@ -38,23 +39,30 @@ const ExtraImage = ({ iconName }) => <img src={require(`@/assets/icon/${iconName
 
 const Overview = props => {
 	const {
-		overviewProductLoading,
+		// overviewProductLoading,
 		overviewDeviceLoading,
 		overviewIPCLoading,
-		productOverview: { totalCount = '' } = {},
-		deviceOverView: { eslTotalCount = '', eslFailedCount = '', apTotalCount = '' } = {},
+		// productOverview: { totalCount = '' } = {},
+		deviceOverView: {
+			eslTotalCount = '',
+			eslPendingCount = '',
+			eslFailedCount = '',
+			apTotalCount = '',
+		} = {},
 		ipcOverView: { onLineCount = '', offLineCount = '' } = {},
+		goToPath,
 	} = props;
 
 	return (
 		<div className={styles.overview}>
 			<Row gutter={20}>
-				<Col span={6}>
+				{/* <Col span={6}>
 					<DisplayCard
 						{...{
+							onClick: () => goToPath('productList'),
 							loading: overviewProductLoading,
 							cardStyle: overviewCardStyle,
-							title: formatMessage({ id: 'esl.overview.product.total' }),
+							title: formatMessage({ id: 'dashBoard.overview.product' }),
 							infoContent: TEXT.TOTAL_INFO,
 							content: totalCount === '' ? '--' : priceFormat(totalCount),
 							extra: (
@@ -64,10 +72,11 @@ const Overview = props => {
 							),
 						}}
 					/>
-				</Col>
+				</Col> */}
 				<Col span={6}>
 					<DisplayCard
 						{...{
+							onClick: overviewDeviceLoading ? null : () => goToPath('electricLabel'),
 							loading: overviewDeviceLoading,
 							cardStyle: overviewCardStyle,
 							title: formatMessage({ id: 'dashBoard.overview.esl.push' }),
@@ -75,7 +84,9 @@ const Overview = props => {
 							content: (
 								<>
 									<div>
-										{eslTotalCount === '' ? '--' : priceFormat(eslTotalCount)}
+										{eslPendingCount === ''
+											? '--'
+											: priceFormat(eslPendingCount)}
 									</div>
 									<div style={descriptionStyle}>
 										{formatMessage({
@@ -89,6 +100,23 @@ const Overview = props => {
 							),
 							extra: (
 								<div className={styles['card-extra-img']}>
+									<ExtraImage iconName="PROD.png" />
+								</div>
+							),
+						}}
+					/>
+				</Col>
+				<Col span={6}>
+					<DisplayCard
+						{...{
+							onClick: overviewDeviceLoading ? null : () => goToPath('electricLabel'),
+							loading: overviewDeviceLoading,
+							cardStyle: overviewCardStyle,
+							title: formatMessage({ id: 'dashBoard.overview.esl.push.total' }),
+							infoContent: TEXT.ESL_INFO,
+							content: eslTotalCount === '' ? '--' : priceFormat(eslTotalCount),
+							extra: (
+								<div className={styles['card-extra-img']}>
 									<ExtraImage iconName="ESL.png" />
 								</div>
 							),
@@ -98,6 +126,7 @@ const Overview = props => {
 				<Col span={6}>
 					<DisplayCard
 						{...{
+							onClick: overviewDeviceLoading ? null : () => goToPath('baseStation'),
 							loading: overviewDeviceLoading,
 							cardStyle: overviewCardStyle,
 							title: formatMessage({ id: 'dashBoard.overview.ap.online' }),
@@ -124,6 +153,7 @@ const Overview = props => {
 				<Col span={6}>
 					<DisplayCard
 						{...{
+							onClick: overviewIPCLoading ? null : () => goToPath('deviceList'),
 							loading: overviewIPCLoading,
 							cardStyle: overviewCardStyle,
 							title: formatMessage({ id: 'dashBoard.overview.ipc.online' }),

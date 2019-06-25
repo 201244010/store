@@ -7,6 +7,7 @@ export default {
 	'tradeVideos.purchaseTime': '交易时间',
 	'tradeVideos.operation': '操作',
 	'tradeVideos.viewVideo': '查看视频',
+	'tradeVideos.viewVideo.merging': '合成视频中',
 	'tradeVideos.unknown': '未知',
 	'tradeVideos.getVideoFailed': '获取审计视频失败，请稍候重试。',
 	'tradeVideos.all': '所有',
@@ -18,5 +19,6 @@ export default {
 	'tradeVideos.choosePos': '请选择收银设备',
 	'tradeVideos.tradeDate': '交易日期',
 	'tradeVideos.unknownDevice': '未知设备',
-	'tradeVideos.viewDetails': '查看明细'
+	'tradeVideos.viewDetails': '查看明细',
+	'tradeVideos.closeDetails': '收起明细',
 };
