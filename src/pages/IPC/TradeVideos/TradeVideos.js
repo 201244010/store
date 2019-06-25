@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Select, DatePicker, Button, Table, Row, Col, Card, Input, Form } from 'antd';
+import { Select, DatePicker, Button, Table, Row, Col, Card, Input, Form, Divider } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
@@ -151,14 +151,26 @@ class TradeVideos extends React.Component {
 		dataIndex:'key',
 		key: 'action',
 		render: (item, record) => (
-			<a
-				className={`${styles['video-watch']} ${record.url ? '' : styles.disabled}`}
-				href='javascript:void(0);'
-				onClick={() => this.watchVideoHandler(record.paymentDeviceSn, record.url)}
-			>
-				{/* 查看视频 */}
-				{formatMessage({id: 'tradeVideos.viewVideo'})}
-			</a>
+			<>
+				<a
+					className={`${styles['video-watch']} ${record.url ? '' : styles.disabled}`}
+					href='javascript:void(0);'
+					onClick={() => this.watchVideoHandler(record.paymentDeviceSn, record.url)}
+				>
+					{/* 查看视频 */}
+					{formatMessage({id: 'tradeVideos.viewVideo'})}
+				</a>
+				<Divider type="vertical" />
+				<a
+					className={styles['video-watch']}
+					href='javascript:void(0);'
+					onClick={() => {
+						this.onExpand(record.key);
+					}}
+				>
+					查看明细
+				</a>
+			</>
 		)
 	}];
 
@@ -307,13 +319,34 @@ class TradeVideos extends React.Component {
 		this.getTradeVideos(currentPage, pageSize);
 	}
 
-	onExpand = (expanded, record) => {
-		if (expanded) {
-			const { expandedRowKeys } = this.state;
-			this.getPaymentDetailList(record.key);
-			// console.log([...expandedRowKeys, record.key]);
+	// onExpand = (expanded, record) => {
+	// 	if (expanded) {
+	// 		const { expandedRowKeys } = this.state;
+	// 		this.getPaymentDetailList(record.key);
+	// 		// console.log([...expandedRowKeys, record.key]);
+	// 		this.setState({
+	// 			expandedRowKeys: Array.from(new Set([...expandedRowKeys, record.key]))
+	// 		});
+	// 	}
+	// }
+
+	onExpand = (key) => {
+		this.getPaymentDetailList(key);
+
+		const { expandedRowKeys } = this.state;
+		const keyIndex = expandedRowKeys.indexOf(key);
+		// console.log(keyIndex);
+		if (keyIndex >= 0) {
+			expandedRowKeys.splice(keyIndex);
 			this.setState({
-				expandedRowKeys: Array.from(new Set([...expandedRowKeys, record.key]))
+				expandedRowKeys
+			});
+		}else{
+			this.setState({
+				expandedRowKeys: [
+					...expandedRowKeys,
+					key
+				]
 			});
 		}
 	}
@@ -399,7 +432,7 @@ class TradeVideos extends React.Component {
 									>
 										{
 											getFieldDecorator('tradeDate', {
-												initialValue: [moment(), moment()]
+												initialValue: [moment().subtract(30, 'days'), moment()]
 											})(
 												<RangePicker
 													// defaultValue={[moment().subtract(1, 'days'), moment()]}
@@ -449,7 +482,9 @@ class TradeVideos extends React.Component {
 
 						defaultExpandedRowKeys={['details']}
 						expandedRowKeys={expandedRowKeys}
-						onExpand={this.onExpand}
+						// onExpand={this.onExpand}
+						expandIconColumnIndex={-1}
+						expandIconAsCell={false}
 						pagination={
 							{
 								current: currentPage,
@@ -472,7 +507,7 @@ class TradeVideos extends React.Component {
 										{formatMessage({id: 'tradeVideos.product'})}
 									</span>
 									{/* <span className={`${styles['payment-detail-title']} ${styles['payment-detail-item']}`}>单价</span> */}
-									<span className={`${styles['payment-detail-title']} ${styles['payment-detail-item']}`}>
+									<span className={`${styles['payment-detail-title']} ${styles['payment-detail-item-amount']} ${styles['payment-detail-item']}`}>
 										{/* 数量 */}
 										{formatMessage({id: 'tradeVideos.amount'})}
 									</span>
@@ -482,7 +517,7 @@ class TradeVideos extends React.Component {
 											<div key={index}>
 												<span className={`${styles['payment-detail-item-name']} ${styles['payment-detail-item']}`}>{item.name}</span>
 												{/* <span className={`${styles['payment-detail-item']}`}>{item.perPrice}</span> */}
-												<span className={`${styles['payment-detail-item']}`}>{item.quantity}</span>
+												<span className={`${styles['payment-detail-item']} ${styles['payment-detail-item-amount']}`}>{item.quantity}</span>
 												{/* <span className={`${styles['payment-detail-item']}`}>{item.promotePrice}</span> */}
 											</div>
 										))
