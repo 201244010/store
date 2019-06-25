@@ -269,7 +269,7 @@ const ProductCUWeight = props => {
 				</Col>
 				<Col span={12}>
 					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.extraText' })}>
-						{getFieldDecorator('tare', {
+						{getFieldDecorator('extraText_content_1', {
 							validateTrigger: 'onBlur',
 							rules: [
 								{
