@@ -148,6 +148,7 @@ export default {
 				type: 'updateState',
 				payload: { loading: false },
 			});
+			return response;
 		},
 		*flushESL({ payload = {} }, { call, put }) {
 			const { options = {} } = payload;

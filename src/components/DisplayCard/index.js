@@ -10,10 +10,12 @@ const DisplayCard = props => {
 		content = null,
 		footer = null,
 		loading = false,
+		extra = <></>,
+		cardStyle = {},
 	} = props;
 
 	return (
-		<div className={styles['card-wrapper']}>
+		<div className={styles['card-wrapper']} style={cardStyle}>
 			<Card title={null} bordered={false} loading={loading}>
 				<div className={styles['card-title']}>
 					<div>{title}</div>
@@ -24,6 +26,7 @@ const DisplayCard = props => {
 
 				<div className={styles['card-content']}>{content}</div>
 				<div className={styles['card-footer']}>{footer}</div>
+				{extra}
 			</Card>
 		</div>
 	);

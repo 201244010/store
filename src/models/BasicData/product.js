@@ -75,6 +75,8 @@ export default {
 				type: 'updateState',
 				payload: { loading: false },
 			});
+
+			return response;
 		},
 		*getERPPlatformList(_, { call, put }) {
 			yield put({
@@ -169,9 +171,9 @@ export default {
 				});
 				yield put({
 					type: 'menu/goToPath',
-					payload:{
-						pathId: 'productList'
-					}
+					payload: {
+						pathId: 'productList',
+					},
 				});
 				// router.push(`${MENU_PREFIX.PRODUCT}`);
 			} else {
@@ -211,21 +213,20 @@ export default {
 				const { fromPage, product_id } = options;
 				const pagePath = {
 					list: {
-						pathId: 'productList'
+						pathId: 'productList',
 					},
-					detail:{
+					detail: {
 						pathId: 'productInfo',
 						urlParams: {
-							id: idEncode(product_id)
-						}
-					}
+							id: idEncode(product_id),
+						},
+					},
 				};
-				
+
 				yield put({
 					type: 'menu/goToPath',
-					payload: pagePath[fromPage]
+					payload: pagePath[fromPage],
 				});
-
 			} else {
 				message.error(formatMessage({ id: 'product.update.error' }));
 				yield put({
@@ -316,7 +317,7 @@ export default {
 				});
 			}
 			return response;
-		}
+		},
 	},
 	reducers: {
 		updateState(state, action) {
