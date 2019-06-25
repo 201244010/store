@@ -5,6 +5,7 @@ import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
 import SearchBar from './SearchBar';
+import Overview from './Overview';
 import CardBar from './CardBar';
 import ContentChart from './ContentChart';
 import FooterChart from './FooterChart';
@@ -118,6 +119,7 @@ class DashBoard extends Component {
 					}}
 				/>
 				<div className={styles['display-content']}>
+					<Overview />
 					<CardBar
 						{...{
 							totalAmount,
