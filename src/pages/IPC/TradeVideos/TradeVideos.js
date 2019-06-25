@@ -399,7 +399,7 @@ class TradeVideos extends React.Component {
 									>
 										{
 											getFieldDecorator('tradeDate', {
-												initialValue: [moment().subtract(1, 'days'), moment()]
+												initialValue: [moment(), moment()]
 											})(
 												<RangePicker
 													// defaultValue={[moment().subtract(1, 'days'), moment()]}
@@ -428,7 +428,12 @@ class TradeVideos extends React.Component {
 								</Col>
 
 								<Col {...SEARCH_FORM_COL.ONE_12TH}>
-									<Button type="primary" className={styles['input-item']} onClick={this.searchHandler}>
+									<Button
+										type="primary"
+										className={styles['input-item']}
+										onClick={this.searchHandler}
+										loading={loading.effects['tradeVideos/read']}
+									>
 										{/* 查询 */}
 										{formatMessage({id: 'tradeVideos.query'})}
 									</Button>
