@@ -83,6 +83,14 @@ class DashBoard extends Component {
 	render() {
 		const {
 			dashBoard: {
+				overviewProductLoading,
+				overviewDeviceLoading,
+				overviewIPCLoading,
+
+				productOverview,
+				deviceOverView,
+				ipcOverView,
+
 				totalAmountLoading,
 				totalCountLoading,
 				totalRefundLoading,
@@ -119,7 +127,16 @@ class DashBoard extends Component {
 					}}
 				/>
 				<div className={styles['display-content']}>
-					<Overview />
+					<Overview
+						{...{
+							overviewProductLoading,
+							overviewDeviceLoading,
+							overviewIPCLoading,
+							productOverview,
+							deviceOverView,
+							ipcOverView,
+						}}
+					/>
 					<CardBar
 						{...{
 							totalAmount,

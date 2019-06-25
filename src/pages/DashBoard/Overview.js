@@ -23,29 +23,40 @@ const descriptionStyle = {
 	fontSize: '14px',
 	color: '#777E8C',
 	lineHeight: '22px',
+	zIndex: 10,
 };
 
 const decriptionNumStyle = {
-	marginLeft: '20px',
+	marginLeft: '12px',
 	fontSize: '16px',
 	color: '#525866',
 	textAlign: 'center',
+	zIndex: 10,
 };
 
 const ExtraImage = ({ iconName }) => <img src={require(`@/assets/icon/${iconName}`)} />;
 
 const Overview = props => {
-	console.log(props);
+	const {
+		overviewProductLoading,
+		overviewDeviceLoading,
+		overviewIPCLoading,
+		productOverview: { totalCount = '' } = {},
+		deviceOverView: { eslTotalCount = '', eslFailedCount = '', apTotalCount = '' } = {},
+		ipcOverView: { onLineCount = '', offLineCount = '' } = {},
+	} = props;
+
 	return (
 		<div className={styles.overview}>
 			<Row gutter={20}>
 				<Col span={6}>
 					<DisplayCard
 						{...{
+							loading: overviewProductLoading,
 							cardStyle: overviewCardStyle,
 							title: formatMessage({ id: 'esl.overview.product.total' }),
 							infoContent: TEXT.TOTAL_INFO,
-							content: priceFormat(1000),
+							content: totalCount === '' ? '--' : priceFormat(totalCount),
 							extra: (
 								<div className={styles['card-extra-img']}>
 									<ExtraImage iconName="PROD.png" />
@@ -57,17 +68,22 @@ const Overview = props => {
 				<Col span={6}>
 					<DisplayCard
 						{...{
+							loading: overviewDeviceLoading,
 							cardStyle: overviewCardStyle,
 							title: formatMessage({ id: 'dashBoard.overview.esl.push' }),
 							infoContent: TEXT.ESL_INFO,
 							content: (
 								<>
-									<div>{priceFormat(180)}</div>
+									<div>
+										{eslTotalCount === '' ? '--' : priceFormat(eslTotalCount)}
+									</div>
 									<div style={descriptionStyle}>
 										{formatMessage({
 											id: 'dashBoard.overview.esl.push.failed',
 										})}
-										<span style={decriptionNumStyle}>9</span>
+										<span style={decriptionNumStyle}>
+											{eslFailedCount === '' ? '--' : eslFailedCount}
+										</span>
 									</div>
 								</>
 							),
@@ -82,18 +98,19 @@ const Overview = props => {
 				<Col span={6}>
 					<DisplayCard
 						{...{
+							loading: overviewDeviceLoading,
 							cardStyle: overviewCardStyle,
 							title: formatMessage({ id: 'dashBoard.overview.ap.online' }),
 							infoContent: TEXT.AP_INFO,
 							content: (
 								<>
-									<div>{priceFormat(4)}</div>
-									<div style={descriptionStyle}>
+									<div>{apTotalCount === '' ? '--' : apTotalCount}</div>
+									{/* <div style={descriptionStyle}>
 										{formatMessage({
 											id: 'dashBoard.overview.ap.offline',
 										})}
 										<span style={decriptionNumStyle}>0</span>
-									</div>
+									</div> */}
 								</>
 							),
 							extra: (
@@ -107,17 +124,22 @@ const Overview = props => {
 				<Col span={6}>
 					<DisplayCard
 						{...{
+							loading: overviewIPCLoading,
 							cardStyle: overviewCardStyle,
 							title: formatMessage({ id: 'dashBoard.overview.ipc.online' }),
 							infoContent: TEXT.IPC_INFO,
 							content: (
 								<>
-									<div>{priceFormat(4)}</div>
+									<div>
+										{onLineCount === '' ? '--' : priceFormat(onLineCount)}
+									</div>
 									<div style={descriptionStyle}>
 										{formatMessage({
 											id: 'dashBoard.overview.ipc.offline',
 										})}
-										<span style={decriptionNumStyle}>2333</span>
+										<span style={decriptionNumStyle}>
+											{offLineCount === '' ? '--' : offLineCount}
+										</span>
 									</div>
 								</>
 							),

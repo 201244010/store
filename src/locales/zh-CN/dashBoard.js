@@ -22,9 +22,9 @@ export default {
 	'dashBoard.overview.ipc.offline': '离线网络摄像机数',
 
 	'dashBoard.overview.product.total.info': '详情及规则说明',
-	'dashBoard.overview.product.esl.info': '详情及规则说明',
-	'dashBoard.overview.product.ap.info': '详情及规则说明',
-	'dashBoard.overview.product.ipc.info': '详情及规则说明',
+	'dashBoard.overview.esl.total.info': '详情及规则说明',
+	'dashBoard.overview.ap.total.info': '详情及规则说明',
+	'dashBoard.overview.ipc.total.info': '详情及规则说明',
 
 	'dashBoard.total.sales': '总销售额',
 	'dashBoard.total.sales.info': '详情及规则说明',
