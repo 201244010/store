@@ -1,4 +1,5 @@
 export const MAX_LENGTH = {
+	2: 2,
 	4: 4,
 	9: 9,
 	20: 20,
@@ -100,43 +101,50 @@ export const FORM_ITEM_LAYOUT_BUSINESS = {
 	wrapperCol: { span: 6 },
 };
 
-
-
-
-
-
 export const SEARCH_FORM_GUTTER = {
 	SMALL: {
-		md: 4, lg: 8, xl: 12
+		md: 4,
+		lg: 8,
+		xl: 12,
 	},
 	NORMAL: {
-		md: 8, lg: 24, xl: 48
-	}
+		md: 8,
+		lg: 24,
+		xl: 48,
+	},
 };
 
 export const SEARCH_FORM_COL = {
 	ONE_HALF: {
-		sm: 24, md: 12
+		sm: 24,
+		md: 12,
 	},
 	ONE_THIRD: {
-		sm: 24, md: 8
+		sm: 24,
+		md: 8,
 	},
 	ONE_FOURTH: {
-		sm: 24, md: 6
+		sm: 24,
+		md: 6,
 	},
 	ONE_SIXTH: {
-		sm: 24, md: 4
+		sm: 24,
+		md: 4,
 	},
 	ONE_EIGHTH: {
-		sm: 24, md: 3
+		sm: 24,
+		md: 3,
 	},
 	ONE_12TH: {
-		sm: 24, md: 2
+		sm: 24,
+		md: 2,
 	},
 	ONE_24TH: {
-		sm: 24, md: 1
+		sm: 24,
+		md: 1,
 	},
 	TWO_THIRD: {
-		sm: 24, md: 16
-	}
+		sm: 24,
+		md: 16,
+	},
 };
