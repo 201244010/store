@@ -245,7 +245,10 @@ class MotionList extends React.Component {
 
 		return (
 			<Card bordered={false}>
-				<div className={!isWatchVideo ? styles['motion-list-container'] : styles['display-none']}>
+				<div
+					// className={!isWatchVideo ? styles['motion-list-container'] : styles['display-none']}
+					className={styles['motion-list-container']}
+				>
 					<div className={global['search-bar']}>
 						<Form layout="inline">
 							<Row gutter={SEARCH_FORM_GUTTER.NORMAL}>
@@ -316,7 +319,7 @@ class MotionList extends React.Component {
 										{
 											getFieldDecorator('dateRange', {
 												initialValue: [
-													moment(),
+													moment().subtract(7, 'days'),
 													moment()
 												]
 											})(
