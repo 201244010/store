@@ -13,6 +13,13 @@ const weightPriceType = [
 	{ key: '500g', value: 4 },
 ];
 
+const wrapDateType = [{ key: 'date', value: 1 }, { key: 'days', value: 2 }];
+const allDateType = [
+	{ key: 'date', value: 1 },
+	{ key: 'days', value: 2 },
+	{ key: 'time', value: 3 },
+];
+
 // TODO 称重商品信息部分，提交的字段需要与后端对应
 const ProductCUWeight = props => {
 	const {
@@ -95,7 +102,7 @@ const ProductCUWeight = props => {
 							rules: [
 								{
 									validator: (rule, value, callback) => {
-										if (!/^\d{0,2}$/.test(value)) {
+										if (value && !/^\d{0,2}$/.test(value)) {
 											callback(
 												formatMessage({
 													id:
@@ -120,7 +127,7 @@ const ProductCUWeight = props => {
 							rules: [
 								{
 									validator: (rule, value, callback) => {
-										if (!/^\d{0,2}$/.test(value)) {
+										if (value && !/^\d{0,2}$/.test(value)) {
 											callback(
 												formatMessage({
 													id:
@@ -194,7 +201,7 @@ const ProductCUWeight = props => {
 							rules: [
 								{
 									validator: (rule, value, callback) => {
-										if (!/^[1-9]{1}|[0-9]{2}$/.test(value)) {
+										if (value && !/^[1-9]{1}|[0-9]{2}$/.test(value)) {
 											callback(
 												formatMessage({
 													id:
@@ -244,7 +251,7 @@ const ProductCUWeight = props => {
 							rules: [
 								{
 									validator: (rule, value, callback) => {
-										if (!/^\d{0,2}$/.test(value)) {
+										if (value && !/^\d{0,2}$/.test(value)) {
 											callback(
 												formatMessage({
 													id:
@@ -282,6 +289,210 @@ const ProductCUWeight = props => {
 						})(
 							<Input.TextArea maxLength={500} autosize={{ minRows: 4, maxRows: 4 }} />
 						)}
+					</Form.Item>
+				</Col>
+			</Row>
+
+			<Row>
+				<Col span={12}>
+					<Form.Item label=" " colon={false}>
+						<Row>
+							<Col span={10}>
+								<Form.Item>
+									{getFieldDecorator('wrapDate_enadble', {
+										valuePropName: 'checked',
+										initialValue: true,
+									})(
+										<Checkbox>
+											{formatMessage({
+												id: 'basicData.weightProduct.wrapDate.enable',
+											})}
+										</Checkbox>
+									)}
+								</Form.Item>
+							</Col>
+							<Col span={14}>
+								<Form.Item
+									label={formatMessage({
+										id: 'basicData.weightProduct.wrapDate.type',
+									})}
+									labelCol={{ span: 10 }}
+									wrapperCol={{ span: 14 }}
+								>
+									{getFieldDecorator('wrapDate_type', {
+										initialValue: 1,
+									})(
+										<Select>
+											{wrapDateType.map(type => (
+												<Select.Option key={type.key} value={type.value}>
+													{formatMessage({
+														id: `basicData.weightProduct.date.type.${
+															type.key
+														}`,
+													})}
+												</Select.Option>
+											))}
+										</Select>
+									)}
+								</Form.Item>
+							</Col>
+						</Row>
+					</Form.Item>
+				</Col>
+				<Col span={12}>
+					<Form.Item
+						label={formatMessage({ id: 'basicData.weightProduct.wrapDate.date' })}
+					>
+						{getFieldDecorator('wrapDate_date', {
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) =>
+										customValidate({
+											field: 'dateNumber',
+											rule,
+											value,
+											callback,
+										}),
+								},
+							],
+						})(<Input />)}
+					</Form.Item>
+				</Col>
+			</Row>
+
+			<Row>
+				<Col span={12}>
+					<Form.Item label=" " colon={false}>
+						<Row>
+							<Col span={10}>
+								<Form.Item>
+									{getFieldDecorator('suggestDate_enadble', {
+										valuePropName: 'checked',
+										initialValue: true,
+									})(
+										<Checkbox>
+											{formatMessage({
+												id: 'basicData.weightProduct.suggestDate.enable',
+											})}
+										</Checkbox>
+									)}
+								</Form.Item>
+							</Col>
+							<Col span={14}>
+								<Form.Item
+									label={formatMessage({
+										id: 'basicData.weightProduct.suggestDate.type',
+									})}
+									labelCol={{ span: 10 }}
+									wrapperCol={{ span: 14 }}
+								>
+									{getFieldDecorator('suggestDate_type', {
+										initialValue: 1,
+									})(
+										<Select>
+											{allDateType.map(type => (
+												<Select.Option key={type.key} value={type.value}>
+													{formatMessage({
+														id: `basicData.weightProduct.date.type.${
+															type.key
+														}`,
+													})}
+												</Select.Option>
+											))}
+										</Select>
+									)}
+								</Form.Item>
+							</Col>
+						</Row>
+					</Form.Item>
+				</Col>
+				<Col span={12}>
+					<Form.Item
+						label={formatMessage({ id: 'basicData.weightProduct.suggestDate.date' })}
+					>
+						{getFieldDecorator('suggestDate_date', {
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) =>
+										customValidate({
+											field: 'dateNumber',
+											rule,
+											value,
+											callback,
+										}),
+								},
+							],
+						})(<Input />)}
+					</Form.Item>
+				</Col>
+			</Row>
+
+			<Row>
+				<Col span={12}>
+					<Form.Item label=" " colon={false}>
+						<Row>
+							<Col span={10}>
+								<Form.Item>
+									{getFieldDecorator('bestBeforeDate_enadble', {
+										valuePropName: 'checked',
+										initialValue: true,
+									})(
+										<Checkbox>
+											{formatMessage({
+												id: 'basicData.weightProduct.bestBeforeDate.enable',
+											})}
+										</Checkbox>
+									)}
+								</Form.Item>
+							</Col>
+							<Col span={14}>
+								<Form.Item
+									label={formatMessage({
+										id: 'basicData.weightProduct.bestBeforeDate.type',
+									})}
+									labelCol={{ span: 10 }}
+									wrapperCol={{ span: 14 }}
+								>
+									{getFieldDecorator('bestBeforeDate_type', {
+										initialValue: 1,
+									})(
+										<Select>
+											{allDateType.map(type => (
+												<Select.Option key={type.key} value={type.value}>
+													{formatMessage({
+														id: `basicData.weightProduct.date.type.${
+															type.key
+														}`,
+													})}
+												</Select.Option>
+											))}
+										</Select>
+									)}
+								</Form.Item>
+							</Col>
+						</Row>
+					</Form.Item>
+				</Col>
+				<Col span={12}>
+					<Form.Item
+						label={formatMessage({ id: 'basicData.weightProduct.bestBeforeDate.date' })}
+					>
+						{getFieldDecorator('bestBeforeDate_date', {
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) =>
+										customValidate({
+											field: 'dateNumber',
+											rule,
+											value,
+											callback,
+										}),
+								},
+							],
+						})(<Input />)}
 					</Form.Item>
 				</Col>
 			</Row>
