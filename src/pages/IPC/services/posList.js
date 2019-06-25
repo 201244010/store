@@ -15,12 +15,15 @@ const dataFormater = (data) => {
 		let posList = [];
 		if (pos) {
 			posList = pos.map((posItem) => {
-				const { sn: posSn, name: posName, status, img_path: src } = posItem;
+				const { sn: posSn, name: posName, status, img_path: src, alias, amount, count } = posItem;
 				return {
 					sn: posSn,
 					name: posName,
 					status,
-					src
+					src,
+					alias,
+					amount,
+					count
 				};
 			});
 		};
@@ -34,8 +37,13 @@ const dataFormater = (data) => {
 	});
 };
 
-export const getPOSList = async () => {
-	const list = request('getIpcList').then(async (response) => {
+export const getPOSList = async ({ startTime, endTime }) => {
+	const list = request('getIpcList', {
+		body: {
+			start_time: startTime,
+			end_time: endTime
+		}
+	}).then(async (response) => {
 		const { data, code } = await response.json();
 
 		if(code === ERROR_OK){

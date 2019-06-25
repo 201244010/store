@@ -45,7 +45,19 @@ const { RangePicker } = DatePicker;
 			return dispatch({
 				type: 'tradeVideos/getPaymentDeviceList',
 				payload: {
-					ipcId
+					ipcId,
+					startTime: moment().set({
+						hours: 0,
+						minutes: 0,
+						seconds: 0,
+						milliseconds: 0
+					}).unix(),
+					endTime: moment().set({
+						hours: 23,
+						minutes: 59,
+						seconds: 59,
+						milliseconds: 999
+					}).unix()
 				}
 			});
 		},
@@ -67,7 +79,19 @@ const { RangePicker } = DatePicker;
 			const type = dispatch({
 				type: 'tradeVideos/getIpcTypeByPosSN',
 				payload: {
-					sn
+					sn,
+					startTime: moment().set({
+						hours: 0,
+						minutes: 0,
+						seconds: 0,
+						milliseconds: 0
+					}).unix(),
+					endTime: moment().set({
+						hours: 23,
+						minutes: 59,
+						seconds: 59,
+						milliseconds: 999
+					}).unix()
 				}
 			});
 
@@ -168,7 +192,7 @@ class TradeVideos extends React.Component {
 						this.onExpand(record.key);
 					}}
 				>
-					查看明细
+					{ formatMessage({ id: 'tradeVideos.viewDetails'})}
 				</a>
 			</>
 		)

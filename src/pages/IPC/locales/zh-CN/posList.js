@@ -24,7 +24,10 @@ export default {
 	'posList.monitorBlock': '监控区域',
 	'posList.posDevice': '收银设备',
 
-	'posList.video': '交易视频',
+	// 'posList.video': '交易视频',
+	'posList.records': '交易记录',
+	'posList.alias': '区域名称',
+	'posList.todayAmount': '当日交易额(笔数)',
 	'posList.adjustScreen': '调整画面',
 	'posList.unbind': '解绑',
 	'posList.unbindConfirm': '你确定要与给台设备解绑吗？',

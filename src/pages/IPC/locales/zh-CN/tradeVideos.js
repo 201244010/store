@@ -18,5 +18,5 @@ export default {
 	'tradeVideos.choosePos': '请选择收银设备',
 	'tradeVideos.tradeDate': '交易日期',
 	'tradeVideos.unknownDevice': '未知设备',
-
+	'tradeVideos.viewDetails': '查看明细'
 };
