@@ -185,6 +185,106 @@ const ProductCUWeight = props => {
 					</Form.Item>
 				</Col>
 			</Row>
+
+			<Row>
+				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.tare.number' })}>
+						{getFieldDecorator('tare_number', {
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) => {
+										if (!/^[1-9]{1}|[0-9]{2}$/.test(value)) {
+											callback(
+												formatMessage({
+													id:
+														'basicData.weightProduct.tare.number.formatError',
+												})
+											);
+										} else {
+											callback();
+										}
+									},
+								},
+							],
+						})(<Input maxLength={2} />)}
+					</Form.Item>
+				</Col>
+				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.tare' })}>
+						{getFieldDecorator('tare', {
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) =>
+										customValidate({
+											field: 'productWeight',
+											rule,
+											value,
+											callback,
+											extra: {
+												messageId:
+													'basicData.weightProduct.tare.formatError',
+											},
+										}),
+								},
+							],
+						})(<Input addonAfter="kg" maxLength={9} />)}
+					</Form.Item>
+				</Col>
+			</Row>
+
+			<Row>
+				<Col span={12}>
+					<Form.Item
+						label={formatMessage({ id: 'basicData.weightProduct.extraText.number' })}
+					>
+						{getFieldDecorator('extraText_number_1', {
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) => {
+										if (!/^\d{0,2}$/.test(value)) {
+											callback(
+												formatMessage({
+													id:
+														'basicData.weightProduct.extraText.number.formatError',
+												})
+											);
+										} else {
+											callback();
+										}
+									},
+								},
+							],
+						})(<Input maxLength={2} />)}
+					</Form.Item>
+				</Col>
+				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.extraText' })}>
+						{getFieldDecorator('tare', {
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) =>
+										customValidate({
+											field: 'productWeight',
+											rule,
+											value,
+											callback,
+											extra: {
+												messageId:
+													'basicData.weightProduct.tare.formatError',
+											},
+										}),
+								},
+							],
+						})(
+							<Input.TextArea maxLength={500} autosize={{ minRows: 4, maxRows: 4 }} />
+						)}
+					</Form.Item>
+				</Col>
+			</Row>
 		</Card>
 	);
 };

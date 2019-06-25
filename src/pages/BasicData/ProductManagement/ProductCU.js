@@ -31,7 +31,7 @@ class ProductCU extends Component {
 		this.state = {
 			productBasicExtra: [],
 			productPriceExtra: [],
-			productType: 1,
+			productType: 0,
 		};
 	}
 
