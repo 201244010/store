@@ -6,6 +6,8 @@ import { Card, Table, Popconfirm, Icon, message, Modal, Form, Input, Button, Div
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 
+import moment from 'moment';
+
 import styles from './POSList.less';
 // import AddPOS from './AddPOS';
 
@@ -23,9 +25,13 @@ const mapDispatchToProps = (dispatch) => ({
 		});
 		return result;
 	},
-	getPOSList: () => {
+	getPOSList: (startTime, endTime) => {
 		dispatch({
-			type: 'posList/read'
+			type: 'posList/read',
+			payload: {
+				startTime,
+				endTime
+			}
 		});
 	},
 	delete: ({ ipcSN, posSN }) => {
@@ -113,7 +119,17 @@ class POSList extends React.Component {
 	async componentDidMount() {
 		const { getPOSList } = this.props;
 
-		getPOSList();
+		getPOSList(moment().set({
+			hours: 0,
+			minutes: 0,
+			seconds: 0,
+			milliseconds: 0
+		}).unix(), moment().set({
+			hours: 23,
+			minutes: 59,
+			seconds: 59,
+			milliseconds: 999
+		}).unix());
 	}
 
 	// showAdd = (device) => {
@@ -168,7 +184,7 @@ class POSList extends React.Component {
 		};
 
 		const {pathId, urlParams = {}} = path[target] || {};
-		console.log('topath', pathId);
+		// console.log('topath', pathId);
 		navigateTo(pathId, urlParams);
 
 	}
@@ -186,6 +202,11 @@ class POSList extends React.Component {
 						</div>
 						: ''
 				)
+			},
+			{
+				title: formatMessage({ id: 'posList.alias' }),
+				dataIndex: 'alias',
+				key: 'alias'
 			},
 			{
 				title: formatMessage({ id: 'posList.posDevice' }),
@@ -237,6 +258,18 @@ class POSList extends React.Component {
 				),
 			},
 			{
+				title: formatMessage({ id: 'posList.todayAmount' }),
+				dataIndex: 'amount',
+				key: 'amount',
+				// render: (amount, record) => `${amount} (${record.count})`
+			},
+			{
+				title: formatMessage({ id: 'posList.todayCount' }),
+				dataIndex: 'count',
+				key: 'count',
+				// render: (amount, record) => `${amount} (${record.count})`
+			},
+			{
 				title: formatMessage({ id: 'posList.operation' }),
 				dataIndex: 'sn',
 				key: 'operation',
@@ -253,7 +286,7 @@ class POSList extends React.Component {
 									{formatMessage({ id: 'posList.video' })}
 								</Link> */}
 								<a href="javascript:void(0)" onClick={() => this.toPath('videos', {sn, ipcId})}>
-									{formatMessage({ id: 'posList.video' })}
+									{formatMessage({ id: 'posList.records' })}
 								</a>
 								<Divider type="veritcal" />
 								{/* <Link

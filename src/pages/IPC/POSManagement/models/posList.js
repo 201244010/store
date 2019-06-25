@@ -11,9 +11,9 @@ export default {
 				...posList
 			];
 		},
-		readBindPOS () {
+		// readBindPOS () {
 
-		},
+		// },
 		unbindPOS (state, { payload: {ipcSN, posSN}}) {
 			state.every((item) => {
 				if (item.sn === ipcSN) {
@@ -48,8 +48,9 @@ export default {
 		}
 	},
 	effects: {
-		*read(_, { put, call }) {
-			const response = yield call(getPOSList);
+		*read({ payload: { startTime, endTime }}, { put, call }) {
+			// console.log(startTime, endTime);
+			const response = yield call(getPOSList, { startTime, endTime });
 			if(response.code === ERROR_OK){
 				const posList = response.data;
 
