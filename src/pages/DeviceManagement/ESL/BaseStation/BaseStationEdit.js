@@ -18,7 +18,11 @@ const BaseStationEdit = props => {
 					{formatMessage({ id: 'esl.device.ap.name' })}：
 				</span>
 				<div className="detail-input-wrapper">
-					<Input value={record.name} onChange={(e) => onChange(e.target.value)} />
+					<Input
+						value={record.name}
+						maxLength={20}
+						onChange={e => onChange(e.target.value)}
+					/>
 				</div>
 			</div>
 		</div>
