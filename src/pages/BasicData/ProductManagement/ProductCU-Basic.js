@@ -5,7 +5,7 @@ import { formatMessage } from 'umi/locale';
 import { MAX_LENGTH } from '@/constants/form';
 // import EditableFormItem from '@/components/EditableFormItem';
 
-const productTypes = [{ key: 'normal', value: 0 }];
+const productTypes = [{ key: 'normal', value: 0 }, { key: 'weight', value: 1 }];
 const productUnits = [
 	{ key: 'box', value: 0, tempValue: formatMessage({ id: 'basicData.product.unit.box' }) },
 	{ key: 'pack', value: 1, tempValue: formatMessage({ id: 'basicData.product.unit.pack' }) },
@@ -47,6 +47,7 @@ const ProductCUBasic = props => {
 			expire_time = '',
 			qr_code = '',
 		},
+		onSelectChange,
 		// productBasicExtra,
 		// remove,
 	} = props;
@@ -127,7 +128,7 @@ const ProductCUBasic = props => {
 						{getFieldDecorator('Type', {
 							initialValue: Type,
 						})(
-							<Select>
+							<Select onChange={onSelectChange}>
 								{productTypes.map(type => (
 									<Select.Option key={type.key} value={type.value}>
 										{formatMessage({
