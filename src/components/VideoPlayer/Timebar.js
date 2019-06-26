@@ -54,8 +54,13 @@ class VideoPlayerProgressBar extends React.Component{
 	componentWillReceiveProps(props) {
 		const { current } = props;
 		const { timeStart, dragging, /* timestamp */ } = this.state;
-		// console.log(current, this.state.timeStart);
-		if (current < timeStart){
+		const { offsetWidth } = this.wrapper;
+		const gap = offsetWidth/this.oneHourWidth/2*60*60;
+
+		console.log(gap);
+
+		console.log('componentWillReceiveProps: ', current, timeStart, timeStart+gap);
+		if (current < timeStart + gap){
 			this.getDuration(current);
 			this.generateTime();
 		}
@@ -116,7 +121,7 @@ class VideoPlayerProgressBar extends React.Component{
 		const { days } = this;
 		// 标尺左侧更长的时间线；
 		// const timeStart = moment.unix(currentTime).subtract(24*days, 'hours').set({
-		const timeStart = moment().subtract(24*days, 'hours').set({
+		const timeStart = moment().subtract(24*(days+1), 'hours').set({
 			minute: 0,
 			second: 0,
 			millisecond: 0
