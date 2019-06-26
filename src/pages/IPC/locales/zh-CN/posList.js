@@ -53,7 +53,7 @@ export default {
 	'posList.unbindSuccess': '解绑成功！',
 	'posList.unbindFailed': '解绑失败，请检查网络连接并重试。',
 	'posList.unbindSucceed': '绑定成功',
-	'posList.unbindFail': '绑定失败',
+	'posList.unbindFail': '未绑定',
 	'posList.rebind': '重新绑定',
 	'posList.removeDevice': '删除设备',
 	'posList.enterSN': '请输入需要绑定设备的SN码。',
