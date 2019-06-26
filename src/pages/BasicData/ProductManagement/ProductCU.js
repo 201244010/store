@@ -3,6 +3,7 @@ import { Form, Button, Row, Col, Card } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import ProductCUBasic from './ProductCU-Basic';
+import ProductCUWeight from './ProductCU-Weight';
 import ProductCUPrice from './ProductCU-Price';
 import { getLocationParam, idDecode } from '@/utils/utils';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
@@ -30,6 +31,7 @@ class ProductCU extends Component {
 		this.state = {
 			productBasicExtra: [],
 			productPriceExtra: [],
+			productType: 0,
 		};
 	}
 
@@ -69,6 +71,12 @@ class ProductCU extends Component {
 		});
 	};
 
+	productTypeChange = value => {
+		this.setState({
+			productType: value,
+		});
+	};
+
 	onSubmit = () => {
 		const {
 			createProduct,
@@ -89,7 +97,7 @@ class ProductCU extends Component {
 			form: { validateFields, setFields },
 		} = this.props;
 		validateFields(async (err, values) => {
-			// console.log(values);
+			console.log(values);
 			if (!err) {
 				const response = await submitFunction[action]({
 					options: {
@@ -130,7 +138,7 @@ class ProductCU extends Component {
 	};
 
 	render() {
-		const { productBasicExtra, productPriceExtra } = this.state;
+		const { productBasicExtra, productPriceExtra, productType } = this.state;
 		const {
 			form,
 			product: { productInfo },
@@ -151,8 +159,11 @@ class ProductCU extends Component {
 							productInfo,
 							productBasicExtra,
 							remove: this.extraInfoRemove,
+							onSelectChange: this.productTypeChange,
 						}}
 					/>
+
+					{productType === 1 ? <ProductCUWeight {...{ form }} /> : <></>}
 
 					<ProductCUPrice
 						{...{

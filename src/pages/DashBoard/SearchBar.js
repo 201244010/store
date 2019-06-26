@@ -12,8 +12,6 @@ const {
 
 const Refresh = () => (
 	<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-		<title>Icon/Replay</title>
-		<desc>Created with Sketch.</desc>
 		<g id="Icon/Replay" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
 			<rect id="Rectangle" x="0" y="0" width="24" height="24" />
 			<path

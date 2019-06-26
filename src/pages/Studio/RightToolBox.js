@@ -85,11 +85,15 @@ export default class RightToolBox extends Component {
 
 	handleWidth = (detail, e) => {
 		const { selectedShapeName, updateComponentsDetail } = this.props;
+		const newDetail = {
+			scaleX: (e.target.value || 0) / MAPS.containerWidth[detail.type],
+		};
+		if (selectedShapeName.indexOf(SHAPE_TYPES.IMAGE) > -1) {
+			newDetail.scaleY = (e.target.value || 0) / MAPS.containerWidth[detail.type];
+		}
 		updateComponentsDetail({
 			isStep: true,
-			[selectedShapeName]: {
-				scaleX: (e.target.value || 0) / MAPS.containerWidth[detail.type],
-			},
+			[selectedShapeName]: newDetail,
 		});
 	};
 
@@ -253,9 +257,7 @@ export default class RightToolBox extends Component {
 		});
 		let realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
 		let realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
-		if (SHAPE_TYPES.IMAGE === detail.type) {
-			realHeight = detail.ratio ? realWidth * detail.ratio : realHeight;
-		}
+		console.log('detail', detail);
 		if (SHAPE_TYPES.HLine === detail.type) {
 			realHeight = detail.strokeWidth;
 		}
@@ -263,6 +265,7 @@ export default class RightToolBox extends Component {
 			realWidth = detail.strokeWidth;
 		}
 		const disabled = selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) > -1;
+		const heightDisabled = disabled || selectedShapeName.indexOf(SHAPE_TYPES.IMAGE) > -1;
 		const hasRed = this.hasRed();
 		const bindFields = this.getRealBindFields();
 
@@ -339,7 +342,7 @@ export default class RightToolBox extends Component {
 								onChange={e => {
 									this.handleHeight(detail, e);
 								}}
-								disabled={disabled}
+								disabled={heightDisabled}
 							/>
 						</Col>
 					</Row>
@@ -797,7 +800,7 @@ export default class RightToolBox extends Component {
 													placeholder={formatMessage({
 														id: 'studio.tool.label.font.size.int',
 													})}
-													min={detail.smallFontSize}
+													min={8}
 													value={detail.fontSize}
 													onChange={value => {
 														this.handleDetail('fontSize', value);
@@ -821,7 +824,7 @@ export default class RightToolBox extends Component {
 													placeholder={formatMessage({
 														id: 'studio.tool.label.font.size.small',
 													})}
-													max={detail.fontSize}
+													min={4}
 													value={detail.smallFontSize}
 													onChange={value => {
 														this.handleDetail('smallFontSize', value);

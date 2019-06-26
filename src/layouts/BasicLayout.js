@@ -134,15 +134,21 @@ class BasicLayout extends React.PureComponent {
 		const {
 			getMenuData,
 			route: { routes, authority },
+			logout,
 		} = this.props;
 
-		const menuData = await getMenuData({ routes, authority });
-		if (env === 'dev') {
-			this.setState({
-				inMenuChecking: false,
-			});
+		const currentCompany = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY);
+		if (!currentCompany) {
+			logout();
 		} else {
-			this.checkMenuAuth(menuData);
+			const menuData = await getMenuData({ routes, authority });
+			if (env === 'dev') {
+				this.setState({
+					inMenuChecking: false,
+				});
+			} else {
+				this.checkMenuAuth(menuData);
+			}
 		}
 	};
 
@@ -274,6 +280,7 @@ export default connect(
 		...setting,
 	}),
 	dispatch => ({
+		logout: () => dispatch({ type: 'user/logout' }),
 		getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		goToPath: (pathId, urlParams = {}) =>

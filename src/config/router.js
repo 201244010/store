@@ -413,7 +413,6 @@ const router = [
 				path: '/faceidLibrary',
 				name: 'faceidLibrary',
 				id: 'faceidLibrary',
-				hideInMenu: true,
 				icon: 'blank',
 				// component: './index.js',
 				routes: [
