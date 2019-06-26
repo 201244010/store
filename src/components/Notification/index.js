@@ -21,16 +21,16 @@ export const Description = props => {
 		minorButtonLink = null,
 	} = btnOptions;
 
-	const handleMainBtnAction = action => {
+	const handleMainBtnAction = (action, paramsStr) => {
 		const { mainAction = null } = props;
 		if (mainAction) {
-			mainAction(action);
+			mainAction(action, paramsStr);
 		}
 	};
-	const handleSubBtnAction = action => {
+	const handleSubBtnAction = (action, paramsStr) => {
 		const { subAction = null } = props;
 		if (subAction) {
-			subAction(action);
+			subAction(action, paramsStr);
 		}
 	};
 
@@ -40,7 +40,9 @@ export const Description = props => {
 			{Object.keys(btnOptions).length > 0 && (
 				<div className={styles['btn-wrapper']}>
 					{minorButtonName && (
-						<Button onClick={() => handleSubBtnAction(minorButtonLink)}>
+						<Button
+							onClick={() => handleSubBtnAction(minorButtonName, minorButtonLink)}
+						>
 							{formatMessageTemplate(minorButtonName)}
 						</Button>
 					)}
@@ -48,7 +50,7 @@ export const Description = props => {
 						<Button
 							style={{ marginLeft: '15px' }}
 							type="primary"
-							onClick={() => handleMainBtnAction(majorButtonLink)}
+							onClick={() => handleMainBtnAction(majorButtonName, majorButtonLink)}
 						>
 							{formatMessageTemplate(majorButtonName)}
 						</Button>

@@ -429,7 +429,7 @@ export const analyzeMessageTemplate = message => {
 		// 第一个值为 decode 判断是否需要对 value 进行解析
 		const [decode, ...rest] = valueList;
 		if (decode) {
-			valueList = rest.map(item => formatMessage({ id: item }));
+			valueList = rest.map(item => formatMessage({ id: `${messageId}-${item}` }));
 		}
 	}
 
@@ -455,3 +455,13 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
 
 export const formatMessageTemplate = message =>
 	replaceTemplateWithValue(analyzeMessageTemplate(message));
+
+export const convertArrayPrams = (str, sperator = '&') => {
+	const obj = {};
+	str.split(sperator).forEach(item => {
+		const [key, value] = item.split('=');
+		obj[key] = value;
+	});
+
+	return obj;
+};

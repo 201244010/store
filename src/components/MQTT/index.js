@@ -54,11 +54,15 @@ function MQTTWrapper(WrapperedComponent) {
 			});
 		};
 
-		handleAction = action => {
+		handleAction = (action, paramsStr, extra = {}) => {
 			const { goToPath } = this.props;
 			if (action) {
 				const handler = ACTION_MAP[action] || (() => null);
-				handler({ goToPath });
+				handler({
+					handlers: { goToPath, removeNotification: this.removeNotification },
+					params: paramsStr,
+					extra: { from: 'mqtt', ...extra },
+				});
 			}
 		};
 
@@ -82,7 +86,8 @@ function MQTTWrapper(WrapperedComponent) {
 					data: param,
 					key: uniqueKey,
 					mainAction: this.handleAction,
-					subAction: this.handleAction,
+					subAction: (action, paramsStr) =>
+						this.handleAction(action, paramsStr, { key: uniqueKey }),
 					closeAction: this.removeNotification,
 				});
 			});

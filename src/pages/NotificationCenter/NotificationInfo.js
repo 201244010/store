@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { getLocationParam, unixSecondToDate, formatMessageTemplate } from '@/utils/utils';
 import { Button, Divider, Card } from 'antd';
+import VideoPlayComponent from '@/pages/IPC/component/VideoPlayComponent';
 import styles from './Notification.less';
 import { ACTION_MAP } from '@/constants/mqttActionMap';
 
@@ -17,6 +18,15 @@ import { ACTION_MAP } from '@/constants/mqttActionMap';
 	})
 )
 class Notification extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			isWatchVideo: false,
+			videoUrl: '',
+			ipcType: '',
+		};
+	}
+
 	componentDidMount() {
 		const msgId = getLocationParam('msgId');
 		const { getNotificationInfo } = this.props;
@@ -25,12 +35,28 @@ class Notification extends React.Component {
 		});
 	}
 
-	handleAction = action => {
-		const { goToPath } = this.props;
+	watchVideoClose = () => {
+		this.setState({
+			videoUrl: '',
+			isWatchVideo: false,
+		});
+	};
 
+	handleAction = (action, paramsStr) => {
+		const { goToPath } = this.props;
 		if (action) {
 			const handler = ACTION_MAP[action] || (() => null);
-			handler({ goToPath });
+			const result = handler({ handlers: { goToPath }, params: paramsStr });
+
+			const { action: resultAction = null, payload = {} } = result || {};
+			if (resultAction === 'showMotionVideo') {
+				const { url, ipcType } = payload;
+				this.setState({
+					isWatchVideo: true,
+					videoUrl: url,
+					ipcType,
+				});
+			}
 		}
 	};
 
@@ -48,6 +74,8 @@ class Notification extends React.Component {
 				} = {},
 			} = {},
 		} = this.props;
+		const { isWatchVideo, videoUrl, ipcType } = this.state;
+
 		return (
 			<Card bordered={false}>
 				<div className={styles['title-wrapper']}>
@@ -64,7 +92,7 @@ class Notification extends React.Component {
 				</div>
 				<div className={styles['button-bar']}>
 					{minorButtonName && (
-						<Button onClick={() => this.handleAction(minorButtonLink)}>
+						<Button onClick={() => this.handleAction(minorButtonName, minorButtonLink)}>
 							{formatMessageTemplate(minorButtonName)}
 						</Button>
 					)}
@@ -72,12 +100,19 @@ class Notification extends React.Component {
 						<Button
 							style={{ marginLeft: minorButtonName ? '20px' : '0' }}
 							type="primary"
-							onClick={() => this.handleAction(majorButtonLink)}
+							onClick={() => this.handleAction(majorButtonName, majorButtonLink)}
 						>
 							{formatMessageTemplate(majorButtonName)}
 						</Button>
 					)}
 				</div>
+
+				<VideoPlayComponent
+					playing={isWatchVideo}
+					watchVideoClose={this.watchVideoClose}
+					videoUrl={videoUrl}
+					ipcType={ipcType}
+				/>
 			</Card>
 		);
 	}
