@@ -13,6 +13,7 @@ import MQTTWrapper from '@/components/MQTT';
 import * as CookieUtil from '@/utils/cookies';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
@@ -288,7 +289,9 @@ export default connect(
 		dispatch,
 	})
 )(props => (
-	<Media query="(max-width: 599px)">
-		{isMobile => <BasicLayout {...props} isMobile={isMobile} />}
-	</Media>
+	<PerfectScrollbar>
+		<Media query="(max-width: 599px)">
+			{isMobile => <BasicLayout {...props} isMobile={isMobile} />}
+		</Media>
+	</PerfectScrollbar>
 ));
