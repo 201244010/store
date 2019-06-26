@@ -224,7 +224,7 @@ export const clearSteps = () => {
 	localForage.clear();
 };
 
-export const saveNowStep = (templateId, componentsDetail) => {
+export const saveNowStep = async (templateId, componentsDetail) => {
 	let nowKey;
 	if (!STEP_KEYS[templateId]) {
 		STEP_KEYS[templateId] = [];
@@ -234,6 +234,11 @@ export const saveNowStep = (templateId, componentsDetail) => {
 	}
 	STEP_KEYS[templateId].push(nowKey);
 	NOW_KEYS[templateId] = nowKey;
+
+	const keys = await localForage.keys();
+	if (keys.length >= 30) {
+		localForage.removeItem(keys[0]);
+	}
 	localForage.setItem(nowKey, JSON.stringify(componentsDetail));
 };
 
