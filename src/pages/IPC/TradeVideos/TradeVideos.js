@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Select, DatePicker, Button, Table, Row, Col, Card, Input, Form } from 'antd';
+import { Select, DatePicker, Button, Table, Row, Col, Card, Input, Form, Divider } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
@@ -16,18 +16,18 @@ const { Option } = Select;
 const { Search } = Input;
 const { RangePicker } = DatePicker;
 
-
-@connect((state) => {
-	const { tradeVideos, ipcList, loading } = state;
-	// console.log(tradeVideos);
-	return {
-		tradeVideos,
-		ipcList,
-		loading
-	};
-}, (dispatch) => (
-	{
-		getTradeVideos({ startTime, endTime, ipcId, posSN, keyword, currentPage, pageSize }){
+@connect(
+	state => {
+		const { tradeVideos, ipcList, loading } = state;
+		// console.log(tradeVideos);
+		return {
+			tradeVideos,
+			ipcList,
+			loading,
+		};
+	},
+	dispatch => ({
+		getTradeVideos({ startTime, endTime, ipcId, posSN, keyword, currentPage, pageSize }) {
 			dispatch({
 				type: 'tradeVideos/read',
 				payload: {
@@ -37,24 +37,40 @@ const { RangePicker } = DatePicker;
 					posSN,
 					keyword,
 					currentPage,
-					pageSize
-				}
+					pageSize,
+				},
 			});
 		},
 		getPaymentDeviceList(ipcId) {
 			return dispatch({
 				type: 'tradeVideos/getPaymentDeviceList',
 				payload: {
-					ipcId
-				}
+					ipcId,
+					startTime: moment()
+						.set({
+							hours: 0,
+							minutes: 0,
+							seconds: 0,
+							milliseconds: 0,
+						})
+						.unix(),
+					endTime: moment()
+						.set({
+							hours: 23,
+							minutes: 59,
+							seconds: 59,
+							milliseconds: 999,
+						})
+						.unix(),
+				},
 			});
 		},
 		getPaymentDetailList(orderId) {
 			dispatch({
 				type: 'tradeVideos/getPaymentDetailList',
 				payload: {
-					orderId
-				}
+					orderId,
+				},
 			});
 		},
 		// getIpcList() {
@@ -63,31 +79,46 @@ const { RangePicker } = DatePicker;
 		// 	});
 		// },
 
-		getIpcTypeByPosSN (sn) {
+		getIpcTypeByPosSN(sn) {
 			const type = dispatch({
 				type: 'tradeVideos/getIpcTypeByPosSN',
 				payload: {
-					sn
-				}
+					sn,
+					startTime: moment()
+						.set({
+							hours: 0,
+							minutes: 0,
+							seconds: 0,
+							milliseconds: 0,
+						})
+						.unix(),
+					endTime: moment()
+						.set({
+							hours: 23,
+							minutes: 59,
+							seconds: 59,
+							milliseconds: 999,
+						})
+						.unix(),
+				},
 			});
 
 			return type;
 		},
-		getTradeVideo (orderId) {
+		getTradeVideo(orderId) {
 			const url = dispatch({
 				type: 'tradeVideos/getVideo',
 				payload: {
-					orderId
-				}
+					orderId,
+				},
 			});
 
 			return url;
-		}
-	}
-))
+		},
+	})
+)
 @Form.create()
 class TradeVideos extends React.Component {
-
 	state = {
 		// selectedStartTime:'',
 		// selectedEndTime:'',
@@ -97,74 +128,102 @@ class TradeVideos extends React.Component {
 		// paymentDeviceSelected:'0',
 		ipcType: '',
 		// keyWord: '',
-		expandedRowKeys:[],
+		expandedRowKeys: [],
 		// currentPaymentDetailList:[]
 
-		currentPage : 1,
-		pageSize: DEFAULT_PAGE_SIZE
+		currentPage: 1,
+		pageSize: DEFAULT_PAGE_SIZE,
 	};
 
-	columns = [{
-		title: formatMessage({id: 'tradeVideos.camera'}),// '摄像头',
-		dataIndex: 'ipcName',
-		key: 'ipcName',
-		sorter: (a, b) => a.ipcName.localeCompare(b.ipcName),
-	}, {
-		title: formatMessage({id: 'tradeVideos.pos'}),// '收银设备',
-		dataIndex: 'paymentDeviceName',
-		key: 'paymentDeviceName',
-		sorter: (a, b) => a.paymentDeviceName.localeCompare(b.paymentDeviceName),
-		render: item => item || formatMessage({id: 'tradeVideos.unknownDevice'})
-	}, {
-		title: formatMessage({id: 'tradeVideos.sn'}),// '设备SN',
-		dataIndex: 'paymentDeviceSn',
-		key: 'paymentDeviceSn',
-		sorter: (a, b) => a.paymentDeviceSn.localeCompare(b.paymentDeviceSn),
-	}, {
-		title: formatMessage({id: 'tradeVideos.totalPrice'}),// '交易金额',
-		dataIndex:'totalPrice',
-		key: 'totalPrice',
-		sorter: (a, b) => a.totalPrice - b.totalPrice,
-	},
-	{
-		title: formatMessage({id: 'tradeVideos.paymentMethod'}),// '支付方式',
-		dataIndex:'paymentMethod',
-		key:'paymentMethod',
-		sorter: (a, b) => a.paymentMethod.localeCompare(b.paymentMethod),
-		render: (item) => (
-			<span>
-				{
-					item || formatMessage({id: 'tradeVideos.unknown'}) // '未知'
-				}
-			</span>
-		)
-	},
-	{
-		title: formatMessage({id: 'tradeVideos.purchaseTime'}),// '交易时间',
-		dataIndex:'purchaseTime',
-		key: 'purchaseTime',
-		sorter: (a, b) => moment(a.purchaseTime).valueOf() - moment(b.purchaseTime).valueOf(),
-	},{
+	columns = [
+		{
+			title: formatMessage({ id: 'tradeVideos.camera' }), // '摄像头',
+			dataIndex: 'ipcName',
+			key: 'ipcName',
+			sorter: (a, b) => a.ipcName.localeCompare(b.ipcName),
+		},
+		{
+			title: formatMessage({ id: 'tradeVideos.pos' }), // '收银设备',
+			dataIndex: 'paymentDeviceName',
+			key: 'paymentDeviceName',
+			sorter: (a, b) => a.paymentDeviceName.localeCompare(b.paymentDeviceName),
+			render: item => item || formatMessage({ id: 'tradeVideos.unknownDevice' }),
+		},
+		{
+			title: formatMessage({ id: 'tradeVideos.sn' }), // '设备SN',
+			dataIndex: 'paymentDeviceSn',
+			key: 'paymentDeviceSn',
+			sorter: (a, b) => a.paymentDeviceSn.localeCompare(b.paymentDeviceSn),
+		},
+		{
+			title: formatMessage({ id: 'tradeVideos.totalPrice' }), // '交易金额',
+			dataIndex: 'totalPrice',
+			key: 'totalPrice',
+			sorter: (a, b) => a.totalPrice - b.totalPrice,
+		},
+		{
+			title: formatMessage({ id: 'tradeVideos.paymentMethod' }), // '支付方式',
+			dataIndex: 'paymentMethod',
+			key: 'paymentMethod',
+			sorter: (a, b) => a.paymentMethod.localeCompare(b.paymentMethod),
+			render: item => (
+				<span>
+					{item || formatMessage({ id: 'tradeVideos.unknown' })}
+				</span>
+			),
+		},
+		{
+			title: formatMessage({ id: 'tradeVideos.purchaseTime' }), // '交易时间',
+			dataIndex: 'purchaseTime',
+			key: 'purchaseTime',
+			sorter: (a, b) => moment(a.purchaseTime).valueOf() - moment(b.purchaseTime).valueOf(),
+		},
+		{},
+		{
+			title: formatMessage({ id: 'tradeVideos.operation' }), // '操作',
+			dataIndex: 'key',
+			key: 'action',
+			render: (item, record) => {
+				const { expandedRowKeys } = this.state;
+				return (
+					<>
+						<a
+							className={`${styles['video-watch']} ${
+								record.url ? '' : styles.disabled
+							}`}
+							href="javascript:void(0);"
+							onClick={() =>
+								this.watchVideoHandler(record.paymentDeviceSn, record.url)
+							}
+						>
+							{record.url
+								? formatMessage({ id: 'tradeVideos.viewVideo' })
+								: formatMessage({ id: 'tradeVideos.viewVideo.merging' })}
+						</a>
+						<Divider type="vertical" />
+						<a
+							className={styles['video-watch']}
+							href="javascript:void(0);"
+							onClick={() => {
+								this.onExpand(record.key);
+							}}
+						>
+							{expandedRowKeys.includes(record.key)
+								? formatMessage({ id: 'tradeVideos.closeDetails' })
+								: formatMessage({ id: 'tradeVideos.viewDetails' })}
+						</a>
+					</>
+				);
+			},
+		},
+	];
 
-	},{
-		title: formatMessage({id: 'tradeVideos.operation'}),// '操作',
-		dataIndex:'key',
-		key: 'action',
-		render: (item, record) => (
-			<a
-				className={`${styles['video-watch']} ${record.url ? '' : styles.disabled}`}
-				href='javascript:void(0);'
-				onClick={() => this.watchVideoHandler(record.paymentDeviceSn, record.url)}
-			>
-				{/* 查看视频 */}
-				{formatMessage({id: 'tradeVideos.viewVideo'})}
-			</a>
-		)
-	}];
-
-
-	async componentDidMount(){
-		const {  /* getIpcList, */ getPaymentDeviceList, location: { query }, form } = this.props;
+	async componentDidMount() {
+		const {
+			/* getIpcList, */ getPaymentDeviceList,
+			location: { query },
+			form,
+		} = this.props;
 		const { setFieldsValue } = form;
 		let { ipcId, posSN } = query;
 		// await getIpcList();
@@ -173,17 +232,15 @@ class TradeVideos extends React.Component {
 		posSN = posSN || 0;
 
 		setFieldsValue({
-			camera: ipcId
+			camera: ipcId,
 		});
 
-		if (ipcId !== 0){
+		if (ipcId !== 0) {
 			await getPaymentDeviceList(ipcId);
 			setFieldsValue({
-				pos : posSN
+				pos: posSN,
 			});
 		}
-
-
 
 		// const startTime = moment().subtract(1, 'days').unix();
 		// const endTime = moment().unix();
@@ -194,9 +251,8 @@ class TradeVideos extends React.Component {
 	}
 
 	watchVideoHandler = async (sn, url) => {
-
 		if (url) {
-			const { getIpcTypeByPosSN/* , getTradeVideo */} = this.props;
+			const { getIpcTypeByPosSN /* , getTradeVideo */ } = this.props;
 			const type = await getIpcTypeByPosSN(sn);
 			// console.log(type);
 
@@ -211,19 +267,18 @@ class TradeVideos extends React.Component {
 			// 	ipcSelected: item.ipcId
 			});
 		}
-
-	}
+	};
 
 	watchVideoClose = () => {
 		this.setState({
-			isWatchVideo: false
+			isWatchVideo: false,
 		});
-	}
+	};
 
-	disabledDate = (value) => {
-		if(!value) return false;
+	disabledDate = value => {
+		if (!value) return false;
 		return value.valueOf() > moment().valueOf();
-	}
+	};
 
 	// changeHandler = (dates) => {
 	// 	this.setState({
@@ -232,14 +287,14 @@ class TradeVideos extends React.Component {
 	// 	});
 	// }
 
-	ipcSelectHandler = async (value) => {
+	ipcSelectHandler = async value => {
 		const { getPaymentDeviceList } = this.props;
 		await getPaymentDeviceList(value);
 
 	// 	this.setState({
 	// 		ipcSelected: value
 	// 	});
-	}
+	};
 
 	// paymentDeviceSelectHandler = (value) => {
 	// 	this.setState({
@@ -253,75 +308,114 @@ class TradeVideos extends React.Component {
 	// 	});
 	// }
 
-	getPaymentDetailList = (orderId) => {
+	getPaymentDetailList = orderId => {
 		const { getPaymentDetailList } = this.props;
 		getPaymentDetailList(orderId);
-	}
+	};
 
 	searchHandler = () => {
 		const { pageSize } = this.state;
 		this.getTradeVideos(1, pageSize);
-	}
+	};
 
 	getTradeVideos = (currentPage, pageSize) => {
 		const { getTradeVideos, form } = this.props;
 		const { getFieldsValue } = form;
 
-		const { tradeDate, camera: ipcId, pos: posSN, keywords } = getFieldsValue(['tradeDate', 'camera', 'pos', 'keywords']);
+		const { tradeDate, camera: ipcId, pos: posSN, keywords } = getFieldsValue([
+			'tradeDate',
+			'camera',
+			'pos',
+			'keywords',
+		]);
 
 		const [startTime, endTime] = tradeDate;
 		// console.log(currentPage, pageSize);
 
 		getTradeVideos({
-			startTime: startTime.set({
-				hour: 0,
-				minute: 0,
-				second: 0,
-				millisecond: 0
-			}).unix(),
-			endTime: endTime.set({
-				hour: 23,
-				minute: 59,
-				second: 59,
-				millisecond: 999
-			}).unix(),
+			startTime: startTime
+				.set({
+					hour: 0,
+					minute: 0,
+					second: 0,
+					millisecond: 0,
+				})
+				.unix(),
+			endTime: endTime
+				.set({
+					hour: 23,
+					minute: 59,
+					second: 59,
+					millisecond: 999,
+				})
+				.unix(),
 			ipcId,
 			posSN,
 			keyword: keywords,
 			currentPage,
-			pageSize
+			pageSize,
 		});
 
 		this.setState({
 			currentPage,
 			pageSize,
-			expandedRowKeys: []
+			expandedRowKeys: [],
 		});
-	}
+	};
 
 	onPaginationChange = (currentPage, pageSize) => {
 		this.getTradeVideos(currentPage, pageSize);
-	}
+	};
 
 	onShowSizeChange = (currentPage, pageSize) => {
 		this.getTradeVideos(currentPage, pageSize);
-	}
+	};
 
-	onExpand = (expanded, record) => {
-		if (expanded) {
-			const { expandedRowKeys } = this.state;
-			this.getPaymentDetailList(record.key);
-			// console.log([...expandedRowKeys, record.key]);
+	// onExpand = (expanded, record) => {
+	// 	if (expanded) {
+	// 		const { expandedRowKeys } = this.state;
+	// 		this.getPaymentDetailList(record.key);
+	// 		// console.log([...expandedRowKeys, record.key]);
+	// 		this.setState({
+	// 			expandedRowKeys: Array.from(new Set([...expandedRowKeys, record.key]))
+	// 		});
+	// 	}
+	// }
+
+	onExpand = key => {
+		this.getPaymentDetailList(key);
+
+		const { expandedRowKeys } = this.state;
+		const keyIndex = expandedRowKeys.indexOf(key);
+		// console.log(keyIndex);
+
+		if (keyIndex >= 0) {
+			expandedRowKeys.splice(keyIndex, 1);
 			this.setState({
-				expandedRowKeys: Array.from(new Set([...expandedRowKeys, record.key]))
+				expandedRowKeys,
+			});
+		} else {
+			this.setState({
+				expandedRowKeys: [...expandedRowKeys, key],
 			});
 		}
-	}
+	};
 
 	render() {
-
-		const { tradeVideos: { tradeVideos, paymentDeviceList, total }, ipcList, loading, form } = this.props;
-		const { isWatchVideo, /* ipcSelected, paymentDeviceSelected, */ ipcType, videoUrl, currentPage, pageSize, expandedRowKeys } = this.state;
+		const {
+			tradeVideos: { tradeVideos, paymentDeviceList, total },
+			ipcList,
+			loading,
+			form,
+		} = this.props;
+		const {
+			isWatchVideo,
+			/* ipcSelected, paymentDeviceSelected, */ ipcType,
+			videoUrl,
+			currentPage,
+			pageSize,
+			expandedRowKeys,
+		} = this.state;
 		const { getFieldDecorator } = form;
 
 		return (
@@ -335,95 +429,106 @@ class TradeVideos extends React.Component {
 							<Row gutter={SEARCH_FORM_GUTTER.SMALL}>
 								<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
 									<Form.Item
-										label={formatMessage({id: 'tradeVideos.camera'})}// '摄像机'
+										label={formatMessage({ id: 'tradeVideos.camera' })} // '摄像机'
 									>
-										{
-											getFieldDecorator('camera', {
-												initialValue: 0
-											})(
-												<Select
-													// defaultValue={0}
-													// value={ipcSelected}
-													className={styles['input-item']}
-													placeholder={formatMessage({id: 'tradeVideos.chooseCamera'}) /* '请选择摄像头' */}
-													onChange={this.ipcSelectHandler}
-												>
-													<Option value={0}>
-														{/* 所有 */}
-														{formatMessage({id: 'tradeVideos.all'})}
+										{getFieldDecorator('camera', {
+											initialValue: 0,
+										})(
+											<Select
+												// defaultValue={0}
+												// value={ipcSelected}
+												className={styles['input-item']}
+												placeholder={
+													formatMessage({
+														id: 'tradeVideos.chooseCamera',
+													}) /* '请选择摄像头' */
+												}
+												onChange={this.ipcSelectHandler}
+											>
+												<Option value={0}>
+													{/* 所有 */}
+													{formatMessage({ id: 'tradeVideos.all' })}
+												</Option>
+												{ipcList.map((item, index) => (
+													<Option
+														key={`ipc-selector-${index}`}
+														value={`${item.deviceId}`}
+													>
+														{item.name}
 													</Option>
-													{
-														ipcList.map((item,index) => (
-															<Option key={`ipc-selector-${index}`} value={`${item.deviceId}`}>{item.name}</Option>
-														))
-													}
-												</Select>
-											)
-										}
-
+												))}
+											</Select>
+										)}
 									</Form.Item>
 								</Col>
 								<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
 									<Form.Item
-										label={formatMessage({id: 'tradeVideos.pos'})}// '收银设备'
+										label={formatMessage({ id: 'tradeVideos.pos' })} // '收银设备'
 									>
-										{
-											getFieldDecorator('pos', {
-												initialValue: 0
-											})(
-												<Select
-													// defaultValue={0}
-													// value={paymentDeviceSelected}
-													className={styles['input-item']}
-													placeholder={formatMessage({id: 'tradeVideos.choosePos'}) /* '请选择收银设备' */}
-													// onChange={this.paymentDeviceSelectHandler}
-												>
-													<Option value={0}>
-														{/* 所有 */}
-														{formatMessage({id: 'tradeVideos.all'})}
-													</Option>
-													{
-														paymentDeviceList && paymentDeviceList.map((item, index) => (
-															<Option key={`payment-selector-${index}`} value={`${item.sn}`}>{item.name || formatMessage({id: 'tradeVideos.unknownDevice'})}</Option>
-														))
-													}
-												</Select>
-											)
-										}
+										{getFieldDecorator('pos', {
+											initialValue: 0,
+										})(
+											<Select
+												// defaultValue={0}
+												// value={paymentDeviceSelected}
+												className={styles['input-item']}
+												placeholder={
+													formatMessage({
+														id: 'tradeVideos.choosePos',
+													}) /* '请选择收银设备' */
+												}
+												// onChange={this.paymentDeviceSelectHandler}
+											>
+												<Option value={0}>
+													{/* 所有 */}
+													{formatMessage({ id: 'tradeVideos.all' })}
+												</Option>
+												{paymentDeviceList &&
+													paymentDeviceList.map((item, index) => (
+														<Option
+															key={`payment-selector-${index}`}
+															value={`${item.sn}`}
+														>
+															{item.name ||
+																formatMessage({
+																	id: 'tradeVideos.unknownDevice',
+																})}
+														</Option>
+													))}
+											</Select>
+										)}
 									</Form.Item>
-
 								</Col>
 								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 									<Form.Item
-										label={formatMessage({id: 'tradeVideos.tradeDate'})} // '交易日期'
+										label={formatMessage({ id: 'tradeVideos.tradeDate' })} // '交易日期'
 									>
-										{
-											getFieldDecorator('tradeDate', {
-												initialValue: [moment(), moment()]
-											})(
-												<RangePicker
-													// defaultValue={[moment().subtract(1, 'days'), moment()]}
-													className={styles['input-item']}
-													disabledDate={this.disabledDate}
-													// onChange={this.changeHandler}
-													format="YYYY-MM-DD"
-												/>
-											)
-										}
+										{getFieldDecorator('tradeDate', {
+											initialValue: [moment().subtract(30, 'days'), moment()],
+										})(
+											<RangePicker
+												// defaultValue={[moment().subtract(1, 'days'), moment()]}
+												className={styles['input-item']}
+												disabledDate={this.disabledDate}
+												// onChange={this.changeHandler}
+												format="YYYY-MM-DD"
+											/>
+										)}
 									</Form.Item>
-
 								</Col>
 								<Col {...SEARCH_FORM_COL.ONE_FOURTH}>
 									<Form.Item>
-										{
-											getFieldDecorator('keywords')(
-												<Search
-													placeholder={formatMessage({id: 'tradeVideos.keywords'}) /* '请输入关键字进行筛选' */}
-													// onChange={this.keyWordHandler}
-													className={styles['input-item']}
-												/>
-											)
-										}
+										{getFieldDecorator('keywords')(
+											<Search
+												placeholder={
+													formatMessage({
+														id: 'tradeVideos.keywords',
+													}) /* '请输入关键字进行筛选' */
+												}
+												// onChange={this.keyWordHandler}
+												className={styles['input-item']}
+											/>
+										)}
 									</Form.Item>
 								</Col>
 
@@ -435,7 +540,7 @@ class TradeVideos extends React.Component {
 										loading={loading.effects['tradeVideos/read']}
 									>
 										{/* 查询 */}
-										{formatMessage({id: 'tradeVideos.query'})}
+										{formatMessage({ id: 'tradeVideos.query' })}
 									</Button>
 								</Col>
 							</Row>
@@ -446,60 +551,81 @@ class TradeVideos extends React.Component {
 						columns={this.columns}
 						dataSource={tradeVideos}
 						loading={loading.effects['tradeVideos/read']}
-
 						defaultExpandedRowKeys={['details']}
 						expandedRowKeys={expandedRowKeys}
-						onExpand={this.onExpand}
-						pagination={
-							{
-								current: currentPage,
-								pageSize,
-								total,
-								defaultCurrent: 1,
-								showSizeChanger: true,
-								showQuickJumper: true,
-								defaultPageSize: DEFAULT_PAGE_SIZE,
-								pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
-								onShowSizeChange: this.onShowSizeChange,
-								onChange: this.onPaginationChange
-							}
-						}
-						expandedRowRender={
-							(record) => (
-								<div className={styles['paymemt-detail']}>
-									<span className={`${styles['payment-detail-title']} ${styles['payment-detail-item-name']} ${styles['payment-detail-item']}`}>
-										{/* 商品 */}
-										{formatMessage({id: 'tradeVideos.product'})}
-									</span>
-									{/* <span className={`${styles['payment-detail-title']} ${styles['payment-detail-item']}`}>单价</span> */}
-									<span className={`${styles['payment-detail-title']} ${styles['payment-detail-item']}`}>
-										{/* 数量 */}
-										{formatMessage({id: 'tradeVideos.amount'})}
-									</span>
-									{/* <span className={`${styles['payment-detail-title']} ${styles['payment-detail-item']}`}>折扣价</span> */}
-									{
-										record.details && record.details.map((item, index) => (
-											<div key={index}>
-												<span className={`${styles['payment-detail-item-name']} ${styles['payment-detail-item']}`}>{item.name}</span>
-												{/* <span className={`${styles['payment-detail-item']}`}>{item.perPrice}</span> */}
-												<span className={`${styles['payment-detail-item']}`}>{item.quantity}</span>
-												{/* <span className={`${styles['payment-detail-item']}`}>{item.promotePrice}</span> */}
-											</div>
-										))
-									}
-								</div>
-							)
-						}
+						// onExpand={this.onExpand}
+						expandIconColumnIndex={-1}
+						expandIconAsCell={false}
+						pagination={{
+							current: currentPage,
+							pageSize,
+							total,
+							defaultCurrent: 1,
+							showSizeChanger: true,
+							showQuickJumper: true,
+							defaultPageSize: DEFAULT_PAGE_SIZE,
+							pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
+							onShowSizeChange: this.onShowSizeChange,
+							onChange: this.onPaginationChange,
+						}}
+						expandedRowRender={record => (
+							<div className={styles['paymemt-detail']}>
+								<span
+									className={`${styles['payment-detail-title']} ${
+										styles['payment-detail-item-name']
+									} ${styles['payment-detail-item']}`}
+								>
+									{/* 商品 */}
+									{formatMessage({ id: 'tradeVideos.product' })}
+								</span>
+								{/* <span className={`${styles['payment-detail-title']} ${styles['payment-detail-item']}`}>单价</span> */}
+								<span
+									className={`${styles['payment-detail-title']} ${
+										styles['payment-detail-item-amount']
+									} ${styles['payment-detail-item']}`}
+								>
+									{/* 数量 */}
+									{formatMessage({ id: 'tradeVideos.amount' })}
+								</span>
+								{/* <span className={`${styles['payment-detail-title']} ${styles['payment-detail-item']}`}>折扣价</span> */}
+								{record.details &&
+									record.details.map((item, index) => (
+										<div key={index}>
+											<span
+												className={`${styles['payment-detail-item-name']} ${
+													styles['payment-detail-item']
+												}`}
+											>
+												{item.name}
+											</span>
+											{/* <span className={`${styles['payment-detail-item']}`}>{item.perPrice}</span> */}
+											<span
+												className={`${styles['payment-detail-item']} ${
+													styles['payment-detail-item-amount']
+												}`}
+											>
+												{item.quantity}
+											</span>
+											{/* <span className={`${styles['payment-detail-item']}`}>{item.promotePrice}</span> */}
+										</div>
+									))}
+							</div>
+						)}
 					/>
 				</div>
 
 				{/* <div
 					className={isWatchVideo ? styles['video-player'] : styles['display-none']}
 				> */}
-				<VideoPlayComponent className={styles.video} playing={isWatchVideo} watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} ipcType={ipcType} />
+				<VideoPlayComponent
+					className={styles.video}
+					playing={isWatchVideo}
+					watchVideoClose={this.watchVideoClose}
+					videoUrl={videoUrl}
+					ipcType={ipcType}
+				/>
 
 				{/* </div> */}
-
 			</Card>
 		);
 	}

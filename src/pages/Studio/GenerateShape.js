@@ -405,7 +405,7 @@ export default function generateShape(option) {
 								const intPriceText = `${option.text}`.split('.')[0];
 								const smallPriceText = `${option.text}`.split('.')[1] || '';
 								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY + option.fontSize) * option.zoomScale) / 2;
-								const yPosition = 0;
+								const yPosition = option.fontSize * option.zoomScale * 0.72;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
@@ -418,7 +418,7 @@ export default function generateShape(option) {
 								const smallXPosition = intXPosition + intTextWidth;
 
 								context.font = `${option.fontStyle} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.textBaseline = 'hanging';
+								context.textBaseline = 'alphabetic';
 								context.fillStyle = option.fill;
 								context.fillText(`${option.text ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
 								context.font = `${option.fontStyle} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;

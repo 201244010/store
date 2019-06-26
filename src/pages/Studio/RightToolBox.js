@@ -257,7 +257,6 @@ export default class RightToolBox extends Component {
 		});
 		let realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
 		let realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
-		console.log('detail', detail);
 		if (SHAPE_TYPES.HLine === detail.type) {
 			realHeight = detail.strokeWidth;
 		}
@@ -505,17 +504,29 @@ export default class RightToolBox extends Component {
 								</span>
 							</Col>
 							<Col span={20}>
-								<InputNumber
+								<Select
 									style={{ width: '100%' }}
 									placeholder={formatMessage({
 										id: 'studio.tool.label.font.size',
 									})}
-									min={8}
 									value={detail.fontSize}
 									onChange={value => {
 										this.handleDetail('fontSize', value);
 									}}
-								/>
+								>
+									<Option value={9}>9</Option>
+									<Option value={10}>10</Option>
+									<Option value={11}>11</Option>
+									<Option value={12}>12</Option>
+									<Option value={14}>14</Option>
+									<Option value={16}>16</Option>
+									<Option value={18}>18</Option>
+									<Option value={20}>20</Option>
+									<Option value={28}>28</Option>
+									<Option value={36}>36</Option>
+									<Option value={48}>48</Option>
+									<Option value={72}>72</Option>
+								</Select>
 							</Col>
 							{/*
 									<Col span={2} />
@@ -795,17 +806,29 @@ export default class RightToolBox extends Component {
 												</span>
 											</Col>
 											<Col span={24}>
-												<InputNumber
+												<Select
 													style={{ width: '100%' }}
 													placeholder={formatMessage({
-														id: 'studio.tool.label.font.size.int',
+														id: 'studio.tool.label.font.size',
 													})}
-													min={8}
 													value={detail.fontSize}
 													onChange={value => {
 														this.handleDetail('fontSize', value);
 													}}
-												/>
+												>
+													<Option value={9}>9</Option>
+													<Option value={10}>10</Option>
+													<Option value={11}>11</Option>
+													<Option value={12}>12</Option>
+													<Option value={14}>14</Option>
+													<Option value={16}>16</Option>
+													<Option value={18}>18</Option>
+													<Option value={20}>20</Option>
+													<Option value={28}>28</Option>
+													<Option value={36}>36</Option>
+													<Option value={48}>48</Option>
+													<Option value={72}>72</Option>
+												</Select>
 											</Col>
 										</Row>
 									</Col>
@@ -819,17 +842,29 @@ export default class RightToolBox extends Component {
 												</span>
 											</Col>
 											<Col span={24}>
-												<InputNumber
+												<Select
 													style={{ width: '100%' }}
 													placeholder={formatMessage({
 														id: 'studio.tool.label.font.size.small',
 													})}
-													min={4}
 													value={detail.smallFontSize}
 													onChange={value => {
 														this.handleDetail('smallFontSize', value);
 													}}
-												/>
+												>
+													<Option value={9}>9</Option>
+													<Option value={10}>10</Option>
+													<Option value={11}>11</Option>
+													<Option value={12}>12</Option>
+													<Option value={14}>14</Option>
+													<Option value={16}>16</Option>
+													<Option value={18}>18</Option>
+													<Option value={20}>20</Option>
+													<Option value={28}>28</Option>
+													<Option value={36}>36</Option>
+													<Option value={48}>48</Option>
+													<Option value={72}>72</Option>
+												</Select>
 											</Col>
 										</Row>
 									</Col>
