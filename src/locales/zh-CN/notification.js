@@ -19,25 +19,31 @@ export default {
 	'notif-model-device-on/offline': '设备上线或下线通知',
 	'notif-model-import-product-finish': '导入商品完成通知',
 	'notif-model-import-product-failure': '导入商品失败通知',
+	'notif-model-motion-detect': '设备预警通知',
 
 	// 消息名称
 	'notif-ap-offline-title': '检测到基站离线',
 	'notif-import-product-finish': '商品导入完成',
 	'notif-import-product-failure': '商品导入失败',
+	'notif-motion-detect-title': '网络摄像机侦测到异常',
 
 	// 消息描述模版
 	'notif-ap-offline-desc': '基站“<%s>”已离线，请检查设备状态',
 	'notif-import-product-finish-desc': '商品导入完成，商品总数%s, 成功导入总数%s',
 	'notif-import-product-failure-desc': '商品导入失败，原因：%s',
+	'notif-motion-detect-desc': '网络摄像机侦测到异常%s，请即刻查看',
 
 	// 消息内容模板
 	'notif-ap-offline-content': '基站“<%s>”于<%s>离线，请检查设备状态',
 	'notif-import-product-finish-content': '商品导入完成，商品总数%s, 成功导入总数%s',
 	'notif-import-product-failure-content': '商品导入失败，原因：%s',
+	'notif-motion-detect-content': '网络摄像机（%s）侦测到异常%s，请即刻查看',
 
 	// 消息按钮
 	'notif-ap-offline-btn1': '查看状态',
 	'notif-import-product-failure-btn1': '查看',
+	'notif-motion-detect-btn1': '查看监控',
 	'notif-ap-offline-btn2': '查看状态',
 	'notif-import-product-failure-btn2': '查看状态',
+	'notif-motion-detect-btn2': '关闭',
 };

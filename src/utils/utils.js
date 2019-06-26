@@ -440,7 +440,7 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
 		return null;
 	}
 
-	const message = formatMessage(messageId);
+	const message = formatMessage({ id: messageId });
 	if (valueList.length === 0) {
 		return message;
 	}
@@ -448,4 +448,5 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
 	return valueList.reduce((prev, cur) => prev.replace('%s', cur), message);
 };
 
-export const formatMessageTemplate = (message) =>  replaceTemplateWithValue(analyzeMessageTemplate(message));
+export const formatMessageTemplate = message =>
+	replaceTemplateWithValue(analyzeMessageTemplate(message));

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, notification } from 'antd';
+import { formatMessageTemplate } from '@/utils/utils';
 import styles from './notification.less';
 
 notification.config({
@@ -8,7 +9,7 @@ notification.config({
 
 export const Title = props => {
 	const { title = '' } = props;
-	return <div className={styles.title}>{title}</div>;
+	return <div className={styles.title}>{title !== '' ? formatMessageTemplate(title) : ''}</div>;
 };
 
 export const Description = props => {
@@ -35,12 +36,12 @@ export const Description = props => {
 
 	return (
 		<div className={styles['description-wrapper']}>
-			<div>{description}</div>
+			<div>{description !== '' ? formatMessageTemplate(description) : ''}</div>
 			{Object.keys(btnOptions).length > 0 && (
 				<div className={styles['btn-wrapper']}>
 					{minorButtonName && (
 						<Button onClick={() => handleSubBtnAction(minorButtonLink)}>
-							{minorButtonName}
+							{formatMessageTemplate(minorButtonName)}
 						</Button>
 					)}
 					{majorButtonName && (
@@ -49,7 +50,7 @@ export const Description = props => {
 							type="primary"
 							onClick={() => handleMainBtnAction(majorButtonLink)}
 						>
-							{majorButtonName}
+							{formatMessageTemplate(majorButtonName)}
 						</Button>
 					)}
 				</div>

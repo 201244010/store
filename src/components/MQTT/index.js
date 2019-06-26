@@ -22,6 +22,8 @@ function MQTTWrapper(WrapperedComponent) {
 				dispatch({ type: 'mqttStore/setMessageHandler', payload }),
 			destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
 			getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
+			goToPath: (pathId, urlParams = {}) =>
+				dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		})
 	)
 	@Ipc
@@ -53,9 +55,10 @@ function MQTTWrapper(WrapperedComponent) {
 		};
 
 		handleAction = action => {
+			const { goToPath } = this.props;
 			if (action) {
 				const handler = ACTION_MAP[action] || (() => null);
-				handler();
+				handler({ goToPath });
 			}
 		};
 
