@@ -98,17 +98,21 @@ export default {
 				});
 			}
 		},
-		*getPOSList(_, { call }) {
-			const response = yield call(getPOSList);
+		*getPOSList({ payload: { startTime, endTime } }, { call }) {
+			const response = yield call(getPOSList, { startTime, endTime });
 			if(response.code === ERROR_OK){
 				const posList = response.data;
 				return posList;
 			}
 			return [];
 		},
-		*getPaymentDeviceList({ payload: { ipcId } },{ put }){
+		*getPaymentDeviceList({ payload: { ipcId, startTime, endTime } },{ put }){
 			const posList = yield put.resolve({
-				type: 'getPOSList'
+				type: 'getPOSList',
+				payload: {
+					startTime,
+					endTime
+				}
 			});
 
 			// console.log(posList);
@@ -191,9 +195,13 @@ export default {
 		// 	}
 		// 	return '';
 		// },
-		*getIpcTypeByPosSN({ payload: { sn }}, { put }) {
+		*getIpcTypeByPosSN({ payload: { sn, startTime, endTime }}, { put }) {
 			const posList = yield put.resolve({
-				type: 'getPOSList'
+				type: 'getPOSList',
+				payload: {
+					startTime,
+					endTime
+				}
 			});
 
 			const targetIpc = posList.filter((ipc) => {

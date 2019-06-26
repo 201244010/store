@@ -1,4 +1,4 @@
-import { getLiveUrl, stopLive } from '@/services/live';
+import { getLiveUrl, stopLive, getTimeSlots, startPublish, stopPublish } from '@/services/live';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const PPIS = {
@@ -16,52 +16,38 @@ export default {
 		streamId: '',
 		url: '',
 		ppi: '',
-		ppiChanged: false
+		ppiChanged: false,
+		timeSlots: []
 	},
 	reducers: {
 		updateUrl(state, { payload: { url, streamId, ppi }}) {
-			// console.log(_);
-			// state.temp.map(item => {
-			// 	console.log('item', item);
-			// });
-
 			return {
+				...state,
 				url,
 				streamId,
 				ppi
 			};
 		},
 		updatePPI(state, { payload: { ppi }}) {
-			// console.log(state);
 			state.ppi = ppi;
-			// return {
-			// 	...state,
-			// 	ppi
-			// };
 		},
 		ppiChanged(state, { payload: { streamId, isChanged }}) {
 			if (state.streamId === streamId) {
 				state.ppiChanged = isChanged;
 			}
+		},
+		updateTimeSlots(state, { payload: { timeSlots } }) {
+			state.timeSlots = timeSlots;
 		}
 	},
 	effects: {
 		*startLive({ payload: { sn }}, { call, put }) {
-			const companyId = yield put.resolve({
-				type: 'global/getCompanyIdFromStorage'
-			});
-
-			const shopId = yield put.resolve({
-				type: 'global/getShopIdFromStorage'
-			});
 
 			const clientId = yield put.resolve({
 				type: 'mqttIpc/getClientId'
 			});
 
 			const response = yield call(getLiveUrl, {
-				companyId,
-				shopId,
 				clientId,
 				sn
 			});
@@ -69,13 +55,7 @@ export default {
 			if (response.code === ERROR_OK){
 				const { data: { url, streamId, resolution } } = response;
 				let ppi = '';
-				// for (let index in PPIS){
-				// 	if (PPIS.hasOwnProperty(index)){
-				// 		if (resolution === PPIS[index]){
-				// 			ppi = index;
-				// 		};
-				// 	}
-				// }
+
 				const list = Object.keys(PPIS);
 				list.forEach(index => {
 					if (resolution === PPIS[index]){
@@ -95,16 +75,12 @@ export default {
 		},
 
 		*stopLive({ payload: { sn, streamId }}, { call }) {
-			// const c = yield select((state) => {
-			// 	return state.live.streamId;
-			// });
-
-			// console.log('check: ', c, streamId);
 
 			yield call(stopLive, {
 				streamId,
 				sn
 			});
+
 		},
 
 		*changePPI({ payload: { ppi, sn } }, { put, select }) {
@@ -148,6 +124,91 @@ export default {
 					ppi
 				}
 			});
+		},
+
+		*getTimeSlots({ payload: { sn, timeStart, timeEnd }}, { put, call }) {
+			const deviceId = yield put.resolve({
+				type: 'ipcList/getDeviceId',
+				payload: {
+					sn
+				}
+			});
+
+			const response = yield call(getTimeSlots, {
+				deviceId,
+				timeStart,
+				timeEnd
+			});
+			// console.log(response);
+			if (response.code === ERROR_OK){
+				const { data: { timeslots } } = response;
+
+				const slots = timeslots.map(item => {
+					const d = {
+						timeStart: item.start_time,
+						timeEnd: item.end_time
+					};
+					return d;
+				});
+
+				yield put({
+					type: 'updateTimeSlots',
+					payload: {
+						timeSlots: slots
+					}
+				});
+			}
+		},
+
+		*getHistoryUrl({ payload: { sn, timestamp }}, { put, call }) {
+			// console.log('models: ', getHistoryUrl);
+			const deviceId = yield put.resolve({
+				type: 'ipcList/getDeviceId',
+				payload: {
+					sn
+				}
+			});
+
+			const clientId = yield put.resolve({
+				type: 'mqttIpc/getClientId'
+			});
+
+			const response = yield call(startPublish, {
+				clientId,
+				deviceId,
+				timeStart: timestamp,
+				// timeEnd
+			});
+
+			const { code, data } = response;
+			if (code === ERROR_OK) {
+				return data;
+			}
+			return '';
+		},
+
+		*stopHistoryPlay({ payload: { sn }}, { put, call}) {
+			const deviceId = yield put.resolve({
+				type: 'ipcList/getDeviceId',
+				payload: {
+					sn
+				}
+			});
+
+			const clientId = yield put.resolve({
+				type: 'mqttIpc/getClientId'
+			});
+
+			const response = yield call(stopPublish, {
+				clientId,
+				deviceId
+			});
+
+			const { code } = response;
+			if (code === ERROR_OK) {
+				return true;
+			}
+			return false;
 		}
 	},
 	subscriptions: {
