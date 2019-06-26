@@ -18,7 +18,7 @@ import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
 import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
-import logo from '../assets/menuLogo.png';
+import logo from '../assets/logo-big.png';
 import logoEN from '../assets/menuLogoEN.png';
 import { env } from '@/config';
 

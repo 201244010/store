@@ -2,6 +2,7 @@ import * as Action from '@/services/dashBoard';
 import moment from 'moment';
 import { ERROR_OK } from '@/constants/errorCode';
 import { shake, format, map } from '@konata9/milk-shake';
+import { getDeviceList } from '@/pages/IPC/services/IPCList';
 
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 
@@ -93,6 +94,10 @@ export default {
 			paymentType: PAYMENT_TYPE.AMOUNT,
 		},
 
+		overviewProductLoading: false,
+		overviewDeviceLoading: false,
+		overviewIPCLoading: false,
+
 		totalAmountLoading: false,
 		totalCountLoading: false,
 		totalRefundLoading: false,
@@ -103,6 +108,11 @@ export default {
 		chartLoading: false,
 
 		lastModifyTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+
+		productOverview: {},
+		deviceOverView: {},
+		ipcOverView: {},
+
 		totalAmount: {},
 		totalCount: {},
 		totalRefund: {},
@@ -125,6 +135,24 @@ export default {
 		*fetchAllData({ payload }, { all, put }) {
 			const { needLoading = false } = payload;
 			yield all([
+				// product overview
+				put({
+					type: 'fetchOverviewProduct',
+					payload: { needLoading },
+				}),
+
+				// device overview
+				put({
+					type: 'fetchOverviewDevices',
+					payload: { needLoading },
+				}),
+
+				// ipc overview
+				put({
+					type: 'fetchOverviewIPC',
+					payload: { needLoading },
+				}),
+
 				// total card
 				put({
 					type: 'fetchTotalInfo',
@@ -181,6 +209,101 @@ export default {
 					lastModifyTime: moment().format('YYYY-MM-DD HH:mm:ss'),
 				},
 			});
+		},
+
+		*fetchOverviewProduct({ payload }, { put }) {
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'overviewProductLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+
+			const response = yield put.resolve({
+				type: 'basicDataProduct/fetchProductOverview',
+			});
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				yield put({
+					type: 'updateState',
+					payload: {
+						productOverview: format('toCamel')(data),
+						overviewProductLoading: false,
+					},
+				});
+			}
+
+			return response;
+		},
+
+		*fetchOverviewDevices({ payload }, { put }) {
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'overviewDeviceLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+
+			const response = yield put.resolve({
+				type: 'eslElectricLabel/fetchDeviceOverview',
+			});
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				yield put({
+					type: 'updateState',
+					payload: {
+						deviceOverView: format('toCamel')(data),
+						overviewDeviceLoading: false,
+					},
+				});
+			}
+
+			return response;
+		},
+
+		*fetchOverviewIPC({ payload }, { call, put }) {
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'overviewIPCLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+
+			const response = yield call(getDeviceList);
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				let [onLineCount, offLineCount] = [0, 0];
+
+				data.forEach(ipc => {
+					const { isOnline = false } = ipc;
+					if (isOnline) {
+						onLineCount++;
+					} else {
+						offLineCount++;
+					}
+				});
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						ipcOverView: {onLineCount, offLineCount},
+						overviewIPCLoading: false,
+					},
+				});
+			}
 		},
 
 		*fetchTotalInfo({ payload }, { select, call, put }) {
@@ -390,7 +513,6 @@ export default {
 
 				const [rest] = purchaseTypeList.slice(5);
 				const { amount = 0, count = 0 } = rest;
-
 				rest.amountPercent = amount
 					? parseFloat(100 - 1 * total.amountPercent).toFixed(2)
 					: parseFloat(amount).toFixed(2);
