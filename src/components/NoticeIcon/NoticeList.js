@@ -3,6 +3,7 @@ import { Avatar, List } from 'antd';
 import { AVATA_IMG } from '@/constants/index';
 import classNames from 'classnames';
 import styles from './NoticeList.less';
+import { formatMessageTemplate } from '@/utils/utils';
 
 export default function NoticeList({
 	data = [],
@@ -47,7 +48,7 @@ export default function NoticeList({
 									avatar={leftIcon}
 									title={
 										<div className={styles.title}>
-											{item.title}
+											{item.title ? formatMessageTemplate(item.title) : ''}
 											<div className={styles.extra}>{item.extra}</div>
 										</div>
 									}

@@ -426,6 +426,11 @@ export const analyzeMessageTemplate = message => {
 			const value = item.split('=')[1];
 			return value;
 		});
+		// 第一个值为 decode 判断是否需要对 value 进行解析
+		const [decode, ...rest] = valueList;
+		if (decode) {
+			valueList = rest.map(item => formatMessage({ id: item }));
+		}
 	}
 
 	return {

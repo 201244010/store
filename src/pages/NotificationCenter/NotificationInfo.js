@@ -39,7 +39,7 @@ class Notification extends React.Component {
 			notification: {
 				notificationInfo: {
 					title = '',
-					description = '',
+					content = '',
 					receiveTime = null,
 					majorButtonLink = null,
 					majorButtonName = null,
@@ -60,7 +60,7 @@ class Notification extends React.Component {
 				</div>
 				<Divider />
 				<div className={styles['content-wrapper']}>
-					<p>{description !== '' ? formatMessageTemplate(description) : ''}</p>
+					<p>{content ? formatMessageTemplate(content.toString()) : ''}</p>
 				</div>
 				<div className={styles['button-bar']}>
 					{minorButtonName && (
