@@ -62,12 +62,7 @@ const ProductCUWeight = props => {
 	};
 
 	const removeExtraList = key => {
-		const keyIndex = extraTextList.indexOf(key);
-		console.log('remove', keyIndex);
-		if (keyIndex > -1) {
-			extraTextList.splice(keyIndex, 1);
-			setExtraTextList([...extraTextList]);
-		}
+		setExtraTextList(extraTextList.filter(k => key !== k));
 	};
 
 	return (
@@ -468,7 +463,11 @@ const ProductCUWeight = props => {
 									{getFieldDecorator('limitType', {
 										initialValue: selectedLimitType,
 									})(
-										<Select>
+										<Select
+											onChange={value =>
+												dateTypeChange(value, 'selectedLimitType')
+											}
+										>
 											{limitType.map(type => (
 												<Select.Option key={type.key} value={type.value}>
 													{formatMessage({
@@ -489,20 +488,27 @@ const ProductCUWeight = props => {
 					<Form.Item
 						label={formatMessage({ id: 'basicData.weightProduct.bestBeforeDate.date' })}
 					>
-						{getFieldDecorator('limitDays', {
-							validateTrigger: 'onBlur',
-							rules: [
-								{
-									validator: (rule, value, callback) =>
-										customValidate({
-											field: 'dateNumber',
-											rule,
-											value,
-											callback,
-										}),
-								},
-							],
-						})(<Input />)}
+						{selectedLimitType === 1 &&
+							getFieldDecorator('limitDays', {})(<DatePicker format={dateFormat} />)}
+
+						{selectedLimitType === 2 &&
+							getFieldDecorator('limitDays', {
+								validateTrigger: 'onBlur',
+								rules: [
+									{
+										validator: (rule, value, callback) =>
+											customValidate({
+												field: 'dateNumber',
+												rule,
+												value,
+												callback,
+											}),
+									},
+								],
+							})(<Input />)}
+
+						{selectedLimitType === 3 &&
+							getFieldDecorator('limitDays', {})(<TimePicker format={timeFormat} />)}
 					</Form.Item>
 				</Col>
 			</Row>
@@ -536,35 +542,31 @@ const ProductCUWeight = props => {
 			</Row>
 
 			{extraTextList.map((key, index) => (
-				<Row key={key}>
-					<Col span={extraTextList.length > 1 ? 23 : 24}>
-						<Form.Item
-							label={
-								index === 0
-									? formatMessage({ id: 'basicData.weightProduct.extraText' })
-									: ' '
-							}
-							colon={index === 0}
-							{...FORM_ITEM_LAYOUT_TWICE}
-						>
-							{getFieldDecorator(`exttextNo${index + 1}`, {})(
-								<Input.TextArea
-									maxLength={500}
-									autosize={{ minRows: 2, maxRows: 4 }}
-								/>
-							)}
-						</Form.Item>
-					</Col>
-					{extraTextList.length > 1 && (
-						<Col span={1}>
-							<Button
-								icon="delete"
-								style={{ marginLeft: '5px' }}
-								onClick={() => removeExtraList(key)}
-							/>
-						</Col>
+				<Form.Item
+					key={key}
+					label={
+						index === 0
+							? formatMessage({ id: 'basicData.weightProduct.extraText' })
+							: ' '
+					}
+					colon={index === 0}
+					{...FORM_ITEM_LAYOUT_TWICE}
+				>
+					{getFieldDecorator(`exttextNo.${key}`, {})(
+						<Input.TextArea
+							maxLength={500}
+							autosize={{ minRows: 2, maxRows: 4 }}
+							style={{ width: '95%' }}
+						/>
 					)}
-				</Row>
+					{extraTextList.length > 1 && (
+						<Button
+							icon="delete"
+							style={{ textAlign: 'center', marginLeft: '5px' }}
+							onClick={() => removeExtraList(key)}
+						/>
+					)}
+				</Form.Item>
 			))}
 
 			{extraTextList.length < 4 && (
