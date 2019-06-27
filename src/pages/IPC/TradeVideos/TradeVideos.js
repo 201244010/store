@@ -263,8 +263,8 @@ class TradeVideos extends React.Component {
 				videoUrl: url,
 				isWatchVideo: true,
 				ipcType: type,
-			// 	paymentDeviceSelected: item.paymentDeviceId,
-			// 	ipcSelected: item.ipcId
+				// 	paymentDeviceSelected: item.paymentDeviceId,
+				// 	ipcSelected: item.ipcId
 			});
 		}
 	};

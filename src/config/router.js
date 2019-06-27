@@ -206,6 +206,10 @@ const router = [
 						redirect: '/basicData/merchantManagement/view',
 					},
 					{
+						path: '/basicData/merchantManagement',
+						redirect: '/basicData/merchantManagement/view',
+					},
+					{
 						path: '/basicData/merchantManagement/view',
 						name: 'merchantManagement',
 						id: 'merchantView',
