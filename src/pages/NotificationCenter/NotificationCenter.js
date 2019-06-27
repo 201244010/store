@@ -3,6 +3,7 @@ import { Checkbox, Table, Button, Icon, Modal } from 'antd';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import { connect } from 'dva';
+import { formatMessageTemplate } from '@/utils/utils';
 import styles from './Notification.less';
 
 @connect(
@@ -162,12 +163,14 @@ class NotificationCenter extends Component {
 					>
 						{record.receive_status ? (
 							<span key={record.mes_id} className={styles.read}>
-								{record.title}
+								{record.title ? formatMessageTemplate(record.title) : ''}
 							</span>
 						) : (
 							<div key={record.msg_id}>
 								<i />
-								<span className={styles.unread}>{record.title}</span>
+								<span className={styles.unread}>
+									{record.title ? formatMessageTemplate(record.title) : ''}
+								</span>
 							</div>
 						)}
 					</div>
@@ -181,6 +184,7 @@ class NotificationCenter extends Component {
 			{
 				title: formatMessage({ id: 'notification.type' }),
 				dataIndex: 'model_name',
+				render: type => (type ? formatMessageTemplate(type) : ''),
 				filterIcon: () => <Icon type="filter" style={{ left: '60px' }} />,
 				filters: filterList,
 				onFilter: (value, record) => record.model_name === value,

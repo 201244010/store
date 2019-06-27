@@ -6,6 +6,7 @@ import RiseDownTag from '@/components/Tag/RiseDownTag';
 import DisplayCard from '@/components/DisplayCard';
 
 import { priceFormat } from '@/utils/utils';
+import styles from './DashBoard.less';
 
 const ringRateStyle = {
 	width: '100%',
@@ -174,20 +175,22 @@ class CardBar extends Component {
 		};
 
 		return (
-			<Row gutter={24}>
-				<Col span={6}>
-					<DisplayCard {...totalAmountCard} />
-				</Col>
-				<Col span={6}>
-					<DisplayCard {...totalCountCard} />
-				</Col>
-				<Col span={6}>
-					<DisplayCard {...avgUnitSaleCard} />
-				</Col>
-				<Col span={6}>
-					<DisplayCard {...totalRefundCard} />
-				</Col>
-			</Row>
+			<div className={styles['card-bar-wrapper']}>
+				<Row gutter={24}>
+					<Col span={6}>
+						<DisplayCard {...totalAmountCard} />
+					</Col>
+					<Col span={6}>
+						<DisplayCard {...totalCountCard} />
+					</Col>
+					<Col span={6}>
+						<DisplayCard {...avgUnitSaleCard} />
+					</Col>
+					<Col span={6}>
+						<DisplayCard {...totalRefundCard} />
+					</Col>
+				</Row>
+			</div>
 		);
 	}
 }

@@ -14,6 +14,20 @@ export default {
 	'dashBoard.order.w2w': '周环比',
 	'dashBoard.order.m2m': '月同比',
 
+	'dashBoard.overview.product': '商品数',
+	'dashBoard.overview.esl.push': '待推送价签数',
+	'dashBoard.overview.esl.push.failed': '推送失败价签数',
+	'dashBoard.overview.esl.push.total': '价签总数',
+	'dashBoard.overview.ap.online': '价签基站数',
+	'dashBoard.overview.ap.offline': '离线基站数',
+	'dashBoard.overview.ipc.online': '在线网络摄像机数',
+	'dashBoard.overview.ipc.offline': '离线网络摄像机数',
+
+	'dashBoard.overview.product.total.info': '详情及规则说明',
+	'dashBoard.overview.esl.total.info': '详情及规则说明',
+	'dashBoard.overview.ap.total.info': '详情及规则说明',
+	'dashBoard.overview.ipc.total.info': '详情及规则说明',
+
 	'dashBoard.total.sales': '总销售额',
 	'dashBoard.total.sales.info': '详情及规则说明',
 	'dashBoard.total.count': '总笔数',
