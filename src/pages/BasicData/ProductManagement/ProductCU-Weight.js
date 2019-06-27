@@ -25,7 +25,7 @@ const chargeUnitType = [
 	{ key: '500g', value: 4 },
 ];
 const dateFormat = 'YYYY-MM-DD';
-const timeFormat = 'HH:mm:ss';
+const timeFormat = 'HH:mm';
 const packType = [{ key: 'date', value: 1 }, { key: 'days', value: 2 }];
 const usebyType = [{ key: 'date', value: 1 }, { key: 'days', value: 2 }, { key: 'time', value: 3 }];
 const limitType = [{ key: 'date', value: 1 }, { key: 'days', value: 2 }, { key: 'time', value: 3 }];
