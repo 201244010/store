@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { notification } from 'antd';
 import { connect } from 'dva';
 import { displayNotification } from '@/components/Notification';
+import VideoPlayComponent from '@/pages/IPC/component/VideoPlayComponent';
 import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
 import { ACTION_MAP } from '@/constants/mqttActionMap';
 import { getRandomString } from '@/utils/utils';
@@ -32,6 +33,9 @@ function MQTTWrapper(WrapperedComponent) {
 			super(props);
 			this.state = {
 				notificationList: [],
+				isWatchVideo: false,
+				videoUrl: '',
+				ipcType: '',
 			};
 		}
 
@@ -44,6 +48,13 @@ function MQTTWrapper(WrapperedComponent) {
 			destroyClient();
 		}
 
+		watchVideoClose = () => {
+			this.setState({
+				videoUrl: '',
+				isWatchVideo: false,
+			});
+		};
+
 		removeNotification = key => {
 			const { notificationList } = this.state;
 			const keyList = [...notificationList];
@@ -54,15 +65,21 @@ function MQTTWrapper(WrapperedComponent) {
 			});
 		};
 
-		handleAction = (action, paramsStr, extra = {}) => {
+		handleAction = (action, paramsStr) => {
 			const { goToPath } = this.props;
 			if (action) {
 				const handler = ACTION_MAP[action] || (() => null);
-				handler({
-					handlers: { goToPath, removeNotification: this.removeNotification },
-					params: paramsStr,
-					extra: { from: 'mqtt', ...extra },
-				});
+				const result = handler({ handlers: { goToPath }, params: paramsStr });
+
+				const { action: resultAction = null, payload = {} } = result || {};
+				if (resultAction === 'showMotionVideo') {
+					const { url, ipcType } = payload;
+					this.setState({
+						isWatchVideo: true,
+						videoUrl: url,
+						ipcType,
+					});
+				}
 			}
 		};
 
@@ -126,7 +143,19 @@ function MQTTWrapper(WrapperedComponent) {
 		};
 
 		render() {
-			return <WrapperedComponent {...this.props} />;
+			const { isWatchVideo, videoUrl, ipcType } = this.state;
+
+			return (
+				<>
+					<WrapperedComponent {...this.props} />
+					<VideoPlayComponent
+						playing={isWatchVideo}
+						watchVideoClose={this.watchVideoClose}
+						videoUrl={videoUrl}
+						ipcType={ipcType}
+					/>
+				</>
+			);
 		}
 	}
 

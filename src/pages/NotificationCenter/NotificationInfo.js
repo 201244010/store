@@ -88,7 +88,7 @@ class Notification extends React.Component {
 				</div>
 				<Divider />
 				<div className={styles['content-wrapper']}>
-					<p>{content ? formatMessageTemplate(content.toString()) : ''}</p>
+					<p>{content ? formatMessageTemplate(content) : ''}</p>
 				</div>
 				<div className={styles['button-bar']}>
 					{minorButtonName && (
