@@ -127,6 +127,7 @@ export default {
 			});
 		},
 		*getProductDetail({ payload = {} }, { call, put }) {
+			// TODO 需要增加 称重商品处理
 			const { options = {} } = payload;
 			yield put({
 				type: 'updateState',
@@ -151,6 +152,7 @@ export default {
 			return response;
 		},
 		*createProduct({ payload = {} }, { call, put }) {
+			// TODO 需要增加 称重商品处理
 			const { options = {} } = payload;
 			const opts = {
 				...options,
@@ -189,6 +191,7 @@ export default {
 			return response;
 		},
 		*updateProduct({ payload = {} }, { call, put }) {
+			// TODO 需要增加 称重商品处理
 			const { options = {} } = payload;
 			const opts = {
 				...options,
