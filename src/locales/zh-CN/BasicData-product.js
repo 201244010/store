@@ -50,7 +50,7 @@ export default {
 	'basicData.weightProduct.extraText.from': '附加文本来源',
 	'basicData.weightProduct.extraText.number': '附加文本号',
 	'basicData.weightProduct.extraText.number.formatError': '附加文本号范围为 0 - 99',
-	'basicData.weightProduct.extraText': '附加文本',
+	'basicData.weightProduct.extraText': ' 附加文本',
 	'basicData.weightProduct.printLabel.number': '打印标签号',
 	'basicData.weightProduct.printLabel.formatError': '打印标签号为 0-99 的数字',
 	'basicData.weightProduct.barCode.number': '条形码号',
