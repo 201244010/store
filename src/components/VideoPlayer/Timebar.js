@@ -25,10 +25,15 @@ class VideoPlayerProgressBar extends React.Component{
 			timeEnd: 0
 		};
 
-		this.days = 1;	// 用来向前记录渲染了多少日期；
+		this.days = 10;	// 用来向前记录渲染了多少日期；
+
+		this.onDragChangeTimeout = 0;
 		this.oneHourWidth = 60;
 
 		this.generateTime = this.generateTime.bind(this);
+		this.setHover = this.setHover.bind(this);
+
+		// this.firstTime = true;
 	}
 
 	componentWillMount() {
@@ -40,17 +45,30 @@ class VideoPlayerProgressBar extends React.Component{
 
 	componentDidMount() {
 		this.setPosition();
+
+		window.addEventListener('resize', () => {
+			this.setPosition();
+		});
 	}
 
 	componentWillReceiveProps(props) {
 		const { current } = props;
-		const { timeStart } = this.state;
-		// console.log(current, this.state.timeStart);
-		if (current < timeStart){
+		const { timeStart, dragging, /* timestamp */ } = this.state;
+		const { offsetWidth } = this.wrapper;
+		const gap = offsetWidth/this.oneHourWidth/2*60*60;
+
+		console.log(gap);
+
+		console.log('componentWillReceiveProps: ', current, timeStart, timeStart+gap);
+		if (current < timeStart + gap){
 			this.getDuration(current);
 			this.generateTime();
 		}
-		this.setPosition(current);
+
+		// console.log('Timerbar componentWillReceiveProps: ', current);
+		if (!dragging) {
+			this.setPosition(current);
+		}
 	}
 
 	// shouldComponentUpdate(nextProps, nextState) {
@@ -69,20 +87,26 @@ class VideoPlayerProgressBar extends React.Component{
 
 	getDuration(current) {
 		// 返回当前时间与传入的current的时间差；
-		const days = Math.ceil((moment().unix() - current)/(24*60*60)) + 1;
+		const days = Math.ceil((moment().unix() - current)/(24*60*60));
 		// 时间如果有误差，可能出现小于0，至少得是1；
-		this.days = days <= 0 ? 1: days;
+		this.days = days <= 0 ? 2: days;
+		// console.log(days, current, moment().unix());
+	}
+
+	setHover(hover) {
+		this.setState({
+			hover
+		});
 	}
 
 	setPosition(timestamp) {
 		let { current } = this.props;
 		current = timestamp || current;
-		const { timeStart } = this.state;
+		const { timeEnd } = this.state;
 
 		if (this.wrapper) {
-			// console.log('position: ', moment.unix(current).format('YYYY-MM-DD HH:mm:ss'));
-			const x = Math.ceil((timeStart - current)*this.oneHourWidth/(60*60)+this.wrapper.offsetWidth/2);
-
+			// console.log('setPosition: time: ', current, this.wrapper.offsetWidth, moment.unix(current).format('YYYY-MM-DD HH:mm:ss'));
+			const x = Math.ceil((timeEnd - current)*this.oneHourWidth/(60*60)+this.wrapper.offsetWidth/2);
 			this.setState({
 				position: {
 					x,
@@ -92,13 +116,12 @@ class VideoPlayerProgressBar extends React.Component{
 		}
 	}
 
-	generateTime() {
+	generateTime = () => {
 		// const { onTimeChange } = this.props;
 		const { days } = this;
-		// console.log('generateTime', days);
 		// 标尺左侧更长的时间线；
 		// const timeStart = moment.unix(currentTime).subtract(24*days, 'hours').set({
-		const timeStart = moment().subtract(24*days, 'hours').set({
+		const timeStart = moment().subtract(24*(days+1), 'hours').set({
 			minute: 0,
 			second: 0,
 			millisecond: 0
@@ -112,7 +135,6 @@ class VideoPlayerProgressBar extends React.Component{
 			millisecond: 0
 		}).unix();
 
-
 		this.setState({
 			timeStart,
 			timeEnd
@@ -122,37 +144,127 @@ class VideoPlayerProgressBar extends React.Component{
 		// 	timeStart,
 		// 	timeEnd
 		// });
+		// console.log(moment.unix(timeStart).format('YYYY-MM-DD HH:mm:ss'), moment.unix(timeEnd).format('YYYY-MM-DD HH:mm:ss'));
+		const { onGenerateTimeRange } = this.props;
+		onGenerateTimeRange(timeStart, timeEnd);
+	}
 
-		const { onChange, current } = this.props;
-		onChange(current);
+	getBounds = () => {
+		const { wrapper, oneHourWidth } = this;
+		const { timeStart, timeEnd } = this.state;
+		if (wrapper){
+			const left = Math.ceil((timeEnd - moment().unix())*oneHourWidth/(60*60))+this.wrapper.offsetWidth/2;
+			const right = Math.ceil((timeEnd - timeStart)*oneHourWidth/(60*60));
+			// console.log('right: ', left, right);
+			return {
+				left,
+				right
+			};
+		};
+
+		return {
+			left: 0,
+			right: 0
+		};
+	}
+
+	onStartDrag = (e, dragger) => {
+		const { oneHourWidth } = this;
+		const { onStartDrag } = this.props;
+		const { timeEnd } = this.state;
+
+		clearTimeout(this.onDragChangeTimeout);
+		// console.log('dragger.x: ',dragger.x);
+		const time = timeEnd - ((Math.abs(dragger.x) - this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60;
+		this.setState({
+			dragging: true,
+			timestamp: time
+		});
+
+		// this.firstTime = false;
+		onStartDrag(time);
+	}
+
+	onMoveDrag = (e, dragger) => {
+		const { x, lastX, deltaX } = dragger;
+
+		clearTimeout(this.onDragChangeTimeout);
+		if (Math.abs(deltaX) > 0 ) {
+			const { oneHourWidth } = this;
+			const { timeEnd } = this.state;
+
+			const time = timeEnd - ((Math.abs(x) - this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60;
+			let drct = 'left';
+			if ( x <= lastX){
+				drct = 'right';
+			};
+			// this.firstTime = false;
+
+			this.setState({
+				timestamp: time,
+				direction: drct
+			});
+		}
+	}
+
+	onStopDrag = (e, dragger) => {
+		const { oneHourWidth } = this;
+		const { timeStart, timeEnd } = this.state;
+
+		const time = timeEnd - ((Math.abs(dragger.x) - this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60;
+		const right = Math.ceil((timeEnd - timeStart)*oneHourWidth/(60*60));
+
+		// console.log(moment.unix(time).format('YYYY-MM-DD HH:mm:ss'));
+		this.setState({
+			timestamp: time,
+			dragging: false
+		});
+
+		// console.log('onStop: ', time, dragger.x, this.days);
+		if (dragger.x === right && this.days < 31){
+			// 到左侧尽头了，需要判断是否渲染前面的时间
+			this.days += 1;
+			this.generateTime();
+		}
+
+		// 因为设置了position，所以需要手动确定位置；
+		const { onStopDrag } = this.props;
+		if (onStopDrag) {
+			onStopDrag(time);
+		}else{
+			this.setPosition(time);
+		}
+
+		// this.setPosition(time);
+		// clearTimeout(this.onDragChangeTimeout);
+		// this.onDragChangeTimeout = setTimeout(() => {
+		// 	const { onStopDrag } = this.props;
+		// 	clearTimeout(this.onDragChangeTimeout);
+		// 	onStopDrag(time);
+		// }, 1000);
 	}
 
 
 	render() {
-		let { sources } = this.props;
-		const { onChange, current } = this.props;
+		// let { sources } = this.props;
+		const { current, timeSlots } = this.props;
 		const { dragging, timestamp, direction, timeStart, timeEnd, position, hover } = this.state;
 
-		sources = sources || [];
+		// sources = sources || [];
 		// console.log('timebar sources: ', sources);
 
-		const { oneHourWidth } = this;
-
+		// const { oneHourWidth } = this;
 		// console.log('current: ', moment.unix(current).format('YYYY-MM-DD HH:mm:ss'));
 
 		return(
 			<div
 				className={`${styles['timebar-container']} ${hover || dragging ? styles.hover : ''}`}
 				onMouseOver={() => {
-					this.setState({
-						hover: true
-					});
+					this.setHover(true);
 				}}
 
 				onMouseLeave={() => {
-					this.setState({
-						hover: false
-					});
+					this.setHover(false);
 				}}
 			>
 				<div className={styles['timebar-wrapper']}>
@@ -169,85 +281,32 @@ class VideoPlayerProgressBar extends React.Component{
 									position
 								}
 								bounds={
-									(() => {
-										if (this.wrapper){
-											const left = Math.ceil((timeStart - moment().unix())*oneHourWidth/(60*60))+this.wrapper.offsetWidth/2;
-
-											return {
-												right: 0,
-												left
-											};
-										};
-
-										return {
-											left: 0,
-											right: 0
-										};
-									})()
+									this.getBounds()
 								}
 								onStart={
-									(e, dragger) => {
-										// console.log('dragger.x: ',dragger.x);
-										const time = ((Math.abs(dragger.x) + this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60 + timeStart;
-										this.setState({
-											dragging: true,
-											timestamp: time
-										});
-									}
+									this.onStartDrag
 								}
 								onDrag={
-									(e, dragger) => {
-										const { x, lastX, deltaX } = dragger;
-										if (Math.abs(deltaX) > 0 ) {
-
-											const time = ((Math.abs(x) + this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60 + timeStart;
-											let drct = 'left';
-											if ( x <= lastX){
-												drct = 'right';
-											};
-											this.firstTime = false;
-
-											this.setState({
-												timestamp: time,
-												direction: drct
-											});
-										}
-									}
+									this.onMoveDrag
 								}
 								onStop={
-									(e, dragger) => {
-										const time = ((Math.abs(dragger.x) + this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60 + timeStart;
-
-										this.setState({
-											timestamp: time,
-											dragging: false
-										});
-
-										// console.log('onStop: ', time, dragger.x, this.days);
-
-										if (dragger.x === 0 && this.days < 31){
-
-											// 到左侧尽头了，需要判断是否渲染前面的时间
-											this.days++;
-											this.generateTime();
-
-										}
-
-										// 因为设置了position，所以需要手动确定位置；
-										if (onChange){
-											onChange(time);
-										}else{
-											this.setPosition(time);
-										}
-									}
+									this.onStopDrag
 								}
 							>
-								<div>
+
+								<div
+									style={
+										{
+											width: 1
+										}
+									}
+								>
 									<Scaleplate
 										timeStart={timeStart}
 										timeEnd={timeEnd}
 										dragging={dragging || hover}
-										sources={sources}
+										// sources={sources}
+										timeSlots={timeSlots}
 										current={current}
 									/>
 								</div>
