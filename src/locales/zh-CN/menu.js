@@ -61,6 +61,7 @@ export default {
 	'menu.basicData.employeeManagement': '员工管理',
 	'menu.basicData.employeeManagement.employeeList': '员工列表',
 	'menu.basicData.employeeManagement.list': '员工列表',
+	'menu.basicData.employeeManagement.info': '员工详情',
 	'menu.setting': '系统设置',
 	'menu.setting.role': '角色管理',
 	'menu.basicData.storeManagement': '门店管理',
