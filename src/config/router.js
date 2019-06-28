@@ -36,7 +36,7 @@ const router = [
 			{
 				path: '/index',
 				hideInMenu: true,
-				component: './Index'
+				component: './Index',
 			},
 			{
 				path: '/dashBoard',
@@ -256,6 +256,24 @@ const router = [
 								component: './StoreManagement/CreateStore.js',
 								name: 'storeManagement',
 								id: 'storeUpdate',
+								hideInMenu: true,
+							},
+						],
+					},
+					{
+						path: '/basicData/employeeManagement',
+						name: 'employeeManagement',
+						id: 'employeeManagement',
+						routes: [
+							{
+								path: '/basicData/employeeManagement',
+								redirect: '/basicData/employeeManagement/list',
+							},
+							{
+								path: '/basicData/employeeManagement/list',
+								name: 'employeeList',
+								id: 'employeeList',
+								component: './BasicData/Employee',
 								hideInMenu: true,
 							},
 						],
