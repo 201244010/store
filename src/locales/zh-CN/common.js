@@ -10,6 +10,7 @@ export default {
 	'btn.unbind': '解绑',
 	'btn.reflush': '重推',
 	'btn.query': '查询',
+	'btn.reset': '重置',
 	'btn.confirm': '确定',
 	'btn.cancel': '取消',
 	'btn.create': '新建',
@@ -47,5 +48,5 @@ export default {
 	'pagination.total.prefix': '共',
 	'select.all': '全部',
 	'select.placeholder': '请选择',
-	'safety.validate': '安全验证'
+	'safety.validate': '安全验证',
 };

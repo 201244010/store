@@ -11,6 +11,8 @@ import SearchBar from './SearchBar';
 		setSearchValue: payload => dispatch({ type: 'employee/setSearchValue', payload }),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
 		getEmployeeList: () => dispatch({ type: 'employee/getEmployeeList' }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class EmployeeList extends Component {
@@ -25,18 +27,24 @@ class EmployeeList extends Component {
 	}
 
 	render() {
-		const { employee = {}, setSearchValue, clearSearchValue, getEmployeeList } = this.props;
+		const {
+			employee: { searchValue = {} } = {},
+			setSearchValue,
+			clearSearchValue,
+			getEmployeeList,
+			goToPath,
+		} = this.props;
 
 		// TODO 等待接口联调渲染页面
-		console.log(employee);
-
 		return (
 			<Card bordered={false}>
 				<SearchBar
 					{...{
+						searchValue,
 						setSearchValue,
 						clearSearchValue,
 						getEmployeeList,
+						goToPath,
 					}}
 				/>
 			</Card>

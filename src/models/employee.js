@@ -50,19 +50,32 @@ export default {
 			});
 		},
 
-		*getEmployeeList(_, { call, select, put }) {
-			const { searchValue } = yield select(state => state.employee);
+		*getEmployeeList({ payload = {} }, { call, select, put }) {
+			const { searchValue, pagination } = yield select(state => state.employee);
+			const { current = 1, pageSize = 10 } = payload;
+			const options = {
+				...searchValue,
+				pageNum: current,
+				pageSize,
+			};
+
 			const response = yield call(
 				Action.handleEmployee,
 				'getList',
-				format('toSnake')(searchValue)
+				format('toSnake')(options)
 			);
 
 			if (response && response.code === ERROR_OK) {
 				// TODO 处理员工列表返回
 				yield put({
 					type: 'updateState',
-					payload: {},
+					payload: {
+						pagination: {
+							...pagination,
+							current,
+							pageSize,
+						},
+					},
 				});
 			}
 		},
