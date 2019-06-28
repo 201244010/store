@@ -155,7 +155,7 @@ export default {
 
 		*deleteEmployee({ payload: { employeeIdList } = {} }, { call, put }) {
 			const response = yield call(
-				Action.handleEmployeen,
+				Action.handleEmployee,
 				'delete',
 				format('toSnake')(employeeIdList)
 			);

@@ -283,6 +283,20 @@ const router = [
 								component: './BasicData/Employee/EmployeeInfo',
 								hideInMenu: true,
 							},
+							{
+								path: '/basicData/employeeManagement/create',
+								name: 'employeeCreate',
+								id: 'employeeCreate',
+								component: './BasicData/Employee/EmployeeCU',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/update',
+								name: 'employeeUpdate',
+								id: 'employeeUpdate',
+								component: './BasicData/Employee/EmployeeCU',
+								hideInMenu: true,
+							},
 						],
 					},
 					{
