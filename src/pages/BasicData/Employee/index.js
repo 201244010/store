@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Card } from 'antd';
 import SearchBar from './SearchBar';
+import SearchResult from './SerachResult';
 
 @connect(
 	state => ({
@@ -28,7 +29,7 @@ class EmployeeList extends Component {
 
 	render() {
 		const {
-			employee: { searchValue = {} } = {},
+			employee: { searchValue = {}, employeeList = [] } = {},
 			setSearchValue,
 			clearSearchValue,
 			getEmployeeList,
@@ -45,6 +46,11 @@ class EmployeeList extends Component {
 						clearSearchValue,
 						getEmployeeList,
 						goToPath,
+					}}
+				/>
+				<SearchResult
+					{...{
+						data: employeeList,
 					}}
 				/>
 			</Card>
