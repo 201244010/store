@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Card, Form, Button } from 'antd';
 import { getLocationParam } from '@/utils/utils';
+import { FORM_ITEM_DETAIL } from '@/constants/form';
 
 const GENDER_MAP = {
 	1: formatMessage({ id: 'employee.gender.male' }),
@@ -60,7 +61,7 @@ class EmployeeInfo extends Component {
 		return (
 			<Card bordered={false}>
 				<h3>{formatMessage({ id: 'employee.info' })}</h3>
-				<Form>
+				<Form {...FORM_ITEM_DETAIL}>
 					<Form.Item label={formatMessage({ id: 'employee.number' })}>
 						<span>{number || '--'}</span>
 					</Form.Item>
