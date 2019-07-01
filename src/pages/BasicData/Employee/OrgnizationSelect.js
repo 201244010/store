@@ -32,7 +32,7 @@ class OrgnizationSelect extends Component {
 		super(props);
 		const value = props.value || [];
 		this.state = {
-			orgnizationRoleList: value.length > 0 ? value : [{ orgnization: null, role: null }],
+			orgnizationRoleList: value.length > 0 ? value : [{ orgnization: null, role: [] }],
 		};
 	}
 
@@ -67,7 +67,7 @@ class OrgnizationSelect extends Component {
 	addItem = () => {
 		const { orgnizationRoleList } = this.state;
 		this.setState({
-			orgnizationRoleList: [...orgnizationRoleList, { orgnization: null, role: null }],
+			orgnizationRoleList: [...orgnizationRoleList, { orgnization: null, role: [] }],
 		});
 	};
 
@@ -96,6 +96,7 @@ class OrgnizationSelect extends Component {
 						</Col>
 						<Col span={orgnizationRoleList.length > 1 ? 10 : 12}>
 							<Select
+								mode="multiple"
 								value={item.role}
 								onChange={value => this.handleSelectChange(item, index, value)}
 							>
