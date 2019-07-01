@@ -23,8 +23,8 @@ export default {
 
 	// 消息名称
 	'notif-ap-offline-title': '检测到基站离线',
-	'notif-import-product-finish': '商品导入完成',
-	'notif-import-product-failure': '商品导入失败',
+	'notif-import-product-finish-title': '商品导入完成',
+	'notif-import-product-failure-title': '商品导入失败',
 	'notif-motion-detect-title': '网络摄像机侦测到异常',
 
 	// 消息描述模版
