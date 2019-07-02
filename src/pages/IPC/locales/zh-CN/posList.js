@@ -68,4 +68,7 @@ export default {
 
 	'posList.notVerified': '您的设备尚未进行验证，请验证后重新绑定！',
 
+	'posList.warningNotBinded': '您还尚未完成收银设备绑定',
+	'posList.confirmGoBack': '确认要返回至上一步吗？',
+
 };
