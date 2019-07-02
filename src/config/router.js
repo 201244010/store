@@ -36,7 +36,7 @@ const router = [
 			{
 				path: '/index',
 				hideInMenu: true,
-				component: './Index'
+				component: './Index',
 			},
 			{
 				path: '/dashBoard',
@@ -206,6 +206,10 @@ const router = [
 						redirect: '/basicData/merchantManagement/view',
 					},
 					{
+						path: '/basicData/merchantManagement',
+						redirect: '/basicData/merchantManagement/view',
+					},
+					{
 						path: '/basicData/merchantManagement/view',
 						name: 'merchantManagement',
 						id: 'merchantView',
@@ -252,6 +256,45 @@ const router = [
 								component: './StoreManagement/CreateStore.js',
 								name: 'storeManagement',
 								id: 'storeUpdate',
+								hideInMenu: true,
+							},
+						],
+					},
+					{
+						path: '/basicData/employeeManagement',
+						name: 'employeeManagement',
+						id: 'employeeManagement',
+						routes: [
+							{
+								path: '/basicData/employeeManagement',
+								redirect: '/basicData/employeeManagement/list',
+							},
+							{
+								path: '/basicData/employeeManagement/list',
+								name: 'employeeList',
+								id: 'employeeList',
+								component: './BasicData/Employee',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/info',
+								name: 'employeeInfo',
+								id: 'employeeInfo',
+								component: './BasicData/Employee/EmployeeInfo',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/create',
+								name: 'employeeCreate',
+								id: 'employeeCreate',
+								component: './BasicData/Employee/EmployeeCU',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/update',
+								name: 'employeeUpdate',
+								id: 'employeeUpdate',
+								component: './BasicData/Employee/EmployeeCU',
 								hideInMenu: true,
 							},
 						],

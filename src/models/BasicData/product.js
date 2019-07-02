@@ -75,6 +75,8 @@ export default {
 				type: 'updateState',
 				payload: { loading: false },
 			});
+
+			return response;
 		},
 		*getERPPlatformList(_, { call, put }) {
 			yield put({
@@ -125,6 +127,7 @@ export default {
 			});
 		},
 		*getProductDetail({ payload = {} }, { call, put }) {
+			// TODO 需要增加 称重商品处理
 			const { options = {} } = payload;
 			yield put({
 				type: 'updateState',
@@ -149,6 +152,7 @@ export default {
 			return response;
 		},
 		*createProduct({ payload = {} }, { call, put }) {
+			// TODO 需要增加 称重商品处理
 			const { options = {} } = payload;
 			const opts = {
 				...options,
@@ -169,9 +173,9 @@ export default {
 				});
 				yield put({
 					type: 'menu/goToPath',
-					payload:{
-						pathId: 'productList'
-					}
+					payload: {
+						pathId: 'productList',
+					},
 				});
 				// router.push(`${MENU_PREFIX.PRODUCT}`);
 			} else {
@@ -187,6 +191,7 @@ export default {
 			return response;
 		},
 		*updateProduct({ payload = {} }, { call, put }) {
+			// TODO 需要增加 称重商品处理
 			const { options = {} } = payload;
 			const opts = {
 				...options,
@@ -211,21 +216,20 @@ export default {
 				const { fromPage, product_id } = options;
 				const pagePath = {
 					list: {
-						pathId: 'productList'
+						pathId: 'productList',
 					},
-					detail:{
+					detail: {
 						pathId: 'productInfo',
 						urlParams: {
-							id: idEncode(product_id)
-						}
-					}
+							id: idEncode(product_id),
+						},
+					},
 				};
-				
+
 				yield put({
 					type: 'menu/goToPath',
-					payload: pagePath[fromPage]
+					payload: pagePath[fromPage],
 				});
-
 			} else {
 				message.error(formatMessage({ id: 'product.update.error' }));
 				yield put({
@@ -316,7 +320,7 @@ export default {
 				});
 			}
 			return response;
-		}
+		},
 	},
 	reducers: {
 		updateState(state, action) {

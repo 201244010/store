@@ -237,7 +237,11 @@ export default {
 						}
 						if ([SHAPE_TYPES.IMAGE].includes(componentDetail.type)) {
 							componentDetail[realKey] = 'picture';
-							componentDetail.codec = 'jpeg';
+							if (componentDetail.imgPath.indexOf('.png') > -1) {
+								componentDetail.codec = 'png';
+							} else {
+								componentDetail.codec = 'jpeg';
+							}
 						}
 					}
 					if (['fill'].includes(detailKey)) {

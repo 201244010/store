@@ -6,7 +6,7 @@ import ProductCUBasic from './ProductCU-Basic';
 import ProductCUWeight from './ProductCU-Weight';
 import ProductCUPrice from './ProductCU-Price';
 import { getLocationParam, idDecode } from '@/utils/utils';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT } from '@/constants/form';
+import { FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK, PRODUCT_SEQ_EXIST } from '@/constants/errorCode';
 import * as styles from './ProductManagement.less';
 
@@ -149,7 +149,6 @@ class ProductCU extends Component {
 			<Card className={styles['content-container']}>
 				<Form
 					{...{
-						...FORM_FORMAT,
 						...FORM_ITEM_LAYOUT,
 					}}
 				>

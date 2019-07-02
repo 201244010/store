@@ -30,16 +30,44 @@ export const FORM_ITEM_LAYOUT = {
 	labelCol: {
 		sm: { span: 24 },
 		md: { span: 6 },
-		lg: { span: 5 },
-		xl: { span: 5 },
+		lg: { span: 6 },
+		xl: { span: 6 },
 		xxl: { span: 4 },
 	},
 	wrapperCol: {
 		sm: { span: 24 },
 		md: { span: 18 },
-		lg: { span: 19 },
-		xl: { span: 19 },
+		lg: { span: 18 },
+		xl: { span: 18 },
 		xxl: { sapn: 20 },
+	},
+};
+
+export const FORM_ITEM_DETAIL = {
+	labelCol: {
+		sm: { span: 24 },
+		md: { span: 4 },
+	},
+	wrapperCol: {
+		sm: { span: 24 },
+		md: { span: 20 },
+	},
+};
+
+export const FORM_ITEM_LAYOUT_TWICE = {
+	labelCol: {
+		sm: { span: 24 },
+		md: { span: 3 },
+		lg: { span: 3 },
+		xl: { span: 3 },
+		xxl: { span: 2 },
+	},
+	wrapperCol: {
+		sm: { span: 24 },
+		md: { span: 21 },
+		lg: { span: 21 },
+		xl: { span: 21 },
+		xxl: { sapn: 22 },
 	},
 };
 
