@@ -11,6 +11,9 @@ import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
 		employee: state.employee,
 	}),
 	dispatch => ({
+		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
+		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
 		getEmployeeInfo: ({ employeeId }) =>
 			dispatch({ type: 'employee/getEmployeeInfo', payload: { employeeId } }),
 		goToPath: (pathId, urlParams = {}) =>
@@ -27,6 +30,10 @@ class EmployeeCU extends Component {
 			getLocationParam('action') || 'create',
 			getLocationParam('from') || 'list',
 		];
+
+		this.state = {
+			orgnizationTree: [],
+		};
 	}
 
 	componentDidMount() {
@@ -34,7 +41,39 @@ class EmployeeCU extends Component {
 			const { getEmployeeInfo } = this.props;
 			getEmployeeInfo();
 		}
+
+		this.createOrgnizationTree();
 	}
+
+	createOrgnizationTree = async () => {
+		const {
+			getCompanyIdFromStorage,
+			getShopListFromStorage,
+			getCompanyListFromStorage,
+		} = this.props;
+		const currentCompanyId = await getCompanyIdFromStorage();
+		const companyList = await getCompanyListFromStorage();
+		const shopList = await getShopListFromStorage();
+
+		const companyInfo =
+			companyList.find(company => company.company_id === currentCompanyId) || {};
+
+		const orgnizationTree = [
+			{
+				title: companyInfo.company_name,
+				value: companyInfo.company_id,
+				key: companyInfo.company_id,
+				children: shopList.map(shop => ({
+					title: shop.shop_name,
+					value: `${companyInfo.company_id}-${shop.shop_id}`,
+					key: `${companyInfo.company_id}-${shop.shop_id}`,
+				})),
+			},
+		];
+		this.setState({
+			orgnizationTree,
+		});
+	};
 
 	handleSubmit = () => {
 		const {
@@ -44,6 +83,13 @@ class EmployeeCU extends Component {
 		validateFields((err, values) => {
 			console.log(values);
 		});
+	};
+
+	handleCancel = () => {
+		const { goToPath } = this.props;
+		if (this.from === 'list' || !this.from) {
+			goToPath('employeeList');
+		}
 	};
 
 	render() {
@@ -60,6 +106,7 @@ class EmployeeCU extends Component {
 				} = {},
 			} = {},
 		} = this.props;
+		const { orgnizationTree } = this.state;
 
 		return (
 			<Card bordered={false}>
@@ -122,7 +169,7 @@ class EmployeeCU extends Component {
 					>
 						{getFieldDecorator('organizationRoleMappingList', {
 							initialValue: organizationRoleMappingList,
-						})(<OrgnizationSelect />)}
+						})(<OrgnizationSelect {...{ orgnizationTree }} />)}
 					</Form.Item>
 					<Form.Item label=" " colon={false}>
 						<Button type="primary" onClick={this.handleSubmit}>
@@ -130,7 +177,7 @@ class EmployeeCU extends Component {
 								? formatMessage({ id: 'btn.create' })
 								: formatMessage({ id: 'btn.alter' })}
 						</Button>
-						<Button style={{ marginLeft: '20px' }}>
+						<Button style={{ marginLeft: '20px' }} onClick={this.handleCancel}>
 							{formatMessage({ id: 'btn.cancel' })}
 						</Button>
 					</Form.Item>

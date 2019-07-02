@@ -1,5 +1,6 @@
 // import { queryNotices } from '@/services/user';
 import * as CookieUtil from '@/utils/cookies';
+import Storage from '@konata9/storage.js';
 
 export default {
 	namespace: 'global',
@@ -20,6 +21,14 @@ export default {
 
 		getShopIdFromStorage() {
 			return CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || null;
+		},
+
+		getShopListFromStorage() {
+			return Storage.get('__shop_list__', 'local') || [];
+		},
+
+		getCompanyListFromStorage() {
+			return Storage.get('__company_list__', 'local') || [];
 		},
 
 		// *fetchNotices(_, { call, put, select }) {
