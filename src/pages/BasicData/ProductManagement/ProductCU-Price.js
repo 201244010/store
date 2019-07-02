@@ -8,7 +8,7 @@ const ProductCUPrice = props => {
 	const {
 		// form = {},
 		form: { getFieldDecorator },
-		productInfo: { price = -1, promote_price = -1, member_price = -1 },
+		productInfo: { price = -1, promotePrice = -1, memberPrice = -1 },
 		// productPriceExtra,
 		// remove,
 	} = props;
@@ -42,12 +42,12 @@ const ProductCUPrice = props => {
 				</Col>
 
 				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.promote_price' })}>
-						{getFieldDecorator('promote_price', {
+					<Form.Item label={formatMessage({ id: 'basicData.product.promotePrice' })}>
+						{getFieldDecorator('promotePrice', {
 							initialValue:
-								parseInt(promote_price, 10) < 0
+								parseInt(promotePrice, 10) < 0
 									? null
-									: parseFloat(promote_price).toFixed(2),
+									: parseFloat(promotePrice).toFixed(2),
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -67,12 +67,12 @@ const ProductCUPrice = props => {
 
 			<Row>
 				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.member_price' })}>
-						{getFieldDecorator('member_price', {
+					<Form.Item label={formatMessage({ id: 'basicData.product.memberPrice' })}>
+						{getFieldDecorator('memberPrice', {
 							initialValue:
-								parseInt(member_price, 10) < 0
+								parseInt(memberPrice, 10) < 0
 									? null
-									: parseFloat(member_price).toFixed(2),
+									: parseFloat(memberPrice).toFixed(2),
 							validateTrigger: 'onBlur',
 							rules: [
 								{

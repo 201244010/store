@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Button, Row, Col, Card } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
+import { melt } from '@konata9/milk-shake';
 import ProductCUBasic from './ProductCU-Basic';
 import ProductCUWeight from './ProductCU-Weight';
 import ProductCUPrice from './ProductCU-Price';
@@ -12,6 +13,7 @@ import * as styles from './ProductManagement.less';
 
 @connect(
 	state => ({
+		loading: state.loading,
 		product: state.basicDataProduct,
 	}),
 	dispatch => ({
@@ -43,11 +45,12 @@ class ProductCU extends Component {
 		} else if (action === 'edit') {
 			const productId = idDecode(id);
 			const response = await getProductDetail({
-				options: { product_id: productId },
+				options: { productId },
 			});
 			if (response && response.code === ERROR_OK) {
 				const result = response.data || {};
 				this.setState({
+					productType: result.Type || 0,
 					productBasicExtra: result.extra_info,
 					productPriceExtra: result.extra_price_info,
 				});
@@ -97,13 +100,26 @@ class ProductCU extends Component {
 			form: { validateFields, setFields },
 		} = this.props;
 		validateFields(async (err, values) => {
-			console.log(values);
 			if (!err) {
+				const meltedValues = values.weighInfo
+					? melt([
+						{
+							target: 'weighInfo.exttextNo',
+							rule: (data, params) => {
+								Object.keys(data).forEach((key, index) => {
+									params.weighInfo[`exttextNo${index + 1}`] = data[key];
+								});
+								return {};
+							},
+						},
+					  ])(values)
+					: values;
+
 				const response = await submitFunction[action]({
 					options: {
-						...values,
+						...meltedValues,
 						fromPage,
-						product_id: id,
+						productId: id,
 					},
 				});
 				if (response && response.code === PRODUCT_SEQ_EXIST) {
@@ -142,11 +158,15 @@ class ProductCU extends Component {
 		const {
 			form,
 			product: { productInfo },
+			loading,
 		} = this.props;
 		const action = getLocationParam('action');
 
 		return (
-			<Card className={styles['content-container']}>
+			<Card
+				className={styles['content-container']}
+				loading={loading.effects['basicDataProduct/getProductDetail']}
+			>
 				<Form
 					{...{
 						...FORM_ITEM_LAYOUT,

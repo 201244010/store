@@ -72,8 +72,8 @@ const ProductCUWeight = props => {
 		>
 			<Row>
 				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.PLU' })}>
-						{getFieldDecorator('pluCode', {
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.pluCode' })}>
+						{getFieldDecorator('weighInfo.pluCode', {
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -96,10 +96,10 @@ const ProductCUWeight = props => {
 						<Row>
 							<Col span={8}>
 								<Form.Item style={noneBottom}>
-									{getFieldDecorator('isDiscount')(
+									{getFieldDecorator('weighInfo.isDiscount')(
 										<Checkbox>
 											{formatMessage({
-												id: 'basicData.weightProduct.discount.admit',
+												id: 'basicData.weightProduct.isDiscount',
 											})}
 										</Checkbox>
 									)}
@@ -107,10 +107,10 @@ const ProductCUWeight = props => {
 							</Col>
 							<Col span={8}>
 								<Form.Item style={noneBottom}>
-									{getFieldDecorator('isAlterPrice')(
+									{getFieldDecorator('weighInfo.isAlterPrice')(
 										<Checkbox>
 											{formatMessage({
-												id: 'basicData.weightProduct.priceChange.admit',
+												id: 'basicData.weightProduct.isAlterPrice',
 											})}
 										</Checkbox>
 									)}
@@ -118,10 +118,10 @@ const ProductCUWeight = props => {
 							</Col>
 							<Col span={8}>
 								<Form.Item style={noneBottom}>
-									{getFieldDecorator('isPrintTraceCode')(
+									{getFieldDecorator('weighInfo.isPrintTraceCode')(
 										<Checkbox>
 											{formatMessage({
-												id: 'basicData.weightProduct.print.code',
+												id: 'basicData.weightProduct.isPrintTraceCode',
 											})}
 										</Checkbox>
 									)}
@@ -134,10 +134,8 @@ const ProductCUWeight = props => {
 
 			<Row>
 				<Col span={12}>
-					<Form.Item
-						label={formatMessage({ id: 'basicData.weightProduct.printLabel.number' })}
-					>
-						{getFieldDecorator('labelCode', {
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.labelCode' })}>
+						{getFieldDecorator('weighInfo.labelCode', {
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -159,10 +157,8 @@ const ProductCUWeight = props => {
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item
-						label={formatMessage({ id: 'basicData.weightProduct.barCode.number' })}
-					>
-						{getFieldDecorator('barCodeCode', {
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.barcodeCode' })}>
+						{getFieldDecorator('weighInfo.barcodeCode', {
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -187,10 +183,8 @@ const ProductCUWeight = props => {
 
 			<Row>
 				<Col span={12}>
-					<Form.Item
-						label={formatMessage({ id: 'basicData.weightProduct.weight.price' })}
-					>
-						{getFieldDecorator('chargeUnit', {
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.chargeUnit' })}>
+						{getFieldDecorator('weighInfo.chargeUnit', {
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -214,8 +208,10 @@ const ProductCUWeight = props => {
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.weight' })}>
-						{getFieldDecorator('productWeigh', {
+					<Form.Item
+						label={formatMessage({ id: 'basicData.weightProduct.productWeigh' })}
+					>
+						{getFieldDecorator('weighInfo.productWeigh', {
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -235,8 +231,8 @@ const ProductCUWeight = props => {
 
 			<Row>
 				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.tare.number' })}>
-						{getFieldDecorator('tareCode', {
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.tareCode' })}>
+						{getFieldDecorator('weighInfo.tareCode', {
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -259,7 +255,7 @@ const ProductCUWeight = props => {
 				</Col>
 				<Col span={12}>
 					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.tare' })}>
-						{getFieldDecorator('tare', {
+						{getFieldDecorator('weighInfo.tare', {
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -287,13 +283,13 @@ const ProductCUWeight = props => {
 						<Row>
 							<Col span={10}>
 								<Form.Item>
-									{getFieldDecorator('packDist', {
+									{getFieldDecorator('weighInfo.packDist', {
 										valuePropName: 'checked',
 										initialValue: true,
 									})(
 										<Checkbox>
 											{formatMessage({
-												id: 'basicData.weightProduct.wrapDate.enable',
+												id: 'basicData.weightProduct.packDist',
 											})}
 										</Checkbox>
 									)}
@@ -302,12 +298,12 @@ const ProductCUWeight = props => {
 							<Col span={14}>
 								<Form.Item
 									label={formatMessage({
-										id: 'basicData.weightProduct.wrapDate.type',
+										id: 'basicData.weightProduct.packType',
 									})}
 									labelCol={{ span: 10 }}
 									wrapperCol={{ span: 14 }}
 								>
-									{getFieldDecorator('packType', {
+									{getFieldDecorator('weighInfo.packType', {
 										initialValue: selectedPackType,
 									})(
 										<Select
@@ -332,12 +328,12 @@ const ProductCUWeight = props => {
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item
-						label={formatMessage({ id: 'basicData.weightProduct.wrapDate.date' })}
-					>
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.packDays' })}>
 						{selectedPackType === 1
-							? getFieldDecorator('packDays', {})(<DatePicker format={dateFormat} />)
-							: getFieldDecorator('packDays', {
+							? getFieldDecorator('weighInfo.packDays', {})(
+								<DatePicker format={dateFormat} />
+							  )
+							: getFieldDecorator('weighInfo.packDays', {
 								validateTrigger: 'onBlur',
 								rules: [
 									{
@@ -361,13 +357,13 @@ const ProductCUWeight = props => {
 						<Row>
 							<Col span={10}>
 								<Form.Item>
-									{getFieldDecorator('usebyDist', {
+									{getFieldDecorator('weighInfo.usebyDist', {
 										valuePropName: 'checked',
 										initialValue: true,
 									})(
 										<Checkbox>
 											{formatMessage({
-												id: 'basicData.weightProduct.suggestDate.enable',
+												id: 'basicData.weightProduct.usebyDist',
 											})}
 										</Checkbox>
 									)}
@@ -376,12 +372,12 @@ const ProductCUWeight = props => {
 							<Col span={14}>
 								<Form.Item
 									label={formatMessage({
-										id: 'basicData.weightProduct.suggestDate.type',
+										id: 'basicData.weightProduct.usebyType',
 									})}
 									labelCol={{ span: 10 }}
 									wrapperCol={{ span: 14 }}
 								>
-									{getFieldDecorator('usebyType', {
+									{getFieldDecorator('weighInfo.usebyType', {
 										initialValue: selectedUseByType,
 									})(
 										<Select
@@ -406,14 +402,14 @@ const ProductCUWeight = props => {
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item
-						label={formatMessage({ id: 'basicData.weightProduct.suggestDate.date' })}
-					>
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.usebyDays' })}>
 						{selectedUseByType === 1 &&
-							getFieldDecorator('usebyDays', {})(<DatePicker format={dateFormat} />)}
+							getFieldDecorator('weighInfo.usebyDays', {})(
+								<DatePicker format={dateFormat} />
+							)}
 
 						{selectedUseByType === 2 &&
-							getFieldDecorator('usebyDays', {
+							getFieldDecorator('weighInfo.usebyDays', {
 								validateTrigger: 'onBlur',
 								rules: [
 									{
@@ -429,7 +425,9 @@ const ProductCUWeight = props => {
 							})(<Input />)}
 
 						{selectedUseByType === 3 &&
-							getFieldDecorator('usebyDays', {})(<TimePicker format={timeFormat} />)}
+							getFieldDecorator('weighInfo.usebyDays', {})(
+								<TimePicker format={timeFormat} />
+							)}
 					</Form.Item>
 				</Col>
 			</Row>
@@ -440,13 +438,13 @@ const ProductCUWeight = props => {
 						<Row>
 							<Col span={10}>
 								<Form.Item>
-									{getFieldDecorator('limitDist', {
+									{getFieldDecorator('weighInfo.limitDist', {
 										valuePropName: 'checked',
 										initialValue: true,
 									})(
 										<Checkbox>
 											{formatMessage({
-												id: 'basicData.weightProduct.bestBeforeDate.enable',
+												id: 'basicData.weightProduct.limitDist',
 											})}
 										</Checkbox>
 									)}
@@ -455,12 +453,12 @@ const ProductCUWeight = props => {
 							<Col span={14}>
 								<Form.Item
 									label={formatMessage({
-										id: 'basicData.weightProduct.bestBeforeDate.type',
+										id: 'basicData.weightProduct.limitType',
 									})}
 									labelCol={{ span: 10 }}
 									wrapperCol={{ span: 14 }}
 								>
-									{getFieldDecorator('limitType', {
+									{getFieldDecorator('weighInfo.limitType', {
 										initialValue: selectedLimitType,
 									})(
 										<Select
@@ -485,14 +483,14 @@ const ProductCUWeight = props => {
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item
-						label={formatMessage({ id: 'basicData.weightProduct.bestBeforeDate.date' })}
-					>
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.limitDays' })}>
 						{selectedLimitType === 1 &&
-							getFieldDecorator('limitDays', {})(<DatePicker format={dateFormat} />)}
+							getFieldDecorator('weighInfo.limitDays', {})(
+								<DatePicker format={dateFormat} />
+							)}
 
 						{selectedLimitType === 2 &&
-							getFieldDecorator('limitDays', {
+							getFieldDecorator('weighInfo.limitDays', {
 								validateTrigger: 'onBlur',
 								rules: [
 									{
@@ -508,17 +506,17 @@ const ProductCUWeight = props => {
 							})(<Input />)}
 
 						{selectedLimitType === 3 &&
-							getFieldDecorator('limitDays', {})(<TimePicker format={timeFormat} />)}
+							getFieldDecorator('weighInfo.limitDays', {})(
+								<TimePicker format={timeFormat} />
+							)}
 					</Form.Item>
 				</Col>
 			</Row>
 
 			<Row>
 				<Col span={12}>
-					<Form.Item
-						label={formatMessage({ id: 'basicData.weightProduct.extraText.number' })}
-					>
-						{getFieldDecorator('exttextCode', {
+					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.exttextCode' })}>
+						{getFieldDecorator('weighInfo.exttextCode', {
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -552,7 +550,7 @@ const ProductCUWeight = props => {
 					colon={index === 0}
 					{...FORM_ITEM_LAYOUT_TWICE}
 				>
-					{getFieldDecorator(`exttextNo.${key}`, {})(
+					{getFieldDecorator(`weighInfo.exttextNo.${key}`, {})(
 						<Input.TextArea
 							maxLength={500}
 							autosize={{ minRows: 2, maxRows: 4 }}

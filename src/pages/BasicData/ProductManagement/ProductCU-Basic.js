@@ -34,18 +34,18 @@ const ProductCUBasic = props => {
 		form: { getFieldDecorator },
 		// form,
 		productInfo: {
-			seq_num = '',
-			bar_code = '',
+			seqNum = '',
+			barCode = '',
 			name = '',
 			alias = '',
-			Type = 0,
+			type = 0,
 			unit = formatMessage({ id: 'basicData.product.unit.box' }),
 			spec = '',
 			area = '',
 			level = '',
 			brand = '',
-			expire_time = '',
-			qr_code = '',
+			expireTime = '',
+			qrCode = '',
 		},
 		onSelectChange,
 		// productBasicExtra,
@@ -55,9 +55,9 @@ const ProductCUBasic = props => {
 		<Card title={formatMessage({ id: 'basicData.product.detail.title' })} bordered={false}>
 			<Row>
 				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.seq_num' })}>
-						{getFieldDecorator('seq_num', {
-							initialValue: seq_num,
+					<Form.Item label={formatMessage({ id: 'basicData.product.seqNum' })}>
+						{getFieldDecorator('seqNum', {
+							initialValue: seqNum,
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -78,9 +78,9 @@ const ProductCUBasic = props => {
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.bar_code' })}>
-						{getFieldDecorator('bar_code', {
-							initialValue: bar_code,
+					<Form.Item label={formatMessage({ id: 'basicData.product.barCode' })}>
+						{getFieldDecorator('barCode', {
+							initialValue: barCode,
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -124,15 +124,15 @@ const ProductCUBasic = props => {
 
 			<Row>
 				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.Type' })}>
-						{getFieldDecorator('Type', {
-							initialValue: Type,
+					<Form.Item label={formatMessage({ id: 'basicData.product.type' })}>
+						{getFieldDecorator('type', {
+							initialValue: type,
 						})(
 							<Select onChange={onSelectChange}>
-								{productTypes.map(type => (
-									<Select.Option key={type.key} value={type.value}>
+								{productTypes.map(item => (
+									<Select.Option key={item.key} value={item.value}>
 										{formatMessage({
-											id: `basicData.product.type.${type.key}`,
+											id: `basicData.product.type.${item.key}`,
 										})}
 									</Select.Option>
 								))}
@@ -195,9 +195,9 @@ const ProductCUBasic = props => {
 
 			<Row>
 				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.expire_time' })}>
-						{getFieldDecorator('expire_time', {
-							initialValue: expire_time > 0 ? expire_time : '',
+					<Form.Item label={formatMessage({ id: 'basicData.product.expireTime' })}>
+						{getFieldDecorator('expireTime', {
+							initialValue: expireTime > 0 ? expireTime : '',
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -221,9 +221,9 @@ const ProductCUBasic = props => {
 					</Form.Item>
 				</Col>
 				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.qr_code' })}>
-						{getFieldDecorator('qr_code', {
-							initialValue: qr_code,
+					<Form.Item label={formatMessage({ id: 'basicData.product.qrCode' })}>
+						{getFieldDecorator('qrCode', {
+							initialValue: qrCode,
 						})(<Input maxLength={MAX_LENGTH['200']} />)}
 					</Form.Item>
 				</Col>
