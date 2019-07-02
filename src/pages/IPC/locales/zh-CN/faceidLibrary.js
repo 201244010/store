@@ -45,4 +45,11 @@ export default {
 	'faceid.confirm': '确认',
 	'faceid.cancel': '取消',
 	'facied.rules': '规则',
+
+	'facied.createSuccess': '创建人脸库成功！',
+	'facied.createFailed': '人脸库创建失败，请检查网络后重试。',
+	'facied.updateSuccess': '编辑成功！',
+	'facied.updateFailed': '操作失败，请检查网络后重试。',
+	'facied.deleteSuccess': '删除人脸库成功！',
+	'facied.deleteFailed': '删除失败，请检查网络后重试。',
 };
