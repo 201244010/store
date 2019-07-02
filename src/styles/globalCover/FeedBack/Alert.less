@@ -1,18 +1,20 @@
 :global {
-	.ant-alert-info {
-		background-color: #e0ecff;
-		border: 1px solid #759fff;
-	}
-	.ant-alert-info .ant-alert-icon {
-		color: #4b7afa;
-	}
-	.ant-alert-success .ant-alert-icon {
-		color: #6dd13b;
-	}
-	.ant-alert-warning .ant-alert-icon {
-		color: #ffcc33;
-	}
-	.ant-alert-error .ant-alert-icon {
-		color: #ff3838;
+	.ant-alert {
+		&-info {
+			background-color: #e0ecff;
+			border: 1px solid #759fff;
+			.ant-alert-icon {
+				color: #4b7afa;
+			}
+		}
+		&-success .ant-alert-icon {
+			color: #6dd13b;
+		}
+		&-warning .ant-alert-icon {
+			color: #ffcc33;
+		}
+		&-error .ant-alert-icon {
+			color: #ff3838;
+		}
 	}
 }

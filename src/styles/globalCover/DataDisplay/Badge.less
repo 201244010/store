@@ -8,22 +8,24 @@
 	.ant-badge-dot {
 		background: #ff3838;
 	}
-	.ant-badge-status-default {
-		background-color: #a1a7b3;
-	}
-	.ant-badge-status-processing {
-		background-color: #4b7afa;
-	}
-	.ant-badge-status-processing::after {
-		border: 1px solid #4b7afa;
-	}
-	.ant-badge-status-warning {
-		background-color: #ffcc33;
-	}
-	.ant-badge-status-success {
-		background-color: #6dd13b;
-	}
-	.ant-badge-status-error {
-		background-color: #ff3838;
+	.ant-badge-status {
+		&-default {
+			background-color: #a1a7b3;
+		}
+		&-processing {
+			background-color: #4b7afa;
+			&::after {
+				border: 1px solid #4b7afa;
+			}
+		}
+		&-warning {
+			background-color: #ffcc33;
+		}
+		&-success {
+			background-color: #6dd13b;
+		}
+		&-error {
+			background-color: #ff3838;
+		}
 	}
 }

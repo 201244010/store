@@ -1,18 +1,24 @@
 :global {
-	.has-error .ant-input:focus {
-		border-color: #ff3838;
-		-webkit-box-shadow: 0 0 0 2px rgba(255, 102, 97, 0.1);
-		box-shadow: 0 0 0 2px rgba(255, 102, 97, 0.1);
-	}
-	.has-error .ant-input,
-	.has-error .ant-input:hover {
-		border-color: #ff3838;
-	}
-	.has-error .ant-input:not([disabled]):hover {
-		border-color: #ff3838;
-	}
-	.has-error .ant-form-explain,
-	.has-error .ant-form-split {
-		color: #ff3838;
+	.has-error {
+		.ant-input {
+			border-color: #ff3838;
+			&:focus {
+				border-color: #ff3838;
+				-webkit-box-shadow: 0 0 0 2px rgba(255, 102, 97, 0.1);
+				box-shadow: 0 0 0 2px rgba(255, 102, 97, 0.1);
+			}
+			&:hover {
+				border-color: #ff3838;
+			}
+			&:not([disabled]) {
+				&:hover {
+					border-color: #ff3838;
+				}
+			}
+		}
+		.ant-form-explain,
+		.ant-form-split {
+			color: #ff3838;
+		}
 	}
 }
