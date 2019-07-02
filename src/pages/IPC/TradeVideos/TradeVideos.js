@@ -504,7 +504,8 @@ class TradeVideos extends React.Component {
 										label={formatMessage({ id: 'tradeVideos.tradeDate' })} // '交易日期'
 									>
 										{getFieldDecorator('tradeDate', {
-											initialValue: [moment().subtract(30, 'days'), moment()],
+											// initialValue: [moment().subtract(30, 'days'), moment()],
+											initialValue: [moment(), moment()],
 										})(
 											<RangePicker
 												// defaultValue={[moment().subtract(1, 'days'), moment()]}

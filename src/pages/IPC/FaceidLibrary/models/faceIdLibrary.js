@@ -1,5 +1,5 @@
 // import { routerRedux } from 'dva/router';
-import { message } from 'antd';
+// import { message } from 'antd';
 import {
 	createLibrary,
 	readLibrary,
@@ -98,17 +98,18 @@ export default {
 				// 	type: 'createData',
 				// 	payload: faceidList.map(dataFormatter)
 				// });
-
 				yield put({
 					type: 'read'
 				});
 
 
-				message.success('创建人脸库成功');
+				// message.success('创建人脸库成功');
 				// yield put(routerRedux.push('/faceidLibrary/faceidLibraryList'));
-			} else{
-				message.error('人脸库创建失败，请检查网络');
 			}
+			return response.code;
+			// else{
+			// 	message.error('人脸库创建失败，请检查网络');
+			// }
 		},
 		*read(action, { put }) {
 			// console.log(action);
@@ -139,9 +140,11 @@ export default {
 					type: 'readData',
 					payload: response.data,
 				});
-			} else {
-				message.error('操作失败，请检查网络');
 			}
+			// else {
+			// 	message.error('操作失败，请检查网络');
+			// }
+			return response.code;
 		},
 		*update(action, { put }) {
 			// console.log('update');
@@ -171,14 +174,16 @@ export default {
 			});
 
 			if (response.code === ERROR_OK) {
-				message.success('编辑成功');
+				// message.success('编辑成功');
 				yield put({
 					type: 'updateData',
 					payload: library,
 				});
-			} else {
-				message.error('操作失败，请检查网络');
 			}
+			// else {
+			// 	message.error('操作失败，请检查网络');
+			// }
+			return response.code;
 		},
 		*delete(action, { put }) {
 			const { payload } = action;
@@ -212,12 +217,12 @@ export default {
 						id,
 					},
 				});
-
-				message.success('删除人脸库成功');
 				// message.success('删除人脸库成功！');
-			} else {
-				message.error('删除失败，请检查网络连接');
 			}
+			// else {
+			// 	message.error('删除失败，请检查网络连接');
+			// }
+			return response.code;
 		},
 	},
 };

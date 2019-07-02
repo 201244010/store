@@ -319,7 +319,7 @@ class MotionList extends React.Component {
 										{
 											getFieldDecorator('dateRange', {
 												initialValue: [
-													moment().subtract(7, 'days'),
+													moment(),
 													moment()
 												]
 											})(
