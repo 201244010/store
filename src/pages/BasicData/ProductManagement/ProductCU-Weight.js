@@ -16,28 +16,16 @@ import { customValidate } from '@/utils/customValidate';
 import { MAX_LENGTH, FORM_ITEM_LAYOUT_TWICE } from '@/constants/form';
 import { getRandomString } from '@/utils/utils';
 import moment from 'moment';
+import {
+	chargeUnitType,
+	dateFormat,
+	timeFormat,
+	packDateType,
+	usebyDateType,
+	limitDateType,
+} from './constants';
 
 const noneBottom = { marginBottom: 0 };
-
-const chargeUnitType = [
-	{ key: 'count', value: '1' },
-	{ key: 'kg', value: '2' },
-	{ key: '100g', value: '3' },
-	{ key: '500g', value: '4' },
-];
-const dateFormat = 'YYYY-MM-DD';
-const timeFormat = 'HH:mm';
-const packDateType = [{ key: 'date', value: '1' }, { key: 'days', value: '2' }];
-const usebyDateType = [
-	{ key: 'date', value: '1' },
-	{ key: 'days', value: '2' },
-	{ key: 'time', value: '3' },
-];
-const limitDateType = [
-	{ key: 'date', value: '1' },
-	{ key: 'days', value: '2' },
-	{ key: 'time', value: '3' },
-];
 
 const ProductCUWeight = props => {
 	const {
@@ -422,7 +410,13 @@ const ProductCUWeight = props => {
 											}),
 									},
 								],
-							  })(<Input />)}
+							  })(
+								<Input
+									suffix={formatMessage({
+										id: 'basicData.product.expire_time.day',
+									})}
+								/>
+							  )}
 					</Form.Item>
 				</Col>
 			</Row>
@@ -499,7 +493,13 @@ const ProductCUWeight = props => {
 											}),
 									},
 								],
-							})(<Input />)}
+							})(
+								<Input
+									suffix={formatMessage({
+										id: 'basicData.product.expire_time.day',
+									})}
+								/>
+							)}
 
 						{selectedUseByType === '3' &&
 							getFieldDecorator('weighInfo.usebyDays', {
@@ -581,7 +581,13 @@ const ProductCUWeight = props => {
 											}),
 									},
 								],
-							})(<Input />)}
+							})(
+								<Input
+									suffix={formatMessage({
+										id: 'basicData.product.expire_time.day',
+									})}
+								/>
+							)}
 
 						{selectedLimitType === '3' &&
 							getFieldDecorator('weighInfo.limitDays', {

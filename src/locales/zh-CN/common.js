@@ -49,4 +49,6 @@ export default {
 	'select.all': '全部',
 	'select.placeholder': '请选择',
 	'safety.validate': '安全验证',
+	'text.yes': '是',
+	'text.no': '否',
 };
