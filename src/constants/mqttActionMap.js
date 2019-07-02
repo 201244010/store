@@ -5,7 +5,6 @@ export const ACTION_MAP = {
 	'notif-ap-offline-btn1': ({ goToPath }) => goToPath('baseStation'),
 	'notif-motion-detect-btn1': ({ params }) => {
 		const { url = null, device_model = null } = convertArrayPrams(params);
-		console.log(url, device_model);
 		return {
 			action: 'showMotionVideo',
 			payload: { url, ipcType: device_model },

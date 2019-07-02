@@ -65,11 +65,16 @@ function MQTTWrapper(WrapperedComponent) {
 			});
 		};
 
-		handleAction = (action, paramsStr) => {
+		handleAction = (action, paramsStr, extra = {}) => {
 			const { goToPath } = this.props;
+			const { key = null } = extra;
 			if (action) {
 				const handler = ACTION_MAP[action] || (() => null);
-				const result = handler({ handlers: { goToPath }, params: paramsStr });
+				const result = handler({
+					handlers: { goToPath, removeNotification: this.removeNotification },
+					params: paramsStr,
+					extra: { from: 'mqtt', key },
+				});
 
 				const { action: resultAction = null, payload = {} } = result || {};
 				if (resultAction === 'showMotionVideo') {

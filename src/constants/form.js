@@ -43,6 +43,17 @@ export const FORM_ITEM_LAYOUT = {
 	},
 };
 
+export const FORM_ITEM_DETAIL = {
+	labelCol: {
+		sm: { span: 24 },
+		md: { span: 4 },
+	},
+	wrapperCol: {
+		sm: { span: 24 },
+		md: { span: 20 },
+	},
+};
+
 export const FORM_ITEM_LAYOUT_TWICE = {
 	labelCol: {
 		sm: { span: 24 },
