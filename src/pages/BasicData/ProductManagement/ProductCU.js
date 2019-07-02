@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Form, Button, Row, Col, Card } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { melt } from '@konata9/milk-shake';
+import { melt, format, map, shake } from '@konata9/milk-shake';
+import moment from 'moment';
 import ProductCUBasic from './ProductCU-Basic';
 import ProductCUWeight from './ProductCU-Weight';
 import ProductCUPrice from './ProductCU-Price';
@@ -48,11 +49,14 @@ class ProductCU extends Component {
 				options: { productId },
 			});
 			if (response && response.code === ERROR_OK) {
-				const result = response.data || {};
+				const result = map([{ from: 'Type', to: 'type' }])(
+					format('toCamel')(response.data || {})
+				);
+				console.log(result);
 				this.setState({
-					productType: result.Type || 0,
-					productBasicExtra: result.extra_info,
-					productPriceExtra: result.extra_price_info,
+					productType: result.type || 0,
+					productBasicExtra: result.extraInfo,
+					productPriceExtra: result.extraPriceInfo,
 				});
 			}
 		}
@@ -80,6 +84,119 @@ class ProductCU extends Component {
 		});
 	};
 
+	formatSubmitValue = values => {
+		const { weighInfo } = values;
+
+		let formattedValue = values;
+
+		if (weighInfo) {
+			formattedValue = shake(formattedValue)(
+				format('toCamel'),
+				melt([
+					{
+						target: 'weighInfo.exttextNo',
+						rule: (data, params) => {
+							if (data) {
+								Object.keys(data).forEach((key, index) => {
+									params.weighInfo[`exttextNo${index + 1}`] = data[key];
+								});
+							}
+							return {};
+						},
+					},
+				]),
+				map([
+					{
+						from: 'weighInfo.isDiscount',
+						to: 'weighInfo.isDiscount',
+						rule: data => (data ? 1 : 0),
+					},
+					{
+						from: 'weighInfo.isAlterPrice',
+						to: 'weighInfo.isAlterPrice',
+						rule: data => (data ? 1 : 0),
+					},
+					{
+						from: 'weighInfo.isPrintTraceCode',
+						to: 'weighInfo.isPrintTraceCode',
+						rule: data => (data ? 1 : 0),
+					},
+					{
+						from: 'weighInfo.packDist',
+						to: 'weighInfo.packDist',
+						rule: data => (data ? 1 : 0),
+					},
+					{
+						from: 'weighInfo.packDays',
+						to: 'weighInfo.packDays',
+						rule: data => {
+							const {
+								weighInfo: { packDays },
+							} = values;
+							if (data && moment.isMoment(packDays)) {
+								return packDays.format('YYYY-MM-DD');
+							}
+							return data;
+						},
+					},
+					{
+						from: 'weighInfo.usebyDist',
+						to: 'weighInfo.usebyDist',
+						rule: data => (data ? 1 : 0),
+					},
+					{
+						from: 'weighInfo.usebyDays',
+						to: 'weighInfo.usebyDays',
+						rule: data => {
+							const {
+								weighInfo: { usebyType, usebyDays },
+							} = values;
+							if (data && moment.isMoment(usebyDays)) {
+								return usebyType === '1'
+									? usebyDays.format('YYYY-MM-DD')
+									: usebyDays.format('HH:mm');
+							}
+							return data;
+						},
+					},
+					{
+						from: 'weighInfo.limitDist',
+						to: 'weighInfo.limitDist',
+						rule: data => (data ? 1 : 0),
+					},
+					{
+						from: 'weighInfo.limitDays',
+						to: 'weighInfo.limitDays',
+						rule: data => {
+							const {
+								weighInfo: { limitType, limitDays },
+							} = values;
+
+							if (data && moment.isMoment(limitDays)) {
+								return limitType === '1'
+									? limitDays.format('YYYY-MM-DD')
+									: limitDays.format('HH:mm');
+							}
+							return data;
+						},
+					},
+				])
+			);
+		}
+
+		formattedValue = shake(formattedValue)(
+			format('toCamel'),
+			map([
+				{ from: 'expireTime', to: 'expireTime', rule: data => data || -1 },
+				{ from: 'price', to: 'price', rule: data => data || -1 },
+				{ from: 'promotePrice', to: 'promotePrice', rule: data => data || -1 },
+				{ from: 'memberPrice', to: 'memberPrice', rule: data => data || -1 },
+			])
+		);
+
+		return formattedValue;
+	};
+
 	onSubmit = () => {
 		const {
 			createProduct,
@@ -101,23 +218,10 @@ class ProductCU extends Component {
 		} = this.props;
 		validateFields(async (err, values) => {
 			if (!err) {
-				const meltedValues = values.weighInfo
-					? melt([
-						{
-							target: 'weighInfo.exttextNo',
-							rule: (data, params) => {
-								Object.keys(data).forEach((key, index) => {
-									params.weighInfo[`exttextNo${index + 1}`] = data[key];
-								});
-								return {};
-							},
-						},
-					  ])(values)
-					: values;
-
+				const submitValue = this.formatSubmitValue(values);
 				const response = await submitFunction[action]({
 					options: {
-						...meltedValues,
+						...submitValue,
 						fromPage,
 						productId: id,
 					},
@@ -182,7 +286,7 @@ class ProductCU extends Component {
 						}}
 					/>
 
-					{productType === 1 ? <ProductCUWeight {...{ form }} /> : <></>}
+					{productType === 1 && <ProductCUWeight {...{ form, productInfo, action }} />}
 
 					<ProductCUPrice
 						{...{

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { PRODUCT_TYPE } from '@/constants/mapping';
-import * as styles from './ProductManagement.less';
+import styles from './ProductManagement.less';
 
 const ProductInfoBasic = props => {
 	const { productBasic = [], productBasicExtra = [] } = props;

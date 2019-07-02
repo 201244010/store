@@ -79,7 +79,6 @@ class EmployeeList extends Component {
 		} = this.props;
 
 		const { orgnizationTree } = this.state;
-		console.log(orgnizationTree);
 
 		// TODO 等待接口联调渲染页面
 		return (
