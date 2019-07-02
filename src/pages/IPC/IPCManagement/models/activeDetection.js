@@ -164,7 +164,7 @@ const paramSerializer = (item) => {
 export default {
 	namespace: 'activeDetection',
 	state: {
-		readFlag: true,
+		readFlag: false,
 		updateFlag: false,
 		startTime: 0,// moment('21:00','HH:mm'),
 		endTime: 0,// moment('09:00','HH:mm'),
@@ -202,6 +202,9 @@ export default {
 				...state,
 				updateFlag: false
 			};
+		},
+		updateReadingFlag (state, { payload: { flag }} ) {
+			state.readFlag = flag;
 		}
 	},
 	effects: {
@@ -234,6 +237,13 @@ export default {
 							sn
 						}
 					}
+				}
+			});
+
+			yield put({
+				type: 'updateReadingFlag',
+				payload: {
+					flag: true
 				}
 			});
 		},
