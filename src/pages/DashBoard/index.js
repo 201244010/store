@@ -114,7 +114,7 @@ class DashBoard extends Component {
 			},
 			fetchAllData,
 			setSearchValue,
-			goToPath
+			goToPath,
 		} = this.props;
 
 		return (
@@ -138,11 +138,12 @@ class DashBoard extends Component {
 							productOverview,
 							deviceOverView,
 							ipcOverView,
-							goToPath
+							goToPath,
 						}}
 					/>
 					<CardBar
 						{...{
+							searchValue,
 							totalAmount,
 							totalCount,
 							totalRefund,

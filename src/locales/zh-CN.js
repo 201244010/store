@@ -25,6 +25,7 @@ import productManagement from './zh-CN/BasicData-product';
 import merchantManagement from './zh-CN/merchant';
 
 import roleManagement from './zh-CN/role';
+import employee from './zh-CN/employee';
 
 export default {
 	'navBar.lang': '语言',
@@ -57,4 +58,5 @@ export default {
 	...studio,
 	...roleManagement,
 	...dashBoard,
+	...employee,
 };

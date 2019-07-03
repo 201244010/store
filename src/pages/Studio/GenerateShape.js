@@ -305,7 +305,7 @@ export default function generateShape(option) {
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
 							height: MAPS.containerHeight[option.type] * option.scaleY * option.zoomScale,
-							lineHeight: (MAPS.containerHeight[option.type] * option.scaleY) / option.fontSize,
+							// lineHeight: (MAPS.containerHeight[option.type] * option.scaleY) / option.fontSize,
 							draggable: true,
 							onDblClick: option.onDblClick,
 						}}
@@ -344,7 +344,8 @@ export default function generateShape(option) {
 							sceneFunc(context) {
 								const intPriceText = `${option.text}`.split('.')[0];
 								const smallPriceText = `${option.text}`.split('.')[1] || '';
-								const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY - option.fontSize) * option.zoomScale) / 2;
+								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY - option.fontSize) * option.zoomScale) / 2;
+								const yPosition = 0;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
@@ -357,7 +358,7 @@ export default function generateShape(option) {
 								const smallXPosition = intXPosition + intTextWidth;
 
 								context.font = `${option.fontStyle} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.textBaseline = 'top';
+								context.textBaseline = 'hanging';
 								context.fillStyle = option.fill;
 								context.fillText(`${option.text ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
 								context.font = `${option.fontStyle} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
@@ -403,7 +404,8 @@ export default function generateShape(option) {
 							sceneFunc(context) {
 								const intPriceText = `${option.text}`.split('.')[0];
 								const smallPriceText = `${option.text}`.split('.')[1] || '';
-								const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY + option.fontSize) * option.zoomScale) / 2;
+								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY + option.fontSize) * option.zoomScale) / 2;
+								const yPosition = option.fontSize * option.zoomScale * 0.72;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
@@ -416,7 +418,7 @@ export default function generateShape(option) {
 								const smallXPosition = intXPosition + intTextWidth;
 
 								context.font = `${option.fontStyle} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.textBaseline = 'bottom';
+								context.textBaseline = 'alphabetic';
 								context.fillStyle = option.fill;
 								context.fillText(`${option.text ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
 								context.font = `${option.fontStyle} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;

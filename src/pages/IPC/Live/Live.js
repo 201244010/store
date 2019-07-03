@@ -20,28 +20,38 @@ const pixelRatioMap = {
 };
 
 @connect((state) => {
-	const { faceid: { rectangles, list }, live: { url, ppi, streamId, ppiChanged }, videoSources } = state;
-
-	// console.log('rectangles: ', rectangles);
+	const { faceid: { rectangles, list }, live: { url, ppi, streamId, ppiChanged, timeSlots }, /* videoSources */ } = state;
 	return {
 		liveUrl: url,
 		streamId,
 		ppiChanged,
 		currentPPI: ppi || '1080',
-		sources: videoSources || [],
+		// sources: videoSources || [],
 		faceidRects: rectangles || [],
-		faceidList: list || []
+		faceidList: list || [],
+		timeSlots: timeSlots || []
 	};
 }, (dispatch) => ({
-	loadVideoSources({sn, timeStart, timeEnd}) {
-		dispatch({
-			type: 'videoSources/read',
+	// loadVideoSources({sn, timeStart, timeEnd}) {
+	// 	dispatch({
+	// 		type: 'videoSources/read',
+	// 		payload: {
+	// 			sn,
+	// 			timeStart,
+	// 			timeEnd
+	// 		}
+	// 	});
+	// },
+	async getTimeSlots({sn, timeStart, timeEnd}) {
+		const result = await dispatch({
+			type: 'live/getTimeSlots',
 			payload: {
 				sn,
 				timeStart,
 				timeEnd
 			}
 		});
+		return result;
 	},
 	startLive({ sn }) {
 		dispatch({
@@ -76,6 +86,26 @@ const pixelRatioMap = {
 				sn
 			}
 		});
+	},
+	async getHistoryUrl({ timestamp, sn }) {
+		// console.log('getHistoryUrl');
+		const url = await dispatch({
+			type: 'live/getHistoryUrl',
+			payload: {
+				timestamp,
+				sn
+			}
+		});
+		// console.log(url);
+		return url;
+	},
+	stopHistoryPlay({ sn }) {
+		dispatch({
+			type: 'live/stopHistoryPlay',
+			payload: {
+				sn
+			}
+		});
 	}
 }))
 class Live extends React.Component{
@@ -88,6 +118,8 @@ class Live extends React.Component{
 
 		this.changePPI = this.changePPI.bind(this);
 		this.onTimeChange = this.onTimeChange.bind(this);
+		this.getHistoryUrl = this.getHistoryUrl.bind(this);
+		this.stopHistoryPlay = this.stopHistoryPlay.bind(this);
 	}
 
 	async componentDidMount() {
@@ -106,7 +138,6 @@ class Live extends React.Component{
 			});
 		}
 
-
 		// 不一定发的出去，因为浏览器会cancel；
 		// window.onbeforeunload = () => {
 		// 	stopLive({
@@ -116,7 +147,7 @@ class Live extends React.Component{
 	}
 
 	componentWillUnmount() {
-		const { stopLive, streamId, location: { query }  } = this.props;
+		const { stopLive, streamId, location: { query }, stopHistoryPlay } = this.props;
 		const { sn } = query;
 
 		// 这部分代码是为了离开live页面关闭notification【需优化】
@@ -127,42 +158,68 @@ class Live extends React.Component{
 		const formatKey = `formatSdcard${sn}`;
 		notification.close(formatKey);
 
-		if (sn && streamId) {
-			stopLive({
-				sn,
-				streamId
+		if (sn) {
+			stopHistoryPlay({
+				sn
 			});
+			if (streamId) {
+				stopLive({
+					sn,
+					streamId
+				});
+			}
 		}
 	}
 
-	onTimeChange(timestamp) {
-		const { loadVideoSources, location: { query } } = this.props;
+	async onTimeChange(timeStart, timeEnd) {
+		// console.log(timestamp);
+		const { /* loadVideoSources, */ getTimeSlots, location: { query } } = this.props;
 		const {sn} = query;
 
-		const timeStart = moment.unix(timestamp).subtract(24, 'hours').set({
-			minute: 0,
-			second: 0,
-			millisecond: 0
-		}).unix(); // .subtract(1, 'day');
+		// const timeStart = moment.unix(timestamp).subtract(24, 'hours').set({
+		// 	minute: 0,
+		// 	second: 0,
+		// 	millisecond: 0
+		// }).unix(); // .subtract(1, 'day');
 
-		// 标尺右侧的时间终点；
-		// 无论从输入的当前时间是什么时候，始终需要渲染到从现在到未来24小时后的时间；
-		const timeEnd = moment.unix(timestamp).add(24, 'hours').set({
-			minute: 0,
-			second: 0,
-			millisecond: 0
-		}).unix();
+		// // 标尺右侧的时间终点；
+		// // 无论从输入的当前时间是什么时候，始终需要渲染到从现在到未来24小时后的时间；
+		// const timeEnd = moment.unix(timestamp).add(24, 'hours').set({
+		// 	minute: 0,
+		// 	second: 0,
+		// 	millisecond: 0
+		// }).unix();
 
-
-		loadVideoSources({
+		// loadVideoSources({
+		// 	sn,
+		// 	timeStart,
+		// 	timeEnd
+		// });
+		// console.log(moment.unix(timeStart).format('YYYY-MM-DD HH:mm:ss'), moment.unix(timeEnd).format('YYYY-MM-DD HH:mm:ss'));
+		const result = await getTimeSlots({
 			sn,
 			timeStart,
 			timeEnd
 		});
-
+		return result;
 	}
 
-	changePPI(ppi) {
+	async getHistoryUrl (timestamp) {
+		const { getHistoryUrl, location: { query }} = this.props;
+		const { sn } = query;
+
+		const url = await getHistoryUrl({ sn, timestamp });
+		return url;
+	}
+
+	stopHistoryPlay () {
+		const { stopHistoryPlay, location: { query } } = this.props;
+		const { sn } = query;
+
+		stopHistoryPlay({ sn });
+	}
+
+	changePPI (ppi) {
 		const { changePPI, location:{ query } } = this.props;
 		const { sn } = query;
 
@@ -173,8 +230,8 @@ class Live extends React.Component{
 	}
 
 	render() {
-		const { sources, liveUrl, faceidRects, faceidList, currentPPI, ppiChanged, location: { query } } = this.props;
-		const {sn} = query;
+		const { /* sources, */ timeSlots, liveUrl, faceidRects, faceidList, currentPPI, ppiChanged, location: { query } } = this.props;
+		const { sn } = query;
 		// console.log(this.props);
 		// console.log('live: ', liveUrl, streamId);
 
@@ -201,7 +258,11 @@ class Live extends React.Component{
 						changePPI={this.changePPI}
 						ppiChanged={ppiChanged}
 
-						sources={sources}
+						getHistoryUrl={this.getHistoryUrl}
+						stopHistoryPlay={this.stopHistoryPlay}
+
+						// sources={sources}
+						timeSlots={timeSlots}
 						url={liveUrl}
 
 						faceidRects={

@@ -5,7 +5,6 @@ import * as styles from '@/pages/BasicData/ProductManagement/ProductManagement.l
 
 const ProductInfoPrice = props => {
 	const { productPrice = [], productPriceExtra = [] } = props;
-
 	return (
 		<Card title={formatMessage({ id: 'basicData.product.price.title' })} bordered={false}>
 			<div className={styles['card-column']}>

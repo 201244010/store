@@ -168,8 +168,7 @@ class TradeVideos extends React.Component {
 			sorter: (a, b) => a.paymentMethod.localeCompare(b.paymentMethod),
 			render: item => (
 				<span>
-					{item || formatMessage({ id: 'tradeVideos.unknown' }) // '未知'
-					}
+					{item || formatMessage({ id: 'tradeVideos.unknown' })}
 				</span>
 			),
 		},
@@ -292,9 +291,9 @@ class TradeVideos extends React.Component {
 		const { getPaymentDeviceList } = this.props;
 		await getPaymentDeviceList(value);
 
-		// 	this.setState({
-		// 		ipcSelected: value
-		// 	});
+	// 	this.setState({
+	// 		ipcSelected: value
+	// 	});
 	};
 
 	// paymentDeviceSelectHandler = (value) => {
@@ -505,7 +504,8 @@ class TradeVideos extends React.Component {
 										label={formatMessage({ id: 'tradeVideos.tradeDate' })} // '交易日期'
 									>
 										{getFieldDecorator('tradeDate', {
-											initialValue: [moment().subtract(30, 'days'), moment()],
+											// initialValue: [moment().subtract(30, 'days'), moment()],
+											initialValue: [moment(), moment()],
 										})(
 											<RangePicker
 												// defaultValue={[moment().subtract(1, 'days'), moment()]}

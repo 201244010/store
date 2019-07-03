@@ -92,7 +92,7 @@ const formatTime = (time, rangeType) => {
 		return timeData.format('ddd');
 	}
 
-	if(rangeType === RANGE.MONTH){
+	if (rangeType === RANGE.MONTH) {
 		return timeData.format('D');
 	}
 
@@ -120,17 +120,10 @@ class ContentChart extends Component {
 			skuLoading,
 		} = this.props;
 
-		const chartScale = {
-			time: timeScales[rangeType] || {},
-			[TRADE_TIME.AMOUNT]: {
-				minLimit: 0,
-				tickCount: 6,
-			},
-			[TRADE_TIME.COUNT]: {
-				minLimit: 0,
-				tickCount: 6,
-			},
-		};
+		const dataList = orderList.map(data => ({
+			time: formatTime(data.time, rangeType),
+			[tradeTime]: data[tradeTime],
+		}));
 
 		const chartToolTip = [
 			`time*${tradeTime}`,
@@ -166,10 +159,27 @@ class ContentChart extends Component {
 			},
 		};
 
-		const dataList = orderList.map(data => ({
-			time: formatTime(data.time, rangeType),
-			[tradeTime]: data[tradeTime],
-		}));
+		const chartScale = {
+			time: timeScales[rangeType] || {
+				ticks: dataList
+					.filter((_, index) => {
+						const len = dataList.length;
+						if (len > 10 && len < 40) {
+							return index % 2 === 0;
+						} 
+						return index % 3 === 0;
+					})
+					.map(item => item.time),
+			},
+			[TRADE_TIME.AMOUNT]: {
+				minLimit: 0,
+				tickCount: 6,
+			},
+			[TRADE_TIME.COUNT]: {
+				minLimit: 0,
+				tickCount: 6,
+			},
+		};
 
 		return (
 			<div className={styles['content-chart']}>

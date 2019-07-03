@@ -1,0 +1,36 @@
+:global {
+	a {
+		color: #4b7afa;
+		&:hover {
+			color: #4b7afa;
+		}
+		&[disabled] {
+			color: #a1a7b3;
+		}
+	}
+	.ant-upload-list-picture .ant-upload-list-item-error,
+	.ant-upload-list-picture-card .ant-upload-list-item-error {
+		border-color: #ff3838;
+	}
+	.ant-upload-list-item-error {
+		color: #ff3838;
+		.anticon-paper-clip,
+		.ant-upload-list-item-name {
+			color: #ff3838;
+		}
+		.anticon-close {
+			color: #ff3838 !important;
+		}
+	}
+	.ant-upload-list-item:hover .ant-upload-list-item-info {
+		background-color: #ecf1fe;
+	}
+	.ant-upload {
+		&.ant-upload-select-picture-card:hover {
+			border-color: #759fff;
+		}
+		&.ant-upload-drag:not(.ant-upload-disabled):hover {
+			border-color: #759fff;
+		}
+	}
+}

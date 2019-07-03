@@ -36,7 +36,7 @@ const router = [
 			{
 				path: '/index',
 				hideInMenu: true,
-				component: './Index'
+				component: './Index',
 			},
 			{
 				path: '/dashBoard',
@@ -147,7 +147,6 @@ const router = [
 					{
 						path: '/esl/template',
 						name: 'template',
-						hideInMenu: true,
 						id: 'template',
 						component: './Template',
 					},
@@ -167,7 +166,6 @@ const router = [
 					{
 						path: '/esl/deviceUpgrade',
 						name: 'deviceUpgrade',
-						hideInMenu: true,
 						id: 'deviceUpgrade',
 						routes: [
 							{
@@ -205,6 +203,10 @@ const router = [
 				routes: [
 					{
 						path: '/basicData',
+						redirect: '/basicData/merchantManagement/view',
+					},
+					{
+						path: '/basicData/merchantManagement',
 						redirect: '/basicData/merchantManagement/view',
 					},
 					{
@@ -259,9 +261,47 @@ const router = [
 						],
 					},
 					{
+						path: '/basicData/employeeManagement',
+						name: 'employeeManagement',
+						id: 'employeeManagement',
+						routes: [
+							{
+								path: '/basicData/employeeManagement',
+								redirect: '/basicData/employeeManagement/list',
+							},
+							{
+								path: '/basicData/employeeManagement/list',
+								name: 'employeeList',
+								id: 'employeeList',
+								component: './BasicData/Employee',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/info',
+								name: 'employeeInfo',
+								id: 'employeeInfo',
+								component: './BasicData/Employee/EmployeeInfo',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/create',
+								name: 'employeeCreate',
+								id: 'employeeCreate',
+								component: './BasicData/Employee/EmployeeCU',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/update',
+								name: 'employeeUpdate',
+								id: 'employeeUpdate',
+								component: './BasicData/Employee/EmployeeCU',
+								hideInMenu: true,
+							},
+						],
+					},
+					{
 						path: '/basicData/roleManagement',
 						name: 'roleManagement',
-						hideInMenu: true,
 						id: 'roleManagement',
 						routes: [
 							{
@@ -416,7 +456,6 @@ const router = [
 				path: '/faceidLibrary',
 				name: 'faceidLibrary',
 				id: 'faceidLibrary',
-				hideInMenu: true,
 				icon: 'blank',
 				// component: './index.js',
 				routes: [

@@ -29,7 +29,7 @@ const MqttWrapper = (WrappedComponent) => {
 		},
 		async subscribeIPCTopics (list) {
 			// console.log(list);
-			if (!list) {
+			if (!Array.isArray(list)) {
 				return;
 			};
 
