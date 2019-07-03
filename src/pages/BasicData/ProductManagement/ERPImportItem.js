@@ -8,7 +8,9 @@ const MODE = {
 };
 
 const COMMON_ERROR = {
+	5042: formatMessage({ id: 'basicData.erp.import.shop.conflict' }),
 	5093: formatMessage({ id: 'basicData.erp.import.task.unfinished' }),
+	default: formatMessage({ id: 'basicData.erp.import.task.failed' }),
 };
 
 export const ERROR_FILEDS = {
@@ -17,7 +19,7 @@ export const ERROR_FILEDS = {
 		errMsg: {
 			...COMMON_ERROR,
 			5020: formatMessage({ id: 'basicData.erp.common.key.existed' }),
-			default: formatMessage({ id: 'basicData.erp.common.key.error' }),
+			// default: formatMessage({ id: 'basicData.erp.common.key.error' }),
 		},
 	},
 	'SAAS-KWYLS': {
@@ -26,7 +28,7 @@ export const ERROR_FILEDS = {
 			...COMMON_ERROR,
 			5020: formatMessage({ id: 'basicData.erp.kwyls.account.used' }),
 			5021: formatMessage({ id: 'basicData.erp.kwyls.account.frequently' }),
-			default: formatMessage({ id: 'basicData.erp.kwyls.account.error' }),
+			// default: formatMessage({ id: 'basicData.erp.kwyls.account.error' }),
 		},
 	},
 	'SAAS-ZZSY': {
@@ -36,21 +38,21 @@ export const ERROR_FILEDS = {
 			5020: formatMessage({ id: 'basicData.erp.zzsy.secret.existed' }),
 			// TODO 等待 error code
 			9999: formatMessage({ id: 'basicData.erp.zzsy.shop.error' }),
-			default: formatMessage({ id: 'basicData.erp.zzsy.secret.error' }),
+			// default: formatMessage({ id: 'basicData.erp.zzsy.secret.error' }),
 		},
 	},
 	'SAAS-HBB': {
 		field: 'saas_info.shop_number',
 		errMsg: {
 			...COMMON_ERROR,
-			default: formatMessage({ id: 'basicData.erp.hbb.error' }),
+			// default: formatMessage({ id: 'basicData.erp.hbb.error' }),
 		},
 	},
 	'SAAS-HDQF': {
 		field: 'saas_info.secret_key',
 		errMsg: {
 			...COMMON_ERROR,
-			default: formatMessage({ id: 'basicData.erp.hdqf.error' }),
+			// default: formatMessage({ id: 'basicData.erp.hdqf.error' }),
 		},
 	},
 };
