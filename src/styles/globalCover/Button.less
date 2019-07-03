@@ -1,12 +1,3 @@
-// @button-color-active:#CC4C00;
-// @button-border-active:#D96121;
-// @button-background-hover:#FFA05C;
-// @button-background-primary: #FF8133;
-// @button-background-primary-hover: #FFA05C;
-// @button-background-primary-focus: #FFA05C;
-// @button-background-primary-active: #D96121;
-// @button-color-dashed-hover: #FFA05C;
-
 :global {
 	//默认样式
 	.ant-btn {
@@ -24,18 +15,18 @@
 		color: #525866;
 		border-color: #ced2d9;
 		background-color: #fff;
-	}
-	.ant-btn:active,
-	.ant-btn.active {
-		color: #cc4c00;
-		background-color: #fff;
-		border-color: #d96121;
-	}
-	.ant-btn:hover,
-	.ant-btn:focus {
-		color: #ffa05c;
-		background-color: #fff;
-		border-color: #ffa05c;
+		&:focus,
+		&:hover {
+			color: #ffa05c;
+			background-color: #fff;
+			border-color: #ffa05c;
+		}
+		&:active,
+		&.active {
+			color: #cc4c00;
+			background-color: #fff;
+			border-color: #d96121;
+		}
 	}
 	//type='primary'的样式
 	.ant-btn-primary {
@@ -45,18 +36,18 @@
 		text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
 		-webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
 		box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
-	}
-	.ant-btn-primary:hover,
-	.ant-btn-primary:focus {
-		color: #fff;
-		background-color: #ffa05c;
-		border-color: #ffa05c;
-	}
-	.ant-btn-primary:active,
-	.ant-btn-primary.active {
-		color: #fff;
-		background-color: #d96121;
-		border-color: #d96121;
+		&:focus,
+		&:hover {
+			color: #fff;
+			background-color: #ffa05c;
+			border-color: #ffa05c;
+		}
+		&:active,
+		&.active {
+			color: #fff;
+			background-color: #d96121;
+			border-color: #d96121;
+		}
 	}
 	//type='dashed'的样式
 	.ant-btn-dashed {
@@ -64,40 +55,40 @@
 		background-color: #fff;
 		border-color: #ced2d9;
 		border-style: dashed;
-	}
-	.ant-btn-dashed:hover,
-	.ant-btn-dashed:focus {
-		color: #ffa05c;
-		background-color: #fff;
-		border-color: #ffa05c;
-	}
-	.ant-btn-dashed:active,
-	.ant-btn-dashed.active {
-		color: #cc4c00;
-		background-color: #fff;
-		border-color: #d96121;
+		&:focus,
+		&:hover {
+			color: #ffa05c;
+			background-color: #fff;
+			border-color: #ffa05c;
+		}
+		&:active,
+		&.active {
+			color: #cc4c00;
+			background-color: #fff;
+			border-color: #d96121;
+		}
 	}
 	//type='danger'的样式
 	.ant-btn-danger {
 		color: #ff3838;
 		background-color: #ffffff;
 		border-color: #ced2d9;
-	}
-	.ant-btn-danger:focus {
-		color: #ff3838;
-		background-color: #fff;
-		border-color: #ff3838;
-	}
-	.ant-btn-danger:hover {
-		color: #fff;
-		background-color: #ff3838;
-		border-color: #ff3838;
-	}
-	.ant-btn-danger:active,
-	.ant-btn-danger.active {
-		color: #fff;
-		background-color: #cf1322;
-		border-color: #cf1322;
+		&:focus {
+			color: #ff3838;
+			background-color: #fff;
+			border-color: #ff3838;
+		}
+		&:hover {
+			color: #fff;
+			background-color: #ff3838;
+			border-color: #ff3838;
+		}
+		&:active,
+		&.active {
+			color: #fff;
+			background-color: #cf1322;
+			border-color: #cf1322;
+		}
 	}
 	//size='large'的样式
 	.ant-btn-lg {

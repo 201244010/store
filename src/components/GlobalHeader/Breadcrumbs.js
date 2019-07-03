@@ -25,7 +25,7 @@ const Breadcrumbs = ({ breadcrumbs }) => {
 	const formattedBreadcrumbs = formatBreadcrumbs(breadcrumbs);
 	const len = formattedBreadcrumbs.length;
 	return (
-		<div className={styles['bread-wrapper']}>
+		<div className="bread-wrapper">
 			{formattedBreadcrumbs.map(({ match, pathName }, index) => (
 				<span key={match.url} className={index === len - 1 ? styles['bread-current'] : ''}>
 					<NavLink to={match.url}>{pathName}</NavLink>

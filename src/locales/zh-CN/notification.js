@@ -30,7 +30,7 @@ export default {
 	// 消息描述模版
 	'notif-ap-offline-desc': '基站“%s”已离线，请检查设备状态',
 	'notif-import-product-finish-desc': '商品导入完成，商品总数%s, 成功导入总数%s',
-	'notif-import-product-failure-desc': '商品导入失败，原因：%s',
+	'notif-import-product-failure-desc': '商品导入失败，请重试',
 	'notif-motion-detect-desc': '网络摄像机侦测到异常%s，请即刻查看',
 	'notif-motion-detect-desc-1': '图像',
 	'notif-motion-detect-desc-2': '声音',
