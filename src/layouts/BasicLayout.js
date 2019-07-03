@@ -244,9 +244,11 @@ class BasicLayout extends React.PureComponent {
 						{...this.props}
 					/>
 					{/* <Breadcrumbs /> */}
-					<Content className={styles.content} style={contentStyle}>
-						{children}
-					</Content>
+					<PerfectScrollbar>
+						<Content className={styles.content} style={contentStyle}>
+							{children}
+						</Content>
+					</PerfectScrollbar>
 				</Layout>
 			</Layout>
 		);
@@ -289,9 +291,7 @@ export default connect(
 		dispatch,
 	})
 )(props => (
-	<PerfectScrollbar>
-		<Media query="(max-width: 599px)">
-			{isMobile => <BasicLayout {...props} isMobile={isMobile} />}
-		</Media>
-	</PerfectScrollbar>
+	<Media query="(max-width: 599px)">
+		{isMobile => <BasicLayout {...props} isMobile={isMobile} />}
+	</Media>
 ));
