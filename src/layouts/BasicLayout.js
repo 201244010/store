@@ -1,4 +1,6 @@
 import React from 'react';
+import ResizeDetecor from 'element-resize-detector';
+
 import { Layout, message, Spin } from 'antd';
 import DocumentTitle from 'react-document-title';
 import isEqual from 'lodash/isEqual';
@@ -93,6 +95,14 @@ class BasicLayout extends React.PureComponent {
 		if (isMobile && !preProps.isMobile && !collapsed) {
 			this.handleMenuCollapse(false);
 		}
+
+		if (this.dom){
+			const erd = ResizeDetecor();
+			erd.listenTo(this.dom, () => {
+				this.scrollbar._ps.update();
+			});
+		}
+
 	}
 
 	getContext() {
@@ -244,11 +254,9 @@ class BasicLayout extends React.PureComponent {
 						{...this.props}
 					/>
 					{/* <Breadcrumbs /> */}
-					<PerfectScrollbar>
-						<Content className={styles.content} style={contentStyle}>
-							{children}
-						</Content>
-					</PerfectScrollbar>
+					<Content className={styles.content} style={contentStyle}>
+						{children}
+					</Content>
 				</Layout>
 			</Layout>
 		);
@@ -261,7 +269,9 @@ class BasicLayout extends React.PureComponent {
 						<ContainerQuery query={query}>
 							{params => (
 								<Context.Provider value={this.getContext()}>
-									<div className={classNames(params)}>{layout}</div>
+									<PerfectScrollbar ref={scrollbar => this.scrollbar = scrollbar}>
+										<div ref={dom => this.dom = dom} className={classNames(params)}>{layout}</div>
+									</PerfectScrollbar>
 								</Context.Provider>
 							)}
 						</ContainerQuery>
