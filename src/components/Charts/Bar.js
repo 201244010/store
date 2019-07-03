@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Chart, Geom, Axis, Tooltip } from 'bizcharts';
-import { DataView } from '@antv/data-set';
+// import { DataView } from '@antv/data-set';
 
 import styles from './bar.less';
 
@@ -19,9 +19,6 @@ class Bar extends Component {
 
 		const { barColor = '#FFAA60', barActive = false, position = '', tooltip = {} } = barStyle;
 
-		const dv = new DataView();
-		dv.source(dataSource);
-
 		return (
 			<div className={styles.chart}>
 				<Chart
@@ -35,7 +32,7 @@ class Bar extends Component {
 					<Axis name={y} />
 					<Tooltip crosshairs={false} {...toolTipStyle} />
 					<Geom
-						adjust="stack"
+						size={dataSource.length > 31 ? 8 : 15}
 						type="interval"
 						color={barColor}
 						active={barActive}

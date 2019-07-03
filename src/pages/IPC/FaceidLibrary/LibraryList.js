@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Row, Col, Table, Card, Modal, Divider } from 'antd';
+import { Form, Button, Row, Col, Table, Card, Modal, Divider, message } from 'antd';
 // import { Link } from 'dva/router';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -201,7 +201,10 @@ class LibraryList extends React.Component {
 					capacity
 				};
 				// console.log(params);
-				createLibrary(Object.assign({}, params, { id }));
+				createLibrary({
+					...params,
+					id
+				});
 				this.closeCreateForm();
 			}
 		});
@@ -229,6 +232,7 @@ class LibraryList extends React.Component {
 				content: formatMessage({ id: 'faceid.deleteInfo' }),
 				okText: formatMessage({ id: 'faceid.confirm' }),
 				cancelText: formatMessage({ id: 'faceid.cancel' }),
+				okType: 'danger',
 				onOk: () => removeLibrary(id),
 			});
 		}
@@ -250,7 +254,10 @@ class LibraryList extends React.Component {
 					capacity
 				};
 				// console.log('params',params);
-				editLibrary(Object.assign({}, selectedRow, params));
+				editLibrary({
+					...selectedRow,
+					...params
+				});
 				this.closeEditForm();
 			}
 		});
@@ -282,8 +289,8 @@ class LibraryList extends React.Component {
 	render() {
 		// console.log(this.props);
 		const { createFormShown, editFormShown, selectedRow } = this.state;
-		const { faceIdLibrary } = this.props;
-		const totalCapacity = 40000;
+		const { faceIdLibrary, loading } = this.props;
+		const totalCapacity = 30000;
 		// const noCustom = list.every((item) => {
 		// 	return item.isDefault === true;
 		// });
@@ -301,6 +308,7 @@ class LibraryList extends React.Component {
 		const list = faceIdLibrary;
 		// console.log(restCapacity);
 		// console.log(list);
+
 		return (
 			<div className="faceid-library-list">
 				<Card bordered={false}>
@@ -313,6 +321,8 @@ class LibraryList extends React.Component {
 											type="primary"
 											disabled={list.length >= this.maxLength || restCapacity <= 0}
 											onClick={this.showCreateForm}
+											icon="plus"
+											loading={loading.effects['faceIdLibrary/create']}
 										>
 											{formatMessage({ id: 'common.create' })}
 										</Button>
@@ -342,7 +352,7 @@ class LibraryList extends React.Component {
 							// expandIconColumnIndex={1}
 						/>
 					</div>
-					{!this.noCustomized ? (
+					{/* {!this.noCustomized ? (
 						''
 					) : (
 						<p>
@@ -353,7 +363,7 @@ class LibraryList extends React.Component {
 								{formatMessage({ id: 'faceid.createLibrary' })}
 							</a>
 						</p>
-					)}
+					)} */}
 				</Card>
 
 				<Modal
@@ -362,6 +372,9 @@ class LibraryList extends React.Component {
 					visible={createFormShown}
 					onCancel={this.closeCreateForm}
 					onOk={this.createLibrary}
+					okButtonProps={{
+						loading: loading.effects['faceIdLibrary/create']
+					}}
 				>
 					<LibraryForm
 						restCapacity={restCapacity}
@@ -382,6 +395,9 @@ class LibraryList extends React.Component {
 					visible={editFormShown}
 					onCancel={this.closeEditForm}
 					onOk={this.editLibrary}
+					okButtonProps={{
+						loading: loading.effects['faceIdLibrary/update']
+					}}
 				>
 					<LibraryForm
 						wrappedComponentRef={form => {
@@ -401,9 +417,10 @@ class LibraryList extends React.Component {
 
 
 const mapStateToProps = (state) => {
-	const { faceIdLibrary } = state;
+	const { faceIdLibrary, loading } = state;
 	return {
-		faceIdLibrary
+		faceIdLibrary,
+		loading
 	};
 };
 
@@ -411,6 +428,14 @@ const mapDispatchToProps = (dispatch) => ({
 	loadLibrary: () => {
 		dispatch({
 			type: 'faceIdLibrary/read'
+		}).then((code) => {
+			switch (code) {
+				case 1:
+					break;
+				default:
+					message.error('操作失败，请检查网络后重试。');
+					break;
+			}
 		});
 	},
 	managePhotos: (key) => {
@@ -424,6 +449,17 @@ const mapDispatchToProps = (dispatch) => ({
 			payload :{
 				library:form
 			}
+		}).then((code) => {
+			switch (code) {
+				case 1:
+					message.success(formatMessage({ id: 'facied.createSuccess'}));
+					break;
+
+				case 5506:	// 最大条目数
+				default:
+					message.error(formatMessage({ id: 'facied.createFailed'}));
+					break;
+			}
 		});
 	},
 	editLibrary: (row) => {
@@ -432,14 +468,31 @@ const mapDispatchToProps = (dispatch) => ({
 			payload: {
 				library: row
 			}
+		}).then((code) => {
+			switch (code) {
+				case 1:
+					message.success(formatMessage({ id: 'facied.updateSuccess'}));
+					break;
+				default:
+					message.error(formatMessage({ id: 'facied.updateFailed'}));
+					break;
+			}
 		});
 	},
 	removeLibrary: (id) => {
-
 		dispatch({
 			type: 'faceIdLibrary/delete',
 			payload: {
 				id
+			}
+		}).then((code) => {
+			switch (code) {
+				case 1:
+					message.success(formatMessage({ id: 'facied.deleteSuccess'}));
+					break;
+				default:
+					message.error(formatMessage({ id: 'facied.deleteFailed'}));
+					break;
 			}
 		});
 	}

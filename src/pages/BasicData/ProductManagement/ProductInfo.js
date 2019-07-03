@@ -3,10 +3,59 @@ import { Button, Card } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import ProductInfoBasic from './ProductInfo-Basic';
+import ProductInfoWeight from './ProductInfo-Weight';
 import ProductInfoPrice from './ProductInfo-Price';
 import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
-import { PRODUCT_BASIC, PRODUCT_PRICE } from '@/constants/mapping';
 import * as styles from './ProductManagement.less';
+
+const PRODUCT_BASIC = {
+	seqNum: null,
+	barCode: null,
+	name: null,
+	alias: null,
+	// 特殊 因为 type 在 GO 中关键字
+	type: null,
+	unit: null,
+	spec: null,
+	area: null,
+	level: null,
+	brand: null,
+	expireTime: null,
+	qrCode: null,
+};
+
+const PRODUCT_WEIGHT = {
+	pluCode: null,
+	isDiscount: false,
+	isAlterPrice: false,
+	isPrintTraceCode: false,
+	labelCode: null,
+	chargeUnit: null,
+	barcodeCode: null,
+	productWeigh: null,
+	tareCode: null,
+	tare: null,
+	exttextCode: null,
+	exttextNo1: null,
+	exttextNo2: null,
+	exttextNo3: null,
+	exttextNo4: null,
+	packDist: null,
+	packType: null,
+	packDays: null,
+	usebyDist: null,
+	usebyType: null,
+	usebyDays: null,
+	limitDist: null,
+	limitType: null,
+	limitDays: null,
+};
+
+const PRODUCT_PRICE = {
+	price: null,
+	promotePrice: null,
+	memberPrice: null,
+};
 
 const MESSAGE_PREFIX = {
 	product: 'basicData.product',
@@ -17,6 +66,7 @@ const MESSAGE_PREFIX = {
 	state => ({
 		product: state.basicDataProduct,
 		store: state.store,
+		loading: state.loading,
 	}),
 	dispatch => ({
 		getProductDetail: payload =>
@@ -75,26 +125,44 @@ class ProductInfo extends Component {
 
 	render() {
 		const {
+			loading,
 			store: {
 				saasBindInfo: { isBind = false },
 			},
 			product: {
 				productInfo = {},
-				productInfo: { extra_info: productBasicExtra, extra_price_info: productPriceExtra },
+				productInfo: {
+					type = 0,
+					extra_info: productBasicExtra,
+					extra_price_info: productPriceExtra,
+				},
 			},
 		} = this.props;
 
 		const productBasic = this.formatProductInfo(productInfo, PRODUCT_BASIC);
+
+		let productWeight = {};
+		if (type === 1 && productInfo.weighInfo) {
+			productWeight = this.formatProductInfo(productInfo.weighInfo, PRODUCT_WEIGHT, 'weight');
+		}
+
 		const productPrice = this.formatProductInfo(productInfo, PRODUCT_PRICE);
 
 		return (
-			<Card bordered={false}>
+			<Card bordered={false} loading={loading.effects['basicDataProduct/getProductDetail']}>
 				<ProductInfoBasic
 					{...{
 						productBasic,
 						productBasicExtra,
 					}}
 				/>
+				{type === 1 && (
+					<ProductInfoWeight
+						{...{
+							productWeight,
+						}}
+					/>
+				)}
 				<ProductInfoPrice
 					{...{
 						productPrice,

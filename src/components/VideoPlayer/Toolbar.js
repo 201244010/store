@@ -86,24 +86,24 @@ class Toolbar extends React.Component{
 						: ''
 				}
 
-				<div className={styles['play-control']}>
+				<div className={`${styles.control} ${styles['play-control']}`}>
 					{/* {
 						playing || isLive ? <Button disabled={ isLive } className={ styles['btn-play'] } shape="circle" onClick={ pause }></Button> : <Button disabled={ isLive } icon='play-circle' shape="circle" onClick={ play }></Button>
 					} */}
-					<a className={`${styles['button-play']} ${  playing || isLive ? styles.playing : ''} ${ !isTrack && isLive ? styles.disabled : '' }`} href='javascript:void(0);' onClick={play}>
+					<a className={`${styles.button} ${styles['button-play']} ${  playing || isLive ? styles.playing : ''} ${ !isTrack && isLive ? styles.disabled : '' }`} href='javascript:void(0);' onClick={play}>
 						{
 							formatMessage({ id: 'videoPlayer.play' })
 						}
 					</a>
 				</div>
 
-				<div className={`${styles['progressbar-control']} ${ styles[`control-items-${buttonNumber}`]}`}>
+				<div className={`${styles.control} ${styles['progressbar-control']} ${ styles[`control-items-${buttonNumber}`]}`}>
 					{ progressbar }
 				</div>
 
 				{
 					!isTrack ?
-						<div className={styles['ppis-control']}>
+						<div className={`${styles.control} ${styles['ppis-control']}`}>
 							{/* <Select style={{ width: 90 }} onChange={ this.props.ppiChange }>
 								{
 									ppis.map((item) => {
@@ -121,8 +121,11 @@ class Toolbar extends React.Component{
 							/>
 							{
 								<Dropdown
+									disabled={!isLive && !isTrack}
 									overlay={
-										<Menu>
+										<Menu
+											selectedKeys={[currentPPI]}
+										>
 											{
 												ppis.map((item) => (
 													<Menu.Item
@@ -141,7 +144,12 @@ class Toolbar extends React.Component{
 									placement="topCenter"
 									getPopupContainer={() => this.ppisWrapper}
 								>
-									<Button className={styles['button-ppis']} size='small' type='primary'>
+									<Button
+										className={`${styles['button-ppis']}`}
+										disabled={!isLive && !isTrack}
+										size='small'
+										type='primary'
+									>
 										{
 											(() => {
 												const current = ppis.filter(item => item.value === currentPPI);
@@ -161,7 +169,7 @@ class Toolbar extends React.Component{
 				{
 
 					!isTrack ?
-						<div className={styles['calendar-control']}>
+						<div className={`${styles.control} ${styles['calendar-control']}`}>
 							<div
 								className={styles.wrapper}
 								ref={(wrapper) => {
@@ -169,7 +177,6 @@ class Toolbar extends React.Component{
 								}}
 							/>
 							<div className={styles.button}>
-
 								<Popover
 									content={
 										(
@@ -220,7 +227,7 @@ class Toolbar extends React.Component{
 											onClick={() => {
 												this.changeDatePicker(true);
 											}}
-											className={styles['calendar-date']}
+											className={`${styles.button} ${styles['calendar-date']}`}
 										>
 											<span className={styles.text}>
 												{ moment.unix(today).date() }
@@ -236,7 +243,7 @@ class Toolbar extends React.Component{
 
 				{
 					canScreenShot ?
-						<div className={styles['screenshot-control']}>
+						<div className={`${styles.control} ${styles['screenshot-control']}`}>
 							<div className={styles.wrapper} ref={(wrapper) => this.screenshotTooltip = wrapper} />
 							<Tooltip
 								overlayClassName={styles.tooltip}
@@ -246,7 +253,7 @@ class Toolbar extends React.Component{
 									formatMessage({ id: 'videoPlayer.videoScreenShot' })
 								}
 							>
-								<a className={styles['button-screenshot']} onClick={screenShot} href='javascript:void(0);'>
+								<a className={`${styles.button} ${styles['button-screenshot']}`} onClick={screenShot} href='javascript:void(0);'>
 									{
 										formatMessage({ id: 'vidoePlayer.screenShot' })
 									}
@@ -256,7 +263,7 @@ class Toolbar extends React.Component{
 						: ''
 				}
 
-				<div className={styles['volume-control']}>
+				<div className={`${styles.control} ${styles['volume-control']}`}>
 					<div
 						className={styles.wrapper}
 						ref={(wrapper) => {
@@ -275,7 +282,7 @@ class Toolbar extends React.Component{
 						placement="topCenter"
 						getPopupContainer={() => this.volumeDropdown}
 					>
-						<a className={`${styles['button-volume']} ${ volume === 0 ? styles.muted : ''}`} href='javascript:void(0);' onClick={mute}>
+						<a className={`${styles.button} ${styles['button-volume']} ${ volume === 0 ? styles.muted : ''}`} href='javascript:void(0);' onClick={mute}>
 							{
 								formatMessage({ id: 'videoPlayer.volume' })
 							}
@@ -284,7 +291,7 @@ class Toolbar extends React.Component{
 				</div>
 
 
-				<div className={styles['fullscreen-control']}>
+				<div className={`${styles.control} ${styles['fullscreen-control']}`}>
 					{/* <Button className='btn-fullscreen' icon='fullscreen' shape='circle' onClick={ this.props.fullScreen }></Button> */}
 					<div className={styles.wrapper} ref={(wrapper) => this.fullScreenTooltip = wrapper} />
 					<Tooltip
@@ -295,7 +302,7 @@ class Toolbar extends React.Component{
 							`${ fullScreenStatus ? formatMessage({ id: 'videoPlayer.exitFullscreen' }) : formatMessage({ id: 'videoPlayer.enterFullscreen' }) }`
 						}
 					>
-						<a className={`${styles['button-fullscreen']} ${ fullScreenStatus ? styles.fullscreen : ''}`} href='javascript:void(0);' onClick={fullScreen}>
+						<a className={`${styles.button} ${styles['button-fullscreen']} ${ fullScreenStatus ? styles.fullscreen : ''}`} href='javascript:void(0);' onClick={fullScreen}>
 							{
 								formatMessage({ id: 'videoPlayer.enterFullscreen' })
 							}
@@ -304,7 +311,7 @@ class Toolbar extends React.Component{
 				</div>
 
 
-				<div className={`${styles['backtolive-control']} ${ !isTrack && !isLive ? '' : styles.hidden }`}>
+				<div className={`${styles.control} ${styles['backtolive-control']} ${ !isTrack && !isLive ? '' : styles.hidden }`}>
 					<Button onClick={backToLive} className={styles['button-backtolive']}>{ formatMessage({ id: 'videoPlayer.backToLive'}) }</Button>
 				</div>
 

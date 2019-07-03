@@ -1,0 +1,55 @@
+:global {
+	.ant-slider-rail {
+		background-color: #e6e8eb;
+	}
+	.ant-slider-track {
+		background-color: #80a6ff;
+	}
+	.ant-slider-handle {
+		border: solid 2px #80a6ff;
+		&:focus {
+			border-color: #6694ff;
+			-webkit-box-shadow: 0 0 0 5px rgba(75, 122, 250, 0.2);
+			box-shadow: 0 0 0 5px rgba(75, 122, 250, 0.2);
+		}
+		&.ant-tooltip-open {
+			border-color: #6694ff;
+		}
+	}
+	.ant-slider {
+		&:hover {
+			.ant-slider-rail {
+				background-color: #ced2d9;
+			}
+			.ant-slider-track {
+				background-color: #6694ff;
+			}
+			.ant-slider-handle:not(.ant-tooltip-open) {
+				border-color: #6694ff;
+			}
+		}
+	}
+	.ant-slider-dot-active {
+		border-color: #80a6ff;
+	}
+	.ant-slider-dot {
+		border: 2px solid #a1a7b3;
+	}
+	.ant-tooltip-inner {
+		background-color: #525866;
+	}
+	.ant-tooltip-placement-top .ant-tooltip-arrow,
+	.ant-tooltip-placement-topLeft .ant-tooltip-arrow,
+	.ant-tooltip-placement-topRight .ant-tooltip-arrow {
+		border-top-color: #525866;
+	}
+	.ant-slider-disabled {
+		.ant-slider-track {
+			background-color: #a1a7b3 !important;
+		}
+		.ant-slider-handle,
+		.ant-slider-dot {
+			border-color: #a1a7b3 !important;
+		}
+	}
+}

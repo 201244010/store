@@ -22,7 +22,7 @@ class VideoPlayer extends React.Component{
 		this.state = {
 			volume: 0,
 			currentTimestamp: moment().valueOf()/1000,
-			liveTimestamp: 0,
+			// liveTimestamp: 0,
 			noMedia: false,
 			isLive: true,
 			playing: false,
@@ -43,6 +43,7 @@ class VideoPlayer extends React.Component{
 		};
 
 		this.interval = 0;
+		this.dragTimeout = 0;
 
 		// this.currentTimestamp = moment().valueOf()/1000;
 		// this.liveTimestamp = 0;
@@ -51,13 +52,14 @@ class VideoPlayer extends React.Component{
 		// 事件
 		this.onPlay = this.onPlay.bind(this);
 		this.onPause = this.onPause.bind(this);
+		this.onError = this.onError.bind(this);
 		this.onEnd = this.onEnd.bind(this);
 		this.onTimeUpdate = this.onTimeUpdate.bind(this);
 
 
 		// 方法
 		this.updateUrl = this.updateUrl.bind(this);
-		this.updateSources = this.updateSources.bind(this);
+		// this.updateSources = this.updateSources.bind(this);
 
 		this.play = this.play.bind(this);
 		this.playlive = this.playlive.bind(this);
@@ -66,7 +68,8 @@ class VideoPlayer extends React.Component{
 		this.playlistAtTimestamp = this.playlistAtTimestamp.bind(this);
 
 		this.pause = this.pause.bind(this);
-		this.pauselist = this.pauselist.bind(this);
+		// this.pauselist = this.pauselist.bind(this);
+		this.pauseHistory = this.pauseHistory.bind(this);
 
 		this.startClock = this.startClock.bind(this);
 		this.stopClock = this.stopClock.bind(this);
@@ -94,20 +97,24 @@ class VideoPlayer extends React.Component{
 	}
 
 	componentDidMount() {
+		const { url, type } = this.props;
 
 		this.setState({
-			canScreenShot: this.canScreenShot()
+			canScreenShot: this.canScreenShot(),
+			currentTimestamp: type === 'track' ? 0 : moment().valueOf()/1000
 		});
+
+
 
 		window.addEventListener('resize', this.fullScreenChangeHandler);
 
-		let { sources } = this.props;
-		const { url } = this.props;
-		sources = sources || [];
+		// let { sources } = this.props;
+
+		// sources = sources || [];
 
 		if ( url && this.player ) {
 			this.updateUrl(url);
-			this.updateSources(sources);
+			// this.updateSources(sources);
 		}
 		// console.log('componentDidMount');
 	}
@@ -144,15 +151,15 @@ class VideoPlayer extends React.Component{
 		// 	}
 		// }
 
-		let { sources } = this.props;
+		// let { sources } = this.props;
 		const { url } = this.props;
-		sources = sources || [];
+		// sources = sources || [];
 		// console.log('did update:', url, oldProps.url);
 		if (url && oldProps.url !== url) {
 			this.updateUrl(url);
 		}
 		// if (1) {
-		this.updateSources(sources);
+		// this.updateSources(sources);
 		// }
 	}
 
@@ -176,13 +183,12 @@ class VideoPlayer extends React.Component{
 
 	// 时间响应
 	onTimeUpdate(timestamp) {
-		// const { liveStartTime } = this.state;
-		const {liveStartTime} = this;
-		this.setState({
-			liveTimestamp: liveStartTime + timestamp
-		});
-		// this.liveTimestamp = this.liveStartTime + timestamp;
-		// console.log(moment.unix(this.state.liveTimestamp).format('YYYY-MM-DD HH:mm:ss'));
+		const { type } = this.props;
+		if (type === 'track') {
+			this.setState({
+				currentTimestamp: timestamp
+			});
+		}
 	}
 
 	onPlay() {
@@ -203,43 +209,119 @@ class VideoPlayer extends React.Component{
 		});
 	}
 
-	onEnd(player) {
-		const { sources, type } = this.props;
-		// const player = this.vjs;
+	onEnd() {
+		const { type } = this.props;
+		console.log(type, 'End Handler.');
+	}
+	// onEnd(player) {
+	// 	const { sources, type } = this.props;
+	// 	// const player = this.vjs;
+	// 	if (type === 'track'){
+	// 		// track模式下，播放结束不作动作；
+	// 		return;
+	// 	}
+
+	// 	const currentIndex = player.playlist.currentIndex();
+	// 	const lastIndex = player.playlist.lastIndex();
+
+	// 	// console.log('onEnd: ', currentIndex, lastIndex);
+	// 	const { currentTimestamp } = this.state;
+	// 	// const currentTimestamp = this.currentTimestamp;
+
+	// 	if (currentIndex === lastIndex){
+	// 		// 当前是最后一个视频
+	// 		// console.log('last: ', moment().valueOf()/1000, currentTimestamp, moment().valueOf()/1000 - currentTimestamp);
+	// 		if ( moment().valueOf()/1000 - currentTimestamp <= 60) {
+	// 			// 60s 内认为可以连续播放，转直播
+	// 			this.playlive();
+	// 		}else{
+	// 			// 还不到当前时间
+	// 			this.showNoMediaCover();
+	// 		}
+	// 	}else{
+	// 		// 当前不是最后一个视频
+	// 		const nextIndex = player.playlist.nextIndex();
+	// 		const nextSource = sources[nextIndex];
+	// 		// console.log(nextIndex, currentTimestamp, nextSource.timeStart);
+	// 		if (currentTimestamp < nextSource.timeStart){
+	// 			// 还未到下一段视频点
+	// 			this.showNoMediaCover();
+	// 		}else{
+	// 			player.playlist.next();
+	// 		}
+	// 	}
+	// }
+
+	onToolbarPlay = () => {
+		const { type } = this.props;
+		const { playing, isLive, currentTimestamp } = this.state;
 		if (type === 'track'){
-			// track模式下，播放结束不作动作；
-			return;
-		}
-
-		const currentIndex = player.playlist.currentIndex();
-		const lastIndex = player.playlist.lastIndex();
-
-		// console.log('onEnd: ', currentIndex, lastIndex);
-		const { currentTimestamp } = this.state;
-		// const currentTimestamp = this.currentTimestamp;
-
-		if (currentIndex === lastIndex){
-			// 当前是最后一个视频
-			// console.log('last: ', moment().valueOf()/1000, currentTimestamp, moment().valueOf()/1000 - currentTimestamp);
-			if ( moment().valueOf()/1000 - currentTimestamp <= 60) {
-				// 60s 内认为可以连续播放，转直播
-				this.playlive();
+			// playing ? this.pause() : this.play();
+			if (playing) {
+				this.pause();
 			}else{
-				// 还不到当前时间
-				this.showNoMediaCover();
+				this.play();
 			}
 		}else{
-			// 当前不是最后一个视频
-			const nextIndex = player.playlist.nextIndex();
-			const nextSource = sources[nextIndex];
-			// console.log(nextIndex, currentTimestamp, nextSource.timeStart);
-			if (currentTimestamp < nextSource.timeStart){
-				// 还未到下一段视频点
-				this.showNoMediaCover();
+			if (isLive) {
+				// 直播时禁用播放暂停按钮
+				return;
+			}
+			// playing ? this.pauselist() : this.playlistAtTimestamp(currentTimestamp);
+			if (playing) {
+				// this.pauselist();
+				this.pauseHistory();
 			}else{
-				player.playlist.next();
+				this.playlistAtTimestamp(currentTimestamp);
 			}
 		}
+
+	}
+
+	onTimebarStartDarg = () => {
+		const { stopHistoryPlay } = this.props;
+		const { playing } = this.state;
+
+		this.stopClock();
+		clearTimeout(this.dragTimeout);
+
+		// console.log('playing: ', playing);
+
+		if (playing) {
+			stopHistoryPlay();
+		}
+
+	}
+
+	onTimebarMoveDarg = () => {
+		this.stopClock();
+		clearTimeout(this.dragTimeout);
+	}
+
+	onTimebarStopDrag = (timestamp) => {
+		this.setState({
+			currentTimestamp: timestamp
+		});
+
+		const { timeSlots } = this.props;
+		const isInside = !timeSlots.every((slot) => {
+			const { timeStart, timeEnd } = slot;
+			// console.log('timestamp: ', timestamp, timeStart, timestamp < timeStart);
+			if (timeStart <= timestamp && timestamp <= timeEnd ){
+				return false;
+			}
+			return true;
+		});
+
+		if (!isInside) {
+			this.showNoMediaCover();
+		}
+
+		clearTimeout(this.dragTimeout);
+		this.dragTimeout = setTimeout(() => {
+			clearTimeout(this.dragTimeout);
+			this.playlistAtTimestamp(timestamp);
+		}, 1.2*1000);
 	}
 
 	setCurrentTime(time) {
@@ -250,32 +332,120 @@ class VideoPlayer extends React.Component{
 		}
 	}
 
-	startClock() {
-		const { playing } = this.state;
+	// generateCurrent = () => {
+	// 	console.log('generateCurrent');
+	// 	const { player } = this;
+	// 	if (player){
+	// 		// console.log(this.player.currentTime());
+	// 		return player.currentTime();
+	// 	}
+	// 	return 0;
+	// }
+
+	generateDuration = () => {
+		const { player } = this;
+		if (player){
+			let duration = player.duration();
+			console.log('generateDuration: ', duration);
+			if (Number.isNaN(duration) || !Number.isFinite(duration)){
+				duration = 0;
+			}
+			return duration;
+		}
+		return 0;
+	}
+
+	backToLive = () => {
+		const { stopHistoryPlay } = this.props;
+		const { player } = this;
+
+		stopHistoryPlay();
+		this.playlive();
+
+		if (player) {
+			setTimeout(() => {
+				player.play();
+			}, 0);
+		}
+	}
+
+	startClock = () => {
 		clearInterval(this.interval);
 
 		this.interval = setInterval(() => {
-			const { currentTimestamp } = this.state;
+			const { playing, isLive, currentTimestamp } = this.state;
+			const { type } = this.props;
+
 			this.setState({
 				currentTimestamp: currentTimestamp + 1,
 				playing: true
 			});
 
+			// console.log('playing: ', playing, 'isLive: ', isLive, 'type: ', type);
+
+			if (playing && !isLive && type === 'time') {
+				this.onPlayingHistory();
+			};
+
 			// this.currentTimestamp = this.currentTimestamp + 1;
 			// console.log(moment.unix(currentTimestamp).format('YYYY-MM-DD HH:mm:ss'));
 
 			// 如果当前不再播放，则需要判断是否开始播放下一秒
-			if (!playing){
-				this.playlistAtTimestamp(currentTimestamp);
-			}
+			// if (!playing){
+			// 	this.playlistAtTimestamp(currentTimestamp);
+			// }
 		}, 1000);
 	}
 
-	stopClock() {
+	isInsideSlots = (timestamp) => {
+		// const { currentTimestamp : timestamp } = this.state;
+		console.log('currentTimestamp: ', timestamp);
+		// 判断当前的时间位置
+		const { timeSlots } = this.props;
+
+		let nextTimeStart = timestamp;
+		const isInside = !timeSlots.every((slot) => {
+			const { timeStart, timeEnd } = slot;
+			if (timeStart <= timestamp && timestamp <= timeEnd ){
+				return false;
+			}
+			if (timestamp < timeStart) {
+				nextTimeStart = timeStart;
+			}
+			return true;
+		});
+		console.log('isInside: ', isInside);
+		if (isInside) {
+			return true;
+		};
+		console.log('nextTimeStart: ', nextTimeStart);
+		return nextTimeStart;
+	}
+
+	onPlayingHistory = async () => {
+		const { currentTimestamp : timestamp } = this.state;
+
+		const isInside = this.isInsideSlots(timestamp);
+		// console.log('onPlayingHistory isInside: ', isInside);
+		if (isInside !== true) {
+			// 当前的位置不在有视频的区域了
+			if (isInside === timestamp) {
+				// todo 后面就是直播数据了 需要优化的点：结束后需要重新去拉取时间
+				this.playlive();
+			}else{
+				// 后面还有回放
+				this.setState({
+					currentTimestamp: isInside
+				});
+			}
+		}
+	}
+
+	stopClock = () => {
 		clearInterval(this.interval);
 	}
 
-	play() {
+	play = () => {
 		const {player} = this;
 		// console.log(player);
 		if (player.paused()){
@@ -283,7 +453,7 @@ class VideoPlayer extends React.Component{
 		}
 	}
 
-	playUrl(url) {
+	playUrl = (url) => {
 		// console.log('playUrl');
 		const {player} = this;
 		player.pause();
@@ -295,9 +465,9 @@ class VideoPlayer extends React.Component{
 			}]
 		}]);
 
-
 		player.playlist.last();
-		// this.play();
+
+		this.play();
 		player.on('canplay', () => {
 			this.play();
 		});
@@ -336,25 +506,26 @@ class VideoPlayer extends React.Component{
 			isLive: true
 		});
 
-		// this.currentTimestamp = moment().valueOf()/1000;
 		player.playlist.last();
 
-		// this.play();	//移除autoplay，不然flvjs会报错；
+		this.play();
 		player.on('canplay', () => {
-			console.log('can play.');
+			// 解决页面刷新后会重新播放声音的问题，这个问题可能需要详细看一下；
+			const { volume } = this.state;
+			if (volume === 0) {
+				player.muted(true);
+			}
 			this.play();
 		});
 
 		player.on('play', () => {
-			// console.log('play');
+			const stamp = moment().valueOf()/1000;
 			this.setState({
-				liveTimestamp: moment().valueOf()/1000,
-				// liveStartTime: moment().valueOf()/1000,
+				// liveTimestamp: stamp,
 				canScreenShot: this.canScreenShot()
 			});
 
-			// this.liveTimestamp = moment().valueOf()/1000;
-			this.liveStartTime = moment().valueOf()/1000;
+			this.liveStartTime = stamp;
 		});
 
 		this.removeNoMediaCover();
@@ -372,57 +543,51 @@ class VideoPlayer extends React.Component{
 		// this.startClock();
 		this.removeNoMediaCover();
 
-		const {player} = this;
+		const { player } = this;
 		player.currentTime(timestamp);
 	}
 
-	playlistAtTimestamp(timestamp){
-		// console.log('timestamp', timestamp, moment.unix(timestamp).format('YYYY-MM-DD hh:mm:ss'));
-		// 当是回放功能时，playlist到特定片段；
-		const {player} = this;
+	async playlistAtTimestamp(timestamp) {
+		const { stopHistoryPlay } = this.props;
+		console.log('timestamp', timestamp, moment.unix(timestamp).format('YYYY-MM-DD HH:mm:ss'));
 
 		if (moment().valueOf()/1000 - timestamp <= 60 ){
 			// 拖到了直播
+			console.log('goto playlive.');
 			this.playlive();
+			stopHistoryPlay();
 		}else{
-			const { sources } = this.props;
+			const { getHistoryUrl } = this.props;
 
-			let src = '';
-			const target = sources.filter((source) => {
-				if (source.timeStart <= timestamp && timestamp <= source.timeEnd ){
-					src = source.url;
-					return true;
-				}
-				return false;
-			});
-			// console.log('target', target, this.list);
+			const isInside = this.isInsideSlots(timestamp);
 
-			if (target.length > 0) {
-				// 播放条目
-				player.playlist(this.list);
-				// console.log('src', src);
-				const index = player.playlist.indexOf(src);
-				// console.log(index);
-				player.playlist.currentItem(index);
-				this.removeNoMediaCover();
-				this.play();
+			if (isInside === true) {
+				// 拖动到了有值的区域，则播放回放
+				const url = await getHistoryUrl(timestamp);
+				console.log('goto playhistory url: ', url);
+
+				this.playUrl(url);
+				this.startClock();
+
+				// 光标定位到当前回放位置，将状态调整我未非直播状态；
+				this.setState({
+					isLive: false,
+					currentTimestamp: timestamp
+				});
+			}
+			// 下面情况均为选中有值区域
+			else if (isInside === timestamp) {
+				// 选取的时间点比所有时间段都晚，说明下一段是直播
+				console.log('goto playlive. because no next video.');
+				this.playlive();
+				stopHistoryPlay();
 			}else{
-				// 黑屏
-				this.showNoMediaCover();
-				this.pause();
+				// 拖动到了无值的区域，则跳转到下个时间点；
+				console.log('goto next time. nextTimeStart:', isInside);
+				this.playlistAtTimestamp(isInside);
 			}
 
-			this.setState({
-				isLive: false
-			});
 		}
-
-		this.setState({
-			currentTimestamp: timestamp
-		});
-		// this.currentTimestamp = timestamp;
-
-		this.startClock();
 	}
 
 	pause() {
@@ -434,19 +599,33 @@ class VideoPlayer extends React.Component{
 		}
 	}
 
-	pauselist() {
-		// 暂停自定义回看时候的;
+	// pauselist() {
+	// 	// todo 暂停和重播功能需要改动；
+	// 	// 暂停自定义回看时候的;
+	// 	this.stopClock();
+	// 	this.pause();
+
+	// 	this.setState({
+	// 		playing: false
+	// 	});
+	// }
+	pauseHistory () {
+		const { stopHistoryPlay } = this.props;
+
 		this.stopClock();
 		this.pause();
 
 		this.setState({
 			playing: false
 		});
+
+		stopHistoryPlay();
 	}
 
 	showNoMediaCover(){
 		this.setState({
-			noMedia: true
+			noMedia: true,
+			playing: false
 		});
 	}
 
@@ -558,19 +737,20 @@ class VideoPlayer extends React.Component{
 
 		const canvas = document.createElement('canvas');
 
-		const currentPPI = parseInt(ppi, 10);
 		// console.log(currentPPI, currentPPI === 1080);
-		let height = 720;
-		switch(currentPPI) {
-			case 1080:
-				height = 800;
-				break;
-			case 720:
-			default:
-				height = 640;
-				break;
-		}
+		// let height = 720;
+		// switch(currentPPI) {
+		// 	case 1080:
+		// 	default:
+		// 		height = 800;
+		// 		break;
+		// 	case 720:
+		// 		height = 640;
+		// 		break;
+		// }
 		// console.log(height);
+		// const height = 720;
+		const height = ppi;
 		// 只给720p的图，否则内存不够导致下载失败；
 		const width = parseInt(height/pr[1]*pr[0], 10);
 
@@ -579,6 +759,17 @@ class VideoPlayer extends React.Component{
 
 		canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 		const base64 = canvas.toDataURL('image/jpeg');
+
+		// const currentPPI = parseInt(ppi, 10);
+		// const ppiWidth = parseInt(currentPPI/pr[1]*pr[0], 10);
+
+		// // 实际按照ipc的ppi尺寸输出图片；
+		// const canvasOutput = document.createElement('canvas');
+		// canvasOutput.width = ppiWidth;
+		// canvasOutput.height = currentPPI;
+
+		// canvasOutput.getContext('2d').drawImage(canvas, 0, 0, ppiWidth, currentPPI);
+		// const base64 = canvasOutput.toDataURL('image/jpeg');
 
 		const image = new Image();
 		image.setAttribute('crossOrigin', 'anonymous');
@@ -611,22 +802,24 @@ class VideoPlayer extends React.Component{
 		changePPI(ppi);
 	}
 
-	dateChange(timestamp) {
-		this.playlistAtTimestamp(timestamp);
+	async dateChange(timestamp) {
+		const { onTimeChange } = this.props;
+		await onTimeChange(timestamp, moment().unix());
+		this.onTimebarStopDrag(timestamp);
 	}
 
-	updateSources(sources) {
+	// updateSources(sources) {
 
-		sources.sort((a, b) => a.timeStart - b.timeStart);
+	// 	sources.sort((a, b) => a.timeStart - b.timeStart);
 
-		this.list = sources.map((item) => ({
-			sources: [{
-				src: item.url,
-				type: 'video/flv'
-			}]
-		}));
-	}
-
+	// 	this.list = sources.map((item) => ({
+	// 		sources: [{
+	// 			src: item.url,
+	// 			type: 'video/flv'
+	// 		}]
+	// 	}));
+	// }
+	// 初始化后首次更新url
 	updateUrl(url) {
 		const { type } = this.props;
 		if ( type === 'track') {
@@ -636,15 +829,22 @@ class VideoPlayer extends React.Component{
 		}
 	}
 
+
+
 	render() {
-		const { type, faceidRects, pixelRatio, currentPPI,ppiChanged, onTimeChange } = this.props;
-		let { sources } = this.props;
-		sources = sources || [];
-		const { playing, isLive, ppis, noMedia, volume, maxVolume, fullScreen, canScreenShot, currentTimestamp, liveTimestamp } = this.state;
+		const { type, faceidRects, pixelRatio, currentPPI, ppiChanged, timeSlots, onTimeChange } = this.props;
+		// let { sources } = this.props;
+		// sources = sources || [];
+		const { playing, isLive, ppis, noMedia, volume, maxVolume, fullScreen, canScreenShot, currentTimestamp } = this.state;
 
 		// const currentTimestamp = this.currentTimestamp;
 
 		// console.log(this.props, this.state);
+		if (type !== 'track') {
+			timeSlots.sort((a,b) => b.timeStart - a.timeStart);
+		}
+
+		console.log('render', currentTimestamp);
 
 		return (
 			<div className={`${styles['video-player']} ${fullScreen ? styles.fullscreen : ''}`} ref={(container) => this.container = container}>
@@ -684,7 +884,7 @@ class VideoPlayer extends React.Component{
 					{
 						(faceidRects && isLive) ?
 							<Faceid
-								current={liveTimestamp}
+								// current={liveTimestamp}
 								faceidRects={faceidRects}
 								pixelRatio={pixelRatio}
 								currentPPI={currentPPI}
@@ -697,28 +897,7 @@ class VideoPlayer extends React.Component{
 
 				<div className={styles['toolbar-container']}>
 					<Toolbar
-						play={() => {
-							if (type === 'track'){
-								// playing ? this.pause() : this.play();
-								if (playing) {
-									this.pause();
-								}else{
-									this.play();
-								}
-							}else{
-								if (isLive) {
-									// 直播时禁用播放暂停按钮
-									return;
-								}
-								// playing ? this.pauselist() : this.playlistAtTimestamp(currentTimestamp);
-								if (playing) {
-									this.pauselist();
-								}else{
-									this.playlistAtTimestamp(currentTimestamp);
-								}
-							}
-
-						}}
+						play={this.onToolbarPlay}
 
 						playing={playing}
 						isLive={isLive && type !== 'track'}
@@ -751,57 +930,36 @@ class VideoPlayer extends React.Component{
 
 						onDatePickerChange={this.dateChange}
 
-						backToLive={() => {
-							const { player } = this;
-							this.playlive();
-							if (player) {
-								setTimeout(() => {
-									player.play();
-								}, 0);
-							}
-						}}
+						backToLive={this.backToLive}
 
 						progressbar={
 
 							type === 'track' ?
 								<Progressbar
-									current={
-										(() => {
-											if (this.player){
-												// console.log(this.player.currentTime());
-												return this.player.currentTime();
-											}
-											return 0;
-
-										})()
-									}
-									duration={(() => {
-										if (this.player){
-											let duration = this.player.duration();
-											// console.log(1, duration);
-											if (Number.isNaN(duration) || !Number.isFinite(duration)){
-												duration = 0;
-											}
-											return duration;
-										}
-										return 0;
-
-									})()}
+									current={currentTimestamp}
+									duration={this.generateDuration()}
 									onChange={this.playTrackAtTimestamp}
 								/> :
 								<Timebar
-									sources={sources}
+									timeSlots={timeSlots}
+									// sources={sources}
 									current={currentTimestamp}
 									// noMedia={ this.state.noMedia }
 									// onStartDrag={ () => {
-
+									ref={bar => this.timebar = bar}
 									// }}
-									onChange={(timestamp) => {
-										this.playlistAtTimestamp(timestamp);
-										onTimeChange(timestamp);
-									}}
 
-									// onTimeChange={onTimeChange}
+									// onChange={(t) => {
+									// 	console.log('here is onChange!');
+									// 	this.setState({
+									// 		currentTimestamp: t
+									// 	});
+									// }}
+									onStartDrag={this.onTimebarStartDarg}
+									onMoveDrag={this.onTimebarMoveDarg}
+									onStopDrag={this.onTimebarStopDrag}
+
+									onGenerateTimeRange={onTimeChange}
 								/>
 						}
 					/>

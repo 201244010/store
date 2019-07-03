@@ -282,7 +282,7 @@ class POSList extends React.Component {
 									className={styles['row-operation']}
 									// href="javascript:void(0);"
 									to={`/cashVerify/videos?posSN=${sn}&ipcId=${ipcId}`}
-								>
+						>
 									{formatMessage({ id: 'posList.video' })}
 								</Link> */}
 								<a href="javascript:void(0)" onClick={() => this.toPath('videos', {sn, ipcId})}>

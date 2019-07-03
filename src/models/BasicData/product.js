@@ -5,6 +5,7 @@ import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { idEncode } from '@/utils/utils';
 import * as CookieUtil from '@/utils/cookies';
+import { format, map, shake } from '@konata9/milk-shake';
 
 export default {
 	namespace: 'basicDataProduct',
@@ -127,19 +128,28 @@ export default {
 			});
 		},
 		*getProductDetail({ payload = {} }, { call, put }) {
+			// TODO 需要增加 称重商品处理
 			const { options = {} } = payload;
 			yield put({
 				type: 'updateState',
 				payload: { loading: true },
 			});
 
-			const response = yield call(Actions.getProductDetail, options);
+			const response = yield call(Actions.getProductDetail, format('toSnake')(options));
 			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const formattedData = shake(data)(
+					format('toCamel'),
+					map([
+						{ from: 'Type', to: 'type' },
+						{ from: 'weighInfo', to: 'weighInfo', rule: dataItem => dataItem || {} },
+					])
+				);
 				yield put({
 					type: 'updateState',
 					payload: {
 						loading: false,
-						productInfo: response.data || {},
+						productInfo: formattedData,
 					},
 				});
 			} else {
@@ -152,18 +162,11 @@ export default {
 		},
 		*createProduct({ payload = {} }, { call, put }) {
 			const { options = {} } = payload;
-			const opts = {
-				...options,
-				expire_time: options.expire_time || -1,
-				price: options.price || -1,
-				promote_price: options.promote_price || -1,
-				member_price: options.member_price || -1,
-			};
 			yield put({
 				type: 'updateState',
 				payload: { loading: true },
 			});
-			const response = yield call(Actions.createProduct, opts);
+			const response = yield call(Actions.createProduct, format('toSnake')(options));
 			if (response && response.code === ERROR_OK) {
 				yield put({
 					type: 'updateState',
@@ -190,27 +193,21 @@ export default {
 		},
 		*updateProduct({ payload = {} }, { call, put }) {
 			const { options = {} } = payload;
-			const opts = {
-				...options,
-				expire_time: options.expire_time || -1,
-				price: options.price || -1,
-				promote_price: options.promote_price || -1,
-				member_price: options.member_price || -1,
-			};
 			yield put({
 				type: 'updateState',
 				payload: { loading: true },
 			});
-			const response = yield call(Actions.updateProduct, opts);
+			const response = yield call(Actions.updateProduct, format('toSnake')(options));
 			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
 				yield put({
 					type: 'updateState',
 					payload: {
 						loading: false,
-						productInfo: response.data || {},
+						productInfo: format('toCamel')(data),
 					},
 				});
-				const { fromPage, product_id } = options;
+				const { fromPage, productId } = options;
 				const pagePath = {
 					list: {
 						pathId: 'productList',
@@ -218,7 +215,7 @@ export default {
 					detail: {
 						pathId: 'productInfo',
 						urlParams: {
-							id: idEncode(product_id),
+							id: idEncode(productId),
 						},
 					},
 				};

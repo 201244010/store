@@ -101,6 +101,32 @@ const otherPrice = (rule, value, callback) => {
 	}
 };
 
+const pluCodeValidate = (rule, value, callback) => {
+	if (!RegExp.pluCode.test(value)) {
+		callback(formatMessage({ id: 'basicData.weightProduct.PLU.formatError' }));
+	} else {
+		callback();
+	}
+};
+
+const productWeightValidate = (rule, value, callback, extra) => {
+	const { messageId = null } = extra || {};
+	if (value && !RegExp.productWeight.test(value)) {
+		callback(formatMessage({ id: messageId || 'basicData.weightProduct.weight.formatError' }));
+	} else {
+		callback();
+	}
+};
+
+const dateNumberValidate = (rule, value, callback, extra) => {
+	const { messageId = null } = extra || {};
+	if (value && !RegExp.dateNumber.test(value)) {
+		callback(formatMessage({ id: messageId || 'basicData.weightProduct.date.formatError' }));
+	} else {
+		callback();
+	}
+};
+
 const validatorList = {
 	password: passwordValidate,
 	confirm: confirmValidate,
@@ -112,6 +138,9 @@ const validatorList = {
 	promote_price: otherPrice,
 	member_price: otherPrice,
 	telephone: phoneValidate,
+	pluCode: pluCodeValidate,
+	productWeight: productWeightValidate,
+	dateNumber: dateNumberValidate,
 };
 
 export function customValidate(params) {
