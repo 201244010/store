@@ -28,7 +28,7 @@ export default {
 	'notif-motion-detect-title': '网络摄像机侦测到异常',
 
 	// 消息描述模版
-	'notif-ap-offline-desc': '基站“<%s>”已离线，请检查设备状态',
+	'notif-ap-offline-desc': '基站“%s”已离线，请检查设备状态',
 	'notif-import-product-finish-desc': '商品导入完成，商品总数%s, 成功导入总数%s',
 	'notif-import-product-failure-desc': '商品导入失败，原因：%s',
 	'notif-motion-detect-desc': '网络摄像机侦测到异常%s，请即刻查看',
@@ -37,7 +37,7 @@ export default {
 	'notif-motion-detect-desc-3': '图像和声音',
 
 	// 消息内容模板
-	'notif-ap-offline-content': '基站“<%s>”于<%s>离线，请检查设备状态',
+	'notif-ap-offline-content': '基站“%s”于%s离线，请检查设备状态',
 	'notif-import-product-finish-content': '商品导入完成，商品总数%s, 成功导入总数%s',
 	'notif-import-product-failure-content': '商品导入失败，原因：%s',
 	'notif-motion-detect-content': '网络摄像机（%s）侦测到异常%s，请即刻查看',
