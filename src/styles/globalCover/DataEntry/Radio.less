@@ -14,66 +14,67 @@
 	.ant-radio-inner::after {
 		background-color: #4b7afa;
 	}
-	.ant-radio-group-solid
-	.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-		background: #4b7afa;
-		border-color: #4b7afa;
-	}
-	.ant-radio-group-solid
-	.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
-		background: #6694ff;
-		border-color: #6694ff;
-	}
-	.ant-radio-group-solid
-	.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):active {
-		background: #355ad4;
-		border-color: #355ad4;
+	.ant-radio-group-solid {
+		.ant-radio-button-wrapper-checked {
+			&:not(.ant-radio-button-wrapper-disabled) {
+				background: #4b7afa;
+				border-color: #4b7afa;
+				&:hover {
+					background: #6694ff;
+					border-color: #6694ff;
+				}
+				&:active {
+					background: #355ad4;
+					border-color: #355ad4;
+				}
+			}
+		}
 	}
 	.ant-radio-button-wrapper-checked {
 		color: #4b7afa;
 		border-color: #4b7afa;
 		-webkit-box-shadow: -1px 0 0 0 #4b7afa;
 		box-shadow: -1px 0 0 0 #4b7afa;
-	}
-	.ant-radio-button-wrapper-checked:hover {
-		color: #6694ff;
-		border-color: #6694ff;
-		-webkit-box-shadow: -1px 0 0 0 #6694ff;
-		box-shadow: -1px 0 0 0 #6694ff;
-	}
-	.ant-radio-button-wrapper-checked:active {
-		color: #355ad4;
-		border-color: #355ad4;
-		-webkit-box-shadow: -1px 0 0 0 #355ad4;
-		box-shadow: -1px 0 0 0 #355ad4;
-	}
-	.ant-radio-button-wrapper-checked:first-child {
-		border-color: #4b7afa;
-	}
-	.ant-radio-button-wrapper:hover {
-		color: #6694ff;
-	}
-	.ant-radio-button-wrapper-checked:focus-within {
-		outline: 3px solid rgba(75, 122, 250, 0.1);
-	}
-	.ant-radio-button-wrapper-disabled.ant-radio-button-wrapper-checked {
-		color: #fff;
-		background-color: #ced2d9;
-		border-color: #a1a7b3;
-		-webkit-box-shadow: none;
-		box-shadow: none;
-	}
-	.ant-radio-button-wrapper-disabled {
-		color: #a1a7b3;
-		background-color: #f0f2f5;
-		border-color: #ced2d9;
-		cursor: not-allowed;
-	}
-	.ant-radio-button-wrapper:first-child {
-		border-left: 1px solid #ced2d9;
-		border-radius: 4px 0 0 4px;
+		&:hover {
+			color: #6694ff;
+			border-color: #6694ff;
+			-webkit-box-shadow: -1px 0 0 0 #6694ff;
+			box-shadow: -1px 0 0 0 #6694ff;
+		}
+		&:active {
+			color: #355ad4;
+			border-color: #355ad4;
+			-webkit-box-shadow: -1px 0 0 0 #355ad4;
+			box-shadow: -1px 0 0 0 #355ad4;
+		}
+		&:first-child {
+			border-color: #4b7afa;
+		}
 	}
 	.ant-radio-button-wrapper {
 		border: 1px solid #ced2d9;
+		&:hover {
+			color: #6694ff;
+		}
+		&:first-child {
+			border-left: 1px solid #ced2d9;
+			border-radius: 4px 0 0 4px;
+		}
+		&-checked:focus-within {
+			outline: 3px solid rgba(75, 122, 250, 0.1);
+		}
+		&-disabled {
+			color: #a1a7b3;
+			background-color: #f0f2f5;
+			border-color: #ced2d9;
+			cursor: not-allowed;
+			&.ant-radio-button-wrapper-checked {
+				color: #fff;
+				background-color: #ced2d9;
+				border-color: #a1a7b3;
+				-webkit-box-shadow: none;
+				box-shadow: none;
+			}
+		}
 	}
 }
