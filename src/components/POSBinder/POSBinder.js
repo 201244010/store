@@ -32,19 +32,19 @@ class POSBinder extends React.Component {
 
 	componentDidMount() {
 		const { posList } = this.props;
-		this.renderBlocks(posList);
 
 		this.onResizeHandler();
 		window.addEventListener('resize', this.onResizeHandler);
 
 		// message.info('请拖动下方虚线框已框选对应收银设备。');
+		this.renderBlocks(posList);
 	}
 
-	// componentWillReceiveProps(newProps) {
-	// 	console.log('componentWillReceiveProps');
-	// 	const { posList } = newProps;
-	// 	this.renderBlocks(posList);
-	// }
+	componentWillReceiveProps(newProps) {
+		const { posList } = newProps;
+
+		this.renderBlocks(posList, newProps);
+	}
 
 	onResizeHandler() {
 		const { pixelRatio } = this.props;
@@ -57,8 +57,7 @@ class POSBinder extends React.Component {
 
 	onDragStop(dragger, sn) {
 		const { list } = this.state;
-		const { getPosition } = this.props;
-
+		// const { getPosition } = this.props;
 		const wrapperHeight = this.wrapper.offsetHeight;
 
 		const result = list.map((item) => {
@@ -75,9 +74,9 @@ class POSBinder extends React.Component {
 			list: result
 		});
 
-		if (getPosition) {
-			getPosition(list);
-		};
+		// if (getPosition) {
+		// 	getPosition(result);
+		// };
 
 	}
 
@@ -93,7 +92,6 @@ class POSBinder extends React.Component {
 		const containerHeight = container.offsetHeight;
 		const containerWidth = container.offsetWidth;
 
-		// console.log(p,containerHeight,containerWidth);
 		let wrapperHeight;
 		let wrapperWidth;
 		let wrapperMarginTop = 0;
@@ -115,6 +113,11 @@ class POSBinder extends React.Component {
 			}
 		});
 	};
+
+	getPosition = () => {
+		const { list } = this.state;
+		return list;
+	}
 
 	generatePosition(sn) {
 		const { list } = this.state;
@@ -155,8 +158,8 @@ class POSBinder extends React.Component {
 	}
 
 
-	renderBlocks(posList) {
-		const { editing, getPosition } = this.props;
+	renderBlocks(posList, props) {
+		const { editing, /* getPosition */ } = props || this.props;
 		const { list } = this.state;
 		const tList = posList || list;
 
@@ -169,13 +172,11 @@ class POSBinder extends React.Component {
 			height: item.height
 		}));
 
-		// console.log('renderBlocks: ', elist);
-
 		this.setState({
 			list: elist
 		});
 
-		getPosition(list);
+		// getPosition(list);
 	}
 
 	render() {
