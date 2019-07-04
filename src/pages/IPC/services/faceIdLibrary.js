@@ -13,7 +13,7 @@ const dataSerializer = (item) => ({
 	name: item.name,
 
 	threshold: item.threshold,
-	period: item.period,
+	period: item.period*24*60*60,
 	mark: item.remarks || '',
 	count: item.amount,
 	capacity: item.capacity,
@@ -24,9 +24,9 @@ const dataSerializer = (item) => ({
 const dataFormatter = (item, index) => ({
 	id: item.group_id || index + 1,
 	name: item.name,
-	isDefault: item.type < 5, // !!((item.type === 0 || item.type === 1)),
+	type: item.type,
 	threshold: item.threshold,
-	period: item.period,
+	period: item.period/24/60/60,
 	remarks: item.mark || '',
 	amount: item.count || 0,
 	capacity: item.capacity,

@@ -28,55 +28,66 @@ class ReVideojs extends React.Component{
 			flvjs: {
 				mediaDataSource: {
 					type: 'flv',
-					isLive: true,
-					cors: true,
-					// withCredentials: true,
+					cors: true
+				},
+				config: {
 					autoCleanupSourceBuffer: true,
-					enableStashBuffer: false
+					enableStashBuffer: false,
+					isLive: true,
+					// enableWorker: true,
 				}
 			}
 		});
 
-		player.muted(true);
+		player.ready(() => {
 
-		// 测试是否可以监听到这个时间
-		player.on('timeupdate', () => {
-			onTimeUpdate(player.currentTime());
-		});
+			// player.loading();
 
-		// player.on('durationchange', () => {
-		// 	console.log('durationchange', e);
-		// });
+			// console.log('revideo player: ', player, player.tech_, player.techName_);
+			player.muted(true);
 
-		// player.on('metadata_arrived', () => {
-		// 	console.log('player metadata_arrived', e);
-		// });
+			// 测试是否可以监听到这个时间
+			player.on('timeupdate', () => {
+				onTimeUpdate(player.currentTime());
+			});
 
-		// player.on('loadedmetadata', () => {
-		// 	// console.log('player loadedmetadata', e);
-		// 	onMetaData(e, player);
-		// });
+			// player.on('durationchange', () => {
+			// 	console.log('durationchange', e);
+			// });
 
-		// player.on('timeupdate', () => {
-		// 	console.log('timeupdate');
-		// });
+			// player.on('metadata_arrived', (e) => {
+			// 	console.log('player metadata_arrived', e);
+			// });
 
-		player.on('play', () => {
-			onPlay(player);
-		});
+			// if (player.techName_.toLowerCase() === 'flvjs') {
+			// 	player.tech_.on('metadata_arrived', (e, metadata) => {
+			// 		console.log('tech metadata_arrived', e);
+			// 		onMetadataArrived(metadata);
+			// 	});
+			// }
 
-		player.on('pause', () => {
-			onPause(player);
-		});
 
-		player.on('error', () => {
-			// console.log('error', e);
-			onError(player);
-		});
+			// player.on('loadedmetadata', (e, d) => {
+			// 	console.log('player loadedmetadata', e, d);
+			// });
 
-		player.on('ended', () => {
-			// console.log('end: ', e);
-			onEnd(player);
+			player.on('play', () => {
+				onPlay(player);
+			});
+
+			player.on('pause', () => {
+				onPause(player);
+			});
+
+			player.on('error', () => {
+				// console.log('error', e);
+				onError(player);
+			});
+
+			player.on('ended', () => {
+				// console.log('end: ', e);
+				onEnd(player);
+			});
 		});
 
 		getVideojsPlayer(player);

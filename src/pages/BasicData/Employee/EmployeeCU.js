@@ -164,8 +164,8 @@ class EmployeeCU extends Component {
 					</Form.Item>
 					<Form.Item
 						label={formatMessage({ id: 'employee.orgnization' })}
-						labelCol={{ span: 4 }}
-						wrapperCol={{ span: 16 }}
+						labelCol={{ md: { span: 4 }, xxl: {span: 2} }}
+						wrapperCol={{ md: { span: 16 }, xxl: {span: 12} }}
 					>
 						{getFieldDecorator('organizationRoleMappingList', {
 							initialValue: organizationRoleMappingList,
