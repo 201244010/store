@@ -164,7 +164,7 @@ const paramSerializer = (item) => {
 export default {
 	namespace: 'activeDetection',
 	state: {
-		readFlag: false,
+		readFlag: true,
 		updateFlag: false,
 		startTime: 0,// moment('21:00','HH:mm'),
 		endTime: 0,// moment('09:00','HH:mm'),
