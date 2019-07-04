@@ -1,34 +1,36 @@
 :global {
 	a {
 		color: #4b7afa;
-	}
-	a:hover {
-		color: #4b7afa;
-	}
-	a[disabled] {
-		color: #a1a7b3;
-		cursor: not-allowed;
-		pointer-events: none;
+		&:hover {
+			color: #4b7afa;
+		}
+		&[disabled] {
+			color: #a1a7b3;
+		}
 	}
 	.ant-upload-list-picture .ant-upload-list-item-error,
 	.ant-upload-list-picture-card .ant-upload-list-item-error {
 		border-color: #ff3838;
 	}
-	.ant-upload-list-item-error,
-	.ant-upload-list-item-error .anticon-paper-clip,
-	.ant-upload-list-item-error .ant-upload-list-item-name {
+	.ant-upload-list-item-error {
 		color: #ff3838;
-	}
-	.ant-upload-list-item-error .anticon-close {
-		color: #ff3838 !important;
+		.anticon-paper-clip,
+		.ant-upload-list-item-name {
+			color: #ff3838;
+		}
+		.anticon-close {
+			color: #ff3838 !important;
+		}
 	}
 	.ant-upload-list-item:hover .ant-upload-list-item-info {
 		background-color: #ecf1fe;
 	}
-	.ant-upload.ant-upload-select-picture-card:hover {
-		border-color: #759fff;
-	}
-	.ant-upload.ant-upload-drag:not(.ant-upload-disabled):hover {
-		border-color: #759fff;
+	.ant-upload {
+		&.ant-upload-select-picture-card:hover {
+			border-color: #759fff;
+		}
+		&.ant-upload-drag:not(.ant-upload-disabled):hover {
+			border-color: #759fff;
+		}
 	}
 }

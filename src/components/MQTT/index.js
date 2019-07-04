@@ -23,6 +23,7 @@ function MQTTWrapper(WrapperedComponent) {
 				dispatch({ type: 'mqttStore/setMessageHandler', payload }),
 			destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
 			getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
+			getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
 			goToPath: (pathId, urlParams = {}) =>
 				dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		})
@@ -88,9 +89,9 @@ function MQTTWrapper(WrapperedComponent) {
 			}
 		};
 
-		showNotification = data => {
+		showNotification = async data => {
 			const { notificationList } = this.state;
-			const { getNotificationCount } = this.props;
+			const { getNotificationCount, getUnreadNotification } = this.props;
 			const messageData = JSON.parse(data.toString()) || {};
 			const uniqueKey = getRandomString();
 
@@ -113,7 +114,8 @@ function MQTTWrapper(WrapperedComponent) {
 					closeAction: this.removeNotification,
 				});
 			});
-			getNotificationCount();
+			await getNotificationCount();
+			await getUnreadNotification();
 		};
 
 		initClient = async () => {

@@ -4,32 +4,8 @@ import { Form, Row, Col, TreeSelect, Input, Button } from 'antd';
 import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
 import styles from './Employee.less';
 
-const treeData = [
-	{
-		title: 'Node1',
-		value: '0-0',
-		key: '0-0',
-		children: [
-			{
-				title: 'Child Node1',
-				value: '0-0-1',
-				key: '0-0-1',
-			},
-			{
-				title: 'Child Node2',
-				value: '0-0-2',
-				key: '0-0-2',
-			},
-		],
-	},
-	{
-		title: 'Node2',
-		value: '0-1',
-		key: '0-1',
-	},
-];
-
 const SearchBar = ({
+	orgnizationTree = [],
 	searchValue: { shopIdList = [], name = null, number = null, username = null } = {},
 	setSearchValue = null,
 	getEmployeeList = null,
@@ -62,7 +38,8 @@ const SearchBar = ({
 					<Col {...COL_THREE_NORMAL}>
 						<Form.Item label={formatMessage({ id: 'employee.orgnization' })}>
 							<TreeSelect
-								treeData={treeData}
+								treeDefaultExpandAll
+								treeData={orgnizationTree}
 								onChange={(value, label, extra) =>
 									handleSearchChange('orgnization', value, label, extra)
 								}
@@ -112,7 +89,9 @@ const SearchBar = ({
 							<Button
 								type="primary"
 								icon="plus"
-								onClick={() => goToPath('employeeCreate', { action: 'create' })}
+								onClick={() =>
+									goToPath('employeeCreate', { action: 'create', from: 'list' })
+								}
 							>
 								{formatMessage({ id: 'employee.create' })}
 							</Button>
