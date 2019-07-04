@@ -10,6 +10,6 @@ export const phone = /^([1][356789][0-9]{9})|((0\d{2}-\d{8}(-\d{1,4})?)|(0\d{3}-
 
 export const money = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;
 
-export const pluCode = /^[a-zA-Z]{0,20}$/;
+export const pluCode = /^[a-zA-Z0-9]{0,20}$/;
 export const productWeight = /^([0-9]{1,5})(\.[0-9]{0,3})?$/;
 export const dateNumber = /^\d*$/;
