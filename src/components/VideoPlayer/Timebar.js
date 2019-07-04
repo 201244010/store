@@ -57,9 +57,6 @@ class VideoPlayerProgressBar extends React.Component{
 		const { offsetWidth } = this.wrapper;
 		const gap = offsetWidth/this.oneHourWidth/2*60*60;
 
-		console.log(gap);
-
-		console.log('componentWillReceiveProps: ', current, timeStart, timeStart+gap);
 		if (current < timeStart + gap){
 			this.getDuration(current);
 			this.generateTime();
