@@ -179,10 +179,11 @@ class BasicParams extends Component {
 									valuePropName: 'checked',
 									initialValue: true
 								})(
-									<Switch
-										checkedChildren={formatMessage({id: 'basicParams.label.open'})}
-										unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
-									/>
+									// <Switch
+									// 	checkedChildren={formatMessage({id: 'basicParams.label.open'})}
+									// 	unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
+									// />
+									<Switch />
 								)
 
 							}
@@ -194,10 +195,11 @@ class BasicParams extends Component {
 									valuePropName: 'checked',
 									initialValue: true
 								})(
-									<Switch
-										checkedChildren={formatMessage({id: 'basicParams.label.open'})}
-										unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
-									/>
+									// <Switch
+									// 	checkedChildren={formatMessage({id: 'basicParams.label.open'})}
+									// 	unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
+									// />
+									<Switch />
 								)
 
 							}

@@ -466,7 +466,8 @@ class VideoPlayer extends React.Component{
 		}]);
 
 		player.playlist.last();
-		// this.play();
+
+		this.play();
 		player.on('canplay', () => {
 			this.play();
 		});
