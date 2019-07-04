@@ -12,9 +12,9 @@
 		background: #303540;
 	}
 	.ant-menu-dark .ant-menu-inline.ant-menu-sub {
-		background: rgba(0, 0, 0, 0.2);
-		-webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45) inset;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45) inset;
+		background: rgba(0, 0, 0, 0.4);
+		-webkit-box-shadow: none;
+		box-shadow: none;
 	}
 	.ant-menu.ant-menu-dark .ant-menu-item-selected,
 	.ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
@@ -33,19 +33,30 @@
 	.ant-menu-vertical-left .ant-menu-submenu-title,
 	.ant-menu-vertical-right .ant-menu-submenu-title,
 	.ant-menu-inline .ant-menu-submenu-title {
-		height: 40px;
+		height: 52px;
+		line-height: 52px;
 		margin-top: 0;
 		margin-bottom: 0;
 		padding: 0 16px;
 		overflow: hidden;
 		font-size: 14px;
-		line-height: 40px;
 		text-overflow: ellipsis;
+	}
+	.ant-menu-vertical > .ant-menu-item,
+	.ant-menu-vertical-left > .ant-menu-item,
+	.ant-menu-vertical-right > .ant-menu-item,
+	.ant-menu-inline > .ant-menu-item,
+	.ant-menu-vertical > .ant-menu-submenu > .ant-menu-submenu-title,
+	.ant-menu-vertical-left > .ant-menu-submenu > .ant-menu-submenu-title,
+	.ant-menu-vertical-right > .ant-menu-submenu > .ant-menu-submenu-title,
+	.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
+		height: 52px;
+		line-height: 52px;
 	}
 	.ant-menu-vertical .ant-menu-item:not(:last-child),
 	.ant-menu-vertical-left .ant-menu-item:not(:last-child),
 	.ant-menu-vertical-right .ant-menu-item:not(:last-child),
 	.ant-menu-inline .ant-menu-item:not(:last-child) {
-		margin-bottom: 8px;
+		margin-bottom: 0;
 	}
 }
