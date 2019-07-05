@@ -11,16 +11,16 @@ const bindFieldsLocaleMap = {
 	productName: 'basicData.product.name',
 	productSpec: 'basicData.product.spec',
 	productLevel: 'basicData.product.level',
-	productExpireTime: 'basicData.product.expire_time',
-	productBarCode: 'basicData.product.bar_code',
+	productExpireTime: 'basicData.product.expireTime',
+	productBarCode: 'basicData.product.barCode',
 	productAlias: 'basicData.product.alias',
 	productUnit: 'basicData.product.unit',
 	productProductionArea: 'basicData.product.area',
 	productBrand: 'basicData.product.brand',
-	productQrCode: 'basicData.product.qr_code',
+	productQrCode: 'basicData.product.qrCode',
 	productPrice: 'basicData.product.price',
-	productPromotePrice: 'basicData.product.promote_price',
-	productMemberPrice: 'basicData.product.member_price',
+	productPromotePrice: 'basicData.product.promotePrice',
+	productMemberPrice: 'basicData.product.memberPrice',
 	productPicture: 'basicData.product.image',
 };
 
@@ -62,6 +62,82 @@ export default class RightToolBox extends Component {
 				isStep: true,
 				[selectedShapeName]: newDetail,
 			});
+		}
+
+		// bindValue 切换二维码或条码
+		if (key === 'bindValue') {
+			if (this.hasSubString(SHAPE_TYPES.CODE_QR)) {
+				const detail = componentsDetail[selectedShapeName];
+				const bb = jQuery(document.createElement('canvas')).qrcode({
+					render: 'canvas',
+					text: value,
+					width: detail.width,
+					height: detail.height,
+					background: '#ffffff',
+					foreground: '#000000'
+				});
+				const canvas = bb.find('canvas').get(0);
+				const image = new Image();
+				image.src = canvas.toDataURL();
+				image.onload = () => {
+					updateComponentsDetail({
+						[selectedShapeName]: {
+							image,
+							imageType: 'selected',
+							ratio: image.height / image.width,
+							height: (detail.width * image.height) / image.width,
+						},
+					});
+				};
+			}
+			if (this.hasSubString(SHAPE_TYPES.CODE_H) || this.hasSubString(SHAPE_TYPES.CODE_V)) {
+				const detail = componentsDetail[selectedShapeName];
+				const image = document.createElement('img');
+				JsBarcode(image, value, {
+					format: 'CODE39',
+					displayValue: false
+				});
+
+				updateComponentsDetail({
+					[selectedShapeName]: {
+						image,
+						imageType: 'selected',
+						ratio: image.height / image.width,
+						height: (detail.width * image.height) / image.width,
+					}
+				});
+			}
+		}
+	};
+
+	handlePressEnter = (detail) => {
+		const { selectedShapeName, updateComponentsDetail } = this.props;
+
+		if (!detail.bindValue) {
+			return;
+		}
+		if (this.hasSubString(SHAPE_TYPES.CODE_QR)) {
+			const bb = jQuery(document.createElement('canvas')).qrcode({
+				render: 'canvas',
+				text: detail.bindValue,
+				width: detail.width,
+				height: detail.height,
+				background: '#ffffff',
+				foreground: '#000000'
+			});
+			const canvas = bb.find('canvas').get(0);
+			const image = new Image();
+			image.src = canvas.toDataURL();
+			image.onload = () => {
+				updateComponentsDetail({
+					[selectedShapeName]: {
+						image,
+						imageType: 'selected',
+						ratio: image.height / image.width,
+						height: (detail.width * image.height) / image.width,
+					},
+				});
+			};
 		}
 	};
 
@@ -204,6 +280,7 @@ export default class RightToolBox extends Component {
 		}
 		if (this.hasSubString(SHAPE_TYPES.CODE)) {
 			menuMap.hasBindData = true;
+			menuMap.isBarOrQrCode = true;
 			if (this.hasSubString(SHAPE_TYPES.CODE_V) || this.hasSubString(SHAPE_TYPES.CODE_H)) {
 				menuMap.isCode = true;
 			}
@@ -290,6 +367,22 @@ export default class RightToolBox extends Component {
 								</Option>
 							))}
 						</Select>
+					</div>
+				) : null}
+				{menuMap.isBarOrQrCode ? (
+					<div className={styles['tool-box-block']}>
+						<h4>{formatMessage({ id: 'studio.tool.title.bind.value' })}</h4>
+						<Input.TextArea
+							placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
+							value={detail.bindValue}
+							style={{ width: '100%' }}
+							onChange={e => {
+								this.handleDetail('bindValue', e.target.value);
+							}}
+							onInput={() => {
+								this.handlePressEnter(detail);
+							}}
+						/>
 					</div>
 				) : null}
 				<div className={styles['tool-box-block']}>
@@ -493,7 +586,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Arial">Arial</Option>
+									<Option value="Microsoft-Yahei">微软雅黑</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -789,7 +882,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Arial">Arial</Option>
+									<Option value="Microsoft-Yahei">微软雅黑</Option>
 								</Select>
 							</Col>
 						</Row>

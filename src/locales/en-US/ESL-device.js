@@ -87,6 +87,7 @@ export default {
 	'esl.device.esl.push.all': 'Repush',
 	'esl.device.esl.push.all.success': 'ESL is repushing…',
 	'esl.device.template.new': 'Create Template',
+	'esl.device.template.clone': 'Clone Template',
 	'esl.device.template.2.13.inch': '2.13 Inch',
 	'esl.device.template.2.6.inch': '2.6 Inch',
 	'esl.device.template.4.2.inch': '4.2 Inch',

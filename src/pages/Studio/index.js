@@ -12,7 +12,7 @@ import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
 import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep } from '@/utils/studio';
 import { KEY } from '@/constants';
-import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS } from '@/constants/studio';
+import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as styles from './index.less';
@@ -34,6 +34,7 @@ import * as styles from './index.less';
 		updateState: payload => dispatch({ type: 'studio/updateState', payload }),
 		zoomOutOrIn: payload => dispatch({ type: 'studio/zoomOutOrIn', payload }),
 		changeOneStep: payload => dispatch({ type: 'studio/changeOneStep', payload }),
+		selectComponentIn: payload => dispatch({ type: 'studio/selectComponentIn', payload }),
 		fetchBindFields: payload => dispatch({ type: 'template/fetchBindFields', payload }),
 		saveAsDraft: payload => dispatch({ type: 'template/saveAsDraft', payload }),
 		fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
@@ -158,10 +159,44 @@ class Studio extends Component {
 		}
 	};
 
+	handleSelectRect = (e) => {
+		const { studio: { componentsDetail }, addComponent, updateComponentsDetail } = this.props;
+
+		this.moveStart = true;
+		this.moveStartX = e.evt.clientX;
+		this.moveStartY = e.evt.clientY;
+		if (!componentsDetail[RECT_SELECT_NAME]) {
+			addComponent({
+				type: SHAPE_TYPES.RECT_SELECT,
+				name: RECT_SELECT_NAME,
+				x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
+				y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
+				fill: '#5cadff',
+				width: 0,
+				height: 0,
+				scaleX: 1,
+				scaleY: 1,
+				rotation: 0,
+				opacity: 0.2,
+				isStep: false
+			});
+		} else {
+			updateComponentsDetail({
+				isStep: false,
+				selectedShapeName: RECT_SELECT_NAME,
+				[RECT_SELECT_NAME]: {
+					x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
+					y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
+					width: 0,
+					height: 0
+				},
+			});
+		}
+		this.updateSelectedShapeName('');
+	};
+
 	handleStageMouseDown = e => {
-		const {
-			studio: { selectedShapeName, componentsDetail, showRightToolBox },
-		} = this.props;
+		const { studio: { selectedShapeName, componentsDetail, showRightToolBox } } = this.props;
 
 		// 点击stage，取消选择正在编辑图形
 		if (e.target === e.target.getStage()) {
@@ -177,14 +212,22 @@ class Studio extends Component {
 					},
 				});
 			}
+			// 鼠标左键出发多选
+			if (e.evt.button === 0) {
+				this.handleSelectRect(e);
+			}
 			return;
 		}
 		// 点击拖拽框时，不做任何操作
 		if (e.target.getParent().className === 'Transformer') {
 			return;
 		}
-
 		const name = e.target.name();
+
+		if (e.evt.button === 0 && name.indexOf(SHAPE_TYPES.RECT_FIX) > -1) {
+			this.handleSelectRect(e);
+		}
+
 		const shape = componentsDetail[name];
 		if (shape) {
 			// 鼠标左键取消右侧工具框
@@ -206,6 +249,29 @@ class Studio extends Component {
 			}
 		} else if (selectedShapeName) {
 			this.updateSelectedShapeName('');
+		}
+	};
+
+	handleStageMouseMove = (e) => {
+		if (this.moveStart) {
+			const { updateComponentsDetail } = this.props;
+			updateComponentsDetail({
+				isStep: false,
+				selectedShapeName: RECT_SELECT_NAME,
+				[RECT_SELECT_NAME]: {
+					width: e.evt.clientX - this.moveStartX,
+					height: e.evt.clientY - this.moveStartY
+				},
+			});
+		}
+	};
+
+	handleStageMouseUp = () => {
+		if (this.moveStart) {
+			const { selectComponentIn } = this.props;
+			this.moveStart = false;
+
+			selectComponentIn();
 		}
 	};
 
@@ -460,22 +526,41 @@ class Studio extends Component {
 					rotation,
 				},
 			};
-			componentDetail[name].lines = [
-				[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
-				[
-					x + realW * realScaleX,
-					0,
-					x + realW * realScaleX,
-					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-				],
-				[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
-				[
-					0,
-					y + height * realScaleY,
-					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-					y + height * realScaleY,
-				],
-			];
+			if (type === SHAPE_TYPES.CODE_V) {
+				componentDetail[name].lines = [
+					[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+					[
+						x - height * realScaleY,
+						0,
+						x - height * realScaleY,
+						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+					],
+					[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
+					[
+						0,
+						y + realW * realScaleX,
+						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+						y + realW * realScaleX,
+					],
+				];
+			} else {
+				componentDetail[name].lines = [
+					[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+					[
+						x + realW * realScaleX,
+						0,
+						x + realW * realScaleX,
+						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+					],
+					[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
+					[
+						0,
+						y + height * realScaleY,
+						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+						y + height * realScaleY,
+					],
+				];
+			}
 			updateComponentsDetail(componentDetail);
 		}
 	};
@@ -589,6 +674,7 @@ class Studio extends Component {
 					showRightToolBox,
 					rightToolBoxPos,
 					copiedComponent,
+					scopedComponents,
 					zoomScale,
 				},
 				template: { bindFields, curTemplate },
@@ -623,6 +709,8 @@ class Studio extends Component {
 							width={stageWidth}
 							height={stageHeight}
 							onMouseDown={this.handleStageMouseDown}
+							onMouseMove={this.handleStageMouseMove}
+							onMouseUp={this.handleStageMouseUp}
 							onDragStart={this.handleStageShapeStart}
 							onDragMove={this.handleStageShapeMove}
 							onDragEnd={this.handleStageShapeEnd}
@@ -678,7 +766,7 @@ class Studio extends Component {
 							) : null}
 						</Stage>
 					</div>
-					{selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1 ? (
+					{selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1 ? (
 						<div className={styles['tool-box']}>
 							<RightToolBox
 								{...{
@@ -705,6 +793,7 @@ class Studio extends Component {
 							componentsDetail,
 							selectedShapeName,
 							copiedComponent,
+							scopedComponents,
 							showRightToolBox,
 							updateComponentsDetail,
 							deleteSelectedComponent,
