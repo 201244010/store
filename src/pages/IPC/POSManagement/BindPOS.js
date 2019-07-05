@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Form, Input, Table, Button, message, Icon } from 'antd';
+import { Card, Form, Input, Table, Button, message, Icon, Modal } from 'antd';
 // import { Exception } from 'ant-design-pro';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
@@ -374,8 +374,11 @@ class AddPOS extends Component {
 	// 	});
 	// }
 
-	startClock = () => {
+	componentWillUnmount() {
+		clearInterval(this.interval);
+	}
 
+	startClock = () => {
 		clearInterval(this.interval);
 		this.interval = setInterval(() => {
 			const { codeStatus } = this.state;
@@ -418,7 +421,7 @@ class AddPOS extends Component {
 			});
 
 			// console.log(chooseList, list);
-
+			clearInterval(this.interval);
 			this.setState({
 				selectedRowKeys: [
 					...new Set([...selectedRowKeys, sn])
@@ -460,28 +463,29 @@ class AddPOS extends Component {
 	};
 
 
-	getPosition = (list) => {
-		const { chooseList } = this.state;
-		// 获取框选的位置
-		// console.log(list, chooseList);
-		const modlist = chooseList.map(item => {
-			const f = list.filter(target => target.sn === item.sn)[0];
-			return {
-				...item,
-				...f
-			};
-		});
+	// getPosition = (list) => {
+	// 	const { chooseList } = this.state;
+	// 	// 获取框选的位置
+	// 	// console.log(list, chooseList);
+	// 	const modlist = chooseList.map(item => {
+	// 		const f = list.filter(target => target.sn === item.sn)[0];
+	// 		return {
+	// 			...item,
+	// 			...f
+	// 		};
+	// 	});
 
-		// todo 在这里更新数据
-		this.setState({
-			chooseList: modlist
-		});
+	// 	// todo 在这里更新数据
+	// 	this.setState({
+	// 		chooseList: modlist
+	// 	});
 
-	}
+	// }
 
 	bindDevice = async () => {
 		const { bind, sn } = this.props;
-		const { chooseList } = this.state;
+		// const { chooseList } = this.state;
+		const chooseList = this.getModList();
 
 		const result = await bind(sn, chooseList);
 		// console.log(result);
@@ -507,11 +511,33 @@ class AddPOS extends Component {
 		}
 	}
 
+	getModList = () => {
+		const list = this.binder.getPosition();
+
+		const { chooseList } = this.state;
+		// 获取框选的位置
+		console.log('chooseList: ', chooseList);
+		const modlist = chooseList.map(item => {
+			const f = list.filter(target => target.sn === item.sn)[0];
+			return {
+				...item,
+				...f,
+
+			};
+		});
+
+		this.setState({
+			chooseList: modlist
+		});
+
+		return modlist;
+	}
+
 	adjustDevice = async () => {
 		const { adjust, sn } = this.props;
-		const { chooseList } = this.state;
+		// const { chooseList } = this.state;
+		const chooseList = this.getModList();
 
-		// todo 需要调整为ajust接口
 		const result = await adjust(sn, chooseList);
 		// console.log(result);
 		if (result === 1) {
@@ -590,32 +616,23 @@ class AddPOS extends Component {
 			},
 		};
 
-		// console.log('bindedPosList: ', bindedPosList);
-
-		// const bindedList = bindedPosList.map((item) => {
-		// 	const target = POSList.filter((o) => o.sn === item.sn);
-
-		// 	return {
-		// 		...item,
-		// 		...target[0]
-		// 	};
-		// });
-
 		const sns = chooseList.map((item) => item.sn);
-		// console.log(chooseList, sns);
+
 		const toAddList = [];
+		const toEditList = [];
+
 		let addColCount = 0;
 		let addRowCount = 0;
-		sns.map((sn => {
-			const target = bindedPosList.filter((o) => o.sn === sn);
+
+		chooseList.forEach(item => {
+			const target = bindedPosList.filter((o) => o.sn === item.sn);
 			if (target.length === 0) {
-				// 该设备还没绑定
 				toAddList.push({
-					sn,
-					width: 320,
-					height: 180,
-					top: 96 + (180+24)*addColCount,
-					left: 1080 - 320 - (320+24)*addRowCount - 24
+					sn: item.sn,
+					width: item.width === undefined ?  320 : item.width,
+					height: item.height === undefined ? 180 : item.height,
+					top: item.top === undefined ? 96 + (180+24)*addColCount : item.top,
+					left: item.left === undefined ? 1080 - 320 - (320+24)*addRowCount - 24 : item.left
 				});
 
 				if (addColCount >= 3) {
@@ -624,111 +641,130 @@ class AddPOS extends Component {
 				}else{
 					addColCount += 1;
 				}
+
+			}else{
+				const temp = target[0];
+				toEditList.push({
+					sn: item.sn,
+					width: item.width === undefined ? temp.width : item.width,
+					height: item.height === undefined ? temp.height : item.height,
+					top: item.top === undefined ? temp.top : item.top,
+					left: item.left === undefined ? temp.left : item.left,
+				});
 			}
-			// 该设备已经绑定过了，需要修改；
-		}));
+		});
+
+		const noEditList = bindedPosList.filter(item => {
+			if (sns.indexOf(item.sn) < 0) {
+				return true;
+			}
+			return false;
+		});
+
+
 
 		// 已绑定list和待绑定list的合集；
-		const bindedList = [
-			...bindedPosList,
+		const allPosList = [
+			...noEditList,
+			...toEditList,
 			...toAddList
 		];
 
-		// console.log(bindedPosList);
+		// console.log('toAddList: ', toAddList);
+		// console.log('toEditList: ', toEditList);
+		// console.log('noEditList: ', noEditList);
+		// console.log('bindedPosList: ', bindedPosList);
 
 		return (
 			<>
 				<Card bordered={false}>
-					{!isClick ? (
-						<div className={styles['device-list-block']}>
 
-							<Table
-								rowKey={record => record.sn}
-								columns={this.columns}
-								dataSource={list}
-								rowSelection={rowSelection}
-								pagination={false}
-							/>
-
-							<div className={`${styles['button-block']} ${styles['under-table']}`}>
-								<Button
-									className={styles.button}
-									onClick={
-										this.goToPosList
+					{
+						isClick || isEdit ?
+							<div>
+								<POSBinder
+									ref={binder => this.binder = binder}
+									editing={sns}
+									posList={allPosList}
+									// getPosition={this.getPosition}
+									background={img}
+									pixelRatio={type === 'FS1' ? '16:9' : '1:1'}
+								/>
+								<div className={styles['button-block']}>
+									{
+										isEdit ?
+											'' :
+											<Button
+												// onClick={this.onClick}
+												// size="large"
+												onClick={() => {
+													Modal.confirm({
+														title: formatMessage({ id: 'posList.warningNotBinded' }),
+														content: formatMessage({ id: 'posList.confirmGoBack' }),
+														onOk: this.onClick
+													});
+												}}
+												className={styles.button}
+											>
+												{formatMessage({id: 'posList.forward'})}
+											</Button>
 									}
-									// size="large"
-								>
-									{formatMessage({id: 'posList.cancel'})}
-								</Button>
 
-								<Button
-									type="primary"
-									disabled={
-										chooseList.length === 0
-									}
-									onClick={() => {
-										if (bindedList.length > 8) {
-											// message.error('每台摄像机只能添加8台收银设备，请重新选择！');
-											message.error(formatMessage({id: 'posList.maxBindNumber'}));
-											return;
+									<Button
+										className={styles.button}
+										type="primary"
+										onClick={this.complete}
+										// size="large"
+									>
+										{ formatMessage({id: 'posList.complete' }) }
+									</Button>
+								</div>
+							</div>
+							:
+							<div className={styles['device-list-block']}>
+								<Table
+									rowKey={record => record.sn}
+									columns={this.columns}
+									dataSource={list}
+									rowSelection={rowSelection}
+									pagination={false}
+								/>
+
+								<div className={`${styles['button-block']} ${styles['under-table']}`}>
+									<Button
+										className={styles.button}
+										onClick={
+											this.goToPosList
 										}
-										this.onClick();
-									}}
-									className={styles.button}
-									// size="large"
-								>
-									{formatMessage({id: 'posList.next'})}
-								</Button>
-							</div>
-						</div>
-					) : (
-						<div>
-							<POSBinder
-								editing={sns}
-								posList={bindedList}
-								getPosition={this.getPosition}
-								background={img}
-								pixelRatio={type === 'FS1' ? '16:9' : '1:1'}
-							/>
-							<div className={styles['button-block']}>
-								{
-									isEdit ?
-										'' :
-										<Button
-											onClick={this.onClick}
-											// size="large"
-											className={styles.button}
-										>
-											{formatMessage({id: 'posList.forward'})}
-										</Button>
-								}
+										// size="large"
+									>
+										{formatMessage({id: 'posList.cancel'})}
+									</Button>
 
-								<Button
-									className={styles.button}
-									type="primary"
-									onClick={this.complete}
-									// size="large"
-								>
-									{ formatMessage({id: 'posList.complete' }) }
-								</Button>
+									<Button
+										type="primary"
+										disabled={
+											chooseList.length === 0
+										}
+										onClick={() => {
+											if (allPosList.length > 8) {
+												// message.error('每台摄像机只能添加8台收银设备，请重新选择！');
+												message.error(formatMessage({id: 'posList.maxBindNumber'}));
+												return;
+											}
+											this.onClick();
+										}}
+										className={styles.button}
+										// size="large"
+									>
+										{formatMessage({id: 'posList.next'})}
+									</Button>
+								</div>
 							</div>
-						</div>
-					)}
+					}
+
 				</Card>
 
-				{/* <Modal
-					visible={infoVisible}
-					title={null}
-					footer={null}
-					className={styles['info-modal']}
-					onCancel={this.hideInfoModal}
-				>
-					<span className={styles['success-icon']} />
-					<h1>操作成功</h1>
-					<p className={styles['info-text']}>注意：为避免输入错误导致错误绑定的风险，系统已发送一条
-						<span className={styles['warning-text']}>双向确认信息</span>到对应收银设备，请在收银设备端进行双向确认
-					</p>
-				</Modal> */}
 			</>
 		);
 	}
