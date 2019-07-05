@@ -204,6 +204,8 @@ export const getNearestPosition = (componentsDetail, selectedShapeName) => {
 	return minInScope;
 };
 
+export const isInComponent = (source, target) => source.left > target.left && source.right < target.right && source.top > target.top && source.bottom < target.bottom;
+
 export const getImagePromise = componentDetail =>
 	new Promise((resolve, reject) => {
 		const image = new Image();
@@ -237,9 +239,9 @@ export const saveNowStep = async (templateId, componentsDetail) => {
 
 	const keys = await localForage.keys();
 	if (keys.length >= 30) {
-		localForage.removeItem(keys[0]);
+		await localForage.removeItem(keys[0]);
 	}
-	localForage.setItem(nowKey, JSON.stringify(componentsDetail));
+	await localForage.setItem(nowKey, JSON.stringify(componentsDetail));
 };
 
 export const preStep = async (templateId) => {

@@ -1,6 +1,7 @@
 export const SHAPE_TYPES = {
 	RECT: 'rect',
 	RECT_FIX: 'rect@fix',
+	RECT_SELECT: 'rect@select',
 	CIRCLE: 'circle',
 	TRIANGLE: 'triangle',
 	TEXT: 'text',
@@ -22,6 +23,8 @@ export const SHAPE_TYPES = {
 	CODE_V: 'barcode@v',
 	CODE_QR: 'barcode@qr',
 };
+
+export const RECT_SELECT_NAME = 'rect@select0';
 
 export const IMAGE_TYPES = [
 	SHAPE_TYPES.IMAGE,
@@ -63,8 +66,8 @@ export const SIZES = {
 	DEFAULT_TEXT_LETTER_SPACING: 0,
 	DEFAULT_CODE_H_CONTAINER_WIDTH: 95,
 	DEFAULT_CODE_H_CONTAINER_HEIGHT: 14,
-	DEFAULT_CODE_V_CONTAINER_WIDTH: 14,
-	DEFAULT_CODE_V_CONTAINER_HEIGHT: 95,
+	DEFAULT_CODE_V_CONTAINER_WIDTH: 95,
+	DEFAULT_CODE_V_CONTAINER_HEIGHT: 14,
 	DEFAULT_CODE_QR_CONTAINER_WIDTH: 40,
 	DEFAULT_CODE_QR_CONTAINER_HEIGHT: 40,
 };
@@ -271,7 +274,7 @@ const screenMap = {
 const imgPathMap = {
 	[SHAPE_TYPES.IMAGE]: require('@/assets/studio/image.svg'),
 	[SHAPE_TYPES.CODE_H]: require('@/assets/studio/code_h.png'),
-	[SHAPE_TYPES.CODE_V]: require('@/assets/studio/code_v.png'),
+	[SHAPE_TYPES.CODE_V]: require('@/assets/studio/code_h.png'),
 	[SHAPE_TYPES.CODE_QR]: require('@/assets/studio/code_qr.png'),
 };
 

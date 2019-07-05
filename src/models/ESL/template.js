@@ -456,6 +456,36 @@ export default {
 			}
 			return response;
 		},
+		*cloneTemplate({ payload = {} }, { call, put }) {
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			const response = yield call(TemplateService.cloneTemplate, payload);
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				yield put({
+					type: 'fetchTemplates',
+					payload: {
+						options: {
+							screen_type: -1,
+							colour: -1,
+						},
+					},
+				});
+				message.success('克隆成功');
+			} else {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				message.error('克隆失败');
+			}
+			return response;
+		},
 	},
 	reducers: {
 		updateState(state, action) {
