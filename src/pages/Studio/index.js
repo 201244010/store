@@ -117,7 +117,7 @@ class Studio extends Component {
 		} = this.props;
 		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
 		// 操作输入框时 无法删除
-		if ([KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT') {
+		if ([KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT' && tagName.toUpperCase() !== 'TEXTAREA') {
 			if (canCopyOrDelete) {
 				deleteSelectedComponent(selectedShapeName);
 			}

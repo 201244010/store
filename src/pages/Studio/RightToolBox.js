@@ -574,7 +574,7 @@ export default class RightToolBox extends Component {
 						<Row style={{ marginBottom: 10 }}>
 							<Col span={4}>
 								<span className={styles.title}>
-									{formatMessage({ id: 'studio.tool.label.font.family' })}
+									{formatMessage({ id: 'studio.tool.label.font.family' })}`
 								</span>
 							</Col>
 							<Col span={20}>
@@ -658,23 +658,13 @@ export default class RightToolBox extends Component {
 								<Icon type="italic" onClick={() => {this.handleFontStyle(detail, 'italic');}} />
 							</Col>
 							<Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
-								<Icon
-									type="underline"
-									onClick={() => {
-										this.handleTextDecoration(detail, 'underline');
-									}}
-								/>
+								<Icon type="underline" onClick={() => {this.handleTextDecoration(detail, 'underline');}} />
 							</Col>
 							<Col
 								span={6}
 								className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}
 							>
-								<Icon
-									type="strikethrough"
-									onClick={() => {
-										this.handleTextDecoration(detail, 'line-through');
-									}}
-								/>
+								<Icon type="strikethrough" onClick={() => {this.handleTextDecoration(detail, 'line-through');}} />
 							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
