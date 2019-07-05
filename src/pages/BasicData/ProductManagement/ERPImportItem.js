@@ -345,12 +345,13 @@ export const HDQF = props => {
 	);
 };
 
+// TODO 等待修改数据
 export const HJ = props => {
 	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
-	const { saasExtraKey1 = null, saasExtraKey2 = null } = saasInfo;
+	const { saasShopKey = null } = saasInfo;
 	return (
 		<>
-			<Form.Item label="app_id">
+			{/* <Form.Item label="app_id">
 				{mode === MODE.VIEW ? (
 					<span>{saasExtraKey1}</span>
 				) : (
@@ -383,6 +384,26 @@ export const HJ = props => {
 									required: true,
 									message: formatMessage({
 										id: 'basicData.erp.hdqf.secret.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item> */}
+			<Form.Item label={formatMessage({ id: 'basicData.erp.api.store.num' })}>
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.store_id', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.zzsy.shop.error',
 									}),
 								},
 							],
