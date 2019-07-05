@@ -55,6 +55,12 @@ export const ERROR_FILEDS = {
 			// default: formatMessage({ id: 'basicData.erp.hdqf.error' }),
 		},
 	},
+	'SAAS-HJ': {
+		field: '',
+		errMsg: {
+			...COMMON_ERROR,
+		},
+	},
 };
 
 export const SDNM = props => {
@@ -291,6 +297,55 @@ export const HBB = props => {
 };
 
 export const HDQF = props => {
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasExtraKey1 = null, saasExtraKey2 = null } = saasInfo;
+	return (
+		<>
+			<Form.Item label="app_id">
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.app_id', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hdqf.key.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+			<Form.Item label="secret_key">
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey2}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.secret_key', {
+							initialValue: saasExtraKey2,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hdqf.secret.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+		</>
+	);
+};
+
+export const HJ = props => {
 	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
 	const { saasExtraKey1 = null, saasExtraKey2 = null } = saasInfo;
 	return (
