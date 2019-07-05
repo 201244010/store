@@ -5,8 +5,8 @@ import { formatMessage } from 'umi/locale';
 import { MAX_LENGTH } from '@/constants/form';
 // import EditableFormItem from '@/components/EditableFormItem';
 
-// const productTypes = [{ key: 'normal', value: 0 }, { key: 'weight', value: 1 }];
-const productTypes = [{ key: 'normal', value: 0 }];
+const productTypes = [{ key: 'normal', value: 0 }, { key: 'weight', value: 1 }];
+// const productTypes = [{ key: 'normal', value: 0 }];
 const productUnits = [
 	{ key: 'box', value: 0, tempValue: formatMessage({ id: 'basicData.product.unit.box' }) },
 	{ key: 'pack', value: 1, tempValue: formatMessage({ id: 'basicData.product.unit.pack' }) },
