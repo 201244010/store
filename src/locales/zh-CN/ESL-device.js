@@ -87,6 +87,7 @@ export default {
 	'esl.device.esl.push.all': '重推',
 	'esl.device.esl.push.all.success': '正在重推失败价签...',
 	'esl.device.template.new': '新建模板',
+	'esl.device.template.clone': '克隆模板',
 	'esl.device.template.2.13.inch': '2.13寸',
 	'esl.device.template.2.6.inch': '2.6寸',
 	'esl.device.template.4.2.inch': '4.2寸',
