@@ -1,6 +1,6 @@
-import { IMAGE_TYPES, MAPS, SHAPE_TYPES, SIZES } from '@/constants/studio';
+import { IMAGE_TYPES, MAPS, SHAPE_TYPES, SIZES, RECT_SELECT_NAME } from '@/constants/studio';
 import { filterObject, getLocationParam } from '@/utils/utils';
-import { getImagePromise, saveNowStep } from '@/utils/studio';
+import { getImagePromise, saveNowStep, isInComponent } from '@/utils/studio';
 
 export default {
 	namespace: 'studio',
@@ -17,6 +17,7 @@ export default {
 			top: -9999
 		},
 		copiedComponent: {},
+		scopedComponents: [],
 		zoomScale: 1
 	},
 	effects: {
@@ -65,13 +66,16 @@ export default {
 			let maxIndex = 0;
 			let name = preName;
 
-			Object.keys(componentsDetail).forEach(key => {
-				const index = parseInt(key.replace(/[^0-9]/gi, ''), 10);
-				if (index >= maxIndex) {
-					maxIndex = index;
-				}
-			});
-			name = `${type}${maxIndex + 1}`;
+			if (name !== RECT_SELECT_NAME) {
+				Object.keys(componentsDetail).forEach(key => {
+					const index = parseInt(key.replace(/[^0-9]/gi, ''), 10);
+					if (index >= maxIndex) {
+						maxIndex = index;
+					}
+				});
+				name = `${type}${maxIndex + 1}`;
+			}
+
 			const newComponentsDetail = {
 				...state.componentsDetail,
 				[name]: {
@@ -194,11 +198,15 @@ export default {
 		},
 		deleteSelectedComponent(state, action) {
 			state.selectedShapeName = '';
-			const { selectedShapeName, isStep = true } = action.payload;
+			const {
+				selectedShapeName,
+				// isStep = true
+			} = action.payload;
 			delete state.componentsDetail[selectedShapeName || action.payload];
-			if (isStep) {
-				saveNowStep(getLocationParam('id'), state.componentsDetail);
-			}
+			// TODO 放开此处代码会报错，需要定位原因，暂时注释
+			// if (isStep) {
+			// 	saveNowStep(getLocationParam('id'), state.componentsDetail);
+			// }
 		},
 		zoomOutOrIn(state, action) {
 			const {
@@ -238,6 +246,31 @@ export default {
 			state.selectedShapeName = '';
 			state.zoomScale = zoomScale;
 			state.componentsDetail = componentsDetail;
+		},
+		selectComponentIn(state) {
+			const { componentsDetail, zoomScale } = state;
+			const selectComponent = componentsDetail[RECT_SELECT_NAME];
+			const selectRect = {
+				...selectComponent,
+				left: selectComponent.x,
+				top: selectComponent.y,
+				right: selectComponent.x + selectComponent.width * selectComponent.scaleX,
+				bottom: selectComponent.y + selectComponent.height * selectComponent.scaleY
+			};
+
+			state.scopedComponents = [];
+			Object.keys(componentsDetail).forEach(key => {
+				if (componentsDetail[key].name && componentsDetail[key].name.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && key !== RECT_SELECT_NAME) {
+					const component = { ...componentsDetail[key] };
+					component.left = component.x;
+					component.top = component.y;
+					component.right = component.x + MAPS.containerWidth[component.type] * zoomScale * component.scaleX;
+					component.bottom = component.y + MAPS.containerHeight[component.type] * zoomScale * component.scaleY;
+					if (isInComponent(component, selectRect)) {
+						state.scopedComponents.push(component);
+					}
+				}
+			});
 		}
 	}
 };
