@@ -5,32 +5,32 @@ import CONFIG from '@/config';
 const { IPC_SERVER } = CONFIG;
 
 // const fetchApi = customizeFetch('api/face/databaset',IPC_SERVER);
-const request = customizeFetch('api/face/database', IPC_SERVER);
+const request = customizeFetch('ipc/api/face/group', IPC_SERVER);
 
 const dataSerializer = (item) => ({
-	id: item.id,
+	// id: item.id || undefined,
+	group_id: item.id || undefined,
 	name: item.name,
 
 	threshold: item.threshold,
-	period: item.period,
-
+	period: item.period*24*60*60,
 	mark: item.remarks || '',
 	count: item.amount,
 	capacity: item.capacity,
 
-	target_name: item.target
+	target_id: item.target
 });
 
 const dataFormatter = (item, index) => ({
-	id: item.id || index + 1,
+	id: item.group_id || index + 1,
 	name: item.name,
-	isDefault: !!((item.type === 0 || item.type === 1)),
+	type: item.type,
 	threshold: item.threshold,
-	period: item.period,
+	period: item.period/24/60/60,
 	remarks: item.mark || '',
 	amount: item.count || 0,
 	capacity: item.capacity,
-	target: item.target_name || '',
+	target: item.target_id || '',
 	lastupdate: item.last_modified_time
 });
 
@@ -39,7 +39,7 @@ export const createLibrary = async (params) => {
 	// const { companyId, shopId, faceidList } = params;
 	const { faceidList } = params;
 	const list = faceidList.map((item) => {
-		const type = item.isDefault ? item.type : 3;
+		const type = item.isDefault ? item.type : 5;
 		const target = dataSerializer(item);
 		return {
 			...target,
@@ -62,7 +62,10 @@ export const createLibrary = async (params) => {
 				code: ERROR_OK
 			};
 		}
-		return response;
+
+		return {
+			code
+		};
 
 	});
 };
@@ -83,14 +86,16 @@ export const readLibrary = async () =>
 		const { errcode, code, data } = await response.json();
 		if (errcode === 0 || code === ERROR_OK) {
 			// const { data } = response;
-			const result = data.facedb_list.map(dataFormatter);
+			const result = data.group_list.map(dataFormatter);
 			// console.log(result);
 			return {
 				code: ERROR_OK,
 				data: result
 			};
 		}
-		return response;
+		return {
+			code
+		};
 
 	})
 	;
@@ -117,7 +122,9 @@ export const updateLibrary = async (params) => {
 				code: ERROR_OK
 			};
 		}
-		return response;
+		return {
+			code
+		};
 
 	});
 };
@@ -134,7 +141,7 @@ export const deleteLibrary = async (params) => {
 			// user_id: userId,
 			// company_id: companyId,
 			// shop_id: shopId,
-			id: libraryId
+			group_id: libraryId
 		}
 	}).then(async (response) => {
 		const { errcode, code } = await response.json();
@@ -143,7 +150,9 @@ export const deleteLibrary = async (params) => {
 				code: ERROR_OK
 			};
 		}
-		return response;
+		return {
+			code
+		};
 
 	});
 };

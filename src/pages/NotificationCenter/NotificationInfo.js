@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'dva';
-import { getLocationParam, unixSecondToDate } from '@/utils/utils';
+import { getLocationParam, unixSecondToDate, formatMessageTemplate } from '@/utils/utils';
 import { Button, Divider, Card } from 'antd';
+import VideoPlayComponent from '@/pages/IPC/component/VideoPlayComponent';
 import styles from './Notification.less';
 import { ACTION_MAP } from '@/constants/mqttActionMap';
 
@@ -12,9 +13,20 @@ import { ACTION_MAP } from '@/constants/mqttActionMap';
 	dispatch => ({
 		getNotificationInfo: payload =>
 			dispatch({ type: 'notification/getNotificationInfo', payload }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class Notification extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			isWatchVideo: false,
+			videoUrl: '',
+			ipcType: '',
+		};
+	}
+
 	componentDidMount() {
 		const msgId = getLocationParam('msgId');
 		const { getNotificationInfo } = this.props;
@@ -23,10 +35,28 @@ class Notification extends React.Component {
 		});
 	}
 
-	handleAction = action => {
+	watchVideoClose = () => {
+		this.setState({
+			videoUrl: '',
+			isWatchVideo: false,
+		});
+	};
+
+	handleAction = (action, paramsStr) => {
+		const { goToPath } = this.props;
 		if (action) {
 			const handler = ACTION_MAP[action] || (() => null);
-			handler();
+			const result = handler({ handlers: { goToPath }, params: paramsStr });
+
+			const { action: resultAction = null, payload = {} } = result || {};
+			if (resultAction === 'showMotionVideo') {
+				const { url, ipcType } = payload;
+				this.setState({
+					isWatchVideo: true,
+					videoUrl: url,
+					ipcType,
+				});
+			}
 		}
 	};
 
@@ -34,42 +64,55 @@ class Notification extends React.Component {
 		const {
 			notification: {
 				notificationInfo: {
-					title,
-					description,
-					receiveTime,
-					majorButtonLink,
-					majorButtonName,
-					minorButtonLink,
-					minorButtonName,
-				},
-			},
+					title = '',
+					content = '',
+					receiveTime = null,
+					majorButtonLink = null,
+					majorButtonName = null,
+					minorButtonLink = null,
+					minorButtonName = null,
+				} = {},
+			} = {},
 		} = this.props;
+		const { isWatchVideo, videoUrl, ipcType } = this.state;
+
 		return (
 			<Card bordered={false}>
 				<div className={styles['title-wrapper']}>
-					<h1 className={styles['info-title']}>{title}</h1>
-					<div className={styles['info-time']}>{unixSecondToDate(receiveTime)}</div>
+					<h1 className={styles['info-title']}>
+						{title !== '' ? formatMessageTemplate(title) : ''}
+					</h1>
+					<div className={styles['info-time']}>
+						{receiveTime ? unixSecondToDate(receiveTime) : null}
+					</div>
 				</div>
 				<Divider />
 				<div className={styles['content-wrapper']}>
-					<p>{description}</p>
+					<p>{content ? formatMessageTemplate(content) : ''}</p>
 				</div>
 				<div className={styles['button-bar']}>
 					{minorButtonName && (
-						<Button onClick={() => this.handleAction(minorButtonLink)}>
-							{minorButtonName}
+						<Button onClick={() => this.handleAction(minorButtonName, minorButtonLink)}>
+							{formatMessageTemplate(minorButtonName)}
 						</Button>
 					)}
 					{majorButtonName && (
 						<Button
 							style={{ marginLeft: minorButtonName ? '20px' : '0' }}
 							type="primary"
-							onClick={() => this.handleAction(majorButtonLink)}
+							onClick={() => this.handleAction(majorButtonName, majorButtonLink)}
 						>
-							{majorButtonName}
+							{formatMessageTemplate(majorButtonName)}
 						</Button>
 					)}
 				</div>
+
+				<VideoPlayComponent
+					playing={isWatchVideo}
+					watchVideoClose={this.watchVideoClose}
+					videoUrl={videoUrl}
+					ipcType={ipcType}
+				/>
 			</Card>
 		);
 	}

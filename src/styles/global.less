@@ -3,8 +3,9 @@
 :global {
 	html,
 	body,
-	#root {
+	#root{
 		height: 100%;
+		overflow: hidden;
 	}
 
 	.colorWeak {
@@ -83,6 +84,11 @@
 		td {
 			word-break: break-all;
 			max-width: 300px;
+		}
+	}
+	.scrollbar-container{
+		.ps__rail-y{
+			z-index: 1;
 		}
 	}
 }

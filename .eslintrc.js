@@ -41,7 +41,7 @@ module.exports = {
 		'camelcase': 1,
 		'react/jsx-indent': ['error', 'tab', { 'props': 4 }],
 		'react/jsx-indent-props': ['error', 'tab'],
-
+		'react/no-find-dom-node': 0,
 		'react/prefer-stateless-function': 0,
 		'semi': ['error', 'always'],
 		'no-underscore-dangle': 0,

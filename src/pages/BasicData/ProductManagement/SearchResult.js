@@ -99,7 +99,7 @@ class SearchResult extends Component {
 		};
 		const columns = [
 			{
-				title: formatMessage({ id: 'basicData.product.seq_num' }),
+				title: formatMessage({ id: 'basicData.product.seqNum' }),
 				dataIndex: 'seq_num',
 			},
 			{
@@ -107,7 +107,7 @@ class SearchResult extends Component {
 				dataIndex: 'name',
 			},
 			{
-				title: formatMessage({ id: 'basicData.product.bar_code' }),
+				title: formatMessage({ id: 'basicData.product.barCode' }),
 				dataIndex: 'bar_code',
 			},
 			{

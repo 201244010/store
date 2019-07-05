@@ -6,6 +6,12 @@ import RiseDownTag from '@/components/Tag/RiseDownTag';
 import DisplayCard from '@/components/DisplayCard';
 
 import { priceFormat } from '@/utils/utils';
+import { DASHBOARD } from '@/pages/DashBoard/constants';
+import styles from './DashBoard.less';
+
+const {
+	SEARCH_TYPE: { RANGE },
+} = DASHBOARD;
 
 const ringRateStyle = {
 	width: '100%',
@@ -52,8 +58,12 @@ class CardBar extends Component {
 			totalRefundLoading,
 			avgUnitLoading,
 
+			searchValue: { rangeType } = {},
 			totalAmount: {
-				totalAmount: amount,
+				totalAmount,
+				dayAmount,
+				weekAmount,
+				monthAmount,
 				dayRate: dayRateAmount,
 				weekRate: weekRateAmount,
 				monthRate: monthRateAmount,
@@ -61,6 +71,9 @@ class CardBar extends Component {
 
 			totalCount: {
 				totalCount,
+				dayCount,
+				weekCount,
+				monthCount,
 				dayRate: dayRateCount,
 				weekRate: weekRateCount,
 				monthRate: monthRateCount,
@@ -68,6 +81,9 @@ class CardBar extends Component {
 
 			avgUnitSale: {
 				aus,
+				dayUnitSale,
+				weekUnitSale,
+				monthUnitSale,
 				dayRate: dayRateAvg,
 				weekRate: weekRateAvg,
 				monthRate: monthRateAvg,
@@ -75,17 +91,30 @@ class CardBar extends Component {
 
 			totalRefund: {
 				refundCount,
+				dayRefund,
+				weekRefund,
+				monthRefund,
 				dayRate: dayRateRefund,
 				weekRate: weekRateRefund,
 				monthRate: monthRateRefund,
 			},
 		} = this.props;
 
+		const totalAmountStore = {
+			[RANGE.TODAY]: dayAmount,
+			[RANGE.WEEK]: weekAmount,
+			[RANGE.MONTH]: monthAmount,
+			[RANGE.FREE]: totalAmount,
+		};
+
 		const totalAmountCard = {
 			loading: totalAmountLoading,
 			title: TEXT.TOTAL_AMOUNT,
 			infoContent: TEXT.TOTAL_AMOUNT_INFO,
-			content: amount || amount === 0 ? priceFormat(parseFloat(amount).toFixed(2)) : '--',
+			content:
+				totalAmountStore[rangeType] || totalAmountStore[rangeType] === 0
+					? priceFormat(parseFloat(totalAmountStore[rangeType]).toFixed(2))
+					: '--',
 			footer: (
 				<RingRate
 					d2d={{
@@ -104,11 +133,17 @@ class CardBar extends Component {
 			),
 		};
 
+		const totalCountStore = {
+			[RANGE.TODAY]: dayCount,
+			[RANGE.WEEK]: weekCount,
+			[RANGE.MONTH]: monthCount,
+			[RANGE.FREE]: totalCount,
+		};
 		const totalCountCard = {
 			loading: totalCountLoading,
 			title: TEXT.TOTAL_COUNT,
 			infoContent: TEXT.TOTAL_COUNT_INFO,
-			content: totalCount !== '' ? totalCount : '--',
+			content: totalCountStore[rangeType] !== '' ? totalCountStore[rangeType] : '--',
 			footer: (
 				<RingRate
 					d2d={{
@@ -127,11 +162,21 @@ class CardBar extends Component {
 			),
 		};
 
+		const ausSaleStore = {
+			[RANGE.TODAY]: dayUnitSale,
+			[RANGE.WEEK]: weekUnitSale,
+			[RANGE.MONTH]: monthUnitSale,
+			[RANGE.FREE]: aus,
+		};
+
 		const avgUnitSaleCard = {
 			loading: avgUnitLoading,
 			title: TEXT.AVG_UNIT,
 			infoContent: TEXT.AVG_UNIT_INFO,
-			content: aus || aus === 0 ? parseFloat(aus).toFixed(2) : '--',
+			content:
+				ausSaleStore[rangeType] || ausSaleStore[rangeType] === 0
+					? parseFloat(ausSaleStore[rangeType]).toFixed(2)
+					: '--',
 			footer: (
 				<RingRate
 					d2d={{
@@ -150,11 +195,17 @@ class CardBar extends Component {
 			),
 		};
 
+		const refundCountStore = {
+			[RANGE.TODAY]: dayRefund,
+			[RANGE.WEEK]: weekRefund,
+			[RANGE.MONTH]: monthRefund,
+			[RANGE.FREE]: refundCount,
+		};
 		const totalRefundCard = {
 			loading: totalRefundLoading,
 			title: TEXT.TOTAL_REFUND,
 			infoContent: TEXT.TOTAL_REFUND_INFO,
-			content: refundCount !== '' ? refundCount : '--',
+			content: refundCountStore[rangeType] !== '' ? refundCountStore[rangeType] : '--',
 			footer: (
 				<RingRate
 					d2d={{
@@ -174,20 +225,22 @@ class CardBar extends Component {
 		};
 
 		return (
-			<Row gutter={24}>
-				<Col span={6}>
-					<DisplayCard {...totalAmountCard} />
-				</Col>
-				<Col span={6}>
-					<DisplayCard {...totalCountCard} />
-				</Col>
-				<Col span={6}>
-					<DisplayCard {...avgUnitSaleCard} />
-				</Col>
-				<Col span={6}>
-					<DisplayCard {...totalRefundCard} />
-				</Col>
-			</Row>
+			<div className={styles['card-bar-wrapper']}>
+				<Row gutter={24}>
+					<Col span={6}>
+						<DisplayCard {...totalAmountCard} />
+					</Col>
+					<Col span={6}>
+						<DisplayCard {...totalCountCard} />
+					</Col>
+					<Col span={6}>
+						<DisplayCard {...avgUnitSaleCard} />
+					</Col>
+					<Col span={6}>
+						<DisplayCard {...totalRefundCard} />
+					</Col>
+				</Row>
+			</div>
 		);
 	}
 }

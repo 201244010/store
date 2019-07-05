@@ -202,6 +202,9 @@ export default {
 				...state,
 				updateFlag: false
 			};
+		},
+		updateReadingFlag (state, { payload: { flag }} ) {
+			state.readFlag = flag;
 		}
 	},
 	effects: {
@@ -234,6 +237,13 @@ export default {
 							sn
 						}
 					}
+				}
+			});
+
+			yield put({
+				type: 'updateReadingFlag',
+				payload: {
+					flag: true
 				}
 			});
 		},

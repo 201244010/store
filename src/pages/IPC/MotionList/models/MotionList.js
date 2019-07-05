@@ -29,7 +29,7 @@ export default {
 			// const shopId = yield select((state) => {
 			// 	return state.shops.currentShopId;
 			// });
-			const { startTime, endTime, ipcSelected, detectedSourceSelected /* , currentPage, pageSize */ } = payload;
+			const { startTime, endTime, ipcSelected, detectedSourceSelected, currentPage, pageSize } = payload;
 
 			// console.log(currentPage, pageSize);
 			let deviceId;
@@ -53,8 +53,8 @@ export default {
 				endTime,
 				deviceId,
 				source,
-				// currentPage,
-				// pageSize
+				currentPage,
+				pageSize
 			});
 			if (response.code === ERROR_OK) {
 				const { list , total } = response.data;

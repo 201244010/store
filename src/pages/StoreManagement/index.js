@@ -202,7 +202,7 @@ class StoreManagement extends Component {
 		const formattedList = storeList.map(store => formatEmptyWithoutZero(store, '--'));
 
 		return (
-			<Card bordered={false}>
+			<Card bordered={false} className={styles.storeList}>
 				<div className={styles['search-bar']}>
 					<Form layout="inline">
 						<Row gutter={FORM_FORMAT.gutter}>

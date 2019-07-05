@@ -5,6 +5,7 @@ import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
 import SearchBar from './SearchBar';
+import Overview from './Overview';
 import CardBar from './CardBar';
 import ContentChart from './ContentChart';
 import FooterChart from './FooterChart';
@@ -25,6 +26,8 @@ const { LAST_HAND_REFRESH_TIME } = DASHBOARD;
 			dispatch({ type: 'dashBoard/fetchAllData', payload: { needLoading } }),
 		setSearchValue: payload => dispatch({ type: 'dashBoard/setSearchValue', payload }),
 		clearSearch: () => dispatch({ type: 'dashBoard/clearSearch' }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class DashBoard extends Component {
@@ -82,6 +85,14 @@ class DashBoard extends Component {
 	render() {
 		const {
 			dashBoard: {
+				overviewProductLoading,
+				overviewDeviceLoading,
+				overviewIPCLoading,
+
+				productOverview,
+				deviceOverView,
+				ipcOverView,
+
 				totalAmountLoading,
 				totalCountLoading,
 				totalRefundLoading,
@@ -103,6 +114,7 @@ class DashBoard extends Component {
 			},
 			fetchAllData,
 			setSearchValue,
+			goToPath,
 		} = this.props;
 
 		return (
@@ -118,8 +130,20 @@ class DashBoard extends Component {
 					}}
 				/>
 				<div className={styles['display-content']}>
+					<Overview
+						{...{
+							overviewProductLoading,
+							overviewDeviceLoading,
+							overviewIPCLoading,
+							productOverview,
+							deviceOverView,
+							ipcOverView,
+							goToPath,
+						}}
+					/>
 					<CardBar
 						{...{
+							searchValue,
 							totalAmount,
 							totalCount,
 							totalRefund,

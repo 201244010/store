@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { notification } from 'antd';
 import { connect } from 'dva';
 import { displayNotification } from '@/components/Notification';
+import VideoPlayComponent from '@/pages/IPC/component/VideoPlayComponent';
 import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
 import { ACTION_MAP } from '@/constants/mqttActionMap';
 import { getRandomString } from '@/utils/utils';
@@ -22,6 +23,9 @@ function MQTTWrapper(WrapperedComponent) {
 				dispatch({ type: 'mqttStore/setMessageHandler', payload }),
 			destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
 			getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
+			getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
+			goToPath: (pathId, urlParams = {}) =>
+				dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		})
 	)
 	@Ipc
@@ -30,6 +34,9 @@ function MQTTWrapper(WrapperedComponent) {
 			super(props);
 			this.state = {
 				notificationList: [],
+				isWatchVideo: false,
+				videoUrl: '',
+				ipcType: '',
 			};
 		}
 
@@ -42,6 +49,13 @@ function MQTTWrapper(WrapperedComponent) {
 			destroyClient();
 		}
 
+		watchVideoClose = () => {
+			this.setState({
+				videoUrl: '',
+				isWatchVideo: false,
+			});
+		};
+
 		removeNotification = key => {
 			const { notificationList } = this.state;
 			const keyList = [...notificationList];
@@ -52,16 +66,32 @@ function MQTTWrapper(WrapperedComponent) {
 			});
 		};
 
-		handleAction = action => {
+		handleAction = (action, paramsStr, extra = {}) => {
+			const { goToPath } = this.props;
+			const { key = null } = extra;
 			if (action) {
 				const handler = ACTION_MAP[action] || (() => null);
-				handler();
+				const result = handler({
+					handlers: { goToPath, removeNotification: this.removeNotification },
+					params: paramsStr,
+					extra: { from: 'mqtt', key },
+				});
+
+				const { action: resultAction = null, payload = {} } = result || {};
+				if (resultAction === 'showMotionVideo') {
+					const { url, ipcType } = payload;
+					this.setState({
+						isWatchVideo: true,
+						videoUrl: url,
+						ipcType,
+					});
+				}
 			}
 		};
 
-		showNotification = data => {
+		showNotification = async data => {
 			const { notificationList } = this.state;
-			const { getNotificationCount } = this.props;
+			const { getNotificationCount, getUnreadNotification } = this.props;
 			const messageData = JSON.parse(data.toString()) || {};
 			const uniqueKey = getRandomString();
 
@@ -79,11 +109,13 @@ function MQTTWrapper(WrapperedComponent) {
 					data: param,
 					key: uniqueKey,
 					mainAction: this.handleAction,
-					subAction: this.handleAction,
+					subAction: (action, paramsStr) =>
+						this.handleAction(action, paramsStr, { key: uniqueKey }),
 					closeAction: this.removeNotification,
 				});
 			});
-			getNotificationCount();
+			await getNotificationCount();
+			await getUnreadNotification();
 		};
 
 		initClient = async () => {
@@ -118,7 +150,19 @@ function MQTTWrapper(WrapperedComponent) {
 		};
 
 		render() {
-			return <WrapperedComponent {...this.props} />;
+			const { isWatchVideo, videoUrl, ipcType } = this.state;
+
+			return (
+				<>
+					<WrapperedComponent {...this.props} />
+					<VideoPlayComponent
+						playing={isWatchVideo}
+						watchVideoClose={this.watchVideoClose}
+						videoUrl={videoUrl}
+						ipcType={ipcType}
+					/>
+				</>
+			);
 		}
 	}
 

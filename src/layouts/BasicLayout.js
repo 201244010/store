@@ -1,4 +1,6 @@
 import React from 'react';
+import ResizeDetecor from 'element-resize-detector';
+
 import { Layout, message, Spin } from 'antd';
 import DocumentTitle from 'react-document-title';
 import isEqual from 'lodash/isEqual';
@@ -13,12 +15,13 @@ import MQTTWrapper from '@/components/MQTT';
 import * as CookieUtil from '@/utils/cookies';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
 import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
-import logo from '../assets/menuLogo.png';
+import logo from '../assets/logo-big.png';
 import logoEN from '../assets/menuLogoEN.png';
 import { env } from '@/config';
 
@@ -92,6 +95,14 @@ class BasicLayout extends React.PureComponent {
 		if (isMobile && !preProps.isMobile && !collapsed) {
 			this.handleMenuCollapse(false);
 		}
+
+		if (this.dom){
+			const erd = ResizeDetecor();
+			erd.listenTo(this.dom, () => {
+				this.scrollbar._ps.update();
+			});
+		}
+
 	}
 
 	getContext() {
@@ -134,15 +145,21 @@ class BasicLayout extends React.PureComponent {
 		const {
 			getMenuData,
 			route: { routes, authority },
+			logout,
 		} = this.props;
 
-		const menuData = await getMenuData({ routes, authority });
-		if (env === 'dev') {
-			this.setState({
-				inMenuChecking: false,
-			});
+		const currentCompany = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY);
+		if (!currentCompany) {
+			logout();
 		} else {
-			this.checkMenuAuth(menuData);
+			const menuData = await getMenuData({ routes, authority });
+			if (env === 'dev') {
+				this.setState({
+					inMenuChecking: false,
+				});
+			} else {
+				this.checkMenuAuth(menuData);
+			}
 		}
 	};
 
@@ -252,7 +269,9 @@ class BasicLayout extends React.PureComponent {
 						<ContainerQuery query={query}>
 							{params => (
 								<Context.Provider value={this.getContext()}>
-									<div className={classNames(params)}>{layout}</div>
+									<PerfectScrollbar ref={scrollbar => this.scrollbar = scrollbar}>
+										<div ref={dom => this.dom = dom} className={classNames(params)}>{layout}</div>
+									</PerfectScrollbar>
 								</Context.Provider>
 							)}
 						</ContainerQuery>
@@ -274,6 +293,7 @@ export default connect(
 		...setting,
 	}),
 	dispatch => ({
+		logout: () => dispatch({ type: 'user/logout' }),
 		getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		goToPath: (pathId, urlParams = {}) =>

@@ -282,11 +282,12 @@ class ActiveDetection extends React.Component {
 									valuePropName: 'checked',
 									initialValue: true,
 								})(
-									<Switch
-										// onChange={this.soundDetectSwitchChange}
-										checkedChildren={formatMessage({id: 'activeDetection.label.open' })}
-										unCheckedChildren={formatMessage({id:'activeDetection.label.close'})}
-									/>
+									// <Switch
+									// 	// onChange={this.soundDetectSwitchChange}
+									// 	checkedChildren={formatMessage({id: 'activeDetection.label.open' })}
+									// 	unCheckedChildren={formatMessage({id:'activeDetection.label.close'})}
+									// />
+									<Switch />
 								)
 							}
 						</Form.Item>
@@ -315,10 +316,11 @@ class ActiveDetection extends React.Component {
 									valuePropName: 'checked',
 									initialValue: true,
 								})(
-									<Switch
-										checkedChildren={formatMessage({id: 'activeDetection.label.open'})}
-										unCheckedChildren={formatMessage({id: 'activeDetection.label.close' })}
-									/>
+									// <Switch
+									// 	checkedChildren={formatMessage({id: 'activeDetection.label.open'})}
+									// 	unCheckedChildren={formatMessage({id: 'activeDetection.label.close' })}
+									// />
+									<Switch />
 								)
 							}
 						</Form.Item>

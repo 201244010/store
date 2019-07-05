@@ -1,14 +1,6 @@
 :global {
 	.ant-input {
-		-webkit-box-sizing: border-box;
-		box-sizing: border-box;
 		margin: 0;
-		font-variant: tabular-nums;
-		list-style: none;
-		-webkit-font-feature-settings: 'tnum';
-		font-feature-settings: 'tnum';
-		position: relative;
-		display: inline-block;
 		width: 100%;
 		height: 32px;
 		padding: 4px 11px;
@@ -19,42 +11,32 @@
 		background-image: none;
 		border: 1px solid #ced2d9;
 		border-radius: 4px;
-		-webkit-transition: all 0.3s;
-		transition: all 0.3s;
-	}
-	.ant-input[disabled] {
-		color: #a1a7b3;
-		background-color: #f0f2f5;
-		cursor: not-allowed;
-		opacity: 1;
-	}
-	.ant-input:focus {
-		border-color: #6694ff;
-		border-right-width: 1px !important;
-		outline: 0;
-		-webkit-box-shadow: 0 0 0 2px rgba(75, 122, 250, 0.1);
-		box-shadow: 0 0 0 2px rgba(75, 122, 250, 0.1);
-	}
-	.ant-input:hover {
-		border-color: #6694ff;
-		border-right-width: 1px !important;
+		&[disabled] {
+			color: #a1a7b3;
+			background-color: #f0f2f5;
+			opacity: 1;
+		}
+		&:focus {
+			border-color: #6694ff;
+			-webkit-box-shadow: 0 0 0 2px rgba(75, 122, 250, 0.1);
+			box-shadow: 0 0 0 2px rgba(75, 122, 250, 0.1);
+		}
+		&:hover {
+			border-color: #6694ff;
+			border-right-width: 1px !important;
+		}
 	}
 	.ant-input-group-addon {
-		position: relative;
 		padding: 0 11px;
 		color: rgba(0, 0, 0, 0.65);
-		font-weight: normal;
 		font-size: 14px;
 		line-height: 1;
-		text-align: center;
 		background-color: #f0f2f5;
 		border: 1px solid #ced2d9;
 		border-radius: 4px;
-		-webkit-transition: all 0.3s;
-		transition: all 0.3s;
-	}
-	.ant-input-group-addon .ant-select-open .ant-select-selection,
-	.ant-input-group-addon .ant-select-focused .ant-select-selection {
-		color: #4b7afa;
+		.ant-select-open .ant-select-selection,
+		.ant-select-focused .ant-select-selection {
+			color: #4b7afa;
+		}
 	}
 }

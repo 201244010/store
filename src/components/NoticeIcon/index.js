@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
-// import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom';
 import { Icon, Tabs, Badge, Spin } from 'antd';
 import classNames from 'classnames';
 import HeaderDropdown from '../HeaderDropdown';
@@ -13,11 +13,11 @@ export default class NoticeIcon extends PureComponent {
 	static Tab = TabPane;
 
 	static defaultProps = {
-		onItemClick: () => { },
-		onPopupVisibleChange: () => { },
-		onTabChange: () => { },
-		onClear: () => { },
-		onViewMore: () => { },
+		onItemClick: () => {},
+		onPopupVisibleChange: () => {},
+		onTabChange: () => {},
+		onClear: () => {},
+		onViewMore: () => {},
 		loading: false,
 		clearClose: false,
 		locale: {
@@ -34,18 +34,17 @@ export default class NoticeIcon extends PureComponent {
 
 	onItemClick = (item, tabProps) => {
 		const { onItemClick } = this.props;
-		// const { clickClose } = item;
 		onItemClick(item, tabProps);
-		// if (clickClose) {
-		// this.popover.click();
-		// }
+		if (this.popover) {
+			this.popover.click();
+		}
 	};
 
 	onClear = name => {
 		const { onClear, clearClose } = this.props;
 		onClear(name);
 		if (clearClose) {
-			// this.popover.click();
+			this.popover.click();
 		}
 	};
 
@@ -57,7 +56,7 @@ export default class NoticeIcon extends PureComponent {
 	onViewMore = (tabProps, event) => {
 		const { onViewMore } = this.props;
 		onViewMore(tabProps, event);
-		// this.popover.click();
+		this.popover.click();
 	};
 
 	getNotificationBox() {
@@ -107,7 +106,8 @@ export default class NoticeIcon extends PureComponent {
 	};
 
 	getUnreadNotice = async () => {
-		const { getUnreadNotification } = this.props;
+		const { getUnreadNotification, getNotificationCount } = this.props;
+		await getNotificationCount();
 		await getUnreadNotification();
 	};
 
@@ -143,7 +143,7 @@ export default class NoticeIcon extends PureComponent {
 				visible={visible}
 				onVisibleChange={this.handleVisibleChange}
 				{...popoverProps}
-			// ref={node => (this.popover = ReactDOM.findDOMNode(node))}
+				ref={node => (this.popover = ReactDOM.findDOMNode(node))}
 			>
 				{trigger}
 			</HeaderDropdown>
