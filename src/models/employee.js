@@ -66,12 +66,15 @@ export default {
 			);
 
 			if (response && response.code === ERROR_OK) {
-				// TODO 处理员工列表返回
+				const { data = {} } = response;
+				const { employeeList, totalCount } = format('toCamel')(data);
 				yield put({
 					type: 'updateState',
 					payload: {
+						employeeList,
 						pagination: {
 							...pagination,
+							total: totalCount,
 							current,
 							pageSize,
 						},
@@ -88,25 +91,16 @@ export default {
 			);
 
 			if (response && response.code === ERROR_OK) {
-				// TODO 处理员工详情
+				const { data = {} } = response;
 				yield put({
 					type: 'updateState',
-					payload: {},
+					payload: { employeeInfo: format('toCamel')(data) },
 				});
 			}
 		},
 
 		*createEmployee(
-			{
-				payload: {
-					name,
-					number,
-					username,
-					gender,
-					ssoUsername,
-					organizationRoleMappingList,
-				} = {},
-			},
+			{ payload: { name, number, username, gender, ssoUsername, mappingList } = {} },
 			{ call, put }
 		) {
 			const response = yield call(
@@ -118,17 +112,17 @@ export default {
 					username,
 					gender,
 					ssoUsername,
-					organizationRoleMappingList,
+					mappingList,
 				})
 			);
 
 			if (response && response.code === ERROR_OK) {
-				// TODO 处理创建员工的返回值
 				yield put({
 					type: 'updateState',
 					payload: {},
 				});
 			}
+			return response;
 		},
 
 		*updateEmployee(
@@ -158,12 +152,12 @@ export default {
 			);
 
 			if (response && response.code === ERROR_OK) {
-				// TODO 更新员工的处理逻辑
 				yield put({
 					type: 'updateState',
 					payload: {},
 				});
 			}
+			return response;
 		},
 
 		*deleteEmployee({ payload: { employeeIdList } = {} }, { call, put }) {
@@ -174,9 +168,8 @@ export default {
 			);
 
 			if (response && response.code === ERROR_OK) {
-				// TODO 删除员工处理逻辑
 				yield put({
-					type: 'updateState',
+					type: 'getEmployeeList',
 					payload: {},
 				});
 			}

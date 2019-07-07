@@ -4,10 +4,16 @@ import { Table, Divider } from 'antd';
 import styles from './Employee.less';
 
 const SearchResult = props => {
-	const { data = [], pagination = {}, loading = false } = props;
+	const { data = [], pagination = {}, loading = false, goToPath = null } = props;
 
-	const viewDetail = value => {
-		console.log(value);
+	const viewDetail = record => {
+		const { employeeId = null } = record;
+		if (goToPath && employeeId) {
+			goToPath('employeeInfo', {
+				employeeId,
+				from: 'list',
+			});
+		}
 	};
 
 	const alterDetail = value => {
@@ -19,12 +25,12 @@ const SearchResult = props => {
 	};
 
 	const columns = [
-		{ title: formatMessage({ id: 'employee.number' }), dataIndex: 'employeeNumber' },
-		{ title: formatMessage({ id: 'employee.name' }), dataIndex: 'employeeName' },
-		{ title: formatMessage({ id: 'employee.gender' }), dataIndex: 'employeeGender' },
+		{ title: formatMessage({ id: 'employee.number' }), dataIndex: 'number' },
+		{ title: formatMessage({ id: 'employee.name' }), dataIndex: 'name' },
+		{ title: formatMessage({ id: 'employee.gender' }), dataIndex: 'gender' },
 		{ title: formatMessage({ id: 'employee.orgnization' }), dataIndex: 'employeeOrgnization' },
-		{ title: formatMessage({ id: 'employee.phone' }), dataIndex: 'employeePhone' },
-		{ title: formatMessage({ id: 'employee.sso.account' }), dataIndex: 'employeeAccount' },
+		{ title: formatMessage({ id: 'employee.phone' }), dataIndex: 'username' },
+		{ title: formatMessage({ id: 'employee.sso.account' }), dataIndex: 'ssoUsername' },
 		{
 			title: formatMessage({ id: 'list.action.title' }),
 			key: 'action',

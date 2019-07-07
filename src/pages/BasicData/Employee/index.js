@@ -14,7 +14,8 @@ import SearchResult from './SerachResult';
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
 		setSearchValue: payload => dispatch({ type: 'employee/setSearchValue', payload }),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
-		getEmployeeList: () => dispatch({ type: 'employee/getEmployeeList' }),
+		getEmployeeList: ({ current, pageSize }) =>
+			dispatch({ type: 'employee/getEmployeeList', payload: { current, pageSize } }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
@@ -28,10 +29,12 @@ class EmployeeList extends Component {
 	}
 
 	componentDidMount() {
-		// const { getEmployeeList } = this.props;
-		// getEmployeeList();
-
 		this.createOrgnizationTree();
+		const { getEmployeeList } = this.props;
+		getEmployeeList({
+			current: 1,
+			pageSize: 10,
+		});
 	}
 
 	componentWillUnmount() {
@@ -71,7 +74,7 @@ class EmployeeList extends Component {
 
 	render() {
 		const {
-			employee: { searchValue = {}, employeeList = [] } = {},
+			employee: { searchValue = {}, employeeList = [], pagination } = {},
 			setSearchValue,
 			clearSearchValue,
 			getEmployeeList,
@@ -96,6 +99,8 @@ class EmployeeList extends Component {
 				<SearchResult
 					{...{
 						data: employeeList,
+						pagination,
+						goToPath,
 					}}
 				/>
 			</Card>

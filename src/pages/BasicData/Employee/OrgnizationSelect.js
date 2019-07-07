@@ -57,7 +57,7 @@ class OrgnizationSelect extends Component {
 
 	render() {
 		const { orgnizationRoleList } = this.state;
-		const { orgnizationTree = [] } = this.props;
+		const { orgnizationTree = [], roleSelectList = [] } = this.props;
 
 		return (
 			<>
@@ -77,8 +77,11 @@ class OrgnizationSelect extends Component {
 								value={item.role}
 								onChange={value => this.handleSelectChange(item, index, value)}
 							>
-								<Select.Option value="jack">Jack</Select.Option>
-								<Select.Option value="lucy">Lucy</Select.Option>
+								{roleSelectList.map((role, i) => (
+									<Select.Option key={i} value={role.id}>
+										{role.name}
+									</Select.Option>
+								))}
 							</Select>
 						</Col>
 						{orgnizationRoleList.length > 1 && (

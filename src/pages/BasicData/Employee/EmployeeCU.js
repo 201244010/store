@@ -8,7 +8,9 @@ import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
 
 @connect(
 	state => ({
+		loading: state.loading,
 		employee: state.employee,
+		role: state.role,
 	}),
 	dispatch => ({
 		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
@@ -16,6 +18,17 @@ import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
 		getEmployeeInfo: ({ employeeId }) =>
 			dispatch({ type: 'employee/getEmployeeInfo', payload: { employeeId } }),
+		createEmployee: ({ name, number, username, gender, ssoUsername, mappingList }) =>
+			dispatch({
+				type: 'employee/createEmployee',
+				payload: { name, number, username, gender, ssoUsername, mappingList },
+			}),
+		updateEmployee: ({ employeeId, name, number, username, gender, mappingList }) =>
+			dispatch({
+				type: 'employee/updateEmployee',
+				payload: { employeeId, name, number, username, gender, mappingList },
+			}),
+		getAllRoles: () => dispatch({ type: 'role/getAllRoles' }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
@@ -37,12 +50,13 @@ class EmployeeCU extends Component {
 	}
 
 	componentDidMount() {
+		const { getAllRoles } = this.props;
+		getAllRoles();
+		this.createOrgnizationTree();
 		if (this.employeeId && this.action === 'edit') {
 			const { getEmployeeInfo } = this.props;
-			getEmployeeInfo();
+			getEmployeeInfo({ employeeId: this.employeeId });
 		}
-
-		this.createOrgnizationTree();
 	}
 
 	createOrgnizationTree = async () => {
@@ -75,13 +89,49 @@ class EmployeeCU extends Component {
 		});
 	};
 
+	formatMappingList = mappingList => {
+		const formattedList = Object.keys(mappingList)
+			.map(key => {
+				const { orgnization = '', role = [] } = mappingList[key];
+				const [companyId = null, shopId = null] = `${orgnization}`.split('-');
+				return role.map(r => ({
+					companyId,
+					shopId,
+					roleId: r,
+				}));
+			})
+			.reduce((prev, cur) => [...prev, ...cur], []);
+		// console.log(formattedList);
+		return formattedList;
+	};
+
 	handleSubmit = () => {
 		const {
 			form: { validateFields },
+			createEmployee,
+			updateEmployee,
+			goToPath,
 		} = this.props;
 
 		validateFields((err, values) => {
-			console.log(values);
+			if (!err) {
+				const { mappingList = [] } = values;
+				if (this.action === 'edit' && this.employeeId) {
+					updateEmployee({
+						employeeId: this.employeeId,
+						...values,
+						mappingList: this.formatMappingList(mappingList),
+					});
+				} else {
+					const response = createEmployee({
+						...values,
+						mappingList: this.formatMappingList(mappingList),
+					});
+					if (response && response.code === ERROR_OK) {
+						goToPath('employeeList');
+					}
+				}
+			}
 		});
 	};
 
@@ -95,14 +145,16 @@ class EmployeeCU extends Component {
 	render() {
 		const {
 			form: { getFieldDecorator },
+			loading,
+			role: { roleSelectList = [] } = {},
 			employee: {
 				employeeInfo: {
-					name = null,
-					number = null,
-					username = null,
-					gender = null,
-					ssoUsername = null,
-					organizationRoleMappingList = [],
+					name = '',
+					number = '',
+					username = '',
+					gender = '',
+					ssoUsername = '',
+					mappingList = [],
 				} = {},
 			} = {},
 		} = this.props;
@@ -117,8 +169,9 @@ class EmployeeCU extends Component {
 				</h3>
 				<Form {...HEAD_FORM_ITEM_LAYOUT}>
 					<Form.Item label={formatMessage({ id: 'employee.number' })}>
-						{getFieldDecorator('employeeNumber', {
+						{getFieldDecorator('number', {
 							initialValue: number,
+							validateTrigger: 'onBlur',
 							rules: [
 								{
 									required: true,
@@ -128,8 +181,9 @@ class EmployeeCU extends Component {
 						})(<Input />)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.name' })}>
-						{getFieldDecorator('employeeNumber', {
+						{getFieldDecorator('name', {
 							initialValue: name,
+							validateTrigger: 'onBlur',
 							rules: [
 								{
 									required: true,
@@ -139,7 +193,7 @@ class EmployeeCU extends Component {
 						})(<Input maxLength={32} />)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.gender' })}>
-						{getFieldDecorator('employeeGender', {
+						{getFieldDecorator('gender', {
 							initialValue: gender,
 						})(
 							<Radio.Group>
@@ -153,8 +207,17 @@ class EmployeeCU extends Component {
 						)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.phone.or.email' })}>
-						{getFieldDecorator('employeeUsername', {
+						{getFieldDecorator('username', {
 							initialValue: username,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'employee.phone.or.email.isEmpty',
+									}),
+								},
+							],
 						})(<Input />)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.sso.account' })}>
@@ -164,15 +227,22 @@ class EmployeeCU extends Component {
 					</Form.Item>
 					<Form.Item
 						label={formatMessage({ id: 'employee.orgnization' })}
-						labelCol={{ md: { span: 4 }, xxl: {span: 2} }}
-						wrapperCol={{ md: { span: 16 }, xxl: {span: 12} }}
+						labelCol={{ md: { span: 4 }, xxl: { span: 2 } }}
+						wrapperCol={{ md: { span: 16 }, xxl: { span: 12 } }}
 					>
-						{getFieldDecorator('organizationRoleMappingList', {
-							initialValue: organizationRoleMappingList,
-						})(<OrgnizationSelect {...{ orgnizationTree }} />)}
+						{getFieldDecorator('mappingList', {
+							initialValue: mappingList,
+						})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList }} />)}
 					</Form.Item>
 					<Form.Item label=" " colon={false}>
-						<Button type="primary" onClick={this.handleSubmit}>
+						<Button
+							type="primary"
+							onClick={this.handleSubmit}
+							loading={
+								loading.effects['employee/createEmployee'] ||
+								loading.effects['employee/updateEmployee']
+							}
+						>
 							{this.action === 'create'
 								? formatMessage({ id: 'btn.create' })
 								: formatMessage({ id: 'btn.alter' })}

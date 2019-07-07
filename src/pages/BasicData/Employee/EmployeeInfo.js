@@ -4,6 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { Card, Form, Button } from 'antd';
 import { getLocationParam } from '@/utils/utils';
 import { FORM_ITEM_DETAIL } from '@/constants/form';
+import moment from 'moment';
 
 const GENDER_MAP = {
 	1: formatMessage({ id: 'employee.gender.male' }),
@@ -34,6 +35,35 @@ class EmployeeInfo extends Component {
 		}
 	}
 
+	formatMappingList = mappingList => {
+		if (mappingList.length === 0) {
+			return mappingList;
+		}
+
+		const roleMap = new Map();
+		mappingList.forEach(list => {
+			const {
+				companyId = null,
+				shopId = null,
+				companyName = '',
+				shopName = '',
+				roleName = '',
+			} = list;
+
+			if (roleMap.has(`${companyId}-${shopId}`)) {
+				const { roleName: roleNames } = role.get(`${companyId}-${shopId}`);
+				roleMap.set(`${companyId}-${shopId}`, {
+					companyName,
+					shopName,
+					roleName: [roleNames, roleName].toString(),
+				});
+			} else {
+				roleMap.set(`${companyId}-${shopId}`, { companyName, shopName, roleName });
+			}
+		});
+		return [...roleMap.values()];
+	};
+
 	goToPath = target => {
 		const { goToPath } = this.props;
 		if (target === 'edit') {
@@ -54,10 +84,14 @@ class EmployeeInfo extends Component {
 					ssoUsername = '--',
 					organizationRoleMappingList = [],
 					createTime = '--',
-					updateTime = '--',
+					modifiedTime = '--',
 				} = {},
 			} = {},
 		} = this.props;
+
+		const mappedList = this.formatMappingList(organizationRoleMappingList);
+		console.log(mappedList);
+
 		return (
 			<Card bordered={false}>
 				<h3>{formatMessage({ id: 'employee.info' })}</h3>
@@ -82,21 +116,28 @@ class EmployeeInfo extends Component {
 						<span>{ssoUsername || '--'}</span>
 					</Form.Item>
 
-					{organizationRoleMappingList.map((info, index) => (
+					{mappedList.map((item, index) => (
 						<Form.Item
-							label={index === 0 ? formatMessage({ id: 'employee.number' }) : ' '}
+							key={index}
+							label={
+								index === 0 ? formatMessage({ id: 'employee.orgnization' }) : ' '
+							}
 							colon={index === 0}
 						>
-							<span>{info || '--'}</span>
+							<span>{item.companyName}</span>
+							<span>{item.shopName}</span>
+							<span>{item.roleName}</span>
 						</Form.Item>
 					))}
 
 					<Form.Item label={formatMessage({ id: 'employee.info.create.time' })}>
-						<span>{createTime || '--'}</span>
+						<span>{moment.unix(createTime).format('YYYY-MM-DD HH:mm:ss') || '--'}</span>
 					</Form.Item>
 
 					<Form.Item label={formatMessage({ id: 'employee.info.update.time' })}>
-						<span>{updateTime || '--'}</span>
+						<span>
+							{moment.unix(modifiedTime).format('YYYY-MM-DD HH:mm:ss') || '--'}
+						</span>
 					</Form.Item>
 
 					<Form.Item label=" " colon={false}>
