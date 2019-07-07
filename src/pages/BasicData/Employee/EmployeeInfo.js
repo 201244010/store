@@ -52,7 +52,7 @@ class EmployeeInfo extends Component {
 			} = list;
 
 			if (roleMap.has(`${companyId}-${shopId}`)) {
-				const { roleName: roleNames } = role.get(`${companyId}-${shopId}`);
+				const { roleName: roleNames } = roleMap.get(`${companyId}-${shopId}`);
 				roleMap.set(`${companyId}-${shopId}`, {
 					companyName,
 					shopName,
@@ -88,14 +88,14 @@ class EmployeeInfo extends Component {
 					username = '--',
 					gender = '--',
 					ssoUsername = '--',
-					organizationRoleMappingList = [],
+					mappingList = [],
 					createTime = '--',
 					modifiedTime = '--',
 				} = {},
 			} = {},
 		} = this.props;
 
-		const mappedList = this.formatMappingList(organizationRoleMappingList);
+		const mappedList = this.formatMappingList(mappingList);
 		// console.log(mappedList);
 
 		return (

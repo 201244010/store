@@ -5,6 +5,7 @@ import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
 import styles from './Employee.less';
 
 const SearchBar = ({
+	currentCompanyId = null,
 	orgnizationTree = [],
 	searchValue: { shopIdList = [], name = null, number = null, username = null } = {},
 	setSearchValue = null,
@@ -12,23 +13,29 @@ const SearchBar = ({
 	clearSearchValue = null,
 	goToPath = null,
 }) => {
-	console.log(shopIdList);
-
-	const handleSearchChange = (field, value, label, extra) => {
-		console.log(field, value, label, extra);
-		setSearchValue({
-			[field]: value,
-		});
+	// console.log(shopIdList);
+	const [shopId = null] = shopIdList;
+	const handleSearchChange = (field, value) => {
+		// console.log(field, value, label, extra);
+		if (field === 'shopIdList') {
+			const [, id = null] = `${value}`.split('-');
+			setSearchValue({
+				[field]: [id],
+			});
+		} else {
+			setSearchValue({
+				[field]: value,
+			});
+		}
 	};
 
 	const handleQuery = async () => {
-		console.log('do query');
-		await getEmployeeList();
+		await getEmployeeList({ current: 1 });
 	};
 
 	const handleReset = async () => {
-		console.log('do reset');
 		await clearSearchValue();
+		await getEmployeeList({ current: 1 });
 	};
 
 	return (
@@ -38,10 +45,11 @@ const SearchBar = ({
 					<Col {...COL_THREE_NORMAL}>
 						<Form.Item label={formatMessage({ id: 'employee.orgnization' })}>
 							<TreeSelect
+								value={shopId ? `${currentCompanyId}-${shopId}` : null}
 								treeDefaultExpandAll
 								treeData={orgnizationTree}
 								onChange={(value, label, extra) =>
-									handleSearchChange('orgnization', value, label, extra)
+									handleSearchChange('shopIdList', value, label, extra)
 								}
 							/>
 						</Form.Item>

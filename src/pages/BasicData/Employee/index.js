@@ -15,7 +15,7 @@ import SearchResult from './SerachResult';
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
 		setSearchValue: payload => dispatch({ type: 'employee/setSearchValue', payload }),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
-		getEmployeeList: ({ current, pageSize }) =>
+		getEmployeeList: ({ current = 1, pageSize = 10 }) =>
 			dispatch({ type: 'employee/getEmployeeList', payload: { current, pageSize } }),
 		deleteEmployee: ({ employeeIdList }) =>
 			dispatch({ type: 'employee/deleteEmployee', payload: { employeeIdList } }),
@@ -28,6 +28,7 @@ class EmployeeList extends Component {
 		super(props);
 		this.state = {
 			orgnizationTree: [],
+			currentCompanyId: null,
 		};
 	}
 
@@ -72,6 +73,7 @@ class EmployeeList extends Component {
 		];
 		this.setState({
 			orgnizationTree,
+			currentCompanyId,
 		});
 	};
 
@@ -86,11 +88,12 @@ class EmployeeList extends Component {
 			goToPath,
 		} = this.props;
 
-		const { orgnizationTree } = this.state;
+		const { orgnizationTree, currentCompanyId } = this.state;
 		return (
 			<Card bordered={false}>
 				<SearchBar
 					{...{
+						currentCompanyId,
 						orgnizationTree,
 						searchValue,
 						setSearchValue,
@@ -106,6 +109,7 @@ class EmployeeList extends Component {
 						pagination,
 						deleteEmployee,
 						goToPath,
+						getEmployeeList,
 					}}
 				/>
 			</Card>

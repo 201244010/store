@@ -11,6 +11,7 @@ const SearchResult = props => {
 		loading = false,
 		goToPath = null,
 		deleteEmployee = null,
+		getEmployeeList = null,
 	} = props;
 
 	const viewDetail = record => {
@@ -82,9 +83,18 @@ const SearchResult = props => {
 		},
 	];
 
+	const onTableChange = page => {
+		// console.log(page);
+		const { current = 1, pageSize = 10 } = page;
+		if (getEmployeeList) {
+			getEmployeeList({ current, pageSize });
+		}
+	};
+
 	return (
 		<div className={styles['table-content']}>
 			<Table
+				onChange={onTableChange}
 				rowKey="employeeId"
 				loading={loading.effects['employee/getEmployeeList']}
 				dataSource={data}
