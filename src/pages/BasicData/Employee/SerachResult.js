@@ -1,10 +1,17 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
-import { Table, Divider } from 'antd';
+import { Table, Divider, Modal, message } from 'antd';
 import styles from './Employee.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 const SearchResult = props => {
-	const { data = [], pagination = {}, loading = false, goToPath = null } = props;
+	const {
+		data = [],
+		pagination = {},
+		loading = false,
+		goToPath = null,
+		deleteEmployee = null,
+	} = props;
 
 	const viewDetail = record => {
 		const { employeeId = null } = record;
@@ -20,8 +27,24 @@ const SearchResult = props => {
 		console.log(value);
 	};
 
-	const handleDelete = value => {
-		console.log(value);
+	const handleDelete = record => {
+		const { employeeId = '' } = record;
+		Modal.confirm({
+			title: formatMessage({ id: 'employee.info.delete' }),
+			content: formatMessage({ id: 'employee.info.delete.confirm' }),
+			okText: formatMessage({ id: 'btn.delete' }),
+			cancelText: formatMessage({ id: 'btn.cancel' }),
+			onOk: () => {
+				if (deleteEmployee && employeeId) {
+					const response = deleteEmployee({ employeeIdList: [employeeId] });
+					if (response && response === ERROR_OK) {
+						message.success(formatMessage({ id: 'employee.info.delete.success' }));
+					} else {
+						message.error(formatMessage({ id: 'employee.info.delete.failed' }));
+					}
+				}
+			},
+		});
 	};
 
 	const columns = [
@@ -56,7 +79,7 @@ const SearchResult = props => {
 		<div className={styles['table-content']}>
 			<Table
 				rowKey="employeeId"
-				loading={loading}
+				loading={loading.effects['employee/getEmployeeList']}
 				dataSource={data}
 				columns={columns}
 				pagination={{ ...pagination }}

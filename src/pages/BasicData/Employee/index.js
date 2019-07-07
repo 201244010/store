@@ -6,6 +6,7 @@ import SearchResult from './SerachResult';
 
 @connect(
 	state => ({
+		loading: state.loading,
 		employee: state.employee,
 	}),
 	dispatch => ({
@@ -16,6 +17,8 @@ import SearchResult from './SerachResult';
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
 		getEmployeeList: ({ current, pageSize }) =>
 			dispatch({ type: 'employee/getEmployeeList', payload: { current, pageSize } }),
+		deleteEmployee: ({ employeeIdList }) =>
+			dispatch({ type: 'employee/deleteEmployee', payload: { employeeIdList } }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
@@ -74,16 +77,16 @@ class EmployeeList extends Component {
 
 	render() {
 		const {
+			loading,
 			employee: { searchValue = {}, employeeList = [], pagination } = {},
 			setSearchValue,
 			clearSearchValue,
 			getEmployeeList,
+			deleteEmployee,
 			goToPath,
 		} = this.props;
 
 		const { orgnizationTree } = this.state;
-
-		// TODO 等待接口联调渲染页面
 		return (
 			<Card bordered={false}>
 				<SearchBar
@@ -98,8 +101,10 @@ class EmployeeList extends Component {
 				/>
 				<SearchResult
 					{...{
+						loading,
 						data: employeeList,
 						pagination,
+						deleteEmployee,
 						goToPath,
 					}}
 				/>

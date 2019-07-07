@@ -160,19 +160,28 @@ export default {
 			return response;
 		},
 
-		*deleteEmployee({ payload: { employeeIdList } = {} }, { call, put }) {
+		*deleteEmployee({ payload: { employeeIdList } = {} }, { select, call, put }) {
 			const response = yield call(
 				Action.handleEmployee,
 				'delete',
-				format('toSnake')(employeeIdList)
+				format('toSnake')({ employeeIdList })
 			);
 
 			if (response && response.code === ERROR_OK) {
+				const {
+					pagination: { current },
+					employeeList = [],
+				} = yield select(state => state.employee);
+
 				yield put({
 					type: 'getEmployeeList',
-					payload: {},
+					payload: {
+						current: employeeList.length === 1 && current > 1 ? current - 1 : current,
+					},
 				});
 			}
+
+			return response;
 		},
 	},
 	reducers: {
