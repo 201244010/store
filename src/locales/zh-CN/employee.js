@@ -23,4 +23,6 @@ export default {
 	'employee.info.delete.confirm': '请确认是否要删除员工',
 	'employee.info.delete.success': '员工删除成功',
 	'employee.info.delete.failed': '员工删除失败',
+	'employee.info.create.failed': '员工创建失败',
+	'employee.info.update.failed': '员工更新失败',
 };

@@ -1,7 +1,7 @@
 import * as Action from '@/services/employee';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
-import { format } from '@konata9/milk-shake';
+import { format, map } from '@konata9/milk-shake';
 
 export default {
 	namespace: 'employee',
@@ -68,10 +68,23 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { employeeList, totalCount } = format('toCamel')(data);
+
+				const fromattedList = employeeList
+					.map(employee =>
+						map([
+							{
+								from: 'organizationRoleMappingList',
+								to: 'mappingList',
+								rule: role => role.filter(r => r.id !== 0),
+							},
+						])(employee)
+					)
+					.map(e => ({ ...e, username: e.phone || e.email }));
+
 				yield put({
 					type: 'updateState',
 					payload: {
-						employeeList,
+						employeeList: fromattedList,
 						pagination: {
 							...pagination,
 							total: totalCount,
@@ -92,16 +105,29 @@ export default {
 
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
+				const formattedData = map([
+					{
+						from: 'organizationRoleMappingList',
+						to: 'mappingList',
+						rule: role => role.filter(d => d.roleId !== 0),
+					},
+				])(format('toCamel')(data));
+				const { phone = '', email = '' } = formattedData;
 				yield put({
 					type: 'updateState',
-					payload: { employeeInfo: format('toCamel')(data) },
+					payload: {
+						employeeInfo: {
+							...formattedData,
+							username: phone || email,
+						},
+					},
 				});
 			}
 		},
 
 		*createEmployee(
 			{ payload: { name, number, username, gender, ssoUsername, mappingList } = {} },
-			{ call, put }
+			{ call }
 		) {
 			const response = yield call(
 				Action.handleEmployee,
@@ -116,27 +142,12 @@ export default {
 				})
 			);
 
-			if (response && response.code === ERROR_OK) {
-				yield put({
-					type: 'updateState',
-					payload: {},
-				});
-			}
 			return response;
 		},
 
 		*updateEmployee(
-			{
-				payload: {
-					employeeId,
-					name,
-					number,
-					username,
-					gender,
-					organizationRoleMappingList,
-				} = {},
-			},
-			{ call, put }
+			{ payload: { employeeId, name, number, username, gender, mappingList } = {} },
+			{ call }
 		) {
 			const response = yield call(
 				Action.handleEmployee,
@@ -147,16 +158,10 @@ export default {
 					number,
 					username,
 					gender,
-					organizationRoleMappingList,
+					mappingList,
 				})
 			);
 
-			if (response && response.code === ERROR_OK) {
-				yield put({
-					type: 'updateState',
-					payload: {},
-				});
-			}
 			return response;
 		},
 

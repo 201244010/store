@@ -23,8 +23,15 @@ const SearchResult = props => {
 		}
 	};
 
-	const alterDetail = value => {
-		console.log(value);
+	const alterDetail = record => {
+		const { employeeId = null } = record;
+		if (employeeId) {
+			goToPath('employeeUpdate', {
+				employeeId,
+				action: 'edit',
+				from: 'list',
+			});
+		}
 	};
 
 	const handleDelete = record => {
@@ -34,10 +41,10 @@ const SearchResult = props => {
 			content: formatMessage({ id: 'employee.info.delete.confirm' }),
 			okText: formatMessage({ id: 'btn.delete' }),
 			cancelText: formatMessage({ id: 'btn.cancel' }),
-			onOk: () => {
+			onOk: async () => {
 				if (deleteEmployee && employeeId) {
-					const response = deleteEmployee({ employeeIdList: [employeeId] });
-					if (response && response === ERROR_OK) {
+					const response = await deleteEmployee({ employeeIdList: [employeeId] });
+					if (response && response.code === ERROR_OK) {
 						message.success(formatMessage({ id: 'employee.info.delete.success' }));
 					} else {
 						message.error(formatMessage({ id: 'employee.info.delete.failed' }));

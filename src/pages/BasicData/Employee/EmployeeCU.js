@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { Card, Form, Input, Button, Radio } from 'antd';
+import { Card, Form, Input, Button, Radio, message } from 'antd';
 import OrgnizationSelect from './OrgnizationSelect';
 import { getLocationParam } from '@/utils/utils';
 import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
+import { ERROR_OK } from '@/constants/errorCode';
 
 @connect(
 	state => ({
@@ -89,7 +90,39 @@ class EmployeeCU extends Component {
 		});
 	};
 
+	decodeMappingList = mappingList => {
+		// console.log(mappingList);
+		const orgnizationMap = new Map();
+		mappingList.forEach(item => {
+			const { companyId = null, shopId = null, roleId = null } = item;
+			const orgnizationKey =
+				shopId === 0 || !shopId ? `${companyId}` : `${companyId}-${shopId}`;
+
+			if (orgnizationMap.has(orgnizationKey)) {
+				const { roleList = [] } = orgnizationMap.get(orgnizationKey);
+				orgnizationMap.set(orgnizationKey, {
+					roleList: [...roleList, roleId],
+				});
+			} else {
+				orgnizationMap.set(orgnizationKey, {
+					roleList: [roleId],
+				});
+			}
+		});
+
+		const result = [...orgnizationMap.keys()].map(key => {
+			const { roleList = [] } = orgnizationMap.get(key);
+			return {
+				orgnization: key,
+				role: roleList,
+			};
+		});
+		// console.log(result);
+		return result;
+	};
+
 	formatMappingList = mappingList => {
+		// console.log('in format map:', mappingList);
 		const formattedList = Object.keys(mappingList)
 			.map(key => {
 				const { orgnization = '', role = [] } = mappingList[key];
@@ -113,22 +146,33 @@ class EmployeeCU extends Component {
 			goToPath,
 		} = this.props;
 
-		validateFields((err, values) => {
+		validateFields(async (err, values) => {
 			if (!err) {
 				const { mappingList = [] } = values;
 				if (this.action === 'edit' && this.employeeId) {
-					updateEmployee({
+					const response = await updateEmployee({
 						employeeId: this.employeeId,
 						...values,
 						mappingList: this.formatMappingList(mappingList),
 					});
+					if (response && response.code === ERROR_OK) {
+						if (this.from === 'detail' && this.employeeId) {
+							goToPath('employeeInfo', { employeeId: this.employeeId });
+						} else {
+							goToPath('employeeList');
+						}
+					} else {
+						message.error(formatMessage({ id: 'employee.info.update.failed' }));
+					}
 				} else {
-					const response = createEmployee({
+					const response = await createEmployee({
 						...values,
 						mappingList: this.formatMappingList(mappingList),
 					});
 					if (response && response.code === ERROR_OK) {
 						goToPath('employeeList');
+					} else {
+						message.error(formatMessage({ id: 'employee.info.create.failed' }));
 					}
 				}
 			}
@@ -139,6 +183,8 @@ class EmployeeCU extends Component {
 		const { goToPath } = this.props;
 		if (this.from === 'list' || !this.from) {
 			goToPath('employeeList');
+		} else if (this.employeeId) {
+			goToPath('employeeInfo', { employeeId: this.employeeId });
 		}
 	};
 
@@ -159,9 +205,14 @@ class EmployeeCU extends Component {
 			} = {},
 		} = this.props;
 		const { orgnizationTree } = this.state;
+		let decodedMapList = [];
+		// console.log(mappingList);
+		if (this.action === 'edit') {
+			decodedMapList = this.decodeMappingList(mappingList);
+		}
 
 		return (
-			<Card bordered={false}>
+			<Card bordered={false} loading={loading.effects['employee/getEmployeeInfo']}>
 				<h3>
 					{this.action === 'create'
 						? formatMessage({ id: 'employee.create' })
@@ -170,7 +221,7 @@ class EmployeeCU extends Component {
 				<Form {...HEAD_FORM_ITEM_LAYOUT}>
 					<Form.Item label={formatMessage({ id: 'employee.number' })}>
 						{getFieldDecorator('number', {
-							initialValue: number,
+							initialValue: this.action === 'edit' ? number : '',
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -182,7 +233,7 @@ class EmployeeCU extends Component {
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.name' })}>
 						{getFieldDecorator('name', {
-							initialValue: name,
+							initialValue: this.action === 'edit' ? name : '',
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -194,7 +245,7 @@ class EmployeeCU extends Component {
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.gender' })}>
 						{getFieldDecorator('gender', {
-							initialValue: gender,
+							initialValue: this.action === 'edit' ? gender : '',
 						})(
 							<Radio.Group>
 								<Radio value={1}>
@@ -208,7 +259,7 @@ class EmployeeCU extends Component {
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.phone.or.email' })}>
 						{getFieldDecorator('username', {
-							initialValue: username,
+							initialValue: this.action === 'edit' ? username : '',
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -222,7 +273,7 @@ class EmployeeCU extends Component {
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.sso.account' })}>
 						{getFieldDecorator('ssoUsername', {
-							initialValue: ssoUsername,
+							initialValue: this.action === 'edit' ? ssoUsername : '',
 						})(<Input />)}
 					</Form.Item>
 					<Form.Item
@@ -231,7 +282,7 @@ class EmployeeCU extends Component {
 						wrapperCol={{ md: { span: 16 }, xxl: { span: 12 } }}
 					>
 						{getFieldDecorator('mappingList', {
-							initialValue: mappingList,
+							initialValue: this.action === 'edit' ? decodedMapList : [],
 						})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList }} />)}
 					</Form.Item>
 					<Form.Item label=" " colon={false}>

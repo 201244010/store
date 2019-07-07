@@ -13,6 +13,7 @@ const GENDER_MAP = {
 
 @connect(
 	state => ({
+		loading: state.loading,
 		employee: state.employee,
 	}),
 	dispatch => ({
@@ -67,7 +68,11 @@ class EmployeeInfo extends Component {
 	goToPath = target => {
 		const { goToPath } = this.props;
 		if (target === 'edit') {
-			goToPath('employeeUpdate', { employeeId: this.employeeId });
+			goToPath('employeeUpdate', {
+				employeeId: this.employeeId,
+				from: 'detail',
+				action: 'edit',
+			});
 		} else if (target === 'back') {
 			goToPath('employeeList');
 		}
@@ -75,6 +80,7 @@ class EmployeeInfo extends Component {
 
 	render() {
 		const {
+			loading,
 			employee: {
 				employeeInfo: {
 					name = '--',
@@ -90,10 +96,10 @@ class EmployeeInfo extends Component {
 		} = this.props;
 
 		const mappedList = this.formatMappingList(organizationRoleMappingList);
-		console.log(mappedList);
+		// console.log(mappedList);
 
 		return (
-			<Card bordered={false}>
+			<Card bordered={false} loading={loading.effects['employee/getEmployeeInfo']}>
 				<h3>{formatMessage({ id: 'employee.info' })}</h3>
 				<Form {...FORM_ITEM_DETAIL}>
 					<Form.Item label={formatMessage({ id: 'employee.number' })}>
@@ -115,6 +121,12 @@ class EmployeeInfo extends Component {
 					<Form.Item label={formatMessage({ id: 'employee.sso.account' })}>
 						<span>{ssoUsername || '--'}</span>
 					</Form.Item>
+
+					{mappedList.length === 0 && (
+						<Form.Item label={formatMessage({ id: 'employee.orgnization' })}>
+							<span>--</span>
+						</Form.Item>
+					)}
 
 					{mappedList.map((item, index) => (
 						<Form.Item
