@@ -26,6 +26,43 @@ const FormItem = Form.Item;
 )
 @Form.create()
 class EmployeeTable extends Component {
+	constructor(props) {
+		super(props);
+		this.columns = [
+			{
+				title: formatMessage({ id: 'roleManagement.role.companyNumber' }),
+				dataIndex: 'number',
+			},
+			{
+				title: formatMessage({ id: 'roleManagement.role.name' }),
+				dataIndex: 'name',
+			},
+			{
+				title: formatMessage({ id: 'roleManagement.role.gender' }),
+				dataIndex: 'gender',
+				render: gender =>
+					gender === 1
+						? formatMessage({ id: 'employee.gender.male' })
+						: formatMessage({ id: 'employee.gender.female' }),
+			},
+			{
+				title: formatMessage({ id: 'roleManagement.role.employeePhone' }),
+				dataIndex: 'phone',
+			},
+			{
+				title: formatMessage({ id: 'roleManagement.role.authorName' }),
+				render: (_, record) => (
+					<span>{`${record.ssoUsername}(${record.phone || record.email || '--'})`}</span>
+				),
+			},
+			{
+				title: formatMessage({ id: 'roleManagement.role.authTime' }),
+				dataIndex: 'createTime',
+				render: createTime => moment.unix(createTime).format('YYYY-MM-DD HH:mm:ss') || '--',
+			},
+		];
+	}
+
 	componentDidMount() {
 		const { getEmployeeList } = this.props;
 		getEmployeeList({});
@@ -88,40 +125,6 @@ class EmployeeTable extends Component {
 			loading,
 		} = this.props;
 
-		const columns = [
-			{
-				title: formatMessage({ id: 'roleManagement.role.companyNumber' }),
-				dataIndex: 'number',
-			},
-			{
-				title: formatMessage({ id: 'roleManagement.role.name' }),
-				dataIndex: 'name',
-			},
-			{
-				title: formatMessage({ id: 'roleManagement.role.gender' }),
-				dataIndex: 'gender',
-				render: gender =>
-					gender === 1
-						? formatMessage({ id: 'employee.gender.male' })
-						: formatMessage({ id: 'employee.gender.female' }),
-			},
-			{
-				title: formatMessage({ id: 'roleManagement.role.employeePhone' }),
-				dataIndex: 'phone',
-			},
-			{
-				title: formatMessage({ id: 'roleManagement.role.authorName' }),
-				render: (_, record) => (
-					<span>{`${record.ssoUsername}(${record.phone || record.email || '--'})`}</span>
-				),
-			},
-			{
-				title: formatMessage({ id: 'roleManagement.role.authTime' }),
-				dataIndex: 'createTime',
-				render: createTime => moment.unix(createTime).format('YYYY-MM-DD HH:mm:ss') || '--',
-			},
-		];
-
 		return (
 			<Card bordered={false}>
 				<div className={styles['role-title']}>
@@ -169,7 +172,7 @@ class EmployeeTable extends Component {
 					<Table
 						rowKey="shop_id"
 						dataSource={employeeList}
-						columns={columns}
+						columns={this.columns}
 						loading={loading.effects['employee/getEmployeeList']}
 						pagination={pagination}
 						onChange={this.onTableChange}
