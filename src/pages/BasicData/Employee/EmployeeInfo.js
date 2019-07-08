@@ -137,7 +137,8 @@ class EmployeeInfo extends Component {
 							colon={index === 0}
 						>
 							<span>{item.companyName}</span>
-							<span>{item.shopName}</span>
+							<span>{item.shopName ? `(${item.shopName})` : null}</span>
+							<span> - </span>
 							<span>{item.roleName}</span>
 						</Form.Item>
 					))}

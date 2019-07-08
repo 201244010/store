@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
-import { Table, Divider, Modal, message } from 'antd';
+import { Table, Divider, Modal, message, Popover } from 'antd';
 import styles from './Employee.less';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -39,7 +39,6 @@ const SearchResult = props => {
 		const { employeeId = '' } = record;
 		Modal.confirm({
 			title: formatMessage({ id: 'employee.info.delete' }),
-			content: formatMessage({ id: 'employee.info.delete.confirm' }),
 			okText: formatMessage({ id: 'btn.delete' }),
 			cancelText: formatMessage({ id: 'btn.cancel' }),
 			onOk: async () => {
@@ -55,11 +54,58 @@ const SearchResult = props => {
 		});
 	};
 
+	const listRole = list => (
+		<>
+			{list.map((role, index) => {
+				const { companyName = null, shopName = null, roleName = null } = role || {};
+
+				return (
+					<div key={index}>
+						<span>{companyName}</span>
+						<span>{shopName ? `(${shopName})` : null} </span>
+						<span> - </span>
+						<span>{roleName}</span>
+					</div>
+				);
+			})}
+		</>
+	);
+
 	const columns = [
 		{ title: formatMessage({ id: 'employee.number' }), dataIndex: 'number' },
 		{ title: formatMessage({ id: 'employee.name' }), dataIndex: 'name' },
 		{ title: formatMessage({ id: 'employee.gender' }), dataIndex: 'gender' },
-		{ title: formatMessage({ id: 'employee.orgnization' }), dataIndex: 'employeeOrgnization' },
+		{
+			title: formatMessage({ id: 'employee.orgnization' }),
+			dataIndex: 'mappingList',
+			render: list => {
+				const [first, ...rest] = list.filter(role => role.roleId !== 0) || [];
+				const { companyName = null, shopName = null, roleName = null } = first || {};
+				return (
+					<>
+						{first && (
+							<>
+								<span>{companyName}</span>
+								<span>{shopName ? `(${shopName})` : null} </span>
+								<span> - </span>
+								<span>{roleName}</span>
+
+								{rest.length > 0 && (
+									<Popover content={listRole(rest)} title={null}>
+										<a
+											href="javascript:void(0);"
+											style={{ marginLeft: '10px' }}
+										>
+											{formatMessage({ id: 'list.action.more' })}
+										</a>
+									</Popover>
+								)}
+							</>
+						)}
+					</>
+				);
+			},
+		},
 		{ title: formatMessage({ id: 'employee.phone' }), dataIndex: 'username' },
 		{ title: formatMessage({ id: 'employee.sso.account' }), dataIndex: 'ssoUsername' },
 		{
