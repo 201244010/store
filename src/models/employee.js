@@ -52,11 +52,14 @@ export default {
 
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { searchValue, pagination } = yield select(state => state.employee);
-			const { current = 1, pageSize = 10 } = payload;
+			const { current = 1, pageSize = 10, name = '', number = '', username = '' } = payload;
 			const options = {
 				...searchValue,
 				pageNum: current,
 				pageSize,
+				name,
+				number,
+				username
 			};
 
 			const response = yield call(
