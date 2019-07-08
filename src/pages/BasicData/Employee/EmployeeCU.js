@@ -283,6 +283,17 @@ class EmployeeCU extends Component {
 										id: 'employee.phone.or.email.isEmpty',
 									}),
 								},
+								{
+									validator: (rule, value, callback) => {
+										if (!/^\d{11}$/.test(value)) {
+											callback(
+												formatMessage({ id: 'employee.phone.formatError' })
+											);
+										} else {
+											callback();
+										}
+									},
+								},
 							],
 						})(<Input />)}
 					</Form.Item>
