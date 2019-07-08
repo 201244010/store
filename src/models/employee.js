@@ -125,6 +125,16 @@ export default {
 			}
 		},
 
+		*checkSsoBinded({ payload: { ssoUsername = '' } = {} }, { call }) {
+			const response = yield call(
+				Action.handleEmployee,
+				'isSsoUsernameBinded',
+				format('toSnake')({ ssoUsername })
+			);
+
+			return response;
+		},
+
 		*createEmployee(
 			{ payload: { name, number, username, gender, ssoUsername, mappingList } = {} },
 			{ call }

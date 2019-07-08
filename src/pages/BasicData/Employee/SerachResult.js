@@ -47,7 +47,11 @@ const SearchResult = props => {
 					if (response && response.code === ERROR_OK) {
 						message.success(formatMessage({ id: 'employee.info.delete.success' }));
 					} else {
-						message.error(formatMessage({ id: 'employee.info.delete.failed' }));
+						Modal.error({
+							title: formatMessage({ id: 'employee.info.delete.failed' }),
+							okText: formatMessage({ id: 'btn.confirm' }),
+							content: formatMessage({ id: 'employee.info.delete.failed.reason' }),
+						});
 					}
 				}
 			},
@@ -91,7 +95,11 @@ const SearchResult = props => {
 								<span>{roleName}</span>
 
 								{rest.length > 0 && (
-									<Popover content={listRole(rest)} title={null}>
+									<Popover
+										placement="rightTop"
+										content={listRole(rest)}
+										title={null}
+									>
 										<a
 											href="javascript:void(0);"
 											style={{ marginLeft: '10px' }}

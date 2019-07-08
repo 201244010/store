@@ -20,7 +20,7 @@ const SearchBar = ({
 		if (field === 'shopIdList') {
 			const [, id = null] = `${value}`.split('-');
 			setSearchValue({
-				[field]: [id],
+				[field]: id ? [id] : [],
 			});
 		} else {
 			setSearchValue({
@@ -45,7 +45,9 @@ const SearchBar = ({
 					<Col {...COL_THREE_NORMAL}>
 						<Form.Item label={formatMessage({ id: 'employee.orgnization' })}>
 							<TreeSelect
-								value={shopId ? `${currentCompanyId}-${shopId}` : null}
+								value={
+									shopId ? `${currentCompanyId}-${shopId}` : `${currentCompanyId}`
+								}
 								treeDefaultExpandAll
 								treeData={orgnizationTree}
 								onChange={(value, label, extra) =>
