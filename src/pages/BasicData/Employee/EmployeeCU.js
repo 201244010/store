@@ -17,6 +17,8 @@ import { ERROR_OK } from '@/constants/errorCode';
 		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
 		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
+		checkSsoBinded: ({ ssoUsername }) =>
+			dispatch({ type: 'employee/checkSsoBinded', payload: { ssoUsername } }),
 		getEmployeeInfo: ({ employeeId }) =>
 			dispatch({ type: 'employee/getEmployeeInfo', payload: { employeeId } }),
 		createEmployee: ({ name, number, username, gender, ssoUsername, mappingList }) =>
@@ -140,7 +142,8 @@ class EmployeeCU extends Component {
 
 	handleSubmit = () => {
 		const {
-			form: { validateFields },
+			form: { validateFields, setFields },
+			checkSsoBinded,
 			createEmployee,
 			updateEmployee,
 			goToPath,
@@ -165,6 +168,18 @@ class EmployeeCU extends Component {
 						message.error(formatMessage({ id: 'employee.info.update.failed' }));
 					}
 				} else {
+					const { username } = values;
+					const checkResponse = await checkSsoBinded({ ssoUsername: username });
+					if (checkResponse !== ERROR_OK) {
+						setFields({
+							username: {
+								value: username,
+								errors: [new Error(formatMessage({ id: 'employee.sso.binded' }))],
+							},
+						});
+						return;
+					}
+
 					const response = await createEmployee({
 						...values,
 						mappingList: this.formatMappingList(mappingList),

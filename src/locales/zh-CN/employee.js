@@ -10,6 +10,7 @@ export default {
 	'employee.gender.male': '男',
 	'employee.gender.female': '女',
 	'employee.sso.account': '商米账号',
+	'employee.sso.binded': '账号已存在',
 	'employee.phone': '手机号码',
 	'employee.create': '新建员工',
 	'employee.alter': '修改员工',
