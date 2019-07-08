@@ -1,8 +1,8 @@
-import { message } from 'antd';
-import { formatMessage } from 'umi/locale';
+// import { message } from 'antd';
+// import { formatMessage } from 'umi/locale';
 import CONFIG from '@/config';
 import { cbcEncryption, idDecode, md5Encryption } from '@/utils/utils';
-import { ALERT_NOTICE_MAP, ERROR_OK, USER_NOT_LOGIN } from '@/constants/errorCode';
+import { USER_NOT_LOGIN } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
 import router from 'umi/router';
 
@@ -139,13 +139,13 @@ export const customizeFetch = (service = 'api', base) => {
 			unAuthHandler();
 		}
 
-		if (result.code !== ERROR_OK) {
-			if (ALERT_NOTICE_MAP[result.code]) {
-				message.error(formatMessage({ id: ALERT_NOTICE_MAP[result.code] }));
-			} else {
-				// message.error('操作错误');
-			}
-		}
+		// if (result.code !== ERROR_OK) {
+		// 	if (ALERT_NOTICE_MAP[result.code]) {
+		// 		message.error(formatMessage({ id: ALERT_NOTICE_MAP[result.code] }));
+		// 	} else {
+		// 		// message.error('操作错误');
+		// 	}
+		// }
 
 		return response;
 	};
