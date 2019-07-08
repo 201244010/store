@@ -22,7 +22,8 @@ export default {
 	'employee.info.delete': '确定要删除该员工？',
 	'employee.info.delete.confirm': '请确认是否要删除员工',
 	'employee.info.delete.success': '员工删除成功',
-	'employee.info.delete.failed': '员工删除失败',
+	'employee.info.delete.failed': '无法删除员工',
+	'employee.info.delete.failed.reason': '超级管理员角色无法删除',
 	'employee.info.create.failed': '员工创建失败',
 	'employee.info.update.failed': '员工更新失败',
 };
