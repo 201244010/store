@@ -6,6 +6,7 @@ import SearchResult from './SerachResult';
 
 @connect(
 	state => ({
+		loading: state.loading,
 		employee: state.employee,
 	}),
 	dispatch => ({
@@ -14,7 +15,10 @@ import SearchResult from './SerachResult';
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
 		setSearchValue: payload => dispatch({ type: 'employee/setSearchValue', payload }),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
-		getEmployeeList: () => dispatch({ type: 'employee/getEmployeeList' }),
+		getEmployeeList: ({ current = 1, pageSize = 10 }) =>
+			dispatch({ type: 'employee/getEmployeeList', payload: { current, pageSize } }),
+		deleteEmployee: ({ employeeIdList }) =>
+			dispatch({ type: 'employee/deleteEmployee', payload: { employeeIdList } }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
@@ -24,14 +28,17 @@ class EmployeeList extends Component {
 		super(props);
 		this.state = {
 			orgnizationTree: [],
+			currentCompanyId: null,
 		};
 	}
 
 	componentDidMount() {
-		// const { getEmployeeList } = this.props;
-		// getEmployeeList();
-
 		this.createOrgnizationTree();
+		const { getEmployeeList } = this.props;
+		getEmployeeList({
+			current: 1,
+			pageSize: 10,
+		});
 	}
 
 	componentWillUnmount() {
@@ -66,25 +73,27 @@ class EmployeeList extends Component {
 		];
 		this.setState({
 			orgnizationTree,
+			currentCompanyId,
 		});
 	};
 
 	render() {
 		const {
-			employee: { searchValue = {}, employeeList = [] } = {},
+			loading,
+			employee: { searchValue = {}, employeeList = [], pagination } = {},
 			setSearchValue,
 			clearSearchValue,
 			getEmployeeList,
+			deleteEmployee,
 			goToPath,
 		} = this.props;
 
-		const { orgnizationTree } = this.state;
-
-		// TODO 等待接口联调渲染页面
+		const { orgnizationTree, currentCompanyId } = this.state;
 		return (
 			<Card bordered={false}>
 				<SearchBar
 					{...{
+						currentCompanyId,
 						orgnizationTree,
 						searchValue,
 						setSearchValue,
@@ -95,7 +104,12 @@ class EmployeeList extends Component {
 				/>
 				<SearchResult
 					{...{
+						loading,
 						data: employeeList,
+						pagination,
+						deleteEmployee,
+						goToPath,
+						getEmployeeList,
 					}}
 				/>
 			</Card>

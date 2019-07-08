@@ -62,6 +62,7 @@ export default {
 	'menu.basicData.employeeManagement.employeeList': '员工列表',
 	'menu.basicData.employeeManagement.list': '员工列表',
 	'menu.basicData.employeeManagement.employeeInfo': '员工详情',
+	'menu.basicData.employeeManagement.info': '员工详情',
 	'menu.basicData.employeeManagement.employeeCreate': '新建员工',
 	'menu.basicData.employeeManagement.create': '新建员工',
 	'menu.basicData.employeeManagement.employeeUpdate': '修改员工',

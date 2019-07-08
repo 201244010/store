@@ -1,7 +1,7 @@
 import * as Action from '@/services/employee';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
-import { format } from '@konata9/milk-shake';
+import { format, map } from '@konata9/milk-shake';
 
 export default {
 	namespace: 'employee',
@@ -66,12 +66,28 @@ export default {
 			);
 
 			if (response && response.code === ERROR_OK) {
-				// TODO 处理员工列表返回
+				const { data = {} } = response;
+				const { employeeList, totalCount } = format('toCamel')(data);
+
+				const fromattedList = employeeList
+					.map(employee =>
+						map([
+							{
+								from: 'organizationRoleMappingList',
+								to: 'mappingList',
+								rule: role => role.filter(r => r.id !== 0),
+							},
+						])(employee)
+					)
+					.map(e => ({ ...e, username: e.phone || e.email }));
+
 				yield put({
 					type: 'updateState',
 					payload: {
+						employeeList: fromattedList,
 						pagination: {
 							...pagination,
+							total: totalCount,
 							current,
 							pageSize,
 						},
@@ -88,26 +104,30 @@ export default {
 			);
 
 			if (response && response.code === ERROR_OK) {
-				// TODO 处理员工详情
+				const { data = {} } = response;
+				const formattedData = map([
+					{
+						from: 'organizationRoleMappingList',
+						to: 'mappingList',
+						rule: role => role.filter(d => d.roleId !== 0),
+					},
+				])(format('toCamel')(data));
+				const { phone = '', email = '' } = formattedData;
 				yield put({
 					type: 'updateState',
-					payload: {},
+					payload: {
+						employeeInfo: {
+							...formattedData,
+							username: phone || email,
+						},
+					},
 				});
 			}
 		},
 
 		*createEmployee(
-			{
-				payload: {
-					name,
-					number,
-					username,
-					gender,
-					ssoUsername,
-					organizationRoleMappingList,
-				} = {},
-			},
-			{ call, put }
+			{ payload: { name, number, username, gender, ssoUsername, mappingList } = {} },
+			{ call }
 		) {
 			const response = yield call(
 				Action.handleEmployee,
@@ -118,31 +138,16 @@ export default {
 					username,
 					gender,
 					ssoUsername,
-					organizationRoleMappingList,
+					mappingList,
 				})
 			);
 
-			if (response && response.code === ERROR_OK) {
-				// TODO 处理创建员工的返回值
-				yield put({
-					type: 'updateState',
-					payload: {},
-				});
-			}
+			return response;
 		},
 
 		*updateEmployee(
-			{
-				payload: {
-					employeeId,
-					name,
-					number,
-					username,
-					gender,
-					organizationRoleMappingList,
-				} = {},
-			},
-			{ call, put }
+			{ payload: { employeeId, name, number, username, gender, mappingList } = {} },
+			{ call }
 		) {
 			const response = yield call(
 				Action.handleEmployee,
@@ -153,33 +158,35 @@ export default {
 					number,
 					username,
 					gender,
-					organizationRoleMappingList,
+					mappingList,
 				})
 			);
 
-			if (response && response.code === ERROR_OK) {
-				// TODO 更新员工的处理逻辑
-				yield put({
-					type: 'updateState',
-					payload: {},
-				});
-			}
+			return response;
 		},
 
-		*deleteEmployee({ payload: { employeeIdList } = {} }, { call, put }) {
+		*deleteEmployee({ payload: { employeeIdList } = {} }, { select, call, put }) {
 			const response = yield call(
 				Action.handleEmployee,
 				'delete',
-				format('toSnake')(employeeIdList)
+				format('toSnake')({ employeeIdList })
 			);
 
 			if (response && response.code === ERROR_OK) {
-				// TODO 删除员工处理逻辑
+				const {
+					pagination: { current },
+					employeeList = [],
+				} = yield select(state => state.employee);
+
 				yield put({
-					type: 'updateState',
-					payload: {},
+					type: 'getEmployeeList',
+					payload: {
+						current: employeeList.length === 1 && current > 1 ? current - 1 : current,
+					},
 				});
 			}
+
+			return response;
 		},
 	},
 	reducers: {
