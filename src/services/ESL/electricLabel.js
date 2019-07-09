@@ -86,3 +86,11 @@ export const refreshFailedImage = () => {
 	};
 	return fetchApi('repushFailedImage', opts).then(response => response.json());
 };
+
+export const setScanTiem = options => {
+	const opts = {
+		method: 'POST',
+		body: options,
+	};
+	return fetchApi('setScanTime', opts).then(response => response.json());
+};

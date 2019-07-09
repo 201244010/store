@@ -191,6 +191,12 @@ const router = [
 							},
 						],
 					},
+					{
+						path: '/esl/systemConfig',
+						name: 'systemConfig',
+						id: 'systemConfig',
+						component: './DeviceManagement/ESL/SystemConfig',
+					},
 					{ path: '/esl', redirect: '/esl/electricLabel' },
 				],
 			},

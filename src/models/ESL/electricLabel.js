@@ -347,6 +347,24 @@ export default {
 			});
 		},
 
+		*setScanTime({ payload = {} }, { call, put }) {
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+
+			const { options = {} } = payload;
+			const response = yield call(ESLServices.setScanTiem, options);
+			if (response.code === ERROR_OK) {
+				message.success(formatMessage({ id: 'esl.device.esl.set.scan.success' }));
+			}
+
+			yield put({
+				type: 'updateState',
+				payload: { loading: false },
+			});
+		},
+
 		*clearSearchValue(_, { put }) {
 			yield put({
 				type: 'updateState',
