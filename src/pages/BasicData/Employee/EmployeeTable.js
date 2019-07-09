@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Table, Form, Input, Button, Row, Col, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
+import { idDecode } from '@/utils/utils';
 import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
 import moment from 'moment';
 import styles from './Employee.less';
@@ -16,10 +17,10 @@ const FormItem = Form.Item;
 		employee: state.employee,
 	}),
 	dispatch => ({
-		getEmployeeList: ({ current = 1, pageSize = 10, name, number, username }) =>
+		getEmployeeList: ({ current = 1, pageSize = 10, name, number, username, roleId }) =>
 			dispatch({
 				type: 'employee/getEmployeeList',
-				payload: { current, pageSize, name, number, username },
+				payload: { current, pageSize, name, number, username, roleId },
 			}),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
 	})
@@ -64,14 +65,18 @@ class EmployeeTable extends Component {
 	}
 
 	componentDidMount() {
-		const { getEmployeeList } = this.props;
-		getEmployeeList({});
+		const {
+			getEmployeeList,
+			query: { roleId },
+		} = this.props;
+		getEmployeeList({ roleId: idDecode(roleId) });
 	}
 
 	handleSubmit = () => {
 		const {
 			form: { validateFields },
 			getEmployeeList,
+			query: { roleId },
 		} = this.props;
 		validateFields(async (err, values) => {
 			if (!err) {
@@ -80,6 +85,7 @@ class EmployeeTable extends Component {
 					name,
 					number,
 					username,
+					roleId: idDecode(roleId),
 				};
 				const response = await getEmployeeList(payload);
 				if (response && response.code !== ERROR_OK) {
@@ -101,19 +107,27 @@ class EmployeeTable extends Component {
 	};
 
 	handleReset = async () => {
-		const { form, clearSearchValue, getEmployeeList } = this.props;
+		const {
+			form,
+			clearSearchValue,
+			getEmployeeList,
+			query: { roleId },
+		} = this.props;
 		if (form) {
 			form.resetFields();
 		}
 		await clearSearchValue();
-		await getEmployeeList({});
+		await getEmployeeList({ roleId: idDecode(roleId) });
 	};
 
 	onTableChange = page => {
-		const {getEmployeeList} = this.props;
+		const {
+			getEmployeeList,
+			query: { roleId },
+		} = this.props;
 		const { current = 1, pageSize = 10 } = page;
 		if (getEmployeeList) {
-			getEmployeeList({ current, pageSize });
+			getEmployeeList({ current, pageSize, roleId: idDecode(roleId) });
 		}
 	};
 
@@ -121,7 +135,7 @@ class EmployeeTable extends Component {
 		const {
 			form: { getFieldDecorator },
 			query: { role },
-			employee: { employeeList , pagination},
+			employee: { employeeList, pagination },
 			loading,
 		} = this.props;
 
