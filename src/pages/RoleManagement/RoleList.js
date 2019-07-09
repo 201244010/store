@@ -220,6 +220,7 @@ class RoleList extends React.Component {
 				pathId: 'employeeTable',
 				urlParams: {
 					role: rowDetail.name,
+					roleId: encodeID
 				},
 			},
 		};
