@@ -67,6 +67,9 @@ class OrgnizationSelect extends Component {
 							<TreeSelect
 								treeDefaultExpandAll
 								value={item.orgnization}
+								placeholder={formatMessage({
+									id: 'employee.info.select.orgnizaion',
+								})}
 								treeData={orgnizationTree}
 								onChange={value => this.handleTreeChange(item, index, value)}
 							/>
@@ -75,6 +78,7 @@ class OrgnizationSelect extends Component {
 							<Select
 								mode="multiple"
 								value={item.role}
+								placeholder={formatMessage({ id: 'employee.info.select.role' })}
 								onChange={value => this.handleSelectChange(item, index, value)}
 							>
 								{roleSelectList.map((role, i) => (

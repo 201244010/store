@@ -22,6 +22,8 @@ export default {
 	'employee.info.create.time': '创建时间',
 	'employee.info.update.time': '更新时间',
 	'employee.info.currentRole': '当前角色：',
+	'employee.info.select.role': '请选择角色',
+	'employee.info.select.orgnizaion': '请选择组织',
 
 	'employee.info.delete': '确定要删除该员工？',
 	'employee.info.delete.confirm': '请确认是否要删除员工',
