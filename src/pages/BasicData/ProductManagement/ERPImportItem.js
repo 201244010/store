@@ -396,7 +396,7 @@ export const HJ = props => {
 					<span>{saasShopKey}</span>
 				) : (
 					<>
-						{getFieldDecorator('saas_info.store_id', {
+						{getFieldDecorator('saas_info.saas_shop_key', {
 							initialValue: saasShopKey,
 							validateTrigger: 'onBlur',
 							rules: [

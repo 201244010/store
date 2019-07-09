@@ -41,6 +41,7 @@ export default {
 			showQuickJumper: true,
 		},
 		roleList: [],
+		roleSelectList: [],
 		roleInfo: {
 			name: '',
 			permissionList: [],
@@ -49,6 +50,25 @@ export default {
 		userPermissionList: Storage.get(USER_PERMISSION_LIST, 'local') || [],
 	},
 	effects: {
+		*getAllRoles(_, { put, call }) {
+			const response = yield call(Actions.handleRoleManagement, 'getList', {
+				page_num: 1,
+				page_size: 999,
+			});
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { roleList } = format('toCamel')(data);
+				yield put({
+					type: 'updateState',
+					payload: {
+						roleSelectList: roleList
+							.filter(role => !role.isDefault)
+							.map(role => ({ id: role.id, name: role.name })),
+					},
+				});
+			}
+		},
+
 		*getRoleList({ payload = {} }, { put, call, select }) {
 			const { pagination } = yield select(state => state.role);
 			const { keyword, current, pageSize } = payload;
@@ -92,7 +112,7 @@ export default {
 						{
 							checkedList: item,
 							indeterminate: item.permissionList && true,
-							checkAll: true,
+							checkAll: false,
 							group: item.label,
 							valueList: item.permissionList
 								? item.permissionList.map(items => items.value)
@@ -205,6 +225,15 @@ export default {
 					},
 				});
 			}
+		},
+
+		*changeAdmin({ payload = {} }, { call }) {
+			const { targetSsoUsername: target_sso_username } = payload;
+			const opts = {
+				target_sso_username,
+			};
+			const response = yield call(Actions.handleRoleManagement, 'changeAdmin', opts);
+			return response;
 		},
 	},
 	reducers: {
