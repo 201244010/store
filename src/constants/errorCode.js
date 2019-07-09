@@ -8,6 +8,7 @@ export const MOBILE_ERROR = 201;
 export const MOBILE_BINDED = 204;
 
 export const USER_EXIST = 1;
+export const SSO_BINDED = 1;
 export const USER_NOT_EXIST = 3603;
 export const USER_NOT_LOGIN = 5028;
 export const TEMPLATE_BOUND_ESL = 5340;

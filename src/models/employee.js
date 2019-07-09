@@ -18,6 +18,7 @@ export default {
 			name: null,
 			number: null,
 			username: null,
+			roleId: -1,
 		},
 		employeeList: [],
 		employeeInfo: {},
@@ -52,22 +53,13 @@ export default {
 
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { searchValue, pagination } = yield select(state => state.employee);
-			const {
-				current = 1,
-				pageSize = 10,
-				name = '',
-				number = '',
-				username = '',
-				roleId = -1,
-			} = payload;
+			const { current = 1, pageSize = 10, roleId = -1 } = payload;
+
 			const options = {
 				...searchValue,
 				pageNum: current,
 				pageSize,
-				name,
-				number,
-				username,
-				role_id: roleId,
+				roleId,
 			};
 
 			const response = yield call(
