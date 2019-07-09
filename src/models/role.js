@@ -112,7 +112,7 @@ export default {
 						{
 							checkedList: item,
 							indeterminate: item.permissionList && true,
-							checkAll: true,
+							checkAll: false,
 							group: item.label,
 							valueList: item.permissionList
 								? item.permissionList.map(items => items.value)
@@ -225,6 +225,15 @@ export default {
 					},
 				});
 			}
+			return response;
+		},
+
+		*changeAdmin({ payload = {} }, { call }) {
+			const { targetSsoUsername: target_sso_username } = payload;
+			const opts = {
+				target_sso_username,
+			};
+			const response = yield call(Actions.handleRoleManagement, 'changeAdmin', opts);
 			return response;
 		},
 	},

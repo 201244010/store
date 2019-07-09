@@ -297,6 +297,13 @@ const router = [
 								component: './BasicData/Employee/EmployeeCU',
 								hideInMenu: true,
 							},
+							{
+								path: '/basicData/employeeManagement/employeeTable',
+								name: 'employeeTable',
+								id: 'employeeTable',
+								component: './BasicData/Employee/EmployeeTable',
+								hideInMenu: true,
+							},
 						],
 					},
 					{
