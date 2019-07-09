@@ -16,7 +16,7 @@ import {
 import { unixSecondToDate, idEncode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
 import { COL_THREE_NORMAL, FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
-import { ERROR_OK, ALERT_NOTICE_MAP, ALERT_ROLE_MAP} from '@/constants/errorCode';
+import { ERROR_OK, ALERT_NOTICE_MAP, ALERT_ROLE_MAP } from '@/constants/errorCode';
 import { connect } from 'dva';
 
 import styles from './Role.less';
@@ -165,7 +165,7 @@ class RoleList extends React.Component {
 		const {
 			form: { validateFields, setFields },
 			changeAdmin,
-			getRoleList
+			getRoleList,
 		} = this.props;
 		validateFields(['account'], async (err, values) => {
 			if (!err) {
@@ -178,16 +178,16 @@ class RoleList extends React.Component {
 						account: {
 							value: values.account,
 							errors: [
-								new Error(
-									formatMessage({id:  ALERT_ROLE_MAP[response.code]})
-								),
+								new Error(formatMessage({ id: ALERT_ROLE_MAP[response.code] })),
 							],
 						},
 					});
 				} else {
-					message.success('移交成功');
+					message.success(
+						formatMessage({ id: 'roleManagement.role.changeRole.success' })
+					);
 					this.setState({
-						visible: false
+						visible: false,
 					});
 					getRoleList({});
 				}
@@ -220,7 +220,7 @@ class RoleList extends React.Component {
 				pathId: 'employeeTable',
 				urlParams: {
 					role: rowDetail.name,
-					roleId: encodeID
+					roleId: encodeID,
 				},
 			},
 		};
@@ -236,7 +236,7 @@ class RoleList extends React.Component {
 			form: { validateFields },
 		} = this.props;
 
-		validateFields(['keyword'],async (err, values) => {
+		validateFields(['keyword'], async (err, values) => {
 			if (!err) {
 				await getRoleList({ keyword: values.keyword });
 			}
