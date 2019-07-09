@@ -1,7 +1,3 @@
-path: '/',
-
-path: '/index',
-
 path: '/dashBoard',
 
 path: '/application',

@@ -225,6 +225,7 @@ export default {
 					},
 				});
 			}
+			return response;
 		},
 	},
 	reducers: {
