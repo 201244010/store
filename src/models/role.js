@@ -225,6 +225,7 @@ export default {
 					},
 				});
 			}
+			return response;
 		},
 
 		*changeAdmin({ payload = {} }, { call }) {

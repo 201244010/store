@@ -43,6 +43,7 @@ export default {
 	'esl.device.esl.status': '状态',
 	'esl.device.esl.push.time': '最后推送时间',
 	'esl.device.esl.battery': '电量',
+	'esl.device.esl.signal.strength': '信号强度',
 	'esl.device.esl.screen.size': '屏幕尺寸',
 	'esl.device.esl.ware.version': '固件版本',
 	'esl.device.esl.ware.version.now': '当前固件版本',
@@ -86,6 +87,7 @@ export default {
 	'esl.device.esl.week.fail': '推送失败',
 	'esl.device.esl.push.all': '重推',
 	'esl.device.esl.push.all.success': '正在重推失败价签...',
+	'esl.device.esl.set.scan.success': '设置扫描时间成功',
 	'esl.device.template.new': '新建模板',
 	'esl.device.template.clone': '克隆模板',
 	'esl.device.template.2.13.inch': '2.13寸',
@@ -158,4 +160,5 @@ export default {
 	'esl.device.esl.comm.result2': '成功',
 	'esl.device.esl.comm.result3': '失败',
 	'esl.device.esl.comm.history.total': '条通信记录',
+	'esl.device.esl.scan.time': '价签扫描周期',
 };

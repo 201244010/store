@@ -83,8 +83,10 @@ export default class GlobalHeaderRight extends PureComponent {
 	};
 
 	handleStoreChange = storeId => {
+		const { goToPath } = this.props;
 		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeId);
-		window.location.reload();
+		goToPath('root', {}, 'href');
+		// window.location.reload();
 	};
 
 	render() {
