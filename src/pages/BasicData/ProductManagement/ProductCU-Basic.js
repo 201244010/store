@@ -40,7 +40,7 @@ const ProductCUBasic = props => {
 			name = '',
 			alias = '',
 			type = 0,
-			unit = formatMessage({ id: 'basicData.product.unit.box' }),
+			unit = null,
 			spec = '',
 			area = '',
 			level = '',

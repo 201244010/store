@@ -5,7 +5,7 @@ import { Card, Form, Input, Button, Radio, message } from 'antd';
 import OrgnizationSelect from './OrgnizationSelect';
 import { getLocationParam } from '@/utils/utils';
 import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, USER_EXIST } from '@/constants/errorCode';
 
 @connect(
 	state => ({
@@ -17,6 +17,8 @@ import { ERROR_OK } from '@/constants/errorCode';
 		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
 		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
+		checkUsernameExist: ({ username }) =>
+			dispatch({ type: 'employee/checkUsernameExist', payload: { username } }),
 		checkSsoBinded: ({ ssoUsername }) =>
 			dispatch({ type: 'employee/checkSsoBinded', payload: { ssoUsername } }),
 		getEmployeeInfo: ({ employeeId }) =>
@@ -143,6 +145,7 @@ class EmployeeCU extends Component {
 	handleSubmit = () => {
 		const {
 			form: { validateFields, setFields },
+			checkUsernameExist,
 			checkSsoBinded,
 			createEmployee,
 			updateEmployee,
@@ -168,16 +171,31 @@ class EmployeeCU extends Component {
 						message.error(formatMessage({ id: 'employee.info.update.failed' }));
 					}
 				} else {
-					const { username } = values;
-					const checkResponse = await checkSsoBinded({ ssoUsername: username });
-					if (checkResponse !== ERROR_OK) {
+					const { username, ssoUsername = '' } = values;
+					const userExistCheckResult = await checkUsernameExist({ username });
+					if (userExistCheckResult && userExistCheckResult.code === USER_EXIST) {
 						setFields({
 							username: {
 								value: username,
-								errors: [new Error(formatMessage({ id: 'employee.sso.binded' }))],
+								errors: [new Error(formatMessage({ id: 'employee.phone.exist' }))],
 							},
 						});
 						return;
+					}
+
+					if (ssoUsername) {
+						const checkResponse = await checkSsoBinded({ ssoUsername: username });
+						if (checkResponse && checkResponse.code !== ERROR_OK) {
+							setFields({
+								ssoUsername: {
+									value: ssoUsername,
+									errors: [
+										new Error(formatMessage({ id: 'employee.sso.binded' })),
+									],
+								},
+							});
+							return;
+						}
 					}
 
 					const response = await createEmployee({
