@@ -162,7 +162,7 @@ export default {
 					name,
 					number,
 					username,
-					gender,
+					gender: gender || 0,
 					ssoUsername,
 					mappingList,
 				})
