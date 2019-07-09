@@ -52,7 +52,14 @@ export default {
 
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { searchValue, pagination } = yield select(state => state.employee);
-			const { current = 1, pageSize = 10, name = '', number = '', username = '', roleId = '' } = payload;
+			const {
+				current = 1,
+				pageSize = 10,
+				name = '',
+				number = '',
+				username = '',
+				roleId = -1,
+			} = payload;
 			const options = {
 				...searchValue,
 				pageNum: current,
@@ -60,7 +67,7 @@ export default {
 				name,
 				number,
 				username,
-				role_id: roleId
+				role_id: roleId,
 			};
 
 			const response = yield call(
@@ -127,6 +134,11 @@ export default {
 					},
 				});
 			}
+		},
+
+		*checkUsernameExist({ payload: { username = '' } = {} }, { call }) {
+			const response = yield call(Action.handleEmployee, 'isUsernameExist', { username });
+			return response;
 		},
 
 		*checkSsoBinded({ payload: { ssoUsername = '' } = {} }, { call }) {
