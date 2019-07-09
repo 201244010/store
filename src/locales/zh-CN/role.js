@@ -23,6 +23,7 @@ export default {
 	'roleManagement.role.placeholder': '请选择角色',
 
 	'roleManagement.role.changeRole': '移交权限',
+	'roleManagement.role.changeRole.success': '移交成功',
 	'roleManagement.role.sunmiAccount': '商米账号',
 	'roleManagement.role.accountPlaceholder': '请输入新系统管理员的账号',
 	'roleManagement.role.accountNotExist': '商米账号不存在，请确认后重新输入',
