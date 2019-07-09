@@ -153,8 +153,8 @@ export default connect(
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
 		getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
-		goToPath: (pathId, urlParams = {}) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		goToPath: (pathId, urlParams = {}, linkType = null) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, linkType } }),
 		dispatch,
 	})
 )(HeaderView);

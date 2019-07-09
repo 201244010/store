@@ -57,7 +57,7 @@ class OrgnizationSelect extends Component {
 
 	render() {
 		const { orgnizationRoleList } = this.state;
-		const { orgnizationTree = [] } = this.props;
+		const { orgnizationTree = [], roleSelectList = [] } = this.props;
 
 		return (
 			<>
@@ -67,6 +67,9 @@ class OrgnizationSelect extends Component {
 							<TreeSelect
 								treeDefaultExpandAll
 								value={item.orgnization}
+								placeholder={formatMessage({
+									id: 'employee.info.select.orgnizaion',
+								})}
 								treeData={orgnizationTree}
 								onChange={value => this.handleTreeChange(item, index, value)}
 							/>
@@ -75,10 +78,14 @@ class OrgnizationSelect extends Component {
 							<Select
 								mode="multiple"
 								value={item.role}
+								placeholder={formatMessage({ id: 'employee.info.select.role' })}
 								onChange={value => this.handleSelectChange(item, index, value)}
 							>
-								<Select.Option value="jack">Jack</Select.Option>
-								<Select.Option value="lucy">Lucy</Select.Option>
+								{roleSelectList.map((role, i) => (
+									<Select.Option key={i} value={role.id}>
+										{role.name}
+									</Select.Option>
+								))}
 							</Select>
 						</Col>
 						{orgnizationRoleList.length > 1 && (

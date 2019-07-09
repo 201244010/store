@@ -4,6 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { Card, Form, Button } from 'antd';
 import { getLocationParam } from '@/utils/utils';
 import { FORM_ITEM_DETAIL } from '@/constants/form';
+import moment from 'moment';
 
 const GENDER_MAP = {
 	1: formatMessage({ id: 'employee.gender.male' }),
@@ -12,6 +13,7 @@ const GENDER_MAP = {
 
 @connect(
 	state => ({
+		loading: state.loading,
 		employee: state.employee,
 	}),
 	dispatch => ({
@@ -34,10 +36,43 @@ class EmployeeInfo extends Component {
 		}
 	}
 
+	formatMappingList = mappingList => {
+		if (mappingList.length === 0) {
+			return mappingList;
+		}
+
+		const roleMap = new Map();
+		mappingList.forEach(list => {
+			const {
+				companyId = null,
+				shopId = null,
+				companyName = '',
+				shopName = '',
+				roleName = '',
+			} = list;
+
+			if (roleMap.has(`${companyId}-${shopId}`)) {
+				const { roleName: roleNames } = roleMap.get(`${companyId}-${shopId}`);
+				roleMap.set(`${companyId}-${shopId}`, {
+					companyName,
+					shopName,
+					roleName: [roleNames, roleName].toString(),
+				});
+			} else {
+				roleMap.set(`${companyId}-${shopId}`, { companyName, shopName, roleName });
+			}
+		});
+		return [...roleMap.values()];
+	};
+
 	goToPath = target => {
 		const { goToPath } = this.props;
 		if (target === 'edit') {
-			goToPath('employeeUpdate', { employeeId: this.employeeId });
+			goToPath('employeeUpdate', {
+				employeeId: this.employeeId,
+				from: 'detail',
+				action: 'edit',
+			});
 		} else if (target === 'back') {
 			goToPath('employeeList');
 		}
@@ -45,6 +80,7 @@ class EmployeeInfo extends Component {
 
 	render() {
 		const {
+			loading,
 			employee: {
 				employeeInfo: {
 					name = '--',
@@ -52,14 +88,18 @@ class EmployeeInfo extends Component {
 					username = '--',
 					gender = '--',
 					ssoUsername = '--',
-					organizationRoleMappingList = [],
+					mappingList = [],
 					createTime = '--',
-					updateTime = '--',
+					modifiedTime = '--',
 				} = {},
 			} = {},
 		} = this.props;
+
+		const mappedList = this.formatMappingList(mappingList);
+		// console.log(mappedList);
+
 		return (
-			<Card bordered={false}>
+			<Card bordered={false} loading={loading.effects['employee/getEmployeeInfo']}>
 				<h3>{formatMessage({ id: 'employee.info' })}</h3>
 				<Form {...FORM_ITEM_DETAIL}>
 					<Form.Item label={formatMessage({ id: 'employee.number' })}>
@@ -82,21 +122,35 @@ class EmployeeInfo extends Component {
 						<span>{ssoUsername || '--'}</span>
 					</Form.Item>
 
-					{organizationRoleMappingList.map((info, index) => (
+					{mappedList.length === 0 && (
+						<Form.Item label={formatMessage({ id: 'employee.orgnization' })}>
+							<span>--</span>
+						</Form.Item>
+					)}
+
+					{mappedList.map((item, index) => (
 						<Form.Item
-							label={index === 0 ? formatMessage({ id: 'employee.number' }) : ' '}
+							key={index}
+							label={
+								index === 0 ? formatMessage({ id: 'employee.orgnization' }) : ' '
+							}
 							colon={index === 0}
 						>
-							<span>{info || '--'}</span>
+							<span>{item.companyName}</span>
+							<span>{item.shopName ? `(${item.shopName})` : null}</span>
+							<span> - </span>
+							<span>{item.roleName}</span>
 						</Form.Item>
 					))}
 
 					<Form.Item label={formatMessage({ id: 'employee.info.create.time' })}>
-						<span>{createTime || '--'}</span>
+						<span>{moment.unix(createTime).format('YYYY-MM-DD HH:mm:ss') || '--'}</span>
 					</Form.Item>
 
 					<Form.Item label={formatMessage({ id: 'employee.info.update.time' })}>
-						<span>{updateTime || '--'}</span>
+						<span>
+							{moment.unix(modifiedTime).format('YYYY-MM-DD HH:mm:ss') || '--'}
+						</span>
 					</Form.Item>
 
 					<Form.Item label=" " colon={false}>
