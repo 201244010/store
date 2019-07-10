@@ -12,6 +12,8 @@ import styles from './Notification.less';
 	dispatch => ({
 		getNotificationInfo: payload =>
 			dispatch({ type: 'notification/getNotificationInfo', payload }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class Notification extends React.Component {
@@ -36,6 +38,7 @@ class Notification extends React.Component {
 					minorButtonName = null,
 				} = {},
 			} = {},
+			goToPath,
 		} = this.props;
 
 		return (
@@ -58,6 +61,7 @@ class Notification extends React.Component {
 							{...{
 								buttonName: minorButtonName,
 								buttonParams: minorButtonLink,
+								handlers: { goToPath },
 							}}
 						/>
 					)}
@@ -66,6 +70,7 @@ class Notification extends React.Component {
 							{...{
 								buttonName: majorButtonName,
 								buttonParams: majorButtonLink,
+								handlers: { goToPath },
 								type: 'primary',
 								style: { marginLeft: minorButtonName ? '20px' : '0' },
 							}}

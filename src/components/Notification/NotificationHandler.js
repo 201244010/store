@@ -26,7 +26,7 @@ const ACTION_MAP = {
 		});
 	},
 	'notif-motion-detect-btn2': ({
-		handlers: { goToPath = null, removeNotification = null },
+		handlers: { goToPath = null, removeNotification = null } = {},
 		extra: { from = null, key = null } = {},
 	}) => {
 		if (from === 'mqtt' && removeNotification) {

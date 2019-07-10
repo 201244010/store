@@ -14,7 +14,7 @@ export const Title = props => {
 };
 
 export const Description = props => {
-	const { description = '', btnOptions = {} } = props;
+	const { description = '', btnOptions = {}, handlers = {} } = props;
 	const {
 		majorButtonName = null,
 		majorButtonLink = null,
@@ -32,6 +32,7 @@ export const Description = props => {
 							{...{
 								buttonName: minorButtonName,
 								buttonParams: minorButtonLink,
+								handlers,
 							}}
 						/>
 					)}
@@ -40,6 +41,7 @@ export const Description = props => {
 							{...{
 								buttonName: majorButtonName,
 								buttonParams: majorButtonLink,
+								handlers,
 								type: 'primary',
 								style: { marginLeft: '15px' },
 							}}
@@ -59,7 +61,7 @@ const notificationType = {
 };
 
 export const displayNotification = props => {
-	const { data = {}, key, closeAction } = props;
+	const { data = {}, key, closeAction, handlers = {} } = props;
 	const {
 		title,
 		description,
@@ -79,6 +81,7 @@ export const displayNotification = props => {
 			<Description
 				{...{
 					description,
+					handlers,
 					btnOptions: {
 						majorButtonName,
 						majorButtonLink,
