@@ -9,6 +9,10 @@ import styles from './Employee.less';
 import global from '@/styles/common.less';
 
 const FormItem = Form.Item;
+const GENDER_MAP = {
+	1: formatMessage({ id: 'employee.gender.male' }),
+	2: formatMessage({ id: 'employee.gender.female' }),
+};
 
 @connect(
 	state => ({
@@ -17,10 +21,10 @@ const FormItem = Form.Item;
 		employee: state.employee,
 	}),
 	dispatch => ({
-		getEmployeeList: ({ current = 1, pageSize = 10 }) =>
+		getEmployeeList: ({ current = 1, pageSize = 10, roleId = -1}) =>
 			dispatch({
 				type: 'employee/getEmployeeList',
-				payload: { current, pageSize },
+				payload: { current, pageSize, roleId },
 			}),
 		setSearchValue: payload => dispatch({ type: 'employee/setSearchValue', payload }),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
@@ -41,10 +45,7 @@ class EmployeeTable extends Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.gender' }),
 				dataIndex: 'gender',
-				render: gender =>
-					gender === 1
-						? formatMessage({ id: 'employee.gender.male' })
-						: formatMessage({ id: 'employee.gender.female' }),
+				render: gender => GENDER_MAP[gender] || '--'
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.employeePhone' }),
