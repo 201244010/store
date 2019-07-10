@@ -7,24 +7,32 @@ import * as styles from './index.less';
 const { Option } = Select;
 
 const bindFieldsLocaleMap = {
-	productSeqNum: 'basicData.product.seq_num',
+	productSeqNum: 'basicData.product.seqNum',
 	productName: 'basicData.product.name',
 	productSpec: 'basicData.product.spec',
 	productLevel: 'basicData.product.level',
-	productExpireTime: 'basicData.product.expire_time',
-	productBarCode: 'basicData.product.bar_code',
+	productExpireTime: 'basicData.product.expireTime',
+	productBarCode: 'basicData.product.barCode',
 	productAlias: 'basicData.product.alias',
 	productUnit: 'basicData.product.unit',
 	productProductionArea: 'basicData.product.area',
 	productBrand: 'basicData.product.brand',
-	productQrCode: 'basicData.product.qr_code',
+	productQrCode: 'basicData.product.qrCode',
 	productPrice: 'basicData.product.price',
-	productPromotePrice: 'basicData.product.promote_price',
-	productMemberPrice: 'basicData.product.member_price',
+	productPromotePrice: 'basicData.product.promotePrice',
+	productMemberPrice: 'basicData.product.memberPrice',
 	productPicture: 'basicData.product.image',
 };
 
 export default class RightToolBox extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			x: 'o',
+			y: 'o'
+		};
+	}
+
 	handleDetail = (key, value) => {
 		const {
 			componentsDetail,
@@ -54,13 +62,61 @@ export default class RightToolBox extends Component {
 			};
 			if (key === 'fontSize') {
 				const detail = componentsDetail[selectedShapeName];
-				if (MAPS.containerHeight[detail.type] * detail.scaleY < value) {
-					newDetail.scaleY = value / MAPS.containerHeight[detail.type];
-				}
+				newDetail.scaleY = value / MAPS.containerHeight[detail.type];
 			}
 			updateComponentsDetail({
 				isStep: true,
 				[selectedShapeName]: newDetail,
+			});
+		}
+	};
+
+	handleBindValue = (value) => {
+		const {
+			componentsDetail,
+			selectedShapeName,
+			updateComponentsDetail,
+		} = this.props;
+
+		if (this.hasSubString(SHAPE_TYPES.CODE_QR)) {
+			const detail = componentsDetail[selectedShapeName];
+			const bb = jQuery(document.createElement('canvas')).qrcode({
+				render: 'canvas',
+				text: value,
+				width: detail.width,
+				height: detail.height,
+				background: '#ffffff',
+				foreground: '#000000'
+			});
+			const canvas = bb.find('canvas').get(0);
+			const image = new Image();
+			image.src = canvas.toDataURL();
+			image.onload = () => {
+				updateComponentsDetail({
+					[selectedShapeName]: {
+						image,
+						imageType: 'selected',
+						ratio: image.height / image.width,
+						height: (detail.width * image.height) / image.width,
+					},
+				});
+			};
+		}
+		if (this.hasSubString(SHAPE_TYPES.CODE_H) || this.hasSubString(SHAPE_TYPES.CODE_V)) {
+			const detail = componentsDetail[selectedShapeName];
+			const image = document.createElement('img');
+			JsBarcode(image, value, {
+				format: 'CODE39',
+				displayValue: false
+			});
+
+			updateComponentsDetail({
+				[selectedShapeName]: {
+					image,
+					imageType: 'selected',
+					ratio: image.height / image.width,
+					height: (detail.width * image.height) / image.width,
+				}
 			});
 		}
 	};
@@ -75,10 +131,27 @@ export default class RightToolBox extends Component {
 				originFix.y = componentDetail.y;
 			}
 		});
+		const { value } = e.target;
+		let toValue = value;
+		if (!/^-?\d*$/.test(value)) {
+			this.setState({
+				[key]: ''
+			});
+			toValue = 0;
+		} else if (value === '' || value === '-') {
+			this.setState({
+				[key]: value
+			});
+			toValue = 0;
+		} else {
+			this.setState({
+				[key]: 'o'
+			});
+		}
 		updateComponentsDetail({
 			isStep: true,
 			[selectedShapeName]: {
-				[key]: originFix[key] + parseInt(e.target.value || 0, 10),
+				[key]: originFix[key] + parseInt(toValue || 0, 10),
 			},
 		});
 	};
@@ -204,6 +277,7 @@ export default class RightToolBox extends Component {
 		}
 		if (this.hasSubString(SHAPE_TYPES.CODE)) {
 			menuMap.hasBindData = true;
+			menuMap.isBarOrQrCode = true;
 			if (this.hasSubString(SHAPE_TYPES.CODE_V) || this.hasSubString(SHAPE_TYPES.CODE_H)) {
 				menuMap.isCode = true;
 			}
@@ -245,6 +319,7 @@ export default class RightToolBox extends Component {
 
 	render() {
 		const { componentsDetail, selectedShapeName } = this.props;
+		const { x, y } = this.state;
 		const menuMap = this.getMenuMap();
 		const detail = componentsDetail[selectedShapeName];
 		const originFix = {};
@@ -292,13 +367,27 @@ export default class RightToolBox extends Component {
 						</Select>
 					</div>
 				) : null}
+				{menuMap.isBarOrQrCode ? (
+					<div className={styles['tool-box-block']}>
+						<h4>{formatMessage({ id: 'studio.tool.title.bind.value' })}</h4>
+						<Input
+							placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
+							value={detail.bindValue}
+							style={{ width: '100%' }}
+							maxLength={30}
+							onChange={e => {
+								this.handleBindValue(e.target.value);
+							}}
+						/>
+					</div>
+				) : null}
 				<div className={styles['tool-box-block']}>
 					<Row gutter={20} style={{ marginBottom: 10 }}>
 						<Col span={12}>
 							<Input
 								style={{ width: 100 }}
 								addonAfter={<span>X</span>}
-								value={Math.round(detail.x - originFix.x)}
+								value={(x === '-' || x === '') ? x : Math.round(detail.x - originFix.x)}
 								onChange={e => {
 									this.handleXY(detail, 'x', e);
 								}}
@@ -309,7 +398,7 @@ export default class RightToolBox extends Component {
 							<Input
 								style={{ width: 100 }}
 								addonAfter={<span>Y</span>}
-								value={Math.round(detail.y - originFix.y)}
+								value={(y === '-' || y === '') ? y : Math.round(detail.y - originFix.y)}
 								onChange={e => {
 									this.handleXY(detail, 'y', e);
 								}}
@@ -481,7 +570,7 @@ export default class RightToolBox extends Component {
 						<Row style={{ marginBottom: 10 }}>
 							<Col span={4}>
 								<span className={styles.title}>
-									{formatMessage({ id: 'studio.tool.label.font.family' })}
+									{formatMessage({ id: 'studio.tool.label.font.family' })}`
 								</span>
 							</Col>
 							<Col span={20}>
@@ -493,7 +582,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Arial">Arial</Option>
+									<Option value="Microsoft-Yahei">微软雅黑</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -565,23 +654,13 @@ export default class RightToolBox extends Component {
 								<Icon type="italic" onClick={() => {this.handleFontStyle(detail, 'italic');}} />
 							</Col>
 							<Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
-								<Icon
-									type="underline"
-									onClick={() => {
-										this.handleTextDecoration(detail, 'underline');
-									}}
-								/>
+								<Icon type="underline" onClick={() => {this.handleTextDecoration(detail, 'underline');}} />
 							</Col>
 							<Col
 								span={6}
 								className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}
 							>
-								<Icon
-									type="strikethrough"
-									onClick={() => {
-										this.handleTextDecoration(detail, 'line-through');
-									}}
-								/>
+								<Icon type="strikethrough" onClick={() => {this.handleTextDecoration(detail, 'line-through');}} />
 							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
@@ -789,7 +868,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Arial">Arial</Option>
+									<Option value="Microsoft-Yahei">微软雅黑</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -877,17 +956,29 @@ export default class RightToolBox extends Component {
 										</span>
 									</Col>
 									<Col span={20}>
-										<InputNumber
+										<Select
 											style={{ width: '100%' }}
 											placeholder={formatMessage({
 												id: 'studio.tool.label.font.size',
 											})}
-											min={8}
 											value={detail.fontSize}
 											onChange={value => {
 												this.handleDetail('fontSize', value);
 											}}
-										/>
+										>
+											<Option value={9}>9</Option>
+											<Option value={10}>10</Option>
+											<Option value={11}>11</Option>
+											<Option value={12}>12</Option>
+											<Option value={14}>14</Option>
+											<Option value={16}>16</Option>
+											<Option value={18}>18</Option>
+											<Option value={20}>20</Option>
+											<Option value={28}>28</Option>
+											<Option value={36}>36</Option>
+											<Option value={48}>48</Option>
+											<Option value={72}>72</Option>
+										</Select>
 									</Col>
 								</Fragment>
 							)}

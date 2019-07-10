@@ -106,7 +106,8 @@ export default class NoticeIcon extends PureComponent {
 	};
 
 	getUnreadNotice = async () => {
-		const { getUnreadNotification } = this.props;
+		const { getUnreadNotification, getNotificationCount } = this.props;
+		await getNotificationCount();
 		await getUnreadNotification();
 	};
 

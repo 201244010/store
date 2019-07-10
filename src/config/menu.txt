@@ -1,0 +1,34 @@
+path: '/dashBoard',
+
+path: '/application',
+path: '/application/cashVerify',
+
+path: '/devices',
+path: '/devices/ipcList',
+path: '/devices/motionMessage',
+
+path: '/esl',
+path: '/esl/electricLabel',
+path: '/esl/template',
+path: '/esl/commRecord',
+path: '/esl/baseStation',
+path: '/esl/deviceUpgrade',
+
+path: '/basicData',
+path: '/basicData/merchantManagement',					
+path: '/basicData/storeManagement',
+path: '/basicData/storeManagement',
+path: '/basicData/employeeManagement',
+path: '/basicData/roleManagement',
+path: '/basicData/productManagement',
+
+path: '/account',
+path: '/notification',
+
+path: '/exception',
+path: '/exception/403',
+path: '/exception/404',
+
+path: '/faceidLibrary',
+path: '/faceidLibrary/faceidLibraryList',
+path: '/faceidLibrary/createLibrary',

@@ -1,6 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import { Form, Input } from 'antd';
+import { Form, Input, InputNumber } from 'antd';
 // import {
 //   FORM_FORMAT,
 //   FORM_ITEM_LAYOUT,
@@ -23,61 +23,55 @@ const FaceIdLibraryForm = Form.create({
 			remarks: Form.createFormField({
 				value: props.remarks,
 			}),
-			// threshold: Form.createFormField({
-			// 	value: props.threshold,
-			// }),
-			// period: Form.createFormField({
-			// 	value: props.period,
-			// }),
+			threshold: Form.createFormField({
+				value: props.threshold,
+			}),
+			period: Form.createFormField({
+				value: props.period,
+			})
 		};
-	},
-	// onFieldsChange(props, changedFields) {
-	// // 	const { id } = props;
-	// // 	const fields = [];
-	// // 	for (var name in changedFields){
-	// // 		if (changedFields.hasOwnProperty(name)){
-	// // 			props[name] = changedFields[name].value;
-
-	// // 			fields.push({
-	// // 				name: name,
-	// // 				value: changedFields[name].value
-	// // 			});
-	// // 		}
-	// // 	};
-	// // 	props.changeFields(id, fields);
-
-	// },
-	// onValuesChange(props, changedValues, allValues) {
-	// 	// console.log('change1',changedValues);
-	// 	// console.log('change2',allValues);
-	// 	// const { id } = props;
-	// 	// props.changeFields(id, allValues);
-	// },
+	}
 });
 
 class LibraryForm extends React.Component {
 	constructor(props) {
 		super(props);
+
 		this.tipFlag = true;
 	}
 
 	render() {
-		const { id, isDefault, isEdit, restCapacity, libraries, capacity, amount, form } = this.props;
-
+		const { id, type, isEdit, restCapacity, libraries, capacity, amount, form } = this.props;
 		const { getFieldDecorator } = form;
 
-		// console.log('form')
-		// console.log(this.props);
+		const isDefault = type < 5;
+
 		const maxCapacity = isEdit ? capacity + restCapacity : restCapacity;
+
 		return (
 			<div className={styles['faceid-library-form']}>
 				<Form
 					className={styles['form-wrapper']}
-					title={formatMessage({id: 'faceid.createLibrary'})}
+					// title={formatMessage({id: 'faceid.createLibrary'})}
+					labelCol={{span: 6}}
+					wrapperCol={{span: 16}}
 				>
 					<Form.Item
 						label={formatMessage({id: 'faceid.libraryName'})}
-						extra={formatMessage({id: 'faceid.libraryNameFormat'})}
+						extra={(() => {
+							switch (type) {
+								case 1:
+									return formatMessage({id: 'faceid.stranger'});
+								case 2:
+									return formatMessage({id: 'faceid.customer'});
+								case 3:
+									return formatMessage({id: 'faceid.employee'});
+								case 4:
+									return formatMessage({id: 'faceid.blacklist'});
+								default:
+									return '';
+							}
+						})()}
 					>
 						{
 							getFieldDecorator('name', {
@@ -133,25 +127,23 @@ class LibraryForm extends React.Component {
 					<Form.Item
 						label={formatMessage({id: 'faceid.photosAmountLimit'})}
 						extra={
-							<span>
-								{
-									`${formatMessage({id: 'faceid.photosAmountNote'}).replace('%min%', (amount || 1)).replace('%max%', maxCapacity).replace('%total%', maxCapacity) }`
-								}
-							</span>
+							`${formatMessage({id: 'faceid.photosAmountNote'}).replace('%min%', (amount || 1)).replace('%max%', maxCapacity).replace('%total%', maxCapacity) }`
 						}
 					>
 						{
 							getFieldDecorator('capacity', {
+								validateFirst: true,
 								rules: [
 									{
 										required: true,
 										message: formatMessage({id: 'faceid.photosAmountRequired'}),
+									},{
+										pattern: /^[0-9]*$/,
+										message: formatMessage({id: 'faceid.integerMsg'})
 									}, {
 										validator: (rule, value, callback) => {
 											// console.log(isEdit)
-											if (value === '') {
-												callback();
-											}else if (value <= 0 || value < amount || value > maxCapacity) {
+											if (value <= 0 || value < amount || value > maxCapacity) {
 												callback('photo-amount-error');
 											}else{
 												callback();
@@ -173,7 +165,7 @@ class LibraryForm extends React.Component {
 							<span>
 								{formatMessage({id: 'faceid.remark'})}
 							</span>
-							<span className="light">
+							<span className={styles.light}>
 								{formatMessage({id: 'faceid.remarkNote'})}
 							</span>
 						</span>}
@@ -183,12 +175,12 @@ class LibraryForm extends React.Component {
 								rules: [
 									{
 										max: 255,
-										message: '备注不得超过255个字符'
+										message: formatMessage({ id: 'faceid.remarksTooLong'})
 									}
 								]
 							})(
 								<Input.TextArea
-									disabled={isDefault}
+									// disabled={isDefault}
 									autosize={{ minRows: 2, maxRows: 6 }}
 									placeholder={formatMessage(
 										{ id: 'faceid.remarkMsg' },
@@ -198,84 +190,105 @@ class LibraryForm extends React.Component {
 						}
 					</Form.Item>
 
-					{/* {!isDefault ? (
-							''
-						) : (
-								<div>
-									<Form.Item
-									label={<FormattedMessage id="faceid.transferCondit" />}
-									>
-									<FormattedMessage id="faceid.transferConditPre" />
-									{getFieldDecorator('threshold', {
-												rules: [
-													{
-														required: true,
-												message: formatMessage({
-													id: 'faceid.transferConditMsg',
-												}),
-											},
-											{
-														type: 'number',
-														min: 1,
-												message: formatMessage({
-													id: 'faceid.transferConditRule',
-												}),
-											},
-										],
-									})(<InputNumber className="threshold" />)}
-									<FormattedMessage id="faceid.transferConditSuf" />
-									</Form.Item>
-								<Form.Item label="">
-									{getFieldDecorator('period', {
-												// initialValue: 7,
-												rules: [
-											{
-												required: true,
-												message: formatMessage({
-													id: 'facied.periodMsg',
-												}),
-											},
-												],
-										getValueFromEvent: this.periodChange,
-											})(
-										<Radio.Group
-											className="period"
-											onChange={this.periodChange}
+					{
+						(() => {
+							switch(type) {
+								case 1:
+									// 生客
+									return (
+										<Form.Item
+											label={formatMessage({id: 'faceid.transferCondit' })}
 										>
-											<Radio key="1" value="1">
-												<FormattedMessage id="faceid.period.day" />
-											</Radio>
-											<Radio key="7" value="7">
-												<FormattedMessage id="faceid.period.week" />
-											</Radio>
-											<Radio key="30" value="30">
-												<FormattedMessage id="faceid.period.month" />
-											</Radio>
-										</Radio.Group>,
-									)}
-									</Form.Item>
-								</div>
-						)} */}
+											<Form.Item className={`${styles.inline} ${styles.number}`}>
+												{
+													getFieldDecorator('period', {
+														validateFirst: true,
+														rules: [{
+															required: true,
+															message: formatMessage({ id: 'faceid.periodMsg' })
+														}, {
+															type: 'integer',
+															message: formatMessage({ id: 'faceid.integerMsg'})
+														}, {
+															validator: (rule, value, callback) => {
+																if (value <= 0) {
+																	callback(false);
+																}else{
+																	callback();
+																}
+															},
+															message: formatMessage({ id: 'faceid.integerMsg' })
+														}]
+													})(
+														<InputNumber
+															className="period"
+															min={1}
+														/>
+													)
+												}
+											</Form.Item>
+
+											<div className={styles.inline}>
+												{formatMessage({ id: 'faceid.transferConditSuf' })}
+											</div>
+
+											<Form.Item className={`${styles.inline} ${styles.number}`}>
+												{
+													getFieldDecorator('threshold', {
+														validateFirst: true,
+														rules: [{
+															required: true,
+															message: formatMessage({ id: 'faceid.thresholdMsg' })
+														}, {
+															type: 'integer',
+															message: formatMessage({ id: 'faceid.integerMsg'})
+														}, {
+															validator: (rule, value, callback) => {
+																if (value <= 0) {
+																	callback(false);
+																}else{
+																	callback();
+																}
+															},
+															message: formatMessage({ id: 'faceid.integerMsg' })
+														}],
+													})(
+														<InputNumber
+															min={1}
+															className="threshold"
+														/>
+													)
+												}
+											</Form.Item>
+											<div className={styles.inline}>
+												{formatMessage({ id: 'faceid.times' })}
+											</div>
+
+										</Form.Item>
+									);
+								case 4:
+									return (
+									// <Form.Item
+									// 	label={formatMessage({id: 'faceid.warningPush'})}
+									// >
+									// 	{
+									// 		getFieldDecorator('warning')(
+									// 			<Switch />
+									// 		)
+									// 	}
+									// </Form.Item>
+										<></>
+									);
+								default:
+									return '';
+							}
+
+						})()
+					}
 				</Form>
 			</div>
 		);
 	}
-
-	// periodChange(e) {
-	// 	const target = e.target;
-	// 	return target.value;
-	// }
 }
-
-// LibraryForm.propTypes = {
-// 	form: PropTypes.object,
-// 	name: PropTypes.string.isRequired,
-// 	isDefault: PropTypes.bool,
-// 	remarks: PropTypes.string,
-// 	// threshold: PropTypes.number,
-// 	restCapacity: PropTypes.number.isRequired,
-// 	// changeFields: PropTypes.func.isRequired,
-// 	libraries: PropTypes.array.isRequired
-// };
 
 export default FaceIdLibraryForm(LibraryForm);

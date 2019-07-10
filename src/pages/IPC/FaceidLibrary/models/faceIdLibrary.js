@@ -1,24 +1,6 @@
-// import { routerRedux } from 'dva/router';
-// import { message } from 'antd';
-import {
-	createLibrary,
-	readLibrary,
-	updateLibrary,
-	deleteLibrary,
-} from '../../services/faceIdLibrary';
+import { createLibrary, readLibrary, updateLibrary, deleteLibrary } from '../../services/faceIdLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
-
-// const dataFormatter = (item, index) => {
-// 	return {
-// 		id: item.id || index+1,
-// 		name: item.name,
-// 		capacity: item.capacity,
-// 		isDefault: item.isDefault,
-// 		remarks: item.remarks || '',
-// 		amount: 0,
-// 	};
-// };
 
 export default {
 	namespace: 'faceIdLibrary',

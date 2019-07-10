@@ -152,8 +152,9 @@ export default connect(
 		logout: () => dispatch({ type: 'user/logout' }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
-		goToPath: (pathId, urlParams = {}) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
+		goToPath: (pathId, urlParams = {}, linkType = null) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, linkType } }),
 		dispatch,
 	})
 )(HeaderView);

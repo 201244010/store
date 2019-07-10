@@ -149,9 +149,10 @@ class NotificationCenter extends Component {
 			},
 		} = this.props;
 		const filterList = modelList.map(item => ({
-			text: item.model_name,
+			text: formatMessage({ id: item.model_name }),
 			value: item.model_name,
 		}));
+
 		const columns = [
 			{
 				title: formatMessage({ id: 'notification.title' }),
