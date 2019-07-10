@@ -29,13 +29,22 @@ class LibraryList extends React.Component {
 				dataIndex: 'name',
 			},
 			{
-				title: formatMessage({ id: 'facied.rules' }),
-				dataIndex: 'rule',
-				render: (rules) => {
-					if(!rules){
-						return '--';
+				title: formatMessage({ id: 'faceid.rules' }),
+				dataIndex: 'type',
+				key: 'rules',
+				render: (type) => {
+					switch (type) {
+						case 1:
+							return formatMessage({id: 'faceid.stranger'});
+						case 2:
+							return formatMessage({id: 'faceid.customer'});
+						case 3:
+							return formatMessage({id: 'faceid.employee'});
+						case 4:
+							return formatMessage({id: 'faceid.blacklist'});
+						default:
+							return '---';
 					}
-					return rules;
 
 				}
 			},
@@ -63,14 +72,14 @@ class LibraryList extends React.Component {
 						return '--';
 					}
 					const d = moment(lastupdate * 1000);
-					return d.format('YYYY-MM-DD h:mm:ss');
+					return d.format('YYYY-MM-DD HH:mm:ss');
 
 				},
 			},
 			{
 				title: formatMessage({ id: 'common.operation' }),
-				dataIndex: 'isDefault',
-				render: (isDefault, row) => (
+				dataIndex: 'type',
+				render: (type, row) => (
 					<div>
 						<a
 							className={styles['btn-operation']}
@@ -91,7 +100,8 @@ class LibraryList extends React.Component {
 						>
 							{formatMessage({id: 'common.edit' })}
 						</a>
-						{isDefault ? (
+
+						{type < 5 ? (
 							''
 						) : (
 							<>
@@ -117,7 +127,7 @@ class LibraryList extends React.Component {
 
 		this.maxLength = 10;
 
-		this.noCustomized = true;
+		// this.noCustomized = true;
 
 		this.showEditForm = this.showEditForm.bind(this);
 		this.closeEditForm = this.closeEditForm.bind(this);
@@ -179,9 +189,9 @@ class LibraryList extends React.Component {
 	// deleteLibrary(id) {
 	// 	const { removeLibrary } = this.props;
 	// 	Modal.confirm({
-	// 		title: formatMessage({ id: 'facied.deleteLibrary' }),
-	// 		context: formatMessage({ id: 'facied.deleteInfo' }),
-	// 		okText: formatMessage({ id: 'facied.confirm' }),
+	// 		title: formatMessage({ id: 'faceid.deleteLibrary' }),
+	// 		context: formatMessage({ id: 'faceid.deleteInfo' }),
+	// 		okText: formatMessage({ id: 'faceid.confirm' }),
 	// 		cancelText: formatMessage({ id: 'faceid.cancel' }),
 	// 		onOk: () => removeLibrary(id),
 	// 	});
@@ -205,6 +215,7 @@ class LibraryList extends React.Component {
 					...params,
 					id
 				});
+
 				this.closeCreateForm();
 			}
 		});
@@ -297,13 +308,7 @@ class LibraryList extends React.Component {
 
 		const restCapacity =
 			totalCapacity -
-			faceIdLibrary.reduce((total, item) => {
-				if (item.isDefault !== true) {
-					this.noCustomized = false;
-				}
-				// console.log(total, '+', item.capacity, '=', total + item.capacity);
-				return total + item.capacity;
-			}, 0);
+			faceIdLibrary.reduce((total, item) => total + item.capacity, 0);
 		// console.log(this.props);
 		const list = faceIdLibrary;
 		// console.log(restCapacity);
@@ -375,6 +380,7 @@ class LibraryList extends React.Component {
 					okButtonProps={{
 						loading: loading.effects['faceIdLibrary/create']
 					}}
+					width={680}
 				>
 					<LibraryForm
 						restCapacity={restCapacity}
@@ -398,6 +404,7 @@ class LibraryList extends React.Component {
 					okButtonProps={{
 						loading: loading.effects['faceIdLibrary/update']
 					}}
+					width={680}
 				>
 					<LibraryForm
 						wrappedComponentRef={form => {
@@ -433,7 +440,7 @@ const mapDispatchToProps = (dispatch) => ({
 				case 1:
 					break;
 				default:
-					message.error('操作失败，请检查网络后重试。');
+					message.error(formatMessage({ id: 'faceid.operateFailed'}));
 					break;
 			}
 		});
@@ -452,12 +459,12 @@ const mapDispatchToProps = (dispatch) => ({
 		}).then((code) => {
 			switch (code) {
 				case 1:
-					message.success(formatMessage({ id: 'facied.createSuccess'}));
+					message.success(formatMessage({ id: 'faceid.createSuccess'}));
 					break;
 
 				case 5506:	// 最大条目数
 				default:
-					message.error(formatMessage({ id: 'facied.createFailed'}));
+					message.error(formatMessage({ id: 'faceid.createFailed'}));
 					break;
 			}
 		});
@@ -471,10 +478,10 @@ const mapDispatchToProps = (dispatch) => ({
 		}).then((code) => {
 			switch (code) {
 				case 1:
-					message.success(formatMessage({ id: 'facied.updateSuccess'}));
+					message.success(formatMessage({ id: 'faceid.updateSuccess'}));
 					break;
 				default:
-					message.error(formatMessage({ id: 'facied.updateFailed'}));
+					message.error(formatMessage({ id: 'faceid.updateFailed'}));
 					break;
 			}
 		});
@@ -488,10 +495,10 @@ const mapDispatchToProps = (dispatch) => ({
 		}).then((code) => {
 			switch (code) {
 				case 1:
-					message.success(formatMessage({ id: 'facied.deleteSuccess'}));
+					message.success(formatMessage({ id: 'faceid.deleteSuccess'}));
 					break;
 				default:
-					message.error(formatMessage({ id: 'facied.deleteFailed'}));
+					message.error(formatMessage({ id: 'faceid.deleteFailed'}));
 					break;
 			}
 		});

@@ -296,7 +296,7 @@ const ProductCUWeight = props => {
 							rules: [
 								{
 									validator: (rule, value, callback) => {
-										if (value && !/^[1-9]{1}|[0-9]{2}$/.test(value)) {
+										if (value && !/^[0-9]{1,2}$/.test(value)) {
 											callback(
 												formatMessage({
 													id:

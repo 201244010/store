@@ -109,3 +109,12 @@ export const applyTemplate = options => {
 
 	return fetchApi('apply', opts).then(response => response.json());
 };
+
+export const cloneTemplate = options => {
+	const opts = {
+		method: 'POST',
+		body: options,
+	};
+
+	return fetchApi('clone', opts).then(response => response.json());
+};

@@ -8,6 +8,7 @@ export const MOBILE_ERROR = 201;
 export const MOBILE_BINDED = 204;
 
 export const USER_EXIST = 1;
+export const SSO_BINDED = 1;
 export const USER_NOT_EXIST = 3603;
 export const USER_NOT_LOGIN = 5028;
 export const TEMPLATE_BOUND_ESL = 5340;
@@ -22,6 +23,8 @@ export const ERR_ROLE_NAME_EXIST = 5036;
 export const ERR_ROLE_USED = 5037;
 
 export const NONE_IMPORTED_RECORD = 5013;
+
+export const ERR_SSO_USER_NOT_IN_COMPANY = 5400;
 
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',
@@ -41,4 +44,9 @@ export const ALERT_NOTICE_MAP = {
 	[TEMPLATE_NAME_USED]: 'alert.template.name.used',
 	[ERR_ROLE_NAME_EXIST]: 'alert.role.name.exist',
 	[ERR_ROLE_USED]: 'alert.role.used',
+};
+
+export const ALERT_ROLE_MAP = {
+	[USER_NOT_EXIST]: 'alert.role.not.exist',
+	[ERR_SSO_USER_NOT_IN_COMPANY]: 'alert.sso.not.company',
 };

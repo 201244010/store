@@ -301,7 +301,14 @@ class ProductCU extends Component {
 						<Row>
 							<Col span={12}>
 								<Form.Item label=" " colon={false}>
-									<Button type="primary" onClick={this.onSubmit}>
+									<Button
+										type="primary"
+										onClick={this.onSubmit}
+										loading={
+											loading.effects['basicDataProduct/createProduct'] ||
+											loading.effects['basicDataProduct/updateProduct']
+										}
+									>
 										{action === 'create'
 											? formatMessage({ id: 'btn.create' })
 											: formatMessage({ id: 'btn.save' })}

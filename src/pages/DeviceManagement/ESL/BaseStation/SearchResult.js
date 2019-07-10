@@ -16,6 +16,64 @@ class SearchResult extends Component {
 			editVisible: false,
 			selectedRecord: '',
 		};
+		this.columns = [
+			{
+				title: formatMessage({ id: 'esl.device.ap.sn' }),
+				dataIndex: 'sn',
+			},
+			{
+				title: formatMessage({ id: 'esl.device.ap.name' }),
+				dataIndex: 'name',
+			},
+			// {
+			// 	title: formatMessage({ id: 'esl.device.ap.esl_num' }),
+			// 	dataIndex: 'esl_number',
+			// },
+			{
+				title: formatMessage({ id: 'esl.device.ap.status' }),
+				dataIndex: 'status',
+				render: (_, record) => <BaseStationTag record={record} template={STATION_STATES} />,
+			},
+			{
+				title: formatMessage({ id: 'list.action.title' }),
+				key: 'action',
+				render: (_, record) => (
+					<span>
+						<a
+							href="javascript: void (0);"
+							onClick={() => this.showDetailVisible(record)}
+						>
+							{formatMessage({ id: 'list.action.detail' })}
+						</a>
+						{`${record.status}` === '1' && (
+							<>
+								<Divider type="vertical" />
+								<a
+									href="javascript: void (0);"
+									onClick={() => this.showRestartStation(record)}
+								>
+									{formatMessage({ id: 'list.action.restart' })}
+								</a>
+							</>
+						)}
+						<Divider type="vertical" />
+						<a
+							href="javascript: void (0);"
+							onClick={() => this.showEditVisible(record)}
+						>
+							{formatMessage({ id: 'list.action.edit' })}
+						</a>
+						<Divider type="vertical" />
+						<a
+							href="javascript: void (0);"
+							onClick={() => this.showDeleteStation(record)}
+						>
+							{formatMessage({ id: 'list.action.delete' })}
+						</a>
+					</span>
+				),
+			},
+		];
 	}
 
 	onTableChange = pagination => {
@@ -129,71 +187,12 @@ class SearchResult extends Component {
 		const { loading, data, pagination, stationInfo } = this.props;
 		const { detailVisible, editVisible, selectedRecord } = this.state;
 
-		const columns = [
-			{
-				title: formatMessage({ id: 'esl.device.ap.sn' }),
-				dataIndex: 'sn',
-			},
-			{
-				title: formatMessage({ id: 'esl.device.ap.name' }),
-				dataIndex: 'name',
-			},
-			{
-				title: formatMessage({ id: 'esl.device.ap.esl_num' }),
-				dataIndex: 'esl_number',
-			},
-			{
-				title: formatMessage({ id: 'esl.device.ap.status' }),
-				dataIndex: 'status',
-				render: (_, record) => <BaseStationTag record={record} template={STATION_STATES} />,
-			},
-			{
-				title: formatMessage({ id: 'list.action.title' }),
-				key: 'action',
-				render: (_, record) => (
-					<span>
-						<a
-							href="javascript: void (0);"
-							onClick={() => this.showDetailVisible(record)}
-						>
-							{formatMessage({ id: 'list.action.detail' })}
-						</a>
-						{`${record.status}` === '1' && (
-							<>
-								<Divider type="vertical" />
-								<a
-									href="javascript: void (0);"
-									onClick={() => this.showRestartStation(record)}
-								>
-									{formatMessage({ id: 'list.action.restart' })}
-								</a>
-							</>
-						)}
-						<Divider type="vertical" />
-						<a
-							href="javascript: void (0);"
-							onClick={() => this.showEditVisible(record)}
-						>
-							{formatMessage({ id: 'list.action.edit' })}
-						</a>
-						<Divider type="vertical" />
-						<a
-							href="javascript: void (0);"
-							onClick={() => this.showDeleteStation(record)}
-						>
-							{formatMessage({ id: 'list.action.delete' })}
-						</a>
-					</span>
-				),
-			},
-		];
-
 		return (
 			<div>
 				<Table
 					rowKey="id"
 					loading={loading}
-					columns={columns}
+					columns={this.columns}
 					dataSource={data}
 					pagination={{
 						...pagination,

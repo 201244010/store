@@ -70,7 +70,7 @@ export default class SiderMenu extends PureComponent {
 						<img
 							src={logo}
 							alt="SUNMI STORE"
-							style={{ width: '194px', height: 'auto' }}
+							style={{ height: '64px' }}
 						/>
 					</Link>
 				</div>
@@ -80,7 +80,6 @@ export default class SiderMenu extends PureComponent {
 						mode="inline"
 						handleOpenChange={this.handleOpenChange}
 						onOpenChange={this.handleOpenChange}
-						style={{ padding: '16px 0', width: '100%' }}
 						{...defaultProps}
 					/>
 				</Suspense>
