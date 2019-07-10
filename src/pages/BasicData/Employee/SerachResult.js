@@ -4,6 +4,11 @@ import { Table, Divider, Modal, message, Popover } from 'antd';
 import styles from './Employee.less';
 import { ERROR_OK } from '@/constants/errorCode';
 
+const GENDER_MAP = {
+	1: formatMessage({ id: 'employee.gender.male' }),
+	2: formatMessage({ id: 'employee.gender.female' }),
+};
+
 const SearchResult = props => {
 	const {
 		data = [],
@@ -78,7 +83,11 @@ const SearchResult = props => {
 	const columns = [
 		{ title: formatMessage({ id: 'employee.number' }), dataIndex: 'number' },
 		{ title: formatMessage({ id: 'employee.name' }), dataIndex: 'name' },
-		{ title: formatMessage({ id: 'employee.gender' }), dataIndex: 'gender' },
+		{
+			title: formatMessage({ id: 'employee.gender' }),
+			dataIndex: 'gender',
+			render: gender => <>{GENDER_MAP[gender]}</>,
+		},
 		{
 			title: formatMessage({ id: 'employee.orgnization' }),
 			dataIndex: 'mappingList',

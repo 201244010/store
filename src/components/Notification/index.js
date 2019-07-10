@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, notification } from 'antd';
+import { notification } from 'antd';
+import NotificationHandler from './NotificationHandler';
 import { formatMessageTemplate } from '@/utils/utils';
 import styles from './notification.less';
 
@@ -21,39 +22,28 @@ export const Description = props => {
 		minorButtonLink = null,
 	} = btnOptions;
 
-	const handleMainBtnAction = (action, paramsStr) => {
-		const { mainAction = null } = props;
-		if (mainAction) {
-			mainAction(action, paramsStr);
-		}
-	};
-	const handleSubBtnAction = (action, paramsStr) => {
-		const { subAction = null } = props;
-		if (subAction) {
-			subAction(action, paramsStr);
-		}
-	};
-
 	return (
 		<div className={styles['description-wrapper']}>
 			<div>{description !== '' ? formatMessageTemplate(description) : ''}</div>
 			{Object.keys(btnOptions).length > 0 && (
 				<div className={styles['btn-wrapper']}>
 					{minorButtonName && (
-						<Button
-							onClick={() => handleSubBtnAction(minorButtonName, minorButtonLink)}
-						>
-							{formatMessageTemplate(minorButtonName)}
-						</Button>
+						<NotificationHandler
+							{...{
+								buttonName: minorButtonName,
+								buttonParams: minorButtonLink,
+							}}
+						/>
 					)}
 					{majorButtonName && (
-						<Button
-							style={{ marginLeft: '15px' }}
-							type="primary"
-							onClick={() => handleMainBtnAction(majorButtonName, majorButtonLink)}
-						>
-							{formatMessageTemplate(majorButtonName)}
-						</Button>
+						<NotificationHandler
+							{...{
+								buttonName: majorButtonName,
+								buttonParams: majorButtonLink,
+								type: 'primary',
+								style: { marginLeft: '15px' },
+							}}
+						/>
 					)}
 				</div>
 			)}
@@ -69,7 +59,7 @@ const notificationType = {
 };
 
 export const displayNotification = props => {
-	const { data = {}, key, mainAction, subAction, closeAction } = props;
+	const { data = {}, key, closeAction } = props;
 	const {
 		title,
 		description,
@@ -89,8 +79,6 @@ export const displayNotification = props => {
 			<Description
 				{...{
 					description,
-					mainAction,
-					subAction,
 					btnOptions: {
 						majorButtonName,
 						majorButtonLink,

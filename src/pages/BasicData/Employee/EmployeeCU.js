@@ -156,21 +156,6 @@ class EmployeeCU extends Component {
 			if (!err) {
 				const { mappingList = [], ssoUsername = '', username } = values;
 
-				if (ssoUsername) {
-					const checkResponse = await checkSsoBinded({ ssoUsername: username });
-					if (checkResponse && checkResponse.code === SSO_BINDED) {
-						setFields({
-							ssoUsername: {
-								value: ssoUsername,
-								errors: [
-									new Error(formatMessage({ id: 'employee.sso.binded' })),
-								],
-							},
-						});
-						return;
-					}
-				}
-				
 				if (this.action === 'edit' && this.employeeId) {
 					const response = await updateEmployee({
 						employeeId: this.employeeId,
@@ -196,6 +181,21 @@ class EmployeeCU extends Component {
 							},
 						});
 						return;
+					}
+
+					if (ssoUsername) {
+						const checkResponse = await checkSsoBinded({ ssoUsername: username });
+						if (checkResponse && checkResponse.code === SSO_BINDED) {
+							setFields({
+								ssoUsername: {
+									value: ssoUsername,
+									errors: [
+										new Error(formatMessage({ id: 'employee.sso.binded' })),
+									],
+								},
+							});
+							return;
+						}
 					}
 
 					const response = await createEmployee({
@@ -318,7 +318,7 @@ class EmployeeCU extends Component {
 					<Form.Item label={formatMessage({ id: 'employee.sso.account' })}>
 						{getFieldDecorator('ssoUsername', {
 							initialValue: this.action === 'edit' ? ssoUsername : '',
-						})(<Input disabled={ssoUsername && this.action === 'edit'} />)}
+						})(<Input disabled={!!(ssoUsername && this.action === 'edit')} />)}
 					</Form.Item>
 					<Form.Item
 						label={formatMessage({ id: 'employee.orgnization' })}
