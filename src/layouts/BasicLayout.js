@@ -13,7 +13,7 @@ import Media from 'react-media';
 import { formatMessage, getLocale } from 'umi/locale';
 import MQTTWrapper from '@/components/MQTT';
 import * as CookieUtil from '@/utils/cookies';
-import router from 'umi/router';
+// import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Header from './Header';
@@ -56,7 +56,7 @@ const query = {
 	},
 };
 
-const UNAUTH_PATH = ['account', 'notification'];
+const UNAUTH_PATH = ['account', 'notification', 'exception'];
 
 @MQTTWrapper
 class BasicLayout extends React.PureComponent {
@@ -96,13 +96,12 @@ class BasicLayout extends React.PureComponent {
 			this.handleMenuCollapse(false);
 		}
 
-		if (this.dom){
+		if (this.dom) {
 			const erd = ResizeDetecor();
 			erd.listenTo(this.dom, () => {
 				this.scrollbar._ps.update();
 			});
 		}
-
 	}
 
 	getContext() {
@@ -136,7 +135,12 @@ class BasicLayout extends React.PureComponent {
 					inMenuChecking: false,
 				});
 			} else {
-				router.goBack();
+				goToPath('noPermission');
+				this.setState({
+					inMenuChecking: false,
+				});
+				// goToPath('noPermission');
+				// router.goBack();
 			}
 		}
 	};
@@ -269,8 +273,15 @@ class BasicLayout extends React.PureComponent {
 						<ContainerQuery query={query}>
 							{params => (
 								<Context.Provider value={this.getContext()}>
-									<PerfectScrollbar ref={scrollbar => this.scrollbar = scrollbar}>
-										<div ref={dom => this.dom = dom} className={classNames(params)}>{layout}</div>
+									<PerfectScrollbar
+										ref={scrollbar => (this.scrollbar = scrollbar)}
+									>
+										<div
+											ref={dom => (this.dom = dom)}
+											className={classNames(params)}
+										>
+											{layout}
+										</div>
 									</PerfectScrollbar>
 								</Context.Provider>
 							)}
