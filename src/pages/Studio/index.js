@@ -115,7 +115,7 @@ class Studio extends Component {
 			copySelectedComponent,
 			addComponent
 		} = this.props;
-		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
+		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1;
 		// 操作输入框时 无法删除
 		if ([KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT' && tagName.toUpperCase() !== 'TEXTAREA') {
 			if (canCopyOrDelete) {
@@ -142,13 +142,21 @@ class Studio extends Component {
 					const newPosition = {};
 					if (canCopyOrDelete) {
 						const selectedComponent = componentsDetail[selectedShapeName];
-						const {x, y, scaleY} = selectedComponent;
-						newPosition.x = x;
-						newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
+						if (selectedComponent) {
+							const {x, y, scaleY} = selectedComponent;
+							newPosition.x = x;
+							newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
+						} else {
+							!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+							newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
+							newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
+						}
 					} else {
-						newPosition.x = copiedComponent.x;
-						newPosition.y = copiedComponent.y;
+						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+						newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
+						newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
 					}
+
 					addComponent({
 						...copiedComponent,
 						x: newPosition.x,
@@ -266,12 +274,23 @@ class Studio extends Component {
 		}
 	};
 
-	handleStageMouseUp = () => {
+	handleStageMouseUp = (e) => {
 		if (this.moveStart) {
-			const { selectComponentIn } = this.props;
 			this.moveStart = false;
+			const { selectComponentIn, updateComponentsDetail } = this.props;
+			if (Math.abs(e.evt.clientX - this.moveStartX) > 10) {
+				selectComponentIn();
+			} else {
+				updateComponentsDetail({
+					isStep: false,
+					selectedShapeName: '',
+					[RECT_SELECT_NAME]: {
+						width: 0,
+						height: 0
+					},
+				});
+			}
 
-			selectComponentIn();
 		}
 	};
 

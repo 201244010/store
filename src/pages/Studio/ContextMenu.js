@@ -92,9 +92,10 @@ export default class ContextMenu extends Component {
 	};
 
 	render() {
-		const { props: { position, selectedShapeName, copiedComponent } } = this;
+		const { props: { position, selectedShapeName, copiedComponent, scopedComponents } } = this;
 		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
 		const canCut = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1;
+		const canPaste = copiedComponent && (copiedComponent.type === SHAPE_TYPES.RECT_SELECT ? (scopedComponents && scopedComponents.length) : copiedComponent.type);
 
 		return (
 			<div
@@ -119,7 +120,7 @@ export default class ContextMenu extends Component {
 						{formatMessage({ id: 'studio.action.copy' })}
 					</div>
 				)}
-				{copiedComponent && copiedComponent.type ? (
+				{canPaste ? (
 					<div className={styles['context-item']} onClick={this.handlePaste}>
 						{formatMessage({ id: 'studio.action.paste' })}
 					</div>
