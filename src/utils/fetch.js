@@ -10,6 +10,7 @@ import router from 'umi/router';
 import { fetch } from 'whatwg-fetch';
 
 const { API_ADDRESS, MD5_TOKEN } = CONFIG;
+const ERR_INTERNET_DISCONNECTED = 9999;
 
 // const codeMessage = {
 //   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
@@ -105,6 +106,15 @@ const customizeParams = (options = {}) => {
 	return formatParams(formattedParams || {});
 };
 
+const fetchHandler = async (url, opts) => {
+	try {
+		const response = await fetch(url, opts);
+		return response;
+	} catch (err) {
+		return new Response(JSON.stringify({ code: ERR_INTERNET_DISCONNECTED }));
+	}
+};
+
 export const customizeFetch = (service = 'api', base) => {
 	const baseUrl = base || API_ADDRESS;
 	return async (api, options = {}, withAuth = true) => {
@@ -126,7 +136,9 @@ export const customizeFetch = (service = 'api', base) => {
 		}
 
 		const url = `//${baseUrl}/${service}/${api}`;
-		const response = await fetch(url, opts);
+		// const response = await fetch(url, opts);
+		const response = await fetchHandler(url, opts);
+		// console.log(response);
 
 		if (response.status === 401) {
 			unAuthHandler();
