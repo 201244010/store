@@ -23,7 +23,8 @@
     "lint:fix": "eslint --fix --ext .js src mock tests && npm run lint:style",
     "lint-staged": "lint-staged",
     "lint-staged:js": "eslint --ext .js",
-    "prettier": "node ./scripts/prettier.js"
+    "prettier": "node ./scripts/prettier.js",
+    "test": "npx jest --colors --coverage"
   },
   "dependencies": {
     "@antv/data-set": "^0.9.6",
@@ -66,6 +67,7 @@
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.5.4",
     "babel-eslint": "^10.0.1",
     "cross-env": "^5.1.1",
     "cross-port-killer": "^1.0.1",

@@ -454,7 +454,7 @@ const router = [
 						path: '/exception/404',
 						name: 'no-rescourse',
 						id: 'noRescourse',
-						component: './Exception/403',
+						component: './Exception/404',
 					},
 				],
 			},

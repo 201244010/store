@@ -9,6 +9,10 @@ import styles from './Employee.less';
 import global from '@/styles/common.less';
 
 const FormItem = Form.Item;
+const GENDER_MAP = {
+	1: formatMessage({ id: 'employee.gender.male' }),
+	2: formatMessage({ id: 'employee.gender.female' }),
+};
 
 @connect(
 	state => ({
@@ -17,15 +21,15 @@ const FormItem = Form.Item;
 		employee: state.employee,
 	}),
 	dispatch => ({
-		getEmployeeList: ({ current = 1, pageSize = 10, name, number, username, roleId }) =>
+		getEmployeeList: ({ current = 1, pageSize = 10, roleId = -1}) =>
 			dispatch({
 				type: 'employee/getEmployeeList',
-				payload: { current, pageSize, name, number, username, roleId },
+				payload: { current, pageSize, roleId },
 			}),
+		setSearchValue: payload => dispatch({ type: 'employee/setSearchValue', payload }),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
 	})
 )
-@Form.create()
 class EmployeeTable extends Component {
 	constructor(props) {
 		super(props);
@@ -41,10 +45,7 @@ class EmployeeTable extends Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.gender' }),
 				dataIndex: 'gender',
-				render: gender =>
-					gender === 1
-						? formatMessage({ id: 'employee.gender.male' })
-						: formatMessage({ id: 'employee.gender.female' }),
+				render: gender => GENDER_MAP[gender] || '--'
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.employeePhone' }),
@@ -72,38 +73,25 @@ class EmployeeTable extends Component {
 		getEmployeeList({ roleId: idDecode(roleId) });
 	}
 
+	componentWillUnmount() {
+		const { clearSearchValue } = this.props;
+		clearSearchValue();
+	}
+
+	handleSearchChange = (field, value) => {
+		const { setSearchValue } = this.props;
+		setSearchValue({
+			[field]: value,
+		});
+	};
+
 	handleSubmit = () => {
 		const {
-			form: { validateFields },
 			getEmployeeList,
 			query: { roleId },
 		} = this.props;
-		validateFields(async (err, values) => {
-			if (!err) {
-				const { name, number, username } = values;
-				const payload = {
-					name,
-					number,
-					username,
-					roleId: idDecode(roleId),
-				};
-				const response = await getEmployeeList(payload);
-				if (response && response.code !== ERROR_OK) {
-					setFields({
-						companyName: {
-							value: values.name,
-							errors: [
-								new Error(
-									formatMessage({
-										id: 'roleManagement.role.accountNotExist',
-									})
-								),
-							],
-						},
-					});
-				}
-			}
-		});
+
+		getEmployeeList({ roleId });
 	};
 
 	handleReset = async () => {
@@ -133,9 +121,12 @@ class EmployeeTable extends Component {
 
 	render() {
 		const {
-			form: { getFieldDecorator },
 			query: { role },
-			employee: { employeeList, pagination },
+			employee: {
+				employeeList,
+				pagination,
+				searchValue: { name, username, number },
+			},
 			loading,
 		} = this.props;
 
@@ -150,7 +141,12 @@ class EmployeeTable extends Component {
 						<Row gutter={FORM_FORMAT.gutter}>
 							<Col {...COL_THREE_NORMAL}>
 								<FormItem label={formatMessage({ id: 'roleManagement.role.name' })}>
-									{getFieldDecorator('name', {})(<Input />)}
+									<Input
+										value={name}
+										onChange={e =>
+											this.handleSearchChange('name', e.target.value)
+										}
+									/>
 								</FormItem>
 							</Col>
 							<Col {...COL_THREE_NORMAL}>
@@ -159,7 +155,12 @@ class EmployeeTable extends Component {
 										id: 'roleManagement.role.companyNumber',
 									})}
 								>
-									{getFieldDecorator('number', {})(<Input />)}
+									<Input
+										value={number}
+										onChange={e =>
+											this.handleSearchChange('number', e.target.value)
+										}
+									/>
 								</FormItem>
 							</Col>
 							<Col {...COL_THREE_NORMAL}>
@@ -168,7 +169,12 @@ class EmployeeTable extends Component {
 										id: 'roleManagement.role.telePhone',
 									})}
 								>
-									{getFieldDecorator('username', {})(<Input />)}
+									<Input
+										value={username}
+										onChange={e =>
+											this.handleSearchChange('username', e.target.value)
+										}
+									/>
 								</FormItem>
 							</Col>
 							<Col {...COL_THREE_NORMAL}>
@@ -184,7 +190,7 @@ class EmployeeTable extends Component {
 				</div>
 				<div className={styles['employee-table']}>
 					<Table
-						rowKey="shop_id"
+						rowKey="shopId"
 						dataSource={employeeList}
 						columns={this.columns}
 						loading={loading.effects['employee/getEmployeeList']}
