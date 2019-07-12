@@ -72,6 +72,9 @@ export default class RightToolBox extends Component {
 	};
 
 	handleBindValue = (value) => {
+		if (!/^[0-9a-zA-Z]+$/.test(value)) {
+			return;
+		}
 		const {
 			componentsDetail,
 			selectedShapeName,
@@ -94,6 +97,7 @@ export default class RightToolBox extends Component {
 			image.onload = () => {
 				updateComponentsDetail({
 					[selectedShapeName]: {
+						content: value,
 						image,
 						imageType: 'selected',
 						ratio: image.height / image.width,
@@ -112,6 +116,7 @@ export default class RightToolBox extends Component {
 
 			updateComponentsDetail({
 				[selectedShapeName]: {
+					content: value,
 					image,
 					imageType: 'selected',
 					ratio: image.height / image.width,
@@ -372,7 +377,7 @@ export default class RightToolBox extends Component {
 						<h4>{formatMessage({ id: 'studio.tool.title.bind.value' })}</h4>
 						<Input
 							placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
-							value={detail.bindValue}
+							value={detail.content}
 							style={{ width: '100%' }}
 							maxLength={30}
 							onChange={e => {
@@ -513,15 +518,19 @@ export default class RightToolBox extends Component {
 										this.handleDetail('stroke', e.target.value);
 									}}
 								>
-									<Radio.Button style={{ width: '33.33%' }} value="black">
+									<Radio.Button style={{ width: hasRed ? '33.33%' : '50%' }} value="black">
 										黑
 									</Radio.Button>
-									<Radio.Button style={{ width: '33.33% ' }} value="white">
+									<Radio.Button style={{ width: hasRed ? '33.33%' : '50%' }} value="white">
 										白
 									</Radio.Button>
-									<Radio.Button style={{ width: '33.33%' }} value="red">
-										红
-									</Radio.Button>
+									{
+										hasRed ?
+											<Radio.Button style={{ width: '33.33%' }} value="red">
+												红
+											</Radio.Button> :
+											null
+									}
 								</Radio.Group>
 							</Col>
 						</Row>

@@ -12,6 +12,7 @@ import {
 	NORMAL_PRICE_TYPES,
 	NON_NORMAL_PRICE_TYPES,
 	MAPS,
+	RECT_SELECT_NAME
 } from '@/constants/studio';
 
 export default {
@@ -160,10 +161,12 @@ export default {
 					draft.backgroundColor = componentDetail.fill;
 				}
 			});
+			delete payload.draft[RECT_SELECT_NAME];
 			Object.keys(payload.draft).map(key => {
-				const componentDetail = payload.draft[key];
+				const componentDetail = { ...payload.draft[key]};
 				Object.keys(componentDetail).map(detailKey => {
-					componentDetail.content = componentDetail.bindField ? `{{${componentDetail.bindField}}}` : (componentDetail.text || '');
+					componentDetail.content = componentDetail.content ? componentDetail.content :
+						(componentDetail.bindField ? `{{${componentDetail.bindField}}}` : (componentDetail.text || ''));
 					if (['height', 'width'].includes(detailKey)) {
 						const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
 						if (SHAPE_TYPES.IMAGE === componentDetail.type) {

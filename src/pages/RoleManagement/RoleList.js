@@ -54,11 +54,17 @@ class RoleList extends React.Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.userCount' }),
 				dataIndex: 'userCount',
-				render: (_, record) => (
-					<a href="javascript:void(0);" onClick={() => this.goPath(record, 'employee')}>
-						{record.userCount}
-					</a>
-				),
+				render: (_, record) =>
+					record.isDefault ? (
+						'--'
+					) : (
+						<a
+							href="javascript:void(0);"
+							onClick={() => this.goPath(record, 'employee')}
+						>
+							{record.userCount}
+						</a>
+					),
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.creator' }),

@@ -45,6 +45,8 @@ module.exports = {
 		'react/prefer-stateless-function': 0,
 		'semi': ['error', 'always'],
 		'no-underscore-dangle': 0,
+		'no-nested-ternary': 0,
+		'no-unused-expressions': 0,
 		'import/no-extraneous-dependencies': 0,
 		'quotes': [2, 'single'],
 		'indent': ['error', 'tab', {

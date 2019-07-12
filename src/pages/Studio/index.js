@@ -110,7 +110,7 @@ class Studio extends Component {
 			return;
 		}
 		const {
-			studio: { selectedShapeName, componentsDetail, copiedComponent, zoomScale },
+			studio: { selectedShapeName, componentsDetail, copiedComponent, scopedComponents, zoomScale },
 			deleteSelectedComponent,
 			copySelectedComponent,
 			addComponent
@@ -139,21 +139,41 @@ class Studio extends Component {
 			// Ctrl + V
 			if (keyCode === KEY.KEY_V) {
 				if (copiedComponent.name) {
-					const newPosition = {};
-					if (canCopyOrDelete) {
-						const selectedComponent = componentsDetail[selectedShapeName];
-						const {x, y, scaleY} = selectedComponent;
-						newPosition.x = x;
-						newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
+					if (copiedComponent.type !== SHAPE_TYPES.RECT_SELECT) {
+						const newPosition = {};
+						if (canCopyOrDelete) {
+							const selectedComponent = componentsDetail[selectedShapeName];
+							if (selectedComponent) {
+								const {x, y, scaleY} = selectedComponent;
+								newPosition.x = x;
+								newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
+							} else {
+								!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+								newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
+								newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
+							}
+						} else {
+							!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+							newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
+							newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
+						}
+
+						addComponent({
+							...copiedComponent,
+							x: newPosition.x,
+							y: newPosition.y,
+						});
 					} else {
-						newPosition.x = copiedComponent.x;
-						newPosition.y = copiedComponent.y;
+						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+						for (let i = 0; i < scopedComponents.length; i++) {
+							const {x, y, type, scaleY} = scopedComponents[i];
+							addComponent({
+								...scopedComponents[i],
+								x,
+								y: y + MAPS.height[type] * scaleY * zoomScale * copiedComponent.copyCount,
+							});
+						}
 					}
-					addComponent({
-						...copiedComponent,
-						x: newPosition.x,
-						y: newPosition.y,
-					});
 				}
 			}
 		}
@@ -266,12 +286,23 @@ class Studio extends Component {
 		}
 	};
 
-	handleStageMouseUp = () => {
+	handleStageMouseUp = (e) => {
 		if (this.moveStart) {
-			const { selectComponentIn } = this.props;
 			this.moveStart = false;
+			const { selectComponentIn, updateComponentsDetail } = this.props;
+			if (Math.abs(e.evt.clientX - this.moveStartX) > 10) {
+				selectComponentIn();
+			} else {
+				updateComponentsDetail({
+					isStep: false,
+					selectedShapeName: '',
+					[RECT_SELECT_NAME]: {
+						width: 0,
+						height: 0
+					},
+				});
+			}
 
-			selectComponentIn();
 		}
 	};
 
