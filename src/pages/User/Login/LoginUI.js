@@ -13,7 +13,8 @@ import * as CookieUtil from '@/utils/cookies';
 import * as Regexp from '@/constants/regexp';
 import { ERROR_OK, ALERT_NOTICE_MAP, USER_NOT_EXIST } from '@/constants/errorCode';
 import { KEY } from '@/constants';
-import { env } from '@/config';
+// import { env } from '@/config';
+import env from '@/config/env';
 import styles from './Login.less';
 
 const VALIDATE_FIELDS = {

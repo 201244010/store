@@ -23,8 +23,10 @@ import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/logo-big.png';
 import logoEN from '../assets/menuLogoEN.png';
-import { env } from '@/config';
+// import { env } from '@/config';
+import env from '@/config/env';
 
+// console.log('in basiclayout env:', env);
 message.config({
 	maxCount: 1,
 });

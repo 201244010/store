@@ -1,14 +1,15 @@
 // ref: https://umijs.org/config/
 import { primaryColor } from '../src/defaultSettings';
 import routers from '../src/config/router';
-import uatRouters from '../src/config/uat-router';
+import uatRouters from '../src/config/router.uat';
+import env from '../src/config/env';
 // import routers from './router';
 
-const env = process.env.UMI_ENV;
 console.log('current environment:', env);
 
 const ROUTERS = {
 	uat: uatRouters,
+	onl: uatRouters,
 	default: routers
 }
 

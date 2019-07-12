@@ -4,7 +4,8 @@ import { Card, List } from 'antd';
 import { ChangePassword, ChangeMobile, ChangeMail } from '@/components/Modal';
 import { maskPhone } from '@/utils/utils';
 import { ERROR_OK } from '@/constants/errorCode';
-import { env } from '@/config';
+// import { env } from '@/config';
+import env from '@/config/env';
 import * as styles from './Account.less';
 
 const RENDER_MODAL = {

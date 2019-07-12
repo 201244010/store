@@ -9,7 +9,8 @@ import Storage from '@konata9/storage.js';
 // import routeConfig from '@/config/devRouter';
 import routeConfig from '@/config/router';
 
-import { env } from '@/config';
+// import { env } from '@/config';
+import env from '@/config/env';
 
 const { check } = Authorized;
 

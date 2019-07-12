@@ -8,7 +8,8 @@ import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
 import { ERROR_OK, SHOW_VCODE, VCODE_ERROR, ALERT_NOTICE_MAP } from '@/constants/errorCode';
-import { env } from '@/config';
+// import { env } from '@/config';
+import env from '@/config/env';
 import styles from './ResetPassword.less';
 
 @connect(
@@ -19,7 +20,7 @@ import styles from './ResetPassword.less';
 	dispatch => ({
 		resetPassword: payload => dispatch({ type: 'user/resetPassword', payload }),
 		sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
-	}),
+	})
 )
 @Form.create()
 class MobileReset extends Component {
@@ -201,7 +202,7 @@ class MobileReset extends Component {
 										maxLength={11}
 										autoComplete="off"
 										placeholder={formatMessage({ id: 'mobile.placeholder' })}
-									/>,
+									/>
 								)}
 							</Form.Item>
 							{env !== 'local' && (
@@ -252,7 +253,7 @@ class MobileReset extends Component {
 													},
 													onClick: this.getCode,
 												}}
-											/>,
+											/>
 										)}
 									</Form.Item>
 								</>
@@ -278,7 +279,7 @@ class MobileReset extends Component {
 										type="password"
 										size="large"
 										placeholder={formatMessage({ id: 'password.placeholder' })}
-									/>,
+									/>
 								)}
 							</Form.Item>
 							<Form.Item>
@@ -304,17 +305,15 @@ class MobileReset extends Component {
 										type="password"
 										size="large"
 										placeholder={formatMessage({ id: 'confirm.placeholder' })}
-									/>,
+									/>
 								)}
 							</Form.Item>
 							<Form.Item />
 						</Form>
 						<div className={styles['reset-footer']}>
 							<Button
-								className={
-									`${styles['primary-btn']}
-									${styles['reset-confirm-btn']}`
-								}
+								className={`${styles['primary-btn']}
+									${styles['reset-confirm-btn']}`}
 								type="primary"
 								size="large"
 								block
