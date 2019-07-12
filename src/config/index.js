@@ -1,4 +1,6 @@
-export const env = process.env.UMI_ENV;
+import sysEnv from './env';
+
+export const env = sysEnv;
 
 const WEB_SOCKET_PREFIX = {
 	dev: 'ws',
