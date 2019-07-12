@@ -10,8 +10,7 @@ import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
 import { ERROR_OK, ALERT_NOTICE_MAP, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 import { MAIL_LIST } from '@/constants';
-// import { env } from '@/config';
-import env from '@/config/env';
+import { env } from '@/config';
 import styles from './Register.less';
 
 const MailRegisterSuccess = ({ props }) => {

@@ -8,8 +8,7 @@ import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
 import { ERROR_OK, SHOW_VCODE, VCODE_ERROR, ALERT_NOTICE_MAP } from '@/constants/errorCode';
-// import { env } from '@/config';
-import env from '@/config/env';
+import { env } from '@/config';
 import styles from './ResetPassword.less';
 
 @connect(
