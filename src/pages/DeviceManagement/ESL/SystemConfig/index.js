@@ -39,10 +39,10 @@ class SystemConfig extends Component {
 				<Card title="价签配置" bordered={false} style={{ width: '100%' }}>
 					<Row>
 						<Row>
-							<Col span={2} offset={6} style={{lineHeight: '30px'}}>
+							<Col span={3} offset={6} style={{lineHeight: '30px', textAlign: 'right'}}>
 								{formatMessage({ id: 'esl.device.esl.scan.time' })}：
 							</Col>
-							<Col span={8}>
+							<Col span={9}>
 								<InputNumber
 									min={5}
 									max={60}
@@ -59,7 +59,7 @@ class SystemConfig extends Component {
 							</Col>
 						</Row>
 						<Row style={{marginTop: 40}}>
-							<Col span={8} offset={8}>
+							<Col span={8} offset={9}>
 								<Button type="primary" onClick={this.handleSetScanTime} loading={loading}>
 									{formatMessage({ id: 'btn.save' })}
 								</Button>

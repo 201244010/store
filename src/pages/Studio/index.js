@@ -110,12 +110,12 @@ class Studio extends Component {
 			return;
 		}
 		const {
-			studio: { selectedShapeName, componentsDetail, copiedComponent, zoomScale },
+			studio: { selectedShapeName, componentsDetail, copiedComponent, scopedComponents, zoomScale },
 			deleteSelectedComponent,
 			copySelectedComponent,
 			addComponent
 		} = this.props;
-		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1;
+		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
 		// 操作输入框时 无法删除
 		if ([KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT' && tagName.toUpperCase() !== 'TEXTAREA') {
 			if (canCopyOrDelete) {
@@ -139,29 +139,41 @@ class Studio extends Component {
 			// Ctrl + V
 			if (keyCode === KEY.KEY_V) {
 				if (copiedComponent.name) {
-					const newPosition = {};
-					if (canCopyOrDelete) {
-						const selectedComponent = componentsDetail[selectedShapeName];
-						if (selectedComponent) {
-							const {x, y, scaleY} = selectedComponent;
-							newPosition.x = x;
-							newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
+					if (copiedComponent.type !== SHAPE_TYPES.RECT_SELECT) {
+						const newPosition = {};
+						if (canCopyOrDelete) {
+							const selectedComponent = componentsDetail[selectedShapeName];
+							if (selectedComponent) {
+								const {x, y, scaleY} = selectedComponent;
+								newPosition.x = x;
+								newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
+							} else {
+								!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+								newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
+								newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
+							}
 						} else {
 							!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
 							newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
 							newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
 						}
+
+						addComponent({
+							...copiedComponent,
+							x: newPosition.x,
+							y: newPosition.y,
+						});
 					} else {
 						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
-						newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
-						newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
+						for (let i = 0; i < scopedComponents.length; i++) {
+							const {x, y, type, scaleY} = scopedComponents[i];
+							addComponent({
+								...scopedComponents[i],
+								x,
+								y: y + MAPS.height[type] * scaleY * zoomScale * copiedComponent.copyCount,
+							});
+						}
 					}
-
-					addComponent({
-						...copiedComponent,
-						x: newPosition.x,
-						y: newPosition.y,
-					});
 				}
 			}
 		}
