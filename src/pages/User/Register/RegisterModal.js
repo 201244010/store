@@ -63,12 +63,12 @@ const MailRegisterSuccess = ({ props }) => {
 	state => ({
 		user: state.user,
 		sso: state.sso,
-		loading: state.loading
+		loading: state.loading,
 	}),
 	dispatch => ({
 		register: payload => dispatch({ type: 'user/register', payload }),
 		sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
-	}),
+	})
 )
 @Form.create()
 class Register extends Component {
@@ -292,7 +292,7 @@ class Register extends Component {
 														placeholder={formatMessage({
 															id: 'mobile.placeholder',
 														})}
-													/>,
+													/>
 												)}
 											</Form.Item>
 
@@ -348,7 +348,7 @@ class Register extends Component {
 																	},
 																	onClick: this.getCode,
 																}}
-															/>,
+															/>
 														)}
 													</Form.Item>
 												</>
@@ -379,7 +379,7 @@ class Register extends Component {
 													placeholder={formatMessage({
 														id: 'mail.placeholder',
 													})}
-												/>,
+												/>
 											)}
 										</Form.Item>
 									)}
@@ -405,7 +405,7 @@ class Register extends Component {
 												placeholder={formatMessage({
 													id: 'password.placeholder',
 												})}
-											/>,
+											/>
 										)}
 									</Form.Item>
 									<Form.Item>
@@ -433,16 +433,14 @@ class Register extends Component {
 												placeholder={formatMessage({
 													id: 'confirm.placeholder',
 												})}
-											/>,
+											/>
 										)}
 									</Form.Item>
 								</Form>
 								<div className={styles['register-footer']}>
 									<Button
-										className={
-											`${styles['primary-btn']}
-											${styles['footer-btn']}`
-										}
+										className={`${styles['primary-btn']}
+											${styles['footer-btn']}`}
 										type="primary"
 										size="large"
 										block
