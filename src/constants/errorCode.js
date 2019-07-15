@@ -14,6 +14,8 @@ export const USER_NOT_LOGIN = 5028;
 export const TEMPLATE_BOUND_ESL = 5340;
 export const TEMPLATE_NAME_USED = 5346;
 
+export const EMPLOYEE_BINDED = 5406;
+
 export const PRODUCT_SEQ_EXIST = 5051;
 export const STORE_EXIST = 5034;
 export const ERR_FIRMWARE_EXIST = 5801;

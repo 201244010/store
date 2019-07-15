@@ -5,7 +5,7 @@ import { Card, Form, Input, Button, Radio, message } from 'antd';
 import OrgnizationSelect from './OrgnizationSelect';
 import { getLocationParam } from '@/utils/utils';
 import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { ERROR_OK, USER_EXIST, SSO_BINDED } from '@/constants/errorCode';
+import { ERROR_OK, USER_EXIST, SSO_BINDED, EMPLOYEE_BINDED } from '@/constants/errorCode';
 
 @connect(
 	state => ({
@@ -154,7 +154,7 @@ class EmployeeCU extends Component {
 
 		validateFields(async (err, values) => {
 			if (!err) {
-				const { mappingList = [], ssoUsername = '', username } = values;
+				const { mappingList = [], ssoUsername = '', username, number } = values;
 
 				if (this.action === 'edit' && this.employeeId) {
 					const response = await updateEmployee({
@@ -168,6 +168,8 @@ class EmployeeCU extends Component {
 						} else {
 							goToPath('employeeList');
 						}
+					} else if (response && response.code === EMPLOYEE_BINDED) {
+						message.error(formatMessage({ id: 'employee.info.binded.error' }));
 					} else {
 						message.error(formatMessage({ id: 'employee.info.update.failed' }));
 					}
@@ -204,6 +206,13 @@ class EmployeeCU extends Component {
 					});
 					if (response && response.code === ERROR_OK) {
 						goToPath('employeeList');
+					} else if (response && response.code === EMPLOYEE_BINDED) {
+						setFields({
+							number: {
+								value: number,
+								errors: [new Error(formatMessage({ id: 'employee.number.exist' }))],
+							},
+						});
 					} else {
 						message.error(formatMessage({ id: 'employee.info.create.failed' }));
 					}
@@ -261,8 +270,19 @@ class EmployeeCU extends Component {
 									required: true,
 									message: formatMessage({ id: 'employee.number.isEmpty' }),
 								},
+								{
+									validator: (rule, value, callback) => {
+										if (/^[\d\w]+$/.test(value)) {
+											callback();
+										} else {
+											callback(
+												formatMessage({ id: 'employee.number.formatError' })
+											);
+										}
+									},
+								},
 							],
-						})(<Input />)}
+						})(<Input maxLength={20} style={{ textTransform: 'uppercase' }} />)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.name' })}>
 						{getFieldDecorator('name', {
@@ -303,7 +323,13 @@ class EmployeeCU extends Component {
 								},
 								{
 									validator: (rule, value, callback) => {
-										if (!/^\d{11}$/.test(value)) {
+										if (
+											!/^\d{11}$/.test(value) &&
+											// eslint-disable-next-line no-useless-escape
+											!/^([A-Za-z0-9_\-\.])+@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(
+												value
+											)
+										) {
 											callback(
 												formatMessage({ id: 'employee.phone.formatError' })
 											);
