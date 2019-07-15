@@ -143,10 +143,10 @@ export default {
 
 			let filteredMenuData = menuData;
 
-			// const permissionResult = yield put.resolve({
-			// 	type: 'role/getUserPermissionList',
-			// });
-			// console.log(permissionResult);
+			const permissionResult = yield put.resolve({
+				type: 'role/getUserPermissionList',
+			});
+			console.log('permission list: ', permissionResult);
 
 			if (env !== 'dev') {
 				const response = yield call(MenuAction.getAuthMenu);
