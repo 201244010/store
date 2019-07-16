@@ -33,24 +33,8 @@ class VideoPlayComponent extends React.Component {
 	}
 
 	render() {
-		const { videoUrl, ipcType, playing } = this.props;
-		// let pixelRatio;
-		// switch(ipcType){
-		// 	case 'FS1':
-		// 		pixelRatio = '16:9';
-		// 		break;
-		// 	case 'SS1':
-		// 		pixelRatio = '1:1';
-		// 		break;
-		// 	default:
-		// 		pixelRatio = '16:9';
-		// 		break;
-		// }
-		const pixelRatio = {
-			'FS1':'16:9',
-			'SS1':'1:1'
-		};
-		// console.log(pixelRatio[ipcType]);
+		const { videoUrl, pixelRatio, playing } = this.props;
+
 		return (
 			<Modal
 				className={styles['video-player']}
@@ -65,11 +49,9 @@ class VideoPlayComponent extends React.Component {
 					<Icon className={styles.close} type="close" onClick={this.closeWindow} />
 					<div className={styles['video-player-container']}>
 						<VideoPlayer
-							pixelRatio={pixelRatio[ipcType]?pixelRatio[ipcType]:'16:9'}
-							// pixelRatio= '16:9'
+							pixelRatio={pixelRatio}
 							type='track'
 							url={videoUrl}
-							// onRef={this.onRef}
 							ref={playler => this.child = playler}
 						/>
 					</div>

@@ -10,9 +10,9 @@ import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 
 import VideoPlayComponent from '../component/VideoPlayComponent';
 
-
-import styles from './MotionList.less';
 import global from '@/styles/common.less';
+import styles from './MotionList.less';
+
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -52,9 +52,9 @@ const { RangePicker } = DatePicker;
 			}
 		});
 	},
-	async getIpcType( sn ){
+	async getDeviceInfo( sn ){
 		const result = await dispatch({
-			type: 'ipcList/getDeviceType',
+			type: 'ipcList/getDeviceInfo',
 			payload: {
 				sn
 			}
@@ -77,7 +77,9 @@ class MotionList extends React.Component {
 		videoUrl: '',
 		// ipcSelected: '',
 		// detectedSourceSelected: '',
-		ipcType: '',
+		deviceInfo: {
+			pixelRatio: '16:9'
+		},
 
 		currentPage: 1,
 		pageSize: DEFAULT_PAGE_SIZE
@@ -137,13 +139,14 @@ class MotionList extends React.Component {
 	}
 
 	watchVideoHandler = async (item) =>{
-		const { getIpcType } = this.props;
-		const ipcType = await getIpcType(item.sn);
+		const { getDeviceInfo } = this.props;
+		const deviceInfo = await getDeviceInfo(item.sn);
 
 		this.setState({
 			videoUrl:item.video,
 			isWatchVideo:true,
-			ipcType
+			deviceInfo
+			// ipcType
 		});
 	}
 
@@ -180,14 +183,12 @@ class MotionList extends React.Component {
 	// }
 
 	onShowSizeChange = (currentPage, pageSize) => {
-		this.getMotionList(currentPage, pageSize);
+		this.getMotionList(1, pageSize);
 
 		this.setState({
-			currentPage,
+			currentPage: 1,
 			pageSize
 		});
-
-		// console.log('onShowSizeChange', currentPage, pageSize);
 	}
 
 	onPaginationChange = (currentPage, pageSize) => {
@@ -232,28 +233,30 @@ class MotionList extends React.Component {
 	}
 
 	searchHandler = () => {
-		const { currentPage , pageSize } = this.state;
+		const { pageSize } = this.state;
 
-		this.getMotionList(currentPage , pageSize);
+		this.getMotionList(1, pageSize);
+
+		this.setState({
+			currentPage: 1
+		});
 	}
 
 	render() {
 		const { motionList, ipcList, total, loading, form } = this.props;
-		const { isWatchVideo, videoUrl, ipcType, currentPage, pageSize } = this.state;
+		const { isWatchVideo, videoUrl, deviceInfo:{ pixelRatio }, currentPage, pageSize } = this.state;
 		const { getFieldDecorator } = form;
 		const dateFormat = 'YYYY-MM-DD';
 
 		return (
 			<Card bordered={false}>
-				<div
-					// className={!isWatchVideo ? styles['motion-list-container'] : styles['display-none']}
-					className={styles['motion-list-container']}
-				>
+				<div className={styles['motion-list-container']}>
 					<div className={global['search-bar']}>
-						<Form layout="inline">
+						<Form layout="inline" className={styles['test-name']}>
 							<Row gutter={SEARCH_FORM_GUTTER.NORMAL}>
 								<Col {...SEARCH_FORM_COL.ONE_FOURTH}>
 									<Form.Item
+										className={styles['search-name']}
 										label={formatMessage({id: 'motionList.ipcName'})}
 									>
 										{
@@ -261,9 +264,8 @@ class MotionList extends React.Component {
 												initialValue: 0
 											})(
 												<Select
-													// defaultValue='0'
+													dropdownMatchSelectWidth={false}
 													placeholder={formatMessage({id: 'motionList.select.ipcName'})}
-													// onChange={this.ipcSelectHandler}
 												>
 													<Option value={0}>
 														{formatMessage({ id: 'motionList.all' })}
@@ -282,6 +284,7 @@ class MotionList extends React.Component {
 								</Col>
 								<Col {...SEARCH_FORM_COL.ONE_FOURTH}>
 									<Form.Item
+										className={styles['search-source']}
 										label={formatMessage({id: 'motionList.detectedSource'})}
 									>
 										{
@@ -289,6 +292,8 @@ class MotionList extends React.Component {
 												initialValue: 0
 											})(
 												<Select
+													className='sfdf-1'
+													dropdownMatchSelectWidth={false}
 													// defaultValue='0'
 													placeholder={formatMessage({id: 'motionList.select.detectedSource'})}
 													// onChange={this.sourceSelectHandler}
@@ -314,6 +319,7 @@ class MotionList extends React.Component {
 								</Col>
 								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 									<Form.Item
+										className={styles['search-time']}
 										label={formatMessage({id: 'motionList.time'})}
 									>
 										{
@@ -367,9 +373,7 @@ class MotionList extends React.Component {
 					</div>
 				</div>
 
-				{/* <div className={isWatchVideo ? styles['video-player'] : styles['display-none']}> */}
-				<VideoPlayComponent playing={isWatchVideo} watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} ipcType={ipcType} />
-				{/* </div> */}
+				<VideoPlayComponent playing={isWatchVideo} watchVideoClose={this.watchVideoClose} videoUrl={videoUrl} pixelRatio={pixelRatio} />
 
 			</Card>
 		);

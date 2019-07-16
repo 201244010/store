@@ -159,7 +159,6 @@ export default {
 			const listeners = [
 				{
 					opcode: opCode.read,
-					models: ['FS1', 'SS1'],
 					type: MESSAGE_TYPE.RESPONSE,
 					handler: (topic, messages) => {
 						const msg = JSON.parse(JSON.stringify(messages));
@@ -187,7 +186,6 @@ export default {
 				},
 				{
 					opcode: opCode.wifiList,
-					models: ['FS1', 'SS1'],
 					type: MESSAGE_TYPE.RESPONSE,
 					handler: (topic, messages) => {
 						const msg = JSON.parse(JSON.stringify(messages));
@@ -220,7 +218,6 @@ export default {
 				},
 				{
 					opcode: opCode.connect,
-					models: ['FS1', 'SS1'],
 					type: MESSAGE_TYPE.RESPONSE,
 					handler: (topic, messages) => {
 						const msg = JSON.parse(JSON.stringify(messages));

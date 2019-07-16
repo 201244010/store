@@ -9,7 +9,7 @@ import ReVideo from './ReVideo';
 import Toolbar from './Toolbar';
 import Timebar from './Timebar';
 
-import Faceid from './Faceid';
+// import Faceid from './Faceid';
 
 import Progressbar from './Progressbar';
 
@@ -49,12 +49,19 @@ class VideoPlayer extends React.Component{
 		// this.liveTimestamp = 0;
 		this.liveStartTime = 0;
 
+
+		this.t = 0;
+		this.firstTimeFlag = true;
+		this.firstTime = 0;
+
+
 		// 事件
 		this.onPlay = this.onPlay.bind(this);
 		this.onPause = this.onPause.bind(this);
 		this.onError = this.onError.bind(this);
 		this.onEnd = this.onEnd.bind(this);
 		this.onTimeUpdate = this.onTimeUpdate.bind(this);
+		this.onMetadataArrived = this.onMetadataArrived.bind(this);
 
 
 		// 方法
@@ -65,7 +72,7 @@ class VideoPlayer extends React.Component{
 		this.playlive = this.playlive.bind(this);
 
 		this.playTrackAtTimestamp = this.playTrackAtTimestamp.bind(this);
-		this.playlistAtTimestamp = this.playlistAtTimestamp.bind(this);
+		this.playHistoryAtTimestamp = this.playHistoryAtTimestamp.bind(this);
 
 		this.pause = this.pause.bind(this);
 		// this.pauselist = this.pauselist.bind(this);
@@ -104,13 +111,46 @@ class VideoPlayer extends React.Component{
 			currentTimestamp: type === 'track' ? 0 : moment().valueOf()/1000
 		});
 
-
-
 		window.addEventListener('resize', this.fullScreenChangeHandler);
 
 		// let { sources } = this.props;
 
 		// sources = sources || [];
+
+		const { player } = this;
+		if (player.techName_ === 'Flvjs' && this.currenTechName === undefined) {
+			player.tech_.on('metadata_arrived', (e, data) => {
+				// console.log('metadata_arrived', e, data);
+				this.onMetadataArrived(data);
+			});
+
+			player.tech_.on('error', (e, data) => {
+				console.log('error: ', e, data);
+				player.load();
+			});
+
+			player.tech_.on('other_error', (e, data) => {
+				console.log('OTHER_ERROR: ', e, data);
+				player.load();
+			});
+
+			player.tech_.on('network_error', (e, data) => {
+				console.log('NETWORK_ERROR: ', e, data);
+				player.load();
+			});
+
+			player.tech_.on('network_exception', (e, data) => {
+				console.log('NETWORK_EXCEPTION: ', e, data);
+				player.load();
+			});
+
+			player.tech_.on('network_unrecoverable_early_eof', (e, data) => {
+				console.log('NETWORK_UNRECOVERABLE_EARLY_EOF: ', e, data);
+				player.load();
+			});
+
+
+		}
 
 		if ( url && this.player ) {
 			this.updateUrl(url);
@@ -151,6 +191,17 @@ class VideoPlayer extends React.Component{
 		// 	}
 		// }
 
+		const { player } = this;
+		// console.log(this.player, this.player.techName_);
+		if (player.techName_ === 'Flvjs' && this.currenTechName === 'Html5') {
+			player.tech_.on('metadata_arrived', (e, data) => {
+				// console.log('metadata_arrived', e, data);
+				this.onMetadataArrived(data);
+			});
+		}
+
+		this.currenTechName = player.techName_;
+
 		// let { sources } = this.props;
 		const { url } = this.props;
 		// sources = sources || [];
@@ -158,9 +209,6 @@ class VideoPlayer extends React.Component{
 		if (url && oldProps.url !== url) {
 			this.updateUrl(url);
 		}
-		// if (1) {
-		// this.updateSources(sources);
-		// }
 	}
 
 	// shouldComponentUpdate(newProps, newState) {
@@ -183,11 +231,39 @@ class VideoPlayer extends React.Component{
 
 	// 时间响应
 	onTimeUpdate(timestamp) {
-		const { type } = this.props;
+		const { type, getCurrentTimestamp } = this.props;
+		// const { currentTimestamp } = this.state;
+
 		if (type === 'track') {
 			this.setState({
 				currentTimestamp: timestamp
 			});
+		}else{
+			// console.log(this.firstTime, timestamp);
+			this.t = this.firstTime+timestamp*1000;
+			// console.log('视频播放时间：', this.t, moment.unix(this.t).format('YYYY-MM-DD HH:mm:ss:SSS'));
+			// console.log('时间轴时间：', currentTimestamp, moment.unix(currentTimestamp).format('YYYY-MM-DD HH:mm:ss:SSS'));
+			getCurrentTimestamp(this.t);
+		};
+	}
+
+	onMetadataArrived(metadaa) {
+		const { relativeTime } = metadaa;
+		const { type } = this.props;
+
+		// console.log('onMetadataArrived: ', this.firstTimeFlag, relativeTime, this.firstTime, this.t);
+
+		if (type === 'time') {
+
+			if (this.firstTimeFlag) {
+				this.firstTime = relativeTime;
+				this.firstTimeFlag = false;
+			}
+
+			// this.setState({
+			// 	currentTimestamp: currenttime
+			// });
+			// this.startClock();
 		}
 	}
 
@@ -204,6 +280,8 @@ class VideoPlayer extends React.Component{
 	}
 
 	onError() {
+		console.log('Error Handler.');
+
 		this.setState({
 			playing: false
 		});
@@ -212,6 +290,10 @@ class VideoPlayer extends React.Component{
 	onEnd() {
 		const { type } = this.props;
 		console.log(type, 'End Handler.');
+
+		const { player } = this;
+
+		player.load();
 	}
 	// onEnd(player) {
 	// 	const { sources, type } = this.props;
@@ -267,12 +349,12 @@ class VideoPlayer extends React.Component{
 				// 直播时禁用播放暂停按钮
 				return;
 			}
-			// playing ? this.pauselist() : this.playlistAtTimestamp(currentTimestamp);
+			// playing ? this.pauselist() : this.playHistoryAtTimestamp(currentTimestamp);
 			if (playing) {
 				// this.pauselist();
 				this.pauseHistory();
 			}else{
-				this.playlistAtTimestamp(currentTimestamp);
+				this.playHistoryAtTimestamp(currentTimestamp);
 			}
 		}
 
@@ -320,7 +402,7 @@ class VideoPlayer extends React.Component{
 		clearTimeout(this.dragTimeout);
 		this.dragTimeout = setTimeout(() => {
 			clearTimeout(this.dragTimeout);
-			this.playlistAtTimestamp(timestamp);
+			this.playHistoryAtTimestamp(timestamp);
 		}, 1.2*1000);
 	}
 
@@ -346,7 +428,7 @@ class VideoPlayer extends React.Component{
 		const { player } = this;
 		if (player){
 			let duration = player.duration();
-			console.log('generateDuration: ', duration);
+			// console.log('generateDuration: ', duration);
 			if (Number.isNaN(duration) || !Number.isFinite(duration)){
 				duration = 0;
 			}
@@ -392,7 +474,7 @@ class VideoPlayer extends React.Component{
 
 			// 如果当前不再播放，则需要判断是否开始播放下一秒
 			// if (!playing){
-			// 	this.playlistAtTimestamp(currentTimestamp);
+			// 	this.playHistoryAtTimestamp(currentTimestamp);
 			// }
 		}, 1000);
 	}
@@ -447,27 +529,25 @@ class VideoPlayer extends React.Component{
 
 	play = () => {
 		const {player} = this;
-		// console.log(player);
+
 		if (player.paused()){
 			player.play();
 		}
 	}
 
 	playUrl = (url) => {
-		// console.log('playUrl');
+
 		const {player} = this;
 		player.pause();
 
-		player.playlist([{
-			sources: [{
-				src: url,
-				type: 'video/flv'
-			}]
-		}]);
+		this.load();
 
-		player.playlist.last();
+		player.src({
+			src: url,
+			type: 'video/flv'
+		});
 
-		this.play();
+		// this.play();
 		player.on('canplay', () => {
 			this.play();
 		});
@@ -481,6 +561,15 @@ class VideoPlayer extends React.Component{
 		this.removeNoMediaCover();
 	}
 
+	load () {
+		const { player } = this;
+
+		if (player) {
+			player.addClass('vjs-waiting');
+			player.loadingSpinner.show();
+		}
+	}
+
 	playlive() {
 		const { url } = this.props;
 		// console.log('playlive: ', url);
@@ -492,23 +581,23 @@ class VideoPlayer extends React.Component{
 		if (!player) {
 			return;
 		}
+
+		this.firstTimeFlag = true;
 		player.pause();
 
-		player.playlist([{
-			sources: [{
-				src: url,
-				type: 'video/flv'
-			}]
-		}]);
+		this.load();
+		player.src({
+			src: url,
+			type: 'video/flv'
+		});
 
 		this.setState({
 			currentTimestamp: moment().valueOf()/1000,
 			isLive: true
 		});
 
-		player.playlist.last();
+		player.preload();
 
-		this.play();
 		player.on('canplay', () => {
 			// 解决页面刷新后会重新播放声音的问题，这个问题可能需要详细看一下；
 			const { volume } = this.state;
@@ -547,7 +636,7 @@ class VideoPlayer extends React.Component{
 		player.currentTime(timestamp);
 	}
 
-	async playlistAtTimestamp(timestamp) {
+	async playHistoryAtTimestamp(timestamp) {
 		const { stopHistoryPlay } = this.props;
 		console.log('timestamp', timestamp, moment.unix(timestamp).format('YYYY-MM-DD HH:mm:ss'));
 
@@ -584,7 +673,7 @@ class VideoPlayer extends React.Component{
 			}else{
 				// 拖动到了无值的区域，则跳转到下个时间点；
 				console.log('goto next time. nextTimeStart:', isInside);
-				this.playlistAtTimestamp(isInside);
+				this.playHistoryAtTimestamp(isInside);
 			}
 
 		}
@@ -790,7 +879,7 @@ class VideoPlayer extends React.Component{
 	}
 
 	canScreenShot() {
-		const {player} = this;
+		const { player } = this;
 		const currentBrowser = browser();
 		return player.techName_ !== 'Flash' && currentBrowser.name !== 'safari' && currentBrowser.name !== 'edge';
 	}
@@ -805,7 +894,8 @@ class VideoPlayer extends React.Component{
 	async dateChange(timestamp) {
 		const { onTimeChange } = this.props;
 		await onTimeChange(timestamp, moment().unix());
-		this.onTimebarStopDrag(timestamp);
+		// this.onTimebarStopDrag(timestamp);
+		this.onTimebarStopDrag(this.t);
 	}
 
 	// updateSources(sources) {
@@ -832,7 +922,7 @@ class VideoPlayer extends React.Component{
 
 
 	render() {
-		const { type, faceidRects, pixelRatio, currentPPI, ppiChanged, timeSlots, onTimeChange } = this.props;
+		const { type, pixelRatio, currentPPI, ppiChanged, timeSlots, onTimeChange, plugin } = this.props;
 		// let { sources } = this.props;
 		// sources = sources || [];
 		const { playing, isLive, ppis, noMedia, volume, maxVolume, fullScreen, canScreenShot, currentTimestamp } = this.state;
@@ -844,7 +934,8 @@ class VideoPlayer extends React.Component{
 			timeSlots.sort((a,b) => b.timeStart - a.timeStart);
 		}
 
-		console.log('render', currentTimestamp);
+		// console.log('render t: ', this.t, moment.unix(this.t).format('YYYY-MM-DD HH:mm:ss:SSS'));
+		// console.log('render s: ', currentTimestamp, moment.unix(currentTimestamp).format('YYYY-MM-DD HH:mm:ss:SSS'));
 
 		return (
 			<div className={`${styles['video-player']} ${fullScreen ? styles.fullscreen : ''}`} ref={(container) => this.container = container}>
@@ -861,6 +952,7 @@ class VideoPlayer extends React.Component{
 						onPause={this.onPause}
 						onEnd={this.onEnd}
 						onError={this.onError}
+						// onMetadataArrived={this.onMetadataArrived}
 						onTimeUpdate={this.onTimeUpdate}
 					/>
 
@@ -881,7 +973,8 @@ class VideoPlayer extends React.Component{
 
 
 				<div className={styles['plugin-container']}>
-					{
+					{ plugin }
+					{/* {
 						(faceidRects && isLive) ?
 							<Faceid
 								// current={liveTimestamp}
@@ -890,7 +983,7 @@ class VideoPlayer extends React.Component{
 								currentPPI={currentPPI}
 							/>
 							: ''
-					}
+					} */}
 				</div>
 
 
