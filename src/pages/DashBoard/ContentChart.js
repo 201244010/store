@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import Media from 'react-media';
-import { Row, Col, Radio, Skeleton, Spin } from 'antd';
+import { Row, Col, Radio, Skeleton } from 'antd';
 import Charts from '@/components/Charts';
 import { priceFormat } from '@/utils/utils';
 import { DASHBOARD } from './constants';
@@ -100,15 +100,35 @@ const formatTime = (time, rangeType) => {
 };
 
 class ContentChart extends Component {
+	constructor(props) {
+		super(props);
+		this.timer = null;
+		this.state = {
+			switchLoading: false,
+		};
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.timer);
+	}
+
 	handleRadioChange = e => {
 		const { setSearchValue } = this.props;
 		const {
 			target: { value },
 		} = e;
 
-		setSearchValue({
-			tradeTime: value,
+		this.setState({
+			switchLoading: true,
 		});
+
+		this.timer = setTimeout(() => {
+			clearTimeout(this.timer);
+			this.setState({ switchLoading: false });
+			setSearchValue({
+				tradeTime: value,
+			});
+		}, 500);
 	};
 
 	render() {
@@ -119,6 +139,7 @@ class ContentChart extends Component {
 			barLoading,
 			skuLoading,
 		} = this.props;
+		const { switchLoading } = this.state;
 
 		const dataList = orderList.map(data => ({
 			time: formatTime(data.time, rangeType),
@@ -166,7 +187,7 @@ class ContentChart extends Component {
 						const len = dataList.length;
 						if (len > 10 && len < 40) {
 							return index % 2 === 0;
-						} 
+						}
 						return index % 3 === 0;
 					})
 					.map(item => item.time),
@@ -188,30 +209,30 @@ class ContentChart extends Component {
 						<Row gutter={result ? 0 : 24}>
 							<Col span={result ? 24 : 18}>
 								<div className={styles['bar-wrapper']}>
-									<Spin spinning={barLoading}>
-										<div className={styles['title-wrapper']}>
-											<div className={styles['bar-title']}>
-												{formatMessage({ id: 'dashBoard.trade.time' })}
-											</div>
-											<div className={styles['bar-radio']}>
-												<Radio.Group
-													value={tradeTime}
-													onChange={this.handleRadioChange}
-												>
-													<Radio.Button value={TRADE_TIME.AMOUNT}>
-														{formatMessage({
-															id: 'dashBoard.order.sales',
-														})}
-													</Radio.Button>
-													<Radio.Button value={TRADE_TIME.COUNT}>
-														{formatMessage({
-															id: 'dashBoard.order.count',
-														})}
-													</Radio.Button>
-												</Radio.Group>
-											</div>
+									<div className={styles['title-wrapper']}>
+										<div className={styles['bar-title']}>
+											{formatMessage({ id: 'dashBoard.trade.time' })}
 										</div>
-										<div className={styles['bar-wrapper']}>
+										<div className={styles['bar-radio']}>
+											<Radio.Group
+												value={tradeTime}
+												onChange={this.handleRadioChange}
+											>
+												<Radio.Button value={TRADE_TIME.AMOUNT}>
+													{formatMessage({
+														id: 'dashBoard.order.sales',
+													})}
+												</Radio.Button>
+												<Radio.Button value={TRADE_TIME.COUNT}>
+													{formatMessage({
+														id: 'dashBoard.order.count',
+													})}
+												</Radio.Button>
+											</Radio.Group>
+										</div>
+									</div>
+									<div className={styles['bar-wrapper']}>
+										<Skeleton active loading={barLoading || switchLoading}>
 											<Bar
 												{...{
 													chartStyle: {
@@ -237,8 +258,8 @@ class ContentChart extends Component {
 													toolTipStyle,
 												}}
 											/>
-										</div>
-									</Spin>
+										</Skeleton>
+									</div>
 								</div>
 							</Col>
 							<Col span={result ? 24 : 6}>
