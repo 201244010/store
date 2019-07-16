@@ -1,7 +1,17 @@
 // ref: https://umijs.org/config/
 import { primaryColor } from '../src/defaultSettings';
 import routers from '../src/config/router';
+import uatRouters from '../src/config/router.uat';
+import env from '../src/config/env';
 // import routers from './router';
+
+console.log('current environment:', env);
+
+const ROUTERS = {
+	uat: uatRouters,
+	onl: uatRouters,
+	default: routers
+}
 
 export default {
 	hash: true,
@@ -62,7 +72,7 @@ export default {
 	/**
 	 * 路由相关配置
 	 */
-	routes: routers,
+	routes: ROUTERS[env] || ROUTERS.default,
 	disableRedirectHoist: true,
 
 	/**

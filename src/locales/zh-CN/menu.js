@@ -1,5 +1,5 @@
 export default {
-	'menu.index': 'index',
+	'menu.index': 'Loading...',
 	'menu.dashBoard': '首页',
 	'menu.account': '个人中心',
 	'menu.account.logout': '退出登录',
@@ -58,14 +58,18 @@ export default {
 	'menu.basicData.roleManagement.view': '查看',
 	'menu.basicData.roleManagement.modify': '编辑',
 	'menu.basicData.roleManagement.roleList': '角色管理',
+
 	'menu.basicData.employeeManagement': '员工管理',
 	'menu.basicData.employeeManagement.employeeList': '员工列表',
 	'menu.basicData.employeeManagement.list': '员工列表',
 	'menu.basicData.employeeManagement.employeeInfo': '员工详情',
+	'menu.basicData.employeeManagement.info': '员工详情',
 	'menu.basicData.employeeManagement.employeeCreate': '新建员工',
 	'menu.basicData.employeeManagement.create': '新建员工',
 	'menu.basicData.employeeManagement.employeeUpdate': '修改员工',
 	'menu.basicData.employeeManagement.update': '修改员工',
+	'menu.basicData.employeeManagement.employeeTable': '员工信息',
+
 	'menu.setting': '系统设置',
 	'menu.setting.role': '角色管理',
 	'menu.basicData.storeManagement': '门店管理',

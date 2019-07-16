@@ -205,6 +205,10 @@ const router = [
 				routes: [
 					{
 						path: '/basicData',
+						redirect: '/basicData/merchantManagement',
+					},
+					{
+						path: '/basicData/merchantManagement',
 						redirect: '/basicData/merchantManagement/view',
 					},
 					{

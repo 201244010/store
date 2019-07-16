@@ -67,6 +67,33 @@ export default function generateShape(option) {
 				/>
 			);
 			break;
+		case SHAPE_TYPES.RECT_SELECT:
+			shape = (
+				<Rect
+					{...{
+						name: option.name,
+						x: option.x,
+						y: option.y,
+						width: option.width,
+						height: option.height,
+						scaleX: option.scaleX,
+						scaleY: option.scaleY,
+						opacity: option.opacity,
+						fill: option.fill,
+						strokeScaleEnabled: false,
+						draggable: true,
+						onTransform: option.onTransform,
+						onTransformEnd: option.onTransformEnd,
+						onMouseOver: () => {
+							document.body.style.cursor = 'pointer';
+						},
+						onMouseOut: () => {
+							document.body.style.cursor = 'default';
+						},
+					}}
+				/>
+			);
+			break;
 		case SHAPE_TYPES.TEXT:
 			shape = (
 				<Group>
@@ -345,7 +372,7 @@ export default function generateShape(option) {
 								const intPriceText = `${option.text}`.split('.')[0];
 								const smallPriceText = `${option.text}`.split('.')[1] || '';
 								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY - option.fontSize) * option.zoomScale) / 2;
-								const yPosition = 0;
+								const yPosition = 5;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
@@ -405,7 +432,7 @@ export default function generateShape(option) {
 								const intPriceText = `${option.text}`.split('.')[0];
 								const smallPriceText = `${option.text}`.split('.')[1] || '';
 								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY + option.fontSize) * option.zoomScale) / 2;
-								const yPosition = option.fontSize * option.zoomScale * 0.72;
+								const yPosition = option.fontSize * option.zoomScale * 0.72 + 5;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
@@ -448,6 +475,7 @@ export default function generateShape(option) {
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
 						image: option.image,
+						rotation: option.type === SHAPE_TYPES.CODE_V ? 90 : 0,
 						draggable: true,
 						onTransform: option.onTransform,
 						onTransformEnd: option.onTransformEnd,

@@ -37,6 +37,7 @@ const tabBarStyle = {
 		loading: state.loading,
 	}),
 	dispatch => ({
+		clearStorage: () => dispatch({ type: 'global/clearStorage' }),
 		userLogin: payload => dispatch({ type: 'user/login', payload }),
 		checkImgCode: payload => dispatch({ type: 'user/checkImgCode', payload }),
 		checkUser: payload => dispatch({ type: 'sso/checkUser', payload }),
@@ -62,6 +63,8 @@ class Login extends Component {
 	}
 
 	componentDidMount() {
+		const { clearStorage } = this.props;
+		clearStorage();
 		document.addEventListener('keydown', this.handleKeyDown);
 	}
 

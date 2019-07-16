@@ -12,7 +12,7 @@ import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
 import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep } from '@/utils/studio';
 import { KEY } from '@/constants';
-import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS } from '@/constants/studio';
+import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as styles from './index.less';
@@ -34,6 +34,7 @@ import * as styles from './index.less';
 		updateState: payload => dispatch({ type: 'studio/updateState', payload }),
 		zoomOutOrIn: payload => dispatch({ type: 'studio/zoomOutOrIn', payload }),
 		changeOneStep: payload => dispatch({ type: 'studio/changeOneStep', payload }),
+		selectComponentIn: payload => dispatch({ type: 'studio/selectComponentIn', payload }),
 		fetchBindFields: payload => dispatch({ type: 'template/fetchBindFields', payload }),
 		saveAsDraft: payload => dispatch({ type: 'template/saveAsDraft', payload }),
 		fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
@@ -109,14 +110,14 @@ class Studio extends Component {
 			return;
 		}
 		const {
-			studio: { selectedShapeName, componentsDetail, copiedComponent, zoomScale },
+			studio: { selectedShapeName, componentsDetail, copiedComponent, scopedComponents, zoomScale },
 			deleteSelectedComponent,
 			copySelectedComponent,
 			addComponent
 		} = this.props;
 		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
 		// 操作输入框时 无法删除
-		if ([KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT') {
+		if ([KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT' && tagName.toUpperCase() !== 'TEXTAREA') {
 			if (canCopyOrDelete) {
 				deleteSelectedComponent(selectedShapeName);
 			}
@@ -138,30 +139,84 @@ class Studio extends Component {
 			// Ctrl + V
 			if (keyCode === KEY.KEY_V) {
 				if (copiedComponent.name) {
-					const newPosition = {};
-					if (canCopyOrDelete) {
-						const selectedComponent = componentsDetail[selectedShapeName];
-						const {x, y, scaleY} = selectedComponent;
-						newPosition.x = x;
-						newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
+					if (copiedComponent.type !== SHAPE_TYPES.RECT_SELECT) {
+						const newPosition = {};
+						if (canCopyOrDelete) {
+							const selectedComponent = componentsDetail[selectedShapeName];
+							if (selectedComponent) {
+								const {x, y, scaleY} = selectedComponent;
+								newPosition.x = x;
+								newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
+							} else {
+								!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+								newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
+								newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
+							}
+						} else {
+							!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+							newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
+							newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
+						}
+
+						addComponent({
+							...copiedComponent,
+							x: newPosition.x,
+							y: newPosition.y,
+						});
 					} else {
-						newPosition.x = copiedComponent.x;
-						newPosition.y = copiedComponent.y;
+						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+						for (let i = 0; i < scopedComponents.length; i++) {
+							const {x, y, type, scaleY} = scopedComponents[i];
+							addComponent({
+								...scopedComponents[i],
+								x,
+								y: y + MAPS.height[type] * scaleY * zoomScale * copiedComponent.copyCount,
+							});
+						}
 					}
-					addComponent({
-						...copiedComponent,
-						x: newPosition.x,
-						y: newPosition.y,
-					});
 				}
 			}
 		}
 	};
 
+	handleSelectRect = (e) => {
+		const { studio: { componentsDetail }, addComponent, updateComponentsDetail } = this.props;
+
+		this.moveStart = true;
+		this.moveStartX = e.evt.clientX;
+		this.moveStartY = e.evt.clientY;
+		if (!componentsDetail[RECT_SELECT_NAME]) {
+			addComponent({
+				type: SHAPE_TYPES.RECT_SELECT,
+				name: RECT_SELECT_NAME,
+				x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
+				y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
+				fill: '#5cadff',
+				width: 0,
+				height: 0,
+				scaleX: 1,
+				scaleY: 1,
+				rotation: 0,
+				opacity: 0.2,
+				isStep: false
+			});
+		} else {
+			updateComponentsDetail({
+				isStep: false,
+				selectedShapeName: RECT_SELECT_NAME,
+				[RECT_SELECT_NAME]: {
+					x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
+					y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
+					width: 0,
+					height: 0
+				},
+			});
+		}
+		this.updateSelectedShapeName('');
+	};
+
 	handleStageMouseDown = e => {
-		const {
-			studio: { selectedShapeName, componentsDetail, showRightToolBox },
-		} = this.props;
+		const { studio: { selectedShapeName, componentsDetail, showRightToolBox } } = this.props;
 
 		// 点击stage，取消选择正在编辑图形
 		if (e.target === e.target.getStage()) {
@@ -177,14 +232,22 @@ class Studio extends Component {
 					},
 				});
 			}
+			// 鼠标左键出发多选
+			if (e.evt.button === 0) {
+				this.handleSelectRect(e);
+			}
 			return;
 		}
 		// 点击拖拽框时，不做任何操作
 		if (e.target.getParent().className === 'Transformer') {
 			return;
 		}
-
 		const name = e.target.name();
+
+		if (e.evt.button === 0 && name.indexOf(SHAPE_TYPES.RECT_FIX) > -1) {
+			this.handleSelectRect(e);
+		}
+
 		const shape = componentsDetail[name];
 		if (shape) {
 			// 鼠标左键取消右侧工具框
@@ -206,6 +269,40 @@ class Studio extends Component {
 			}
 		} else if (selectedShapeName) {
 			this.updateSelectedShapeName('');
+		}
+	};
+
+	handleStageMouseMove = (e) => {
+		if (this.moveStart) {
+			const { updateComponentsDetail } = this.props;
+			updateComponentsDetail({
+				isStep: false,
+				selectedShapeName: RECT_SELECT_NAME,
+				[RECT_SELECT_NAME]: {
+					width: e.evt.clientX - this.moveStartX,
+					height: e.evt.clientY - this.moveStartY
+				},
+			});
+		}
+	};
+
+	handleStageMouseUp = (e) => {
+		if (this.moveStart) {
+			this.moveStart = false;
+			const { selectComponentIn, updateComponentsDetail } = this.props;
+			if (Math.abs(e.evt.clientX - this.moveStartX) > 10) {
+				selectComponentIn();
+			} else {
+				updateComponentsDetail({
+					isStep: false,
+					selectedShapeName: '',
+					[RECT_SELECT_NAME]: {
+						width: 0,
+						height: 0
+					},
+				});
+			}
+
 		}
 	};
 
@@ -460,22 +557,41 @@ class Studio extends Component {
 					rotation,
 				},
 			};
-			componentDetail[name].lines = [
-				[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
-				[
-					x + realW * realScaleX,
-					0,
-					x + realW * realScaleX,
-					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-				],
-				[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
-				[
-					0,
-					y + height * realScaleY,
-					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-					y + height * realScaleY,
-				],
-			];
+			if (type === SHAPE_TYPES.CODE_V) {
+				componentDetail[name].lines = [
+					[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+					[
+						x - height * realScaleY,
+						0,
+						x - height * realScaleY,
+						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+					],
+					[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
+					[
+						0,
+						y + realW * realScaleX,
+						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+						y + realW * realScaleX,
+					],
+				];
+			} else {
+				componentDetail[name].lines = [
+					[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+					[
+						x + realW * realScaleX,
+						0,
+						x + realW * realScaleX,
+						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+					],
+					[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
+					[
+						0,
+						y + height * realScaleY,
+						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+						y + height * realScaleY,
+					],
+				];
+			}
 			updateComponentsDetail(componentDetail);
 		}
 	};
@@ -589,6 +705,7 @@ class Studio extends Component {
 					showRightToolBox,
 					rightToolBoxPos,
 					copiedComponent,
+					scopedComponents,
 					zoomScale,
 				},
 				template: { bindFields, curTemplate },
@@ -623,6 +740,8 @@ class Studio extends Component {
 							width={stageWidth}
 							height={stageHeight}
 							onMouseDown={this.handleStageMouseDown}
+							onMouseMove={this.handleStageMouseMove}
+							onMouseUp={this.handleStageMouseUp}
 							onDragStart={this.handleStageShapeStart}
 							onDragMove={this.handleStageShapeMove}
 							onDragEnd={this.handleStageShapeEnd}
@@ -678,7 +797,7 @@ class Studio extends Component {
 							) : null}
 						</Stage>
 					</div>
-					{selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1 ? (
+					{selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1 ? (
 						<div className={styles['tool-box']}>
 							<RightToolBox
 								{...{
@@ -705,6 +824,7 @@ class Studio extends Component {
 							componentsDetail,
 							selectedShapeName,
 							copiedComponent,
+							scopedComponents,
 							showRightToolBox,
 							updateComponentsDetail,
 							deleteSelectedComponent,

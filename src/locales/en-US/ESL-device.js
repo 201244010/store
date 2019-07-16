@@ -43,6 +43,7 @@ export default {
 	'esl.device.esl.status': 'Status',
 	'esl.device.esl.push.time': 'Last Push Time',
 	'esl.device.esl.battery': 'Battery',
+	'esl.device.esl.signal.strength': 'Signal Strength',
 	'esl.device.esl.screen.size': 'Size',
 	'esl.device.esl.ware.version': 'Firmware',
 	'esl.device.esl.ware.version.now': 'Current Bin Version',
@@ -87,6 +88,7 @@ export default {
 	'esl.device.esl.push.all': 'Repush',
 	'esl.device.esl.push.all.success': 'ESL is repushing…',
 	'esl.device.template.new': 'Create Template',
+	'esl.device.template.clone': 'Clone Template',
 	'esl.device.template.2.13.inch': '2.13 Inch',
 	'esl.device.template.2.6.inch': '2.6 Inch',
 	'esl.device.template.4.2.inch': '4.2 Inch',
@@ -157,4 +159,5 @@ export default {
 	'esl.device.esl.comm.result2': '成功',
 	'esl.device.esl.comm.result3': '失败',
 	'esl.device.esl.comm.history.total': '总数',
+	'esl.device.esl.scan.time': '价签扫描周期',
 };

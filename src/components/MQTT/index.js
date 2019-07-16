@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { notification } from 'antd';
 import { connect } from 'dva';
 import { displayNotification } from '@/components/Notification';
-import VideoPlayComponent from '@/pages/IPC/component/VideoPlayComponent';
 import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
-import { ACTION_MAP } from '@/constants/mqttActionMap';
 import { getRandomString } from '@/utils/utils';
 
 import Ipc from './Ipc';
@@ -34,9 +32,6 @@ function MQTTWrapper(WrapperedComponent) {
 			super(props);
 			this.state = {
 				notificationList: [],
-				isWatchVideo: false,
-				videoUrl: '',
-				ipcType: '',
 			};
 		}
 
@@ -49,13 +44,6 @@ function MQTTWrapper(WrapperedComponent) {
 			destroyClient();
 		}
 
-		watchVideoClose = () => {
-			this.setState({
-				videoUrl: '',
-				isWatchVideo: false,
-			});
-		};
-
 		removeNotification = key => {
 			const { notificationList } = this.state;
 			const keyList = [...notificationList];
@@ -66,32 +54,9 @@ function MQTTWrapper(WrapperedComponent) {
 			});
 		};
 
-		handleAction = (action, paramsStr, extra = {}) => {
-			const { goToPath } = this.props;
-			const { key = null } = extra;
-			if (action) {
-				const handler = ACTION_MAP[action] || (() => null);
-				const result = handler({
-					handlers: { goToPath, removeNotification: this.removeNotification },
-					params: paramsStr,
-					extra: { from: 'mqtt', key },
-				});
-
-				const { action: resultAction = null, payload = {} } = result || {};
-				if (resultAction === 'showMotionVideo') {
-					const { url, ipcType } = payload;
-					this.setState({
-						isWatchVideo: true,
-						videoUrl: url,
-						ipcType,
-					});
-				}
-			}
-		};
-
 		showNotification = async data => {
 			const { notificationList } = this.state;
-			const { getNotificationCount, getUnreadNotification } = this.props;
+			const { getNotificationCount, getUnreadNotification, goToPath } = this.props;
 			const messageData = JSON.parse(data.toString()) || {};
 			const uniqueKey = getRandomString();
 
@@ -108,10 +73,8 @@ function MQTTWrapper(WrapperedComponent) {
 				displayNotification({
 					data: param,
 					key: uniqueKey,
-					mainAction: this.handleAction,
-					subAction: (action, paramsStr) =>
-						this.handleAction(action, paramsStr, { key: uniqueKey }),
 					closeAction: this.removeNotification,
+					handlers: { goToPath },
 				});
 			});
 			await getNotificationCount();
@@ -150,18 +113,8 @@ function MQTTWrapper(WrapperedComponent) {
 		};
 
 		render() {
-			const { isWatchVideo, videoUrl, ipcType } = this.state;
-
 			return (
-				<>
-					<WrapperedComponent {...this.props} />
-					<VideoPlayComponent
-						playing={isWatchVideo}
-						watchVideoClose={this.watchVideoClose}
-						videoUrl={videoUrl}
-						ipcType={ipcType}
-					/>
-				</>
+				<WrapperedComponent {...this.props} />
 			);
 		}
 	}

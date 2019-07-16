@@ -19,6 +19,8 @@ class SearchResult extends Component {
 		super(props);
 		this.state = {
 			newVisible: false,
+			cloneVisible: false,
+			curRecord: {}
 		};
 	}
 
@@ -89,6 +91,13 @@ class SearchResult extends Component {
 		});
 	};
 
+	showClone = (record) => {
+		this.setState({
+			cloneVisible: true,
+			curRecord: record
+		});
+	};
+
 	handleOkNew = () => {
 		const {
 			props: {
@@ -124,6 +133,41 @@ class SearchResult extends Component {
 		});
 	};
 
+	handleCancelClone = () => {
+		this.setState({
+			cloneVisible: false,
+		});
+	};
+
+	handleClone = () => {
+		const {
+			state: { curRecord },
+			props: {
+				form: { validateFields, resetFields },
+				cloneTemplate,
+			},
+		} = this;
+		validateFields(async (errors, values) => {
+			if (!errors.name) {
+				const response = await cloneTemplate({
+					name: values.name,
+					template_id: curRecord.id
+				});
+				if (response && response.code === ERROR_OK) {
+					this.setState(
+						{
+							newVisible: false,
+						},
+						() => {
+							resetFields();
+							window.open(`/studio?id=${response.data.template_id}&screen=${curRecord.screen_type}`);
+						}
+					);
+				}
+			}
+		});
+	};
+
 	search = () => {
 		const { fetchTemplates } = this.props;
 		fetchTemplates();
@@ -141,7 +185,7 @@ class SearchResult extends Component {
 				form: { getFieldDecorator },
 				fetchColors,
 			},
-			state: { newVisible },
+			state: { newVisible, cloneVisible, curRecord },
 		} = this;
 		const columns = [
 			{
@@ -181,6 +225,10 @@ class SearchResult extends Component {
 						<Divider type="vertical" />
 						<a href="javascript: void (0);" onClick={() => this.applyTemplate(record)}>
 							{formatMessage({ id: 'list.action.apply' })}
+						</a>
+						<Divider type="vertical" />
+						<a href="javascript: void (0);" onClick={() => this.showClone(record)}>
+							{formatMessage({ id: 'list.action.clone' })}
 						</a>
 						<Divider type="vertical" />
 						{record.is_default === 1 || record.esl_num > 1 ? (
@@ -372,6 +420,39 @@ class SearchResult extends Component {
 									))}
 								</Select>
 							)}
+						</Form.Item>
+					</Form>
+				</Modal>
+				<Modal
+					title={formatMessage({ id: 'esl.device.template.clone' })}
+					visible={cloneVisible}
+					onOk={this.handleClone}
+					onCancel={this.handleCancelClone}
+				>
+					<Form {...formItemLayout} style={{ padding: 24 }}>
+						<Form.Item label={formatMessage({ id: 'esl.device.template.name' })}>
+							{getFieldDecorator('name', {
+								rules: [
+									{
+										required: true,
+										message: formatMessage({
+											id: 'esl.device.template.name.require',
+										}),
+									},
+								],
+							})(
+								<Input
+									placeholder={formatMessage({
+										id: 'esl.device.template.name.require',
+									})}
+								/>
+							)}
+						</Form.Item>
+						<Form.Item label={formatMessage({ id: 'esl.device.template.size' })}>
+							<Input value={curRecord.screen_type_name} disabled />
+						</Form.Item>
+						<Form.Item label={formatMessage({ id: 'esl.device.template.color' })}>
+							<Input value={curRecord.colour_name} disabled />
 						</Form.Item>
 					</Form>
 				</Modal>

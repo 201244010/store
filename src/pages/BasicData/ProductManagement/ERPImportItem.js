@@ -7,41 +7,58 @@ const MODE = {
 	MODIFY: 'modify',
 };
 
+const COMMON_ERROR = {
+	5042: formatMessage({ id: 'basicData.erp.import.shop.conflict' }),
+	5093: formatMessage({ id: 'basicData.erp.import.task.unfinished' }),
+	default: formatMessage({ id: 'basicData.erp.import.task.failed' }),
+};
+
 export const ERROR_FILEDS = {
 	'SAAS-SDNM': {
 		field: 'saas_info.secret',
 		errMsg: {
+			...COMMON_ERROR,
 			5020: formatMessage({ id: 'basicData.erp.common.key.existed' }),
-			default: formatMessage({ id: 'basicData.erp.common.key.error' }),
+			// default: formatMessage({ id: 'basicData.erp.common.key.error' }),
 		},
 	},
 	'SAAS-KWYLS': {
 		field: 'saas_info.password',
 		errMsg: {
+			...COMMON_ERROR,
 			5020: formatMessage({ id: 'basicData.erp.kwyls.account.used' }),
 			5021: formatMessage({ id: 'basicData.erp.kwyls.account.frequently' }),
-			default: formatMessage({ id: 'basicData.erp.kwyls.account.error' }),
+			// default: formatMessage({ id: 'basicData.erp.kwyls.account.error' }),
 		},
 	},
 	'SAAS-ZZSY': {
 		field: 'saas_info.secret',
 		errMsg: {
+			...COMMON_ERROR,
 			5020: formatMessage({ id: 'basicData.erp.zzsy.secret.existed' }),
 			// TODO 等待 error code
 			9999: formatMessage({ id: 'basicData.erp.zzsy.shop.error' }),
-			default: formatMessage({ id: 'basicData.erp.zzsy.secret.error' }),
+			// default: formatMessage({ id: 'basicData.erp.zzsy.secret.error' }),
 		},
 	},
 	'SAAS-HBB': {
 		field: 'saas_info.shop_number',
 		errMsg: {
-			default: formatMessage({ id: 'basicData.erp.hbb.error' }),
+			...COMMON_ERROR,
+			// default: formatMessage({ id: 'basicData.erp.hbb.error' }),
 		},
 	},
 	'SAAS-HDQF': {
 		field: 'saas_info.secret_key',
 		errMsg: {
-			default: formatMessage({ id: 'basicData.erp.hdqf.error' }),
+			...COMMON_ERROR,
+			// default: formatMessage({ id: 'basicData.erp.hdqf.error' }),
+		},
+	},
+	'SAAS-HJ': {
+		field: '',
+		errMsg: {
+			...COMMON_ERROR,
 		},
 	},
 };
@@ -317,6 +334,76 @@ export const HDQF = props => {
 									required: true,
 									message: formatMessage({
 										id: 'basicData.erp.hdqf.secret.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+		</>
+	);
+};
+
+// TODO 等待修改数据
+export const HJ = props => {
+	const { getFieldDecorator, mode = MODE.MODIFY, saasInfo = {} } = props;
+	const { saasShopKey = null } = saasInfo;
+	return (
+		<>
+			{/* <Form.Item label="app_id">
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey1}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.app_id', {
+							initialValue: saasExtraKey1,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hdqf.key.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item>
+			<Form.Item label="secret_key">
+				{mode === MODE.VIEW ? (
+					<span>{saasExtraKey2}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.secret_key', {
+							initialValue: saasExtraKey2,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.hdqf.secret.isEmpty',
+									}),
+								},
+							],
+						})(<Input />)}
+					</>
+				)}
+			</Form.Item> */}
+			<Form.Item label={formatMessage({ id: 'basicData.erp.api.store.num' })}>
+				{mode === MODE.VIEW ? (
+					<span>{saasShopKey}</span>
+				) : (
+					<>
+						{getFieldDecorator('saas_info.saas_shop_key', {
+							initialValue: saasShopKey,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'basicData.erp.zzsy.shop.error',
 									}),
 								},
 							],

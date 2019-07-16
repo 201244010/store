@@ -12,6 +12,7 @@ import {
 	NORMAL_PRICE_TYPES,
 	NON_NORMAL_PRICE_TYPES,
 	MAPS,
+	RECT_SELECT_NAME
 } from '@/constants/studio';
 
 export default {
@@ -160,10 +161,12 @@ export default {
 					draft.backgroundColor = componentDetail.fill;
 				}
 			});
+			delete payload.draft[RECT_SELECT_NAME];
 			Object.keys(payload.draft).map(key => {
-				const componentDetail = payload.draft[key];
+				const componentDetail = { ...payload.draft[key]};
 				Object.keys(componentDetail).map(detailKey => {
-					componentDetail.content = componentDetail.bindField ? `{{${componentDetail.bindField}}}` : (componentDetail.text || '');
+					componentDetail.content = componentDetail.content ? componentDetail.content :
+						(componentDetail.bindField ? `{{${componentDetail.bindField}}}` : (componentDetail.text || ''));
 					if (['height', 'width'].includes(detailKey)) {
 						const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
 						if (SHAPE_TYPES.IMAGE === componentDetail.type) {
@@ -453,6 +456,36 @@ export default {
 					payload: { loading: false },
 				});
 				message.error('应用失败');
+			}
+			return response;
+		},
+		*cloneTemplate({ payload = {} }, { call, put }) {
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			const response = yield call(TemplateService.cloneTemplate, payload);
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				yield put({
+					type: 'fetchTemplates',
+					payload: {
+						options: {
+							screen_type: -1,
+							colour: -1,
+						},
+					},
+				});
+				message.success('克隆成功');
+			} else {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				message.error('克隆失败');
 			}
 			return response;
 		},

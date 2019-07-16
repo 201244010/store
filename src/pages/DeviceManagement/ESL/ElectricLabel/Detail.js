@@ -67,6 +67,12 @@ export default function detail(props) {
 					</div>
 					<div className={styles['detail-info-item']}>
 						<span className={styles['detail-info-label']}>
+							{formatMessage({ id: 'esl.device.esl.signal.strength' })}：
+						</span>
+						<span className={styles['detail-info-content']}>{eslInfo.rssi || '--'}</span>
+					</div>
+					<div className={styles['detail-info-item']}>
+						<span className={styles['detail-info-label']}>
 							{formatMessage({ id: 'esl.device.esl.status' })}：
 						</span>
 						<span className={styles['detail-info-content']}>
