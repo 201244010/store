@@ -14,6 +14,7 @@ export default {
 	'basicData.product.category': '商品分类',
 	'basicData.product.type': '商品类型',
 	'basicData.product.unit': '单位',
+	'basicData.product.unit.select': '请选择',
 	'basicData.product.area': '产地',
 	'basicData.product.brand': '品牌',
 	'basicData.product.spec': '规格',
