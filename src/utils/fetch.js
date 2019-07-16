@@ -1,5 +1,5 @@
-// import { message } from 'antd';
-// import { formatMessage } from 'umi/locale';
+import { message } from 'antd';
+import { formatMessage } from 'umi/locale';
 import CONFIG from '@/config';
 import { cbcEncryption, idDecode, md5Encryption } from '@/utils/utils';
 import { USER_NOT_LOGIN } from '@/constants/errorCode';
@@ -147,7 +147,9 @@ export const customizeFetch = (service = 'api', base) => {
 		}
 
 		const result = await response.clone().json();
-		if (result.code === USER_NOT_LOGIN) {
+		if (result.code === ERR_INTERNET_DISCONNECTED) {
+			message.error(formatMessage({ id: 'app.network.disconnect' }));
+		} else if (result.code === USER_NOT_LOGIN) {
 			unAuthHandler();
 		}
 
