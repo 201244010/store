@@ -37,7 +37,7 @@ const ProductCUPrice = props => {
 										}),
 								},
 							],
-						})(<Input type="number" />)}
+						})(<Input />)}
 					</Form.Item>
 				</Col>
 
@@ -60,7 +60,7 @@ const ProductCUPrice = props => {
 										}),
 								},
 							],
-						})(<Input type="number" />)}
+						})(<Input />)}
 					</Form.Item>
 				</Col>
 			</Row>
@@ -85,7 +85,7 @@ const ProductCUPrice = props => {
 										}),
 								},
 							],
-						})(<Input type="number" />)}
+						})(<Input />)}
 					</Form.Item>
 				</Col>
 			</Row>
