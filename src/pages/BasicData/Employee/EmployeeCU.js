@@ -6,6 +6,8 @@ import OrgnizationSelect from './OrgnizationSelect';
 import { getLocationParam } from '@/utils/utils';
 import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK, USER_EXIST, SSO_BINDED, EMPLOYEE_BINDED } from '@/constants/errorCode';
+import * as RegExp from '@/constants/regexp';
+import styles from './Employee.less';
 
 @connect(
 	state => ({
@@ -153,6 +155,7 @@ class EmployeeCU extends Component {
 		} = this.props;
 
 		validateFields(async (err, values) => {
+			// console.log(values);
 			if (!err) {
 				const { mappingList = [], ssoUsername = '', username, number } = values;
 
@@ -202,6 +205,7 @@ class EmployeeCU extends Component {
 
 					const response = await createEmployee({
 						...values,
+						number: number ? number.toUpperCase() : '',
 						mappingList: this.formatMappingList(mappingList),
 					});
 					if (response && response.code === ERROR_OK) {
@@ -272,7 +276,7 @@ class EmployeeCU extends Component {
 								},
 								{
 									validator: (rule, value, callback) => {
-										if (/^[\d\w]+$/.test(value)) {
+										if (RegExp.employeeNumber.test(value)) {
 											callback();
 										} else {
 											callback(
@@ -282,7 +286,7 @@ class EmployeeCU extends Component {
 									},
 								},
 							],
-						})(<Input maxLength={20} style={{ textTransform: 'uppercase' }} />)}
+						})(<Input maxLength={20} className={styles['uppercase-input']} />)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.name' })}>
 						{getFieldDecorator('name', {
@@ -324,11 +328,9 @@ class EmployeeCU extends Component {
 								{
 									validator: (rule, value, callback) => {
 										if (
-											!/^\d{11}$/.test(value) &&
+											!RegExp.phone.test(value) &&
 											// eslint-disable-next-line no-useless-escape
-											!/^([A-Za-z0-9_\-\.])+@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(
-												value
-											)
+											!RegExp.mail.test(value)
 										) {
 											callback(
 												formatMessage({ id: 'employee.phone.formatError' })
