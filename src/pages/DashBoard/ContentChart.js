@@ -208,31 +208,34 @@ class ContentChart extends Component {
 					{result => (
 						<Row gutter={result ? 0 : 24}>
 							<Col span={result ? 24 : 18}>
-								<div className={styles['bar-wrapper']}>
-									<div className={styles['title-wrapper']}>
-										<div className={styles['bar-title']}>
-											{formatMessage({ id: 'dashBoard.trade.time' })}
+								<div
+									className={styles['bar-wrapper']}
+									style={barLoading || switchLoading ? { padding: '24px' } : {}}
+								>
+									<Skeleton active loading={barLoading || switchLoading}>
+										<div className={styles['title-wrapper']}>
+											<div className={styles['bar-title']}>
+												{formatMessage({ id: 'dashBoard.trade.time' })}
+											</div>
+											<div className={styles['bar-radio']}>
+												<Radio.Group
+													value={tradeTime}
+													onChange={this.handleRadioChange}
+												>
+													<Radio.Button value={TRADE_TIME.AMOUNT}>
+														{formatMessage({
+															id: 'dashBoard.order.sales',
+														})}
+													</Radio.Button>
+													<Radio.Button value={TRADE_TIME.COUNT}>
+														{formatMessage({
+															id: 'dashBoard.order.count',
+														})}
+													</Radio.Button>
+												</Radio.Group>
+											</div>
 										</div>
-										<div className={styles['bar-radio']}>
-											<Radio.Group
-												value={tradeTime}
-												onChange={this.handleRadioChange}
-											>
-												<Radio.Button value={TRADE_TIME.AMOUNT}>
-													{formatMessage({
-														id: 'dashBoard.order.sales',
-													})}
-												</Radio.Button>
-												<Radio.Button value={TRADE_TIME.COUNT}>
-													{formatMessage({
-														id: 'dashBoard.order.count',
-													})}
-												</Radio.Button>
-											</Radio.Group>
-										</div>
-									</div>
-									<div className={styles['bar-wrapper']}>
-										<Skeleton active loading={barLoading || switchLoading}>
+										<div className={styles['bar-wrapper']}>
 											<Bar
 												{...{
 													chartStyle: {
@@ -258,8 +261,8 @@ class ContentChart extends Component {
 													toolTipStyle,
 												}}
 											/>
-										</Skeleton>
-									</div>
+										</div>
+									</Skeleton>
 								</div>
 							</Col>
 							<Col span={result ? 24 : 6}>
