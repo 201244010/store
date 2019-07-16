@@ -9,7 +9,7 @@ import ProductCUWeight from './ProductCU-Weight';
 import ProductCUPrice from './ProductCU-Price';
 import { getLocationParam, idDecode } from '@/utils/utils';
 import { FORM_ITEM_LAYOUT } from '@/constants/form';
-import { ERROR_OK, PRODUCT_SEQ_EXIST } from '@/constants/errorCode';
+import { ERROR_OK, PRODUCT_SEQ_EXIST, PRODUCT_PLU_EXIST } from '@/constants/errorCode';
 import * as styles from './ProductManagement.less';
 
 @connect(
@@ -52,7 +52,7 @@ class ProductCU extends Component {
 				const result = map([{ from: 'Type', to: 'type' }])(
 					format('toCamel')(response.data || {})
 				);
-				console.log(result);
+				// console.log(result);
 				this.setState({
 					productType: result.type || 0,
 					productBasicExtra: result.extraInfo,
@@ -217,6 +217,7 @@ class ProductCU extends Component {
 			form: { validateFields, setFields },
 		} = this.props;
 		validateFields(async (err, values) => {
+			// console.log(values);
 			if (!err) {
 				const submitValue = this.formatSubmitValue(values);
 				const response = await submitFunction[action]({
@@ -228,9 +229,22 @@ class ProductCU extends Component {
 				});
 				if (response && response.code === PRODUCT_SEQ_EXIST) {
 					setFields({
-						seq_num: {
-							values: values.seq_num,
+						seqNum: {
+							values: values.seqNum,
 							errors: [new Error(formatMessage({ id: 'product.seq_num.isExist' }))],
+						},
+					});
+				} else if (response && response.code === PRODUCT_PLU_EXIST) {
+					setFields({
+						'weighInfo.pluCode': {
+							values: values['weighInfo.pluCode'],
+							errors: [
+								new Error(
+									formatMessage({
+										id: 'basicData.weightProduct.pluCode.exist',
+									})
+								),
+							],
 						},
 					});
 				}

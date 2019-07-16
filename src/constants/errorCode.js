@@ -17,6 +17,7 @@ export const TEMPLATE_NAME_USED = 5346;
 export const EMPLOYEE_BINDED = 5406;
 
 export const PRODUCT_SEQ_EXIST = 5051;
+export const PRODUCT_PLU_EXIST = 5000;
 export const STORE_EXIST = 5034;
 export const ERR_FIRMWARE_EXIST = 5801;
 export const ERR_FIRMWARE_VERSION_LOWER = 5802;

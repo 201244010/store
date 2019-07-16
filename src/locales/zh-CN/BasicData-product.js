@@ -35,6 +35,7 @@ export default {
 	'basicData.product.price.title': '价格信息',
 	'basicData.weightProduct.detail.title': '称重商品信息',
 	'basicData.weightProduct.pluCode': 'PLU编号',
+	'basicData.weightProduct.pluCode.exist': 'PLU编号已经存在',
 	'basicData.weightProduct.PLU.isEmpty': 'PLU编号不能为空',
 	'basicData.weightProduct.PLU.formatError': 'PLU编号为数字',
 	'basicData.weightProduct.isDiscount': '允许改价',
