@@ -158,12 +158,16 @@ class EmployeeCU extends Component {
 			// console.log(values);
 			if (!err) {
 				const { mappingList = [], ssoUsername = '', username, number } = values;
+				const submitData = {
+					...values,
+					number: number.toUpperCase(),
+					mappingList: this.formatMappingList(mappingList),
+				};
 
 				if (this.action === 'edit' && this.employeeId) {
 					const response = await updateEmployee({
 						employeeId: this.employeeId,
-						...values,
-						mappingList: this.formatMappingList(mappingList),
+						...submitData,
 					});
 					if (response && response.code === ERROR_OK) {
 						if (this.from === 'detail' && this.employeeId) {
@@ -203,11 +207,7 @@ class EmployeeCU extends Component {
 						}
 					}
 
-					const response = await createEmployee({
-						...values,
-						number: number ? number.toUpperCase() : '',
-						mappingList: this.formatMappingList(mappingList),
-					});
+					const response = await createEmployee(submitData);
 					if (response && response.code === ERROR_OK) {
 						goToPath('employeeList');
 					} else if (response && response.code === EMPLOYEE_BINDED) {
