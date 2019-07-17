@@ -1,5 +1,6 @@
 export const password = /^(?=.*[a-zA-Z])(?=.*\d)[\s\S]{8,30}$/;
-export const mail = /^[\w\d_-]+@[\w\d_-]+(\.[\w\d_-]+)+$/;
+// export const mail = /^[\w\d_-]+@[\w\d_-]+(\.[\w\d_-]+)+$/;
+export const mail = /^[a-zA-Z0-9_+.-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z0-9]{2,4}/;
 export const production_date = /^\d{0,4}$/;
 // 匹配所有 ascii 字符
 export const normalInput = /^[a-zA-Z\\u0021-\\u007E]+$/;
