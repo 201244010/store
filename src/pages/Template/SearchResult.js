@@ -173,6 +173,15 @@ class SearchResult extends Component {
 		fetchTemplates();
 	};
 
+	validateTemplateName = (rule, value, callback) => {
+		const {length} = (value || '').replace(/[^\x00-\xff]/g, '01');
+		if (length <= 40) {
+			callback();
+		} else {
+			callback('长度超过限制(40个英文字母或20个汉字以内)');
+		}
+	};
+
 	render() {
 		const {
 			props: {
@@ -361,6 +370,9 @@ class SearchResult extends Component {
 											id: 'esl.device.template.name.require',
 										}),
 									},
+									{
+										validator: this.validateTemplateName
+									}
 								],
 							})(
 								<Input
@@ -439,6 +451,9 @@ class SearchResult extends Component {
 											id: 'esl.device.template.name.require',
 										}),
 									},
+									{
+										validator: this.validateTemplateName
+									}
 								],
 							})(
 								<Input
