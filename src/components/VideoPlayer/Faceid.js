@@ -1,25 +1,45 @@
 import React from 'react';
+// import moment from 'moment';
+
 import styles from './Faceid.less';
+
 
 class Faceid extends React.Component{
 	render () {
 		const { current, faceidRects, pixelRatio, currentPPI } = this.props;
-
+		// console.log(faceidRects);
 		const times = faceidRects.filter(item => {
-			if ( current*1000 < item.reportTime && item.reportTime < current*1000 + 400){
+			// console.log(current, item.timestamp);
+			if ( current < item.timestamp && item.timestamp < current + 500){
 				return true;
 			}
 			return false;
 		});
 
+		times.sort((a, b) => a.id - b.id);
+
+		let temp = null;
 		const rects = [];
-		times.forEach(item => {
-			item.rects.forEach(rect => {
-				rects.push(rect);
-			});
+		times.forEach((item, index) => {
+			if (index === 0) {
+				temp = item;
+				rects.push(item);
+				return;
+			}
+			if (temp.id === item.id) {
+				if (item.timestamp > temp.timestamp) {
+					rects.splice(rects.length-1, 1, item);
+				}
+			}else{
+				rects.push(item);
+			}
+			temp = item;
 		});
 
-		// console.log('rects: ', current*1000, rects);
+		// console.log('faceid 获得的时间：', current, moment.unix(current).format('YYYY-MM-DD HH:mm:ss:SSS'));
+		// rects.forEach(item => {
+		// 	console.log('框的时间戳：', item.id, item.timestamp, moment.unix(item.timestamp).format('YYYY-MM-DD HH:mm:ss:SSS'));
+		// });
 
 		return (
 			<div className={styles['faceid-container']} ref={(container) => this.container = container}>
@@ -85,7 +105,7 @@ class Faceid extends React.Component{
 									key={index}
 									style={
 										position
-									} 
+									}
 									className={styles['faceid-rectangle']}
 								>
 									<div className={`${styles['corner-top-left']} ${ styles.corner}`}>

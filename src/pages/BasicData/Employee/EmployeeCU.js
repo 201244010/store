@@ -5,7 +5,9 @@ import { Card, Form, Input, Button, Radio, message } from 'antd';
 import OrgnizationSelect from './OrgnizationSelect';
 import { getLocationParam } from '@/utils/utils';
 import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { ERROR_OK, USER_EXIST, SSO_BINDED } from '@/constants/errorCode';
+import { ERROR_OK, USER_EXIST, SSO_BINDED, EMPLOYEE_BINDED } from '@/constants/errorCode';
+import * as RegExp from '@/constants/regexp';
+import styles from './Employee.less';
 
 @connect(
 	state => ({
@@ -153,14 +155,19 @@ class EmployeeCU extends Component {
 		} = this.props;
 
 		validateFields(async (err, values) => {
+			// console.log(values);
 			if (!err) {
-				const { mappingList = [], ssoUsername = '', username } = values;
+				const { mappingList = [], ssoUsername = '', username, number } = values;
+				const submitData = {
+					...values,
+					number: number.toUpperCase(),
+					mappingList: this.formatMappingList(mappingList),
+				};
 
 				if (this.action === 'edit' && this.employeeId) {
 					const response = await updateEmployee({
 						employeeId: this.employeeId,
-						...values,
-						mappingList: this.formatMappingList(mappingList),
+						...submitData,
 					});
 					if (response && response.code === ERROR_OK) {
 						if (this.from === 'detail' && this.employeeId) {
@@ -168,6 +175,8 @@ class EmployeeCU extends Component {
 						} else {
 							goToPath('employeeList');
 						}
+					} else if (response && response.code === EMPLOYEE_BINDED) {
+						message.error(formatMessage({ id: 'employee.info.binded.error' }));
 					} else {
 						message.error(formatMessage({ id: 'employee.info.update.failed' }));
 					}
@@ -198,12 +207,16 @@ class EmployeeCU extends Component {
 						}
 					}
 
-					const response = await createEmployee({
-						...values,
-						mappingList: this.formatMappingList(mappingList),
-					});
+					const response = await createEmployee(submitData);
 					if (response && response.code === ERROR_OK) {
 						goToPath('employeeList');
+					} else if (response && response.code === EMPLOYEE_BINDED) {
+						setFields({
+							number: {
+								value: number,
+								errors: [new Error(formatMessage({ id: 'employee.number.exist' }))],
+							},
+						});
 					} else {
 						message.error(formatMessage({ id: 'employee.info.create.failed' }));
 					}
@@ -261,8 +274,19 @@ class EmployeeCU extends Component {
 									required: true,
 									message: formatMessage({ id: 'employee.number.isEmpty' }),
 								},
+								{
+									validator: (rule, value, callback) => {
+										if (RegExp.employeeNumber.test(value)) {
+											callback();
+										} else {
+											callback(
+												formatMessage({ id: 'employee.number.formatError' })
+											);
+										}
+									},
+								},
 							],
-						})(<Input />)}
+						})(<Input maxLength={20} className={styles['uppercase-input']} />)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.name' })}>
 						{getFieldDecorator('name', {
@@ -303,7 +327,11 @@ class EmployeeCU extends Component {
 								},
 								{
 									validator: (rule, value, callback) => {
-										if (!/^\d{11}$/.test(value)) {
+										if (
+											!RegExp.phone.test(value) &&
+											// eslint-disable-next-line no-useless-escape
+											!RegExp.mail.test(value)
+										) {
 											callback(
 												formatMessage({ id: 'employee.phone.formatError' })
 											);

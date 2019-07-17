@@ -112,14 +112,14 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name: 'ipc-device-basic-info',
-	mapPropsToFields: (props) => {
-		const { basicInfo } = props;
-		return {
-			deviceName: Form.createFormField({
-				value: basicInfo.name,
-			})
-		};
-	}
+	// mapPropsToFields: (props) => {
+	// 	const { basicInfo } = props;
+	// 	return {
+	// 		deviceName: Form.createFormField({
+	// 			value: basicInfo.name,
+	// 		})
+	// 	};
+	// }
 })
 class DeviceBasicInfo extends React.Component {
 	constructor(props) {
@@ -303,6 +303,7 @@ class DeviceBasicInfo extends React.Component {
 						>
 							{
 								getFieldDecorator('deviceName', {
+									initialValue: name,
 									rules: [
 										{ required: true, message: formatMessage({id: 'deviceBasicInfo.enterName'}) },
 										{
@@ -345,25 +346,6 @@ class DeviceBasicInfo extends React.Component {
 						<Form.Item label={formatMessage({id: 'deviceBasicInfo.sn'})}>
 							<span>{sn}</span>
 						</Form.Item>
-
-						{/* {type === 'SS1' ? (
-							<Form.Item
-								{...TAIL_FORM_ITEM_LAYOUT}
-								className={styles['radio-item']}
-							>
-								<RadioGroup value={mode}>
-									<Radio value={1}>
-										{ formatMessage({id: 'deviceBasicInfo.directionForward'}) }
-
-									</Radio>
-									<Radio value={2}>
-										{ formatMessage({id: 'deviceBasicInfo.directionBack'}) }
-									</Radio>
-								</RadioGroup>
-							</Form.Item>
-						) : (
-							''
-						)} */}
 
 						<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
 							{status ? '' : ''}

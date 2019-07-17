@@ -49,19 +49,19 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name:'basic-params-form',
-	mapPropsToFields(props) {
-		return {
-			nightMode: Form.createFormField({
-				value: props.ipcBasicParams.nightMode
-			}),
-			indicator: Form.createFormField({
-				value: props.ipcBasicParams.indicator
-			}),
-			rotation: Form.createFormField({
-				value: props.ipcBasicParams.rotation
-			})
-		};
-	},
+	// mapPropsToFields(props) {
+	// 	return {
+	// 		nightMode: Form.createFormField({
+	// 			value: props.ipcBasicParams.nightMode
+	// 		}),
+	// 		indicator: Form.createFormField({
+	// 			value: props.ipcBasicParams.indicator
+	// 		}),
+	// 		rotation: Form.createFormField({
+	// 			value: props.ipcBasicParams.rotation
+	// 		})
+	// 	};
+	// },
 	// onValuesChange(props,values){
 	// 	// console.log(values);
 	// 	Object.keys(values).forEach(item => {
@@ -139,7 +139,7 @@ class BasicParams extends Component {
 
 	render() {
 		const { form, ipcBasicParams } = this.props;
-		const { isReading, isSaving } = ipcBasicParams;
+		const { isReading, isSaving, nightMode, rotation, indicator } = ipcBasicParams;
 		// const { status } = basicParams;
 		// if( status === 'error'){
 		//  	this.resetChange();
@@ -149,7 +149,7 @@ class BasicParams extends Component {
 		// Object.keys(isChange).forEach(item => {
 		// 	changes = changes || isChange[item];
 		// });
-
+		// console.log(rotation);
 		const { getFieldDecorator } = form;
 		return (
 			<Spin spinning={isReading || isSaving === 'saving'}>
@@ -157,7 +157,9 @@ class BasicParams extends Component {
 					<Form>
 						<Form.Item {...FORM_ITEM_LAYOUT} label={formatMessage({id: 'basicParams.nightMode'})}>
 							{
-								getFieldDecorator('nightMode')(
+								getFieldDecorator('nightMode',{
+									initialValue: nightMode
+								})(
 									<RadioGroup>
 										<Radio value={2}>
 											{ formatMessage({id: 'basicParams.autoSwitch'}) }
@@ -173,11 +175,31 @@ class BasicParams extends Component {
 							}
 						</Form.Item>
 
+						<Form.Item {...FORM_ITEM_LAYOUT} label={formatMessage({id: 'basicParams.rotation'})}>
+							{
+								getFieldDecorator('rotation',{
+									initialValue: rotation
+								})(
+									// <Switch
+									// 	checkedChildren={formatMessage({id: 'basicParams.label.open'})}
+									// 	unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
+									// />
+									// <Switch />
+									<RadioGroup>
+										<Radio value={0}>0{ formatMessage({id: 'basicParams.degree'})}</Radio>
+										<Radio value={1}>90{ formatMessage({id: 'basicParams.degree'})}</Radio>
+										<Radio value={2}>180{ formatMessage({id: 'basicParams.degree'})}</Radio>
+										<Radio value={3}>270{ formatMessage({id: 'basicParams.degree'})}</Radio>
+									</RadioGroup>
+								)
+							}
+						</Form.Item>
+
 						<Form.Item {...FORM_ITEM_LAYOUT} label={formatMessage({id: 'basicParams.statusIndicator'})}>
 							{
 								getFieldDecorator('indicator',{
 									valuePropName: 'checked',
-									initialValue: true
+									initialValue: indicator
 								})(
 									// <Switch
 									// 	checkedChildren={formatMessage({id: 'basicParams.label.open'})}
@@ -189,21 +211,7 @@ class BasicParams extends Component {
 							}
 						</Form.Item>
 
-						<Form.Item {...FORM_ITEM_LAYOUT} label={formatMessage({id: 'basicParams.rotation'})}>
-							{
-								getFieldDecorator('rotation',{
-									valuePropName: 'checked',
-									initialValue: true
-								})(
-									// <Switch
-									// 	checkedChildren={formatMessage({id: 'basicParams.label.open'})}
-									// 	unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
-									// />
-									<Switch />
-								)
 
-							}
-						</Form.Item>
 
 						<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
 							<Button
