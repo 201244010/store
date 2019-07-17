@@ -37,7 +37,7 @@ module.exports = {
 		'import/no-dynamic-require': 0,
 		'no-plusplus': 0,
 		'no-undef': 0,
-        'no-control-regex': 0,
+        'no-control-regex': 1,
 		'import/no-mutable-exports': 0,
 		'camelcase': 1,
 		'react/jsx-indent': ['error', 'tab', { 'props': 4 }],
