@@ -28,7 +28,6 @@ const dataFormatter = (item) => {
 		orderId: item.id,
 		orderNo: item.order_no,
 		paymentDeviceSn: item.payment_device_sn,
-		// ipcDeviceType: item.ipc_device_type || 'FS1',
 
 		// ipcId: item.ipc_device_Id,
 		// paymentDeviceId: item.payment_device_Id,

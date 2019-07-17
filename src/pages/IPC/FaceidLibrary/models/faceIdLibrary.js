@@ -1,3 +1,5 @@
+import { formatMessage } from 'umi/locale';
+
 import { createLibrary, readLibrary, updateLibrary, deleteLibrary } from '../../services/faceIdLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -117,10 +119,42 @@ export default {
 				// companyId,
 				// shopId,
 			});
-			if (response.code === ERROR_OK) {
+			const { data, code} = response;
+			const list = data.map(item => {
+				const { name, type } = item;
+
+				// let remarksText = remarks;
+				// if (remarks === 'stranger' && type === 1) {
+				// 	remarksText = formatMessage({id: 'faceid.strangerInfo'});
+				// }else if (remarks === 'regular' && type === 2) {
+				// 	remarksText = formatMessage({id: 'faceid.regularInfo'});
+				// }else if (remarks === 'employee' && type === 3) {
+				// 	remarksText = formatMessage({id: 'faceid.employeeInfo'});
+				// }else if (remarks === 'blacklist' && type === 4) {
+				// 	remarksText = formatMessage({id: 'faceid.blacklistInfo'});
+				// };
+
+				let nameText = name;
+				if (type === 1) {
+					nameText = formatMessage({id: 'faceid.stranger'});
+				}else if (type === 2) {
+					nameText = formatMessage({id: 'faceid.regular'});
+				}else if (type === 3) {
+					nameText = formatMessage({id: 'faceid.employee'});
+				}else if (type === 4) {
+					nameText = formatMessage({id: 'faceid.blacklist'});
+				};
+
+				return {
+					...item,
+					name: nameText
+				};
+			});
+
+			if (code === ERROR_OK) {
 				yield put({
 					type: 'readData',
-					payload: response.data,
+					payload: list,
 				});
 			}
 			// else {
@@ -133,6 +167,24 @@ export default {
 			// console.log(action);
 			const { payload } = action;
 			const { library } = payload;
+
+			const { type } = library;
+			switch (type) {
+				case 1:
+					library.name = 'stranger';
+					break;
+				case 2:
+					library.name = 'regular';
+					break;
+				case 3:
+					library.name = 'employee';
+					break;
+				case 4:
+					library.name = 'blacklist';
+					break;
+				default:
+			}
+
 			// const companyId = yield put.resolve({
 			// 	type: 'global/getCompanyIdFromStorage'
 			// });
