@@ -25,6 +25,88 @@ const FormItem = Form.Item;
 	})
 )
 class StoreManagement extends Component {
+	constructor(props) {
+		super(props);
+		this.columns = [
+			{
+				title: formatMessage({ id: 'storeManagement.list.columnId' }),
+				dataIndex: 'shop_id',
+				key: 'shop_id',
+			},
+			{
+				title: formatMessage({ id: 'storeManagement.list.columnName' }),
+				dataIndex: 'shop_name',
+				key: 'shop_name',
+			},
+			{
+				title: formatMessage({ id: 'storeManagement.list.columnStatus' }),
+				dataIndex: 'business_status',
+				key: 'business_status',
+				render: text => (
+					<span>
+						{text === 0
+							? formatMessage({ id: 'storeManagement.create.status.open' })
+							: formatMessage({ id: 'storeManagement.create.status.closed' })}
+					</span>
+				),
+			},
+			{
+				title: formatMessage({ id: 'storeManagement.list.columnAddress' }),
+				dataIndex: 'address',
+				key: 'address',
+				render: (text, record) => (
+					<>
+						{text === '--' && record.region === '--' ? (
+							<span>--</span>
+						) : (
+							<>
+								<span>
+									{record.region !== '--'
+										? record.region.split(',').join(' ')
+										: ''}{' '}
+								</span>
+								<span>{text !== '--' ? text : ''}</span>
+							</>
+						)}
+					</>
+				),
+			},
+			{
+				title: formatMessage({ id: 'storeManagement.list.columnTypes' }),
+				dataIndex: 'type_name',
+				key: 'type_name',
+			},
+			{
+				title: formatMessage({ id: 'storeManagement.list.columnContacts' }),
+				dataIndex: 'contact_person',
+				key: 'contact_person',
+			},
+			{
+				title: formatMessage({ id: 'storeManagement.list.columnOperation' }),
+				dataIndex: 'operation',
+				key: 'operation',
+				width: 120,
+				render: (_, record) => (
+					<span>
+						<a
+							onClick={() => this.toPath('viewInfo', record.shop_id)}
+							className={styles.infoAnchor}
+						>
+							{formatMessage({ id: 'storeManagement.list.operation1' })}
+						</a>
+						<Divider type="vertical" />
+						<a
+							onClick={() => this.toPath('update', record.shop_id)}
+							className={styles.infoAnchor}
+						>
+							{formatMessage({ id: 'storeManagement.list.operation2' })}
+						</a>
+					</span>
+				),
+			},
+		];
+	}
+
 	componentDidMount() {
 		const { getShopTypeList, getRegionList, getStoreList, clearSearch } = this.props;
 		if (!Storage.get('__shopTypeList__', 'local')) {
@@ -120,85 +202,6 @@ class StoreManagement extends Component {
 			},
 		} = this.props;
 
-		const columns = [
-			{
-				title: formatMessage({ id: 'storeManagement.list.columnId' }),
-				dataIndex: 'shop_id',
-				key: 'shop_id',
-			},
-			{
-				title: formatMessage({ id: 'storeManagement.list.columnName' }),
-				dataIndex: 'shop_name',
-				key: 'shop_name',
-			},
-			{
-				title: formatMessage({ id: 'storeManagement.list.columnStatus' }),
-				dataIndex: 'business_status',
-				key: 'business_status',
-				render: text => (
-					<span>
-						{text === 0
-							? formatMessage({ id: 'storeManagement.create.status.open' })
-							: formatMessage({ id: 'storeManagement.create.status.closed' })}
-					</span>
-				),
-			},
-			{
-				title: formatMessage({ id: 'storeManagement.list.columnAddress' }),
-				dataIndex: 'address',
-				key: 'address',
-				render: (text, record) => (
-					<>
-						{text === '--' && record.region === '--' ? (
-							<span>--</span>
-						) : (
-							<>
-								<span>
-									{record.region !== '--'
-										? record.region.split(',').join(' ')
-										: ''}{' '}
-								</span>
-								<span>{text !== '--' ? text : ''}</span>
-							</>
-						)}
-					</>
-				),
-			},
-			{
-				title: formatMessage({ id: 'storeManagement.list.columnTypes' }),
-				dataIndex: 'type_name',
-				key: 'type_name',
-			},
-			{
-				title: formatMessage({ id: 'storeManagement.list.columnContacts' }),
-				dataIndex: 'contact_person',
-				key: 'contact_person',
-			},
-			{
-				title: formatMessage({ id: 'storeManagement.list.columnOperation' }),
-				dataIndex: 'operation',
-				key: 'operation',
-				width: 120,
-				render: (text, record) => (
-					<span>
-						<a
-							onClick={() => this.toPath('viewInfo', record.shop_id)}
-							className={styles.infoAnchor}
-						>
-							{formatMessage({ id: 'storeManagement.list.operation1' })}
-						</a>
-						<Divider type="vertical" />
-						<a
-							onClick={() => this.toPath('update', record.shop_id)}
-							className={styles.infoAnchor}
-						>
-							{formatMessage({ id: 'storeManagement.list.operation2' })}
-						</a>
-					</span>
-				),
-			},
-		];
-
 		const formattedList = storeList.map(store => formatEmptyWithoutZero(store, '--'));
 
 		return (
@@ -259,7 +262,12 @@ class StoreManagement extends Component {
 					{formatMessage({ id: 'storeManagement.list.newBuiltStore' })}
 				</Button>
 				<div className={styles.table}>
-					<Table rowKey="shop_id" dataSource={formattedList} columns={columns} />
+					<Table
+						rowKey="shop_id"
+						dataSource={formattedList}
+						columns={this.columns}
+						pagination={{ showSizeChanger: true }}
+					/>
 				</div>
 			</Card>
 		);
