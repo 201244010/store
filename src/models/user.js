@@ -58,20 +58,15 @@ export default {
 			yield put({
 				type: 'initState',
 			});
-			CookieUtil.clearCookies();
-			Storage.remove(
-				[CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY, 'FILTERED_MENU'],
-				'local'
-			);
 
-			window.location.reload();
-			// yield put({
-			// 	type: 'menu/goToPath',
-			// 	payload: {
-			// 		pathId: 'userLogin',
-			// 		linkType: 'replace',
-			// 	},
-			// });
+			// window.location.reload();
+			yield put({
+				type: 'menu/goToPath',
+				payload: {
+					pathId: 'userLogin',
+					linkType: 'replace',
+				},
+			});
 			// router.push('/user/login');
 		},
 		*checkImgCode({ payload }, { call }) {

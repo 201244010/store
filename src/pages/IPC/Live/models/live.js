@@ -216,7 +216,6 @@ export default {
 			const listeners = [
 				{
 					opcode: OPCODE.CHANGE_PPI,
-					models: ['FS1', 'SS1'],
 					type: 'response',
 					handler: (topic, message) => {
 						const { data } = message;

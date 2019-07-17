@@ -61,13 +61,13 @@ class LibraryForm extends React.Component {
 						extra={(() => {
 							switch (type) {
 								case 1:
-									return formatMessage({id: 'faceid.stranger'});
+									return formatMessage({id: 'faceid.strangerInfo'});
 								case 2:
-									return formatMessage({id: 'faceid.customer'});
+									return formatMessage({id: 'faceid.regularInfo'});
 								case 3:
-									return formatMessage({id: 'faceid.employee'});
+									return formatMessage({id: 'faceid.employeeInfo'});
 								case 4:
-									return formatMessage({id: 'faceid.blacklist'});
+									return formatMessage({id: 'faceid.blacklistInfo'});
 								default:
 									return '';
 							}

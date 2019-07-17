@@ -2,11 +2,21 @@
 	position: relative;
 	font-size: 0;
 
+	.faceid-container{
+		position: absolute;
+		top: 0;
+		left: 0;
+
+		height: calc(100% - 60px);
+		width: calc(100% - 178px);
+	}
+
 	.video-player-container{
 		display: inline-block;
 		width: 100%;
 		height: calc(100vh - 120px);
 		min-height: 650px;
+		position: relative;
 
 		&.has-faceid{
 			padding-right: 178px;

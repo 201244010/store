@@ -106,49 +106,4 @@ export default {
 			return false;
 		}
 	},
-	// subscriptions: {
-	// 	setup({ dispatch }) {
-	// 		const listeners = [
-	// 			{
-	// 				opcode: OPCODE.READ,
-	// 				models: ['FS1', 'SS1'],
-	// 				type: MESSAGE_TYPE.RESPONSE,
-	// 				handler: (topic, messages) => {
-	// 					const msg = JSON.parse(JSON.stringify(messages));
-	// 					// console.log(msg);
-	// 					if (msg.errcode === ERROR_OK) {
-	// 						const { data } = msg;
-	// 						dispatch({
-	// 							type: 'readData',
-	// 							payload: {
-	// 								name: data.ipc_name
-	// 							}
-	// 						});
-
-	// 						dispatch({
-	// 							type: 'setStatus',
-	// 							payload: {
-	// 								status: 'success'
-	// 							}
-	// 						}).then(() => {
-	// 							setTimeout(() => {
-	// 								// console.log('ccc');
-	// 								dispatch({
-	// 									type: 'setStatus',
-	// 									payload: {
-	// 										status: 'normal'
-	// 									}
-	// 								});
-	// 							}, 300);
-	// 						});
-	// 					}
-	// 				}
-	// 			}
-	// 		];
-	// 		dispatch({
-	// 			type: 'mqttIpc/addListener',
-	// 			payload: listeners
-	// 		});
-	// 	}
-	// }
 };

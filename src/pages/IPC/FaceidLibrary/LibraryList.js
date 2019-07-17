@@ -15,7 +15,7 @@ class LibraryList extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const { managePhotos} = this.props;
+		// const { managePhotos} = this.props;
 
 		this.state = {
 			editFormShown: false,
@@ -27,6 +27,21 @@ class LibraryList extends React.Component {
 			{
 				title: formatMessage({ id: 'faceid.libraryName' }),
 				dataIndex: 'name',
+				key: 'name',
+				render: (name) => {
+					switch (name) {
+						case 'stranger':
+							return formatMessage({id: 'faceid.stranger'});
+						case 'regular':
+							return formatMessage({id: 'faceid.regular'});
+						case 'employee':
+							return formatMessage({id: 'faceid.employee'});
+						case 'blacklist':
+							return formatMessage({id: 'faceid.blacklist'});
+						default:
+							return name;
+					}
+				}
 			},
 			{
 				title: formatMessage({ id: 'faceid.rules' }),
@@ -35,15 +50,15 @@ class LibraryList extends React.Component {
 				render: (type) => {
 					switch (type) {
 						case 1:
-							return formatMessage({id: 'faceid.stranger'});
+							return formatMessage({id: 'faceid.strangerInfo'});
 						case 2:
-							return formatMessage({id: 'faceid.customer'});
+							return formatMessage({id: 'faceid.regularInfo'});
 						case 3:
-							return formatMessage({id: 'faceid.employee'});
+							return formatMessage({id: 'faceid.employeeInfo'});
 						case 4:
-							return formatMessage({id: 'faceid.blacklist'});
+							return formatMessage({id: 'faceid.blacklistInfo'});
 						default:
-							return '---';
+							return '--';
 					}
 
 				}
@@ -52,11 +67,10 @@ class LibraryList extends React.Component {
 				title: formatMessage({ id: 'faceid.remark' }),
 				dataIndex: 'remarks',
 				render: (remark) => {
-					if(!remark) {
+					if (remark === '') {
 						return '--';
 					}
 					return remark;
-
 				}
 			},
 			{
@@ -85,7 +99,7 @@ class LibraryList extends React.Component {
 							className={styles['btn-operation']}
 							href="javascript:void(0);"
 							onClick={() => {
-								managePhotos(row.id);
+								this.managePhotos(row.id);
 							}}
 						>
 							{formatMessage({ id: 'faceid.managePhoto' })}
@@ -152,6 +166,13 @@ class LibraryList extends React.Component {
 			createFormShown: false,
 		});
 
+	}
+
+	managePhotos = (key) => {
+		const { navigateTo } = this.props;
+		navigateTo('photoList', {
+			groupId: key
+		});
 	}
 	// changeFields(id, fields) {
 	// 	console.log(id, fields);
@@ -445,11 +466,6 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		});
 	},
-	managePhotos: (key) => {
-		// console.log('managePhotos', key);
-		const temp = key;
-		return temp;
-	},
 	createLibrary: (form) => {
 		dispatch({
 			type:'faceIdLibrary/create',
@@ -502,7 +518,14 @@ const mapDispatchToProps = (dispatch) => ({
 					break;
 			}
 		});
-	}
+	},
+	navigateTo: (pathId, urlParams) => dispatch({
+		type: 'menu/goToPath',
+		payload: {
+			pathId,
+			urlParams
+		}
+	})
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LibraryList);

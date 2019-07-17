@@ -5,6 +5,7 @@ import Link from 'umi/link';
 import { List, Avatar, Card, notification } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
+import Faceid from '@/components/VideoPlayer/Faceid';
 import VideoPlayer from '@/components/VideoPlayer/VideoPlayer';
 // import Faveid from './Faveid';
 
@@ -14,34 +15,26 @@ import SDCard from '../SDCard/SDCard';
 import styles from './Live.less';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 
-const pixelRatioMap = {
-	'FS1': '16:9',
-	'SS1': '1:1'
-};
-
 @connect((state) => {
-	const { faceid: { rectangles, list }, live: { url, ppi, streamId, ppiChanged, timeSlots }, /* videoSources */ } = state;
+	const { faceid: { rectangles, list }, live: { url, ppi, streamId, ppiChanged, timeSlots } } = state;
+
+	const rects = [];
+	rectangles.forEach(item => {
+		item.rects.forEach(rect => {
+			rects.push(rect);
+		});
+	});
+
 	return {
 		liveUrl: url,
 		streamId,
 		ppiChanged,
 		currentPPI: ppi || '1080',
-		// sources: videoSources || [],
-		faceidRects: rectangles || [],
+		faceidRects: rects || [],
 		faceidList: list || [],
 		timeSlots: timeSlots || []
 	};
 }, (dispatch) => ({
-	// loadVideoSources({sn, timeStart, timeEnd}) {
-	// 	dispatch({
-	// 		type: 'videoSources/read',
-	// 		payload: {
-	// 			sn,
-	// 			timeStart,
-	// 			timeEnd
-	// 		}
-	// 	});
-	// },
 	async getTimeSlots({sn, timeStart, timeEnd}) {
 		const result = await dispatch({
 			type: 'live/getTimeSlots',
@@ -70,13 +63,13 @@ const pixelRatioMap = {
 			}
 		});
 	},
-	getDeviceType({ sn }) {
+	getDeviceInfo({ sn }) {
 		return dispatch({
-			type: 'ipcList/getDeviceType',
+			type: 'ipcList/getDeviceInfo',
 			payload: {
 				sn
 			}
-		}).then(type => type);
+		}).then(info => info);
 	},
 	changePPI({ ppi, sn }) {
 		dispatch({
@@ -88,7 +81,6 @@ const pixelRatioMap = {
 		});
 	},
 	async getHistoryUrl({ timestamp, sn }) {
-		// console.log('getHistoryUrl');
 		const url = await dispatch({
 			type: 'live/getHistoryUrl',
 			payload: {
@@ -96,7 +88,7 @@ const pixelRatioMap = {
 				sn
 			}
 		});
-		// console.log(url);
+
 		return url;
 	},
 	stopHistoryPlay({ sn }) {
@@ -113,24 +105,29 @@ class Live extends React.Component{
 		super(props);
 
 		this.state = {
-			type: 'FS1'	// 默认为FS1
+			deviceInfo: {
+				pixelRatio: '16:9'
+			},
+			liveTimestamp: 0
 		};
 
 		this.changePPI = this.changePPI.bind(this);
 		this.onTimeChange = this.onTimeChange.bind(this);
 		this.getHistoryUrl = this.getHistoryUrl.bind(this);
 		this.stopHistoryPlay = this.stopHistoryPlay.bind(this);
+		this.syncLiveTimestamp = this.syncLiveTimestamp.bind(this);
 	}
 
 	async componentDidMount() {
-		const { startLive, getDeviceType, location: { query } } = this.props;
-		// const timeStart = moment().format('X');
+		const { startLive, getDeviceInfo, location: { query } } = this.props;
+
 		const {sn} = query;
 
 		if (sn) {
-			const type = await getDeviceType({ sn });
+			const deviceInfo = await getDeviceInfo({ sn });
+			console.log('getDeviceInfo', deviceInfo);
 			this.setState({
-				type
+				deviceInfo
 			});
 
 			startLive({
@@ -138,12 +135,6 @@ class Live extends React.Component{
 			});
 		}
 
-		// 不一定发的出去，因为浏览器会cancel；
-		// window.onbeforeunload = () => {
-		// 	stopLive({
-		// 		sn
-		// 	});
-		// };
 	}
 
 	componentWillUnmount() {
@@ -172,35 +163,16 @@ class Live extends React.Component{
 	}
 
 	async onTimeChange(timeStart, timeEnd) {
-		// console.log(timestamp);
-		const { /* loadVideoSources, */ getTimeSlots, location: { query } } = this.props;
+
+		const { getTimeSlots, location: { query } } = this.props;
 		const {sn} = query;
 
-		// const timeStart = moment.unix(timestamp).subtract(24, 'hours').set({
-		// 	minute: 0,
-		// 	second: 0,
-		// 	millisecond: 0
-		// }).unix(); // .subtract(1, 'day');
-
-		// // 标尺右侧的时间终点；
-		// // 无论从输入的当前时间是什么时候，始终需要渲染到从现在到未来24小时后的时间；
-		// const timeEnd = moment.unix(timestamp).add(24, 'hours').set({
-		// 	minute: 0,
-		// 	second: 0,
-		// 	millisecond: 0
-		// }).unix();
-
-		// loadVideoSources({
-		// 	sn,
-		// 	timeStart,
-		// 	timeEnd
-		// });
-		// console.log(moment.unix(timeStart).format('YYYY-MM-DD HH:mm:ss'), moment.unix(timeEnd).format('YYYY-MM-DD HH:mm:ss'));
 		const result = await getTimeSlots({
 			sn,
 			timeStart,
 			timeEnd
 		});
+
 		return result;
 	}
 
@@ -210,6 +182,12 @@ class Live extends React.Component{
 
 		const url = await getHistoryUrl({ sn, timestamp });
 		return url;
+	}
+
+	syncLiveTimestamp (timestamp) {
+		this.setState({
+			liveTimestamp: timestamp
+		});
 	}
 
 	stopHistoryPlay () {
@@ -229,14 +207,13 @@ class Live extends React.Component{
 		});
 	}
 
-	render() {
-		const { /* sources, */ timeSlots, liveUrl, faceidRects, faceidList, currentPPI, ppiChanged, location: { query } } = this.props;
-		const { sn } = query;
-		// console.log(this.props);
-		// console.log('live: ', liveUrl, streamId);
 
-		const { type } = this.state;
-		const hasFaceId = (type === 'FS1');
+
+	render() {
+		const { timeSlots, liveUrl, faceidRects, faceidList, currentPPI, ppiChanged, location: { query } } = this.props;
+		const { sn } = query;
+
+		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp } = this.state;
 
 		const genders = {
 			0: '未知',
@@ -248,10 +225,10 @@ class Live extends React.Component{
 			<div className={styles['live-wrapper']}>
 				<InitStatusSDCard sn={sn} />
 				<SDCard />
-				<div className={`${styles['video-player-container']} ${hasFaceId ? styles['has-faceid'] : ''}`}>
+				<div className={`${styles['video-player-container']} ${hasFaceid ? styles['has-faceid'] : ''}`}>
 					<VideoPlayer
 
-						pixelRatio={pixelRatioMap[type] || '16:9'}
+						pixelRatio={pixelRatio}
 						type='time'
 
 						currentPPI={currentPPI}
@@ -265,16 +242,24 @@ class Live extends React.Component{
 						timeSlots={timeSlots}
 						url={liveUrl}
 
-						faceidRects={
-							hasFaceId ? faceidRects : null
+						plugin={
+							<Faceid
+								faceidRects={
+									hasFaceid ? faceidRects : []
+								}
+								current={liveTimestamp}
+								pixelRatio={pixelRatio}
+								currentPPI={currentPPI}
+							/>
 						}
-
+						getCurrentTimestamp={this.syncLiveTimestamp}
 						onTimeChange={this.onTimeChange}
 					/>
+
 				</div>
 
 				{
-					hasFaceId ?
+					hasFaceid ?
 						<div className={styles['faceid-list-container']}>
 							<PerfectScrollbar>
 								<List
@@ -297,7 +282,6 @@ class Live extends React.Component{
 												>
 													<p className={styles.name}>{ item.name }</p>
 													<p>
-														{/* { `(${ item.gender === 0 ? '未知' : item.gender === 1 ? '男' : '女' } ${ item.age }岁)` } */}
 														{ `(${ genders[item.gender] } ${ item.age }岁)` }
 													</p>
 													<p>
@@ -308,8 +292,6 @@ class Live extends React.Component{
 															}
 														</span>
 													</p>
-
-													{/* <Button>会员详情</Button> */}
 
 													<p>
 														<Link className={styles['button-infos']} to='./userinfo'>会员详情</Link>

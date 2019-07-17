@@ -40,7 +40,7 @@ const ProductCUBasic = props => {
 			name = '',
 			alias = '',
 			type = 0,
-			unit = null,
+			unit = undefined,
 			spec = '',
 			area = '',
 			level = '',
@@ -144,9 +144,11 @@ const ProductCUBasic = props => {
 				<Col span={12}>
 					<Form.Item label={formatMessage({ id: 'basicData.product.unit' })}>
 						{getFieldDecorator('unit', {
-							initialValue: unit,
+							initialValue: unit || undefined,
 						})(
-							<Select>
+							<Select
+								placeholder={formatMessage({ id: 'basicData.product.unit.select' })}
+							>
 								{productUnits.map(unitItem => (
 									<Select.Option key={unitItem.key} value={unitItem.tempValue}>
 										{formatMessage({
