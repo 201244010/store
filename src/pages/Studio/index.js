@@ -121,6 +121,12 @@ class Studio extends Component {
 			if (canCopyOrDelete) {
 				deleteSelectedComponent(selectedShapeName);
 			}
+			if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) > -1) {
+			    deleteSelectedComponent(selectedShapeName);
+			    for (let i = 0; i < scopedComponents.length; i++) {
+			        deleteSelectedComponent(scopedComponents[i].name);
+				}
+			}
 		}
 		if (ctrlKey) {
 			// Ctrl + X
