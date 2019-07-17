@@ -10,6 +10,7 @@ import {
 	Button,
 	DatePicker,
 	TimePicker,
+	message,
 } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { customValidate } from '@/utils/customValidate';
@@ -88,8 +89,13 @@ const ProductCUWeight = props => {
 
 	const addExtraList = () => {
 		const randomKey = getRandomString();
-		setExtraTextList([...extraTextList, randomKey]);
-		setExtValueList([...extValueList, null]);
+
+		if (extraTextList.length < 4) {
+			setExtraTextList([...extraTextList, randomKey]);
+			setExtValueList([...extValueList, null]);
+		} else {
+			message.info(formatMessage({ id: 'basicData.weightProduct.extraText.onLimit' }));
+		}
 	};
 
 	const removeExtraList = key => {
@@ -654,13 +660,11 @@ const ProductCUWeight = props => {
 				</Form.Item>
 			))}
 
-			{extraTextList.length < 4 && (
-				<Form.Item label=" " colon={false} {...FORM_ITEM_LAYOUT_TWICE}>
-					<Button type="dashed" icon="plus" block onClick={addExtraList}>
-						{formatMessage({ id: 'btn.create' })}
-					</Button>
-				</Form.Item>
-			)}
+			<Form.Item label=" " colon={false} {...FORM_ITEM_LAYOUT_TWICE}>
+				<Button type="dashed" icon="plus" block onClick={addExtraList}>
+					{formatMessage({ id: 'btn.create' })}
+				</Button>
+			</Form.Item>
 		</Card>
 	);
 };
