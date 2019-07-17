@@ -138,7 +138,7 @@ export default {
 			});
 		},
 		*saveAsDraft({ payload = {} }, { call, put, select }) {
-			const { bindFields, curTemplate } = yield select(state => state.template);
+			const { curTemplate } = yield select(state => state.template);
 			yield put({
 				type: 'updateState',
 				payload: { loading: true },
@@ -147,12 +147,13 @@ export default {
 				encoding: 'UTF-8',
 				type: curTemplate.model_name,
 				backgroundColor: '',
-				fillFields: bindFields,
+				fillFields: [],
 				layers: [],
 				layerCount: 0,
 			};
 			const layers = [];
 			const originOffset = {};
+			const bindFields = [];
 			Object.keys(payload.draft).map(key => {
 				const componentDetail = payload.draft[key];
 				if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
@@ -160,7 +161,11 @@ export default {
 					originOffset.y = componentDetail.y;
 					draft.backgroundColor = componentDetail.fill;
 				}
+				if (componentDetail.bindField) {
+				    bindFields.push(componentDetail.bindField);
+				}
 			});
+			draft.fillFields = bindFields;
 			delete payload.draft[RECT_SELECT_NAME];
 			Object.keys(payload.draft).map(key => {
 				const componentDetail = { ...payload.draft[key]};
