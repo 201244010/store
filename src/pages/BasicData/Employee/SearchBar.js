@@ -40,7 +40,7 @@ const SearchBar = ({
 
 	const handleReset = async () => {
 		await clearSearchValue();
-		await getEmployeeList({ current: 1 });
+		// await getEmployeeList({ current: 1 });
 	};
 
 	return (

@@ -154,16 +154,11 @@ class StoreManagement extends Component {
 	};
 
 	handleReset = async () => {
-		const { form, clearSearch, getStoreList } = this.props;
+		const { form, clearSearch } = this.props;
 		if (form) {
 			form.resetFields();
 		}
 		await clearSearch();
-		await getStoreList({
-			options: {
-				current: 1,
-			},
-		});
 	};
 
 	handleSubmit = () => {
