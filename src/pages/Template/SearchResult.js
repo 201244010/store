@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { unixSecondToDate } from '@/utils/utils';
 import * as styles from './index.less';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT, COL_THREE_NORMAL } from '@/constants/form';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT, SEARCH_FORM_COL } from '@/constants/form';
 
 const { Option } = Select;
 
@@ -178,6 +178,7 @@ class SearchResult extends Component {
 	};
 
 	validateTemplateName = (rule, value, callback) => {
+		// eslint-disable-next-line no-control-regex
 		const {length} = (value || '').replace(/[^\x00-\xff]/g, '01');
 		if (length <= 40) {
 			callback();
@@ -276,7 +277,7 @@ class SearchResult extends Component {
 				<div className={styles['search-bar']}>
 					<Form {...{ ...FORM_ITEM_LAYOUT, ...FORM_LABEL_LEFT }}>
 						<Row gutter={FORM_FORMAT.gutter}>
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<Form.Item>
 									<Input
 										style={{ width: '100%' }}
@@ -289,8 +290,8 @@ class SearchResult extends Component {
 									/>
 								</Form.Item>
 							</Col>
-							<Col {...COL_THREE_NORMAL} />
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD} />
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<Form.Item className={styles['query-item']}>
 									<Button loading={loading} type="primary" onClick={this.search}>
 										{formatMessage({ id: 'btn.query' })}

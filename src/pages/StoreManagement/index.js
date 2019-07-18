@@ -3,7 +3,7 @@ import { Table, Form, Input, Button, Row, Col, Cascader, Divider, Card } from 'a
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
-import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
+import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import styles from './StoreManagement.less';
 import { formatEmptyWithoutZero } from '@/utils/utils';
 
@@ -209,7 +209,7 @@ class StoreManagement extends Component {
 				<div className={styles['search-bar']}>
 					<Form layout="inline">
 						<Row gutter={FORM_FORMAT.gutter}>
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<FormItem
 									label={formatMessage({ id: 'storeManagement.list.inputLabel' })}
 								>
@@ -224,7 +224,7 @@ class StoreManagement extends Component {
 									)}
 								</FormItem>
 							</Col>
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<FormItem
 									label={formatMessage({
 										id: 'storeManagement.list.selectLabel',
@@ -242,7 +242,7 @@ class StoreManagement extends Component {
 									)}
 								</FormItem>
 							</Col>
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<Form.Item className={styles['query-item']}>
 									<Button type="primary" onClick={this.handleSubmit}>
 										{formatMessage({ id: 'btn.query' })}

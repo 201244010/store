@@ -15,7 +15,7 @@ import {
 } from 'antd';
 import { unixSecondToDate, idEncode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
-import { COL_THREE_NORMAL, FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
+import { SEARCH_FORM_COL, FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { ERROR_OK, ALERT_NOTICE_MAP, ALERT_ROLE_MAP } from '@/constants/errorCode';
 import { connect } from 'dva';
 
@@ -269,7 +269,7 @@ class RoleList extends React.Component {
 					<div className={styles['search-bar']}>
 						<Form layout="inline">
 							<Row gutter={FORM_FORMAT.gutter}>
-								<Col {...COL_THREE_NORMAL}>
+								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 									<FormItem
 										label={formatMessage({
 											id: 'roleManagement.role.roleName',
@@ -284,8 +284,8 @@ class RoleList extends React.Component {
 										)}
 									</FormItem>
 								</Col>
-								<Col {...COL_THREE_NORMAL} />
-								<Col {...COL_THREE_NORMAL}>
+								<Col {...SEARCH_FORM_COL.ONE_THIRD} />
+								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 									<Form.Item className={styles['query-item']}>
 										<Button type="primary" onClick={this.handleSubmit}>
 											{formatMessage({ id: 'btn.query' })}

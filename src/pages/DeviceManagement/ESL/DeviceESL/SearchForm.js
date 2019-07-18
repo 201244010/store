@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
+import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import styles from './DeviceESL.less';
 
 @Form.create()
@@ -29,7 +29,7 @@ class SearchForm extends Component {
 			<div className={styles['search-bar']}>
 				<Form layout="inline">
 					<Row gutter={FORM_FORMAT.gutter}>
-						<Col {...COL_THREE_NORMAL}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item>
 								{getFieldDecorator('keyword')(
 									<Input
@@ -41,8 +41,8 @@ class SearchForm extends Component {
 								)}
 							</Form.Item>
 						</Col>
-						<Col {...COL_THREE_NORMAL} />
-						<Col {...COL_THREE_NORMAL}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD} />
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item className={styles['query-item']}>
 								<Button type="primary" onClick={this.handleQuery}>
 									{formatMessage({ id: 'btn.query' })}
