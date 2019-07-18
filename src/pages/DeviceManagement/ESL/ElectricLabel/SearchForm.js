@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import {
-	FORM_FORMAT,
-	COL_THREE_NORMAL,
-} from '@/constants/form';
+import { FORM_FORMAT, COL_THREE_NORMAL } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 import styles from './index.less';
 
@@ -81,7 +78,7 @@ class SearchForm extends Component {
 							</Form.Item>
 						</Col>
 						<Col {...COL_THREE_NORMAL}>
-							<Form.Item>
+							<Form.Item className={styles['query-item']}>
 								<Button type="primary" onClick={this.search}>
 									{formatMessage({ id: 'btn.query' })}
 								</Button>

@@ -82,8 +82,9 @@ const SearchBar = ({
 							/>
 						</Form.Item>
 					</Col>
+					<Col {...COL_THREE_NORMAL} />
 					<Col {...COL_THREE_NORMAL}>
-						<Form.Item>
+						<Form.Item className={styles['query-item']}>
 							<Button type="primary" onClick={handleQuery}>
 								{formatMessage({ id: 'btn.query' })}
 							</Button>

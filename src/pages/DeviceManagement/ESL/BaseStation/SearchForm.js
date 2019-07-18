@@ -43,7 +43,9 @@ class SearchForm extends Component {
 				<Form layout="inline">
 					<Row gutter={FORM_FORMAT.gutter}>
 						<Col {...COL_THREE_NORMAL}>
-							<Form.Item label={formatMessage({ id: 'esl.device.ap.search.ap.info' })}>
+							<Form.Item
+								label={formatMessage({ id: 'esl.device.ap.search.ap.info' })}
+							>
 								<Input
 									placeholder={formatMessage({
 										id: 'esl.device.ap.search.placeholder',
@@ -59,9 +61,13 @@ class SearchForm extends Component {
 								<Select
 									placeholder={formatMessage({ id: 'select.placeholder' })}
 									value={searchFormValues.status}
-									onChange={value => this.changeFormValues('select', 'status', value)}
+									onChange={value =>
+										this.changeFormValues('select', 'status', value)
+									}
 								>
-									<Option value={-1}>{formatMessage({ id: 'select.all' })}</Option>
+									<Option value={-1}>
+										{formatMessage({ id: 'select.all' })}
+									</Option>
 									{states.map(s => (
 										<Option key={s.status_code}>{s.status_desc}</Option>
 									))}
@@ -69,7 +75,7 @@ class SearchForm extends Component {
 							</Form.Item>
 						</Col>
 						<Col {...COL_THREE_NORMAL}>
-							<Form.Item>
+							<Form.Item className={styles['query-item']}>
 								<Button type="primary" onClick={this.search}>
 									{formatMessage({ id: 'btn.query' })}
 								</Button>

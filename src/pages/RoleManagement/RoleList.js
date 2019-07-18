@@ -20,7 +20,6 @@ import { ERROR_OK, ALERT_NOTICE_MAP, ALERT_ROLE_MAP } from '@/constants/errorCod
 import { connect } from 'dva';
 
 import styles from './Role.less';
-import global from '@/styles/common.less';
 
 const FormItem = Form.Item;
 
@@ -267,7 +266,7 @@ class RoleList extends React.Component {
 		return (
 			<Card bordered={false}>
 				<div className={styles.wrapper}>
-					<div className={global['search-bar']}>
+					<div className={styles['search-bar']}>
 						<Form layout="inline">
 							<Row gutter={FORM_FORMAT.gutter}>
 								<Col {...COL_THREE_NORMAL}>
@@ -285,10 +284,13 @@ class RoleList extends React.Component {
 										)}
 									</FormItem>
 								</Col>
+								<Col {...COL_THREE_NORMAL} />
 								<Col {...COL_THREE_NORMAL}>
-									<Button type="primary" onClick={this.handleSubmit}>
-										{formatMessage({ id: 'btn.query' })}
-									</Button>
+									<Form.Item className={styles['query-item']}>
+										<Button type="primary" onClick={this.handleSubmit}>
+											{formatMessage({ id: 'btn.query' })}
+										</Button>
+									</Form.Item>
 								</Col>
 							</Row>
 						</Form>

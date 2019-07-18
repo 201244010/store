@@ -6,7 +6,6 @@ import { idDecode } from '@/utils/utils';
 import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
 import moment from 'moment';
 import styles from './Employee.less';
-import global from '@/styles/common.less';
 
 const FormItem = Form.Item;
 const GENDER_MAP = {
@@ -21,7 +20,7 @@ const GENDER_MAP = {
 		employee: state.employee,
 	}),
 	dispatch => ({
-		getEmployeeList: ({ current = 1, pageSize = 10, roleId = -1}) =>
+		getEmployeeList: ({ current = 1, pageSize = 10, roleId = -1 }) =>
 			dispatch({
 				type: 'employee/getEmployeeList',
 				payload: { current, pageSize, roleId },
@@ -45,7 +44,7 @@ class EmployeeTable extends Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.gender' }),
 				dataIndex: 'gender',
-				render: gender => GENDER_MAP[gender] || '--'
+				render: gender => GENDER_MAP[gender] || '--',
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.employeePhone' }),
@@ -54,7 +53,11 @@ class EmployeeTable extends Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.authorName' }),
 				render: (_, record) => (
-					<span>{`${record.createByUsername || '--'}(${record.phone || record.email || '--'})`}</span>
+					<span>
+						{`${record.createByUsername || '--'}(${record.phone ||
+							record.email ||
+							'--'})`}
+					</span>
 				),
 			},
 			{
@@ -136,7 +139,7 @@ class EmployeeTable extends Component {
 					<span>{formatMessage({ id: 'employee.info.currentRole' })}</span>
 					<span>{role}</span>
 				</div>
-				<div className={global['search-bar']}>
+				<div className={styles['search-bar']}>
 					<Form layout="inline">
 						<Row gutter={FORM_FORMAT.gutter}>
 							<Col {...COL_THREE_NORMAL}>
@@ -177,20 +180,29 @@ class EmployeeTable extends Component {
 									/>
 								</FormItem>
 							</Col>
+						</Row>
+						<Row gutter={FORM_FORMAT.gutter}>
+							<Col {...COL_THREE_NORMAL} />
+							<Col {...COL_THREE_NORMAL} />
 							<Col {...COL_THREE_NORMAL}>
-								<Button type="primary" onClick={this.handleSubmit}>
-									{formatMessage({ id: 'btn.query' })}
-								</Button>
-								<Button style={{ marginLeft: '20px' }} onClick={this.handleReset}>
-									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
-								</Button>
+								<Form.Item className={styles['query-item']}>
+									<Button type="primary" onClick={this.handleSubmit}>
+										{formatMessage({ id: 'btn.query' })}
+									</Button>
+									<Button
+										style={{ marginLeft: '20px' }}
+										onClick={this.handleReset}
+									>
+										{formatMessage({ id: 'storeManagement.list.buttonReset' })}
+									</Button>
+								</Form.Item>
 							</Col>
 						</Row>
 					</Form>
 				</div>
 				<div className={styles['employee-table']}>
 					<Table
-						rowKey="shopId"
+						rowKey="employeeId"
 						dataSource={employeeList}
 						columns={this.columns}
 						loading={loading.effects['employee/getEmployeeList']}

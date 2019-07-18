@@ -243,12 +243,17 @@ class StoreManagement extends Component {
 								</FormItem>
 							</Col>
 							<Col {...COL_THREE_NORMAL}>
-								<Button type="primary" onClick={this.handleSubmit}>
-									{formatMessage({ id: 'btn.query' })}
-								</Button>
-								<Button style={{ marginLeft: '20px' }} onClick={this.handleReset}>
-									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
-								</Button>
+								<Form.Item className={styles['query-item']}>
+									<Button type="primary" onClick={this.handleSubmit}>
+										{formatMessage({ id: 'btn.query' })}
+									</Button>
+									<Button
+										style={{ marginLeft: '20px' }}
+										onClick={this.handleReset}
+									>
+										{formatMessage({ id: 'storeManagement.list.buttonReset' })}
+									</Button>
+								</Form.Item>
 							</Col>
 						</Row>
 					</Form>

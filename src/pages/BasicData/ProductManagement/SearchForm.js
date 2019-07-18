@@ -58,15 +58,13 @@ class SearchForm extends Component {
 								/>
 							</Form.Item>
 						</Col>
+						<Col {...COL_THREE_NORMAL} />
 						<Col {...COL_THREE_NORMAL}>
-							<Form.Item>
+							<Form.Item className={styles['query-item']}>
 								<Button type="primary" onClick={this.search}>
 									{formatMessage({ id: 'btn.query' })}
 								</Button>
-								<Button
-									style={{ marginLeft: '20px' }}
-									onClick={this.handleReset}
-								>
+								<Button style={{ marginLeft: '20px' }} onClick={this.handleReset}>
 									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
 								</Button>
 							</Form.Item>
