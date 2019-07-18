@@ -278,12 +278,12 @@ class EmployeeCU extends Component {
 								},
 								{
 									validator: (rule, value, callback) => {
-										if (RegExp.employeeNumber.test(value)) {
-											callback();
-										} else {
+										if (value && !RegExp.employeeNumber.test(value)) {
 											callback(
 												formatMessage({ id: 'employee.number.formatError' })
 											);
+										} else {
+											callback();
 										}
 									},
 								},
