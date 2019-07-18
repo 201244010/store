@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import { Col, Icon, Input, Row, Select, Radio, InputNumber } from 'antd';
+import { Col, Icon, Input, Row, Select, Radio } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { SHAPE_TYPES, MAPS } from '@/constants/studio';
+import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
 
 const { Option } = Select;
@@ -60,14 +61,25 @@ export default class RightToolBox extends Component {
 			const newDetail = {
 				[key]: value,
 			};
+			const detail = componentsDetail[selectedShapeName];
+			let canUpdate = true;
 			if (key === 'fontSize') {
-				const detail = componentsDetail[selectedShapeName];
 				newDetail.scaleY = value / MAPS.containerHeight[detail.type];
+			} else if (key === 'text' && selectedShapeName.indexOf(SHAPE_TYPES.PRICE) > -1) {
+				if (!RegExp.money.test(value) && (!value.endsWith('.') || value.split('.').length > 2)) {
+					canUpdate = false;
+				}
+			    const decimal = value.split('.')[1];
+				if (decimal && decimal.length > detail.precision) {
+					canUpdate = false;
+				}
 			}
-			updateComponentsDetail({
-				isStep: true,
-				[selectedShapeName]: newDetail,
-			});
+			if (canUpdate) {
+				updateComponentsDetail({
+					isStep: true,
+					[selectedShapeName]: newDetail,
+				});
+			}
 		}
 	};
 
@@ -851,13 +863,12 @@ export default class RightToolBox extends Component {
 						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
 						<Row style={{ marginBottom: 10 }}>
 							<Col span={24}>
-								<InputNumber
+								<Input
 									style={{ width: '100%' }}
 									placeholder={formatMessage({ id: 'studio.price.component' })}
 									value={detail.text}
-									precision={detail.precision}
-									onChange={value => {
-										this.handleDetail('text', value);
+									onChange={e => {
+										this.handleDetail('text', e.target.value);
 									}}
 								/>
 							</Col>

@@ -76,7 +76,7 @@ const router = [
 								name: 'videos',
 								id: 'videos',
 								hideInMenu: true,
-								component: './IPC/TradeVideos/TradeVideos.js',
+								component: './IPC/TradeVideos/index.js',
 							},
 							{
 								path: '/application/cashVerify',
