@@ -4,7 +4,7 @@ import { Form, Button, Row, Col, Table, Card, Modal, Divider, message } from 'an
 import moment from 'moment';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
+import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import LibraryForm from './LibraryForm';
 
 import styles from './FaceidLibrary.less';
@@ -341,7 +341,7 @@ class LibraryList extends React.Component {
 					<div className={global['search-bar']}>
 						<Form layout="inline">
 							<Row gutter={FORM_FORMAT.gutter}>
-								<Col {...COL_THREE_NORMAL}>
+								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 									<Form.Item>
 										<Button
 											type="primary"
