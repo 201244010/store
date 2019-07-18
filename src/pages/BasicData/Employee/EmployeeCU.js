@@ -328,8 +328,8 @@ class EmployeeCU extends Component {
 								{
 									validator: (rule, value, callback) => {
 										if (
+											value &&
 											!RegExp.phone.test(value) &&
-											// eslint-disable-next-line no-useless-escape
 											!RegExp.mail.test(value)
 										) {
 											callback(

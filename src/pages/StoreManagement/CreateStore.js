@@ -13,6 +13,7 @@ const FormItem = Form.Item;
 
 @connect(
 	state => ({
+		loading: state.loading,
 		store: state.store,
 	}),
 	dispatch => ({
@@ -22,8 +23,8 @@ const FormItem = Form.Item;
 		getRegionList: () => dispatch({ type: 'store/getRegionList' }),
 		getStoreDetail: payload => dispatch({ type: 'store/getStoreDetail', payload }),
 		clearState: () => dispatch({ type: 'store/clearState' }),
-		goToPath: (pathId, urlParams = {},) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams,  } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()
@@ -110,6 +111,7 @@ class CreateStore extends React.Component {
 	render() {
 		const {
 			form: { getFieldDecorator },
+			loading: cardLoading,
 			store: {
 				shopType_list,
 				regionList,
@@ -133,7 +135,7 @@ class CreateStore extends React.Component {
 		const [action = 'create'] = [getLocationParam('action')];
 
 		return (
-			<Card bordered={false}>
+			<Card bordered={false} loading={cardLoading.effects['store/getStoreDetail']}>
 				<h3>
 					{action === 'create'
 						? formatMessage({ id: 'storeManagement.create.title' })

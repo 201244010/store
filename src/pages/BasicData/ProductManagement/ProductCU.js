@@ -152,7 +152,7 @@ class ProductCU extends Component {
 								weighInfo: { usebyType, usebyDays },
 							} = values;
 							if (data && moment.isMoment(usebyDays)) {
-								return usebyType === '1'
+								return usebyType === '2'
 									? usebyDays.format('YYYY-MM-DD')
 									: usebyDays.format('HH:mm');
 							}
@@ -173,7 +173,7 @@ class ProductCU extends Component {
 							} = values;
 
 							if (data && moment.isMoment(limitDays)) {
-								return limitType === '1'
+								return limitType === '2'
 									? limitDays.format('YYYY-MM-DD')
 									: limitDays.format('HH:mm');
 							}
@@ -217,7 +217,7 @@ class ProductCU extends Component {
 			form: { validateFields, setFields },
 		} = this.props;
 		validateFields(async (err, values) => {
-			console.log(values);
+			// console.log(values);
 			if (!err) {
 				const submitValue = this.formatSubmitValue(values);
 				const response = await submitFunction[action]({
