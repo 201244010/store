@@ -301,7 +301,7 @@ class SearchResult extends Component {
 										type="primary"
 										icon="plus"
 										onClick={this.showNew}
-										className={styles['btn-marginleft']}
+										className={styles['btn-margin-left']}
 									>
 										{formatMessage({ id: 'esl.device.template.new' })}
 									</Button>
