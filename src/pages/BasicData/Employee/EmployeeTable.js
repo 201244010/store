@@ -54,7 +54,7 @@ class EmployeeTable extends Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.authorName' }),
 				render: (_, record) => (
-					<span>{`${record.createByUsername || '--'}(${record.phone || record.email || '--'})`}</span>
+					<span>{`${record.createByUsername || '--'}(${record.createBy || '--'})`}</span>
 				),
 			},
 			{
