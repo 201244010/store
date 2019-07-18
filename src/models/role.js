@@ -2,12 +2,14 @@ import * as Actions from '@/services/role';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_SIZE, USER_PERMISSION_LIST } from '@/constants';
 import { map, format } from '@konata9/milk-shake';
+import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
 
 const getInitStatus = (permissionList, roleInfo) => {
 	const rolePermissionList = roleInfo.permissionList;
 	const initResult = {};
-	rolePermissionList.map(item => {
+	rolePermissionList.forEach(item => {
+		console.log(item.group, permissionList.label);
 		if (item.group === permissionList.label) {
 			initResult.valueList = item.valueList;
 			initResult.checkAll = item.checkAll;
@@ -22,12 +24,23 @@ const formatData = data => {
 	tmp = tmp.map(item => {
 		if (item.permissionList) {
 			item.permissionList = item.permissionList.map(items =>
-				map([{ from: 'id', to: 'value' }, { from: 'name', to: 'label' }])(items)
+				map([{ from: 'id', to: 'value' }, { from: 'path', to: 'label' }])(items)
 			);
 		}
 		return item;
 	});
 	return tmp;
+};
+
+const formatPath = data => {
+	data.label = formatMessage({ id: `menu${data.label.split('/').join('.')}` });
+	data.permissionList.forEach(
+		item =>
+			(item.label = formatMessage({
+				id: `menu${item.label.split('/').join('.')}`,
+			}))
+	);
+	return data;
 };
 
 export default {
@@ -106,20 +119,18 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const forData = format('toCamel')(data);
-				forData.permissionList = formatData(forData.permissionList).map(item =>
-					Object.assign(
-						{},
-						{
-							checkedList: item,
-							indeterminate: item.permissionList && true,
-							checkAll: false,
-							group: item.label,
-							valueList: item.permissionList
-								? item.permissionList.map(items => items.value)
-								: [item.value],
-						}
-					)
-				);
+				forData.permissionList = formatData(forData.permissionList).map(item => {
+					const formatResult = formatPath(item);
+					return {
+						checkedList: formatResult,
+						indeterminate: formatResult.permissionList && true,
+						checkAll: false,
+						group: formatResult.label,
+						valueList: formatResult.permissionList
+							? formatResult.permissionList.map(items => items.value)
+							: [formatResult.value],
+					};
+				});
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -143,21 +154,22 @@ export default {
 
 				const { data = {} } = response;
 				const forData = format('toCamel')(data);
-
-				const tmpList = formatData(forData.permissionList).map(item =>
-					Object.assign(
-						{},
-						{
-							checkedList: item,
-							indeterminate: item.permissionList && true,
-							checkAll:
-								type === 'modify' ? getInitStatus(item, roleInfo).checkAll : false,
-							group: item.label,
-							valueList:
-								type === 'modify' ? getInitStatus(item, roleInfo).valueList : [],
-						}
-					)
-				);
+				const tmpList = formatData(forData.permissionList).map(item => {
+					const formatResult = formatPath(item);
+					return {
+						checkedList: formatResult,
+						indeterminate: formatResult.permissionList && true,
+						checkAll:
+							type === 'modify'
+								? getInitStatus(formatResult, roleInfo).checkAll
+								: false,
+						group: formatResult.label,
+						valueList:
+							type === 'modify'
+								? getInitStatus(formatResult, roleInfo).valueList
+								: [],
+					};
+				});
 				yield put({
 					type: 'updateState',
 					payload: {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Row, Col, TreeSelect, Input, Button } from 'antd';
-import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
+import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import styles from './Employee.less';
 
 const SearchBar = ({
@@ -42,7 +42,7 @@ const SearchBar = ({
 		<div className={styles['search-bar']}>
 			<Form layout="inline">
 				<Row gutter={FORM_FORMAT.gutter}>
-					<Col {...COL_THREE_NORMAL}>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.orgnization' })}>
 							<TreeSelect
 								value={
@@ -56,7 +56,7 @@ const SearchBar = ({
 							/>
 						</Form.Item>
 					</Col>
-					<Col {...COL_THREE_NORMAL}>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.name' })}>
 							<Input
 								value={name}
@@ -64,7 +64,7 @@ const SearchBar = ({
 							/>
 						</Form.Item>
 					</Col>
-					<Col {...COL_THREE_NORMAL}>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.number' })}>
 							<Input
 								value={number}
@@ -74,7 +74,7 @@ const SearchBar = ({
 					</Col>
 				</Row>
 				<Row gutter={FORM_FORMAT.gutter}>
-					<Col {...COL_THREE_NORMAL}>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.phone' })}>
 							<Input
 								value={username}
@@ -82,8 +82,9 @@ const SearchBar = ({
 							/>
 						</Form.Item>
 					</Col>
-					<Col {...COL_THREE_NORMAL}>
-						<Form.Item>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD} />
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+						<Form.Item className={styles['query-item']}>
 							<Button type="primary" onClick={handleQuery}>
 								{formatMessage({ id: 'btn.query' })}
 							</Button>
@@ -94,7 +95,7 @@ const SearchBar = ({
 					</Col>
 				</Row>
 				<Row gutter={FORM_FORMAT.gutter}>
-					<Col {...COL_THREE_NORMAL}>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item>
 							<Button
 								type="primary"

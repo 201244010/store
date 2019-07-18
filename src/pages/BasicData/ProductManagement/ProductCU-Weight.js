@@ -44,13 +44,13 @@ const ProductCUWeight = props => {
 				productWeigh = null,
 				tareCode = null,
 				tare = null,
-				packDist = '0',
+				packDist = '1',
 				packType = '1',
 				packDays = null,
-				usebyDist = '0',
+				usebyDist = '1',
 				usebyType = '1',
 				usebyDays = null,
-				limitDist = '0',
+				limitDist = '1',
 				limitType = '1',
 				limitDays = null,
 				exttextCode = null,
@@ -400,9 +400,6 @@ const ProductCUWeight = props => {
 					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.packDays' })}>
 						{selectedPackType === '1'
 							? getFieldDecorator('weighInfo.packDays', {
-								initialValue: !packDays ? null : moment(packDays, dateFormat),
-							  })(<DatePicker format={dateFormat} />)
-							: getFieldDecorator('weighInfo.packDays', {
 								initialValue: packDays,
 								validateTrigger: 'onBlur',
 								rules: [
@@ -422,7 +419,10 @@ const ProductCUWeight = props => {
 										id: 'basicData.product.expire_time.day',
 									})}
 								/>
-							  )}
+							  )
+							: getFieldDecorator('weighInfo.packDays', {
+								initialValue: !packDays ? null : moment(packDays, dateFormat),
+							  })(<DatePicker format={dateFormat} />)}
 					</Form.Item>
 				</Col>
 			</Row>
@@ -481,11 +481,6 @@ const ProductCUWeight = props => {
 					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.usebyDays' })}>
 						{selectedUseByType === '1' &&
 							getFieldDecorator('weighInfo.usebyDays', {
-								initialValue: !usebyDays ? null : moment(usebyDays, dateFormat),
-							})(<DatePicker format={dateFormat} />)}
-
-						{selectedUseByType === '2' &&
-							getFieldDecorator('weighInfo.usebyDays', {
 								initialValue: usebyDays,
 								validateTrigger: 'onBlur',
 								rules: [
@@ -506,6 +501,11 @@ const ProductCUWeight = props => {
 									})}
 								/>
 							)}
+
+						{selectedUseByType === '2' &&
+							getFieldDecorator('weighInfo.usebyDays', {
+								initialValue: !usebyDays ? null : moment(usebyDays, dateFormat),
+							})(<DatePicker format={dateFormat} />)}
 
 						{selectedUseByType === '3' &&
 							getFieldDecorator('weighInfo.usebyDays', {
@@ -569,11 +569,6 @@ const ProductCUWeight = props => {
 					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.limitDays' })}>
 						{selectedLimitType === '1' &&
 							getFieldDecorator('weighInfo.limitDays', {
-								initialValue: !limitDays ? null : moment(limitDays, dateFormat),
-							})(<DatePicker format={dateFormat} />)}
-
-						{selectedLimitType === '2' &&
-							getFieldDecorator('weighInfo.limitDays', {
 								initialValue: limitDays,
 								validateTrigger: 'onBlur',
 								rules: [
@@ -594,6 +589,11 @@ const ProductCUWeight = props => {
 									})}
 								/>
 							)}
+
+						{selectedLimitType === '2' &&
+							getFieldDecorator('weighInfo.limitDays', {
+								initialValue: !limitDays ? null : moment(limitDays, dateFormat),
+							})(<DatePicker format={dateFormat} />)}
 
 						{selectedLimitType === '3' &&
 							getFieldDecorator('weighInfo.limitDays', {
