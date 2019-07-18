@@ -99,22 +99,24 @@ class EmployeeCU extends Component {
 	decodeMappingList = mappingList => {
 		// console.log(mappingList);
 		const orgnizationMap = new Map();
-		mappingList.forEach(item => {
-			const { companyId = null, shopId = null, roleId = null } = item;
-			const orgnizationKey =
-				shopId === 0 || !shopId ? `${companyId}` : `${companyId}-${shopId}`;
+		mappingList
+			.filter(item => item.roleName !== 'admin')
+			.forEach(item => {
+				const { companyId = null, shopId = null, roleId = null } = item;
+				const orgnizationKey =
+					shopId === 0 || !shopId ? `${companyId}` : `${companyId}-${shopId}`;
 
-			if (orgnizationMap.has(orgnizationKey)) {
-				const { roleList = [] } = orgnizationMap.get(orgnizationKey);
-				orgnizationMap.set(orgnizationKey, {
-					roleList: [...roleList, roleId],
-				});
-			} else {
-				orgnizationMap.set(orgnizationKey, {
-					roleList: [roleId],
-				});
-			}
-		});
+				if (orgnizationMap.has(orgnizationKey)) {
+					const { roleList = [] } = orgnizationMap.get(orgnizationKey);
+					orgnizationMap.set(orgnizationKey, {
+						roleList: [...roleList, roleId],
+					});
+				} else {
+					orgnizationMap.set(orgnizationKey, {
+						roleList: [roleId],
+					});
+				}
+			});
 
 		const result = [...orgnizationMap.keys()].map(key => {
 			const { roleList = [] } = orgnizationMap.get(key);
