@@ -2,6 +2,11 @@ import React from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Row, Col, TreeSelect, Input, Button } from 'antd';
 import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
+import {
+	EMPLOYEE_NUMBER_LIMIT,
+	EMPLOYEE_NAME_LIMIT,
+	EMPLOYEE_PHONE_LIMIT,
+} from './constants';
 import styles from './Employee.less';
 
 const SearchBar = ({
@@ -59,6 +64,7 @@ const SearchBar = ({
 					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.name' })}>
 							<Input
+								maxLength={EMPLOYEE_NAME_LIMIT}
 								value={name}
 								onChange={e => handleSearchChange('name', e.target.value)}
 							/>
@@ -67,6 +73,7 @@ const SearchBar = ({
 					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.number' })}>
 							<Input
+								maxLength={EMPLOYEE_NUMBER_LIMIT}
 								value={number}
 								onChange={e => handleSearchChange('number', e.target.value)}
 							/>
@@ -77,6 +84,7 @@ const SearchBar = ({
 					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.phone' })}>
 							<Input
+								maxLength={EMPLOYEE_PHONE_LIMIT}
 								value={username}
 								onChange={e => handleSearchChange('username', e.target.value)}
 							/>

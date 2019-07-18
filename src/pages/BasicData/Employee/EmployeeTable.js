@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import { idDecode } from '@/utils/utils';
 import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import moment from 'moment';
+import { EMPLOYEE_NUMBER_LIMIT, EMPLOYEE_NAME_LIMIT, EMPLOYEE_PHONE_LIMIT } from './constants';
 import styles from './Employee.less';
 
 const FormItem = Form.Item;
@@ -141,6 +142,7 @@ class EmployeeTable extends Component {
 							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<FormItem label={formatMessage({ id: 'roleManagement.role.name' })}>
 									<Input
+										maxLength={EMPLOYEE_NAME_LIMIT}
 										value={name}
 										onChange={e =>
 											this.handleSearchChange('name', e.target.value)
@@ -155,6 +157,7 @@ class EmployeeTable extends Component {
 									})}
 								>
 									<Input
+										maxLength={EMPLOYEE_NUMBER_LIMIT}
 										value={number}
 										onChange={e =>
 											this.handleSearchChange('number', e.target.value)
@@ -169,6 +172,7 @@ class EmployeeTable extends Component {
 									})}
 								>
 									<Input
+										maxLength={EMPLOYEE_PHONE_LIMIT}
 										value={username}
 										onChange={e =>
 											this.handleSearchChange('username', e.target.value)

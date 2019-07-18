@@ -7,6 +7,11 @@ import { getLocationParam } from '@/utils/utils';
 import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK, USER_EXIST, SSO_BINDED, EMPLOYEE_BINDED } from '@/constants/errorCode';
 import * as RegExp from '@/constants/regexp';
+import {
+	EMPLOYEE_NUMBER_LIMIT,
+	EMPLOYEE_NAME_LIMIT,
+	EMPLOYEE_PHONE_EMAIL_LIMIT,
+} from './constants';
 import styles from './Employee.less';
 
 @connect(
@@ -288,7 +293,12 @@ class EmployeeCU extends Component {
 									},
 								},
 							],
-						})(<Input maxLength={20} className={styles['uppercase-input']} />)}
+						})(
+							<Input
+								maxLength={EMPLOYEE_NUMBER_LIMIT}
+								className={styles['uppercase-input']}
+							/>
+						)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.name' })}>
 						{getFieldDecorator('name', {
@@ -300,7 +310,7 @@ class EmployeeCU extends Component {
 									message: formatMessage({ id: 'employee.name.isEmpty' }),
 								},
 							],
-						})(<Input maxLength={32} />)}
+						})(<Input maxLength={EMPLOYEE_NAME_LIMIT} />)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.gender' })}>
 						{getFieldDecorator('gender', {
@@ -343,7 +353,7 @@ class EmployeeCU extends Component {
 									},
 								},
 							],
-						})(<Input />)}
+						})(<Input maxLength={EMPLOYEE_PHONE_EMAIL_LIMIT} />)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.sso.account' })}>
 						{getFieldDecorator('ssoUsername', {

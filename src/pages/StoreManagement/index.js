@@ -217,6 +217,7 @@ class StoreManagement extends Component {
 										initialValue: keyword,
 									})(
 										<Input
+											maxLength={20}
 											placeholder={formatMessage({
 												id: 'storeManagement.list.inputPlaceHolder',
 											})}
