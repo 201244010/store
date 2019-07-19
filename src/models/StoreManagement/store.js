@@ -88,6 +88,18 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
 				const shopList = data.shop_list || [];
+				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
+
+				if (shopList.length === 0) {
+					CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
+				} else {
+					const lastStore = shopList.length;
+					const defaultStore = shopList[lastStore - 1] || {};
+					if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
+						CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
+					}
+				}
+
 				const newPayload = {
 					loading: false,
 					storeList: shopList,
