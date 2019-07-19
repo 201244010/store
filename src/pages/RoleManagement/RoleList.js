@@ -298,6 +298,7 @@ class RoleList extends React.Component {
 									>
 										{getFieldDecorator('keyword', {})(
 											<Input
+												maxLength={40}
 												placeholder={formatMessage({
 													id: 'esl.device.upload.device.version.input',
 												})}
