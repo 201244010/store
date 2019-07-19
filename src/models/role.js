@@ -7,12 +7,13 @@ import Storage from '@konata9/storage.js';
 const getInitStatus = (permissionList, roleInfo) => {
 	const rolePermissionList = roleInfo.permissionList;
 	const initResult = {};
-	rolePermissionList.map(item => {
+	rolePermissionList.forEach(item => {
 		if (item.group === permissionList.label) {
 			initResult.valueList = item.valueList;
 			initResult.checkAll = item.checkAll;
 		}
 	});
+	console.log('initResult', initResult);
 	return initResult;
 };
 
