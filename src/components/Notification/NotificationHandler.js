@@ -2,12 +2,14 @@ import React from 'react';
 import { Button, Modal } from 'antd';
 import VideoPlayComponent from '@/pages/IPC/component/VideoPlayComponent';
 import { formatMessageTemplate, convertArrayPrams } from '@/utils/utils';
+import ipcTypes from '@/constants/ipcTypes';
 
 const ACTION_MAP = {
 	'GET-AP-LIST': ({ handlers: { goToPath } }) => goToPath('baseStation'),
 	'notif-ap-offline-btn1': ({ handlers: { goToPath } }) => goToPath('baseStation'),
 	'notif-motion-detect-btn1': ({ params }) => {
 		const { url = null, device_model: ipcType = null } = convertArrayPrams(params);
+		const { pixelRatio = '16:9' } = ipcTypes[ipcType];
 		const modal = Modal.info({
 			title: '',
 			content: (
@@ -19,7 +21,7 @@ const ACTION_MAP = {
 						}
 					}}
 					videoUrl={url}
-					ipcType={ipcType}
+					pixelRatio={pixelRatio}
 				/>
 			),
 			okButtonProps: { style: { dispaly: 'none' } },

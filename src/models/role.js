@@ -236,6 +236,11 @@ export default {
 			const response = yield call(Actions.handleRoleManagement, 'changeAdmin', opts);
 			return response;
 		},
+
+		*checkAdmin(_, { call }) {
+			const response = yield call(Actions.handleRoleManagement, 'checkAdmin');
+			return response;
+		},
 	},
 	reducers: {
 		updateState(state, action) {

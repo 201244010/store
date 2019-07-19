@@ -31,6 +31,14 @@ export default {
 			return Storage.get('__company_list__', 'local') || [];
 		},
 
+		clearStorage() {
+			CookieUtil.clearCookies();
+			Storage.remove(
+				[CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY, 'FILTERED_MENU'],
+				'local'
+			);
+		},
+
 		// *fetchNotices(_, { call, put, select }) {
 		// 	const data = yield call(queryNotices);
 		// 	yield put({

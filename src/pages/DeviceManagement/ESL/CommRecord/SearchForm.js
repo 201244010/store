@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select, DatePicker } from 'antd';
-import { FORM_FORMAT, COL_THREE_NORMAL } from '@/constants/form';
+import { FORM_FORMAT, SEARCH_FORM_COL } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 import styles from './index.less';
 
@@ -52,7 +52,7 @@ class SearchForm extends Component {
 			<div className={styles['search-bar']}>
 				<Form layout="inline">
 					<Row gutter={FORM_FORMAT.gutter}>
-						<Col {...COL_THREE_NORMAL}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item label={formatMessage({ id: 'esl.device.esl.id' })}>
 								<Input
 									placeholder={formatMessage({
@@ -64,7 +64,7 @@ class SearchForm extends Component {
 								/>
 							</Form.Item>
 						</Col>
-						<Col {...COL_THREE_NORMAL}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item label={formatMessage({ id: 'esl.device.esl.comm.date' })}>
 								<RangePicker
 									format="YYYY-MM-DD"
@@ -76,7 +76,7 @@ class SearchForm extends Component {
 						</Col>
 					</Row>
 					<Row gutter={FORM_FORMAT.gutter}>
-						<Col {...COL_THREE_NORMAL}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item label={formatMessage({ id: 'esl.device.esl.comm.reason' })}>
 								<Select
 									placeholder={formatMessage({ id: 'select.placeholder' })}
@@ -110,7 +110,7 @@ class SearchForm extends Component {
 								</Select>
 							</Form.Item>
 						</Col>
-						<Col {...COL_THREE_NORMAL}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item label={formatMessage({ id: 'esl.device.esl.comm.result' })}>
 								<Select
 									placeholder={formatMessage({ id: 'select.placeholder' })}
@@ -132,7 +132,7 @@ class SearchForm extends Component {
 								</Select>
 							</Form.Item>
 						</Col>
-						<Col {...COL_THREE_NORMAL}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item>
 								<Button type="primary" onClick={this.search}>
 									{formatMessage({ id: 'btn.query' })}

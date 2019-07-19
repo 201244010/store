@@ -164,7 +164,7 @@ const ProductInfoWeight = ({ productWeight = {} }) => {
 					</span>
 					<span className={styles['item-content']}>
 						{packDays.value}
-						{packType.value === '2' && packDays.value
+						{packType.value === '1' && packDays.value
 							? formatMessage({ id: 'basicData.product.expire_time.day' })
 							: ''}
 					</span>
@@ -198,7 +198,7 @@ const ProductInfoWeight = ({ productWeight = {} }) => {
 					</span>
 					<span className={styles['item-content']}>
 						{usebyDays.value}
-						{usebyType.value === '2' && usebyDays.value
+						{usebyType.value === '1' && usebyDays.value
 							? formatMessage({ id: 'basicData.product.expire_time.day' })
 							: ''}
 					</span>
@@ -232,7 +232,7 @@ const ProductInfoWeight = ({ productWeight = {} }) => {
 					</span>
 					<span className={styles['item-content']}>
 						{limitDays.value}
-						{limitType.value === '2' && limitDays.value
+						{limitType.value === '1' && limitDays.value
 							? formatMessage({ id: 'basicData.product.expire_time.day' })
 							: ''}
 					</span>
