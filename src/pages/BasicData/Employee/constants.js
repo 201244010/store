@@ -1,0 +1,4 @@
+export const EMPLOYEE_NUMBER_LIMIT = 20;
+export const EMPLOYEE_NAME_LIMIT = 32;
+export const EMPLOYEE_PHONE_EMAIL_LIMIT = 32;
+export const EMPLOYEE_PHONE_LIMIT = 11;

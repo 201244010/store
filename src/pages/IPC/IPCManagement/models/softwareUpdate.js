@@ -16,24 +16,35 @@ export default {
 		lastCheckTime: 0,
 		newVersion: '',
 		updating: 'normal',
-		url: ''
+		url: '',
+		sn: ''
 	},
 	reducers: {
-		setCurrentVersion (state, { payload: { version }}) {
-			// console.log('inn: ', version);
-			state.currentVersion = version;
+		init( state, { payload: { sn }} ) {
+			state.sn = sn;
 		},
-		setLastCheckTime (state, { payload: { time }}) {
-			state.lastCheckTime = time;
+		setCurrentVersion (state, { payload: { sn, version }}) {
+			// console.log('inn: ', version);
+			if(state.sn === sn){
+				state.currentVersion = version;
+			}
+		},
+		setLastCheckTime (state, { payload: { sn, time }}) {
+			if(state.sn === sn){
+				state.lastCheckTime = time;
+			}
 		},
 		updateStatus (state, { payload: { needUpdate, version, url }}) {
 			state.needUpdate = needUpdate;
 			state.newVersion = version;
 			state.url = url;
 		},
-		setUpdatingStatus (state, { payload: { status }}) {
+		setUpdatingStatus (state, { payload: { sn, status }}) {
 			// console.log(status);
-			state.updating = status;
+			if(state.sn === sn){
+				state.updating = status;
+			}
+
 		}
 	},
 	effects: {
@@ -46,8 +57,16 @@ export default {
 			});
 
 			yield put({
+				type: 'init',
+				payload: {
+					sn
+				}
+			});
+
+			yield put({
 				type: 'setCurrentVersion',
 				payload: {
+					sn,
 					version: ipcInfo.binVersion
 				}
 			});
@@ -55,6 +74,7 @@ export default {
 			yield put({
 				type: 'setLastCheckTime',
 				payload: {
+					sn,
 					time: ipcInfo.checkTime
 				}
 			});
@@ -124,6 +144,7 @@ export default {
 			yield put({
 				type: 'setUpdatingStatus',
 				payload: {
+					sn,
 					status: 'loading'
 				}
 			});
@@ -142,12 +163,11 @@ export default {
 			const listeners = [
 				{
 					opcode: OPCODE.START_UPDATE,
-					models: ['FS1', 'SS1'],
 					type: MESSAGE_TYPE.RESPONSE,
 					handler: (topic, messages) => {
 						// IPC返回开始升级
 						const msg = JSON.parse(JSON.stringify(messages));
-
+						const { sn } = msg.data;
 						if (msg.errcode === ERROR_OK) {
 							const status = 'success';
 							dispatch({
@@ -157,6 +177,7 @@ export default {
 								dispatch({
 									type: 'setUpdatingStatus',
 									payload: {
+										sn,
 										status
 									}
 								});
@@ -164,6 +185,7 @@ export default {
 								dispatch({
 									type: 'setCurrentVersion',
 									payload: {
+										sn,
 										version
 									}
 								});
@@ -175,13 +197,11 @@ export default {
 							dispatch({
 								type: 'setUpdatingStatus',
 								payload: {
+									sn,
 									status
 								}
 							});
 						}
-
-
-
 					}
 				}
 			];

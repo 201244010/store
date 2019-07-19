@@ -38,6 +38,7 @@ export default {
 	'app.exception.description.404': '您所访问的页面不存在',
 	'app.exception.description.403': '您没有权限进行此操作',
 	'app.exception.back': '返回首页',
+	'app.network.disconnect': '您的网络似乎出现了问题，请检查网络连接',
 	...globalHeader,
 	...common,
 	...menu,

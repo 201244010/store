@@ -52,9 +52,9 @@ class IPCList extends React.Component {
 		}
 		return (
 			<div className={styles.container}>
-				<Spin spinning={loading.effects['ipcList/getList']}>
+				<Spin spinning={loading.effects['ipcList/read']}>
 					{
-						ipcList.length === 0 && !loading.effects['ipcList/getList'] ?
+						ipcList.length === 0 && !loading.effects['ipcList/read'] ?
 							<div className={styles['no-device']}>
 								<div className={styles['ipc-pic']} />
 								<h2>{<FormattedMessage id='ipcList.noDevice.addIPC.tips' />}</h2>
@@ -176,7 +176,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
 	loadList: () => dispatch({
-		type:'ipcList/getList'
+		type:'ipcList/read'
 	}),
 	navigateTo: (pathId, urlParams) => dispatch({
 		type: 'menu/goToPath',

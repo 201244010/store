@@ -58,20 +58,15 @@ export default {
 			yield put({
 				type: 'initState',
 			});
-			CookieUtil.clearCookies();
-			Storage.remove(
-				[CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY, 'FILTERED_MENU'],
-				'local'
-			);
 
-			window.location.reload();
-			// yield put({
-			// 	type: 'menu/goToPath',
-			// 	payload: {
-			// 		pathId: 'userLogin',
-			// 		linkType: 'replace',
-			// 	},
-			// });
+			// window.location.reload();
+			yield put({
+				type: 'menu/goToPath',
+				payload: {
+					pathId: 'userLogin',
+					linkType: 'replace',
+				},
+			});
 			// router.push('/user/login');
 		},
 		*checkImgCode({ payload }, { call }) {
@@ -83,9 +78,11 @@ export default {
 			return yield call(Actions.register, options);
 		},
 		*getUserInfo(_, { call, put }) {
+			const checkAdminResponse = yield put.resolve({ type: 'role/checkAdmin' });
 			const response = yield call(Actions.getUserInfo);
+			const checkAdmin = checkAdminResponse && checkAdminResponse.code === ERROR_OK ? 1 : 0;
 			if (response && response.code === ERROR_OK) {
-				const result = response.data || {};
+				const result = { ...response.data, checkAdmin } || { checkAdmin };
 				CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, result);
 				yield put({
 					type: 'storeUserInfo',

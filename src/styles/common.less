@@ -1,11 +1,11 @@
 @font-color-common: #525866;
-@font-color-primary: #FF8133;
-@font-color-primary-hover: #FFA05C;
-@font-color-primary-active: #D96121;
-@font-color-explain: #FF3838;
+@font-color-primary: #ff8133;
+@font-color-primary-hover: #ffa05c;
+@font-color-primary-active: #d96121;
+@font-color-explain: #ff3838;
 
-@formItem-border-color: #CED2D9;
-@formItem-bg-color: #FDFDFD;
+@formItem-border-color: #ced2d9;
+@formItem-bg-color: #fdfdfd;
 
 .primary-btn {
 	width: 100%;
@@ -15,8 +15,8 @@
 	border-radius: 4px;
 	background: @font-color-primary;
 
-
-	&:visited, &:focus {
+	&:visited,
+	&:focus {
 		background: @font-color-primary;
 	}
 
@@ -37,21 +37,17 @@
 	margin-top: 40px;
 }
 
-
-
 .success-icon {
-	background: url("../assets/icon/success.svg") no-repeat;
+	background: url('../assets/icon/success.svg') no-repeat;
 }
 
 .fail-icon {
-	background: url("../assets/icon/failed.svg") no-repeat;
+	background: url('../assets/icon/failed.svg') no-repeat;
 }
 
 .close-icon {
-	background: url("../assets/icon/close.svg") no-repeat;
+	background: url('../assets/icon/close.svg') no-repeat;
 }
-
-
 
 .custom-modal-wrapper {
 	min-height: 362px;
@@ -69,7 +65,7 @@
 			margin-top: 8px;
 			margin-right: 8px;
 			cursor: pointer;
-			background: url("../assets/icon/close.svg") no-repeat;
+			background: url('../assets/icon/close.svg') no-repeat;
 		}
 	}
 
@@ -84,7 +80,7 @@
 
 		.description {
 			font-size: 14px;
-			color: #A1A7B3;
+			color: #a1a7b3;
 			margin-top: 40px;
 		}
 
@@ -97,14 +93,15 @@
 			display: flex;
 			justify-content: space-between;
 
-			.cancel-btn, .confirm-btn {
+			.cancel-btn,
+			.confirm-btn {
 				width: 140px;
 				height: 48px;
 				text-align: center;
 			}
 
 			.confirm-btn {
-				color: #FFF;
+				color: #fff;
 				border: none;
 				background: @font-color-primary;
 			}
@@ -134,6 +131,14 @@
 			flex: 1 !important;
 		}
 	}
+
+	.query-item {
+		text-align: right;
+	}
+}
+
+.btn-margin-left {
+	margin-left: 20px;
 }
 
 // .default-model-body {
