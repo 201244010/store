@@ -9,7 +9,6 @@ const getInitStatus = (permissionList, roleInfo) => {
 	const rolePermissionList = roleInfo.permissionList;
 	const initResult = {};
 	rolePermissionList.forEach(item => {
-		console.log(item.group, permissionList.label);
 		if (item.group === permissionList.label) {
 			initResult.valueList = item.valueList;
 			initResult.checkAll = item.checkAll;
