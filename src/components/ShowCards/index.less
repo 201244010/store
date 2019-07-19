@@ -1,0 +1,81 @@
+@font-face {
+	font-family: 'Gotham-Bold';
+	src: url('../../assets/font/Gotham-Bold.otf');
+}
+@font-face {
+	font-family: 'Gotham-Medium';
+	src: url('../../assets/font/Gotham-Medium.otf');
+}
+@font-face {
+	font-family: 'Gotham-Light';
+	src: url('../../assets/font/Gotham-Light.otf');
+}
+.showCards {
+	width: 1824px;
+	display: flex;
+	justify-content: space-between;
+}
+.cardBorder {
+	width: 438px;
+	height: 176px;
+	background: linear-gradient(148deg, #8491c3 0%, #6574b1 10%, #5262a5 18%, #414987 100%);
+	box-shadow: 0 26px 50px -20px rgba(30, 36, 66, 0.7);
+	border-radius: 16px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	.card {
+		width: 432px;
+		height: 170px;
+		padding: 32px 22px;
+		border-radius: 14px;
+		background-image: linear-gradient(148deg, #4e6199 0%, #344166 100%);
+		display: flex;
+		justify-content: space-between;
+		.cardLeft {
+			.cardLeftTitle {
+				font-family: PingFangSC-Semibold, sans-serif;
+				font-size: 16px;
+				color: #ffffff;
+				line-height: 28px;
+				margin-bottom: 8px;
+			}
+			.cardLeftNum {
+				font-family: Gotham-Medium, sans-serif;
+				font-size: 60px;
+				color: #ffffff;
+				line-height: 80px;
+			}
+		}
+		.cardRight {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			.cardRightCount {
+				width: 135px;
+				display: flex;
+				justify-content: space-between;
+				.cardRightCountTitle {
+					font-family: PingFangSC-Regular, sans-serif;
+					font-size: 16px;
+					color: rgba(255, 255, 255, 0.6);
+					line-height: 22px;
+				}
+				.cardRightCountNum {
+					font-family: Gotham-Bold, sans-serif;
+					font-size: 16px;
+					color: #ffffff;
+					line-height: 22px;
+					display: flex;
+					align-items: center;
+					.compare {
+						width: 8px;
+						height: 6px;
+						display: inline-block;
+						margin-left: 8px;
+					}
+				}
+			}
+		}
+	}
+}
