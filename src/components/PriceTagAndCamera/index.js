@@ -47,9 +47,9 @@ export default class PriceTagAndCamera extends React.Component {
 		];
 
 		return (
-			<div className={styles.priceTagAndCamera}>
+			<div className={styles['price-tag-camera']}>
 				<div>
-					<div className={styles.priceTagAndCameraTitle}>
+					<div className={styles['price-title']}>
 						{formatMessage({ id: 'dashBoard.overview.esl.push.show.title' })}
 					</div>
 					{priceTag.map(item => {
@@ -57,7 +57,7 @@ export default class PriceTagAndCamera extends React.Component {
 					})}
 				</div>
 				<div>
-					<div className={styles.priceTagAndCameraTitle}>
+					<div className={styles['price-title']}>
 						{formatMessage({ id: 'dashBoard.overview.ipc.show.title' })}
 					</div>
 					{camera.map(item => {
@@ -73,8 +73,8 @@ const OneList = props => {
 	const { name, num } = props;
 	return (
 		<div className={styles.oneList}>
-			<span className={styles.oneListName}>{name}</span>
-			<span className={styles.oneListNum}>{num}</span>
+			<span className={styles['oneList-name']}>{name}</span>
+			<span className={styles['oneList-num']}>{num}</span>
 		</div>
 	);
 };
