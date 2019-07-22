@@ -2,30 +2,13 @@ import React from 'react';
 import { Chart, Axis, Tooltip, Geom, Label, Shape } from 'bizcharts';
 import moment from 'moment';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
+import { formatTime } from '@/pages/DashBoard/ContentChart';
 
 import styles from './index.less';
 
 const {
 	SEARCH_TYPE: { RANGE },
 } = DASHBOARD;
-
-const formatTime = (time, rangeType) => {
-	const timeData = moment.unix(time).local();
-
-	if (rangeType === RANGE.TODAY) {
-		return timeData.format('HH:mm');
-	}
-
-	if (rangeType === RANGE.WEEK) {
-		return timeData.format('ddd');
-	}
-
-	if (rangeType === RANGE.MONTH) {
-		return timeData.format('D');
-	}
-
-	return timeData.format('M/D');
-};
 
 Shape.registerShape('interval', 'myShape', {
 	getPoints(pointInfo) {
@@ -112,8 +95,8 @@ export default class ShowChart extends React.Component {
 			}));
 
 		return (
-			<div className={styles.showChart}>
-				<div className={styles.chartName}>{chartName}</div>
+			<div className={styles['show-chart']}>
+				<div className={styles['chart-name']}>{chartName}</div>
 				<Chart width={841} height={214} padding="auto" data={mockData()}>
 					<Axis
 						name="time"
@@ -185,9 +168,9 @@ export default class ShowChart extends React.Component {
 							htmlTemplate={(_, item) => {
 								const { point = {} } = item;
 								return nowTime === point.time
-									? `<div class="htmlTemplateTitle">
-										<div class="htmlTemplateTitleContent" style="width:${labelWidth}px;">
-											<div class="htmlTemplateTitleContentTop">${point[saleType]}</div>
+									? `<div class="template-title">
+										<div class="template-content" style="width:${labelWidth}px;">
+											<div class="template-top">${point[saleType]}</div>
 										</div>
 									</div>`
 									: '';

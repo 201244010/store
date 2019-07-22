@@ -61,21 +61,16 @@ export default class ShowHeader extends React.Component {
 
 		const shopList = JSON.parse(localStorage.getItem(SHOP_LIST_KEY));
 		const shopID = getCookieByKey(SHOP_ID_KEY);
-		let shopName = '';
-		shopList.map(item => {
-			if (item.shop_id === shopID) {
-				shopName = item.shop_name;
-			}
-		});
+		const shopName = shopList.find(item => item.shop_id === shopID).shop_name;
 
 		return (
-			<div className={styles.showHeader}>
-				<div className={styles.showHeaderTitle}>
-					<div className={styles.showHeaderTitleLogo} />
-					<div className={styles.showHeaderTitleName}>{shopName}</div>
-					<div className={styles.showHeaderTitleTime}>{time}</div>
+			<div className={styles['show-header']}>
+				<div className={styles['header-title']}>
+					<div className={styles['header-logo']} />
+					<div className={styles['header-name']}>{shopName}</div>
+					<div className={styles['header-time']}>{time}</div>
 				</div>
-				<div className={styles.showHeaderTabs}>
+				<div className={styles['header-tabs']}>
 					<Tabs
 						defaultActiveKey="today"
 						activeKey={activeKey}

@@ -35,11 +35,11 @@ export default class ShowPayChart extends React.Component {
 		});
 
 		return (
-			<div className={styles.payChart}>
-				<div className={styles.payChartTitle}>
+			<div className={styles['pay-chart']}>
+				<div className={styles['pay-chart-title']}>
 					{formatMessage({ id: 'dashBoard.payment' })}
 				</div>
-				<div className={styles.payChartLengend}>
+				<div className={styles['pay-chart-lengend']}>
 					{data.map(item => {
 						let color = '';
 						switch (item.item) {
@@ -65,8 +65,8 @@ export default class ShowPayChart extends React.Component {
 								color = '#6666FF';
 						}
 						return (
-							<div key={item.item} className={styles.payChartLengendOneList}>
-								<div className={styles.payChartLengendOneListRight}>
+							<div key={item.item} className={styles['lengend-oneList']}>
+								<div className={styles['oneList-right']}>
 									<span
 										style={{
 											display: 'inline-block',
@@ -79,7 +79,7 @@ export default class ShowPayChart extends React.Component {
 									/>
 									{item.item}
 								</div>
-								<div className={styles.payChartLengendOneListLeft}>
+								<div className={styles['oneList-left']}>
 									{((parseFloat(item.count) / totalCount) * 100).toFixed(2)}%
 								</div>
 							</div>

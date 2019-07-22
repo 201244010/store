@@ -243,7 +243,7 @@ export default class ShowCards extends React.Component {
 
 		const info = [totalAmountCard, avgUnitSaleCard, totalCountCard, totalRefundCard];
 		return (
-			<div className={styles.showCards}>
+			<div className={styles['show-cards']}>
 				{info.map(item => (
 					<Card
 						key={item.title}
@@ -286,11 +286,11 @@ const Card = props => {
 		showUnit = true;
 	}
 	return (
-		<div className={styles.cardBorder}>
+		<div className={styles['card-border']}>
 			<div className={styles.card}>
-				<div className={styles.cardLeft}>
-					<div className={styles.cardLeftTitle}>{title}</div>
-					<div className={styles.cardLeftNum}>
+				<div className={styles['card-left']}>
+					<div className={styles['card-left-title']}>{title}</div>
+					<div className={styles['card-left-num']}>
 						{num}
 						{showUnit ? (
 							<span
@@ -308,10 +308,10 @@ const Card = props => {
 						)}
 					</div>
 				</div>
-				<div className={styles.cardRight}>
-					<div className={styles.cardRightCount}>
-						<div className={styles.cardRightCountTitle}>{dayTitle}</div>
-						<div className={styles.cardRightCountNum}>
+				<div className={styles['card-right']}>
+					<div className={styles['card-right-count']}>
+						<div className={styles['card-right-title']}>{dayTitle}</div>
+						<div className={styles['card-right-num']}>
 							{dayNum}%
 							<span
 								className={styles.compare}
@@ -328,9 +328,9 @@ const Card = props => {
 							/>
 						</div>
 					</div>
-					<div className={styles.cardRightCount}>
-						<div className={styles.cardRightCountTitle}>{weekTitle}</div>
-						<div className={styles.cardRightCountNum}>
+					<div className={styles['card-right-count']}>
+						<div className={styles['card-right-title']}>{weekTitle}</div>
+						<div className={styles['card-right-num']}>
 							{weekNum}%
 							<span
 								className={styles.compare}
@@ -347,9 +347,9 @@ const Card = props => {
 							/>
 						</div>
 					</div>
-					<div className={styles.cardRightCount}>
-						<div className={styles.cardRightCountTitle}>{monthTitle}</div>
-						<div className={styles.cardRightCountNum}>
+					<div className={styles['card-right-count']}>
+						<div className={styles['card-right-title']}>{monthTitle}</div>
+						<div className={styles['card-right-num']}>
 							{monthNum}%
 							<span
 								className={styles.compare}
