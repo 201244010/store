@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="8px" height="6px" viewBox="0 0 8 6" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>ic_up</title>
+    <desc>Created with Sketch.</desc>
+    <g id="组件" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Data/环比" transform="translate(-104.000000, -11.000000)" fill="#FF4133">
+            <path d="M104.530288,11.780894 L107.653079,16.3794729 C107.808212,16.6079203 108.119166,16.667353 108.347614,16.5122195 C108.402239,16.4751249 108.448975,16.427578 108.485126,16.3723237 L111.493773,11.7737448 C111.644958,11.5426653 111.580191,11.2327788 111.349111,11.0815937 C111.267739,11.0283552 111.172608,11 111.075367,11 L104.943928,11 C104.667786,11 104.443928,11.2238576 104.443928,11.5 C104.443928,11.600168 104.474014,11.6980269 104.530288,11.780894 Z" id="ic_up" transform="translate(108.000000, 14.000000) scale(1, -1) translate(-108.000000, -14.000000) "></path>
+        </g>
+    </g>
+</svg>
