@@ -9,7 +9,7 @@ export default class ShowSaleList extends React.Component {
 		return (
 			<div className={styles['sale-lists']}>
 				<div className={styles['lists-title']}>
-					{formatMessage({ id: 'dashBoard.sku.rate' })}
+					{formatMessage({ id: 'dashboard.sku.rate' })}
 				</div>
 				{skuRankList.map((item, index) => (
 					<SaleList
