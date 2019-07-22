@@ -27,6 +27,13 @@ const router = [
 	},
 
 	{
+		path: '/show',
+		component: '../layouts/BlankLayout',
+		id: 'show',
+		routes: [{ path: '/show', component: '../layouts/ShowLayout.js' }],
+	},
+
+	{
 		path: '/',
 		component: '../layouts/BasicLayout',
 		id: 'root',

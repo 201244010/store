@@ -3,10 +3,10 @@ import { Table, Form, Input, Button, Row, Col, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { idDecode } from '@/utils/utils';
-import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
+import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import moment from 'moment';
+import { EMPLOYEE_NUMBER_LIMIT, EMPLOYEE_NAME_LIMIT, EMPLOYEE_PHONE_LIMIT } from './constants';
 import styles from './Employee.less';
-import global from '@/styles/common.less';
 
 const FormItem = Form.Item;
 const GENDER_MAP = {
@@ -21,7 +21,7 @@ const GENDER_MAP = {
 		employee: state.employee,
 	}),
 	dispatch => ({
-		getEmployeeList: ({ current = 1, pageSize = 10, roleId = -1}) =>
+		getEmployeeList: ({ current = 1, pageSize = 10, roleId = -1 }) =>
 			dispatch({
 				type: 'employee/getEmployeeList',
 				payload: { current, pageSize, roleId },
@@ -45,7 +45,7 @@ class EmployeeTable extends Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.gender' }),
 				dataIndex: 'gender',
-				render: gender => GENDER_MAP[gender] || '--'
+				render: gender => GENDER_MAP[gender] || '--',
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.employeePhone' }),
@@ -54,7 +54,7 @@ class EmployeeTable extends Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.authorName' }),
 				render: (_, record) => (
-					<span>{`${record.createByUsername || '--'}(${record.phone || record.email || '--'})`}</span>
+					<span>{`${record.createByUsername || '--'}(${record.createBy || '--'})`}</span>
 				),
 			},
 			{
@@ -98,14 +98,11 @@ class EmployeeTable extends Component {
 		const {
 			form,
 			clearSearchValue,
-			getEmployeeList,
-			query: { roleId },
 		} = this.props;
 		if (form) {
 			form.resetFields();
 		}
 		await clearSearchValue();
-		await getEmployeeList({ roleId: idDecode(roleId) });
 	};
 
 	onTableChange = page => {
@@ -136,12 +133,13 @@ class EmployeeTable extends Component {
 					<span>{formatMessage({ id: 'employee.info.currentRole' })}</span>
 					<span>{role}</span>
 				</div>
-				<div className={global['search-bar']}>
+				<div className={styles['search-bar']}>
 					<Form layout="inline">
 						<Row gutter={FORM_FORMAT.gutter}>
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<FormItem label={formatMessage({ id: 'roleManagement.role.name' })}>
 									<Input
+										maxLength={EMPLOYEE_NAME_LIMIT}
 										value={name}
 										onChange={e =>
 											this.handleSearchChange('name', e.target.value)
@@ -149,13 +147,14 @@ class EmployeeTable extends Component {
 									/>
 								</FormItem>
 							</Col>
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<FormItem
 									label={formatMessage({
 										id: 'roleManagement.role.companyNumber',
 									})}
 								>
 									<Input
+										maxLength={EMPLOYEE_NUMBER_LIMIT}
 										value={number}
 										onChange={e =>
 											this.handleSearchChange('number', e.target.value)
@@ -163,13 +162,14 @@ class EmployeeTable extends Component {
 									/>
 								</FormItem>
 							</Col>
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<FormItem
 									label={formatMessage({
 										id: 'roleManagement.role.telePhone',
 									})}
 								>
 									<Input
+										maxLength={EMPLOYEE_PHONE_LIMIT}
 										value={username}
 										onChange={e =>
 											this.handleSearchChange('username', e.target.value)
@@ -177,20 +177,29 @@ class EmployeeTable extends Component {
 									/>
 								</FormItem>
 							</Col>
-							<Col {...COL_THREE_NORMAL}>
-								<Button type="primary" onClick={this.handleSubmit}>
-									{formatMessage({ id: 'btn.query' })}
-								</Button>
-								<Button style={{ marginLeft: '20px' }} onClick={this.handleReset}>
-									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
-								</Button>
+						</Row>
+						<Row gutter={FORM_FORMAT.gutter}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD} />
+							<Col {...SEARCH_FORM_COL.ONE_THIRD} />
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+								<Form.Item className={styles['query-item']}>
+									<Button type="primary" onClick={this.handleSubmit}>
+										{formatMessage({ id: 'btn.query' })}
+									</Button>
+									<Button
+										style={{ marginLeft: '20px' }}
+										onClick={this.handleReset}
+									>
+										{formatMessage({ id: 'storeManagement.list.buttonReset' })}
+									</Button>
+								</Form.Item>
 							</Col>
 						</Row>
 					</Form>
 				</div>
 				<div className={styles['employee-table']}>
 					<Table
-						rowKey="shopId"
+						rowKey="employeeId"
 						dataSource={employeeList}
 						columns={this.columns}
 						loading={loading.effects['employee/getEmployeeList']}

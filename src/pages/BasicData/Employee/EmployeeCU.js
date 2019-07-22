@@ -7,6 +7,11 @@ import { getLocationParam } from '@/utils/utils';
 import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK, USER_EXIST, SSO_BINDED, EMPLOYEE_BINDED } from '@/constants/errorCode';
 import * as RegExp from '@/constants/regexp';
+import {
+	EMPLOYEE_NUMBER_LIMIT,
+	EMPLOYEE_NAME_LIMIT,
+	EMPLOYEE_PHONE_EMAIL_LIMIT,
+} from './constants';
 import styles from './Employee.less';
 
 @connect(
@@ -99,22 +104,24 @@ class EmployeeCU extends Component {
 	decodeMappingList = mappingList => {
 		// console.log(mappingList);
 		const orgnizationMap = new Map();
-		mappingList.forEach(item => {
-			const { companyId = null, shopId = null, roleId = null } = item;
-			const orgnizationKey =
-				shopId === 0 || !shopId ? `${companyId}` : `${companyId}-${shopId}`;
+		mappingList
+			.filter(item => item.roleName !== 'admin')
+			.forEach(item => {
+				const { companyId = null, shopId = null, roleId = null } = item;
+				const orgnizationKey =
+					shopId === 0 || !shopId ? `${companyId}` : `${companyId}-${shopId}`;
 
-			if (orgnizationMap.has(orgnizationKey)) {
-				const { roleList = [] } = orgnizationMap.get(orgnizationKey);
-				orgnizationMap.set(orgnizationKey, {
-					roleList: [...roleList, roleId],
-				});
-			} else {
-				orgnizationMap.set(orgnizationKey, {
-					roleList: [roleId],
-				});
-			}
-		});
+				if (orgnizationMap.has(orgnizationKey)) {
+					const { roleList = [] } = orgnizationMap.get(orgnizationKey);
+					orgnizationMap.set(orgnizationKey, {
+						roleList: [...roleList, roleId],
+					});
+				} else {
+					orgnizationMap.set(orgnizationKey, {
+						roleList: [roleId],
+					});
+				}
+			});
 
 		const result = [...orgnizationMap.keys()].map(key => {
 			const { roleList = [] } = orgnizationMap.get(key);
@@ -276,17 +283,22 @@ class EmployeeCU extends Component {
 								},
 								{
 									validator: (rule, value, callback) => {
-										if (RegExp.employeeNumber.test(value)) {
-											callback();
-										} else {
+										if (value && !RegExp.employeeNumber.test(value)) {
 											callback(
 												formatMessage({ id: 'employee.number.formatError' })
 											);
+										} else {
+											callback();
 										}
 									},
 								},
 							],
-						})(<Input maxLength={20} className={styles['uppercase-input']} />)}
+						})(
+							<Input
+								maxLength={EMPLOYEE_NUMBER_LIMIT}
+								className={styles['uppercase-input']}
+							/>
+						)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.name' })}>
 						{getFieldDecorator('name', {
@@ -298,7 +310,7 @@ class EmployeeCU extends Component {
 									message: formatMessage({ id: 'employee.name.isEmpty' }),
 								},
 							],
-						})(<Input maxLength={32} />)}
+						})(<Input maxLength={EMPLOYEE_NAME_LIMIT} />)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.gender' })}>
 						{getFieldDecorator('gender', {
@@ -328,8 +340,8 @@ class EmployeeCU extends Component {
 								{
 									validator: (rule, value, callback) => {
 										if (
+											value &&
 											!RegExp.phone.test(value) &&
-											// eslint-disable-next-line no-useless-escape
 											!RegExp.mail.test(value)
 										) {
 											callback(
@@ -341,7 +353,7 @@ class EmployeeCU extends Component {
 									},
 								},
 							],
-						})(<Input />)}
+						})(<Input maxLength={EMPLOYEE_PHONE_EMAIL_LIMIT} />)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'employee.sso.account' })}>
 						{getFieldDecorator('ssoUsername', {

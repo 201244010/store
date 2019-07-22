@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { unixSecondToDate } from '@/utils/utils';
 import * as styles from './index.less';
-import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT } from '@/constants/form';
+import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT, SEARCH_FORM_COL } from '@/constants/form';
 
 const { Option } = Select;
 
@@ -20,7 +20,7 @@ class SearchResult extends Component {
 		this.state = {
 			newVisible: false,
 			cloneVisible: false,
-			curRecord: {}
+			curRecord: {},
 		};
 	}
 
@@ -37,8 +37,8 @@ class SearchResult extends Component {
 		const { changeSearchFormValue } = this.props;
 		await changeSearchFormValue({
 			options: {
-				[type]: value
-			}
+				[type]: value,
+			},
 		});
 		this.search();
 	};
@@ -91,10 +91,10 @@ class SearchResult extends Component {
 		});
 	};
 
-	showClone = (record) => {
+	showClone = record => {
 		this.setState({
 			cloneVisible: true,
-			curRecord: record
+			curRecord: record,
 		});
 	};
 
@@ -151,7 +151,7 @@ class SearchResult extends Component {
 			if (!errors.name) {
 				const response = await cloneTemplate({
 					name: values.name,
-					template_id: curRecord.id
+					template_id: curRecord.id,
 				});
 				if (response && response.code === ERROR_OK) {
 					this.setState(
@@ -160,7 +160,11 @@ class SearchResult extends Component {
 						},
 						() => {
 							resetFields();
-							window.open(`/studio?id=${response.data.template_id}&screen=${curRecord.screen_type}`);
+							window.open(
+								`/studio?id=${response.data.template_id}&screen=${
+									curRecord.screen_type
+								}`
+							);
 						}
 					);
 				}
@@ -174,6 +178,7 @@ class SearchResult extends Component {
 	};
 
 	validateTemplateName = (rule, value, callback) => {
+		// eslint-disable-next-line no-control-regex
 		const {length} = (value || '').replace(/[^\x00-\xff]/g, '01');
 		if (length <= 40) {
 			callback();
@@ -269,13 +274,13 @@ class SearchResult extends Component {
 
 		return (
 			<div>
-				<div style={{ marginBottom: 20 }}>
+				<div className={styles['search-bar']}>
 					<Form {...{ ...FORM_ITEM_LAYOUT, ...FORM_LABEL_LEFT }}>
 						<Row gutter={FORM_FORMAT.gutter}>
-							<Col xl={6} lg={6} md={24}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<Form.Item>
 									<Input
-										style={{width: '100%'}}
+										style={{ width: '100%' }}
 										placeholder={formatMessage({
 											id: 'esl.device.template.name.require',
 										})}
@@ -285,58 +290,81 @@ class SearchResult extends Component {
 									/>
 								</Form.Item>
 							</Col>
-							<Col xl={6} lg={6} md={24}>
-								<Button loading={loading} type="primary" onClick={this.search}>{formatMessage({id: 'btn.query'})}</Button>
-							</Col>
-							<Col xl={12} lg={12} md={24} style={{textAlign: 'right'}}>
-								<Button loading={loading} type="primary" icon="plus" onClick={this.showNew}>
-									{formatMessage({ id: 'esl.device.template.new' })}
-								</Button>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD} />
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+								<Form.Item className={styles['query-item']}>
+									<Button loading={loading} type="primary" onClick={this.search}>
+										{formatMessage({ id: 'btn.query' })}
+									</Button>
+									<Button
+										loading={loading}
+										type="primary"
+										icon="plus"
+										onClick={this.showNew}
+										className={styles['btn-margin-left']}
+									>
+										{formatMessage({ id: 'esl.device.template.new' })}
+									</Button>
+								</Form.Item>
 							</Col>
 						</Row>
 						<div style={{ marginBottom: 20 }}>
-							<span style={{marginRight: 30}}>{formatMessage({ id: 'esl.device.template.size' })}:</span>
+							<span style={{ marginRight: 30 }}>
+								{formatMessage({ id: 'esl.device.template.size' })}:
+							</span>
 							<Button
 								type={searchFormValues.screen_type === -1 ? 'primary' : 'default'}
-								style={{marginRight: 30}}
-								onClick={() => {this.onFormChange('screen_type', -1);}}
+								style={{ marginRight: 30 }}
+								onClick={() => {
+									this.onFormChange('screen_type', -1);
+								}}
 							>
 								{formatMessage({ id: 'select.all' })}
 							</Button>
-							{
-								screenTypes.map(type =>
-									<Button
-										type={searchFormValues.screen_type === type.id ? 'primary' : 'default'}
-										style={{marginRight: 30}}
-										key={type.id}
-										onClick={() => {this.onFormChange('screen_type', type.id);}}
-									>
-										{type.name}
-									</Button>
-								)
-							}
+							{screenTypes.map(type => (
+								<Button
+									type={
+										searchFormValues.screen_type === type.id
+											? 'primary'
+											: 'default'
+									}
+									style={{ marginRight: 30 }}
+									key={type.id}
+									onClick={() => {
+										this.onFormChange('screen_type', type.id);
+									}}
+								>
+									{type.name}
+								</Button>
+							))}
 						</div>
 						<div>
-							<span style={{marginRight: 30}}>{formatMessage({ id: 'esl.device.template.color.support' })}:</span>
+							<span style={{ marginRight: 30 }}>
+								{formatMessage({ id: 'esl.device.template.color.support' })}:
+							</span>
 							<Button
 								type={searchFormValues.colour === -1 ? 'primary' : 'default'}
-								style={{marginRight: 30}}
-								onClick={() => {this.onFormChange('colour', -1);}}
+								style={{ marginRight: 30 }}
+								onClick={() => {
+									this.onFormChange('colour', -1);
+								}}
 							>
 								{formatMessage({ id: 'select.all' })}
 							</Button>
-							{
-								colors.map(color =>
-									<Button
-										type={searchFormValues.colour === color.id ? 'primary' : 'default'}
-										style={{marginRight: 30}}
-										key={color.id}
-										onClick={() => {this.onFormChange('colour', color.id);}}
-									>
-										{color.name}
-									</Button>
-								)
-							}
+							{colors.map(color => (
+								<Button
+									type={
+										searchFormValues.colour === color.id ? 'primary' : 'default'
+									}
+									style={{ marginRight: 30 }}
+									key={color.id}
+									onClick={() => {
+										this.onFormChange('colour', color.id);
+									}}
+								>
+									{color.name}
+								</Button>
+							))}
 						</div>
 					</Form>
 				</div>

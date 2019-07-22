@@ -9,7 +9,9 @@ export default {
 	'dashBoard.refresh.too.fast': '刷新过于频繁，请稍后再试',
 
 	'dashBoard.order.sales': '按销售额',
+	'dashBoard.order.show.sales': '交易时间分布（按销售额）',
 	'dashBoard.order.count': '按订单数',
+	'dashBoard.order.show.count': '交易时间分布（按订单数）',
 	'dashBoard.order.d2d': '日环比',
 	'dashBoard.order.w2w': '周环比',
 	'dashBoard.order.m2m': '月同比',
@@ -18,10 +20,12 @@ export default {
 	'dashBoard.overview.esl.push': '待推送价签数',
 	'dashBoard.overview.esl.push.failed': '推送失败价签数',
 	'dashBoard.overview.esl.push.total': '价签总数',
+	'dashBoard.overview.esl.push.show.title': '电子价签数',
 	'dashBoard.overview.ap.online': '价签基站数',
 	'dashBoard.overview.ap.offline': '离线基站数',
 	'dashBoard.overview.ipc.online': '在线网络摄像机数',
 	'dashBoard.overview.ipc.offline': '离线网络摄像机数',
+	'dashBoard.overview.ipc.show.title': '摄像机数',
 
 	'dashBoard.overview.product.total.info': '详情及规则说明',
 	'dashBoard.overview.esl.total.info': '详情及规则说明',
