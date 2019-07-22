@@ -36,15 +36,15 @@ class FooterChart extends Component {
 			<div className={styles['footer-chart-wrapper']}>
 				<div className={styles['title-wrapper']}>
 					<div className={styles['chart-title']}>
-						{formatMessage({ id: 'dashBoard.payment' })}
+						{formatMessage({ id: 'dashboard.payment' })}
 					</div>
 					<div className={styles['title-btn-bar']}>
 						<Radio.Group value={paymentType} onChange={this.handleRadioChange}>
 							<Radio.Button value={PAYMENT_TYPE.AMOUNT}>
-								{formatMessage({ id: 'dashBoard.order.sales' })}
+								{formatMessage({ id: 'dashboard.order.sales' })}
 							</Radio.Button>
 							<Radio.Button value={PAYMENT_TYPE.COUNT}>
-								{formatMessage({ id: 'dashBoard.order.count' })}
+								{formatMessage({ id: 'dashboard.order.count' })}
 							</Radio.Button>
 						</Radio.Group>
 					</div>

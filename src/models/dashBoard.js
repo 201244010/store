@@ -84,7 +84,7 @@ const sortPurchaseOrder = purchaseInfo => {
 };
 
 export default {
-	namespace: 'dashBoard',
+	namespace: 'dashboard',
 	state: {
 		searchValue: {
 			rangeType: RANGE.TODAY,
@@ -310,7 +310,7 @@ export default {
 			const {
 				searchValue,
 				searchValue: { rangeType },
-			} = yield select(state => state.dashBoard);
+			} = yield select(state => state.dashboard);
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 
 			const { queryType = null, needLoading, loadingType } = payload;
@@ -352,7 +352,7 @@ export default {
 		},
 
 		*fetchSKURankList({ payload }, { select, put, call }) {
-			const { searchValue } = yield select(state => state.dashBoard);
+			const { searchValue } = yield select(state => state.dashboard);
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 
 			const options = {
@@ -401,7 +401,7 @@ export default {
 			const {
 				searchValue,
 				searchValue: { rangeType },
-			} = yield select(state => state.dashBoard);
+			} = yield select(state => state.dashboard);
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 
 			const options = {
@@ -449,7 +449,7 @@ export default {
 			const {
 				searchValue,
 				searchValue: { rangeType },
-			} = yield select(state => state.dashBoard);
+			} = yield select(state => state.dashboard);
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 
 			const options = {
@@ -534,7 +534,7 @@ export default {
 		},
 
 		*setSearchValue({ payload }, { select, put }) {
-			const { searchValue } = yield select(state => state.dashBoard);
+			const { searchValue } = yield select(state => state.dashboard);
 			yield put({
 				type: 'updateState',
 				payload: {
