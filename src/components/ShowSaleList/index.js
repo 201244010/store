@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatMessage } from 'umi/locale';
 
 import styles from './index.less';
 
@@ -7,7 +8,9 @@ export default class ShowSaleList extends React.Component {
 		const { skuRankList = [] } = this.props;
 		return (
 			<div className={styles.saleLists}>
-				<div className={styles.saleListsTitle}>商品销量排行</div>
+				<div className={styles.saleListsTitle}>
+					{formatMessage({ id: 'dashBoard.sku.rate' })}
+				</div>
 				{skuRankList.map((item, index) => (
 					<SaleList
 						key={index + 1}
@@ -22,7 +25,7 @@ export default class ShowSaleList extends React.Component {
 }
 
 const SaleList = props => {
-	const {rank, name, num} = props;
+	const { rank, name, num } = props;
 	return (
 		<div className={styles.saleList}>
 			<div className={styles.saleListRankName}>

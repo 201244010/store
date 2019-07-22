@@ -1,6 +1,7 @@
 import React from 'react';
 import { Chart, Geom, Axis, Tooltip, Coord, Guide } from 'bizcharts';
 import DataSet from '@antv/data-set';
+import { formatMessage } from 'umi/locale';
 import PriceTagAndCamera from '../PriceTagAndCamera';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 
@@ -35,7 +36,9 @@ export default class ShowPayChart extends React.Component {
 
 		return (
 			<div className={styles.payChart}>
-				<div className={styles.payChartTitle}>支付方式</div>
+				<div className={styles.payChartTitle}>
+					{formatMessage({ id: 'dashBoard.payment' })}
+				</div>
 				<div className={styles.payChartLengend}>
 					{data.map(item => {
 						let color = '';
@@ -84,7 +87,7 @@ export default class ShowPayChart extends React.Component {
 					})}
 				</div>
 				<Chart width={438} height={208} data={dv} padding={[-26, -26, -26, -250]}>
-					<Coord type='theta' radius={0.75} innerRadius={0.6} />
+					<Coord type="theta" radius={0.75} innerRadius={0.6} />
 					<Axis name="percent" />
 					{/* <Legend
                 position="right"

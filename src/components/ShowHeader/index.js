@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tabs } from 'antd';
 import moment from 'moment';
+import { formatMessage } from 'umi/locale';
 import ShowCards from '../ShowCards';
 import ShowChart from '../ShowChart';
 import ShowSaleList from '../ShowSaleList';
@@ -82,7 +83,11 @@ export default class ShowHeader extends React.Component {
 						tabPosition="top"
 						onChange={this.tabChange}
 					>
-						<TabPane tab="今日" key={ACTIVEKEY[0]} forceRender>
+						<TabPane
+							tab={formatMessage({ id: 'dashBoard.search.today' })}
+							key={ACTIVEKEY[0]}
+							forceRender
+						>
 							<TabPaneContent
 								{...{
 									today,
@@ -90,7 +95,11 @@ export default class ShowHeader extends React.Component {
 								time="today"
 							/>
 						</TabPane>
-						<TabPane tab="本周" key={ACTIVEKEY[1]} forceRender>
+						<TabPane
+							tab={formatMessage({ id: 'dashBoard.search.week' })}
+							key={ACTIVEKEY[1]}
+							forceRender
+						>
 							<TabPaneContent
 								{...{
 									week,
@@ -98,7 +107,11 @@ export default class ShowHeader extends React.Component {
 								time="week"
 							/>
 						</TabPane>
-						<TabPane tab="本月" key={ACTIVEKEY[2]} forceRender>
+						<TabPane
+							tab={formatMessage({ id: 'dashBoard.search.month' })}
+							key={ACTIVEKEY[2]}
+							forceRender
+						>
 							<TabPaneContent
 								{...{
 									month,
@@ -147,7 +160,7 @@ const TabPaneContent = props => {
 			<div style={{ paddingTop: 52, display: 'flex' }}>
 				<div style={{ width: 841 }}>
 					<ShowChart
-						chartName="交易时间分布（按销售额）"
+						chartName={formatMessage({ id: 'dashBoard.order.show.sales' })}
 						saleType="count"
 						{...{
 							searchValue,
@@ -156,7 +169,7 @@ const TabPaneContent = props => {
 						}}
 					/>
 					<ShowChart
-						chartName="交易时间分布（按订单数）"
+						chartName={formatMessage({ id: 'dashBoard.order.show.count' })}
 						saleType="amount"
 						fillColor={['l(90) 0:#FFBC50 1:#FFBC50', 'l(90) 0:#B38F6B 1:#B37047']}
 						shadowColor="#FF7750"

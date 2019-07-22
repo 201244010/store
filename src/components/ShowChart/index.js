@@ -86,34 +86,8 @@ export default class ShowChart extends React.Component {
 			labelWidth = 33;
 		}
 		if (range === RANGE.WEEK) {
-			nowTime = nowTime.getDay();
 			labelWidth = 73;
-			switch (nowTime) {
-				case 0:
-					nowTime = '周日';
-					break;
-				case 1:
-					nowTime = '周一';
-					break;
-				case 2:
-					nowTime = '周二';
-					break;
-				case 3:
-					nowTime = '周三';
-					break;
-				case 4:
-					nowTime = '周四';
-					break;
-				case 5:
-					nowTime = '周五';
-					break;
-				case 6:
-					nowTime = '周六';
-					break;
-				default:
-					nowTime = '周六';
-					break;
-			}
+			nowTime = moment(nowTime.getTime()).format('ddd');
 		}
 		if (range === RANGE.MONTH) {
 			nowTime = nowTime.getDate().toString();
