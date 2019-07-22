@@ -1,5 +1,5 @@
 export default {
-	'menu.dashBoard': '首页',
+	'menu.dashboard': '首页',
 	'menu.account': '个人中心',
 	'menu.account.logout': '退出登录',
 	'menu.serviceApplication': '服务应用',
