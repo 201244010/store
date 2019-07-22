@@ -84,16 +84,8 @@ const sortPurchaseOrder = purchaseInfo => {
 };
 
 export default {
-	namespace: 'dashboard',
+	namespace: 'showInfo',
 	state: {
-		searchValue: {
-			rangeType: RANGE.TODAY,
-			timeRangeStart: null,
-			timeRangeEnd: null,
-			tradeTime: TRADE_TIME.AMOUNT,
-			paymentType: PAYMENT_TYPE.AMOUNT,
-		},
-
 		overviewProductLoading: false,
 		overviewDeviceLoading: false,
 		overviewIPCLoading: false,
@@ -109,17 +101,69 @@ export default {
 
 		lastModifyTime: moment().format('YYYY-MM-DD HH:mm:ss'),
 
-		productOverview: {},
-		deviceOverView: {},
-		ipcOverView: {},
+		today: {
+			searchValue: {
+				rangeType: RANGE.TODAY,
+				timeRangeStart: null,
+				timeRangeEnd: null,
+				tradeTime: TRADE_TIME.AMOUNT,
+				paymentType: PAYMENT_TYPE.AMOUNT,
+			},
 
-		totalAmount: {},
-		totalCount: {},
-		totalRefund: {},
-		avgUnitSale: {},
-		orderList: [],
-		skuRankList: [],
-		purchaseInfo: {},
+			productOverview: {},
+			deviceOverView: {},
+			ipcOverView: {},
+
+			totalAmount: {},
+			totalCount: {},
+			totalRefund: {},
+			avgUnitSale: {},
+			orderList: [],
+			skuRankList: [],
+			purchaseInfo: {},
+		},
+		week: {
+			searchValue: {
+				rangeType: RANGE.TODAY,
+				timeRangeStart: null,
+				timeRangeEnd: null,
+				tradeTime: TRADE_TIME.AMOUNT,
+				paymentType: PAYMENT_TYPE.AMOUNT,
+			},
+
+			productOverview: {},
+			deviceOverView: {},
+			ipcOverView: {},
+
+			totalAmount: {},
+			totalCount: {},
+			totalRefund: {},
+			avgUnitSale: {},
+			orderList: [],
+			skuRankList: [],
+			purchaseInfo: {},
+		},
+		month: {
+			searchValue: {
+				rangeType: RANGE.TODAY,
+				timeRangeStart: null,
+				timeRangeEnd: null,
+				tradeTime: TRADE_TIME.AMOUNT,
+				paymentType: PAYMENT_TYPE.AMOUNT,
+			},
+
+			productOverview: {},
+			deviceOverView: {},
+			ipcOverView: {},
+
+			totalAmount: {},
+			totalCount: {},
+			totalRefund: {},
+			avgUnitSale: {},
+			orderList: [],
+			skuRankList: [],
+			purchaseInfo: {},
+		},
 	},
 	effects: {
 		*switchLoading({ payload }, { put }) {
@@ -133,24 +177,24 @@ export default {
 		},
 
 		*fetchAllData({ payload }, { all, put }) {
-			const { needLoading = false } = payload;
+			const { needLoading = false, range } = payload;
 			yield all([
 				// product overview
 				put({
 					type: 'fetchOverviewProduct',
-					payload: { needLoading },
+					payload: { needLoading, range },
 				}),
 
 				// device overview
 				put({
 					type: 'fetchOverviewDevices',
-					payload: { needLoading },
+					payload: { needLoading, range },
 				}),
 
 				// ipc overview
 				put({
 					type: 'fetchOverviewIPC',
-					payload: { needLoading },
+					payload: { needLoading, range },
 				}),
 
 				// total card
@@ -160,6 +204,7 @@ export default {
 						queryType: QUERY_TYPE.TOTAL_AMOUNT,
 						needLoading,
 						loadingType: 'totalAmountLoading',
+						range,
 					},
 				}),
 				put({
@@ -168,6 +213,7 @@ export default {
 						queryType: QUERY_TYPE.TOTAL_COUNT,
 						needLoading,
 						loadingType: 'totalCountLoading',
+						range,
 					},
 				}),
 				put({
@@ -176,6 +222,7 @@ export default {
 						queryType: QUERY_TYPE.TOTAL_REFUND,
 						needLoading,
 						loadingType: 'totalRefundLoading',
+						range,
 					},
 				}),
 				put({
@@ -184,22 +231,23 @@ export default {
 						queryType: QUERY_TYPE.AVG_UNIT,
 						needLoading,
 						loadingType: 'avgUnitLoading',
+						range,
 					},
 				}),
 				// time duration
 				put({
 					type: 'fetchTimeDistribution',
-					payload: { needLoading },
+					payload: { needLoading, range },
 				}),
 				// sku rank
 				put({
 					type: 'fetchSKURankList',
-					payload: { needLoading },
+					payload: { needLoading, range },
 				}),
 				// payment
 				put({
 					type: 'fetchPurchaseTypeStatistics',
-					payload: { needLoading },
+					payload: { needLoading, range },
 				}),
 			]);
 
@@ -212,7 +260,7 @@ export default {
 		},
 
 		*fetchOverviewProduct({ payload }, { put }) {
-			const { needLoading } = payload;
+			const { needLoading, range } = payload;
 			if (needLoading) {
 				yield put({
 					type: 'switchLoading',
@@ -233,6 +281,7 @@ export default {
 					payload: {
 						productOverview: format('toCamel')(data),
 						overviewProductLoading: false,
+						range,
 					},
 				});
 			}
@@ -241,7 +290,7 @@ export default {
 		},
 
 		*fetchOverviewDevices({ payload }, { put }) {
-			const { needLoading } = payload;
+			const { needLoading, range } = payload;
 			if (needLoading) {
 				yield put({
 					type: 'switchLoading',
@@ -262,6 +311,7 @@ export default {
 					payload: {
 						deviceOverView: format('toCamel')(data),
 						overviewDeviceLoading: false,
+						range,
 					},
 				});
 			}
@@ -270,7 +320,7 @@ export default {
 		},
 
 		*fetchOverviewIPC({ payload }, { call, put }) {
-			const { needLoading } = payload;
+			const { needLoading, range } = payload;
 			if (needLoading) {
 				yield put({
 					type: 'switchLoading',
@@ -299,24 +349,21 @@ export default {
 				yield put({
 					type: 'updateState',
 					payload: {
-						ipcOverView: {onLineCount, offLineCount},
+						ipcOverView: { onLineCount, offLineCount },
 						overviewIPCLoading: false,
+						range,
 					},
 				});
 			}
 		},
 
-		*fetchTotalInfo({ payload }, { select, call, put }) {
-			const {
-				searchValue,
-				searchValue: { rangeType },
-			} = yield select(state => state.dashboard);
-			const [startTime, endTime] = getQueryTimeRange(searchValue);
+		*fetchTotalInfo({ payload }, { call, put }) {
+			const { queryType = null, needLoading, loadingType, range } = payload;
+			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
 
-			const { queryType = null, needLoading, loadingType } = payload;
 			const stateField = stateFields[queryType];
 			const options = {
-				rateRequired: rangeType === RANGE.FREE ? 0 : 1,
+				rateRequired: range === RANGE.FREE ? 0 : 1,
 				timeRangeStart: startTime,
 				timeRangeEnd: endTime,
 			};
@@ -344,6 +391,7 @@ export default {
 					payload: {
 						[stateField]: format('toCamel')(data),
 						[loadingType]: false,
+						range,
 					},
 				});
 			}
@@ -351,16 +399,15 @@ export default {
 			return response;
 		},
 
-		*fetchSKURankList({ payload }, { select, put, call }) {
-			const { searchValue } = yield select(state => state.dashboard);
-			const [startTime, endTime] = getQueryTimeRange(searchValue);
+		*fetchSKURankList({ payload }, { put, call }) {
+			const { needLoading, range } = payload;
+			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
 
 			const options = {
 				timeRangeStart: startTime,
 				timeRangeEnd: endTime,
 			};
 
-			const { needLoading } = payload;
 			if (needLoading) {
 				yield put({
 					type: 'switchLoading',
@@ -382,7 +429,7 @@ export default {
 				const { quantityRank = [] } = format('toCamel')(data);
 				yield put({
 					type: 'updateState',
-					payload: { skuRankList: fullfuillSKURankList(quantityRank) },
+					payload: { skuRankList: fullfuillSKURankList(quantityRank), range },
 				});
 			}
 
@@ -397,20 +444,16 @@ export default {
 			return response;
 		},
 
-		*fetchTimeDistribution({ payload }, { select, put, call }) {
-			const {
-				searchValue,
-				searchValue: { rangeType },
-			} = yield select(state => state.dashboard);
-			const [startTime, endTime] = getQueryTimeRange(searchValue);
+		*fetchTimeDistribution({ payload }, { put, call }) {
+			const { needLoading, range } = payload;
+			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
 
 			const options = {
 				startTime,
 				endTime,
-				timeInterval: rangeType === RANGE.TODAY ? TIME_INTERVAL.HOUR : TIME_INTERVAL.DAY,
+				timeInterval: range === RANGE.TODAY ? TIME_INTERVAL.HOUR : TIME_INTERVAL.DAY,
 			};
 
-			const { needLoading } = payload;
 			if (needLoading) {
 				yield put({
 					type: 'switchLoading',
@@ -432,7 +475,7 @@ export default {
 				const { orderList } = format('toCamel')(data);
 				yield put({
 					type: 'updateState',
-					payload: { orderList },
+					payload: { orderList, range },
 				});
 			}
 
@@ -445,20 +488,16 @@ export default {
 			});
 		},
 
-		*fetchPurchaseTypeStatistics({ payload }, { select, put, call }) {
-			const {
-				searchValue,
-				searchValue: { rangeType },
-			} = yield select(state => state.dashboard);
-			const [startTime, endTime] = getQueryTimeRange(searchValue);
+		*fetchPurchaseTypeStatistics({ payload }, { put, call }) {
+			const { needLoading, range } = payload;
+			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
 
 			const options = {
 				startTime,
 				endTime,
-				timeInterval: rangeType === RANGE.TODAY ? TIME_INTERVAL.HOUR : TIME_INTERVAL.DAY,
+				timeInterval: range === RANGE.TODAY ? TIME_INTERVAL.HOUR : TIME_INTERVAL.DAY,
 			};
 
-			const { needLoading } = payload;
 			if (needLoading) {
 				yield put({
 					type: 'switchLoading',
@@ -528,13 +567,14 @@ export default {
 					payload: {
 						purchaseInfo: sortedData,
 						chartLoading: false,
+						range,
 					},
 				});
 			}
 		},
 
 		*setSearchValue({ payload }, { select, put }) {
-			const { searchValue } = yield select(state => state.dashboard);
+			const { searchValue } = yield select(state => state.showInfo);
 			yield put({
 				type: 'updateState',
 				payload: {
@@ -564,10 +604,28 @@ export default {
 
 	reducers: {
 		updateState(state, action) {
-			return {
-				...state,
-				...action.payload,
-			};
+			const { payload: { range } = {} } = action;
+			switch (range) {
+				case 'today':
+					return {
+						...state,
+						today: { ...state.today, ...action.payload },
+					};
+				case 'week':
+					return {
+						...state,
+						week: { ...state.week, ...action.payload },
+					};
+				case 'month':
+					return {
+						...state,
+						month: { ...state.month, ...action.payload },
+					};
+				default:
+					return {
+						...state,
+					};
+			}
 		},
 	},
 };
