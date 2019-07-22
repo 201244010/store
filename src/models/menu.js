@@ -14,7 +14,7 @@ import { env } from '@/config';
 const { check } = Authorized;
 
 const FIRST_MENU_ORDER = [
-	'dashBoard',
+	'dashboard',
 	'application',
 	'devices',
 	'esl',

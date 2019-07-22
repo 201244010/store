@@ -150,19 +150,19 @@ class ContentChart extends Component {
 			`time*${tradeTime}`,
 			(time, value) => ({
 				title: `${formatMessage({
-					id: 'dashBoard.trade.date',
+					id: 'dashboard.trade.date',
 				})}: ${time} ${
 					[RANGE.MONTH, RANGE.FREE].includes(rangeType)
-						? formatMessage({ id: 'dashBoard.trade.date.unit' })
+						? formatMessage({ id: 'dashboard.trade.date.unit' })
 						: ''
 				}`,
 				name: `${
 					tradeTime === TRADE_TIME.AMOUNT
 						? formatMessage({
-							id: 'dashBoard.trade.amount',
+							id: 'dashboard.trade.amount',
 						  })
 						: formatMessage({
-							id: 'dashBoard.trade.count',
+							id: 'dashboard.trade.count',
 						  })
 				}: ${value}`,
 			}),
@@ -215,7 +215,7 @@ class ContentChart extends Component {
 									<Skeleton active loading={barLoading || switchLoading}>
 										<div className={styles['title-wrapper']}>
 											<div className={styles['bar-title']}>
-												{formatMessage({ id: 'dashBoard.trade.time' })}
+												{formatMessage({ id: 'dashboard.trade.time' })}
 											</div>
 											<div className={styles['bar-radio']}>
 												<Radio.Group
@@ -224,12 +224,12 @@ class ContentChart extends Component {
 												>
 													<Radio.Button value={TRADE_TIME.AMOUNT}>
 														{formatMessage({
-															id: 'dashBoard.order.sales',
+															id: 'dashboard.order.sales',
 														})}
 													</Radio.Button>
 													<Radio.Button value={TRADE_TIME.COUNT}>
 														{formatMessage({
-															id: 'dashBoard.order.count',
+															id: 'dashboard.order.count',
 														})}
 													</Radio.Button>
 												</Radio.Group>
@@ -274,7 +274,7 @@ class ContentChart extends Component {
 								>
 									<Skeleton active loading={skuLoading}>
 										<div className={styles['list-title']}>
-											{formatMessage({ id: 'dashBoard.sku.rate' })}
+											{formatMessage({ id: 'dashboard.sku.rate' })}
 										</div>
 										{result ? (
 											<TwinList
