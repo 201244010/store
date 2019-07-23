@@ -3,13 +3,11 @@ import { formatMessage, getLocale } from 'umi/locale';
 import { connect } from 'dva';
 import { Tabs, Form, Button, Modal } from 'antd';
 import { encryption } from '@/utils/utils';
-import Storage from '@konata9/storage.js';
 import AccountLogin from './AccountLogin';
 import AccountLoginLocal from './AccountLoginLocal';
 import MobileLogin from './MobileLogin';
 import RegisterModal from '@/pages/User/Register/RegisterModal';
 import ResetModal from '@/pages/User/ResetPassword/ResetModal';
-import * as CookieUtil from '@/utils/cookies';
 import * as Regexp from '@/constants/regexp';
 import { ERROR_OK, ALERT_NOTICE_MAP, USER_NOT_EXIST } from '@/constants/errorCode';
 import { KEY } from '@/constants';
@@ -44,7 +42,6 @@ const tabBarStyle = {
 		sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
 		getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
 		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
-		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
@@ -110,14 +107,11 @@ class Login extends Component {
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
 			const shopList = result.shop_list || [];
-			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
+			// Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
 				goToPath('storeCreate');
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
-				const lastStore = shopList.length;
-				const defaultStore = shopList[lastStore - 1] || {};
-				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
 				goToPath('root');
 				// router.push('/');
 			}
@@ -125,7 +119,7 @@ class Login extends Component {
 	};
 
 	checkCompanyList = async () => {
-		const { getCompanyList, goToPath, setCurrentCompany } = this.props;
+		const { getCompanyList, goToPath } = this.props;
 		const response = await getCompanyList({});
 		if (response && response.code === ERROR_OK) {
 			const data = response.data || {};
@@ -135,9 +129,6 @@ class Login extends Component {
 				// router.push('/user/merchantCreate');
 				goToPath('userMerchant');
 			} else if (companys === 1) {
-				const companyInfo = companyList[0] || {};
-				CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, companyInfo.company_id);
-				setCurrentCompany({ companyId: companyInfo.company_id });
 				this.checkStoreExist();
 			} else {
 				goToPath('userStore');

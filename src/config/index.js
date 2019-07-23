@@ -1,6 +1,6 @@
-import sysEnv from './env';
+import envConfig from './env';
 
-export const env = sysEnv;
+export const { env, country } = envConfig;
 
 const WEB_SOCKET_PREFIX = {
 	dev: 'ws',

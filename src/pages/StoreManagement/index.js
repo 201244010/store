@@ -3,7 +3,7 @@ import { Table, Form, Input, Button, Row, Col, Cascader, Divider, Card } from 'a
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
-import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
+import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import styles from './StoreManagement.less';
 import { formatEmptyWithoutZero } from '@/utils/utils';
 
@@ -154,16 +154,11 @@ class StoreManagement extends Component {
 	};
 
 	handleReset = async () => {
-		const { form, clearSearch, getStoreList } = this.props;
+		const { form, clearSearch } = this.props;
 		if (form) {
 			form.resetFields();
 		}
 		await clearSearch();
-		await getStoreList({
-			options: {
-				current: 1,
-			},
-		});
 	};
 
 	handleSubmit = () => {
@@ -209,7 +204,7 @@ class StoreManagement extends Component {
 				<div className={styles['search-bar']}>
 					<Form layout="inline">
 						<Row gutter={FORM_FORMAT.gutter}>
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<FormItem
 									label={formatMessage({ id: 'storeManagement.list.inputLabel' })}
 								>
@@ -217,6 +212,7 @@ class StoreManagement extends Component {
 										initialValue: keyword,
 									})(
 										<Input
+											maxLength={20}
 											placeholder={formatMessage({
 												id: 'storeManagement.list.inputPlaceHolder',
 											})}
@@ -224,7 +220,7 @@ class StoreManagement extends Component {
 									)}
 								</FormItem>
 							</Col>
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<FormItem
 									label={formatMessage({
 										id: 'storeManagement.list.selectLabel',
@@ -242,13 +238,18 @@ class StoreManagement extends Component {
 									)}
 								</FormItem>
 							</Col>
-							<Col {...COL_THREE_NORMAL}>
-								<Button type="primary" onClick={this.handleSubmit}>
-									{formatMessage({ id: 'btn.query' })}
-								</Button>
-								<Button style={{ marginLeft: '20px' }} onClick={this.handleReset}>
-									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
-								</Button>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+								<Form.Item className={styles['query-item']}>
+									<Button type="primary" onClick={this.handleSubmit}>
+										{formatMessage({ id: 'btn.query' })}
+									</Button>
+									<Button
+										style={{ marginLeft: '20px' }}
+										onClick={this.handleReset}
+									>
+										{formatMessage({ id: 'storeManagement.list.buttonReset' })}
+									</Button>
+								</Form.Item>
 							</Col>
 						</Row>
 					</Form>

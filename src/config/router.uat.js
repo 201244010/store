@@ -39,11 +39,11 @@ const router = [
 				component: './Index'
 			},
 			{
-				path: '/dashBoard',
-				name: 'dashBoard',
+				path: '/dashboard',
+				name: 'dashboard',
 				icon: 'blank',
 				component: './DashBoard',
-				id: 'dashBoard',
+				id: 'dashboard',
 			},
 
 			{
@@ -76,7 +76,7 @@ const router = [
 								name: 'videos',
 								id: 'videos',
 								hideInMenu: true,
-								component: './IPC/TradeVideos/TradeVideos.js',
+								component: './IPC/TradeVideos/index.js',
 							},
 							{
 								path: '/application/cashVerify',

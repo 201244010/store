@@ -27,6 +27,13 @@ const router = [
 	},
 
 	{
+		path: '/show',
+		component: '../layouts/BlankLayout',
+		id: 'show',
+		routes: [{ path: '/show', component: '../layouts/ShowLayout.js' }],
+	},
+
+	{
 		path: '/',
 		component: '../layouts/BasicLayout',
 		id: 'root',
@@ -39,11 +46,11 @@ const router = [
 				component: './Index',
 			},
 			{
-				path: '/dashBoard',
-				name: 'dashBoard',
+				path: '/dashboard',
+				name: 'dashboard',
 				icon: 'blank',
 				component: './DashBoard',
-				id: 'dashBoard',
+				id: 'dashboard',
 			},
 
 			{

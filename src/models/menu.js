@@ -8,13 +8,14 @@ import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
 // import routeConfig from '@/config/devRouter';
 import routeConfig from '@/config/router';
+import { format } from '@konata9/milk-shake';
 
 import { env } from '@/config';
 
 const { check } = Authorized;
 
 const FIRST_MENU_ORDER = [
-	'dashBoard',
+	'dashboard',
 	'application',
 	'devices',
 	'esl',
@@ -104,8 +105,19 @@ const getBreadcrumbNameMap = menuData => {
 
 const memoizeOneGetBreadcrumbNameMap = memoizeOne(getBreadcrumbNameMap, isEqual);
 
+const checkChildrenAuth = (children, authMenuList) =>
+	children.filter(child => authMenuList.some(authMenu => authMenu.path.indexOf(child.path) > -1));
+
 const checkMenuAuth = (menuData, authMenuList = []) =>
-	menuData.filter(menu => authMenuList.includes(menu.path.slice(1)));
+	menuData
+		.filter(menu => authMenuList.some(authMenu => authMenu.base === menu.path.slice(1)))
+		.map(menu => {
+			const { children = [] } = menu;
+			return {
+				...menu,
+				children: checkChildrenAuth(children, authMenuList),
+			};
+		});
 
 const flatRoutes = routesList => {
 	let result = [];
@@ -136,32 +148,71 @@ export default {
 	},
 
 	effects: {
-		*getMenuData({ payload }, { put, call }) {
+		*getAuthMenu(_, { call }) {
+			const response = yield call(MenuAction.getAuthMenu);
+			return response;
+		},
+
+		*getMenuData({ payload }, { put }) {
 			const { routes, authority } = payload;
 			const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
 			const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
 
 			let filteredMenuData = menuData;
 
-			// const permissionResult = yield put.resolve({
-			// 	type: 'role/getUserPermissionList',
-			// });
-			// console.log(permissionResult);
+			const permissionResult = yield put.resolve({
+				type: 'role/getUserPermissionList',
+			});
+			const authMenuResult = yield put.resolve({ type: 'getAuthMenu' });
 
-			if (env !== 'dev') {
-				const response = yield call(MenuAction.getAuthMenu);
-				if (response && response.code === ERROR_OK) {
-					const { menu_list: menuList = [] } = response.data || {};
-					// console.log('menu control', menuList);
-					if (menuList && menuList.length > 0) {
-						filteredMenuData = checkMenuAuth(
-							menuData,
-							FIRST_MENU_ORDER.filter(menu => menuList.includes(menu))
-						);
-						Storage.set({ FILTERED_MENU: filteredMenuData }, 'local');
+			if (
+				permissionResult &&
+				permissionResult.code === ERROR_OK &&
+				authMenuResult &&
+				authMenuResult.code === ERROR_OK
+			) {
+				const { data: permissionData = {} } = permissionResult || {};
+				const { permissionList = [] } = format('toCamel')(permissionData);
+				console.log('permissionList, ', permissionList);
+
+				const formattedPermissionList = permissionList.map(item => ({
+					base: ((item.path || '').slice(1).split('/') || [])[0],
+					path: item.path,
+				}));
+				console.log('formattedPermissionList: ', formattedPermissionList);
+
+				const { data: authMenuData = {} } = authMenuResult || {};
+				const { menuList = [] } = format('toCamel')(authMenuData);
+				console.log('menu control: ', menuList);
+
+				const filteredPermissionList = formattedPermissionList.filter(item => {
+					if (env === 'dev') {
+						return FIRST_MENU_ORDER.includes(item.base);
 					}
+					return menuList.includes(item.base);
+				});
+
+				console.log('filteredPermissionList: ', filteredPermissionList);
+
+				if (filteredPermissionList.length > 0) {
+					filteredMenuData = checkMenuAuth(menuData, filteredPermissionList);
 				}
+				// console.log('filteredMenuData: ', filteredMenuData);
 			}
+
+			// if (env !== 'dev') {
+			// const response = yield call(MenuAction.getAuthMenu);
+			// if (response && response.code === ERROR_OK) {
+			// 	const { menu_list: menuList = [] } = response.data || {};
+			// 	if (menuList && menuList.length > 0) {
+			// 		filteredMenuData = checkMenuAuth(
+			// 			menuData,
+			// 			FIRST_MENU_ORDER.filter(menu => menuList.includes(menu))
+			// 		);
+			// 		Storage.set({ FILTERED_MENU: filteredMenuData }, 'local');
+			// 	}
+			// }
+			// }
 
 			yield put({
 				type: 'save',
