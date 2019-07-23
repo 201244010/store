@@ -163,12 +163,8 @@ export default class ShowChart extends React.Component {
 					>
 						<Label
 							autoRotate={false}
-							position="top"
+							position="bottom"
 							content={saleType}
-							textStyle={{
-								fill: 'red',
-								fontSize: '12',
-							}}
 							htmlTemplate={(_, item) => {
 								const { point = {} } = item;
 								return nowTime === point.time
