@@ -52,17 +52,13 @@ export default class PriceTagAndCamera extends React.Component {
 					<div className={styles['price-title']}>
 						{formatMessage({ id: 'dashBoard.overview.esl.push.show.title' })}
 					</div>
-					{priceTag.map(item => {
-						<OneList key={item.name} name={item.name} num={item.num} />;
-					})}
+					{priceTag.map(item => <OneList key={item.name} name={item.name} num={item.num} />)}
 				</div>
 				<div>
 					<div className={styles['price-title']}>
 						{formatMessage({ id: 'dashBoard.overview.ipc.show.title' })}
 					</div>
-					{camera.map(item => {
-						<OneList key={item.name} name={item.name} num={item.num} />;
-					})}
+					{camera.map(item => <OneList key={item.name} name={item.name} num={item.num} />)}
 				</div>
 			</div>
 		);
