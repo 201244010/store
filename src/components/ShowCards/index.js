@@ -17,17 +17,17 @@ const ringRateStyle = {
 };
 
 const TEXT = {
-	TOTAL_AMOUNT: formatMessage({ id: 'dashBoard.total.sales' }),
-	TOTAL_AMOUNT_INFO: formatMessage({ id: 'dashBoard.total.sales.info' }),
-	TOTAL_COUNT: formatMessage({ id: 'dashBoard.total.count' }),
-	TOTAL_COUNT_INFO: formatMessage({ id: 'dashBoard.total.count.info' }),
-	TOTAL_REFUND: formatMessage({ id: 'dashBoard.total.refund.count' }),
-	TOTAL_REFUND_INFO: formatMessage({ id: 'dashBoard.total.refund.count.info' }),
-	AVG_UNIT: formatMessage({ id: 'dashBoard.customer.unit.price' }),
-	AVG_UNIT_INFO: formatMessage({ id: 'dashBoard.customer.unit.price.info' }),
-	D2D: formatMessage({ id: 'dashBoard.order.d2d' }),
-	W2W: formatMessage({ id: 'dashBoard.order.w2w' }),
-	M2M: formatMessage({ id: 'dashBoard.order.m2m' }),
+	TOTAL_AMOUNT: formatMessage({ id: 'dashboard.total.sales' }),
+	TOTAL_AMOUNT_INFO: formatMessage({ id: 'dashboard.total.sales.info' }),
+	TOTAL_COUNT: formatMessage({ id: 'dashboard.total.count' }),
+	TOTAL_COUNT_INFO: formatMessage({ id: 'dashboard.total.count.info' }),
+	TOTAL_REFUND: formatMessage({ id: 'dashboard.total.refund.count' }),
+	TOTAL_REFUND_INFO: formatMessage({ id: 'dashboard.total.refund.count.info' }),
+	AVG_UNIT: formatMessage({ id: 'dashboard.customer.unit.price' }),
+	AVG_UNIT_INFO: formatMessage({ id: 'dashboard.customer.unit.price.info' }),
+	D2D: formatMessage({ id: 'dashboard.order.d2d' }),
+	W2W: formatMessage({ id: 'dashboard.order.w2w' }),
+	M2M: formatMessage({ id: 'dashboard.order.m2m' }),
 };
 
 const RingRate = props => {

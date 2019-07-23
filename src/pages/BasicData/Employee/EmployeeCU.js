@@ -358,7 +358,7 @@ class EmployeeCU extends Component {
 					<Form.Item label={formatMessage({ id: 'employee.sso.account' })}>
 						{getFieldDecorator('ssoUsername', {
 							initialValue: this.action === 'edit' ? ssoUsername : '',
-						})(<Input disabled={!!(ssoUsername && this.action === 'edit')} />)}
+						})(<Input disabled={this.action === 'edit'} />)}
 					</Form.Item>
 					<Form.Item
 						label={formatMessage({ id: 'employee.orgnization' })}

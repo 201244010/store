@@ -97,7 +97,7 @@ export default class ShowPayChart extends React.Component {
 		return (
 			<div className={styles['pay-chart']}>
 				<div className={styles['pay-chart-title']}>
-					{formatMessage({ id: 'dashBoard.payment' })}
+					{formatMessage({ id: 'dashboard.payment' })}
 				</div>
 				<div className={styles['pay-chart-lengend']}>
 					{data.map(item => {

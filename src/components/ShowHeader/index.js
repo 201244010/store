@@ -76,21 +76,21 @@ export default class ShowHeader extends React.Component {
 						onChange={this.tabChange}
 					>
 						<TabPane
-							tab={formatMessage({ id: 'dashBoard.search.today' })}
+							tab={formatMessage({ id: 'dashboard.search.today' })}
 							key={ACTIVEKEY[0]}
 							forceRender
 						>
 							<ShowTabContent time="today" />
 						</TabPane>
 						<TabPane
-							tab={formatMessage({ id: 'dashBoard.search.week' })}
+							tab={formatMessage({ id: 'dashboard.search.week' })}
 							key={ACTIVEKEY[1]}
 							forceRender
 						>
 							<ShowTabContent time="week" />
 						</TabPane>
 						<TabPane
-							tab={formatMessage({ id: 'dashBoard.search.month' })}
+							tab={formatMessage({ id: 'dashboard.search.month' })}
 							key={ACTIVEKEY[2]}
 							forceRender
 						>
