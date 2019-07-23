@@ -19,13 +19,13 @@ const { LAST_HAND_REFRESH_TIME } = DASHBOARD;
 @connect(
 	state => ({
 		loading: state.loading,
-		dashBoard: state.dashBoard,
+		dashboard: state.dashboard,
 	}),
 	dispatch => ({
 		fetchAllData: ({ needLoading }) =>
-			dispatch({ type: 'dashBoard/fetchAllData', payload: { needLoading } }),
-		setSearchValue: payload => dispatch({ type: 'dashBoard/setSearchValue', payload }),
-		clearSearch: () => dispatch({ type: 'dashBoard/clearSearch' }),
+			dispatch({ type: 'dashboard/fetchAllData', payload: { needLoading } }),
+		setSearchValue: payload => dispatch({ type: 'dashboard/setSearchValue', payload }),
+		clearSearch: () => dispatch({ type: 'dashboard/clearSearch' }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
@@ -77,14 +77,14 @@ class DashBoard extends Component {
 			await fetchAllData({ needLoading: true });
 			this.startAutoRefresh();
 		} else {
-			message.warning(formatMessage({ id: 'dashBoard.refresh.too.fast' }));
+			message.warning(formatMessage({ id: 'dashboard.refresh.too.fast' }));
 			this.startAutoRefresh();
 		}
 	};
 
 	render() {
 		const {
-			dashBoard: {
+			dashboard: {
 				overviewProductLoading,
 				overviewDeviceLoading,
 				overviewIPCLoading,

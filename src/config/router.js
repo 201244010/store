@@ -46,11 +46,11 @@ const router = [
 				component: './Index',
 			},
 			{
-				path: '/dashBoard',
-				name: 'dashBoard',
+				path: '/dashboard',
+				name: 'dashboard',
 				icon: 'blank',
-				component: './DashBoard',
-				id: 'dashBoard',
+				component: './dashboard',
+				id: 'dashboard',
 			},
 
 			{
