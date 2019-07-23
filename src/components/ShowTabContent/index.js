@@ -117,7 +117,7 @@ class ShowTabContent extends React.Component {
 				<div style={{ paddingTop: 52, display: 'flex' }}>
 					<div style={{ width: 841 }}>
 						<ShowChart
-							chartName={formatMessage({ id: 'dashBoard.order.show.sales' })}
+							chartName={formatMessage({ id: 'dashboard.order.show.sales' })}
 							saleType="amount"
 							{...{
 								searchValue,
@@ -126,7 +126,7 @@ class ShowTabContent extends React.Component {
 							}}
 						/>
 						<ShowChart
-							chartName={formatMessage({ id: 'dashBoard.order.show.count' })}
+							chartName={formatMessage({ id: 'dashboard.order.show.count' })}
 							saleType="count"
 							fillColor={['l(90) 0:#FFBC50 1:#FFBC50', 'l(90) 0:#B38F6B 1:#B37047']}
 							shadowColor="#FF7750"
