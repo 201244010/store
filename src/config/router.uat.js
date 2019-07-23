@@ -42,7 +42,7 @@ const router = [
 				path: '/dashboard',
 				name: 'dashboard',
 				icon: 'blank',
-				component: './dashboard',
+				component: './DashBoard',
 				id: 'dashboard',
 			},
 

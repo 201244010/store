@@ -79,7 +79,7 @@ export default class ShowHeader extends React.Component {
 						onChange={this.tabChange}
 					>
 						<TabPane
-							tab={formatMessage({ id: 'dashBoard.search.today' })}
+							tab={formatMessage({ id: 'dashboard.search.today' })}
 							key={ACTIVEKEY[0]}
 							forceRender
 						>
@@ -91,7 +91,7 @@ export default class ShowHeader extends React.Component {
 							/>
 						</TabPane>
 						<TabPane
-							tab={formatMessage({ id: 'dashBoard.search.week' })}
+							tab={formatMessage({ id: 'dashboard.search.week' })}
 							key={ACTIVEKEY[1]}
 							forceRender
 						>
@@ -103,7 +103,7 @@ export default class ShowHeader extends React.Component {
 							/>
 						</TabPane>
 						<TabPane
-							tab={formatMessage({ id: 'dashBoard.search.month' })}
+							tab={formatMessage({ id: 'dashboard.search.month' })}
 							key={ACTIVEKEY[2]}
 							forceRender
 						>
@@ -155,7 +155,7 @@ const TabPaneContent = props => {
 			<div style={{ paddingTop: 52, display: 'flex' }}>
 				<div style={{ width: 841 }}>
 					<ShowChart
-						chartName={formatMessage({ id: 'dashBoard.order.show.sales' })}
+						chartName={formatMessage({ id: 'dashboard.order.show.sales' })}
 						saleType="count"
 						{...{
 							searchValue,
@@ -164,7 +164,7 @@ const TabPaneContent = props => {
 						}}
 					/>
 					<ShowChart
-						chartName={formatMessage({ id: 'dashBoard.order.show.count' })}
+						chartName={formatMessage({ id: 'dashboard.order.show.count' })}
 						saleType="amount"
 						fillColor={['l(90) 0:#FFBC50 1:#FFBC50', 'l(90) 0:#B38F6B 1:#B37047']}
 						shadowColor="#FF7750"

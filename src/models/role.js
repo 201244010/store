@@ -14,6 +14,7 @@ const getInitStatus = (permissionList, roleInfo) => {
 			initResult.checkAll = item.checkAll;
 		}
 	});
+	// console.log('initResult', initResult);
 	return initResult;
 };
 
