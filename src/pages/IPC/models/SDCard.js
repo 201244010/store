@@ -104,7 +104,6 @@ export default {
 			const listeners = [
 				{
 					opcode:changeStatusCode,
-					models:['FS1', 'SS1'],
 					type:MESSAGE_TYPE.EVENT,
 					handler:(topic,message) =>{
 						const {sn} = message.data;
@@ -117,7 +116,6 @@ export default {
 					}
 				},{
 					opcode:formatCode,
-					models:['FS1', 'SS1'],
 					type:MESSAGE_TYPE.RESPONSE,
 					handler:(topic,message) => {
 						const {sn} = message.data;

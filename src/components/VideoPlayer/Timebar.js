@@ -183,6 +183,7 @@ class VideoPlayerProgressBar extends React.Component{
 	}
 
 	onMoveDrag = (e, dragger) => {
+		const { onMoveDrag } = this.props;
 		const { x, lastX, deltaX } = dragger;
 
 		clearTimeout(this.onDragChangeTimeout);
@@ -201,7 +202,11 @@ class VideoPlayerProgressBar extends React.Component{
 				timestamp: time,
 				direction: drct
 			});
+
+			onMoveDrag(time);
 		}
+
+
 	}
 
 	onStopDrag = (e, dragger) => {

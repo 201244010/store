@@ -7,14 +7,13 @@ export default {
 	'menu.notification.center': '消息中心',
 	'menu.notification.info': '消息详情',
 
-	// 'menu.devices': '设备管理',
-	'menu.devices': '智能摄像机',
-	// 'menu.devices.ipcList': '设备列表',
-	'menu.devices.ipcList': '摄像机管理',
+	'menu.devices': '设备管理',
+	'menu.devices.ipcList': '设备列表',
+	'menu.devices.motionMessage':'消息提醒',
 	'menu.devices.ipcList.live': '直播',
 	'menu.devices.ipcList.ipcManagement': '摄像头设置',
-	'menu.devices.motionMessage': '活动侦测',
 	'menu.motionMessage': '消息提醒',
+	
 
 	'menu.faceidLabrary.management': '人脸库管理',
 	'menu.faceidLabrary.list': '人脸库列表',

@@ -1,4 +1,4 @@
-import { getLiveUrl, stopLive, getTimeSlots, startPublish, stopPublish } from '@/services/live';
+import { getLiveUrl, stopLive, getTimeSlots, startPublish, stopPublish } from '../../services/live';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const PPIS = {
@@ -14,16 +14,14 @@ export default {
 	namespace: 'live',
 	state: {
 		streamId: '',
-		url: '',
 		ppi: '',
 		ppiChanged: false,
 		timeSlots: []
 	},
 	reducers: {
-		updateUrl(state, { payload: { url, streamId, ppi }}) {
+		update(state, { payload: { streamId, ppi }}) {
 			return {
 				...state,
-				url,
 				streamId,
 				ppi
 			};
@@ -41,7 +39,7 @@ export default {
 		}
 	},
 	effects: {
-		*startLive({ payload: { sn }}, { call, put }) {
+		*getLiveUrl({ payload: { sn }}, { call, put }) {
 
 			const clientId = yield put.resolve({
 				type: 'mqttIpc/getClientId'
@@ -64,23 +62,23 @@ export default {
 				});
 
 				yield put({
-					type: 'updateUrl',
+					type: 'update',
 					payload: {
-						url,
 						streamId,
 						ppi
 					}
 				});
+
+				return url;
 			};
+			return '';
 		},
 
 		*stopLive({ payload: { sn, streamId }}, { call }) {
-
 			yield call(stopLive, {
 				streamId,
 				sn
 			});
-
 		},
 
 		*changePPI({ payload: { ppi, sn } }, { put, select }) {
@@ -240,7 +238,6 @@ export default {
 					}
 				}
 			];
-
 
 			dispatch({
 				type: 'mqttIpc/addListener',

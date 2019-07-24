@@ -7,9 +7,7 @@ import styles from './Faceid.less';
 class Faceid extends React.Component{
 	render () {
 		const { current, faceidRects, pixelRatio, currentPPI } = this.props;
-		// console.log(faceidRects);
 		const times = faceidRects.filter(item => {
-			// console.log(current, item.timestamp);
 			if ( current < item.timestamp && item.timestamp < current + 500){
 				return true;
 			}
@@ -28,26 +26,17 @@ class Faceid extends React.Component{
 			}
 			if (temp.id === item.id) {
 				if (item.timestamp > temp.timestamp) {
-					rects.splice(rects.length-1, 1, item);
+					rects.splice(rects.length - 1, 1, item);
 				}
 			}else{
 				rects.push(item);
 			}
 			temp = item;
+			rects.push(item);
 		});
-
-		// console.log('faceid 获得的时间：', current, moment.unix(current).format('YYYY-MM-DD HH:mm:ss:SSS'));
-		// rects.forEach(item => {
-		// 	console.log('框的时间戳：', item.id, item.timestamp, moment.unix(item.timestamp).format('YYYY-MM-DD HH:mm:ss:SSS'));
-		// });
 
 		return (
 			<div className={styles['faceid-container']} ref={(container) => this.container = container}>
-				{/* <div style={ {
-					color: 'white',
-					fontSize: '12px'
-				}}>{ current }</div> */}
-				{/* <div className={ styles['faceid-wrapper'] }> */}
 				{
 					!this.container ? '' :
 						rects.map((item, index) => {

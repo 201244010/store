@@ -73,4 +73,9 @@ export default {
 	'faceid.employeeInfo': '默认分组，店员将不计入客流统计。',
 	'faceid.blacklistInfo': '默认分组，包含所有黑名单人脸信息。',
 
+	'faceid.info':'通知',
+	'faceid.list.length.max':'当前创建的人脸分组数量已达到上限',
+	'faceid.amount.max' :'当前人脸分组的照片总数量已达到上限',
+	'faceid.info.known':'知道了'
+
 };

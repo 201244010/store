@@ -210,7 +210,7 @@ class SoftwareUpdate extends Component {
 										<p>
 											{
 												lastCheckTime === 0 ?
-													'您尚未检查过固件更新' :
+													`${formatMessage({ id: 'softwareUpdate.noCheck' })}` :
 													`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment.unix(lastCheckTime).format('YYYY-MM-DD')}`
 											}
 
@@ -282,7 +282,7 @@ class SoftwareUpdate extends Component {
 										<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.noUpdate' })}</span>
 									</h3>
 									<p>
-										{`${formatMessage({ id: 'softwareUpdate.updateDate' })}: ${moment().format('YYYY-MM-DD')}`}
+										{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment().format('YYYY-MM-DD')}`}
 									</p>
 								</div>
 							);

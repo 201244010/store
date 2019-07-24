@@ -13,21 +13,6 @@ class TradeVideosTable extends React.Component {
 		const { tradeVideos, loading, total, currentPage, pageSize, expandedRowKeys } = this.props;
 		const { onShowSizeChange, onPaginationChange, watchVideoHandler, onExpand } = this.props;
 
-		// const tradeVideo  = [
-		// 	{
-		// 		ipcName: '林远峰使用',
-		// 		paymentDeviceName: 'T2',
-		// 		paymentDeviceSn: '9988776655',
-		// 		totalPrice: '123',
-		// 		paymentMethod: '支付宝',
-		// 		purchaseTime: '',
-		// 		key: '1',
-		// 		details: [{
-		// 			name: 'test',
-		// 			quantity: 100
-		// 		}]
-		// 	}
-		// ];
 		const columns = [
 			{
 				title: formatMessage({ id: 'tradeVideos.camera' }), // '摄像头',
@@ -104,8 +89,8 @@ class TradeVideosTable extends React.Component {
 								: formatMessage({ id: 'tradeVideos.viewDetails' })}
 						</a>
 					</>
-				),
-			},
+				)
+			}
 		];
 		return(
 			<Table
