@@ -160,59 +160,47 @@ export default {
 
 			let filteredMenuData = menuData;
 
-			const permissionResult = yield put.resolve({
-				type: 'role/getUserPermissionList',
-			});
-			const authMenuResult = yield put.resolve({ type: 'getAuthMenu' });
-
-			if (
-				permissionResult &&
-				permissionResult.code === ERROR_OK &&
-				authMenuResult &&
-				authMenuResult.code === ERROR_OK
-			) {
-				const { data: permissionData = {} } = permissionResult || {};
-				const { permissionList = [] } = format('toCamel')(permissionData);
-				console.log('permissionList, ', permissionList);
-
-				const formattedPermissionList = permissionList.map(item => ({
-					base: ((item.path || '').slice(1).split('/') || [])[0],
-					path: item.path,
-				}));
-				console.log('formattedPermissionList: ', formattedPermissionList);
-
-				const { data: authMenuData = {} } = authMenuResult || {};
-				const { menuList = [] } = format('toCamel')(authMenuData);
-				console.log('menu control: ', menuList);
-
-				const filteredPermissionList = formattedPermissionList.filter(item => {
-					if (env === 'dev') {
-						return FIRST_MENU_ORDER.includes(item.base);
-					}
-					return menuList.includes(item.base);
+			if (env !== 'dev') {
+				const permissionResult = yield put.resolve({
+					type: 'role/getUserPermissionList',
 				});
+				const authMenuResult = yield put.resolve({ type: 'getAuthMenu' });
 
-				console.log('filteredPermissionList: ', filteredPermissionList);
+				if (
+					permissionResult &&
+					permissionResult.code === ERROR_OK &&
+					authMenuResult &&
+					authMenuResult.code === ERROR_OK
+				) {
+					const { data: permissionData = {} } = permissionResult || {};
+					const { permissionList = [] } = format('toCamel')(permissionData);
+					console.log('permissionList, ', permissionList);
 
-				if (filteredPermissionList.length > 0) {
-					filteredMenuData = checkMenuAuth(menuData, filteredPermissionList);
+					const formattedPermissionList = permissionList.map(item => ({
+						base: ((item.path || '').slice(1).split('/') || [])[0],
+						path: item.path,
+					}));
+					console.log('formattedPermissionList: ', formattedPermissionList);
+
+					const { data: authMenuData = {} } = authMenuResult || {};
+					const { menuList = [] } = format('toCamel')(authMenuData);
+					console.log('menu control: ', menuList);
+
+					const filteredPermissionList = formattedPermissionList.filter(item => {
+						if (env === 'dev') {
+							return FIRST_MENU_ORDER.includes(item.base);
+						}
+						return menuList.includes(item.base);
+					});
+
+					console.log('filteredPermissionList: ', filteredPermissionList);
+
+					if (filteredPermissionList.length > 0) {
+						filteredMenuData = checkMenuAuth(menuData, filteredPermissionList);
+					}
+					// console.log('filteredMenuData: ', filteredMenuData);
 				}
-				// console.log('filteredMenuData: ', filteredMenuData);
 			}
-
-			// if (env !== 'dev') {
-			// const response = yield call(MenuAction.getAuthMenu);
-			// if (response && response.code === ERROR_OK) {
-			// 	const { menu_list: menuList = [] } = response.data || {};
-			// 	if (menuList && menuList.length > 0) {
-			// 		filteredMenuData = checkMenuAuth(
-			// 			menuData,
-			// 			FIRST_MENU_ORDER.filter(menu => menuList.includes(menu))
-			// 		);
-			// 		Storage.set({ FILTERED_MENU: filteredMenuData }, 'local');
-			// 	}
-			// }
-			// }
 
 			yield put({
 				type: 'save',
