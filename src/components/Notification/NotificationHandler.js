@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, Modal } from 'antd';
-import VideoPlayComponent from '@/pages/IPC/component/VideoPlayComponent';
+// import VideoPlayComponent from '@/pages/IPC/component/VideoPlayComponent';
+import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
+
 import { formatMessageTemplate, convertArrayPrams } from '@/utils/utils';
 import ipcTypes from '@/constants/ipcTypes';
 
@@ -13,15 +15,15 @@ const ACTION_MAP = {
 		const modal = Modal.info({
 			title: '',
 			content: (
-				<VideoPlayComponent
-					playing
-					watchVideoClose={() => {
+				<ModalPlayer 
+					// visible={playing} 
+					onClose={() => {
 						if (modal) {
 							modal.destroy();
 						}
 					}}
-					videoUrl={url}
-					pixelRatio={pixelRatio}
+					url={url} 
+					pixelRatio={pixelRatio} 
 				/>
 			),
 			okButtonProps: { style: { dispaly: 'none' } },

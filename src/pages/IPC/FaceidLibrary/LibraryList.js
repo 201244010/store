@@ -4,7 +4,7 @@ import { Form, Button, Row, Col, Table, Card, Modal, Divider, message } from 'an
 import moment from 'moment';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
+import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
 import LibraryForm from './LibraryForm';
 
 import styles from './FaceidLibrary.less';
@@ -155,7 +155,35 @@ class LibraryList extends React.Component {
 		loadLibrary();
 	}
 
-	showCreateForm = () => {
+	addFaceidLibraryHandler = (list,restCapacity) => {
+		if(list.length >= this.maxLength){
+			Modal.info({
+				title: formatMessage({ id: 'faceid.info' }),
+				okText: formatMessage({ id: 'faceid.info.known' }),
+				content: (
+					<div>
+						{formatMessage({ id: 'faceid.list.length.max' })}
+					</div>
+				),
+				onOk() {},
+			});
+			return;
+		}
+
+		if(restCapacity <= 0){
+			Modal.info({
+				title: formatMessage({ id: 'faceid.info' }),
+				okText: formatMessage({ id: 'faceid.info.known' }),
+				content: (
+					<div>
+						{formatMessage({ id: 'faceid.amount.max' })}
+					</div>
+				),
+				onOk() {},
+			});
+			return;
+		}
+
 		this.setState({
 			createFormShown: true
 		});
@@ -271,6 +299,34 @@ class LibraryList extends React.Component {
 
 	}
 
+	// showInfoHandler = (list,restCapacity) => {
+	// 	// list.length >= this.maxLength || restCapacity <= 0;
+	// 	if(list.length >= this.maxLength){
+	// 		Modal.info({
+	// 			title: formatMessage({ id: 'faceid.info' }),
+	// 			okText: formatMessage({ id: 'faceid.info.known' }),
+	// 			content: (
+	// 				<div>
+	// 					{formatMessage({ id: 'faceid.list.length.max' })}
+	// 				</div>
+	// 			),
+	// 			onOk() {},
+	// 		});
+	// 	}else if(restCapacity <= 0){
+	// 		Modal.info({
+	// 			title: formatMessage({ id: 'faceid.info' }),
+	// 			okText: formatMessage({ id: 'faceid.info.known' }),
+	// 			content: (
+	// 				<div>
+	// 					{formatMessage({ id: 'faceid.amount.max' })}
+	// 				</div>
+	// 			),
+	// 			onOk() {},
+	// 		});
+	// 	}
+		
+	// }
+
 	editLibrary() {
 		const { editLibrary } = this.props;
 		const { selectedRow } = this.state;
@@ -341,14 +397,14 @@ class LibraryList extends React.Component {
 					<div className={global['search-bar']}>
 						<Form layout="inline">
 							<Row gutter={FORM_FORMAT.gutter}>
-								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+								<Col {...COL_THREE_NORMAL}>
 									<Form.Item>
 										<Button
 											type="primary"
-											disabled={list.length >= this.maxLength || restCapacity <= 0}
-											onClick={this.showCreateForm}
+											// disabled={list.length >= this.maxLength || restCapacity <= 0}
+											onClick={()=>this.addFaceidLibraryHandler(list,restCapacity)}
 											icon="plus"
-											loading={loading.effects['faceIdLibrary/create']}
+											loading={loading.effects['faceIdLibrary/create']||loading.effects['faceIdLibrary/read']}
 										>
 											{formatMessage({ id: 'common.create' })}
 										</Button>
@@ -360,6 +416,7 @@ class LibraryList extends React.Component {
 
 					<div>
 						<Table
+							loading={loading.effects['faceIdLibrary/read']}
 							columns={this.columns}
 							dataSource={list}
 							rowKey="id"
@@ -395,6 +452,7 @@ class LibraryList extends React.Component {
 				<Modal
 					title={formatMessage({id: 'faceid.createLibrary'})}
 					maskClosable={false}
+					destroyOnClose
 					visible={createFormShown}
 					onCancel={this.closeCreateForm}
 					onOk={this.createLibrary}
@@ -419,6 +477,7 @@ class LibraryList extends React.Component {
 				<Modal
 					title={formatMessage({id: 'faceid.editLibrary' })}
 					maskClosable={false}
+					destroyOnClose
 					visible={editFormShown}
 					onCancel={this.closeEditForm}
 					onOk={this.editLibrary}

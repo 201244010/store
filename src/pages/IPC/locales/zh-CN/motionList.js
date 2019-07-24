@@ -15,6 +15,7 @@ export default{
 	'motionList.sound.detect': '声音侦测',
 	'motionList.image.detect': '图像侦测',
 	'motionList.soundAndImage.detect': '声音和图像侦测',
-	'motionList.time': '时间',
+	'motionList.time': '侦测时间',
 	'motionList.search': '查询',
+	'motionList.reset': '重置',
 };

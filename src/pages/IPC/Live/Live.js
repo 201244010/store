@@ -2,21 +2,16 @@ import React from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import { List, Avatar, Card, notification } from 'antd';
+import { List, Avatar, Card } from 'antd';
+import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
 import Faceid from '@/components/VideoPlayer/Faceid';
-import VideoPlayer from '@/components/VideoPlayer/VideoPlayer';
-// import Faveid from './Faveid';
-
-import InitStatusSDCard from '../InitStatusSDCard/InitStatusSDCard';
-import SDCard from '../SDCard/SDCard';
+import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 
 import styles from './Live.less';
-import 'react-perfect-scrollbar/dist/css/styles.css';
 
 @connect((state) => {
-	const { faceid: { rectangles, list }, live: { url, ppi, streamId, ppiChanged, timeSlots } } = state;
+	const { faceid: { rectangles, list }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
 
 	const rects = [];
 	rectangles.forEach(item => {
@@ -26,7 +21,6 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 	});
 
 	return {
-		liveUrl: url,
 		streamId,
 		ppiChanged,
 		currentPPI: ppi || '1080',
@@ -46,21 +40,25 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 		});
 		return result;
 	},
-	startLive({ sn }) {
-		dispatch({
-			type: 'live/startLive',
+	async getLiveUrl({ sn }) {
+		const url = await dispatch({
+			type: 'live/getLiveUrl',
 			payload: {
 				sn
 			}
 		});
+		return url;
 	},
 	stopLive({ sn, streamId }) {
-		dispatch({
+		return dispatch({
 			type: 'live/stopLive',
 			payload: {
 				sn,
 				streamId
 			}
+		}).then(() => {
+			console.log('stopLive done.');
+			return true;
 		});
 	},
 	getDeviceInfo({ sn }) {
@@ -92,10 +90,20 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 		return url;
 	},
 	stopHistoryPlay({ sn }) {
-		dispatch({
+		return dispatch({
 			type: 'live/stopHistoryPlay',
 			payload: {
 				sn
+			}
+		}).then(() => {
+			console.log('stopHistoryPlay done.');
+		});
+	},
+	clearRects(timestamp) {
+		dispatch({
+			type: 'faceid/clearRects',
+			payload: {
+				timestamp
 			}
 		});
 	}
@@ -110,16 +118,10 @@ class Live extends React.Component{
 			},
 			liveTimestamp: 0
 		};
-
-		this.changePPI = this.changePPI.bind(this);
-		this.onTimeChange = this.onTimeChange.bind(this);
-		this.getHistoryUrl = this.getHistoryUrl.bind(this);
-		this.stopHistoryPlay = this.stopHistoryPlay.bind(this);
-		this.syncLiveTimestamp = this.syncLiveTimestamp.bind(this);
 	}
 
-	async componentDidMount() {
-		const { startLive, getDeviceInfo, location: { query } } = this.props;
+	async componentDidMount () {
+		const { getDeviceInfo, location: { query } } = this.props;
 
 		const {sn} = query;
 
@@ -129,25 +131,13 @@ class Live extends React.Component{
 			this.setState({
 				deviceInfo
 			});
-
-			startLive({
-				sn
-			});
 		}
 
 	}
 
-	componentWillUnmount() {
+	componentWillUnmount () {
 		const { stopLive, streamId, location: { query }, stopHistoryPlay } = this.props;
 		const { sn } = query;
-
-		// 这部分代码是为了离开live页面关闭notification【需优化】
-		const noSdcardKey = `noSdcard${sn}`;
-		notification.close(noSdcardKey);
-		const unknownKey = `unknown${ sn }`;
-		notification.close(unknownKey);
-		const formatKey = `formatSdcard${sn}`;
-		notification.close(formatKey);
 
 		if (sn) {
 			stopHistoryPlay({
@@ -162,7 +152,7 @@ class Live extends React.Component{
 		}
 	}
 
-	async onTimeChange(timeStart, timeEnd) {
+	onTimeChange = async (timeStart, timeEnd) => {
 
 		const { getTimeSlots, location: { query } } = this.props;
 		const {sn} = query;
@@ -176,7 +166,38 @@ class Live extends React.Component{
 		return result;
 	}
 
-	async getHistoryUrl (timestamp) {
+	onMetadataArrived = (timestamp) => {
+		const { clearRects } = this.props;
+		clearRects(timestamp);
+	}
+
+
+	syncLiveTimestamp = (timestamp) => {
+		// console.log(timestamp);
+		this.setState({
+			liveTimestamp: timestamp
+		});
+	}
+
+	getLiveUrl = async () => {
+		const { getLiveUrl, location: { query }} = this.props;
+		const { sn } = query;
+
+		const url = await getLiveUrl({ sn });
+		return url;
+	}
+
+	stopLive = async () => {
+		const { stopLive, streamId, location: { query }} = this.props;
+		const { sn } = query;
+
+		await stopLive({
+			sn,
+			streamId
+		});
+	}
+
+	getHistoryUrl = async  (timestamp) => {
 		const { getHistoryUrl, location: { query }} = this.props;
 		const { sn } = query;
 
@@ -184,20 +205,14 @@ class Live extends React.Component{
 		return url;
 	}
 
-	syncLiveTimestamp (timestamp) {
-		this.setState({
-			liveTimestamp: timestamp
-		});
-	}
-
-	stopHistoryPlay () {
+	stopHistoryPlay = async () => {
 		const { stopHistoryPlay, location: { query } } = this.props;
 		const { sn } = query;
 
-		stopHistoryPlay({ sn });
+		await stopHistoryPlay({ sn });
 	}
 
-	changePPI (ppi) {
+	changePPI = (ppi) => {
 		const { changePPI, location:{ query } } = this.props;
 		const { sn } = query;
 
@@ -210,26 +225,24 @@ class Live extends React.Component{
 
 
 	render() {
-		const { timeSlots, liveUrl, faceidRects, faceidList, currentPPI, ppiChanged, location: { query } } = this.props;
-		const { sn } = query;
+		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged } = this.props;
 
 		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp } = this.state;
 
 		const genders = {
-			0: '未知',
-			1: '男',
-			2: '女'
+			0: formatMessage({ id: 'live.genders.unknown' }),
+			1: formatMessage({ id: 'live.genders.male'}),
+			2: formatMessage({ id: 'live.genders.female'})
 		};
+
 
 		return(
 			<div className={styles['live-wrapper']}>
-				<InitStatusSDCard sn={sn} />
-				<SDCard />
+
 				<div className={`${styles['video-player-container']} ${hasFaceid ? styles['has-faceid'] : ''}`}>
-					<VideoPlayer
+					<LivePlayer
 
 						pixelRatio={pixelRatio}
-						type='time'
 
 						currentPPI={currentPPI}
 						changePPI={this.changePPI}
@@ -238,9 +251,10 @@ class Live extends React.Component{
 						getHistoryUrl={this.getHistoryUrl}
 						stopHistoryPlay={this.stopHistoryPlay}
 
-						// sources={sources}
+						getLiveUrl={this.getLiveUrl}
+						pauseLive={this.stopLive}
+
 						timeSlots={timeSlots}
-						url={liveUrl}
 
 						plugin={
 							<Faceid
@@ -252,8 +266,10 @@ class Live extends React.Component{
 								currentPPI={currentPPI}
 							/>
 						}
+
 						getCurrentTimestamp={this.syncLiveTimestamp}
 						onTimeChange={this.onTimeChange}
+						onMetadataArrived={this.onMetadataArrived}
 					/>
 
 				</div>
@@ -269,7 +285,7 @@ class Live extends React.Component{
 									renderItem={
 										(item) => (
 											<List.Item key={item.id}>
-												<Card
+												{/* <Card
 													title={
 														<div className={styles['avatar-container']}>
 															<div className={styles.type}>{ item.libraryName }</div>
@@ -285,7 +301,7 @@ class Live extends React.Component{
 														{ `(${ genders[item.gender] } ${ item.age }岁)` }
 													</p>
 													<p>
-														<span>进店时间：</span>
+														<span>{formatMessage({id: 'live.entry.time'})}</span>
 														<span>
 															{
 																moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
@@ -294,13 +310,47 @@ class Live extends React.Component{
 													</p>
 
 													<p>
-														<Link className={styles['button-infos']} to='./userinfo'>会员详情</Link>
+														<Link className={styles['button-infos']} to='./userinfo'>{formatMessage({ id: 'live.member.details'})}</Link>
+													</p>
+												</Card> */}
+												<Card
+													bordered={false}
+													className={styles['faceid-card']}
+												>
+													<div className={styles['avatar-col']}>
+														<Avatar className={styles['avatar-img']} shape="square" size={89} src={`data:image/jpeg;base64,${item.pic}`} />
+													</div>
+													<div className={styles['info-col']}>
+														<span className={styles['info-label']}>{`${ formatMessage({id: 'live.name'}) } : ${ item.name }`}</span>
+														<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.group'}) } : ${ item.libraryName }`}</span>
+														<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.gender'}) } : ${genders[item.gender]}`}</span>
+														<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.age'}) } : ${item.age}`}</span>
+													</div>
+													<div className={styles['info-col']}>
+														<span>{`${formatMessage({id: 'live.last.arrival.time'})}: `}</span>
+														<span>
+															{
+																moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
+															}
+														</span>
+													</div>
+
+													<p>
+														<Link className={styles['button-infos']} to='./userinfo'>{formatMessage({ id: 'live.enter.details'})}</Link>
 													</p>
 												</Card>
 											</List.Item>
 										)
 									}
 								/>
+								{
+									faceidList.length ?
+										<div className={styles['infos-more']}>
+											<Link to='./userinfo'>{formatMessage({ id: 'live.logs'})}</Link>
+										</div>
+										: ''
+								}
+
 							</PerfectScrollbar>
 						</div>
 						: ''
