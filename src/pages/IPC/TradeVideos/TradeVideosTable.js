@@ -65,14 +65,19 @@ class TradeVideosTable extends React.Component {
 					<>
 						<a
 							className={`${styles['video-watch']} ${
-								record.url ? '' : styles.disabled
+								record.url && record.paymentDeviceSn !== '' ? '' : styles.disabled
 							}`}
 							href="javascript:void(0);"
-							onClick={() =>
-								watchVideoHandler(record.paymentDeviceSn, record.url)
+							onClick={() =>{
+								if (record.url && record.paymentDeviceSn !== ''){
+									watchVideoHandler(record.paymentDeviceSn, record.url);
+								}
+								
+							}
+								
 							}
 						>
-							{record.url
+							{record.url && record.paymentDeviceSn !== ''
 								? formatMessage({ id: 'tradeVideos.viewVideo' })
 								: formatMessage({ id: 'tradeVideos.viewVideo.merging' })}
 						</a>

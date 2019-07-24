@@ -163,9 +163,8 @@ class VideoPlayer extends React.Component{
 	}
 
 	onPlay = () => {
-		console.log('org onPlay');
-
 		this.setState({
+			playing: true,
 			canScreenShot: this.canScreenShot()
 		});
 	}
@@ -365,7 +364,7 @@ class VideoPlayer extends React.Component{
 
 	render() {
 		const { pixelRatio, currentPPI, ppiChanged, progressbar, isLive,
-			onTimeUpdate, onMetadataArrived, onError, onPause, onEnd, onPlay, onCanPlay, onCanplayThrough, onDateChange, playHandler,
+			onTimeUpdate, onMetadataArrived, onError, onPause, onEnd, onCanPlay, onCanplayThrough, onDateChange, playHandler,
 			playBtnDisabled, showDatePicker, canPPIChange, showBackToLive, ppiChange, backToLive,
 			current, plugin
 		} = this.props;
@@ -387,7 +386,7 @@ class VideoPlayer extends React.Component{
 
 						fullScreen={fullScreen}
 
-						onPlay={onPlay || this.onPlay}
+						onPlay={this.onPlay}
 						onCanPlay={onCanPlay || this.onCanPlay}
 						onCanplayThrough={onCanplayThrough || this.onCanplayThrough}
 						onPause={onPause || this.onPause}

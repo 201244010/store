@@ -36,6 +36,11 @@ class LivePlayer extends React.Component{
 		videoplayer.pause();
 	}
 
+	paused = () => {
+		const { videoplayer } = this;
+		return videoplayer.paused();
+	}
+
 	src = (src) => {
 		const { videoplayer } = this;
 		videoplayer.src(src);
@@ -124,11 +129,24 @@ class LivePlayer extends React.Component{
 	}
 
 	pauseHistory = async () => {
-		console.log('pauseHistory');
 		const { stopHistoryPlay } = this.props;
 
 		this.pause();
 		await stopHistoryPlay();
+	}
+
+	playHandler = async () => {
+		const { isLive,  currentTimestamp } = this.state;
+		if (isLive) {
+			return;
+		}
+
+		if (this.paused()) {
+			await this.playHistory(parseInt(currentTimestamp, 10));
+		}else{
+			await this.pauseHistory();
+		}
+
 	}
 
 	getTechName = () => {
@@ -274,6 +292,7 @@ class LivePlayer extends React.Component{
 
 				showBackToLive={!isLive}
 				backToLive={this.playLive}
+				playHandler={this.playHandler}
 
 				ppiChange={this.ppiChange}
 

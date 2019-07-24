@@ -60,17 +60,18 @@ class TrackPlayer extends React.Component{
 
 	onTimeUpdate = (current) => {
 		this.setState({
-			current
+			current,
+			duration: this.generateDuration()
 		});
 	}
 
-	onPlay = () => {
-		const duration = this.generateDuration();
+	// onPlay = () => {
+	// 	const duration = this.generateDuration();
 
-		this.setState({
-			duration
-		});
-	}
+	// 	this.setState({
+	// 		duration
+	// 	});
+	// }
 
 	render () {
 		const { current, duration } = this.state;
@@ -80,7 +81,7 @@ class TrackPlayer extends React.Component{
 				ref={player => this.videoplayer = player}
 				playHandler={this.playHandler}
 				onTimeUpdate={this.onTimeUpdate}
-				onPlay={this.onPlay}
+				// onPlay={this.onPlay}
 				{...this.props}
 
 				progressbar={

@@ -34,6 +34,11 @@ const { confirm } = Modal;
 				payload: filter
 			})
 		,
+		getLibrary: () =>
+			dispatch({
+				type: 'photoLibrary/getLibrary'
+			})
+		,
 		check: payload =>
 			dispatch({
 				type: 'photoLibrary/checked',
@@ -74,12 +79,12 @@ class PhotoCard extends React.Component {
 			imageLoaded: false,
 		};
 	}
-	
+
 	componentDidMount () {
 		const { image: src } = this.props;
 		this.preloadImage(src);
 	}
-	
+
 	componentWillReceiveProps(nextProps) {
 		const { image: src } = nextProps;
 		const { image } = this.props;
@@ -87,12 +92,12 @@ class PhotoCard extends React.Component {
 			this.preloadImage(src);
 		}
 	}
-	
+
 	preloadImage = (src) => {
 		this.setState({
 			imageLoaded: false
 		});
-		
+
 		const image = new Image();
 		image.src = src;
 		image.addEventListener('load', () => {
@@ -107,31 +112,31 @@ class PhotoCard extends React.Component {
 			});
 		});
 	};
-	
+
 	showInfo = () => {
 		this.setState({
 			infoFormVisible: true,
 		});
 	};
-	
+
 	hideInfo = () => {
 		this.setState({ infoFormVisible: false, fileName: '' }, ()=> {
 			this.setState({isEdit: false, file: {}, uploadSuccess: false, uploadFail: false});
 		});
 	};
-	
+
 	showRemove = () => {
 		this.setState({
 			removeVisible: true,
 		});
 	};
-	
+
 	hideRemove = () => {
 		this.setState({
 			removeVisible: false,
 		});
 	};
-	
+
 	showDelete = () => {
 		confirm({
 			title: formatMessage({id:'photoManagement.mention4'}),
@@ -144,11 +149,11 @@ class PhotoCard extends React.Component {
 			cancelText: formatMessage({id: 'photoManagement.card.cancel'})
 		});
 	};
-	
+
 	hideDelete = () => {
-	
+
 	};
-	
+
 	// 处理保存编辑结果
 	handleSubmit = () => {
 		const { fileName, file} = this.state;
@@ -164,9 +169,9 @@ class PhotoCard extends React.Component {
 					targetGroupId: fields.libraryName || libraryId,
 					age: fields.age
 				});
-				
+
 				let isUpload = true;
-				
+
 				if(fileName !== '' && file.response !== undefined && file.response.data.verifyResult === 1) {
 					isUpload = await upload({
 						groupId,
@@ -182,42 +187,44 @@ class PhotoCard extends React.Component {
 			}
 		});
 	};
-	
+
 	// 处理移库
 	handleRemove = async () => {
-		const { id, move, groupId, getList } = this.props;
+		const { id, move, groupId, getList, getLibrary } = this.props;
 		const { targetLibrary } = this.state;
 		await move({faceIdList: [id], targetGroupId: targetLibrary, updateType: 1, sourceGroupId: groupId});
 		this.hideRemove();
+		getLibrary();
 		getList();
 	};
-	
+
 	handleTarget = e => {
 		this.setState({
 			targetLibrary: e.target.value,
 		});
 	};
-	
+
 	// 确定删除照片
 	handleDelete = async () => {
-		const { deletePhoto, id, groupId, getList } = this.props;
+		const { deletePhoto, id, groupId, getList, getLibrary } = this.props;
 		await deletePhoto({faceIdList: [id], groupId});
 		getList();
+		getLibrary();
 		this.hideDelete();
 	};
-	
+
 	handleEdit = () => {
 		this.setState({
 			isEdit: true
 		});
 	};
-	
+
 	handleCheckbox = (e) => {
 		// 根据e.target.checked来设置加进checklist或者从checklist中删掉
 		const { check, id } = this.props;
 		check({isChecked: e.target.checked, checkList: [id]});
 	};
-	
+
 	ageRange = () => {
 		const { photoLibrary: {ageRange} , age } = this.props;
 		let ageName = formatMessage({id: 'photoManagement.unKnown'});
@@ -228,7 +235,7 @@ class PhotoCard extends React.Component {
 		});
 		return ageName;
 	};
-	
+
 	upload = file => {
 		file = handleResponse(file);
 		const { file: { status }} = file;
@@ -242,7 +249,7 @@ class PhotoCard extends React.Component {
 				message.error(formatMessage({id:'photoManagement.uploadFail'}));
 				this.setState({uploadFail: true});
 			}
-			
+
 		} else if (status === 'error') {
 			message.error(formatMessage({id:'photoManagement.uploadFail'}));
 		}
@@ -250,7 +257,7 @@ class PhotoCard extends React.Component {
 			file: file.file
 		});
 	};
-	
+
 	beforeUpload = file => {
 		const isLt1M = file.size / 1024 / 1024 < 1;
 		const isJPG = file.type === 'image/jpeg';
@@ -261,7 +268,7 @@ class PhotoCard extends React.Component {
 		}
 		return isLt1M && isPic;
 	};
-	
+
 	handleInfo = type => {
 		const { name, gender, latestDate, createDate, count, libraryName } = this.props;
 		switch(type) {
@@ -285,7 +292,7 @@ class PhotoCard extends React.Component {
 			default: return 0;
 		}
 	};
-	
+
 	handleSelectInfo = type => {
 		const { gender, age, photoLibrary: {ageRange} } = this.props;
 		let ageName = '';
@@ -308,7 +315,7 @@ class PhotoCard extends React.Component {
 			default: return 0;
 		}
 	};
-	
+
 	handleLibraryName = value => {
 		const { groupName } = value;
 		switch(value.type) {
@@ -319,7 +326,7 @@ class PhotoCard extends React.Component {
 			default: return groupName;
 		}
 	};
-	
+
 	isUploaded = () => {
 		const { file: { status, response } } = this.state;
 		if(status === 'uploading' && status !== undefined) {
@@ -332,11 +339,11 @@ class PhotoCard extends React.Component {
 		}
 		return false;
 	};
-	
+
 	dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>
 		date ? moment.unix(date).format(format) : undefined;
-	
-	
+
+
 	render() {
 		const {
 			name,
@@ -349,7 +356,7 @@ class PhotoCard extends React.Component {
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
 		const { isEdit, uploadFail, infoFormVisible, removeVisible, file, uploadSuccess, imageLoaded } = this.state;
-		
+
 		return (
 			<Card
 				actions={[
@@ -392,7 +399,7 @@ class PhotoCard extends React.Component {
 						/>
 					</div>
 				</div>
-				
+
 				<Modal
 					visible={infoFormVisible}
 					title={formatMessage({id:'photoManagement.card.detail'})}
@@ -552,7 +559,7 @@ class PhotoCard extends React.Component {
 										<Avatar shape="square" size={300} icon='user' className={styles['pic-col']} src={image} />
 									</div>
 								</Col>
-								
+
 								<Col span={14}>
 									<div className={styles['edit-form']}>
 										<Form

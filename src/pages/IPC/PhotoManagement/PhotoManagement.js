@@ -99,13 +99,16 @@ class PhotoManagement extends React.Component {
 			removeRadioValue: 0,
 			showFailedModal: false,
 			failedList: [],
+			overAmount: false,
+			uploadable: true,
 			filter: {
 				pageNum: 1,
 				pageSize: 9,
 				name: '',
 				age: 10,
 				gender: -1
-			}
+			},
+			saveBtnDisabled: true
 		};
 	}
 
@@ -123,21 +126,46 @@ class PhotoManagement extends React.Component {
 		const { clearPhotoList } = this.props;
 		clearPhotoList();
 	}
-	
+
 	getList = () => {
 		const { filter, groupId } = this.state;
 		const { getPhotoList } = this.props;
 		getPhotoList({...filter, groupId});
 	};
-	
-	showUpload = () => {
-		this.setState({
-			uploadPhotoShown: true,
-		});
+
+	showUpload = async () => {
+		const rest = await this.groupRestCapacity();
+		console.log('show',rest);
+		if(rest <= 0 ){
+			Modal.info({
+				title: formatMessage({id:'photoManagement.countOver2'})
+			});
+			this.setState({
+				uploadable: false,
+				uploadPhotoShown: false,
+			});
+
+		} else {
+			this.setState({
+				uploadPhotoShown: true,
+			});
+		}
+
 	};
 
 	hideUpload = () => {
-		this.setState({ uploadPhotoShown: false},()=>{this.setState({fileList: [] });});
+		const rest = this.groupRestCapacity();
+		if(rest > 0 ){
+			this.setState({ uploadPhotoShown: false },()=>{
+				this.setState({
+					fileList: [],
+					uploadable: true
+				});
+			});
+		} else {
+			this.setState({ uploadPhotoShown: false },()=>{this.setState({fileList: [] });});
+		}
+
 	};
 
 	showRemove = () => {
@@ -166,6 +194,8 @@ class PhotoManagement extends React.Component {
 	};
 
 	onUpload = ({file, fileList}) => {
+
+		console.log('upload');
 		if (fileList.length >= 20) {
 			fileList.splice(20, fileList.length);
 		}
@@ -185,23 +215,45 @@ class PhotoManagement extends React.Component {
 						}
 					});
 				}
-				this.setState({fileList});
+				// this.setState({fileList});
 			}
 		} else if (status === 'error') {
 			message.error(`${file.name}${formatMessage({id:'photoManagement.uploadFail'})}`);
-			this.setState({fileList});
+			// this.setState({fileList});
 		}
+
+		// console.log('upload',fileList);
 
 		this.setState({
-			fileList: [...fileList]
+			fileList: [...fileList],
+			saveBtnDisabled: !this.canSave(fileList)
 		});
+
+
 	};
 
-	beforeUpload = (file, fileList) => {
-		// 单次只允许上传20张；
-		if (fileList.indexOf(file) >= 20) {
-			return false;
-		}
+	beforeUpload = (file) => {
+		// 单次只允许上传20张且不允许超过余量；
+
+		// const limitCapacity = this.groupRestCapacity();
+		// const limit = limitCapacity < 20 ? limitCapacity : 20;
+
+		// const { fileList } = this.state;
+		// const length = fileList.length + list.length;
+		// if(length > limit){
+		// 	this.setState({
+		// 		overAmount: true,
+		// 		uploadable: false
+		// 	});
+		// 	// return false;
+		// } if(length === limit){
+		// 	this.setState({
+		// 		uploadable: false
+		// 	});
+		// }
+		// if (fileList.indexOf(file) >= limit) {
+		// 	return false;
+		// }
 
 		const isLt1M = file.size / 1024 / 1024 < 1;
 		const isJPG = file.type === 'image/jpeg';
@@ -215,26 +267,28 @@ class PhotoManagement extends React.Component {
 
 	// 确认移库
 	onRemove = async () => {
-		const { movePhoto, photoLibrary: {checkList} } = this.props;
+		const { movePhoto, photoLibrary: {checkList}, getLibrary} = this.props;
 		const { removeRadioValue, groupId } = this.state;
 		this.hideRemove();
 		await movePhoto({faceIdList: checkList, targetGroupId: removeRadioValue, updateType: 1, sourceGroupId: groupId});
 		this.getList();
+		getLibrary();
 	};
 
 	// 确认删除
 	onDelete = async () => {
-		const { photoLibrary: {checkList}, deletePhoto} = this.props;
+		const { photoLibrary: {checkList}, deletePhoto, getLibrary} = this.props;
 		const { groupId } =this.state;
 		await deletePhoto({faceIdList: checkList, groupId});
 		this.getList();
+		getLibrary();
 	};
 
 	// 确认新增照片上传
     handlePhotoSubmit = async () => {
     	const { fileList, groupId } = this.state;
-    	const { saveFile } = this.props;
-    	
+    	const { saveFile, getLibrary } = this.props;
+    	console.log(fileList);
     	const list = fileList.map(item => {
     		const { response: { data: { verifyResult, fileName }}} = item;
     		if(verifyResult === 1) {
@@ -252,6 +306,7 @@ class PhotoManagement extends React.Component {
     		} else if(response.data.failureList.length === 0) {
     			message.success(formatMessage({id: 'photoManagement.card.saveSuccess'}));
     			this.setState({uploadPhotoShown: false},()=> {this.setState({fileList: []});});
+    			getLibrary();
     			this.getList();
     		} else {
     			this.setState({showFailedModal: true, failedList: response.data.failureList, fileList: [], uploadPhotoShown: false});
@@ -284,11 +339,11 @@ class PhotoManagement extends React.Component {
     handlePage = (page, size) => {
     	const { getPhotoList, clear } = this.props;
     	const { filter, groupId } = this.state;
-    	
+
     	getPhotoList({ ...filter, pageNum: page, pageSize: size, groupId});
     	this.setState({filter: { ...filter, pageNum: page, pageSize: size },});
     	clear();
-		
+
     };
 
     // 全选
@@ -311,17 +366,47 @@ class PhotoManagement extends React.Component {
 		this.setState({removeRadioValue: e.target.value});
 	};
 
-	isSave = () => {
-		const { fileList } = this.state;
+	canSave = (fileList) => {
+
+		console.log('save',fileList);
+		const limitCapacity = this.groupRestCapacity();
+		const limit = limitCapacity < 20 ? limitCapacity : 20;
+
+		const list = fileList.filter( item => {
+			 const result = item.status !== 'removed';
+			 return result;
+		});
+		console.log(limitCapacity, limit);
+		let overLimit = false;
+		if(list.length > limit){
+			this.setState({
+				overAmount: true,
+				uploadable: false
+			});
+			overLimit = true;
+			// return false;
+		} else if(list.length === limit){
+			this.setState({
+				uploadable: false,
+				overAmount: false
+			});
+		} else if(list.length < limit) {
+			this.setState({
+				uploadable: true,
+				overAmount: false
+			});
+		}
 		let successList = 0;
-		fileList.map(item => {
+		list.forEach(item => {
 			if(item.status === 'done') {
 				if(item.response.code === 1) {
 					successList ++;
 				}
 			}
 		});
-		return !(fileList.length > 0 && successList === fileList.length);
+
+		// console.log('canSave: ', fileList, list, list.length > 0 && successList === list.length && !overLimit);
+		return list.length > 0 && successList === list.length && !overLimit;
 
 	};
 
@@ -338,6 +423,7 @@ class PhotoManagement extends React.Component {
 
 	uploadElement = () => {
 		const { fileList } = this.state;
+
 		if (fileList.length === 0) {
 			return (
 				<div className={styles['upload-content']}>
@@ -377,6 +463,21 @@ class PhotoManagement extends React.Component {
 		}
 	};
 
+	groupRestCapacity = () => {
+		const { groupId } = this.state;
+		const { photoLibrary: { faceList } } = this.props;
+		let restCapacity = 0;
+		// const faceList = await getLibrary();
+		// console.log('get',faceList);
+		faceList.forEach(item => {
+			if(item.groupId === groupId) {
+				restCapacity = item.capacity - item.count;
+			}
+		});
+
+		return restCapacity;
+	};
+
 	onSearch = () => {
 		const { clear } = this.props;
 		const { filter } = this.state;
@@ -414,11 +515,15 @@ class PhotoManagement extends React.Component {
 			removeLibraryShown,
 			showFailedModal,
 			failedList,
-			filter: {gender, name, age, pageNum, pageSize}
+			overAmount,
+			uploadable,
+			filter: {gender, name, age, pageNum, pageSize},
+			saveBtnDisabled
 		} = this.state;
+
 		const { photoLibrary: {photoList, faceList, total, checkList, ageRange}, clear, loading } = this.props;
 		const fullChosen = this.isFullChecked();
-
+		// const rest = this.groupRestCapacity();
 		return(
 			<Card className={styles['management-card']}>
 				<h2>{this.groupName()}</h2>
@@ -512,7 +617,7 @@ class PhotoManagement extends React.Component {
 					showIcon={false}
 					className={styles.alert}
 				/>
-				
+
 				<Spin spinning={loading.effects['photoLibrary/getPhotoList']} size='large' wrapperClassName={styles.spin}>
 					{
 						photoList.length > 0 ?
@@ -542,7 +647,7 @@ class PhotoManagement extends React.Component {
 							<Empty className={styles.alert} />
 					}
 				</Spin>
-				
+
 				{
 					total>0 &&
 					<Pagination
@@ -552,7 +657,7 @@ class PhotoManagement extends React.Component {
 						showQuickJumper
 						showSizeChanger
 						onShowSizeChange={(page,size)=>this.handlePage(page,size)}
-						onChange={(page)=>this.handlePage(page,pageSize)}
+						onChange={(page, size)=>this.handlePage(page,size)}
 						className={styles.pagination}
 						current={pageNum}
 						pageSize={pageSize}
@@ -565,7 +670,7 @@ class PhotoManagement extends React.Component {
 					onOk={this.handlePhotoSubmit}
 					width={800}
 					maskClosable={false}
-					okButtonProps={{disabled: this.isSave()}}
+					okButtonProps={{disabled: saveBtnDisabled}}
 				>
 					<Upload
 						listType="picture-card"
@@ -574,13 +679,27 @@ class PhotoManagement extends React.Component {
 						beforeUpload={this.beforeUpload}
 						className={styles['upload-card']}
 						showUploadList={{showPreviewIcon:false,showRemoveIcon:true}}
+						disabled={!uploadable}
 						{...handleUpload(groupId)}
 					>
 						{
 							this.uploadElement()
 						}
 					</Upload>
-					<p>{formatMessage({id:'photoManagement.limitation'})}</p>
+					{
+						uploadable ? <p>{formatMessage({id:'photoManagement.limitation'})}</p> : ''
+					}
+					{
+						!uploadable && overAmount ?
+							<p className={styles['fail-info']}>{formatMessage({id:'photoManagement.countOver'})}</p>
+							: ''
+					}
+					{
+						!uploadable && !overAmount ?
+							<p>{formatMessage({id:'photoManagement.countOver2'})}</p>
+							:''
+					}
+
 				</Modal>
 
 				<Modal
