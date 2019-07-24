@@ -39,7 +39,7 @@ export default {
 	'photoManagement.card.latestTime': '最新到店时间',
 	'photoManagement.card.createTime': '创建时间',
 	'photoManagement.card.frequency': '到店次数',
-	'photoManagement.card.libraryName': '人脸库',
+	'photoManagement.card.libraryName': '人脸分组',
 	'photoManagement.card.save': '保存',
 	'photoManagement.card.edit': '编辑',
 	'photoManagement.card.cancel': '取消',
@@ -64,6 +64,8 @@ export default {
 	'photoManagement.card.libraryName4': '黑名单',
 	'photoManagement.card.genderMessage': '请选择性别',
 	'photoManagement.card.ageMessage': '请选择年龄',
+	'photoManagement.countOver':'当前添加的人脸照片数量大于人脸库照片剩余数量，无法保存照片，请重新选择后上传',
+	'photoManagement.countOver2':'当前人脸库照片数量已达上限，无法继续添加照片',
 	'menu.photoManagement': '照片管理',
 	'menu.photoManagement.photoList': '照片列表',
 };

@@ -24,11 +24,13 @@ export const readPhotoList = async (params) => {
 };
 
 // 获取人脸库
-export const getLibrary = async () => request('getList',{
-}).then(async response => {
-	const json = await response.json();
-	return format('toCamel')(json);
-});
+export const getLibrary = async () => (
+	request('getList',{
+	}).then(async response => {
+		const json = await response.json();
+		return format('toCamel')(json);
+	})
+);
 
 // 移库
 export const move = async (params) => {
@@ -70,12 +72,16 @@ export const saveFile = async (params) => {
 };
 
 // 获取年龄列表
-export const getRange = async () => range('getRangeList').then(
-	async response => {
-		const json = await response.json();
-		return format('toCamel')(json);
-	}
+export const getRange = async () => (
+	range('getRangeList').then(
+		async response => {
+			const json = await response.json();
+			return format('toCamel')(json);
+		}
+	)	
 );
+
+
 
 // 编辑
 export const editInfo = async  (params) => {
