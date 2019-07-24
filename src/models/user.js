@@ -46,7 +46,7 @@ export default {
 			return response;
 		},
 		*logout(_, { call, put }) {
-			call(Actions.logout);
+			yield call(Actions.logout);
 			yield put({
 				type: 'initState',
 			});

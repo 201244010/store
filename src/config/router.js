@@ -479,6 +479,7 @@ const router = [
 				icon: 'blank',
 				// component: './index.js',
 				routes: [
+					{ path: '/faceidLibrary', redirect: '/faceidLibrary/faceidLibraryList' },
 					{
 						path: '/faceidLibrary/faceidLibraryList',
 						name: 'list',
@@ -492,25 +493,13 @@ const router = [
 					// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
 					// },
 					{
-						path: '/faceidLibrary',
-						redirect: '/faceidLibrary/faceidLibraryList',
-					},
-				],
-			},
-			{
-				path: '/photoManagement',
-				name: 'photoManagement',
-				id: 'photoManagement',
-				hideInMenu: true,
-				icon: 'blank',
-				routes: [
-					{
-						path: '/photoManagement/photoList',
-						name: 'photoManagement.photoList',
+						path: '/faceidLibrary/photoManagement',
+						name: 'photoManagement',
+						hideInMenu: true,
 						id: 'photoList',
 						component: './IPC/PhotoManagement/PhotoManagement.js',
-					}
-				]
+					},
+				],
 			},
 		],
 	},
