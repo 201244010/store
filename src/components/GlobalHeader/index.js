@@ -26,7 +26,7 @@ export default class GlobalHeader extends PureComponent {
 	};
 
 	render() {
-		const { isMobile, logo } = this.props;
+		const { isMobile, logo, menuData } = this.props;
 		return (
 			<div className={styles.header}>
 				{isMobile && (
@@ -34,7 +34,7 @@ export default class GlobalHeader extends PureComponent {
 						<img src={logo} alt="logo" width="32" />
 					</Link>
 				)}
-				<Breadcrumbs />
+				<Breadcrumbs menuData={menuData}/>
 				<RightContent {...this.props} />
 			</div>
 		);

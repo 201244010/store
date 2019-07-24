@@ -164,13 +164,13 @@ export default class ShowChart extends React.Component {
 						<Label
 							autoRotate={false}
 							position="bottom"
-							content="name"
+							content={saleType}
 							htmlTemplate={(_, item) => {
 								const { point = {} } = item;
 								return nowTime === point.time
 									? `<div class="template-title">
 										<div class="template-content" style="width:${labelWidth}px;">
-											<div class="template-top">${point[saleType]}</div>
+											<div class="template-top">${point[saleType] !== 0 ? point[saleType] : ''}</div>
 										</div>
 									</div>`
 									: '';

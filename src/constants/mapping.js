@@ -22,3 +22,7 @@ export const PRODUCT_BASIC_EXTRA = {
 export const PRODUCT_PRICE_EXTRA = {
 	extra_price_info: null,
 };
+
+export const ROLE_MAPPING = {
+	COMPANY_LIST: '/basicData/merchantManagement/view',
+};

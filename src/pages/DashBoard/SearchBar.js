@@ -61,7 +61,7 @@ class SearchBar extends Component {
 				.subtract(60, 'days')
 				.isAfter(startTime)
 		) {
-			message.error(formatMessage({ id: 'dashBoard.search.range.overflow' }));
+			message.error(formatMessage({ id: 'dashboard.search.range.overflow' }));
 			return;
 		}
 
@@ -97,20 +97,20 @@ class SearchBar extends Component {
 						onChange={this.handleRadioChange}
 					>
 						<Radio.Button value={RANGE.TODAY}>
-							{formatMessage({ id: 'dashBoard.search.today' })}
+							{formatMessage({ id: 'dashboard.search.today' })}
 						</Radio.Button>
 						<Radio.Button value={RANGE.WEEK}>
-							{formatMessage({ id: 'dashBoard.search.week' })}
+							{formatMessage({ id: 'dashboard.search.week' })}
 						</Radio.Button>
 						<Radio.Button value={RANGE.MONTH}>
-							{formatMessage({ id: 'dashBoard.search.month' })}
+							{formatMessage({ id: 'dashboard.search.month' })}
 						</Radio.Button>
 					</Radio.Group>
 
 					<DatePicker.RangePicker
 						placeholder={[
-							formatMessage({ id: 'dashBoard.search.range.start' }),
-							formatMessage({ id: 'dashBoard.search.range.end' }),
+							formatMessage({ id: 'dashboard.search.range.start' }),
+							formatMessage({ id: 'dashboard.search.range.end' }),
 						]}
 						value={[timeRangeStart, timeRangeEnd]}
 						style={{ marginLeft: '24px' }}
@@ -121,7 +121,7 @@ class SearchBar extends Component {
 
 				<div className={styles['right-content']}>
 					<span>
-						{formatMessage({ id: 'dashBoard.last.modify.date' })}: {lastModifyTime}
+						{formatMessage({ id: 'dashboard.last.modify.date' })}: {lastModifyTime}
 					</span>
 					<div className={styles['icon-wrapper']} onClick={doHandRefresh}>
 						<Icon component={Refresh} style={{ fontSize: '24px' }} />

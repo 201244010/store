@@ -63,6 +63,18 @@ export default {
 				const result = response.data || {};
 				const companyList = result.company_list || [];
 				Storage.set({ [CookieUtil.COMPANY_LIST_KEY]: companyList }, 'local');
+				
+				if (companyList.length === 1) {
+					const companyInfo = companyList[0] || {};
+					CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, companyInfo.company_id);
+					yield put({
+						type: 'setCurrentCompany',
+						payload: {
+							companyId: companyInfo.company_id,
+						},
+					});
+				}
+
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -70,6 +82,7 @@ export default {
 						loading: false,
 					},
 				});
+				// TODO 8 月首配时可能需要调整这个接口的调用顺序。返回值会影响 company 和 shop
 				yield put({
 					type: 'initialCompany',
 					payload: {

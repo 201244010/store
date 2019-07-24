@@ -18,30 +18,30 @@ export default class PriceTagAndCamera extends React.Component {
 
 		const priceTag = [
 			{
-				name: formatMessage({ id: 'dashBoard.overview.esl.push.total' }),
+				name: formatMessage({ id: 'dashboard.overview.esl.push.total' }),
 				num: eslTotalCount === '' ? '--' : priceFormat(eslTotalCount),
 			},
 			{
-				name: formatMessage({ id: 'dashBoard.overview.ap.online' }),
+				name: formatMessage({ id: 'dashboard.overview.ap.online' }),
 				num: apTotalCount === '' ? '--' : apTotalCount,
 			},
 			{
-				name: formatMessage({ id: 'dashBoard.overview.esl.push' }),
+				name: formatMessage({ id: 'dashboard.overview.esl.push' }),
 				num: eslPendingCount === '' ? '--' : priceFormat(eslPendingCount),
 			},
 			{
-				name: formatMessage({ id: 'dashBoard.overview.esl.push.failed' }),
+				name: formatMessage({ id: 'dashboard.overview.esl.push.failed' }),
 				num: eslFailedCount === '' ? '--' : eslFailedCount,
 			},
 		];
 
 		const camera = [
 			{
-				name: formatMessage({ id: 'dashBoard.overview.ipc.online' }),
+				name: formatMessage({ id: 'dashboard.overview.ipc.online' }),
 				num: onLineCount === '' ? '--' : priceFormat(onLineCount),
 			},
 			{
-				name: formatMessage({ id: 'dashBoard.overview.ipc.offline' }),
+				name: formatMessage({ id: 'dashboard.overview.ipc.offline' }),
 				num: offLineCount === '' ? '--' : offLineCount,
 			},
 		];
@@ -50,19 +50,15 @@ export default class PriceTagAndCamera extends React.Component {
 			<div className={styles['price-tag-camera']}>
 				<div>
 					<div className={styles['price-title']}>
-						{formatMessage({ id: 'dashBoard.overview.esl.push.show.title' })}
+						{formatMessage({ id: 'dashboard.overview.esl.push.show.title' })}
 					</div>
-					{priceTag.map(item => {
-						<OneList key={item.name} name={item.name} num={item.num} />;
-					})}
+					{priceTag.map(item => <OneList key={item.name} name={item.name} num={item.num} />)}
 				</div>
 				<div>
 					<div className={styles['price-title']}>
-						{formatMessage({ id: 'dashBoard.overview.ipc.show.title' })}
+						{formatMessage({ id: 'dashboard.overview.ipc.show.title' })}
 					</div>
-					{camera.map(item => {
-						<OneList key={item.name} name={item.name} num={item.num} />;
-					})}
+					{camera.map(item => <OneList key={item.name} name={item.name} num={item.num} />)}
 				</div>
 			</div>
 		);

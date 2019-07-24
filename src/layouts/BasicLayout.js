@@ -25,6 +25,8 @@ import logo from '../assets/logo-big.png';
 import logoEN from '../assets/menuLogoEN.png';
 import { env } from '@/config';
 
+import 'react-perfect-scrollbar/dist/css/styles.css';
+
 message.config({
 	maxCount: 1,
 });

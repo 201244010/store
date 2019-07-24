@@ -28,25 +28,34 @@ class Toolbar extends React.Component{
 
 	render () {
 		const {
-			play, progressbar, ppis, currentPPI, ppiChange, ppiChanged,
-			today, volume, playing, screenShot, isLive,
-			isTrack, onDatePickerChange, canScreenShot,
-			fullScreenStatus, backToLive,
-			maxVolume, fullScreen, mute, changeVolume, volume: volumneValue
+			play, progressbar, ppis,
+			currentPPI, ppiChange, ppiChanged, canPPIChange,
+			isLive,
+			today, playing, playBtnDisabled,
+			showDatePicker, onDatePickerChange,
+			canScreenShot, screenShot,
+			backToLive, showBackToLive,
+			fullScreen, fullScreenStatus,
+			maxVolume, mute, changeVolume, volume: volumneValue
 		} = this.props;
+
 		const { clicked, datePickerVisiable } = this.state;
-		// console.log(today);
 
 		let buttonNumber = 2;	// 至少有音量调节和全屏显示；
 
 		if (canScreenShot) {
 			// 浏览器类型决定是否可以进行截图；
-			buttonNumber++;
+			buttonNumber += 1;
 		}
 
-		if (!isTrack) {
-			// 片段模式下，不能切换分辨率，不能选择日期；
-			buttonNumber += 2;
+		if (showDatePicker) {
+			// 能选择日期；
+			buttonNumber += 1;
+		}
+
+		if (canPPIChange) {
+			// 能切换分辨率；
+			buttonNumber += 1;
 		}
 
 
@@ -55,7 +64,6 @@ class Toolbar extends React.Component{
 		if (t.length > 0) {
 			modeText = t[0].name;
 		}
-
 
 		return(
 			<div
@@ -74,7 +82,7 @@ class Toolbar extends React.Component{
 				}
 
 				{
-					!isTrack ?
+					canPPIChange ?
 						// 分辨率切换成功提示；
 						<div className={`${ styles['this-is-live'] } ${ isLive && ppiChanged ? '' : styles.hidden }`}>
 							<div className={styles.text}>
@@ -87,10 +95,8 @@ class Toolbar extends React.Component{
 				}
 
 				<div className={`${styles.control} ${styles['play-control']}`}>
-					{/* {
-						playing || isLive ? <Button disabled={ isLive } className={ styles['btn-play'] } shape="circle" onClick={ pause }></Button> : <Button disabled={ isLive } icon='play-circle' shape="circle" onClick={ play }></Button>
-					} */}
-					<a className={`${styles.button} ${styles['button-play']} ${  playing || isLive ? styles.playing : ''} ${ !isTrack && isLive ? styles.disabled : '' }`} href='javascript:void(0);' onClick={play}>
+
+					<a className={`${styles.button} ${styles['button-play']} ${  playing ? styles.playing : ''} ${ playBtnDisabled ? styles.disabled : '' }`} href='javascript:void(0);' onClick={play}>
 						{
 							formatMessage({ id: 'videoPlayer.play' })
 						}
@@ -102,17 +108,8 @@ class Toolbar extends React.Component{
 				</div>
 
 				{
-					!isTrack ?
+					canPPIChange ?
 						<div className={`${styles.control} ${styles['ppis-control']}`}>
-							{/* <Select style={{ width: 90 }} onChange={ this.props.ppiChange }>
-								{
-									ppis.map((item) => {
-										return(
-											<Select.Option key={ item.value } value={ item.value }>{ item.name }</Select.Option>
-										);
-									})
-								}
-							</Select> */}
 							<div
 								className={styles.wrapper}
 								ref={(wrapper) => {
@@ -121,7 +118,7 @@ class Toolbar extends React.Component{
 							/>
 							{
 								<Dropdown
-									disabled={!isLive && !isTrack}
+									disabled={!isLive}
 									overlay={
 										<Menu
 											selectedKeys={[currentPPI]}
@@ -146,7 +143,7 @@ class Toolbar extends React.Component{
 								>
 									<Button
 										className={`${styles['button-ppis']}`}
-										disabled={!isLive && !isTrack}
+										disabled={!isLive}
 										size='small'
 										type='primary'
 									>
@@ -168,7 +165,7 @@ class Toolbar extends React.Component{
 				}
 				{
 
-					!isTrack ?
+					showDatePicker ?
 						<div className={`${styles.control} ${styles['calendar-control']}`}>
 							<div
 								className={styles.wrapper}
@@ -282,7 +279,7 @@ class Toolbar extends React.Component{
 						placement="topCenter"
 						getPopupContainer={() => this.volumeDropdown}
 					>
-						<a className={`${styles.button} ${styles['button-volume']} ${ volume === 0 ? styles.muted : ''}`} href='javascript:void(0);' onClick={mute}>
+						<a className={`${styles.button} ${styles['button-volume']} ${ volumneValue === 0 ? styles.muted : ''}`} href='javascript:void(0);' onClick={mute}>
 							{
 								formatMessage({ id: 'videoPlayer.volume' })
 							}
@@ -311,7 +308,7 @@ class Toolbar extends React.Component{
 				</div>
 
 
-				<div className={`${styles.control} ${styles['backtolive-control']} ${ !isTrack && !isLive ? '' : styles.hidden }`}>
+				<div className={`${styles.control} ${styles['backtolive-control']} ${ showBackToLive ? '' : styles.hidden }`}>
 					<Button onClick={backToLive} className={styles['button-backtolive']}>{ formatMessage({ id: 'videoPlayer.backToLive'}) }</Button>
 				</div>
 

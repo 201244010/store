@@ -13,21 +13,6 @@ class TradeVideosTable extends React.Component {
 		const { tradeVideos, loading, total, currentPage, pageSize, expandedRowKeys } = this.props;
 		const { onShowSizeChange, onPaginationChange, watchVideoHandler, onExpand } = this.props;
 
-		// const tradeVideo  = [
-		// 	{
-		// 		ipcName: '林远峰使用',
-		// 		paymentDeviceName: 'T2',
-		// 		paymentDeviceSn: '9988776655',
-		// 		totalPrice: '123',
-		// 		paymentMethod: '支付宝',
-		// 		purchaseTime: '',
-		// 		key: '1',
-		// 		details: [{
-		// 			name: 'test',
-		// 			quantity: 100
-		// 		}]
-		// 	}
-		// ];
 		const columns = [
 			{
 				title: formatMessage({ id: 'tradeVideos.camera' }), // '摄像头',
@@ -80,14 +65,19 @@ class TradeVideosTable extends React.Component {
 					<>
 						<a
 							className={`${styles['video-watch']} ${
-								record.url ? '' : styles.disabled
+								record.url && record.paymentDeviceSn !== '' ? '' : styles.disabled
 							}`}
 							href="javascript:void(0);"
-							onClick={() =>
-								watchVideoHandler(record.paymentDeviceSn, record.url)
+							onClick={() =>{
+								if (record.url && record.paymentDeviceSn !== ''){
+									watchVideoHandler(record.paymentDeviceSn, record.url);
+								}
+								
+							}
+								
 							}
 						>
-							{record.url
+							{record.url && record.paymentDeviceSn !== ''
 								? formatMessage({ id: 'tradeVideos.viewVideo' })
 								: formatMessage({ id: 'tradeVideos.viewVideo.merging' })}
 						</a>
@@ -104,8 +94,8 @@ class TradeVideosTable extends React.Component {
 								: formatMessage({ id: 'tradeVideos.viewDetails' })}
 						</a>
 					</>
-				),
-			},
+				)
+			}
 		];
 		return(
 			<Table

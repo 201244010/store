@@ -6,7 +6,7 @@ import moment from 'moment';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import SearchBox from './SearchBox';
 import TradeVideosTable from './TradeVideosTable';
-import VideoPlayComponent from '../component/VideoPlayComponent';
+import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
 
 import styles from './TradeVideos.less';
 
@@ -150,6 +150,7 @@ class TradeVideos extends React.Component {
 		this.getTradeVideos(currentPage, pageSize);
 	}
 
+
 	getTradeVideos = (currentPage, pageSize) => {
 		const { getTradeVideos } = this.props;
 		const { form } = this.searchForm.props;
@@ -202,6 +203,32 @@ class TradeVideos extends React.Component {
 		this.getTradeVideos(1, pageSize);
 	};
 
+	resetHandler = async () => {
+		const { location: { query }, getPaymentDeviceList } = this.props;
+		let { ipcId, posSN } = query;
+
+		const { form } = this.searchForm.props;
+		const { setFieldsValue } = form;
+
+		ipcId = ipcId || 0;
+		posSN = posSN || 0;
+		setFieldsValue({
+			camera: ipcId,
+			tradeDate: [moment().subtract(30, 'days'), moment()],
+			keywords: ''
+		});
+
+		if (ipcId !== 0) {
+			await getPaymentDeviceList(ipcId);
+			setFieldsValue({
+				pos: posSN,
+			});
+		}
+
+		const { pageSize } = this.state;
+		this.getTradeVideos(1, pageSize);
+
+	};
 	// selectHandler = () => {
 	// 	const { pageSize } = this.state;
 	// 	this.getTradeVideos(1, pageSize);
@@ -235,6 +262,7 @@ class TradeVideos extends React.Component {
 
 			// const url = await getTradeVideo(orderId);
 			// console.log(url);
+			console.log(deviceInfo);
 
 			this.setState({
 				videoUrl: url,
@@ -279,6 +307,8 @@ class TradeVideos extends React.Component {
 		});
 	};
 
+
+
 	render() {
 		const { ipcList, loading } = this.props;
 		const { tradeVideos: { tradeVideos, paymentDeviceList, total } } = this.props;
@@ -291,6 +321,8 @@ class TradeVideos extends React.Component {
 			pageSize,
 			expandedRowKeys,
 		} = this.state;
+		console.log(pixelRatio);
+
 		return(
 			<Card bordered={false}>
 				<div
@@ -305,6 +337,7 @@ class TradeVideos extends React.Component {
 						paymentDeviceList={paymentDeviceList}
 						ipcSelectHandler={this.ipcSelectHandler}
 						searchHandler={this.searchHandler}
+						resetHandler={this.resetHandler}
 						loading={loading.effects['tradeVideos/read']}
 					/>
 					<TradeVideosTable
@@ -320,12 +353,13 @@ class TradeVideos extends React.Component {
 						loading={loading.effects['tradeVideos/read']}
 					/>
 				</div>
-				<VideoPlayComponent
+
+				<ModalPlayer
 					className={styles.video}
-					playing={isWatchVideo}
-					watchVideoClose={this.watchVideoClose}
-					videoUrl={videoUrl}
-					// ipcType={ipcType}
+					visible={isWatchVideo}
+					onClose={this.watchVideoClose}
+					url={videoUrl}
+
 					pixelRatio={pixelRatio}
 				/>
 			</Card>

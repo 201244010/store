@@ -12,7 +12,7 @@ import userCenter from './zh-CN/userCenter';
 import storeManagement from './zh-CN/storeManagement';
 import notification from './zh-CN/notification';
 import studio from './zh-CN/studio';
-import dashBoard from './zh-CN/dashBoard';
+import dashboard from './zh-CN/dashBoard';
 
 import VideoPlayer from './zh-CN/videoPlayer';
 
@@ -58,6 +58,6 @@ export default {
 	...VideoPlayer,
 	...studio,
 	...roleManagement,
-	...dashBoard,
+	...dashboard,
 	...employee,
 };
