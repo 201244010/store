@@ -262,7 +262,6 @@ class TradeVideos extends React.Component {
 
 			// const url = await getTradeVideo(orderId);
 			// console.log(url);
-			console.log(deviceInfo);
 
 			this.setState({
 				videoUrl: url,
@@ -321,8 +320,6 @@ class TradeVideos extends React.Component {
 			pageSize,
 			expandedRowKeys,
 		} = this.state;
-		console.log(pixelRatio);
-
 		return(
 			<Card bordered={false}>
 				<div
@@ -353,7 +350,6 @@ class TradeVideos extends React.Component {
 						loading={loading.effects['tradeVideos/read']}
 					/>
 				</div>
-
 				<ModalPlayer
 					className={styles.video}
 					visible={isWatchVideo}

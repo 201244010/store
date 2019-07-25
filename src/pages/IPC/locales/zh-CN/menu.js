@@ -11,7 +11,7 @@ export default {
 	'menu.devices.ipcList': '设备列表',
 	'menu.devices.motionMessage':'消息提醒',
 	'menu.devices.ipcList.live': '直播',
-	'menu.devices.ipcList.ipcManagement': '摄像头设置',
+	'menu.devices.ipcList.ipcManagement': '摄像机设置',
 	'menu.motionMessage': '消息提醒',
 	
 

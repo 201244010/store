@@ -1,5 +1,11 @@
 
 .upload-card{
+	&:after,
+	&:before {
+		content: '';
+		display: block;
+		clear: both;
+	}
 	:global {
 		.ant-upload .ant-upload-select-picture-card
 		.ant-upload-select-picture-card i {
