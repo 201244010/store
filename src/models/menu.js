@@ -190,7 +190,7 @@ export default {
 						if (env === 'dev') {
 							return FIRST_MENU_ORDER.includes(item.base);
 						}
-						return menuList.includes(item.base);
+						return (menuList || []).includes(item.base);
 					});
 
 					console.log('filteredPermissionList: ', filteredPermissionList);
