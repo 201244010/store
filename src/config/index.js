@@ -30,6 +30,11 @@ const API_ADDRESS = {
 	// local: '10.10.168.228:30001',
 };
 
+const COUNTRY_ADDRESS = {
+	china: API_ADDRESS[env],
+	southAmerica: '',
+};
+
 // ipc专用的测试和开发地址
 const IPC_ADDRESS = {
 	dev: '47.96.240.44:35150',
@@ -68,4 +73,5 @@ export default {
 	MD5_TOKEN: MD5_TOKEN[env],
 	IPC_SERVER: IPC_ADDRESS[env],
 	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[env],
+	COUNTRY_ADDRESS: COUNTRY_ADDRESS[country],
 };
