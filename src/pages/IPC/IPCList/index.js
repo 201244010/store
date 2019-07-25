@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { Button, Row, Spin } from 'antd';
+import { /* Button, */ Row, Spin } from 'antd';
 import { connect } from 'dva';
 
-import { FormattedMessage } from 'umi/locale';
+// import { FormattedMessage } from 'umi/locale';
 
 import NoIPCList from './NoIPCList';
 import IPCItem from './IPCItem';
@@ -74,17 +74,17 @@ class IPCList extends React.Component {
 						ipcList.length === 0 && !loading.effects['ipcList/read'] ?
 							<NoIPCList />:
 							<div className="ipcList">
-								<Button type="dashed" block>{<FormattedMessage id='ipcList.addIPC' />}</Button>
+								{/* <Button type="dashed" block>{<FormattedMessage id='ipcList.addIPC' />}</Button> */}
 								<Row gutter={8}>
 									{ipcList.map((item, index) => (
-										<IPCItem 
-											empty={item.type === 'empty'} 
-											isOnline={item.isOnline} 
-											img={item.img} 
-											sn={item.sn} 
-											key={index} 
-											type={item.type} 
-											name={item.name} 
+										<IPCItem
+											empty={item.type === 'empty'}
+											isOnline={item.isOnline}
+											img={item.img}
+											sn={item.sn}
+											key={index}
+											type={item.type}
+											name={item.name}
 											listLength={ipcList.length}
 											onClickPlay={this.onClickPlay}
 											onClickSetting={this.onClickSetting}

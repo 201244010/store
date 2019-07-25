@@ -33,6 +33,14 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		});
 	},
+	getDeviceInfo({ sn }) {
+		return dispatch({
+			type: 'ipcList/getDeviceInfo',
+			payload: {
+				sn
+			}
+		}).then(info => info);
+	},
 	saveSetting: ({ nightMode, indicator, rotation, sn }) => {
 		dispatch({
 			type: 'ipcBasicParams/update',
@@ -76,9 +84,28 @@ const mapDispatchToProps = (dispatch) => ({
 })
 class BasicParams extends Component {
 
-	componentDidMount = () => {
-		const { loadSetting, sn } = this.props;
-		loadSetting(sn);
+	constructor(props) {
+		super(props);
+		this.state = {
+			deviceInfo: {
+				rotate: []
+			}
+		};
+	}
+
+	componentDidMount = async () => {
+
+
+		const { loadSetting, sn, getDeviceInfo } = this.props;
+
+		if(sn) {
+			const deviceInfo = await getDeviceInfo({ sn });
+			this.setState({
+				deviceInfo
+			});
+			loadSetting(sn);
+		}
+
 	}
 
 	// componentWillReceiveProps = (props) => {
@@ -140,6 +167,7 @@ class BasicParams extends Component {
 	render() {
 		const { form, ipcBasicParams } = this.props;
 		const { isReading, isSaving, nightMode, rotation, indicator } = ipcBasicParams;
+		const { deviceInfo: { rotate }} = this.state;
 		// const { status } = basicParams;
 		// if( status === 'error'){
 		//  	this.resetChange();
@@ -185,11 +213,17 @@ class BasicParams extends Component {
 									// 	unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
 									// />
 									// <Switch />
+
 									<RadioGroup>
-										<Radio value={0}>0{ formatMessage({id: 'basicParams.degree'})}</Radio>
+										{
+											rotate.map(item =>
+												<Radio key={item.key} value={item.key}>{item.value}{ formatMessage({id: 'basicParams.degree'})}</Radio>
+											)
+										}
+										{/* <Radio value={0}>0{ formatMessage({id: 'basicParams.degree'})}</Radio>
 										<Radio value={1}>90{ formatMessage({id: 'basicParams.degree'})}</Radio>
 										<Radio value={2}>180{ formatMessage({id: 'basicParams.degree'})}</Radio>
-										<Radio value={3}>270{ formatMessage({id: 'basicParams.degree'})}</Radio>
+										<Radio value={3}>270{ formatMessage({id: 'basicParams.degree'})}</Radio> */}
 									</RadioGroup>
 								)
 							}

@@ -40,10 +40,11 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		});
 	},
-	setUpdatingStatus: (status) => {
+	setUpdatingStatus: (sn, status) => {
 		dispatch({
 			type: 'ipcSoftwareUpdate/setUpdatingStatus',
 			payload: {
+				sn,
 				status
 			}
 		});
@@ -97,7 +98,6 @@ class SoftwareUpdate extends Component {
 
 		setTimeout(() => {
 			const { info: { updating } } = this.props;
-			// console.log('timeout', updating);
 			if (updating === 'loading') {
 				this.setUpdatingStatus('failed');
 			}
@@ -118,8 +118,8 @@ class SoftwareUpdate extends Component {
 	}
 
 	setUpdatingStatus = (status) => {
-		const {setUpdatingStatus} = this.props;
-		setUpdatingStatus(status);
+		const { setUpdatingStatus, sn } = this.props;
+		setUpdatingStatus(sn, status);
 	}
 
 	// hideInfo = () => {
@@ -167,19 +167,12 @@ class SoftwareUpdate extends Component {
 					maskClosable={false}
 					footer={
 						(() => {
-							// console.log(updating);
 							if (updating === 'success' || updating === 'failed') {
 								clearInterval(this.interval);
 								return (
 									<Button
 										type="primary"
-										onClick={() => {
-											this.setUpdatingStatus('normal');
-
-											this.setState({
-												visible: false
-											});
-										}}
+										onClick={this.hideModal}
 									>
 										{formatMessage({ id: 'softwareUpdate.confirm' })}
 									</Button>
@@ -239,12 +232,28 @@ class SoftwareUpdate extends Component {
 												switch (updating) {
 													case 'success':
 														text = (
-															<p>{formatMessage({ id: 'softwareUpdate.updateSuccess' })}</p>
+															<>
+																{/* <h3>
+																	<Icon className={`${styles.icon} ${styles.success}`} type='check-circle' />
+																	<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.updateSuccess' })}</span>
+																</h3> */}
+
+																<p>{formatMessage({ id: 'softwareUpdate.updateSuccessMsg' })}</p>
+															</>
+
 														);
 														break;
 													case 'failed':
 														text = (
-															<p>{ formatMessage({ id: 'softwareUpdate.updateFailed' }) }</p>
+															<>
+																<h3>
+																	<Icon className={`${styles.icon} ${styles.error}`} type='close-circle' />
+																	<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.updateFailed'})}</span>
+																</h3>
+
+																<p>{ formatMessage({ id: 'softwareUpdate.updateFailedMsg' }) }</p>
+															</>
+
 														);
 														break;
 													case 'loading':

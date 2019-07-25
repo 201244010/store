@@ -285,7 +285,7 @@ class Live extends React.Component{
 									renderItem={
 										(item) => (
 											<List.Item key={item.id}>
-												{/* <Card
+												<Card
 													title={
 														<div className={styles['avatar-container']}>
 															<div className={styles.type}>{ item.libraryName }</div>
@@ -301,7 +301,7 @@ class Live extends React.Component{
 														{ `(${ genders[item.gender] } ${ item.age }岁)` }
 													</p>
 													<p>
-														<span>{formatMessage({id: 'live.entry.time'})}</span>
+														<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
 														<span>
 															{
 																moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
@@ -310,10 +310,10 @@ class Live extends React.Component{
 													</p>
 
 													<p>
-														<Link className={styles['button-infos']} to='./userinfo'>{formatMessage({ id: 'live.member.details'})}</Link>
+														<Link className={styles['button-infos']} to='./userinfo'>{formatMessage({ id: 'live.enter.details'})}</Link>
 													</p>
-												</Card> */}
-												<Card
+												</Card>
+												{/* <Card
 													bordered={false}
 													className={styles['faceid-card']}
 												>
@@ -338,7 +338,7 @@ class Live extends React.Component{
 													<p>
 														<Link className={styles['button-infos']} to='./userinfo'>{formatMessage({ id: 'live.enter.details'})}</Link>
 													</p>
-												</Card>
+												</Card> */}
 											</List.Item>
 										)
 									}
