@@ -294,7 +294,7 @@ class DeviceBasicInfo extends React.Component {
 					title={formatMessage({id: 'deviceBasicInfo.title'})}
 					className={styles['main-card']}
 				>
-					<img src={image} alt="镜头显示图" className={styles['main-image']} />
+					<img src={image} alt="main-camera" className={styles['main-image']} />
 					<Form {...FORM_ITEM_LAYOUT} className={styles['info-form']}>
 
 						<Form.Item

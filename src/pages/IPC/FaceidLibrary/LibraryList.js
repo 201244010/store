@@ -289,7 +289,7 @@ class LibraryList extends React.Component {
 		} else {
 			Modal.confirm({
 				title: formatMessage({ id: 'faceid.deleteLibrary' }),
-				content: formatMessage({ id: 'faceid.deleteInfo' }),
+				// content: formatMessage({ id: 'faceid.deleteInfo' }),
 				okText: formatMessage({ id: 'faceid.confirm' }),
 				cancelText: formatMessage({ id: 'faceid.cancel' }),
 				okType: 'danger',
@@ -324,7 +324,7 @@ class LibraryList extends React.Component {
 	// 			onOk() {},
 	// 		});
 	// 	}
-		
+
 	// }
 
 	editLibrary() {

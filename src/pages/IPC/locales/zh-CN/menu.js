@@ -20,7 +20,7 @@ export default {
 	'menu.faceidLibrary.list': '人脸分组列表',
 	'menu.faceidLibrary.photoManagement': '照片管理',
 	'menu.faceidLibrary.faceidLibraryList': '人脸分组列表',
-	'menu.devices.ipcManagement': '摄像头设置',
+	'menu.devices.ipcManagement': '摄像机设置',
 
 	'menu.cashVerify': '收银审计',
 	'menu.cashVerify.posList': '设备绑定列表',

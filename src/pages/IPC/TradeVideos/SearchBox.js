@@ -96,7 +96,7 @@ class SearchBox extends React.Component{
 													key={`payment-selector-${index}`}
 													value={`${item.sn}`}
 												>
-													{item.name ||
+													{`${item.name}(${item.sn})` ||
 														formatMessage({
 															id: 'tradeVideos.unknownDevice',
 														})}
