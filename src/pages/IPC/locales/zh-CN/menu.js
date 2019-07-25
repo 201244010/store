@@ -7,14 +7,12 @@ export default {
 	'menu.notification.center': '消息中心',
 	'menu.notification.info': '消息详情',
 
-	'menu.devices': '设备管理',
+	'menu.devices': '摄像机管理',
 	'menu.devices.ipcList': '设备列表',
-	'menu.devices.motionMessage':'消息提醒',
+	'menu.devices.motionMessage': '消息提醒',
 	'menu.devices.ipcList.live': '直播',
 	'menu.devices.ipcList.ipcManagement': '摄像机设置',
 	'menu.motionMessage': '消息提醒',
-	
-
 
 	'menu.faceidLibrary': '人脸分组管理',
 	'menu.faceidLibrary.list': '人脸分组列表',
@@ -26,5 +24,4 @@ export default {
 	'menu.cashVerify.posList': '设备绑定列表',
 	'menu.cashVerify.bindPOSDevice': '绑定收银设备',
 	'menu.cashVerify.videos': '交易视频',
-
 };
