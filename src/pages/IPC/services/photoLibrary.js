@@ -108,7 +108,7 @@ export const handleUpload =  groupId => {
 		case 'test': IP = '47.99.16.199:30401';break;
 		default: break;
 	}
-	
+
 	return {
 		action: `http://${IP}/ipc/api/face/group/uploadFace`,
 		data: file => (format('toSnake')({
