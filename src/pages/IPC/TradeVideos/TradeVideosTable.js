@@ -65,19 +65,14 @@ class TradeVideosTable extends React.Component {
 					<>
 						<a
 							className={`${styles['video-watch']} ${
-								record.url && record.paymentDeviceSn !== '' ? '' : styles.disabled
+								record.url ? '' : styles.disabled
 							}`}
 							href="javascript:void(0);"
-							onClick={() =>{
-								if (record.url && record.paymentDeviceSn !== ''){
-									watchVideoHandler(record.paymentDeviceSn, record.url);
-								}
-								
-							}
-								
+							onClick={() =>
+								watchVideoHandler(record.paymentDeviceSn, record.url)
 							}
 						>
-							{record.url && record.paymentDeviceSn !== ''
+							{record.url
 								? formatMessage({ id: 'tradeVideos.viewVideo' })
 								: formatMessage({ id: 'tradeVideos.viewVideo.merging' })}
 						</a>
@@ -94,8 +89,8 @@ class TradeVideosTable extends React.Component {
 								: formatMessage({ id: 'tradeVideos.viewDetails' })}
 						</a>
 					</>
-				)
-			}
+				),
+			},
 		];
 		return(
 			<Table
