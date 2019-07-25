@@ -39,7 +39,7 @@ export default {
 	'menu.template': '模板管理',
 	'menu.template.list': '模板列表',
 	'menu.studio': 'Studio',
-	'menu.deviceManagement': '设备管理',
+	'menu.deviceManagement': '摄像机管理',
 	'menu.deviceManagement.esl': '电子价签',
 	'menu.deviceManagement.esl.baseStation': '基站管理',
 	'menu.deviceManagement.esl.electricLabel': '价签管理',
@@ -85,7 +85,6 @@ export default {
 	// 'menu.devices.ipcList.live': '直播',
 	// 'menu.devices.ipcList.ipcManagement': '摄像头设置',
 	// 'menu.devices.motionMessage': '活动侦测',
-
 
 	// 'menu.faceidLibrary': '人脸库管理',
 	// 'menu.faceidLibrary.list': '人脸库列表',
