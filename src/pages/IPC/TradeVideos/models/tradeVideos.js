@@ -196,7 +196,6 @@ export default {
 		// 	return '';
 		// },
 		*getDeviceInfoByPosSN({ payload: { sn, startTime, endTime }}, { put }) {
-			console.log(sn, startTime, endTime);
 			const posList = yield put.resolve({
 				type: 'getPOSList',
 				payload: {
@@ -214,7 +213,7 @@ export default {
 				}
 				return false;
 			});
-			console.log(targetIpc);
+
 			if (targetIpc.length > 0) {
 				const ipcSN = targetIpc[0].sn;
 

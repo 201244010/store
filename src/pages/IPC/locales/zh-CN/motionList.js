@@ -1,5 +1,5 @@
 export default{
-	'motionList.ipcName': '摄像头名称',
+	'motionList.ipcName': '摄像机名称',
 	'motionList.detectedSource': '侦测来源',
 	'motionList.sound': '声音',
 	'motionList.image': '图像',
@@ -9,7 +9,7 @@ export default{
 	'motionList.action': '操作',
 	'motionList.watch':'查看',
 	'motionList.select.detectedTime':'请选择筛选日期',
-	'motionList.select.ipcName':'选择摄像头名称',
+	'motionList.select.ipcName':'选择摄像机名称',
 	'motionList.select.detectedSource':'请选择侦测来源',
 	'motionList.all': '所有',
 	'motionList.sound.detect': '声音侦测',
