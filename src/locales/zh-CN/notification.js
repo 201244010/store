@@ -28,19 +28,21 @@ export default {
 	'notif-motion-detect-title': '网络摄像机侦测到异常',
 
 	// 消息描述模版
-	'notif-ap-offline-desc': '基站“%s”已离线，请检查设备状态',
-	'notif-import-product-finish-desc': '商品导入完成，商品总数%s, 成功导入总数%s',
+	'notif-ap-offline-desc': '基站“{{ap_name}}”已离线，请检查设备状态',
+	'notif-import-product-finish-desc':
+		'商品导入完成，商品总数{{total_num}}, 成功导入总数{{current_num}}',
 	'notif-import-product-failure-desc': '商品导入失败，请重试',
-	'notif-motion-detect-desc': '网络摄像机侦测到异常%s，请即刻查看',
+	'notif-motion-detect-desc': '网络摄像机侦测到异常{{source}}，请即刻查看',
 	'notif-motion-detect-desc-1': '图像',
 	'notif-motion-detect-desc-2': '声音',
 	'notif-motion-detect-desc-3': '图像和声音',
 
 	// 消息内容模板
-	'notif-ap-offline-content': '基站“%s”于%s离线，请检查设备状态',
-	'notif-import-product-finish-content': '商品导入完成，商品总数%s, 成功导入总数%s',
-	'notif-import-product-failure-content': '商品导入失败，原因：%s',
-	'notif-motion-detect-content': '网络摄像机（%s）侦测到异常%s，请即刻查看',
+	'notif-ap-offline-content': '基站“{{ap_name}}”于{{disconnect_time}}离线，请检查设备状态',
+	'notif-import-product-finish-content':
+		'商品导入完成，商品总数{{total_num}}, 成功导入总数{{current_num}}',
+	'notif-import-product-failure-content': '商品导入失败，原因：{{reason}}',
+	'notif-motion-detect-content': '网络摄像机（{{device_name}}）侦测到异常{{source}}，请即刻查看',
 	'notif-motion-detect-content-1': '图像',
 	'notif-motion-detect-content-2': '声音',
 	'notif-motion-detect-content-3': '图像和声音',
@@ -67,25 +69,38 @@ export default {
 	'notif-device-ipc-motion-detect-audio-title': '网络摄像机侦测到异常',
 	'notif-device-ipc-motion-detect-video-audio-title': '网络摄像机侦测到异常',
 	'notif-device-ipc-on/offline-title': '检测到网络摄像机离线',
-	// todo
 	'notif-device-ipc-tf-card-detect-title': '网络摄像机侦测到异常',
+	'notif-device-ipc-tf-card-detect-title-1': '图像',
+	'notif-device-ipc-tf-card-detect-title-2': '声音',
+	'notif-device-ipc-tf-card-detect-title-3': '图像和声音',
 
 	// ipc-device-desc
 	'notif-device-ipc-ota-desc': '网络摄像机有新版固件，请更新',
-	'notif-device-ipc-motion-detect-video-desc': '网络摄像机侦测到异常画面，请即刻查看',
-	'notif-device-ipc-motion-detect-audio-desc': '网络摄像机侦测到异常声音，请即刻查看',
-	'notif-device-ipc-motion-detect-video-audio-desc': '网络摄像机侦测到异常画面与声音，请即刻查看',
+	'notif-device-ipc-motion-detect-video-desc':
+		'[{{company_name}}-{{shop_name}}]网络摄像机{{device_name}}侦测到异常画面，请即刻查看',
+	'notif-device-ipc-motion-detect-audio-desc':
+		'[{{comapny_name}} - {{shop_name}}]网络摄像机{{device_name}}侦测到异常声音，请即刻查看',
+	'notif-device-ipc-motion-detect-video-audio-desc':
+		'[{{comapny_name}} - {{shop_name}}]网络摄像机 {{device_name}} 侦测到异常画面与声音，请即刻查看',
 	'notif-device-ipc-on/offline-desc': '网络摄像机已离线，请检查设备状态',
-	'notif-device-ipc-tf-card-detect-desc': '网络摄像机的存储卡%s',
+	'notif-device-ipc-tf-card-detect-desc': '网络摄像机的存储卡{{status}}',
 
 	// ipc-device-content
-	'notif-device-ipc-ota-content': '网络摄像机（%s）已发布新版固件%s，请更新',
-	'notif-device-ipc-motion-detect-video-content': '网络摄像机（%s）侦测到异常画面，请即刻查看',
-	'notif-device-ipc-motion-detect-audio-content': '网络摄像机（%s）侦测到异常声音，请即刻查看',
+	'notif-device-ipc-ota-content':
+		'网络摄像机（{{device_name}}）已发布新版固件{{bin_version}}，请更新',
+	'notif-device-ipc-motion-detect-video-content':
+		'网络摄像机（{{device_name}}）侦测到异常画面，请即刻查看',
+	'notif-device-ipc-motion-detect-audio-content':
+		'网络摄像机（{{device_name}}）侦测到异常声音，请即刻查看',
 	'notif-device-ipc-motion-detect-video-audio-content':
-		'网络摄像机（%s）侦测到异常画面与声音，请即刻查看',
-	'notif-device-ipc-on/offline-content': '网络摄像机（%s）于%s离线，请检查设备状态',
-	'notif-device-ipc-tf-card-detect-content': '网络摄像机（%s）的存储卡%s',
+		'网络摄像机（{{device_name}}）侦测到异常画面与声音，请即刻查看',
+	'notif-device-ipc-on/offline-content':
+		'网络摄像机（{{device_name}} 于{{disconnect_time}}离线，请检查设备状态',
+	'notif-device-ipc-tf-card-detect-content': '网络摄像机（{{device_name}}）的存储卡{{status}}',
+	// todo 状态 value
+	// 'notif-device-ipc-tf-card-detect-content-1': '网络摄像机（{{%s}}）的存储卡{{%s}}',
+	// 'notif-device-ipc-tf-card-detect-content-2': '网络摄像机（{{%s}}）的存储卡{{%s}}',
+	// 'notif-device-ipc-tf-card-detect-content-3': '网络摄像机（{{%s}}）的存储卡{{%s}}',
 
 	// esl-device-model
 	'notif-model-system-esl-erp': 'ERP对接提醒',
@@ -99,5 +114,13 @@ export default {
 
 	// esl-device-desc
 	'notif-system-esl-erp-desc':
-		'【商户-门店】已完成与<(康铭泰克速店农贸版)>的对接，成功获取<1234>条商品信息',
+		'[{{company_name}}-{{shop_name}}]已完成与 ({{saas_name}}) 的对接，成功获取 {{total_count}} 条商品信息',
+	'notif-device-esl-ota-des':
+		'[{{company_name}}-{{shop_name}}]{{device_name}}已发布新版固件{{bin_version}}，请更新',
+	'notif-device-esl-ap-on/offline-desc': '[{{company_name}}-{{shop_name}}]基站{{device_name}}已离线，请检查设备状态',
+
+	// esl-device-content
+	'notif-device-esl-ota-content': '{{device_name}}已发布新版固件{{bin_version}}，请更新',
+	'notif-device-esl-ap-on/offline-content': '基站{{device_name}}于{{disconnect_time}}离线，请检查设备状态',
+	'notif-system-task-erp-content': '[{{company_name}}-{{shop_name}}]已完成与{{saas_name}}的对接，成功获取{{total_count}}条商品信息'
 };
