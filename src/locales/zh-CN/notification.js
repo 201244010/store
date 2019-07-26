@@ -122,5 +122,6 @@ export default {
 	// esl-device-content
 	'notif-device-esl-ota-content': '{{device_name}}已发布新版固件{{bin_version}}，请更新',
 	'notif-device-esl-ap-on/offline-content': '基站{{device_name}}于{{disconnect_time}}离线，请检查设备状态',
-	'notif-system-task-erp-content': '[{{company_name}}-{{shop_name}}]已完成与{{saas_name}}的对接，成功获取{{total_count}}条商品信息'
+	'notif-system-task-erp-finish-content': '已完成与{{saas_name}}的对接，成功获取{{total_count}}条商品信息',
+	'notif-system-task-erp-failure-content': '未能完成与{{saas_name}}的对接，请重试'
 };
