@@ -97,10 +97,10 @@ export default {
 	'notif-device-ipc-on/offline-content':
 		'网络摄像机（{{device_name}} 于{{disconnect_time}}离线，请检查设备状态',
 	'notif-device-ipc-tf-card-detect-content': '网络摄像机（{{device_name}}）的存储卡{{status}}',
-	// todo 状态 value
-	// 'notif-device-ipc-tf-card-detect-content-1': '网络摄像机（{{%s}}）的存储卡{{%s}}',
-	// 'notif-device-ipc-tf-card-detect-content-2': '网络摄像机（{{%s}}）的存储卡{{%s}}',
-	// 'notif-device-ipc-tf-card-detect-content-3': '网络摄像机（{{%s}}）的存储卡{{%s}}',
+	'notif-device-ipc-tf-card-detect-content-0': '无sd卡',
+	'notif-device-ipc-tf-card-detect-content-1': '插入sd卡，需初始化',
+	'notif-device-ipc-tf-card-detect-content-2': '插入sd卡，已初始化',
+	'notif-device-ipc-tf-card-detect-content-3': 'sd卡无法识别',
 
 	// esl-device-model
 	'notif-model-system-esl-erp': 'ERP对接提醒',
