@@ -16,14 +16,14 @@ const {
 		showInfo: state.showInfo,
 	}),
 	dispatch => ({
-		fetchAllData: ({ range }) =>
-			dispatch({ type: 'showInfo/fetchAllData', payload: { range } }),
+		fetchAllData: ({ range, activeKey }) =>
+			dispatch({ type: 'showInfo/fetchAllData', payload: { range, activeKey } }),
 		clearSearch: () => dispatch({ type: 'showInfo/clearSearch' }),
 	})
 )
 class ShowTabContent extends React.Component {
 	componentDidMount() {
-		const { time = 'today' } = this.props;
+		const { time = 'today', activeKey } = this.props;
 
 		if (time === 'today') {
 			this.atuoRefresh(RANGE.TODAY);
@@ -37,17 +37,17 @@ class ShowTabContent extends React.Component {
 			this.atuoRefresh(RANGE.MONTH);
 		}
 
-		setTimeout(()=> {
+		setTimeout(() => {
 			if (time === 'today') {
-				this.atuoRefresh(RANGE.TODAY);
+				this.atuoRefresh(RANGE.TODAY, activeKey);
 			}
 
 			if (time === 'week') {
-				this.atuoRefresh(RANGE.WEEK);
+				this.atuoRefresh(RANGE.WEEK, activeKey);
 			}
 
 			if (time === 'month') {
-				this.atuoRefresh(RANGE.MONTH);
+				this.atuoRefresh(RANGE.MONTH, activeKey);
 			}
 			this.startAutoRefresh();
 		}, 1000 * 30);
@@ -59,25 +59,25 @@ class ShowTabContent extends React.Component {
 		clearSearch();
 	}
 
-	atuoRefresh = type => {
+	atuoRefresh = (type, activeKey = 'all') => {
 		const { fetchAllData } = this.props;
-		fetchAllData({ range: type });
+		fetchAllData({ range: type, activeKey });
 	};
 
 	startAutoRefresh = () => {
 		clearTimeout(this.timer);
 		this.timer = setTimeout(async () => {
-			const { time = 'today' } = this.props;
+			const { time = 'today', activeKey = 'all' } = this.props;
 			if (time === 'today') {
-				this.atuoRefresh(RANGE.TODAY);
+				this.atuoRefresh(RANGE.TODAY, activeKey);
 			}
 
 			if (time === 'week') {
-				this.atuoRefresh(RANGE.WEEK);
+				this.atuoRefresh(RANGE.WEEK, activeKey);
 			}
 
 			if (time === 'month') {
-				this.atuoRefresh(RANGE.MONTH);
+				this.atuoRefresh(RANGE.MONTH, activeKey);
 			}
 			this.startAutoRefresh();
 		}, 1000 * 60);

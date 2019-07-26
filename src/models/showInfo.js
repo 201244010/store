@@ -130,18 +130,18 @@ export default {
 	},
 	effects: {
 		*fetchAllData({ payload }, { all, put }) {
-			const { range } = payload;
+			const { range, activeKey = 'all' } = payload;
 			yield all([
 				// device overview
 				put({
 					type: 'fetchOverviewDevices',
-					payload: { range },
+					payload: { range, activeKey },
 				}),
 
 				// ipc overview
 				put({
 					type: 'fetchOverviewIPC',
-					payload: { range },
+					payload: { range, activeKey },
 				}),
 
 				// total card
@@ -150,6 +150,7 @@ export default {
 					payload: {
 						queryType: QUERY_TYPE.TOTAL_AMOUNT,
 						range,
+						activeKey
 					},
 				}),
 				put({
@@ -157,6 +158,7 @@ export default {
 					payload: {
 						queryType: QUERY_TYPE.TOTAL_COUNT,
 						range,
+						activeKey
 					},
 				}),
 				put({
@@ -164,6 +166,7 @@ export default {
 					payload: {
 						queryType: QUERY_TYPE.TOTAL_REFUND,
 						range,
+						activeKey
 					},
 				}),
 				put({
@@ -171,28 +174,32 @@ export default {
 					payload: {
 						queryType: QUERY_TYPE.AVG_UNIT,
 						range,
+						activeKey
 					},
 				}),
 				// time duration
 				put({
 					type: 'fetchTimeDistribution',
-					payload: { range },
+					payload: { range, activeKey },
 				}),
 				// sku rank
 				put({
 					type: 'fetchSKURankList',
-					payload: { range },
+					payload: { range, activeKey },
 				}),
 				// payment
 				put({
 					type: 'fetchPurchaseTypeStatistics',
-					payload: { range },
+					payload: { range, activeKey },
 				}),
 			]);
 		},
 
 		*fetchOverviewDevices({ payload }, { put }) {
-			const { range } = payload;
+			const { range, activeKey } = payload;
+			if (range !== activeKey && activeKey !== 'all') {
+				return null;
+			}
 
 			const response = yield put.resolve({
 				type: 'eslElectricLabel/fetchDeviceOverview',
@@ -212,7 +219,10 @@ export default {
 		},
 
 		*fetchOverviewIPC({ payload }, { call, put }) {
-			const { range } = payload;
+			const { range, activeKey } = payload;
+			if (range !== activeKey && activeKey !== 'all') {
+				return;
+			}
 
 			const response = yield call(getDeviceList);
 
@@ -240,9 +250,12 @@ export default {
 		},
 
 		*fetchTotalInfo({ payload }, { call, put }) {
-			const { queryType = null, range } = payload;
-			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
+			const { queryType = null, range, activeKey } = payload;
+			if (range !== activeKey && activeKey !== 'all') {
+				return null;
+			}
 
+			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
 			const stateField = stateFields[queryType];
 			const options = {
 				rateRequired: range === RANGE.FREE ? 0 : 1,
@@ -271,9 +284,12 @@ export default {
 		},
 
 		*fetchSKURankList({ payload }, { put, call }) {
-			const { range } = payload;
-			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
+			const { range, activeKey } = payload;
+			if (range !== activeKey && activeKey !== 'all') {
+				return null;
+			}
 
+			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
 			const options = {
 				timeRangeStart: startTime,
 				timeRangeEnd: endTime,
@@ -297,7 +313,11 @@ export default {
 		},
 
 		*fetchTimeDistribution({ payload }, { put, call }) {
-			const { range } = payload;
+			const { range, activeKey } = payload;
+			if (range !== activeKey && activeKey !== 'all') {
+				return;
+			}
+
 			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
 
 			const options = {
@@ -323,7 +343,11 @@ export default {
 		},
 
 		*fetchPurchaseTypeStatistics({ payload }, { put, call }) {
-			const { range } = payload;
+			const { range, activeKey } = payload;
+			if (range !== activeKey && activeKey !== 'all') {
+				return;
+			}
+
 			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
 
 			const options = {
@@ -397,6 +421,11 @@ export default {
 		},
 
 		*setSearchValue({ payload }, { select, put }) {
+			const {range, activeKey} = payload;
+			if (range !== activeKey && activeKey !== 'all') {
+				return;
+			}
+
 			const { searchValue } = yield select(state => state.showInfo);
 			yield put({
 				type: 'updateState',
