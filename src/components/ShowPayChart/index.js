@@ -102,6 +102,7 @@ export default class ShowPayChart extends React.Component {
 				<div className={styles['pay-chart-lengend']}>
 					{data.map(item => {
 						let color = '';
+						const onLighter = maxItem.item === item.item;
 						switch (item.item) {
 							case PURCHASE_ORDER[0]:
 								color = '#2D59F4';
@@ -125,7 +126,12 @@ export default class ShowPayChart extends React.Component {
 								color = '#6666FF';
 						}
 						return (
-							<div key={item.item} className={styles['lengend-oneList']}>
+							<div
+								key={item.item}
+								className={`${styles['lengend-oneList']} ${
+									onLighter ? styles['oneList-lighter'] : ''
+								}`}
+							>
 								<div className={styles['oneList-right']}>
 									<span
 										style={{
@@ -135,6 +141,7 @@ export default class ShowPayChart extends React.Component {
 											borderRadius: '50%',
 											background: color,
 											marginRight: 16,
+											marginLeft: 13,
 										}}
 									/>
 									{item.item}
@@ -170,7 +177,7 @@ export default class ShowPayChart extends React.Component {
 							'item*percent',
 							item => {
 								if (item === PURCHASE_ORDER[0]) {
-									return 'l(45) 0:#6591F3 1:#5276E9 ';
+									return 'l(45) 0:#6590F3 1:#293DD3 ';
 								}
 								if (item === PURCHASE_ORDER[1]) {
 									return 'l(45) 0:#5EFFC9 1:#00FF99';
@@ -184,55 +191,31 @@ export default class ShowPayChart extends React.Component {
 								if (item === PURCHASE_ORDER[4]) {
 									return 'l(45) 0:#CC99FF 1:#AA80FF';
 								}
-								return 'l(45) 0:#8095FF 1:#6666FF';
+								return 'l(45) 0:#8A72FF 1:#6666FF';
 							},
 						]}
-						hide
-						// tooltip={[
-						//   "item*percent",
-						//   (item, percent) => {
-						//     percent = percent * 100 + "%";
-						//     return {
-						//       name: item,
-						//       value: percent
-						//     };
-						//   }
-						// ]}
-						style={{
-							lineWidth: 0,
-							stroke: '#fff',
-						}}
+						style={[
+							'item*percent',
+							{
+								lineWidth: 0,
+								stroke: '#fff',
+								shadowBlur: 20,
+								shadowOffsetX: 0,
+								shadowOffsetY: 10,
+								shadowColor: item =>
+									maxItem.item === item ? 'rgba(255,255,255,1)' : 'transparent',
+							},
+						]}
 						shape="sliceShape"
-					>
-						{/* <Label
-                  autoRotate={false}
-                  // position="top"     //饼图中已失效
-                  content="item"
-                  formatter={(item) => {
-                    return item;
-                  }}
-                  offset={-35}
-                  // labelLine={{
-                  //   lineWidth: 0,
-                  // }}
-                  textStyle={{
-                    textAlign: 'end', // 文本对齐方向，可取值为： start middle end
-                    fill: '#FFFFFF', // 文本的颜色
-                    fontSize: '12', // 文本大小
-                    textBaseline: 'top' // 文本基准线，可取 top middle bottom，默认为middle
-                  }}
-                  // htmlTemplate={(text, item, index)=>{
-                  //   var point = item.point;
-                  //   return '<div style="color: #FFFFFF;font-size: 14px;text-align: center">'+point.item+'</div>'
-                  // }}
-                /> */}
-					</Geom>
+						tooltip={false}
+					/>
 					<View data={dv2}>
 						<Coord type="theta" radius={0.83} innerRadius={0.46} />
 						<Geom
 							type="intervalStack"
 							position="count"
 							color={['item', ['rgba(125,158,250,0.16)']]}
+							tooltip={false}
 						/>
 					</View>
 				</Chart>
