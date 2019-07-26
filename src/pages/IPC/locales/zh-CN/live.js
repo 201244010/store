@@ -7,6 +7,6 @@ export default {
 	'live.group':'身份',
 	'live.gender':'性别',
 	'live.age':'年龄',
-	'live.last.arrival.time':'最新到店日期',
-	'live.logs':'查看更多人脸日志'
+	'live.last.arrival.time':'进店时间：',
+	'live.logs':'查看更多进店记录'
 };

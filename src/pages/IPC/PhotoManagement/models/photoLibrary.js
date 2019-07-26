@@ -81,8 +81,9 @@ export default {
 						faceList: groupList,
 					}
 				});
+				return groupList;
 			}
-			return response;
+			return [];
 		},
 		*move({payload}, {put, select, call}) {
 			// body请求的对象  移库之后去掉选中状态 更新选中列表
@@ -124,14 +125,14 @@ export default {
 		*checked({payload}, {put, select}) {
 			const { checkList } = yield select(state => state.photoLibrary);
 			const newCheckList = payload.checkList;
-			
+
 			if(payload.isChecked) {
 				newCheckList.forEach(item => {
 					if(checkList.indexOf(item) === -1) {
 						checkList.push(item);
 					}
 				});
-				
+
 				yield put({
 					type: 'readData',
 					payload: {
@@ -176,7 +177,7 @@ export default {
 			}
 			return false;
 		},
-		*edit({payload}, {call}) {
+		*edit({payload}, { call }) {
 			const response = yield call(editInfo, payload);
 			return response.code === ERROR_OK;
 		},

@@ -15,7 +15,7 @@ class TradeVideosTable extends React.Component {
 
 		const columns = [
 			{
-				title: formatMessage({ id: 'tradeVideos.camera' }), // '摄像头',
+				title: formatMessage({ id: 'tradeVideos.camera' }), // '摄像机',
 				dataIndex: 'ipcName',
 				key: 'ipcName',
 				sorter: (a, b) => a.ipcName.localeCompare(b.ipcName),
@@ -89,8 +89,8 @@ class TradeVideosTable extends React.Component {
 								: formatMessage({ id: 'tradeVideos.viewDetails' })}
 						</a>
 					</>
-				)
-			}
+				),
+			},
 		];
 		return(
 			<Table

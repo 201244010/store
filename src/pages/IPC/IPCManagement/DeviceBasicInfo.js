@@ -6,6 +6,7 @@ import { formatMessage } from 'umi/locale';
 import defaultImage from '@/assets/imgs/default.jpeg';
 import router from 'umi/router';
 
+// eslint-disable-next-line import/no-cycle
 import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 
 import styles from './DeviceBasicInfo.less';
@@ -294,7 +295,7 @@ class DeviceBasicInfo extends React.Component {
 					title={formatMessage({id: 'deviceBasicInfo.title'})}
 					className={styles['main-card']}
 				>
-					<img src={image} alt="镜头显示图" className={styles['main-image']} />
+					<img src={image} alt="main-camera" className={styles['main-image']} />
 					<Form {...FORM_ITEM_LAYOUT} className={styles['info-form']}>
 
 						<Form.Item

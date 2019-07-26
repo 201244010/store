@@ -1,25 +1,27 @@
 <!DOCTYPE html>
+
 <html lang="en">
-    <head>
-	<meta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta http-equiv="Pragma" content="no-cache">
-        <meta http-equiv="Cache-Control" content="no-cache">
-        <meta http-equiv="Expires" content="0">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>SUNMI STORE</title>
-        <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
-        <link rel="stylesheet" type="text/css" href="<%= context.base %>/css/video-js.min.css">
+	<head>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>SUNMI STORE</title>
+		<link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+		<link rel="stylesheet" type="text/css" href="<%= context.base %>/css/video-js.min.css">
+
 		<script defer type="text/javascript" src="<%= context.base %>/libs/jquery-1.8.3.min.js"></script>
 		<script defer type="text/javascript" src="<%= context.base %>/libs/jquery.qrcode.min.js"></script>
 		<script defer type="text/javascript" src="<%= context.base %>/libs/utf.js"></script>
 		<script defer type="text/javascript" src="<%= context.base %>/libs/jsBarCode.min.js"></script>
-    </head>
+	</head>
 
-    <body>
-        <noscript>Sorry, we need js to run correctly!</noscript>
+	<body>
+		<noscript>Sorry, we need js to run correctly!</noscript>
 
-        <div id="root"></div>
+		<div id="root"></div>
 
 		<!-- Polyfills -->
 		<!--[if lt IE 10]>
@@ -40,12 +42,12 @@
 		<![endif]-->
 
 		<!--[if !IE]> <!-->
-			<script defer type="text/javascript" src="<%= context.base %>/libs/flv.min.js"></script>
-			<script defer type="text/javascript" src="<%= context.base %>/libs/videojs-flvjs.min.js"></script>
+			<script type="text/javascript" src="<%= context.base %>/libs/flv.min.js"></script>
+			<script type="text/javascript" src="<%= context.base %>/libs/videojs-flvjs.min.js"></script>
 		<!-- <![endif]-->
 
-		<script defer type="text/javascript" src="<%= context.base %>/libs/videojs-flash.min.js"></script>
-		<!-- <script defer type="text/javascript" src="<%= context.base %>/libs/videojs-playlist.min.js"></script> -->
+		<script type="text/javascript" src="<%= context.base %>/libs/videojs-flash.min.js"></script>
+		<!-- <script type="text/javascript" src="<%= context.base %>/libs/videojs-playlist.min.js"></script> -->
 
-    </body>
+	</body>
 </html>

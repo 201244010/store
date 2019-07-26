@@ -8,7 +8,7 @@ export default {
 	// 'faceid.createNote': '您还未建立自己的分组，现在就去',
 	'faceid.addButton': '新增分组',
 	'faceid.createButton': '创建',
-	'faceid.libraryNameMsg': '请输入分组名称，如会员',
+	'faceid.libraryNameMsg': '请输入分组名称，如会员, 不超过20个字符。',
 	'faceid.libraryNameRequired': '请输入分组名称。',
 	'faceid.libraryNameFormat': '不超过20个字符。',
 
@@ -32,7 +32,7 @@ export default {
 
 	'faceid.remarkNote': '(可选)',
 
-	'faceid.remarkMsg': '请输入备注。',
+	'faceid.remarkMsg': '请输入备注,不超过255个字符。',
 	'faceid.remarksTooLong': '备注不得超过255个字符',
 
 	'faceid.transferCondit': '移至熟客分组条件',

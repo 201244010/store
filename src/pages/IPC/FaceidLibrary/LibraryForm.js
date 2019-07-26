@@ -1,6 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import { Form, Input, InputNumber } from 'antd';
+import { Form, Input, InputNumber, Switch } from 'antd';
 // import {
 //   FORM_FORMAT,
 //   FORM_ITEM_LAYOUT,
@@ -42,14 +42,14 @@ class LibraryForm extends React.Component {
 
 	render() {
 		const { id, type, isEdit, restCapacity, libraries, amount, form } = this.props;
-		const { name, capacity, remarks, threshold, period } = this.props;
+		const { name, capacity, remarks, threshold, period, warning } = this.props;
 		const { getFieldDecorator } = form;
 
 		const isDefault = type < 5;
 
 		const maxCapacity = isEdit ? capacity + restCapacity : restCapacity;
 
-
+		console.log(warning);
 
 		return (
 			<div className={styles['faceid-library-form']}>
@@ -276,16 +276,18 @@ class LibraryForm extends React.Component {
 									);
 								case 4:
 									return (
-									// <Form.Item
-									// 	label={formatMessage({id: 'faceid.warningPush'})}
-									// >
-									// 	{
-									// 		getFieldDecorator('warning')(
-									// 			<Switch />
-									// 		)
-									// 	}
-									// </Form.Item>
-										<></>
+										<Form.Item
+											label={formatMessage({id: 'faceid.warningPush'})}
+										>
+											{
+												getFieldDecorator('warning', {
+													initialValue: warning,
+													valuePropName: 'checked'
+												})(
+													<Switch />
+												)
+											}
+										</Form.Item>
 									);
 								default:
 									return '';
