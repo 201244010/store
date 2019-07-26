@@ -176,29 +176,32 @@ export default {
 					const { permissionList = [] } = format('toCamel')(permissionData);
 					console.log('permissionList, ', permissionList);
 
-					const formattedPermissionList = permissionList.map(item => ({
-						base: ((item.path || '').slice(1).split('/') || [])[0],
-						path: item.path,
-					}));
-					console.log('formattedPermissionList: ', formattedPermissionList);
+					if (permissionList.length === 0) {
+						filteredMenuData = [];
+					} else {
+						const formattedPermissionList = permissionList.map(item => ({
+							base: ((item.path || '').slice(1).split('/') || [])[0],
+							path: item.path,
+						}));
+						console.log('formattedPermissionList: ', formattedPermissionList);
 
-					const { data: authMenuData = {} } = authMenuResult || {};
-					const { menuList = [] } = format('toCamel')(authMenuData);
-					console.log('menu control: ', menuList);
+						const { data: authMenuData = {} } = authMenuResult || {};
+						const { menuList = [] } = format('toCamel')(authMenuData);
+						console.log('menu control: ', menuList);
 
-					const filteredPermissionList = formattedPermissionList.filter(item => {
-						if (env === 'dev') {
-							return FIRST_MENU_ORDER.includes(item.base);
+						const filteredPermissionList = formattedPermissionList.filter(item => {
+							if (env === 'dev') {
+								return FIRST_MENU_ORDER.includes(item.base);
+							}
+							return menuList.includes(item.base);
+						});
+
+						console.log('filteredPermissionList: ', filteredPermissionList);
+
+						if (filteredPermissionList.length > 0) {
+							filteredMenuData = checkMenuAuth(menuData, filteredPermissionList);
 						}
-						return (menuList || []).includes(item.base);
-					});
-
-					console.log('filteredPermissionList: ', filteredPermissionList);
-
-					if (filteredPermissionList.length > 0) {
-						filteredMenuData = checkMenuAuth(menuData, filteredPermissionList);
 					}
-					// console.log('filteredMenuData: ', filteredMenuData);
 				}
 			}
 
