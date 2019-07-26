@@ -6,6 +6,7 @@ import { formatMessage } from 'umi/locale';
 import defaultImage from '@/assets/imgs/default.jpeg';
 import router from 'umi/router';
 
+// eslint-disable-next-line import/no-cycle
 import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 
 import styles from './DeviceBasicInfo.less';

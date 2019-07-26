@@ -4,6 +4,7 @@ import { Card, Radio, Switch, Button,Form, Spin, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 
+// eslint-disable-next-line import/no-cycle
 import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 
 import styles from './BasicParams.less';
