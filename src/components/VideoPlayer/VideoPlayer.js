@@ -15,6 +15,7 @@ class VideoPlayer extends React.Component{
 		showDatePicker: false,
 		canPPIChange: false,
 		showBackToLive: false,
+		pixelRatio: '16:9',
 		current: moment().unix()
 	}
 
