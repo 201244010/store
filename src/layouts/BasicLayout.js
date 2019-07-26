@@ -209,11 +209,19 @@ class BasicLayout extends React.PureComponent {
 	};
 
 	checkStore = () => {
-		const { goToPath } = this.props;
+		const { goToPath, role: { userPermissionList = [] } = {} } = this.props;
 		const shopList = Storage.get(CookieUtil.SHOP_LIST_KEY, 'local') || [];
 		if (shopList.length === 0) {
-			message.warning(formatMessage({ id: 'alert.store.is.none' }));
-			goToPath('storeCreate', { action: 'create' });
+			if (
+				userPermissionList.some(
+					permission => permission.path === `${MENU_PREFIX.STORE}/list`
+				)
+			) {
+				message.warning(formatMessage({ id: 'alert.store.is.none' }));
+				goToPath('storeCreate', { action: 'create' });
+			} else {
+				goToPath('account');
+			}
 			// router.push(`${MENU_PREFIX.STORE}/createStore?action=create`);
 		}
 	};
@@ -296,13 +304,14 @@ class BasicLayout extends React.PureComponent {
 }
 
 export default connect(
-	({ global, setting, menu, user, store: storeData }) => ({
+	({ global, setting, menu, user, store: storeData, role }) => ({
 		collapsed: global.collapsed,
 		layout: setting.layout,
 		menuData: menu.menuData,
 		breadcrumbNameMap: menu.breadcrumbNameMap,
 		user,
 		storeData,
+		role,
 		...setting,
 	}),
 	dispatch => ({
