@@ -52,4 +52,52 @@ export default {
 	'notif-ap-offline-btn2': '查看状态',
 	'notif-import-product-failure-btn2': '查看状态',
 	'notif-motion-detect-btn2': '关闭',
+
+	// ipc-device-model
+	'notif-model-device-ipc-ota': '版本升级提醒',
+	'notif-model-device-ipc-motion-detect-video': '动态侦测（画面侦测）通知',
+	'notif-model-device-ipc-motion-detect-audio': '动态侦测（声音侦测）通知',
+	'notif-model-device-ipc-motion-detect-video-audio': '动态侦测（画面与声音侦测）通知',
+	'notif-model-device-ipc-on/offline': '网络摄像机上下线通知',
+	'notif-model-device-ipc-tf-card-detect': '存储卡提醒',
+
+	// ipc-device-title
+	'notif-device-ipc-ota-title': '检查到新版固件',
+	'notif-device-ipc-motion-detect-video-title': '网络摄像机侦测到异常',
+	'notif-device-ipc-motion-detect-audio-title': '网络摄像机侦测到异常',
+	'notif-device-ipc-motion-detect-video-audio-title': '网络摄像机侦测到异常',
+	'notif-device-ipc-on/offline-title': '检测到网络摄像机离线',
+	// todo
+	'notif-device-ipc-tf-card-detect-title': '网络摄像机侦测到异常',
+
+	// ipc-device-desc
+	'notif-device-ipc-ota-desc': '网络摄像机有新版固件，请更新',
+	'notif-device-ipc-motion-detect-video-desc': '网络摄像机侦测到异常画面，请即刻查看',
+	'notif-device-ipc-motion-detect-audio-desc': '网络摄像机侦测到异常声音，请即刻查看',
+	'notif-device-ipc-motion-detect-video-audio-desc': '网络摄像机侦测到异常画面与声音，请即刻查看',
+	'notif-device-ipc-on/offline-desc': '网络摄像机已离线，请检查设备状态',
+	'notif-device-ipc-tf-card-detect-desc': '网络摄像机的存储卡%s',
+
+	// ipc-device-content
+	'notif-device-ipc-ota-content': '网络摄像机（%s）已发布新版固件%s，请更新',
+	'notif-device-ipc-motion-detect-video-content': '网络摄像机（%s）侦测到异常画面，请即刻查看',
+	'notif-device-ipc-motion-detect-audio-content': '网络摄像机（%s）侦测到异常声音，请即刻查看',
+	'notif-device-ipc-motion-detect-video-audio-content':
+		'网络摄像机（%s）侦测到异常画面与声音，请即刻查看',
+	'notif-device-ipc-on/offline-content': '网络摄像机（%s）于%s离线，请检查设备状态',
+	'notif-device-ipc-tf-card-detect-content': '网络摄像机（%s）的存储卡%s',
+
+	// esl-device-model
+	'notif-model-system-esl-erp': 'ERP对接提醒',
+	'notif-model-system-esl-ota': '版本升级提醒',
+	'notif-model-system-esl-ap-on/offline': '基站上下线通知',
+
+	// esl-device-title
+	'notif-system-esl-erp-title': 'ERP对接完成',
+	'notif-device-esl-ota-title': '检测到新版固件',
+	'notif-device-esl-ap-on/offline-title': '检测到基站离线',
+
+	// esl-device-desc
+	'notif-system-esl-erp-desc':
+		'【商户-门店】已完成与<(康铭泰克速店农贸版)>的对接，成功获取<1234>条商品信息',
 };
