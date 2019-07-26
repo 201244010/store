@@ -201,13 +201,6 @@ export default {
 						if (filteredPermissionList.length > 0) {
 							filteredMenuData = checkMenuAuth(menuData, filteredPermissionList);
 						}
-						return (menuList || []).includes(item.base);
-					}
-
-					console.log('filteredPermissionList: ', filteredPermissionList);
-
-					if (filteredPermissionList.length > 0) {
-						filteredMenuData = checkMenuAuth(menuData, filteredPermissionList);
 					}
 				}
 			}
