@@ -90,7 +90,7 @@ export default {
 		'[##comapny_name## - ##shop_name##]网络摄像机##device_name##侦测到异常声音，请即刻查看',
 	'notif-device-ipc-motion-detect-video-audio-desc':
 		'[##comapny_name## - ##shop_name##]网络摄像机 ##device_name## 侦测到异常画面与声音，请即刻查看',
-	'notif-device-ipc-on/offline-desc': '网络摄像机已离线，请检查设备状态',
+	'notif-device-ipc-on/offline-desc': '[##company_name##-##shop_name##]网络摄像机(##device_name##)已离线，请检查设备状态',
 	'notif-device-ipc-tf-card-detect-desc': '网络摄像机的存储卡##status##',
 	'notif-device-ipc-tf-card-detect-tf-non-exist-desc':
 		'[##company_name##-##shop_name##]网络摄像机##device_name##的存储卡未插入或被拔出，请检查',
@@ -118,7 +118,7 @@ export default {
 	'notif-device-ipc-motion-detect-video-audio-content':
 		'网络摄像机（##device_name##）侦测到异常画面与声音，请即刻查看',
 	'notif-device-ipc-on/offline-content':
-		'网络摄像机（##device_name## 于##disconnect_time##离线，请检查设备状态',
+		'网络摄像机（##device_name##） 于##disconnect_time##离线，请检查设备状态',
 	'notif-device-ipc-tf-card-detect-content': '网络摄像机（##device_name##）的存储卡##status##',
 	'notif-device-ipc-tf-card-detect-content-0': '无sd卡',
 	'notif-device-ipc-tf-card-detect-content-1': '插入sd卡，需初始化',
