@@ -70,10 +70,10 @@ export default {
 	'notif-device-ipc-motion-detect-video-audio-title': '网络摄像机侦测到异常',
 	'notif-device-ipc-on/offline-title': '检测到网络摄像机离线',
 	'notif-device-ipc-tf-card-detect-title': '网络摄像机的存储卡{{status}}',
-	'notif-device-ipc-tf-card-detect-tf-nonexist-title': '网络摄像机的存储卡未插入或被拔出',
+	'notif-device-ipc-tf-card-detect-tf-non-exist-title': '网络摄像机的存储卡未插入或被拔出',
 	'notif-device-ipc-tf-card-detect-tf-exist-title': '网络摄像机检测到存储卡插入',
 	'notif-device-ipc-tf-card-detect-tf-capable-title': '网络摄像机检测到可用的存储卡',
-	'notif-device-ipc-tf-card-detect-tf-abnormal-title': '网络摄像机检测到存储卡异常',
+	'notif-device-ipc-tf-card-detect-tf-non-capable-title': '网络摄像机检测到存储卡异常',
 	'notif-device-ipc-tf-card-detect-title-1': '图像',
 	'notif-device-ipc-tf-card-detect-title-2': '声音',
 	'notif-device-ipc-tf-card-detect-title-3': '图像和声音',
@@ -88,13 +88,13 @@ export default {
 		'[{{comapny_name}} - {{shop_name}}]网络摄像机 {{device_name}} 侦测到异常画面与声音，请即刻查看',
 	'notif-device-ipc-on/offline-desc': '网络摄像机已离线，请检查设备状态',
 	'notif-device-ipc-tf-card-detect-desc': '网络摄像机的存储卡{{status}}',
-	'notif-device-ipc-tf-card-detect-tf-nonexist-desc':
+	'notif-device-ipc-tf-card-detect-tf-non-exist-desc':
 		'[{{company_name}}-{{shop_name}}]网络摄像机{{device_name}}的存储卡未插入或被拔出，请检查',
 	'notif-device-ipc-tf-card-detect-tf-exist-desc':
 		'[{{company_name}}-{{shop_name}}]网络摄像机{{device_name}}检测到有新存储卡插入，请查看',
 	'notif-device-ipc-tf-card-detect-tf-capable-desc':
 		'[{{company_name}}-{{shop_name}}]网络摄像机{{device_name}}检测到可用的存储卡，请查看',
-	'notif-device-ipc-tf-card-detect-tf-abnormal-desc':
+	'notif-device-ipc-tf-card-detect-tf-non-capable-desc':
 		'[{{company_name}}-{{shop_name}}]网络摄像机{{device_name}}检测到存储卡异常，请查看',
 
 	// 'notif-device-ipc-tf-card-detect-btn1': '查看状态',
@@ -117,11 +117,11 @@ export default {
 	'notif-device-ipc-tf-card-detect-content-3': 'sd卡无法识别',
 	'notif-device-ipc-tf-card-detect-tf-exist-content':
 		'网络摄像机{{device_name}}检测到有新存储卡插入，建议格式化，用于本地存储监控视频',
-	'notif-device-ipc-tf-card-detect-tf-nonexist-content':
+	'notif-device-ipc-tf-card-detect-tf-non-exist-content':
 		'网络摄像机{{device_name}}的存储卡未插入或被拔出，请检查',
 	'notif-device-ipc-tf-card-detect-tf-capable-content':
 		'网络摄像机{{device_name}}检测到可用的存储卡，可用于本地存储监控视频',
-	'notif-device-ipc-tf-card-detect-tf-abnormal-content':
+	'notif-device-ipc-tf-card-detect-tf-non-capable-content':
 		'网络摄像机{{device_name}}检测到插入的存储卡可能已损坏，请更换存储卡',
 
 	// esl-device-model

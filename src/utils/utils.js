@@ -418,7 +418,7 @@ export const priceFormat = (price, dotPos = 3) => {
 };
 
 export const analyzeMessageTemplate = message => {
-	const [messageId, values] = message.split(':');
+	const [messageId, values] = decodeURIComponent(message).split(':');
 	let valueList = [];
 
 	if (values) {
