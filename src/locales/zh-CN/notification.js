@@ -99,6 +99,11 @@ export default {
 
 	// 'notif-device-ipc-tf-card-detect-btn1': '查看状态',
 
+	'notif-device-ipc-tf-card-detect-tf-exist-btn1': '查看状态',
+	'notif-device-ipc-tf-card-detect-tf-non-exist-btn1': '格式化',
+	'notif-device-ipc-tf-card-detect-tf-capable-btn1': '查看状态',
+	'notif-device-ipc-tf-card-detect-tf-non-capable-btn1': '查看状态',
+
 	// ipc-device-content
 	'notif-device-ipc-ota-content':
 		'网络摄像机（{{device_name}}）已发布新版固件{{bin_version}}，请更新',
