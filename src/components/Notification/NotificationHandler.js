@@ -44,6 +44,27 @@ const ACTION_MAP = {
 			goToPath('notificationList');
 		}
 	},
+	'notif-device-ipc-tf-card-detect-tf-exist-btn1':({handlers: { formatSdCard, goToPath }, params}) => {
+		const deviceSn = params.split('&')[0].split('=')[1];
+		formatSdCard(deviceSn);
+		goToPath('ipcManagement',{sn:deviceSn});
+	},
+	// TF卡拔出
+	'notif-device-ipc-tf-card-detect-tf-non-exist-btn1':({ handlers: { goToPath }, params }) => {
+		const deviceSn = params.split('&')[0].split('=')[1];		
+		goToPath('ipcManagement',{sn:deviceSn});
+	},
+	// TF卡可用
+	'notif-device-ipc-tf-card-detect-tf-capable-btn1':({ handlers: { goToPath }, params }) => {
+		const deviceSn = params.split('&')[0].split('=')[1];		
+		goToPath('ipcManagement',{sn:deviceSn});
+	},
+	// TF卡不可用
+	'notif-device-ipc-tf-card-detect-tf-non-capable-btn1':({ handlers: { goToPath }, params }) => {
+		const deviceSn = params.split('&')[0].split('=')[1];		
+		goToPath('ipcManagement',{sn:deviceSn});
+	},
+
 };
 
 const NotificationHandler = props => {
