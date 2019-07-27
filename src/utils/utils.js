@@ -426,12 +426,12 @@ export const analyzeMessageTemplate = message => {
 			const [key, value] = item.split('=');
 			if (key.indexOf('decode-') > -1) {
 				return {
-					key: `{{${key.replace('decode-', '')}}}`,
+					key: `##${key.replace('decode-', '')}##`,
 					value: formatMessage({ id: `${messageId}-${value}` }),
 				};
 			}
 			return {
-				key: `{{${key}}}`,
+				key: `##${key}##`,
 				value,
 			};
 		});
@@ -449,8 +449,8 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
 		return null;
 	}
 
-	// console.log('messageId: ', messageId);
-	// console.log('valueList: ', valueList);
+	console.log('messageId: ', messageId);
+	console.log('valueList: ', valueList);
 	const message = formatMessage({ id: messageId });
 	if (valueList.length === 0) {
 		return message;
