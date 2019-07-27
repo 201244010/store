@@ -54,6 +54,10 @@ export default {
 	'notif-ap-offline-btn2': '查看状态',
 	'notif-import-product-failure-btn2': '查看状态',
 	'notif-motion-detect-btn2': '关闭',
+	'notif-device-ipc-on/offline-btn1': '查看状态',
+	'notif-system-task-erp-btn1': '查看',
+	'notif-device-ipc-motion-detect-video-btn1': '查看监控',
+	'notif-device-ipc-motion-detect-audio-btn1': '查看监控',
 
 	// ipc-device-model
 	'notif-model-device-ipc-ota': '版本升级提醒',
