@@ -75,7 +75,7 @@ function MQTTWrapper(WrapperedComponent) {
 					data: param,
 					key: uniqueKey,
 					closeAction: this.removeNotification,
-					handlers: { goToPath, formatSdCard },
+					handlers: { goToPath, formatSdCard, removeNotification: this.removeNotification },
 				});
 			});
 			await getNotificationCount();

@@ -44,25 +44,29 @@ const ACTION_MAP = {
 			goToPath('notificationList');
 		}
 	},
-	'notif-device-ipc-tf-card-detect-tf-exist-btn1':({handlers: { formatSdCard, goToPath }, params}) => {
+	'notif-device-ipc-tf-card-detect-tf-exist-btn1':({handlers: { formatSdCard, goToPath, removeNotification }, params, extra:{ key }}) => {
 		const deviceSn = params.split('&')[0].split('=')[1];
 		formatSdCard(deviceSn);
 		goToPath('ipcManagement',{sn:deviceSn});
+		removeNotification(key);
 	},
 	// TF卡拔出
-	'notif-device-ipc-tf-card-detect-tf-non-exist-btn1':({ handlers: { goToPath }, params }) => {
+	'notif-device-ipc-tf-card-detect-tf-non-exist-btn1':({ handlers: { goToPath, removeNotification }, params, extra:{ key } }) => {
 		const deviceSn = params.split('&')[0].split('=')[1];		
 		goToPath('ipcManagement',{sn:deviceSn});
+		removeNotification(key);
 	},
 	// TF卡可用
-	'notif-device-ipc-tf-card-detect-tf-capable-btn1':({ handlers: { goToPath }, params }) => {
+	'notif-device-ipc-tf-card-detect-tf-capable-btn1':({ handlers: { goToPath, removeNotification }, params, extra:{ key } }) => {
 		const deviceSn = params.split('&')[0].split('=')[1];		
 		goToPath('ipcManagement',{sn:deviceSn});
+		removeNotification(key);
 	},
 	// TF卡不可用
-	'notif-device-ipc-tf-card-detect-tf-non-capable-btn1':({ handlers: { goToPath }, params }) => {
+	'notif-device-ipc-tf-card-detect-tf-non-capable-btn1':({ handlers: { goToPath, removeNotification }, params, extra:{ key } }) => {
 		const deviceSn = params.split('&')[0].split('=')[1];		
 		goToPath('ipcManagement',{sn:deviceSn});
+		removeNotification(key);
 	},
 
 };
@@ -76,7 +80,7 @@ const NotificationHandler = props => {
 		type = null,
 		style = {},
 	} = props;
-
+	console.log(extra);
 	const handleAction = () => {
 		if (buttonName) {
 			const hander = ACTION_MAP[buttonName] || (() => null);
