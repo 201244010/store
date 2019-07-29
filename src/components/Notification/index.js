@@ -14,7 +14,7 @@ export const Title = props => {
 };
 
 export const Description = props => {
-	const { description = '', btnOptions = {}, handlers = {} } = props;
+	const { description = '', btnOptions = {}, handlers = {}, extra = {} } = props;
 	const {
 		majorButtonName = null,
 		majorButtonLink = null,
@@ -33,6 +33,7 @@ export const Description = props => {
 								buttonName: minorButtonName,
 								buttonParams: minorButtonLink,
 								handlers,
+								extra
 							}}
 						/>
 					)}
@@ -42,6 +43,7 @@ export const Description = props => {
 								buttonName: majorButtonName,
 								buttonParams: majorButtonLink,
 								handlers,
+								extra,
 								type: 'primary',
 								style: { marginLeft: '15px' },
 							}}
@@ -82,6 +84,7 @@ export const displayNotification = props => {
 				{...{
 					description,
 					handlers,
+					extra:{ key },
 					btnOptions: {
 						majorButtonName,
 						majorButtonLink,

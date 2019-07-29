@@ -7,9 +7,9 @@ export default {
 	'menu.notification.center': '消息中心',
 	'menu.notification.info': '消息详情',
 
-	'menu.devices': '摄像机管理',
-	'menu.devices.ipcList': '设备列表',
-	'menu.devices.motionMessage': '消息提醒',
+	'menu.devices': '智能摄像机',
+	'menu.devices.ipcList': '摄像机管理',
+	'menu.devices.motionMessage': '活动侦测',
 	'menu.devices.ipcList.live': '直播',
 	'menu.devices.ipcList.ipcManagement': '摄像机设置',
 	'menu.motionMessage': '消息提醒',

@@ -53,7 +53,6 @@ export default class ShowHeader extends React.Component {
 	};
 
 	render() {
-		// const { today = {}, week = {}, month = {} } = this.props;
 		const { time, activeKey } = this.state;
 
 		const shopList = JSON.parse(localStorage.getItem(SHOP_LIST_KEY));
@@ -80,21 +79,21 @@ export default class ShowHeader extends React.Component {
 							key={ACTIVEKEY[0]}
 							forceRender
 						>
-							<ShowTabContent time="today" />
+							<ShowTabContent time="today" activeKey={activeKey} />
 						</TabPane>
 						<TabPane
 							tab={formatMessage({ id: 'dashboard.search.week' })}
 							key={ACTIVEKEY[1]}
 							forceRender
 						>
-							<ShowTabContent time="week" />
+							<ShowTabContent time="week" activeKey={activeKey} />
 						</TabPane>
 						<TabPane
 							tab={formatMessage({ id: 'dashboard.search.month' })}
 							key={ACTIVEKEY[2]}
 							forceRender
 						>
-							<ShowTabContent time="month" />
+							<ShowTabContent time="month" activeKey={activeKey} />
 						</TabPane>
 					</Tabs>
 				</div>
