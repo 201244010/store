@@ -24,6 +24,7 @@ function MQTTWrapper(WrapperedComponent) {
 			getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
 			goToPath: (pathId, urlParams = {}) =>
 				dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+			formatSdCard: (sn) => { dispatch({ type: 'sdcard/formatSdCard', sn });},
 		})
 	)
 	@Ipc
@@ -56,7 +57,7 @@ function MQTTWrapper(WrapperedComponent) {
 
 		showNotification = async data => {
 			const { notificationList } = this.state;
-			const { getNotificationCount, getUnreadNotification, goToPath } = this.props;
+			const { getNotificationCount, getUnreadNotification, goToPath, formatSdCard } = this.props;
 			const messageData = JSON.parse(data.toString()) || {};
 			const uniqueKey = getRandomString();
 
@@ -74,7 +75,7 @@ function MQTTWrapper(WrapperedComponent) {
 					data: param,
 					key: uniqueKey,
 					closeAction: this.removeNotification,
-					handlers: { goToPath },
+					handlers: { goToPath, formatSdCard, removeNotification: this.removeNotification },
 				});
 			});
 			await getNotificationCount();
