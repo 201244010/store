@@ -44,29 +44,42 @@ const ACTION_MAP = {
 			goToPath('notificationList');
 		}
 	},
-	'notif-device-ipc-tf-card-detect-tf-exist-btn1':({handlers: { formatSdCard, goToPath, removeNotification }, params, extra:{ key }}) => {
+	'notif-device-ipc-tf-card-detect-tf-exist-btn1':({handlers: { formatSdCard, goToPath, removeNotification }, params, extra}) => {
 		const deviceSn = params.split('&')[0].split('=')[1];
 		formatSdCard(deviceSn);
 		goToPath('ipcManagement',{sn:deviceSn});
-		removeNotification(key);
+		if(removeNotification){
+			const { key } = extra;
+			removeNotification(key);
+		}
+		
 	},
 	// TF卡拔出
-	'notif-device-ipc-tf-card-detect-tf-non-exist-btn1':({ handlers: { goToPath, removeNotification }, params, extra:{ key } }) => {
+	'notif-device-ipc-tf-card-detect-tf-non-exist-btn1':({ handlers: { goToPath, removeNotification }, params, extra}) => {
 		const deviceSn = params.split('&')[0].split('=')[1];		
 		goToPath('ipcManagement',{sn:deviceSn});
-		removeNotification(key);
+		if(removeNotification){
+			const { key } = extra;
+			removeNotification(key);
+		}
 	},
 	// TF卡可用
-	'notif-device-ipc-tf-card-detect-tf-capable-btn1':({ handlers: { goToPath, removeNotification }, params, extra:{ key } }) => {
+	'notif-device-ipc-tf-card-detect-tf-capable-btn1':({ handlers: { goToPath, removeNotification }, params, extra}) => {
 		const deviceSn = params.split('&')[0].split('=')[1];		
 		goToPath('ipcManagement',{sn:deviceSn});
-		removeNotification(key);
+		if(removeNotification){
+			const { key } = extra;
+			removeNotification(key);
+		}
 	},
 	// TF卡不可用
-	'notif-device-ipc-tf-card-detect-tf-non-capable-btn1':({ handlers: { goToPath, removeNotification }, params, extra:{ key } }) => {
+	'notif-device-ipc-tf-card-detect-tf-non-capable-btn1':({ handlers: { goToPath, removeNotification }, params, extra}) => {
 		const deviceSn = params.split('&')[0].split('=')[1];		
 		goToPath('ipcManagement',{sn:deviceSn});
-		removeNotification(key);
+		if(removeNotification){
+			const { key } = extra;
+			removeNotification(key);
+		}
 	},
 
 };
