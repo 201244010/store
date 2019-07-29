@@ -16,8 +16,6 @@ import posList from './zh-CN/posList';
 import tradeVideos from './zh-CN/tradeVideos';
 import live from './zh-CN/live';
 import photoManagement from './zh-CN/photoManagement';
-import faceLog from './zh-CN/faceLog';
-import entryDetail from './zh-CN/entryDetail';
 
 export default {
 
@@ -38,7 +36,5 @@ export default {
 	...posList,
 	...tradeVideos,
 	...live,
-	...photoManagement,
-	...faceLog,
-	...entryDetail
+	...photoManagement
 };

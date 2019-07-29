@@ -52,11 +52,6 @@ class LivePlayer extends React.Component{
 		const { getLiveUrl } = this.props;
 		const url = await getLiveUrl();
 
-		if (!url) {
-			console.log('直播的URL未能成功获取！');
-			return;
-		}
-
 		this.src(url);
 
 		this.setState({
@@ -119,7 +114,7 @@ class LivePlayer extends React.Component{
 			else if (isInside === timestamp) {
 				// 选取的时间点比所有时间段都晚，说明下一段是直播
 				console.log('goto playLive. because no next video.');
-				await this.pauseLive();
+
 				await this.pauseHistory();
 				this.playLive();
 			}else{

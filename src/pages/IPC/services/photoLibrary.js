@@ -1,5 +1,5 @@
 import { customizeFetch } from '@/utils/fetch';
-import { format, map, shake } from '@konata9/milk-shake';
+import { format } from '@konata9/milk-shake';
 import CONFIG, {env} from '@/config';
 import * as CookieUtil from '@/utils/cookies';
 
@@ -76,7 +76,7 @@ export const getRange = async () => (
 	range('getRangeList').then(
 		async response => {
 			const json = await response.json();
-			return shake(json)(map([{from: 'age_range_code', to: 'ageRange'}]),format('toCamel'));
+			return format('toCamel')(json);
 		}
 	)	
 );
@@ -85,8 +85,7 @@ export const getRange = async () => (
 
 // 编辑
 export const editInfo = async  (params) => {
-	// const body = format('toSnake')(params);
-	const body = shake(params)(map([{from: 'ageRange', to: 'age_range_code'}]), format('toSnake'));
+	const body = format('toSnake')(params);
 	return request1('update', {
 		body: {
 			...body

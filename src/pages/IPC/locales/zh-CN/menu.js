@@ -13,12 +13,6 @@ export default {
 	'menu.devices.ipcList.live': '直播',
 	'menu.devices.ipcList.ipcManagement': '摄像机设置',
 	'menu.motionMessage': '消息提醒',
-	
-
-	'menu.faceidLabrary.management': '人脸库管理',
-	'menu.faceidLabrary.list': '人脸库列表',
-	'menu.faceLog':'人脸日志',
-	'menu.entryDetail':'进店详情',
 
 	'menu.faceidLibrary': '人脸分组管理',
 	'menu.faceidLibrary.list': '人脸分组列表',

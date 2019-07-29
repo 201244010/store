@@ -70,6 +70,7 @@ class MotionList extends React.Component {
 		this.setState({
 			currentPage: 1
 		});
+
 	}
 
 	resetHandler = () => {

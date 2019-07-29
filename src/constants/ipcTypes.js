@@ -8,8 +8,7 @@ export  default {
 		},{
 			key: 1,
 			value: 180
-		}],
-		OTATime: 360000
+		}]
 	},
 	'SS1': {
 		hasFaceid: false,
@@ -26,8 +25,7 @@ export  default {
 		},{
 			key: 3,
 			value: 270
-		}],
-		OTATime: 120000
+		}]
 	},
 	'FM010': {
 		hasFaceid: false,
@@ -44,7 +42,6 @@ export  default {
 		},{
 			key: 3,
 			value: 270
-		}],
-		OTATime: 120000
+		}]
 	}
 };
