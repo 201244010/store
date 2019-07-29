@@ -48,6 +48,14 @@ const mapDispatchToProps = (dispatch) => ({
 				status
 			}
 		});
+	},
+	getDeviceInfo({ sn }) {
+		return dispatch({
+			type: 'ipcList/getDeviceInfo',
+			payload: {
+				sn
+			}
+		}).then(info => info);
 	}
 });
 
@@ -58,6 +66,7 @@ class SoftwareUpdate extends Component {
 		// isLatest: true,
 		visible: false,
 		percent: 0,
+		deviceInfo: {}
 		// proVisible: false,
 		// isUpdate: false,
 		// isCheck: false
@@ -65,9 +74,15 @@ class SoftwareUpdate extends Component {
 
 	interval = 0
 
-	componentDidMount = () => {
-		const { load, sn } = this.props;
+	componentDidMount = async () => {
+		const { load, sn, getDeviceInfo } = this.props;
 		// console.log(sn);
+		if(sn){
+			const deviceInfo = await getDeviceInfo({ sn });
+			this.setState({
+				deviceInfo
+			});
+		}
 		load(sn);
 	}
 
@@ -83,9 +98,11 @@ class SoftwareUpdate extends Component {
 
 	updateSoftware = () => {
 		const { update,  sn } = this.props;
+		const { deviceInfo: { OTATime }} = this.state;
 		update(sn);
 
-		const time = 120*1000;
+		const time = OTATime;
+		console.log(time);
 		clearInterval(this.interval);
 		this.interval = setInterval(() => {
 			const { percent } = this.state;
