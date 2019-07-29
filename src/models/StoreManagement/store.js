@@ -59,6 +59,31 @@ export default {
 	},
 
 	effects: {
+		* getStoreNameById({
+			payload
+		}, {
+			put
+		}) {
+			const {
+				shopId
+			} = payload;
+			const response = yield put.resolve({
+				type: 'getStoreList',
+				payload: {}
+			});
+			let name = '';
+			if (response && response.code === ERROR_OK) {
+				const data = response.data || {};
+				const shopList = data.shop_list || [];
+				shopList.map(item => {
+					if (item.shop_id === shopId) {
+						name = item.shop_name;
+					}
+				});
+			}
+			// console.log(name);
+			return name;
+		},
 		*changeSearchFormValue({ payload }, { put, select }) {
 			const { options = {} } = payload;
 			const { searchFormValue } = yield select(state => state.store);
