@@ -11,16 +11,20 @@ const palyMotion = ({ params }) => {
 	const modal = Modal.info({
 		title: '',
 		content: (
-			<ModalPlayer
-				visible
-				onClose={() => {
-					if (modal) {
-						modal.destroy();
-					}
-				}}
-				videoUrl={url}
-				pixelRatio={pixelRatio}
-			/>
+			<>
+				{url && (
+					<ModalPlayer
+						visible
+						onClose={() => {
+							if (modal) {
+								modal.destroy();
+							}
+						}}
+						videoUrl={url}
+						pixelRatio={pixelRatio}
+					/>
+				)}
+			</>
 		),
 		okButtonProps: { style: { dispaly: 'none' } },
 	});
@@ -81,7 +85,6 @@ const ACTION_MAP = {
 			removeNotification(key);
 		}
 	},
-
 };
 
 const NotificationHandler = props => {
