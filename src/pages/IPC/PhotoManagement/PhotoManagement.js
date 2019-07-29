@@ -356,8 +356,9 @@ class PhotoManagement extends React.Component {
 		const limitCapacity = this.groupRestCapacity();
 		const limit = limitCapacity < 20 ? limitCapacity : 20;
 
-		const list = fileList.filter( item =>{
-			return item.status !== 'removed';
+		const list = fileList.filter( item => {
+			const result = item.status !== 'removed';
+			return result;
 		});
 		// console.log(limitCapacity, limit);
 		let overLimit = false;
@@ -395,10 +396,10 @@ class PhotoManagement extends React.Component {
 	handleLibraryName = value => {
 		const { type, groupName } = value;
 		switch(type) {
-			case 1: return formatMessage({id: 'photoManagement.card.libraryName1'});
-			case 2: return formatMessage({id: 'photoManagement.card.libraryName2'});
-			case 3: return formatMessage({id: 'photoManagement.card.libraryName3'});
-			case 4: return formatMessage({id: 'photoManagement.card.libraryName4'});
+			case 1: return formatMessage({id: 'photoManagement.card.stranger'});
+			case 2: return formatMessage({id: 'photoManagement.card.regular'});
+			case 3: return formatMessage({id: 'photoManagement.card.employee'});
+			case 4: return formatMessage({id: 'photoManagement.card.blacklist'});
 			default: return groupName;
 		}
 	};
@@ -438,10 +439,10 @@ class PhotoManagement extends React.Component {
 		});
 
 		switch(name.type) {
-			case 1: return formatMessage({id: 'photoManagement.card.libraryName1'});
-			case 2: return formatMessage({id: 'photoManagement.card.libraryName2'});
-			case 3: return formatMessage({id: 'photoManagement.card.libraryName3'});
-			case 4: return formatMessage({id: 'photoManagement.card.libraryName4'});
+			case 1: return formatMessage({id: 'photoManagement.card.stranger'});
+			case 2: return formatMessage({id: 'photoManagement.card.regular'});
+			case 3: return formatMessage({id: 'photoManagement.card.employee'});
+			case 4: return formatMessage({id: 'photoManagement.card.blacklist'});
 			default: return name.groupName;
 		}
 	};

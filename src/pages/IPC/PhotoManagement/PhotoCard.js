@@ -319,10 +319,10 @@ class PhotoCard extends React.Component {
 	handleLibraryName = value => {
 		const { groupName } = value;
 		switch(value.type) {
-			case 1: return formatMessage({id: 'photoManagement.card.libraryName1'});
-			case 2: return formatMessage({id: 'photoManagement.card.libraryName2'});
-			case 3: return formatMessage({id: 'photoManagement.card.libraryName3'});
-			case 4: return formatMessage({id: 'photoManagement.card.libraryName4'});
+			case 1: return formatMessage({id: 'photoManagement.card.stranger'});
+			case 2: return formatMessage({id: 'photoManagement.card.regular'});
+			case 3: return formatMessage({id: 'photoManagement.card.employee'});
+			case 4: return formatMessage({id: 'photoManagement.card.blacklist'});
 			default: return groupName;
 		}
 	};

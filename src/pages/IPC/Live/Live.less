@@ -32,7 +32,7 @@
 		// display: inline-block;
 		// width: 178px;
 		width: 176px;
-		height: 100%;
+		height: calc(100% - 60px);
 
 		overflow: hidden;
 
@@ -101,6 +101,7 @@
 
 			.button-infos{
 
+				cursor: pointer;
 				font-size: 14px;
 				color: #ffffff;
 
@@ -179,32 +180,30 @@
 		// 	}
 		// }
 
-		.infos-more{
-			text-align: center;
-			font-size: 14px;
 
-			height: 60px;
-			line-height: 60px;
-			margin: 0 auto;
-			// padding: 3px 0;
-			width: 176px;
-			// display: block;
-			// border-radius: 4px;
-			background-color: #ffffff;
-			position: fixed;
-			z-index: 999;
-			bottom: 32px;
-			:global{
-				a{
-					color: #525866;
-				}
-			}
-		}
 
 		:global{
 			.ant-list-item{
 				border-bottom: 0 none;
 				padding: 24px 0 0;
+			}
+		}
+	}
+	.infos-more{
+		text-align: center;
+		font-size: 14px;
+		cursor: pointer;
+		position: absolute;
+		top: calc(100% - 60px);
+		right: 0;
+
+		height: 60px;
+		line-height: 60px;
+		width: 176px;
+		background-color: #ffffff;
+		:global{
+			a{
+				color: #525866;
 			}
 		}
 	}
