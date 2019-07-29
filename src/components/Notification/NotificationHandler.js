@@ -48,9 +48,13 @@ const ACTION_MAP = {
 			goToPath('notificationList');
 		}
 	},
-	'notif-device-ipc-tf-card-detect-tf-exist-btn1':({handlers: { formatSdCard, goToPath, removeNotification }, params, extra}) => {
+	// 需格式化
+	'notif-device-ipc-tf-card-detect-tf-exist-btn1':async ({handlers: { formatSdCard, goToPath, removeNotification, getSdStatus }, params, extra}) => {
 		const deviceSn = params.split('&')[0].split('=')[1];
-		formatSdCard(deviceSn);
+		const status = await getSdStatus(deviceSn);
+		if(status === 1){
+			formatSdCard(deviceSn);
+		}
 		goToPath('ipcManagement',{sn:deviceSn});
 		if(removeNotification){
 			const { key } = extra;
@@ -96,7 +100,7 @@ const NotificationHandler = props => {
 		type = null,
 		style = {},
 	} = props;
-	console.log(extra);
+
 	const handleAction = () => {
 		if (buttonName) {
 			const hander = ACTION_MAP[buttonName] || (() => null);

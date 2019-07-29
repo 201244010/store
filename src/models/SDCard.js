@@ -1,3 +1,6 @@
+import { getSdStatus } from '../pages/IPC/services/initStatusSDCard';
+import { ERROR_OK } from '@/constants/errorCode';
+
 const formatCode = '0x3058';
 
 // const Status = {
@@ -9,14 +12,21 @@ const formatCode = '0x3058';
 
 export default {
 	namespace: 'sdcard',
+	state:[],
+	reducers:{},
 	effects: {
 		*formatSdCard(action, { put }) {
 			const { sn } = action;
-
+			const deviceType = yield put.resolve({
+				type:'ipcList/getDeviceType',
+				payload: {
+					sn
+				}
+			});
 			const topicPublish = yield put.resolve({
 				type:'mqttIpc/generateTopic',
 				payload:{
-					deviceType: 'SS1',
+					deviceType,
 					messageType: 'request',
 					method: 'pub'
 				}
@@ -34,6 +44,21 @@ export default {
 					}
 				}
 			});
+		},
+		*getSdStatus(action, { put }) {
+			const { sn } = action;
+			const deviceId = yield put.resolve({
+				type:'ipcList/getDeviceId',
+				payload: {
+					sn
+				}
+			});
+			const response = yield getSdStatus({deviceId});
+			if(response.code === ERROR_OK ){
+				return response.status;
+			}
+			return -1;
+			
 		},
 
 	},
