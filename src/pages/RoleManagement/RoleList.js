@@ -189,8 +189,6 @@ class RoleList extends React.Component {
 		const {
 			form: { validateFields, setFields },
 			changeAdmin,
-			getRoleList,
-			getUserInfo,
 		} = this.props;
 		validateFields(['account'], async (err, values) => {
 			if (!err) {
@@ -214,8 +212,7 @@ class RoleList extends React.Component {
 					this.setState({
 						visible: false,
 					});
-					await getRoleList({});
-					await getUserInfo();
+					window.location.reload();
 				}
 			}
 		});

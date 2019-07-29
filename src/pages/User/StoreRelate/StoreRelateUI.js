@@ -3,6 +3,7 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { Button, Form, Input } from 'antd';
 import * as CookieUtil from '@/utils/cookies';
+import Storage from '@konata9/storage.js';
 import { ERROR_OK } from '@/constants/errorCode';
 import styles from './StoreRelate.less';
 
@@ -138,10 +139,16 @@ class StoreRelate extends Component {
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
 			const shopList = result.shop_list || [];
+			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
+
 			if (shopList.length === 0) {
+				CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
 				goToPath('storeCreate');
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
+				const lastStore = shopList.length;
+				const defaultStore = shopList[lastStore - 1] || {};
+				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
 				goToPath('root');
 				// router.push('/');
 			}

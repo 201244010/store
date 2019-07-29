@@ -18,8 +18,6 @@ export const getSdStatus = async (params) => {
 
 		if (code === ERROR_OK) {
 			const status = data.sd_status_code;
-			// console.log('-----------------');
-			// console.log(status);
 			return {
 				code: ERROR_OK,
 				status

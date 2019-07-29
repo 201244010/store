@@ -3,6 +3,8 @@ import { formatMessage } from 'umi/locale';
 import { Form, Button, Input } from 'antd';
 import { connect } from 'dva';
 import styles from './Merchant.less';
+import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
 
 @connect(
@@ -24,10 +26,14 @@ class MerchantCreate extends Component {
 		const response = await getStoreList({});
 		const result = response.data || {};
 		const shopList = result.shop_list || [];
+		Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 		if (shopList.length === 0) {
+			CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
 			goToPath('storeCreate');
 			// router.push(`${MENU_PREFIX.STORE}/createStore`);
 		} else {
+			const defaultStore = shopList[0] || {};
+			CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
 			goToPath('root');
 			// router.push('/');
 		}

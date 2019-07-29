@@ -486,6 +486,19 @@ const router = [
 						id: 'faceidLibraryList',
 						component: './IPC/FaceidLibrary/LibraryList.js',
 					},
+					{
+						path: '/faceidLibrary/faceLog',
+						name: 'faceLog',
+						id: 'faceLog',
+						component: './IPC/FaceLog/index.js',
+					},
+					{
+						path: '/faceidLibrary/entryDetail',
+						name: 'entryDetail',
+						id: 'entryDetail',
+						hideInMenu: true,
+						component: './IPC/EntryDetail/index.js',
+					},
 					// {
 					// 	path: '/faceidLibrary/createLibrary',
 					// 	// name: 'faceidLibrary.create',

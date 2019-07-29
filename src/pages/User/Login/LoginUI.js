@@ -3,6 +3,8 @@ import { formatMessage, getLocale } from 'umi/locale';
 import { connect } from 'dva';
 import { Tabs, Form, Button, Modal } from 'antd';
 import { encryption } from '@/utils/utils';
+import * as CookieUtil from '@/utils/cookies';
+import Storage from '@konata9/storage.js';
 import AccountLogin from './AccountLogin';
 import AccountLoginLocal from './AccountLoginLocal';
 import MobileLogin from './MobileLogin';
@@ -107,11 +109,15 @@ class Login extends Component {
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
 			const shopList = result.shop_list || [];
-			// Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
+			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
+				CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
 				goToPath('storeCreate');
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
+				const lastStore = shopList.length;
+				const defaultStore = shopList[lastStore - 1] || {};
+				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
 				goToPath('root');
 				// router.push('/');
 			}

@@ -1,19 +1,30 @@
 import React from 'react';
 import { connect } from 'dva';
-import { getLocationParam, unixSecondToDate, formatMessageTemplate } from '@/utils/utils';
 import { Divider, Card } from 'antd';
+import { getLocationParam, unixSecondToDate, formatMessageTemplate } from '@/utils/utils';
 import NotificationHandler from '@/components/Notification/NotificationHandler';
 import styles from './Notification.less';
 
 @connect(
-	state => ({
-		notification: state.notification,
-	}),
+	state => {
+		const result = {
+			notification: state.notification,
+		};
+		return result;
+	},
 	dispatch => ({
 		getNotificationInfo: payload =>
 			dispatch({ type: 'notification/getNotificationInfo', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		formatSdCard: (sn) => { dispatch({ type: 'sdcard/formatSdCard', sn });},
+		getSdStatus: async (sn) => {
+			const status = await dispatch({
+				type: 'sdcard/getSdStatus',
+				sn
+			});
+			return status;
+		}
 	})
 )
 class Notification extends React.Component {
@@ -39,6 +50,8 @@ class Notification extends React.Component {
 				} = {},
 			} = {},
 			goToPath,
+			formatSdCard,
+			getSdStatus
 		} = this.props;
 
 		return (
@@ -61,7 +74,7 @@ class Notification extends React.Component {
 							{...{
 								buttonName: minorButtonName,
 								buttonParams: minorButtonLink,
-								handlers: { goToPath },
+								handlers: { goToPath, formatSdCard, getSdStatus },
 							}}
 						/>
 					)}
@@ -70,7 +83,7 @@ class Notification extends React.Component {
 							{...{
 								buttonName: majorButtonName,
 								buttonParams: majorButtonLink,
-								handlers: { goToPath },
+								handlers: { goToPath, formatSdCard, getSdStatus },
 								type: 'primary',
 								style: { marginLeft: minorButtonName ? '20px' : '0' },
 							}}

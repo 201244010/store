@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import Link from 'umi/link';
+// import Link from 'umi/link';
 import { List, Avatar, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -106,7 +106,14 @@ import styles from './Live.less';
 				timestamp
 			}
 		});
-	}
+	},
+	navigateTo: (pathId, urlParams) => dispatch({
+		type: 'menu/goToPath',
+		payload: {
+			pathId,
+			urlParams
+		}
+	})
 }))
 class Live extends React.Component{
 	constructor(props) {
@@ -225,7 +232,7 @@ class Live extends React.Component{
 
 
 	render() {
-		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged } = this.props;
+		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
 		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp } = this.state;
 
@@ -310,7 +317,7 @@ class Live extends React.Component{
 													</p>
 
 													<p>
-														<Link className={styles['button-infos']} to='./userinfo'>{formatMessage({ id: 'live.enter.details'})}</Link>
+														<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
 													</p>
 												</Card>
 												{/* <Card
@@ -343,18 +350,18 @@ class Live extends React.Component{
 										)
 									}
 								/>
-								{
-									faceidList.length ?
-										<div className={styles['infos-more']}>
-											<Link to='./userinfo'>{formatMessage({ id: 'live.logs'})}</Link>
-										</div>
-										: ''
-								}
 
 							</PerfectScrollbar>
 						</div>
 						: ''
 				}
+
+				<div className={styles['infos-more']}>
+					{
+						faceidList.length? <span onClick={() => navigateTo('faceLog')}>{formatMessage({ id: 'live.logs'})}</span> : ''
+					}
+				</div>
+
 			</div>
 
 		);
