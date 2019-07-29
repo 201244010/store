@@ -15,8 +15,8 @@ export default {
 	'menu.motionMessage': '消息提醒',
 	
 
-	'menu.faceidLabrary.management': '人脸库管理',
-	'menu.faceidLabrary.list': '人脸库列表',
+	'menu.faceidLabrary.management': '人脸分组管理',
+	'menu.faceidLabrary.list': '人脸分组列表',
 	'menu.faceLog':'人脸日志',
 	'menu.entryDetail':'进店详情',
 
