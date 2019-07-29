@@ -424,17 +424,12 @@ class PhotoManagement extends React.Component {
 
 	handleLibraryName = value => {
 		const { type, groupName } = value;
-		switch (type) {
-			case 1:
-				return formatMessage({ id: 'photoManagement.card.libraryName1' });
-			case 2:
-				return formatMessage({ id: 'photoManagement.card.libraryName2' });
-			case 3:
-				return formatMessage({ id: 'photoManagement.card.libraryName3' });
-			case 4:
-				return formatMessage({ id: 'photoManagement.card.libraryName4' });
-			default:
-				return groupName;
+		switch(type) {
+			case 1: return formatMessage({id: 'photoManagement.card.stranger'});
+			case 2: return formatMessage({id: 'photoManagement.card.regular'});
+			case 3: return formatMessage({id: 'photoManagement.card.employee'});
+			case 4: return formatMessage({id: 'photoManagement.card.blacklist'});
+			default: return groupName;
 		}
 	};
 
@@ -475,17 +470,12 @@ class PhotoManagement extends React.Component {
 			}
 		});
 
-		switch (name.type) {
-			case 1:
-				return formatMessage({ id: 'photoManagement.card.libraryName1' });
-			case 2:
-				return formatMessage({ id: 'photoManagement.card.libraryName2' });
-			case 3:
-				return formatMessage({ id: 'photoManagement.card.libraryName3' });
-			case 4:
-				return formatMessage({ id: 'photoManagement.card.libraryName4' });
-			default:
-				return name.groupName;
+		switch(name.type) {
+			case 1: return formatMessage({id: 'photoManagement.card.stranger'});
+			case 2: return formatMessage({id: 'photoManagement.card.regular'});
+			case 3: return formatMessage({id: 'photoManagement.card.employee'});
+			case 4: return formatMessage({id: 'photoManagement.card.blacklist'});
+			default: return name.groupName;
 		}
 	};
 
