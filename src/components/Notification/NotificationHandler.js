@@ -7,7 +7,7 @@ import ipcTypes from '@/constants/ipcTypes';
 
 const palyMotion = ({ params }) => {
 	const { url = null, device_model: ipcType = null } = convertArrayPrams(params);
-	const { pixelRatio = '16:9' } = ipcTypes[ipcType];
+	const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
 	const modal = Modal.info({
 		title: '',
 		content: (
