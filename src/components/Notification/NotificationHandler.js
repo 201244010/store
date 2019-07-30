@@ -22,6 +22,7 @@ const palyMotion = ({ params }) => {
 							}
 						}}
 						videoUrl={url}
+						ipcType={ipcType}
 						pixelRatio={pixelRatio}
 					/>
 				)}
