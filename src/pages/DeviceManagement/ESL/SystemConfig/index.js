@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, InputNumber, Tooltip, Icon, Button } from 'antd';
+import { Card, Select } from 'antd';
 import { formatMessage } from 'umi/locale';
+import styles from './systemConfig.less';
 
 @connect(
 	state => ({
+		loading: state.loading,
 		eslBaseStation: state.eslBaseStation,
 		eslElectricLabel: state.eslElectricLabel,
 	}),
@@ -21,6 +23,11 @@ class SystemConfig extends Component {
 		};
 	}
 
+	componentDidMount() {
+		const { getNetWorkIdList } = this.props;
+		getNetWorkIdList();
+	}
+
 	handleSetScanTime = () => {
 		const { setScanTime } = this.props;
 		const { time } = this.state;
@@ -32,58 +39,44 @@ class SystemConfig extends Component {
 		});
 	};
 
+	handleSelectChange = () => {};
+
 	render() {
 		const {
-			eslElectricLabel: { loading },
+			loading,
+			eslBaseStation: { newWorkIdList = [] },
 		} = this.props;
-		const { time } = this.state;
 
 		return (
-			<div>
-				<Card title="价签配置" bordered={false} style={{ width: '100%' }}>
-					<Row>
-						<Row>
-							<Col
-								span={3}
-								offset={6}
-								style={{ lineHeight: '30px', textAlign: 'right' }}
-							>
-								{formatMessage({ id: 'esl.device.esl.scan.time' })}：
-							</Col>
-							<Col span={9}>
-								<InputNumber
-									min={5}
-									max={60}
-									value={time}
-									onChange={value => {
-										this.setState({
-											time: value,
-										});
-									}}
-								/>{' '}
-								秒
-								<Tooltip
-									placement="right"
-									title="扫描周期范围为5~60秒。扫描越快，图像更新越快，但电池寿命会减少。"
-								>
-									<Icon type="question-circle" style={{ marginLeft: 20 }} />
-								</Tooltip>
-							</Col>
-						</Row>
-						<Row style={{ marginTop: 40 }}>
-							<Col span={8} offset={9}>
-								<Button
-									type="primary"
-									onClick={this.handleSetScanTime}
-									loading={loading}
-								>
-									{formatMessage({ id: 'btn.save' })}
-								</Button>
-							</Col>
-						</Row>
-					</Row>
+			<Card
+				title={formatMessage({ id: 'esl.device.config.title' })}
+				bordered={false}
+				style={{ width: '100%' }}
+				loading={loading.effects['eslBaseStation/getNetWorkIdList']}
+			>
+				<Card title={formatMessage({ id: 'esl.device.config.info' })} bordered={false}>
+					<div className={styles['display-content']}>
+						<span>{formatMessage({ id: 'esl.device.config.networkId' })}:</span>
+
+						<Select
+							defaultValue={newWorkIdList[0] || null}
+							onChange={this.handleSelectChange}
+							style={{ minWidth: '200px' }}
+						>
+							{newWorkIdList.map(netWork => (
+								<Select.Option value={netWork.networkId}>
+									{netWork.networkId}
+								</Select.Option>
+							))}
+						</Select>
+					</div>
 				</Card>
-			</div>
+				<Card title={formatMessage({ id: 'esl.device.config.setting' })} bordered={false} />
+				<Card
+					title={formatMessage({ id: 'esl.device.config.boardcast' })}
+					bordered={false}
+				/>
+			</Card>
 		);
 	}
 }
