@@ -14,21 +14,40 @@ import styles from './systemConfig.less';
 	dispatch => ({
 		getNetWorkIdList: () => dispatch({ type: 'eslBaseStation/getNetWorkIdList' }),
 		setScanTime: payload => dispatch({ type: 'eslElectricLabel/setScanTime', payload }),
+		checkClientExist: () => dispatch({ type: 'mqttStore/checkClientExist' }),
 	})
 )
 @Form.create()
 class SystemConfig extends Component {
 	constructor(props) {
 		super(props);
+		this.checkTimer = null;
 		this.state = {
 			time: 5,
 		};
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		const { getNetWorkIdList } = this.props;
-		getNetWorkIdList();
+		await getNetWorkIdList();
+		await this.checkMQTTClient();
 	}
+
+	componentWillUnmount(){
+		
+	}
+
+	checkMQTTClient = async () => {
+		clearTimeout(this.checkTimer);
+		const { checkClientExist } = this.props;
+		const isClientExist = await checkClientExist();
+		console.log(isClientExist);
+		if (isClientExist) {
+			console.log('client existed');
+		} else {
+			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 2000);
+		}
+	};
 
 	handleSetScanTime = () => {
 		const { setScanTime } = this.props;
@@ -70,7 +89,7 @@ class SystemConfig extends Component {
 								})(
 									<Select
 										onChange={this.handleSelectChange}
-										style={{ minWidth: '200px' }}
+										style={{ maxWidth: '300px' }}
 									>
 										{networkIdList.map(netWork => (
 											<Select.Option
@@ -99,7 +118,7 @@ class SystemConfig extends Component {
 								})(
 									<Select
 										onChange={this.handleSelectChange}
-										style={{ minWidth: '200px' }}
+										style={{ maxWidth: '300px' }}
 									>
 										{networkIdList.map(netWork => (
 											<Select.Option
