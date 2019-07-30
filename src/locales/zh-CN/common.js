@@ -28,6 +28,7 @@ export default {
 	'btn.detail': '详情',
 	'btn.more': '更多',
 	'btn.know': '知道了',
+	'btn.open': '开启',
 	'link.forgot.password': '忘记密码',
 	'link.to.register': '注册账户',
 	'link.to.login': '使用已有账户登录',
