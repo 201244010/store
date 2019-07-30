@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Select } from 'antd';
+import { Card, Select, Form, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { FORM_SETTING_LAYOUT } from '@/constants/form';
 import styles from './systemConfig.less';
 
 @connect(
@@ -15,6 +16,7 @@ import styles from './systemConfig.less';
 		setScanTime: payload => dispatch({ type: 'eslElectricLabel/setScanTime', payload }),
 	})
 )
+@Form.create()
 class SystemConfig extends Component {
 	constructor(props) {
 		super(props);
@@ -44,7 +46,8 @@ class SystemConfig extends Component {
 	render() {
 		const {
 			loading,
-			eslBaseStation: { newWorkIdList = [] },
+			eslBaseStation: { networkIdList = [] },
+			form: { getFieldDecorator },
 		} = this.props;
 
 		return (
@@ -54,28 +57,97 @@ class SystemConfig extends Component {
 				style={{ width: '100%' }}
 				loading={loading.effects['eslBaseStation/getNetWorkIdList']}
 			>
-				<Card title={formatMessage({ id: 'esl.device.config.info' })} bordered={false}>
-					<div className={styles['display-content']}>
-						<span>{formatMessage({ id: 'esl.device.config.networkId' })}:</span>
-
-						<Select
-							defaultValue={newWorkIdList[0] || null}
-							onChange={this.handleSelectChange}
-							style={{ minWidth: '200px' }}
-						>
-							{newWorkIdList.map(netWork => (
-								<Select.Option value={netWork.networkId}>
-									{netWork.networkId}
-								</Select.Option>
-							))}
-						</Select>
-					</div>
-				</Card>
-				<Card title={formatMessage({ id: 'esl.device.config.setting' })} bordered={false} />
-				<Card
-					title={formatMessage({ id: 'esl.device.config.boardcast' })}
-					bordered={false}
-				/>
+				<Form {...FORM_SETTING_LAYOUT}>
+					<Card title={formatMessage({ id: 'esl.device.config.info' })} bordered={false} className={styles['content-card']}>
+						<div className={styles['display-content']}>
+							<Form.Item label={formatMessage({ id: 'esl.device.config.networkId' })}>
+								{getFieldDecorator('networkId', {
+									initialValue: (networkIdList[0] || {}).networkId || null,
+								})(
+									<Select
+										onChange={this.handleSelectChange}
+										style={{ minWidth: '200px' }}
+									>
+										{networkIdList.map(netWork => (
+											<Select.Option
+												key={netWork.networkId}
+												value={netWork.networkId}
+											>
+												{netWork.networkId}
+											</Select.Option>
+										))}
+									</Select>
+								)}
+							</Form.Item>
+						</div>
+					</Card>
+					<Card
+						title={formatMessage({ id: 'esl.device.config.setting' })}
+						bordered={false}
+						className={styles['content-card']}
+					>
+						<div className={styles['display-content']}>
+							<Form.Item
+								label={formatMessage({ id: 'esl.device.config.scan.round' })}
+							>
+								{getFieldDecorator('scanRound', {
+									initialValue: (networkIdList[0] || {}).networkId || null,
+								})(
+									<Select
+										onChange={this.handleSelectChange}
+										style={{ minWidth: '200px' }}
+									>
+										{networkIdList.map(netWork => (
+											<Select.Option
+												key={netWork.networkId}
+												value={netWork.networkId}
+											>
+												{netWork.networkId}
+											</Select.Option>
+										))}
+									</Select>
+								)}
+							</Form.Item>
+							<Form.Item
+								label={formatMessage({ id: 'esl.device.config.scan.green' })}
+							>
+								{getFieldDecorator('scanRound', {
+									initialValue: (networkIdList[0] || {}).networkId || null,
+								})(
+									<Select
+										onChange={this.handleSelectChange}
+										style={{ minWidth: '200px' }}
+									>
+										{networkIdList.map(netWork => (
+											<Select.Option
+												key={netWork.networkId}
+												value={netWork.networkId}
+											>
+												{netWork.networkId}
+											</Select.Option>
+										))}
+									</Select>
+								)}
+							</Form.Item>
+							<Form.Item label=" " colon={false}>
+								<Button type="primary">{formatMessage({ id: 'btn.save' })}</Button>
+							</Form.Item>
+						</div>
+					</Card>
+					<Card
+						title={formatMessage({ id: 'esl.device.config.boardcast' })}
+						bordered={false}
+					>
+						<div className={styles['display-content']}>
+							<Form.Item label=" " colon={false}>
+								<Button type="primary">{formatMessage({ id: 'btn.open' })}</Button>
+								<Button className={styles['btn-margin-left']}>
+									{formatMessage({ id: 'btn.close' })}
+								</Button>
+							</Form.Item>
+						</div>
+					</Card>
+				</Form>
 			</Card>
 		);
 	}

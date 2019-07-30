@@ -37,6 +37,17 @@ export const FORM_ITEM_DETAIL = {
 	},
 };
 
+export const FORM_SETTING_LAYOUT = {
+	labelCol: {
+		sm: { span: 24 },
+		md: { span: 8 },
+	},
+	wrapperCol: {
+		sm: { span: 24 },
+		md: { span: 16 },
+	},
+};
+
 export const FORM_ITEM_LAYOUT_TWICE = {
 	labelCol: {
 		sm: { span: 24 },
@@ -178,21 +189,21 @@ export const SEARCH_FORM_COL = {
 	OFFSET_ONE_THIRD: {
 		sm: {
 			offset: 0,
-			span: 24
+			span: 24,
 		},
 		md: {
 			offset: 8,
-			span: 8
-		}
+			span: 8,
+		},
 	},
 	OFFSET_TWO_THIRD: {
 		sm: {
 			offset: 0,
-			span: 24
+			span: 24,
 		},
 		md: {
 			offset: 16,
-			span: 8
-		}
-	}
+			span: 8,
+		},
+	},
 };

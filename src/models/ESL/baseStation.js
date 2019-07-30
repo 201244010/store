@@ -17,7 +17,7 @@ export default {
 		states: [],
 		data: [],
 		deviceInfoList: [],
-		newWorkIdList: [],
+		networkIdList: [],
 		pagination: {
 			current: 1,
 			pageSize: DEFAULT_PAGE_SIZE,
@@ -206,8 +206,8 @@ export default {
 			const response = yield call(Actions.deviceApHandler, 'getNetworkIdList');
 			if (response.code === ERROR_OK) {
 				const { data = {} } = response || {};
-				const { newWorkIdList = [] } = format('toCamel')(data);
-				yield put({ type: 'updateState', payload: { newWorkIdList } });
+				const { networkIdList = [] } = format('toCamel')(data);
+				yield put({ type: 'updateState', payload: { networkIdList } });
 			}
 			return response;
 		},
