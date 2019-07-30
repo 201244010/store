@@ -49,7 +49,8 @@ module.exports = {
 		'quotes': [2, 'single'],
 		'indent': ['error', 'tab', {
 			'SwitchCase': 1
-		}]
+		}],
+		'no-nested-ternary': 0,
 	},
 	settings: {
 		polyfills: ['fetch', 'promises', 'url'],

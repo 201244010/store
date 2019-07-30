@@ -195,7 +195,7 @@ export default {
 		// 	}
 		// 	return '';
 		// },
-		*getIpcTypeByPosSN({ payload: { sn, startTime, endTime }}, { put }) {
+		*getDeviceInfoByPosSN({ payload: { sn, startTime, endTime }}, { put }) {
 			const posList = yield put.resolve({
 				type: 'getPOSList',
 				payload: {
@@ -217,15 +217,15 @@ export default {
 			if (targetIpc.length > 0) {
 				const ipcSN = targetIpc[0].sn;
 
-				const ipcType = yield put.resolve({
-					type: 'ipcList/getDeviceType',
+				const info = yield put.resolve({
+					type: 'ipcList/getDeviceInfo',
 					payload: {
 						sn: ipcSN
 					}
 				});
-				return ipcType;
+				return info;
 			}
-			return '';
+			return {};
 		}
 	}
 };

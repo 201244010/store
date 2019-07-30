@@ -30,15 +30,15 @@ export const FORM_ITEM_LAYOUT = {
 	labelCol: {
 		sm: { span: 24 },
 		md: { span: 6 },
-		lg: { span: 6 },
-		xl: { span: 6 },
+		lg: { span: 5 },
+		xl: { span: 5 },
 		xxl: { span: 4 },
 	},
 	wrapperCol: {
 		sm: { span: 24 },
 		md: { span: 18 },
-		lg: { span: 18 },
-		xl: { span: 18 },
+		lg: { span: 19 },
+		xl: { span: 19 },
 		xxl: { sapn: 20 },
 	},
 };
@@ -175,4 +175,24 @@ export const SEARCH_FORM_COL = {
 		sm: 24,
 		md: 16,
 	},
+	OFFSET_ONE_THIRD: {
+		sm: {
+			offset: 0,
+			span: 24
+		},
+		md: {
+			offset: 8,
+			span: 8
+		}
+	},
+	OFFSET_TWO_THIRD: {
+		sm: {
+			offset: 0,
+			span: 24
+		},
+		md: {
+			offset: 16,
+			span: 8
+		}
+	}
 };

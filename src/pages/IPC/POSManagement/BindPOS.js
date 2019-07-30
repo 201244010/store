@@ -516,7 +516,7 @@ class AddPOS extends Component {
 
 		const { chooseList } = this.state;
 		// 获取框选的位置
-		console.log('chooseList: ', chooseList);
+		// console.log('chooseList: ', chooseList);
 		const modlist = chooseList.map(item => {
 			const f = list.filter(target => target.sn === item.sn)[0];
 			return {
@@ -596,7 +596,7 @@ class AddPOS extends Component {
 	render() {
 		const {  POSList, ipcInfo, poses, isEdit, bindedPosList } = this.props;
 		const { isClick, chooseList, selectedRowKeys } = this.state;
-		const { img, type } = ipcInfo;
+		const { img, pixelRatio } = ipcInfo;
 
 		const list = poses.length === 0 ? POSList : POSList.filter(item => poses.includes(item.sn));
 
@@ -688,7 +688,7 @@ class AddPOS extends Component {
 									posList={allPosList}
 									// getPosition={this.getPosition}
 									background={img}
-									pixelRatio={type === 'FS1' ? '16:9' : '1:1'}
+									pixelRatio={pixelRatio}
 								/>
 								<div className={styles['button-block']}>
 									{

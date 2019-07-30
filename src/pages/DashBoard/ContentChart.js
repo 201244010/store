@@ -81,7 +81,7 @@ const timeScales = {
 	[RANGE.MONTH]: { ticks: TIME_TICKS.MONTH },
 };
 
-const formatTime = (time, rangeType) => {
+export const formatTime = (time, rangeType) => {
 	const timeData = moment.unix(time).local();
 
 	if (rangeType === RANGE.TODAY) {
