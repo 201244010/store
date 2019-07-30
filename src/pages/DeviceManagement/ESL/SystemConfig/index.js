@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Select, Form, Button } from 'antd';
+import { Card, Select, Form, Button, Switch } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { FORM_SETTING_LAYOUT } from '@/constants/form';
 import styles from './systemConfig.less';
@@ -58,7 +58,11 @@ class SystemConfig extends Component {
 				loading={loading.effects['eslBaseStation/getNetWorkIdList']}
 			>
 				<Form {...FORM_SETTING_LAYOUT}>
-					<Card title={formatMessage({ id: 'esl.device.config.info' })} bordered={false} className={styles['content-card']}>
+					<Card
+						title={formatMessage({ id: 'esl.device.config.info' })}
+						bordered={false}
+						className={styles['content-card']}
+					>
 						<div className={styles['display-content']}>
 							<Form.Item label={formatMessage({ id: 'esl.device.config.networkId' })}>
 								{getFieldDecorator('networkId', {
@@ -90,7 +94,7 @@ class SystemConfig extends Component {
 							<Form.Item
 								label={formatMessage({ id: 'esl.device.config.scan.round' })}
 							>
-								{getFieldDecorator('scanRound', {
+								{getFieldDecorator('scanPeriod', {
 									initialValue: (networkIdList[0] || {}).networkId || null,
 								})(
 									<Select
@@ -111,34 +115,28 @@ class SystemConfig extends Component {
 							<Form.Item
 								label={formatMessage({ id: 'esl.device.config.scan.green' })}
 							>
-								{getFieldDecorator('scanRound', {
+								{getFieldDecorator('scanMulti', {
 									initialValue: (networkIdList[0] || {}).networkId || null,
-								})(
-									<Select
-										onChange={this.handleSelectChange}
-										style={{ minWidth: '200px' }}
-									>
-										{networkIdList.map(netWork => (
-											<Select.Option
-												key={netWork.networkId}
-												value={netWork.networkId}
-											>
-												{netWork.networkId}
-											</Select.Option>
-										))}
-									</Select>
-								)}
+								})(<Switch />)}
 							</Form.Item>
 							<Form.Item label=" " colon={false}>
 								<Button type="primary">{formatMessage({ id: 'btn.save' })}</Button>
 							</Form.Item>
 						</div>
 					</Card>
-					<Card
+					{/* 广播这一期不做 */}
+					{/* <Card
 						title={formatMessage({ id: 'esl.device.config.boardcast' })}
 						bordered={false}
 					>
 						<div className={styles['display-content']}>
+							<Form.Item
+								label={formatMessage({
+									id: 'esl.device.config.boardcast.startTime',
+								})}
+							>
+								{getFieldDecorator('time', {})(<TimePicker />)}
+							</Form.Item>
 							<Form.Item label=" " colon={false}>
 								<Button type="primary">{formatMessage({ id: 'btn.open' })}</Button>
 								<Button className={styles['btn-margin-left']}>
@@ -146,7 +144,7 @@ class SystemConfig extends Component {
 								</Button>
 							</Form.Item>
 						</div>
-					</Card>
+					</Card> */}
 				</Form>
 			</Card>
 		);
