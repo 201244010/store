@@ -8,7 +8,7 @@ export default {
 	// 'faceid.createNote': '您还未建立自己的分组，现在就去',
 	'faceid.addButton': '新增分组',
 	'faceid.createButton': '创建',
-	'faceid.libraryNameMsg': '请输入分组名称，如会员',
+	'faceid.libraryNameMsg': '请输入分组名称，如会员, 不超过20个字符。',
 	'faceid.libraryNameRequired': '请输入分组名称。',
 	'faceid.libraryNameFormat': '不超过20个字符。',
 
@@ -32,7 +32,7 @@ export default {
 
 	'faceid.remarkNote': '(可选)',
 
-	'faceid.remarkMsg': '请输入备注。',
+	'faceid.remarkMsg': '请输入备注,不超过255个字符。',
 	'faceid.remarksTooLong': '备注不得超过255个字符',
 
 	'faceid.transferCondit': '移至熟客分组条件',
@@ -63,9 +63,19 @@ export default {
 	'faceid.deleteSuccess': '删除分组成功！',
 	'faceid.deleteFailed': '删除失败，请检查网络后重试。',
 
-	'faceid.stranger': '默认分组，包含所有抓拍到的陌生人脸信息。',
-	'faceid.customer': '默认分组，满足生客分组调整条件的人脸信息将被自动存入此分组中。',
-	'faceid.employee': '默认分组，店员将不计入客流统计。',
-	'faceid.blacklist': '默认分组，包含所有黑名单人脸信息。',
+	'faceid.stranger': '陌生人',
+	'faceid.regular': '熟客',
+	'faceid.employee': '店员',
+	'faceid.blacklist': '黑名单',
+
+	'faceid.strangerInfo': '默认分组，包含所有抓拍到的陌生人脸信息。',
+	'faceid.regularInfo': '默认分组，满足生客分组调整条件的人脸信息将被自动存入此分组中。',
+	'faceid.employeeInfo': '默认分组，店员将不计入客流统计。',
+	'faceid.blacklistInfo': '默认分组，包含所有黑名单人脸信息。',
+
+	'faceid.info':'通知',
+	'faceid.list.length.max':'当前创建的人脸分组数量已达到上限',
+	'faceid.amount.max' :'当前人脸分组的照片总数量已达到上限',
+	'faceid.info.known':'知道了'
 
 };

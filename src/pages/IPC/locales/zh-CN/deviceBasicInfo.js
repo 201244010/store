@@ -1,7 +1,7 @@
 export default {
 	'deviceBasicInfo.title': '基本信息',
-	'deviceBasicInfo.name': '摄像头名称',
-	'deviceBasicInfo.type': '摄像头型号',
+	'deviceBasicInfo.name': '摄像机名称',
+	'deviceBasicInfo.type': '摄像机型号',
 	'deviceBasicInfo.sn': 'SN',
 	'deviceBasicInfo.save': '保存',
 	'deviceBasicInfo.delete': '删除设备',

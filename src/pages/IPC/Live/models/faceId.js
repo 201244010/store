@@ -1,6 +1,8 @@
 
 // import { listen } from '@/services/mqtt';
-import moment from 'moment';
+// import moment from 'moment';
+
+import { formatMessage } from 'umi/locale';
 
 export default {
 	namespace: 'faceid',
@@ -9,38 +11,10 @@ export default {
 		list: []
 	},
 	reducers: {
-		drawRects({ rectangles, list }, { payload: { rects, sn, timestamp, reportTime } }) {
-			// const newState = [];
-			// console.log('drawRects');
-			// rects.forEach((rect) => {
+		drawRects({ rectangles, list }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
 
-			// });
-			// newState.push({
-			// 	rects,
-			// 	sn,
-			// 	timestamp
-			// });
-
-			// console.log('rectangles: ', rectangles);
-
-			// return {
-			// 	rectangles: [
-			// 		...rectangles,
-			// 		...newState
-			// 	]
-			// };
-			const rect = rectangles.filter((item) => 
-				// console.log(item.timestamp, moment().subtract(2, 'minutes').unix());
-				 item.timestamp > moment().subtract(2, 'minutes').unix()
-			);
-
-
-			// rectangles.push({
-			// 	rects,
-			// 	sn,
-			// 	timestamp,
-			// 	reportTime
-			// });
+			// todo 需要添加信息清除逻辑
+			const rect = rectangles;
 
 			return {
 				rectangles: [
@@ -49,19 +23,47 @@ export default {
 						rects,
 						sn,
 						timestamp,
-						reportTime
+						// reportTime
 					}
 				],
 				list
 			};
 		},
-		clearRects() {
-			return {
-				rectangles: []
-			};
+		clearRects(state, { payload: { timestamp }}) {
+			const rectangles = [];
+			state.rectangles.forEach(item => {
+				if (item.timestamp > timestamp - 2000) {
+					rectangles.push(item);
+				}
+			});
+
+			state.rectangles = [
+				...rectangles
+			];
+
 		},
 		updateList( { list }, { payload }) {
-			list.push(payload);
+			const { libraryName } = payload;
+			let libraryNameText = libraryName;
+			switch(libraryName) {
+				case 'stranger':
+					libraryNameText = formatMessage({ id: 'faceid.stranger'});
+					break;
+				case 'regular':
+					libraryNameText = formatMessage({id: 'faceid.regular'});
+					break;
+				case 'employee':
+					libraryNameText = formatMessage({ id: 'faceid.employee'});
+					break;
+				case 'blacklist':
+					libraryNameText = formatMessage( { id: 'faceid.blacklist'});
+					break;
+				default:
+			}
+			list.push({
+				...payload,
+				libraryName: libraryNameText
+			});
 		}
 
 	},
@@ -83,40 +85,47 @@ export default {
 			const listeners = [
 				{
 					opcode: '0x4100',
-					models: 'FS1',
 					type: 'event',
 					handler: (topic, message) => {
 						const { data } = message;
-						// console.log(data);
-						// console.log(message);
+
+						const { rect, pts } = data;
+
+						const rects = rect.map(item => ({
+							id: item.face_id,
+							left: item.left,
+							top: item.top,
+							right: item.right,
+							bottom: item.bottom,
+							timestamp: pts
+						}));
+
 						dispatch({
 							type: 'drawRects',
 							payload: {
-								rects: data.rect,
-								timestamp: data.pts,
-								reportTime: data.report_time,
+								rects,
+								timestamp: pts,
+								// reportTime: data.report_time,
 								sn: data.sn
 							}
 						});
 					}
 				}, {
 					opcode: '0x4101',
-					models: 'FS1',
 					type: 'event',
 					handler: (topic, message) => {
 						const { data } = message;
-						// console.log(message, data);
 
 						dispatch({
 							type: 'updateList',
 							payload: {
-								timestamp: data.pts,
-								name: data.name,
+								timestamp: data.report_time,
+								name: data.name === 'undefined' ? '--' : data.name,
 								id: data.id,
 								libraryId: data.db_id,
 								libraryName: data.db_name,
-								age: data.age,
-								gender: data.gender,
+								age: data.age ,
+								gender: data.gender === 'undefined' ? '--' : data.gender,
 								pic: data.pic
 							}
 						});

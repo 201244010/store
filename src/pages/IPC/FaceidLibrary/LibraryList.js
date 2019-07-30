@@ -15,7 +15,7 @@ class LibraryList extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const { managePhotos} = this.props;
+		// const { managePhotos} = this.props;
 
 		this.state = {
 			editFormShown: false,
@@ -27,6 +27,21 @@ class LibraryList extends React.Component {
 			{
 				title: formatMessage({ id: 'faceid.libraryName' }),
 				dataIndex: 'name',
+				key: 'name',
+				render: (name) => {
+					switch (name) {
+						case 'stranger':
+							return formatMessage({id: 'faceid.stranger'});
+						case 'regular':
+							return formatMessage({id: 'faceid.regular'});
+						case 'employee':
+							return formatMessage({id: 'faceid.employee'});
+						case 'blacklist':
+							return formatMessage({id: 'faceid.blacklist'});
+						default:
+							return name;
+					}
+				}
 			},
 			{
 				title: formatMessage({ id: 'faceid.rules' }),
@@ -35,15 +50,15 @@ class LibraryList extends React.Component {
 				render: (type) => {
 					switch (type) {
 						case 1:
-							return formatMessage({id: 'faceid.stranger'});
+							return formatMessage({id: 'faceid.strangerInfo'});
 						case 2:
-							return formatMessage({id: 'faceid.customer'});
+							return formatMessage({id: 'faceid.regularInfo'});
 						case 3:
-							return formatMessage({id: 'faceid.employee'});
+							return formatMessage({id: 'faceid.employeeInfo'});
 						case 4:
-							return formatMessage({id: 'faceid.blacklist'});
+							return formatMessage({id: 'faceid.blacklistInfo'});
 						default:
-							return '---';
+							return '--';
 					}
 
 				}
@@ -52,11 +67,10 @@ class LibraryList extends React.Component {
 				title: formatMessage({ id: 'faceid.remark' }),
 				dataIndex: 'remarks',
 				render: (remark) => {
-					if(!remark) {
+					if (remark === '') {
 						return '--';
 					}
 					return remark;
-
 				}
 			},
 			{
@@ -85,7 +99,7 @@ class LibraryList extends React.Component {
 							className={styles['btn-operation']}
 							href="javascript:void(0);"
 							onClick={() => {
-								managePhotos(row.id);
+								this.managePhotos(row.id);
 							}}
 						>
 							{formatMessage({ id: 'faceid.managePhoto' })}
@@ -141,7 +155,35 @@ class LibraryList extends React.Component {
 		loadLibrary();
 	}
 
-	showCreateForm = () => {
+	addFaceidLibraryHandler = (list,restCapacity) => {
+		if(list.length >= this.maxLength){
+			Modal.info({
+				title: formatMessage({ id: 'faceid.info' }),
+				okText: formatMessage({ id: 'faceid.info.known' }),
+				content: (
+					<div>
+						{formatMessage({ id: 'faceid.list.length.max' })}
+					</div>
+				),
+				onOk() {},
+			});
+			return;
+		}
+
+		if(restCapacity <= 0){
+			Modal.info({
+				title: formatMessage({ id: 'faceid.info' }),
+				okText: formatMessage({ id: 'faceid.info.known' }),
+				content: (
+					<div>
+						{formatMessage({ id: 'faceid.amount.max' })}
+					</div>
+				),
+				onOk() {},
+			});
+			return;
+		}
+
 		this.setState({
 			createFormShown: true
 		});
@@ -152,6 +194,13 @@ class LibraryList extends React.Component {
 			createFormShown: false,
 		});
 
+	}
+
+	managePhotos = (key) => {
+		const { navigateTo } = this.props;
+		navigateTo('photoList', {
+			groupId: key
+		});
 	}
 	// changeFields(id, fields) {
 	// 	console.log(id, fields);
@@ -240,7 +289,7 @@ class LibraryList extends React.Component {
 		} else {
 			Modal.confirm({
 				title: formatMessage({ id: 'faceid.deleteLibrary' }),
-				content: formatMessage({ id: 'faceid.deleteInfo' }),
+				// content: formatMessage({ id: 'faceid.deleteInfo' }),
 				okText: formatMessage({ id: 'faceid.confirm' }),
 				cancelText: formatMessage({ id: 'faceid.cancel' }),
 				okType: 'danger',
@@ -249,6 +298,34 @@ class LibraryList extends React.Component {
 		}
 
 	}
+
+	// showInfoHandler = (list,restCapacity) => {
+	// 	// list.length >= this.maxLength || restCapacity <= 0;
+	// 	if(list.length >= this.maxLength){
+	// 		Modal.info({
+	// 			title: formatMessage({ id: 'faceid.info' }),
+	// 			okText: formatMessage({ id: 'faceid.info.known' }),
+	// 			content: (
+	// 				<div>
+	// 					{formatMessage({ id: 'faceid.list.length.max' })}
+	// 				</div>
+	// 			),
+	// 			onOk() {},
+	// 		});
+	// 	}else if(restCapacity <= 0){
+	// 		Modal.info({
+	// 			title: formatMessage({ id: 'faceid.info' }),
+	// 			okText: formatMessage({ id: 'faceid.info.known' }),
+	// 			content: (
+	// 				<div>
+	// 					{formatMessage({ id: 'faceid.amount.max' })}
+	// 				</div>
+	// 			),
+	// 			onOk() {},
+	// 		});
+	// 	}
+
+	// }
 
 	editLibrary() {
 		const { editLibrary } = this.props;
@@ -269,6 +346,7 @@ class LibraryList extends React.Component {
 					...selectedRow,
 					...params
 				});
+
 				this.closeEditForm();
 			}
 		});
@@ -324,10 +402,10 @@ class LibraryList extends React.Component {
 									<Form.Item>
 										<Button
 											type="primary"
-											disabled={list.length >= this.maxLength || restCapacity <= 0}
-											onClick={this.showCreateForm}
+											// disabled={list.length >= this.maxLength || restCapacity <= 0}
+											onClick={()=>this.addFaceidLibraryHandler(list,restCapacity)}
 											icon="plus"
-											loading={loading.effects['faceIdLibrary/create']}
+											loading={loading.effects['faceIdLibrary/create']||loading.effects['faceIdLibrary/read']}
 										>
 											{formatMessage({ id: 'common.create' })}
 										</Button>
@@ -339,6 +417,7 @@ class LibraryList extends React.Component {
 
 					<div>
 						<Table
+							loading={loading.effects['faceIdLibrary/read']}
 							columns={this.columns}
 							dataSource={list}
 							rowKey="id"
@@ -374,6 +453,7 @@ class LibraryList extends React.Component {
 				<Modal
 					title={formatMessage({id: 'faceid.createLibrary'})}
 					maskClosable={false}
+					destroyOnClose
 					visible={createFormShown}
 					onCancel={this.closeCreateForm}
 					onOk={this.createLibrary}
@@ -398,6 +478,7 @@ class LibraryList extends React.Component {
 				<Modal
 					title={formatMessage({id: 'faceid.editLibrary' })}
 					maskClosable={false}
+					destroyOnClose
 					visible={editFormShown}
 					onCancel={this.closeEditForm}
 					onOk={this.editLibrary}
@@ -444,11 +525,6 @@ const mapDispatchToProps = (dispatch) => ({
 					break;
 			}
 		});
-	},
-	managePhotos: (key) => {
-		// console.log('managePhotos', key);
-		const temp = key;
-		return temp;
 	},
 	createLibrary: (form) => {
 		dispatch({
@@ -502,7 +578,14 @@ const mapDispatchToProps = (dispatch) => ({
 					break;
 			}
 		});
+	},
+	navigateTo: (pathId, urlParams) => dispatch({
+		type: 'menu/goToPath',
+		payload: {
+			pathId,
+			urlParams
 	}
+	})
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LibraryList);
