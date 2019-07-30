@@ -2,6 +2,7 @@ import * as Actions from '@/services/ESL/baseStation';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
+import { format } from '@konata9/milk-shake';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 
 export default {
@@ -16,6 +17,7 @@ export default {
 		states: [],
 		data: [],
 		deviceInfoList: [],
+		newWorkIdList: [],
 		pagination: {
 			current: 1,
 			pageSize: DEFAULT_PAGE_SIZE,
@@ -198,6 +200,16 @@ export default {
 				type: 'updateState',
 				payload: { loading: false },
 			});
+		},
+
+		*getNetWorkIdList(_, { put, call }) {
+			const response = yield call(Actions.deviceApHandler, 'getNetworkIdList');
+			if (response.code === ERROR_OK) {
+				const { data = {} } = response || {};
+				const { newWorkIdList = [] } = format('toCamel')(data);
+				yield put({ type: 'updateState', payload: { newWorkIdList } });
+			}
+			return response;
 		},
 	},
 	reducers: {
