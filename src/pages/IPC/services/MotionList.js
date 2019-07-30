@@ -6,7 +6,6 @@ import CONFIG from '@/config';
 const { IPC_SERVER } = CONFIG;
 
 const request = customizeFetch('ipc/api/device/motion', IPC_SERVER);
-// const fetch = customizeFetch('ipc/api/device', IPC_SERVER);
 
 const dataFormatter = (item) => {
 	const detectedTime = moment.unix(item.detect_time).format('YYYY-MM-DD HH:mm:ss');

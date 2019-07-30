@@ -1,4 +1,4 @@
-import { getMotionList/* , getIpcList */ } from '../../services/motionList';
+import { getMotionList } from '../../services/motionList';
 import { ERROR_OK } from '@/constants/errorCode';
 
 export default {

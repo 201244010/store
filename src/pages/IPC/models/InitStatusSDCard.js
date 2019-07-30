@@ -6,7 +6,6 @@ import { ERROR_OK } from '@/constants/errorCode';
 const formatCode = '0x3058';
 // const changeStatusCode = '0x3057';
 
-
 // const Status = {
 // 	NO_SDCARD: 0,
 // 	NEED_FORMAT: 1,
