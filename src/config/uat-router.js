@@ -26,12 +26,12 @@ const router = [
 		routes: [{ path: '/studio', component: './Studio' }],
 	},
 
-	{
-		path: '/show',
-		component: '../layouts/BlankLayout',
-		id: 'show',
-		routes: [{ path: '/show', component: '../layouts/ShowLayout.js' }],
-	},
+	// {
+	// 	path: '/show',
+	// 	component: '../layouts/BlankLayout',
+	// 	id: 'show',
+	// 	routes: [{ path: '/show', component: '../layouts/ShowLayout.js' }],
+	// },
 
 	{
 		path: '/',
