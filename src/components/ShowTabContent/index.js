@@ -94,7 +94,6 @@ class ShowTabContent extends React.Component {
 					totalCount = {},
 					totalRefund = {},
 					avgUnitSale = {},
-					searchValue = {},
 					orderList = [],
 					skuRankList = [],
 					purchaseInfo = {},
@@ -107,7 +106,7 @@ class ShowTabContent extends React.Component {
 			<>
 				<ShowCards
 					{...{
-						searchValue,
+						range,
 						totalAmount,
 						totalCount,
 						totalRefund,
@@ -120,7 +119,6 @@ class ShowTabContent extends React.Component {
 							chartName={formatMessage({ id: 'dashboard.order.show.sales' })}
 							saleType="amount"
 							{...{
-								searchValue,
 								orderList,
 								range,
 							}}
@@ -131,7 +129,6 @@ class ShowTabContent extends React.Component {
 							fillColor={['l(90) 0:#FFBC50 1:#FFBC50', 'l(90) 0:#B38F6B 1:#B37047']}
 							shadowColor="#FF7750"
 							{...{
-								searchValue,
 								orderList,
 								range,
 							}}
@@ -144,7 +141,6 @@ class ShowTabContent extends React.Component {
 					/>
 					<ShowPayChart
 						{...{
-							searchValue,
 							purchaseInfo,
 							deviceOverView,
 							ipcOverView,
