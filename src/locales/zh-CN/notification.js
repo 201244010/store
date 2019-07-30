@@ -58,6 +58,7 @@ export default {
 	'notif-system-task-erp-btn1': '查看',
 	'notif-device-ipc-motion-detect-video-btn1': '查看监控',
 	'notif-device-ipc-motion-detect-audio-btn1': '查看监控',
+	'notif-device-ipc-ota-btn1':'立即更新',
 
 	// ipc-device-model
 	'notif-model-device-ipc-ota': '版本升级提醒',

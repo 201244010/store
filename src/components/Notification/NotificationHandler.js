@@ -89,6 +89,24 @@ const ACTION_MAP = {
 			removeNotification(key);
 		}
 	},
+	// OTA 版本更新提醒
+	'notif-device-ipc-ota-btn1':({ handlers: { goToPath, removeNotification }, params, extra}) => {
+		const deviceSn = params.split('&')[0].split('=')[1];		
+		goToPath('ipcManagement',{sn:deviceSn});
+		if(removeNotification){
+			const { key } = extra;
+			removeNotification(key);
+		}
+	},
+	// 设备离线
+	'notif-device-ipc-on/offline-btn1':({ handlers: { goToPath, removeNotification }, params, extra}) => {
+		const deviceSn = params.split('&')[0].split('=')[1];		
+		goToPath('ipcManagement',{sn:deviceSn});
+		if(removeNotification){
+			const { key } = extra;
+			removeNotification(key);
+		}
+	},
 };
 
 const NotificationHandler = props => {
