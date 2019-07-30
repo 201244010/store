@@ -58,6 +58,7 @@ export default {
 	'notif-system-task-erp-btn1': '查看',
 	'notif-device-ipc-motion-detect-video-btn1': '查看监控',
 	'notif-device-ipc-motion-detect-audio-btn1': '查看监控',
+	'notif-device-ipc-ota-btn1': '立即更新',
 
 	// ipc-device-model
 	'notif-model-device-ipc-ota': '版本升级提醒',
@@ -90,7 +91,8 @@ export default {
 		'[##comapny_name## - ##shop_name##]网络摄像机##device_name##侦测到异常声音，请即刻查看',
 	'notif-device-ipc-motion-detect-video-audio-desc':
 		'[##comapny_name## - ##shop_name##]网络摄像机 ##device_name## 侦测到异常画面与声音，请即刻查看',
-	'notif-device-ipc-on/offline-desc': '[##company_name##-##shop_name##]网络摄像机(##device_name##)已离线，请检查设备状态',
+	'notif-device-ipc-on/offline-desc':
+		'[##company_name##-##shop_name##]网络摄像机(##device_name##)已离线，请检查设备状态',
 	'notif-device-ipc-tf-card-detect-desc': '网络摄像机的存储卡##status##',
 	'notif-device-ipc-tf-card-detect-tf-non-exist-desc':
 		'[##company_name##-##shop_name##]网络摄像机##device_name##的存储卡未插入或被拔出，请检查',
