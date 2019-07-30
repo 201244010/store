@@ -83,7 +83,7 @@ const router = [
 								name: 'videos',
 								id: 'videos',
 								hideInMenu: true,
-								component: './IPC/TradeVideos/TradeVideos.js',
+								component: './IPC/TradeVideos/index.js',
 							},
 							{
 								path: '/application/cashVerify',
@@ -122,7 +122,7 @@ const router = [
 								path: '/devices/ipcList',
 								// name: 'ipcList',
 								id: 'deviceList',
-								component: './IPC/IPCList/IPCList.js',
+								component: './IPC/IPCList/index.js',
 							},
 						],
 					},
@@ -130,7 +130,7 @@ const router = [
 						path: '/devices/motionMessage',
 						name: 'motionMessage',
 						id: 'motionMessage',
-						component: './IPC/MotionList/MotionList.js',
+						component: './IPC/MotionList/index.js',
 					},
 					{
 						path: '/devices',
@@ -437,12 +437,12 @@ const router = [
 						id: 'faceidLibraryList',
 						component: './IPC/FaceidLibrary/LibraryList.js',
 					},
-					{
-						path: '/faceidLibrary/createLibrary',
-						// name: 'faceidLibrary.create',
-						id: 'createLibrary',
-						component: './IPC/FaceidLibrary/CreateLibrary.js',
-					},
+					// {
+					// 	path: '/faceidLibrary/createLibrary',
+					// 	// name: 'faceidLibrary.create',
+					// 	id: 'createLibrary',
+					// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
+					// },
 					{
 						path: '/faceidLibrary',
 						redirect: '/faceidLibrary/faceidLibraryList',

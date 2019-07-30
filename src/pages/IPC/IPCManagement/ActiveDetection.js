@@ -21,21 +21,21 @@ const LAYOUT = {
 };
 
 const mapStateToProps = (state) => {
-	const { activeDetection, loading } = state;
-	// console.log(activeDetection);
+	const { activeDetection } = state;
 	return {
 		activeDetection,
-		loading
+		// loading
 	};
 };
 const mapDispatchToProps = (dispatch) => ({
-	// 获取设备列表
-	getDeviceList() {
-		return dispatch({
-			type: 'ipcList/read'
-		}).then(() => {
-		});
-	},
+	// init: (sn) => {
+	// 	dispatch({
+	// 		type: 'activeDetection/init',
+	// 		payload: {
+	// 			sn
+	// 		}
+	// 	});
+	// },
 	loadSetting: (sn) => {
 		dispatch({
 			type: 'activeDetection/read',
@@ -60,40 +60,40 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name: 'active-detection-form',
-	mapPropsToFields(props) {
-		const { activeDetection } = props;
-		return {
-			isSound: Form.createFormField({
-				value: activeDetection.isSound
-			}),
-			sSensitivity: Form.createFormField({
-				value: activeDetection.sSensitivity
-			}),
-			isDynamic: Form.createFormField({
-				value: props.activeDetection.isDynamic
-			}),
-			mSensitivity: Form.createFormField({
-				value: activeDetection.mSensitivity
-			}),
-			isAuto: Form.createFormField({
-				value: activeDetection.isAuto
-			}),
-			startTime: Form.createFormField({
-				// value: moment(props.activeDetection.startTime,'HH:mm')
-				value: moment('1970-01-01').add(activeDetection.startTime, 's')
-			}),
-			endTime: Form.createFormField({
-				// value: moment(props.activeDetection.endTime,'HH:mm')
-				value: moment('1970-01-01').add(activeDetection.endTime, 's')
-			}),
-			days: Form.createFormField({
-				value: activeDetection.days
-			}),
-			all: Form.createFormField({
-				value: activeDetection.all
-			}),
-		};
-	},
+	// mapPropsToFields(props) {
+	// 	const { activeDetection } = props;
+	// 	return {
+	// 		isSound: Form.createFormField({
+	// 			value: activeDetection.isSound
+	// 		}),
+	// 		sSensitivity: Form.createFormField({
+	// 			value: activeDetection.sSensitivity
+	// 		}),
+	// 		isDynamic: Form.createFormField({
+	// 			value: props.activeDetection.isDynamic
+	// 		}),
+	// 		mSensitivity: Form.createFormField({
+	// 			value: activeDetection.mSensitivity
+	// 		}),
+	// 		isAuto: Form.createFormField({
+	// 			value: activeDetection.isAuto
+	// 		}),
+	// 		startTime: Form.createFormField({
+	// 			// value: moment(props.activeDetection.startTime,'HH:mm')
+	// 			value: moment('1970-01-01').add(activeDetection.startTime, 's')
+	// 		}),
+	// 		endTime: Form.createFormField({
+	// 			// value: moment(props.activeDetection.endTime,'HH:mm')
+	// 			value: moment('1970-01-01').add(activeDetection.endTime, 's')
+	// 		}),
+	// 		days: Form.createFormField({
+	// 			value: activeDetection.days
+	// 		}),
+	// 		all: Form.createFormField({
+	// 			value: activeDetection.all
+	// 		}),
+	// 	};
+	// },
 	// onFieldsChange(props, fields) {
 
 	// },
@@ -116,14 +116,12 @@ class ActiveDetection extends React.Component {
 
 
 	componentDidMount = async () => {
-		const { loadSetting, sn } = this.props;
-		if (!sn) {
-			message.error('sn号获取失败');
-		}
-		// subscribe(sn);
-
-		// await getDeviceList();
-
+		const { loadSetting, /* init, */ sn } = this.props;
+		// if (!sn) {
+		// 	message.error('sn号获取失败');
+		// }
+		// console.log(sn);
+		// init(sn);
 		loadSetting(sn);
 	};
 
@@ -143,9 +141,15 @@ class ActiveDetection extends React.Component {
 		}
 	}
 
-	// componentDidUpdate() {
+	componentDidUpdate() {
+		const { activeDetection } = this.props;
 
-	// }
+		if (activeDetection.isSaving === 'success') {
+			message.success(formatMessage({ id: 'ipcManagement.success'}));
+		}else if (activeDetection.isSaving === 'failed') {
+			message.error(formatMessage({ id: 'ipcManagement.failed'}));
+		}
+	}
 
 	handleSubmit = (e) => {
 		e.preventDefault();
@@ -156,9 +160,7 @@ class ActiveDetection extends React.Component {
 		} else if (getFieldValue('startTime') === null || getFieldValue('endTime') === null) {
 			// 开始或者结束的时间任一为空
 		} else {
-			// 暂时不知道sn如何获取，大概率由上层在用户选择特定设备时传递
-			// const sn = 'FS101D8BS00084';
-			// const sn = this.props.params.sn;
+
 			const { saveSetting, sn } = this.props;
 			const values = form.getFieldsValue();
 
@@ -178,14 +180,14 @@ class ActiveDetection extends React.Component {
 		const { form } = this.props;
 
 		if (e.target.value === 2) {
-			// const startTime = moment('1970-01-01').add(75600, 's');
-			// const endTime = moment('1970-01-01').add(32400, 's');
+			const startTime = moment('1970-01-01').add(75600, 's');
+			const endTime = moment('1970-01-01').add(32400, 's');
 
 			form.setFieldsValue({
 				'all': true,
 				'days': ['1', '2', '3', '4', '5', '6', '7'],
-				// 'startTime': startTime,
-				// 'endTime': endTime
+				'startTime': startTime,
+				'endTime': endTime
 			});
 		}
 
@@ -266,12 +268,12 @@ class ActiveDetection extends React.Component {
 		const { form, activeDetection /* , loading */ } = this.props;
 
 		const { getFieldDecorator, getFieldValue } = form;
-		const { readFlag, updateFlag } = activeDetection;
+		const { isReading, isSaving, isSound, isDynamic, sSensitivity, mSensitivity, isAuto, startTime, endTime, all, days } = activeDetection;
 		const { marks, daysError } = this.state;
-		const spinning = readFlag || updateFlag;
+		// const spinning = readFlag || updateFlag;
 
 		return (
-			<Spin spinning={spinning}>
+			<Spin spinning={isReading || isSaving === 'saving'}>
 				<Card bordered={false} title={formatMessage({id: 'activeDetection.title' })}>
 					<Form {...LAYOUT} onSubmit={this.handleSubmit} hideRequiredMark className={styles['main-form']}>
 						<Form.Item
@@ -280,7 +282,7 @@ class ActiveDetection extends React.Component {
 							{
 								getFieldDecorator('isSound', {
 									valuePropName: 'checked',
-									initialValue: true,
+									initialValue: isSound,
 								})(
 									// <Switch
 									// 	// onChange={this.soundDetectSwitchChange}
@@ -298,7 +300,7 @@ class ActiveDetection extends React.Component {
 						>
 							{
 								getFieldDecorator('sSensitivity', {
-									initialValue: 50
+									initialValue: sSensitivity
 								})(
 									<Slider
 										marks={marks}
@@ -314,7 +316,7 @@ class ActiveDetection extends React.Component {
 							{
 								getFieldDecorator('isDynamic', {
 									valuePropName: 'checked',
-									initialValue: true,
+									initialValue: isDynamic,
 								})(
 									// <Switch
 									// 	checkedChildren={formatMessage({id: 'activeDetection.label.open'})}
@@ -331,7 +333,7 @@ class ActiveDetection extends React.Component {
 						>
 							{
 								getFieldDecorator('mSensitivity', {
-									initialValue: 50
+									initialValue: mSensitivity
 								})(
 									<Slider
 										marks={marks}
@@ -347,6 +349,7 @@ class ActiveDetection extends React.Component {
 							{
 								getFieldDecorator('isAuto', {
 									getValueFromEvent: this.onAutoChange,
+									initialValue: isAuto
 								})(
 									<RadioGroup inChange={this.onAutoChange}>
 										<Radio value={1}>
@@ -362,7 +365,7 @@ class ActiveDetection extends React.Component {
 						<Form.Item label={formatMessage({id: 'activeDetection.days'})}>
 							{
 								getFieldDecorator('all', {
-									initialValue: true,
+									initialValue: all,
 									valuePropName: 'checked',
 									getValueFromEvent: this.onSelectAll,
 								})(
@@ -375,7 +378,7 @@ class ActiveDetection extends React.Component {
 						<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
 							{
 								getFieldDecorator('days', {
-									initialValue: ['1', '2', '3', '4', '5', '6', '7'],
+									initialValue: days,
 									getValueFromEvent: this.dayControl,
 								})(
 									<Checkbox.Group className={styles['form-checkbox-group']} disabled={getFieldValue('isAuto') !== 2}>
@@ -434,7 +437,8 @@ class ActiveDetection extends React.Component {
 						<Form.Item label={formatMessage({id: 'activeDetection.open'})}>
 							{
 								getFieldDecorator('startTime', {
-									initialValue: moment('1970-01-01').add(0, 's'),
+									// initialValue: moment('1970-01-01').add(0, 's'),
+									initialValue: moment('1970-01-01').add(startTime, 's'),
 									rules: [
 										{
 											required: true,
@@ -455,7 +459,8 @@ class ActiveDetection extends React.Component {
 						<Form.Item label={formatMessage({id: 'activeDetection.close'})}>
 							{
 								getFieldDecorator('endTime', {
-									initialValue: moment('1970-01-01').add(0, 's'),
+									// initialValue: moment('1970-01-01').add(0, 's'),
+									initialValue: moment('1970-01-01').add(endTime, 's'),
 									rules: [
 										{
 											required: true,
@@ -478,7 +483,7 @@ class ActiveDetection extends React.Component {
 							<Button
 								type="primary"
 								htmlType="submit"
-								loading={updateFlag}
+								loading={isSaving === 'saving'}
 								disabled={!form.isFieldsTouched(
 									[
 										'isSound',

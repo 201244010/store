@@ -1,6 +1,7 @@
 import { MESSAGE_TYPE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 
+
 const OPCODE = {
 	READ: '0x305c',
 	UPDATE: '0x305d'
@@ -12,12 +13,12 @@ export default {
 		sn: '',
 		nightMode: 2,
 		indicator: false,
-		rotation: false,
+		rotation: 0,
 		isReading: true,
 		isSaving: 'normal'
 	},
 	reducers:{
-		readSn: (state, { payload: { sn }}) => {
+		init: (state, { payload: { sn }}) => {
 			state.sn = sn;
 		},
 		readData: (state, { payload: { sn, nightMode, indicator, rotation }}) => {
@@ -27,11 +28,15 @@ export default {
 				state.rotation = rotation;
 			}
 		},
-		setReadingStatus: (state, { payload: { status }}) => {
+		setReadingStatus: (state, { payload: { sn, status }}) => {
+			if(state.sn === sn) {
 			state.isReading = status;
+			}
 		},
-		setSavingStatus: (state, { payload: { status }}) => {
+		setSavingStatus: (state, { payload: { sn, status }}) => {
+			if(state.sn === sn) {
 			state.isSaving = status;
+		}
 		}
 	},
 	effects:{
@@ -66,7 +71,7 @@ export default {
 			});
 
 			yield put({
-				type: 'readSn',
+				type: 'init',
 				payload: {
 					sn
 				}
@@ -75,6 +80,7 @@ export default {
 			yield put({
 				type: 'setReadingStatus',
 				payload: {
+					sn,
 					status: true
 				}
 			});
@@ -106,7 +112,8 @@ export default {
 							sn,
 							night_mode: nightMode,
 							led_indicator: indicator ? 1 : 0,
-							rotation: rotation ? 1 : 0
+							// rotation: rotation ? 1 : 0
+							rotation
 						}
 					}
 				}
@@ -125,6 +132,7 @@ export default {
 			yield put({
 				type: 'setSavingStatus',
 				payload: {
+					sn,
 					status: 'saving'
 				}
 			});
@@ -136,7 +144,6 @@ export default {
 			const listeners = [
 				{
 					opcode: OPCODE.READ,
-					models: ['FS1', 'SS1'],
 					type: MESSAGE_TYPE.RESPONSE,
 					handler: (topic, messages) => {
 						const msg = JSON.parse(JSON.stringify(messages));
@@ -149,29 +156,38 @@ export default {
 									sn: data.sn,
 									nightMode: data.night_mode,
 									indicator: data.led_indicator === 1,
-									rotation: data.rotation === 1
+									rotation: data.rotation
 								}
 							});
-						}
 
 						dispatch({
 							type: 'setReadingStatus',
 							payload: {
+									sn: data.sn,
 								status: false
 							}
 						});
 					}
+
+						// dispatch({
+						// 	type: 'setReadingStatus',
+						// 	payload: {
+						// 		sn: msg.data.sn,
+						// 		status: false
+						// 	}
+						// });
+					}
 				}, {
 					opcode: OPCODE.UPDATE,
-					models: ['FS1', 'SS1'],
 					type: MESSAGE_TYPE.RESPONSE,
 					handler: (topic, messages) => {
 						const msg = JSON.parse(JSON.stringify(messages));
-
+						const { sn } = msg.data;
 						if (msg.errcode === ERROR_OK) {
 							dispatch({
 								type: 'setSavingStatus',
 								payload: {
+									sn,
 									status: 'success'
 								}
 							});
@@ -179,6 +195,7 @@ export default {
 							dispatch({
 								type: 'setSavingStatus',
 								payload: {
+									sn,
 									status: 'failed'
 								}
 							});
@@ -188,6 +205,7 @@ export default {
 							dispatch({
 								type: 'setSavingStatus',
 								payload: {
+									sn,
 									status: 'normal'
 								}
 							});
