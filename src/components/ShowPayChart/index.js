@@ -177,21 +177,21 @@ export default class ShowPayChart extends React.Component {
 							'item*percent',
 							item => {
 								if (item === PURCHASE_ORDER[0]) {
-									return 'l(45) 0:#6590F3 1:#293DD3 ';
+									return 'l(45) 0:#66BDFF 1:#3D84FF';
 								}
 								if (item === PURCHASE_ORDER[1]) {
 									return 'l(45) 0:#5EFFC9 1:#00FF99';
 								}
 								if (item === PURCHASE_ORDER[2]) {
-									return 'l(45) 0:#FFE16B 1:#FFB366';
+									return 'l(45) 0:#FFB366 1:#FFE16B';
 								}
 								if (item === PURCHASE_ORDER[3]) {
-									return 'l(45) 0:#FF9F82 1:#FF8989';
+									return 'l(45) 0:#FF8989 1:#FF9B82';
 								}
 								if (item === PURCHASE_ORDER[4]) {
-									return 'l(45) 0:#CC99FF 1:#AA80FF';
+									return 'l(45) 0:#AA80FF 1:#CC99FF';
 								}
-								return 'l(45) 0:#8A72FF 1:#6666FF';
+								return 'l(45) 0:#827DFF 1:#6670FF';
 							},
 						]}
 						style={[
