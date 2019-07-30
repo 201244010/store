@@ -1,29 +1,27 @@
 import React from 'react';
 import { Button, Modal } from 'antd';
-// import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
-import VideoPlayComponent from '@/pages/IPC/component/VideoPlayComponent';
+import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
 
 import { formatMessageTemplate, convertArrayPrams } from '@/utils/utils';
-// import ipcTypes from '@/constants/ipcTypes';
+import ipcTypes from '@/constants/ipcTypes';
 
 const palyMotion = ({ params }) => {
 	const { url = null, device_model: ipcType = null } = convertArrayPrams(params);
-	// const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
+	const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
 	const modal = Modal.info({
 		title: '',
 		content: (
 			<>
 				{url && (
-					<VideoPlayComponent
-						playing
+					<ModalPlayer
+						visible
 						onClose={() => {
 							if (modal) {
 								modal.destroy();
 							}
 						}}
-						videoUrl={url}
-						ipcType={ipcType}
-						// pixelRatio={pixelRatio}
+						url={url}
+						pixelRatio={pixelRatio}
 					/>
 				)}
 			</>
