@@ -1,20 +1,12 @@
 import React from 'react';
 import styles from './index.less';
 import { formatMessage } from 'umi/locale';
-import Media from 'react-media';
-import RiseDownTag from '@/components/Tag/RiseDownTag';
 import { priceFormat } from '@/utils/utils';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 
 const {
 	SEARCH_TYPE: { RANGE },
 } = DASHBOARD;
-
-const ringRateStyle = {
-	width: '100%',
-	display: 'flex',
-	justifyContent: 'space-between',
-};
 
 const TEXT = {
 	TOTAL_AMOUNT: formatMessage({ id: 'dashboard.total.sales' }),
@@ -30,32 +22,10 @@ const TEXT = {
 	M2M: formatMessage({ id: 'dashboard.order.m2m' }),
 };
 
-const RingRate = props => {
-	const { d2d = {}, w2w = {}, m2m = {} } = props;
-	return (
-		<div style={ringRateStyle}>
-			<RiseDownTag label={d2d.label} content={d2d.content} />
-			<Media
-				query={{ minWidth: 1440 }}
-				render={() => <RiseDownTag label={w2w.label} content={w2w.content} />}
-			/>
-			<Media
-				query={{ minWidth: 1920 }}
-				render={() => <RiseDownTag label={m2m.label} content={m2m.content} />}
-			/>
-		</div>
-	);
-};
-
 export default class ShowCards extends React.Component {
 	render() {
 		const {
-			totalAmountLoading,
-			totalCountLoading,
-			totalRefundLoading,
-			avgUnitLoading,
-
-			searchValue: { rangeType } = {},
+			range,
 			totalAmount: {
 				totalAmount,
 				dayAmount,
@@ -105,35 +75,32 @@ export default class ShowCards extends React.Component {
 		};
 
 		const totalAmountCard = {
-			loading: totalAmountLoading,
 			title: TEXT.TOTAL_AMOUNT,
 			infoContent: TEXT.TOTAL_AMOUNT_INFO,
 			content:
-				totalAmountStore[rangeType] || totalAmountStore[rangeType] === 0
-					? priceFormat(parseFloat(totalAmountStore[rangeType]).toFixed(2))
+				totalAmountStore[range] || totalAmountStore[range] === 0
+					? priceFormat(parseFloat(totalAmountStore[range]).toFixed(2))
 					: '--',
-			footer: (
-				<RingRate
-					d2d={{
-						label: TEXT.D2D,
-						content: dayRateAmount !== '' ? dayRateAmount : '--',
-						compare:
-							dayRateAmount !== '' ? (parseFloat(dayRateAmount) > 0 ? 1 : 0) : -1,
-					}}
-					w2w={{
-						label: TEXT.W2W,
-						content: weekRateAmount !== '' ? weekRateAmount : '--',
-						compare:
-							weekRateAmount !== '' ? (parseFloat(weekRateAmount) > 0 ? 1 : 0) : -1,
-					}}
-					m2m={{
-						label: TEXT.M2M,
-						content: monthRateAmount !== '' ? monthRateAmount : '--',
-						compare:
-							monthRateAmount !== '' ? (parseFloat(monthRateAmount) > 0 ? 1 : 0) : -1,
-					}}
-				/>
-			),
+			footer: {
+				d2d: {
+					label: TEXT.D2D,
+					content: dayRateAmount !== '' ? dayRateAmount : '--',
+					compare:
+						dayRateAmount !== '' ? (parseFloat(dayRateAmount) > 0 ? 1 : 0) : -1,
+				},
+				w2w: {
+					label: TEXT.W2W,
+					content: weekRateAmount !== '' ? weekRateAmount : '--',
+					compare:
+						weekRateAmount !== '' ? (parseFloat(weekRateAmount) > 0 ? 1 : 0) : -1,
+				},
+				m2m: {
+					label: TEXT.M2M,
+					content: monthRateAmount !== '' ? monthRateAmount : '--',
+					compare:
+						monthRateAmount !== '' ? (parseFloat(monthRateAmount) > 0 ? 1 : 0) : -1,
+				}
+			},
 		};
 
 		const totalCountStore = {
@@ -143,31 +110,28 @@ export default class ShowCards extends React.Component {
 			[RANGE.FREE]: totalCount,
 		};
 		const totalCountCard = {
-			loading: totalCountLoading,
 			title: TEXT.TOTAL_COUNT,
 			infoContent: TEXT.TOTAL_COUNT_INFO,
-			content: totalCountStore[rangeType] !== '' ? totalCountStore[rangeType] : '--',
-			footer: (
-				<RingRate
-					d2d={{
-						label: TEXT.D2D,
-						content: dayRateCount !== '' ? dayRateCount : '--',
-						compare: dayRateCount !== '' ? (parseFloat(dayRateCount) > 0 ? 1 : 0) : -1,
-					}}
-					w2w={{
-						label: TEXT.W2W,
-						content: weekRateCount !== '' ? weekRateCount : '--',
-						compare:
-							weekRateCount !== '' ? (parseFloat(weekRateCount) > 0 ? 1 : 0) : -1,
-					}}
-					m2m={{
-						label: TEXT.M2M,
-						content: monthRateCount !== '' ? monthRateCount : '--',
-						compare:
-							monthRateCount !== '' ? (parseFloat(monthRateCount) > 0 ? 1 : 0) : -1,
-					}}
-				/>
-			),
+			content: totalCountStore[range] !== '' ? totalCountStore[range] : '--',
+			footer: {
+				d2d: {
+					label: TEXT.D2D,
+					content: dayRateCount !== '' ? dayRateCount : '--',
+					compare: dayRateCount !== '' ? (parseFloat(dayRateCount) > 0 ? 1 : 0) : -1,
+				},
+				w2w: {
+					label: TEXT.W2W,
+					content: weekRateCount !== '' ? weekRateCount : '--',
+					compare:
+						weekRateCount !== '' ? (parseFloat(weekRateCount) > 0 ? 1 : 0) : -1,
+				},
+				m2m: {
+					label: TEXT.M2M,
+					content: monthRateCount !== '' ? monthRateCount : '--',
+					compare:
+						monthRateCount !== '' ? (parseFloat(monthRateCount) > 0 ? 1 : 0) : -1,
+				}
+			},
 		};
 
 		const ausSaleStore = {
@@ -178,32 +142,29 @@ export default class ShowCards extends React.Component {
 		};
 
 		const avgUnitSaleCard = {
-			loading: avgUnitLoading,
 			title: TEXT.AVG_UNIT,
 			infoContent: TEXT.AVG_UNIT_INFO,
 			content:
-				ausSaleStore[rangeType] || ausSaleStore[rangeType] === 0
-					? parseFloat(ausSaleStore[rangeType]).toFixed(2)
+				ausSaleStore[range] || ausSaleStore[range] === 0
+					? parseFloat(ausSaleStore[range]).toFixed(2)
 					: '--',
-			footer: (
-				<RingRate
-					d2d={{
-						label: TEXT.D2D,
-						content: dayRateAvg !== '' ? dayRateAvg : '--',
-						compare: dayRateAvg !== '' ? (parseFloat(dayRateAvg) > 0 ? 1 : 0) : -1,
-					}}
-					w2w={{
-						label: TEXT.W2W,
-						content: weekRateAvg !== '' ? weekRateAvg : '--',
-						compare: weekRateAvg !== '' ? (parseFloat(weekRateAvg) > 0 ? 1 : 0) : -1,
-					}}
-					m2m={{
-						label: TEXT.M2M,
-						content: monthRateAvg !== '' ? monthRateAvg : '--',
-						compare: monthRateAvg !== '' ? (parseFloat(monthRateAvg) > 0 ? 1 : 0) : -1,
-					}}
-				/>
-			),
+			footer: {
+				d2d: {
+					label: TEXT.D2D,
+					content: dayRateAvg !== '' ? dayRateAvg : '--',
+					compare: dayRateAvg !== '' ? (parseFloat(dayRateAvg) > 0 ? 1 : 0) : -1,
+				},
+				w2w: {
+					label: TEXT.W2W,
+					content: weekRateAvg !== '' ? weekRateAvg : '--',
+					compare: weekRateAvg !== '' ? (parseFloat(weekRateAvg) > 0 ? 1 : 0) : -1,
+				},
+				m2m: {
+					label: TEXT.M2M,
+					content: monthRateAvg !== '' ? monthRateAvg : '--',
+					compare: monthRateAvg !== '' ? (parseFloat(monthRateAvg) > 0 ? 1 : 0) : -1,
+				}
+			},		
 		};
 
 		const refundCountStore = {
@@ -213,32 +174,29 @@ export default class ShowCards extends React.Component {
 			[RANGE.FREE]: refundCount,
 		};
 		const totalRefundCard = {
-			loading: totalRefundLoading,
 			title: TEXT.TOTAL_REFUND,
 			infoContent: TEXT.TOTAL_REFUND_INFO,
-			content: refundCountStore[rangeType] !== '' ? refundCountStore[rangeType] : '--',
-			footer: (
-				<RingRate
-					d2d={{
-						label: TEXT.D2D,
-						content: dayRateRefund !== '' ? dayRateRefund : '--',
-						compare:
-							dayRateRefund !== '' ? (parseFloat(dayRateRefund) > 0 ? 1 : 0) : -1,
-					}}
-					w2w={{
-						label: TEXT.W2W,
-						content: weekRateRefund !== '' ? weekRateRefund : '--',
-						compare:
-							weekRateRefund !== '' ? (parseFloat(weekRateRefund) > 0 ? 1 : 0) : -1,
-					}}
-					m2m={{
-						label: TEXT.M2M,
-						content: monthRateRefund !== '' ? monthRateRefund : '--',
-						compare:
-							monthRateRefund !== '' ? (parseFloat(monthRateRefund) > 0 ? 1 : 0) : -1,
-					}}
-				/>
-			),
+			content: refundCountStore[range] !== '' ? refundCountStore[range] : '--',
+			footer: {
+				d2d: {
+					label: TEXT.D2D,
+					content: dayRateRefund !== '' ? dayRateRefund : '--',
+					compare:
+						dayRateRefund !== '' ? (parseFloat(dayRateRefund) > 0 ? 1 : 0) : -1,
+				},
+				w2w: {
+					label: TEXT.W2W,
+					content: weekRateRefund !== '' ? weekRateRefund : '--',
+					compare:
+						weekRateRefund !== '' ? (parseFloat(weekRateRefund) > 0 ? 1 : 0) : -1,
+				},
+				m2m: {
+					label: TEXT.M2M,
+					content: monthRateRefund !== '' ? monthRateRefund : '--',
+					compare:
+						monthRateRefund !== '' ? (parseFloat(monthRateRefund) > 0 ? 1 : 0) : -1,
+				}
+			},			
 		};
 
 		const info = [totalAmountCard, avgUnitSaleCard, totalCountCard, totalRefundCard];
@@ -249,15 +207,15 @@ export default class ShowCards extends React.Component {
 						key={item.title}
 						title={item.title}
 						num={item.content}
-						dayTitle={item.footer.props.d2d.label}
-						dayNum={item.footer.props.d2d.content}
-						dayCompare={item.footer.props.d2d.compare}
-						weekTitle={item.footer.props.w2w.label}
-						weekNum={item.footer.props.w2w.content}
-						weekCompare={item.footer.props.w2w.compare}
-						monthTitle={item.footer.props.m2m.label}
-						monthNum={item.footer.props.m2m.content}
-						monthCompare={item.footer.props.m2m.compare}
+						dayTitle={item.footer.d2d.label}
+						dayNum={item.footer.d2d.content}
+						dayCompare={item.footer.d2d.compare}
+						weekTitle={item.footer.w2w.label}
+						weekNum={item.footer.w2w.content}
+						weekCompare={item.footer.w2w.compare}
+						monthTitle={item.footer.m2m.label}
+						monthNum={item.footer.m2m.content}
+						monthCompare={item.footer.m2m.compare}
 					/>
 				))}
 			</div>
