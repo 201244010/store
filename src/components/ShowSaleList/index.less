@@ -1,0 +1,81 @@
+.sale-lists {
+	width: 390px;
+	margin-left: 83px;
+	margin-right: 96px;
+	.lists-title {
+		font-family: PingFangSC-Semibold, sans-serif;
+		font-size: 20px;
+		color: #ffffff;
+		margin-bottom: 32px;
+	}
+	.sale-oneList {
+		width: 366px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 16px;
+		margin-bottom: 20px;
+		.oneList-rank-name {
+			display: flex;
+			align-items: center;
+			.oneList-rank {
+				width: 32px;
+				height: 32px;
+				margin-right: 32px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-family: Gotham-Bold, sans-serif;
+				color: #ffffff;
+				border-radius: 4px;
+			}
+			.oneList-name {
+				font-family: PingFangSC-Regular, sans-serif;
+				color: #ffffff;
+			}
+		}
+		.oneList-num {
+			font-family: Gotham-Light, sans-serif;
+			color: #ffffff;
+		}
+		&:nth-child(2) {
+			font-size: 20px;
+			margin-bottom: 30px;
+			.oneList-rank-name {
+				.oneList-rank {
+					background: rgba(125, 158, 250, 0.9);
+					box-shadow: 0 3px 10px 0 rgba(117, 147, 234, 0.5);
+				}
+				.oneList-name {
+					font-family: PingFangSC-Semibold, sans-serif;
+				}
+			}
+		}
+		&:nth-child(3) {
+			font-size: 20px;
+			margin-bottom: 30px;
+			.oneList-rank-name {
+				.oneList-rank {
+					background: #5d76bb;
+					box-shadow: 0 3px 10px 0 rgba(93, 118, 187, 0.5);
+				}
+				.oneList-name {
+					font-family: PingFangSC-Semibold, sans-serif;
+				}
+			}
+		}
+		&:nth-child(4) {
+			font-size: 20px;
+			margin-bottom: 28px;
+			.oneList-rank-name {
+				.oneList-rank {
+					background: #445489;
+					box-shadow: 0 3px 10px 0 rgba(68, 84, 137, 0.5);
+				}
+				.oneList-name {
+					font-family: PingFangSC-Semibold, sans-serif;
+				}
+			}
+		}
+	}
+}
