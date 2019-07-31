@@ -42,7 +42,7 @@ export default {
 	'notif-import-product-finish-content':
 		'商品导入完成，商品总数##total_num##, 成功导入总数##current_num##',
 	'notif-import-product-failure-content': '商品导入失败，原因：##reason##',
-	'notif-motion-detect-content': '网络摄像机（##device_name##）侦测到异常##source##，请即刻查看',
+	'notif-motion-detect-content': '网络摄像机(##device_name##)侦测到异常##source##，请即刻查看',
 	'notif-motion-detect-content-1': '图像',
 	'notif-motion-detect-content-2': '声音',
 	'notif-motion-detect-content-3': '图像和声音',
@@ -86,6 +86,7 @@ export default {
 	// ipc-device-desc
 	'notif-device-ipc-ota-desc': '【##company_name##-##shop_name##】网络摄像机(##device_name##)有新版固件，请更新',
 	'notif-device-ipc-motion-detect-video-desc':
+<<<<<<< HEAD
 		'【##company_name##-##shop_name##】网络摄像机(##device_name##)侦测到异常画面，请即刻查看',
 	'notif-device-ipc-motion-detect-audio-desc':
 		'【##comapny_name##-##shop_name##】网络摄像机(##device_name##)侦测到异常声音，请即刻查看',
@@ -94,6 +95,16 @@ export default {
 	'notif-device-ipc-on/offline-desc':
 		'[##company_name##-##shop_name##]网络摄像机(##device_name##)已离线，请检查设备状态',
 	// 'notif-device-ipc-tf-card-detect-desc': '网络摄像机的存储卡##status##',
+=======
+		'【##company_name##-##shop_name##】网络摄像机##device_name##侦测到异常画面，请即刻查看',
+	'notif-device-ipc-motion-detect-audio-desc':
+		'【##company_name##-##shop_name##】网络摄像机##device_name##侦测到异常声音，请即刻查看',
+	'notif-device-ipc-motion-detect-video-audio-desc':
+		'【##company_name##-##shop_name##】网络摄像机 ##device_name## 侦测到异常画面与声音，请即刻查看',
+	'notif-device-ipc-on/offline-desc':
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)已离线，请检查设备状态',
+	'notif-device-ipc-tf-card-detect-desc': '网络摄像机的存储卡##status##',
+>>>>>>> 1. 修改 notification 切分方法
 	'notif-device-ipc-tf-card-detect-tf-non-exist-desc':
 		'【##company_name##-##shop_name##】网络摄像机(##device_name##)的存储卡未插入或被拔出，请检查',
 	'notif-device-ipc-tf-card-detect-tf-exist-desc':
@@ -147,7 +158,7 @@ export default {
 
 	// esl-device-desc
 	'notif-system-esl-erp-desc':
-		'【##company_name##-##shop_name##】已完成与(##saas_name##)的对接，成功获取 ##total_count## 条商品信息',
+		'【##company_name##-##shop_name##】已完成与 (##saas_name##) 的对接，成功获取 ##total_count## 条商品信息',
 	'notif-device-esl-ota-des':
 		'【##company_name##-##shop_name##】##device_name##已发布新版固件##bin_version##，请更新',
 	'notif-device-esl-ap-on/offline-desc':

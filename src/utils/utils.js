@@ -417,10 +417,19 @@ export const priceFormat = (price, dotPos = 3) => {
 		: `${isNagtive ? '-' : ''}${reversedRound}`;
 };
 
-export const analyzeMessageTemplate = message => {
-	const [messageId, values] = message.split(':');
-	let valueList = [];
+export const analyzeMessageTemplate = (message, option) => {
+	const { spliter, timeFormat } = option;
+	const spliterIndex = message.indexOf(spliter);
+	let [messageId, values] = [message, null];
 
+	if (spliterIndex > -1) {
+		[messageId, values] = [
+			message.substring(0, spliterIndex),
+			message.substring(spliterIndex + 1),
+		];
+	}
+
+	let valueList = [];
 	if (values) {
 		valueList = values.split('&').map(item => {
 			const [key, value] = item.split('=');
@@ -430,6 +439,14 @@ export const analyzeMessageTemplate = message => {
 					value: formatMessage({ id: `${messageId}-${value}` }),
 				};
 			}
+
+			if (key.indexOf('_time') > -1) {
+				return {
+					key: `##${key}##`,
+					value: moment(value).format(timeFormat),
+				};
+			}
+
 			return {
 				key: `##${key}##`,
 				value,
@@ -459,8 +476,13 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
 	return valueList.reduce((prev, cur) => prev.replace(cur.key, cur.value), message);
 };
 
-export const formatMessageTemplate = message =>
-	replaceTemplateWithValue(analyzeMessageTemplate(message));
+export const formatMessageTemplate = (
+	message,
+	option = {
+		spliter: ':',
+		timeFormat: 'YYYY-MM-DD HH:mm:ss',
+	}
+) => replaceTemplateWithValue(analyzeMessageTemplate(message, option));
 
 export const convertArrayPrams = (str, sperator = '&') => {
 	const obj = {};
