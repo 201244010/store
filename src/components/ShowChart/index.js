@@ -75,7 +75,7 @@ Shape.registerShape('interval', 'myShape', {
 	},
 });
 
-export default class ShowChart extends React.Component {
+export default class ShowChart extends React.PureComponent {
 	render() {
 		const { orderList, saleType, range } = this.props;
 

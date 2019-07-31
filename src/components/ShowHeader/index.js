@@ -10,7 +10,7 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 const ACTIVEKEY = ['today', 'week', 'month'];
 
-export default class ShowHeader extends React.Component {
+export default class ShowHeader extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.couter = 0;

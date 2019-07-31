@@ -21,9 +21,9 @@ const {
 		clearSearch: () => dispatch({ type: 'showInfo/clearSearch' }),
 	})
 )
-class ShowTabContent extends React.Component {
+class ShowTabContent extends React.PureComponent {
 	componentDidMount() {
-		const { time = 'today', activeKey } = this.props;
+		const { time = 'today' } = this.props;
 
 		if (time === 'today') {
 			this.atuoRefresh(RANGE.TODAY);
@@ -39,15 +39,15 @@ class ShowTabContent extends React.Component {
 
 		setTimeout(() => {
 			if (time === 'today') {
-				this.atuoRefresh(RANGE.TODAY, activeKey);
+				this.atuoRefresh(RANGE.TODAY);
 			}
 
 			if (time === 'week') {
-				this.atuoRefresh(RANGE.WEEK, activeKey);
+				this.atuoRefresh(RANGE.WEEK);
 			}
 
 			if (time === 'month') {
-				this.atuoRefresh(RANGE.MONTH, activeKey);
+				this.atuoRefresh(RANGE.MONTH);
 			}
 			this.startAutoRefresh();
 		}, 1000 * 30);
@@ -67,17 +67,17 @@ class ShowTabContent extends React.Component {
 	startAutoRefresh = () => {
 		clearTimeout(this.timer);
 		this.timer = setTimeout(async () => {
-			const { time = 'today', activeKey = 'all' } = this.props;
+			const { time = 'today' } = this.props;
 			if (time === 'today') {
-				this.atuoRefresh(RANGE.TODAY, activeKey);
+				this.atuoRefresh(RANGE.TODAY);
 			}
 
 			if (time === 'week') {
-				this.atuoRefresh(RANGE.WEEK, activeKey);
+				this.atuoRefresh(RANGE.WEEK);
 			}
 
 			if (time === 'month') {
-				this.atuoRefresh(RANGE.MONTH, activeKey);
+				this.atuoRefresh(RANGE.MONTH);
 			}
 			this.startAutoRefresh();
 		}, 1000 * 60);
