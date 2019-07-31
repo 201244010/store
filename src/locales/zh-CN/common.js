@@ -54,4 +54,5 @@ export default {
 	'safety.validate': '安全验证',
 	'text.yes': '是',
 	'text.no': '否',
+	'data.empty': '暂无数据',
 };
