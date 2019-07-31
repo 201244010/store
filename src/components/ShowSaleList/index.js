@@ -3,7 +3,7 @@ import { formatMessage } from 'umi/locale';
 
 import styles from './index.less';
 
-export default class ShowSaleList extends React.Component {
+export default class ShowSaleList extends React.PureComponent {
 	render() {
 		const { skuRankList = [] } = this.props;
 		return (

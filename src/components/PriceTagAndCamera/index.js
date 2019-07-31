@@ -4,7 +4,7 @@ import { priceFormat } from '@/utils/utils';
 
 import styles from './index.less';
 
-export default class PriceTagAndCamera extends React.Component {
+export default class PriceTagAndCamera extends React.PureComponent {
 	render() {
 		const {
 			deviceOverView: {

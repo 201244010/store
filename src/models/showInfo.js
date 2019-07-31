@@ -89,10 +89,6 @@ export default {
 		deviceOverView: {},
 		ipcOverView: {},
 		today: {
-			searchValue: {
-				rangeType: RANGE.TODAY,
-			},
-
 			totalAmount: {},
 			totalCount: {},
 			totalRefund: {},
@@ -100,12 +96,9 @@ export default {
 			orderList: [],
 			skuRankList: [],
 			purchaseInfo: {},
+			range: ''
 		},
 		week: {
-			searchValue: {
-				rangeType: RANGE.TODAY,
-			},
-
 			totalAmount: {},
 			totalCount: {},
 			totalRefund: {},
@@ -113,12 +106,9 @@ export default {
 			orderList: [],
 			skuRankList: [],
 			purchaseInfo: {},
+			range: ''
 		},
 		month: {
-			searchValue: {
-				rangeType: RANGE.TODAY,
-			},
-
 			totalAmount: {},
 			totalCount: {},
 			totalRefund: {},
@@ -126,6 +116,7 @@ export default {
 			orderList: [],
 			skuRankList: [],
 			purchaseInfo: {},
+			range: '',
 		},
 	},
 	effects: {

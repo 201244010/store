@@ -9,7 +9,7 @@ import styles from './index.less';
 
 const { PURCHASE_ORDER } = DASHBOARD;
 
-export default class ShowPayChart extends React.Component {
+export default class ShowPayChart extends React.PureComponent {
 	render() {
 		const { purchaseInfo, deviceOverView, ipcOverView } = this.props;
 
@@ -44,26 +44,26 @@ export default class ShowPayChart extends React.Component {
 				let path = [];
 				path.push([
 					'M',
-					origin.item !== maxItem.item ? points[0].x : points[0].x - xWidth * 0.2,
+					origin.item !== maxItem.item ? points[0].x : points[0].x - xWidth * 0.1,
 					points[0].y,
 				]);
 				path.push([
 					'L',
-					origin.item !== maxItem.item ? points[1].x : points[1].x - xWidth * 0.2,
+					origin.item !== maxItem.item ? points[1].x : points[1].x - xWidth * 0.1,
 					points[1].y,
 				]);
 				path.push([
 					'L',
 					origin.item !== maxItem.item
 						? points[0].x + xWidth
-						: points[0].x + xWidth * 1.2,
+						: points[0].x + xWidth * 1.1,
 					points[2].y,
 				]);
 				path.push([
 					'L',
 					origin.item !== maxItem.item
 						? points[0].x + xWidth
-						: points[0].x + xWidth * 1.2,
+						: points[0].x + xWidth * 1.1,
 					points[3].y,
 				]);
 				path.push('Z');
@@ -210,7 +210,7 @@ export default class ShowPayChart extends React.Component {
 						tooltip={false}
 					/>
 					<View data={dv2}>
-						<Coord type="theta" radius={0.83} innerRadius={0.46} />
+						<Coord type="theta" radius={0.80} innerRadius={0.50} />
 						<Geom
 							type="intervalStack"
 							position="count"

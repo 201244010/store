@@ -22,7 +22,7 @@ const TEXT = {
 	M2M: formatMessage({ id: 'dashboard.order.m2m' }),
 };
 
-export default class ShowCards extends React.Component {
+export default class ShowCards extends React.PureComponent {
 	render() {
 		const {
 			range,
@@ -85,19 +85,21 @@ export default class ShowCards extends React.Component {
 				d2d: {
 					label: TEXT.D2D,
 					content: dayRateAmount !== '' ? dayRateAmount : '--',
-					compare: dayRateAmount !== '' ? (parseFloat(dayRateAmount) > 0 ? 1 : 0) : -1,
+					compare:
+						dayRateAmount !== '' ? (parseFloat(dayRateAmount) > 0 ? 1 : 0) : -1,
 				},
 				w2w: {
 					label: TEXT.W2W,
 					content: weekRateAmount !== '' ? weekRateAmount : '--',
-					compare: weekRateAmount !== '' ? (parseFloat(weekRateAmount) > 0 ? 1 : 0) : -1,
+					compare:
+						weekRateAmount !== '' ? (parseFloat(weekRateAmount) > 0 ? 1 : 0) : -1,
 				},
 				m2m: {
 					label: TEXT.M2M,
 					content: monthRateAmount !== '' ? monthRateAmount : '--',
 					compare:
 						monthRateAmount !== '' ? (parseFloat(monthRateAmount) > 0 ? 1 : 0) : -1,
-				},
+				}
 			},
 		};
 
@@ -120,13 +122,15 @@ export default class ShowCards extends React.Component {
 				w2w: {
 					label: TEXT.W2W,
 					content: weekRateCount !== '' ? weekRateCount : '--',
-					compare: weekRateCount !== '' ? (parseFloat(weekRateCount) > 0 ? 1 : 0) : -1,
+					compare:
+						weekRateCount !== '' ? (parseFloat(weekRateCount) > 0 ? 1 : 0) : -1,
 				},
 				m2m: {
 					label: TEXT.M2M,
 					content: monthRateCount !== '' ? monthRateCount : '--',
-					compare: monthRateCount !== '' ? (parseFloat(monthRateCount) > 0 ? 1 : 0) : -1,
-				},
+					compare:
+						monthRateCount !== '' ? (parseFloat(monthRateCount) > 0 ? 1 : 0) : -1,
+				}
 			},
 		};
 
@@ -159,7 +163,7 @@ export default class ShowCards extends React.Component {
 					label: TEXT.M2M,
 					content: monthRateAvg !== '' ? monthRateAvg : '--',
 					compare: monthRateAvg !== '' ? (parseFloat(monthRateAvg) > 0 ? 1 : 0) : -1,
-				},
+				}
 			},
 		};
 
@@ -177,20 +181,22 @@ export default class ShowCards extends React.Component {
 				d2d: {
 					label: TEXT.D2D,
 					content: dayRateRefund !== '' ? dayRateRefund : '--',
-					compare: dayRateRefund !== '' ? (parseFloat(dayRateRefund) > 0 ? 1 : 0) : -1,
+					compare:
+						dayRateRefund !== '' ? (parseFloat(dayRateRefund) > 0 ? 1 : 0) : -1,
 				},
 				w2w: {
 					label: TEXT.W2W,
 					content: weekRateRefund !== '' ? weekRateRefund : '--',
-					compare: weekRateRefund !== '' ? (parseFloat(weekRateRefund) > 0 ? 1 : 0) : -1,
+					compare:
+						weekRateRefund !== '' ? (parseFloat(weekRateRefund) > 0 ? 1 : 0) : -1,
 				},
 				m2m: {
 					label: TEXT.M2M,
 					content: monthRateRefund !== '' ? monthRateRefund : '--',
 					compare:
 						monthRateRefund !== '' ? (parseFloat(monthRateRefund) > 0 ? 1 : 0) : -1,
-				},
-			},
+				}
+			},	
 		};
 
 		const info = [totalAmountCard, avgUnitSaleCard, totalCountCard, totalRefundCard];
