@@ -18,20 +18,22 @@ const dataSerializer = (item) => ({
 	count: item.amount,
 	capacity: item.capacity,
 
-	target_id: item.target
+	target_id: item.target,
+	alarm_notified: item.warning ? 1 : 0
 });
 
 const dataFormatter = (item, index) => ({
 	id: item.group_id || index + 1,
-	name: item.name,
+	name: item.group_name,
 	type: item.type,
 	threshold: item.threshold,
 	period: item.period/24/60/60,
 	remarks: item.mark || '',
 	amount: item.count || 0,
 	capacity: item.capacity,
-	target: item.target_id || '',
-	lastupdate: item.last_modified_time
+	target: item.target_group_id || '',
+	lastupdate: item.last_modified_time,
+	warning: item.alarm_notified === 1
 });
 
 export const createLibrary = async (params) => {

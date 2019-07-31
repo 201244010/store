@@ -1,4 +1,4 @@
-import { getSdStatus } from '../services/InitStatusSDCard';
+import { getSdStatus } from '../services/initStatusSDCard';
 import { ERROR_OK } from '@/constants/errorCode';
 
 

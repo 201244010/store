@@ -1,33 +1,42 @@
 import React from 'react';
+// import moment from 'moment';
+
 import styles from './Faceid.less';
+
 
 class Faceid extends React.Component{
 	render () {
 		const { current, faceidRects, pixelRatio, currentPPI } = this.props;
-
 		const times = faceidRects.filter(item => {
-			if ( current*1000 < item.reportTime && item.reportTime < current*1000 + 400){
+			if ( current < item.timestamp && item.timestamp < current + 500){
 				return true;
 			}
 			return false;
 		});
 
-		const rects = [];
-		times.forEach(item => {
-			item.rects.forEach(rect => {
-				rects.push(rect);
-			});
-		});
+		times.sort((a, b) => a.id - b.id);
 
-		// console.log('rects: ', current*1000, rects);
+		let temp = null;
+		const rects = [];
+		times.forEach((item, index) => {
+			if (index === 0) {
+				temp = item;
+				rects.push(item);
+				return;
+			}
+			if (temp.id === item.id) {
+				if (item.timestamp > temp.timestamp) {
+					rects.splice(rects.length - 1, 1, item);
+				}
+			}else{
+				rects.push(item);
+			}
+			temp = item;
+			rects.push(item);
+		});
 
 		return (
 			<div className={styles['faceid-container']} ref={(container) => this.container = container}>
-				{/* <div style={ {
-					color: 'white',
-					fontSize: '12px'
-				}}>{ current }</div> */}
-				{/* <div className={ styles['faceid-wrapper'] }> */}
 				{
 					!this.container ? '' :
 						rects.map((item, index) => {
@@ -85,7 +94,7 @@ class Faceid extends React.Component{
 									key={index}
 									style={
 										position
-									} 
+									}
 									className={styles['faceid-rectangle']}
 								>
 									<div className={`${styles['corner-top-left']} ${ styles.corner}`}>
