@@ -5,6 +5,9 @@ import { formatMessage } from 'umi/locale';
 import { FORM_SETTING_LAYOUT } from '@/constants/form';
 import styles from './systemConfig.less';
 
+const SELECT_STYLE = { maxWidth: '300px' };
+const SCAN_PERIODS = [5, 10, 15];
+
 @connect(
 	state => ({
 		loading: state.loading,
@@ -14,6 +17,8 @@ import styles from './systemConfig.less';
 	dispatch => ({
 		getNetWorkIdList: () => dispatch({ type: 'eslBaseStation/getNetWorkIdList' }),
 		setScanTime: payload => dispatch({ type: 'eslElectricLabel/setScanTime', payload }),
+		getAPConfig: ({ networkId }) =>
+			dispatch({ type: 'eslBaseStation/getAPConfig', payload: { networkId } }),
 		checkClientExist: () => dispatch({ type: 'mqttStore/checkClientExist' }),
 	})
 )
@@ -33,9 +38,7 @@ class SystemConfig extends Component {
 		await this.checkMQTTClient();
 	}
 
-	componentWillUnmount(){
-		
-	}
+	componentWillUnmount() {}
 
 	checkMQTTClient = async () => {
 		clearTimeout(this.checkTimer);
@@ -60,7 +63,11 @@ class SystemConfig extends Component {
 		});
 	};
 
-	handleSelectChange = () => {};
+	handleSelectChange = networkId => {
+		console.log(networkId);
+		const { getAPConfig } = this.props;
+		getAPConfig({ networkId });
+	};
 
 	render() {
 		const {
@@ -87,10 +94,7 @@ class SystemConfig extends Component {
 								{getFieldDecorator('networkId', {
 									initialValue: (networkIdList[0] || {}).networkId || null,
 								})(
-									<Select
-										onChange={this.handleSelectChange}
-										style={{ maxWidth: '300px' }}
-									>
+									<Select onChange={this.handleSelectChange} style={SELECT_STYLE}>
 										{networkIdList.map(netWork => (
 											<Select.Option
 												key={netWork.networkId}
@@ -114,18 +118,13 @@ class SystemConfig extends Component {
 								label={formatMessage({ id: 'esl.device.config.scan.round' })}
 							>
 								{getFieldDecorator('scanPeriod', {
-									initialValue: (networkIdList[0] || {}).networkId || null,
+									initialValue: 15,
 								})(
-									<Select
-										onChange={this.handleSelectChange}
-										style={{ maxWidth: '300px' }}
-									>
-										{networkIdList.map(netWork => (
-											<Select.Option
-												key={netWork.networkId}
-												value={netWork.networkId}
-											>
-												{netWork.networkId}
+									<Select onChange={this.handleSelectChange} style={SELECT_STYLE}>
+										{SCAN_PERIODS.map((period, index) => (
+											<Select.Option key={index} value={period}>
+												{period}
+												{formatMessage({ id: 'countDown.unit' })}
 											</Select.Option>
 										))}
 									</Select>
@@ -134,8 +133,9 @@ class SystemConfig extends Component {
 							<Form.Item
 								label={formatMessage({ id: 'esl.device.config.scan.green' })}
 							>
-								{getFieldDecorator('scanMulti', {
-									initialValue: (networkIdList[0] || {}).networkId || null,
+								{getFieldDecorator('isEnergySave', {
+									initialValue: true,
+									valuePropName: 'checked',
 								})(<Switch />)}
 							</Form.Item>
 							<Form.Item label=" " colon={false}>

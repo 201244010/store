@@ -4,6 +4,12 @@ import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { format } from '@konata9/milk-shake';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
+import { OPCODE } from '@/constants/mqttStore';
+
+const apConfigHandler = (topic, data) => {
+	console.log('topic: ', topic);
+	console.log('data: ', data);
+};
 
 export default {
 	namespace: 'eslBaseStation',
@@ -210,6 +216,32 @@ export default {
 				yield put({ type: 'updateState', payload: { networkIdList } });
 			}
 			return response;
+		},
+
+		*getAPConfig({ payload }, { put }) {
+			const { networkId } = payload;
+			const topic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'request' },
+			});
+
+			yield put({
+				type: 'mqttStore/setMessageHandler',
+				payload: {
+					handler: apConfigHandler,
+				},
+			});
+
+			yield put({
+				type: 'mqttStore/publish',
+				payload: {
+					topic,
+					message: {
+						opcode: OPCODE.GET_AP_CONFIG,
+						param: { network_id: networkId },
+					},
+				},
+			});
 		},
 	},
 	reducers: {
