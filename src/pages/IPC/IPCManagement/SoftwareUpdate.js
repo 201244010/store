@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		});
 	},
-	setUpdatingStatus: (sn, status) => {
+	setUpdatingStatus: (sn,status) => {
 		dispatch({
 			type: 'ipcSoftwareUpdate/setUpdatingStatus',
 			payload: {
@@ -116,9 +116,10 @@ class SoftwareUpdate extends Component {
 		setTimeout(() => {
 			const { info: { updating } } = this.props;
 			if (updating === 'loading') {
+				// console.log('timeout', updating);
 				this.setUpdatingStatus('failed');
 			}
-		}, 150*1000);
+		}, time+30*1000);
 
 		// this.setState({
 		// 	isCheck: false,
@@ -135,7 +136,9 @@ class SoftwareUpdate extends Component {
 	}
 
 	setUpdatingStatus = (status) => {
-		const { setUpdatingStatus, sn } = this.props;
+
+		const {setUpdatingStatus, sn} = this.props;
+		// console.log('set',status,sn);
 		setUpdatingStatus(sn, status);
 	}
 
@@ -295,7 +298,7 @@ class SoftwareUpdate extends Component {
 											<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.hasUpdate' })}</span>
 										</h3>
 										<p>
-											{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment.unix(lastCheckTime).format('YYYY-MM-DD')}`}
+											{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment().format('YYYY-MM-DD')}`}
 										</p>
 									</div>
 								);
@@ -308,7 +311,7 @@ class SoftwareUpdate extends Component {
 										<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.noUpdate' })}</span>
 									</h3>
 									<p>
-										{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment.unix(lastCheckTime).format('YYYY-MM-DD')}`}
+										{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment().format('YYYY-MM-DD')}`}
 									</p>
 								</div>
 							);

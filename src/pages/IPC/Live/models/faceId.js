@@ -119,7 +119,8 @@ export default {
 						dispatch({
 							type: 'updateList',
 							payload: {
-								timestamp: data.report_time,
+								// timestamp: data.report_time,
+								timestamp: data.arrival_time,
 								name: data.name === 'undefined' ? '--' : data.name,
 								id: data.id,
 								libraryId: data.db_id,

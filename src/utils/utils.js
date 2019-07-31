@@ -1,7 +1,8 @@
 import CryptoJS from 'crypto-js/crypto-js';
 import moment from 'moment';
-import CONFIG from '@/config';
 import { formatMessage } from 'umi/locale';
+
+import CONFIG from '@/config';
 
 const { DES_KEY, DES_IV } = CONFIG;
 
@@ -470,4 +471,22 @@ export const convertArrayPrams = (str, sperator = '&') => {
 	});
 
 	return obj;
+};
+
+export const mbStringLength = (s) => {
+	let totalLength = 0;
+	let i;
+	let charCode;
+	for (i = 0; i < s.length; i++) {
+		charCode = s.charCodeAt(i);
+		if (charCode < 0x007f) {
+			totalLength += 1;
+		} else if ((charCode >= 0x0080) && (charCode <= 0x07ff)) {
+			totalLength += 2;
+		} else if ((charCode >= 0x0800) && (charCode <= 0xffff)) {
+			totalLength += 3;
+		}
+	}
+	// alert(totalLength);
+	return totalLength;
 };

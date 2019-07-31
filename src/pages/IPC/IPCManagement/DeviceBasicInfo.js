@@ -3,13 +3,15 @@ import { Card, Icon, Button, Form, Input, Modal, Spin, /* Radio, */ message } fr
 import { connect } from 'dva';
 // import PropTypes from 'prop-types';
 import { formatMessage } from 'umi/locale';
-import defaultImage from '@/assets/imgs/default.jpeg';
 import router from 'umi/router';
+
+import { mbStringLength } from '@/utils/utils';
 
 // eslint-disable-next-line import/no-cycle
 import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 
 import styles from './DeviceBasicInfo.less';
+import defaultImage from '@/assets/imgs/default.jpeg';
 
 // const FORM_ITEM_LAYOUT = {
 // 	labelCol: {
@@ -27,23 +29,23 @@ import styles from './DeviceBasicInfo.less';
 // 	}
 // };
 
-const mbStringLength = (s) => {
-	let totalLength = 0;
-	let i;
-	let charCode;
-	for (i = 0; i < s.length; i++) {
-		charCode = s.charCodeAt(i);
-		if (charCode < 0x007f) {
-			totalLength += 1;
-		} else if ((charCode >= 0x0080) && (charCode <= 0x07ff)) {
-			totalLength += 2;
-		} else if ((charCode >= 0x0800) && (charCode <= 0xffff)) {
-			totalLength += 3;
-		}
-	}
-	// alert(totalLength);
-	return totalLength;
-};
+// const mbStringLength = (s) => {
+// 	let totalLength = 0;
+// 	let i;
+// 	let charCode;
+// 	for (i = 0; i < s.length; i++) {
+// 		charCode = s.charCodeAt(i);
+// 		if (charCode < 0x007f) {
+// 			totalLength += 1;
+// 		} else if ((charCode >= 0x0080) && (charCode <= 0x07ff)) {
+// 			totalLength += 2;
+// 		} else if ((charCode >= 0x0800) && (charCode <= 0xffff)) {
+// 			totalLength += 3;
+// 		}
+// 	}
+// 	// alert(totalLength);
+// 	return totalLength;
+// };
 
 
 // const RadioGroup = Radio.Group;

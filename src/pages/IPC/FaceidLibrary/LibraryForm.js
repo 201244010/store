@@ -7,7 +7,10 @@ import { Form, Input, InputNumber, Switch } from 'antd';
 //   FORM_ITEM_LAYOUT_COMMON,
 // } from "@/constants/form";
 import { formatMessage } from 'umi/locale';
+import { mbStringLength } from '@/utils/utils';
+
 import * as styles from './FaceidLibrary.less';
+
 
 const FaceIdLibraryForm = Form.create({
 	name: 'faceid-library-form',
@@ -87,7 +90,21 @@ class LibraryForm extends React.Component {
 										}),
 									},
 									{
-										max: 20,
+										// max: 20,
+										validator: (rule, value, callback) => {
+											const len = mbStringLength(value);
+											if (len <= 20) {
+												callback();
+											}else{
+												callback(false);
+											}
+										},
+										message: formatMessage({
+											id: 'faceid.libraryNameFormat',
+										}),
+									},
+									{
+										pattern: /\s*\S+?/,
 										message: formatMessage({
 											id: 'faceid.libraryNameFormat',
 										}),
