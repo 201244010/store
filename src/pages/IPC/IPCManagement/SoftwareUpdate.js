@@ -295,7 +295,7 @@ class SoftwareUpdate extends Component {
 											<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.hasUpdate' })}</span>
 										</h3>
 										<p>
-											{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment().format('YYYY-MM-DD')}`}
+											{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment.unix(lastCheckTime).format('YYYY-MM-DD')}`}
 										</p>
 									</div>
 								);
@@ -308,7 +308,7 @@ class SoftwareUpdate extends Component {
 										<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.noUpdate' })}</span>
 									</h3>
 									<p>
-										{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment().format('YYYY-MM-DD')}`}
+										{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment.unix(lastCheckTime).format('YYYY-MM-DD')}`}
 									</p>
 								</div>
 							);
