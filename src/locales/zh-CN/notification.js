@@ -160,4 +160,8 @@ export default {
 	'notif-system-task-erp-finish-content':
 		'已完成与##saas_name##的对接，成功获取##total_count##条商品信息',
 	'notif-system-task-erp-failure-content': '未能完成与##saas_name##的对接，请重试',
+
+	// modal
+	'notif-modal-content':'您当前处于【##currentCompanyName##-##currentShopName##】，请将门店切换至【##targetCompanyName##-##targetShopName##】后查看',
+	'notif-modal-title-info':'提示',
 };

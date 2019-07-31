@@ -24,7 +24,11 @@ import styles from './Notification.less';
 				sn
 			});
 			return status;
-		}
+		},
+		getCurrentCompanyId:() => (dispatch({ type:'global/getCompanyIdFromStorage'})),
+		getCurrentShopId:() => (dispatch({ type:'global/getShopIdFromStorage'})),
+		getStoreNameById:(shopId) => (dispatch({ type: 'store/getStoreNameById', payload:{ shopId } })),
+		getCompanyNameById:(companyId) => (dispatch({ type: 'merchant/getCompanyNameById', payload:{ companyId }}))
 	})
 )
 class Notification extends React.Component {
@@ -51,7 +55,11 @@ class Notification extends React.Component {
 			} = {},
 			goToPath,
 			formatSdCard,
-			getSdStatus
+			getSdStatus,
+			getCurrentCompanyId,
+			getCurrentShopId,
+			getStoreNameById,
+			getCompanyNameById
 		} = this.props;
 
 		return (
@@ -74,7 +82,7 @@ class Notification extends React.Component {
 							{...{
 								buttonName: minorButtonName,
 								buttonParams: minorButtonLink,
-								handlers: { goToPath, formatSdCard, getSdStatus },
+								handlers: { goToPath, formatSdCard, getSdStatus, getCurrentCompanyId, getCurrentShopId, getStoreNameById, getCompanyNameById },
 							}}
 						/>
 					)}
@@ -83,7 +91,7 @@ class Notification extends React.Component {
 							{...{
 								buttonName: majorButtonName,
 								buttonParams: majorButtonLink,
-								handlers: { goToPath, formatSdCard, getSdStatus },
+								handlers: { goToPath, formatSdCard, getSdStatus, getCurrentCompanyId, getCurrentShopId, getStoreNameById, getCompanyNameById },
 								type: 'primary',
 								style: { marginLeft: minorButtonName ? '20px' : '0' },
 							}}
