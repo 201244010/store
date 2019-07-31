@@ -417,8 +417,8 @@ export const priceFormat = (price, dotPos = 3) => {
 		: `${isNagtive ? '-' : ''}${reversedRound}`;
 };
 
-export const analyzeMessageTemplate = (message, option) => {
-	const { spliter, timeFormat } = option;
+export const analyzeMessageTemplate = (message, option = {}) => {
+	const { spliter = ':', timeFormat = 'YYYY-MM-DD HH:mm:ss' } = option;
 	const spliterIndex = message.indexOf(spliter);
 	let [messageId, values] = [message, null];
 
