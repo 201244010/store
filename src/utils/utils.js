@@ -440,6 +440,7 @@ export const analyzeMessageTemplate = (message, option = {}) => {
 				};
 			}
 
+			// 临时解决方法，需要和云端确定时间戳对应的特定变量名
 			if (key.indexOf('_time') > -1) {
 				return {
 					key: `##${key}##`,
