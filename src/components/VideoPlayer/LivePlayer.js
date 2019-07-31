@@ -31,8 +31,14 @@ class LivePlayer extends React.Component{
 		}
 	}
 
+	play = () => {
+		const { videoplayer } = this;
+		videoplayer.play();
+	}
+
 	pause = () => {
 		const { videoplayer } = this;
+		this.toPause = true;
 		videoplayer.pause();
 	}
 
@@ -207,9 +213,8 @@ class LivePlayer extends React.Component{
 
 		this.showLoadingSpinner();
 
-		const { onTimeChange } = this.props;
-		await onTimeChange(timestamp, moment().unix());
-
+		// const { onTimeChange } = this.props;
+		// await onTimeChange(timestamp, moment().unix());
 		this.onTimebarStopDrag(timestamp);
 	}
 
@@ -230,17 +235,9 @@ class LivePlayer extends React.Component{
 			currentTimestamp: timestamp
 		});
 
-		const { timeSlots } = this.props;
-		const isInside = !timeSlots.every((slot) => {
-			const { timeStart, timeEnd } = slot;
-			// console.log('timestamp: ', timestamp, timeStart, timestamp < timeStart);
-			if (timeStart <= timestamp && timestamp <= timeEnd ){
-				return false;
-			}
-			return true;
-		});
+		const isInside = this.isInsideSlots(timestamp);
 
-		if (!isInside) {
+		if (isInside !== true) {
 			this.showNoMediaCover();
 		}
 
@@ -258,23 +255,47 @@ class LivePlayer extends React.Component{
 			return;
 		}
 
-		this.setState({
-			currentTimestamp: this.startTimestamp + timestamp
-		});
+		const { isLive } = this.state;
+		const currentTimestamp = this.startTimestamp + timestamp;
 
-		// console.log(this.startTimestamp + timestamp, moment.unix(this.startTimestamp + timestamp).format('YYYY-MM-DD HH:mm:ss'));
+		if (isLive) {
+			this.setState({
+				currentTimestamp
+			});
 
-		getCurrentTimestamp(this.relativeTimestamp + timestamp*1000);
+			getCurrentTimestamp(this.relativeTimestamp + timestamp*1000);
+		}
+
 	}
 
 	onMetadataArrived = (metadata) => {
 		const { onMetadataArrived } = this.props;
 
-		if (this.relativeTimestamp === 0) {
-			this.relativeTimestamp = metadata.relativeTime;
+		const { isLive } = this.state;
+
+		if (isLive) {
+			if (this.relativeTimestamp === 0) {
+				this.relativeTimestamp = metadata.relativeTime;
+			}
+
+			onMetadataArrived(metadata.relativeTime);
+		} else {
+			const { creationdate } = metadata;
+			const timestamp = moment(creationdate.substring(0, creationdate.length - 4)).unix();
+
+			this.setState({
+				currentTimestamp: timestamp
+			});
 		}
 
-		onMetadataArrived(metadata.relativeTime);
+	}
+
+	onPause = () => {
+		console.log('liveplayer onpause');
+		if (!this.toPause) {
+			console.log('非人为暂停!');
+			this.play();
+		}
 	}
 
 	render () {
@@ -303,7 +324,7 @@ class LivePlayer extends React.Component{
 
 				onDateChange={this.onDateChange}
 				onTimeUpdate={this.onTimeUpdate}
-
+				onPause={this.onPause}
 				onMetadataArrived={this.onMetadataArrived}
 
 				progressbar={
