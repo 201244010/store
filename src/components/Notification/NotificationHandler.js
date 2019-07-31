@@ -20,7 +20,7 @@ const palyMotion = ({ params }) => {
 								modal.destroy();
 							}
 						}}
-						videoUrl={url}
+						url={url}
 						pixelRatio={pixelRatio}
 					/>
 				)}
@@ -82,6 +82,42 @@ const ACTION_MAP = {
 	},
 	// TF卡不可用
 	'notif-device-ipc-tf-card-detect-tf-non-capable-btn1':({ handlers: { goToPath, removeNotification }, params, extra}) => {
+		const deviceSn = params.split('&')[0].split('=')[1];		
+		goToPath('ipcManagement',{sn:deviceSn});
+		if(removeNotification){
+			const { key } = extra;
+			removeNotification(key);
+		}
+	},
+	// OTA 版本更新提醒
+	'notif-device-ipc-ota-btn1':({ handlers: { goToPath, removeNotification }, params, extra}) => {
+		const deviceSn = params.split('&')[0].split('=')[1];		
+		goToPath('ipcManagement',{sn:deviceSn});
+		if(removeNotification){
+			const { key } = extra;
+			removeNotification(key);
+		}
+	},
+	// 设备离线
+	'notif-device-ipc-on/offline-btn1':({ handlers: { goToPath, removeNotification }, params, extra}) => {
+		const deviceSn = params.split('&')[0].split('=')[1];		
+		goToPath('ipcManagement',{sn:deviceSn});
+		if(removeNotification){
+			const { key } = extra;
+			removeNotification(key);
+		}
+	},
+	// OTA 版本更新提醒
+	'notif-device-ipc-ota-btn1':({ handlers: { goToPath, removeNotification }, params, extra}) => {
+		const deviceSn = params.split('&')[0].split('=')[1];		
+		goToPath('ipcManagement',{sn:deviceSn});
+		if(removeNotification){
+			const { key } = extra;
+			removeNotification(key);
+		}
+	},
+	// 设备离线
+	'notif-device-ipc-on/offline-btn1':({ handlers: { goToPath, removeNotification }, params, extra}) => {
 		const deviceSn = params.split('&')[0].split('=')[1];		
 		goToPath('ipcManagement',{sn:deviceSn});
 		if(removeNotification){

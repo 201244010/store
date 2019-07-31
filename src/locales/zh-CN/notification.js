@@ -42,7 +42,7 @@ export default {
 	'notif-import-product-finish-content':
 		'商品导入完成，商品总数##total_num##, 成功导入总数##current_num##',
 	'notif-import-product-failure-content': '商品导入失败，原因：##reason##',
-	'notif-motion-detect-content': '网络摄像机（##device_name##）侦测到异常##source##，请即刻查看',
+	'notif-motion-detect-content': '网络摄像机(##device_name##)侦测到异常##source##，请即刻查看',
 	'notif-motion-detect-content-1': '图像',
 	'notif-motion-detect-content-2': '声音',
 	'notif-motion-detect-content-3': '图像和声音',
@@ -58,6 +58,7 @@ export default {
 	'notif-system-task-erp-btn1': '查看',
 	'notif-device-ipc-motion-detect-video-btn1': '查看监控',
 	'notif-device-ipc-motion-detect-audio-btn1': '查看监控',
+	'notif-device-ipc-ota-btn1':'立即更新',
 
 	// ipc-device-model
 	'notif-model-device-ipc-ota': '版本升级提醒',
@@ -83,23 +84,24 @@ export default {
 	'notif-device-ipc-tf-card-detect-title-3': '图像和声音',
 
 	// ipc-device-desc
-	'notif-device-ipc-ota-desc': '网络摄像机有新版固件，请更新',
+	'notif-device-ipc-ota-desc': '【##company_name##-##shop_name##】网络摄像机(##device_name##)有新版固件，请更新',
 	'notif-device-ipc-motion-detect-video-desc':
-		'[##company_name##-##shop_name##]网络摄像机##device_name##侦测到异常画面，请即刻查看',
+		'【##company_name##-##shop_name##】网络摄像机##device_name##侦测到异常画面，请即刻查看',
 	'notif-device-ipc-motion-detect-audio-desc':
-		'[##comapny_name## - ##shop_name##]网络摄像机##device_name##侦测到异常声音，请即刻查看',
+		'【##company_name##-##shop_name##】网络摄像机##device_name##侦测到异常声音，请即刻查看',
 	'notif-device-ipc-motion-detect-video-audio-desc':
-		'[##comapny_name## - ##shop_name##]网络摄像机 ##device_name## 侦测到异常画面与声音，请即刻查看',
-	'notif-device-ipc-on/offline-desc': '[##company_name##-##shop_name##]网络摄像机(##device_name##)已离线，请检查设备状态',
+		'【##company_name##-##shop_name##】网络摄像机 ##device_name## 侦测到异常画面与声音，请即刻查看',
+	'notif-device-ipc-on/offline-desc':
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)已离线，请检查设备状态',
 	'notif-device-ipc-tf-card-detect-desc': '网络摄像机的存储卡##status##',
 	'notif-device-ipc-tf-card-detect-tf-non-exist-desc':
-		'[##company_name##-##shop_name##]网络摄像机##device_name##的存储卡未插入或被拔出，请检查',
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)的存储卡未插入或被拔出，请检查',
 	'notif-device-ipc-tf-card-detect-tf-exist-desc':
-		'[##company_name##-##shop_name##]网络摄像机##device_name##检测到有新存储卡插入，请查看',
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)检测到有新存储卡插入，请查看',
 	'notif-device-ipc-tf-card-detect-tf-capable-desc':
-		'[##company_name##-##shop_name##]网络摄像机##device_name##检测到可用的存储卡，请查看',
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)检测到可用的存储卡，请查看',
 	'notif-device-ipc-tf-card-detect-tf-non-capable-desc':
-		'[##company_name##-##shop_name##]网络摄像机##device_name##检测到存储卡异常，请查看',
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)检测到存储卡异常，请查看',
 
 	// 'notif-device-ipc-tf-card-detect-btn1': '查看状态',
 
@@ -110,28 +112,28 @@ export default {
 
 	// ipc-device-content
 	'notif-device-ipc-ota-content':
-		'网络摄像机（##device_name##）已发布新版固件##bin_version##，请更新',
+		'网络摄像机(##device_name##)已发布新版固件##bin_version##，请更新',
 	'notif-device-ipc-motion-detect-video-content':
-		'网络摄像机（##device_name##）侦测到异常画面，请即刻查看',
+		'网络摄像机(##device_name##)侦测到异常画面，请即刻查看',
 	'notif-device-ipc-motion-detect-audio-content':
-		'网络摄像机（##device_name##）侦测到异常声音，请即刻查看',
+		'网络摄像机(##device_name##)侦测到异常声音，请即刻查看',
 	'notif-device-ipc-motion-detect-video-audio-content':
-		'网络摄像机（##device_name##）侦测到异常画面与声音，请即刻查看',
+		'网络摄像机(##device_name##)侦测到异常画面与声音，请即刻查看',
 	'notif-device-ipc-on/offline-content':
-		'网络摄像机（##device_name##） 于##disconnect_time##离线，请检查设备状态',
-	'notif-device-ipc-tf-card-detect-content': '网络摄像机（##device_name##）的存储卡##status##',
+		'网络摄像机(##device_name##)于##disconnect_time##离线，请检查设备状态',
+	'notif-device-ipc-tf-card-detect-content': '网络摄像机(##device_name##)的存储卡##status##',
 	'notif-device-ipc-tf-card-detect-content-0': '无sd卡',
 	'notif-device-ipc-tf-card-detect-content-1': '插入sd卡，需初始化',
 	'notif-device-ipc-tf-card-detect-content-2': '插入sd卡，已初始化',
 	'notif-device-ipc-tf-card-detect-content-3': 'sd卡无法识别',
 	'notif-device-ipc-tf-card-detect-tf-exist-content':
-		'网络摄像机##device_name##检测到有新存储卡插入，建议格式化，用于本地存储监控视频',
+		'网络摄像机(##device_name##)检测到有新存储卡插入，建议格式化，用于本地存储监控视频',
 	'notif-device-ipc-tf-card-detect-tf-non-exist-content':
-		'网络摄像机##device_name##的存储卡未插入或被拔出，请检查',
+		'网络摄像机(##device_name##)的存储卡未插入或被拔出，请检查',
 	'notif-device-ipc-tf-card-detect-tf-capable-content':
-		'网络摄像机##device_name##检测到可用的存储卡，可用于本地存储监控视频',
+		'网络摄像机(##device_name##)检测到可用的存储卡，可用于本地存储监控视频',
 	'notif-device-ipc-tf-card-detect-tf-non-capable-content':
-		'网络摄像机##device_name##检测到插入的存储卡可能已损坏，请更换存储卡',
+		'网络摄像机(##device_name##)检测到插入的存储卡可能已损坏，请更换存储卡',
 
 	// esl-device-model
 	'notif-model-device-esl-erp': 'ERP对接提醒',
@@ -145,11 +147,11 @@ export default {
 
 	// esl-device-desc
 	'notif-system-esl-erp-desc':
-		'[##company_name##-##shop_name##]已完成与 (##saas_name##) 的对接，成功获取 ##total_count## 条商品信息',
+		'【##company_name##-##shop_name##】已完成与 (##saas_name##) 的对接，成功获取 ##total_count## 条商品信息',
 	'notif-device-esl-ota-des':
-		'[##company_name##-##shop_name##]##device_name##已发布新版固件##bin_version##，请更新',
+		'【##company_name##-##shop_name##】##device_name##已发布新版固件##bin_version##，请更新',
 	'notif-device-esl-ap-on/offline-desc':
-		'[##company_name##-##shop_name##]基站##device_name##已离线，请检查设备状态',
+		'【##company_name##-##shop_name##】基站##device_name##已离线，请检查设备状态',
 
 	// esl-device-content
 	'notif-device-esl-ota-content': '##device_name##已发布新版固件##bin_version##，请更新',
