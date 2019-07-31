@@ -10,7 +10,7 @@ export default {
 	'faceid.createButton': '创建',
 	'faceid.libraryNameMsg': '请输入分组名称，如会员, 不超过20个字符。',
 	'faceid.libraryNameRequired': '请输入分组名称。',
-	'faceid.libraryNameFormat': '不超过20个字符。',
+	'faceid.libraryNameFormat': '不超过20个字节。',
 
 	'faceid.libraryNameRule': '分组名称不可以重复。',
 
