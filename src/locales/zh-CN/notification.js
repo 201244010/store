@@ -52,6 +52,7 @@ export default {
 
 	// 消息按钮
 	'notif-ap-offline-btn1': '查看状态',
+	'notif-device-esl-ap-offline-btn1': '查看状态',
 	'notif-import-product-failure-btn1': '查看',
 	'notif-motion-detect-btn1': '查看监控',
 	'notif-ap-offline-btn2': '查看状态',
