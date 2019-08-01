@@ -284,7 +284,7 @@ class Live extends React.Component{
 				{
 					hasFaceid ?
 						<div className={styles['faceid-list-container']}>
-							<PerfectScrollbar>
+							<PerfectScrollbar className={styles['faceid-list']}>
 								<List
 									dataSource={
 										faceidList
@@ -352,15 +352,16 @@ class Live extends React.Component{
 								/>
 
 							</PerfectScrollbar>
+							<div className={styles['infos-more']}>
+								{
+									faceidList.length? <span onClick={() => navigateTo('faceLog')}>{formatMessage({ id: 'live.logs'})}</span> : ''
+								}
+							</div>
 						</div>
 						: ''
 				}
 
-				<div className={styles['infos-more']}>
-					{
-						faceidList.length? <span onClick={() => navigateTo('faceLog')}>{formatMessage({ id: 'live.logs'})}</span> : ''
-					}
-				</div>
+
 
 			</div>
 

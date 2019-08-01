@@ -32,12 +32,15 @@
 		// display: inline-block;
 		// width: 178px;
 		width: 176px;
-		height: calc(100% - 60px);
+		height: 100%;
 
 		overflow: hidden;
 
 		background-color: #ffffff;
 
+		.faceid-list{
+			height: calc(100% - 60px);
+		}
 		.avatar-container{
 			position: relative;
 			width: 96px;
@@ -179,7 +182,24 @@
 		// 		}
 		// 	}
 		// }
+		.infos-more{
+			text-align: center;
+			font-size: 14px;
+			cursor: pointer;
+			position: absolute;
+			top: calc(100% - 60px);
+			right: 0;
 
+			height: 60px;
+			line-height: 60px;
+			width: 176px;
+			background-color: #ffffff;
+			:global{
+				a{
+					color: #525866;
+				}
+			}
+		}
 
 
 		:global{
@@ -189,22 +209,5 @@
 			}
 		}
 	}
-	.infos-more{
-		text-align: center;
-		font-size: 14px;
-		cursor: pointer;
-		position: absolute;
-		top: calc(100% - 60px);
-		right: 0;
 
-		height: 60px;
-		line-height: 60px;
-		width: 176px;
-		background-color: #ffffff;
-		:global{
-			a{
-				color: #525866;
-			}
-		}
-	}
 }

@@ -56,7 +56,15 @@ const mapDispatchToProps = (dispatch) => ({
 				sn
 			}
 		}).then(info => info);
-	}
+	},
+	// getLastCheckTime( sn ) {
+	// 	return dispatch({
+	// 		type: 'ipcSoftwareUpdate/getLastCheckTime',
+	// 		payload:{
+	// 			sn
+	// 		}
+	// 	});
+	// }
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -85,6 +93,13 @@ class SoftwareUpdate extends Component {
 		}
 		load(sn);
 	}
+ 
+
+	// getNewLastCheckTime(){
+	// 	const { sn, getLastCheckTime } = this.props;
+	// 	const newLastCheckTime = getLastCheckTime(sn);
+	// 	console.log(newLastCheckTime);
+	// }
 
 	showModal = () => {
 		const { checkVersion, sn } = this.props;
@@ -102,7 +117,6 @@ class SoftwareUpdate extends Component {
 		update(sn);
 
 		const time = OTATime;
-		console.log(time);
 		clearInterval(this.interval);
 		this.interval = setInterval(() => {
 			const { percent } = this.state;
@@ -155,12 +169,11 @@ class SoftwareUpdate extends Component {
 	// 	});
 	// }
 
+
 	render() {
-		const { info: { currentVersion, needUpdate, lastCheckTime, updating }, loading } = this.props;
+		const { info: { currentVersion, needUpdate, lastCheckTime, updating, newTimeValue }, loading } = this.props;
 		const { percent, visible } = this.state;
-
 		const detecting = loading.effects['ipcSoftwareUpdate/detect'];
-
 		return (
 			<div>
 				<Card
@@ -198,7 +211,6 @@ class SoftwareUpdate extends Component {
 									</Button>
 								);
 							}
-							// console.log(lo)
 							if (needUpdate && updating === 'normal') {
 								return (
 									<Button type="primary" onClick={this.updateSoftware}>
@@ -298,7 +310,7 @@ class SoftwareUpdate extends Component {
 											<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.hasUpdate' })}</span>
 										</h3>
 										<p>
-											{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment().format('YYYY-MM-DD')}`}
+											{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment.unix(newTimeValue).format('YYYY-MM-DD')}`}
 										</p>
 									</div>
 								);
@@ -311,7 +323,7 @@ class SoftwareUpdate extends Component {
 										<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.noUpdate' })}</span>
 									</h3>
 									<p>
-										{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment().format('YYYY-MM-DD')}`}
+										{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment.unix(newTimeValue).format('YYYY-MM-DD')}`}
 									</p>
 								</div>
 							);

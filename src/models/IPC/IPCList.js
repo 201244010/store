@@ -54,18 +54,7 @@ export default {
 
 		},
 		*getList(action,{ put }){
-			const companyId = yield put.resolve({
-				type: 'global/getCompanyIdFromStorage'
-			});
-
-			const shopId = put.resolve({
-				type: 'global/getShopIdFromStorage'
-			});
-
-			const response = yield getDeviceList({
-				companyId,
-				shopId
-			});
+			const response = yield getDeviceList();
 			const result = response.data;
 			if (response.code === ERROR_OK) {
 				yield put({
