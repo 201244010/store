@@ -20,6 +20,9 @@ export default {
 	'notif-model-import-product-finish': '导入商品完成通知',
 	'notif-model-import-product-failure': '导入商品失败通知',
 	'notif-model-motion-detect': '设备预警通知',
+	'notif-model-ipc':'网络摄像机',
+	'notif-model-esl':'电子价签',
+	'notif-model-system-task-erp':'ERP对接提醒',
 
 	// 消息名称
 	'notif-ap-offline-title': '检测到基站离线',
