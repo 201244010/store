@@ -53,3 +53,11 @@ export const changeBaseStationName = options => {
 	};
 	return fetchApi('updateName', opts).then(response => response.json());
 };
+
+export const deviceApHandler = (action, options) => {
+	const opts = {
+		method: 'POST',
+		body: { ...options },
+	};
+	return fetchApi(action, opts).then(response => response.json());
+};

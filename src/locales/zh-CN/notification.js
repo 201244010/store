@@ -20,6 +20,9 @@ export default {
 	'notif-model-import-product-finish': '导入商品完成通知',
 	'notif-model-import-product-failure': '导入商品失败通知',
 	'notif-model-motion-detect': '设备预警通知',
+	'notif-model-ipc':'网络摄像机',
+	'notif-model-esl':'电子价签',
+	'notif-model-system-task-erp':'ERP对接提醒',
 
 	// 消息名称
 	'notif-ap-offline-title': '检测到基站离线',
@@ -49,6 +52,7 @@ export default {
 
 	// 消息按钮
 	'notif-ap-offline-btn1': '查看状态',
+	'notif-device-esl-ap-offline-btn1': '查看状态',
 	'notif-import-product-failure-btn1': '查看',
 	'notif-motion-detect-btn1': '查看监控',
 	'notif-ap-offline-btn2': '查看状态',
@@ -86,11 +90,11 @@ export default {
 	// ipc-device-desc
 	'notif-device-ipc-ota-desc': '【##company_name##-##shop_name##】网络摄像机(##device_name##)有新版固件，请更新',
 	'notif-device-ipc-motion-detect-video-desc':
-		'【##company_name##-##shop_name##】网络摄像机##device_name##侦测到异常画面，请即刻查看',
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)侦测到异常画面，请即刻查看',
 	'notif-device-ipc-motion-detect-audio-desc':
-		'【##company_name##-##shop_name##】网络摄像机##device_name##侦测到异常声音，请即刻查看',
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)侦测到异常声音，请即刻查看',
 	'notif-device-ipc-motion-detect-video-audio-desc':
-		'【##company_name##-##shop_name##】网络摄像机 ##device_name## 侦测到异常画面与声音，请即刻查看',
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)侦测到异常画面与声音，请即刻查看',
 	'notif-device-ipc-on/offline-desc':
 		'【##company_name##-##shop_name##】网络摄像机(##device_name##)已离线，请检查设备状态',
 	'notif-device-ipc-tf-card-detect-desc': '网络摄像机的存储卡##status##',

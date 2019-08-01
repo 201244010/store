@@ -39,6 +39,10 @@ class MqttModel {
 	effects() {
 		const me = this;
 		return {
+			checkClientExist() {
+				return !!me.clientId && !!me.address;
+			},
+
 			*connect(_, { select }) {
 				const info = yield select(state => state[me.namespace]);
 				// console.log(info);
