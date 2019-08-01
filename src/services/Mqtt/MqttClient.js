@@ -21,6 +21,7 @@ class MqttClient {
 
 		this.listenerStack = [];
 
+		this.handlerMap = new Map();
 		this.reconnectTimes = 0;
 
 		this.connect = this.connect.bind(this);
@@ -106,13 +107,16 @@ class MqttClient {
 	}
 
 	registerTopicHandler(topic, topicHandler) {
-		const { client } = this;
-
+		const { client, handlerMap } = this;
+		if (!handlerMap.has(topic)) {
+			handlerMap.set(topic, topicHandler);
+		}
 		client.on('message', (messageTopic, message) => {
-			if (messageTopic === topic) {
-				console.log(messageTopic, ': received.');
+			// console.log(handlerMap);
+			if (handlerMap.has(messageTopic)) {
+				console.log('message topic: ', messageTopic, ' : received.');
 				console.log('data: ', message.toString());
-				topicHandler(message);
+				handlerMap.get(messageTopic)(message);
 			}
 		});
 	}
