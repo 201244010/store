@@ -40,13 +40,22 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		});
 	},
-	setUpdatingStatus: (status) => {
+	setUpdatingStatus: (sn,status) => {
 		dispatch({
 			type: 'ipcSoftwareUpdate/setUpdatingStatus',
 			payload: {
+				sn,
 				status
 			}
 		});
+	},
+	getDeviceInfo({ sn }) {
+		return dispatch({
+			type: 'ipcList/getDeviceInfo',
+			payload: {
+				sn
+			}
+		}).then(info => info);
 	}
 });
 
@@ -57,6 +66,7 @@ class SoftwareUpdate extends Component {
 		// isLatest: true,
 		visible: false,
 		percent: 0,
+		deviceInfo: {}
 		// proVisible: false,
 		// isUpdate: false,
 		// isCheck: false
@@ -64,9 +74,15 @@ class SoftwareUpdate extends Component {
 
 	interval = 0
 
-	componentDidMount = () => {
-		const { load, sn } = this.props;
+	componentDidMount = async () => {
+		const { load, sn, getDeviceInfo } = this.props;
 		// console.log(sn);
+		if(sn){
+			const deviceInfo = await getDeviceInfo({ sn });
+			this.setState({
+				deviceInfo
+			});
+		}
 		load(sn);
 	}
 
@@ -82,9 +98,11 @@ class SoftwareUpdate extends Component {
 
 	updateSoftware = () => {
 		const { update,  sn } = this.props;
+		const { deviceInfo: { OTATime }} = this.state;
 		update(sn);
 
-		const time = 120*1000;
+		const time = OTATime;
+		console.log(time);
 		clearInterval(this.interval);
 		this.interval = setInterval(() => {
 			const { percent } = this.state;
@@ -97,11 +115,11 @@ class SoftwareUpdate extends Component {
 
 		setTimeout(() => {
 			const { info: { updating } } = this.props;
-			// console.log('timeout', updating);
 			if (updating === 'loading') {
+				// console.log('timeout', updating);
 				this.setUpdatingStatus('failed');
 			}
-		}, 150*1000);
+		}, time+30*1000);
 
 		// this.setState({
 		// 	isCheck: false,
@@ -118,8 +136,10 @@ class SoftwareUpdate extends Component {
 	}
 
 	setUpdatingStatus = (status) => {
-		const {setUpdatingStatus} = this.props;
-		setUpdatingStatus(status);
+
+		const {setUpdatingStatus, sn} = this.props;
+		// console.log('set',status,sn);
+		setUpdatingStatus(sn, status);
 	}
 
 	// hideInfo = () => {
@@ -167,19 +187,12 @@ class SoftwareUpdate extends Component {
 					maskClosable={false}
 					footer={
 						(() => {
-							// console.log(updating);
 							if (updating === 'success' || updating === 'failed') {
 								clearInterval(this.interval);
 								return (
 									<Button
 										type="primary"
-										onClick={() => {
-											this.setUpdatingStatus('normal');
-
-											this.setState({
-												visible: false
-											});
-										}}
+										onClick={this.hideModal}
 									>
 										{formatMessage({ id: 'softwareUpdate.confirm' })}
 									</Button>
@@ -210,7 +223,7 @@ class SoftwareUpdate extends Component {
 										<p>
 											{
 												lastCheckTime === 0 ?
-													'您尚未检查过固件更新' :
+													`${formatMessage({ id: 'softwareUpdate.noCheck' })}` :
 													`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment.unix(lastCheckTime).format('YYYY-MM-DD')}`
 											}
 
@@ -239,12 +252,28 @@ class SoftwareUpdate extends Component {
 												switch (updating) {
 													case 'success':
 														text = (
-															<p>{formatMessage({ id: 'softwareUpdate.updateSuccess' })}</p>
+															<>
+																{/* <h3>
+																	<Icon className={`${styles.icon} ${styles.success}`} type='check-circle' />
+																	<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.updateSuccess' })}</span>
+																</h3> */}
+
+																<p>{formatMessage({ id: 'softwareUpdate.updateSuccessMsg' })}</p>
+															</>
+
 														);
 														break;
 													case 'failed':
 														text = (
-															<p>{ formatMessage({ id: 'softwareUpdate.updateFailed' }) }</p>
+															<>
+																<h3>
+																	<Icon className={`${styles.icon} ${styles.error}`} type='close-circle' />
+																	<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.updateFailed'})}</span>
+																</h3>
+
+																<p>{ formatMessage({ id: 'softwareUpdate.updateFailedMsg' }) }</p>
+															</>
+
 														);
 														break;
 													case 'loading':
@@ -282,7 +311,7 @@ class SoftwareUpdate extends Component {
 										<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.noUpdate' })}</span>
 									</h3>
 									<p>
-										{`${formatMessage({ id: 'softwareUpdate.updateDate' })}: ${moment().format('YYYY-MM-DD')}`}
+										{`${formatMessage({ id: 'softwareUpdate.checkDate' })}: ${moment().format('YYYY-MM-DD')}`}
 									</p>
 								</div>
 							);

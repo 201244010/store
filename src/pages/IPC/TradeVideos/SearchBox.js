@@ -9,19 +9,19 @@ import styles from './TradeVideos.less';
 import global from '@/styles/common.less';
 
 const { Option } = Select;
-const { Search } = Input;
+// const { Search } = Input;
 const { RangePicker } = DatePicker;
 
 @Form.create({
 	name: 'video-search-form',
 	wrappedComponentRef: true,
-	onFieldsChange(props, fields) {
-		const { searchHandler } = props;
-		// console.log(Object.keys(fields)[0]);
-		if(Object.keys(fields)[0] !== 'keywords') {
-			searchHandler();
-		}
-	}
+	// onFieldsChange(props, fields) {
+	// 	const { searchHandler } = props;
+	// 	// console.log(Object.keys(fields)[0]);
+	// 	if(Object.keys(fields)[0] !== 'keywords') {
+	// 		searchHandler();
+	// 	}
+	// }
 
 })
 class SearchBox extends React.Component{
@@ -32,14 +32,14 @@ class SearchBox extends React.Component{
 	};
 
 	render() {
-		const { ipcList, form, paymentDeviceList, searchHandler, ipcSelectHandler, loading } = this.props;
+		const { ipcList, form, paymentDeviceList, searchHandler, ipcSelectHandler, loading, resetHandler } = this.props;
 		// console.log(ipcList);
 		const { getFieldDecorator } = form;
 		return(
 			<div className={global['search-bar']}>
 				<Form layout="inline">
 					<Row gutter={SEARCH_FORM_GUTTER.SMALL}>
-						<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item
 								className={styles['search-camera']}
 								label={formatMessage({ id: 'tradeVideos.camera'})}
@@ -71,7 +71,7 @@ class SearchBox extends React.Component{
 								)}
 							</Form.Item>
 						</Col>
-						<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item
 								className={styles['search-pos']}
 								label={formatMessage({ id: 'tradeVideos.pos' })}
@@ -96,7 +96,7 @@ class SearchBox extends React.Component{
 													key={`payment-selector-${index}`}
 													value={`${item.sn}`}
 												>
-													{item.name ||
+													{`${item.name}(${item.sn})` ||
 														formatMessage({
 															id: 'tradeVideos.unknownDevice',
 														})}
@@ -109,25 +109,32 @@ class SearchBox extends React.Component{
 						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item
 								label={formatMessage({ id: 'tradeVideos.tradeDate' })}
+								// className={styles['search-time']}
 							>
 								{getFieldDecorator('tradeDate', {
 									initialValue: [moment().subtract(30, 'days'), moment()]
 								})(
 									<RangePicker
-										className={styles['input-item']}
+										allowClear={false}
+										className={styles['search-date-picker']}
 										disabledDate={this.disabledDate}
 										format="YYYY-MM-DD"
 									/>
 								)}
 							</Form.Item>
 						</Col>
-						<Col {...SEARCH_FORM_COL.ONE_FOURTH}>
-							<Form.Item>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+							<Form.Item
+								className={styles['search-keyword']}
+								label={formatMessage({
+									id: 'tradeVideos.keywords',
+								})}
+							>
 								{getFieldDecorator('keywords')(
-									<Search
+									<Input
 										placeholder={
 											formatMessage({
-												id: 'tradeVideos.keywords',
+												id: 'tradeVideos.inputKeywords',
 											})
 										}
 										className={styles['input-item']}
@@ -135,8 +142,8 @@ class SearchBox extends React.Component{
 								)}
 							</Form.Item>
 						</Col>
-						<Col {...SEARCH_FORM_COL.ONE_12TH}>
-							<Form.Item>
+						<Col {...SEARCH_FORM_COL.OFFSET_ONE_THIRD}>
+							<Form.Item className={global['query-item']}>
 								<Button
 									type="primary"
 									className={styles['input-item']}
@@ -145,8 +152,28 @@ class SearchBox extends React.Component{
 								>
 									{formatMessage({ id: 'tradeVideos.query' })}
 								</Button>
+								<Button
+									type="default"
+									className={global['btn-margin-left']}
+									onClick={resetHandler}
+									// loading={loading}
+								>
+									{formatMessage({ id: 'tradeVideos.reset' })}
+								</Button>
 							</Form.Item>
 						</Col>
+						{/* <Col {...SEARCH_FORM_COL.ONE_12TH}>
+							<Form.Item>
+								<Button
+									type="default"
+									className={styles['input-item']}
+									onClick={resetHandler}
+									// loading={loading}
+								>
+									{formatMessage({ id: 'tradeVideos.reset' })}
+								</Button>
+							</Form.Item>
+						</Col> */}
 					</Row>
 				</Form>
 			</div>

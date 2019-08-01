@@ -27,6 +27,13 @@ const router = [
 	},
 
 	{
+		path: '/show',
+		component: '../layouts/BlankLayout',
+		id: 'show',
+		routes: [{ path: '/show', component: '../layouts/ShowLayout.js' }],
+	},
+
+	{
 		path: '/',
 		component: '../layouts/BasicLayout',
 		id: 'root',
@@ -39,11 +46,11 @@ const router = [
 				component: './Index',
 			},
 			{
-				path: '/dashBoard',
-				name: 'dashBoard',
+				path: '/dashboard',
+				name: 'dashboard',
 				icon: 'blank',
 				component: './DashBoard',
-				id: 'dashBoard',
+				id: 'dashboard',
 			},
 
 			{
@@ -115,7 +122,7 @@ const router = [
 								path: '/devices/ipcList',
 								// name: 'ipcList',
 								id: 'deviceList',
-								component: './IPC/IPCList/IPCList.js',
+								component: './IPC/IPCList/index.js',
 							},
 						],
 					},
@@ -123,7 +130,7 @@ const router = [
 						path: '/devices/motionMessage',
 						name: 'motionMessage',
 						id: 'motionMessage',
-						component: './IPC/MotionList/MotionList.js',
+						component: './IPC/MotionList/index.js',
 					},
 					{
 						path: '/devices',
@@ -472,6 +479,7 @@ const router = [
 				icon: 'blank',
 				// component: './index.js',
 				routes: [
+					{ path: '/faceidLibrary', redirect: '/faceidLibrary/faceidLibraryList' },
 					{
 						path: '/faceidLibrary/faceidLibraryList',
 						name: 'list',
@@ -479,14 +487,30 @@ const router = [
 						component: './IPC/FaceidLibrary/LibraryList.js',
 					},
 					{
-						path: '/faceidLibrary/createLibrary',
-						// name: 'faceidLibrary.create',
-						id: 'createLibrary',
-						component: './IPC/FaceidLibrary/CreateLibrary.js',
+						path: '/faceidLibrary/faceLog',
+						name: 'faceLog',
+						id: 'faceLog',
+						component: './IPC/FaceLog/index.js',
 					},
 					{
-						path: '/faceidLibrary',
-						redirect: '/faceidLibrary/faceidLibraryList',
+						path: '/faceidLibrary/entryDetail',
+						name: 'entryDetail',
+						id: 'entryDetail',
+						hideInMenu: true,
+						component: './IPC/EntryDetail/index.js',
+					},
+					// {
+					// 	path: '/faceidLibrary/createLibrary',
+					// 	// name: 'faceidLibrary.create',
+					// 	id: 'createLibrary',
+					// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
+					// },
+					{
+						path: '/faceidLibrary/photoManagement',
+						name: 'photoManagement',
+						hideInMenu: true,
+						id: 'photoList',
+						component: './IPC/PhotoManagement/PhotoManagement.js',
 					},
 				],
 			},

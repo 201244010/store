@@ -5,8 +5,6 @@ import uatRouters from '../src/config/router.uat';
 import env from '../src/config/env';
 // import routers from './router';
 
-console.log('current environment:', env);
-
 const ROUTERS = {
 	uat: uatRouters,
 	onl: uatRouters,
@@ -81,6 +79,7 @@ export default {
 	define: {
 		APP_TYPE: process.env.APP_TYPE || '',
 		'process.env.UMI_ENV': process.env.UMI_ENV,
+		'process.env.COUNTRY': process.env.COUNTRY || 'china',
 	},
 	// Theme for antd
 	// https://ant.design/docs/react/customize-theme-cn

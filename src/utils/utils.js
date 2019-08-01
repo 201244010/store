@@ -1,7 +1,8 @@
 import CryptoJS from 'crypto-js/crypto-js';
 import moment from 'moment';
-import CONFIG from '@/config';
 import { formatMessage } from 'umi/locale';
+
+import CONFIG from '@/config';
 
 const { DES_KEY, DES_IV } = CONFIG;
 
@@ -417,17 +418,41 @@ export const priceFormat = (price, dotPos = 3) => {
 		: `${isNagtive ? '-' : ''}${reversedRound}`;
 };
 
-export const analyzeMessageTemplate = message => {
-	const [messageId, values] = message.split(':');
-	let valueList = [];
+export const analyzeMessageTemplate = (message, option = {}) => {
+	const { spliter = ':', timeFormat = 'YYYY-MM-DD HH:mm:ss' } = option;
+	const spliterIndex = message.indexOf(spliter);
+	let [messageId, values] = [message, null];
 
+	if (spliterIndex > -1) {
+		[messageId, values] = [
+			message.substring(0, spliterIndex),
+			message.substring(spliterIndex + 1),
+		];
+	}
+
+	let valueList = [];
 	if (values) {
 		valueList = values.split('&').map(item => {
 			const [key, value] = item.split('=');
 			if (key.indexOf('decode-') > -1) {
-				return formatMessage({ id: `${messageId}-${value}` });
+				return {
+					key: `##${key.replace('decode-', '')}##`,
+					value: formatMessage({ id: `${messageId}-${value}` }),
+				};
 			}
-			return value;
+
+			// 临时解决方法，需要和云端确定时间戳对应的特定变量名
+			if (key.indexOf('_time') > -1) {
+				return {
+					key: `##${key}##`,
+					value: moment(parseInt(value,0)*1000).format(timeFormat),
+				};
+			}
+
+			return {
+				key: `##${key}##`,
+				value,
+			};
 		});
 	}
 
@@ -443,16 +468,23 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
 		return null;
 	}
 
+	console.log('messageId: ', messageId);
+	console.log('valueList: ', valueList);
 	const message = formatMessage({ id: messageId });
 	if (valueList.length === 0) {
 		return message;
 	}
 
-	return valueList.reduce((prev, cur) => prev.replace('%s', cur), message);
+	return valueList.reduce((prev, cur) => prev.replace(cur.key, cur.value), message);
 };
 
-export const formatMessageTemplate = message =>
-	replaceTemplateWithValue(analyzeMessageTemplate(message));
+export const formatMessageTemplate = (
+	message,
+	option = {
+		spliter: ':',
+		timeFormat: 'YYYY-MM-DD HH:mm:ss',
+	}
+) => replaceTemplateWithValue(analyzeMessageTemplate(message, option));
 
 export const convertArrayPrams = (str, sperator = '&') => {
 	const obj = {};
@@ -462,4 +494,22 @@ export const convertArrayPrams = (str, sperator = '&') => {
 	});
 
 	return obj;
+};
+
+export const mbStringLength = (s) => {
+	let totalLength = 0;
+	let i;
+	let charCode;
+	for (i = 0; i < s.length; i++) {
+		charCode = s.charCodeAt(i);
+		if (charCode < 0x007f) {
+			totalLength += 1;
+		} else if ((charCode >= 0x0080) && (charCode <= 0x07ff)) {
+			totalLength += 2;
+		} else if ((charCode >= 0x0800) && (charCode <= 0xffff)) {
+			totalLength += 3;
+		}
+	}
+	// alert(totalLength);
+	return totalLength;
 };

@@ -3,7 +3,6 @@ import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
-import Storage from '@konata9/storage.js';
 
 export default {
 	namespace: 'user',
@@ -24,14 +23,7 @@ export default {
 				payload: { loading: true },
 			});
 
-			CookieUtil.clearCookies();
-			Storage.remove(
-				[CookieUtil.SHOP_LIST_KEY, CookieUtil.COMPANY_LIST_KEY, 'FILTERED_MENU'],
-				'local'
-			);
-
 			const response = yield call(Actions.login, type, options);
-
 			if (response && response.code === ERROR_OK) {
 				const token = response.data;
 				CookieUtil.setCookieByKey(CookieUtil.TOKEN_KEY, token);
@@ -54,12 +46,11 @@ export default {
 			return response;
 		},
 		*logout(_, { call, put }) {
-			call(Actions.logout);
+			yield call(Actions.logout);
 			yield put({
 				type: 'initState',
 			});
 
-			// window.location.reload();
 			yield put({
 				type: 'menu/goToPath',
 				payload: {
@@ -67,7 +58,6 @@ export default {
 					linkType: 'replace',
 				},
 			});
-			// router.push('/user/login');
 		},
 		*checkImgCode({ payload }, { call }) {
 			const { options } = payload;
@@ -78,9 +68,11 @@ export default {
 			return yield call(Actions.register, options);
 		},
 		*getUserInfo(_, { call, put }) {
+			const checkAdminResponse = yield put.resolve({ type: 'role/checkAdmin' });
 			const response = yield call(Actions.getUserInfo);
+			const checkAdmin = checkAdminResponse && checkAdminResponse.code === ERROR_OK ? 1 : 0;
 			if (response && response.code === ERROR_OK) {
-				const result = response.data || {};
+				const result = { ...response.data, checkAdmin } || { checkAdmin };
 				CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, result);
 				yield put({
 					type: 'storeUserInfo',

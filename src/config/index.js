@@ -1,6 +1,8 @@
 import sysEnv from './env';
 
-export const env = sysEnv;
+export const { env, country } = sysEnv;
+
+console.log(sysEnv);
 
 const WEB_SOCKET_PREFIX = {
 	dev: 'ws',
@@ -26,6 +28,11 @@ const API_ADDRESS = {
 	onl: 'store.sunmi.com:443',
 	local: '127.0.0.1:30001',
 	// local: '10.10.168.228:30001',
+};
+
+const COUNTRY_ADDRESS = {
+	china: API_ADDRESS[env],
+	southAmerica: '',
 };
 
 // ipc专用的测试和开发地址
@@ -66,4 +73,5 @@ export default {
 	MD5_TOKEN: MD5_TOKEN[env],
 	IPC_SERVER: IPC_ADDRESS[env],
 	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[env],
+	COUNTRY_ADDRESS: COUNTRY_ADDRESS[country],
 };

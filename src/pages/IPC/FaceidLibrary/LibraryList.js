@@ -155,7 +155,35 @@ class LibraryList extends React.Component {
 		loadLibrary();
 	}
 
-	showCreateForm = () => {
+	addFaceidLibraryHandler = (list,restCapacity) => {
+		if(list.length >= this.maxLength){
+			Modal.info({
+				title: formatMessage({ id: 'faceid.info' }),
+				okText: formatMessage({ id: 'faceid.info.known' }),
+				content: (
+					<div>
+						{formatMessage({ id: 'faceid.list.length.max' })}
+					</div>
+				),
+				onOk() {},
+			});
+			return;
+		}
+
+		if(restCapacity <= 0){
+			Modal.info({
+				title: formatMessage({ id: 'faceid.info' }),
+				okText: formatMessage({ id: 'faceid.info.known' }),
+				content: (
+					<div>
+						{formatMessage({ id: 'faceid.amount.max' })}
+					</div>
+				),
+				onOk() {},
+			});
+			return;
+		}
+
 		this.setState({
 			createFormShown: true
 		});
@@ -261,7 +289,7 @@ class LibraryList extends React.Component {
 		} else {
 			Modal.confirm({
 				title: formatMessage({ id: 'faceid.deleteLibrary' }),
-				content: formatMessage({ id: 'faceid.deleteInfo' }),
+				// content: formatMessage({ id: 'faceid.deleteInfo' }),
 				okText: formatMessage({ id: 'faceid.confirm' }),
 				cancelText: formatMessage({ id: 'faceid.cancel' }),
 				okType: 'danger',
@@ -270,6 +298,34 @@ class LibraryList extends React.Component {
 		}
 
 	}
+
+	// showInfoHandler = (list,restCapacity) => {
+	// 	// list.length >= this.maxLength || restCapacity <= 0;
+	// 	if(list.length >= this.maxLength){
+	// 		Modal.info({
+	// 			title: formatMessage({ id: 'faceid.info' }),
+	// 			okText: formatMessage({ id: 'faceid.info.known' }),
+	// 			content: (
+	// 				<div>
+	// 					{formatMessage({ id: 'faceid.list.length.max' })}
+	// 				</div>
+	// 			),
+	// 			onOk() {},
+	// 		});
+	// 	}else if(restCapacity <= 0){
+	// 		Modal.info({
+	// 			title: formatMessage({ id: 'faceid.info' }),
+	// 			okText: formatMessage({ id: 'faceid.info.known' }),
+	// 			content: (
+	// 				<div>
+	// 					{formatMessage({ id: 'faceid.amount.max' })}
+	// 				</div>
+	// 			),
+	// 			onOk() {},
+	// 		});
+	// 	}
+
+	// }
 
 	editLibrary() {
 		const { editLibrary } = this.props;
@@ -290,6 +346,7 @@ class LibraryList extends React.Component {
 					...selectedRow,
 					...params
 				});
+
 				this.closeEditForm();
 			}
 		});
@@ -345,10 +402,10 @@ class LibraryList extends React.Component {
 									<Form.Item>
 										<Button
 											type="primary"
-											disabled={list.length >= this.maxLength || restCapacity <= 0}
-											onClick={this.showCreateForm}
+											// disabled={list.length >= this.maxLength || restCapacity <= 0}
+											onClick={()=>this.addFaceidLibraryHandler(list,restCapacity)}
 											icon="plus"
-											loading={loading.effects['faceIdLibrary/create']}
+											loading={loading.effects['faceIdLibrary/create']||loading.effects['faceIdLibrary/read']}
 										>
 											{formatMessage({ id: 'common.create' })}
 										</Button>
@@ -360,6 +417,7 @@ class LibraryList extends React.Component {
 
 					<div>
 						<Table
+							loading={loading.effects['faceIdLibrary/read']}
 							columns={this.columns}
 							dataSource={list}
 							rowKey="id"
@@ -395,6 +453,7 @@ class LibraryList extends React.Component {
 				<Modal
 					title={formatMessage({id: 'faceid.createLibrary'})}
 					maskClosable={false}
+					destroyOnClose
 					visible={createFormShown}
 					onCancel={this.closeCreateForm}
 					onOk={this.createLibrary}
@@ -419,6 +478,7 @@ class LibraryList extends React.Component {
 				<Modal
 					title={formatMessage({id: 'faceid.editLibrary' })}
 					maskClosable={false}
+					destroyOnClose
 					visible={editFormShown}
 					onCancel={this.closeEditForm}
 					onOk={this.editLibrary}
@@ -478,7 +538,7 @@ const mapDispatchToProps = (dispatch) => ({
 					message.success(formatMessage({ id: 'faceid.createSuccess'}));
 					break;
 
-				case 5506:	// 最大条目数
+				case 5506: // 最大条目数
 				default:
 					message.error(formatMessage({ id: 'faceid.createFailed'}));
 					break;

@@ -14,7 +14,10 @@ import common from './zh-CN/common';
 import motionList from './zh-CN/motionList';
 import posList from './zh-CN/posList';
 import tradeVideos from './zh-CN/tradeVideos';
-
+import live from './zh-CN/live';
+import photoManagement from './zh-CN/photoManagement';
+import faceLog from './zh-CN/faceLog';
+import entryDetail from './zh-CN/entryDetail';
 
 export default {
 
@@ -33,5 +36,9 @@ export default {
 	...ipcList,
 	...motionList,
 	...posList,
-	...tradeVideos
+	...tradeVideos,
+	...live,
+	...photoManagement,
+	...faceLog,
+	...entryDetail
 };
