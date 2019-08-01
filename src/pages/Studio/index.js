@@ -14,7 +14,6 @@ import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNow
 import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
-import { ERROR_OK } from '@/constants/errorCode';
 import * as styles from './index.less';
 
 @connect(
@@ -25,6 +24,10 @@ import * as styles from './index.less';
 	dispatch => ({
 		updateComponentsDetail: payload =>
 			dispatch({ type: 'studio/updateComponentsDetail', payload }),
+		batchUpdateComponentDetail: payload =>
+			dispatch({ type: 'studio/batchUpdateComponentDetail', payload }),
+		batchUpdateScopedComponent: payload =>
+			dispatch({ type: 'studio/batchUpdateScopedComponent', payload }),
 		toggleRightToolBox: payload => dispatch({ type: 'studio/toggleRightToolBox', payload }),
 		copySelectedComponent: payload =>
 			dispatch({ type: 'studio/copySelectedComponent', payload }),
@@ -55,46 +58,23 @@ class Studio extends Component {
 	}
 
 	async componentDidMount() {
-		const {stageWidth, stageHeight, props: {fetchTemplateDetail, addComponent, fetchBindFields, updateState}} = this;
+		const {stageWidth, stageHeight, props: {fetchTemplateDetail, fetchBindFields, updateState}} = this;
 		fetchBindFields();
-		const response = await fetchTemplateDetail({
-			template_id: getLocationParam('id'),
-		});
 		const screenType = getLocationParam('screen');
-		const { width, height, zoomScale } = MAPS.screen[screenType];
-		let realZoomScale = zoomScale;
-		if (response && response.code === ERROR_OK) {
-			const studioInfo = JSON.parse(response.data.template_info.studio_info || '{}');
-			if (!studioInfo.layers || !studioInfo.layers.length) {
-				const type = SHAPE_TYPES.RECT_FIX;
-				addComponent({
-					x: (stageWidth - width * zoomScale) / 2,
-					y: (stageHeight - height * zoomScale) / 2,
-					screenType,
-					type,
-					fill: 'white',
-					width,
-					height,
-					cornerRadius: MAPS.cornerRadius[type],
-					strokeWidth: MAPS.strokeWidth[type],
-					stroke: MAPS.stroke[type],
-					scaleX: 1,
-					scaleY: 1,
-					rotation: 0,
-					isStep: false
-				});
-				this.updateSelectedShapeName('');
-			} else {
-				realZoomScale = studioInfo.layers[0].zoomScale;
-			}
-		}
 		updateState({
-			zoomScale: realZoomScale,
 			stage: {
 				width: stageWidth,
 				height: stageHeight,
 			},
 		});
+
+		await fetchTemplateDetail({
+			template_id: getLocationParam('id'),
+			width: stageWidth,
+			height: stageHeight,
+			screenType,
+		});
+
 		document.addEventListener('keydown', this.handleComponentActions);
 	}
 
@@ -197,11 +177,12 @@ class Studio extends Component {
 				name: RECT_SELECT_NAME,
 				x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
 				y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
-				fill: '#5cadff',
+				background: '#5cadff',
 				width: 0,
 				height: 0,
 				scaleX: 1,
 				scaleY: 1,
+				zoomScale: 1,
 				rotation: 0,
 				opacity: 0.2,
 				isStep: false
@@ -319,24 +300,37 @@ class Studio extends Component {
 	};
 
 	handleStageShapeMove = e => {
-		this.updateComponentsDetail({
-			target: e.target
-		});
+		const { studio: { selectedShapeName }, batchUpdateComponentDetail } = this.props;
+
+		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+			this.updateComponentsDetail({
+				target: e.target
+			});
+		} else {
+			batchUpdateComponentDetail({
+				x: e.target.attrs.x,
+				y: e.target.attrs.y,
+			});
+		}
 	};
 
 	handleStageShapeEnd = () => {
-		const { studio: { selectedShapeName, componentsDetail }, updateComponentsDetail } = this.props;
+		const { studio: { selectedShapeName, componentsDetail }, updateComponentsDetail, batchUpdateScopedComponent } = this.props;
 		this.setState({
 			dragging: false,
 		});
-		const scope = getNearestPosition(componentsDetail, selectedShapeName);
-		updateComponentsDetail({
-			isStep: true,
-			[selectedShapeName]: {
-				x: scope.x,
-				y: scope.y
-			},
-		});
+		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+			const scope = getNearestPosition(componentsDetail, selectedShapeName);
+			updateComponentsDetail({
+				isStep: true,
+				[selectedShapeName]: {
+					x: scope.x,
+					y: scope.y
+				},
+			});
+		} else {
+			batchUpdateScopedComponent();
+		}
 		// if (scope.x || scope.x === 0) {
 		// 	componentsDetail[selectedShapeName].x = scope.x;
 		// }
@@ -450,7 +444,7 @@ class Studio extends Component {
 		updateComponentsDetail({
 			selectedShapeName: targetName,
 			[targetName]: {
-				text: '',
+				content: '',
 			},
 		});
 	};
@@ -489,7 +483,6 @@ class Studio extends Component {
 					[targetName]: {
 						image,
 						imgPath,
-						imageType: 'selected',
 						ratio: image.height / image.width,
 						height: (detail.width * image.height) / image.width,
 					},
@@ -621,13 +614,13 @@ class Studio extends Component {
 		const inputEle = document.createElement('input');
 		document.body.appendChild(inputEle);
 		inputEle.setAttribute('id', 'textInput');
-		inputEle.value = targetDetail.text;
+		inputEle.value = targetDetail.content;
 		inputEle.style.backgroundColor = 'transparent';
 		inputEle.style.border = '1px solid #ccc';
 		inputEle.style.borderRadius = '5px';
 		inputEle.style.fontSize = `${targetDetail.fontSize * zoomScale}px`;
 		inputEle.style.fontFamily = targetDetail.fontFamily;
-		inputEle.style.color = targetDetail.fill;
+		inputEle.style.color = targetDetail.fontColor;
 		inputEle.style.position = 'absolute';
 		inputEle.style.left = `${inputPosition.x}px`;
 		inputEle.style.top = `${inputPosition.y}px`;
@@ -656,7 +649,7 @@ class Studio extends Component {
 				updateComponentsDetail({
 					selectedShapeName: targetName,
 					[targetName]: {
-						text: inputValue || '双击编辑文本',
+						content: inputValue || '双击编辑文本',
 					},
 				});
 			} catch (evt) {
@@ -719,7 +712,7 @@ class Studio extends Component {
 			state: { dragging },
 		} = this;
 
-		const lines = getNearestLines(componentsDetail, selectedShapeName);
+		const lines = getNearestLines(componentsDetail, selectedShapeName, scopedComponents);
 
 		return (
 			<div className={styles.board}>
@@ -739,7 +732,7 @@ class Studio extends Component {
 				</div>
 				<div className={styles['board-content']}>
 					<div className={styles['board-tools']}>
-						<BoardTools addComponent={addComponent} />
+						<BoardTools addComponent={addComponent} zoomScale={zoomScale} />
 					</div>
 					<div className={styles['board-stage']}>
 						<Stage
@@ -823,7 +816,7 @@ class Studio extends Component {
 				{showRightToolBox ? (
 					<ContextMenu
 						{...{
-							color: (componentsDetail[selectedShapeName] || {}).fill,
+							color: (componentsDetail[selectedShapeName] || {}).fontColor,
 							fontSize: (componentsDetail[selectedShapeName] || {}).fontSize,
 							text: (componentsDetail[selectedShapeName] || {}).text,
 							position: rightToolBoxPos,

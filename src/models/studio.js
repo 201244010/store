@@ -61,7 +61,7 @@ export default {
 		},
 		addComponent(state, action) {
 			// name为组件名，若被原始定义，则用，否则，则生成
-			const { componentsDetail } = state;
+			const { componentsDetail, zoomScale } = state;
 			const { x, y, type, name: preName, scaleX, scaleY} = action.payload;
 			let maxIndex = 0;
 			let name = preName;
@@ -86,19 +86,20 @@ export default {
 					lines: [
 						[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
 						[
-							x + MAPS.width[type] * scaleX * state.zoomScale,
+							x + MAPS.containerWidth[type] * scaleX * state.zoomScale,
 							0,
-							x + MAPS.width[type] * scaleX * state.zoomScale,
+							x + MAPS.containerWidth[type] * scaleX * state.zoomScale,
 							SIZES.DEFAULT_MAX_CANVAS_LENGTH
 						],
 						[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
 						[
 							0,
-							y + MAPS.height[type] * scaleY * state.zoomScale,
+							y + MAPS.containerHeight[type] * scaleY * state.zoomScale,
 							SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-							y + MAPS.height[type] * scaleY * state.zoomScale
+							y + MAPS.containerHeight[type] * scaleY * state.zoomScale
 						]
-					]
+					],
+					zoomScale
 				}
 			};
 			saveNowStep(getLocationParam('id'), newComponentsDetail);
@@ -163,7 +164,11 @@ export default {
 			}
 			const newComponentsDetail = {
 				...state.componentsDetail,
-				[targetShapeName]: detail
+				[targetShapeName]: {
+					...detail,
+					content: (detail.type && detail.type.indexOf(SHAPE_TYPES.PRICE) > -1) ?
+						Number(detail.content).toFixed(detail.precision) : detail.content
+				}
 			};
 			if (isStep) {
 				saveNowStep(getLocationParam('id'), newComponentsDetail);
@@ -174,6 +179,30 @@ export default {
 				selectedShapeName: targetShapeName,
 				componentsDetail: newComponentsDetail
 			};
+		},
+		batchUpdateComponentDetail(state, action) {
+			const { scopedComponents, selectedShapeName, componentsDetail } = state;
+			const { x, y } = action.payload;
+			const detail = componentsDetail[selectedShapeName];
+
+			detail.lines = [
+				[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+				[x + detail.width, 0, x + detail.width, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+				[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
+				[0, y + detail.height, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y + detail.height]
+			];
+			for (let i = 0 ; i < scopedComponents.length; i++) {
+				componentsDetail[scopedComponents[i].name].x = scopedComponents[i].x + (x - detail.x);
+				componentsDetail[scopedComponents[i].name].y = scopedComponents[i].y + (y - detail.y);
+			}
+		},
+		batchUpdateScopedComponent(state) {
+			const { scopedComponents, componentsDetail, } = state;
+
+			for (let i = 0 ; i < scopedComponents.length; i++) {
+				scopedComponents[i].x = componentsDetail[scopedComponents[i].name].x;
+				scopedComponents[i].y = componentsDetail[scopedComponents[i].name].y;
+			}
 		},
 		toggleRightToolBox(state, action) {
 			const chooseShapeName = state.selectedShapeName;
@@ -257,6 +286,7 @@ export default {
 				right: selectComponent.x + selectComponent.width * selectComponent.scaleX,
 				bottom: selectComponent.y + selectComponent.height * selectComponent.scaleY
 			};
+			const bound = {};
 
 			state.scopedComponents = [];
 			Object.keys(componentsDetail).forEach(key => {
@@ -264,13 +294,31 @@ export default {
 					const component = { ...componentsDetail[key] };
 					component.left = component.x;
 					component.top = component.y;
-					component.right = component.x + MAPS.containerWidth[component.type] * zoomScale * component.scaleX;
-					component.bottom = component.y + MAPS.containerHeight[component.type] * zoomScale * component.scaleY;
+					component.right = component.x + MAPS.containerWidth[component.type] * zoomScale * (component.scaleX || 1);
+					component.bottom = component.y + MAPS.containerHeight[component.type] * zoomScale * (component.scaleY || 1);
+
 					if (isInComponent(component, selectRect)) {
 						state.scopedComponents.push(component);
+
+						if (!bound.left || bound.left > component.left) {
+							bound.left = component.left;
+						}
+						if (!bound.top || bound.top > component.top) {
+							bound.top = component.top;
+						}
+						if (!bound.right || bound.right < component.right) {
+							bound.right = component.right;
+						}
+						if (!bound.bottom || bound.bottom < component.bottom) {
+							bound.bottom = component.bottom;
+						}
 					}
 				}
 			});
+			state.componentsDetail[RECT_SELECT_NAME].x = bound.left;
+			state.componentsDetail[RECT_SELECT_NAME].y = bound.top;
+			state.componentsDetail[RECT_SELECT_NAME].width = bound.right - bound.left;
+			state.componentsDetail[RECT_SELECT_NAME].height = bound.bottom - bound.top;
 		}
 	}
 };

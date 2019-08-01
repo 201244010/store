@@ -64,7 +64,7 @@ export default class MTransformer extends Component {
 				/>
 			);
 		}
-		if ([SHAPE_TYPES.HLine].includes(type)) {
+		if ([SHAPE_TYPES.LINE_H].includes(type)) {
 			return (
 				<Transformer
 					ref={node => {
@@ -78,7 +78,7 @@ export default class MTransformer extends Component {
 				/>
 			);
 		}
-		if ([SHAPE_TYPES.VLine].includes(type)) {
+		if ([SHAPE_TYPES.LINE_V].includes(type)) {
 			return (
 				<Transformer
 					ref={node => {
@@ -92,7 +92,7 @@ export default class MTransformer extends Component {
 				/>
 			);
 		}
-		if ([SHAPE_TYPES.RECT_FIX].includes(type)) {
+		if ([SHAPE_TYPES.RECT_FIX, SHAPE_TYPES.RECT_SELECT].includes(type)) {
 			return (
 				<Transformer
 					ref={node => {

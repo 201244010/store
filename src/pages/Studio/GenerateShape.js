@@ -2,6 +2,31 @@ import React, { Fragment } from 'react';
 import { Group, Rect, Text, Image, Shape } from 'react-konva';
 import { SHAPE_TYPES, SIZES, MAPS } from '@/constants/studio';
 
+const initFontStyle = (option) => {
+	let fontStyle = 'normal';
+	if (option.bold && !option.italic) {
+		fontStyle = 'bold';
+	}
+	if (!option.bold && option.italic) {
+		fontStyle = 'italic';
+	}
+	if (option.bold && option.italic) {
+		fontStyle = 'bold italic';
+	}
+	return fontStyle;
+};
+
+const initTextDecoration = (option) => {
+	let textDecoration = 'normal';
+	if (option.underline) {
+		textDecoration = 'underline';
+	}
+	if (option.strikethrough) {
+		textDecoration = 'line-through';
+	}
+	return textDecoration;
+};
+
 export default function generateShape(option) {
 	let shape;
 
@@ -17,8 +42,8 @@ export default function generateShape(option) {
 						height: MAPS.height[SHAPE_TYPES.RECT] * option.zoomScale,
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
-						fill: option.fill,
-						stroke: option.strokeWidth ? option.stroke : 'rgba(0, 0, 0, 0)',
+						fill: option.backgroundColor,
+						stroke: option.strokeWidth ? option.strokeColor : 'rgba(0, 0, 0, 0)',
 						strokeWidth: option.strokeWidth,
 						cornerRadius: option.cornerRadius,
 						strokeScaleEnabled: false,
@@ -46,8 +71,8 @@ export default function generateShape(option) {
 						height: MAPS.screen[option.screenType].height * option.zoomScale,
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
-						fill: option.fill,
-						stroke: option.strokeWidth ? option.stroke : 'rgba(0, 0, 0, 0)',
+						fill: option.backgroundColor,
+						stroke: option.strokeWidth ? option.strokeColor : 'rgba(0, 0, 0, 0)',
 						strokeWidth: option.strokeWidth,
 						cornerRadius: option.cornerRadius,
 						strokeScaleEnabled: false,
@@ -79,11 +104,9 @@ export default function generateShape(option) {
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
 						opacity: option.opacity,
-						fill: option.fill,
+						fill: option.backgroundColor,
 						strokeScaleEnabled: false,
 						draggable: true,
-						onTransform: option.onTransform,
-						onTransformEnd: option.onTransformEnd,
 						onMouseOver: () => {
 							document.body.style.cursor = 'pointer';
 						},
@@ -106,8 +129,8 @@ export default function generateShape(option) {
 							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
-							fill: option.textBg,
-							opacity: option.textBg === 'opacity' ? 0 : 1,
+							fill: option.backgroundColor,
+							opacity: option.backgroundColor === 'opacity' ? 0 : 1,
 							draggable: true,
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
@@ -119,12 +142,12 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
-							text: option.text,
+							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,
-							fontStyle: option.fontStyle,
-							textDecoration: option.textDecoration,
-							fill: option.fill,
+							fontStyle: initFontStyle(option),
+							textDecoration: initTextDecoration(option),
+							fill: option.fontColor,
 							align: option.align,
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX * option.zoomScale,
@@ -137,18 +160,18 @@ export default function generateShape(option) {
 				</Group>
 			);
 			break;
-		case SHAPE_TYPES.HLine:
+		case SHAPE_TYPES.LINE_H:
 			shape = (
 				<Rect
 					{...{
 						name: option.name,
 						x: option.x,
 						y: option.y,
-						width: MAPS.width[SHAPE_TYPES.HLine] * option.zoomScale,
-						height: option.strokeWidth * option.zoomScale,
+						width: MAPS.containerWidth[SHAPE_TYPES.LINE_H] * option.zoomScale,
+						height: MAPS.containerHeight[SHAPE_TYPES.LINE_H] * option.zoomScale,
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
-						fill: option.stroke,
+						fill: option.backgroundColor,
 						draggable: true,
 						onTransform: option.onTransform,
 						onTransformEnd: option.onTransformEnd,
@@ -162,18 +185,18 @@ export default function generateShape(option) {
 				/>
 			);
 			break;
-		case SHAPE_TYPES.VLine:
+		case SHAPE_TYPES.LINE_V:
 			shape = (
 				<Rect
 					{...{
 						name: option.name,
 						x: option.x,
 						y: option.y,
-						width: option.strokeWidth * option.zoomScale,
-						height: MAPS.height[SHAPE_TYPES.VLine] * option.zoomScale,
+						width: MAPS.containerWidth[SHAPE_TYPES.LINE_V] * option.zoomScale,
+						height: MAPS.containerHeight[SHAPE_TYPES.LINE_V] * option.zoomScale,
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
-						fill: option.stroke,
+						fill: option.backgroundColor,
 						draggable: true,
 						onTransform: option.onTransform,
 						onTransformEnd: option.onTransformEnd,
@@ -188,7 +211,7 @@ export default function generateShape(option) {
 			);
 			break;
 		case SHAPE_TYPES.IMAGE:
-			if (option.imageType === 'default') {
+			if (!option.imgPath) {
 				shape = (
 					<Group>
 						<Rect
@@ -309,8 +332,8 @@ export default function generateShape(option) {
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
-							fill: option.textBg,
-							opacity: option.textBg === 'opacity' ? 0 : 1,
+							fill: option.backgroundColor,
+							opacity: option.backgroundColor === 'opacity' ? 0 : 1,
 							draggable: true,
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
@@ -322,12 +345,12 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
-							text: option.text,
+							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,
-							fontStyle: option.fontStyle,
-							textDecoration: option.textDecoration,
-							fill: option.fill,
+							fontStyle: initFontStyle(option),
+							textDecoration: initTextDecoration(option),
+							fill: option.fontColor,
 							align: option.align,
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
@@ -353,9 +376,8 @@ export default function generateShape(option) {
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
-							fill: option.textBg,
-							opacity: option.textBg === 'opacity' ? 0 : 1,
-							text: option.text,
+							fill: option.backgroundColor,
+							opacity: option.backgroundColor === 'opacity' ? 0 : 1,
 							draggable: true,
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
@@ -369,8 +391,8 @@ export default function generateShape(option) {
 							y: option.y,
 							onDblClick: option.onDblClick,
 							sceneFunc(context) {
-								const intPriceText = `${option.text}`.split('.')[0];
-								const smallPriceText = `${option.text}`.split('.')[1] || '';
+								const intPriceText = `${option.content}`.split('.')[0];
+								const smallPriceText = `${option.content}`.split('.')[1] || '';
 								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY - option.fontSize) * option.zoomScale) / 2;
 								const yPosition = 5;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
@@ -384,16 +406,16 @@ export default function generateShape(option) {
 								}
 								const smallXPosition = intXPosition + intTextWidth;
 
-								context.font = `${option.fontStyle} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+								context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
 								context.textBaseline = 'hanging';
-								context.fillStyle = option.fill;
-								context.fillText(`${option.text ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
-								context.font = `${option.fontStyle} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.fillText(`${option.text ? smallPriceText : ''}`, smallXPosition, yPosition);
-								if (option.textDecoration === 'line-through') {
-									context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale / 2, textWidth, 1 * option.zoomScale);
-								} else if (option.textDecoration === 'underline') {
-									context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale, textWidth, 1 * option.zoomScale);
+								context.fillStyle = option.fontColor;
+								context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+								context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+								context.fillText(`${option.content ? smallPriceText : ''}`, smallXPosition, yPosition);
+								if (initTextDecoration(option) === 'line-through') {
+									context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
+								} else if (initTextDecoration(option) === 'underline') {
+									context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7, textWidth, 1 * option.zoomScale);
 								}
 							},
 						}}
@@ -414,8 +436,8 @@ export default function generateShape(option) {
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
-							fill: option.textBg,
-							opacity: option.textBg === 'opacity' ? 0 : 1,
+							fill: option.backgroundColor,
+							opacity: option.backgroundColor === 'opacity' ? 0 : 1,
 							draggable: true,
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
@@ -429,8 +451,8 @@ export default function generateShape(option) {
 							y: option.y,
 							onDblClick: option.onDblClick,
 							sceneFunc(context) {
-								const intPriceText = `${option.text}`.split('.')[0];
-								const smallPriceText = `${option.text}`.split('.')[1] || '';
+								const intPriceText = `${option.content}`.split('.')[0];
+								const smallPriceText = `${option.content}`.split('.')[1] || '';
 								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY + option.fontSize) * option.zoomScale) / 2;
 								const yPosition = option.fontSize * option.zoomScale * 0.72 + 5;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
@@ -444,15 +466,15 @@ export default function generateShape(option) {
 								}
 								const smallXPosition = intXPosition + intTextWidth;
 
-								context.font = `${option.fontStyle} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+								context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
 								context.textBaseline = 'alphabetic';
-								context.fillStyle = option.fill;
-								context.fillText(`${option.text ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
-								context.font = `${option.fontStyle} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.fillText(`${option.text ? smallPriceText : ''}`, smallXPosition, yPosition);
-								if (option.textDecoration === 'line-through') {
-									context.fillRect(intXPosition, yPosition - option.fontSize * option.zoomScale / 2, textWidth, 1 * option.zoomScale);
-								} else if (option.textDecoration === 'underline') {
+								context.fillStyle = option.fontColor;
+								context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+								context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+								context.fillText(`${option.content ? smallPriceText : ''}`, smallXPosition, yPosition);
+								if (initTextDecoration(option) === 'line-through') {
+									context.fillRect(intXPosition, yPosition - option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
+								} else if (initTextDecoration(option) === 'underline') {
 									context.fillRect(intXPosition, yPosition, textWidth, 1 * option.zoomScale);
 								}
 							},
