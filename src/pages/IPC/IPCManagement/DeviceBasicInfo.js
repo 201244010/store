@@ -1,17 +1,16 @@
 import React from 'react';
 import { Card, Icon, Button, Form, Input, Modal, Spin, /* Radio, */ message } from 'antd';
 import { connect } from 'dva';
-// import PropTypes from 'prop-types';
 import { formatMessage } from 'umi/locale';
-import router from 'umi/router';
-
 import { mbStringLength } from '@/utils/utils';
+import { TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
 
 // eslint-disable-next-line import/no-cycle
-import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
+import { FORM_ITEM_LAYOUT /* , TAIL_FORM_ITEM_LAYOUT */	} from './IPCManagement';
 
-import styles from './DeviceBasicInfo.less';
 import defaultImage from '@/assets/imgs/default.jpeg';
+import styles from './DeviceBasicInfo.less';
+
 
 // const FORM_ITEM_LAYOUT = {
 // 	labelCol: {
@@ -90,26 +89,33 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		});
 	},
-	deleteDevice: (sn) => {
+	deleteDevice: (sn, callback) => {
 		dispatch({
 			type: 'ipcBasicInfo/delete',
 			payload: {
 				sn
 			}
 		}).then((response) => {
-			// console.log('result: ', result);
 			if (response) {
 				message.success(formatMessage({ id: 'ipcManagement.deleteSuccess'}));
 
 				setTimeout(() => {
-					router.push('/devices/ipcList');
+					// router.push('/devices/ipcList');
+					callback();
 				}, 800);
 
 			}else{
 				message.error(formatMessage({ id: 'ipcManagement.deleteFailed'}));
 			}
 		});
-	}
+	},
+	navigateTo: (pathId, urlParams) => dispatch({
+		type: 'menu/goToPath',
+		payload: {
+			pathId,
+			urlParams
+		}
+	})
 });
 // let disabledControl = true;
 @connect(mapStateToProps, mapDispatchToProps)
@@ -165,9 +171,14 @@ class DeviceBasicInfo extends React.Component {
 
 	}
 
+	navigateTo = () => {
+		const { navigateTo } = this.props;
+		navigateTo('deviceList');
+	}
+
 	onShowModal = () => {
 		const { deleteDevice, sn } = this.props;
-
+		const _this = this;
 		const modal = Modal.confirm({
 			title: formatMessage({ id: 'deviceBasicInfo.delete' }),
 			content: (
@@ -195,7 +206,7 @@ class DeviceBasicInfo extends React.Component {
 					}
 				});
 
-				await deleteDevice(sn);
+				await deleteDevice(sn, _this.navigateTo);
 
 				modal.update({
 					okButtonProps:{
@@ -336,7 +347,7 @@ class DeviceBasicInfo extends React.Component {
 							label={formatMessage({id: 'deviceBasicInfo.name'})}
 							className={isEdit ? styles.hidden : ''}
 						>
-							<div>
+							<div className={styles['text-container']}>
 								<span className={styles.text}>{ name }</span>
 								<Icon type="edit" onClick={this.onClick} />
 							</div>
