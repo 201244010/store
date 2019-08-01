@@ -168,4 +168,5 @@ export default {
 	// modal
 	'notif-modal-content':'您当前处于【##currentCompanyName##-##currentShopName##】，请将门店切换至【##targetCompanyName##-##targetShopName##】后查看',
 	'notif-modal-title-info':'提示',
+	'notif-modal-known-text':'知道了'
 };

@@ -1,11 +1,11 @@
 import React from 'react';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Spin } from 'antd';
 import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
 import { formatMessage } from 'umi/locale';
 
 import { formatMessageTemplate, convertArrayPrams, replaceTemplateWithValue } from '@/utils/utils';
 import ipcTypes from '@/constants/ipcTypes';
-
+ 
 const palyMotion = ({ params }) => {
 	const { url = null, device_model: ipcType = null } = convertArrayPrams(params);
 	const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
@@ -70,13 +70,22 @@ const ACTION_MAP = {
 				const { key } = extra;
 				removeNotification(key);
 			}
+			const modal = Modal.info({
+				title: formatMessage({ id: 'notif-modal-title-info' }),
+				content: (
+					<div>
+						<Spin spinning />
+					</div>
+				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
+				onOk() {},
+			});
 			const targetCompanyId = parseInt(companyId,0);
 			const currentCompanyId = await getCurrentCompanyId();
 			const currentCompanyName = await getCompanyNameById(currentCompanyId);
 			const currentShopName = await getStoreNameById(currentShopId);
 			const targetShopName = await getStoreNameById(targetShopId);
 			const targetCompanyName = await getCompanyNameById(targetCompanyId);
-		
 			const templateValue = {
 				messageId:'notif-modal-content',
 				valueList : [{
@@ -94,14 +103,12 @@ const ACTION_MAP = {
 					value:targetShopName
 				}]
 			};
-			Modal.info({
-				title: formatMessage({ id: 'notif-modal-title-info' }),
+			modal.update({
 				content: (
 					<div>
-						<p>{replaceTemplateWithValue(templateValue)}</p>
+						<p>{replaceTemplateWithValue(templateValue)}</p>		
 					</div>
-				),
-				onOk() {},
+				)
 			});
 		}
 		
@@ -124,6 +131,16 @@ const ACTION_MAP = {
 				const { key } = extra;
 				removeNotification(key);
 			}
+			const modal = Modal.info({
+				title: formatMessage({ id: 'notif-modal-title-info' }),
+				content: (
+					<div>
+						<Spin spinning />
+					</div>
+				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
+				onOk() {},
+			});
 			const targetCompanyId = parseInt(companyId,0);
 			const currentCompanyId = await getCurrentCompanyId();
 			const currentCompanyName = await getCompanyNameById(currentCompanyId);
@@ -147,14 +164,12 @@ const ACTION_MAP = {
 					value:targetShopName
 				}]
 			};
-			Modal.info({
-				title: formatMessage({ id: 'notif-modal-title-info' }),
+			modal.update({
 				content: (
 					<div>
-						<p>{replaceTemplateWithValue(templateValue)}</p>
+						<p>{replaceTemplateWithValue(templateValue)}</p>		
 					</div>
-				),
-				onOk() {},
+				)
 			});
 		}
 	},
@@ -175,6 +190,16 @@ const ACTION_MAP = {
 				const { key } = extra;
 				removeNotification(key);
 			}
+			const modal = Modal.info({
+				title: formatMessage({ id: 'notif-modal-title-info' }),
+				content: (
+					<div>
+						<Spin spinning />
+					</div>
+				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
+				onOk() {},
+			});
 			const targetCompanyId = parseInt(companyId,0);
 			const currentCompanyId = await getCurrentCompanyId();
 			const currentCompanyName = await getCompanyNameById(currentCompanyId);
@@ -198,14 +223,12 @@ const ACTION_MAP = {
 					value:targetShopName
 				}]
 			};
-			Modal.info({
-				title: formatMessage({ id: 'notif-modal-title-info' }),
+			modal.update({
 				content: (
 					<div>
-						<p>{replaceTemplateWithValue(templateValue)}</p>
+						<p>{replaceTemplateWithValue(templateValue)}</p>		
 					</div>
-				),
-				onOk() {},
+				)
 			});
 		}
 	},
@@ -226,13 +249,22 @@ const ACTION_MAP = {
 				const { key } = extra;
 				removeNotification(key);
 			}
+			const modal = Modal.info({
+				title: formatMessage({ id: 'notif-modal-title-info' }),
+				content: (
+					<div>
+						<Spin spinning />
+					</div>
+				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
+				onOk() {},
+			});
 			const targetCompanyId = parseInt(companyId,0);
 			const currentCompanyId = await getCurrentCompanyId();
 			const currentCompanyName = await getCompanyNameById(currentCompanyId);
 			const currentShopName = await getStoreNameById(currentShopId);
 			const targetShopName = await getStoreNameById(targetShopId);
 			const targetCompanyName = await getCompanyNameById(targetCompanyId);
-			
 			const templateValue = {
 				messageId:'notif-modal-content',
 				valueList : [{
@@ -250,14 +282,12 @@ const ACTION_MAP = {
 					value:targetShopName
 				}]
 			};
-			Modal.info({
-				title: formatMessage({ id: 'notif-modal-title-info' }),
+			modal.update({
 				content: (
 					<div>
-						<p>{replaceTemplateWithValue(templateValue)}</p>
+						<p>{replaceTemplateWithValue(templateValue)}</p>		
 					</div>
-				),
-				onOk() {},
+				)
 			});
 		}
 	},
@@ -268,7 +298,7 @@ const ACTION_MAP = {
 		const targetShopId = parseInt(shopId,0);
 		const currentShopId = await getCurrentShopId();
 		if(currentShopId === targetShopId){		
-			goToPath('ipcManagement',{sn:deviceSn});
+			goToPath('ipcManagement',{sn:deviceSn, showModal:true});
 			if(removeNotification){
 				const { key } = extra;
 				removeNotification(key);
@@ -278,13 +308,22 @@ const ACTION_MAP = {
 				const { key } = extra;
 				removeNotification(key);
 			}
+			const modal = Modal.info({
+				title: formatMessage({ id: 'notif-modal-title-info' }),
+				content: (
+					<div>
+						<Spin spinning />
+					</div>
+				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
+				onOk() {},
+			});
 			const targetCompanyId = parseInt(companyId,0);
 			const currentCompanyId = await getCurrentCompanyId();
 			const currentCompanyName = await getCompanyNameById(currentCompanyId);
 			const currentShopName = await getStoreNameById(currentShopId);
 			const targetShopName = await getStoreNameById(targetShopId);
 			const targetCompanyName = await getCompanyNameById(targetCompanyId);
-			
 			const templateValue = {
 				messageId:'notif-modal-content',
 				valueList : [{
@@ -302,14 +341,12 @@ const ACTION_MAP = {
 					value:targetShopName
 				}]
 			};
-			Modal.info({
-				title: formatMessage({ id: 'notif-modal-title-info' }),
+			modal.update({
 				content: (
 					<div>
-						<p>{replaceTemplateWithValue(templateValue)}</p>
+						<p>{replaceTemplateWithValue(templateValue)}</p>		
 					</div>
-				),
-				onOk() {},
+				)
 			});
 		}
 	},
@@ -320,7 +357,7 @@ const ACTION_MAP = {
 		const targetShopId = parseInt(shopId,0);
 		const currentShopId = await getCurrentShopId();
 		if(currentShopId === targetShopId){		
-			goToPath('ipcManagement',{sn:deviceSn});
+			goToPath('deviceList',{sn:deviceSn});
 			if(removeNotification){
 				const { key } = extra;
 				removeNotification(key);
@@ -330,13 +367,22 @@ const ACTION_MAP = {
 				const { key } = extra;
 				removeNotification(key);
 			}
+			const modal = Modal.info({
+				title: formatMessage({ id: 'notif-modal-title-info' }),
+				content: (
+					<div>
+						<Spin spinning />
+					</div>
+				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
+				onOk() {},
+			});
 			const targetCompanyId = parseInt(companyId,0);
 			const currentCompanyId = await getCurrentCompanyId();
 			const currentCompanyName = await getCompanyNameById(currentCompanyId);
 			const currentShopName = await getStoreNameById(currentShopId);
 			const targetShopName = await getStoreNameById(targetShopId);
 			const targetCompanyName = await getCompanyNameById(targetCompanyId);
-			
 			const templateValue = {
 				messageId:'notif-modal-content',
 				valueList : [{
@@ -354,14 +400,12 @@ const ACTION_MAP = {
 					value:targetShopName
 				}]
 			};
-			Modal.info({
-				title: formatMessage({ id: 'notif-modal-title-info' }),
+			modal.update({
 				content: (
 					<div>
-						<p>{replaceTemplateWithValue(templateValue)}</p>
+						<p>{replaceTemplateWithValue(templateValue)}</p>		
 					</div>
-				),
-				onOk() {},
+				)
 			});
 		}
 	}
