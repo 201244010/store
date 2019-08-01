@@ -101,6 +101,7 @@ const ACTION_MAP = {
 						<p>{replaceTemplateWithValue(templateValue)}</p>
 					</div>
 				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
 				onOk() {},
 			});
 		}
@@ -154,6 +155,7 @@ const ACTION_MAP = {
 						<p>{replaceTemplateWithValue(templateValue)}</p>
 					</div>
 				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
 				onOk() {},
 			});
 		}
@@ -205,6 +207,7 @@ const ACTION_MAP = {
 						<p>{replaceTemplateWithValue(templateValue)}</p>
 					</div>
 				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
 				onOk() {},
 			});
 		}
@@ -257,6 +260,7 @@ const ACTION_MAP = {
 						<p>{replaceTemplateWithValue(templateValue)}</p>
 					</div>
 				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
 				onOk() {},
 			});
 		}
@@ -309,6 +313,7 @@ const ACTION_MAP = {
 						<p>{replaceTemplateWithValue(templateValue)}</p>
 					</div>
 				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
 				onOk() {},
 			});
 		}
@@ -320,7 +325,7 @@ const ACTION_MAP = {
 		const targetShopId = parseInt(shopId,0);
 		const currentShopId = await getCurrentShopId();
 		if(currentShopId === targetShopId){		
-			goToPath('ipcManagement',{sn:deviceSn});
+			goToPath('deviceList',{sn:deviceSn});
 			if(removeNotification){
 				const { key } = extra;
 				removeNotification(key);
@@ -361,6 +366,7 @@ const ACTION_MAP = {
 						<p>{replaceTemplateWithValue(templateValue)}</p>
 					</div>
 				),
+				okText:formatMessage({ id: 'notif-modal-known-text' }),
 				onOk() {},
 			});
 		}
