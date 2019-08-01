@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, Divider, Avatar } from 'antd';
-import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, AGE_RANGE_CODE } from '@/constants';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, AGE_RANGE_CODE } from '@/constants';
 
 
 import styles from './FaceLog.less';
@@ -63,7 +63,7 @@ class FaceLogTable extends React.Component{
 			dataIndex:'lastArrivalTime',
 			key:'lastArrivalTime',
 			render:(time) => (
-				<span>{moment.unix(time).format('YYYY.MM.DD hh:mm:ss')}</span>
+				<span>{time === 0?'--':moment.unix(time).format('YYYY.MM.DD hh:mm:ss')}</span>
 			)
 		},
 		{
