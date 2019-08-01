@@ -86,11 +86,11 @@ export default {
 	// ipc-device-desc
 	'notif-device-ipc-ota-desc': '【##company_name##-##shop_name##】网络摄像机(##device_name##)有新版固件，请更新',
 	'notif-device-ipc-motion-detect-video-desc':
-		'【##company_name##-##shop_name##】网络摄像机##device_name##侦测到异常画面，请即刻查看',
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)侦测到异常画面，请即刻查看',
 	'notif-device-ipc-motion-detect-audio-desc':
-		'【##company_name##-##shop_name##】网络摄像机##device_name##侦测到异常声音，请即刻查看',
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)侦测到异常声音，请即刻查看',
 	'notif-device-ipc-motion-detect-video-audio-desc':
-		'【##company_name##-##shop_name##】网络摄像机 ##device_name## 侦测到异常画面与声音，请即刻查看',
+		'【##company_name##-##shop_name##】网络摄像机(##device_name##)侦测到异常画面与声音，请即刻查看',
 	'notif-device-ipc-on/offline-desc':
 		'【##company_name##-##shop_name##】网络摄像机(##device_name##)已离线，请检查设备状态',
 	'notif-device-ipc-tf-card-detect-desc': '网络摄像机的存储卡##status##',
