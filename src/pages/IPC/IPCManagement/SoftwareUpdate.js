@@ -75,7 +75,7 @@ class SoftwareUpdate extends Component {
 	interval = 0
 
 	componentDidMount = async () => {
-		const { load, sn, getDeviceInfo } = this.props;
+		const { load, sn, getDeviceInfo, showModal } = this.props;
 		// console.log(sn);
 		if(sn){
 			const deviceInfo = await getDeviceInfo({ sn });
@@ -83,7 +83,10 @@ class SoftwareUpdate extends Component {
 				deviceInfo
 			});
 		}
-		load(sn);
+		await load(sn);
+		if(showModal){
+			this.showModal();
+		}
 	}
 
 	showModal = () => {
