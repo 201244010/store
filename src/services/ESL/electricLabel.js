@@ -11,6 +11,8 @@ export const fetchElectricLabels = options => {
 			page_size: options.pageSize,
 			keyword: options.keyword,
 			status: options.status,
+			sort_key: options.sort_key,
+			desc: options.desc
 		},
 	};
 

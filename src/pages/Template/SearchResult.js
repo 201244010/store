@@ -115,11 +115,7 @@ class SearchResult extends Component {
 						},
 						() => {
 							resetFields();
-							window.open(
-								`/studio?id=${response.data.template_id}&screen=${
-									values.screen_type
-								}`
-							);
+							window.open(`/studio?id=${response.data.template_id}&screen=${values.screen_type}`);
 						}
 					);
 				}
@@ -156,7 +152,7 @@ class SearchResult extends Component {
 				if (response && response.code === ERROR_OK) {
 					this.setState(
 						{
-							newVisible: false,
+							cloneVisible: false,
 						},
 						() => {
 							resetFields();

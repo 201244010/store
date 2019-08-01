@@ -35,8 +35,8 @@ export default function BoardTools(props) {
 				</ToolItem>
 				<ToolItem
 					className={`${styles.item} ${styles['item-circle']}`}
-					type={SHAPE_TYPES.HLine}
-					id={generatorId(SHAPE_TYPES.HLine)}
+					type={SHAPE_TYPES.LINE_H}
+					id={generatorId(SHAPE_TYPES.LINE_H)}
 					addComponent={addComponent}
 				>
 					<Fragment>
@@ -46,8 +46,8 @@ export default function BoardTools(props) {
 				</ToolItem>
 				<ToolItem
 					className={`${styles.item} ${styles['item-v-line']}`}
-					type={SHAPE_TYPES.VLine}
-					id={generatorId(SHAPE_TYPES.VLine)}
+					type={SHAPE_TYPES.LINE_V}
+					id={generatorId(SHAPE_TYPES.LINE_V)}
 					addComponent={addComponent}
 				>
 					<Fragment>
