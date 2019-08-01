@@ -13,7 +13,8 @@ class Toolbar extends React.Component{
 
 		this.state = {
 			clicked: false,
-			datePickerVisiable: false
+			datePickerVisiable: false,
+			todayState: props.today
 		};
 
 		this.changeDatePicker = this.changeDatePicker.bind(this);
@@ -39,7 +40,7 @@ class Toolbar extends React.Component{
 			maxVolume, mute, changeVolume, volume: volumneValue
 		} = this.props;
 
-		const { clicked, datePickerVisiable } = this.state;
+		const { clicked, datePickerVisiable, todayState } = this.state;
 
 		let buttonNumber = 2;	// 至少有音量调节和全屏显示；
 
@@ -183,6 +184,8 @@ class Toolbar extends React.Component{
 
 													defaultValue={moment.unix(today)}
 
+													valute={moment.unix(todayState)}
+
 													getCalendarContainer={() => this.calendarPopupWrapper}
 
 													disabledDate={(current) => current > moment().endOf('day') || current < moment().subtract(30, 'days')}
@@ -195,6 +198,10 @@ class Toolbar extends React.Component{
 															millisecond: 0
 														});
 														this.changeDatePicker(false);
+
+														this.setState({
+															todayState: date.unix()
+														});
 														onDatePickerChange(date.unix());
 													}}
 													open

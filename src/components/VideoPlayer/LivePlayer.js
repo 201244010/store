@@ -82,7 +82,7 @@ class LivePlayer extends React.Component{
 	}
 
 	playHistory = async (timestamp) => {
-		console.log('timestamp', timestamp, moment.unix(timestamp).format('YYYY-MM-DD HH:mm:ss'));
+		// console.log('timestamp', timestamp, moment.unix(timestamp).format('YYYY-MM-DD HH:mm:ss'));
 
 		if (moment().valueOf()/1000 - timestamp <= 60 ){
 			// 拖到了直播
@@ -235,6 +235,26 @@ class LivePlayer extends React.Component{
 			currentTimestamp: timestamp
 		});
 
+		const { getTimeStart, getTimeEnd } = this.timebar;
+		const timeStart = getTimeStart();
+		const timeEnd = getTimeEnd();
+
+		if (timeStart <= timestamp && timestamp <= timeEnd) {
+			this.onTimeChangeEnd(timestamp);
+		}
+
+	}
+
+	onTimeChange = async (timeStart, timeEnd) => {
+		// console.log('onTimeChange.');
+		const { onTimeChange } = this.props;
+		await onTimeChange(timeStart, timeEnd);
+	}
+
+	onTimeChangeEnd = (time) => {
+		// console.log('onTimeChangeEnd');
+		const { currentTimestamp } = this.state;
+		const timestamp = time || currentTimestamp;
 		const isInside = this.isInsideSlots(timestamp);
 
 		if (isInside !== true) {
@@ -299,7 +319,7 @@ class LivePlayer extends React.Component{
 	}
 
 	render () {
-		const { onTimeChange, timeSlots, plugin } = this.props;
+		const { timeSlots, plugin } = this.props;
 		const { currentTimestamp, isLive, playBtnDisabled } = this.state;
 
 		return (
@@ -329,6 +349,7 @@ class LivePlayer extends React.Component{
 
 				progressbar={
 					<Timebar
+						ref={bar => this.timebar = bar}
 						current={currentTimestamp}
 						timeSlots={timeSlots}
 
@@ -336,7 +357,8 @@ class LivePlayer extends React.Component{
 						onMoveDrag={this.onTimebarMoveDarg}
 						onStopDrag={this.onTimebarStopDrag}
 
-						onGenerateTimeRange={onTimeChange}
+						onTimeChange={this.onTimeChange}
+						onTimeChangeEnd={this.onTimeChangeEnd}
 					/>
 				}
 			/>

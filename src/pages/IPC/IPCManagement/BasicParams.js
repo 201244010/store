@@ -3,9 +3,9 @@ import { Card, Radio, Switch, Button,Form, Spin, message } from 'antd';
 
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-
+import { TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
 // eslint-disable-next-line import/no-cycle
-import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
+import { FORM_ITEM_LAYOUT /* , TAIL_FORM_ITEM_LAYOUT */ } from './IPCManagement';
 
 import styles from './BasicParams.less';
 
@@ -217,7 +217,7 @@ class BasicParams extends Component {
 
 									<RadioGroup>
 										{
-											rotate.map(item =>
+											rotate && rotate.map(item =>
 												<Radio key={item.key} value={item.key}>{item.value}{ formatMessage({id: 'basicParams.degree'})}</Radio>
 											)
 										}

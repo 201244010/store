@@ -16,6 +16,7 @@ export default {
 		lastCheckTime: 0,
 		newVersion: '',
 		updating: 'normal',
+		newTimeValue:'',
 		url: '',
 		sn: ''
 	},
@@ -34,10 +35,11 @@ export default {
 				state.lastCheckTime = time;
 			}
 		},
-		updateStatus (state, { payload: { needUpdate, version, url }}) {
+		updateStatus (state, { payload: { needUpdate, version, url, newTimeValue }}) {
 			state.needUpdate = needUpdate;
 			state.newVersion = version;
 			state.url = url;
+			state.newTimeValue = newTimeValue;
 		},
 		setUpdatingStatus (state, { payload: { sn, status }}) {
 			// console.log(status);
@@ -81,7 +83,6 @@ export default {
 
 		},
 		*detect ({ payload: { sn }}, { put, call }) {
-			// console.log('detect: ', sn);
 			const deviceId = yield put.resolve({
 				type: 'ipcList/getDeviceId',
 				payload: {
@@ -94,6 +95,19 @@ export default {
 			});
 
 			if (response.code === ERROR_OK) {
+				yield put.resolve({
+					type:'ipcList/getList'
+				});
+				const ipcList = yield put.resolve({
+					type:'ipcList/getIpcList'
+				});
+				let newTimeValue;
+				for(let i=0;i<ipcList.length;i++){
+					if(ipcList[i].sn === sn){
+						newTimeValue = ipcList[i].checkTime;
+						break;
+					}
+				}
 				const { data } = response;
 				const { needUpdate, version, url } = data;
 				// console.log(needUpdate, version, url);
@@ -102,7 +116,8 @@ export default {
 					payload: {
 						needUpdate,
 						version,
-						url
+						url,
+						newTimeValue
 					}
 				});
 			}
