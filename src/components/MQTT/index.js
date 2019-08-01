@@ -24,11 +24,13 @@ function MQTTWrapper(WrapperedComponent) {
 			getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
 			goToPath: (pathId, urlParams = {}) =>
 				dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
-			formatSdCard: (sn) => { dispatch({ type: 'sdcard/formatSdCard', sn });},
-			getSdStatus: async (sn) => {
+			formatSdCard: sn => {
+				dispatch({ type: 'sdcard/formatSdCard', sn });
+			},
+			getSdStatus: async sn => {
 				const status = await dispatch({
 					type: 'sdcard/getSdStatus',
-					sn
+					sn,
 				});
 				return status;
 			},
@@ -114,19 +116,18 @@ function MQTTWrapper(WrapperedComponent) {
 					service: 'notification',
 					action: 'sub',
 				});
+				const apInfoTopic = await generateTopic({ service: 'response', action: 'sub' });
 
 				await setTopicListener({ service: 'notification', handler: this.showNotification });
 
-				await subscribe({ topic: [registerTopic, notificationTopic] });
+				await subscribe({ topic: [registerTopic, notificationTopic, apInfoTopic] });
 				// console.log('subscribed');
 				await publish({ topic: registerTopicPub, message: REGISTER_PUB_MSG });
 			}
 		};
 
 		render() {
-			return (
-				<WrapperedComponent {...this.props} />
-			);
+			return <WrapperedComponent {...this.props} />;
 		}
 	}
 

@@ -1,0 +1,106 @@
+{
+  "encoding": "UTF-8",
+  "type": "BWR-2.13",
+  "backgroundColor": "white",                   //始终为white
+  "layers": [{
+    "type": "text",                             //文本元件
+    "backgroundColor": "black",                      //背景色，背景black，字体white即为反显
+    "startX": 408,                              //元件左上角起点X位置
+    "startY": 331,                              //元件左上角起点Y位置
+    "width": 450,                               //元件宽度
+    "height": 150,                              //元件高度
+    "rotation": 0,                              //顺时针旋转角度，只能直角旋转
+    "fontFamily": "Microsoft Yahei",            //字体
+    "fontSize": 14,                             //字号
+    "fontColor": "black",                       //颜色
+    "bold": false,                              //加粗
+    "italic": false,                            //倾斜
+    "underline": false,                         //下划线
+    "strikethrough": false,                     //删除线
+    "align": "left",                            //对齐 "center" "left" "right"
+    "content": "商品名称",                        //未绑定数据显示内容
+    "bindField": "{{goods_name}}"               //绑定的数据
+  }, {
+    "type": "rect",                           //矩形元件
+    "backgroundColor": "red",
+    "startX": 408,
+    "startY": 331,
+    "width": 450,
+    "height": 150,
+    "strokeWidth": 3,                         //边框宽度
+    "strokeColor": "black",                   //边框颜色
+    "cornerRadius": 0,                        //圆角弧度
+    "rotation": 0
+  },
+    {
+      "type": "price",                          //价格元件
+      "subType": "super sub",                         //上标还是下标
+      "backgroundColor": "red",
+      "startX": 408,
+      "startY": 331,
+      "width": 450,
+      "height": 150,
+      "strokeWidth": 3,                         //边框宽度
+      "strokeColor": "black",                   //边框颜色
+      "precision": 2,                           //价格精度
+      "rotation": 0,
+      "fontFamily": "Microsoft Yahei",          //字体
+      "fontSize": 14,                           //字号
+      "fontColor": "black",                     //颜色
+      "bold": false,                            //加粗
+      "italic": false,                          //倾斜
+      "underline": false,                       //下划线
+      "strikethrough": false,                   //删除线
+      "align": "left",                          //对齐 "center" "left" "right"
+      "bindField": "{{goods_name}}"             //绑定的数据
+    },
+    {
+      "startX": 473,
+      "startY": 396,
+      "type": "hLine",
+      "fill": "black",
+      "width": 50,
+      "height": 1,
+      "strokeWidth": 1,
+      "strokeColor": "black",
+      "rotation": 0
+    },
+    {
+      "type": "barcode",                        //条形码元件
+      "subType": "vertical",                    //横向还是竖向
+      "startX": 9,
+      "startY": 85,
+      "width": 95,
+      "height": 14,
+      "rotation": 0,
+      "codec": "EAN13",                         //条形码编码规则："EAN13"、"Code128"...
+      "content": "1234561234567",
+      "bindField": "{{bar_code}}"
+    },
+    {
+      "type": "barcode",                        //条形码元件
+      "subType": "qr",                          //二维码
+      "startX": 9,
+      "startY": 85,
+      "width": 95,
+      "height": 14,
+      "rotation": 0,
+      "barcodeID": 1,                           //条形码号
+      "codec": "EAN13",                         //条形码编码规则："EAN13"、"Code128"...
+      "content": "1234561234567",
+      "bindField": "{{bar_code}}"
+    },
+    {
+      "type": "image",                          //图片元件
+      "imgPath": "1561536587780_10.jpeg",       //图片存放位置，需讨论
+      "startX": 753,
+      "startY": 346,
+      "width": 240,
+      "height": 135,
+      "rotation": 0,
+      "codec": "jpeg",                          //图片编码方式：jpeg、png
+      "content": ""                             //绑定内容待定义
+    }
+  ],
+  "layerCount": 5
+}

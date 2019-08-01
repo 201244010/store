@@ -28,13 +28,15 @@ class SearchResult extends Component {
 		};
 	}
 
-	onTableChange = pagination => {
+	onTableChange = (pagination, filters, sorter) => {
 		const { fetchElectricLabels } = this.props;
 
 		fetchElectricLabels({
 			options: {
 				current: pagination.current,
 				pageSize: pagination.pageSize,
+				sort_key: sorter.field === 'battery' ? 1 : (sorter.field === 'push_time' ? 2 : -1),
+				desc: sorter.order === 'ascend' ? 0 : (sorter.order === 'descend' ? 1 : -1)
 			},
 		});
 	};
@@ -249,6 +251,7 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.esl.battery' }),
 				dataIndex: 'battery',
+				sorter: true,
 				render: text => (
 					<span className={text < 10 ? styles['low-battery'] : ''}>{text}%</span>
 				),
@@ -279,6 +282,7 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.esl.push.time' }),
 				dataIndex: 'push_time',
+				sorter: true,
 				render: text => (text !== 0 ? <span>{unixSecondToDate(text)}</span> : <noscript />),
 			},
 			{
