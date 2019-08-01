@@ -6,10 +6,7 @@ import { format } from '@konata9/milk-shake';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { OPCODE } from '@/constants/mqttStore';
 
-const apConfigHandler = (topic, data) => {
-	console.log('topic: ', topic);
-	console.log('data: ', data);
-};
+const IN_ENERGY_SAVE = 128;
 
 export default {
 	namespace: 'eslBaseStation',
@@ -24,6 +21,7 @@ export default {
 		data: [],
 		deviceInfoList: [],
 		networkIdList: [],
+		networkConfig: {},
 		pagination: {
 			current: 1,
 			pageSize: DEFAULT_PAGE_SIZE,
@@ -218,27 +216,78 @@ export default {
 			return response;
 		},
 
+		*setAPHandler({ payload }, { put }) {
+			const { handler } = payload;
+			yield put({
+				type: 'mqttStore/setTopicListener',
+				payload: {
+					service: 'response',
+					handler: receivedMessage => {
+						const { data } = JSON.parse(receivedMessage);
+						const { opcode, result: { scanMulti, scanPeriod } = {} } = format(
+							'toCamel'
+						)(data[0] || {});
+
+						const action = opcode === OPCODE.GET_AP_CONFIG ? 'query' : 'update';
+						let networkConfig = {};
+
+						if (action === 'query') {
+							const isEnergySave = parseInt(scanPeriod, 10) > IN_ENERGY_SAVE;
+							networkConfig = {
+								scanMulti,
+								scanPeriod: isEnergySave
+									? parseInt(scanPeriod, 10) - IN_ENERGY_SAVE
+									: parseInt(scanPeriod, 10),
+								isEnergySave,
+							};
+						}
+
+						handler(action, networkConfig);
+					},
+				},
+			});
+		},
+
 		*getAPConfig({ payload }, { put }) {
 			const { networkId } = payload;
-			const topic = yield put.resolve({
+			const requestTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
 				payload: { service: 'request' },
 			});
 
-			yield put({
-				type: 'mqttStore/setMessageHandler',
-				payload: {
-					handler: apConfigHandler,
-				},
-			});
+			console.log('get ap:', networkId);
 
 			yield put({
 				type: 'mqttStore/publish',
 				payload: {
-					topic,
+					topic: requestTopic,
 					message: {
 						opcode: OPCODE.GET_AP_CONFIG,
 						param: { network_id: networkId },
+					},
+				},
+			});
+		},
+
+		*updateAPConfig({ payload }, { put }) {
+			const { networkId, scanPeriod, isEnergySave, scanMulti = 2 } = payload;
+			const requestTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'request' },
+			});
+			yield put({
+				type: 'mqttStore/publish',
+				payload: {
+					topic: requestTopic,
+					message: {
+						opcode: OPCODE.SET_AP_CONFIG,
+						param: {
+							network_id: networkId,
+							scan_period: isEnergySave
+								? parseInt(scanPeriod, 10) + IN_ENERGY_SAVE
+								: parseInt(scanPeriod, 10),
+							scan_multi: scanMulti,
+						},
 					},
 				},
 			});
