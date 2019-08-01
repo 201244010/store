@@ -17,9 +17,20 @@ const SCAN_PERIODS = [5, 10, 15];
 	}),
 	dispatch => ({
 		getNetWorkIdList: () => dispatch({ type: 'eslBaseStation/getNetWorkIdList' }),
-		setScanTime: payload => dispatch({ type: 'eslElectricLabel/setScanTime', payload }),
+		setAPHandler: ({ handler }) =>
+			dispatch({ type: 'eslBaseStation/setAPHandler', payload: { handler } }),
 		getAPConfig: ({ networkId }) =>
 			dispatch({ type: 'eslBaseStation/getAPConfig', payload: { networkId } }),
+		updateAPConfig: ({ networkId, isEnergySave, scanPeriod, scanMulti }) =>
+			dispatch({
+				type: 'eslBaseStation/updateAPConfig',
+				payload: {
+					networkId,
+					isEnergySave,
+					scanPeriod,
+					scanMulti,
+				},
+			}),
 		checkClientExist: () => dispatch({ type: 'mqttStore/checkClientExist' }),
 	})
 )
@@ -28,9 +39,7 @@ class SystemConfig extends Component {
 	constructor(props) {
 		super(props);
 		this.checkTimer = null;
-		this.state = {
-			time: 5,
-		};
+		this.state = { networkId: null, networkConfig: {}, configLoading: true };
 	}
 
 	async componentDidMount() {
@@ -39,43 +48,89 @@ class SystemConfig extends Component {
 		await this.checkMQTTClient();
 	}
 
-	componentWillUnmount() {}
-
-	checkMQTTClient = async () => {
-		clearTimeout(this.checkTimer);
-		const { checkClientExist } = this.props;
-		const isClientExist = await checkClientExist();
-		console.log(isClientExist);
-		if (isClientExist) {
-			console.log('client existed');
+	apHandler = (action, receiveConfig) => {
+		// console.log('mqtt ap response', networkConfig);
+		if (action === 'update') {
+			const { getAPConfig } = this.props;
+			const { networkId } = this.state;
+			getAPConfig({ networkId });
 		} else {
-			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 2000);
+			this.setState({ networkConfig: receiveConfig, configLoading: false });
 		}
 	};
 
-	handleSetScanTime = () => {
-		const { setScanTime } = this.props;
-		const { time } = this.state;
-
-		setScanTime({
-			options: {
-				time,
-			},
-		});
+	checkMQTTClient = async () => {
+		clearTimeout(this.checkTimer);
+		const { checkClientExist, getAPConfig, setAPHandler } = this.props;
+		const isClientExist = await checkClientExist();
+		if (isClientExist) {
+			const {
+				eslBaseStation: { networkIdList = [] },
+			} = this.props;
+			await setAPHandler({ handler: this.apHandler });
+			if (networkIdList.length > 0) {
+				const { networkId } = networkIdList[0] || {};
+				this.setState(
+					{
+						networkId,
+					},
+					() => getAPConfig({ networkId })
+				);
+			}
+			// console.log('client existed', networkIdList);
+		} else {
+			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
+		}
 	};
 
 	handleSelectChange = networkId => {
-		console.log(networkId);
+		// console.log(networkId);
 		const { getAPConfig } = this.props;
-		getAPConfig({ networkId });
+		this.setState(
+			{
+				networkId,
+				configLoading: true,
+			},
+			() => getAPConfig({ networkId })
+		);
+	};
+
+	updateAPConfig = () => {
+		const {
+			form: { validateFields },
+			updateAPConfig,
+		} = this.props;
+
+		const {
+			networkConfig: { scanMulti },
+		} = this.state;
+
+		validateFields((err, values) => {
+			if (!err) {
+				updateAPConfig({
+					...values,
+					scanMulti,
+				});
+
+				this.setState({
+					configLoading: true,
+				});
+			}
+		});
 	};
 
 	render() {
 		const {
 			loading,
 			eslBaseStation: { networkIdList = [] },
-			form: { getFieldDecorator },
+			form: { getFieldDecorator, isFieldsTouched },
 		} = this.props;
+		const {
+			networkId,
+			networkConfig: { scanPeriod, isEnergySave } = {},
+			configLoading,
+		} = this.state;
+		const hasTouched = isFieldsTouched(['scanPeriod', 'isEnergySave']);
 
 		return (
 			<Card
@@ -89,6 +144,7 @@ class SystemConfig extends Component {
 						<Card
 							title={formatMessage({ id: 'esl.device.config.info' })}
 							bordered={false}
+							loading={configLoading}
 							className={styles['content-card']}
 						>
 							<div className={styles['display-content']}>
@@ -96,7 +152,7 @@ class SystemConfig extends Component {
 									label={formatMessage({ id: 'esl.device.config.networkId' })}
 								>
 									{getFieldDecorator('networkId', {
-										initialValue: (networkIdList[0] || {}).networkId || null,
+										initialValue: networkId,
 									})(
 										<Select
 											onChange={this.handleSelectChange}
@@ -118,6 +174,7 @@ class SystemConfig extends Component {
 						<Card
 							title={formatMessage({ id: 'esl.device.config.setting' })}
 							bordered={false}
+							loading={configLoading}
 							className={styles['content-card']}
 						>
 							<div className={styles['display-content']}>
@@ -125,12 +182,9 @@ class SystemConfig extends Component {
 									label={formatMessage({ id: 'esl.device.config.scan.round' })}
 								>
 									{getFieldDecorator('scanPeriod', {
-										initialValue: 15,
+										initialValue: scanPeriod || 15,
 									})(
-										<Select
-											onChange={this.handleSelectChange}
-											style={SELECT_STYLE}
-										>
+										<Select style={SELECT_STYLE}>
 											{SCAN_PERIODS.map((period, index) => (
 												<Select.Option key={index} value={period}>
 													{period}
@@ -144,12 +198,16 @@ class SystemConfig extends Component {
 									label={formatMessage({ id: 'esl.device.config.scan.green' })}
 								>
 									{getFieldDecorator('isEnergySave', {
-										initialValue: true,
+										initialValue: isEnergySave || true,
 										valuePropName: 'checked',
 									})(<Switch />)}
 								</Form.Item>
 								<Form.Item label=" " colon={false}>
-									<Button type="primary">
+									<Button
+										type="primary"
+										disabled={!hasTouched}
+										onClick={this.updateAPConfig}
+									>
 										{formatMessage({ id: 'btn.save' })}
 									</Button>
 								</Form.Item>
@@ -158,6 +216,7 @@ class SystemConfig extends Component {
 						{/* 广播这一期不做 */}
 						{/* <Card
 									title={formatMessage({ id: 'esl.device.config.boardcast' })}
+									loading={configLoading}
 									bordered={false}
 								>
 									<div className={styles['display-content']}>
