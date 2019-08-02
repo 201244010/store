@@ -198,7 +198,7 @@ class SystemConfig extends Component {
 									label={formatMessage({ id: 'esl.device.config.scan.green' })}
 								>
 									{getFieldDecorator('isEnergySave', {
-										initialValue: isEnergySave || true,
+										initialValue: isEnergySave,
 										valuePropName: 'checked',
 									})(<Switch />)}
 								</Form.Item>
