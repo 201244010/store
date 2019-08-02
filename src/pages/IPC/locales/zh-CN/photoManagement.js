@@ -7,6 +7,7 @@ export default {
 	'photoManagement.addPhoto': '新增照片',
 	'photoManagement.uploadSuccess': '上传成功',
 	'photoManagement.uploadFail': '上传失败',
+	'photoManagement.FailforOver':'上传失败,照片大于1M',
 	'photoManagement.plentyMove': '批量移库',
 	'photoManagement.plentyMoveTo': '批量移库至 : ',
 	'photoManagement.moveTo': '移库至 : ',
@@ -33,6 +34,7 @@ export default {
 	'photoManagement.noPhotoAlert': '请上传图片',
 	'photoManagement.addFailTitle': '新增照片失败',
 	'photoManagement.addFailContent': '以下照片不符合照片库上传规则，请调整后重新上传',
+	'photoManagement.confirm':'确认',
 	'photoManagement.card.function1': '详情',
 	'photoManagement.card.function2': '移库',
 	'photoManagement.card.function3': '删除',
@@ -68,4 +70,5 @@ export default {
 	'photoManagement.countOver2':'当前人脸库照片数量已达上限，无法继续添加照片',
 	'menu.photoManagement': '照片管理',
 	'menu.photoManagement.photoList': '照片列表',
+	'photoManagement.firstInputFormat':'首位字符不能为空，请重新输入'
 };

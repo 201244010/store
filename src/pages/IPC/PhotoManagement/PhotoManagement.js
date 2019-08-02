@@ -141,7 +141,8 @@ class PhotoManagement extends React.Component {
 		// console.log('show',rest);
 		if (rest <= 0) {
 			Modal.info({
-				title: formatMessage({ id: 'photoManagement.countOver2' }),
+				title: formatMessage({ id:'photoManagement.countOver2'}),
+				okText: formatMessage({ id: 'photoManagement.confirm'}),
 			});
 			this.setState({
 				uploadable: false,
@@ -150,6 +151,7 @@ class PhotoManagement extends React.Component {
 		} else {
 			this.setState({
 				uploadPhotoShown: true,
+				uploadable: true,
 			});
 		}
 	};
@@ -200,23 +202,17 @@ class PhotoManagement extends React.Component {
 		if (fileList.length >= 20) {
 			fileList.splice(20, fileList.length);
 		}
+		// console.log('upload',file);
 
-		fileList = handleResponse(fileList);
-		file = handleResponse(file);
-
+		// console.log('upload-',file);
 		const { status } = file;
 		if (status === 'done') {
-			if (file.response) {
-				const {
-					response: {
-						data: { verifyResult },
-						code,
-					},
-				} = file;
-				if (verifyResult !== 1 || code !== 1) {
-					message.error(
-						`${file.name}${formatMessage({ id: 'photoManagement.uploadFail' })}`
-					);
+			fileList = handleResponse(fileList);
+			file = handleResponse(file);
+			if(file.response) {
+				const { response: { data: { verifyResult }, code } } = file;
+				if(verifyResult !== 1 || code !== 1) {
+					message.error(`${file.name}${formatMessage({id:'photoManagement.uploadFail'})}`);
 					fileList.forEach(item => {
 						if (item.uid === file.uid) {
 							item.status = 'error';
@@ -226,7 +222,7 @@ class PhotoManagement extends React.Component {
 				// this.setState({fileList});
 			}
 		} else if (status === 'error') {
-			message.error(`${file.name}${formatMessage({ id: 'photoManagement.uploadFail' })}`);
+			// message.error(`${file.name}${formatMessage({id:'photoManagement.uploadFail'})}`);
 			// this.setState({fileList});
 		}
 
@@ -239,8 +235,9 @@ class PhotoManagement extends React.Component {
 	};
 
 	beforeUpload = (file, fileList) => {
-		// 单次只允许上传20张且不允许超过余量；
+		// 单次只允许上传20张；
 
+		// console.log('before',file);
 		if (fileList.indexOf(file) >= 20) {
 			return false;
 		}
@@ -251,6 +248,7 @@ class PhotoManagement extends React.Component {
 		const isPic = isJPG || isPNG;
 		if (!(isLt1M && isPic)) {
 			file.status = 'error';
+			message.error(`${file.name}${formatMessage({id:'photoManagement.uploadFail'})}`);
 		}
 		return isLt1M && isPic;
 	};
@@ -387,7 +385,8 @@ class PhotoManagement extends React.Component {
 	canSave = fileList => {
 		// console.log('save');
 		const limitCapacity = this.groupRestCapacity();
-		const limit = limitCapacity < 20 ? limitCapacity : 20;
+		// const limit = limitCapacity < 20 ? limitCapacity : 20;
+		const limit = limitCapacity;
 
 		const list = fileList.filter(item => item.status !== 'removed');
 		// console.log(limitCapacity, limit);
@@ -551,6 +550,7 @@ class PhotoManagement extends React.Component {
 			loading,
 		} = this.props;
 		const fullChosen = this.isFullChecked();
+		// console.log(faceList);
 		// const rest = this.groupRestCapacity();
 		return (
 			<Card className={styles['management-card']}>
@@ -587,8 +587,8 @@ class PhotoManagement extends React.Component {
 											<Option value={10}>
 												{formatMessage({ id: 'photoManagement.all' })}
 											</Option>
-											{ageRange.map(item => (
-												<Option value={item.ageCode} key={item.ageCode}>
+											{ageRange.map((item, index) => (
+												<Option value={item.ageCode} key={index}>
 													{item.ageRange}
 												</Option>
 											))}
@@ -727,6 +727,7 @@ class PhotoManagement extends React.Component {
 					width={800}
 					maskClosable={false}
 					okButtonProps={{ disabled: saveBtnDisabled }}
+					destroyOnClose
 				>
 					<Upload
 						listType="picture-card"
@@ -762,6 +763,7 @@ class PhotoManagement extends React.Component {
 					onOk={this.onRemove}
 					maskClosable={false}
 					width={640}
+					destroyOnClose
 				>
 					<Row>
 						<Col span={6}>{formatMessage({ id: 'photoManagement.plentyMoveTo' })}</Col>
@@ -799,7 +801,7 @@ class PhotoManagement extends React.Component {
 					{failedList.map((item, index) => (
 						<div
 							className={styles['fail-list-modal']}
-							style={{ backgroundImage: `url(${item.imgUrl})` }}
+							style={{ backgroundImage: `url("${item.imgUrl}")` }}
 							key={index}
 						/>
 					))}

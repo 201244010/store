@@ -3,10 +3,10 @@ import { Card, Form, Checkbox, Modal, Radio, Upload, Row, Col, Avatar, Select, I
 // import PhotoForm from './PhotoForm';
 import {formatMessage} from 'umi/locale';
 import {connect} from 'dva';
-import Button from 'antd/es/button';
 import moment from 'moment';
 import { handleResponse, handleUpload } from '../services/photoLibrary';
 import styles from './PhotoManagement.less';
+import { spaceInput } from '@/constants/regexp';
 
 
 
@@ -74,8 +74,10 @@ class PhotoCard extends React.Component {
 			isEdit: false,
 			file: {},
 			fileName: '',
-			uploadFail: false,
-			uploadSuccess: false,
+			fileUrl:'',
+			// uploadFail: false,
+			// uploadSuccess: false,
+			isUpload: 0,
 			imageLoaded: false,
 		};
 	}
@@ -121,7 +123,7 @@ class PhotoCard extends React.Component {
 
 	hideInfo = () => {
 		this.setState({ infoFormVisible: false, fileName: '' }, ()=> {
-			this.setState({isEdit: false, file: {}, uploadSuccess: false, uploadFail: false});
+			this.setState({isEdit: false, file: {}, isUpload: 0, fileUrl: ''});
 		});
 	};
 
@@ -175,15 +177,19 @@ class PhotoCard extends React.Component {
 				if(fileName !== '' && file.response !== undefined && file.response.data.verifyResult === 1) {
 					isUpload = await upload({
 						groupId,
-						faceImgList: [fileName]
+						faceImgList: [fileName],
+						faceId: id
 					});
 				}
-				isEdit && isUpload ?
-					message.success(formatMessage({id: 'photoManagement.card.editSuccess'}))
-					:
+
+				if(isEdit && isUpload) {
+					message.success(formatMessage({id: 'photoManagement.card.editSuccess'}));
+				} else {
+
 					message.error(formatMessage({id: 'photoManagement.card.editError'}));
+				}
 				getList();
-				this.setState({infoFormVisible: false, isEdit: false, fileName: '', uploadFail: false, uploadSuccess: false});
+				this.setState({infoFormVisible: false, isEdit: false, fileName: '', isUpload: 0, fileUrl: ''});
 			}
 		});
 	};
@@ -228,6 +234,7 @@ class PhotoCard extends React.Component {
 	ageRange = () => {
 		const { photoLibrary: {ageRange} , age } = this.props;
 		let ageName = formatMessage({id: 'photoManagement.unKnown'});
+		// console.log(ageRange);
 		ageRange.forEach(item => {
 			if(item.ageCode === age) {
 				ageName = item.ageRange;
@@ -236,25 +243,49 @@ class PhotoCard extends React.Component {
 		return ageName;
 	};
 
+	getBase64 = (img, callback) => {
+		const reader = new FileReader();
+		reader.addEventListener('load', () => callback(reader.result));
+		reader.readAsDataURL(img);
+	};
+
 	upload = file => {
+		// console.log(file);
 		file = handleResponse(file);
 		const { file: { status }} = file;
+		let isUpload = 0;
+		// console.log('upload',file);
 		if (status === 'done') {
 			const { file: { response }} = file;
 			const { code, data: {verifyResult}} = response;
+
 			if(verifyResult === 1 && code === 1 ) {
 				message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
-				this.setState({fileName: response.data.fileName, uploadSuccess: true});
+				isUpload = 1;
+				// this.setState({fileName: response.data.fileName, uploadSuccess: true});
 			} else {
 				message.error(formatMessage({id:'photoManagement.uploadFail'}));
-				this.setState({uploadFail: true});
+				isUpload = 2;
+				// this.setState({uploadFail: true});
 			}
+			this.getBase64(file.file.originFileObj,imageUrl => {
+				// console.log(imageUrl);
+				this.setState({
+					fileUrl: imageUrl,
+					fileName: response.data.fileName,
+					isUpload,
+				});
+			});
 
 		} else if (status === 'error') {
-			message.error(formatMessage({id:'photoManagement.uploadFail'}));
+			message.error(formatMessage({id:'photoManagement.FailforOver'}));
+			this.setState({
+				// file: file.file,
+				isUpload: 2
+			});
 		}
 		this.setState({
-			file: file.file
+			file:file.file
 		});
 	};
 
@@ -294,8 +325,9 @@ class PhotoCard extends React.Component {
 	};
 
 	handleSelectInfo = type => {
-		const { gender, age, photoLibrary: {ageRange} } = this.props;
+		const { gender, age, photoLibrary: { ageRange } } = this.props;
 		let ageName = '';
+		// console.log(ageRange);
 		switch (type) {
 			case 'gender':
 				if(gender === 1) {
@@ -352,11 +384,15 @@ class PhotoCard extends React.Component {
 			photoLibrary,
 			form: {getFieldDecorator},
 			photoLibrary: { ageRange },
-			groupId
+			groupId,
+			age,
+			gender
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
-		const { isEdit, uploadFail, infoFormVisible, removeVisible, file, uploadSuccess, imageLoaded } = this.state;
-
+		const { isEdit, infoFormVisible, removeVisible, file, fileUrl, imageLoaded, isUpload } = this.state;
+		const imageUrl = fileUrl || image;
+		// console.log('url',imageUrl);
+		// console.log(id, age, gender);
 		return (
 			<Card
 				actions={[
@@ -413,6 +449,7 @@ class PhotoCard extends React.Component {
 					width={840}
 					maskClosable={false}
 					okButtonProps={{disabled:this.isUploaded()}}
+					destroyOnClose
 				>
 					{
 						isEdit ?
@@ -429,13 +466,13 @@ class PhotoCard extends React.Component {
 										<div className={styles['upload-pic']}>
 											{image !== '' &&
 												<div
-													style={{backgroundImage:`url(${image})`}}
+													style={{backgroundImage:`url("${imageUrl}")`}}
 													className={styles['edit-pic-col']}
 												/>
 											}
 											<div
 												className={styles['word-on-pic']}
-												style={uploadFail?border:{}}
+												style={isUpload === 2 ?border:{}}
 											>
 												<Icon type="edit" />
 												<p>{formatMessage({id:'photoManagement.card.changeImg'})}</p>
@@ -443,23 +480,23 @@ class PhotoCard extends React.Component {
 										</div>
 									</Upload>
 									{
-										uploadFail&&
+										isUpload === 2 &&
 										<div>
 											<p>{formatMessage({id:'photoManagement.card.uploadFail'})}</p>
-											<Button onClick={()=>this.setState({file:{},uploadFail:false})}>
+											{/* <Button onClick={()=>this.setState({file:{},fileUrl:'',uploadFail:false})}>
 												{formatMessage({id:'photoManagement.card.cancel'})}
-											</Button>
+											</Button> */}
 										</div>
 									}
-									{
+									{/* {
 										uploadSuccess&&
 										<div>
 											<p>{formatMessage({id:'photoManagement.card.uploadSuccess'})}</p>
-											<Button onClick={()=>this.setState({file:{},uploadSuccess:false})}>
+											<Button onClick={()=>this.setState({file:{},fileUrl:'',uploadSuccess:false})}>
 												{formatMessage({id:'photoManagement.card.cancel'})}
 											</Button>
 										</div>
-									}
+									} */}
 								</Col>
 								<Col span={14}>
 									<div className={styles['edit-form']}>
@@ -476,6 +513,10 @@ class PhotoCard extends React.Component {
 															message: formatMessage({id:'photoManagement.card.alert1'})
 														},
 														{
+															pattern: spaceInput,
+															message: formatMessage({id: 'photoManagement.firstInputFormat'})
+														},
+														{
 															max: 20,
 															message: formatMessage({id:'photoManagement.card.alert2'})
 														},
@@ -488,7 +529,8 @@ class PhotoCard extends React.Component {
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.gender'})}>
 												{getFieldDecorator('gender', {
-													initialValue: this.handleSelectInfo('gender'),
+													// initialValue: this.handleSelectInfo('gender'),
+													initialValue: gender === 0? '': gender,
 													rules: [
 														{
 															required: true,
@@ -510,9 +552,9 @@ class PhotoCard extends React.Component {
 												{getFieldDecorator('libraryName', {
 													initialValue: groupId
 												})(
-													<Select>
-														{photoLibrary.faceList.map(item => (
-															<Select.Option value={item.groupId} key={item.groupId}>
+													<Select dropdownMatchSelectWidth={false}>
+														{photoLibrary.faceList.map((item, index) => (
+															<Select.Option value={item.groupId} key={index}>
 																{this.handleLibraryName(item)}
 															</Select.Option>
 														))}
@@ -521,7 +563,8 @@ class PhotoCard extends React.Component {
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.age'})}>
 												{getFieldDecorator('age', {
-													initialValue: this.handleSelectInfo('age'),
+													// initialValue: this.handleSelectInfo('age'),
+													initialValue: age === 0?'':age,
 													rules: [
 														{
 															required: true,
@@ -531,8 +574,8 @@ class PhotoCard extends React.Component {
 												})(
 													<Select>
 														{
-															ageRange.map(item=>
-																<Option value={item.ageCode} key={item.ageCode}>
+															ageRange.map((item, index)=>
+																<Option value={item.ageCode} key={index}>
 																	{item.ageRange}
 																</Option>)
 														}
@@ -565,7 +608,7 @@ class PhotoCard extends React.Component {
 										<Form
 											className={styles['info-form']}
 											labelCol={{ lg: { span: 10 }}}
-											wrapperCol={{ lg: { span: 6 }}}
+											wrapperCol={{ lg: { span: 14 }}}
 										>
 											<Form.Item label={formatMessage({id:'photoManagement.name'})}>
 												{this.handleInfo('name')}
@@ -604,6 +647,7 @@ class PhotoCard extends React.Component {
 					onOk={this.handleRemove}
 					maskClosable={false}
 					width={640}
+					destroyOnClose
 				>
 					<Row className={styles['move-modal']}>
 						<Col span={8}>
