@@ -249,10 +249,10 @@ export default {
 			// const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
 			const [startTime, endTime] = [
 				moment()
-					.startOf('today')
+					.startOf('day')
 					.unix(),
 				moment()
-					.endOf()
+					.endOf('day')
 					.unix(),
 			];
 			const stateField = stateFields[queryType];
