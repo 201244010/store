@@ -255,8 +255,6 @@ export default {
 				payload: { service: 'request' },
 			});
 
-			console.log('get ap:', networkId);
-
 			yield put({
 				type: 'mqttStore/publish',
 				payload: {
