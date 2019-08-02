@@ -1,16 +1,12 @@
 import { customizeFetch } from '@/utils/fetch';
 import { ERROR_OK } from '@/constants/errorCode';
-// import { IPC_SERVER } from '@/config';
+
 import CONFIG from '@/config';
 
 const { IPC_SERVER } = CONFIG;
-
-// console.log(IPC_SERVER);
-// console.log(CONFIG);
 const request = customizeFetch('ipc/api/device', IPC_SERVER);
-// const requestT = customizeFetch('ipc/api/device', 'localhost:8000');
-// const request = customizeFetch('api/device/ipc');
-// const fetchApi = customizeFetch('ipc/api/device',IPC_SERVER);
+// const request = customizeFetch('ipc/api/device', 'localhost:8000');
+
 
 const dataFormatter = (item) => ({
 	deviceId: item.id,

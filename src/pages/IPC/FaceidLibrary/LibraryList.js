@@ -254,6 +254,7 @@ class LibraryList extends React.Component {
 		form.validateFields(errors => {
 			if(!errors) {
 				const fields = form.getFieldsValue();
+				fields.name = fields.name.trim();
 				const capacity = parseInt(fields.capacity, 10);
 				const params = {
 					...fields,
@@ -335,7 +336,7 @@ class LibraryList extends React.Component {
 		form.validateFields(errors => {
 			if (!errors) {
 				const fields = form.getFieldsValue();
-				// console.log('fields',fields);
+				fields.name = fields.name.trim();
 				const capacity = parseInt(fields.capacity, 10);
 				const params = {
 					...fields,

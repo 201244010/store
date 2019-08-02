@@ -83,7 +83,7 @@ class SoftwareUpdate extends Component {
 	interval = 0
 
 	componentDidMount = async () => {
-		const { load, sn, getDeviceInfo } = this.props;
+		const { load, sn, getDeviceInfo, showModal } = this.props;
 		// console.log(sn);
 		if(sn){
 			const deviceInfo = await getDeviceInfo({ sn });
@@ -91,9 +91,12 @@ class SoftwareUpdate extends Component {
 				deviceInfo
 			});
 		}
-		load(sn);
+		await load(sn);
+		if(showModal){
+			this.showModal();
+		}
 	}
- 
+
 
 	// getNewLastCheckTime(){
 	// 	const { sn, getLastCheckTime } = this.props;
@@ -117,6 +120,7 @@ class SoftwareUpdate extends Component {
 		update(sn);
 
 		const time = OTATime;
+		console.log(time);
 		clearInterval(this.interval);
 		this.interval = setInterval(() => {
 			const { percent } = this.state;

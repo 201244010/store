@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { mbStringLength } from '@/utils/utils';
 import { TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
+import { spaceInput } from '@/constants/regexp';
 
 // eslint-disable-next-line import/no-cycle
 import { FORM_ITEM_LAYOUT /* , TAIL_FORM_ITEM_LAYOUT */	} from './IPCManagement';
@@ -11,47 +12,11 @@ import { FORM_ITEM_LAYOUT /* , TAIL_FORM_ITEM_LAYOUT */	} from './IPCManagement'
 import defaultImage from '@/assets/imgs/default.jpeg';
 import styles from './DeviceBasicInfo.less';
 
-
-// const FORM_ITEM_LAYOUT = {
-// 	labelCol: {
-// 		span: 8
-// 	},
-// 	wrapperCol: {
-// 		span: 12
-// 	}
-// };
-
-// const TAIL_FORM_ITEM_LAYOUT = {
-// 	wrapperCol: {
-// 		span: 12,
-// 		offset: 8
-// 	}
-// };
-
-// const mbStringLength = (s) => {
-// 	let totalLength = 0;
-// 	let i;
-// 	let charCode;
-// 	for (i = 0; i < s.length; i++) {
-// 		charCode = s.charCodeAt(i);
-// 		if (charCode < 0x007f) {
-// 			totalLength += 1;
-// 		} else if ((charCode >= 0x0080) && (charCode <= 0x07ff)) {
-// 			totalLength += 2;
-// 		} else if ((charCode >= 0x0800) && (charCode <= 0xffff)) {
-// 			totalLength += 3;
-// 		}
-// 	}
-// 	// alert(totalLength);
-// 	return totalLength;
-// };
-
-
-// const RadioGroup = Radio.Group;
 const mapStateToProps = (state) => {
-	const { ipcBasicInfo: basicInfo } = state;
+	const { ipcBasicInfo: basicInfo, ipcList } = state;
 	return {
 		basicInfo,
+		ipcList
 		// loading
 	};
 };
@@ -70,7 +35,6 @@ const mapDispatchToProps = (dispatch) => ({
 				sn
 			}
 		}).then((result) => {
-			// console.log('result: ', result);
 			if (result) {
 				message.success(formatMessage({ id: 'ipcManagement.success'}));
 			}else{
@@ -100,7 +64,6 @@ const mapDispatchToProps = (dispatch) => ({
 				message.success(formatMessage({ id: 'ipcManagement.deleteSuccess'}));
 
 				setTimeout(() => {
-					// router.push('/devices/ipcList');
 					callback();
 				}, 800);
 
@@ -121,14 +84,6 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name: 'ipc-device-basic-info',
-	// mapPropsToFields: (props) => {
-	// 	const { basicInfo } = props;
-	// 	return {
-	// 		deviceName: Form.createFormField({
-	// 			value: basicInfo.name,
-	// 		})
-	// 	};
-	// }
 })
 class DeviceBasicInfo extends React.Component {
 	constructor(props) {
@@ -153,7 +108,7 @@ class DeviceBasicInfo extends React.Component {
 
 		validateFields(async (errors) => {
 			if (!errors){
-				const name = getFieldValue('deviceName');
+				const name = getFieldValue('deviceName').trim();
 				this.setState({
 					saving: true
 				});
@@ -223,63 +178,10 @@ class DeviceBasicInfo extends React.Component {
 		});
 
 		setTimeout(() => {
-			// this.input.select();
 			this.input.focus();
 		}, 0);
 
 	}
-
-	// onChange = (e) => {
-	// 	const { form } = this.props;
-	// 	form.setFieldsValue({
-	// 		deviceName: e.target.value
-	// 	});
-	// 	// this.setState({
-	// 	// 	name: e.target.value
-	// 	// });
-	// }
-
-	// onPressEnter = () => {
-	// 	// console.log(this.state.name);
-	// 	// const { name } = this.state;
-	// 	// const { deviceBasicInfo } = this.props;
-
-	// 	// if (deviceBasicInfo.name !== name) {
-	// 		// disabledControl = false;
-	// 		// this.setState({
-	// 		// 	isChange: true
-	// 		// });
-	// 	// } else {
-	// 		// disabledControl = true;
-	// 		// this.setState({
-	// 		// 	isChange: false
-	// 		// });
-	// 	// }
-
-	// 	this.setState({
-	// 		isEdit: false
-	// 	});
-	// }
-
-	// componentWillReceiveProps = (props) => {
-	// 	const { basicInfo: { status } } = props;
-
-	// 	if (status === 'success') {
-	// 		this.setState({
-	// 			isEdit: false
-	// 		});
-	// 	}
-	// }
-
-	// componentDidUpdate = () => {
-	// 	const { basicInfo: { status } } = this.props;
-
-	// 	if (status === 'success') {
-	// 		message.success('修改成功！');
-	// 	} else if (status === 'failed') {
-	// 		message.error('修改失败！请检查网络或重新设置。');
-	// 	}
-	// }
 
 	exitEditName = () => {
 		const { form } = this.props;
@@ -294,7 +196,7 @@ class DeviceBasicInfo extends React.Component {
 
 	render() {
 		const { isEdit, saving } = this.state;
-		const { basicInfo, form }  = this.props;
+		const { basicInfo, form, ipcList }  = this.props;
 		const { name, type, sn, img, /* mode, */ status } = basicInfo;
 
 		const { isFieldTouched, getFieldDecorator } = form;
@@ -321,6 +223,34 @@ class DeviceBasicInfo extends React.Component {
 									rules: [
 										{ required: true, message: formatMessage({id: 'deviceBasicInfo.enterName'}) },
 										{
+											pattern: spaceInput,
+											message: formatMessage({id: 'deviceBasicInfo.firstInputFormat'})
+										},
+										{
+											validator: (rule, value, callback) => {
+												let confictFlag = false;
+												ipcList.every(item => {
+													if (item.sn !== sn) {
+														if (item.name === value.trim()) {
+															confictFlag = true;
+															return false;
+														}
+														return true;
+													}
+													return true;
+												});
+	
+												if (confictFlag) {
+													callback('name-confict');
+												} else {
+													callback();
+												}
+											},
+											message: formatMessage({
+												id: 'deviceBasicInfo.deviceNameRule',
+											}),
+										},
+										{
 											validator: (rule, value, callback) => {
 												const len = mbStringLength(value);
 												if (len <= 36) {
@@ -330,7 +260,7 @@ class DeviceBasicInfo extends React.Component {
 												}
 											},
 											message: formatMessage({ id: 'deviceBasicInfo.maxLength'})// '设备名称不可以超过36字节'
-										}
+										},
 									]
 								})(
 									<Input

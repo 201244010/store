@@ -55,7 +55,6 @@ const { Meta } = Card;
 }))
 
 class EntryDetail extends React.Component {
-
 	state= {
 		currentPage: 1,
 		deviceId: undefined,
@@ -101,7 +100,6 @@ class EntryDetail extends React.Component {
 
 	onShowSizeChange = (currentPage, pageSize) => {
 		this.getCurrentArrivalList({currentPage, pageSize});
-
 		this.setState({
 			currentPage,
 			pageSize

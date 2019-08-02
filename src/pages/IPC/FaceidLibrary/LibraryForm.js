@@ -8,6 +8,7 @@ import { Form, Input, InputNumber, Switch } from 'antd';
 // } from "@/constants/form";
 import { formatMessage } from 'umi/locale';
 import { mbStringLength } from '@/utils/utils';
+import { spaceInput } from '@/constants/regexp';
 
 import * as styles from './FaceidLibrary.less';
 
@@ -51,8 +52,6 @@ class LibraryForm extends React.Component {
 		const isDefault = type < 5;
 
 		const maxCapacity = isEdit ? capacity + restCapacity : restCapacity;
-
-		console.log(warning);
 
 		return (
 			<div className={styles['faceid-library-form']}>
@@ -104,9 +103,9 @@ class LibraryForm extends React.Component {
 										}),
 									},
 									{
-										pattern: /\s*\S+?/,
+										pattern: spaceInput,
 										message: formatMessage({
-											id: 'faceid.libraryNameFormat',
+											id: 'faceid.firstInputFormat',
 										}),
 									},
 									{
@@ -114,7 +113,7 @@ class LibraryForm extends React.Component {
 											let confictFlag = false;
 											libraries.every(item => {
 												if (item.id !== id) {
-													if (item.name === value) {
+													if (item.name === value.trim()) {
 														confictFlag = true;
 														return false;
 													}

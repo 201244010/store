@@ -90,7 +90,6 @@ class FaceLog extends React.Component {
 		readAgeRangeList();
 		getFaceLibrary();
 		this.getFaceLogList(currentPage, pageSize);
-
 	}
 
 	getFaceLogList = (currentPage, pageSize) => {
@@ -113,7 +112,6 @@ class FaceLog extends React.Component {
 
 	onShowSizeChange = (currentPage, pageSize) => {
 		this.getFaceLogList(currentPage, pageSize);
-
 		this.setState({
 			currentPage,
 			pageSize
@@ -135,7 +133,6 @@ class FaceLog extends React.Component {
 	}
 
 	adjustGroupHandler = async (groupInfo) => {
-
 		this.setState({
 			moveModalVisible: true,
 			groupInfo
@@ -202,7 +199,6 @@ class FaceLog extends React.Component {
 			faceGroup: -1,
 			name: undefined
 		});
-
 		this.getFaceLogList(1, pageSize);
 
 		this.setState({

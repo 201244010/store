@@ -76,6 +76,7 @@ export default {
 	'faceid.info':'通知',
 	'faceid.list.length.max':'当前创建的人脸分组数量已达到上限',
 	'faceid.amount.max' :'当前人脸分组的照片总数量已达到上限',
-	'faceid.info.known':'知道了'
-
+	'faceid.info.known':'知道了',
+	
+	'faceid.firstInputFormat':'首位字符不能为空，请重新输入'
 };
