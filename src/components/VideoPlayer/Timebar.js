@@ -142,9 +142,8 @@ class VideoPlayerProgressBar extends React.Component{
 		// 	timeEnd
 		// });
 		// console.log(moment.unix(timeStart).format('YYYY-MM-DD HH:mm:ss'), moment.unix(timeEnd).format('YYYY-MM-DD HH:mm:ss'));
-		const { onTimeChange, onTimeChangeEnd } = this.props;
+		const { onTimeChange } = this.props;
 		await onTimeChange(timeStart, timeEnd);
-		await onTimeChangeEnd();
 	}
 
 	getBounds = () => {
@@ -263,6 +262,7 @@ class VideoPlayerProgressBar extends React.Component{
 		const { current, timeSlots } = this.props;
 		const { dragging, timestamp, direction, timeStart, timeEnd, position, hover } = this.state;
 
+		// console.log('timebar', timeSlots, position, timeStart, moment.unix(timeStart).format('YYYY-MM-DD HH:mm:ss'), timeEnd, moment.unix(timeEnd).format('YYYY-MM-DD HH:mm:ss'));
 		// sources = sources || [];
 		// console.log('timebar sources: ', sources);
 
