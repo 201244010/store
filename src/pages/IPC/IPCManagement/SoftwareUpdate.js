@@ -96,7 +96,7 @@ class SoftwareUpdate extends Component {
 			this.showModal();
 		}
 	}
- 
+
 
 	// getNewLastCheckTime(){
 	// 	const { sn, getLastCheckTime } = this.props;
@@ -120,6 +120,7 @@ class SoftwareUpdate extends Component {
 		update(sn);
 
 		const time = OTATime;
+		console.log(time);
 		clearInterval(this.interval);
 		this.interval = setInterval(() => {
 			const { percent } = this.state;

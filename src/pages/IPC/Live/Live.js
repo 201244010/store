@@ -360,9 +360,6 @@ class Live extends React.Component{
 						</div>
 						: ''
 				}
-
-
-
 			</div>
 
 		);
