@@ -55,9 +55,9 @@ export default class ShowHeader extends React.PureComponent {
 	render() {
 		const { time, activeKey } = this.state;
 
-		const shopList = JSON.parse(localStorage.getItem(SHOP_LIST_KEY));
-		const shopID = getCookieByKey(SHOP_ID_KEY);
-		const shopName = shopList.find(item => item.shop_id === shopID).shop_name;
+		const shopList = JSON.parse(localStorage.getItem(SHOP_LIST_KEY)) || [];
+		const shopID = getCookieByKey(SHOP_ID_KEY) || '';
+		const { shop_name: shopName = '' } = shopList.find(item => item.shop_id === shopID) || {};
 
 		return (
 			<div className={styles['show-header']}>

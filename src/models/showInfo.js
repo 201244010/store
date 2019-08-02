@@ -96,7 +96,7 @@ export default {
 			orderList: [],
 			skuRankList: [],
 			purchaseInfo: {},
-			range: ''
+			range: '',
 		},
 		week: {
 			totalAmount: {},
@@ -106,7 +106,7 @@ export default {
 			orderList: [],
 			skuRankList: [],
 			purchaseInfo: {},
-			range: ''
+			range: '',
 		},
 		month: {
 			totalAmount: {},
@@ -141,7 +141,7 @@ export default {
 					payload: {
 						queryType: QUERY_TYPE.TOTAL_AMOUNT,
 						range,
-						activeKey
+						activeKey,
 					},
 				}),
 				put({
@@ -149,7 +149,7 @@ export default {
 					payload: {
 						queryType: QUERY_TYPE.TOTAL_COUNT,
 						range,
-						activeKey
+						activeKey,
 					},
 				}),
 				put({
@@ -157,7 +157,7 @@ export default {
 					payload: {
 						queryType: QUERY_TYPE.TOTAL_REFUND,
 						range,
-						activeKey
+						activeKey,
 					},
 				}),
 				put({
@@ -165,7 +165,7 @@ export default {
 					payload: {
 						queryType: QUERY_TYPE.AVG_UNIT,
 						range,
-						activeKey
+						activeKey,
 					},
 				}),
 				// time duration
@@ -246,7 +246,15 @@ export default {
 				return null;
 			}
 
-			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
+			// const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
+			const [startTime, endTime] = [
+				moment()
+					.startOf('day')
+					.unix(),
+				moment()
+					.endOf('day')
+					.unix(),
+			];
 			const stateField = stateFields[queryType];
 			const options = {
 				rateRequired: range === RANGE.FREE ? 0 : 1,
@@ -412,7 +420,7 @@ export default {
 		},
 
 		*setSearchValue({ payload }, { select, put }) {
-			const {range, activeKey} = payload;
+			const { range, activeKey } = payload;
 			if (range !== activeKey && activeKey !== 'all') {
 				return;
 			}
