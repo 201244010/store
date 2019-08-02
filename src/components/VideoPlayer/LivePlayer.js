@@ -15,6 +15,7 @@ class LivePlayer extends React.Component{
 			currentTimestamp: moment().unix()
 		};
 
+		this.currentSrc = '';
 		this.startTimestamp = 0;
 		this.relativeTimestamp = 0;
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
@@ -49,6 +50,7 @@ class LivePlayer extends React.Component{
 
 	src = (src) => {
 		const { videoplayer } = this;
+		this.currentSrc = src;
 		videoplayer.src(src);
 	}
 
@@ -81,14 +83,20 @@ class LivePlayer extends React.Component{
 		await pauseLive();
 	}
 
+	backToLive = async () => {
+		await this.pauseHistory();
+		this.playLive();
+	}
+
 	playHistory = async (timestamp) => {
 		// console.log('timestamp', timestamp, moment.unix(timestamp).format('YYYY-MM-DD HH:mm:ss'));
-
 		if (moment().valueOf()/1000 - timestamp <= 60 ){
 			// 拖到了直播
 			console.log('goto playLive.');
+			await this.pauseLive();
 			await this.pauseHistory();
 			this.playLive();
+
 		}else{
 			const { getHistoryUrl } = this.props;
 
@@ -249,11 +257,17 @@ class LivePlayer extends React.Component{
 		// console.log('onTimeChange.');
 		const { onTimeChange } = this.props;
 		await onTimeChange(timeStart, timeEnd);
+
+		if (this.toPause) {
+			this.onTimeChangeEnd();
+		}
+
 	}
 
 	onTimeChangeEnd = (time) => {
 		// console.log('onTimeChangeEnd');
 		const { currentTimestamp } = this.state;
+
 		const timestamp = time || currentTimestamp;
 		const isInside = this.isInsideSlots(timestamp);
 
@@ -266,6 +280,7 @@ class LivePlayer extends React.Component{
 			clearTimeout(this.dragTimeout);
 			this.playHistory(timestamp);
 		}, 1.2*1000);
+
 	}
 
 	onTimeUpdate = (timestamp) => {
@@ -318,6 +333,11 @@ class LivePlayer extends React.Component{
 		}
 	}
 
+	onError = () => {
+		console.log('liveplayer error handler');
+		this.src(this.currentSrc);
+	}
+
 	render () {
 		const { timeSlots, plugin } = this.props;
 		const { currentTimestamp, isLive, playBtnDisabled } = this.state;
@@ -337,7 +357,7 @@ class LivePlayer extends React.Component{
 				plugin={plugin}
 
 				showBackToLive={!isLive}
-				backToLive={this.playLive}
+				backToLive={this.backToLive}
 				playHandler={this.playHandler}
 
 				ppiChange={this.ppiChange}
@@ -345,6 +365,7 @@ class LivePlayer extends React.Component{
 				onDateChange={this.onDateChange}
 				onTimeUpdate={this.onTimeUpdate}
 				onPause={this.onPause}
+				onError={this.onError}
 				onMetadataArrived={this.onMetadataArrived}
 
 				progressbar={
@@ -358,7 +379,6 @@ class LivePlayer extends React.Component{
 						onStopDrag={this.onTimebarStopDrag}
 
 						onTimeChange={this.onTimeChange}
-						onTimeChangeEnd={this.onTimeChangeEnd}
 					/>
 				}
 			/>
