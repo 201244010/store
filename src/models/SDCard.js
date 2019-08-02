@@ -1,4 +1,4 @@
-import { getSdStatus } from '../pages/IPC/services/initStatusSDCard';
+import { getSdStatus } from '../pages/IPC/services/SDCard';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const formatCode = '0x3058';
