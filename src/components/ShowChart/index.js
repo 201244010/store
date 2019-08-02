@@ -79,18 +79,18 @@ export default class ShowChart extends React.PureComponent {
 	render() {
 		const { orderList, saleType, range } = this.props;
 
-		let nowTime = new Date();
+		let nowTime = moment(new Date().getTime());
 		let labelWidth = 0;
 		if (range === RANGE.TODAY) {
-			nowTime = `${nowTime.getHours()}:00`;
+			nowTime = nowTime.format('HH:00');
 			labelWidth = 33;
 		}
 		if (range === RANGE.WEEK) {
+			nowTime = nowTime.format('ddd');
 			labelWidth = 73;
-			nowTime = moment(nowTime.getTime()).format('ddd');
 		}
 		if (range === RANGE.MONTH) {
-			nowTime = nowTime.getDate().toString();
+			nowTime = nowTime.format('D');
 			labelWidth = 30;
 		}
 

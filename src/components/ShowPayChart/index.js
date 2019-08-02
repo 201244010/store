@@ -44,26 +44,26 @@ export default class ShowPayChart extends React.PureComponent {
 				let path = [];
 				path.push([
 					'M',
-					origin.item !== maxItem.item ? points[0].x : points[0].x - xWidth * 0.1,
+					origin.item !== maxItem.item ? points[0].x : points[0].x - xWidth * 0.15,
 					points[0].y,
 				]);
 				path.push([
 					'L',
-					origin.item !== maxItem.item ? points[1].x : points[1].x - xWidth * 0.1,
+					origin.item !== maxItem.item ? points[1].x : points[1].x - xWidth * 0.15,
 					points[1].y,
 				]);
 				path.push([
 					'L',
 					origin.item !== maxItem.item
 						? points[0].x + xWidth
-						: points[0].x + xWidth * 1.1,
+						: points[0].x + xWidth * 1.15,
 					points[2].y,
 				]);
 				path.push([
 					'L',
 					origin.item !== maxItem.item
 						? points[0].x + xWidth
-						: points[0].x + xWidth * 1.1,
+						: points[0].x + xWidth * 1.15,
 					points[3].y,
 				]);
 				path.push('Z');
