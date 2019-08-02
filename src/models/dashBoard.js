@@ -37,14 +37,18 @@ const getQueryDate = rangeType => {
 	];
 };
 
-const getQueryTimeRange = (searchValue = {}) => {
+const getQueryTimeRange = (searchValue = {}, action) => {
 	const { rangeType, timeRangeStart, timeRangeEnd } = searchValue;
 
 	let startTime;
 	let endTime;
 
 	if (rangeType !== RANGE.FREE) {
-		[startTime, endTime] = getQueryDate(rangeType);
+		if(action && action === 'total'){
+			[startTime, endTime] = getQueryDate(RANGE.TODAY);
+		}else{
+			[startTime, endTime] = getQueryDate(rangeType);
+		}
 	} else {
 		[startTime, endTime] = [
 			timeRangeStart.startOf('day').unix(),
@@ -299,7 +303,7 @@ export default {
 				yield put({
 					type: 'updateState',
 					payload: {
-						ipcOverView: {onLineCount, offLineCount},
+						ipcOverView: { onLineCount, offLineCount },
 						overviewIPCLoading: false,
 					},
 				});
@@ -311,7 +315,7 @@ export default {
 				searchValue,
 				searchValue: { rangeType },
 			} = yield select(state => state.dashBoard);
-			const [startTime, endTime] = getQueryTimeRange(searchValue);
+			const [startTime, endTime] = getQueryTimeRange(searchValue, 'total');
 
 			const { queryType = null, needLoading, loadingType } = payload;
 			const stateField = stateFields[queryType];
