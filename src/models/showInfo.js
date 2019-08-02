@@ -246,7 +246,15 @@ export default {
 				return null;
 			}
 
-			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
+			// const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
+			const [startTime, endTime] = [
+				moment()
+					.startOf('today')
+					.unix(),
+				moment()
+					.endOf()
+					.unix(),
+			];
 			const stateField = stateFields[queryType];
 			const options = {
 				rateRequired: range === RANGE.FREE ? 0 : 1,
