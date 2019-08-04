@@ -4,6 +4,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY ./docker/timezone /etc/
 COPY ./docker/localtime /etc/
 
+COPY --from=hub.sunmi.com/demo/frontend_node_modules /app/src/ /app/src
 COPY . /app/src
 RUN npm cache clean --force
 RUN cd /app/src && npm install
