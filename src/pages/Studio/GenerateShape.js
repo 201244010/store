@@ -38,8 +38,8 @@ export default function generateShape(option) {
 						name: option.name,
 						x: option.x,
 						y: option.y,
-						width: MAPS.width[SHAPE_TYPES.RECT] * option.zoomScale,
-						height: MAPS.height[SHAPE_TYPES.RECT] * option.zoomScale,
+						width: MAPS.width[SHAPE_TYPES.RECT] * option.zoomScale - (option.strokeWidth || 0),
+						height: MAPS.height[SHAPE_TYPES.RECT] * option.zoomScale - (option.strokeWidth || 0),
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
 						fill: option.backgroundColor,
@@ -104,8 +104,9 @@ export default function generateShape(option) {
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
 						opacity: option.opacity,
-						fill: option.backgroundColor,
+						fill: 'rgb(41, 141, 248)',
 						strokeScaleEnabled: false,
+						zIndex: 1000,
 						draggable: true,
 						onMouseOver: () => {
 							document.body.style.cursor = 'pointer';
@@ -152,7 +153,7 @@ export default function generateShape(option) {
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX * option.zoomScale,
 							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
-							lineHeight: (MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.scaleY) / option.fontSize,
+							// lineHeight: (MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.scaleY) / option.fontSize,
 							draggable: true,
 							onDblClick: option.onDblClick,
 						}}
@@ -398,11 +399,12 @@ export default function generateShape(option) {
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
+								const totalWidth = MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale;
 								if (option.align === 'center') {
-									intXPosition = (MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth) / 2;
+									intXPosition = (totalWidth - textWidth) / 2;
 								}
 								if (option.align === 'right') {
-									intXPosition = MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth;
+									intXPosition = totalWidth - textWidth;
 								}
 								const smallXPosition = intXPosition + intTextWidth;
 
