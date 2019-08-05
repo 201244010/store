@@ -216,8 +216,21 @@ export default {
 			return response;
 		},
 
+		*unsubscribeTopic(_, { put }) {
+			const responseTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'response', action: 'sub' },
+			});
+
+			yield put({
+				type: 'mqttStore/unsubscribeTopic',
+				payload: { topic: responseTopic },
+			});
+		},
+
 		*setAPHandler({ payload }, { put }) {
 			const { handler } = payload;
+
 			yield put({
 				type: 'mqttStore/setTopicListener',
 				payload: {
