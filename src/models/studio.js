@@ -10,7 +10,6 @@ export default {
 			height: 0
 		},
 		selectedShapeName: '',
-		selectedComponent: {},
 		componentsDetail: {},
 		showRightToolBox: false,
 		rightToolBoxPos: {
@@ -63,7 +62,7 @@ export default {
 		addComponent(state, action) {
 			// name为组件名，若被原始定义，则用，否则，则生成
 			const { componentsDetail, zoomScale } = state;
-			const { x, y, type, name: preName, scaleX, scaleY} = action.payload;
+			const { x, y, type, name: preName, scaleX, scaleY, isStep = true} = action.payload;
 			let maxIndex = 0;
 			let name = preName;
 
@@ -103,11 +102,12 @@ export default {
 					zoomScale
 				}
 			};
-			saveNowStep(getLocationParam('id'), newComponentsDetail);
+			if (isStep) {
+				saveNowStep(getLocationParam('id'), newComponentsDetail);
+			}
 			return {
 				...state,
 				selectedShapeName: name,
-				selectedComponent: { ...newComponentsDetail[name] },
 				componentsDetail: newComponentsDetail
 			};
 		},
@@ -129,7 +129,6 @@ export default {
 			return {
 				...state,
 				selectedShapeName: '',
-				selectedComponent: {},
 				componentsDetail: {
 					...action.payload
 				}
@@ -169,8 +168,8 @@ export default {
 				...state.componentsDetail,
 				[targetShapeName]: {
 					...detail,
-					content: (detail.type && detail.type.indexOf(SHAPE_TYPES.PRICE) > -1) ?
-						Number(detail.content).toFixed(detail.precision) : detail.content
+					content: detail.content === '' ? '' : ((detail.type && detail.type.indexOf(SHAPE_TYPES.PRICE) > -1) ?
+						Number(detail.content).toFixed(detail.precision) : detail.content)
 				}
 			};
 			if (isStep) {
@@ -180,7 +179,6 @@ export default {
 			return {
 				...state,
 				selectedShapeName: targetShapeName,
-				selectedComponent: { ...newComponentsDetail[targetShapeName] },
 				componentsDetail: newComponentsDetail
 			};
 		},
@@ -211,7 +209,6 @@ export default {
 		toggleRightToolBox(state, action) {
 			const chooseShapeName = state.selectedShapeName;
 			let { selectedShapeName } = action.payload;
-			const {componentsDetail } = action.payload;
 			const { showRightToolBox, rightToolBoxPos } = action.payload;
 			if (!selectedShapeName) {
 				selectedShapeName = chooseShapeName;
@@ -220,7 +217,6 @@ export default {
 			return {
 				...state,
 				selectedShapeName,
-				selectedComponent: { ...componentsDetail[selectedShapeName] },
 				showRightToolBox,
 				rightToolBoxPos
 			};
@@ -233,7 +229,6 @@ export default {
 		},
 		deleteSelectedComponent(state, action) {
 			state.selectedShapeName = '';
-			state.selectedComponent = {};
 			const {
 				selectedShapeName,
 				// isStep = true
@@ -280,7 +275,6 @@ export default {
 			});
 
 			state.selectedShapeName = '';
-			state.selectedComponent = {};
 			state.zoomScale = zoomScale;
 			state.componentsDetail = componentsDetail;
 		},

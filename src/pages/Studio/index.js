@@ -127,22 +127,9 @@ class Studio extends Component {
 				if (copiedComponent.name) {
 					if (copiedComponent.type !== SHAPE_TYPES.RECT_SELECT) {
 						const newPosition = {};
-						if (canCopyOrDelete) {
-							const selectedComponent = componentsDetail[selectedShapeName];
-							if (selectedComponent) {
-								const {x, y, scaleY} = selectedComponent;
-								newPosition.x = x;
-								newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
-							} else {
-								!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
-								newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
-								newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
-							}
-						} else {
-							!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
-							newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
-							newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
-						}
+						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+						newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
+						newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
 
 						addComponent({
 							...copiedComponent,
@@ -515,7 +502,7 @@ class Studio extends Component {
 		updateComponentsDetail({
 			selectedShapeName: targetName,
 			[targetName]: {
-				text: '',
+				content: '',
 			},
 		});
 	};
@@ -835,7 +822,7 @@ class Studio extends Component {
 						{...{
 							color: (componentsDetail[selectedShapeName] || {}).fontColor,
 							fontSize: (componentsDetail[selectedShapeName] || {}).fontSize,
-							text: (componentsDetail[selectedShapeName] || {}).text,
+							text: (componentsDetail[selectedShapeName] || {}).context,
 							position: rightToolBoxPos,
 							componentsDetail,
 							selectedShapeName,

@@ -120,7 +120,7 @@ export default class RightToolBox extends Component {
 	};
 
 	handleBindValue = (value) => {
-		if (!/^[0-9a-zA-Z]+$/.test(value)) {
+		if (value !== '' && !/^[0-9a-zA-Z]+$/.test(value)) {
 			return;
 		}
 		const {
@@ -128,6 +128,23 @@ export default class RightToolBox extends Component {
 			selectedShapeName,
 			updateComponentsDetail,
 		} = this.props;
+
+		if (value === '') {
+			const detail = componentsDetail[selectedShapeName];
+			const image = new Image();
+			image.src = MAPS.imgPath[componentsDetail[selectedShapeName].type];
+			image.onload = () => {
+				updateComponentsDetail({
+					[selectedShapeName]: {
+						content: value,
+						image,
+						ratio: image.height / image.width,
+						height: (detail.width * image.height) / image.width,
+					},
+				});
+			};
+			return;
+		}
 
 		if (this.hasSubString(SHAPE_TYPES.CODE_QR)) {
 			const detail = componentsDetail[selectedShapeName];
@@ -641,16 +658,16 @@ export default class RightToolBox extends Component {
 									*/}
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={6} className={`${styles.formatter} ${detail.bold ? `${styles.active}` : ''}`}>
+							<Col span={8} className={`${styles.formatter} ${detail.bold ? `${styles.active}` : ''}`}>
 								<Icon type="bold" onClick={() => {this.handleFontStyle(detail, 'bold');}} />
 							</Col>
-							<Col span={6} className={`${styles.formatter} ${detail.italic ? `${styles.active}` : ''}`}>
-								<Icon type="italic" onClick={() => {this.handleFontStyle(detail, 'italic');}} />
-							</Col>
-							<Col span={6} className={`${styles.formatter} ${detail.underline ? `${styles.active}` : ''}`}>
+							{/* <Col span={6} className={`${styles.formatter} ${detail.italic ? `${styles.active}` : ''}`}> */}
+							{/* <Icon type="italic" onClick={() => {this.handleFontStyle(detail, 'italic');}} /> */}
+							{/* </Col> */}
+							<Col span={8} className={`${styles.formatter} ${detail.underline ? `${styles.active}` : ''}`}>
 								<Icon type="underline" onClick={() => {this.handleFontStyle(detail, 'underline');}} />
 							</Col>
-							<Col span={6} className={`${styles.formatter} ${detail.strikethrough ? `${styles.active}` : ''}`}>
+							<Col span={8} className={`${styles.formatter} ${detail.strikethrough ? `${styles.active}` : ''}`}>
 								<Icon type="strikethrough" onClick={() => {this.handleFontStyle(detail, 'strikethrough');}} />
 							</Col>
 						</Row>
@@ -978,16 +995,16 @@ export default class RightToolBox extends Component {
 							)}
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={6} className={`${styles.formatter} ${detail.bold ? `${styles.active}` : ''}`}>
+							<Col span={8} className={`${styles.formatter} ${detail.bold ? `${styles.active}` : ''}`}>
 								<Icon type="bold" onClick={() => {this.handleFontStyle(detail, 'bold');}} />
 							</Col>
-							<Col span={6} className={`${styles.formatter} ${detail.italic ? `${styles.active}` : ''}`}>
-								<Icon type="italic" onClick={() => {this.handleFontStyle(detail, 'italic');}} />
-							</Col>
-							<Col span={6} className={`${styles.formatter} ${detail.underline ? `${styles.active}` : ''}`}>
+							{/* <Col span={6} className={`${styles.formatter} ${detail.italic ? `${styles.active}` : ''}`}> */}
+							{/* <Icon type="italic" onClick={() => {this.handleFontStyle(detail, 'italic');}} /> */}
+							{/* </Col> */}
+							<Col span={8} className={`${styles.formatter} ${detail.underline ? `${styles.active}` : ''}`}>
 								<Icon type="underline" onClick={() => {this.handleFontStyle(detail, 'underline');}} />
 							</Col>
-							<Col span={6} className={`${styles.formatter} ${detail.strikethrough ? `${styles.active}` : ''}`}>
+							<Col span={8} className={`${styles.formatter} ${detail.strikethrough ? `${styles.active}` : ''}`}>
 								<Icon type="strikethrough" onClick={() => {this.handleFontStyle(detail, 'strikethrough');}} />
 							</Col>
 						</Row>
@@ -1000,7 +1017,7 @@ export default class RightToolBox extends Component {
 									style={{ width: '100%' }}
 									value={detail.fill}
 									onChange={e => {
-										this.handleDetail('fill', e.target.value);
+										this.handleDetail('fontColor', e.target.value);
 									}}
 								>
 									<Radio.Button

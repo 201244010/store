@@ -261,7 +261,7 @@ const screenMap = {
 		zoomScale: 1.5,
 	},
 };
-const imgPathMap = {
+export const imgPathMap = {
 	[SHAPE_TYPES.IMAGE]: require('@/assets/studio/image.svg'),
 	[SHAPE_TYPES.CODE_H]: require('@/assets/studio/code_h.png'),
 	[SHAPE_TYPES.CODE_V]: require('@/assets/studio/code_h.png'),
