@@ -126,6 +126,7 @@ class CreateStore extends React.Component {
 					area = null,
 					address,
 					business_hours,
+					business_area = null,
 					contact_person,
 					contact_tel,
 				},
@@ -228,6 +229,27 @@ class CreateStore extends React.Component {
 						{getFieldDecorator('business_hours', {
 							initialValue: business_hours,
 						})(<Input />)}
+					</FormItem>
+					<FormItem label={formatMessage({ id: 'storeManagement.create.area' })}>
+						{getFieldDecorator('business_area', {
+							initialValue: business_area,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) => {
+										if (value && !/^\d+(\.\d{1,2})?$/.test(value)) {
+											callback(
+												formatMessage({
+													id: 'storeManagement.create.area.formatError',
+												})
+											);
+										} else {
+											callback();
+										}
+									},
+								},
+							],
+						})(<Input suffix="㎡" />)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.contactName' })}>
 						{getFieldDecorator('contact_person', {

@@ -29,6 +29,8 @@ export default {
 	'storeManagement.create.address.region': '省/市/区',
 	'storeManagement.create.address.detail': '详细地址',
 	'storeManagement.create.daysLabel': '营业时间',
+	'storeManagement.create.area': '经营面积',
+	'storeManagement.create.area.formatError': '经营面积为数字类型',
 	'storeManagement.create.daysAll': '全部',
 	'storeManagement.create.daysMon': '周一',
 	'storeManagement.create.daysTus': '周二',

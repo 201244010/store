@@ -113,6 +113,12 @@ class StoreInformation extends React.Component {
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
+						label={formatMessage({ id: 'storeManagement.create.area' })}
+					>
+						暂无，等云端 ㎡
+					</Form.Item>
+					<Form.Item
+						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.contactName' })}
 					>
 						{contact_person || '--'}
