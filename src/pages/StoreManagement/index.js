@@ -77,6 +77,11 @@ class StoreManagement extends Component {
 				key: 'type_name',
 			},
 			{
+				title: formatMessage({ id: 'storeManagement.list.area' }),
+				dataIndex: 'business_area',
+				key: 'business_area',
+			},
+			{
 				title: formatMessage({ id: 'storeManagement.list.columnContacts' }),
 				dataIndex: 'contact_person',
 				key: 'contact_person',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Button, Input, Radio, Cascader, Card } from 'antd';
+import { Form, Button, Input, Radio, Cascader, Card, Select } from 'antd';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import * as CookieUtil from '@/utils/cookies';
@@ -29,6 +29,14 @@ const FormItem = Form.Item;
 )
 @Form.create()
 class CreateStore extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			selectedRegion: [],
+			addressSearchResult: [],
+		};
+	}
+
 	componentDidMount() {
 		const { getShopTypeList, getRegionList, getStoreDetail, clearState } = this.props;
 		const [action = 'create', shopId] = [
@@ -50,6 +58,31 @@ class CreateStore extends React.Component {
 			getRegionList();
 		}
 	}
+
+	handleCascaderChange = (_, selections) => {
+		this.setState({
+			selectedRegion: selections,
+		});
+	};
+
+	handleSelectSearch = value => {
+		const { selectedRegion } = this.state;
+		const [cityInfo, ,] = selectedRegion;
+		console.log(cityInfo);
+
+		AMap.plugin('AMap.Autocomplete', () => {
+			const autoComplete = new AMap.Autocomplete();
+			autoComplete.search(value, (status, result) => {
+				// 搜索成功时，result即是对应的匹配数据
+				if (status === 'complete') {
+					const { tips = [] } = result || {};
+					this.setState({
+						addressSearchResult: tips,
+					});
+				}
+			});
+		});
+	};
 
 	handleResponse = response => {
 		const {
@@ -133,6 +166,7 @@ class CreateStore extends React.Component {
 			},
 			goToPath,
 		} = this.props;
+		const { addressSearchResult } = this.state;
 		const [action = 'create'] = [getLocationParam('action')];
 
 		return (
@@ -207,6 +241,7 @@ class CreateStore extends React.Component {
 							],
 						})(
 							<Cascader
+								onChange={this.handleCascaderChange}
 								options={regionList}
 								placeholder={formatMessage({
 									id: 'storeManagement.create.address.region',
@@ -218,11 +253,19 @@ class CreateStore extends React.Component {
 						{getFieldDecorator('address', {
 							initialValue: address,
 						})(
-							<Input
+							<Select
+								showSearch
 								placeholder={formatMessage({
 									id: 'storeManagement.create.address.detail',
 								})}
-							/>
+								showArrow={false}
+								filterOption={false}
+								onSearch={this.handleSelectSearch}
+							>
+								{addressSearchResult.map(() => (
+									<Select.Option value="2333">2333</Select.Option>
+								))}
+							</Select>
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>

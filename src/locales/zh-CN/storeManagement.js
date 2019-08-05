@@ -11,6 +11,7 @@ export default {
 	'storeManagement.list.columnStatus': '状态',
 	'storeManagement.list.columnAddress': '地址',
 	'storeManagement.list.columnTypes': '经营品类',
+	'storeManagement.list.area': '营业面积',
 	'storeManagement.list.columnContacts': '联系人',
 	'storeManagement.list.columnOperation': '操作',
 	'storeManagement.list.operation1': '查看',
