@@ -178,12 +178,18 @@ export const getNearestLines = (componentsDetail, selectedShapeName, scopedCompo
 	const scopedPosition = {};
 	if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) > -1) {
 		scopedComponents.forEach((detail) => {
-			scopedKeys.push(detail.name);
-			if (!scopedPosition.x || scopedPosition.x > componentsDetail[detail.name].x) {
-				scopedPosition.x = componentsDetail[detail.name].x;
-			}
-			if (!scopedPosition.y || scopedPosition.y > componentsDetail[detail.name].y) {
-				scopedPosition.y = componentsDetail[detail.name].y;
+			if (detail.name) {
+				scopedKeys.push(detail.name);
+				const curDetail = componentsDetail[detail.name];
+
+				if (curDetail) {
+					if (!scopedPosition.x || scopedPosition.x > curDetail.x) {
+						scopedPosition.x = curDetail.x;
+					}
+					if (!scopedPosition.y || scopedPosition.y > curDetail.y) {
+						scopedPosition.y = curDetail.y;
+					}
+				}
 			}
 		});
 	}

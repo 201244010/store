@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from 'antd';
+import { Card, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 
 import { connect } from 'dva';
@@ -10,6 +10,7 @@ import FaceIdLibraryMove from './FaceIdLibraryMove';
 
 import styles from './FaceLog.less';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
+import { ERROR_OK } from '@/constants/errorCode';
 
 
 @connect((state) => {
@@ -67,10 +68,10 @@ import { DEFAULT_PAGE_SIZE } from '@/constants';
 		});
 	},
 	move: payload =>
-		dispatch({
-			type: 'photoLibrary/move',
+		(dispatch({
+			type: 'faceLog/moveLibrary',
 			payload
-		})
+		}))
 	,
 }))
 
@@ -151,12 +152,18 @@ class FaceLog extends React.Component {
 
 		const { faceId, groupId } = groupInfo;
 		if(targetGroup !== groupId){
-			await move({
+			const result = await move({
 				faceIdList: [faceId],
 				targetGroupId: targetGroup,
 				updateType: 1,
 				sourceGroupId: groupId
 			});
+			if(result === ERROR_OK){
+				message.success(formatMessage({id: 'faceLog.card.moveSuccess'}));
+			}else{
+				message.error(formatMessage({id: 'faceLog.card.moveFail'}));
+			}
+
 		}
 		await this.getFaceLogList(currentPage, pageSize);
 		this.setState({

@@ -1,5 +1,5 @@
 import { getFaceLogList } from '../../services/faceLog';
-import { getLibrary, getRange } from '../../services/photoLibrary';
+import { getLibrary, getRange, move } from '../../services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
 
@@ -20,6 +20,10 @@ export default {
 		},
 	},
 	effects: {
+		*moveLibrary({payload}, {call}) {
+			const { code } = yield call(move, {...payload});
+			return code;
+		},
 		*readAgeRangeList(action, { call, put }) {
 			const response = yield call(getRange);
 			const { code, data: {ageRangeList} } = response;
