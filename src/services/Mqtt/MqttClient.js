@@ -26,6 +26,7 @@ class MqttClient {
 
 		this.connect = this.connect.bind(this);
 		this.subscribe = this.subscribe.bind(this);
+		this.unsubscribe = this.unsubscribe.bind(this);
 		this.publish = this.publish.bind(this);
 		this.destroy = this.destroy.bind(this);
 
@@ -90,6 +91,15 @@ class MqttClient {
 		});
 	}
 
+	unsubscribe(topic) {
+		const { client } = this;
+		this.handlerMap.delete(topic);
+		console.log('rest handler: ', this.handlerMap);
+		client.unsubscribe([topic], () => {
+			console.log('unsubscribe', topic);
+		});
+	}
+
 	publish(topic, message) {
 		const { messages } = this;
 		const { client } = this;
@@ -111,8 +121,9 @@ class MqttClient {
 		if (!handlerMap.has(topic)) {
 			handlerMap.set(topic, topicHandler);
 		}
+		console.log('current handler: ', this.handlerMap);
 		client.on('message', (messageTopic, message) => {
-			// console.log(handlerMap);
+			console.log('message received: ', messageTopic);
 			if (handlerMap.has(messageTopic)) {
 				console.log('message topic: ', messageTopic, ' : received.');
 				console.log('data: ', message.toString());
