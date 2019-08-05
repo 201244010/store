@@ -32,7 +32,6 @@ class CreateStore extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			selectedRegion: [],
 			addressSearchResult: [],
 		};
 	}
@@ -59,19 +58,30 @@ class CreateStore extends React.Component {
 		}
 	}
 
-	handleCascaderChange = (_, selections) => {
-		this.setState({
-			selectedRegion: selections,
-		});
+	deepFindCity = (regionValues = []) => {
+		const [province, city, ,] = regionValues;
+		const regionList = Storage.get('__regionList__', 'local') || [];
+		if (province && city) {
+			const findedCity = (
+				(regionList.find(provinceInfo => provinceInfo.province === province) || {})
+					.children || []
+			).find(cityInfo => cityInfo.city === city);
+			return findedCity;
+		}
+		return null;
 	};
 
 	handleSelectSearch = value => {
-		const { selectedRegion } = this.state;
-		const [cityInfo, ,] = selectedRegion;
-		console.log(cityInfo);
+		const {
+			form: { getFieldValue },
+		} = this.props;
+		const regionValue = getFieldValue('region');
+		const cityInfo = this.deepFindCity(regionValue);
+		const { name = null } = cityInfo || {};
 
 		AMap.plugin('AMap.Autocomplete', () => {
-			const autoComplete = new AMap.Autocomplete();
+			const opts = { city: name || '全国', citylimit: true };
+			const autoComplete = new AMap.Autocomplete(opts);
 			autoComplete.search(value, (status, result) => {
 				// 搜索成功时，result即是对应的匹配数据
 				if (status === 'complete') {
@@ -143,7 +153,7 @@ class CreateStore extends React.Component {
 
 	render() {
 		const {
-			form: { getFieldDecorator },
+			form: { getFieldDecorator, getFieldValue },
 			loading: cardLoading,
 			store: {
 				shopType_list,
@@ -241,7 +251,6 @@ class CreateStore extends React.Component {
 							],
 						})(
 							<Cascader
-								onChange={this.handleCascaderChange}
 								options={regionList}
 								placeholder={formatMessage({
 									id: 'storeManagement.create.address.region',
@@ -258,12 +267,19 @@ class CreateStore extends React.Component {
 								placeholder={formatMessage({
 									id: 'storeManagement.create.address.detail',
 								})}
+								disabled={getFieldValue('region').some(value => !value)}
 								showArrow={false}
 								filterOption={false}
 								onSearch={this.handleSelectSearch}
 							>
-								{addressSearchResult.map(() => (
-									<Select.Option value="2333">2333</Select.Option>
+								{addressSearchResult.map(addressInfo => (
+									<Select.Option
+										value={`${addressInfo.name + addressInfo.address}`}
+										key={addressInfo.id}
+									>
+										{addressInfo.name}
+										{addressInfo.address}
+									</Select.Option>
 								))}
 							</Select>
 						)}
