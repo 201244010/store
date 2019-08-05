@@ -10,6 +10,7 @@ export default {
 			height: 0
 		},
 		selectedShapeName: '',
+		selectedComponent: {},
 		componentsDetail: {},
 		showRightToolBox: false,
 		rightToolBoxPos: {
@@ -106,6 +107,7 @@ export default {
 			return {
 				...state,
 				selectedShapeName: name,
+				selectedComponent: { ...newComponentsDetail[name] },
 				componentsDetail: newComponentsDetail
 			};
 		},
@@ -127,6 +129,7 @@ export default {
 			return {
 				...state,
 				selectedShapeName: '',
+				selectedComponent: {},
 				componentsDetail: {
 					...action.payload
 				}
@@ -177,6 +180,7 @@ export default {
 			return {
 				...state,
 				selectedShapeName: targetShapeName,
+				selectedComponent: { ...newComponentsDetail[targetShapeName] },
 				componentsDetail: newComponentsDetail
 			};
 		},
@@ -207,6 +211,7 @@ export default {
 		toggleRightToolBox(state, action) {
 			const chooseShapeName = state.selectedShapeName;
 			let { selectedShapeName } = action.payload;
+			const {componentsDetail } = action.payload;
 			const { showRightToolBox, rightToolBoxPos } = action.payload;
 			if (!selectedShapeName) {
 				selectedShapeName = chooseShapeName;
@@ -215,6 +220,7 @@ export default {
 			return {
 				...state,
 				selectedShapeName,
+				selectedComponent: { ...componentsDetail[selectedShapeName] },
 				showRightToolBox,
 				rightToolBoxPos
 			};
@@ -227,6 +233,7 @@ export default {
 		},
 		deleteSelectedComponent(state, action) {
 			state.selectedShapeName = '';
+			state.selectedComponent = {};
 			const {
 				selectedShapeName,
 				// isStep = true
@@ -273,6 +280,7 @@ export default {
 			});
 
 			state.selectedShapeName = '';
+			state.selectedComponent = {};
 			state.zoomScale = zoomScale;
 			state.componentsDetail = componentsDetail;
 		},
@@ -292,10 +300,18 @@ export default {
 			Object.keys(componentsDetail).forEach(key => {
 				if (componentsDetail[key].name && componentsDetail[key].name.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && key !== RECT_SELECT_NAME) {
 					const component = { ...componentsDetail[key] };
+					const realWidth = MAPS.containerWidth[component.type] * zoomScale * (component.scaleX || 1);
+					let realHeight = MAPS.containerHeight[component.type] * zoomScale * (component.scaleY || 1);
+
+					// 上传过图片的IMAGE组件高度需要特殊处理
+					if (component.type === SHAPE_TYPES.IMAGE && component.imgPath) {
+						realHeight = realWidth * component.ratio;
+					}
+
 					component.left = component.x;
 					component.top = component.y;
-					component.right = component.x + MAPS.containerWidth[component.type] * zoomScale * (component.scaleX || 1);
-					component.bottom = component.y + MAPS.containerHeight[component.type] * zoomScale * (component.scaleY || 1);
+					component.right = component.x + realWidth;
+					component.bottom = component.y + realHeight;
 
 					if (isInComponent(component, selectRect)) {
 						state.scopedComponents.push(component);

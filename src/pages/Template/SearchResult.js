@@ -50,8 +50,6 @@ class SearchResult extends Component {
 			options: {
 				current: pagination.current,
 				pageSize: pagination.pageSize,
-				screen_type: -1,
-				colour: -1,
 			},
 		});
 	};

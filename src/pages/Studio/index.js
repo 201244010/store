@@ -262,14 +262,27 @@ class Studio extends Component {
 	handleStageMouseMove = (e) => {
 		if (this.moveStart) {
 			const { updateComponentsDetail } = this.props;
-			updateComponentsDetail({
-				isStep: false,
-				selectedShapeName: RECT_SELECT_NAME,
-				[RECT_SELECT_NAME]: {
-					width: e.evt.clientX - this.moveStartX,
-					height: e.evt.clientY - this.moveStartY
-				},
-			});
+			if (e.evt.clientX - this.moveStartX > 0) {
+				updateComponentsDetail({
+					isStep: false,
+					selectedShapeName: RECT_SELECT_NAME,
+					[RECT_SELECT_NAME]: {
+						width: Math.abs(e.evt.clientX - this.moveStartX),
+						height: Math.abs(e.evt.clientY - this.moveStartY),
+					},
+				});
+			} else {
+				updateComponentsDetail({
+					isStep: false,
+					selectedShapeName: RECT_SELECT_NAME,
+					[RECT_SELECT_NAME]: {
+						x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
+						y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
+						width: Math.abs(e.evt.clientX - this.moveStartX),
+						height: Math.abs(e.evt.clientY - this.moveStartY),
+					},
+				});
+			}
 		}
 	};
 
@@ -690,6 +703,7 @@ class Studio extends Component {
 			stageHeight,
 			props: {
 				updateComponentsDetail,
+				updateState,
 				copySelectedComponent,
 				deleteSelectedComponent,
 				addComponent,
@@ -700,6 +714,7 @@ class Studio extends Component {
 				fetchTemplateDetail,
 				studio: {
 					selectedShapeName,
+					selectedComponent,
 					componentsDetail,
 					showRightToolBox,
 					rightToolBoxPos,
@@ -802,10 +817,12 @@ class Studio extends Component {
 								{...{
 									bindFields,
 									selectedShapeName,
+									selectedComponent,
 									componentsDetail,
 									zoomScale,
 									templateInfo: curTemplate,
 									updateComponentsDetail,
+									updateState,
 									deleteSelectedComponent,
 									addComponent,
 								}}
