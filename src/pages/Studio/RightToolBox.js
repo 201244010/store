@@ -66,12 +66,16 @@ export default class RightToolBox extends Component {
 			if (key === 'fontSize') {
 				newDetail.scaleY = value / MAPS.containerHeight[detail.type];
 			} else if (key === 'content' && selectedShapeName.indexOf(SHAPE_TYPES.PRICE) > -1) {
-				if (!RegExp.money.test(value) && (!value.endsWith('.') || value.split('.').length > 2)) {
-					canUpdate = false;
-				}
-			    const decimal = value.split('.')[1];
-				if (decimal && decimal.length > detail.precision) {
-					canUpdate = false;
+				if (value === '') {
+					canUpdate = true;
+				} else {
+					if (!RegExp.money.test(value) && (!value.endsWith('.') || value.split('.').length > 2)) {
+						canUpdate = false;
+					}
+					const decimal = value.split('.')[1];
+					if (decimal && decimal.length > detail.precision) {
+						canUpdate = false;
+					}
 				}
 			}
 			if (canUpdate) {
@@ -113,6 +117,7 @@ export default class RightToolBox extends Component {
 		} = this.props;
 		updateComponentsDetail({
 			isStep: true,
+			updatePrecision: true,
 			[selectedShapeName]: {
 				precision: value
 			},
@@ -383,20 +388,6 @@ export default class RightToolBox extends Component {
 								</Option>
 							))}
 						</Select>
-					</div>
-				) : null}
-				{menuMap.isBarOrQrCode ? (
-					<div className={styles['tool-box-block']}>
-						<h4>{formatMessage({ id: 'studio.tool.title.bind.value' })}</h4>
-						<Input
-							placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
-							value={detail.content}
-							style={{ width: '100%' }}
-							maxLength={30}
-							onChange={e => {
-								this.handleBindValue(e.target.value);
-							}}
-						/>
 					</div>
 				) : null}
 				<div className={styles['tool-box-block']}>
@@ -1015,7 +1006,7 @@ export default class RightToolBox extends Component {
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
-									value={detail.fill}
+									value={detail.fontColor}
 									onChange={e => {
 										this.handleDetail('fontColor', e.target.value);
 									}}
@@ -1156,25 +1147,43 @@ export default class RightToolBox extends Component {
 						</Row>
 					</div>
 				) : null}
-				{menuMap.isCode ? (
+				{menuMap.isBarOrQrCode ? (
 					<div className={styles['tool-box-block']}>
 						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={24}>{formatMessage({ id: 'studio.tool.label.codec' })}</Col>
+							<Col span={24}>{formatMessage({ id: 'studio.tool.title.bind.value' })}</Col>
 							<Col span={24}>
-								<Select
+								<Input
+									placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
+									value={detail.content}
 									style={{ width: '100%' }}
-									value={detail.codec}
-									onChange={value => {
-										this.handleDetail('codec', value);
+									maxLength={30}
+									onChange={e => {
+										this.handleBindValue(e.target.value);
 									}}
-								>
-									<Option value="ean8">ean8</Option>
-									<Option value="ean13">ean13</Option>
-									<Option value="code128">code128</Option>
-								</Select>
+								/>
 							</Col>
 						</Row>
+						{
+							menuMap.isCode ?
+								<Row style={{ marginBottom: 10 }} gutter={20}>
+									<Col span={24}>{formatMessage({ id: 'studio.tool.label.codec' })}</Col>
+									<Col span={24}>
+										<Select
+											style={{ width: '100%' }}
+											value={detail.codec}
+											onChange={value => {
+												this.handleDetail('codec', value);
+											}}
+										>
+											<Option value="ean8">ean8</Option>
+											<Option value="ean13">ean13</Option>
+											<Option value="code128">code128</Option>
+										</Select>
+									</Col>
+								</Row> :
+								null
+						}
 					</div>
 				) : null}
 			</Fragment>
