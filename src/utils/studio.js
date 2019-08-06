@@ -371,7 +371,7 @@ export const initTemplateDetail = (stage, layers, zoomScale, screenType) => {
 				layer.subType = 'normal';
 			}
 			let backgroundColor = layer.backgroundColor;
-			if (backgroundColor === 'red' || backgroundColor === 'opacity') {
+			if (!backgroundColor || backgroundColor === 'red' || backgroundColor === 'opacity') {
 				backgroundColor = 'white';
 			}
 			layer.type = `${layer.type}@${layer.subType}@${backgroundColor}`;
