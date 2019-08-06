@@ -32,6 +32,8 @@ const SCAN_PERIODS = [5, 10, 15];
 					scanMulti,
 				},
 			}),
+		generateTopic: payload => dispatch({ type: 'mqttStore/generateTopic', payload }),
+		subscribe: payload => dispatch({ type: 'mqttStore/subscribe', payload }),
 		unsubscribeTopic: () => dispatch({ type: 'eslBaseStation/unsubscribeTopic' }),
 		checkClientExist: () => dispatch({ type: 'mqttStore/checkClientExist' }),
 	})
@@ -60,7 +62,7 @@ class SystemConfig extends Component {
 		// console.log('errcode: ', errcode);
 		if (action === 'update') {
 			if (errcode === ERROR_OK) {
-				message.error(formatMessage({ id: 'esl.device.config.setting.success' }));
+				message.success(formatMessage({ id: 'esl.device.config.setting.success' }));
 				const { getAPConfig } = this.props;
 				const { networkId } = this.state;
 				console.log('get updated config');
@@ -82,12 +84,20 @@ class SystemConfig extends Component {
 
 	checkMQTTClient = async () => {
 		clearTimeout(this.checkTimer);
-		const { checkClientExist, getAPConfig, setAPHandler } = this.props;
+		const {
+			checkClientExist,
+			getAPConfig,
+			setAPHandler,
+			generateTopic,
+			subscribe,
+		} = this.props;
 		const isClientExist = await checkClientExist();
 		if (isClientExist) {
 			const {
 				eslBaseStation: { networkIdList = [] },
 			} = this.props;
+			const apInfoTopic = await generateTopic({ service: 'response', action: 'sub' });
+			await subscribe({ topic: [apInfoTopic] });
 			await setAPHandler({ handler: this.apHandler });
 			if (networkIdList.length > 0) {
 				const { networkId } = networkIdList[0] || {};
@@ -105,7 +115,7 @@ class SystemConfig extends Component {
 	};
 
 	handleSelectChange = networkId => {
-		console.log('changed', networkId);
+		// console.log('changed', networkId);
 		const { getAPConfig } = this.props;
 		this.setState(
 			{
@@ -128,14 +138,16 @@ class SystemConfig extends Component {
 
 		validateFields((err, values) => {
 			if (!err) {
-				updateAPConfig({
-					...values,
-					scanMulti,
-				});
-
-				this.setState({
-					configLoading: true,
-				});
+				this.setState(
+					{
+						configLoading: true,
+					},
+					() =>
+						updateAPConfig({
+							...values,
+							scanMulti,
+						})
+				);
 			}
 		});
 	};
