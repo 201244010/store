@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Select, Form, Button, Switch } from 'antd';
+import { Card, Select, Form, Button, Switch, message } from 'antd';
 import DataEmpty from '@/components/BigIcon/DataEmpty';
 import { formatMessage } from 'umi/locale';
 import { FORM_SETTING_LAYOUT } from '@/constants/form';
 import styles from './systemConfig.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 const SELECT_STYLE = { maxWidth: '300px' };
 const SCAN_PERIODS = [5, 10, 15];
@@ -31,6 +32,8 @@ const SCAN_PERIODS = [5, 10, 15];
 					scanMulti,
 				},
 			}),
+		generateTopic: payload => dispatch({ type: 'mqttStore/generateTopic', payload }),
+		subscribe: payload => dispatch({ type: 'mqttStore/subscribe', payload }),
 		unsubscribeTopic: () => dispatch({ type: 'eslBaseStation/unsubscribeTopic' }),
 		checkClientExist: () => dispatch({ type: 'mqttStore/checkClientExist' }),
 	})
@@ -56,24 +59,45 @@ class SystemConfig extends Component {
 	}
 
 	apHandler = (errcode, action, receiveConfig) => {
-		console.log('errcode: ', errcode);
+		// console.log('errcode: ', errcode);
 		if (action === 'update') {
-			const { getAPConfig } = this.props;
-			const { networkId } = this.state;
-			getAPConfig({ networkId });
+			if (errcode === ERROR_OK) {
+				message.success(formatMessage({ id: 'esl.device.config.setting.success' }));
+				const { getAPConfig } = this.props;
+				const { networkId } = this.state;
+				console.log('get updated config');
+				getAPConfig({ networkId });
+			} else {
+				message.error(formatMessage({ id: 'esl.device.config.setting.fail' }));
+			}
+		} else if (action === 'query') {
+			if (errcode === ERROR_OK) {
+				this.setState({ networkConfig: receiveConfig, configLoading: false });
+			} else {
+				message.error(formatMessage({ id: 'esl.device.config.info.fail' }));
+				this.setState({ networkConfig: [], configLoading: false });
+			}
 		} else {
-			this.setState({ networkConfig: receiveConfig, configLoading: false });
+			this.setState({ networkConfig: [], configLoading: false });
 		}
 	};
 
 	checkMQTTClient = async () => {
 		clearTimeout(this.checkTimer);
-		const { checkClientExist, getAPConfig, setAPHandler } = this.props;
+		const {
+			checkClientExist,
+			getAPConfig,
+			setAPHandler,
+			generateTopic,
+			subscribe,
+		} = this.props;
 		const isClientExist = await checkClientExist();
 		if (isClientExist) {
 			const {
 				eslBaseStation: { networkIdList = [] },
 			} = this.props;
+			const apInfoTopic = await generateTopic({ service: 'response', action: 'sub' });
+			await subscribe({ topic: [apInfoTopic] });
 			await setAPHandler({ handler: this.apHandler });
 			if (networkIdList.length > 0) {
 				const { networkId } = networkIdList[0] || {};
@@ -91,7 +115,7 @@ class SystemConfig extends Component {
 	};
 
 	handleSelectChange = networkId => {
-		// console.log(networkId);
+		// console.log('changed', networkId);
 		const { getAPConfig } = this.props;
 		this.setState(
 			{
@@ -114,14 +138,16 @@ class SystemConfig extends Component {
 
 		validateFields((err, values) => {
 			if (!err) {
-				updateAPConfig({
-					...values,
-					scanMulti,
-				});
-
-				this.setState({
-					configLoading: true,
-				});
+				this.setState(
+					{
+						configLoading: true,
+					},
+					() =>
+						updateAPConfig({
+							...values,
+							scanMulti,
+						})
+				);
 			}
 		});
 	};
