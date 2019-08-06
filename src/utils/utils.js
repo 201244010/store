@@ -446,7 +446,7 @@ export const analyzeMessageTemplate = (message, option = {}) => {
 			if (key.indexOf('_time') > -1) {
 				return {
 					key: `##${key}##`,
-					value: moment(parseInt(value, 0) * 1000).format(timeFormat),
+					value: moment(parseInt(value, 10) * 1000).format(timeFormat),
 				};
 			}
 
