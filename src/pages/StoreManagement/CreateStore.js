@@ -86,6 +86,7 @@ class CreateStore extends React.Component {
 				// 搜索成功时，result即是对应的匹配数据
 				if (status === 'complete') {
 					const { tips = [] } = result || {};
+					// console.log(tips);
 					this.setState({
 						addressSearchResult: tips,
 					});
@@ -125,7 +126,15 @@ class CreateStore extends React.Component {
 		} = this.props;
 
 		validateFields(async (err, values) => {
+			// console.log(values);
 			if (!err) {
+				const {
+					address: {
+						name: addressName,
+						address: addressDetail,
+						location: { lat, lng } = {},
+					} = {},
+				} = values;
 				const options = {
 					...values,
 					shop_id: shopId,
@@ -135,6 +144,9 @@ class CreateStore extends React.Component {
 					province: values.region[0] || null,
 					city: values.region[1] || null,
 					area: values.region[2] || null,
+					address: addressName + addressDetail,
+					lat: `${lat}`,
+					lng: `${lng}`,
 				};
 
 				let response = null;
@@ -273,10 +285,7 @@ class CreateStore extends React.Component {
 								onSearch={this.handleSelectSearch}
 							>
 								{addressSearchResult.map(addressInfo => (
-									<Select.Option
-										value={`${addressInfo.name + addressInfo.address}`}
-										key={addressInfo.id}
-									>
+									<Select.Option key={addressInfo.id} value={addressInfo}>
 										{addressInfo.name}
 										{addressInfo.address}
 									</Select.Option>

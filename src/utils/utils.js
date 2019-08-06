@@ -420,13 +420,14 @@ export const priceFormat = (price, dotPos = 3) => {
 
 export const analyzeMessageTemplate = (message, option = {}) => {
 	const { spliter = ':', timeFormat = 'YYYY-MM-DD HH:mm:ss' } = option;
-	const spliterIndex = message.indexOf(spliter);
-	let [messageId, values] = [message, null];
+	const decodeMessage = decodeURIComponent(message);
+	const spliterIndex = decodeMessage.indexOf(spliter);
+	let [messageId, values] = [decodeMessage, null];
 
 	if (spliterIndex > -1) {
 		[messageId, values] = [
-			message.substring(0, spliterIndex),
-			message.substring(spliterIndex + 1),
+			decodeMessage.substring(0, spliterIndex),
+			decodeMessage.substring(spliterIndex + 1),
 		];
 	}
 
@@ -445,7 +446,7 @@ export const analyzeMessageTemplate = (message, option = {}) => {
 			if (key.indexOf('_time') > -1) {
 				return {
 					key: `##${key}##`,
-					value: moment(parseInt(value,0)*1000).format(timeFormat),
+					value: moment(parseInt(value, 0) * 1000).format(timeFormat),
 				};
 			}
 
@@ -496,7 +497,7 @@ export const convertArrayPrams = (str, sperator = '&') => {
 	return obj;
 };
 
-export const mbStringLength = (s) => {
+export const mbStringLength = s => {
 	let totalLength = 0;
 	let i;
 	let charCode;
@@ -504,9 +505,9 @@ export const mbStringLength = (s) => {
 		charCode = s.charCodeAt(i);
 		if (charCode < 0x007f) {
 			totalLength += 1;
-		} else if ((charCode >= 0x0080) && (charCode <= 0x07ff)) {
+		} else if (charCode >= 0x0080 && charCode <= 0x07ff) {
 			totalLength += 2;
-		} else if ((charCode >= 0x0800) && (charCode <= 0xffff)) {
+		} else if (charCode >= 0x0800 && charCode <= 0xffff) {
 			totalLength += 3;
 		}
 	}

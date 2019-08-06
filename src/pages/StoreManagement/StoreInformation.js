@@ -54,6 +54,7 @@ class StoreInformation extends React.Component {
 			region = '--',
 			address = '--',
 			business_hours = '--',
+			business_area = '--',
 			contact_person = '--',
 			contact_tel = '--',
 			created_time = '--',
@@ -115,7 +116,10 @@ class StoreInformation extends React.Component {
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.area' })}
 					>
-						暂无，等云端 ㎡
+						{parseInt(business_area, 10) === 0 || parseInt(business_area, 10) > 0
+							? business_area
+							: '--'}
+						㎡
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
