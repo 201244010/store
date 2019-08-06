@@ -220,20 +220,27 @@ const router = [
 					},
 					{
 						path: '/basicData/merchantManagement',
-						redirect: '/basicData/merchantManagement/view',
-					},
-					{
-						path: '/basicData/merchantManagement/view',
 						name: 'merchantManagement',
-						id: 'merchantView',
-						component: './MerchantManagement/MerchantView',
-					},
-					{
-						path: '/basicData/merchantManagement/modify',
-						name: 'merchantManagement',
-						id: 'merchantModify',
-						hideInMenu: true,
-						component: './MerchantManagement/MerchantModify',
+						routes: [
+							{
+								path: '/basicData/merchantManagement',
+								redirect: '/basicData/merchantManagement/view',
+							},
+							{
+								path: '/basicData/merchantManagement/view',
+								name: 'view',
+								id: 'merchantView',
+								hideInMenu: true,
+								component: './MerchantManagement/MerchantView',
+							},
+							{
+								path: '/basicData/merchantManagement/modify',
+								name: 'modify',
+								id: 'merchantModify',
+								hideInMenu: true,
+								component: './MerchantManagement/MerchantModify',
+							},
+						],
 					},
 					{
 						path: '/basicData/storeManagement',
