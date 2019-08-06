@@ -43,6 +43,18 @@ class MqttModel {
 				return !!me.clientId && !!me.address;
 			},
 
+			getTopicHanders() {
+				return me.client.handlerMap;
+			},
+
+			getTopicHandlerByTopic({ payload: { topic } }) {
+				return me.client.handlerMap.get(topic);
+			},
+
+			checkTpoicHandlerExist({ payload: { topic } }) {
+				return me.client.handlerMap.has(topic);
+			},
+
 			*connect(_, { select }) {
 				const info = yield select(state => state[me.namespace]);
 				// console.log(info);
@@ -91,6 +103,15 @@ class MqttModel {
 				{ call }
 			) {
 				yield call(me.client.registerMessageHandler, handler);
+			},
+
+			*unsubscribeTopic(
+				{
+					payload: { topic },
+				},
+				{ call }
+			) {
+				yield call(me.client.unsubscribe, topic);
 			},
 
 			*registerTopicHandler(

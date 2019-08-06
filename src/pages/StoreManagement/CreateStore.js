@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Button, Input, Radio, Cascader, Card } from 'antd';
+import { Form, Button, Input, Radio, Cascader, Card, Select } from 'antd';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import * as CookieUtil from '@/utils/cookies';
@@ -29,6 +29,13 @@ const FormItem = Form.Item;
 )
 @Form.create()
 class CreateStore extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			addressSearchResult: [],
+		};
+	}
+
 	componentDidMount() {
 		const { getShopTypeList, getRegionList, getStoreDetail, clearState } = this.props;
 		const [action = 'create', shopId] = [
@@ -50,6 +57,43 @@ class CreateStore extends React.Component {
 			getRegionList();
 		}
 	}
+
+	deepFindCity = (regionValues = []) => {
+		const [province, city, ,] = regionValues;
+		const regionList = Storage.get('__regionList__', 'local') || [];
+		if (province && city) {
+			const findedCity = (
+				(regionList.find(provinceInfo => provinceInfo.province === province) || {})
+					.children || []
+			).find(cityInfo => cityInfo.city === city);
+			return findedCity;
+		}
+		return null;
+	};
+
+	handleSelectSearch = value => {
+		const {
+			form: { getFieldValue },
+		} = this.props;
+		const regionValue = getFieldValue('region');
+		const cityInfo = this.deepFindCity(regionValue);
+		const { name = null } = cityInfo || {};
+
+		AMap.plugin('AMap.Autocomplete', () => {
+			const opts = { city: name || '全国', citylimit: true };
+			const autoComplete = new AMap.Autocomplete(opts);
+			autoComplete.search(value, (status, result) => {
+				// 搜索成功时，result即是对应的匹配数据
+				if (status === 'complete') {
+					const { tips = [] } = result || {};
+					// console.log(tips);
+					this.setState({
+						addressSearchResult: tips,
+					});
+				}
+			});
+		});
+	};
 
 	handleResponse = response => {
 		const {
@@ -82,7 +126,15 @@ class CreateStore extends React.Component {
 		} = this.props;
 
 		validateFields(async (err, values) => {
+			// console.log(values);
 			if (!err) {
+				const {
+					address: {
+						name: addressName,
+						address: addressDetail,
+						location: { lat, lng } = {},
+					} = {},
+				} = values;
 				const options = {
 					...values,
 					shop_id: shopId,
@@ -92,6 +144,9 @@ class CreateStore extends React.Component {
 					province: values.region[0] || null,
 					city: values.region[1] || null,
 					area: values.region[2] || null,
+					address: addressName + addressDetail,
+					lat: `${lat}`,
+					lng: `${lng}`,
 				};
 
 				let response = null;
@@ -110,7 +165,7 @@ class CreateStore extends React.Component {
 
 	render() {
 		const {
-			form: { getFieldDecorator },
+			form: { getFieldDecorator, getFieldValue },
 			loading: cardLoading,
 			store: {
 				shopType_list,
@@ -126,12 +181,14 @@ class CreateStore extends React.Component {
 					area = null,
 					address,
 					business_hours,
+					business_area = null,
 					contact_person,
 					contact_tel,
 				},
 			},
 			goToPath,
 		} = this.props;
+		const { addressSearchResult } = this.state;
 		const [action = 'create'] = [getLocationParam('action')];
 
 		return (
@@ -217,17 +274,50 @@ class CreateStore extends React.Component {
 						{getFieldDecorator('address', {
 							initialValue: address,
 						})(
-							<Input
+							<Select
+								showSearch
 								placeholder={formatMessage({
 									id: 'storeManagement.create.address.detail',
 								})}
-							/>
+								disabled={getFieldValue('region').some(value => !value)}
+								showArrow={false}
+								filterOption={false}
+								onSearch={this.handleSelectSearch}
+							>
+								{addressSearchResult.map(addressInfo => (
+									<Select.Option key={addressInfo.id} value={addressInfo}>
+										{addressInfo.name}
+										{addressInfo.address}
+									</Select.Option>
+								))}
+							</Select>
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>
 						{getFieldDecorator('business_hours', {
 							initialValue: business_hours,
 						})(<Input />)}
+					</FormItem>
+					<FormItem label={formatMessage({ id: 'storeManagement.create.area' })}>
+						{getFieldDecorator('business_area', {
+							initialValue: business_area,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) => {
+										if (value && !/^\d+(\.\d{1,2})?$/.test(value)) {
+											callback(
+												formatMessage({
+													id: 'storeManagement.create.area.formatError',
+												})
+											);
+										} else {
+											callback();
+										}
+									},
+								},
+							],
+						})(<Input suffix="㎡" />)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.contactName' })}>
 						{getFieldDecorator('contact_person', {
