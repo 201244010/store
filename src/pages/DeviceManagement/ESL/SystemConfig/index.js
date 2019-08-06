@@ -31,6 +31,7 @@ const SCAN_PERIODS = [5, 10, 15];
 					scanMulti,
 				},
 			}),
+		unsubscribeTopic: () => dispatch({ type: 'eslBaseStation/unsubscribeTopic' }),
 		checkClientExist: () => dispatch({ type: 'mqttStore/checkClientExist' }),
 	})
 )
@@ -46,6 +47,12 @@ class SystemConfig extends Component {
 		const { getNetWorkIdList } = this.props;
 		await getNetWorkIdList();
 		await this.checkMQTTClient();
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.checkTimer);
+		const { unsubscribeTopic } = this.props;
+		unsubscribeTopic();
 	}
 
 	apHandler = (action, receiveConfig) => {

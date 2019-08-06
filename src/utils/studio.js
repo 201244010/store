@@ -95,6 +95,7 @@ export const getPositionInNearScope = (source, target, scopedPosition) => {
 		}
 	}
 
+	console.log('ret', ret);
 	return ret;
 };
 
@@ -434,9 +435,6 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 			const backWidth = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.width = backWidth;
 			componentDetail.height = backWidth * componentDetail.ratio;
-		} else if (SHAPE_TYPES.CODE_V === componentDetail.type) {
-			componentDetail.height = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
-			componentDetail.width = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
 		} else {
 			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
