@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Select, Form, Button, Switch } from 'antd';
+import { Card, Select, Form, Button, Switch, message } from 'antd';
 import DataEmpty from '@/components/BigIcon/DataEmpty';
 import { formatMessage } from 'umi/locale';
 import { FORM_SETTING_LAYOUT } from '@/constants/form';
 import styles from './systemConfig.less';
+import { ERROR_OK } from '@/constants/errorCode';
 
 const SELECT_STYLE = { maxWidth: '300px' };
 const SCAN_PERIODS = [5, 10, 15];
@@ -56,13 +57,25 @@ class SystemConfig extends Component {
 	}
 
 	apHandler = (errcode, action, receiveConfig) => {
-		console.log('errcode: ', errcode);
+		// console.log('errcode: ', errcode);
 		if (action === 'update') {
-			const { getAPConfig } = this.props;
-			const { networkId } = this.state;
-			getAPConfig({ networkId });
+			if (errcode === ERROR_OK) {
+				message.error(formatMessage({ id: 'esl.device.config.setting.success' }));
+				const { getAPConfig } = this.props;
+				const { networkId } = this.state;
+				getAPConfig({ networkId });
+			} else {
+				message.error(formatMessage({ id: 'esl.device.config.setting.fail' }));
+			}
+		} else if (action === 'query') {
+			if (errcode === ERROR_OK) {
+				this.setState({ networkConfig: receiveConfig, configLoading: false });
+			} else {
+				message.error(formatMessage({ id: 'esl.device.config.info.fail' }));
+				this.setState({ networkConfig: [], configLoading: false });
+			}
 		} else {
-			this.setState({ networkConfig: receiveConfig, configLoading: false });
+			this.setState({ networkConfig: [], configLoading: false });
 		}
 	};
 
@@ -91,7 +104,7 @@ class SystemConfig extends Component {
 	};
 
 	handleSelectChange = networkId => {
-		// console.log(networkId);
+		console.log('changed', networkId);
 		const { getAPConfig } = this.props;
 		this.setState(
 			{

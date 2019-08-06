@@ -210,8 +210,8 @@ export default {
 			const response = yield call(Actions.deviceApHandler, 'getNetworkList');
 			if (response.code === ERROR_OK) {
 				const { data = {} } = response || {};
-				const { networkIdList = [] } = format('toCamel')(data);
-				yield put({ type: 'updateState', payload: { networkIdList } });
+				const { networkList = [] } = format('toCamel')(data);
+				yield put({ type: 'updateState', payload: { networkIdList: networkList } });
 			}
 			return response;
 		},
