@@ -153,7 +153,6 @@ export default function generateShape(option) {
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX * option.zoomScale,
 							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
-							// lineHeight: (MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.scaleY) / option.fontSize,
 							draggable: true,
 							onDblClick: option.onDblClick,
 						}}
@@ -486,7 +485,6 @@ export default function generateShape(option) {
 			);
 			break;
 		case SHAPE_TYPES.CODE_H:
-		case SHAPE_TYPES.CODE_V:
 		case SHAPE_TYPES.CODE_QR:
 			shape = (
 				<Image
@@ -499,12 +497,46 @@ export default function generateShape(option) {
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
 						image: option.image,
-						rotation: option.type === SHAPE_TYPES.CODE_V ? 90 : 0,
+						rotation: 0,
 						draggable: true,
 						onTransform: option.onTransform,
 						onTransformEnd: option.onTransformEnd,
 					}}
 				/>
+			);
+			break;
+		case SHAPE_TYPES.CODE_V:
+			shape = (
+				<Group>
+					<Shape
+						{...{
+							name: option.name,
+							x: option.x,
+							y: option.y,
+							width: MAPS.containerWidth[option.type] * option.zoomScale,
+							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							sceneFunc(context) {
+								context.rotate(Math.PI / 2);
+								context.translate(0, -MAPS.containerWidth[option.type] * option.zoomScale);
+								context.drawImage(option.image, 0, 0, MAPS.containerHeight[option.type] * option.zoomScale, MAPS.containerWidth[option.type] * option.zoomScale);
+							}
+						}}
+					/>
+					<Rect
+						{...{
+							name: option.name,
+							x: option.x,
+							y: option.y,
+							width: MAPS.containerWidth[option.type] * option.zoomScale,
+							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							scaleX: option.scaleX,
+							scaleY: option.scaleY,
+							draggable: true,
+							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
+						}}
+					/>
+				</Group>
 			);
 			break;
 		default:
