@@ -3,6 +3,14 @@ import CONFIG from '@/config';
 
 const { WEB_SOCKET_PREFIX } = CONFIG;
 
+const MSG_ID_MAX = 2 ** 32 - 1;
+
+const generateMsgId = () => {
+	const randomId = parseInt(`${+new Date()}`.substr(4), 10) + parseInt(Math.random() * 10000, 10);
+	// console.log(randomId);
+	return randomId < MSG_ID_MAX ? randomId : generateMsgId();
+};
+
 class MqttClient {
 	constructor(config) {
 		this.client = null;
@@ -101,13 +109,14 @@ class MqttClient {
 	}
 
 	publish(topic, message) {
-		const { messages } = this;
+		// const { messages } = this;
 		const { client } = this;
 		const { config } = this;
 
-		messages.id += 1;
+		// console.log('random id ', generateMsgId());
+		// messages.id += 1;
 		const msg = JSON.stringify({
-			msg_id: messages.id,
+			msg_id: generateMsgId(),
 			params: Array.isArray(message) ? [...message] : [message],
 		});
 

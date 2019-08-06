@@ -55,8 +55,8 @@ class SystemConfig extends Component {
 		unsubscribeTopic();
 	}
 
-	apHandler = (action, receiveConfig) => {
-		// console.log('mqtt ap response', networkConfig);
+	apHandler = (errcode, action, receiveConfig) => {
+		console.log('errcode: ', errcode);
 		if (action === 'update') {
 			const { getAPConfig } = this.props;
 			const { networkId } = this.state;
