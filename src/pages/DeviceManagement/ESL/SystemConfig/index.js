@@ -63,6 +63,7 @@ class SystemConfig extends Component {
 				message.error(formatMessage({ id: 'esl.device.config.setting.success' }));
 				const { getAPConfig } = this.props;
 				const { networkId } = this.state;
+				console.log('get updated config');
 				getAPConfig({ networkId });
 			} else {
 				message.error(formatMessage({ id: 'esl.device.config.setting.fail' }));
