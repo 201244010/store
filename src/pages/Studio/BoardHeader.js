@@ -136,7 +136,11 @@ export default class BoardHeader extends Component {
 						/>
 					) : (
 						<Fragment>
-							<span className={styles['edit-content']}>{formatMessage({id: templateInfo.name })}</span>
+							{
+								templateInfo.name ?
+									<span className={styles['edit-content']}>{formatMessage({id: templateInfo.name })}</span> :
+									null
+							}
 							<img
 								className={styles['edit-img']}
 								src={require('@/assets/studio/edit.svg')}
