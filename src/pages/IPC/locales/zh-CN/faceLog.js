@@ -19,5 +19,7 @@ export default {
 	'faceLog.watch.details':'查看详情',
 	'faceLog.adjust.group':'调整分组',
 	'faceLog.adjust.group.to':'调整分组至',
-	'faceLog.adjust.to':'移至'
+	'faceLog.adjust.to':'移至',
+	'faceLog.card.moveSuccess':'移库成功',
+	'faceLog.card.moveFail':'移库失败'
 };

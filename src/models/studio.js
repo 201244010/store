@@ -62,7 +62,7 @@ export default {
 		addComponent(state, action) {
 			// name为组件名，若被原始定义，则用，否则，则生成
 			const { componentsDetail, zoomScale } = state;
-			const { x, y, type, name: preName, scaleX, scaleY} = action.payload;
+			const { x, y, type, name: preName, scaleX, scaleY, isStep = true} = action.payload;
 			let maxIndex = 0;
 			let name = preName;
 
@@ -102,7 +102,9 @@ export default {
 					zoomScale
 				}
 			};
-			saveNowStep(getLocationParam('id'), newComponentsDetail);
+			if (isStep) {
+				saveNowStep(getLocationParam('id'), newComponentsDetail);
+			}
 			return {
 				...state,
 				selectedShapeName: name,
@@ -166,8 +168,8 @@ export default {
 				...state.componentsDetail,
 				[targetShapeName]: {
 					...detail,
-					content: (detail.type && detail.type.indexOf(SHAPE_TYPES.PRICE) > -1) ?
-						Number(detail.content).toFixed(detail.precision) : detail.content
+					content: detail.content === '' ? '' : ((detail.type && detail.type.indexOf(SHAPE_TYPES.PRICE) > -1) ?
+						Number(detail.content).toFixed(detail.precision) : detail.content)
 				}
 			};
 			if (isStep) {
@@ -292,10 +294,18 @@ export default {
 			Object.keys(componentsDetail).forEach(key => {
 				if (componentsDetail[key].name && componentsDetail[key].name.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && key !== RECT_SELECT_NAME) {
 					const component = { ...componentsDetail[key] };
+					const realWidth = MAPS.containerWidth[component.type] * zoomScale * (component.scaleX || 1);
+					let realHeight = MAPS.containerHeight[component.type] * zoomScale * (component.scaleY || 1);
+
+					// 上传过图片的IMAGE组件高度需要特殊处理
+					if (component.type === SHAPE_TYPES.IMAGE && component.imgPath) {
+						realHeight = realWidth * component.ratio;
+					}
+
 					component.left = component.x;
 					component.top = component.y;
-					component.right = component.x + MAPS.containerWidth[component.type] * zoomScale * (component.scaleX || 1);
-					component.bottom = component.y + MAPS.containerHeight[component.type] * zoomScale * (component.scaleY || 1);
+					component.right = component.x + realWidth;
+					component.bottom = component.y + realHeight;
 
 					if (isInComponent(component, selectRect)) {
 						state.scopedComponents.push(component);

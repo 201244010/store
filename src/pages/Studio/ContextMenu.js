@@ -11,7 +11,7 @@ export default class ContextMenu extends Component {
 	};
 
 	handlePaste = () => {
-		const { copiedComponent, scopedComponents, position, showRightToolBox, addComponent } = this.props;
+		const { copiedComponent, scopedComponents, position, showRightToolBox, addComponent, updateComponentsDetail } = this.props;
 		if (showRightToolBox) {
 			this.hideRightToolBox();
 		}
@@ -28,14 +28,19 @@ export default class ContextMenu extends Component {
 					...baseComponent,
 					x: position.left - SIZES.TOOL_BOX_WIDTH,
 					y: position.top - SIZES.HEADER_HEIGHT,
+					isStep: false
 				});
 				for (let i = 1; i < scopedComponents.length; i++) {
 					addComponent({
 						...scopedComponents[i],
 						x: position.left - SIZES.TOOL_BOX_WIDTH + scopedComponents[i].x - baseComponent.x,
 						y: position.top - SIZES.HEADER_HEIGHT + scopedComponents[i].y - baseComponent.y,
+						isStep: i === scopedComponents.length - 1
 					});
 				}
+				updateComponentsDetail({
+					selectedShapeName: ''
+				});
 			}
 		}
 	};

@@ -30,13 +30,20 @@ class SearchResult extends Component {
 
 	onTableChange = (pagination, filters, sorter) => {
 		const { fetchElectricLabels } = this.props;
+		const { field, order } = sorter;
+		let desc = -1;
+		if (field === 'push_time') {
+			desc = order === 'ascend' ? 1 : (order === 'descend' ? 0 : -1);
+		} else {
+			desc = order === 'ascend' ? 0 : (order === 'descend' ? 1 : -1);
+		}
 
 		fetchElectricLabels({
 			options: {
 				current: pagination.current,
 				pageSize: pagination.pageSize,
-				sort_key: sorter.field === 'battery' ? 1 : (sorter.field === 'push_time' ? 2 : -1),
-				desc: sorter.order === 'ascend' ? 0 : (sorter.order === 'descend' ? 1 : -1)
+				sort_key: field === 'battery' ? 1 : (field === 'push_time' ? 2 : -1),
+				desc
 			},
 		});
 	};
