@@ -135,7 +135,7 @@ export default {
 			};
 		},
 		updateComponentsDetail(state, action) {
-			const { noUpdateLines, selectedShapeName, isStep = false, ...componentsDetail } = action.payload;
+			const { noUpdateLines, selectedShapeName, isStep = false, updatePrecision = false, ...componentsDetail } = action.payload;
 			const chooseShapeName = state.selectedShapeName;
 			let targetShapeName = selectedShapeName;
 			if (selectedShapeName === undefined) {
@@ -166,12 +166,13 @@ export default {
 			}
 			const newComponentsDetail = {
 				...state.componentsDetail,
-				[targetShapeName]: {
-					...detail,
-					content: detail.content === '' ? '' : ((detail.type && detail.type.indexOf(SHAPE_TYPES.PRICE) > -1) ?
-						Number(detail.content).toFixed(detail.precision) : detail.content)
-				}
+				[targetShapeName]: detail
 			};
+			if (updatePrecision) {
+				newComponentsDetail[targetShapeName].content = detail.content === '' ? '' :
+					((detail.type && detail.type.indexOf(SHAPE_TYPES.PRICE) > -1) ? Number(detail.content).toFixed(detail.precision) : detail.content);
+			}
+			console.log(newComponentsDetail[targetShapeName]);
 			if (isStep) {
 				saveNowStep(getLocationParam('id'), newComponentsDetail);
 			}
