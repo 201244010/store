@@ -2,6 +2,8 @@
 // import { listen } from '@/services/mqtt';
 // import moment from 'moment';
 
+import { formatMessage } from 'umi/locale';
+
 export default {
 	namespace: 'faceid',
 	state: {
@@ -27,13 +29,41 @@ export default {
 				list
 			};
 		},
-		clearRects() {
-			return {
-				rectangles: []
-			};
+		clearRects(state, { payload: { timestamp }}) {
+			const rectangles = [];
+			state.rectangles.forEach(item => {
+				if (item.timestamp > timestamp - 2000) {
+					rectangles.push(item);
+				}
+			});
+
+			state.rectangles = [
+				...rectangles
+			];
+
 		},
 		updateList( { list }, { payload }) {
-			list.push(payload);
+			const { libraryName } = payload;
+			let libraryNameText = libraryName;
+			switch(libraryName) {
+				case 'stranger':
+					libraryNameText = formatMessage({ id: 'faceid.stranger'});
+					break;
+				case 'regular':
+					libraryNameText = formatMessage({id: 'faceid.regular'});
+					break;
+				case 'employee':
+					libraryNameText = formatMessage({ id: 'faceid.employee'});
+					break;
+				case 'blacklist':
+					libraryNameText = formatMessage( { id: 'faceid.blacklist'});
+					break;
+				default:
+			}
+			list.push({
+				...payload,
+				libraryName: libraryNameText
+			});
 		}
 
 	},
@@ -85,17 +115,18 @@ export default {
 					type: 'event',
 					handler: (topic, message) => {
 						const { data } = message;
-						// console.log(message, data);
+
 						dispatch({
 							type: 'updateList',
 							payload: {
-								timestamp: data.pts,
-								name: data.name,
+								// timestamp: data.report_time,
+								timestamp: data.arrival_time,
+								name: data.name === 'undefined' ? '--' : data.name,
 								id: data.id,
 								libraryId: data.db_id,
 								libraryName: data.db_name,
-								age: data.age,
-								gender: data.gender,
+								age: data.age ,
+								gender: data.gender === 'undefined' ? '--' : data.gender,
 								pic: data.pic
 							}
 						});

@@ -15,6 +15,22 @@ export default {
 	},
 
 	effects: {
+		*getCompanyNameById({ payload }, { take, select}){
+			const { companyId } = payload;
+			let list  = yield select((state) => state.merchant.companyList);
+			let name = '';
+		 
+			if (list.length === 0){
+				const { payload:result } = yield take('updateState');
+				list = result;
+			}
+			list.forEach(item => {
+				if(item.company_id === companyId) {
+					name = item.company_name;
+				}
+			});
+			return name;
+		},
 		*initialCompany({ payload = {} }, { call }) {
 			const { options = {} } = payload;
 			yield call(Actions.initialCompany, options);
@@ -63,6 +79,18 @@ export default {
 				const result = response.data || {};
 				const companyList = result.company_list || [];
 				Storage.set({ [CookieUtil.COMPANY_LIST_KEY]: companyList }, 'local');
+				
+				if (companyList.length === 1) {
+					const companyInfo = companyList[0] || {};
+					CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, companyInfo.company_id);
+					yield put({
+						type: 'setCurrentCompany',
+						payload: {
+							companyId: companyInfo.company_id,
+						},
+					});
+				}
+
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -70,6 +98,7 @@ export default {
 						loading: false,
 					},
 				});
+				// TODO 8 月首配时可能需要调整这个接口的调用顺序。返回值会影响 company 和 shop
 				yield put({
 					type: 'initialCompany',
 					payload: {

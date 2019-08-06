@@ -1,1 +1,4 @@
-module.exports = process.env.UMI_ENV;
+module.exports = {
+	env: process.env.UMI_ENV,
+	country: process.env.COUNTRY || 'china',
+};

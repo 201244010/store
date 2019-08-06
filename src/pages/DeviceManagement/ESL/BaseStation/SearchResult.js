@@ -30,6 +30,10 @@ class SearchResult extends Component {
 			// 	dataIndex: 'esl_number',
 			// },
 			{
+				title: formatMessage({ id: 'esl.device.ap.network.id' }),
+				dataIndex: 'network_id',
+			},
+			{
 				title: formatMessage({ id: 'esl.device.ap.status' }),
 				dataIndex: 'status',
 				render: (_, record) => <BaseStationTag record={record} template={STATION_STATES} />,

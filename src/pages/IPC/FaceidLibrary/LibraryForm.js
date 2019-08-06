@@ -1,36 +1,39 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import { Form, Input, InputNumber } from 'antd';
+import { Form, Input, InputNumber, Switch } from 'antd';
 // import {
 //   FORM_FORMAT,
 //   FORM_ITEM_LAYOUT,
 //   FORM_ITEM_LAYOUT_COMMON,
 // } from "@/constants/form";
 import { formatMessage } from 'umi/locale';
+import { mbStringLength } from '@/utils/utils';
+
 import * as styles from './FaceidLibrary.less';
+
 
 const FaceIdLibraryForm = Form.create({
 	name: 'faceid-library-form',
 	wrappedComponentRef: true,
-	mapPropsToFields(props) {
-		return {
-			name: Form.createFormField({
-				value: props.name,
-			}),
-			capacity: Form.createFormField({
-				value: props.capacity,
-			}),
-			remarks: Form.createFormField({
-				value: props.remarks,
-			}),
-			threshold: Form.createFormField({
-				value: props.threshold,
-			}),
-			period: Form.createFormField({
-				value: props.period,
-			})
-		};
-	}
+	// mapPropsToFields(props) {
+	// 	return {
+	// 		name: Form.createFormField({
+	// 			value: props.name,
+	// 		}),
+	// 		capacity: Form.createFormField({
+	// 			value: props.capacity,
+	// 		}),
+	// 		remarks: Form.createFormField({
+	// 			value: props.remarks,
+	// 		}),
+	// 		threshold: Form.createFormField({
+	// 			value: props.threshold,
+	// 		}),
+	// 		period: Form.createFormField({
+	// 			value: props.period,
+	// 		})
+	// 	};
+	// }
 });
 
 class LibraryForm extends React.Component {
@@ -41,12 +44,15 @@ class LibraryForm extends React.Component {
 	}
 
 	render() {
-		const { id, type, isEdit, restCapacity, libraries, capacity, amount, form } = this.props;
+		const { id, type, isEdit, restCapacity, libraries, amount, form } = this.props;
+		const { name, capacity, remarks, threshold, period, warning } = this.props;
 		const { getFieldDecorator } = form;
 
 		const isDefault = type < 5;
 
 		const maxCapacity = isEdit ? capacity + restCapacity : restCapacity;
+
+		console.log(warning);
 
 		return (
 			<div className={styles['faceid-library-form']}>
@@ -75,6 +81,7 @@ class LibraryForm extends React.Component {
 					>
 						{
 							getFieldDecorator('name', {
+								initialValue: name,
 								rules: [
 									{
 										required: true,
@@ -83,7 +90,21 @@ class LibraryForm extends React.Component {
 										}),
 									},
 									{
-										max: 20,
+										// max: 20,
+										validator: (rule, value, callback) => {
+											const len = mbStringLength(value);
+											if (len <= 20) {
+												callback();
+											}else{
+												callback(false);
+											}
+										},
+										message: formatMessage({
+											id: 'faceid.libraryNameFormat',
+										}),
+									},
+									{
+										pattern: /\s*\S+?/,
 										message: formatMessage({
 											id: 'faceid.libraryNameFormat',
 										}),
@@ -132,6 +153,7 @@ class LibraryForm extends React.Component {
 					>
 						{
 							getFieldDecorator('capacity', {
+								initialValue: capacity,
 								validateFirst: true,
 								rules: [
 									{
@@ -172,6 +194,7 @@ class LibraryForm extends React.Component {
 					>
 						{
 							getFieldDecorator('remarks', {
+								initialValue: remarks,
 								rules: [
 									{
 										max: 255,
@@ -202,6 +225,7 @@ class LibraryForm extends React.Component {
 											<Form.Item className={`${styles.inline} ${styles.number}`}>
 												{
 													getFieldDecorator('period', {
+														initialValue: period,
 														validateFirst: true,
 														rules: [{
 															required: true,
@@ -235,6 +259,7 @@ class LibraryForm extends React.Component {
 											<Form.Item className={`${styles.inline} ${styles.number}`}>
 												{
 													getFieldDecorator('threshold', {
+														initialValue: threshold,
 														validateFirst: true,
 														rules: [{
 															required: true,
@@ -268,16 +293,18 @@ class LibraryForm extends React.Component {
 									);
 								case 4:
 									return (
-									// <Form.Item
-									// 	label={formatMessage({id: 'faceid.warningPush'})}
-									// >
-									// 	{
-									// 		getFieldDecorator('warning')(
-									// 			<Switch />
-									// 		)
-									// 	}
-									// </Form.Item>
-										<></>
+										<Form.Item
+											label={formatMessage({id: 'faceid.warningPush'})}
+										>
+											{
+												getFieldDecorator('warning', {
+													initialValue: warning,
+													valuePropName: 'checked'
+												})(
+													<Switch />
+												)
+											}
+										</Form.Item>
 									);
 								default:
 									return '';

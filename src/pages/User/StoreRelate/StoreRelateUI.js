@@ -3,8 +3,8 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { Button, Form, Input } from 'antd';
 import * as CookieUtil from '@/utils/cookies';
-import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
+import { ERROR_OK } from '@/constants/errorCode';
 import styles from './StoreRelate.less';
 
 const MerchantCreate = props => {
@@ -140,6 +140,7 @@ class StoreRelate extends Component {
 			const result = response.data || {};
 			const shopList = result.shop_list || [];
 			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
+
 			if (shopList.length === 0) {
 				CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
 				goToPath('storeCreate');

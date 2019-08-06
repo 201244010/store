@@ -2,11 +2,8 @@ import React from 'react';
 import { Tabs } from 'antd';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import ShowCards from '../ShowCards';
-import ShowChart from '../ShowChart';
-import ShowSaleList from '../ShowSaleList';
-import ShowPayChart from '../ShowPayChart';
 import { SHOP_ID_KEY, SHOP_LIST_KEY, getCookieByKey } from '@/utils/cookies';
+import ShowTabContent from '../ShowTabContent';
 
 import styles from './index.less';
 
@@ -56,7 +53,6 @@ export default class ShowHeader extends React.Component {
 	};
 
 	render() {
-		const { today = {}, week = {}, month = {} } = this.props;
 		const { time, activeKey } = this.state;
 
 		const shopList = JSON.parse(localStorage.getItem(SHOP_LIST_KEY));
@@ -79,40 +75,25 @@ export default class ShowHeader extends React.Component {
 						onChange={this.tabChange}
 					>
 						<TabPane
-							tab={formatMessage({ id: 'dashBoard.search.today' })}
+							tab={formatMessage({ id: 'dashboard.search.today' })}
 							key={ACTIVEKEY[0]}
 							forceRender
 						>
-							<TabPaneContent
-								{...{
-									today,
-								}}
-								time="today"
-							/>
+							<ShowTabContent time="today" activeKey={activeKey} />
 						</TabPane>
 						<TabPane
-							tab={formatMessage({ id: 'dashBoard.search.week' })}
+							tab={formatMessage({ id: 'dashboard.search.week' })}
 							key={ACTIVEKEY[1]}
 							forceRender
 						>
-							<TabPaneContent
-								{...{
-									week,
-								}}
-								time="week"
-							/>
+							<ShowTabContent time="week" activeKey={activeKey} />
 						</TabPane>
 						<TabPane
-							tab={formatMessage({ id: 'dashBoard.search.month' })}
+							tab={formatMessage({ id: 'dashboard.search.month' })}
 							key={ACTIVEKEY[2]}
 							forceRender
 						>
-							<TabPaneContent
-								{...{
-									month,
-								}}
-								time="month"
-							/>
+							<ShowTabContent time="month" activeKey={activeKey} />
 						</TabPane>
 					</Tabs>
 				</div>
@@ -120,76 +101,3 @@ export default class ShowHeader extends React.Component {
 		);
 	}
 }
-
-const TabPaneContent = props => {
-	const { time = 'today' } = props;
-	const {
-		[time]: {
-			productOverview = {},
-			deviceOverView = {},
-			ipcOverView = {},
-
-			totalAmount = {},
-			totalCount = {},
-			totalRefund = {},
-			avgUnitSale = {},
-			searchValue = {},
-			orderList = [],
-			skuRankList = [],
-			purchaseInfo = {},
-			range = '',
-		},
-	} = props;
-
-	return (
-		<>
-			<ShowCards
-				{...{
-					searchValue,
-					totalAmount,
-					totalCount,
-					totalRefund,
-					avgUnitSale,
-				}}
-			/>
-			<div style={{ paddingTop: 52, display: 'flex' }}>
-				<div style={{ width: 841 }}>
-					<ShowChart
-						chartName={formatMessage({ id: 'dashBoard.order.show.sales' })}
-						saleType="count"
-						{...{
-							searchValue,
-							orderList,
-							range,
-						}}
-					/>
-					<ShowChart
-						chartName={formatMessage({ id: 'dashBoard.order.show.count' })}
-						saleType="amount"
-						fillColor={['l(90) 0:#FFBC50 1:#FFBC50', 'l(90) 0:#B38F6B 1:#B37047']}
-						shadowColor="#FF7750"
-						{...{
-							searchValue,
-							orderList,
-							range,
-						}}
-					/>
-				</div>
-				<ShowSaleList
-					{...{
-						skuRankList,
-					}}
-				/>
-				<ShowPayChart
-					{...{
-						searchValue,
-						purchaseInfo,
-						productOverview,
-						deviceOverView,
-						ipcOverView,
-					}}
-				/>
-			</div>
-		</>
-	);
-};

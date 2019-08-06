@@ -22,7 +22,7 @@ export default {
 	'studio.placeholder.bind.field': '请选择绑定的字段',
 	'studio.placeholder.bind.value': '请输入绑定的值',
 	'studio.tool.title.bind.field': '绑定字段',
-	'studio.tool.title.bind.value': '绑定值',
+	'studio.tool.title.bind.value': '条码',
 	'studio.tool.title.style': '样式',
 	'studio.tool.title.fill.color': '填充颜色',
 	'studio.tool.title.text': '文本',

@@ -22,7 +22,7 @@ export default {
 	'studio.placeholder.bind.field': 'Please select field',
 	'studio.placeholder.bind.value': 'Please input value',
 	'studio.tool.title.bind.field': 'Bind Field',
-	'studio.tool.title.bind.value': 'Bind Value',
+	'studio.tool.title.bind.value': 'Barcode',
 	'studio.tool.title.style': 'Style',
 	'studio.tool.title.fill.color': 'Fill Color',
 	'studio.tool.title.text': 'Text',

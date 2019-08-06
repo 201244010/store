@@ -9,9 +9,12 @@ export default {
 	'softwareUpdate.noUpdate': '您的设备已经安装了最新的软件。',
 	'softwareUpdate.updateDate': '上次更新时间',
 	'softwareUpdate.updating': '正在更新最新软件，请保持设备在线，请耐心等待。',
-	'softwareUpdate.updateSuccess': '设备升级成功！',
-	'softwareUpdate.updateFailed': '升级失败，请重试！',
+	'softwareUpdate.updateSuccess': '升级成功',
+	'softwareUpdate.updateSuccessMsg': '设备升级成功！',
+	'softwareUpdate.updateFailed': '升级失败',
+	'softwareUpdate.updateFailedMsg': '设备升级失败，请检查网络连接，并稍候重试！',
 	'softwareUpdate.confirm': '确定',
+	'softwareUpdate.noCheck':'您尚未检查过固件更新'
 	// 'softwareUpdate.downloadMsg': '正在下载固件，请保持设备在线，请勿断电',
 	// 'softwareUpdate.verificationMsg': '正在验证版本包，请耐心等待并保持设备在线，切勿断电',
 	// 'softwareUpdate.restartMsg': '验证完成，后续安装过程IPC会执行重启操作，请耐心等待'

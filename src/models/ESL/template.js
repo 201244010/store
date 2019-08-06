@@ -1,19 +1,11 @@
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { hideSinglePageCheck } from '@/utils/utils';
-import { getImagePromise } from '@/utils/studio';
+import { getImagePromise, initTemplateDetail, purifyJsonOfBackEnd } from '@/utils/studio';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import * as TemplateService from '@/services/ESL/template';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
-import {
-	IMAGE_TYPES,
-	SHAPE_TYPES,
-	BARCODE_TYPES,
-	NORMAL_PRICE_TYPES,
-	NON_NORMAL_PRICE_TYPES,
-	MAPS,
-	RECT_SELECT_NAME
-} from '@/constants/studio';
+import {IMAGE_TYPES, MAPS} from '@/constants/studio';
 
 export default {
 	namespace: 'template',
@@ -151,133 +143,15 @@ export default {
 			const draft = {
 				encoding: 'UTF-8',
 				type: curTemplate.model_name,
-				backgroundColor: '',
+				backgroundColor: 'white',
 				fillFields: [],
 				layers: [],
 				layerCount: 0,
 			};
-			const layers = [];
-			const originOffset = {};
-			const bindFields = [];
-			Object.keys(payload.draft).map(key => {
-				const componentDetail = payload.draft[key];
-				if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
-					originOffset.x = componentDetail.x;
-					originOffset.y = componentDetail.y;
-					draft.backgroundColor = componentDetail.fill;
-				}
-				if (componentDetail.bindField) {
-				    bindFields.push(componentDetail.bindField);
-				}
-			});
-			draft.fillFields = bindFields;
-			delete payload.draft[RECT_SELECT_NAME];
-			Object.keys(payload.draft).map(key => {
-				const componentDetail = payload.draft[key];
-				Object.keys(componentDetail).map(detailKey => {
-					componentDetail.content = componentDetail.content ? componentDetail.content :
-						(componentDetail.bindField ? `{{${componentDetail.bindField}}}` : (componentDetail.text || ''));
-					if (['height', 'width'].includes(detailKey)) {
-						const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
-						if (SHAPE_TYPES.IMAGE === componentDetail.type) {
-							const backWidth = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
-							componentDetail.backWidth = backWidth;
-							componentDetail.backHeight = backWidth * componentDetail.ratio;
-						} else if (SHAPE_TYPES.HLine === componentDetail.type) {
-							componentDetail.backWidth = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
-							componentDetail.backHeight = componentDetail.strokeWidth;
-						} else if (SHAPE_TYPES.VLine === componentDetail.type) {
-							componentDetail.backWidth = componentDetail.strokeWidth;
-							componentDetail.backHeight = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
-						} else {
-							const scale = {
-								width: componentDetail.scaleX,
-								height: componentDetail.scaleY,
-							};
-							const size = {
-								width: MAPS.containerWidth,
-								height: MAPS.containerHeight,
-							};
-							componentDetail[realKey] = Math.round(size[detailKey][componentDetail.type] * scale[detailKey]);
-						}
-					}
-					if (['x', 'y'].includes(detailKey)) {
-						if (componentDetail.type !== SHAPE_TYPES.RECT_FIX) {
-							componentDetail.backStartX = ((componentDetail.x - originOffset.x) / componentDetail.zoomScale).toFixed();
-							componentDetail.backStartY = ((componentDetail.y - originOffset.y) / componentDetail.zoomScale).toFixed();
-							if (NON_NORMAL_PRICE_TYPES.includes(componentDetail.type)) {
-								const intPriceText = `${componentDetail.text}`.split('.')[0];
-								const smallPriceText = `${componentDetail.text}`.split('.')[1] || '';
-								let backSmallStartY = 0;
-								if (componentDetail.type.indexOf(SHAPE_TYPES.PRICE_SUPER)) {
-									backSmallStartY =
-										(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY - componentDetail.fontSize) / 2;
-								}
-								const intTextWidth = (componentDetail.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0));
-								const textWidth = intTextWidth + (smallPriceText.length * componentDetail.smallFontSize) / 2;
-								let intXPosition = 0;
-								if (componentDetail.align === 'center') {
-									intXPosition = (MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX - textWidth) / 2;
-								}
-								if (componentDetail.align === 'right') {
-									intXPosition = MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX - textWidth;
-								}
-								componentDetail.backType = SHAPE_TYPES.PRICE;
-								componentDetail.backIntStartX = Math.round(componentDetail.backStartX) + Math.round(intXPosition);
-								componentDetail.backIntStartY = Math.round(componentDetail.backStartY) + Math.round(backSmallStartY);
-								componentDetail.backSmallStartX = componentDetail.backIntStartX + Math.round(intTextWidth);
-								if (componentDetail.type.indexOf(SHAPE_TYPES.PRICE_SUPER) > -1) {
-									componentDetail.backSmallStartY = componentDetail.backIntStartY;
-								} else {
-									componentDetail.backSmallStartY = componentDetail.backIntStartY + componentDetail.fontSize - componentDetail.smallFontSize;
-								}
-							}
-						}
-					}
-					if (['type'].includes(detailKey)) {
-						const realKey = `back${detailKey.replace(/^\S/, s => s.toUpperCase())}`;
-						if ([...NORMAL_PRICE_TYPES, SHAPE_TYPES.RECT, SHAPE_TYPES.HLine, SHAPE_TYPES.VLine].includes(componentDetail.type)) {
-							componentDetail[realKey] = SHAPE_TYPES.TEXT;
-						}
-						if (BARCODE_TYPES.includes(componentDetail.type)) {
-							componentDetail[realKey] = SHAPE_TYPES.CODE;
-							componentDetail.codec = componentDetail.type === SHAPE_TYPES.CODE_QR ? 'qrcode' : componentDetail.codec;
-						}
-						if ([SHAPE_TYPES.TEXT].includes(componentDetail.type)) {
-							componentDetail[realKey] = SHAPE_TYPES.TEXT;
-						}
-						if ([SHAPE_TYPES.IMAGE].includes(componentDetail.type)) {
-							componentDetail[realKey] = 'picture';
-							if (componentDetail.imgPath.indexOf('.png') > -1) {
-								componentDetail.codec = 'png';
-							} else {
-								componentDetail.codec = 'jpeg';
-							}
-						}
-					}
-					if (['fill'].includes(detailKey)) {
-						if ([...NORMAL_PRICE_TYPES, ...NON_NORMAL_PRICE_TYPES, SHAPE_TYPES.TEXT].includes(componentDetail.type)) {
-							componentDetail.backBg = componentDetail.textBg;
-						}
-						if ([SHAPE_TYPES.RECT].includes(componentDetail.type)) {
-							componentDetail.backBg = componentDetail.fill;
-							componentDetail.fontFamily = '';
-							componentDetail.fontSize = '';
-						}
-					}
-					if (['stroke'].includes(detailKey)) {
-						if ([SHAPE_TYPES.HLine, SHAPE_TYPES.VLine].includes(componentDetail.type)) {
-							componentDetail.backBg = componentDetail.stroke;
-							componentDetail.fill = componentDetail.stroke;
-							componentDetail.fontFamily = '';
-							componentDetail.fontSize = '';
-						}
-					}
-				});
-				layers.push(payload.draft[key]);
-			});
-			draft.layers = layers;
-			draft.layerCount = layers.length;
+			const result = purifyJsonOfBackEnd(payload.draft);
+			draft.fillFields = result.bindFields;
+			draft.layers = result.layers;
+			draft.layerCount = result.layers.length;
 
 			const response = yield call(TemplateService.saveAsDraft, {
 				...payload,
@@ -297,30 +171,47 @@ export default {
 				message.error('保存模板草稿失败');
 			}
 		},
-		*fetchTemplateDetail({ payload = {} }, { call, put }) {
+		*fetchTemplateDetail({ payload = {} }, { call, put, select }) {
 			yield put({
 				type: 'updateState',
 				payload: { loading: true },
 			});
 			const response = yield call(TemplateService.fetchTemplateDetail, payload);
 			if (response && response.code === ERROR_OK) {
+				const { stage } = yield select(state => state.studio);
 				const templateInfo = response.data.template_info;
+
 				yield put({
 					type: 'updateState',
 					payload: {
 						curTemplate: response.data.template_info,
 					},
 				});
-				let { layers } = JSON.parse(templateInfo.studio_info || '{}') || {};
+
+				let { zoomScale, layers } = JSON.parse(templateInfo.studio_info || '{}') || {};
+				zoomScale = zoomScale || MAPS.screen[payload.screenType].zoomScale;
+				yield put({
+					type: 'studio/updateState',
+					payload: {
+						zoomScale
+					},
+				});
 				layers = layers || [];
+
+				initTemplateDetail(stage, layers, zoomScale, payload.screenType);
+
 				const componentsDetail = {
 					isStep: !!templateInfo.studio_info
 				};
 				let hasImage = false;
-				layers.map(layer => {
-					componentsDetail[layer.name] = layer;
-					hasImage = hasImage || IMAGE_TYPES.includes(layer.type);
-				});
+				for (let i = 0; i < layers.length; i++) {
+					const layer = layers[i];
+					if (!layer.name) {
+						layer.name = `${layer.type}${i}`;
+					}
+					componentsDetail[layer.name] = layers[i];
+					hasImage = hasImage || IMAGE_TYPES.includes(layers[i].type);
+				}
 
 				if (hasImage) {
 					(yield Promise.all(
@@ -493,7 +384,11 @@ export default {
 					type: 'updateState',
 					payload: { loading: false },
 				});
-				message.error('克隆失败');
+				if (ALERT_NOTICE_MAP[response.code]) {
+					message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
+				} else {
+					message.error('修改模板名称失败');
+				}
 			}
 			return response;
 		},

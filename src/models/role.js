@@ -14,6 +14,7 @@ const getInitStatus = (permissionList, roleInfo) => {
 			initResult.checkAll = item.checkAll;
 		}
 	});
+	// console.log('initResult', initResult);
 	return initResult;
 };
 
@@ -239,12 +240,18 @@ export default {
 			return response;
 		},
 
-		*changeAdmin({ payload = {} }, { call }) {
+		*changeAdmin({ payload = {} }, { call, put }) {
 			const { targetSsoUsername: target_sso_username } = payload;
 			const opts = {
 				target_sso_username,
 			};
 			const response = yield call(Actions.handleRoleManagement, 'changeAdmin', opts);
+			if (response && response.code === ERROR_OK) {
+				yield put({type: 'getRoleList'});
+				yield put({
+					type: 'getUserPermissionList',
+				});
+			}
 			return response;
 		},
 

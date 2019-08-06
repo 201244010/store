@@ -13,20 +13,29 @@ const {
 Shape.registerShape('interval', 'myShape', {
 	getPoints(pointInfo) {
 		const { x, y, y0, size } = pointInfo;
-		const width = size;
+		const n = 60;
+		const unit = size / n;
 		return [
-			{ x: x - width / 4, y: y0 },
-			{ x: x - (width * 3) / 8, y: y === 0 ? y0 : y0 + width / 8 },
-			{ x: x - width / 2, y: y === 0 ? y0 : y0 + (width * 2) / 3 },
-			{ x: x - width / 2, y: y - (width * 2) / 3 < 0 ? y : y - (width * 2) / 3 },
-			{ x: x - (width * 3) / 8, y: y - width / 8 < 0 ? y : y - width / 8 },
-			{ x: x - width / 4, y },
-			{ x: x + width / 4, y },
-			{ x: x + (width * 3) / 8, y: y - width / 8 < 0 ? y : y - width / 8 },
-			{ x: x + width / 2, y: y - (width * 2) / 3 < 0 ? y : y - (width * 2) / 3 },
-			{ x: x + width / 2, y: y === 0 ? y0 : y0 + (width * 2) / 3 },
-			{ x: x + (width * 3) / 8, y: y === 0 ? y0 : y0 + width / 8 },
-			{ x: x + width / 4, y: y0 },
+			{ x: x - (n / 3) * unit, y: y0 },
+			{ x: x - (n / 2.5) * unit, y: y - y0 < unit ? y0 : y0 + unit },
+			{ x: x - (n / 2.22) * unit, y: y - y0 < (n / 20) * unit ? y0 : y0 + (n / 20) * unit },
+			{ x: x - (n / 2.06) * unit, y: y - y0 < (n / 6) * unit ? y0 : y0 + (n / 6) * unit },
+			{ x: x - (n / 2) * unit, y: y - y0 < (n / 3) * unit ? y0 : y0 + (n / 3) * unit },
+			{ x: x - (n / 2) * unit, y: y - y0 < (n / 3) * unit ? y : y - (n / 3) * unit },
+			{ x: x - (n / 2.06) * unit, y: y - y0 < (n / 6) * unit ? y : y - (n / 6) * unit },
+			{ x: x - (n / 2.22) * unit, y: y - y0 < (n / 20) * unit ? y : y - (n / 20) * unit },
+			{ x: x - (n / 2.5) * unit, y: y - y0 < unit ? y : y - unit },
+			{ x: x - (n / 3) * unit, y },
+			{ x: x + (n / 3) * unit, y },
+			{ x: x + (n / 2.5) * unit, y: y - y0 < unit ? y : y - unit },
+			{ x: x + (n / 2.22) * unit, y: y - y0 < (n / 20) * unit ? y : y - (n / 20) * unit },
+			{ x: x + (n / 2.06) * unit, y: y - y0 < (n / 6) * unit ? y : y - (n / 6) * unit },
+			{ x: x + (n / 2) * unit, y: y - y0 < (n / 3) * unit ? y : y - (n / 3) * unit },
+			{ x: x + (n / 2) * unit, y: y - y0 < (n / 3) * unit ? y0 : y0 + (n / 3) * unit },
+			{ x: x + (n / 2.06) * unit, y: y - y0 < (n / 6) * unit ? y0 : y0 + (n / 6) * unit },
+			{ x: x + (n / 2.22) * unit, y: y - y0 < (n / 20) * unit ? y0 : y0 + (n / 20) * unit },
+			{ x: x + (n / 2.5) * unit, y: y - y0 < unit ? y0 : y0 + unit },
+			{ x: x + (n / 3) * unit, y: y0 },
 		];
 	},
 	draw(cfg, container) {
@@ -46,6 +55,14 @@ Shape.registerShape('interval', 'myShape', {
 					[points[9].x, points[9].y],
 					[points[10].x, points[10].y],
 					[points[11].x, points[11].y],
+					[points[12].x, points[12].y],
+					[points[13].x, points[13].y],
+					[points[14].x, points[14].y],
+					[points[15].x, points[15].y],
+					[points[16].x, points[16].y],
+					[points[17].x, points[17].y],
+					[points[18].x, points[18].y],
+					[points[19].x, points[19].y],
 				],
 				shadowColor: cfg.style.shadowColor,
 				shadowBlur: cfg.style.shadowBlur,
@@ -105,8 +122,8 @@ export default class ShowChart extends React.Component {
 							textStyle: {
 								textAlign: 'center',
 								fill: '#FFFFFF',
-								fontSize: '12',
-								fontWeight: 'light',
+								fontSize: '14',
+								fontWeight: '400',
 							},
 							autoRotate: false,
 							formatter(text, _, index) {
@@ -160,17 +177,18 @@ export default class ShowChart extends React.Component {
 							},
 						]}
 						shape="myShape"
+						tooltip={false}
 					>
 						<Label
 							autoRotate={false}
 							position="bottom"
-							content="name"
+							content={saleType}
 							htmlTemplate={(_, item) => {
 								const { point = {} } = item;
 								return nowTime === point.time
 									? `<div class="template-title">
 										<div class="template-content" style="width:${labelWidth}px;">
-											<div class="template-top">${point[saleType]}</div>
+											<div class="template-top">${point[saleType] !== 0 ? point[saleType] : ''}</div>
 										</div>
 									</div>`
 									: '';
