@@ -6,7 +6,6 @@ const fetchApi = customizeFetch('api/shop');
 export const getList = (options = {}) => {
 	const opt = {
 		body: {
-			page_size: 999,
 			...options,
 		},
 	};

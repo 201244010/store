@@ -35,7 +35,7 @@ const ACTION_MAP = {
 	'GET-AP-LIST': ({ handlers: { goToPath } }) => goToPath('baseStation'),
 	'notif-device-esl-ap-offline-btn1': ({ handlers: { goToPath } }) => goToPath('baseStation'),
 	'notif-ap-offline-btn1': ({ handlers: { goToPath } }) => goToPath('baseStation'),
-	'notif-system-task-erp-btn1': ({ handers: { goToPath } }) => goToPath('productList'),
+	'notif-system-task-erp-btn1': ({ handlers: { goToPath } }) => goToPath('productList'),
 	'notif-device-ipc-motion-detect-video-btn1': palyMotion,
 	'notif-device-ipc-motion-detect-audio-btn1': palyMotion,
 	'notif-motion-detect-btn1': palyMotion,
