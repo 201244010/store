@@ -73,8 +73,8 @@ export const SIZES = {
 	DEFAULT_TEXT_LETTER_SPACING: 0,
 	DEFAULT_CODE_H_CONTAINER_WIDTH: 95,
 	DEFAULT_CODE_H_CONTAINER_HEIGHT: 14,
-	DEFAULT_CODE_V_CONTAINER_WIDTH: 95,
-	DEFAULT_CODE_V_CONTAINER_HEIGHT: 14,
+	DEFAULT_CODE_V_CONTAINER_WIDTH: 14,
+	DEFAULT_CODE_V_CONTAINER_HEIGHT: 95,
 	DEFAULT_CODE_QR_CONTAINER_WIDTH: 40,
 	DEFAULT_CODE_QR_CONTAINER_HEIGHT: 40,
 };
@@ -261,7 +261,7 @@ const screenMap = {
 		zoomScale: 1.5,
 	},
 };
-const imgPathMap = {
+export const imgPathMap = {
 	[SHAPE_TYPES.IMAGE]: require('@/assets/studio/image.svg'),
 	[SHAPE_TYPES.CODE_H]: require('@/assets/studio/code_h.png'),
 	[SHAPE_TYPES.CODE_V]: require('@/assets/studio/code_h.png'),

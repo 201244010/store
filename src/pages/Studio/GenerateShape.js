@@ -38,8 +38,8 @@ export default function generateShape(option) {
 						name: option.name,
 						x: option.x,
 						y: option.y,
-						width: MAPS.width[SHAPE_TYPES.RECT] * option.zoomScale,
-						height: MAPS.height[SHAPE_TYPES.RECT] * option.zoomScale,
+						width: MAPS.width[SHAPE_TYPES.RECT] * option.zoomScale - (option.strokeWidth || 0),
+						height: MAPS.height[SHAPE_TYPES.RECT] * option.zoomScale - (option.strokeWidth || 0),
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
 						fill: option.backgroundColor,
@@ -104,8 +104,9 @@ export default function generateShape(option) {
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
 						opacity: option.opacity,
-						fill: option.backgroundColor,
+						fill: 'rgb(41, 141, 248)',
 						strokeScaleEnabled: false,
+						zIndex: 1000,
 						draggable: true,
 						onMouseOver: () => {
 							document.body.style.cursor = 'pointer';
@@ -152,7 +153,6 @@ export default function generateShape(option) {
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX * option.zoomScale,
 							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
-							lineHeight: (MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.scaleY) / option.fontSize,
 							draggable: true,
 							onDblClick: option.onDblClick,
 						}}
@@ -398,11 +398,12 @@ export default function generateShape(option) {
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
+								const totalWidth = MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale;
 								if (option.align === 'center') {
-									intXPosition = (MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth) / 2;
+									intXPosition = (totalWidth - textWidth) / 2;
 								}
 								if (option.align === 'right') {
-									intXPosition = MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale - textWidth;
+									intXPosition = totalWidth - textWidth;
 								}
 								const smallXPosition = intXPosition + intTextWidth;
 
@@ -484,7 +485,6 @@ export default function generateShape(option) {
 			);
 			break;
 		case SHAPE_TYPES.CODE_H:
-		case SHAPE_TYPES.CODE_V:
 		case SHAPE_TYPES.CODE_QR:
 			shape = (
 				<Image
@@ -497,12 +497,46 @@ export default function generateShape(option) {
 						scaleX: option.scaleX,
 						scaleY: option.scaleY,
 						image: option.image,
-						rotation: option.type === SHAPE_TYPES.CODE_V ? 90 : 0,
+						rotation: 0,
 						draggable: true,
 						onTransform: option.onTransform,
 						onTransformEnd: option.onTransformEnd,
 					}}
 				/>
+			);
+			break;
+		case SHAPE_TYPES.CODE_V:
+			shape = (
+				<Group>
+					<Shape
+						{...{
+							name: option.name,
+							x: option.x,
+							y: option.y,
+							width: MAPS.containerWidth[option.type] * option.zoomScale,
+							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							sceneFunc(context) {
+								context.rotate(Math.PI / 2);
+								context.translate(0, -MAPS.containerWidth[option.type] * option.zoomScale);
+								context.drawImage(option.image, 0, 0, MAPS.containerHeight[option.type] * option.zoomScale, MAPS.containerWidth[option.type] * option.zoomScale);
+							}
+						}}
+					/>
+					<Rect
+						{...{
+							name: option.name,
+							x: option.x,
+							y: option.y,
+							width: MAPS.containerWidth[option.type] * option.zoomScale,
+							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							scaleX: option.scaleX,
+							scaleY: option.scaleY,
+							draggable: true,
+							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
+						}}
+					/>
+				</Group>
 			);
 			break;
 		default:

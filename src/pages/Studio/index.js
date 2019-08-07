@@ -127,22 +127,9 @@ class Studio extends Component {
 				if (copiedComponent.name) {
 					if (copiedComponent.type !== SHAPE_TYPES.RECT_SELECT) {
 						const newPosition = {};
-						if (canCopyOrDelete) {
-							const selectedComponent = componentsDetail[selectedShapeName];
-							if (selectedComponent) {
-								const {x, y, scaleY} = selectedComponent;
-								newPosition.x = x;
-								newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
-							} else {
-								!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
-								newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
-								newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
-							}
-						} else {
-							!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
-							newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
-							newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
-						}
+						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+						newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
+						newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
 
 						addComponent({
 							...copiedComponent,
@@ -262,14 +249,53 @@ class Studio extends Component {
 	handleStageMouseMove = (e) => {
 		if (this.moveStart) {
 			const { updateComponentsDetail } = this.props;
-			updateComponentsDetail({
-				isStep: false,
-				selectedShapeName: RECT_SELECT_NAME,
-				[RECT_SELECT_NAME]: {
-					width: e.evt.clientX - this.moveStartX,
-					height: e.evt.clientY - this.moveStartY
-				},
-			});
+			const diffX = e.evt.clientX - this.moveStartX;
+			const diffY = e.evt.clientY - this.moveStartY;
+			if (diffX > 0) {
+				if (diffY > 0) {
+					updateComponentsDetail({
+						isStep: false,
+						selectedShapeName: RECT_SELECT_NAME,
+						[RECT_SELECT_NAME]: {
+							width: Math.abs(diffX),
+							height: Math.abs(diffY),
+						},
+					});
+				} else {
+					updateComponentsDetail({
+						isStep: false,
+						selectedShapeName: RECT_SELECT_NAME,
+						[RECT_SELECT_NAME]: {
+							y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
+							width: Math.abs(diffX),
+							height: Math.abs(diffY),
+						},
+					});
+				}
+			} else if (diffX <= 0) {
+				if (diffY > 0) {
+					updateComponentsDetail({
+						isStep: false,
+						selectedShapeName: RECT_SELECT_NAME,
+						[RECT_SELECT_NAME]: {
+							x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
+							width: Math.abs(diffX),
+							height: Math.abs(diffY),
+						},
+					});
+				} else {
+					updateComponentsDetail({
+						isStep: false,
+						selectedShapeName: RECT_SELECT_NAME,
+						[RECT_SELECT_NAME]: {
+							x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
+							y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
+							width: Math.abs(e.evt.clientX - this.moveStartX),
+							height: Math.abs(e.evt.clientY - this.moveStartY),
+						},
+					});
+				}
+			}
 		}
 	};
 
@@ -502,7 +528,7 @@ class Studio extends Component {
 		updateComponentsDetail({
 			selectedShapeName: targetName,
 			[targetName]: {
-				text: '',
+				content: '',
 			},
 		});
 	};
@@ -556,41 +582,22 @@ class Studio extends Component {
 					rotation,
 				},
 			};
-			if (type === SHAPE_TYPES.CODE_V) {
-				componentDetail[name].lines = [
-					[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
-					[
-						x - height * realScaleY,
-						0,
-						x - height * realScaleY,
-						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-					],
-					[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
-					[
-						0,
-						y + realW * realScaleX,
-						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-						y + realW * realScaleX,
-					],
-				];
-			} else {
-				componentDetail[name].lines = [
-					[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
-					[
-						x + realW * realScaleX,
-						0,
-						x + realW * realScaleX,
-						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-					],
-					[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
-					[
-						0,
-						y + height * realScaleY,
-						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-						y + height * realScaleY,
-					],
-				];
-			}
+			componentDetail[name].lines = [
+				[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+				[
+					x + realW * realScaleX,
+					0,
+					x + realW * realScaleX,
+					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+				],
+				[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
+				[
+					0,
+					y + height * realScaleY,
+					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+					y + height * realScaleY,
+				],
+			];
 			updateComponentsDetail(componentDetail);
 		}
 	};
@@ -690,6 +697,7 @@ class Studio extends Component {
 			stageHeight,
 			props: {
 				updateComponentsDetail,
+				updateState,
 				copySelectedComponent,
 				deleteSelectedComponent,
 				addComponent,
@@ -700,6 +708,7 @@ class Studio extends Component {
 				fetchTemplateDetail,
 				studio: {
 					selectedShapeName,
+					selectedComponent,
 					componentsDetail,
 					showRightToolBox,
 					rightToolBoxPos,
@@ -802,10 +811,12 @@ class Studio extends Component {
 								{...{
 									bindFields,
 									selectedShapeName,
+									selectedComponent,
 									componentsDetail,
 									zoomScale,
 									templateInfo: curTemplate,
 									updateComponentsDetail,
+									updateState,
 									deleteSelectedComponent,
 									addComponent,
 								}}
@@ -818,7 +829,7 @@ class Studio extends Component {
 						{...{
 							color: (componentsDetail[selectedShapeName] || {}).fontColor,
 							fontSize: (componentsDetail[selectedShapeName] || {}).fontSize,
-							text: (componentsDetail[selectedShapeName] || {}).text,
+							text: (componentsDetail[selectedShapeName] || {}).context,
 							position: rightToolBoxPos,
 							componentsDetail,
 							selectedShapeName,

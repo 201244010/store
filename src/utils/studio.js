@@ -95,6 +95,7 @@ export const getPositionInNearScope = (source, target, scopedPosition) => {
 		}
 	}
 
+	console.log('ret', ret);
 	return ret;
 };
 
@@ -178,12 +179,18 @@ export const getNearestLines = (componentsDetail, selectedShapeName, scopedCompo
 	const scopedPosition = {};
 	if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) > -1) {
 		scopedComponents.forEach((detail) => {
-			scopedKeys.push(detail.name);
-			if (!scopedPosition.x || scopedPosition.x > componentsDetail[detail.name].x) {
-				scopedPosition.x = componentsDetail[detail.name].x;
-			}
-			if (!scopedPosition.y || scopedPosition.y > componentsDetail[detail.name].y) {
-				scopedPosition.y = componentsDetail[detail.name].y;
+			if (detail.name) {
+				scopedKeys.push(detail.name);
+				const curDetail = componentsDetail[detail.name];
+
+				if (curDetail) {
+					if (!scopedPosition.x || scopedPosition.x > curDetail.x) {
+						scopedPosition.x = curDetail.x;
+					}
+					if (!scopedPosition.y || scopedPosition.y > curDetail.y) {
+						scopedPosition.y = curDetail.y;
+					}
+				}
 			}
 		});
 	}
@@ -363,7 +370,11 @@ export const initTemplateDetail = (stage, layers, zoomScale, screenType) => {
 			if (!['sup', 'sub'].includes(layer.subType)) {
 				layer.subType = 'normal';
 			}
-			layer.type = `${layer.type}@${layer.subType}@${layer.backgroundColor}`;
+			let backgroundColor = layer.backgroundColor;
+			if (!backgroundColor || backgroundColor === 'red' || backgroundColor === 'opacity') {
+				backgroundColor = 'white';
+			}
+			layer.type = `${layer.type}@${layer.subType}@${backgroundColor}`;
 		}
 		if (layer.type === SHAPE_TYPES.CODE) {
 			if (layer.width - layer.height > 10) {
@@ -428,9 +439,6 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 			const backWidth = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.width = backWidth;
 			componentDetail.height = backWidth * componentDetail.ratio;
-		} else if (SHAPE_TYPES.CODE_V === componentDetail.type) {
-			componentDetail.height = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
-			componentDetail.width = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
 		} else {
 			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
