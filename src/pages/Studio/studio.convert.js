@@ -1,8 +1,12 @@
 const fs = require('fs');
 
 function convert(fileName) {
-	const jsonStr = fs.readFileSync(`${__dirname}/${fileName}`);
-	const jsonObject = JSON.parse(jsonStr.toString());
+	const jsonBuffer = fs.readFileSync(`${__dirname}/${fileName}`);
+	const jsonStr = jsonBuffer.toString();
+	if (!jsonStr) {
+		return;
+	}
+	const jsonObject = JSON.parse(jsonStr);
 
 	let fixIndex;
 
@@ -23,7 +27,9 @@ function convert(fileName) {
 		delete layer.image;
 		delete layer.imageType;
 
-		layer.type = layer.type.split('@')[0];
+		if (layer.type) {
+			layer.type = layer.type.split('@')[0];
+		}
 		layer.startX = layer.backStartX;
 		delete layer.backStartX;
 		layer.startY = layer.backStartY;
@@ -78,13 +84,13 @@ function convert(fileName) {
 			layer.smallStartY = layer.backSmallStartY;
 			delete layer.backSmallStartY;
 		}
-		if (layer.bindField) {
-			layer.bindField = `{{${layer.bindField}}}`;
-		} else {
+
+		if (!layer.hasConverted) {
 			layer.bindField = layer.content;
+			layer.content = layer.text;
+			layer.hasConverted = true;
+			delete layer.text;
 		}
-		layer.content = layer.text;
-		delete layer.text;
 	}
 
 	jsonObject.layers.splice(fixIndex, 1);
@@ -96,7 +102,11 @@ function convert(fileName) {
 fs.readdir(__dirname, (err, files) => {
 	files.forEach(file => {
 		if (file.indexOf('.json') > -1) {
-			convert(file);
+			try {
+				convert(file);
+			} catch (e) {
+				throw new Error(`${file}转换出错`);
+			}
 		}
 	});
 });

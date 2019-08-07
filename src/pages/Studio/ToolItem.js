@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { SIZES, SHAPE_TYPES, IMAGE_TYPES, MAPS } from '@/constants/studio';
+import { formatMessage } from 'umi/locale';
 
 const contentMap = {
-	[SHAPE_TYPES.TEXT]: '双击编辑文本',
+	[SHAPE_TYPES.TEXT]: formatMessage({ id: 'studio.action.text.db.click' }),
 	[SHAPE_TYPES.PRICE_NORMAL_WHITE]: '99.00',
 	[SHAPE_TYPES.PRICE_SUPER_WHITE]: '99.00',
 	[SHAPE_TYPES.PRICE_SUB_WHITE]: '99.00',
