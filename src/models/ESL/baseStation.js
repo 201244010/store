@@ -219,7 +219,7 @@ export default {
 		*unsubscribeTopic(_, { put }) {
 			const responseTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
-				payload: { service: 'response', action: 'sub' },
+				payload: { service: 'esl/response', action: 'sub' },
 			});
 
 			yield put({
@@ -234,7 +234,7 @@ export default {
 			yield put({
 				type: 'mqttStore/setTopicListener',
 				payload: {
-					service: 'response',
+					service: 'esl/response',
 					handler: receivedMessage => {
 						const { data } = JSON.parse(receivedMessage);
 						const { opcode, errcode, result: { scanMulti, scanPeriod } = {} } = format(
@@ -265,7 +265,7 @@ export default {
 			const { networkId } = payload;
 			const requestTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
-				payload: { service: 'request' },
+				payload: { service: 'esl/request' },
 			});
 
 			yield put({
@@ -284,7 +284,7 @@ export default {
 			const { networkId, scanPeriod, isEnergySave, scanMulti = 2 } = payload;
 			const requestTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
-				payload: { service: 'request' },
+				payload: { service: 'esl/request' },
 			});
 			yield put({
 				type: 'mqttStore/publish',
