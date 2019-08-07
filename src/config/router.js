@@ -209,6 +209,14 @@ const router = [
 			},
 
 			{
+				path: '/network',
+				name: 'network',
+				id: 'network',
+				icon: 'blank',
+				component: './DeviceManagement/Network'
+			},
+			
+			{
 				path: '/basicData',
 				name: 'basicData',
 				icon: 'blank',
