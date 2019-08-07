@@ -207,11 +207,11 @@ export default {
 		},
 
 		*getNetWorkIdList(_, { put, call }) {
-			const response = yield call(Actions.deviceApHandler, 'getNetworkIdList');
+			const response = yield call(Actions.deviceApHandler, 'getNetworkList');
 			if (response.code === ERROR_OK) {
 				const { data = {} } = response || {};
-				const { networkIdList = [] } = format('toCamel')(data);
-				yield put({ type: 'updateState', payload: { networkIdList } });
+				const { networkList = [] } = format('toCamel')(data);
+				yield put({ type: 'updateState', payload: { networkIdList: networkList } });
 			}
 			return response;
 		},
@@ -237,7 +237,7 @@ export default {
 					service: 'response',
 					handler: receivedMessage => {
 						const { data } = JSON.parse(receivedMessage);
-						const { opcode, result: { scanMulti, scanPeriod } = {} } = format(
+						const { opcode, errcode, result: { scanMulti, scanPeriod } = {} } = format(
 							'toCamel'
 						)(data[0] || {});
 
@@ -255,7 +255,7 @@ export default {
 							};
 						}
 
-						handler(action, networkConfig);
+						handler(errcode, action, networkConfig);
 					},
 				},
 			});

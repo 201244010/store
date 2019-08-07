@@ -6,6 +6,10 @@ function convert(fileName) {
 
 	let fixIndex;
 
+	if (!jsonObject.layers || !jsonObject.layers.length) {
+		return;
+	}
+
 	for (let i = 0; i < jsonObject.layers.length; i++) {
 		const layer = jsonObject.layers[i];
 		if (layer.type === 'rect@fix') {
@@ -91,7 +95,7 @@ function convert(fileName) {
 
 fs.readdir(__dirname, (err, files) => {
 	files.forEach(file => {
-		if (file.indexOf('studio') === -1) {
+		if (file.indexOf('.json') > -1) {
 			convert(file);
 		}
 	});
