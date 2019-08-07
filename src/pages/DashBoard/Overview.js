@@ -114,7 +114,21 @@ const Overview = props => {
 							cardStyle: overviewCardStyle,
 							title: formatMessage({ id: 'dashboard.overview.esl.push.total' }),
 							infoContent: TEXT.ESL_INFO,
-							content: eslTotalCount === '' ? '--' : priceFormat(eslTotalCount),
+							content: (
+								<>
+									<div>
+										{eslTotalCount === '' ? '--' : priceFormat(eslTotalCount)}
+									</div>
+									<div style={descriptionStyle}>
+										{formatMessage({
+											id: 'dashboard.overview.ap.online',
+										})}
+										<span style={decriptionNumStyle}>
+											{apTotalCount === '' ? '--' : apTotalCount}
+										</span>
+									</div>
+								</>
+							),
 							extra: (
 								<div className={styles['card-extra-img']}>
 									<ExtraImage iconName="ESL.png" />
@@ -129,17 +143,22 @@ const Overview = props => {
 							onClick: overviewDeviceLoading ? null : () => goToPath('baseStation'),
 							loading: overviewDeviceLoading,
 							cardStyle: overviewCardStyle,
-							title: formatMessage({ id: 'dashboard.overview.ap.online' }),
+							title: formatMessage({ id: 'dashboard.overview.device.online' }),
 							infoContent: TEXT.AP_INFO,
+							// TODO 在线网络设备数，离线网络设备数 需要替换变量
 							content: (
 								<>
-									<div>{apTotalCount === '' ? '--' : apTotalCount}</div>
-									{/* <div style={descriptionStyle}>
+									<div>
+										{eslTotalCount === '' ? '--' : priceFormat(eslTotalCount)}
+									</div>
+									<div style={descriptionStyle}>
 										{formatMessage({
-											id: 'dashboard.overview.ap.offline',
+											id: 'dashboard.overview.device.offline',
 										})}
-										<span style={decriptionNumStyle}>0</span>
-									</div> */}
+										<span style={decriptionNumStyle}>
+											{apTotalCount === '' ? '--' : apTotalCount}
+										</span>
+									</div>
 								</>
 							),
 							extra: (

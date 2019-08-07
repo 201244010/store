@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import Media from 'react-media';
@@ -99,7 +99,7 @@ export const formatTime = (time, rangeType) => {
 	return timeData.format('M/D');
 };
 
-class ContentChart extends Component {
+class ContentChart extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.timer = null;

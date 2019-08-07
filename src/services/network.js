@@ -1,6 +1,6 @@
 import { customizeFetch } from '@/utils/fetch';
 
-const fetchApi = customizeFetch('api/device');
+const fetchApi = customizeFetch('ap/api/device');
 
 export const handleNetworkEquipment = (api, options = {}) => {
 	const opts = {
