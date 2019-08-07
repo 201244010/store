@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, Table } from 'antd';
 import { formatMessage } from 'umi/locale';
-// import { connect } from 'dva';
 
 // @connect(
 // 	state => ({}),

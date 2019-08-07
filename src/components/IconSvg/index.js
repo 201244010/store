@@ -1,6 +1,6 @@
 import React from 'react';
 
-const IconEquipment = ({color}) => (
+const IconEquipment = ({ color }) => (
 	<svg
 		width="40px"
 		height="40px"
@@ -19,7 +19,7 @@ const IconEquipment = ({color}) => (
 	</svg>
 );
 
-const IconLink = ({color}) => {
+const IconLink = ({color}) => (
 	<svg
 		width="40px"
 		height="40px"
@@ -35,10 +35,10 @@ const IconLink = ({color}) => {
 				fill={color}
 			/>
 		</g>
-	</svg>;
-};
+	</svg>
+);
 
-const IconNetwork = ({color}) => (
+const IconNetwork = ({ color }) => (
 	<svg
 		width="40px"
 		height="40px"
