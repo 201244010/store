@@ -16,6 +16,8 @@ const FormItem = Form.Item;
 	dispatch => ({
 		changeSearchFormValue: payload =>
 			dispatch({ type: 'store/changeSearchFormValue', payload }),
+		updatePagination: options =>
+			dispatch({ type: 'store/updatePagination', payload: { options } }),
 		clearSearch: () => dispatch({ type: 'store/clearSearch' }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
@@ -122,7 +124,7 @@ class StoreManagement extends Component {
 			getRegionList();
 		}
 		clearSearch();
-		getStoreList({});
+		getStoreList({ current: 1 });
 	}
 
 	componentWillUnmount() {
@@ -159,11 +161,12 @@ class StoreManagement extends Component {
 	};
 
 	handleReset = async () => {
-		const { form, clearSearch } = this.props;
+		const { form, clearSearch, getStoreList } = this.props;
 		if (form) {
 			form.resetFields();
 		}
 		await clearSearch();
+		await getStoreList({ current: 1 });
 	};
 
 	handleSubmit = () => {
@@ -191,6 +194,12 @@ class StoreManagement extends Component {
 		});
 	};
 
+	handleTableChange = pagination => {
+		const { current = 1 } = pagination;
+		const { updatePagination } = this.props;
+		updatePagination({ current });
+	};
+
 	render() {
 		const {
 			form: { getFieldDecorator },
@@ -199,6 +208,7 @@ class StoreManagement extends Component {
 				shopType_list,
 				searchFormValue: { keyword, type_one, type_two },
 				loading,
+				pagination,
 			},
 		} = this.props;
 
@@ -272,7 +282,8 @@ class StoreManagement extends Component {
 						rowKey="shop_id"
 						dataSource={formattedList}
 						columns={this.columns}
-						pagination={{ showSizeChanger: true }}
+						pagination={pagination}
+						onChange={this.handleTableChange}
 					/>
 				</div>
 			</Card>
