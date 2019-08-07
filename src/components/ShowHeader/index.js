@@ -1,19 +1,30 @@
 import React from 'react';
+import { connect } from 'dva';
 import { Tabs } from 'antd';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { SHOP_ID_KEY, SHOP_LIST_KEY, getCookieByKey } from '@/utils/cookies';
 import ShowTabContent from '../ShowTabContent';
+import { ERROR_OK } from '@/constants/errorCode';
 
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 const ACTIVEKEY = ['today', 'week', 'month'];
 
-export default class ShowHeader extends React.PureComponent {
+@connect(
+	state => ({
+		showInfo: state.showInfo,
+	}),
+	dispatch => ({
+		refreshStoreToken: () => dispatch({ type: 'showInfo/refreshStoreToken' }),
+	})
+)
+class ShowHeader extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.couter = 0;
+		this.startTime = new Date().getTime();
 	}
 
 	state = {
@@ -41,12 +52,29 @@ export default class ShowHeader extends React.PureComponent {
 				this.couter = 0;
 				this.setState({ activeKey: ACTIVEKEY[activeKeyNum] });
 			}
+
+			const nowTime = new Date().getTime();
+			if (nowTime - this.refreshTime > 72000000) {
+				this.startRefreshToken();
+			}
 		}, 1000);
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.setTime);
 	}
+
+	startRefreshToken = () => {
+		const { refreshStoreToken } = this.props;
+		refreshStoreToken().then(response => {
+			const { code } = response;
+			if (code === ERROR_OK) {
+				this.startTime = new Date().getTime();
+			} else {
+				this.startRefreshToken();
+			}
+		});
+	};
 
 	tabChange = value => {
 		this.setState({ activeKey: value });
@@ -101,3 +129,5 @@ export default class ShowHeader extends React.PureComponent {
 		);
 	}
 }
+
+export default ShowHeader;
