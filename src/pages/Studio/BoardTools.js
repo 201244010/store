@@ -41,7 +41,7 @@ export default function BoardTools(props) {
 				>
 					<Fragment>
 						<img src={require('@/assets/studio/hLine.svg')} />
-						<span>横向直线</span>
+						<span>{formatMessage({ id: 'studio.component.line.h' })}</span>
 					</Fragment>
 				</ToolItem>
 				<ToolItem
@@ -52,7 +52,7 @@ export default function BoardTools(props) {
 				>
 					<Fragment>
 						<img src={require('@/assets/studio/vLine.svg')} />
-						<span>竖向直线</span>
+						<span>{formatMessage({ id: 'studio.component.line.v' })}</span>
 					</Fragment>
 				</ToolItem>
 				<ToolItem
@@ -63,7 +63,7 @@ export default function BoardTools(props) {
 				>
 					<Fragment>
 						<img src={require('@/assets/studio/image.svg')} />
-						<span>图片</span>
+						<span>{formatMessage({ id: 'studio.component.image' })}</span>
 					</Fragment>
 				</ToolItem>
 			</div>
@@ -147,7 +147,7 @@ export default function BoardTools(props) {
 				>
 					<Fragment>
 						<img src={require('@/assets/studio/code_v.svg')} />
-						<span>竖向条码</span>
+						<span>{formatMessage({ id: 'studio.component.barcode.v' })}</span>
 					</Fragment>
 				</ToolItem>
 				<ToolItem
