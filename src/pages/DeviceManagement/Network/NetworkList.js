@@ -26,9 +26,6 @@ class NetworkList extends React.Component {
 
 const Topology = props => {
 	const { online, upSpeed, downSpeed } = props || {};
-	// console.log(typeof IconLink({color: 'green'}));
-	// console.log(typeof (<IconLink />));
-	// console.log(typeof IconLink);
 	return (
 		<div className={styles['network-shop']}>
 			<div className={styles['network-title']}>

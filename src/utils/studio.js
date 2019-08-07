@@ -370,7 +370,11 @@ export const initTemplateDetail = (stage, layers, zoomScale, screenType) => {
 			if (!['sup', 'sub'].includes(layer.subType)) {
 				layer.subType = 'normal';
 			}
-			layer.type = `${layer.type}@${layer.subType}@${layer.backgroundColor}`;
+			let backgroundColor = layer.backgroundColor;
+			if (!backgroundColor || backgroundColor === 'red' || backgroundColor === 'opacity') {
+				backgroundColor = 'white';
+			}
+			layer.type = `${layer.type}@${layer.subType}@${backgroundColor}`;
 		}
 		if (layer.type === SHAPE_TYPES.CODE) {
 			if (layer.width - layer.height > 10) {

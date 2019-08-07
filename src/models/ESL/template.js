@@ -198,112 +198,20 @@ export default {
 				});
 				layers = layers || [];
 
-				// layers = [{
-				// 	type: 'rect',
-				// 	name: 'rect1',
-				// 	background: 'red',
-				// 	startX: 10,
-				// 	startY: 10,
-				// 	width: 450,
-				// 	height: 150,
-				// 	strokeWidth: 3,
-				// 	strokeColor: 'black',
-				// 	cornerRadius: 0,
-				// 	rotation: 0
-				// }, {
-				// 	type: 'text',
-				// 	name: 'text2',
-				// 	background: 'white',
-				// 	startX: 20,
-				// 	startY: 20,
-				// 	width: 450,
-				// 	height: 150,
-				// 	rotation: 0,
-				// 	fontFamily: 'Microsoft Yahei',
-				// 	fontSize: 14,
-				// 	fontColor: 'black',
-				// 	bold: false,
-				// 	italic: false,
-				// 	underline: false,
-				// 	strikethrough: true,
-				// 	align: 'left',
-				// 	content: '商品名称',
-				// 	bindField: '{{goods_name}}'
-				// }, {
-				// 	startX: 15,
-				// 	startY: 200,
-				// 	type: 'line@h',
-				// 	name: 'line@h3',
-				// 	background: 'black',
-				// 	width: 50,
-				// 	height: 1,
-				// 	strokeWidth: 1,
-				// 	strokeColor: 'black',
-				// 	rotation: 0
-				// }, {
-				// 	startX: 15,
-				// 	startY: 200,
-				// 	type: 'line@v',
-				// 	name: 'line@v4',
-				// 	background: 'black',
-				// 	width: 1,
-				// 	height: 50,
-				// 	strokeWidth: 1,
-				// 	strokeColor: 'black',
-				// 	rotation: 0
-				// }, {
-				// 	type: 'image',
-				// 	name: 'image5',
-				// 	startX: 200,
-				// 	startY: 200,
-				// 	rotation: 0,
-				// 	width: 16,
-				// 	height: 16
-				// }, {
-				// 	type: 'price@sub@white',
-				// 	subType: 'sub',
-				// 	name: 'price@sub@white6',
-				// 	background: 'white',
-				// 	startX: 0,
-				// 	startY: 0,
-				// 	width: 450,
-				// 	height: 150,
-				// 	strokeWidth: 3,
-				// 	strokeColor: 'black',
-				// 	precision: 2,
-				// 	rotation: 0,
-				// 	fontFamily: 'Microsoft Yahei',
-				// 	fontSize: 14,
-				// 	fontColor: 'black',
-				// 	smallFontSize: 8,
-				// 	bold: true,
-				// 	italic: true,
-				// 	underline: true,
-				// 	strikethrough: true,
-				// 	align: 'left',
-				// 	content: '99.00',
-				// 	bindField: '{{goods_name}}'
-				// }, {
-				// 	type: 'barcode@qr',
-				// 	name: 'barcode@qr7',
-				// 	startX: 9,
-				// 	startY: 85,
-				// 	width: 95,
-				// 	height: 14,
-				// 	codec: 'EAN13',
-				// 	content: '1234561234567',
-				// 	bindField: '{{bar_code}}'
-				// }];
 				initTemplateDetail(stage, layers, zoomScale, payload.screenType);
 
 				const componentsDetail = {
 					isStep: !!templateInfo.studio_info
 				};
 				let hasImage = false;
-				layers.map(layer => {
-					componentsDetail[layer.name] = layer;
-					hasImage = hasImage || IMAGE_TYPES.includes(layer.type);
-				});
+				for (let i = 0; i < layers.length; i++) {
+					const layer = layers[i];
+					if (!layer.name) {
+						layer.name = `${layer.type}${i}`;
+					}
+					componentsDetail[layer.name] = layers[i];
+					hasImage = hasImage || IMAGE_TYPES.includes(layers[i].type);
+				}
 
 				if (hasImage) {
 					(yield Promise.all(
