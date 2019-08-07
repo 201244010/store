@@ -179,7 +179,7 @@ export default class RightToolBox extends Component {
 			const detail = componentsDetail[selectedShapeName];
 			const image = document.createElement('img');
 			JsBarcode(image, value, {
-				format: 'CODE39',
+				format: 'CODE128',
 				displayValue: false
 			});
 
