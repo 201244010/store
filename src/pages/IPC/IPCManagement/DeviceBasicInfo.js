@@ -3,10 +3,11 @@ import { Card, Icon, Button, Form, Input, Modal, Spin, /* Radio, */ message } fr
 import { connect } from 'dva';
 // import PropTypes from 'prop-types';
 import { formatMessage } from 'umi/locale';
-import defaultImage from '@/assets/imgs/default.jpeg';
 import router from 'umi/router';
+import defaultImage from '@/assets/imgs/default.jpeg';
 
-import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
+
+import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
 
 import styles from './DeviceBasicInfo.less';
 
@@ -295,7 +296,7 @@ class DeviceBasicInfo extends React.Component {
 					className={styles['main-card']}
 				>
 					<img src={image} alt="main-camera" className={styles['main-image']} />
-					<Form {...FORM_ITEM_LAYOUT} className={styles['info-form']}>
+					<Form {...FORM_ITEM_LAYOUT_MANAGEMENT} className={styles['info-form']}>
 
 						<Form.Item
 							className={!isEdit ? styles.hidden : ''}
