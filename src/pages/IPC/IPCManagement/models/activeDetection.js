@@ -2,16 +2,14 @@ import { MESSAGE_TYPE } from '@/constants';
 // import { message } from 'antd';
 import { ERROR_OK } from '@/constants/errorCode';
 
-
 const getOperationCode = '0x3120';
 const setOperationCode = '0x3121';
 
-const dataSerializer = (item) => {
+const dataSerializer = item => {
 	// console.log('item: ', item);
 	const object = {};
 	switch (item.audio_level) {
-		case 0:
-		{
+		case 0: {
 			object.isSound = false;
 			object.sSensitivity = 50;
 			break;
@@ -31,13 +29,12 @@ const dataSerializer = (item) => {
 			object.sSensitivity = 100;
 			break;
 		}
-		default: break;
+		default:
+			break;
 	}
 
-
 	switch (item.motion_level) {
-		case 0:
-		{
+		case 0: {
 			object.isDynamic = false;
 			object.mSensitivity = 50;
 			break;
@@ -57,18 +54,22 @@ const dataSerializer = (item) => {
 			object.mSensitivity = 100;
 			break;
 		}
-		default: break;
+		default:
+			break;
 	}
 
-	const arr = item.weekday.toString(2).split('').reverse();
+	const arr = item.weekday
+		.toString(2)
+		.split('')
+		.reverse();
 	// console.log(arr);
 	// console.log(object);
 
 	const days = [];
 	for (let i = 0; i < arr.length; i++) {
-		if (arr[i] === '1'){
+		if (arr[i] === '1') {
 			days.push((i + 1).toString());
-		};
+		}
 	}
 
 	// console.log(days);
@@ -76,7 +77,7 @@ const dataSerializer = (item) => {
 		// 7*24小时
 		object.isAuto = 1;
 		for (let index = 0; index < 7; index++) {
-			days[index] = (index+1).toString();
+			days[index] = (index + 1).toString();
 		}
 
 		object.all = true;
@@ -97,7 +98,7 @@ const dataSerializer = (item) => {
 	return object;
 };
 
-const paramSerializer = (item) => {
+const paramSerializer = item => {
 	const object = {};
 	if (item.isSound === false) {
 		object.audio_level = 0;
@@ -124,9 +125,11 @@ const paramSerializer = (item) => {
 			default:
 				object.motion_level = 1;
 				break;
-			case 50: object.motion_level = 2;
+			case 50:
+				object.motion_level = 2;
 				break;
-			case 100: object.motion_level = 3;
+			case 100:
+				object.motion_level = 3;
 				break;
 		}
 	}
@@ -138,10 +141,10 @@ const paramSerializer = (item) => {
 	} else if (item.isAuto === 2) {
 		// object.start_time = item.startTime.unix() - moment().startOf('day').unix();
 		// object.end_time = item.endTime.unix() - moment().startOf('day').unix();
-		item.days.forEach((index) => {
+		item.days.forEach(index => {
 			arr[index - 1] = '1';
 		});
-	};
+	}
 
 	arr = arr.reverse();
 	object.weekday = parseInt(arr.join(''), 2);
@@ -165,28 +168,33 @@ export default {
 		endTime: 0,
 		days: ['1', '2', '3', '4', '5', '6', '7'],
 		all: true,
-		isAuto:1,
-		isSound:true,
-		isDynamic:true,
-		sSensitivity:50,
-		mSensitivity:50,
+		isAuto: 1,
+		isSound: true,
+		isDynamic: true,
+		sSensitivity: 50,
+		mSensitivity: 50,
 		sn: '',
 		isReading: true,
-		isSaving: 'normal'
+		isSaving: 'normal',
 	},
 	reducers: {
-		init( state, { payload: { sn }} ) {
+		init(
+			state,
+			{
+				payload: { sn },
+			}
+		) {
 			state.sn = sn;
 		},
 		readData(state, { payload }) {
 			// console.log(state.sn, payload.sn);
 			if (state.sn === payload.sn) {
-			return {
+				return {
 					...state,
 					// readFlag: false,
 					// updateFlag: false,
-				...payload,
-			};
+					...payload,
+				};
 			}
 			return state;
 		},
@@ -211,113 +219,126 @@ export default {
 		// 	return state;
 		// },
 
-		setReadingStatus(state, { payload: { sn, status }}) {
+		setReadingStatus(
+			state,
+			{
+				payload: { sn, status },
+			}
+		) {
 			// console.log(sn, state.sn);
 			// state.isReading = status;
-			if(state.sn === sn){
+			if (state.sn === sn) {
 				state.isReading = status;
 			}
-
 		},
 
-		setSavingStatus(state, { payload: { sn, status }}) {
-			if(state.sn === sn){
+		setSavingStatus(
+			state,
+			{
+				payload: { sn, status },
+			}
+		) {
+			if (state.sn === sn) {
 				state.isSaving = status;
 			}
-		}
+		},
 
 		// updateReadingFlag (state, { payload: { flag }} ) {
 		// 	state.readFlag = flag;
 		// }
 	},
 	effects: {
-		*read({ payload: { sn } }, { put }) {
+		*read(
+			{
+				payload: { sn },
+			},
+			{ put }
+		) {
 			const type = yield put.resolve({
-				type:'ipcList/getDeviceType',
-				payload:{
-					sn
-				}
+				type: 'ipcList/getDeviceType',
+				payload: {
+					sn,
+				},
 			});
 			// console.log(item);
 			const topicPublish = yield put.resolve({
-				type:'mqttIpc/generateTopic',
-				payload:{
+				type: 'mqttIpc/generateTopic',
+				payload: {
 					deviceType: type,
 					messageType: 'request',
-					method: 'pub'
-				}
+					method: 'pub',
+				},
 			});
 			// console.log(topicPublish);
 			yield put({
-				type:'mqttIpc/publish',
-				payload:{
+				type: 'mqttIpc/publish',
+				payload: {
 					topic: topicPublish,
 					message: {
 						opcode: getOperationCode,
 						param: {
-							sn
-						}
-					}
-				}
+							sn,
+						},
+					},
+				},
 			});
 
 			yield put({
 				type: 'init',
 				payload: {
-					sn
-				}
+					sn,
+				},
 			});
 
 			yield put({
 				type: 'setReadingStatus',
 				payload: {
 					sn,
-					status: true
-				}
+					status: true,
+				},
 			});
 		},
 		*update({ payload }, { put }) {
 			const { sn } = payload;
 
 			const type = yield put.resolve({
-				type:'ipcList/getDeviceType',
-				payload:{
-					sn
-				}
+				type: 'ipcList/getDeviceType',
+				payload: {
+					sn,
+				},
 			});
 			const topicPublish = yield put.resolve({
-				type:'mqttIpc/generateTopic',
-				payload:{
+				type: 'mqttIpc/generateTopic',
+				payload: {
 					deviceType: type,
 					messageType: 'request',
-					method: 'pub'
-				}
+					method: 'pub',
+				},
 			});
 
 			// console.log(paramSerializer(payload));
 			yield put({
-				type:'mqttIpc/publish',
-				payload:{
+				type: 'mqttIpc/publish',
+				payload: {
 					topic: topicPublish,
 					message: {
 						opcode: setOperationCode,
-						param: paramSerializer(payload)
-					}
-				}
+						param: paramSerializer(payload),
+					},
+				},
 			});
 			yield put({
-				type:'readData',
-				payload
+				type: 'readData',
+				payload,
 			});
 			yield put({
 				type: 'setSavingStatus',
 				payload: {
 					sn,
-					status: 'saving'
-				}
+					status: 'saving',
+				},
 			});
 		},
-
 	},
 	subscriptions: {
 		setup({ dispatch }) {
@@ -331,66 +352,65 @@ export default {
 							const { sn } = msg.data;
 							dispatch({
 								type: 'readData',
-								payload: dataSerializer(msg.data)
+								payload: dataSerializer(msg.data),
 							});
 							dispatch({
 								type: 'setReadingStatus',
 								payload: {
 									sn,
-									status: false
-								}
+									status: false,
+								},
 							});
-
 						} else {
-
 							// message.destroy();
 							// message.error('当前设备获取设置失败,请检查网络');
 						}
-					}
-				}, {
+					},
+				},
+				{
 					opcode: setOperationCode,
 					type: MESSAGE_TYPE.RESPONSE,
 					handler: (topic, msg) => {
 						const { sn } = msg.data;
-						if (msg.errcode === ERROR_OK){
+						if (msg.errcode === ERROR_OK) {
 							// message.destroy();
 
 							dispatch({
 								type: 'setSavingStatus',
 								payload: {
 									sn,
-									status: 'success'
-								}
+									status: 'success',
+								},
 							});
 							// message.success('修改成功');
-						}else {
+						} else {
 							// console.log(msg);
 							// const { sn } = msg.data;
 							dispatch({
 								type: 'setSavingStatus',
 								payload: {
 									sn,
-									status: 'failed'
-								}
+									status: 'failed',
+								},
 							});
-						};
+						}
 						setTimeout(() => {
 							dispatch({
 								type: 'setSavingStatus',
 								payload: {
 									sn,
-									status: 'normal'
-						}
+									status: 'normal',
+								},
 							});
 						}, 800);
-					}
-				}
+					},
+				},
 			];
 
 			dispatch({
 				type: 'mqttIpc/addListener',
-				payload: listeners
+				payload: listeners,
 			});
-		}
-	}
+		},
+	},
 };
