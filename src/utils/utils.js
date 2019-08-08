@@ -479,7 +479,7 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [], handlers =
 		return message;
 	}
 
-	if (handerKeys.includes(messageId) && handlers[messageId]) {
+	if (handerKeys.length > 0 && handerKeys.includes(messageId)) {
 		const handledValues = handlers[messageId](valueList) || [];
 		return handledValues.reduce((prev, cur) => prev.replace(cur.key, cur.value), message);
 	}
