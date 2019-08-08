@@ -146,13 +146,17 @@ export default {
 
 	// esl-device-title
 	'notif-system-esl-erp-title': 'ERP对接完成',
+	'notif-system-task-erp-finish-title':'EERP对接完成',
+	'notif-system-task-erp-failure-title':'EERP对接失败',
 	'notif-device-esl-ota-title': '检测到新版固件',
 	'notif-device-esl-ap-on/offline-title': '检测到基站离线',
 
 	// esl-device-desc
-	'notif-system-esl-erp-desc':
+	'notif-system-task-erp-finish-desc':
 		'【##company_name##-##shop_name##】已完成与 (##saas_name##) 的对接，成功获取 ##total_count## 条商品信息',
-	'notif-device-esl-ota-des':
+	'notif-system-task-erp-failure-desc':
+		'【##company_name##-##shop_name##】已完成与 (##saas_name##) 的对接，成功获取 ##total_count## 条商品信息',
+	'notif-device-esl-ota-desc':
 		'【##company_name##-##shop_name##】##device_name##已发布新版固件##bin_version##，请更新',
 	'notif-device-esl-ap-on/offline-desc':
 		'【##company_name##-##shop_name##】基站##device_name##已离线，请检查设备状态',
