@@ -419,7 +419,7 @@ export const priceFormat = (price, dotPos = 3) => {
 };
 
 export const analyzeMessageTemplate = (message, option = {}) => {
-	const { spliter = ':', timeFormat = 'YYYY-MM-DD HH:mm:ss' } = option;
+	const { spliter = ':', timeFormat = 'YYYY-MM-DD HH:mm:ss', handler = null } = option;
 	const decodeMessage = decodeURIComponent(message);
 	const spliterIndex = decodeMessage.indexOf(spliter);
 	let [messageId, values] = [decodeMessage, null];
@@ -435,6 +435,7 @@ export const analyzeMessageTemplate = (message, option = {}) => {
 	if (values) {
 		valueList = values.split('&').map(item => {
 			const [key, value] = item.split('=');
+
 			if (key.indexOf('decode-') > -1) {
 				return {
 					key: `##${key.replace('decode-', '')}##`,
@@ -460,10 +461,11 @@ export const analyzeMessageTemplate = (message, option = {}) => {
 	return {
 		messageId,
 		valueList,
+		handler,
 	};
 };
 
-export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
+export const replaceTemplateWithValue = ({ messageId, valueList = [], handler = null }) => {
 	if (!messageId) {
 		console.error('messageId can not be null.');
 		return null;
@@ -476,6 +478,11 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
 		return message;
 	}
 
+	if (handler) {
+		const handledValues = handler(valueList) || [];
+		return handledValues.reduce((prev, cur) => prev.replace(cur.key, cur.value), message);
+	}
+
 	return valueList.reduce((prev, cur) => prev.replace(cur.key, cur.value), message);
 };
 
@@ -484,6 +491,7 @@ export const formatMessageTemplate = (
 	option = {
 		spliter: ':',
 		timeFormat: 'YYYY-MM-DD HH:mm:ss',
+		handler: null,
 	}
 ) => replaceTemplateWithValue(analyzeMessageTemplate(message, option));
 
