@@ -112,4 +112,6 @@ export default {
 	'menu.exception.no-rescourse': '404',
 
 	'menu.network': '网络设备',
+	'menu.network.list': '网络设备',
+	'menu.network.detail': '网络设备详情',
 };

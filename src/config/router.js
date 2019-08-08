@@ -227,8 +227,8 @@ const router = [
 						name: 'detail',
 						id: 'networkDetail',
 						hideInMenu: true,
-						component: ''
-					}
+						component: './DeviceManagement/Network/NetworkDetail',
+					},
 				],
 			},
 
