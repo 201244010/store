@@ -1,4 +1,6 @@
 import * as Action from '@/services/dashBoard';
+import * as Actions from '@/services/user';
+import * as CookieUtil from '@/utils/cookies';
 import moment from 'moment';
 import { ERROR_OK } from '@/constants/errorCode';
 import { shake, format, map } from '@konata9/milk-shake';
@@ -450,6 +452,16 @@ export default {
 					},
 				},
 			});
+		},
+
+		*refreshStoreToken(options, { call }) {
+			const response = yield call(Actions.refreshStoreToken, options);
+			const { code, data: { store_token = '' } = {} } = response;
+			if (code === ERROR_OK) {
+				CookieUtil.setCookieByKey(CookieUtil.TOKEN_KEY, store_token);
+			}
+
+			return response;
 		},
 	},
 

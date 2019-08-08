@@ -4,7 +4,7 @@ import { Card, Radio, Switch, Button,Form, Spin, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 
-import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
+import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
 
 import styles from './BasicParams.less';
 
@@ -103,8 +103,8 @@ class BasicParams extends Component {
 			this.setState({
 				deviceInfo
 			});
-		loadSetting(sn);
-	}
+			loadSetting(sn);
+		}
 
 	}
 
@@ -182,8 +182,8 @@ class BasicParams extends Component {
 		return (
 			<Spin spinning={isReading || isSaving === 'saving'}>
 				<Card bordered={false} className={styles.card} title={formatMessage({id: 'basicParams.title'})}>
-					<Form>
-						<Form.Item {...FORM_ITEM_LAYOUT} label={formatMessage({id: 'basicParams.nightMode'})}>
+					<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
+						<Form.Item label={formatMessage({id: 'basicParams.nightMode'})}>
 							{
 								getFieldDecorator('nightMode',{
 									initialValue: nightMode
@@ -203,7 +203,7 @@ class BasicParams extends Component {
 							}
 						</Form.Item>
 
-						<Form.Item {...FORM_ITEM_LAYOUT} label={formatMessage({id: 'basicParams.rotation'})}>
+						<Form.Item label={formatMessage({id: 'basicParams.rotation'})}>
 							{
 								getFieldDecorator('rotation',{
 									initialValue: rotation
@@ -216,7 +216,7 @@ class BasicParams extends Component {
 
 									<RadioGroup>
 										{
-											rotate.map(item =>
+											rotate && rotate.map(item =>
 												<Radio key={item.key} value={item.key}>{item.value}{ formatMessage({id: 'basicParams.degree'})}</Radio>
 											)
 										}
@@ -229,7 +229,7 @@ class BasicParams extends Component {
 							}
 						</Form.Item>
 
-						<Form.Item {...FORM_ITEM_LAYOUT} label={formatMessage({id: 'basicParams.statusIndicator'})}>
+						<Form.Item label={formatMessage({id: 'basicParams.statusIndicator'})}>
 							{
 								getFieldDecorator('indicator',{
 									valuePropName: 'checked',

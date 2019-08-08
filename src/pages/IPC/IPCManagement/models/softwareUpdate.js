@@ -2,7 +2,6 @@ import { detectUpdate } from '../../services/IPCList';
 import { MESSAGE_TYPE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 
-
 const OPCODE = {
 	START_UPDATE: '0x3140',
 	// END_UPDATE: '0x31xx'
@@ -17,80 +16,113 @@ export default {
 		newVersion: '',
 		updating: 'normal',
 		url: '',
-		sn: ''
+		sn: '',
 	},
 	reducers: {
-		init( state, { payload: { sn }} ) {
+		init(
+			state,
+			{
+				payload: { sn },
+			}
+		) {
 			state.sn = sn;
 		},
-		setCurrentVersion (state, { payload: { sn, version }}) {
+		setCurrentVersion(
+			state,
+			{
+				payload: { sn, version },
+			}
+		) {
 			// console.log('inn: ', version);
-			if(state.sn === sn){
-			state.currentVersion = version;
+			if (state.sn === sn) {
+				state.currentVersion = version;
 			}
 		},
-		setLastCheckTime (state, { payload: { sn, time }}) {
-			if(state.sn === sn){
-			state.lastCheckTime = time;
+		setLastCheckTime(
+			state,
+			{
+				payload: { sn, time },
+			}
+		) {
+			if (state.sn === sn) {
+				state.lastCheckTime = time;
 			}
 		},
-		updateStatus (state, { payload: { needUpdate, version, url }}) {
+		updateStatus(
+			state,
+			{
+				payload: { needUpdate, version, url },
+			}
+		) {
 			state.needUpdate = needUpdate;
 			state.newVersion = version;
 			state.url = url;
 		},
-		setUpdatingStatus (state, { payload: { sn, status }}) {
+		setUpdatingStatus(
+			state,
+			{
+				payload: { sn, status },
+			}
+		) {
 			// console.log(status);
-			if(state.sn === sn){
-			state.updating = status;
-		}
-
-		}
+			if (state.sn === sn) {
+				state.updating = status;
+			}
+		},
 	},
 	effects: {
-		*load ({ payload: { sn }}, { put }) {
+		*load(
+			{
+				payload: { sn },
+			},
+			{ put }
+		) {
 			const ipcInfo = yield put.resolve({
 				type: 'ipcList/getDeviceInfo',
 				payload: {
-					sn
-				}
+					sn,
+				},
 			});
 
 			yield put({
 				type: 'init',
 				payload: {
-					sn
-				}
+					sn,
+				},
 			});
 
 			yield put({
 				type: 'setCurrentVersion',
 				payload: {
 					sn,
-					version: ipcInfo.binVersion
-				}
+					version: ipcInfo.binVersion,
+				},
 			});
 
 			yield put({
 				type: 'setLastCheckTime',
 				payload: {
 					sn,
-					time: ipcInfo.checkTime
-				}
+					time: ipcInfo.checkTime,
+				},
 			});
-
 		},
-		*detect ({ payload: { sn }}, { put, call }) {
+		*detect(
+			{
+				payload: { sn },
+			},
+			{ put, call }
+		) {
 			// console.log('detect: ', sn);
 			const deviceId = yield put.resolve({
 				type: 'ipcList/getDeviceId',
 				payload: {
-					sn
-				}
+					sn,
+				},
 			});
 
 			const response = yield call(detectUpdate, {
-				deviceId
+				deviceId,
 			});
 
 			if (response.code === ERROR_OK) {
@@ -102,61 +134,67 @@ export default {
 					payload: {
 						needUpdate,
 						version,
-						url
-					}
+						url,
+					},
 				});
 			}
 		},
-		*update ({ payload: { sn }}, { put, select }) {
-			const {newVersion, url} = yield select(state => state.ipcSoftwareUpdate);
+		*update(
+			{
+				payload: { sn },
+			},
+			{ put, select }
+		) {
+			const { newVersion, url } = yield select(state => state.ipcSoftwareUpdate);
 
 			const type = yield put.resolve({
-				type:'ipcList/getDeviceType',
-				payload:{
-					sn
-				}
+				type: 'ipcList/getDeviceType',
+				payload: {
+					sn,
+				},
 			});
 
 			const topicPublish = yield put.resolve({
-				type:'mqttIpc/generateTopic',
-				payload:{
+				type: 'mqttIpc/generateTopic',
+				payload: {
 					deviceType: type,
 					messageType: 'request',
-					method: 'pub'
-				}
+					method: 'pub',
+				},
 			});
 
 			yield put({
-				type:'mqttIpc/publish',
-				payload:{
+				type: 'mqttIpc/publish',
+				payload: {
 					topic: topicPublish,
 					message: {
 						opcode: OPCODE.START_UPDATE,
 						param: {
 							sn,
 							bin_version: newVersion,
-							url
-						}
-					}
-				}
+							url,
+						},
+					},
+				},
 			});
 
 			yield put({
 				type: 'setUpdatingStatus',
 				payload: {
 					sn,
-					status: 'loading'
-				}
+					status: 'loading',
+				},
 			});
 		},
-		*getNewVersion (_, { select }) {
-			const newVersion = yield select(state =>
-				// console.log(state, state.ipcSoftwareUpdate);
-				 state.ipcSoftwareUpdate.newVersion
+		*getNewVersion(_, { select }) {
+			const newVersion = yield select(
+				state =>
+					// console.log(state, state.ipcSoftwareUpdate);
+					state.ipcSoftwareUpdate.newVersion
 			);
 			// console.log('newVersion: ', newVersion);
 			return newVersion;
-		}
+		},
 	},
 	subscriptions: {
 		setup({ dispatch }) {
@@ -171,45 +209,44 @@ export default {
 						if (msg.errcode === ERROR_OK) {
 							const status = 'success';
 							dispatch({
-								type: 'getNewVersion'
-							}).then((version) => {
+								type: 'getNewVersion',
+							}).then(version => {
 								// console.log('version: ', version);
 								dispatch({
 									type: 'setUpdatingStatus',
 									payload: {
 										sn,
-										status
-									}
+										status,
+									},
 								});
 
 								dispatch({
 									type: 'setCurrentVersion',
 									payload: {
 										sn,
-										version
-									}
+										version,
+									},
 								});
 							});
-
-						}else{
+						} else {
 							const status = 'failed';
 
 							dispatch({
 								type: 'setUpdatingStatus',
 								payload: {
 									sn,
-									status
-								}
+									status,
+								},
 							});
 						}
-					}
-				}
+					},
+				},
 			];
 
 			dispatch({
 				type: 'mqttIpc/addListener',
-				payload: listeners
+				payload: listeners,
 			});
-		}
-	}
+		},
+	},
 };

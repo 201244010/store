@@ -1,5 +1,5 @@
-// import { message } from 'antd';
-// import { formatMessage } from 'umi/locale';
+import { message } from 'antd';
+import { formatMessage } from 'umi/locale';
 import CONFIG from '@/config';
 import { cbcEncryption, idDecode, md5Encryption } from '@/utils/utils';
 import { USER_NOT_LOGIN } from '@/constants/errorCode';
@@ -10,6 +10,8 @@ import router from 'umi/router';
 import { fetch } from 'whatwg-fetch';
 
 const { API_ADDRESS, MD5_TOKEN } = CONFIG;
+const ERR_INTERNET_DISCONNECTED = 9999;
+const GATEWAY_ERR = 9998;
 
 // const codeMessage = {
 //   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
@@ -105,6 +107,15 @@ const customizeParams = (options = {}) => {
 	return formatParams(formattedParams || {});
 };
 
+const fetchHandler = async (url, opts) => {
+	try {
+		const response = await fetch(url, opts);
+		return response;
+	} catch (err) {
+		return new Response(JSON.stringify({ code: ERR_INTERNET_DISCONNECTED }));
+	}
+};
+
 export const customizeFetch = (service = 'api', base) => {
 	const baseUrl = base || API_ADDRESS;
 	return async (api, options = {}, withAuth = true) => {
@@ -126,16 +137,22 @@ export const customizeFetch = (service = 'api', base) => {
 		}
 
 		const url = `//${baseUrl}/${service}/${api}`;
-		const response = await fetch(url, opts);
+		// const response = await fetch(url, opts);
+		let response = await fetchHandler(url, opts);
+		// console.log(response);
 
 		if (response.status === 401) {
 			unAuthHandler();
 		} else if (response.status === 403) {
 			noAuthhandler();
+		} else if (response.status === 502) {
+			response = new Response(JSON.stringify({ code: GATEWAY_ERR }));
 		}
 
 		const result = await response.clone().json();
-		if (result.code === USER_NOT_LOGIN) {
+		if (result.code === ERR_INTERNET_DISCONNECTED) {
+			message.error(formatMessage({ id: 'app.network.disconnect' }));
+		} else if (result.code === USER_NOT_LOGIN) {
 			unAuthHandler();
 		}
 

@@ -1,7 +1,8 @@
 import CryptoJS from 'crypto-js/crypto-js';
 import moment from 'moment';
-import CONFIG from '@/config';
 import { formatMessage } from 'umi/locale';
+
+import CONFIG from '@/config';
 
 const { DES_KEY, DES_IV } = CONFIG;
 
@@ -417,19 +418,39 @@ export const priceFormat = (price, dotPos = 3) => {
 		: `${isNagtive ? '-' : ''}${reversedRound}`;
 };
 
-export const analyzeMessageTemplate = message => {
-	const [messageId, values] = message.split(':');
-	let valueList = [];
+export const analyzeMessageTemplate = (message, option = {}) => {
+	const { spliter = ':', timeFormat = 'YYYY-MM-DD HH:mm:ss', handlers = {} } = option;
+	const decodeMessage = decodeURIComponent(message);
+	const spliterIndex = decodeMessage.indexOf(spliter);
+	let [messageId, values] = [decodeMessage, null];
 
+	if (spliterIndex > -1) {
+		[messageId, values] = [
+			decodeMessage.substring(0, spliterIndex),
+			decodeMessage.substring(spliterIndex + 1),
+		];
+	}
+
+	let valueList = [];
 	if (values) {
 		valueList = values.split('&').map(item => {
 			const [key, value] = item.split('=');
+
 			if (key.indexOf('decode-') > -1) {
 				return {
 					key: `##${key.replace('decode-', '')}##`,
 					value: formatMessage({ id: `${messageId}-${value}` }),
 				};
 			}
+
+			// 临时解决方法，需要和云端确定时间戳对应的特定变量名
+			if (key.indexOf('_time') > -1 || key.indexOf('timestamp') > -1) {
+				return {
+					key: `##${key}##`,
+					value: moment(parseInt(value, 10) * 1000).format(timeFormat),
+				};
+			}
+
 			return {
 				key: `##${key}##`,
 				value,
@@ -440,10 +461,11 @@ export const analyzeMessageTemplate = message => {
 	return {
 		messageId,
 		valueList,
+		handlers,
 	};
 };
 
-export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
+export const replaceTemplateWithValue = ({ messageId, valueList = [], handlers = {} }) => {
 	if (!messageId) {
 		console.error('messageId can not be null.');
 		return null;
@@ -451,16 +473,33 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
 
 	console.log('messageId: ', messageId);
 	console.log('valueList: ', valueList);
+	const handerKeys = Object.keys(handlers);
 	const message = formatMessage({ id: messageId });
 	if (valueList.length === 0) {
 		return message;
 	}
 
+	if (handerKeys.length > 0 && handerKeys.includes(messageId)) {
+		const handledValues = handlers[messageId](valueList) || [];
+		return handledValues.reduce((prev, cur) => prev.replace(cur.key, cur.value), message);
+	}
+
 	return valueList.reduce((prev, cur) => prev.replace(cur.key, cur.value), message);
 };
 
-export const formatMessageTemplate = message =>
-	replaceTemplateWithValue(analyzeMessageTemplate(message));
+export const formatMessageTemplate = (
+	message,
+	option = {
+		spliter: ':',
+		timeFormat: 'YYYY-MM-DD HH:mm:ss',
+		/**
+		 * handers {key: fun}
+		 * key 为 messageId
+		 * fun 为 自定义处理的函数
+		 */
+		handlers: {},
+	}
+) => replaceTemplateWithValue(analyzeMessageTemplate(message, option));
 
 export const convertArrayPrams = (str, sperator = '&') => {
 	const obj = {};
@@ -470,4 +509,22 @@ export const convertArrayPrams = (str, sperator = '&') => {
 	});
 
 	return obj;
+};
+
+export const mbStringLength = s => {
+	let totalLength = 0;
+	let i;
+	let charCode;
+	for (i = 0; i < s.length; i++) {
+		charCode = s.charCodeAt(i);
+		if (charCode < 0x007f) {
+			totalLength += 1;
+		} else if (charCode >= 0x0080 && charCode <= 0x07ff) {
+			totalLength += 2;
+		} else if (charCode >= 0x0800 && charCode <= 0xffff) {
+			totalLength += 3;
+		}
+	}
+	// alert(totalLength);
+	return totalLength;
 };
