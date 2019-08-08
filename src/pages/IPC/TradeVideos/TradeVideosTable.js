@@ -7,9 +7,7 @@ import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import styles from './TradeVideos.less';
 
 class TradeVideosTable extends React.Component {
-
 	render() {
-
 		const { tradeVideos, loading, total, currentPage, pageSize, expandedRowKeys } = this.props;
 		const { onShowSizeChange, onPaginationChange, watchVideoHandler, onExpand } = this.props;
 
@@ -44,27 +42,24 @@ class TradeVideosTable extends React.Component {
 				dataIndex: 'paymentMethod',
 				key: 'paymentMethod',
 				sorter: (a, b) => a.paymentMethod.localeCompare(b.paymentMethod),
-				render: item => (
-					<span>
-						{item || formatMessage({ id: 'tradeVideos.unknown' })}
-					</span>
-				),
+				render: item => <span>{item || formatMessage({ id: 'tradeVideos.unknown' })}</span>,
 			},
 			{
 				title: formatMessage({ id: 'tradeVideos.purchaseTime' }), // '交易时间',
 				dataIndex: 'purchaseTime',
 				key: 'purchaseTime',
-				sorter: (a, b) => moment(a.purchaseTime).valueOf() - moment(b.purchaseTime).valueOf(),
+				sorter: (a, b) =>
+					moment(a.purchaseTime).valueOf() - moment(b.purchaseTime).valueOf(),
 			},
 			{},
 			{
 				title: formatMessage({ id: 'tradeVideos.operation' }), // '操作',
 				dataIndex: 'key',
 				key: 'action',
-				render: (item, record) => {
+				render: (item, record) => 
 					// const { expandedRowKeys } = this.state;
 					// console.log(record);
-					return (
+					 (
 						<>
 							<a
 								className={`${styles['video-watch']} ${
@@ -92,11 +87,11 @@ class TradeVideosTable extends React.Component {
 									: formatMessage({ id: 'tradeVideos.viewDetails' })}
 							</a>
 						</>
-					);
-				},
+					)
+				,
 			},
 		];
-		return(
+		return (
 			<Table
 				columns={columns}
 				dataSource={tradeVideos}

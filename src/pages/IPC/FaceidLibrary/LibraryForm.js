@@ -56,245 +56,242 @@ class LibraryForm extends React.Component {
 				<Form
 					className={styles['form-wrapper']}
 					// title={formatMessage({id: 'faceid.createLibrary'})}
-					labelCol={{span: 6}}
-					wrapperCol={{span: 16}}
+					labelCol={{ span: 6 }}
+					wrapperCol={{ span: 16 }}
 				>
 					<Form.Item
-						label={formatMessage({id: 'faceid.libraryName'})}
+						label={formatMessage({ id: 'faceid.libraryName' })}
 						extra={(() => {
 							switch (type) {
 								case 1:
-									return formatMessage({id: 'faceid.strangerInfo'});
+									return formatMessage({ id: 'faceid.strangerInfo' });
 								case 2:
-									return formatMessage({id: 'faceid.regularInfo'});
+									return formatMessage({ id: 'faceid.regularInfo' });
 								case 3:
-									return formatMessage({id: 'faceid.employeeInfo'});
+									return formatMessage({ id: 'faceid.employeeInfo' });
 								case 4:
-									return formatMessage({id: 'faceid.blacklistInfo'});
+									return formatMessage({ id: 'faceid.blacklistInfo' });
 								default:
 									return '';
 							}
 						})()}
 					>
-						{
-							getFieldDecorator('name', {
-								initialValue: name,
-								rules: [
-									{
-										required: true,
-										message: formatMessage({
-											id: 'faceid.libraryNameRequired',
-										}),
-									},
-									{
-										max: 20,
-										message: formatMessage({
-											id: 'faceid.libraryNameFormat',
-										}),
-									},
-									{
-										validator: (rule, value, callback) => {
-											let confictFlag = false;
-											libraries.every(item => {
-												if (item.id !== id) {
-													if (item.name === value) {
-														confictFlag = true;
-														return false;
-													}
-													return true;
+						{getFieldDecorator('name', {
+							initialValue: name,
+							rules: [
+								{
+									required: true,
+									message: formatMessage({
+										id: 'faceid.libraryNameRequired',
+									}),
+								},
+								{
+									max: 20,
+									message: formatMessage({
+										id: 'faceid.libraryNameFormat',
+									}),
+								},
+								{
+									validator: (rule, value, callback) => {
+										let confictFlag = false;
+										libraries.every(item => {
+											if (item.id !== id) {
+												if (item.name === value) {
+													confictFlag = true;
+													return false;
 												}
 												return true;
-											});
-
-											if (confictFlag) {
-												callback('library-name-confict');
-											} else {
-												callback();
 											}
-										},
-										message: formatMessage({
-											id: 'faceid.libraryNameRule',
-										}),
+											return true;
+										});
+
+										if (confictFlag) {
+											callback('library-name-confict');
+										} else {
+											callback();
+										}
 									},
-								],
-							})(
-								<Input
-									disabled={isDefault}
-									placeholder={formatMessage({
-										id: 'faceid.libraryNameMsg',
-									})}
-								/>
-							)
-						}
+									message: formatMessage({
+										id: 'faceid.libraryNameRule',
+									}),
+								},
+							],
+						})(
+							<Input
+								disabled={isDefault}
+								placeholder={formatMessage({
+									id: 'faceid.libraryNameMsg',
+								})}
+							/>
+						)}
 					</Form.Item>
 
 					<Form.Item
-						label={formatMessage({id: 'faceid.photosAmountLimit'})}
-						extra={
-							`${formatMessage({id: 'faceid.photosAmountNote'}).replace('%min%', (amount || 1)).replace('%max%', maxCapacity).replace('%total%', maxCapacity) }`
-						}
+						label={formatMessage({ id: 'faceid.photosAmountLimit' })}
+						extra={`${formatMessage({ id: 'faceid.photosAmountNote' })
+							.replace('%min%', amount || 1)
+							.replace('%max%', maxCapacity)
+							.replace('%total%', maxCapacity)}`}
 					>
-						{
-							getFieldDecorator('capacity', {
-								initialValue: capacity,
-								validateFirst: true,
-								rules: [
-									{
-										required: true,
-										message: formatMessage({id: 'faceid.photosAmountRequired'}),
-									},{
-										pattern: /^[0-9]*$/,
-										message: formatMessage({id: 'faceid.integerMsg'})
-									}, {
-										validator: (rule, value, callback) => {
-											// console.log(isEdit)
-											if (value <= 0 || value < amount || value > maxCapacity) {
-												callback('photo-amount-error');
-											}else{
-												callback();
-											}
-										},
-										message: `${formatMessage({id: 'faceid.photosAmountNoteError'}).replace('%min%', (amount || 1)).replace('%max%', maxCapacity)}`,
+						{getFieldDecorator('capacity', {
+							initialValue: capacity,
+							validateFirst: true,
+							rules: [
+								{
+									required: true,
+									message: formatMessage({ id: 'faceid.photosAmountRequired' }),
+								},
+								{
+									pattern: /^[0-9]*$/,
+									message: formatMessage({ id: 'faceid.integerMsg' }),
+								},
+								{
+									validator: (rule, value, callback) => {
+										// console.log(isEdit)
+										if (value <= 0 || value < amount || value > maxCapacity) {
+											callback('photo-amount-error');
+										} else {
+											callback();
+										}
 									},
-								],
-							})(
-								<Input
-									placeholder={formatMessage({id: 'faceid.photosAmountPlaceHolder'})}
-								/>
-							)
-						}
+									message: `${formatMessage({
+										id: 'faceid.photosAmountNoteError',
+									})
+										.replace('%min%', amount || 1)
+										.replace('%max%', maxCapacity)}`,
+								},
+							],
+						})(
+							<Input
+								placeholder={formatMessage({
+									id: 'faceid.photosAmountPlaceHolder',
+								})}
+							/>
+						)}
 					</Form.Item>
 
-					<Form.Item label={
-						<span>
+					<Form.Item
+						label={
 							<span>
-								{formatMessage({id: 'faceid.remark'})}
+								<span>{formatMessage({ id: 'faceid.remark' })}</span>
+								<span className={styles.light}>
+									{formatMessage({ id: 'faceid.remarkNote' })}
+								</span>
 							</span>
-							<span className={styles.light}>
-								{formatMessage({id: 'faceid.remarkNote'})}
-							</span>
-						</span>}
-					>
-						{
-							getFieldDecorator('remarks', {
-								initialValue: remarks,
-								rules: [
-									{
-										max: 255,
-										message: formatMessage({ id: 'faceid.remarksTooLong'})
-									}
-								]
-							})(
-								<Input.TextArea
-									// disabled={isDefault}
-									autosize={{ minRows: 2, maxRows: 6 }}
-									placeholder={formatMessage(
-										{ id: 'faceid.remarkMsg' },
-									)}
-								/>
-							)
 						}
+					>
+						{getFieldDecorator('remarks', {
+							initialValue: remarks,
+							rules: [
+								{
+									max: 255,
+									message: formatMessage({ id: 'faceid.remarksTooLong' }),
+								},
+							],
+						})(
+							<Input.TextArea
+								// disabled={isDefault}
+								autosize={{ minRows: 2, maxRows: 6 }}
+								placeholder={formatMessage({ id: 'faceid.remarkMsg' })}
+							/>
+						)}
 					</Form.Item>
 
-					{
-						(() => {
-							switch(type) {
-								case 1:
-									// 生客
-									return (
-										<Form.Item
-											label={formatMessage({id: 'faceid.transferCondit' })}
-										>
-											<Form.Item className={`${styles.inline} ${styles.number}`}>
-												{
-													getFieldDecorator('period', {
-														initialValue: period,
-														validateFirst: true,
-														rules: [{
-															required: true,
-															message: formatMessage({ id: 'faceid.periodMsg' })
-														}, {
-															type: 'integer',
-															message: formatMessage({ id: 'faceid.integerMsg'})
-														}, {
-															validator: (rule, value, callback) => {
-																if (value <= 0) {
-																	callback(false);
-																}else{
-																	callback();
-																}
-															},
-															message: formatMessage({ id: 'faceid.integerMsg' })
-														}]
-													})(
-														<InputNumber
-															className="period"
-															min={1}
-														/>
-													)
-												}
-											</Form.Item>
-
-											<div className={styles.inline}>
-												{formatMessage({ id: 'faceid.transferConditSuf' })}
-											</div>
-
-											<Form.Item className={`${styles.inline} ${styles.number}`}>
-												{
-													getFieldDecorator('threshold', {
-														initialValue: threshold,
-														validateFirst: true,
-														rules: [{
-															required: true,
-															message: formatMessage({ id: 'faceid.thresholdMsg' })
-														}, {
-															type: 'integer',
-															message: formatMessage({ id: 'faceid.integerMsg'})
-														}, {
-															validator: (rule, value, callback) => {
-																if (value <= 0) {
-																	callback(false);
-																}else{
-																	callback();
-																}
-															},
-															message: formatMessage({ id: 'faceid.integerMsg' })
-														}],
-													})(
-														<InputNumber
-															min={1}
-															className="threshold"
-														/>
-													)
-												}
-											</Form.Item>
-											<div className={styles.inline}>
-												{formatMessage({ id: 'faceid.times' })}
-											</div>
-
+					{(() => {
+						switch (type) {
+							case 1:
+								// 生客
+								return (
+									<Form.Item
+										label={formatMessage({ id: 'faceid.transferCondit' })}
+									>
+										<Form.Item className={`${styles.inline} ${styles.number}`}>
+											{getFieldDecorator('period', {
+												initialValue: period,
+												validateFirst: true,
+												rules: [
+													{
+														required: true,
+														message: formatMessage({
+															id: 'faceid.periodMsg',
+														}),
+													},
+													{
+														type: 'integer',
+														message: formatMessage({
+															id: 'faceid.integerMsg',
+														}),
+													},
+													{
+														validator: (rule, value, callback) => {
+															if (value <= 0) {
+																callback(false);
+															} else {
+																callback();
+															}
+														},
+														message: formatMessage({
+															id: 'faceid.integerMsg',
+														}),
+													},
+												],
+											})(<InputNumber className="period" min={1} />)}
 										</Form.Item>
-									);
-								case 4:
-									return (
-										<Form.Item
-											label={formatMessage({id: 'faceid.warningPush'})}
-										>
-											{
-												getFieldDecorator('warning', {
-													initialValue: warning,
-													valuePropName: 'checked'
-												})(
-													<Switch />
-												)
-											}
-										</Form.Item>
-									);
-								default:
-									return '';
-							}
 
-						})()
-					}
+										<div className={styles.inline}>
+											{formatMessage({ id: 'faceid.transferConditSuf' })}
+										</div>
+
+										<Form.Item className={`${styles.inline} ${styles.number}`}>
+											{getFieldDecorator('threshold', {
+												initialValue: threshold,
+												validateFirst: true,
+												rules: [
+													{
+														required: true,
+														message: formatMessage({
+															id: 'faceid.thresholdMsg',
+														}),
+													},
+													{
+														type: 'integer',
+														message: formatMessage({
+															id: 'faceid.integerMsg',
+														}),
+													},
+													{
+														validator: (rule, value, callback) => {
+															if (value <= 0) {
+																callback(false);
+															} else {
+																callback();
+															}
+														},
+														message: formatMessage({
+															id: 'faceid.integerMsg',
+														}),
+													},
+												],
+											})(<InputNumber min={1} className="threshold" />)}
+										</Form.Item>
+										<div className={styles.inline}>
+											{formatMessage({ id: 'faceid.times' })}
+										</div>
+									</Form.Item>
+								);
+							case 4:
+								return (
+									<Form.Item label={formatMessage({ id: 'faceid.warningPush' })}>
+										{getFieldDecorator('warning', {
+											initialValue: warning,
+											valuePropName: 'checked',
+										})(<Switch />)}
+									</Form.Item>
+								);
+							default:
+								return '';
+						}
+					})()}
 				</Form>
 			</div>
 		);

@@ -10,7 +10,6 @@ import LibraryForm from './LibraryForm';
 import styles from './FaceidLibrary.less';
 import global from '@/styles/common.less';
 
-
 class LibraryList extends React.Component {
 	constructor(props) {
 		super(props);
@@ -19,7 +18,7 @@ class LibraryList extends React.Component {
 
 		this.state = {
 			editFormShown: false,
-			createFormShown :false,
+			createFormShown: false,
 			selectedRow: null,
 		};
 
@@ -28,55 +27,54 @@ class LibraryList extends React.Component {
 				title: formatMessage({ id: 'faceid.libraryName' }),
 				dataIndex: 'name',
 				key: 'name',
-				render: (name) => {
+				render: name => {
 					switch (name) {
 						case 'stranger':
-							return formatMessage({id: 'faceid.stranger'});
+							return formatMessage({ id: 'faceid.stranger' });
 						case 'regular':
-							return formatMessage({id: 'faceid.regular'});
+							return formatMessage({ id: 'faceid.regular' });
 						case 'employee':
-							return formatMessage({id: 'faceid.employee'});
+							return formatMessage({ id: 'faceid.employee' });
 						case 'blacklist':
-							return formatMessage({id: 'faceid.blacklist'});
+							return formatMessage({ id: 'faceid.blacklist' });
 						default:
 							return name;
 					}
-				}
+				},
 			},
 			{
 				title: formatMessage({ id: 'faceid.rules' }),
 				dataIndex: 'type',
 				key: 'rules',
-				render: (type) => {
+				render: type => {
 					switch (type) {
 						case 1:
-							return formatMessage({id: 'faceid.strangerInfo'});
+							return formatMessage({ id: 'faceid.strangerInfo' });
 						case 2:
-							return formatMessage({id: 'faceid.regularInfo'});
+							return formatMessage({ id: 'faceid.regularInfo' });
 						case 3:
-							return formatMessage({id: 'faceid.employeeInfo'});
+							return formatMessage({ id: 'faceid.employeeInfo' });
 						case 4:
-							return formatMessage({id: 'faceid.blacklistInfo'});
+							return formatMessage({ id: 'faceid.blacklistInfo' });
 						default:
 							return '--';
 					}
-
-				}
+				},
 			},
 			{
 				title: formatMessage({ id: 'faceid.remark' }),
 				dataIndex: 'remarks',
-				render: (remark) => {
+				render: remark => {
 					if (remark === '') {
 						return '--';
 					}
 					return remark;
-				}
+				},
 			},
 			{
 				title: formatMessage({ id: 'faceid.photosAmount' }),
 				dataIndex: 'amount',
-				render: (amount, row) => `${amount  }/${  row.capacity}`,
+				render: (amount, row) => `${amount}/${row.capacity}`,
 			},
 			{
 				title: formatMessage({ id: 'faceid.updateTime' }),
@@ -87,7 +85,6 @@ class LibraryList extends React.Component {
 					}
 					const d = moment(lastupdate * 1000);
 					return d.format('YYYY-MM-DD HH:mm:ss');
-
 				},
 			},
 			{
@@ -112,7 +109,7 @@ class LibraryList extends React.Component {
 								this.showEditForm(row.id);
 							}}
 						>
-							{formatMessage({id: 'common.edit' })}
+							{formatMessage({ id: 'common.edit' })}
 						</a>
 
 						{type < 5 ? (
@@ -128,7 +125,7 @@ class LibraryList extends React.Component {
 										this.removeLibrary(row.id);
 									}}
 								>
-									{formatMessage({id: 'common.delete'})}
+									{formatMessage({ id: 'common.delete' })}
 								</a>
 							</>
 						)}
@@ -155,53 +152,44 @@ class LibraryList extends React.Component {
 		loadLibrary();
 	}
 
-	addFaceidLibraryHandler = (list,restCapacity) => {
-		if(list.length >= this.maxLength){
+	addFaceidLibraryHandler = (list, restCapacity) => {
+		if (list.length >= this.maxLength) {
 			Modal.info({
 				title: formatMessage({ id: 'faceid.info' }),
 				okText: formatMessage({ id: 'faceid.info.known' }),
-				content: (
-					<div>
-						{formatMessage({ id: 'faceid.list.length.max' })}
-					</div>
-				),
+				content: <div>{formatMessage({ id: 'faceid.list.length.max' })}</div>,
 				onOk() {},
 			});
 			return;
 		}
 
-		if(restCapacity <= 0){
+		if (restCapacity <= 0) {
 			Modal.info({
 				title: formatMessage({ id: 'faceid.info' }),
 				okText: formatMessage({ id: 'faceid.info.known' }),
-				content: (
-					<div>
-						{formatMessage({ id: 'faceid.amount.max' })}
-					</div>
-				),
+				content: <div>{formatMessage({ id: 'faceid.amount.max' })}</div>,
 				onOk() {},
 			});
 			return;
 		}
 
 		this.setState({
-			createFormShown: true
+			createFormShown: true,
 		});
-	}
+	};
 
 	closeCreateForm = () => {
 		this.setState({
 			createFormShown: false,
 		});
+	};
 
-	}
-
-	managePhotos = (key) => {
+	managePhotos = key => {
 		const { navigateTo } = this.props;
 		navigateTo('photoList', {
-			groupId: key
+			groupId: key,
 		});
-	}
+	};
 	// changeFields(id, fields) {
 	// 	console.log(id, fields);
 	// 	// const { libraryList } = this.state;
@@ -246,42 +234,40 @@ class LibraryList extends React.Component {
 	// 	});
 	// }
 
-
 	createLibrary = () => {
 		const { createLibrary } = this.props;
 		const { form, id } = this.createForm.props;
 
 		form.validateFields(errors => {
-			if(!errors) {
+			if (!errors) {
 				const fields = form.getFieldsValue();
 				const capacity = parseInt(fields.capacity, 10);
 				const params = {
 					...fields,
-					capacity
+					capacity,
 				};
 				// console.log(params);
 				createLibrary({
 					...params,
-					id
+					id,
 				});
 
 				this.closeCreateForm();
 			}
 		});
-	}
+	};
 
-	removeLibrary = (id) => {
+	removeLibrary = id => {
 		// console.log('remove',id);
 		const { faceIdLibrary, removeLibrary } = this.props;
 		const target = faceIdLibrary.filter(item => {
-			if(item.id === id){
+			if (item.id === id) {
 				return true;
 			}
 			return false;
-
 		});
 		// console.log(target);
-		if(target[0].amount !== 0){
+		if (target[0].amount !== 0) {
 			Modal.error({
 				title: formatMessage({ id: 'faceid.deleteError' }),
 				content: formatMessage({ id: 'faceid.deleteErrorMsg' }),
@@ -296,8 +282,7 @@ class LibraryList extends React.Component {
 				onOk: () => removeLibrary(id),
 			});
 		}
-
-	}
+	};
 
 	// showInfoHandler = (list,restCapacity) => {
 	// 	// list.length >= this.maxLength || restCapacity <= 0;
@@ -339,12 +324,12 @@ class LibraryList extends React.Component {
 				const capacity = parseInt(fields.capacity, 10);
 				const params = {
 					...fields,
-					capacity
+					capacity,
 				};
 				// console.log('params',params);
 				editLibrary({
 					...selectedRow,
-					...params
+					...params,
 				});
 
 				this.closeEditForm();
@@ -360,7 +345,6 @@ class LibraryList extends React.Component {
 				return true;
 			}
 			return false;
-
 		});
 
 		this.setState({
@@ -385,8 +369,7 @@ class LibraryList extends React.Component {
 		// });
 
 		const restCapacity =
-			totalCapacity -
-			faceIdLibrary.reduce((total, item) => total + item.capacity, 0);
+			totalCapacity - faceIdLibrary.reduce((total, item) => total + item.capacity, 0);
 		// console.log(this.props);
 		const list = faceIdLibrary;
 		// console.log(restCapacity);
@@ -403,9 +386,14 @@ class LibraryList extends React.Component {
 										<Button
 											type="primary"
 											// disabled={list.length >= this.maxLength || restCapacity <= 0}
-											onClick={()=>this.addFaceidLibraryHandler(list,restCapacity)}
+											onClick={() =>
+												this.addFaceidLibraryHandler(list, restCapacity)
+											}
 											icon="plus"
-											loading={loading.effects['faceIdLibrary/create']||loading.effects['faceIdLibrary/read']}
+											loading={
+												loading.effects['faceIdLibrary/create'] ||
+												loading.effects['faceIdLibrary/read']
+											}
 										>
 											{formatMessage({ id: 'common.create' })}
 										</Button>
@@ -422,11 +410,10 @@ class LibraryList extends React.Component {
 							dataSource={list}
 							rowKey="id"
 							rowClassName={(record, index) => {
-								if(index % 2 === 0){
+								if (index % 2 === 0) {
 									return styles['table-row-light'];
 								}
 								return styles['table-row-dark'];
-
 							}}
 							// expandedRowRender={record => {
 							// 	return <p>{record.remarks}</p>;
@@ -451,14 +438,14 @@ class LibraryList extends React.Component {
 				</Card>
 
 				<Modal
-					title={formatMessage({id: 'faceid.createLibrary'})}
+					title={formatMessage({ id: 'faceid.createLibrary' })}
 					maskClosable={false}
 					destroyOnClose
 					visible={createFormShown}
 					onCancel={this.closeCreateForm}
 					onOk={this.createLibrary}
 					okButtonProps={{
-						loading: loading.effects['faceIdLibrary/create']
+						loading: loading.effects['faceIdLibrary/create'],
 					}}
 					width={680}
 				>
@@ -476,14 +463,14 @@ class LibraryList extends React.Component {
 				</Modal>
 
 				<Modal
-					title={formatMessage({id: 'faceid.editLibrary' })}
+					title={formatMessage({ id: 'faceid.editLibrary' })}
 					maskClosable={false}
 					destroyOnClose
 					visible={editFormShown}
 					onCancel={this.closeEditForm}
 					onOk={this.editLibrary}
 					okButtonProps={{
-						loading: loading.effects['faceIdLibrary/update']
+						loading: loading.effects['faceIdLibrary/update'],
 					}}
 					width={680}
 				>
@@ -503,89 +490,92 @@ class LibraryList extends React.Component {
 	}
 }
 
-
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	const { faceIdLibrary, loading } = state;
 	return {
 		faceIdLibrary,
-		loading
+		loading,
 	};
 };
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
 	loadLibrary: () => {
 		dispatch({
-			type: 'faceIdLibrary/read'
-		}).then((code) => {
+			type: 'faceIdLibrary/read',
+		}).then(code => {
 			switch (code) {
 				case 1:
 					break;
 				default:
-					message.error(formatMessage({ id: 'faceid.operateFailed'}));
+					message.error(formatMessage({ id: 'faceid.operateFailed' }));
 					break;
 			}
 		});
 	},
-	createLibrary: (form) => {
+	createLibrary: form => {
 		dispatch({
-			type:'faceIdLibrary/create',
-			payload :{
-				library:form
-			}
-		}).then((code) => {
+			type: 'faceIdLibrary/create',
+			payload: {
+				library: form,
+			},
+		}).then(code => {
 			switch (code) {
 				case 1:
-					message.success(formatMessage({ id: 'faceid.createSuccess'}));
+					message.success(formatMessage({ id: 'faceid.createSuccess' }));
 					break;
 
-				case 5506:	// 最大条目数
+				case 5506: // 最大条目数
 				default:
-					message.error(formatMessage({ id: 'faceid.createFailed'}));
+					message.error(formatMessage({ id: 'faceid.createFailed' }));
 					break;
 			}
 		});
 	},
-	editLibrary: (row) => {
+	editLibrary: row => {
 		dispatch({
 			type: 'faceIdLibrary/update',
 			payload: {
-				library: row
-			}
-		}).then((code) => {
+				library: row,
+			},
+		}).then(code => {
 			switch (code) {
 				case 1:
-					message.success(formatMessage({ id: 'faceid.updateSuccess'}));
+					message.success(formatMessage({ id: 'faceid.updateSuccess' }));
 					break;
 				default:
-					message.error(formatMessage({ id: 'faceid.updateFailed'}));
+					message.error(formatMessage({ id: 'faceid.updateFailed' }));
 					break;
 			}
 		});
 	},
-	removeLibrary: (id) => {
+	removeLibrary: id => {
 		dispatch({
 			type: 'faceIdLibrary/delete',
 			payload: {
-				id
-			}
-		}).then((code) => {
+				id,
+			},
+		}).then(code => {
 			switch (code) {
 				case 1:
-					message.success(formatMessage({ id: 'faceid.deleteSuccess'}));
+					message.success(formatMessage({ id: 'faceid.deleteSuccess' }));
 					break;
 				default:
-					message.error(formatMessage({ id: 'faceid.deleteFailed'}));
+					message.error(formatMessage({ id: 'faceid.deleteFailed' }));
 					break;
 			}
 		});
 	},
-	navigateTo: (pathId, urlParams) => dispatch({
-		type: 'menu/goToPath',
-		payload: {
-			pathId,
-			urlParams
-	}
-	})
+	navigateTo: (pathId, urlParams) =>
+		dispatch({
+			type: 'menu/goToPath',
+			payload: {
+				pathId,
+				urlParams,
+			},
+		}),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(LibraryList);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(LibraryList);

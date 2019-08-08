@@ -15,6 +15,22 @@ export default {
 	},
 
 	effects: {
+		*getCompanyNameById({ payload }, { take, select}){
+			const { companyId } = payload;
+			let list  = yield select((state) => state.merchant.companyList);
+			let name = '';
+		 
+			if (list.length === 0){
+				const { payload:result } = yield take('updateState');
+				list = result;
+			}
+			list.forEach(item => {
+				if(item.company_id === companyId) {
+					name = item.company_name;
+				}
+			});
+			return name;
+		},
 		*initialCompany({ payload = {} }, { call }) {
 			const { options = {} } = payload;
 			yield call(Actions.initialCompany, options);

@@ -9,52 +9,52 @@ import NoIPCList from './NoIPCList';
 import IPCItem from './IPCItem';
 import styles from './IPCList.less';
 
-@connect((state) => {
-	const { ipcList,loading  } = state;
-	return {
-		ipcList,
-		loading
-	};
-},(dispatch) => ({
-	loadList: () => dispatch({ type:'ipcList/read'}),
-	navigateTo: (pathId, urlParams) => dispatch({
-		type: 'menu/goToPath',
-		payload: {
-			pathId,
-			urlParams
-		}
+@connect(
+	state => {
+		const { ipcList, loading } = state;
+		return {
+			ipcList,
+			loading,
+		};
+	},
+	dispatch => ({
+		loadList: () => dispatch({ type: 'ipcList/read' }),
+		navigateTo: (pathId, urlParams) =>
+			dispatch({
+				type: 'menu/goToPath',
+				payload: {
+					pathId,
+					urlParams,
+				},
+			}),
 	})
-}))
-
+)
 class IPCList extends React.Component {
-
 	async componentWillMount() {
 		const { loadList } = this.props;
 		await loadList();
 	}
 
-	onClickSetting = (sn) => {
+	onClickSetting = sn => {
 		const { navigateTo } = this.props;
-		navigateTo('ipcManagement', {sn});
-	}
+		navigateTo('ipcManagement', { sn });
+	};
 
-	onClickPlay = (sn) => {
+	onClickPlay = sn => {
 		const { navigateTo } = this.props;
-		navigateTo('live', {sn});
-	}
+		navigateTo('live', { sn });
+	};
 
 	render() {
 		const { ipcList: list, loading } = this.props;
-		const ipcList = [
-			...list
-		];
+		const ipcList = [...list];
 
 		if (ipcList.length <= 4) {
 			switch (ipcList.length) {
 				case 1:
 				case 3:
 					ipcList.push({
-						type: 'empty'
+						type: 'empty',
 					});
 					break;
 				default:
@@ -63,36 +63,38 @@ class IPCList extends React.Component {
 		} else {
 			while (ipcList.length % 4 !== 0) {
 				ipcList.push({
-					type: 'empty'
+					type: 'empty',
 				});
 			}
 		}
 		return (
 			<div className={styles.container}>
 				<Spin spinning={loading.effects['ipcList/read']}>
-					{
-						ipcList.length === 0 && !loading.effects['ipcList/read'] ?
-							<NoIPCList />:
-							<div className="ipcList">
-								<Button type="dashed" block>{<FormattedMessage id='ipcList.addIPC' />}</Button>
-								<Row gutter={8}>
-									{ipcList.map((item, index) => (
-											<IPCItem 
-												empty={item.type === 'empty'} 
-												isOnline={item.isOnline} 
-												img={item.img} 
-												sn={item.sn} 
-												key={index} 
-												type={item.type} 
-												name={item.name} 
-												listLength={ipcList.length}
-												onClickPlay={this.onClickPlay}
-												onClickSetting={this.onClickSetting}
-											/>
-									))}
-								</Row>
-							</div>
-					}
+					{ipcList.length === 0 && !loading.effects['ipcList/read'] ? (
+						<NoIPCList />
+					) : (
+						<div className="ipcList">
+							<Button type="dashed" block>
+								{<FormattedMessage id="ipcList.addIPC" />}
+							</Button>
+							<Row gutter={8}>
+								{ipcList.map((item, index) => (
+									<IPCItem
+										empty={item.type === 'empty'}
+										isOnline={item.isOnline}
+										img={item.img}
+										sn={item.sn}
+										key={index}
+										type={item.type}
+										name={item.name}
+										listLength={ipcList.length}
+										onClickPlay={this.onClickPlay}
+										onClickSetting={this.onClickSetting}
+									/>
+								))}
+							</Row>
+						</div>
+					)}
 				</Spin>
 			</div>
 		);

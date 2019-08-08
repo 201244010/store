@@ -8,15 +8,15 @@ import Toolbar from './Toolbar';
 
 import styles from './VideoPlayer.less';
 
-class VideoPlayer extends React.Component{
+class VideoPlayer extends React.Component {
 	static defaultProps = {
 		currentPPI: 1080,
 		playBtnDisabled: false,
 		showDatePicker: false,
 		canPPIChange: false,
 		showBackToLive: false,
-		current: moment().unix()
-	}
+		current: moment().unix(),
+	};
 
 	constructor(props) {
 		super(props);
@@ -38,25 +38,24 @@ class VideoPlayer extends React.Component{
 		};
 
 		this.ppis = [
-				{
-					name: formatMessage({ id: 'videoPlayer.fullHighDefinition' }),
-					value: '1080'
-				}, {
-					name: formatMessage({ id: 'videoPlayer.highDefinition' }),
-					value: '720'
-				}
+			{
+				name: formatMessage({ id: 'videoPlayer.fullHighDefinition' }),
+				value: '1080',
+			},
+			{
+				name: formatMessage({ id: 'videoPlayer.highDefinition' }),
+				value: '720',
+			},
 		];
-
 	}
 
 	componentDidMount = () => {
 		// const { url } = this.props;
 		this.setState({
-			canScreenShot: this.canScreenShot()
+			canScreenShot: this.canScreenShot(),
 		});
 
 		window.addEventListener('resize', this.fullScreenChangeHandler);
-
 
 		const { player } = this;
 		if (player) {
@@ -74,27 +73,27 @@ class VideoPlayer extends React.Component{
 				player.tech_.on('other_error', (e, data) => {
 					console.log('OTHER_ERROR: ', e, data);
 					player.load();
-			});
+				});
 
 				player.tech_.on('network_error', (e, data) => {
 					console.log('NETWORK_ERROR: ', e, data);
 					player.load();
-		});
+				});
 
 				player.tech_.on('network_exception', (e, data) => {
 					console.log('NETWORK_EXCEPTION: ', e, data);
 					player.load();
-		});
+				});
 
 				player.tech_.on('network_unrecoverable_early_eof', (e, data) => {
 					console.log('NETWORK_UNRECOVERABLE_EARLY_EOF: ', e, data);
 					player.load();
-		});
-	}
+				});
 			}
 		}
+	};
 
-	src = (src) => {
+	src = src => {
 		const { player } = this;
 		player.pause();
 
@@ -102,51 +101,51 @@ class VideoPlayer extends React.Component{
 
 		player.src({
 			src,
-			type: 'video/flv'
+			type: 'video/flv',
 		});
 
 		player.load();
 
 		this.removeNoMediaCover();
-		}
+	};
 
 	play = () => {
 		const { player } = this;
 		if (player) {
 			console.log('paused: ', player.paused());
-				player.play();
+			player.play();
 
 			this.setState({
-				playing: true
+				playing: true,
 			});
-			}
-	}
+		}
+	};
 
 	pause = () => {
 		const { player } = this;
 		if (player) {
 			player.pause();
 
-				this.setState({
-				playing: false
-				});
-			}
+			this.setState({
+				playing: false,
+			});
 		}
+	};
 
 	paused = () => {
 		const { player } = this;
 		if (player) {
 			return player.paused();
-	}
+		}
 		return false;
-	}
+	};
 
-	setCurrentTime = (time) => {
-		const {player} = this;
+	setCurrentTime = time => {
+		const { player } = this;
 		if (player) {
 			player.currentTime(time);
 		}
-	}
+	};
 
 	showLoadingSpinner = () => {
 		const { player } = this;
@@ -155,49 +154,49 @@ class VideoPlayer extends React.Component{
 			player.addClass('vjs-waiting');
 			player.loadingSpinner.show();
 		}
-	}
+	};
 
 	getTechName = () => {
 		const { player } = this;
 		return player.techName_;
-			}
+	};
 
 	onPlay = () => {
-			this.setState({
+		this.setState({
 			playing: true,
-				canScreenShot: this.canScreenShot()
-			});
-	}
+			canScreenShot: this.canScreenShot(),
+		});
+	};
 
 	onCanPlay = () => {
 		console.log('org onCanPlay');
-	}
+	};
 
 	onCanplayThrough = () => {
 		console.log('org onCanplayThrough');
-			}
+	};
 
 	onPause = () => {
 		console.log('org onPause');
-	}
+	};
 
 	onEnd = () => {
 		this.setState({
-			playing: false
+			playing: false,
 		});
-	}
+	};
 
 	onError = () => {
 		console.log('org onError');
-	}
+	};
 
 	onMetadataArrived = () => {
 		console.log('org onMetadataArrived');
-	}
+	};
 
 	onTimeUpdate = () => {
 		console.log('org onTimeUpdate');
-	}
+	};
 
 	mute = () => {
 		const { player } = this;
@@ -207,45 +206,46 @@ class VideoPlayer extends React.Component{
 		player.muted(!muted);
 
 		this.setState({
-			volume: !muted ? 0 : player.volume()*maxVolume
+			volume: !muted ? 0 : player.volume() * maxVolume,
 		});
-	}
+	};
 
-	changeVolume = (volume) => {
+	changeVolume = volume => {
 		const { player } = this;
 		const { maxVolume } = this.state;
 
-		player.volume(volume/maxVolume);
+		player.volume(volume / maxVolume);
 
 		this.setState({
-			volume
+			volume,
 		});
 
 		if (volume > 0) {
 			player.muted(false);
-		};
-	}
+		}
+	};
 
 	fullScreenHandler = () => {
 		const { fullScreen } = this.state;
 
-		if (fullScreen){
+		if (fullScreen) {
 			this.exitFullScreen();
-		}else{
+		} else {
 			this.requestFullScreen();
 		}
-	}
+	};
 
 	requestFullScreen = () => {
 		const element = this.container;
-		const method = element.requestFullScreen ||
+		const method =
+			element.requestFullScreen ||
 			element.webkitRequestFullScreen ||
 			element.mozRequestFullScreen ||
 			element.msRequestFullScreen;
 
-		if (method){
+		if (method) {
 			method.call(element);
-		}else if (typeof window.ActiveXObject !== 'undefined'){
+		} else if (typeof window.ActiveXObject !== 'undefined') {
 			const wscript = new window.ActiveXObject('WScript.Shell');
 			if (wscript !== null) {
 				wscript.SendKeys('{F11}');
@@ -253,21 +253,22 @@ class VideoPlayer extends React.Component{
 		}
 
 		this.setState({
-			fullScreen: true
+			fullScreen: true,
 		});
-	}
+	};
 
 	exitFullScreen = () => {
-		const method = document.cancelFullScreen ||
+		const method =
+			document.cancelFullScreen ||
 			document.webkitCancelFullScreen ||
 			document.mozCancelFullScreen ||
 			document.oCancelFullScreen ||
 			document.msExitFullscreen ||
 			document.exitFullScreen;
 
-		if (method){
+		if (method) {
 			method.call(document);
-		}else if (typeof window.ActiveXObject !== 'undefined'){
+		} else if (typeof window.ActiveXObject !== 'undefined') {
 			const wscript = new window.ActiveXObject('WScript.Shell');
 			if (wscript !== null) {
 				wscript.SendKeys('{F11}');
@@ -275,21 +276,21 @@ class VideoPlayer extends React.Component{
 		}
 
 		this.setState({
-			fullScreen: false
+			fullScreen: false,
 		});
-	}
+	};
 
 	dateChange = () => {
 		console.log('org dateChange');
-	}
+	};
 
 	backToLive = () => {
 		console.log('org backToLive');
-	}
+	};
 
 	ppiChange = () => {
 		console.log('org ppiChange');
-	}
+	};
 
 	screenShot = () => {
 		const { player } = this;
@@ -303,7 +304,7 @@ class VideoPlayer extends React.Component{
 
 		const height = ppi;
 		// 只给720p的图，否则内存不够导致下载失败；
-		const width = parseInt(height/pr[1]*pr[0], 10);
+		const width = parseInt((height / pr[1]) * pr[0], 10);
 
 		canvas.width = width;
 		canvas.height = height;
@@ -325,67 +326,94 @@ class VideoPlayer extends React.Component{
 			const event = document.createEvent('MouseEvents');
 			event.initEvent('click', true, true);
 			a.dispatchEvent(event);
-
 		});
 
 		image.src = base64;
-	}
+	};
 
 	canScreenShot = () => {
 		const { player } = this;
 		const currentBrowser = browser();
-		return player.techName_ !== 'Flash' && currentBrowser.name !== 'safari' && currentBrowser.name !== 'edge';
-	}
+		return (
+			player.techName_ !== 'Flash' &&
+			currentBrowser.name !== 'safari' &&
+			currentBrowser.name !== 'edge'
+		);
+	};
 
 	showNoMediaCover = () => {
 		this.setState({
-			noMedia: true
+			noMedia: true,
 		});
-	}
+	};
 
 	removeNoMediaCover = () => {
 		this.setState({
-			noMedia: false
+			noMedia: false,
 		});
-	}
+	};
 
 	generateDuration = () => {
 		const { player } = this;
-		if (player){
+		if (player) {
 			let duration = player.duration();
 			// console.log('generateDuration: ', duration);
-			if (Number.isNaN(duration) || !Number.isFinite(duration)){
+			if (Number.isNaN(duration) || !Number.isFinite(duration)) {
 				duration = 0;
 			}
 			return duration;
 		}
 		return 0;
-	}
+	};
 
 	render() {
-		const { pixelRatio, currentPPI, ppiChanged, progressbar, isLive,
-			onTimeUpdate, onMetadataArrived, onError, onPause, onEnd, onCanPlay, onCanplayThrough, onDateChange, playHandler,
-			playBtnDisabled, showDatePicker, canPPIChange, showBackToLive, ppiChange, backToLive,
-			current, plugin
+		const {
+			pixelRatio,
+			currentPPI,
+			ppiChanged,
+			progressbar,
+			isLive,
+			onTimeUpdate,
+			onMetadataArrived,
+			onError,
+			onPause,
+			onEnd,
+			onCanPlay,
+			onCanplayThrough,
+			onDateChange,
+			playHandler,
+			playBtnDisabled,
+			showDatePicker,
+			canPPIChange,
+			showBackToLive,
+			ppiChange,
+			backToLive,
+			current,
+			plugin,
 		} = this.props;
 
-		const { playing, fullScreen, noMedia, volume,
+		const {
+			playing,
+			fullScreen,
+			noMedia,
+			volume,
 			// playBtnDisabled, showDatePicker, canPPIChange, showBackToLive,
-			maxVolume, canScreenShot
+			maxVolume,
+			canScreenShot,
 		} = this.state;
 
 		const { player } = this;
 
 		return (
-			<div className={`${styles['video-player']} ${fullScreen ? styles.fullscreen : ''}`} ref={(container) => this.container = container}>
+			<div
+				className={`${styles['video-player']} ${fullScreen ? styles.fullscreen : ''}`}
+				ref={container => (this.container = container)}
+			>
 				<div className={styles['video-container']}>
 					<ReVideo
-						getVideojsPlayer={(vjs) => this.player = vjs}
-
+						getVideojsPlayer={vjs => (this.player = vjs)}
 						pixelRatio={pixelRatio}
-
 						fullScreen={fullScreen}
-
 						onPlay={this.onPlay}
 						onCanPlay={onCanPlay || this.onCanPlay}
 						onCanplayThrough={onCanplayThrough || this.onCanplayThrough}
@@ -397,66 +425,49 @@ class VideoPlayer extends React.Component{
 					/>
 
 					<div
-						style={
-							{
-								display: noMedia ? 'block': 'none'
-							}
-						}
+						style={{
+							display: noMedia ? 'block' : 'none',
+						}}
 						className={styles['no-media']}
 					>
 						<div className={styles.content}>
 							<span className={styles.icon} />
-							<span>{ formatMessage({ id: 'videoPlayer.noMedia'}) }</span>
+							<span>{formatMessage({ id: 'videoPlayer.noMedia' })}</span>
 						</div>
 					</div>
 
-					{
-						player && player.techName_ === 'Flvjs' ?
-				<div className={styles['plugin-container']}>
-								{ isLive ? plugin : '' }
-							</div>
-							: ''
-					}
-
+					{player && player.techName_ === 'Flvjs' ? (
+						<div className={styles['plugin-container']}>{isLive ? plugin : ''}</div>
+					) : (
+						''
+					)}
 				</div>
 
 				<div className={styles['toolbar-container']}>
 					<Toolbar
 						play={playHandler || this.playHandler}
-
 						playing={playing}
 						playBtnDisabled={playBtnDisabled}
 						isLive={isLive}
-
 						ppis={this.ppis}
 						currentPPI={currentPPI}
 						volume={volume}
 						maxVolume={maxVolume}
-
 						mute={this.mute}
 						changeVolume={this.changeVolume}
-
 						screenShot={this.screenShot}
 						canScreenShot={canScreenShot}
-
 						fullScreen={this.fullScreenHandler}
 						fullScreenStatus={fullScreen}
-
 						today={current}
-
 						canPPIChange={canPPIChange}
 						ppiChange={ppiChange || this.ppiChange}
 						ppiChanged={ppiChanged}
-
 						showDatePicker={showDatePicker}
 						onDatePickerChange={onDateChange || this.dateChange}
-
 						showBackToLive={showBackToLive}
 						backToLive={backToLive || this.backToLive}
-
-						progressbar={
-							progressbar
-						}
+						progressbar={progressbar}
 					/>
 				</div>
 			</div>
