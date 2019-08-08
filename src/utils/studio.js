@@ -359,31 +359,37 @@ export const initTemplateDetail = (stage, layers, zoomScale, screenType) => {
 		} else {
 			layer.bindField = undefined;
 		}
-		if (layer.type === SHAPE_TYPES.LINE) {
-			if (layer.width > layer.height) {
-				layer.type = `${layer.type}@h`;
-			} else {
-				layer.type = `${layer.type}@v`;
+		if (layer.type) {
+			const sType = layer.type.toLowerCase();
+			if (sType.indexOf(SHAPE_TYPES.LINE) > -1) {
+				if (layer.width > layer.height) {
+					layer.type = SHAPE_TYPES.LINE_H;
+				} else {
+					layer.type = SHAPE_TYPES.LINE_V;
+				}
 			}
-		}
-		if (layer.type === SHAPE_TYPES.PRICE) {
-			if (!['sup', 'sub'].includes(layer.subType)) {
-				layer.subType = 'normal';
+			if (sType.indexOf(SHAPE_TYPES.PRICE) > -1) {
+				if (!['sup', 'sub', 'super'].includes(layer.subType)) {
+					layer.subType = 'normal';
+				}
+				let backgroundColor = layer.backgroundColor;
+				if (!backgroundColor || ['red', 'opacity'].includes(backgroundColor)) {
+					backgroundColor = 'white';
+				}
+				const subType = layer.subType === 'super' ? 'sup' : layer.subType;
+				layer.type = `price@${subType}@${backgroundColor}`;
 			}
-			let backgroundColor = layer.backgroundColor;
-			if (!backgroundColor || backgroundColor === 'red' || backgroundColor === 'opacity') {
-				backgroundColor = 'white';
+			if (sType.indexOf(SHAPE_TYPES.CODE) > -1) {
+				if (layer.width - layer.height > 10) {
+					layer.type = SHAPE_TYPES.CODE_H;
+				} else if (layer.width - layer.height < -10) {
+					layer.type = SHAPE_TYPES.CODE_V;
+				} else {
+					layer.type = SHAPE_TYPES.CODE_QR;
+				}
 			}
-			layer.type = `${layer.type}@${layer.subType}@${backgroundColor}`;
-		}
-		if (layer.type === SHAPE_TYPES.CODE) {
-			if (layer.width - layer.height > 10) {
-				layer.type = `${layer.type}@h`;
-			} else if (layer.width - layer.height < -10) {
-				layer.type = `${layer.type}@v`;
-			} else {
-				layer.type = `${layer.type}@qr`;
-			}
+		} else {
+			throw new Error('字段中无type类型');
 		}
 	});
 

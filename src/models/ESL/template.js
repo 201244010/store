@@ -89,7 +89,7 @@ export default {
 						},
 					},
 				});
-				message.success('新建模板成功');
+				message.success(formatMessage({ id: '新建模板成功' }));
 			} else {
 				yield put({
 					type: 'updateState',
@@ -98,7 +98,7 @@ export default {
 				if (ALERT_NOTICE_MAP[response.code]) {
 					message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
 				} else {
-					message.error('新建模板失败');
+					message.error(formatMessage({ id: '新建模板失败' }));
 				}
 			}
 			return response;
@@ -162,13 +162,13 @@ export default {
 					type: 'updateState',
 					payload: { loading: false },
 				});
-				message.success('保存模板草稿成功');
+				message.success(formatMessage({ id: 'esl.device.template.action.save.success' }));
 			} else {
 				yield put({
 					type: 'updateState',
 					payload: { loading: false },
 				});
-				message.error('保存模板草稿失败');
+				message.error(formatMessage({ id: 'esl.device.template.action.save.error' }));
 			}
 		},
 		*fetchTemplateDetail({ payload = {} }, { call, put, select }) {
@@ -255,13 +255,13 @@ export default {
 					type: 'updateState',
 					payload: { loading: false },
 				});
-				message.success('上传成功');
+				message.success(formatMessage({ id: 'esl.device.template.action.upload.success' }));
 			} else {
 				yield put({
 					type: 'updateState',
 					payload: { loading: false },
 				});
-				message.error('上传失败');
+				message.error(formatMessage({ id: 'esl.device.template.action.upload.error' }));
 			}
 			return response;
 		},
@@ -290,7 +290,7 @@ export default {
 						},
 					},
 				});
-				message.success('删除成功');
+				message.success(formatMessage({ id: 'esl.device.template.action.delete.success' }));
 			} else {
 				yield put({
 					type: 'updateState',
@@ -299,7 +299,7 @@ export default {
 				if (ALERT_NOTICE_MAP[response.code]) {
 					message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
 				} else {
-					message.error('删除失败');
+					message.error(formatMessage({ id: 'esl.device.template.action.delete.error' }));
 				}
 			}
 			return response;
@@ -323,7 +323,7 @@ export default {
 				if (ALERT_NOTICE_MAP[response.code]) {
 					message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
 				} else {
-					message.error('修改模板名称失败');
+					message.error(formatMessage({ id: 'esl.device.template.action.modify.name.error' }));
 				}
 			}
 			return response;
@@ -348,13 +348,13 @@ export default {
 						},
 					},
 				});
-				message.success('应用成功');
+				message.success(formatMessage({ id: 'esl.device.template.action.apply.success' }));
 			} else {
 				yield put({
 					type: 'updateState',
 					payload: { loading: false },
 				});
-				message.error('应用失败');
+				message.error(formatMessage({ id: 'esl.device.template.action.apply.error' }));
 			}
 			return response;
 		},
@@ -378,7 +378,7 @@ export default {
 						},
 					},
 				});
-				message.success('克隆成功');
+				message.success(formatMessage({ id: 'esl.device.template.action.clone.success' }));
 			} else {
 				yield put({
 					type: 'updateState',
@@ -387,7 +387,7 @@ export default {
 				if (ALERT_NOTICE_MAP[response.code]) {
 					message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
 				} else {
-					message.error('修改模板名称失败');
+					message.error(formatMessage({ id: 'esl.device.template.action.modify.name.error' }));
 				}
 			}
 			return response;
