@@ -123,7 +123,7 @@ export default {
 	'esl.device.template.action.upload.error': '上次失败',
 	'esl.device.template.action.delete.success': '删除模板成功',
 	'esl.device.template.action.delete.error': '删除模板失败',
-	'esl.device.template.action.modify.name.error': '修改模板名称失败',
+	'esl.device.template.action.modify.name.error': '模板名已被占用',
 	'esl.device.template.action.apply.success': '应用模板成功',
 	'esl.device.template.action.apply.error': '应用模板失败',
 	'esl.device.template.action.clone.success': '克隆模板成功',
