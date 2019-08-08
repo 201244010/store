@@ -419,7 +419,7 @@ export const priceFormat = (price, dotPos = 3) => {
 };
 
 export const analyzeMessageTemplate = (message, option = {}) => {
-	const { spliter = ':', timeFormat = 'YYYY-MM-DD HH:mm:ss', handler = null } = option;
+	const { spliter = ':', timeFormat = 'YYYY-MM-DD HH:mm:ss', handlers = {} } = option;
 	const decodeMessage = decodeURIComponent(message);
 	const spliterIndex = decodeMessage.indexOf(spliter);
 	let [messageId, values] = [decodeMessage, null];
@@ -461,11 +461,11 @@ export const analyzeMessageTemplate = (message, option = {}) => {
 	return {
 		messageId,
 		valueList,
-		handler,
+		handlers,
 	};
 };
 
-export const replaceTemplateWithValue = ({ messageId, valueList = [], handler = null }) => {
+export const replaceTemplateWithValue = ({ messageId, valueList = [], handlers = {} }) => {
 	if (!messageId) {
 		console.error('messageId can not be null.');
 		return null;
@@ -473,13 +473,14 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [], handler = 
 
 	console.log('messageId: ', messageId);
 	console.log('valueList: ', valueList);
+	const handerKeys = Object.keys(handlers);
 	const message = formatMessage({ id: messageId });
 	if (valueList.length === 0) {
 		return message;
 	}
 
-	if (handler) {
-		const handledValues = handler(valueList) || [];
+	if (handerKeys.includes(messageId) && handlers[messageId]) {
+		const handledValues = handlers[messageId](valueList) || [];
 		return handledValues.reduce((prev, cur) => prev.replace(cur.key, cur.value), message);
 	}
 
@@ -491,7 +492,12 @@ export const formatMessageTemplate = (
 	option = {
 		spliter: ':',
 		timeFormat: 'YYYY-MM-DD HH:mm:ss',
-		handler: null,
+		/**
+		 * handers {key: fun}
+		 * key 为 messageId
+		 * fun 为 自定义处理的函数
+		 */
+		handlers: {},
 	}
 ) => replaceTemplateWithValue(analyzeMessageTemplate(message, option));
 
