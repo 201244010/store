@@ -219,8 +219,16 @@ const router = [
 						path: '/network/list',
 						name: 'list',
 						id: 'networkList',
+						hideInMenu: true,
 						component: './DeviceManagement/Network',
 					},
+					{
+						path: '/network/detail',
+						name: 'detail',
+						id: 'networkDetail',
+						hideInMenu: true,
+						component: ''
+					}
 				],
 			},
 
