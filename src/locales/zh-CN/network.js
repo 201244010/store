@@ -22,5 +22,7 @@ export default {
 
 	'network.detail': '网络设备详情',
 	'network.rssi': '信号强度',
+	'network.rssi.strong': '较好',
+	'network.rssi.weak': '较差',
 	'network.router.parent': '上级路由',
 };

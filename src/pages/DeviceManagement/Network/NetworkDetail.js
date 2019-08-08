@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Card, Pagination } from 'antd';
+import { Card } from 'antd';
+import PageList from '@/components/List/PageList';
 import { formatMessage } from 'umi/locale';
 import styles from './Network.less';
 
@@ -83,16 +84,52 @@ const mockData = {
 	],
 };
 
+const ListContent = ({ data = {}, index = 0 }) => {
+	const { mac = '', ip = '', location = '', rssi = '', role = '' } = data;
+
+	return (
+		<div
+			className={`${index > 0 ? '' : styles['list-content-first']}  ${
+				styles['list-content']
+			}`}
+		>
+			<div className={styles['info-title']}>{location}</div>
+			<div className={styles['info-bar']}>
+				<div className={styles['info-content']}>
+					<span>{formatMessage({ id: 'network.rssi' })}:</span>
+					<span className={styles.detail}>{rssi}</span>
+				</div>
+				<div className={styles['info-content']}>
+					<span>IP:</span>
+					<span className={styles.detail}>{ip}</span>
+				</div>
+				<div className={styles['info-content']}>
+					<span>MAC:</span>
+					<span className={styles.detail}>{mac}</span>
+				</div>
+				<div className={styles['info-content']}>
+					<span>{formatMessage({ id: 'network.router.parent' })}</span>
+					<span className={styles.detail}>{role}</span>
+				</div>
+			</div>
+		</div>
+	);
+};
+
 class NetworkDetail extends PureComponent {
+	componentDidMount() {
+		// TODO 监听 MQTT 事件
+	}
+
 	render() {
 		console.log(mockData);
+		const { data = [] } = mockData;
+		const [dataResult = {}, ,] = data;
+		const { result: { sonconnect: { devices = [] } = {} } = {} } = dataResult;
+
 		return (
 			<Card title={formatMessage({ id: 'network.detail' })}>
-				<div>1234</div>
-
-				<div className={styles['footer-bar']}>
-					<Pagination />
-				</div>
+				<PageList data={devices} RenderComponent={ListContent} />
 			</Card>
 		);
 	}

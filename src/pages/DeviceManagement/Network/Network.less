@@ -140,9 +140,29 @@
 	}
 }
 
+.list-content {
+	width: 100%;
+	padding: 15px 0;
+	border-top: 1px solid lightgray;
 
-.footer-bar {
-	display: flex;
-	justify-content: flex-end;
-	margin: 12px 0 auto;
+	.info-title {
+		font-weight: bold;
+	}
+
+	.info-bar {
+		margin-top: 10px;
+		display: flex;
+		align-items: center;
+
+		.info-content {
+			width: 25%;
+			.detail {
+				margin-left: 10px;
+			}
+		}
+	}
+}
+
+.list-content-first {
+	border-top: none;
 }
