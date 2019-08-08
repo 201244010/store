@@ -42,6 +42,7 @@ const Overview = props => {
 		// overviewProductLoading,
 		overviewDeviceLoading,
 		overviewIPCLoading,
+		overviewNetworkLoading,
 		// productOverview: { totalCount = '' } = {},
 		deviceOverView: {
 			eslTotalCount = '',
@@ -50,6 +51,10 @@ const Overview = props => {
 			apTotalCount = '',
 		} = {},
 		ipcOverView: { onLineCount = '', offLineCount = '' } = {},
+		networkOverview: {
+			onlineCount: deviceOnlineCount = '',
+			offlineCount: deviceOfflineCount = '',
+		},
 		goToPath,
 	} = props;
 
@@ -140,23 +145,24 @@ const Overview = props => {
 				<Col span={6}>
 					<DisplayCard
 						{...{
-							onClick: overviewDeviceLoading ? null : () => goToPath('baseStation'),
-							loading: overviewDeviceLoading,
+							onClick: overviewNetworkLoading ? null : () => goToPath('network'),
+							loading: overviewNetworkLoading,
 							cardStyle: overviewCardStyle,
 							title: formatMessage({ id: 'dashboard.overview.device.online' }),
 							infoContent: TEXT.AP_INFO,
-							// TODO 在线网络设备数，离线网络设备数 需要替换变量
 							content: (
 								<>
 									<div>
-										{eslTotalCount === '' ? '--' : priceFormat(eslTotalCount)}
+										{deviceOnlineCount === ''
+											? '--'
+											: priceFormat(deviceOnlineCount)}
 									</div>
 									<div style={descriptionStyle}>
 										{formatMessage({
 											id: 'dashboard.overview.device.offline',
 										})}
 										<span style={decriptionNumStyle}>
-											{apTotalCount === '' ? '--' : apTotalCount}
+											{deviceOfflineCount === '' ? '--' : deviceOfflineCount}
 										</span>
 									</div>
 								</>

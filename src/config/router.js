@@ -213,9 +213,17 @@ const router = [
 				name: 'network',
 				id: 'network',
 				icon: 'blank',
-				component: './DeviceManagement/Network'
+				routes: [
+					{ path: '/network', redirect: '/network/list' },
+					{
+						path: '/network/list',
+						name: 'list',
+						id: 'networkList',
+						component: './DeviceManagement/Network',
+					},
+				],
 			},
-			
+
 			{
 				path: '/basicData',
 				name: 'basicData',

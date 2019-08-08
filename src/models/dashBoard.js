@@ -138,10 +138,10 @@ export default {
 			const { needLoading = false } = payload;
 			yield all([
 				// product overview
-				put({
-					type: 'fetchOverviewProduct',
-					payload: { needLoading },
-				}),
+				// put({
+				// 	type: 'fetchOverviewProduct',
+				// 	payload: { needLoading },
+				// }),
 
 				// device overview
 				put({
