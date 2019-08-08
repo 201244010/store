@@ -27,7 +27,7 @@ export default {
 		// 更新store上的ageRangeList，并返回ageRangeCodeMap
 		*readAgeRangeList(action, { call, put }) {
 			const response = yield call(getRange);
-			const { code, data: {ageRangeList} } = response;
+			const { code, data: { ageRangeList = [] } } = response;
 			
 			if(code === ERROR_OK) {
 				yield put({
