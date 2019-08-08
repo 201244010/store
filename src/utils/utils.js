@@ -1,7 +1,8 @@
 import CryptoJS from 'crypto-js/crypto-js';
 import moment from 'moment';
-import CONFIG from '@/config';
 import { formatMessage } from 'umi/locale';
+
+import CONFIG from '@/config';
 
 const { DES_KEY, DES_IV } = CONFIG;
 
@@ -417,10 +418,20 @@ export const priceFormat = (price, dotPos = 3) => {
 		: `${isNagtive ? '-' : ''}${reversedRound}`;
 };
 
-export const analyzeMessageTemplate = message => {
-	const [messageId, values] = message.split(':');
-	let valueList = [];
+export const analyzeMessageTemplate = (message, option = {}) => {
+	const { spliter = ':', timeFormat = 'YYYY-MM-DD HH:mm:ss' } = option;
+	const decodeMessage = decodeURIComponent(message);
+	const spliterIndex = decodeMessage.indexOf(spliter);
+	let [messageId, values] = [decodeMessage, null];
 
+	if (spliterIndex > -1) {
+		[messageId, values] = [
+			decodeMessage.substring(0, spliterIndex),
+			decodeMessage.substring(spliterIndex + 1),
+		];
+	}
+
+	let valueList = [];
 	if (values) {
 		valueList = values.split('&').map(item => {
 			const [key, value] = item.split('=');
@@ -430,6 +441,15 @@ export const analyzeMessageTemplate = message => {
 					value: formatMessage({ id: `${messageId}-${value}` }),
 				};
 			}
+
+			// 临时解决方法，需要和云端确定时间戳对应的特定变量名
+			if (key.indexOf('_time') > -1 || key.indexOf('timestamp') > -1) {
+				return {
+					key: `##${key}##`,
+					value: moment(parseInt(value, 10) * 1000).format(timeFormat),
+				};
+			}
+
 			return {
 				key: `##${key}##`,
 				value,
@@ -459,8 +479,13 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
 	return valueList.reduce((prev, cur) => prev.replace(cur.key, cur.value), message);
 };
 
-export const formatMessageTemplate = message =>
-	replaceTemplateWithValue(analyzeMessageTemplate(message));
+export const formatMessageTemplate = (
+	message,
+	option = {
+		spliter: ':',
+		timeFormat: 'YYYY-MM-DD HH:mm:ss',
+	}
+) => replaceTemplateWithValue(analyzeMessageTemplate(message, option));
 
 export const convertArrayPrams = (str, sperator = '&') => {
 	const obj = {};
@@ -470,4 +495,22 @@ export const convertArrayPrams = (str, sperator = '&') => {
 	});
 
 	return obj;
+};
+
+export const mbStringLength = s => {
+	let totalLength = 0;
+	let i;
+	let charCode;
+	for (i = 0; i < s.length; i++) {
+		charCode = s.charCodeAt(i);
+		if (charCode < 0x007f) {
+			totalLength += 1;
+		} else if (charCode >= 0x0080 && charCode <= 0x07ff) {
+			totalLength += 2;
+		} else if (charCode >= 0x0800 && charCode <= 0xffff) {
+			totalLength += 3;
+		}
+	}
+	// alert(totalLength);
+	return totalLength;
 };
