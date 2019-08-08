@@ -19,4 +19,8 @@ export default {
 	'network.router': '路由器',
 	'network.viewMore': '查看详情',
 	'network.guestNumber': '顾客接入数量',
+
+	'network.detail': '网络设备详情',
+	'network.rssi': '信号强度',
+	'network.router.parent': '上级路由',
 };
