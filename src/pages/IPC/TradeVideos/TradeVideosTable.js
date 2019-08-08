@@ -19,6 +19,7 @@ class TradeVideosTable extends React.Component {
 				dataIndex: 'ipcName',
 				key: 'ipcName',
 				sorter: (a, b) => a.ipcName.localeCompare(b.ipcName),
+				render: item => item || formatMessage({ id: 'tradeVideos.myCamera'})
 			},
 			{
 				title: formatMessage({ id: 'tradeVideos.pos' }), // '收银设备',

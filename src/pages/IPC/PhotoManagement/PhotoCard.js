@@ -232,14 +232,18 @@ class PhotoCard extends React.Component {
 	};
 
 	ageRange = () => {
-		const { photoLibrary: {ageRange} , age } = this.props;
+		const { photoLibrary: {ageRange} , age, realAge } = this.props;
 		let ageName = formatMessage({id: 'photoManagement.unKnown'});
 		// console.log(ageRange);
-		ageRange.forEach(item => {
-			if(item.ageCode === age) {
-				ageName = item.ageRange;
-			}
-		});
+		if(realAge){
+			ageName = realAge;
+		} else {
+			ageRange.forEach(item => {
+				if(item.ageCode === age) {
+					ageName = item.ageRange;
+				}
+			});
+		}
 		return ageName;
 	};
 
