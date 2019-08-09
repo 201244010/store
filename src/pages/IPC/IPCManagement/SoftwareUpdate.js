@@ -48,7 +48,23 @@ const mapDispatchToProps = (dispatch) => ({
 				status
 			}
 		});
-	}
+	},
+	getDeviceInfo({ sn }) {
+		return dispatch({
+			type: 'ipcList/getDeviceInfo',
+			payload: {
+				sn
+			}
+		}).then(info => info);
+	},
+	// getLastCheckTime( sn ) {
+	// 	return dispatch({
+	// 		type: 'ipcSoftwareUpdate/getLastCheckTime',
+	// 		payload:{
+	// 			sn
+	// 		}
+	// 	});
+	// }
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -58,6 +74,7 @@ class SoftwareUpdate extends Component {
 		// isLatest: true,
 		visible: false,
 		percent: 0,
+		deviceInfo: {}
 		// proVisible: false,
 		// isUpdate: false,
 		// isCheck: false
@@ -65,11 +82,27 @@ class SoftwareUpdate extends Component {
 
 	interval = 0
 
-	componentDidMount = () => {
-		const { load, sn } = this.props;
+	componentDidMount = async () => {
+		const { load, sn, getDeviceInfo, showModal } = this.props;
 		// console.log(sn);
-		load(sn);
+		if(sn){
+			const deviceInfo = await getDeviceInfo({ sn });
+			this.setState({
+				deviceInfo
+			});
+		}
+		await load(sn);
+		if(showModal){
+			this.showModal();
+		}
 	}
+
+
+	// getNewLastCheckTime(){
+	// 	const { sn, getLastCheckTime } = this.props;
+	// 	const newLastCheckTime = getLastCheckTime(sn);
+	// 	console.log(newLastCheckTime);
+	// }
 
 	showModal = () => {
 		const { checkVersion, sn } = this.props;
@@ -83,9 +116,11 @@ class SoftwareUpdate extends Component {
 
 	updateSoftware = () => {
 		const { update,  sn } = this.props;
+		const { deviceInfo: { OTATime }} = this.state;
 		update(sn);
 
-		const time = 120*1000;
+		const time = OTATime;
+		console.log(time);
 		clearInterval(this.interval);
 		this.interval = setInterval(() => {
 			const { percent } = this.state;
@@ -101,7 +136,7 @@ class SoftwareUpdate extends Component {
 			if (updating === 'loading') {
 				this.setUpdatingStatus('failed');
 			}
-		}, 150*1000);
+		}, time+30*1000);
 
 		// this.setState({
 		// 	isCheck: false,
@@ -178,7 +213,6 @@ class SoftwareUpdate extends Component {
 									</Button>
 								);
 							}
-							// console.log(lo)
 							if (needUpdate && updating === 'normal') {
 								return (
 									<Button type="primary" onClick={this.updateSoftware}>
