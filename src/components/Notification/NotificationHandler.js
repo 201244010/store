@@ -21,7 +21,7 @@ const palyMotion = ({ params }) => {
 								modal.destroy();
 							}
 						}}
-						url={url}
+						url={decodeURIComponent(url)}
 						pixelRatio={pixelRatio}
 					/>
 				)}
