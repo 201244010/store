@@ -168,7 +168,7 @@ class EntryDetail extends React.Component {
 				dataIndex:'arrivalTime',
 				key:'arrivalTime',
 				render:(time) => (
-					<span>{moment.unix(time).format('YYYY.MM.DD hh:mm:ss')}</span>
+					<span>{moment.unix(time).format('YYYY.MM.DD HH:mm:ss')}</span>
 				)
 			},
 			{
@@ -180,6 +180,7 @@ class EntryDetail extends React.Component {
 				title: formatMessage({id: 'entry.detail.ipc'}),
 				dataIndex:'deviceName',
 				key:'deviceName',
+				render: (item) => item || formatMessage({ id: 'entry.detail.myCamera'}),
 				filterDropdown: (params) => {
 					const { confirm: confirmHandler } = params;
 					const { deviceId } = this.state;
@@ -236,20 +237,22 @@ class EntryDetail extends React.Component {
 					<Meta
 						title={formatMessage({id: 'entry.detail.user.info'})}
 						description={
-							<Row className={styles['user-info']} gutter={16}>
-								<Col span={6}>
-									{faceInfo.imgUrl&&faceInfo.imgUrl !==''?<img className={styles['user-avatar']} src={faceInfo.imgUrl} />:<Avatar shape="square" size={50} icon="user" />}
-								</Col>
-								<Col span={6}>
-									<div>{formatMessage({id: 'entry.detail.user.name'})} ：{faceInfo.name === ''? '--': faceInfo.name}</div>
-								</Col>
-								<Col span={6}>
-									<div>{formatMessage({id: 'entry.detail.user.group'})} ：{this.handleLibraryName(faceInfo.groupName)}</div>
-								</Col>
-								<Col span={6}>
-									<div>{formatMessage({id: 'entry.detail.arrival.count'})}：{faceInfo.arrivalCount}</div>
-								</Col>
-							</Row>
+							<div className={styles['user-info']}>
+								<Row gutter={16}>
+									<Col span={7}>
+										{faceInfo.imgUrl&&faceInfo.imgUrl !==''?<img className={styles['user-avatar']} src={faceInfo.imgUrl} />:<Avatar shape="square" size={50} icon="user" />}
+									</Col>
+									<Col span={7}>
+										<div>{formatMessage({id: 'entry.detail.user.name'})} ：{faceInfo.name === ''? '--': faceInfo.name}</div>
+									</Col>
+									<Col span={7}>
+										<div>{formatMessage({id: 'entry.detail.user.group'})} ：{this.handleLibraryName(faceInfo.groupName)}</div>
+									</Col>
+									<Col span={3}>
+										<div>{formatMessage({id: 'entry.detail.arrival.count'})}：{faceInfo.arrivalCount}</div>
+									</Col>
+								</Row>
+							</div>
 						}
 					/>
 					<Divider />

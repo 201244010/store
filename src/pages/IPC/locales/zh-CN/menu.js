@@ -22,10 +22,10 @@ export default {
 	'menu.entryDetail':'进店详情',
 	'menu.faceidLibrary.entryDetail':'进店详情',
 
-	'menu.faceidLibrary': '人脸库管理',
-	'menu.faceidLibrary.list': '人脸库列表',
+	'menu.faceidLibrary': '人脸分组管理',
+	'menu.faceidLibrary.list': '人脸分组列表',
 	'menu.faceidLibrary.photoManagement': '照片管理',
-	'menu.faceidLibrary.faceidLibraryList': '人脸库列表',
+	'menu.faceidLibrary.faceidLibraryList': '人脸分组列表',
 	'menu.devices.ipcManagement': '摄像机设置',
 
 	'menu.cashVerify': '收银审计',

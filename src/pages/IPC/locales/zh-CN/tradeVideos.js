@@ -23,4 +23,5 @@ export default {
 	'tradeVideos.unknownDevice': '未知设备',
 	'tradeVideos.viewDetails': '查看明细',
 	'tradeVideos.closeDetails': '收起明细',
+	'tradeVideos.myCamera':'My Camera'
 };

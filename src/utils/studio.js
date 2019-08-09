@@ -9,6 +9,7 @@ import {
 	BARCODE_TYPES,
 	CODE_TYPES
 } from '@/constants/studio';
+import {getLocationParam} from '@/utils/utils';
 
 const NEAR_GAP = 10;
 export const COINCIDE_GAP = 10;
@@ -95,7 +96,6 @@ export const getPositionInNearScope = (source, target, scopedPosition) => {
 		}
 	}
 
-	console.log('ret', ret);
 	return ret;
 };
 
@@ -341,7 +341,8 @@ export const nextStep = async (templateId) => {
 	return result;
 };
 
-export const initTemplateDetail = (stage, layers, zoomScale, screenType) => {
+export const initTemplateDetail = (stage, layers, zoomScale) => {
+	const screenType = getLocationParam('screen');
 	const type = SHAPE_TYPES.RECT_FIX;
 	const {width, height} = MAPS.screen[screenType];
 	const x = (stage.width - width * zoomScale) / 2;
