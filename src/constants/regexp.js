@@ -14,3 +14,5 @@ export const pluCode = /^[0-9]{0,20}$/;
 export const productWeight = /^([0-9]{1,5})(\.[0-9]{0,3})?$/;
 export const dateNumber = /^-?\d{1,2}$/;
 export const employeeNumber = /^[\d\w]+$/;
+
+export const spaceInput = /^\S.*/;

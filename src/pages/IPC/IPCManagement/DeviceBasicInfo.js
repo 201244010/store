@@ -1,56 +1,20 @@
 import React from 'react';
 import { Card, Icon, Button, Form, Input, Modal, Spin, /* Radio, */ message } from 'antd';
 import { connect } from 'dva';
-// import PropTypes from 'prop-types';
 import { formatMessage } from 'umi/locale';
-import router from 'umi/router';
-import defaultImage from '@/assets/imgs/default.jpeg';
-
-
+import { mbStringLength } from '@/utils/utils';
 import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
+import { spaceInput } from '@/constants/regexp';
+// import { FORM_ITEM_LAYOUT , TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 
+import defaultImage from '@/assets/imgs/default.jpeg';
 import styles from './DeviceBasicInfo.less';
 
-// const FORM_ITEM_LAYOUT = {
-// 	labelCol: {
-// 		span: 8
-// 	},
-// 	wrapperCol: {
-// 		span: 12
-// 	}
-// };
-
-// const TAIL_FORM_ITEM_LAYOUT = {
-// 	wrapperCol: {
-// 		span: 12,
-// 		offset: 8
-// 	}
-// };
-
-const mbStringLength = (s) => {
-	let totalLength = 0;
-	let i;
-	let charCode;
-	for (i = 0; i < s.length; i++) {
-		charCode = s.charCodeAt(i);
-		if (charCode < 0x007f) {
-			totalLength += 1;
-		} else if ((charCode >= 0x0080) && (charCode <= 0x07ff)) {
-			totalLength += 2;
-		} else if ((charCode >= 0x0800) && (charCode <= 0xffff)) {
-			totalLength += 3;
-		}
-	}
-	// alert(totalLength);
-	return totalLength;
-};
-
-
-// const RadioGroup = Radio.Group;
 const mapStateToProps = (state) => {
-	const { ipcBasicInfo: basicInfo } = state;
+	const { ipcBasicInfo: basicInfo, ipcList } = state;
 	return {
 		basicInfo,
+		ipcList
 		// loading
 	};
 };
@@ -69,7 +33,6 @@ const mapDispatchToProps = (dispatch) => ({
 				sn
 			}
 		}).then((result) => {
-			// console.log('result: ', result);
 			if (result) {
 				message.success(formatMessage({ id: 'ipcManagement.success'}));
 			}else{
@@ -88,7 +51,7 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		});
 	},
-	deleteDevice: (sn) => {
+	deleteDevice: (sn, callback) => {
 		dispatch({
 			type: 'ipcBasicInfo/delete',
 			payload: {
@@ -100,14 +63,21 @@ const mapDispatchToProps = (dispatch) => ({
 				message.success(formatMessage({ id: 'ipcManagement.deleteSuccess'}));
 
 				setTimeout(() => {
-					router.push('/devices/ipcList');
+					callback();
 				}, 800);
 
 			}else{
 				message.error(formatMessage({ id: 'ipcManagement.deleteFailed'}));
 			}
 		});
+	},
+	navigateTo: (pathId, urlParams) => dispatch({
+		type: 'menu/goToPath',
+		payload: {
+			pathId,
+			urlParams
 	}
+	})
 });
 // let disabledControl = true;
 @connect(mapStateToProps, mapDispatchToProps)
@@ -145,7 +115,7 @@ class DeviceBasicInfo extends React.Component {
 
 		validateFields(async (errors) => {
 			if (!errors){
-				const name = getFieldValue('deviceName');
+				const name = getFieldValue('deviceName').trim();
 				this.setState({
 					saving: true
 				});
@@ -163,9 +133,14 @@ class DeviceBasicInfo extends React.Component {
 
 	}
 
+	navigateTo = () => {
+		const { navigateTo } = this.props;
+		navigateTo('deviceList');
+	}
+
 	onShowModal = () => {
 		const { deleteDevice, sn } = this.props;
-
+		const _this = this;
 		const modal = Modal.confirm({
 			title: formatMessage({ id: 'deviceBasicInfo.delete' }),
 			content: (
@@ -193,7 +168,7 @@ class DeviceBasicInfo extends React.Component {
 					}
 				});
 
-				await deleteDevice(sn);
+				await deleteDevice(sn, _this.navigateTo);
 
 				modal.update({
 					okButtonProps:{
@@ -281,7 +256,7 @@ class DeviceBasicInfo extends React.Component {
 
 	render() {
 		const { isEdit, saving } = this.state;
-		const { basicInfo, form }  = this.props;
+		const { basicInfo, form, ipcList }  = this.props;
 		const { name, type, sn, img, /* mode, */ status } = basicInfo;
 
 		const { isFieldTouched, getFieldDecorator } = form;
@@ -307,6 +282,34 @@ class DeviceBasicInfo extends React.Component {
 									initialValue: name,
 									rules: [
 										{ required: true, message: formatMessage({id: 'deviceBasicInfo.enterName'}) },
+										{
+											pattern: spaceInput,
+											message: formatMessage({id: 'deviceBasicInfo.firstInputFormat'})
+										},
+										{
+											validator: (rule, value, callback) => {
+												let confictFlag = false;
+												ipcList.every(item => {
+													if (item.sn !== sn) {
+														if (item.name === value.trim()) {
+															confictFlag = true;
+															return false;
+														}
+														return true;
+													}
+													return true;
+												});
+
+												if (confictFlag) {
+													callback('name-confict');
+												} else {
+													callback();
+												}
+											},
+											message: formatMessage({
+												id: 'deviceBasicInfo.deviceNameRule',
+											}),
+										},
 										{
 											validator: (rule, value, callback) => {
 												const len = mbStringLength(value);
@@ -334,7 +337,7 @@ class DeviceBasicInfo extends React.Component {
 							label={formatMessage({id: 'deviceBasicInfo.name'})}
 							className={isEdit ? styles.hidden : ''}
 						>
-							<div>
+							<div className={styles['text-container']}>
 								<span className={styles.text}>{ name }</span>
 								<Icon type="edit" onClick={this.onClick} />
 							</div>
