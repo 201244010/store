@@ -180,6 +180,7 @@ export default class RightToolBox extends Component {
 			const image = document.createElement('img');
 			JsBarcode(image, value, {
 				format: 'CODE128',
+				width: MAPS.containerWidth[detail.type] * detail.scaleX * detail.zoomScale,
 				displayValue: false
 			});
 

@@ -1,6 +1,16 @@
-import { IMAGE_TYPES, MAPS, SHAPE_TYPES, SIZES, RECT_SELECT_NAME } from '@/constants/studio';
+import {IMAGE_TYPES, MAPS, SHAPE_TYPES, SIZES, RECT_SELECT_NAME, RECT_FIX_NAME} from '@/constants/studio';
 import { filterObject, getLocationParam } from '@/utils/utils';
 import { getImagePromise, saveNowStep, isInComponent } from '@/utils/studio';
+
+function calcutePosition(stage, zoomScale) {
+	const screenType = getLocationParam('screen');
+	const {width, height} = MAPS.screen[screenType];
+
+	const x = (stage.width - width * zoomScale) / 2;
+	const y = (stage.height - height * zoomScale) / 2;
+
+	return {x, y};
+}
 
 export default {
 	namespace: 'studio',
@@ -21,11 +31,17 @@ export default {
 		zoomScale: 1
 	},
 	effects: {
-		* changeOneStep({ payload = {} }, { put }) {
+		* changeOneStep({ payload = {} }, { put, select }) {
+			const { stage, zoomScale } = yield select(state => state.studio);
+			const position = calcutePosition(stage, zoomScale);
 			const componentsDetail = {};
 			let hasImage = false;
+			console.log(payload);
 			Object.keys(payload).map(key => {
 				componentsDetail[key] = payload[key];
+				componentsDetail[key].x = componentsDetail[key].startX * zoomScale + position.x;
+				console.log(componentsDetail[key].startX, zoomScale, position.x);
+				componentsDetail[key].y = componentsDetail[key].startY * zoomScale + position.y;
 				hasImage = hasImage || IMAGE_TYPES.includes(payload[key].type);
 			});
 
@@ -75,6 +91,8 @@ export default {
 				});
 				name = `${type}${maxIndex + 1}`;
 			}
+			const startX = ((x - componentsDetail[RECT_FIX_NAME].x) / zoomScale).toFixed();
+			const startY = ((y - componentsDetail[RECT_FIX_NAME].y) / zoomScale).toFixed();
 
 			const newComponentsDetail = {
 				...state.componentsDetail,
@@ -99,6 +117,8 @@ export default {
 							y + MAPS.containerHeight[type] * scaleY * state.zoomScale
 						]
 					],
+					startX,
+					startY,
 					zoomScale
 				}
 			};
@@ -172,7 +192,6 @@ export default {
 				newComponentsDetail[targetShapeName].content = detail.content === '' ? '' :
 					((detail.type && detail.type.indexOf(SHAPE_TYPES.PRICE) > -1) ? Number(detail.content).toFixed(detail.precision) : detail.content);
 			}
-			console.log(newComponentsDetail[targetShapeName]);
 			if (isStep) {
 				saveNowStep(getLocationParam('id'), newComponentsDetail);
 			}
@@ -251,6 +270,7 @@ export default {
 			const originFixRect = {};
 			Object.keys(componentsDetail).map(key => {
 				const componentDetail = componentsDetail[key];
+				componentDetail.zoomScale = zoomScale;
 				if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
 					originFixRect.x = componentDetail.x;
 					originFixRect.y = componentDetail.y;
