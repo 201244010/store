@@ -13,7 +13,7 @@ class IPCManagement extends Component {
 	render() {
 		// console.log(this.props);
 		const { location } = this.props;
-		const { query: {sn} } = location;
+		const { query: {sn, showModal} } = location;
 		return (
 			<div className={styles.wrapper}>
 				<DeviceBasicInfo sn={sn} />
@@ -21,7 +21,7 @@ class IPCManagement extends Component {
 				<BasicParams sn={sn} />
 				{/* <NetworkSetting sn={sn} /> */}
 				{/* <CloudService sn={sn} /> */}
-				<SoftwareUpdate sn={sn} />
+				<SoftwareUpdate sn={sn} showModal={showModal} />
 			</div>
 
 		);
