@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import { Col, Icon, Input, Row, Select, Radio, InputNumber } from 'antd';
+import { Col, Icon, Input, Row, Select, Radio } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { SHAPE_TYPES, MAPS } from '@/constants/studio';
+import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
 
 const { Option } = Select;
@@ -60,23 +61,95 @@ export default class RightToolBox extends Component {
 			const newDetail = {
 				[key]: value,
 			};
+			const detail = componentsDetail[selectedShapeName];
+			let canUpdate = true;
 			if (key === 'fontSize') {
-				const detail = componentsDetail[selectedShapeName];
 				newDetail.scaleY = value / MAPS.containerHeight[detail.type];
+			} else if (key === 'content' && selectedShapeName.indexOf(SHAPE_TYPES.PRICE) > -1) {
+				if (value === '') {
+					canUpdate = true;
+				} else {
+					if (!RegExp.money.test(value) && (!value.endsWith('.') || value.split('.').length > 2)) {
+						canUpdate = false;
+					}
+					const decimal = value.split('.')[1];
+					if (decimal && decimal.length > detail.precision) {
+						canUpdate = false;
+					}
+				}
 			}
+			if (canUpdate) {
+				updateComponentsDetail({
+					isStep: true,
+					[selectedShapeName]: newDetail,
+				});
+			}
+		}
+	};
+
+	handleLineWidth = (detail, value) => {
+		const {
+			selectedShapeName,
+			updateComponentsDetail,
+		} = this.props;
+
+		if (detail.type === SHAPE_TYPES.LINE_H) {
 			updateComponentsDetail({
 				isStep: true,
-				[selectedShapeName]: newDetail,
+				[selectedShapeName]: {
+					scaleY: value
+				},
+			});
+		} else {
+			updateComponentsDetail({
+				isStep: true,
+				[selectedShapeName]: {
+					scaleX: value
+				},
 			});
 		}
 	};
 
+	handlePrecision = (value) => {
+		const {
+			selectedShapeName,
+			updateComponentsDetail,
+		} = this.props;
+		updateComponentsDetail({
+			isStep: true,
+			updatePrecision: true,
+			[selectedShapeName]: {
+				precision: value
+			},
+		});
+	};
+
 	handleBindValue = (value) => {
+		if (value !== '' && !/^[0-9a-zA-Z]+$/.test(value)) {
+			return;
+		}
 		const {
 			componentsDetail,
 			selectedShapeName,
 			updateComponentsDetail,
 		} = this.props;
+
+		if (value === '') {
+			const detail = componentsDetail[selectedShapeName];
+			const image = new Image();
+			image.src = MAPS.imgPath[componentsDetail[selectedShapeName].type];
+			image.onload = () => {
+				updateComponentsDetail({
+					[selectedShapeName]: {
+						content: value,
+						image,
+						ratio: image.height / image.width,
+						height: (detail.width * image.height) / image.width,
+					},
+				});
+			};
+			return;
+		}
 
 		if (this.hasSubString(SHAPE_TYPES.CODE_QR)) {
 			const detail = componentsDetail[selectedShapeName];
@@ -94,8 +167,8 @@ export default class RightToolBox extends Component {
 			image.onload = () => {
 				updateComponentsDetail({
 					[selectedShapeName]: {
+						content: value,
 						image,
-						imageType: 'selected',
 						ratio: image.height / image.width,
 						height: (detail.width * image.height) / image.width,
 					},
@@ -106,14 +179,15 @@ export default class RightToolBox extends Component {
 			const detail = componentsDetail[selectedShapeName];
 			const image = document.createElement('img');
 			JsBarcode(image, value, {
-				format: 'CODE39',
+				format: 'CODE128',
+				width: MAPS.containerWidth[detail.type] * detail.scaleX * detail.zoomScale,
 				displayValue: false
 			});
 
 			updateComponentsDetail({
 				[selectedShapeName]: {
+					content: value,
 					image,
-					imageType: 'selected',
 					ratio: image.height / image.width,
 					height: (detail.width * image.height) / image.width,
 				}
@@ -182,70 +256,20 @@ export default class RightToolBox extends Component {
 
 	handleFontStyle = (detail, style) => {
 		const { selectedShapeName, updateComponentsDetail } = this.props;
-		let newFontStyle;
-		if (!detail.fontStyle || detail.fontStyle === 'normal') {
-			newFontStyle = style;
+		const newDetail = {
+			[style]: detail[style] === 1 ? 0 : 1
+		};
+
+		if (style === 'underline') {
+			newDetail.strikethrough = 0;
 		}
-		if (detail.fontStyle === 'bold') {
-			if (style === 'bold') {
-				newFontStyle = '';
-			}
-			if (style === 'italic') {
-				newFontStyle = 'bold italic';
-			}
-		}
-		if (detail.fontStyle === 'italic') {
-			if (style === 'italic') {
-				newFontStyle = '';
-			}
-			if (style === 'bold') {
-				newFontStyle = 'bold italic';
-			}
-		}
-		if (detail.fontStyle === 'bold italic') {
-			if (style === 'bold') {
-				newFontStyle = 'italic';
-			}
-			if (style === 'italic') {
-				newFontStyle = 'bold';
-			}
+		if (style === 'strikethrough') {
+			newDetail.underline = 0;
 		}
 
 		updateComponentsDetail({
 			isStep: true,
-			[selectedShapeName]: {
-				fontStyle: newFontStyle,
-			},
-		});
-	};
-
-	handleTextDecoration = (detail, textDecoration) => {
-		const { selectedShapeName, updateComponentsDetail } = this.props;
-		let newTextDecoration;
-		if (!detail.textDecoration || detail.textDecoration === 'normal') {
-			newTextDecoration = textDecoration;
-		}
-		if (detail.textDecoration === 'underline') {
-			if (textDecoration === 'underline') {
-				newTextDecoration = '';
-			}
-			if (textDecoration === 'line-through') {
-				newTextDecoration = 'line-through';
-			}
-		}
-		if (detail.textDecoration === 'line-through') {
-			if (textDecoration === 'line-through') {
-				newTextDecoration = '';
-			}
-			if (textDecoration === 'underline') {
-				newTextDecoration = 'underline';
-			}
-		}
-		updateComponentsDetail({
-			isStep: true,
-			[selectedShapeName]: {
-				textDecoration: newTextDecoration,
-			},
+			[selectedShapeName]: newDetail,
 		});
 	};
 
@@ -259,7 +283,7 @@ export default class RightToolBox extends Component {
 		if (this.hasSubString(SHAPE_TYPES.RECT)) {
 			menuMap.isRect = true;
 		}
-		if (this.hasSubString(SHAPE_TYPES.VLine) || this.hasSubString(SHAPE_TYPES.HLine)) {
+		if (this.hasSubString(SHAPE_TYPES.LINE_H) || this.hasSubString(SHAPE_TYPES.LINE_V)) {
 			menuMap.isLine = true;
 		}
 		if (this.hasSubString(SHAPE_TYPES.IMAGE)) {
@@ -332,10 +356,10 @@ export default class RightToolBox extends Component {
 		});
 		let realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
 		let realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
-		if (SHAPE_TYPES.HLine === detail.type) {
+		if (SHAPE_TYPES.LINE_H === detail.type) {
 			realHeight = detail.strokeWidth;
 		}
-		if (SHAPE_TYPES.VLine === detail.type) {
+		if (SHAPE_TYPES.LINE_V === detail.type) {
 			realWidth = detail.strokeWidth;
 		}
 		const disabled = selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) > -1;
@@ -365,20 +389,6 @@ export default class RightToolBox extends Component {
 								</Option>
 							))}
 						</Select>
-					</div>
-				) : null}
-				{menuMap.isBarOrQrCode ? (
-					<div className={styles['tool-box-block']}>
-						<h4>{formatMessage({ id: 'studio.tool.title.bind.value' })}</h4>
-						<Input
-							placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
-							value={detail.bindValue}
-							style={{ width: '100%' }}
-							maxLength={30}
-							onChange={e => {
-								this.handleBindValue(e.target.value);
-							}}
-						/>
 					</div>
 				) : null}
 				<div className={styles['tool-box-block']}>
@@ -453,9 +463,9 @@ export default class RightToolBox extends Component {
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
-									value={detail.fill}
+									value={detail.backgroundColor}
 									onChange={e => {
-										this.handleDetail('fill', e.target.value);
+										this.handleDetail('backgroundColor', e.target.value);
 									}}
 								>
 									<Radio.Button
@@ -508,20 +518,24 @@ export default class RightToolBox extends Component {
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
-									value={detail.stroke}
+									value={detail.strokeColor}
 									onChange={e => {
-										this.handleDetail('stroke', e.target.value);
+										this.handleDetail('strokeColor', e.target.value);
 									}}
 								>
-									<Radio.Button style={{ width: '33.33%' }} value="black">
+									<Radio.Button style={{ width: hasRed ? '33.33%' : '50%' }} value="black">
 										黑
 									</Radio.Button>
-									<Radio.Button style={{ width: '33.33% ' }} value="white">
+									<Radio.Button style={{ width: hasRed ? '33.33%' : '50%' }} value="white">
 										白
 									</Radio.Button>
-									<Radio.Button style={{ width: '33.33%' }} value="red">
-										红
-									</Radio.Button>
+									{
+										hasRed ?
+											<Radio.Button style={{ width: '33.33%' }} value="red">
+												红
+											</Radio.Button> :
+											null
+									}
 								</Radio.Group>
 							</Col>
 						</Row>
@@ -560,9 +574,9 @@ export default class RightToolBox extends Component {
 							<Col span={24}>
 								<Input
 									placeholder="文本内容"
-									value={detail.text}
+									value={detail.content}
 									onChange={e => {
-										this.handleDetail('text', e.target.value);
+										this.handleDetail('content', e.target.value);
 									}}
 								/>
 							</Col>
@@ -570,7 +584,7 @@ export default class RightToolBox extends Component {
 						<Row style={{ marginBottom: 10 }}>
 							<Col span={4}>
 								<span className={styles.title}>
-									{formatMessage({ id: 'studio.tool.label.font.family' })}`
+									{formatMessage({ id: 'studio.tool.label.font.family' })}
 								</span>
 							</Col>
 							<Col span={20}>
@@ -636,31 +650,17 @@ export default class RightToolBox extends Component {
 									*/}
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col
-								span={6}
-								className={`${styles.formatter} ${detail.fontStyle.indexOf('bold') > -1 ? `${styles.active}` : ''}`}
-							>
-								<Icon
-									type="bold"
-									onClick={() => {
-										this.handleFontStyle(detail, 'bold');
-									}}
-								/>
+							<Col span={8} className={`${styles.formatter} ${detail.bold ? `${styles.active}` : ''}`}>
+								<Icon type="bold" onClick={() => {this.handleFontStyle(detail, 'bold');}} />
 							</Col>
-							<Col
-								span={6}
-								className={`${styles.formatter} ${detail.fontStyle.indexOf('italic') > -1 ? `${styles.active}` : ''}`}
-							>
-								<Icon type="italic" onClick={() => {this.handleFontStyle(detail, 'italic');}} />
+							{/* <Col span={6} className={`${styles.formatter} ${detail.italic ? `${styles.active}` : ''}`}> */}
+							{/* <Icon type="italic" onClick={() => {this.handleFontStyle(detail, 'italic');}} /> */}
+							{/* </Col> */}
+							<Col span={8} className={`${styles.formatter} ${detail.underline ? `${styles.active}` : ''}`}>
+								<Icon type="underline" onClick={() => {this.handleFontStyle(detail, 'underline');}} />
 							</Col>
-							<Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
-								<Icon type="underline" onClick={() => {this.handleTextDecoration(detail, 'underline');}} />
-							</Col>
-							<Col
-								span={6}
-								className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}
-							>
-								<Icon type="strikethrough" onClick={() => {this.handleTextDecoration(detail, 'line-through');}} />
+							<Col span={8} className={`${styles.formatter} ${detail.strikethrough ? `${styles.active}` : ''}`}>
+								<Icon type="strikethrough" onClick={() => {this.handleFontStyle(detail, 'strikethrough');}} />
 							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
@@ -670,9 +670,9 @@ export default class RightToolBox extends Component {
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
-									value={detail.fill}
+									value={detail.fontColor}
 									onChange={e => {
-										this.handleDetail('fill', e.target.value);
+										this.handleDetail('fontColor', e.target.value);
 									}}
 								>
 									<Radio.Button
@@ -702,9 +702,9 @@ export default class RightToolBox extends Component {
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
-									value={detail.textBg}
+									value={detail.backgroundColor}
 									onChange={e => {
-										this.handleDetail('textBg', e.target.value);
+										this.handleDetail('backgroundColor', e.target.value);
 									}}
 								>
 									<Radio.Button
@@ -773,9 +773,9 @@ export default class RightToolBox extends Component {
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
-									value={detail.stroke}
+									value={detail.backgroundColor}
 									onChange={e => {
-										this.handleDetail('stroke', e.target.value);
+										this.handleDetail('backgroundColor', e.target.value);
 									}}
 								>
 									<Radio.Button style={{ width: '33.33%' }} value="black">
@@ -797,9 +797,13 @@ export default class RightToolBox extends Component {
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
-									value={detail.strokeWidth}
+									value={
+										detail.type === SHAPE_TYPES.LINE_H ?
+											MAPS.containerHeight[detail.type] * detail.scaleY :
+											MAPS.containerWidth[detail.type] * detail.scaleX
+									}
 									onChange={e => {
-										this.handleDetail('strokeWidth', e.target.value);
+										this.handleLineWidth(detail, e.target.value);
 									}}
 								>
 									<Radio.Button style={{ width: '33.33%' }} value={1}>
@@ -842,13 +846,12 @@ export default class RightToolBox extends Component {
 						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
 						<Row style={{ marginBottom: 10 }}>
 							<Col span={24}>
-								<InputNumber
+								<Input
 									style={{ width: '100%' }}
 									placeholder={formatMessage({ id: 'studio.price.component' })}
-									value={detail.text}
-									precision={detail.precision}
-									onChange={value => {
-										this.handleDetail('text', value);
+									value={detail.content}
+									onChange={e => {
+										this.handleDetail('content', e.target.value);
 									}}
 								/>
 							</Col>
@@ -984,37 +987,17 @@ export default class RightToolBox extends Component {
 							)}
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('bold') > -1 ? `${styles.active}` : ''}`}>
-								<Icon
-									type="bold"
-									onClick={() => {
-										this.handleFontStyle(detail, 'bold');
-									}}
-								/>
+							<Col span={8} className={`${styles.formatter} ${detail.bold ? `${styles.active}` : ''}`}>
+								<Icon type="bold" onClick={() => {this.handleFontStyle(detail, 'bold');}} />
 							</Col>
-							<Col span={6} className={`${styles.formatter} ${detail.fontStyle.indexOf('italic') > -1 ? `${styles.active}` : ''}`}>
-								<Icon
-									type="italic"
-									onClick={() => {
-										this.handleFontStyle(detail, 'italic');
-									}}
-								/>
+							{/* <Col span={6} className={`${styles.formatter} ${detail.italic ? `${styles.active}` : ''}`}> */}
+							{/* <Icon type="italic" onClick={() => {this.handleFontStyle(detail, 'italic');}} /> */}
+							{/* </Col> */}
+							<Col span={8} className={`${styles.formatter} ${detail.underline ? `${styles.active}` : ''}`}>
+								<Icon type="underline" onClick={() => {this.handleFontStyle(detail, 'underline');}} />
 							</Col>
-							<Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'underline' ? `${styles.active}` : ''}`}>
-								<Icon
-									type="underline"
-									onClick={() => {
-										this.handleTextDecoration(detail, 'underline');
-									}}
-								/>
-							</Col>
-							<Col span={6} className={`${styles.formatter} ${detail.textDecoration === 'line-through' ? `${styles.active}` : ''}`}>
-								<Icon
-									type="strikethrough"
-									onClick={() => {
-										this.handleTextDecoration(detail, 'line-through');
-									}}
-								/>
+							<Col span={8} className={`${styles.formatter} ${detail.strikethrough ? `${styles.active}` : ''}`}>
+								<Icon type="strikethrough" onClick={() => {this.handleFontStyle(detail, 'strikethrough');}} />
 							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
@@ -1024,9 +1007,9 @@ export default class RightToolBox extends Component {
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
-									value={detail.fill}
+									value={detail.fontColor}
 									onChange={e => {
-										this.handleDetail('fill', e.target.value);
+										this.handleDetail('fontColor', e.target.value);
 									}}
 								>
 									<Radio.Button
@@ -1056,9 +1039,9 @@ export default class RightToolBox extends Component {
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
-									value={detail.textBg}
+									value={detail.backgroundColor}
 									onChange={e => {
-										this.handleDetail('textBg', e.target.value);
+										this.handleDetail('backgroundColor', e.target.value);
 									}}
 								>
 									<Radio.Button
@@ -1104,7 +1087,7 @@ export default class RightToolBox extends Component {
 											<Radio.Button style={{ width: '33.33%' }} value="price@normal">
 												<span style={{ fontSize: 16 }}>99.{detail.precision === 1 ? '0' : '00'}</span>
 											</Radio.Button>
-											<Radio.Button style={{ width: '33.33%' }} value="price@super">
+											<Radio.Button style={{ width: '33.33%' }} value="price@sup">
 												<span style={{ fontSize: 16 }}>
 													99.<sup>{detail.precision === 1 ? '0' : '00'}</sup>
 												</span>
@@ -1127,7 +1110,7 @@ export default class RightToolBox extends Component {
 								<Radio.Group
 									style={{width: '100%'}}
 									value={detail.precision}
-									onChange={(e) => {this.handleDetail('precision', e.target.value);}}
+									onChange={(e) => {this.handlePrecision(e.target.value);}}
 								>
 									<Radio.Button style={{width: '33.33%'}} value={0}>
 										0
@@ -1165,25 +1148,43 @@ export default class RightToolBox extends Component {
 						</Row>
 					</div>
 				) : null}
-				{menuMap.isCode ? (
+				{menuMap.isBarOrQrCode ? (
 					<div className={styles['tool-box-block']}>
 						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={24}>{formatMessage({ id: 'studio.tool.label.codec' })}</Col>
+							<Col span={24}>{formatMessage({ id: 'studio.tool.title.bind.value' })}</Col>
 							<Col span={24}>
-								<Select
+								<Input
+									placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
+									value={detail.content}
 									style={{ width: '100%' }}
-									value={detail.codec}
-									onChange={value => {
-										this.handleDetail('codec', value);
+									maxLength={30}
+									onChange={e => {
+										this.handleBindValue(e.target.value);
 									}}
-								>
-									<Option value="ean8">ean8</Option>
-									<Option value="ean13">ean13</Option>
-									<Option value="code128">code128</Option>
-								</Select>
+								/>
 							</Col>
 						</Row>
+						{
+							menuMap.isCode ?
+								<Row style={{ marginBottom: 10 }} gutter={20}>
+									<Col span={24}>{formatMessage({ id: 'studio.tool.label.codec' })}</Col>
+									<Col span={24}>
+										<Select
+											style={{ width: '100%' }}
+											value={detail.codec}
+											onChange={value => {
+												this.handleDetail('codec', value);
+											}}
+										>
+											<Option value="ean8">ean8</Option>
+											<Option value="ean13">ean13</Option>
+											<Option value="code128">code128</Option>
+										</Select>
+									</Col>
+								</Row> :
+								null
+						}
 					</div>
 				) : null}
 			</Fragment>

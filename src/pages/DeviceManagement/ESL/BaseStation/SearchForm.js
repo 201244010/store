@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
+import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 import styles from './BaseStation.less';
 
@@ -42,8 +42,10 @@ class SearchForm extends Component {
 			<div className={styles['search-bar']}>
 				<Form layout="inline">
 					<Row gutter={FORM_FORMAT.gutter}>
-						<Col {...COL_THREE_NORMAL}>
-							<Form.Item label={formatMessage({ id: 'esl.device.ap.search.ap.info' })}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+							<Form.Item
+								label={formatMessage({ id: 'esl.device.ap.search.ap.info' })}
+							>
 								<Input
 									placeholder={formatMessage({
 										id: 'esl.device.ap.search.placeholder',
@@ -54,22 +56,26 @@ class SearchForm extends Component {
 								/>
 							</Form.Item>
 						</Col>
-						<Col {...COL_THREE_NORMAL}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item label={formatMessage({ id: 'esl.device.ap.status' })}>
 								<Select
 									placeholder={formatMessage({ id: 'select.placeholder' })}
 									value={searchFormValues.status}
-									onChange={value => this.changeFormValues('select', 'status', value)}
+									onChange={value =>
+										this.changeFormValues('select', 'status', value)
+									}
 								>
-									<Option value={-1}>{formatMessage({ id: 'select.all' })}</Option>
+									<Option value={-1}>
+										{formatMessage({ id: 'select.all' })}
+									</Option>
 									{states.map(s => (
 										<Option key={s.status_code}>{s.status_desc}</Option>
 									))}
 								</Select>
 							</Form.Item>
 						</Col>
-						<Col {...COL_THREE_NORMAL}>
-							<Form.Item>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+							<Form.Item className={styles['query-item']}>
 								<Button type="primary" onClick={this.search}>
 									{formatMessage({ id: 'btn.query' })}
 								</Button>

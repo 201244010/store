@@ -4,7 +4,7 @@ import { Card, Radio, Switch, Button,Form, Spin, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 
-import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
+import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
 
 import styles from './BasicParams.less';
 
@@ -182,7 +182,7 @@ class BasicParams extends Component {
 		return (
 			<Spin spinning={isReading || isSaving === 'saving'}>
 				<Card bordered={false} className={styles.card} title={formatMessage({id: 'basicParams.title'})}>
-					<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
+					<Form {...FORM_ITEM_LAYOUT}>
 						<Form.Item label={formatMessage({id: 'basicParams.nightMode'})}>
 							{
 								getFieldDecorator('nightMode',{

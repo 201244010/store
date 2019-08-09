@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import {
-	FORM_FORMAT,
-	COL_THREE_NORMAL,
-} from '@/constants/form';
+import { FORM_FORMAT, SEARCH_FORM_COL } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 import styles from './index.less';
 
@@ -43,7 +40,7 @@ class SearchForm extends Component {
 			<div className={styles['search-bar']}>
 				<Form layout="inline">
 					<Row gutter={FORM_FORMAT.gutter}>
-						<Col {...COL_THREE_NORMAL}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item label={formatMessage({ id: 'esl.device.esl.search.info' })}>
 								<Input
 									placeholder={formatMessage({
@@ -55,7 +52,7 @@ class SearchForm extends Component {
 								/>
 							</Form.Item>
 						</Col>
-						<Col {...COL_THREE_NORMAL}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item label={formatMessage({ id: 'esl.device.esl.status' })}>
 								<Select
 									placeholder={formatMessage({ id: 'select.placeholder' })}
@@ -80,8 +77,8 @@ class SearchForm extends Component {
 								</Select>
 							</Form.Item>
 						</Col>
-						<Col {...COL_THREE_NORMAL}>
-							<Form.Item>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+							<Form.Item className={styles['query-item']}>
 								<Button type="primary" onClick={this.search}>
 									{formatMessage({ id: 'btn.query' })}
 								</Button>
