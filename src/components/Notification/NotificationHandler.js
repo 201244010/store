@@ -1,11 +1,11 @@
 import React from 'react';
 import { Button, Modal, Spin } from 'antd';
-import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
 import { formatMessage } from 'umi/locale';
+import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
 
 import { formatMessageTemplate, convertArrayPrams, replaceTemplateWithValue } from '@/utils/utils';
 import ipcTypes from '@/constants/ipcTypes';
- 
+
 const palyMotion = ({ params }) => {
 	const { url = null, device_model: ipcType = null } = convertArrayPrams(params);
 	const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
@@ -21,7 +21,7 @@ const palyMotion = ({ params }) => {
 								modal.destroy();
 							}
 						}}
-						url={url}
+						url={decodeURIComponent(url)}
 						pixelRatio={pixelRatio}
 					/>
 				)}
