@@ -26,6 +26,23 @@ export const COL_THREE_NORMAL = {
 	md: 8,
 };
 
+export const FORM_ITEM_LAYOUT = {
+	labelCol: {
+		sm: { span: 24 },
+		md: { span: 6 },
+		lg: { span: 5 },
+		xl: { span: 5 },
+		xxl: { span: 4 },
+	},
+	wrapperCol: {
+		sm: { span: 24 },
+		md: { span: 18 },
+		lg: { span: 19 },
+		xl: { span: 19 },
+		xxl: { sapn: 20 },
+	},
+};
+
 export const FORM_ITEM_DETAIL = {
 	labelCol: {
 		sm: { span: 24 },
@@ -34,17 +51,6 @@ export const FORM_ITEM_DETAIL = {
 	wrapperCol: {
 		sm: { span: 24 },
 		md: { span: 20 },
-	},
-};
-
-export const FORM_SETTING_LAYOUT = {
-	labelCol: {
-		sm: { span: 24 },
-		md: { span: 8 },
-	},
-	wrapperCol: {
-		sm: { span: 24 },
-		md: { span: 16 },
 	},
 };
 
@@ -62,23 +68,6 @@ export const FORM_ITEM_LAYOUT_TWICE = {
 		lg: { span: 21 },
 		xl: { span: 21 },
 		xxl: { sapn: 22 },
-	},
-};
-
-export const FORM_ITEM_LAYOUT = {
-	labelCol: {
-		sm: { span: 24 },
-		md: { span: 6 },
-		lg: { span: 5 },
-		xl: { span: 5 },
-		xxl: { span: 4 },
-	},
-	wrapperCol: {
-		sm: { span: 24 },
-		md: { span: 18 },
-		lg: { span: 19 },
-		xl: { span: 19 },
-		xxl: { span: 20 },
 	},
 };
 
@@ -189,21 +178,31 @@ export const SEARCH_FORM_COL = {
 	OFFSET_ONE_THIRD: {
 		sm: {
 			offset: 0,
-			span: 24,
+			span: 24
 		},
 		md: {
 			offset: 8,
-			span: 8,
-		},
+			span: 8
+		}
 	},
 	OFFSET_TWO_THIRD: {
 		sm: {
 			offset: 0,
-			span: 24,
+			span: 24
 		},
 		md: {
 			offset: 16,
-			span: 8,
-		},
+			span: 8
+		}
+	}
+};
+export const FORM_ITEM_LAYOUT_MANAGEMENT = {
+	labelCol: {
+		xs: { span: 24 },
+		sm: { span: 8 },
+	},
+	wrapperCol: {
+		xs: { span: 24 },
+		sm: { span: 16 },
 	},
 };
