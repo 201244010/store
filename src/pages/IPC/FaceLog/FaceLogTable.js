@@ -2,14 +2,12 @@ import React from 'react';
 import { Table, Divider, Avatar } from 'antd';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, AGE_RANGE_CODE } from '@/constants';
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 
 
 import styles from './FaceLog.less';
 
 class FaceLogTable extends React.Component{
-
-
 	columns = [
 		{
 			title: formatMessage({id: 'faceLog.regFace'}),
@@ -40,11 +38,13 @@ class FaceLogTable extends React.Component{
 		},
 		{
 			title: formatMessage({id: 'faceLog.age'}),
-			dataIndex: 'ageRangeCode',
-			key: 'ageRangeCode',
-			render:(ageRangeCode) => {
-				if(ageRangeCode === 0) return '--';
-				return AGE_RANGE_CODE[ageRangeCode];
+			dataIndex: 'ageItem',
+			key: 'ageItem',
+			render:(ageItem) => {
+				const { ageRangeCodeMap } = this.props;
+				const { ageRangeCode, age } = ageItem;
+				if(ageRangeCode === 0 && age === 0) return '--';
+				return age||ageRangeCodeMap[ageRangeCode];
 			}
 		},
 		{
@@ -63,7 +63,7 @@ class FaceLogTable extends React.Component{
 			dataIndex:'lastArrivalTime',
 			key:'lastArrivalTime',
 			render:(time) => (
-				<span>{time === 0?'--':moment.unix(time).format('YYYY.MM.DD hh:mm:ss')}</span>
+				<span>{time === 0?'--':moment.unix(time).format('YYYY.MM.DD HH:mm:ss')}</span>
 			)
 		},
 		{

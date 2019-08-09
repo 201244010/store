@@ -17,19 +17,9 @@ export default {
 			state.motionList = [...list];
 			state.total = total;
 		},
-		// readIpcList(state,action){
-		// 	const { payload } = action;
-		// 	state.ipcList = [...payload];
-		// }
 	},
 	effects: {
 		*read({ payload }, { put }) {
-			// const companyId = yield put.resolve({
-			// 	type: 'global/getCompanyIdFromStorage'
-			// });
-			// const shopId = yield select((state) => {
-			// 	return state.shops.currentShopId;
-			// });
 			const {
 				startTime,
 				endTime,
@@ -39,16 +29,9 @@ export default {
 				pageSize,
 			} = payload;
 
-			// console.log(currentPage, pageSize);
 			let deviceId;
 			let source;
 			if (ipcSelected) {
-				// deviceId = yield put.resolve({
-				// 	type: 'ipcList/getDeviceId',
-				// 	payload: {
-				// 		sn:ipcSelected
-				// 	}
-				// });
 				deviceId = ipcSelected;
 			}
 
@@ -66,42 +49,21 @@ export default {
 			});
 			if (response.code === ERROR_OK) {
 				const { list, total } = response.data;
+				const motionList = list.map(item => {
+					const name = item.name === ''? 'My Camera': item.name;
+					item.name = name;
+					return {
+						...item
+					};
+				});
 				yield put({
 					type: 'readData',
 					payload: {
-						list,
+						list:motionList,
 						total,
 					},
 				});
 			}
 		},
-		// *getIpcType({ payload },{ put }){
-		// 	const { sn } = payload;
-		// 	const type = yield put.resolve({
-		// 		type:'ipcList/getDeviceType',
-		// 		payload:{
-		// 			sn
-		// 		}
-		// 	});
-		// 	return type;
-		// },
-		// *getIpcList(_,{ put }){
-		// 	// const companyId = yield put.resolve({
-		// 	// 	type: 'global/getCompanyIdFromStorage'
-		// 	// });
-		// 	// const shopId = yield select((state) => {
-		// 	// 	return state.shops.currentShopId;
-		// 	// });
-		// 	// console.log(`motionList: companyId:${companyId} shopId${shopId}`);
-		// 	const response = yield getIpcList();
-		// 	if (response.code === ERROR_OK) {
-		// 		const result = response.data;
-		// 		// console.log(result);
-		// 		yield put({
-		// 			type: 'readIpcList',
-		// 			payload: result
-		// 		});
-		// 	}
-		// }
 	},
 };
