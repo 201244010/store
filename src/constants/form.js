@@ -207,3 +207,13 @@ export const SEARCH_FORM_COL = {
 		},
 	},
 };
+export const FORM_ITEM_LAYOUT_MANAGEMENT = {
+	labelCol: {
+		xs: { span: 24 },
+		sm: { span: 8 },
+	},
+	wrapperCol: {
+		xs: { span: 24 },
+		sm: { span: 16 },
+	},
+};
