@@ -11,7 +11,7 @@ export default class ContextMenu extends Component {
 	};
 
 	handlePaste = () => {
-		const { copiedComponent, scopedComponents, position, showRightToolBox, addComponent } = this.props;
+		const { copiedComponent, scopedComponents, position, showRightToolBox, addComponent, updateComponentsDetail } = this.props;
 		if (showRightToolBox) {
 			this.hideRightToolBox();
 		}
@@ -28,14 +28,19 @@ export default class ContextMenu extends Component {
 					...baseComponent,
 					x: position.left - SIZES.TOOL_BOX_WIDTH,
 					y: position.top - SIZES.HEADER_HEIGHT,
+					isStep: false
 				});
 				for (let i = 1; i < scopedComponents.length; i++) {
 					addComponent({
 						...scopedComponents[i],
 						x: position.left - SIZES.TOOL_BOX_WIDTH + scopedComponents[i].x - baseComponent.x,
 						y: position.top - SIZES.HEADER_HEIGHT + scopedComponents[i].y - baseComponent.y,
+						isStep: i === scopedComponents.length - 1
 					});
 				}
+				updateComponentsDetail({
+					selectedShapeName: ''
+				});
 			}
 		}
 	};
@@ -92,9 +97,10 @@ export default class ContextMenu extends Component {
 	};
 
 	render() {
-		const { props: { position, selectedShapeName, copiedComponent } } = this;
+		const { props: { position, selectedShapeName, copiedComponent, scopedComponents } } = this;
 		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
 		const canCut = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1;
+		const canPaste = copiedComponent && (copiedComponent.type === SHAPE_TYPES.RECT_SELECT ? (scopedComponents && scopedComponents.length) : copiedComponent.type);
 
 		return (
 			<div
@@ -119,7 +125,7 @@ export default class ContextMenu extends Component {
 						{formatMessage({ id: 'studio.action.copy' })}
 					</div>
 				)}
-				{copiedComponent && copiedComponent.type ? (
+				{canPaste ? (
 					<div className={styles['context-item']} onClick={this.handlePaste}>
 						{formatMessage({ id: 'studio.action.paste' })}
 					</div>

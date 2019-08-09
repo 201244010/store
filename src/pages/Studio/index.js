@@ -14,7 +14,6 @@ import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNow
 import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
-import { ERROR_OK } from '@/constants/errorCode';
 import * as styles from './index.less';
 
 @connect(
@@ -25,6 +24,10 @@ import * as styles from './index.less';
 	dispatch => ({
 		updateComponentsDetail: payload =>
 			dispatch({ type: 'studio/updateComponentsDetail', payload }),
+		batchUpdateComponentDetail: payload =>
+			dispatch({ type: 'studio/batchUpdateComponentDetail', payload }),
+		batchUpdateScopedComponent: payload =>
+			dispatch({ type: 'studio/batchUpdateScopedComponent', payload }),
 		toggleRightToolBox: payload => dispatch({ type: 'studio/toggleRightToolBox', payload }),
 		copySelectedComponent: payload =>
 			dispatch({ type: 'studio/copySelectedComponent', payload }),
@@ -55,46 +58,23 @@ class Studio extends Component {
 	}
 
 	async componentDidMount() {
-		const {stageWidth, stageHeight, props: {fetchTemplateDetail, addComponent, fetchBindFields, updateState}} = this;
+		const {stageWidth, stageHeight, props: {fetchTemplateDetail, fetchBindFields, updateState}} = this;
 		fetchBindFields();
-		const response = await fetchTemplateDetail({
-			template_id: getLocationParam('id'),
-		});
 		const screenType = getLocationParam('screen');
-		const { width, height, zoomScale } = MAPS.screen[screenType];
-		let realZoomScale = zoomScale;
-		if (response && response.code === ERROR_OK) {
-			const studioInfo = JSON.parse(response.data.template_info.studio_info || '{}');
-			if (!studioInfo.layers || !studioInfo.layers.length) {
-				const type = SHAPE_TYPES.RECT_FIX;
-				addComponent({
-					x: (stageWidth - width * zoomScale) / 2,
-					y: (stageHeight - height * zoomScale) / 2,
-					screenType,
-					type,
-					fill: 'white',
-					width,
-					height,
-					cornerRadius: MAPS.cornerRadius[type],
-					strokeWidth: MAPS.strokeWidth[type],
-					stroke: MAPS.stroke[type],
-					scaleX: 1,
-					scaleY: 1,
-					rotation: 0,
-					isStep: false
-				});
-				this.updateSelectedShapeName('');
-			} else {
-				realZoomScale = studioInfo.layers[0].zoomScale;
-			}
-		}
 		updateState({
-			zoomScale: realZoomScale,
 			stage: {
 				width: stageWidth,
 				height: stageHeight,
 			},
 		});
+
+		await fetchTemplateDetail({
+			template_id: getLocationParam('id'),
+			width: stageWidth,
+			height: stageHeight,
+			screenType,
+		});
+
 		document.addEventListener('keydown', this.handleComponentActions);
 	}
 
@@ -110,7 +90,7 @@ class Studio extends Component {
 			return;
 		}
 		const {
-			studio: { selectedShapeName, componentsDetail, copiedComponent, zoomScale },
+			studio: { selectedShapeName, componentsDetail, copiedComponent, scopedComponents, zoomScale },
 			deleteSelectedComponent,
 			copySelectedComponent,
 			addComponent
@@ -120,6 +100,12 @@ class Studio extends Component {
 		if ([KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT' && tagName.toUpperCase() !== 'TEXTAREA') {
 			if (canCopyOrDelete) {
 				deleteSelectedComponent(selectedShapeName);
+			}
+			if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) > -1) {
+			    deleteSelectedComponent(selectedShapeName);
+			    for (let i = 0; i < scopedComponents.length; i++) {
+			        deleteSelectedComponent(scopedComponents[i].name);
+				}
 			}
 		}
 		if (ctrlKey) {
@@ -139,21 +125,36 @@ class Studio extends Component {
 			// Ctrl + V
 			if (keyCode === KEY.KEY_V) {
 				if (copiedComponent.name) {
-					const newPosition = {};
-					if (canCopyOrDelete) {
-						const selectedComponent = componentsDetail[selectedShapeName];
-						const {x, y, scaleY} = selectedComponent;
-						newPosition.x = x;
-						newPosition.y = y + MAPS.height[selectedComponent.type] * scaleY * zoomScale;
+					if (copiedComponent.type !== SHAPE_TYPES.RECT_SELECT) {
+						const newPosition = {};
+						if (!copiedComponent.copyCount) {
+							copiedComponent.copyCount = 1;
+						} else {
+							copiedComponent.copyCount++;
+						}
+						newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
+						newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
+
+						addComponent({
+							...copiedComponent,
+							x: newPosition.x,
+							y: newPosition.y,
+						});
 					} else {
-						newPosition.x = copiedComponent.x;
-						newPosition.y = copiedComponent.y;
+						if (!copiedComponent.copyCount) {
+							copiedComponent.copyCount = 1;
+						} else {
+							copiedComponent.copyCount++;
+						}
+						for (let i = 0; i < scopedComponents.length; i++) {
+							const {x, y, type, scaleY} = scopedComponents[i];
+							addComponent({
+								...scopedComponents[i],
+								x,
+								y: y + MAPS.height[type] * scaleY * zoomScale * copiedComponent.copyCount,
+							});
+						}
 					}
-					addComponent({
-						...copiedComponent,
-						x: newPosition.x,
-						y: newPosition.y,
-					});
 				}
 			}
 		}
@@ -171,11 +172,12 @@ class Studio extends Component {
 				name: RECT_SELECT_NAME,
 				x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
 				y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
-				fill: '#5cadff',
+				background: '#5cadff',
 				width: 0,
 				height: 0,
 				scaleX: 1,
 				scaleY: 1,
+				zoomScale: 1,
 				rotation: 0,
 				opacity: 0.2,
 				isStep: false
@@ -255,23 +257,73 @@ class Studio extends Component {
 	handleStageMouseMove = (e) => {
 		if (this.moveStart) {
 			const { updateComponentsDetail } = this.props;
-			updateComponentsDetail({
-				isStep: false,
-				selectedShapeName: RECT_SELECT_NAME,
-				[RECT_SELECT_NAME]: {
-					width: e.evt.clientX - this.moveStartX,
-					height: e.evt.clientY - this.moveStartY
-				},
-			});
+			const diffX = e.evt.clientX - this.moveStartX;
+			const diffY = e.evt.clientY - this.moveStartY;
+			if (diffX > 0) {
+				if (diffY > 0) {
+					updateComponentsDetail({
+						isStep: false,
+						selectedShapeName: RECT_SELECT_NAME,
+						[RECT_SELECT_NAME]: {
+							width: Math.abs(diffX),
+							height: Math.abs(diffY),
+						},
+					});
+				} else {
+					updateComponentsDetail({
+						isStep: false,
+						selectedShapeName: RECT_SELECT_NAME,
+						[RECT_SELECT_NAME]: {
+							y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
+							width: Math.abs(diffX),
+							height: Math.abs(diffY),
+						},
+					});
+				}
+			} else if (diffX <= 0) {
+				if (diffY > 0) {
+					updateComponentsDetail({
+						isStep: false,
+						selectedShapeName: RECT_SELECT_NAME,
+						[RECT_SELECT_NAME]: {
+							x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
+							width: Math.abs(diffX),
+							height: Math.abs(diffY),
+						},
+					});
+				} else {
+					updateComponentsDetail({
+						isStep: false,
+						selectedShapeName: RECT_SELECT_NAME,
+						[RECT_SELECT_NAME]: {
+							x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
+							y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
+							width: Math.abs(e.evt.clientX - this.moveStartX),
+							height: Math.abs(e.evt.clientY - this.moveStartY),
+						},
+					});
+				}
+			}
 		}
 	};
 
-	handleStageMouseUp = () => {
+	handleStageMouseUp = (e) => {
 		if (this.moveStart) {
-			const { selectComponentIn } = this.props;
 			this.moveStart = false;
+			const { selectComponentIn, updateComponentsDetail } = this.props;
+			if (Math.abs(e.evt.clientX - this.moveStartX) > 10) {
+				selectComponentIn();
+			} else {
+				updateComponentsDetail({
+					isStep: false,
+					selectedShapeName: '',
+					[RECT_SELECT_NAME]: {
+						width: 0,
+						height: 0
+					},
+				});
+			}
 
-			selectComponentIn();
 		}
 	};
 
@@ -282,24 +334,37 @@ class Studio extends Component {
 	};
 
 	handleStageShapeMove = e => {
-		this.updateComponentsDetail({
-			target: e.target
-		});
+		const { studio: { selectedShapeName }, batchUpdateComponentDetail } = this.props;
+
+		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+			this.updateComponentsDetail({
+				target: e.target
+			});
+		} else {
+			batchUpdateComponentDetail({
+				x: e.target.attrs.x,
+				y: e.target.attrs.y,
+			});
+		}
 	};
 
 	handleStageShapeEnd = () => {
-		const { studio: { selectedShapeName, componentsDetail }, updateComponentsDetail } = this.props;
+		const { studio: { selectedShapeName, componentsDetail }, updateComponentsDetail, batchUpdateScopedComponent } = this.props;
 		this.setState({
 			dragging: false,
 		});
-		const scope = getNearestPosition(componentsDetail, selectedShapeName);
-		updateComponentsDetail({
-			isStep: true,
-			[selectedShapeName]: {
-				x: scope.x,
-				y: scope.y
-			},
-		});
+		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+			const scope = getNearestPosition(componentsDetail, selectedShapeName);
+			updateComponentsDetail({
+				isStep: true,
+				[selectedShapeName]: {
+					x: scope.x,
+					y: scope.y
+				},
+			});
+		} else {
+			batchUpdateScopedComponent();
+		}
 		// if (scope.x || scope.x === 0) {
 		// 	componentsDetail[selectedShapeName].x = scope.x;
 		// }
@@ -413,7 +478,7 @@ class Studio extends Component {
 		updateComponentsDetail({
 			selectedShapeName: targetName,
 			[targetName]: {
-				text: '',
+				content: '',
 			},
 		});
 	};
@@ -452,7 +517,6 @@ class Studio extends Component {
 					[targetName]: {
 						image,
 						imgPath,
-						imageType: 'selected',
 						ratio: image.height / image.width,
 						height: (detail.width * image.height) / image.width,
 					},
@@ -472,7 +536,7 @@ class Studio extends Component {
 		updateComponentsDetail({
 			selectedShapeName: targetName,
 			[targetName]: {
-				text: '',
+				content: '',
 			},
 		});
 	};
@@ -526,41 +590,22 @@ class Studio extends Component {
 					rotation,
 				},
 			};
-			if (type === SHAPE_TYPES.CODE_V) {
-				componentDetail[name].lines = [
-					[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
-					[
-						x - height * realScaleY,
-						0,
-						x - height * realScaleY,
-						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-					],
-					[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
-					[
-						0,
-						y + realW * realScaleX,
-						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-						y + realW * realScaleX,
-					],
-				];
-			} else {
-				componentDetail[name].lines = [
-					[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
-					[
-						x + realW * realScaleX,
-						0,
-						x + realW * realScaleX,
-						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-					],
-					[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
-					[
-						0,
-						y + height * realScaleY,
-						SIZES.DEFAULT_MAX_CANVAS_LENGTH,
-						y + height * realScaleY,
-					],
-				];
-			}
+			componentDetail[name].lines = [
+				[x, 0, x, SIZES.DEFAULT_MAX_CANVAS_LENGTH],
+				[
+					x + realW * realScaleX,
+					0,
+					x + realW * realScaleX,
+					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+				],
+				[0, y, SIZES.DEFAULT_MAX_CANVAS_LENGTH, y],
+				[
+					0,
+					y + height * realScaleY,
+					SIZES.DEFAULT_MAX_CANVAS_LENGTH,
+					y + height * realScaleY,
+				],
+			];
 			updateComponentsDetail(componentDetail);
 		}
 	};
@@ -584,13 +629,13 @@ class Studio extends Component {
 		const inputEle = document.createElement('input');
 		document.body.appendChild(inputEle);
 		inputEle.setAttribute('id', 'textInput');
-		inputEle.value = targetDetail.text;
+		inputEle.value = targetDetail.content;
 		inputEle.style.backgroundColor = 'transparent';
 		inputEle.style.border = '1px solid #ccc';
 		inputEle.style.borderRadius = '5px';
 		inputEle.style.fontSize = `${targetDetail.fontSize * zoomScale}px`;
 		inputEle.style.fontFamily = targetDetail.fontFamily;
-		inputEle.style.color = targetDetail.fill;
+		inputEle.style.color = targetDetail.fontColor;
 		inputEle.style.position = 'absolute';
 		inputEle.style.left = `${inputPosition.x}px`;
 		inputEle.style.top = `${inputPosition.y}px`;
@@ -619,7 +664,7 @@ class Studio extends Component {
 				updateComponentsDetail({
 					selectedShapeName: targetName,
 					[targetName]: {
-						text: inputValue || '双击编辑文本',
+						content: inputValue || formatMessage({ id: 'studio.action.text.db.click' }),
 					},
 				});
 			} catch (evt) {
@@ -660,6 +705,7 @@ class Studio extends Component {
 			stageHeight,
 			props: {
 				updateComponentsDetail,
+				updateState,
 				copySelectedComponent,
 				deleteSelectedComponent,
 				addComponent,
@@ -670,6 +716,7 @@ class Studio extends Component {
 				fetchTemplateDetail,
 				studio: {
 					selectedShapeName,
+					selectedComponent,
 					componentsDetail,
 					showRightToolBox,
 					rightToolBoxPos,
@@ -682,7 +729,7 @@ class Studio extends Component {
 			state: { dragging },
 		} = this;
 
-		const lines = getNearestLines(componentsDetail, selectedShapeName);
+		const lines = getNearestLines(componentsDetail, selectedShapeName, scopedComponents);
 
 		return (
 			<div className={styles.board}>
@@ -702,7 +749,7 @@ class Studio extends Component {
 				</div>
 				<div className={styles['board-content']}>
 					<div className={styles['board-tools']}>
-						<BoardTools addComponent={addComponent} />
+						<BoardTools addComponent={addComponent} zoomScale={zoomScale} />
 					</div>
 					<div className={styles['board-stage']}>
 						<Stage
@@ -772,10 +819,12 @@ class Studio extends Component {
 								{...{
 									bindFields,
 									selectedShapeName,
+									selectedComponent,
 									componentsDetail,
 									zoomScale,
 									templateInfo: curTemplate,
 									updateComponentsDetail,
+									updateState,
 									deleteSelectedComponent,
 									addComponent,
 								}}
@@ -786,9 +835,9 @@ class Studio extends Component {
 				{showRightToolBox ? (
 					<ContextMenu
 						{...{
-							color: (componentsDetail[selectedShapeName] || {}).fill,
+							color: (componentsDetail[selectedShapeName] || {}).fontColor,
 							fontSize: (componentsDetail[selectedShapeName] || {}).fontSize,
-							text: (componentsDetail[selectedShapeName] || {}).text,
+							text: (componentsDetail[selectedShapeName] || {}).context,
 							position: rightToolBoxPos,
 							componentsDetail,
 							selectedShapeName,

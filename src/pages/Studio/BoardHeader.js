@@ -122,7 +122,8 @@ export default class BoardHeader extends Component {
 			<Fragment>
 				<div className={styles['left-actions']}>
 					<ButtonIcon name="save" onClick={saveAsDraft} />
-					<ButtonIcon name="check" />
+					{/* <ButtonIcon name="check" /> */}
+					<span />
 					<ButtonIcon name="preStep" onClick={this.preStep} />
 					<ButtonIcon name="nextStep" onClick={this.nextStep} />
 				</div>
@@ -136,7 +137,11 @@ export default class BoardHeader extends Component {
 						/>
 					) : (
 						<Fragment>
-							<span className={styles['edit-content']}>{templateInfo.name}</span>
+							{
+								templateInfo.name ?
+									<span className={styles['edit-content']}>{formatMessage({id: templateInfo.name })}</span> :
+									null
+							}
 							<img
 								className={styles['edit-img']}
 								src={require('@/assets/studio/edit.svg')}
@@ -147,9 +152,9 @@ export default class BoardHeader extends Component {
 				</div>
 				<div className={styles['right-actions']}>
 					<ZoomIcon zoomScale={zoomScale} zoomOutOrIn={zoomOutOrIn} />
-					<ButtonIcon name="wrapper" />
-					<ButtonIcon name="view" />
-					<ButtonIcon name="history" />
+					{/* <ButtonIcon name="wrapper" /> */}
+					{/* <ButtonIcon name="view" /> */}
+					{/* <ButtonIcon name="history" /> */}
 				</div>
 			</Fragment>
 		);

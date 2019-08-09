@@ -51,6 +51,7 @@ module.exports = {
 			'SwitchCase': 1
 		}],
 		'no-nested-ternary': 0,
+        'prefer-destructuring': 0
 	},
 	settings: {
 		polyfills: ['fetch', 'promises', 'url'],

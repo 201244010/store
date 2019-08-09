@@ -4,7 +4,7 @@ import { Card, Switch, Row, Col, Slider, Radio, TimePicker, Checkbox, Button, Fo
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import moment from 'moment';
-import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
+import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
 // import PropTypes, { object } from 'prop-types';
 import styles from './ActiveDetection.less';
 
@@ -264,7 +264,7 @@ class ActiveDetection extends React.Component {
 		return (
 			<Spin spinning={isReading || isSaving === 'saving'}>
 				<Card bordered={false} title={formatMessage({id: 'activeDetection.title' })}>
-					<Form {...FORM_ITEM_LAYOUT_MANAGEMENT} onSubmit={this.handleSubmit} hideRequiredMark className={styles['main-form']}>
+					<Form {...FORM_ITEM_LAYOUT} onSubmit={this.handleSubmit} hideRequiredMark className={styles['main-form']}>
 						<Form.Item
 							label={formatMessage({id: 'activeDetection.soundDetection'})}
 						>

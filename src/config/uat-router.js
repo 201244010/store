@@ -154,7 +154,6 @@ const router = [
 					{
 						path: '/esl/template',
 						name: 'template',
-						hideInMenu: true,
 						id: 'template',
 						component: './Template',
 					},

@@ -85,5 +85,18 @@ export const AVATA_IMG = {
 	},
 };
 
+
+export const AGE_RANGE_CODE = {
+	1: '0~6',
+	2: '7~12',
+	3: '13~18',
+	4: '19~28',
+	5: '29~35',
+	6: '36~45',
+	7: '46~55',
+	8: '56~100',
+};
+
+
 export const USER_PERMISSION_LIST = '__user_permission_list__';
 
