@@ -36,11 +36,9 @@ export default {
 			const position = calcutePosition(stage, zoomScale);
 			const componentsDetail = {};
 			let hasImage = false;
-			console.log(payload);
 			Object.keys(payload).map(key => {
 				componentsDetail[key] = payload[key];
 				componentsDetail[key].x = componentsDetail[key].startX * zoomScale + position.x;
-				console.log(componentsDetail[key].startX, zoomScale, position.x);
 				componentsDetail[key].y = componentsDetail[key].startY * zoomScale + position.y;
 				hasImage = hasImage || IMAGE_TYPES.includes(payload[key].type);
 			});
