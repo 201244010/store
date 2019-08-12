@@ -26,4 +26,10 @@ export default {
 	'network.rssi.weak': '较差',
 	'network.router.parent': '上级路由',
 	'network.router.parent.none': '无',
+	'network.reboot': '立即重启',
+	'network.upgrade': '立即升级',
+	'network.isUpgrading': '升级中',
+	'network.online': '在线',
+	'network.offline': '离线',
+	'network.master': '主',
 };
