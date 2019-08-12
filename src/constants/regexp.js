@@ -1,7 +1,7 @@
 export const password = /^(?=.*[a-zA-Z])(?=.*\d)[\s\S]{8,30}$/;
 // export const mail = /^[\w\d_-]+@[\w\d_-]+(\.[\w\d_-]+)+$/;
 export const mail = /^[a-zA-Z0-9_+.-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z0-9]{2,4}/;
-export const production_date = /^\d{0,4}$/;
+export const productionDate = /^\d{0,4}$/;
 // 匹配所有 ascii 字符
 export const normalInput = /^[a-zA-Z\\u0021-\\u007E]+$/;
 // export const productPrice = /^([0-9]{1,6})(\.[0-9]{0,2})?$/;
@@ -19,3 +19,6 @@ export const employeeNumber = /^[\d\w]+$/;
 
 // 首字母不为空格
 export const spaceInput = /^\S.*/;
+
+// 匹配emoji
+export const emojiInput = /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[A9|AE]\u3030|\uA9|\uAE|\u3030/ig;
