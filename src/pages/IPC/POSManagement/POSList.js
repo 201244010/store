@@ -536,7 +536,7 @@ class POSList extends React.Component {
 				{
 					posList.length === 0 ?
 						<Card className={styles['no-ipc']} bordered={false}>
-							您还未绑定任何摄像机设备，请在手机端下载“商米助手”APP进行绑定。
+							{formatMessage({ id: 'posList.noCamera' })}
 						</Card>
 						: ''
 				}
@@ -547,7 +547,7 @@ class POSList extends React.Component {
 							key={item.sn}
 							bordered={false}
 						>
-							<h3>{item.name}</h3>
+							<h3>{item.name ? item.name :  formatMessage({ id: 'posList.myCamera'})}</h3>
 
 							{
 								item.posList.length === 0 ?

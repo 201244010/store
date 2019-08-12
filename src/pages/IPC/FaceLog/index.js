@@ -24,11 +24,10 @@ import { ERROR_OK } from '@/constants/errorCode';
 		loading
 	};
 },(dispatch) => ({
-	readAgeRangeList:() => {
+	readAgeRangeList:() => 
 		dispatch({
 			type:'faceLog/readAgeRangeList'
-		});
-	},
+		}),
 	readFaceLogList:({
 		gender,
 		age,
@@ -52,7 +51,7 @@ import { ERROR_OK } from '@/constants/errorCode';
 				pageNum
 			}
 		});
-	},
+	},		
 	getFaceLibrary:() => {
 		dispatch({
 			type:'faceLog/getLibrary'
@@ -82,15 +81,19 @@ class FaceLog extends React.Component {
 		pageSize: DEFAULT_PAGE_SIZE,
 		moveModalVisible: false,
 		groupInfo: {},
-		targetGroup: ''
+		targetGroup: '',
+		ageRangeCodeMap: {}
 	};
 
-	componentDidMount(){
+	async componentDidMount(){
 		const { readAgeRangeList, getFaceLibrary } = this.props;
 		const { currentPage, pageSize } = this.state;
-		readAgeRangeList();
+		const ageRangeCodeMap = await readAgeRangeList();
 		getFaceLibrary();
 		this.getFaceLogList(currentPage, pageSize);
+		this.setState({
+			ageRangeCodeMap
+		});
 	}
 
 	getFaceLogList = (currentPage, pageSize) => {
@@ -215,8 +218,8 @@ class FaceLog extends React.Component {
 
 	render(){
 		const { ageRangeList,faceLogList, total, loading, faceLibraryList } = this.props;
-		const { currentPage, pageSize, moveModalVisible, groupInfo } = this.state;
-
+		const { currentPage, pageSize, moveModalVisible, groupInfo, ageRangeCodeMap } = this.state;
+		
 		return(
 			<div className={styles['face-log-container']}>
 				<Card
@@ -244,6 +247,7 @@ class FaceLog extends React.Component {
 						linkToDetailHandler={this.linkToDetailHandler}
 						adjustGroupHandler={this.adjustGroupHandler}
 						handleLibraryName={this.handleLibraryName}
+						ageRangeCodeMap={ageRangeCodeMap}
 					/>
 					<FaceIdLibraryMove
 						moveModalVisible={moveModalVisible}

@@ -16,5 +16,6 @@ export default {
 	'entry.detail.arrival.count':'进店次数',
 	'entry.detail.arrival.record':'进店记录',
 	'entry.detail.confirm':'确定',
-	'entry.detail.reset':'重置'
+	'entry.detail.reset':'重置',
+	'entry.detail.myCamera':'My Camera'
 };

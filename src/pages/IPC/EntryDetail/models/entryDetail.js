@@ -27,7 +27,7 @@ export default {
 				pageNum,
 				pageSize
 			});
-			const { code, data: { historyList, totalCount } } = response;
+			const { code, data: { historyList = [], totalCount } } = response;
 			const arrivalList = [];
 			for(let i=0;i<historyList.length;i++){
 				const shopName = yield put.resolve({

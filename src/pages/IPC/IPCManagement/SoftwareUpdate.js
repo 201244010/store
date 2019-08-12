@@ -74,7 +74,8 @@ class SoftwareUpdate extends Component {
 		// isLatest: true,
 		visible: false,
 		percent: 0,
-		deviceInfo: {}
+		deviceInfo: {},
+		showLoadingFlag:true
 		// proVisible: false,
 		// isUpdate: false,
 		// isCheck: false
@@ -105,12 +106,19 @@ class SoftwareUpdate extends Component {
 	// }
 
 	showModal = () => {
-		const { checkVersion, sn } = this.props;
+		const { checkVersion, sn, load } = this.props;
 		checkVersion(sn);
 
 		this.setState({
 			visible: true
 		});
+
+		setTimeout(async () => {
+			await load(sn);
+			this.setState({
+				showLoadingFlag:false
+			});
+		}, 2000);
 	}
 
 
@@ -120,7 +128,6 @@ class SoftwareUpdate extends Component {
 		update(sn);
 
 		const time = OTATime;
-		console.log(time);
 		clearInterval(this.interval);
 		this.interval = setInterval(() => {
 			const { percent } = this.state;
@@ -160,24 +167,16 @@ class SoftwareUpdate extends Component {
 		setUpdatingStatus(sn, status);
 	}
 
-	// hideInfo = () => {
-	// 	this.setState({
-	// 		isCheck: false
-	// 	});
-	// }
-
-	// showInfo = () => {
-	// 	this.setState({
-	// 		isCheck: true,
-	// 		visible: false
-	// 	});
-	// }
-
+	closeHanlder=()=>{
+		this.setState({
+			showLoadingFlag:true
+		});
+	}
 
 	render() {
 		const { info: { currentVersion, needUpdate, lastCheckTime, updating, newTimeValue }, loading } = this.props;
-		const { percent, visible } = this.state;
-		const detecting = loading.effects['ipcSoftwareUpdate/detect'];
+		const { percent, visible, showLoadingFlag } = this.state;
+		const showLoading = loading.effects['ipcSoftwareUpdate/detect']||showLoadingFlag;
 		return (
 			<div>
 				<Card
@@ -202,6 +201,7 @@ class SoftwareUpdate extends Component {
 					visible={visible}
 					closable={updating !== 'loading'}
 					maskClosable={false}
+					afterClose={this.closeHanlder}
 					footer={
 						(() => {
 							if (updating === 'success' || updating === 'failed') {
@@ -229,7 +229,7 @@ class SoftwareUpdate extends Component {
 				>
 					{
 						(() => {
-							if (detecting) {
+							if (showLoading) {
 								return (
 									<div className={styles.info}>
 										<h3>
