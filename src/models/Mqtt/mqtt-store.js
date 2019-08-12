@@ -121,5 +121,6 @@ export default {
 				type: 'destroy',
 			});
 		},
+		// *putMsgMap(_, { put})
 	},
 };
