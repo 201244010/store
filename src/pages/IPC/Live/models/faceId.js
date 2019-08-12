@@ -11,9 +11,10 @@ export default {
 		rectangles: [],
 		list: [],
 		ageRangeList: [],
+		deviceSn: ''
 	},
 	reducers: {
-		drawRects({ rectangles, list, ageRangeList }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
+		drawRects({ rectangles, list, ageRangeList, deviceSn }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
 
 			// todo 需要添加信息清除逻辑
 			const rect = rectangles;
@@ -29,7 +30,8 @@ export default {
 					}
 				],
 				list,
-				ageRangeList
+				ageRangeList,
+				deviceSn
 			};
 		},
 		clearRects(state, { payload: { timestamp }}) {
@@ -54,11 +56,18 @@ export default {
 			console.log('list payload', payload.ageRangeList);
 
 			state.ageRangeList =  payload.ageRangeList;
-			// return {
-			// 	ageRangeList: payload.ageRangeList,
-			// 	...state
-			// };
+		},
+		setDeviceSn(state, { payload }) {
+			const { sn } = payload;
+			state.deviceSn = sn;
+		},
+		clearList(state, { payload }) {
+			const { sn } = payload;
+			console.log('sn', sn, state.deviceSn);
 
+			if(state.deviceSn !== sn) {
+				state.list = [];
+			}
 		}
 
 	},
@@ -126,12 +135,12 @@ export default {
 			 yield put({
 				 type: 'updateList',
 				 payload: {
-					...payload,
+					 ...payload,
 					 libraryName: libraryNameText,
 					 age: ageName,
 					 name: name === 'undefined' ? formatMessage({id: 'live.unknown'}) : name
 				 }
-			});
+			 });
 		},
 		// *test(_, { put }) {
 		// 	console.log('in test');

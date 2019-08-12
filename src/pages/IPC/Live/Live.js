@@ -119,10 +119,29 @@ import styles from './Live.less';
 			type: 'faceid/getAgeRangeList'
 		});
 	},
-	getSdStatus: ({ sn }) => dispatch({
-		type: 'sdcard/getSdStatus',
-		sn
-	}),
+	getSdStatus: ({ sn }) => {
+		const result = dispatch({
+			type: 'sdcard/getSdStatus',
+			sn
+		});
+		return result;
+	},
+	setDeviceSn({ sn }) {
+		dispatch({
+			type: 'faceid/setDeviceSn',
+			payload: {
+				sn
+			}
+		});
+	},
+	clearList({ sn }) {
+		dispatch({
+			type: 'faceid/clearList',
+			payload: {
+				sn
+			}
+		});
+	}
 	// test: () => {
 	// 	dispatch({
 	// 		type:'faceid/test'
@@ -143,14 +162,16 @@ class Live extends React.Component{
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, /* test */ } = this.props;
+		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList } = this.props;
 
 		const {sn} = query;
 		let sdStatus = true;
 		if (sn) {
 			// test();
+			clearList({ sn });
 			getAgeRangeList();
 			const deviceInfo = await getDeviceInfo({ sn });
+			setDeviceSn({ sn });
 			const status = await getSdStatus({ sn });
 			if(status === 0) {
 				message.info(formatMessage({ id: 'live.nosdInfo' }));
@@ -354,7 +375,7 @@ class Live extends React.Component{
 										faceidList
 									}
 									renderItem={
-										(item) => 
+										(item) =>
 											(
 												<List.Item key={item.id}>
 													<Card
@@ -413,7 +434,7 @@ class Live extends React.Component{
 												</Card> */}
 												</List.Item>
 											)
-										
+
 									}
 								/>
 
