@@ -176,6 +176,27 @@ const router = [
 						id: 'deviceUpgrade',
 						component: './DeviceManagement/ESL/DeviceUpgrade'
 					},
+					{
+						path: '/esl/deviceUpgrade/deviceESL',
+						name: 'deviceESL',
+						id: 'deviceESL',
+						hideInMenu: true,
+						component: './DeviceManagement/ESL/DeviceESL',
+					},
+					{
+						path: '/esl/deviceUpgrade',
+						name: 'overview',
+						id: 'deviceUpgradeOverview',
+						hideInMenu: true,
+						component: './DeviceManagement/ESL/DeviceUpgrade',
+					},
+					{
+						path: '/esl/deviceUpgrade/deviceAP',
+						name: 'deviceAP',
+						id: 'deviceAP',
+						hideInMenu: true,
+						component: './DeviceManagement/ESL/DeviceAP',
+					},
 					{ path: '/esl', redirect: '/esl/electricLabel' },
 				],
 			},

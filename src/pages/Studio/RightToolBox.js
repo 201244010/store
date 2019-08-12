@@ -458,7 +458,7 @@ export default class RightToolBox extends Component {
 						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
 							<Col span={24}>
-								{formatMessage({ id: 'studio.tool.title.fill.color' })}
+								{formatMessage({ id: 'studio.tool.title.bg.color' })}
 							</Col>
 							<Col span={24}>
 								<Radio.Group
