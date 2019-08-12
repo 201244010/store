@@ -63,7 +63,7 @@ export default {
 	'faceid.deleteSuccess': '删除分组成功！',
 	'faceid.deleteFailed': '删除失败，请检查网络后重试。',
 
-	'faceid.stranger': '陌生人',
+	'faceid.stranger': '新客',
 	'faceid.regular': '熟客',
 	'faceid.employee': '店员',
 	'faceid.blacklist': '黑名单',
@@ -77,6 +77,6 @@ export default {
 	'faceid.list.length.max':'当前创建的人脸分组数量已达到上限',
 	'faceid.amount.max' :'当前人脸分组的照片总数量已达到上限',
 	'faceid.info.known':'知道了',
-	
+
 	'faceid.firstInputFormat':'首位字符不能为空，请重新输入'
 };
