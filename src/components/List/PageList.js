@@ -3,6 +3,11 @@ import { Pagination } from 'antd';
 import DataEmpty from '@/components/BigIcon/DataEmpty';
 import styles from './list.less';
 
+const calculateSlicePos = (pageNum, pageSize) => ({
+	start: (pageNum - 1) * pageSize,
+	end: (pageNum - 1) * pageSize + pageSize,
+});
+
 const PageList = ({
 	data = [],
 	RenderComponent = () => <></>,
@@ -15,9 +20,10 @@ const PageList = ({
 		total: data.length,
 		...pagination,
 	});
+
 	const { current, pageSize } = pageConfig;
-	const dispayStart = (current - 1) * pageSize;
-	const [displayData, setDisplayData] = useState(data.slice(dispayStart, pageSize));
+	const { start: initStart, end: initEnd } = calculateSlicePos(current, pageSize);
+	const [displayData, setDisplayData] = useState(data.slice(initStart, initEnd));
 
 	const listPageChange = (page, size) => {
 		setPageConfig({
@@ -26,8 +32,8 @@ const PageList = ({
 			pageSize: size,
 		});
 
-		const _dispayStart = (page - 1) * size;
-		setDisplayData(data.slice(_dispayStart, size));
+		const { start, end } = calculateSlicePos(page, size);
+		setDisplayData(data.slice(start, end));
 
 		if (onChange) {
 			onChange(page);
@@ -39,6 +45,9 @@ const PageList = ({
 			...pageConfig,
 			pageSize: size,
 		});
+
+		const { start, end } = calculateSlicePos(_current, size);
+		setDisplayData(data.slice(start, end));
 	};
 
 	return (
