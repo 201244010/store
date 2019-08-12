@@ -200,7 +200,7 @@ class EmployeeCU extends Component {
 					}
 
 					if (ssoUsername) {
-						const checkResponse = await checkSsoBinded({ ssoUsername: username });
+						const checkResponse = await checkSsoBinded({ ssoUsername });
 						if (checkResponse && checkResponse.code === SSO_BINDED) {
 							setFields({
 								ssoUsername: {
@@ -377,7 +377,7 @@ class EmployeeCU extends Component {
 								{
 									required: true,
 									validator: (rule, value, callback) => {
-										console.log(value);
+										// console.log(value);
 										if (value.length === 0) {
 											callback(
 												formatMessage({

@@ -337,9 +337,19 @@ const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 };
 
 class NetworkDetail extends PureComponent {
+	constructor(props) {
+		super(props);
+		this.checkTimer = null;
+	}
+
 	componentDidMount() {
 		// TODO 监听 MQTT 事件
 	}
+
+	checkClientExist = async () => {
+		clearTimeout(this.checkTimer);
+		
+	};
 
 	render() {
 		const { data = [] } = mockData;

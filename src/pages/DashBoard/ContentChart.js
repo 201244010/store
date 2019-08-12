@@ -198,7 +198,7 @@ class ContentChart extends PureComponent {
 			},
 			[TRADE_TIME.COUNT]: {
 				minLimit: 0,
-				tickCount: 6,
+				// tickCount: 6,
 			},
 		};
 
