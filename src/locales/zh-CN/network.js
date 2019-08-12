@@ -19,4 +19,11 @@ export default {
 	'network.router': '路由器',
 	'network.viewMore': '查看详情',
 	'network.guestNumber': '顾客接入数量',
+
+	'network.reboot': '立即重启',
+	'network.upgrade': '立即升级',
+	'network.isUpgrading': '升级中',
+	'network.online': '在线',
+	'network.offline': '离线',
+	'network.master': '主',
 };

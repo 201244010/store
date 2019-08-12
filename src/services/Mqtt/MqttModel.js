@@ -88,7 +88,6 @@ class MqttModel {
 						company_id: currentCompanyId,
 					},
 				};
-
 				yield call(me.client.publish, topic, sendMessage);
 			},
 
@@ -130,6 +129,14 @@ class MqttModel {
 				{ call }
 			) {
 				yield call(me.client.registerErrorHandler, handler);
+			},
+
+			putMsgMap() {
+				return me.client.msgIdMap;
+			},
+
+			*clearMsgId({payload}, { call }) {
+				yield call(me.client.clearMsg, payload);
 			},
 		};
 	}
