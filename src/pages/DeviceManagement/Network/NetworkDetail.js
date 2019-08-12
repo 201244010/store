@@ -342,12 +342,10 @@ class NetworkDetail extends PureComponent {
 	}
 
 	render() {
-		// console.log(mockData);
 		const { data = [] } = mockData;
 		const [dataResult = {}, ,] = data;
 		const { result: { sonconnect: { devices = [] } = {} } = {} } = dataResult;
 		const parentRoute = devices.find(device => device.role === '1');
-		// console.log(parentRoute);
 
 		return (
 			<Card title={formatMessage({ id: 'network.detail' })}>
