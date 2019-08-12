@@ -234,7 +234,7 @@ const mockData = {
 							online: '1',
 							location: 'W101D8BS00101',
 							rssi: 0,
-							role: '1',
+							role: '0',
 						},
 						{
 							mac: '0C:25:76:35:D9:9D',
@@ -288,9 +288,14 @@ const mockData = {
 	],
 };
 
-const ListContent = ({ data = {}, index = 0 }) => {
-	const { mac = '', ip = '', location = '', rssi = '', role = '' } = data;
+const rssiStyle = {
+	strong: { color: 'green' },
+	weak: { color: 'red' },
+};
 
+const ListContent = ({ data = {}, index = 0, parent = {} }) => {
+	const { mac = '', ip = '', location = '', rssi = '', role = '' } = data;
+	// console.log('ppp', parent);
 	return (
 		<div
 			className={`${index > 0 ? '' : styles['list-content-first']}  ${
@@ -301,7 +306,14 @@ const ListContent = ({ data = {}, index = 0 }) => {
 			<div className={styles['info-bar']}>
 				<div className={styles['info-content']}>
 					<span>{formatMessage({ id: 'network.rssi' })}:</span>
-					<span className={styles.detail}>{rssi}</span>
+					<span
+						className={styles.detail}
+						style={rssi > 20 ? rssiStyle.strong : rssiStyle.weak}
+					>
+						{rssi > 20
+							? formatMessage({ id: 'network.rssi.strong' })
+							: formatMessage({ id: 'network.rssi.weak' })}
+					</span>
 				</div>
 				<div className={styles['info-content']}>
 					<span>IP:</span>
@@ -313,7 +325,11 @@ const ListContent = ({ data = {}, index = 0 }) => {
 				</div>
 				<div className={styles['info-content']}>
 					<span>{formatMessage({ id: 'network.router.parent' })}</span>
-					<span className={styles.detail}>{role}</span>
+					<span className={styles.detail}>
+						{`${role}` === '1'
+							? formatMessage({ id: 'network.router.parent.none' })
+							: parent.mac}
+					</span>
 				</div>
 			</div>
 		</div>
@@ -326,14 +342,21 @@ class NetworkDetail extends PureComponent {
 	}
 
 	render() {
-		console.log(mockData);
+		// console.log(mockData);
 		const { data = [] } = mockData;
 		const [dataResult = {}, ,] = data;
 		const { result: { sonconnect: { devices = [] } = {} } = {} } = dataResult;
+		const parentRoute = devices.find(device => device.role === '1');
+		// console.log(parentRoute);
 
 		return (
 			<Card title={formatMessage({ id: 'network.detail' })}>
-				<PageList data={devices} RenderComponent={ListContent} />
+				<PageList
+					data={devices}
+					RenderComponent={({ data: _data, index }) => (
+						<ListContent data={_data} index={index} parent={parentRoute} />
+					)}
+				/>
 			</Card>
 		);
 	}

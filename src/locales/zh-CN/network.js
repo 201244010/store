@@ -25,4 +25,5 @@ export default {
 	'network.rssi.strong': '较好',
 	'network.rssi.weak': '较差',
 	'network.router.parent': '上级路由',
+	'network.router.parent.none': '无',
 };
