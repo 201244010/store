@@ -29,6 +29,7 @@ class MqttClient {
 
 		this.listenerStack = [];
 
+		this.msgIdMap = new Map();
 		this.handlerMap = new Map();
 		this.reconnectTimes = 0;
 
@@ -108,21 +109,25 @@ class MqttClient {
 		});
 	}
 
-	publish(topic, message) {
+	publish(topic, message = []) {
 		// const { messages } = this;
 		const { client } = this;
 		const { config } = this;
 
 		// console.log('random id ', generateMsgId());
 		// messages.id += 1;
+		const msgId = generateMsgId();
+		// console.log(message);
+		const { sn } = (message[0] || {}).param || {};
+		this.msgIdMap.set(msgId, sn);
 		const msg = JSON.stringify({
-			msg_id: generateMsgId(),
+			msg_id: msgId,
 			params: Array.isArray(message) ? [...message] : [message],
 		});
-
 		client.publish(topic, msg, config, () => {
 			console.log('publish', topic, msg);
 		});
+		console.log(this.msgIdMap);
 	}
 
 	registerTopicHandler(topic, topicHandler) {

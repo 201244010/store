@@ -121,5 +121,12 @@ export default {
 				type: 'destroy',
 			});
 		},
+
+		*putMsg(_, { put}) {
+			const response = yield put({
+				type: 'putMsgMap',
+			});
+			return response;
+		}
 	},
 };
