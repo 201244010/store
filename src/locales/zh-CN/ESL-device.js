@@ -117,6 +117,8 @@ export default {
 	'esl.device.template.name.require': '请输入模板名称',
 	'esl.device.template.size.require': '请选择模板尺寸',
 	'esl.device.template.color.require': '请选择模板颜色',
+	'esl.device.template.action.create.success': '新建模板成功',
+	'esl.device.template.action.create.error': '新建模板失败',
 	'esl.device.template.action.save.success': '保存模板草稿成功',
 	'esl.device.template.action.save.error': '保存模板草稿失败',
 	'esl.device.template.action.upload.success': '上次成功',

@@ -136,6 +136,7 @@ class DeviceList extends React.PureComponent {
 		const {
 			deviceList: { networkDeviceList },
 		} = this.props;
+
 		return (
 			<Card title={formatMessage({ id: 'network.deviceList' })} bordered={false}>
 				<Table

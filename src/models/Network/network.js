@@ -42,8 +42,21 @@ export default {
 				});
 			}
 		},
-		*updateAlias({ payload }, { call }) {
-			const { networkId, networkAlias } = payload;
+		*getOverview(_, { call, put }) {
+			const response = yield call(Actions.handleNetworkEquipment, 'device/getOverview');
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { onlineCount = 0, offlineCount = 0 } = format('toCamel')(data);
+				yield put({
+					type: 'updateState',
+					payload: {
+						networkOverview: { onlineCount, offlineCount },
+					},
+				});
+			}
+			return response;
+		},
+		*updateAlias({ networkId, networkAlias }, { call }) {
 			const response = yield call(Actions.handleNetworkEquipment, 'network/updateAlias', {
 				network_id: networkId,
 				network_alias: networkAlias,

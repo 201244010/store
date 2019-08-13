@@ -82,6 +82,7 @@ class StoreManagement extends Component {
 				title: formatMessage({ id: 'storeManagement.list.area' }),
 				dataIndex: 'business_area',
 				key: 'business_area',
+				render: text => <span>{text === 0 ? '--' : text}</span>,
 			},
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnContacts' }),

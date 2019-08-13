@@ -632,8 +632,8 @@ class Studio extends Component {
 		inputEle.style.left = `${inputPosition.x}px`;
 		inputEle.style.top = `${inputPosition.y}px`;
 		inputEle.style.width = `${targetDetail.width * targetDetail.scaleX}px`;
-		inputEle.style.height = `${targetDetail.height * targetDetail.scaleY}px`;
-		inputEle.style.lineHeight = `${targetDetail.lineHeight}`;
+		inputEle.style.height = `${targetDetail.fontSize * targetDetail.zoomScale}px`;
+		// inputEle.style.lineHeight = `${targetDetail.lineHeight}`;
 		inputEle.style.letterSpacing = `${targetDetail.letterSpacing}px`;
 		inputEle.style.textAlign = targetDetail.align;
 		inputEle.focus();
@@ -681,8 +681,8 @@ class Studio extends Component {
 		const textInput = document.getElementById('textInput');
 		if (textInput) {
 			textInput.style.width = `${config.width * config.scaleX}px`;
-			textInput.style.height = `${config.height * config.scaleY}px`;
-			textInput.style.lineHeight = `${config.lineHeight}`;
+			textInput.style.height = `${config.fontSize * config.zoomScale}px`;
+			// textInput.style.lineHeight = `${config.lineHeight}`;
 		}
 	};
 

@@ -78,7 +78,7 @@ export const FORM_ITEM_LAYOUT = {
 		md: { span: 18 },
 		lg: { span: 19 },
 		xl: { span: 19 },
-		xxl: { sapn: 20 },
+		xxl: { span: 20 },
 	},
 };
 
