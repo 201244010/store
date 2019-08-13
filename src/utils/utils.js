@@ -536,6 +536,7 @@ export const formatSpeed = speed => {
 	const gSpeed = mSpeed * 1024;
 
 	speed = parseInt(speed, 10);
+	let unit = '';
 	if (speed >= gSpeed) {
 		const val = speed / gSpeed;
 		speed = val.toFixed(val > 99 ? 0 : 2);

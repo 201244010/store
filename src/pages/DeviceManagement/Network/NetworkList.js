@@ -13,8 +13,8 @@ class NetworkList extends React.PureComponent {
 	}
 
 	async componentDidMount() {
-		// const { getList } = this.props;
-		// await getList();
+		const { getList } = this.props;
+		await getList();
 		await this.checkMQTTClient();
 	}
 
@@ -40,41 +40,44 @@ class NetworkList extends React.PureComponent {
 			const apInfoTopic = await generateTopic({ service: 'W1/response', action: 'sub' });
 			await subscribe({ topic: [apInfoTopic] });
 			// await setAPHandler({ handler: this.apHandler });
-			// this.checkTimer = setInterval(async () => {
-			await Promise.all(
-				networkList.map(async item => {
-					const { networkId, masterDeviceSn: sn } = item;
-					// console.log(masterDeviceSn);
-					// let sn = masterDeviceSn;
-					await setAPHandler({ handler: this.apHandler });
-					await getAPMessage([
-						{
-							opcode: OPCODE.CLIENT_LIST_GET,
-							param: {
-								network_id: networkId,
-								sn,
+			await setAPHandler({ handler: this.apHandler });
+			this.checkTimer = setInterval(async () => {
+				await Promise.all(
+					networkList.map(async item => {
+						const { networkId, masterDeviceSn: sn } = item;
+						// console.log(masterDeviceSn);
+						// let sn = masterDeviceSn;
+						await getAPMessage({
+							message: {
+								opcode: OPCODE.CLIENT_LIST_GET,
+								param: {
+									network_id: networkId,
+									sn,
+								},
 							},
-						},
-						{
-							opcode: OPCODE.TRAFFIC_STATS_GET,
-							param: {
-								network_id: networkId,
-								sn,
+						});
+						await getAPMessage({
+							message: {
+								opcode: OPCODE.TRAFFIC_STATS_GET,
+								param: {
+									network_id: networkId,
+									sn,
+								},
 							},
-						},
-					]);
-				})
-			);
-			// }, 5000);
+						});
+					})
+				);
+			}, 5000);
 		} else {
 			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
 		}
 	};
 
 	apHandler = async payload => {
-		// console.log(data);
-		const { refreshNetworkList } = this.props;
+		const { refreshNetworkList, clearMsg } = this.props;
+		const { msgId } = payload;
 		await refreshNetworkList(payload);
+		await clearMsg({ msgId});
 	};
 
 	editName = payload => {
@@ -102,7 +105,11 @@ class NetworkList extends React.PureComponent {
 		return (
 			<Card bordered={false}>
 				<h1>{formatMessage({ id: 'network.shopNetwork' })}</h1>
-				{TopologyList}
+				{networkList.length > 0 ? (
+					TopologyList
+				) : (
+					<div className={styles['network-no-device']}>暂无网络</div>
+				)}
 			</Card>
 		);
 	}
@@ -122,9 +129,8 @@ const Topology = props => {
 		upUnit,
 		downUnit,
 		edit,
-		errorTip,
-		editName,
 		goToPath,
+		editName,
 	} = props || {};
 
 	const routerNumber = networkDeviceList.filter(item => item.networkId === networkId).length;
@@ -132,10 +138,13 @@ const Topology = props => {
 		<div className={styles['network-shop']}>
 			<div className={styles['network-title']}>
 				<div className={styles['network-Id']}>
-					<span>{`${formatMessage({ id: 'network.networkId' })}:`}</span>
+					<span className={styles['network-name']}>{`${formatMessage({
+						id: 'network.networkId',
+					})}:`}
+					</span>
 					{!edit ? (
 						<>
-							<span> {networkAlias}</span>
+							<span> {networkAlias || networkId}</span>
 							<div
 								onClick={() => editName({ sn: masterDeviceSn, edit: 1 })}
 								className={styles['network-edit']}
@@ -144,27 +153,33 @@ const Topology = props => {
 					) : (
 						<>
 							<Input
-								style={{ width: '70%', marginLeft: 10 }}
+								style={{ width: '70%' }}
 								autoFocus
-								onBlur={() => editName({ sn: masterDeviceSn, edit: 0 })}
-								onChange={e =>
-									editName({ sn: masterDeviceSn, networkAlias: e.target.value })
+								onBlur={e =>
+									editName({
+										sn: masterDeviceSn,
+										edit: 0,
+										networkAlias: e.target.value,
+									})
 								}
-								defaultValue={networkAlias}
+								defaultValue={networkAlias || networkId}
+								maxLength={32}
+								// onChange={() => {}}
+								// value={networkAlias}
 							/>
-							<span className={styles['network-errtip']}>{errorTip}</span>
+							{/* <span className={styles['network-errtip']}>{errorTip}</span> */}
 						</>
 					)}
 				</div>
 				<div className={styles['network-speed']}>
 					<div className={styles['network-upspeed']} />
 					{`${formatMessage({ id: 'network.upSpeed' })}：`}
-					<span>{upSpeed || '--'}</span>
+					<span>{online ? upSpeed || 0 : '--'}</span>
 					{upUnit || 'KB/s'}
 					<Divider type="vertical" />
 					<div className={styles['network-downspeed']} />
 					{`${formatMessage({ id: 'network.downSpeed' })}：`}
-					<span>{downSpeed || '--'}</span>
+					<span>{online ? downSpeed || 0 : '--'}</span>
 					{downUnit || 'KB/s'}
 				</div>
 			</div>

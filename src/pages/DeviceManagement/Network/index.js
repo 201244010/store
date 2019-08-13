@@ -22,6 +22,7 @@ import styles from './Network.less';
 		checkClientExist: () => dispatch({ type: 'mqttStore/checkClientExist' }),
 		generateTopic: payload => dispatch({ type: 'mqttStore/generateTopic', payload }),
 		subscribe: payload => dispatch({ type: 'mqttStore/subscribe', payload }),
+		clearMsg: payload => dispatch({ type: 'mqttStore/clearMsg', payload }),
 	})
 )
 class Network extends React.Component {
@@ -38,7 +39,8 @@ class Network extends React.Component {
 			getAPMessage,
 			setAPHandler,
 			refreshNetworkList,
-			goToPath
+			goToPath,
+			clearMsg
 		} = this.props;
 		return (
 			<div>
@@ -55,7 +57,8 @@ class Network extends React.Component {
 						getAPMessage,
 						setAPHandler,
 						refreshNetworkList,
-						goToPath
+						goToPath,
+						clearMsg
 					}}
 				/>
 				<div className={styles['card-network-wrapper']}>

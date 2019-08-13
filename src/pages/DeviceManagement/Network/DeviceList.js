@@ -48,6 +48,7 @@ class DeviceList extends React.PureComponent {
 			{
 				title: formatMessage({ id: 'network.deviceNum' }),
 				dataIndex: 'clientCount',
+				render: record => record || '--',
 			},
 			{
 				title: formatMessage({ id: 'network.operation' }),
