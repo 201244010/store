@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Radio, Spin } from 'antd';
 import Charts from '@/components/Charts';
@@ -11,7 +11,7 @@ const {
 	PIE_COLOR,
 } = DASHBOARD;
 
-class FooterChart extends Component {
+class FooterChart extends PureComponent {
 	handleRadioChange = e => {
 		const { setSearchValue } = this.props;
 		const {

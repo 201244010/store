@@ -88,10 +88,12 @@ class DashBoard extends Component {
 				overviewProductLoading,
 				overviewDeviceLoading,
 				overviewIPCLoading,
+				overviewNetworkLoading,
 
 				productOverview,
 				deviceOverView,
 				ipcOverView,
+				networkOverview,
 
 				totalAmountLoading,
 				totalCountLoading,
@@ -135,9 +137,11 @@ class DashBoard extends Component {
 							overviewProductLoading,
 							overviewDeviceLoading,
 							overviewIPCLoading,
+							overviewNetworkLoading,
 							productOverview,
 							deviceOverView,
 							ipcOverView,
+							networkOverview,
 							goToPath,
 						}}
 					/>

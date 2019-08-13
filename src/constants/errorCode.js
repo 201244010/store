@@ -1,4 +1,5 @@
 export const ERROR_OK = 1;
+export const MQTT_RES_OK = 0;
 export const TOKEN_EXPIRE = -2;
 
 export const SHOW_VCODE = 2;

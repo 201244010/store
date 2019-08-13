@@ -13,6 +13,7 @@ import storeManagement from './zh-CN/storeManagement';
 import notification from './zh-CN/notification';
 import studio from './zh-CN/studio';
 import dashboard from './zh-CN/dashBoard';
+import network from './zh-CN/network';
 
 import VideoPlayer from './zh-CN/videoPlayer';
 
@@ -60,4 +61,5 @@ export default {
 	...roleManagement,
 	...dashboard,
 	...employee,
+	...network,
 };
