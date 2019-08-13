@@ -26,6 +26,43 @@ import styles from './Network.less';
 	})
 )
 class Network extends React.Component {
+
+	async componentDidMount() {
+		await this.checkMQTTClient();
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.checkTimer);
+		clearInterval(this.intervalTimer);
+		const { unsubscribeTopic } = this.props;
+		unsubscribeTopic();
+	}
+
+	checkMQTTClient = async () => {
+		clearTimeout(this.checkTimer);
+		const {
+			checkClientExist,
+			setAPHandler,
+			generateTopic,
+			subscribe,
+		} = this.props;
+		const isClientExist = await checkClientExist();
+		if (isClientExist) {
+			const apInfoTopic = await generateTopic({ service: 'W1/response', action: 'sub' });
+			await subscribe({ topic: [apInfoTopic] });
+			await setAPHandler({ handler: this.apHandler });
+		} else {
+			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
+		}
+	};
+
+	apHandler = async payload => {
+		const { refreshNetworkList, clearMsg } = this.props;
+		const { msgId } = payload;
+		await refreshNetworkList(payload);
+		await clearMsg({ msgId });
+	};
+
 	render() {
 		const {
 			network: { deviceList, networkList },
