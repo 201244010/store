@@ -1,7 +1,8 @@
 import * as Actions from '@/services/network';
 import { ERROR_OK } from '@/constants/errorCode';
 import { format } from '@konata9/milk-shake';
-import { OPCODE } from '@/constants/mqttStore';
+// import { formatSpeed } from '@/utils/utils';
+// import { OPCODE } from '@/constants/mqttStore';
 
 export default {
 	namespace: 'network',
@@ -43,33 +44,6 @@ export default {
 				});
 			}
 		},
-		*getNetworkList(_, { call, put }) {
-			const response = yield call(Actions.handleNetworkEquipment, 'getNetworkList');
-			if (response && response.code === ERROR_OK) {
-				const { data = {} } = response;
-				const { networkList } = format('toCamel')(data);
-				yield put({
-					type: 'updateState',
-					payload: {
-						networkList,
-					},
-				});
-			}
-		},
-		*getOverview(_, { call, put }) {
-			const response = yield call(Actions.handleNetworkEquipment, 'device/getOverview');
-			if (response && response.code === ERROR_OK) {
-				const { data = {} } = response;
-				const { onlineCount = 0, offlineCount = 0 } = format('toCamel')(data);
-				yield put({
-					type: 'updateState',
-					payload: {
-						networkOverview: { onlineCount, offlineCount },
-					},
-				});
-			}
-			return response;
-		},
 		*updateAlias({ networkId, networkAlias }, { call }) {
 			const response = yield call(Actions.handleNetworkEquipment, 'network/updateAlias', {
 				networkId,
@@ -89,17 +63,16 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { networkDeviceList, totalCount } = format('toCamel')(data);
-				// console.log(networkDeviceList)
-				// console.log(data, networkDeviceList, totalCount);
 				const { networkList } = yield select(state => state.network);
 				const tmpNetworkList = [];
-				networkList.forEach(item => {
-					networkDeviceList.forEach(items => {
+				networkList.map(item => {
+					networkDeviceList.map(items => {
 						if (item.masterDeviceSn === items.sn) {
 							tmpNetworkList.push({ ...item, online: items.activeStatus });
 						}
 					});
 				});
+				// console.log(tmpNetworkList);
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -108,6 +81,20 @@ export default {
 					},
 				});
 			}
+		},
+		*getOverview(_, { call, put }) {
+			const response = yield call(Actions.handleNetworkEquipment, 'device/getOverview');
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { onlineCount = 0, offlineCount = 0 } = format('toCamel')(data);
+				yield put({
+					type: 'updateState',
+					payload: {
+						networkOverview: { onlineCount, offlineCount },
+					},
+				});
+			}
+			return response;
 		},
 		*unsubscribeTopic(_, { put }) {
 			const responseTopic = yield put.resolve({
@@ -120,29 +107,40 @@ export default {
 				payload: { topic: responseTopic },
 			});
 		},
-		*setAPHandler({ payload }, { put }) {
+		*setAPHandler({ payload }, { put, select }) {
 			const { handler } = payload;
-			// const {
-			// 	deviceList: { networkDeviceList },
-			// } = yield select(state => state.network);
+			const { networkList } = yield select(state => state.network);
+			console.log(networkList);
+			const msgMap = yield put.resolve({
+				type: 'mqttStore/putMsg',
+			});
 			yield put({
 				type: 'mqttStore/setTopicListener',
 				payload: {
 					service: 'W1/response',
 					handler: receivedMessage => {
-						const { data } = JSON.parse(receivedMessage);
-						// console.log('data', data);
-						handler(data);
+						const { data = [], msgId } = format('toCamel')(JSON.parse(receivedMessage));
+						console.log('data', data, msgId);
 
-						// const guestNumber
-						// handler(errcode, action, networkConfig);
+						const sn = msgMap.get(msgId);
+						const clientNumber =
+							(((data[0] || {}).result || {}).data || []).length || 0;
+						const guestNumber = (((data[0] || {}).result || {}).data || []).filter(
+							item => item.bridge === 'br-lan'
+						).length;
+						// console.log(sn, clientNumber, guestNumber);
+						// const wan = data[1].result.traffic_stats.wan;
+						// const {speed: upSpeed, unit: upUnit} = formatSpeed(wan.cur_tx_bytes);
+						// const {speed: downSpeed, unit: downUnit} = formatSpeed(wan.cur_rx_bytes);
+						// console.log(upSpeed, downSpeed);
+						// handler({sn, clientNumber, guestNumber, upSpeed, upUnit, downSpeed, downUnit});
+						handler({ sn, clientNumber, guestNumber });
 					},
 				},
 			});
 		},
 		*getAPMessage({ payload }, { put }) {
-			const { networkId, sn } = payload;
-			// console.log(sn);
+			const { message } = payload;
 			const requestTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
 				payload: { service: 'W1/request' },
@@ -152,22 +150,40 @@ export default {
 				type: 'mqttStore/publishArray',
 				payload: {
 					topic: requestTopic,
-					message: [
-						{
-							opcode: OPCODE.CLIENT_LIST_GET,
-							param: {
-								network_id: networkId,
-								sn,
-							},
-						},
-						{
-							opcode: OPCODE.TRAFFIC_STATS_GET,
-							param: {
-								network_id: networkId,
-								sn,
-							},
-						},
-					],
+					message,
+				},
+			});
+		},
+
+		*refreshNetworkList({ payload }, { put, select }) {
+			console.log(payload);
+			const { sn, guestNumber, clientNumber, edit = 0, errorTip = '' } = payload;
+			const {
+				networkList,
+				deviceList: { totalCount, networkDeviceList },
+			} = yield select(state => state.network);
+			console.log(networkList);
+			const tmpList = networkList.map(item => {
+				if (item.masterDeviceSn === sn) {
+					return { ...item, guestNumber, clientNumber, edit, errorTip };
+				}
+				return { ...item, edit: 0, errorTip: '' };
+			});
+			const tmpDeviceList = networkDeviceList.map(item => {
+				if (item.sn === sn) {
+					return { ...item, clientCount: clientNumber };
+				}
+				return { ...item };
+			});
+			console.log(tmpList, tmpDeviceList);
+			yield put({
+				type: 'updateState',
+				payload: {
+					networkList: tmpList,
+					deviceList: {
+						totalCount,
+						networkDeviceList: tmpDeviceList,
+					},
 				},
 			});
 		},

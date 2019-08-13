@@ -16,6 +16,7 @@ import styles from './Network.less';
 		unsubscribeTopic: () => dispatch({ type: 'network/unsubscribeTopic' }),
 		setAPHandler: payload => dispatch({ type: 'network/setAPHandler', payload }),
 		getAPMessage: payload => dispatch({ type: 'network/getAPMessage', payload }),
+		refreshNetworkList: payload => dispatch({ type: 'network/refreshNetworkList', payload }),
 		checkClientExist: () => dispatch({ type: 'mqttStore/checkClientExist' }),
 		generateTopic: payload => dispatch({ type: 'mqttStore/generateTopic', payload }),
 		subscribe: payload => dispatch({ type: 'mqttStore/subscribe', payload }),
@@ -34,6 +35,7 @@ class Network extends React.Component {
 			unsubscribeTopic,
 			getAPMessage,
 			setAPHandler,
+			refreshNetworkList,
 		} = this.props;
 		return (
 			<div>
@@ -49,10 +51,17 @@ class Network extends React.Component {
 						deviceList,
 						getAPMessage,
 						setAPHandler,
+						refreshNetworkList,
 					}}
 				/>
 				<div className={styles['card-network-wrapper']}>
-					<DeviceList deviceList={deviceList} getListWithStatus={getListWithStatus} />
+					<DeviceList
+						{...{
+							deviceList,
+							getAPMessage,
+							getListWithStatus,
+						}}
+					/>
 				</div>
 			</div>
 		);

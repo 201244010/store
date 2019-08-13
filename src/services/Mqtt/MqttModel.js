@@ -91,7 +91,6 @@ class MqttModel {
 				yield call(me.client.publish, topic, sendMessage);
 			},
 
-		
 			*publishArray(
 				{
 					payload: { topic, message },
@@ -141,7 +140,9 @@ class MqttModel {
 				yield call(me.client.registerErrorHandler, handler);
 			},
 
-			// *putMsgMap()
+			putMsgMap() {
+				return me.client.msgIdMap;
+			},
 		};
 	}
 }
