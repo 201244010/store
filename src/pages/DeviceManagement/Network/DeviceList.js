@@ -93,7 +93,7 @@ class DeviceList extends React.PureComponent {
 		clearInterval(this.timer);
 	}
 
-	upgradeRouter = async ({sn, networkId}) => {
+	upgradeRouter = async ({ sn, networkId }) => {
 		const { getAPMessage } = this.props;
 		await getAPMessage({
 			message: {
@@ -106,7 +106,7 @@ class DeviceList extends React.PureComponent {
 		});
 	};
 
-	rebootRouter = async ({sn, networkId}) => {
+	rebootRouter = async ({ sn, networkId }) => {
 		const { getAPMessage } = this.props;
 		await getAPMessage({
 			message: {
@@ -118,16 +118,16 @@ class DeviceList extends React.PureComponent {
 			},
 		});
 	};
-
 
 	render() {
 		const {
 			deviceList: { networkDeviceList },
 		} = this.props;
+
 		return (
 			<Card title={formatMessage({ id: 'network.deviceList' })} bordered={false}>
 				<Table
-					rowKey="deviceSn"
+					rowKey="id"
 					columns={this.columns}
 					dataSource={networkDeviceList}
 					onChange={this.onTableChange}

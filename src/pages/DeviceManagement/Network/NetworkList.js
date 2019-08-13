@@ -19,6 +19,10 @@ class NetworkList extends React.PureComponent {
 		// await this.checkMQTTClient();
 	}
 
+	componentWillUnmount(){
+		clearInterval(this.checkTimer);
+	}
+
 	fetchApMessage = () => {
 		const { getAPMessage, networkList } = this.props;
 		this.checkTimer = setInterval(async () => {

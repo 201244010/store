@@ -99,7 +99,7 @@ export default {
 		*unsubscribeTopic(_, { put }) {
 			const responseTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
-				payload: { service: 'response', action: 'sub' },
+				payload: { service: 'W1/response', action: 'sub' },
 			});
 
 			yield put({
