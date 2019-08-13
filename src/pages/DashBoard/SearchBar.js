@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { Radio, DatePicker, Icon, message } from 'antd';
@@ -24,7 +24,7 @@ const Refresh = () => (
 	</svg>
 );
 
-class SearchBar extends Component {
+class SearchBar extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {

@@ -9,6 +9,7 @@ export default {
 	'employee.number.exist': '员工工号已存在',
 	'employee.number.formatError': '员工工号为数字和字母的组合',
 	'employee.gender': '性别',
+	'employee.gender.isEmpty': '性别不能为空',
 	'employee.gender.male': '男',
 	'employee.gender.female': '女',
 	'employee.sso.account': '商米账号',
@@ -26,6 +27,7 @@ export default {
 	'employee.info.currentRole': '当前角色：',
 	'employee.info.select.role': '请选择角色',
 	'employee.info.select.orgnizaion': '请选择组织',
+	'employee.info.select.orgnizaion.isEmpty': '组织和角色都不能为空',
 
 	'employee.info.delete': '确定要删除该员工？',
 	'employee.info.delete.confirm': '请确认是否要删除员工',
