@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Table } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { OPCODE } from '@/constants/mqttStore';
 import styles from './Network.less';
 
 class DeviceList extends React.PureComponent {
@@ -48,21 +49,32 @@ class DeviceList extends React.PureComponent {
 			{
 				title: formatMessage({ id: 'network.deviceNum' }),
 				dataIndex: 'clientCount',
+				render: (_, record) => {
+					const { clientCount, activeStatus } = record;
+					return <span>{activeStatus ? clientCount || '--' : '--'}</span>;
+				},
 			},
 			{
 				title: formatMessage({ id: 'network.operation' }),
 				render: (_, record) => {
-					const { isUpgrading, isLatestVersion, activeStatus } = record;
+					const { isUpgrading, isLatestVersion, activeStatus, sn, networkId } = record;
 					return (
 						<div>
 							{isUpgrading ? (
 								<span>{formatMessage({ id: 'network.isUpgrading' })}</span>
 							) : (
-								<a disabled={isLatestVersion || !activeStatus}>
+								<a
+									onClick={() => this.upgradeRouter({ sn, networkId })}
+									disabled={isLatestVersion || !activeStatus}
+								>
 									{formatMessage({ id: 'network.upgrade' })}
 								</a>
 							)}
-							<a disabled={!activeStatus} className={styles['network-operation']}>
+							<a
+								onClick={() => this.rebootRouter({ sn, networkId })}
+								disabled={!activeStatus}
+								className={styles['network-operation']}
+							>
 								{formatMessage({ id: 'network.reboot' })}
 							</a>
 						</div>
@@ -75,23 +87,60 @@ class DeviceList extends React.PureComponent {
 	componentDidMount() {
 		const { getListWithStatus } = this.props;
 		getListWithStatus();
-		// this.timer = setInterval(() => {
-		// 	getListWithStatus();
-		// }, 5000);
+		this.timer = setInterval(() => {
+			getListWithStatus();
+		}, 5000);
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.timer);
 	}
 
+	upgradeRouter = async ({ sn, networkId }) => {
+		const { getAPMessage } = this.props;
+		await getAPMessage({
+			message: {
+				opcode: OPCODE.MESH_UPGRADE_START,
+				param: {
+					network_id: networkId,
+					sn,
+				},
+			},
+		}).then(async () => {
+			await getAPMessage({
+				message: {
+					opcode: OPCODE.MESH_UPGRADE_STATE,
+					param: {
+						network_id: networkId,
+						sn,
+					},
+				},
+			});
+		});
+	};
+
+	rebootRouter = async ({ sn, networkId }) => {
+		const { getAPMessage } = this.props;
+		await getAPMessage({
+			message: {
+				opcode: OPCODE.SYSTEMTOOLS_RESTART,
+				param: {
+					network_id: networkId,
+					sn,
+				},
+			},
+		});
+	};
+
 	render() {
 		const {
 			deviceList: { networkDeviceList },
 		} = this.props;
+
 		return (
 			<Card title={formatMessage({ id: 'network.deviceList' })} bordered={false}>
 				<Table
-					rowKey="deviceSn"
+					rowKey="id"
 					columns={this.columns}
 					dataSource={networkDeviceList}
 					onChange={this.onTableChange}

@@ -127,6 +127,13 @@ export default {
 				type: 'putMsgMap',
 			});
 			return response;
-		}
+		},
+
+		*clearMsg({payload}, { put }) {
+			yield put({
+				type: 'clearMsgId',
+				payload,
+			});
+		},
 	},
 };
