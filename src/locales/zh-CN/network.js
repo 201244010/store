@@ -32,4 +32,6 @@ export default {
 	'network.online': '在线',
 	'network.offline': '离线',
 	'network.master': '主',
+	'network.noNetwork': '暂无网络',
+	'network.changeSuccess': '更改名称成功',
 };
