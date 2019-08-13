@@ -56,7 +56,8 @@ export default {
 			}
 			return response;
 		},
-		*updateAlias({ networkId, networkAlias }, { call }) {
+		*updateAlias({ payload }, { call }) {
+			const { networkId, networkAlias } = payload;
 			const response = yield call(Actions.handleNetworkEquipment, 'network/updateAlias', {
 				network_id: networkId,
 				network_alias: networkAlias,
