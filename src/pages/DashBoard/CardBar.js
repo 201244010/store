@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { formatMessage } from 'umi/locale';
 import Media from 'react-media';
 import { Col, Row } from 'antd';
@@ -50,7 +50,7 @@ const RingRate = props => {
 	);
 };
 
-class CardBar extends Component {
+class CardBar extends PureComponent {
 	render() {
 		const {
 			totalAmountLoading,

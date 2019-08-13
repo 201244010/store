@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import Media from 'react-media';
@@ -99,7 +99,7 @@ export const formatTime = (time, rangeType) => {
 	return timeData.format('M/D');
 };
 
-class ContentChart extends Component {
+class ContentChart extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.timer = null;
@@ -180,6 +180,12 @@ class ContentChart extends Component {
 			},
 		};
 
+		const maxCount = Math.max(...dataList.map(d => d.count || 0));
+		const countTick =
+			maxCount === 0
+				? { tickCount: 6 }
+				: { tickInterval: maxCount > 4 ? parseInt(maxCount / 5, 10) : 1 };
+
 		const chartScale = {
 			time: timeScales[rangeType] || {
 				ticks: dataList
@@ -198,7 +204,8 @@ class ContentChart extends Component {
 			},
 			[TRADE_TIME.COUNT]: {
 				minLimit: 0,
-				tickCount: 6,
+				...countTick,
+				// tickCount: 6,
 			},
 		};
 

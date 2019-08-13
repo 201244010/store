@@ -200,7 +200,7 @@ class EmployeeCU extends Component {
 					}
 
 					if (ssoUsername) {
-						const checkResponse = await checkSsoBinded({ ssoUsername: username });
+						const checkResponse = await checkSsoBinded({ ssoUsername });
 						if (checkResponse && checkResponse.code === SSO_BINDED) {
 							setFields({
 								ssoUsername: {
@@ -315,6 +315,12 @@ class EmployeeCU extends Component {
 					<Form.Item label={formatMessage({ id: 'employee.gender' })}>
 						{getFieldDecorator('gender', {
 							initialValue: this.action === 'edit' ? gender : '',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({ id: 'employee.gender.isEmpty' }),
+								},
+							],
 						})(
 							<Radio.Group>
 								<Radio value={1}>
@@ -367,6 +373,36 @@ class EmployeeCU extends Component {
 					>
 						{getFieldDecorator('mappingList', {
 							initialValue: this.action === 'edit' ? decodedMapList : [],
+							rules: [
+								{
+									required: true,
+									validator: (rule, value, callback) => {
+										// console.log(value);
+										if (value.length === 0) {
+											callback(
+												formatMessage({
+													id: 'employee.info.select.orgnizaion.isEmpty',
+												})
+											);
+										} else {
+											const hasEmpty = Object.keys(value).some(key => {
+												const { orgnization = null, role = [] } = value[
+													key
+												];
+												return !orgnization || role.length === 0;
+											});
+											hasEmpty
+												? callback(
+													formatMessage({
+														id:
+																'employee.info.select.orgnizaion.isEmpty',
+													})
+												  )
+												: callback();
+										}
+									},
+								},
+							],
 						})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList }} />)}
 					</Form.Item>
 					<Form.Item label=" " colon={false}>

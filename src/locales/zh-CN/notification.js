@@ -162,7 +162,7 @@ export default {
 	'notif-device-esl-ap-on/offline-content':
 		'基站##device_name##于##disconnect_time##离线，请检查设备状态',
 	'notif-system-task-erp-finish-content':
-		'已完成与##saas_name##的对接，成功获取##total_count##条商品信息',
+		'已于##timestamp##完成与（##saas_name##）的对接，成功获取##total_count##条商品信息',
 	'notif-system-task-erp-failure-content': '未能完成与##saas_name##的对接，请重试',
 
 	// modal

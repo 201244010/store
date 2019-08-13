@@ -49,7 +49,10 @@ class DeviceList extends React.PureComponent {
 			{
 				title: formatMessage({ id: 'network.deviceNum' }),
 				dataIndex: 'clientCount',
-				render: record => record || '--',
+				render: (_, record) => {
+					const { clientCount, activeStatus } = record;
+					return <span>{activeStatus ? clientCount || '--' : '--'}</span>;
+				},
 			},
 			{
 				title: formatMessage({ id: 'network.operation' }),
@@ -95,22 +98,18 @@ class DeviceList extends React.PureComponent {
 
 	upgradeRouter = async ({ sn, networkId }) => {
 		const { getAPMessage } = this.props;
-		console.log('first');
 		await getAPMessage({
 			message: {
-				// opcode: OPCODE.MESH_UPGRADE_START,
-				opcode: OPCODE.CLIENT_LIST_GET,
+				opcode: OPCODE.MESH_UPGRADE_START,
 				param: {
 					network_id: networkId,
 					sn,
 				},
 			},
 		}).then(async () => {
-			console.log('second');
 			await getAPMessage({
 				message: {
-					// opcode: OPCODE.MESH_UPGRADE_STATE,
-					opcode: OPCODE.TRAFFIC_STATS_GET,
+					opcode: OPCODE.MESH_UPGRADE_STATE,
 					param: {
 						network_id: networkId,
 						sn,

@@ -5,7 +5,7 @@ import { createEmqToken } from '@/services/user';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const namespace = 'mqttStore';
-const model = new MqttModel(namespace);
+const model = new MqttModel(namespace, { qos: 2 });
 
 export default {
 	namespace,
@@ -122,7 +122,7 @@ export default {
 			});
 		},
 
-		*putMsg(_, { put }) {
+		*putMsg(_, { put}) {
 			const response = yield put({
 				type: 'putMsgMap',
 			});

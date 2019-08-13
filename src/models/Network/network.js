@@ -1,7 +1,8 @@
 import * as Actions from '@/services/network';
-import { ERROR_OK } from '@/constants/errorCode';
 import { format } from '@konata9/milk-shake';
 import { formatSpeed } from '@/utils/utils';
+import { ERROR_OK, MQTT_RES_OK } from '@/constants/errorCode';
+import { OPCODE } from '@/constants/mqttStore';
 
 export default {
 	namespace: 'network',
@@ -14,23 +15,38 @@ export default {
 	},
 
 	effects: {
-		*getList(_, { call, put }) {
+		*getList(_, { call, put, select }) {
 			const response = yield call(Actions.handleNetworkEquipment, 'network/getList');
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-				const { networkList } = format('toCamel')(data);
+				const { networkList: getList } = format('toCamel')(data);
+				const { networkList } = yield select(state => state.network);
+				const tmpList =
+					networkList.length > 0
+						? networkList.map(item => {
+							const filterNetwork =
+									getList.filter(
+										items => item.masterDeviceSn === items.masterDeviceSn
+									)[0] || {};
+							const { activeStatus, networkAlias } = filterNetwork;
+							item.activeStatus = activeStatus;
+							item.networkAlias = networkAlias;
+							return item;
+						  })
+						: getList;
 				yield put({
 					type: 'updateState',
 					payload: {
-						networkList,
+						networkList: tmpList,
 					},
 				});
 			}
 		},
-		*updateAlias({ networkId, networkAlias }, { call }) {
+		*updateAlias({ payload }, { call }) {
+			const { networkId, networkAlias } = payload;
 			const response = yield call(Actions.handleNetworkEquipment, 'network/updateAlias', {
-				networkId,
-				networkAlias,
+				network_id: networkId,
+				network_alias: networkAlias,
 			});
 			return response;
 		},
@@ -45,14 +61,14 @@ export default {
 			);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-				const { networkDeviceList: getList, totalCount } = format('toCamel')(
-					data
-				);
+				const { networkDeviceList: getList, totalCount } = format('toCamel')(data);
 				const {
 					deviceList: { networkDeviceList },
 				} = yield select(state => state.network);
 				const tmpList = getList.map(item => {
-					item.clientCount = (networkDeviceList.filter(items => item.sn === items.sn)[0] || {}).clientCount;
+					item.clientCount = (
+						networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
+					).clientCount;
 					return item;
 				});
 				yield put({
@@ -66,7 +82,7 @@ export default {
 		*unsubscribeTopic(_, { put }) {
 			const responseTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
-				payload: { service: 'response', action: 'sub' },
+				payload: { service: 'W1/response', action: 'sub' },
 			});
 
 			yield put({
@@ -74,10 +90,8 @@ export default {
 				payload: { topic: responseTopic },
 			});
 		},
-		*setAPHandler({ payload }, { put, select }) {
+		*setAPHandler({ payload }, { put }) {
 			const { handler } = payload;
-			const { networkList } = yield select(state => state.network);
-			console.log(networkList);
 			const msgMap = yield put.resolve({
 				type: 'mqttStore/putMsg',
 			});
@@ -172,6 +186,70 @@ export default {
 					deviceList: {
 						totalCount,
 						networkDeviceList: tmpDeviceList,
+					},
+				},
+			});
+		},
+
+		*subscribeDetail(_, { put }) {
+			const responseTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'W1/response', action: 'sub' },
+			});
+
+			yield put({
+				type: 'mqttStore/subscribe',
+				payload: { topic: responseTopic },
+			});
+		},
+
+		*unsubscribeDetail(_, { put }) {
+			const responseTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'W1/response', action: 'sub' },
+			});
+
+			yield put({
+				type: 'mqttStore/unsubscribeTopic',
+				payload: { topic: responseTopic },
+			});
+		},
+
+		*setDetailHandler({ payload = {} }, { put }) {
+			const { handler } = payload;
+			yield put({
+				type: 'mqttStore/setTopicListener',
+				payload: {
+					service: 'W1/response',
+					handler: receivedMessage => {
+						const { data = [] } = JSON.parse(receivedMessage);
+						// console.log(data);
+						const [dataContent, ,] = data;
+						const { result: { sonconnect: { devices = [] } = {} } = {}, errcode } =
+							dataContent || {};
+
+						if (errcode === MQTT_RES_OK) {
+							handler(devices);
+						}
+					},
+				},
+			});
+		},
+
+		*getDetailList({ payload = {} }, { put }) {
+			const { sn = null, networkId = null } = payload;
+			const requestTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'W1/request' },
+			});
+
+			yield put({
+				type: 'mqttStore/publish',
+				payload: {
+					topic: requestTopic,
+					message: {
+						opcode: OPCODE.GET_ROUTES_DETAIL,
+						param: { network_id: networkId, sn },
 					},
 				},
 			});

@@ -20,6 +20,12 @@ export default {
 	'network.viewMore': '查看详情',
 	'network.guestNumber': '顾客接入数量',
 
+	'network.detail': '网络设备详情',
+	'network.rssi': '信号强度',
+	'network.rssi.strong': '较好',
+	'network.rssi.weak': '较差',
+	'network.router.parent': '上级路由',
+	'network.router.parent.none': '无',
 	'network.reboot': '立即重启',
 	'network.upgrade': '立即升级',
 	'network.isUpgrading': '升级中',
@@ -27,5 +33,5 @@ export default {
 	'network.offline': '离线',
 	'network.master': '主',
 	'network.noNetwork': '暂无网络',
-	
+	'network.changeSuccess': '更改名称成功',
 };

@@ -42,6 +42,7 @@ const Overview = props => {
 		// overviewProductLoading,
 		overviewDeviceLoading,
 		overviewIPCLoading,
+		overviewNetworkLoading,
 		// productOverview: { totalCount = '' } = {},
 		deviceOverView: {
 			eslTotalCount = '',
@@ -50,6 +51,10 @@ const Overview = props => {
 			apTotalCount = '',
 		} = {},
 		ipcOverView: { onLineCount = '', offLineCount = '' } = {},
+		networkOverview: {
+			onlineCount: deviceOnlineCount = '',
+			offlineCount: deviceOfflineCount = '',
+		},
 		goToPath,
 	} = props;
 
@@ -114,7 +119,21 @@ const Overview = props => {
 							cardStyle: overviewCardStyle,
 							title: formatMessage({ id: 'dashboard.overview.esl.push.total' }),
 							infoContent: TEXT.ESL_INFO,
-							content: eslTotalCount === '' ? '--' : priceFormat(eslTotalCount),
+							content: (
+								<>
+									<div>
+										{eslTotalCount === '' ? '--' : priceFormat(eslTotalCount)}
+									</div>
+									<div style={descriptionStyle}>
+										{formatMessage({
+											id: 'dashboard.overview.ap.online',
+										})}
+										<span style={decriptionNumStyle}>
+											{apTotalCount === '' ? '--' : apTotalCount}
+										</span>
+									</div>
+								</>
+							),
 							extra: (
 								<div className={styles['card-extra-img']}>
 									<ExtraImage iconName="ESL.png" />
@@ -126,20 +145,26 @@ const Overview = props => {
 				<Col span={6}>
 					<DisplayCard
 						{...{
-							onClick: overviewDeviceLoading ? null : () => goToPath('baseStation'),
-							loading: overviewDeviceLoading,
+							onClick: overviewNetworkLoading ? null : () => goToPath('network'),
+							loading: overviewNetworkLoading,
 							cardStyle: overviewCardStyle,
-							title: formatMessage({ id: 'dashboard.overview.ap.online' }),
+							title: formatMessage({ id: 'dashboard.overview.device.online' }),
 							infoContent: TEXT.AP_INFO,
 							content: (
 								<>
-									<div>{apTotalCount === '' ? '--' : apTotalCount}</div>
-									{/* <div style={descriptionStyle}>
+									<div>
+										{deviceOnlineCount === ''
+											? '--'
+											: priceFormat(deviceOnlineCount)}
+									</div>
+									<div style={descriptionStyle}>
 										{formatMessage({
-											id: 'dashboard.overview.ap.offline',
+											id: 'dashboard.overview.device.offline',
 										})}
-										<span style={decriptionNumStyle}>0</span>
-									</div> */}
+										<span style={decriptionNumStyle}>
+											{deviceOfflineCount === '' ? '--' : deviceOfflineCount}
+										</span>
+									</div>
 								</>
 							),
 							extra: (

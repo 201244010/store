@@ -110,7 +110,7 @@ class MqttClient {
 		});
 	}
 
-	publish(topic, message) {
+	publish(topic, message = []) {
 		// const { messages } = this;
 		const { client } = this;
 		const { config } = this;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Divider, Badge, Icon, Input } from 'antd';
+import { Card, Divider, Badge, Icon, Input, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { IconLink, IconEquipment, IconNetwork } from '@/components/IconSvg';
 import { ERROR_OK } from '@/constants/errorCode';
@@ -9,74 +9,86 @@ import styles from './Network.less';
 class NetworkList extends React.PureComponent {
 	constructor(props) {
 		super(props);
-		this.checkTimer = null;
+		this.intervalTimer = null;
 	}
 
 	async componentDidMount() {
 		const { getList } = this.props;
+		this.fetchApMessage();
 		await getList();
-		await this.fetchApMessage();
 	}
 
 	componentWillUnmount() {
-		clearInterval(this.checkTimer);
+		clearInterval(this.intervalTimer);
 	}
 
 	fetchApMessage = () => {
-		const { getAPMessage, networkList } = this.props;
-		this.checkTimer = setInterval(async () => {
-			await Promise.all(
-				networkList.map(async item => {
-					const { networkId, masterDeviceSn: sn } = item;
-					await getAPMessage({
-						message: {
-							opcode: OPCODE.CLIENT_LIST_GET,
-							param: {
-								network_id: networkId,
-								sn,
-							},
-						},
-					});
-					await getAPMessage({
-						message: {
-							opcode: OPCODE.TRAFFIC_STATS_GET,
-							param: {
-								network_id: networkId,
-								sn,
-							},
-						},
-					});
-				})
-			);
+		const { getList } = this.props;
+		this.intervalTimer = setInterval(async () => {
+			await getList();
+			await this.fetchMqtt();
 		}, 5000);
+	};
+
+	fetchMqtt = async () => {
+		const { getAPMessage, networkList } = this.props;
+		await Promise.all(
+			networkList.map(async item => {
+				const { networkId, masterDeviceSn: sn } = item;
+				await getAPMessage({
+					message: {
+						opcode: OPCODE.CLIENT_LIST_GET,
+						param: {
+							network_id: networkId,
+							sn,
+						},
+					},
+				});
+				await getAPMessage({
+					message: {
+						opcode: OPCODE.TRAFFIC_STATS_GET,
+						param: {
+							network_id: networkId,
+							sn,
+						},
+					},
+				});
+			})
+		);
 	};
 
 	editName = payload => {
 		const { refreshNetworkList } = this.props;
-		clearInterval(this.checkTimer);
+		clearInterval(this.intervalTimer);
 		refreshNetworkList(payload);
 	};
 
 	upgradeName = async payload => {
-		const { networkId, networkAlias } = payload;
-		const { updateAlias } = this.props;
-		const response = await updateAlias({ networkId, networkAlias });
-		if (response && response.code === ERROR_OK) {
-			message.success('更改名称成功');
-			this.fetchApMessage();
-		}
+		const { networkId, networkAlias, initNetworkAlias } = payload;
+		const { updateAlias, refreshNetworkList, getList } = this.props;
+		if (initNetworkAlias !== networkAlias) {
+			const response = await updateAlias({ networkId, networkAlias });
+			if (response && response.code === ERROR_OK) {
+				message.success(formatMessage({ id: 'network.changeSuccess' }));
+				this.fetchApMessage();
+			}
+		} 
+		await getList();
+		await refreshNetworkList(payload);
 	};
 
 	render() {
 		const {
 			networkList,
 			deviceList: { networkDeviceList },
+			goToPath,
 		} = this.props;
 		const TopologyList = networkList.map(item => (
 			<Topology
 				key={item.networkId}
 				editName={this.editName}
 				upgradeName={this.upgradeName}
+				goToPath={goToPath}
 				networkDeviceList={networkDeviceList}
 				{...item}
 			/>
@@ -110,8 +122,9 @@ const Topology = props => {
 		upUnit,
 		downUnit,
 		edit,
-		editName,
 		upgradeName,
+		editName,
+		goToPath,
 	} = props || {};
 
 	const routerNumber = networkDeviceList.filter(item => item.networkId === networkId).length;
@@ -139,10 +152,11 @@ const Topology = props => {
 								autoFocus
 								onBlur={e =>
 									upgradeName({
-										sn: masterDeviceSn,
-										edit: 0,
 										networkAlias: e.target.value,
 										networkId,
+										sn: masterDeviceSn,
+										edit: 0,
+										initNetworkAlias: networkAlias,
 									})
 								}
 								defaultValue={networkAlias || networkId}
@@ -232,7 +246,15 @@ const Topology = props => {
 							<div>
 								{formatMessage({ id: 'network.router' })}
 								{activeStatus ? (
-									<a href="javascript:void(0);" onClick={() => console.log('aa')}>
+									<a
+										href="javascript:void(0);"
+										onClick={() =>
+											goToPath('networkDetail', {
+												sn: masterDeviceSn,
+												networkId,
+											})
+										}
+									>
 										（{formatMessage({ id: 'network.viewMore' })}）
 									</a>
 								) : (
