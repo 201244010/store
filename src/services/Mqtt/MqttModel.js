@@ -143,6 +143,10 @@ class MqttModel {
 			putMsgMap() {
 				return me.client.msgIdMap;
 			},
+
+			*clearMsgId({payload}, { call }) {
+				yield call(me.client.clearMsg, payload);
+			},
 		};
 	}
 }
