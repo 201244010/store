@@ -84,20 +84,47 @@ class DeviceList extends React.PureComponent {
 	componentDidMount() {
 		const { getListWithStatus } = this.props;
 		getListWithStatus();
-		// this.timer = setInterval(() => {
-		// 	getListWithStatus();
-		// }, 5000);
+		this.timer = setInterval(() => {
+			getListWithStatus();
+		}, 5000);
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.timer);
 	}
 
-	upgradeRouter = async ({sn, networkId}) => {
+	upgradeRouter = async ({ sn, networkId }) => {
+		const { getAPMessage } = this.props;
+		console.log('first');
+		await getAPMessage({
+			message: {
+				// opcode: OPCODE.MESH_UPGRADE_START,
+				opcode: OPCODE.CLIENT_LIST_GET,
+				param: {
+					network_id: networkId,
+					sn,
+				},
+			},
+		}).then(async () => {
+			console.log('second');
+			await getAPMessage({
+				message: {
+					// opcode: OPCODE.MESH_UPGRADE_STATE,
+					opcode: OPCODE.TRAFFIC_STATS_GET,
+					param: {
+						network_id: networkId,
+						sn,
+					},
+				},
+			});
+		});
+	};
+
+	rebootRouter = async ({ sn, networkId }) => {
 		const { getAPMessage } = this.props;
 		await getAPMessage({
 			message: {
-				opcode: OPCODE.CLIENT_LIST_GET,
+				opcode: OPCODE.SYSTEMTOOLS_RESTART,
 				param: {
 					network_id: networkId,
 					sn,
@@ -105,20 +132,6 @@ class DeviceList extends React.PureComponent {
 			},
 		});
 	};
-
-	rebootRouter = async ({sn, networkId}) => {
-		const { getAPMessage } = this.props;
-		await getAPMessage({
-			message: {
-				opcode: OPCODE.CLIENT_LIST_GET,
-				param: {
-					network_id: networkId,
-					sn,
-				},
-			},
-		});
-	};
-
 
 	render() {
 		const {
@@ -127,7 +140,7 @@ class DeviceList extends React.PureComponent {
 		return (
 			<Card title={formatMessage({ id: 'network.deviceList' })} bordered={false}>
 				<Table
-					rowKey="deviceSn"
+					rowKey="id"
 					columns={this.columns}
 					dataSource={networkDeviceList}
 					onChange={this.onTableChange}
