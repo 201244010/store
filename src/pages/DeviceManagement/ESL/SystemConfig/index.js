@@ -96,7 +96,7 @@ class SystemConfig extends Component {
 			const {
 				eslBaseStation: { networkIdList = [] },
 			} = this.props;
-			const apInfoTopic = await generateTopic({ service: 'response', action: 'sub' });
+			const apInfoTopic = await generateTopic({ service: 'ESL/response', action: 'sub' });
 			await subscribe({ topic: [apInfoTopic] });
 			await setAPHandler({ handler: this.apHandler });
 			if (networkIdList.length > 0) {

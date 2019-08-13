@@ -656,7 +656,7 @@ class Studio extends Component {
 				updateComponentsDetail({
 					selectedShapeName: targetName,
 					[targetName]: {
-						content: inputValue || '双击编辑文本',
+						content: inputValue || formatMessage({ id: 'studio.action.text.db.click' }),
 					},
 				});
 			} catch (evt) {

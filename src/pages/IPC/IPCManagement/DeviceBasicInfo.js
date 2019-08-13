@@ -3,11 +3,9 @@ import { Card, Icon, Button, Form, Input, Modal, Spin, /* Radio, */ message } fr
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { mbStringLength } from '@/utils/utils';
-import { TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { spaceInput } from '@/constants/regexp';
-
-// eslint-disable-next-line import/no-cycle
-import { FORM_ITEM_LAYOUT /* , TAIL_FORM_ITEM_LAYOUT */	} from './IPCManagement';
+import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
+import { spaceInput, emojiInput } from '@/constants/regexp';
+// import { FORM_ITEM_LAYOUT , TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 
 import defaultImage from '@/assets/imgs/default.jpeg';
 import styles from './DeviceBasicInfo.less';
@@ -78,7 +76,14 @@ const mapDispatchToProps = (dispatch) => ({
 			pathId,
 			urlParams
 		}
-	})
+	}),
+	getSdStatus: ({ sn }) => {
+		const result = dispatch({
+			type: 'sdcard/getSdStatus',
+			sn
+		});
+		return result;
+	}
 });
 // let disabledControl = true;
 @connect(mapStateToProps, mapDispatchToProps)
@@ -96,9 +101,14 @@ class DeviceBasicInfo extends React.Component {
 	}
 
 	componentDidMount = async () => {
-		const { loadInfo, sn } = this.props;
-
-		loadInfo(sn);
+		const { loadInfo, sn, getSdStatus } = this.props;
+		if(sn){
+			const status = await getSdStatus({ sn });
+			if(status === 0) {
+				message.info(formatMessage({ id: 'deviceBasicInfo.nosdInfo' }));
+			}
+			loadInfo(sn);
+		}
 	}
 
 	onSave = () => {
@@ -211,7 +221,7 @@ class DeviceBasicInfo extends React.Component {
 					className={styles['main-card']}
 				>
 					<img src={image} alt="main-camera" className={styles['main-image']} />
-					<Form {...FORM_ITEM_LAYOUT} className={styles['info-form']}>
+					<Form {...FORM_ITEM_LAYOUT_MANAGEMENT} className={styles['info-form']}>
 
 						<Form.Item
 							className={!isEdit ? styles.hidden : ''}
@@ -227,6 +237,17 @@ class DeviceBasicInfo extends React.Component {
 											message: formatMessage({id: 'deviceBasicInfo.firstInputFormat'})
 										},
 										{
+											validator: (rule, value,callback) => {
+												const invalidSymbol = emojiInput;
+												if(invalidSymbol.test(value)) {
+													callback(false);
+												} else {
+													callback();
+												}
+											},
+											message: formatMessage({ id: 'deviceBasicInfo.invalidSymbol'})
+										},
+										{
 											validator: (rule, value, callback) => {
 												let confictFlag = false;
 												ipcList.every(item => {
@@ -239,7 +260,7 @@ class DeviceBasicInfo extends React.Component {
 													}
 													return true;
 												});
-	
+
 												if (confictFlag) {
 													callback('name-confict');
 												} else {

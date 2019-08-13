@@ -11,6 +11,18 @@ export  default {
 		}],
 		OTATime: 360000
 	},
+	'FM020': {
+		hasFaceid: true,
+		pixelRatio: '16:9',
+		rotate: [{
+			key: 0,
+			value: 0
+		},{
+			key: 1,
+			value: 180
+		}],
+		OTATime: 360000
+	},
 	'SS1': {
 		hasFaceid: false,
 		pixelRatio: '1:1',

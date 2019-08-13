@@ -1,11 +1,11 @@
 import React from 'react';
 import { Button, Modal, Spin } from 'antd';
-import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
 import { formatMessage } from 'umi/locale';
+import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
 
 import { formatMessageTemplate, convertArrayPrams, replaceTemplateWithValue } from '@/utils/utils';
 import ipcTypes from '@/constants/ipcTypes';
- 
+
 const palyMotion = ({ params }) => {
 	const { url = null, device_model: ipcType = null } = convertArrayPrams(params);
 	const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
@@ -21,7 +21,7 @@ const palyMotion = ({ params }) => {
 								modal.destroy();
 							}
 						}}
-						url={url}
+						url={decodeURIComponent(url)}
 						pixelRatio={pixelRatio}
 					/>
 				)}
@@ -35,7 +35,7 @@ const ACTION_MAP = {
 	'GET-AP-LIST': ({ handlers: { goToPath } }) => goToPath('baseStation'),
 	'notif-device-esl-ap-offline-btn1': ({ handlers: { goToPath } }) => goToPath('baseStation'),
 	'notif-ap-offline-btn1': ({ handlers: { goToPath } }) => goToPath('baseStation'),
-	'notif-system-task-erp-btn1': ({ handers: { goToPath } }) => goToPath('productList'),
+	'notif-system-task-erp-btn1': ({ handlers: { goToPath } }) => goToPath('productList'),
 	'notif-device-ipc-motion-detect-video-btn1': palyMotion,
 	'notif-device-ipc-motion-detect-audio-btn1': palyMotion,
 	'notif-motion-detect-btn1': palyMotion,

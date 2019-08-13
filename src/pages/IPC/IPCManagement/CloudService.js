@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Card,Button} from 'antd';
+import { Card,Button } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import styles from './CloudService.less';

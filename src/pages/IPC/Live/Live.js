@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
 // import Link from 'umi/link';
-import { List, Avatar, Card } from 'antd';
+import { List, Avatar, Card, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Faceid from '@/components/VideoPlayer/Faceid';
@@ -113,7 +113,40 @@ import styles from './Live.less';
 			pathId,
 			urlParams
 		}
-	})
+	}),
+	getAgeRangeList() {
+		dispatch({
+			type: 'faceid/getAgeRangeList'
+		});
+	},
+	getSdStatus: ({ sn }) => {
+		const result = dispatch({
+			type: 'sdcard/getSdStatus',
+			sn
+		});
+		return result;
+	},
+	setDeviceSn({ sn }) {
+		dispatch({
+			type: 'faceid/setDeviceSn',
+			payload: {
+				sn
+			}
+		});
+	},
+	clearList({ sn }) {
+		dispatch({
+			type: 'faceid/clearList',
+			payload: {
+				sn
+			}
+		});
+	}
+	// test: () => {
+	// 	dispatch({
+	// 		type:'faceid/test'
+	// 	});
+	// }
 }))
 class Live extends React.Component{
 	constructor(props) {
@@ -123,23 +156,35 @@ class Live extends React.Component{
 			deviceInfo: {
 				pixelRatio: '16:9'
 			},
-			liveTimestamp: 0
+			liveTimestamp: 0,
+			sdStatus: true
 		};
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, location: { query } } = this.props;
+		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList } = this.props;
 
 		const {sn} = query;
-
+		let sdStatus = true;
 		if (sn) {
+			// test();
+			clearList({ sn });
+			getAgeRangeList();
 			const deviceInfo = await getDeviceInfo({ sn });
-			console.log('getDeviceInfo', deviceInfo);
-			this.setState({
-				deviceInfo
-			});
-		}
+			setDeviceSn({ sn });
+			const status = await getSdStatus({ sn });
+			if(status === 0) {
+				message.info(formatMessage({ id: 'live.nosdInfo' }));
+				sdStatus = false;
+			}
 
+			this.setState({
+				deviceInfo,
+				sdStatus
+			});
+
+			// setTimeout(test, 1000);
+		}
 	}
 
 	componentWillUnmount () {
@@ -229,12 +274,51 @@ class Live extends React.Component{
 		});
 	}
 
+	// handleInfo = (info) => {
+	// 	const { ageRangeList } = this.props;
+	// 	// console.log(ageRangeList);
+	// 	const { age, ageRangeCode, libraryName} = info;
+	// 	let ageName = formatMessage({id: 'photoManagement.unKnown'});
+
+	// 	let libraryNameText = libraryName;
+	// 	switch(libraryName) {
+	// 		case 'stranger':
+	// 			libraryNameText = formatMessage({ id: 'faceid.stranger'});
+	// 			break;
+	// 		case 'regular':
+	// 			libraryNameText = formatMessage({id: 'faceid.regular'});
+	// 			break;
+	// 		case 'employee':
+	// 			libraryNameText = formatMessage({ id: 'faceid.employee'});
+	// 			break;
+	// 		case 'blacklist':
+	// 			libraryNameText = formatMessage( { id: 'faceid.blacklist'});
+	// 			break;
+	// 		default:
+	// 	}
+
+	// 	if(age) {
+	// 		ageName = age;
+	// 	} else {
+	// 		ageRangeList.forEach(item => {
+	// 			if(item.ageRangeCode === ageRangeCode) {
+	// 				ageName = item.ageRange;
+	// 			}
+	// 		});
+	// 	}
+
+	// 	return {
+	// 		...info,
+	// 		libraryName: libraryNameText,
+	// 		age: ageName
+	// 	};
+	// }
 
 
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
-		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp } = this.state;
+		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
 
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
@@ -243,10 +327,11 @@ class Live extends React.Component{
 		};
 
 
+
 		return(
 			<div className={styles['live-wrapper']}>
 
-				<div className={`${styles['video-player-container']} ${hasFaceid ? styles['has-faceid'] : ''}`}>
+				<div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}`}>
 					<LivePlayer
 
 						pixelRatio={pixelRatio}
@@ -282,7 +367,7 @@ class Live extends React.Component{
 				</div>
 
 				{
-					hasFaceid ?
+					sdStatus && hasFaceid ?
 						<div className={styles['faceid-list-container']}>
 							<PerfectScrollbar className={styles['faceid-list']}>
 								<List
@@ -290,37 +375,38 @@ class Live extends React.Component{
 										faceidList
 									}
 									renderItem={
-										(item) => (
-											<List.Item key={item.id}>
-												<Card
-													title={
-														<div className={styles['avatar-container']}>
-															<div className={styles.type}>{ item.libraryName }</div>
-															<Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic}`} />
-														</div>
-													}
-													bordered={false}
+										(item) =>
+											(
+												<List.Item key={item.id}>
+													<Card
+														title={
+															<div className={styles['avatar-container']}>
+																<div className={styles.type}>{ item.libraryName }</div>
+																<Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic}`} />
+															</div>
+														}
+														bordered={false}
 
-													className={styles.infos}
-												>
-													<p className={styles.name}>{ item.name }</p>
-													<p>
-														{ `(${ genders[item.gender] } ${ item.age }岁)` }
-													</p>
-													<p>
-														<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
-														<span>
-															{
-																moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
-															}
-														</span>
-													</p>
+														className={styles.infos}
+													>
+														<p className={styles.name}>{ item.name }</p>
+														<p>
+															{ `(${ genders[item.gender] } ${ item.age }${formatMessage({id: 'live.age.unit'})})` }
+														</p>
+														<p>
+															<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
+															<span>
+																{
+																	moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
+																}
+															</span>
+														</p>
 
-													<p>
-														<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
-													</p>
-												</Card>
-												{/* <Card
+														<p>
+															<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
+														</p>
+													</Card>
+													{/* <Card
 													bordered={false}
 													className={styles['faceid-card']}
 												>
@@ -346,15 +432,16 @@ class Live extends React.Component{
 														<Link className={styles['button-infos']} to='./userinfo'>{formatMessage({ id: 'live.enter.details'})}</Link>
 													</p>
 												</Card> */}
-											</List.Item>
-										)
+												</List.Item>
+											)
+
 									}
 								/>
 
 							</PerfectScrollbar>
 							<div className={styles['infos-more']}>
 								{
-									faceidList.length? <span onClick={() => navigateTo('faceLog')}>{formatMessage({ id: 'live.logs'})}</span> : ''
+									faceidList && faceidList.length? <span onClick={() => navigateTo('faceLog')}>{formatMessage({ id: 'live.logs'})}</span> : ''
 								}
 							</div>
 						</div>

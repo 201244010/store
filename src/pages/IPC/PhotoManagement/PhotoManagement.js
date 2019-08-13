@@ -96,7 +96,7 @@ class PhotoManagement extends React.Component {
 			removeRadioValue: 0,
 			showFailedModal: false,
 			failedList: [],
-			overAmount: false,
+			// overAmount: false,
 			uploadable: true,
 			filter: {
 				pageNum: 1,
@@ -199,12 +199,13 @@ class PhotoManagement extends React.Component {
 
 	onUpload = ({ file, fileList }) => {
 		// console.log('upload');
-		if (fileList.length >= 20) {
-			fileList.splice(20, fileList.length);
-		}
-		// console.log('upload',file);
+		const limitCapacity = this.groupRestCapacity();
+		const limit = limitCapacity < 20 ? limitCapacity : 20;
 
-		// console.log('upload-',file);
+		if (fileList.length >= limit) {
+			// fileList.splice(20, fileList.length);
+			fileList.splice(limit, fileList.length);
+		}
 		const { status } = file;
 		if (status === 'done') {
 			fileList = handleResponse(fileList);
@@ -212,7 +213,7 @@ class PhotoManagement extends React.Component {
 			if(file.response) {
 				const { response: { data: { verifyResult }, code } } = file;
 				if(verifyResult !== 1 || code !== 1) {
-					message.error(`${file.name}${formatMessage({id:'photoManagement.uploadFail'})}`);
+					message.error(`${file.name}, ${formatMessage({id:'photoManagement.uploadFail'})}`);
 					fileList.forEach(item => {
 						if (item.uid === file.uid) {
 							item.status = 'error';
@@ -248,7 +249,8 @@ class PhotoManagement extends React.Component {
 		const isPic = isJPG || isPNG;
 		if (!(isLt1M && isPic)) {
 			file.status = 'error';
-			message.error(`${file.name}${formatMessage({id:'photoManagement.uploadFail'})}`);
+			const text = !isPic ? formatMessage({ id:'photoManagement.wrongFormat' }) : formatMessage({ id:'photoManagement.overSize' });
+			message.error(`${file.name}, ${text}`);
 		}
 		return isLt1M && isPic;
 	};
@@ -393,19 +395,19 @@ class PhotoManagement extends React.Component {
 		let overLimit = false;
 		if (list.length > limit) {
 			this.setState({
-				overAmount: true,
+				// overAmount: true,
 				uploadable: false,
 			});
 			overLimit = true;
 		} else if (list.length === limit) {
 			this.setState({
 				uploadable: false,
-				overAmount: false,
+				// overAmount: false,
 			});
 		} else if (list.length < limit) {
 			this.setState({
 				uploadable: true,
-				overAmount: false,
+				// overAmount: false,
 			});
 		}
 		let successList = 0;
@@ -538,7 +540,7 @@ class PhotoManagement extends React.Component {
 			removeLibraryShown,
 			showFailedModal,
 			failedList,
-			overAmount,
+			// overAmount,
 			uploadable,
 			filter: { gender, name, age, pageNum, pageSize },
 			saveBtnDisabled,
@@ -552,6 +554,7 @@ class PhotoManagement extends React.Component {
 		const fullChosen = this.isFullChecked();
 		// console.log(faceList);
 		// const rest = this.groupRestCapacity();
+		// console.log('photo',photoList);
 		return (
 			<Card className={styles['management-card']}>
 				<h2>{this.groupName()}</h2>
@@ -688,6 +691,7 @@ class PhotoManagement extends React.Component {
 										name={item.name}
 										gender={item.gender}
 										age={item.age}
+										realAge={item.realAge}
 										latestDate={item.lastArrivalTime}
 										createDate={item.createTime}
 										libraryName={this.groupName()}
@@ -741,8 +745,8 @@ class PhotoManagement extends React.Component {
 					>
 						{this.uploadElement()}
 					</Upload>
-					{uploadable ? <p>{formatMessage({ id: 'photoManagement.limitation' })}</p> : ''}
-					{!uploadable && overAmount ? (
+					{uploadable ? <p>{formatMessage({ id: 'photoManagement.limitation' })}</p> : <p>{formatMessage({ id: 'photoManagement.countOver2' })}</p>}
+					{/* {!uploadable && overAmount ? (
 						<p className={styles['fail-info']}>
 							{formatMessage({ id: 'photoManagement.countOver' })}
 						</p>
@@ -753,7 +757,7 @@ class PhotoManagement extends React.Component {
 						<p>{formatMessage({ id: 'photoManagement.countOver2' })}</p>
 					) : (
 						''
-					)}
+					)} */}
 				</Modal>
 
 				<Modal

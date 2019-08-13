@@ -24,9 +24,10 @@ export default {
 			const { code } = yield call(move, {...payload});
 			return code;
 		},
+		// 更新store上的ageRangeList，并返回ageRangeCodeMap
 		*readAgeRangeList(action, { call, put }) {
 			const response = yield call(getRange);
-			const { code, data: {ageRangeList} } = response;
+			const { code, data: { ageRangeList = [] } } = response;
 			
 			if(code === ERROR_OK) {
 				yield put({
@@ -35,7 +36,13 @@ export default {
 						ageRangeList
 					}
 				});
+				const ageRangeCodeMap = {};
+				for(let i=0; i<ageRangeList.length;i++){
+					ageRangeCodeMap[ageRangeList[i].ageRangeCode] = ageRangeList[i].ageRange;
+				}
+				return ageRangeCodeMap;
 			}
+			return {};
 		},
 		*readFaceLogList({payload}, { put }){
 			const response = yield getFaceLogList(payload);
@@ -58,6 +65,10 @@ export default {
 						faceId:item.faceId
 					},
 					groupName:name,
+					ageItem:{
+						age: item.age,
+						ageRangeCode: item.ageRangeCode
+					},
 					regFace:item.imgUrl,
 					...item
 				};

@@ -407,16 +407,44 @@ export default function generateShape(option) {
 								}
 								const smallXPosition = intXPosition + intTextWidth;
 
-								context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.textBaseline = 'hanging';
-								context.fillStyle = option.fontColor;
-								context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
-								context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.fillText(`${option.content ? smallPriceText : ''}`, smallXPosition, yPosition);
-								if (initTextDecoration(option) === 'line-through') {
-									context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
-								} else if (initTextDecoration(option) === 'underline') {
-									context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7, textWidth, 1 * option.zoomScale);
+								const rectWidth = MAPS.containerWidth[option.type] * option.zoomScale * option.scaleX;
+								if (rectWidth > textWidth) {
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'hanging';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+									context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.fillText(`${option.content ? smallPriceText : ''}`, smallXPosition, yPosition);
+									if (initTextDecoration(option) === 'line-through') {
+										context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
+									} else if (initTextDecoration(option) === 'underline') {
+										context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7, textWidth, 1 * option.zoomScale);
+									}
+								} else if (rectWidth > intTextWidth) {
+									const leaveLength = Math.floor((rectWidth - intTextWidth) / option.zoomScale / option.smallFontSize * 2);
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'hanging';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+									context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.fillText(`${option.content ? smallPriceText.substr(0, leaveLength) : ''}`, smallXPosition, yPosition);
+									if (initTextDecoration(option) === 'line-through') {
+										context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
+									} else if (initTextDecoration(option) === 'underline') {
+										context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7, textWidth, 1 * option.zoomScale);
+									}
+								} else if (rectWidth > (option.fontSize / 2 * intPriceText.length * option.zoomScale)) {
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'hanging';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}` : ''}`, intXPosition, yPosition);
+								} else {
+									const leaveLength = Math.floor(rectWidth / option.zoomScale / option.fontSize * 2);
+
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'hanging';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText.substr(0, leaveLength)}` : ''}`, intXPosition, yPosition);
 								}
 							},
 						}}
@@ -467,16 +495,45 @@ export default function generateShape(option) {
 								}
 								const smallXPosition = intXPosition + intTextWidth;
 
-								context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.textBaseline = 'alphabetic';
-								context.fillStyle = option.fontColor;
-								context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
-								context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.fillText(`${option.content ? smallPriceText : ''}`, smallXPosition, yPosition);
-								if (initTextDecoration(option) === 'line-through') {
-									context.fillRect(intXPosition, yPosition - option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
-								} else if (initTextDecoration(option) === 'underline') {
-									context.fillRect(intXPosition, yPosition, textWidth, 1 * option.zoomScale);
+								const rectWidth = MAPS.containerWidth[option.type] * option.zoomScale * option.scaleX;
+								if (rectWidth > textWidth) {
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'alphabetic';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+									context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.fillText(`${option.content ? smallPriceText : ''}`, smallXPosition, yPosition);
+									if (initTextDecoration(option) === 'line-through') {
+										context.fillRect(intXPosition, yPosition - option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
+									} else if (initTextDecoration(option) === 'underline') {
+										context.fillRect(intXPosition, yPosition, textWidth, 1 * option.zoomScale);
+									}
+								} else if (rectWidth > intTextWidth) {
+									const leaveLength = Math.floor((rectWidth - intTextWidth) / option.zoomScale / option.smallFontSize * 2);
+
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'alphabetic';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+									context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.fillText(`${option.content ? smallPriceText.substr(0, leaveLength) : ''}`, smallXPosition, yPosition);
+									if (initTextDecoration(option) === 'line-through') {
+										context.fillRect(intXPosition, yPosition - option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
+									} else if (initTextDecoration(option) === 'underline') {
+										context.fillRect(intXPosition, yPosition, textWidth, 1 * option.zoomScale);
+									}
+								} else if (rectWidth > (option.fontSize / 2 * intPriceText.length * option.zoomScale)) {
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'alphabetic';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}` : ''}`, intXPosition, yPosition);
+								} else {
+									const leaveLength = Math.floor(rectWidth / option.zoomScale / option.fontSize * 2);
+
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'alphabetic';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText.substr(0, leaveLength)}` : ''}`, intXPosition, yPosition);
 								}
 							},
 						}}

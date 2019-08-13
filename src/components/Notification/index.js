@@ -8,6 +8,28 @@ notification.config({
 	top: 65,
 });
 
+const ipcNotifHandler = valueList => {
+	valueList.forEach(item => {
+		if (item.key === '##device_name##' && item.value === '') {
+			item.value = 'My Camera';
+		}
+	});
+	return valueList;
+};
+
+const templateHandler = {
+	'notif-device-ipc-tf-card-detect-tf-capable-desc': ipcNotifHandler,
+	'notif-device-ipc-tf-card-detect-tf-non-exist-desc': ipcNotifHandler,
+	'notif-device-ipc-ota-desc': ipcNotifHandler,
+	'notif-device-ipc-motion-detect-video-desc': ipcNotifHandler,
+	'notif-device-ipc-motion-detect-audio-desc': ipcNotifHandler,
+	'notif-device-ipc-motion-detect-video-audio-desc': ipcNotifHandler,
+	'notif-device-ipc-on/offline-desc': ipcNotifHandler,
+	'notif-device-ipc-tf-card-detect-desc': ipcNotifHandler,
+	'notif-device-ipc-tf-card-detect-tf-exist-desc': ipcNotifHandler,
+	'notif-device-ipc-tf-card-detect-tf-non-capable-desc': ipcNotifHandler,
+};
+
 export const Title = props => {
 	const { title = '' } = props;
 	return <div className={styles.title}>{title !== '' ? formatMessageTemplate(title) : ''}</div>;
@@ -24,7 +46,11 @@ export const Description = props => {
 
 	return (
 		<div className={styles['description-wrapper']}>
-			<div>{description !== '' ? formatMessageTemplate(description) : ''}</div>
+			<div>
+				{description !== ''
+					? formatMessageTemplate(description, { handlers: templateHandler })
+					: ''}
+			</div>
 			{Object.keys(btnOptions).length > 0 && (
 				<div className={styles['btn-wrapper']}>
 					{minorButtonName && (
@@ -33,7 +59,7 @@ export const Description = props => {
 								buttonName: minorButtonName,
 								buttonParams: minorButtonLink,
 								handlers,
-								extra
+								extra,
 							}}
 						/>
 					)}
@@ -84,7 +110,7 @@ export const displayNotification = props => {
 				{...{
 					description,
 					handlers,
-					extra:{ key },
+					extra: { key },
 					btnOptions: {
 						majorButtonName,
 						majorButtonLink,

@@ -15,69 +15,39 @@ class NetworkList extends React.PureComponent {
 	async componentDidMount() {
 		const { getList } = this.props;
 		await getList();
-		await this.checkMQTTClient();
+		await this.fetchApMessage();
+		// await this.checkMQTTClient();
 	}
 
-	componentWillUnmount() {
-		clearTimeout(this.checkTimer);
-		clearInterval(this.intervalTimer);
-		const { unsubscribeTopic } = this.props;
-		unsubscribeTopic();
-	}
-
-	checkMQTTClient = async () => {
-		clearTimeout(this.checkTimer);
-		const {
-			networkList,
-			checkClientExist,
-			setAPHandler,
-			generateTopic,
-			subscribe,
-			getAPMessage,
-		} = this.props;
-		const isClientExist = await checkClientExist();
-		if (isClientExist) {
-			const apInfoTopic = await generateTopic({ service: 'W1/response', action: 'sub' });
-			await subscribe({ topic: [apInfoTopic] });
-			// await setAPHandler({ handler: this.apHandler });
-			await setAPHandler({ handler: this.apHandler });
-			this.checkTimer = setInterval(async () => {
-				await Promise.all(
-					networkList.map(async item => {
-						const { networkId, masterDeviceSn: sn } = item;
-						// console.log(masterDeviceSn);
-						// let sn = masterDeviceSn;
-						await getAPMessage({
-							message: {
-								opcode: OPCODE.CLIENT_LIST_GET,
-								param: {
-									network_id: networkId,
-									sn,
-								},
+	fetchApMessage = () => {
+		const { getAPMessage, networkList } = this.props;
+		this.checkTimer = setInterval(async () => {
+			await Promise.all(
+				networkList.map(async item => {
+					const { networkId, masterDeviceSn: sn } = item;
+					// console.log(masterDeviceSn);
+					// let sn = masterDeviceSn;
+					await getAPMessage({
+						message: {
+							opcode: OPCODE.CLIENT_LIST_GET,
+							param: {
+								network_id: networkId,
+								sn,
 							},
-						});
-						await getAPMessage({
-							message: {
-								opcode: OPCODE.TRAFFIC_STATS_GET,
-								param: {
-									network_id: networkId,
-									sn,
-								},
+						},
+					});
+					await getAPMessage({
+						message: {
+							opcode: OPCODE.TRAFFIC_STATS_GET,
+							param: {
+								network_id: networkId,
+								sn,
 							},
-						});
-					})
-				);
-			}, 5000);
-		} else {
-			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
-		}
-	};
-
-	apHandler = async payload => {
-		const { refreshNetworkList, clearMsg } = this.props;
-		const { msgId } = payload;
-		await refreshNetworkList(payload);
-		await clearMsg({ msgId});
+						},
+					});
+				})
+			);
+		}, 5000);
 	};
 
 	editName = payload => {
@@ -135,9 +105,10 @@ const Topology = props => {
 		<div className={styles['network-shop']}>
 			<div className={styles['network-title']}>
 				<div className={styles['network-Id']}>
-					<span className={styles['network-name']}>{`${formatMessage({
-						id: 'network.networkId',
-					})}:`}
+					<span className={styles['network-name']}>
+						{`${formatMessage({
+							id: 'network.networkId',
+						})}:`}
 					</span>
 					{!edit ? (
 						<>

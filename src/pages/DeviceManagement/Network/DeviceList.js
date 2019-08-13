@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Table } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { OPCODE } from '@/constants/mqttStore';
 import styles from './Network.less';
 
 class DeviceList extends React.PureComponent {
@@ -53,17 +54,24 @@ class DeviceList extends React.PureComponent {
 			{
 				title: formatMessage({ id: 'network.operation' }),
 				render: (_, record) => {
-					const { isUpgrading, isLatestVersion, activeStatus } = record;
+					const { isUpgrading, isLatestVersion, activeStatus, sn, networkId } = record;
 					return (
 						<div>
 							{isUpgrading ? (
 								<span>{formatMessage({ id: 'network.isUpgrading' })}</span>
 							) : (
-								<a disabled={isLatestVersion || !activeStatus}>
+								<a
+									onClick={() => this.upgradeRouter({ sn, networkId })}
+									disabled={isLatestVersion || !activeStatus}
+								>
 									{formatMessage({ id: 'network.upgrade' })}
 								</a>
 							)}
-							<a disabled={!activeStatus} className={styles['network-operation']}>
+							<a
+								onClick={() => this.rebootRouter({ sn, networkId })}
+								disabled={!activeStatus}
+								className={styles['network-operation']}
+							>
 								{formatMessage({ id: 'network.reboot' })}
 							</a>
 						</div>
@@ -84,6 +92,33 @@ class DeviceList extends React.PureComponent {
 	componentWillUnmount() {
 		clearInterval(this.timer);
 	}
+
+	upgradeRouter = async ({sn, networkId}) => {
+		const { getAPMessage } = this.props;
+		await getAPMessage({
+			message: {
+				opcode: OPCODE.CLIENT_LIST_GET,
+				param: {
+					network_id: networkId,
+					sn,
+				},
+			},
+		});
+	};
+
+	rebootRouter = async ({sn, networkId}) => {
+		const { getAPMessage } = this.props;
+		await getAPMessage({
+			message: {
+				opcode: OPCODE.CLIENT_LIST_GET,
+				param: {
+					network_id: networkId,
+					sn,
+				},
+			},
+		});
+	};
+
 
 	render() {
 		const {
