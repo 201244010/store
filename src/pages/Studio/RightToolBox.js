@@ -489,7 +489,9 @@ export default class RightToolBox extends Component {
 							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={24}>边框宽度</Col>
+							<Col span={24}>
+								{formatMessage({ id: 'studio.tool.label.stroke.width' })}
+							</Col>
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
@@ -499,7 +501,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Radio.Button style={{ width: '25%' }} value={0}>
-										无
+										0px
 									</Radio.Button>
 									<Radio.Button style={{ width: '25%' }} value={1}>
 										1px
@@ -514,7 +516,9 @@ export default class RightToolBox extends Component {
 							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={24}>边框颜色</Col>
+							<Col span={24}>
+								{formatMessage({ id: 'studio.tool.label.stroke.color' })}
+							</Col>
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
@@ -524,15 +528,15 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Radio.Button style={{ width: hasRed ? '33.33%' : '50%' }} value="black">
-										黑
+										{formatMessage({ id: 'studio.tool.label.black' })}
 									</Radio.Button>
 									<Radio.Button style={{ width: hasRed ? '33.33%' : '50%' }} value="white">
-										白
+										{formatMessage({ id: 'studio.tool.label.white' })}
 									</Radio.Button>
 									{
 										hasRed ?
 											<Radio.Button style={{ width: '33.33%' }} value="red">
-												红
+												{formatMessage({ id: 'studio.tool.label.red' })}
 											</Radio.Button> :
 											null
 									}

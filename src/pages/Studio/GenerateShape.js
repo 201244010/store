@@ -143,6 +143,7 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
+							offsetY: -2,
 							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,
@@ -354,7 +355,7 @@ export default function generateShape(option) {
 							align: option.align,
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
-							height: MAPS.containerHeight[option.type] * option.scaleY * option.zoomScale,
+							height: MAPS.containerHeight[option.type] * option.zoomScale,
 							// lineHeight: (MAPS.containerHeight[option.type] * option.scaleY) / option.fontSize,
 							draggable: true,
 							onDblClick: option.onDblClick,
@@ -572,11 +573,16 @@ export default function generateShape(option) {
 							y: option.y,
 							width: MAPS.containerWidth[option.type] * option.zoomScale,
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							scaleX: option.scaleX,
+							scaleY: option.scaleY,
 							sceneFunc(context) {
 								context.rotate(Math.PI / 2);
 								context.translate(0, -MAPS.containerWidth[option.type] * option.zoomScale);
 								context.drawImage(option.image, 0, 0, MAPS.containerHeight[option.type] * option.zoomScale, MAPS.containerWidth[option.type] * option.zoomScale);
-							}
+							},
+							draggable: true,
+							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
 						}}
 					/>
 					<Rect
@@ -588,9 +594,6 @@ export default function generateShape(option) {
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
-							draggable: true,
-							onTransform: option.onTransform,
-							onTransformEnd: option.onTransformEnd,
 						}}
 					/>
 				</Group>

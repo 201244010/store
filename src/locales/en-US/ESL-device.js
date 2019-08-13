@@ -116,6 +116,8 @@ export default {
 	'esl.device.template.name.require': 'Please input the template name',
 	'esl.device.template.size.require': 'Please choose the template size',
 	'esl.device.template.color.require': 'Please choose the template color',
+	'esl.device.template.action.create.success': '新建模板成功',
+	'esl.device.template.action.create.error': '新建模板失败',
 	'esl.device.template.action.save.success': '保存模板草稿成功',
 	'esl.device.template.action.delete.success': '删除模板成功',
 	'esl.device.template.action.delete.error': '删除模板成功',

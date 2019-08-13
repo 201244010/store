@@ -89,7 +89,7 @@ export default {
 						},
 					},
 				});
-				message.success(formatMessage({ id: '新建模板成功' }));
+				message.success(formatMessage({ id: 'esl.device.template.action.create.success' }));
 			} else {
 				yield put({
 					type: 'updateState',
@@ -98,7 +98,7 @@ export default {
 				if (ALERT_NOTICE_MAP[response.code]) {
 					message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
 				} else {
-					message.error(formatMessage({ id: '新建模板失败' }));
+					message.error(formatMessage({ id: 'esl.device.template.action.create.error' }));
 				}
 			}
 			return response;
@@ -198,7 +198,7 @@ export default {
 				});
 				layers = layers || [];
 
-				initTemplateDetail(stage, layers, zoomScale, payload.screenType);
+				initTemplateDetail(stage, layers, zoomScale);
 
 				const componentsDetail = {
 					isStep: !!templateInfo.studio_info
