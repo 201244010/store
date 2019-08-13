@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'dva';
 import { Card } from 'antd';
 import PageList from '@/components/List/PageList';
 import { formatMessage } from 'umi/locale';
@@ -336,19 +337,50 @@ const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 	);
 };
 
+@connect(
+	state => ({
+		network: state.network,
+		routing: state.routing,
+	}),
+	dispatch => ({
+		checkClientExist: () => dispatch({ type: 'mqttStore/checkClientExist' }),
+		subscribeDetail: () => dispatch({ type: 'network/subscribeDetail' }),
+		unsubscribeDetail: () => dispatch({ type: 'network/unsubscribeDetail' }),
+		setDetailHandler: ({ handler }) =>
+			dispatch({ type: 'network/setDetailHandler', payload: { handler } }),
+	})
+)
 class NetworkDetail extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.checkTimer = null;
+		// this.state = { deviceList: [], parentRouter: {} };
 	}
 
 	componentDidMount() {
-		// TODO 监听 MQTT 事件
+		// const { routing: { location: { query = {} } = {} } = {} } = this.props;
+		this.checkMQTTClient();
 	}
 
-	checkClientExist = async () => {
+	componentWillUnmount() {
+		const { unsubscribeDetail } = this.props;
+		unsubscribeDetail();
+	}
+
+	deviceHandler = data => {
+		console.log(data);
+	};
+
+	checkMQTTClient = async () => {
+		const { checkClientExist, subscribeDetail, setDetailHandler } = this.props;
 		clearTimeout(this.checkTimer);
-		
+		const isClientExist = await checkClientExist();
+		if (isClientExist) {
+			await subscribeDetail();
+			await setDetailHandler({ handler: this.deviceHandler });
+		} else {
+			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
+		}
 	};
 
 	render() {

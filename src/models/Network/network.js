@@ -171,6 +171,45 @@ export default {
 				},
 			});
 		},
+
+		*subscribeDetail(_, { put }) {
+			const responseTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'W1/response', action: 'sub' },
+			});
+
+			yield put({
+				type: 'mqttStore/subscribe',
+				payload: { topic: responseTopic },
+			});
+		},
+
+		*unsubscribeDetail(_, { put }) {
+			const responseTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'W1/response', action: 'sub' },
+			});
+
+			yield put({
+				type: 'mqttStore/unsubscribeTopic',
+				payload: { topic: responseTopic },
+			});
+		},
+
+		*setDetailHandler({ payload = {} }, { put }) {
+			const { handler } = payload;
+			yield put({
+				type: 'mqttStore/setTopicListener',
+				payload: {
+					service: 'W1/response',
+					handler: receivedMessage => {
+						const { data } = JSON.parse(receivedMessage);
+						console.log(data);
+						handler(data);
+					},
+				},
+			});
+		},
 	},
 
 	reducers: {
