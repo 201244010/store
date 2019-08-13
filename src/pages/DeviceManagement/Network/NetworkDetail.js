@@ -12,7 +12,6 @@ const rssiStyle = {
 
 const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 	const { mac = '', ip = '', location = '', rssi = '', role = '' } = data;
-	// console.log('ppp', parent);
 	return (
 		<div
 			className={`${index > 0 ? '' : styles['list-content-first']}  ${
@@ -72,7 +71,7 @@ class NetworkDetail extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.checkTimer = null;
-		// this.state = { deviceList: [], parentRouter: {} };
+		this.state = { deviceList: [], parentRouter: {}, detailLoading: true };
 	}
 
 	componentDidMount() {
@@ -90,8 +89,15 @@ class NetworkDetail extends PureComponent {
 		unsubscribeDetail();
 	}
 
-	deviceHandler = data => {
-		console.log(data);
+	deviceHandler = (data = []) => {
+		// console.log('aaaaaaaa');
+		// console.log(data);
+		const parentRouter = data.find(info => info.role === '1');
+		this.setState({
+			deviceList: data,
+			parentRouter,
+			detailLoading: false,
+		});
 	};
 
 	checkMQTTClient = async () => {
@@ -104,7 +110,7 @@ class NetworkDetail extends PureComponent {
 			} = this.props;
 
 			await subscribeDetail();
-			// console.log(111)
+			// console.log(111);
 			await setDetailHandler({ handler: this.deviceHandler });
 			await getDetailList({ sn, networkId });
 		} else {
@@ -113,17 +119,14 @@ class NetworkDetail extends PureComponent {
 	};
 
 	render() {
-		const { data = [] } =  {};
-		const [dataResult = {}, ,] = data;
-		const { result: { sonconnect: { devices = [] } = {} } = {} } = dataResult;
-		const parentRoute = devices.find(device => device.role === '1');
-
+		const { deviceList = [], parentRouter = {}, detailLoading = true } = this.state;
 		return (
 			<Card title={formatMessage({ id: 'network.detail' })}>
 				<PageList
-					data={devices}
+					loading={detailLoading}
+					data={deviceList}
 					RenderComponent={({ data: _data, index }) => (
-						<ListContent data={_data} index={index} parent={parentRoute} />
+						<ListContent data={_data} index={index} parent={parentRouter} />
 					)}
 				/>
 			</Card>

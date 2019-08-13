@@ -1,5 +1,5 @@
 import * as Actions from '@/services/network';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, MQTT_RES_OK } from '@/constants/errorCode';
 import { format } from '@konata9/milk-shake';
 // import { formatSpeed } from '@/utils/utils';
 import { OPCODE } from '@/constants/mqttStore';
@@ -219,9 +219,15 @@ export default {
 				payload: {
 					service: 'W1/response',
 					handler: receivedMessage => {
-						const { data } = JSON.parse(receivedMessage);
-						console.log(data);
-						handler(data);
+						const { data = [] } = JSON.parse(receivedMessage);
+						// console.log(data);
+						const [dataContent, ,] = data;
+						const { result: { sonconnect: { devices = [] } = {} } = {}, errcode } =
+							dataContent || {};
+
+						if (errcode === MQTT_RES_OK) {
+							handler(devices);
+						}
 					},
 				},
 			});
