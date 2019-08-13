@@ -12,6 +12,7 @@ export default {
 	'deviceBasicInfo.enterName':'请输入设备名称',
 	'deviceBasicInfo.maxLength':'设备名称不可以超过36字节',
 	'deviceBasicInfo.firstInputFormat':'首位字符不能为空，请重新输入',
+	'deviceBasicInfo.invalidSymbol':'名称包含异常符号，请重新输入',
 	'deviceBasicInfo.deviceNameRule':'该名称已被其他设备占用，请重新命名',
 	'deviceBasicInfo.nosdInfo':'TF卡未插入，人脸识别相关功能将无法使用'
 };

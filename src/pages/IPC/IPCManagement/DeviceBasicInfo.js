@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { mbStringLength } from '@/utils/utils';
 import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { spaceInput } from '@/constants/regexp';
+import { spaceInput, emojiInput } from '@/constants/regexp';
 // import { FORM_ITEM_LAYOUT , TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 
 import defaultImage from '@/assets/imgs/default.jpeg';
@@ -235,6 +235,17 @@ class DeviceBasicInfo extends React.Component {
 										{
 											pattern: spaceInput,
 											message: formatMessage({id: 'deviceBasicInfo.firstInputFormat'})
+										},
+										{
+											validator: (rule, value,callback) => {
+												const invalidSymbol = emojiInput;
+												if(invalidSymbol.test(value)) {
+													callback(false);
+												} else {
+													callback();
+												}
+											},
+											message: formatMessage({ id: 'deviceBasicInfo.invalidSymbol'})
 										},
 										{
 											validator: (rule, value, callback) => {

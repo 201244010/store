@@ -76,7 +76,7 @@ const productBarCode = (rule, value, callback) => {
 const expireTime = (rule, value, callback) => {
 	if (!value) {
 		callback();
-	} else if (!RegExp.production_date.test(value)) {
+	} else if (!RegExp.productionDate.test(value)) {
 		callback(formatMessage({ id: 'product.expire_time.isFormatted' }));
 	} else {
 		callback();
