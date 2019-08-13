@@ -19,8 +19,8 @@ export default class MTransformer extends Component {
 		if (newBoundBox.width < 3) {
 			newBoundBox.width = 3;
 		}
-		if (newBoundBox.height < detail.fontSize * zoomScale) {
-			newBoundBox.height = detail.fontSize * zoomScale;
+		if (newBoundBox.height < (detail.fontSize || 1) * zoomScale) {
+			newBoundBox.height = (detail.fontSize || 1) * zoomScale;
 		}
 		return newBoundBox;
 	};
@@ -61,6 +61,7 @@ export default class MTransformer extends Component {
 					rotateAnchorOffset={20}
 					rotateEnabled={false}
 					enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+					boundBoxFunc={this.boundBoxFunc}
 				/>
 			);
 		}

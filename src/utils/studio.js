@@ -361,15 +361,15 @@ export const initTemplateDetail = (stage, layers, zoomScale) => {
 			layer.bindField = undefined;
 		}
 		if (layer.type) {
-			const sType = layer.type.toLowerCase();
-			if (sType.indexOf(SHAPE_TYPES.LINE) > -1) {
+			layer.type = layer.type.toLowerCase();
+			if (layer.type.indexOf(SHAPE_TYPES.LINE) > -1) {
 				if (layer.width > layer.height) {
 					layer.type = SHAPE_TYPES.LINE_H;
 				} else {
 					layer.type = SHAPE_TYPES.LINE_V;
 				}
 			}
-			if (sType.indexOf(SHAPE_TYPES.PRICE) > -1) {
+			if (layer.type.indexOf(SHAPE_TYPES.PRICE) > -1) {
 				if (!['sup', 'sub', 'super'].includes(layer.subType)) {
 					layer.subType = 'normal';
 				}
@@ -377,10 +377,10 @@ export const initTemplateDetail = (stage, layers, zoomScale) => {
 				if (!backgroundColor || ['red', 'opacity'].includes(backgroundColor)) {
 					backgroundColor = 'white';
 				}
-				const subType = layer.subType === 'super' ? 'sup' : layer.subType;
+				const subType = (layer.subType === 'super' ? 'sup' : layer.subType);
 				layer.type = `price@${subType}@${backgroundColor}`;
 			}
-			if (sType.indexOf(SHAPE_TYPES.CODE) > -1) {
+			if (layer.type.indexOf(SHAPE_TYPES.CODE) > -1) {
 				if (layer.width - layer.height > 10) {
 					layer.type = SHAPE_TYPES.CODE_H;
 				} else if (layer.width - layer.height < -10) {
@@ -466,41 +466,20 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 		// 计算startX, startY 等位置信息
 		componentDetail.startX = ((componentDetail.x - originOffset.x) / componentDetail.zoomScale).toFixed();
 		componentDetail.startY = ((componentDetail.y - originOffset.y) / componentDetail.zoomScale).toFixed();
-		if (NON_NORMAL_PRICE_TYPES.includes(componentDetail.type)) {
-			const intPriceText = `${componentDetail.content}`.split('.')[0];
-			const smallPriceText = `${componentDetail.content}`.split('.')[1] || '';
-			let backSmallStartY = 0;
-			if (componentDetail.type.indexOf(SHAPE_TYPES.PRICE_SUPER)) {
-				backSmallStartY = (MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY - componentDetail.fontSize) / 2;
-			}
-			const intTextWidth = (componentDetail.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0));
-			const textWidth = intTextWidth + (smallPriceText.length * componentDetail.smallFontSize) / 2;
-			let intXPosition = 0;
-			if (componentDetail.align === 'center') {
-				intXPosition = (MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX - textWidth) / 2;
-			}
-			if (componentDetail.align === 'right') {
-				intXPosition = MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX - textWidth;
-			}
-			componentDetail.intStartX = Math.round(componentDetail.startX) + Math.round(intXPosition);
-			componentDetail.intStartY = Math.round(componentDetail.startY) + Math.round(backSmallStartY);
-			componentDetail.smallStartX = componentDetail.intStartX + Math.round(intTextWidth);
-			if (componentDetail.type.indexOf(SHAPE_TYPES.PRICE_SUPER) > -1) {
-				componentDetail.smallStartY = componentDetail.intStartY;
-			} else {
-				componentDetail.smallStartY = componentDetail.intStartY + componentDetail.fontSize - componentDetail.smallFontSize;
-			}
-		}
 
 		// 处理type
 		if ([SHAPE_TYPES.LINE_H, SHAPE_TYPES.LINE_V, ...CODE_TYPES].includes(componentDetail.type)) {
 			componentDetail.type = componentDetail.type.split('@')[0];
 		}
 
+		// 处理价格组件
 		if ([...NORMAL_PRICE_TYPES, ...NON_NORMAL_PRICE_TYPES].includes(componentDetail.type)) {
 			const types = componentDetail.type.split('@');
 			componentDetail.type = types[0];
 			componentDetail.subType = types[1];
+			if (componentDetail.subType === 'normal') {
+				componentDetail.smallFontSize = componentDetail.fontSize;
+			}
 		}
 
 		delete componentDetail.lines;
