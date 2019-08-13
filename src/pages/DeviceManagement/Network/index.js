@@ -9,6 +9,8 @@ import styles from './Network.less';
 		network: state.network,
 	}),
 	dispatch => ({
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		getListWithStatus: () => dispatch({ type: 'network/getListWithStatus' }),
 		getList: () => dispatch({ type: 'network/getList' }),
 		updateAlias: (networkId, networkAlias) =>
@@ -36,6 +38,7 @@ class Network extends React.Component {
 			getAPMessage,
 			setAPHandler,
 			refreshNetworkList,
+			goToPath
 		} = this.props;
 		return (
 			<div>
@@ -52,6 +55,7 @@ class Network extends React.Component {
 						getAPMessage,
 						setAPHandler,
 						refreshNetworkList,
+						goToPath
 					}}
 				/>
 				<div className={styles['card-network-wrapper']}>

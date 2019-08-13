@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Divider, Badge, Icon, Input } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { IconLink, IconEquipment, IconNetwork } from '@/components/IconSvg';
+import { OPCODE } from '@/constants/mqttStore';
 import styles from './Network.less';
 
 class NetworkList extends React.PureComponent {
@@ -86,12 +87,14 @@ class NetworkList extends React.PureComponent {
 		const {
 			networkList,
 			deviceList: { networkDeviceList },
+			goToPath,
 		} = this.props;
 		console.log(networkList);
 		const TopologyList = networkList.map(item => (
 			<Topology
 				key={item.networkId}
 				editName={this.editName}
+				goToPath={goToPath}
 				networkDeviceList={networkDeviceList}
 				{...item}
 			/>
@@ -121,6 +124,7 @@ const Topology = props => {
 		edit,
 		errorTip,
 		editName,
+		goToPath,
 	} = props || {};
 
 	const routerNumber = networkDeviceList.filter(item => item.networkId === networkId).length;
@@ -232,7 +236,15 @@ const Topology = props => {
 							<div>
 								{formatMessage({ id: 'network.router' })}
 								{online ? (
-									<a href="javascript:void(0);" onClick={() => console.log('aa')}>
+									<a
+										href="javascript:void(0);"
+										onClick={() =>
+											goToPath('networkDetail', {
+												sn: masterDeviceSn,
+												networkId,
+											})
+										}
+									>
 										（{formatMessage({ id: 'network.viewMore' })}）
 									</a>
 								) : (
