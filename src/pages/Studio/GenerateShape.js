@@ -573,11 +573,16 @@ export default function generateShape(option) {
 							y: option.y,
 							width: MAPS.containerWidth[option.type] * option.zoomScale,
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							scaleX: option.scaleX,
+							scaleY: option.scaleY,
 							sceneFunc(context) {
 								context.rotate(Math.PI / 2);
 								context.translate(0, -MAPS.containerWidth[option.type] * option.zoomScale);
 								context.drawImage(option.image, 0, 0, MAPS.containerHeight[option.type] * option.zoomScale, MAPS.containerWidth[option.type] * option.zoomScale);
-							}
+							},
+							draggable: true,
+							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
 						}}
 					/>
 					<Rect
@@ -589,9 +594,6 @@ export default function generateShape(option) {
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
-							draggable: true,
-							onTransform: option.onTransform,
-							onTransformEnd: option.onTransformEnd,
 						}}
 					/>
 				</Group>
