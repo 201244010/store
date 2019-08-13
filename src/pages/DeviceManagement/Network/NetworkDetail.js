@@ -5,290 +5,6 @@ import PageList from '@/components/List/PageList';
 import { formatMessage } from 'umi/locale';
 import styles from './Network.less';
 
-const mockData = {
-	errcode: '0',
-	msg_id: '1',
-	data: [
-		{
-			opcode: '0x2116',
-			errcode: '0',
-			result: {
-				sonconnect: {
-					devices: [
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: 0,
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: 0,
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: 0,
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '0',
-						},
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-						{
-							mac: '0C:25:76:35:D9:9D',
-							routermac: '00:00:00:00:00:00',
-							devid: 'W101D8BS00101',
-							conn_mode: {
-								wired: 0,
-								w_2g: 0,
-								w_5g: 0,
-							},
-							ip: '192.168.100.1',
-							online: '1',
-							location: 'W101D8BS00101',
-							rssi: 0,
-							role: '1',
-						},
-					],
-				},
-			},
-		},
-	],
-};
-
 const rssiStyle = {
 	strong: { color: 'green' },
 	weak: { color: 'red' },
@@ -346,6 +62,8 @@ const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 		checkClientExist: () => dispatch({ type: 'mqttStore/checkClientExist' }),
 		subscribeDetail: () => dispatch({ type: 'network/subscribeDetail' }),
 		unsubscribeDetail: () => dispatch({ type: 'network/unsubscribeDetail' }),
+		getDetailList: ({ sn, networkId }) =>
+			dispatch({ type: 'network/getDetailList', payload: { sn, networkId } }),
 		setDetailHandler: ({ handler }) =>
 			dispatch({ type: 'network/setDetailHandler', payload: { handler } }),
 	})
@@ -358,8 +76,13 @@ class NetworkDetail extends PureComponent {
 	}
 
 	componentDidMount() {
-		// const { routing: { location: { query = {} } = {} } = {} } = this.props;
-		this.checkMQTTClient();
+		const {
+			routing: { location: { query: { sn = null, networkId = null } = {} } = {} } = {},
+		} = this.props;
+
+		if (sn && networkId) {
+			this.checkMQTTClient();
+		}
 	}
 
 	componentWillUnmount() {
@@ -372,19 +95,25 @@ class NetworkDetail extends PureComponent {
 	};
 
 	checkMQTTClient = async () => {
-		const { checkClientExist, subscribeDetail, setDetailHandler } = this.props;
+		const { checkClientExist, subscribeDetail, setDetailHandler, getDetailList } = this.props;
 		clearTimeout(this.checkTimer);
 		const isClientExist = await checkClientExist();
 		if (isClientExist) {
+			const {
+				routing: { location: { query: { sn = null, networkId = null } = {} } = {} } = {},
+			} = this.props;
+
 			await subscribeDetail();
+			// console.log(111)
 			await setDetailHandler({ handler: this.deviceHandler });
+			await getDetailList({ sn, networkId });
 		} else {
 			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
 		}
 	};
 
 	render() {
-		const { data = [] } = mockData;
+		const { data = [] } =  {};
 		const [dataResult = {}, ,] = data;
 		const { result: { sonconnect: { devices = [] } = {} } = {} } = dataResult;
 		const parentRoute = devices.find(device => device.role === '1');

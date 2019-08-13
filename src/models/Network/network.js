@@ -2,7 +2,7 @@ import * as Actions from '@/services/network';
 import { ERROR_OK } from '@/constants/errorCode';
 import { format } from '@konata9/milk-shake';
 // import { formatSpeed } from '@/utils/utils';
-// import { OPCODE } from '@/constants/mqttStore';
+import { OPCODE } from '@/constants/mqttStore';
 
 export default {
 	namespace: 'network',
@@ -222,6 +222,25 @@ export default {
 						const { data } = JSON.parse(receivedMessage);
 						console.log(data);
 						handler(data);
+					},
+				},
+			});
+		},
+
+		*getDetailList({ payload = {} }, { put }) {
+			const { sn = null, networkId = null } = payload;
+			const requestTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'W1/request' },
+			});
+
+			yield put({
+				type: 'mqttStore/publish',
+				payload: {
+					topic: requestTopic,
+					message: {
+						opcode: OPCODE.GET_ROUTES_DETAIL,
+						param: { network_id: networkId, sn },
 					},
 				},
 			});
