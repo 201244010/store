@@ -121,10 +121,9 @@ export default {
 				const { data = {} } = response;
 				const forData = format('toCamel')(data) || {};
 				const { permissionList = [] } = forData || {};
-
-				const sortedPermission = FIRST_MENU_ORDER.map(
-					menu => permissionList.find(permission => permission.name === `/${menu}`) || {}
-				);
+				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
+					permissionList.find(permission => permission.name === `/${menu}`)
+				).filter(item => !!item);
 
 				forData.permissionList = formatData(sortedPermission).map(item => {
 					const formatResult = formatPath(item);
@@ -162,9 +161,9 @@ export default {
 				const { data = {} } = response;
 				const { permissionList = [] } = format('toCamel')(data) || {};
 
-				const sortedPermission = FIRST_MENU_ORDER.map(
-					menu => permissionList.find(permission => permission.name === `/${menu}`) || {}
-				);
+				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
+					permissionList.find(permission => permission.name === `/${menu}`)
+				).filter(item => !!item);
 
 				const tmpList = formatData(sortedPermission).map(item => {
 					const formatResult = formatPath(item);
