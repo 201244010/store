@@ -357,6 +357,7 @@ class Studio extends Component {
 		} else {
 			batchUpdateScopedComponent();
 		}
+
 		// if (scope.x || scope.x === 0) {
 		// 	componentsDetail[selectedShapeName].x = scope.x;
 		// }
@@ -656,7 +657,7 @@ class Studio extends Component {
 				updateComponentsDetail({
 					selectedShapeName: targetName,
 					[targetName]: {
-						content: inputValue || formatMessage({ id: 'studio.action.text.db.click' }),
+						content: inputValue ? Number(inputValue).toFixed(targetDetail.precision) : formatMessage({ id: 'studio.action.text.db.click' }),
 					},
 				});
 			} catch (evt) {
@@ -761,7 +762,7 @@ class Studio extends Component {
 							<Layer x={0} y={0} width={stageWidth} height={stageHeight}>
 								{Object.keys(componentsDetail).map(key => {
 									const targetDetail = componentsDetail[key];
-									if (targetDetail.name) {
+									if (targetDetail.name && targetDetail.name !== RECT_SELECT_NAME) {
 										return generateShape({
 											...targetDetail,
 											key,
@@ -779,6 +780,24 @@ class Studio extends Component {
 									}
 									return undefined;
 								})}
+								{
+									componentsDetail[RECT_SELECT_NAME] ?
+										generateShape({
+											...componentsDetail[RECT_SELECT_NAME],
+											key: RECT_SELECT_NAME,
+											stageWidth,
+											stageHeight,
+											scaleX: componentsDetail[RECT_SELECT_NAME].scaleX || 1,
+											scaleY: componentsDetail[RECT_SELECT_NAME].scaleY || 1,
+											zoomScale,
+											ratio: componentsDetail[RECT_SELECT_NAME].ratio || 1,
+											selected: selectedShapeName === RECT_SELECT_NAME,
+											onTransform: this.handleShapeTransform,
+											onTransformEnd: this.handleShapeTransformEnd,
+											onDblClick: this.handleShapeDblClick,
+										}) :
+										null
+								}
 								{!dragging &&
 									selectedShapeName &&
 									componentsDetail[selectedShapeName].type !==
