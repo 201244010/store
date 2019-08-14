@@ -288,6 +288,31 @@ export const isInComponent = (source, target) => source.left > target.left && so
 export const getImagePromise = componentDetail =>
 	new Promise((resolve, reject) => {
 		const image = new Image();
+
+		if (componentDetail.content) {
+			if (componentDetail.type === SHAPE_TYPES.CODE_QR) {
+				const bb = jQuery(document.createElement('canvas')).qrcode({
+					render: 'canvas',
+					text: componentDetail.content,
+					width: componentDetail.width,
+					height: componentDetail.height,
+					background: '#ffffff',
+					foreground: '#000000'
+				});
+				const canvas = bb.find('canvas').get(0);
+				image.src = canvas.toDataURL();
+			}
+			if ([SHAPE_TYPES.CODE_H, SHAPE_TYPES.CODE_V].includes(componentDetail.type)) {
+				JsBarcode(image, componentDetail.content, {
+					format: 'CODE128',
+					width: MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX * componentDetail.zoomScale,
+					displayValue: false
+				});
+			}
+		} else {
+			image.src = componentDetail.imgPath || MAPS.imgPath[componentDetail.type];
+		}
+
 		image.onload = () => {
 			componentDetail.image = image;
 			resolve(componentDetail);
@@ -295,7 +320,6 @@ export const getImagePromise = componentDetail =>
 		image.onerror = error => {
 			reject(error);
 		};
-		image.src = componentDetail.imgPath || MAPS.imgPath[componentDetail.type];
 	});
 
 export const STEP_KEYS = {};
@@ -493,4 +517,38 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 		layers,
 		bindFields
 	};
+};
+
+export const checkEAN8Num = (number) => {
+	const res = number
+		.substr(0, 7)
+		.split('')
+		.map((n) => +n)
+		.reduce((sum, a, idx) => (
+			idx % 2 ? sum + a : sum + a * 3
+		), 0);
+
+	return (10 - (res % 10)) % 10;
+};
+
+export const checkEAN13Num = (number) => {
+	const res = number
+		.substr(0, 12)
+		.split('')
+		.map((n) => +n)
+		.reduce((sum, a, idx) => (
+			idx % 2 ? sum + a * 3 : sum + a
+		), 0);
+
+	return (10 - (res % 10)) % 10;
+};
+
+export const validEAN8Num = (number) => {
+	console.log(checkEAN8Num(number));
+	return number.search(/^[0-9]{8}$/) !== -1 && +number[7] === checkEAN8Num(number);
+};
+
+export const validEAN13Num = (number) => {
+	console.log(checkEAN13Num(number));
+	return number.search(/^[0-9]{13}$/) !== -1 && +number[12] === checkEAN13Num(number);
 };

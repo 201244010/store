@@ -136,6 +136,12 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 					<Text
@@ -156,6 +162,12 @@ export default function generateShape(option) {
 							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
 							draggable: true,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 				</Group>
@@ -229,6 +241,12 @@ export default function generateShape(option) {
 								onTransform: option.onTransform,
 								onTransformEnd: option.onTransformEnd,
 								onDblClick: option.onDblClick,
+								onMouseOver: () => {
+									document.body.style.cursor = 'pointer';
+								},
+								onMouseOut: () => {
+									document.body.style.cursor = 'default';
+								},
 							}}
 						/>
 						<Image
@@ -238,6 +256,12 @@ export default function generateShape(option) {
 								width: SIZES.DEFAULT_IMAGE_WIDTH * option.zoomScale,
 								height: SIZES.DEFAULT_IMAGE_HEIGHT * option.zoomScale,
 								image: option.image,
+								onMouseOver: () => {
+									document.body.style.cursor = 'pointer';
+								},
+								onMouseOut: () => {
+									document.body.style.cursor = 'default';
+								},
 							}}
 						/>
 						{option.selected ? (
@@ -250,6 +274,12 @@ export default function generateShape(option) {
 										height: 32,
 										fill: '#5085E3',
 										cornerRadius: 16,
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
 									}}
 								/>
 								<Text
@@ -263,6 +293,12 @@ export default function generateShape(option) {
 										fontSize: 14,
 										fill: 'white',
 										text: '双击更换图片',
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
 									}}
 								/>
 							</Fragment>
@@ -287,6 +323,12 @@ export default function generateShape(option) {
 								onTransform: option.onTransform,
 								onTransformEnd: option.onTransformEnd,
 								onDblClick: option.onDblClick,
+								onMouseOver: () => {
+									document.body.style.cursor = 'pointer';
+								},
+								onMouseOut: () => {
+									document.body.style.cursor = 'default';
+								},
 							}}
 						/>
 						{option.selected ? (
@@ -299,6 +341,12 @@ export default function generateShape(option) {
 										height: 32,
 										fill: '#5085E3',
 										cornerRadius: 16,
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
 									}}
 								/>
 								<Text
@@ -312,6 +360,12 @@ export default function generateShape(option) {
 										fontSize: 14,
 										fill: 'white',
 										text: '双击更换图片',
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
 									}}
 								/>
 							</Fragment>
@@ -339,6 +393,12 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 					<Text
@@ -359,6 +419,12 @@ export default function generateShape(option) {
 							// lineHeight: (MAPS.containerHeight[option.type] * option.scaleY) / option.fontSize,
 							draggable: true,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 				</Group>
@@ -383,6 +449,12 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 					<Shape
@@ -391,6 +463,12 @@ export default function generateShape(option) {
 							x: option.x,
 							y: option.y,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 							sceneFunc(context) {
 								const intPriceText = `${option.content}`.split('.')[0];
 								const smallPriceText = `${option.content}`.split('.')[1] || '';
@@ -472,6 +550,12 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 					<Shape
@@ -480,6 +564,12 @@ export default function generateShape(option) {
 							x: option.x,
 							y: option.y,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 							sceneFunc(context) {
 								const intPriceText = `${option.content}`.split('.')[0];
 								const smallPriceText = `${option.content}`.split('.')[1] || '';
@@ -559,6 +649,12 @@ export default function generateShape(option) {
 						draggable: true,
 						onTransform: option.onTransform,
 						onTransformEnd: option.onTransformEnd,
+						onMouseOver: () => {
+							document.body.style.cursor = 'pointer';
+						},
+						onMouseOut: () => {
+							document.body.style.cursor = 'default';
+						},
 					}}
 				/>
 			);
@@ -583,6 +679,12 @@ export default function generateShape(option) {
 							draggable: true,
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 					<Rect
@@ -594,6 +696,13 @@ export default function generateShape(option) {
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
+							draggable: true,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 				</Group>
