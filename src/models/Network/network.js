@@ -38,9 +38,9 @@ export default {
 						  })
 						: getList;
 				const tmpDeviceList = networkDeviceList.map(item => {
-					item.networkAlias = getList.filter(
-						items => item.sn === items.masterDeviceSn
-					)[0].networkAlias;
+					item.networkAlias = (
+						getList.filter(items => item.sn === items.masterDeviceSn)[0] || {}
+					).networkAlias;
 					return item;
 				});
 				yield put({
@@ -89,12 +89,22 @@ export default {
 				const {
 					deviceList: { networkDeviceList },
 				} = yield select(state => state.network);
-				const tmpList = getList.map(item => {
-					item.clientCount = (
-						networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
-					).clientCount;
-					return item;
-				});
+				const tmpList = getList
+					.map(item => {
+						item.masterDeviceSn = (
+							getList.filter(
+								items => item.networkId === items.networkId && items.isMaster
+							)[0] || {}
+						).sn;
+						return item;
+					})
+					.map(item => {
+						item.clientCount = (
+							networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
+						).clientCount;
+						return item;
+					});
+				console.log(tmpList);
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -144,10 +154,10 @@ export default {
 							handler({ msgId, opcode, sn, upSpeed, upUnit, downSpeed, downUnit });
 						}
 
-						if (opcode === '0x207b' && errcode === 0) {
-							// const result = res.data[0].result.upgrade;
-							handler({ msgId, opcode, sn });
-						}
+						// if (opcode === '0x207b' && errcode === 0) {
+						// 	// const result = res.data[0].result.upgrade;
+						// 	handler({ msgId, opcode, sn });
+						// }
 					},
 				},
 			});

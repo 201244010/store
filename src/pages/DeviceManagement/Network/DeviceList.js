@@ -59,6 +59,7 @@ class DeviceList extends React.PureComponent {
 				title: formatMessage({ id: 'network.operation' }),
 				render: (_, record) => {
 					const {
+						masterDeviceSn,
 						isLatestVersion,
 						activeStatus,
 						sn,
@@ -87,7 +88,7 @@ class DeviceList extends React.PureComponent {
 							) : (
 								<Popconfirm
 									title={formatMessage({ id: 'network.rebootTitle' })}
-									onConfirm={() => this.rebootRouter({ sn, networkId })}
+									onConfirm={() => this.rebootRouter({ sn, networkId, masterDeviceSn })}
 								>
 									<a
 										disabled={!activeStatus}
@@ -140,7 +141,7 @@ class DeviceList extends React.PureComponent {
 		});
 	};
 
-	rebootRouter = async ({ sn, networkId }) => {
+	rebootRouter = async ({ sn, networkId, masterDeviceSn }) => {
 		const { getAPMessage, refreshNetworkList } = this.props;
 		await refreshNetworkList({ opcode: OPCODE.SYSTEMTOOLS_RESTART, sn, networkId });
 		await getAPMessage({
@@ -148,7 +149,8 @@ class DeviceList extends React.PureComponent {
 				opcode: OPCODE.SYSTEMTOOLS_RESTART,
 				param: {
 					network_id: networkId,
-					sn,
+					sn: masterDeviceSn,
+					devs: [sn]
 				},
 			},
 		});
