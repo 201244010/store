@@ -9,12 +9,12 @@ import styles from './Network.less';
 		network: state.network,
 	}),
 	dispatch => ({
+		updateAlias: ({networkId, networkAlias}) =>
+			dispatch({ type: 'network/updateAlias', payload: { networkId, networkAlias } }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		getListWithStatus: () => dispatch({ type: 'network/getListWithStatus' }),
 		getList: () => dispatch({ type: 'network/getList' }),
-		updateAlias: (networkId, networkAlias) =>
-			dispatch({ type: 'network/getListWithStatus', payload: { networkId, networkAlias } }),
 		unsubscribeTopic: () => dispatch({ type: 'network/unsubscribeTopic' }),
 		setAPHandler: payload => dispatch({ type: 'network/setAPHandler', payload }),
 		getAPMessage: payload => dispatch({ type: 'network/getAPMessage', payload }),
@@ -26,14 +26,17 @@ import styles from './Network.less';
 	})
 )
 class Network extends React.Component {
-
+	constructor(props) {
+		super(props);
+		this.checkTimer = null;
+	}
+	
 	async componentDidMount() {
 		await this.checkMQTTClient();
 	}
 
 	componentWillUnmount() {
 		clearTimeout(this.checkTimer);
-		clearInterval(this.intervalTimer);
 		const { unsubscribeTopic } = this.props;
 		unsubscribeTopic();
 	}
@@ -92,10 +95,10 @@ class Network extends React.Component {
 						unsubscribeTopic,
 						deviceList,
 						getAPMessage,
+						clearMsg,
 						setAPHandler,
 						refreshNetworkList,
-						goToPath,
-						clearMsg
+						goToPath
 					}}
 				/>
 				<div className={styles['card-network-wrapper']}>

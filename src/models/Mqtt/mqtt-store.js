@@ -122,7 +122,7 @@ export default {
 			});
 		},
 
-		*putMsg(_, { put }) {
+		*putMsg(_, { put}) {
 			const response = yield put({
 				type: 'putMsgMap',
 			});

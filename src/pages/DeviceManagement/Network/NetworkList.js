@@ -1,7 +1,8 @@
 import React from 'react';
-import { Card, Divider, Badge, Icon, Input } from 'antd';
+import { Card, Divider, Badge, Icon, Input, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { IconLink, IconEquipment, IconNetwork } from '@/components/IconSvg';
+import { ERROR_OK } from '@/constants/errorCode';
 import { OPCODE } from '@/constants/mqttStore';
 import styles from './Network.less';
 
@@ -9,55 +10,71 @@ class NetworkList extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.intervalTimer = null;
-		this.checkTimer = null;
 	}
 
 	async componentDidMount() {
 		const { getList } = this.props;
+		this.fetchApMessage();
 		await getList();
-		await this.fetchApMessage();
-		// await this.checkMQTTClient();
 	}
 
-	componentWillUnmount(){
-		clearInterval(this.checkTimer);
+	componentWillUnmount() {
+		clearInterval(this.intervalTimer);
 	}
 
 	fetchApMessage = () => {
-		const { getAPMessage, networkList } = this.props;
-		this.checkTimer = setInterval(async () => {
-			await Promise.all(
-				networkList.map(async item => {
-					const { networkId, masterDeviceSn: sn } = item;
-					// console.log(masterDeviceSn);
-					// let sn = masterDeviceSn;
-					await getAPMessage({
-						message: {
-							opcode: OPCODE.CLIENT_LIST_GET,
-							param: {
-								network_id: networkId,
-								sn,
-							},
-						},
-					});
-					await getAPMessage({
-						message: {
-							opcode: OPCODE.TRAFFIC_STATS_GET,
-							param: {
-								network_id: networkId,
-								sn,
-							},
-						},
-					});
-				})
-			);
+		const { getList } = this.props;
+		this.intervalTimer = setInterval(async () => {
+			await getList();
+			await this.fetchMqtt();
 		}, 5000);
+	};
+
+	fetchMqtt = async () => {
+		const { getAPMessage, networkList } = this.props;
+		await Promise.all(
+			networkList.map(async item => {
+				const { networkId, masterDeviceSn: sn } = item;
+				await getAPMessage({
+					message: {
+						opcode: OPCODE.CLIENT_LIST_GET,
+						param: {
+							network_id: networkId,
+							sn,
+						},
+					},
+				});
+				await getAPMessage({
+					message: {
+						opcode: OPCODE.TRAFFIC_STATS_GET,
+						param: {
+							network_id: networkId,
+							sn,
+						},
+					},
+				});
+			})
+		);
 	};
 
 	editName = payload => {
 		const { refreshNetworkList } = this.props;
-		console.log(payload);
+		clearInterval(this.intervalTimer);
 		refreshNetworkList(payload);
+	};
+
+	upgradeName = async payload => {
+		const { networkId, networkAlias, initNetworkAlias } = payload;
+		const { updateAlias, refreshNetworkList, getList } = this.props;
+		if (initNetworkAlias !== networkAlias) {
+			const response = await updateAlias({ networkId, networkAlias });
+			if (response && response.code === ERROR_OK) {
+				message.success(formatMessage({ id: 'network.changeSuccess' }));
+				this.fetchApMessage();
+			}
+		} 
+		await getList();
+		await refreshNetworkList(payload);
 	};
 
 	render() {
@@ -66,11 +83,11 @@ class NetworkList extends React.PureComponent {
 			deviceList: { networkDeviceList },
 			goToPath,
 		} = this.props;
-		console.log(networkList);
 		const TopologyList = networkList.map(item => (
 			<Topology
 				key={item.networkId}
 				editName={this.editName}
+				upgradeName={this.upgradeName}
 				goToPath={goToPath}
 				networkDeviceList={networkDeviceList}
 				{...item}
@@ -82,7 +99,9 @@ class NetworkList extends React.PureComponent {
 				{networkList.length > 0 ? (
 					TopologyList
 				) : (
-					<div className={styles['network-no-device']}>暂无网络</div>
+					<div className={styles['network-no-device']}>
+						{formatMessage({ id: 'network.noNetwork' })}
+					</div>
 				)}
 			</Card>
 		);
@@ -95,7 +114,7 @@ const Topology = props => {
 		networkDeviceList,
 		masterDeviceSn,
 		networkAlias,
-		online,
+		activeStatus,
 		clientNumber,
 		guestNumber,
 		upSpeed,
@@ -103,8 +122,9 @@ const Topology = props => {
 		upUnit,
 		downUnit,
 		edit,
-		goToPath,
+		upgradeName,
 		editName,
+		goToPath,
 	} = props || {};
 
 	const routerNumber = networkDeviceList.filter(item => item.networkId === networkId).length;
@@ -131,16 +151,16 @@ const Topology = props => {
 								style={{ width: '70%' }}
 								autoFocus
 								onBlur={e =>
-									editName({
+									upgradeName({
+										networkAlias: e.target.value,
+										networkId,
 										sn: masterDeviceSn,
 										edit: 0,
-										networkAlias: e.target.value,
+										initNetworkAlias: networkAlias,
 									})
 								}
 								defaultValue={networkAlias || networkId}
 								maxLength={32}
-								// onChange={() => {}}
-								// value={networkAlias}
 							/>
 							{/* <span className={styles['network-errtip']}>{errorTip}</span> */}
 						</>
@@ -149,20 +169,20 @@ const Topology = props => {
 				<div className={styles['network-speed']}>
 					<div className={styles['network-upspeed']} />
 					{`${formatMessage({ id: 'network.upSpeed' })}：`}
-					<span>{online ? upSpeed || 0 : '--'}</span>
+					<span>{activeStatus ? upSpeed || 0 : '--'}</span>
 					{upUnit || 'KB/s'}
 					<Divider type="vertical" />
 					<div className={styles['network-downspeed']} />
 					{`${formatMessage({ id: 'network.downSpeed' })}：`}
-					<span>{online ? downSpeed || 0 : '--'}</span>
+					<span>{activeStatus ? downSpeed || 0 : '--'}</span>
 					{downUnit || 'KB/s'}
 				</div>
 			</div>
-			<div className={styles[online ? 'network-topology' : 'network-topology-offline']}>
+			<div className={styles[activeStatus ? 'network-topology' : 'network-topology-offline']}>
 				<div className={styles['network-map']}>
 					<ul>
 						<li>
-							{online ? (
+							{activeStatus ? (
 								<>
 									<Icon component={() => <IconNetwork color="#303540" />} />
 									<Badge
@@ -191,7 +211,7 @@ const Topology = props => {
 							)}
 						</li>
 						<li>
-							{online ? (
+							{activeStatus ? (
 								<>
 									<div className={styles['network-cicle-first']} />
 									<div className={styles['network-line']} />
@@ -225,7 +245,7 @@ const Topology = props => {
 							<div>{`${formatMessage({ id: 'network.Internet' })}`}</div>
 							<div>
 								{formatMessage({ id: 'network.router' })}
-								{online ? (
+								{activeStatus ? (
 									<a
 										href="javascript:void(0);"
 										onClick={() =>
@@ -252,7 +272,7 @@ const Topology = props => {
 					<Divider style={{ height: 80 }} type="vertical" />
 					<div className={styles['network-guest']}>
 						{formatMessage({ id: 'network.guestNumber' })}
-						{online ? (
+						{activeStatus ? (
 							<div>
 								<span className={styles['network-guest-number']}>
 									{guestNumber || 0}

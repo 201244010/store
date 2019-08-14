@@ -49,7 +49,10 @@ class DeviceList extends React.PureComponent {
 			{
 				title: formatMessage({ id: 'network.deviceNum' }),
 				dataIndex: 'clientCount',
-				render: record => record || '--',
+				render: (_, record) => {
+					const { clientCount, activeStatus } = record;
+					return <span>{activeStatus ? clientCount || '--' : '--'}</span>;
+				},
 			},
 			{
 				title: formatMessage({ id: 'network.operation' }),
@@ -84,9 +87,9 @@ class DeviceList extends React.PureComponent {
 	componentDidMount() {
 		const { getListWithStatus } = this.props;
 		getListWithStatus();
-		// this.timer = setInterval(() => {
-		// 	getListWithStatus();
-		// }, 5000);
+		this.timer = setInterval(() => {
+			getListWithStatus();
+		}, 5000);
 	}
 
 	componentWillUnmount() {
@@ -97,12 +100,22 @@ class DeviceList extends React.PureComponent {
 		const { getAPMessage } = this.props;
 		await getAPMessage({
 			message: {
-				opcode: OPCODE.CLIENT_LIST_GET,
+				opcode: OPCODE.MESH_UPGRADE_START,
 				param: {
 					network_id: networkId,
 					sn,
 				},
 			},
+		}).then(async () => {
+			await getAPMessage({
+				message: {
+					opcode: OPCODE.MESH_UPGRADE_STATE,
+					param: {
+						network_id: networkId,
+						sn,
+					},
+				},
+			});
 		});
 	};
 
@@ -110,7 +123,7 @@ class DeviceList extends React.PureComponent {
 		const { getAPMessage } = this.props;
 		await getAPMessage({
 			message: {
-				opcode: OPCODE.CLIENT_LIST_GET,
+				opcode: OPCODE.SYSTEMTOOLS_RESTART,
 				param: {
 					network_id: networkId,
 					sn,

@@ -1,29 +1,13 @@
 import * as Actions from '@/services/network';
-import { ERROR_OK, MQTT_RES_OK } from '@/constants/errorCode';
 import { format } from '@konata9/milk-shake';
 import { formatSpeed } from '@/utils/utils';
+import { ERROR_OK, MQTT_RES_OK } from '@/constants/errorCode';
 import { OPCODE } from '@/constants/mqttStore';
 
 export default {
 	namespace: 'network',
 	state: {
-		networkList: [
-			// {
-			// 	networkAlias: '12313',
-			// 	networkId: 'bac72ca1e0684c0c8ffe1d89b8cefd00',
-			// 	masterDeviceSn: 'W10118AC00018',
-			// },
-			// {
-			// 	networkAlias: '312312',
-			// 	networkId: '565635225a334d2ba9f9935f8c612b20',
-			// 	masterDeviceSn: 'W10118AC00059',
-			// },
-			// {
-			// 	networkAlias: '31231',
-			// 	networkId: '2cd01f3293344ad186c9ef798772efe3',
-			// 	masterDeviceSn: 'W101P8CC00069',
-			// },
-		],
+		networkList: [],
 		deviceList: {
 			totalCount: 0,
 			networkDeviceList: [],
@@ -31,15 +15,29 @@ export default {
 	},
 
 	effects: {
-		*getList(_, { call, put }) {
+		*getList(_, { call, put, select }) {
 			const response = yield call(Actions.handleNetworkEquipment, 'network/getList');
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-				const { networkList } = format('toCamel')(data);
+				const { networkList: getList } = format('toCamel')(data);
+				const { networkList } = yield select(state => state.network);
+				const tmpList =
+					networkList.length > 0
+						? networkList.map(item => {
+							const filterNetwork =
+									getList.filter(
+										items => item.masterDeviceSn === items.masterDeviceSn
+									)[0] || {};
+							const { activeStatus, networkAlias } = filterNetwork;
+							item.activeStatus = activeStatus;
+							item.networkAlias = networkAlias;
+							return item;
+						  })
+						: getList;
 				yield put({
 					type: 'updateState',
 					payload: {
-						networkList,
+						networkList: tmpList,
 					},
 				});
 			}
@@ -60,8 +58,8 @@ export default {
 		},
 		*updateAlias({ networkId, networkAlias }, { call }) {
 			const response = yield call(Actions.handleNetworkEquipment, 'network/updateAlias', {
-				networkId,
-				networkAlias,
+				network_id: networkId,
+				network_alias: networkAlias,
 			});
 			return response;
 		},
@@ -76,22 +74,20 @@ export default {
 			);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-				const { networkDeviceList, totalCount } = format('toCamel')(data);
-				const { networkList } = yield select(state => state.network);
-				const tmpNetworkList = [];
-				networkList.map(item => {
-					networkDeviceList.map(items => {
-						if (item.masterDeviceSn === items.sn) {
-							tmpNetworkList.push({ ...item, online: items.activeStatus });
-						}
-					});
+				const { networkDeviceList: getList, totalCount } = format('toCamel')(data);
+				const {
+					deviceList: { networkDeviceList },
+				} = yield select(state => state.network);
+				const tmpList = getList.map(item => {
+					item.clientCount = (
+						networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
+					).clientCount;
+					return item;
 				});
-				// console.log(tmpNetworkList);
 				yield put({
 					type: 'updateState',
 					payload: {
-						deviceList: { networkDeviceList, totalCount },
-						networkList: tmpNetworkList,
+						deviceList: { networkDeviceList: tmpList, totalCount },
 					},
 				});
 			}
@@ -107,10 +103,8 @@ export default {
 				payload: { topic: responseTopic },
 			});
 		},
-		*setAPHandler({ payload }, { put, select }) {
+		*setAPHandler({ payload }, { put }) {
 			const { handler } = payload;
-			const { networkList } = yield select(state => state.network);
-			console.log(networkList);
 			const msgMap = yield put.resolve({
 				type: 'mqttStore/putMsg',
 			});
@@ -120,7 +114,6 @@ export default {
 					service: 'W1/response',
 					handler: receivedMessage => {
 						const { data = [], msgId } = format('toCamel')(JSON.parse(receivedMessage));
-						console.log('data', data, msgId);
 						const { opcode, errcode } = data[0] || {};
 						const sn = msgMap.get(msgId);
 						if (opcode === '0x2025' && errcode === 0) {
@@ -160,7 +153,6 @@ export default {
 		},
 
 		*refreshNetworkList({ payload }, { put, select }) {
-			console.log(payload);
 			const {
 				opcode,
 				sn,
@@ -176,7 +168,6 @@ export default {
 				networkList,
 				deviceList: { totalCount, networkDeviceList },
 			} = yield select(state => state.network);
-			console.log(networkList);
 			const tmpList = networkList.map(item => {
 				if (item.masterDeviceSn === sn) {
 					switch (opcode) {
@@ -201,7 +192,6 @@ export default {
 				}
 				return { ...item };
 			});
-			console.log(tmpList, tmpDeviceList);
 			yield put({
 				type: 'updateState',
 				payload: {
