@@ -20,9 +20,7 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { networkList: getList } = format('toCamel')(data);
-				const {
-					networkList,
-				} = yield select(state => state.network);
+				const { networkList } = yield select(state => state.network);
 				const tmpList =
 					networkList.length > 0
 						? networkList.map(item => {
@@ -99,21 +97,22 @@ export default {
 				const {
 					deviceList: { networkDeviceList },
 				} = yield select(state => state.network);
-				const getMasterSn = getList.map(item => {
-					item.masterDeviceSn = (
-						getList.filter(
-							items => item.networkId === items.networkId && items.isMaster
-						)[0] || {}
-					).sn;
-					return item;
-				});
-				const tmpList = getMasterSn.map(item => {
-					item.clientCount = (
-						networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
-					).clientCount;
+				const tmpList = getList
+					.map(item => {
+						item.masterDeviceSn = (
+							getList.filter(
+								items => item.networkId === items.networkId && items.isMaster
+							)[0] || {}
+						).sn;
+						return item;
+					})
+					.map(item => {
+						item.clientCount = (
+							networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
+						).clientCount;
 
-					return item;
-				});
+						return item;
+					});
 				yield put({
 					type: 'updateState',
 					payload: {

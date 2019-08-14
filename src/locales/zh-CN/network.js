@@ -39,5 +39,5 @@ export default {
 	'network.readyUpgrade': '升级中...',
 	'network.rebootTitle': '您确定将此设备重新启动？',
 	'network.upgradeTitle': '您确定将此设备升级？',
-
+	'network.noMeshDevice': '暂无数据或设备版本过低'
 };

@@ -156,7 +156,7 @@ class DeviceList extends React.PureComponent {
 				setTimeout(() => {
 					this.refreshStatus();
 				}, 30000);
-			});;
+			});
 		});
 	};
 
