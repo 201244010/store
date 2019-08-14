@@ -155,7 +155,7 @@ class DeviceList extends React.PureComponent {
 			}).then(() => {
 				setTimeout(() => {
 					this.refreshStatus();
-				}, 30000);
+				}, 60000);
 			});
 		});
 	};
@@ -176,7 +176,7 @@ class DeviceList extends React.PureComponent {
 		}).then(() => {
 			setTimeout(() => {
 				this.refreshStatus();
-			}, 30000);
+			}, 60000);
 		});
 	};
 
