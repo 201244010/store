@@ -10,18 +10,9 @@ import Storage from '@konata9/storage.js';
 import routeConfig from '@/config/router';
 import { format } from '@konata9/milk-shake';
 
-import { env } from '@/config';
+import { env, FIRST_MENU_ORDER } from '@/config';
 
 const { check } = Authorized;
-
-const FIRST_MENU_ORDER = [
-	'dashboard',
-	'application',
-	'devices',
-	'esl',
-	'basicData',
-	'faceidLibrary',
-];
 
 // Conversion router to menu.
 function formatter(data, parentAuthority, parentName) {

@@ -12,6 +12,7 @@ const rssiStyle = {
 
 const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 	const { mac = '', ip = '', location = '', rssi = '', role = '' } = data;
+	// console.log(parent);
 	return (
 		<div
 			className={`${index > 0 ? '' : styles['list-content-first']}  ${
@@ -40,11 +41,11 @@ const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 					<span className={styles.detail}>{mac}</span>
 				</div>
 				<div className={styles['info-content']}>
-					<span>{formatMessage({ id: 'network.router.parent' })}</span>
+					<span>{formatMessage({ id: 'network.router.parent' })}:</span>
 					<span className={styles.detail}>
 						{`${role}` === '1'
 							? formatMessage({ id: 'network.router.parent.none' })
-							: parent.mac}
+							: parent.location || parent.devid}
 					</span>
 				</div>
 			</div>
