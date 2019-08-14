@@ -11,8 +11,9 @@ class DeviceList extends React.PureComponent {
 		this.columns = [
 			{
 				title: formatMessage({ id: 'network.networkId' }),
+				width: 200,
 				dataIndex: 'networkAlias',
-				render: (_, record) => record.networkAlias || record.networkId
+				render: (_, record) => record.networkAlias || record.networkId,
 			},
 			{
 				title: formatMessage({ id: 'network.deviceSN' }),
@@ -72,31 +73,39 @@ class DeviceList extends React.PureComponent {
 							{upgrade ? (
 								<span>{formatMessage({ id: 'network.readyUpgrade' })}</span>
 							) : (
-								<Popconfirm
-									title={formatMessage({ id: 'network.upgradeTitle' })}
-									onConfirm={() => this.upgradeRouter({ sn, networkId })}
-								>
-									<a disabled={isLatestVersion || !activeStatus}>
-										{formatMessage({ id: 'network.upgrade' })}
-									</a>
-								</Popconfirm>
+								''
 							)}
 							{reboot ? (
-								<span className={styles['network-ready-reboot']}>
-									{formatMessage({ id: 'network.readyReboot' })}
-								</span>
+								<span>{formatMessage({ id: 'network.readyReboot' })}</span>
 							) : (
-								<Popconfirm
-									title={formatMessage({ id: 'network.rebootTitle' })}
-									onConfirm={() => this.rebootRouter({ sn, networkId, masterDeviceSn })}
-								>
-									<a
-										disabled={!activeStatus}
-										className={styles['network-operation']}
+								''
+							)}
+							{!upgrade && !reboot ? (
+								<>
+									<Popconfirm
+										title={formatMessage({ id: 'network.upgradeTitle' })}
+										onConfirm={() => this.upgradeRouter({ sn, networkId })}
 									>
-										{formatMessage({ id: 'network.reboot' })}
-									</a>
-								</Popconfirm>
+										<a disabled={isLatestVersion || !activeStatus}>
+											{formatMessage({ id: 'network.upgrade' })}
+										</a>
+									</Popconfirm>
+									<Popconfirm
+										title={formatMessage({ id: 'network.rebootTitle' })}
+										onConfirm={() =>
+											this.rebootRouter({ sn, networkId, masterDeviceSn })
+										}
+									>
+										<a
+											disabled={!activeStatus}
+											className={styles['network-operation']}
+										>
+											{formatMessage({ id: 'network.reboot' })}
+										</a>
+									</Popconfirm>
+								</>
+							) : (
+								''
 							)}
 						</div>
 					);
@@ -108,17 +117,23 @@ class DeviceList extends React.PureComponent {
 	componentDidMount() {
 		const { getListWithStatus } = this.props;
 		getListWithStatus();
-		this.timer = setInterval(() => {
-			getListWithStatus();
-		}, 5000);
+		this.refreshStatus();
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.timer);
 	}
 
+	refreshStatus = () => {
+		const { getListWithStatus } = this.props;
+		this.timer = setInterval(() => {
+			getListWithStatus();
+		}, 5000);
+	};
+
 	upgradeRouter = async ({ sn, networkId }) => {
 		const { getAPMessage, refreshNetworkList } = this.props;
+		clearInterval(this.timer);
 		await refreshNetworkList({ opcode: OPCODE.MESH_UPGRADE_STATE, sn, networkId });
 		await getAPMessage({
 			message: {
@@ -137,11 +152,16 @@ class DeviceList extends React.PureComponent {
 						sn,
 					},
 				},
-			});
+			}).then(() => {
+				setTimeout(() => {
+					this.refreshStatus();
+				}, 30000);
+			});;
 		});
 	};
 
 	rebootRouter = async ({ sn, networkId, masterDeviceSn }) => {
+		clearInterval(this.timer);
 		const { getAPMessage, refreshNetworkList } = this.props;
 		await refreshNetworkList({ opcode: OPCODE.SYSTEMTOOLS_RESTART, sn, networkId });
 		await getAPMessage({
@@ -150,9 +170,13 @@ class DeviceList extends React.PureComponent {
 				param: {
 					network_id: networkId,
 					sn: masterDeviceSn,
-					devs: [sn]
+					devs: [sn],
 				},
 			},
+		}).then(() => {
+			setTimeout(() => {
+				this.refreshStatus();
+			}, 30000);
 		});
 	};
 

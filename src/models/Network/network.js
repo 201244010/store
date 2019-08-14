@@ -22,7 +22,6 @@ export default {
 				const { networkList: getList } = format('toCamel')(data);
 				const {
 					networkList,
-					deviceList: { networkDeviceList, totalCount },
 				} = yield select(state => state.network);
 				const tmpList =
 					networkList.length > 0
@@ -37,17 +36,11 @@ export default {
 							return item;
 						  })
 						: getList;
-				const tmpDeviceList = networkDeviceList.map(item => {
-					item.networkAlias = (
-						getList.filter(items => item.sn === items.masterDeviceSn)[0] || {}
-					).networkAlias;
-					return item;
-				});
+
 				yield put({
 					type: 'updateState',
 					payload: {
 						networkList: tmpList,
-						deviceList: { networkDeviceList: tmpDeviceList, totalCount },
 					},
 				});
 			}
@@ -66,12 +59,29 @@ export default {
 			}
 			return response;
 		},
-		*updateAlias({ payload }, { call }) {
+		*updateAlias({ payload }, { call, put, select }) {
 			const { networkId, networkAlias } = payload;
 			const response = yield call(Actions.handleNetworkEquipment, 'network/updateAlias', {
 				network_id: networkId,
 				network_alias: networkAlias,
 			});
+			const {
+				deviceList: { networkDeviceList, totalCount },
+			} = yield select(state => state.network);
+			const tmpDeviceList = networkDeviceList.map(item => {
+				if (item.networkId === networkId) {
+					item.networkAlias = networkAlias;
+				}
+				return item;
+			});
+
+			yield put({
+				type: 'updateState',
+				payload: {
+					deviceList: { networkDeviceList: tmpDeviceList, totalCount },
+				},
+			});
+
 			return response;
 		},
 		*getListWithStatus(_, { call, put, select }) {
@@ -89,22 +99,21 @@ export default {
 				const {
 					deviceList: { networkDeviceList },
 				} = yield select(state => state.network);
-				const tmpList = getList
-					.map(item => {
-						item.masterDeviceSn = (
-							getList.filter(
-								items => item.networkId === items.networkId && items.isMaster
-							)[0] || {}
-						).sn;
-						return item;
-					})
-					.map(item => {
-						item.clientCount = (
-							networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
-						).clientCount;
-						return item;
-					});
-				console.log(tmpList);
+				const getMasterSn = getList.map(item => {
+					item.masterDeviceSn = (
+						getList.filter(
+							items => item.networkId === items.networkId && items.isMaster
+						)[0] || {}
+					).sn;
+					return item;
+				});
+				const tmpList = getMasterSn.map(item => {
+					item.clientCount = (
+						networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
+					).clientCount;
+
+					return item;
+				});
 				yield put({
 					type: 'updateState',
 					payload: {

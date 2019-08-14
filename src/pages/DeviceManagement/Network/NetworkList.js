@@ -72,7 +72,7 @@ class NetworkList extends React.PureComponent {
 				message.success(formatMessage({ id: 'network.changeSuccess' }));
 				this.fetchApMessage();
 			}
-		} 
+		}
 		await getList();
 		await refreshNetworkList(payload);
 	};
@@ -151,6 +151,15 @@ const Topology = props => {
 								style={{ width: '70%' }}
 								autoFocus
 								onBlur={e =>
+									upgradeName({
+										networkAlias: e.target.value,
+										networkId,
+										sn: masterDeviceSn,
+										edit: 0,
+										initNetworkAlias: networkAlias,
+									})
+								}
+								onPressEnter={e =>
 									upgradeName({
 										networkAlias: e.target.value,
 										networkId,
