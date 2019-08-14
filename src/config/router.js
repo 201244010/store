@@ -490,8 +490,20 @@ const router = [
 					{
 						path: '/faceidLibrary/faceidLibraryList',
 						name: 'list',
-						id: 'faceidLibraryList',
-						component: './IPC/FaceidLibrary/LibraryList.js',
+						routes: [
+							{
+								path: '/faceidLibrary/faceidLibraryList/photoManagement',
+								name: 'photoManagement',
+								hideInMenu: true,
+								id: 'photoList',
+								component: './IPC/PhotoManagement/PhotoManagement.js',
+							},
+							{
+								path: '/faceidLibrary/faceidLibraryList',
+								id: 'faceidLibraryList',
+								component: './IPC/FaceidLibrary/LibraryList.js',
+							}
+						]
 					},
 					{
 						path: '/faceidLibrary/faceLog',
@@ -528,13 +540,7 @@ const router = [
 					// 	id: 'createLibrary',
 					// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
 					// },
-					{
-						path: '/faceidLibrary/photoManagement',
-						name: 'photoManagement',
-						hideInMenu: true,
-						id: 'photoList',
-						component: './IPC/PhotoManagement/PhotoManagement.js',
-					},
+					
 				],
 			},
 		],
