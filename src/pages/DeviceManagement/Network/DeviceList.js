@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Table } from 'antd';
+import { Card, Table, Popconfirm } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { OPCODE } from '@/constants/mqttStore';
 import styles from './Network.less';
@@ -10,8 +10,9 @@ class DeviceList extends React.PureComponent {
 		this.timer = null;
 		this.columns = [
 			{
-				title: formatMessage({ id: 'network.deviceId' }),
-				dataIndex: 'networkId',
+				title: formatMessage({ id: 'network.networkId' }),
+				dataIndex: 'networkAlias',
+				render: (_, record) => record.networkAlias || record.networkId
 			},
 			{
 				title: formatMessage({ id: 'network.deviceSN' }),
@@ -31,12 +32,12 @@ class DeviceList extends React.PureComponent {
 			{
 				title: formatMessage({ id: 'network.cpuUsage' }),
 				dataIndex: 'cpuPercent',
-				render: record => record || '--',
+				render: record => (record ? `${record}%` : '--'),
 			},
 			{
 				title: formatMessage({ id: 'network.memoryUsage' }),
 				dataIndex: 'memPercent',
-				render: record => record || '--',
+				render: record => (record ? `${record}%` : '--'),
 			},
 			{
 				title: formatMessage({ id: 'network.status' }),
@@ -57,26 +58,46 @@ class DeviceList extends React.PureComponent {
 			{
 				title: formatMessage({ id: 'network.operation' }),
 				render: (_, record) => {
-					const { isUpgrading, isLatestVersion, activeStatus, sn, networkId } = record;
+					const {
+						masterDeviceSn,
+						isLatestVersion,
+						activeStatus,
+						sn,
+						networkId,
+						reboot = 0,
+						upgrade = 0,
+					} = record;
 					return (
 						<div>
-							{isUpgrading ? (
-								<span>{formatMessage({ id: 'network.isUpgrading' })}</span>
+							{upgrade ? (
+								<span>{formatMessage({ id: 'network.readyUpgrade' })}</span>
 							) : (
-								<a
-									onClick={() => this.upgradeRouter({ sn, networkId })}
-									disabled={isLatestVersion || !activeStatus}
+								<Popconfirm
+									title={formatMessage({ id: 'network.upgradeTitle' })}
+									onConfirm={() => this.upgradeRouter({ sn, networkId })}
 								>
-									{formatMessage({ id: 'network.upgrade' })}
-								</a>
+									<a disabled={isLatestVersion || !activeStatus}>
+										{formatMessage({ id: 'network.upgrade' })}
+									</a>
+								</Popconfirm>
 							)}
-							<a
-								onClick={() => this.rebootRouter({ sn, networkId })}
-								disabled={!activeStatus}
-								className={styles['network-operation']}
-							>
-								{formatMessage({ id: 'network.reboot' })}
-							</a>
+							{reboot ? (
+								<span className={styles['network-ready-reboot']}>
+									{formatMessage({ id: 'network.readyReboot' })}
+								</span>
+							) : (
+								<Popconfirm
+									title={formatMessage({ id: 'network.rebootTitle' })}
+									onConfirm={() => this.rebootRouter({ sn, networkId, masterDeviceSn })}
+								>
+									<a
+										disabled={!activeStatus}
+										className={styles['network-operation']}
+									>
+										{formatMessage({ id: 'network.reboot' })}
+									</a>
+								</Popconfirm>
+							)}
 						</div>
 					);
 				},
@@ -97,7 +118,8 @@ class DeviceList extends React.PureComponent {
 	}
 
 	upgradeRouter = async ({ sn, networkId }) => {
-		const { getAPMessage } = this.props;
+		const { getAPMessage, refreshNetworkList } = this.props;
+		await refreshNetworkList({ opcode: OPCODE.MESH_UPGRADE_STATE, sn, networkId });
 		await getAPMessage({
 			message: {
 				opcode: OPCODE.MESH_UPGRADE_START,
@@ -119,14 +141,16 @@ class DeviceList extends React.PureComponent {
 		});
 	};
 
-	rebootRouter = async ({ sn, networkId }) => {
-		const { getAPMessage } = this.props;
+	rebootRouter = async ({ sn, networkId, masterDeviceSn }) => {
+		const { getAPMessage, refreshNetworkList } = this.props;
+		await refreshNetworkList({ opcode: OPCODE.SYSTEMTOOLS_RESTART, sn, networkId });
 		await getAPMessage({
 			message: {
 				opcode: OPCODE.SYSTEMTOOLS_RESTART,
 				param: {
 					network_id: networkId,
-					sn,
+					sn: masterDeviceSn,
+					devs: [sn]
 				},
 			},
 		});

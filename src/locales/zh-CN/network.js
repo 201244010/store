@@ -34,4 +34,10 @@ export default {
 	'network.master': '主',
 	'network.noNetwork': '暂无网络',
 	'network.changeSuccess': '更改名称成功',
+
+	'network.readyReboot': '正在准备重启...',
+	'network.readyUpgrade': '正在准备升级...',
+	'network.rebootTitle': '您确定将此设备重新启动？',
+	'network.upgradeTitle': '您确定将此设备升级？',
+
 };

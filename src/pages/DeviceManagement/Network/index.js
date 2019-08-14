@@ -107,6 +107,7 @@ class Network extends React.Component {
 							deviceList,
 							getAPMessage,
 							getListWithStatus,
+							refreshNetworkList
 						}}
 					/>
 				</div>
