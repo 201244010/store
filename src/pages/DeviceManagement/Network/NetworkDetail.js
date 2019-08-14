@@ -23,14 +23,18 @@ const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 			<div className={styles['info-bar']}>
 				<div className={styles['info-content']}>
 					<span>{formatMessage({ id: 'network.rssi' })}:</span>
-					<span
-						className={styles.detail}
-						style={rssi > 20 ? rssiStyle.strong : rssiStyle.weak}
-					>
-						{rssi > 20
-							? formatMessage({ id: 'network.rssi.strong' })
-							: formatMessage({ id: 'network.rssi.weak' })}
-					</span>
+					{`${role}` === '1' ? (
+						<span className={styles.detail}>--</span>
+					) : (
+						<span
+							className={styles.detail}
+							style={rssi > 20 ? rssiStyle.strong : rssiStyle.weak}
+						>
+							{rssi > 20
+								? formatMessage({ id: 'network.rssi.strong' })
+								: formatMessage({ id: 'network.rssi.weak' })}
+						</span>
+					)}
 				</div>
 				<div className={styles['info-content']}>
 					<span>IP:</span>
@@ -129,6 +133,7 @@ class NetworkDetail extends PureComponent {
 					RenderComponent={({ data: _data, index }) => (
 						<ListContent data={_data} index={index} parent={parentRouter} />
 					)}
+					dataEmpty={formatMessage({ id: 'network.noMeshDevice' })}
 				/>
 			</Card>
 		);

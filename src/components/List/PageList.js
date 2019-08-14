@@ -14,6 +14,7 @@ const PageList = ({
 	RenderComponent = () => <></>,
 	pagination = {},
 	onChange = null,
+	dataEmpty,
 }) => {
 	const [pageConfig, setPageConfig] = useState({});
 	const [displayData, setDisplayData] = useState([]);
@@ -71,7 +72,7 @@ const PageList = ({
 					</div>
 				</Spin>
 			) : (
-				<DataEmpty />
+				<DataEmpty dataEmpty={dataEmpty} />
 			)}
 		</>
 	);
