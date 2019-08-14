@@ -2,6 +2,16 @@ import sysEnv from './env';
 
 export const { env, country } = sysEnv;
 
+export const FIRST_MENU_ORDER = [
+	'dashboard',
+	'application',
+	'devices',
+	'esl',
+	'network',
+	'basicData',
+	'faceidLibrary',
+];
+
 console.log(sysEnv);
 
 const WEB_SOCKET_PREFIX = {

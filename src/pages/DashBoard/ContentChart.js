@@ -182,9 +182,9 @@ class ContentChart extends PureComponent {
 
 		const maxCount = Math.max(...dataList.map(d => d.count || 0));
 		const countTick =
-			maxCount === 0
-				? { tickCount: 6 }
-				: { tickInterval: maxCount > 4 ? parseInt(maxCount / 5, 10) : 1 };
+			maxCount < 5
+				? { ticks: [1,2,3,4,5] }
+				: { tickInterval:  Math.ceil(maxCount / 5) };
 
 		const chartScale = {
 			time: timeScales[rangeType] || {
