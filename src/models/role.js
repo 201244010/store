@@ -119,8 +119,14 @@ export default {
 			const response = yield call(Actions.handleRoleManagement, 'getInfo', opts);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-				const forData = format('toCamel')(data);
-				forData.permissionList = formatData(forData.permissionList).map(item => {
+				const forData = format('toCamel')(data) || {};
+				const { permissionList = [] } = forData || {};
+
+				const sortedPermission = FIRST_MENU_ORDER.map(
+					menu => permissionList.find(permission => permission.name === `/${menu}`) || {}
+				);
+
+				forData.permissionList = formatData(sortedPermission).map(item => {
 					const formatResult = formatPath(item);
 					return {
 						checkedList: formatResult,
