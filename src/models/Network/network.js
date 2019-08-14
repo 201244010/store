@@ -20,10 +20,7 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { networkList: getList } = format('toCamel')(data);
-				const {
-					networkList,
-					deviceList: { networkDeviceList, totalCount },
-				} = yield select(state => state.network);
+				const { networkList } = yield select(state => state.network);
 				const tmpList =
 					networkList.length > 0
 						? networkList.map(item => {
@@ -37,17 +34,11 @@ export default {
 							return item;
 						  })
 						: getList;
-				const tmpDeviceList = networkDeviceList.map(item => {
-					item.networkAlias = (
-						getList.filter(items => item.sn === items.masterDeviceSn)[0] || {}
-					).networkAlias;
-					return item;
-				});
+
 				yield put({
 					type: 'updateState',
 					payload: {
 						networkList: tmpList,
-						deviceList: { networkDeviceList: tmpDeviceList, totalCount },
 					},
 				});
 			}
@@ -66,12 +57,29 @@ export default {
 			}
 			return response;
 		},
-		*updateAlias({ payload }, { call }) {
+		*updateAlias({ payload }, { call, put, select }) {
 			const { networkId, networkAlias } = payload;
 			const response = yield call(Actions.handleNetworkEquipment, 'network/updateAlias', {
 				network_id: networkId,
 				network_alias: networkAlias,
 			});
+			const {
+				deviceList: { networkDeviceList, totalCount },
+			} = yield select(state => state.network);
+			const tmpDeviceList = networkDeviceList.map(item => {
+				if (item.networkId === networkId) {
+					item.networkAlias = networkAlias;
+				}
+				return item;
+			});
+
+			yield put({
+				type: 'updateState',
+				payload: {
+					deviceList: { networkDeviceList: tmpDeviceList, totalCount },
+				},
+			});
+
 			return response;
 		},
 		*getListWithStatus(_, { call, put, select }) {
@@ -102,9 +110,9 @@ export default {
 						item.clientCount = (
 							networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
 						).clientCount;
+
 						return item;
 					});
-				console.log(tmpList);
 				yield put({
 					type: 'updateState',
 					payload: {
