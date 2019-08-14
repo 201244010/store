@@ -20,7 +20,10 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { networkList: getList } = format('toCamel')(data);
-				const { networkList } = yield select(state => state.network);
+				const {
+					networkList,
+					deviceList: { networkDeviceList, totalCount },
+				} = yield select(state => state.network);
 				const tmpList =
 					networkList.length > 0
 						? networkList.map(item => {
@@ -34,10 +37,17 @@ export default {
 							return item;
 						  })
 						: getList;
+				const tmpDeviceList = networkDeviceList.map(item => {
+					item.networkAlias = getList.filter(
+						items => item.sn === items.masterDeviceSn
+					)[0].networkAlias;
+					return item;
+				});
 				yield put({
 					type: 'updateState',
 					payload: {
 						networkList: tmpList,
+						deviceList: { networkDeviceList: tmpDeviceList, totalCount },
 					},
 				});
 			}
@@ -133,6 +143,11 @@ export default {
 							);
 							handler({ msgId, opcode, sn, upSpeed, upUnit, downSpeed, downUnit });
 						}
+
+						if (opcode === '0x207b' && errcode === 0) {
+							// const result = res.data[0].result.upgrade;
+							handler({ msgId, opcode, sn });
+						}
 					},
 				},
 			});
@@ -187,6 +202,12 @@ export default {
 					switch (opcode) {
 						case '0x2025':
 							return { ...item, clientCount: clientNumber };
+						case '0x2015':
+							return { ...item, reboot: 1 };
+						case '0x207a':
+							return { ...item, upgrade: 1 };
+						case '0x207b':
+							return { ...item, upgrade: 1 };
 						default:
 							return { ...item };
 					}
