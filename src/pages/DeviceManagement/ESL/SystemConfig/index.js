@@ -246,7 +246,7 @@ class SystemConfig extends Component {
 						<Card
 							title={formatMessage({ id: 'esl.device.config.setting' })}
 							bordered={false}
-							// loading={configLoading}
+							loading={configLoading}
 							className={styles['content-card']}
 						>
 							<div className={styles['display-content']}>
