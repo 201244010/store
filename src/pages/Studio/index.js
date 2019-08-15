@@ -656,8 +656,9 @@ class Studio extends Component {
 				document.body.removeChild(inputEle);
 				updateComponentsDetail({
 					selectedShapeName: targetName,
+					updatePrecision: true,
 					[targetName]: {
-						content: inputValue ? Number(inputValue).toFixed(targetDetail.precision) : formatMessage({ id: 'studio.action.text.db.click' }),
+						content: inputValue || formatMessage({ id: 'studio.action.text.db.click' }),
 					},
 				});
 			} catch (evt) {
