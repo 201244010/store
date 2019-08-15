@@ -251,10 +251,12 @@ export default function generateShape(option) {
 						/>
 						<Image
 							{...{
-								x: option.x + ((SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - SIZES.DEFAULT_IMAGE_WIDTH) * option.zoomScale) / 2,
-								y: option.y + ((SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT * option.scaleY - SIZES.DEFAULT_IMAGE_HEIGHT) * option.zoomScale) / 2,
+								x: option.x + ((SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH - SIZES.DEFAULT_IMAGE_WIDTH) * option.scaleX * option.zoomScale) / 2,
+								y: option.y + ((SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT - SIZES.DEFAULT_IMAGE_HEIGHT) * option.scaleY * option.zoomScale) / 2,
 								width: SIZES.DEFAULT_IMAGE_WIDTH * option.zoomScale,
 								height: SIZES.DEFAULT_IMAGE_HEIGHT * option.zoomScale,
+								scaleX: option.scaleX,
+								scaleY: option.scaleY,
 								image: option.image,
 								onMouseOver: () => {
 									document.body.style.cursor = 'pointer';
@@ -268,10 +270,10 @@ export default function generateShape(option) {
 							<Fragment>
 								<Rect
 									{...{
-										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
-										y: option.y - 50,
-										width: 180,
-										height: 32,
+										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 120) / 2,
+										y: option.y - 30,
+										width: 120,
+										height: 24,
 										fill: '#5085E3',
 										cornerRadius: 16,
 										onMouseOver: () => {
@@ -284,13 +286,13 @@ export default function generateShape(option) {
 								/>
 								<Text
 									{...{
-										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
-										y: option.y - 50,
-										width: 180,
-										height: 32,
-										lineHeight: 2.5,
+										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 120) / 2,
+										y: option.y - 30,
+										width: 120,
+										height: 24,
+										lineHeight: 2,
 										align: 'center',
-										fontSize: 14,
+										fontSize: 12,
 										fill: 'white',
 										text: '双击更换图片',
 										onMouseOver: () => {
