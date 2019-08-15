@@ -55,6 +55,7 @@ class ShowHeader extends React.PureComponent {
 
 			const nowTime = new Date().getTime();
 			if (nowTime - this.startTime > 72000000) {
+				console.log('更新token');
 				this.startRefreshToken();
 			}
 		}, 1000);
