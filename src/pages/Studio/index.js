@@ -622,6 +622,7 @@ class Studio extends Component {
 		const inputEle = document.createElement('input');
 		document.body.appendChild(inputEle);
 		inputEle.setAttribute('id', 'textInput');
+		inputEle.setAttribute('autocomplete', 'off');
 		inputEle.value = targetDetail.content;
 		inputEle.style.backgroundColor = 'transparent';
 		inputEle.style.border = '1px solid #ccc';
@@ -808,7 +809,8 @@ class Studio extends Component {
 											componentsDetail={componentsDetail}
 											zoomScale={zoomScale}
 										/>
-									) : null}
+									) : null
+								}
 							</Layer>
 							{dragging && lines && !showRightToolBox ? (
 								<Layer x={0} y={0} width={stageWidth} height={stageHeight}>
