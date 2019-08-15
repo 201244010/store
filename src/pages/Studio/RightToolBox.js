@@ -887,27 +887,6 @@ export default class RightToolBox extends Component {
 						</Row>
 					</div>
 				) : null}
-				{menuMap.isImage ? (
-					<div className={styles['tool-box-block']}>
-						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
-						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={24}>{formatMessage({ id: 'studio.tool.title.color' })}</Col>
-							<Col span={24}>
-								<Radio.Group style={{ width: '100%' }} value="black">
-									<Radio.Button style={{ width: '33.33%' }} value="black">
-										黑
-									</Radio.Button>
-									<Radio.Button style={{ width: '33.33%' }} value="white">
-										白
-									</Radio.Button>
-									<Radio.Button style={{ width: '33.33%' }} value="red">
-										红
-									</Radio.Button>
-								</Radio.Group>
-							</Col>
-						</Row>
-					</div>
-				) : null}
 				{menuMap.isPrice ? (
 					<div className={styles['tool-box-block']}>
 						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
