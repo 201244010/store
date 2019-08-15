@@ -15,7 +15,7 @@ export const FIRST_MENU_ORDER = [
 console.log(sysEnv);
 
 const WEB_SOCKET_PREFIX = {
-	dev: 'ws',
+	dev: 'wss',
 	test: 'ws',
 	uat: 'wss',
 	onl: 'wss',

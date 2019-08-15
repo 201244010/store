@@ -156,7 +156,14 @@ class SystemConfig extends Component {
 		} = this.state;
 
 		validateFields((err, values) => {
+			// console.log(values);
+			// console.log(values.eslRefleshTime.hour());
 			if (!err) {
+				const [eslRefleshHour = 4, eslRefleshMinute= 0] = [
+					values.eslRefleshTime.hour(),
+					values.eslRefleshTime.minute(),
+				];
+				// console.log(eslRefleshHour, eslRefleshTime);
 				this.setState(
 					{
 						configLoading: true,
@@ -165,6 +172,7 @@ class SystemConfig extends Component {
 						updateAPConfig({
 							...values,
 							scanMulti,
+							eslRefleshTime: eslRefleshHour * 60 * 60 + eslRefleshMinute * 60,
 						})
 				);
 			}
