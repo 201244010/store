@@ -1,14 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Select, Form, Button, Switch, message } from 'antd';
+import {
+	Card,
+	Select,
+	Form,
+	Button,
+	Switch,
+	message,
+	Tooltip,
+	Icon,
+	Input,
+	TimePicker,
+} from 'antd';
 import DataEmpty from '@/components/BigIcon/DataEmpty';
+import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { FORM_SETTING_LAYOUT } from '@/constants/form';
 import styles from './systemConfig.less';
 import { ERROR_OK } from '@/constants/errorCode';
 
-const SELECT_STYLE = { maxWidth: '300px' };
+const SELECT_STYLE = { maxWidth: '180px' };
 const SCAN_PERIODS = [5, 10, 15];
+// const SLEEP_PERIODS = [60, 120, 180];
+
+const FormTip = ({ text = '', pos = 'right', style = {} }) => (
+	<Tooltip placement={pos} title={text}>
+		<Icon type="question-circle" style={{ marginLeft: '20px', ...style }} />
+	</Tooltip>
+);
 
 @connect(
 	state => ({
@@ -160,10 +179,22 @@ class SystemConfig extends Component {
 		} = this.props;
 		const {
 			networkId,
-			networkConfig: { scanPeriod, isEnergySave } = {},
+			networkConfig: {
+				scanPeriod,
+				isEnergySave,
+				clksyncPeriod,
+				eslRefleshPeriod,
+				eslRefleshTime,
+			} = {},
 			configLoading,
 		} = this.state;
-		const hasTouched = isFieldsTouched(['scanPeriod', 'isEnergySave']);
+		const hasTouched = isFieldsTouched([
+			'scanPeriod',
+			'isEnergySave',
+			'clksyncPeriod',
+			'eslRefleshPeriod',
+			'eslRefleshTime',
+		]);
 
 		return (
 			<Card
@@ -207,34 +238,192 @@ class SystemConfig extends Component {
 						<Card
 							title={formatMessage({ id: 'esl.device.config.setting' })}
 							bordered={false}
-							loading={configLoading}
+							// loading={configLoading}
 							className={styles['content-card']}
 						>
 							<div className={styles['display-content']}>
 								<Form.Item
 									label={formatMessage({ id: 'esl.device.config.scan.round' })}
 								>
-									{getFieldDecorator('scanPeriod', {
-										initialValue: scanPeriod || 15,
-									})(
-										<Select style={SELECT_STYLE}>
-											{SCAN_PERIODS.map((period, index) => (
-												<Select.Option key={index} value={period}>
-													{period}
-													{formatMessage({ id: 'countDown.unit' })}
-												</Select.Option>
-											))}
-										</Select>
-									)}
+									<div className={styles['form-item-wrapper']}>
+										{getFieldDecorator('scanPeriod', {
+											initialValue: scanPeriod || 15,
+										})(
+											<Select style={SELECT_STYLE}>
+												{SCAN_PERIODS.map((period, index) => (
+													<Select.Option key={index} value={period}>
+														{period}
+														{formatMessage({ id: 'countDown.unit' })}
+													</Select.Option>
+												))}
+											</Select>
+										)}
+										<FormTip
+											text={formatMessage({
+												id: 'esl.device.config.scan.round.desc',
+											})}
+										/>
+									</div>
 								</Form.Item>
+
 								<Form.Item
 									label={formatMessage({ id: 'esl.device.config.scan.green' })}
 								>
-									{getFieldDecorator('isEnergySave', {
-										initialValue: isEnergySave,
-										valuePropName: 'checked',
-									})(<Switch />)}
+									<div className={styles['form-item-wrapper']}>
+										{getFieldDecorator('isEnergySave', {
+											initialValue: isEnergySave,
+											valuePropName: 'checked',
+										})(<Switch />)}
+										<FormTip
+											text={formatMessage({
+												id: 'esl.device.config.scan.green.desc',
+											})}
+										/>
+									</div>
 								</Form.Item>
+
+								{/* 深度睡眠模式暂时隐去 */}
+								{/* <Form.Item
+									label={formatMessage({ id: 'esl.device.config.sleep.round' })}
+								>
+									<div className={styles['form-item-wrapper']}>
+										{getFieldDecorator('scanPeriod', {
+											initialValue: scanPeriod || 60,
+										})(
+											<Select style={SELECT_STYLE}>
+												{SLEEP_PERIODS.map((period, index) => (
+													<Select.Option key={index} value={period}>
+														{period}
+														{formatMessage({ id: 'countDown.unit' })}
+													</Select.Option>
+												))}
+											</Select>
+										)}
+										<FormTip
+											text={formatMessage({
+												id: 'esl.device.config.sleep.desc',
+											})}
+										/>
+									</div>
+								</Form.Item> */}
+
+								<Form.Item
+									label={formatMessage({ id: 'esl.device.config.async.round' })}
+								>
+									<div className={styles['form-item-wrapper']}>
+										{getFieldDecorator('clksyncPeriod', {
+											initialValue: clksyncPeriod || 3,
+											validateTrigger: 'onBlur',
+											rules: [
+												{
+													validator: (rule, value, callback) => {
+														if (!value) {
+															callback(
+																formatMessage({
+																	id:
+																		'esl.device.config.async.isEmpty',
+																})
+															);
+														} else if (
+															value &&
+															!/(^[1-9]$)|(^1[0-5]$)/.test(value)
+														) {
+															callback(
+																formatMessage({
+																	id:
+																		'esl.device.config.async.formatError',
+																})
+															);
+														} else {
+															callback();
+														}
+													},
+												},
+											],
+										})(
+											<Input
+												suffix={formatMessage({ id: 'day.unit' })}
+												style={SELECT_STYLE}
+											/>
+										)}
+										<FormTip
+											text={formatMessage({
+												id: 'esl.device.config.async.desc',
+											})}
+										/>
+									</div>
+								</Form.Item>
+
+								<Form.Item
+									label={formatMessage({
+										id: 'esl.device.config.self.refresh.round',
+									})}
+								>
+									<div className={styles['form-item-wrapper']}>
+										{getFieldDecorator('eslRefleshPeriod', {
+											initialValue: eslRefleshPeriod || 1,
+											validateTrigger: 'onBlur',
+											rules: [
+												{
+													validator: (rule, value, callback) => {
+														if (!value) {
+															callback(
+																formatMessage({
+																	id:
+																		'esl.device.config.self.refresh.isEmpty',
+																})
+															);
+														} else if (
+															value &&
+															!/(^[1-9]$)|(^[1-9]\d+$)/.test(value)
+														) {
+															callback(
+																formatMessage({
+																	id:
+																		'esl.device.config.self.refresh.formatError',
+																})
+															);
+														} else {
+															callback();
+														}
+													},
+												},
+											],
+										})(
+											<Input
+												suffix={formatMessage({ id: 'day.unit' })}
+												style={SELECT_STYLE}
+											/>
+										)}
+										<FormTip
+											text={formatMessage({
+												id: 'esl.device.config.scan.refresh.desc',
+											})}
+										/>
+									</div>
+								</Form.Item>
+
+								<Form.Item
+									label={formatMessage({
+										id: 'esl.device.config.scan.refresh.time',
+									})}
+								>
+									<div className={styles['form-item-wrapper']}>
+										{getFieldDecorator('eslRefleshTime', {
+											initialValue:
+												eslRefleshTime ||
+												moment()
+													.startOf('day')
+													.add(4, 'hour'),
+										})(<TimePicker format="HH:mm" />)}
+										<FormTip
+											text={formatMessage({
+												id: 'esl.device.config.scan.refresh.time.desc',
+											})}
+										/>
+									</div>
+								</Form.Item>
+
 								<Form.Item label=" " colon={false}>
 									<Button
 										type="primary"

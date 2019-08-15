@@ -105,9 +105,11 @@ class MqttClient {
 		const { client } = this;
 		this.handlerMap.delete(topic);
 		console.log('rest handler: ', this.handlerMap);
-		client.unsubscribe([topic], () => {
-			console.log('unsubscribe', topic);
-		});
+		if(client){
+			client.unsubscribe([topic], () => {
+				console.log('unsubscribe', topic);
+			});
+		}
 	}
 
 	publish(topic, message = []) {
