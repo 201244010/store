@@ -458,7 +458,6 @@ export default {
 			const response = yield call(Actions.refreshStoreToken, options);
 			const { code, data: { store_token = '' } = {} } = response;
 			if (code === ERROR_OK) {
-				console.log('store_token',store_token);
 				CookieUtil.setCookieByKey(CookieUtil.TOKEN_KEY, store_token);
 			}
 

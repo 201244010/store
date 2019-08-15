@@ -33,6 +33,7 @@ class ShowHeader extends React.PureComponent {
 	};
 
 	componentDidMount() {
+		this.startRefreshToken();
 		this.setTime = setInterval(() => {
 			const time = moment().format('YYYY-MM-DD HH:mm:ss');
 			this.setState({ time });
@@ -54,8 +55,7 @@ class ShowHeader extends React.PureComponent {
 			}
 
 			const nowTime = new Date().getTime();
-			if (nowTime - this.startTime > 72000000) {
-				console.log('更新token');
+			if (nowTime - this.startTime > 18000000) {
 				this.startRefreshToken();
 			}
 		}, 1000);
