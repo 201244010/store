@@ -1,87 +1,134 @@
 import React, { Component } from 'react';
+import { notification } from 'antd';
 import { connect } from 'dva';
 import { displayNotification } from '@/components/Notification';
 import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
-import { ACTION_MAP } from '@/constants/mqttActionMap';
+import { getRandomString } from '@/utils/utils';
+
+import Ipc from './Ipc';
 
 function MQTTWrapper(WrapperedComponent) {
-    @connect(
-        null,
-        dispatch => ({
-            getUserInfo: () => dispatch({ type: 'user/getUserInfo' }),
-            initializeClient: () => dispatch({ type: 'mqttStore/initializeClient' }),
-            generateTopic: payload => dispatch({ type: 'mqttStore/generateTopic', payload }),
-            subscribe: payload => dispatch({ type: 'mqttStore/subscribe', payload }),
-            publish: payload => dispatch({ type: 'mqttStore/publish', payload }),
-            setTopicListener: payload => dispatch({ type: 'mqttStore/setTopicListener', payload }),
-            setMessageHandler: payload =>
-                dispatch({ type: 'mqttStore/setMessageHandler', payload }),
-            destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
-            getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
-        })
-    )
-    class Wrapper extends Component {
-        componentDidMount() {
-            this.initClient();
-        }
+	@connect(
+		null,
+		dispatch => ({
+			getUserInfo: () => dispatch({ type: 'user/getUserInfo' }),
+			initializeClient: () => dispatch({ type: 'mqttStore/initializeClient' }),
+			generateTopic: payload => dispatch({ type: 'mqttStore/generateTopic', payload }),
+			subscribe: payload => dispatch({ type: 'mqttStore/subscribe', payload }),
+			publish: payload => dispatch({ type: 'mqttStore/publish', payload }),
+			setTopicListener: payload => dispatch({ type: 'mqttStore/setTopicListener', payload }),
+			setMessageHandler: payload =>
+				dispatch({ type: 'mqttStore/setMessageHandler', payload }),
+			destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
+			getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
+			getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
+			goToPath: (pathId, urlParams = {}) =>
+				dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+			formatSdCard: sn => {
+				dispatch({ type: 'sdcard/formatSdCard', sn });
+			},
+			getSdStatus: async sn => {
+				const status = await dispatch({
+					type: 'sdcard/getSdStatus',
+					sn,
+				});
+				return status;
+			},
+			getCurrentCompanyId:() => (dispatch({ type:'global/getCompanyIdFromStorage'})),
+			getCurrentShopId:() => (dispatch({ type:'global/getShopIdFromStorage'})),
+			getStoreNameById:(shopId) => (dispatch({ type: 'store/getStoreNameById', payload:{ shopId } })),
+			getCompanyNameById:(companyId) => (dispatch({ type: 'merchant/getCompanyNameById', payload:{ companyId }}))
+		})
+	)
+	@Ipc
+	class Wrapper extends Component {
+		constructor(props) {
+			super(props);
+			this.state = {
+				notificationList: [],
+			};
+		}
 
-        componentWillUnmount() {
-            const { destroyClient } = this.props;
-            destroyClient();
-        }
+		componentDidMount() {
+			this.initClient();
+		}
 
-        handleAction = action => {
-            if (action) {
-                const handler = ACTION_MAP[action] || (() => null);
-                handler();
-            }
-        };
+		componentWillUnmount() {
+			const { destroyClient } = this.props;
+			destroyClient();
+		}
 
-        showNotification = (topic, data) => {
-            const { getNotificationCount } = this.props;
-            const messageData = JSON.parse(data.toString()) || {};
-            const { params = [] } = messageData;
-            params.forEach(item => {
-                const { param = {} } = item;
-                displayNotification({
-                    data: param,
-                    mainAction: this.handleAction,
-                    subAction: this.handleAction,
-                });
-            });
-            getNotificationCount();
-        };
+		removeNotification = key => {
+			const { notificationList } = this.state;
+			const keyList = [...notificationList];
+			keyList.splice(keyList.indexOf(key), 1);
+			notification.close(key);
+			this.setState({
+				notificationList: keyList,
+			});
+		};
 
-        initClient = async () => {
-            const {
-                getUserInfo,
-                initializeClient,
-                generateTopic,
-                setTopicListener,
-                subscribe,
-                publish,
-            } = this.props;
+		showNotification = async data => {
+			const { notificationList } = this.state;
+			const { getNotificationCount, getUnreadNotification, goToPath, formatSdCard, getSdStatus, getCurrentCompanyId, getCurrentShopId, getStoreNameById, getCompanyNameById } = this.props;
+			const messageData = JSON.parse(data.toString()) || {};
+			const uniqueKey = getRandomString();
+			if (notificationList.length >= 3) {
+				this.removeNotification(notificationList.shift());
+			}
 
-            await getUserInfo();
-            await initializeClient();
-            const registerTopic = await generateTopic({ service: 'register', action: 'sub' });
-            const notificationTopic = await generateTopic({
-                service: 'notification',
-                action: 'sub',
-            });
+			this.setState({
+				notificationList: [...notificationList, uniqueKey],
+			});
+			const { params = [] } = messageData;
+			params.forEach(item => {
+				const { param = {} } = item;
+				displayNotification({
+					data: param,
+					key: uniqueKey,
+					closeAction: this.removeNotification,
+					handlers: { goToPath, formatSdCard, getSdStatus, getCurrentCompanyId, getCurrentShopId, getStoreNameById, getCompanyNameById, removeNotification: this.removeNotification },
+				});
+			});
+			await getNotificationCount();
+			await getUnreadNotification();
+		};
 
-            await setTopicListener({ service: 'notification', handler: this.showNotification });
+		initClient = async () => {
+			const {
+				getUserInfo,
+				initializeClient,
+				generateTopic,
+				setTopicListener,
+				subscribe,
+				publish,
+			} = this.props;
 
-            subscribe({ topic: [registerTopic, notificationTopic] });
-            await publish({ service: 'register', message: REGISTER_PUB_MSG });
-        };
+			await getUserInfo();
+			const initializeStatus = await initializeClient();
+			if (initializeStatus === 'success') {
+				const registerTopic = await generateTopic({ service: 'register', action: 'sub' });
+				const registerTopicPub = await generateTopic({
+					service: 'register',
+					action: 'pub',
+				});
+				const notificationTopic = await generateTopic({
+					service: 'notification',
+					action: 'sub',
+				});
+				await setTopicListener({ service: 'notification', handler: this.showNotification });
+				await subscribe({ topic: [registerTopic, notificationTopic] });
+				// console.log('subscribed');
+				await publish({ topic: registerTopicPub, message: REGISTER_PUB_MSG });
+			}
+		};
 
-        render() {
-            return <WrapperedComponent {...this.props} />;
-        }
-    }
+		render() {
+			return <WrapperedComponent {...this.props} />;
+		}
+	}
 
-    return Wrapper;
+	return Wrapper;
 }
 
 export default MQTTWrapper;

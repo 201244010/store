@@ -1,0 +1,131 @@
+:global {
+	//默认样式
+	.ant-btn {
+		line-height: 22px;
+		font-weight: 400;
+		border: 1px solid transparent;
+		-webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+		box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+		-webkit-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+		transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+		height: 32px;
+		padding: 0 16px;
+		font-size: 14px;
+		border-radius: 4px;
+		color: #525866;
+		border-color: #ced2d9;
+		background-color: #fff;
+		&:focus,
+		&:hover {
+			color: #ffa05c;
+			background-color: #fff;
+			border-color: #ffa05c;
+		}
+		&:active,
+		&.active {
+			color: #cc4c00;
+			background-color: #fff;
+			border-color: #d96121;
+		}
+	}
+	//type='primary'的样式
+	.ant-btn-primary {
+		color: #fff;
+		background-color: #ff8133;
+		border-color: #ff8133;
+		text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+		-webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+		box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+		&:focus,
+		&:hover {
+			color: #fff;
+			background-color: #ffa05c;
+			border-color: #ffa05c;
+		}
+		&:active,
+		&.active {
+			color: #fff;
+			background-color: #d96121;
+			border-color: #d96121;
+		}
+	}
+	//type='dashed'的样式
+	.ant-btn-dashed {
+		color: #525866;
+		background-color: #fff;
+		border-color: #ced2d9;
+		border-style: dashed;
+		&:focus,
+		&:hover {
+			color: #ffa05c;
+			background-color: #fff;
+			border-color: #ffa05c;
+		}
+		&:active,
+		&.active {
+			color: #cc4c00;
+			background-color: #fff;
+			border-color: #d96121;
+		}
+	}
+	//type='danger'的样式
+	.ant-btn-danger {
+		color: #ff3838;
+		background-color: #ffffff;
+		border-color: #ced2d9;
+		&:focus {
+			color: #ff3838;
+			background-color: #fff;
+			border-color: #ff3838;
+		}
+		&:hover {
+			color: #fff;
+			background-color: #ff3838;
+			border-color: #ff3838;
+		}
+		&:active,
+		&.active {
+			color: #fff;
+			background-color: #cf1322;
+			border-color: #cf1322;
+		}
+	}
+	//size='large'的样式
+	.ant-btn-lg {
+		height: 40px;
+		line-height: 24px;
+		padding: 0 16px;
+		font-size: 16px;
+		border-radius: 4px;
+	}
+	//size='small'的样式
+	.ant-btn-sm {
+		height: 24px;
+		padding: 0 8px;
+		font-size: 14px;
+		border-radius: 4px;
+	}
+	//disabled的样式
+	.ant-btn-disabled,
+	.ant-btn.disabled,
+	.ant-btn[disabled],
+	.ant-btn-disabled:hover,
+	.ant-btn.disabled:hover,
+	.ant-btn[disabled]:hover,
+	.ant-btn-disabled:focus,
+	.ant-btn.disabled:focus,
+	.ant-btn[disabled]:focus,
+	.ant-btn-disabled:active,
+	.ant-btn.disabled:active,
+	.ant-btn[disabled]:active,
+	.ant-btn-disabled.active,
+	.ant-btn.disabled.active,
+	.ant-btn[disabled].active {
+		color: #a1a7b3;
+		background-color: #f0f2f5;
+		border-color: #ced2d9;
+		text-shadow: none;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+	}
+}

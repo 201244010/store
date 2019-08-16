@@ -1,0 +1,53 @@
+.entryDetail-container {
+	.user-info {
+		line-height: 50px;
+		color: rgba(0, 0, 0, 0.847058823529412);
+
+		.user-avatar {
+			max-width: 50px;
+			max-height: 50px;
+		}
+	}
+
+
+	.entry-detail-table {
+		.img-wrapper {
+			width: 50px;
+			height: 50px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			img {
+				max-width: 50px;
+				max-height: 50px;
+			}
+		}
+
+		:global {
+			.ant-table-tbody>tr>td {
+				height: 54px;
+				padding: 2px 16px;
+			}
+		}
+	}
+}
+
+.entry-detail-drop-down {
+	margin: 0 10px;
+
+	.drop-down-radio {
+		display: block;
+		height: 30px;
+		line-height: 30px;
+	}
+
+	.drop-down-buttons {
+
+		// margin：5px 0;
+		.reset-button {
+			// display: block;
+			float: right;
+		}
+	}
+}

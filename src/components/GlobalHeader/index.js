@@ -6,37 +6,37 @@ import RightContent from './RightContent';
 import Breadcrumbs from './Breadcrumbs';
 
 export default class GlobalHeader extends PureComponent {
-    componentWillUnmount() {
-        this.triggerResizeEvent.cancel();
-    }
+	componentWillUnmount() {
+		this.triggerResizeEvent.cancel();
+	}
 
-    /* eslint-disable*/
-    @Debounce(600)
-    triggerResizeEvent() {
-        // eslint-disable-line
-        const event = document.createEvent('HTMLEvents');
-        event.initEvent('resize', true, false);
-        window.dispatchEvent(event);
-    }
+	/* eslint-disable*/
+	@Debounce(600)
+	triggerResizeEvent() {
+		// eslint-disable-line
+		const event = document.createEvent('HTMLEvents');
+		event.initEvent('resize', true, false);
+		window.dispatchEvent(event);
+	}
 
-    toggle = () => {
-        const { collapsed, onCollapse } = this.props;
-        onCollapse(!collapsed);
-        this.triggerResizeEvent();
-    };
+	toggle = () => {
+		const { collapsed, onCollapse } = this.props;
+		onCollapse(!collapsed);
+		this.triggerResizeEvent();
+	};
 
-    render() {
-        const { isMobile, logo } = this.props;
-        return (
-            <div className={styles.header}>
-                {isMobile && (
-                    <Link to="/" className={styles.logo} key="logo">
-                        <img src={logo} alt="logo" width="32" />
-                    </Link>
-                )}
-                <Breadcrumbs />
-                <RightContent {...this.props} />
-            </div>
-        );
-    }
+	render() {
+		const { isMobile, logo, menuData } = this.props;
+		return (
+			<div className={styles.header}>
+				{isMobile && (
+					<Link to="/" className={styles.logo} key="logo">
+						<img src={logo} alt="logo" width="32" />
+					</Link>
+				)}
+				<Breadcrumbs menuData={menuData}/>
+				<RightContent {...this.props} />
+			</div>
+		);
+	}
 }

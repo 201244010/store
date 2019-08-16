@@ -1,0 +1,59 @@
+:global {
+	.ant-radio-wrapper:hover .ant-radio,
+	.ant-radio:hover .ant-radio-inner,
+	.ant-radio-input:focus + .ant-radio-inner {
+		border-color: #4b7afa;
+	}
+	.ant-radio-checked .ant-radio-inner {
+		border-color: #4b7afa;
+	}
+	.ant-radio-input:focus + .ant-radio-inner {
+		-webkit-box-shadow: 0 0 0 3px rgba(75, 122, 250, 0.1);
+		box-shadow: 0 0 0 3px rgba(75, 122, 250, 0.1);
+	}
+	.ant-radio-inner::after {
+		background-color: #4b7afa;
+	}
+	.ant-radio-group-solid {
+		.ant-radio-button-wrapper-checked {
+			&:not(.ant-radio-button-wrapper-disabled) {
+				background: #4b7afa;
+				border-color: #4b7afa;
+				&:hover {
+					background: #6694ff;
+					border-color: #6694ff;
+				}
+				&:active {
+					background: #355ad4;
+					border-color: #355ad4;
+				}
+			}
+		}
+	}
+	.ant-radio-button-wrapper-checked {
+		color: #4b7afa;
+		border-color: #4b7afa;
+		-webkit-box-shadow: -1px 0 0 0 #4b7afa;
+		box-shadow: -1px 0 0 0 #4b7afa;
+		&:hover {
+			color: #6694ff;
+			border-color: #6694ff;
+			-webkit-box-shadow: -1px 0 0 0 #6694ff;
+			box-shadow: -1px 0 0 0 #6694ff;
+		}
+		&:active {
+			color: #355ad4;
+			border-color: #355ad4;
+			-webkit-box-shadow: -1px 0 0 0 #355ad4;
+			box-shadow: -1px 0 0 0 #355ad4;
+		}
+		&:first-child {
+			border-color: #4b7afa;
+		}
+	}
+	.ant-radio-button-wrapper {
+		&:hover {
+			color: #6694ff;
+		}
+	}
+}

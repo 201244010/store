@@ -1,46 +1,47 @@
 @import '~antd/lib/style/themes/default.less';
-@import "./../../common";
+@import "~@/styles/common.less";
 
 .menu {
-  margin-top: 12px;
-  :global(.anticon) {
-    margin-right: 8px;
-  }
+	margin-top: 12px;
 
-  :global(.ant-dropdown-menu-item) {
-    width: 130px;
-    height: 48px;
-    line-height: 48px;
-    padding: 0;
-    color: @font-color-common;
+	:global(.anticon) {
+		margin-right: 8px;
+	}
 
-    &:hover {
-      color: @font-color-primary;
-      background: #F0F0F0;
-    }
-  }
+	:global(.ant-dropdown-menu-item) {
+		width: 130px;
+		height: 48px;
+		line-height: 48px;
+		padding: 0;
+		color: @font-color-common;
 
-  :global(.ant-dropdown-menu-item-selected) {
-    color: @font-color-primary;
-    background: #F0F0F0;
-  }
+		&:hover {
+			color: @font-color-primary;
+			background: #F0F0F0;
+		}
+	}
 
-  .menu-item {
-    padding-left: 25px;
-  }
+	:global(.ant-dropdown-menu-item-selected) {
+		color: @font-color-primary;
+		background: #F0F0F0;
+	}
+
+	.menu-item {
+		padding-left: 25px;
+	}
 }
 
 .dropDown {
-  cursor: pointer;
-  vertical-align: top;
-  line-height: @layout-header-height;
+	cursor: pointer;
+	vertical-align: top;
+	line-height: @layout-header-height;
 
-  > i {
-    transform: none !important;
+	>i {
+		transform: none !important;
 
-    svg {
-      position: relative;
-      top: -1px;
-    }
-  }
+		svg {
+			position: relative;
+			top: -1px;
+		}
+	}
 }

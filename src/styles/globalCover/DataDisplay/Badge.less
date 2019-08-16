@@ -1,0 +1,31 @@
+:global {
+	.head-example {
+		background: #d8d8d8;
+	}
+	.ant-badge-count {
+		background: #ff3838;
+	}
+	.ant-badge-dot {
+		background: #ff3838;
+	}
+	.ant-badge-status {
+		&-default {
+			background-color: #a1a7b3;
+		}
+		&-processing {
+			background-color: #4b7afa;
+			&::after {
+				border: 1px solid #4b7afa;
+			}
+		}
+		&-warning {
+			background-color: #ffcc33;
+		}
+		&-success {
+			background-color: #6dd13b;
+		}
+		&-error {
+			background-color: #ff3838;
+		}
+	}
+}
