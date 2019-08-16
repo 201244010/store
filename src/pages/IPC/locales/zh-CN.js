@@ -18,6 +18,7 @@ import live from './zh-CN/live';
 import photoManagement from './zh-CN/photoManagement';
 import faceLog from './zh-CN/faceLog';
 import entryDetail from './zh-CN/entryDetail';
+import initialSetting from './zh-CN/initialSetting';
 
 export default {
 
@@ -40,5 +41,6 @@ export default {
 	...live,
 	...photoManagement,
 	...faceLog,
-	...entryDetail
+	...entryDetail,
+	...initialSetting
 };

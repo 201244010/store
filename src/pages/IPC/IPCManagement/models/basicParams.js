@@ -12,6 +12,7 @@ export default {
 	state:{
 		sn: '',
 		nightMode: 2,
+		// WDRMode: 1,
 		indicator: false,
 		rotation: 0,
 		isReading: true,

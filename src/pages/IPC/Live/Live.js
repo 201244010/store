@@ -171,11 +171,14 @@ class Live extends React.Component{
 			clearList({ sn });
 			getAgeRangeList();
 			const deviceInfo = await getDeviceInfo({ sn });
+			const { hasFaceid } = deviceInfo;
 			setDeviceSn({ sn });
-			const status = await getSdStatus({ sn });
-			if(status === 0) {
-				message.info(formatMessage({ id: 'live.nosdInfo' }));
-				sdStatus = false;
+			if(hasFaceid){
+				const status = await getSdStatus({ sn });
+				if(status === 0) {
+					message.info(formatMessage({ id: 'live.nosdInfo' }));
+					sdStatus = false;
+				}
 			}
 
 			this.setState({

@@ -62,7 +62,7 @@ export default {
 	'photoManagement.card.editError': '编辑失败',
 	'photoManagement.card.uploadFail': '更换头像失败，请重新上传清晰的人脸照片',
 	'photoManagement.card.uploadSuccess': '更换头像成功',
-	'photoManagement.card.stranger': '陌生人',
+	'photoManagement.card.stranger': '新客',
 	'photoManagement.card.regular': '熟客',
 	'photoManagement.card.employee': '店员',
 	'photoManagement.card.blacklist': '黑名单',
