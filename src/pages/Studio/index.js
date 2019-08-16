@@ -625,14 +625,14 @@ class Studio extends Component {
 		inputEle.setAttribute('autocomplete', 'off');
 		inputEle.value = targetDetail.content;
 		inputEle.style.backgroundColor = 'transparent';
-		inputEle.style.border = '1px solid #ccc';
-		inputEle.style.borderRadius = '5px';
+		// inputEle.style.border = '1px solid #ccc';
+		// inputEle.style.borderRadius = '5px';
 		inputEle.style.fontSize = `${targetDetail.fontSize * zoomScale}px`;
 		inputEle.style.fontFamily = targetDetail.fontFamily;
 		inputEle.style.color = targetDetail.fontColor;
 		inputEle.style.position = 'absolute';
 		inputEle.style.left = `${inputPosition.x}px`;
-		inputEle.style.top = `${inputPosition.y}px`;
+		inputEle.style.top = `${inputPosition.y + 10}px`;
 		inputEle.style.width = `${targetDetail.width * targetDetail.scaleX}px`;
 		inputEle.style.height = `${targetDetail.fontSize * targetDetail.zoomScale}px`;
 		// inputEle.style.lineHeight = `${targetDetail.lineHeight}`;
