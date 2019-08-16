@@ -350,7 +350,7 @@ class ActiveDetection extends React.Component {
 									getValueFromEvent: this.onAutoChange,
 									initialValue: isAuto
 								})(
-									<RadioGroup inChange={this.onAutoChange}>
+									<RadioGroup onChange={this.onAutoChange}>
 										<Radio value={1}>
 											{formatMessage({id: 'activeDetection.auto' })}
 										</Radio>

@@ -48,7 +48,7 @@ export default {
 		},
 		updateList( { list }, { payload }) {
 			console.log('payload',payload);
-			list.push({
+			list.unshift({
 				...payload,
 			});
 		},
