@@ -741,6 +741,7 @@ class PhotoManagement extends React.Component {
 						className={styles['upload-card']}
 						showUploadList={{ showPreviewIcon: false, showRemoveIcon: true }}
 						disabled={!uploadable}
+						multiple
 						{...handleUpload(groupId)}
 					>
 						{this.uploadElement()}
