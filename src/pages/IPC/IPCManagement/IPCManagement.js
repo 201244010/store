@@ -1,15 +1,12 @@
 
 import React, { Component } from 'react';
-// eslint-disable-next-line import/no-cycle
 import DeviceBasicInfo from './DeviceBasicInfo';
-// eslint-disable-next-line import/no-cycle
 import ActiveDetection from './ActiveDetection';
-// eslint-disable-next-line import/no-cycle
 import BasicParams from './BasicParams';
 // import NetworkSetting from './NetworkSetting';
 // import CloudService from './CloudService';
 import SoftwareUpdate from './SoftwareUpdate';
-
+import InitialSetting from './InitialSetting';
 import styles from './IPCManagement.less';
 
 class IPCManagement extends Component {
@@ -26,6 +23,7 @@ class IPCManagement extends Component {
 				{/* <NetworkSetting sn={sn} /> */}
 				{/* <CloudService sn={sn} /> */}
 				<SoftwareUpdate sn={sn} showModal={showModal} />
+				<InitialSetting sn={sn} />
 			</div>
 
 		);

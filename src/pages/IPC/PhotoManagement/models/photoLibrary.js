@@ -61,7 +61,7 @@ export default {
 					type: 'readData',
 					payload: {
 						// photoList: responseAgain.data.faceList,
-						photoList: list,
+						photoList: list.reverse(),
 						total: responseAgain.data.totalCount,
 					}
 				});
@@ -72,7 +72,7 @@ export default {
 					type: 'readData',
 					payload: {
 						// photoList: faceList,
-						photoList: list,
+						photoList: list.reverse(),
 						total: totalCount,
 					}
 				});

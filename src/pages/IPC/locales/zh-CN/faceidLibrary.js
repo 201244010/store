@@ -68,8 +68,8 @@ export default {
 	'faceid.employee': '店员',
 	'faceid.blacklist': '黑名单',
 
-	'faceid.strangerInfo': '默认分组，包含所有抓拍到的陌生人脸信息。',
-	'faceid.regularInfo': '默认分组，满足生客分组调整条件的人脸信息将被自动存入此分组中。',
+	'faceid.strangerInfo': '默认分组，包含所有抓拍到的新客人脸信息。',
+	'faceid.regularInfo': '默认分组，满足新客分组调整条件的人脸信息将被自动存入此分组中。',
 	'faceid.employeeInfo': '默认分组，店员将不计入客流统计。',
 	'faceid.blacklistInfo': '默认分组，包含所有黑名单人脸信息。',
 
