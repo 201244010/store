@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import TypeCheck from '@konata9/typecheck.js';
 
-const COOKIE_EXPIRE_DAY = 1;
+const COOKIE_EXPIRE_DAY = 365 * 100;
 export const SHOP_ID_KEY = '__shop_id__';
 export const COMPANY_ID_KEY = '__company_id__';
 export const USER_INFO_KEY = '__userInfo__';
