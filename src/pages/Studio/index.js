@@ -618,6 +618,7 @@ class Studio extends Component {
 			x: stageBox.left + textPosition.x,
 			y: stageBox.top + textPosition.y,
 		};
+		const offsetY = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? 0 : 4;
 
 		const inputEle = document.createElement('input');
 		document.body.appendChild(inputEle);
@@ -632,7 +633,7 @@ class Studio extends Component {
 		inputEle.style.color = targetDetail.fontColor;
 		inputEle.style.position = 'absolute';
 		inputEle.style.left = `${inputPosition.x}px`;
-		inputEle.style.top = `${inputPosition.y + 10}px`;
+		inputEle.style.top = `${inputPosition.y + offsetY}px`;
 		inputEle.style.width = `${targetDetail.width * targetDetail.scaleX}px`;
 		inputEle.style.height = `${targetDetail.fontSize * targetDetail.zoomScale}px`;
 		// inputEle.style.lineHeight = `${targetDetail.lineHeight}`;
