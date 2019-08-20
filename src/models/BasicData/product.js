@@ -128,7 +128,6 @@ export default {
 			});
 		},
 		*getProductDetail({ payload = {} }, { call, put }) {
-			// TODO 需要增加 称重商品处理
 			const { options = {} } = payload;
 			yield put({
 				type: 'updateState',
@@ -233,8 +232,12 @@ export default {
 			}
 			return response;
 		},
-		*deleteProduct({ payload = {} }, { call, put }) {
-			const { options = {} } = payload;
+		*deleteProduct({ payload = {} }, { call, select, put }) {
+			const { options = {}, options: { product_id_list = [] } = {} } = payload;
+			const {
+				data: productDatas,
+				pagination: { current },
+			} = yield select(state => state.basicDataProduct);
 			yield put({
 				type: 'updateState',
 				payload: { loading: true },
@@ -251,12 +254,25 @@ export default {
 					payload: { loading: false },
 				});
 
-				yield put({
-					type: 'fetchProductList',
-					payload: {
-						current: 1,
-					},
-				});
+				if (product_id_list.length === productDatas.length) {
+					yield put({
+						type: 'fetchProductList',
+						payload: {
+							options: {
+								current: current > 1 ? current - 1 : 1,
+							},
+						},
+					});
+				} else {
+					yield put({
+						type: 'fetchProductList',
+						payload: {
+							options: {
+								current,
+							},
+						},
+					});
+				}
 			} else {
 				message.error(
 					formatMessage({ id: 'basicData.product.delete.fail' }),

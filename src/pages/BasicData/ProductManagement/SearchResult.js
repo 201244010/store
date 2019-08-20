@@ -75,11 +75,14 @@ class SearchResult extends Component {
 			content: formatMessage({ id: 'basicData.product.delete.notice' }),
 			okText: formatMessage({ id: 'btn.delete' }),
 			cancelText: formatMessage({ id: 'btn.cancel' }),
-			onOk() {
-				deleteProduct({
+			onOk: async () => {
+				await deleteProduct({
 					options: {
 						product_id_list: selectedRowKeys,
 					},
+				});
+				this.setState({
+					selectedRowKeys: []
 				});
 			},
 		});
