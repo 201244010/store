@@ -18,7 +18,7 @@ const SSO_ADDRESS = {
 };
 
 const API_ADDRESS = {
-	dev: 'dev-store.sunmi.com:30301',
+	dev: 'store.dev.sunmi.com',
 	test: 'test-store.sunmi.com:30301',
 	uat: 'uat-store.sunmi.com:443',
 	onl: 'store.sunmi.com:443',
@@ -28,7 +28,7 @@ const API_ADDRESS = {
 
 // ipc专用的测试和开发地址
 const IPC_ADDRESS = {
-	dev: '47.96.240.44:35150',
+	dev: 'store.dev.sunmi.com',
 	test: '47.99.16.199:30401',
 };
 

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import Media from 'react-media';
-import { Row, Col, Radio, Skeleton, Spin } from 'antd';
+import { Row, Col, Radio, Skeleton } from 'antd';
 import Charts from '@/components/Charts';
 import { priceFormat } from '@/utils/utils';
 import { DASHBOARD } from './constants';
@@ -99,16 +99,36 @@ export const formatTime = (time, rangeType) => {
 	return timeData.format('M/D');
 };
 
-class ContentChart extends Component {
+class ContentChart extends PureComponent {
+	constructor(props) {
+		super(props);
+		this.timer = null;
+		this.state = {
+			switchLoading: false,
+		};
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.timer);
+	}
+
 	handleRadioChange = e => {
 		const { setSearchValue } = this.props;
 		const {
 			target: { value },
 		} = e;
 
-		setSearchValue({
-			tradeTime: value,
+		this.setState({
+			switchLoading: true,
 		});
+
+		this.timer = setTimeout(() => {
+			clearTimeout(this.timer);
+			this.setState({ switchLoading: false });
+			setSearchValue({
+				tradeTime: value,
+			});
+		}, 500);
 	};
 
 	render() {
@@ -119,6 +139,7 @@ class ContentChart extends Component {
 			barLoading,
 			skuLoading,
 		} = this.props;
+		const { switchLoading } = this.state;
 
 		const dataList = orderList.map(data => ({
 			time: formatTime(data.time, rangeType),
@@ -129,19 +150,19 @@ class ContentChart extends Component {
 			`time*${tradeTime}`,
 			(time, value) => ({
 				title: `${formatMessage({
-					id: 'dashBoard.trade.date',
+					id: 'dashboard.trade.date',
 				})}: ${time} ${
 					[RANGE.MONTH, RANGE.FREE].includes(rangeType)
-						? formatMessage({ id: 'dashBoard.trade.date.unit' })
+						? formatMessage({ id: 'dashboard.trade.date.unit' })
 						: ''
 				}`,
 				name: `${
 					tradeTime === TRADE_TIME.AMOUNT
 						? formatMessage({
-							id: 'dashBoard.trade.amount',
+							id: 'dashboard.trade.amount',
 						  })
 						: formatMessage({
-							id: 'dashBoard.trade.count',
+							id: 'dashboard.trade.count',
 						  })
 				}: ${value}`,
 			}),
@@ -159,6 +180,12 @@ class ContentChart extends Component {
 			},
 		};
 
+		const maxCount = Math.max(...dataList.map(d => d.count || 0));
+		const countTick =
+			maxCount < 5
+				? { ticks: [1,2,3,4,5] }
+				: { tickInterval:  Math.ceil(maxCount / 5) };
+
 		const chartScale = {
 			time: timeScales[rangeType] || {
 				ticks: dataList
@@ -166,7 +193,7 @@ class ContentChart extends Component {
 						const len = dataList.length;
 						if (len > 10 && len < 40) {
 							return index % 2 === 0;
-						} 
+						}
 						return index % 3 === 0;
 					})
 					.map(item => item.time),
@@ -177,7 +204,8 @@ class ContentChart extends Component {
 			},
 			[TRADE_TIME.COUNT]: {
 				minLimit: 0,
-				tickCount: 6,
+				...countTick,
+				// tickCount: 6,
 			},
 		};
 
@@ -187,11 +215,14 @@ class ContentChart extends Component {
 					{result => (
 						<Row gutter={result ? 0 : 24}>
 							<Col span={result ? 24 : 18}>
-								<div className={styles['bar-wrapper']}>
-									<Spin spinning={barLoading}>
+								<div
+									className={styles['bar-wrapper']}
+									style={barLoading || switchLoading ? { padding: '24px' } : {}}
+								>
+									<Skeleton active loading={barLoading || switchLoading}>
 										<div className={styles['title-wrapper']}>
 											<div className={styles['bar-title']}>
-												{formatMessage({ id: 'dashBoard.trade.time' })}
+												{formatMessage({ id: 'dashboard.trade.time' })}
 											</div>
 											<div className={styles['bar-radio']}>
 												<Radio.Group
@@ -200,12 +231,12 @@ class ContentChart extends Component {
 												>
 													<Radio.Button value={TRADE_TIME.AMOUNT}>
 														{formatMessage({
-															id: 'dashBoard.order.sales',
+															id: 'dashboard.order.sales',
 														})}
 													</Radio.Button>
 													<Radio.Button value={TRADE_TIME.COUNT}>
 														{formatMessage({
-															id: 'dashBoard.order.count',
+															id: 'dashboard.order.count',
 														})}
 													</Radio.Button>
 												</Radio.Group>
@@ -238,7 +269,7 @@ class ContentChart extends Component {
 												}}
 											/>
 										</div>
-									</Spin>
+									</Skeleton>
 								</div>
 							</Col>
 							<Col span={result ? 24 : 6}>
@@ -250,7 +281,7 @@ class ContentChart extends Component {
 								>
 									<Skeleton active loading={skuLoading}>
 										<div className={styles['list-title']}>
-											{formatMessage({ id: 'dashBoard.sku.rate' })}
+											{formatMessage({ id: 'dashboard.sku.rate' })}
 										</div>
 										{result ? (
 											<TwinList

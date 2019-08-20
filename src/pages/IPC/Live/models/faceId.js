@@ -1,17 +1,20 @@
 
 // import { listen } from '@/services/mqtt';
 // import moment from 'moment';
-
 import { formatMessage } from 'umi/locale';
+import { getRange } from '../../services/photoLibrary';
+import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
 	namespace: 'faceid',
 	state: {
 		rectangles: [],
-		list: []
+		list: [],
+		ageRangeList: [],
+		deviceSn: ''
 	},
 	reducers: {
-		drawRects({ rectangles, list }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
+		drawRects({ rectangles, list, ageRangeList, deviceSn }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
 
 			// todo 需要添加信息清除逻辑
 			const rect = rectangles;
@@ -26,7 +29,9 @@ export default {
 						// reportTime
 					}
 				],
-				list
+				list,
+				ageRangeList,
+				deviceSn
 			};
 		},
 		clearRects(state, { payload: { timestamp }}) {
@@ -36,15 +41,67 @@ export default {
 					rectangles.push(item);
 				}
 			});
-
 			state.rectangles = [
 				...rectangles
 			];
 
 		},
 		updateList( { list }, { payload }) {
-			const { libraryName } = payload;
+			console.log('payload',payload);
+			list.unshift({
+				...payload,
+			});
+		},
+		readAgeRangeList(state, { payload }) {
+			console.log('list payload', payload.ageRangeList);
+
+			state.ageRangeList =  payload.ageRangeList;
+		},
+		setDeviceSn(state, { payload }) {
+			const { sn } = payload;
+			state.deviceSn = sn;
+		},
+		clearList(state, { payload }) {
+			const { sn } = payload;
+			console.log('sn', sn, state.deviceSn);
+
+			if(state.deviceSn !== sn) {
+				state.list = [];
+			}
+		}
+
+	},
+	effects: {
+		// *subscribe({ payload: { device }}, { select, call }) {
+		// 	const { userId, clientId } = yield select((state) => {
+		// 		return {
+		// 			userId: state.user.id,
+		// 			clientId: state.mqtt.clientId
+		// 		};
+		// 	});
+
+		// 	const topic = `/WEB/${ userId }/${clientId}/${device.type}/event/sub`;
+		// 	yield call(subscribe, topic);
+		// }
+		*getAgeRangeList(_,{ put, call }) {
+			const response = yield call(getRange);
+			const { code, data: { ageRangeList }} = response;
+			if(code === ERROR_OK) {
+				yield put({
+					type: 'readAgeRangeList',
+					payload: {
+						ageRangeList
+					}
+				});
+			}
+		},
+		*mapFaceInfo({ payload }, { select, take, put }) {
+			const { libraryName, age, ageRangeCode, name } = payload;
+			let rangeList = yield select((state) => state.faceid.ageRangeList);
+			console.log('rangeList',rangeList);
+			let ageName = formatMessage({id: 'live.unknown'});
 			let libraryNameText = libraryName;
+
 			switch(libraryName) {
 				case 'stranger':
 					libraryNameText = formatMessage({ id: 'faceid.stranger'});
@@ -60,26 +117,49 @@ export default {
 					break;
 				default:
 			}
-			list.push({
-				...payload,
-				libraryName: libraryNameText
+
+			if(!rangeList || rangeList.length === 0){
+				const { payload: list } = yield take('readAgeRangeList');
+				console.log('take list', list);
+				rangeList = list.ageRangeList;
+			}
+			if(age) {
+				ageName = age;
+			} else if(rangeList) {
+				rangeList.forEach(item => {
+					if(item.ageRangeCode === ageRangeCode) {
+						ageName = item.ageRange;
+					}
+				});
+			}
+			 yield put({
+				 type: 'updateList',
+				 payload: {
+					...payload,
+					 libraryName: libraryNameText,
+					 age: ageName,
+					 name: name === 'undefined' ? formatMessage({id: 'live.unknown'}) : name
+				 }
 			});
-		}
-
-	},
-	// effects: {
-	// 	*subscribe({ payload: { device }}, { select, call }) {
-	// 		const { userId, clientId } = yield select((state) => {
-	// 			return {
-	// 				userId: state.user.id,
-	// 				clientId: state.mqtt.clientId
-	// 			};
+		},
+		// *test(_, { put }) {
+		// 	console.log('in test');
+		// 	yield put({
+		// 		// type: 'updateList',
+		// 		type:'mapFaceInfo',
+		// 		payload: {
+		// 			age: 0,
+		// 			ageRangeCode: 4,
+		// 			timestamp: 15652373226,
+		// 			libraryId: 3497,
+		// 			libraryName: 'stranger',
+		// 			gender: 1,
+		// 			id: 2751,
+		// 			name: 'undefined'
+		// 		}
 	// 		});
-
-	// 		const topic = `/WEB/${ userId }/${clientId}/${device.type}/event/sub`;
-	// 		yield call(subscribe, topic);
 	// 	}
-	// },
+	},
 	subscriptions: {
 		mqtt ({ dispatch }) {
 			const listeners = [
@@ -115,17 +195,20 @@ export default {
 					type: 'event',
 					handler: (topic, message) => {
 						const { data } = message;
-
+						console.log('data',data);
 						dispatch({
-							type: 'updateList',
+							// type: 'updateList',
+							type:'mapFaceInfo',
 							payload: {
-								timestamp: data.report_time,
-								name: data.name === 'undefined' ? '--' : data.name,
+								// timestamp: data.report_time,
+								timestamp: data.arrival_time,
+								name: data.name,
 								id: data.id,
 								libraryId: data.db_id,
 								libraryName: data.db_name,
-								age: data.age ,
-								gender: data.gender === 'undefined' ? '--' : data.gender,
+								age: data.age,
+								ageRangeCode: data.age_range_code,
+								gender: data.gender,
 								pic: data.pic
 							}
 						});

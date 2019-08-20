@@ -1,5 +1,6 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import _ from 'lodash';
+
 import { formatMessage } from 'umi/locale';
 import { Button, DatePicker, Dropdown, Slider, Menu, Popover, Tooltip } from 'antd';
 import moment from 'moment';
@@ -19,6 +20,29 @@ class Toolbar extends React.Component{
 		this.changeDatePicker = this.changeDatePicker.bind(this);
 	}
 
+	shouldComponentUpdate(oldProps, oldState) {
+		const { today } = this.props;
+
+		const isEqualProps = _.isEqual({
+			...oldProps,
+			today: 0,
+			progressbar: null
+		}, {
+			...this.props,
+			today: 0,
+			progressbar: null
+		});
+
+		const isEqualState = _.isEqual(oldState, this.state);
+
+		if (isEqualProps && isEqualState) {
+			if (Math.abs(today - oldProps.today) <= 24*3600) {
+				return false;
+			}
+			return true;
+		}
+		return true;
+	}
 
 	changeDatePicker(visiable) {
 		this.setState({
@@ -64,6 +88,8 @@ class Toolbar extends React.Component{
 		if (t.length > 0) {
 			modeText = t[0].name;
 		}
+
+		console.log(today, moment.unix(today).format('YYYY-MM-DD HH:mm:ss'));
 
 		return(
 			<div
@@ -181,7 +207,7 @@ class Toolbar extends React.Component{
 												<div ref={wrapper => this.calendarPopupWrapper = wrapper} />
 												<DatePicker
 
-													defaultValue={moment.unix(today)}
+													value={moment.unix(today)}
 
 													getCalendarContainer={() => this.calendarPopupWrapper}
 
@@ -194,7 +220,9 @@ class Toolbar extends React.Component{
 															second: 0,
 															millisecond: 0
 														});
+
 														this.changeDatePicker(false);
+
 														onDatePickerChange(date.unix());
 													}}
 													open

@@ -38,7 +38,7 @@ export default {
 	'menu.template': '模板管理',
 	'menu.template.list': '模板列表',
 	'menu.studio': 'Studio',
-	'menu.deviceManagement': '设备管理',
+	'menu.deviceManagement': '摄像机管理',
 	'menu.deviceManagement.esl': '电子价签',
 	'menu.deviceManagement.esl.baseStation': '基站管理',
 	'menu.deviceManagement.esl.electricLabel': '价签管理',

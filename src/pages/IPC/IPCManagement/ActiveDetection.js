@@ -1,11 +1,10 @@
 import React from 'react';
-
+import moment from 'moment';
 import { Card, Switch, Row, Col, Slider, Radio, TimePicker, Checkbox, Button, Form, Spin, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-import moment from 'moment';
 import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
-// import PropTypes, { object } from 'prop-types';
+// import { FORM_ITEM_LAYOUT } from './IPCManagement';
 import styles from './ActiveDetection.less';
 
 const RadioGroup = Radio.Group;
@@ -228,7 +227,7 @@ class ActiveDetection extends React.Component {
 		const startTime = getFieldValue('startTime');
 		const endTime = getFieldValue('endTime');
 		// console.log(startTime, endTime);
-		if (startTime.isAfter(endTime) || startTime.isSame(endTime)){
+		if (startTime && startTime.isAfter(endTime) || startTime && startTime.isSame(endTime)){
 			return `HH:mm ${formatMessage({id: 'activeDetection.nextDay'})}`;
 		}
 		return 'HH:mm';
@@ -340,7 +339,7 @@ class ActiveDetection extends React.Component {
 									getValueFromEvent: this.onAutoChange,
 									initialValue: isAuto
 								})(
-									<RadioGroup inChange={this.onAutoChange}>
+									<RadioGroup onChange={this.onAutoChange}>
 										<Radio value={1}>
 											{formatMessage({id: 'activeDetection.auto' })}
 										</Radio>

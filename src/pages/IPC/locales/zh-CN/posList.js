@@ -70,5 +70,7 @@ export default {
 
 	'posList.warningNotBinded': '您还尚未完成收银设备绑定',
 	'posList.confirmGoBack': '确认要返回至上一步吗？',
+	'posList.noCamera':'您还未绑定任何摄像机设备，请在手机端下载“商米助手”APP进行绑定。',
+	'posList.myCamera':'My Camera'
 
 };

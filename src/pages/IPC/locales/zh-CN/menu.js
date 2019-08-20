@@ -9,16 +9,23 @@ export default {
 
 	'menu.devices': '智能摄像机',
 	'menu.devices.ipcList': '摄像机管理',
-	'menu.devices.motionMessage':'活动侦测',
+	'menu.devices.motionMessage': '活动侦测',
 	'menu.devices.ipcList.live': '直播',
 	'menu.devices.ipcList.ipcManagement': '摄像机设置',
 	'menu.motionMessage': '消息提醒',
-	
 
+
+	'menu.faceidLabrary.management': '人脸分组管理',
+	'menu.faceidLabrary.list': '人脸分组列表',
+	'menu.faceLog':'人脸日志',
+	'menu.faceidLibrary.faceLog': '人脸日志',
+	'menu.entryDetail':'进店详情',
+	'menu.faceidLibrary.faceLog.entryDetail':'进店详情',
 
 	'menu.faceidLibrary': '人脸分组管理',
 	'menu.faceidLibrary.list': '人脸分组列表',
 	'menu.faceidLibrary.photoManagement': '照片管理',
+	'menu.faceidLibrary.faceidLibraryList.photoManagement': '照片管理',
 	'menu.faceidLibrary.faceidLibraryList': '人脸分组列表',
 	'menu.devices.ipcManagement': '摄像机设置',
 
@@ -26,5 +33,4 @@ export default {
 	'menu.cashVerify.posList': '设备绑定列表',
 	'menu.cashVerify.bindPOSDevice': '绑定收银设备',
 	'menu.cashVerify.videos': '交易视频',
-
 };

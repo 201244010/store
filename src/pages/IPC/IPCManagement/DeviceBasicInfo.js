@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { mbStringLength } from '@/utils/utils';
 import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { spaceInput } from '@/constants/regexp';
+import { spaceInput, emojiInput } from '@/constants/regexp';
 // import { FORM_ITEM_LAYOUT , TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 
 import defaultImage from '@/assets/imgs/default.jpeg';
@@ -58,7 +58,6 @@ const mapDispatchToProps = (dispatch) => ({
 				sn
 			}
 		}).then((response) => {
-			// console.log('result: ', result);
 			if (response) {
 				message.success(formatMessage({ id: 'ipcManagement.deleteSuccess'}));
 
@@ -76,21 +75,28 @@ const mapDispatchToProps = (dispatch) => ({
 		payload: {
 			pathId,
 			urlParams
-	}
-	})
+		}
+	}),
+	getSdStatus: ({ sn }) => {
+		const result = dispatch({
+			type: 'sdcard/getSdStatus',
+			sn
+		});
+		return result;
+	},
+	getDeviceInfo({ sn }) {
+		return dispatch({
+			type: 'ipcList/getDeviceInfo',
+			payload: {
+				sn
+			}
+		}).then(info => info);
+	},
 });
 // let disabledControl = true;
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name: 'ipc-device-basic-info',
-	// mapPropsToFields: (props) => {
-	// 	const { basicInfo } = props;
-	// 	return {
-	// 		deviceName: Form.createFormField({
-	// 			value: basicInfo.name,
-	// 		})
-	// 	};
-	// }
 })
 class DeviceBasicInfo extends React.Component {
 	constructor(props) {
@@ -103,9 +109,18 @@ class DeviceBasicInfo extends React.Component {
 	}
 
 	componentDidMount = async () => {
-		const { loadInfo, sn } = this.props;
-
-		loadInfo(sn);
+		const { getDeviceInfo, loadInfo, sn, getSdStatus } = this.props;
+		if(sn){
+			const deviceInfo = await getDeviceInfo({ sn });
+			const { hasFaceid } = deviceInfo;
+			if(hasFaceid){
+				const status = await getSdStatus({ sn });
+				if(status === 0 && hasFaceid) {
+					message.info(formatMessage({ id: 'deviceBasicInfo.nosdInfo' }));
+				}
+			}
+			loadInfo(sn);
+		}
 	}
 
 	onSave = () => {
@@ -185,63 +200,10 @@ class DeviceBasicInfo extends React.Component {
 		});
 
 		setTimeout(() => {
-			// this.input.select();
 			this.input.focus();
 		}, 0);
 
 	}
-
-	// onChange = (e) => {
-	// 	const { form } = this.props;
-	// 	form.setFieldsValue({
-	// 		deviceName: e.target.value
-	// 	});
-	// 	// this.setState({
-	// 	// 	name: e.target.value
-	// 	// });
-	// }
-
-	// onPressEnter = () => {
-	// 	// console.log(this.state.name);
-	// 	// const { name } = this.state;
-	// 	// const { deviceBasicInfo } = this.props;
-
-	// 	// if (deviceBasicInfo.name !== name) {
-	// 		// disabledControl = false;
-	// 		// this.setState({
-	// 		// 	isChange: true
-	// 		// });
-	// 	// } else {
-	// 		// disabledControl = true;
-	// 		// this.setState({
-	// 		// 	isChange: false
-	// 		// });
-	// 	// }
-
-	// 	this.setState({
-	// 		isEdit: false
-	// 	});
-	// }
-
-	// componentWillReceiveProps = (props) => {
-	// 	const { basicInfo: { status } } = props;
-
-	// 	if (status === 'success') {
-	// 		this.setState({
-	// 			isEdit: false
-	// 		});
-	// 	}
-	// }
-
-	// componentDidUpdate = () => {
-	// 	const { basicInfo: { status } } = this.props;
-
-	// 	if (status === 'success') {
-	// 		message.success('修改成功！');
-	// 	} else if (status === 'failed') {
-	// 		message.error('修改失败！请检查网络或重新设置。');
-	// 	}
-	// }
 
 	exitEditName = () => {
 		const { form } = this.props;
@@ -287,6 +249,17 @@ class DeviceBasicInfo extends React.Component {
 											message: formatMessage({id: 'deviceBasicInfo.firstInputFormat'})
 										},
 										{
+											validator: (rule, value,callback) => {
+												const invalidSymbol = emojiInput;
+												if(invalidSymbol.test(value)) {
+													callback(false);
+												} else {
+													callback();
+												}
+											},
+											message: formatMessage({ id: 'deviceBasicInfo.invalidSymbol'})
+										},
+										{
 											validator: (rule, value, callback) => {
 												let confictFlag = false;
 												ipcList.every(item => {
@@ -320,7 +293,7 @@ class DeviceBasicInfo extends React.Component {
 												}
 											},
 											message: formatMessage({ id: 'deviceBasicInfo.maxLength'})// '设备名称不可以超过36字节'
-										}
+										},
 									]
 								})(
 									<Input
