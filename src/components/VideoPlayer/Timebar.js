@@ -51,7 +51,7 @@ class VideoPlayerProgressBar extends React.Component{
 		});
 	}
 
-	componentWillReceiveProps(props) {
+	async componentWillReceiveProps(props) {
 		const { current } = props;
 		const { timeStart, dragging, /* timestamp */ } = this.state;
 		const { offsetWidth } = this.wrapper;
@@ -59,7 +59,7 @@ class VideoPlayerProgressBar extends React.Component{
 
 		if (current < timeStart + gap){
 			this.getDuration(current);
-			this.generateTime();
+			await this.generateTime();
 		}
 
 		// console.log('Timerbar componentWillReceiveProps: ', current);
@@ -113,7 +113,7 @@ class VideoPlayerProgressBar extends React.Component{
 		}
 	}
 
-	generateTime = () => {
+	generateTime = async () => {
 		// const { onTimeChange } = this.props;
 		const { days } = this;
 		// 标尺左侧更长的时间线；
@@ -142,8 +142,8 @@ class VideoPlayerProgressBar extends React.Component{
 		// 	timeEnd
 		// });
 		// console.log(moment.unix(timeStart).format('YYYY-MM-DD HH:mm:ss'), moment.unix(timeEnd).format('YYYY-MM-DD HH:mm:ss'));
-		const { onGenerateTimeRange } = this.props;
-		onGenerateTimeRange(timeStart, timeEnd);
+		const { onTimeChange } = this.props;
+		await onTimeChange(timeStart, timeEnd);
 	}
 
 	getBounds = () => {
@@ -163,6 +163,16 @@ class VideoPlayerProgressBar extends React.Component{
 			left: 0,
 			right: 0
 		};
+	}
+
+	getTimeStart = () => {
+		const { timeStart } = this.state;
+		return timeStart;
+	}
+
+	getTimeEnd = () => {
+		const { timeEnd } = this.state;
+		return timeEnd;
 	}
 
 	onStartDrag = (e, dragger) => {
@@ -209,7 +219,7 @@ class VideoPlayerProgressBar extends React.Component{
 
 	}
 
-	onStopDrag = (e, dragger) => {
+	onStopDrag = async (e, dragger) => {
 		const { oneHourWidth } = this;
 		const { timeStart, timeEnd } = this.state;
 
@@ -226,7 +236,7 @@ class VideoPlayerProgressBar extends React.Component{
 		if (dragger.x === right && this.days < 31){
 			// 到左侧尽头了，需要判断是否渲染前面的时间
 			this.days += 1;
-			this.generateTime();
+			await this.generateTime();
 		}
 
 		// 因为设置了position，所以需要手动确定位置；
@@ -252,6 +262,7 @@ class VideoPlayerProgressBar extends React.Component{
 		const { current, timeSlots } = this.props;
 		const { dragging, timestamp, direction, timeStart, timeEnd, position, hover } = this.state;
 
+		// console.log('timebar', timeSlots, position, timeStart, moment.unix(timeStart).format('YYYY-MM-DD HH:mm:ss'), timeEnd, moment.unix(timeEnd).format('YYYY-MM-DD HH:mm:ss'));
 		// sources = sources || [];
 		// console.log('timebar sources: ', sources);
 

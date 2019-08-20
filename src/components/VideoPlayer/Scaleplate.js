@@ -36,7 +36,7 @@ class Scaleplate extends React.Component{
 			});
 		};
 
-		timeArray.sort((a, b ) => a.timestamp - b.timestamp);
+		timeArray.sort((a, b) => a.timestamp - b.timestamp);
 
 		this.renderedTimestamp = timeStart;
 

@@ -1,6 +1,7 @@
 export default{
 	'basicParams.title': '基本参数',
 	'basicParams.nightMode': '夜视模式',
+	'basicParams.wdr':'宽动态WDR',
 	'basicParams.open': '始终开启',
 	'basicParams.close': '始终关闭',
 	'basicParams.autoSwitch': '自动切换',

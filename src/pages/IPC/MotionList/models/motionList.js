@@ -1,49 +1,41 @@
-import { getMotionList/* , getIpcList */ } from '../../services/motionList';
+import { getMotionList /* , getIpcList */ } from '../../services/motionList';
 import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
 	namespace: 'motionList',
 	state: {
-		motionList:[],
+		motionList: [],
 		// ipcList:[],
-		total: 0
+		total: 0,
 	},
 	reducers: {
-		readData(state, action){
-			const { payload: { list, total } } = action;
-			list.sort((a,b) => Date.parse(b.detectedTime)-Date.parse(a.detectedTime));
+		readData(state, action) {
+			const {
+				payload: { list, total },
+			} = action;
+			list.sort((a, b) => Date.parse(b.detectedTime) - Date.parse(a.detectedTime));
 			state.motionList = [...list];
 			state.total = total;
 		},
-		// readIpcList(state,action){
-		// 	const { payload } = action;
-		// 	state.ipcList = [...payload];
-		// }
 	},
 	effects: {
-		*read({ payload },{ put }){
-			// const companyId = yield put.resolve({
-			// 	type: 'global/getCompanyIdFromStorage'
-			// });
-			// const shopId = yield select((state) => {
-			// 	return state.shops.currentShopId;
-			// });
-			const { startTime, endTime, ipcSelected, detectedSourceSelected, currentPage, pageSize } = payload;
+		*read({ payload }, { put }) {
+			const {
+				startTime,
+				endTime,
+				ipcSelected,
+				detectedSourceSelected,
+				currentPage,
+				pageSize,
+			} = payload;
 
-			// console.log(currentPage, pageSize);
 			let deviceId;
 			let source;
-			if(ipcSelected){
-				// deviceId = yield put.resolve({
-				// 	type: 'ipcList/getDeviceId',
-				// 	payload: {
-				// 		sn:ipcSelected
-				// 	}
-				// });
+			if (ipcSelected) {
 				deviceId = ipcSelected;
 			}
 
-			if(detectedSourceSelected){
+			if (detectedSourceSelected) {
 				source = detectedSourceSelected;
 			}
 
@@ -53,46 +45,25 @@ export default {
 				deviceId,
 				source,
 				currentPage,
-				pageSize
+				pageSize,
 			});
 			if (response.code === ERROR_OK) {
-				const { list , total } = response.data;
+				const { list, total } = response.data;
+				const motionList = list.map(item => {
+					const name = item.name === ''? 'My Camera': item.name;
+					item.name = name;
+					return {
+						...item
+					};
+				});
 				yield put({
 					type: 'readData',
 					payload: {
-						list,
-						total
-					}
+						list:motionList,
+						total,
+					},
 				});
 			}
 		},
-		// *getIpcType({ payload },{ put }){
-		// 	const { sn } = payload;
-		// 	const type = yield put.resolve({
-		// 		type:'ipcList/getDeviceType',
-		// 		payload:{
-		// 			sn
-		// 		}
-		// 	});
-		// 	return type;
-		// },
-		// *getIpcList(_,{ put }){
-		// 	// const companyId = yield put.resolve({
-		// 	// 	type: 'global/getCompanyIdFromStorage'
-		// 	// });
-		// 	// const shopId = yield select((state) => {
-		// 	// 	return state.shops.currentShopId;
-		// 	// });
-		// 	// console.log(`motionList: companyId:${companyId} shopId${shopId}`);
-		// 	const response = yield getIpcList();
-		// 	if (response.code === ERROR_OK) {
-		// 		const result = response.data;
-		// 		// console.log(result);
-		// 		yield put({
-		// 			type: 'readIpcList',
-		// 			payload: result
-		// 		});
-		// 	}
-		// }
-	}
+	},
 };

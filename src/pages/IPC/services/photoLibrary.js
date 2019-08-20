@@ -1,5 +1,5 @@
-import { customizeFetch } from '@/utils/fetch';
 import { format } from '@konata9/milk-shake';
+import { customizeFetch } from '@/utils/fetch';
 import CONFIG, {env} from '@/config';
 import * as CookieUtil from '@/utils/cookies';
 
@@ -7,7 +7,6 @@ const { IPC_SERVER } = CONFIG;
 const request = customizeFetch('ipc/api/face/group', IPC_SERVER);
 const request1 = customizeFetch('ipc/api/face', IPC_SERVER);
 const range = customizeFetch('ipc/api/face/age', IPC_SERVER);
-// const mock = customizeFetch('api/face/group', 'localhost:8000');
 
 // 获取照片列表
 export const readPhotoList = async (params) => {
@@ -77,8 +76,9 @@ export const getRange = async () => (
 		async response => {
 			const json = await response.json();
 			return format('toCamel')(json);
+
 		}
-	)	
+	)
 );
 
 
@@ -86,6 +86,7 @@ export const getRange = async () => (
 // 编辑
 export const editInfo = async  (params) => {
 	const body = format('toSnake')(params);
+	// console.log(body);
 	return request1('update', {
 		body: {
 			...body

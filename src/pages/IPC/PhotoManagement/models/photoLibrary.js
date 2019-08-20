@@ -1,4 +1,7 @@
-import { ERROR_OK } from '@/constants/errorCode';
+
+import { message } from 'antd';
+import { formatMessage } from 'umi/locale';
+import { map } from '@konata9/milk-shake';
 import {
 	deletePhoto,
 	editInfo,
@@ -8,8 +11,7 @@ import {
 	readPhotoList,
 	saveFile,
 } from '../../services/photoLibrary';
-import { message } from 'antd';
-import { formatMessage } from 'umi/locale';
+import { ERROR_OK } from '@/constants/errorCode';
 
 
 export default {
@@ -45,25 +47,32 @@ export default {
 				request.name = name;
 			}
 			if(head.age !== 10) {
-				request.age = age;
+				request.ageRangeCode = age;
 			}
 			const response = yield call(readPhotoList, request);
 			const { code, data:{ faceList, totalCount }} = response;
+			// console.log('list',faceList);
 			if(totalCount < pageNum * pageSize && code === ERROR_OK) {
 				request.pageNum = Math.ceil(totalCount / pageSize);
 				const responseAgain = yield call(readPhotoList, request);
+				const list = responseAgain.data.faceList.map(item => map([{from: 'age', to: 'realAge'},{ from: 'ageRangeCode', to: 'age'}])(item));
+				// console.log('model',list);
 				yield put({
 					type: 'readData',
 					payload: {
-						photoList: responseAgain.data.faceList,
+						// photoList: responseAgain.data.faceList,
+						photoList: list,
 						total: responseAgain.data.totalCount,
 					}
 				});
 			} else if(code === ERROR_OK) {
+				const list = faceList.map(item => map([{from: 'age', to: 'realAge'},{ from: 'ageRangeCode', to: 'age'}])(item));
+				// console.log('model',list);
 				yield put({
 					type: 'readData',
 					payload: {
-						photoList: faceList,
+						// photoList: faceList,
+						photoList: list,
 						total: totalCount,
 					}
 				});
@@ -160,12 +169,14 @@ export default {
 		},
 		*getRange(_,{put, call}) {
 			const response = yield call(getRange);
-			const { code, data: {ageRangeList} } = response;
+			const { code, data: { ageRangeList } } = response;
 			if(code === ERROR_OK) {
+				const list = ageRangeList.map(item => map([{from: 'ageRangeCode', to: 'ageCode'}])(item));
+				// console.log(list);
 				yield put({
 					type: 'readData',
 					payload: {
-						ageRange: ageRangeList
+						ageRange: list
 					}
 				});
 			}
@@ -178,7 +189,10 @@ export default {
 			return false;
 		},
 		*edit({payload}, { call }) {
-			const response = yield call(editInfo, payload);
+			const info = map([{from: 'age', to: 'ageRangeCode'}])(payload);
+			// const info = payload;
+			// console.log(info);
+			const response = yield call(editInfo, info);
 			return response.code === ERROR_OK;
 		},
 		*clearPhotoList(_, {put}) {

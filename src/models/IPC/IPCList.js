@@ -14,11 +14,6 @@ export default {
 	},
 	effects: {
 		*read(action,{ put }) {
-
-			// const userInfo = yield put.resolve({
-			// 	type: 'user/getUserInfoFromStorage'
-			// });
-			// const userId = userInfo.id;
 			const companyId = yield put.resolve({
 				type: 'global/getCompanyIdFromStorage'
 			});
@@ -27,7 +22,7 @@ export default {
 				type: 'global/getShopIdFromStorage'
 			});
 
-			// console.log(companyId, shopId);
+
 			if (!companyId || !shopId) {
 				return [];
 			}
@@ -40,10 +35,19 @@ export default {
 			const {data : result , code} = response;
 			if (code === ERROR_OK) {
 
-				const d = result.map(item => ({
-					...item,
-					...ipcTypes[item.type]
-				}));
+				// const d = result.map(item => ({
+				// 	...item,
+				// 	...ipcTypes[item.type]
+				// }));
+
+				const d = result.map(item => {
+					const name = item.name === ''? 'My Camera': item.name;
+					item.name = name;
+					return {
+						...item,
+						...ipcTypes[item.type]
+					};
+				});
 
 				yield put({
 					type: 'readData',
@@ -54,18 +58,7 @@ export default {
 
 		},
 		*getList(action,{ put }){
-			const companyId = yield put.resolve({
-				type: 'global/getCompanyIdFromStorage'
-			});
-
-			const shopId = put.resolve({
-				type: 'global/getShopIdFromStorage'
-			});
-
-			const response = yield getDeviceList({
-				companyId,
-				shopId
-			});
+			const response = yield getDeviceList();
 			const result = response.data;
 			if (response.code === ERROR_OK) {
 				yield put({

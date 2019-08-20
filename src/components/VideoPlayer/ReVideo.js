@@ -4,26 +4,17 @@ import browser from 'browser-detect';
 
 import styles from './ReVideo.less';
 
-class ReVideojs extends React.Component {
+class ReVideojs extends React.Component{
+
+
 	componentDidMount() {
-		const {
-			getVideojsPlayer,
-			onPlay,
-			onCanPlay,
-			onCanplayThrough,
-			onPause,
-			onError,
-			onEnd,
-			onTimeUpdate,
-			onMetadataArrived,
-		} = this.props;
+		const { getVideojsPlayer, onPlay, onCanPlay, onCanplayThrough, onPause, onError, onEnd, onTimeUpdate, onMetadataArrived } = this.props;
 
 		const { videojs } = window;
 		videojs.options.flash.swf = '/swf/video-js.swf';
 
 		const currentbrowser = browser();
-		const techOrder =
-			currentbrowser.name === 'ie' ? ['flash', 'html5'] : ['flvjs', 'flash', 'html5'];
+		const techOrder = (currentbrowser.name === 'ie') ? [ 'flash', 'html5' ] : [ 'flvjs', 'flash', 'html5' ];
 
 		const player = videojs(this.videojsPlayer, {
 			techOrder,
@@ -32,7 +23,7 @@ class ReVideojs extends React.Component {
 			aspectRatio: '4:3',
 			fluid: false,
 			loop: false,
-			controls: false,
+			controls : false,
 			language: 'cn',
 			flvjs: {
 				mediaDataSource: {
@@ -44,8 +35,8 @@ class ReVideojs extends React.Component {
 					enableStashBuffer: false,
 					isLive: true,
 					// enableWorker: true,
-				},
-			},
+				}
+			}
 		});
 
 		player.ready(() => {
@@ -120,7 +111,8 @@ class ReVideojs extends React.Component {
 					console.log('NETWORK_UNRECOVERABLE_EARLY_EOF: ', e, data);
 					player.load();
 				});
-			}
+
+			};
 		});
 
 		getVideojsPlayer(player);
@@ -128,11 +120,11 @@ class ReVideojs extends React.Component {
 	}
 
 	componentWillUnmount() {
-		try {
+		try{
 			if (this.player) {
 				this.player.dispose();
 			}
-		} catch (e) {
+		}catch(e){
 			console.log(e);
 		}
 	}
@@ -143,22 +135,14 @@ class ReVideojs extends React.Component {
 		// console.log(pixelRatio);
 		const p = pixelRatio.split(':');
 		let isWide = false;
-		if (p[0] / p[1] > 4 / 3) {
+		if (p[0]/p[1] > 4/3){
 			// 宽
 			isWide = true;
 		}
 		return (
-			<div
-				className={`${styles['video-player-container']} ${
-					fullScreen ? styles['full-screen'] : ''
-				}`}
-			>
-				<video
-					className={isWide ? styles.wide : styles.high}
-					crossOrigin="anonymous"
-					ref={player => (this.videojsPlayer = player)}
-				>
-					<track kind="captions" />
+			<div className={`${ styles['video-player-container'] } ${ fullScreen ? styles['full-screen'] : '' }`}>
+				<video className={isWide ? styles.wide : styles.high} crossOrigin='anonymous' ref={(player) => this.videojsPlayer = player}>
+					<track kind='captions' />
 				</video>
 			</div>
 		);
@@ -172,5 +156,7 @@ class ReVideojs extends React.Component {
 // 	onEnd: PropTypes.func,
 // 	onError: PropTypes.func
 // };
+
+
 
 export default ReVideojs;
