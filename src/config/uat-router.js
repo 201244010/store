@@ -462,7 +462,8 @@ const router = [
 							},
 							{
 								path: '/faceidLibrary/faceLog',
-								name: 'faceLog',
+								hideInMenu: true,
+								// name: 'faceLog',
 								id: 'faceLog',
 								component: './IPC/FaceLog/index.js',
 							}

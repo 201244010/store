@@ -181,7 +181,7 @@ export default {
 			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
 
 			console.log('input id:', pathId, '   matched path:', path);
-			console.log(flattedRoutes);
+			// console.log(flattedRoutes);
 
 			if (!path) {
 				router.push('/exception/404');
