@@ -9,11 +9,6 @@ import styles from './BasicParams.less';
 
 const RadioGroup = Radio.Group;
 
-// const isChange = {
-// 	nightMode:false,
-// 	indicator:false,
-// 	rotation:false
-// };
 
 // let temp = {};
 const mapStateToProps = (state) => {
@@ -40,14 +35,15 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		}).then(info => info);
 	},
-	saveSetting: ({ nightMode, indicator, rotation, sn }) => {
+	saveSetting: ({ nightMode, indicator, rotation, sn, WDRMode }) => {
 		dispatch({
 			type: 'ipcBasicParams/update',
 			payload: {
 				sn,
 				nightMode,
 				indicator,
-				rotation
+				rotation,
+				WDRMode
 			}
 		});
 	}
@@ -141,10 +137,10 @@ class BasicParams extends Component {
 		const values = form.getFieldsValue();
 		const { saveSetting } = this.props;
 
-		const { nightMode, indicator, rotation } = values;
+		const { nightMode, indicator, rotation, WDRMode } = values;
 
 		saveSetting({
-			nightMode, indicator, rotation, sn
+			nightMode, indicator, rotation, sn, WDRMode
 		});
 		// temp = values;
 
@@ -154,21 +150,21 @@ class BasicParams extends Component {
 		// });
 	}
 
-	// nightModeChange = (e) => {
-	// 	const { form } = this.props;
-	// 	if(e.target.value === 1) {
-	// 		form.setFieldsValue({
-	// 			'WDR': 1
-	// 		});
-	// 	}
-	// }
+	nightModeChange = (e) => {
+		const { form } = this.props;
+		if(e.target.value === 1) {
+			form.setFieldsValue({
+				'WDRMode': 0
+			});
+		}
+	}
 
 	render() {
 		const { form, ipcBasicParams } = this.props;
-		const { isReading, isSaving, nightMode, rotation, indicator /* , WDRMode */} = ipcBasicParams;
+		const { isReading, isSaving, nightMode, rotation, indicator , WDRMode } = ipcBasicParams;
 		const { deviceInfo: { rotate }} = this.state;
-		// console.log(rotation);
-		const { getFieldDecorator /* , getFieldValue */ } = form;
+		// console.log(ipcBasicParams);
+		const { getFieldDecorator , getFieldValue } = form;
 		return (
 			<Spin spinning={isReading || isSaving === 'saving'}>
 				<Card bordered={false} className={styles.card} title={formatMessage({id: 'basicParams.title'})}>
@@ -178,7 +174,7 @@ class BasicParams extends Component {
 								getFieldDecorator('nightMode',{
 									initialValue: nightMode
 								})(
-									<RadioGroup>
+									<RadioGroup onChange={this.nightModeChange}>
 										<Radio value={2}>
 											{ formatMessage({id: 'basicParams.autoSwitch'}) }
 										</Radio>
@@ -193,22 +189,23 @@ class BasicParams extends Component {
 							}
 						</Form.Item>
 
-						{/* <Form.Item label={formatMessage({ id: 'basicParams.wdr'})}>
+						<Form.Item label={formatMessage({ id: 'basicParams.wdr'})}>
 							{
-								getFieldDecorator('WDR',{
+								getFieldDecorator('WDRMode',{
 									initialValue: WDRMode,
 								})(
 									<RadioGroup disabled={getFieldValue('nightMode') === 1}>
 										<Radio value={1}>
-											{ formatMessage({id: 'basicParams.close'}) }
-										</Radio>
-										<Radio value={2}>
 											{ formatMessage({id: 'basicParams.open'}) }
 										</Radio>
+										<Radio value={0}>
+											{ formatMessage({id: 'basicParams.close'}) }
+										</Radio>
+
 									</RadioGroup>
 								)
 							}
-						</Form.Item> */}
+						</Form.Item>
 						<Form.Item label={formatMessage({id: 'basicParams.rotation'})}>
 							{
 								getFieldDecorator('rotation',{
@@ -255,7 +252,7 @@ class BasicParams extends Component {
 							<Button
 								type='primary'
 								htmlType='submit'
-								disabled={!form.isFieldsTouched(['nightMode','indicator','rotation'])}
+								disabled={!form.isFieldsTouched(['nightMode','indicator','rotation','WDRMode'])}
 
 								onClick={this.submit}
 

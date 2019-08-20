@@ -6,7 +6,7 @@ export default {
 	'photoManagement.queryPlaceholder': '请输入姓名或ID进行查询',
 	'photoManagement.addPhoto': '新增照片',
 	'photoManagement.uploadSuccess': '上传成功',
-	'photoManagement.uploadFail': '图片异常，上传失败',
+	'photoManagement.uploadFail': '照片异常，请删除上述异常照片后再进行确定操作',
 	'photoManagement.wrongFormat':'格式错误，上传失败',
 	'photoManagement.overSize':'大于1M，上传失败',
 	'photoManagement.FailforOver':'上传失败,照片大于1M',
