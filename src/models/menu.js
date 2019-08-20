@@ -7,7 +7,7 @@ import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
 // import routeConfig from '@/config/devRouter';
-import routeConfig from '@/config/router';
+import routeConfig from '@/config/uat-router';
 
 import { env } from '@/config';
 
@@ -181,7 +181,7 @@ export default {
 			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
 
 			console.log('input id:', pathId, '   matched path:', path);
-			// console.log(flattedRoutes);
+			console.log(flattedRoutes);
 
 			if (!path) {
 				router.push('/exception/404');
