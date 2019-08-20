@@ -82,6 +82,8 @@ export default {
 				...pagination,
 				...searchFormValues,
 				...payload,
+				page_num: pagination.current || 1,
+				page_size: pagination.pageSize || 10,
 			};
 
 			const response = yield call(handleESLAction, 'getInfo', options);
