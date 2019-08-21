@@ -38,6 +38,10 @@ export default {
 	],
 	copy: [
 		{
+			from: 'static',
+			to: 'static',
+		},
+		{
 			from: 'src/libs',
 			to: 'libs',
 		},

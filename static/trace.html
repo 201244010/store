@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+        <title>信息追溯</title>
+        <link rel="stylesheet" href="./css/reset.css">
+        <link rel="stylesheet" href="./css/index.css">
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    </head>
+    <body>
+        <div id="app">
+            <div class="banner">
+                <img v-if="detail" :src="detail.headerImg" alt="header">
+            </div>
+            <div v-if="detail" class="info product-info">
+                <h2>商品信息</h2>
+                <div class="item">
+                    <span class="name">商品名称:</span><span class="detail">{{detail.productInfo.name}}</span>
+                </div>
+                <div class="item">
+                    <span class="name">商品类型:</span><span class="detail">{{detail.productInfo.type}}</span>
+                </div>
+                <div class="item">
+                    <span class="name">商品产地:</span><span class="detail">{{detail.productInfo.address}}</span>
+                </div>
+                <div class="item">
+                    <span class="name">商品简介:</span><span class="detail">{{detail.productInfo.desc}}</span>
+                </div>
+            </div>
+            <div class="split"></div>
+            <div v-if="detail" class="info trace-info">
+                <h2>追溯消息</h2>
+                <div class="content">
+                    <div class="item">
+                        <img class="icon" src="./images/icon/pifashang.png" alt="">
+                        <h3>供应商信息</h3>
+                        <div class="item-content">
+                            <p><span class="name">供应商:</span><span class="detail">{{detail.traceInfo.pifashangInfo.name}}</span></p>
+                            <p><span class="name">联系人:</span><span class="detail">{{detail.traceInfo.pifashangInfo.contact}}</span></p>
+                            <p><span class="name">电话:</span><span class="detail">{{detail.traceInfo.pifashangInfo.phone}}</span></p>
+                            <p><span class="name">地址:</span><span class="detail">{{detail.traceInfo.pifashangInfo.address}}</span></p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img class="icon" src="./images/icon/ruku.png" alt="">
+                        <h3>入库信息</h3>
+                        <div class="item-content">
+                            <p><span class="name">入库时间:</span><span class="detail">{{detail.traceInfo.rukuInfo.time}}</span></p>
+                            <p><span class="name">批次号:</span><span class="detail">{{detail.traceInfo.rukuInfo.batchNumber}}</span></p>
+                            <p><span class="name">签收人:</span><span class="detail">{{detail.traceInfo.rukuInfo.signer}}</span></p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img class="icon" src="./images/icon/tuzai.png" alt="">
+                        <h3>运输信息</h3>
+                        <div class="item-content">
+                            <p><span class="name">货运公司:</span><span class="detail">{{detail.traceInfo.yunshuInfo.company}}</span></p>
+                            <p><span class="name">联系人:</span><span class="detail">{{detail.traceInfo.yunshuInfo.contact}}</span></p>
+                            <p><span class="name">地址:</span><span class="detail">{{detail.traceInfo.yunshuInfo.address}}</span></p>
+                            <p><span class="name">运输司机:</span><span class="detail">{{detail.traceInfo.yunshuInfo.driver}}</span></p>
+                            <p><span class="name">车牌号:</span><span class="detail">{{detail.traceInfo.yunshuInfo.number}}</span></p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img class="icon" src="./images/icon/lingshou.png" alt="">
+                        <h3>零售信息</h3>
+                        <div class="item-content">
+                            <p><span class="name">零售企业:</span><span class="detail">{{detail.traceInfo.lingshouInfo.company}}</span></p>
+                            <p><span class="name">联系人:</span><span class="detail">{{detail.traceInfo.lingshouInfo.contact}}</span></p>
+                            <p><span class="name">电话:</span><span class="detail">{{detail.traceInfo.lingshouInfo.phone}}</span></p>
+                            <p><span class="name">地址:</span><span class="detail">{{detail.traceInfo.lingshouInfo.address}}</span></p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <img class="icon" src="./images/icon/shanghu.png" alt="">
+                        <h3>商户信息</h3>
+                        <div class="item-content">
+                            <p><span class="name">商户号:</span><span class="detail">{{detail.traceInfo.shanghuInfo.number}}</span></p>
+                            <p><span class="name">联系人:</span><span class="detail">{{detail.traceInfo.shanghuInfo.contact}</span></p>
+                            <p><span class="name">电话:</span><span class="detail">{{detail.traceInfo.shanghuInfo.phone}</span></p>
+                            <p><span class="name">追溯码:</span><span class="detail">{{detail.traceInfo.shanghuInfo.traceNo}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            const list = {
+				1001: {
+					headerImg: './images/boluo.jpg',
+					productInfo: {
+						name: '神湾菠萝',
+						type: '水果',
+						address: '广东省中山市神湾镇',
+						desc: '神湾菠萝，果身圆形或椭圆形，果丁较深。一般每个重一市斤左右，色泽金黄，皮薄肉厚，肉细爽脆无渣，甜蜜清香而无酸味，齿颊留香，经久不散。神湾菠萝营养价值，菠萝含有一种叫“菠萝朊酶”的物质，它能分解蛋白质，有利于改善局部的血液循环，消除炎症和水肿；菠萝中所含糖、盐类和酶有利尿作用，适当食用对肾炎、高血压病患者有益。2016年12月28日，原国家质检总局批准对“神湾菠萝”实施地理标志产品保护。'
+					},
+					traceInfo: {
+						pifashangInfo: {
+							name: '广东神湾农产品专业合作社',
+							contact: '王先生',
+							phone: '18888888888',
+							address: '广东省中山市神湾镇'
+						},
+						rukuInfo: {
+							time: '2019/08/06 08:08:08',
+							batchNumber: '2019080608080801',
+							signer: '陈女士'
+						},
+						yunshuInfo: {
+							company: '中国货运公司',
+							contact: '郭先生',
+							address: '广东省中山市神湾镇',
+							driver: '柳先生',
+							number: '粤T88888'
+						},
+						lingshouInfo: {
+							company: '猫猫水果生鲜连锁超市闵行分店',
+							contact: '猫猫',
+							phone: '16812888888',
+							address: '上海市闵行区淞沪路388号',
+						},
+						shanghuInfo: {
+							number: '218',
+							contact: '芳芳',
+							phone: '12312345678',
+							traceNo: '3101155218081001967669'
+						}
+
+					}
+				},
+            	1002: {
+					headerImg: './images/chengzi.jpeg',
+					productInfo: {
+						name: '赣南脐橙',
+						type: '水果',
+						address: '江西省赣州市',
+						desc: '赣南脐橙，江西省赣州市特产，中国国家地理标志产品。赣南脐橙年产量达百万吨，原产地江西省赣州市已经成为脐橙种植面积世界第一，年产量世界第三、全国最大的脐橙主产区。赣南脐橙果大形正，橙红鲜艳，光洁美观，可食率达85%，肉质脆嫩、化渣，风味浓甜芳香，含果汁55%以上。赣南脐橙已被列为全国十一大优势农产品之一，荣获“中华名果”等称号。赣南脐橙作为江西省唯一产品，入围商务部、质检总局中欧地理标志协定谈判的地理标志产品清单。2016年，赣南脐橙品牌价值达到668.11亿元，连续四年位居全国初级农产品类地理标志产品价值榜榜首。2017年，赣南脐橙列入中欧“100+100”互认保护名单。'
+					},
+					traceInfo: {
+						pifashangInfo: {
+							name: '江西赣州农产品专业合作社',
+							contact: '王先生',
+							phone: '18888888888',
+							address: '江西省赣州市'
+						},
+						rukuInfo: {
+							time: '2019/08/06 08:08:08',
+							batchNumber: '2019080608080801',
+							signer: '陈女士'
+						},
+						yunshuInfo: {
+							company: '中国货运公司',
+							contact: '郭先生',
+							address: '江西省赣州市',
+							driver: '柳先生',
+							number: '粤T88888'
+						},
+						lingshouInfo: {
+							company: '猫猫水果生鲜连锁超市闵行分店',
+							contact: '猫猫',
+							phone: '16812888888',
+							address: '上海市闵行区淞沪路388号',
+						},
+						shanghuInfo: {
+							number: '218',
+							contact: '芳芳',
+							phone: '12312345678',
+							traceNo: '3101155218081001967669'
+						}
+
+					}
+				},
+				1003: {
+					headerImg: './images/pingguo.jpg',
+					productInfo: {
+						name: '阿克苏苹果',
+						type: '水果',
+						address: '新疆维吾尔自治区阿克苏地区',
+						desc: '阿克苏苹果又称加丽果，具有果面光滑细腻、色泽光亮、果肉细腻、果核透明、甘甜味厚、汁多无渣等特点。富含丰富的维生素C、纤维素、果胶等。而阿克苏苹果果核透明（俗称“糖心”）则是其区别于其他产地红富士苹果的显著标志。新疆阿克苏地区地处中纬度，位于塔里木盆地西北部，北高南低，日照丰富，热量适宜，属温带大陆性干旱气候，各地年日照时数2600小时以上，得天独厚的光能资源对红富士苹果品质的提高起到了很大的作用。光、水条件均比日本原产地和中国东部和西北东部苹果产区优越。2011年05月12日，原国家质检总局批准对“阿克苏苹果”实施地理标志产品保护。'
+					},
+					traceInfo: {
+						pifashangInfo: {
+							name: '新疆阿克苏农产品专业合作社',
+							contact: '王先生',
+							phone: '18888888888',
+							address: '新疆维吾尔自治区阿克苏地区'
+						},
+						rukuInfo: {
+							time: '2019/08/06 08:08:08',
+							batchNumber: '2019080608080801',
+							signer: '陈女士'
+						},
+						yunshuInfo: {
+							company: '中国货运公司',
+							contact: '郭先生',
+							address: '新疆维吾尔自治区阿克苏地区',
+							driver: '柳先生',
+							number: '粤T88888'
+						},
+						lingshouInfo: {
+							company: '猫猫水果生鲜连锁超市闵行分店',
+							contact: '猫猫',
+							phone: '16812888888',
+							address: '上海市闵行区淞沪路388号',
+						},
+						shanghuInfo: {
+							number: '218',
+							contact: '芳芳',
+							phone: '12312345678',
+							traceNo: '3101155218081001967669'
+						}
+
+					}
+				},
+				1004: {
+					headerImg: './images/pingguo.jpg',
+					productInfo: {
+						name: '雪花梨',
+						type: '水果',
+						address: '河北省赵县',
+						desc: '雪花梨是河北省土特名产之一，主要分布在河北省中南部，赵县是著名的集中产区，故称“赵州雪花梨”，当地人也称雪梨、“相相梨”。早在北魏时就有是向宫廷进贡的土特产品，至今已有2000多年的栽培历史。雪花梨也是河北省传统的大宗出口水果，在国内外久负盛誉。果肉细脆而嫩，汁多味甜，果汁含糖量11-15%，还含有大量的蛋白质，脂肪，果酸，矿物质及多种维生素等营养成分，此梨除生食风味独特外，还可加工成梨罐头，梨脯，梨汁等各具风味的工业食品和饮料，雪花梨还有较高的医用价值，具有清心润肺，利便，止咳，润燥清风，醒酒解毒等功效，中药“梨膏”即是用雪花梨配以中草药熬制而成的。'
+					},
+					traceInfo: {
+						pifashangInfo: {
+							name: '河北赵县农产品专业合作社',
+							contact: '王先生',
+							phone: '18888888888',
+							address: '河北省赵县'
+						},
+						rukuInfo: {
+							time: '2019/08/06 08:08:08',
+							batchNumber: '2019080608080801',
+							signer: '陈女士'
+						},
+						yunshuInfo: {
+							company: '中国货运公司',
+							contact: '郭先生',
+							address: '河北省赵县',
+							driver: '柳先生',
+							number: '粤T88888'
+						},
+						lingshouInfo: {
+							company: '猫猫水果生鲜连锁超市闵行分店',
+							contact: '猫猫',
+							phone: '16812888888',
+							address: '上海市闵行区淞沪路388号',
+						},
+						shanghuInfo: {
+							number: '218',
+							contact: '芳芳',
+							phone: '12312345678',
+							traceNo: '3101155218081001967669'
+						}
+
+					}
+				},
+            };
+            var app = new Vue({
+                el: '#app',
+                data: {
+                	traceId: ''
+                },
+                computed: {
+                    detail: function () {
+                        return list[this.traceId];
+					}
+                },
+                mounted: function () {
+                    this.traceId = window.location.search.split('=')[1];
+				}
+            })
+        </script>
+    </body>
+</html>
