@@ -51,6 +51,14 @@ const mapDispatchToProps = (dispatch) => ({
 			urlParams
 		}
 	}),
+	getDeviceInfo({ sn }) {
+		return dispatch({
+			type: 'ipcList/getDeviceInfo',
+			payload: {
+				sn
+			}
+		}).then(info => info);
+	},
 });
 @connect(mapStateToProps, mapDispatchToProps)
 class InitialSetting extends Component {
@@ -59,14 +67,24 @@ class InitialSetting extends Component {
 		percent: 0,
 		rebootVisible: false,
 		resetVisible: false,
+		deviceInfo:{
+			hasFaceid: false
+		}
 	}
 
 	interval = 0;
 
 
-	componentDidMount = () => {
-		const { init, sn } = this.props;
-		init(sn);
+	componentDidMount = async () => {
+		const { init, sn, getDeviceInfo } = this.props;
+		if(sn){
+			const deviceInfo = await getDeviceInfo({ sn });
+			this.setState({
+				deviceInfo
+			});
+			init(sn);
+		}
+
 	}
 
 	componentDidUpdate = () => {
@@ -123,7 +141,7 @@ class InitialSetting extends Component {
 			const { initialSetting: { status } } = this.props;
 			if(status === 'rebooting' || status === 'reseting') {
 				// message.info({})
-				this.setStatus('failed', msg);
+				this.setStatus('success', msg);
 				clearInterval(this.interval);
 			}
 		}, time+ 10*1000);
@@ -156,21 +174,33 @@ class InitialSetting extends Component {
 
 		const { reboot, sn } = this.props;
 		reboot(sn);
-		// const { rebootVisible, resetVisible } = this.state;
-		// // const { wait } =  this.props;
-		// if(rebootVisible) {
-		// 	const { reboot, sn } = this.props;
-		// 	reboot(sn);
-		// } else if(resetVisible){
-		// 	const { reset, sn } = this.props;
-		// 	reset(sn);
-		// }
-
+		setTimeout(() => {
+			// console.log(status);
+			const { initialSetting: { status: s } } =this.props;
+			// console.log(s);
+			if(s === 'waiting'){
+				this.setState({
+					rebootVisible: false
+				});
+				this.setStatus('overTime');
+				message.error(formatMessage({ id: 'initialSetting.error'}));
+			}
+		},10000);
 	}
 
 	resetHandle = () => {
 		const { reset, sn } = this.props;
 		reset(sn);
+		setTimeout(() => {
+			const { initialSetting: { status: s } } =this.props;
+			if(s === 'waiting'){
+				this.setState({
+					resetVisible: false
+				});
+				this.setStatus('overTime');
+				message.error(formatMessage({ id: 'initialSetting.error'}));
+			}
+		},10000);
 	}
 
 	showRebootModal = () => {
@@ -205,7 +235,7 @@ class InitialSetting extends Component {
 
 	render() {
 		const { initialSetting: { status, visible } } = this.props;
-		const { percent, rebootVisible,  resetVisible } = this.state;
+		const { percent, rebootVisible,  resetVisible, deviceInfo: { hasFaceid } } = this.state;
 		return (
 			<div>
 				<Card
@@ -213,25 +243,30 @@ class InitialSetting extends Component {
 					className={styles['main-card']}
 					title={formatMessage({ id: 'initialSetting.title'})}
 				>
-					<div className={styles['main-block']}>
-						<div className={styles['btn-block']}>
-							<Button className={styles['reboot-btn']} onClick={this.showRebootModal}>
-								{formatMessage({ id: 'initialSetting.reboot'})}
-							</Button>
-							<span className={styles['info-span']}>
-								{ `(${formatMessage({ id: 'initialSetting.rebootWarning'})})`}
-							</span>
-						</div>
-						<div className={styles['btn-block']}>
-							<Button className={styles['reset-btn']} onClick={this.showResetModal}>
-								{formatMessage({ id: 'initialSetting.reset'})}
-							</Button>
-							<span className={styles['info-span']}>
-								{ `(${formatMessage({ id: 'initialSetting.resetWarning'})})`}
-							</span>
-						</div>
+					{
+						hasFaceid ?
+							<div className={styles['warning-span']}><span>{formatMessage({ id: 'initialSetting.warningInfo'})}</span></div>
+							:
+							<div className={styles['main-block']}>
+								<div className={styles['btn-block']}>
+									<Button className={styles['reboot-btn']} onClick={this.showRebootModal}>
+										{formatMessage({ id: 'initialSetting.reboot'})}
+									</Button>
+									<span className={styles['info-span']}>
+										{formatMessage({ id: 'initialSetting.rebootWarning'})}
+									</span>
+								</div>
+								<div className={styles['btn-block']}>
+									<Button className={styles['reset-btn']} onClick={this.showResetModal}>
+										{formatMessage({ id: 'initialSetting.reset'})}
+									</Button>
+									<span className={styles['info-span']}>
+										{formatMessage({ id: 'initialSetting.resetWarning'})}
+									</span>
+								</div>
+							</div>
+					}
 
-					</div>
 				</Card>
 				<Modal
 					visible={rebootVisible && visible}
