@@ -60,10 +60,12 @@ class MqttClient {
 			client.on('connect', () => {
 				console.log('mqtt connect');
 				this.reconnectTimes = 0;
+				console.log('established client: ', client);
 				resolve(client);
 			});
 
 			client.on('reconnect', () => {
+				console.log(this);
 				console.log('mqtt reconnect', this.reconnectTimes);
 				this.reconnectTimes = this.reconnectTimes + 1;
 			});
@@ -105,9 +107,11 @@ class MqttClient {
 		const { client } = this;
 		this.handlerMap.delete(topic);
 		console.log('rest handler: ', this.handlerMap);
-		client.unsubscribe([topic], () => {
-			console.log('unsubscribe', topic);
-		});
+		if (client) {
+			client.unsubscribe([topic], () => {
+				console.log('unsubscribe', topic);
+			});
+		}
 	}
 
 	publish(topic, message = []) {
@@ -167,8 +171,8 @@ class MqttClient {
 		}
 	}
 
-	clearMsg({msgId}) {
-		const {msgIdMap} = this;
+	clearMsg({ msgId }) {
+		const { msgIdMap } = this;
 		msgIdMap.delete(msgId);
 	}
 }

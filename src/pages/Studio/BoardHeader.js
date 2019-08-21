@@ -139,7 +139,7 @@ export default class BoardHeader extends Component {
 						<Fragment>
 							{
 								templateInfo.name ?
-									<span className={styles['edit-content']}>{templateInfo.name}</span> :
+									<span className={styles['edit-content']}>{formatMessage({id: templateInfo.name })}</span> :
 									null
 							}
 							<img

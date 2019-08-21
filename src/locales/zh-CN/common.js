@@ -33,6 +33,7 @@ export default {
 	'link.forgot.password': '忘记密码',
 	'link.to.register': '注册账户',
 	'link.to.login': '使用已有账户登录',
+	'day.unit': '天',
 	'countDown.unit': '秒',
 	'countDown.unit.second': 's',
 	'list.action.title': '操作',

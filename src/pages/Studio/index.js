@@ -618,7 +618,9 @@ class Studio extends Component {
 			x: stageBox.left + textPosition.x,
 			y: stageBox.top + textPosition.y,
 		};
-		const offsetY = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? 0 : 4;
+
+		const offsetX = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? 0 : -1;
+		const offsetY = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? -4 : 5;
 
 		const inputEle = document.createElement('input');
 		document.body.appendChild(inputEle);
@@ -632,7 +634,7 @@ class Studio extends Component {
 		inputEle.style.fontFamily = targetDetail.fontFamily;
 		inputEle.style.color = targetDetail.fontColor;
 		inputEle.style.position = 'absolute';
-		inputEle.style.left = `${inputPosition.x}px`;
+		inputEle.style.left = `${inputPosition.x + offsetX}px`;
 		inputEle.style.top = `${inputPosition.y + offsetY}px`;
 		inputEle.style.width = `${targetDetail.width * targetDetail.scaleX}px`;
 		inputEle.style.height = `${targetDetail.fontSize * targetDetail.zoomScale}px`;

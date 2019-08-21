@@ -91,6 +91,18 @@ const router = [
 							},
 						],
 					},
+					{
+						path: '/application/payment',
+						name: 'payment',
+						routes: [
+							{
+								path: '/application/payment',
+								id: 'payment',
+								hideInMenu: true,
+								component: './Payment'
+							}
+						]
+					}
 				],
 			},
 
