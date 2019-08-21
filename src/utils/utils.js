@@ -552,3 +552,14 @@ export const formatSpeed = speed => {
 
 	return { speed, unit };
 };
+
+export const checkAnchor = (anchor = null) => {
+	if (!anchor) {
+		return null;
+	}
+	const anchorTag = document.createElement('a');
+	anchorTag.href = `#${anchor}`;
+	anchorTag.click();
+
+	return null;
+};
