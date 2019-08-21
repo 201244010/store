@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { Col, Icon, Input, Row, Select, Radio } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { SHAPE_TYPES, MAPS } from '@/constants/studio';
+import { SHAPE_TYPES, MAPS, FORMATS } from '@/constants/studio';
+// import { validEAN8Num, validEAN13Num } from '@/utils/studio';
 import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
 
@@ -24,6 +25,44 @@ const bindFieldsLocaleMap = {
 	productMemberPrice: 'basicData.product.memberPrice',
 	productPicture: 'basicData.product.image',
 };
+
+const fontSizes = [{
+	key: 9,
+	value: 9
+}, {
+	key: 10,
+	value: 10
+}, {
+	key: 11,
+	value: 11
+}, {
+	key: 12,
+	value: 12
+}, {
+	key: 14,
+	value: 14
+}, {
+	key: 16,
+	value: 16
+}, {
+	key: 18,
+	value: 18
+}, {
+	key: 20,
+	value: 20
+}, {
+	key: 28,
+	value: 28
+}, {
+	key: 36,
+	value: 36
+}, {
+	key: 48,
+	value: 48
+}, {
+	key: 72,
+	value: 72
+}];
 
 export default class RightToolBox extends Component {
 	constructor(props) {
@@ -48,6 +87,7 @@ export default class RightToolBox extends Component {
 			const detail = componentsDetail[selectedShapeName];
 			const oldNameIndex = detail.name.replace(/[^0-9]/gi, '');
 			const newType = `${value}@${detail.type.split('@')[2] || ''}`;
+			const smallFontSize = newType.indexOf('normal') > -1 ? detail.fontSize : FORMATS.DEFAULT_PRICE_SMALL_FONT_SIZE;
 			deleteSelectedComponent({
 				selectedShapeName,
 				isStep: false
@@ -56,6 +96,7 @@ export default class RightToolBox extends Component {
 				...detail,
 				type: newType,
 				name: `${newType}${oldNameIndex}`,
+				smallFontSize
 			});
 		} else {
 			const newDetail = {
@@ -85,6 +126,18 @@ export default class RightToolBox extends Component {
 				});
 			}
 		}
+	};
+
+	handleCodec = (value) => {
+		const {selectedShapeName, updateComponentsDetail} = this.props;
+		const newDetail = {
+			codec: value,
+		};
+
+		updateComponentsDetail({
+			isStep: true,
+			[selectedShapeName]: newDetail,
+		});
 	};
 
 	handleLineWidth = (detail, value) => {
@@ -125,19 +178,33 @@ export default class RightToolBox extends Component {
 	};
 
 	handleBindValue = (value) => {
-		if (value !== '' && !/^[0-9a-zA-Z]+$/.test(value)) {
-			return;
-		}
 		const {
 			componentsDetail,
 			selectedShapeName,
 			updateComponentsDetail,
 		} = this.props;
 
+		if (value !== '' && !/^[0-9a-zA-Z]+$/.test(value)) {
+			return;
+		}
+
+		const detail = componentsDetail[selectedShapeName];
+		// const valid = {
+		// 	EAN8: validEAN8Num,
+		// 	EAN13: validEAN13Num
+		// };
+		// if (valid[detail.codec] && !valid[detail.codec](value)) {
+		// 	updateComponentsDetail({
+		// 		[selectedShapeName]: {
+		// 			content: value,
+		// 		}
+		// 	});
+		// 	return;
+		// }
+
 		if (value === '') {
-			const detail = componentsDetail[selectedShapeName];
 			const image = new Image();
-			image.src = MAPS.imgPath[componentsDetail[selectedShapeName].type];
+			image.src = MAPS.imgPath[detail.type];
 			image.onload = () => {
 				updateComponentsDetail({
 					[selectedShapeName]: {
@@ -152,7 +219,6 @@ export default class RightToolBox extends Component {
 		}
 
 		if (this.hasSubString(SHAPE_TYPES.CODE_QR)) {
-			const detail = componentsDetail[selectedShapeName];
 			const bb = jQuery(document.createElement('canvas')).qrcode({
 				render: 'canvas',
 				text: value,
@@ -176,7 +242,6 @@ export default class RightToolBox extends Component {
 			};
 		}
 		if (this.hasSubString(SHAPE_TYPES.CODE_H) || this.hasSubString(SHAPE_TYPES.CODE_V)) {
-			const detail = componentsDetail[selectedShapeName];
 			const image = document.createElement('img');
 			JsBarcode(image, value, {
 				format: 'CODE128',
@@ -458,7 +523,7 @@ export default class RightToolBox extends Component {
 						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
 							<Col span={24}>
-								{formatMessage({ id: 'studio.tool.title.bg.color' })}
+								{formatMessage({ id: 'studio.tool.title.fill.color' })}
 							</Col>
 							<Col span={24}>
 								<Radio.Group
@@ -489,7 +554,9 @@ export default class RightToolBox extends Component {
 							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={24}>边框宽度</Col>
+							<Col span={24}>
+								{formatMessage({ id: 'studio.tool.label.stroke.width' })}
+							</Col>
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
@@ -499,7 +566,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Radio.Button style={{ width: '25%' }} value={0}>
-										无
+										0px
 									</Radio.Button>
 									<Radio.Button style={{ width: '25%' }} value={1}>
 										1px
@@ -514,7 +581,9 @@ export default class RightToolBox extends Component {
 							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={24}>边框颜色</Col>
+							<Col span={24}>
+								{formatMessage({ id: 'studio.tool.label.stroke.color' })}
+							</Col>
 							<Col span={24}>
 								<Radio.Group
 									style={{ width: '100%' }}
@@ -524,15 +593,15 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Radio.Button style={{ width: hasRed ? '33.33%' : '50%' }} value="black">
-										黑
+										{formatMessage({ id: 'studio.tool.label.black' })}
 									</Radio.Button>
 									<Radio.Button style={{ width: hasRed ? '33.33%' : '50%' }} value="white">
-										白
+										{formatMessage({ id: 'studio.tool.label.white' })}
 									</Radio.Button>
 									{
 										hasRed ?
 											<Radio.Button style={{ width: '33.33%' }} value="red">
-												红
+												{formatMessage({ id: 'studio.tool.label.red' })}
 											</Radio.Button> :
 											null
 									}
@@ -820,27 +889,6 @@ export default class RightToolBox extends Component {
 						</Row>
 					</div>
 				) : null}
-				{menuMap.isImage ? (
-					<div className={styles['tool-box-block']}>
-						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
-						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={24}>{formatMessage({ id: 'studio.tool.title.color' })}</Col>
-							<Col span={24}>
-								<Radio.Group style={{ width: '100%' }} value="black">
-									<Radio.Button style={{ width: '33.33%' }} value="black">
-										黑
-									</Radio.Button>
-									<Radio.Button style={{ width: '33.33%' }} value="white">
-										白
-									</Radio.Button>
-									<Radio.Button style={{ width: '33.33%' }} value="red">
-										红
-									</Radio.Button>
-								</Radio.Group>
-							</Col>
-						</Row>
-					</div>
-				) : null}
 				{menuMap.isPrice ? (
 					<div className={styles['tool-box-block']}>
 						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
@@ -871,7 +919,6 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Microsoft-Yahei">微软雅黑</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -898,18 +945,9 @@ export default class RightToolBox extends Component {
 														this.handleDetail('fontSize', value);
 													}}
 												>
-													<Option value={9}>9</Option>
-													<Option value={10}>10</Option>
-													<Option value={11}>11</Option>
-													<Option value={12}>12</Option>
-													<Option value={14}>14</Option>
-													<Option value={16}>16</Option>
-													<Option value={18}>18</Option>
-													<Option value={20}>20</Option>
-													<Option value={28}>28</Option>
-													<Option value={36}>36</Option>
-													<Option value={48}>48</Option>
-													<Option value={72}>72</Option>
+													{
+														fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
+													}
 												</Select>
 											</Col>
 										</Row>
@@ -934,18 +972,11 @@ export default class RightToolBox extends Component {
 														this.handleDetail('smallFontSize', value);
 													}}
 												>
-													<Option value={9}>9</Option>
-													<Option value={10}>10</Option>
-													<Option value={11}>11</Option>
-													<Option value={12}>12</Option>
-													<Option value={14}>14</Option>
-													<Option value={16}>16</Option>
-													<Option value={18}>18</Option>
-													<Option value={20}>20</Option>
-													<Option value={28}>28</Option>
-													<Option value={36}>36</Option>
-													<Option value={48}>48</Option>
-													<Option value={72}>72</Option>
+													{
+														fontSizes
+															.filter(size => size.value < detail.fontSize)
+															.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
+													}
 												</Select>
 											</Col>
 										</Row>
@@ -969,18 +1000,9 @@ export default class RightToolBox extends Component {
 												this.handleDetail('fontSize', value);
 											}}
 										>
-											<Option value={9}>9</Option>
-											<Option value={10}>10</Option>
-											<Option value={11}>11</Option>
-											<Option value={12}>12</Option>
-											<Option value={14}>14</Option>
-											<Option value={16}>16</Option>
-											<Option value={18}>18</Option>
-											<Option value={20}>20</Option>
-											<Option value={28}>28</Option>
-											<Option value={36}>36</Option>
-											<Option value={48}>48</Option>
-											<Option value={72}>72</Option>
+											{
+												fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
+											}
 										</Select>
 									</Col>
 								</Fragment>
@@ -1174,12 +1196,12 @@ export default class RightToolBox extends Component {
 											style={{ width: '100%' }}
 											value={detail.codec}
 											onChange={value => {
-												this.handleDetail('codec', value);
+												this.handleCodec(value);
 											}}
 										>
-											<Option value="ean8">ean8</Option>
-											<Option value="ean13">ean13</Option>
-											<Option value="code128">code128</Option>
+											<Option value="EAN8">ean8</Option>
+											<Option value="EAN13">ean13</Option>
+											<Option value="CODE128">code128</Option>
 										</Select>
 									</Col>
 								</Row> :

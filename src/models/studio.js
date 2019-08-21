@@ -2,15 +2,15 @@ import {IMAGE_TYPES, MAPS, SHAPE_TYPES, SIZES, RECT_SELECT_NAME, RECT_FIX_NAME} 
 import { filterObject, getLocationParam } from '@/utils/utils';
 import { getImagePromise, saveNowStep, isInComponent } from '@/utils/studio';
 
-function calcutePosition(stage, zoomScale) {
-	const screenType = getLocationParam('screen');
-	const {width, height} = MAPS.screen[screenType];
-
-	const x = (stage.width - width * zoomScale) / 2;
-	const y = (stage.height - height * zoomScale) / 2;
-
-	return {x, y};
-}
+// function calculatePosition(stage, zoomScale) {
+// 	const screenType = getLocationParam('screen');
+// 	const {width, height} = MAPS.screen[screenType];
+//
+// 	const x = (stage.width - width * zoomScale) / 2;
+// 	const y = (stage.height - height * zoomScale) / 2;
+//
+// 	return {x, y};
+// }
 
 export default {
 	namespace: 'studio',
@@ -31,15 +31,15 @@ export default {
 		zoomScale: 1
 	},
 	effects: {
-		* changeOneStep({ payload = {} }, { put, select }) {
-			const { stage, zoomScale } = yield select(state => state.studio);
-			const position = calcutePosition(stage, zoomScale);
+		* changeOneStep({ payload = {} }, { put }) {
+			// const { stage, zoomScale } = yield select(state => state.studio);
+			// const position = calculatePosition(stage, zoomScale);
 			const componentsDetail = {};
 			let hasImage = false;
 			Object.keys(payload).map(key => {
 				componentsDetail[key] = payload[key];
-				componentsDetail[key].x = componentsDetail[key].startX * zoomScale + position.x;
-				componentsDetail[key].y = componentsDetail[key].startY * zoomScale + position.y;
+				// componentsDetail[key].x = componentsDetail[key].startX * zoomScale + position.x;
+				// componentsDetail[key].y = componentsDetail[key].startY * zoomScale + position.y;
 				hasImage = hasImage || IMAGE_TYPES.includes(payload[key].type);
 			});
 

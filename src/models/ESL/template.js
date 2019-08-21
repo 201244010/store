@@ -198,7 +198,7 @@ export default {
 				});
 				layers = layers || [];
 
-				initTemplateDetail(stage, layers, zoomScale, payload.screenType);
+				initTemplateDetail(stage, layers, zoomScale);
 
 				const componentsDetail = {
 					isStep: !!templateInfo.studio_info

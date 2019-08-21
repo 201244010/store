@@ -365,6 +365,7 @@ class Studio extends Component {
 		} else {
 			batchUpdateScopedComponent();
 		}
+
 		// if (scope.x || scope.x === 0) {
 		// 	componentsDetail[selectedShapeName].x = scope.x;
 		// }
@@ -626,22 +627,26 @@ class Studio extends Component {
 			y: stageBox.top + textPosition.y,
 		};
 
+		const offsetX = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? 0 : -1;
+		const offsetY = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? -4 : 5;
+
 		const inputEle = document.createElement('input');
 		document.body.appendChild(inputEle);
 		inputEle.setAttribute('id', 'textInput');
+		inputEle.setAttribute('autocomplete', 'off');
 		inputEle.value = targetDetail.content;
 		inputEle.style.backgroundColor = 'transparent';
-		inputEle.style.border = '1px solid #ccc';
-		inputEle.style.borderRadius = '5px';
+		// inputEle.style.border = '1px solid #ccc';
+		// inputEle.style.borderRadius = '5px';
 		inputEle.style.fontSize = `${targetDetail.fontSize * zoomScale}px`;
 		inputEle.style.fontFamily = targetDetail.fontFamily;
 		inputEle.style.color = targetDetail.fontColor;
 		inputEle.style.position = 'absolute';
-		inputEle.style.left = `${inputPosition.x}px`;
-		inputEle.style.top = `${inputPosition.y}px`;
+		inputEle.style.left = `${inputPosition.x + offsetX}px`;
+		inputEle.style.top = `${inputPosition.y + offsetY}px`;
 		inputEle.style.width = `${targetDetail.width * targetDetail.scaleX}px`;
-		inputEle.style.height = `${targetDetail.height * targetDetail.scaleY}px`;
-		inputEle.style.lineHeight = `${targetDetail.lineHeight}`;
+		inputEle.style.height = `${targetDetail.fontSize * targetDetail.zoomScale}px`;
+		// inputEle.style.lineHeight = `${targetDetail.lineHeight}`;
 		inputEle.style.letterSpacing = `${targetDetail.letterSpacing}px`;
 		inputEle.style.textAlign = targetDetail.align;
 		inputEle.focus();
@@ -663,6 +668,7 @@ class Studio extends Component {
 				document.body.removeChild(inputEle);
 				updateComponentsDetail({
 					selectedShapeName: targetName,
+					updatePrecision: true,
 					[targetName]: {
 						content: inputValue || formatMessage({ id: 'studio.action.text.db.click' }),
 					},
@@ -689,8 +695,8 @@ class Studio extends Component {
 		const textInput = document.getElementById('textInput');
 		if (textInput) {
 			textInput.style.width = `${config.width * config.scaleX}px`;
-			textInput.style.height = `${config.height * config.scaleY}px`;
-			textInput.style.lineHeight = `${config.lineHeight}`;
+			textInput.style.height = `${config.fontSize * config.zoomScale}px`;
+			// textInput.style.lineHeight = `${config.lineHeight}`;
 		}
 	};
 
@@ -769,7 +775,7 @@ class Studio extends Component {
 							<Layer x={0} y={0} width={stageWidth} height={stageHeight}>
 								{Object.keys(componentsDetail).map(key => {
 									const targetDetail = componentsDetail[key];
-									if (targetDetail.name) {
+									if (targetDetail.name && targetDetail.name !== RECT_SELECT_NAME) {
 										return generateShape({
 											...targetDetail,
 											key,
@@ -787,6 +793,24 @@ class Studio extends Component {
 									}
 									return undefined;
 								})}
+								{
+									componentsDetail[RECT_SELECT_NAME] ?
+										generateShape({
+											...componentsDetail[RECT_SELECT_NAME],
+											key: RECT_SELECT_NAME,
+											stageWidth,
+											stageHeight,
+											scaleX: componentsDetail[RECT_SELECT_NAME].scaleX || 1,
+											scaleY: componentsDetail[RECT_SELECT_NAME].scaleY || 1,
+											zoomScale,
+											ratio: componentsDetail[RECT_SELECT_NAME].ratio || 1,
+											selected: selectedShapeName === RECT_SELECT_NAME,
+											onTransform: this.handleShapeTransform,
+											onTransformEnd: this.handleShapeTransformEnd,
+											onDblClick: this.handleShapeDblClick,
+										}) :
+										null
+								}
 								{!dragging &&
 									selectedShapeName &&
 									componentsDetail[selectedShapeName].type !==
@@ -796,7 +820,8 @@ class Studio extends Component {
 											componentsDetail={componentsDetail}
 											zoomScale={zoomScale}
 										/>
-									) : null}
+									) : null
+								}
 							</Layer>
 							{dragging && lines && !showRightToolBox ? (
 								<Layer x={0} y={0} width={stageWidth} height={stageHeight}>

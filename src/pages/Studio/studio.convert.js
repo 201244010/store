@@ -14,6 +14,12 @@ function convert(fileName) {
 		return;
 	}
 
+	if (jsonObject.layers[0].hasConverted || jsonObject.layers[0].startX !== undefined) {
+		return;
+	}
+
+	const fillFields = [];
+
 	for (let i = 0; i < jsonObject.layers.length; i++) {
 		const layer = jsonObject.layers[i];
 		if (layer.type === 'rect@fix') {
@@ -26,9 +32,20 @@ function convert(fileName) {
 		delete layer.backType;
 		delete layer.image;
 		delete layer.imageType;
+		delete layer.backIntStartX;
+		delete layer.backIntStartY;
+		delete layer.backSmallStartX;
+		delete layer.backSmallStartY;
 
 		if (layer.type) {
-			layer.type = layer.type.split('@')[0];
+			const types = layer.type.split('@');
+			layer.type = (types[0] || '').toLowerCase();
+			if (layer.type.indexOf('price') > -1) {
+				layer.subType = types[1];
+			}
+			if (layer.type.indexOf('line') > -1) {
+				layer.type = 'line';
+			}
 		}
 		layer.startX = layer.backStartX;
 		delete layer.backStartX;
@@ -64,6 +81,9 @@ function convert(fileName) {
 			if (layer.textDecoration === 'line-through') {
 				layer.strikethrough = 1;
 			}
+			if (layer.underline && layer.strikethrough) {
+				layer.strikethrough = 0;
+			}
 			delete layer.textDecoration;
 		} else {
 			delete layer.backBg;
@@ -74,15 +94,8 @@ function convert(fileName) {
 			delete layer.stroke;
 		}
 
-		if (layer.type === 'price') {
-			layer.intStartX = layer.backIntStartX;
-			delete layer.backIntStartX;
-			layer.intStartY = layer.backIntStartY;
-			delete layer.backIntStartY;
-			layer.smallStartX = layer.backSmallStartX;
-			delete layer.backSmallStartX;
-			layer.smallStartY = layer.backSmallStartY;
-			delete layer.backSmallStartY;
+		if (layer.bindField) {
+			fillFields.push(layer.bindField);
 		}
 
 		if (!layer.hasConverted) {
@@ -93,6 +106,7 @@ function convert(fileName) {
 		}
 	}
 
+	jsonObject.fillFields = fillFields;
 	jsonObject.layers.splice(fixIndex, 1);
 	jsonObject.layerCount = jsonObject.layers.length;
 
