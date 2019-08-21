@@ -5,6 +5,7 @@ import basicParams from './zh-CN/basicParams';
 import networkSetting from './zh-CN/networkSetting';
 import ipcManagement from './zh-CN/ipcManagement';
 import softwareUpdate from './zh-CN/softwareUpdate';
+import cardManagement from './zh-CN/cardManagement';
 import cloudService from './zh-CN/cloudService';
 import faceidLibrary from './zh-CN/faceidLibrary';
 import menu from './zh-CN/menu';
@@ -31,6 +32,7 @@ export default {
 	...basicParams,
 	...networkSetting,
 	...softwareUpdate,
+	...cardManagement,
 	...cloudService,
 	...menu,
 	...sdcard,
