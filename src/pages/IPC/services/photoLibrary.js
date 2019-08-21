@@ -113,7 +113,7 @@ export const handleUpload =  groupId => {
 
 
 	return {
-		action: `http://${IP}/ipc/api/face/group/uploadFace`,
+		action: `https://${IP}/ipc/api/face/group/uploadFace`,
 		data: file => (format('toSnake')({
 			name: file.name,
 			companyId,
