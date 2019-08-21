@@ -27,6 +27,7 @@ export default {
 	'menu.faceidLibrary.photoManagement': '照片管理',
 	'menu.faceidLibrary.list.photoManagement': '照片管理',
 	'menu.faceidLibrary.faceidLibraryList.photoManagement': '照片管理',
+	'menu.faceidLibrary.list.photoManagement':'照片管理',
 	'menu.faceidLibrary.faceidLibraryList': '人脸分组列表',
 	'menu.devices.ipcManagement': '摄像机设置',
 

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Col, Icon, Input, Row, Select, Radio } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { SHAPE_TYPES, MAPS } from '@/constants/studio';
+import { SHAPE_TYPES, MAPS, FORMATS } from '@/constants/studio';
 // import { validEAN8Num, validEAN13Num } from '@/utils/studio';
 import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
@@ -87,6 +87,7 @@ export default class RightToolBox extends Component {
 			const detail = componentsDetail[selectedShapeName];
 			const oldNameIndex = detail.name.replace(/[^0-9]/gi, '');
 			const newType = `${value}@${detail.type.split('@')[2] || ''}`;
+			const smallFontSize = newType.indexOf('normal') > -1 ? detail.fontSize : FORMATS.DEFAULT_PRICE_SMALL_FONT_SIZE;
 			deleteSelectedComponent({
 				selectedShapeName,
 				isStep: false
@@ -95,6 +96,7 @@ export default class RightToolBox extends Component {
 				...detail,
 				type: newType,
 				name: `${newType}${oldNameIndex}`,
+				smallFontSize
 			});
 		} else {
 			const newDetail = {
@@ -917,7 +919,6 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Microsoft-Yahei">微软雅黑</Option>
 								</Select>
 							</Col>
 						</Row>

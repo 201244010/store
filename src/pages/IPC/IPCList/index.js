@@ -71,27 +71,34 @@ class IPCList extends React.Component {
 			<div className={styles.container}>
 				<Spin spinning={loading.effects['ipcList/read']}>
 					{
-						ipcList.length === 0 && !loading.effects['ipcList/read'] ?
-							<NoIPCList />:
-							<div className="ipcList">
-								{/* <Button type="dashed" block>{<FormattedMessage id='ipcList.addIPC' />}</Button> */}
-								<Row gutter={8}>
-									{ipcList.map((item, index) => (
-										<IPCItem
-											empty={item.type === 'empty'}
-											isOnline={item.isOnline}
-											img={item.img}
-											sn={item.sn}
-											key={index}
-											type={item.type}
-											name={item.name}
-											listLength={ipcList.length}
-											onClickPlay={this.onClickPlay}
-											onClickSetting={this.onClickSetting}
-										/>
-									))}
-								</Row>
-							</div>
+						( () => {
+							if(!loading.effects['ipcList/read']){
+								return(
+									ipcList.length === 0 ?
+										<NoIPCList />:
+										<div className="ipcList">
+											{/* <Button type="dashed" block>{<FormattedMessage id='ipcList.addIPC' />}</Button> */}
+											<Row gutter={8}>
+												{ipcList.map((item, index) => (
+													<IPCItem
+														empty={item.type === 'empty'}
+														isOnline={item.isOnline}
+														img={item.img}
+														sn={item.sn}
+														key={index}
+														type={item.type}
+														name={item.name}
+														listLength={ipcList.length}
+														onClickPlay={this.onClickPlay}
+														onClickSetting={this.onClickSetting}
+													/>
+												))}
+											</Row>
+										</div>
+								);
+							}
+							return null;
+						})()
 					}
 				</Spin>
 			</div>
