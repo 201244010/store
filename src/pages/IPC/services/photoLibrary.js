@@ -112,8 +112,9 @@ export const handleUpload =  groupId => {
 	const IP = IPC_SERVER || API_ADDRESS;
 
 	
+
 	return {
-		action: `${document.location.protocol}//${IP}/ipc/api/face/group/uploadFace`,
+		action: `${window.location.protocol}//${IP}/ipc/api/face/group/uploadFace`,
 		data: file => (format('toSnake')({
 			name: file.name,
 			companyId,
