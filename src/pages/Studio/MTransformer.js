@@ -16,11 +16,13 @@ export default class MTransformer extends Component {
 		const { componentsDetail, selectedShapeName, zoomScale } = this.props;
 		const detail = componentsDetail[selectedShapeName];
 
-		if (newBoundBox.width < 3) {
-			newBoundBox.width = 3;
+		if (newBoundBox.width < (detail.fontSize || 10) * zoomScale) {
+			newBoundBox.width = (detail.fontSize || 10) * zoomScale;
+			return oldBoundBox;
 		}
-		if (newBoundBox.height < detail.fontSize * zoomScale) {
-			newBoundBox.height = detail.fontSize * zoomScale;
+		if (newBoundBox.height < (detail.fontSize || 10) * zoomScale) {
+			newBoundBox.height = (detail.fontSize || 10) * zoomScale;
+			return oldBoundBox;
 		}
 		return newBoundBox;
 	};
@@ -61,6 +63,7 @@ export default class MTransformer extends Component {
 					rotateAnchorOffset={20}
 					rotateEnabled={false}
 					enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+					boundBoxFunc={this.boundBoxFunc}
 				/>
 			);
 		}
@@ -75,6 +78,7 @@ export default class MTransformer extends Component {
 					rotateAnchorOffset={20}
 					rotateEnabled={false}
 					enabledAnchors={['middle-right', 'middle-left']}
+					boundBoxFunc={this.boundBoxFunc}
 				/>
 			);
 		}
@@ -89,6 +93,7 @@ export default class MTransformer extends Component {
 					rotateAnchorOffset={20}
 					rotateEnabled={false}
 					enabledAnchors={['top-center', 'bottom-center']}
+					boundBoxFunc={this.boundBoxFunc}
 				/>
 			);
 		}

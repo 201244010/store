@@ -136,6 +136,12 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 					<Text
@@ -143,6 +149,7 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
+							offsetY: -4,
 							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,
@@ -155,6 +162,12 @@ export default function generateShape(option) {
 							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
 							draggable: true,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 				</Group>
@@ -228,40 +241,66 @@ export default function generateShape(option) {
 								onTransform: option.onTransform,
 								onTransformEnd: option.onTransformEnd,
 								onDblClick: option.onDblClick,
+								onMouseOver: () => {
+									document.body.style.cursor = 'pointer';
+								},
+								onMouseOut: () => {
+									document.body.style.cursor = 'default';
+								},
 							}}
 						/>
 						<Image
 							{...{
-								x: option.x + ((SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - SIZES.DEFAULT_IMAGE_WIDTH) * option.zoomScale) / 2,
-								y: option.y + ((SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT * option.scaleY - SIZES.DEFAULT_IMAGE_HEIGHT) * option.zoomScale) / 2,
+								x: option.x + ((SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH - SIZES.DEFAULT_IMAGE_WIDTH) * option.scaleX * option.zoomScale) / 2,
+								y: option.y + ((SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT - SIZES.DEFAULT_IMAGE_HEIGHT) * option.scaleY * option.zoomScale) / 2,
 								width: SIZES.DEFAULT_IMAGE_WIDTH * option.zoomScale,
 								height: SIZES.DEFAULT_IMAGE_HEIGHT * option.zoomScale,
+								scaleX: option.scaleX,
+								scaleY: option.scaleY,
 								image: option.image,
+								onMouseOver: () => {
+									document.body.style.cursor = 'pointer';
+								},
+								onMouseOut: () => {
+									document.body.style.cursor = 'default';
+								},
 							}}
 						/>
 						{option.selected ? (
 							<Fragment>
 								<Rect
 									{...{
-										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
-										y: option.y - 50,
-										width: 180,
-										height: 32,
+										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 120) / 2,
+										y: option.y - 30,
+										width: 120,
+										height: 24,
 										fill: '#5085E3',
 										cornerRadius: 16,
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
 									}}
 								/>
 								<Text
 									{...{
-										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
-										y: option.y - 50,
-										width: 180,
-										height: 32,
-										lineHeight: 2.5,
+										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 120) / 2,
+										y: option.y - 30,
+										width: 120,
+										height: 24,
+										lineHeight: 2,
 										align: 'center',
-										fontSize: 14,
+										fontSize: 12,
 										fill: 'white',
 										text: '双击更换图片',
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
 									}}
 								/>
 							</Fragment>
@@ -286,6 +325,12 @@ export default function generateShape(option) {
 								onTransform: option.onTransform,
 								onTransformEnd: option.onTransformEnd,
 								onDblClick: option.onDblClick,
+								onMouseOver: () => {
+									document.body.style.cursor = 'pointer';
+								},
+								onMouseOut: () => {
+									document.body.style.cursor = 'default';
+								},
 							}}
 						/>
 						{option.selected ? (
@@ -298,6 +343,12 @@ export default function generateShape(option) {
 										height: 32,
 										fill: '#5085E3',
 										cornerRadius: 16,
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
 									}}
 								/>
 								<Text
@@ -311,6 +362,12 @@ export default function generateShape(option) {
 										fontSize: 14,
 										fill: 'white',
 										text: '双击更换图片',
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
 									}}
 								/>
 							</Fragment>
@@ -338,6 +395,12 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 					<Text
@@ -345,6 +408,7 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
+							offsetY: 6,
 							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,
@@ -354,10 +418,16 @@ export default function generateShape(option) {
 							align: option.align,
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
-							height: MAPS.containerHeight[option.type] * option.scaleY * option.zoomScale,
+							height: MAPS.containerHeight[option.type] * option.zoomScale,
 							// lineHeight: (MAPS.containerHeight[option.type] * option.scaleY) / option.fontSize,
 							draggable: true,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 				</Group>
@@ -382,6 +452,12 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 					<Shape
@@ -390,11 +466,17 @@ export default function generateShape(option) {
 							x: option.x,
 							y: option.y,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 							sceneFunc(context) {
 								const intPriceText = `${option.content}`.split('.')[0];
 								const smallPriceText = `${option.content}`.split('.')[1] || '';
 								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY - option.fontSize) * option.zoomScale) / 2;
-								const yPosition = 5;
+								const yPosition = 4;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
@@ -471,6 +553,12 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 					<Shape
@@ -479,11 +567,17 @@ export default function generateShape(option) {
 							x: option.x,
 							y: option.y,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 							sceneFunc(context) {
 								const intPriceText = `${option.content}`.split('.')[0];
 								const smallPriceText = `${option.content}`.split('.')[1] || '';
 								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY + option.fontSize) * option.zoomScale) / 2;
-								const yPosition = option.fontSize * option.zoomScale * 0.72 + 5;
+								const yPosition = option.fontSize * option.zoomScale * 0.72 + 2;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
@@ -558,6 +652,12 @@ export default function generateShape(option) {
 						draggable: true,
 						onTransform: option.onTransform,
 						onTransformEnd: option.onTransformEnd,
+						onMouseOver: () => {
+							document.body.style.cursor = 'pointer';
+						},
+						onMouseOut: () => {
+							document.body.style.cursor = 'default';
+						},
 					}}
 				/>
 			);
@@ -572,11 +672,22 @@ export default function generateShape(option) {
 							y: option.y,
 							width: MAPS.containerWidth[option.type] * option.zoomScale,
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							scaleX: option.scaleX,
+							scaleY: option.scaleY,
 							sceneFunc(context) {
 								context.rotate(Math.PI / 2);
 								context.translate(0, -MAPS.containerWidth[option.type] * option.zoomScale);
 								context.drawImage(option.image, 0, 0, MAPS.containerHeight[option.type] * option.zoomScale, MAPS.containerWidth[option.type] * option.zoomScale);
-							}
+							},
+							draggable: true,
+							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 					<Rect
@@ -589,8 +700,12 @@ export default function generateShape(option) {
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
 							draggable: true,
-							onTransform: option.onTransform,
-							onTransformEnd: option.onTransformEnd,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
 						}}
 					/>
 				</Group>
