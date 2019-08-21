@@ -3,7 +3,7 @@ import { customizeFetch } from '@/utils/fetch';
 import CONFIG from '@/config';
 import * as CookieUtil from '@/utils/cookies';
 
-const { IPC_SERVER } = CONFIG;
+const { IPC_SERVER, API_ADDRESS } = CONFIG;
 const request = customizeFetch('ipc/api/face/group', IPC_SERVER);
 const request1 = customizeFetch('ipc/api/face', IPC_SERVER);
 const range = customizeFetch('ipc/api/face/age', IPC_SERVER);
@@ -109,10 +109,11 @@ export const handleUpload =  groupId => {
 	// 	case 'test': IP = '47.99.16.199:30401';break;
 	// 	default: break;
 	// }
+	const IP = IPC_SERVER || API_ADDRESS;
 
 
 	return {
-		action: `http://${IPC_SERVER}/ipc/api/face/group/uploadFace`,
+		action: `http://${IP}/ipc/api/face/group/uploadFace`,
 		data: file => (format('toSnake')({
 			name: file.name,
 			companyId,
