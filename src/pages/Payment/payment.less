@@ -4,8 +4,54 @@
 	font-weight: bold;
 }
 
-.product-info{
+.product-info {
 	padding: 10px 0;
 	display: flex;
 	justify-content: flex-end;
+
+	.product-wrapper {
+		display: flex;
+		align-items: center;
+
+		.product-title {
+			min-width: 250px;
+			text-align: right;
+		}
+
+		.product-content {
+			min-width: 80px;
+			margin-left: 10px;
+			text-align: right;
+		}
+	}
+
+	.total-amount {
+		line-height: 40px;
+		font-size: 24px;
+		font-weight: bold;
+		color: lightcoral;
+		text-align: right;
+	}
+}
+
+.noAuth-wrapper {
+	padding: 20px 10px;
+	text-align: center;
+	font-weight: bold;
+
+	.noAuth-btn {
+		margin-top: 30px;
+	}
+}
+
+.action-bar {
+	margin-top: 20px;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+
+	.rest-time {
+		margin-right: 20px;
+		color: red;
+	}
 }
