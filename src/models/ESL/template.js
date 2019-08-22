@@ -1,6 +1,5 @@
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { hideSinglePageCheck } from '@/utils/utils';
 import { getImagePromise, initTemplateDetail, purifyJsonOfBackEnd } from '@/utils/studio';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import * as TemplateService from '@/services/ESL/template';
@@ -129,7 +128,6 @@ export default {
 						current: opts.current,
 						pageSize: opts.pageSize,
 						total: Number(result.total_count) || 0,
-						hideOnSinglePage: hideSinglePageCheck(result.total_count) || true,
 					},
 				},
 			});
