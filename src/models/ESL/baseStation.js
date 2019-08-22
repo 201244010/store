@@ -73,15 +73,13 @@ export default {
 			});
 		},
 		*fetchBaseStations({ payload = {} }, { call, put, select }) {
-			const { options = {} } = payload;
 			const { pagination, searchFormValues } = yield select(state => state.eslBaseStation);
 
 			yield put({
 				type: 'updateState',
 				payload: { loading: true },
 			});
-
-			const opts = Object.assign({}, pagination, searchFormValues, options);
+			const opts = Object.assign({}, pagination, searchFormValues, payload);
 			const response = yield call(Actions.fetchBaseStations, opts);
 			const result = response.data || {};
 			yield put({
