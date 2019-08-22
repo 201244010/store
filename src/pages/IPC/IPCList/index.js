@@ -28,9 +28,9 @@ import styles from './IPCList.less';
 
 class IPCList extends React.Component {
 
-	async componentWillMount() {
+	componentDidMount() {
 		const { loadList } = this.props;
-		await loadList();
+		loadList();
 	}
 
 	onClickSetting = (sn) => {
@@ -67,6 +67,7 @@ class IPCList extends React.Component {
 				});
 			}
 		}
+		console.log(loading.effects['ipcList/read']);
 		return (
 			<div className={styles.container}>
 				<Spin spinning={loading.effects['ipcList/read']}>
