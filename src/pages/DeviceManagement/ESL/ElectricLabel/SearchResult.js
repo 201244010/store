@@ -313,15 +313,17 @@ class SearchResult extends Component {
 										</a>
 									</Menu.Item>
 									<Menu.Divider />
-									<Menu.Item key="5">
-										<a
-											href="javascript: void (0);"
-											data-record={JSON.stringify(record)}
-										>
-											{formatMessage({ id: 'list.action.push.again' })}
-										</a>
-									</Menu.Item>
-									<Menu.Divider />
+									{record.product_id ? (
+										<Menu.Item key="5">
+											<a
+												href="javascript: void (0);"
+												data-record={JSON.stringify(record)}
+											>
+												{formatMessage({ id: 'list.action.push.again' })}
+											</a>
+										</Menu.Item>
+									) : null}
+									{record.product_id ? <Menu.Divider /> : null}
 									{record.product_id ? (
 										<Menu.Item key="0">
 											<a
