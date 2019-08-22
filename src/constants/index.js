@@ -85,5 +85,5 @@ export const AVATA_IMG = {
 	},
 };
 
-export const USER_PERMISSION_LIST = '__user_permission_list__';
 
+export const USER_PERMISSION_LIST = '__user_permission_list__';

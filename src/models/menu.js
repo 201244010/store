@@ -7,7 +7,7 @@ import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 import Storage from '@konata9/storage.js';
 // import routeConfig from '@/config/devRouter';
-import routeConfig from '@/config/router';
+import routeConfig from '@/config/uat-router';
 
 import { env } from '@/config';
 

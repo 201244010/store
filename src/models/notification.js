@@ -191,7 +191,7 @@ export default {
 					minor_button_link: minorButtonLink,
 					minor_button_name: minorButtonName,
 				} = data;
-				
+
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -261,22 +261,24 @@ export default {
 			yield switchLoadingStatus(false, put);
 		},
 
-		*updateNotificationStatus({ payload = {} }, { put, call, select }) {
+		*updateNotificationStatus({ payload = {} }, { select, put, call }) {
 			yield switchLoadingStatus(true, put);
 			const {
-				notificationList,
-				pagination: { current },
+				searchFormValues: { statusCode: storedStatusCode = -1 } = {},
+				notificationList = [],
+				pagination: { current = 1 },
 			} = yield select(state => state.notification);
+			// console.log('storedStatusCode', storedStatusCode);
 			const { msgIdList: msg_id_list, statusCode: status_code } = payload;
 			const response = yield call(Actions.handleNotifiCation, 'mailbox/updateReceiveStatus', {
 				msg_id_list,
 				status_code,
 			});
 			if (response && response.code === ERROR_OK) {
-				if (notificationList.length === msg_id_list.length) {
+				if (storedStatusCode === 0 && msg_id_list.length === notificationList.length) {
 					yield put({
 						type: 'getNotificationList',
-						payload: { current: current > 1 ? current - 1 : 1 },
+						payload: { current: current === 1 ? 1 : current - 1 },
 					});
 				} else {
 					yield put({

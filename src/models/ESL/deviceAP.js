@@ -82,6 +82,8 @@ export default {
 				...pagination,
 				...searchFormValues,
 				...payload,
+				page_num: payload.current || 1,
+				page_size: payload.pageSize || 10,
 			};
 
 			const response = yield call(handleAPAction, 'getInfo', options);
@@ -93,6 +95,8 @@ export default {
 						apInfoList: data.ap_firmware_group_info_list || [],
 						pagination: {
 							...pagination,
+							current: payload.current || 1,
+							pageSize: payload.pageSize || 10,
 							total: data.total_count || 0,
 						},
 					},

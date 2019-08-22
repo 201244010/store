@@ -13,3 +13,7 @@ export const money = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9
 export const pluCode = /^[0-9]{0,20}$/;
 export const productWeight = /^([0-9]{1,5})(\.[0-9]{0,3})?$/;
 export const dateNumber = /^-?\d{1,2}$/;
+export const employeeNumber = /^[\d\w]+$/;
+
+export const spaceInput = /^\S.*/;
+export const emojiInput = /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[A9|AE]\u3030|\uA9|\uAE|\u3030/ig;

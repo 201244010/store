@@ -1,0 +1,71 @@
+body {
+    margin: 0 auto;
+    max-width: 750px;
+}
+.split {
+    width: 100%;
+    height: 15px;
+    background: #efefef;
+}
+.banner {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 60%;
+    overflow: hidden;
+}
+.banner img {
+    width: 100%;
+}
+.info {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 25px 25px;
+}
+.product-info .item {
+    font-size: 13px;
+    line-height: 23px;
+}
+.info h2 {
+    padding: 15px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+.product-info .item .name {
+    margin-right: 6px;
+}
+.product-info .item .detail {
+    color: #a1a1a1;
+    margin-right: 4px;
+}
+.trace-info .content {
+    margin-left: 23px;
+    border-left: 2px solid #ebebeb;
+}
+.trace-info .item {
+    position: relative;
+    padding-left: 23px;
+}
+.trace-info .item .icon {
+    position: absolute;
+    left: -25px;
+    top: -6px;
+    width: 48px;
+    height: 48px;
+}
+.trace-info .item h3 {
+    font-size: 16px;
+    line-height: 30px;
+    font-weight: bold;
+}
+.trace-info .item .item-content {
+    padding: 8px;
+    line-height: 24px;
+    border-radius: 3px;
+    background: #f8f8f8;
+    color: #666;
+    font-size: 12px;
+}
+.trace-info .item .name {
+    margin-right: 6px;
+}

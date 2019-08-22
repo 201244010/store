@@ -154,7 +154,6 @@ const router = [
 					{
 						path: '/esl/template',
 						name: 'template',
-						hideInMenu: true,
 						id: 'template',
 						component: './Template',
 					},
@@ -174,31 +173,29 @@ const router = [
 					{
 						path: '/esl/deviceUpgrade',
 						name: 'deviceUpgrade',
-						hideInMenu: true,
 						id: 'deviceUpgrade',
-						routes: [
-							{
-								path: '/esl/deviceUpgrade',
-								name: 'overview',
-								id: 'deviceUpgradeOverview',
-								hideInMenu: true,
-								component: './DeviceManagement/ESL/DeviceUpgrade',
-							},
-							{
-								path: '/esl/deviceUpgrade/deviceESL',
-								name: 'deviceESL',
-								id: 'deviceESL',
-								hideInMenu: true,
-								component: './DeviceManagement/ESL/DeviceESL',
-							},
-							{
-								path: '/esl/deviceUpgrade/deviceAP',
-								name: 'deviceAP',
-								id: 'deviceAP',
-								hideInMenu: true,
-								component: './DeviceManagement/ESL/DeviceAP',
-							},
-						],
+						component: './DeviceManagement/ESL/DeviceUpgrade'
+					},
+					{
+						path: '/esl/deviceUpgrade/deviceESL',
+						name: 'deviceESL',
+						id: 'deviceESL',
+						hideInMenu: true,
+						component: './DeviceManagement/ESL/DeviceESL',
+					},
+					{
+						path: '/esl/deviceUpgrade',
+						name: 'overview',
+						id: 'deviceUpgradeOverview',
+						hideInMenu: true,
+						component: './DeviceManagement/ESL/DeviceUpgrade',
+					},
+					{
+						path: '/esl/deviceUpgrade/deviceAP',
+						name: 'deviceAP',
+						id: 'deviceAP',
+						hideInMenu: true,
+						component: './DeviceManagement/ESL/DeviceAP',
 					},
 					{ path: '/esl', redirect: '/esl/electricLabel' },
 				],
@@ -427,26 +424,58 @@ const router = [
 				path: '/faceidLibrary',
 				name: 'faceidLibrary',
 				id: 'faceidLibrary',
-				hideInMenu: true,
 				icon: 'blank',
 				// component: './index.js',
 				routes: [
+					{ path: '/faceidLibrary', redirect: '/faceidLibrary/faceidLibraryList' },
 					{
 						path: '/faceidLibrary/faceidLibraryList',
 						name: 'list',
 						id: 'faceidLibraryList',
-						component: './IPC/FaceidLibrary/LibraryList.js',
+						routes: [
+							{
+								path: '/faceidLibrary/faceidLibraryList/photoManagement',
+								name: 'photoManagement',
+								hideInMenu: true,
+								id: 'photoList',
+								component: './IPC/PhotoManagement/PhotoManagement.js',
+							},
+							{
+								path: '/faceidLibrary/faceidLibraryList',
+								id: 'faceidLibraryList',
+								component: './IPC/FaceidLibrary/LibraryList.js',
+							}
+						]
 					},
+					{
+						path: '/faceidLibrary/faceLog',
+						name: 'faceLog',
+						id: 'faceLog',
+						// component: './IPC/FaceLog/index.js',
+						routes: [
+							{
+								path: '/faceidLibrary/faceLog/entryDetail',
+								name: 'entryDetail',
+								id: 'entryDetail',
+								hideInMenu: true,
+								component: './IPC/EntryDetail/index.js',
+							},
+							{
+								path: '/faceidLibrary/faceLog',
+								hideInMenu: true,
+								// name: 'faceLog',
+								id: 'faceLog',
+								component: './IPC/FaceLog/index.js',
+							}
+						]
+					},
+
 					// {
 					// 	path: '/faceidLibrary/createLibrary',
 					// 	// name: 'faceidLibrary.create',
 					// 	id: 'createLibrary',
 					// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
 					// },
-					{
-						path: '/faceidLibrary',
-						redirect: '/faceidLibrary/faceidLibraryList',
-					},
 				],
 			},
 		],

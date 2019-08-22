@@ -38,13 +38,7 @@ export default {
 				}
 				return true;
 			});
-			// state.paymentDetailList.push(payload);
 		},
-		// readIpcList(state, { payload: { ipcList }}){
-		// 	state.ipcList = [
-		// 		...ipcList
-		// 	];
-		// }
 	},
 	effects: {
 		*read({ payload }, { put, call }){
@@ -65,12 +59,9 @@ export default {
 				currentPage,
 				pageSize
 			});
-
 			if (response.code === ERROR_OK) {
 				const { data: { list, total } } = response;
-
 				const orderNoList = list.map(item => item.orderNo);
-				// console.log(orderNoList);
 
 				if (orderNoList.length > 0) {
 					const { code, data } = yield call(getVideo, {orderNoList});
@@ -89,9 +80,17 @@ export default {
 					}
 				}
 
+				// const tradevideoList = list.map(item => {
+				// 	const ipcName = item.ipcName === ''? 'My Camera': item.ipcName;
+				// 	item.ipcName = ipcName;
+				// 	return {
+				// 		...item
+				// 	};
+				// });
 				yield put({
 					type: 'readData',
 					payload: {
+						// list: tradevideoList,
 						list,
 						total
 					}
@@ -115,7 +114,7 @@ export default {
 				}
 			});
 
-			// console.log(posList);
+			// console.log('pos',posList);
 			const ipcList = posList.filter((ipc) => {
 				// console.log(ipc.id.toString(), ipcId);
 				if (ipc.id.toString() === ipcId){
@@ -158,43 +157,6 @@ export default {
 			}
 			return [];
 		},
-		// *getIpcList(_,{ put }) {
-		// 	const ipcList = yield put.resolve({
-		// 		type: 'ipcList/getIpcList'
-		// 	});
-
-		// 	yield put({
-		// 		type: 'readIpcList',
-		// 		payload: {
-		// 			ipcList
-		// 		}
-		// 	});
-
-		// 	return ipcList;
-		// },
-		// *getVideo({ payload: { orderId } }, { call, select }) {
-
-		// 	const tradeVideos = yield select(state => state.tradeVideos.tradeVideos);
-		// 	// console.log(tradeVideos);
-		// 	let no = '';
-		// 	tradeVideos.every((item) => {
-		// 		if (item.orderId === orderId){
-		// 			no = item.orderNo;
-		// 			return false;
-		// 		}
-		// 		return true;
-		// 	});
-
-		// 	const response = yield call(getVideo, {
-		// 		orderNo: no
-		// 	});
-
-		// 	const { code, data } = response;
-		// 	if (code === ERROR_OK) {
-		// 		return data.address;
-		// 	}
-		// 	return '';
-		// },
 		*getDeviceInfoByPosSN({ payload: { sn, startTime, endTime }}, { put }) {
 			const posList = yield put.resolve({
 				type: 'getPOSList',
