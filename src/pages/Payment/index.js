@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Card, Table, Modal, Button, Tabs } from 'antd';
+import PaymentRadio from '@/components/BigIcon/PaymentRadio';
 import styles from './payment.less';
 
 const { TabPane } = Tabs;
@@ -123,7 +124,7 @@ class Payment extends PureComponent {
 				>
 					<Tabs defaultActiveKey="business" animated={false}>
 						<TabPane tab={formatMessage({ id: 'business.account' })} key="business">
-							Content of Tab Pane 1
+							<PaymentRadio />
 						</TabPane>
 						<TabPane tab={formatMessage({ id: 'person.account' })} key="account">
 							Content of Tab Pane 2
