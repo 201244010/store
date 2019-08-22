@@ -12,6 +12,7 @@
 		"property-no-unknown": [ true, {
 			"ignoreProperties": [ "composes" ]
 		}],
-		"indentation": "tab"
+		"indentation": "tab",
+		"length-zero-no-unit":null
 	}
 }

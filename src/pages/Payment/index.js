@@ -5,6 +5,11 @@ import { Card, Table, Modal, Button, Tabs } from 'antd';
 import PaymentRadio from '@/components/BigIcon/PaymentRadio';
 import styles from './payment.less';
 
+import businessBank from '@/assets/icon/business-bank.svg';
+import accountBank from '@/assets/icon/account-bank.svg';
+import alipayPayment from '@/assets/icon/alipay-payment.svg';
+import wechatPayment from '@/assets/icon/wechat-payment.svg';
+
 const { TabPane } = Tabs;
 
 const mockData = {
@@ -80,6 +85,10 @@ class Payment extends PureComponent {
 		});
 	};
 
+	radioChange = value => {
+		console.log('radio value: ', value);
+	};
+
 	render() {
 		const { modalVisible } = this.state;
 
@@ -124,10 +133,46 @@ class Payment extends PureComponent {
 				>
 					<Tabs defaultActiveKey="business" animated={false}>
 						<TabPane tab={formatMessage({ id: 'business.account' })} key="business">
-							<PaymentRadio />
+							<PaymentRadio
+								{...{
+									backgroundImg: businessBank,
+									name: 'payment',
+									id: 'businessBank',
+									value: 'businessBank',
+									onChange: this.radioChange,
+								}}
+							/>
 						</TabPane>
 						<TabPane tab={formatMessage({ id: 'person.account' })} key="account">
-							Content of Tab Pane 2
+							<div>
+								<PaymentRadio
+									{...{
+										backgroundImg: alipayPayment,
+										name: 'accountPayment',
+										id: 'alipayPayment',
+										value: 'alipayPayment',
+										onChange: this.radioChange,
+									}}
+								/>
+								<PaymentRadio
+									{...{
+										backgroundImg: wechatPayment,
+										name: 'accountPayment',
+										id: 'wechatPayment',
+										value: 'wechatPayment',
+										onChange: this.radioChange,
+									}}
+								/>
+								<PaymentRadio
+									{...{
+										backgroundImg: accountBank,
+										name: 'accountPayment',
+										id: 'accountBank',
+										value: 'accountBank',
+										onChange: this.radioChange,
+									}}
+								/>
+							</div>
 						</TabPane>
 					</Tabs>
 
