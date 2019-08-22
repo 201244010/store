@@ -363,6 +363,7 @@ class SearchResult extends Component {
 					</Form>
 				</div>
 				<Table
+					style={{marginTop: '20px'}}
 					rowKey="id"
 					loading={loading}
 					columns={columns}
