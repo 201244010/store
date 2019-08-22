@@ -82,8 +82,8 @@ export default {
 				...pagination,
 				...searchFormValues,
 				...payload,
-				page_num: pagination.current || 1,
-				page_size: pagination.pageSize || 10,
+				page_num: payload.current || 1,
+				page_size: payload.pageSize || 10,
 			};
 
 			const response = yield call(handleESLAction, 'getInfo', options);
@@ -95,6 +95,8 @@ export default {
 						eslInfoList: data.esl_firmware_group_info_list || [],
 						pagination: {
 							...pagination,
+							current: payload.current || 1,
+							pageSize: payload.pageSize || 10,
 							total: data.total_count || 0,
 						},
 					},
