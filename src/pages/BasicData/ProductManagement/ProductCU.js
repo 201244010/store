@@ -228,8 +228,8 @@ class ProductCU extends Component {
 				});
 				if (response && response.code === PRODUCT_SEQ_EXIST) {
 					setFields({
-						seq_num: {
-							values: values.seq_num,
+						seqNum: {
+							values: values.seqNum,
 							errors: [new Error(formatMessage({ id: 'product.seq_num.isExist' }))],
 						},
 					});
