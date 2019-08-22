@@ -1195,9 +1195,9 @@ export default class RightToolBox extends Component {
 												this.handleCodec(value);
 											}}
 										>
-											<Option value="EAN8">ean8</Option>
-											<Option value="EAN13">ean13</Option>
-											<Option value="CODE128">code128</Option>
+											<Option value="ean8">ean8</Option>
+											<Option value="ean13">ean13</Option>
+											<Option value="code128">code128</Option>
 										</Select>
 									</Col>
 								</Row> :
