@@ -9,7 +9,7 @@ const WEB_SOCKET_PREFIX = {
 };
 
 const SSO_ADDRESS = {
-	dev: 'dev.api.sunmi.com',
+	dev: 'test.api.sunmi.com',
 	test: 'test.api.sunmi.com',
 	uat: 'uat.api.sunmi.com',
 	onl: 'api.sunmi.com',
