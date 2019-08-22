@@ -23,8 +23,8 @@ const columns = [
 		key: 'productName',
 		render: (name, record) => (
 			<>
-				<img src={record.productImg}  />
-				<span>{name}</span>
+				<img src={record.productImg} />
+				<span style={{ marginLeft: '20px' }}>{name}</span>
 			</>
 		),
 	},
@@ -59,6 +59,7 @@ class Payment extends PureComponent {
 					{formatMessage({ id: 'order.number' })}：{mockData.orderNumber}
 				</div>
 				<Table columns={columns} dataSource={mockData.table} pagination={false} />
+				{/* <div className={styles['product-info']}></div> */}
 			</Card>
 		);
 	}
