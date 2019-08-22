@@ -149,7 +149,7 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
-							offsetY: -4,
+							offsetY: -2,
 							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,
@@ -408,7 +408,6 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
-							offsetY: 6,
 							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,
@@ -476,7 +475,7 @@ export default function generateShape(option) {
 								const intPriceText = `${option.content}`.split('.')[0];
 								const smallPriceText = `${option.content}`.split('.')[1] || '';
 								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY - option.fontSize) * option.zoomScale) / 2;
-								const yPosition = 4;
+								const yPosition = 2 * option.zoomScale;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;

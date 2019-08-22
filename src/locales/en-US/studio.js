@@ -45,7 +45,7 @@ export default {
 	'studio.tool.label.font.size.int': 'IntFontSize',
 	'studio.tool.label.font.size.small': 'SmallFontSize',
 	'studio.tool.label.font.color': 'FontColor',
-	'studio.tool.label.stroke.width': 'White',
+	'studio.tool.label.stroke.width': 'Width',
 	'studio.tool.label.small.type': 'Small Type',
 	'studio.tool.label.codec': 'Codec'
 };
