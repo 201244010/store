@@ -9,6 +9,9 @@ export default {
 	'network.status': '在线状态',
 	'network.deviceNum': '当前接入终端数',
 	'network.operation': '操作',
+	'menu.network.clientList': '客户端列表',
+	'menu.network.clientListTitle': '当前客户端列表',
+	
 
 	'network.networkId': '网络ID',
 	'network.upSpeed': '上传速度',
@@ -39,5 +42,12 @@ export default {
 	'network.readyUpgrade': '升级中...',
 	'network.rebootTitle': '您确定将此设备重新启动？',
 	'network.upgradeTitle': '您确定将此设备升级？',
-	'network.noMeshDevice': '暂无数据或设备版本过低'
+	'network.noMeshDevice': '暂无数据或设备版本过低',
+	
+	'network.hostName': '客户端名称',
+	'network.macAddress': 'MAC地址',
+	'network.ipAddress': 'IP地址',
+	'network.routerMac': '接入路由器',
+	'network.connectMode': '接入方式',
+	'network.ontime': '已接入时间'
 };

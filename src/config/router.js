@@ -229,6 +229,13 @@ const router = [
 						hideInMenu: true,
 						component: './DeviceManagement/Network/NetworkDetail',
 					},
+					{
+						path: '/network/clientList',
+						name: 'clientList',
+						id: 'clientList',
+						hideInMenu: true,
+						component: './DeviceManagement/Network/ClientList'
+					}
 				],
 			},
 
