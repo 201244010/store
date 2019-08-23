@@ -21,7 +21,7 @@ import {
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import PhotoCard from './PhotoCard';
-import { handleResponse, handleUpload } from '../services/photoLibrary';
+// import { handleResponse, handleUpload } from '../services/photoLibrary';
 import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
 import styles from './PhotoManagement.less';
 import global from '@/styles/common.less';
@@ -59,11 +59,16 @@ const redStyle = { color: 'red' };
 			dispatch({
 				type: 'photoLibrary/clearSelect',
 			}),
-		upload: payload =>
-			dispatch({
-				type: 'photoLibrary/upload',
-				payload,
-			}),
+		uploadFiles: (fileList, groupId) => {
+			const result = dispatch({
+				type:'photoLibrary/uploadFiles',
+				payload: {
+					fileList,
+					groupId
+				}
+			});
+			return result;
+		},
 		check: payload =>
 			dispatch({
 				type: 'photoLibrary/checked',
@@ -81,7 +86,7 @@ const redStyle = { color: 'red' };
 		clearPhotoList: () =>
 			dispatch({
 				type: 'photoLibrary/clearPhotoList',
-			}),
+			})
 	})
 )
 @Form.create()
@@ -96,7 +101,7 @@ class PhotoManagement extends React.Component {
 			removeRadioValue: 0,
 			showFailedModal: false,
 			failedList: [],
-			// overAmount: false,
+			overAmount: false,
 			uploadable: true,
 			filter: {
 				pageNum: 1,
@@ -106,9 +111,11 @@ class PhotoManagement extends React.Component {
 				gender: -1,
 			},
 			saveBtnDisabled: true,
-			fileError: false
+			fileError: false,
 		};
 	}
+
+
 
 	componentDidMount() {
 		const {
@@ -148,13 +155,15 @@ class PhotoManagement extends React.Component {
 			this.setState({
 				uploadable: false,
 				uploadPhotoShown: false,
-				fileError:false
+				fileError:false,
+				overAmount: false
 			});
 		} else {
 			this.setState({
 				uploadPhotoShown: true,
 				uploadable: true,
-				fileError:false
+				fileError:false,
+				overAmount: false
 			});
 		}
 	};
@@ -200,36 +209,88 @@ class PhotoManagement extends React.Component {
 		});
 	};
 
-	onUpload = ({ file, fileList }) => {
-		// console.log('upload',file, fileList);
+
+	upload = async  (fileList) => {
+		const { groupId } = this.state;
+		const { uploadFiles } = this.props;
+		// console.log('before',fileList);
+		const uploadList = fileList.filter(item => item.uploading === true);
+		// console.log('filter',uploadList);
+		const newList = await uploadFiles(uploadList, groupId);
+		// const newList = await uploadFiles(fileList, groupId);
+
+		const { fileList: list } = this.state;
+		// console.log(newList);
+		if(newList){
+			// console.log('in');
+			newList.forEach(item => {
+				const { response: { data: { verifyResult }, code } } = item;
+				if(verifyResult !== 1 || code !== 1) {
+					list.forEach(file => {
+						if(file.uid === item.uid){
+							file.status = 'error';
+							file.uploading = false;
+							file.response = item.response;
+						}
+					});
+				} else {
+					// item.status = 'done';
+					list.forEach(file => {
+						if(file.uid === item.uid){
+							// console.log('upload', item.uid);
+							file.status = 'done';
+							file.uploading = false;
+							file.response = item.response;
+						}
+					});
+				}
+			});
+		}
+		this.setState({
+			fileList: list,
+			saveBtnDisabled: !this.canSave(list),
+		});
+
+	}
+
+	onUpload = ({ fileList }) => {
+
+		// console.log('upload', fileList);
+
 		const limitCapacity = this.groupRestCapacity();
 		const limit = limitCapacity < 20 ? limitCapacity : 20;
 		if (fileList.length >= limit) {
 			// fileList.splice(20, fileList.length);
 			fileList.splice(limit, fileList.length);
 		}
-		const { status } = file;
-		if (status === 'done') {
-			fileList = handleResponse(fileList);
-			file = handleResponse(file);
-			if(file.response) {
-				const { response: { data: { verifyResult }, code } } = file;
-				if(verifyResult !== 1 || code !== 1) {
-					// message.error(`${file.name}, ${formatMessage({id:'photoManagement.uploadFail'})}`);
-					fileList.forEach(item => {
-						if (item.uid === file.uid) {
-							item.status = 'error';
-						}
-					});
-				}
-				// this.setState({fileList});
-			}
-		} else if (status === 'error') {
-			// message.error(`${file.name}${formatMessage({id:'photoManagement.uploadFail'})}`);
-			// this.setState({fileList});
-		}
+		// const { status } = file;
 
-		// console.log('upload',fileList);
+		// if (status === 'done') {
+		// 	fileList = handleResponse(fileList);
+		// 	file = handleResponse(file);
+		// 	if(file.response) {
+		// 		const { response: { data: { verifyResult }, code } } = file;
+		// 		if(verifyResult !== 1 || code !== 1) {
+		// 			fileList.forEach(item => {
+		// 				if (item.uid === file.uid) {
+		// 					item.status = 'error';
+		// 				}
+		// 			});
+		// 		}
+		// 	}
+		// }
+
+
+		fileList.forEach(item => {
+			if(item.originFileObj.status === 'error'){
+				item.status = 'error';
+			}
+			if(item.uploading){
+				item.status = 'uploading';
+			}
+
+
+		});
 
 		this.setState({
 			fileList: [...fileList],
@@ -237,12 +298,16 @@ class PhotoManagement extends React.Component {
 		});
 	};
 
-	beforeUpload = (file, fileList) => {
-		// 单次只允许上传20张；
 
-		// console.log('before',file);
-		if (fileList.indexOf(file) >= 20) {
-			return false;
+	beforeUpload = async (file, fileList) => {
+		// 单次只允许上传20张；
+		// console.log('before', fileList);
+
+		const limitCapacity = this.groupRestCapacity();
+		const limit = limitCapacity < 20 ? limitCapacity : 20;
+		if (fileList.length >= limit) {
+			// fileList.splice(20, fileList.length);
+			fileList.splice(limit, fileList.length);
 		}
 
 		const isLt1M = file.size / 1024 / 1024 < 1;
@@ -251,10 +316,17 @@ class PhotoManagement extends React.Component {
 		const isPic = isJPG || isPNG;
 		if (!(isLt1M && isPic)) {
 			file.status = 'error';
-			// const text = !isPic ? formatMessage({ id:'photoManagement.wrongFormat' }) : formatMessage({ id:'photoManagement.overSize' });
-			// message.error(`${file.name}, ${text}`);
+			file.uploading = false;
+		} else {
+			file.uploading = true;
 		}
-		return isLt1M && isPic;
+
+		const t = fileList[fileList.length - 1];
+		if (t === file) {
+			this.upload(fileList);
+		}
+		// return isLt1M && isPic;
+		return false;
 	};
 
 	// 确认移库
@@ -386,21 +458,23 @@ class PhotoManagement extends React.Component {
 		this.setState({ removeRadioValue: e.target.value });
 	};
 
+	// 判断是否可以保存
 	canSave = fileList => {
-		// console.log('save');
+		// console.log('save', fileList);
 		const limitCapacity = this.groupRestCapacity();
 		const limit = limitCapacity < 20 ? limitCapacity : 20;
 		// const limit = limitCapacity;
 
 		const list = fileList.filter(item => item.status !== 'removed');
-		// console.log(limitCapacity, limit);
+		const overAmount = list.length >= limitCapacity;
 		let fileError = false;
 		let successList = 0;
 		list.forEach(item => {
 			if (item.status === 'done') {
-				if (item.response.code === 1) {
-					successList++;
-				}
+				// if (item.response.code === 1) {
+				// 	successList++;
+				// }
+				successList++;
 			}
 			if(item.status === 'error') {
 				fileError = true;
@@ -409,26 +483,27 @@ class PhotoManagement extends React.Component {
 		let overLimit = false;
 		if (list.length > limit) {
 			this.setState({
-				// overAmount: true,
+				overAmount,
 				uploadable: false,
 				fileError
 			});
 			overLimit = true;
-		} else if (list.length === limit) {
+		} else if(list.length === limit) {
 			this.setState({
+				overAmount,
 				uploadable: false,
 				fileError
-				// overAmount: false,
 			});
 		} else if (list.length < limit) {
 			this.setState({
 				uploadable: true,
-				fileError
-				// overAmount: false,
+				fileError,
+				overAmount
 			});
 		}
+		// console.log(list, successList, overLimit);
 
-		// console.log('canSave: ', fileList, list, list.length > 0 && successList === list.length && !overLimit);
+		// console.log('canSave: ', list.length > 0 && successList === list.length && !overLimit);
 		return list.length > 0 && successList === list.length && !overLimit;
 	};
 
@@ -550,7 +625,7 @@ class PhotoManagement extends React.Component {
 			showFailedModal,
 			failedList,
 			fileError,
-			// overAmount,
+			overAmount,
 			uploadable,
 			filter: { gender, name, age, pageNum, pageSize },
 			saveBtnDisabled,
@@ -753,7 +828,9 @@ class PhotoManagement extends React.Component {
 						showUploadList={{ showPreviewIcon: false, showRemoveIcon: true }}
 						disabled={!uploadable}
 						multiple
-						{...handleUpload(groupId)}
+						// onRemove={this.removeFile}
+						// {...handleUpload(groupId)}
+						// customRequest={this.customRequest}
 					>
 						{this.uploadElement()}
 					</Upload>
@@ -775,10 +852,10 @@ class PhotoManagement extends React.Component {
 							if(fileError){
 								return(<span className={styles['fail-info']}>{formatMessage({id: 'photoManagement.uploadFail'})}</span>);
 							}
-							if(uploadable){
-								return <p>{formatMessage({ id: 'photoManagement.limitation' })}</p>;
+							if(overAmount){
+								return <p>{formatMessage({ id: 'photoManagement.countOver2' })}</p>;
 							}
-							return <p>{formatMessage({ id: 'photoManagement.countOver2' })}</p>;
+							return <p>{formatMessage({ id: 'photoManagement.limitation' })}</p>;
 						})()
 					}
 				</Modal>

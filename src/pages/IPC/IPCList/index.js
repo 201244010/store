@@ -67,7 +67,6 @@ class IPCList extends React.Component {
 				});
 			}
 		}
-		console.log(loading.effects['ipcList/read']);
 		return (
 			<div className={styles.container}>
 				<Spin spinning={loading.effects['ipcList/read']}>

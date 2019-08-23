@@ -10,6 +10,7 @@ import {
 	move,
 	readPhotoList,
 	saveFile,
+	handleUpload
 } from '../../services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -22,6 +23,7 @@ export default {
 		total: 0,
 		checkList: [],
 		ageRange: [],
+		fileList: []
 	},
 	reducers: {
 		readData(state, { payload }) {
@@ -204,6 +206,27 @@ export default {
 					checkList: []
 				}
 			});
+		},
+		*upload({ payload }, { call }) {
+			// console.log('payload',payload);
+			const response = yield call(handleUpload, payload);
+			// console.log(response);
+			return response;
+		},
+		*uploadFiles({ payload }, { put }) {
+			const { fileList, groupId } = payload;
+			for (let index = 0, len = fileList.length; index < len; index++){
+				const file = fileList[index];
+				const result = yield put.resolve({
+					type: 'upload',
+					payload: {
+						groupId,
+						file
+					}
+				});
+				file.response = result;
+			}
+			return fileList;
 		}
 	}
 };
