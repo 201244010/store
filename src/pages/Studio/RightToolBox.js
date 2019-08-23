@@ -419,16 +419,12 @@ export default class RightToolBox extends Component {
 				originFix.y = componentDetail.y;
 			}
 		});
-		let realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
-		let realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
-		if (SHAPE_TYPES.LINE_H === detail.type) {
-			realHeight = detail.strokeWidth;
-		}
-		if (SHAPE_TYPES.LINE_V === detail.type) {
-			realWidth = detail.strokeWidth;
-		}
+		const realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
+		const realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
+
 		const disabled = selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) > -1;
-		const heightDisabled = disabled || selectedShapeName.indexOf(SHAPE_TYPES.IMAGE) > -1;
+		const widthDisabled = disabled || selectedShapeName.indexOf(SHAPE_TYPES.LINE_V) > -1;
+		const heightDisabled = disabled || selectedShapeName.indexOf(SHAPE_TYPES.IMAGE) > -1 || selectedShapeName.indexOf(SHAPE_TYPES.LINE_H) > -1;
 		const hasRed = this.hasRed();
 		const bindFields = this.getRealBindFields();
 
@@ -492,7 +488,7 @@ export default class RightToolBox extends Component {
 								onChange={e => {
 									this.handleWidth(detail, e);
 								}}
-								disabled={disabled}
+								disabled={widthDisabled}
 							/>
 						</Col>
 						<Col span={12}>
@@ -1199,9 +1195,9 @@ export default class RightToolBox extends Component {
 												this.handleCodec(value);
 											}}
 										>
-											<Option value="EAN8">ean8</Option>
-											<Option value="EAN13">ean13</Option>
-											<Option value="CODE128">code128</Option>
+											<Option value="ean8">ean8</Option>
+											<Option value="ean13">ean13</Option>
+											<Option value="code128">code128</Option>
 										</Select>
 									</Col>
 								</Row> :
