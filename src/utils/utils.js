@@ -3,6 +3,7 @@ import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 
 import CONFIG from '@/config';
+import { TIME } from '@/constants';
 
 const { DES_KEY, DES_IV } = CONFIG;
 
@@ -562,4 +563,31 @@ export const checkAnchor = (anchor = null) => {
 	anchorTag.click();
 
 	return null;
+};
+
+export const getCountDown = (seconds, level = 'hour') => {
+	if (!seconds) {
+		console.error('Seconds is null');
+		return null;
+	}
+
+	const day = Math.floor(seconds / TIME.DAY);
+	const hour = Math.floor((seconds % TIME.DAY) / TIME.HOUR);
+	const minute = Math.floor(((seconds % TIME.DAY) % TIME.HOUR) / TIME.MINUTE);
+	const second = Math.floor(((seconds % TIME.DAY) % TIME.HOUR) % TIME.MINUTE);
+
+	if(level === 'day'){
+		return {
+			day,
+			hour,
+			minute,
+			second
+		};
+	}
+
+	return {
+		hour: hour === 0 ? 24 : hour,
+		minute,
+		second
+	};
 };

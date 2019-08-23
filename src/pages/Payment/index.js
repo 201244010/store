@@ -3,6 +3,8 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Card, Table, Modal, Button, Tabs } from 'antd';
 import PaymentRadio from '@/components/BigIcon/PaymentRadio';
+import { getCountDown } from '@/utils/utils';
+import { TIME } from '@/constants';
 import styles from './payment.less';
 
 import businessBank from '@/assets/icon/business-bank.svg';
@@ -74,10 +76,33 @@ const columns = [
 class Payment extends PureComponent {
 	constructor(props) {
 		super(props);
+		this.timer = null;
 		this.state = {
 			modalVisible: false,
+			countDown: TIME.DAY,
 		};
 	}
+
+	componentDidMount() {
+		this.startCountDown();
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.timer);
+	}
+
+	startCountDown = () => {
+		clearTimeout(this.timer);
+		this.timer = setTimeout(() => {
+			const { countDown } = this.state;
+			this.setState(
+				{
+					countDown: countDown - 1,
+				},
+				() => this.startCountDown()
+			);
+		}, 1000);
+	};
 
 	closeModal = () => {
 		this.setState({
@@ -90,7 +115,8 @@ class Payment extends PureComponent {
 	};
 
 	render() {
-		const { modalVisible } = this.state;
+		const { modalVisible, countDown } = this.state;
+		const { hour = '--', minute = '--', second = '--' } = getCountDown(countDown);
 
 		return (
 			<>
@@ -178,7 +204,10 @@ class Payment extends PureComponent {
 
 					<div className={styles['action-bar']}>
 						<div className={styles['rest-time']}>
-							{formatMessage({ id: 'purchase.time.rest' })}：
+							{formatMessage({ id: 'purchase.time.rest' })}：{hour}
+							{formatMessage({ id: 'hour.unit' })} {minute}
+							{formatMessage({ id: 'minute.unit' })} {second}
+							{formatMessage({ id: 'second.unit' })}
 						</div>
 						<Button type="primary">{formatMessage({ id: 'purchase.intime' })}</Button>
 					</div>
