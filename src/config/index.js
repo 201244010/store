@@ -12,8 +12,6 @@ export const FIRST_MENU_ORDER = [
 	'faceidLibrary',
 ];
 
-console.log(sysEnv);
-
 const WEB_SOCKET_PREFIX = {
 	dev: 'ws',
 	test: 'ws',
@@ -23,7 +21,7 @@ const WEB_SOCKET_PREFIX = {
 };
 
 const SSO_ADDRESS = {
-	dev: 'dev.api.sunmi.com',
+	dev: 'test.api.sunmi.com',
 	test: 'test.api.sunmi.com',
 	uat: 'uat.api.sunmi.com',
 	onl: 'api.sunmi.com',

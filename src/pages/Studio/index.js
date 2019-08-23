@@ -127,7 +127,11 @@ class Studio extends Component {
 				if (copiedComponent.name) {
 					if (copiedComponent.type !== SHAPE_TYPES.RECT_SELECT) {
 						const newPosition = {};
-						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+						if (!copiedComponent.copyCount) {
+							copiedComponent.copyCount = 1;
+						} else {
+							copiedComponent.copyCount++;
+						}
 						newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
 						newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
 
@@ -137,7 +141,11 @@ class Studio extends Component {
 							y: newPosition.y,
 						});
 					} else {
-						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+						if (!copiedComponent.copyCount) {
+							copiedComponent.copyCount = 1;
+						} else {
+							copiedComponent.copyCount++;
+						}
 						for (let i = 0; i < scopedComponents.length; i++) {
 							const {x, y, type, scaleY} = scopedComponents[i];
 							addComponent({
@@ -620,7 +628,7 @@ class Studio extends Component {
 		};
 
 		const offsetX = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? 0 : -1;
-		const offsetY = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? -4 : 5;
+		const offsetY = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? 0 : 2;
 
 		const inputEle = document.createElement('input');
 		document.body.appendChild(inputEle);
