@@ -113,7 +113,11 @@ class SearchResult extends Component {
 						},
 						() => {
 							resetFields();
-							window.open(`/studio?id=${response.data.template_id}&screen=${values.screen_type}`);
+							window.open(
+								`/studio?id=${response.data.template_id}&screen=${
+									values.screen_type
+								}`
+							);
 						}
 					);
 				}
@@ -173,7 +177,7 @@ class SearchResult extends Component {
 
 	validateTemplateName = (rule, value, callback) => {
 		// eslint-disable-next-line no-control-regex
-		const {length} = (value || '').replace(/[^\x00-\xff]/g, '01');
+		const { length } = (value || '').replace(/[^\x00-\xff]/g, '01');
 		if (length <= 40) {
 			callback();
 		} else {
@@ -203,10 +207,12 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.template.size' }),
 				dataIndex: 'screen_type_name',
+				render: text => <span>{formatMessage({ id: text })}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.template.color' }),
 				dataIndex: 'colour_name',
+				render: text => <span>{formatMessage({ id: text })}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.template.esl.num' }),
@@ -328,7 +334,7 @@ class SearchResult extends Component {
 										this.onFormChange('screen_type', type.id);
 									}}
 								>
-									{type.name}
+									{formatMessage({ id: type.name })}
 								</Button>
 							))}
 						</div>
@@ -356,7 +362,7 @@ class SearchResult extends Component {
 										this.onFormChange('colour', color.id);
 									}}
 								>
-									{color.name}
+									{formatMessage({ id: color.name })}
 								</Button>
 							))}
 						</div>
@@ -393,8 +399,8 @@ class SearchResult extends Component {
 										}),
 									},
 									{
-										validator: this.validateTemplateName
-									}
+										validator: this.validateTemplateName,
+									},
 								],
 							})(
 								<Input
@@ -474,8 +480,8 @@ class SearchResult extends Component {
 										}),
 									},
 									{
-										validator: this.validateTemplateName
-									}
+										validator: this.validateTemplateName,
+									},
 								],
 							})(
 								<Input

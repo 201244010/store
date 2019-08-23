@@ -1,9 +1,9 @@
 import { format } from '@konata9/milk-shake';
 import { customizeFetch } from '@/utils/fetch';
-import CONFIG, {env} from '@/config';
+import CONFIG from '@/config';
 import * as CookieUtil from '@/utils/cookies';
 
-const { IPC_SERVER } = CONFIG;
+const { IPC_SERVER, API_ADDRESS } = CONFIG;
 const request = customizeFetch('ipc/api/face/group', IPC_SERVER);
 const request1 = customizeFetch('ipc/api/face', IPC_SERVER);
 const range = customizeFetch('ipc/api/face/age', IPC_SERVER);
@@ -103,15 +103,17 @@ export const handleUpload =  groupId => {
 	const token = CookieUtil.getCookieByKey(CookieUtil.TOKEN_KEY) || '';
 	const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY) || '';
 	const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || '';
-	let IP = '47.96.240.44:35150';
-	switch (env) {
-		case 'dev': IP = '47.96.240.44:35150';break;
-		case 'test': IP = '47.99.16.199:30401';break;
-		default: break;
-	}
+	// let IP = '47.96.240.44:35150';
+	// switch (env) {
+	// 	case 'dev': IP = '47.96.240.44:35150';break;
+	// 	case 'test': IP = '47.99.16.199:30401';break;
+	// 	default: break;
+	// }
+
+	const IP = IPC_SERVER || API_ADDRESS;
 
 	return {
-		action: `http://${IP}/ipc/api/face/group/uploadFace`,
+		action: `${window.location.protocol}//${IP}/ipc/api/face/group/uploadFace`,
 		data: file => (format('toSnake')({
 			name: file.name,
 			companyId,

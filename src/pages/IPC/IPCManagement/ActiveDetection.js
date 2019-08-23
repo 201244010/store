@@ -238,7 +238,7 @@ class ActiveDetection extends React.Component {
 		const startTime = getFieldValue('startTime');
 		const endTime = getFieldValue('endTime');
 		// console.log(startTime, endTime);
-		if (startTime.isAfter(endTime) || startTime.isSame(endTime)){
+		if (startTime && startTime.isAfter(endTime) || startTime && startTime.isSame(endTime)){
 			return `HH:mm ${formatMessage({id: 'activeDetection.nextDay'})}`;
 		}
 		return 'HH:mm';

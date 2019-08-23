@@ -281,7 +281,15 @@ export default {
 		},
 
 		*updateAPConfig({ payload }, { put }) {
-			const { networkId, scanPeriod, isEnergySave, scanMulti = 2 } = payload;
+			const {
+				networkId,
+				scanPeriod,
+				isEnergySave,
+				scanMulti = 2,
+				clksyncPeriod = 3,
+				eslRefleshPeriod = 1,
+				eslRefleshTime = 4 * 60 * 60,
+			} = payload;
 			const requestTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
 				payload: { service: 'ESL/request' },
@@ -298,6 +306,35 @@ export default {
 								? parseInt(scanPeriod, 10) + IN_ENERGY_SAVE
 								: parseInt(scanPeriod, 10),
 							scan_multi: scanMulti,
+						},
+					},
+				},
+			});
+
+			yield put({
+				type: 'mqttStore/publish',
+				payload: {
+					topic: requestTopic,
+					message: {
+						opcode: OPCODE.SET_CLKSYNC,
+						param: {
+							network_id: networkId,
+							clksync_period: clksyncPeriod,
+						},
+					},
+				},
+			});
+
+			yield put({
+				type: 'mqttStore/publish',
+				payload: {
+					topic: requestTopic,
+					message: {
+						opcode: OPCODE.SET_SELF_REFRESH,
+						param: {
+							network_id: networkId,
+							esl_reflesh_period: eslRefleshPeriod,
+							esl_reflesh_time: eslRefleshTime,
 						},
 					},
 				},
