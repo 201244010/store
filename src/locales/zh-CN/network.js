@@ -49,5 +49,13 @@ export default {
 	'network.ipAddress': 'IP地址',
 	'network.routerMac': '接入路由器',
 	'network.connectMode': '接入方式',
-	'network.ontime': '已接入时间'
+	'network.ontime': '已接入时间',
+	
+	'network.routerEvent.title': '事件列表',
+	'network.connect.time': '时间',
+	'network.connect.eventType': '事件类型',
+	'network.connect.eventType5': 'CPU过高',
+	'network.connect.eventType7': '内存过高',
+	'network.connect.eventType.unknown': '未知事件类型',
+	'network.routerEvent.requestFail': '事件列表请求失败',
 };

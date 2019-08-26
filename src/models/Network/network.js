@@ -359,6 +359,11 @@ export default {
 				payload: { topic: responseTopic },
 			});
 		},
+		*getEventList({ payload }, { call }) {
+			const param = format('toSnake')(payload);
+			const response = yield call(Actions.getNetworkEventList, 'device/getEventList', param);
+			return format('toCamel')(response);
+		}
 	},
 
 	reducers: {
