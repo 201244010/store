@@ -115,4 +115,5 @@ export default {
 	'menu.network': '网络设备',
 	'menu.network.list': '网络设备',
 	'menu.network.detail': '网络设备详情',
+	'menu.network.configManagement': '配置管理'
 };
