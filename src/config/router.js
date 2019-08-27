@@ -92,14 +92,14 @@ const router = [
 						],
 					},
 					{
-						path: '/application/payment',
-						name: 'payment',
+						path: '/application/trade',
+						name: 'trade',
 						routes: [
 							{
-								path: '/application/payment',
-								id: 'payment',
+								path: '/application/trade',
+								id: 'trade',
 								hideInMenu: true,
-								component: './Payment'
+								component: './Trade'
 							}
 						]
 					}

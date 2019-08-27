@@ -5,7 +5,7 @@ import { Card, Table, Modal, Button, Tabs } from 'antd';
 import PaymentRadio from '@/components/BigIcon/PaymentRadio';
 import { getCountDown } from '@/utils/utils';
 import { TIME } from '@/constants';
-import styles from './payment.less';
+import styles from './trade.less';
 
 import businessBank from '@/assets/icon/business-bank.svg';
 import accountBank from '@/assets/icon/account-bank.svg';
@@ -73,7 +73,7 @@ const columns = [
 ];
 
 @connect()
-class Payment extends PureComponent {
+class Trade extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.timer = null;
@@ -219,4 +219,4 @@ class Payment extends PureComponent {
 	}
 }
 
-export default Payment;
+export default Trade;
