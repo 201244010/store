@@ -1,5 +1,5 @@
-import { getFaceLogList } from '../../services/faceLog';
-import { getLibrary, getRange, move } from '../../services/photoLibrary';
+import { getFaceLogList } from '../services/faceLog';
+import { getLibrary, getRange, move } from '../services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
 
