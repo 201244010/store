@@ -19,7 +19,7 @@ const IconEquipment = ({ color }) => (
 	</svg>
 );
 
-const IconLink = ({color}) => (
+const IconLink = ({ color }) => (
 	<svg
 		width="40px"
 		height="40px"
@@ -57,4 +57,33 @@ const IconNetwork = ({ color }) => (
 	</svg>
 );
 
-export { IconLink, IconEquipment, IconNetwork };
+const IconBandwidth = () => (
+	<svg
+		version="1.1"
+		id="图层_1"
+		xmlns="http://www.w3.org/2000/svg"
+		x="0px"
+		y="0px"
+		width="14px"
+		height="14px"
+	>
+		<g id="bandwidth" troke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+			<g>
+				<rect id="矩形备份-2" className="st0" width="14" height="14" />
+				<path
+					id="Combined-Shape"
+					className="st1"
+					d="M7,2c0.3,0,0.5,0.2,0.5,0.5S7.3,3,7,3C4.8,3,3,4.8,3,7s1.8,4,4,4s4-1.8,4-4
+			c0-0.3,0.2-0.5,0.5-0.5S12,6.7,12,7c0,2.8-2.2,5-5,5S2,9.8,2,7S4.2,2,7,2z M9.4,4.6c0.1,0.1,0.1,0.2,0,0.3L7.3,7.7c0,0,0,0,0,0
+			C7.1,7.9,6.9,8,6.7,8C6.3,8,6,7.7,6,7.3C6,7.1,6.1,7,6.2,6.8c0,0,0,0,0.1-0.1l2.8-2.2C9.2,4.5,9.3,4.5,9.4,4.6z M11,4
+			c0.3,0.5,0.6,1,0.8,1.5c0.1,0.3-0.1,0.5-0.3,0.6s-0.5-0.1-0.6-0.3c-0.1-0.4-0.3-0.9-0.6-1.2c-0.2-0.2-0.1-0.5,0.1-0.7
+			C10.5,3.7,10.8,3.8,11,4z M8.4,2.2c0.5,0.2,1,0.4,1.5,0.7c0.2,0.2,0.3,0.5,0.1,0.7C9.8,3.8,9.5,3.9,9.3,3.7C9,3.5,8.6,3.3,8.1,3.2
+			C7.9,3.1,7.7,2.8,7.8,2.5S8.2,2.1,8.4,2.2z"
+					fill='currentColor'
+				/>
+			</g>
+		</g>
+	</svg>
+);
+
+export { IconLink, IconEquipment, IconNetwork, IconBandwidth };

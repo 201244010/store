@@ -12,6 +12,47 @@ export default {
 			totalCount: 0,
 			networkDeviceList: [],
 		},
+		tabType: {
+			wireless: 1,
+			qos: 'init',
+		},
+		qosList: {
+			totalCount: 3,
+			configList: [
+				{
+					id: 123,
+					name: 'ada',
+					config: {
+						qos: {
+							enable: true,
+							source: 'speedtest/default/manual',
+							operator: 'user/OEM',
+							upBandwidth: '20480',
+							downBandwidth: '102400',
+							sunmiWeight: '50',
+							whiteWeight: '30',
+							normalWeight: '20',
+						},
+					},
+				},
+			],
+		},
+		qosInfo: {
+			id: 123,
+			name: 'ada',
+			config: {
+				qos: {
+					enable: true,
+					source: 'speedtest/default/manual',
+					operator: 'user/OEM',
+					upBandwidth: '20480',
+					downBandwidth: '102400',
+					sunmiWeight: '50',
+					whiteWeight: '30',
+					normalWeight: '20',
+				},
+			},
+		},
 	},
 
 	effects: {
@@ -42,6 +83,70 @@ export default {
 					},
 				});
 			}
+		},
+		*getQosList(_, { call, put }) {
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/getList');
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { totalCount = 0, configList = [] } = format('toCamel')(data);
+				yield put({
+					type: 'updateState',
+					payload: {
+						qosList: { totalCount, configList },
+					},
+				});
+			}
+			return response;
+		},
+		*getQosInfo(_, { call, put }) {
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/getInfo');
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const qosInfo = format('toCamel')(data);
+				yield put({
+					type: 'updateState',
+					payload: {
+						qosInfo,
+					},
+				});
+			}
+			return response;
+		},
+		*createQos({ payload }, { call, put }) {
+			const opts = {
+				...payload,
+			};
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/create', opts);
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'getQosList',
+				});
+			}
+			return response;
+		},
+		*updateQos({ payload }, { call, put }) {
+			const opts = {
+				...payload,
+			};
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/update', opts);
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'getQosList',
+				});
+			}
+			return response;
+		},
+		*deleteQos({ payload }, { call, put }) {
+			const opts = {
+				...payload,
+			};
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/delete', opts);
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'getQosList',
+				});
+			}
+			return response;
 		},
 		*getOverview(_, { call, put }) {
 			const response = yield call(Actions.handleNetworkEquipment, 'device/getOverview');
@@ -110,7 +215,9 @@ export default {
 						item.clientCount = (
 							networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
 						).clientCount;
-
+						item.onlineTime = (
+							networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
+						).onlineTime;
 						return item;
 					});
 				yield put({
@@ -145,27 +252,46 @@ export default {
 						const { data = [], msgId } = format('toCamel')(JSON.parse(receivedMessage));
 						const { opcode, errcode } = data[0] || {};
 						const sn = msgMap.get(msgId);
-						if (opcode === '0x2025' && errcode === 0) {
-							const clientNumber = data[0].result.data.length || 0;
-							const guestNumber = data[0].result.data.filter(
-								item => item.bridge === 'br-guest'
-							).length;
-							handler({ msgId, opcode, sn, clientNumber, guestNumber });
+						switch (opcode) {
+							case '0x2025':
+								if (errcode === 0) {
+									const clientNumber = data[0].result.data.length || 0;
+									const guestNumber = data[0].result.data.filter(
+										item => item.bridge === 'br-guest'
+									).length;
+									handler({ msgId, opcode, sn, clientNumber, guestNumber });
+								}
+								break;
+							case '0x2040':
+								if (errcode === 0) {
+									const wan = data[0].result.trafficStats.wan;
+									const { speed: upSpeed, unit: upUnit } = formatSpeed(
+										wan.curTxBytes
+									);
+									const { speed: downSpeed, unit: downUnit } = formatSpeed(
+										wan.curRxBytes
+									);
+									handler({
+										msgId,
+										opcode,
+										sn,
+										upSpeed,
+										upUnit,
+										downSpeed,
+										downUnit,
+									});
+								}
+								break;
+							case '0x2116':
+								console.log(data);
+								if (errcode === 0) {
+									const devices = data[0].result.sonconnect.devices;
+									handler({ msgId, opcode, sn, devices });
+								}
+								break;
+							default: 
+								break;
 						}
-
-						if (opcode === '0x2040' && errcode === 0) {
-							const wan = data[0].result.trafficStats.wan;
-							const { speed: upSpeed, unit: upUnit } = formatSpeed(wan.curTxBytes);
-							const { speed: downSpeed, unit: downUnit } = formatSpeed(
-								wan.curRxBytes
-							);
-							handler({ msgId, opcode, sn, upSpeed, upUnit, downSpeed, downUnit });
-						}
-
-						// if (opcode === '0x207b' && errcode === 0) {
-						// 	// const result = res.data[0].result.upgrade;
-						// 	handler({ msgId, opcode, sn });
-						// }
 					},
 				},
 			});
@@ -197,6 +323,7 @@ export default {
 				upUnit,
 				downSpeed,
 				downUnit,
+				devices = [],
 			} = payload;
 			const {
 				networkList,
@@ -216,6 +343,14 @@ export default {
 				return { ...item };
 			});
 			const tmpDeviceList = networkDeviceList.map(item => {
+				if (opcode === '0x2116') {
+					return {
+						...item,
+						onlineTime: (devices.filter(items => items.devid === item.sn)[0] || {})
+							.uptime,
+					};
+				}
+
 				if (item.sn === sn) {
 					switch (opcode) {
 						case '0x2025':
@@ -230,6 +365,7 @@ export default {
 							return { ...item };
 					}
 				}
+
 				return { ...item };
 			});
 			yield put({
@@ -304,6 +440,21 @@ export default {
 						opcode: OPCODE.GET_ROUTES_DETAIL,
 						param: { network_id: networkId, sn },
 					},
+				},
+			});
+		},
+
+		*changeTabType({ payload = {} }, { put, select }) {
+			const { type, value } = payload;
+			const { tabType, qosInfo } = yield select(state => state.network);
+			yield put({
+				type: 'updateState',
+				payload: {
+					tabType: {
+						...tabType,
+						[type]: value,
+					},
+					qosInfo: value === 'create' ? {} : qosInfo,
 				},
 			});
 		},
