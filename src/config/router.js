@@ -202,6 +202,30 @@ const router = [
 			},
 
 			{
+				path: '/network',	
+				name: 'network',
+				id: 'network',
+				icon: 'blank',
+				routes: [
+					{ path: '/network', redirect: '/network/list' },
+					{
+						path: '/network/list',
+						name: 'list',
+						id: 'networkList',
+						hideInMenu: true,
+						component: './DeviceManagement/Network',
+					},
+					{
+						path: '/network/detail',
+						name: 'detail',
+						id: 'networkDetail',
+						hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkDetail',
+					},
+				],
+			},
+
+			{
 				path: '/basicData',
 				name: 'basicData',
 				icon: 'blank',

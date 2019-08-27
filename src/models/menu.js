@@ -18,6 +18,7 @@ const FIRST_MENU_ORDER = [
 	'application',
 	'devices',
 	'esl',
+	'network',
 	'basicData',
 	'faceidLibrary',
 ];
@@ -142,7 +143,6 @@ export default {
 			const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
 
 			let filteredMenuData = menuData;
-
 			// const permissionResult = yield put.resolve({
 			// 	type: 'role/getUserPermissionList',
 			// });

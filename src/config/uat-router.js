@@ -202,6 +202,30 @@ const router = [
 			},
 
 			{
+				path: '/network',	
+				name: 'network',
+				id: 'network',
+				icon: 'blank',
+				routes: [
+					{ path: '/network', redirect: '/network/list' },
+					{
+						path: '/network/list',
+						name: 'list',
+						id: 'networkList',
+						hideInMenu: true,
+						component: './DeviceManagement/Network',
+					},
+					{
+						path: '/network/detail',
+						name: 'detail',
+						id: 'networkDetail',
+						hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkDetail',
+					},
+				],
+			},
+
+			{
 				path: '/basicData',
 				name: 'basicData',
 				icon: 'blank',
@@ -420,64 +444,64 @@ const router = [
 			// 	component: './IPC/Live/Live.js',
 			// },
 
-			{
-				path: '/faceidLibrary',
-				name: 'faceidLibrary',
-				id: 'faceidLibrary',
-				icon: 'blank',
-				// component: './index.js',
-				routes: [
-					{ path: '/faceidLibrary', redirect: '/faceidLibrary/faceidLibraryList' },
-					{
-						path: '/faceidLibrary/faceidLibraryList',
-						name: 'list',
-						id: 'faceidLibraryList',
-						routes: [
-							{
-								path: '/faceidLibrary/faceidLibraryList/photoManagement',
-								name: 'photoManagement',
-								hideInMenu: true,
-								id: 'photoList',
-								component: './IPC/PhotoManagement/PhotoManagement.js',
-							},
-							{
-								path: '/faceidLibrary/faceidLibraryList',
-								id: 'faceidLibraryList',
-								component: './IPC/FaceidLibrary/LibraryList.js',
-							}
-						]
-					},
-					{
-						path: '/faceidLibrary/faceLog',
-						name: 'faceLog',
-						id: 'faceLog',
-						// component: './IPC/FaceLog/index.js',
-						routes: [
-							{
-								path: '/faceidLibrary/faceLog/entryDetail',
-								name: 'entryDetail',
-								id: 'entryDetail',
-								hideInMenu: true,
-								component: './IPC/EntryDetail/index.js',
-							},
-							{
-								path: '/faceidLibrary/faceLog',
-								hideInMenu: true,
-								// name: 'faceLog',
-								id: 'faceLog',
-								component: './IPC/FaceLog/index.js',
-							}
-						]
-					},
+			// {
+			// 	path: '/faceidLibrary',
+			// 	name: 'faceidLibrary',
+			// 	id: 'faceidLibrary',
+			// 	icon: 'blank',
+			// 	// component: './index.js',
+			// 	routes: [
+			// 		{ path: '/faceidLibrary', redirect: '/faceidLibrary/faceidLibraryList' },
+			// 		{
+			// 			path: '/faceidLibrary/faceidLibraryList',
+			// 			name: 'list',
+			// 			id: 'faceidLibraryList',
+			// 			routes: [
+			// 				{
+			// 					path: '/faceidLibrary/faceidLibraryList/photoManagement',
+			// 					name: 'photoManagement',
+			// 					hideInMenu: true,
+			// 					id: 'photoList',
+			// 					component: './IPC/PhotoManagement/PhotoManagement.js',
+			// 				},
+			// 				{
+			// 					path: '/faceidLibrary/faceidLibraryList',
+			// 					id: 'faceidLibraryList',
+			// 					component: './IPC/FaceidLibrary/LibraryList.js',
+			// 				}
+			// 			]
+			// 		},
+			// 		{
+			// 			path: '/faceidLibrary/faceLog',
+			// 			name: 'faceLog',
+			// 			id: 'faceLog',
+			// 			// component: './IPC/FaceLog/index.js',
+			// 			routes: [
+			// 				{
+			// 					path: '/faceidLibrary/faceLog/entryDetail',
+			// 					name: 'entryDetail',
+			// 					id: 'entryDetail',
+			// 					hideInMenu: true,
+			// 					component: './IPC/EntryDetail/index.js',
+			// 				},
+			// 				{
+			// 					path: '/faceidLibrary/faceLog',
+			// 					hideInMenu: true,
+			// 					// name: 'faceLog',
+			// 					id: 'faceLog',
+			// 					component: './IPC/FaceLog/index.js',
+			// 				}
+			// 			]
+			// 		},
 
-					// {
-					// 	path: '/faceidLibrary/createLibrary',
-					// 	// name: 'faceidLibrary.create',
-					// 	id: 'createLibrary',
-					// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
-					// },
-				],
-			},
+			// 		// {
+			// 		// 	path: '/faceidLibrary/createLibrary',
+			// 		// 	// name: 'faceidLibrary.create',
+			// 		// 	id: 'createLibrary',
+			// 		// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
+			// 		// },
+			// 	],
+			// },
 		],
 	},
 ];
