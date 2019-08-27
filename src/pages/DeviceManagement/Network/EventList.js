@@ -73,14 +73,18 @@ class EventList extends React.Component {
 			<Card title={formatMessage({id: 'network.routerEvent.title'})}>
 				<Spin spinning={loading.effects['network/getEventList']}>
 					<Table columns={columns} dataSource={dataSource} pagination={false} rowKey='index' />
-					<Pagination
-						total={total}
-						showSizeChanger
-						pageSizeOptions={['10', '20', '30', '40']}
-						onChange={this.handleChange}
-						onShowSizeChange={this.handleChange}
-						className={styles['network-router-pagination']}
-					/>
+					{
+						total > 0 ?
+							<Pagination
+								total={total}
+								showSizeChanger
+								pageSizeOptions={['10', '20', '30', '40']}
+								onChange={this.handleChange}
+								onShowSizeChange={this.handleChange}
+								className={styles['network-router-pagination']}
+							/>
+							: ''
+					}
 				</Spin>
 			</Card>
 		);

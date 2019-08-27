@@ -2,8 +2,9 @@ import React from 'react';
 import { Card, Table, Spin } from 'antd';
 import { connect} from 'dva';
 import { formatMessage } from 'umi/locale';
-import styles from './Network.less';
 import { OPCODE } from '@/constants/mqttStore';
+import styles from './Network.less';
+
 
 const columns = [{
 	title: formatMessage({id: 'network.hostName'}), dataIndex: 'hostname', key: 'hostname'
@@ -12,7 +13,7 @@ const columns = [{
 }, {
 	title: formatMessage({id: 'network.ipAddress'}), dataIndex: 'ip', key: 'ip'
 }, {
-	title: formatMessage({id: 'network.routerMac'}), dataIndex: 'routermac', key: 'routermac'
+	title: formatMessage({id: 'network.routerMac'}), dataIndex: 'sn', key: 'sn'
 }, {
 	title: formatMessage({id: 'network.connectMode'}), dataIndex: 'connMode', key: 'connMode'
 }, {
@@ -42,12 +43,15 @@ class ClientList extends React.Component {
 		this.checkTime = null;
 		this.state = {
 			dataSource: [],
-			pageSize: 10
+			pageSize: 10,
+			sn: '',
+			networkId: ''
 		};
 	}
 	
 	async componentDidMount() {
-		// const { location: { query: { edit }}} = this.props;
+		const { location: { query: { sn, networkId }}} = this.props;
+		this.setState({sn, networkId});
 		await this.checkClient();
 	}
 	
@@ -62,59 +66,70 @@ class ClientList extends React.Component {
 	apHandler = (responseData, action) => {
 		const { getDeviceList } = this.props;
 		const { errcode } = responseData[0];
-		console.log('函数处理');
+		const { sn, networkId, dataSource } = this.state;
+		
+		// 当未组网时直接用sn号填进去，有routerMac字段时需要再发一个请求进行匹配
 		
 		if(errcode === 0 && action === 'list') {
-			//
+			const { result } = responseData[0];
 			if(result.data[0].routermac === undefined) {
-				const dataSource = result.data.map(item => {
-					item.routermac = 'W101P8CC00069';
+				const dataArray = result.data.map(item => {
+					// item.ontime = formatRelativeTime(item.ontime);
+					item.sn = sn;
 					return item;
 				});
-				this.setState({dataSource});
+				this.setState({dataSource: dataArray});
 			} else {
-				const dataSource = result.data.map(item => {
-					item.routermac = '--';
+				const dataArray = result.data.map(item => {
+					// item.ontime = formatRelativeTime(item.ontime);
+					item.sn = '--';
 					return item;
 				});
-				this.setState({dataSource});
+				this.setState({dataSource: dataArray});
 				getDeviceList({
 					message: {
 						opcode: OPCODE.GET_ROUTES_DETAIL,
 						param: {
-							sn: 'W101P8CC00069',
-							network_id: '2cd01f3293344ad186c9ef798772efe3'
+							sn,
+							network_id: networkId
 						}
 					}
 				});
 			}
-			
-			console.log(result.data);
 		}
 		
 		if(errcode === 0 && action === 'router') {
 			// 对路由进行处理
+			const { result : {sonconnect: { devices}}} = responseData[0];
+			dataSource.forEach(item => {
+				devices.forEach(single => {
+					if(item.routermac.toUpperCase() === single.mac) {
+						item.sn = single.devid;
+					}
+				});
+			});
+			this.setState({dataSource});
 		}
 	};
 	
 	checkClient = async () => {
 		const { generateTopic, subscribe, checkClientExist, apHandler, getDeviceList } = this.props;
+		const { sn, networkId } = this.state;
 		const isClientExist = await checkClientExist();
 		clearTimeout(this.checkTime);
-		console.log('服务端是否开启', isClientExist);
+		
 		if(isClientExist) {
 			const apInfo = await generateTopic({service: 'W1/response', action: 'sub'});
-			console.log('url', apInfo);
 			await subscribe({ topic: [apInfo] });
 			await apHandler({handler: this.apHandler});
+			
 			getDeviceList({message: {
 				opcode: OPCODE.CLIENT_LIST_GET,
 				param: {
-					sn: 'W101P8CC00069',
-					network_id: '2cd01f3293344ad186c9ef798772efe3'
+					sn,
+					network_id: networkId
 				},
 			}});
-			
 		} else {
 			this.checkTime = setTimeout(() => this.checkClient(), 1000);
 		}
@@ -128,7 +143,15 @@ class ClientList extends React.Component {
 		return (
 			<Card title={formatMessage({id: 'menu.network.clientListTitle'})} className={styles['network-client-table']}>
 				<Spin spinning={loading.effects['network/apHandler']}>
-					<Table columns={columns} dataSource={array} pagination={{showSizeChanger: true, onShowSizeChange: (_, size) => this.setState({pageSize: size})}} />
+					<Table
+						columns={columns}
+						dataSource={array}
+						rowKey='mac'
+						pagination={{
+							showSizeChanger: true,
+							onShowSizeChange: (_, size) => this.setState({pageSize: size})
+						}}
+					/>
 				</Spin>
 				{/* <Pagination className={styles.pagination} pageSizeOptions={pageOption} total={100} showSizeChanger /> */}
 			</Card>

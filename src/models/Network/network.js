@@ -308,10 +308,7 @@ export default {
 			});
 		},
 		*apHandler({payload}, {put}) {
-			console.log('apHandle', payload);
 			const { handler } = payload;
-			
-			// Todo 对两个不同的mqtt请求进行区分
 			
 			yield put({
 				type: 'mqttStore/setTopicListener',
@@ -332,9 +329,7 @@ export default {
 		},
 		
 		*getDeviceList({ payload }, { put }) {
-			console.log(payload);
 			const { message } = payload;
-			console.log('发送请求');
 			const requestTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
 				payload: { service: 'W1/request'}
