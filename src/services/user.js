@@ -7,7 +7,7 @@ export const login = (type, options = {}) => {
 		body: {
 			...options,
 			// TODO 临时修改，以后会修正
-			app_type: 2,
+			app_type: 1,
 		},
 	};
 	return fetchApi(type, opts, false).then(response => response.json());
