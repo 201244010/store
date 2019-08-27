@@ -72,7 +72,14 @@ const columns = [
 	},
 ];
 
-@connect()
+@connect(
+	state => ({
+		trade: state.trade,
+	}),
+	dispatch => ({
+		getPurchaseType: () => dispatch({ type: 'trade/getPurchaseType' }),
+	})
+)
 class Trade extends PureComponent {
 	constructor(props) {
 		super(props);
@@ -83,7 +90,10 @@ class Trade extends PureComponent {
 		};
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
+		// TODO 获取支付方式
+		// const { getPurchaseType } = this.props;
+		// await getPurchaseType();
 		this.startCountDown();
 	}
 
