@@ -75,6 +75,11 @@ const mapDispatchToProps = (dispatch) => ({
 				sn
 			}
 		}).then(info => info);
+	},
+	readIpcList(){
+		dispatch({
+			type: 'ipcList/read'
+		});
 	}
 });
 
@@ -84,7 +89,8 @@ class SoftwareUpdate extends Component {
 		visible: false,
 		percent: 0,
 		deviceInfo: {},
-		showLoadingFlag:true
+		showLoadingFlag: true,
+		confirmBtnShowLoadingFlag: false
 	}
 
 	interval = 0
@@ -139,6 +145,7 @@ class SoftwareUpdate extends Component {
 			defaultAIUpgradeTime, 
 			defaultRestartTime 
 		 },STATUS_PERCENT } } = this.state;
+		let visible = true;
 
 		await update(sn);
 
@@ -200,13 +207,13 @@ class SoftwareUpdate extends Component {
 						percent = percent > STATUS_PERCENT.RESTART ? STATUS_PERCENT.RESTART : percent;
 					}
 					break;
-				// case STATUS.DOWNLOADFAIL:
-				// 	percent = 0;
-				// 	visible = false;
-				// 	message.info(formatMessage({ id: 'softwareUpdate.download.fail' }));
-				// 	clearInterval(this.interval);
-				// 	this.setUpdatingStatus(STATUS.NORMAL);
-				// 	break;
+				case STATUS.DOWNLOADFAIL:
+					percent = 0;
+					visible = false;
+					message.info(formatMessage({ id: 'softwareUpdate.download.fail' }));
+					clearInterval(this.interval);
+					this.setUpdatingStatus(STATUS.NORMAL);
+					break;
 				// case STATUS.NODOWNLOADRECEIVE:
 				// 	percent = 0;
 				// 	visible = false;
@@ -218,15 +225,24 @@ class SoftwareUpdate extends Component {
 					break;
 			}
 			this.setState({
-				percent
+				percent,
+				visible
 			});
 		}, totalTime/100);
 	}
 
 	hideModal = async() => {
+		this.setState({
+			confirmBtnShowLoadingFlag: true	
+		});
+		const { readIpcList, getDeviceInfo, sn } = this.props;
+		await readIpcList();
+		const deviceInfo = await getDeviceInfo({ sn });
 		await this.setState({
 			visible: false,
-			percent: 0
+			percent: 0,
+			deviceInfo,
+			confirmBtnShowLoadingFlag: false
 		});
 		this.setUpdatingStatus(STATUS.NORMAL);
 	}
@@ -279,13 +295,13 @@ class SoftwareUpdate extends Component {
 			setTimeout(() => {
 				const { info: { updating: newUpdating } } = this.props;
 				if (newUpdating === STATUS.DOWNLOAD) {
-					clearInterval(this.interval);
-					this.setState({
-						percent: 0,
-						visible: false
-					});
-					message.error(formatMessage({ id: 'softwareUpdate.download.fail' }));
-					this.setUpdatingStatus(STATUS.NORMAL);
+					// clearInterval(this.interval);
+					// this.setState({
+					// 	percent: 0,
+					// 	visible: false
+					// });
+					// message.error(formatMessage({ id: 'softwareUpdate.download.fail' }));
+					this.setUpdatingStatus(STATUS.DOWNLOADFAIL);
 				}
 			}, downloadTime+15*1000);
 		}
@@ -337,7 +353,7 @@ class SoftwareUpdate extends Component {
 
 	render() {
 		const { info: { currentVersion, needUpdate, lastCheckTime, updating, newTimeValue }, loading } = this.props;
-		const { percent, visible, showLoadingFlag, deviceInfo:{ STATUS_PERCENT } } = this.state;
+		const { percent, visible, showLoadingFlag, deviceInfo:{ STATUS_PERCENT }, confirmBtnShowLoadingFlag } = this.state;
 		const showLoading = loading.effects['ipcSoftwareUpdate/detect']||showLoadingFlag;
 		return (
 			<div>
@@ -372,6 +388,7 @@ class SoftwareUpdate extends Component {
 									<Button
 										type="primary"
 										onClick={this.hideModal}
+										loading={confirmBtnShowLoadingFlag}
 									>
 										{formatMessage({ id: 'softwareUpdate.confirm' })}
 									</Button>
