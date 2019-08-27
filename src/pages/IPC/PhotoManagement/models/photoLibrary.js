@@ -9,7 +9,7 @@ import {
 	getRange,
 	move,
 	readPhotoList,
-	saveFile,
+	saveFile
 } from '../../services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -21,7 +21,7 @@ export default {
 		faceList: [],
 		total: 0,
 		checkList: [],
-		ageRange: [],
+		ageRange: []
 	},
 	reducers: {
 		readData(state, { payload }) {
@@ -56,7 +56,7 @@ export default {
 				request.pageNum = Math.ceil(totalCount / pageSize);
 				const responseAgain = yield call(readPhotoList, request);
 				const list = responseAgain.data.faceList.map(item => map([{from: 'age', to: 'realAge'},{ from: 'ageRangeCode', to: 'age'}])(item));
-				// console.log('model',list);
+				console.log('model',list);
 				yield put({
 					type: 'readData',
 					payload: {
@@ -67,7 +67,7 @@ export default {
 				});
 			} else if(code === ERROR_OK) {
 				const list = faceList.map(item => map([{from: 'age', to: 'realAge'},{ from: 'ageRangeCode', to: 'age'}])(item));
-				// console.log('model',list);
+				console.log('model',list);
 				yield put({
 					type: 'readData',
 					payload: {
@@ -204,6 +204,27 @@ export default {
 					checkList: []
 				}
 			});
-		}
+		},
+		// *upload({ payload }, { call }) {
+		// 	// console.log('payload',payload);
+		// 	const response = yield call(handleUpload, payload);
+		// 	// console.log(response);
+		// 	return response;
+		// },
+		// *uploadFiles({ payload }, { put }) {
+		// 	const { fileList, groupId } = payload;
+		// 	for (let index = 0, len = fileList.length; index < len; index++){
+		// 		const file = fileList[index];
+		// 		const result = yield put.resolve({
+		// 			type: 'upload',
+		// 			payload: {
+		// 				groupId,
+		// 				file
+		// 			}
+		// 		});
+		// 		file.response = result;
+		// 	}
+		// 	return fileList;
+		// }
 	}
 };

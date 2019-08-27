@@ -19,7 +19,7 @@ const dataSerializer = (item) => ({
 	capacity: item.capacity,
 
 	target_id: item.target,
-	alarm_notified: item.warning ? 1 : 0
+	alarm_notified: item.warning ? 2 : 1
 });
 
 const dataFormatter = (item, index) => ({
@@ -33,7 +33,7 @@ const dataFormatter = (item, index) => ({
 	capacity: item.capacity,
 	target: item.target_group_id || '',
 	lastupdate: item.last_modified_time,
-	warning: item.alarm_notified === 1
+	warning: item.alarm_notified === 2
 });
 
 export const createLibrary = async (params) => {
@@ -89,7 +89,6 @@ export const readLibrary = async () =>
 		if (errcode === 0 || code === ERROR_OK) {
 			// const { data } = response;
 			const result = data.group_list.map(dataFormatter);
-			// console.log(result);
 			return {
 				code: ERROR_OK,
 				data: result

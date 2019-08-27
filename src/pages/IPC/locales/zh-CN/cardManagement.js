@@ -7,12 +7,12 @@ export default {
 	'cardManagement.sdStatus3': '未识别到存储卡',
 	'cardManagement.sdStatus4': '存储卡被移除，请重新插入并刷新页面',
 
-	'cardManagement.sizeLeft': '存储卡剩余空间',
-	'cardManagement.daysCanUse': '存储卡大约可使用',
+	'cardManagement.sizeLeft': '存储卡空间容量',
+	'cardManagement.daysCanUse': '整张存储卡可存视频约',
 	'cardManagement.hasUsed': '已使用',
 	'cardManagement.day': '天',
 	'cardManagement.hour': '小时',
-	'cardManagement.daysUseTip': '说明：存储卡容量使用达上限时，新的直播回放视频会自动覆盖最老的视频',
+	'cardManagement.daysUseTip': '(备注：存储卡容量到达上限后，会以循环存储的方式存视频，即新的直播回放视频会自动覆盖最早的视频)',
 
 	'cardManagement.modalOk': '确定',
 	'cardManagement.modalCancel': '取消',
@@ -25,9 +25,9 @@ export default {
 	'cardManagement.removeFail': '移除失败',
 
 	'cardManagement.format': '格式化',
-	'cardManagement.formatImmediately': '立即格式',
+	'cardManagement.formatImmediately': '立即格式化',
 	'cardManagement.formatTipTitle': '确定要格式化TF卡？',
-	'cardManagement.formatTipContent': '格式化操作后，TF存储卡里的资料将会被清空，请提前保存TF卡内重要资料',
+	'cardManagement.formatTipContent': '格式化操作后，TF卡里的资料将会被清空，请提前保存TF卡内重要资料',
 	'cardManagement.formatSuccess': '格式化成功',
 	'cardManagement.formatFail': '格式化失败，请检查网络后重新操作',
 
