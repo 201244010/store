@@ -46,8 +46,7 @@ const COUNTRY_ADDRESS = {
 // ipc专用的测试和开发地址
 const IPC_ADDRESS = {
 	dev: 'store.dev.sunmi.com',
-	// test: '47.99.16.199:30401',
-	test: 'test-store.sunmi.com',
+	test: '47.99.16.199:30401',
 };
 
 const DES_KEY = {
