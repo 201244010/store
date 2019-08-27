@@ -75,4 +75,5 @@ export default {
 
 	'network.return': '返回',
 	'network.apply': '立即应用',
+	'network.sure.delete': '你确定要删除本条配置吗？',
 };

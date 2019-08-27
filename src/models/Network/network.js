@@ -42,7 +42,7 @@ export default {
 			name: 'ada',
 			config: {
 				qos: {
-					enable: true,
+					enable: false,
 					source: 'speedtest/default/manual',
 					operator: 'user/OEM',
 					upBandwidth: '20480',
