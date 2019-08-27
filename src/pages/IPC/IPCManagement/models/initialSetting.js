@@ -11,10 +11,12 @@ export default {
 	},
 	reducers: {
 		init( state, { payload: { sn }} ) {
+			// console.log('init');
 			state.sn = sn;
 			state.status = 'normal';
 		},
 		updateStatus(state, { payload: { sn, status }}) {
+			// console.log('update');
 			if(state.sn === sn) {
 				state.status = status;
 			}
@@ -178,10 +180,9 @@ export default {
 					}
 				},{
 					opcode: '0x4200',
-					type: 'event',
+					type: MESSAGE_TYPE.EVENT,
 					handler: (topic, messages) => {
 						const msg = JSON.parse(JSON.stringify(messages));
-						// console.log(msg);
 						const { sn } = msg.data;
 						const status = 'success';
 						dispatch({

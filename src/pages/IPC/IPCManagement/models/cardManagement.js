@@ -13,7 +13,6 @@ export default {
 		sn: '',
 		isLoading: true,
 		hasCard: false,
-		isOldDevice: false, // 是否为老款设备
 
 		used: 0, // 已用存储空间MB
 		total: 0, // 总存储空间MB
@@ -59,7 +58,6 @@ export default {
 				sn: '',
 				isLoading: true,
 				hasCard: false,
-				isOldDevice: false,
 
 				used: 0,
 				total: 0,
@@ -221,6 +219,7 @@ export default {
 						console.log('CardInfo msg=', msg);
 
 						const { sd_status_code, sn } = msg.data;
+						// sd_status_code 1，卡读不到信息，但可被操作；2，卡能读到信息，能被操作；其他num，卡读不到信息，不能被操作；
 						if (msg.errcode === ERROR_OK && sd_status_code === 2) {
 							const {
 								used,
@@ -239,30 +238,26 @@ export default {
 								payloadData.available_time = available_time;
 							}
 
-							if (used === undefined || total === undefined || available_time === undefined) {
-								// 没有这些字段认为是老款设备
-								dispatch({
-									type: 'updateState',
-									payload: {
-										sn,
-										hasCard: true,
-										isOldDevice: true,
-										isLoading: false,
-										...payloadData
-									}
-								});
-							} else {
-								dispatch({
-									type: 'updateState',
-									payload: {
-										sn,
-										hasCard: true,
-										isOldDevice: false,
-										isLoading: false,
-										...payloadData
-									}
-								});
-							}
+							dispatch({
+								type: 'updateState',
+								payload: {
+									sn,
+									hasCard: true,
+									isLoading: false,
+									sd_status_code,
+									...payloadData
+								}
+							});
+						} else if (msg.errcode === ERROR_OK && sd_status_code === 1) {
+							dispatch({
+								type: 'updateState',
+								payload: {
+									sn,
+									hasCard: true,
+									isLoading: false,
+									sd_status_code
+								}
+							});
 						} else {
 							dispatch({
 								type: 'updateState',
