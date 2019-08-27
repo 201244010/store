@@ -3,6 +3,10 @@ import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import moment from 'moment';
 import SearchBar from './SearchBar';
+import SalseBar from './SalseBar';
+import SalseChart from './SalseChart';
+import CustomerChart from './CustomerChart';
+import OverviewBar from './OverviewBar';
 import styles from './DashBoard.less';
 import { DASHBOARD } from './constants';
 
@@ -58,7 +62,12 @@ class DashBoard extends PureComponent {
 		return (
 			<div className={styles['dashboard-wrapper']}>
 				<SearchBar {...{ doHandRefresh: this.doHandRefresh }} />
-				<div className={styles['display-content']}>233</div>
+				<div className={styles['display-content']}>
+					<SalseBar />
+					<SalseChart />
+					<CustomerChart />
+					<OverviewBar />
+				</div>
 			</div>
 		);
 	}

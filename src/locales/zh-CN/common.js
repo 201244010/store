@@ -59,4 +59,5 @@ export default {
 	'text.yes': '是',
 	'text.no': '否',
 	'data.empty': '暂无数据',
+	'yesterday': '昨日'
 };
