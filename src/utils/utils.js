@@ -528,3 +528,27 @@ export const mbStringLength = s => {
 	// alert(totalLength);
 	return totalLength;
 };
+
+// 格式化网络速率，最多保留4位数字+单位
+export const formatSpeed = speed => {
+	const kSpeed = 1024;
+	const mSpeed = kSpeed * 1024;
+	const gSpeed = mSpeed * 1024;
+
+	speed = parseInt(speed, 10);
+	let unit = '';
+	if (speed >= gSpeed) {
+		const val = speed / gSpeed;
+		speed = val.toFixed(val > 99 ? 0 : 2);
+		unit = 'GB/s';
+	} else if (speed >= mSpeed) {
+		const val = speed / mSpeed;
+		speed = val.toFixed(val > 99 ? 0 : 2);
+		unit = 'MB/s';
+	} else {
+		speed = (speed / kSpeed).toFixed(0);
+		unit = 'KB/s';
+	}
+
+	return { speed, unit };
+};
