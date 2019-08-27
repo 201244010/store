@@ -299,13 +299,13 @@ class CardManagement extends Component {
 	 * 操作失败弹框
 	 * */
 	operateFail = (content) => {
-		const modal = Modal.error({
+		Modal.error({
 			content,
 			// centered: true,
 		});
-		setTimeout(() => {
-			modal.destroy();
-		}, 1000);
+		// setTimeout(() => {
+		// 	modal.destroy();
+		// }, 1000);
 	}
 
 	/**

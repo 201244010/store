@@ -160,12 +160,13 @@ export default {
 				// }else{
 				// 	deviceType = Array.isArray(models) ? models : [models];
 				// };
-
+				// console.log(listenerStack);
 				const hasNotAdded = listenerStack.every((listener) => {
 					// listener.models.sort();
 					// deviceType.sort();
-					if (listener.opcode === opcode && listener.type === type /* && JSON.stringify(listener.models) === JSON.stringify(deviceType) */){
-						listener.handler = handler;
+					// console.log(listener, listener.handler === handler);
+					if (listener.opcode === opcode && listener.type === type && listener.handler === handler){
+						// listener.handler = handler;
 						return false;
 					}
 					return true;
