@@ -100,7 +100,7 @@ class Toolbar extends React.Component{
 			modeText = t[0].name;
 		}
 
-		console.log(today, moment.unix(today).format('YYYY-MM-DD HH:mm:ss'));
+		// console.log(today, moment.unix(today).format('YYYY-MM-DD HH:mm:ss'));
 
 		return(
 			<div

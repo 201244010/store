@@ -21,11 +21,11 @@ class IPCManagement extends Component {
 				<DeviceBasicInfo sn={sn} />
 				<ActiveDetection sn={sn} />
 				<BasicParams sn={sn} />
+				<CardManagement sn={sn} />
+				<InitialSetting sn={sn} />
+				<SoftwareUpdate sn={sn} showModal={showModal} />
 				{/* <NetworkSetting sn={sn} /> */}
 				{/* <CloudService sn={sn} /> */}
-				<SoftwareUpdate sn={sn} showModal={showModal} />
-				<InitialSetting sn={sn} />
-				<CardManagement sn={sn} />
 			</div>
 
 		);

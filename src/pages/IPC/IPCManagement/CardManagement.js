@@ -70,16 +70,19 @@ class CardManagement extends Component {
 			formatStatus
 		}} = nextProps;
 
-		const { formattingModalVisible } = this.state;
-		
+		const {
+			formattingModalVisible,
+			removeTimeout,
+			formatTimeout,
+			timer
+		} = this.state;
+
 		if (removeStatus === 'success' && this.removeConfirmInstance) {
-			const { removeTimeout } = this.state;
 			clearTimeout(removeTimeout);
 
 			this.removeConfirmInstance.destroy();
 			this.operateSuccess(formatMessage({ id: 'cardManagement.removeSuccess' }));
 		} else if (removeStatus === 'fail' && this.removeConfirmInstance) {
-			const { removeTimeout } = this.state;
 			clearTimeout(removeTimeout);
 
 			this.removeConfirmInstance.destroy();
@@ -87,7 +90,6 @@ class CardManagement extends Component {
 		}
 
 		if (formatStatus === 'success' && formattingModalVisible === true) {
-			const { formatTimeout, timer } = this.state;
 			clearTimeout(formatTimeout);
 
 			clearInterval(timer);
@@ -99,7 +101,6 @@ class CardManagement extends Component {
 			});
 			this.operateSuccess(formatMessage({ id: 'cardManagement.formatSuccess' }));
 		} else if (formatStatus === 'fail' && formattingModalVisible === true) {
-			const { formatTimeout, timer } = this.state;
 			clearTimeout(formatTimeout);
 
 			clearInterval(timer);
@@ -298,13 +299,13 @@ class CardManagement extends Component {
 	 * 操作失败弹框
 	 * */
 	operateFail = (content) => {
-		const modal = Modal.error({
+		Modal.error({
 			content,
 			// centered: true,
 		});
-		setTimeout(() => {
-			modal.destroy();
-		}, 1000);
+		// setTimeout(() => {
+		// 	modal.destroy();
+		// }, 1000);
 	}
 
 	/**
@@ -334,9 +335,9 @@ class CardManagement extends Component {
 		if (num >= 1024) {
 			const size = Math.floor(num / 1024);
 			return `${size}GB`;
-		} 
+		}
 		return `${num}MB`;
-		
+
 	}
 
 	/**
@@ -347,9 +348,9 @@ class CardManagement extends Component {
 			return `${Math.floor(h / 24)} ${formatMessage({ id: 'cardManagement.day' })}`;
 		} if (h > 0) {
 			return `0.5 ${formatMessage({ id: 'cardManagement.day' })}`;
-		} 
+		}
 		return `0 ${formatMessage({ id: 'cardManagement.day' })}`;
-		
+
 	}
 
 	render() {
@@ -361,19 +362,19 @@ class CardManagement extends Component {
 				total, // 总存储空间MB
 				available_time, // 可用时长h
 				sd_status_code, // sd卡状态码
-				isOldDevice // 老款设备
+				// isOldDevice // 老款设备
 			}
 		} = this.props;
-		
+
 		const { formattingModalVisible, formatProgress } = this.state;
 
 		return (
 			<Spin spinning={isLoading}>
-				<Card title={formatMessage({ id: 'cardManagement.title' })} className={(!hasCard || isOldDevice) && styles['transparnt-05']}>
+				<Card title={formatMessage({ id: 'cardManagement.title' })} className={(!hasCard) && styles['transparnt-05']}>
 					<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
 						<Form.Item label={formatMessage({ id: 'cardManagement.sizeLeft' })}>
 							{
-								hasCard ?
+								hasCard && sd_status_code === 2 ?
 									<div>
 										<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}{this.cardSizeInfo(used)}/{this.cardSizeInfo(total)}</p>
 										<Progress
@@ -389,7 +390,7 @@ class CardManagement extends Component {
 
 						<Form.Item label={formatMessage({ id: 'cardManagement.daysCanUse' })}>
 							{
-								hasCard ?
+								hasCard && sd_status_code === 2 ?
 									<p>
 										{this.hour2day(available_time)}<br />
 										{formatMessage({ id: 'cardManagement.daysUseTip' })}
@@ -399,8 +400,9 @@ class CardManagement extends Component {
 						</Form.Item>
 
 						<Form.Item label={formatMessage({ id: 'cardManagement.removeSafely' })}>
+							{/* 未格式化的卡不能点移除 */}
 							<Button
-								disabled={!hasCard || isOldDevice}
+								disabled={!hasCard || (hasCard && sd_status_code === 1)}
 								onClick={(e) => {
 									e.target.blur();
 									this.removeConfirm();
@@ -411,7 +413,7 @@ class CardManagement extends Component {
 
 						<Form.Item label={formatMessage({ id: 'cardManagement.format' })}>
 							<Button
-								disabled={!hasCard || isOldDevice}
+								disabled={!hasCard}
 								onClick={(e) => {
 									e.target.blur();
 									this.formatConfirm();
