@@ -101,6 +101,7 @@ export default {
 		overviewProductLoading: false,
 		overviewDeviceLoading: false,
 		overviewIPCLoading: false,
+		overviewNetworkLoading: false,
 
 		totalAmountLoading: false,
 		totalCountLoading: false,
@@ -116,6 +117,7 @@ export default {
 		productOverview: {},
 		deviceOverView: {},
 		ipcOverView: {},
+		networkOverview: {},
 
 		totalAmount: {},
 		totalCount: {},
@@ -148,6 +150,12 @@ export default {
 				// device overview
 				put({
 					type: 'fetchOverviewDevices',
+					payload: { needLoading },
+				}),
+
+				// network overviw
+				put({
+					type: 'fetchOverviewNetwork',
 					payload: { needLoading },
 				}),
 
@@ -271,6 +279,33 @@ export default {
 			}
 
 			return response;
+		},
+
+		*fetchOverviewNetwork({ payload }, { put }) {
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'overviewNetworkLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+
+			const response = yield put.resolve({
+				type: 'network/getOverview',
+			});
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				yield put({
+					type: 'updateState',
+					payload: {
+						networkOverview: format('toCamel')(data),
+						overviewNetworkLoading: false,
+					},
+				});
+			}
 		},
 
 		*fetchOverviewIPC({ payload }, { call, put }) {

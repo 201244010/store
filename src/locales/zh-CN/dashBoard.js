@@ -83,6 +83,8 @@ export default {
 	'dashboard.overview.esl.push.show.title': '电子价签数',
 	'dashboard.overview.ap.online': '价签基站数',
 	'dashboard.overview.ap.offline': '离线基站数',
+	'dashboard.overview.device.online': '在线网络设备数',
+	'dashboard.overview.device.offline': '离线网络设备数',
 	'dashboard.overview.ipc.online': '在线网络摄像机数',
 	'dashboard.overview.ipc.offline': '离线网络摄像机数',
 	'dashboard.overview.ipc.show.title': '摄像机数',
