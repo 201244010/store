@@ -56,4 +56,8 @@ export default {
 	'text.yes': '是',
 	'text.no': '否',
 	'data.empty': '暂无数据',
+	'common.time.day': '天',
+	'common.time.hour': '小时',
+	'common.time.minute': '分钟',
+	'common.time.second': '秒'
 };

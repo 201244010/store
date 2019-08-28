@@ -563,3 +563,31 @@ export const checkAnchor = (anchor = null) => {
 
 	return null;
 };
+
+//  格式化时间，返回字符串
+export const formatRelativeTime = timeStamp => {
+	const seconds = parseInt(timeStamp, 10);
+	const day = parseInt(seconds / 86400, 10);
+	const hour = parseInt((seconds % 86400) / 3600, 10);
+	const minute = parseInt((seconds % 3600) / 60, 10);
+	const second = parseInt(seconds % 60, 10);
+	
+	let timeStr = '';
+	if (day > 0) {
+		timeStr += day + formatMessage({ id: 'common.time.day' });
+	}
+	
+	if (hour > 0) {
+		timeStr += hour + formatMessage({ id: 'common.time.hour' });
+	}
+	
+	if (minute > 0) {
+		timeStr += minute + formatMessage({ id: 'common.time.minute' });
+	}
+	
+	if (second >= 0) {
+		timeStr += second + formatMessage({ id: 'common.time.second' });
+	}
+	
+	return timeStr;
+};

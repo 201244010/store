@@ -3,8 +3,8 @@ import { Card, Table, Spin } from 'antd';
 import { connect} from 'dva';
 import { formatMessage } from 'umi/locale';
 import { OPCODE } from '@/constants/mqttStore';
+import { formatRelativeTime } from '@/utils/utils';
 import styles from './Network.less';
-
 
 const columns = [{
 	title: formatMessage({id: 'network.hostName'}), dataIndex: 'hostname', key: 'hostname'
@@ -20,9 +20,6 @@ const columns = [{
 	title: formatMessage({id: 'network.ontime'}), dataIndex: 'ontime', key: 'ontime'
 }];
 
-
-
-// const pageOption = ['10', '20', '30', '40'];
 
 @connect(
 	state => ({
@@ -76,6 +73,7 @@ class ClientList extends React.Component {
 				const dataArray = result.data.map(item => {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = sn;
+					item.ontime = formatRelativeTime(item.ontime);
 					return item;
 				});
 				this.setState({dataSource: dataArray});
@@ -83,6 +81,7 @@ class ClientList extends React.Component {
 				const dataArray = result.data.map(item => {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = '--';
+					item.ontime = formatRelativeTime(item.ontime);
 					return item;
 				});
 				this.setState({dataSource: dataArray});
@@ -153,7 +152,6 @@ class ClientList extends React.Component {
 						}}
 					/>
 				</Spin>
-				{/* <Pagination className={styles.pagination} pageSizeOptions={pageOption} total={100} showSizeChanger /> */}
 			</Card>
 		);
 	}
