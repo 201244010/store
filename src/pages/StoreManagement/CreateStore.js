@@ -350,7 +350,10 @@ class CreateStore extends React.Component {
 							rules: [
 								{
 									validator: (rule, value, callback) => {
-										if (value && !/^(([1-9]\d*)|(0))(\.\d{1,2})?$/.test(value)) {
+										if (
+											value &&
+											!/^(([1-9]\d{0,5})|0)(\.\d{1,2})?$/.test(value)
+										) {
 											callback(
 												formatMessage({
 													id: 'storeManagement.create.area.formatError',
