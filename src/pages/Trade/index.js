@@ -114,6 +114,16 @@ class Trade extends PureComponent {
 		}, 1000);
 	};
 
+	payOrder = () => {
+		const myWindow = window.open(
+			'',
+			'_blank',
+			'location=no, toolbar=no, menubar=no, status=no'
+		);
+		myWindow.document.write('<p>这是\'我的窗口\'</p>');
+		myWindow.focus();
+	};
+
 	closeModal = () => {
 		this.setState({
 			modalVisible: false,
@@ -219,7 +229,9 @@ class Trade extends PureComponent {
 							{formatMessage({ id: 'minute.unit' })} {second}
 							{formatMessage({ id: 'second.unit' })}
 						</div>
-						<Button type="primary">{formatMessage({ id: 'purchase.intime' })}</Button>
+						<Button type="primary" onClick={this.payOrder}>
+							{formatMessage({ id: 'purchase.intime' })}
+						</Button>
 					</div>
 				</Card>
 
