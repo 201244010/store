@@ -307,6 +307,58 @@ export default {
 				},
 			});
 		},
+		*apHandler({payload}, {put}) {
+			const { handler } = payload;
+			
+			yield put({
+				type: 'mqttStore/setTopicListener',
+				payload: {
+					service: 'W1/response',
+					handler: receivedMessage => {
+						const { data = [{errcode: -1}]} = format('toCamel')(JSON.parse(receivedMessage));
+						const { opcode } = data[0];
+						if( opcode === '0x2116') {
+							handler(data, 'router');
+						}
+						if( opcode === '0x2025') {
+							handler(data, 'list');
+						}
+					},
+				},
+			});
+		},
+		
+		*getDeviceList({ payload }, { put }) {
+			const { message } = payload;
+			const requestTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'W1/request'}
+			});
+			
+			yield put({
+				type: 'mqttStore/publish',
+				payload: {
+					topic: requestTopic,
+					message
+				}
+			});
+		},
+		*unsubscribeDeviceTopic(_, { put }) {
+			const responseTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'W1/request', action: 'sub' },
+			});
+			
+			yield put({
+				type: 'mqttStore/unsubscribeTopic',
+				payload: { topic: responseTopic },
+			});
+		},
+		*getEventList({ payload }, { call }) {
+			const param = format('toSnake')(payload);
+			const response = yield call(Actions.getNetworkEventList, 'device/getEventList', param);
+			return format('toCamel')(response);
+		}
 	},
 
 	reducers: {

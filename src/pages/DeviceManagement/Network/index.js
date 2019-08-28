@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import DeviceList from './DeviceList';
 import NetworkList from './NetworkList';
+import EventList from './EventList';
 import styles from './Network.less';
 
 @connect(
@@ -110,6 +111,9 @@ class Network extends React.Component {
 							refreshNetworkList
 						}}
 					/>
+				</div>
+				<div className={styles['card-network-wrapper']}>
+					 <EventList />
 				</div>
 			</div>
 		);
