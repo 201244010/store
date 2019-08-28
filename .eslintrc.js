@@ -54,7 +54,8 @@ module.exports = {
 		'quotes': [2, 'single'],
 		'indent': ['error', 'tab', {
 			'SwitchCase': 1
-		}]
+		}],
+		'prefer-template': 2
 	},
 	settings: {
 		polyfills: ['fetch', 'promises', 'url'],
