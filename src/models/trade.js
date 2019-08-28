@@ -9,6 +9,7 @@ export default {
 			b2b: [],
 			b2c: [],
 		},
+		payLink: {},
 	},
 	effects: {
 		*getPurchaseType(_, { call, put }) {
@@ -24,6 +25,25 @@ export default {
 							b2c: formattedData.b2c || [],
 						},
 					},
+				});
+			}
+		},
+
+		*payOrder({ payload }, { call, put }) {
+			const { orderNo, purchaseType, source } = payload || {};
+			const opts = { orderNo, purchaseType, source };
+			const response = yield call(
+				Actions.handleTradeManagement,
+				'pay',
+				format('toSnake')(opts)
+			);
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response || {};
+				const { qrCodeUrl = '', unionPayForm = '' } = data;
+				yield put({
+					type: 'updateState',
+					payload: { payLink: { qrCodeUrl, unionPayForm } },
 				});
 			}
 		},
