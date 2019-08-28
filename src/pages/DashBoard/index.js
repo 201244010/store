@@ -39,6 +39,13 @@ class DashBoard extends PureComponent {
 		}, 1000 * 60 * 2);
 	};
 
+	onSearchChanged = async () => {
+		const { fetchAllData } = this.props;
+		clearTimeout(this.timer);
+		await fetchAllData({ needLoading: true });
+		this.startAutoRefresh();
+	};
+
 	doHandRefresh = async () => {
 		const { fetchAllData } = this.props;
 		clearTimeout(this.timer);
@@ -61,7 +68,12 @@ class DashBoard extends PureComponent {
 	render() {
 		return (
 			<div className={styles['dashboard-wrapper']}>
-				<SearchBar {...{ doHandRefresh: this.doHandRefresh }} />
+				<SearchBar
+					{...{
+						doHandRefresh: this.doHandRefresh,
+						onSearchChanged: this.onSearchChanged,
+					}}
+				/>
 				<div className={styles['display-content']}>
 					<SalseBar />
 					<SalseChart />
