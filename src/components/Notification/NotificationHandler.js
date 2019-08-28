@@ -6,60 +6,224 @@ import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
 import { formatMessageTemplate, convertArrayPrams, replaceTemplateWithValue } from '@/utils/utils';
 import ipcTypes from '@/constants/ipcTypes';
 
-// const isInCurrentCompany = async ({ getCurrentCompanyId, companyId }) => {
-// 	const currentCompanyId = await getCurrentCompanyId();
+const isInCurrentCompany = ({ currentCompanyId, companyId }) =>
+	`${currentCompanyId}` === `${companyId}`;
 
-// 	return `${currentCompanyId}` === `${companyId}`;
-// };
+const isInCurrentShop = ({ currentShopId, shopId }) => `${currentShopId}` === `${shopId}`;
 
-// const isInCurrentShop = async ({ getCurrentShopId, shopId }) => {
-// 	const currentShopId = await getCurrentShopId();
-// 	return `${currentShopId}` === `${shopId}`;
-// };
+const getCurrentAndTargetCompanyInfo = async ({
+	getCurrentCompanyId,
+	getCompanyNameById,
+	getCurrentShopId,
+	getStoreNameById,
+	companyId,
+	shopId,
+}) => {
+	const [currentCompanyId, currentShopId] = await Promise.all([
+		getCurrentCompanyId(),
+		getCurrentShopId(),
+	]);
 
-const palyMotion = ({ params }) => {
-	const { url = null, device_model: ipcType = null } = convertArrayPrams(params);
-	const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
-	const modal = Modal.info({
+	const [
+		currentCompanyName,
+		currentShopName,
+		targetCompanyName,
+		targetShopName,
+	] = await Promise.all([
+		getCompanyNameById(currentCompanyId),
+		getStoreNameById(currentShopId),
+		getCompanyNameById(companyId),
+		getStoreNameById(shopId),
+	]);
+
+	return {
+		currentCompanyId,
+		currentShopId,
+		companyId,
+		shopId,
+		currentCompanyName,
+		currentShopName,
+		targetCompanyName,
+		targetShopName,
+	};
+};
+
+const formatInfoMessage = ({
+	currentCompanyName,
+	currentShopName,
+	targetCompanyName,
+	targetShopName,
+}) => {
+	const templateValue = {
+		messageId: 'notif-modal-content',
+		valueList: [
+			{
+				key: '##currentCompanyName##',
+				value: currentCompanyName,
+			},
+			{
+				key: '##currentShopName##',
+				value: currentShopName,
+			},
+			{
+				key: '##targetCompanyName##',
+				value: targetCompanyName,
+			},
+			{
+				key: '##targetShopName##',
+				value: targetShopName,
+			},
+		],
+	};
+
+	Modal.info({
 		title: '',
 		content: (
-			<>
-				{url && (
-					<ModalPlayer
-						visible
-						onClose={() => {
-							if (modal) {
-								modal.destroy();
-							}
-						}}
-						url={decodeURIComponent(url)}
-						pixelRatio={pixelRatio}
-					/>
-				)}
-			</>
+			<div>
+				<p>{replaceTemplateWithValue(templateValue)}</p>
+			</div>
 		),
-		okButtonProps: { style: { dispaly: 'none' } },
+		okText: formatMessage({ id: 'notif-modal-known-text' }),
 	});
 };
 
+const palyMotion = async ({ handlers, params }) => {
+	const {
+		url = null,
+		device_model: ipcType = null,
+		shop_id: shopId = null,
+		company_id: companyId = null,
+	} = convertArrayPrams(params) || {};
+
+	const { getCurrentCompanyId, getCompanyNameById, getCurrentShopId, getStoreNameById } =
+		handlers || {};
+
+	const {
+		currentCompanyId,
+		currentShopId,
+		currentCompanyName,
+		currentShopName,
+		targetCompanyName,
+		targetShopName,
+	} =
+		(await getCurrentAndTargetCompanyInfo({
+			getCurrentCompanyId,
+			getCompanyNameById,
+			getCurrentShopId,
+			getStoreNameById,
+			companyId,
+			shopId,
+		})) || {};
+
+	if (
+		isInCurrentCompany({ currentCompanyId, companyId }) &&
+		isInCurrentShop({ currentShopId, shopId })
+	) {
+		const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
+		const modal = Modal.info({
+			title: '',
+			content: (
+				<>
+					{url && (
+						<ModalPlayer
+							visible
+							onClose={() => {
+								if (modal) {
+									modal.destroy();
+								}
+							}}
+							url={decodeURIComponent(url)}
+							pixelRatio={pixelRatio}
+						/>
+					)}
+				</>
+			),
+			okButtonProps: { style: { dispaly: 'none' } },
+		});
+	} else {
+		formatInfoMessage({
+			currentCompanyName,
+			currentShopName,
+			targetCompanyName,
+			targetShopName,
+		});
+	}
+};
+
+const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
+	const { shop_id: shopId = null, company_id: companyId = null } =
+		convertArrayPrams(params) || {};
+
+	const {
+		getCurrentCompanyId,
+		getCompanyNameById,
+		getCurrentShopId,
+		getStoreNameById,
+		goToPath,
+	} = handlers || {};
+
+	const {
+		currentCompanyId,
+		currentShopId,
+		currentCompanyName,
+		currentShopName,
+		targetCompanyName,
+		targetShopName,
+	} =
+		(await getCurrentAndTargetCompanyInfo({
+			getCurrentCompanyId,
+			getCompanyNameById,
+			getCurrentShopId,
+			getStoreNameById,
+			companyId,
+			shopId,
+		})) || {};
+
+	if (
+		isInCurrentCompany({ currentCompanyId, companyId }) &&
+		isInCurrentShop({ currentShopId, shopId })
+	) {
+		goToPath(target);
+	} else {
+		formatInfoMessage({
+			currentCompanyName,
+			currentShopName,
+			targetCompanyName,
+			targetShopName,
+		});
+	}
+};
+
 const ACTION_MAP = {
-	'GET-AP-LIST': ({ handlers: { goToPath } }) => goToPath('baseStation'),
-	'notif-device-esl-ap-offline-btn1': ({ handlers: { goToPath } }) => goToPath('baseStation'),
-	'notif-ap-offline-btn1': ({ handlers: { goToPath } }) => goToPath('baseStation'),
-	'notif-system-task-erp-btn1': ({ handlers: { goToPath } }) => goToPath('productList'),
+	'GET-AP-LIST': ({ handlers, params }) =>
+		switchPage({ target: 'baseStation', handlers, params }),
+
+	'notif-device-esl-ap-offline-btn1': ({ handlers, params }) =>
+		switchPage({ target: 'baseStation', handlers, params }),
+
+	'notif-ap-offline-btn1': ({ handlers, params }) =>
+		switchPage({ target: 'baseStation', handlers, params }),
+
+	'notif-system-task-erp-btn1': ({ handlers, params }) =>
+		switchPage({ target: 'productList', handlers, params }),
+
 	'notif-device-ipc-motion-detect-video-btn1': palyMotion,
 	'notif-device-ipc-motion-detect-audio-btn1': palyMotion,
 	'notif-motion-detect-btn1': palyMotion,
+
 	'notif-motion-detect-btn2': ({
-		handlers: { goToPath = null, removeNotification = null } = {},
+		handlers = {},
+		params,
 		extra: { from = null, key = null } = {},
 	}) => {
+		const { removeNotification = null } = handlers;
 		if (from === 'mqtt' && removeNotification) {
 			removeNotification(key);
 		} else {
-			goToPath('notificationList');
+			switchPage({ target: 'notificationList', handlers, params });
 		}
 	},
+
 	// TF卡需格式化
 	'notif-device-ipc-tf-card-detect-tf-exist-btn1': async ({
 		handlers: {
