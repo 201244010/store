@@ -99,10 +99,16 @@ const router = [
 								path: '/application/trade',
 								id: 'trade',
 								hideInMenu: true,
-								component: './Trade'
-							}
-						]
-					}
+								component: './Trade',
+							},
+							{
+								path: '/application/trade/result',
+								id: 'tradeResult',
+								hideInMenu: true,
+								component: './Trade/TradeResult',
+							},
+						],
+					},
 				],
 			},
 
@@ -246,8 +252,8 @@ const router = [
 						name: 'clientList',
 						id: 'clientList',
 						hideInMenu: true,
-						component: './DeviceManagement/Network/ClientList'
-					}
+						component: './DeviceManagement/Network/ClientList',
+					},
 				],
 			},
 
@@ -545,8 +551,8 @@ const router = [
 								path: '/faceidLibrary/faceidLibraryList',
 								id: 'faceidLibraryList',
 								component: './IPC/FaceidLibrary/LibraryList.js',
-							}
-						]
+							},
+						],
 					},
 					{
 						path: '/faceidLibrary/faceLog',
@@ -566,8 +572,8 @@ const router = [
 								// name: 'faceLog',
 								id: 'faceLog',
 								component: './IPC/FaceLog/index.js',
-							}
-						]
+							},
+						],
 					},
 
 					// {
@@ -583,7 +589,6 @@ const router = [
 					// 	id: 'createLibrary',
 					// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
 					// },
-					
 				],
 			},
 		],

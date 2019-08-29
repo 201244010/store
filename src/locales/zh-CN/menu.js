@@ -11,6 +11,7 @@ export default {
 	'menu.application.cashVerify.bindPOSDevice': '绑定收银设备',
 	'menu.application.cashVerify.videos': '交易视频',
 	'menu.application.trade': '服务下单',
+	'menu.application.trade.result': '支付结果',
 	'menu.esl': '电子价签',
 	'menu.esl.electricLabel': '价签管理',
 	'menu.esl.template': '模板管理',
