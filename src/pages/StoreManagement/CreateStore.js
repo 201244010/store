@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
-import { Form, Button, Input, Radio, Cascader, Card } from 'antd';
+import { Form, Button, Input, Radio, Cascader, Card, AutoComplete } from 'antd';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import * as CookieUtil from '@/utils/cookies';
@@ -13,6 +13,7 @@ const FormItem = Form.Item;
 
 @connect(
 	state => ({
+		loading: state.loading,
 		store: state.store,
 	}),
 	dispatch => ({
@@ -22,12 +23,19 @@ const FormItem = Form.Item;
 		getRegionList: () => dispatch({ type: 'store/getRegionList' }),
 		getStoreDetail: payload => dispatch({ type: 'store/getStoreDetail', payload }),
 		clearState: () => dispatch({ type: 'store/clearState' }),
-		goToPath: (pathId, urlParams = {},) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams,  } }),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()
 class CreateStore extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			addressSearchResult: [],
+		};
+	}
+
 	componentDidMount() {
 		const { getShopTypeList, getRegionList, getStoreDetail, clearState } = this.props;
 		const [action = 'create', shopId] = [
@@ -49,6 +57,92 @@ class CreateStore extends React.Component {
 			getRegionList();
 		}
 	}
+
+	deepFindCity = (regionValues = []) => {
+		const [province, city, ,] = regionValues;
+		const regionList = Storage.get('__regionList__', 'local') || [];
+		if (province && city) {
+			const findedCity = (
+				(regionList.find(provinceInfo => provinceInfo.province === province) || {})
+					.children || []
+			).find(cityInfo => cityInfo.city === city);
+			return findedCity;
+		}
+		return null;
+	};
+
+	handleSelectSearch = value => {
+		const {
+			form: { getFieldValue },
+		} = this.props;
+		const regionValue = getFieldValue('region');
+		const cityInfo = this.deepFindCity(regionValue);
+		const { name = null } = cityInfo || {};
+
+		AMap.plugin('AMap.Autocomplete', () => {
+			const opts = { city: name || '全国', citylimit: true };
+			const autoComplete = new AMap.Autocomplete(opts);
+			autoComplete.search(value, (status, result) => {
+				// 搜索成功时，result即是对应的匹配数据
+				if (status === 'complete') {
+					const { tips = [] } = result || {};
+					// console.log(tips);
+					this.setState({
+						addressSearchResult: tips.filter(tip => !!tip.id),
+					});
+				}
+			});
+		});
+	};
+
+	getAddressLocation = async () => {
+		const {
+			form: { getFieldValue },
+		} = this.props;
+		const { addressSearchResult } = this.state;
+
+		const regionValue = getFieldValue('region');
+		const address = getFieldValue('address');
+
+		const cityInfo = this.deepFindCity(regionValue);
+		const { name = null } = cityInfo || {};
+
+		const inputAddress = addressSearchResult.find(
+			addressInfo => address === `${addressInfo.name}${addressInfo.address}`
+		);
+		// console.log(inputAddress);
+
+		return new Promise(resolve => {
+			AMap.plugin('AMap.PlaceSearch', () => {
+				const opts = { city: name || '全国', citylimit: true, pageSize: 50 };
+				const placeSearch = new AMap.PlaceSearch(opts);
+
+				if (inputAddress && inputAddress.id) {
+					placeSearch.getDetails(inputAddress.id, (status, result) => {
+						// console.log(status);
+						// console.log(result);
+						if (status === 'complete') {
+							// console.log(result);
+							resolve(result);
+						} else {
+							resolve({});
+						}
+					});
+				} else {
+					placeSearch.search(address, (status, result) => {
+						// 搜索成功时，result即是对应的匹配数据
+						// console.log(result);
+						if (status === 'complete') {
+							// console.log(result);
+							resolve(result);
+						} else {
+							resolve({});
+						}
+					});
+				}
+			});
+		});
+	};
 
 	handleResponse = response => {
 		const {
@@ -81,7 +175,16 @@ class CreateStore extends React.Component {
 		} = this.props;
 
 		validateFields(async (err, values) => {
+			// console.log(values);
 			if (!err) {
+				const { address } = values;
+				const { poiList: { pois = [] } = {} } =
+					(await this.getAddressLocation(address)) || {};
+
+				const { location: { lat = null, lng = null } = {} } =
+					pois.find(poi => address === `${poi.name}${poi.address}`) || {};
+				// console.log(lat, lng);
+
 				const options = {
 					...values,
 					shop_id: shopId,
@@ -91,6 +194,8 @@ class CreateStore extends React.Component {
 					province: values.region[0] || null,
 					city: values.region[1] || null,
 					area: values.region[2] || null,
+					lat: lat ? `${lat}` : null,
+					lng: lng ? `${lng}` : null,
 				};
 
 				let response = null;
@@ -110,6 +215,7 @@ class CreateStore extends React.Component {
 	render() {
 		const {
 			form: { getFieldDecorator },
+			loading: cardLoading,
 			store: {
 				shopType_list,
 				regionList,
@@ -122,18 +228,29 @@ class CreateStore extends React.Component {
 					province = null,
 					city = null,
 					area = null,
-					address,
+					address = null,
 					business_hours,
+					business_area = null,
 					contact_person,
 					contact_tel,
 				},
 			},
 			goToPath,
 		} = this.props;
+		const { addressSearchResult } = this.state;
 		const [action = 'create'] = [getLocationParam('action')];
 
+		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => (
+			<AutoComplete.Option
+				key={`${index}-${addressInfo.id}`}
+				value={`${addressInfo.name}${addressInfo.address}`}
+			>
+				{`${addressInfo.name}${addressInfo.address}`}
+			</AutoComplete.Option>
+		));
+
 		return (
-			<Card bordered={false}>
+			<Card bordered={false} loading={cardLoading.effects['store/getStoreDetail']}>
 				<h3>
 					{action === 'create'
 						? formatMessage({ id: 'storeManagement.create.title' })
@@ -215,10 +332,9 @@ class CreateStore extends React.Component {
 						{getFieldDecorator('address', {
 							initialValue: address,
 						})(
-							<Input
-								placeholder={formatMessage({
-									id: 'storeManagement.create.address.detail',
-								})}
+							<AutoComplete
+								dataSource={autoCompleteSelection}
+								onChange={this.handleSelectSearch}
 							/>
 						)}
 					</FormItem>
@@ -226,6 +342,30 @@ class CreateStore extends React.Component {
 						{getFieldDecorator('business_hours', {
 							initialValue: business_hours,
 						})(<Input />)}
+					</FormItem>
+					<FormItem label={formatMessage({ id: 'storeManagement.create.area' })}>
+						{getFieldDecorator('business_area', {
+							initialValue: business_area || null,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) => {
+										if (
+											value &&
+											!/^(([1-9]\d{0,5})|0)(\.\d{1,2})?$/.test(value)
+										) {
+											callback(
+												formatMessage({
+													id: 'storeManagement.create.area.formatError',
+												})
+											);
+										} else {
+											callback();
+										}
+									},
+								},
+							],
+						})(<Input suffix="㎡" />)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.contactName' })}>
 						{getFieldDecorator('contact_person', {

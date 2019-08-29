@@ -1,8 +1,8 @@
 import MqttClient from '@/services/Mqtt/MqttClient';
 
 class MqttModel {
-	constructor(namespace) {
-		this.client = new MqttClient();
+	constructor(namespace, config = {}) {
+		this.client = new MqttClient(config);
 
 		this.namespace = namespace;
 		this.username = '';
@@ -39,6 +39,22 @@ class MqttModel {
 	effects() {
 		const me = this;
 		return {
+			checkClientExist() {
+				return !!me.clientId && !!me.address;
+			},
+
+			getTopicHanders() {
+				return me.client.handlerMap;
+			},
+
+			getTopicHandlerByTopic({ payload: { topic } }) {
+				return me.client.handlerMap.get(topic);
+			},
+
+			checkTpoicHandlerExist({ payload: { topic } }) {
+				return me.client.handlerMap.has(topic);
+			},
+
 			*connect(_, { select }) {
 				const info = yield select(state => state[me.namespace]);
 				// console.log(info);
@@ -72,8 +88,16 @@ class MqttModel {
 						company_id: currentCompanyId,
 					},
 				};
-
 				yield call(me.client.publish, topic, sendMessage);
+			},
+
+			*publishArray(
+				{
+					payload: { topic, message },
+				},
+				{ call }
+			) {
+				yield call(me.client.publish, topic, message);
 			},
 
 			*destroy(_, { call }) {
@@ -87,6 +111,15 @@ class MqttModel {
 				{ call }
 			) {
 				yield call(me.client.registerMessageHandler, handler);
+			},
+
+			*unsubscribeTopic(
+				{
+					payload: { topic },
+				},
+				{ call }
+			) {
+				yield call(me.client.unsubscribe, topic);
 			},
 
 			*registerTopicHandler(
@@ -105,6 +138,14 @@ class MqttModel {
 				{ call }
 			) {
 				yield call(me.client.registerErrorHandler, handler);
+			},
+
+			putMsgMap() {
+				return me.client.msgIdMap;
+			},
+
+			*clearMsgId({payload}, { call }) {
+				yield call(me.client.clearMsg, payload);
 			},
 		};
 	}
