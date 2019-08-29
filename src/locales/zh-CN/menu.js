@@ -12,6 +12,7 @@ export default {
 	'menu.application.cashVerify.videos': '交易视频',
 	'menu.application.trade': '服务下单',
 	'menu.application.trade.result': '支付结果',
+	'menu.application.trade.qrpay': '订单支付',
 	'menu.esl': '电子价签',
 	'menu.esl.electricLabel': '价签管理',
 	'menu.esl.template': '模板管理',
@@ -116,5 +117,5 @@ export default {
 	'menu.network': '网络设备',
 	'menu.network.list': '网络设备',
 	'menu.network.detail': '网络设备详情',
-	'menu.network.configManagement': '配置管理'
+	'menu.network.configManagement': '配置管理',
 };

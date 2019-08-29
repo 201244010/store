@@ -107,6 +107,12 @@ const router = [
 								hideInMenu: true,
 								component: './Trade/TradeResult',
 							},
+							{
+								path: '/application/trade/qrpay',
+								id: 'qrpay',
+								hideInMenu: true,
+								component: './Trade/QRCodePayment',
+							},
 						],
 					},
 				],
