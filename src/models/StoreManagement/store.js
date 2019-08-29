@@ -105,10 +105,10 @@ export default {
 			yield put({
 				type: 'updateState',
 				payload: {
-					pagination:{
+					pagination: {
 						...pagination,
 						...options,
-					}
+					},
 				},
 			});
 		},
