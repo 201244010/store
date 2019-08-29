@@ -94,73 +94,29 @@ const formatInfoMessage = ({
 	});
 };
 
-const palyMotion = async ({ handlers, params }) => {
-	const {
-		url = null,
-		device_model: ipcType = null,
-		shop_id: shopId = null,
-		company_id: companyId = null,
-	} = convertArrayPrams(params) || {};
-
-	const {
-		getCurrentCompanyId,
-		getCompanyNameById,
-		getCurrentShopId,
-		getStoreNameById,
-		getStoreList,
-	} = handlers || {};
-
-	const {
-		currentCompanyId,
-		currentShopId,
-		currentCompanyName,
-		currentShopName,
-		targetCompanyName,
-		targetShopName,
-	} =
-		(await getCurrentAndTargetCompanyInfo({
-			getCurrentCompanyId,
-			getCompanyNameById,
-			getCurrentShopId,
-			getStoreNameById,
-			getStoreList,
-			companyId: parseInt(companyId, 10),
-			shopId: parseInt(shopId, 10),
-		})) || {};
-
-	if (
-		isInCurrentCompany({ currentCompanyId, companyId }) &&
-		isInCurrentShop({ currentShopId, shopId })
-	) {
-		const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
-		const modal = Modal.info({
-			title: '',
-			content: (
-				<>
-					{url && (
-						<ModalPlayer
-							visible
-							onClose={() => {
-								if (modal) {
-									modal.destroy();
-								}
-							}}
-							url={decodeURIComponent(url)}
-							pixelRatio={pixelRatio}
-						/>
-					)}
-				</>
-			),
-			okButtonProps: { style: { dispaly: 'none' } },
-		});
-	} else {
-		formatInfoMessage({
-			currentCompanyName,
-			currentShopName,
-			targetCompanyName,
-			targetShopName,
-		});
-	}
+const palyMotion = async ({ params }) => {
+	const { url = null, device_model: ipcType = null } = convertArrayPrams(params) || {};
+	const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
+	const modal = Modal.info({
+		title: '',
+		content: (
+			<>
+				{url && (
+					<ModalPlayer
+						visible
+						onClose={() => {
+							if (modal) {
+								modal.destroy();
+							}
+						}}
+						url={decodeURIComponent(url)}
+						pixelRatio={pixelRatio}
+					/>
+				)}
+			</>
+		),
+		okButtonProps: { style: { dispaly: 'none' } },
+	});
 };
 
 const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
