@@ -79,6 +79,8 @@ const columns = [
 	}),
 	dispatch => ({
 		getPurchaseType: () => dispatch({ type: 'trade/getPurchaseType' }),
+		payOrder: ({ orderNo, purchaseType, source }) =>
+			dispatch({ type: 'trade/payOrder', payload: { orderNo, purchaseType, source } }),
 	})
 )
 class Trade extends PureComponent {
@@ -116,6 +118,8 @@ class Trade extends PureComponent {
 	};
 
 	payOrder = () => {
+		// const { payOrder } = this.props;
+
 		const { open } = window;
 		const newWindow = open('/network', '_blank');
 		newWindow.document.write('<p>这是\'我的窗口\'</p>');
