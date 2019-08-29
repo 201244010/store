@@ -11,22 +11,43 @@ const OverviewInfo = ({
 	content = null,
 	subContent = null,
 	loading = false,
-}) => (
-	<Card title={null} bordered={false} loading={loading} className={styles['overview-card']}>
-		<div className={styles['overview-info']}>
-			<div className={styles['overview-icon']}>{icon && <Icon type={icon} />}</div>
-			<div className={styles['overview-content']}>
-				<div className={styles['content-title']}>{title}</div>
-				<div className={styles.content}>{content}</div>
-				<div className={styles['sub-content']}>{subContent}</div>
-			</div>
-		</div>
-	</Card>
-);
+	onClick = null,
+}) => {
+	const handleClick = e => {
+		if (onClick) {
+			onClick(e);
+		}
+	};
 
-@connect(state => ({
-	dashboard: state.dashboard,
-}))
+	return (
+		<Card
+			title={null}
+			bordered={false}
+			loading={loading}
+			className={styles['overview-card']}
+			onClick={handleClick}
+		>
+			<div className={styles['overview-info']}>
+				<div className={styles['overview-icon']}>{icon && <Icon type={icon} />}</div>
+				<div className={styles['overview-content']}>
+					<div className={styles['content-title']}>{title}</div>
+					<div className={styles.content}>{content}</div>
+					<div className={styles['sub-content']}>{subContent}</div>
+				</div>
+			</div>
+		</Card>
+	);
+};
+
+@connect(
+	state => ({
+		dashboard: state.dashboard,
+	}),
+	dispatch => ({
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+	})
+)
 class OverviewBar extends PureComponent {
 	render() {
 		const {
@@ -45,6 +66,7 @@ class OverviewBar extends PureComponent {
 					offlineCount: deviceOfflineCount = '',
 				},
 			},
+			goToPath,
 		} = this.props;
 
 		return (
@@ -56,6 +78,7 @@ class OverviewBar extends PureComponent {
 							loading: overviewDeviceLoading,
 							title: formatMessage({ id: 'dashboard.overview.ap.online' }),
 							content: apTotalCount === '' ? '--' : apTotalCount,
+							onClick: overviewDeviceLoading ? null : () => goToPath('baseStation'),
 						}}
 					/>
 					<OverviewInfo
@@ -70,6 +93,7 @@ class OverviewBar extends PureComponent {
 									{eslPendingCount === '' ? '--' : priceFormat(eslPendingCount)}
 								</span>
 							),
+							onClick: overviewDeviceLoading ? null : () => goToPath('electricLabel'),
 						}}
 					/>
 					<OverviewInfo
@@ -84,6 +108,7 @@ class OverviewBar extends PureComponent {
 									{offLineCount === '' ? '--' : offLineCount}
 								</span>
 							),
+							onClick: overviewIPCLoading ? null : () => goToPath('deviceList'),
 						}}
 					/>
 					<OverviewInfo
@@ -99,6 +124,7 @@ class OverviewBar extends PureComponent {
 									{deviceOfflineCount === '' ? '--' : deviceOfflineCount}
 								</span>
 							),
+							onClick: overviewNetworkLoading ? null : () => goToPath('network'),
 						}}
 					/>
 				</div>

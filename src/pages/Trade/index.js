@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
+import { format } from '@konata9/milk-shake';
 import { Card, Table, Modal, Button, Tabs } from 'antd';
 import PaymentRadio from '@/components/BigIcon/PaymentRadio';
 import { getCountDown } from '@/utils/utils';
@@ -11,6 +12,15 @@ import businessBank from '@/assets/icon/business-bank.svg';
 import accountBank from '@/assets/icon/account-bank.svg';
 import alipayPayment from '@/assets/icon/alipay-payment.svg';
 import wechatPayment from '@/assets/icon/wechat-payment.svg';
+import { ERROR_OK } from '@/constants/errorCode';
+
+const PAYMENT_ICON = {
+	'purchase-type-b2b-unionpay': businessBank,
+	'purchase-type-b2c-unionpay': accountBank,
+	'purchase-type-alipay': alipayPayment,
+	'purchase-type-wechat': wechatPayment,
+	default: null,
+};
 
 const { TabPane } = Tabs;
 
@@ -81,6 +91,8 @@ const columns = [
 		getPurchaseType: () => dispatch({ type: 'trade/getPurchaseType' }),
 		payOrder: ({ orderNo, purchaseType, source }) =>
 			dispatch({ type: 'trade/payOrder', payload: { orderNo, purchaseType, source } }),
+		goToPath: (pathId, urlParams = {}, linkType = null) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, linkType } }),
 	})
 )
 class Trade extends PureComponent {
@@ -88,6 +100,7 @@ class Trade extends PureComponent {
 		super(props);
 		this.timer = null;
 		this.state = {
+			selectedPurchaseType: null,
 			modalVisible: false,
 			countDown: TIME.DAY,
 		};
@@ -95,8 +108,8 @@ class Trade extends PureComponent {
 
 	async componentDidMount() {
 		// TODO 获取支付方式
-		const { getPurchaseType } = this.props;
-		await getPurchaseType();
+		// const { getPurchaseType } = this.props;
+		// await getPurchaseType();
 		this.startCountDown();
 	}
 
@@ -117,8 +130,29 @@ class Trade extends PureComponent {
 		}, 1000);
 	};
 
-	payOrder = () => {
-		// const { payOrder } = this.props;
+	payOrder = async () => {
+		const { selectedPurchaseType } = this.state;
+		const { payOrder } = this.props;
+
+		const response = await payOrder({
+			orderNo: '',
+			purchaseType: selectedPurchaseType,
+			source: '',
+		});
+
+		if (response && response.code === ERROR_OK) {
+			const { data = {} } = response || {};
+			const { qrCodeUrl = '', unionPayForm = '' } = format('toCamel')(data);
+			if (qrCodeUrl) {
+				// TODO 二维码操作页面
+			}
+
+			if (unionPayForm) {
+				// TODO 跳转到银联页面
+			}
+		} else {
+			// TODO 支付错误的情况
+		}
 
 		const { open } = window;
 		const newWindow = open('/network', '_blank');
@@ -139,10 +173,16 @@ class Trade extends PureComponent {
 	};
 
 	radioChange = value => {
-		console.log('radio value: ', value);
+		this.setState({
+			selectedPurchaseType: value,
+		});
 	};
 
 	render() {
+		const {
+			trade: { purchaseType: { b2b = [], b2c = [] } = {} },
+		} = this.props;
+
 		const { modalVisible, countDown } = this.state;
 		const { hour = '--', minute = '--', second = '--' } = getCountDown(countDown);
 
@@ -192,45 +232,40 @@ class Trade extends PureComponent {
 				>
 					<Tabs defaultActiveKey="business" animated={false}>
 						<TabPane tab={formatMessage({ id: 'business.account' })} key="business">
-							<PaymentRadio
-								{...{
-									backgroundImg: businessBank,
-									name: 'payment',
-									id: 'businessBank',
-									value: 'businessBank',
-									onChange: this.radioChange,
-								}}
-							/>
+							{b2b.map(info => {
+								const { id, tag } = info;
+								return (
+									<PaymentRadio
+										key={id}
+										{...{
+											backgroundImg:
+												PAYMENT_ICON[tag] || PAYMENT_ICON.default,
+											name: 'b2b',
+											id,
+											value: id,
+											onChange: this.radioChange,
+										}}
+									/>
+								);
+							})}
 						</TabPane>
 						<TabPane tab={formatMessage({ id: 'person.account' })} key="account">
 							<div>
-								<PaymentRadio
-									{...{
-										backgroundImg: alipayPayment,
-										name: 'accountPayment',
-										id: 'alipayPayment',
-										value: 'alipayPayment',
-										onChange: this.radioChange,
-									}}
-								/>
-								<PaymentRadio
-									{...{
-										backgroundImg: wechatPayment,
-										name: 'accountPayment',
-										id: 'wechatPayment',
-										value: 'wechatPayment',
-										onChange: this.radioChange,
-									}}
-								/>
-								<PaymentRadio
-									{...{
-										backgroundImg: accountBank,
-										name: 'accountPayment',
-										id: 'accountBank',
-										value: 'accountBank',
-										onChange: this.radioChange,
-									}}
-								/>
+								{b2c.map(info => {
+									const { id, tag } = info;
+									return (
+										<PaymentRadio
+											{...{
+												backgroundImg:
+													PAYMENT_ICON[tag] || PAYMENT_ICON.default,
+												name: 'b2c',
+												id,
+												value: id,
+												onChange: this.radioChange,
+											}}
+										/>
+									);
+								})}
 							</div>
 						</TabPane>
 					</Tabs>
