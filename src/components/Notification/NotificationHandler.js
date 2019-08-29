@@ -5,6 +5,7 @@ import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
 
 import { formatMessageTemplate, convertArrayPrams, replaceTemplateWithValue } from '@/utils/utils';
 import ipcTypes from '@/constants/ipcTypes';
+import { ERROR_OK } from '@/constants/errorCode';
 
 const isInCurrentCompany = ({ currentCompanyId, companyId }) =>
 	`${currentCompanyId}` === `${companyId}`;
@@ -16,25 +17,31 @@ const getCurrentAndTargetCompanyInfo = async ({
 	getCompanyNameById,
 	getCurrentShopId,
 	getStoreNameById,
+	getStoreList,
 	companyId,
 	shopId,
 }) => {
+	const result = await getStoreList({ options: { company_id: companyId } });
+	let targetShopName = '';
+	if (result && result.code === ERROR_OK) {
+		const { data = {} } = result || {};
+		const { shop_list: targetShopList } = data;
+		const { shop_name: shopName } = targetShopList.find(shop => shop.shop_id === shopId) || {};
+		targetShopName = shopName;
+	}
+
 	const [currentCompanyId, currentShopId] = await Promise.all([
 		getCurrentCompanyId(),
 		getCurrentShopId(),
 	]);
 
-	const [
-		currentCompanyName,
-		currentShopName,
-		targetCompanyName,
-		targetShopName,
-	] = await Promise.all([
+	const [currentCompanyName, currentShopName, targetCompanyName] = await Promise.all([
 		getCompanyNameById(currentCompanyId),
 		getStoreNameById(currentShopId),
 		getCompanyNameById(companyId),
-		getStoreNameById(shopId),
 	]);
+
+	// console.log('companyId:', targetCompanyName);
 
 	return {
 		currentCompanyId,
@@ -95,8 +102,13 @@ const palyMotion = async ({ handlers, params }) => {
 		company_id: companyId = null,
 	} = convertArrayPrams(params) || {};
 
-	const { getCurrentCompanyId, getCompanyNameById, getCurrentShopId, getStoreNameById } =
-		handlers || {};
+	const {
+		getCurrentCompanyId,
+		getCompanyNameById,
+		getCurrentShopId,
+		getStoreNameById,
+		getStoreList,
+	} = handlers || {};
 
 	const {
 		currentCompanyId,
@@ -111,8 +123,9 @@ const palyMotion = async ({ handlers, params }) => {
 			getCompanyNameById,
 			getCurrentShopId,
 			getStoreNameById,
-			companyId,
-			shopId,
+			getStoreList,
+			companyId: parseInt(companyId, 10),
+			shopId: parseInt(shopId, 10),
 		})) || {};
 
 	if (
@@ -159,6 +172,7 @@ const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
 		getCompanyNameById,
 		getCurrentShopId,
 		getStoreNameById,
+		getStoreList,
 		goToPath,
 	} = handlers || {};
 
@@ -175,8 +189,9 @@ const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
 			getCompanyNameById,
 			getCurrentShopId,
 			getStoreNameById,
-			companyId,
-			shopId,
+			getStoreList,
+			companyId: parseInt(companyId, 10),
+			shopId: parseInt(shopId, 10),
 		})) || {};
 
 	if (
