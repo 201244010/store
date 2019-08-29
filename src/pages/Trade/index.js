@@ -18,6 +18,7 @@ const mockData = {
 	orderNumber: 'YCC1234567890213456',
 	table: [
 		{
+			id: '233',
 			productImg: 'http://test.cdn.sunmi.com/IMG/uploadicon/698745/1556108862_thumb.jpg',
 			productName: '云存储七天视频存储半年包',
 			productPrice: 69,
@@ -92,8 +93,8 @@ class Trade extends PureComponent {
 
 	async componentDidMount() {
 		// TODO 获取支付方式
-		// const { getPurchaseType } = this.props;
-		// await getPurchaseType();
+		const { getPurchaseType } = this.props;
+		await getPurchaseType();
 		this.startCountDown();
 	}
 
@@ -115,13 +116,16 @@ class Trade extends PureComponent {
 	};
 
 	payOrder = () => {
-		const myWindow = window.open(
-			'',
-			'_blank',
-			'location=no, toolbar=no, menubar=no, status=no'
-		);
-		myWindow.document.write('<p>这是\'我的窗口\'</p>');
-		myWindow.focus();
+		const { open } = window;
+		const newWindow = open('/network', '_blank');
+		newWindow.document.write('<p>这是\'我的窗口\'</p>');
+		// const myWindow = window.open(
+		// 	'',
+		// 	'_blank',
+		// 	'location=no, toolbar=no, menubar=no, status=no'
+		// );
+		// myWindow.document.write('<p>这是\'我的窗口\'</p>');
+		// myWindow.focus();
 	};
 
 	closeModal = () => {
@@ -144,7 +148,12 @@ class Trade extends PureComponent {
 					<div className={styles['order-title']}>
 						{formatMessage({ id: 'order.number' })}：{mockData.orderNumber}
 					</div>
-					<Table columns={columns} dataSource={mockData.table} pagination={false} />
+					<Table
+						rowKey="id"
+						columns={columns}
+						dataSource={mockData.table}
+						pagination={false}
+					/>
 					<div className={styles['product-info']}>
 						<div>
 							<div className={styles['product-wrapper']}>
