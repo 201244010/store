@@ -123,6 +123,6 @@ export const displayNotification = props => {
 		onClose: () => closeAction(key),
 
 		// 测试时用
-		// duration: 0,
+		duration: 8,
 	});
 };

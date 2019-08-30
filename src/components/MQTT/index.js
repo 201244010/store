@@ -40,6 +40,7 @@ function MQTTWrapper(WrapperedComponent) {
 				dispatch({ type: 'store/getStoreNameById', payload: { shopId } }),
 			getCompanyNameById: companyId =>
 				dispatch({ type: 'merchant/getCompanyNameById', payload: { companyId } }),
+			getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		})
 	)
 	@Ipc
@@ -82,6 +83,7 @@ function MQTTWrapper(WrapperedComponent) {
 				getCurrentShopId,
 				getStoreNameById,
 				getCompanyNameById,
+				getStoreList,
 			} = this.props;
 			const messageData = JSON.parse(data.toString()) || {};
 			const uniqueKey = getRandomString();
@@ -103,6 +105,7 @@ function MQTTWrapper(WrapperedComponent) {
 						goToPath,
 						formatSdCard,
 						getSdStatus,
+						getStoreList,
 						getCurrentCompanyId,
 						getCurrentShopId,
 						getStoreNameById,

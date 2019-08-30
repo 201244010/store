@@ -5,6 +5,7 @@ import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
 
 import { formatMessageTemplate, convertArrayPrams, replaceTemplateWithValue } from '@/utils/utils';
 import ipcTypes from '@/constants/ipcTypes';
+import { ERROR_OK } from '@/constants/errorCode';
 
 const isInCurrentCompany = ({ currentCompanyId, companyId }) =>
 	`${currentCompanyId}` === `${companyId}`;
@@ -16,25 +17,31 @@ const getCurrentAndTargetCompanyInfo = async ({
 	getCompanyNameById,
 	getCurrentShopId,
 	getStoreNameById,
+	getStoreList,
 	companyId,
 	shopId,
 }) => {
+	const result = await getStoreList({ options: { company_id: companyId } });
+	let targetShopName = '';
+	if (result && result.code === ERROR_OK) {
+		const { data = {} } = result || {};
+		const { shop_list: targetShopList } = data;
+		const { shop_name: shopName } = targetShopList.find(shop => shop.shop_id === shopId) || {};
+		targetShopName = shopName;
+	}
+
 	const [currentCompanyId, currentShopId] = await Promise.all([
 		getCurrentCompanyId(),
 		getCurrentShopId(),
 	]);
 
-	const [
-		currentCompanyName,
-		currentShopName,
-		targetCompanyName,
-		targetShopName,
-	] = await Promise.all([
+	const [currentCompanyName, currentShopName, targetCompanyName] = await Promise.all([
 		getCompanyNameById(currentCompanyId),
 		getStoreNameById(currentShopId),
 		getCompanyNameById(companyId),
-		getStoreNameById(shopId),
 	]);
+
+	// console.log('companyId:', targetCompanyName);
 
 	return {
 		currentCompanyId,
@@ -87,67 +94,30 @@ const formatInfoMessage = ({
 	});
 };
 
-const palyMotion = async ({ handlers, params }) => {
-	const {
-		url = null,
-		device_model: ipcType = null,
-		shop_id: shopId = null,
-		company_id: companyId = null,
-	} = convertArrayPrams(params) || {};
+const palyMotion = async ({ params }) => {
+	const { url = null, device_model: ipcType = null } = convertArrayPrams(params) || {};
 
-	const { getCurrentCompanyId, getCompanyNameById, getCurrentShopId, getStoreNameById } =
-		handlers || {};
-
-	const {
-		currentCompanyId,
-		currentShopId,
-		currentCompanyName,
-		currentShopName,
-		targetCompanyName,
-		targetShopName,
-	} =
-		(await getCurrentAndTargetCompanyInfo({
-			getCurrentCompanyId,
-			getCompanyNameById,
-			getCurrentShopId,
-			getStoreNameById,
-			companyId,
-			shopId,
-		})) || {};
-
-	if (
-		isInCurrentCompany({ currentCompanyId, companyId }) &&
-		isInCurrentShop({ currentShopId, shopId })
-	) {
-		const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
-		const modal = Modal.info({
-			title: '',
-			content: (
-				<>
-					{url && (
-						<ModalPlayer
-							visible
-							onClose={() => {
-								if (modal) {
-									modal.destroy();
-								}
-							}}
-							url={decodeURIComponent(url)}
-							pixelRatio={pixelRatio}
-						/>
-					)}
-				</>
-			),
-			okButtonProps: { style: { dispaly: 'none' } },
-		});
-	} else {
-		formatInfoMessage({
-			currentCompanyName,
-			currentShopName,
-			targetCompanyName,
-			targetShopName,
-		});
-	}
+	const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
+	const modal = Modal.info({
+		title: '',
+		content: (
+			<>
+				{url && (
+					<ModalPlayer
+						visible
+						onClose={() => {
+							if (modal) {
+								modal.destroy();
+							}
+						}}
+						url={decodeURIComponent(url)}
+						pixelRatio={pixelRatio}
+					/>
+				)}
+			</>
+		),
+		okButtonProps: { style: { dispaly: 'none' } },
+	});
 };
 
 const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
@@ -159,6 +129,7 @@ const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
 		getCompanyNameById,
 		getCurrentShopId,
 		getStoreNameById,
+		getStoreList,
 		goToPath,
 	} = handlers || {};
 
@@ -175,8 +146,9 @@ const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
 			getCompanyNameById,
 			getCurrentShopId,
 			getStoreNameById,
-			companyId,
-			shopId,
+			getStoreList,
+			companyId: parseInt(companyId, 10),
+			shopId: parseInt(shopId, 10),
 		})) || {};
 
 	if (
