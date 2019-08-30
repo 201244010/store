@@ -49,8 +49,21 @@ const router = [
 				path: '/dashboard',
 				name: 'dashboard',
 				icon: 'blank',
-				component: './DashBoard',
-				id: 'dashboard',
+
+				routes: [
+					{
+						path: '/dashboard',
+						id: 'dashboard',
+						hideInMenu: true,
+						component: './DashBoard',
+					},
+					{
+						path: '/dashboard/detail',
+						id: 'tradeDetail',
+						hideInMenu: true,
+						component: './DashBoard/TradeDetail',
+					},
+				],
 			},
 
 			{
