@@ -13,7 +13,7 @@ class QRCodePayment extends PureComponent {
 	componentDidMount() {
 		console.log(this.qrContainer);
 		const { current } = this.qrContainer;
-		$(current).qrcode('23332333');
+		$(current).qrcode('weixin://wxpay/bizpayurl?pr=7Z6c5QC');
 	}
 
 	componentWillUnmount() {
