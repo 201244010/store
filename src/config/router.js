@@ -115,16 +115,16 @@ const router = [
 								component: './Trade',
 							},
 							{
-								path: '/application/trade/result',
-								id: 'tradeResult',
-								hideInMenu: true,
-								component: './Trade/TradeResult',
-							},
-							{
 								path: '/application/trade/qrpay',
 								id: 'qrpay',
 								hideInMenu: true,
 								component: './Trade/QRCodePayment',
+							},
+							{
+								path: '/application/trade/result',
+								id: 'tradeResult',
+								hideInMenu: true,
+								component: './Trade/TradeResult',
 							},
 						],
 					},
