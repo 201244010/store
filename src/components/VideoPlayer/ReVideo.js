@@ -34,7 +34,7 @@ class ReVideojs extends React.Component{
 					autoCleanupSourceBuffer: true,
 					enableStashBuffer: false,
 					isLive: true,
-					// enableWorker: true,
+					enableWorker: true,
 				}
 			}
 		});
