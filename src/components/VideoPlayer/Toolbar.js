@@ -21,7 +21,7 @@ class Toolbar extends React.Component{
 	}
 
 	shouldComponentUpdate(oldProps, oldState) {
-		const { today } = this.props;
+		const { today, progressbar } = this.props;
 
 		const isEqualProps = _.isEqual({
 			...oldProps,
@@ -36,9 +36,20 @@ class Toolbar extends React.Component{
 		const isEqualState = _.isEqual(oldState, this.state);
 
 		if (isEqualProps && isEqualState) {
+			const { progressbar: oldBar } = oldProps;
+
+			if (progressbar.props.duration !== oldBar.props.duration) {
+				return true;
+			}
+
+			if (progressbar.props.current !== oldBar.props.current) {
+				return true;
+			}
+
 			if (Math.abs(today - oldProps.today) <= 24*3600) {
 				return false;
 			}
+
 			return true;
 		}
 		return true;
@@ -89,7 +100,7 @@ class Toolbar extends React.Component{
 			modeText = t[0].name;
 		}
 
-		console.log(today, moment.unix(today).format('YYYY-MM-DD HH:mm:ss'));
+		// console.log(today, moment.unix(today).format('YYYY-MM-DD HH:mm:ss'));
 
 		return(
 			<div

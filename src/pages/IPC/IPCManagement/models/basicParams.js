@@ -12,6 +12,7 @@ export default {
 	state:{
 		sn: '',
 		nightMode: 2,
+		WDRMode: 1,
 		indicator: false,
 		rotation: 0,
 		isReading: true,
@@ -21,11 +22,12 @@ export default {
 		init: (state, { payload: { sn }}) => {
 			state.sn = sn;
 		},
-		readData: (state, { payload: { sn, nightMode, indicator, rotation }}) => {
+		readData: (state, { payload: { sn, nightMode, indicator, rotation, WDRMode }}) => {
 			if (state.sn === sn) {
 				state.nightMode = nightMode;
 				state.indicator = indicator;
 				state.rotation = rotation;
+				state.WDRMode = WDRMode;
 			}
 		},
 		setReadingStatus: (state, { payload: { sn, status }}) => {
@@ -85,7 +87,7 @@ export default {
 				}
 			});
 		},
-		*update({ payload: { nightMode, indicator, rotation, sn } }, { put }){
+		*update({ payload: { nightMode, indicator, rotation, sn, WDRMode } }, { put }){
 			const type = yield put.resolve({
 				type:'ipcList/getDeviceType',
 				payload:{
@@ -113,7 +115,8 @@ export default {
 							night_mode: nightMode,
 							led_indicator: indicator ? 1 : 0,
 							// rotation: rotation ? 1 : 0
-							rotation
+							rotation,
+							wdr_mode: WDRMode
 						}
 					}
 				}
@@ -125,6 +128,7 @@ export default {
 					nightMode,
 					indicator,
 					rotation,
+					WDRMode,
 					sn
 				}
 			});
@@ -156,7 +160,8 @@ export default {
 									sn: data.sn,
 									nightMode: data.night_mode,
 									indicator: data.led_indicator === 1,
-									rotation: data.rotation
+									rotation: data.rotation,
+									WDRMode:data.nightMode === 1 ? 0: data.wdr_mode
 								}
 							});
 

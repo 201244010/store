@@ -4,12 +4,17 @@
 	margin: -24px;
 }
 
+.dashboard-title {
+	padding: 16px 24px 0 24px;
+	margin: 0;
+	background: #fff;
+}
+
 .search-bar {
 	width: 100%;
 	height: 64px;
 	padding: 16px 24px;
 	background: #ffffff;
-	border-top: 1px solid #eff1f2;
 
 	display: flex;
 	justify-content: space-between;
@@ -44,6 +49,55 @@
 
 		text-align: center;
 		cursor: pointer;
+	}
+}
+
+.salse-bar,
+.overview-bar {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.salse-card,
+.overview-card {
+	min-width: 25%;
+	min-height: 130px;
+	cursor: pointer;
+}
+
+.salse-info,
+.overview-info {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+
+	.salse-content,
+	.overview-content {
+		margin-left: 20px;
+
+		.content-title {
+			color: #5a6c84cc;
+		}
+
+		.content {
+			font-size: 24px;
+			font-weight: bold;
+		}
+
+		.sub-content {
+			font-size: 14px;
+			color: #5a6c84cc;
+		}
+	}
+}
+
+.salse-chart,
+.customer-chart {
+	:global {
+		.ant-card-body {
+			padding: 0;
+		}
 	}
 }
 

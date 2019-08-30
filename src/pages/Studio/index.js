@@ -127,7 +127,11 @@ class Studio extends Component {
 				if (copiedComponent.name) {
 					if (copiedComponent.type !== SHAPE_TYPES.RECT_SELECT) {
 						const newPosition = {};
-						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+						if (!copiedComponent.copyCount) {
+							copiedComponent.copyCount = 1;
+						} else {
+							copiedComponent.copyCount++;
+						}
 						newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
 						newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
 
@@ -137,7 +141,11 @@ class Studio extends Component {
 							y: newPosition.y,
 						});
 					} else {
-						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+						if (!copiedComponent.copyCount) {
+							copiedComponent.copyCount = 1;
+						} else {
+							copiedComponent.copyCount++;
+						}
 						for (let i = 0; i < scopedComponents.length; i++) {
 							const {x, y, type, scaleY} = scopedComponents[i];
 							addComponent({
@@ -619,20 +627,23 @@ class Studio extends Component {
 			y: stageBox.top + textPosition.y,
 		};
 
+		const offsetX = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? 0 : -1;
+		const offsetY = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? 0 : 2;
+
 		const inputEle = document.createElement('input');
 		document.body.appendChild(inputEle);
 		inputEle.setAttribute('id', 'textInput');
 		inputEle.setAttribute('autocomplete', 'off');
 		inputEle.value = targetDetail.content;
 		inputEle.style.backgroundColor = 'transparent';
-		inputEle.style.border = '1px solid #ccc';
-		inputEle.style.borderRadius = '5px';
+		// inputEle.style.border = '1px solid #ccc';
+		// inputEle.style.borderRadius = '5px';
 		inputEle.style.fontSize = `${targetDetail.fontSize * zoomScale}px`;
 		inputEle.style.fontFamily = targetDetail.fontFamily;
 		inputEle.style.color = targetDetail.fontColor;
 		inputEle.style.position = 'absolute';
-		inputEle.style.left = `${inputPosition.x}px`;
-		inputEle.style.top = `${inputPosition.y}px`;
+		inputEle.style.left = `${inputPosition.x + offsetX}px`;
+		inputEle.style.top = `${inputPosition.y + offsetY}px`;
 		inputEle.style.width = `${targetDetail.width * targetDetail.scaleX}px`;
 		inputEle.style.height = `${targetDetail.fontSize * targetDetail.zoomScale}px`;
 		// inputEle.style.lineHeight = `${targetDetail.lineHeight}`;

@@ -139,10 +139,14 @@ class EntryDetail extends React.Component {
 	}
 
 	async deleteArrivalHandler(historyId){
-		const { deleteArrivalItem } = this.props;
-		const { currentPage, pageSize } = this.state;
+		const { deleteArrivalItem, getFaceInfo } = this.props;
+		const { currentPage, pageSize, faceInfo:{ faceId }} = this.state;
 		const historyIdList = [historyId];
 		const result = await deleteArrivalItem({historyIdList});
+		const faceInfo = await getFaceInfo({faceId});
+		this.setState({
+			faceInfo
+		});
 		if(result === ERROR_OK){ // 删除成功
 			message.success(formatMessage({id: 'entry.detail.delete.success'}));
 		}

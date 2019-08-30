@@ -60,8 +60,14 @@ const { confirm } = Modal;
 			dispatch({
 				type: 'photoLibrary/saveFile',
 				payload
-			})
-		,
+			}),
+		navigateTo: (pathId, urlParams) => dispatch({
+			type: 'menu/goToPath',
+			payload: {
+				pathId,
+				urlParams
+			}
+		}),
 	})
 )
 class PhotoCard extends React.Component {
@@ -321,7 +327,8 @@ class PhotoCard extends React.Component {
 			case 'createDate':
 				return createDate === 0 ? formatMessage({id: 'photoManagement.unKnown'}) : this.dateStrFormat(createDate);
 			case 'count':
-				return count === 0 ? formatMessage({id: 'photoManagement.unKnown'}) : count;
+				// return count === 0 ? formatMessage({id: 'photoManagement.unKnown'}) : count;
+				return count;
 			case 'libraryName':
 				return libraryName === '' ? formatMessage({id: 'photoManagement.unKnown'}) : libraryName;
 			default: return 0;
@@ -390,7 +397,9 @@ class PhotoCard extends React.Component {
 			photoLibrary: { ageRange },
 			groupId,
 			age,
-			gender
+			gender,
+			count,
+			navigateTo
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
 		const { isEdit, infoFormVisible, removeVisible, file, fileUrl, imageLoaded, isUpload } = this.state;
@@ -429,8 +438,10 @@ class PhotoCard extends React.Component {
 							{formatMessage({id:'photoManagement.age'})} : {this.ageRange()}
 						</span>
 						<span className={styles['info-card-span']}>
-							<span>{formatMessage({id:'photoManagement.card.latestTime'})} : </span>
-							<span>{this.handleInfo('latestDate')}</span>
+							{/* <span>{formatMessage({id:'photoManagement.card.latestTime'})} : </span>
+							<span>{this.handleInfo('latestDate')}</span> */}
+							<span>{formatMessage({id:'photoManagement.card.createTime'})} : </span>
+							<span>{this.handleInfo('createDate')}</span>
 						</span>
 						<Checkbox
 							className={styles['card-checkbox']}
@@ -507,7 +518,7 @@ class PhotoCard extends React.Component {
 										<Form
 											className={styles['info-form']}
 											  labelCol={{ lg: { span: 10 }}}
-											  wrapperCol={{ lg: { span: 6 }}}
+											  wrapperCol={{ lg: { span: 10 }}}
 										>
 											<Form.Item label={formatMessage({id:'photoManagement.name'})}>
 												{getFieldDecorator('name', {
@@ -630,7 +641,13 @@ class PhotoCard extends React.Component {
 												{this.ageRange()}
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.frequency'})}>
-												{this.handleInfo('count')}
+												{
+													count?
+														<span className={styles['frequency-label']} onClick={() => navigateTo('entryDetail',{ faceId: id })}>{this.handleInfo('count')}</span>
+														:
+														<span>{this.handleInfo('count')}</span>
+												}
+
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.createTime'})}>
 												{this.handleInfo('createDate')}

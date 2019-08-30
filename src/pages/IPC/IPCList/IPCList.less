@@ -155,46 +155,73 @@
 
 	.no-device {
 		text-align: center;
-		margin-top: 60px;
+		margin-top: 250px;
 
+		.qr-code-container{
+			height: 320px;
+			width: 320px;
+			margin: auto;
+			background-color:#FFFFFF;
+			border-radius:15px; 
+			box-shadow: 5px 5px 5px #D5D8DC;
+			.ipc-qr-code {
+				// border: 1px solid;
+				display: flex;
+				background: url(@/assets/imgs/qrcode.jpg) no-repeat center;
+				background-size: 160px 160px;
+				.scan-border{
+					width: 248px;
+					height: 248px;
+					margin: 36px auto;
+					position: relative;
+					.border {
+						width: 24px;
+						height: 24px;
+						position:absolute;
+						padding:5px;
+						border-style: solid;
+						border-color: #4B7AFA ;
+						// border-radius: px;
+					}
+					.border-top-left{
+						border-width: 4px 0 0 4px;
+						border-radius: 8px 0 0 0;
+						top:-5px;
+						left:-5px;
+					}
+					.border-top-right{
+						border-width: 4px 4px 0 0;
+						border-radius: 0 8px 0 0;
+						top:-5px;
+						right:-5px;
+					}
+					.border-bottom-left{
+						border-width: 0 0 4px 4px;
+						border-radius: 0 0 0 8px;
+						bottom:-5px;
+						left:-5px;
+					}
+					.border-bottom-right{
+						border-width: 0 4px 4px 0;
+						border-radius: 0 0 8px 0;
+						bottom:-5px;
+						right:-5px;
+					}
+				}
+				
+			}
+		}
 		.tips {
-			color: rgba(153, 153, 153, 0.847058823529412);
-			font-size: 14px;
+			color: #999999;
+			font-size: 16px;
 			font-weight: 400;
 			// margin: 10px;
 			width: 520px;
-			margin: 50px auto;
-			text-align: left;
-
-			.tips-item {
-				margin-top: 10px;
-
-				.num {
-					text-align: center;
-					margin-right: 5px;
-					display: inline-block;
-					border: 1px rgb(255, 102, 0) solid;
-					line-height: 20px;
-					border-radius: 20px;
-					width: 20px;
-					height: 20px;
-					color: rgb(255, 102, 0);
-				}
-			}
-			.blue-span{
-				color: #0099FF
-			}
-
+			margin: 40px auto;
+			text-align: center;
 		}
-
-		.ipc-pic {
-			margin: 20px auto;
-			height: 150px;
-			width: 200px;
-			background: url('@/assets/imgs/ipc-1.png') no-repeat;
-			background-size: cover;
-			background-position: -5px 0;
-		}
+		
+		
 
 		.device-link{
 			background-color: #FF6600;
