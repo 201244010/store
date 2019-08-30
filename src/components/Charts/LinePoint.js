@@ -8,6 +8,7 @@ class LinePoint extends PureComponent {
 			data = [],
 			forceFit = true,
 			scale = {},
+			padding = ['15%', '10%'],
 			axis: {
 				x: { name: xName = null, label: xLabel = {} } = {},
 				y: { name: yName = null, label: yLabel = {} } = {},
@@ -30,7 +31,7 @@ class LinePoint extends PureComponent {
 		} = this.props;
 
 		return (
-			<Chart height={height} data={data} forceFit={forceFit} scale={scale}>
+			<Chart height={height} data={data} forceFit={forceFit} scale={scale} padding={padding}>
 				<Axis name={xName} label={xLabel} />
 				<Axis name={yName} label={yLabel} />
 				<Tooltip {...toolTip} />

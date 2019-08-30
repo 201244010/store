@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Chart, Geom, Axis, Tooltip, Label, View, Facet } from 'bizcharts';
+import '@/components/Charts/Shape';
 
 class FacetChart extends PureComponent {
 	render() {
@@ -8,6 +9,7 @@ class FacetChart extends PureComponent {
 			data = [],
 			forceFit = true,
 			scale = {},
+			chartPadding = 0,
 			axis: {
 				x: {
 					name: xName = null,
@@ -30,13 +32,19 @@ class FacetChart extends PureComponent {
 			} = {},
 			tooltip = {},
 			facet: { padding = 50, fields = [] },
-			geom: { position = null, size = 15, color = '#ffffff', label: { content = null } = {} },
-			assistGeom: { position: assistPosition = null, color: assistColor = '#ffffff' },
+			geom: { position = null, size = 25, color = '#ffffff', label: { content = null } = {} },
+			assistGeom: { position: assistPosition = null, color: assistColor = '#f0f2f5' },
 		} = this.props;
 
 		return (
 			<div>
-				<Chart height={height} data={data} scale={scale} forceFit={forceFit}>
+				<Chart
+					height={height}
+					data={data}
+					scale={scale}
+					forceFit={forceFit}
+					padding={chartPadding}
+				>
 					<Tooltip {...tooltip} />
 					<Axis name={xName} line={xLine} tickLine={xTickLine} visible={xVisible} />
 					<Axis name={yName} line={yLine} tickLine={yTickLine} visible={yVisible} />
@@ -49,15 +57,20 @@ class FacetChart extends PureComponent {
 					<Facet type="mirror" fields={fields} transpose padding={padding}>
 						<View>
 							<Geom
-								type="intervalStack"
+								size={size}
+								type="interval"
+								shape="distributionBorderShape"
 								position={assistPosition}
 								color={assistColor}
+								active={false}
 							/>
 							<Geom
 								size={size}
-								type="intervalStack"
+								type="interval"
+								shape="distributionBorderShape"
 								position={position}
 								color={color}
+								active={false}
 							>
 								<Label content={content} />
 							</Geom>

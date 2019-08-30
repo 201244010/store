@@ -69,12 +69,13 @@ class CustomerChart extends PureComponent {
 				<Facet
 					{...{
 						data: data.map(item => ({ ...item, limit: 2000 })),
+						tooltip: { crosshairs: false },
 						scale: {
 							visitor: {
-								ticks: [0, 200, 600, 1000, 2000],
+								ticks: [0, 200, 600, 1000],
 							},
 							limit: {
-								ticks: [0, 200, 600, 1000, 2000],
+								ticks: [0, 200, 600, 1000],
 							},
 						},
 						axis: {
@@ -85,10 +86,10 @@ class CustomerChart extends PureComponent {
 						facet: { fields: ['site'] },
 						geom: {
 							position: 'action*visitor',
-							color: ['site', site => (site === '站点1' ? 'blue' : 'red')],
+							color: ['site', site => (site === '站点1' ? '#2b7ac0' : '#ff6666')],
 							label: { content: 'visitor' },
 						},
-						assistGeom: { position: 'action*limit', color: '#000000' },
+						assistGeom: { position: 'action*limit' },
 					}}
 				/>
 			</Card>
