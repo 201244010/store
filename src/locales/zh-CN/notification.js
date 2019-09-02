@@ -146,8 +146,8 @@ export default {
 
 	// esl-device-title
 	'notif-system-esl-erp-title': 'ERP对接完成',
-	'notif-system-task-erp-finish-title':'EERP对接完成',
-	'notif-system-task-erp-failure-title':'EERP对接失败',
+	'notif-system-task-erp-finish-title':'ERP对接完成',
+	'notif-system-task-erp-failure-title':'ERP对接失败',
 	'notif-device-esl-ota-title': '检测到新版固件',
 	'notif-device-esl-ap-on/offline-title': '检测到基站离线',
 

@@ -14,7 +14,7 @@ const {
 	TIME_TICKS,
 } = DASHBOARD;
 
-const { Bar } = Charts;
+const { Bar, Facet } = Charts;
 
 const TwinList = props => {
 	const { leftList, rightList } = props;
@@ -211,6 +211,7 @@ class ContentChart extends PureComponent {
 
 		return (
 			<div className={styles['content-chart']}>
+				<Facet />
 				<Media query={{ maxWidth: 1439 }}>
 					{result => (
 						<Row gutter={result ? 0 : 24}>

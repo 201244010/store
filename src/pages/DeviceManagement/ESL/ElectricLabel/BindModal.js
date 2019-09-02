@@ -33,6 +33,7 @@ export default class BindModal extends Component {
 		fetchProductList({
 			options: {
 				current: pagination.current,
+				pageSize: pagination.pageSize,
 			},
 		});
 	};

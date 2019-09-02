@@ -49,8 +49,21 @@ const router = [
 				path: '/dashboard',
 				name: 'dashboard',
 				icon: 'blank',
-				component: './DashBoard',
-				id: 'dashboard',
+
+				routes: [
+					{
+						path: '/dashboard',
+						id: 'dashboard',
+						hideInMenu: true,
+						component: './DashBoard',
+					},
+					{
+						path: '/dashboard/detail',
+						id: 'tradeDetail',
+						hideInMenu: true,
+						component: './DashBoard/TradeDetail',
+					},
+				],
 			},
 
 			{
@@ -92,17 +105,29 @@ const router = [
 						],
 					},
 					{
-						path: '/application/payment',
-						name: 'payment',
+						path: '/application/trade',
+						name: 'trade',
 						routes: [
 							{
-								path: '/application/payment',
-								id: 'payment',
+								path: '/application/trade',
+								id: 'trade',
 								hideInMenu: true,
-								component: './Payment'
-							}
-						]
-					}
+								component: './Trade',
+							},
+							{
+								path: '/application/trade/result',
+								id: 'tradeResult',
+								hideInMenu: true,
+								component: './Trade/TradeResult',
+							},
+							{
+								path: '/application/trade/qrpay',
+								id: 'qrpay',
+								hideInMenu: true,
+								component: './Trade/QRCodePayment',
+							},
+						],
+					},
 				],
 			},
 
@@ -246,8 +271,8 @@ const router = [
 						name: 'clientList',
 						id: 'clientList',
 						hideInMenu: true,
-						component: './DeviceManagement/Network/ClientList'
-					}
+						component: './DeviceManagement/Network/ClientList',
+					},
 				],
 			},
 
@@ -545,8 +570,8 @@ const router = [
 								path: '/faceidLibrary/faceidLibraryList',
 								id: 'faceidLibraryList',
 								component: './IPC/FaceidLibrary/LibraryList.js',
-							}
-						]
+							},
+						],
 					},
 					{
 						path: '/faceidLibrary/faceLog',
@@ -566,8 +591,8 @@ const router = [
 								// name: 'faceLog',
 								id: 'faceLog',
 								component: './IPC/FaceLog/index.js',
-							}
-						]
+							},
+						],
 					},
 
 					// {
@@ -583,7 +608,6 @@ const router = [
 					// 	id: 'createLibrary',
 					// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
 					// },
-					
 				],
 			},
 		],
