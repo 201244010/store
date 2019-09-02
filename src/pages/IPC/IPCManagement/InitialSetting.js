@@ -76,7 +76,7 @@ class InitialSetting extends Component {
 
 	interval2 = 0;
 
-	componentDidMount = async () => {
+	componentDidMount = () => {
 		const { init, sn, /* getDeviceInfo */ } = this.props;
 		if(sn){
 			// const deviceInfo = await getDeviceInfo({ sn });
@@ -348,45 +348,12 @@ class InitialSetting extends Component {
 											<Icon className={`${styles.icon} ${styles.warning}`} type="info-circle" />
 											<span className={styles.text}>{formatMessage({ id: 'initialSetting.rebootConfirm' })}</span>
 										</h3>
-										<p className={styles.caveat}>
+										<p>
 											{formatMessage({ id: 'initialSetting.rebootInfo'})}
 										</p>
 									</div>
 								);
 							}
-
-							if(resetVisible) {
-								if(status === 'reseting' || status === 'success') {
-									return (
-										<div className={styles.info}>
-											<p>
-												{ formatMessage({id: 'initialSetting.reseting'})}
-											</p>
-											<Progress
-												className={styles.progress}
-												// percent={status === 'reseting' || status === 'success' ? percent: 100}
-												percent={percent}
-												status='active'
-											/>
-											<p>
-												{ formatMessage({id: 'initialSetting.resetingInfo'})}
-											</p>
-										</div>
-									);
-								}
-								return (
-									<div className={styles.info}>
-										<h3>
-											<Icon className={`${styles.icon} ${styles.warning}`} type="info-circle" />
-											<span className={styles.text}>{formatMessage({ id: 'initialSetting.resetConfirm' })}</span>
-										</h3>
-										<p className={styles.caveat}>
-											{formatMessage({ id: 'initialSetting.resetInfo'})}
-										</p>
-									</div>
-								);
-							}
-
 							return null;
 						})()
 					}
@@ -429,7 +396,7 @@ class InitialSetting extends Component {
 											</p>
 											<Progress
 												className={styles.progress}
-												percent={status === 'reseting'? percent: 100}
+												percent={percent}
 												status='active'
 											/>
 											<p>
@@ -444,7 +411,7 @@ class InitialSetting extends Component {
 											<Icon className={`${styles.icon} ${styles.warning}`} type="info-circle" />
 											<span className={styles.text}>{formatMessage({ id: 'initialSetting.resetConfirm' })}</span>
 										</h3>
-										<p className={styles.caveat}>
+										<p>
 											{formatMessage({ id: 'initialSetting.resetInfo'})}
 										</p>
 									</div>
