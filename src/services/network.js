@@ -11,3 +11,12 @@ export const handleNetworkEquipment = (api, options = {}) => {
 
 	return fetchApi(api, opts).then(response => response.json());
 };
+
+export const getNetworkEventList = (api, options = {}) => {
+	const opts = {
+		body: {
+			...options,
+		}
+	};
+	return fetchApi(api, opts).then(response => response.json());
+};

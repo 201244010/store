@@ -3,6 +3,7 @@ import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 
 import CONFIG from '@/config';
+import { TIME } from '@/constants';
 
 const { DES_KEY, DES_IV } = CONFIG;
 
@@ -562,4 +563,58 @@ export const checkAnchor = (anchor = null) => {
 	anchorTag.click();
 
 	return null;
+};
+
+export const getCountDown = (seconds, level = 'hour') => {
+	if (!seconds) {
+		console.error('Seconds is null');
+		return null;
+	}
+
+	const day = Math.floor(seconds / TIME.DAY);
+	const hour = Math.floor((seconds % TIME.DAY) / TIME.HOUR);
+	const minute = Math.floor(((seconds % TIME.DAY) % TIME.HOUR) / TIME.MINUTE);
+	const second = Math.floor(((seconds % TIME.DAY) % TIME.HOUR) % TIME.MINUTE);
+
+	if(level === 'day'){
+		return {
+			day,
+			hour,
+			minute,
+			second
+		};
+	}
+
+	return {
+		hour: hour === 0 ? 24 : hour,
+		minute,
+		second
+	};
+};
+//  格式化时间，返回字符串
+export const formatRelativeTime = timeStamp => {
+	const seconds = parseInt(timeStamp, 10);
+	const day = parseInt(seconds / 86400, 10);
+	const hour = parseInt((seconds % 86400) / 3600, 10);
+	const minute = parseInt((seconds % 3600) / 60, 10);
+	const second = parseInt(seconds % 60, 10);
+	
+	let timeStr = '';
+	if (day > 0) {
+		timeStr += day + formatMessage({ id: 'common.time.day' });
+	}
+	
+	if (hour > 0) {
+		timeStr += hour + formatMessage({ id: 'common.time.hour' });
+	}
+	
+	if (minute > 0) {
+		timeStr += minute + formatMessage({ id: 'common.time.minute' });
+	}
+	
+	if (second >= 0) {
+		timeStr += second + formatMessage({ id: 'common.time.second' });
+	}
+	
+	return timeStr;
 };
