@@ -65,7 +65,6 @@ class QosConfig extends React.PureComponent {
 	}
 
 	editQos = async record => {
-		console.log(record);
 		const { id } = record;
 		const { changeTabType, getQosInfo } = this.props;
 		const payload = {
@@ -83,9 +82,9 @@ class QosConfig extends React.PureComponent {
 		};
 		const response = await deleteQos(payload);
 		if (response && response.code === ERROR_OK) {
-			message.success('删除成功');
+			message.success(formatMessage({id: 'network.qos.delete.success'}));
 		} else {
-			message.error('删除失败');
+			message.error(formatMessage({id: 'network.qos.delete.fail'}));
 		}
 	};
 

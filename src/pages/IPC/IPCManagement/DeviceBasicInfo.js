@@ -83,7 +83,15 @@ const mapDispatchToProps = (dispatch) => ({
 			sn
 		});
 		return result;
-	}
+	},
+	getDeviceInfo({ sn }) {
+		return dispatch({
+			type: 'ipcList/getDeviceInfo',
+			payload: {
+				sn
+			}
+		}).then(info => info);
+	},
 });
 // let disabledControl = true;
 @connect(mapStateToProps, mapDispatchToProps)
@@ -101,11 +109,15 @@ class DeviceBasicInfo extends React.Component {
 	}
 
 	componentDidMount = async () => {
-		const { loadInfo, sn, getSdStatus } = this.props;
+		const { getDeviceInfo, loadInfo, sn, getSdStatus } = this.props;
 		if(sn){
-			const status = await getSdStatus({ sn });
-			if(status === 0) {
-				message.info(formatMessage({ id: 'deviceBasicInfo.nosdInfo' }));
+			const deviceInfo = await getDeviceInfo({ sn });
+			const { hasFaceid } = deviceInfo;
+			if(hasFaceid){
+				const status = await getSdStatus({ sn });
+				if(status === 0 && hasFaceid) {
+					message.info(formatMessage({ id: 'deviceBasicInfo.nosdInfo' }));
+				}
 			}
 			loadInfo(sn);
 		}

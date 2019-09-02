@@ -12,8 +12,6 @@ export const FIRST_MENU_ORDER = [
 	'faceidLibrary',
 ];
 
-console.log(sysEnv);
-
 const WEB_SOCKET_PREFIX = {
 	dev: 'ws',
 	test: 'ws',
@@ -23,7 +21,7 @@ const WEB_SOCKET_PREFIX = {
 };
 
 const SSO_ADDRESS = {
-	dev: 'dev.api.sunmi.com',
+	dev: 'test.api.sunmi.com',
 	test: 'test.api.sunmi.com',
 	uat: 'uat.api.sunmi.com',
 	onl: 'api.sunmi.com',
@@ -32,9 +30,8 @@ const SSO_ADDRESS = {
 };
 
 const API_ADDRESS = {
-	dev: 'test-store.sunmi.com:30301',
-	// dev: 'store.dev.sunmi.com',
-	test: 'test-store.sunmi.com:30301',
+	dev: 'store.dev.sunmi.com',
+	test: 'test-store.sunmi.com',
 	uat: 'uat-store.sunmi.com:443',
 	onl: 'store.sunmi.com:443',
 	local: '127.0.0.1:30001',
@@ -49,7 +46,8 @@ const COUNTRY_ADDRESS = {
 // ipc专用的测试和开发地址
 const IPC_ADDRESS = {
 	dev: 'store.dev.sunmi.com',
-	test: '47.99.16.199:30401',
+	// test: '47.99.16.199:30401',
+	test: 'test-store.sunmi.com',
 };
 
 const DES_KEY = {

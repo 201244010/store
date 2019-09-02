@@ -82,9 +82,8 @@ const MqttWrapper = (WrappedComponent) => {
 		async componentDidMount() {
 			// console.log(this.props);
 			const { init, getIPCList, subscribeIPCTopics } = this.props;
-
-			await init();
 			const list = await getIPCList();
+			await init();
 			// console.log(list);
 			subscribeIPCTopics(list);
 

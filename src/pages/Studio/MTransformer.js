@@ -16,14 +16,19 @@ export default class MTransformer extends Component {
 		const { componentsDetail, selectedShapeName, zoomScale } = this.props;
 		const detail = componentsDetail[selectedShapeName];
 
-		if (newBoundBox.width < (detail.fontSize || 10) * zoomScale) {
-			newBoundBox.width = (detail.fontSize || 10) * zoomScale;
-			return oldBoundBox;
+		if (selectedShapeName.indexOf(SHAPE_TYPES.LINE_V) === -1) {
+			if (newBoundBox.width < (detail.fontSize || 10) * zoomScale) {
+				newBoundBox.width = (detail.fontSize || 10) * zoomScale;
+				return oldBoundBox;
+			}
 		}
-		if (newBoundBox.height < (detail.fontSize || 10) * zoomScale) {
-			newBoundBox.height = (detail.fontSize || 10) * zoomScale;
-			return oldBoundBox;
+		if (selectedShapeName.indexOf(SHAPE_TYPES.LINE_H) === -1) {
+			if (newBoundBox.height < (detail.fontSize || 10) * zoomScale) {
+				newBoundBox.height = (detail.fontSize || 10) * zoomScale;
+				return oldBoundBox;
+			}
 		}
+
 		return newBoundBox;
 	};
 

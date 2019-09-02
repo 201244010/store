@@ -238,7 +238,7 @@ class ActiveDetection extends React.Component {
 		const startTime = getFieldValue('startTime');
 		const endTime = getFieldValue('endTime');
 		// console.log(startTime, endTime);
-		if (startTime.isAfter(endTime) || startTime.isSame(endTime)){
+		if (startTime && startTime.isAfter(endTime) || startTime && startTime.isSame(endTime)){
 			return `HH:mm ${formatMessage({id: 'activeDetection.nextDay'})}`;
 		}
 		return 'HH:mm';
@@ -350,7 +350,7 @@ class ActiveDetection extends React.Component {
 									getValueFromEvent: this.onAutoChange,
 									initialValue: isAuto
 								})(
-									<RadioGroup inChange={this.onAutoChange}>
+									<RadioGroup onChange={this.onAutoChange}>
 										<Radio value={1}>
 											{formatMessage({id: 'activeDetection.auto' })}
 										</Radio>

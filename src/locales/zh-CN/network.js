@@ -9,6 +9,9 @@ export default {
 	'network.status': '在线状态',
 	'network.deviceNum': '当前接入终端数',
 	'network.operation': '操作',
+	'menu.network.clientList': '客户端列表',
+	'menu.network.clientListTitle': '当前客户端列表',
+	
 
 	'network.networkId': '网络ID',
 	'network.upSpeed': '上传速度',
@@ -82,4 +85,23 @@ export default {
 	'network.sure.delete': '你确定要删除本条配置吗？',
 
 	'network.qos.unOpen': '未开启',
+	'network.qos.setSuccess': '配置应用成功',
+	'network.qos.setFail': '配置应用失败',
+	'network.qos.delete.success': '删除成功',
+	'network.qos.delete.fail': '删除失败',
+	
+	'network.hostName': '客户端名称',
+	'network.macAddress': 'MAC地址',
+	'network.ipAddress': 'IP地址',
+	'network.routerMac': '接入路由器',
+	'network.connectMode': '接入方式',
+	'network.ontime': '已接入时间',
+	
+	'network.routerEvent.title': '事件列表',
+	'network.connect.time': '时间',
+	'network.connect.eventType': '事件类型',
+	'network.connect.eventType5': 'CPU过高',
+	'network.connect.eventType7': '内存过高',
+	'network.connect.eventType.unknown': '未知事件类型',
+	'network.routerEvent.requestFail': '事件列表请求失败',
 };

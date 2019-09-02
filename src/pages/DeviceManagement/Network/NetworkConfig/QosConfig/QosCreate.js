@@ -14,6 +14,7 @@ class QosCreate extends React.PureComponent {
 		this.state = {
 			selectedRowKeys: [],
 		};
+		this.checkTimer = null;
 		this.columns = [
 			{
 				title: formatMessage({ id: 'network.deviceName' }),
@@ -84,6 +85,8 @@ class QosCreate extends React.PureComponent {
 		clearTimeout(this.checkTimer);
 		const { checkClientExist, setAPHandler, generateTopic, subscribe } = this.props;
 		const isClientExist = await checkClientExist();
+		console.log(isClientExist);
+
 		if (isClientExist) {
 			const apInfoTopic = await generateTopic({ service: 'W1/response', action: 'sub' });
 			await subscribe({ topic: [apInfoTopic] });
@@ -96,14 +99,13 @@ class QosCreate extends React.PureComponent {
 	apHandler = async payload => {
 		const { clearMsg, getQosList } = this.props;
 		const { msgId, opcode, errcode } = payload;
-		console.log(payload);
 		if (opcode === '0x2022' && errcode === 0) {
-			message.success('配置应用成功');
+			message.success(formatMessage({id: 'network.qos.setSuccess'}));
 			await getQosList();
 		}
 
 		if (opcode === '0x2022' && errcode !== 0) {
-			message.error('配置应用失败');
+			message.error(formatMessage({id: 'network.qos.setFail'}));
 		}
 		await clearMsg({ msgId });
 	};
@@ -114,9 +116,10 @@ class QosCreate extends React.PureComponent {
 			createQos,
 			updateQos,
 			network: {
-				tabType: { qos },
+				tabType: { qos: qosType },
 				deviceList: { networkDeviceList },
 			},
+			getQosList,
 			getAPMessage,
 		} = this.props;
 		const { selectedRowKeys } = this.state;
@@ -132,7 +135,7 @@ class QosCreate extends React.PureComponent {
 					whiteWeight,
 					normalWeight,
 				} = values;
-				const qosConfig = {
+				const qos = {
 					enable,
 					source: 'manual',
 					operator: 'user',
@@ -145,16 +148,15 @@ class QosCreate extends React.PureComponent {
 				const payload = {
 					name: ruleName,
 					config: {
-						qos: qosConfig,
+						qos,
 					},
 					configId: id,
 				};
-				qos === 'create' && (await createQos(payload));
-				qos === 'update' && (await updateQos(payload));
+				qosType === 'create' && (await createQos(payload));
+				qosType === 'update' && (await updateQos(payload));
 				selectedRowKeys.forEach(async keyId => {
 					const { networkId, sn } =
 						networkDeviceList.filter(item => item.id === keyId)[0] || {};
-					console.log(networkId, sn);
 					await getAPMessage({
 						message: {
 							opcode: OPCODE.QOS_SET,
@@ -166,6 +168,7 @@ class QosCreate extends React.PureComponent {
 						},
 					});
 				});
+				selectedRowKeys.length === 0 && await getQosList();
 			}
 		});
 	};
@@ -197,11 +200,10 @@ class QosCreate extends React.PureComponent {
 			},
 			changeTabType,
 		} = this.props;
-		console.log(enable);
 		const rowSelection = {
 			onChange: this.onSelectChange,
 			getCheckboxProps: record => ({
-				disabled: record.activeStatus === 0, // Column configuration not to be checked
+				disabled: record.activeStatus === 0,
 			}),
 		};
 		return (

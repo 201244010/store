@@ -51,10 +51,12 @@ module.exports = {
 		'no-prototype-builtins': 0,
 		'prefer-destructuring': 0,
 		'import/no-extraneous-dependencies': 0,
+		'length-zero-no-unit':0,
 		'quotes': [2, 'single'],
 		'indent': ['error', 'tab', {
 			'SwitchCase': 1
-		}]
+		}],
+		'prefer-template': 2
 	},
 	settings: {
 		polyfills: ['fetch', 'promises', 'url'],
