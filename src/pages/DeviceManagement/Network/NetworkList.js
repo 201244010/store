@@ -270,7 +270,25 @@ const Topology = props => {
 									''
 								)}
 							</div>
-							<div>{formatMessage({ id: 'network.client' })}</div>
+							<div>
+								{formatMessage({ id: 'network.client' })}
+								{activeStatus ? (
+									<a
+										href="javascript:void(0);"
+										onClick={() =>
+											goToPath('clientList', {
+												sn: masterDeviceSn,
+												networkId,
+												type: 'client'
+											})
+										}
+									>
+										（{formatMessage({ id: 'network.viewMore' })}）
+									</a>
+								) : (
+									''
+								)}
+							</div>
 						</li>
 					</ul>
 					<ul>
@@ -290,6 +308,22 @@ const Topology = props => {
 							</div>
 						) : (
 							<div className={styles['network-guest-number']}>--</div>
+						)}
+						{activeStatus ? (
+							<a
+								href="javascript:void(0);"
+								onClick={() =>
+									goToPath('clientList', {
+										sn: masterDeviceSn,
+										networkId,
+										type: 'guest'
+									})
+								}
+							>
+								（{formatMessage({ id: 'network.viewMore' })}）
+							</a>
+						) : (
+							''
 						)}
 					</div>
 				</div>
