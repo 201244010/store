@@ -1,6 +1,6 @@
 import React from 'react';
-import styles from './ModalPlayer.less';
 import { Icon, Modal } from 'antd';
+import styles from './ModalPlayer.less';
 
 import TrackPlayer from '@/components/VideoPlayer/TrackPlayer';
 
@@ -24,7 +24,7 @@ class ModalPlayer extends React.Component {
 	}
 
 	render() {
-		const { url, pixelRatio, visible } = this.props;
+		const { url, pixelRatio, visible, defaultDuration } = this.props;
 
 		return (
 			<Modal
@@ -40,6 +40,7 @@ class ModalPlayer extends React.Component {
 					<Icon className={styles.close} type="close" onClick={this.close} />
 					<div className={styles['video-player-container']}>
 						<TrackPlayer
+							defaultDuration={defaultDuration}
 							pixelRatio={pixelRatio}
 							url={url}
 							ref={playler => this.trackplayler = playler}

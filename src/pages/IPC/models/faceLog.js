@@ -46,7 +46,11 @@ export default {
 		},
 		*readFaceLogList({payload}, { put }){
 			const response = yield getFaceLogList(payload);
-			const { code, data: {faceList, totalCount} } = response;
+			const { code, data } = response;
+			let { faceList = [] } = data;
+			const { totalCount } = data;
+			
+			faceList = faceList === null ? [] : faceList;
 			const groupList = yield put.resolve({
 				type:'getLibrary'
 			});
