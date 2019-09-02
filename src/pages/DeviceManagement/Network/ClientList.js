@@ -42,14 +42,16 @@ class ClientList extends React.Component {
 			dataSource: [],
 			pageSize: 10,
 			sn: '',
-			networkId: ''
+			networkId: '',
+			type: ''
 		};
 	}
 	
-	async componentDidMount() {
-		const { location: { query: { sn, networkId }}} = this.props;
-		this.setState({sn, networkId});
-		await this.checkClient();
+	componentDidMount() {
+		const { location: { query: { sn, networkId, type }}} = this.props;
+		this.setState({sn, networkId, type}, ()=> {
+			this.checkClient();
+		});
 	}
 	
 	componentWillUnmount() {
@@ -63,28 +65,27 @@ class ClientList extends React.Component {
 	apHandler = (responseData, action) => {
 		const { getDeviceList } = this.props;
 		const { errcode } = responseData[0];
-		const { sn, networkId, dataSource } = this.state;
+		const { sn, networkId, dataSource, type } = this.state;
 		
 		// 当未组网时直接用sn号填进去，有routerMac字段时需要再发一个请求进行匹配
 		
 		if(errcode === 0 && action === 'list') {
 			const { result } = responseData[0];
+			let dataArray = [];
 			if(result.data[0].routermac === undefined) {
-				const dataArray = result.data.map(item => {
+				dataArray = result.data.map(item => {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = sn;
 					item.ontime = formatRelativeTime(item.ontime);
 					return item;
 				});
-				this.setState({dataSource: dataArray});
 			} else {
-				const dataArray = result.data.map(item => {
+				dataArray = result.data.map(item => {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = '--';
 					item.ontime = formatRelativeTime(item.ontime);
 					return item;
 				});
-				this.setState({dataSource: dataArray});
 				getDeviceList({
 					message: {
 						opcode: OPCODE.GET_ROUTES_DETAIL,
@@ -94,6 +95,14 @@ class ClientList extends React.Component {
 						}
 					}
 				});
+			}
+			
+			// 根据type筛选是否为客户
+			if(type === 'guest') {
+				const filter = dataArray.filter(item => item.bridge === 'br-guest');
+				this.setState({dataSource: filter});
+			} else {
+				this.setState({dataSource: dataArray});
 			}
 		}
 		
