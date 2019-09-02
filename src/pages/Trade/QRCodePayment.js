@@ -28,19 +28,26 @@ class QRCodePayment extends PureComponent {
 
 		this.qrContainer = React.createRef();
 		this.refreshTimer = null;
+		this.refreshCount = null;
 
 		this.orderNo = orderNo || null;
 		this.purchaseType = purchaseType || null;
 		this.source = parseInt(source, 10) || null;
+
+		this.state = {
+			refreshRemain: 120,
+		};
 	}
 
-	componentDidMount() {
-		this.getQRCodeURL();
+	async componentDidMount() {
+		await this.getQRCodeURL();
+		this.countRefresh();
 		// TODO 等待云端 MQTT 消息返回
 	}
 
 	componentWillUnmount() {
 		clearTimeout(this.refreshTimer);
+		clearInterval(this.refreshCount);
 	}
 
 	getQRCodeURL = async () => {
@@ -63,16 +70,27 @@ class QRCodePayment extends PureComponent {
 		}
 	};
 
-	refreshQRCode = () => {
-		clearTimeout(this.refreshTimer);
-		this.refreshTimer = setTimeout(() => {
-			this.getQRCodeURL();
-			this.refreshQRCode();
-		}, 1000 * 60 * 2);
+	countRefresh = () => {
+		clearInterval(this.refreshCount);
+		this.refreshCount = setInterval(() => {
+			const { refreshRemain } = this.state;
+
+			if (refreshRemain === 0) {
+				this.getQRCodeURL();
+				this.setState({
+					refreshRemain: 120,
+				});
+			} else {
+				this.setState({
+					refreshRemain: refreshRemain - 1,
+				});
+			}
+		}, 1000);
 	};
 
 	render() {
 		const { loading, goToPath } = this.props;
+		const { refreshRemain } = this.state;
 
 		return (
 			<Card title={formatMessage({ id: 'pay.order.commit' })}>
@@ -91,7 +109,14 @@ class QRCodePayment extends PureComponent {
 					loading={loading.effects['trade/payOrder']}
 				>
 					<div className={styles['qrCode-content']}>
-						<div className={styles['qrcode-data']} ref={this.qrContainer} />
+						<div>
+							<div className={styles['qrCode-refresh']}>
+								{formatMessage({ id: 'qrcode.refresh.remain' })}
+								<span>{refreshRemain}</span>
+								{formatMessage({ id: 'common.time.second' })}
+							</div>
+							<div className={styles['qrcode-data']} ref={this.qrContainer} />
+						</div>
 						<img className={styles['qrcode-info']} src={qrPayment} />
 					</div>
 				</Card>
