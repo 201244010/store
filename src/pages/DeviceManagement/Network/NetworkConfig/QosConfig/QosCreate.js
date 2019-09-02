@@ -99,12 +99,12 @@ class QosCreate extends React.PureComponent {
 	apHandler = async payload => {
 		const { clearMsg, getQosList } = this.props;
 		const { msgId, opcode, errcode } = payload;
-		if (opcode === '0x2022' && errcode === 0) {
+		if (opcode === OPCODE.QOS_SET && errcode === 0) {
 			message.success(formatMessage({id: 'network.qos.setSuccess'}));
 			await getQosList();
 		}
 
-		if (opcode === '0x2022' && errcode !== 0) {
+		if (opcode === OPCODE.QOS_SET && errcode !== 0) {
 			message.error(formatMessage({id: 'network.qos.setFail'}));
 		}
 		await clearMsg({ msgId });

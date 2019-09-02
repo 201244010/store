@@ -232,7 +232,7 @@ export default {
 						const { opcode, errcode } = data[0] || {};
 						const sn = msgMap.get(msgId);
 						switch (opcode) {
-							case '0x2025':
+							case OPCODE.CLIENT_LIST_GET:
 								if (errcode === 0) {
 									const clientNumber = data[0].result.data.length || 0;
 									const guestNumber = data[0].result.data.filter(
@@ -241,7 +241,7 @@ export default {
 									handler({ msgId, opcode, sn, clientNumber, guestNumber });
 								}
 								break;
-							case '0x2040':
+							case OPCODE.TRAFFIC_STATS_GET:
 								if (errcode === 0) {
 									const wan = data[0].result.trafficStats.wan;
 									const { speed: upSpeed, unit: upUnit } = formatSpeed(
@@ -261,14 +261,13 @@ export default {
 									});
 								}
 								break;
-							case '0x2116':
+							case OPCODE.ROUTER_GET:
 								if (errcode === 0) {
 									const devices = data[0].result.sonconnect.devices;
 									handler({ msgId, opcode, sn, devices });
 								}
 								break;
-							case '0x2022':
-								console.log(data);
+							case OPCODE.QOS_SET:
 								handler({ msgId, opcode, errcode });
 								break;
 							default:
@@ -318,9 +317,9 @@ export default {
 			const tmpList = networkList.map(item => {
 				if (item.masterDeviceSn === sn) {
 					switch (opcode) {
-						case '0x2025':
+						case OPCODE.CLIENT_LIST_GET:
 							return { ...item, guestNumber, clientNumber, edit };
-						case '0x2040':
+						case OPCODE.ROUTER_GET:
 							return { ...item, upSpeed, upUnit, downSpeed, downUnit };
 						default:
 							return { ...item, edit };
@@ -329,7 +328,7 @@ export default {
 				return { ...item };
 			});
 			const tmpDeviceList = networkDeviceList.map(item => {
-				if (opcode === '0x2116') {
+				if (opcode === OPCODE.ROUTER_GET) {
 					return {
 						...item,
 						onlineTime: (devices.filter(items => items.devid === item.sn)[0] || {})
@@ -339,13 +338,13 @@ export default {
 
 				if (item.sn === sn) {
 					switch (opcode) {
-						case '0x2025':
+						case OPCODE.CLIENT_LIST_GET:
 							return { ...item, clientCount: clientNumber };
-						case '0x2015':
+						case OPCODE.SYSTEMTOOLS_RESTART:
 							return { ...item, reboot: 1 };
-						case '0x207a':
+						case OPCODE.MESH_UPGRADE_START:
 							return { ...item, upgrade: 1 };
-						case '0x207b':
+						case OPCODE.MESH_UPGRADE_STATE:
 							return { ...item, upgrade: 1 };
 						default:
 							return { ...item };
@@ -456,10 +455,10 @@ export default {
 							JSON.parse(receivedMessage)
 						);
 						const { opcode } = data[0];
-						if (opcode === '0x2116') {
+						if (opcode === OPCODE.ROUTER_GET) {
 							handler(data, 'router');
 						}
-						if (opcode === '0x2025') {
+						if (opcode === OPCODE.CLIENT_LIST_GET) {
 							handler(data, 'list');
 						}
 					},

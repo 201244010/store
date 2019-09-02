@@ -60,8 +60,6 @@ const IconNetwork = ({ color }) => (
 const IconBandwidth = () => (
 	<svg
 		version="1.1"
-		id="图层_1"
-		xmlns="http://www.w3.org/2000/svg"
 		x="0px"
 		y="0px"
 		width="14px"
@@ -69,7 +67,7 @@ const IconBandwidth = () => (
 	>
 		<g id="bandwidth" troke="none" strokeWidth="1" fill="none" fillRule="evenodd">
 			<g>
-				<rect id="矩形备份-2" className="st0" width="14" height="14" />
+				<rect className="st0" width="14" height="14" />
 				<path
 					id="Combined-Shape"
 					className="st1"
