@@ -1,6 +1,7 @@
 import * as Actions from '@/services/network';
 import { format } from '@konata9/milk-shake';
 import { formatSpeed } from '@/utils/utils';
+import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK, MQTT_RES_OK } from '@/constants/errorCode';
 import { OPCODE } from '@/constants/mqttStore';
 
@@ -17,41 +18,16 @@ export default {
 			qos: 'init',
 		},
 		qosList: {
-			totalCount: 3,
-			configList: [
-				{
-					id: 123,
-					name: 'ada',
-					config: {
-						qos: {
-							enable: true,
-							source: 'speedtest/default/manual',
-							operator: 'user/OEM',
-							upBandwidth: '20480',
-							downBandwidth: '102400',
-							sunmiWeight: '50',
-							whiteWeight: '30',
-							normalWeight: '20',
-						},
-					},
-				},
-			],
+			totalCount: 0,
+			configList: [],
 		},
-		qosInfo: {
-			id: 123,
-			name: 'ada',
-			config: {
-				qos: {
-					enable: false,
-					source: 'speedtest/default/manual',
-					operator: 'user/OEM',
-					upBandwidth: '20480',
-					downBandwidth: '102400',
-					sunmiWeight: '50',
-					whiteWeight: '30',
-					normalWeight: '20',
-				},
-			},
+		qosInfo: {},
+		pagination: {
+			current: 1,
+			pageSize: DEFAULT_PAGE_SIZE,
+			total: 0,
+			showSizeChanger: true,
+			showQuickJumper: true,
 		},
 	},
 
@@ -75,7 +51,6 @@ export default {
 							return item;
 						  })
 						: getList;
-
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -84,22 +59,63 @@ export default {
 				});
 			}
 		},
-		*getQosList(_, { call, put }) {
-			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/getList');
+		*getQosList({ payload = {} }, { call, put, select }) {
+			const { pagination } = yield select(state => state.network);
+			const { pageNum = 1, pageSize = 10 } = payload;
+			const opts = format('toSnake')({ ...payload });
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/getList', opts);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { totalCount = 0, configList = [] } = format('toCamel')(data);
+				const tmpList = [];
+				configList.forEach(item => {
+					const {
+						name,
+						id,
+						config: {
+							qos: {
+								enable,
+								upBandwidth,
+								downBandwidth,
+								sunmiWeight,
+								whiteWeight,
+								normalWeight,
+							} = {},
+						} = {},
+					} = item || {};
+					tmpList.push({
+						id,
+						name,
+						enable,
+						upBandwidth,
+						downBandwidth,
+						sunmiWeight,
+						whiteWeight,
+						normalWeight,
+					});
+				});
 				yield put({
 					type: 'updateState',
 					payload: {
-						qosList: { totalCount, configList },
+						qosList: { totalCount, configList: tmpList },
+						pagination: {
+							...pagination,
+							total: totalCount,
+							current: pageNum,
+							pageSize,
+						},
 					},
+				});
+				yield put({
+					type: 'changeTabType',
+					payload: { type: 'qos', value: 'init' },
 				});
 			}
 			return response;
 		},
-		*getQosInfo(_, { call, put }) {
-			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/getInfo');
+		*getQosInfo({ payload }, { call, put }) {
+			const opts = format('toSnake')({ ...payload });
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/getInfo', opts);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const qosInfo = format('toCamel')(data);
@@ -112,34 +128,18 @@ export default {
 			}
 			return response;
 		},
-		*createQos({ payload }, { call, put }) {
-			const opts = {
-				...payload,
-			};
+		*createQos({ payload }, { call }) {
+			const opts = format('toSnake')({ ...payload });
 			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/create', opts);
-			if (response && response.code === ERROR_OK) {
-				yield put({
-					type: 'getQosList',
-				});
-			}
 			return response;
 		},
-		*updateQos({ payload }, { call, put }) {
-			const opts = {
-				...payload,
-			};
+		*updateQos({ payload }, { call }) {
+			const opts = format('toSnake')({ ...payload });
 			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/update', opts);
-			if (response && response.code === ERROR_OK) {
-				yield put({
-					type: 'getQosList',
-				});
-			}
 			return response;
 		},
 		*deleteQos({ payload }, { call, put }) {
-			const opts = {
-				...payload,
-			};
+			const opts = format('toSnake')({ ...payload });
 			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/delete', opts);
 			if (response && response.code === ERROR_OK) {
 				yield put({
@@ -148,6 +148,23 @@ export default {
 			}
 			return response;
 		},
+		// *setQosHandler({ payload = {} }, { put }) {
+		// 	const { handler } = payload;
+		// 	yield put({
+		// 		type: 'mqttStore/setTopicListener',
+		// 		payload: {
+		// 			service: 'W1/response',
+		// 			handler: receivedMessage => {
+		// 				const { data = [] } = JSON.parse(receivedMessage);
+		// 				// console.log(data);
+		// 				const [dataContent, ,] = data;
+		// 				const { errcode } = dataContent || {};
+
+		// 				handler(errcode);
+		// 			},
+		// 		},
+		// 	});
+		// },
 		*getOverview(_, { call, put }) {
 			const response = yield call(Actions.handleNetworkEquipment, 'device/getOverview');
 			if (response && response.code === ERROR_OK) {
@@ -244,6 +261,7 @@ export default {
 			const msgMap = yield put.resolve({
 				type: 'mqttStore/putMsg',
 			});
+			console.log('msgMap', msgMap);
 			yield put({
 				type: 'mqttStore/setTopicListener',
 				payload: {
@@ -252,6 +270,7 @@ export default {
 						const { data = [], msgId } = format('toCamel')(JSON.parse(receivedMessage));
 						const { opcode, errcode } = data[0] || {};
 						const sn = msgMap.get(msgId);
+						console.log('msgMap', msgMap, msgId, sn);
 						switch (opcode) {
 							case '0x2025':
 								if (errcode === 0) {
@@ -289,7 +308,11 @@ export default {
 									handler({ msgId, opcode, sn, devices });
 								}
 								break;
-							default: 
+							case '0x2022':
+								console.log(data);
+								handler({msgId, errcode });
+								break;
+							default:
 								break;
 						}
 					},
@@ -315,7 +338,6 @@ export default {
 		*refreshNetworkList({ payload }, { put, select }) {
 			const {
 				opcode,
-				sn,
 				guestNumber,
 				clientNumber,
 				edit = 0,
@@ -324,11 +346,16 @@ export default {
 				downSpeed,
 				downUnit,
 				devices = [],
+				msgId,
 			} = payload;
 			const {
 				networkList,
 				deviceList: { totalCount, networkDeviceList },
 			} = yield select(state => state.network);
+			const msgMap = yield put.resolve({
+				type: 'mqttStore/putMsg',
+			});
+			const sn = msgMap.get(msgId);
 			const tmpList = networkList.map(item => {
 				if (item.masterDeviceSn === sn) {
 					switch (opcode) {

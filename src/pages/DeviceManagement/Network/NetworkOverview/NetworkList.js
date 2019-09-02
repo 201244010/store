@@ -30,11 +30,12 @@ class NetworkList extends React.PureComponent {
 		}, 5000);
 	};
 
-	fetchMqtt = async () => {
+	fetchMqtt = () => {
 		const { getAPMessage, networkList } = this.props;
-		await Promise.all(
-			networkList.map(async item => {
-				const { networkId, masterDeviceSn: sn } = item;
+		networkList.map(async item => {
+			const { networkId, masterDeviceSn: sn, activeStatus } = item;
+			console.log(activeStatus);
+			if (activeStatus) {
 				await getAPMessage({
 					message: {
 						opcode: OPCODE.CLIENT_LIST_GET,
@@ -53,8 +54,8 @@ class NetworkList extends React.PureComponent {
 						},
 					},
 				});
-			})
-		);
+			}
+		});
 	};
 
 	editName = payload => {
@@ -196,6 +197,7 @@ const Topology = props => {
 									<Icon component={() => <IconNetwork color="#303540" />} />
 									<Badge
 										count={routerNumber}
+										showZero
 										offset={[0, -2]}
 										overflowCount={9999}
 										style={{ backgroundColor: '#4B7AFA', fontSize: 14 }}
@@ -204,18 +206,19 @@ const Topology = props => {
 									</Badge>
 									<Badge
 										count={clientNumber || 0}
-										offset={[0, -2]}
+										showZero
+										offset={[-32, -2]}
 										overflowCount={9999}
 										style={{ backgroundColor: '#4B7AFA', fontSize: 14 }}
 									>
-										<Icon component={() => <IconEquipment color="#303540" />} />
+										<Icon className={styles['network-client']} component={() => <IconEquipment color="#303540" />} />
 									</Badge>
 								</>
 							) : (
 								<>
 									<Icon component={() => <IconNetwork color="#A1A7B3" />} />
 									<Icon component={() => <IconLink color="#A1A7B3" />} />
-									<Icon component={() => <IconEquipment color="#A1A7B3" />} />
+									<Icon className={styles['network-client']} component={() => <IconEquipment color="#A1A7B3" />} />
 								</>
 							)}
 						</li>
@@ -252,7 +255,7 @@ const Topology = props => {
 						</li>
 						<li>
 							<div>{`${formatMessage({ id: 'network.Internet' })}`}</div>
-							<div>
+							<div className={activeStatus ? styles['network-router'] : ''}>
 								{formatMessage({ id: 'network.router' })}
 								{activeStatus ? (
 									<a
@@ -270,11 +273,25 @@ const Topology = props => {
 									''
 								)}
 							</div>
-							<div>{formatMessage({ id: 'network.client' })}</div>
+							<div className={!activeStatus ? styles['network-client-offline'] : ''}>
+								{formatMessage({ id: 'network.client' })}
+								{activeStatus ? (
+									<a
+										href="javascript:void(0);"
+										onClick={() =>
+											goToPath('networkDetail', {
+												sn: masterDeviceSn,
+												networkId,
+											})
+										}
+									>
+										（{formatMessage({ id: 'network.viewMore' })}）
+									</a>
+								) : (
+									''
+								)}
+							</div>
 						</li>
-					</ul>
-					<ul>
-						<li />
 					</ul>
 				</div>
 				<div className={styles['network-guest-wrapper']}>
@@ -287,6 +304,21 @@ const Topology = props => {
 									{guestNumber || 0}
 								</span>
 								{formatMessage({ id: 'network.unit' })}
+								{activeStatus ? (
+									<a
+										href="javascript:void(0);"
+										onClick={() =>
+											goToPath('networkDetail', {
+												sn: masterDeviceSn,
+												networkId,
+											})
+										}
+									>
+										（{formatMessage({ id: 'network.viewMore' })}）
+									</a>
+								) : (
+									''
+								)}
 							</div>
 						) : (
 							<div className={styles['network-guest-number']}>--</div>

@@ -555,28 +555,14 @@ export const formatSpeed = speed => {
 
 // 格式化时间，精确到天时分秒
 export const formatRelativeTime = timeStamp => {
-	const seconds = parseInt(timeStamp, 10);
-	const day = parseInt(seconds / 86400, 10);
-	const hour = parseInt((seconds % 86400) / 3600, 10);
-	const minute = parseInt((seconds % 3600) / 60, 10);
-	const second = parseInt(seconds % 60, 10);
-
-	let timeStr = '';
-	if (day > 0) {
-		timeStr += day + formatMessage({ id: 'common.time.day' });
-	}
-
-	if (hour > 0) {
-		timeStr += hour + formatMessage({ id: 'common.time.hour' });
-	}
-
-	if (minute > 0) {
-		timeStr += minute + formatMessage({ id: 'common.time.minute' });
-	}
-
-	if (second >= 0) {
-		timeStr += second + formatMessage({ id: 'common.time.second' });
-	}
+	const duration = moment.duration(timeStamp);
+	const { years, months, days, hours, minutes, seconds } = duration._data || {};
+	const timeStr = `${years && `${years}${formatMessage({ id: 'common.time.year' })}`}${months &&
+		`${months}${formatMessage({ id: 'common.time.month' })}`}${days &&
+		`${days}${formatMessage({ id: 'common.time.day' })}`}${hours &&
+		`${hours}${formatMessage({ id: 'common.time.hour' })}`}
+	${minutes && `${minutes}${formatMessage({ id: 'common.time.minute' })}`}${seconds &&
+		`${seconds}${formatMessage({ id: 'common.time.second' })}`}`;
 
 	return timeStr;
 };

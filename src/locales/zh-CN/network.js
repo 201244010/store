@@ -72,8 +72,14 @@ export default {
 	'network.qos.noEmpty.downBandwidth': '下行带宽不能为空',
 	'network.qos.noEmpty.bandRadio': '带宽比例不能为空',
 	'network.qos.noEmpty.bandSum': '带宽比例之和不能超过100%',
+	'network.qos.bandwidth.scape': '带宽范围应在1-1000之间',
+	'network.qos.bandradio.scape': '带宽比例范围应在1-100之间',
+	'network.qos.bandwidth.number': '请输入数字',
+	'network.qos.createConfig': '新增配置',
 
 	'network.return': '返回',
 	'network.apply': '立即应用',
 	'network.sure.delete': '你确定要删除本条配置吗？',
+
+	'network.qos.unOpen': '未开启',
 };

@@ -56,6 +56,9 @@ export default {
 	'text.no': '否',
 	'data.empty': '暂无数据',
 
+
+	'common.time.year': '年',
+	'common.time.month': '月',
 	'common.time.day': '天',
 	'common.time.hour': '时',
 	'common.time.minute': '分',

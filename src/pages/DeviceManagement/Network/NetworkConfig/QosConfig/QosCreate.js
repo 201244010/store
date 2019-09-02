@@ -1,6 +1,9 @@
 import React from 'react';
-import { Table, Form, Input, Row, Col, Switch, Button } from 'antd';
+import { Table, Form, Input, Row, Col, Switch, Button, message } from 'antd';
 import { FORM_ITEM_LAYOUT_BUSINESS, FORM_ITEM_LAYOUT_INLINE } from '@/constants/form';
+// import { ERROR_OK } from '@/constants/errorCode';
+import { OPCODE } from '@/constants/mqttStore';
+import { format } from '@konata9/milk-shake';
 import { formatMessage } from 'umi/locale';
 import styles from '../NetworkConfig.less';
 
@@ -8,36 +11,50 @@ import styles from '../NetworkConfig.less';
 class QosCreate extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		this.state = {
+			selectedRowKeys: [],
+		};
 		this.columns = [
 			{
 				title: formatMessage({ id: 'network.deviceName' }),
 				dataIndex: 'networkAlias',
+				render: (_, record) => record.networkAlias || record.networkId,
 			},
 			{
-				title: formatMessage({ id: 'network.qos.upBandwidth' }),
-				dataIndex: 'sn',
+				title: formatMessage({ id: 'network.belongNetwork' }),
+				dataIndex: 'networkId',
 			},
 			{
-				title: formatMessage({ id: 'network.qos.downBandwidth' }),
+				title: formatMessage({ id: 'network.onlineStatus' }),
+				dataIndex: 'activeStatus',
+				render: record =>
+					parseInt(record, 10)
+						? formatMessage({ id: 'network.online' })
+						: formatMessage({ id: 'network.offline' }),
+			},
+			{
+				title: formatMessage({ id: 'network.currentVersion' }),
 				dataIndex: 'binVersion',
-			},
-			{
-				title: formatMessage({ id: 'network.bandwidth.allocation' }),
-				dataIndex: 'cpuPercent',
-			},
-			{
-				title: formatMessage({ id: 'network.operation' }),
 			},
 		];
 	}
 
+	componentDidMount() {
+		const { getListWithStatus } = this.props;
+		getListWithStatus();
+	}
+
+	componentWillUnmount() {
+		const { changeTabType } = this.props;
+		changeTabType({ type: 'qos', value: 'init' });
+	}
+
 	validateBandWidth = (rule, value, callback) => {
 		const number = /^\d+$/g;
-		// console.log(value && !number.test(value), value, number.test(value));
 		if (value && !number.test(value)) {
-			callback('请输入数字');
+			callback(formatMessage({ id: 'network.qos.bandwidth.number' }));
 		} else if (value && (value > 1000 || value < 1)) {
-			callback('带宽范围在1-1000之间');
+			callback(formatMessage({ id: 'network.qos.bandwidth.scape' }));
 		} else {
 			callback();
 		}
@@ -52,26 +69,141 @@ class QosCreate extends React.PureComponent {
 			parseInt(getFieldValue('sunmi'), 10) +
 			parseInt(getFieldValue('whitelist'), 10) +
 			parseInt(getFieldValue('normal'), 10);
-		// const sunmi = getFieldValue('sunmi');
-		// const whitelist = getFieldValue('whitelist');
-		// const normal = getFieldValue('normal');
 		if (value && !number.test(value)) {
-			callback('请输入数字');
+			callback(formatMessage({ id: 'network.qos.bandwidth.number' }));
 		} else if (value && (value > 100 || value < 1)) {
-			callback('数字范围1-100');
+			callback(formatMessage({ id: 'network.qos.bandradio.scape' }));
 		} else if (sum > 100) {
-			callback('和不超过100');
+			callback(formatMessage({ id: 'network.qos.noEmpty.bandSum' }));
 		} else {
 			callback();
 		}
 	};
 
+	checkMQTTClient = async () => {
+		clearTimeout(this.checkTimer);
+		const { checkClientExist, setAPHandler, generateTopic, subscribe } = this.props;
+		const isClientExist = await checkClientExist();
+		if (isClientExist) {
+			const apInfoTopic = await generateTopic({ service: 'W1/response', action: 'sub' });
+			await subscribe({ topic: [apInfoTopic] });
+			await setAPHandler({ handler: this.apHandler });
+		} else {
+			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
+		}
+	};
+
+	apHandler = async payload => {
+		const { clearMsg, getQosList } = this.props;
+		const { msgId, opcode, errcode } = payload;
+		console.log(payload);
+		if (opcode === '0x2022' && errcode === 0) {
+			message.success('配置应用成功');
+			await getQosList();
+		}
+
+		if (opcode === '0x2022' && errcode !== 0) {
+			message.error('配置应用失败');
+		}
+		await clearMsg({ msgId });
+	};
+
+	submitConfig = async id => {
+		const {
+			form: { validateFields },
+			createQos,
+			updateQos,
+			network: {
+				tabType: { qos },
+				deviceList: { networkDeviceList },
+			},
+			getAPMessage,
+		} = this.props;
+		const { selectedRowKeys } = this.state;
+		await this.checkMQTTClient();
+		validateFields(async (err, values) => {
+			if (!err) {
+				const {
+					ruleName,
+					upBandwidth,
+					downBandwidth,
+					enable,
+					sunmiWeight,
+					whiteWeight,
+					normalWeight,
+				} = values;
+				const qosConfig = {
+					enable,
+					source: 'manual',
+					operator: 'user',
+					upBandwidth: `${upBandwidth * 1024}`,
+					downBandwidth: `${downBandwidth * 1024}`,
+					sunmiWeight,
+					whiteWeight,
+					normalWeight,
+				};
+				const payload = {
+					name: ruleName,
+					config: {
+						qos: qosConfig,
+					},
+					configId: id,
+				};
+				qos === 'create' && (await createQos(payload));
+				qos === 'update' && (await updateQos(payload));
+				selectedRowKeys.forEach(async keyId => {
+					const { networkId, sn } =
+						networkDeviceList.filter(item => item.id === keyId)[0] || {};
+					console.log(networkId, sn);
+					await getAPMessage({
+						message: {
+							opcode: OPCODE.QOS_SET,
+							param: {
+								network_id: networkId,
+								sn,
+								qos: format('toSnake')({ ...qos }),
+							},
+						},
+					});
+				});
+			}
+		});
+	};
+
+	onSelectChange = selectedRowKeys => {
+		console.log('selectedRowKeys changed: ', selectedRowKeys);
+		this.setState({ selectedRowKeys });
+	};
+
 	render() {
 		const {
 			form: { getFieldDecorator },
-			network: { qosInfo: { config: { qos: { enable } = {} } = {} } = {} },
+			network: {
+				qosInfo: {
+					config: {
+						qos: {
+							enable,
+							upBandwidth,
+							downBandwidth,
+							sunmiWeight,
+							whiteWeight,
+							normalWeight,
+						} = {},
+					} = {},
+					name,
+					id,
+				} = {},
+				deviceList: { networkDeviceList },
+			},
 			changeTabType,
 		} = this.props;
+		console.log(enable);
+		const rowSelection = {
+			onChange: this.onSelectChange,
+			getCheckboxProps: record => ({
+				disabled: record.activeStatus === 0, // Column configuration not to be checked
+			}),
+		};
 		return (
 			<div>
 				<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
@@ -79,6 +211,7 @@ class QosCreate extends React.PureComponent {
 						<Row gutter={8}>
 							<Col span={15}>
 								{getFieldDecorator('ruleName', {
+									initialValue: name,
 									rules: [
 										{
 											required: true,
@@ -96,6 +229,7 @@ class QosCreate extends React.PureComponent {
 						<Row gutter={8}>
 							<Col span={15}>
 								{getFieldDecorator('upBandwidth', {
+									initialValue: upBandwidth && parseInt(upBandwidth / 1024, 10),
 									rules: [
 										{
 											required: true,
@@ -116,6 +250,8 @@ class QosCreate extends React.PureComponent {
 						<Row gutter={8}>
 							<Col span={15}>
 								{getFieldDecorator('downBandwidth', {
+									initialValue:
+										downBandwidth && parseInt(downBandwidth / 1024, 10),
 									rules: [
 										{
 											required: true,
@@ -133,9 +269,9 @@ class QosCreate extends React.PureComponent {
 						</Row>
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'network.qos.QoS' })}>
-						{getFieldDecorator('switch', {
+						{getFieldDecorator('enable', {
 							valuePropName: 'checked',
-							initialValue: enable,
+							initialValue: enable || false,
 						})(
 							<Switch
 								checkedChildren={formatMessage({ id: 'network.switchOn' })}
@@ -149,7 +285,8 @@ class QosCreate extends React.PureComponent {
 					<Form.Item label={formatMessage({ id: 'network.qos.sunmi' })}>
 						<Row gutter={8}>
 							<Col span={15}>
-								{getFieldDecorator('sunmi', {
+								{getFieldDecorator('sunmiWeight', {
+									initialValue: sunmiWeight,
 									rules: [
 										{
 											required: true,
@@ -167,7 +304,8 @@ class QosCreate extends React.PureComponent {
 					<Form.Item label={formatMessage({ id: 'network.qos.whitelist' })}>
 						<Row gutter={8}>
 							<Col span={15}>
-								{getFieldDecorator('whitelist', {
+								{getFieldDecorator('whiteWeight', {
+									initialValue: whiteWeight,
 									rules: [
 										{
 											required: true,
@@ -185,7 +323,8 @@ class QosCreate extends React.PureComponent {
 					<Form.Item label={formatMessage({ id: 'network.qos.normal' })}>
 						<Row gutter={8}>
 							<Col span={15}>
-								{getFieldDecorator('normal', {
+								{getFieldDecorator('normalWeight', {
+									initialValue: normalWeight,
 									rules: [
 										{
 											required: true,
@@ -201,10 +340,15 @@ class QosCreate extends React.PureComponent {
 						</Row>
 					</Form.Item>
 				</Form>
+				<div className={styles['qos-title']}>
+					{formatMessage({ id: 'network.wirelessConfig.title' })}
+				</div>
 				<Table
+					className={styles['qos-table']}
 					rowKey="id"
+					rowSelection={rowSelection}
 					columns={this.columns}
-					dataSource={[{}]}
+					dataSource={networkDeviceList.filter(item => item.isMaster)}
 					onChange={this.onTableChange}
 				/>
 				<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
@@ -215,7 +359,7 @@ class QosCreate extends React.PureComponent {
 						>
 							{formatMessage({ id: 'network.return' })}
 						</Button>
-						<Button type="primary" onClick={this.cancel}>
+						<Button type="primary" onClick={() => this.submitConfig(id)}>
 							{formatMessage({ id: 'network.apply' })}
 						</Button>
 					</Form.Item>
