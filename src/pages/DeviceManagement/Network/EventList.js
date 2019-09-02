@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Pagination, Spin, Table, message } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { formatRelativeTime } from '@/utils/utils';
+import moment from 'moment';
 import styles from './Network.less';
 
 const columns = [{
@@ -50,7 +50,7 @@ class EventList extends React.Component {
 			const total = totalCount > 50 * pageSize ? 50 * pageSize : totalCount;
 			eventInfo.forEach((item, index) => {
 				item.index = index;
-				item.reportTime = formatRelativeTime(item.reportTime/1000);
+				item.reportTime = moment(item.reportTime * 1000).format('hh:mm:ss DD/MM/YYYY');
 				switch(item.eventType) {
 					case 5: item.eventType = formatMessage({id: 'network.connect.eventType5'});break;
 					case 7: item.eventType = formatMessage({id: 'network.connect.eventType7'});break;
