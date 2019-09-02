@@ -74,6 +74,11 @@ export default {
 				});
 			// 	file.response = result;
 			}
+		},
+		*editFile({ payload }, { call }) {
+			const response = yield call(handleUpload, payload);
+
+			return response;
 		}
 	}
 };
