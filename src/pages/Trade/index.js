@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { format } from '@konata9/milk-shake';
-import { Card, Table, Modal, Button, Tabs } from 'antd';
+import { Card, Table, Modal, Button, Tabs, message } from 'antd';
 import PaymentRadio from '@/components/BigIcon/PaymentRadio';
 import { getCountDown, idEncode } from '@/utils/utils';
 import { TIME } from '@/constants';
@@ -12,7 +12,7 @@ import businessBank from '@/assets/icon/business-bank.svg';
 import accountBank from '@/assets/icon/account-bank.svg';
 import alipayPayment from '@/assets/icon/alipay-payment.svg';
 import wechatPayment from '@/assets/icon/wechat-payment.svg';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, ALTERT_TRADE_MAP } from '@/constants/errorCode';
 
 import { TRADE } from './constants';
 
@@ -115,7 +115,6 @@ class Trade extends PureComponent {
 	}
 
 	async componentDidMount() {
-		// TODO 获取支付方式
 		const { getPurchaseType } = this.props;
 		await getPurchaseType();
 		this.startCountDown();
@@ -139,8 +138,9 @@ class Trade extends PureComponent {
 	};
 
 	handleUnionPay = async opts => {
-		const { payOrder } = this.props;
+		const { payOrder, goToPath } = this.props;
 		const response = await payOrder(opts);
+
 		if (response && response.code === ERROR_OK) {
 			const { data = {} } = response;
 			const { unionPayForm = '' } = format('toCamel')(data);
@@ -148,6 +148,19 @@ class Trade extends PureComponent {
 			// TODO 银联支付的跳转有风险，如果银联的方法变了可能会失效
 			const wf = window.open('');
 			wf.document.write(`${unionPayForm} <script>document.forms[0].submit()</script>`);
+
+			Modal.confirm({
+				title: formatMessage({ id: 'pay.confirm.title' }),
+				content: formatMessage({ id: 'pay.confirm.title' }),
+				okText: formatMessage({ id: 'pay.success' }),
+				cancelText: formatMessage({ id: 'pay.failed' }),
+				onOk: () => goToPath('tradeResult', { status: 'success' }),
+				onCancel: () => goToPath('tradeResult', { status: 'failed' }),
+			});
+		} else if (response && ALTERT_TRADE_MAP[response.code]) {
+			message.error(formatMessage({ id: ALTERT_TRADE_MAP[response.code] }));
+		} else {
+			message.error(formatMessage({ id: 'pay.failed.info' }));
 		}
 	};
 

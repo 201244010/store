@@ -45,10 +45,9 @@ export default {
 					type: 'updateState',
 					payload: { payLink: { qrCodeUrl, unionPayForm } },
 				});
-				return response;
 			}
 
-			return null;
+			return response;
 		},
 	},
 	reducers: {
