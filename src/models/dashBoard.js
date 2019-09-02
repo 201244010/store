@@ -8,7 +8,7 @@ import { DASHBOARD } from '@/pages/DashBoard/constants';
 
 const {
 	QUERY_TYPE,
-	SEARCH_TYPE: { RANGE, TRADE_TIME, PAYMENT_TYPE },
+	SEARCH_TYPE: { RANGE, TRADE_TIME, PAYMENT_TYPE, PASSENGER_FLOW_TYPE },
 	TIME_INTERVAL,
 	PURCHASE_ORDER,
 } = DASHBOARD;
@@ -92,6 +92,7 @@ export default {
 			timeRangeEnd: null,
 			tradeTime: TRADE_TIME.AMOUNT,
 			paymentType: PAYMENT_TYPE.AMOUNT,
+			passengerFlowType: PASSENGER_FLOW_TYPE.GENDER,
 		},
 
 		overviewProductLoading: false,

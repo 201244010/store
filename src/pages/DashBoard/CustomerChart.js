@@ -1,9 +1,14 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { Card } from 'antd';
+import { Card, Radio } from 'antd';
 import Facet from '@/components/Charts/Facet';
+import { DASHBOARD } from './constants';
 import styles from './DashBoard.less';
+
+const {
+	SEARCH_TYPE: { PASSENGER_FLOW_TYPE },
+} = DASHBOARD;
 
 const data = [
 	{
@@ -58,12 +63,58 @@ const data = [
 	},
 ];
 
-@connect()
+const CardTitle = ({ onChange = null }) => {
+	const handleChange = e => {
+		const { target: { value = null } = {} } = e;
+		if (onChange) {
+			onChange(value);
+		}
+	};
+
+	return (
+		<div className={styles['customer-card-header']}>
+			<div className={styles['customer-title']}>
+				{formatMessage({ id: 'customer.distribute' })}
+			</div>
+			<div className={styles['customer-button']}>
+				<Radio.Group
+					defaultValue={PASSENGER_FLOW_TYPE.GENDER}
+					buttonStyle="solid"
+					onChange={handleChange}
+				>
+					<Radio.Button value={PASSENGER_FLOW_TYPE.GENDER}>
+						{formatMessage({ id: 'customer.sex' })}
+					</Radio.Button>
+					<Radio.Button value={PASSENGER_FLOW_TYPE.REGULAR}>
+						{formatMessage({ id: 'customer.newold' })}
+					</Radio.Button>
+				</Radio.Group>
+			</div>
+		</div>
+	);
+};
+
+@connect(
+	state => ({
+		dashboard: state.dashboard,
+	}),
+	dispatch => ({
+		setSearchValue: payload => dispatch({ type: 'dashboard/setSearchValue', payload }),
+	})
+)
 class CustomerChart extends PureComponent {
+	radioChange = value => {
+		console.log(value);
+		const { setSearchValue } = this.props;
+		setSearchValue({
+			passengerFlowType: value,
+		});
+	};
+
 	render() {
 		return (
 			<Card
-				title={formatMessage({ id: 'customer.distribute' })}
+				title={<CardTitle onChange={this.radioChange} />}
 				className={`${styles['card-bar-wrapper']} ${styles['customer-chart']}`}
 			>
 				<Facet
