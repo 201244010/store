@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { format } from '@konata9/milk-shake';
 import { Card, Table, Modal, Button, Tabs, message } from 'antd';
 import PaymentRadio from '@/components/BigIcon/PaymentRadio';
-import { getCountDown, idEncode } from '@/utils/utils';
+import { getCountDown } from '@/utils/utils';
 import { TIME } from '@/constants';
 import styles from './trade.less';
 
@@ -180,7 +180,6 @@ class Trade extends PureComponent {
 		} else {
 			goToPath('qrpay', {
 				...opts,
-				purchaseType: idEncode(selectedPurchaseType, 5, 10, 'number'),
 			});
 		}
 	};

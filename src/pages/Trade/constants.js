@@ -4,9 +4,9 @@ export const TRADE = {
 			UNIONPAY: 'purchase-type-b2b-unionpay',
 		},
 		B2C: {
-			UNIONPAY: 'purchase-type-wechat',
+			WECHAT: 'purchase-type-wechat',
 			ALIPAY: 'purchase-type-alipay',
-			WECHAT: 'purchase-type-b2c-unionpay',
+			UNIONPAY: 'purchase-type-b2c-unionpay',
 		},
 	},
 };

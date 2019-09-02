@@ -23,6 +23,7 @@ export default {
 	'purchase-type-b2c-unionpay': '银联支付',
 
 	'pay.confirm.title': '请确认订单的状态',
+	'pay.order.commit': '订单提交',
 	'pay.success': '支付成功',
 	'pay.success.info': '支付成功，点击可查看订单信息和服务信息',
 	'pay.failed': '支付失败',
@@ -31,5 +32,8 @@ export default {
 	'pay.back.service': '服务管理',
 	'pay.check.detail': '查看订单详情',
 
+	'pay.order.no': '订单编号',
+	'pay.true.price': '实付款',
 	'pay.order.completed': '该订单已支付完成',
+	'pay.retry': '重新选择支付方式'
 };
