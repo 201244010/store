@@ -174,7 +174,6 @@ class QosCreate extends React.PureComponent {
 	};
 
 	onSelectChange = selectedRowKeys => {
-		console.log('selectedRowKeys changed: ', selectedRowKeys);
 		this.setState({ selectedRowKeys });
 	};
 

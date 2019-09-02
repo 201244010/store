@@ -557,13 +557,33 @@ export const formatSpeed = speed => {
 // 格式化时间，精确到天时分秒
 export const formatRelativeTime = timeStamp => {
 	const duration = moment.duration(timeStamp);
-	const { years, months, days, hours, minutes, seconds } = duration._data || {};
-	const timeStr = `${years && `${years}${formatMessage({ id: 'common.time.year' })}`}${months &&
-		`${months}${formatMessage({ id: 'common.time.month' })}`}${days &&
-		`${days}${formatMessage({ id: 'common.time.day' })}`}${hours &&
-		`${hours}${formatMessage({ id: 'common.time.hour' })}`}
-	${minutes && `${minutes}${formatMessage({ id: 'common.time.minute' })}`}${seconds &&
-		`${seconds}${formatMessage({ id: 'common.time.second' })}`}`;
+	const years = duration.years();
+	const months = duration.months();
+	const days = duration.days();
+	const hours = duration.hours();
+	const minutes = duration.minutes();
+	const seconds = duration.seconds();
+	let timeStr = '';
+	if (years > 0) {
+		timeStr = `${timeStr}${years}${formatMessage({ id: 'common.time.year' })}`;
+	}
+
+	if (months > 0) {
+		timeStr = `${timeStr}${months}${formatMessage({ id: 'common.time.month' })}`;
+	}
+	if (days > 0) {
+		timeStr = `${timeStr}${days}${formatMessage({ id: 'common.time.day' })}`;
+	}
+	if (hours > 0) {
+		timeStr = `${timeStr}${hours}${formatMessage({ id: 'common.time.hour' })}`;
+	}
+	if (minutes > 0) {
+		timeStr = `${timeStr}${minutes}${formatMessage({ id: 'common.time.minute' })}`;
+	}
+
+	if (seconds > 0) {
+		timeStr = `${timeStr}${seconds}${formatMessage({ id: 'common.time.second' })}`;
+	}
 
 	return timeStr;
 };

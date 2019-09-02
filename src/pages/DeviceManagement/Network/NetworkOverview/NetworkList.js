@@ -34,7 +34,6 @@ class NetworkList extends React.PureComponent {
 		const { getAPMessage, networkList } = this.props;
 		networkList.map(async item => {
 			const { networkId, masterDeviceSn: sn, activeStatus } = item;
-			console.log(activeStatus);
 			if (activeStatus) {
 				await getAPMessage({
 					message: {
@@ -194,31 +193,35 @@ const Topology = props => {
 						<li>
 							{activeStatus ? (
 								<>
-									<Icon component={() => <IconNetwork color="#303540" />} />
+									<Icon component={() => <IconNetwork activeStatus />} />
 									<Badge
 										count={routerNumber}
 										showZero
 										offset={[0, -2]}
 										overflowCount={9999}
-										style={{ backgroundColor: '#4B7AFA', fontSize: 14 }}
 									>
-										<Icon component={() => <IconLink color="#303540" />} />
+										<Icon component={() => <IconLink activeStatus />} />
 									</Badge>
 									<Badge
 										count={clientNumber || 0}
 										showZero
 										offset={[-32, -2]}
 										overflowCount={9999}
-										style={{ backgroundColor: '#4B7AFA', fontSize: 14 }}
 									>
-										<Icon className={styles['network-client']} component={() => <IconEquipment color="#303540" />} />
+										<Icon
+											className={styles['network-client']}
+											component={() => <IconEquipment activeStatus />}
+										/>
 									</Badge>
 								</>
 							) : (
 								<>
-									<Icon component={() => <IconNetwork color="#A1A7B3" />} />
-									<Icon component={() => <IconLink color="#A1A7B3" />} />
-									<Icon className={styles['network-client']} component={() => <IconEquipment color="#A1A7B3" />} />
+									<Icon component={() => <IconNetwork activeStatus />} />
+									<Icon component={() => <IconLink activeStatus />} />
+									<Icon
+										className={styles['network-client']}
+										component={() => <IconEquipment activeStatus />}
+									/>
 								</>
 							)}
 						</li>
@@ -282,7 +285,7 @@ const Topology = props => {
 											goToPath('clientList', {
 												sn: masterDeviceSn,
 												networkId,
-												type: 'client'
+												type: 'client',
 											})
 										}
 									>
@@ -296,7 +299,7 @@ const Topology = props => {
 					</ul>
 				</div>
 				<div className={styles['network-guest-wrapper']}>
-					<Divider style={{ height: 80 }} type="vertical" />
+					<Divider className={styles['network-divider']} type="vertical" />
 					<div className={styles['network-guest']}>
 						{formatMessage({ id: 'network.guestNumber' })}
 						{activeStatus ? (
@@ -316,7 +319,7 @@ const Topology = props => {
 									goToPath('clientList', {
 										sn: masterDeviceSn,
 										networkId,
-										type: 'guest'
+										type: 'guest',
 									})
 								}
 							>

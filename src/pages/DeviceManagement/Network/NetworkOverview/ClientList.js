@@ -97,14 +97,14 @@ class ClientList extends React.Component {
 				dataArray = result.data.map(item => {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = sn;
-					item.ontime = formatRelativeTime(item.ontime);
+					item.ontime = formatRelativeTime(item.ontime * 1000);
 					return item;
 				});
 			} else {
 				dataArray = result.data.map(item => {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = '--';
-					item.ontime = formatRelativeTime(item.ontime);
+					item.ontime = formatRelativeTime(item.ontime * 1000);
 					return item;
 				});
 				getDeviceList({
