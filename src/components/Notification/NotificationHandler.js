@@ -96,6 +96,7 @@ const formatInfoMessage = ({
 
 const palyMotion = async ({ params }) => {
 	const { url = null, device_model: ipcType = null } = convertArrayPrams(params) || {};
+
 	const { pixelRatio = '16:9' } = ipcTypes[ipcType] || {};
 	const modal = Modal.info({
 		title: '',
@@ -103,6 +104,7 @@ const palyMotion = async ({ params }) => {
 			<>
 				{url && (
 					<ModalPlayer
+						defaultDuration={5}
 						visible
 						onClose={() => {
 							if (modal) {

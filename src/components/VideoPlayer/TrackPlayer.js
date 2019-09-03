@@ -55,7 +55,8 @@ class TrackPlayer extends React.Component{
 
 	generateDuration = () => {
 		const { videoplayer } = this;
-		return videoplayer.generateDuration();
+		const { defaultDuration } = this.props;
+		return videoplayer.generateDuration() || defaultDuration || 0;
 	}
 
 	onTimeUpdate = (current) => {

@@ -4,7 +4,6 @@ import { Card, Form, Checkbox, Modal, Radio, Upload, Row, Col, Avatar, Select, I
 import {formatMessage} from 'umi/locale';
 import {connect} from 'dva';
 import moment from 'moment';
-import { handleResponse, handleUpload } from '../services/photoLibrary';
 import styles from './PhotoManagement.less';
 import { spaceInput } from '@/constants/regexp';
 
@@ -61,6 +60,16 @@ const { confirm } = Modal;
 				type: 'photoLibrary/saveFile',
 				payload
 			}),
+		editFile: (file, groupId ) => {
+			const result = dispatch({
+				type: 'photoUpload/editFile',
+				payload: {
+					file,
+					groupId
+				}
+			});
+			return result;
+		},
 		navigateTo: (pathId, urlParams) => dispatch({
 			type: 'menu/goToPath',
 			payload: {
@@ -259,55 +268,98 @@ class PhotoCard extends React.Component {
 		reader.readAsDataURL(img);
 	};
 
-	upload = file => {
-		// console.log(file);
-		file = handleResponse(file);
-		const { file: { status }} = file;
+	// upload = async file => {
+	// 	const { editFile, groupId } = this.props;
+	// 	const response = await editFile(file, groupId);
+	// console.log('upload',file);
+	// 	// file = handleResponse(file);
+	// 	const { file: { status }} = file;
+	// 	let isUpload = 0;
+	// 	// console.log('upload',file);
+	// 	if (status === 'done') {
+	// 		// const { file: { response }} = file;
+	// 		const { code, data: {verifyResult}} = response;
+
+	// 		if(verifyResult === 1 && code === 1 ) {
+	// 			message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
+	// 			isUpload = 1;
+	// 			// this.setState({fileName: response.data.fileName, uploadSuccess: true});
+	// 		} else {
+	// 			message.error(formatMessage({id:'photoManagement.uploadFail'}));
+	// 			isUpload = 2;
+	// 			// this.setState({uploadFail: true});
+	// 		}
+	// 		this.getBase64(file.file.originFileObj,imageUrl => {
+	// 			// console.log(imageUrl);
+	// 			this.setState({
+	// 				fileUrl: imageUrl,
+	// 				fileName: response.data.fileName,
+	// 				isUpload,
+	// 			});
+	// 		});
+
+	// 	} else if (status === 'error') {
+	// 		message.error(formatMessage({id:'photoManagement.FailforOver'}));
+	// 		this.setState({
+	// 			// file: file.file,
+	// 			isUpload: 2
+	// 		});
+	// 	}
+	// 	this.setState({
+	// 		file:file.file
+	// 	});
+	// };
+
+	editFile = async file => {
+		// console.log('file', file);
+		const { editFile, groupId } = this.props;
+		const response = await editFile(file, groupId);
+		const { code, data: {verifyResult}} = response;
 		let isUpload = 0;
-		// console.log('upload',file);
-		if (status === 'done') {
-			const { file: { response }} = file;
-			const { code, data: {verifyResult}} = response;
-
-			if(verifyResult === 1 && code === 1 ) {
-				message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
-				isUpload = 1;
-				// this.setState({fileName: response.data.fileName, uploadSuccess: true});
-			} else {
-				message.error(formatMessage({id:'photoManagement.uploadFail'}));
-				isUpload = 2;
-				// this.setState({uploadFail: true});
-			}
-			this.getBase64(file.file.originFileObj,imageUrl => {
-				// console.log(imageUrl);
-				this.setState({
-					fileUrl: imageUrl,
-					fileName: response.data.fileName,
-					isUpload,
-				});
-			});
-
-		} else if (status === 'error') {
-			message.error(formatMessage({id:'photoManagement.FailforOver'}));
-			this.setState({
-				// file: file.file,
-				isUpload: 2
-			});
+		if(verifyResult === 1 && code === 1 ) {
+			message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
+			isUpload = 1;
+		} else {
+			message.error(formatMessage({id:'photoManagement.uploadFail'}));
+			isUpload = 2;
 		}
-		this.setState({
-			file:file.file
+		this.getBase64(file,imageUrl => {
+			this.setState({
+				fileUrl: imageUrl,
+				fileName: response.data.fileName,
+				isUpload,
+				file:{
+					...file,
+					response,
+					status: 'done'
+				}
+			});
 		});
-	};
+	}
+
 
 	beforeUpload = file => {
+		// console.log('before',file);
+
 		const isLt1M = file.size / 1024 / 1024 < 1;
 		const isJPG = file.type === 'image/jpeg';
 		const isPNG = file.type === 'image/png';
 		const isPic = isJPG || isPNG;
 		if (!(isLt1M && isPic)) {
 			file.status = 'error';
+			message.error(formatMessage({id:'photoManagement.FailforOver'}));
+			this.setState({
+				file,
+				isUpload: 2
+			});
+		} else {
+			file.status = 'uploading';
+			this.editFile(file);
+			this.setState({
+				file,
+			});
 		}
-		return isLt1M && isPic;
+		return false;
 	};
 
 	handleInfo = type => {
@@ -402,7 +454,7 @@ class PhotoCard extends React.Component {
 			navigateTo
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
-		const { isEdit, infoFormVisible, removeVisible, file, fileUrl, imageLoaded, isUpload } = this.state;
+		const { isEdit, infoFormVisible, removeVisible, fileUrl, imageLoaded, isUpload } = this.state;
 		const imageUrl = fileUrl || image;
 		// console.log('url',imageUrl);
 		// console.log(id, age, gender);
@@ -471,12 +523,10 @@ class PhotoCard extends React.Component {
 							<Row className={styles['edit-content-span']}>
 								<Col span={10}>
 									<Upload
-										onChange={this.upload}
 										beforeUpload={this.beforeUpload}
 										className={styles['upload-card']}
-										fileList={[file]}
+										// fileList={[file]}
 										showUploadList={false}
-										{...handleUpload(groupId)}
 									>
 										<div className={styles['upload-pic']}>
 											{image !== '' &&

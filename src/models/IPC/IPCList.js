@@ -14,23 +14,8 @@ export default {
 	},
 	effects: {
 		*read(action,{ put }) {
-			const companyId = yield put.resolve({
-				type: 'global/getCompanyIdFromStorage'
-			});
-
-			const shopId = yield put.resolve({
-				type: 'global/getShopIdFromStorage'
-			});
-
-
-			if (!companyId || !shopId) {
-				return [];
-			}
-
-			const response = yield getDeviceList({
-				companyId,
-				shopId
-			});
+		
+			const response = yield getDeviceList();
 
 			const {data : result , code} = response;
 			if (code === ERROR_OK) {

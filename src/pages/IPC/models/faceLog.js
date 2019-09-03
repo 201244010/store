@@ -1,5 +1,5 @@
-import { getFaceLogList } from '../../services/faceLog';
-import { getLibrary, getRange, move } from '../../services/photoLibrary';
+import { getFaceLogList } from '../services/faceLog';
+import { getLibrary, getRange, move } from '../services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
 
@@ -46,7 +46,11 @@ export default {
 		},
 		*readFaceLogList({payload}, { put }){
 			const response = yield getFaceLogList(payload);
-			const { code, data: {faceList, totalCount} } = response;
+			const { code, data } = response;
+			let { faceList = [] } = data;
+			const { totalCount } = data;
+			
+			faceList = faceList === null ? [] : faceList;
 			const groupList = yield put.resolve({
 				type:'getLibrary'
 			});
