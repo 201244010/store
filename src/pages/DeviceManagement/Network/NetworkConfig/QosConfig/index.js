@@ -10,7 +10,7 @@ class QosConfig extends React.PureComponent {
 		super(props);
 		this.columns = [
 			{
-				title: formatMessage({ id: 'network.deviceName' }),
+				title: formatMessage({ id: 'network.name' }),
 				dataIndex: 'name',
 			},
 			{
