@@ -67,6 +67,14 @@ const router = [
 			},
 
 			{
+				path: '/orderDetail',
+				name: 'orderDetail',
+				id: 'orderDetail',
+				hideInMenu: true,
+				component: './OrderDetail',
+			},
+
+			{
 				path: '/application',
 				name: 'application',
 				icon: 'blank',
