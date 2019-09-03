@@ -65,10 +65,11 @@ export default {
 	'network.qos.sunmi': '商米设备',
 	'network.qos.whitelist': '优先设备',
 	'network.qos.normal': '普通设备',
-	'network.bandwidth.allocation': '分配带宽比例',
+	'network.bandwidth.allocation': '带宽分配比例',
 
 	'network.switchOn': '开',
 	'network.switchOff': '关',
+	'network.name': '名称',
 
 	'network.qos.noEmpty.ruleName': '规则名称不能为空',
 	'network.qos.noEmpty.upBandwidth': '上行带宽不能为空',
@@ -77,7 +78,7 @@ export default {
 	'network.qos.noEmpty.bandSum': '带宽比例之和不能超过100%',
 	'network.qos.bandwidth.scape': '带宽范围应在1-1000之间',
 	'network.qos.bandradio.scape': '带宽比例范围应在1-100之间',
-	'network.qos.bandwidth.number': '请输入数字',
+	'network.qos.bandwidth.number': '请输入整数',
 	'network.qos.createConfig': '新增配置',
 
 	'network.return': '返回',
@@ -100,8 +101,10 @@ export default {
 	'network.routerEvent.title': '事件列表',
 	'network.connect.time': '时间',
 	'network.connect.eventType': '事件类型',
-	'network.connect.eventType5': 'CPU过高',
-	'network.connect.eventType7': '内存过高',
+	'network.connect.deviceCpuOverwhelmed': '设备CPU使用率过高',
+	'network.connect.deviceMemoryOverwhelmed': '设备内存使用率过高',
+	'network.connect.deviceOnline': '设备上线',
+	'network.connect.deviceOffline': '设备下线',
 	'network.connect.eventType.unknown': '未知事件类型',
 	'network.routerEvent.requestFail': '事件列表请求失败',
 };

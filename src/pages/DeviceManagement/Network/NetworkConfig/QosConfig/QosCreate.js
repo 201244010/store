@@ -19,7 +19,7 @@ class QosCreate extends React.PureComponent {
 			{
 				title: formatMessage({ id: 'network.deviceName' }),
 				dataIndex: 'networkAlias',
-				render: (_, record) => record.networkAlias || record.networkId,
+				render: (_, record) => record.location || record.sn 
 			},
 			{
 				title: formatMessage({ id: 'network.belongNetwork' }),
@@ -67,9 +67,9 @@ class QosCreate extends React.PureComponent {
 		} = this.props;
 		const number = /^\d+$/g;
 		const sum =
-			parseInt(getFieldValue('sunmi'), 10) +
-			parseInt(getFieldValue('whitelist'), 10) +
-			parseInt(getFieldValue('normal'), 10);
+			parseInt(getFieldValue('sunmiWeight'), 10) +
+			parseInt(getFieldValue('whiteWeight'), 10) +
+			parseInt(getFieldValue('normalWeight'), 10);
 		if (value && !number.test(value)) {
 			callback(formatMessage({ id: 'network.qos.bandwidth.number' }));
 		} else if (value && (value > 100 || value < 1)) {
