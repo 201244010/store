@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { Card, Icon } from 'antd';
+import { Card } from 'antd';
 import { priceFormat } from '@/utils/utils';
 import styles from './DashBoard.less';
 
@@ -10,7 +10,7 @@ const OverviewInfo = ({
 	title = null,
 	content = null,
 	subContent = null,
-	loading = false,
+	loading = true,
 	onClick = null,
 }) => {
 	const handleClick = e => {
@@ -28,7 +28,7 @@ const OverviewInfo = ({
 			onClick={handleClick}
 		>
 			<div className={styles['overview-info']}>
-				<div className={styles['overview-icon']}>{icon && <Icon type={icon} />}</div>
+				<div className={styles['overview-icon']}>{icon}</div>
 				<div className={styles['overview-content']}>
 					<div className={styles['content-title']}>{title}</div>
 					<div className={styles.content}>{content}</div>
@@ -58,6 +58,7 @@ class OverviewBar extends PureComponent {
 				deviceOverView: {
 					eslTotalCount = '',
 					eslPendingCount = '',
+					eslFailedCount = '',
 					apTotalCount = '',
 				} = {},
 				ipcOverView: { onLineCount = '', offLineCount = '' } = {},
@@ -74,23 +75,29 @@ class OverviewBar extends PureComponent {
 				<div className={styles['overview-bar']}>
 					<OverviewInfo
 						{...{
-							icon: 'smile',
-							loading: overviewDeviceLoading,
-							title: formatMessage({ id: 'dashboard.overview.ap.online' }),
-							content: apTotalCount === '' ? '--' : apTotalCount,
-							onClick: overviewDeviceLoading ? null : () => goToPath('baseStation'),
-						}}
-					/>
-					<OverviewInfo
-						{...{
-							icon: 'smile',
+							icon: <img src={require('@/assets/icon/AP.png')} />,
 							loading: overviewDeviceLoading,
 							title: formatMessage({ id: 'dashboard.overview.esl.push.total' }),
 							content: eslTotalCount === '' ? '--' : priceFormat(eslTotalCount),
 							subContent: (
 								<span>
-									{formatMessage({ id: 'dashboard.overview.esl.push' })}：
-									{eslPendingCount === '' ? '--' : priceFormat(eslPendingCount)}
+									{formatMessage({ id: 'dashboard.overview.ap.online' })}：
+									{apTotalCount === '' ? '--' : apTotalCount}
+								</span>
+							),
+							onClick: overviewDeviceLoading ? null : () => goToPath('baseStation'),
+						}}
+					/>
+					<OverviewInfo
+						{...{
+							icon: <img src={require('@/assets/icon/ESL.png')} />,
+							loading: overviewDeviceLoading,
+							title: formatMessage({ id: 'dashboard.overview.esl.push' }),
+							content: eslPendingCount === '' ? '--' : priceFormat(eslPendingCount),
+							subContent: (
+								<span>
+									{formatMessage({ id: 'dashboard.overview.esl.push.failed' })}：
+									{eslFailedCount === '' ? '--' : eslFailedCount}
 								</span>
 							),
 							onClick: overviewDeviceLoading ? null : () => goToPath('electricLabel'),
@@ -98,7 +105,7 @@ class OverviewBar extends PureComponent {
 					/>
 					<OverviewInfo
 						{...{
-							icon: 'smile',
+							icon: <img src={require('@/assets/icon/IPC.png')} />,
 							title: formatMessage({ id: 'dashboard.overview.ipc.online' }),
 							loading: overviewIPCLoading,
 							content: onLineCount === '' ? '--' : priceFormat(onLineCount),
@@ -113,7 +120,7 @@ class OverviewBar extends PureComponent {
 					/>
 					<OverviewInfo
 						{...{
-							icon: 'smile',
+							icon: <img src={require('@/assets/icon/W1.png')} />,
 							loading: overviewNetworkLoading,
 							title: formatMessage({ id: 'dashboard.overview.device.online' }),
 							content:

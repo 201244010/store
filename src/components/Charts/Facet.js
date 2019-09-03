@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Chart, Geom, Axis, Tooltip, Label, View, Facet } from 'bizcharts';
+import { Chart, Geom, Axis, Label, View, Facet } from 'bizcharts';
 import '@/components/Charts/Shape';
 
 class FacetChart extends PureComponent {
@@ -30,9 +30,14 @@ class FacetChart extends PureComponent {
 					visible: assistVisible = true,
 				},
 			} = {},
-			tooltip = {},
 			facet: { padding = 50, fields = [] },
-			geom: { position = null, size = 25, color = '#ffffff', label: { content = null } = {} },
+			geom: {
+				position = null,
+				size = 25,
+				color = '#ffffff',
+				label: { content = null } = {},
+				tooltip = {},
+			},
 			assistGeom: { position: assistPosition = null, color: assistColor = '#f0f2f5' },
 		} = this.props;
 
@@ -45,7 +50,6 @@ class FacetChart extends PureComponent {
 					forceFit={forceFit}
 					padding={chartPadding}
 				>
-					<Tooltip {...tooltip} />
 					<Axis name={xName} line={xLine} tickLine={xTickLine} visible={xVisible} />
 					<Axis name={yName} line={yLine} tickLine={yTickLine} visible={yVisible} />
 					<Axis
@@ -63,6 +67,7 @@ class FacetChart extends PureComponent {
 								position={assistPosition}
 								color={assistColor}
 								active={false}
+								tooltip={tooltip}
 							/>
 							<Geom
 								size={size}

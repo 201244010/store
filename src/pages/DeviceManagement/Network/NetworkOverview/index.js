@@ -10,12 +10,14 @@ import styles from './Network.less';
 		network: state.network,
 	}),
 	dispatch => ({
-		updateAlias: ({networkId, networkAlias}) =>
+		updateAlias: ({ networkId, networkAlias }) =>
 			dispatch({ type: 'network/updateAlias', payload: { networkId, networkAlias } }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		getListWithStatus: () => dispatch({ type: 'network/getListWithStatus' }),
 		getList: () => dispatch({ type: 'network/getList' }),
+		editNetworkId: ({ networkId, edit }) =>
+			dispatch({ type: 'network/editNetworkId', payload: { networkId, edit } }),
 		unsubscribeTopic: () => dispatch({ type: 'network/unsubscribeTopic' }),
 		setAPHandler: payload => dispatch({ type: 'network/setAPHandler', payload }),
 		getAPMessage: payload => dispatch({ type: 'network/getAPMessage', payload }),
@@ -31,7 +33,7 @@ class Network extends React.Component {
 		super(props);
 		this.checkTimer = null;
 	}
-	
+
 	async componentDidMount() {
 		await this.checkMQTTClient();
 	}
@@ -44,12 +46,7 @@ class Network extends React.Component {
 
 	checkMQTTClient = async () => {
 		clearTimeout(this.checkTimer);
-		const {
-			checkClientExist,
-			setAPHandler,
-			generateTopic,
-			subscribe,
-		} = this.props;
+		const { checkClientExist, setAPHandler, generateTopic, subscribe } = this.props;
 		const isClientExist = await checkClientExist();
 		if (isClientExist) {
 			const apInfoTopic = await generateTopic({ service: 'W1/response', action: 'sub' });
@@ -63,6 +60,7 @@ class Network extends React.Component {
 	apHandler = async payload => {
 		const { refreshNetworkList, clearMsg } = this.props;
 		const { msgId } = payload;
+		console.log(payload);
 		await refreshNetworkList(payload);
 		await clearMsg({ msgId });
 	};
@@ -81,7 +79,8 @@ class Network extends React.Component {
 			setAPHandler,
 			refreshNetworkList,
 			goToPath,
-			clearMsg
+			clearMsg,
+			editNetworkId
 		} = this.props;
 		return (
 			<div>
@@ -99,7 +98,8 @@ class Network extends React.Component {
 						clearMsg,
 						setAPHandler,
 						refreshNetworkList,
-						goToPath
+						goToPath,
+						editNetworkId
 					}}
 				/>
 				<div className={styles['card-network-wrapper']}>
@@ -108,12 +108,12 @@ class Network extends React.Component {
 							deviceList,
 							getAPMessage,
 							getListWithStatus,
-							refreshNetworkList
+							refreshNetworkList,
 						}}
 					/>
 				</div>
 				<div className={styles['card-network-wrapper']}>
-					 <EventList />
+					<EventList />
 				</div>
 			</div>
 		);

@@ -60,12 +60,18 @@ export default {
 	'text.no': '否',
 	'data.empty': '暂无数据',
 
-
 	'common.time.year': '年',
 	'common.time.month': '月',
 	'common.time.day': '天',
 	'common.time.hour': '小时',
 	'common.time.minute': '分',
 	'common.time.second': '秒',
-	'yesterday': '昨日',
+	yesterday: '昨日',
+	lastWeek: '上周',
+	lastMonth: '上月',
+	'common.person': '人',
+
+	'common.male': '男性',
+	'common.female': '女性',
+	'common.age': '岁',
 };
