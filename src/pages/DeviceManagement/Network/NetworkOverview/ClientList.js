@@ -107,6 +107,8 @@ class ClientList extends React.Component {
 					item.ontime = formatRelativeTime(item.ontime * 1000);
 					if(item.connMode === WIFI) {
 						item.connMode = item.wifiMode;
+					} else {
+						item.connMode = formatMessage({id: 'network.connect.wired'});
 					}
 					return item;
 				});
@@ -117,6 +119,8 @@ class ClientList extends React.Component {
 					item.ontime = formatRelativeTime(item.ontime * 1000);
 					if(item.connMode === WIFI) {
 						item.connMode = item.wifiMode;
+					} else {
+						item.connMode = formatMessage({id: 'network.connect.wired'});
 					}
 					return item;
 				});
