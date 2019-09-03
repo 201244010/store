@@ -81,7 +81,9 @@ class LivePlayer extends React.Component{
 		const { pauseLive } = this.props;
 		this.pause();
 
-		await pauseLive();
+		if (pauseLive) {
+			await pauseLive();
+		}
 	}
 
 	backToLive = async () => {
