@@ -13,12 +13,12 @@ const purchaseCode = {
 	bankQr: 6,
 	qqWallet: 7,
 	jdWallet: 8,
-	other: 9,
+	other: 1,
 };
 const orderCode = {
 	// totalTrade: 1,
-	normal: 2,
-	refund: 3,
+	normal: 1,
+	refund: 2,
 };
 
 const formItemLayout = {
@@ -168,6 +168,7 @@ class OrderDetail extends Component {
 			record.loading = true;
 			this.getDetailList(id).then(
 				detailList => {
+					detailList.key = id;
 					record.detail = detailList;
 					record.loading = false;
 					this.setState({ orderList });
@@ -177,19 +178,6 @@ class OrderDetail extends Component {
 	};
 
 	getList = (options = {}) => {
-		/*         {
-                    "company_id":319,
-                    "shop_id": 7948,
-                    "time_range_start":1522652400,
-                    "time_range_end":1560322800,
-                    "order_type_list": [1],
-                    "purchase_type_list": [],
-                    "sort_by_amount":1,
-                    "sort_by_time":-1; 
-                    "page_size":3,
-                    "page_num":1
-                } */
-
 		const {
 			sortByPrice: sort_by_amount = -1, // 空时取默认值-1
 			sortByTime: sort_by_time = -1,
@@ -229,9 +217,13 @@ class OrderDetail extends Component {
 			obj.orderType = item.order_type;
 			obj.orderTypeId = item.order_type_id;
 			obj.purchaseType = item.purchase_type;
-			obj.tradeValue = item.amount;
 			obj.purchaseTime = unixSecondToDate(item.purchase_time);
 			obj.expanded = false;
+			obj.tradeValue = item.amount;
+
+			if (obj.orderTypeId === 2) {
+				obj.tradeValue = `-${  obj.tradeValue}`;
+			}
 
 			orderList.push(obj);
 		});
