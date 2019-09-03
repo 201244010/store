@@ -58,6 +58,7 @@ class OverviewBar extends PureComponent {
 				deviceOverView: {
 					eslTotalCount = '',
 					eslPendingCount = '',
+					eslFailedCount = '',
 					apTotalCount = '',
 				} = {},
 				ipcOverView: { onLineCount = '', offLineCount = '' } = {},
@@ -76,8 +77,14 @@ class OverviewBar extends PureComponent {
 						{...{
 							icon: <img src={require('@/assets/icon/AP.png')} />,
 							loading: overviewDeviceLoading,
-							title: formatMessage({ id: 'dashboard.overview.ap.online' }),
-							content: apTotalCount === '' ? '--' : apTotalCount,
+							title: formatMessage({ id: 'dashboard.overview.esl.push.total' }),
+							content: eslTotalCount === '' ? '--' : priceFormat(eslTotalCount),
+							subContent: (
+								<span>
+									{formatMessage({ id: 'dashboard.overview.ap.online' })}：
+									{apTotalCount === '' ? '--' : apTotalCount}
+								</span>
+							),
 							onClick: overviewDeviceLoading ? null : () => goToPath('baseStation'),
 						}}
 					/>
@@ -85,12 +92,12 @@ class OverviewBar extends PureComponent {
 						{...{
 							icon: <img src={require('@/assets/icon/ESL.png')} />,
 							loading: overviewDeviceLoading,
-							title: formatMessage({ id: 'dashboard.overview.esl.push.total' }),
-							content: eslTotalCount === '' ? '--' : priceFormat(eslTotalCount),
+							title: formatMessage({ id: 'dashboard.overview.esl.push' }),
+							content: eslPendingCount === '' ? '--' : priceFormat(eslPendingCount),
 							subContent: (
 								<span>
-									{formatMessage({ id: 'dashboard.overview.esl.push' })}：
-									{eslPendingCount === '' ? '--' : priceFormat(eslPendingCount)}
+									{formatMessage({ id: 'dashboard.overview.esl.push.failed' })}：
+									{eslFailedCount === '' ? '--' : eslFailedCount}
 								</span>
 							),
 							onClick: overviewDeviceLoading ? null : () => goToPath('electricLabel'),
