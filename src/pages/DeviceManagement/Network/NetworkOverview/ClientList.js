@@ -38,6 +38,13 @@ const columns = [
 		key: 'ontime',
 	},
 ];
+const WIFI = 'wifi';
+const MQTT_TYPE = {
+	ROUTER: 'router',
+	LIST: 'list'
+};
+const GUEST = 'guest';
+const BR_GUEST = 'br-guest';
 
 @connect(
 	state => ({
@@ -90,7 +97,7 @@ class ClientList extends React.Component {
 
 		// 当未组网时直接用sn号填进去，有routerMac字段时需要再发一个请求进行匹配
 
-		if (errcode === 0 && action === 'list') {
+		if (errcode === 0 && action === MQTT_TYPE.LIST) {
 			const { result = {} } = responseData[0];
 			let dataArray = [];
 			if ((result.data[0] || {}).routermac === undefined) {
@@ -98,7 +105,7 @@ class ClientList extends React.Component {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = sn;
 					item.ontime = formatRelativeTime(item.ontime * 1000);
-					if(item.connMode === 'wifi') {
+					if(item.connMode === WIFI) {
 						item.connMode = item.wifiMode;
 					}
 					return item;
@@ -108,7 +115,7 @@ class ClientList extends React.Component {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = '--';
 					item.ontime = formatRelativeTime(item.ontime * 1000);
-					if(item.connMode === 'wifi') {
+					if(item.connMode === WIFI) {
 						item.connMode = item.wifiMode;
 					}
 					return item;
@@ -125,15 +132,15 @@ class ClientList extends React.Component {
 			}
 
 			// 根据type筛选是否为客户
-			if (type === 'guest') {
-				const filter = dataArray.filter(item => item.bridge === 'br-guest');
+			if (type === GUEST) {
+				const filter = dataArray.filter(item => item.bridge === BR_GUEST);
 				this.setState({ dataSource: filter });
 			} else {
 				this.setState({ dataSource: dataArray });
 			}
 		}
 
-		if (errcode === 0 && action === 'router') {
+		if (errcode === 0 && action === MQTT_TYPE.ROUTER) {
 			// 对路由进行处理
 			const {
 				result: {
