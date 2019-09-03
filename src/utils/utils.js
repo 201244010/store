@@ -563,29 +563,34 @@ export const formatRelativeTime = timeStamp => {
 	const hours = duration.hours();
 	const minutes = duration.minutes();
 	const seconds = duration.seconds();
-	let timeStr = '';
+	let yearStr = '';
+	let monthStr = '';
+	let dayStr = '';
+	let hourStr = '';
+	let minuteStr = '';
+	let secondStr = '';
 	if (years > 0) {
-		timeStr = `${timeStr}${years}${formatMessage({ id: 'common.time.year' })}`;
+		yearStr = `${years}${formatMessage({ id: 'common.time.year' })}`;
 	}
 
 	if (months > 0) {
-		timeStr = `${timeStr}${months}${formatMessage({ id: 'common.time.month' })}`;
+		monthStr = `${months}${formatMessage({ id: 'common.time.month' })}`;
 	}
 	if (days > 0) {
-		timeStr = `${timeStr}${days}${formatMessage({ id: 'common.time.day' })}`;
+		dayStr = `${days}${formatMessage({ id: 'common.time.day' })}`;
 	}
 	if (hours > 0) {
-		timeStr = `${timeStr}${hours}${formatMessage({ id: 'common.time.hour' })}`;
+		hourStr = `${hours}${formatMessage({ id: 'common.time.hour' })}`;
 	}
 	if (minutes > 0) {
-		timeStr = `${timeStr}${minutes}${formatMessage({ id: 'common.time.minute' })}`;
+		minuteStr = `${minutes}${formatMessage({ id: 'common.time.minute' })}`;
 	}
 
 	if (seconds > 0) {
-		timeStr = `${timeStr}${seconds}${formatMessage({ id: 'common.time.second' })}`;
+		secondStr = `${seconds}${formatMessage({ id: 'common.time.second' })}`;
 	}
 
-	return timeStr;
+	return `${yearStr}${monthStr}${dayStr}${hourStr}${minuteStr}${secondStr}`;
 };
 
 export const checkAnchor = (anchor = null) => {

@@ -5,7 +5,7 @@ import { ERROR_OK } from '@/constants/errorCode';
 export default {
 	namespace: 'passengerFlow',
 	state: {
-		passengerFlowCount: null,
+		passengerFlowCount: {},
 		passengerAgeCountList: [],
 	},
 	effects: {
@@ -14,21 +14,43 @@ export default {
 			const opts = { startTime, endTime };
 			const response = yield call(
 				Actions.handlePassengerFlowManagement,
-				'statistics/getByTimeRange',
+				'statistic/getByTimeRange',
 				format('toSnake')(opts)
 			);
 
-			// TODO 云端可能会有修正
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response || {};
-				const { totalCount = 0 } = format('toCamel')(data);
+				const { latestCount = 0 } = format('toCamel')(data);
 				yield put({
 					type: 'updateState',
 					payload: {
-						passengerFlowCount: totalCount,
+						passengerFlowCount: { latestCount },
 					},
 				});
 			}
+
+			return response;
+		},
+
+		*getPassengerFlowLatest({ payload }, { call, put }) {
+			const { type = 1 } = payload || {};
+			const response = yield call(
+				Actions.handlePassengerFlowManagement,
+				'statistic/getLatest',
+				format('toSnake')({ type })
+			);
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response || {};
+				const { latestCount = 0, earlyCount = 0 } = format('toCamel')(data);
+
+				yield put({
+					type: 'updateState',
+					payload: { passengerFlowCount: { latestCount, earlyCount } },
+				});
+			}
+
+			return response;
 		},
 
 		// TODO 等待交易转化率趋势接口
@@ -40,7 +62,7 @@ export default {
 
 			const response = yield call(
 				Actions.handlePassengerFlowManagement,
-				`statistics/age/${optType}`,
+				`statistic/age/${optType}`,
 				format('toSnake')(opts)
 			);
 
@@ -56,6 +78,8 @@ export default {
 					},
 				});
 			}
+
+			return response;
 		},
 	},
 	reducres: {

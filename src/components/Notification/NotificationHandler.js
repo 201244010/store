@@ -21,7 +21,7 @@ const getCurrentAndTargetCompanyInfo = async ({
 	companyId,
 	shopId,
 }) => {
-	const result = await getStoreList({ options: { company_id: companyId } });
+	const result = await getStoreList({ options: { company_id: parseInt(companyId, 10) } });
 	let targetShopName = '';
 	if (result && result.code === ERROR_OK) {
 		const { data = {} } = result || {};

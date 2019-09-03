@@ -1,4 +1,5 @@
 import * as Action from '@/services/dashBoard';
+import { getRange } from '@/pages/IPC/services/photoLibrary';
 import moment from 'moment';
 import { ERROR_OK } from '@/constants/errorCode';
 import { shake, format, map } from '@konata9/milk-shake';
@@ -18,6 +19,12 @@ const stateFields = {
 	[QUERY_TYPE.TOTAL_COUNT]: 'totalCount',
 	[QUERY_TYPE.TOTAL_REFUND]: 'totalRefund',
 	[QUERY_TYPE.AVG_UNIT]: 'avgUnitSale',
+};
+
+const queryRangeType = {
+	[RANGE.TODAY]: 1,
+	[RANGE.WEEK]: 2,
+	[RANGE.MONTH]: 3,
 };
 
 const getQueryDate = rangeType => {
@@ -95,6 +102,8 @@ export default {
 			passengerFlowType: PASSENGER_FLOW_TYPE.GENDER,
 		},
 
+		ageRangeList: [],
+
 		overviewProductLoading: false,
 		overviewDeviceLoading: false,
 		overviewIPCLoading: false,
@@ -104,6 +113,9 @@ export default {
 		totalCountLoading: false,
 		totalRefundLoading: false,
 		avgUnitLoading: false,
+
+		passengerFlowLoading: false,
+		passengerFlowTypeLoading: false,
 
 		barLoading: false,
 		skuLoading: false,
@@ -123,6 +135,9 @@ export default {
 		orderList: [],
 		skuRankList: [],
 		purchaseInfo: {},
+
+		passengerFlow: {},
+		passengerAgeList: [],
 	},
 	effects: {
 		*switchLoading({ payload }, { put }) {
@@ -133,6 +148,21 @@ export default {
 					[loadingType]: loadingStatus,
 				},
 			});
+		},
+
+		*getAgeRanges(_, { call, put }) {
+			const response = yield call(getRange);
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = {};
+				const { ageRangeList = [] } = format('toCamel')(data);
+				yield put({
+					type: 'updateState',
+					payload: {
+						ageRangeList,
+					},
+				});
+			}
+			return response;
 		},
 
 		*fetchAllData({ payload }, { all, put }) {
@@ -179,37 +209,56 @@ export default {
 						loadingType: 'totalCountLoading',
 					},
 				}),
+
+				// 进店客流
 				put({
-					type: 'fetchTotalInfo',
+					type: 'fetchPassengerFlowByTimeRange',
 					payload: {
-						queryType: QUERY_TYPE.TOTAL_REFUND,
 						needLoading,
-						loadingType: 'totalRefundLoading',
+						loadingType: 'passengerFlowLoading',
 					},
 				}),
+
+				// 客群年龄分布
 				put({
-					type: 'fetchTotalInfo',
+					type: 'fetchPassengerAgeByTimeRange',
 					payload: {
-						queryType: QUERY_TYPE.AVG_UNIT,
 						needLoading,
-						loadingType: 'avgUnitLoading',
+						loadingType: 'passengerFlowTypeLoading',
 					},
 				}),
+
+				// put({
+				// 	type: 'fetchTotalInfo',
+				// 	payload: {
+				// 		queryType: QUERY_TYPE.TOTAL_REFUND,
+				// 		needLoading,
+				// 		loadingType: 'totalRefundLoading',
+				// 	},
+				// }),
+				// put({
+				// 	type: 'fetchTotalInfo',
+				// 	payload: {
+				// 		queryType: QUERY_TYPE.AVG_UNIT,
+				// 		needLoading,
+				// 		loadingType: 'avgUnitLoading',
+				// 	},
+				// }),
 				// time duration
-				put({
-					type: 'fetchTimeDistribution',
-					payload: { needLoading },
-				}),
+				// put({
+				// 	type: 'fetchTimeDistribution',
+				// 	payload: { needLoading },
+				// }),
 				// sku rank
-				put({
-					type: 'fetchSKURankList',
-					payload: { needLoading },
-				}),
+				// put({
+				// 	type: 'fetchSKURankList',
+				// 	payload: { needLoading },
+				// }),
 				// payment
-				put({
-					type: 'fetchPurchaseTypeStatistics',
-					payload: { needLoading },
-				}),
+				// put({
+				// 	type: 'fetchPurchaseTypeStatistics',
+				// 	payload: { needLoading },
+				// }),
 			]);
 
 			yield put({
@@ -337,6 +386,95 @@ export default {
 					payload: {
 						ipcOverView: { onLineCount, offLineCount },
 						overviewIPCLoading: false,
+					},
+				});
+			}
+		},
+
+		*fetchPassengerFlowByTimeRange({ payload }, { select, put }) {
+			const {
+				searchValue,
+				searchValue: { rangeType },
+			} = yield select(state => state.dashboard);
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
+
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'passengerFlowLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+
+			let response = null;
+			if (rangeType === RANGE.FREE) {
+				response = yield put.resolve({
+					type: 'passengerFlow/getPassengerFlow',
+					payload: {
+						startTime: moment.unix(startTime).format('YYYY-MM-DD'),
+						endTime: moment.unix(endTime).format('YYYY-MM-DD'),
+					},
+				});
+			} else {
+				response = yield put.resolve({
+					type: 'passengerFlow/getPassengerFlowLatest',
+					payload: {
+						type: queryRangeType[rangeType],
+					},
+				});
+			}
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				yield put({
+					type: 'updateState',
+					payload: {
+						passengerFlow: format('toCamel')(data),
+						passengerFlowLoading: false,
+					},
+				});
+			}
+		},
+
+		*fetchPassengerAgeByTimeRange({ payload }, { select, put }) {
+			const {
+				searchValue,
+				searchValue: { passengerFlowType },
+				// ageRangeList,
+			} = yield select(state => state.dashboard);
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
+
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'passengerFlowTypeLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+
+			const response = yield put.resolve({
+				type: 'passengerFlow/getPassengerAge',
+				payload: {
+					startTime: moment.unix(startTime).format('YYYY-MM-DD'),
+					endTime: moment.unix(endTime).format('YYYY-MM-DD'),
+					type: passengerFlowType,
+				},
+			});
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { countList = [] } = format('toCamel')(data) || {};
+				yield put({
+					type: 'updateState',
+					payload: {
+						passengerAgeList: countList,
+						passengerFlowTypeLoading: false,
 					},
 				});
 			}
