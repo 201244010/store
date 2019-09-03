@@ -10,7 +10,7 @@ const OverviewInfo = ({
 	title = null,
 	content = null,
 	subContent = null,
-	loading = false,
+	loading = true,
 	onClick = null,
 }) => {
 	const handleClick = e => {

@@ -28,7 +28,7 @@ const SalseInfo = ({
 	icon = null,
 	content = null,
 	subContent = null,
-	loading = false,
+	loading = true,
 	onClick = null,
 }) => {
 	const handleClick = () => {
@@ -91,7 +91,7 @@ class SalseBar extends PureComponent {
 					weekRate: weekRateCount,
 					monthRate: monthRateCount,
 				},
-				searchValue: { rangeType = RANGE.TODAY } = {},
+				searchValue: { rangeType = RANGE.TODAY, startQueryTime, endQueryTime } = {},
 			},
 			goToPath,
 		} = this.props;
@@ -146,7 +146,11 @@ class SalseBar extends PureComponent {
 										content={totalAmountRate[rangeType]}
 									/>
 								),
-							onClick: () => goToPath('tradeDetail'),
+							onClick: () =>
+								goToPath('tradeDetail', {
+									timeRangeStart: startQueryTime,
+									timeRangeEnd: endQueryTime,
+								}),
 						}}
 					/>
 					<Divider type="vertical" />
@@ -169,7 +173,11 @@ class SalseBar extends PureComponent {
 										content={totalCountRate[rangeType]}
 									/>
 								),
-							onClick: () => goToPath('tradeDetail'),
+							onClick: () =>
+								goToPath('tradeDetail', {
+									timeRangeStart: startQueryTime,
+									timeRangeEnd: endQueryTime,
+								}),
 						}}
 					/>
 					<Divider type="vertical" />

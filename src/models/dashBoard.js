@@ -27,7 +27,7 @@ const queryRangeType = {
 	[RANGE.MONTH]: 3,
 };
 
-const getQueryDate = rangeType => {
+export const getQueryDate = rangeType => {
 	const range = {
 		[RANGE.TODAY]: 'day',
 		[RANGE.WEEK]: 'week',
@@ -176,6 +176,12 @@ export default {
 	state: {
 		searchValue: {
 			rangeType: RANGE.TODAY,
+			startQueryTime: moment()
+				.startOf('day')
+				.unix(),
+			endQueryTime: moment()
+				.endOf('day')
+				.unix(),
 			timeRangeStart: null,
 			timeRangeEnd: null,
 			tradeTime: TRADE_TIME.AMOUNT,
@@ -853,6 +859,12 @@ export default {
 						rangeType: RANGE.TODAY,
 						timeRangeStart: null,
 						timeRangeEnd: null,
+						startQueryTime: moment()
+							.startOf('day')
+							.unix(),
+						endQueryTime: moment()
+							.endOf('day')
+							.unix(),
 						tradeTime: TRADE_TIME.AMOUNT,
 						paymentType: PAYMENT_TYPE.AMOUNT,
 					},
