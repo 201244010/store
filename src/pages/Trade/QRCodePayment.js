@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Card, message } from 'antd';
 import { ERROR_OK, ALTERT_TRADE_MAP } from '@/constants/errorCode';
+import { format } from '@konata9/milk-shake';
 import styles from './trade.less';
 
 import qrPayment from '@/assets/qrpaycode.jpg';
@@ -42,7 +43,6 @@ class QRCodePayment extends PureComponent {
 	async componentDidMount() {
 		await this.getQRCodeURL();
 		this.countRefresh();
-		// TODO 等待云端 MQTT 消息返回
 	}
 
 	componentWillUnmount() {
@@ -51,7 +51,6 @@ class QRCodePayment extends PureComponent {
 	}
 
 	getQRCodeURL = async () => {
-		const { current } = this.qrContainer;
 		const { payOrder } = this.props;
 		const response = await payOrder({
 			orderNo: this.orderNo,
@@ -60,6 +59,7 @@ class QRCodePayment extends PureComponent {
 		});
 
 		if (response && response.code === ERROR_OK) {
+			const { current } = this.qrContainer;
 			const { data = {} } = response;
 			const { qrCodeUrl = '' } = format('toCamel')(data);
 			$(current).qrcode(qrCodeUrl);

@@ -2,7 +2,13 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Card, Icon, Divider } from 'antd';
+import { priceFormat } from '@/utils/utils';
+import { DASHBOARD } from './constants';
 import styles from './DashBoard.less';
+
+const {
+	SEARCH_TYPE: { RANGE },
+} = DASHBOARD;
 
 const SalseInfo = ({
 	title = null,
@@ -50,7 +56,32 @@ const SalseInfo = ({
 )
 class SalseBar extends PureComponent {
 	render() {
-		const { goToPath } = this.props;
+		const {
+			dashboard: {
+				passengerFlowLoading,
+				totalAmountLoading,
+				totalCountLoading,
+				passengerFlow: { latestCount = '--', earlyCount = '--' },
+				totalAmount: { totalAmount, dayAmount, weekAmount, monthAmount },
+				totalCount: { totalCount, dayCount, weekCount, monthCount },
+				searchValue: { rangeType = RANGE.TODAY } = {},
+			},
+			goToPath,
+		} = this.props;
+
+		const totalAmountStore = {
+			[RANGE.TODAY]: dayAmount,
+			[RANGE.WEEK]: weekAmount,
+			[RANGE.MONTH]: monthAmount,
+			[RANGE.FREE]: totalAmount,
+		};
+
+		const totalCountStore = {
+			[RANGE.TODAY]: dayCount,
+			[RANGE.WEEK]: weekCount,
+			[RANGE.MONTH]: monthCount,
+			[RANGE.FREE]: totalCount,
+		};
 
 		return (
 			<Card title={null}>
@@ -59,8 +90,15 @@ class SalseBar extends PureComponent {
 						{...{
 							icon: 'pay-circle',
 							title: formatMessage({ id: 'salse.total' }),
-							content: 6560.0,
-							subContent: <span>{formatMessage({ id: 'yesterday' })}: 7009.00</span>,
+							content:
+								totalAmountStore[rangeType] || totalAmountStore[rangeType] === 0
+									? priceFormat(
+										parseFloat(totalAmountStore[rangeType]).toFixed(2)
+									  )
+									: '--',
+							loading: totalAmountLoading,
+							// TODO 暂时先隐去
+							// subContent: <span>{formatMessage({ id: 'yesterday' })}: 7009.00</span>,
 							onClick: () => goToPath('tradeDetail'),
 						}}
 					/>
@@ -68,9 +106,14 @@ class SalseBar extends PureComponent {
 					<SalseInfo
 						{...{
 							icon: 'wallet',
-							title: formatMessage({ id: 'salse.total' }),
-							content: 6560.0,
-							subContent: <span>{formatMessage({ id: 'yesterday' })}: 7009.00</span>,
+							title: formatMessage({ id: 'salse.count' }),
+							content:
+								totalCountStore[rangeType] !== ''
+									? totalCountStore[rangeType]
+									: '--',
+							loading: totalCountLoading,
+							// TODO 暂时隐去
+							// subContent: <span>{formatMessage({ id: 'yesterday' })}: 7009.00</span>,
 							onClick: () => goToPath('tradeDetail'),
 						}}
 					/>
@@ -78,16 +121,25 @@ class SalseBar extends PureComponent {
 					<SalseInfo
 						{...{
 							icon: 'user',
-							title: formatMessage({ id: 'salse.total' }),
-							content: 6560.0,
-							subContent: <span>{formatMessage({ id: 'yesterday' })}: 7009.00</span>,
+							title: formatMessage({ id: 'shop.customers' }),
+							content: latestCount === '--' ? '--' : priceFormat(latestCount),
+							subContent:
+								rangeType === RANGE.FREE ? (
+									<></>
+								) : (
+									<span>
+										{formatMessage({ id: 'yesterday' })}:{' '}
+										{earlyCount === '--' ? '--' : priceFormat(earlyCount)}
+									</span>
+								),
+							loading: passengerFlowLoading,
 						}}
 					/>
 					<Divider type="vertical" />
 					<SalseInfo
 						{...{
 							icon: 'bank',
-							title: formatMessage({ id: 'salse.total' }),
+							title: formatMessage({ id: 'area.effect' }),
 							content: 6560.0,
 							subContent: <span>{formatMessage({ id: 'yesterday' })}: 7009.00</span>,
 						}}

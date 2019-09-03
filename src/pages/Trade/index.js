@@ -93,6 +93,7 @@ const columns = [
 	state => ({
 		loading: state.loading,
 		trade: state.trade,
+		routing: state.routing,
 	}),
 	dispatch => ({
 		getPurchaseType: () => dispatch({ type: 'trade/getPurchaseType' }),
@@ -166,11 +167,14 @@ class Trade extends PureComponent {
 
 	goToPayOrder = async () => {
 		const { selectedPurchaseType } = this.state;
-		const { goToPath } = this.props;
+		const {
+			routing: { location: { query: { orderNo = null } = {} } = {} },
+			goToPath,
+		} = this.props;
 
 		// TODO 目前部分参数为写死的，今后会进行修改
 		const opts = {
-			orderNo: 'AS20190823',
+			orderNo: orderNo || 'AS20190823',
 			purchaseType: selectedPurchaseType,
 			source: 1,
 		};
