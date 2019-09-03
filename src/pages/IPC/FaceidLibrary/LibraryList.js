@@ -58,7 +58,7 @@ class LibraryList extends React.Component {
 						case 4:
 							return formatMessage({id: 'faceid.blacklistInfo'});
 						default:
-							return '--';
+							return formatMessage({id: 'faceid.undefined'});
 					}
 
 				}
@@ -68,7 +68,10 @@ class LibraryList extends React.Component {
 				dataIndex: 'remarks',
 				render: (remark) => {
 					if (remark === '') {
-						return '--';
+						return formatMessage({id: 'faceid.unknown'});
+					}
+					if (remark === undefined){
+						return formatMessage({id: 'faceid.undefined'});
 					}
 					return remark;
 				}
@@ -82,8 +85,11 @@ class LibraryList extends React.Component {
 				title: formatMessage({ id: 'faceid.updateTime' }),
 				dataIndex: 'lastupdate',
 				render: lastupdate => {
-					if (!lastupdate) {
-						return '--';
+					if(lastupdate === 0){
+						return formatMessage({id: 'faceid.unknown'});
+					}
+					if(lastupdate === undefined){
+						return formatMessage({id: 'faceid.undefined'});
 					}
 					const d = moment(lastupdate * 1000);
 					return d.format('YYYY-MM-DD HH:mm:ss');

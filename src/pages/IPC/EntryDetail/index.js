@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card,Row,Col,Divider,Icon,Table,Modal, message, Spin, Radio, Avatar } from 'antd';
+import { Card, Row, Col, Divider, Table, message, Spin, Radio, Avatar } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import moment from 'moment';
@@ -9,7 +9,6 @@ import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_LIST_SIZE } from '@/constants';
 
 import styles from './EntryDetail.less';
 
-const { confirm } = Modal;
 const { Meta } = Card;
 
 @connect((state) => {
@@ -160,6 +159,14 @@ class EntryDetail extends React.Component {
 	render(){
 		const { arrivalList, total, loading, ipcList } = this.props;
 		const { currentPage, pageSize, faceInfo } = this.state;
+		const { name } = faceInfo;
+
+		if(name === ''){
+			faceInfo.name = formatMessage({id: 'entry.detail.unknown'});
+		}else if(name === undefined){
+			faceInfo.name = formatMessage({id: 'entry.detail.undefined'});
+		}
+
 		const columns = [
 			{
 				title: formatMessage({id: 'entry.detail.capture.face'}),
@@ -206,30 +213,30 @@ class EntryDetail extends React.Component {
 						</div>
 					);},
 			},
-			{
-				title: formatMessage({id: 'entry.detail.action'}),
-				key: 'action',
-				render: (item) => (
-					<span>
-						<a
-							href="javascript:;"
-							onClick={()=>{
-								confirm({
-									icon:<Icon style={{color:'red'}} type="close-circle" theme="filled" />,
-									title: formatMessage({id: 'entry.detail.delete.confirm.title'}),
-									content: formatMessage({id: 'entry.detail.delete.confirm.content'}),
-									okText: formatMessage({id: 'entry.detail.delete'}),
-									okType: 'danger',
-									cancelText: formatMessage({id: 'entry.detail.cancel'}),
-									onOk: () => this.deleteArrivalHandler(item.historyId)
-								});
-							}}
-						>
-							{formatMessage({id: 'entry.detail.delete'})}
-						</a>
-					</span>
-				)
-			},
+			// {
+			// 	title: formatMessage({id: 'entry.detail.action'}),
+			// 	key: 'action',
+			// 	render: (item) => (
+			// 		<span>
+			// 			<a
+			// 				href="javascript:;"
+			// 				onClick={()=>{
+			// 					confirm({
+			// 						icon:<Icon style={{color:'red'}} type="close-circle" theme="filled" />,
+			// 						title: formatMessage({id: 'entry.detail.delete.confirm.title'}),
+			// 						content: formatMessage({id: 'entry.detail.delete.confirm.content'}),
+			// 						okText: formatMessage({id: 'entry.detail.delete'}),
+			// 						okType: 'danger',
+			// 						cancelText: formatMessage({id: 'entry.detail.cancel'}),
+			// 						onOk: () => this.deleteArrivalHandler(item.historyId)
+			// 					});
+			// 				}}
+			// 			>
+			// 				{formatMessage({id: 'entry.detail.delete'})}
+			// 			</a>
+			// 		</span>
+			// 	)
+			// },
 		];
 		return(
 			<Spin spinning={
@@ -247,13 +254,13 @@ class EntryDetail extends React.Component {
 										{faceInfo.imgUrl&&faceInfo.imgUrl !==''?<img className={styles['user-avatar']} src={faceInfo.imgUrl} />:<Avatar shape="square" size={50} icon="user" />}
 									</Col>
 									<Col span={7}>
-										<div>{formatMessage({id: 'entry.detail.user.name'})} ：{faceInfo.name === ''? '--': faceInfo.name}</div>
+										<div>{formatMessage({id: 'entry.detail.user.name'})} : {faceInfo.name}</div>
 									</Col>
 									<Col span={7}>
-										<div>{formatMessage({id: 'entry.detail.user.group'})} ：{this.handleLibraryName(faceInfo.groupName)}</div>
+										<div>{formatMessage({id: 'entry.detail.user.group'})} : {this.handleLibraryName(faceInfo.groupName)}</div>
 									</Col>
 									<Col span={3}>
-										<div>{formatMessage({id: 'entry.detail.arrival.count'})}：{faceInfo.arrivalCount}</div>
+										<div>{formatMessage({id: 'entry.detail.arrival.count'})} : {faceInfo.arrivalCount}</div>
 									</Col>
 								</Row>
 							</div>

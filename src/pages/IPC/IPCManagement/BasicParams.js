@@ -10,7 +10,7 @@ import styles from './BasicParams.less';
 const RadioGroup = Radio.Group;
 
 
-// let temp = {};
+
 const mapStateToProps = (state) => {
 	const { ipcBasicParams } = state;
 	return {
@@ -49,6 +49,8 @@ const mapDispatchToProps = (dispatch) => ({
 	}
 });
 
+let btnDisabled = true;
+
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name:'basic-params-form',
@@ -65,8 +67,8 @@ const mapDispatchToProps = (dispatch) => ({
 	// 		})
 	// 	};
 	// },
-	// onValuesChange(props,values){
-	// 	// console.log(values);
+	onValuesChange(){
+		// console.log(values);
 	// 	Object.keys(values).forEach(item => {
 	// 		const key = item;
 	// 		if (values[key] !== props.ipcBasicParams[key]) {
@@ -75,7 +77,8 @@ const mapDispatchToProps = (dispatch) => ({
 	// 			isChange[key] = false;
 	// 		}
 	// 	});
-	// }
+		btnDisabled = false;
+	}
 })
 class BasicParams extends Component {
 
@@ -122,15 +125,30 @@ class BasicParams extends Component {
 	// 	}
 	// }
 
-	componentDidUpdate () {
-		const { ipcBasicParams } = this.props;
+	componentWillReceiveProps = (props) => {
 
+		const { ipcBasicParams } = props;
 		if (ipcBasicParams.isSaving === 'success') {
+			btnDisabled = true;
 			message.success(formatMessage({ id: 'ipcManagement.success'}));
 		}else if (ipcBasicParams.isSaving === 'failed') {
+			btnDisabled = false;
 			message.error(formatMessage({ id: 'ipcManagement.failed'}));
 		}
 	}
+
+
+	// componentDidUpdate () {
+	// 	const { ipcBasicParams } = this.props;
+
+	// 	if (ipcBasicParams.isSaving === 'success') {
+	// 		btnDisabled = true;
+	// 		message.success(formatMessage({ id: 'ipcManagement.success'}));
+	// 	}else if (ipcBasicParams.isSaving === 'failed') {
+	// 		btnDisabled = false;
+	// 		message.error(formatMessage({ id: 'ipcManagement.failed'}));
+	// 	}
+	// }
 
 	submit = () => {
 		const { form, sn } = this.props;
@@ -142,12 +160,8 @@ class BasicParams extends Component {
 		saveSetting({
 			nightMode, indicator, rotation, sn, WDRMode
 		});
-		// temp = values;
+		// btnDisabled = true;
 
-		// const list = Object.keys(isChange);
-		// list.forEach(name => {
-		// 	isChange[name] = false;
-		// });
 	}
 
 	nightModeChange = (e) => {
@@ -252,7 +266,8 @@ class BasicParams extends Component {
 							<Button
 								type='primary'
 								htmlType='submit'
-								disabled={!form.isFieldsTouched(['nightMode','indicator','rotation','WDRMode'])}
+								// disabled={!form.isFieldsTouched(['nightMode','indicator','rotation','WDRMode'])}
+								disabled={btnDisabled}
 
 								onClick={this.submit}
 

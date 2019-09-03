@@ -1,7 +1,6 @@
 import { format } from '@konata9/milk-shake';
 import { customizeFetch } from '@/utils/fetch';
 import CONFIG from '@/config';
-// import * as CookieUtil from '@/utils/cookies';
 
 const { IPC_SERVER } = CONFIG;
 const request = customizeFetch('ipc/api/face/group', IPC_SERVER);

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { format } from '@konata9/milk-shake';
-import { Card, Table, Modal, Button, Tabs } from 'antd';
+import { Card, Table, Modal, Button, Tabs, message } from 'antd';
 import PaymentRadio from '@/components/BigIcon/PaymentRadio';
 import { getCountDown } from '@/utils/utils';
 import { TIME } from '@/constants';
@@ -12,13 +12,19 @@ import businessBank from '@/assets/icon/business-bank.svg';
 import accountBank from '@/assets/icon/account-bank.svg';
 import alipayPayment from '@/assets/icon/alipay-payment.svg';
 import wechatPayment from '@/assets/icon/wechat-payment.svg';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, ALTERT_TRADE_MAP } from '@/constants/errorCode';
+
+import { TRADE } from './constants';
+
+const {
+	PAYMENT: { B2B, B2C },
+} = TRADE;
 
 const PAYMENT_ICON = {
-	'purchase-type-b2b-unionpay': businessBank,
-	'purchase-type-b2c-unionpay': accountBank,
-	'purchase-type-alipay': alipayPayment,
-	'purchase-type-wechat': wechatPayment,
+	[B2B.UNIONPAY]: businessBank,
+	[B2C.UNIONPAY]: accountBank,
+	[B2C.ALIPAY]: alipayPayment,
+	[B2C.WECHAT]: wechatPayment,
 	default: null,
 };
 
@@ -85,6 +91,7 @@ const columns = [
 
 @connect(
 	state => ({
+		loading: state.loading,
 		trade: state.trade,
 	}),
 	dispatch => ({
@@ -99,6 +106,7 @@ class Trade extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.timer = null;
+		this.frame = React.createRef();
 		this.state = {
 			selectedPurchaseType: null,
 			modalVisible: false,
@@ -107,9 +115,8 @@ class Trade extends PureComponent {
 	}
 
 	async componentDidMount() {
-		// TODO 获取支付方式
-		// const { getPurchaseType } = this.props;
-		// await getPurchaseType();
+		const { getPurchaseType } = this.props;
+		await getPurchaseType();
 		this.startCountDown();
 	}
 
@@ -130,40 +137,51 @@ class Trade extends PureComponent {
 		}, 1000);
 	};
 
-	payOrder = async () => {
-		const { selectedPurchaseType } = this.state;
-		const { payOrder } = this.props;
-
-		const response = await payOrder({
-			orderNo: '',
-			purchaseType: selectedPurchaseType,
-			source: '',
-		});
+	handleUnionPay = async opts => {
+		const { payOrder, goToPath } = this.props;
+		const response = await payOrder(opts);
 
 		if (response && response.code === ERROR_OK) {
-			const { data = {} } = response || {};
-			const { qrCodeUrl = '', unionPayForm = '' } = format('toCamel')(data);
-			if (qrCodeUrl) {
-				// TODO 二维码操作页面
-			}
+			const { data = {} } = response;
+			const { unionPayForm = '' } = format('toCamel')(data);
 
-			if (unionPayForm) {
-				// TODO 跳转到银联页面
-			}
+			// TODO 银联支付的跳转有风险，如果银联的方法变了可能会失效
+			const wf = window.open('');
+			wf.document.write(`${unionPayForm} <script>document.forms[0].submit()</script>`);
+
+			Modal.confirm({
+				title: formatMessage({ id: 'pay.confirm.title' }),
+				content: formatMessage({ id: 'pay.confirm.title' }),
+				okText: formatMessage({ id: 'pay.success' }),
+				cancelText: formatMessage({ id: 'pay.failed' }),
+				onOk: () => goToPath('tradeResult', { status: 'success' }),
+				onCancel: () => goToPath('tradeResult', { status: 'failed' }),
+			});
+		} else if (response && ALTERT_TRADE_MAP[response.code]) {
+			message.error(formatMessage({ id: ALTERT_TRADE_MAP[response.code] }));
 		} else {
-			// TODO 支付错误的情况
+			message.error(formatMessage({ id: 'pay.failed.info' }));
 		}
+	};
 
-		const { open } = window;
-		const newWindow = open('/network', '_blank');
-		newWindow.document.write('<p>这是\'我的窗口\'</p>');
-		// const myWindow = window.open(
-		// 	'',
-		// 	'_blank',
-		// 	'location=no, toolbar=no, menubar=no, status=no'
-		// );
-		// myWindow.document.write('<p>这是\'我的窗口\'</p>');
-		// myWindow.focus();
+	goToPayOrder = async () => {
+		const { selectedPurchaseType } = this.state;
+		const { goToPath } = this.props;
+
+		// TODO 目前部分参数为写死的，今后会进行修改
+		const opts = {
+			orderNo: 'AS20190823',
+			purchaseType: selectedPurchaseType,
+			source: 1,
+		};
+
+		if ([B2B.UNIONPAY, B2C.UNIONPAY].includes(selectedPurchaseType)) {
+			this.handleUnionPay(opts);
+		} else {
+			goToPath('qrpay', {
+				...opts,
+			});
+		}
 	};
 
 	closeModal = () => {
@@ -181,9 +199,10 @@ class Trade extends PureComponent {
 	render() {
 		const {
 			trade: { purchaseType: { b2b = [], b2c = [] } = {} },
+			loading,
 		} = this.props;
 
-		const { modalVisible, countDown } = this.state;
+		const { modalVisible, countDown, selectedPurchaseType } = this.state;
 		const { hour = '--', minute = '--', second = '--' } = getCountDown(countDown);
 
 		return (
@@ -229,6 +248,7 @@ class Trade extends PureComponent {
 				<Card
 					title={formatMessage({ id: 'purchase.choose' })}
 					style={{ marginTop: '20px' }}
+					loading={loading.effects['trade/getPurchaseType']}
 				>
 					<Tabs defaultActiveKey="business" animated={false}>
 						<TabPane tab={formatMessage({ id: 'business.account' })} key="business">
@@ -242,7 +262,7 @@ class Trade extends PureComponent {
 												PAYMENT_ICON[tag] || PAYMENT_ICON.default,
 											name: 'b2b',
 											id,
-											value: id,
+											value: tag,
 											onChange: this.radioChange,
 										}}
 									/>
@@ -250,23 +270,22 @@ class Trade extends PureComponent {
 							})}
 						</TabPane>
 						<TabPane tab={formatMessage({ id: 'person.account' })} key="account">
-							<div>
-								{b2c.map(info => {
-									const { id, tag } = info;
-									return (
-										<PaymentRadio
-											{...{
-												backgroundImg:
-													PAYMENT_ICON[tag] || PAYMENT_ICON.default,
-												name: 'b2c',
-												id,
-												value: id,
-												onChange: this.radioChange,
-											}}
-										/>
-									);
-								})}
-							</div>
+							{b2c.map(info => {
+								const { id, tag } = info;
+								return (
+									<PaymentRadio
+										key={id}
+										{...{
+											backgroundImg:
+												PAYMENT_ICON[tag] || PAYMENT_ICON.default,
+											name: 'b2c',
+											id,
+											value: tag,
+											onChange: this.radioChange,
+										}}
+									/>
+								);
+							})}
 						</TabPane>
 					</Tabs>
 
@@ -277,7 +296,11 @@ class Trade extends PureComponent {
 							{formatMessage({ id: 'minute.unit' })} {second}
 							{formatMessage({ id: 'second.unit' })}
 						</div>
-						<Button type="primary" onClick={this.payOrder}>
+						<Button
+							type="primary"
+							disabled={!selectedPurchaseType}
+							onClick={this.goToPayOrder}
+						>
 							{formatMessage({ id: 'purchase.intime' })}
 						</Button>
 					</div>

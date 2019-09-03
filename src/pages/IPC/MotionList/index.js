@@ -82,7 +82,7 @@ class MotionList extends React.Component {
 			dateRange:[moment().subtract(7, 'days'),
 				moment()]
 		});
-		
+
 		this.getCurrentMotionList(1, pageSize);
 
 		this.setState({
@@ -116,7 +116,7 @@ class MotionList extends React.Component {
 		});
 
 	}
-	
+
 	watchVideoClose = () =>{
 		this.setState({
 			videoUrl:'',
@@ -126,7 +126,7 @@ class MotionList extends React.Component {
 
 	onShowSizeChange = (currentPage, pageSize) => {
 		this.getCurrentMotionList(currentPage, pageSize);
-		
+
 		this.setState({
 			currentPage,
 			pageSize
@@ -160,7 +160,7 @@ class MotionList extends React.Component {
 		});
 	}
 
-	
+
 
 	render() {
 		const { motionList, ipcList, total, loading, getMotionList } = this.props;
@@ -168,36 +168,37 @@ class MotionList extends React.Component {
 		return (
 			<Card bordered={false}>
 				<div className={styles['motion-list-container']}>
-					<MotionListSearchBar 
+					<MotionListSearchBar
 						wrappedComponentRef={ref => {
 							this.searchForm = ref;
 						}}
-						ipcList={ipcList} 
-						getMotionList={getMotionList} 
+						ipcList={ipcList}
+						getMotionList={getMotionList}
 						getCurrentMotionList={this.getCurrentMotionList}
-						loading={loading} 
-						currentPage={currentPage} 
+						loading={loading}
+						currentPage={currentPage}
 						pageSize={pageSize}
 						searchHandler={this.searchHandler}
 						resetHandler={this.resetHandler}
-						
+
 					/>
-					<MotionListTable 
-						motionList={motionList} 
-						total={total} 
-						loading={loading} 
-						currentPage={currentPage} 
-						pageSize={pageSize} 
-						watchVideoHandler={this.watchVideoHandler} 
+					<MotionListTable
+						motionList={motionList}
+						total={total}
+						loading={loading}
+						currentPage={currentPage}
+						pageSize={pageSize}
+						watchVideoHandler={this.watchVideoHandler}
 						onShowSizeChange={this.onShowSizeChange}
 						onPaginationChange={this.onPaginationChange}
 					/>
 				</div>
-				<ModalPlayer 
-					visible={isWatchVideo} 
-					onClose={this.watchVideoClose} 
-					url={videoUrl} 
-					pixelRatio={pixelRatio} 
+				<ModalPlayer
+					defaultDuration={5}
+					visible={isWatchVideo}
+					onClose={this.watchVideoClose}
+					url={videoUrl}
+					pixelRatio={pixelRatio}
 				/>
 
 			</Card>

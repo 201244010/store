@@ -21,8 +21,8 @@ export default {
 					type: 'updateState',
 					payload: {
 						purchaseType: {
-							b2b: formattedData.b2b || [],
-							b2c: formattedData.b2c || [],
+							b2b: formattedData.b2b.sort((a, b) => b.id - a.id) || [],
+							b2c: formattedData.b2c.sort((a, b) => b.id - a.id) || [],
 						},
 					},
 				});
@@ -46,6 +46,8 @@ export default {
 					payload: { payLink: { qrCodeUrl, unionPayForm } },
 				});
 			}
+
+			return response;
 		},
 	},
 	reducers: {

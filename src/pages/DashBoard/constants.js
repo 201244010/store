@@ -23,6 +23,10 @@ export const DASHBOARD = {
 			AMOUNT: 'amount',
 			COUNT: 'count',
 		},
+		PASSENGER_FLOW_TYPE: {
+			GENDER: 'gender',
+			REGULAR: 'regular',
+		},
 	},
 	TIME_INTERVAL: {
 		HOUR: 60 * 60,
