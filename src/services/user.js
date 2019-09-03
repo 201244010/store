@@ -6,8 +6,8 @@ export const login = (type, options = {}) => {
 	const opts = {
 		body: {
 			...options,
-			// TODO 临时修改，以后会修正
-			app_type: 2,
+			// 配合 APP 单点登录修改
+			app_type: 1,
 		},
 	};
 	return fetchApi(type, opts, false).then(response => response.json());
