@@ -56,6 +56,10 @@ export default function generateShape(option) {
 						onMouseOut: () => {
 							document.body.style.cursor = 'default';
 						},
+						dragBoundFunc: (pos) => ({
+							x: option.frozenX ? option.x : pos.x,
+							y: option.frozenY ? option.y : pos.y
+						})
 					}}
 				/>
 			);
@@ -142,6 +146,10 @@ export default function generateShape(option) {
 							onMouseOut: () => {
 								document.body.style.cursor = 'default';
 							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 					<Text
@@ -149,7 +157,6 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
-							offsetY: -2,
 							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,
@@ -159,7 +166,8 @@ export default function generateShape(option) {
 							align: option.align,
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX * option.zoomScale,
-							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
+							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.scaleY * option.zoomScale,
+							lineHeight: 1 + (option.lineSpacing / option.fontSize),
 							draggable: true,
 							onDblClick: option.onDblClick,
 							onMouseOver: () => {
@@ -168,6 +176,10 @@ export default function generateShape(option) {
 							onMouseOut: () => {
 								document.body.style.cursor = 'default';
 							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 				</Group>
@@ -194,6 +206,10 @@ export default function generateShape(option) {
 						onMouseOut: () => {
 							document.body.style.cursor = 'default';
 						},
+						dragBoundFunc: (pos) => ({
+							x: option.frozenX ? option.x : pos.x,
+							y: option.frozenY ? option.y : pos.y
+						})
 					}}
 				/>
 			);
@@ -219,6 +235,10 @@ export default function generateShape(option) {
 						onMouseOut: () => {
 							document.body.style.cursor = 'default';
 						},
+						dragBoundFunc: (pos) => ({
+							x: option.frozenX ? option.x : pos.x,
+							y: option.frozenY ? option.y : pos.y
+						})
 					}}
 				/>
 			);
@@ -247,6 +267,10 @@ export default function generateShape(option) {
 								onMouseOut: () => {
 									document.body.style.cursor = 'default';
 								},
+								dragBoundFunc: (pos) => ({
+									x: option.frozenX ? option.x : pos.x,
+									y: option.frozenY ? option.y : pos.y
+								})
 							}}
 						/>
 						<Image
@@ -264,6 +288,10 @@ export default function generateShape(option) {
 								onMouseOut: () => {
 									document.body.style.cursor = 'default';
 								},
+								dragBoundFunc: (pos) => ({
+									x: option.frozenX ? option.x : pos.x,
+									y: option.frozenY ? option.y : pos.y
+								})
 							}}
 						/>
 						{option.selected ? (
@@ -282,6 +310,10 @@ export default function generateShape(option) {
 										onMouseOut: () => {
 											document.body.style.cursor = 'default';
 										},
+										dragBoundFunc: (pos) => ({
+											x: option.frozenX ? option.x : pos.x,
+											y: option.frozenY ? option.y : pos.y
+										})
 									}}
 								/>
 								<Text
@@ -301,6 +333,10 @@ export default function generateShape(option) {
 										onMouseOut: () => {
 											document.body.style.cursor = 'default';
 										},
+										dragBoundFunc: (pos) => ({
+											x: option.frozenX ? option.x : pos.x,
+											y: option.frozenY ? option.y : pos.y
+										})
 									}}
 								/>
 							</Fragment>
@@ -331,6 +367,10 @@ export default function generateShape(option) {
 								onMouseOut: () => {
 									document.body.style.cursor = 'default';
 								},
+								dragBoundFunc: (pos) => ({
+									x: option.frozenX ? option.x : pos.x,
+									y: option.frozenY ? option.y : pos.y
+								})
 							}}
 						/>
 						{option.selected ? (
@@ -349,6 +389,10 @@ export default function generateShape(option) {
 										onMouseOut: () => {
 											document.body.style.cursor = 'default';
 										},
+										dragBoundFunc: (pos) => ({
+											x: option.frozenX ? option.x : pos.x,
+											y: option.frozenY ? option.y : pos.y
+										})
 									}}
 								/>
 								<Text
@@ -368,6 +412,10 @@ export default function generateShape(option) {
 										onMouseOut: () => {
 											document.body.style.cursor = 'default';
 										},
+										dragBoundFunc: (pos) => ({
+											x: option.frozenX ? option.x : pos.x,
+											y: option.frozenY ? option.y : pos.y
+										})
 									}}
 								/>
 							</Fragment>
@@ -401,6 +449,10 @@ export default function generateShape(option) {
 							onMouseOut: () => {
 								document.body.style.cursor = 'default';
 							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 					<Text
@@ -427,6 +479,10 @@ export default function generateShape(option) {
 							onMouseOut: () => {
 								document.body.style.cursor = 'default';
 							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 				</Group>
@@ -457,6 +513,10 @@ export default function generateShape(option) {
 							onMouseOut: () => {
 								document.body.style.cursor = 'default';
 							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 					<Shape
@@ -471,6 +531,10 @@ export default function generateShape(option) {
 							onMouseOut: () => {
 								document.body.style.cursor = 'default';
 							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							}),
 							sceneFunc(context) {
 								const intPriceText = `${option.content}`.split('.')[0];
 								const smallPriceText = `${option.content}`.split('.')[1] || '';
@@ -558,6 +622,10 @@ export default function generateShape(option) {
 							onMouseOut: () => {
 								document.body.style.cursor = 'default';
 							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 					<Shape
@@ -572,6 +640,10 @@ export default function generateShape(option) {
 							onMouseOut: () => {
 								document.body.style.cursor = 'default';
 							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							}),
 							sceneFunc(context) {
 								const intPriceText = `${option.content}`.split('.')[0];
 								const smallPriceText = `${option.content}`.split('.')[1] || '';
@@ -657,6 +729,10 @@ export default function generateShape(option) {
 						onMouseOut: () => {
 							document.body.style.cursor = 'default';
 						},
+						dragBoundFunc: (pos) => ({
+							x: option.frozenX ? option.x : pos.x,
+							y: option.frozenY ? option.y : pos.y
+						})
 					}}
 				/>
 			);
@@ -687,6 +763,10 @@ export default function generateShape(option) {
 							onMouseOut: () => {
 								document.body.style.cursor = 'default';
 							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 					<Rect
@@ -705,6 +785,10 @@ export default function generateShape(option) {
 							onMouseOut: () => {
 								document.body.style.cursor = 'default';
 							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 				</Group>
