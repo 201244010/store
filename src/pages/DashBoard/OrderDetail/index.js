@@ -4,85 +4,15 @@ import { Card, Button, Form, Select, Row, Col, Table } from 'antd';
 import styles from './index.less';
 import * as Actions from './services/payment';
 
-const purchaseCode = {
-	// totalPay: 1,
-	ali: 2,
-	wechat: 3,
-	cash: 4,
-	bankCard: 5,
-	bankQr: 6,
-	qqWallet: 7,
-	jdWallet: 8,
-	other: 1,
-};
-const orderCode = {
-	// totalTrade: 1,
-	normal: 1,
-	refund: 2,
-};
-
-const formItemLayout = {
-	labelCol: {
-		span: 8
-	},
-	wrapperCol: {
-		span: 16
-	}
-};
-const buttonItemLayout = {
-	wrapperCol: {
-		span: 24,
-	}
-};
-const formLayout = 'inline';
-
-const res = {
-	code: 1,
-	msg: '',
-	data: {
-		order_list: [
-			{
-				id: 10457,
-				order_no: 'test001',
-				order_type: '正常销售',
-				order_type_id: 1,
-				ipc_device_name: '林远峰使用',
-				payment_device_name: '收银设备2',
-				payment_device_sn: 'VT101D8BS00089',
-				purchase_type: '其他',
-				purchase_type_id: 1,
-				purchase_time: 1593029283,
-				amount: '30.10'
-			},
-			{
-				id: 10449,
-				order_no: '123',
-				order_type: '退款',
-				order_type_id: 2,
-				ipc_device_name: 'Fake设备',
-				payment_device_name: '收银设备PLUS',
-				payment_device_sn: 'LTY132456',
-				purchase_type: '现金',
-				purchase_type_id: 5,
-				purchase_time: 1608361200,
-				amount: '7.00'
-			}
-		],
-		total_count: 11
-	}
-};
-
-const detailColumns = [
-	{ title: '商品', dataIndex: 'name', key: 'name', width: '150px' },
-	{ title: '数量', dataIndex: 'quantity', key: 'quantity' }
-];
-
 @Form.create()
 class OrderDetail extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			orderList: [],
+			expandKeys: [],
+			orderTotal: 50,
+			postOptions: {},
 		};
 	};
 
@@ -98,8 +28,7 @@ class OrderDetail extends Component {
 		);
 		this.getList().then(
 			orderList => {
-				// console.log('getList:', res);
-				// const orderList = res;
+				// console.log('getList:', orderList);
 				this.setState({ orderList });
 			}
 		);
@@ -110,12 +39,16 @@ class OrderDetail extends Component {
 		const { form: { validateFields } } = this.props;
 		validateFields((err, values) => {
 			if (!err) {
-				// console.log('Received values of form: ', values);
 				const { orderType, purchaseType, rankType } = values;
-				const options = {};
+				const { postOptions: options = {} } = this.state;
+
 
 				options.purchaseType = purchase[purchaseType] ? [purchase[purchaseType]] : [];
 				options.orderType = order[orderType] ? [order[orderType]] : [];
+				
+				if(purchase[purchaseType] || order[orderType]){ // 筛选时，默认请求第一页
+					options.current = 1;
+				}
 				switch (rankType) {
 					case 'rankDefault':
 						break;
@@ -135,12 +68,12 @@ class OrderDetail extends Component {
 						break;
 				}
 
+				this.setState({ postOptions: options });
 				this.getList(options)
 					.then(
 						orderList => {
-							// console.log('handlesubmit:',orderList[0])
-							this.setState({ orderList });
-							this.forceUpdate();
+							const expandKeys = [];
+							this.setState({ orderList, expandKeys });
 						}
 					);
 			}
@@ -158,10 +91,20 @@ class OrderDetail extends Component {
 		);
 	};
 
-	handleExpand = (expanded, record) => {
-		record.expanded = expanded;
+	handleExpand = (record) => {
+		const { expandKeys, orderList } = this.state;
 		const id = record.orderId;
-		const { orderList } = this.state;
+		const index = expandKeys.findIndex(key => key === record.key); // 是否在展开列表中
+
+		if (index >= 0) {
+			expandKeys.splice(index, 1); // 存在时删除
+			record.expanded = false;
+		} else {
+			expandKeys.push(record.key);
+			record.expanded = true;
+		}
+
+		this.setState({ expandKeys });
 
 		// 展开订单无详情时拉取一次
 		if (!record.detail || !record.detail[0]) {
@@ -177,26 +120,50 @@ class OrderDetail extends Component {
 		}
 	};
 
+	handlePaginate = (page, pageSize) => {
+		// console.log('page:,ps:', page, pageSize);
+		const { postOptions } = this.state;
+		postOptions.current = page;
+		postOptions.pageSize = pageSize;
+		this.setState({ postOptions });
+		this.getList(postOptions)
+			.then(
+				orderList => {
+					const expandKeys = [];
+					this.setState({ orderList, expandKeys });
+				}
+			);
+		// this.getList();
+	}
+
 	getList = (options = {}) => {
 		const {
-			sortByPrice: sort_by_amount = -1, // 空时取默认值-1
+			sortByPrice: sort_by_amount = -1, // 空时取默认值-1，不排序
 			sortByTime: sort_by_time = -1,
 			purchaseType: purchase_type_list = [],
 			orderType: order_type_list = [],
+			current: page_num = 1,
+			pageSize: page_size = 10,
 		} = options;
 
+		const timeRange = this.getUrlkey(window.location.href);
+		// console.log('timeRange:', timeRange);
+
 		return Actions.getList({
-			time_range_start: 15438823200,
-			time_range_end: 1608361200000,
+			time_range_end: timeRange.timeRangeEnd,
+			time_range_start: timeRange.timeRangeStart,
 			sort_by_amount,
 			sort_by_time,
 			order_type_list,
-			purchase_type_list
+			purchase_type_list,
+			page_num,
+			page_size,
 		}).then(
 			response => {
-				// console.log('afterGetList:', response)
-				// console.log('fakeRes:', res)
-				response = res;
+				let { orderTotal } = this.state;
+				orderTotal = response.data.total_count;
+				// console.log('setstate:', orderTotal);
+				this.setState({ orderTotal });
 				return this.createOrderData(response);
 			}
 		);
@@ -207,10 +174,11 @@ class OrderDetail extends Component {
 			response => this.createOrderDetail(response)
 		);
 
-	createOrderData = resData => {
+	createOrderData = response => {
 		const orderList = [];
 		// const detailList = []
-		resData.data.order_list.forEach(item => {
+
+		response.data.order_list.forEach(item => {
 			const obj = {};
 			obj.key = item.id;
 			obj.orderId = item.id;
@@ -221,23 +189,34 @@ class OrderDetail extends Component {
 			obj.expanded = false;
 			obj.tradeValue = item.amount;
 
-			if (obj.orderTypeId === 2) {
-				obj.tradeValue = `-${  obj.tradeValue}`;
-			}
-
 			orderList.push(obj);
 		});
-		// console.log('orderList:', orderList)
 		return orderList;
 	};
 
-	createOrderDetail = resdetail => {
-		const detailList = resdetail.data.detail_list;
+	createOrderDetail = res => {
+		const detailList = res.data.detail_list;
 		return detailList;
-	}
+	};
+
+	getUrlkey = url => {
+		const params = {};
+		const urls = url.split('?');
+		if (urls[1]) {
+			const arr = urls[1].split('&') || [];
+			for (let i = 0, l = arr.length; i < l; i++) {
+				const a = arr[i].split('=');
+				params[a[0]] = a[1];
+			}
+			return params;
+		}
+		params.timeRangeStart = 946656000;// 2000year
+		params.timeRangeEnd = 4102444800;// 2100year
+		return params;
+	};
 
 	render() {
-		const { orderList: resData } = this.state;
+		const { orderList: resData, expandKeys, orderTotal } = this.state;
 
 		const columns = [
 			{ title: '订单号', dataIndex: 'orderId', key: 'orderId' },
@@ -250,13 +229,56 @@ class OrderDetail extends Component {
 				dataIndex: '',
 				key: 'x',
 				render: record =>
-					<a>{record.expanded ? '收起支付明细' : '查看支付明细'}</a>
+					<a onClick={() => {
+						this.handleExpand(record);
+					}}
+					>
+						{record.expanded ? '收起支付明细' : '查看支付明细'}
+					</a>
+
 			},
 		];
 
 		const {
 			form: { getFieldDecorator },
 		} = this.props;
+
+		const purchaseCode = {
+			// totalPay: 1,
+			ali: 9,
+			wechat: 2,
+			cash: 5,
+			bankCard: 4,
+			bankQr: 4,
+			qqWallet: 11,
+			jdWallet: 8,
+			other: 1,
+		};
+		const orderCode = {
+			// totalTrade: 1,
+			normal: 1,
+			refund: 2,
+		};
+		
+		const formItemLayout = {
+			labelCol: {
+				span: 8
+			},
+			wrapperCol: {
+				span: 16
+			}
+		};
+		const buttonItemLayout = {
+			wrapperCol: {
+				span: 24,
+			}
+		};
+		const formLayout = 'inline';
+		
+		const detailColumns = [
+			{ title: '商品', dataIndex: 'name', key: 'name', width: '150px' },
+			{ title: '数量', dataIndex: 'quantity', key: 'quantity' }
+		];
 
 		return (
 			<Card className={styles.wrapper}>
@@ -338,10 +360,7 @@ class OrderDetail extends Component {
 					dataSource={resData}
 					expandRowByClick
 					expandIconAsCell={false}
-					onExpand={(expanded, record) => {
-						// console.log('onexpand')
-						this.handleExpand(expanded, record);
-					}}
+					expandedRowKeys={expandKeys}
 					expandedRowRender={
 						record =>
 							<Table
@@ -353,7 +372,14 @@ class OrderDetail extends Component {
 								loading={record.loading}
 							/>
 					}
-					pagination={{ showQuickJumper: true, showSizeChanger: true }}
+					pagination={
+						{
+							showQuickJumper: true,
+							showSizeChanger: true,
+							total: orderTotal,
+							onChange: this.handlePaginate
+						}
+					}
 				/>
 			</Card>
 		);
