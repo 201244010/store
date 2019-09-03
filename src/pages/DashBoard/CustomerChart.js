@@ -99,19 +99,18 @@ class CustomerChart extends PureComponent {
 					  })}：${fieldRightPercent}% | ${fieldRightCount} ${formatMessage({
 						id: 'common.person',
 					  })}`;
-			} 
+			}
 			return regular !== null
 				? `${formatMessage({
-					id: 'customer.stranger',
-					  })}：${fieldLeftPercent}% | ${fieldLeftCount} ${formatMessage({
-					id: 'common.person',
-					  })}`
-				: `${formatMessage({
 					id: 'customer.regular',
-					  })}：${fieldRightPercent}% | ${fieldRightCount} ${formatMessage({
+				  })}：${fieldLeftPercent}% | ${fieldLeftCount} ${formatMessage({
 					id: 'common.person',
-					  })}`;
-			
+				  })}`
+				: `${formatMessage({
+					id: 'customer.stranger',
+				  })}：${fieldRightPercent}% | ${fieldRightCount} ${formatMessage({
+					id: 'common.person',
+				  })}`;
 		};
 
 		return passengerList.map(passenger => {

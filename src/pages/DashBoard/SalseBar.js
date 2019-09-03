@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { Card, Icon, Divider } from 'antd';
+import { Card, Divider } from 'antd';
+import RiseDownTag from '@/components/Tag/RiseDownTag';
 import { priceFormat } from '@/utils/utils';
 import { DASHBOARD } from './constants';
 import styles from './DashBoard.less';
@@ -9,6 +10,18 @@ import styles from './DashBoard.less';
 const {
 	SEARCH_TYPE: { RANGE },
 } = DASHBOARD;
+
+const passengerFlowMessage = {
+	[RANGE.TODAY]: formatMessage({ id: 'yesterday' }),
+	[RANGE.WEEK]: formatMessage({ id: 'lastWeek' }),
+	[RANGE.MONTH]: formatMessage({ id: 'lastMonth' }),
+};
+
+const rateMessage = {
+	[RANGE.TODAY]: formatMessage({ id: 'dashboard.order.d2d' }),
+	[RANGE.WEEK]: formatMessage({ id: 'dashboard.order.w2w' }),
+	[RANGE.MONTH]: formatMessage({ id: 'dashboard.order.m2m' }),
+};
 
 const SalseInfo = ({
 	title = null,
@@ -32,9 +45,7 @@ const SalseInfo = ({
 			onClick={handleClick}
 		>
 			<div className={styles['salse-info']}>
-				<div className={styles['salse-icon']}>
-					{icon && <Icon type={icon} style={{ fontSize: '24px' }} />}
-				</div>
+				<div className={styles['salse-icon']}>{icon}</div>
 				<div className={styles['salse-content']}>
 					<div className={styles['content-title']}>{title}</div>
 					<div className={styles.content}>{content}</div>
@@ -62,8 +73,24 @@ class SalseBar extends PureComponent {
 				totalAmountLoading,
 				totalCountLoading,
 				passengerFlow: { latestCount = '--', earlyCount = '--' },
-				totalAmount: { totalAmount, dayAmount, weekAmount, monthAmount },
-				totalCount: { totalCount, dayCount, weekCount, monthCount },
+				totalAmount: {
+					totalAmount,
+					dayAmount,
+					weekAmount,
+					monthAmount,
+					dayRate: dayRateAmount,
+					weekRate: weekRateAmount,
+					monthRate: monthRateAmount,
+				},
+				totalCount: {
+					totalCount,
+					dayCount,
+					weekCount,
+					monthCount,
+					dayRate: dayRateCount,
+					weekRate: weekRateCount,
+					monthRate: monthRateCount,
+				},
 				searchValue: { rangeType = RANGE.TODAY } = {},
 			},
 			goToPath,
@@ -76,6 +103,12 @@ class SalseBar extends PureComponent {
 			[RANGE.FREE]: totalAmount,
 		};
 
+		const totalAmountRate = {
+			[RANGE.TODAY]: dayRateAmount,
+			[RANGE.WEEK]: weekRateAmount,
+			[RANGE.MONTH]: monthRateAmount,
+		};
+
 		const totalCountStore = {
 			[RANGE.TODAY]: dayCount,
 			[RANGE.WEEK]: weekCount,
@@ -83,12 +116,18 @@ class SalseBar extends PureComponent {
 			[RANGE.FREE]: totalCount,
 		};
 
+		const totalCountRate = {
+			[RANGE.TODAY]: dayRateCount,
+			[RANGE.WEEK]: weekRateCount,
+			[RANGE.MONTH]: monthRateCount,
+		};
+
 		return (
 			<Card title={null}>
 				<div className={styles['salse-bar']}>
 					<SalseInfo
 						{...{
-							icon: 'pay-circle',
+							icon: <img src={require('@/assets/icon/totalAmount.png')} />,
 							title: formatMessage({ id: 'salse.total' }),
 							content:
 								totalAmountStore[rangeType] || totalAmountStore[rangeType] === 0
@@ -97,30 +136,46 @@ class SalseBar extends PureComponent {
 									  )
 									: '--',
 							loading: totalAmountLoading,
-							// TODO 暂时先隐去
-							// subContent: <span>{formatMessage({ id: 'yesterday' })}: 7009.00</span>,
+							// TODO 等云端修改接口，临时方案
+							subContent:
+								rangeType === RANGE.FREE ? (
+									<></>
+								) : (
+									<RiseDownTag
+										label={rateMessage[rangeType]}
+										content={totalAmountRate[rangeType]}
+									/>
+								),
 							onClick: () => goToPath('tradeDetail'),
 						}}
 					/>
 					<Divider type="vertical" />
 					<SalseInfo
 						{...{
-							icon: 'wallet',
+							icon: <img src={require('@/assets/icon/tradeCount.png')} />,
 							title: formatMessage({ id: 'salse.count' }),
 							content:
 								totalCountStore[rangeType] !== ''
 									? totalCountStore[rangeType]
 									: '--',
 							loading: totalCountLoading,
-							// TODO 暂时隐去
-							// subContent: <span>{formatMessage({ id: 'yesterday' })}: 7009.00</span>,
+							// TODO 等云端修改接口，临时方案
+							subContent:
+								rangeType === RANGE.FREE ? (
+									<></>
+								) : (
+									<RiseDownTag
+										label={rateMessage[rangeType]}
+										content={totalCountRate[rangeType]}
+									/>
+								),
 							onClick: () => goToPath('tradeDetail'),
 						}}
 					/>
 					<Divider type="vertical" />
 					<SalseInfo
 						{...{
-							icon: 'user',
+							icon: <img src={require('@/assets/icon/passengerFlow.png')} />,
 							title: formatMessage({ id: 'shop.customers' }),
 							content: latestCount === '--' ? '--' : priceFormat(latestCount),
 							subContent:
@@ -128,7 +183,7 @@ class SalseBar extends PureComponent {
 									<></>
 								) : (
 									<span>
-										{formatMessage({ id: 'yesterday' })}:{' '}
+										{passengerFlowMessage[rangeType]}:{' '}
 										{earlyCount === '--' ? '--' : priceFormat(earlyCount)}
 									</span>
 								),
@@ -138,7 +193,7 @@ class SalseBar extends PureComponent {
 					<Divider type="vertical" />
 					<SalseInfo
 						{...{
-							icon: 'bank',
+							icon: <img src={require('@/assets/icon/square.png')} />,
 							title: formatMessage({ id: 'area.effect' }),
 							content: 6560.0,
 							subContent: <span>{formatMessage({ id: 'yesterday' })}: 7009.00</span>,
