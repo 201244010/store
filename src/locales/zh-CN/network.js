@@ -66,7 +66,6 @@ export default {
 	'network.qos.whitelist': '优先设备',
 	'network.qos.normal': '普通设备',
 	'network.bandwidth.allocation': '带宽分配比例',
-	'network.allocation.bandwidth': '分配带宽比例',
 
 	'network.switchOn': '开',
 	'network.switchOff': '关',

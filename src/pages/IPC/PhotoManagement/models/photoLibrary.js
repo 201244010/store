@@ -9,7 +9,7 @@ import {
 	getRange,
 	move,
 	readPhotoList,
-	saveFile
+	saveFile,
 } from '../../services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
