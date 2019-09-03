@@ -2,9 +2,12 @@
 	width: '100%';
 	border: 0;
 	.main-block {
+		// width: 100%
 		.btn-block{
 			margin: 15px auto;
-			width: 700px;
+			width: 50%;
+			display: flex;
+			// max-width: 100%;
 			// text-align: center;
 			.reboot-btn,
 			.reset-btn {
@@ -17,6 +20,9 @@
 			}
 			.info-span{
 				font-size: 13px;
+				width: calc(100% - 130px);
+				float: right;
+				line-height: 32px;
 			}
 		}
 

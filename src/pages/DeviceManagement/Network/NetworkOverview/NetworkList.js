@@ -30,11 +30,11 @@ class NetworkList extends React.PureComponent {
 		}, 5000);
 	};
 
-	fetchMqtt = async () => {
+	fetchMqtt = () => {
 		const { getAPMessage, networkList } = this.props;
-		await Promise.all(
-			networkList.map(async item => {
-				const { networkId, masterDeviceSn: sn } = item;
+		networkList.map(async item => {
+			const { networkId, masterDeviceSn: sn, activeStatus } = item;
+			if (activeStatus) {
 				await getAPMessage({
 					message: {
 						opcode: OPCODE.CLIENT_LIST_GET,
@@ -53,8 +53,8 @@ class NetworkList extends React.PureComponent {
 						},
 					},
 				});
-			})
-		);
+			}
+		});
 	};
 
 	editName = payload => {
@@ -193,29 +193,35 @@ const Topology = props => {
 						<li>
 							{activeStatus ? (
 								<>
-									<Icon component={() => <IconNetwork color="#303540" />} />
+									<Icon component={() => <IconNetwork activeStatus />} />
 									<Badge
 										count={routerNumber}
+										showZero
 										offset={[0, -2]}
 										overflowCount={9999}
-										style={{ backgroundColor: '#4B7AFA', fontSize: 14 }}
 									>
-										<Icon component={() => <IconLink color="#303540" />} />
+										<Icon component={() => <IconLink activeStatus />} />
 									</Badge>
 									<Badge
 										count={clientNumber || 0}
-										offset={[0, -2]}
+										showZero
+										offset={[-32, -2]}
 										overflowCount={9999}
-										style={{ backgroundColor: '#4B7AFA', fontSize: 14 }}
 									>
-										<Icon component={() => <IconEquipment color="#303540" />} />
+										<Icon
+											className={styles['network-client']}
+											component={() => <IconEquipment activeStatus />}
+										/>
 									</Badge>
 								</>
 							) : (
 								<>
-									<Icon component={() => <IconNetwork color="#A1A7B3" />} />
-									<Icon component={() => <IconLink color="#A1A7B3" />} />
-									<Icon component={() => <IconEquipment color="#A1A7B3" />} />
+									<Icon component={() => <IconNetwork activeStatus />} />
+									<Icon component={() => <IconLink activeStatus />} />
+									<Icon
+										className={styles['network-client']}
+										component={() => <IconEquipment activeStatus />}
+									/>
 								</>
 							)}
 						</li>
@@ -252,7 +258,7 @@ const Topology = props => {
 						</li>
 						<li>
 							<div>{`${formatMessage({ id: 'network.Internet' })}`}</div>
-							<div>
+							<div className={activeStatus ? styles['network-router'] : ''}>
 								{formatMessage({ id: 'network.router' })}
 								{activeStatus ? (
 									<a
@@ -270,15 +276,30 @@ const Topology = props => {
 									''
 								)}
 							</div>
-							<div>{formatMessage({ id: 'network.client' })}</div>
+							<div className={!activeStatus ? styles['network-client-offline'] : ''}>
+								{formatMessage({ id: 'network.client' })}
+								{activeStatus ? (
+									<a
+										href="javascript:void(0);"
+										onClick={() =>
+											goToPath('clientList', {
+												sn: masterDeviceSn,
+												networkId,
+												type: 'client',
+											})
+										}
+									>
+										（{formatMessage({ id: 'network.viewMore' })}）
+									</a>
+								) : (
+									''
+								)}
+							</div>
 						</li>
-					</ul>
-					<ul>
-						<li />
 					</ul>
 				</div>
 				<div className={styles['network-guest-wrapper']}>
-					<Divider style={{ height: 80 }} type="vertical" />
+					<Divider className={styles['network-divider']} type="vertical" />
 					<div className={styles['network-guest']}>
 						{formatMessage({ id: 'network.guestNumber' })}
 						{activeStatus ? (
@@ -290,6 +311,22 @@ const Topology = props => {
 							</div>
 						) : (
 							<div className={styles['network-guest-number']}>--</div>
+						)}
+						{activeStatus ? (
+							<a
+								href="javascript:void(0);"
+								onClick={() =>
+									goToPath('clientList', {
+										sn: masterDeviceSn,
+										networkId,
+										type: 'guest',
+									})
+								}
+							>
+								（{formatMessage({ id: 'network.viewMore' })}）
+							</a>
+						) : (
+							''
 						)}
 					</div>
 				</div>

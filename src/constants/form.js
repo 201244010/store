@@ -140,6 +140,12 @@ export const FORM_ITEM_LAYOUT_BUSINESS = {
 	wrapperCol: { span: 6 },
 };
 
+
+export const FORM_ITEM_LAYOUT_INLINE = {
+	labelCol: { span: 8},
+	wrapperCol: { span: 10 },
+};
+
 export const SEARCH_FORM_GUTTER = {
 	SMALL: {
 		md: 4,

@@ -119,7 +119,7 @@ class LibraryForm extends React.Component {
 													}
 													return true;
 												}
-												return true;
+												return false;
 											});
 
 											if (confictFlag) {

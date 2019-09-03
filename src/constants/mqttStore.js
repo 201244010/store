@@ -13,6 +13,7 @@ export const OPCODE = {
 	MESH_UPGRADE_START: '0x207a',
 	MESH_UPGRADE_STATE: '0x207b',
 	GET_ROUTES_DETAIL: '0x2116',
+	QOS_SET : '0x2022',
 };
 
 export const REGISTER_PUB_MSG = {
