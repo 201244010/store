@@ -90,6 +90,87 @@ const sortPurchaseOrder = purchaseInfo => {
 	};
 };
 
+const getGenderCount = targetList =>
+	targetList.reduce(
+		(prev, cur) => {
+			const { femaleCount = 0, maleCount = 0 } = cur || {};
+			const { femaleCount: prevFemaleCount = 0, maleCount: prevMaleCount = 0 } = prev || {};
+			return {
+				maleCount: maleCount + prevMaleCount,
+				femaleCount: femaleCount + prevFemaleCount,
+			};
+		},
+		{ maleCount: 0, femaleCount: 0 }
+	);
+
+const getGenderFieldsList = targetList => {
+	const maleList = targetList.map(item => {
+		const { ageRange, ageRangeCode, maleCount } = item;
+		return {
+			ageRange,
+			ageRangeCode,
+			personCount: maleCount,
+			maleCount,
+		};
+	});
+
+	const femaleList = targetList.map(item => {
+		const { ageRange, ageRangeCode, femaleCount } = item;
+		return {
+			ageRange,
+			ageRangeCode,
+			personCount: femaleCount,
+			femaleCount,
+		};
+	});
+
+	return {
+		maleList,
+		femaleList,
+	};
+};
+
+const getRegularCount = targetList =>
+	targetList.reduce(
+		(prev, cur) => {
+			const { strangerCount = 0, regularCount = 0 } = cur || {};
+			const { strangerCount: prevStrangerCount = 0, regularCount: prevRegularCount = 0 } =
+				prev || {};
+			return {
+				strangerCount: strangerCount + prevStrangerCount,
+				regularCount: regularCount + prevRegularCount,
+			};
+		},
+		{ strangerCount: 0, regularCount: 0 }
+	);
+
+const getRegularFiledsList = targetList => {
+	const strangerList = targetList.map(item => {
+		const { ageRange, ageRangeCode, strangerCount } = item;
+		return {
+			ageRange,
+			ageRangeCode,
+			personCount: strangerCount,
+			strangerCount,
+		};
+	});
+
+	const regularList = targetList.map(item => {
+		const { ageRange, ageRangeCode, regularCount } = item;
+		return {
+			ageRange,
+			ageRangeCode,
+			personCount: regularCount,
+			regularCount,
+		};
+	});
+
+	return {
+		strangerList,
+		regularList,
+	};
+};
+
 export default {
 	namespace: 'dashboard',
 	state: {
@@ -103,6 +184,7 @@ export default {
 		},
 
 		ageRangeList: [],
+		ageRangeMap: {},
 
 		overviewProductLoading: false,
 		overviewDeviceLoading: false,
@@ -137,7 +219,7 @@ export default {
 		purchaseInfo: {},
 
 		passengerFlow: {},
-		passengerAgeList: [],
+		passengerAgeInfo: {},
 	},
 	effects: {
 		*switchLoading({ payload }, { put }) {
@@ -153,12 +235,22 @@ export default {
 		*getAgeRanges(_, { call, put }) {
 			const response = yield call(getRange);
 			if (response && response.code === ERROR_OK) {
-				const { data = {} } = {};
+				const { data = {} } = response;
 				const { ageRangeList = [] } = format('toCamel')(data);
+
+				const ageRangeMap = ageRangeList.reduce((prev, cur) => {
+					const { ageRange, ageRangeCode } = cur;
+					return {
+						...prev,
+						[ageRangeCode]: ageRange,
+					};
+				}, {});
+
 				yield put({
 					type: 'updateState',
 					payload: {
 						ageRangeList,
+						ageRangeMap,
 					},
 				});
 			}
@@ -443,7 +535,7 @@ export default {
 			const {
 				searchValue,
 				searchValue: { passengerFlowType },
-				// ageRangeList,
+				ageRangeMap,
 			} = yield select(state => state.dashboard);
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 
@@ -470,13 +562,46 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { countList = [] } = format('toCamel')(data) || {};
-				yield put({
-					type: 'updateState',
-					payload: {
-						passengerAgeList: countList,
-						passengerFlowTypeLoading: false,
-					},
-				});
+
+				const formattedList = countList
+					.map(item => {
+						const { ageRangeCode } = item;
+						return {
+							...item,
+							ageRange: ageRangeMap[ageRangeCode] || '',
+						};
+					})
+					.sort((a, b) => a.ageRangeCode - b.ageRangeCode);
+
+				if (passengerFlowType === PASSENGER_FLOW_TYPE.GENDER) {
+					const genderCount = getGenderCount(formattedList);
+					const { maleList, femaleList } = getGenderFieldsList(formattedList);
+
+					yield put({
+						type: 'updateState',
+						payload: {
+							passengerAgeInfo: {
+								passengerList: [...maleList, ...femaleList] || [],
+								...genderCount,
+							},
+							passengerFlowTypeLoading: false,
+						},
+					});
+				} else {
+					const regularCount = getRegularCount(formattedList);
+					const { strangerList, regularList } = getRegularFiledsList(formattedList);
+
+					yield put({
+						type: 'updateState',
+						payload: {
+							passengerAgeInfo: {
+								passengerList: [...strangerList, ...regularList] || [],
+								...regularCount,
+							},
+							passengerFlowTypeLoading: false,
+						},
+					});
+				}
 			}
 		},
 

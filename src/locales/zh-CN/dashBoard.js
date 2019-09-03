@@ -75,4 +75,6 @@ export default {
 	'customer.distribute': '客群分布',
 	'customer.sex': '性别',
 	'customer.newold': '新老',
+	'customer.stranger': '新客',
+	'customer.regular': '熟客',
 };
