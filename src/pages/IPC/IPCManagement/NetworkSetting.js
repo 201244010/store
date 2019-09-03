@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Card, Form, Select, Button, Input, Icon, Spin, Modal, Alert } from 'antd';
 import { formatMessage } from 'umi/locale';
 import{ connect } from 'dva';
-
 import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
+// import { FORM_ITEM_LAYOUT, TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 
 import styles from './NetworkSetting.less';
 

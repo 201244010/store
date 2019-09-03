@@ -93,10 +93,12 @@ const mapDispatchToProps = (dispatch) => ({
 		}).then(info => info);
 	},
 });
-// let disabledControl = true;
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name: 'ipc-device-basic-info',
+	onValuesChange() {
+		// btnDisabled = false;
+	}
 })
 class DeviceBasicInfo extends React.Component {
 	constructor(props) {
@@ -221,7 +223,7 @@ class DeviceBasicInfo extends React.Component {
 		const { basicInfo, form, ipcList }  = this.props;
 		const { name, type, sn, img, /* mode, */ status } = basicInfo;
 
-		const { isFieldTouched, getFieldDecorator } = form;
+		const { /* isFieldTouched, */ getFieldDecorator } = form;
 
 		const image = img || defaultImage;
 
@@ -270,7 +272,7 @@ class DeviceBasicInfo extends React.Component {
 														}
 														return true;
 													}
-													return true;
+													return false;
 												});
 
 												if (confictFlag) {
@@ -331,7 +333,8 @@ class DeviceBasicInfo extends React.Component {
 									type="primary"
 									onClick={this.onSave}
 									// disabled={disabledControl}
-									disabled={!isFieldTouched('deviceName')}
+									// disabled={!isFieldTouched('deviceName')}
+									disabled={!isEdit}
 									className={styles['save-btn']}
 
 									// loading={loading.effects['ipcBasicInfo/update']}

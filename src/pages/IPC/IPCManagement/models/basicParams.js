@@ -1,119 +1,112 @@
 import { MESSAGE_TYPE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 
+
 const OPCODE = {
 	READ: '0x305c',
-	UPDATE: '0x305d',
+	UPDATE: '0x305d'
 };
 
 export default {
 	namespace: 'ipcBasicParams',
-	state: {
+	state:{
 		sn: '',
 		nightMode: 2,
+		WDRMode: 1,
 		indicator: false,
 		rotation: 0,
 		isReading: true,
-		isSaving: 'normal',
+		isSaving: 'normal'
 	},
-	reducers: {
-		init: (state, { payload: { sn } }) => {
+	reducers:{
+		init: (state, { payload: { sn }}) => {
 			state.sn = sn;
 		},
-		readData: (state, { payload: { sn, nightMode, indicator, rotation } }) => {
+		readData: (state, { payload: { sn, nightMode, indicator, rotation, WDRMode }}) => {
 			if (state.sn === sn) {
 				state.nightMode = nightMode;
 				state.indicator = indicator;
 				state.rotation = rotation;
+				state.WDRMode = WDRMode;
 			}
 		},
-		setReadingStatus: (state, { payload: { sn, status } }) => {
-			if (state.sn === sn) {
+		setReadingStatus: (state, { payload: { sn, status }}) => {
+			if(state.sn === sn) {
 				state.isReading = status;
 			}
 		},
-		setSavingStatus: (state, { payload: { sn, status } }) => {
-			if (state.sn === sn) {
+		setSavingStatus: (state, { payload: { sn, status }}) => {
+			if(state.sn === sn) {
 				state.isSaving = status;
 			}
-		},
+		}
 	},
-	effects: {
-		*read(
-			{
-				payload: { sn },
-			},
-			{ put }
-		) {
+	effects:{
+		*read({ payload: { sn }}, { put }) {
 			const type = yield put.resolve({
-				type: 'ipcList/getDeviceType',
-				payload: {
-					sn,
-				},
+				type:'ipcList/getDeviceType',
+				payload:{
+					sn
+				}
 			});
 
 			const topicPublish = yield put.resolve({
-				type: 'mqttIpc/generateTopic',
-				payload: {
+				type:'mqttIpc/generateTopic',
+				payload:{
 					deviceType: type,
 					messageType: 'request',
-					method: 'pub',
-				},
+					method: 'pub'
+				}
 			});
 
 			yield put({
-				type: 'mqttIpc/publish',
-				payload: {
+				type:'mqttIpc/publish',
+				payload:{
 					topic: topicPublish,
 					message: {
 						opcode: OPCODE.READ,
 						param: {
-							sn,
-						},
-					},
-				},
+							sn
+						}
+					}
+				}
 			});
 
 			yield put({
 				type: 'init',
 				payload: {
-					sn,
-				},
+					sn
+				}
 			});
 
 			yield put({
 				type: 'setReadingStatus',
 				payload: {
 					sn,
-					status: true,
-				},
+					status: true
+				}
 			});
 		},
-		*update(
-			{
-				payload: { nightMode, indicator, rotation, sn },
-			},
-			{ put }
-		) {
+		*update({ payload: { nightMode, indicator, rotation, sn, WDRMode } }, { put }){
 			const type = yield put.resolve({
-				type: 'ipcList/getDeviceType',
-				payload: {
-					sn,
-				},
+				type:'ipcList/getDeviceType',
+				payload:{
+					sn
+				}
 			});
 
 			const topicPublish = yield put.resolve({
-				type: 'mqttIpc/generateTopic',
-				payload: {
+				type:'mqttIpc/generateTopic',
+				payload:{
 					deviceType: type,
 					messageType: 'request',
-					method: 'pub',
-				},
+					method: 'pub'
+				}
 			});
 
 			yield put({
-				type: 'mqttIpc/publish',
-				payload: {
+				type:'mqttIpc/publish',
+				payload:{
 					topic: topicPublish,
 					message: {
 						opcode: OPCODE.UPDATE,
@@ -123,9 +116,10 @@ export default {
 							led_indicator: indicator ? 1 : 0,
 							// rotation: rotation ? 1 : 0
 							rotation,
-						},
-					},
-				},
+							wdr_mode: WDRMode
+						}
+					}
+				}
 			});
 
 			yield put({
@@ -134,18 +128,20 @@ export default {
 					nightMode,
 					indicator,
 					rotation,
-					sn,
-				},
+					WDRMode,
+					sn
+				}
 			});
 
 			yield put({
 				type: 'setSavingStatus',
 				payload: {
 					sn,
-					status: 'saving',
-				},
+					status: 'saving'
+				}
 			});
-		},
+
+		}
 	},
 	subscriptions: {
 		setup({ dispatch }) {
@@ -165,15 +161,16 @@ export default {
 									nightMode: data.night_mode,
 									indicator: data.led_indicator === 1,
 									rotation: data.rotation,
-								},
+									WDRMode:data.nightMode === 1 ? 0: data.wdr_mode
+								}
 							});
 
 							dispatch({
 								type: 'setReadingStatus',
 								payload: {
 									sn: data.sn,
-									status: false,
-								},
+									status: false
+								}
 							});
 						}
 
@@ -184,9 +181,8 @@ export default {
 						// 		status: false
 						// 	}
 						// });
-					},
-				},
-				{
+					}
+				}, {
 					opcode: OPCODE.UPDATE,
 					type: MESSAGE_TYPE.RESPONSE,
 					handler: (topic, messages) => {
@@ -197,35 +193,35 @@ export default {
 								type: 'setSavingStatus',
 								payload: {
 									sn,
-									status: 'success',
-								},
+									status: 'success'
+								}
 							});
-						} else {
+						}else{
 							dispatch({
 								type: 'setSavingStatus',
 								payload: {
 									sn,
-									status: 'failed',
-								},
+									status: 'failed'
+								}
 							});
-						}
+						};
 
 						setTimeout(() => {
 							dispatch({
 								type: 'setSavingStatus',
 								payload: {
 									sn,
-									status: 'normal',
-								},
+									status: 'normal'
+								}
 							});
 						}, 800);
-					},
-				},
+					}
+				}
 			];
 			dispatch({
 				type: 'mqttIpc/addListener',
-				payload: listeners,
+				payload: listeners
 			});
-		},
-	},
+		}
+	}
 };
