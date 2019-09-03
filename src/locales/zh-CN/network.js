@@ -100,6 +100,7 @@ export default {
 	
 	'network.routerEvent.title': '事件列表',
 	'network.connect.time': '时间',
+	'network.connect.wired': '有线',
 	'network.connect.eventType': '事件类型',
 	'network.connect.deviceCpuOverwhelmed': '设备CPU使用率过高',
 	'network.connect.deviceMemoryOverwhelmed': '设备内存使用率过高',
