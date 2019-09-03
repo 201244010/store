@@ -58,14 +58,14 @@ class NetworkList extends React.PureComponent {
 	};
 
 	editName = payload => {
-		const { refreshNetworkList } = this.props;
+		const { editNetworkId } = this.props;
 		clearInterval(this.intervalTimer);
-		refreshNetworkList(payload);
+		editNetworkId(payload);
 	};
 
 	upgradeName = async payload => {
 		const { networkId, networkAlias, initNetworkAlias } = payload;
-		const { updateAlias, refreshNetworkList, getList } = this.props;
+		const { updateAlias, getList, editNetworkId } = this.props;
 		if (initNetworkAlias !== networkAlias) {
 			const response = await updateAlias({ networkId, networkAlias });
 			if (response && response.code === ERROR_OK) {
@@ -74,7 +74,7 @@ class NetworkList extends React.PureComponent {
 			}
 		}
 		await getList();
-		await refreshNetworkList(payload);
+		await editNetworkId(payload);
 	};
 
 	render() {
@@ -141,7 +141,7 @@ const Topology = props => {
 						<>
 							<span> {networkAlias || networkId}</span>
 							<div
-								onClick={() => editName({ sn: masterDeviceSn, edit: 1 })}
+								onClick={() => editName({ networkId, edit: 1 })}
 								className={styles['network-edit']}
 							/>
 						</>
