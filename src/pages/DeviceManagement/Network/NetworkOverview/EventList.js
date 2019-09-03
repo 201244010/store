@@ -55,6 +55,8 @@ class EventList extends React.Component {
 				switch(item.eventType) {
 					case 5: item.eventType = formatMessage({id: 'network.connect.eventType5'});break;
 					case 7: item.eventType = formatMessage({id: 'network.connect.eventType7'});break;
+					case 11: item.eventType = formatMessage({id: 'network.connect.eventType11'});break;
+					case 12: item.eventType = formatMessage({id: 'network.connect.eventType12'});break;
 					default: item.eventType = formatMessage({id: 'network.connect.eventType.unknown'});break;
 				}
 			});

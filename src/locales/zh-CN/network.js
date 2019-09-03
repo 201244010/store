@@ -102,6 +102,8 @@ export default {
 	'network.connect.eventType': '事件类型',
 	'network.connect.eventType5': '设备CPU使用率过高',
 	'network.connect.eventType7': '设备内存使用率过高',
+	'network.connect.eventType11': '设备上线',
+	'network.connect.eventType12': '设备下线',
 	'network.connect.eventType.unknown': '未知事件类型',
 	'network.routerEvent.requestFail': '事件列表请求失败',
 };

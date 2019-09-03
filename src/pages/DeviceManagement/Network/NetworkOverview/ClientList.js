@@ -98,6 +98,9 @@ class ClientList extends React.Component {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = sn;
 					item.ontime = formatRelativeTime(item.ontime * 1000);
+					if(item.connMode === 'wifi') {
+						item.connMode = item.wifiMode;
+					}
 					return item;
 				});
 			} else {
@@ -105,6 +108,9 @@ class ClientList extends React.Component {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = '--';
 					item.ontime = formatRelativeTime(item.ontime * 1000);
+					if(item.connMode === 'wifi') {
+						item.connMode = item.wifiMode;
+					}
 					return item;
 				});
 				getDeviceList({
@@ -169,11 +175,19 @@ class ClientList extends React.Component {
 			this.checkTime = setTimeout(() => this.checkClient(), 1000);
 		}
 	};
+	
+	handleData = array =>
+		array.map(item => {
+			item.mac = item.mac.toUpperCase();
+			return item;
+		});
+	
 
 	render() {
 		const { dataSource, pageSize } = this.state;
 		const { loading } = this.props;
-		const array = dataSource.slice(0, 50 * pageSize);
+		const data = this.handleData(dataSource);
+		const array = data.slice(0, 50 * pageSize);
 
 		return (
 			<Card
