@@ -101,8 +101,10 @@ export default {
 	'network.routerEvent.title': '事件列表',
 	'network.connect.time': '时间',
 	'network.connect.eventType': '事件类型',
-	'network.connect.eventType5': 'CPU过高',
-	'network.connect.eventType7': '内存过高',
+	'network.connect.deviceCpuOverwhelmed': '设备CPU使用率过高',
+	'network.connect.deviceMemoryOverwhelmed': '设备内存使用率过高',
+	'network.connect.deviceOnline': '设备上线',
+	'network.connect.deviceOffline': '设备下线',
 	'network.connect.eventType.unknown': '未知事件类型',
 	'network.routerEvent.requestFail': '事件列表请求失败',
 };
