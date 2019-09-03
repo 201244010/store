@@ -35,5 +35,6 @@ export default {
 	'pay.order.no': '订单编号',
 	'pay.true.price': '实付款',
 	'pay.order.completed': '该订单已支付完成',
-	'pay.retry': '重新选择支付方式'
+	'pay.retry': '重新选择支付方式',
+	'qrcode.refresh.remain': '距离二维码刷新还有',
 };

@@ -1,4 +1,5 @@
 export const ERROR_OK = 1;
+export const ORDER_OK = 1;
 export const MQTT_RES_OK = 0;
 export const TOKEN_EXPIRE = -2;
 
@@ -58,5 +59,5 @@ export const ALERT_ROLE_MAP = {
 };
 
 export const ALTERT_TRADE_MAP = {
-	[ORDER_COMPLETED]: 'pay.order.completed'
+	[ORDER_COMPLETED]: 'pay.order.completed',
 };
