@@ -49,8 +49,9 @@ class EventList extends React.Component {
 			const { data: { eventInfo, totalCount}} = arr;
 			const total = totalCount > 50 * pageSize ? 50 * pageSize : totalCount;
 			eventInfo.forEach((item, index) => {
+				item.networkId = item.neworkAlias === '' ? item.networkId : item.networkAlias;
 				item.index = index;
-				item.reportTime = moment(item.reportTime * 1000).format('hh:mm:ss DD/MM/YYYY');
+				item.reportTime = moment.unix(item.reportTime).format('HH:mm:ss DD/MM/YYYY');
 				switch(item.eventType) {
 					case 5: item.eventType = formatMessage({id: 'network.connect.eventType5'});break;
 					case 7: item.eventType = formatMessage({id: 'network.connect.eventType7'});break;
