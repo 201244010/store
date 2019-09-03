@@ -26,13 +26,11 @@ class Toolbar extends React.Component{
 		const isEqualProps = _.isEqual({
 			...oldProps,
 			today: 0,
-			progressbar: null,
-			slots: oldProps.progressbar.props.timeSlots
+			progressbar: null
 		}, {
 			...this.props,
 			today: 0,
-			progressbar: null,
-			slots: progressbar.props.timeSlots
+			progressbar: null
 		});
 
 		const isEqualState = _.isEqual(oldState, this.state);
@@ -102,6 +100,8 @@ class Toolbar extends React.Component{
 			modeText = t[0].name;
 		}
 
+		console.log(today, moment.unix(today).format('YYYY-MM-DD HH:mm:ss'));
+
 		return(
 			<div
 				className={styles.toolbar}
@@ -158,7 +158,7 @@ class Toolbar extends React.Component{
 									disabled={!isLive}
 									overlay={
 										<Menu
-											selectedKeys={[`${currentPPI}`]}
+											selectedKeys={[currentPPI]}
 										>
 											{
 												ppis.map((item) => (
@@ -166,7 +166,7 @@ class Toolbar extends React.Component{
 														onClick={() => {
 															ppiChange(item.value);
 														}}
-														key={`${item.value}`}
+														key={item.value}
 													>
 														{ item.name }
 													</Menu.Item>

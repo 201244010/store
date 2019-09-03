@@ -33,11 +33,8 @@ class ReVideojs extends React.Component{
 				config: {
 					autoCleanupSourceBuffer: true,
 					enableStashBuffer: false,
-					// deferLoadAfterSourceOpen: false,
-					fixAudioTimestampGap: false,
 					isLive: true,
-					cors: true,
-					// enableWorker: true,
+					enableWorker: true,
 				}
 			}
 		});

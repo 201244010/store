@@ -12,7 +12,6 @@ class LivePlayer extends React.Component{
 		this.state = {
 			isLive: true,
 			playBtnDisabled: true,
-			ppiChanged: false,
 			currentTimestamp: moment().unix()
 		};
 
@@ -62,7 +61,7 @@ class LivePlayer extends React.Component{
 		const url = await getLiveUrl();
 
 		if (!url) {
-			console.log('直播未能获取url！');
+			console.log('直播的URL未能成功获取！');
 			return;
 		}
 
@@ -117,11 +116,8 @@ class LivePlayer extends React.Component{
 				// 拖动到了有值的区域，则播放回放
 				const url = await getHistoryUrl(timestamp);
 				console.log('goto playhistory url: ', url);
-				if (url) {
-					this.src(url);
-				}else{
-					console.log('回放未获取到url，当前时间戳为：', timestamp);
-				}
+
+				this.src(url);
 
 				// 光标定位到当前回放位置，将状态调整我未非直播状态；
 				this.setState({
@@ -191,28 +187,9 @@ class LivePlayer extends React.Component{
 		videoplayer.showNoMediaCover();
 	}
 
-	ppiChange = async (ppi) => {
+	ppiChange = (ppi) => {
 		const { changePPI } = this.props;
-		const { videoplayer } = this;
-
-		this.pause();
-		const url = await changePPI(ppi);
-
-		if (url) {
-			videoplayer.src(url);
-
-			this.setState({
-				ppiChanged: true
-			});
-
-			setTimeout(() => {
-				this.setState({
-					ppiChanged: false
-				});
-			}, 3*1000);
-		}else{
-			console.log('切换分辨率，未获得url！');
-		}
+		changePPI(ppi);
 	}
 
 	isInsideSlots = (timestamp) => {
@@ -260,11 +237,11 @@ class LivePlayer extends React.Component{
 	onTimebarStopDrag = (timestamp) => {
 		this.toPause = true;
 
+		this.pause();
+
 		this.setState({
 			currentTimestamp: timestamp
 		});
-
-		this.pause();
 
 		const { getTimeStart, getTimeEnd } = this.timebar;
 		const timeStart = getTimeStart();
@@ -308,7 +285,7 @@ class LivePlayer extends React.Component{
 
 	onTimeUpdate = (timestamp) => {
 		const { getCurrentTimestamp } = this.props;
-		// console.log('onTimeUpdate: ', this.toPause);
+
 		if (this.toPause) {
 			return;
 		}
@@ -362,13 +339,13 @@ class LivePlayer extends React.Component{
 	}
 
 	render () {
-		const { timeSlots, plugin, currentPPI } = this.props;
-		const { currentTimestamp, isLive, ppiChanged, playBtnDisabled } = this.state;
+		const { timeSlots, plugin } = this.props;
+		const { currentTimestamp, isLive, playBtnDisabled } = this.state;
 
 		return (
 			<VideoPlayer
 				ref={videoplayer => this.videoplayer = videoplayer}
-				// {...this.props}
+				{...this.props}
 
 				current={currentTimestamp}
 
@@ -383,9 +360,7 @@ class LivePlayer extends React.Component{
 				backToLive={this.backToLive}
 				playHandler={this.playHandler}
 
-				currentPPI={currentPPI}
 				ppiChange={this.ppiChange}
-				ppiChanged={ppiChanged}
 
 				onDateChange={this.onDateChange}
 				onTimeUpdate={this.onTimeUpdate}
