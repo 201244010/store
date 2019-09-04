@@ -40,8 +40,13 @@ const OverviewInfo = ({
 };
 
 @connect(
-	state => ({
-		dashboard: state.dashboard,
+	({ dashboard }) => ({
+		overviewDeviceLoading: dashboard.overviewDeviceLoading,
+		overviewIPCLoading: dashboard.overviewIPCLoading,
+		overviewNetworkLoading: dashboard.overviewNetworkLoading,
+		deviceOverView: dashboard.deviceOverView,
+		ipcOverView: dashboard.ipcOverView,
+		networkOverview: dashboard.networkOverview,
 	}),
 	dispatch => ({
 		goToPath: (pathId, urlParams = {}) =>
@@ -51,21 +56,19 @@ const OverviewInfo = ({
 class OverviewBar extends PureComponent {
 	render() {
 		const {
-			dashboard: {
-				overviewDeviceLoading = true,
-				overviewIPCLoading = true,
-				overviewNetworkLoading = true,
-				deviceOverView: {
-					eslTotalCount = '',
-					eslPendingCount = '',
-					eslFailedCount = '',
-					apTotalCount = '',
-				} = {},
-				ipcOverView: { onLineCount = '', offLineCount = '' } = {},
-				networkOverview: {
-					onlineCount: deviceOnlineCount = '',
-					offlineCount: deviceOfflineCount = '',
-				},
+			overviewDeviceLoading = true,
+			overviewIPCLoading = true,
+			overviewNetworkLoading = true,
+			deviceOverView: {
+				eslTotalCount = '',
+				eslPendingCount = '',
+				eslFailedCount = '',
+				apTotalCount = '',
+			} = {},
+			ipcOverView: { onLineCount = '', offLineCount = '' } = {},
+			networkOverview: {
+				onlineCount: deviceOnlineCount = '',
+				offlineCount: deviceOfflineCount = '',
 			},
 			goToPath,
 		} = this.props;

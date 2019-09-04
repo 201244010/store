@@ -68,9 +68,14 @@ const data = [
 	},
 ];
 
-@connect()
+@connect(state => ({
+	ipcList: state.ipcList,
+}))
 class SalseChart extends PureComponent {
 	render() {
+		const { ipcList = [] } = this.props;
+		console.log(ipcList);
+
 		return (
 			<Card
 				title={formatMessage({ id: 'trade.transfer.trend' })}

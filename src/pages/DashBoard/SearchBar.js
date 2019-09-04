@@ -27,8 +27,9 @@ const Refresh = () => (
 );
 
 @connect(
-	state => ({
-		dashboard: state.dashboard,
+	({ dashboard }) => ({
+		searchValue: dashboard.searchValue,
+		lastModifyTime: dashboard.lastModifyTime,
 	}),
 	dispatch => ({
 		getShopIdFromStorage: () => dispatch({ type: 'global/getShopIdFromStorage' }),
@@ -114,7 +115,8 @@ class SearchBar extends PureComponent {
 	render() {
 		const { tempSelected, currentShopName } = this.state;
 		const {
-			dashboard: { searchValue: { timeRangeStart, timeRangeEnd } = {}, lastModifyTime },
+			searchValue: { timeRangeStart, timeRangeEnd } = {},
+			lastModifyTime,
 			doHandRefresh,
 		} = this.props;
 

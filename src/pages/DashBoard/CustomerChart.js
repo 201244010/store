@@ -42,8 +42,10 @@ const CardTitle = ({ onChange = null }) => {
 };
 
 @connect(
-	state => ({
-		dashboard: state.dashboard,
+	({ dashboard }) => ({
+		passengerFlowTypeLoading: dashboard.passengerFlowTypeLoading,
+		passengerAgeInfo: dashboard.passengerAgeInfo,
+		searchValue: dashboard.searchValue,
 	}),
 	dispatch => ({
 		setSearchValue: payload => dispatch({ type: 'dashboard/setSearchValue', payload }),
@@ -68,9 +70,7 @@ class CustomerChart extends PureComponent {
 		strangerCount = 0,
 		regularCount = 0,
 	}) => {
-		const {
-			dashboard: { searchValue: { passengerFlowType } = {} },
-		} = this.props;
+		const { searchValue: { passengerFlowType } = {} } = this.props;
 
 		let [fieldLeftCount, fieldRightCount] = [0, 0];
 		if (passengerFlowType === PASSENGER_FLOW_TYPE.GENDER) {
@@ -131,10 +131,8 @@ class CustomerChart extends PureComponent {
 
 	render() {
 		const {
-			dashboard: {
-				passengerFlowTypeLoading,
-				passengerAgeInfo: { passengerList = [], maleCount = 0, femaleCount = 0 } = {},
-			},
+			passengerFlowTypeLoading,
+			passengerAgeInfo: { passengerList = [], maleCount = 0, femaleCount = 0 } = {},
 		} = this.props;
 
 		const displayPassengerList = this.formatPassengerList({

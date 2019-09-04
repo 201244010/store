@@ -489,6 +489,8 @@ export default {
 			}
 		},
 
+		// *fetchPassengerOrderByTimeRange({ payload }, { select, put }) {},
+
 		*fetchPassengerFlowByTimeRange({ payload }, { select, put }) {
 			const {
 				searchValue,

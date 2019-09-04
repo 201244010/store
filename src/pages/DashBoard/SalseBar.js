@@ -57,8 +57,14 @@ const SalseInfo = ({
 };
 
 @connect(
-	state => ({
-		dashboard: state.dashboard,
+	({ dashboard }) => ({
+		passengerFlowLoading: dashboard.passengerFlowLoading,
+		totalAmountLoading: dashboard.totalAmountLoading,
+		totalCountLoading: dashboard.totalCountLoading,
+		passengerFlow: dashboard.passengerFlow,
+		totalAmount: dashboard.totalAmount,
+		totalCount: dashboard.totalCount,
+		searchValue: dashboard.searchValue,
 	}),
 	dispatch => ({
 		goToPath: (pathId, urlParams = {}) =>
@@ -68,31 +74,29 @@ const SalseInfo = ({
 class SalseBar extends PureComponent {
 	render() {
 		const {
-			dashboard: {
-				passengerFlowLoading,
-				totalAmountLoading,
-				totalCountLoading,
-				passengerFlow: { latestCount = '--', earlyCount = '--' },
-				totalAmount: {
-					totalAmount,
-					dayAmount,
-					weekAmount,
-					monthAmount,
-					dayRate: dayRateAmount,
-					weekRate: weekRateAmount,
-					monthRate: monthRateAmount,
-				},
-				totalCount: {
-					totalCount,
-					dayCount,
-					weekCount,
-					monthCount,
-					dayRate: dayRateCount,
-					weekRate: weekRateCount,
-					monthRate: monthRateCount,
-				},
-				searchValue: { rangeType = RANGE.TODAY, startQueryTime, endQueryTime } = {},
+			passengerFlowLoading,
+			totalAmountLoading,
+			totalCountLoading,
+			passengerFlow: { latestCount = '--', earlyCount = '--' },
+			totalAmount: {
+				totalAmount,
+				dayAmount,
+				weekAmount,
+				monthAmount,
+				dayRate: dayRateAmount,
+				weekRate: weekRateAmount,
+				monthRate: monthRateAmount,
 			},
+			totalCount: {
+				totalCount,
+				dayCount,
+				weekCount,
+				monthCount,
+				dayRate: dayRateCount,
+				weekRate: weekRateCount,
+				monthRate: monthRateCount,
+			},
+			searchValue: { rangeType = RANGE.TODAY, startQueryTime, endQueryTime } = {},
 			goToPath,
 		} = this.props;
 
