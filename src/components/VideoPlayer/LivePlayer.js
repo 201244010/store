@@ -116,24 +116,34 @@ class LivePlayer extends React.Component{
 					console.log('pauseHistory done.');
 				}
 
-				// 拖动到了有值的区域，则播放回放
-				const url = await getHistoryUrl(timestamp);
-				console.log('goto playhistory url: ', url);
-				if (url) {
-					this.src(url);
-				}else{
-					console.log('回放未获取到url，当前时间戳为：', timestamp);
-				}
+				setTimeout(async () => {
+					// 拖动到了有值的区域，则播放回放
+					const url = await getHistoryUrl(timestamp);
+					console.log('goto playhistory url: ', url);
+					if (url) {
+						this.src(url);
+						setTimeout(() => {
+							const { videoplayer } = this;
+							// console.log(videoplayer.paused());
+							if (videoplayer.paused()) {
+								this.src(url);
+							}
+						}, 1000);
+					}else{
+						console.log('回放未获取到url，当前时间戳为：', timestamp);
+					}
 
-				// 光标定位到当前回放位置，将状态调整我未非直播状态；
-				this.setState({
-					isLive: false,
-					playBtnDisabled: this.getTechName() !== 'flvjs',
-					currentTimestamp: timestamp
-				});
+					// 光标定位到当前回放位置，将状态调整我未非直播状态；
+					this.setState({
+						isLive: false,
+						playBtnDisabled: this.getTechName() !== 'flvjs',
+						currentTimestamp: timestamp
+					});
 
-				this.startTimestamp = timestamp;
-				this.toPause = false;
+					this.startTimestamp = timestamp;
+					this.toPause = false;
+				}, 800);
+
 			}
 			// 下面情况均为选中有值区域
 			else if (isInside === timestamp) {
