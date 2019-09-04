@@ -210,7 +210,7 @@ class SoftwareUpdate extends Component {
 				case STATUS.DOWNLOADFAIL:
 					percent = 0;
 					visible = false;
-					message.info(formatMessage({ id: 'softwareUpdate.download.fail' }));
+					message.error(formatMessage({ id: 'softwareUpdate.download.fail' }));
 					clearInterval(this.interval);
 					this.setUpdatingStatus(STATUS.NORMAL);
 					break;

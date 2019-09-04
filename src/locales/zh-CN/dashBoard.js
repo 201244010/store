@@ -18,7 +18,7 @@ export default {
 
 	'dashboard.overview.product': '商品数',
 	'dashboard.overview.esl.push': '待推送',
-	'dashboard.overview.esl.push.failed': '推送失败价签数',
+	'dashboard.overview.esl.push.failed': '推送失败',
 	'dashboard.overview.esl.push.total': '价签总数',
 	'dashboard.overview.esl.push.show.title': '电子价签数',
 	'dashboard.overview.ap.online': '在线价签基站',
@@ -75,4 +75,6 @@ export default {
 	'customer.distribute': '客群分布',
 	'customer.sex': '性别',
 	'customer.newold': '新老',
+	'customer.stranger': '新客',
+	'customer.regular': '熟客',
 };

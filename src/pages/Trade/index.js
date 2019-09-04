@@ -256,40 +256,46 @@ class Trade extends PureComponent {
 				>
 					<Tabs defaultActiveKey="business" animated={false}>
 						<TabPane tab={formatMessage({ id: 'business.account' })} key="business">
-							{b2b.map(info => {
-								const { id, tag } = info;
-								return (
-									<PaymentRadio
-										key={id}
-										{...{
-											backgroundImg:
-												PAYMENT_ICON[tag] || PAYMENT_ICON.default,
-											name: 'b2b',
-											id,
-											value: tag,
-											onChange: this.radioChange,
-										}}
-									/>
-								);
-							})}
+							<div className={styles['tab-content']}>
+								{b2b.map(info => {
+									const { id, tag } = info;
+									return (
+										<div className={styles['payment-radio-wrapper']} key={id}>
+											<PaymentRadio
+												{...{
+													backgroundImg:
+														PAYMENT_ICON[tag] || PAYMENT_ICON.default,
+													name: 'b2b',
+													id,
+													value: tag,
+													onChange: this.radioChange,
+												}}
+											/>
+										</div>
+									);
+								})}
+							</div>
 						</TabPane>
 						<TabPane tab={formatMessage({ id: 'person.account' })} key="account">
-							{b2c.map(info => {
-								const { id, tag } = info;
-								return (
-									<PaymentRadio
-										key={id}
-										{...{
-											backgroundImg:
-												PAYMENT_ICON[tag] || PAYMENT_ICON.default,
-											name: 'b2c',
-											id,
-											value: tag,
-											onChange: this.radioChange,
-										}}
-									/>
-								);
-							})}
+							<div className={styles['tab-content']}>
+								{b2c.map(info => {
+									const { id, tag } = info;
+									return (
+										<div className={styles['payment-radio-wrapper']} key={id}>
+											<PaymentRadio
+												{...{
+													backgroundImg:
+														PAYMENT_ICON[tag] || PAYMENT_ICON.default,
+													name: 'b2c',
+													id,
+													value: tag,
+													onChange: this.radioChange,
+												}}
+											/>
+										</div>
+									);
+								})}
+							</div>
 						</TabPane>
 					</Tabs>
 

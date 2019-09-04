@@ -38,6 +38,13 @@ const columns = [
 		key: 'ontime',
 	},
 ];
+const WIFI = 'wifi';
+const MQTT_TYPE = {
+	ROUTER: 'router',
+	LIST: 'list'
+};
+const GUEST = 'guest';
+const BR_GUEST = 'br-guest';
 
 @connect(
 	state => ({
@@ -59,21 +66,20 @@ class ClientList extends React.Component {
 		this.state = {
 			dataSource: [],
 			pageSize: 10,
-			sn: '',
-			networkId: '',
-			type: '',
 		};
-	}
-
-	componentDidMount() {
+		
 		const {
 			location: {
 				query: { sn, networkId, type },
 			},
 		} = this.props;
-		this.setState({ sn, networkId, type }, () => {
-			this.checkClient();
-		});
+		this.sn = sn;
+		this.networkId = networkId;
+		this.type = type;
+	}
+
+	componentDidMount() {
+		this.checkClient();
 	}
 
 	componentWillUnmount() {
@@ -83,21 +89,27 @@ class ClientList extends React.Component {
 	}
 
 	// 对返回的数据进行处理
-	apHandler = (responseData, action) => {
+	apHandler = (responseData, action, sn) => {
 		const { getDeviceList } = this.props;
 		const { errcode } = responseData[0];
-		const { sn, networkId, dataSource, type } = this.state;
+		const { dataSource } = this.state;
+		
 
 		// 当未组网时直接用sn号填进去，有routerMac字段时需要再发一个请求进行匹配
 
-		if (errcode === 0 && action === 'list') {
+		if (errcode === 0 && action === MQTT_TYPE.LIST && sn === this.sn) {
 			const { result = {} } = responseData[0];
 			let dataArray = [];
 			if ((result.data[0] || {}).routermac === undefined) {
 				dataArray = result.data.map(item => {
 					// item.ontime = formatRelativeTime(item.ontime);
-					item.sn = sn;
+					item.sn = this.sn;
 					item.ontime = formatRelativeTime(item.ontime * 1000);
+					if(item.connMode === WIFI) {
+						item.connMode = item.wifiMode;
+					} else {
+						item.connMode = formatMessage({id: 'network.connect.wired'});
+					}
 					return item;
 				});
 			} else {
@@ -105,29 +117,34 @@ class ClientList extends React.Component {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = '--';
 					item.ontime = formatRelativeTime(item.ontime * 1000);
+					if(item.connMode === WIFI) {
+						item.connMode = item.wifiMode;
+					} else {
+						item.connMode = formatMessage({id: 'network.connect.wired'});
+					}
 					return item;
 				});
 				getDeviceList({
 					message: {
 						opcode: OPCODE.GET_ROUTES_DETAIL,
 						param: {
-							sn,
-							network_id: networkId,
+							sn: this.sn,
+							network_id: this.networkId,
 						},
 					},
 				});
 			}
 
 			// 根据type筛选是否为客户
-			if (type === 'guest') {
-				const filter = dataArray.filter(item => item.bridge === 'br-guest');
+			if (this.type === GUEST) {
+				const filter = dataArray.filter(item => item.bridge === BR_GUEST);
 				this.setState({ dataSource: filter });
 			} else {
 				this.setState({ dataSource: dataArray });
 			}
 		}
 
-		if (errcode === 0 && action === 'router') {
+		if (errcode === 0 && action === MQTT_TYPE.ROUTER && sn === this.sn) {
 			// 对路由进行处理
 			const {
 				result: {
@@ -147,7 +164,6 @@ class ClientList extends React.Component {
 
 	checkClient = async () => {
 		const { generateTopic, subscribe, checkClientExist, apHandler, getDeviceList } = this.props;
-		const { sn, networkId } = this.state;
 		const isClientExist = await checkClientExist();
 		clearTimeout(this.checkTime);
 
@@ -160,8 +176,8 @@ class ClientList extends React.Component {
 				message: {
 					opcode: OPCODE.CLIENT_LIST_GET,
 					param: {
-						sn,
-						network_id: networkId,
+						sn: this.sn,
+						network_id: this.networkId,
 					},
 				},
 			});
@@ -169,11 +185,19 @@ class ClientList extends React.Component {
 			this.checkTime = setTimeout(() => this.checkClient(), 1000);
 		}
 	};
+	
+	handleData = array =>
+		array.map(item => {
+			item.mac = item.mac.toUpperCase();
+			return item;
+		});
+	
 
 	render() {
 		const { dataSource, pageSize } = this.state;
 		const { loading } = this.props;
-		const array = dataSource.slice(0, 50 * pageSize);
+		const data = this.handleData(dataSource);
+		const array = data.slice(0, 50 * pageSize);
 
 		return (
 			<Card
