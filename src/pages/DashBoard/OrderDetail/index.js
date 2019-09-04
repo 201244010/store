@@ -1,17 +1,34 @@
 import React, { Component } from 'react';
+import { connect } from 'dva';
 import { unixSecondToDate } from '@/utils/utils';
 import { Card, Button, Form, Select, Row, Col, Table } from 'antd';
 import styles from './index.less';
-import * as Actions from './services/payment';
+
+@connect(
+	state => {
+		const { orderList, detailList, total } = state.orderDetail;
+		return {
+			orderList,
+			detailList,
+			total,
+		};
+	},
+	dispatch => ({
+		getList: options => {
+			dispatch({ type: 'orderDetail/getList', payload: { options } });
+		},
+		getDetailList: orderId => {
+			dispatch({ type: 'orderDetail/addDetailList', payload: { orderId } });
+		}
+	}),
+)
 
 @Form.create()
 class OrderDetail extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			orderList: [],
 			expandKeys: [],
-			orderTotal: 50,
 			postOptions: {},
 		};
 	};
@@ -26,13 +43,10 @@ class OrderDetail extends Component {
 				'orderType': 'totalTrade'
 			}
 		);
-		this.getList().then(
-			orderList => {
-				// console.log('getList:', orderList);
-				this.setState({ orderList });
-			}
-		);
+		this.initTimeRange();
+		this.getList();
 	};
+
 
 	handleSubmit = (e, purchase, order) => {
 		e.preventDefault();
@@ -43,20 +57,23 @@ class OrderDetail extends Component {
 				const { postOptions: options = {} } = this.state;
 
 
-				options.purchaseType = purchase[purchaseType] ? [purchase[purchaseType]] : [];
-				options.orderType = order[orderType] ? [order[orderType]] : [];
-				
-				if(purchase[purchaseType] || order[orderType]){ // 筛选时，默认请求第一页
-					options.current = 1;
+				options.purchaseTypeList = purchase[purchaseType] ? [purchase[purchaseType]] : [];
+				options.orderTypeList = order[orderType] ? [order[orderType]] : [];
+
+				if (purchase[purchaseType] || order[orderType]) { // 筛选时，默认请求第一页
+					options.pageNum = 1;
 				}
+
 				switch (rankType) {
 					case 'rankDefault':
+						options.sortByAmount = -1;
+						options.sortByTime = -1;
 						break;
 					case 'priceNegativ':
-						options.sortByPrice = 1;
+						options.sortByAmount = 1;
 						break;
 					case 'pricePositive':
-						options.sortByPrice = 0;
+						options.sortByAmount = 0;
 						break;
 					case 'timeNegtiv':
 						options.sortByTime = 1;
@@ -68,14 +85,14 @@ class OrderDetail extends Component {
 						break;
 				}
 
-				this.setState({ postOptions: options });
-				this.getList(options)
-					.then(
-						orderList => {
-							const expandKeys = [];
-							this.setState({ orderList, expandKeys });
-						}
-					);
+				this.setState(
+					{
+						postOptions: options,
+						expandKeys: []
+					},
+				);
+				this.getList(options);
+
 			}
 		});
 	};
@@ -91,94 +108,63 @@ class OrderDetail extends Component {
 		);
 	};
 
-	handleExpand = (record) => {
-		const { expandKeys, orderList } = this.state;
-		const id = record.orderId;
+	handleExpand = async (record) => {
+		const { expandKeys } = this.state;
+
+		// console.log('record:', record);
+
 		const index = expandKeys.findIndex(key => key === record.key); // 是否在展开列表中
 
 		if (index >= 0) {
 			expandKeys.splice(index, 1); // 存在时删除
-			record.expanded = false;
 		} else {
 			expandKeys.push(record.key);
-			record.expanded = true;
 		}
 
 		this.setState({ expandKeys });
 
+
 		// 展开订单无详情时拉取一次
 		if (!record.detail || !record.detail[0]) {
+			this.getDetailList(record.orderId);
 			record.loading = true;
-			this.getDetailList(id).then(
-				detailList => {
-					detailList.key = id;
-					record.detail = detailList;
-					record.loading = false;
-					this.setState({ orderList });
-				}
-			);
 		}
 	};
 
 	handlePaginate = (page, pageSize) => {
 		// console.log('page:,ps:', page, pageSize);
 		const { postOptions } = this.state;
-		postOptions.current = page;
+		postOptions.pageNum = page;
 		postOptions.pageSize = pageSize;
 		this.setState({ postOptions });
-		this.getList(postOptions)
-			.then(
-				orderList => {
-					const expandKeys = [];
-					this.setState({ orderList, expandKeys });
-				}
-			);
-		// this.getList();
+
+		this.getList(postOptions);
+		const expandKeys = [];
+		this.setState({ expandKeys });
 	}
 
-	getList = (options = {}) => {
-		const {
-			sortByPrice: sort_by_amount = -1, // 空时取默认值-1，不排序
-			sortByTime: sort_by_time = -1,
-			purchaseType: purchase_type_list = [],
-			orderType: order_type_list = [],
-			current: page_num = 1,
-			pageSize: page_size = 10,
-		} = options;
-
+	initTimeRange = () => {
 		const timeRange = this.getUrlkey(window.location.href);
-		// console.log('timeRange:', timeRange);
-
-		return Actions.getList({
-			time_range_end: timeRange.timeRangeEnd,
-			time_range_start: timeRange.timeRangeStart,
-			sort_by_amount,
-			sort_by_time,
-			order_type_list,
-			purchase_type_list,
-			page_num,
-			page_size,
-		}).then(
-			response => {
-				let { orderTotal } = this.state;
-				orderTotal = response.data.total_count;
-				// console.log('setstate:', orderTotal);
-				this.setState({ orderTotal });
-				return this.createOrderData(response);
-			}
-		);
+		const postOptions = {};
+		postOptions.timeRangeEnd = timeRange.timeRangeEnd;
+		postOptions.timeRangeStart = timeRange.timeRangeStart;
+		this.setState({ postOptions });
 	};
 
-	getDetailList = orderId => Actions.getDetailList({ order_id: orderId })
-		.then(
-			response => this.createOrderDetail(response)
-		);
+	getList = async (options = {}) => {
+		const { getList } = this.props;
+		await getList(options);
+	};
 
-	createOrderData = response => {
+	getDetailList = async id => {
+		const { getDetailList } = this.props;
+		await getDetailList(id);
+	};
+
+	createOrderData = list => {
 		const orderList = [];
-		// const detailList = []
 
-		response.data.order_list.forEach(item => {
+		list.forEach(item => {
 			const obj = {};
 			obj.key = item.id;
 			obj.orderId = item.id;
@@ -186,22 +172,30 @@ class OrderDetail extends Component {
 			obj.orderTypeId = item.order_type_id;
 			obj.purchaseType = item.purchase_type;
 			obj.purchaseTime = unixSecondToDate(item.purchase_time);
-			obj.expanded = false;
+			obj.expanded = this.isExpand(item.id);
 			obj.tradeValue = item.amount;
+			obj.detail = item.detail;
 
 			orderList.push(obj);
 		});
+
 		return orderList;
 	};
 
-	createOrderDetail = res => {
-		const detailList = res.data.detail_list;
-		return detailList;
+	isExpand = orderId => {
+		const { expandKeys } = this.state;
+		const index = expandKeys.indexOf(orderId);
+		if (index < 0) {
+			return false;
+		}
+		return true;
 	};
 
 	getUrlkey = url => {
 		const params = {};
 		const urls = url.split('?');
+
+		 // 存在参数时
 		if (urls[1]) {
 			const arr = urls[1].split('&') || [];
 			for (let i = 0, l = arr.length; i < l; i++) {
@@ -216,7 +210,14 @@ class OrderDetail extends Component {
 	};
 
 	render() {
-		const { orderList: resData, expandKeys, orderTotal } = this.state;
+		const { 
+			orderList, 
+			total: orderTotal, 
+			form: { getFieldDecorator } 
+		} = this.props;
+		const { expandKeys } = this.state;
+
+		const orderData = this.createOrderData(orderList);
 
 		const columns = [
 			{ title: '订单号', dataIndex: 'orderId', key: 'orderId' },
@@ -239,10 +240,6 @@ class OrderDetail extends Component {
 			},
 		];
 
-		const {
-			form: { getFieldDecorator },
-		} = this.props;
-
 		const purchaseCode = {
 			// totalPay: 1,
 			ali: 9,
@@ -259,7 +256,7 @@ class OrderDetail extends Component {
 			normal: 1,
 			refund: 2,
 		};
-		
+
 		const formItemLayout = {
 			labelCol: {
 				span: 8
@@ -274,7 +271,7 @@ class OrderDetail extends Component {
 			}
 		};
 		const formLayout = 'inline';
-		
+
 		const detailColumns = [
 			{ title: '商品', dataIndex: 'name', key: 'name', width: '150px' },
 			{ title: '数量', dataIndex: 'quantity', key: 'quantity' }
@@ -357,7 +354,7 @@ class OrderDetail extends Component {
 
 				<Table
 					columns={columns}
-					dataSource={resData}
+					dataSource={orderData}
 					expandRowByClick
 					expandIconAsCell={false}
 					expandedRowKeys={expandKeys}
@@ -377,7 +374,8 @@ class OrderDetail extends Component {
 							showQuickJumper: true,
 							showSizeChanger: true,
 							total: orderTotal,
-							onChange: this.handlePaginate
+							onChange: this.handlePaginate,
+							onShowSizeChange: this.handlePaginate,
 						}
 					}
 				/>
