@@ -19,6 +19,7 @@ class LivePlayer extends React.Component{
 		this.currentSrc = '';
 		this.startTimestamp = 0;
 		this.relativeTimestamp = 0;
+		this.replayTimeout = 0;
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
 	}
 
@@ -121,14 +122,21 @@ class LivePlayer extends React.Component{
 					const url = await getHistoryUrl(timestamp);
 					console.log('goto playhistory url: ', url);
 					if (url) {
+						const replay = (time) => {
+							this.replayTimeout = setTimeout(() => {
+								console.log('replay timeout', time);
+								const { videoplayer } = this;
+								if (videoplayer.paused()) {
+									this.src(url);
+									replay(time*2);
+								}else{
+									clearTimeout(this.replayTimeout);
+
+								}
+							}, time*1000);
+						};
 						this.src(url);
-						setTimeout(() => {
-							const { videoplayer } = this;
-							// console.log(videoplayer.paused());
-							if (videoplayer.paused()) {
-								this.src(url);
-							}
-						}, 1000);
+						replay(2);
 					}else{
 						console.log('回放未获取到url，当前时间戳为：', timestamp);
 					}
