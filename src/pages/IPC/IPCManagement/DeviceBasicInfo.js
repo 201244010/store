@@ -93,11 +93,12 @@ const mapDispatchToProps = (dispatch) => ({
 		}).then(info => info);
 	},
 });
+
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name: 'ipc-device-basic-info',
 	onValuesChange() {
-		btnDisabled = false;
+		// btnDisabled = false;
 	}
 })
 class DeviceBasicInfo extends React.Component {
@@ -272,7 +273,7 @@ class DeviceBasicInfo extends React.Component {
 														}
 														return true;
 													}
-													return true;
+													return false;
 												});
 
 												if (confictFlag) {

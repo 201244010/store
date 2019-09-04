@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Table, Popconfirm } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { OPCODE } from '@/constants/mqttStore';
+import { formatRelativeTime } from '@/utils/utils';
 import styles from './Network.less';
 
 class DeviceList extends React.PureComponent {
@@ -54,6 +55,14 @@ class DeviceList extends React.PureComponent {
 				render: (_, record) => {
 					const { clientCount, activeStatus } = record;
 					return <span>{activeStatus ? clientCount || '--' : '--'}</span>;
+				},
+			},
+			{
+				title: formatMessage({ id: 'network.onlineTime' }),
+				dataIndex: 'uptime',
+				render: (_, record) => {
+					const { uptime, activeStatus } = record;
+					return <span>{activeStatus && uptime ? formatRelativeTime(uptime * 1000) : '--'}</span>;
 				},
 			},
 			{

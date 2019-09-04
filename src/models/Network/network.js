@@ -220,9 +220,6 @@ export default {
 		},
 		*setAPHandler({ payload }, { put }) {
 			const { handler } = payload;
-			const msgMap = yield put.resolve({
-				type: 'mqttStore/putMsg',
-			});
 			yield put({
 				type: 'mqttStore/setTopicListener',
 				payload: {
@@ -230,7 +227,6 @@ export default {
 					handler: receivedMessage => {
 						const { data = [], msgId } = format('toCamel')(JSON.parse(receivedMessage));
 						const { opcode, errcode } = data[0] || {};
-						const sn = msgMap.get(msgId);
 						switch (opcode) {
 							case OPCODE.CLIENT_LIST_GET:
 								if (errcode === 0) {
@@ -238,7 +234,7 @@ export default {
 									const guestNumber = data[0].result.data.filter(
 										item => item.bridge === 'br-guest'
 									).length;
-									handler({ msgId, opcode, sn, clientNumber, guestNumber });
+									handler({ msgId, opcode, clientNumber, guestNumber });
 								}
 								break;
 							case OPCODE.TRAFFIC_STATS_GET:
@@ -253,7 +249,6 @@ export default {
 									handler({
 										msgId,
 										opcode,
-										sn,
 										upSpeed,
 										upUnit,
 										downSpeed,
@@ -264,7 +259,7 @@ export default {
 							case OPCODE.ROUTER_GET:
 								if (errcode === 0) {
 									const devices = data[0].result.sonconnect.devices;
-									handler({ msgId, opcode, sn, devices });
+									handler({ msgId, opcode, devices });
 								}
 								break;
 							case OPCODE.QOS_SET:
@@ -293,12 +288,26 @@ export default {
 			});
 		},
 
+		*editNetworkId({ payload }, { put, select }) {
+			const { networkId, edit } = payload;
+			const { networkList } = yield select(state => state.network);
+			const tmpList = networkList.map(item => ({
+				...item,
+				edit: item.networkId === networkId && edit,
+			}));
+			yield put({
+				type: 'updateState',
+				payload: {
+					networkList: tmpList,
+				},
+			});
+		},
+
 		*refreshNetworkList({ payload }, { put, select }) {
 			const {
 				opcode,
 				guestNumber,
 				clientNumber,
-				edit = 0,
 				upSpeed,
 				upUnit,
 				downSpeed,
@@ -318,11 +327,11 @@ export default {
 				if (item.masterDeviceSn === sn) {
 					switch (opcode) {
 						case OPCODE.CLIENT_LIST_GET:
-							return { ...item, guestNumber, clientNumber, edit };
-						case OPCODE.ROUTER_GET:
+							return { ...item, guestNumber, clientNumber };
+						case OPCODE.TRAFFIC_STATS_GET:
 							return { ...item, upSpeed, upUnit, downSpeed, downUnit };
 						default:
-							return { ...item, edit };
+							return { ...item };
 					}
 				}
 				return { ...item };
@@ -445,21 +454,26 @@ export default {
 		},
 		*apHandler({ payload }, { put }) {
 			const { handler } = payload;
+			const msgMap = yield put.resolve({
+				type: 'mqttStore/putMsg',
+			});
 
 			yield put({
 				type: 'mqttStore/setTopicListener',
 				payload: {
 					service: 'W1/response',
 					handler: receivedMessage => {
-						const { data = [{ errcode: -1 }] } = format('toCamel')(
+						const { data = [{ errcode: -1 }], msgId } = format('toCamel')(
 							JSON.parse(receivedMessage)
 						);
 						const { opcode } = data[0];
+						const sn = msgMap.get(msgId);
+						
 						if (opcode === OPCODE.ROUTER_GET) {
-							handler(data, 'router');
+							handler(data, 'router', sn);
 						}
 						if (opcode === OPCODE.CLIENT_LIST_GET) {
-							handler(data, 'list');
+							handler(data, 'list', sn);
 						}
 					},
 				},
@@ -484,7 +498,7 @@ export default {
 		*unsubscribeDeviceTopic(_, { put }) {
 			const responseTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
-				payload: { service: 'W1/request', action: 'sub' },
+				payload: { service: 'W1/response', action: 'sub' },
 			});
 
 			yield put({
