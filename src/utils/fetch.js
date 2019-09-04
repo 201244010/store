@@ -142,14 +142,16 @@ export const customizeFetch = (service = 'api', base) => {
 		let response = await fetchHandler(url, opts);
 		// console.log(response);
 
-		if (response.status === 401) {
-			unAuthHandler();
-		} else if (response.status === 403) {
-			noAuthhandler();
-		} else if (response.status === 502) {
-			response = new Response(JSON.stringify({ code: GATEWAY_ERR }));
-		} else {
-			response = new Response(JSON.stringify({ code: COMMON_ERROR }));
+		if (response.status !== 200) {
+			if (response.status === 401) {
+				unAuthHandler();
+			} else if (response.status === 403) {
+				noAuthhandler();
+			} else if (response.status === 502) {
+				response = new Response(JSON.stringify({ code: GATEWAY_ERR }));
+			} else {
+				response = new Response(JSON.stringify({ code: COMMON_ERROR }));
+			}
 		}
 
 		const result = await response.clone().json();
