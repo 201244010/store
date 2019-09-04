@@ -525,10 +525,23 @@ class POSList extends React.Component {
 
 		posList.sort((a, b) => {
 			// console.log(a, b);
+			let compareResult;
+			let nameCompare;
 			if (a.name.localeCompare) {
-				return a.name.localeCompare(b.name);
+				nameCompare = a.name.localeCompare(b.name);
+			}else{
+				nameCompare = a.name - b.name;
 			}
-			return a.name - b.name;
+			if(nameCompare === 0){
+				if (a.sn.localeCompare) {
+					compareResult = a.sn.localeCompare(b.sn);
+				}else{
+					compareResult = a.sn - b.sn;
+				}
+			}else{
+				compareResult = nameCompare;
+			}
+			return compareResult;
 		});
 
 		return (

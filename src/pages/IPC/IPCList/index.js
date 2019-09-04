@@ -69,7 +69,7 @@ class IPCList extends React.Component {
 		}
 		return (
 			<div className={styles.container}>
-				<Spin spinning={loading.effects['ipcList/read']}>
+				<Spin className={styles.loading} spinning={loading.effects['ipcList/read']}>
 					{
 						( () => {
 							if(!loading.effects['ipcList/read']){
