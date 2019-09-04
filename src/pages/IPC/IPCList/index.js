@@ -28,9 +28,9 @@ import styles from './IPCList.less';
 
 class IPCList extends React.Component {
 
-	async componentWillMount() {
+	componentDidMount() {
 		const { loadList } = this.props;
-		await loadList();
+		loadList();
 	}
 
 	onClickSetting = (sn) => {
