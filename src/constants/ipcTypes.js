@@ -1,6 +1,7 @@
 export  default {
 	'FS1': {
 		hasFaceid: true,
+		hasTFCard: true,
 		pixelRatio: '16:9',
 		rotate: [{
 			key: 0,
@@ -32,6 +33,7 @@ export  default {
 	},
 	'FM020': {
 		hasFaceid: true,
+		hasTFCard: true,
 		pixelRatio: '16:9',
 		rotate: [{
 			key: 0,
@@ -62,6 +64,7 @@ export  default {
 	},
 	'SS1': {
 		hasFaceid: false,
+		hasTFCard: true,
 		pixelRatio: '1:1',
 		rotate: [{
 			key: 0,
@@ -98,6 +101,7 @@ export  default {
 	},
 	'FM010': {
 		hasFaceid: false,
+		hasTFCard: true,
 		pixelRatio: '1:1',
 		rotate: [{
 			key: 0,
