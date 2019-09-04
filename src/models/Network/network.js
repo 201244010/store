@@ -445,21 +445,26 @@ export default {
 		},
 		*apHandler({ payload }, { put }) {
 			const { handler } = payload;
+			const msgMap = yield put.resolve({
+				type: 'mqttStore/putMsg',
+			});
 
 			yield put({
 				type: 'mqttStore/setTopicListener',
 				payload: {
 					service: 'W1/response',
 					handler: receivedMessage => {
-						const { data = [{ errcode: -1 }] } = format('toCamel')(
+						const { data = [{ errcode: -1 }], msgId } = format('toCamel')(
 							JSON.parse(receivedMessage)
 						);
 						const { opcode } = data[0];
+						const sn = msgMap.get(msgId);
+						
 						if (opcode === OPCODE.ROUTER_GET) {
-							handler(data, 'router');
+							handler(data, 'router', sn);
 						}
 						if (opcode === OPCODE.CLIENT_LIST_GET) {
-							handler(data, 'list');
+							handler(data, 'list', sn);
 						}
 					},
 				},
@@ -484,7 +489,7 @@ export default {
 		*unsubscribeDeviceTopic(_, { put }) {
 			const responseTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
-				payload: { service: 'W1/request', action: 'sub' },
+				payload: { service: 'W1/response', action: 'sub' },
 			});
 
 			yield put({
