@@ -136,6 +136,7 @@ class PhotoUpload extends React.Component {
 		fileList.forEach(item => {
 			if(item.uploading){
 				item.status = 'uploading';
+				item.percent = 100;
 			}
 		});
 
@@ -182,8 +183,8 @@ class PhotoUpload extends React.Component {
 			const uploadList = fileList.filter(item => item.uploading === true);
 			uploadFileList(uploadList, groupId);
 		}
-
-		return isLt1M && isPic;
+		return false;
+		// return isLt1M && isPic;
 
 	}
 

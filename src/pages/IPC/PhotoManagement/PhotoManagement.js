@@ -96,6 +96,9 @@ const redStyle = { color: 'red' };
 )
 @Form.create()
 class PhotoManagement extends React.Component {
+
+	isUpload = false;
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -239,11 +242,13 @@ class PhotoManagement extends React.Component {
 		getLibrary();
 	};
 
+
+
 	// 确认新增照片上传
 	handlePhotoSubmit = async (fileList) => {
 		const { groupId } = this.state;
 		const { saveFile, getLibrary, clearFileList } = this.props;
-		console.log(fileList);
+		// let isUpload = false;
 		const list = fileList.map(item => {
 			const {
 				response: {
@@ -255,32 +260,37 @@ class PhotoManagement extends React.Component {
 			}
 			return false;
 		});
-
-		if (fileList.length === 0) {
-			message.error(formatMessage({ id: 'photoManagement.noPhotoAlert' }));
-		} else if (list.filter(item => item !== false).length === list.length) {
-			const response = await saveFile({ groupId, faceImgList: list });
-			console.log('save', response);
-			if (response === false) {
-				message.error(formatMessage({ id: 'photoManagement.addFailTitle' }));
-			} else if (response.data.failureList.length === 0) {
-				message.success(formatMessage({ id: 'photoManagement.card.saveSuccess' }));
-				this.setState({ uploadPhotoShown: false }, () => {
+		if(!this.isUpload) {
+			if (fileList.length === 0) {
+				message.error(formatMessage({ id: 'photoManagement.noPhotoAlert' }));
+			} else if (list.filter(item => item !== false).length === list.length) {
+				this.isUpload = true;
+				const response = await saveFile({ groupId, faceImgList: list });
+				// console.log('save', response);
+				if (response === false) {
+					message.error(formatMessage({ id: 'photoManagement.addFailTitle' }));
+				} else if (response.data.failureList.length === 0) {
+					message.success(formatMessage({ id: 'photoManagement.card.saveSuccess' }));
+					this.setState({ uploadPhotoShown: false }, () => {
+						clearFileList();
+						this.isUpload = false;
+					});
+					getLibrary();
+					this.getList();
+				} else {
+					this.setState({
+						showFailedModal: true,
+						failedList: response.data.failureList,
+						uploadPhotoShown: false,
+					});
+					this.isUpload = false;
 					clearFileList();
-				});
-				getLibrary();
-				this.getList();
+				}
 			} else {
-				this.setState({
-					showFailedModal: true,
-					failedList: response.data.failureList,
-					uploadPhotoShown: false,
-				});
-				clearFileList();
+				message.error(formatMessage({ id: 'photoManagement.card.saveFail' }));
 			}
-		} else {
-			message.error(formatMessage({ id: 'photoManagement.card.saveFail' }));
 		}
+
 		// this.hideUpload();
 	};
 
@@ -661,6 +671,7 @@ class PhotoManagement extends React.Component {
 						pageSize={pageSize}
 					/>
 				)}
+
 				<PhotoUpload
 					uploadPhotoShown={uploadPhotoShown}
 					handlePhotoSubmit={this.handlePhotoSubmit}

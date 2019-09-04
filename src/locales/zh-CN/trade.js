@@ -22,11 +22,19 @@ export default {
 	'purchase-type-alipay': '支付宝',
 	'purchase-type-b2c-unionpay': '银联支付',
 
+	'pay.confirm.title': '请确认订单的状态',
+	'pay.order.commit': '订单提交',
 	'pay.success': '支付成功',
 	'pay.success.info': '支付成功，点击可查看订单信息和服务信息',
 	'pay.failed': '支付失败',
 	'pay.failed.info': '支付失败，再查看订单详情重新支付。',
 	'pay.back.order': '订单管理',
 	'pay.back.service': '服务管理',
-	'pay.check.detail': '查看订单详情'
+	'pay.check.detail': '查看订单详情',
+
+	'pay.order.no': '订单编号',
+	'pay.true.price': '实付款',
+	'pay.order.completed': '该订单已支付完成',
+	'pay.retry': '重新选择支付方式',
+	'qrcode.refresh.remain': '距离二维码刷新还有',
 };

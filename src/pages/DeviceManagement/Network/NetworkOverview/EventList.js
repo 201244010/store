@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Pagination, Spin, Table, message } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { formatRelativeTime } from '@/utils/utils';
+import moment from 'moment';
 import styles from './Network.less';
 
 const columns = [{
@@ -49,11 +49,14 @@ class EventList extends React.Component {
 			const { data: { eventInfo, totalCount}} = arr;
 			const total = totalCount > 50 * pageSize ? 50 * pageSize : totalCount;
 			eventInfo.forEach((item, index) => {
+				item.networkAlias !== '' ? item.networkId = item.networkAlias : '';
 				item.index = index;
-				item.reportTime = formatRelativeTime(item.reportTime/1000);
+				item.reportTime = moment.unix(item.reportTime).format('HH:mm:ss DD/MM/YYYY');
 				switch(item.eventType) {
-					case 5: item.eventType = formatMessage({id: 'network.connect.eventType5'});break;
-					case 7: item.eventType = formatMessage({id: 'network.connect.eventType7'});break;
+					case 5: item.eventType = formatMessage({id: 'network.connect.deviceCpuOverwhelmed'});break;
+					case 7: item.eventType = formatMessage({id: 'network.connect.deviceMemoryOverwhelmed'});break;
+					case 11: item.eventType = formatMessage({id: 'network.connect.deviceOnline'});break;
+					case 12: item.eventType = formatMessage({id: 'network.connect.deviceOffline'});break;
 					default: item.eventType = formatMessage({id: 'network.connect.eventType.unknown'});break;
 				}
 			});

@@ -34,6 +34,15 @@
 	}
 }
 
+.tab-content {
+	display: flex;
+	align-items: center;
+
+	.payment-radio-wrapper {
+		margin-right: 10px;
+	}
+}
+
 .noAuth-wrapper {
 	padding: 20px 10px;
 	text-align: center;
@@ -56,6 +65,49 @@
 	}
 }
 
-.icon-wrapper{
+.icon-wrapper {
 	margin: 50px auto;
+}
+
+.qrCode-title {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+
+	.order-no {
+		font-weight: bold;
+	}
+
+	.order-price {
+		font-weight: bold;
+
+		.price {
+			color: lightcoral;
+		}
+	}
+}
+
+.qrCode-content {
+	width: 80%;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+
+	.qrCode-refresh {
+		text-align: center;
+		font-weight: bold;
+
+		span {
+			color: red;
+		}
+	}
+}
+
+.qrCode-footer {
+	margin-top: 20px;
+	a {
+		font-weight: bold;
+		color: red;
+	}
 }

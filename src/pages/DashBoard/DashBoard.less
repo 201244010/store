@@ -57,6 +57,18 @@
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
+
+	:global {
+		.ant-card-body {
+			padding: 24px 10px;
+		}
+	}
+
+	img {
+		width: 48px;
+		height: 100%;
+		object-fit: contain;
+	}
 }
 
 .salse-card,
@@ -99,6 +111,12 @@
 			padding: 0;
 		}
 	}
+}
+
+.customer-card-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .display-content {

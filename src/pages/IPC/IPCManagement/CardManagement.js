@@ -43,6 +43,14 @@ const mapDispatchToProps = (dispatch) => ({
 			type: 'cardManagement/resetState'
 		});
 	},
+	getDeviceInfo({ sn }) {
+		return dispatch({
+			type: 'ipcList/getDeviceInfo',
+			payload: {
+				sn
+			}
+		}).then(info => info);
+	}
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -56,12 +64,22 @@ class CardManagement extends Component {
 			formatProgress: 0, // 格式化进度
 			formatTimeout: null, // 格式化超时
 			removeTimeout: null, // 移除超时
+			deviceInfo: {
+				hasTFCard: true
+			}
 		};
 	}
 
-	componentDidMount() {
-		const { sn, readCardInfo } = this.props;
-		readCardInfo(sn);
+	componentDidMount = async () => {
+		const { sn, readCardInfo, getDeviceInfo } = this.props;
+		if(sn){
+			readCardInfo(sn);
+			const deviceInfo = await getDeviceInfo({ sn });
+			this.setState({
+				deviceInfo
+			});
+		}
+
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -366,80 +384,86 @@ class CardManagement extends Component {
 			}
 		} = this.props;
 
-		const { formattingModalVisible, formatProgress } = this.state;
+		const { formattingModalVisible, formatProgress, deviceInfo: { hasTFCard } } = this.state;
 
 		return (
-			<Spin spinning={isLoading}>
-				<Card title={formatMessage({ id: 'cardManagement.title' })} className={(!hasCard) && styles['transparnt-05']}>
-					<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
-						<Form.Item label={formatMessage({ id: 'cardManagement.sizeLeft' })}>
-							{
-								hasCard && sd_status_code === 2 ?
-									<div>
-										<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}{this.cardSizeInfo(used)}/{this.cardSizeInfo(total)}</p>
+			<>
+				{
+					hasTFCard ?
+						<Spin spinning={isLoading}>
+							<Card title={formatMessage({ id: 'cardManagement.title' })} className={(!hasCard) && styles['transparnt-05']}>
+								<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
+									<Form.Item label={formatMessage({ id: 'cardManagement.sizeLeft' })}>
+										{
+											hasCard && sd_status_code === 2 ?
+												<div>
+													<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}{this.cardSizeInfo(used)}/{this.cardSizeInfo(total)}</p>
+													<Progress
+														className={styles['form-progress']}
+														percent={this.percentage(used, total)}
+														showInfo={false}
+													/>
+												</div>
+												: <p>{ this.sdStatus2text(sd_status_code) }</p>
+										}
+
+									</Form.Item>
+
+									<Form.Item label={formatMessage({ id: 'cardManagement.daysCanUse' })}>
+										{
+											hasCard && sd_status_code === 2 ?
+												<p>
+													{this.hour2day(available_time)}<br />
+													{formatMessage({ id: 'cardManagement.daysUseTip' })}
+												</p>
+												: <p>{this.sdStatus2text(sd_status_code)}</p>
+										}
+									</Form.Item>
+
+									<Form.Item label={formatMessage({ id: 'cardManagement.removeSafely' })}>
+										{/* 未格式化的卡不能点移除 */}
+										<Button
+											disabled={!hasCard || (hasCard && sd_status_code === 1)}
+											onClick={(e) => {
+												e.target.blur();
+												this.removeConfirm();
+											}}
+										>{formatMessage({ id: 'cardManagement.removeImmediately' })}
+										</Button>
+									</Form.Item>
+
+									<Form.Item label={formatMessage({ id: 'cardManagement.format' })}>
+										<Button
+											disabled={!hasCard}
+											onClick={(e) => {
+												e.target.blur();
+												this.formatConfirm();
+											}}
+										>{formatMessage({ id: 'cardManagement.formatImmediately' })}
+										</Button>
+									</Form.Item>
+
+									{/* 格式化中弹框 */}
+									<Modal
+										title={formatMessage({ id: 'cardManagement.formattingTitle' })}
+										visible={formattingModalVisible}
+										closable={false}
+										footer={null}
+										maskClosable={false}
+									>
 										<Progress
 											className={styles['form-progress']}
-											percent={this.percentage(used, total)}
-											showInfo={false}
+											percent={formatProgress}
+											showInfo
 										/>
-									</div>
-									: <p>{ this.sdStatus2text(sd_status_code) }</p>
-							}
-
-						</Form.Item>
-
-						<Form.Item label={formatMessage({ id: 'cardManagement.daysCanUse' })}>
-							{
-								hasCard && sd_status_code === 2 ?
-									<p>
-										{this.hour2day(available_time)}<br />
-										{formatMessage({ id: 'cardManagement.daysUseTip' })}
-									</p>
-									: <p>{this.sdStatus2text(sd_status_code)}</p>
-							}
-						</Form.Item>
-
-						<Form.Item label={formatMessage({ id: 'cardManagement.removeSafely' })}>
-							{/* 未格式化的卡不能点移除 */}
-							<Button
-								disabled={!hasCard || (hasCard && sd_status_code === 1)}
-								onClick={(e) => {
-									e.target.blur();
-									this.removeConfirm();
-								}}
-							>{formatMessage({ id: 'cardManagement.removeImmediately' })}
-							</Button>
-						</Form.Item>
-
-						<Form.Item label={formatMessage({ id: 'cardManagement.format' })}>
-							<Button
-								disabled={!hasCard}
-								onClick={(e) => {
-									e.target.blur();
-									this.formatConfirm();
-								}}
-							>{formatMessage({ id: 'cardManagement.formatImmediately' })}
-							</Button>
-						</Form.Item>
-
-						{/* 格式化中弹框 */}
-						<Modal
-							title={formatMessage({ id: 'cardManagement.formattingTitle' })}
-							visible={formattingModalVisible}
-							closable={false}
-							footer={null}
-							maskClosable={false}
-						>
-							<Progress
-								className={styles['form-progress']}
-								percent={formatProgress}
-								showInfo
-							/>
-							<p>{formatMessage({ id: 'cardManagement.formattingContent' })}</p>
-						</Modal>
-					</Form>
-				</Card>
-			</Spin>
+										<p>{formatMessage({ id: 'cardManagement.formattingContent' })}</p>
+									</Modal>
+								</Form>
+							</Card>
+						</Spin>
+						: null
+				}
+			</>
 		);
 	}
 }

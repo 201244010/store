@@ -6,7 +6,6 @@ export const login = (type, options = {}) => {
 	const opts = {
 		body: {
 			...options,
-			// TODO 临时修改，以后会修正
 			app_type: 1,
 		},
 	};

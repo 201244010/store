@@ -17,12 +17,14 @@ const { LAST_HAND_REFRESH_TIME } = DASHBOARD;
 	dispatch => ({
 		fetchAllData: ({ needLoading }) =>
 			dispatch({ type: 'dashboard/fetchAllData', payload: { needLoading } }),
+		getAgeRanges: () => dispatch({ type: 'dashboard/getAgeRanges' }),
 	})
 )
 class DashBoard extends PureComponent {
-	componentDidMount() {
-		const { fetchAllData } = this.props;
-		fetchAllData({ needLoading: true });
+	async componentDidMount() {
+		const { fetchAllData, getAgeRanges } = this.props;
+		await getAgeRanges();
+		await fetchAllData({ needLoading: true });
 	}
 
 	componentWillUnmount() {

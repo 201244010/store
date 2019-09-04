@@ -554,6 +554,45 @@ export const formatSpeed = speed => {
 	return { speed, unit };
 };
 
+// 格式化时间，精确到天时分秒
+export const formatRelativeTime = timeStamp => {
+	const duration = moment.duration(timeStamp);
+	const years = duration.years();
+	const months = duration.months();
+	const days = duration.days();
+	const hours = duration.hours();
+	const minutes = duration.minutes();
+	const seconds = duration.seconds();
+	let yearStr = '';
+	let monthStr = '';
+	let dayStr = '';
+	let hourStr = '';
+	let minuteStr = '';
+	let secondStr = '';
+	if (years > 0) {
+		yearStr = `${years}${formatMessage({ id: 'common.time.year' })}`;
+	}
+
+	if (months > 0) {
+		monthStr = `${months}${formatMessage({ id: 'common.time.month' })}`;
+	}
+	if (days > 0) {
+		dayStr = `${days}${formatMessage({ id: 'common.time.day' })}`;
+	}
+	if (hours > 0) {
+		hourStr = `${hours}${formatMessage({ id: 'common.time.hour' })}`;
+	}
+	if (minutes > 0) {
+		minuteStr = `${minutes}${formatMessage({ id: 'common.time.minute' })}`;
+	}
+
+	if (seconds > 0) {
+		secondStr = `${seconds}${formatMessage({ id: 'common.time.second' })}`;
+	}
+
+	return `${yearStr}${monthStr}${dayStr}${hourStr}${minuteStr}${secondStr}`;
+};
+
 export const checkAnchor = (anchor = null) => {
 	if (!anchor) {
 		return null;
@@ -576,45 +615,18 @@ export const getCountDown = (seconds, level = 'hour') => {
 	const minute = Math.floor(((seconds % TIME.DAY) % TIME.HOUR) / TIME.MINUTE);
 	const second = Math.floor(((seconds % TIME.DAY) % TIME.HOUR) % TIME.MINUTE);
 
-	if(level === 'day'){
+	if (level === 'day') {
 		return {
 			day,
 			hour,
 			minute,
-			second
+			second,
 		};
 	}
 
 	return {
 		hour: hour === 0 ? 24 : hour,
 		minute,
-		second
+		second,
 	};
-};
-//  格式化时间，返回字符串
-export const formatRelativeTime = timeStamp => {
-	const seconds = parseInt(timeStamp, 10);
-	const day = parseInt(seconds / 86400, 10);
-	const hour = parseInt((seconds % 86400) / 3600, 10);
-	const minute = parseInt((seconds % 3600) / 60, 10);
-	const second = parseInt(seconds % 60, 10);
-	
-	let timeStr = '';
-	if (day > 0) {
-		timeStr += day + formatMessage({ id: 'common.time.day' });
-	}
-	
-	if (hour > 0) {
-		timeStr += hour + formatMessage({ id: 'common.time.hour' });
-	}
-	
-	if (minute > 0) {
-		timeStr += minute + formatMessage({ id: 'common.time.minute' });
-	}
-	
-	if (second >= 0) {
-		timeStr += second + formatMessage({ id: 'common.time.second' });
-	}
-	
-	return timeStr;
 };

@@ -3,6 +3,7 @@ import moment from 'moment';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Radio, DatePicker, Icon, message } from 'antd';
+import { getQueryDate } from '@/models/dashBoard';
 import { DASHBOARD } from './constants';
 
 import styles from './DashBoard.less';
@@ -68,10 +69,14 @@ class SearchBar extends PureComponent {
 			tempSelected: value,
 		});
 
+		const [startQueryTime, endQueryTime] = getQueryDate(value);
+
 		setSearchValue({
 			rangeType: value,
 			timeRangeStart: null,
 			timeRangeEnd: null,
+			startQueryTime,
+			endQueryTime,
 		});
 		onSearchChanged();
 	};
@@ -97,6 +102,8 @@ class SearchBar extends PureComponent {
 			rangeType: RANGE.FREE,
 			timeRangeStart: startTime,
 			timeRangeEnd: endTime,
+			startQueryTime: moment(startTime).unix(),
+			endQueryTime: moment(endTime).unix(),
 		});
 
 		if (startTime && endTime) {

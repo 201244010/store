@@ -25,11 +25,11 @@
 			}
 			.network-upspeed {
 				.speed;
-				background-image: url(../../../assets/imgs/upload.svg);
+				background-image: url('@/assets/imgs/upload.svg');
 			}
 			.network-downspeed {
 				.speed;
-				background-image: url(../../../assets/imgs/download.svg);
+				background-image: url('@/assets/imgs/download.svg');
 			}
 			span {
 				font-family: PingFangSC-Medium, sans-serif;
@@ -47,7 +47,7 @@
 				display: inline-block;
 				width: 14px;
 				height: 14px;
-				background-image: url(../../../assets/imgs/rename.svg);
+				background-image: url('@/assets/imgs/rename.svg');
 			}
 			.network-name {
 				margin-right: 4px;
@@ -75,9 +75,12 @@
 					color: #303540;
 				}
 			}
+			.network-divider {
+				height: 80px;
+			}
 		}
 		.network-map {
-			width: calc(100% - 153px);
+			width: calc(100% - 180px);
 			ul {
 				margin: 0;
 				padding: 0;
@@ -97,7 +100,7 @@
 					}
 					.network-cicle-third {
 						.network-cicle;
-						margin-right: 14px;
+						margin-right: 44px;
 					}
 					.network-line {
 						width: calc(50% - 32px);
@@ -112,7 +115,7 @@
 						vertical-align: middle;
 						width: 15px;
 						height: 15px;
-						background-image: url(../../../assets/imgs/break.svg);
+						background-image: url('@/assets/imgs/break.svg');
 						background-size: contain;
 						background-repeat: no-repeat;
 					}
@@ -123,15 +126,27 @@
 					.offline {
 						border: 3px solid #a1a7b3;
 					}
+					.network-router {
+						margin-left: 40px;
+					}
+					.network-client {
+						margin-right: 30px;
+					}
+					.network-client-offline {
+						margin-right: 30px;
+					}
 				}
 			}
 			:global {
 				.ant-badge-count {
+					background-color: #4B7AFA;
+					font-size: 14px;
 					min-width: 16px;
 					height: 16px;
 					line-height: 16px;
 					padding: 0 4px;
 				}
+
 			}
 		}
 	}
@@ -197,4 +212,3 @@
 	float: right;
 	margin: 16px 0;
 }
-
