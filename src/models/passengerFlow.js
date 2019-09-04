@@ -59,7 +59,7 @@ export default {
 			const { type = 1 } = payload || {};
 			const response = yield call(
 				Actions.handlePassengerFlowManagement,
-				'statistic/order/getByTimeRange',
+				'statistic/order/getLatest',
 				format('toSnake')({ type })
 			);
 
@@ -122,7 +122,7 @@ export default {
 			return response;
 		},
 	},
-	reducres: {
+	reducers: {
 		updateState(state, action) {
 			return {
 				...state,

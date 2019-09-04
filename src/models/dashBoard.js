@@ -130,6 +130,28 @@ const getGenderFieldsList = targetList => {
 	};
 };
 
+const formatTime = (time, rangeType, timeRangeStart, timeRangeEnd) => {
+	if (rangeType === RANGE.TODAY) {
+		return parseInt(time, 10) - 1;
+	}
+
+	if (rangeType === RANGE.WEEK || rangeType === RANGE.MONTH) {
+		return time;
+	}
+
+	if (rangeType === RANGE.FREE) {
+		if (moment(timeRangeStart).isSame(timeRangeEnd, 'day')) {
+			return parseInt(time, 10) - 1;
+		}
+
+		return moment(timeRangeStart)
+			.add(time - 1, 'day')
+			.format('MM/DD');
+	}
+
+	return time;
+};
+
 const getRegularCount = targetList =>
 	targetList.reduce(
 		(prev, cur) => {
@@ -203,6 +225,7 @@ export default {
 		avgUnitLoading: false,
 
 		passengerFlowLoading: false,
+		passengerOrderLoading: false,
 		passengerFlowTypeLoading: false,
 
 		barLoading: false,
@@ -226,6 +249,7 @@ export default {
 
 		passengerFlow: {},
 		passengerAgeInfo: {},
+		passengerOrderList: [],
 	},
 	effects: {
 		*switchLoading({ payload }, { put }) {
@@ -314,6 +338,15 @@ export default {
 					payload: {
 						needLoading,
 						loadingType: 'passengerFlowLoading',
+					},
+				}),
+
+				// 转化率趋势
+				put({
+					type: 'fetchPassengerOrderByTimeRange',
+					payload: {
+						needLoading,
+						loadingType: 'passengerOrderLoading',
 					},
 				}),
 
@@ -489,7 +522,67 @@ export default {
 			}
 		},
 
-		// *fetchPassengerOrderByTimeRange({ payload }, { select, put }) {},
+		*fetchPassengerOrderByTimeRange({ payload }, { select, put }) {
+			const {
+				searchValue,
+				searchValue: { rangeType, timeRangeStart, timeRangeEnd },
+			} = yield select(state => state.dashboard);
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
+
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'passengerOrderLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+
+			let response = null;
+			if (rangeType === RANGE.FREE) {
+				response = yield put.resolve({
+					type: 'passengerFlow/getPassengerFlowOrderByRange',
+					payload: {
+						startTime: moment.unix(startTime).format('YYYY-MM-DD'),
+						endTime: moment.unix(endTime).format('YYYY-MM-DD'),
+					},
+				});
+			} else {
+				response = yield put.resolve({
+					type: 'passengerFlow/getPassengerFlowOrderLatest',
+					payload: {
+						type: queryRangeType[rangeType],
+					},
+				});
+			}
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { countList = [] } = format('toCamel')(data);
+
+				const formattedList = countList.map(item => {
+					const { orderCount = 0, passengerFlowCount = 0, time } = item;
+					return {
+						...item,
+						time: formatTime(time, rangeType, timeRangeStart, timeRangeEnd),
+						passengerFlowRate:
+							passengerFlowCount === 0
+								? 0
+								: parseInt((orderCount / passengerFlowCount) * 100, 10),
+					};
+				});
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						passengerOrderList: formattedList,
+						passengerOrderLoading: false,
+					},
+				});
+			}
+		},
 
 		*fetchPassengerFlowByTimeRange({ payload }, { select, put }) {
 			const {
