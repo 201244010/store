@@ -1,6 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import { Form, Input, InputNumber, Switch } from 'antd';
+import { Form, Input, InputNumber, /* Switch */ } from 'antd';
 // import {
 //   FORM_FORMAT,
 //   FORM_ITEM_LAYOUT,
@@ -46,7 +46,7 @@ class LibraryForm extends React.Component {
 
 	render() {
 		const { id, type, isEdit, restCapacity, libraries, amount, form } = this.props;
-		const { name, capacity, remarks, threshold, period, warning } = this.props;
+		const { name, capacity, remarks, threshold, period, /* warning */} = this.props;
 		const { getFieldDecorator } = form;
 
 		const isDefault = type < 5;
@@ -290,21 +290,21 @@ class LibraryForm extends React.Component {
 
 										</Form.Item>
 									);
-								case 4:
-									return (
-										<Form.Item
-											label={formatMessage({id: 'faceid.warningPush'})}
-										>
-											{
-												getFieldDecorator('warning', {
-													initialValue: warning,
-													valuePropName: 'checked'
-												})(
-													<Switch />
-												)
-											}
-										</Form.Item>
-									);
+								// case 4:
+								// 	return (
+								// 		<Form.Item
+								// 			label={formatMessage({id: 'faceid.warningPush'})}
+								// 		>
+								// 			{
+								// 				getFieldDecorator('warning', {
+								// 					initialValue: warning,
+								// 					valuePropName: 'checked'
+								// 				})(
+								// 					<Switch />
+								// 				)
+								// 			}
+								// 		</Form.Item>
+								// 	);
 								default:
 									return '';
 							}
