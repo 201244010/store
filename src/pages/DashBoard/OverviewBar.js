@@ -74,7 +74,7 @@ class OverviewBar extends PureComponent {
 		} = this.props;
 
 		return (
-			<Card title={null} className={styles['card-bar-wrapper']}>
+			<Card title={null} style={{ marginTop: '24px' }}>
 				<div className={styles['overview-bar']}>
 					<OverviewInfo
 						{...{
