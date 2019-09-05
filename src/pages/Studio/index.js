@@ -24,10 +24,14 @@ import * as styles from './index.less';
 	dispatch => ({
 		updateComponentsDetail: payload =>
 			dispatch({ type: 'studio/updateComponentsDetail', payload }),
+		updateComponentDetail: payload =>
+			dispatch({ type: 'studio/updateComponentDetail', payload }),
 		batchUpdateComponentDetail: payload =>
 			dispatch({ type: 'studio/batchUpdateComponentDetail', payload }),
 		batchUpdateScopedComponent: payload =>
 			dispatch({ type: 'studio/batchUpdateScopedComponent', payload }),
+		resetScopedComponents: payload =>
+			dispatch({ type: 'studio/resetScopedComponents', payload }),
 		toggleRightToolBox: payload => dispatch({ type: 'studio/toggleRightToolBox', payload }),
 		copySelectedComponent: payload =>
 			dispatch({ type: 'studio/copySelectedComponent', payload }),
@@ -38,6 +42,7 @@ import * as styles from './index.less';
 		zoomOutOrIn: payload => dispatch({ type: 'studio/zoomOutOrIn', payload }),
 		changeOneStep: payload => dispatch({ type: 'studio/changeOneStep', payload }),
 		selectComponentIn: payload => dispatch({ type: 'studio/selectComponentIn', payload }),
+		selectComponent: payload => dispatch({ type: 'studio/selectComponent', payload }),
 		fetchBindFields: payload => dispatch({ type: 'template/fetchBindFields', payload }),
 		saveAsDraft: payload => dispatch({ type: 'template/saveAsDraft', payload }),
 		fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
@@ -93,7 +98,8 @@ class Studio extends Component {
 			studio: { selectedShapeName, componentsDetail, copiedComponent, scopedComponents, zoomScale },
 			deleteSelectedComponent,
 			copySelectedComponent,
-			addComponent
+			addComponent,
+			updateComponentsDetail
 		} = this.props;
 		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
 		// 操作输入框时 无法删除
@@ -107,6 +113,34 @@ class Studio extends Component {
 			        deleteSelectedComponent(scopedComponents[i].name);
 				}
 			}
+		}
+		if (keyCode === KEY.KEY_LEFT) {
+			updateComponentsDetail({
+				[selectedShapeName]: {
+					x: componentsDetail[selectedShapeName].x - 1,
+				},
+			});
+		}
+		if (keyCode === KEY.KEY_RIGHT) {
+			updateComponentsDetail({
+				[selectedShapeName]: {
+					x: componentsDetail[selectedShapeName].x + 1,
+				},
+			});
+		}
+		if (keyCode === KEY.KEY_UP) {
+			updateComponentsDetail({
+				[selectedShapeName]: {
+					y: componentsDetail[selectedShapeName].y - 1,
+				},
+			});
+		}
+		if (keyCode === KEY.KEY_DOWN) {
+			updateComponentsDetail({
+				[selectedShapeName]: {
+					y: componentsDetail[selectedShapeName].y + 1,
+				},
+			});
 		}
 		if (ctrlKey) {
 			// Ctrl + X
@@ -198,7 +232,18 @@ class Studio extends Component {
 	};
 
 	handleStageMouseDown = e => {
-		const { studio: { selectedShapeName, componentsDetail, showRightToolBox } } = this.props;
+		const { selectComponent, studio: { selectedShapeName, componentsDetail, showRightToolBox } } = this.props;
+		const name = e.target.name();
+
+		if (e.evt.ctrlKey && !e.evt.shiftKey && name.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && name.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+			window.clearTimeout(this.selectComponentTimer);
+			this.selectComponentTimer = setTimeout(() => {
+				selectComponent({
+					componentName: name
+				});
+			}, 100);
+			return;
+		}
 
 		// 点击stage，取消选择正在编辑图形
 		if (e.target === e.target.getStage()) {
@@ -224,7 +269,6 @@ class Studio extends Component {
 		if (e.target.getParent().className === 'Transformer') {
 			return;
 		}
-		const name = e.target.name();
 
 		if (e.evt.button === 0 && name.indexOf(SHAPE_TYPES.RECT_FIX) > -1) {
 			this.handleSelectRect(e);
@@ -317,6 +361,7 @@ class Studio extends Component {
 				updateComponentsDetail({
 					isStep: false,
 					selectedShapeName: '',
+					scopedComponents: [],
 					[RECT_SELECT_NAME]: {
 						width: 0,
 						height: 0
@@ -327,14 +372,84 @@ class Studio extends Component {
 		}
 	};
 
-	handleStageShapeStart = () => {
+	handleStageShapeStart = e => {
+		const { studio: { componentsDetail }, updateComponentDetail } = this.props;
 		this.setState({
 			dragging: true,
 		});
+		const componentName = e.target.name();
+		if (componentName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1 && componentsDetail[componentName]) {
+			// 按住ctrl拖动复制组件
+			if (e.evt.ctrlKey && !e.evt.shiftKey) {
+				updateComponentDetail({
+					componentName,
+					detail: {
+						frozenX: true,
+						frozenY: true
+					}
+				});
+				return;
+			}
+			// 按住shift只能平移
+			if (!e.evt.ctrlKey && e.evt.shiftKey) {
+				updateComponentDetail({
+					componentName,
+					detail: {
+						frozenX: false,
+						frozenY: true
+					}
+				});
+				return;
+			}
+			// 按住ctrl + shift只能竖移
+			if (e.evt.ctrlKey && e.evt.shiftKey) {
+				updateComponentDetail({
+					componentName,
+					detail: {
+						frozenX: true,
+						frozenY: false
+					}
+				});
+				return;
+			}
+			updateComponentDetail({
+				componentName,
+				detail: {
+					frozenX: false,
+					frozenY: false
+				}
+			});
+		}
 	};
 
 	handleStageShapeMove = e => {
-		const { studio: { selectedShapeName }, batchUpdateComponentDetail } = this.props;
+		const {
+			studio: { componentsDetail, selectedShapeName },
+			resetScopedComponents, addComponent, batchUpdateComponentDetail
+		} = this.props;
+
+		if (e.evt.ctrlKey && !e.evt.shiftKey) {
+			window.clearTimeout(this.selectComponentTimer);
+			resetScopedComponents();
+			const name = e.target.name();
+			const curComponent = componentsDetail[name];
+			if (curComponent && !this.dragCopy) {
+				const newPosition = {};
+				this.dragCopy = true;
+
+				newPosition.x = curComponent.x * 1.1;
+				newPosition.y = curComponent.y * 1.1;
+
+				addComponent({
+					...curComponent,
+					x: newPosition.x,
+					y: newPosition.y,
+					frozenX: false,
+					frozenY: false
+				});
+			}
+			return;
+		}
 
 		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
 			this.updateComponentsDetail({
@@ -348,11 +463,15 @@ class Studio extends Component {
 		}
 	};
 
-	handleStageShapeEnd = () => {
+	handleStageShapeEnd = (e) => {
 		const { studio: { selectedShapeName, componentsDetail }, updateComponentsDetail, batchUpdateScopedComponent } = this.props;
 		this.setState({
 			dragging: false,
 		});
+		const curComponent = componentsDetail[e.target.name()];
+		if (curComponent) {
+			this.dragCopy = false;
+		}
 		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
 			const scope = getNearestPosition(componentsDetail, selectedShapeName);
 			updateComponentsDetail({
@@ -423,14 +542,16 @@ class Studio extends Component {
 		//     return;
 		// }
 
-		this.toggleRightToolBox({
-			selectedShapeName: name,
-			showRightToolBox: true,
-			rightToolBoxPos: {
-				left: e.evt.clientX,
-				top: e.evt.clientY,
-			},
-		});
+		if (!e.evt.ctrlKey) {
+			this.toggleRightToolBox({
+				selectedShapeName: name,
+				showRightToolBox: true,
+				rightToolBoxPos: {
+					left: e.evt.clientX,
+					top: e.evt.clientY,
+				},
+			});
+		}
 	};
 
 	handleWheel = (e) => {

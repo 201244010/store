@@ -4,7 +4,7 @@ export default {
 	'studio.component.text': '文本',
 	'studio.component.rect': '矩形',
 	'studio.component.line.h': '横向直线',
-	'studio.component.line.v': '横向直线',
+	'studio.component.line.v': '竖向直线',
 	'studio.component.image': '图片',
 	'studio.price.component': '价格',
 	'studio.code.component': '条码/二维码',
