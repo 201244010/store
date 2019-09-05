@@ -14,7 +14,7 @@ class Bar extends Component {
 			axis = {},
 		} = this.props;
 
-		const { x = 'xAxis', y = 'yAxis' } = axis;
+		const { x = 'xAxis', y = 'yAxis', xLabel = {}, yLabel = {} } = axis;
 		const { height = 388, forceFit = true, padding = 'auto', scale = {} } = chartStyle;
 
 		const { barColor = '#FFAA60', barActive = false, position = '', tooltip = {} } = barStyle;
@@ -28,8 +28,8 @@ class Bar extends Component {
 					data={dataSource}
 					forceFit={forceFit}
 				>
-					<Axis name={x} />
-					<Axis name={y} />
+					<Axis name={x} label={xLabel} />
+					<Axis name={y} label={yLabel} />
 					<Tooltip crosshairs={false} {...toolTipStyle} />
 					<Geom
 						size={dataSource.length > 31 ? 8 : 15}

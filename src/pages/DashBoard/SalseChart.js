@@ -3,6 +3,8 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Card, Skeleton } from 'antd';
 import LinePoint from '@/components/Charts/LinePoint';
+import Bar from '@/components/Charts/Bar';
+import moment from 'moment';
 import { DASHBOARD } from './constants';
 
 import styles from './DashBoard.less';
@@ -34,7 +36,7 @@ const CardTitle = ({ loading = true, fsDevice = null }) => (
 	</Skeleton>
 );
 
-const formatXLabel = (value, rangeType) => {
+const formatXLabel = (value, rangeType, timeRangeStart, timeRangeEnd) => {
 	if (rangeType === RANGE.TODAY) {
 		const t = parseInt(value, 10);
 		return t > 9 ? `${t}:00` : `0${t}:00`;
@@ -42,6 +44,23 @@ const formatXLabel = (value, rangeType) => {
 
 	if (rangeType === RANGE.WEEK) {
 		return formatMessage({ id: `common.week.${value}` });
+	}
+
+	if (rangeType === RANGE.MONTH) {
+		return moment()
+			.startOf('month')
+			.add(value - 1, 'day')
+			.format('MM/DD');
+	}
+
+	if (rangeType === RANGE.FREE) {
+		if (moment(timeRangeStart).isSame(timeRangeEnd, 'day')) {
+			return parseInt(time, 10) - 1;
+		}
+
+		return moment(timeRangeStart)
+			.add(time - 1, 'day')
+			.format('MM/DD');
 	}
 
 	return value;
@@ -57,24 +76,36 @@ class SalseChart extends PureComponent {
 	render() {
 		const {
 			ipcList = [],
-			searchValue: { rangeType },
+			searchValue: { rangeType, timeRangeStart, timeRangeEnd },
 			passengerOrderLoading,
 			passengerOrderList,
 		} = this.props;
 		const fsDevice = ipcList.find(ipc => ipc.type.indexOf('FS') > -1);
 
-		let chartScale = {};
+		let chartScale = {
+			time: {
+				...(TIME_SCALE[rangeType] || {
+					ticks: passengerOrderList
+						.filter((_, index) => {
+							const len = passengerOrderList.length;
+							if (len > 10 && len < 40) {
+								return index % 2 === 0;
+							}
+							return index % 3 === 0;
+						})
+						.map(item => item.time),
+				}),
+			},
+		};
 		let chartTip = {};
 		let itemTpl = '';
 		if (fsDevice) {
 			chartScale = {
+				...chartScale,
 				passengerFlowRate: {
 					minLimit: 0,
 					maxLimit: 100,
 					ticks: [0, 20, 40, 60, 80, 100],
-				},
-				time: {
-					...(TIME_SCALE[rangeType] || []),
 				},
 			};
 
@@ -90,12 +121,26 @@ class SalseChart extends PureComponent {
 			chartTip = [
 				'time*passengerFlowRate*orderCount*passengerFlowCount',
 				(time, passengerFlowRate, orderCount, passengerFlowCount) => ({
-					time: time > 9 ? `${time}:00` : `0${time}:00`,
+					time: formatXLabel(time, rangeType, timeRangeStart, timeRangeEnd),
 					passengerFlowRate,
 					orderCount,
 					passengerFlowCount,
 				}),
 			];
+		} else {
+			const maxOrderCount = Math.max(...passengerOrderList.map(i => i.orderCount)) || 0;
+			const orderTicks =
+				maxOrderCount < 5
+					? { ticks: [1, 2, 3, 4, 5] }
+					: { tickInterval: Math.ceil(maxOrderCount / 5) };
+
+			chartScale = {
+				...chartScale,
+				orderCount: {
+					minLimit: 0,
+					...orderTicks,
+				},
+			};
 		}
 
 		return (
@@ -103,38 +148,58 @@ class SalseChart extends PureComponent {
 				loading={passengerOrderLoading}
 				title={<CardTitle loading={passengerOrderLoading} fsDevice={fsDevice} />}
 				className={`${styles['card-bar-wrapper']}  ${
-					passengerOrderLoading ? '' : styles['salse-chart']
+					passengerOrderLoading || !fsDevice ? '' : styles['salse-chart']
 				}`}
 			>
-				{passengerOrderList.length > 0 && (
-					<LinePoint
+				{fsDevice ? (
+					passengerOrderList.length > 0 && (
+						<LinePoint
+							{...{
+								data: passengerOrderList,
+								scale: chartScale,
+								tooltip: { itemTpl, useHtml: true },
+								axis: {
+									x: {
+										name: 'time',
+										label: {
+											formatter: val => formatXLabel(val, rangeType),
+										},
+									},
+									y: {
+										name: 'passengerFlowRate',
+										label: {
+											formatter: val => `${val}%`,
+										},
+									},
+								},
+								line: {
+									position: 'time*passengerFlowRate',
+									color: ['passengerFlowRate', '#25B347'],
+									tooltip: chartTip,
+								},
+								point: {
+									position: 'time*passengerFlowRate',
+									color: ['passengerFlowRate', '#25B347'],
+									tooltip: chartTip,
+								},
+							}}
+						/>
+					)
+				) : (
+					<Bar
 						{...{
-							data: passengerOrderList,
-							scale: chartScale,
-							tooltip: { itemTpl, useHtml: true },
+							chartStyle: {
+								scale: chartScale,
+							},
 							axis: {
-								x: {
-									name: 'time',
-									label: {
-										formatter: val => formatXLabel(val, rangeType),
-									},
-								},
-								y: {
-									name: 'passengerFlowRate',
-									label: {
-										formatter: val => `${val}%`,
-									},
-								},
+								x: 'time',
+								y: 'orderCount',
+								xLabel: { formatter: val => formatXLabel(val, rangeType) },
 							},
-							line: {
-								position: 'time*passengerFlowRate',
-								color: ['passengerFlowRate', '#25B347'],
-								tooltip: chartTip,
-							},
-							point: {
-								position: 'time*passengerFlowRate',
-								color: ['passengerFlowRate', '#25B347'],
-								tooltip: chartTip,
+							dataSource: passengerOrderList,
+							barStyle: {
+								barActive: true,
+								position: 'time*orderCount',
 							},
 						}}
 					/>
