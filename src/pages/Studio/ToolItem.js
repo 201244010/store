@@ -81,6 +81,7 @@ export default class ToolItem extends Component {
 							strokeWidth: MAPS.strokeWidth[type],
 							strokeColor: MAPS.strokeColor[type],
 							letterSpacing: MAPS.letterSpacing[type],
+							lineSpacing: MAPS.lineSpacing[type],
 							align: MAPS.align[type],
 							fontFamily: MAPS.fontFamily[type],
 							fontColor: MAPS.fontColor[type],
