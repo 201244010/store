@@ -20,29 +20,27 @@ export default {
 		*getList({ payload }, { put, call }) {
 			const { options = {} } = payload;
 			const {
-				timeRangeStart: time_range_start = 946656000,
-				timeRangeEnd: time_range_end = 4102444800,
-				sortByAmount: sort_by_amount = -1,
-				sortByTime: sort_by_time = -1,
-				purchaseTypeList: purchase_type_list = [],
-				orderTypeList: order_type_list = [],
-				pageNum: page_num = 1,
-				pageSize: page_size = 10,
+				timeRangeStart = 946656000,
+				timeRangeEnd = 4102444800,
+				sortByAmount = -1,
+				sortByTime = -1,
+				purchaseTypeList = [],
+				orderTypeList = [],
+				pageNum = 1,
+				pageSize = 10,
 			} = options;
 
+			const response = yield call(Actions.getList, {
+				timeRangeStart,
+				timeRangeEnd,
+				sortByAmount,
+				sortByTime,
+				purchaseTypeList,
+				orderTypeList,
+				pageNum,
+				pageSize
+			});
 
-			const opt = {
-				time_range_start,
-				time_range_end,
-				sort_by_amount,
-				sort_by_time,
-				purchase_type_list,
-				order_type_list,
-				page_num,
-				page_size
-			};
-
-			const response = yield call(Actions.getList, opt);
 			if (response && response.code === ERROR_OK) {
 				const result = response.data || {};
 				const { orderList = [], totalCount } = result;

@@ -9,7 +9,7 @@ const fetchApi = customizeFetch('api/payment');
 export const getList = (options = {}) => {
 	const opt = {
 		body: {
-			...options,
+			...format('toSnake')(options),
 		},
 	};
 	return fetchApi('getList', opt)
