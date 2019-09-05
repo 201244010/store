@@ -34,10 +34,13 @@ function MQTTWrapper(WrapperedComponent) {
 				});
 				return status;
 			},
-			getCurrentCompanyId:() => (dispatch({ type:'global/getCompanyIdFromStorage'})),
-			getCurrentShopId:() => (dispatch({ type:'global/getShopIdFromStorage'})),
-			getStoreNameById:(shopId) => (dispatch({ type: 'store/getStoreNameById', payload:{ shopId } })),
-			getCompanyNameById:(companyId) => (dispatch({ type: 'merchant/getCompanyNameById', payload:{ companyId }}))
+			getCurrentCompanyId: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
+			getCurrentShopId: () => dispatch({ type: 'global/getShopIdFromStorage' }),
+			getStoreNameById: shopId =>
+				dispatch({ type: 'store/getStoreNameById', payload: { shopId } }),
+			getCompanyNameById: companyId =>
+				dispatch({ type: 'merchant/getCompanyNameById', payload: { companyId } }),
+			getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		})
 	)
 	@Ipc
@@ -70,7 +73,18 @@ function MQTTWrapper(WrapperedComponent) {
 
 		showNotification = async data => {
 			const { notificationList } = this.state;
-			const { getNotificationCount, getUnreadNotification, goToPath, formatSdCard, getSdStatus, getCurrentCompanyId, getCurrentShopId, getStoreNameById, getCompanyNameById } = this.props;
+			const {
+				getNotificationCount,
+				getUnreadNotification,
+				goToPath,
+				formatSdCard,
+				getSdStatus,
+				getCurrentCompanyId,
+				getCurrentShopId,
+				getStoreNameById,
+				getCompanyNameById,
+				getStoreList,
+			} = this.props;
 			const messageData = JSON.parse(data.toString()) || {};
 			const uniqueKey = getRandomString();
 			if (notificationList.length >= 3) {
@@ -87,7 +101,17 @@ function MQTTWrapper(WrapperedComponent) {
 					data: param,
 					key: uniqueKey,
 					closeAction: this.removeNotification,
-					handlers: { goToPath, formatSdCard, getSdStatus, getCurrentCompanyId, getCurrentShopId, getStoreNameById, getCompanyNameById, removeNotification: this.removeNotification },
+					handlers: {
+						goToPath,
+						formatSdCard,
+						getSdStatus,
+						getStoreList,
+						getCurrentCompanyId,
+						getCurrentShopId,
+						getStoreNameById,
+						getCompanyNameById,
+						removeNotification: this.removeNotification,
+					},
 				});
 			});
 			await getNotificationCount();

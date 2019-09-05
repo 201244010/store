@@ -2,13 +2,13 @@ import memoizeOne from 'memoize-one';
 import isEqual from 'lodash/isEqual';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
+import Storage from '@konata9/storage.js';
+import { format } from '@konata9/milk-shake';
 import Authorized from '@/utils/Authorized';
 import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
-import Storage from '@konata9/storage.js';
 // import routeConfig from '@/config/devRouter';
 import routeConfig from '@/config/router';
-import { format } from '@konata9/milk-shake';
 
 import { env } from '@/config';
 
@@ -218,7 +218,7 @@ export default {
 		},
 
 		goToPath({ payload = {} }) {
-			const { pathId = null, urlParams = {}, linkType = null } = payload;
+			const { pathId = null, urlParams = {}, linkType = null, anchorId = null } = payload;
 
 			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
 
@@ -234,6 +234,10 @@ export default {
 			if (keyList.length > 0) {
 				const query = keyList.map(key => `${key}=${urlParams[key]}`).join('&');
 				targetPath = `${path}?${query}`;
+			}
+
+			if(anchorId){
+				targetPath = `${targetPath}#${anchorId}`;
 			}
 
 			const { open, location, origin } = window;
