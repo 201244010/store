@@ -5,32 +5,6 @@ import { getLocationParam, unixSecondToDate, formatMessageTemplate } from '@/uti
 import NotificationHandler from '@/components/Notification/NotificationHandler';
 import styles from './Notification.less';
 
-const ipcNotifHandler = valueList => {
-	valueList.forEach(item => {
-		if (item.key === '##device_name##' && item.value === '') {
-			item.value = 'My Camera';
-		}
-	});
-	return valueList;
-};
-
-const handlers = {
-	'notif-motion-detect-content': ipcNotifHandler,
-	'notif-device-ipc-ota-content': ipcNotifHandler,
-	'notif-device-ipc-motion-detect-video-content': ipcNotifHandler,
-	'notif-device-ipc-motion-detect-audio-content': ipcNotifHandler,
-	'notif-device-ipc-motion-detect-video-audio-content': ipcNotifHandler,
-	'notif-device-ipc-on/offline-content': ipcNotifHandler,
-	'notif-device-ipc-tf-card-detect-content': ipcNotifHandler,
-	'notif-device-ipc-tf-card-detect-tf-exist-content': ipcNotifHandler,
-	'notif-device-ipc-tf-card-detect-tf-non-exist-content': ipcNotifHandler,
-	'notif-device-ipc-tf-card-detect-tf-capable-content': ipcNotifHandler,
-	'notif-device-ipc-tf-card-detect-tf-non-capable-content': ipcNotifHandler,
-};
-const option = {
-	handlers,
-};
-
 @connect(
 	state => {
 		const result = {
@@ -41,24 +15,20 @@ const option = {
 	dispatch => ({
 		getNotificationInfo: payload =>
 			dispatch({ type: 'notification/getNotificationInfo', payload }),
-		goToPath: (pathId, urlParams = {}, anchorId) => dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, anchorId } }),
-		formatSdCard: sn => {
-			dispatch({ type: 'sdcard/formatSdCard', sn });
-		},
-		getSdStatus: async sn => {
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		formatSdCard: (sn) => { dispatch({ type: 'sdcard/formatSdCard', sn });},
+		getSdStatus: async (sn) => {
 			const status = await dispatch({
 				type: 'sdcard/getSdStatus',
-				sn,
+				sn
 			});
 			return status;
 		},
-		getCurrentCompanyId: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
-		getCurrentShopId: () => dispatch({ type: 'global/getShopIdFromStorage' }),
-		getStoreNameById: shopId =>
-			dispatch({ type: 'store/getStoreNameById', payload: { shopId } }),
-		getCompanyNameById: companyId =>
-			dispatch({ type: 'merchant/getCompanyNameById', payload: { companyId } }),
-		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		getCurrentCompanyId:() => (dispatch({ type:'global/getCompanyIdFromStorage'})),
+		getCurrentShopId:() => (dispatch({ type:'global/getShopIdFromStorage'})),
+		getStoreNameById:(shopId) => (dispatch({ type: 'store/getStoreNameById', payload:{ shopId } })),
+		getCompanyNameById:(companyId) => (dispatch({ type: 'merchant/getCompanyNameById', payload:{ companyId }}))
 	})
 )
 class Notification extends React.Component {
@@ -89,8 +59,7 @@ class Notification extends React.Component {
 			getCurrentCompanyId,
 			getCurrentShopId,
 			getStoreNameById,
-			getCompanyNameById,
-			getStoreList,
+			getCompanyNameById
 		} = this.props;
 
 		return (
@@ -105,7 +74,7 @@ class Notification extends React.Component {
 				</div>
 				<Divider />
 				<div className={styles['content-wrapper']}>
-					<p>{content ? formatMessageTemplate(content, option) : ''}</p>
+					<p>{content ? formatMessageTemplate(content) : ''}</p>
 				</div>
 				<div className={styles['button-bar']}>
 					{minorButtonName && (
@@ -113,15 +82,7 @@ class Notification extends React.Component {
 							{...{
 								buttonName: minorButtonName,
 								buttonParams: minorButtonLink,
-								handlers: {
-									goToPath,
-									formatSdCard,
-									getSdStatus,
-									getCurrentCompanyId,
-									getCurrentShopId,
-									getStoreNameById,
-									getCompanyNameById,
-								},
+								handlers: { goToPath, formatSdCard, getSdStatus, getCurrentCompanyId, getCurrentShopId, getStoreNameById, getCompanyNameById },
 							}}
 						/>
 					)}
@@ -130,16 +91,7 @@ class Notification extends React.Component {
 							{...{
 								buttonName: majorButtonName,
 								buttonParams: majorButtonLink,
-								handlers: {
-									goToPath,
-									formatSdCard,
-									getSdStatus,
-									getCurrentCompanyId,
-									getCurrentShopId,
-									getStoreNameById,
-									getCompanyNameById,
-									getStoreList,
-								},
+								handlers: { goToPath, formatSdCard, getSdStatus, getCurrentCompanyId, getCurrentShopId, getStoreNameById, getCompanyNameById },
 								type: 'primary',
 								style: { marginLeft: minorButtonName ? '20px' : '0' },
 							}}

@@ -4,8 +4,6 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import styles from './CardManagement.less';
 import { FORM_ITEM_LAYOUT_MANAGEMENT } from '@/constants/form';
-import AnchorWrapper from '@/components/Anchor';
-
 
 const mapStateToProps = (state) => {
 	const { cardManagement } = state;
@@ -55,7 +53,6 @@ const mapDispatchToProps = (dispatch) => ({
 	}
 });
 
-@AnchorWrapper
 @connect(mapStateToProps, mapDispatchToProps)
 
 class CardManagement extends Component {
@@ -394,7 +391,7 @@ class CardManagement extends Component {
 				{
 					hasTFCard ?
 						<Spin spinning={isLoading}>
-							<Card title={formatMessage({ id: 'cardManagement.title' })} className={(!hasCard) && styles['transparnt-05']} id='tfCard'>
+							<Card title={formatMessage({ id: 'cardManagement.title' })} className={(!hasCard) && styles['transparnt-05']}>
 								<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
 									<Form.Item label={formatMessage({ id: 'cardManagement.sizeLeft' })}>
 										{

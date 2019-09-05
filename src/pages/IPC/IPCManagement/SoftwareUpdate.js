@@ -3,7 +3,6 @@ import { Card, Button, Modal, Spin, Progress, Icon, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import moment from 'moment';
-import AnchorWrapper from '@/components/Anchor';
 
 import styles from './SoftwareUpdate.less';
 
@@ -84,7 +83,6 @@ const mapDispatchToProps = (dispatch) => ({
 	}
 });
 
-@AnchorWrapper
 @connect(mapStateToProps, mapDispatchToProps)
 class SoftwareUpdate extends Component {
 	state = {
@@ -363,7 +361,6 @@ class SoftwareUpdate extends Component {
 					bordered={false}
 					className={styles['main-card']}
 					title={formatMessage({ id: 'softwareUpdate.title' })}
-					id="softwareUpdate"
 				>
 					<div className={styles['main-block']}>
 						<p className={styles.tips}>

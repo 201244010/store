@@ -218,7 +218,7 @@ export default {
 		},
 
 		goToPath({ payload = {} }) {
-			const { pathId = null, urlParams = {}, linkType = null, anchorId = null } = payload;
+			const { pathId = null, urlParams = {}, linkType = null } = payload;
 
 			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
 
@@ -234,10 +234,6 @@ export default {
 			if (keyList.length > 0) {
 				const query = keyList.map(key => `${key}=${urlParams[key]}`).join('&');
 				targetPath = `${path}?${query}`;
-			}
-
-			if(anchorId){
-				targetPath = `${targetPath}#${anchorId}`;
 			}
 
 			const { open, location, origin } = window;
