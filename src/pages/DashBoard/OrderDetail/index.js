@@ -17,27 +17,27 @@ const SEARCH_FORM_BUTTON = {
 };
 
 const PURCHASECODE = {
-	// totalPay: 1,
-	ali: 9,
-	wechat: 2,
-	cash: 5,
-	bankCard: 4,
-	bankQr: 4,
-	qqWallet: 11,
-	jdWallet: 8,
-	other: 1,
+	ALL: '0',
+	ALI: '9',
+	WECHAT: '2',
+	CASH: '5',
+	BANKCARD: '6',
+	BANKQR: '4',
+	QQWALLET: '11',
+	JDWALLET: '8',
+	OTHER: '1',
 };
 const ORDERCODE = {
-	// totalTrade: 1,
-	normal: 1,
-	refund: 2,
+	ALL: '0',
+	NORMAL: '1',
+	REFUND: '2',
 };
 const RANKTYPE = {
-	rankDefault: -1,
-	priceNegativ: 1,
-	pricePositive: 0,
-	timeNegtiv: 1,
-	timePositive: 0,
+	RANKDEFAULT: '-1',
+	PRICEDESC: '11',
+	PRICEASC: '10',
+	TIMEDESC: '1',
+	TIMEASC: '0',
 };
 
 @connect(
@@ -82,10 +82,21 @@ class OrderDetail extends Component {
 				const { orderType, purchaseType, rankType } = values;
 				const { postOptions: options = {} } = this.state;
 
-				options.sortByAmount = RANKTYPE[rankType];
-				options.sortByTime = RANKTYPE[rankType];
-				options.purchaseTypeList = PURCHASECODE[purchaseType] ? [PURCHASECODE[purchaseType]] : [];
-				options.orderTypeList = ORDERCODE[orderType] ? [ORDERCODE[orderType]] : [];
+				if (rankType === '11') {
+					options.sortByAmount = 1;
+				}
+				if (rankType === '10') {
+					options.sortByAmount = 0;
+				}
+				if (rankType === '1') {
+					options.sortByTime = 1;
+				}
+				if (rankType === '0') {
+					options.sortByTime = 0;
+				}
+				
+				options.purchaseTypeList = purchaseType === '0' ? [] : [purchaseType];
+				options.orderTypeList = orderType === '0' ? [] : [orderType];
 				options.pageNum = 1; // 默认请求第1页
 
 				this.setState(
@@ -104,9 +115,9 @@ class OrderDetail extends Component {
 		const { form: { setFieldsValue } } = this.props;
 		setFieldsValue(
 			{
-				'rankType': 'rankDefault',
-				'purchaseType': 'totalPay',
-				'orderType': 'totalTrade'
+				'rankType': '-1',
+				'purchaseType': '0',
+				'orderType': '0'
 			}
 		);
 	};
@@ -197,13 +208,13 @@ class OrderDetail extends Component {
 		const orderData = this.createOrderData(orderList);
 
 		const columns = [
-			{ title: formatMessage({id: 'payment.order.id'}), dataIndex: 'orderId', key: 'orderId' },
-			{ title: formatMessage({id: 'payment.purchase.type'}), dataIndex: 'purchaseType', key: 'purchaseType' },
-			{ title: formatMessage({id: 'payment.order.type'}), dataIndex: 'orderType', key: 'orderType' },
-			{ title: formatMessage({id: 'payment.order.amount'}), dataIndex: 'tradeValue', key: 'tradeValue', align: 'right' },
-			{ title: formatMessage({id: 'payment.order.time'}), dataIndex: 'purchaseTime', key: 'purchaseTime' },
+			{ title: formatMessage({ id: 'payment.order.id' }), dataIndex: 'orderId', key: 'orderId' },
+			{ title: formatMessage({ id: 'payment.purchase.type' }), dataIndex: 'purchaseType', key: 'purchaseType' },
+			{ title: formatMessage({ id: 'payment.order.type' }), dataIndex: 'orderType', key: 'orderType' },
+			{ title: formatMessage({ id: 'payment.order.amount' }), dataIndex: 'tradeValue', key: 'tradeValue', align: 'right' },
+			{ title: formatMessage({ id: 'payment.order.time' }), dataIndex: 'purchaseTime', key: 'purchaseTime' },
 			{
-				title: formatMessage({id: 'payment.list.action'}),
+				title: formatMessage({ id: 'payment.list.action' }),
 				dataIndex: '',
 				key: 'x',
 				render: record =>
@@ -211,7 +222,7 @@ class OrderDetail extends Component {
 						this.handleExpand(record);
 					}}
 					>
-						{record.expanded ? formatMessage({id: 'payment.order.detail.expanded'}) : formatMessage({id: 'payment.order.detail.show'})}
+						{record.expanded ? formatMessage({ id: 'payment.order.detail.expanded' }) : formatMessage({ id: 'payment.order.detail.show' })}
 					</a>
 
 			},
@@ -228,20 +239,20 @@ class OrderDetail extends Component {
 					<Form
 						className={styles['ant-form-change']}
 						layout="inline"
-						onSubmit={e => this.handleSubmit(e, PURCHASECODE, ORDERCODE)}
+						onSubmit={this.handleSubmit}
 					>
 						<Row gutter={SEARCH_FORM_GUTTER.NORMAL}>
 							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<Form.Item label={formatMessage({ id: 'order.search.rankdefault' })}>
 									{getFieldDecorator('rankType', {
-										initialValue: 'rankDefault'
+										initialValue: RANKTYPE.RANKDEFAULT
 									})(
 										<Select>
-											<Select.Option value="rankDefault">{formatMessage({ id: 'order.search.rankdefault' })}</Select.Option>
-											<Select.Option value="priceNegativ">{formatMessage({ id: 'order.search.price.desc' })}</Select.Option>
-											<Select.Option value="pricePositive">{formatMessage({ id: 'order.search.price.asc' })}</Select.Option>
-											<Select.Option value="timeNegtiv">{formatMessage({ id: 'order.search.time.desc' })}</Select.Option>
-											<Select.Option value="timePositive">{formatMessage({ id: 'order.search.time.asc' })}</Select.Option>
+											<Select.Option value={RANKTYPE.RANKDEFAULT}>{formatMessage({ id: 'order.search.rankdefault' })}</Select.Option>
+											<Select.Option value={RANKTYPE.PRICEDESC}>{formatMessage({ id: 'order.search.price.desc' })}</Select.Option>
+											<Select.Option value={RANKTYPE.PRICEASC}>{formatMessage({ id: 'order.search.price.asc' })}</Select.Option>
+											<Select.Option value={RANKTYPE.TIMEDESC}>{formatMessage({ id: 'order.search.time.desc' })}</Select.Option>
+											<Select.Option value={RANKTYPE.TIMEASC}>{formatMessage({ id: 'order.search.time.asc' })}</Select.Option>
 										</Select>
 									)}
 								</Form.Item>
@@ -250,19 +261,19 @@ class OrderDetail extends Component {
 								<Form.Item label={formatMessage({ id: 'payment.purchase.type' })}>
 									{getFieldDecorator(
 										'purchaseType', {
-											initialValue: 'totalPay'
+											initialValue: PURCHASECODE.ALL
 										}
 									)(
 										<Select>
-											<Select.Option value="totalPay">{formatMessage({ id: 'select.all' })}</Select.Option>
-											<Select.Option value="ali">{formatMessage({ id: 'payment-purchase-type-alipay' })}</Select.Option>
-											<Select.Option value="wechat">{formatMessage({ id: 'payment-purchase-type-wechat' })}</Select.Option>
-											<Select.Option value="cash">{formatMessage({ id: 'payment-purchase-type-cash' })}</Select.Option>
-											<Select.Option value="bankCard">{formatMessage({ id: 'payment-purchase-type-card' })}</Select.Option>
-											<Select.Option value="bankQr">{formatMessage({ id: 'payment-purchase-type-unionpayqr' })}</Select.Option>
-											<Select.Option value="qqWallet">{formatMessage({ id: 'payment-purchase-type-qqwallet' })}</Select.Option>
-											<Select.Option value="jdWallet">{formatMessage({ id: 'payment-purchase-type-jdwallet' })}</Select.Option>
-											<Select.Option value="other">{formatMessage({ id: 'payment-purchase-type-other' })}</Select.Option>
+											<Select.Option value={PURCHASECODE.ALL}>{formatMessage({ id: 'select.all' })}</Select.Option>
+											<Select.Option value={PURCHASECODE.ALI}>{formatMessage({ id: 'payment-purchase-type-alipay' })}</Select.Option>
+											<Select.Option value={PURCHASECODE.WECHAT}>{formatMessage({ id: 'payment-purchase-type-wechat' })}</Select.Option>
+											<Select.Option value={PURCHASECODE.CASH}>{formatMessage({ id: 'payment-purchase-type-cash' })}</Select.Option>
+											<Select.Option value={PURCHASECODE.BANKCARD}>{formatMessage({ id: 'payment-purchase-type-card' })}</Select.Option>
+											<Select.Option value={PURCHASECODE.BANKQR}>{formatMessage({ id: 'payment-purchase-type-unionpayqr' })}</Select.Option>
+											<Select.Option value={PURCHASECODE.QQWALLET}>{formatMessage({ id: 'payment-purchase-type-qqwallet' })}</Select.Option>
+											<Select.Option value={PURCHASECODE.JDWALLET}>{formatMessage({ id: 'payment-purchase-type-jdwallet' })}</Select.Option>
+											<Select.Option value={PURCHASECODE.OTHER}>{formatMessage({ id: 'payment-purchase-type-other' })}</Select.Option>
 										</Select>
 									)}
 								</Form.Item>
@@ -271,13 +282,13 @@ class OrderDetail extends Component {
 								<Form.Item label={formatMessage({ id: 'payment.order.type' })}>
 									{getFieldDecorator(
 										'orderType', {
-											initialValue: 'totalTrade'
+											initialValue: ORDERCODE.ALL
 										}
 									)(
 										<Select>
-											<Select.Option value="totalTrade">{formatMessage({ id: 'select.all' })}</Select.Option>
-											<Select.Option value="normal">{formatMessage({ id: 'payment-order-type-normal' })}</Select.Option>
-											<Select.Option value="refund">{formatMessage({ id: 'payment-order-type-refund' })}</Select.Option>
+											<Select.Option value={ORDERCODE.ALL}>{formatMessage({ id: 'select.all' })}</Select.Option>
+											<Select.Option value={ORDERCODE.NORMAL}>{formatMessage({ id: 'payment-order-type-normal' })}</Select.Option>
+											<Select.Option value={ORDERCODE.REFUND}>{formatMessage({ id: 'payment-order-type-refund' })}</Select.Option>
 										</Select>
 									)}
 								</Form.Item>
