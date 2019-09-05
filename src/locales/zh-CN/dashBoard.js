@@ -64,6 +64,8 @@ export default {
 	'payment-purchase-type-card': '银行卡刷卡',
 	'payment-purchase-type-unionpayqr': '银联二维码',
 	'payment-purchase-type-other': '其他',
+	'payment-purchase-type-qqwallet': 'QQ钱包',
+	'payment-purchase-type-jdwallet': '京东钱包',
 
 	// 销售
 	'salse.total': '总销售额',
@@ -77,4 +79,21 @@ export default {
 	'customer.newold': '新老',
 	'customer.stranger': '新客',
 	'customer.regular': '熟客',
+
+	// 订单详情页面
+	'order.search.rankdefault': '综合排序',
+	'order.search.price.desc': '金额倒序',
+	'order.search.price.asc': '金额正序',
+	'order.search.time.desc': '时间倒序',
+	'order.search.time.asc': '时间正序',
+	'payment.purchase.type': '支付类型',
+	'payment.order.type': '交易类型',
+	'order.goods': '商品',
+	'order.goods.amount': '数量',
+	'payment.order.id':'订单号',
+	'payment.order.amount':'交易金额',
+	'payment.order.time':'交易时间',
+	'payment.list.action':'操作',
+	'payment.order.detail.expanded':'收起支付明细',
+	'payment.order.detail.show':'查看支付明细',
 };

@@ -43,18 +43,15 @@ export default {
 			};
 
 			const response = yield call(Actions.getList, opt);
-			// console.log('redux res:', response);
 			if (response && response.code === ERROR_OK) {
 				const result = response.data || {};
-
-				const orderList = result.order_list || [];
-				const total = result.total_count;
+				const { orderList = [], totalCount } = result;
 
 				yield put({
 					type: 'updateState',
 					payload: {
 						orderList,
-						total,
+						total: totalCount,
 					},
 				});
 			}
@@ -65,7 +62,7 @@ export default {
 			const response = yield call(Actions.getDetailList, { order_id: orderId });
 			if (response && response.code === ERROR_OK) {
 				const result = response.data || {};
-				const detailList = result.detail_list || [];
+				const detailList = result.detailList || [];
 
 				const orderList = yield select(state => state.orderDetail.orderList);
 				orderList.forEach(order => {

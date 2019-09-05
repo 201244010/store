@@ -1,4 +1,6 @@
 import { customizeFetch } from '@/utils/fetch';
+import { format } from '@konata9/milk-shake';
+
 
 const fetchApi = customizeFetch('api/payment');
 
@@ -10,7 +12,9 @@ export const getList = (options = {}) => {
 			...options,
 		},
 	};
-	return fetchApi('getList', opt).then(response => response.json());
+	return fetchApi('getList', opt)
+		.then(response => response.json())
+		.then(response => format('toCamel')(response));
 };
 
 // 获取交易详情
@@ -20,5 +24,7 @@ export const getDetailList = (options = {}) => {
 			...options,
 		},
 	};
-	return fetchApi('getDetailList', opt).then(response => response.json());
+	return fetchApi('getDetailList', opt)
+		.then(response => response.json())
+		.then(response => format('toCamel')(response));
 };
