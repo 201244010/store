@@ -55,12 +55,9 @@ const formatXLabel = (value, rangeType, timeRangeStart, timeRangeEnd) => {
 
 	if (rangeType === RANGE.FREE) {
 		if (moment(timeRangeStart).isSame(timeRangeEnd, 'day')) {
-			return parseInt(time, 10) - 1;
+			const t = parseInt(value, 10);
+			return t > 9 ? `${t}:00` : `0${t}:00`;
 		}
-
-		return moment(timeRangeStart)
-			.add(time - 1, 'day')
-			.format('MM/DD');
 	}
 
 	return value;
@@ -88,9 +85,14 @@ class SalseChart extends PureComponent {
 					ticks: passengerOrderList
 						.filter((_, index) => {
 							const len = passengerOrderList.length;
-							if (len > 10 && len < 40) {
+							if (len < 10) {
+								return true;
+							}
+
+							if (len < 40) {
 								return index % 2 === 0;
 							}
+
 							return index % 3 === 0;
 						})
 						.map(item => item.time),
@@ -162,7 +164,13 @@ class SalseChart extends PureComponent {
 									x: {
 										name: 'time',
 										label: {
-											formatter: val => formatXLabel(val, rangeType),
+											formatter: val =>
+												formatXLabel(
+													val,
+													rangeType,
+													timeRangeStart,
+													timeRangeEnd
+												),
 										},
 									},
 									y: {
