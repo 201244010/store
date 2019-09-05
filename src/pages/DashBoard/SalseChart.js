@@ -200,6 +200,20 @@ class SalseChart extends PureComponent {
 							barStyle: {
 								barActive: true,
 								position: 'time*orderCount',
+								tooltip: [
+									'time*orderCount',
+									(time, orderCount) => ({
+										name: `${formatMessage({
+											id: 'salse.time',
+										})}:${formatXLabel(
+											time,
+											rangeType,
+											timeRangeStart,
+											timeRangeEnd
+										)}`,
+										value: orderCount,
+									}),
+								],
 							},
 						}}
 					/>
