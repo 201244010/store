@@ -269,10 +269,6 @@ class SearchResult extends Component {
 							{formatMessage({ id: 'list.action.edit' })}
 						</a>
 						<Divider type="vertical" />
-						<a href="javascript: void (0);" onClick={() => this.previewTemplate(record)}>
-							{formatMessage({ id: 'list.action.preview' })}
-						</a>
-						<Divider type="vertical" />
 						<a href="javascript: void (0);" onClick={() => this.applyTemplate(record)}>
 							{formatMessage({ id: 'list.action.apply' })}
 						</a>
@@ -536,11 +532,16 @@ class SearchResult extends Component {
 					</Form>
 				</Modal>
 				<Modal
-					title={formatMessage({ id: 'list.action.preview' })}
+					title={curRecord.name}
 					width={widthMap[curRecord.screen_type]}
 					visible={previewVisible}
 					onOk={this.handleCancelPreview}
 					onCancel={this.handleCancelPreview}
+					footer={[
+						<Button type="primary" onClick={this.handleCancelPreview}>
+							{formatMessage({ id: 'btn.confirm' })}
+						</Button>
+					]}
 				>
 					<div className={styles['preview-img']}>
 						<img className={`${styles['wrap-img}']} ${styles[styleMap[curRecord.screen_type]]}`} src={imgMap[curRecord.screen_type]} alt="" />

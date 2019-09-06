@@ -16,12 +16,31 @@ const ESL_STATES = {
 	4: formatMessage({ id: 'esl.device.esl.push.fail' }),
 };
 
+const widthMap = {
+	1: 348,
+	2: 442,
+	3: 510
+};
+
+const styleMap = {
+	1: 'img-213',
+	2: 'img-26',
+	3: 'img-42'
+};
+
+const imgMap = {
+	1: require('../../../../assets/studio/2.13.png'),
+	2: require('../../../../assets/studio/2.6.png'),
+	3: require('../../../../assets/studio/4.2.png'),
+};
+
 class SearchResult extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			detailVisible: false,
 			templateVisible: false,
+			previewVisible: false,
 			bindVisible: false,
 			currentRecord: {},
 			selectedProduct: {},
@@ -45,6 +64,13 @@ class SearchResult extends Component {
 				sort_key: field === 'battery' ? 1 : (field === 'push_time' ? 2 : -1),
 				desc
 			},
+		});
+	};
+
+	previewTemplate = (record) => {
+		this.setState({
+			previewVisible: true,
+			currentRecord: record,
 		});
 	};
 
@@ -95,6 +121,11 @@ class SearchResult extends Component {
 				product_id: record.product_id,
 			},
 		});
+	};
+
+	togglePage = (record) => {
+		// todo toggle page
+		console.log(record);
 	};
 
 	unbindESL = record => {
@@ -212,6 +243,10 @@ class SearchResult extends Component {
 			const eslDetail = JSON.parse(record);
 			this.flushESL(eslDetail);
 		}
+		if (e.key === '6') {
+			const eslDetail = JSON.parse(record);
+			this.togglePage(eslDetail);
+		}
 	};
 
 	confirmBind = () => {
@@ -242,6 +277,7 @@ class SearchResult extends Component {
 		const {
 			detailVisible,
 			templateVisible,
+			previewVisible,
 			bindVisible,
 			currentRecord,
 			selectedProduct,
@@ -297,6 +333,10 @@ class SearchResult extends Component {
 				key: 'action',
 				render: (_, record) => (
 					<span>
+						<a href="javascript: void (0);" onClick={() => this.previewTemplate(record)}>
+							{formatMessage({ id: 'list.action.preview' })}
+						</a>
+						<Divider type="vertical" />
 						<a href="javascript: void (0);" onClick={() => this.showDetail(record)}>
 							{formatMessage({ id: 'list.action.detail' })}
 						</a>
@@ -323,6 +363,7 @@ class SearchResult extends Component {
 											</a>
 										</Menu.Item>
 									) : null}
+									{record.product_id ? <Menu.Divider /> : null}
 									{record.product_id ? (
 										<Menu.Item key="0">
 											<a
@@ -347,6 +388,17 @@ class SearchResult extends Component {
 										</Menu.Item>
 									) : null}
 									{record.product_id ? <Menu.Divider /> : null}
+									<Menu.Item key="6">
+										<a
+											href="javascript: void (0);"
+											data-record={JSON.stringify(record)}
+										>
+											{formatMessage({
+												id: 'esl.device.esl.page.toggle',
+											})}
+										</a>
+									</Menu.Item>
+									<Menu.Divider />
 									<Menu.Item key="2">
 										<a href="javascript: void (0);" data-record-id={record.id}>
 											{formatMessage({ id: 'esl.device.esl.flash' })}
@@ -470,6 +522,23 @@ class SearchResult extends Component {
 						updateProduct: this.updateProduct,
 					}}
 				/>
+				<Modal
+					title={currentRecord.template_name}
+					width={widthMap[currentRecord.size]}
+					visible={previewVisible}
+					onCancel={() => this.closeModal('previewVisible')}
+					onOk={() => this.closeModal('previewVisible')}
+					footer={[
+						<Button key="submit" type="primary" onClick={() => this.closeModal('previewVisible')}>
+							{formatMessage({ id: 'btn.confirm' })}
+						</Button>
+					]}
+				>
+					<div className={styles['preview-img']}>
+						<img className={`${styles['wrap-img}']} ${styles[styleMap[currentRecord.size]]}`} src={imgMap[currentRecord.size]} alt="" />
+						<img className={`${styles['content-img']} ${styles[styleMap[currentRecord.size]]}`} src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" alt="" />
+					</div>
+				</Modal>
 			</div>
 		);
 	}
