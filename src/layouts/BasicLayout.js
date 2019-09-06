@@ -242,61 +242,57 @@ class BasicLayout extends React.PureComponent {
 		const isTop = PropsLayout === 'topmenu';
 		const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
 		const layout = (
-			<Layout>
-				{isTop && !isMobile ? null : (
-					<SiderMenu
-						logo={currentLanguage === 'zh-CN' ? logo : logoEN}
-						theme={navTheme}
-						onCollapse={this.handleMenuCollapse}
-						menuData={menuData}
-						isMobile={isMobile}
-						{...this.props}
-					/>
-				)}
-				<Layout
-					style={{
-						...this.getLayoutStyle(),
-						minHeight: '100vh',
-					}}
-				>
-					<Header
-						menuData={menuData}
-						handleMenuCollapse={this.handleMenuCollapse}
-						logo={logo}
-						isMobile={isMobile}
-						selectedStore={selectedStore}
-						{...this.props}
-					/>
-					{/* <Breadcrumbs /> */}
-					<Content className={styles.content} style={contentStyle}>
-						{children}
-					</Content>
+			<Spin spinning={inMenuChecking}>
+				<Layout>
+					{isTop && !isMobile ? null : (
+						<SiderMenu
+							logo={currentLanguage === 'zh-CN' ? logo : logoEN}
+							theme={navTheme}
+							onCollapse={this.handleMenuCollapse}
+							menuData={menuData}
+							isMobile={isMobile}
+							{...this.props}
+						/>
+					)}
+					<Layout
+						style={{
+							...this.getLayoutStyle(),
+							minHeight: '100vh',
+						}}
+					>
+						<Header
+							menuData={menuData}
+							handleMenuCollapse={this.handleMenuCollapse}
+							logo={logo}
+							isMobile={isMobile}
+							selectedStore={selectedStore}
+							{...this.props}
+						/>
+						{/* <Breadcrumbs /> */}
+						<Content className={styles.content} style={contentStyle}>
+							{children}
+						</Content>
+					</Layout>
 				</Layout>
-			</Layout>
+			</Spin>
 		);
 		return (
 			<React.Fragment>
 				<DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
-					{inMenuChecking ? (
-						<Spin spinning />
-					) : (
-						<ContainerQuery query={query}>
-							{params => (
-								<Context.Provider value={this.getContext()}>
-									<PerfectScrollbar
-										ref={scrollbar => (this.scrollbar = scrollbar)}
+					<ContainerQuery query={query}>
+						{params => (
+							<Context.Provider value={this.getContext()}>
+								<PerfectScrollbar ref={scrollbar => (this.scrollbar = scrollbar)}>
+									<div
+										ref={dom => (this.dom = dom)}
+										className={classNames(params)}
 									>
-										<div
-											ref={dom => (this.dom = dom)}
-											className={classNames(params)}
-										>
-											{layout}
-										</div>
-									</PerfectScrollbar>
-								</Context.Provider>
-							)}
-						</ContainerQuery>
-					)}
+										{layout}
+									</div>
+								</PerfectScrollbar>
+							</Context.Provider>
+						)}
+					</ContainerQuery>
 				</DocumentTitle>
 			</React.Fragment>
 		);

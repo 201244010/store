@@ -18,9 +18,9 @@ const passengerFlowMessage = {
 };
 
 const rateMessage = {
-	[RANGE.TODAY]: formatMessage({ id: 'dashboard.order.d2d' }),
-	[RANGE.WEEK]: formatMessage({ id: 'dashboard.order.w2w' }),
-	[RANGE.MONTH]: formatMessage({ id: 'dashboard.order.m2m' }),
+	[RANGE.TODAY]: `${formatMessage({ id: 'dashboard.order.d2d' })}:`,
+	[RANGE.WEEK]: `${formatMessage({ id: 'dashboard.order.w2w' })}:`,
+	[RANGE.MONTH]: `${formatMessage({ id: 'dashboard.order.m2m' })}:`,
 };
 
 const SalseInfo = ({
@@ -57,8 +57,14 @@ const SalseInfo = ({
 };
 
 @connect(
-	state => ({
-		dashboard: state.dashboard,
+	({ dashboard }) => ({
+		passengerFlowLoading: dashboard.passengerFlowLoading,
+		totalAmountLoading: dashboard.totalAmountLoading,
+		totalCountLoading: dashboard.totalCountLoading,
+		passengerFlow: dashboard.passengerFlow,
+		totalAmount: dashboard.totalAmount,
+		totalCount: dashboard.totalCount,
+		searchValue: dashboard.searchValue,
 	}),
 	dispatch => ({
 		goToPath: (pathId, urlParams = {}) =>
@@ -68,31 +74,29 @@ const SalseInfo = ({
 class SalseBar extends PureComponent {
 	render() {
 		const {
-			dashboard: {
-				passengerFlowLoading,
-				totalAmountLoading,
-				totalCountLoading,
-				passengerFlow: { latestCount = '--', earlyCount = '--' },
-				totalAmount: {
-					totalAmount,
-					dayAmount,
-					weekAmount,
-					monthAmount,
-					dayRate: dayRateAmount,
-					weekRate: weekRateAmount,
-					monthRate: monthRateAmount,
-				},
-				totalCount: {
-					totalCount,
-					dayCount,
-					weekCount,
-					monthCount,
-					dayRate: dayRateCount,
-					weekRate: weekRateCount,
-					monthRate: monthRateCount,
-				},
-				searchValue: { rangeType = RANGE.TODAY, startQueryTime, endQueryTime } = {},
+			passengerFlowLoading,
+			totalAmountLoading,
+			totalCountLoading,
+			passengerFlow: { latestCount = '--', earlyCount = '--' },
+			totalAmount: {
+				totalAmount,
+				dayAmount,
+				weekAmount,
+				monthAmount,
+				dayRate: dayRateAmount,
+				weekRate: weekRateAmount,
+				monthRate: monthRateAmount,
 			},
+			totalCount: {
+				totalCount,
+				dayCount,
+				weekCount,
+				monthCount,
+				dayRate: dayRateCount,
+				weekRate: weekRateCount,
+				monthRate: monthRateCount,
+			},
+			searchValue: { rangeType = RANGE.TODAY, startQueryTime, endQueryTime } = {},
 			goToPath,
 		} = this.props;
 
@@ -202,9 +206,23 @@ class SalseBar extends PureComponent {
 					<SalseInfo
 						{...{
 							icon: <img src={require('@/assets/icon/square.png')} />,
-							title: formatMessage({ id: 'area.effect' }),
-							content: 6560.0,
-							subContent: <span>{formatMessage({ id: 'yesterday' })}: 7009.00</span>,
+							title: formatMessage({ id: 'trade.transfer' }),
+							content:
+								latestCount === 0
+									? 0
+									: `${parseFloat(
+										(totalCountStore[rangeType] / latestCount) * 100
+									  ).toFixed(2)}%`,
+							subContent:
+								rangeType === RANGE.FREE ? (
+									<></>
+								) : (
+									<span>
+										{/* 临时方案，等待云端更新接口后计算昨日值 */}
+										{passengerFlowMessage[rangeType]}: --
+									</span>
+								),
+							loading: passengerFlowLoading || totalCountLoading,
 						}}
 					/>
 				</div>

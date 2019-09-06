@@ -6,6 +6,7 @@ export default {
 	namespace: 'passengerFlow',
 	state: {
 		passengerFlowCount: {},
+		passengerFlowOrder: {},
 		passengerAgeCountList: [],
 	},
 	effects: {
@@ -54,6 +55,45 @@ export default {
 		},
 
 		// TODO 等待交易转化率趋势接口
+		*getPassengerFlowOrderLatest({ payload }, { call, put }) {
+			const { type = 1 } = payload || {};
+			const response = yield call(
+				Actions.handlePassengerFlowManagement,
+				'statistic/order/getLatest',
+				format('toSnake')({ type })
+			);
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response || {};
+				const { countList = [] } = format('toCamel')(data) || {};
+				yield put({
+					type: 'updateState',
+					payload: { passengerFlowOrder: countList },
+				});
+			}
+
+			return response;
+		},
+
+		*getPassengerFlowOrderByRange({ payload }, { call, put }) {
+			const { startTime, endTime } = payload || {};
+			const response = yield call(
+				Actions.handlePassengerFlowManagement,
+				'statistic/order/getByTimeRange',
+				format('toSnake')({ startTime, endTime })
+			);
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response || {};
+				const { countList = [] } = format('toCamel')(data) || {};
+				yield put({
+					type: 'updateState',
+					payload: { passengerFlowOrder: countList },
+				});
+			}
+
+			return response;
+		},
 
 		*getPassengerAge({ payload }, { call, put }) {
 			const { startTime, endTime, type = 'gender' } = payload || {};
@@ -82,7 +122,7 @@ export default {
 			return response;
 		},
 	},
-	reducres: {
+	reducers: {
 		updateState(state, action) {
 			return {
 				...state,

@@ -69,6 +69,13 @@ export default {
 	yesterday: '昨日',
 	lastWeek: '上周',
 	lastMonth: '上月',
+	'common.week.1': '周一',
+	'common.week.2': '周二',
+	'common.week.3': '周三',
+	'common.week.4': '周四',
+	'common.week.5': '周五',
+	'common.week.6': '周六',
+	'common.week.7': '周日',
 	'common.person': '人',
 
 	'common.male': '男性',
