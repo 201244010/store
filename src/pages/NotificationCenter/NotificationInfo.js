@@ -41,8 +41,7 @@ const option = {
 	dispatch => ({
 		getNotificationInfo: payload =>
 			dispatch({ type: 'notification/getNotificationInfo', payload }),
-		goToPath: (pathId, urlParams = {}) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		goToPath: (pathId, urlParams = {}, anchorId) => dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, anchorId } }),
 		formatSdCard: sn => {
 			dispatch({ type: 'sdcard/formatSdCard', sn });
 		},
