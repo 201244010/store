@@ -42,6 +42,7 @@ export default {
 	'esl.device.esl.product.name': 'Product Name',
 	'esl.device.esl.product.code': 'Barcode',
 	'esl.device.esl.template.name': 'Template',
+	'esl.device.esl.page.display': 'Page Name',
 	'esl.device.esl.status': 'Status',
 	'esl.device.esl.push.time': 'Last Push Time',
 	'esl.device.esl.battery': 'Battery',

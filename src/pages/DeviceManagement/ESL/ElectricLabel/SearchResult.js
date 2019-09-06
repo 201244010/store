@@ -41,6 +41,7 @@ class SearchResult extends Component {
 			detailVisible: false,
 			templateVisible: false,
 			previewVisible: false,
+			toggleVisible: false,
 			bindVisible: false,
 			currentRecord: {},
 			selectedProduct: {},
@@ -124,8 +125,10 @@ class SearchResult extends Component {
 	};
 
 	togglePage = (record) => {
-		// todo toggle page
-		console.log(record);
+		this.setState({
+			toggleVisible: true,
+			currentRecord: record,
+		});
 	};
 
 	unbindESL = record => {
@@ -278,6 +281,7 @@ class SearchResult extends Component {
 			detailVisible,
 			templateVisible,
 			previewVisible,
+			toggleVisible,
 			bindVisible,
 			currentRecord,
 			selectedProduct,
@@ -474,21 +478,82 @@ class SearchResult extends Component {
 					]}
 				>
 					<div className={styles['custom-modal-wrapper']}>
-						<Row>
-							<Col span={4}>{formatMessage({ id: 'esl.device.esl.id' })}:</Col>
-							<Col span={20}>{currentRecord.esl_code}</Col>
-							<Col span={4}>
-								{formatMessage({ id: 'esl.device.esl.product.seq.num' })}:
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>{formatMessage({ id: 'esl.device.esl.id' })}：</Col>
+							<Col span={18}>{currentRecord.esl_code}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.product.seq.num' })}：
 							</Col>
-							<Col span={20}>{currentRecord.product_seq_num}</Col>
-							<Col span={4}>
-								{formatMessage({ id: 'esl.device.esl.product.name' })}:
+							<Col span={18}>{currentRecord.product_seq_num || '---'}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.product.name' })}：
 							</Col>
-							<Col span={20}>{currentRecord.product_name}</Col>
-							<Col span={4}>
-								{formatMessage({ id: 'esl.device.esl.template.name' })}:
+							<Col span={18}>{currentRecord.product_name || '---'}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.template.name' })}：
 							</Col>
-							<Col span={20}>
+							<Col span={18}>
+								<Select
+									style={{ width: '100%' }}
+									value={currentRecord.template_id}
+									onChange={id => this.updateProduct(id)}
+								>
+									{templates4ESL.map(template => (
+										<Select.Option key={template.id} value={template.id}>
+											{template.name}
+										</Select.Option>
+									))}
+								</Select>
+							</Col>
+						</Row>
+					</div>
+				</Modal>
+				<Modal
+					title={formatMessage({ id: 'esl.device.esl.page.toggle' })}
+					visible={toggleVisible}
+					width={500}
+					onCancel={() => this.closeModal('toggleVisible')}
+					footer={[
+						<Button
+							key="cancel"
+							type="default"
+							onClick={() => this.closeModal('toggleVisible')}
+						>
+							{formatMessage({ id: 'btn.cancel' })}
+						</Button>,
+						<Button key="submit" type="primary" onClick={this.confirmBind}>
+							{formatMessage({ id: 'btn.confirm' })}
+						</Button>,
+					]}
+				>
+					<div className={styles['custom-modal-wrapper']}>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>{formatMessage({ id: 'esl.device.esl.id' })}：</Col>
+							<Col span={18}>{currentRecord.esl_code}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.product.seq.num' })}：
+							</Col>
+							<Col span={18}>{currentRecord.product_seq_num || '---'}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.product.name' })}：
+							</Col>
+							<Col span={18}>{currentRecord.product_name || '---'}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.page.display' })}：
+							</Col>
+							<Col span={18}>
 								<Select
 									style={{ width: '100%' }}
 									value={currentRecord.template_id}

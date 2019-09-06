@@ -44,6 +44,7 @@ export default {
 	'esl.device.esl.product.name': '商品名称',
 	'esl.device.esl.product.code': '条码',
 	'esl.device.esl.template.name': '模板',
+	'esl.device.esl.page.display': '显示页面',
 	'esl.device.esl.template.placeholder': '请选择模板',
 	'esl.device.esl.status': '状态',
 	'esl.device.esl.push.time': '最后推送时间',
