@@ -59,13 +59,13 @@ const router = [
 					},
 					{
 						path: '/dashboard/detail',
-						id: 'tradeDetail',
+						id: 'orderDetail',
+						name: 'orderDetail',
 						hideInMenu: true,
-						component: './DashBoard/TradeDetail',
+						component: './DashBoard/OrderDetail',
 					},
 				],
 			},
-
 			{
 				path: '/application',
 				name: 'application',
