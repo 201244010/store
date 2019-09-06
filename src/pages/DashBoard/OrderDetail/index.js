@@ -8,14 +8,6 @@ import { formatMessage } from 'umi/locale';
 import styles from './index.less';
 import global from '@/styles/common.less';
 
-const SEARCH_FORM_BUTTON = {
-	sm: 24,
-	md: {
-		span: 6,
-		offset: 18
-	}
-};
-
 const PURCHASECODE = {
 	ALL: '0',
 	ALI: '9',
@@ -94,7 +86,11 @@ class OrderDetail extends Component {
 				if (rankType === '0') {
 					options.sortByTime = 0;
 				}
-				
+				if (rankType === '-1') {
+					options.sortByAmount = -1;
+					options.sortByTime = -1;
+				}
+
 				options.purchaseTypeList = purchaseType === '0' ? [] : [purchaseType];
 				options.orderTypeList = orderType === '0' ? [] : [orderType];
 				options.pageNum = 1; // 默认请求第1页
@@ -293,8 +289,7 @@ class OrderDetail extends Component {
 									)}
 								</Form.Item>
 							</Col>
-
-							<Col {...SEARCH_FORM_BUTTON}>
+							<Col {...SEARCH_FORM_COL.OFFSET_TWO_THIRD}>
 								<Form.Item className={global['query-item']}>
 									<Button
 										type="primary"
