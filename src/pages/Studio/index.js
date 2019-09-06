@@ -374,6 +374,8 @@ class Studio extends Component {
 
 	handleStageShapeStart = e => {
 		const { studio: { componentsDetail }, updateComponentDetail } = this.props;
+		this.dragStartX = e.evt.clientX;
+		this.dragStartY = e.evt.clientY;
 		this.setState({
 			dragging: true,
 		});
@@ -388,37 +390,7 @@ class Studio extends Component {
 						frozenY: true
 					}
 				});
-				return;
 			}
-			// 按住shift只能平移
-			if (!e.evt.ctrlKey && e.evt.shiftKey) {
-				updateComponentDetail({
-					componentName,
-					detail: {
-						frozenX: false,
-						frozenY: true
-					}
-				});
-				return;
-			}
-			// 按住ctrl + shift只能竖移
-			if (e.evt.ctrlKey && e.evt.shiftKey) {
-				updateComponentDetail({
-					componentName,
-					detail: {
-						frozenX: true,
-						frozenY: false
-					}
-				});
-				return;
-			}
-			updateComponentDetail({
-				componentName,
-				detail: {
-					frozenX: false,
-					frozenY: false
-				}
-			});
 		}
 	};
 
@@ -428,11 +400,11 @@ class Studio extends Component {
 			resetScopedComponents, addComponent, batchUpdateComponentDetail
 		} = this.props;
 
+		const name = e.target.name();
+		const curComponent = componentsDetail[name];
 		if (e.evt.ctrlKey && !e.evt.shiftKey) {
 			window.clearTimeout(this.selectComponentTimer);
 			resetScopedComponents();
-			const name = e.target.name();
-			const curComponent = componentsDetail[name];
 			if (curComponent && !this.dragCopy) {
 				const newPosition = {};
 				this.dragCopy = true;
@@ -451,9 +423,22 @@ class Studio extends Component {
 			return;
 		}
 
+		let frozenX = false;
+		let frozenY = false;
+		if (e.evt.shiftKey) {
+			if (Math.abs(e.evt.clientX - this.dragStartX) >= Math.abs(e.evt.clientY - this.dragStartY)) {
+				frozenX = false;
+				frozenY = true;
+			} else {
+				frozenX = true;
+				frozenY = false;
+			}
+		}
 		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
 			this.updateComponentsDetail({
-				target: e.target
+				target: e.target,
+				frozenX,
+				frozenY
 			});
 		} else {
 			batchUpdateComponentDetail({
@@ -671,7 +656,7 @@ class Studio extends Component {
 		});
 	};
 
-	updateComponentsDetail = ({ target, selectedShapeName, updateInput, isStep }) => {
+	updateComponentsDetail = ({ target, selectedShapeName, updateInput, isStep, frozenX = false, frozenY = false }) => {
 		const { updateComponentsDetail } = this.props;
 		const { x, y, name, width, height, scaleX, scaleY, rotation } = target.attrs;
 		let realW = width;
@@ -710,6 +695,8 @@ class Studio extends Component {
 					scaleX: realScaleX,
 					scaleY: realScaleY,
 					rotation,
+					frozenX,
+					frozenY
 				},
 			};
 			componentDetail[name].lines = [
