@@ -31,7 +31,7 @@ class MqttClient {
 
 		this.msgIdMap = new Map();
 		this.handlerMap = new Map();
-		this.reconnectTimes = 0;
+		this.reconnectTimes = 1;
 
 		this.connect = this.connect.bind(this);
 		this.subscribe = this.subscribe.bind(this);
@@ -45,7 +45,7 @@ class MqttClient {
 		this.registerErrorHandler = this.registerErrorHandler.bind(this);
 	}
 
-	connect({ address, username, password, clientId, path = '/mqtt' }) {
+	connect({ address, username, password, clientId, path = '/mqtt', reconnectPeriod = 3 * 1000 }) {
 		return new Promise((resolve, reject) => {
 			const client = MQTT.connect(
 				`${WEB_SOCKET_PREFIX}://${address}`,
@@ -54,12 +54,13 @@ class MqttClient {
 					username,
 					password,
 					path,
+					reconnectPeriod,
 				}
 			);
 
 			client.on('connect', () => {
 				console.log('mqtt connect');
-				this.reconnectTimes = 0;
+				this.reconnectTimes = 1;
 				console.log('established client: ', client);
 				resolve(client);
 			});
@@ -118,19 +119,24 @@ class MqttClient {
 		// const { messages } = this;
 		const { client } = this;
 		const { config } = this;
+		const { msgIdMap } = this;
 		// console.log('random id ', generateMsgId());
 		// messages.id += 1;
 		const msgId = generateMsgId();
 		const { sn } = message.param || {};
-		this.msgIdMap.set(msgId, sn);
+		console.log(message, sn);
 		const msg = JSON.stringify({
 			msg_id: msgId,
 			params: Array.isArray(message) ? [...message] : [message],
 		});
-		client.publish(topic, msg, config, () => {
-			console.log('publish', topic, msg);
+		client.publish(topic, msg, config, err => {
+			console.log('publish', topic, msg, err);
+			if (!err) {
+				console.log(sn);
+				msgIdMap.set(msgId, sn);
+				console.log(msgIdMap);
+			}
 		});
-		console.log(this.msgIdMap);
 	}
 
 	registerTopicHandler(topic, topicHandler) {
@@ -173,6 +179,7 @@ class MqttClient {
 
 	clearMsg({ msgId }) {
 		const { msgIdMap } = this;
+		console.log(msgId);
 		msgIdMap.delete(msgId);
 	}
 }
