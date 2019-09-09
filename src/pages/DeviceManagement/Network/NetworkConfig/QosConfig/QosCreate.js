@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Form, Input, Row, Col, Switch, Button, message } from 'antd';
 import { FORM_ITEM_LAYOUT_QOS } from '@/constants/form';
-// import { ERROR_OK } from '@/constants/errorCode';
+import { STATUS } from '@/constants/index';
 import { OPCODE } from '@/constants/mqttStore';
 import { format } from '@konata9/milk-shake';
 import { formatMessage } from 'umi/locale';
@@ -152,8 +152,13 @@ class QosCreate extends React.PureComponent {
 					},
 					configId: id,
 				};
-				qosType === 'create' && (await createQos(payload));
-				qosType === 'update' && (await updateQos(payload));
+				if (qosType === STATUS.CREATE) {
+					await createQos(payload);
+				}
+
+				if (qosType === STATUS.UPDATE) {
+					await updateQos(payload);
+				}
 				selectedRowKeys.forEach(async keyId => {
 					const { networkId, sn } =
 						networkDeviceList.filter(item => item.id === keyId)[0] || {};
@@ -168,7 +173,9 @@ class QosCreate extends React.PureComponent {
 						},
 					});
 				});
-				selectedRowKeys.length === 0 && (await getQosList());
+				if (selectedRowKeys.length === 0) {
+					await getQosList();
+				}
 			}
 		});
 	};
@@ -279,7 +286,9 @@ class QosCreate extends React.PureComponent {
 									checkedChildren={formatMessage({ id: 'network.switchOn' })}
 									unCheckedChildren={formatMessage({ id: 'network.switchOff' })}
 								/>
-								<span className={styles['qos-ratio']}>({formatMessage({ id: 'network.switch.tip' })})</span>
+								<span className={styles['qos-ratio']}>
+									({formatMessage({ id: 'network.switch.tip' })})
+								</span>
 							</>
 						)}
 					</Form.Item>
