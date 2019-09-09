@@ -227,7 +227,7 @@ export default {
 				targetPath = `${path}?${query}`;
 			}
 
-			if(anchorId){
+			if (anchorId) {
 				targetPath = `${targetPath}#${anchorId}`;
 			}
 

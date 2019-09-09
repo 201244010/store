@@ -41,9 +41,11 @@ class SearchResult extends Component {
 			detailVisible: false,
 			templateVisible: false,
 			previewVisible: false,
+			toggleVisible: false,
 			bindVisible: false,
 			currentRecord: {},
 			selectedProduct: {},
+			selectedScreen: undefined
 		};
 	}
 
@@ -124,8 +126,24 @@ class SearchResult extends Component {
 	};
 
 	togglePage = (record) => {
-		// todo toggle page
-		console.log(record);
+		const { fetchSwitchScreenInfo } = this.props;
+		fetchSwitchScreenInfo({
+			options: {
+				esl_code: record.esl_code,
+			},
+		});
+
+		this.setState({
+			toggleVisible: true,
+			currentRecord: record,
+		});
+	};
+
+	closeToggle = () => {
+		this.setState({
+			toggleVisible: false,
+			selectedScreen: undefined
+		});
 	};
 
 	unbindESL = record => {
@@ -191,6 +209,12 @@ class SearchResult extends Component {
 				...currentRecord,
 				template_id: templateId,
 			},
+		});
+	};
+
+	updateScreen = (screenNum) => {
+		this.setState({
+			selectedScreen: screenNum
 		});
 	};
 
@@ -262,6 +286,19 @@ class SearchResult extends Component {
 		this.closeModal('templateVisible');
 	};
 
+	confirmToggle = () => {
+		const { switchScreen } = this.props;
+		const { currentRecord, selectedScreen } = this.state;
+
+		switchScreen({
+			options: {
+				esl_code: currentRecord.esl_code,
+				screen_num: selectedScreen,
+			},
+		});
+		this.closeToggle();
+	};
+
 	render() {
 		const {
 			loading,
@@ -271,6 +308,7 @@ class SearchResult extends Component {
 			templates4ESL,
 			products,
 			productPagination,
+			screenInfo,
 			fetchProductList,
 			bindESL,
 		} = this.props;
@@ -278,9 +316,11 @@ class SearchResult extends Component {
 			detailVisible,
 			templateVisible,
 			previewVisible,
+			toggleVisible,
 			bindVisible,
 			currentRecord,
 			selectedProduct,
+			selectedScreen
 		} = this.state;
 		const columns = [
 			{
@@ -474,21 +514,27 @@ class SearchResult extends Component {
 					]}
 				>
 					<div className={styles['custom-modal-wrapper']}>
-						<Row>
-							<Col span={4}>{formatMessage({ id: 'esl.device.esl.id' })}:</Col>
-							<Col span={20}>{currentRecord.esl_code}</Col>
-							<Col span={4}>
-								{formatMessage({ id: 'esl.device.esl.product.seq.num' })}:
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>{formatMessage({ id: 'esl.device.esl.id' })}：</Col>
+							<Col span={18}>{currentRecord.esl_code}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.product.seq.num' })}：
 							</Col>
-							<Col span={20}>{currentRecord.product_seq_num}</Col>
-							<Col span={4}>
-								{formatMessage({ id: 'esl.device.esl.product.name' })}:
+							<Col span={18}>{currentRecord.product_seq_num || '---'}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.product.name' })}：
 							</Col>
-							<Col span={20}>{currentRecord.product_name}</Col>
-							<Col span={4}>
-								{formatMessage({ id: 'esl.device.esl.template.name' })}:
+							<Col span={18}>{currentRecord.product_name || '---'}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.template.name' })}：
 							</Col>
-							<Col span={20}>
+							<Col span={18}>
 								<Select
 									style={{ width: '100%' }}
 									value={currentRecord.template_id}
@@ -497,6 +543,62 @@ class SearchResult extends Component {
 									{templates4ESL.map(template => (
 										<Select.Option key={template.id} value={template.id}>
 											{template.name}
+										</Select.Option>
+									))}
+								</Select>
+							</Col>
+						</Row>
+					</div>
+				</Modal>
+				<Modal
+					title={formatMessage({ id: 'esl.device.esl.page.toggle' })}
+					visible={toggleVisible}
+					width={500}
+					onCancel={() => this.closeToggle()}
+					footer={[
+						<Button
+							key="cancel"
+							type="default"
+							onClick={() => this.closeToggle()}
+						>
+							{formatMessage({ id: 'btn.cancel' })}
+						</Button>,
+						<Button key="submit" type="primary" onClick={this.confirmToggle}>
+							{formatMessage({ id: 'btn.confirm' })}
+						</Button>,
+					]}
+				>
+					<div className={styles['custom-modal-wrapper']}>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>{formatMessage({ id: 'esl.device.esl.id' })}：</Col>
+							<Col span={18}>{currentRecord.esl_code}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.product.seq.num' })}：
+							</Col>
+							<Col span={18}>{currentRecord.product_seq_num || '---'}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.product.name' })}：
+							</Col>
+							<Col span={18}>{currentRecord.product_name || '---'}</Col>
+						</Row>
+						<Row className={styles.row}>
+							<Col span={6} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.page.display' })}：
+							</Col>
+							<Col span={18}>
+								<Select
+									placeholder={formatMessage({id: 'select.placeholder'})}
+									style={{ width: '100%' }}
+									value={selectedScreen}
+									onChange={screenNum => this.updateScreen(screenNum)}
+								>
+									{(screenInfo || []).map(screen => (
+										<Select.Option key={screen.screen_num} value={screen.screen_num}>
+											{screen.screen_name}
 										</Select.Option>
 									))}
 								</Select>
@@ -524,7 +626,7 @@ class SearchResult extends Component {
 				/>
 				<Modal
 					title={currentRecord.template_name}
-					width={widthMap[currentRecord.size]}
+					width={widthMap[currentRecord.model_size]}
 					visible={previewVisible}
 					onCancel={() => this.closeModal('previewVisible')}
 					onOk={() => this.closeModal('previewVisible')}
@@ -535,8 +637,8 @@ class SearchResult extends Component {
 					]}
 				>
 					<div className={styles['preview-img']}>
-						<img className={`${styles['wrap-img}']} ${styles[styleMap[currentRecord.size]]}`} src={imgMap[currentRecord.size]} alt="" />
-						<img className={`${styles['content-img']} ${styles[styleMap[currentRecord.size]]}`} src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" alt="" />
+						<img className={`${styles['wrap-img}']} ${styles[styleMap[currentRecord.model_size]]}`} src={imgMap[currentRecord.model_size]} alt="" />
+						<img className={`${styles['content-img']} ${styles[styleMap[currentRecord.model_size]]}`} src={currentRecord.address} alt="" />
 					</div>
 				</Modal>
 			</div>
