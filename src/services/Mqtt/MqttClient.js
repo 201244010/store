@@ -31,7 +31,7 @@ class MqttClient {
 
 		this.msgIdMap = new Map();
 		this.handlerMap = new Map();
-		this.reconnectTimes = 1;
+		this.reconnectTimes = 0;
 
 		this.connect = this.connect.bind(this);
 		this.subscribe = this.subscribe.bind(this);
@@ -124,7 +124,6 @@ class MqttClient {
 		// messages.id += 1;
 		const msgId = generateMsgId();
 		const { sn } = message.param || {};
-		console.log(message, sn);
 		const msg = JSON.stringify({
 			msg_id: msgId,
 			params: Array.isArray(message) ? [...message] : [message],
@@ -179,7 +178,6 @@ class MqttClient {
 
 	clearMsg({ msgId }) {
 		const { msgIdMap } = this;
-		console.log(msgId);
 		msgIdMap.delete(msgId);
 	}
 }

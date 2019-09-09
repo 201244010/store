@@ -51,7 +51,7 @@ class EventList extends React.Component {
 			eventInfo.forEach((item, index) => {
 				item.networkAlias !== '' ? item.networkId = item.networkAlias : '';
 				item.index = index;
-				item.reportTime = moment.unix(item.reportTime).format('HH:mm:ss DD/MM/YYYY');
+				item.reportTime = moment.unix(item.reportTime).format('YYYY-MM-DD HH:mm:ss');
 				switch(item.eventType) {
 					case 5: item.eventType = formatMessage({id: 'network.connect.deviceCpuOverwhelmed'});break;
 					case 7: item.eventType = formatMessage({id: 'network.connect.deviceMemoryOverwhelmed'});break;
