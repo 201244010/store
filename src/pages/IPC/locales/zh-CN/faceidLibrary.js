@@ -81,5 +81,5 @@ export default {
 	'faceid.firstInputFormat':'首位字符不能为空，请重新输入',
 
 	'faceid.undefined':'--',
-	'faceid.unknown':'未知'
+	'faceid.unknown':'--'
 };
