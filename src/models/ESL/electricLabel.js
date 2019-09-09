@@ -26,6 +26,7 @@ export default {
 		detailInfo: {},
 		templates4ESL: [],
 		flashModes: [],
+		screenInfo: []
 	},
 	effects: {
 		*changeSearchFormValue({ payload = {} }, { put }) {
@@ -354,7 +355,7 @@ export default {
 			});
 
 			const { options = {} } = payload;
-			const response = yield call(ESLServices.setScanTiem, options);
+			const response = yield call(ESLServices.setScanTime, options);
 			if (response.code === ERROR_OK) {
 				message.success(formatMessage({ id: 'esl.device.esl.set.scan.success' }));
 			}
@@ -363,6 +364,40 @@ export default {
 				type: 'updateState',
 				payload: { loading: false },
 			});
+		},
+
+		*fetchSwitchScreenInfo({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+
+			const response = yield call(ESLServices.getSwitchScreenInfo, options);
+			const result = response.data || {};
+			if (response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: {
+						screenInfo: result.esl_switch_screen_info_list || [],
+					},
+				});
+			}
+			return response;
+		},
+
+		*switchScreen({ payload = {} }, { call }) {
+			const { options = {} } = payload;
+
+			const response = yield call(ESLServices.switchScreen, options);
+			if (response.code === ERROR_OK) {
+				message.success(
+					formatMessage({ id: 'esl.device.esl.toggle.page.success' }),
+					DURATION_TIME
+				);
+			} else {
+				message.error(
+					formatMessage({ id: 'esl.device.esl.toggle.page.fail' }),
+					DURATION_TIME
+				);
+			}
+			return response;
 		},
 
 		*clearSearchValue(_, { put }) {

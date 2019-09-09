@@ -45,6 +45,7 @@ class SearchResult extends Component {
 			bindVisible: false,
 			currentRecord: {},
 			selectedProduct: {},
+			selectedScreen: undefined
 		};
 	}
 
@@ -125,9 +126,23 @@ class SearchResult extends Component {
 	};
 
 	togglePage = (record) => {
+		const { fetchSwitchScreenInfo } = this.props;
+		fetchSwitchScreenInfo({
+			options: {
+				esl_code: record.esl_code,
+			},
+		});
+
 		this.setState({
 			toggleVisible: true,
 			currentRecord: record,
+		});
+	};
+
+	closeToggle = () => {
+		this.setState({
+			toggleVisible: false,
+			selectedScreen: undefined
 		});
 	};
 
@@ -194,6 +209,12 @@ class SearchResult extends Component {
 				...currentRecord,
 				template_id: templateId,
 			},
+		});
+	};
+
+	updateScreen = (screenNum) => {
+		this.setState({
+			selectedScreen: screenNum
 		});
 	};
 
@@ -265,6 +286,19 @@ class SearchResult extends Component {
 		this.closeModal('templateVisible');
 	};
 
+	confirmToggle = () => {
+		const { switchScreen } = this.props;
+		const { currentRecord, selectedScreen } = this.state;
+
+		switchScreen({
+			options: {
+				esl_code: currentRecord.esl_code,
+				screen_num: selectedScreen,
+			},
+		});
+		this.closeToggle();
+	};
+
 	render() {
 		const {
 			loading,
@@ -274,6 +308,7 @@ class SearchResult extends Component {
 			templates4ESL,
 			products,
 			productPagination,
+			screenInfo,
 			fetchProductList,
 			bindESL,
 		} = this.props;
@@ -285,6 +320,7 @@ class SearchResult extends Component {
 			bindVisible,
 			currentRecord,
 			selectedProduct,
+			selectedScreen
 		} = this.state;
 		const columns = [
 			{
@@ -518,16 +554,16 @@ class SearchResult extends Component {
 					title={formatMessage({ id: 'esl.device.esl.page.toggle' })}
 					visible={toggleVisible}
 					width={500}
-					onCancel={() => this.closeModal('toggleVisible')}
+					onCancel={() => this.closeToggle()}
 					footer={[
 						<Button
 							key="cancel"
 							type="default"
-							onClick={() => this.closeModal('toggleVisible')}
+							onClick={() => this.closeToggle()}
 						>
 							{formatMessage({ id: 'btn.cancel' })}
 						</Button>,
-						<Button key="submit" type="primary" onClick={this.confirmBind}>
+						<Button key="submit" type="primary" onClick={this.confirmToggle}>
 							{formatMessage({ id: 'btn.confirm' })}
 						</Button>,
 					]}
@@ -555,13 +591,14 @@ class SearchResult extends Component {
 							</Col>
 							<Col span={18}>
 								<Select
+									placeholder={formatMessage({id: 'select.placeholder'})}
 									style={{ width: '100%' }}
-									value={currentRecord.template_id}
-									onChange={id => this.updateProduct(id)}
+									value={selectedScreen}
+									onChange={screenNum => this.updateScreen(screenNum)}
 								>
-									{templates4ESL.map(template => (
-										<Select.Option key={template.id} value={template.id}>
-											{template.name}
+									{(screenInfo || []).map(screen => (
+										<Select.Option key={screen.screen_num} value={screen.screen_num}>
+											{screen.screen_name}
 										</Select.Option>
 									))}
 								</Select>
@@ -589,7 +626,7 @@ class SearchResult extends Component {
 				/>
 				<Modal
 					title={currentRecord.template_name}
-					width={widthMap[currentRecord.size]}
+					width={widthMap[currentRecord.model_size]}
 					visible={previewVisible}
 					onCancel={() => this.closeModal('previewVisible')}
 					onOk={() => this.closeModal('previewVisible')}
@@ -600,8 +637,8 @@ class SearchResult extends Component {
 					]}
 				>
 					<div className={styles['preview-img']}>
-						<img className={`${styles['wrap-img}']} ${styles[styleMap[currentRecord.size]]}`} src={imgMap[currentRecord.size]} alt="" />
-						<img className={`${styles['content-img']} ${styles[styleMap[currentRecord.size]]}`} src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" alt="" />
+						<img className={`${styles['wrap-img}']} ${styles[styleMap[currentRecord.model_size]]}`} src={imgMap[currentRecord.model_size]} alt="" />
+						<img className={`${styles['content-img']} ${styles[styleMap[currentRecord.model_size]]}`} src={currentRecord.address} alt="" />
 					</div>
 				</Modal>
 			</div>

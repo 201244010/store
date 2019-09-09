@@ -68,6 +68,9 @@ export default {
 				},
 			});
 		},
+		*fetchScreenNameList({ payload = {} }, { call }) {
+			return yield call(TemplateService.fetchScreenNameList, payload);
+		},
 		*createTemplate({ payload = {} }, { call, put }) {
 			yield put({
 				type: 'updateState',

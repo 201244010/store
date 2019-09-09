@@ -82,6 +82,8 @@ export default {
 	'esl.device.esl.bind.input.placeholder': 'Please Input the Product ID/Name/Barcode',
 	'esl.device.esl.change.template.success': 'Success',
 	'esl.device.esl.change.template.fail': 'Fail',
+	'esl.device.esl.toggle.page.success': '模板修改成功，价签将开始刷新',
+	'esl.device.esl.toggle.page.fail': '模板修改失败',
 	'esl.device.esl.flash.mode.error': 'No mathed pattern',
 	'esl.device.esl.push.wait.bind': 'Unbind',
 	'esl.device.esl.push.wait': 'Updating',

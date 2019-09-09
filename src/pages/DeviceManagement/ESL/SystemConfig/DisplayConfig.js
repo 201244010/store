@@ -20,6 +20,7 @@ const FormTip = ({ text = '', pos = 'right', style = {} }) => (
 		getDisplayConfig: () => dispatch({ type: 'systemConfig/getDisplayConfig' }),
 		updateScreenName: payload => dispatch({ type: 'systemConfig/updateScreenName', payload }),
 		updateTemplateConfig: payload => dispatch({ type: 'systemConfig/updateTemplateConfig', payload }),
+		fetchScreenNameList: payload => dispatch({ type: 'template/fetchScreenNameList', payload }),
 	})
 )
 class DisplayConfig extends Component {
@@ -27,34 +28,79 @@ class DisplayConfig extends Component {
 		super(props);
 		this.state = {
 			page2Config: {},
-			page3Config: {}
+			page3Config: {},
+			modelTemplateMap: {}
 		};
 	}
 
 	async componentDidMount() {
-		const { getDisplayConfig } = this.props;
+		const { getDisplayConfig, fetchScreenNameList } = this.props;
 
 		const response = await getDisplayConfig();
+		const screenConfig = response.data.esl_switch_screen_config || [];
+		this.page2Config = screenConfig.filter(item => item.screen_num === 2)[0] || {};
+		this.page3Config = screenConfig.filter(item => item.screen_num === 3)[0] || {};
 		this.setState({
-			page2Config: (response.data || [])[0] || {},
-			page3Config: (response.data || [])[1] || {}
+			page2Config: JSON.parse(JSON.stringify(this.page2Config)),
+			page3Config: JSON.parse(JSON.stringify(this.page3Config)),
 		});
+		if (screenConfig.length && screenConfig[0].template_config && screenConfig[0].template_config.length) {
+			const fetchPromises = [];
+			const modelTemplateMap = {};
+			for (let i = 0; i < screenConfig[0].template_config.length; i++) {
+				const templateConfig = screenConfig[0].template_config[i];
+				const fetchPromise = fetchScreenNameList({
+					model_id: templateConfig.model_id
+				});
+				fetchPromises.push(fetchPromise);
+			}
+			Promise.all(fetchPromises).then(resData => {
+				for (let i = 0; i < resData.length; i++) {
+					modelTemplateMap[screenConfig[0].template_config[i].model_name] = resData[i].data.template_list;
+				}
+				this.setState({
+					modelTemplateMap
+				});
+			});
+		}
 	}
 
 	submit = () => {
 		const { updateScreenName, updateTemplateConfig } = this.props;
-		const { page2Config } = this.state;
+		const { page2Config, page3Config } = this.state;
 		updateScreenName({
-			page_id: page2Config.id,
-			page_name: page2Config.page_name
-		});
-		updateTemplateConfig({
-			template_config: [{
-				page_id: page2Config.id,
-				model_id: page2Config.template_config[0].model_id,
-				template_id: page2Config.template_config[0].template_id,
+			name_info: [{
+				screen_id: page2Config.id,
+				screen_name: page2Config.screen_name
+			}, {
+				screen_id: page3Config.id,
+				screen_name: page3Config.screen_name
 			}]
 		});
+		const updatedTemplateConfig = [];
+		if (page2Config.template_config.length) {
+			for (let i = 0; i < page2Config.template_config.length; i++) {
+				if (this.page2Config.template_config[i].template_id !== page2Config.template_config[i].template_id) {
+					updatedTemplateConfig.push({
+						screen_id: page2Config.id,
+						model_id: page2Config.template_config[i].model_id,
+						template_id: page2Config.template_config[i].template_id,
+					});
+				}
+				if (this.page3Config.template_config[i].template_id !== page3Config.template_config[i].template_id) {
+					updatedTemplateConfig.push({
+						screen_id: page3Config.id,
+						model_id: page3Config.template_config[i].model_id,
+						template_id: page3Config.template_config[i].template_id,
+					});
+				}
+			}
+		}
+		if (updatedTemplateConfig.length) {
+			updateTemplateConfig({
+				template_config: updatedTemplateConfig
+			});
+		}
 	};
 
 	updatePageConfig = (config, key, e) => {
@@ -76,8 +122,34 @@ class DisplayConfig extends Component {
 		}
 	};
 
-	render() {
+	updatePageTemplateConfig = (configName, templateConfig, value) => {
 		const { page2Config, page3Config } = this.state;
+
+		if (configName === 'page2Config') {
+			const newPage2Config = page2Config;
+			newPage2Config.template_config.forEach(config => {
+				if (config.model_id === templateConfig.model_id) {
+					config.template_id = value;
+				}
+			});
+			this.setState({
+				page2Config: newPage2Config
+			});
+		} else {
+			const newPage3Config = page3Config;
+			newPage3Config.template_config.forEach(config => {
+				if (config.model_id === templateConfig.model_id) {
+					config.template_id = value;
+				}
+			});
+			this.setState({
+				page3Config: newPage3Config
+			});
+		}
+	};
+
+	render() {
+		const { page2Config, page3Config, modelTemplateMap } = this.state;
 		const page2TemplateConfig = {};
 		(page2Config.template_config || []).forEach(item => {
 			page2TemplateConfig[item.model_name] = item;
@@ -115,10 +187,10 @@ class DisplayConfig extends Component {
 					<Row gutter={10} className={styles['m-b-15']}>
 						<Col span={8} className={styles['page-name']}>{formatMessage({id: 'esl.device.display.page.name'})}：</Col>
 						<Col span={4}>
-							<Input value={page2Config.page_name} onChange={(e) => this.updatePageConfig('page2Config', 'page_name', e)} />
+							<Input value={page2Config.screen_name} onChange={(e) => this.updatePageConfig('page2Config', 'screen_name', e)} />
 						</Col>
 						<Col span={4}>
-							<Input value={page3Config.page_name} onChange={(e) => this.updatePageConfig('page3Config', 'page_name', e)} />
+							<Input value={page3Config.screen_name} onChange={(e) => this.updatePageConfig('page3Config', 'screen_name', e)} />
 						</Col>
 					</Row>
 					{
@@ -126,13 +198,31 @@ class DisplayConfig extends Component {
 							<Row gutter={10} className={styles['m-b-15']} key={config.model_id}>
 								<Col span={8} className={styles['page-name']}>{config.model_name}：</Col>
 								<Col span={4}>
-									<Select style={{width: '100%'}} value={config.template_id}>
-										<Option value={0}>{formatMessage({id: 'esl.device.display.config.close'})}</Option>
+									<Select
+										style={{width: '100%'}}
+										value={config.template_id}
+										onChange={(id) => this.updatePageTemplateConfig('page2Config', config, id)}
+									>
+										<Option key={0} value={0}>{formatMessage({id: 'esl.device.display.config.close'})}</Option>
+										{
+											modelTemplateMap[config.model_name] && modelTemplateMap[config.model_name].map(model => (
+												<Option key={model.id} value={model.id}>{model.name}</Option>
+											))
+										}
 									</Select>
 								</Col>
 								<Col span={4}>
-									<Select style={{width: '100%'}} value={(page3TemplateConfig[config.model_name] || {}).template_id}>
-										<Option value={0}>{formatMessage({id: 'esl.device.display.config.not'})}</Option>
+									<Select
+										style={{width: '100%'}}
+										value={(page3TemplateConfig[config.model_name] || {}).template_id}
+										onChange={(id) => this.updatePageTemplateConfig('page3Config', config, id)}
+									>
+										<Option key={0} value={0}>{formatMessage({id: 'esl.device.display.config.not'})}</Option>
+										{
+											modelTemplateMap[config.model_name] && modelTemplateMap[config.model_name].map(model => (
+												<Option key={model.id} value={model.id}>{model.name}</Option>
+											))
+										}
 									</Select>
 								</Col>
 								{

@@ -95,6 +95,8 @@ export default {
 	'esl.device.esl.push.all': '重推',
 	'esl.device.esl.push.all.success': '正在重推失败价签...',
 	'esl.device.esl.set.scan.success': '设置扫描时间成功',
+	'esl.device.esl.toggle.page.success': '模板修改成功，价签将开始刷新',
+	'esl.device.esl.toggle.page.fail': '模板修改失败',
 	'esl.device.template.new': '新建模板',
 	'esl.device.template.clone': '克隆模板',
 	'esl.device.template.2.13.inch': '2.13寸',
