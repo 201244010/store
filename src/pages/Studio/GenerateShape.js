@@ -56,6 +56,10 @@ export default function generateShape(option) {
 						onMouseOut: () => {
 							document.body.style.cursor = 'default';
 						},
+						dragBoundFunc: (pos) => ({
+							x: option.frozenX ? option.x : pos.x,
+							y: option.frozenY ? option.y : pos.y
+						})
 					}}
 				/>
 			);
@@ -136,6 +140,16 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 					<Text
@@ -152,9 +166,20 @@ export default function generateShape(option) {
 							align: option.align,
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX * option.zoomScale,
-							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.zoomScale,
+							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.scaleY * option.zoomScale,
+							lineHeight: 1 + (option.lineSpacing / option.fontSize),
 							draggable: true,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 				</Group>
@@ -181,6 +206,10 @@ export default function generateShape(option) {
 						onMouseOut: () => {
 							document.body.style.cursor = 'default';
 						},
+						dragBoundFunc: (pos) => ({
+							x: option.frozenX ? option.x : pos.x,
+							y: option.frozenY ? option.y : pos.y
+						})
 					}}
 				/>
 			);
@@ -206,6 +235,10 @@ export default function generateShape(option) {
 						onMouseOut: () => {
 							document.body.style.cursor = 'default';
 						},
+						dragBoundFunc: (pos) => ({
+							x: option.frozenX ? option.x : pos.x,
+							y: option.frozenY ? option.y : pos.y
+						})
 					}}
 				/>
 			);
@@ -228,40 +261,82 @@ export default function generateShape(option) {
 								onTransform: option.onTransform,
 								onTransformEnd: option.onTransformEnd,
 								onDblClick: option.onDblClick,
+								onMouseOver: () => {
+									document.body.style.cursor = 'pointer';
+								},
+								onMouseOut: () => {
+									document.body.style.cursor = 'default';
+								},
+								dragBoundFunc: (pos) => ({
+									x: option.frozenX ? option.x : pos.x,
+									y: option.frozenY ? option.y : pos.y
+								})
 							}}
 						/>
 						<Image
 							{...{
-								x: option.x + ((SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX - SIZES.DEFAULT_IMAGE_WIDTH) * option.zoomScale) / 2,
-								y: option.y + ((SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT * option.scaleY - SIZES.DEFAULT_IMAGE_HEIGHT) * option.zoomScale) / 2,
+								x: option.x + ((SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH - SIZES.DEFAULT_IMAGE_WIDTH) * option.scaleX * option.zoomScale) / 2,
+								y: option.y + ((SIZES.DEFAULT_IMAGE_CONTAINER_HEIGHT - SIZES.DEFAULT_IMAGE_HEIGHT) * option.scaleY * option.zoomScale) / 2,
 								width: SIZES.DEFAULT_IMAGE_WIDTH * option.zoomScale,
 								height: SIZES.DEFAULT_IMAGE_HEIGHT * option.zoomScale,
+								scaleX: option.scaleX,
+								scaleY: option.scaleY,
 								image: option.image,
+								onMouseOver: () => {
+									document.body.style.cursor = 'pointer';
+								},
+								onMouseOut: () => {
+									document.body.style.cursor = 'default';
+								},
+								dragBoundFunc: (pos) => ({
+									x: option.frozenX ? option.x : pos.x,
+									y: option.frozenY ? option.y : pos.y
+								})
 							}}
 						/>
 						{option.selected ? (
 							<Fragment>
 								<Rect
 									{...{
-										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
-										y: option.y - 50,
-										width: 180,
-										height: 32,
+										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 120) / 2,
+										y: option.y - 30,
+										width: 120,
+										height: 24,
 										fill: '#5085E3',
 										cornerRadius: 16,
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
+										dragBoundFunc: (pos) => ({
+											x: option.frozenX ? option.x : pos.x,
+											y: option.frozenY ? option.y : pos.y
+										})
 									}}
 								/>
 								<Text
 									{...{
-										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 180) / 2,
-										y: option.y - 50,
-										width: 180,
-										height: 32,
-										lineHeight: 2.5,
+										x: option.x + (SIZES.DEFAULT_IMAGE_CONTAINER_WIDTH * option.scaleX * option.zoomScale - 120) / 2,
+										y: option.y - 30,
+										width: 120,
+										height: 24,
+										lineHeight: 2,
 										align: 'center',
-										fontSize: 14,
+										fontSize: 12,
 										fill: 'white',
 										text: '双击更换图片',
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
+										dragBoundFunc: (pos) => ({
+											x: option.frozenX ? option.x : pos.x,
+											y: option.frozenY ? option.y : pos.y
+										})
 									}}
 								/>
 							</Fragment>
@@ -286,6 +361,16 @@ export default function generateShape(option) {
 								onTransform: option.onTransform,
 								onTransformEnd: option.onTransformEnd,
 								onDblClick: option.onDblClick,
+								onMouseOver: () => {
+									document.body.style.cursor = 'pointer';
+								},
+								onMouseOut: () => {
+									document.body.style.cursor = 'default';
+								},
+								dragBoundFunc: (pos) => ({
+									x: option.frozenX ? option.x : pos.x,
+									y: option.frozenY ? option.y : pos.y
+								})
 							}}
 						/>
 						{option.selected ? (
@@ -298,6 +383,16 @@ export default function generateShape(option) {
 										height: 32,
 										fill: '#5085E3',
 										cornerRadius: 16,
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
+										dragBoundFunc: (pos) => ({
+											x: option.frozenX ? option.x : pos.x,
+											y: option.frozenY ? option.y : pos.y
+										})
 									}}
 								/>
 								<Text
@@ -311,6 +406,16 @@ export default function generateShape(option) {
 										fontSize: 14,
 										fill: 'white',
 										text: '双击更换图片',
+										onMouseOver: () => {
+											document.body.style.cursor = 'pointer';
+										},
+										onMouseOut: () => {
+											document.body.style.cursor = 'default';
+										},
+										dragBoundFunc: (pos) => ({
+											x: option.frozenX ? option.x : pos.x,
+											y: option.frozenY ? option.y : pos.y
+										})
 									}}
 								/>
 							</Fragment>
@@ -338,6 +443,16 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 					<Text
@@ -354,10 +469,20 @@ export default function generateShape(option) {
 							align: option.align,
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[option.type] * option.scaleX * option.zoomScale,
-							height: MAPS.containerHeight[option.type] * option.scaleY * option.zoomScale,
+							height: MAPS.containerHeight[option.type] * option.zoomScale,
 							// lineHeight: (MAPS.containerHeight[option.type] * option.scaleY) / option.fontSize,
 							draggable: true,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 				</Group>
@@ -382,6 +507,16 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 					<Shape
@@ -390,11 +525,21 @@ export default function generateShape(option) {
 							x: option.x,
 							y: option.y,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							}),
 							sceneFunc(context) {
 								const intPriceText = `${option.content}`.split('.')[0];
 								const smallPriceText = `${option.content}`.split('.')[1] || '';
 								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY - option.fontSize) * option.zoomScale) / 2;
-								const yPosition = 5;
+								const yPosition = 2 * option.zoomScale;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
@@ -407,16 +552,44 @@ export default function generateShape(option) {
 								}
 								const smallXPosition = intXPosition + intTextWidth;
 
-								context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.textBaseline = 'hanging';
-								context.fillStyle = option.fontColor;
-								context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
-								context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.fillText(`${option.content ? smallPriceText : ''}`, smallXPosition, yPosition);
-								if (initTextDecoration(option) === 'line-through') {
-									context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
-								} else if (initTextDecoration(option) === 'underline') {
-									context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7, textWidth, 1 * option.zoomScale);
+								const rectWidth = MAPS.containerWidth[option.type] * option.zoomScale * option.scaleX;
+								if (rectWidth > textWidth) {
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'hanging';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+									context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.fillText(`${option.content ? smallPriceText : ''}`, smallXPosition, yPosition);
+									if (initTextDecoration(option) === 'line-through') {
+										context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
+									} else if (initTextDecoration(option) === 'underline') {
+										context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7, textWidth, 1 * option.zoomScale);
+									}
+								} else if (rectWidth > intTextWidth) {
+									const leaveLength = Math.floor((rectWidth - intTextWidth) / option.zoomScale / option.smallFontSize * 2);
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'hanging';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+									context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.fillText(`${option.content ? smallPriceText.substr(0, leaveLength) : ''}`, smallXPosition, yPosition);
+									if (initTextDecoration(option) === 'line-through') {
+										context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
+									} else if (initTextDecoration(option) === 'underline') {
+										context.fillRect(intXPosition, yPosition + option.fontSize * option.zoomScale * 0.7, textWidth, 1 * option.zoomScale);
+									}
+								} else if (rectWidth > (option.fontSize / 2 * intPriceText.length * option.zoomScale)) {
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'hanging';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}` : ''}`, intXPosition, yPosition);
+								} else {
+									const leaveLength = Math.floor(rectWidth / option.zoomScale / option.fontSize * 2);
+
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'hanging';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText.substr(0, leaveLength)}` : ''}`, intXPosition, yPosition);
 								}
 							},
 						}}
@@ -443,6 +616,16 @@ export default function generateShape(option) {
 							onTransform: option.onTransform,
 							onTransformEnd: option.onTransformEnd,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 					<Shape
@@ -451,11 +634,21 @@ export default function generateShape(option) {
 							x: option.x,
 							y: option.y,
 							onDblClick: option.onDblClick,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							}),
 							sceneFunc(context) {
 								const intPriceText = `${option.content}`.split('.')[0];
 								const smallPriceText = `${option.content}`.split('.')[1] || '';
 								// const yPosition = ((MAPS.containerHeight[option.type] * option.scaleY + option.fontSize) * option.zoomScale) / 2;
-								const yPosition = option.fontSize * option.zoomScale * 0.72 + 5;
+								const yPosition = option.fontSize * option.zoomScale * 0.72 + 2;
 								const intTextWidth = (option.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0)) * option.zoomScale;
 								const textWidth = intTextWidth + ((smallPriceText.length * option.smallFontSize) / 2) * option.zoomScale;
 								let intXPosition = 0;
@@ -467,16 +660,45 @@ export default function generateShape(option) {
 								}
 								const smallXPosition = intXPosition + intTextWidth;
 
-								context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.textBaseline = 'alphabetic';
-								context.fillStyle = option.fontColor;
-								context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
-								context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
-								context.fillText(`${option.content ? smallPriceText : ''}`, smallXPosition, yPosition);
-								if (initTextDecoration(option) === 'line-through') {
-									context.fillRect(intXPosition, yPosition - option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
-								} else if (initTextDecoration(option) === 'underline') {
-									context.fillRect(intXPosition, yPosition, textWidth, 1 * option.zoomScale);
+								const rectWidth = MAPS.containerWidth[option.type] * option.zoomScale * option.scaleX;
+								if (rectWidth > textWidth) {
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'alphabetic';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+									context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.fillText(`${option.content ? smallPriceText : ''}`, smallXPosition, yPosition);
+									if (initTextDecoration(option) === 'line-through') {
+										context.fillRect(intXPosition, yPosition - option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
+									} else if (initTextDecoration(option) === 'underline') {
+										context.fillRect(intXPosition, yPosition, textWidth, 1 * option.zoomScale);
+									}
+								} else if (rectWidth > intTextWidth) {
+									const leaveLength = Math.floor((rectWidth - intTextWidth) / option.zoomScale / option.smallFontSize * 2);
+
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'alphabetic';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}${smallPriceText ? '.' : ''}` : ''}`, intXPosition, yPosition);
+									context.font = `${initFontStyle(option)} ${option.smallFontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.fillText(`${option.content ? smallPriceText.substr(0, leaveLength) : ''}`, smallXPosition, yPosition);
+									if (initTextDecoration(option) === 'line-through') {
+										context.fillRect(intXPosition, yPosition - option.fontSize * option.zoomScale * 0.7 / 2, textWidth, 1 * option.zoomScale);
+									} else if (initTextDecoration(option) === 'underline') {
+										context.fillRect(intXPosition, yPosition, textWidth, 1 * option.zoomScale);
+									}
+								} else if (rectWidth > (option.fontSize / 2 * intPriceText.length * option.zoomScale)) {
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'alphabetic';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText}` : ''}`, intXPosition, yPosition);
+								} else {
+									const leaveLength = Math.floor(rectWidth / option.zoomScale / option.fontSize * 2);
+
+									context.font = `${initFontStyle(option)} ${option.fontSize * option.zoomScale}px ${option.fontFamily}`;
+									context.textBaseline = 'alphabetic';
+									context.fillStyle = option.fontColor;
+									context.fillText(`${option.content ? `${intPriceText.substr(0, leaveLength)}` : ''}`, intXPosition, yPosition);
 								}
 							},
 						}}
@@ -501,6 +723,16 @@ export default function generateShape(option) {
 						draggable: true,
 						onTransform: option.onTransform,
 						onTransformEnd: option.onTransformEnd,
+						onMouseOver: () => {
+							document.body.style.cursor = 'pointer';
+						},
+						onMouseOut: () => {
+							document.body.style.cursor = 'default';
+						},
+						dragBoundFunc: (pos) => ({
+							x: option.frozenX ? option.x : pos.x,
+							y: option.frozenY ? option.y : pos.y
+						})
 					}}
 				/>
 			);
@@ -515,11 +747,26 @@ export default function generateShape(option) {
 							y: option.y,
 							width: MAPS.containerWidth[option.type] * option.zoomScale,
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							scaleX: option.scaleX,
+							scaleY: option.scaleY,
 							sceneFunc(context) {
 								context.rotate(Math.PI / 2);
 								context.translate(0, -MAPS.containerWidth[option.type] * option.zoomScale);
 								context.drawImage(option.image, 0, 0, MAPS.containerHeight[option.type] * option.zoomScale, MAPS.containerWidth[option.type] * option.zoomScale);
-							}
+							},
+							draggable: true,
+							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 					<Rect
@@ -532,8 +779,16 @@ export default function generateShape(option) {
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
 							draggable: true,
-							onTransform: option.onTransform,
-							onTransformEnd: option.onTransformEnd,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
 						}}
 					/>
 				</Group>

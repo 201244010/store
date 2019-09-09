@@ -13,6 +13,24 @@ const TEMPLATE_STATES = {
 	1: formatMessage({ id: 'esl.device.template.status.apply' }),
 };
 
+const widthMap = {
+	1: 348,
+	2: 442,
+	3: 510
+};
+
+const styleMap = {
+	1: 'img-213',
+	2: 'img-26',
+	3: 'img-42'
+};
+
+const imgMap = {
+	1: require('../../assets/studio/2.13.png'),
+	2: require('../../assets/studio/2.6.png'),
+	3: require('../../assets/studio/4.2.png'),
+};
+
 @Form.create()
 class SearchResult extends Component {
 	constructor(props) {
@@ -20,6 +38,7 @@ class SearchResult extends Component {
 		this.state = {
 			newVisible: false,
 			cloneVisible: false,
+			previewVisible: false,
 			curRecord: {},
 		};
 	}
@@ -75,6 +94,13 @@ class SearchResult extends Component {
 		});
 	};
 
+	previewTemplate = (record) => {
+		this.setState({
+			previewVisible: true,
+			curRecord: record,
+		});
+	};
+
 	applyTemplate = record => {
 		const { applyTemplate } = this.props;
 
@@ -113,7 +139,11 @@ class SearchResult extends Component {
 						},
 						() => {
 							resetFields();
-							window.open(`/studio?id=${response.data.template_id}&screen=${values.screen_type}`);
+							window.open(
+								`/studio?id=${response.data.template_id}&screen=${
+									values.screen_type
+								}`
+							);
 						}
 					);
 				}
@@ -130,6 +160,12 @@ class SearchResult extends Component {
 	handleCancelClone = () => {
 		this.setState({
 			cloneVisible: false,
+		});
+	};
+
+	handleCancelPreview = () => {
+		this.setState({
+			previewVisible: false,
 		});
 	};
 
@@ -173,7 +209,7 @@ class SearchResult extends Component {
 
 	validateTemplateName = (rule, value, callback) => {
 		// eslint-disable-next-line no-control-regex
-		const {length} = (value || '').replace(/[^\x00-\xff]/g, '01');
+		const { length } = (value || '').replace(/[^\x00-\xff]/g, '01');
 		if (length <= 40) {
 			callback();
 		} else {
@@ -193,7 +229,7 @@ class SearchResult extends Component {
 				form: { getFieldDecorator },
 				fetchColors,
 			},
-			state: { newVisible, cloneVisible, curRecord },
+			state: { newVisible, cloneVisible, previewVisible, curRecord },
 		} = this;
 		const columns = [
 			{
@@ -203,10 +239,12 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.template.size' }),
 				dataIndex: 'screen_type_name',
+				render: text => <span>{formatMessage({ id: text })}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.template.color' }),
 				dataIndex: 'colour_name',
+				render: text => <span>{formatMessage({ id: text })}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.template.esl.num' }),
@@ -328,7 +366,7 @@ class SearchResult extends Component {
 										this.onFormChange('screen_type', type.id);
 									}}
 								>
-									{type.name}
+									{formatMessage({ id: type.name })}
 								</Button>
 							))}
 						</div>
@@ -356,13 +394,14 @@ class SearchResult extends Component {
 										this.onFormChange('colour', color.id);
 									}}
 								>
-									{color.name}
+									{formatMessage({ id: color.name })}
 								</Button>
 							))}
 						</div>
 					</Form>
 				</div>
 				<Table
+					style={{ marginTop: '20px' }}
 					rowKey="id"
 					loading={loading}
 					columns={columns}
@@ -393,8 +432,8 @@ class SearchResult extends Component {
 										}),
 									},
 									{
-										validator: this.validateTemplateName
-									}
+										validator: this.validateTemplateName,
+									},
 								],
 							})(
 								<Input
@@ -474,8 +513,8 @@ class SearchResult extends Component {
 										}),
 									},
 									{
-										validator: this.validateTemplateName
-									}
+										validator: this.validateTemplateName,
+									},
 								],
 							})(
 								<Input
@@ -492,6 +531,23 @@ class SearchResult extends Component {
 							<Input value={curRecord.colour_name} disabled />
 						</Form.Item>
 					</Form>
+				</Modal>
+				<Modal
+					title={curRecord.name}
+					width={widthMap[curRecord.screen_type]}
+					visible={previewVisible}
+					onOk={this.handleCancelPreview}
+					onCancel={this.handleCancelPreview}
+					footer={[
+						<Button type="primary" onClick={this.handleCancelPreview}>
+							{formatMessage({ id: 'btn.confirm' })}
+						</Button>
+					]}
+				>
+					<div className={styles['preview-img']}>
+						<img className={`${styles['wrap-img}']} ${styles[styleMap[curRecord.screen_type]]}`} src={imgMap[curRecord.screen_type]} alt="" />
+						<img className={`${styles['content-img']} ${styles[styleMap[curRecord.screen_type]]}`} src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" alt="" />
+					</div>
 				</Modal>
 			</div>
 		);

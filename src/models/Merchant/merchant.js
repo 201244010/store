@@ -15,17 +15,17 @@ export default {
 	},
 
 	effects: {
-		*getCompanyNameById({ payload }, { take, select}){
+		*getCompanyNameById({ payload }, { take, select }) {
 			const { companyId } = payload;
-			let list  = yield select((state) => state.merchant.companyList);
+			let list = yield select(state => state.merchant.companyList);
 			let name = '';
-		 
-			if (list.length === 0){
-				const { payload:result } = yield take('updateState');
+
+			if (list.length === 0) {
+				const { payload: result } = yield take('updateState');
 				list = result;
 			}
 			list.forEach(item => {
-				if(item.company_id === companyId) {
+				if (item.company_id === companyId) {
 					name = item.company_name;
 				}
 			});
@@ -79,7 +79,7 @@ export default {
 				const result = response.data || {};
 				const companyList = result.company_list || [];
 				Storage.set({ [CookieUtil.COMPANY_LIST_KEY]: companyList }, 'local');
-				
+
 				if (companyList.length === 1) {
 					const companyInfo = companyList[0] || {};
 					CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, companyInfo.company_id);
@@ -91,20 +91,21 @@ export default {
 					});
 				}
 
-				yield put({
-					type: 'updateState',
-					payload: {
-						companyList,
-						loading: false,
-					},
-				});
-				// TODO 8 月首配时可能需要调整这个接口的调用顺序。返回值会影响 company 和 shop
+				// TODO 移到前面，暂时不对错误情况做处理（等待云端评审结果）
 				yield put({
 					type: 'initialCompany',
 					payload: {
 						options: {
 							company_id_list: companyList.map(company => company.company_id),
 						},
+					},
+				});
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						companyList,
+						loading: false,
 					},
 				});
 			} else {
@@ -123,6 +124,7 @@ export default {
 				});
 				// router.push('/user/login');
 			}
+			
 			return response;
 		},
 

@@ -3,6 +3,7 @@ import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 
 import CONFIG from '@/config';
+import { TIME } from '@/constants';
 
 const { DES_KEY, DES_IV } = CONFIG;
 
@@ -419,7 +420,7 @@ export const priceFormat = (price, dotPos = 3) => {
 };
 
 export const analyzeMessageTemplate = (message, option = {}) => {
-	const { spliter = ':', timeFormat = 'YYYY-MM-DD HH:mm:ss' } = option;
+	const { spliter = ':', timeFormat = 'YYYY-MM-DD HH:mm:ss', handlers = {} } = option;
 	const decodeMessage = decodeURIComponent(message);
 	const spliterIndex = decodeMessage.indexOf(spliter);
 	let [messageId, values] = [decodeMessage, null];
@@ -435,6 +436,7 @@ export const analyzeMessageTemplate = (message, option = {}) => {
 	if (values) {
 		valueList = values.split('&').map(item => {
 			const [key, value] = item.split('=');
+
 			if (key.indexOf('decode-') > -1) {
 				return {
 					key: `##${key.replace('decode-', '')}##`,
@@ -443,7 +445,7 @@ export const analyzeMessageTemplate = (message, option = {}) => {
 			}
 
 			// 临时解决方法，需要和云端确定时间戳对应的特定变量名
-			if (key.indexOf('_time') > -1) {
+			if (key.indexOf('_time') > -1 || key.indexOf('timestamp') > -1) {
 				return {
 					key: `##${key}##`,
 					value: moment(parseInt(value, 10) * 1000).format(timeFormat),
@@ -460,10 +462,11 @@ export const analyzeMessageTemplate = (message, option = {}) => {
 	return {
 		messageId,
 		valueList,
+		handlers,
 	};
 };
 
-export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
+export const replaceTemplateWithValue = ({ messageId, valueList = [], handlers = {} }) => {
 	if (!messageId) {
 		console.error('messageId can not be null.');
 		return null;
@@ -471,9 +474,15 @@ export const replaceTemplateWithValue = ({ messageId, valueList = [] }) => {
 
 	console.log('messageId: ', messageId);
 	console.log('valueList: ', valueList);
+	const handerKeys = Object.keys(handlers);
 	const message = formatMessage({ id: messageId });
 	if (valueList.length === 0) {
 		return message;
+	}
+
+	if (handerKeys.length > 0 && handerKeys.includes(messageId)) {
+		const handledValues = handlers[messageId](valueList) || [];
+		return handledValues.reduce((prev, cur) => prev.replace(cur.key, cur.value), message);
 	}
 
 	return valueList.reduce((prev, cur) => prev.replace(cur.key, cur.value), message);
@@ -484,6 +493,12 @@ export const formatMessageTemplate = (
 	option = {
 		spliter: ':',
 		timeFormat: 'YYYY-MM-DD HH:mm:ss',
+		/**
+		 * handers {key: fun}
+		 * key 为 messageId
+		 * fun 为 自定义处理的函数
+		 */
+		handlers: {},
 	}
 ) => replaceTemplateWithValue(analyzeMessageTemplate(message, option));
 
@@ -513,4 +528,105 @@ export const mbStringLength = s => {
 	}
 	// alert(totalLength);
 	return totalLength;
+};
+
+// 格式化网络速率，最多保留4位数字+单位
+export const formatSpeed = speed => {
+	const kSpeed = 1024;
+	const mSpeed = kSpeed * 1024;
+	const gSpeed = mSpeed * 1024;
+
+	speed = parseInt(speed, 10);
+	let unit = '';
+	if (speed >= gSpeed) {
+		const val = speed / gSpeed;
+		speed = val.toFixed(val > 99 ? 0 : 2);
+		unit = 'GB/s';
+	} else if (speed >= mSpeed) {
+		const val = speed / mSpeed;
+		speed = val.toFixed(val > 99 ? 0 : 2);
+		unit = 'MB/s';
+	} else {
+		speed = (speed / kSpeed).toFixed(0);
+		unit = 'KB/s';
+	}
+
+	return { speed, unit };
+};
+
+// 格式化时间，精确到天时分秒
+export const formatRelativeTime = timeStamp => {
+	const duration = moment.duration(timeStamp);
+	const years = duration.years();
+	const months = duration.months();
+	const days = duration.days();
+	const hours = duration.hours();
+	const minutes = duration.minutes();
+	const seconds = duration.seconds();
+	let yearStr = '';
+	let monthStr = '';
+	let dayStr = '';
+	let hourStr = '';
+	let minuteStr = '';
+	let secondStr = '';
+	if (years > 0) {
+		yearStr = `${years}${formatMessage({ id: 'common.time.year' })}`;
+	}
+
+	if (months > 0) {
+		monthStr = `${months}${formatMessage({ id: 'common.time.month' })}`;
+	}
+	if (days > 0) {
+		dayStr = `${days}${formatMessage({ id: 'common.time.day' })}`;
+	}
+	if (hours > 0) {
+		hourStr = `${hours}${formatMessage({ id: 'common.time.hour' })}`;
+	}
+	if (minutes > 0) {
+		minuteStr = `${minutes}${formatMessage({ id: 'common.time.minute' })}`;
+	}
+
+	if (seconds > 0) {
+		secondStr = `${seconds}${formatMessage({ id: 'common.time.second' })}`;
+	}
+
+	return `${yearStr}${monthStr}${dayStr}${hourStr}${minuteStr}${secondStr}`;
+};
+
+export const checkAnchor = (anchor = null) => {
+	if (!anchor) {
+		return null;
+	}
+	const anchorTag = document.createElement('a');
+	anchorTag.href = `#${anchor}`;
+	anchorTag.click();
+
+	return null;
+};
+
+export const getCountDown = (seconds, level = 'hour') => {
+	if (!seconds) {
+		console.error('Seconds is null');
+		return null;
+	}
+
+	const day = Math.floor(seconds / TIME.DAY);
+	const hour = Math.floor((seconds % TIME.DAY) / TIME.HOUR);
+	const minute = Math.floor(((seconds % TIME.DAY) % TIME.HOUR) / TIME.MINUTE);
+	const second = Math.floor(((seconds % TIME.DAY) % TIME.HOUR) % TIME.MINUTE);
+
+	if (level === 'day') {
+		return {
+			day,
+			hour,
+			minute,
+			second,
+		};
+	}
+
+	return {
+		hour: hour === 0 ? 24 : hour,
+		minute,
+		second,
+	};
 };

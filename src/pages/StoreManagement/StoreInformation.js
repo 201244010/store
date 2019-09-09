@@ -116,10 +116,7 @@ class StoreInformation extends React.Component {
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.area' })}
 					>
-						{parseInt(business_area, 10) === 0 || parseInt(business_area, 10) > 0
-							? business_area
-							: '--'}
-						㎡
+						{business_area || '--'}㎡
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}

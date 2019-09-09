@@ -78,7 +78,7 @@ export const FORM_ITEM_LAYOUT = {
 		md: { span: 18 },
 		lg: { span: 19 },
 		xl: { span: 19 },
-		xxl: { sapn: 20 },
+		xxl: { span: 20 },
 	},
 };
 
@@ -138,6 +138,12 @@ export const FORM_ITEM_LONGER = {
 export const FORM_ITEM_LAYOUT_BUSINESS = {
 	labelCol: { span: 2 },
 	wrapperCol: { span: 6 },
+};
+
+
+export const FORM_ITEM_LAYOUT_INLINE = {
+	labelCol: { span: 8},
+	wrapperCol: { span: 10 },
 };
 
 export const SEARCH_FORM_GUTTER = {

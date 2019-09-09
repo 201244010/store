@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import Media from 'react-media';
@@ -14,7 +14,7 @@ const {
 	TIME_TICKS,
 } = DASHBOARD;
 
-const { Bar } = Charts;
+const { Bar, Facet } = Charts;
 
 const TwinList = props => {
 	const { leftList, rightList } = props;
@@ -99,7 +99,7 @@ export const formatTime = (time, rangeType) => {
 	return timeData.format('M/D');
 };
 
-class ContentChart extends Component {
+class ContentChart extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.timer = null;
@@ -180,6 +180,12 @@ class ContentChart extends Component {
 			},
 		};
 
+		const maxCount = Math.max(...dataList.map(d => d.count || 0));
+		const countTick =
+			maxCount < 5
+				? { ticks: [1,2,3,4,5] }
+				: { tickInterval:  Math.ceil(maxCount / 5) };
+
 		const chartScale = {
 			time: timeScales[rangeType] || {
 				ticks: dataList
@@ -198,12 +204,14 @@ class ContentChart extends Component {
 			},
 			[TRADE_TIME.COUNT]: {
 				minLimit: 0,
-				tickCount: 6,
+				...countTick,
+				// tickCount: 6,
 			},
 		};
 
 		return (
 			<div className={styles['content-chart']}>
+				<Facet />
 				<Media query={{ maxWidth: 1439 }}>
 					{result => (
 						<Row gutter={result ? 0 : 24}>

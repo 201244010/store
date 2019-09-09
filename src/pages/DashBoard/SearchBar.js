@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import moment from 'moment';
+import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Radio, DatePicker, Icon, message } from 'antd';
+import { getQueryDate } from '@/models/dashBoard';
 import { DASHBOARD } from './constants';
 
 import styles from './DashBoard.less';
@@ -24,12 +26,36 @@ const Refresh = () => (
 	</svg>
 );
 
-class SearchBar extends Component {
+@connect(
+	({ dashboard }) => ({
+		searchValue: dashboard.searchValue,
+		lastModifyTime: dashboard.lastModifyTime,
+	}),
+	dispatch => ({
+		getShopIdFromStorage: () => dispatch({ type: 'global/getShopIdFromStorage' }),
+		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		setSearchValue: payload => dispatch({ type: 'dashboard/setSearchValue', payload }),
+		clearSearch: () => dispatch({ type: 'dashboard/clearSearch' }),
+	})
+)
+class SearchBar extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {
 			tempSelected: RANGE.TODAY,
+			currentShopName: null,
 		};
+	}
+
+	async componentDidMount() {
+		const { getShopIdFromStorage, getShopListFromStorage } = this.props;
+		const shopList = await getShopListFromStorage();
+		const shopId = await getShopIdFromStorage();
+
+		const currentShop = shopList.find(shop => shop.shop_id === shopId) || {};
+		this.setState({
+			currentShopName: currentShop.shop_name || null,
+		});
 	}
 
 	disabledDate = current => current && current > moment().endOf('day');
@@ -44,10 +70,14 @@ class SearchBar extends Component {
 			tempSelected: value,
 		});
 
+		const [startQueryTime, endQueryTime] = getQueryDate(value);
+
 		setSearchValue({
 			rangeType: value,
 			timeRangeStart: null,
 			timeRangeEnd: null,
+			startQueryTime,
+			endQueryTime,
 		});
 		onSearchChanged();
 	};
@@ -73,6 +103,8 @@ class SearchBar extends Component {
 			rangeType: RANGE.FREE,
 			timeRangeStart: startTime,
 			timeRangeEnd: endTime,
+			startQueryTime: moment(startTime).unix(),
+			endQueryTime: moment(endTime).unix(),
 		});
 
 		if (startTime && endTime) {
@@ -81,53 +113,56 @@ class SearchBar extends Component {
 	};
 
 	render() {
-		const { tempSelected } = this.state;
+		const { tempSelected, currentShopName } = this.state;
 		const {
-			searchValue: { timeRangeStart, timeRangeEnd },
+			searchValue: { timeRangeStart, timeRangeEnd } = {},
 			lastModifyTime,
 			doHandRefresh,
 		} = this.props;
 
 		return (
-			<div className={styles['search-bar']}>
-				<div>
-					<Radio.Group
-						value={tempSelected}
-						buttonStyle="solid"
-						onChange={this.handleRadioChange}
-					>
-						<Radio.Button value={RANGE.TODAY}>
-							{formatMessage({ id: 'dashboard.search.today' })}
-						</Radio.Button>
-						<Radio.Button value={RANGE.WEEK}>
-							{formatMessage({ id: 'dashboard.search.week' })}
-						</Radio.Button>
-						<Radio.Button value={RANGE.MONTH}>
-							{formatMessage({ id: 'dashboard.search.month' })}
-						</Radio.Button>
-					</Radio.Group>
+			<>
+				<h2 className={styles['dashboard-title']}>{currentShopName}</h2>
+				<div className={styles['search-bar']}>
+					<div>
+						<Radio.Group
+							value={tempSelected}
+							buttonStyle="solid"
+							onChange={this.handleRadioChange}
+						>
+							<Radio.Button value={RANGE.TODAY}>
+								{formatMessage({ id: 'dashboard.search.today' })}
+							</Radio.Button>
+							<Radio.Button value={RANGE.WEEK}>
+								{formatMessage({ id: 'dashboard.search.week' })}
+							</Radio.Button>
+							<Radio.Button value={RANGE.MONTH}>
+								{formatMessage({ id: 'dashboard.search.month' })}
+							</Radio.Button>
+						</Radio.Group>
 
-					<DatePicker.RangePicker
-						placeholder={[
-							formatMessage({ id: 'dashboard.search.range.start' }),
-							formatMessage({ id: 'dashboard.search.range.end' }),
-						]}
-						value={[timeRangeStart, timeRangeEnd]}
-						style={{ marginLeft: '24px' }}
-						disabledDate={this.disabledDate}
-						onChange={this.handleTimeRangeChange}
-					/>
-				</div>
+						<DatePicker.RangePicker
+							placeholder={[
+								formatMessage({ id: 'dashboard.search.range.start' }),
+								formatMessage({ id: 'dashboard.search.range.end' }),
+							]}
+							value={[timeRangeStart, timeRangeEnd]}
+							style={{ marginLeft: '24px' }}
+							disabledDate={this.disabledDate}
+							onChange={this.handleTimeRangeChange}
+						/>
+					</div>
 
-				<div className={styles['right-content']}>
-					<span>
-						{formatMessage({ id: 'dashboard.last.modify.date' })}: {lastModifyTime}
-					</span>
-					<div className={styles['icon-wrapper']} onClick={doHandRefresh}>
-						<Icon component={Refresh} style={{ fontSize: '24px' }} />
+					<div className={styles['right-content']}>
+						<span>
+							{formatMessage({ id: 'dashboard.last.modify.date' })}: {lastModifyTime}
+						</span>
+						<div className={styles['icon-wrapper']} onClick={doHandRefresh}>
+							<Icon component={Refresh} style={{ fontSize: '24px' }} />
+						</div>
 					</div>
 				</div>
-			</div>
+			</>
 		);
 	}
 }

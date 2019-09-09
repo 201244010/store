@@ -13,6 +13,7 @@ import storeManagement from './zh-CN/storeManagement';
 import notification from './zh-CN/notification';
 import studio from './zh-CN/studio';
 import dashboard from './zh-CN/dashBoard';
+import network from './zh-CN/network';
 
 import VideoPlayer from './zh-CN/videoPlayer';
 
@@ -26,6 +27,7 @@ import merchantManagement from './zh-CN/merchant';
 
 import roleManagement from './zh-CN/role';
 import employee from './zh-CN/employee';
+import trade from './zh-CN/trade';
 
 export default {
 	'navBar.lang': '语言',
@@ -60,4 +62,6 @@ export default {
 	...roleManagement,
 	...dashboard,
 	...employee,
+	...network,
+	...trade,
 };

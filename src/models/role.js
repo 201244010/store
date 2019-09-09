@@ -4,6 +4,7 @@ import { DEFAULT_PAGE_SIZE, USER_PERMISSION_LIST } from '@/constants';
 import { map, format } from '@konata9/milk-shake';
 import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
+import { FIRST_MENU_ORDER } from '@/config';
 
 const getInitStatus = (permissionList, roleInfo) => {
 	const rolePermissionList = roleInfo.permissionList;
@@ -118,8 +119,13 @@ export default {
 			const response = yield call(Actions.handleRoleManagement, 'getInfo', opts);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-				const forData = format('toCamel')(data);
-				forData.permissionList = formatData(forData.permissionList).map(item => {
+				const forData = format('toCamel')(data) || {};
+				const { permissionList = [] } = forData || {};
+				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
+					permissionList.find(permission => permission.name === `/${menu}`)
+				).filter(item => !!item);
+
+				forData.permissionList = formatData(sortedPermission).map(item => {
 					const formatResult = formatPath(item);
 					return {
 						checkedList: formatResult,
@@ -153,8 +159,13 @@ export default {
 				const roleInfo = yield select(state => state.role.roleInfo);
 
 				const { data = {} } = response;
-				const forData = format('toCamel')(data);
-				const tmpList = formatData(forData.permissionList).map(item => {
+				const { permissionList = [] } = format('toCamel')(data) || {};
+
+				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
+					permissionList.find(permission => permission.name === `/${menu}`)
+				).filter(item => !!item);
+
+				const tmpList = formatData(sortedPermission).map(item => {
 					const formatResult = formatPath(item);
 					return {
 						checkedList: formatResult,
@@ -247,7 +258,7 @@ export default {
 			};
 			const response = yield call(Actions.handleRoleManagement, 'changeAdmin', opts);
 			if (response && response.code === ERROR_OK) {
-				yield put({type: 'getRoleList'});
+				yield put({ type: 'getRoleList' });
 				yield put({
 					type: 'getUserPermissionList',
 				});

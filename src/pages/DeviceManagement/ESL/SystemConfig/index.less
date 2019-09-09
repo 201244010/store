@@ -1,0 +1,40 @@
+@import '~@/styles/common.less';
+
+.content-card {
+	border-bottom: 1px solid #e8e8e8;
+
+	:global {
+		.ant-card-head {
+			border-bottom: none;
+		}
+		.ant-card-body {
+			padding: 0;
+		}
+	}
+}
+
+.display-content {
+	width: 45%;
+	margin: 0 auto;
+
+	.form-item-wrapper {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+}
+
+.display-config {
+	width: 100%;
+	.m-b-15 {
+		margin-bottom: 15px;
+	}
+	.title {
+		font-weight: bold;
+		font-size: 16px;
+	}
+	.page-name {
+		text-align: right;
+		line-height: 32px;
+	}
+}

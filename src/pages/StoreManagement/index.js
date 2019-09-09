@@ -82,6 +82,7 @@ class StoreManagement extends Component {
 				title: formatMessage({ id: 'storeManagement.list.area' }),
 				dataIndex: 'business_area',
 				key: 'business_area',
+				render: text => <span>{text === 0 ? '--' : text}</span>,
 			},
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnContacts' }),
@@ -195,9 +196,9 @@ class StoreManagement extends Component {
 	};
 
 	handleTableChange = pagination => {
-		const { current = 1 } = pagination;
+		const { current = 1, pageSize = 10 } = pagination;
 		const { updatePagination } = this.props;
-		updatePagination({ current });
+		updatePagination({ current, pageSize });
 	};
 
 	render() {

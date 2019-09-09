@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { notification } from 'antd';
 import { connect } from 'dva';
 import { displayNotification } from '@/components/Notification';
-import { REGISTER_PUB_MSG } from '@/constants/mqttStore';
+import { REGISTER_PUB_MSG, OPCODE } from '@/constants/mqttStore';
 import { getRandomString } from '@/utils/utils';
+import { ORDER_OK } from '@/constants/errorCode';
+import { format } from '@konata9/milk-shake';
 
 import Ipc from './Ipc';
 
@@ -34,10 +36,13 @@ function MQTTWrapper(WrapperedComponent) {
 				});
 				return status;
 			},
-			getCurrentCompanyId:() => (dispatch({ type:'global/getCompanyIdFromStorage'})),
-			getCurrentShopId:() => (dispatch({ type:'global/getShopIdFromStorage'})),
-			getStoreNameById:(shopId) => (dispatch({ type: 'store/getStoreNameById', payload:{ shopId } })),
-			getCompanyNameById:(companyId) => (dispatch({ type: 'merchant/getCompanyNameById', payload:{ companyId }}))
+			getCurrentCompanyId: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
+			getCurrentShopId: () => dispatch({ type: 'global/getShopIdFromStorage' }),
+			getStoreNameById: shopId =>
+				dispatch({ type: 'store/getStoreNameById', payload: { shopId } }),
+			getCompanyNameById: companyId =>
+				dispatch({ type: 'merchant/getCompanyNameById', payload: { companyId } }),
+			getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		})
 	)
 	@Ipc
@@ -68,11 +73,36 @@ function MQTTWrapper(WrapperedComponent) {
 			});
 		};
 
-		showNotification = async data => {
+		handleTrade = async param => {
+			const { getCurrentCompanyId, goToPath } = this.props;
+			const { companyId, orderStatus } = format('toCamel')(param) || {};
+
+			const currentCompanyId = await getCurrentCompanyId();
+			if (`${currentCompanyId}` === `${companyId}`) {
+				goToPath('tradeResult', {
+					status: orderStatus === ORDER_OK ? 'success' : 'error',
+				});
+			}
+		};
+
+		handleNotification = async data => {
 			const { notificationList } = this.state;
-			const { getNotificationCount, getUnreadNotification, goToPath, formatSdCard, getSdStatus, getCurrentCompanyId, getCurrentShopId, getStoreNameById, getCompanyNameById } = this.props;
+			const {
+				getNotificationCount,
+				getUnreadNotification,
+				goToPath,
+				formatSdCard,
+				getSdStatus,
+				getCurrentCompanyId,
+				getCurrentShopId,
+				getStoreNameById,
+				getCompanyNameById,
+				getStoreList,
+			} = this.props;
+
 			const messageData = JSON.parse(data.toString()) || {};
 			const uniqueKey = getRandomString();
+
 			if (notificationList.length >= 3) {
 				this.removeNotification(notificationList.shift());
 			}
@@ -82,14 +112,30 @@ function MQTTWrapper(WrapperedComponent) {
 			});
 			const { params = [] } = messageData;
 			params.forEach(item => {
-				const { param = {} } = item;
-				displayNotification({
-					data: param,
-					key: uniqueKey,
-					closeAction: this.removeNotification,
-					handlers: { goToPath, formatSdCard, getSdStatus, getCurrentCompanyId, getCurrentShopId, getStoreNameById, getCompanyNameById, removeNotification: this.removeNotification },
-				});
+				const { param = {}, opcode = null } = item;
+
+				if (opcode && opcode === OPCODE.NOTIFICATION) {
+					displayNotification({
+						data: param,
+						key: uniqueKey,
+						closeAction: this.removeNotification,
+						handlers: {
+							goToPath,
+							formatSdCard,
+							getSdStatus,
+							getStoreList,
+							getCurrentCompanyId,
+							getCurrentShopId,
+							getStoreNameById,
+							getCompanyNameById,
+							removeNotification: this.removeNotification,
+						},
+					});
+				} else if (opcode && opcode === OPCODE.TRADE_NOTIFICATION) {
+					this.handleTrade(param);
+				}
 			});
+
 			await getNotificationCount();
 			await getUnreadNotification();
 		};
@@ -116,7 +162,10 @@ function MQTTWrapper(WrapperedComponent) {
 					service: 'notification',
 					action: 'sub',
 				});
-				await setTopicListener({ service: 'notification', handler: this.showNotification });
+				await setTopicListener({
+					service: 'notification',
+					handler: this.handleNotification,
+				});
 				await subscribe({ topic: [registerTopic, notificationTopic] });
 				// console.log('subscribed');
 				await publish({ topic: registerTopicPub, message: REGISTER_PUB_MSG });

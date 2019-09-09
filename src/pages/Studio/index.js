@@ -24,10 +24,14 @@ import * as styles from './index.less';
 	dispatch => ({
 		updateComponentsDetail: payload =>
 			dispatch({ type: 'studio/updateComponentsDetail', payload }),
+		updateComponentDetail: payload =>
+			dispatch({ type: 'studio/updateComponentDetail', payload }),
 		batchUpdateComponentDetail: payload =>
 			dispatch({ type: 'studio/batchUpdateComponentDetail', payload }),
 		batchUpdateScopedComponent: payload =>
 			dispatch({ type: 'studio/batchUpdateScopedComponent', payload }),
+		resetScopedComponents: payload =>
+			dispatch({ type: 'studio/resetScopedComponents', payload }),
 		toggleRightToolBox: payload => dispatch({ type: 'studio/toggleRightToolBox', payload }),
 		copySelectedComponent: payload =>
 			dispatch({ type: 'studio/copySelectedComponent', payload }),
@@ -38,6 +42,7 @@ import * as styles from './index.less';
 		zoomOutOrIn: payload => dispatch({ type: 'studio/zoomOutOrIn', payload }),
 		changeOneStep: payload => dispatch({ type: 'studio/changeOneStep', payload }),
 		selectComponentIn: payload => dispatch({ type: 'studio/selectComponentIn', payload }),
+		selectComponent: payload => dispatch({ type: 'studio/selectComponent', payload }),
 		fetchBindFields: payload => dispatch({ type: 'template/fetchBindFields', payload }),
 		saveAsDraft: payload => dispatch({ type: 'template/saveAsDraft', payload }),
 		fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
@@ -93,7 +98,8 @@ class Studio extends Component {
 			studio: { selectedShapeName, componentsDetail, copiedComponent, scopedComponents, zoomScale },
 			deleteSelectedComponent,
 			copySelectedComponent,
-			addComponent
+			addComponent,
+			updateComponentsDetail
 		} = this.props;
 		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
 		// 操作输入框时 无法删除
@@ -107,6 +113,34 @@ class Studio extends Component {
 			        deleteSelectedComponent(scopedComponents[i].name);
 				}
 			}
+		}
+		if (keyCode === KEY.KEY_LEFT) {
+			updateComponentsDetail({
+				[selectedShapeName]: {
+					x: componentsDetail[selectedShapeName].x - 1,
+				},
+			});
+		}
+		if (keyCode === KEY.KEY_RIGHT) {
+			updateComponentsDetail({
+				[selectedShapeName]: {
+					x: componentsDetail[selectedShapeName].x + 1,
+				},
+			});
+		}
+		if (keyCode === KEY.KEY_UP) {
+			updateComponentsDetail({
+				[selectedShapeName]: {
+					y: componentsDetail[selectedShapeName].y - 1,
+				},
+			});
+		}
+		if (keyCode === KEY.KEY_DOWN) {
+			updateComponentsDetail({
+				[selectedShapeName]: {
+					y: componentsDetail[selectedShapeName].y + 1,
+				},
+			});
 		}
 		if (ctrlKey) {
 			// Ctrl + X
@@ -127,7 +161,11 @@ class Studio extends Component {
 				if (copiedComponent.name) {
 					if (copiedComponent.type !== SHAPE_TYPES.RECT_SELECT) {
 						const newPosition = {};
-						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+						if (!copiedComponent.copyCount) {
+							copiedComponent.copyCount = 1;
+						} else {
+							copiedComponent.copyCount++;
+						}
 						newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
 						newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
 
@@ -137,7 +175,11 @@ class Studio extends Component {
 							y: newPosition.y,
 						});
 					} else {
-						!copiedComponent.copyCount ? copiedComponent.copyCount = 1 : copiedComponent.copyCount++;
+						if (!copiedComponent.copyCount) {
+							copiedComponent.copyCount = 1;
+						} else {
+							copiedComponent.copyCount++;
+						}
 						for (let i = 0; i < scopedComponents.length; i++) {
 							const {x, y, type, scaleY} = scopedComponents[i];
 							addComponent({
@@ -190,7 +232,18 @@ class Studio extends Component {
 	};
 
 	handleStageMouseDown = e => {
-		const { studio: { selectedShapeName, componentsDetail, showRightToolBox } } = this.props;
+		const { selectComponent, studio: { selectedShapeName, componentsDetail, showRightToolBox } } = this.props;
+		const name = e.target.name();
+
+		if (e.evt.ctrlKey && !e.evt.shiftKey && name.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && name.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+			window.clearTimeout(this.selectComponentTimer);
+			this.selectComponentTimer = setTimeout(() => {
+				selectComponent({
+					componentName: name
+				});
+			}, 100);
+			return;
+		}
 
 		// 点击stage，取消选择正在编辑图形
 		if (e.target === e.target.getStage()) {
@@ -216,7 +269,6 @@ class Studio extends Component {
 		if (e.target.getParent().className === 'Transformer') {
 			return;
 		}
-		const name = e.target.name();
 
 		if (e.evt.button === 0 && name.indexOf(SHAPE_TYPES.RECT_FIX) > -1) {
 			this.handleSelectRect(e);
@@ -309,6 +361,7 @@ class Studio extends Component {
 				updateComponentsDetail({
 					isStep: false,
 					selectedShapeName: '',
+					scopedComponents: [],
 					[RECT_SELECT_NAME]: {
 						width: 0,
 						height: 0
@@ -319,18 +372,73 @@ class Studio extends Component {
 		}
 	};
 
-	handleStageShapeStart = () => {
+	handleStageShapeStart = e => {
+		const { studio: { componentsDetail }, updateComponentDetail } = this.props;
+		this.dragStartX = e.evt.clientX;
+		this.dragStartY = e.evt.clientY;
 		this.setState({
 			dragging: true,
 		});
+		const componentName = e.target.name();
+		if (componentName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1 && componentsDetail[componentName]) {
+			// 按住ctrl拖动复制组件
+			if (e.evt.ctrlKey && !e.evt.shiftKey) {
+				updateComponentDetail({
+					componentName,
+					detail: {
+						frozenX: true,
+						frozenY: true
+					}
+				});
+			}
+		}
 	};
 
 	handleStageShapeMove = e => {
-		const { studio: { selectedShapeName }, batchUpdateComponentDetail } = this.props;
+		const {
+			studio: { componentsDetail, selectedShapeName },
+			resetScopedComponents, addComponent, batchUpdateComponentDetail
+		} = this.props;
 
+		const name = e.target.name();
+		const curComponent = componentsDetail[name];
+		if (e.evt.ctrlKey && !e.evt.shiftKey) {
+			window.clearTimeout(this.selectComponentTimer);
+			resetScopedComponents();
+			if (curComponent && !this.dragCopy) {
+				const newPosition = {};
+				this.dragCopy = true;
+
+				newPosition.x = curComponent.x * 1.1;
+				newPosition.y = curComponent.y * 1.1;
+
+				addComponent({
+					...curComponent,
+					x: newPosition.x,
+					y: newPosition.y,
+					frozenX: false,
+					frozenY: false
+				});
+			}
+			return;
+		}
+
+		let frozenX = false;
+		let frozenY = false;
+		if (e.evt.shiftKey) {
+			if (Math.abs(e.evt.clientX - this.dragStartX) >= Math.abs(e.evt.clientY - this.dragStartY)) {
+				frozenX = false;
+				frozenY = true;
+			} else {
+				frozenX = true;
+				frozenY = false;
+			}
+		}
 		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
 			this.updateComponentsDetail({
-				target: e.target
+				target: e.target,
+				frozenX,
+				frozenY
 			});
 		} else {
 			batchUpdateComponentDetail({
@@ -340,11 +448,15 @@ class Studio extends Component {
 		}
 	};
 
-	handleStageShapeEnd = () => {
+	handleStageShapeEnd = (e) => {
 		const { studio: { selectedShapeName, componentsDetail }, updateComponentsDetail, batchUpdateScopedComponent } = this.props;
 		this.setState({
 			dragging: false,
 		});
+		const curComponent = componentsDetail[e.target.name()];
+		if (curComponent) {
+			this.dragCopy = false;
+		}
 		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
 			const scope = getNearestPosition(componentsDetail, selectedShapeName);
 			updateComponentsDetail({
@@ -357,6 +469,7 @@ class Studio extends Component {
 		} else {
 			batchUpdateScopedComponent();
 		}
+
 		// if (scope.x || scope.x === 0) {
 		// 	componentsDetail[selectedShapeName].x = scope.x;
 		// }
@@ -414,14 +527,16 @@ class Studio extends Component {
 		//     return;
 		// }
 
-		this.toggleRightToolBox({
-			selectedShapeName: name,
-			showRightToolBox: true,
-			rightToolBoxPos: {
-				left: e.evt.clientX,
-				top: e.evt.clientY,
-			},
-		});
+		if (!e.evt.ctrlKey) {
+			this.toggleRightToolBox({
+				selectedShapeName: name,
+				showRightToolBox: true,
+				rightToolBoxPos: {
+					left: e.evt.clientX,
+					top: e.evt.clientY,
+				},
+			});
+		}
 	};
 
 	handleWheel = (e) => {
@@ -541,7 +656,7 @@ class Studio extends Component {
 		});
 	};
 
-	updateComponentsDetail = ({ target, selectedShapeName, updateInput, isStep }) => {
+	updateComponentsDetail = ({ target, selectedShapeName, updateInput, isStep, frozenX = false, frozenY = false }) => {
 		const { updateComponentsDetail } = this.props;
 		const { x, y, name, width, height, scaleX, scaleY, rotation } = target.attrs;
 		let realW = width;
@@ -580,6 +695,8 @@ class Studio extends Component {
 					scaleX: realScaleX,
 					scaleY: realScaleY,
 					rotation,
+					frozenX,
+					frozenY
 				},
 			};
 			componentDetail[name].lines = [
@@ -618,22 +735,26 @@ class Studio extends Component {
 			y: stageBox.top + textPosition.y,
 		};
 
+		const offsetX = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? 0 : -1;
+		const offsetY = targetDetail.type.indexOf(SHAPE_TYPES.PRICE) > -1 ? 0 : 2;
+
 		const inputEle = document.createElement('input');
 		document.body.appendChild(inputEle);
 		inputEle.setAttribute('id', 'textInput');
+		inputEle.setAttribute('autocomplete', 'off');
 		inputEle.value = targetDetail.content;
 		inputEle.style.backgroundColor = 'transparent';
-		inputEle.style.border = '1px solid #ccc';
-		inputEle.style.borderRadius = '5px';
+		// inputEle.style.border = '1px solid #ccc';
+		// inputEle.style.borderRadius = '5px';
 		inputEle.style.fontSize = `${targetDetail.fontSize * zoomScale}px`;
 		inputEle.style.fontFamily = targetDetail.fontFamily;
 		inputEle.style.color = targetDetail.fontColor;
 		inputEle.style.position = 'absolute';
-		inputEle.style.left = `${inputPosition.x}px`;
-		inputEle.style.top = `${inputPosition.y}px`;
+		inputEle.style.left = `${inputPosition.x + offsetX}px`;
+		inputEle.style.top = `${inputPosition.y + offsetY}px`;
 		inputEle.style.width = `${targetDetail.width * targetDetail.scaleX}px`;
-		inputEle.style.height = `${targetDetail.height * targetDetail.scaleY}px`;
-		inputEle.style.lineHeight = `${targetDetail.lineHeight}`;
+		inputEle.style.height = `${targetDetail.fontSize * targetDetail.zoomScale}px`;
+		// inputEle.style.lineHeight = `${targetDetail.lineHeight}`;
 		inputEle.style.letterSpacing = `${targetDetail.letterSpacing}px`;
 		inputEle.style.textAlign = targetDetail.align;
 		inputEle.focus();
@@ -655,6 +776,7 @@ class Studio extends Component {
 				document.body.removeChild(inputEle);
 				updateComponentsDetail({
 					selectedShapeName: targetName,
+					updatePrecision: true,
 					[targetName]: {
 						content: inputValue || formatMessage({ id: 'studio.action.text.db.click' }),
 					},
@@ -681,8 +803,8 @@ class Studio extends Component {
 		const textInput = document.getElementById('textInput');
 		if (textInput) {
 			textInput.style.width = `${config.width * config.scaleX}px`;
-			textInput.style.height = `${config.height * config.scaleY}px`;
-			textInput.style.lineHeight = `${config.lineHeight}`;
+			textInput.style.height = `${config.fontSize * config.zoomScale}px`;
+			// textInput.style.lineHeight = `${config.lineHeight}`;
 		}
 	};
 
@@ -761,7 +883,7 @@ class Studio extends Component {
 							<Layer x={0} y={0} width={stageWidth} height={stageHeight}>
 								{Object.keys(componentsDetail).map(key => {
 									const targetDetail = componentsDetail[key];
-									if (targetDetail.name) {
+									if (targetDetail.name && targetDetail.name !== RECT_SELECT_NAME) {
 										return generateShape({
 											...targetDetail,
 											key,
@@ -779,6 +901,24 @@ class Studio extends Component {
 									}
 									return undefined;
 								})}
+								{
+									componentsDetail[RECT_SELECT_NAME] ?
+										generateShape({
+											...componentsDetail[RECT_SELECT_NAME],
+											key: RECT_SELECT_NAME,
+											stageWidth,
+											stageHeight,
+											scaleX: componentsDetail[RECT_SELECT_NAME].scaleX || 1,
+											scaleY: componentsDetail[RECT_SELECT_NAME].scaleY || 1,
+											zoomScale,
+											ratio: componentsDetail[RECT_SELECT_NAME].ratio || 1,
+											selected: selectedShapeName === RECT_SELECT_NAME,
+											onTransform: this.handleShapeTransform,
+											onTransformEnd: this.handleShapeTransformEnd,
+											onDblClick: this.handleShapeDblClick,
+										}) :
+										null
+								}
 								{!dragging &&
 									selectedShapeName &&
 									componentsDetail[selectedShapeName].type !==
@@ -788,7 +928,8 @@ class Studio extends Component {
 											componentsDetail={componentsDetail}
 											zoomScale={zoomScale}
 										/>
-									) : null}
+									) : null
+								}
 							</Layer>
 							{dragging && lines && !showRightToolBox ? (
 								<Layer x={0} y={0} width={stageWidth} height={stageHeight}>

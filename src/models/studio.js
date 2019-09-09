@@ -1,6 +1,16 @@
-import { IMAGE_TYPES, MAPS, SHAPE_TYPES, SIZES, RECT_SELECT_NAME } from '@/constants/studio';
+import {IMAGE_TYPES, MAPS, SHAPE_TYPES, SIZES, RECT_SELECT_NAME, RECT_FIX_NAME} from '@/constants/studio';
 import { filterObject, getLocationParam } from '@/utils/utils';
 import { getImagePromise, saveNowStep, isInComponent } from '@/utils/studio';
+
+function calculatePosition(stage, zoomScale) {
+	const screenType = getLocationParam('screen');
+	const {width, height} = MAPS.screen[screenType];
+
+	const x = (stage.width - width * zoomScale) / 2;
+	const y = (stage.height - height * zoomScale) / 2;
+
+	return {x, y};
+}
 
 export default {
 	namespace: 'studio',
@@ -21,11 +31,15 @@ export default {
 		zoomScale: 1
 	},
 	effects: {
-		* changeOneStep({ payload = {} }, { put }) {
+		* changeOneStep({ payload = {} }, { put, select }) {
+			const { stage, zoomScale } = yield select(state => state.studio);
+			const position = calculatePosition(stage, zoomScale);
 			const componentsDetail = {};
 			let hasImage = false;
 			Object.keys(payload).map(key => {
 				componentsDetail[key] = payload[key];
+				componentsDetail[key].x = componentsDetail[key].startX * zoomScale + position.x;
+				componentsDetail[key].y = componentsDetail[key].startY * zoomScale + position.y;
 				hasImage = hasImage || IMAGE_TYPES.includes(payload[key].type);
 			});
 
@@ -75,6 +89,8 @@ export default {
 				});
 				name = `${type}${maxIndex + 1}`;
 			}
+			const startX = ((x - componentsDetail[RECT_FIX_NAME].x) / zoomScale).toFixed();
+			const startY = ((y - componentsDetail[RECT_FIX_NAME].y) / zoomScale).toFixed();
 
 			const newComponentsDetail = {
 				...state.componentsDetail,
@@ -99,6 +115,8 @@ export default {
 							y + MAPS.containerHeight[type] * scaleY * state.zoomScale
 						]
 					],
+					startX,
+					startY,
 					zoomScale
 				}
 			};
@@ -135,7 +153,7 @@ export default {
 			};
 		},
 		updateComponentsDetail(state, action) {
-			const { noUpdateLines, selectedShapeName, isStep = false, updatePrecision = false, ...componentsDetail } = action.payload;
+			const { noUpdateLines, selectedShapeName, scopedComponents, isStep = false, updatePrecision = false, ...componentsDetail } = action.payload;
 			const chooseShapeName = state.selectedShapeName;
 			let targetShapeName = selectedShapeName;
 			if (selectedShapeName === undefined) {
@@ -164,6 +182,12 @@ export default {
 					]
 				];
 			}
+
+			if (state.componentsDetail[RECT_FIX_NAME]) {
+				detail.startX = ((x - state.componentsDetail[RECT_FIX_NAME].x) / state.zoomScale).toFixed();
+				detail.startY = ((y - state.componentsDetail[RECT_FIX_NAME].y) / state.zoomScale).toFixed();
+			}
+
 			const newComponentsDetail = {
 				...state.componentsDetail,
 				[targetShapeName]: detail
@@ -172,7 +196,6 @@ export default {
 				newComponentsDetail[targetShapeName].content = detail.content === '' ? '' :
 					((detail.type && detail.type.indexOf(SHAPE_TYPES.PRICE) > -1) ? Number(detail.content).toFixed(detail.precision) : detail.content);
 			}
-			console.log(newComponentsDetail[targetShapeName]);
 			if (isStep) {
 				saveNowStep(getLocationParam('id'), newComponentsDetail);
 			}
@@ -180,8 +203,15 @@ export default {
 			return {
 				...state,
 				selectedShapeName: targetShapeName,
-				componentsDetail: newComponentsDetail
+				componentsDetail: newComponentsDetail,
+				scopedComponents: scopedComponents || state.scopedComponents
 			};
+		},
+		updateComponentDetail(state, action) {
+			const { componentName, detail } = action.payload;
+			if (state.componentsDetail[componentName]) {
+				Object.keys(detail).forEach(key => state.componentsDetail[componentName][key] = detail[key]);
+			}
 		},
 		batchUpdateComponentDetail(state, action) {
 			const { scopedComponents, selectedShapeName, componentsDetail } = state;
@@ -200,7 +230,7 @@ export default {
 			}
 		},
 		batchUpdateScopedComponent(state) {
-			const { scopedComponents, componentsDetail, } = state;
+			const { scopedComponents, componentsDetail } = state;
 
 			for (let i = 0 ; i < scopedComponents.length; i++) {
 				scopedComponents[i].x = componentsDetail[scopedComponents[i].name].x;
@@ -251,6 +281,7 @@ export default {
 			const originFixRect = {};
 			Object.keys(componentsDetail).map(key => {
 				const componentDetail = componentsDetail[key];
+				componentDetail.zoomScale = zoomScale;
 				if (componentDetail.type === SHAPE_TYPES.RECT_FIX) {
 					originFixRect.x = componentDetail.x;
 					originFixRect.y = componentDetail.y;
@@ -330,6 +361,87 @@ export default {
 			state.componentsDetail[RECT_SELECT_NAME].y = bound.top;
 			state.componentsDetail[RECT_SELECT_NAME].width = bound.right - bound.left;
 			state.componentsDetail[RECT_SELECT_NAME].height = bound.bottom - bound.top;
+		},
+		selectComponent(state, action) {
+			const { componentsDetail, scopedComponents, zoomScale } = state;
+			const { componentName } = action.payload;
+			const componentNames = scopedComponents.map(component => component.name);
+			const component = componentsDetail[componentName];
+
+			if (!componentNames.includes(componentName)) {
+				scopedComponents.push(component);
+			}
+
+			if (!componentsDetail[RECT_SELECT_NAME]) {
+				componentsDetail[RECT_SELECT_NAME] = {
+					type: SHAPE_TYPES.RECT_SELECT,
+					name: RECT_SELECT_NAME,
+					background: '#5cadff',
+					scaleX: 1,
+					scaleY: 1,
+					zoomScale,
+					rotation: 0,
+					opacity: 0.2,
+				};
+
+				const realWidth = MAPS.containerWidth[component.type] * zoomScale * (component.scaleX || 1);
+				let realHeight = MAPS.containerHeight[component.type] * zoomScale * (component.scaleY || 1);
+
+				// 上传过图片的IMAGE组件高度需要特殊处理
+				if (component.type === SHAPE_TYPES.IMAGE && component.imgPath) {
+					realHeight = realWidth * component.ratio;
+				}
+				component.left = component.x;
+				component.top = component.y;
+				component.right = component.x + realWidth;
+				component.bottom = component.y + realHeight;
+				componentsDetail[RECT_SELECT_NAME].x = component.left;
+				componentsDetail[RECT_SELECT_NAME].y = component.top;
+				componentsDetail[RECT_SELECT_NAME].width = component.right - component.left;
+				componentsDetail[RECT_SELECT_NAME].height = component.bottom - component.top;
+			} else {
+				const bound = {};
+				scopedComponents.forEach(item => {
+					if (item.name) {
+						const curItem = componentsDetail[item.name];
+						const realWidth = MAPS.containerWidth[curItem.type] * zoomScale * (curItem.scaleX || 1);
+						let realHeight = MAPS.containerHeight[curItem.type] * zoomScale * (curItem.scaleY || 1);
+
+						// 上传过图片的IMAGE组件高度需要特殊处理
+						if (curItem.type === SHAPE_TYPES.IMAGE && curItem.imgPath) {
+							realHeight = realWidth * curItem.ratio;
+						}
+						curItem.left = curItem.x;
+						curItem.top = curItem.y;
+						curItem.right = curItem.x + realWidth;
+						curItem.bottom = curItem.y + realHeight;
+						if (!bound.left || bound.left > curItem.left) {
+							bound.left = curItem.left;
+						}
+						if (!bound.top || bound.top > curItem.top) {
+							bound.top = curItem.top;
+						}
+						if (!bound.right || bound.right < curItem.right) {
+							bound.right = curItem.right;
+						}
+						if (!bound.bottom || bound.bottom < curItem.bottom) {
+							bound.bottom = curItem.bottom;
+						}
+					}
+				});
+				state.selectedShapeName = RECT_SELECT_NAME;
+				componentsDetail[RECT_SELECT_NAME].x = bound.left;
+				componentsDetail[RECT_SELECT_NAME].y = bound.top;
+				componentsDetail[RECT_SELECT_NAME].width = bound.right - bound.left;
+				componentsDetail[RECT_SELECT_NAME].height = bound.bottom - bound.top;
+			}
+		},
+		resetScopedComponents(state) {
+			state.scopedComponents = [];
+			if (state.componentsDetail[RECT_SELECT_NAME]) {
+				state.componentsDetail[RECT_SELECT_NAME].width = 0;
+				state.componentsDetail[RECT_SELECT_NAME].height = 0;
+			}
 		}
 	}
 };

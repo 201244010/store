@@ -10,18 +10,9 @@ import { ERROR_OK } from '@/constants/errorCode';
 // import routeConfig from '@/config/devRouter';
 import routeConfig from '@/config/router';
 
-import { env } from '@/config';
+import { env, FIRST_MENU_ORDER } from '@/config';
 
 const { check } = Authorized;
-
-const FIRST_MENU_ORDER = [
-	'dashboard',
-	'application',
-	'devices',
-	'esl',
-	'basicData',
-	'faceidLibrary',
-];
 
 // Conversion router to menu.
 function formatter(data, parentAuthority, parentName) {
@@ -218,7 +209,7 @@ export default {
 		},
 
 		goToPath({ payload = {} }) {
-			const { pathId = null, urlParams = {}, linkType = null } = payload;
+			const { pathId = null, urlParams = {}, linkType = null, anchorId = null } = payload;
 
 			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
 
@@ -234,6 +225,10 @@ export default {
 			if (keyList.length > 0) {
 				const query = keyList.map(key => `${key}=${urlParams[key]}`).join('&');
 				targetPath = `${path}?${query}`;
+			}
+
+			if (anchorId) {
+				targetPath = `${targetPath}#${anchorId}`;
 			}
 
 			const { open, location, origin } = window;

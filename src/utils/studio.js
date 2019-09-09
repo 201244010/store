@@ -9,6 +9,7 @@ import {
 	BARCODE_TYPES,
 	CODE_TYPES
 } from '@/constants/studio';
+import {getLocationParam} from '@/utils/utils';
 
 const NEAR_GAP = 10;
 export const COINCIDE_GAP = 10;
@@ -95,7 +96,6 @@ export const getPositionInNearScope = (source, target, scopedPosition) => {
 		}
 	}
 
-	console.log('ret', ret);
 	return ret;
 };
 
@@ -288,6 +288,31 @@ export const isInComponent = (source, target) => source.left > target.left && so
 export const getImagePromise = componentDetail =>
 	new Promise((resolve, reject) => {
 		const image = new Image();
+
+		if (componentDetail.content) {
+			if (componentDetail.type === SHAPE_TYPES.CODE_QR) {
+				const bb = jQuery(document.createElement('canvas')).qrcode({
+					render: 'canvas',
+					text: componentDetail.content,
+					width: componentDetail.width,
+					height: componentDetail.height,
+					background: '#ffffff',
+					foreground: '#000000'
+				});
+				const canvas = bb.find('canvas').get(0);
+				image.src = canvas.toDataURL();
+			}
+			if ([SHAPE_TYPES.CODE_H, SHAPE_TYPES.CODE_V].includes(componentDetail.type)) {
+				JsBarcode(image, componentDetail.content, {
+					format: 'CODE128',
+					width: MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX * componentDetail.zoomScale,
+					displayValue: false
+				});
+			}
+		} else {
+			image.src = componentDetail.imgPath || MAPS.imgPath[componentDetail.type];
+		}
+
 		image.onload = () => {
 			componentDetail.image = image;
 			resolve(componentDetail);
@@ -295,7 +320,6 @@ export const getImagePromise = componentDetail =>
 		image.onerror = error => {
 			reject(error);
 		};
-		image.src = componentDetail.imgPath || MAPS.imgPath[componentDetail.type];
 	});
 
 export const STEP_KEYS = {};
@@ -341,7 +365,8 @@ export const nextStep = async (templateId) => {
 	return result;
 };
 
-export const initTemplateDetail = (stage, layers, zoomScale, screenType) => {
+export const initTemplateDetail = (stage, layers, zoomScale) => {
+	const screenType = getLocationParam('screen');
 	const type = SHAPE_TYPES.RECT_FIX;
 	const {width, height} = MAPS.screen[screenType];
 	const x = (stage.width - width * zoomScale) / 2;
@@ -360,15 +385,15 @@ export const initTemplateDetail = (stage, layers, zoomScale, screenType) => {
 			layer.bindField = undefined;
 		}
 		if (layer.type) {
-			const sType = layer.type.toLowerCase();
-			if (sType.indexOf(SHAPE_TYPES.LINE) > -1) {
+			layer.type = layer.type.toLowerCase();
+			if (layer.type.indexOf(SHAPE_TYPES.LINE) > -1) {
 				if (layer.width > layer.height) {
 					layer.type = SHAPE_TYPES.LINE_H;
 				} else {
 					layer.type = SHAPE_TYPES.LINE_V;
 				}
 			}
-			if (sType.indexOf(SHAPE_TYPES.PRICE) > -1) {
+			if (layer.type.indexOf(SHAPE_TYPES.PRICE) > -1) {
 				if (!['sup', 'sub', 'super'].includes(layer.subType)) {
 					layer.subType = 'normal';
 				}
@@ -376,10 +401,10 @@ export const initTemplateDetail = (stage, layers, zoomScale, screenType) => {
 				if (!backgroundColor || ['red', 'opacity'].includes(backgroundColor)) {
 					backgroundColor = 'white';
 				}
-				const subType = layer.subType === 'super' ? 'sup' : layer.subType;
+				const subType = (layer.subType === 'super' ? 'sup' : layer.subType);
 				layer.type = `price@${subType}@${backgroundColor}`;
 			}
-			if (sType.indexOf(SHAPE_TYPES.CODE) > -1) {
+			if (layer.type.indexOf(SHAPE_TYPES.CODE) > -1) {
 				if (layer.width - layer.height > 10) {
 					layer.type = SHAPE_TYPES.CODE_H;
 				} else if (layer.width - layer.height < -10) {
@@ -465,41 +490,20 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 		// 计算startX, startY 等位置信息
 		componentDetail.startX = ((componentDetail.x - originOffset.x) / componentDetail.zoomScale).toFixed();
 		componentDetail.startY = ((componentDetail.y - originOffset.y) / componentDetail.zoomScale).toFixed();
-		if (NON_NORMAL_PRICE_TYPES.includes(componentDetail.type)) {
-			const intPriceText = `${componentDetail.content}`.split('.')[0];
-			const smallPriceText = `${componentDetail.content}`.split('.')[1] || '';
-			let backSmallStartY = 0;
-			if (componentDetail.type.indexOf(SHAPE_TYPES.PRICE_SUPER)) {
-				backSmallStartY = (MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY - componentDetail.fontSize) / 2;
-			}
-			const intTextWidth = (componentDetail.fontSize / 2) * (intPriceText.length + (smallPriceText ? 0.7 : 0));
-			const textWidth = intTextWidth + (smallPriceText.length * componentDetail.smallFontSize) / 2;
-			let intXPosition = 0;
-			if (componentDetail.align === 'center') {
-				intXPosition = (MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX - textWidth) / 2;
-			}
-			if (componentDetail.align === 'right') {
-				intXPosition = MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX - textWidth;
-			}
-			componentDetail.intStartX = Math.round(componentDetail.startX) + Math.round(intXPosition);
-			componentDetail.intStartY = Math.round(componentDetail.startY) + Math.round(backSmallStartY);
-			componentDetail.smallStartX = componentDetail.intStartX + Math.round(intTextWidth);
-			if (componentDetail.type.indexOf(SHAPE_TYPES.PRICE_SUPER) > -1) {
-				componentDetail.smallStartY = componentDetail.intStartY;
-			} else {
-				componentDetail.smallStartY = componentDetail.intStartY + componentDetail.fontSize - componentDetail.smallFontSize;
-			}
-		}
 
 		// 处理type
 		if ([SHAPE_TYPES.LINE_H, SHAPE_TYPES.LINE_V, ...CODE_TYPES].includes(componentDetail.type)) {
 			componentDetail.type = componentDetail.type.split('@')[0];
 		}
 
+		// 处理价格组件
 		if ([...NORMAL_PRICE_TYPES, ...NON_NORMAL_PRICE_TYPES].includes(componentDetail.type)) {
 			const types = componentDetail.type.split('@');
 			componentDetail.type = types[0];
 			componentDetail.subType = types[1];
+			if (componentDetail.subType === 'normal') {
+				componentDetail.smallFontSize = componentDetail.fontSize;
+			}
 		}
 
 		delete componentDetail.lines;
@@ -513,4 +517,38 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 		layers,
 		bindFields
 	};
+};
+
+export const checkEAN8Num = (number) => {
+	const res = number
+		.substr(0, 7)
+		.split('')
+		.map((n) => +n)
+		.reduce((sum, a, idx) => (
+			idx % 2 ? sum + a : sum + a * 3
+		), 0);
+
+	return (10 - (res % 10)) % 10;
+};
+
+export const checkEAN13Num = (number) => {
+	const res = number
+		.substr(0, 12)
+		.split('')
+		.map((n) => +n)
+		.reduce((sum, a, idx) => (
+			idx % 2 ? sum + a * 3 : sum + a
+		), 0);
+
+	return (10 - (res % 10)) % 10;
+};
+
+export const validEAN8Num = (number) => {
+	console.log(checkEAN8Num(number));
+	return number.search(/^[0-9]{8}$/) !== -1 && +number[7] === checkEAN8Num(number);
+};
+
+export const validEAN13Num = (number) => {
+	console.log(checkEAN13Num(number));
+	return number.search(/^[0-9]{13}$/) !== -1 && +number[12] === checkEAN13Num(number);
 };

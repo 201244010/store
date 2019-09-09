@@ -1,4 +1,6 @@
 export const ERROR_OK = 1;
+export const ORDER_OK = 1;
+export const MQTT_RES_OK = 0;
 export const TOKEN_EXPIRE = -2;
 
 export const SHOW_VCODE = 2;
@@ -29,6 +31,8 @@ export const NONE_IMPORTED_RECORD = 5013;
 
 export const ERR_SSO_USER_NOT_IN_COMPANY = 5400;
 
+export const ORDER_COMPLETED = 5503;
+
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',
 	'3': 'alert.code.send.fast',
@@ -52,4 +56,8 @@ export const ALERT_NOTICE_MAP = {
 export const ALERT_ROLE_MAP = {
 	[USER_NOT_EXIST]: 'alert.role.not.exist',
 	[ERR_SSO_USER_NOT_IN_COMPANY]: 'alert.sso.not.company',
+};
+
+export const ALTERT_TRADE_MAP = {
+	[ORDER_COMPLETED]: 'pay.order.completed',
 };

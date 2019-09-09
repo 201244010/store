@@ -29,21 +29,30 @@ class MqttClient {
 
 		this.listenerStack = [];
 
+		this.msgIdMap = new Map();
 		this.handlerMap = new Map();
-		this.reconnectTimes = 0;
+		this.reconnectTimes = 1;
 
 		this.connect = this.connect.bind(this);
 		this.subscribe = this.subscribe.bind(this);
 		this.unsubscribe = this.unsubscribe.bind(this);
 		this.publish = this.publish.bind(this);
 		this.destroy = this.destroy.bind(this);
+		this.clearMsg = this.clearMsg.bind(this);
 
 		this.registerMessageHandler = this.registerMessageHandler.bind(this);
 		this.registerTopicHandler = this.registerTopicHandler.bind(this);
 		this.registerErrorHandler = this.registerErrorHandler.bind(this);
 	}
 
-	connect({ address, username, password, clientId, path = '/mqtt' }) {
+	connect({
+		address,
+		username,
+		password,
+		clientId,
+		path = '/mqtt',
+		reconnectPeriod = this.reconnectTimes,
+	}) {
 		return new Promise((resolve, reject) => {
 			const client = MQTT.connect(
 				`${WEB_SOCKET_PREFIX}://${address}`,
@@ -52,23 +61,26 @@ class MqttClient {
 					username,
 					password,
 					path,
+					reconnectPeriod,
 				}
 			);
 
 			client.on('connect', () => {
 				console.log('mqtt connect');
 				this.reconnectTimes = 0;
+				console.log('established client: ', client);
 				resolve(client);
 			});
 
 			client.on('reconnect', () => {
+				console.log(this);
 				console.log('mqtt reconnect', this.reconnectTimes);
-				this.reconnectTimes = this.reconnectTimes + 1;
+				this.reconnectTimes = this.reconnectTimes * 2;
 			});
 
 			client.on('close', () => {
 				console.log('mqtt close');
-				if (this.reconnectTimes > 10) {
+				if (this.reconnectTimes > 2048) {
 					client.end(true);
 				}
 			});
@@ -103,25 +115,34 @@ class MqttClient {
 		const { client } = this;
 		this.handlerMap.delete(topic);
 		console.log('rest handler: ', this.handlerMap);
-		client.unsubscribe([topic], () => {
-			console.log('unsubscribe', topic);
-		});
+		if (client) {
+			client.unsubscribe([topic], () => {
+				console.log('unsubscribe', topic);
+			});
+		}
 	}
 
-	publish(topic, message) {
+	publish(topic, message = []) {
 		// const { messages } = this;
 		const { client } = this;
 		const { config } = this;
-
+		const { msgIdMap } = this;
 		// console.log('random id ', generateMsgId());
 		// messages.id += 1;
+		const msgId = generateMsgId();
+		const { sn } = message.param || {};
+		console.log(message, sn);
 		const msg = JSON.stringify({
-			msg_id: generateMsgId(),
+			msg_id: msgId,
 			params: Array.isArray(message) ? [...message] : [message],
 		});
-
-		client.publish(topic, msg, config, () => {
-			console.log('publish', topic, msg);
+		client.publish(topic, msg, config, err => {
+			console.log('publish', topic, msg, err);
+			if (!err) {
+				console.log(sn);
+				msgIdMap.set(msgId, sn);
+				console.log(msgIdMap);
+			}
 		});
 	}
 
@@ -161,6 +182,12 @@ class MqttClient {
 		if (client) {
 			client.end(true);
 		}
+	}
+
+	clearMsg({ msgId }) {
+		const { msgIdMap } = this;
+		console.log(msgId);
+		msgIdMap.delete(msgId);
 	}
 }
 

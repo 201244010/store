@@ -48,12 +48,15 @@ module.exports = {
 		'no-nested-ternary': 0,
 		'no-unused-expressions': 0,
 		'no-control-regex': 0,
+		'no-prototype-builtins': 0,
 		'prefer-destructuring': 0,
 		'import/no-extraneous-dependencies': 0,
+		'length-zero-no-unit':0,
 		'quotes': [2, 'single'],
 		'indent': ['error', 'tab', {
 			'SwitchCase': 1
-		}]
+		}],
+		'prefer-template': 2
 	},
 	settings: {
 		polyfills: ['fetch', 'promises', 'url'],
