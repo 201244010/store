@@ -22,8 +22,11 @@ class NetworkList extends React.PureComponent {
 		clearInterval(this.intervalTimer);
 	}
 
-	fetchApMessage = () => {
+	fetchApMessage = async () => {
 		const { getList } = this.props;
+		await getList();
+		await this.fetchMqtt();
+
 		this.intervalTimer = setInterval(async () => {
 			await getList();
 			await this.fetchMqtt();

@@ -60,13 +60,6 @@ const query = {
 
 const UNAUTH_PATH = ['account', 'notification', 'exception'];
 
-const layoutContainerStyle = {
-	width: '100%',
-	height: '100vh',
-	textAlign: 'center',
-	paddingTop: '10vh',
-};
-
 @MQTTWrapper
 class BasicLayout extends React.PureComponent {
 	constructor(props) {
@@ -202,6 +195,7 @@ class BasicLayout extends React.PureComponent {
 		if (fixSiderbar && layout !== 'topmenu' && !isMobile) {
 			return {
 				paddingLeft: collapsed ? '80px' : '256px',
+				minHeight: '100vh',
 			};
 		}
 		return null;
@@ -263,7 +257,6 @@ class BasicLayout extends React.PureComponent {
 				<Layout
 					style={{
 						...this.getLayoutStyle(),
-						minHeight: '100vh',
 					}}
 				>
 					<Header
@@ -285,7 +278,7 @@ class BasicLayout extends React.PureComponent {
 			<React.Fragment>
 				<DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
 					{inMenuChecking ? (
-						<div style={layoutContainerStyle}>
+						<div className={styles['layout-content']}>
 							<Spin spinning size="large" />
 						</div>
 					) : (
