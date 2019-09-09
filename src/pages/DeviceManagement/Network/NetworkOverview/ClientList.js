@@ -33,7 +33,6 @@ class ClientList extends React.Component {
 		this.checkTime = null;
 		this.state = {
 			dataSource: [],
-			pageSize: 10,
 		};
 
 		const {
@@ -54,6 +53,7 @@ class ClientList extends React.Component {
 				title: formatMessage({ id: 'network.macAddress' }),
 				dataIndex: 'mac',
 				key: 'mac',
+				render: text => text.toUpperCase(),
 			},
 			{
 				title: formatMessage({ id: 'network.ipAddress' }),
@@ -185,17 +185,9 @@ class ClientList extends React.Component {
 		}
 	};
 
-	handleData = array =>
-		array.map(item => {
-			item.mac = item.mac.toUpperCase();
-			return item;
-		});
-
 	render() {
-		const { dataSource, pageSize } = this.state;
+		const { dataSource } = this.state;
 		const { loading } = this.props;
-		const data = this.handleData(dataSource);
-		const array = data.slice(0, 50 * pageSize);
 
 		return (
 			<Card
@@ -205,11 +197,10 @@ class ClientList extends React.Component {
 				<Spin spinning={loading.effects['network/apHandler']}>
 					<Table
 						columns={this.columns}
-						dataSource={array}
+						dataSource={dataSource}
 						rowKey="mac"
 						pagination={{
 							showSizeChanger: true,
-							onShowSizeChange: (_, size) => this.setState({ pageSize: size }),
 						}}
 					/>
 				</Spin>
