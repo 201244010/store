@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Form, Input, Row, Col, Switch, Button, message } from 'antd';
 import { FORM_ITEM_LAYOUT_QOS } from '@/constants/form';
-// import { ERROR_OK } from '@/constants/errorCode';
+import { STATUS } from '@/constants/index';
 import { OPCODE } from '@/constants/mqttStore';
 import { format } from '@konata9/milk-shake';
 import { formatMessage } from 'umi/locale';
@@ -152,11 +152,11 @@ class QosCreate extends React.PureComponent {
 					},
 					configId: id,
 				};
-				if (qosType === 'create') {
+				if (qosType === STATUS.CREATE) {
 					await createQos(payload);
 				}
 
-				if (qosType === 'update') {
+				if (qosType === STATUS.UPDATE) {
 					await updateQos(payload);
 				}
 				selectedRowKeys.forEach(async keyId => {

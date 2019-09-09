@@ -127,7 +127,6 @@ const Topology = props => {
 		editName,
 		goToPath,
 	} = props || {};
-
 	const routerNumber = networkDeviceList.filter(item => item.networkId === networkId).length;
 	return (
 		<div className={styles['network-shop']}>
@@ -205,7 +204,7 @@ const Topology = props => {
 									</Badge>
 									<Badge
 										count={clientNumber || 0}
-										// showZero
+										showZero
 										offset={[-32, -2]}
 										overflowCount={9999}
 									>

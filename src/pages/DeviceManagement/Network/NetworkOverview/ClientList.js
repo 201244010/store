@@ -6,42 +6,10 @@ import { OPCODE } from '@/constants/mqttStore';
 import { formatRelativeTime } from '@/utils/utils';
 import styles from './Network.less';
 
-const columns = [
-	{
-		title: formatMessage({ id: 'network.hostName' }),
-		dataIndex: 'hostname',
-		key: 'hostname',
-	},
-	{
-		title: formatMessage({ id: 'network.macAddress' }),
-		dataIndex: 'mac',
-		key: 'mac',
-	},
-	{
-		title: formatMessage({ id: 'network.ipAddress' }),
-		dataIndex: 'ip',
-		key: 'ip',
-	},
-	{
-		title: formatMessage({ id: 'network.routerMac' }),
-		dataIndex: 'sn',
-		key: 'sn',
-	},
-	{
-		title: formatMessage({ id: 'network.connectMode' }),
-		dataIndex: 'connMode',
-		key: 'connMode',
-	},
-	{
-		title: formatMessage({ id: 'network.ontime' }),
-		dataIndex: 'ontime',
-		key: 'ontime',
-	},
-];
 const WIFI = 'wifi';
 const MQTT_TYPE = {
 	ROUTER: 'router',
-	LIST: 'list'
+	LIST: 'list',
 };
 const GUEST = 'guest';
 const BR_GUEST = 'br-guest';
@@ -67,7 +35,7 @@ class ClientList extends React.Component {
 			dataSource: [],
 			pageSize: 10,
 		};
-		
+
 		const {
 			location: {
 				query: { sn, networkId, type },
@@ -76,6 +44,38 @@ class ClientList extends React.Component {
 		this.sn = sn;
 		this.networkId = networkId;
 		this.type = type;
+		this.columns = [
+			{
+				title: formatMessage({ id: 'network.hostName' }),
+				dataIndex: 'hostname',
+				key: 'hostname',
+			},
+			{
+				title: formatMessage({ id: 'network.macAddress' }),
+				dataIndex: 'mac',
+				key: 'mac',
+			},
+			{
+				title: formatMessage({ id: 'network.ipAddress' }),
+				dataIndex: 'ip',
+				key: 'ip',
+			},
+			{
+				title: formatMessage({ id: 'network.routerMac' }),
+				dataIndex: 'sn',
+				key: 'sn',
+			},
+			{
+				title: formatMessage({ id: 'network.connectMode' }),
+				dataIndex: 'connMode',
+				key: 'connMode',
+			},
+			{
+				title: formatMessage({ id: 'network.ontime' }),
+				dataIndex: 'ontime',
+				key: 'ontime',
+			},
+		];
 	}
 
 	componentDidMount() {
@@ -93,7 +93,6 @@ class ClientList extends React.Component {
 		const { getDeviceList } = this.props;
 		const { errcode } = responseData[0];
 		const { dataSource } = this.state;
-		
 
 		// 当未组网时直接用sn号填进去，有routerMac字段时需要再发一个请求进行匹配
 
@@ -105,22 +104,22 @@ class ClientList extends React.Component {
 					// item.ontime = formatRelativeTime(item.ontime);
 					item.sn = this.sn;
 					item.ontime = formatRelativeTime(item.ontime * 1000);
-					if(item.connMode === WIFI) {
+					if (item.connMode === WIFI) {
 						item.connMode = item.wifiMode;
 					} else {
-						item.connMode = formatMessage({id: 'network.connect.wired'});
+						item.connMode = formatMessage({ id: 'network.connect.wired' });
 					}
 					return item;
 				});
 			} else {
 				dataArray = result.data.map(item => {
 					// item.ontime = formatRelativeTime(item.ontime);
-					item.sn = '--';
+					item.sn = formatMessage({ id: 'network.routerEvent.noRouter' });
 					item.ontime = formatRelativeTime(item.ontime * 1000);
-					if(item.connMode === WIFI) {
+					if (item.connMode === WIFI) {
 						item.connMode = item.wifiMode;
 					} else {
-						item.connMode = formatMessage({id: 'network.connect.wired'});
+						item.connMode = formatMessage({ id: 'network.connect.wired' });
 					}
 					return item;
 				});
@@ -185,13 +184,12 @@ class ClientList extends React.Component {
 			this.checkTime = setTimeout(() => this.checkClient(), 1000);
 		}
 	};
-	
+
 	handleData = array =>
 		array.map(item => {
 			item.mac = item.mac.toUpperCase();
 			return item;
 		});
-	
 
 	render() {
 		const { dataSource, pageSize } = this.state;
@@ -206,7 +204,7 @@ class ClientList extends React.Component {
 			>
 				<Spin spinning={loading.effects['network/apHandler']}>
 					<Table
-						columns={columns}
+						columns={this.columns}
 						dataSource={array}
 						rowKey="mac"
 						pagination={{

@@ -3,30 +3,8 @@ import { Card, Pagination, Spin, Table, message } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
+import { DEFAULT_PAGE_LIST_SIZE } from '@/constants/index';
 import styles from './Network.less';
-
-const columns = [
-	{
-		title: formatMessage({ id: 'network.networkId' }),
-		dataIndex: 'networkId',
-		key: 'networkId',
-	},
-	{
-		title: formatMessage({ id: 'network.deviceSN' }),
-		dataIndex: 'sn',
-		key: 'sn',
-	},
-	{
-		title: formatMessage({ id: 'network.connect.eventType' }),
-		dataIndex: 'eventType',
-		key: 'eventType',
-	},
-	{
-		title: formatMessage({ id: 'network.connect.time' }),
-		dataIndex: 'reportTime',
-		key: 'reportTime',
-	},
-];
 
 @connect(
 	state => ({
@@ -45,6 +23,28 @@ class EventList extends React.Component {
 			pageSize: 10,
 			pageNum: 1,
 		};
+		this.columns = [
+			{
+				title: formatMessage({ id: 'network.networkId' }),
+				dataIndex: 'networkId',
+				key: 'networkId',
+			},
+			{
+				title: formatMessage({ id: 'network.deviceSN' }),
+				dataIndex: 'sn',
+				key: 'sn',
+			},
+			{
+				title: formatMessage({ id: 'network.connect.eventType' }),
+				dataIndex: 'eventType',
+				key: 'eventType',
+			},
+			{
+				title: formatMessage({ id: 'network.connect.time' }),
+				dataIndex: 'reportTime',
+				key: 'reportTime',
+			},
+		];
 	}
 
 	componentDidMount() {
@@ -108,7 +108,7 @@ class EventList extends React.Component {
 			<Card title={formatMessage({ id: 'network.routerEvent.title' })}>
 				<Spin spinning={loading.effects['network/getEventList']}>
 					<Table
-						columns={columns}
+						columns={this.columns}
 						dataSource={dataSource}
 						pagination={false}
 						rowKey="index"
@@ -117,7 +117,7 @@ class EventList extends React.Component {
 						<Pagination
 							total={total}
 							showSizeChanger
-							pageSizeOptions={['10', '20', '30', '40']}
+							pageSizeOptions={DEFAULT_PAGE_LIST_SIZE}
 							onChange={this.handleChange}
 							onShowSizeChange={this.handleChange}
 							className={styles['network-router-pagination']}
