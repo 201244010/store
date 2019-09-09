@@ -3,6 +3,7 @@ export default {
 	'menu.dashBoard': ' ',
 	'menu.dashboard': '首页',
 	'menu.dashboard.detail': '交易详情',
+	'menu.dashboard.orderDetail': '订单详情',
 	'menu.account': '个人中心',
 	'menu.account.logout': '退出登录',
 	'menu.serviceApplication': '服务应用',

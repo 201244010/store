@@ -60,6 +60,13 @@ const query = {
 
 const UNAUTH_PATH = ['account', 'notification', 'exception'];
 
+const layoutContainerStyle = {
+	width: '100%',
+	height: '100vh',
+	textAlign: 'center',
+	paddingTop: '10vh',
+};
+
 @MQTTWrapper
 class BasicLayout extends React.PureComponent {
 	constructor(props) {
@@ -242,57 +249,63 @@ class BasicLayout extends React.PureComponent {
 		const isTop = PropsLayout === 'topmenu';
 		const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
 		const layout = (
-			<Spin spinning={inMenuChecking}>
-				<Layout>
-					{isTop && !isMobile ? null : (
-						<SiderMenu
-							logo={currentLanguage === 'zh-CN' ? logo : logoEN}
-							theme={navTheme}
-							onCollapse={this.handleMenuCollapse}
-							menuData={menuData}
-							isMobile={isMobile}
-							{...this.props}
-						/>
-					)}
-					<Layout
-						style={{
-							...this.getLayoutStyle(),
-							minHeight: '100vh',
-						}}
-					>
-						<Header
-							menuData={menuData}
-							handleMenuCollapse={this.handleMenuCollapse}
-							logo={logo}
-							isMobile={isMobile}
-							selectedStore={selectedStore}
-							{...this.props}
-						/>
-						{/* <Breadcrumbs /> */}
-						<Content className={styles.content} style={contentStyle}>
-							{children}
-						</Content>
-					</Layout>
+			<Layout>
+				{isTop && !isMobile ? null : (
+					<SiderMenu
+						logo={currentLanguage === 'zh-CN' ? logo : logoEN}
+						theme={navTheme}
+						onCollapse={this.handleMenuCollapse}
+						menuData={menuData}
+						isMobile={isMobile}
+						{...this.props}
+					/>
+				)}
+				<Layout
+					style={{
+						...this.getLayoutStyle(),
+						minHeight: '100vh',
+					}}
+				>
+					<Header
+						menuData={menuData}
+						handleMenuCollapse={this.handleMenuCollapse}
+						logo={logo}
+						isMobile={isMobile}
+						selectedStore={selectedStore}
+						{...this.props}
+					/>
+					{/* <Breadcrumbs /> */}
+					<Content className={styles.content} style={contentStyle}>
+						{children}
+					</Content>
 				</Layout>
-			</Spin>
+			</Layout>
 		);
 		return (
 			<React.Fragment>
 				<DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
-					<ContainerQuery query={query}>
-						{params => (
-							<Context.Provider value={this.getContext()}>
-								<PerfectScrollbar ref={scrollbar => (this.scrollbar = scrollbar)}>
-									<div
-										ref={dom => (this.dom = dom)}
-										className={classNames(params)}
+					{inMenuChecking ? (
+						<div style={layoutContainerStyle}>
+							<Spin spinning size="large" />
+						</div>
+					) : (
+						<ContainerQuery query={query}>
+							{params => (
+								<Context.Provider value={this.getContext()}>
+									<PerfectScrollbar
+										ref={scrollbar => (this.scrollbar = scrollbar)}
 									>
-										{layout}
-									</div>
-								</PerfectScrollbar>
-							</Context.Provider>
-						)}
-					</ContainerQuery>
+										<div
+											ref={dom => (this.dom = dom)}
+											className={classNames(params)}
+										>
+											{layout}
+										</div>
+									</PerfectScrollbar>
+								</Context.Provider>
+							)}
+						</ContainerQuery>
+					)}
 				</DocumentTitle>
 			</React.Fragment>
 		);
