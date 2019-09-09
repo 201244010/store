@@ -27,20 +27,31 @@ export default {
 				pageNum,
 				pageSize
 			});
+
 			const { code, data: { historyList = [], totalCount } } = response;
-			const arrivalList = [];
-			for(let i=0;i<historyList.length;i++){
-				const shopName = yield put.resolve({
-					type:'store/getStoreNameById',
-					payload:{
-						shopId:historyList[i].shopId
+			const result = yield put.resolve({
+				type:'store/getStoreList',
+				payload: {}
+			});
+			let shopList = [];
+			if (result && result.code === ERROR_OK) {
+				const data = result.data || {};
+				shopList = data.shop_list || [];
+			}
+
+			const arrivalList = historyList.map((item) => {
+				let shopName = '';
+				shopList.forEach(shopItem => {
+					if (shopItem.shop_id === item.shopId) {
+						shopName = shopItem.shop_name;
 					}
 				});
-				arrivalList.push({
+				return({
 					shopName,
-					...historyList[i]
+					...item
 				});
-			}
+			});
+			
 			if(code === ERROR_OK) {
 				yield put({
 					type: 'readData',

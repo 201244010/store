@@ -136,6 +136,20 @@ export const handleUpload = async (params) => {
 	);
 };
 
+export const handleUpload2 = async (params) => {
+	const body = format('toSnake')(params);
+	return request('uploadFaceList', {
+		body: {
+			...body
+		}
+	}).then(
+		async response => {
+			const json = await response.json();
+			return format('toCamel')(json);
+		}
+	);
+};
+
 export const handleResponse =  fileList => {
 	let answer;
 	if(Array.isArray(fileList)) {

@@ -22,6 +22,6 @@ export default {
 	'faceLog.adjust.to':'移至',
 	'faceLog.card.moveSuccess':'移库成功',
 	'faceLog.card.moveFail':'移库失败',
-	'faceLog.unknown':'未知',
+	'faceLog.unknown':'--',
 	'faceLog.undefined':'--'
 };
