@@ -45,7 +45,7 @@ class MqttClient {
 		this.registerErrorHandler = this.registerErrorHandler.bind(this);
 	}
 
-	connect({ address, username, password, clientId, path = '/mqtt' }) {
+	connect({ address, username, password, clientId, path = '/mqtt', reconnectPeriod = 3 * 1000 }) {
 		return new Promise((resolve, reject) => {
 			const client = MQTT.connect(
 				`${WEB_SOCKET_PREFIX}://${address}`,
@@ -54,6 +54,7 @@ class MqttClient {
 					username,
 					password,
 					path,
+					reconnectPeriod,
 				}
 			);
 
@@ -118,19 +119,23 @@ class MqttClient {
 		// const { messages } = this;
 		const { client } = this;
 		const { config } = this;
+		const { msgIdMap } = this;
 		// console.log('random id ', generateMsgId());
 		// messages.id += 1;
 		const msgId = generateMsgId();
 		const { sn } = message.param || {};
-		this.msgIdMap.set(msgId, sn);
 		const msg = JSON.stringify({
 			msg_id: msgId,
 			params: Array.isArray(message) ? [...message] : [message],
 		});
-		client.publish(topic, msg, config, () => {
-			console.log('publish', topic, msg);
+		client.publish(topic, msg, config, err => {
+			console.log('publish', topic, msg, err);
+			if (!err) {
+				console.log(sn);
+				msgIdMap.set(msgId, sn);
+				console.log(msgIdMap);
+			}
 		});
-		console.log(this.msgIdMap);
 	}
 
 	registerTopicHandler(topic, topicHandler) {
