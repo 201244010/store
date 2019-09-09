@@ -92,6 +92,29 @@ const redStyle = { color: 'red' };
 				type: 'photoUpload/clearFileList',
 			});
 		},
+		setUploadHandler: (handler) =>
+			dispatch({
+				type: 'photoUpload/setUploadHandler',
+				payload: {
+					handler
+				}
+			}),
+		checkClientExist: () =>
+			dispatch({
+				type: 'mqttStore/checkClientExist'
+			}),
+		unsubscribeTopic: () =>
+			dispatch({
+				type: 'photoUpload/unsubscribeTopic'
+			}),
+		changeFileList: (faceExtractList) => {
+			dispatch({
+				type: 'photoUpload/changeFileList',
+				payload: {
+					faceList: faceExtractList
+				}
+			});
+		}
 	})
 )
 @Form.create()
@@ -124,7 +147,7 @@ class PhotoManagement extends React.Component {
 
 
 
-	componentDidMount() {
+	componentDidMount () {
 		const {
 			getLibrary,
 			getRange,
@@ -138,12 +161,33 @@ class PhotoManagement extends React.Component {
 		});
 		getLibrary();
 		getRange();
+		this.checkMQTTClient();
 	}
 
 	componentWillUnmount() {
-		const { clearPhotoList, clearFileList } = this.props;
+		const { clearPhotoList, clearFileList, unsubscribeTopic } = this.props;
 		clearPhotoList();
 		clearFileList();
+		unsubscribeTopic();
+	}
+
+	// { handler: this.apHandler }
+
+	// changeFileList = (faceExtractList) => {
+
+	// 	const { changeFileList } = this.props;
+	// 	changeFileList(faceExtractList);
+	// }
+
+	checkMQTTClient = async () => {
+		clearTimeout(this.checkTimer);
+		const { checkClientExist, setUploadHandler, changeFileList } = this.props;
+		const isClientExist = await checkClientExist();
+		if(isClientExist) {
+			setUploadHandler(changeFileList);
+		} else {
+			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
+		}
 	}
 
 	getList = () => {
@@ -251,15 +295,17 @@ class PhotoManagement extends React.Component {
 		// let isUpload = false;
 		const list = fileList.map(item => {
 			const {
-				response: {
-					data: { verifyResult, fileName },
-				},
+				// response: {
+				// 	data: { verifyResult, fileName },
+				// },
+				response: { verifyResult, fileName }
 			} = item;
 			if (verifyResult === 1) {
 				return fileName;
 			}
 			return false;
 		});
+		// console.log('submit', fileList,list);
 		if(!this.isUpload) {
 			if (fileList.length === 0) {
 				message.error(formatMessage({ id: 'photoManagement.noPhotoAlert' }));
