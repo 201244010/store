@@ -152,12 +152,15 @@ class QosCreate extends React.PureComponent {
 					},
 					configId: id,
 				};
-				if (qosType === STATUS.CREATE) {
-					await createQos(payload);
-				}
-
-				if (qosType === STATUS.UPDATE) {
-					await updateQos(payload);
+				switch (qosType) {
+					case STATUS.CREATE:
+						await createQos(payload);
+						break;
+					case STATUS.UPDATE:
+						await updateQos(payload);
+						break;
+					default:
+						break;
 				}
 				selectedRowKeys.forEach(async keyId => {
 					const { networkId, sn } =
