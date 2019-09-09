@@ -118,3 +118,12 @@ export const cloneTemplate = options => {
 
 	return fetchApi('clone', opts).then(response => response.json());
 };
+
+export const fetchScreenNameList = options => {
+	const opts = {
+		method: 'POST',
+		body: options,
+	};
+
+	return fetchApi('getScreenNameList', opts).then(response => response.json());
+};
