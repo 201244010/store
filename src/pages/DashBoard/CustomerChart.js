@@ -42,8 +42,10 @@ const CardTitle = ({ onChange = null }) => {
 };
 
 @connect(
-	state => ({
-		dashboard: state.dashboard,
+	({ dashboard }) => ({
+		passengerFlowTypeLoading: dashboard.passengerFlowTypeLoading,
+		passengerAgeInfo: dashboard.passengerAgeInfo,
+		searchValue: dashboard.searchValue,
 	}),
 	dispatch => ({
 		setSearchValue: payload => dispatch({ type: 'dashboard/setSearchValue', payload }),
@@ -53,7 +55,6 @@ const CardTitle = ({ onChange = null }) => {
 )
 class CustomerChart extends PureComponent {
 	radioChange = async value => {
-		console.log(value);
 		const { setSearchValue, fetchPassengerAgeByTimeRange } = this.props;
 		await setSearchValue({
 			passengerFlowType: value,
@@ -68,9 +69,7 @@ class CustomerChart extends PureComponent {
 		strangerCount = 0,
 		regularCount = 0,
 	}) => {
-		const {
-			dashboard: { searchValue: { passengerFlowType } = {} },
-		} = this.props;
+		const { searchValue: { passengerFlowType } = {} } = this.props;
 
 		let [fieldLeftCount, fieldRightCount] = [0, 0];
 		if (passengerFlowType === PASSENGER_FLOW_TYPE.GENDER) {
@@ -123,7 +122,7 @@ class CustomerChart extends PureComponent {
 			return {
 				...passenger,
 				ageRange: `${ageRange}${formatMessage({ id: 'common.age' })}`,
-				limit: totalCount === 0 ? 100 : totalCount,
+				limit: totalCount === 0 ? 100 : totalCount * 2.5,
 				title: getTitle({ gender: pMaleCount, regular: pRegularCount }),
 			};
 		});
@@ -131,19 +130,33 @@ class CustomerChart extends PureComponent {
 
 	render() {
 		const {
-			dashboard: {
-				passengerFlowTypeLoading,
-				passengerAgeInfo: { passengerList = [], maleCount = 0, femaleCount = 0 } = {},
-			},
+			passengerFlowTypeLoading,
+			passengerAgeInfo: {
+				passengerList = [],
+				maleCount = 0,
+				femaleCount = 0,
+				strangerCount = 0,
+				regularCount = 0,
+			} = {},
 		} = this.props;
 
 		const displayPassengerList = this.formatPassengerList({
 			passengerList,
 			maleCount,
 			femaleCount,
+			strangerCount,
+			regularCount,
 		});
 
-		const totalCount = maleCount === 0 && femaleCount === 0 ? 100 : maleCount + femaleCount;
+		const { limit = 100 } = displayPassengerList[0] || {};
+		const ticks = [
+			0,
+			Math.floor(limit * 0.2),
+			Math.floor(limit * 0.4),
+			Math.floor(limit * 0.6),
+			Math.floor(limit * 0.8),
+			limit,
+		];
 
 		return (
 			<Card
@@ -158,21 +171,11 @@ class CustomerChart extends PureComponent {
 						data: displayPassengerList,
 						tooltip: { crosshairs: false },
 						scale: {
-							visitor: {
-								ticks: [
-									0,
-									parseInt(totalCount / 4, 10),
-									parseInt(totalCount / 2, 10),
-									totalCount,
-								],
+							personCount: {
+								ticks,
 							},
 							limit: {
-								ticks: [
-									0,
-									parseInt(totalCount / 4, 10),
-									parseInt(totalCount / 2, 10),
-									totalCount,
-								],
+								ticks,
 							},
 						},
 						axis: {

@@ -661,7 +661,6 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Microsoft-Yahei">微软雅黑</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -682,18 +681,9 @@ export default class RightToolBox extends Component {
 										this.handleDetail('fontSize', value);
 									}}
 								>
-									<Option value={9}>9</Option>
-									<Option value={10}>10</Option>
-									<Option value={11}>11</Option>
-									<Option value={12}>12</Option>
-									<Option value={14}>14</Option>
-									<Option value={16}>16</Option>
-									<Option value={18}>18</Option>
-									<Option value={20}>20</Option>
-									<Option value={28}>28</Option>
-									<Option value={36}>36</Option>
-									<Option value={48}>48</Option>
-									<Option value={72}>72</Option>
+									{
+										fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
+									}
 								</Select>
 							</Col>
 							{/*
