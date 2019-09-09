@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Form, Input, Row, Col, Switch, Button, message } from 'antd';
-import { FORM_ITEM_LAYOUT_BUSINESS, FORM_ITEM_LAYOUT_INLINE } from '@/constants/form';
-// import { ERROR_OK } from '@/constants/errorCode';
+import { FORM_ITEM_LAYOUT_QOS } from '@/constants/form';
+import { STATUS } from '@/constants/index';
 import { OPCODE } from '@/constants/mqttStore';
 import { format } from '@konata9/milk-shake';
 import { formatMessage } from 'umi/locale';
@@ -19,7 +19,7 @@ class QosCreate extends React.PureComponent {
 			{
 				title: formatMessage({ id: 'network.deviceName' }),
 				dataIndex: 'networkAlias',
-				render: (_, record) => record.location || record.sn 
+				render: (_, record) => record.location || record.sn,
 			},
 			{
 				title: formatMessage({ id: 'network.belongNetwork' }),
@@ -100,12 +100,12 @@ class QosCreate extends React.PureComponent {
 		const { clearMsg, getQosList } = this.props;
 		const { msgId, opcode, errcode } = payload;
 		if (opcode === OPCODE.QOS_SET && errcode === 0) {
-			message.success(formatMessage({id: 'network.qos.setSuccess'}));
+			message.success(formatMessage({ id: 'network.qos.setSuccess' }));
 			await getQosList();
 		}
 
 		if (opcode === OPCODE.QOS_SET && errcode !== 0) {
-			message.error(formatMessage({id: 'network.qos.setFail'}));
+			message.error(formatMessage({ id: 'network.qos.setFail' }));
 		}
 		await clearMsg({ msgId });
 	};
@@ -152,8 +152,16 @@ class QosCreate extends React.PureComponent {
 					},
 					configId: id,
 				};
-				qosType === 'create' && (await createQos(payload));
-				qosType === 'update' && (await updateQos(payload));
+				switch (qosType) {
+					case STATUS.CREATE:
+						await createQos(payload);
+						break;
+					case STATUS.UPDATE:
+						await updateQos(payload);
+						break;
+					default:
+						break;
+				}
 				selectedRowKeys.forEach(async keyId => {
 					const { networkId, sn } =
 						networkDeviceList.filter(item => item.id === keyId)[0] || {};
@@ -168,7 +176,9 @@ class QosCreate extends React.PureComponent {
 						},
 					});
 				});
-				selectedRowKeys.length === 0 && await getQosList();
+				if (selectedRowKeys.length === 0) {
+					await getQosList();
+				}
 			}
 		});
 	};
@@ -207,7 +217,7 @@ class QosCreate extends React.PureComponent {
 		};
 		return (
 			<div>
-				<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
+				<Form {...FORM_ITEM_LAYOUT_QOS}>
 					<Form.Item label={formatMessage({ id: 'network.ruleName' })}>
 						<Row gutter={8}>
 							<Col span={15}>
@@ -274,15 +284,17 @@ class QosCreate extends React.PureComponent {
 							valuePropName: 'checked',
 							initialValue: enable || false,
 						})(
-							<Switch
-								checkedChildren={formatMessage({ id: 'network.switchOn' })}
-								unCheckedChildren={formatMessage({ id: 'network.switchOff' })}
-							/>
+							<>
+								<Switch
+									checkedChildren={formatMessage({ id: 'network.switchOn' })}
+									unCheckedChildren={formatMessage({ id: 'network.switchOff' })}
+								/>
+								<span className={styles['qos-ratio']}>
+									({formatMessage({ id: 'network.switch.tip' })})
+								</span>
+							</>
 						)}
 					</Form.Item>
-					<Form.Item label={formatMessage({ id: 'network.bandwidth.allocation' })} />
-				</Form>
-				<Form {...FORM_ITEM_LAYOUT_INLINE} layout="inline">
 					<Form.Item label={formatMessage({ id: 'network.qos.sunmi' })}>
 						<Row gutter={8}>
 							<Col span={15}>
@@ -352,7 +364,7 @@ class QosCreate extends React.PureComponent {
 					dataSource={networkDeviceList.filter(item => item.isMaster)}
 					onChange={this.onTableChange}
 				/>
-				<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
+				<Form {...FORM_ITEM_LAYOUT_QOS}>
 					<Form.Item label=" " colon={false}>
 						<Button
 							onClick={() => changeTabType({ type: 'qos', value: 'init' })}
