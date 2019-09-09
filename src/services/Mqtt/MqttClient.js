@@ -60,7 +60,7 @@ class MqttClient {
 
 			client.on('connect', () => {
 				console.log('mqtt connect');
-				this.reconnectTimes = 1;
+				this.reconnectTimes = 0;
 				console.log('established client: ', client);
 				resolve(client);
 			});

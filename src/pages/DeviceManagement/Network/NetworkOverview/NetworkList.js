@@ -12,18 +12,19 @@ class NetworkList extends React.PureComponent {
 		this.intervalTimer = null;
 	}
 
-	async componentDidMount() {
-		const { getList } = this.props;
+	componentDidMount() {
 		this.fetchApMessage();
-		await getList();
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.intervalTimer);
 	}
 
-	fetchApMessage = () => {
+	fetchApMessage = async () => {
 		const { getList } = this.props;
+		await getList();
+		await this.fetchMqtt();
+		clearInterval(this.intervalTimer);
 		this.intervalTimer = setInterval(async () => {
 			await getList();
 			await this.fetchMqtt();
@@ -126,7 +127,6 @@ const Topology = props => {
 		editName,
 		goToPath,
 	} = props || {};
-
 	const routerNumber = networkDeviceList.filter(item => item.networkId === networkId).length;
 	return (
 		<div className={styles['network-shop']}>

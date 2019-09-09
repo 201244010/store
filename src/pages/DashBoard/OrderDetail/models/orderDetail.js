@@ -38,7 +38,7 @@ export default {
 				purchaseTypeList,
 				orderTypeList,
 				pageNum,
-				pageSize
+				pageSize,
 			});
 
 			if (response && response.code === ERROR_OK) {
@@ -77,6 +77,6 @@ export default {
 					},
 				});
 			}
-		}
+		},
 	},
 };

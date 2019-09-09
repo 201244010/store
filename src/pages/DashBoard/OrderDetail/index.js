@@ -47,10 +47,9 @@ const RANKTYPE = {
 		},
 		getDetailList: orderId => {
 			dispatch({ type: 'orderDetail/addDetailList', payload: { orderId } });
-		}
-	}),
+		},
+	})
 )
-
 @Form.create()
 class OrderDetail extends Component {
 	constructor(props) {
@@ -59,16 +58,17 @@ class OrderDetail extends Component {
 			expandKeys: [],
 			postOptions: {},
 		};
-	};
+	}
 
 	componentDidMount() {
 		this.initTimeRange();
-		this.getList();
-	};
+	}
 
 	handleSubmit = e => {
 		e.preventDefault();
-		const { form: { validateFields } } = this.props;
+		const {
+			form: { validateFields },
+		} = this.props;
 		validateFields((err, values) => {
 			if (!err) {
 				const { orderType, purchaseType, rankType } = values;
@@ -95,30 +95,27 @@ class OrderDetail extends Component {
 				options.orderTypeList = orderType === '0' ? [] : [orderType];
 				options.pageNum = 1; // 默认请求第1页
 
-				this.setState(
-					{
-						postOptions: options,
-						expandKeys: [],
-					},
-				);
+				this.setState({
+					postOptions: options,
+					expandKeys: [],
+				});
 				this.getList(options);
-
 			}
 		});
 	};
 
 	handleReset = () => {
-		const { form: { setFieldsValue } } = this.props;
-		setFieldsValue(
-			{
-				'rankType': '-1',
-				'purchaseType': '0',
-				'orderType': '0'
-			}
-		);
+		const {
+			form: { setFieldsValue },
+		} = this.props;
+		setFieldsValue({
+			rankType: '-1',
+			purchaseType: '0',
+			orderType: '0',
+		});
 	};
 
-	handleExpand = async (record) => {
+	handleExpand = async record => {
 		const { expandKeys } = this.state;
 
 		const index = expandKeys.findIndex(key => key === record.key); // 是否在展开列表中
@@ -147,18 +144,20 @@ class OrderDetail extends Component {
 		this.getList(postOptions);
 		const expandKeys = [];
 		this.setState({ expandKeys });
-	}
+	};
 
 	initTimeRange = () => {
 		const postOptions = {};
 		postOptions.timeRangeEnd = getLocationParam('timeRangeEnd');
 		postOptions.timeRangeStart = getLocationParam('timeRangeStart');
-		this.setState({ postOptions });
+
+		this.setState({ postOptions }, () => this.getList());
 	};
 
 	getList = async (options = {}) => {
 		const { getList } = this.props;
-		await getList(options);
+		const { postOptions } = this.state;
+		await getList({ ...postOptions, ...options });
 	};
 
 	getDetailList = async id => {
@@ -190,43 +189,79 @@ class OrderDetail extends Component {
 	isExpand = orderId => {
 		const { expandKeys } = this.state;
 		const index = expandKeys.indexOf(orderId);
-		return (index >= 0);
+		return index >= 0;
 	};
 
 	render() {
 		const {
 			orderList,
 			total: orderTotal,
-			form: { getFieldDecorator }
+			form: { getFieldDecorator },
 		} = this.props;
-		const { expandKeys, postOptions: { pageNum } } = this.state;
+		const {
+			expandKeys,
+			postOptions: { pageNum },
+		} = this.state;
 
 		const orderData = this.createOrderData(orderList);
 
 		const columns = [
-			{ title: formatMessage({ id: 'payment.order.id' }), dataIndex: 'orderId', key: 'orderId' },
-			{ title: formatMessage({ id: 'payment.purchase.type' }), dataIndex: 'purchaseType', key: 'purchaseType' },
-			{ title: formatMessage({ id: 'payment.order.type' }), dataIndex: 'orderType', key: 'orderType' },
-			{ title: formatMessage({ id: 'payment.order.amount' }), dataIndex: 'tradeValue', key: 'tradeValue', align: 'right' },
-			{ title: formatMessage({ id: 'payment.order.time' }), dataIndex: 'purchaseTime', key: 'purchaseTime' },
+			{
+				title: formatMessage({ id: 'payment.order.id' }),
+				dataIndex: 'orderId',
+				key: 'orderId',
+			},
+			{
+				title: formatMessage({ id: 'payment.purchase.type' }),
+				dataIndex: 'purchaseType',
+				key: 'purchaseType',
+			},
+			{
+				title: formatMessage({ id: 'payment.order.type' }),
+				dataIndex: 'orderType',
+				key: 'orderType',
+			},
+			{
+				title: formatMessage({ id: 'payment.order.amount' }),
+				dataIndex: 'tradeValue',
+				key: 'tradeValue',
+				align: 'right',
+			},
+			{
+				title: formatMessage({ id: 'payment.order.time' }),
+				dataIndex: 'purchaseTime',
+				key: 'purchaseTime',
+			},
 			{
 				title: formatMessage({ id: 'payment.list.action' }),
 				dataIndex: '',
 				key: 'x',
-				render: record =>
-					<a onClick={() => {
-						this.handleExpand(record);
-					}}
+				render: record => (
+					<a
+						onClick={() => {
+							this.handleExpand(record);
+						}}
 					>
-						{record.expanded ? formatMessage({ id: 'payment.order.detail.expanded' }) : formatMessage({ id: 'payment.order.detail.show' })}
+						{record.expanded
+							? formatMessage({ id: 'payment.order.detail.expanded' })
+							: formatMessage({ id: 'payment.order.detail.show' })}
 					</a>
-
+				),
 			},
 		];
 
 		const detailColumns = [
-			{ title: formatMessage({ id: 'order.goods' }), dataIndex: 'name', key: 'name', width: '150px' },
-			{ title: formatMessage({ id: 'order.goods.amount' }), dataIndex: 'quantity', key: 'quantity' }
+			{
+				title: formatMessage({ id: 'order.goods' }),
+				dataIndex: 'name',
+				key: 'name',
+				width: '150px',
+			},
+			{
+				title: formatMessage({ id: 'order.goods.amount' }),
+				dataIndex: 'quantity',
+				key: 'quantity',
+			},
 		];
 
 		return (
@@ -239,62 +274,107 @@ class OrderDetail extends Component {
 					>
 						<Row gutter={SEARCH_FORM_GUTTER.NORMAL}>
 							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-								<Form.Item label={formatMessage({ id: 'order.search.rankdefault' })}>
+								<Form.Item
+									label={formatMessage({ id: 'order.search.rankdefault' })}
+								>
 									{getFieldDecorator('rankType', {
-										initialValue: RANKTYPE.RANKDEFAULT
+										initialValue: RANKTYPE.RANKDEFAULT,
 									})(
 										<Select>
-											<Select.Option value={RANKTYPE.RANKDEFAULT}>{formatMessage({ id: 'order.search.rankdefault' })}</Select.Option>
-											<Select.Option value={RANKTYPE.PRICEDESC}>{formatMessage({ id: 'order.search.price.desc' })}</Select.Option>
-											<Select.Option value={RANKTYPE.PRICEASC}>{formatMessage({ id: 'order.search.price.asc' })}</Select.Option>
-											<Select.Option value={RANKTYPE.TIMEDESC}>{formatMessage({ id: 'order.search.time.desc' })}</Select.Option>
-											<Select.Option value={RANKTYPE.TIMEASC}>{formatMessage({ id: 'order.search.time.asc' })}</Select.Option>
+											<Select.Option value={RANKTYPE.RANKDEFAULT}>
+												{formatMessage({ id: 'order.search.rankdefault' })}
+											</Select.Option>
+											<Select.Option value={RANKTYPE.PRICEDESC}>
+												{formatMessage({ id: 'order.search.price.desc' })}
+											</Select.Option>
+											<Select.Option value={RANKTYPE.PRICEASC}>
+												{formatMessage({ id: 'order.search.price.asc' })}
+											</Select.Option>
+											<Select.Option value={RANKTYPE.TIMEDESC}>
+												{formatMessage({ id: 'order.search.time.desc' })}
+											</Select.Option>
+											<Select.Option value={RANKTYPE.TIMEASC}>
+												{formatMessage({ id: 'order.search.time.asc' })}
+											</Select.Option>
 										</Select>
 									)}
 								</Form.Item>
 							</Col>
 							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<Form.Item label={formatMessage({ id: 'payment.purchase.type' })}>
-									{getFieldDecorator(
-										'purchaseType', {
-											initialValue: PURCHASECODE.ALL
-										}
-									)(
+									{getFieldDecorator('purchaseType', {
+										initialValue: PURCHASECODE.ALL,
+									})(
 										<Select>
-											<Select.Option value={PURCHASECODE.ALL}>{formatMessage({ id: 'select.all' })}</Select.Option>
-											<Select.Option value={PURCHASECODE.ALI}>{formatMessage({ id: 'payment-purchase-type-alipay' })}</Select.Option>
-											<Select.Option value={PURCHASECODE.WECHAT}>{formatMessage({ id: 'payment-purchase-type-wechat' })}</Select.Option>
-											<Select.Option value={PURCHASECODE.CASH}>{formatMessage({ id: 'payment-purchase-type-cash' })}</Select.Option>
-											<Select.Option value={PURCHASECODE.BANKCARD}>{formatMessage({ id: 'payment-purchase-type-card' })}</Select.Option>
-											<Select.Option value={PURCHASECODE.BANKQR}>{formatMessage({ id: 'payment-purchase-type-unionpayqr' })}</Select.Option>
-											<Select.Option value={PURCHASECODE.QQWALLET}>{formatMessage({ id: 'payment-purchase-type-qqwallet' })}</Select.Option>
-											<Select.Option value={PURCHASECODE.JDWALLET}>{formatMessage({ id: 'payment-purchase-type-jdwallet' })}</Select.Option>
-											<Select.Option value={PURCHASECODE.OTHER}>{formatMessage({ id: 'payment-purchase-type-other' })}</Select.Option>
+											<Select.Option value={PURCHASECODE.ALL}>
+												{formatMessage({ id: 'select.all' })}
+											</Select.Option>
+											<Select.Option value={PURCHASECODE.ALI}>
+												{formatMessage({
+													id: 'payment-purchase-type-alipay',
+												})}
+											</Select.Option>
+											<Select.Option value={PURCHASECODE.WECHAT}>
+												{formatMessage({
+													id: 'payment-purchase-type-wechat',
+												})}
+											</Select.Option>
+											<Select.Option value={PURCHASECODE.CASH}>
+												{formatMessage({
+													id: 'payment-purchase-type-cash',
+												})}
+											</Select.Option>
+											<Select.Option value={PURCHASECODE.BANKCARD}>
+												{formatMessage({
+													id: 'payment-purchase-type-card',
+												})}
+											</Select.Option>
+											<Select.Option value={PURCHASECODE.BANKQR}>
+												{formatMessage({
+													id: 'payment-purchase-type-unionpayqr',
+												})}
+											</Select.Option>
+											<Select.Option value={PURCHASECODE.QQWALLET}>
+												{formatMessage({
+													id: 'payment-purchase-type-qqwallet',
+												})}
+											</Select.Option>
+											<Select.Option value={PURCHASECODE.JDWALLET}>
+												{formatMessage({
+													id: 'payment-purchase-type-jdwallet',
+												})}
+											</Select.Option>
+											<Select.Option value={PURCHASECODE.OTHER}>
+												{formatMessage({
+													id: 'payment-purchase-type-other',
+												})}
+											</Select.Option>
 										</Select>
 									)}
 								</Form.Item>
 							</Col>
 							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<Form.Item label={formatMessage({ id: 'payment.order.type' })}>
-									{getFieldDecorator(
-										'orderType', {
-											initialValue: ORDERCODE.ALL
-										}
-									)(
+									{getFieldDecorator('orderType', {
+										initialValue: ORDERCODE.ALL,
+									})(
 										<Select>
-											<Select.Option value={ORDERCODE.ALL}>{formatMessage({ id: 'select.all' })}</Select.Option>
-											<Select.Option value={ORDERCODE.NORMAL}>{formatMessage({ id: 'payment-order-type-normal' })}</Select.Option>
-											<Select.Option value={ORDERCODE.REFUND}>{formatMessage({ id: 'payment-order-type-refund' })}</Select.Option>
+											<Select.Option value={ORDERCODE.ALL}>
+												{formatMessage({ id: 'select.all' })}
+											</Select.Option>
+											<Select.Option value={ORDERCODE.NORMAL}>
+												{formatMessage({ id: 'payment-order-type-normal' })}
+											</Select.Option>
+											<Select.Option value={ORDERCODE.REFUND}>
+												{formatMessage({ id: 'payment-order-type-refund' })}
+											</Select.Option>
 										</Select>
 									)}
 								</Form.Item>
 							</Col>
 							<Col {...SEARCH_FORM_COL.OFFSET_TWO_THIRD}>
 								<Form.Item className={global['query-item']}>
-									<Button
-										type="primary"
-										htmlType="submit"
-									>
+									<Button type="primary" htmlType="submit">
 										{formatMessage({ id: 'btn.query' })}
 									</Button>
 									<Button
@@ -316,30 +396,27 @@ class OrderDetail extends Component {
 					expandRowByClick
 					expandIconAsCell={false}
 					expandedRowKeys={expandKeys}
-					expandedRowRender={
-						record =>
-							<Table
-								className={styles['expanded-table']}
-								size='small'
-								columns={detailColumns}
-								dataSource={record.detail}
-								pagination={false}
-							/>
-					}
-					pagination={
-						{
-							current: pageNum,
-							showQuickJumper: true,
-							showSizeChanger: true,
-							total: orderTotal,
-							onChange: this.handlePaginate,
-							onShowSizeChange: this.handlePaginate,
-						}
-					}
+					expandedRowRender={record => (
+						<Table
+							className={styles['expanded-table']}
+							size="small"
+							columns={detailColumns}
+							dataSource={record.detail}
+							pagination={false}
+						/>
+					)}
+					pagination={{
+						current: pageNum,
+						showQuickJumper: true,
+						showSizeChanger: true,
+						total: orderTotal,
+						onChange: this.handlePaginate,
+						onShowSizeChange: this.handlePaginate,
+					}}
 				/>
 			</Card>
 		);
-	};
+	}
 }
 
 export default OrderDetail;

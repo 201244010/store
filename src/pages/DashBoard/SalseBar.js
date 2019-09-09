@@ -151,7 +151,7 @@ class SalseBar extends PureComponent {
 									/>
 								),
 							onClick: () =>
-								goToPath('tradeDetail', {
+								goToPath('orderDetail', {
 									timeRangeStart: startQueryTime,
 									timeRangeEnd: endQueryTime,
 								}),
@@ -178,7 +178,7 @@ class SalseBar extends PureComponent {
 									/>
 								),
 							onClick: () =>
-								goToPath('tradeDetail', {
+								goToPath('orderDetail', {
 									timeRangeStart: startQueryTime,
 									timeRangeEnd: endQueryTime,
 								}),
