@@ -22,6 +22,7 @@ export default {
 		deviceInfoList: [],
 		networkIdList: [],
 		networkConfig: {},
+		baseStationList: [],
 		pagination: {
 			current: 1,
 			pageSize: DEFAULT_PAGE_SIZE,
@@ -212,8 +213,28 @@ export default {
 				const { data = {} } = response || {};
 				const { networkList = [] } = format('toCamel')(data);
 				yield put({ type: 'updateState', payload: { networkIdList: networkList } });
+				return networkList;
 			}
-			return response;
+			
+			message.error('获取networkId失败');
+			return [];
+		},
+		
+		*getBaseStationList({ payload }, { put, call }) {
+			const response = yield call(Actions.fetchBaseStations, payload);
+			const formatResponse = format('toCamel')(response);
+			if(response.code === ERROR_OK) {
+				const {data: { apList = [] }} = formatResponse;
+				yield put({
+					type: 'updateState',
+					payload: {
+						baseStationList: apList
+					}
+				});
+				return apList;
+			}
+			message.error('获取基站列表');
+			return [];
 		},
 
 		*unsubscribeTopic(_, { put }) {
