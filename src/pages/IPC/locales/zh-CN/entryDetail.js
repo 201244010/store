@@ -18,6 +18,6 @@ export default {
 	'entry.detail.confirm':'确定',
 	'entry.detail.reset':'重置',
 	'entry.detail.myCamera':'My Camera',
-	'entry.detail.unknown':'未知',
+	'entry.detail.unknown':'--',
 	'entry.detail.undefined':'--'
 };

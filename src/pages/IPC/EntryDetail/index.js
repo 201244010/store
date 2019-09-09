@@ -1,10 +1,9 @@
 import React from 'react';
-import { Card, Row, Col, Divider, Table, message, Spin, Radio, Avatar } from 'antd';
+import { Card, Row, Col, Divider, Table, Spin, Avatar } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import moment from 'moment';
 
-import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_LIST_SIZE } from '@/constants';
 
 import styles from './EntryDetail.less';
@@ -64,7 +63,8 @@ class EntryDetail extends React.Component {
 
 	async componentDidMount(){
 		const { currentPage, pageSize } = this.state;
-		this.getCurrentArrivalList({currentPage, pageSize});
+		await this.getCurrentArrivalList({currentPage, pageSize});
+
 		const { location: { query }, getFaceInfo} = this.props;
 		const {faceId} = query;
 		const faceInfo = await getFaceInfo({faceId});
@@ -83,13 +83,13 @@ class EntryDetail extends React.Component {
 		}
 	};
 
-	getCurrentArrivalList = (params) => {
-		// const { deviceId } = this.state;
-		const { currentPage, pageSize, deviceId } = params;
+	getCurrentArrivalList = async(params) => {
+		const { deviceId } = this.state;
+		const { currentPage, pageSize } = params;
 		const { getArrivalList } = this.props;
 		const { location: { query } } = this.props;
 		const {faceId} = query;
-		getArrivalList({
+		await getArrivalList({
 			faceId,
 			deviceId,
 			pageNum:currentPage,
@@ -97,69 +97,74 @@ class EntryDetail extends React.Component {
 		});
 	}
 
-	onShowSizeChange = (currentPage, pageSize) => {
-		this.getCurrentArrivalList({currentPage, pageSize});
-		this.setState({
-			currentPage,
-			pageSize
-		});
-	}
+	// onShowSizeChange = async (currentPage, pageSize) => {
+	// 	console.log('start onShowSizeChange search');
+	// 	await this.getCurrentArrivalList({currentPage, pageSize});
+	// 	console.log('end onShowSizeChange search');
 
-	onPaginationChange = (currentPage, pageSize) => {
-		this.getCurrentArrivalList({currentPage, pageSize});
+	// 	this.setState({
+	// 		currentPage,
+	// 		pageSize
+	// 	});
+	// }
 
-		this.setState({
-			currentPage,
-			pageSize
-		});
-	}
+	// onPaginationChange = async (currentPage, pageSize) => {
+	// 	console.log('start onPaginationChange search');
+	// 	await this.getCurrentArrivalList({currentPage, pageSize});
+	// 	console.log('end onPaginationChange search');
 
-	deviceSelectHandler = e => {
-		this.setState({
-			deviceId: e.target.value,
-		});
-	}
+	// 	this.setState({
+	// 		currentPage,
+	// 		pageSize
+	// 	});
+	// }
 
-	searchHandler = (confirmHandler) => {
-		confirmHandler();
-		const { deviceId, currentPage, pageSize } = this.state;
-		this.getCurrentArrivalList({currentPage, pageSize, deviceId});
-	}
-
-	resetHandler = (confirmHandler) => {
-		confirmHandler();
-		const { pageSize } = this.state;
-		const  currentPage = 1;
-		this.getCurrentArrivalList({currentPage, pageSize});
-		this.setState({
-			currentPage,
-			deviceId: undefined
-		});
-	}
-
-	async deleteArrivalHandler(historyId){
-		const { deleteArrivalItem, getFaceInfo } = this.props;
-		const { currentPage, pageSize, faceInfo:{ faceId }} = this.state;
-		const historyIdList = [historyId];
-		const result = await deleteArrivalItem({historyIdList});
-		const faceInfo = await getFaceInfo({faceId});
-		this.setState({
-			faceInfo
-		});
-		if(result === ERROR_OK){ // 删除成功
-			message.success(formatMessage({id: 'entry.detail.delete.success'}));
+	onTableChange = async(pagination, filters) => {
+		const { deviceName: deviceArray } = filters;
+		let deviceId;
+		if(deviceArray){
+			[deviceId] = deviceArray;
 		}
-		if(result === -1){
-			message.error(formatMessage({id: 'entry.detail.delete.fail'}));
-		}
-		this.getCurrentArrivalList({currentPage, pageSize});
+		
+		const { current, pageSize } = pagination;
+		await this.setState({
+			currentPage: current,
+			pageSize,
+			deviceId
+		});
+		await this.getCurrentArrivalList({currentPage:current, pageSize});
 	}
+
+	// async deleteArrivalHandler(historyId){
+	// 	const { deleteArrivalItem, getFaceInfo } = this.props;
+	// 	const { currentPage, pageSize, faceInfo:{ faceId }} = this.state;
+	// 	const historyIdList = [historyId];
+	// 	const result = await deleteArrivalItem({historyIdList});
+	// 	const faceInfo = await getFaceInfo({faceId});
+	// 	this.setState({
+	// 		faceInfo
+	// 	});
+	// 	if(result === ERROR_OK){ // 删除成功
+	// 		message.success(formatMessage({id: 'entry.detail.delete.success'}));
+	// 	}
+	// 	if(result === -1){
+	// 		message.error(formatMessage({id: 'entry.detail.delete.fail'}));
+	// 	}
+
+	// 	this.getCurrentArrivalList({currentPage, pageSize});
+	// }
 
 
 	render(){
 		const { arrivalList, total, loading, ipcList } = this.props;
+
 		const { currentPage, pageSize, faceInfo } = this.state;
 		const { name } = faceInfo;
+
+		const filterList = ipcList.map(item => ({
+			text: item.name,
+			value: item.deviceId
+		}));
 
 		if(name === ''){
 			faceInfo.name = formatMessage({id: 'entry.detail.unknown'});
@@ -192,51 +197,10 @@ class EntryDetail extends React.Component {
 				dataIndex:'deviceName',
 				key:'deviceName',
 				render: (item) => item || formatMessage({ id: 'entry.detail.myCamera'}),
-				filterDropdown: (params) => {
-					const { confirm: confirmHandler } = params;
-					const { deviceId } = this.state;
-					return(
-						<div className={styles['entry-detail-drop-down']}>
-							<Radio.Group onChange={this.deviceSelectHandler} value={deviceId}>
-								{
-									ipcList.map((item) => (
-										<Radio key={item.deviceId} className={styles['drop-down-radio']} value={item.deviceId}>
-											{item.name}
-										</Radio>
-									))
-								}
-							</Radio.Group>
-							<div className={styles['drop-down-buttons']}>
-								<a onClick={() => this.searchHandler(confirmHandler)}>{formatMessage({id: 'entry.detail.confirm'})}</a>
-								<a className={styles['reset-button']} onClick={() => this.resetHandler(confirmHandler)}>{formatMessage({id: 'entry.detail.reset'})}</a>
-							</div>
-						</div>
-					);},
-			},
-			// {
-			// 	title: formatMessage({id: 'entry.detail.action'}),
-			// 	key: 'action',
-			// 	render: (item) => (
-			// 		<span>
-			// 			<a
-			// 				href="javascript:;"
-			// 				onClick={()=>{
-			// 					confirm({
-			// 						icon:<Icon style={{color:'red'}} type="close-circle" theme="filled" />,
-			// 						title: formatMessage({id: 'entry.detail.delete.confirm.title'}),
-			// 						content: formatMessage({id: 'entry.detail.delete.confirm.content'}),
-			// 						okText: formatMessage({id: 'entry.detail.delete'}),
-			// 						okType: 'danger',
-			// 						cancelText: formatMessage({id: 'entry.detail.cancel'}),
-			// 						onOk: () => this.deleteArrivalHandler(item.historyId)
-			// 					});
-			// 				}}
-			// 			>
-			// 				{formatMessage({id: 'entry.detail.delete'})}
-			// 			</a>
-			// 		</span>
-			// 	)
-			// },
+				filters: filterList,
+				onFilter:  (value, record) => record.deviceId === value,
+				filterMultiple:false,
+			}
 		];
 		return(
 			<Spin spinning={
@@ -282,10 +246,11 @@ class EntryDetail extends React.Component {
 								showSizeChanger: true,
 								pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
 								defaultPageSize: DEFAULT_PAGE_SIZE,
-								onShowSizeChange:this.onShowSizeChange,
-								onChange:this.onPaginationChange
+								// onShowSizeChange:this.onShowSizeChange,
+								// onChange:this.onPaginationChange
 							}
 						}
+						onChange={this.onTableChange}
 					/>
 				</Card>
 			</Spin>

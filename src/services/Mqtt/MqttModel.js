@@ -59,6 +59,10 @@ class MqttModel {
 				return me.client.handlerMap.has(topic);
 			},
 
+			getClientId() {
+				return me.clientId;
+			},
+
 			*connect(_, { select }) {
 				const info = yield select(state => state[me.namespace]);
 				// console.log(info);

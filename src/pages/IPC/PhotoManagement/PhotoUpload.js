@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => ({
 	uploadFileList: (fileList, groupId) => {
-		// console.log('uploadFileList');
+		// console.log('uploadFileList', fileList);
 		dispatch({
 			type:'photoUpload/uploadFileList',
 			payload: {
@@ -149,6 +149,7 @@ class PhotoUpload extends React.Component {
 	}
 
 	beforeUpload = (file, fileList) => {
+		// console.log('before', fileList);
 		const { groupRestCapacity, setFileList, uploadFileList, groupId } = this.props;
 
 		const capacity = groupRestCapacity();
