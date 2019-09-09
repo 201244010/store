@@ -45,14 +45,7 @@ class MqttClient {
 		this.registerErrorHandler = this.registerErrorHandler.bind(this);
 	}
 
-	connect({
-		address,
-		username,
-		password,
-		clientId,
-		path = '/mqtt',
-		reconnectPeriod = this.reconnectTimes,
-	}) {
+	connect({ address, username, password, clientId, path = '/mqtt', reconnectPeriod = 3 * 1000 }) {
 		return new Promise((resolve, reject) => {
 			const client = MQTT.connect(
 				`${WEB_SOCKET_PREFIX}://${address}`,
@@ -67,7 +60,7 @@ class MqttClient {
 
 			client.on('connect', () => {
 				console.log('mqtt connect');
-				this.reconnectTimes = 0;
+				this.reconnectTimes = 1;
 				console.log('established client: ', client);
 				resolve(client);
 			});
@@ -75,12 +68,12 @@ class MqttClient {
 			client.on('reconnect', () => {
 				console.log(this);
 				console.log('mqtt reconnect', this.reconnectTimes);
-				this.reconnectTimes = this.reconnectTimes * 2;
+				this.reconnectTimes = this.reconnectTimes + 1;
 			});
 
 			client.on('close', () => {
 				console.log('mqtt close');
-				if (this.reconnectTimes > 2048) {
+				if (this.reconnectTimes > 10) {
 					client.end(true);
 				}
 			});

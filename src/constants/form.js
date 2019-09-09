@@ -141,8 +141,8 @@ export const FORM_ITEM_LAYOUT_BUSINESS = {
 };
 
 
-export const FORM_ITEM_LAYOUT_INLINE = {
-	labelCol: { span: 8},
+export const FORM_ITEM_LAYOUT_QOS = {
+	labelCol: { span: 2},
 	wrapperCol: { span: 10 },
 };
 

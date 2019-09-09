@@ -69,6 +69,7 @@ export default {
 
 	'network.switchOn': '开',
 	'network.switchOff': '关',
+	'network.switch.tip': '设置网络拥堵时，客户端最低保障的网络带宽比例',
 	'network.name': '名称',
 
 	'network.qos.noEmpty.ruleName': '规则名称不能为空',
