@@ -1,10 +1,10 @@
 import React from 'react';
 import { Table, Form, Input, Row, Col, Switch, Button, message } from 'antd';
+import { format } from '@konata9/milk-shake';
+import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_QOS } from '@/constants/form';
 import { STATUS } from '@/constants/index';
 import { OPCODE } from '@/constants/mqttStore';
-import { format } from '@konata9/milk-shake';
-import { formatMessage } from 'umi/locale';
 import styles from '../NetworkConfig.less';
 
 @Form.create()
@@ -38,6 +38,12 @@ class QosCreate extends React.PureComponent {
 				dataIndex: 'binVersion',
 			},
 		];
+		this.rowSelection = {
+			onChange: this.onSelectChange,
+			getCheckboxProps: record => ({
+				disabled: record.activeStatus === 0,
+			}),
+		};
 	}
 
 	componentDidMount() {
@@ -145,6 +151,7 @@ class QosCreate extends React.PureComponent {
 					whiteWeight,
 					normalWeight,
 				};
+
 				const payload = {
 					name: ruleName,
 					config: {
@@ -209,12 +216,6 @@ class QosCreate extends React.PureComponent {
 			},
 			changeTabType,
 		} = this.props;
-		const rowSelection = {
-			onChange: this.onSelectChange,
-			getCheckboxProps: record => ({
-				disabled: record.activeStatus === 0,
-			}),
-		};
 		return (
 			<div>
 				<Form {...FORM_ITEM_LAYOUT_QOS}>
@@ -280,20 +281,22 @@ class QosCreate extends React.PureComponent {
 						</Row>
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'network.qos.QoS' })}>
-						{getFieldDecorator('enable', {
-							valuePropName: 'checked',
-							initialValue: enable || false,
-						})(
-							<>
-								<Switch
-									checkedChildren={formatMessage({ id: 'network.switchOn' })}
-									unCheckedChildren={formatMessage({ id: 'network.switchOff' })}
-								/>
-								<span className={styles['qos-ratio']}>
-									({formatMessage({ id: 'network.switch.tip' })})
-								</span>
-							</>
-						)}
+						<Row gutter={8}>
+							<Col span={3}>
+								{getFieldDecorator('enable', {
+									valuePropName: 'checked',
+									initialValue: enable || false,
+								})(
+									<Switch
+										checkedChildren={formatMessage({ id: 'network.switchOn' })}
+										unCheckedChildren={formatMessage({
+											id: 'network.switchOff',
+										})}
+									/>
+								)}
+							</Col>
+							<Col span={21}>({formatMessage({ id: 'network.switch.tip' })})</Col>
+						</Row>
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'network.qos.sunmi' })}>
 						<Row gutter={8}>
@@ -359,7 +362,7 @@ class QosCreate extends React.PureComponent {
 				<Table
 					className={styles['qos-table']}
 					rowKey="id"
-					rowSelection={rowSelection}
+					rowSelection={this.rowSelection}
 					columns={this.columns}
 					dataSource={networkDeviceList.filter(item => item.isMaster)}
 					onChange={this.onTableChange}
