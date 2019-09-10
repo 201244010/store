@@ -5,8 +5,13 @@ import { ERROR_OK } from '@/constants/errorCode';
 import * as Actions from '@/services/ESL/baseStation';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { OPCODE } from '@/constants/mqttStore';
+import moment from 'moment';
 
 const IN_ENERGY_SAVE = 128;
+const ACTION = {
+	QUERY: 'query',
+	UPDATE: 'update'
+};
 
 export default {
 	namespace: 'eslBaseStation',
@@ -21,7 +26,9 @@ export default {
 		data: [],
 		deviceInfoList: [],
 		networkIdList: [],
-		networkConfig: {},
+		networkConfig: {
+		},
+		baseStationList: [],
 		pagination: {
 			current: 1,
 			pageSize: DEFAULT_PAGE_SIZE,
@@ -210,8 +217,36 @@ export default {
 				const { data = {} } = response || {};
 				const { networkList = [] } = format('toCamel')(data);
 				yield put({ type: 'updateState', payload: { networkIdList: networkList } });
+				return networkList;
 			}
-			return response;
+			
+			message.error(formatMessage({id: 'esl.device.ap.network.get.fail'}));
+			return [];
+		},
+		
+		*getBaseStationList({ payload }, { put, call }) {
+			const response = yield call(Actions.fetchBaseStations, payload);
+			const formatResponse = format('toCamel')(response);
+			if(response.code === ERROR_OK) {
+				const {data: { apList = [] }} = formatResponse;
+				yield put({
+					type: 'updateState',
+					payload: {
+						baseStationList: apList
+					}
+				});
+				return apList;
+			}
+			
+			message.error(formatMessage({id: 'esl.device.ap.getList.fail'}));
+			yield put({
+				type: 'updateState',
+				payload: {
+					baseStationList: []
+				}
+			});
+			return [];
+			
 		},
 
 		*unsubscribeTopic(_, { put }) {
@@ -235,25 +270,43 @@ export default {
 					service: 'ESL/response',
 					handler: receivedMessage => {
 						const { data } = JSON.parse(receivedMessage);
-						const { opcode, errcode, result: { scanMulti, scanPeriod } = {} } = format(
+						const {
+							opcode,
+							errcode,
+							result: {
+								scanMulti = 30,
+								scanPeriod = 143,
+								scanDeepSleep = 60,
+								clksyncPeriod = 3 * 3600 * 24,
+								eslRefleshPeriod = 1,
+								eslRefleshTime = moment().startOf('day').add(4, 'hour').add(0, 'minute'),
+							} = {}
+						} = format(
 							'toCamel'
 						)(data[0] || {});
-
-						const action = opcode === OPCODE.GET_AP_CONFIG ? 'query' : 'update';
+						// 正常模式下扫描周期大于128则开启了节能模式，实际扫描时间减去128
+						
+						const action = opcode === OPCODE.GET_AP_CONFIG ? ACTION.QUERY : ACTION.UPDATE;
+						const hour = Math.floor(eslRefleshTime / 3600);
+						const minute = (eslRefleshTime % 3600) / 60;
 						let networkConfig = {};
 
-						if (action === 'query') {
+						if (action === ACTION.QUERY) {
 							const isEnergySave = parseInt(scanPeriod, 10) > IN_ENERGY_SAVE;
 							networkConfig = {
 								scanMulti,
 								scanPeriod: isEnergySave
 									? parseInt(scanPeriod, 10) - IN_ENERGY_SAVE
 									: parseInt(scanPeriod, 10),
-								isEnergySave,
+								scanDeepSleep,
+								clksyncPeriod: clksyncPeriod / 60 / 60 / 24,
+								eslRefleshPeriod,
+								eslRefleshTime: moment().startOf('day').add(hour, 'hour').add(minute, 'minute'),
+								isEnergySave
 							};
 						}
 
-						handler(errcode, action, networkConfig);
+						handler(errcode, action, networkConfig, opcode);
 					},
 				},
 			});
@@ -265,6 +318,7 @@ export default {
 				type: 'mqttStore/generateTopic',
 				payload: { service: 'ESL/request' },
 			});
+			const param = format('toSnake')({networkId});
 
 			yield put({
 				type: 'mqttStore/publish',
@@ -272,7 +326,7 @@ export default {
 					topic: requestTopic,
 					message: {
 						opcode: OPCODE.GET_AP_CONFIG,
-						param: { network_id: networkId },
+						param,
 					},
 				},
 			});
@@ -283,11 +337,31 @@ export default {
 				networkId,
 				scanPeriod,
 				isEnergySave,
-				scanMulti = 2,
-				clksyncPeriod = 3,
-				eslRefleshPeriod = 1,
-				eslRefleshTime = 4 * 60 * 60,
+				scanMulti,
+				clksyncPeriod,
+				eslRefleshPeriod,
+				eslRefleshTime,
+				scanDeepSleep
 			} = payload;
+			const [refleshHour = 4, refleshMinute = 0 ] = [eslRefleshTime.hour(), eslRefleshTime.minutes()];
+			const param1 = format('toSnake')({
+				networkId,
+				scanPeriod: isEnergySave
+					? parseInt(scanPeriod, 10) + IN_ENERGY_SAVE
+					: parseInt(scanPeriod, 10),
+				scanMulti,
+				scanDeepSleep
+			});
+			const param2 = format('toSnake')({
+				networkId,
+				clksyncPeriod: parseInt(clksyncPeriod, 10) * 24 * 3600,
+			});
+			const param3 = format('toSnake')({
+				networkId,
+				eslRefleshPeriod: parseInt(eslRefleshPeriod, 10),
+				eslRefleshTime: refleshHour * 3600 + refleshMinute * 60,
+			});
+			
 			const requestTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
 				payload: { service: 'ESL/request' },
@@ -298,13 +372,7 @@ export default {
 					topic: requestTopic,
 					message: {
 						opcode: OPCODE.SET_AP_CONFIG,
-						param: {
-							network_id: networkId,
-							scan_period: isEnergySave
-								? parseInt(scanPeriod, 10) + IN_ENERGY_SAVE
-								: parseInt(scanPeriod, 10),
-							scan_multi: scanMulti,
-						},
+						param: param1,
 					},
 				},
 			});
@@ -315,10 +383,7 @@ export default {
 					topic: requestTopic,
 					message: {
 						opcode: OPCODE.SET_CLKSYNC,
-						param: {
-							network_id: networkId,
-							clksync_period: clksyncPeriod,
-						},
+						param: param2
 					},
 				},
 			});
@@ -329,15 +394,21 @@ export default {
 					topic: requestTopic,
 					message: {
 						opcode: OPCODE.SET_SELF_REFRESH,
-						param: {
-							network_id: networkId,
-							esl_reflesh_period: eslRefleshPeriod,
-							esl_reflesh_time: eslRefleshTime,
-						},
+						param: param3
 					},
 				},
 			});
 		},
+		
+		*setNetworkConfig({ payload }, { put }) {
+			const { networkConfig } = payload;
+			yield put({
+				type: 'updateState',
+				payload: {
+					networkConfig
+				}
+			});
+		}
 	},
 	reducers: {
 		updateState(state, action) {
