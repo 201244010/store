@@ -12,9 +12,9 @@ import {
 	Input,
 	TimePicker,
 } from 'antd';
-import DataEmpty from '@/components/BigIcon/DataEmpty';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
+import DataEmpty from '@/components/BigIcon/DataEmpty';
 import { FORM_SETTING_LAYOUT } from '@/constants/form';
 import styles from './index.less';
 import { ERROR_OK } from '@/constants/errorCode';

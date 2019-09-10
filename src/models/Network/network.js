@@ -1,5 +1,5 @@
-import * as Actions from '@/services/network';
 import { format } from '@konata9/milk-shake';
+import * as Actions from '@/services/network';
 import { formatSpeed } from '@/utils/utils';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK, MQTT_RES_OK } from '@/constants/errorCode';

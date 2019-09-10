@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge, Icon, Tooltip } from 'antd';
-import { unixSecondToDate } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
+import { unixSecondToDate } from '@/utils/utils';
 
 export default ({ record, template }) => {
 	let title;

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import { SIZES, SHAPE_TYPES, IMAGE_TYPES, MAPS } from '@/constants/studio';
 import { formatMessage } from 'umi/locale';
+import { SIZES, SHAPE_TYPES, IMAGE_TYPES, MAPS } from '@/constants/studio';
 
 const contentMap = {
 	[SHAPE_TYPES.TEXT]: formatMessage({ id: 'studio.action.text.db.click' }),

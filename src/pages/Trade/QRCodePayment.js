@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Card, message } from 'antd';
-import { ERROR_OK, ALTERT_TRADE_MAP } from '@/constants/errorCode';
 import { format } from '@konata9/milk-shake';
+import { ERROR_OK, ALTERT_TRADE_MAP } from '@/constants/errorCode';
 import styles from './trade.less';
 
 import qrPayment from '@/assets/qrpaycode.jpg';

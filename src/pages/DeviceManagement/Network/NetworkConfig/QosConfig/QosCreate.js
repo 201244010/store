@@ -3,8 +3,6 @@ import { Table, Form, Input, Row, Col, Switch, Button, message } from 'antd';
 import { FORM_ITEM_LAYOUT_QOS } from '@/constants/form';
 import { STATUS } from '@/constants/index';
 import { OPCODE } from '@/constants/mqttStore';
-import { format } from '@konata9/milk-shake';
-import { formatMessage } from 'umi/locale';
 import styles from '../NetworkConfig.less';
 
 @Form.create()
