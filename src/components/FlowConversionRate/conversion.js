@@ -1,6 +1,6 @@
 import { Shape } from 'bizcharts';
 
-Shape.registerShape('interval', 'distributionShape', {
+Shape.registerShape('interval', 'rateShape', {
 	getPoints(pointInfo) {
 		const { x, y, y0, size } = pointInfo;
 		const n = 60;
@@ -65,22 +65,26 @@ Shape.registerShape('interval', 'distributionShape', {
 	},
 });
 
-export const COLS = {
-	visitor: {
-		ticks: [0, 500],
-	},
-	max: {
-		ticks: [0, 500],
-	},
+export const COLORS = {
+	NOW_COLOR: 'l(90) 0:#6CBBFF 1:#6CBBFF',
+	NOR_COLOR: 'l(90) 0:#667ECC 1:#3D6DCC',
+	LIGHT_SHADOW: '#1A56FF',
+	NOR_SHADOW: 'transparent',
 };
 
-export const LABEL = {
-	offset: 16,
-	textStyle: {
-		textAlign: 'start',
-		fill: '#FFFFFF',
-		fontSize: '14',
-		textBaseline: 'middle',
-	},
-	autoRotate: true,
+export const X_TEXT_STYLE = {
+	textAlign: 'center',
+	fill: '#FFFFFF',
+	fontSize: '14',
+	fontWeight: '400',
+};
+export const Y_TEXT_STYLE = {
+	fill: '#FFFFFF',
+	fontSize: '12',
+	fontWeight: 'lighter',
+};
+export const Y_LINE_STYLE = {
+	stroke: 'rgba(114,134,217,0.20)',
+	lineWidth: 1,
+	lineDash: [1, 0],
 };

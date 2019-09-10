@@ -23,16 +23,12 @@ export function shape(lightType, chartName) {
 			]);
 			path.push([
 				'L',
-				origin.item !== lightType
-					? points[0].x + xWidth
-					: points[0].x + xWidth * 1.15,
+				origin.item !== lightType ? points[0].x + xWidth : points[0].x + xWidth * 1.15,
 				points[2].y,
 			]);
 			path.push([
 				'L',
-				origin.item !== lightType
-					? points[0].x + xWidth
-					: points[0].x + xWidth * 1.15,
+				origin.item !== lightType ? points[0].x + xWidth : points[0].x + xWidth * 1.15,
 				points[3].y,
 			]);
 			path.push('Z');
@@ -47,8 +43,11 @@ export function shape(lightType, chartName) {
 	});
 }
 
-export const lightColor = 'l(45) 0:#66BDFF 1:#3D84FF';
-export const normalColor = 'transparent';
-export const lightShadow = 'rgba(255,255,255,1)';
-export const normalShadow = 'transparent';
+export const COLORS = {
+	LIGHT_COLOR: 'l(45) 0:#66BDFF 1:#3D84FF',
+	NOR_COLOR: 'transparent',
+	LIGHT_SHADOW: 'rgba(255,255,255,1)',
+	NOR_SHADOW: 'transparent',
+	GEOM_COLOR: 'rgba(125,158,250,0.16)',
+};
 export const geomColor = 'rgba(125,158,250,0.16)';

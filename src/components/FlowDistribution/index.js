@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Chart, Facet, View, Geom, Axis } from 'bizcharts';
 import { formatMessage } from 'umi/locale';
-import { LABEL, COLS} from './distributionShape';
+import { LABEL, COLORS } from './distribution';
 
 // import DataSet from '@antv/data-set';
 import styles from './index.less';
@@ -19,6 +19,14 @@ import styles from './index.less';
 class FlowDistribution extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		this.cols = {
+			visitor: {
+				ticks: [0, 500],
+			},
+			max: {
+				ticks: [0, 500],
+			},
+		};
 		this.age = 0;
 	}
 
@@ -137,7 +145,7 @@ class FlowDistribution extends React.PureComponent {
 					width={400}
 					height={204}
 					data={data1}
-					scale={COLS}
+					scale={this.cols}
 					padding={[-50, -53, -50, -53]}
 				>
 					<Axis name="age" visible line={null} tickLine={null} label={LABEL} />
@@ -154,7 +162,7 @@ class FlowDistribution extends React.PureComponent {
 							<Geom
 								type="interval"
 								position="age*max"
-								color={['gender', '#344166']}
+								color={['gender', COLORS.GENDER]}
 								opacity={0.3}
 							/>
 							<Geom
@@ -168,9 +176,9 @@ class FlowDistribution extends React.PureComponent {
 											// if (light[0] === age && light[1] === gender) {
 											// 	return '#6CBBFF';
 											// }
-											return '#667ECC';
+											return COLORS.MALE;
 										}
-										return '#FF8080';
+										return COLORS.FEMALE;
 									},
 								]}
 								style={[
@@ -179,7 +187,7 @@ class FlowDistribution extends React.PureComponent {
 										shadowBlur: 8,
 										shadowOffsetX: 0,
 										shadowOffsetY: 0,
-										shadowColor: 'transparent',
+										shadowColor: COLORS.NOR_SHADOW,
 										// shadowColor: (age, gender) => {
 										// 	if (light[0] === age && light[1] === gender) {
 										// 		return '#1A56FF';

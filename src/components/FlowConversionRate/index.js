@@ -3,7 +3,8 @@ import { connect } from 'dva';
 import { Chart, Axis, Tooltip, Geom, Label } from 'bizcharts';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import { FILLCOlOR, COLS, xTextStyle, yTextStyle, yLineStyle, lightShadow, normalShadow } from './conversionShape';
+
+import { X_TEXT_STYLE, Y_TEXT_STYLE, Y_LINE_STYLE, COLORS } from './conversion';
 
 import styles from './index.less';
 
@@ -20,6 +21,11 @@ import styles from './index.less';
 class FlowConversionRate extends React.PureComponent {
 	constructor(props) {
 		super(props);
+		this.cols = {
+			time: {
+				ticks: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+			},
+		};
 		this.flowOrder = 0;
 	}
 
@@ -27,6 +33,7 @@ class FlowConversionRate extends React.PureComponent {
 		const { getPassengerFlowOrderLatest } = this.props;
 		getPassengerFlowOrderLatest();
 		clearInterval(this.flowOrder);
+
 		this.flowOrder = setInterval(() => {
 			getPassengerFlowOrderLatest();
 		}, 5000);
@@ -107,12 +114,12 @@ class FlowConversionRate extends React.PureComponent {
 				<div className={styles['chart-name']}>
 					{formatMessage({ id: 'flow.conversionRate.title' })}
 				</div>
-				<Chart width={656} height={205} padding="auto" data={list} scale={COLS}>
+				<Chart width={656} height={205} padding="auto" data={list} scale={this.cols}>
 					<Axis
 						name="time"
 						label={{
 							offset: 36,
-							textStyle: xTextStyle,
+							textStyle: X_TEXT_STYLE,
 							autoRotate: false,
 							formatter(text) {
 								if (parseInt(text, 10) < 10) {
@@ -128,7 +135,7 @@ class FlowConversionRate extends React.PureComponent {
 						name="rate"
 						label={{
 							offset: 11,
-							textStyle: yTextStyle,
+							textStyle: Y_TEXT_STYLE,
 							autoRotate: false,
 							formatter(text) {
 								return `${parseInt(text, 10) * 100}%`;
@@ -136,22 +143,22 @@ class FlowConversionRate extends React.PureComponent {
 						}}
 						grid={{
 							type: 'line',
-							lineStyle: yLineStyle,
+							lineStyle: Y_LINE_STYLE,
 						}}
 					/>
 					<Tooltip />
 					<Geom
 						type="interval"
 						position='time*rate'
-						color={['time', time => (nowHour === time ? FILLCOlOR[0] : FILLCOlOR[1])]}
+						color={['time', time => (nowHour === time ? COLORS.NOW_COLOR : COLORS.NOR_COLOR)]}
 						style={[
 							'time',
 							{
 								shadowBlur: 20,
 								shadowOffsetX: 0,
 								shadowOffsetY: 10,
-								shadowColor: time => (nowHour === time ? lightShadow : normalShadow),
-							},
+								shadowColor: time => (nowHour === time ? COLORS.LIGHT_SHADOW : COLORS.NOR_SHADOW),
+							}
 						]}
 						shape="rateShape"
 						tooltip={false}

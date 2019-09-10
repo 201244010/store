@@ -1,7 +1,7 @@
 import React from 'react';
 import { Chart, Geom, Axis, Tooltip, Coord, Guide, View } from 'bizcharts';
 import DataSet from '@antv/data-set';
-import { shape, lightColor, normalColor, lightShadow, normalShadow, geomColor } from './proportionShape';
+import { shape, COLORS } from './proportion';
 
 import styles from './index.less';
 
@@ -66,7 +66,7 @@ class ProportionChart extends React.PureComponent {
 						color={[
 							'item*percent',
 							item =>
-								item === lightType ? lightColor : normalColor,
+								item === lightType ? COLORS.LIGHT_COLOR : COLORS.NOR_COLOR,
 						]}
 						style={[
 							'item*percent',
@@ -77,7 +77,7 @@ class ProportionChart extends React.PureComponent {
 								shadowOffsetX: 0,
 								shadowOffsetY: 10,
 								shadowColor: item =>
-									lightType === item ? lightShadow : normalShadow,
+									lightType === item ? COLORS.LIGHT_SHADOW : COLORS.NOR_SHADOW,
 							},
 						]}
 						shape={chartName}
@@ -88,7 +88,7 @@ class ProportionChart extends React.PureComponent {
 						<Geom
 							type="intervalStack"
 							position="count"
-							color={['item', [geomColor]]}
+							color={['item', [COLORS.GEOM_COLOR]]}
 							tooltip={false}
 						/>
 					</View>
