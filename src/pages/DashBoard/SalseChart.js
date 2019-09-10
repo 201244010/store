@@ -6,7 +6,7 @@ import moment from 'moment';
 import LinePoint from '@/components/Charts/LinePoint';
 import Bar from '@/components/Charts/Bar';
 import { DASHBOARD } from './constants';
-
+import { salseChartToolTipStyle } from './chartStyle';
 import styles from './DashBoard.less';
 
 const {
@@ -23,18 +23,6 @@ const TIME_SCALE = {
 	},
 	[RANGE.MONTH]: {
 		ticks: TIME_TICKS.MONTH,
-	},
-};
-
-const toolTipStyle = {
-	'g2-tooltip': {
-		background: 'rgba(48,53,64,0.70)',
-		'box-shadow': '0 2px 8px 0 rgba(0,0,0,0.15)',
-		'border-radius': '2px',
-		color: '#ffffff',
-	},
-	'g2-tooltip-marker': {
-		display: 'none',
 	},
 };
 
@@ -235,7 +223,7 @@ class SalseChart extends PureComponent {
 									}),
 								],
 							},
-							toolTipStyle,
+							toolTipStyle: salseChartToolTipStyle,
 						}}
 					/>
 				)}
