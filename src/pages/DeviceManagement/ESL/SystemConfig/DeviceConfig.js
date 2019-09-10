@@ -28,6 +28,10 @@ const TIMEPICKER_STYLE = { width: '180px' };
 const SCAN_PERIODS = [5, 10, 15];
 const SLEEP_PERIODS = [60, 120, 180];
 const SAVE_PERIODS = [30, 45, 60];
+const ACTION = {
+	QUERY: 'query',
+	UPDATE: 'update'
+};
 
 const template = ['esl.device.ap.status.offline', 'esl.device.ap.status.online' ];
 
@@ -146,7 +150,7 @@ class SystemConfig extends Component {
 			setApConfig: false, setClksync: false, setRefresh: false
 		};
 		
-		if (action === 'update') {
+		if (action === ACTION.UPDATE) {
 			if (errcode === ERROR_OK) {
 				switch (opcode) {
 					case OPCODE.SET_AP_CONFIG:
@@ -174,7 +178,7 @@ class SystemConfig extends Component {
 				message.error(formatMessage({ id: 'esl.device.config.setting.fail' }));
 				this.setState({ isUpdateSuccess: updateSuccess, btnLoading: false});
 			}
-		} else if (action === 'query') {
+		} else if (action === ACTION.QUERY) {
 			if (errcode === ERROR_OK) {
 				setNetworkConfig({networkConfig: receiveConfig});
 				this.setState({ configLoading: false });

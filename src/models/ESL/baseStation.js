@@ -318,6 +318,7 @@ export default {
 				type: 'mqttStore/generateTopic',
 				payload: { service: 'ESL/request' },
 			});
+			const param = format('toSnake')({networkId});
 
 			yield put({
 				type: 'mqttStore/publish',
@@ -325,7 +326,7 @@ export default {
 					topic: requestTopic,
 					message: {
 						opcode: OPCODE.GET_AP_CONFIG,
-						param: { network_id: networkId },
+						param,
 					},
 				},
 			});
@@ -343,6 +344,23 @@ export default {
 				scanDeepSleep
 			} = payload;
 			const [refleshHour = 4, refleshMinute = 0 ] = [eslRefleshTime.hour(), eslRefleshTime.minutes()];
+			const param1 = format('toSnake')({
+				networkId,
+				scanPeriod: isEnergySave
+					? parseInt(scanPeriod, 10) + IN_ENERGY_SAVE
+					: parseInt(scanPeriod, 10),
+				scanMulti,
+				scanDeepSleep
+			});
+			const param2 = format('toSnake')({
+				networkId,
+				clksyncPeriod: parseInt(clksyncPeriod, 10) * 24 * 3600,
+			});
+			const param3 = format('toSnake')({
+				networkId,
+				eslRefleshPeriod: parseInt(eslRefleshPeriod, 10),
+				eslRefleshTime: refleshHour * 3600 + refleshMinute * 60,
+			});
 			
 			const requestTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
@@ -354,14 +372,7 @@ export default {
 					topic: requestTopic,
 					message: {
 						opcode: OPCODE.SET_AP_CONFIG,
-						param: {
-							network_id: networkId,
-							scan_period: isEnergySave
-								? parseInt(scanPeriod, 10) + IN_ENERGY_SAVE
-								: parseInt(scanPeriod, 10),
-							scan_multi: scanMulti,
-							scan_deep_sleep: scanDeepSleep
-						},
+						param: param1,
 					},
 				},
 			});
@@ -372,10 +383,7 @@ export default {
 					topic: requestTopic,
 					message: {
 						opcode: OPCODE.SET_CLKSYNC,
-						param: {
-							network_id: networkId,
-							clksync_period: parseInt(clksyncPeriod, 10) * 24 * 3600,
-						},
+						param: param2
 					},
 				},
 			});
@@ -386,11 +394,7 @@ export default {
 					topic: requestTopic,
 					message: {
 						opcode: OPCODE.SET_SELF_REFRESH,
-						param: {
-							network_id: networkId,
-							esl_reflesh_period: parseInt(eslRefleshPeriod, 10),
-							esl_reflesh_time: refleshHour * 3600 + refleshMinute * 60,
-						},
+						param: param3
 					},
 				},
 			});
