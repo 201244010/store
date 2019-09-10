@@ -77,7 +77,7 @@ class SalseChart extends PureComponent {
 			passengerOrderLoading,
 			passengerOrderList,
 		} = this.props;
-		const fsDevice = ipcList.find(ipc => ipc.type.indexOf('FS') > -1);
+		const fsDevice = ipcList.some(ipc => ipc.sn.indexOf('FS') > -1);
 
 		let chartScale = {
 			time: {
