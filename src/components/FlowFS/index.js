@@ -128,7 +128,7 @@ class FlowLive extends React.Component {
 			location: { query = {} } = {},
 		} = this.props;
 
-		const { sn = 'FS101D8BS00999' } = query;
+		const { sn = '' } = query;
 
 		if (sn) {
 			const deviceInfo = await getDeviceInfo({ sn });
@@ -145,7 +145,7 @@ class FlowLive extends React.Component {
 			location: { query = {} },
 			stopHistoryPlay,
 		} = this.props;
-		const { sn = 'FS101D8BS00999' } = query;
+		const { sn = '' } = query;
 
 		if (sn) {
 			stopHistoryPlay({
@@ -165,7 +165,7 @@ class FlowLive extends React.Component {
 			getTimeSlots,
 			location: { query = {} } = {},
 		} = this.props;
-		const { sn = 'FS101D8BS00999' } = query;
+		const { sn = '' } = query;
 
 		const result = await getTimeSlots({
 			sn,
@@ -192,7 +192,7 @@ class FlowLive extends React.Component {
 			getLiveUrl,
 			location: { query = {} } = {},
 		} = this.props;
-		const { sn = 'FS101D8BS00999' } = query;
+		const { sn = '' } = query;
 
 		const url = await getLiveUrl({ sn });
 		return url;
@@ -204,7 +204,7 @@ class FlowLive extends React.Component {
 			streamId,
 			location: { query = {} } = {},
 		} = this.props;
-		const { sn = 'FS101D8BS00999' } = query;
+		const { sn = '' } = query;
 
 		await stopLive({
 			sn,
@@ -217,7 +217,7 @@ class FlowLive extends React.Component {
 			getHistoryUrl,
 			location: { query = {} } = {},
 		} = this.props;
-		const { sn = 'FS101D8BS00999' } = query;
+		const { sn = '' } = query;
 
 		const url = await getHistoryUrl({ sn, timestamp });
 		return url;
@@ -228,7 +228,7 @@ class FlowLive extends React.Component {
 			stopHistoryPlay,
 			location: { query = {} } = {},
 		} = this.props;
-		const { sn = 'FS101D8BS00999' } = query;
+		const { sn = '' } = query;
 
 		await stopHistoryPlay({ sn });
 	};
@@ -238,7 +238,7 @@ class FlowLive extends React.Component {
 			changePPI,
 			location: { query = {} } = {},
 		} = this.props;
-		const { sn = 'FS101D8BS00999' } = query;
+		const { sn = '' } = query;
 
 		changePPI({
 			ppi,

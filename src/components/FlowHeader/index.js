@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { ERROR_OK } from '@/constants/errorCode';
+// import { ERROR_OK } from '@/constants/errorCode';
 import { SHOP_ID_KEY, SHOP_LIST_KEY, getCookieByKey } from '@/utils/cookies';
 // import { DASHBOARD } from '@/pages/DashBoard/constants';
 
@@ -24,6 +24,7 @@ class FlowHeader extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		this.startTime = new Date().getTime();
+		this.setTime = 0;
 	}
 
 	state = {
@@ -32,6 +33,7 @@ class FlowHeader extends React.PureComponent {
 
 	componentDidMount() {
 		// this.startRefreshToken();
+		clearInterval(this.setTime);
 		this.setTime = setInterval(() => {
 			const time = moment().format('YYYY-MM-DD HH:mm:ss');
 			this.setState({ time });
@@ -47,17 +49,17 @@ class FlowHeader extends React.PureComponent {
 		clearInterval(this.setTime);
 	}
 
-	startRefreshToken = () => {
-		const { refreshStoreToken } = this.props;
-		refreshStoreToken().then(response => {
-			const { code } = response;
-			if (code === ERROR_OK) {
-				this.startTime = new Date().getTime();
-			} else {
-				this.startRefreshToken();
-			}
-		});
-	};
+	// startRefreshToken = () => {
+	// 	const { refreshStoreToken } = this.props;
+	// 	refreshStoreToken().then(response => {
+	// 		const { code } = response;
+	// 		if (code === ERROR_OK) {
+	// 			this.startTime = new Date().getTime();
+	// 		} else {
+	// 			this.startRefreshToken();
+	// 		}
+	// 	});
+	// };
 
 	render() {
 		const { time } = this.state;

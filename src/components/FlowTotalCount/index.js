@@ -12,9 +12,15 @@ import styles from './index.less';
 	})
 )
 class FlowTotalCount extends React.PureComponent {
+	constructor(props) {
+		super(props);
+		this.counter = 0;
+	}
+
 	componentDidMount() {
 		const { getPassengerFlowLatest } = this.props;
 		getPassengerFlowLatest();
+		clearInterval(this.counter);
 		this.counter = setInterval(() => {
 			getPassengerFlowLatest();
 		}, 5000);
@@ -26,7 +32,7 @@ class FlowTotalCount extends React.PureComponent {
 
 	render() {
 		const {
-			flowInfo: { passengerFlowCount: { latestCount = '999', earlyCount = '888' } = {} },
+			flowInfo: { passengerFlowCount: { latestCount = '', earlyCount = '' } = {} },
 		} = this.props;
 		return (
 			<div className={styles.border}>

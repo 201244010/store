@@ -1,75 +1,11 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Chart, Axis, Tooltip, Geom, Label, Shape } from 'bizcharts';
+import { Chart, Axis, Tooltip, Geom, Label } from 'bizcharts';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
+import { FILLCOlOR, COLS } from './conversionShape';
 
 import styles from './index.less';
-
-Shape.registerShape('interval', 'rateShape', {
-	getPoints(pointInfo) {
-		const { x, y, y0, size } = pointInfo;
-		const n = 60;
-		const unit = size / n;
-		return [
-			{ x: x - (n / 3) * unit, y: y0 },
-			{ x: x - (n / 2.5) * unit, y: y - y0 < unit ? y0 : y0 + unit },
-			{ x: x - (n / 2.22) * unit, y: y - y0 < (n / 20) * unit ? y0 : y0 + (n / 20) * unit },
-			{ x: x - (n / 2.06) * unit, y: y - y0 < (n / 6) * unit ? y0 : y0 + (n / 6) * unit },
-			{ x: x - (n / 2) * unit, y: y - y0 < (n / 3) * unit ? y0 : y0 + (n / 3) * unit },
-			{ x: x - (n / 2) * unit, y: y - y0 < (n / 3) * unit ? y : y - (n / 3) * unit },
-			{ x: x - (n / 2.06) * unit, y: y - y0 < (n / 6) * unit ? y : y - (n / 6) * unit },
-			{ x: x - (n / 2.22) * unit, y: y - y0 < (n / 20) * unit ? y : y - (n / 20) * unit },
-			{ x: x - (n / 2.5) * unit, y: y - y0 < unit ? y : y - unit },
-			{ x: x - (n / 3) * unit, y },
-			{ x: x + (n / 3) * unit, y },
-			{ x: x + (n / 2.5) * unit, y: y - y0 < unit ? y : y - unit },
-			{ x: x + (n / 2.22) * unit, y: y - y0 < (n / 20) * unit ? y : y - (n / 20) * unit },
-			{ x: x + (n / 2.06) * unit, y: y - y0 < (n / 6) * unit ? y : y - (n / 6) * unit },
-			{ x: x + (n / 2) * unit, y: y - y0 < (n / 3) * unit ? y : y - (n / 3) * unit },
-			{ x: x + (n / 2) * unit, y: y - y0 < (n / 3) * unit ? y0 : y0 + (n / 3) * unit },
-			{ x: x + (n / 2.06) * unit, y: y - y0 < (n / 6) * unit ? y0 : y0 + (n / 6) * unit },
-			{ x: x + (n / 2.22) * unit, y: y - y0 < (n / 20) * unit ? y0 : y0 + (n / 20) * unit },
-			{ x: x + (n / 2.5) * unit, y: y - y0 < unit ? y0 : y0 + unit },
-			{ x: x + (n / 3) * unit, y: y0 },
-		];
-	},
-	draw(cfg, container) {
-		const points = this.parsePoints(cfg.points); // 将0-1空间的坐标转换为画布坐标
-		const polygon = container.addShape('polygon', {
-			attrs: {
-				points: [
-					[points[0].x, points[0].y],
-					[points[1].x, points[1].y],
-					[points[2].x, points[2].y],
-					[points[3].x, points[3].y],
-					[points[4].x, points[4].y],
-					[points[5].x, points[5].y],
-					[points[6].x, points[6].y],
-					[points[7].x, points[7].y],
-					[points[8].x, points[8].y],
-					[points[9].x, points[9].y],
-					[points[10].x, points[10].y],
-					[points[11].x, points[11].y],
-					[points[12].x, points[12].y],
-					[points[13].x, points[13].y],
-					[points[14].x, points[14].y],
-					[points[15].x, points[15].y],
-					[points[16].x, points[16].y],
-					[points[17].x, points[17].y],
-					[points[18].x, points[18].y],
-					[points[19].x, points[19].y],
-				],
-				shadowColor: cfg.style.shadowColor,
-				shadowBlur: cfg.style.shadowBlur,
-				shadowOffsetX: cfg.style.shadowOffsetX,
-				shadowOffsetY: cfg.style.shadowOffsetY,
-				fill: cfg.color,
-			},
-		});
-		return polygon;
-	},
-});
 
 // getPassengerFlowOrderLatest
 @connect(
@@ -82,9 +18,15 @@ Shape.registerShape('interval', 'rateShape', {
 	})
 )
 class FlowConversionRate extends React.PureComponent {
+	constructor(props) {
+		super(props);
+		this.flowOrder = 0;
+	}
+
 	componentDidMount() {
 		const { getPassengerFlowOrderLatest } = this.props;
 		getPassengerFlowOrderLatest();
+		clearInterval(this.flowOrder);
 		this.flowOrder = setInterval(() => {
 			getPassengerFlowOrderLatest();
 		}, 5000);
@@ -98,15 +40,16 @@ class FlowConversionRate extends React.PureComponent {
 		const {
 			flowInfo: { passengerFlowOrder = [] },
 		} = this.props;
-		const listFilter = passengerFlowOrder.filter((item, index) => index > 7 && index < 18);
+		const listFilter = passengerFlowOrder.filter((item, index) => index > 6 && index < 19);
 		const list = listFilter.map(item => {
-			const rate = (item.orderCount / (item.passengerFlowCount === 0?  1 :  item.passengerFlowCount)).toFixed(0);
+			const passengerFlowCount = item.passengerFlowCount === 0?  1 :  item.passengerFlowCount;
+			const rate = (item.orderCount / passengerFlowCount).toFixed(0);
 			return {
 				time: item.time,
 				rate,
 			};
 		});
-		const nowTime = moment(new Date().getTime()).format('HH');
+		const nowHour = moment().hour(); 
 
 		// const data = [
 		// 	{
@@ -159,18 +102,12 @@ class FlowConversionRate extends React.PureComponent {
 		// 	},
 		// ];
 
-		const fillColor = ['l(90) 0:#6CBBFF 1:#6CBBFF', 'l(90) 0:#667ECC 1:#3D6DCC'];
-		const cols = {
-			time: {
-				ticks: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
-			},
-		};
 		return (
 			<div className={styles['flow-chart']}>
 				<div className={styles['chart-name']}>
 					{formatMessage({ id: 'flow.conversionRate.title' })}
 				</div>
-				<Chart width={656} height={205} padding="auto" data={list} scale={cols}>
+				<Chart width={656} height={205} padding="auto" data={list} scale={COLS}>
 					<Axis
 						name="time"
 						label={{
@@ -219,14 +156,14 @@ class FlowConversionRate extends React.PureComponent {
 					<Geom
 						type="interval"
 						position='time*rate'
-						color={['time', time => (nowTime === time ? fillColor[0] : fillColor[1])]}
+						color={['time', time => (nowHour === time ? FILLCOlOR[0] : FILLCOlOR[1])]}
 						style={[
 							'time',
 							{
 								shadowBlur: 20,
 								shadowOffsetX: 0,
 								shadowOffsetY: 10,
-								shadowColor: time => (nowTime === time ? '#1A56FF' : 'transparent'),
+								shadowColor: time => (nowHour === time ? '#1A56FF' : 'transparent'),
 							},
 						]}
 						shape="rateShape"
@@ -238,9 +175,9 @@ class FlowConversionRate extends React.PureComponent {
 							content="rate"
 							htmlTemplate={(_, item) => {
 								const { point = {} } = item;
-								return parseInt(nowTime, 10) === parseInt(point.time, 10)
+								return parseInt(nowHour, 10) === parseInt(point.time, 10)
 									? `<div class="template-title">
-										<div class="template-content" style="width:40px;">
+										<div class="template-content">
 											<div class="template-top">${parseInt(point.rate, 10) !== 0 ? point.rate : ''}</div>
 										</div>
 									</div>`

@@ -13,9 +13,15 @@ import styles from './index.less';
 	})
 )
 class FlowProportion extends React.PureComponent {
+	constructor(props) {
+		super(props);
+		this.regular = 0;
+	}
+
 	componentDidMount() {
 		const { getPassengerAgeByRegular } = this.props;
 		getPassengerAgeByRegular();
+		clearInterval(this.regular);
 		this.regular = setInterval(() => {
 			getPassengerAgeByRegular();
 		}, 5000);
