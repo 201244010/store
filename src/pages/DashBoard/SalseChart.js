@@ -102,13 +102,18 @@ class SalseChart extends PureComponent {
 		let chartTip = {};
 		let itemTpl = '';
 		if (fsDevice) {
+			const maxFlowRate = Math.max(
+				...passengerOrderList.map(order => order.passengerFlowRate || 0)
+			);
+
+			const passengerTicks =
+				maxFlowRate > 100
+					? {}
+					: { minLimit: 0, maxLimit: 100, ticks: [0, 20, 40, 60, 80, 100] };
+
 			chartScale = {
 				...chartScale,
-				passengerFlowRate: {
-					minLimit: 0,
-					maxLimit: 100,
-					ticks: [0, 20, 40, 60, 80, 100],
-				},
+				passengerFlowRate: passengerTicks,
 			};
 
 			itemTpl = `
