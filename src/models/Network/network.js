@@ -1,6 +1,7 @@
 import * as Actions from '@/services/network';
 import { format } from '@konata9/milk-shake';
 import { formatSpeed } from '@/utils/utils';
+import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK, MQTT_RES_OK } from '@/constants/errorCode';
 import { OPCODE } from '@/constants/mqttStore';
 
@@ -11,6 +12,22 @@ export default {
 		deviceList: {
 			totalCount: 0,
 			networkDeviceList: [],
+		},
+		tabType: {
+			wireless: 1,
+			qos: 'init',
+		},
+		qosList: {
+			totalCount: 0,
+			configList: [],
+		},
+		qosInfo: {},
+		pagination: {
+			current: 1,
+			pageSize: DEFAULT_PAGE_SIZE,
+			total: 0,
+			showSizeChanger: true,
+			showQuickJumper: true,
 		},
 	},
 
@@ -34,7 +51,6 @@ export default {
 							return item;
 						  })
 						: getList;
-
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -42,6 +58,77 @@ export default {
 					},
 				});
 			}
+		},
+		*getQosList({ payload = {} }, { call, put, select }) {
+			const { pagination } = yield select(state => state.network);
+			const { pageNum = 1, pageSize = 10 } = payload;
+			const opts = format('toSnake')({ ...payload });
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/getList', opts);
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { totalCount = 0, configList = [] } = format('toCamel')(data);
+				const tmpList = [];
+				configList.forEach(item => {
+					const { name, id, config: { qos = {} } = {} } = item || {};
+					tmpList.push({
+						id,
+						name,
+						...qos,
+					});
+				});
+				yield put({
+					type: 'updateState',
+					payload: {
+						qosList: { totalCount, configList: tmpList },
+						pagination: {
+							...pagination,
+							total: totalCount,
+							current: pageNum,
+							pageSize,
+						},
+					},
+				});
+				yield put({
+					type: 'changeTabType',
+					payload: { type: 'qos', value: 'init' },
+				});
+			}
+			return response;
+		},
+		*getQosInfo({ payload }, { call, put }) {
+			const opts = format('toSnake')({ ...payload });
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/getInfo', opts);
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const qosInfo = format('toCamel')(data);
+				yield put({
+					type: 'updateState',
+					payload: {
+						qosInfo,
+					},
+				});
+			}
+			return response;
+		},
+		*createQos({ payload }, { call }) {
+			const opts = format('toSnake')({ ...payload });
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/create', opts);
+			return response;
+		},
+		*updateQos({ payload }, { call }) {
+			const opts = format('toSnake')({ ...payload });
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/update', opts);
+			return response;
+		},
+		*deleteQos({ payload }, { call, put }) {
+			const opts = format('toSnake')({ ...payload });
+			const response = yield call(Actions.handleNetworkEquipment, 'config/qos/delete', opts);
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'getQosList',
+				});
+			}
+			return response;
 		},
 		*getOverview(_, { call, put }) {
 			const response = yield call(Actions.handleNetworkEquipment, 'device/getOverview');
@@ -110,7 +197,6 @@ export default {
 						item.clientCount = (
 							networkDeviceList.filter(items => item.sn === items.sn)[0] || {}
 						).clientCount;
-
 						return item;
 					});
 				yield put({
@@ -134,9 +220,6 @@ export default {
 		},
 		*setAPHandler({ payload }, { put }) {
 			const { handler } = payload;
-			const msgMap = yield put.resolve({
-				type: 'mqttStore/putMsg',
-			});
 			yield put({
 				type: 'mqttStore/setTopicListener',
 				payload: {
@@ -144,28 +227,47 @@ export default {
 					handler: receivedMessage => {
 						const { data = [], msgId } = format('toCamel')(JSON.parse(receivedMessage));
 						const { opcode, errcode } = data[0] || {};
-						const sn = msgMap.get(msgId);
-						if (opcode === '0x2025' && errcode === 0) {
-							const clientNumber = data[0].result.data.length || 0;
-							const guestNumber = data[0].result.data.filter(
-								item => item.bridge === 'br-guest'
-							).length;
-							handler({ msgId, opcode, sn, clientNumber, guestNumber });
+						switch (opcode) {
+							case OPCODE.CLIENT_LIST_GET:
+								if (errcode === 0) {
+									const clientNumber = data[0].result.data.length || 0;
+									const guestNumber = data[0].result.data.filter(
+										item => item.bridge === 'br-guest'
+									).length;
+									handler({ msgId, opcode, clientNumber, guestNumber });
+								}
+								break;
+							case OPCODE.TRAFFIC_STATS_GET:
+								if (errcode === 0) {
+									const wan = data[0].result.trafficStats.wan;
+									const { speed: upSpeed, unit: upUnit } = formatSpeed(
+										wan.curTxBytes
+									);
+									const { speed: downSpeed, unit: downUnit } = formatSpeed(
+										wan.curRxBytes
+									);
+									handler({
+										msgId,
+										opcode,
+										upSpeed,
+										upUnit,
+										downSpeed,
+										downUnit,
+									});
+								}
+								break;
+							case OPCODE.ROUTER_GET:
+								if (errcode === 0) {
+									const devices = data[0].result.sonconnect.devices;
+									handler({ msgId, opcode, devices });
+								}
+								break;
+							case OPCODE.QOS_SET:
+								handler({ msgId, opcode, errcode });
+								break;
+							default:
+								break;
 						}
-
-						if (opcode === '0x2040' && errcode === 0) {
-							const wan = data[0].result.trafficStats.wan;
-							const { speed: upSpeed, unit: upUnit } = formatSpeed(wan.curTxBytes);
-							const { speed: downSpeed, unit: downUnit } = formatSpeed(
-								wan.curRxBytes
-							);
-							handler({ msgId, opcode, sn, upSpeed, upUnit, downSpeed, downUnit });
-						}
-
-						// if (opcode === '0x207b' && errcode === 0) {
-						// 	// const result = res.data[0].result.upgrade;
-						// 	handler({ msgId, opcode, sn });
-						// }
 					},
 				},
 			});
@@ -186,50 +288,78 @@ export default {
 			});
 		},
 
+		*editNetworkId({ payload }, { put, select }) {
+			const { networkId, edit } = payload;
+			const { networkList } = yield select(state => state.network);
+			const tmpList = networkList.map(item => ({
+				...item,
+				edit: item.networkId === networkId && edit,
+			}));
+			yield put({
+				type: 'updateState',
+				payload: {
+					networkList: tmpList,
+				},
+			});
+		},
+
 		*refreshNetworkList({ payload }, { put, select }) {
 			const {
 				opcode,
-				sn,
 				guestNumber,
 				clientNumber,
-				edit = 0,
 				upSpeed,
 				upUnit,
 				downSpeed,
 				downUnit,
+				devices = [],
+				msgId,
 			} = payload;
 			const {
 				networkList,
 				deviceList: { totalCount, networkDeviceList },
 			} = yield select(state => state.network);
+			const msgMap = yield put.resolve({
+				type: 'mqttStore/putMsg',
+			});
+			const sn = msgMap.get(msgId);
 			const tmpList = networkList.map(item => {
 				if (item.masterDeviceSn === sn) {
 					switch (opcode) {
-						case '0x2025':
-							return { ...item, guestNumber, clientNumber, edit };
-						case '0x2040':
+						case OPCODE.CLIENT_LIST_GET:
+							return { ...item, guestNumber, clientNumber };
+						case OPCODE.TRAFFIC_STATS_GET:
 							return { ...item, upSpeed, upUnit, downSpeed, downUnit };
 						default:
-							return { ...item, edit };
+							return { ...item };
 					}
 				}
 				return { ...item };
 			});
 			const tmpDeviceList = networkDeviceList.map(item => {
+				if (opcode === OPCODE.ROUTER_GET) {
+					return {
+						...item,
+						onlineTime: (devices.filter(items => items.devid === item.sn)[0] || {})
+							.uptime,
+					};
+				}
+
 				if (item.sn === sn) {
 					switch (opcode) {
-						case '0x2025':
+						case OPCODE.CLIENT_LIST_GET:
 							return { ...item, clientCount: clientNumber };
-						case '0x2015':
+						case OPCODE.SYSTEMTOOLS_RESTART:
 							return { ...item, reboot: 1 };
-						case '0x207a':
+						case OPCODE.MESH_UPGRADE_START:
 							return { ...item, upgrade: 1 };
-						case '0x207b':
+						case OPCODE.MESH_UPGRADE_STATE:
 							return { ...item, upgrade: 1 };
 						default:
 							return { ...item };
 					}
 				}
+
 				return { ...item };
 			});
 			yield put({
@@ -306,6 +436,80 @@ export default {
 					},
 				},
 			});
+		},
+
+		*changeTabType({ payload = {} }, { put, select }) {
+			const { type, value } = payload;
+			const { tabType, qosInfo } = yield select(state => state.network);
+			yield put({
+				type: 'updateState',
+				payload: {
+					tabType: {
+						...tabType,
+						[type]: value,
+					},
+					qosInfo: value === 'create' ? {} : qosInfo,
+				},
+			});
+		},
+		*apHandler({ payload }, { put }) {
+			const { handler } = payload;
+			const msgMap = yield put.resolve({
+				type: 'mqttStore/putMsg',
+			});
+
+			yield put({
+				type: 'mqttStore/setTopicListener',
+				payload: {
+					service: 'W1/response',
+					handler: receivedMessage => {
+						const { data = [{ errcode: -1 }], msgId } = format('toCamel')(
+							JSON.parse(receivedMessage)
+						);
+						const { opcode } = data[0];
+						const sn = msgMap.get(msgId);
+						
+						if (opcode === OPCODE.ROUTER_GET) {
+							handler(data, 'router', sn);
+						}
+						if (opcode === OPCODE.CLIENT_LIST_GET) {
+							handler(data, 'list', sn);
+						}
+					},
+				},
+			});
+		},
+
+		*getDeviceList({ payload }, { put }) {
+			const { message } = payload;
+			const requestTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'W1/request' },
+			});
+
+			yield put({
+				type: 'mqttStore/publish',
+				payload: {
+					topic: requestTopic,
+					message,
+				},
+			});
+		},
+		*unsubscribeDeviceTopic(_, { put }) {
+			const responseTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'W1/response', action: 'sub' },
+			});
+
+			yield put({
+				type: 'mqttStore/unsubscribeTopic',
+				payload: { topic: responseTopic },
+			});
+		},
+		*getEventList({ payload }, { call }) {
+			const param = format('toSnake')(payload);
+			const response = yield call(Actions.handleNetworkEquipment, 'device/getEventList', param);
+			return format('toCamel')(response);
 		},
 	},
 
