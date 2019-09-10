@@ -6,7 +6,7 @@ import moment from 'moment';
 import LinePoint from '@/components/Charts/LinePoint';
 import Bar from '@/components/Charts/Bar';
 import { DASHBOARD } from './constants';
-
+import { salseChartToolTipStyle } from './chartStyle';
 import styles from './DashBoard.less';
 
 const {
@@ -77,7 +77,7 @@ class SalseChart extends PureComponent {
 			passengerOrderLoading,
 			passengerOrderList,
 		} = this.props;
-		const fsDevice = ipcList.find(ipc => ipc.type.indexOf('FS') > -1);
+		const fsDevice = ipcList.some(ipc => ipc.hasFaceid);
 
 		let chartScale = {
 			time: {
@@ -102,13 +102,18 @@ class SalseChart extends PureComponent {
 		let chartTip = {};
 		let itemTpl = '';
 		if (fsDevice) {
+			const maxFlowRate = Math.max(
+				...passengerOrderList.map(order => order.passengerFlowRate || 0)
+			);
+
+			const passengerTicks =
+				maxFlowRate > 100
+					? {}
+					: { minLimit: 0, maxLimit: 100, ticks: [0, 20, 40, 60, 80, 100] };
+
 			chartScale = {
 				...chartScale,
-				passengerFlowRate: {
-					minLimit: 0,
-					maxLimit: 100,
-					ticks: [0, 20, 40, 60, 80, 100],
-				},
+				passengerFlowRate: passengerTicks,
 			};
 
 			itemTpl = `
@@ -223,6 +228,7 @@ class SalseChart extends PureComponent {
 									}),
 								],
 							},
+							toolTipStyle: salseChartToolTipStyle,
 						}}
 					/>
 				)}
