@@ -135,7 +135,6 @@ class QosCreate extends React.PureComponent {
 					whiteWeight,
 					normalWeight,
 				} = values;
-				console.log(values);
 				const qos = {
 					enable,
 					source: 'manual',
