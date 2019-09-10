@@ -3,6 +3,7 @@ import { formatMessage } from 'umi/locale';
 import { Form, Alert, Icon, Input } from 'antd';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import { ALERT_NOTICE_MAP } from '@/constants/errorCode';
+import { mail, cellphone, normalInput } from '@/constants/regexp';
 import styles from '@/pages/User/Login/Login.less';
 
 const AccountLogin = props => {
@@ -32,10 +33,25 @@ const AccountLogin = props => {
 					validateTrigger: 'onBlur',
 					rules: [
 						{
-							required: true,
-							message: formatMessage({
-								id: 'account.validate.isEmpty',
-							}),
+							validator: (_, value, callback) => {
+								if (!value) {
+									callback(
+										formatMessage({
+											id: 'account.validate.isEmpty',
+										})
+									);
+								}
+
+								if (!normalInput.test(value)) {
+									callback(formatMessage({ id: 'username.invalid.character' }));
+								}
+
+								if (cellphone.test(value) || mail.test(value)) {
+									callback();
+								}
+
+								callback();
+							},
 						},
 					],
 				})(
