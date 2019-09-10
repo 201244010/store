@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { notification } from 'antd';
 import { connect } from 'dva';
+import { format } from '@konata9/milk-shake';
 import { displayNotification } from '@/components/Notification';
 import { REGISTER_PUB_MSG, OPCODE } from '@/constants/mqttStore';
 import { getRandomString } from '@/utils/utils';
 import { ORDER_OK } from '@/constants/errorCode';
-import { format } from '@konata9/milk-shake';
 
 import Ipc from './Ipc';
 

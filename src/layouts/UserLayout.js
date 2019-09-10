@@ -4,8 +4,8 @@ import { Icon } from 'antd';
 import { connect } from 'dva';
 import { GlobalFooter } from 'ant-design-pro';
 import DocumentTitle from 'react-document-title';
-import SelectLang from '@/components/SelectLang';
 import pathToRegexp from 'path-to-regexp';
+import SelectLang from '@/components/SelectLang';
 import styles from './UserLayout.less';
 
 const copyright = (

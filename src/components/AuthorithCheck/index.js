@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import * as CookieUtil from '@/utils/cookies';
 import router from 'umi/router';
+import * as CookieUtil from '@/utils/cookies';
 
 class AuthorithCheck extends Component {
 	componentDidMount() {

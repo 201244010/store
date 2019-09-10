@@ -1,8 +1,8 @@
 import React from 'react';
 import { Checkbox, Button, Form, Spin, Card } from 'antd';
 import { connect } from 'dva';
-import { idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
+import { idDecode } from '@/utils/utils';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 
 import styles from './Role.less';

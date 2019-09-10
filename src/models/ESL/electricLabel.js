@@ -1,10 +1,10 @@
+import { formatMessage } from 'umi/locale';
+import { message } from 'antd';
 import * as ESLServices from '@/services/ESL/electricLabel';
 import * as TemplateServices from '@/services/ESL/template';
 import * as ProductServices from '@/services/ESL/product';
-import { formatMessage } from 'umi/locale';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
-import { message } from 'antd';
 
 export default {
 	namespace: 'eslElectricLabel',

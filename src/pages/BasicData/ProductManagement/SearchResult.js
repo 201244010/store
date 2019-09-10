@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Divider, Modal, Table, Button } from 'antd';
+import { formatMessage } from 'umi/locale';
 import { CustomSkeleton } from '@/components/Skeleton';
 import { idEncode, unixSecondToDate } from '@/utils/utils';
 import * as CookieUtil from '@/utils/cookies';
-import { formatMessage } from 'umi/locale';
 import * as styles from './ProductManagement.less';
 
 class SearchResult extends Component {

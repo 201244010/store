@@ -1,9 +1,9 @@
-import * as Actions from '@/services/role';
-import { ERROR_OK } from '@/constants/errorCode';
-import { DEFAULT_PAGE_SIZE, USER_PERMISSION_LIST } from '@/constants';
 import { map, format } from '@konata9/milk-shake';
 import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
+import * as Actions from '@/services/role';
+import { ERROR_OK } from '@/constants/errorCode';
+import { DEFAULT_PAGE_SIZE, USER_PERMISSION_LIST } from '@/constants';
 import { FIRST_MENU_ORDER } from '@/config';
 
 const getInitStatus = (permissionList, roleInfo) => {

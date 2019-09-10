@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Card, Form, Button } from 'antd';
+import moment from 'moment';
 import { getLocationParam } from '@/utils/utils';
 import { FORM_ITEM_DETAIL } from '@/constants/form';
-import moment from 'moment';
 
 const GENDER_MAP = {
 	1: formatMessage({ id: 'employee.gender.male' }),
