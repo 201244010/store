@@ -10,7 +10,7 @@ export default class SystemConfig extends Component {
 	render() {
 		return (
 			<Card>
-				<Tabs defaultActiveKey="1">
+				<Tabs defaultActiveKey="1" animated={false}>
 					<TabPane tab={formatMessage({id: 'esl.device.display.title'})} key="1">
 						<DisplayConfig />
 					</TabPane>

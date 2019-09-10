@@ -162,7 +162,7 @@ const Topology = props => {
 									</Badge>
 									<Badge
 										count={clientNumber || 0}
-										showZero
+										// showZero
 										offset={[-32, -2]}
 										overflowCount={9999}
 									>
