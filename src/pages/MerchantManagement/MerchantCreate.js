@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Button, Input } from 'antd';
 import { connect } from 'dva';
-import styles from './Merchant.less';
 import Storage from '@konata9/storage.js';
+import styles from './Merchant.less';
 import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
 

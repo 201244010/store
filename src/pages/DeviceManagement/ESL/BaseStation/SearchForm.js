@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
+import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import styles from './BaseStation.less';
 
 const { Option } = Select;

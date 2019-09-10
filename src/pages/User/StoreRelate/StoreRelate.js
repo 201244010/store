@@ -3,10 +3,10 @@ import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { connect } from 'dva';
 import { Button, Divider, List } from 'antd';
+import Storage from '@konata9/storage.js';
 import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
 import { MENU_PREFIX } from '@/constants';
-import Storage from '@konata9/storage.js';
 import styles from './StoreRelate.less';
 
 @connect(

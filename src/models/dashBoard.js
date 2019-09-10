@@ -1,8 +1,8 @@
+import moment from 'moment';
+import { shake, format, map } from '@konata9/milk-shake';
 import * as Action from '@/services/dashBoard';
 import { getRange } from '@/pages/IPC/services/photoLibrary';
-import moment from 'moment';
 import { ERROR_OK } from '@/constants/errorCode';
-import { shake, format, map } from '@konata9/milk-shake';
 import { getDeviceList } from '@/pages/IPC/services/IPCList';
 
 import { DASHBOARD } from '@/pages/DashBoard/constants';

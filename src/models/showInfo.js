@@ -1,7 +1,7 @@
-import * as Action from '@/services/dashBoard';
 import moment from 'moment';
-import { ERROR_OK } from '@/constants/errorCode';
 import { shake, format, map } from '@konata9/milk-shake';
+import * as Action from '@/services/dashBoard';
+import { ERROR_OK } from '@/constants/errorCode';
 import { getDeviceList } from '@/pages/IPC/services/IPCList';
 
 import { DASHBOARD } from '@/pages/DashBoard/constants';

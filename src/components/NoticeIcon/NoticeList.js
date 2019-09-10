@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, List } from 'antd';
-import { AVATA_IMG } from '@/constants/index';
 import classNames from 'classnames';
+import { AVATA_IMG } from '@/constants/index';
 import styles from './NoticeList.less';
 import { formatMessageTemplate } from '@/utils/utils';
 

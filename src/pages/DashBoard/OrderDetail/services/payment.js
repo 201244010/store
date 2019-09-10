@@ -1,5 +1,5 @@
-import { customizeFetch } from '@/utils/fetch';
 import { format } from '@konata9/milk-shake';
+import { customizeFetch } from '@/utils/fetch';
 
 
 const fetchApi = customizeFetch('api/payment');

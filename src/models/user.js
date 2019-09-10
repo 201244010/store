@@ -1,6 +1,6 @@
-import * as Actions from '@/services/user';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
+import * as Actions from '@/services/user';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
 

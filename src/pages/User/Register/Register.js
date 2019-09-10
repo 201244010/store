@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Row, Col, Alert, Modal, message } from 'antd';
 import { Result } from 'ant-design-pro';
-import ResultInfo from '@/components/ResultInfo';
-import Captcha from '@/components/Captcha';
-import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import { formatMessage, getLocale } from 'umi/locale';
 import Link from 'umi/link';
 import { connect } from 'dva';
+import ResultInfo from '@/components/ResultInfo';
+import Captcha from '@/components/Captcha';
+import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
 import { ERROR_OK, ALERT_NOTICE_MAP, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';

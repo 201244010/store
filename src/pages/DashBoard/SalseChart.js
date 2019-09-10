@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Card, Skeleton } from 'antd';
+import moment from 'moment';
 import LinePoint from '@/components/Charts/LinePoint';
 import Bar from '@/components/Charts/Bar';
-import moment from 'moment';
 import { DASHBOARD } from './constants';
 
 import styles from './DashBoard.less';

@@ -4,8 +4,8 @@ import { connect } from 'dva';
 import DocumentTitle from 'react-document-title';
 // import SelectLang from '@/components/SelectLang';
 import pathToRegexp from 'path-to-regexp';
-import HeaderDropdown from '@/components/HeaderDropdown';
 import { Menu, Avatar, Icon } from 'antd';
+import HeaderDropdown from '@/components/HeaderDropdown';
 import { getLocationParam } from '@/utils/utils';
 import * as styles from './SunmiLayout.less';
 
