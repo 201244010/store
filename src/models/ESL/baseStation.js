@@ -1,11 +1,11 @@
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
+import moment from 'moment';
 import { format } from '@konata9/milk-shake';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as Actions from '@/services/ESL/baseStation';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { OPCODE } from '@/constants/mqttStore';
-import moment from 'moment';
 
 const IN_ENERGY_SAVE = 128;
 const ACTION = {
