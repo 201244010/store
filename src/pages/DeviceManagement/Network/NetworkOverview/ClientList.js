@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { OPCODE } from '@/constants/mqttStore';
 import { formatRelativeTime } from '@/utils/utils';
+import { DEFAULT_PAGE_LIST_SIZE } from '@/constants/index';
 import styles from './Network.less';
 
 const WIFI = 'wifi';
@@ -201,6 +202,7 @@ class ClientList extends React.Component {
 						rowKey="mac"
 						pagination={{
 							showSizeChanger: true,
+							pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
 						}}
 					/>
 				</Spin>
