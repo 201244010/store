@@ -2,28 +2,10 @@ import React from 'react';
 import { connect } from 'dva';
 import { Chart, Facet, View, Geom, Axis } from 'bizcharts';
 import { formatMessage } from 'umi/locale';
+import { LABEL, COLS} from './distributionShape';
+
 // import DataSet from '@antv/data-set';
 import styles from './index.less';
-
-const cols = {
-	visitor: {
-		ticks: [0, 500],
-	},
-	max: {
-		ticks: [0, 500],
-	},
-};
-
-const label = {
-	offset: 16,
-	textStyle: {
-		textAlign: 'start',
-		fill: '#FFFFFF',
-		fontSize: '14',
-		textBaseline: 'middle',
-	},
-	autoRotate: true,
-};
 
 @connect(
 	state => ({
@@ -56,7 +38,7 @@ class FlowDistribution extends React.PureComponent {
 
 	render() {
 		const {
-			light = ['40岁-50岁', 'male'],
+			// light = ['40岁-50岁', 'male'],
 			flowInfo: { countListByGender = [], ageRangeMap = {} } = {},
 		} = this.props;
 		// const data = [
@@ -155,10 +137,10 @@ class FlowDistribution extends React.PureComponent {
 					width={400}
 					height={204}
 					data={data1}
-					scale={cols}
+					scale={COLS}
 					padding={[-50, -53, -50, -53]}
 				>
-					<Axis name="age" visible line={null} tickLine={null} label={label} />
+					<Axis name="age" visible line={null} tickLine={null} label={LABEL} />
 					<Axis name="visitor" visible={false} />
 					<Axis name="max" visible={false} />
 					<Facet
@@ -183,9 +165,9 @@ class FlowDistribution extends React.PureComponent {
 									'age*gender',
 									(age, gender) => {
 										if (gender === 'male') {
-											if (light[0] === age && light[1] === gender) {
-												return '#6CBBFF';
-											}
+											// if (light[0] === age && light[1] === gender) {
+											// 	return '#6CBBFF';
+											// }
 											return '#667ECC';
 										}
 										return '#FF8080';
@@ -197,12 +179,13 @@ class FlowDistribution extends React.PureComponent {
 										shadowBlur: 8,
 										shadowOffsetX: 0,
 										shadowOffsetY: 0,
-										shadowColor: (age, gender) => {
-											if (light[0] === age && light[1] === gender) {
-												return '#1A56FF';
-											}
-											return 'transparent';
-										},
+										shadowColor: 'transparent',
+										// shadowColor: (age, gender) => {
+										// 	if (light[0] === age && light[1] === gender) {
+										// 		return '#1A56FF';
+										// 	}
+										// 	return 'transparent';
+										// },
 									},
 								]}
 							/>

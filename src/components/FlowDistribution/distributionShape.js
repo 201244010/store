@@ -64,3 +64,23 @@ Shape.registerShape('interval', 'distributionShape', {
 		return polygon;
 	},
 });
+
+export const COLS = {
+	visitor: {
+		ticks: [0, 500],
+	},
+	max: {
+		ticks: [0, 500],
+	},
+};
+
+export const LABEL = {
+	offset: 16,
+	textStyle: {
+		textAlign: 'start',
+		fill: '#FFFFFF',
+		fontSize: '14',
+		textBaseline: 'middle',
+	},
+	autoRotate: true,
+};

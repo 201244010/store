@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Chart, Axis, Tooltip, Geom, Label } from 'bizcharts';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import { FILLCOlOR, COLS } from './conversionShape';
+import { FILLCOlOR, COLS, xTextStyle, yTextStyle, yLineStyle, lightShadow, normalShadow } from './conversionShape';
 
 import styles from './index.less';
 
@@ -112,12 +112,7 @@ class FlowConversionRate extends React.PureComponent {
 						name="time"
 						label={{
 							offset: 36,
-							textStyle: {
-								textAlign: 'center',
-								fill: '#FFFFFF',
-								fontSize: '14',
-								fontWeight: '400',
-							},
+							textStyle: xTextStyle,
 							autoRotate: false,
 							formatter(text) {
 								if (parseInt(text, 10) < 10) {
@@ -133,11 +128,7 @@ class FlowConversionRate extends React.PureComponent {
 						name="rate"
 						label={{
 							offset: 11,
-							textStyle: {
-								fill: '#FFFFFF',
-								fontSize: '12',
-								fontWeight: 'lighter',
-							},
+							textStyle: yTextStyle,
 							autoRotate: false,
 							formatter(text) {
 								return `${parseInt(text, 10) * 100}%`;
@@ -145,11 +136,7 @@ class FlowConversionRate extends React.PureComponent {
 						}}
 						grid={{
 							type: 'line',
-							lineStyle: {
-								stroke: 'rgba(114,134,217,0.20)',
-								lineWidth: 1,
-								lineDash: [1, 0],
-							},
+							lineStyle: yLineStyle,
 						}}
 					/>
 					<Tooltip />
@@ -163,7 +150,7 @@ class FlowConversionRate extends React.PureComponent {
 								shadowBlur: 20,
 								shadowOffsetX: 0,
 								shadowOffsetY: 10,
-								shadowColor: time => (nowHour === time ? '#1A56FF' : 'transparent'),
+								shadowColor: time => (nowHour === time ? lightShadow : normalShadow),
 							},
 						]}
 						shape="rateShape"

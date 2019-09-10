@@ -1,6 +1,8 @@
 import React from 'react';
-import { Chart, Geom, Axis, Tooltip, Coord, Guide, Shape, View } from 'bizcharts';
+import { Chart, Geom, Axis, Tooltip, Coord, Guide, View } from 'bizcharts';
 import DataSet from '@antv/data-set';
+import { shape, lightColor, normalColor, lightShadow, normalShadow, geomColor } from './proportionShape';
+
 import styles from './index.less';
 
 class ProportionChart extends React.PureComponent {
@@ -42,50 +44,7 @@ class ProportionChart extends React.PureComponent {
 			as: 'percent',
 		});
 
-		Shape.registerShape('interval', chartName, {
-			draw(cfg, container) {
-				const {
-					points,
-					origin: { _origin },
-					color,
-				} = cfg;
-				const origin = _origin;
-				const xWidth = points[2].x - points[1].x;
-				let path = [];
-				path.push([
-					'M',
-					origin.item !== lightType ? points[0].x : points[0].x - xWidth * 0.15,
-					points[0].y,
-				]);
-				path.push([
-					'L',
-					origin.item !== lightType ? points[1].x : points[1].x - xWidth * 0.15,
-					points[1].y,
-				]);
-				path.push([
-					'L',
-					origin.item !== lightType
-						? points[0].x + xWidth
-						: points[0].x + xWidth * 1.15,
-					points[2].y,
-				]);
-				path.push([
-					'L',
-					origin.item !== lightType
-						? points[0].x + xWidth
-						: points[0].x + xWidth * 1.15,
-					points[3].y,
-				]);
-				path.push('Z');
-				path = this.parsePath(path);
-				return container.addShape('path', {
-					attrs: {
-						fill: color,
-						path,
-					},
-				});
-			},
-		});
+		shape(lightType, chartName);
 
 		return (
 			<div className={styles['proportion-chart']}>
@@ -107,7 +66,7 @@ class ProportionChart extends React.PureComponent {
 						color={[
 							'item*percent',
 							item =>
-								item === lightType ? 'l(45) 0:#66BDFF 1:#3D84FF' : 'transparent',
+								item === lightType ? lightColor : normalColor,
 						]}
 						style={[
 							'item*percent',
@@ -118,7 +77,7 @@ class ProportionChart extends React.PureComponent {
 								shadowOffsetX: 0,
 								shadowOffsetY: 10,
 								shadowColor: item =>
-									lightType === item ? 'rgba(255,255,255,1)' : 'transparent',
+									lightType === item ? lightShadow : normalShadow,
 							},
 						]}
 						shape={chartName}
@@ -129,7 +88,7 @@ class ProportionChart extends React.PureComponent {
 						<Geom
 							type="intervalStack"
 							position="count"
-							color={['item', ['rgba(125,158,250,0.16)']]}
+							color={['item', [geomColor]]}
 							tooltip={false}
 						/>
 					</View>

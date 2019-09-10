@@ -71,3 +71,21 @@ export const COLS = {
 		ticks: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 	},
 };
+export const xTextStyle = {
+	textAlign: 'center',
+	fill: '#FFFFFF',
+	fontSize: '14',
+	fontWeight: '400',
+};
+export const yTextStyle = {
+	fill: '#FFFFFF',
+	fontSize: '12',
+	fontWeight: 'lighter',
+};
+export const yLineStyle = {
+	stroke: 'rgba(114,134,217,0.20)',
+	lineWidth: 1,
+	lineDash: [1, 0],
+};
+export const lightShadow = '#1A56FF';
+export const normalShadow = 'transparent';
