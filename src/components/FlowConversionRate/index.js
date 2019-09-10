@@ -28,7 +28,7 @@ class FlowConversionRate extends React.PureComponent {
 			rate: {
 				minLimit: 0,
 				maxLimit: 100,
-				ticks: [0, 20, 40, 80, 100],
+				ticks: [0, 20, 40, 60, 80, 100],
 			}
 		};
 		this.flowOrder = 0;
