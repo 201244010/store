@@ -34,6 +34,13 @@ const router = [
 	},
 
 	{
+		path: '/flow',
+		component: '../layouts/BlankLayout',
+		id: 'flow',
+		routes: [{ path: '/flow', component: '../layouts/PassengerFlowLayout.js' }],
+	},
+
+	{
 		path: '/',
 		component: '../layouts/BasicLayout',
 		id: 'root',
