@@ -135,6 +135,7 @@ class QosCreate extends React.PureComponent {
 					whiteWeight,
 					normalWeight,
 				} = values;
+				console.log(values);
 				const qos = {
 					enable,
 					source: 'manual',
@@ -145,6 +146,7 @@ class QosCreate extends React.PureComponent {
 					whiteWeight,
 					normalWeight,
 				};
+
 				const payload = {
 					name: ruleName,
 					config: {
@@ -280,20 +282,22 @@ class QosCreate extends React.PureComponent {
 						</Row>
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'network.qos.QoS' })}>
-						{getFieldDecorator('enable', {
-							valuePropName: 'checked',
-							initialValue: enable || false,
-						})(
-							<>
-								<Switch
-									checkedChildren={formatMessage({ id: 'network.switchOn' })}
-									unCheckedChildren={formatMessage({ id: 'network.switchOff' })}
-								/>
-								<span className={styles['qos-ratio']}>
-									({formatMessage({ id: 'network.switch.tip' })})
-								</span>
-							</>
-						)}
+						<Row gutter={8}>
+							<Col span={3}>
+								{getFieldDecorator('enable', {
+									valuePropName: 'checked',
+									initialValue: enable || false,
+								})(
+									<Switch
+										checkedChildren={formatMessage({ id: 'network.switchOn' })}
+										unCheckedChildren={formatMessage({
+											id: 'network.switchOff',
+										})}
+									/>
+								)}
+							</Col>
+							<Col span={21}>({formatMessage({ id: 'network.switch.tip' })})</Col>
+						</Row>
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'network.qos.sunmi' })}>
 						<Row gutter={8}>
