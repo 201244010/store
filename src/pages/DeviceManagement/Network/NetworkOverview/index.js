@@ -9,7 +9,6 @@ import styles from './Network.less';
 @connect(
 	state => ({
 		network: state.network,
-		loading: state.loading,
 	}),
 	dispatch => ({
 		updateAlias: ({ networkId, networkAlias }) =>
@@ -34,6 +33,7 @@ class Network extends React.Component {
 	constructor(props) {
 		super(props);
 		this.checkTimer = null;
+		this.intervalTimer = null;
 	}
 
 	async componentDidMount() {
@@ -42,6 +42,8 @@ class Network extends React.Component {
 
 	componentWillUnmount() {
 		clearTimeout(this.checkTimer);
+		clearInterval(this.intervalTimer);
+	
 		const { unsubscribeTopic } = this.props;
 		unsubscribeTopic();
 	}
@@ -63,7 +65,6 @@ class Network extends React.Component {
 	apHandler = async payload => {
 		const { refreshNetworkList, clearMsg } = this.props;
 		const { msgId } = payload;
-		console.log(payload);
 		await refreshNetworkList(payload);
 		await clearMsg({ msgId });
 	};

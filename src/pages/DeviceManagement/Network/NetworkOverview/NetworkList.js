@@ -16,10 +16,6 @@ class NetworkList extends React.PureComponent {
 		getList();
 	}
 
-	componentWillUnmount() {
-		clearInterval(this.intervalTimer);
-	}
-
 	editName = payload => {
 		const { editNetworkId } = this.props;
 		clearInterval(this.intervalTimer);
