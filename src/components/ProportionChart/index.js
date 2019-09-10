@@ -5,11 +5,12 @@ import { shape, COLORS } from './proportion';
 
 import styles from './index.less';
 
+const { DataView } = DataSet;
+const { Html } = Guide;
+
 class ProportionChart extends React.PureComponent {
 	render() {
 		const { list = [], lightType = '', chartName } = this.props;
-		const { DataView } = DataSet;
-		const { Html } = Guide;
 
 		let totalCount = 0;
 		let lightCount = 0;
@@ -55,7 +56,7 @@ class ProportionChart extends React.PureComponent {
 					<Guide>
 						<Html
 							position={['50%', '50%']}
-							html={`<span style="font-family: PingFangSC-Semibold,serif;font-size: 16px; color: #FFFFFF; text-align: center;">${lightPercent}%</span>`}
+							html={`<span class='proportion-percent'>${lightPercent}%</span>`}
 							alignX="middle"
 							alignY="middle"
 						/>

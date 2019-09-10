@@ -1,4 +1,4 @@
-import { getLiveUrl, getTimeSlots, startPublish, stopPublish } from '@/services/flowLive';
+import { getLiveUrl, stopLive, getTimeSlots, startPublish, stopPublish } from '@/services/flowLive';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const PPIS = {

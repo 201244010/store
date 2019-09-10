@@ -49,68 +49,6 @@ class FlowDistribution extends React.PureComponent {
 			// light = ['40岁-50岁', 'male'],
 			flowInfo: { countListByGender = [], ageRangeMap = {} } = {},
 		} = this.props;
-		// const data = [
-		// 	{
-		// 		age: '50岁以上',
-		// 		visitor: 80,
-		// 		gender: 'male',
-		// 		max: 1000,
-		// 	},
-		// 	{
-		// 		age: '50岁以上',
-		// 		visitor: 100,
-		// 		gender: 'female',
-		// 		max: 1000,
-		// 	},
-		// 	{
-		// 		age: '40岁-50岁',
-		// 		visitor: 135,
-		// 		gender: 'female',
-		// 		max: 1000,
-		// 	},
-		// 	{
-		// 		age: '40岁-50岁',
-		// 		visitor: 140,
-		// 		gender: 'male',
-		// 		max: 1000,
-		// 	},
-		// 	{
-		// 		age: '30岁-40岁',
-		// 		visitor: 100,
-		// 		gender: 'female',
-		// 		max: 1000,
-		// 	},
-		// 	{
-		// 		age: '30岁-40岁',
-		// 		visitor: 130,
-		// 		gender: 'male',
-		// 		max: 1000,
-		// 	},
-		// 	{
-		// 		age: '20岁-30岁',
-		// 		visitor: 100,
-		// 		gender: 'female',
-		// 		max: 1000,
-		// 	},
-		// 	{
-		// 		age: '20岁-30岁',
-		// 		visitor: 120,
-		// 		gender: 'male',
-		// 		max: 1000,
-		// 	},
-		// 	{
-		// 		age: '20岁以下',
-		// 		visitor: 100,
-		// 		gender: 'female',
-		// 		max: 1000,
-		// 	},
-		// 	{
-		// 		age: '20岁以下',
-		// 		visitor: 200,
-		// 		gender: 'male',
-		// 		max: 1000,
-		// 	},
-		// ];
 
 		const data1 = [];
 		let male = 0;

@@ -4,7 +4,7 @@ import { Chart, Axis, Tooltip, Geom, Label } from 'bizcharts';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 
-import { X_TEXT_STYLE, Y_TEXT_STYLE, Y_LINE_STYLE, COLORS } from './conversion';
+import { X_TEXT_STYLE, Y_TEXT_STYLE, Y_LINE_STYLE, COLORS, LIST } from './conversion';
 
 import styles from './index.less';
 
@@ -25,6 +25,11 @@ class FlowConversionRate extends React.PureComponent {
 			time: {
 				ticks: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 			},
+			rate: {
+				minLimit: 0,
+				maxLimit: 100,
+				ticks: [0, 20, 40, 80, 100],
+			}
 		};
 		this.flowOrder = 0;
 	}
@@ -33,7 +38,6 @@ class FlowConversionRate extends React.PureComponent {
 		const { getPassengerFlowOrderLatest } = this.props;
 		getPassengerFlowOrderLatest();
 		clearInterval(this.flowOrder);
-
 		this.flowOrder = setInterval(() => {
 			getPassengerFlowOrderLatest();
 		}, 5000);
@@ -47,74 +51,33 @@ class FlowConversionRate extends React.PureComponent {
 		const {
 			flowInfo: { passengerFlowOrder = [] },
 		} = this.props;
+
 		const listFilter = passengerFlowOrder.filter((item, index) => index > 6 && index < 19);
 		const list = listFilter.map(item => {
 			const passengerFlowCount = item.passengerFlowCount === 0?  1 :  item.passengerFlowCount;
-			const rate = (item.orderCount / passengerFlowCount).toFixed(0);
+			const rate = (item.orderCount / passengerFlowCount).toFixed(2)*100;
 			return {
 				time: item.time,
 				rate,
 			};
 		});
-		const nowHour = moment().hour(); 
+		const rateList = LIST;
+		list.map(item => {
+			for(let i = 0; i < rateList.length; i++) {
+				if (item.time === rateList[i].time) {
+					rateList[i].rate = item.rate;
+				}
+			}
+		});
 
-		// const data = [
-		// 	{
-		// 		time: '8:00',
-		// 		rate: 20,
-		// 	},
-		// 	{
-		// 		time: '9:00',
-		// 		rate: 30,
-		// 	},
-		// 	{
-		// 		time: '10:00',
-		// 		rate: 40,
-		// 	},
-		// 	{
-		// 		time: '11:00',
-		// 		rate: 22,
-		// 	},
-		// 	{
-		// 		time: '12:00',
-		// 		rate: 26,
-		// 	},
-		// 	{
-		// 		time: '13:00',
-		// 		rate: 27,
-		// 	},
-		// 	{
-		// 		time: '14:00',
-		// 		rate: 22,
-		// 	},
-		// 	{
-		// 		time: '15:00',
-		// 		rate: 36,
-		// 	},
-		// 	{
-		// 		time: '16:00',
-		// 		rate: 42,
-		// 	},
-		// 	{
-		// 		time: '17:00',
-		// 		rate: 23,
-		// 	},
-		// 	{
-		// 		time: '18:00',
-		// 		rate: 32,
-		// 	},
-		// 	{
-		// 		time: '19:00',
-		// 		rate: 33,
-		// 	},
-		// ];
+		const nowHour = moment().hour(); 
 
 		return (
 			<div className={styles['flow-chart']}>
 				<div className={styles['chart-name']}>
 					{formatMessage({ id: 'flow.conversionRate.title' })}
 				</div>
-				<Chart width={656} height={205} padding="auto" data={list} scale={this.cols}>
+				<Chart width={656} height={205} padding="auto" data={rateList} scale={this.cols}>
 					<Axis
 						name="time"
 						label={{
@@ -122,6 +85,7 @@ class FlowConversionRate extends React.PureComponent {
 							textStyle: X_TEXT_STYLE,
 							autoRotate: false,
 							formatter(text) {
+								console.log('text', text);
 								if (parseInt(text, 10) < 10) {
 									return `0${text}:00`;
 								}
@@ -138,7 +102,7 @@ class FlowConversionRate extends React.PureComponent {
 							textStyle: Y_TEXT_STYLE,
 							autoRotate: false,
 							formatter(text) {
-								return `${parseInt(text, 10) * 100}%`;
+								return `${text}%`;
 							},
 						}}
 						grid={{

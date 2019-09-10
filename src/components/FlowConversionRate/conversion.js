@@ -88,3 +88,54 @@ export const Y_LINE_STYLE = {
 	lineWidth: 1,
 	lineDash: [1, 0],
 };
+
+export const LIST = [
+	{
+		time: 8,
+		rate: 0,
+	},
+	{
+		time: 9,
+		rate: 0,
+	},
+	{
+		time: 10,
+		rate: 0,
+	},
+	{
+		time: 11,
+		rate: 0,
+	},
+	{
+		time: 12,
+		rate: 0,
+	},
+	{
+		time: 13,
+		rate: 0,
+	},
+	{
+		time: 14,
+		rate: 0,
+	},
+	{
+		time: 15,
+		rate: 0,
+	},
+	{
+		time: 16,
+		rate: 0,
+	},
+	{
+		time: 17,
+		rate: 0,
+	},
+	{
+		time: 18,
+		rate: 0,
+	},
+	{
+		time: 19,
+		rate: 0,
+	},
+];

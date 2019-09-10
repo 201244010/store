@@ -50,4 +50,3 @@ export const COLORS = {
 	NOR_SHADOW: 'transparent',
 	GEOM_COLOR: 'rgba(125,158,250,0.16)',
 };
-export const geomColor = 'rgba(125,158,250,0.16)';
