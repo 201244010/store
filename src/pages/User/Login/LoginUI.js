@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { formatMessage, getLocale } from 'umi/locale';
 import { connect } from 'dva';
 import { Tabs, Form, Button, Modal } from 'antd';
-import { encryption } from '@/utils/utils';
 import Storage from '@konata9/storage.js';
+import { encryption } from '@/utils/utils';
 import AccountLogin from './AccountLogin';
 import AccountLoginLocal from './AccountLoginLocal';
 import MobileLogin from './MobileLogin';
@@ -193,19 +193,8 @@ class Login extends Component {
 
 	doLogin = async (loginType, values) => {
 		const { userLogin } = this.props;
-		const { username = null, phone = null } = values;
-		const filteredUsername = (`${username}`.match(Regexp.mailCatcher) || [])[1]
-			? (`${username}`.match(Regexp.mailCatcher) || [])[1]
-			: (`${username}`.match(Regexp.cellphoneCatcher) || [])[1];
-		const filteredPhone = (`${phone}`.match(Regexp.cellphoneCatcher) || [])[1];
-
-		// console.log('filteredPhone', filteredPhone);
-		// console.log('filteredUsername', filteredUsername);
-
 		const options = {
 			...values,
-			username: filteredUsername,
-			phone: filteredPhone,
 			password: encryption(values.password),
 		};
 

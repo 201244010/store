@@ -3,7 +3,7 @@ import { formatMessage } from 'umi/locale';
 import { Form, Alert, Icon, Input, message } from 'antd';
 import { ALERT_NOTICE_MAP, ERROR_OK, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 import Captcha from '@/components/Captcha';
-import { cellphoneCatcher } from '@/constants/regexp';
+import { cellphone } from '@/constants/regexp';
 import ImgCaptchaModal from '@/components/Captcha/ImgCaptchaModal';
 import styles from '@/pages/User/Login/Login.less';
 
@@ -25,12 +25,9 @@ class MobileLogin extends Component {
 			needImgCaptcha,
 		} = this.props;
 
-		const phone = getFieldValue('phone') || null;
-		const filteredPhone = (`${phone}`.match(cellphoneCatcher) || [])[1];
-
 		const response = await sendCode({
 			options: {
-				username: filteredPhone,
+				username: getFieldValue('phone'),
 				type: '2',
 				imgCode: getFieldValue('vcode2') || '',
 				key: needImgCaptcha ? imgCaptcha.key : '',
@@ -67,12 +64,9 @@ class MobileLogin extends Component {
 			sendCode,
 		} = this.props;
 
-		const phone = getFieldValue('phone') || null;
-		const filteredPhone = (`${phone}`.match(cellphoneCatcher) || [])[1];
-
 		const response = await sendCode({
 			options: {
-				username: filteredPhone,
+				username: getFieldValue('phone'),
 				type: '2',
 				imgCode: '',
 				key: '',
@@ -117,16 +111,23 @@ class MobileLogin extends Component {
 						validateTrigger: 'onBlur',
 						rules: [
 							{
-								required: true,
-								message: formatMessage({
-									id: 'mobile.validate.isEmpty',
-								}),
-							},
-							{
-								pattern: /^1\d{10}$/,
-								message: formatMessage({
-									id: 'mobile.validate.isFormatted',
-								}),
+								validator: (_, value, callback) => {
+									if (!value) {
+										callback(
+											formatMessage({
+												id: 'mobile.validate.isEmpty',
+											})
+										);
+									}
+
+									if (cellphone.test(value)) {
+										callback();
+									} else {
+										callback(
+											formatMessage({ id: 'username.invalid.character' })
+										);
+									}
+								},
 							},
 						],
 					})(
