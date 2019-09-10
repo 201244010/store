@@ -38,6 +38,12 @@ class QosCreate extends React.PureComponent {
 				dataIndex: 'binVersion',
 			},
 		];
+		this.rowSelection = {
+			onChange: this.onSelectChange,
+			getCheckboxProps: record => ({
+				disabled: record.activeStatus === 0,
+			}),
+		};
 	}
 
 	componentDidMount() {
@@ -210,12 +216,6 @@ class QosCreate extends React.PureComponent {
 			},
 			changeTabType,
 		} = this.props;
-		const rowSelection = {
-			onChange: this.onSelectChange,
-			getCheckboxProps: record => ({
-				disabled: record.activeStatus === 0,
-			}),
-		};
 		return (
 			<div>
 				<Form {...FORM_ITEM_LAYOUT_QOS}>
@@ -362,7 +362,7 @@ class QosCreate extends React.PureComponent {
 				<Table
 					className={styles['qos-table']}
 					rowKey="id"
-					rowSelection={rowSelection}
+					rowSelection={this.rowSelection}
 					columns={this.columns}
 					dataSource={networkDeviceList.filter(item => item.isMaster)}
 					onChange={this.onTableChange}
