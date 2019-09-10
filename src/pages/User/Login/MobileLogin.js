@@ -3,6 +3,7 @@ import { formatMessage } from 'umi/locale';
 import { Form, Alert, Icon, Input, message } from 'antd';
 import { ALERT_NOTICE_MAP, ERROR_OK, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 import Captcha from '@/components/Captcha';
+import { cellphoneCatcher } from '@/constants/regexp';
 import ImgCaptchaModal from '@/components/Captcha/ImgCaptchaModal';
 import styles from '@/pages/User/Login/Login.less';
 
@@ -24,9 +25,12 @@ class MobileLogin extends Component {
 			needImgCaptcha,
 		} = this.props;
 
+		const phone = getFieldValue('phone') || null;
+		const filteredPhone = (`${phone}`.match(cellphoneCatcher) || [])[1];
+
 		const response = await sendCode({
 			options: {
-				username: getFieldValue('phone'),
+				username: filteredPhone,
 				type: '2',
 				imgCode: getFieldValue('vcode2') || '',
 				key: needImgCaptcha ? imgCaptcha.key : '',
@@ -63,9 +67,12 @@ class MobileLogin extends Component {
 			sendCode,
 		} = this.props;
 
+		const phone = getFieldValue('phone') || null;
+		const filteredPhone = (`${phone}`.match(cellphoneCatcher) || [])[1];
+
 		const response = await sendCode({
 			options: {
-				username: getFieldValue('phone'),
+				username: filteredPhone,
 				type: '2',
 				imgCode: '',
 				key: '',

@@ -193,8 +193,19 @@ class Login extends Component {
 
 	doLogin = async (loginType, values) => {
 		const { userLogin } = this.props;
+		const { username = null, phone = null } = values;
+		const filteredUsername = (`${username}`.match(Regexp.mailCatcher) || [])[1]
+			? (`${username}`.match(Regexp.mailCatcher) || [])[1]
+			: (`${username}`.match(Regexp.cellphoneCatcher) || [])[1];
+		const filteredPhone = (`${phone}`.match(Regexp.cellphoneCatcher) || [])[1];
+
+		// console.log('filteredPhone', filteredPhone);
+		// console.log('filteredUsername', filteredUsername);
+
 		const options = {
 			...values,
+			username: filteredUsername,
+			phone: filteredPhone,
 			password: encryption(values.password),
 		};
 
