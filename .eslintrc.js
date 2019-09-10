@@ -38,12 +38,12 @@ module.exports = {
 		'no-plusplus': 0,
 		'no-undef': 0,
 		'import/no-mutable-exports': 0,
-		'camelcase': 1,
-		'react/jsx-indent': ['error', 'tab', { 'props': 4 }],
+		camelcase: 1,
+		'react/jsx-indent': ['error', 'tab'],
 		'react/jsx-indent-props': ['error', 'tab'],
 		'react/no-find-dom-node': 0,
 		'react/prefer-stateless-function': 0,
-		'semi': ['error', 'always'],
+		semi: ['error', 'always'],
 		'no-underscore-dangle': 0,
 		'no-nested-ternary': 0,
 		'no-unused-expressions': 0,
@@ -51,12 +51,16 @@ module.exports = {
 		'no-prototype-builtins': 0,
 		'prefer-destructuring': 0,
 		'import/no-extraneous-dependencies': 0,
-		'length-zero-no-unit':0,
-		'quotes': [2, 'single'],
-		'indent': ['error', 'tab', {
-			'SwitchCase': 1
-		}],
-		'prefer-template': 2
+		'length-zero-no-unit': 0,
+		quotes: [2, 'single'],
+		indent: [
+			'error',
+			'tab',
+			{
+				SwitchCase: 1,
+			},
+		],
+		'prefer-template': 2,
 	},
 	settings: {
 		polyfills: ['fetch', 'promises', 'url'],

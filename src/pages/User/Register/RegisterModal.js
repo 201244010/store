@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Alert, Modal, message } from 'antd';
 import { Result } from 'ant-design-pro';
+import { formatMessage, getLocale } from 'umi/locale';
+import { connect } from 'dva';
 import ResultInfo from '@/components/ResultInfo';
 import Captcha from '@/components/Captcha';
 import ImgCaptchaModal from '@/components/Captcha/ImgCaptchaModal';
-import { formatMessage, getLocale } from 'umi/locale';
-import { connect } from 'dva';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
 import { ERROR_OK, ALERT_NOTICE_MAP, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';

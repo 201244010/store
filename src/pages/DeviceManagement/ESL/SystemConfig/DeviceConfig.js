@@ -14,9 +14,9 @@ import {
 	Table,
 	Tag
 } from 'antd';
-import DataEmpty from '@/components/BigIcon/DataEmpty';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
+import DataEmpty from '@/components/BigIcon/DataEmpty';
 import { FORM_SETTING_LAYOUT } from '@/constants/form';
 import { ERROR_OK } from '@/constants/errorCode';
 import tagCircle from '@/components/Tag/index';

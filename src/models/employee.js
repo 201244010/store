@@ -1,7 +1,7 @@
+import { format, map } from '@konata9/milk-shake';
 import * as Action from '@/services/employee';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
-import { format, map } from '@konata9/milk-shake';
 
 export default {
 	namespace: 'employee',

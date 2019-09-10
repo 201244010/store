@@ -1,5 +1,5 @@
-import * as Actions from '@/services/passengerFlow';
 import { format } from '@konata9/milk-shake';
+import * as Actions from '@/services/passengerFlow';
 import { ERROR_OK } from '@/constants/errorCode';
 
 export default {

@@ -1,6 +1,6 @@
-import { handleESLAction } from '@/services/ESL/deviceUpgrade';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { handleESLAction } from '@/services/ESL/deviceUpgrade';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 
