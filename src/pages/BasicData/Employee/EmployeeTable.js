@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Table, Form, Input, Button, Row, Col, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
+import moment from 'moment';
 import { idDecode } from '@/utils/utils';
 import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
-import moment from 'moment';
 import { EMPLOYEE_NUMBER_LIMIT, EMPLOYEE_NAME_LIMIT, EMPLOYEE_PHONE_LIMIT } from './constants';
 import styles from './Employee.less';
 

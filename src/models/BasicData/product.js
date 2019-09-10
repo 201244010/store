@@ -1,11 +1,11 @@
-import * as Actions from '@/services/BasicData/product';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { format, map, shake } from '@konata9/milk-shake';
+import * as Actions from '@/services/BasicData/product';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { idEncode } from '@/utils/utils';
 import * as CookieUtil from '@/utils/cookies';
-import { format, map, shake } from '@konata9/milk-shake';
 
 export default {
 	namespace: 'basicDataProduct',

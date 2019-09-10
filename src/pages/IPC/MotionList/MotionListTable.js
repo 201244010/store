@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'antd';
-import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import { formatMessage } from 'umi/locale';
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 
 
 

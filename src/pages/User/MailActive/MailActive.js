@@ -1,6 +1,6 @@
 import React from 'react';
-import ResultInfo from '@/components/ResultInfo';
 import { formatMessage } from 'umi/locale';
+import ResultInfo from '@/components/ResultInfo';
 
 const MailActive = () => (
 	<ResultInfo

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Form, Button, Input, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { connect } from 'dva';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import { customValidate } from '@/utils/customValidate';
 import * as CookieUtil from '@/utils/cookies';
-import { connect } from 'dva';
 import styles from './Merchant.less';
 import { ERROR_OK } from '@/constants/errorCode';
 

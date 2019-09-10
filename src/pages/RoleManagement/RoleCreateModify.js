@@ -1,8 +1,8 @@
 import React from 'react';
 import { Input, Checkbox, Button, Form, message, Spin, Card } from 'antd';
 import { connect } from 'dva';
-import { idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
+import { idDecode } from '@/utils/utils';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 

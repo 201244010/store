@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Col, Form, Input, Row, Select } from 'antd';
-import { customValidate } from '@/utils/customValidate';
 import { formatMessage } from 'umi/locale';
+import { customValidate } from '@/utils/customValidate';
 import { MAX_LENGTH } from '@/constants/form';
 // import EditableFormItem from '@/components/EditableFormItem';
 

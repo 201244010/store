@@ -1,6 +1,6 @@
 import React from 'react';
-import styles from './index.less';
 import { formatMessage } from 'umi/locale';
+import styles from './index.less';
 import { priceFormat } from '@/utils/utils';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 

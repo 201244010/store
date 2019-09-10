@@ -1,6 +1,6 @@
+import { format } from '@konata9/milk-shake';
 import * as Actions from '@/services/trade';
 import { ERROR_OK } from '@/constants/errorCode';
-import { format } from '@konata9/milk-shake';
 
 export default {
 	namespace: 'trade',

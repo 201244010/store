@@ -13,10 +13,10 @@ import {
 	message,
 } from 'antd';
 import { formatMessage } from 'umi/locale';
+import moment from 'moment';
 import { customValidate } from '@/utils/customValidate';
 import { MAX_LENGTH, FORM_ITEM_LAYOUT_TWICE } from '@/constants/form';
 import { getRandomString } from '@/utils/utils';
-import moment from 'moment';
 import {
 	chargeUnitType,
 	dateFormat,
