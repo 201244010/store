@@ -196,9 +196,9 @@ class StoreManagement extends Component {
 	};
 
 	handleTableChange = pagination => {
-		const { current = 1 } = pagination;
+		const { current = 1, pageSize = 10 } = pagination;
 		const { updatePagination } = this.props;
-		updatePagination({ current });
+		updatePagination({ current, pageSize });
 	};
 
 	render() {

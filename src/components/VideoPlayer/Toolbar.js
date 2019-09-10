@@ -21,24 +21,37 @@ class Toolbar extends React.Component{
 	}
 
 	shouldComponentUpdate(oldProps, oldState) {
-		const { today } = this.props;
+		const { today, progressbar } = this.props;
 
 		const isEqualProps = _.isEqual({
 			...oldProps,
 			today: 0,
-			progressbar: null
+			progressbar: null,
+			slots: oldProps.progressbar.props.timeSlots
 		}, {
 			...this.props,
 			today: 0,
-			progressbar: null
+			progressbar: null,
+			slots: progressbar.props.timeSlots
 		});
 
 		const isEqualState = _.isEqual(oldState, this.state);
 
 		if (isEqualProps && isEqualState) {
+			const { progressbar: oldBar } = oldProps;
+
+			if (progressbar.props.duration !== oldBar.props.duration) {
+				return true;
+			}
+
+			if (progressbar.props.current !== oldBar.props.current) {
+				return true;
+			}
+
 			if (Math.abs(today - oldProps.today) <= 24*3600) {
 				return false;
 			}
+
 			return true;
 		}
 		return true;
@@ -88,8 +101,6 @@ class Toolbar extends React.Component{
 		if (t.length > 0) {
 			modeText = t[0].name;
 		}
-
-		console.log(today, moment.unix(today).format('YYYY-MM-DD HH:mm:ss'));
 
 		return(
 			<div
@@ -147,7 +158,7 @@ class Toolbar extends React.Component{
 									disabled={!isLive}
 									overlay={
 										<Menu
-											selectedKeys={[currentPPI]}
+											selectedKeys={[`${currentPPI}`]}
 										>
 											{
 												ppis.map((item) => (
@@ -155,7 +166,7 @@ class Toolbar extends React.Component{
 														onClick={() => {
 															ppiChange(item.value);
 														}}
-														key={item.value}
+														key={`${item.value}`}
 													>
 														{ item.name }
 													</Menu.Item>

@@ -41,8 +41,7 @@ const option = {
 	dispatch => ({
 		getNotificationInfo: payload =>
 			dispatch({ type: 'notification/getNotificationInfo', payload }),
-		goToPath: (pathId, urlParams = {}) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		goToPath: (pathId, urlParams = {}, anchorId) => dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, anchorId } }),
 		formatSdCard: sn => {
 			dispatch({ type: 'sdcard/formatSdCard', sn });
 		},
@@ -59,6 +58,7 @@ const option = {
 			dispatch({ type: 'store/getStoreNameById', payload: { shopId } }),
 		getCompanyNameById: companyId =>
 			dispatch({ type: 'merchant/getCompanyNameById', payload: { companyId } }),
+		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 	})
 )
 class Notification extends React.Component {
@@ -90,6 +90,7 @@ class Notification extends React.Component {
 			getCurrentShopId,
 			getStoreNameById,
 			getCompanyNameById,
+			getStoreList,
 		} = this.props;
 
 		return (
@@ -137,6 +138,7 @@ class Notification extends React.Component {
 									getCurrentShopId,
 									getStoreNameById,
 									getCompanyNameById,
+									getStoreList,
 								},
 								type: 'primary',
 								style: { marginLeft: minorButtonName ? '20px' : '0' },

@@ -19,7 +19,7 @@ class FaceLogTable extends React.Component{
 			title: formatMessage({id: 'faceLog.name'}),
 			dataIndex: 'name',
 			key: 'name',
-			render: name => <span>{name === ''? '--' : name}</span>
+			render: (name = formatMessage({id: 'faceLog.undefined'})) => <span>{name === ''?  formatMessage({id: 'faceLog.unknown'}) : name}</span>
 		},
 		{
 			title: formatMessage({id: 'faceLog.gender'}),
@@ -31,8 +31,10 @@ class FaceLogTable extends React.Component{
 						return <span>{formatMessage({id: 'faceLog.gender.male'})}</span>;
 					case 2:
 						return <span>{formatMessage({id: 'faceLog.gender.female'})}</span>;
+					case undefined:
+						return <span>{formatMessage({id: 'faceLog.undefined'})}</span>;
 					default:
-						return <span>--</span>;
+						return <span>{formatMessage({id: 'faceLog.unknown'})}</span>;
 				}
 			}
 		},
@@ -43,7 +45,8 @@ class FaceLogTable extends React.Component{
 			render:(ageItem) => {
 				const { ageRangeCodeMap } = this.props;
 				const { ageRangeCode, age } = ageItem;
-				if(ageRangeCode === 0 && age === 0) return '--';
+				if(ageRangeCode === 0 && age === 0) return formatMessage({id: 'faceLog.unknown'});
+				if( ageRangeCode === undefined && age === undefined ) return formatMessage({id: 'faceLog.undefined'});
 				return age||ageRangeCodeMap[ageRangeCode];
 			}
 		},
@@ -54,7 +57,7 @@ class FaceLogTable extends React.Component{
 			render:(name) => {
 				const { handleLibraryName } = this.props;
 				return(
-					<span>{handleLibraryName(name)}</span>
+					<span>{name ? handleLibraryName(name): formatMessage({id: 'faceLog.undefined'})}</span>
 				);
 			}
 		},
@@ -62,14 +65,26 @@ class FaceLogTable extends React.Component{
 			title:formatMessage({id: 'faceLog.last.arrival.date'}),
 			dataIndex:'lastArrivalTime',
 			key:'lastArrivalTime',
-			render:(time) => (
-				<span>{time === 0?'--':moment.unix(time).format('YYYY.MM.DD HH:mm:ss')}</span>
-			)
+			render:(time) => {
+				if(time === 0 || time === null){
+					time = formatMessage({id: 'faceLog.unknown'});
+				}else if(time === undefined){
+					time = formatMessage({id: 'faceLog.undefined'});
+				}else{
+					time = moment.unix(time).format('YYYY.MM.DD HH:mm:ss');
+				}
+				return(
+					<span>{time}</span>
+				);
+			}
 		},
 		{
 			title: formatMessage({id: 'faceLog.arrival.count'}),
 			dataIndex:'arrivalCount',
-			key:'arrivalCount'
+			key:'arrivalCount',
+			render:(count = formatMessage({id: 'faceLog.undefined'})) => (
+				<span>{count}</span>
+			)
 		},
 		{
 			title: formatMessage({id: 'faceLog.action'}),

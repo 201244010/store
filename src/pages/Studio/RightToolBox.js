@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Col, Icon, Input, Row, Select, Radio } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { SHAPE_TYPES, MAPS } from '@/constants/studio';
+import { SHAPE_TYPES, MAPS, FORMATS } from '@/constants/studio';
 // import { validEAN8Num, validEAN13Num } from '@/utils/studio';
 import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
@@ -87,6 +87,7 @@ export default class RightToolBox extends Component {
 			const detail = componentsDetail[selectedShapeName];
 			const oldNameIndex = detail.name.replace(/[^0-9]/gi, '');
 			const newType = `${value}@${detail.type.split('@')[2] || ''}`;
+			const smallFontSize = newType.indexOf('normal') > -1 ? detail.fontSize : FORMATS.DEFAULT_PRICE_SMALL_FONT_SIZE;
 			deleteSelectedComponent({
 				selectedShapeName,
 				isStep: false
@@ -95,6 +96,7 @@ export default class RightToolBox extends Component {
 				...detail,
 				type: newType,
 				name: `${newType}${oldNameIndex}`,
+				smallFontSize
 			});
 		} else {
 			const newDetail = {
@@ -417,16 +419,12 @@ export default class RightToolBox extends Component {
 				originFix.y = componentDetail.y;
 			}
 		});
-		let realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
-		let realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
-		if (SHAPE_TYPES.LINE_H === detail.type) {
-			realHeight = detail.strokeWidth;
-		}
-		if (SHAPE_TYPES.LINE_V === detail.type) {
-			realWidth = detail.strokeWidth;
-		}
+		const realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
+		const realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
+
 		const disabled = selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) > -1;
-		const heightDisabled = disabled || selectedShapeName.indexOf(SHAPE_TYPES.IMAGE) > -1;
+		const widthDisabled = disabled || selectedShapeName.indexOf(SHAPE_TYPES.LINE_V) > -1;
+		const heightDisabled = disabled || selectedShapeName.indexOf(SHAPE_TYPES.IMAGE) > -1 || selectedShapeName.indexOf(SHAPE_TYPES.LINE_H) > -1;
 		const hasRed = this.hasRed();
 		const bindFields = this.getRealBindFields();
 
@@ -490,7 +488,7 @@ export default class RightToolBox extends Component {
 								onChange={e => {
 									this.handleWidth(detail, e);
 								}}
-								disabled={disabled}
+								disabled={widthDisabled}
 							/>
 						</Col>
 						<Col span={12}>
@@ -663,7 +661,6 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Microsoft-Yahei">微软雅黑</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -684,18 +681,9 @@ export default class RightToolBox extends Component {
 										this.handleDetail('fontSize', value);
 									}}
 								>
-									<Option value={9}>9</Option>
-									<Option value={10}>10</Option>
-									<Option value={11}>11</Option>
-									<Option value={12}>12</Option>
-									<Option value={14}>14</Option>
-									<Option value={16}>16</Option>
-									<Option value={18}>18</Option>
-									<Option value={20}>20</Option>
-									<Option value={28}>28</Option>
-									<Option value={36}>36</Option>
-									<Option value={48}>48</Option>
-									<Option value={72}>72</Option>
+									{
+										fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
+									}
 								</Select>
 							</Col>
 							{/*
@@ -917,7 +905,6 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Microsoft-Yahei">微软雅黑</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -1198,9 +1185,9 @@ export default class RightToolBox extends Component {
 												this.handleCodec(value);
 											}}
 										>
-											<Option value="EAN8">ean8</Option>
-											<Option value="EAN13">ean13</Option>
-											<Option value="CODE128">code128</Option>
+											<Option value="ean8">ean8</Option>
+											<Option value="ean13">ean13</Option>
+											<Option value="code128">code128</Option>
 										</Select>
 									</Col>
 								</Row> :

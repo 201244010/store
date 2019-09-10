@@ -1,4 +1,5 @@
 import * as Action from '@/services/dashBoard';
+import { getRange } from '@/pages/IPC/services/photoLibrary';
 import moment from 'moment';
 import { ERROR_OK } from '@/constants/errorCode';
 import { shake, format, map } from '@konata9/milk-shake';
@@ -8,7 +9,7 @@ import { DASHBOARD } from '@/pages/DashBoard/constants';
 
 const {
 	QUERY_TYPE,
-	SEARCH_TYPE: { RANGE, TRADE_TIME, PAYMENT_TYPE },
+	SEARCH_TYPE: { RANGE, TRADE_TIME, PAYMENT_TYPE, PASSENGER_FLOW_TYPE },
 	TIME_INTERVAL,
 	PURCHASE_ORDER,
 } = DASHBOARD;
@@ -20,7 +21,13 @@ const stateFields = {
 	[QUERY_TYPE.AVG_UNIT]: 'avgUnitSale',
 };
 
-const getQueryDate = rangeType => {
+const queryRangeType = {
+	[RANGE.TODAY]: 1,
+	[RANGE.WEEK]: 2,
+	[RANGE.MONTH]: 3,
+};
+
+export const getQueryDate = rangeType => {
 	const range = {
 		[RANGE.TODAY]: 'day',
 		[RANGE.WEEK]: 'week',
@@ -83,26 +90,143 @@ const sortPurchaseOrder = purchaseInfo => {
 	};
 };
 
+const getGenderCount = targetList =>
+	targetList.reduce(
+		(prev, cur) => {
+			const { femaleCount = 0, maleCount = 0 } = cur || {};
+			const { femaleCount: prevFemaleCount = 0, maleCount: prevMaleCount = 0 } = prev || {};
+			return {
+				maleCount: maleCount + prevMaleCount,
+				femaleCount: femaleCount + prevFemaleCount,
+			};
+		},
+		{ maleCount: 0, femaleCount: 0 }
+	);
+
+const getGenderFieldsList = targetList => {
+	const maleList = targetList.map(item => {
+		const { ageRange, ageRangeCode, maleCount } = item;
+		return {
+			ageRange,
+			ageRangeCode,
+			personCount: maleCount,
+			maleCount,
+		};
+	});
+
+	const femaleList = targetList.map(item => {
+		const { ageRange, ageRangeCode, femaleCount } = item;
+		return {
+			ageRange,
+			ageRangeCode,
+			personCount: femaleCount,
+			femaleCount,
+		};
+	});
+
+	return {
+		maleList,
+		femaleList,
+	};
+};
+
+const formatTime = (time, rangeType, timeRangeStart, timeRangeEnd) => {
+	if (rangeType === RANGE.TODAY) {
+		return parseInt(time, 10) - 1;
+	}
+
+	if (rangeType === RANGE.WEEK || rangeType === RANGE.MONTH) {
+		return time;
+	}
+
+	if (rangeType === RANGE.FREE) {
+		if (moment(timeRangeStart).isSame(timeRangeEnd, 'day')) {
+			return parseInt(time, 10) - 1;
+		}
+
+		return moment(timeRangeStart)
+			.add(time - 1, 'day')
+			.format('MM/DD');
+	}
+
+	return time;
+};
+
+const getRegularCount = targetList =>
+	targetList.reduce(
+		(prev, cur) => {
+			const { strangerCount = 0, regularCount = 0 } = cur || {};
+			const { strangerCount: prevStrangerCount = 0, regularCount: prevRegularCount = 0 } =
+				prev || {};
+			return {
+				strangerCount: strangerCount + prevStrangerCount,
+				regularCount: regularCount + prevRegularCount,
+			};
+		},
+		{ strangerCount: 0, regularCount: 0 }
+	);
+
+const getRegularFiledsList = targetList => {
+	const strangerList = targetList.map(item => {
+		const { ageRange, ageRangeCode, strangerCount } = item;
+		return {
+			ageRange,
+			ageRangeCode,
+			personCount: strangerCount,
+			strangerCount,
+		};
+	});
+
+	const regularList = targetList.map(item => {
+		const { ageRange, ageRangeCode, regularCount } = item;
+		return {
+			ageRange,
+			ageRangeCode,
+			personCount: regularCount,
+			regularCount,
+		};
+	});
+
+	return {
+		strangerList,
+		regularList,
+	};
+};
+
 export default {
 	namespace: 'dashboard',
 	state: {
 		searchValue: {
 			rangeType: RANGE.TODAY,
+			startQueryTime: moment()
+				.startOf('day')
+				.unix(),
+			endQueryTime: moment()
+				.endOf('day')
+				.unix(),
 			timeRangeStart: null,
 			timeRangeEnd: null,
 			tradeTime: TRADE_TIME.AMOUNT,
 			paymentType: PAYMENT_TYPE.AMOUNT,
+			passengerFlowType: PASSENGER_FLOW_TYPE.GENDER,
 		},
 
-		overviewProductLoading: false,
-		overviewDeviceLoading: false,
-		overviewIPCLoading: false,
-		overviewNetworkLoading: false,
+		ageRangeList: [],
+		ageRangeMap: {},
 
-		totalAmountLoading: false,
-		totalCountLoading: false,
-		totalRefundLoading: false,
-		avgUnitLoading: false,
+		overviewProductLoading: true,
+		overviewDeviceLoading: true,
+		overviewIPCLoading: true,
+		overviewNetworkLoading: true,
+
+		totalAmountLoading: true,
+		totalCountLoading: true,
+		totalRefundLoading: true,
+		avgUnitLoading: true,
+
+		passengerFlowLoading: true,
+		passengerOrderLoading: true,
+		passengerFlowTypeLoading: true,
 
 		barLoading: false,
 		skuLoading: false,
@@ -122,6 +246,10 @@ export default {
 		orderList: [],
 		skuRankList: [],
 		purchaseInfo: {},
+
+		passengerFlow: {},
+		passengerAgeInfo: {},
+		passengerOrderList: [],
 	},
 	effects: {
 		*switchLoading({ payload }, { put }) {
@@ -132,6 +260,31 @@ export default {
 					[loadingType]: loadingStatus,
 				},
 			});
+		},
+
+		*getAgeRanges(_, { call, put }) {
+			const response = yield call(getRange);
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { ageRangeList = [] } = format('toCamel')(data);
+
+				const ageRangeMap = ageRangeList.reduce((prev, cur) => {
+					const { ageRange, ageRangeCode } = cur;
+					return {
+						...prev,
+						[ageRangeCode]: ageRange,
+					};
+				}, {});
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						ageRangeList,
+						ageRangeMap,
+					},
+				});
+			}
+			return response;
 		},
 
 		*fetchAllData({ payload }, { all, put }) {
@@ -178,37 +331,65 @@ export default {
 						loadingType: 'totalCountLoading',
 					},
 				}),
+
+				// 进店客流
 				put({
-					type: 'fetchTotalInfo',
+					type: 'fetchPassengerFlowByTimeRange',
 					payload: {
-						queryType: QUERY_TYPE.TOTAL_REFUND,
 						needLoading,
-						loadingType: 'totalRefundLoading',
+						loadingType: 'passengerFlowLoading',
 					},
 				}),
+
+				// 转化率趋势
 				put({
-					type: 'fetchTotalInfo',
+					type: 'fetchPassengerOrderByTimeRange',
 					payload: {
-						queryType: QUERY_TYPE.AVG_UNIT,
 						needLoading,
-						loadingType: 'avgUnitLoading',
+						loadingType: 'passengerOrderLoading',
 					},
 				}),
+
+				// 客群年龄分布
+				put({
+					type: 'fetchPassengerAgeByTimeRange',
+					payload: {
+						needLoading,
+						loadingType: 'passengerFlowTypeLoading',
+					},
+				}),
+
+				// put({
+				// 	type: 'fetchTotalInfo',
+				// 	payload: {
+				// 		queryType: QUERY_TYPE.TOTAL_REFUND,
+				// 		needLoading,
+				// 		loadingType: 'totalRefundLoading',
+				// 	},
+				// }),
+				// put({
+				// 	type: 'fetchTotalInfo',
+				// 	payload: {
+				// 		queryType: QUERY_TYPE.AVG_UNIT,
+				// 		needLoading,
+				// 		loadingType: 'avgUnitLoading',
+				// 	},
+				// }),
 				// time duration
-				put({
-					type: 'fetchTimeDistribution',
-					payload: { needLoading },
-				}),
+				// put({
+				// 	type: 'fetchTimeDistribution',
+				// 	payload: { needLoading },
+				// }),
 				// sku rank
-				put({
-					type: 'fetchSKURankList',
-					payload: { needLoading },
-				}),
+				// put({
+				// 	type: 'fetchSKURankList',
+				// 	payload: { needLoading },
+				// }),
 				// payment
-				put({
-					type: 'fetchPurchaseTypeStatistics',
-					payload: { needLoading },
-				}),
+				// put({
+				// 	type: 'fetchPurchaseTypeStatistics',
+				// 	payload: { needLoading },
+				// }),
 			]);
 
 			yield put({
@@ -338,6 +519,190 @@ export default {
 						overviewIPCLoading: false,
 					},
 				});
+			}
+		},
+
+		*fetchPassengerOrderByTimeRange({ payload }, { select, put }) {
+			const {
+				searchValue,
+				searchValue: { rangeType, timeRangeStart, timeRangeEnd },
+			} = yield select(state => state.dashboard);
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
+
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'passengerOrderLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+
+			let response = null;
+			if (rangeType === RANGE.FREE) {
+				response = yield put.resolve({
+					type: 'passengerFlow/getPassengerFlowOrderByRange',
+					payload: {
+						startTime: moment.unix(startTime).format('YYYY-MM-DD'),
+						endTime: moment.unix(endTime).format('YYYY-MM-DD'),
+					},
+				});
+			} else {
+				response = yield put.resolve({
+					type: 'passengerFlow/getPassengerFlowOrderLatest',
+					payload: {
+						type: queryRangeType[rangeType],
+					},
+				});
+			}
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { countList = [] } = format('toCamel')(data);
+
+				const formattedList = countList.map(item => {
+					const { orderCount = 0, passengerFlowCount = 0, time } = item;
+					return {
+						...item,
+						time: formatTime(time, rangeType, timeRangeStart, timeRangeEnd),
+						passengerFlowRate:
+							passengerFlowCount === 0
+								? 0
+								: parseInt((orderCount / passengerFlowCount) * 100, 10),
+					};
+				});
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						passengerOrderList: formattedList,
+						passengerOrderLoading: false,
+					},
+				});
+			}
+		},
+
+		*fetchPassengerFlowByTimeRange({ payload }, { select, put }) {
+			const {
+				searchValue,
+				searchValue: { rangeType },
+			} = yield select(state => state.dashboard);
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
+
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'passengerFlowLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+
+			let response = null;
+			if (rangeType === RANGE.FREE) {
+				response = yield put.resolve({
+					type: 'passengerFlow/getPassengerFlow',
+					payload: {
+						startTime: moment.unix(startTime).format('YYYY-MM-DD'),
+						endTime: moment.unix(endTime).format('YYYY-MM-DD'),
+					},
+				});
+			} else {
+				response = yield put.resolve({
+					type: 'passengerFlow/getPassengerFlowLatest',
+					payload: {
+						type: queryRangeType[rangeType],
+					},
+				});
+			}
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				yield put({
+					type: 'updateState',
+					payload: {
+						passengerFlow: format('toCamel')(data),
+						passengerFlowLoading: false,
+					},
+				});
+			}
+		},
+
+		*fetchPassengerAgeByTimeRange({ payload }, { select, put }) {
+			const {
+				searchValue,
+				searchValue: { passengerFlowType },
+				ageRangeMap,
+			} = yield select(state => state.dashboard);
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
+
+			const { needLoading } = payload;
+			if (needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'passengerFlowTypeLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+
+			const response = yield put.resolve({
+				type: 'passengerFlow/getPassengerAge',
+				payload: {
+					startTime: moment.unix(startTime).format('YYYY-MM-DD'),
+					endTime: moment.unix(endTime).format('YYYY-MM-DD'),
+					type: passengerFlowType,
+				},
+			});
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { countList = [] } = format('toCamel')(data) || {};
+
+				const formattedList = countList
+					.map(item => {
+						const { ageRangeCode } = item;
+						return {
+							...item,
+							ageRange: ageRangeMap[ageRangeCode] || '',
+						};
+					})
+					.sort((a, b) => a.ageRangeCode - b.ageRangeCode);
+
+				if (passengerFlowType === PASSENGER_FLOW_TYPE.GENDER) {
+					const genderCount = getGenderCount(formattedList);
+					const { maleList, femaleList } = getGenderFieldsList(formattedList);
+
+					yield put({
+						type: 'updateState',
+						payload: {
+							passengerAgeInfo: {
+								passengerList: [...maleList, ...femaleList] || [],
+								...genderCount,
+							},
+							passengerFlowTypeLoading: false,
+						},
+					});
+				} else {
+					const regularCount = getRegularCount(formattedList);
+					const { strangerList, regularList } = getRegularFiledsList(formattedList);
+
+					yield put({
+						type: 'updateState',
+						payload: {
+							passengerAgeInfo: {
+								passengerList: [...strangerList, ...regularList] || [],
+								...regularCount,
+							},
+							passengerFlowTypeLoading: false,
+						},
+					});
+				}
 			}
 		},
 
@@ -589,6 +954,12 @@ export default {
 						rangeType: RANGE.TODAY,
 						timeRangeStart: null,
 						timeRangeEnd: null,
+						startQueryTime: moment()
+							.startOf('day')
+							.unix(),
+						endQueryTime: moment()
+							.endOf('day')
+							.unix(),
 						tradeTime: TRADE_TIME.AMOUNT,
 						paymentType: PAYMENT_TYPE.AMOUNT,
 					},

@@ -39,6 +39,10 @@ class MqttModel {
 	effects() {
 		const me = this;
 		return {
+			getClientId() {
+				return me.clientId || null;
+			},
+
 			checkClientExist() {
 				return !!me.clientId && !!me.address;
 			},
@@ -144,7 +148,7 @@ class MqttModel {
 				return me.client.msgIdMap;
 			},
 
-			*clearMsgId({payload}, { call }) {
+			*clearMsgId({ payload }, { call }) {
 				yield call(me.client.clearMsg, payload);
 			},
 		};

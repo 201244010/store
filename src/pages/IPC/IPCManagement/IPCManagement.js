@@ -7,6 +7,7 @@ import BasicParams from './BasicParams';
 // import CloudService from './CloudService';
 import SoftwareUpdate from './SoftwareUpdate';
 import InitialSetting from './InitialSetting';
+import CardManagement from './CardManagement';
 import styles from './IPCManagement.less';
 
 class IPCManagement extends Component {
@@ -20,10 +21,11 @@ class IPCManagement extends Component {
 				<DeviceBasicInfo sn={sn} />
 				<ActiveDetection sn={sn} />
 				<BasicParams sn={sn} />
+				<CardManagement sn={sn} />
+				<InitialSetting sn={sn} />
+				<SoftwareUpdate sn={sn} showModal={showModal} />
 				{/* <NetworkSetting sn={sn} /> */}
 				{/* <CloudService sn={sn} /> */}
-				<SoftwareUpdate sn={sn} showModal={showModal} />
-				<InitialSetting sn={sn} />
 			</div>
 
 		);

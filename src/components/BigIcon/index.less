@@ -7,6 +7,54 @@
 
 	.icon-default {
 		font-size: 60px;
-		color: #FFF;
+		color: #fff;
+	}
+}
+
+.radio-label {
+	display: inline-block;
+	position: relative;
+
+	input {
+		display: none;
+	}
+
+	.radio-bg {
+		width: 200px;
+		height: 80px;
+		padding: 5px 10px;
+		box-sizing: border-box;
+		border: 1px solid #cccccc;
+		border-radius: 10px;
+		background-repeat: no-repeat !important;
+		background-size: 90% auto !important;
+		background-position: center !important;
+		cursor: pointer;
+	}
+
+	input:checked + .radio-bg {
+		border: 1px solid #ffa05c;
+		border-radius: 10px;
+
+		&::before {
+			content: '';
+			width: 0px;
+			position: absolute;
+			top: 0;
+			right: 0;
+			border: 20px solid red;
+			border-left-color: transparent;
+			border-bottom-color: transparent;
+			border-top-right-radius: 10px;
+		}
+
+		&::after {
+			content: url('./../../assets/icon/check.svg');
+			width: 20px;
+			height: 20px;
+			position: absolute;
+			top: 5px;
+			right: 0;
+		}
 	}
 }

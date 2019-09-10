@@ -1,12 +1,32 @@
 import React, { Component } from 'react';
-import { Card, Button, Modal, Spin, Progress, Icon } from 'antd';
+import { Card, Button, Modal, Spin, Progress, Icon, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import moment from 'moment';
+import AnchorWrapper from '@/components/Anchor';
 
 import styles from './SoftwareUpdate.less';
 
+const STATUS = {
+	NORMAL: 'normal',
+	DOWNLOAD: 'downloading',
+	DOWNLOADFAIL: 'downloadFailed',
+	AI: 'aiUpgrading',
+	AIFIRMWARE: 'firmwaringAfterAI',
+	FIRMWARE: 'firmwaring',
+	RESTART: 'restarting',
+	SUCCESS: 'success',
+	FAIL: 'failed',
+	BTNLOAD: 'btnLoading',
+	NODOWNLOADRECEIVE: 'noDownloadReceive'
+};
 
+// const STATUS_PERCENT = {
+// 	DOWNLOAD: 37,
+// 	AI: 68,
+// 	FIRMWARE: 83,
+// 	RESTART : 95
+// };
 
 const mapStateToProps = (state) => {
 	const { ipcSoftwareUpdate: info, loading } = state;
@@ -24,7 +44,7 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		});
 	},
-	checkVersion: (sn) => {
+	detect: (sn) => {
 		dispatch({
 			type: 'ipcSoftwareUpdate/detect',
 			payload: {
@@ -57,35 +77,29 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		}).then(info => info);
 	},
-	// getLastCheckTime( sn ) {
-	// 	return dispatch({
-	// 		type: 'ipcSoftwareUpdate/getLastCheckTime',
-	// 		payload:{
-	// 			sn
-	// 		}
-	// 	});
-	// }
+	readIpcList(){
+		dispatch({
+			type: 'ipcList/read'
+		});
+	}
 });
 
+@AnchorWrapper
 @connect(mapStateToProps, mapDispatchToProps)
 class SoftwareUpdate extends Component {
 	state = {
-		// version: 'V1.0.20',
-		// isLatest: true,
 		visible: false,
 		percent: 0,
 		deviceInfo: {},
-		showLoadingFlag:true
-		// proVisible: false,
-		// isUpdate: false,
-		// isCheck: false
+		showLoadingFlag: true,
+		confirmBtnShowLoadingFlag: false
 	}
 
 	interval = 0
 
 	componentDidMount = async () => {
 		const { load, sn, getDeviceInfo, showModal } = this.props;
-		// console.log(sn);
+
 		if(sn){
 			const deviceInfo = await getDeviceInfo({ sn });
 			this.setState({
@@ -98,16 +112,18 @@ class SoftwareUpdate extends Component {
 		}
 	}
 
+	componentWillReceiveProps(nextProps){
+		const { info } = nextProps;
+		const { info: lastInfo } = this.props;
+		if(lastInfo.updating !== info.updating){
+			this.addTimeoutHandler(info, lastInfo);
+		}
+	}
 
-	// getNewLastCheckTime(){
-	// 	const { sn, getLastCheckTime } = this.props;
-	// 	const newLastCheckTime = getLastCheckTime(sn);
-	// 	console.log(newLastCheckTime);
-	// }
 
 	showModal = () => {
-		const { checkVersion, sn, load } = this.props;
-		checkVersion(sn);
+		const { detect, sn, load } = this.props;
+		detect(sn);
 
 		this.setState({
 			visible: true
@@ -121,49 +137,121 @@ class SoftwareUpdate extends Component {
 		}, 2000);
 	}
 
-
-	updateSoftware = () => {
+	updateSoftware = async () => {
+		
 		const { update,  sn } = this.props;
-		const { deviceInfo: { OTATime }} = this.state;
-		update(sn);
+		const { deviceInfo: { OTATime: { 
+			totalTime,
+			defaultDownloadTime, 
+			defaultFirmwareTime, 
+			defaultAIUpgradeTime, 
+			defaultRestartTime 
+		 },STATUS_PERCENT } } = this.state;
+		let visible = true;
 
-		const time = OTATime;
+		await update(sn);
+
 		clearInterval(this.interval);
 		this.interval = setInterval(() => {
-			const { percent } = this.state;
-			if (percent < 90) {
-				this.setState({
-					percent: percent+1
-				});
-			}
-		}, time/100);
+			let { percent } = this.state;
+			const { info: { updating, OTATime:{
+				downloadTime = defaultDownloadTime, 
+				firmwareTime = defaultFirmwareTime, 
+				aiUpgradeTime = defaultAIUpgradeTime, 
+				restartTime = defaultRestartTime 
+			} } } = this.props;
 
-		setTimeout(() => {
-			const { info: { updating } } = this.props;
-			if (updating === 'loading') {
-				// console.log('timeout', updating);
-				this.setUpdatingStatus('failed');
+			switch(updating){
+				case STATUS.DOWNLOAD:
+					if(percent < STATUS_PERCENT.DOWNLOAD){
+						const sections = STATUS_PERCENT.DOWNLOAD - 0;
+						percent += Math.round(sections*totalTime/downloadTime/100);
+						percent = percent > STATUS_PERCENT.DOWNLOAD ? STATUS_PERCENT.DOWNLOAD : percent;
+					}
+					break;
+				case STATUS.AI:
+					if(percent < STATUS_PERCENT.DOWNLOAD){
+						percent = STATUS_PERCENT.DOWNLOAD;
+					}
+					if(percent >= STATUS_PERCENT.DOWNLOAD && percent < STATUS_PERCENT.AI){
+						const sections = STATUS_PERCENT.AI - STATUS_PERCENT.DOWNLOAD;
+						percent += Math.round(sections*totalTime/aiUpgradeTime/100);
+						percent = percent > STATUS_PERCENT.AI ? STATUS_PERCENT.AI : percent;
+					}
+					break;
+				case STATUS.AIFIRMWARE:
+					if(percent < STATUS_PERCENT.AI){
+						percent = STATUS_PERCENT.AI;
+					}
+					if(percent >= STATUS_PERCENT.AI && percent < STATUS_PERCENT.FIRMWARE){
+						const sections = STATUS_PERCENT.FIRMWARE - STATUS_PERCENT.AI;
+						percent += Math.round(sections*totalTime/firmwareTime/100);
+						percent = percent > STATUS_PERCENT.FIRMWARE ? STATUS_PERCENT.FIRMWARE : percent;
+					}
+					break;
+				case STATUS.FIRMWARE:
+					if(percent < STATUS_PERCENT.DOWNLOAD){
+						percent = STATUS_PERCENT.DOWNLOAD;
+					}
+					if(percent >= STATUS_PERCENT.DOWNLOAD && percent < STATUS_PERCENT.FIRMWARE){
+						const sections = STATUS_PERCENT.FIRMWARE - STATUS_PERCENT.DOWNLOAD;
+						percent += Math.round(sections*totalTime/firmwareTime/100);
+						percent = percent > STATUS_PERCENT.FIRMWARE ? STATUS_PERCENT.FIRMWARE : percent;
+					}
+					break;
+				case STATUS.RESTART:
+					if(percent < STATUS_PERCENT.FIRMWARE){
+						percent = STATUS_PERCENT.FIRMWARE;
+					}
+					if(percent >= STATUS_PERCENT.FIRMWARE && percent < STATUS_PERCENT.RESTART){
+						const sections = STATUS_PERCENT.RESTART - STATUS_PERCENT.FIRMWARE;
+						percent += Math.round(sections*totalTime/restartTime/100);
+						percent = percent > STATUS_PERCENT.RESTART ? STATUS_PERCENT.RESTART : percent;
+					}
+					break;
+				case STATUS.DOWNLOADFAIL:
+					percent = 0;
+					visible = false;
+					message.error(formatMessage({ id: 'softwareUpdate.download.fail' }));
+					clearInterval(this.interval);
+					this.setUpdatingStatus(STATUS.NORMAL);
+					break;
+				// case STATUS.NODOWNLOADRECEIVE:
+				// 	percent = 0;
+				// 	visible = false;
+				// 	message.info(formatMessage({ id: 'softwareUpdate.receive.fail' }));
+				// 	clearInterval(this.interval);
+				// 	this.setUpdatingStatus(STATUS.NORMAL);
+				// 	break;
+				default:
+					break;
 			}
-		}, time+30*1000);
-
-		// this.setState({
-		// 	isCheck: false,
-		// 	isUpdate: true
-		// });
+			this.setState({
+				percent,
+				visible
+			});
+		}, totalTime/100);
 	}
 
-	hideModal = () => {
+	hideModal = async() => {
 		this.setState({
-			visible: false
+			confirmBtnShowLoadingFlag: true	
 		});
-
-		this.setUpdatingStatus('normal');
+		const { readIpcList, getDeviceInfo, sn } = this.props;
+		await readIpcList();
+		const deviceInfo = await getDeviceInfo({ sn });
+		await this.setState({
+			visible: false,
+			percent: 0,
+			deviceInfo,
+			confirmBtnShowLoadingFlag: false
+		});
+		this.setUpdatingStatus(STATUS.NORMAL);
 	}
 
 	setUpdatingStatus = (status) => {
 
 		const {setUpdatingStatus, sn} = this.props;
-		// console.log('set',status,sn);
 		setUpdatingStatus(sn, status);
 	}
 
@@ -173,9 +261,101 @@ class SoftwareUpdate extends Component {
 		});
 	}
 
+	addTimeoutHandler(info, lastInfo){
+		const { updating, OTATime } = info;
+		const { updating: lastUpdating } = lastInfo; 
+		const { deviceInfo: { OTATime: { 
+			defaultDownloadTime, 
+			defaultFirmwareTime, 
+			defaultAIUpgradeTime, 
+			defaultRestartTime 
+		}}} = this.state;
+
+		const { 
+			downloadTime = defaultDownloadTime, 
+			firmwareTime = defaultFirmwareTime, 
+			aiUpgradeTime = defaultAIUpgradeTime, 
+			restartTime = defaultRestartTime 
+		} = OTATime;
+
+		if(lastUpdating === STATUS.NORMAL && updating === STATUS.BTNLOAD){
+			setTimeout(() => {
+				const { info: { updating: newUpdating } } = this.props;
+				if (newUpdating === STATUS.BTNLOAD) {
+					clearInterval(this.interval);
+					this.setState({
+						percent: 0,
+						visible: false
+					});
+					message.error(formatMessage({ id: 'softwareUpdate.receive.fail' }));
+					this.setUpdatingStatus(STATUS.NORMAL);	
+				}
+			}, 10*1000);
+		}
+
+		if(lastUpdating === STATUS.BTNLOAD && updating === STATUS.DOWNLOAD){
+			setTimeout(() => {
+				const { info: { updating: newUpdating } } = this.props;
+				if (newUpdating === STATUS.DOWNLOAD) {
+					// clearInterval(this.interval);
+					// this.setState({
+					// 	percent: 0,
+					// 	visible: false
+					// });
+					// message.error(formatMessage({ id: 'softwareUpdate.download.fail' }));
+					this.setUpdatingStatus(STATUS.DOWNLOADFAIL);
+				}
+			}, downloadTime+15*1000);
+		}
+		if(lastUpdating === STATUS.DOWNLOAD && updating === STATUS.AI){
+			setTimeout(() => {
+				const { info: { updating: newUpdating } } = this.props;
+				if (newUpdating === STATUS.AI) {
+					this.setUpdatingStatus(STATUS.FAIL);
+				}
+			}, aiUpgradeTime+15*1000);
+		}
+		if(lastUpdating === STATUS.DOWNLOAD && updating === STATUS.FIRMWARE){
+
+			setTimeout(() => {
+				const { info: { updating: newUpdating } } = this.props;
+				if (newUpdating === STATUS.FIRMWARE) {
+					this.setUpdatingStatus(STATUS.RESTART);
+				}
+			}, firmwareTime);
+		}
+		if(lastUpdating === STATUS.AI && updating === STATUS.AIFIRMWARE){
+			setTimeout(() => {
+				const { info: { updating: newUpdating } } = this.props;
+				if (newUpdating === STATUS.AIFIRMWARE) {
+					this.setUpdatingStatus(STATUS.RESTART);
+				}
+			}, firmwareTime);
+		}
+		if(lastUpdating === STATUS.FIRMWARE && updating === STATUS.RESTART){
+			setTimeout(() => {
+				const { info: { updating: newUpdating } } = this.props;
+				if (newUpdating === STATUS.RESTART) {
+					this.setUpdatingStatus(STATUS.FAIL);
+	
+				}
+			}, restartTime+15*1000);
+		}
+		if(lastUpdating === STATUS.AIFIRMWARE && updating === STATUS.RESTART){
+			setTimeout(() => {
+				const { info: { updating: newUpdating } } = this.props;
+				if (newUpdating === STATUS.RESTART) {
+					this.setUpdatingStatus(STATUS.FAIL);
+	
+				}
+			}, restartTime+15*1000);
+		}
+		
+	}
+
 	render() {
 		const { info: { currentVersion, needUpdate, lastCheckTime, updating, newTimeValue }, loading } = this.props;
-		const { percent, visible, showLoadingFlag } = this.state;
+		const { percent, visible, showLoadingFlag, deviceInfo:{ STATUS_PERCENT }, confirmBtnShowLoadingFlag } = this.state;
 		const showLoading = loading.effects['ipcSoftwareUpdate/detect']||showLoadingFlag;
 		return (
 			<div>
@@ -183,6 +363,7 @@ class SoftwareUpdate extends Component {
 					bordered={false}
 					className={styles['main-card']}
 					title={formatMessage({ id: 'softwareUpdate.title' })}
+					id="softwareUpdate"
 				>
 					<div className={styles['main-block']}>
 						<p className={styles.tips}>
@@ -199,25 +380,26 @@ class SoftwareUpdate extends Component {
 
 				<Modal
 					visible={visible}
-					closable={updating !== 'loading'}
+					closable={updating === STATUS.NORMAL}
 					maskClosable={false}
 					afterClose={this.closeHanlder}
 					footer={
 						(() => {
-							if (updating === 'success' || updating === 'failed') {
+							if (updating === STATUS.SUCCESS || updating === STATUS.FAIL) {
 								clearInterval(this.interval);
 								return (
 									<Button
 										type="primary"
 										onClick={this.hideModal}
+										loading={confirmBtnShowLoadingFlag}
 									>
 										{formatMessage({ id: 'softwareUpdate.confirm' })}
 									</Button>
 								);
 							}
-							if (needUpdate && updating === 'normal') {
+							if (needUpdate && (updating === STATUS.NORMAL || updating === STATUS.BTNLOAD) && !showLoading) {
 								return (
-									<Button type="primary" onClick={this.updateSoftware}>
+									<Button type="primary" onClick={this.updateSoftware} loading={updating === STATUS.BTNLOAD}>
 										{formatMessage({ id: 'softwareUpdate.update' })}
 									</Button>
 								);
@@ -248,35 +430,69 @@ class SoftwareUpdate extends Component {
 								);
 							}
 
-							if (updating !== 'normal') {
+							if (updating !== STATUS.NORMAL && updating !== STATUS.BTNLOAD && updating !== STATUS.SUCCESS && updating !== STATUS.FAIL && updating !== STATUS.NODOWNLOADRECEIVE) {
 								return (
 									<div className={styles.info}>
-
+										<Progress
+											className={styles.progress}
+											percent={updating === STATUS.SUCCESS ? 100 : percent}
+											status='active'
+										/>
 										{
-											updating === 'failed' ?
+											(() => {
+												let text = '';
+												if(percent >= 0 && percent <= STATUS_PERCENT.DOWNLOAD){
+													text = (
+														<p>{ formatMessage({ id: 'softwareUpdate.downloadTips' }) }</p>
+													);
+												}
+												if(percent > STATUS_PERCENT.DOWNLOAD && percent <= STATUS_PERCENT.FIRMWARE){
+													if(updating === STATUS.FIRMWARE){
+														text = (
+															<p>{ formatMessage({ id: 'softwareUpdate.upgradeTips' }) }</p>
+														);
+													}else if(updating === STATUS.AI || updating === STATUS.AIFIRMWARE){
+														text = (
+															<p>{ formatMessage({ id: 'softwareUpdate.upgradeWithAITips' }) }</p>
+														);
+													}else{
+														text = (
+															<p>{ formatMessage({ id: 'softwareUpdate.restartTips' }) }</p>
+														);
+													}
+													
+												}
+												if(percent > STATUS_PERCENT.FIRMWARE && percent < 100){
+													text = (
+														<p>{ formatMessage({ id: 'softwareUpdate.restartTips' }) }</p>
+													);
+												}
+												return text;
+											})()
+										}
+									</div>
+								);
+							}
+
+							if(updating === STATUS.SUCCESS || updating === STATUS.FAIL){
+								return(
+									<div className={`${styles['no-padding-bottom']} ${styles.info}`}>
+										{
+											updating === STATUS.FAIL ?
 												'' :
 												<Progress
 													className={styles.progress}
-													percent={updating === 'loading' ? percent : 100}
+													percent={updating === STATUS.SUCCESS ? 100 : percent}
 													status='active'
 												/>
 										}
 										{
 											(() => {
-												// console.log(loading);
 												let text = '';
 												switch (updating) {
-													case 'success':
+													case STATUS.SUCCESS:
 														text = (
-															<>
-																{/* <h3>
-																	<Icon className={`${styles.icon} ${styles.success}`} type='check-circle' />
-																	<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.updateSuccess' })}</span>
-																</h3> */}
-
-																<p>{formatMessage({ id: 'softwareUpdate.updateSuccessMsg' })}</p>
-															</>
-
+															<p>{formatMessage({ id: 'softwareUpdate.updateSuccessMsg' })}</p>
 														);
 														break;
 													case 'failed':
@@ -286,17 +502,11 @@ class SoftwareUpdate extends Component {
 																	<Icon className={`${styles.icon} ${styles.error}`} type='close-circle' />
 																	<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.updateFailed'})}</span>
 																</h3>
-
 																<p>{ formatMessage({ id: 'softwareUpdate.updateFailedMsg' }) }</p>
 															</>
-
 														);
 														break;
-													case 'loading':
 													default:
-														text = (
-															<p>{formatMessage({ id: 'softwareUpdate.updating' })}</p>
-														);
 														break;
 												}
 												return text;
@@ -308,7 +518,7 @@ class SoftwareUpdate extends Component {
 
 							if (needUpdate) {
 								return (
-									<div className={styles.info}>
+									<div className={`${styles['no-padding-bottom']} ${styles.info}`}>
 										<h3>
 											<Icon className={`${styles.icon} ${styles.warning}`} type="info-circle" />
 											<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.hasUpdate' })}</span>

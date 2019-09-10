@@ -49,10 +49,23 @@ const router = [
 				path: '/dashboard',
 				name: 'dashboard',
 				icon: 'blank',
-				component: './DashBoard',
-				id: 'dashboard',
-			},
 
+				routes: [
+					{
+						path: '/dashboard',
+						id: 'dashboard',
+						hideInMenu: true,
+						component: './DashBoard',
+					},
+					{
+						path: '/dashboard/detail',
+						id: 'orderDetail',
+						name: 'orderDetail',
+						hideInMenu: true,
+						component: './DashBoard/OrderDetail',
+					},
+				],
+			},
 			{
 				path: '/application',
 				name: 'application',
@@ -88,6 +101,30 @@ const router = [
 							{
 								path: '/application/cashVerify',
 								redirect: '/application/cashVerify/posList',
+							},
+						],
+					},
+					{
+						path: '/application/trade',
+						name: 'trade',
+						routes: [
+							{
+								path: '/application/trade',
+								id: 'trade',
+								hideInMenu: true,
+								component: './Trade',
+							},
+							{
+								path: '/application/trade/qrpay',
+								id: 'qrpay',
+								hideInMenu: true,
+								component: './Trade/QRCodePayment',
+							},
+							{
+								path: '/application/trade/result',
+								id: 'tradeResult',
+								hideInMenu: true,
+								component: './Trade/TradeResult',
 							},
 						],
 					},
@@ -219,15 +256,29 @@ const router = [
 						path: '/network/list',
 						name: 'list',
 						id: 'networkList',
-						hideInMenu: true,
-						component: './DeviceManagement/Network',
+						// hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkOverview',
 					},
 					{
 						path: '/network/detail',
 						name: 'detail',
 						id: 'networkDetail',
 						hideInMenu: true,
-						component: './DeviceManagement/Network/NetworkDetail',
+						component: './DeviceManagement/Network/NetworkOverview/NetworkDetail',
+					},
+					{
+						path: '/network/configManagement',
+						name: 'configManagement',
+						id: 'configManagement',
+						// hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkConfig',
+					},
+					{
+						path: '/network/clientList',
+						name: 'clientList',
+						id: 'clientList',
+						hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkOverview/ClientList',
 					},
 				],
 			},
@@ -526,8 +577,8 @@ const router = [
 								path: '/faceidLibrary/faceidLibraryList',
 								id: 'faceidLibraryList',
 								component: './IPC/FaceidLibrary/LibraryList.js',
-							}
-						]
+							},
+						],
 					},
 					{
 						path: '/faceidLibrary/faceLog',
@@ -547,8 +598,8 @@ const router = [
 								// name: 'faceLog',
 								id: 'faceLog',
 								component: './IPC/FaceLog/index.js',
-							}
-						]
+							},
+						],
 					},
 
 					// {
@@ -564,7 +615,6 @@ const router = [
 					// 	id: 'createLibrary',
 					// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
 					// },
-					
 				],
 			},
 		],
