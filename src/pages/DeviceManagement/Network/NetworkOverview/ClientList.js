@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Table, Spin } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
+import { DEFAULT_PAGE_LIST_SIZE } from '@/constants/index';
 import { OPCODE } from '@/constants/mqttStore';
 import { formatRelativeTime } from '@/utils/utils';
 import styles from './Network.less';
@@ -201,6 +202,7 @@ class ClientList extends React.Component {
 						rowKey="mac"
 						pagination={{
 							showSizeChanger: true,
+							pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
 						}}
 					/>
 				</Spin>
