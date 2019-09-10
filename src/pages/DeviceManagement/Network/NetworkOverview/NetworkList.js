@@ -3,7 +3,6 @@ import { Card, Divider, Badge, Icon, Input, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { IconLink, IconEquipment, IconNetwork } from '@/components/IconSvg';
 import { ERROR_OK } from '@/constants/errorCode';
-import { OPCODE } from '@/constants/mqttStore';
 import styles from './Network.less';
 
 class NetworkList extends React.PureComponent {
@@ -13,50 +12,13 @@ class NetworkList extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		this.fetchApMessage();
+		const { getList } = this.props;
+		getList();
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.intervalTimer);
 	}
-
-	fetchApMessage = async () => {
-		const { getList } = this.props;
-		await getList();
-		await this.fetchMqtt();
-		clearInterval(this.intervalTimer);
-		this.intervalTimer = setInterval(async () => {
-			await getList();
-			await this.fetchMqtt();
-		}, 5000);
-	};
-
-	fetchMqtt = () => {
-		const { getAPMessage, networkList } = this.props;
-		networkList.map(async item => {
-			const { networkId, masterDeviceSn: sn, activeStatus } = item;
-			if (activeStatus) {
-				await getAPMessage({
-					message: {
-						opcode: OPCODE.CLIENT_LIST_GET,
-						param: {
-							network_id: networkId,
-							sn,
-						},
-					},
-				});
-				await getAPMessage({
-					message: {
-						opcode: OPCODE.TRAFFIC_STATS_GET,
-						param: {
-							network_id: networkId,
-							sn,
-						},
-					},
-				});
-			}
-		});
-	};
 
 	editName = payload => {
 		const { editNetworkId } = this.props;

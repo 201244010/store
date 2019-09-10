@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
+import { OPCODE } from '@/constants/mqttStore';
 import DeviceList from './DeviceList';
 import NetworkList from './NetworkList';
 import EventList from './EventList';
@@ -8,6 +9,7 @@ import styles from './Network.less';
 @connect(
 	state => ({
 		network: state.network,
+		loading: state.loading,
 	}),
 	dispatch => ({
 		updateAlias: ({ networkId, networkAlias }) =>
@@ -52,6 +54,7 @@ class Network extends React.Component {
 			const apInfoTopic = await generateTopic({ service: 'W1/response', action: 'sub' });
 			await subscribe({ topic: [apInfoTopic] });
 			await setAPHandler({ handler: this.apHandler });
+			await this.fetchApMessage();
 		} else {
 			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
 		}
@@ -63,6 +66,46 @@ class Network extends React.Component {
 		console.log(payload);
 		await refreshNetworkList(payload);
 		await clearMsg({ msgId });
+	};
+
+	fetchApMessage = async () => {
+		const { getList } = this.props;
+		await this.fetchMqtt();
+		clearInterval(this.intervalTimer);
+		this.intervalTimer = setInterval(async () => {
+			await getList();
+			await this.fetchMqtt();
+		}, 5000);
+	};
+
+	fetchMqtt = () => {
+		const {
+			getAPMessage,
+			network: { networkList },
+		} = this.props;
+		networkList.map(async item => {
+			const { networkId, masterDeviceSn: sn, activeStatus } = item;
+			if (activeStatus) {
+				await getAPMessage({
+					message: {
+						opcode: OPCODE.CLIENT_LIST_GET,
+						param: {
+							network_id: networkId,
+							sn,
+						},
+					},
+				});
+				await getAPMessage({
+					message: {
+						opcode: OPCODE.TRAFFIC_STATS_GET,
+						param: {
+							network_id: networkId,
+							sn,
+						},
+					},
+				});
+			}
+		});
 	};
 
 	render() {
@@ -80,7 +123,7 @@ class Network extends React.Component {
 			refreshNetworkList,
 			goToPath,
 			clearMsg,
-			editNetworkId
+			editNetworkId,
 		} = this.props;
 		return (
 			<div>
@@ -99,7 +142,7 @@ class Network extends React.Component {
 						setAPHandler,
 						refreshNetworkList,
 						goToPath,
-						editNetworkId
+						editNetworkId,
 					}}
 				/>
 				<div className={styles['card-network-wrapper']}>
