@@ -100,6 +100,7 @@ export default {
 	'network.ontime': '已接入时间',
 	
 	'network.routerEvent.title': '事件列表',
+	'network.routerEvent.noRouter': '--',
 	'network.connect.time': '时间',
 	'network.connect.wired': '有线',
 	'network.connect.eventType': '事件类型',
