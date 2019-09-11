@@ -1,11 +1,11 @@
 import React from 'react';
 import MQTTWrapper from '@/components/MQTT';
-import FlowHeader from '@/components/FlowHeader';
-import FlowTotalCount from '@/components/FlowTotalCount';
-import FlowConversionRate from '@/components/FlowConversionRate';
-import FlowDistribution from '@/components/FlowDistribution';
-import FlowProportion from '@/components/FlowProportion';
-import FlowFS from '@/components/FlowFS';
+import FlowHeader from '@/pages/Flow/FlowHeader';
+import FlowTotalCount from '@/pages/Flow/FlowTotalCount';
+import FlowConversionRate from '@/pages/Flow/FlowConversionRate';
+import FlowDistribution from '@/pages/Flow/FlowDistribution';
+import FlowProportion from '@/pages/Flow/FlowProportion';
+import FlowFS from '@/pages/Flow/IPC/FlowFS/Live';
 
 import styles from './PassengerFlowLayout.less';
 

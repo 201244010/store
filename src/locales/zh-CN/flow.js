@@ -1,5 +1,5 @@
 export default {
-	'flow.conversionRate.title': '交易转化率趋势',
+	'flow.conversionRate.title': '客流量趋势',
 	'flow.distribution.title': '客群分布',
 	'flow.distribution.male': '男性',
 	'flow.distribution.female': '女性',
