@@ -187,10 +187,18 @@ class DisplayConfig extends Component {
 					<Row gutter={10} className={styles['m-b-15']}>
 						<Col span={8} className={styles['page-name']}>{formatMessage({id: 'esl.device.display.page.name'})}：</Col>
 						<Col span={4}>
-							<Input value={page2Config.screen_name} onChange={(e) => this.updatePageConfig('page2Config', 'screen_name', e)} />
+							<Input
+								maxLength={20}
+								value={page2Config.screen_name}
+								onChange={(e) => this.updatePageConfig('page2Config', 'screen_name', e)}
+							/>
 						</Col>
 						<Col span={4}>
-							<Input value={page3Config.screen_name} onChange={(e) => this.updatePageConfig('page3Config', 'screen_name', e)} />
+							<Input
+								maxLength={20}
+								value={page3Config.screen_name}
+								onChange={(e) => this.updatePageConfig('page3Config', 'screen_name', e)}
+							/>
 						</Col>
 					</Row>
 					{
