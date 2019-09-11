@@ -11,7 +11,7 @@ import LivePlayer from '@/pages/Flow/VideoPlayer/LivePlayer';
 import styles from './Live.less';
 
 @connect((state) => {
-	const { faceid: { rectangles, list }, live: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }, } = state;
+	const { flowFaceid: { rectangles, list }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }, } = state;
 	const rects = [];
 	rectangles.forEach(item => {
 		item.rects.forEach(rect => {
@@ -31,7 +31,7 @@ import styles from './Live.less';
 }, (dispatch) => ({
 	async getTimeSlots({sn, timeStart, timeEnd}) {
 		const result = await dispatch({
-			type: 'live/getTimeSlots',
+			type: 'flowLive/getTimeSlots',
 			payload: {
 				sn,
 				timeStart,
@@ -42,7 +42,7 @@ import styles from './Live.less';
 	},
 	async getLiveUrl({ sn }) {
 		const url = await dispatch({
-			type: 'live/getLiveUrl',
+			type: 'flowLive/getLiveUrl',
 			payload: {
 				sn
 			}
@@ -51,7 +51,7 @@ import styles from './Live.less';
 	},
 	stopLive({ sn, streamId }) {
 		return dispatch({
-			type: 'live/stopLive',
+			type: 'flowLive/stopLive',
 			payload: {
 				sn,
 				streamId
@@ -71,7 +71,7 @@ import styles from './Live.less';
 	},
 	changePPI({ ppi, sn }) {
 		dispatch({
-			type: 'live/changePPI',
+			type: 'flowLive/changePPI',
 			payload: {
 				ppi,
 				sn
@@ -80,7 +80,7 @@ import styles from './Live.less';
 	},
 	async getHistoryUrl({ timestamp, sn }) {
 		const url = await dispatch({
-			type: 'live/getHistoryUrl',
+			type: 'flowLive/getHistoryUrl',
 			payload: {
 				timestamp,
 				sn
@@ -91,7 +91,7 @@ import styles from './Live.less';
 	},
 	stopHistoryPlay({ sn }) {
 		return dispatch({
-			type: 'live/stopHistoryPlay',
+			type: 'flowLive/stopHistoryPlay',
 			payload: {
 				sn
 			}
@@ -101,7 +101,7 @@ import styles from './Live.less';
 	},
 	clearRects(timestamp) {
 		dispatch({
-			type: 'faceid/clearRects',
+			type: 'flowFaceid/clearRects',
 			payload: {
 				timestamp
 			}
@@ -116,7 +116,7 @@ import styles from './Live.less';
 	}),
 	getAgeRangeList() {
 		dispatch({
-			type: 'faceid/getAgeRangeList'
+			type: 'flowFaceid/getAgeRangeList'
 		});
 	},
 	getSdStatus: ({ sn }) => {
@@ -128,7 +128,7 @@ import styles from './Live.less';
 	},
 	setDeviceSn({ sn }) {
 		dispatch({
-			type: 'faceid/setDeviceSn',
+			type: 'flowFaceid/setDeviceSn',
 			payload: {
 				sn
 			}
@@ -136,7 +136,7 @@ import styles from './Live.less';
 	},
 	clearList({ sn }) {
 		dispatch({
-			type: 'faceid/clearList',
+			type: 'flowFaceid/clearList',
 			payload: {
 				sn
 			}

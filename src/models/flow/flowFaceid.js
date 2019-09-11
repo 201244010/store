@@ -6,7 +6,7 @@ import { getRange } from '@/pages/Flow/IPC/services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
-	namespace: 'faceid',
+	namespace: 'flowFaceid',
 	state: {
 		rectangles: [],
 		list: [],

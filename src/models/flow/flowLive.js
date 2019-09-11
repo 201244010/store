@@ -12,7 +12,7 @@ const OPCODE = {
 };
 
 export default {
-	namespace: 'live',
+	namespace: 'flowLive',
 	state: {
 		streamId: '',
 		ppi: '',
