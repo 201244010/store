@@ -52,7 +52,6 @@ class FlowConversionRate extends React.PureComponent {
 			time: item.time - 1,
 			flowCount: item.passengerFlowCount,
 		}));
-		console.log('list123', list);
 		const rateList = LIST;
 		list.map(item => {
 			for (let i = 0; i < rateList.length; i++) {

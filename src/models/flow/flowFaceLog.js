@@ -1,10 +1,10 @@
-import { getFaceLogList } from '../services/faceLog';
-import { getLibrary, getRange, move } from '../services/photoLibrary';
+import { getFaceLogList } from '@/pages/Flow/IPC/services/faceLog';
+import { getLibrary, getRange, move } from '@/pages/Flow/IPC/services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
 
 export default {
-	namespace: 'faceLog',
+	namespace: 'flowFaceLog',
 	state: {
 		total:0,
 		faceLibraryList:[],
@@ -25,7 +25,7 @@ export default {
 			return code;
 		},
 		// 更新store上的ageRangeList，并返回ageRangeCodeMap
-		*readAgeRangeList(action, { call, put }) {
+		*flowReadAgeRangeList(action, { call, put }) {
 			const response = yield call(getRange);
 			const { code, data: { ageRangeList = [] } } = response;
 			

@@ -281,7 +281,6 @@ class Live extends React.Component{
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged } = this.props;
 
 		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
-
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
 			1: formatMessage({ id: 'live.genders.male'}),

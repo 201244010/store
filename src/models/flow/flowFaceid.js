@@ -97,8 +97,7 @@ export default {
 		},
 		*mapFaceInfo({ payload }, { select, take, put }) {
 			const { libraryName, age, ageRangeCode, name } = payload;
-			let rangeList = yield select((state) => state.faceid.ageRangeList);
-			console.log('rangeList',rangeList);
+			let rangeList = yield select((state) => state.flowFaceid.ageRangeList);
 			let ageName = formatMessage({id: 'live.unknown'});
 			let libraryNameText = libraryName;
 
@@ -119,8 +118,7 @@ export default {
 			}
 
 			if(!rangeList || rangeList.length === 0){
-				const { payload: list } = yield take('readAgeRangeList');
-				console.log('take list', list);
+				const { payload: list } = yield take('flowReadAgeRangeList');
 				rangeList = list.ageRangeList;
 			}
 			if(age) {
