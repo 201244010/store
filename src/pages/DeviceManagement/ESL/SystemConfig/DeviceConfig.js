@@ -275,7 +275,6 @@ class SystemConfig extends Component {
 				eslRefleshPeriod,
 				eslRefleshTime,
 				clksyncPeriod
-		
 			} },
 			form: { getFieldDecorator, isFieldsTouched },
 		} = this.props;
@@ -298,9 +297,8 @@ class SystemConfig extends Component {
 		
 		return (
 			<Card
-				title={formatMessage({ id: 'esl.device.config.title' })}
 				bordered={false}
-				style={{ width: '100%' }}
+				className={styles['device-config-card']}
 				loading={loading.effects['eslBaseStation/getNetWorkIdList']}
 			>
 				{networkIdList.length > 0 ? (
@@ -312,7 +310,9 @@ class SystemConfig extends Component {
 							className={styles['content-card']}
 						>
 							<div className={styles['device-info']}>
-								{formatMessage({ id: 'esl.device.config.networkId' })}
+								<span className={styles['select-margin-right']}>
+									{formatMessage({ id: 'esl.device.config.networkId' })}
+								</span>
 								<Select
 									onChange={this.handleSelectChange}
 									style={SELECT_STYLE}
@@ -331,7 +331,7 @@ class SystemConfig extends Component {
 									columns={this.columns}
 									dataSource={baseStationList}
 									rowKey='sn'
-									pagination={{pageSize: 10}}
+									pagination={false}
 									className={styles['table-margin-top']}
 								/>
 							</div>
@@ -433,7 +433,7 @@ class SystemConfig extends Component {
 										>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('clksyncPeriod', {
-													initialValue: clksyncPeriod,
+													initialValue: clksyncPeriod || 3,
 													validateTrigger: 'onBlur',
 													rules: [
 														{
