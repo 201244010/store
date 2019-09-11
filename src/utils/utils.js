@@ -552,3 +552,43 @@ export const formatSpeed = speed => {
 
 	return { speed, unit };
 };
+
+
+// 格式化时间，精确到天时分秒
+export const formatRelativeTime = timeStamp => {
+	const duration = moment.duration(timeStamp);
+	const years = duration.years();
+	const months = duration.months();
+	const days = duration.days();
+	const hours = duration.hours();
+	const minutes = duration.minutes();
+	const seconds = duration.seconds();
+	let yearStr = '';
+	let monthStr = '';
+	let dayStr = '';
+	let hourStr = '';
+	let minuteStr = '';
+	let secondStr = '';
+	if (years > 0) {
+		yearStr = `${years}${formatMessage({ id: 'common.time.year' })}`;
+	}
+
+	if (months > 0) {
+		monthStr = `${months}${formatMessage({ id: 'common.time.month' })}`;
+	}
+	if (days > 0) {
+		dayStr = `${days}${formatMessage({ id: 'common.time.day' })}`;
+	}
+	if (hours > 0) {
+		hourStr = `${hours}${formatMessage({ id: 'common.time.hour' })}`;
+	}
+	if (minutes > 0) {
+		minuteStr = `${minutes}${formatMessage({ id: 'common.time.minute' })}`;
+	}
+
+	if (seconds > 0) {
+		secondStr = `${seconds}${formatMessage({ id: 'common.time.second' })}`;
+	}
+
+	return `${yearStr}${monthStr}${dayStr}${hourStr}${minuteStr}${secondStr}`;
+};

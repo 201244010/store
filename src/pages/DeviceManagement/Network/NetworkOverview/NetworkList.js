@@ -3,7 +3,6 @@ import { Card, Divider, Badge, Icon, Input, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { IconLink, IconEquipment, IconNetwork } from '@/components/IconSvg';
 import { ERROR_OK } from '@/constants/errorCode';
-import { OPCODE } from '@/constants/mqttStore';
 import styles from './Network.less';
 
 class NetworkList extends React.PureComponent {
@@ -12,60 +11,20 @@ class NetworkList extends React.PureComponent {
 		this.intervalTimer = null;
 	}
 
-	async componentDidMount() {
+	componentDidMount() {
 		const { getList } = this.props;
-		this.fetchApMessage();
-		await getList();
+		getList();
 	}
-
-	componentWillUnmount() {
-		clearInterval(this.intervalTimer);
-	}
-
-	fetchApMessage = () => {
-		const { getList } = this.props;
-		this.intervalTimer = setInterval(async () => {
-			await getList();
-			await this.fetchMqtt();
-		}, 5000);
-	};
-
-	fetchMqtt = async () => {
-		const { getAPMessage, networkList } = this.props;
-		await Promise.all(
-			networkList.map(async item => {
-				const { networkId, masterDeviceSn: sn } = item;
-				await getAPMessage({
-					message: {
-						opcode: OPCODE.CLIENT_LIST_GET,
-						param: {
-							network_id: networkId,
-							sn,
-						},
-					},
-				});
-				await getAPMessage({
-					message: {
-						opcode: OPCODE.TRAFFIC_STATS_GET,
-						param: {
-							network_id: networkId,
-							sn,
-						},
-					},
-				});
-			})
-		);
-	};
 
 	editName = payload => {
-		const { refreshNetworkList } = this.props;
+		const { editNetworkId } = this.props;
 		clearInterval(this.intervalTimer);
-		refreshNetworkList(payload);
+		editNetworkId(payload);
 	};
 
 	upgradeName = async payload => {
 		const { networkId, networkAlias, initNetworkAlias } = payload;
-		const { updateAlias, refreshNetworkList, getList } = this.props;
+		const { updateAlias, getList, editNetworkId } = this.props;
 		if (initNetworkAlias !== networkAlias) {
 			const response = await updateAlias({ networkId, networkAlias });
 			if (response && response.code === ERROR_OK) {
@@ -74,7 +33,7 @@ class NetworkList extends React.PureComponent {
 			}
 		}
 		await getList();
-		await refreshNetworkList(payload);
+		await editNetworkId(payload);
 	};
 
 	render() {
@@ -126,7 +85,6 @@ const Topology = props => {
 		editName,
 		goToPath,
 	} = props || {};
-
 	const routerNumber = networkDeviceList.filter(item => item.networkId === networkId).length;
 	return (
 		<div className={styles['network-shop']}>
@@ -141,7 +99,7 @@ const Topology = props => {
 						<>
 							<span> {networkAlias || networkId}</span>
 							<div
-								onClick={() => editName({ sn: masterDeviceSn, edit: 1 })}
+								onClick={() => editName({ networkId, edit: 1 })}
 								className={styles['network-edit']}
 							/>
 						</>
@@ -193,29 +151,35 @@ const Topology = props => {
 						<li>
 							{activeStatus ? (
 								<>
-									<Icon component={() => <IconNetwork color="#303540" />} />
+									<Icon component={() => <IconNetwork activeStatus />} />
 									<Badge
 										count={routerNumber}
+										showZero
 										offset={[0, -2]}
 										overflowCount={9999}
-										style={{ backgroundColor: '#4B7AFA', fontSize: 14 }}
 									>
-										<Icon component={() => <IconLink color="#303540" />} />
+										<Icon component={() => <IconLink activeStatus />} />
 									</Badge>
 									<Badge
 										count={clientNumber || 0}
-										offset={[0, -2]}
+										// showZero
+										offset={[-32, -2]}
 										overflowCount={9999}
-										style={{ backgroundColor: '#4B7AFA', fontSize: 14 }}
 									>
-										<Icon component={() => <IconEquipment color="#303540" />} />
+										<Icon
+											className={styles['network-client']}
+											component={() => <IconEquipment activeStatus />}
+										/>
 									</Badge>
 								</>
 							) : (
 								<>
-									<Icon component={() => <IconNetwork color="#A1A7B3" />} />
-									<Icon component={() => <IconLink color="#A1A7B3" />} />
-									<Icon component={() => <IconEquipment color="#A1A7B3" />} />
+									<Icon component={() => <IconNetwork activeStatus />} />
+									<Icon component={() => <IconLink activeStatus />} />
+									<Icon
+										className={styles['network-client']}
+										component={() => <IconEquipment activeStatus />}
+									/>
 								</>
 							)}
 						</li>
@@ -252,7 +216,7 @@ const Topology = props => {
 						</li>
 						<li>
 							<div>{`${formatMessage({ id: 'network.Internet' })}`}</div>
-							<div>
+							<div className={activeStatus ? styles['network-router'] : ''}>
 								{formatMessage({ id: 'network.router' })}
 								{activeStatus ? (
 									<a
@@ -270,15 +234,30 @@ const Topology = props => {
 									''
 								)}
 							</div>
-							<div>{formatMessage({ id: 'network.client' })}</div>
+							<div className={!activeStatus ? styles['network-client-offline'] : ''}>
+								{formatMessage({ id: 'network.client' })}
+								{activeStatus ? (
+									<a
+										href="javascript:void(0);"
+										onClick={() =>
+											goToPath('clientList', {
+												sn: masterDeviceSn,
+												networkId,
+												type: 'client',
+											})
+										}
+									>
+										（{formatMessage({ id: 'network.viewMore' })}）
+									</a>
+								) : (
+									''
+								)}
+							</div>
 						</li>
-					</ul>
-					<ul>
-						<li />
 					</ul>
 				</div>
 				<div className={styles['network-guest-wrapper']}>
-					<Divider style={{ height: 80 }} type="vertical" />
+					<Divider className={styles['network-divider']} type="vertical" />
 					<div className={styles['network-guest']}>
 						{formatMessage({ id: 'network.guestNumber' })}
 						{activeStatus ? (
@@ -290,6 +269,22 @@ const Topology = props => {
 							</div>
 						) : (
 							<div className={styles['network-guest-number']}>--</div>
+						)}
+						{activeStatus ? (
+							<a
+								href="javascript:void(0);"
+								onClick={() =>
+									goToPath('clientList', {
+										sn: masterDeviceSn,
+										networkId,
+										type: 'guest',
+									})
+								}
+							>
+								（{formatMessage({ id: 'network.viewMore' })}）
+							</a>
+						) : (
+							''
 						)}
 					</div>
 				</div>

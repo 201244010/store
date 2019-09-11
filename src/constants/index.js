@@ -5,6 +5,13 @@ export const TABLE_SCROLL_X = 1080;
 export const QUERY_INTERVAL = 1000;
 export const DURATION_TIME = 1;
 
+export const STATUS = {
+	INIT: 'init',
+	CREATE: 'create',
+	UPDATE: 'update',
+	DELETE: 'delete',
+};
+
 export const MENU_PREFIX = {
 	USER: '',
 	ESL: '',
