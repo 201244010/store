@@ -43,6 +43,8 @@ export default {
 	'studio.tool.label.opacity': '无',
 	'studio.tool.label.font.family': '字体',
 	'studio.tool.label.font.size': '字号',
+	'studio.tool.label.line.spacing': '行距',
+	'studio.tool.label.text.content': '文本内容',
 	'studio.tool.label.font.size.int': '整数字号',
 	'studio.tool.label.font.size.small': '小数字号',
 	'studio.tool.label.font.color': '字体颜色',

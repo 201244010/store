@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Col, Icon, Input, Row, Select, Radio } from 'antd';
+import { Col, Icon, Input, InputNumber, Row, Select, Radio } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { SHAPE_TYPES, MAPS, FORMATS } from '@/constants/studio';
 // import { validEAN8Num, validEAN13Num } from '@/utils/studio';
@@ -184,7 +184,7 @@ export default class RightToolBox extends Component {
 			updateComponentsDetail,
 		} = this.props;
 
-		if (value !== '' && !/^[0-9a-zA-Z]+$/.test(value)) {
+		if (selectedShapeName.indexOf(SHAPE_TYPES.CODE_QR) === -1 && value !== '' && !/^[0-9a-zA-Z]+$/.test(value)) {
 			return;
 		}
 
@@ -638,7 +638,7 @@ export default class RightToolBox extends Component {
 						<Row style={{ marginBottom: 10 }}>
 							<Col span={24}>
 								<Input
-									placeholder="文本内容"
+									placeholder={formatMessage({id: 'studio.tool.label.text.content'})}
 									value={detail.content}
 									onChange={e => {
 										this.handleDetail('content', e.target.value);
@@ -703,6 +703,24 @@ export default class RightToolBox extends Component {
 									/>
 								</Col>
 									*/}
+						</Row>
+						<Row style={{ marginBottom: 10 }}>
+							<Col span={4}>
+								<span className={styles.title}>
+									{formatMessage({ id: 'studio.tool.label.line.spacing' })}
+								</span>
+							</Col>
+							<Col span={20}>
+								<InputNumber
+									style={{ width: '100%' }}
+									placeholder={formatMessage({ id: 'studio.tool.label.line.spacing' })}
+									min={0}
+									value={detail.lineSpacing}
+									onChange={value => {
+										this.handleDetail('lineSpacing', value);
+									}}
+								/>
+							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={20}>
 							<Col span={8} className={`${styles.formatter} ${detail.bold ? `${styles.active}` : ''}`}>
