@@ -1,4 +1,5 @@
-import { getLiveUrl, stopLive, getTimeSlots, startPublish, stopPublish } from '@/services/flowLive';
+// import { getLiveUrl, stopLive, getTimeSlots, startPublish, stopPublish } from '../../services/live';
+import { getLiveUrl, stopLive, getTimeSlots, startPublish, stopPublish } from '@/pages/Flow/IPC/services/live';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const PPIS = {
@@ -11,7 +12,7 @@ const OPCODE = {
 };
 
 export default {
-	namespace: 'flowLive',
+	namespace: 'live',
 	state: {
 		streamId: '',
 		ppi: '',
@@ -40,9 +41,11 @@ export default {
 	},
 	effects: {
 		*getLiveUrl({ payload: { sn }}, { call, put }) {
+
 			const clientId = yield put.resolve({
-				type: 'flowMqtt/getClientId'
+				type: 'mqttIpc/getClientId'
 			});
+
 			const response = yield call(getLiveUrl, {
 				clientId,
 				sn
@@ -82,14 +85,14 @@ export default {
 		*changePPI({ payload: { ppi, sn } }, { put, select }) {
 
 			const deviceType = yield put.resolve({
-				type: 'flowIpcList/getDeviceType',
+				type: 'ipcList/getDeviceType',
 				payload: {
 					sn
 				}
 			});
 
 			const topic = yield put.resolve({
-				type: 'flowMqtt/generateTopic',
+				type: 'mqttIpc/generateTopic',
 				payload: {
 					deviceType,
 					messageType: 'request',
@@ -100,7 +103,7 @@ export default {
 			const streamId = yield select((state) => state.live.streamId);
 
 			yield put({
-				type: 'flowMqtt/publish',
+				type: 'mqttIpc/publish',
 				payload: {
 					topic,
 					message: {
@@ -124,7 +127,7 @@ export default {
 
 		*getTimeSlots({ payload: { sn, timeStart, timeEnd }}, { put, call }) {
 			const deviceId = yield put.resolve({
-				type: 'flowIpcList/getDeviceId',
+				type: 'ipcList/getDeviceId',
 				payload: {
 					sn
 				}
@@ -159,14 +162,14 @@ export default {
 		*getHistoryUrl({ payload: { sn, timestamp }}, { put, call }) {
 			// console.log('models: ', getHistoryUrl);
 			const deviceId = yield put.resolve({
-				type: 'flowIpcList/getDeviceId',
+				type: 'ipcList/getDeviceId',
 				payload: {
 					sn
 				}
 			});
 
 			const clientId = yield put.resolve({
-				type: 'flowMqtt/getClientId'
+				type: 'mqttIpc/getClientId'
 			});
 
 			const response = yield call(startPublish, {
@@ -185,14 +188,14 @@ export default {
 
 		*stopHistoryPlay({ payload: { sn }}, { put, call}) {
 			const deviceId = yield put.resolve({
-				type: 'flowIpcList/getDeviceId',
+				type: 'ipcList/getDeviceId',
 				payload: {
 					sn
 				}
 			});
 
 			const clientId = yield put.resolve({
-				type: 'flowMqtt/getClientId'
+				type: 'mqttIpc/getClientId'
 			});
 
 			const response = yield call(stopPublish, {
@@ -238,7 +241,7 @@ export default {
 			];
 
 			dispatch({
-				type: 'flowMqtt/addListener',
+				type: 'mqttIpc/addListener',
 				payload: listeners
 			});
 		}

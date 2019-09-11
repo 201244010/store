@@ -20,6 +20,7 @@ import styles from './Live.less';
 		});
 	});
 
+	console.log('rects1', rects);
 	return {
 		streamId,
 		ppiChanged,
