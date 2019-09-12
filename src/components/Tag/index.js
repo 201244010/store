@@ -11,7 +11,7 @@ const STATUS = {
 export default ({ status, template }) => (
 	<div className={status === 1 ? styles['status-badge-wrapper-success'] : styles['status-badge-wrapper-error']}>
 		<Badge
-			status={`${status}` === '1' ? STATUS.SUCCESS : STATUS.ERROR}
+			status={status === 1 ? STATUS.SUCCESS : STATUS.ERROR}
 			text={formatMessage({ id: template[status] })}
 		/>
 	</div>
