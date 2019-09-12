@@ -193,6 +193,7 @@ class SearchResult extends Component {
 		const { [name]: modalStatus } = this.state;
 		this.setState({
 			[name]: !modalStatus,
+			currentRecord: {}
 		});
 	};
 

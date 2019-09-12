@@ -218,7 +218,7 @@ class DisplayConfig extends Component {
 										value={config.template_id}
 										onChange={(id) => this.updatePageTemplateConfig('page2Config', config, id)}
 									>
-										<Option key={0} value={0}>{formatMessage({id: 'esl.device.display.config.close'})}</Option>
+										<Option key={0} value={0}>{formatMessage({id: 'esl.device.display.config.not'})}</Option>
 										{
 											modelTemplateMap[config.model_name] && modelTemplateMap[config.model_name].map(model => (
 												<Option key={model.id} value={model.id}>{model.name}</Option>
