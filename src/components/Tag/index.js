@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import styles from './Tag.less';
 
 export default ({ status, template }) => (
-	<div className={styles['status-badge-wrapper']}>
+	<div className={status === 1 ? styles['status-badge-wrapper-success'] : styles['status-badge-wrapper-error']}>
 		<Badge
 			status={`${status}` === '1' ? 'success' : 'error'}
 			text={formatMessage({ id: template[status] })}
