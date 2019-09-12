@@ -163,6 +163,20 @@ export default class RightToolBox extends Component {
 		}
 	};
 
+	handleLineSpacing = (detail, value) => {
+		if ((!value || /^(0|[1-9][0-9]*)$/.test(value)) && value <= detail.fontSize * detail.zoomScale) {
+			const {selectedShapeName, updateComponentsDetail} = this.props;
+			const newDetail = {
+				lineSpacing: value,
+			};
+
+			updateComponentsDetail({
+				isStep: true,
+				[selectedShapeName]: newDetail,
+			});
+		}
+	};
+
 	handlePrecision = (value) => {
 		const {
 			selectedShapeName,
@@ -715,9 +729,10 @@ export default class RightToolBox extends Component {
 									style={{ width: '100%' }}
 									placeholder={formatMessage({ id: 'studio.tool.label.line.spacing' })}
 									min={0}
+									max={detail.fontSize * detail.zoomScale}
 									value={detail.lineSpacing}
 									onChange={value => {
-										this.handleDetail('lineSpacing', value);
+										this.handleLineSpacing(detail, value);
 									}}
 								/>
 							</Col>
