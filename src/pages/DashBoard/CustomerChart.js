@@ -76,8 +76,8 @@ class CustomerChart extends PureComponent {
 			fieldLeftCount = maleCount;
 			fieldRightCount = femaleCount;
 		} else {
-			fieldLeftCount = strangerCount;
-			fieldRightCount = regularCount;
+			fieldLeftCount = regularCount;
+			fieldRightCount = strangerCount;
 		}
 
 		const totalCount = fieldLeftCount + fieldRightCount;

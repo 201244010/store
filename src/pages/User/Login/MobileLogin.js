@@ -4,6 +4,7 @@ import { Form, Alert, Icon, Input, message } from 'antd';
 import { ALERT_NOTICE_MAP, ERROR_OK, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 import Captcha from '@/components/Captcha';
 import ImgCaptchaModal from '@/components/Captcha/ImgCaptchaModal';
+import { cellphone } from '@/constants/regexp';
 import styles from '@/pages/User/Login/Login.less';
 
 class MobileLogin extends Component {
@@ -110,16 +111,23 @@ class MobileLogin extends Component {
 						validateTrigger: 'onBlur',
 						rules: [
 							{
-								required: true,
-								message: formatMessage({
-									id: 'mobile.validate.isEmpty',
-								}),
-							},
-							{
-								pattern: /^1\d{10}$/,
-								message: formatMessage({
-									id: 'mobile.validate.isFormatted',
-								}),
+								validator: (_, value, callback) => {
+									if (!value) {
+										callback(
+											formatMessage({
+												id: 'mobile.validate.isEmpty',
+											})
+										);
+									}
+
+									if (cellphone.test(value)) {
+										callback();
+									} else {
+										callback(
+											formatMessage({ id: 'username.invalid.character' })
+										);
+									}
+								},
 							},
 						],
 					})(

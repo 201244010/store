@@ -1,6 +1,6 @@
+import moment from 'moment';
 import { customizeFetch } from '@/utils/fetch';
 import { ERROR_OK } from '@/constants/errorCode';
-import moment from 'moment';
 
 import CONFIG from '@/config';
 

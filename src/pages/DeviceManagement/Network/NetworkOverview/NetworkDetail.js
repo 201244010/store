@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Card } from 'antd';
-import PageList from '@/components/List/PageList';
 import { formatMessage } from 'umi/locale';
+import PageList from '@/components/List/PageList';
 import styles from './Network.less';
 
 const rssiStyle = {

@@ -1,6 +1,6 @@
 // import { queryNotices } from '@/services/user';
-import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 
 export default {
 	namespace: 'global',

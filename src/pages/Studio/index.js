@@ -396,30 +396,13 @@ class Studio extends Component {
 
 	handleStageShapeMove = e => {
 		const {
-			studio: { componentsDetail, selectedShapeName },
-			resetScopedComponents, addComponent, batchUpdateComponentDetail
+			studio: { selectedShapeName },
+			resetScopedComponents, batchUpdateComponentDetail
 		} = this.props;
 
-		const name = e.target.name();
-		const curComponent = componentsDetail[name];
 		if (e.evt.ctrlKey && !e.evt.shiftKey) {
 			window.clearTimeout(this.selectComponentTimer);
 			resetScopedComponents();
-			if (curComponent && !this.dragCopy) {
-				const newPosition = {};
-				this.dragCopy = true;
-
-				newPosition.x = curComponent.x * 1.1;
-				newPosition.y = curComponent.y * 1.1;
-
-				addComponent({
-					...curComponent,
-					x: newPosition.x,
-					y: newPosition.y,
-					frozenX: false,
-					frozenY: false
-				});
-			}
 			return;
 		}
 
@@ -449,14 +432,25 @@ class Studio extends Component {
 	};
 
 	handleStageShapeEnd = (e) => {
-		const { studio: { selectedShapeName, componentsDetail }, updateComponentsDetail, batchUpdateScopedComponent } = this.props;
+		const {
+			studio: { selectedShapeName, componentsDetail },
+			addComponent, updateComponentsDetail, batchUpdateScopedComponent
+		} = this.props;
 		this.setState({
 			dragging: false,
 		});
 		const curComponent = componentsDetail[e.target.name()];
-		if (curComponent) {
-			this.dragCopy = false;
+		if (e.evt.ctrlKey && !e.evt.shiftKey && curComponent) {
+			addComponent({
+				...curComponent,
+				x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
+				y: e.evt.clientY - SIZES.HEADER_HEIGHT - 20,
+				frozenX: false,
+				frozenY: false
+			});
+			return;
 		}
+
 		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
 			const scope = getNearestPosition(componentsDetail, selectedShapeName);
 			updateComponentsDetail({

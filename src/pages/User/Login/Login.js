@@ -4,11 +4,11 @@ import Link from 'umi/link';
 import router from 'umi/router';
 import { connect } from 'dva';
 import { Tabs, Form, Input, Button, Icon, Alert, Modal, message } from 'antd';
+import Storage from '@konata9/storage.js';
 import { encryption } from '@/utils/utils';
 import Captcha from '@/components/Captcha';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
 import * as CookieUtil from '@/utils/cookies';
-import Storage from '@konata9/storage.js';
 import {
 	ERROR_OK,
 	ALERT_NOTICE_MAP,

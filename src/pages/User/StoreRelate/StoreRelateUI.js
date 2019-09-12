@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { Button, Form, Input } from 'antd';
-import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
 import styles from './StoreRelate.less';
 

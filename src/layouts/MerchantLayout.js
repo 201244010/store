@@ -1,11 +1,11 @@
 import React from 'react';
 import { Menu, Icon, Avatar } from 'antd';
 import DocumentTitle from 'react-document-title';
-import HeaderDropdown from '@/components/HeaderDropdown';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { connect } from 'dva';
 import pathToRegexp from 'path-to-regexp';
+import HeaderDropdown from '@/components/HeaderDropdown';
 import styles from './MerchantLayout.less';
 
 class MerchantLayout extends React.PureComponent {

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Form, Select, Row, Col, Table } from 'antd';
+import { formatMessage } from 'umi/locale';
 import { unixSecondToDate, getLocationParam } from '@/utils/utils';
 import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
-import { formatMessage } from 'umi/locale';
 
 import styles from './index.less';
 import global from '@/styles/common.less';

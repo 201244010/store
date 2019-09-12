@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row } from 'antd';
-import { unixSecondToDate } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
+import { unixSecondToDate } from '@/utils/utils';
 import styles from './index.less';
 
 const ROW_GUTTER = 16;

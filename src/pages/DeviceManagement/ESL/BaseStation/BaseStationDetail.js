@@ -1,7 +1,7 @@
 import React from 'react';
+import { formatMessage } from 'umi/locale';
 import { STATION_STATES } from '@/constants/mapping';
 import { unixSecondToDate } from '@/utils/utils';
-import { formatMessage } from 'umi/locale';
 import styles from './BaseStation.less';
 
 const BaseStationDetail = props => {
