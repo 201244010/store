@@ -108,8 +108,9 @@ class SystemConfig extends Component {
 	}
 	
 	async componentDidMount() {
-		const { getNetWorkIdList, getBaseStationList, } = this.props;
+		const { getNetWorkIdList, getBaseStationList, getAPConfig } = this.props;
 		const networkIdList = await getNetWorkIdList();
+		await this.checkMQTTClient();
 		
 		if(networkIdList.length > 0) {
 			const stationList = await getBaseStationList({
@@ -119,7 +120,8 @@ class SystemConfig extends Component {
 			
 			if(this.isMainApOnline(stationList)) {
 				this.setState({configShow: true, settingLoading: false});
-				await this.checkMQTTClient();
+				const { networkId } = networkIdList[0] || {};
+				getAPConfig({ networkId });
 			} else {
 				this.setState({configShow: false, settingLoading: false});
 			}
@@ -194,7 +196,6 @@ class SystemConfig extends Component {
 		clearTimeout(this.checkTimer);
 		const {
 			checkClientExist,
-			getAPConfig,
 			setAPHandler,
 			generateTopic,
 			subscribe,
@@ -202,16 +203,9 @@ class SystemConfig extends Component {
 		const isClientExist = await checkClientExist();
 		
 		if (isClientExist) {
-			const {
-				eslBaseStation: { networkIdList = [] },
-			} = this.props;
 			const apInfoTopic = await generateTopic({ service: 'ESL/response', action: 'sub' });
 			await subscribe({ topic: [apInfoTopic] });
 			await setAPHandler({ handler: this.apHandler });
-			if (networkIdList.length > 0) {
-				const { networkId } = networkIdList[0] || {};
-				getAPConfig({ networkId });
-			}
 		} else {
 			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
 		}
