@@ -277,7 +277,7 @@ export default {
 								scanMulti = 30,
 								scanPeriod = 143,
 								scanDeepSleep = 60,
-								clksyncPeriod = 3 * 3600 * 24,
+								clksyncPeriod = 3 * 24 * 3600,
 								eslRefleshPeriod = 1,
 								eslRefleshTime = moment().startOf('day').add(4, 'hour').add(0, 'minute'),
 							} = {}
@@ -299,7 +299,7 @@ export default {
 									? parseInt(scanPeriod, 10) - IN_ENERGY_SAVE
 									: parseInt(scanPeriod, 10),
 								scanDeepSleep,
-								clksyncPeriod: clksyncPeriod / 60 / 60 / 24,
+								clksyncPeriod: clksyncPeriod / 24 / 3600,
 								eslRefleshPeriod,
 								eslRefleshTime: moment().startOf('day').add(hour, 'hour').add(minute, 'minute'),
 								isEnergySave
