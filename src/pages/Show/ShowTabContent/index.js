@@ -7,6 +7,8 @@ import ShowSaleList from '../ShowSaleList';
 import ShowPayChart from '../ShowPayChart';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 
+import styles from './index.less';
+
 const {
 	SEARCH_TYPE: { RANGE },
 } = DASHBOARD;
@@ -113,8 +115,8 @@ class ShowTabContent extends React.Component {
 						avgUnitSale,
 					}}
 				/>
-				<div style={{ paddingTop: 52, display: 'flex' }}>
-					<div style={{ width: 841 }}>
+				<div className={styles['content-body']}>
+					<div className={styles['body-chart']}>
 						<ShowChart
 							chartName={formatMessage({ id: 'dashboard.order.show.sales' })}
 							saleType="amount"

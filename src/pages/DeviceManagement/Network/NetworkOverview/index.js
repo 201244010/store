@@ -71,6 +71,7 @@ class Network extends React.Component {
 
 	fetchApMessage = async () => {
 		const { getList } = this.props;
+		await getList();
 		await this.fetchMqtt();
 		clearInterval(this.intervalTimer);
 		this.intervalTimer = setInterval(async () => {

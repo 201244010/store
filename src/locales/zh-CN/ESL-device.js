@@ -166,6 +166,8 @@ export default {
 	'esl.device.upload.device.bin.error': '上传固件的文件格式错误',
 	'esl.device.upgrade.esl.query.input': '请输入价签ID',
 	'esl.device.upgrade.ap.query.input': '请输入基站SN',
+	'esl.device.display.update.config.success': '更新配置成功',
+	'esl.device.display.update.config.fail': '更新配置失败',
 	'esl.overview.product.total': '商品总数',
 	'esl.overview.esl.total': '价签总数',
 	'esl.overview.ap.total': '基站总数',
