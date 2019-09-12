@@ -373,13 +373,19 @@ class SearchResult extends Component {
 				key: 'action',
 				render: (_, record) => (
 					<span>
-						<a href="javascript: void (0);" onClick={() => this.previewTemplate(record)}>
-							{formatMessage({ id: 'list.action.preview' })}
-						</a>
-						<Divider type="vertical" />
 						<a href="javascript: void (0);" onClick={() => this.showDetail(record)}>
 							{formatMessage({ id: 'list.action.detail' })}
 						</a>
+						<Divider type="vertical" />
+						{
+							[0, 1].includes(record.status) ?
+								<a href="javascript: void (0);" className={styles.disabled}>
+									{formatMessage({ id: 'list.action.preview' })}
+								</a> :
+								<a href="javascript: void (0);" onClick={() => this.previewTemplate(record)}>
+									{formatMessage({ id: 'list.action.preview' })}
+								</a>
+						}
 						<Divider type="vertical" />
 						<Dropdown
 							overlay={

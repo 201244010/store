@@ -322,8 +322,8 @@ export const getImagePromise = componentDetail =>
 		};
 	});
 
-export const STEP_KEYS = {};
-export const NOW_KEYS = {};
+const STEP_KEYS = {};
+const NOW_KEYS = {};
 
 export const clearSteps = () => {
 	localForage.clear();
@@ -337,7 +337,12 @@ export const saveNowStep = async (templateId, componentsDetail) => {
 	} else {
 		nowKey = Number(STEP_KEYS[templateId][STEP_KEYS[templateId].length - 1]) + 1;
 	}
-	STEP_KEYS[templateId].push(nowKey);
+	if (!STEP_KEYS[templateId].length) {
+		STEP_KEYS[templateId].push(nowKey);
+	} else {
+		const index = STEP_KEYS[templateId].findIndex(item => item === NOW_KEYS[templateId]);
+		STEP_KEYS[templateId].splice(index + 1, 0, nowKey);
+	}
 	NOW_KEYS[templateId] = nowKey;
 
 	const keys = await localForage.keys();
@@ -349,18 +354,20 @@ export const saveNowStep = async (templateId, componentsDetail) => {
 
 export const preStep = async (templateId) => {
 	const nowKey = NOW_KEYS[templateId];
-	const result = await localForage.getItem(nowKey - 1);
+	const index = STEP_KEYS[templateId].findIndex(item => item === nowKey);
+	const result = await localForage.getItem(STEP_KEYS[templateId][index === 0 ? 0 : index - 1]);
 	if (result) {
-		NOW_KEYS[templateId] = nowKey - 1;
+		NOW_KEYS[templateId] = STEP_KEYS[templateId][index === 0 ? 0 : index - 1];
 	}
 	return result;
 };
 
 export const nextStep = async (templateId) => {
 	const nowKey = NOW_KEYS[templateId];
-	const result = await localForage.getItem(nowKey + 1);
+	const index = STEP_KEYS[templateId].findIndex(item => item === nowKey);
+	const result = await localForage.getItem(STEP_KEYS[templateId][index === 29 ? 29 : index + 1]);
 	if (result) {
-		NOW_KEYS[templateId] = nowKey + 1;
+		NOW_KEYS[templateId] = STEP_KEYS[templateId][index === 29 ? 29 : index + 1];
 	}
 	return result;
 };

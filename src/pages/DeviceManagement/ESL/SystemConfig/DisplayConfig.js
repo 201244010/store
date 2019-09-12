@@ -33,7 +33,11 @@ class DisplayConfig extends Component {
 		};
 	}
 
-	async componentDidMount() {
+	componentDidMount() {
+		this.getPageConfig();
+	}
+
+	getPageConfig = async () => {
 		const { getDisplayConfig, fetchScreenNameList } = this.props;
 
 		const response = await getDisplayConfig();
@@ -63,9 +67,9 @@ class DisplayConfig extends Component {
 				});
 			});
 		}
-	}
+	};
 
-	submit = () => {
+	submit = async () => {
 		const { updateScreenName, updateTemplateConfig } = this.props;
 		const { page2Config, page3Config } = this.state;
 		updateScreenName({
@@ -99,6 +103,8 @@ class DisplayConfig extends Component {
 		if (updatedTemplateConfig.length) {
 			updateTemplateConfig({
 				template_config: updatedTemplateConfig
+			}).then(() => {
+				this.getPageConfig();
 			});
 		}
 	};
@@ -149,6 +155,7 @@ class DisplayConfig extends Component {
 	};
 
 	render() {
+		const { systemConfig: { loading } } = this.props;
 		const { page2Config, page3Config, modelTemplateMap } = this.state;
 		const page2TemplateConfig = {};
 		(page2Config.template_config || []).forEach(item => {
@@ -248,7 +255,7 @@ class DisplayConfig extends Component {
 					}
 					<Row gutter={10} className={styles['m-b-15']}>
 						<Col span={4} offset={8}>
-							<Button type="primary" onClick={this.submit}>{formatMessage({id: 'btn.submit'})}</Button>
+							<Button type="primary" loading={loading} onClick={this.submit}>{formatMessage({id: 'btn.submit'})}</Button>
 						</Col>
 					</Row>
 				</Card>
