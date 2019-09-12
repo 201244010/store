@@ -16,13 +16,13 @@ export const getLiveUrl = ({ deviceId, clientId, resolution}) => {
 			resolution
 		}
 	}).then(async (response) => {
-		const { code, data: { url } } = await response.json();
+		const { code, data: { url, stream_id: streamId } } = await response.json();
 		if (code === ERROR_OK) {
 			return {
 				code: ERROR_OK,
 				data: {
 					url,
-					// streamId,
+					streamId,
 					resolution
 				}
 			};
