@@ -50,7 +50,7 @@ class FlowDistribution extends React.PureComponent {
 			flowInfo: { countListByGender = [], ageRangeMap = {} } = {},
 			flowFaceid: { list = [] } = {},
 		} = this.props;
-		console.log('list', list);
+
 		let lightItem = [];
 		if (list.length > 0) {
 			const { ageRangeCode = 0, gender = '0'} = list[0];

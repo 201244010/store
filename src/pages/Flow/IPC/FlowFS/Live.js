@@ -286,7 +286,6 @@ class Live extends React.Component{
 			1: formatMessage({ id: 'live.genders.male'}),
 			2: formatMessage({ id: 'live.genders.female'})
 		};
-		// console.log('faceidList', faceidList, 'hasFaceid', hasFaceid);
 
 		return(
 			<div className={styles['live-wrapper']}>

@@ -10,6 +10,7 @@ const COLOR_OLD = 'l(45) 0:#FFB366 1:#FF7733';
 @connect(
 	state => ({
 		flowInfo: state.flowInfo,
+		flowFaceid: state.flowFaceid,
 	}),
 	dispatch => ({
 		getPassengerAgeByRegular: () => dispatch({ type: 'flowInfo/getPassengerAgeByRegular' }),
@@ -62,7 +63,6 @@ class FlowProportion extends React.PureComponent {
 		if (list.length > 0) {
 			const { libraryName = ''} = list[0];
 			lightType = libraryName === formatMessage({ id: 'flow.proportion.title.new' })? data[0].type : data[1].type;
-
 		}
 
 		return (

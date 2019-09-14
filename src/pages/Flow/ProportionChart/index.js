@@ -50,7 +50,7 @@ class ProportionChart extends React.PureComponent {
 		return (
 			<div className={styles['proportion-chart']}>
 				<Chart width={240} height={240} data={dv} padding={[-30, -30, -30, -30]}>
-					<Coord type="theta" radius={0.72} innerRadius={0.70} />
+					<Coord type="theta" radius={0.72} innerRadius={0.68} />
 					<Axis name="percent" />
 					<Tooltip />
 					<Guide>
@@ -85,7 +85,7 @@ class ProportionChart extends React.PureComponent {
 						tooltip={false}
 					/>
 					<View data={dv2}>
-						<Coord type="theta" radius={0.72} innerRadius={0.70} />
+						<Coord type="theta" radius={0.72} innerRadius={0.68} />
 						<Geom
 							type="intervalStack"
 							position="count"
