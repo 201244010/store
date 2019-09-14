@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Chart, Facet, View, Geom, Axis } from 'bizcharts';
 import { formatMessage } from 'umi/locale';
-import { LABEL, COLORS } from './distribution';
+import { LABEL, COLORS, GENDERS } from './distribution';
 
 // import DataSet from '@antv/data-set';
 import styles from './index.less';
@@ -10,6 +10,7 @@ import styles from './index.less';
 @connect(
 	state => ({
 		flowInfo: state.flowInfo,
+		flowFaceid: state.flowFaceid,
 	}),
 	dispatch => ({
 		getPassengerAgeByGender: () => dispatch({ type: 'flowInfo/getPassengerAgeByGender' }),
@@ -24,7 +25,7 @@ class FlowDistribution extends React.PureComponent {
 				ticks: [0, 500],
 			},
 			max: {
-				ticks: [0, 500],
+				ticks: [0, 1000],
 			},
 		};
 		this.age = 0;
@@ -46,10 +47,18 @@ class FlowDistribution extends React.PureComponent {
 
 	render() {
 		const {
-			// light = ['40岁-50岁', 'male'],
 			flowInfo: { countListByGender = [], ageRangeMap = {} } = {},
+			flowFaceid: { list = [] } = {},
 		} = this.props;
-
+		console.log('list', list);
+		let lightItem = [];
+		if (list.length > 0) {
+			const { ageRangeCode = 0, gender = '0'} = list[0];
+			const lightAge = `${ageRangeMap[ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`;
+			const lightGender = GENDERS[gender];
+			lightItem = [ lightAge, lightGender ];
+		}
+		
 		const data1 = [];
 		let male = 0;
 		let female = 0;
@@ -111,10 +120,13 @@ class FlowDistribution extends React.PureComponent {
 									'age*gender',
 									(age, gender) => {
 										if (gender === 'male') {
-											// if (light[0] === age && light[1] === gender) {
-											// 	return '#6CBBFF';
-											// }
+											if (lightItem[0] === age && lightItem[1] === gender) {
+												return COLORS.MALE_LIGHT;
+											}
 											return COLORS.MALE;
+										}
+										if (lightItem[0] === age && lightItem[1] === gender) {
+											return COLORS.FEMALE_LIGHT;
 										}
 										return COLORS.FEMALE;
 									},
@@ -125,13 +137,12 @@ class FlowDistribution extends React.PureComponent {
 										shadowBlur: 8,
 										shadowOffsetX: 0,
 										shadowOffsetY: 0,
-										shadowColor: COLORS.NOR_SHADOW,
-										// shadowColor: (age, gender) => {
-										// 	if (light[0] === age && light[1] === gender) {
-										// 		return '#1A56FF';
-										// 	}
-										// 	return 'transparent';
-										// },
+										shadowColor: (age, gender) => {
+											if (lightItem[0] === age && lightItem[1] === gender) {
+												return COLORS.LIGHT_SHADOW;
+											}
+											return COLORS.NOR_SHADOW;
+										},
 									},
 								]}
 							/>

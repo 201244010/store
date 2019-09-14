@@ -91,6 +91,10 @@ export const Y_LINE_STYLE = {
 
 export const LIST = [
 	{
+		time: 7,
+		flowCount: 0,
+	},
+	{
 		time: 8,
 		flowCount: 0,
 	},

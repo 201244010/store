@@ -65,6 +65,12 @@ Shape.registerShape('interval', 'distributionShape', {
 	},
 });
 
+export const GENDERS = {
+	0: 'unknow',
+	1: 'male',
+	2: 'female',
+};
+
 export const LABEL = {
 	offset: 16,
 	textStyle: {
@@ -79,6 +85,9 @@ export const LABEL = {
 export const COLORS = {
 	GENDER: '#344166',
 	MALE: '#667ECC',
-	FEMALE: '#FF8080',
+	MALE_LIGHT: '#6CBBFF',
+	FEMALE: 'rgba(255,128,128,0.6)',
+	FEMALE_LIGHT: '#FF8080',
 	NOR_SHADOW: 'transparent',
+	LIGHT_SHADOW: '#1A56FF',
 };

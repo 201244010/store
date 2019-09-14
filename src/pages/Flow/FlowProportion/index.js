@@ -4,6 +4,9 @@ import { formatMessage } from 'umi/locale';
 import ProportionChart from '@/pages/Flow/ProportionChart';
 import styles from './index.less';
 
+const COLOR_NEW = 'l(45) 0:#5EFFC9 1:#00FF99';
+const COLOR_OLD = 'l(45) 0:#FFB366 1:#FF7733';
+
 @connect(
 	state => ({
 		flowInfo: state.flowInfo,
@@ -34,6 +37,7 @@ class FlowProportion extends React.PureComponent {
 	render() {
 		const {
 			flowInfo: { countListByRegular = [] },
+			flowFaceid: { list = [] } = {},
 		} = this.props;
 
 		let strangerCount = 0;
@@ -42,7 +46,8 @@ class FlowProportion extends React.PureComponent {
 			strangerCount += item.strangerCount;
 			regularCount += item.regularCount;
 		});
-		const list = [
+		
+		const data = [
 			{
 				type: 'strangerCount',
 				count: strangerCount,
@@ -53,12 +58,35 @@ class FlowProportion extends React.PureComponent {
 			},
 		];
 
+		let lightType = '';
+		if (list.length > 0) {
+			const { libraryName = ''} = list[0];
+			lightType = libraryName === formatMessage({ id: 'flow.proportion.title.new' })? data[0].type : data[1].type;
+
+		}
+
 		return (
 			<div className={styles['flow-proportion']}>
 				<div className={styles.title}>{formatMessage({ id: 'flow.proportion.rate' })}</div>
-				<div className={styles.description}>{formatMessage({ id: 'flow.proportion.rule' })}</div>
-				<ProportionChart list={list} lightType="strangerCount" chartName="newCustomer" />
-				<ProportionChart list={list} lightType="regularCount" chartName="oldCustomer" />
+				<div className={styles.description}>
+					{formatMessage({ id: 'flow.proportion.rule' })}
+				</div>
+				<ProportionChart
+					list={data}
+					countType={data[0].type}
+					lightType={lightType}
+					chartName="newCustomer"
+					chartTitle={formatMessage({ id: 'flow.proportion.title.new' })}
+					chartColor={COLOR_NEW}
+				/>
+				<ProportionChart
+					list={data}
+					countType={data[1].type}
+					lightType={lightType}
+					chartName="oldCustomer"
+					chartTitle={formatMessage({ id: 'flow.proportion.title.old' })}
+					chartColor={COLOR_OLD}
+				/>
 			</div>
 		);
 	}

@@ -10,13 +10,13 @@ const { Html } = Guide;
 
 class ProportionChart extends React.PureComponent {
 	render() {
-		const { list = [], lightType = '', chartName } = this.props;
+		const { list = [], countType='', lightType = '', chartName, chartTitle, chartColor } = this.props;
 
 		let totalCount = 0;
 		let lightCount = 0;
 		const data = list.map(item => {
 			totalCount += item.count;
-			if (item.type === lightType) {
+			if (item.type === countType) {
 				lightCount = item.count;
 			}
 			return {
@@ -26,7 +26,7 @@ class ProportionChart extends React.PureComponent {
 		});
 
 		totalCount = totalCount === 0 ? 1 : totalCount;
-		const lightPercent = (lightCount / totalCount).toFixed(2) * 100;
+		const lightPercent = (lightCount * 100 / totalCount).toFixed(1);
 
 		const dv = new DataView();
 		dv.source(data).transform({
@@ -49,14 +49,14 @@ class ProportionChart extends React.PureComponent {
 
 		return (
 			<div className={styles['proportion-chart']}>
-				<Chart width={120} height={120} data={dv} padding={[-30, -30, -30, -30]}>
-					<Coord type="theta" radius={0.6} innerRadius={0.55} />
+				<Chart width={240} height={240} data={dv} padding={[-30, -30, -30, -30]}>
+					<Coord type="theta" radius={0.72} innerRadius={0.70} />
 					<Axis name="percent" />
 					<Tooltip />
 					<Guide>
 						<Html
 							position={['50%', '50%']}
-							html={`<span class='proportion-percent'>${lightPercent}%</span>`}
+							html={`<span class='proportion-percent'>${lightPercent}%<br /><span class='proportion-name'>${chartTitle}</span></span>`}
 							alignX="middle"
 							alignY="middle"
 						/>
@@ -67,7 +67,7 @@ class ProportionChart extends React.PureComponent {
 						color={[
 							'item*percent',
 							item =>
-								item === lightType ? COLORS.LIGHT_COLOR : COLORS.NOR_COLOR,
+								item === countType ? chartColor : COLORS.NOR_COLOR,
 						]}
 						style={[
 							'item*percent',
@@ -85,7 +85,7 @@ class ProportionChart extends React.PureComponent {
 						tooltip={false}
 					/>
 					<View data={dv2}>
-						<Coord type="theta" radius={0.6} innerRadius={0.55} />
+						<Coord type="theta" radius={0.72} innerRadius={0.70} />
 						<Geom
 							type="intervalStack"
 							position="count"
