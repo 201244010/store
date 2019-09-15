@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'dva';
-import { formatMessage } from 'umi/locale';
+// import { formatMessage } from 'umi/locale';
 import ShowCards from '../ShowCards';
-import ShowChart from '../ShowChart';
+// import ShowChart from '../ShowChart';
 import ShowSaleList from '../ShowSaleList';
 import ShowPayChart from '../ShowPayChart';
+import CashierAudit from '../CashierAudit';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 
 import styles from './index.less';
@@ -13,10 +14,11 @@ const {
 	SEARCH_TYPE: { RANGE },
 } = DASHBOARD;
 
+// const FILL_COLOR = ['l(90) 0:#FFBC50 1:#FFBC50', 'l(90) 0:#B38F6B 1:#B37047'];
+// const SHADOW_COLOR = '#FF7750';
+
 @connect(
-	state => ({
-		showInfo: state.showInfo,
-	}),
+	null,
 	dispatch => ({
 		fetchAllData: ({ range, activeKey }) =>
 			dispatch({ type: 'showInfo/fetchAllData', payload: { range, activeKey } }),
@@ -87,65 +89,43 @@ class ShowTabContent extends React.Component {
 
 	render() {
 		const { time = 'today' } = this.props;
-		const {
-			showInfo: {
-				deviceOverView = {},
-				ipcOverView = {},
-				[time]: {
-					totalAmount = {},
-					totalCount = {},
-					totalRefund = {},
-					avgUnitSale = {},
-					orderList = [],
-					skuRankList = [],
-					purchaseInfo = {},
-					range = '',
-				} = {},
-			},
-		} = this.props;
 
 		return (
 			<>
 				<ShowCards
 					{...{
-						range,
-						totalAmount,
-						totalCount,
-						totalRefund,
-						avgUnitSale,
+						time,
 					}}
 				/>
 				<div className={styles['content-body']}>
 					<div className={styles['body-chart']}>
-						<ShowChart
+						<CashierAudit />
+						{/* <ShowChart
 							chartName={formatMessage({ id: 'dashboard.order.show.sales' })}
 							saleType="amount"
 							{...{
-								orderList,
-								range,
+								time,
 							}}
 						/>
 						<ShowChart
 							chartName={formatMessage({ id: 'dashboard.order.show.count' })}
 							saleType="count"
-							fillColor={['l(90) 0:#FFBC50 1:#FFBC50', 'l(90) 0:#B38F6B 1:#B37047']}
-							shadowColor="#FF7750"
+							fillColor={FILL_COLOR}
+							shadowColor={SHADOW_COLOR}
 							{...{
-								orderList,
-								range,
+								time,
 							}}
-						/>
+						/> */}
+
 					</div>
 					<ShowSaleList
 						{...{
-							skuRankList,
+							time,
 						}}
 					/>
 					<ShowPayChart
 						{...{
-							purchaseInfo,
-							deviceOverView,
-							ipcOverView,
+							time,
 						}}
 					/>
 				</div>

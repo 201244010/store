@@ -1,11 +1,26 @@
 import React from 'react';
+import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
+import SaleList from './saleList';
 
 import styles from './index.less';
 
-export default class ShowSaleList extends React.Component {
+@connect(
+	state => ({
+		showInfo: state.showInfo,
+	}),
+)
+class ShowSaleList extends React.Component {
 	render() {
-		const { skuRankList = [] } = this.props;
+		const { time } = this.props;
+		const {
+			showInfo: {
+				[time]: {
+					skuRankList = [],
+				} = {},
+			},
+		} = this.props;
+
 		return (
 			<div className={styles['sale-lists']}>
 				<div className={styles['lists-title']}>
@@ -23,16 +38,4 @@ export default class ShowSaleList extends React.Component {
 		);
 	}
 }
-
-const SaleList = props => {
-	const { rank, name, num } = props;
-	return (
-		<div className={styles['sale-oneList']}>
-			<div className={styles['oneList-rank-name']}>
-				<div className={styles['oneList-rank']}>{rank}</div>
-				<div className={styles['oneList-name']}>{name}</div>
-			</div>
-			<div className={styles['oneList-num']}>{num}</div>
-		</div>
-	);
-};
+export default ShowSaleList;

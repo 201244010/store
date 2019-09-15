@@ -1,22 +1,37 @@
 import React from 'react';
-import { Chart, Geom, Axis, Tooltip, Coord, Guide, Shape, View } from 'bizcharts';
+import { connect } from 'dva';
+import { Chart, Geom, Axis, Tooltip, Coord, Guide, View } from 'bizcharts';
 import DataSet from '@antv/data-set';
 import { formatMessage } from 'umi/locale';
 import PriceTagAndCamera from '../PriceTagAndCamera';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
+import { shape, COLORS } from './payShape';
 
 import styles from './index.less';
 
 const { PURCHASE_ORDER } = DASHBOARD;
+const { DataView } = DataSet;
+const { Html } = Guide;
 
-export default class ShowPayChart extends React.Component {
+@connect(
+	state => ({
+		showInfo: state.showInfo,
+	}),
+)
+class ShowPayChart extends React.PureComponent {
 	render() {
-		const { purchaseInfo, deviceOverView, ipcOverView } = this.props;
-
-		const { purchaseTypeList = [] } = purchaseInfo;
-
-		const { DataView } = DataSet;
-		const { Html } = Guide;
+		const { time } = this.props;
+		const {
+			showInfo: {
+				deviceOverView = {},
+				ipcOverView = {},
+				[time]: {
+					purchaseInfo: {
+						purchaseTypeList = [],
+					},
+				} = {},
+			},
+		} = this.props;
 
 		let totalCount = 0;
 		const maxItem = { item: '', count: 0 };
@@ -30,51 +45,6 @@ export default class ShowPayChart extends React.Component {
 				item: item.purchaseTypeName,
 				count: item.count,
 			};
-		});
-
-		Shape.registerShape('interval', 'sliceShape', {
-			draw(cfg, container) {
-				const {
-					points,
-					origin: { _origin },
-					color,
-				} = cfg;
-				const origin = _origin;
-				const xWidth = points[2].x - points[1].x;
-				let path = [];
-				path.push([
-					'M',
-					origin.item !== maxItem.item ? points[0].x : points[0].x - xWidth * 0.2,
-					points[0].y,
-				]);
-				path.push([
-					'L',
-					origin.item !== maxItem.item ? points[1].x : points[1].x - xWidth * 0.2,
-					points[1].y,
-				]);
-				path.push([
-					'L',
-					origin.item !== maxItem.item
-						? points[0].x + xWidth
-						: points[0].x + xWidth * 1.2,
-					points[2].y,
-				]);
-				path.push([
-					'L',
-					origin.item !== maxItem.item
-						? points[0].x + xWidth
-						: points[0].x + xWidth * 1.2,
-					points[3].y,
-				]);
-				path.push('Z');
-				path = this.parsePath(path);
-				return container.addShape('path', {
-					attrs: {
-						fill: color,
-						path,
-					},
-				});
-			},
 		});
 
 		const dv = new DataView();
@@ -94,6 +64,7 @@ export default class ShowPayChart extends React.Component {
 			as: 'percent',
 		});
 
+		shape(maxItem);
 		return (
 			<div className={styles['pay-chart']}>
 				<div className={styles['pay-chart-title']}>
@@ -105,25 +76,25 @@ export default class ShowPayChart extends React.Component {
 						const onLighter = maxItem.item === item.item;
 						switch (item.item) {
 							case PURCHASE_ORDER[0]:
-								color = '#2D59F4';
+								color = COLORS.POINT_COLOR.ZHI_FU_BAO;
 								break;
 							case PURCHASE_ORDER[1]:
-								color = '#2DE29A';
+								color = COLORS.POINT_COLOR.WECHAT;
 								break;
 							case PURCHASE_ORDER[2]:
-								color = '#FFDF66';
+								color = COLORS.POINT_COLOR.QR_CODE;
 								break;
 							case PURCHASE_ORDER[3]:
-								color = '#FFC489';
+								color = COLORS.POINT_COLOR.CARD;
 								break;
 							case PURCHASE_ORDER[4]:
-								color = '#BB99FF';
+								color = COLORS.POINT_COLOR.CASH;
 								break;
 							case PURCHASE_ORDER[5]:
-								color = '#6666FF';
+								color = COLORS.POINT_COLOR.OTHER;
 								break;
 							default:
-								color = '#6666FF';
+								color = COLORS.POINT_COLOR.OTHER;
 						}
 						return (
 							<div
@@ -134,14 +105,9 @@ export default class ShowPayChart extends React.Component {
 							>
 								<div className={styles['oneList-right']}>
 									<span
+										className={styles['oneList-point']}
 										style={{
-											display: 'inline-block',
-											width: 8,
-											height: 8,
-											borderRadius: '50%',
 											background: color,
-											marginRight: 16,
-											marginLeft: 13,
 										}}
 									/>
 									{item.item}
@@ -165,7 +131,7 @@ export default class ShowPayChart extends React.Component {
 					<Guide>
 						<Html
 							position={['50%', '50%']}
-							html={`<span style="font-family: Gotham-Bold;font-size: 20px; color: #FFFFFF; text-align: center;">${totalCount}</span>`}
+							html={`<span class='html-totalCount'>${totalCount}</span>`}
 							alignX="middle"
 							alignY="middle"
 						/>
@@ -177,33 +143,33 @@ export default class ShowPayChart extends React.Component {
 							'item*percent',
 							item => {
 								if (item === PURCHASE_ORDER[0]) {
-									return 'l(45) 0:#66BDFF 1:#3D84FF';
+									return COLORS.FILL_COLOR.ZHI_FU_BAO;
 								}
 								if (item === PURCHASE_ORDER[1]) {
-									return 'l(45) 0:#5EFFC9 1:#00FF99';
+									return COLORS.FILL_COLOR.WECHAT;
 								}
 								if (item === PURCHASE_ORDER[2]) {
-									return 'l(45) 0:#FFB366 1:#FFE16B';
+									return COLORS.FILL_COLOR.QR_CODE;
 								}
 								if (item === PURCHASE_ORDER[3]) {
-									return 'l(45) 0:#FF8989 1:#FF9B82';
+									return COLORS.FILL_COLOR.CARD;
 								}
 								if (item === PURCHASE_ORDER[4]) {
-									return 'l(45) 0:#AA80FF 1:#CC99FF';
+									return COLORS.FILL_COLOR.CASH;
 								}
-								return 'l(45) 0:#827DFF 1:#6670FF';
+								return COLORS.FILL_COLOR.OTHER;
 							},
 						]}
 						style={[
 							'item*percent',
 							{
 								lineWidth: 0,
-								stroke: '#fff',
+								stroke: COLORS.STROKE,
 								shadowBlur: 20,
 								shadowOffsetX: 0,
 								shadowOffsetY: 10,
 								shadowColor: item =>
-									maxItem.item === item ? 'rgba(255,255,255,1)' : 'transparent',
+									maxItem.item === item ? COLORS.SHADOW_LIGHT : COLORS.SHADOW_NOR,
 							},
 						]}
 						shape="sliceShape"
@@ -214,7 +180,7 @@ export default class ShowPayChart extends React.Component {
 						<Geom
 							type="intervalStack"
 							position="count"
-							color={['item', ['rgba(125,158,250,0.16)']]}
+							color={['item', [COLORS.GEOM_COLOR]]}
 							tooltip={false}
 						/>
 					</View>
@@ -229,3 +195,4 @@ export default class ShowPayChart extends React.Component {
 		);
 	}
 }
+export default ShowPayChart;

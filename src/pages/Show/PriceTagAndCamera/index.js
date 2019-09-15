@@ -1,6 +1,7 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
 import { priceFormat } from '@/utils/utils';
+import OneList from './oneList';
 
 import styles from './index.less';
 
@@ -64,13 +65,3 @@ export default class PriceTagAndCamera extends React.Component {
 		);
 	}
 }
-
-const OneList = props => {
-	const { name, num } = props;
-	return (
-		<div className={styles.oneList}>
-			<span className={styles['oneList-name']}>{name}</span>
-			<span className={styles['oneList-num']}>{num}</span>
-		</div>
-	);
-};
