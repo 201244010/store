@@ -5,7 +5,7 @@ import ShowCards from '../ShowCards';
 // import ShowChart from '../ShowChart';
 import ShowSaleList from '../ShowSaleList';
 import ShowPayChart from '../ShowPayChart';
-// import CashierAudit from '../CashierAudit';
+import CashierAudit from '../CashierAudit';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 
 import styles from './index.less';
@@ -99,7 +99,7 @@ class ShowTabContent extends React.Component {
 				/>
 				<div className={styles['content-body']}>
 					<div className={styles['body-chart']}>
-						{/* <CashierAudit /> */}
+						<CashierAudit />
 						{/* <ShowChart
 							chartName={formatMessage({ id: 'dashboard.order.show.sales' })}
 							saleType="amount"
