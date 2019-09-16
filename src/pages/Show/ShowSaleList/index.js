@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import SaleList from './saleList';
+import SaleList from './SaleList';
 
 import styles from './index.less';
 

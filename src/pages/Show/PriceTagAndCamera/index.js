@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
 import { priceFormat } from '@/utils/utils';
-import OneList from './oneList';
+import OneList from './OneList';
 
 import styles from './index.less';
 
