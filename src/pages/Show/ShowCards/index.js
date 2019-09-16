@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import Card from './card';
+import Card from './Card';
 import { priceFormat } from '@/utils/utils';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 import styles from './index.less';

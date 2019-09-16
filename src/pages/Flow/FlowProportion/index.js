@@ -2,10 +2,8 @@ import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import ProportionChart from '@/pages/Flow/ProportionChart';
+import { COLORS } from './proportion';
 import styles from './index.less';
-
-const COLOR_NEW = 'l(45) 0:#5EFFC9 1:#00FF99';
-const COLOR_OLD = 'l(45) 0:#FFB366 1:#FF7733';
 
 @connect(
 	state => ({
@@ -77,7 +75,7 @@ class FlowProportion extends React.PureComponent {
 					lightType={lightType}
 					chartName="newCustomer"
 					chartTitle={formatMessage({ id: 'flow.proportion.title.new' })}
-					chartColor={COLOR_NEW}
+					chartColor={COLORS.COLOR_NEW}
 				/>
 				<ProportionChart
 					list={data}
@@ -85,7 +83,7 @@ class FlowProportion extends React.PureComponent {
 					lightType={lightType}
 					chartName="oldCustomer"
 					chartTitle={formatMessage({ id: 'flow.proportion.title.old' })}
-					chartColor={COLOR_OLD}
+					chartColor={COLORS.COLOR_OLD}
 				/>
 			</div>
 		);
