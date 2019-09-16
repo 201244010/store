@@ -7,7 +7,7 @@ import VideoPlayer from '../VideoPlayer';
 
 import styles from './CashierAudit.less';
 
-const TIMER = 60000;
+const TIMER = 180000;
 const DAY = 30;
 
 
