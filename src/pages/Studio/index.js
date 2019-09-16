@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import { connect } from 'dva';
 import { Spin, message } from 'antd';
@@ -15,6 +15,27 @@ import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
+
+const imageMap = {
+	text: require('@/assets/studio/text.svg'),
+	rect: require('@/assets/studio/rect.svg'),
+	'line@h': require('@/assets/studio/hLine.svg'),
+	'line@v': require('@/assets/studio/vLine.svg'),
+	image: require('@/assets/studio/image.svg'),
+	'barcode@h': require('@/assets/studio/code_h.svg'),
+	'barcode@v': require('@/assets/studio/code_v.svg'),
+	'barcode@qr': require('@/assets/studio/code_qr.svg'),
+};
+const textMap = {
+	text: formatMessage({ id: 'studio.component.text' }),
+	rect: formatMessage({ id: 'studio.component.rect' }),
+	'line@h': formatMessage({ id: 'studio.component.line.h' }),
+	'line@v': formatMessage({ id: 'studio.component.line.v' }),
+	image: formatMessage({ id: 'studio.component.image' }),
+	'barcode@h': formatMessage({ id: 'studio.component.barcode' }),
+	'barcode@v': formatMessage({ id: 'studio.component.barcode.v' }),
+	'barcode@qr': formatMessage({ id: 'studio.component.qrcode' }),
+};
 
 @connect(
 	state => ({
@@ -56,8 +77,13 @@ class Studio extends Component {
 		this.stageWidth = window.innerWidth - SIZES.TOOL_BOX_WIDTH * 2;
 		this.stageHeight = window.innerHeight - SIZES.HEADER_HEIGHT;
 		this.state = {
-			dragging: false,
 			editing: false,
+			dragging: false,
+			dragName: '',
+			dragCopy: {
+				left: -9999,
+				top: -9999
+			}
 		};
 		clearSteps();
 	}
@@ -374,8 +400,6 @@ class Studio extends Component {
 
 	handleStageShapeStart = e => {
 		const { studio: { componentsDetail }, updateComponentDetail } = this.props;
-		this.dragStartX = e.evt.clientX;
-		this.dragStartY = e.evt.clientY;
 		this.setState({
 			dragging: true,
 		});
@@ -383,6 +407,13 @@ class Studio extends Component {
 		if (componentName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1 && componentsDetail[componentName]) {
 			// 按住ctrl拖动复制组件
 			if (e.evt.ctrlKey && !e.evt.shiftKey) {
+				this.setState({
+					dragName: componentName,
+					dragCopy: {
+						left: e.evt.clientX,
+						top: e.evt.clientY
+					}
+				});
 				updateComponentDetail({
 					componentName,
 					detail: {
@@ -401,6 +432,12 @@ class Studio extends Component {
 		} = this.props;
 
 		if (e.evt.ctrlKey && !e.evt.shiftKey) {
+			this.setState({
+				dragCopy: {
+					left: e.evt.clientX,
+					top: e.evt.clientY
+				}
+			});
 			window.clearTimeout(this.selectComponentTimer);
 			resetScopedComponents();
 			return;
@@ -453,6 +490,12 @@ class Studio extends Component {
 			}
 		});
 		if (e.evt.ctrlKey && !e.evt.shiftKey && curComponent) {
+			this.setState({
+				dragCopy: {
+					left: -9999,
+					top: -9999
+				}
+			});
 			addComponent({
 				...curComponent,
 				x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
@@ -842,10 +885,11 @@ class Studio extends Component {
 				},
 				template: { bindFields, curTemplate },
 			},
-			state: { dragging },
+			state: { dragging, dragCopy, dragName },
 		} = this;
 
 		const lines = getNearestLines(componentsDetail, selectedShapeName, scopedComponents);
+		const type = getTypeByName(dragName);
 
 		return (
 			<div className={styles.board}>
@@ -987,6 +1031,21 @@ class Studio extends Component {
 						}}
 					/>
 				) : null}
+				{
+					type.indexOf(SHAPE_TYPES.PRICE) === -1 ?
+						<div className={styles['drag-copy-show']} style={{...dragCopy}}>
+							<img src={imageMap[type]} />
+							<span>{textMap[type]}</span>
+						</div> :
+						<div
+							className={`${styles['drag-copy-price-show']} ${type.indexOf('white') > -1 ? `${styles['drag-copy-price-white']}` : ''}`}
+							style={{...dragCopy}}
+						>
+							<span>
+								99.{type.indexOf('sup') > -1 ? <sup>00</sup> : (type.indexOf('sub') > -1 ? <sub>00</sub> : '00')}
+							</span>
+						</div>
+				}
 			</div>
 		);
 	}

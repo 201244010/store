@@ -29,6 +29,55 @@
 		z-index: 1000;
 	}
 
+	.drag-copy-show {
+		width: @TOOL_BASIC_ITEM_WIDTH;
+		height: @TOOL_BASIC_ITEM_HEIGHT;
+		line-height: @TOOL_BASIC_ITEM_HEIGHT;
+		text-align: center;
+		font-size: 14px;
+		background: #fff;
+		border: 1px solid #d9d9d9;
+		border-radius: 4px;
+		box-sizing: border-box;
+		cursor: pointer;
+		position: fixed;
+		left: -9999px;
+		top: -9999px;
+		display: flex;
+		align-items: center;
+
+		:global {
+			img {
+				margin-left: 8px;
+			}
+
+			span {
+				margin-left: 6px;
+			}
+		}
+	}
+
+	.drag-copy-price-show {
+		width: @TOOL_PRICE_ITEM_WIDTH;
+		height: @TOOL_PRICE_ITEM_HEIGHT;
+		line-height: @TOOL_PRICE_ITEM_HEIGHT;
+		text-align: center;
+		font-size: 16px;
+		background: #595959;
+		color: #fff;
+		border-radius: 4px;
+		box-sizing: border-box;
+		cursor: pointer;
+		position: fixed;
+		left: -9999px;
+		top: -9999px;
+	}
+
+	.drag-copy-price-white {
+		background: #fff;
+		color: #595959;
+	}
+
 	.board-header {
 		width: 100%;
 		box-sizing: border-box;
