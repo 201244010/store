@@ -335,7 +335,7 @@ export const saveNowStep = async (templateId, componentsDetail) => {
 		STEP_KEYS[templateId] = [];
 		nowKey = templateId * 1000 + 1;
 	} else {
-		nowKey = Number(STEP_KEYS[templateId][STEP_KEYS[templateId].length - 1]) + 1;
+		nowKey = Math.max.apply({}, STEP_KEYS[templateId]) + 1;
 	}
 	if (!STEP_KEYS[templateId].length) {
 		STEP_KEYS[templateId].push(nowKey);

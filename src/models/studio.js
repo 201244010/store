@@ -40,6 +40,10 @@ export default {
 				componentsDetail[key] = payload[key];
 				componentsDetail[key].x = componentsDetail[key].startX * zoomScale + position.x;
 				componentsDetail[key].y = componentsDetail[key].startY * zoomScale + position.y;
+				if (componentsDetail[key].type === SHAPE_TYPES.RECT_SELECT) {
+					componentsDetail[key].width = 0;
+					componentsDetail[key].height = 0;
+				}
 				hasImage = hasImage || IMAGE_TYPES.includes(payload[key].type);
 			});
 
