@@ -89,6 +89,7 @@ class CashierAudit extends React.Component {
 		const { getTradeList } = this.props;
 		const { list = [] } = await getTradeList({startTime, endTime});
 		let tradeList = [];
+
 		if(list.length >= 6){
 			tradeList = list.slice(0,6).map(item => ({
 				time:item.purchaseTime,
@@ -104,7 +105,7 @@ class CashierAudit extends React.Component {
 		}else if(list.length >= 1) {
 			tradeList = list.slice(0,list.length).map(item => ({
 				time: item.purchaseTime,
-				amount: Number(item.totalPrice) > 10000 ? 
+				amount: Number(item.totalPrice) < 10000 ? 
 					Number(item.totalPrice).toFixed(2) : 
 					(Number(item.totalPrice)/10000).toFixed(2),
 				hasVideo: item.url !== '',
@@ -135,7 +136,25 @@ class CashierAudit extends React.Component {
 			!item.hasVideo
 		));
 		if(noVideoFlag){
-			tradeList.splice(4, 1, ...tradeList.splice(5, 1, tradeList[4]));
+			if(tradeList[5].hasVideo){
+				tradeList.splice(4, 1, ...tradeList.splice(5, 1, tradeList[4]));
+			}else{
+				const findVideoList = list.filter(item => (item.orderId && item.url !== '' ));
+				if(findVideoList.length > 0){
+					const obj = {
+						time: findVideoList[0].purchaseTime,
+						amount: Number(findVideoList[0].totalPrice) < 10000 ? 
+							Number(findVideoList[0].totalPrice).toFixed(2) : 
+							(Number(findVideoList[0].totalPrice)/10000).toFixed(2),
+						hasVideo: findVideoList[0].url !== '',
+						orderId: findVideoList[0].orderId,
+						videoUrl : findVideoList[0].url,
+						posSn: findVideoList[0].paymentDeviceSn,
+						unit: Number(findVideoList[0].totalPrice) < 10000 ? 0 : 1
+					};
+					tradeList[4] = obj;
+				}
+			}
 		}
 		
 		const filterList = tradeList.filter(item => (item.orderId && item.hasVideo ));
