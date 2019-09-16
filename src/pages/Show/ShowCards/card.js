@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatMessage } from 'umi/locale';
 import styles from './card.less';
 
 class Card extends React.PureComponent {
@@ -33,14 +34,9 @@ class Card extends React.PureComponent {
 							{num}
 							{showUnit ? (
 								<span
-									style={{
-										display: 'inline-block',
-										marginLeft: 4,
-										fontFamily: 'PingFangSC-light',
-										fontSize: '24px',
-									}}
+									className={styles['card-left-unit']}
 								>
-									万
+									{formatMessage({ id: 'show.total.unit' })}
 								</span>
 							) : (
 								''

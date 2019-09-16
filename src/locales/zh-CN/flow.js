@@ -11,4 +11,5 @@ export default {
 	'flow.totalCount.today': '今日进店客流总数',
 	'flow.totalCount.yesterday': '熟客人数统计',
 	'flow.fs.privacy': '隐私说明：隐私说明隐私说明隐私说明隐私说明隐私说明隐私说明隐私说明',
+	'show.total.unit': '万',
 };
