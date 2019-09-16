@@ -138,8 +138,13 @@ class FlowDistribution extends React.PureComponent {
 										shadowOffsetX: 0,
 										shadowOffsetY: 0,
 										shadowColor: (age, gender) => {
+											if (gender === 'male') {
+												if (lightItem[0] === age && lightItem[1] === gender) {
+													return COLORS.MALE_SHADOW;
+												}
+											}
 											if (lightItem[0] === age && lightItem[1] === gender) {
-												return COLORS.LIGHT_SHADOW;
+												return COLORS.FEMALE_SHADOW;
 											}
 											return COLORS.NOR_SHADOW;
 										},
@@ -152,11 +157,11 @@ class FlowDistribution extends React.PureComponent {
 				<div className={styles['distribution-footer']}>
 					<div className={styles['footer-item']}>
 						<p className={styles['item-title']}>{formatMessage({ id: 'flow.distribution.male' })}</p>
-						<p className={styles['item-content']}>{malePercent}%&nbsp;&nbsp;{male}</p>
+						<p className={styles['item-content']}>{malePercent}%<span className={styles['item-num']}>{male}</span></p>
 					</div>
 					<div className={styles['footer-item']}>
 						<p className={styles['item-title']}>{formatMessage({ id: 'flow.distribution.female' })}</p>
-						<p className={styles['item-content']}>{femalePercent}%&nbsp;&nbsp;{female}</p>
+						<p className={styles['item-content']}>{femalePercent}%<span className={styles['item-num']}>{female}</span></p>
 					</div>
 				</div>
 			</div>

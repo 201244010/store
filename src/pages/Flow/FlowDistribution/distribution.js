@@ -75,7 +75,7 @@ export const LABEL = {
 	offset: 16,
 	textStyle: {
 		textAlign: 'start',
-		fill: '#FFFFFF',
+		fill: '#A5A7B1',
 		fontSize: '14',
 		textBaseline: 'middle',
 	},
@@ -89,5 +89,6 @@ export const COLORS = {
 	FEMALE: 'rgba(255,128,128,0.6)',
 	FEMALE_LIGHT: '#FF8080',
 	NOR_SHADOW: 'transparent',
-	LIGHT_SHADOW: '#1A56FF',
+	MALE_SHADOW: '#1A56FF',
+	FEMALE_SHADOW: 'rgba(255,26,26,0.5)',
 };

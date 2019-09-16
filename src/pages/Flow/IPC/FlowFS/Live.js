@@ -351,7 +351,7 @@ class Live extends React.Component{
 															{ `(${ genders[item.gender] } ${ item.age }${formatMessage({id: 'live.age.unit'})})` }
 														</p>
 														<p className={styles['infos-time']}>
-															<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
+															{/* <span>{formatMessage({id: 'live.last.arrival.time'})}</span> */}
 															<span>
 																{
 																	moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
