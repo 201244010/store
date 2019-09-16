@@ -7,8 +7,14 @@ import VideoPlayer from '../VideoPlayer';
 
 import styles from './CashierAudit.less';
 
-const TIMER = 60000;
+const TIMER = 180000;
 const DAY = 30;
+
+/**
+ * unit
+ * 0 => 元
+ * 1 => 万元
+ */
 
 
 @connect(null,
@@ -86,20 +92,26 @@ class CashierAudit extends React.Component {
 		if(list.length >= 6){
 			tradeList = list.slice(0,6).map(item => ({
 				time:item.purchaseTime,
-				amount:item.totalPrice,
+				amount: Number(item.totalPrice) < 10000 ?
+					Number(item.totalPrice).toFixed(2) : 
+					(Number(item.totalPrice)/10000).toFixed(2),
 				hasVideo: item.url !== '',
 				orderId: item.orderId,
 				videoUrl: item.url,
-				posSn: item.paymentDeviceSn
+				posSn: item.paymentDeviceSn,
+				unit: Number(item.totalPrice) < 10000 ? 0 : 1
 			}));
 		}else if(list.length >= 1) {
 			tradeList = list.slice(0,list.length).map(item => ({
-				time:item.purchaseTime,
-				amount:item.totalPrice,
+				time: item.purchaseTime,
+				amount: Number(item.totalPrice) > 10000 ? 
+					Number(item.totalPrice).toFixed(2) : 
+					(Number(item.totalPrice)/10000).toFixed(2),
 				hasVideo: item.url !== '',
 				orderId: item.orderId,
 				videoUrl : item.url,
-				posSn: item.paymentDeviceSn
+				posSn: item.paymentDeviceSn,
+				unit: Number(item.totalPrice) < 10000 ? 0 : 1
 			}));
 		}
 		for(let i=tradeList.length; i<6; i++){
@@ -107,6 +119,7 @@ class CashierAudit extends React.Component {
 				time: -1,
 				amount: -1,
 				hasVideo: true,
+				unit: 0
 			};
 			tradeList[i] = obj;
 		}
@@ -122,7 +135,7 @@ class CashierAudit extends React.Component {
 			!item.hasVideo
 		));
 		if(noVideoFlag){
-			tradeList.splice(4, 1, ...tradeList.splice(5, 1, tradeList[4]))
+			tradeList.splice(4, 1, ...tradeList.splice(5, 1, tradeList[4]));
 		}
 		
 		const filterList = tradeList.filter(item => (item.orderId && item.hasVideo ));
