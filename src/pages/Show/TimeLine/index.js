@@ -23,22 +23,23 @@ class TimeLine extends React.Component {
 						>
 							
 							<div className={item.hasVideo? styles.dot : styles['waiting-video-dot']} />
-
-							<div className={item.hasVideo? styles['normal-content'] : styles['waiting-video-content']}>
-								<div className={styles.time}>
-									{/* {moment.unix(item.time).format('YYYY-MM-DD HH:mm:ss')} */}
-									{item.time === -1 ? '--' :item.time}
+							<div className={item.hasVideo? styles.border : styles['waiting-video-border']}>
+								<div className={item.hasVideo? styles['normal-content'] : styles['waiting-video-content']}>
+									<div className={styles.time}>
+										{/* {moment.unix(item.time).format('YYYY-MM-DD HH:mm:ss')} */}
+										{item.time === -1 ? '--' :item.time}
+									</div>
+									<div className={styles.amount}>
+										<span className={styles.title}>{formatMessage({id: 'trade.show.title'})}</span>
+										<span className={styles.price}>{item.amount === -1 ? formatMessage({id: 'trade.show.unknown'}) : item.amount}</span>
+										<span className={styles.unit}>{formatMessage({id: 'trade.show.unit'})}</span>
+									</div>
+									{
+										item.hasVideo ? 
+											'' :
+											<div className={styles.tips}>{formatMessage({id: 'trade.show.tips'})}</div>
+									}
 								</div>
-								<div className={styles.amount}>
-									<span className={styles.title}>{formatMessage({id: 'trade.show.title'})}</span>
-									<span className={styles.price}>{item.amount === -1 ? formatMessage({id: 'trade.show.unknown'}) : item.amount}</span>
-									<span className={styles.unit}>{formatMessage({id: 'trade.show.unit'})}</span>
-								</div>
-								{
-									item.hasVideo ? 
-										'' :
-										<div className={styles.tips}>{formatMessage({id: 'trade.show.tips'})}</div>
-								}
 							</div>
 						</div>
 					))}

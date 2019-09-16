@@ -104,9 +104,3 @@ export const TIME = {
 	HOUR: 60 * 60,
 	DAY: 24 * 60 * 60,
 };
-
-export const TIMER = {
-	TRADE_SHOW: 180000
-};
-
-export const DAY = 30;

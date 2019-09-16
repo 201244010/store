@@ -1,11 +1,14 @@
 import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { TIMER, DAY } from '@/constants';
+
 import TimeLine from '../TimeLine';
 import VideoPlayer from '../VideoPlayer';
 
 import styles from './CashierAudit.less';
+
+const TIMER = 60000;
+const DAY = 30;
 
 
 @connect(null,
@@ -112,6 +115,15 @@ class CashierAudit extends React.Component {
 			tradeList = tradeList.sort((a,b) => moment(b.time).valueOf() - moment(a.time).valueOf()).slice(0,5);
 			tradeList.push(activeOrderItem);
 		}
+
+		// 判断前五条内容是否都是没有视频
+		let noVideoFlag = false;
+		noVideoFlag = tradeList.slice(0,5).every(item =>(
+			!item.hasVideo
+		));
+		if(noVideoFlag){
+			tradeList.splice(4, 1, ...tradeList.splice(5, 1, tradeList[4]))
+		}
 		
 		const filterList = tradeList.filter(item => (item.orderId && item.hasVideo ));
 
@@ -158,7 +170,7 @@ class CashierAudit extends React.Component {
 			if(activeOrderId === ''){
 				await this.setActiveOrder();
 			}
-		},TIMER.TRADE_SHOW);
+		},TIMER);
 	}
 
 	render(){
