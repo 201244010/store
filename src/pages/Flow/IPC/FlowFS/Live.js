@@ -12,8 +12,9 @@ import { LIBRARY_NAME } from './libraryName';
 import styles from './Live.less';
 
 @connect((state) => {
-	const { flowFaceid: { rectangles, list }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }, } = state;
+	const { flowFaceid: { rectangles, list, libraryList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }, } = state;
 	const rects = [];
+
 	rectangles.forEach(item => {
 		item.rects.forEach(rect => {
 			rects.push(rect);
@@ -28,6 +29,7 @@ import styles from './Live.less';
 		faceidList: list || [],
 		timeSlots: timeSlots || [],
 		location,
+		libraryList,
 	};
 }, (dispatch) => ({
 	async getTimeSlots({sn, timeStart, timeEnd}) {
@@ -142,7 +144,12 @@ import styles from './Live.less';
 				sn
 			}
 		});
-	}
+	},
+	readLibraryType() {
+		dispatch({
+			type: 'flowFaceid/readLibraryType',
+		});
+	},
 	// test: () => {
 	// 	dispatch({
 	// 		type:'faceid/test'
@@ -152,7 +159,6 @@ import styles from './Live.less';
 class Live extends React.Component{
 	constructor(props) {
 		super(props);
-
 		this.state = {
 			deviceInfo: {
 				pixelRatio: '16:9'
@@ -163,8 +169,9 @@ class Live extends React.Component{
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList } = this.props;
+		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList, readLibraryType } = this.props;
 
+		readLibraryType();
 		const {sn} = query;
 		let sdStatus = true;
 		if (sn) {
@@ -279,8 +286,12 @@ class Live extends React.Component{
 	}
 
 	render() {
-		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged } = this.props;
+		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, libraryList } = this.props;
 
+		const libraryType = {};
+		libraryList.map(item => {
+			libraryType[item.id] = item.type;
+		});
 		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
@@ -341,7 +352,7 @@ class Live extends React.Component{
 													<Card
 														title={
 															<div className={styles['avatar-container']}>
-																<div className={styles.type} style={{backgroundImage: LIBRARY_NAME[item.libraryName]}}>{ item.libraryName }</div>
+																<div className={styles.type} style={{backgroundImage: LIBRARY_NAME[libraryType[item.libraryId]]}}>{ item.libraryName }</div>
 																<Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic}`} />
 															</div>
 														}

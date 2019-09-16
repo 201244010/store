@@ -2,7 +2,7 @@
 // import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 // import { getRange } from '../../services/photoLibrary';
-import { getRange } from '@/pages/Flow/IPC/services/photoLibrary';
+import { getRange, readLibrary } from '@/pages/Flow/IPC/services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
@@ -11,10 +11,11 @@ export default {
 		rectangles: [],
 		list: [],
 		ageRangeList: [],
-		deviceSn: ''
+		deviceSn: '',
+		libraryList: [],
 	},
 	reducers: {
-		drawRects({ rectangles, list, ageRangeList, deviceSn }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
+		drawRects({ rectangles, list, ageRangeList, deviceSn, libraryList }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
 
 			// todo 需要添加信息清除逻辑
 			const rect = rectangles;
@@ -31,7 +32,8 @@ export default {
 				],
 				list,
 				ageRangeList,
-				deviceSn
+				deviceSn,
+				libraryList,
 			};
 		},
 		clearRects(state, { payload: { timestamp }}) {
@@ -68,7 +70,11 @@ export default {
 			if(state.deviceSn !== sn) {
 				state.list = [];
 			}
-		}
+		},
+		readData(state, action) {
+			const { libraryList } = action;
+			return {...state, ...{libraryList}};
+		},
 
 	},
 	effects: {
@@ -139,6 +145,21 @@ export default {
 					 name: name === 'undefined' ? formatMessage({id: 'live.unknown'}) : name
 				 }
 			});
+		},
+		*readLibraryType(_, { put }) {
+			const response = yield readLibrary({
+				// userId,
+				// companyId,
+				// shopId,
+			});
+			const { data: libraryList, code} = response;
+			if (code === ERROR_OK) {
+				yield put({
+					type: 'readData',
+					libraryList,
+				});
+			}
+			return response.code;
 		},
 		// *test(_, { put }) {
 		// 	console.log('in test');
