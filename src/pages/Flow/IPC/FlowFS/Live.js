@@ -7,6 +7,7 @@ import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Faceid from '@/pages/Flow/VideoPlayer/Faceid';
 import LivePlayer from '@/pages/Flow/VideoPlayer/LivePlayer';
+import { LIBRARY_NAME } from './libraryName';
 
 import styles from './Live.less';
 
@@ -340,7 +341,7 @@ class Live extends React.Component{
 													<Card
 														title={
 															<div className={styles['avatar-container']}>
-																<div className={styles.type}>{ item.libraryName }</div>
+																<div className={styles.type} style={{backgroundImage: LIBRARY_NAME[item.libraryName]}}>{ item.libraryName }</div>
 																<Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic}`} />
 															</div>
 														}

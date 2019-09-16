@@ -124,7 +124,7 @@ class ShowPayChart extends React.PureComponent {
 						);
 					})}
 				</div>
-				<Chart width={438} height={208} data={dv} padding={[-20, -20, -20, -250]}>
+				<Chart width={438} height={208} data={dv} padding={[-20, -20, -20, -240]}>
 					<Coord type="theta" radius={0.75} innerRadius={0.6} />
 					<Axis name="percent" />
 					<Tooltip />
