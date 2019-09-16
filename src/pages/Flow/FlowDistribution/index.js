@@ -59,13 +59,13 @@ class FlowDistribution extends React.PureComponent {
 			lightItem = [ lightAge, lightGender ];
 		}
 		
-		const data1 = [];
+		const data = [];
 		let male = 0;
 		let female = 0;
 		countListByGender.map(item => {
 			male += item.maleCount;
 			female += item.femaleCount;
-			data1.push(
+			data.push(
 				{
 					age: `${ageRangeMap[item.ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`,
 					visitor: item.maleCount,
@@ -85,13 +85,26 @@ class FlowDistribution extends React.PureComponent {
 		const malePercent = (male * 100/ personTotal).toFixed(1);
 		const femalePercent = (female * 100/ personTotal).toFixed(1);
 
+		const guideData = [
+			{
+				title: formatMessage({ id: 'flow.distribution.male' }),
+				percent: malePercent,
+				num: male,
+			},
+			{
+				title: formatMessage({ id: 'flow.distribution.female' }),
+				percent: femalePercent,
+				num: female,
+			}
+		];
+
 		return (
 			<div className={styles['flow-distribution']}>
 				<p className={styles['distribution-title']}>{formatMessage({ id: 'flow.distribution.title' })}</p>
 				<Chart
 					width={400}
 					height={204}
-					data={data1}
+					data={data}
 					scale={this.cols}
 					padding={[-50, -53, -50, -53]}
 				>
@@ -155,14 +168,14 @@ class FlowDistribution extends React.PureComponent {
 					</Facet>
 				</Chart>
 				<div className={styles['distribution-footer']}>
-					<div className={styles['footer-item']}>
-						<p className={styles['item-title']}>{formatMessage({ id: 'flow.distribution.male' })}</p>
-						<p className={styles['item-content']}>{malePercent}%<span className={styles['item-num']}>{male}</span></p>
-					</div>
-					<div className={styles['footer-item']}>
-						<p className={styles['item-title']}>{formatMessage({ id: 'flow.distribution.female' })}</p>
-						<p className={styles['item-content']}>{femalePercent}%<span className={styles['item-num']}>{female}</span></p>
-					</div>
+					{
+						guideData.map(item => (
+							<div className={styles['footer-item']} key={item.title}>
+								<p className={styles['item-title']}>{item.title}</p>
+								<p><span className={styles['item-content']}>{item.percent}%<span className={styles['item-num']}>{item.num}</span></span></p>
+							</div>
+						))
+					}
 				</div>
 			</div>
 		);

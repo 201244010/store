@@ -7,7 +7,7 @@ import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Faceid from '@/pages/Flow/VideoPlayer/Faceid';
 import LivePlayer from '@/pages/Flow/VideoPlayer/LivePlayer';
-import { LIBRARY_NAME } from './libraryName';
+import { LIBRARY_STYLE } from './libraryName';
 
 import styles from './Live.less';
 
@@ -290,7 +290,7 @@ class Live extends React.Component{
 
 		const libraryType = {};
 		libraryList.map(item => {
-			libraryType[item.id] = item.type;
+			libraryType[item.id] = LIBRARY_STYLE[item.type];
 		});
 		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
 		const genders = {
@@ -352,7 +352,7 @@ class Live extends React.Component{
 													<Card
 														title={
 															<div className={styles['avatar-container']}>
-																<div className={styles.type} style={{backgroundImage: LIBRARY_NAME[libraryType[item.libraryId]]}}>{ item.libraryName }</div>
+																<div className={`${styles.type} ${styles[libraryType[item.libraryId]]}`}>{ item.libraryName }</div>
 																<Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic}`} />
 															</div>
 														}

@@ -1,7 +1,4 @@
-// import { listen } from '@/services/mqtt';
-// import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-// import { getRange } from '../../services/photoLibrary';
 import { getRange, readLibrary } from '@/pages/Flow/IPC/services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 

@@ -1,7 +1,7 @@
 .card-border {
 	width: 438px;
 	height: 176px;
-	background: linear-gradient(148deg, #8491c3 0%, #6574b1 10%, #5262a5 18%, #414987 100%);
+	background-image: linear-gradient(148deg, #8491c3 0%, #6574b1 10%, #5262a5 18%, #414987 100%);
 	box-shadow: 0 26px 50px -20px rgba(30, 36, 66, 0.7);
 	border-radius: 16px;
 	display: flex;
@@ -58,6 +58,27 @@
 					display: flex;
 					align-items: center;
 					.compare {
+						width: 8px;
+						height: 6px;
+						display: inline-block;
+						margin-left: 8px;
+					}
+					.compare-up {
+						background: url('./ic_up.svg');
+						width: 8px;
+						height: 6px;
+						display: inline-block;
+						margin-left: 8px;
+					}
+					.compare-down {
+						background: url('./ic_down.svg');
+						width: 8px;
+						height: 6px;
+						display: inline-block;
+						margin-left: 8px;
+					}
+					.compare-normal {
+						background: transparent;
 						width: 8px;
 						height: 6px;
 						display: inline-block;

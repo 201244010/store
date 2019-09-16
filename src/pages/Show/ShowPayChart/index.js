@@ -4,12 +4,10 @@ import { Chart, Geom, Axis, Tooltip, Coord, Guide, View } from 'bizcharts';
 import DataSet from '@antv/data-set';
 import { formatMessage } from 'umi/locale';
 import PriceTagAndCamera from '../PriceTagAndCamera';
-import { DASHBOARD } from '@/pages/DashBoard/constants';
 import { shape, COLORS } from './payShape';
 
 import styles from './index.less';
 
-const { PURCHASE_ORDER } = DASHBOARD;
 const { DataView } = DataSet;
 const { Html } = Guide;
 
@@ -65,6 +63,7 @@ class ShowPayChart extends React.PureComponent {
 		});
 
 		shape(maxItem);
+
 		return (
 			<div className={styles['pay-chart']}>
 				<div className={styles['pay-chart-title']}>
@@ -72,30 +71,7 @@ class ShowPayChart extends React.PureComponent {
 				</div>
 				<div className={styles['pay-chart-lengend']}>
 					{data.map(item => {
-						let color = '';
 						const onLighter = maxItem.item === item.item;
-						switch (item.item) {
-							case PURCHASE_ORDER[0]:
-								color = COLORS.POINT_COLOR.ZHI_FU_BAO;
-								break;
-							case PURCHASE_ORDER[1]:
-								color = COLORS.POINT_COLOR.WECHAT;
-								break;
-							case PURCHASE_ORDER[2]:
-								color = COLORS.POINT_COLOR.QR_CODE;
-								break;
-							case PURCHASE_ORDER[3]:
-								color = COLORS.POINT_COLOR.CARD;
-								break;
-							case PURCHASE_ORDER[4]:
-								color = COLORS.POINT_COLOR.CASH;
-								break;
-							case PURCHASE_ORDER[5]:
-								color = COLORS.POINT_COLOR.OTHER;
-								break;
-							default:
-								color = COLORS.POINT_COLOR.OTHER;
-						}
 						return (
 							<div
 								key={item.item}
@@ -105,10 +81,7 @@ class ShowPayChart extends React.PureComponent {
 							>
 								<div className={styles['oneList-right']}>
 									<span
-										className={styles['oneList-point']}
-										style={{
-											background: color,
-										}}
+										className={`${styles['oneList-point']} ${styles[COLORS.POINT_COLOR[item.item]]}`}
 									/>
 									{item.item}
 								</div>
@@ -141,24 +114,7 @@ class ShowPayChart extends React.PureComponent {
 						position="count"
 						color={[
 							'item*percent',
-							item => {
-								if (item === PURCHASE_ORDER[0]) {
-									return COLORS.FILL_COLOR.ZHI_FU_BAO;
-								}
-								if (item === PURCHASE_ORDER[1]) {
-									return COLORS.FILL_COLOR.WECHAT;
-								}
-								if (item === PURCHASE_ORDER[2]) {
-									return COLORS.FILL_COLOR.QR_CODE;
-								}
-								if (item === PURCHASE_ORDER[3]) {
-									return COLORS.FILL_COLOR.CARD;
-								}
-								if (item === PURCHASE_ORDER[4]) {
-									return COLORS.FILL_COLOR.CASH;
-								}
-								return COLORS.FILL_COLOR.OTHER;
-							},
+							item => COLORS.FILL_COLOR[item],
 						]}
 						style={[
 							'item*percent',

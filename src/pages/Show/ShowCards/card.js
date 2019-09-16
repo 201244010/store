@@ -16,14 +16,36 @@ class Card extends React.PureComponent {
 			monthNum,
 			monthCompare,
 		} = this.props;
+
 		let { num = '0' } = this.props;
 		num = num.toString().replace(/,/g, '');
 
 		let showUnit = false;
-		if (parseFloat(num) >= 10000) {
+		if (parseFloat(num) >= 10000 || parseFloat(num) <= -10000) {
 			num = (parseFloat(num) / 10000).toFixed(2);
 			showUnit = true;
 		}
+
+		const compareData = [
+			{
+				title: dayTitle,
+				num: dayNum,
+				compare: dayCompare,
+				style: dayCompare !== -1 ? dayCompare === 1 ? 'compare-up' : 'compare-down' : 'compare-normal',
+			},
+			{
+				title: weekTitle,
+				num: weekNum,
+				compare: weekCompare,
+				style: weekCompare !== -1 ? weekCompare === 1 ? 'compare-up' : 'compare-down' : 'compare-normal',
+			},
+			{
+				title: monthTitle,
+				num: monthNum,
+				compare: monthCompare,
+				style: monthCompare !== -1 ? monthCompare === 1 ? 'compare-up' : 'compare-down' : 'compare-normal',
+			},
+		];
 
 		return (
 			<div className={styles['card-border']}>
@@ -44,63 +66,19 @@ class Card extends React.PureComponent {
 						</div>
 					</div>
 					<div className={styles['card-right']}>
-						<div className={styles['card-right-count']}>
-							<div className={styles['card-right-title']}>{dayTitle}</div>
-							<div className={styles['card-right-num']}>
-								{dayNum}%
-								<span
-									className={styles.compare}
-									style={{
-										background:
-											dayCompare !== -1
-												? `url(${
-													dayCompare === 1
-														? require('./ic_up.svg')
-														: require('./ic_down.svg')
-												  })`
-												: 'transparent',
-									}}
-								/>
-							</div>
-						</div>
-						<div className={styles['card-right-count']}>
-							<div className={styles['card-right-title']}>{weekTitle}</div>
-							<div className={styles['card-right-num']}>
-								{weekNum}%
-								<span
-									className={styles.compare}
-									style={{
-										background:
-											weekCompare !== -1
-												? `url(${
-													weekCompare === 1
-														? require('./ic_up.svg')
-														: require('./ic_down.svg')
-												  })`
-												: 'transparent',
-									}}
-								/>
-							</div>
-						</div>
-						<div className={styles['card-right-count']}>
-							<div className={styles['card-right-title']}>{monthTitle}</div>
-							<div className={styles['card-right-num']}>
-								{monthNum}%
-								<span
-									className={styles.compare}
-									style={{
-										background:
-											monthCompare !== -1
-												? `url(${
-													monthCompare === 1
-														? require('./ic_up.svg')
-														: require('./ic_down.svg')
-												  })`
-												: 'transparent',
-									}}
-								/>
-							</div>
-						</div>
+						{
+							compareData.map(item => (
+								<div className={styles['card-right-count']} key={item.title}>
+									<div className={styles['card-right-title']}>{item.title}</div>
+									<div className={styles['card-right-num']}>
+										{item.num}%
+										<span
+											className={`${styles.compare} ${styles[item.style]}`}
+										/>
+									</div>
+								</div>
+							))
+						}
 					</div>
 				</div>
 			</div>
