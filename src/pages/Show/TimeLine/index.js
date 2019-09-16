@@ -32,7 +32,7 @@ class TimeLine extends React.Component {
 									<div className={styles.amount}>
 										<span className={styles.title}>{formatMessage({id: 'trade.show.title'})}</span>
 										<span className={styles.price}>{item.amount === -1 ? formatMessage({id: 'trade.show.unknown'}) : item.amount}</span>
-										<span className={styles.unit}>{formatMessage({id: 'trade.show.unit'})}</span>
+										<span className={styles.unit}>{item.unit === 0 ? formatMessage({id: 'trade.show.unit'}) : formatMessage({id: 'trade.show.ten.thousand.unit'})}</span>
 									</div>
 									{
 										item.hasVideo ? 
