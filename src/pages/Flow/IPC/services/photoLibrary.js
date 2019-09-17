@@ -1,11 +1,26 @@
 import { format } from '@konata9/milk-shake';
 import { customizeFetch } from '@/utils/fetch';
+import { ERROR_OK } from '@/constants/errorCode';
 import CONFIG from '@/config';
 
 const { IPC_SERVER } = CONFIG;
 const request = customizeFetch('ipc/api/face/group', IPC_SERVER);
 const request1 = customizeFetch('ipc/api/face', IPC_SERVER);
 const range = customizeFetch('ipc/api/face/age', IPC_SERVER);
+
+const dataFormatter = (item, index) => ({
+	id: item.group_id || index + 1,
+	name: item.group_name,
+	type: item.type,
+	threshold: item.threshold,
+	period: item.period/24/60/60,
+	remarks: item.mark || '',
+	amount: item.count || 0,
+	capacity: item.capacity,
+	target: item.target_group_id || '',
+	lastupdate: item.last_modified_time,
+	warning: item.alarm_notified === 2
+});
 
 // 获取照片列表
 export const readPhotoList = async (params) => {
@@ -145,3 +160,31 @@ export const handleResponse =  fileList => {
 	}
 	return answer;
 };
+
+export const readLibrary = async () =>
+	// const { userId, shopId } = params;
+	// const { shopId, companyId } = params;
+	request('getList', {
+		// method: 'post',
+		// requestType: 'form',
+		body: {
+			// user_id: userId,
+			// company_id: companyId,
+			// shop_id: shopId
+		}
+	}).then(async (response) => {
+		// console.log(await response.json());
+		const { errcode, code, data } = await response.json();
+		if (errcode === 0 || code === ERROR_OK) {
+			// const { data } = response;
+			const result = data.group_list.map(dataFormatter);
+			return {
+				code: ERROR_OK,
+				data: result
+			};
+		}
+		return {
+			code
+		};
+
+	});

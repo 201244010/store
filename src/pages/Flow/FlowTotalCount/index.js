@@ -32,8 +32,14 @@ class FlowTotalCount extends React.PureComponent {
 
 	render() {
 		const {
-			flowInfo: { passengerFlowCount: { latestCount = '', earlyCount = '' } = {} },
+			flowInfo: { passengerFlowCount: { latestCount = '' } = {}, countListByRegular = [] },
 		} = this.props;
+
+		let regularCount = 0;
+		countListByRegular.map(item => {
+			regularCount += item.regularCount;
+		});
+
 		return (
 			<div className={styles.border}>
 				<div className={styles.content}>
@@ -44,7 +50,7 @@ class FlowTotalCount extends React.PureComponent {
 					</div>
 					<div className={styles.yesterday}>
 						<p className={styles['yesterday-title']}>{formatMessage({ id: 'flow.totalCount.yesterday' })}</p>
-						<span className={styles['yesterday-num']}>{earlyCount}</span>
+						<span className={styles['yesterday-num']}>{regularCount}</span>
 					</div>
 				</div>
 			</div>
