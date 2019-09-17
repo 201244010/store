@@ -1,0 +1,146 @@
+// .timebar-container{
+// 	composes: 'timebar-container' from './Timebar.less';
+// }
+
+.time-line-container{
+	position: relative;
+	height: 4px;
+
+	transition: all 0.3s;
+
+	&.dragging,
+	&:hover{
+		height: 44px;
+
+		.time-line{
+
+			height: 44px;
+
+			.sources{
+				.block{
+					opacity: 0.5;
+				}
+			}
+
+			.time-line-wrapper{
+				opacity: 1;
+			}
+		}
+	}
+
+	.time-line{
+		width: 4000px;
+		// margin-bottom: 20px;
+		// background-color: #ffffff;
+		position: absolute;
+		cursor: pointer;
+
+
+		text-align: right;
+		right: 0;
+
+		.time-line-wrapper{
+			padding-top: 10px;
+
+			// opacity: 0;
+			transition: all 0.3s;
+		}
+
+		.hour-block{
+			display: inline-block;
+			position: relative;
+			z-index: 10;
+			// margin-top: 10px;
+
+			&:first-child{
+				padding-left: 1px;
+			}
+
+			div{
+				display: inline-block;
+				height: 4px;
+				width: 1px;
+				background-color: #ffffff;
+				margin-left: 9px;
+
+				vertical-align: bottom;
+
+				opacity: 0.8;
+			}
+
+			.high{
+				height: 10px;
+				position: relative;
+
+				.tag{
+					position: absolute;
+					color: #ffffff;
+
+					width: 60px;
+					top: 0;
+					left: 0;
+					margin: 12px 0 0 -30px;
+					text-align: center;
+					background-color: transparent;
+
+					font-size: 10px;
+				}
+			}
+
+			.short{
+				height: 5px;
+			}
+
+		}
+
+		.sources {
+			width: 100%;
+			height: 20px;
+			position: absolute;
+			top: 0;
+
+			.block{
+				// width: 54px;
+
+				// background-color:#284372;
+
+				// background-color: #(5085E3;
+				// opacity: 0.5;
+				// background-color: rgba(75,122,250,0.50);
+				background-color: #4B7AFA;
+
+				height: 100%;
+				position: absolute;
+			}
+		}
+
+		&:after{
+			content: '';
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			z-index: 12;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+		}
+
+		// &:hover,
+		// &.dragging {
+		// 	height: 44px;
+		// 	// background-color: transparent;
+		// 	// margin-top: -8px;
+
+		// 	.sources{
+		// 		.block{
+		// 			opacity: 0.5;
+		// 		}
+		// 	}
+
+		// 	.time-line-wrapper{
+		// 		opacity: 1;
+		// 	}
+		// }
+	}
+}
