@@ -56,7 +56,7 @@ class ProportionChart extends React.PureComponent {
 					<Guide>
 						<Html
 							position={['50%', '50%']}
-							html={`<span class='proportion-percent'>${lightPercent}%<span class='proportion-name'>${chartTitle}</span></span>`}
+							html={`<span class='proportion-percent'><span>${lightPercent}%</span><span class='proportion-name'>${chartTitle}</span></span>`}
 							alignX="middle"
 							alignY="middle"
 						/>

@@ -172,7 +172,7 @@ class FlowDistribution extends React.PureComponent {
 						guideData.map(item => (
 							<div className={styles['footer-item']} key={item.title}>
 								<p className={styles['item-title']}>{item.title}</p>
-								<p><span className={styles['item-content']}>{item.percent}%<span className={styles['item-num']}>{item.num}</span></span></p>
+								<p className={styles['item-content']}><span>{item.percent}%</span><span className={styles['item-num']}>{item.num}</span></p>
 							</div>
 						))
 					}
