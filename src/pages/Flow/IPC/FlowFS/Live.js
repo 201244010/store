@@ -150,6 +150,7 @@ import styles from './Live.less';
 			type: 'flowFaceid/readLibraryType',
 		});
 	},
+	loadList: () => dispatch({ type:'ipcList/read'}),
 	// test: () => {
 	// 	dispatch({
 	// 		type:'faceid/test'
@@ -169,7 +170,7 @@ class Live extends React.Component{
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList, readLibraryType } = this.props;
+		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList, readLibraryType, loadList } = this.props;
 
 		readLibraryType();
 		const {sn} = query;
@@ -178,6 +179,7 @@ class Live extends React.Component{
 			// test();
 			clearList({ sn });
 			getAgeRangeList();
+			await loadList();
 			const deviceInfo = await getDeviceInfo({ sn });
 			const { hasFaceid } = deviceInfo;
 			setDeviceSn({ sn });
