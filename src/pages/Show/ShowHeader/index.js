@@ -9,6 +9,9 @@ import styles from './index.less';
 
 const { TabPane } = Tabs;
 const ACTIVEKEY = ['today', 'week', 'month'];
+// const {
+// 	TIME_INTERVAL: { HOUR },
+// } = DASHBOARD;
 
 export default class ShowHeader extends React.Component {
 	constructor(props) {
