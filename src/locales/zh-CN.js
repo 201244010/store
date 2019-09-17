@@ -27,6 +27,8 @@ import merchantManagement from './zh-CN/merchant';
 
 import roleManagement from './zh-CN/role';
 import employee from './zh-CN/employee';
+import flow from './zh-CN/flow';
+import tradeShow from './zh-CN/tradeShow';
 
 export default {
 	'navBar.lang': '语言',
@@ -61,5 +63,7 @@ export default {
 	...roleManagement,
 	...dashBoard,
 	...employee,
-	...network
+	...network,
+	...flow,
+	...tradeShow,
 };
