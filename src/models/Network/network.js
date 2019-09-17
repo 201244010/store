@@ -315,6 +315,7 @@ export default {
 				downUnit,
 				devices = [],
 				msgId,
+				sn: getSn
 			} = payload;
 			const {
 				networkList,
@@ -346,7 +347,7 @@ export default {
 					};
 				}
 
-				if (item.sn === sn) {
+				if (item.sn === sn || item.sn === getSn) {
 					switch (opcode) {
 						case OPCODE.CLIENT_LIST_GET:
 							return { ...item, clientCount: clientNumber };
