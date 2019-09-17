@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tabs } from 'antd';
 import moment from 'moment';
+import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { SHOP_ID_KEY, SHOP_LIST_KEY, getCookieByKey } from '@/utils/cookies';
