@@ -7,3 +7,5 @@ src/.DS_Store
 dist
 Dockerfile
 coverage
+package-lock.json
+yarn.lock
