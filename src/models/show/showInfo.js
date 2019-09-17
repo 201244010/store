@@ -1,7 +1,9 @@
 import moment from 'moment';
 import { shake, format, map } from '@konata9/milk-shake';
 import * as Action from '@/services/dashBoard';
+import * as Actions from '@/services/user';
 import { ERROR_OK } from '@/constants/errorCode';
+import { TOKEN_KEY, SHOP_ID_KEY, COMPANY_ID_KEY, USER_INFO_KEY, setCookieByKey, getCookieByKey } from '@/utils/cookies';
 import { getDeviceList } from '@/pages/IPC/services/IPCList';
 
 import { DASHBOARD } from '@/pages/DashBoard/constants';
@@ -451,6 +453,18 @@ export default {
 					},
 				},
 			});
+		},
+
+		*refreshStoreToken(options, { call }) {
+			const response = yield call(Actions.refreshStoreToken, options);
+			const { code, data: { store_token = '' } = {} } = response;
+			if (code === ERROR_OK) {
+			 setCookieByKey(TOKEN_KEY, store_token);
+			 setCookieByKey(SHOP_ID_KEY, getCookieByKey(SHOP_ID_KEY));
+			 setCookieByKey(COMPANY_ID_KEY, getCookieByKey(COMPANY_ID_KEY));
+			 setCookieByKey(USER_INFO_KEY, getCookieByKey(USER_INFO_KEY));
+			}
+			return response;
 		},
 	},
 
