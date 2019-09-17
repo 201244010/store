@@ -1,8 +1,11 @@
 import React from 'react';
 import { Tabs } from 'antd';
 import moment from 'moment';
+import { connect } from 'dva';
+import { ERROR_OK } from '@/constants/errorCode';
 import { formatMessage } from 'umi/locale';
 import { SHOP_ID_KEY, SHOP_LIST_KEY, getCookieByKey } from '@/utils/cookies';
+import { DASHBOARD } from '@/pages/DashBoard/constants';
 import ShowTabContent from '../ShowTabContent';
 
 import styles from './index.less';
@@ -10,9 +13,22 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 const ACTIVEKEY = ['today', 'week', 'month'];
 
-export default class ShowHeader extends React.Component {
+const {
+	TIME_INTERVAL: { HOUR },
+} = DASHBOARD;
+
+@connect(
+	state => ({
+		showInfo: state.showInfo,
+	}),
+	dispatch => ({
+		refreshStoreToken: () => dispatch({ type: 'showInfo/refreshStoreToken' }),
+	})
+)
+class ShowHeader extends React.Component {
 	constructor(props) {
 		super(props);
+		this.startTime = new Date().getTime();
 		this.couter = 0;
 	}
 
@@ -22,6 +38,8 @@ export default class ShowHeader extends React.Component {
 	};
 
 	componentDidMount() {
+		this.startRefreshToken();
+		clearInterval(this.setTime);
 		this.setTime = setInterval(() => {
 			const time = moment().format('YYYY-MM-DD HH:mm:ss');
 			this.setState({ time });
@@ -41,12 +59,29 @@ export default class ShowHeader extends React.Component {
 				this.couter = 0;
 				this.setState({ activeKey: ACTIVEKEY[activeKeyNum] });
 			}
+
+			const nowTime = new Date().getTime();
+			if (nowTime - this.startTime > 5 * HOUR * 1000) {
+				this.startRefreshToken();
+			}
 		}, 1000);
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.setTime);
 	}
+
+	startRefreshToken = () => {
+		const { refreshStoreToken } = this.props;
+		refreshStoreToken().then(response => {
+			const { code } = response;
+			if (code === ERROR_OK) {
+				this.startTime = new Date().getTime();
+			} else {
+				this.startRefreshToken();
+			}
+		});
+	};
 
 	tabChange = value => {
 		this.setState({ activeKey: value });
@@ -101,3 +136,4 @@ export default class ShowHeader extends React.Component {
 		);
 	}
 }
+export default ShowHeader;
