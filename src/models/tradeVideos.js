@@ -1,6 +1,5 @@
-
-import { getTradeVideos, getVideo , getPaymentDetailList } from '../../services/tradeVideos';
-import { getPOSList } from '../../services/posList';
+import { getTradeVideos, getVideo , getPaymentDetailList } from '../pages/IPC/services/tradeVideos';
+import { getPOSList } from '../pages/IPC/services/posList';
 import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
@@ -60,7 +59,7 @@ export default {
 				pageSize
 			});
 			if (response.code === ERROR_OK) {
-				const { data: { list, total } } = response;
+				const { data: { list=[], total } } = response;
 				const orderNoList = list.map(item => item.orderNo);
 
 				if (orderNoList.length > 0) {
@@ -95,7 +94,13 @@ export default {
 						total
 					}
 				});
+
+				return {
+					list,
+					total
+				};
 			}
+			return {};
 		},
 		*getPOSList({ payload: { startTime, endTime } }, { call }) {
 			const response = yield call(getPOSList, { startTime, endTime });
@@ -165,7 +170,6 @@ export default {
 					endTime
 				}
 			});
-
 			const targetIpc = posList.filter((ipc) => {
 				const { posList: list } = ipc;
 				const has = list.filter((pos) => pos.sn === sn);
@@ -178,7 +182,6 @@ export default {
 
 			if (targetIpc.length > 0) {
 				const ipcSN = targetIpc[0].sn;
-
 				const info = yield put.resolve({
 					type: 'ipcList/getDeviceInfo',
 					payload: {

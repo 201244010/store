@@ -1,6 +1,6 @@
 import { Shape } from 'bizcharts';
 
-Shape.registerShape('interval', 'distributionShape', {
+Shape.registerShape('interval', 'myShape', {
 	getPoints(pointInfo) {
 		const { x, y, y0, size } = pointInfo;
 		const n = 60;
@@ -65,30 +65,28 @@ Shape.registerShape('interval', 'distributionShape', {
 	},
 });
 
-export const GENDERS = {
-	0: 'unknow',
-	1: 'male',
-	2: 'female',
+export const X_TEXT_STYLE = {
+	textAlign: 'center',
+	fill: '#FFFFFF',
+	fontSize: '14',
+	fontWeight: '400',
 };
 
-export const LABEL = {
-	offset: 16,
-	textStyle: {
-		textAlign: 'start',
-		fill: '#A5A7B1',
-		fontSize: '14',
-		textBaseline: 'middle',
-	},
-	autoRotate: true,
+export const Y_TEXT_STYLE = {
+	fill: '#FFFFFF',
+	fontSize: '12',
+	fontWeight: 'lighter',
+};
+
+export const Y_LINE_STYLE = {
+	stroke: 'rgba(114,134,217,0.20)',
+	lineWidth: 1,
+	lineDash: [1, 0],
 };
 
 export const COLORS = {
-	GENDER: '#344166',
-	MALE: '#667ECC',
-	MALE_LIGHT: '#6CBBFF',
-	FEMALE: 'rgba(255,128,128,0.6)',
-	FEMALE_LIGHT: '#FF8080',
-	NOR_SHADOW: 'transparent',
-	MALE_SHADOW: '#1A56FF',
-	FEMALE_SHADOW: 'rgba(255,26,26,0.5)',
+	FILL_ONE: 'l(90) 0:#6CBBFF 1:#6CBBFF',
+	FILL_TWO: 'l(90) 0:#667ECC 1:#3D6DCC',
+	SHADOW: '#1A56FF',
+	SHADOW_NOR: 'transparent',
 };

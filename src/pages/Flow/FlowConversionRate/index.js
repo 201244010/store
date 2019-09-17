@@ -68,7 +68,7 @@ class FlowConversionRate extends React.PureComponent {
 				<div className={styles['chart-name']}>
 					{formatMessage({ id: 'flow.conversionRate.title' })}
 				</div>
-				<Chart width={656} height={205} padding="auto" data={rateList} scale={this.cols}>
+				<Chart width={656} height={205} padding={[15,30,32,20]} data={rateList} scale={this.cols}>
 					<Axis
 						name="time"
 						label={{
@@ -88,7 +88,7 @@ class FlowConversionRate extends React.PureComponent {
 					<Axis
 						name="flowCount"
 						label={{
-							offset: 21,
+							offset: 0,
 							textStyle: Y_TEXT_STYLE,
 							autoRotate: false,
 						}}

@@ -100,7 +100,7 @@ export default {
 				}
 			});
 
-			const streamId = yield select((state) => state.live.streamId);
+			const streamId = yield select((state) => state.flowLive.streamId);
 
 			yield put({
 				type: 'mqttIpc/publish',
