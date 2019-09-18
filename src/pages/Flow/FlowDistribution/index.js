@@ -22,10 +22,7 @@ class FlowDistribution extends React.PureComponent {
 		super(props);
 		this.cols = {
 			visitor: {
-				ticks: [0, 500],
-			},
-			max: {
-				ticks: [0, 1000],
+				ticks: [0, 50],
 			},
 		};
 		this.age = 0;
@@ -70,16 +67,27 @@ class FlowDistribution extends React.PureComponent {
 					age: `${ageRangeMap[item.ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`,
 					visitor: item.maleCount,
 					gender: 'male',
-					max: 1000,
+					max: 1,
 				},
 				{
 					age: `${ageRangeMap[item.ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`,
 					visitor: item.femaleCount,
 					gender: 'female',
-					max: 1000,
+					max: 1,
 				}
 			);
 		});
+
+		let maxTicks = 0;
+		data.map(item => {
+			maxTicks = item.visitor > maxTicks ? item.visitor : maxTicks; 
+		});
+
+		this.cols = {
+			visitor: {
+				ticks: [0, maxTicks + 20],
+			},
+		};
 
 		const personTotal = (male + female) === 0 ? 1 : (male + female);
 		const malePercent = (male * 100/ personTotal).toFixed(1);
@@ -170,9 +178,9 @@ class FlowDistribution extends React.PureComponent {
 				<div className={styles['distribution-footer']}>
 					{
 						guideData.map(item => (
-							<div className={styles['footer-item']} key={item.title}>
+							<div className={styles['footer-item']} key={item.title}>	
+								<p className={styles['item-content']}><span>{item.percent}%</span><span className={styles['item-num']}>{`${item.num}${formatMessage({ id: 'flow.distribution.footer.unit' })}`}</span></p>
 								<p className={styles['item-title']}>{item.title}</p>
-								<p className={styles['item-content']}><span>{item.percent}%</span><span className={styles['item-num']}>{item.num}</span></p>
 							</div>
 						))
 					}
