@@ -379,7 +379,7 @@ class LivePlayer extends React.Component{
 				console.log('time gap=', now.valueOf() - (baseTime + relativeTime));
 			}
 
-			const { player } = this.videoplayer;
+			// const { player } = this.videoplayer;
 
 			// 仅flvjs播放器能使用此方式矫正播放进度
 			if (player.techName_ === 'Flvjs' && player.buffered &&  player.buffered().length > 0) {
