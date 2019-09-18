@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
+import { env } from '@/config';
 import { ERROR_OK } from '@/constants/errorCode';
 import { SHOP_ID_KEY, SHOP_LIST_KEY, getCookieByKey } from '@/utils/cookies';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
@@ -73,7 +74,7 @@ class FlowHeader extends React.PureComponent {
 				<div className={styles['header-title']}>
 					<div className={styles['header-logo']} />
 					<div className={styles['header-name']}>{shopName}</div>
-					<div className={styles['header-time']}>{time}</div>
+					<div className={`${styles['header-time']} ${env === 'onl'&&styles['header-time-disappear']}`}>{time}</div>
 				</div>
 			</div>
 		);
