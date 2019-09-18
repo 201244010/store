@@ -223,6 +223,18 @@ class PhotoCard extends React.Component {
 		const { form, id , edit, libraryId, upload, groupId, getList, clearFileList } = this.props;
 		form.validateFields(async errors => {
 			if (!errors) {
+
+				let isUpload = true;
+
+				if(fileName !== '' && file.response !== undefined && file.response.verifyResult === 1) {
+					const response = await upload({
+						groupId,
+						faceImgList: [fileName],
+						faceId: id
+					});
+					isUpload = response.data.failureList.length === 0;
+				}
+
 				const fields = form.getFieldsValue();
 				const isEdit = await edit({
 					faceId: id,
@@ -233,20 +245,11 @@ class PhotoCard extends React.Component {
 					age: fields.age
 				});
 
-				let isUpload = true;
+				// console.log(isUpload);
 
-				if(fileName !== '' && file.response !== undefined && file.response.verifyResult === 1) {
-					isUpload = await upload({
-						groupId,
-						faceImgList: [fileName],
-						faceId: id
-					});
-				}
-
-				if(isEdit && isUpload.data.failureList.length === 0) {
+				if(isEdit && isUpload) {
 					message.success(formatMessage({id: 'photoManagement.card.editSuccess'}));
 				} else {
-
 					message.error(formatMessage({id: 'photoManagement.card.editError'}));
 				}
 				getList();
