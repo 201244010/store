@@ -17,6 +17,5 @@ export default {
 	'flow.libraryName.clerk': '店员',
 	'flow.libraryName.blackList': '黑名单',
 	'flow.libraryName.vip': 'VIP',
-	'show.total.unit.tenThousand': '万',
-	'show.total.unit.tenMillion': '千万',
+	'show.total.unit': '万',
 };
