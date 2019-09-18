@@ -347,7 +347,7 @@ class LivePlayer extends React.Component{
 			const gap = (Math.round((timestamp - this.lastMetadataTimestamp)*1000*1000))/1000;
 			getCurrentTimestamp(this.relativeTimestamp + gap);
 
-			console.log('relativeTimestamp: ', this.relativeTimestamp, 'timestamp: ', timestamp, 'lastMetadataTimestamp: ', this.lastMetadataTimestamp, 'gap: ', gap,  'total: ', this.relativeTimestamp + gap);
+			// console.log('relativeTimestamp: ', this.relativeTimestamp, 'timestamp: ', timestamp, 'lastMetadataTimestamp: ', this.lastMetadataTimestamp, 'gap: ', gap,  'total: ', this.relativeTimestamp + gap);
 		}
 
 	}
