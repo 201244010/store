@@ -49,6 +49,11 @@ const { Meta } = Card;
 				historyIdList
 			}
 		});
+	},
+	getStoreList:() => {
+		dispatch({
+			type:'entryDetail/getStoreList'
+		});
 	}
 }))
 
@@ -63,9 +68,10 @@ class EntryDetail extends React.Component {
 
 	async componentDidMount(){
 		const { currentPage, pageSize } = this.state;
+		const { location: { query }, getFaceInfo, getStoreList } = this.props;
+		await getStoreList();
 		await this.getCurrentArrivalList({currentPage, pageSize});
-
-		const { location: { query }, getFaceInfo} = this.props;
+		
 		const {faceId} = query;
 		const faceInfo = await getFaceInfo({faceId});
 		this.setState({
