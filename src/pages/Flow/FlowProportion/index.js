@@ -38,7 +38,6 @@ class FlowProportion extends React.PureComponent {
 			flowInfo: { countListByRegular = [] },
 			flowFaceid: { list = [], libraryList = [] } = {},
 		} = this.props;
-		console.log('this.props flowFaceid', this.props);
 
 		let strangerCount = 0;
 		let regularCount = 0;

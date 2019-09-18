@@ -209,7 +209,6 @@ class ShowCards extends React.PureComponent {
 		};
 
 		const info = [totalAmountCard, avgUnitSaleCard, totalCountCard, totalRefundCard];
-
 		return (
 			<div className={styles['show-cards']}>
 				{info.map(item => (
