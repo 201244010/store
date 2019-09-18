@@ -2,6 +2,11 @@ import React from 'react';
 import { formatMessage } from 'umi/locale';
 import styles from './card.less';
 
+const UNIT = {
+	'tenThousand': formatMessage({ id: 'show.total.unit.tenThousand' }),
+	'tenMillion': formatMessage({ id: 'show.total.unit.tenMillion' }),
+};
+
 class Card extends React.PureComponent {
 	render() {
 		const {
@@ -21,9 +26,17 @@ class Card extends React.PureComponent {
 		num = num.toString().replace(/,/g, '');
 
 		let showUnit = false;
+		let unit = '';
+		if (parseFloat(num) >= 10000000 || parseFloat(num) <= -10000000) {
+			num = (parseFloat(num) / 10000000).toFixed(2);
+			showUnit = true;
+			unit = 'tenMillion';
+		}
+
 		if (parseFloat(num) >= 10000 || parseFloat(num) <= -10000) {
 			num = (parseFloat(num) / 10000).toFixed(2);
 			showUnit = true;
+			unit = 'tenThousand';
 		}
 
 		const compareData = [
@@ -58,7 +71,7 @@ class Card extends React.PureComponent {
 								<span
 									className={styles['card-left-unit']}
 								>
-									{formatMessage({ id: 'show.total.unit' })}
+									{UNIT[unit]}
 								</span>
 							) : (
 								''

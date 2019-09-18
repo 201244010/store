@@ -12,10 +12,11 @@ export default {
 	'flow.totalCount.today': '今日进店客流总数',
 	'flow.totalCount.yesterday': '熟客人数统计',
 	'flow.fs.privacy': '隐私说明：人脸识别图像仅供现场演示，不进行存储或用作其他用途',
-	'show.total.unit': '万',
 	'flow.libraryName.new': '新客',
 	'flow.libraryName.old': '熟客',
 	'flow.libraryName.clerk': '店员',
 	'flow.libraryName.blackList': '黑名单',
 	'flow.libraryName.vip': 'VIP',
+	'show.total.unit.tenThousand': '万',
+	'show.total.unit.tenMillion': '千万',
 };
