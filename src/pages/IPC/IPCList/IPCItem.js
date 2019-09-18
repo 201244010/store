@@ -31,7 +31,7 @@ class IPCItem extends React.Component {
 						{sn&&
 						<a
 							className={styles.play}
-							href='javascript:void(0);'
+							// href='javascript:void(0);'
 							onClick={() => {
 								onClickPlay(sn);
 							}}
@@ -46,7 +46,7 @@ class IPCItem extends React.Component {
 						</div>
 					</Col>
 				}
-				{!empty&&!isOnline&&		
+				{!empty&&!isOnline&&
 					<Col span={listLength <= 4 ? 12 : 6} className={styles.col}>
 						<Card
 							className={styles['outline-card']}
@@ -74,7 +74,7 @@ class IPCItem extends React.Component {
 			</div>
 		);
 	}
-	
+
 }
 
 export default IPCItem;

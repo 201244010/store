@@ -7,8 +7,11 @@ import styles from './Faceid.less';
 class Faceid extends React.Component{
 	render () {
 		const { current, faceidRects, pixelRatio, currentPPI } = this.props;
+		console.log('current', current);
 		const tmp = faceidRects.filter(item => {
-			if ( current < item.timestamp && item.timestamp < current + 1200){
+			console.log('timestamp: ', item.timestamp);
+			// if ( current - 300 < item.timestamp && item.timestamp < current + 500){
+			if (item.timestamp - 300 < current && current < item.timestamp + 300) {
 				return true;
 			}
 			return false;
