@@ -47,6 +47,7 @@ class FlowConversionRate extends React.PureComponent {
 			flowInfo: { passengerFlowOrder = [] },
 		} = this.props;
 
+		console.log('passengerFlowOrder', passengerFlowOrder);
 		const listFilter = passengerFlowOrder.filter((item, index) => index > 7 && index < 20);
 		const list = listFilter.map(item => ({
 			time: item.time - 1,

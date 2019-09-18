@@ -39,14 +39,18 @@ const getQueryDate = rangeType => {
 	];
 };
 
-const getQueryTimeRange = (searchValue = {}) => {
+const getQueryTimeRange = (searchValue = {}, action) => {
 	const { rangeType, timeRangeStart, timeRangeEnd } = searchValue;
 
 	let startTime;
 	let endTime;
 
 	if (rangeType !== RANGE.FREE) {
-		[startTime, endTime] = getQueryDate(rangeType);
+		if(action && action === 'total'){
+			[startTime, endTime] = getQueryDate(RANGE.TODAY);
+		}else{
+			[startTime, endTime] = getQueryDate(rangeType);
+		}
 	} else {
 		[startTime, endTime] = [
 			timeRangeStart.startOf('day').unix(),
@@ -257,7 +261,7 @@ export default {
 				return null;
 			}
 
-			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
+			const [startTime, endTime] = getQueryTimeRange({ rangeType: range }, 'total');
 			const stateField = stateFields[queryType];
 			const options = {
 				rateRequired: range === RANGE.FREE ? 0 : 1,
