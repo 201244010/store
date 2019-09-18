@@ -29,19 +29,19 @@ class Card extends React.PureComponent {
 		const compareData = [
 			{
 				title: dayTitle,
-				num: dayNum,
+				num: dayNum !== '--'? (parseFloat(dayNum) * 100).toFixed(0) : dayNum,
 				compare: dayCompare,
 				style: dayCompare !== -1 ? dayCompare === 1 ? 'compare-up' : 'compare-down' : 'compare-normal',
 			},
 			{
 				title: weekTitle,
-				num: weekNum,
+				num: weekNum !== '--'? (parseFloat(weekNum) * 100).toFixed(0) : weekNum,
 				compare: weekCompare,
 				style: weekCompare !== -1 ? weekCompare === 1 ? 'compare-up' : 'compare-down' : 'compare-normal',
 			},
 			{
 				title: monthTitle,
-				num: monthNum,
+				num: monthNum !== '--'? (parseFloat(monthNum) * 100).toFixed(0) : monthNum,
 				compare: monthCompare,
 				style: monthCompare !== -1 ? monthCompare === 1 ? 'compare-up' : 'compare-down' : 'compare-normal',
 			},
