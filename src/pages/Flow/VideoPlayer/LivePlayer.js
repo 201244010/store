@@ -341,7 +341,7 @@ class LivePlayer extends React.Component{
 
 	onError = () => {
 		console.log('liveplayer error handler');
-		// this.src(this.currentSrc);
+		this.src(this.currentSrc);
 		this.timeoutReplay();
 	}
 
@@ -366,10 +366,7 @@ class LivePlayer extends React.Component{
 			}, time * 1000);
 		};
 
-		if (videoplayer.paused()) { // 当前未play
-			this.src(this.currentSrc);
-			replay(2);
-		}
+		replay(2);
 	}
 
 	render () {
