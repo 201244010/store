@@ -155,7 +155,7 @@ export default {
 	'notif-system-task-erp-finish-desc':
 		'【##company_name##-##shop_name##】已完成与 (##saas_name##) 的对接，成功获取 ##total_count## 条商品信息',
 	'notif-system-task-erp-failure-desc':
-		'【##company_name##-##shop_name##】已完成与 (##saas_name##) 的对接，成功获取 ##total_count## 条商品信息',
+		'【##company_name##-##shop_name##】未能完成与<(##saas_name##)>的对接，请重试',
 	'notif-device-esl-ota-desc':
 		'【##company_name##-##shop_name##】##device_name##已发布新版固件##bin_version##，请更新',
 	'notif-device-esl-ap-on/offline-desc':
