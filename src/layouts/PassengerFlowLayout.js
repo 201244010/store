@@ -1,5 +1,5 @@
 import React from 'react';
-import MQTTWrapper from '@/components/MQTT';
+import MqttWrapper from '@/components/MQTT/Ipc';
 import FlowHeader from '@/pages/Flow/FlowHeader';
 import FlowTotalCount from '@/pages/Flow/FlowTotalCount';
 import FlowConversionRate from '@/pages/Flow/FlowConversionRate';
@@ -9,7 +9,7 @@ import FlowFS from '@/pages/Flow/IPC/FlowFS/Live';
 
 import styles from './PassengerFlowLayout.less';
 
-@MQTTWrapper
+@MqttWrapper
 class PassengerFlowLayout extends React.PureComponent {
 	render() {
 		return (
