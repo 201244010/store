@@ -3,6 +3,9 @@ import { primaryColor } from '../src/defaultSettings';
 // import routers from '../src/config/router';
 import routers from '../src/config/uat-router';
 // import routers from './router';
+import sysConfig from '../src/config/env';
+
+const {env} = sysConfig;
 
 export default {
 	hash: true,
@@ -76,6 +79,12 @@ export default {
 	define: {
 		APP_TYPE: process.env.APP_TYPE || '',
 		'process.env.UMI_ENV': process.env.UMI_ENV,
+	},
+	uglifyJSOptions(opts) {
+		if(['uat', 'onl'].includes(env)){
+			opts.uglifyOptions.compress.drop_console = true;
+		}
+		return opts;
 	},
 	// Theme for antd
 	// https://ant.design/docs/react/customize-theme-cn
