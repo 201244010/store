@@ -18,6 +18,7 @@ class LivePlayer extends React.Component{
 		this.currentSrc = '';
 		this.startTimestamp = 0;
 		this.relativeTimestamp = 0;
+		this.replayTimeout = 0;
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
 	}
 
@@ -117,7 +118,12 @@ class LivePlayer extends React.Component{
 				const url = await getHistoryUrl(timestamp);
 				console.log('goto playhistory url: ', url);
 
-				this.src(url);
+				if (url) {
+					this.src(url);
+					this.timeoutReplay();
+				}else{
+					console.log('回放未获取到url，当前时间戳为：', timestamp);
+				}
 
 				// 光标定位到当前回放位置，将状态调整我未非直播状态；
 				this.setState({
@@ -335,7 +341,39 @@ class LivePlayer extends React.Component{
 
 	onError = () => {
 		console.log('liveplayer error handler');
+
+		// 当前为直播
+		const { isLive } = this.state;
+		if (isLive) {
+			this.playLive();
+		}
+
 		this.src(this.currentSrc);
+		this.timeoutReplay();
+	}
+
+	// 超时重新播放
+	timeoutReplay = () => {
+		console.log('timeoutReplay');
+		// 首先检查当前video是否为playing
+		// 2秒后检查是否为play状态
+		// 为playing，则清除定时器；
+		// 不为playing，则重新赋值url，并执行2*time检查逻辑；
+		const { videoplayer } = this;
+		const replay = (time) => {
+			clearTimeout(this.replayTimeout);
+			this.replayTimeout = setTimeout(() => {
+				if (videoplayer.paused()) {
+					this.src(this.currentSrc);
+					replay(time*2);
+				} else {
+					clearTimeout(this.replayTimeout);
+				}
+
+			}, time * 1000);
+		};
+
+		replay(2);
 	}
 
 	render () {
