@@ -36,8 +36,9 @@ class FlowProportion extends React.PureComponent {
 	render() {
 		const {
 			flowInfo: { countListByRegular = [] },
-			flowFaceid: { list = [] } = {},
+			flowFaceid: { list = [], libraryList = [] } = {},
 		} = this.props;
+		console.log('this.props flowFaceid', this.props);
 
 		let strangerCount = 0;
 		let regularCount = 0;
@@ -59,16 +60,26 @@ class FlowProportion extends React.PureComponent {
 
 		let lightType = '';
 		if (list.length > 0) {
-			const { libraryName = ''} = list[0];
-			lightType = libraryName === formatMessage({ id: 'flow.proportion.title.new' })? data[0].type : data[1].type;
+			const { libraryId } = list[0];
+			const lightList = libraryList.filter(item => item.id === libraryId);
+			switch (lightList[0].type) {
+				case 1:
+					lightType = data[0].type;
+					break;
+				case 2:
+					lightType = data[1].type;
+					break;
+				default:
+					lightType = '';
+			}
 		}
 
 		return (
 			<div className={styles['flow-proportion']}>
 				<div className={styles.title}>{formatMessage({ id: 'flow.proportion.rate' })}</div>
-				<div className={styles.description}>
+				{/* <div className={styles.description}>
 					{formatMessage({ id: 'flow.proportion.rule' })}
-				</div>
+				</div> */}
 				<ProportionChart
 					list={data}
 					countType={data[0].type}

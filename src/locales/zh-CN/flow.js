@@ -4,6 +4,7 @@ export default {
 	'flow.distribution.male': '男性',
 	'flow.distribution.female': '女性',
 	'flow.distribution.age': '岁',
+	'flow.distribution.footer.unit': '人',
 	'flow.proportion.rate': '新老客流占比',
 	'flow.proportion.rule': '规则介绍规则介绍',
 	'flow.proportion.title.new': '新客',
