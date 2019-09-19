@@ -266,10 +266,10 @@ export default {
 			return response;
 		},
 
-		// *checkAdmin(_, { call }) {
-		// 	const response = yield call(Actions.handleRoleManagement, 'checkAdmin');
-		// 	return response;
-		// },
+		*checkAdmin(_, { call }) {
+			const response = yield call(Actions.handleRoleManagement, 'checkAdmin');
+			return response;
+		},
 	},
 	reducers: {
 		updateState(state, action) {

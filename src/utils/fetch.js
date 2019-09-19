@@ -135,7 +135,7 @@ export const customizeFetch = (service = 'api', base) => {
 			};
 		}
 
-		const url = `https://${baseUrl}/${service}/${api}`;
+		const url = `//${baseUrl}/${service}/${api}`;
 		// const response = await fetch(url, opts);
 		const response = await fetchHandler(url, opts);
 		// console.log(response);
