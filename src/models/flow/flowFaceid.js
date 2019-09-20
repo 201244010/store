@@ -106,16 +106,16 @@ export default {
 
 			switch(libraryName) {
 				case 'stranger':
-					libraryNameText = formatMessage({ id: 'faceid.stranger'});
+					libraryNameText = formatMessage({ id: 'flow.faceid.stranger'});
 					break;
 				case 'regular':
-					libraryNameText = formatMessage({id: 'faceid.regular'});
+					libraryNameText = formatMessage({id: 'flow.faceid.regular'});
 					break;
 				case 'employee':
-					libraryNameText = formatMessage({ id: 'faceid.employee'});
+					libraryNameText = formatMessage({ id: 'flow.faceid.employee'});
 					break;
 				case 'blacklist':
-					libraryNameText = formatMessage( { id: 'faceid.blacklist'});
+					libraryNameText = formatMessage({ id: 'flow.faceid.blacklist'});
 					break;
 				default:
 			}
