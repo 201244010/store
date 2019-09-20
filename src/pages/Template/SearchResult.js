@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Divider, Modal, Button, Form, Input, Select, Row, Col } from 'antd';
+import { Table, Divider, Modal, Button, Form, Input, Select, Row, Col, Upload, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { unixSecondToDate } from '@/utils/utils';
@@ -39,6 +39,8 @@ class SearchResult extends Component {
 			newVisible: false,
 			cloneVisible: false,
 			previewVisible: false,
+			uploadLoading: false,
+			uploadVisible: false,
 			curRecord: {},
 		};
 	}
@@ -115,6 +117,15 @@ class SearchResult extends Component {
 		});
 	};
 
+	showUpload = info => {
+		this.setState({
+			uploadVisible: true,
+			curRecord: {
+				fileName: info.name
+			}
+		});
+	};
+
 	showClone = record => {
 		this.setState({
 			cloneVisible: true,
@@ -163,6 +174,12 @@ class SearchResult extends Component {
 		});
 	};
 
+	handleCancelUpload = () => {
+		this.setState({
+			uploadVisible: false,
+		});
+	};
+
 	handleCancelPreview = () => {
 		this.setState({
 			previewVisible: false,
@@ -202,6 +219,13 @@ class SearchResult extends Component {
 		});
 	};
 
+	handleUpload = () => {
+		this.setState({
+			uploadVisible: false,
+			uploadLoading: false
+		});
+	};
+
 	search = () => {
 		const { fetchTemplates } = this.props;
 		fetchTemplates();
@@ -217,6 +241,17 @@ class SearchResult extends Component {
 		}
 	};
 
+	uploadJsonFileChange = (info) => {
+		if (info.file.status === 'done') {
+			this.showUpload(info.file);
+		} else if (info.file.status === 'error') {
+			message.error(`${info.file.name} file upload failed.`);
+			this.setState({
+				uploadLoading: false
+			});
+		}
+	};
+
 	render() {
 		const {
 			props: {
@@ -229,7 +264,7 @@ class SearchResult extends Component {
 				form: { getFieldDecorator },
 				fetchColors,
 			},
-			state: { newVisible, cloneVisible, previewVisible, curRecord },
+			state: { newVisible, cloneVisible, uploadVisible, uploadLoading, previewVisible, curRecord },
 		} = this;
 		const columns = [
 			{
@@ -337,6 +372,34 @@ class SearchResult extends Component {
 									>
 										{formatMessage({ id: 'esl.device.template.new' })}
 									</Button>
+									<Upload
+										{...{
+											name: 'file',
+											action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+											headers: {
+												authorization: 'authorization-text',
+											},
+											showUploadList: false,
+											beforeUpload: (file) => {
+												this.setState({
+													uploadLoading: true
+												});
+												const isJson = file.type === 'application/json';
+												if (!isJson) {
+													this.setState({
+														uploadLoading: false
+													});
+													message.error(formatMessage({id: 'esl.device.template.upload.file.type.error'}));
+												}
+												return isJson;
+											},
+											onChange: this.uploadJsonFileChange
+										}}
+									>
+										<Button type="default" icon="upload" loading={uploadLoading} className={styles['btn-margin-left']}>
+											{formatMessage({ id: 'esl.device.template.upload' })}
+										</Button>
+									</Upload>
 								</Form.Item>
 							</Col>
 						</Row>
@@ -503,6 +566,45 @@ class SearchResult extends Component {
 					onCancel={this.handleCancelClone}
 				>
 					<Form {...formItemLayout} style={{ padding: 24 }}>
+						<Form.Item label={formatMessage({ id: 'esl.device.template.name' })}>
+							{getFieldDecorator('name', {
+								rules: [
+									{
+										required: true,
+										message: formatMessage({
+											id: 'esl.device.template.name.require',
+										}),
+									},
+									{
+										validator: this.validateTemplateName,
+									},
+								],
+							})(
+								<Input
+									placeholder={formatMessage({
+										id: 'esl.device.template.name.require',
+									})}
+								/>
+							)}
+						</Form.Item>
+						<Form.Item label={formatMessage({ id: 'esl.device.template.size' })}>
+							<Input value={curRecord.screen_type_name} disabled />
+						</Form.Item>
+						<Form.Item label={formatMessage({ id: 'esl.device.template.color' })}>
+							<Input value={curRecord.colour_name} disabled />
+						</Form.Item>
+					</Form>
+				</Modal>
+				<Modal
+					title={formatMessage({ id: 'esl.device.template.upload' })}
+					visible={uploadVisible}
+					onOk={this.handleUpload}
+					onCancel={this.handleCancelUpload}
+				>
+					<Form {...formItemLayout} style={{ padding: 24 }}>
+						<Form.Item label={formatMessage({ id: 'esl.device.template.upload.file' })}>
+							<Input value={curRecord.fileName} disabled />
+						</Form.Item>
 						<Form.Item label={formatMessage({ id: 'esl.device.template.name' })}>
 							{getFieldDecorator('name', {
 								rules: [

@@ -675,6 +675,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
+									<Option value="Alibaba Sans">Alibaba Sans</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -938,6 +939,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
+									<Option value="Alibaba Sans">Alibaba Sans</Option>
 								</Select>
 							</Col>
 						</Row>
