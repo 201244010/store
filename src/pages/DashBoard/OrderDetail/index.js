@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Form, Select, Row, Col, Table } from 'antd';
 import { unixSecondToDate, getLocationParam } from '@/utils/utils';
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
 
@@ -334,6 +335,8 @@ class OrderDetail extends Component {
 							total: orderTotal,
 							onChange: this.handlePaginate,
 							onShowSizeChange: this.handlePaginate,
+							defaultPageSize: DEFAULT_PAGE_SIZE,
+							pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
 						}
 					}
 				/>
