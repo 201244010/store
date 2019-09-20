@@ -77,7 +77,6 @@ export default {
 			// });
 			const { uid, data } = payload;
 			// console.log('upload',data, uid);
-			// const response = yield call(handleUpload2, data);
 			const response = yield call(handleUpload2, data);
 			// console.log('upload response', response);
 			const { code, data: { imgList } } = response;
