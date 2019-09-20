@@ -71,16 +71,26 @@ export const GENDERS = {
 	2: 'female',
 };
 
-export const LABEL = {
-	offset: 16,
-	textStyle: {
-		textAlign: 'start',
-		fill: '#A5A7B1',
-		fontSize: '14',
-		textBaseline: 'middle',
-	},
-	autoRotate: true,
-};
+export function getLabel(lang) {
+	const label = {
+		textStyle: {
+			textAlign: 'start',
+			fill: '#A5A7B1',
+			fontSize: '14',
+			textBaseline: 'middle',
+		},
+		autoRotate: true,
+	};
+
+	if (lang === 'en-US') {
+		label.offset = 25;
+	} else {
+		label.offset = 16;
+	}
+
+	return label;
+}
+
 
 export const COLORS = {
 	GENDER: '#344166',
