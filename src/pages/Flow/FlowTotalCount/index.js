@@ -45,7 +45,7 @@ class FlowTotalCount extends React.PureComponent {
 		return (
 			<div className={styles.border}>
 				<div className={`${isEnglish? styles['content-en'] : styles['content-cn']}`}>
-					{!isEnglish&&<div className={styles.line} />}
+					<div className={`${isEnglish? styles['line-en'] : styles['line-cn']}`} />
 					<div className={styles.today}>
 						<p className={styles['today-title']}>{formatMessage({ id: 'flow.totalCount.today' })}</p>
 						<span className={styles['today-num']}>{latestCount}</span>
