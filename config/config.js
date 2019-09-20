@@ -81,7 +81,7 @@ export default {
 		'process.env.UMI_ENV': process.env.UMI_ENV,
 	},
 	uglifyJSOptions(opts) {
-		if(['uat', 'onl'].includes(env)){
+		if(['onl'].includes(env)){
 			opts.uglifyOptions.compress.drop_console = true;
 		}
 		return opts;
