@@ -169,7 +169,11 @@ export default {
 					handler: (topic, message) => {
 						const { data } = message;
 
-						const { rect, pts } = data;
+						const { rect = [], pts } = data;
+
+						if (rect === null) {
+							return;
+						}
 
 						const rects = rect.map(item => ({
 							id: item.face_id,
