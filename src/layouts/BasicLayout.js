@@ -11,11 +11,11 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage, getLocale } from 'umi/locale';
+import Storage from '@konata9/storage.js';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import MQTTWrapper from '@/components/MQTT';
 import * as CookieUtil from '@/utils/cookies';
 // import router from 'umi/router';
-import Storage from '@konata9/storage.js';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
@@ -195,6 +195,7 @@ class BasicLayout extends React.PureComponent {
 		if (fixSiderbar && layout !== 'topmenu' && !isMobile) {
 			return {
 				paddingLeft: collapsed ? '80px' : '256px',
+				minHeight: '100vh',
 			};
 		}
 		return null;
@@ -256,7 +257,6 @@ class BasicLayout extends React.PureComponent {
 				<Layout
 					style={{
 						...this.getLayoutStyle(),
-						minHeight: '100vh',
 					}}
 				>
 					<Header
@@ -278,7 +278,9 @@ class BasicLayout extends React.PureComponent {
 			<React.Fragment>
 				<DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
 					{inMenuChecking ? (
-						<Spin spinning />
+						<div className={styles['layout-content']}>
+							<Spin spinning size="large" />
+						</div>
 					) : (
 						<ContainerQuery query={query}>
 							{params => (

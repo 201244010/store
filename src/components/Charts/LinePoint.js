@@ -13,13 +13,14 @@ class LinePoint extends PureComponent {
 				x: { name: xName = null, label: xLabel = {} } = {},
 				y: { name: yName = null, label: yLabel = {} } = {},
 			} = {},
-			toolTip = {},
+			tooltip = {},
 			line: {
 				position: linePosition = null,
 				color: lineColor = null,
 				size: lineSize = 2,
 				shape: lineShape = 'smooth',
 				style: lineStyle = {},
+				tooltip: lineTooltip = {},
 			} = {},
 			point: {
 				position: pointPosition = null,
@@ -27,14 +28,20 @@ class LinePoint extends PureComponent {
 				size: pointSize = 4,
 				shape: pointShape = 'circle',
 				style: pointStyle = {},
+				tooltip: pointTooltip = {},
 			} = {},
 		} = this.props;
+
 
 		return (
 			<Chart height={height} data={data} forceFit={forceFit} scale={scale} padding={padding}>
 				<Axis name={xName} label={xLabel} />
 				<Axis name={yName} label={yLabel} />
-				<Tooltip {...toolTip} />
+				<Tooltip
+					showTitle={false}
+					crosshairs={{ type: 'rect', fill: '#000000' }}
+					{...tooltip}
+				/>
 				<Geom
 					type="line"
 					position={linePosition}
@@ -42,6 +49,7 @@ class LinePoint extends PureComponent {
 					color={lineColor}
 					shape={lineShape}
 					style={lineStyle}
+					tooltip={lineTooltip}
 				/>
 				<Geom
 					type="point"
@@ -50,6 +58,7 @@ class LinePoint extends PureComponent {
 					shape={pointShape}
 					color={pointColor}
 					style={pointStyle}
+					tooltip={pointTooltip}
 				/>
 			</Chart>
 		);

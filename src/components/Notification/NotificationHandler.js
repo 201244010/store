@@ -104,6 +104,7 @@ const palyMotion = async ({ params }) => {
 			<>
 				{url && (
 					<ModalPlayer
+						defaultDuration={5}
 						visible
 						onClose={() => {
 							if (modal) {
@@ -223,7 +224,7 @@ const ACTION_MAP = {
 			if (status === 1) {
 				formatSdCard(deviceSn);
 			}
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -300,7 +301,7 @@ const ACTION_MAP = {
 		const currentShopId = await getCurrentShopId();
 		const targetShopId = parseInt(shopId, 0);
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -377,7 +378,7 @@ const ACTION_MAP = {
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -454,7 +455,7 @@ const ACTION_MAP = {
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -531,7 +532,7 @@ const ACTION_MAP = {
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn, showModal: true });
+			goToPath('ipcManagement', { sn: deviceSn, showModal: true },'softwareUpdate');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);

@@ -2,13 +2,13 @@ export default {
 	'cardManagement.title': '存储卡管理',
 
 	'cardManagement.sdStatus0': '未插入存储卡',
-	'cardManagement.sdStatus1': '已插入存储卡，需格式化能使用',
+	'cardManagement.sdStatus1': '已插入存储卡，需格式化才能使用',
 	'cardManagement.sdStatus2': 'TF卡已格式化，已挂载',
 	'cardManagement.sdStatus3': '未识别到存储卡',
 	'cardManagement.sdStatus4': '存储卡被移除，请重新插入并刷新页面',
 
 	'cardManagement.sizeLeft': '存储卡空间容量',
-	'cardManagement.daysCanUse': '整张存储卡可存视频约',
+	'cardManagement.daysCanUse': '整张存储卡可存视频约为',
 	'cardManagement.hasUsed': '已使用',
 	'cardManagement.day': '天',
 	'cardManagement.hour': '小时',

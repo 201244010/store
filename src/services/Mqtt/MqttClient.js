@@ -31,7 +31,7 @@ class MqttClient {
 
 		this.msgIdMap = new Map();
 		this.handlerMap = new Map();
-		this.reconnectTimes = 1;
+		this.reconnectTimes = 0;
 
 		this.connect = this.connect.bind(this);
 		this.subscribe = this.subscribe.bind(this);
@@ -45,14 +45,7 @@ class MqttClient {
 		this.registerErrorHandler = this.registerErrorHandler.bind(this);
 	}
 
-	connect({
-		address,
-		username,
-		password,
-		clientId,
-		path = '/mqtt',
-		reconnectPeriod = this.reconnectTimes,
-	}) {
+	connect({ address, username, password, clientId, path = '/mqtt', reconnectPeriod = 3 * 1000 }) {
 		return new Promise((resolve, reject) => {
 			const client = MQTT.connect(
 				`${WEB_SOCKET_PREFIX}://${address}`,
@@ -75,12 +68,12 @@ class MqttClient {
 			client.on('reconnect', () => {
 				console.log(this);
 				console.log('mqtt reconnect', this.reconnectTimes);
-				this.reconnectTimes = this.reconnectTimes * 2;
+				this.reconnectTimes = this.reconnectTimes + 1;
 			});
 
 			client.on('close', () => {
 				console.log('mqtt close');
-				if (this.reconnectTimes > 2048) {
+				if (this.reconnectTimes > 10) {
 					client.end(true);
 				}
 			});
@@ -131,7 +124,6 @@ class MqttClient {
 		// messages.id += 1;
 		const msgId = generateMsgId();
 		const { sn } = message.param || {};
-		console.log(message, sn);
 		const msg = JSON.stringify({
 			msg_id: msgId,
 			params: Array.isArray(message) ? [...message] : [message],
@@ -186,7 +178,6 @@ class MqttClient {
 
 	clearMsg({ msgId }) {
 		const { msgIdMap } = this;
-		console.log(msgId);
 		msgIdMap.delete(msgId);
 	}
 }

@@ -52,13 +52,15 @@ export default {
 				});
 			}
 		},
-		*getIpcList(_, { select, take}) {
+		*getIpcList(_, { select, put}) {
 			let ipcList  = yield select((state) => state.ipcList);
 
 			if (ipcList.length === 0){
 				// console.log(ipcList.length);
-				const { payload } = yield take('readData');
-				ipcList = payload;
+				yield put.resolve({
+					type: 'getList'
+				});
+				ipcList  = yield select((state) => state.ipcList);
 			}
 
 			return ipcList;

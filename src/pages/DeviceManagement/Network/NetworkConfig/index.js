@@ -1,8 +1,9 @@
 import React from 'react';
 import { Card, Tabs, Icon } from 'antd';
 import { connect } from 'dva';
-import { IconBandwidth } from '@/components/IconSvg';
 import { formatMessage } from 'umi/locale';
+import { STATUS } from '@/constants/index';
+import { IconBandwidth } from '@/components/IconSvg';
 import QosConfig from './QosConfig';
 import QosCreate from './QosConfig/QosCreate';
 
@@ -48,15 +49,9 @@ class NetworkConfig extends React.PureComponent {
 						}
 						key="1"
 					>
-						{qos === 'init' && (
-							<QosConfig
-								{...this.props}
-							/>
-						)}
-						{(qos === 'update' || qos === 'create') && (
-							<QosCreate
-								{...this.props}
-							/>
+						{qos === STATUS.INIT && <QosConfig {...this.props} />}
+						{(qos === STATUS.UPDATE || qos === STATUS.CREATE) && (
+							<QosCreate {...this.props} />
 						)}
 					</TabPane>
 				</Tabs>

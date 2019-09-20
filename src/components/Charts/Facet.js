@@ -63,7 +63,6 @@ class FacetChart extends PureComponent {
 							<Geom
 								size={size}
 								type="interval"
-								shape="distributionBorderShape"
 								position={assistPosition}
 								color={assistColor}
 								active={false}
@@ -72,7 +71,6 @@ class FacetChart extends PureComponent {
 							<Geom
 								size={size}
 								type="interval"
-								shape="distributionBorderShape"
 								position={position}
 								color={color}
 								active={false}

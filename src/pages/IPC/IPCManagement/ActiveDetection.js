@@ -157,9 +157,12 @@ class ActiveDetection extends React.Component {
 
 			const { saveSetting, sn } = this.props;
 			const values = form.getFieldsValue();
-
+			// console.log(getFieldValue('startTime'), getFieldValue('endTime'));
+			// console.log('now',moment().format('X'));
 			const startTime = values.startTime.format('X') - moment('1970-01-01').format('X');
+			// console.log(startTime);
 			const endTime = values.endTime.format('X') - moment('1970-01-01').format('X');
+			// console.log(endTime);
 			const params = {
 				...values,
 				startTime,
@@ -170,6 +173,19 @@ class ActiveDetection extends React.Component {
 			// btnDisabled = true;
 		}
 	};
+
+	onTimeSelect = (time) => {
+		let t = time;
+		if(time) {
+			const date = time.format('YYYY-MM-DD');
+			// console.log(date);
+			if(date !== '1970-01-01'){
+				const deviation = time.format('X') - moment(date).format('X');
+				t = moment('1970-01-01').add(deviation, 's');
+			}
+		}
+		return t;
+	}
 
 	onAutoChange = (e) => {
 		const { form } = this.props;
@@ -434,6 +450,7 @@ class ActiveDetection extends React.Component {
 								getFieldDecorator('startTime', {
 									// initialValue: moment('1970-01-01').add(0, 's'),
 									initialValue: moment('1970-01-01').add(startTime, 's'),
+									getValueFromEvent: this.onTimeSelect,
 									rules: [
 										{
 											required: true,
@@ -456,6 +473,7 @@ class ActiveDetection extends React.Component {
 								getFieldDecorator('endTime', {
 									// initialValue: moment('1970-01-01').add(0, 's'),
 									initialValue: moment('1970-01-01').add(endTime, 's'),
+									getValueFromEvent: this.onTimeSelect,
 									rules: [
 										{
 											required: true,

@@ -1,7 +1,7 @@
-import * as Actions from '@/services/network';
 import { format } from '@konata9/milk-shake';
+import * as Actions from '@/services/network';
 import { formatSpeed } from '@/utils/utils';
-import { DEFAULT_PAGE_SIZE } from '@/constants';
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_LIST_SIZE } from '@/constants';
 import { ERROR_OK, MQTT_RES_OK } from '@/constants/errorCode';
 import { OPCODE } from '@/constants/mqttStore';
 
@@ -25,6 +25,7 @@ export default {
 		pagination: {
 			current: 1,
 			pageSize: DEFAULT_PAGE_SIZE,
+			pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
 			total: 0,
 			showSizeChanger: true,
 			showQuickJumper: true,
@@ -314,6 +315,7 @@ export default {
 				downUnit,
 				devices = [],
 				msgId,
+				sn: getSn
 			} = payload;
 			const {
 				networkList,
@@ -345,7 +347,7 @@ export default {
 					};
 				}
 
-				if (item.sn === sn) {
+				if (item.sn === sn || item.sn === getSn) {
 					switch (opcode) {
 						case OPCODE.CLIENT_LIST_GET:
 							return { ...item, clientCount: clientNumber };

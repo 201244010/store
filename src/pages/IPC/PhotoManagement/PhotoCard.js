@@ -19,6 +19,7 @@ const { confirm } = Modal;
 @connect(
 	state => ({
 		photoLibrary: state.photoLibrary,
+		fileList: state.photoUpload.fileList
 	}),
 	dispatch => ({
 		deletePhoto: payload =>
@@ -61,14 +62,28 @@ const { confirm } = Modal;
 				payload
 			}),
 		editFile: (file, groupId ) => {
-			const result = dispatch({
-				type: 'photoUpload/editFile',
+			// console.log(file);
+			dispatch({
+				// type: 'photoUpload/editFile',
+				type: 'photoUpload/uploadFileList',
 				payload: {
-					file,
+					fileList: [file],
 					groupId
 				}
 			});
-			return result;
+		},
+		setFile: (file) => {
+			dispatch({
+				type: 'photoUpload/setFileList',
+				payload: {
+					fileList: [file]
+				}
+			});
+		},
+		clearFileList: () => {
+			dispatch({
+				type: 'photoUpload/clearFileList',
+			});
 		},
 		navigateTo: (pathId, urlParams) => dispatch({
 			type: 'menu/goToPath',
@@ -93,6 +108,7 @@ class PhotoCard extends React.Component {
 			// uploadFail: false,
 			// uploadSuccess: false,
 			isUpload: 0,
+			isMessage: false,
 			imageLoaded: false,
 		};
 	}
@@ -103,11 +119,39 @@ class PhotoCard extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const { image: src } = nextProps;
+		const { image: src, fileList } = nextProps;
 		const { image } = this.props;
+		// console.log('will', fileList);
+		const { isMessage } = this.state;
 		if (src !== image) {
 			this.preloadImage(src);
 		}
+		if(fileList && fileList.length !== 0){
+			const file = fileList[0];
+			// console.log('will',file);
+			if(file.response && file.response.verifyResult !== undefined && isMessage){
+				const { fileName, verifyResult } = file.response;
+				let isUpload = 0;
+				if(verifyResult === 1 ) {
+					message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
+					isUpload = 1;
+				} else {
+					message.error(formatMessage({id:'photoManagement.uploadFail'}));
+					isUpload = 2;
+				}
+				this.getBase64(file, imageUrl => {
+					this.setState({
+						fileUrl: imageUrl,
+						fileName,
+						isUpload,
+						isMessage: false,
+						file
+					});
+				});
+			}
+
+		}
+
 	}
 
 	preloadImage = (src) => {
@@ -137,8 +181,10 @@ class PhotoCard extends React.Component {
 	};
 
 	hideInfo = () => {
+		const { clearFileList } = this.props;
 		this.setState({ infoFormVisible: false, fileName: '' }, ()=> {
 			this.setState({isEdit: false, file: {}, isUpload: 0, fileUrl: ''});
+			clearFileList();
 		});
 	};
 
@@ -174,9 +220,21 @@ class PhotoCard extends React.Component {
 	// 处理保存编辑结果
 	handleSubmit = () => {
 		const { fileName, file} = this.state;
-		const { form, id , edit, libraryId, upload, groupId, getList } = this.props;
+		const { form, id , edit, libraryId, upload, groupId, getList, clearFileList } = this.props;
 		form.validateFields(async errors => {
 			if (!errors) {
+
+				let isUpload = true;
+
+				if(fileName !== '' && file.response !== undefined && file.response.verifyResult === 1) {
+					const response = await upload({
+						groupId,
+						faceImgList: [fileName],
+						faceId: id
+					});
+					isUpload = response.data.failureList.length === 0;
+				}
+
 				const fields = form.getFieldsValue();
 				const isEdit = await edit({
 					faceId: id,
@@ -187,24 +245,16 @@ class PhotoCard extends React.Component {
 					age: fields.age
 				});
 
-				let isUpload = true;
-
-				if(fileName !== '' && file.response !== undefined && file.response.data.verifyResult === 1) {
-					isUpload = await upload({
-						groupId,
-						faceImgList: [fileName],
-						faceId: id
-					});
-				}
+				// console.log(isUpload);
 
 				if(isEdit && isUpload) {
 					message.success(formatMessage({id: 'photoManagement.card.editSuccess'}));
 				} else {
-
 					message.error(formatMessage({id: 'photoManagement.card.editError'}));
 				}
 				getList();
 				this.setState({infoFormVisible: false, isEdit: false, fileName: '', isUpload: 0, fileUrl: ''});
+				clearFileList();
 			}
 		});
 	};
@@ -310,37 +360,37 @@ class PhotoCard extends React.Component {
 	// 	});
 	// };
 
-	editFile = async file => {
-		// console.log('file', file);
-		const { editFile, groupId } = this.props;
-		const response = await editFile(file, groupId);
-		const { code, data: {verifyResult}} = response;
-		let isUpload = 0;
-		if(verifyResult === 1 && code === 1 ) {
-			message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
-			isUpload = 1;
-		} else {
-			message.error(formatMessage({id:'photoManagement.uploadFail'}));
-			isUpload = 2;
-		}
-		this.getBase64(file,imageUrl => {
-			this.setState({
-				fileUrl: imageUrl,
-				fileName: response.data.fileName,
-				isUpload,
-				file:{
-					...file,
-					response,
-					status: 'done'
-				}
-			});
-		});
-	}
+	// editFile = async file => {
+	// 	console.log('file', file);
+	// 	const { editFile, groupId } = this.props;
+	// 	const response = await editFile(file, groupId);
+	// 	const { code, data: {verifyResult}} = response;
+	// 	let isUpload = 0;
+	// 	if(verifyResult === 1 && code === 1 ) {
+	// 		message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
+	// 		isUpload = 1;
+	// 	} else {
+	// 		message.error(formatMessage({id:'photoManagement.uploadFail'}));
+	// 		isUpload = 2;
+	// 	}
+	// 	this.getBase64(file,imageUrl => {
+	// 		this.setState({
+	// 			fileUrl: imageUrl,
+	// 			fileName: response.data.fileName,
+	// 			isUpload,
+	// 			file:{
+	// 				...file,
+	// 				response,
+	// 				status: 'done'
+	// 			}
+	// 		});
+	// 	});
+	// }
 
 
 	beforeUpload = file => {
 		// console.log('before',file);
-
+		const { editFile, groupId, setFile } = this.props;
 		const isLt1M = file.size / 1024 / 1024 < 1;
 		const isJPG = file.type === 'image/jpeg';
 		const isPNG = file.type === 'image/png';
@@ -354,11 +404,14 @@ class PhotoCard extends React.Component {
 			});
 		} else {
 			file.status = 'uploading';
-			this.editFile(file);
+			// this.editFile(file);
+			editFile(file, groupId);
 			this.setState({
 				file,
+				isMessage: true
 			});
 		}
+		setFile(file);
 		return false;
 	};
 
@@ -424,11 +477,11 @@ class PhotoCard extends React.Component {
 
 	isUploaded = () => {
 		const { file: { status, response } } = this.state;
-		if(status === 'uploading' && status !== undefined) {
+		if((status === 'uploading' || status === 'error') && status !== undefined) {
 			return true;
 		}
 		if(status !== undefined ) {
-			if(response !== undefined && response.code !== 1) {
+			if(response !== undefined && response.verifyResult!== 1) {
 				return true;
 			}
 		}

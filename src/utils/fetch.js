@@ -1,13 +1,13 @@
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
+import router from 'umi/router';
+import { fetch } from 'whatwg-fetch';
 import CONFIG from '@/config';
 import { cbcEncryption, idDecode, md5Encryption } from '@/utils/utils';
 import { USER_NOT_LOGIN } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
-import router from 'umi/router';
 
 // import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
-import { fetch } from 'whatwg-fetch';
 
 const { API_ADDRESS, MD5_TOKEN } = CONFIG;
 const ERR_INTERNET_DISCONNECTED = 9999;

@@ -42,6 +42,8 @@ export default {
 	'studio.tool.label.opacity': 'Opacity',
 	'studio.tool.label.font.family': 'FontFamily',
 	'studio.tool.label.font.size': 'Size',
+	'studio.tool.label.line.spacing': 'Line Spacing',
+	'studio.tool.label.text.content': 'Text Content',
 	'studio.tool.label.font.size.int': 'IntFontSize',
 	'studio.tool.label.font.size.small': 'SmallFontSize',
 	'studio.tool.label.font.color': 'FontColor',

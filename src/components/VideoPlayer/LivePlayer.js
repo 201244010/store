@@ -18,7 +18,9 @@ class LivePlayer extends React.Component{
 
 		this.currentSrc = '';
 		this.startTimestamp = 0;
+		this.metadataCount = 0;
 		this.relativeTimestamp = 0;
+		this.lastMetadataTimestamp = 0;
 		this.replayTimeout = 0;
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
 	}
@@ -75,6 +77,7 @@ class LivePlayer extends React.Component{
 
 		this.startTimestamp = moment().unix();
 		this.relativeTimestamp = 0;
+		this.metadataCount = 0;
 		this.toPause = false;
 	}
 
@@ -341,19 +344,58 @@ class LivePlayer extends React.Component{
 				currentTimestamp
 			});
 
-			getCurrentTimestamp(this.relativeTimestamp + timestamp*1000);
+			const gap = (Math.round((timestamp - this.lastMetadataTimestamp)*1000*1000))/1000;
+			getCurrentTimestamp(this.relativeTimestamp + gap);
+
+			// console.log('relativeTimestamp: ', this.relativeTimestamp, 'timestamp: ', timestamp, 'lastMetadataTimestamp: ', this.lastMetadataTimestamp, 'gap: ', gap,  'total: ', this.relativeTimestamp + gap);
 		}
 
 	}
 
 	onMetadataArrived = (metadata) => {
 		const { onMetadataArrived } = this.props;
-
 		const { isLive } = this.state;
+		const { videoplayer: { player } } = this;
+
+		this.metadataCount++;
+		console.log('this.metadataCount++', this.metadataCount);
 
 		if (isLive) {
-			if (this.relativeTimestamp === 0) {
+
+			if (this.metadataCount === 2) {
+				// 只使用第二次到达的metadata
 				this.relativeTimestamp = metadata.relativeTime;
+				this.lastMetadataTimestamp = player.currentTime();
+			}
+
+			if (metadata.baseTime !== undefined && metadata.relativeTime !== undefined) {
+				const baseTime = metadata.baseTime * 1000;
+				const { relativeTime } = metadata;
+				const videoTime = moment(baseTime + relativeTime).format('YYYY-MM-DD HH:mm:ss');
+				const now = moment();
+
+				console.log('系统时间=', now.format('YYYY-MM-DD HH:mm:ss'));
+				console.log('视频帧时间=', videoTime);
+				console.log('time gap=', now.valueOf() - (baseTime + relativeTime));
+			}
+
+			// const { player } = this.videoplayer;
+
+			// 仅flvjs播放器能使用此方式矫正播放进度
+			if (player.techName_ === 'Flvjs' && player.buffered &&  player.buffered().length > 0) {
+				const index = player.buffered().length -1;
+				const curTime = player.currentTime();
+				const endTime = player.buffered().end(index);
+
+				console.log('before curTime=', curTime);
+				console.log('endTime=', endTime);
+
+				// 离缓存间隔太小，会导致loading
+				if (endTime - 2 > curTime) {
+					console.log('endTime-curTime=', endTime - curTime);
+					player.currentTime(endTime - 2);
+					console.log('after player.currentTime()=', player.currentTime());
+				}
 			}
 
 			onMetadataArrived(metadata.relativeTime);

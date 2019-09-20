@@ -133,7 +133,7 @@ class Toolbar extends React.Component{
 
 				<div className={`${styles.control} ${styles['play-control']}`}>
 
-					<a className={`${styles.button} ${styles['button-play']} ${  playing ? styles.playing : ''} ${ playBtnDisabled ? styles.disabled : '' }`} href='javascript:void(0);' onClick={play}>
+					<a className={`${styles.button} ${styles['button-play']} ${  playing ? styles.playing : ''} ${ playBtnDisabled ? styles.disabled : '' }`} onClick={play}>
 						{
 							formatMessage({ id: 'videoPlayer.play' })
 						}
@@ -289,7 +289,7 @@ class Toolbar extends React.Component{
 									formatMessage({ id: 'videoPlayer.videoScreenShot' })
 								}
 							>
-								<a className={`${styles.button} ${styles['button-screenshot']}`} onClick={screenShot} href='javascript:void(0);'>
+								<a className={`${styles.button} ${styles['button-screenshot']}`} onClick={screenShot}>
 									{
 										formatMessage({ id: 'vidoePlayer.screenShot' })
 									}
@@ -318,7 +318,7 @@ class Toolbar extends React.Component{
 						placement="topCenter"
 						getPopupContainer={() => this.volumeDropdown}
 					>
-						<a className={`${styles.button} ${styles['button-volume']} ${ volumneValue === 0 ? styles.muted : ''}`} href='javascript:void(0);' onClick={mute}>
+						<a className={`${styles.button} ${styles['button-volume']} ${ volumneValue === 0 ? styles.muted : ''}`} onClick={mute}>
 							{
 								formatMessage({ id: 'videoPlayer.volume' })
 							}
@@ -338,7 +338,7 @@ class Toolbar extends React.Component{
 							`${ fullScreenStatus ? formatMessage({ id: 'videoPlayer.exitFullscreen' }) : formatMessage({ id: 'videoPlayer.enterFullscreen' }) }`
 						}
 					>
-						<a className={`${styles.button} ${styles['button-fullscreen']} ${ fullScreenStatus ? styles.fullscreen : ''}`} href='javascript:void(0);' onClick={fullScreen}>
+						<a className={`${styles.button} ${styles['button-fullscreen']} ${ fullScreenStatus ? styles.fullscreen : ''}`} onClick={fullScreen}>
 							{
 								formatMessage({ id: 'videoPlayer.enterFullscreen' })
 							}

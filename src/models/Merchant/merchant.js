@@ -1,9 +1,9 @@
-import * as Actions from '@/services/Merchant/merchant';
-import { ERROR_OK } from '@/constants/errorCode';
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
-import * as CookieUtil from '@/utils/cookies';
 import Storage from '@konata9/storage.js';
+import * as Actions from '@/services/Merchant/merchant';
+import { ERROR_OK } from '@/constants/errorCode';
+import * as CookieUtil from '@/utils/cookies';
 
 export default {
 	namespace: 'merchant',
@@ -124,6 +124,7 @@ export default {
 				});
 				// router.push('/user/login');
 			}
+			
 			return response;
 		},
 
