@@ -88,3 +88,12 @@ export const createEmqToken = () => {
 	const opts = { body: { source: 'WEB' } };
 	return fetchApi('createEmqToken', opts).then(response => response.json());
 };
+
+export const refreshStoreToken = (options = {}) => {
+	const opts = {
+		body: {
+			...options,
+		},
+	};
+	return fetchApi('refreshStoreToken', opts).then(response => response.json());
+};

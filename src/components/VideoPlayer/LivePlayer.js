@@ -347,7 +347,7 @@ class LivePlayer extends React.Component{
 			const gap = (Math.round((timestamp - this.lastMetadataTimestamp)*1000*1000))/1000;
 			getCurrentTimestamp(this.relativeTimestamp + gap);
 
-			console.log('relativeTimestamp: ', this.relativeTimestamp, 'timestamp: ', timestamp, 'lastMetadataTimestamp: ', this.lastMetadataTimestamp, 'gap: ', gap,  'total: ', this.relativeTimestamp + gap);
+			// console.log('relativeTimestamp: ', this.relativeTimestamp, 'timestamp: ', timestamp, 'lastMetadataTimestamp: ', this.lastMetadataTimestamp, 'gap: ', gap,  'total: ', this.relativeTimestamp + gap);
 		}
 
 	}
@@ -379,7 +379,7 @@ class LivePlayer extends React.Component{
 				console.log('time gap=', now.valueOf() - (baseTime + relativeTime));
 			}
 
-			const { player } = this.videoplayer;
+			// const { player } = this.videoplayer;
 
 			// 仅flvjs播放器能使用此方式矫正播放进度
 			if (player.techName_ === 'Flvjs' && player.buffered &&  player.buffered().length > 0) {
