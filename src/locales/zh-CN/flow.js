@@ -17,5 +17,11 @@ export default {
 	'flow.libraryName.clerk': '店员',
 	'flow.libraryName.blackList': '黑名单',
 	'flow.libraryName.vip': 'VIP',
+	'flow.genders.unknown':'未知',
+	'flow.genders.male':'男',
+	'flow.genders.female':'女',
+	'flow.age.unit':'岁',
+	'flow.unknown':'未知',
+	'flow.nosdInfo':'TF卡未插入，人脸识别相关功能将无法使用',
 	'show.total.unit': '万',
 };

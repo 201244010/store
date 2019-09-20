@@ -101,7 +101,7 @@ export default {
 		*mapFaceInfo({ payload }, { select, take, put }) {
 			const { libraryName, age, ageRangeCode, name } = payload;
 			let rangeList = yield select((state) => state.flowFaceid.ageRangeList);
-			let ageName = formatMessage({id: 'live.unknown'});
+			let ageName = formatMessage({id: 'flow.unknown'});
 			let libraryNameText = libraryName;
 
 			switch(libraryName) {
@@ -139,7 +139,7 @@ export default {
 					...payload,
 					 libraryName: libraryNameText,
 					 age: ageName,
-					 name: name === 'undefined' ? formatMessage({id: 'live.unknown'}) : name
+					 name: name === 'undefined' ? formatMessage({id: 'flow.unknown'}) : name
 				 }
 			});
 		},
