@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Card, Button, Form, Select, Row, Col, Table } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { unixSecondToDate, getLocationParam } from '@/utils/utils';
+import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
 
 import styles from './index.less';
@@ -396,23 +397,28 @@ class OrderDetail extends Component {
 					expandRowByClick
 					expandIconAsCell={false}
 					expandedRowKeys={expandKeys}
-					expandedRowRender={record => (
-						<Table
-							className={styles['expanded-table']}
-							size="small"
-							columns={detailColumns}
-							dataSource={record.detail}
-							pagination={false}
-						/>
-					)}
-					pagination={{
-						current: pageNum,
-						showQuickJumper: true,
-						showSizeChanger: true,
-						total: orderTotal,
-						onChange: this.handlePaginate,
-						onShowSizeChange: this.handlePaginate,
-					}}
+					expandedRowRender={
+						record =>
+							<Table
+								className={styles['expanded-table']}
+								size='small'
+								columns={detailColumns}
+								dataSource={record.detail}
+								pagination={false}
+							/>
+					}
+					pagination={
+						{
+							current: pageNum,
+							showQuickJumper: true,
+							showSizeChanger: true,
+							total: orderTotal,
+							onChange: this.handlePaginate,
+							onShowSizeChange: this.handlePaginate,
+							defaultPageSize: DEFAULT_PAGE_SIZE,
+							pageSizeOptions: DEFAULT_PAGE_LIST_SIZE,
+						}
+					}
 				/>
 			</Card>
 		);
