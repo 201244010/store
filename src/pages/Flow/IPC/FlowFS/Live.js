@@ -150,6 +150,7 @@ import styles from './Live.less';
 			type: 'flowFaceid/readLibraryType',
 		});
 	},
+	loadList: () => dispatch({ type:'ipcList/read'}),
 	// test: () => {
 	// 	dispatch({
 	// 		type:'faceid/test'
@@ -169,7 +170,7 @@ class Live extends React.Component{
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList, readLibraryType } = this.props;
+		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList, readLibraryType, loadList } = this.props;
 
 		readLibraryType();
 		const {sn} = query;
@@ -178,13 +179,14 @@ class Live extends React.Component{
 			// test();
 			clearList({ sn });
 			getAgeRangeList();
+			await loadList();
 			const deviceInfo = await getDeviceInfo({ sn });
 			const { hasFaceid } = deviceInfo;
 			setDeviceSn({ sn });
 			if(hasFaceid){
 				const status = await getSdStatus({ sn });
 				if(status === 0) {
-					message.info(formatMessage({ id: 'live.nosdInfo' }));
+					message.info(formatMessage({ id: 'flow.nosdInfo' }));
 					sdStatus = false;
 				}
 			}
@@ -294,9 +296,9 @@ class Live extends React.Component{
 		});
 		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
 		const genders = {
-			0: formatMessage({ id: 'live.genders.unknown' }),
-			1: formatMessage({ id: 'live.genders.male'}),
-			2: formatMessage({ id: 'live.genders.female'})
+			0: formatMessage({ id: 'flow.genders.unknown' }),
+			1: formatMessage({ id: 'flow.genders.male'}),
+			2: formatMessage({ id: 'flow.genders.female'})
 		};
 
 		return(
@@ -360,7 +362,7 @@ class Live extends React.Component{
 														className={styles.infos}
 													>
 														<p className={styles['infos-age']}>
-															{ `(${ genders[item.gender] } ${ item.age }${formatMessage({id: 'live.age.unit'})})` }
+															{ `${ genders[item.gender] } ${ item.age }${formatMessage({id: 'flow.age.unit'})}` }
 														</p>
 														<p className={styles['infos-time']}>
 															{/* <span>{formatMessage({id: 'live.last.arrival.time'})}</span> */}

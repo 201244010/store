@@ -9,7 +9,7 @@ import * as CookieUtil from '@/utils/cookies';
 
 // import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
 
-const { API_ADDRESS, MD5_TOKEN } = CONFIG;
+const { API_ADDRESS, MD5_TOKEN, HTTP_PREFIX } = CONFIG;
 const ERR_INTERNET_DISCONNECTED = 9999;
 
 // const codeMessage = {
@@ -135,7 +135,7 @@ export const customizeFetch = (service = 'api', base) => {
 			};
 		}
 
-		const url = `//${baseUrl}/${service}/${api}`;
+		const url = `${HTTP_PREFIX}//${baseUrl}/${service}/${api}`;
 		// const response = await fetch(url, opts);
 		const response = await fetchHandler(url, opts);
 		// console.log(response);
