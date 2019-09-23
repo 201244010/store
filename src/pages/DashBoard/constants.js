@@ -14,6 +14,19 @@ export const DASHBOARD = {
 			TODAY: 'today',
 			WEEK: 'week',
 			MONTH: 'month',
+			YESTERDAY: 'yesterday',
+		},
+		RANGE_VALUE: {
+			TODAY: 1,
+			WEEK: 2,
+			MONTH: 3,
+			YESTERDAY: 4,
+		},
+		GROUP_RANGE: {
+			HOUR: 'hour',
+			DAY: 'day',
+			WEEK: 'week',
+			MONTH: 'month',
 		},
 		TRADE_TIME: {
 			AMOUNT: 'amount',
