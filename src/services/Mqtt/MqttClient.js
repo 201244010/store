@@ -48,7 +48,7 @@ class MqttClient {
 	connect({ address, username, password, clientId, path = '/mqtt', reconnectPeriod = 3 * 1000 }) {
 		return new Promise((resolve, reject) => {
 			const client = MQTT.connect(
-				`${WEB_SOCKET_PREFIX}://${address}`,
+				`${WEB_SOCKET_PREFIX}//${address}`,
 				{
 					clientId,
 					username,
