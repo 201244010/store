@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent } from '@/pages/PassengerAnalyze/node_modules/react';
 
 class PassengerAnalyze extends PureComponent {
 	render() {

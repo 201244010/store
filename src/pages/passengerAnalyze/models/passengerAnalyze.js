@@ -1,6 +1,6 @@
 import moment from '@/pages/PassengerAnalyze/models/node_modules/moment';
-import * as Actions from '@/services/passengerFlow';
-import { ERROR_OK } from '@/constants/errorCode';
+import * as Actions from '@/pages/PassengerAnalyze/models/node_modules/@/services/passengerFlow';
+import { ERROR_OK } from '@/pages/PassengerAnalyze/models/node_modules/@/constants/errorCode';
 import DASHBOARD from '@/pages/PassengerAnalyze/models/node_modules/@/pages/DashBoard/constants';
 
 const {
@@ -27,6 +27,7 @@ export default {
 			memberCount: 0,
 		},
 		passengerFlowTrendList: [],
+		passengerAgeListByGender: [],
 	},
 
 	effects: {
@@ -59,7 +60,7 @@ export default {
 			});
 		},
 
-		*getPassengerFlowCount(_, { select, put, call }) {
+		*getPassengerFlowHistory(_, { select, put, call }) {
 			const searchValue = yield select(state => state.searchValue);
 			const { type } = searchValue;
 
@@ -83,6 +84,42 @@ export default {
 							strangerCount,
 							memberCount,
 						},
+					},
+				});
+			}
+		},
+
+		*getPassengerFlowHistoryTrend(_, { select, put, call }) {
+			const searchValue = yield select(state => state.searchValue);
+			const { type, groupBy } = searchValue;
+
+			const response = yield call(Actions.getPassengerFlowHistoryTrend, { type, groupBy });
+			if (response && response.code === ERROR_OK) {
+				const { data: { countList = [] } = {} } = response || {};
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						passengerFlowTrendList: countList,
+					},
+				});
+			}
+		},
+
+		*getPassengerFlowAgeByGender(_, { select, put, call }) {
+			const searchValue = yield select(state => state.searchValue);
+			const { type } = searchValue;
+
+			const response = yield call(Actions.getPassengerFlowAgeByGender, { type });
+			if (response && response.code === ERROR_OK) {
+				const {
+					data: { countList = [] },
+				} = response || {};
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						passengerAgeListByGender: countList,
 					},
 				});
 			}
