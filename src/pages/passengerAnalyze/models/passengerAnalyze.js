@@ -1,4 +1,5 @@
 import moment from 'moment';
+// import * as Actions from '@/services/passengerFlow';
 import DASHBOARD from '@/pages/DashBoard/constants';
 
 const {
@@ -56,6 +57,8 @@ export default {
 				},
 			});
 		},
+
+		// *getPassengerFlowCount(_, { select, put, call }) {},
 	},
 
 	reducers: {
