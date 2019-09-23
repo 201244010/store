@@ -1,6 +1,7 @@
-import moment from 'moment';
-// import * as Actions from '@/services/passengerFlow';
-import DASHBOARD from '@/pages/DashBoard/constants';
+import moment from '@/pages/PassengerAnalyze/models/node_modules/moment';
+import * as Actions from '@/services/passengerFlow';
+import { ERROR_OK } from '@/constants/errorCode';
+import DASHBOARD from '@/pages/PassengerAnalyze/models/node_modules/@/pages/DashBoard/constants';
 
 const {
 	SEARCH_TYPE: { GROUP_RANGE, RANGE_VALUE },
@@ -58,7 +59,34 @@ export default {
 			});
 		},
 
-		// *getPassengerFlowCount(_, { select, put, call }) {},
+		*getPassengerFlowCount(_, { select, put, call }) {
+			const searchValue = yield select(state => state.searchValue);
+			const { type } = searchValue;
+
+			const response = yield call(Actions.getPassengerFlowHistory, { type });
+			if (response && response.code === ERROR_OK) {
+				const {
+					data: {
+						totalCount = 0,
+						regularCount = 0,
+						strangerCount = 0,
+						memberCount = 0,
+					} = {},
+				} = response || {};
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						passengerFlowCount: {
+							totalCount,
+							regularCount,
+							strangerCount,
+							memberCount,
+						},
+					},
+				});
+			}
+		},
 	},
 
 	reducers: {
