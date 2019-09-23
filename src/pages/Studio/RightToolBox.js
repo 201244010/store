@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Col, Icon, Input, InputNumber, Row, Select, Radio } from 'antd';
+import { Col, Icon, Input, InputNumber, Row, Select, Radio, AutoComplete } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { SHAPE_TYPES, MAPS, FORMATS } from '@/constants/studio';
 // import { validEAN8Num, validEAN13Num } from '@/utils/studio';
@@ -686,6 +686,26 @@ export default class RightToolBox extends Component {
 								</span>
 							</Col>
 							<Col span={20}>
+								<AutoComplete
+									style={{ width: '100%' }}
+									dataSource={fontSizes.map(size => size.key.toString())}
+									placeholder={formatMessage({
+										id: 'studio.tool.label.font.size',
+									})}
+									value={detail.fontSize.toString()}
+									onChange={value => {
+										this.handleDetail('fontSize', value);
+									}}
+								/>
+							</Col>
+						</Row>
+						<Row style={{ marginBottom: 10 }}>
+							<Col span={4}>
+								<span className={styles.title}>
+									{formatMessage({ id: 'studio.tool.label.font.size' })}
+								</span>
+							</Col>
+							<Col span={20}>
 								<Select
 									style={{ width: '100%' }}
 									placeholder={formatMessage({
@@ -701,23 +721,6 @@ export default class RightToolBox extends Component {
 									}
 								</Select>
 							</Col>
-							{/*
-									<Col span={2} />
-								<Col span={4}>
-									<span className={styles.title}>间距</span>
-								</Col>
-								<Col span={7}>
-									<InputNumber
-										style={{ width: "100%" }}
-										placeholder="间距"
-										min={0}
-										value={detail.letterSpacing}
-										onChange={value => {
-											this.handleDetail("letterSpacing", value);
-										}}
-									/>
-								</Col>
-									*/}
 						</Row>
 						<Row style={{ marginBottom: 10 }}>
 							<Col span={4}>
