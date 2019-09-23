@@ -1,5 +1,9 @@
 import sysEnv from './env';
 
+const {
+	location: { protocol },
+} = window;
+
 export const { env, country } = sysEnv;
 
 export const FIRST_MENU_ORDER = [
@@ -12,12 +16,14 @@ export const FIRST_MENU_ORDER = [
 	'faceidLibrary',
 ];
 
-const WEB_SOCKET_PREFIX = {
-	dev: 'ws',
-	test: 'ws',
-	uat: 'wss',
-	onl: 'wss',
-	local: 'ws',
+export const HTTP_PREFIX = {
+	'http:': 'https:',
+	'https:': 'https:',
+};
+
+export const WEB_SOCKET_PREFIX = {
+	'http:': 'ws:',
+	'https:': 'wss:',
 };
 
 const SSO_ADDRESS = {
@@ -81,6 +87,7 @@ export default {
 	DES_IV: DES_IV[env],
 	MD5_TOKEN: MD5_TOKEN[env],
 	IPC_SERVER: IPC_ADDRESS[env],
-	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[env],
+	HTTP_PREFIX: HTTP_PREFIX[protocol] || 'http:',
+	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[protocol] || 'ws:',
 	COUNTRY_ADDRESS: COUNTRY_ADDRESS[country],
 };
