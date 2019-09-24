@@ -15,7 +15,6 @@ const {
 	dispatch => ({
 		getShopIdFromStorage: () => dispatch({ type: 'global/getShopIdFromStorage' }),
 		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
-		refreshPage: () => dispatch({ type: 'passengerAnalyze/refreshPage' }),
 		setSearchValue: ({ type, groupBy }) =>
 			dispatch({ type: 'passengerAnalyze/setSearchValue', payload: { type, groupBy } }),
 	})
@@ -39,14 +38,14 @@ class SearchBar extends PureComponent {
 
 	handleRadioChange = async e => {
 		const { target: { value = RANGE.TODAY } = {} } = e;
-		const { setSearchValue, refreshPage } = this.props;
+		const { setSearchValue, onSearchChange } = this.props;
 		this.setState({ tempSelected: value });
 
 		await setSearchValue({
 			type: RANGE_VALUE[value.toUpperCase()],
 			groupBy: value === RANGE.TODAY ? GROUP_RANGE.HOUR : GROUP_RANGE.DAY,
 		});
-		await refreshPage();
+		await onSearchChange();
 	};
 
 	render() {

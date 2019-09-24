@@ -23,7 +23,7 @@ const rateMessage = {
 	[RANGE.MONTH]: `${formatMessage({ id: 'dashboard.order.m2m' })}:`,
 };
 
-const SalseInfo = ({
+export const SalseInfo = ({
 	title = null,
 	icon = null,
 	content = null,

@@ -28,6 +28,8 @@ export default {
 		},
 		passengerFlowTrendList: [],
 		passengerAgeListByGender: [],
+		// TODO 等待云端接口
+		passengerDetailWithAgeAndGender: {},
 	},
 
 	effects: {
@@ -60,7 +62,7 @@ export default {
 			});
 		},
 
-		*refreshPage(_, { put }) {
+		*refreshPage(_, { all, put }) {
 			yield all([
 				put({ type: 'getPassengerFlowHistory' }),
 				put({ type: 'getPassengerFlowHistoryTrend' }),
