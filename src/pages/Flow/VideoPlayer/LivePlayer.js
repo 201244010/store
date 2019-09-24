@@ -344,12 +344,13 @@ class LivePlayer extends React.Component{
 
 		// 当前为直播
 		const { isLive } = this.state;
-		if (isLive) {
+		if (isLive && !this.currentSrc) {
+			console.log('执行playLive');
 			this.playLive();
+		} else {
+			this.src(this.currentSrc);
+			this.timeoutReplay();
 		}
-
-		this.src(this.currentSrc);
-		this.timeoutReplay();
 	}
 
 	// 超时重新播放
