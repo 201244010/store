@@ -1,0 +1,39 @@
+@import '~@/styles/common.less';
+
+.passengerAnalyze-wrapper {
+	margin: -24px;
+}
+
+.passengerAnalyze-title{
+	padding: 16px 24px 0 24px;
+	margin: 0;
+	background: #fff;
+}
+
+.search-bar {
+	width: 100%;
+	height: 64px;
+	padding: 16px 24px;
+	background: #ffffff;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	:global {
+		.ant-radio-button-wrapper-checked {
+			box-shadow: -1px 0 0 0 @font-color-primary;
+		}
+
+		.ant-radio-button-wrapper:hover {
+			color: @font-color-primary;
+		}
+
+		.ant-radio-group-solid {
+			.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+				background: @font-color-primary;
+				border-color: @font-color-primary;
+			}
+		}
+	}
+}

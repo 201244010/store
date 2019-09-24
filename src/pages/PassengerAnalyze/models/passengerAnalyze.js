@@ -18,7 +18,7 @@ export default {
 			startTime: moment().format('YYYY-MM-DD'),
 			endTime: moment().format('YYYY-MM-DD'),
 			type: RANGE_VALUE.TODAY,
-			gourpBy: GROUP_RANGE.HOUR,
+			groupBy: GROUP_RANGE.HOUR,
 		},
 		passengerFlowCount: {
 			totalCount: 0,
@@ -58,6 +58,15 @@ export default {
 					},
 				},
 			});
+		},
+
+		*refreshPage(_, { put }) {
+			yield all([
+				put({ type: 'getPassengerFlowHistory' }),
+				put({ type: 'getPassengerFlowHistoryTrend' }),
+				put({ type: 'getPassengerFlowAgeByGender' }),
+				put({ type: 'getPassengerFlowHistoryWithAgeAndGender' }),
+			]);
 		},
 
 		*getPassengerFlowHistory(_, { select, put, call }) {
