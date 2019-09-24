@@ -8,10 +8,17 @@ export default {
 		total: 0,
 		tradeVideos:[],
 		paymentDeviceList:[],
+		posList:[]
 		// paymentDetailList:[],
 		// ipcList:[]
 	},
 	reducers: {
+		readPostList(state, { payload }) {
+			return {
+				...state,
+				...payload
+			};
+		},
 		readData(state, action){
 			const { payload: { list, total} } = action;
 			// console.log(payload);
@@ -102,13 +109,23 @@ export default {
 			}
 			return {};
 		},
-		*getPOSList({ payload: { startTime, endTime } }, { call }) {
-			const response = yield call(getPOSList, { startTime, endTime });
-			if(response.code === ERROR_OK){
-				const posList = response.data;
-				return posList;
+		*getPOSList({ payload: { startTime, endTime } }, { select, call, put }) {
+			let posList = yield select((state) => state.tradeVideos.posList);
+			if(posList.length === 0){
+				const response = yield call(getPOSList, { startTime, endTime });
+				if(response.code === ERROR_OK){
+					posList = response.data;
+					yield put({
+						type: 'readPostList',
+						payload: {
+							posList
+						}
+					});
+					return posList;
+				}
 			}
-			return [];
+			
+			return posList;
 		},
 		*getPaymentDeviceList({ payload: { ipcId, startTime, endTime } },{ put }){
 			const posList = yield put.resolve({

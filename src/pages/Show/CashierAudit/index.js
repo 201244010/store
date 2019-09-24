@@ -9,6 +9,8 @@ import styles from './CashierAudit.less';
 
 const TIMER = 60000;
 const DAY = 30;
+const PAGE_SIZE = 10;
+const PAGE_NUM = 1;
 
 /**
  * unit
@@ -19,12 +21,14 @@ const DAY = 30;
 
 @connect(null,
 	dispatch => ({
-		getTradeList({ startTime, endTime }) {
+		getTradeList({ startTime, endTime, currentPage, pageSize }) {
 			return dispatch({
 				type: 'tradeVideos/read',
 				payload: {
 					startTime,
-					endTime
+					endTime,
+					currentPage,
+					pageSize
 				}
 			});
 		},
@@ -87,7 +91,7 @@ class CashierAudit extends React.Component {
 		const endTime = moment().unix();
 		const startTime = moment().subtract(DAY, 'days').unix();
 		const { getTradeList } = this.props;
-		const { list = [] } = await getTradeList({startTime, endTime});
+		const { list = [] } = await getTradeList({startTime, endTime, currentPage:PAGE_NUM, pageSize:PAGE_SIZE});
 		let tradeList = [];
 
 		if(list.length >= 6){
