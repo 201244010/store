@@ -167,17 +167,19 @@ class Live extends React.Component{
 			liveTimestamp: 0,
 			sdStatus: true
 		};
+
+		this.refreshTimer = 0;
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList, readLibraryType, loadList } = this.props;
+		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, readLibraryType, loadList } = this.props;
 
 		readLibraryType();
 		const {sn} = query;
 		let sdStatus = true;
 		if (sn) {
 			// test();
-			clearList({ sn });
+			// clearList({ sn });
 			getAgeRangeList();
 			await loadList();
 			const deviceInfo = await getDeviceInfo({ sn });
@@ -198,6 +200,8 @@ class Live extends React.Component{
 
 			// setTimeout(test, 1000);
 		}
+
+		this.reloadPage();
 	}
 
 	componentWillUnmount () {
@@ -285,6 +289,24 @@ class Live extends React.Component{
 			ppi,
 			sn
 		});
+	}
+
+	// 定时刷新页面
+	reloadPage = () => {
+		console.log('reloadPage');
+		clearTimeout(this.refreshTimer);
+		this.refreshTimer = setTimeout(async () => {
+			const { faceidList } = this.props;
+
+			console.log('reloadPage faceidList=', faceidList);
+			console.log('reloadPage faceidList.slice(0, 7)=', faceidList.slice(0, 7));
+			localStorage.setItem('flowFace7', JSON.stringify(faceidList.slice(0, 7)));
+
+			// 先发stop，停止推流；（防止到达分流上限）
+			await this.stopLive();
+
+			window.location.reload();
+		}, 30 * 60 * 1000);
 	}
 
 	render() {
