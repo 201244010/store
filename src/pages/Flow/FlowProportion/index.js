@@ -45,7 +45,7 @@ class FlowProportion extends React.PureComponent {
 			strangerCount += item.strangerCount;
 			regularCount += item.regularCount;
 		});
-		
+
 		const data = [
 			{
 				type: 'strangerCount',
@@ -61,7 +61,15 @@ class FlowProportion extends React.PureComponent {
 		if (list.length > 0) {
 			const { libraryId } = list[0];
 			const lightList = libraryList.filter(item => item.id === libraryId);
-			switch (lightList[0].type) {
+
+			console.log('lightList=', lightList);
+
+			let type = '';
+			if (lightList.length > 0) {
+				type = lightList[0].type;
+			}
+
+			switch (type) {
 				case 1:
 					lightType = data[0].type;
 					break;
