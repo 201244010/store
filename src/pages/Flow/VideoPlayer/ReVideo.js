@@ -89,7 +89,8 @@ class ReVideojs extends React.Component{
 
 				player.tech_.on('error', (e, data) => {
 					console.log('error: ', e, data);
-					player.load();
+					// player.load();
+					onError(player);
 				});
 
 				player.tech_.on('other_error', (e, data) => {
@@ -109,7 +110,8 @@ class ReVideojs extends React.Component{
 
 				player.tech_.on('network_unrecoverable_early_eof', (e, data) => {
 					console.log('NETWORK_UNRECOVERABLE_EARLY_EOF: ', e, data);
-					player.load();
+					// player.load();
+					onError(player);
 				});
 
 			};

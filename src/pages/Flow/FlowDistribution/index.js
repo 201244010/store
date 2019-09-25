@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Chart, Facet, View, Geom, Axis } from 'bizcharts';
-import { formatMessage } from 'umi/locale';
-import { LABEL, COLORS, GENDERS } from './distribution';
+import { formatMessage, getLocale } from 'umi/locale';
+import { getLabel, COLORS, GENDERS } from './distribution';
 
 // import DataSet from '@antv/data-set';
 import styles from './index.less';
@@ -22,10 +22,7 @@ class FlowDistribution extends React.PureComponent {
 		super(props);
 		this.cols = {
 			visitor: {
-				ticks: [0, 500],
-			},
-			max: {
-				ticks: [0, 1000],
+				ticks: [0, 50],
 			},
 		};
 		this.age = 0;
@@ -51,6 +48,8 @@ class FlowDistribution extends React.PureComponent {
 			flowFaceid: { list = [] } = {},
 		} = this.props;
 
+		const currentLanguage = getLocale();
+
 		let lightItem = [];
 		if (list.length > 0) {
 			const { ageRangeCode = 0, gender = '0'} = list[0];
@@ -70,16 +69,27 @@ class FlowDistribution extends React.PureComponent {
 					age: `${ageRangeMap[item.ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`,
 					visitor: item.maleCount,
 					gender: 'male',
-					max: 1000,
+					max: 1,
 				},
 				{
 					age: `${ageRangeMap[item.ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`,
 					visitor: item.femaleCount,
 					gender: 'female',
-					max: 1000,
+					max: 1,
 				}
 			);
 		});
+
+		let maxTicks = 0;
+		data.map(item => {
+			maxTicks = item.visitor > maxTicks ? item.visitor : maxTicks; 
+		});
+
+		this.cols = {
+			visitor: {
+				ticks: [0, maxTicks + 20],
+			},
+		};
 
 		const personTotal = (male + female) === 0 ? 1 : (male + female);
 		const malePercent = (male * 100/ personTotal).toFixed(1);
@@ -108,7 +118,7 @@ class FlowDistribution extends React.PureComponent {
 					scale={this.cols}
 					padding={[-50, -53, -50, -53]}
 				>
-					<Axis name="age" visible line={null} tickLine={null} label={LABEL} />
+					<Axis name="age" visible line={null} tickLine={null} label={getLabel(currentLanguage)} />
 					<Axis name="visitor" visible={false} />
 					<Axis name="max" visible={false} />
 					<Facet
@@ -171,8 +181,8 @@ class FlowDistribution extends React.PureComponent {
 					{
 						guideData.map(item => (
 							<div className={styles['footer-item']} key={item.title}>
+								<p className={styles['item-content']}><span>{item.percent}%</span><span className={styles['item-num']}>{`${item.num}${formatMessage({ id: 'flow.distribution.footer.unit' })}`}</span></p>
 								<p className={styles['item-title']}>{item.title}</p>
-								<p className={styles['item-content']}><span>{item.percent}%</span><span className={styles['item-num']}>{item.num}</span></p>
 							</div>
 						))
 					}
