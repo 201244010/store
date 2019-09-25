@@ -22,7 +22,7 @@ class PassengerData extends PureComponent {
 					<div className={styles['passenger-bar']}>
 						<SalseInfo
 							{...{
-								icon: <img src={require('@/assets/icon/totalAmount.png')} />,
+								icon: <img src={require('@/assets/icon/passenger.png')} />,
 								title: formatMessage({ id: 'passengerAnalyze.comein' }),
 								loading: false,
 								content: totalCount,
@@ -30,7 +30,7 @@ class PassengerData extends PureComponent {
 						/>
 						<SalseInfo
 							{...{
-								icon: <img src={require('@/assets/icon/totalAmount.png')} />,
+								icon: <img src={require('@/assets/icon/stranger.png')} />,
 								title: formatMessage({ id: 'passengerAnalyze.stranger' }),
 								loading: false,
 								content: strangerCount,
@@ -38,7 +38,7 @@ class PassengerData extends PureComponent {
 						/>
 						<SalseInfo
 							{...{
-								icon: <img src={require('@/assets/icon/totalAmount.png')} />,
+								icon: <img src={require('@/assets/icon/regular.png')} />,
 								title: formatMessage({ id: 'passengerAnalyze.regular' }),
 								loading: false,
 								content: regularCount,
@@ -46,7 +46,7 @@ class PassengerData extends PureComponent {
 						/>
 						<SalseInfo
 							{...{
-								icon: <img src={require('@/assets/icon/totalAmount.png')} />,
+								icon: <img src={require('@/assets/icon/member.png')} />,
 								title: formatMessage({ id: 'passengerAnalyze.member' }),
 								loading: false,
 								content: memberCount,
