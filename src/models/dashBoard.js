@@ -564,13 +564,16 @@ export default {
 
 				const formattedList = countList.map(item => {
 					const { orderCount = 0, passengerFlowCount = 0, time } = item;
+					let passengerFlowRate = 0;
+					if (passengerFlowCount > 0) {
+						const rate = parseInt((orderCount / passengerFlowCount) * 100, 10);
+						passengerFlowRate = rate > 100 ? 100 : rate;
+					}
+
 					return {
 						...item,
 						time: formatTime(time, rangeType, timeRangeStart, timeRangeEnd),
-						passengerFlowRate:
-							passengerFlowCount === 0
-								? 0
-								: parseInt((orderCount / passengerFlowCount) * 100, 10),
+						passengerFlowRate,
 					};
 				});
 
