@@ -19,7 +19,7 @@ export const getPassengerFlowHistory = options => {
 		body: { ...format('toSnake')(options) },
 	};
 
-	return fetchApi('statistic/history/getList', opts)
+	return fetchApi('statistic/getHistory', opts)
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
 };
@@ -29,7 +29,7 @@ export const getPassengerFlowHistoryTrend = options => {
 		body: { ...format('toSnake')(options) },
 	};
 
-	return fetchApi('statistic/history/getListByTimeRange', opts)
+	return fetchApi('statistic/history/getList', opts)
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
 };
@@ -39,7 +39,7 @@ export const getPassengerFlowAgeByGender = options => {
 		body: { ...format('toSnake')(options) },
 	};
 
-	return fetchApi('statistic/age/getListByGender', opts)
+	return fetchApi('statistic/age/getHistroyByGender', opts)
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
 };

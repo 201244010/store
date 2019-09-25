@@ -17,8 +17,8 @@ import styles from './passengerAnalyze.less';
 class PassengerAnalyze extends PureComponent {
 	componentDidMount() {
 		// TODO 云端接口好之后恢复
-		// const { refreshPage } = this.props;
-		// refreshPage();
+		const { refreshPage } = this.props;
+		refreshPage();
 	}
 
 	componentWillUnmount() {

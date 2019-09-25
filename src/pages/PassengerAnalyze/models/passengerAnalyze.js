@@ -67,7 +67,8 @@ export default {
 				put({ type: 'getPassengerFlowHistory' }),
 				put({ type: 'getPassengerFlowHistoryTrend' }),
 				put({ type: 'getPassengerFlowAgeByGender' }),
-				put({ type: 'getPassengerFlowHistoryWithAgeAndGender' }),
+				// TODO Sprint 10 不做，之后做了再完善接口
+				// put({ type: 'getPassengerFlowHistoryWithAgeAndGender' }),
 			]);
 		},
 
