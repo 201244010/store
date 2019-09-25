@@ -702,29 +702,6 @@ export default class RightToolBox extends Component {
 						<Row style={{ marginBottom: 10 }}>
 							<Col span={4}>
 								<span className={styles.title}>
-									{formatMessage({ id: 'studio.tool.label.font.size' })}
-								</span>
-							</Col>
-							<Col span={20}>
-								<Select
-									style={{ width: '100%' }}
-									placeholder={formatMessage({
-										id: 'studio.tool.label.font.size',
-									})}
-									value={detail.fontSize}
-									onChange={value => {
-										this.handleDetail('fontSize', value);
-									}}
-								>
-									{
-										fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-									}
-								</Select>
-							</Col>
-						</Row>
-						<Row style={{ marginBottom: 10 }}>
-							<Col span={4}>
-								<span className={styles.title}>
 									{formatMessage({ id: 'studio.tool.label.line.spacing' })}
 								</span>
 							</Col>
@@ -959,20 +936,17 @@ export default class RightToolBox extends Component {
 												</span>
 											</Col>
 											<Col span={24}>
-												<Select
+												<AutoComplete
 													style={{ width: '100%' }}
+													dataSource={fontSizes.map(size => size.key.toString())}
 													placeholder={formatMessage({
 														id: 'studio.tool.label.font.size',
 													})}
-													value={detail.fontSize}
+													value={detail.fontSize.toString()}
 													onChange={value => {
 														this.handleDetail('fontSize', value);
 													}}
-												>
-													{
-														fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-													}
-												</Select>
+												/>
 											</Col>
 										</Row>
 									</Col>
@@ -986,22 +960,17 @@ export default class RightToolBox extends Component {
 												</span>
 											</Col>
 											<Col span={24}>
-												<Select
+												<AutoComplete
 													style={{ width: '100%' }}
+													dataSource={fontSizes.filter(size => size.value < detail.fontSize).map(size => size.key.toString())}
 													placeholder={formatMessage({
-														id: 'studio.tool.label.font.size.small',
+														id: 'studio.tool.label.font.size',
 													})}
-													value={detail.smallFontSize}
+													value={detail.fontSize.toString()}
 													onChange={value => {
 														this.handleDetail('smallFontSize', value);
 													}}
-												>
-													{
-														fontSizes
-															.filter(size => size.value < detail.fontSize)
-															.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-													}
-												</Select>
+												/>
 											</Col>
 										</Row>
 									</Col>
@@ -1014,20 +983,17 @@ export default class RightToolBox extends Component {
 										</span>
 									</Col>
 									<Col span={20}>
-										<Select
+										<AutoComplete
 											style={{ width: '100%' }}
+											dataSource={fontSizes.map(size => size.key.toString())}
 											placeholder={formatMessage({
 												id: 'studio.tool.label.font.size',
 											})}
-											value={detail.fontSize}
+											value={detail.fontSize.toString()}
 											onChange={value => {
 												this.handleDetail('fontSize', value);
 											}}
-										>
-											{
-												fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-											}
-										</Select>
+										/>
 									</Col>
 								</Fragment>
 							)}
