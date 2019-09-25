@@ -167,17 +167,19 @@ class Live extends React.Component{
 			liveTimestamp: 0,
 			sdStatus: true
 		};
+
+		this.refreshTimer = 0;
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList, readLibraryType, loadList } = this.props;
+		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, readLibraryType, loadList } = this.props;
 
 		readLibraryType();
 		const {sn} = query;
 		let sdStatus = true;
 		if (sn) {
 			// test();
-			clearList({ sn });
+			// clearList({ sn });
 			getAgeRangeList();
 			await loadList();
 			const deviceInfo = await getDeviceInfo({ sn });
@@ -186,7 +188,7 @@ class Live extends React.Component{
 			if(hasFaceid){
 				const status = await getSdStatus({ sn });
 				if(status === 0) {
-					message.info(formatMessage({ id: 'live.nosdInfo' }));
+					message.info(formatMessage({ id: 'flow.nosdInfo' }));
 					sdStatus = false;
 				}
 			}
@@ -198,6 +200,8 @@ class Live extends React.Component{
 
 			// setTimeout(test, 1000);
 		}
+
+		this.reloadPage();
 	}
 
 	componentWillUnmount () {
@@ -287,6 +291,24 @@ class Live extends React.Component{
 		});
 	}
 
+	// 定时刷新页面
+	reloadPage = () => {
+		console.log('reloadPage');
+		clearTimeout(this.refreshTimer);
+		this.refreshTimer = setTimeout(async () => {
+			const { faceidList } = this.props;
+
+			console.log('reloadPage faceidList=', faceidList);
+			console.log('reloadPage faceidList.slice(0, 7)=', faceidList.slice(0, 7));
+			localStorage.setItem('flowFace7', JSON.stringify(faceidList.slice(0, 7)));
+
+			// 先发stop，停止推流；（防止到达分流上限）
+			await this.stopLive();
+
+			window.location.reload();
+		}, 30 * 60 * 1000);
+	}
+
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, libraryList } = this.props;
 
@@ -296,9 +318,9 @@ class Live extends React.Component{
 		});
 		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
 		const genders = {
-			0: formatMessage({ id: 'live.genders.unknown' }),
-			1: formatMessage({ id: 'live.genders.male'}),
-			2: formatMessage({ id: 'live.genders.female'})
+			0: formatMessage({ id: 'flow.genders.unknown' }),
+			1: formatMessage({ id: 'flow.genders.male'}),
+			2: formatMessage({ id: 'flow.genders.female'})
 		};
 
 		return(
@@ -362,7 +384,7 @@ class Live extends React.Component{
 														className={styles.infos}
 													>
 														<p className={styles['infos-age']}>
-															{ `${ genders[item.gender] } ${ item.age }${formatMessage({id: 'live.age.unit'})}` }
+															{ `${ genders[item.gender] } ${ item.age }${formatMessage({id: 'flow.age.unit'})}` }
 														</p>
 														<p className={styles['infos-time']}>
 															{/* <span>{formatMessage({id: 'live.last.arrival.time'})}</span> */}

@@ -17,10 +17,9 @@
 	justify-content: center;
 	align-items: center;
 	text-align: left;
-	.content {
+	.content-cn, .content-en {
 		width: 650px;
 		height: 186px;
-		padding: 48px 0 0 96px;
 		border-radius: 14px;
 		background-image: linear-gradient(148deg, #47588B 0%, #354268 100%);
 		position: relative;
@@ -28,16 +27,23 @@
 		justify-content: space-between;
 		align-items: flex-start;
 		color: #FFFFFF;
-		.line {
+		.line-cn, .line-en {
 			width: 2px;
 			height: 32px;
 			opacity: 0.5;
 			background: #7A87BD;
 			border-radius: 1px;
 			position: absolute;
+		}
+		.line-cn {
 			top: 80px;
 			left: 399px;
 		}
+		.line-en {
+			top: 80px;
+			left: 346px;
+		}
+
 		.today {
 			.today-title {
 				font-family: PingFangSC-Semibold, sans-serif;
@@ -52,7 +58,6 @@
 			}
 		}
 		.yesterday {
-			width: 192px;
 			.yesterday-title {
 				font-family: PingFangSC-Light, sans-serif;
 				font-size: 16px;
@@ -64,6 +69,18 @@
 				font-size: 40px;
 				line-height: 22px;
 			}
+		}
+	}
+	.content-cn {
+		padding: 48px 0 0 96px;
+		.yesterday {
+			width: 192px;
+		}
+	}
+	.content-en {
+		padding: 48px 0 0 48px;
+		.yesterday {
+			width: 250px;
 		}
 	}
 }
