@@ -26,9 +26,10 @@ class LivePlayer extends React.Component{
 		this.playLive();
 	}
 
-	componentDidUpdate (oldProps) {
+	componentDidUpdate = async(oldProps) => {
 		const { url } = this.props;
 		if (oldProps.url !== url) {
+			await this.pauseLive();
 			this.playLive();
 		}
 	}
