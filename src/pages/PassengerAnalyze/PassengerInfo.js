@@ -13,7 +13,7 @@ const PassengerAgeItemActive = () => (
 		<div className={styles['age-content']}>
 			<div className={styles.title}>男 25~36</div>
 			<div className={styles['progress-wrapper']}>
-				<Progress percent={30} />
+				<Progress percent={30} strokeWidth={15} />
 			</div>
 		</div>
 	</div>
@@ -23,7 +23,7 @@ const PassengerAgeItem = () => (
 	<div className={styles['age-item']}>
 		<div className={styles.title}>男 25~36</div>
 		<div className={styles['progress-wrapper']}>
-			<Progress percent={30} />
+			<Progress percent={30} strokeWidth={10} />
 		</div>
 	</div>
 );

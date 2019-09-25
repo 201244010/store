@@ -135,7 +135,12 @@ export const customizeFetch = (service = 'api', base) => {
 			};
 		}
 
-		const url = `${HTTP_PREFIX}//${baseUrl}/${service}/${api}`;
+		let url = `${HTTP_PREFIX}//${baseUrl}/${service}/${api}`;
+
+		// TODO 因为 SSO 那边 https 证书的问题，因此对 SSO 的接口临时改成相对协议
+		if (baseUrl === 'api.test.sunmi.com') {
+			url = `//${baseUrl}/${service}/${api}`;
+		}
 		// const response = await fetch(url, opts);
 		const response = await fetchHandler(url, opts);
 		// console.log(response);
