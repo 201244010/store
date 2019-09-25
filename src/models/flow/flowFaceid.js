@@ -2,11 +2,21 @@ import { formatMessage } from 'umi/locale';
 import { getRange, readLibrary } from '@/pages/Flow/IPC/services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
+console.log('localStorage.getItem(flowFace7)=', localStorage.getItem('flowFace7'));
+
+const flowFace7str = localStorage.getItem('flowFace7');
+let flowFace7List = [];
+if (flowFace7str) {
+	flowFace7List = JSON.parse(flowFace7str);
+}
+
+console.log('flowFace7List=', flowFace7List);
+
 export default {
 	namespace: 'flowFaceid',
 	state: {
 		rectangles: [],
-		list: [],
+		list: flowFace7List || [],
 		ageRangeList: [],
 		deviceSn: '',
 		libraryList: [],
