@@ -339,14 +339,15 @@ class LivePlayer extends React.Component{
 		}
 	}
 
-	onError = () => {
+	onError = async() => {
 		console.log('liveplayer error handler');
 
 		// 当前为直播
 		const { isLive } = this.state;
 		if (isLive && !this.currentSrc) {
 			console.log('执行playLive');
-			this.playLive();
+			await this.pauseLive();
+			await this.playLive();
 		} else {
 			this.src(this.currentSrc);
 			this.timeoutReplay();
