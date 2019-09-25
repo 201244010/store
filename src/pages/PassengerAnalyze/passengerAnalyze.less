@@ -72,3 +72,56 @@
 .passenger-info-wrapper {
 	margin-top: 30px;
 }
+
+.passenger-chart-wrapper {
+	position: relative;
+
+	.chart-header {
+		position: absolute;
+	}
+}
+
+.passenger-info-content {
+	display: flex;
+
+	.agebar-wrapper {
+		width: 50%;
+	}
+
+	.age-item {
+		display: flex;
+
+		.title {
+			min-width: 100px;
+		}
+
+		.progress-wrapper {
+			width: 100%;
+		}
+	}
+
+	.age-item-active {
+		align-items: center;
+
+		.age-icon {
+			min-width: 100px;
+		}
+
+		.age-content {
+			width: 100%;
+		}
+	}
+}
+
+.detail-wrapper {
+	width: 100%;
+	margin-left: 50px;
+	box-sizing: border-box;
+	display: flex;
+	flex-wrap: wrap;
+	.detail-info {
+		width: 25%;
+		min-height: 100px;
+		box-sizing: border-box;
+	}
+}

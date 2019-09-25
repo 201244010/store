@@ -27,8 +27,8 @@ export const WEB_SOCKET_PREFIX = {
 };
 
 const SSO_ADDRESS = {
-	dev: 'test.api.sunmi.com',
-	test: 'test.api.sunmi.com',
+	dev: 'api.test.sunmi.com',
+	test: 'api.test.sunmi.com',
 	uat: 'uat.api.sunmi.com',
 	onl: 'api.sunmi.com',
 	local: '127.0.0.1:30001',

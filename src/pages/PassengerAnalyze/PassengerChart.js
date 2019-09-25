@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-// import { formatMessage } from 'umi/locale';
+import { formatMessage } from 'umi/locale';
 import { Card } from 'antd';
 import LinePoint from '@/components/Charts/LinePoint';
 
@@ -138,11 +138,22 @@ class PassengerChart extends PureComponent {
 		return (
 			<div className={styles['passenger-chart-wrapper']}>
 				<Card bordered={false}>
+					<h4 className={styles['chart-header']}>
+						{formatMessage({ id: 'passengerAnalyze.trend' })}
+					</h4>
 					<LinePoint
 						{...{
 							data: mockData,
-							line: { position: 'month*temperature', color: 'city' },
-							point: { position: 'month*temperature', color: 'city' },
+							height: 300,
+							line: {
+								position: 'month*temperature',
+								color: ['city', ['#ff0000', '#00ff00']],
+								shape: '',
+							},
+							point: {
+								position: 'month*temperature',
+								color: ['city', ['#ff0000', '#00ff00']],
+							},
 						}}
 					/>
 				</Card>

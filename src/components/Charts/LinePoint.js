@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Chart, Geom, Axis, Tooltip } from 'bizcharts';
+import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 
 class LinePoint extends PureComponent {
 	render() {
@@ -8,7 +8,7 @@ class LinePoint extends PureComponent {
 			data = [],
 			forceFit = true,
 			scale = {},
-			padding = ['15%', '10%'],
+			padding = 'auto',
 			axis: {
 				x: { name: xName = null, label: xLabel = {} } = {},
 				y: { name: yName = null, label: yLabel = {} } = {},
@@ -32,9 +32,9 @@ class LinePoint extends PureComponent {
 			} = {},
 		} = this.props;
 
-
 		return (
 			<Chart height={height} data={data} forceFit={forceFit} scale={scale} padding={padding}>
+				<Legend position="top-right" />
 				<Axis name={xName} label={xLabel} />
 				<Axis name={yName} label={yLabel} />
 				<Tooltip
