@@ -20,6 +20,8 @@ class LivePlayer extends React.Component{
 		this.relativeTimestamp = 0;
 		this.replayTimeout = 0;
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
+
+		this.isPlaying = false; // video是否正在播放
 	}
 
 	componentDidMount () {
@@ -121,7 +123,7 @@ class LivePlayer extends React.Component{
 
 				if (url) {
 					this.src(url);
-					this.timeoutReplay();
+					// this.timeoutReplay();
 				}else{
 					console.log('回放未获取到url，当前时间戳为：', timestamp);
 				}
@@ -291,6 +293,7 @@ class LivePlayer extends React.Component{
 	}
 
 	onTimeUpdate = (timestamp) => {
+		console.log('onTimeUpdate this.isPlaying=', this.isPlaying);
 		const { getCurrentTimestamp } = this.props;
 
 		if (this.toPause) {
@@ -314,10 +317,41 @@ class LivePlayer extends React.Component{
 		const { onMetadataArrived } = this.props;
 
 		const { isLive } = this.state;
+		const { videoplayer: { player } } = this;
 
 		if (isLive) {
 			if (this.relativeTimestamp === 0) {
 				this.relativeTimestamp = metadata.relativeTime;
+			}
+
+			if (metadata.baseTime !== undefined && metadata.relativeTime !== undefined) {
+				const baseTime = metadata.baseTime * 1000;
+				const { relativeTime } = metadata;
+				const videoTime = moment(baseTime + relativeTime).format('YYYY-MM-DD HH:mm:ss');
+				const now = moment();
+
+				console.log('系统时间=', now.format('YYYY-MM-DD HH:mm:ss'));
+				console.log('视频帧时间=', videoTime);
+				console.log('time gap=', now.valueOf() - (baseTime + relativeTime));
+			}
+
+			// const { player } = this.videoplayer;
+
+			// 仅flvjs播放器能使用此方式矫正播放进度
+			if (player.techName_ === 'Flvjs' && player.buffered &&  player.buffered().length > 0) {
+				const index = player.buffered().length -1;
+				const curTime = player.currentTime();
+				const endTime = player.buffered().end(index);
+
+				console.log('before curTime=', curTime);
+				console.log('endTime=', endTime);
+
+				// 离缓存间隔太小，会导致loading
+				if (endTime - 2 > curTime) {
+					console.log('endTime-curTime=', endTime - curTime);
+					player.currentTime(endTime - 2);
+					console.log('after player.currentTime()=', player.currentTime());
+				}
 			}
 
 			onMetadataArrived(metadata.relativeTime);
@@ -338,21 +372,27 @@ class LivePlayer extends React.Component{
 			console.log('非人为暂停!');
 			this.play();
 		}
+		this.isPlaying = false;
 	}
 
 	onError = async() => {
 		console.log('liveplayer error handler');
+		this.isPlaying = false;
 
 		// 当前为直播
 		const { isLive } = this.state;
-		if (isLive && !this.currentSrc) {
-			console.log('执行playLive');
-			await this.pauseLive();
-			await this.playLive();
-		} else {
-			this.src(this.currentSrc);
+		if (isLive) {
 			this.timeoutReplay();
 		}
+	}
+
+	onEnd = () => {
+		this.isPlaying = false;
+	}
+
+	onPlay = () => {
+		console.log('LivePlayer onPlay');
+		this.isPlaying = true;
 	}
 
 	// 超时重新播放
@@ -362,14 +402,20 @@ class LivePlayer extends React.Component{
 		// 2秒后检查是否为play状态
 		// 为playing，则清除定时器；
 		// 不为playing，则重新赋值url，并执行2*time检查逻辑；
-		const { videoplayer } = this;
 		const replay = (time) => {
 			clearTimeout(this.replayTimeout);
-			this.replayTimeout = setTimeout(() => {
-				if (videoplayer.paused()) {
-					this.src(this.currentSrc);
-					replay(time*2);
-				} else {
+			this.replayTimeout = setTimeout(async() => {
+				const { isLive } = this.state;
+				const { videoplayer } = this;
+
+				console.log('isLive=', isLive);
+				console.log('this.isPlaying=', this.isPlaying);
+				console.log('videoplayer.paused()=', videoplayer.paused());
+				if (!this.isPlaying) { // 断网时，视频画面不动，videoplayer.paused()为false
+					await this.pauseLive();
+					await this.playLive();
+					replay(5);
+				} else if (this.isPlaying) {
 					clearTimeout(this.replayTimeout);
 				}
 
@@ -407,7 +453,10 @@ class LivePlayer extends React.Component{
 				onTimeUpdate={this.onTimeUpdate}
 				onPause={this.onPause}
 				onError={this.onError}
+				onEnd={this.onEnd}
 				onMetadataArrived={this.onMetadataArrived}
+
+				onPlay={this.onPlay}
 
 				progressbar={
 					<Timebar
