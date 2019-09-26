@@ -12,7 +12,7 @@ import styles from './passengerAnalyze.less';
 }))
 class PassengerChart extends PureComponent {
 	render() {
-		const { passengerFlowTrendList } = this.props;
+		const { passengerFlowTrendList, loading } = this.props;
 		const timeTicks = passengerFlowTrendList.reduce((prev, cur) => {
 			const { time } = cur;
 			if (!prev.includes(time)) {
@@ -49,7 +49,10 @@ class PassengerChart extends PureComponent {
 
 		return (
 			<div className={styles['passenger-chart-wrapper']}>
-				<Card bordered={false}>
+				<Card
+					bordered={false}
+					loading={loading.effects['passengerAnalyze/getPassengerFlowHistoryTrend']}
+				>
 					<h4 className={styles['chart-header']}>
 						{formatMessage({ id: 'passengerAnalyze.trend' })}
 					</h4>

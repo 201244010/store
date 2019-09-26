@@ -13,12 +13,14 @@ class PassengerData extends PureComponent {
 	render() {
 		const {
 			passengerFlowCount: { totalCount, regularCount, strangerCount, memberCount },
-			// loading,
+			loading,
 		} = this.props;
 
+		const onLoading = loading.effects['passengerAnalyze/getPassengerFlowHistory'];
+
 		return (
-			<div className={styles['passenger-bar-wrapper']}>
-				<Card bordered={false}>
+			<div className={onLoading ? '' : styles['passenger-bar-wrapper']}>
+				<Card bordered={false} loading={onLoading}>
 					<div className={styles['passenger-bar']}>
 						<SalseInfo
 							{...{
