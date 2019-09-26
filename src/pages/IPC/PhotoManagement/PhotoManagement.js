@@ -143,7 +143,6 @@ class PhotoManagement extends React.Component {
 				age: 10,
 				gender: -1,
 			},
-			visible: false
 
 		};
 	}
@@ -166,18 +165,7 @@ class PhotoManagement extends React.Component {
 		getRange();
 		this.checkMQTTClient();
 	}
-
-	componentWillReceiveProps = (nextProps) => {
-		const { photoLibrary: { isSignAgreement } } = this.props;
-		const { photoLibrary: { isSignAgreement: nextIsSignAgreement } } = nextProps;
-		if(nextIsSignAgreement !== isSignAgreement){
-			this.setState({
-				visible: !nextIsSignAgreement
-			});
-		}
-
-	}
-
+	
 	componentWillUnmount() {
 		const { clearPhotoList, clearFileList, unsubscribeTopic } = this.props;
 		clearPhotoList();
@@ -551,8 +539,9 @@ class PhotoManagement extends React.Component {
 			fileError,
 			saveBtnDisabled,
 			filter: { gender, name, age, pageNum, pageSize },
-			visible
 		} = this.state;
+
+		const { photoLibrary: { isSignAgreement } } = this.props;
 
 		const {
 			photoLibrary: { photoList, faceList, total, checkList, ageRange },
@@ -796,7 +785,7 @@ class PhotoManagement extends React.Component {
 						/>
 					))}
 				</Modal>
-				{visible && <AgreementModal visible path='faceidLibrary' refreshHandler={this.getList} />}
+				{!isSignAgreement && <AgreementModal visible path='faceidLibrary' refreshHandler={this.getList} />}
 			</Card>
 		);
 	}
