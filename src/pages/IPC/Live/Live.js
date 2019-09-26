@@ -213,7 +213,6 @@ class Live extends React.Component{
 	componentWillUnmount () {
 		const { stopHistoryPlay } = this.props;
 		const sn = this.getSN();
-
 		if (sn) {
 			stopHistoryPlay({
 				sn

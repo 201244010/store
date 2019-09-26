@@ -21,6 +21,7 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import PhotoCard from './PhotoCard';
 import PhotoUpload from './PhotoUpload';
+import AgreementModal from '../AgreementModal';
 // import { handleResponse, handleUpload } from '../services/photoLibrary';
 import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
 import styles from './PhotoManagement.less';
@@ -142,6 +143,8 @@ class PhotoManagement extends React.Component {
 				age: 10,
 				gender: -1,
 			},
+			visible: false
+
 		};
 	}
 
@@ -162,6 +165,17 @@ class PhotoManagement extends React.Component {
 		getLibrary();
 		getRange();
 		this.checkMQTTClient();
+	}
+
+	componentWillReceiveProps = (nextProps) => {
+		const { photoLibrary: { isSignAgreement } } = this.props;
+		const { photoLibrary: { isSignAgreement: nextIsSignAgreement } } = nextProps;
+		if(nextIsSignAgreement !== isSignAgreement){
+			this.setState({
+				visible: !nextIsSignAgreement
+			});
+		}
+
 	}
 
 	componentWillUnmount() {
@@ -523,7 +537,7 @@ class PhotoManagement extends React.Component {
 
 	render() {
 		const {
-			form: { getFieldDecorator },
+			form: { getFieldDecorator }, 
 		} = this.props;
 		const {
 			removeRadioValue,
@@ -537,6 +551,7 @@ class PhotoManagement extends React.Component {
 			fileError,
 			saveBtnDisabled,
 			filter: { gender, name, age, pageNum, pageSize },
+			visible
 		} = this.state;
 
 		const {
@@ -781,6 +796,7 @@ class PhotoManagement extends React.Component {
 						/>
 					))}
 				</Modal>
+				{visible && <AgreementModal visible path='faceidLibrary' refreshHandler={this.getList} />}
 			</Card>
 		);
 	}
