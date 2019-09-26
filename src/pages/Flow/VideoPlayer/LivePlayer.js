@@ -293,6 +293,7 @@ class LivePlayer extends React.Component{
 	}
 
 	onTimeUpdate = (timestamp) => {
+		console.log('onTimeUpdate this.isPlaying=', this.isPlaying);
 		const { getCurrentTimestamp } = this.props;
 
 		if (this.toPause) {
@@ -371,6 +372,7 @@ class LivePlayer extends React.Component{
 			console.log('非人为暂停!');
 			this.play();
 		}
+		this.isPlaying = false;
 	}
 
 	onError = async() => {
@@ -382,6 +384,10 @@ class LivePlayer extends React.Component{
 		if (isLive) {
 			this.timeoutReplay();
 		}
+	}
+
+	onEnd = () => {
+		this.isPlaying = false;
 	}
 
 	onPlay = () => {
@@ -419,11 +425,6 @@ class LivePlayer extends React.Component{
 		replay(2);
 	}
 
-	markPlaying2false = () => {
-		console.log('markPlaying2false');
-		this.isPlaying = false;
-	}
-
 	render () {
 		const { timeSlots, plugin } = this.props;
 		const { currentTimestamp, isLive, playBtnDisabled } = this.state;
@@ -452,9 +453,9 @@ class LivePlayer extends React.Component{
 				onTimeUpdate={this.onTimeUpdate}
 				onPause={this.onPause}
 				onError={this.onError}
+				onEnd={this.onEnd}
 				onMetadataArrived={this.onMetadataArrived}
 
-				markPlaying2false={this.markPlaying2false}
 				onPlay={this.onPlay}
 
 				progressbar={
