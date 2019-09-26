@@ -123,6 +123,8 @@ class VideoPlayer extends React.Component {
 
 	pause = () => {
 		const { player } = this;
+		const { markPlaying2false } = this.props;
+		markPlaying2false();
 		if (player) {
 			player.pause();
 
@@ -162,6 +164,9 @@ class VideoPlayer extends React.Component {
 	};
 
 	onPlay = () => {
+		console.log('VideoPlayer onPlay');
+		const { onPlay } = this.props;
+		onPlay();
 		// this.setState({
 		// 	playing: true,
 		// 	canScreenShot: this.canScreenShot(),
@@ -178,16 +183,22 @@ class VideoPlayer extends React.Component {
 
 	onPause = () => {
 		console.log('org onPause');
+		const { markPlaying2false } = this.props;
+		markPlaying2false();
 	};
 
 	onEnd = () => {
 		// this.setState({
 		// 	playing: false,
 		// });
+		const { markPlaying2false } = this.props;
+		markPlaying2false();
 	};
 
 	onError = () => {
 		console.log('org onError');
+		const { markPlaying2false } = this.props;
+		markPlaying2false();
 	};
 
 	onMetadataArrived = () => {
