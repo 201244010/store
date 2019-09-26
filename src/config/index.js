@@ -1,5 +1,9 @@
 import sysEnv from './env';
 
+const {
+	location: { protocol },
+} = window;
+
 export const { env, country } = sysEnv;
 
 export const FIRST_MENU_ORDER = [
@@ -12,12 +16,14 @@ export const FIRST_MENU_ORDER = [
 	'faceidLibrary',
 ];
 
-const WEB_SOCKET_PREFIX = {
-	dev: 'ws',
-	test: 'ws',
-	uat: 'wss',
-	onl: 'wss',
-	local: 'ws',
+export const HTTP_PREFIX = {
+	'http:': 'https:',
+	'https:': 'https:',
+};
+
+export const WEB_SOCKET_PREFIX = {
+	'http:': 'ws:',
+	'https:': 'wss:',
 };
 
 const SSO_ADDRESS = {
@@ -31,7 +37,7 @@ const SSO_ADDRESS = {
 
 const API_ADDRESS = {
 	dev: 'store.dev.sunmi.com',
-	test: 'test-store.sunmi.com',
+	test: 'store.test.sunmi.com',
 	uat: 'uat-store.sunmi.com:443',
 	onl: 'store.sunmi.com:443',
 	local: '127.0.0.1:30001',
@@ -47,7 +53,7 @@ const COUNTRY_ADDRESS = {
 const IPC_ADDRESS = {
 	dev: 'store.dev.sunmi.com',
 	// test: '47.99.16.199:30401',
-	test: 'test-store.sunmi.com',
+	test: 'store.test.sunmi.com',
 };
 
 const DES_KEY = {
@@ -81,6 +87,7 @@ export default {
 	DES_IV: DES_IV[env],
 	MD5_TOKEN: MD5_TOKEN[env],
 	IPC_SERVER: IPC_ADDRESS[env],
-	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[env],
+	HTTP_PREFIX: HTTP_PREFIX[protocol] || 'http:',
+	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[protocol] || 'ws:',
 	COUNTRY_ADDRESS: COUNTRY_ADDRESS[country],
 };
