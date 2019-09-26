@@ -15,8 +15,9 @@ export const getLiveUrl = ({ clientId, sn }) => {
 			sn
 		}
 	}).then(async (response) => {
-		const { code, data: { url, stream_id: streamId, resolution } } = await response.json();
+		const { code, data } = await response.json();
 		if (code === ERROR_OK) {
+			const  { url, stream_id: streamId, resolution } = data;
 			return {
 				code: ERROR_OK,
 				data: {

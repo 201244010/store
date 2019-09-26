@@ -162,6 +162,9 @@ class VideoPlayer extends React.Component {
 	};
 
 	onPlay = () => {
+		console.log('VideoPlayer onPlay');
+		const { onPlay } = this.props;
+		onPlay();
 		// this.setState({
 		// 	playing: true,
 		// 	canScreenShot: this.canScreenShot(),
