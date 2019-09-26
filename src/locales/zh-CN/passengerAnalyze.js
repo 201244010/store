@@ -5,6 +5,7 @@ export default {
 	'passengerAnalyze.member': '进店会员数',
 	'passengerAnalyze.trend': '客流变化趋势',
 	'passengerAnalyze.analyze': '客群分析',
+	'passengerAnalyze.analyzing': '数据正在分析中，请稍候...',
 
 	'passengerAnalyze.rate.normal': '正常',
 	'passengerAnalyze.rate.heigh': '偏高',

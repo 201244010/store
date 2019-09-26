@@ -14,6 +14,7 @@ const {
 export default {
 	namespace: 'passengerAnalyze',
 	state: {
+		hasData: false,
 		searchValue: {
 			startTime: moment().format('YYYY-MM-DD'),
 			endTime: moment().format('YYYY-MM-DD'),
@@ -52,6 +53,7 @@ export default {
 			yield put({
 				type: 'updateState',
 				payload: {
+					hasData: false,
 					searchValue: {
 						startTime: moment().format('YYYY-MM-DD'),
 						endTime: moment().format('YYYY-MM-DD'),
@@ -95,6 +97,7 @@ export default {
 							strangerCount,
 							memberCount,
 						},
+						hasData: true,
 					},
 				});
 			}

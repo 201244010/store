@@ -1,5 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
+import { formatMessage } from 'umi/locale';
+import { Card } from 'antd';
+import DataEmpty from '@/components/BigIcon/DataEmpty';
 import SearchBar from './SearchBar';
 import PassengerData from './PassengerData';
 import PassengerChart from './PassengerChart';
@@ -8,7 +11,9 @@ import PassengerInfo from './PassengerInfo';
 import styles from './passengerAnalyze.less';
 
 @connect(
-	null,
+	({ passengerAnalyze }) => ({
+		hasData: passengerAnalyze.hasData,
+	}),
 	dispatch => ({
 		clearSearch: () => dispatch({ type: 'clearSearch' }),
 		refreshPage: () => dispatch({ type: 'passengerAnalyze/refreshPage' }),
@@ -32,14 +37,26 @@ class PassengerAnalyze extends PureComponent {
 	};
 
 	render() {
+		const { hasData } = this.props;
+
 		return (
 			<div className={styles['passengerAnalyze-wrapper']}>
 				<SearchBar onSearchChange={this.refreshPage} />
 
 				<div className={styles['display-content']}>
-					<PassengerData />
-					<PassengerChart />
-					<PassengerInfo />
+					{!hasData ? (
+						<>
+							<PassengerData />
+							<PassengerChart />
+							<PassengerInfo />
+						</>
+					) : (
+						<Card bordered={false}>
+							<DataEmpty
+								dataEmpty={formatMessage({ id: 'passengerAnalyze.analyzing' })}
+							/>
+						</Card>
+					)}
 				</div>
 			</div>
 		);

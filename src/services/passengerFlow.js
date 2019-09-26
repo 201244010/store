@@ -39,7 +39,7 @@ export const getPassengerFlowAgeByGender = options => {
 		body: { ...format('toSnake')(options) },
 	};
 
-	return fetchApi('statistic/age/getHistroyByGender', opts)
+	return fetchApi('statistic/age/getHistoryByGender', opts)
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
 };
