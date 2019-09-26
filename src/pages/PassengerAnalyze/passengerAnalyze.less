@@ -79,16 +79,25 @@
 	.chart-header {
 		position: absolute;
 	}
+
+	:global {
+		.g2-tooltip {
+			background-color: rgba(44, 49, 68, 0.8) !important;
+		}
+	}
 }
 
 .passenger-info-content {
 	display: flex;
 
 	.agebar-wrapper {
-		width: 50%;
+		min-width: 40%;
 	}
 
 	.age-item {
+		width: 80%;
+		padding: 10px 20px;
+		box-sizing: border-box;
 		display: flex;
 
 		.title {
@@ -101,6 +110,8 @@
 	}
 
 	.age-item-active {
+		width: 85%;
+		position: relative;
 		align-items: center;
 
 		.age-icon {
@@ -110,6 +121,26 @@
 		.age-content {
 			width: 100%;
 		}
+
+		&::after {
+			content: '';
+			width: 0;
+			position: absolute;
+			top: 0;
+			right: -92px;
+			border: 46px solid #eaf5ff;
+			border-top-color: transparent;
+			border-right-color: transparent;
+			border-bottom-color: transparent;
+		}
+	}
+
+	.male-active {
+		background: #eaf5ff;
+	}
+
+	.female-active {
+		background: #eaf5ff;
 	}
 }
 

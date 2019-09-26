@@ -14,6 +14,14 @@ class LinePoint extends PureComponent {
 				y: { name: yName = null, label: yLabel = {} } = {},
 			} = {},
 			tooltip = {},
+			legend = {},
+			legend: {
+				position: legendPosition = 'bottom',
+				offsetX = 0,
+				offsetY = 0,
+				custom = false,
+				items = [],
+			} = {},
 			line: {
 				position: linePosition = null,
 				color: lineColor = null,
@@ -34,7 +42,15 @@ class LinePoint extends PureComponent {
 
 		return (
 			<Chart height={height} data={data} forceFit={forceFit} scale={scale} padding={padding}>
-				<Legend position="top-right" />
+				{Object.keys(legend).length > 0 && (
+					<Legend
+						custom={custom}
+						position={legendPosition}
+						items={items}
+						offsetY={offsetY}
+						offsetX={offsetX}
+					/>
+				)}
 				<Axis name={xName} label={xLabel} />
 				<Axis name={yName} label={yLabel} />
 				<Tooltip

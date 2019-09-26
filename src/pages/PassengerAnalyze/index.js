@@ -44,7 +44,7 @@ class PassengerAnalyze extends PureComponent {
 				<SearchBar onSearchChange={this.refreshPage} />
 
 				<div className={styles['display-content']}>
-					{!hasData ? (
+					{hasData ? (
 						<>
 							<PassengerData />
 							<PassengerChart />

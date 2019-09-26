@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { formatMessage } from 'umi/locale';
 import * as Actions from '@/services/passengerFlow';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
@@ -100,6 +101,13 @@ export default {
 						hasData: true,
 					},
 				});
+			} else {
+				yield put({
+					type: 'updateState',
+					payload: {
+						hasData: false,
+					},
+				});
 			}
 		},
 
@@ -112,10 +120,42 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data: { countList = [] } = {} } = response || {};
 
+				const formattedList = countList.reduce((prev, cur) => {
+					const { time, totalCount = 0, regularCount = 0, strangerCount = 0 } = cur;
+
+					let _time = time;
+					if (type === RANGE_VALUE.TODAY || type === RANGE_VALUE.YESTERDAY) {
+						_time = moment(time).format('HH:mm');
+					} else {
+						_time = moment(time).format('MM/DD');
+					}
+
+					return prev.concat([
+						{
+							time: _time,
+							passengerType: 'total',
+							count: totalCount,
+							passengerTypeDisplay: formatMessage({ id: 'passenger.total' }),
+						},
+						{
+							time: _time,
+							passengerType: 'regular',
+							count: regularCount,
+							passengerTypeDisplay: formatMessage({ id: 'passenger.regular' }),
+						},
+						{
+							time: _time,
+							passengerType: 'stranger',
+							count: strangerCount,
+							passengerTypeDisplay: formatMessage({ id: 'passenger.stranger' }),
+						},
+					]);
+				}, []);
+
 				yield put({
 					type: 'updateState',
 					payload: {
-						passengerFlowTrendList: countList,
+						passengerFlowTrendList: formattedList,
 					},
 				});
 			}

@@ -7,6 +7,10 @@ export default {
 	'passengerAnalyze.analyze': '客群分析',
 	'passengerAnalyze.analyzing': '数据正在分析中，请稍候...',
 
+	'passenger.total': '全部',
+	'passenger.regular': '熟客',
+	'passenger.stranger': '生客',
+
 	'passengerAnalyze.rate.normal': '正常',
 	'passengerAnalyze.rate.heigh': '偏高',
 	'passengerAnalyze.rate.low': '偏低',

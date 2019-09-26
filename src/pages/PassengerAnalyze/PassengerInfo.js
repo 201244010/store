@@ -6,9 +6,9 @@ import PassengerDetail from './PassengerDetail';
 import styles from './passengerAnalyze.less';
 
 const PassengerAgeItemActive = () => (
-	<div className={`${styles['age-item']} ${styles['age-item-active']}`}>
+	<div className={`${styles['age-item']} ${styles['age-item-active']} ${styles['male-active']}`}>
 		<div className={styles['age-icon']}>
-			<img src={require('@/assets/icon/totalAmount.png')} />
+			<img src={require('@/assets/icon/man.png')} />
 		</div>
 		<div className={styles['age-content']}>
 			<div className={styles.title}>男 25~36</div>
