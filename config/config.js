@@ -84,7 +84,7 @@ export default {
 		'process.env.COUNTRY': process.env.COUNTRY || 'china',
 	},
 	uglifyJSOptions(opts) {
-		if(['uat', 'onl'].includes(env)){
+		if(['onl'].includes(env)){
 			opts.uglifyOptions.compress.drop_console = true;
 		}
 		return opts;
