@@ -65,20 +65,39 @@ Shape.registerShape('interval', 'distributionShape', {
 	},
 });
 
-export const LABEL = {
-	offset: 16,
-	textStyle: {
-		textAlign: 'start',
-		fill: '#FFFFFF',
-		fontSize: '14',
-		textBaseline: 'middle',
-	},
-	autoRotate: true,
+export const GENDERS = {
+	0: 'unknow',
+	1: 'male',
+	2: 'female',
 };
+
+export function getLabel(lang) {
+	const label = {
+		textStyle: {
+			textAlign: 'start',
+			fill: '#A5A7B1',
+			fontSize: '14',
+			textBaseline: 'middle',
+		},
+		autoRotate: true,
+	};
+
+	if (lang === 'en-US') {
+		label.offset = 25;
+	} else {
+		label.offset = 16;
+	}
+
+	return label;
+}
 
 export const COLORS = {
 	GENDER: '#344166',
 	MALE: '#667ECC',
-	FEMALE: '#FF8080',
+	MALE_LIGHT: '#6CBBFF',
+	FEMALE: 'rgba(255,128,128,0.6)',
+	FEMALE_LIGHT: '#FF8080',
 	NOR_SHADOW: 'transparent',
+	MALE_SHADOW: '#1A56FF',
+	FEMALE_SHADOW: 'rgba(255,26,26,0.5)',
 };

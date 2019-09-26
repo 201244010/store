@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { formatMessage } from 'umi/locale';
+import { formatMessage, getLocale } from 'umi/locale';
 import styles from './index.less';
 
 @connect(
@@ -32,19 +32,27 @@ class FlowTotalCount extends React.PureComponent {
 
 	render() {
 		const {
-			flowInfo: { passengerFlowCount: { latestCount = '', earlyCount = '' } = {} },
+			flowInfo: { passengerFlowCount: { latestCount = '' } = {}, countListByRegular = [] },
 		} = this.props;
+
+		const currentLanguage = getLocale();
+		const isEnglish = currentLanguage === 'en-US';
+		let regularCount = 0;
+		countListByRegular.map(item => {
+			regularCount += item.regularCount;
+		});
+
 		return (
 			<div className={styles.border}>
-				<div className={styles.content}>
-					<div className={styles.line} />
+				<div className={`${isEnglish? styles['content-en'] : styles['content-cn']}`}>
+					<div className={`${isEnglish? styles['line-en'] : styles['line-cn']}`} />
 					<div className={styles.today}>
 						<p className={styles['today-title']}>{formatMessage({ id: 'flow.totalCount.today' })}</p>
 						<span className={styles['today-num']}>{latestCount}</span>
 					</div>
 					<div className={styles.yesterday}>
 						<p className={styles['yesterday-title']}>{formatMessage({ id: 'flow.totalCount.yesterday' })}</p>
-						<span className={styles['yesterday-num']}>{earlyCount}</span>
+						<span className={styles['yesterday-num']}>{regularCount}</span>
 					</div>
 				</div>
 			</div>

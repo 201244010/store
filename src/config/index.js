@@ -22,7 +22,7 @@ export const HTTP_PREFIX = {
 };
 
 export const WEB_SOCKET_PREFIX = {
-	'http:': 'wss:',
+	'http:': 'ws:',
 	'https:': 'wss:',
 };
 

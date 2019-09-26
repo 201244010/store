@@ -1,15 +1,16 @@
 import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-// import { ERROR_OK } from '@/constants/errorCode';
+import { env } from '@/config';
+import { ERROR_OK } from '@/constants/errorCode';
 import { SHOP_ID_KEY, SHOP_LIST_KEY, getCookieByKey } from '@/utils/cookies';
-// import { DASHBOARD } from '@/pages/DashBoard/constants';
+import { DASHBOARD } from '@/pages/DashBoard/constants';
 
 import styles from './index.less';
 
-// const {
-// 	TIME_INTERVAL: { HOUR },
-// } = DASHBOARD;
+const {
+	TIME_INTERVAL: { HOUR },
+} = DASHBOARD;
 
 @connect(
 	state => ({
@@ -32,16 +33,16 @@ class FlowHeader extends React.PureComponent {
 	};
 
 	componentDidMount() {
-		// this.startRefreshToken();
+		this.startRefreshToken();
 		clearInterval(this.setTime);
 		this.setTime = setInterval(() => {
 			const time = moment().format('YYYY-MM-DD HH:mm:ss');
 			this.setState({ time });
 
-			// const nowTime = new Date().getTime();
-			// if (nowTime - this.startTime > 5 * HOUR * 1000) {
-			// 	this.startRefreshToken();
-			// }
+			const nowTime = new Date().getTime();
+			if (nowTime - this.startTime > 5 * HOUR * 1000) {
+				this.startRefreshToken();
+			}
 		}, 1000);
 	}
 
@@ -49,17 +50,17 @@ class FlowHeader extends React.PureComponent {
 		clearInterval(this.setTime);
 	}
 
-	// startRefreshToken = () => {
-	// 	const { refreshStoreToken } = this.props;
-	// 	refreshStoreToken().then(response => {
-	// 		const { code } = response;
-	// 		if (code === ERROR_OK) {
-	// 			this.startTime = new Date().getTime();
-	// 		} else {
-	// 			this.startRefreshToken();
-	// 		}
-	// 	});
-	// };
+	startRefreshToken = () => {
+		const { refreshStoreToken } = this.props;
+		refreshStoreToken().then(response => {
+			const { code } = response;
+			if (code === ERROR_OK) {
+				this.startTime = new Date().getTime();
+			} else {
+				this.startRefreshToken();
+			}
+		});
+	};
 
 	render() {
 		const { time } = this.state;
@@ -73,7 +74,7 @@ class FlowHeader extends React.PureComponent {
 				<div className={styles['header-title']}>
 					<div className={styles['header-logo']} />
 					<div className={styles['header-name']}>{shopName}</div>
-					<div className={styles['header-time']}>{time}</div>
+					<div className={`${styles['header-time']} ${env === 'onl'&&styles['header-time-disappear']}`}>{time}</div>
 				</div>
 			</div>
 		);

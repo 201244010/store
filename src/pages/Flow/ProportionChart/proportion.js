@@ -44,7 +44,6 @@ export function shape(lightType, chartName) {
 }
 
 export const COLORS = {
-	LIGHT_COLOR: 'l(45) 0:#66BDFF 1:#3D84FF',
 	NOR_COLOR: 'transparent',
 	LIGHT_SHADOW: 'rgba(255,255,255,1)',
 	NOR_SHADOW: 'transparent',

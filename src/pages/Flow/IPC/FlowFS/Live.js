@@ -7,12 +7,14 @@ import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Faceid from '@/pages/Flow/VideoPlayer/Faceid';
 import LivePlayer from '@/pages/Flow/VideoPlayer/LivePlayer';
+import { LIBRARY_STYLE } from './libraryName';
 
 import styles from './Live.less';
 
 @connect((state) => {
-	const { flowFaceid: { rectangles, list }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }, } = state;
+	const { flowFaceid: { rectangles, list, libraryList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }, } = state;
 	const rects = [];
+
 	rectangles.forEach(item => {
 		item.rects.forEach(rect => {
 			rects.push(rect);
@@ -27,6 +29,7 @@ import styles from './Live.less';
 		faceidList: list || [],
 		timeSlots: timeSlots || [],
 		location,
+		libraryList,
 	};
 }, (dispatch) => ({
 	async getTimeSlots({sn, timeStart, timeEnd}) {
@@ -141,7 +144,13 @@ import styles from './Live.less';
 				sn
 			}
 		});
-	}
+	},
+	readLibraryType() {
+		dispatch({
+			type: 'flowFaceid/readLibraryType',
+		});
+	},
+	loadList: () => dispatch({ type:'ipcList/read'}),
 	// test: () => {
 	// 	dispatch({
 	// 		type:'faceid/test'
@@ -151,7 +160,6 @@ import styles from './Live.less';
 class Live extends React.Component{
 	constructor(props) {
 		super(props);
-
 		this.state = {
 			deviceInfo: {
 				pixelRatio: '16:9'
@@ -162,21 +170,23 @@ class Live extends React.Component{
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList } = this.props;
+		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList, readLibraryType, loadList } = this.props;
 
+		readLibraryType();
 		const {sn} = query;
 		let sdStatus = true;
 		if (sn) {
 			// test();
 			clearList({ sn });
 			getAgeRangeList();
+			await loadList();
 			const deviceInfo = await getDeviceInfo({ sn });
 			const { hasFaceid } = deviceInfo;
 			setDeviceSn({ sn });
 			if(hasFaceid){
 				const status = await getSdStatus({ sn });
 				if(status === 0) {
-					message.info(formatMessage({ id: 'live.nosdInfo' }));
+					message.info(formatMessage({ id: 'flow.nosdInfo' }));
 					sdStatus = false;
 				}
 			}
@@ -278,16 +288,18 @@ class Live extends React.Component{
 	}
 
 	render() {
-		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged } = this.props;
+		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, libraryList } = this.props;
 
+		const libraryType = {};
+		libraryList.map(item => {
+			libraryType[item.id] = LIBRARY_STYLE[item.type];
+		});
 		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
 		const genders = {
-			0: formatMessage({ id: 'live.genders.unknown' }),
-			1: formatMessage({ id: 'live.genders.male'}),
-			2: formatMessage({ id: 'live.genders.female'})
+			0: formatMessage({ id: 'flow.genders.unknown' }),
+			1: formatMessage({ id: 'flow.genders.male'}),
+			2: formatMessage({ id: 'flow.genders.female'})
 		};
-
-
 
 		return(
 			<div className={styles['live-wrapper']}>
@@ -342,7 +354,7 @@ class Live extends React.Component{
 													<Card
 														title={
 															<div className={styles['avatar-container']}>
-																<div className={styles.type}>{ item.libraryName }</div>
+																<div className={`${styles.type} ${styles[libraryType[item.libraryId]]}`}>{ item.libraryName }</div>
 																<Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic}`} />
 															</div>
 														}
@@ -350,10 +362,10 @@ class Live extends React.Component{
 														className={styles.infos}
 													>
 														<p className={styles['infos-age']}>
-															{ `(${ genders[item.gender] } ${ item.age }${formatMessage({id: 'live.age.unit'})})` }
+															{ `${ genders[item.gender] } ${ item.age }${formatMessage({id: 'flow.age.unit'})}` }
 														</p>
 														<p className={styles['infos-time']}>
-															<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
+															{/* <span>{formatMessage({id: 'live.last.arrival.time'})}</span> */}
 															<span>
 																{
 																	moment.unix(item.timestamp).format('MM-DD HH:mm:ss')

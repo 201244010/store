@@ -55,6 +55,7 @@ class MqttClient {
 					password,
 					path,
 					reconnectPeriod,
+					keepalive: 600,
 				}
 			);
 

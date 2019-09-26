@@ -1,7 +1,9 @@
 import moment from 'moment';
 import { shake, format, map } from '@konata9/milk-shake';
 import * as Action from '@/services/dashBoard';
+import * as Actions from '@/services/user';
 import { ERROR_OK } from '@/constants/errorCode';
+import { TOKEN_KEY, SHOP_ID_KEY, COMPANY_ID_KEY, USER_INFO_KEY, setCookieByKey, getCookieByKey } from '@/utils/cookies';
 import { getDeviceList } from '@/pages/IPC/services/IPCList';
 
 import { DASHBOARD } from '@/pages/DashBoard/constants';
@@ -37,14 +39,18 @@ const getQueryDate = rangeType => {
 	];
 };
 
-const getQueryTimeRange = (searchValue = {}) => {
+const getQueryTimeRange = (searchValue = {}, action) => {
 	const { rangeType, timeRangeStart, timeRangeEnd } = searchValue;
 
 	let startTime;
 	let endTime;
 
 	if (rangeType !== RANGE.FREE) {
-		[startTime, endTime] = getQueryDate(rangeType);
+		if(action && action === 'total'){
+			[startTime, endTime] = getQueryDate(RANGE.TODAY);
+		}else{
+			[startTime, endTime] = getQueryDate(rangeType);
+		}
 	} else {
 		[startTime, endTime] = [
 			timeRangeStart.startOf('day').unix(),
@@ -255,7 +261,7 @@ export default {
 				return null;
 			}
 
-			const [startTime, endTime] = getQueryTimeRange({ rangeType: range });
+			const [startTime, endTime] = getQueryTimeRange({ rangeType: range }, 'total');
 			const stateField = stateFields[queryType];
 			const options = {
 				rateRequired: range === RANGE.FREE ? 0 : 1,
@@ -451,6 +457,18 @@ export default {
 					},
 				},
 			});
+		},
+
+		*refreshStoreToken(options, { call }) {
+			const response = yield call(Actions.refreshStoreToken, options);
+			const { code, data: { store_token = '' } = {} } = response;
+			if (code === ERROR_OK) {
+			 setCookieByKey(TOKEN_KEY, store_token);
+			 setCookieByKey(SHOP_ID_KEY, getCookieByKey(SHOP_ID_KEY));
+			 setCookieByKey(COMPANY_ID_KEY, getCookieByKey(COMPANY_ID_KEY));
+			 setCookieByKey(USER_INFO_KEY, getCookieByKey(USER_INFO_KEY));
+			}
+			return response;
 		},
 	},
 

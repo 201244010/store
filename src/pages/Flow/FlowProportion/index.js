@@ -2,11 +2,13 @@ import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import ProportionChart from '@/pages/Flow/ProportionChart';
+import { COLORS } from './proportion';
 import styles from './index.less';
 
 @connect(
 	state => ({
 		flowInfo: state.flowInfo,
+		flowFaceid: state.flowFaceid,
 	}),
 	dispatch => ({
 		getPassengerAgeByRegular: () => dispatch({ type: 'flowInfo/getPassengerAgeByRegular' }),
@@ -34,6 +36,7 @@ class FlowProportion extends React.PureComponent {
 	render() {
 		const {
 			flowInfo: { countListByRegular = [] },
+			flowFaceid: { list = [], libraryList = [] } = {},
 		} = this.props;
 
 		let strangerCount = 0;
@@ -42,7 +45,8 @@ class FlowProportion extends React.PureComponent {
 			strangerCount += item.strangerCount;
 			regularCount += item.regularCount;
 		});
-		const list = [
+		
+		const data = [
 			{
 				type: 'strangerCount',
 				count: strangerCount,
@@ -53,12 +57,44 @@ class FlowProportion extends React.PureComponent {
 			},
 		];
 
+		let lightType = '';
+		if (list.length > 0) {
+			const { libraryId } = list[0];
+			const lightList = libraryList.filter(item => item.id === libraryId);
+			switch (lightList[0].type) {
+				case 1:
+					lightType = data[0].type;
+					break;
+				case 2:
+					lightType = data[1].type;
+					break;
+				default:
+					lightType = '';
+			}
+		}
+
 		return (
 			<div className={styles['flow-proportion']}>
 				<div className={styles.title}>{formatMessage({ id: 'flow.proportion.rate' })}</div>
-				<div className={styles.description}>{formatMessage({ id: 'flow.proportion.rule' })}</div>
-				<ProportionChart list={list} lightType="strangerCount" chartName="newCustomer" />
-				<ProportionChart list={list} lightType="regularCount" chartName="oldCustomer" />
+				{/* <div className={styles.description}>
+					{formatMessage({ id: 'flow.proportion.rule' })}
+				</div> */}
+				<ProportionChart
+					list={data}
+					countType={data[0].type}
+					lightType={lightType}
+					chartName="newCustomer"
+					chartTitle={formatMessage({ id: 'flow.proportion.title.new' })}
+					chartColor={COLORS.COLOR_NEW}
+				/>
+				<ProportionChart
+					list={data}
+					countType={data[1].type}
+					lightType={lightType}
+					chartName="oldCustomer"
+					chartTitle={formatMessage({ id: 'flow.proportion.title.old' })}
+					chartColor={COLORS.COLOR_OLD}
+				/>
 			</div>
 		);
 	}

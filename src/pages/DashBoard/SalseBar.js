@@ -126,6 +126,13 @@ class SalseBar extends PureComponent {
 			[RANGE.MONTH]: monthRateCount,
 		};
 
+		const tradeRate =
+			latestCount === 0
+				? 0
+				: parseInt(totalCountStore[rangeType] / latestCount, 10) > 100
+					? parseFloat(100).toFixed(2)
+					: parseFloat((totalCountStore[rangeType] / latestCount) * 100).toFixed(2);
+
 		return (
 			<Card title={null}>
 				<div className={styles['salse-bar']}>
@@ -207,12 +214,7 @@ class SalseBar extends PureComponent {
 						{...{
 							icon: <img src={require('@/assets/icon/square.png')} />,
 							title: formatMessage({ id: 'trade.transfer' }),
-							content:
-								latestCount === 0
-									? 0
-									: `${parseFloat(
-										(totalCountStore[rangeType] / latestCount) * 100
-									  ).toFixed(2)}%`,
+							content: `${tradeRate}%`,
 							subContent:
 								rangeType === RANGE.FREE ? (
 									<></>

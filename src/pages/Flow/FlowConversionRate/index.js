@@ -47,6 +47,7 @@ class FlowConversionRate extends React.PureComponent {
 			flowInfo: { passengerFlowOrder = [] },
 		} = this.props;
 
+		console.log('passengerFlowOrder', passengerFlowOrder);
 		const listFilter = passengerFlowOrder.filter((item, index) => index > 7 && index < 20);
 		const list = listFilter.map(item => ({
 			time: item.time - 1,
@@ -68,7 +69,7 @@ class FlowConversionRate extends React.PureComponent {
 				<div className={styles['chart-name']}>
 					{formatMessage({ id: 'flow.conversionRate.title' })}
 				</div>
-				<Chart width={656} height={205} padding="auto" data={rateList} scale={this.cols}>
+				<Chart width={656} height={205} padding={[15,30,32,20]} data={rateList} scale={this.cols}>
 					<Axis
 						name="time"
 						label={{
@@ -88,7 +89,7 @@ class FlowConversionRate extends React.PureComponent {
 					<Axis
 						name="flowCount"
 						label={{
-							offset: 21,
+							offset: 0,
 							textStyle: Y_TEXT_STYLE,
 							autoRotate: false,
 						}}

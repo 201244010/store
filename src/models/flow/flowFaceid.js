@@ -1,8 +1,5 @@
-// import { listen } from '@/services/mqtt';
-// import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-// import { getRange } from '../../services/photoLibrary';
-import { getRange } from '@/pages/Flow/IPC/services/photoLibrary';
+import { getRange, readLibrary } from '@/pages/Flow/IPC/services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
@@ -11,10 +8,11 @@ export default {
 		rectangles: [],
 		list: [],
 		ageRangeList: [],
-		deviceSn: ''
+		deviceSn: '',
+		libraryList: [],
 	},
 	reducers: {
-		drawRects({ rectangles, list, ageRangeList, deviceSn }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
+		drawRects({ rectangles, list, ageRangeList, deviceSn, libraryList }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
 
 			// todo 需要添加信息清除逻辑
 			const rect = rectangles;
@@ -31,7 +29,8 @@ export default {
 				],
 				list,
 				ageRangeList,
-				deviceSn
+				deviceSn,
+				libraryList,
 			};
 		},
 		clearRects(state, { payload: { timestamp }}) {
@@ -68,7 +67,11 @@ export default {
 			if(state.deviceSn !== sn) {
 				state.list = [];
 			}
-		}
+		},
+		readData(state, action) {
+			const { libraryList } = action;
+			return {...state, ...{libraryList}};
+		},
 
 	},
 	effects: {
@@ -98,21 +101,21 @@ export default {
 		*mapFaceInfo({ payload }, { select, take, put }) {
 			const { libraryName, age, ageRangeCode, name } = payload;
 			let rangeList = yield select((state) => state.flowFaceid.ageRangeList);
-			let ageName = formatMessage({id: 'live.unknown'});
+			let ageName = formatMessage({id: 'flow.unknown'});
 			let libraryNameText = libraryName;
 
 			switch(libraryName) {
 				case 'stranger':
-					libraryNameText = formatMessage({ id: 'faceid.stranger'});
+					libraryNameText = formatMessage({ id: 'flow.faceid.stranger'});
 					break;
 				case 'regular':
-					libraryNameText = formatMessage({id: 'faceid.regular'});
+					libraryNameText = formatMessage({id: 'flow.faceid.regular'});
 					break;
 				case 'employee':
-					libraryNameText = formatMessage({ id: 'faceid.employee'});
+					libraryNameText = formatMessage({ id: 'flow.faceid.employee'});
 					break;
 				case 'blacklist':
-					libraryNameText = formatMessage( { id: 'faceid.blacklist'});
+					libraryNameText = formatMessage({ id: 'flow.faceid.blacklist'});
 					break;
 				default:
 			}
@@ -136,9 +139,24 @@ export default {
 					...payload,
 					 libraryName: libraryNameText,
 					 age: ageName,
-					 name: name === 'undefined' ? formatMessage({id: 'live.unknown'}) : name
+					 name: name === 'undefined' ? formatMessage({id: 'flow.unknown'}) : name
 				 }
 			});
+		},
+		*readLibraryType(_, { put }) {
+			const response = yield readLibrary({
+				// userId,
+				// companyId,
+				// shopId,
+			});
+			const { data: libraryList, code} = response;
+			if (code === ERROR_OK) {
+				yield put({
+					type: 'readData',
+					libraryList,
+				});
+			}
+			return response.code;
 		},
 		// *test(_, { put }) {
 		// 	console.log('in test');
