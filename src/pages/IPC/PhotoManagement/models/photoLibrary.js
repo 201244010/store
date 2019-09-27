@@ -62,6 +62,12 @@ export default {
 				});
 			}else if(code !== ERROR_OK){
 				message.error(formatMessage({id: 'photoManagement.card.getListError'}));
+				yield put({
+					type: 'readData',
+					payload: {
+						isSignAgreement: true
+					}
+				});
 			}else if(totalCount < pageNum * pageSize && code === ERROR_OK) {
 				request.pageNum = Math.ceil(totalCount / pageSize);
 				const responseAgain = yield call(readPhotoList, request);
@@ -73,6 +79,7 @@ export default {
 						// photoList: responseAgain.data.faceList,
 						photoList: list,
 						total: responseAgain.data.totalCount,
+						isSignAgreement: true
 					}
 				});
 			} else if(code === ERROR_OK) {
@@ -84,6 +91,7 @@ export default {
 						// photoList: faceList,
 						photoList: list,
 						total: totalCount,
+						isSignAgreement: true
 					}
 				});
 			}
