@@ -115,7 +115,7 @@ export default class BoardHeader extends Component {
 	render() {
 		const {
 			state: { editing, templateName },
-			props: { templateInfo = {}, zoomScale, saveAsDraft, zoomOutOrIn },
+			props: { templateInfo = {}, zoomScale, saveAsDraft, downloadAsDraft, zoomOutOrIn },
 		} = this;
 
 		return (
@@ -153,6 +153,7 @@ export default class BoardHeader extends Component {
 				<div className={styles['right-actions']}>
 					<ZoomIcon zoomScale={zoomScale} zoomOutOrIn={zoomOutOrIn} />
 					{/* <ButtonIcon name="wrapper" /> */}
+					<ButtonIcon name="download" onClick={downloadAsDraft} />
 					{/* <ButtonIcon name="view" /> */}
 					{/* <ButtonIcon name="history" /> */}
 				</div>

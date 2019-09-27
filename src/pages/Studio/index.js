@@ -66,6 +66,7 @@ const textMap = {
 		selectComponent: payload => dispatch({ type: 'studio/selectComponent', payload }),
 		fetchBindFields: payload => dispatch({ type: 'template/fetchBindFields', payload }),
 		saveAsDraft: payload => dispatch({ type: 'template/saveAsDraft', payload }),
+		downloadAsDraft: payload => dispatch({ type: 'template/downloadAsDraft', payload }),
 		fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
 		renameTemplate: payload => dispatch({ type: 'template/renameTemplate', payload }),
 		uploadImage: payload => dispatch({ type: 'template/uploadImage', payload }),
@@ -625,6 +626,25 @@ class Studio extends Component {
 		});
 	};
 
+	handleDownloadAsDraft = () => {
+		const { studio: { componentsDetail, zoomScale }, downloadAsDraft} = this.props;
+		const newDetails = {};
+		Object.keys(componentsDetail).forEach(key => {
+			const detail = componentsDetail[key];
+			if (detail.name) {
+				newDetails[key] = {
+					...detail,
+					zoomScale,
+				};
+			}
+		});
+
+		downloadAsDraft({
+			template_id: getLocationParam('id'),
+			draft: newDetails,
+		});
+	};
+
 	handleTextDblClick = e => {
 		const { updateComponentsDetail } = this.props;
 		const targetName = e.target.name();
@@ -900,6 +920,7 @@ class Studio extends Component {
 							templateInfo: curTemplate,
 							zoomScale,
 							saveAsDraft: this.handleSaveAsDraft,
+							downloadAsDraft: this.handleDownloadAsDraft,
 							zoomOutOrIn,
 							changeOneStep,
 							renameTemplate,

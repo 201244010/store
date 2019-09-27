@@ -22,6 +22,7 @@ export default {
 	'studio.action.wrapper': 'Wrap',
 	'studio.action.view': 'View',
 	'studio.action.history': 'Versions',
+	'studio.action.download': 'Download',
 	'studio.action.zoom': 'Zoom',
 	'studio.action.text.db.click': 'DdClick To Edit',
 	'studio.placeholder.bind.field': 'Please select field',
