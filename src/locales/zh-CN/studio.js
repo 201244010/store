@@ -21,6 +21,7 @@ export default {
 	'studio.action.wrapper': '外壳',
 	'studio.action.view': '预览',
 	'studio.action.history': '版本',
+	'studio.action.download': '下载',
 	'studio.action.zoom': '缩放',
 	'studio.action.text.db.click': '双击编辑文本',
 	'studio.placeholder.bind.field': '请选择绑定的字段',
