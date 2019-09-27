@@ -14,10 +14,10 @@ const PURCHASECODE = {
 	ALI: '9',
 	WECHAT: '2',
 	CASH: '5',
-	BANKCARD: '6',
+	BANKCARD: '10',
 	BANKQR: '4',
 	QQWALLET: '11',
-	JDWALLET: '8',
+	JDWALLET: '12',
 	OTHER: '1',
 };
 const ORDERCODE = {
@@ -26,11 +26,9 @@ const ORDERCODE = {
 	REFUND: '2',
 };
 const RANKTYPE = {
-	RANKDEFAULT: '-1',
-	PRICEDESC: '11',
-	PRICEASC: '10',
-	TIMEDESC: '1',
-	TIMEASC: '0',
+	DESC: '1',
+	ASC: '0',
+	NOT: '-1',
 };
 
 @connect(
@@ -75,25 +73,25 @@ class OrderDetail extends Component {
 				const { orderType, purchaseType, rankType } = values;
 				const { postOptions: options = {} } = this.state;
 
-				if (rankType === '11') {
-					options.sortByAmount = 1;
+				if (rankType === 'priceDesc') {
+					options.sortByTime = RANKTYPE.NOT;
+					options.sortByAmount = RANKTYPE.DESC;
 				}
-				if (rankType === '10') {
-					options.sortByAmount = 0;
+				if (rankType === 'priceAsc') {
+					options.sortByTime = RANKTYPE.NOT;
+					options.sortByAmount = RANKTYPE.ASC;
 				}
-				if (rankType === '1') {
-					options.sortByTime = 1;
+				if (rankType === 'timeDesc') {
+					options.sortByAmount = RANKTYPE.NOT;
+					options.sortByTime = RANKTYPE.DESC;
 				}
-				if (rankType === '0') {
-					options.sortByTime = 0;
-				}
-				if (rankType === '-1') {
-					options.sortByAmount = -1;
-					options.sortByTime = -1;
+				if (rankType === 'timeAsc') {
+					options.sortByAmount = RANKTYPE.NOT;
+					options.sortByTime = RANKTYPE.ASC;
 				}
 
-				options.purchaseTypeList = purchaseType === '0' ? [] : [purchaseType];
-				options.orderTypeList = orderType === '0' ? [] : [orderType];
+				options.purchaseTypeList = purchaseType === PURCHASECODE.ALL ? [] : [purchaseType];
+				options.orderTypeList = orderType === ORDERCODE.ALL ? [] : [orderType];
 				options.pageNum = 1; // 默认请求第1页
 
 				this.setState({
@@ -110,9 +108,9 @@ class OrderDetail extends Component {
 			form: { setFieldsValue },
 		} = this.props;
 		setFieldsValue({
-			rankType: '-1',
-			purchaseType: '0',
-			orderType: '0',
+			rankType: 'timeDesc',
+			purchaseType: PURCHASECODE.ALL,
+			orderType: ORDERCODE.ALL,
 		});
 	};
 
@@ -279,22 +277,19 @@ class OrderDetail extends Component {
 									label={formatMessage({ id: 'order.search.rankdefault' })}
 								>
 									{getFieldDecorator('rankType', {
-										initialValue: RANKTYPE.RANKDEFAULT,
+										initialValue: 'timeDesc',
 									})(
 										<Select>
-											<Select.Option value={RANKTYPE.RANKDEFAULT}>
-												{formatMessage({ id: 'order.search.rankdefault' })}
-											</Select.Option>
-											<Select.Option value={RANKTYPE.PRICEDESC}>
+											<Select.Option value='priceDesc'>
 												{formatMessage({ id: 'order.search.price.desc' })}
 											</Select.Option>
-											<Select.Option value={RANKTYPE.PRICEASC}>
+											<Select.Option value='priceAsc'>
 												{formatMessage({ id: 'order.search.price.asc' })}
 											</Select.Option>
-											<Select.Option value={RANKTYPE.TIMEDESC}>
+											<Select.Option value='timeDesc'>
 												{formatMessage({ id: 'order.search.time.desc' })}
 											</Select.Option>
-											<Select.Option value={RANKTYPE.TIMEASC}>
+											<Select.Option value='timeAsc'>
 												{formatMessage({ id: 'order.search.time.asc' })}
 											</Select.Option>
 										</Select>
