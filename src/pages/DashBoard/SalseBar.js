@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { Card, Divider } from 'antd';
+import { Card } from 'antd';
 import RiseDownTag from '@/components/Tag/RiseDownTag';
 import { priceFormat } from '@/utils/utils';
 import { DASHBOARD } from './constants';
@@ -157,7 +157,6 @@ class SalseBar extends PureComponent {
 								}),
 						}}
 					/>
-					<Divider type="vertical" />
 					<SalseInfo
 						{...{
 							icon: <img src={require('@/assets/icon/tradeCount.png')} />,
@@ -184,7 +183,6 @@ class SalseBar extends PureComponent {
 								}),
 						}}
 					/>
-					<Divider type="vertical" />
 					<SalseInfo
 						{...{
 							icon: <img src={require('@/assets/icon/passengerFlow.png')} />,
@@ -202,7 +200,6 @@ class SalseBar extends PureComponent {
 							loading: passengerFlowLoading,
 						}}
 					/>
-					<Divider type="vertical" />
 					<SalseInfo
 						{...{
 							icon: <img src={require('@/assets/icon/square.png')} />,
