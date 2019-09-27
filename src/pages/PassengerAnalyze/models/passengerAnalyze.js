@@ -8,10 +8,6 @@ const {
 	SEARCH_TYPE: { GROUP_RANGE, RANGE_VALUE },
 } = DASHBOARD;
 
-// const getSearchTimeRange = (type, format = 'YYYY-MM-DD') => {
-// 	// TODO 待完善
-// };
-
 export default {
 	namespace: 'passengerAnalyze',
 	state: {

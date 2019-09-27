@@ -15,15 +15,14 @@ import styles from './passengerAnalyze.less';
 		hasData: passengerAnalyze.hasData,
 	}),
 	dispatch => ({
-		clearSearch: () => dispatch({ type: 'clearSearch' }),
+		clearSearch: () => dispatch({ type: 'passengerAnalyze/clearSearch' }),
 		refreshPage: () => dispatch({ type: 'passengerAnalyze/refreshPage' }),
 	})
 )
 class PassengerAnalyze extends PureComponent {
 	componentDidMount() {
 		// TODO 云端接口好之后恢复
-		const { refreshPage } = this.props;
-		refreshPage();
+		this.refreshPage();
 	}
 
 	componentWillUnmount() {
