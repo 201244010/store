@@ -28,6 +28,10 @@ class PassengerChart extends PureComponent {
 						? timeTicks.filter((_, index) => index % 2 === 0)
 						: timeTicks,
 			},
+			count: {
+				min: 0,
+				minLimit: 0,
+			},
 		};
 
 		const itemTpl = `

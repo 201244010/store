@@ -126,6 +126,8 @@ export default {
 					let _time = time;
 					if (type === RANGE_VALUE.TODAY || type === RANGE_VALUE.YESTERDAY) {
 						_time = moment(time).format('HH:mm');
+					} else if (type === RANGE_VALUE.WEEK) {
+						_time = moment(time).format('ddd');
 					} else {
 						_time = moment(time).format('MM/DD');
 					}
@@ -166,18 +168,62 @@ export default {
 				searchValue: { type },
 			} = yield select(state => state.passengerAnalyze);
 
-			const response = yield call(Actions.getPassengerFlowAgeByGender, { type });
-			if (response && response.code === ERROR_OK) {
-				const {
-					data: { countList = [] },
-				} = response || {};
+			const result = yield put.resolve({
+				type: 'dashboard/getAgeRanges',
+			});
 
-				yield put({
-					type: 'updateState',
-					payload: {
-						passengerAgeListByGender: countList,
-					},
-				});
+			if (result && result.code === ERROR_OK) {
+				const { data: { ageRangeList = [] } = {} } = result;
+				const response = yield call(Actions.getPassengerFlowAgeByGender, { type });
+				if (response && response.code === ERROR_OK) {
+					const {
+						data: { countList = [] },
+					} = response || {};
+
+					const totalGender = countList.reduce((prev, cur) => {
+						const { maleCount = 0, femaleCount = 0 } = cur;
+						return (prev = prev + maleCount + femaleCount);
+					}, 0);
+
+					const formattedList = countList
+						.reduce((prev, cur) => {
+							const { ageRangeCode, maleCount, femaleCount } = cur;
+
+							const { ageRange } = ageRangeList.find(
+								item => item.ageRangeCode === ageRangeCode
+							);
+
+							return prev.concat([
+								{
+									ageRange,
+									ageRangeCode,
+									genderRate:
+										totalGender === 0
+											? 0
+											: parseInt((maleCount / totalGender) * 100, 10),
+									gender: 'male',
+								},
+								{
+									ageRange,
+									ageRangeCode,
+									genderRate:
+										totalGender === 0
+											? 0
+											: parseInt((femaleCount / totalGender) * 100, 10),
+									gender: 'female',
+								},
+							]);
+						}, [])
+						.sort((a, b) => b.genderRate - a.genderRate)
+						.slice(0, 5);
+
+					yield put({
+						type: 'updateState',
+						payload: {
+							passengerAgeListByGender: formattedList,
+						},
+					});
+				}
 			}
 		},
 

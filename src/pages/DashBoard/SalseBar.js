@@ -16,7 +16,7 @@ const passengerFlowMessage = {
 	[RANGE.MONTH]: formatMessage({ id: 'lastMonth' }),
 };
 
-const SalseInfo = ({
+export const SalseInfo = ({
 	title = null,
 	icon = null,
 	content = null,

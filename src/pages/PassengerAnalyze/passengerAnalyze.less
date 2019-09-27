@@ -100,6 +100,13 @@
 		padding: 10px 20px;
 		box-sizing: border-box;
 		display: flex;
+		cursor: pointer;
+
+		:global {
+			.ant-progress-text {
+				color: #333333;
+			}
+		}
 
 		.title {
 			min-width: 100px;
@@ -117,10 +124,19 @@
 
 		.age-icon {
 			min-width: 100px;
+			img {
+				width: 48px;
+				height: 100%;
+				object-fit: contain;
+			}
 		}
 
 		.age-content {
 			width: 100%;
+
+			.title {
+				font-size: 20px;
+			}
 		}
 
 		&::after {
@@ -128,8 +144,8 @@
 			width: 0;
 			position: absolute;
 			top: 0;
-			right: -92px;
-			border: 46px solid #eaf5ff;
+			right: -72px;
+			border: 36px solid #eaf5ff;
 			border-top-color: transparent;
 			border-right-color: transparent;
 			border-bottom-color: transparent;

@@ -43,7 +43,10 @@ class SearchBar extends PureComponent {
 
 		await setSearchValue({
 			type: RANGE_VALUE[value.toUpperCase()],
-			groupBy: value === RANGE.TODAY ? GROUP_RANGE.HOUR : GROUP_RANGE.DAY,
+			groupBy:
+				value === RANGE.TODAY || value === RANGE.YESTERDAY
+					? GROUP_RANGE.HOUR
+					: GROUP_RANGE.DAY,
 		});
 		await onSearchChange();
 	};
