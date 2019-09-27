@@ -125,21 +125,8 @@ class LivePlayer extends React.Component{
 					const url = await getHistoryUrl(timestamp);
 					console.log('goto playhistory url: ', url);
 					if (url) {
-						const replay = (time) => {
-							this.replayTimeout = setTimeout(() => {
-								console.log('replay timeout', time);
-								const { videoplayer } = this;
-								if (videoplayer.paused()) {
-									this.src(url);
-									replay(time*2);
-								}else{
-									clearTimeout(this.replayTimeout);
-
-								}
-							}, time*1000);
-						};
 						this.src(url);
-						replay(2);
+						this.timeoutReplay();
 					}else{
 						console.log('回放未获取到url，当前时间戳为：', timestamp);
 					}
@@ -421,6 +408,31 @@ class LivePlayer extends React.Component{
 	onError = () => {
 		console.log('liveplayer error handler');
 		this.src(this.currentSrc);
+		this.timeoutReplay();
+	}
+
+	// 超时重新播放
+	timeoutReplay = () => {
+		console.log('timeoutReplay');
+		// 首先检查当前video是否为playing
+		// 2秒后检查是否为play状态
+		// 为playing，则清除定时器；
+		// 不为playing，则重新赋值url，并执行2*time检查逻辑；
+		const { videoplayer } = this;
+		const replay = (time) => {
+			clearTimeout(this.replayTimeout);
+			this.replayTimeout = setTimeout(() => {
+				if (videoplayer.paused()) {
+					this.src(this.currentSrc);
+					replay(time*2);
+				} else {
+					clearTimeout(this.replayTimeout);
+				}
+
+			}, time * 1000);
+		};
+
+		replay(2);
 	}
 
 	render () {

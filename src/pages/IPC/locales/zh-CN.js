@@ -20,6 +20,7 @@ import photoManagement from './zh-CN/photoManagement';
 import faceLog from './zh-CN/faceLog';
 import entryDetail from './zh-CN/entryDetail';
 import initialSetting from './zh-CN/initialSetting';
+import agreementModal from './zh-CN/agreementModal';
 
 export default {
 
@@ -44,5 +45,6 @@ export default {
 	...photoManagement,
 	...faceLog,
 	...entryDetail,
-	...initialSetting
+	...initialSetting,
+	...agreementModal
 };
