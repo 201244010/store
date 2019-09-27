@@ -54,8 +54,18 @@ const CardTitle = ({ onChange = null }) => {
 	})
 )
 class CustomerChart extends PureComponent {
+	constructor(props) {
+		super(props);
+		this.state = {
+			flowType: PASSENGER_FLOW_TYPE.GENDER,
+		};
+	}
+
 	radioChange = async value => {
 		const { setSearchValue, fetchPassengerAgeByTimeRange } = this.props;
+		this.setState({
+			flowType: value,
+		});
 		await setSearchValue({
 			passengerFlowType: value,
 		});
@@ -129,6 +139,8 @@ class CustomerChart extends PureComponent {
 	};
 
 	render() {
+		const { flowType } = this.state;
+
 		const {
 			passengerFlowTypeLoading,
 			passengerAgeInfo: {
@@ -158,6 +170,25 @@ class CustomerChart extends PureComponent {
 			limit,
 		];
 
+		const geomColor =
+			flowType === PASSENGER_FLOW_TYPE.GENDER
+				? [
+					'title',
+					// eslint-disable-next-line no-shadow
+					title =>
+						title.indexOf(formatMessage({ id: 'common.male' })) > -1
+							? '#2b7ac0'
+							: '#ff6666',
+				  ]
+				: [
+					'title',
+					// eslint-disable-next-line no-shadow
+					title =>
+						title.indexOf(formatMessage({ id: 'customer.stranger' })) > -1
+							? '#2b7ac0'
+							: '#ff6666',
+				  ];
+
 		return (
 			<Card
 				title={<CardTitle onChange={this.radioChange} />}
@@ -186,14 +217,7 @@ class CustomerChart extends PureComponent {
 						facet: { fields: ['title'] },
 						geom: {
 							position: 'ageRange*personCount',
-							color: [
-								'title',
-								// eslint-disable-next-line no-shadow
-								title =>
-									title.indexOf(formatMessage({ id: 'common.male' })) > -1
-										? '#2b7ac0'
-										: '#ff6666',
-							],
+							color: geomColor,
 							label: { content: 'personCount' },
 						},
 						assistGeom: { position: 'ageRange*limit' },

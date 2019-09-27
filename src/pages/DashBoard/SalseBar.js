@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Card } from 'antd';
-import RiseDownTag from '@/components/Tag/RiseDownTag';
 import { priceFormat } from '@/utils/utils';
 import { DASHBOARD } from './constants';
 import styles from './DashBoard.less';
@@ -17,19 +16,14 @@ const passengerFlowMessage = {
 	[RANGE.MONTH]: formatMessage({ id: 'lastMonth' }),
 };
 
-const rateMessage = {
-	[RANGE.TODAY]: `${formatMessage({ id: 'dashboard.order.d2d' })}:`,
-	[RANGE.WEEK]: `${formatMessage({ id: 'dashboard.order.w2w' })}:`,
-	[RANGE.MONTH]: `${formatMessage({ id: 'dashboard.order.m2m' })}:`,
-};
-
-export const SalseInfo = ({
+const SalseInfo = ({
 	title = null,
 	icon = null,
 	content = null,
 	subContent = null,
 	loading = true,
 	onClick = null,
+	action = true,
 }) => {
 	const handleClick = () => {
 		if (onClick) {
@@ -39,7 +33,7 @@ export const SalseInfo = ({
 
 	return (
 		<Card
-			className={styles['salse-card']}
+			className={`${styles['salse-card']} ${action ? styles['width-action'] : ''}`}
 			bordered={false}
 			loading={loading}
 			onClick={handleClick}
@@ -83,18 +77,18 @@ class SalseBar extends PureComponent {
 				dayAmount,
 				weekAmount,
 				monthAmount,
-				dayRate: dayRateAmount,
-				weekRate: weekRateAmount,
-				monthRate: monthRateAmount,
+				yesterdayAmount,
+				lastWeekAmount,
+				lastMonthAmount,
 			},
 			totalCount: {
 				totalCount,
 				dayCount,
 				weekCount,
 				monthCount,
-				dayRate: dayRateCount,
-				weekRate: weekRateCount,
-				monthRate: monthRateCount,
+				yesterdayCount,
+				lastWeekCount,
+				lastMonthCount,
 			},
 			searchValue: { rangeType = RANGE.TODAY, startQueryTime, endQueryTime } = {},
 			goToPath,
@@ -107,10 +101,10 @@ class SalseBar extends PureComponent {
 			[RANGE.FREE]: totalAmount,
 		};
 
-		const totalAmountRate = {
-			[RANGE.TODAY]: dayRateAmount,
-			[RANGE.WEEK]: weekRateAmount,
-			[RANGE.MONTH]: monthRateAmount,
+		const earlyAmountStore = {
+			[RANGE.TODAY]: yesterdayAmount,
+			[RANGE.WEEK]: lastWeekAmount,
+			[RANGE.MONTH]: lastMonthAmount,
 		};
 
 		const totalCountStore = {
@@ -120,11 +114,25 @@ class SalseBar extends PureComponent {
 			[RANGE.FREE]: totalCount,
 		};
 
-		const totalCountRate = {
-			[RANGE.TODAY]: dayRateCount,
-			[RANGE.WEEK]: weekRateCount,
-			[RANGE.MONTH]: monthRateCount,
+		const earlyCountStore = {
+			[RANGE.TODAY]: yesterdayCount,
+			[RANGE.WEEK]: lastWeekCount,
+			[RANGE.MONTH]: lastMonthCount,
 		};
+
+		const tradeRate =
+			latestCount === 0
+				? 0
+				: parseInt((totalCountStore[rangeType] / latestCount) * 100, 10) > 100
+					? parseFloat(100).toFixed(2)
+					: parseFloat((totalCountStore[rangeType] / latestCount) * 100).toFixed(2);
+
+		const lastTradeRate =
+			earlyCountStore[rangeType] === 0
+				? 0
+				: parseInt((earlyCountStore[rangeType] / earlyCount) * 100, 10) > 100
+					? parseFloat(100).toFixed(2)
+					: parseFloat((earlyCountStore[rangeType] / earlyCount) * 100).toFixed(2);
 
 		return (
 			<Card title={null}>
@@ -140,15 +148,16 @@ class SalseBar extends PureComponent {
 									  )
 									: '--',
 							loading: totalAmountLoading,
-							// TODO 等云端修改接口，临时方案
 							subContent:
 								rangeType === RANGE.FREE ? (
 									<></>
 								) : (
-									<RiseDownTag
-										label={rateMessage[rangeType]}
-										content={totalAmountRate[rangeType]}
-									/>
+									<span>
+										{passengerFlowMessage[rangeType]}：{' '}
+										{earlyAmountStore[rangeType] === '--'
+											? '--'
+											: priceFormat(earlyAmountStore[rangeType])}
+									</span>
 								),
 							onClick: () =>
 								goToPath('orderDetail', {
@@ -166,15 +175,16 @@ class SalseBar extends PureComponent {
 									? totalCountStore[rangeType]
 									: '--',
 							loading: totalCountLoading,
-							// TODO 等云端修改接口，临时方案
 							subContent:
 								rangeType === RANGE.FREE ? (
 									<></>
 								) : (
-									<RiseDownTag
-										label={rateMessage[rangeType]}
-										content={totalCountRate[rangeType]}
-									/>
+									<span>
+										{passengerFlowMessage[rangeType]}：{' '}
+										{earlyCountStore[rangeType] === '--'
+											? '--'
+											: priceFormat(earlyCountStore[rangeType])}
+									</span>
 								),
 							onClick: () =>
 								goToPath('orderDetail', {
@@ -193,33 +203,30 @@ class SalseBar extends PureComponent {
 									<></>
 								) : (
 									<span>
-										{passengerFlowMessage[rangeType]}:{' '}
+										{passengerFlowMessage[rangeType]}：{' '}
 										{earlyCount === '--' ? '--' : priceFormat(earlyCount)}
 									</span>
 								),
 							loading: passengerFlowLoading,
+							onClick: () => goToPath('faceLog'),
 						}}
 					/>
 					<SalseInfo
 						{...{
 							icon: <img src={require('@/assets/icon/square.png')} />,
 							title: formatMessage({ id: 'trade.transfer' }),
-							content:
-								latestCount === 0
-									? 0
-									: `${parseFloat(
-										(totalCountStore[rangeType] / latestCount) * 100
-									  ).toFixed(2)}%`,
+							content: `${tradeRate}%`,
 							subContent:
 								rangeType === RANGE.FREE ? (
 									<></>
 								) : (
 									<span>
 										{/* 临时方案，等待云端更新接口后计算昨日值 */}
-										{passengerFlowMessage[rangeType]}: --
+										{passengerFlowMessage[rangeType]}： {lastTradeRate}%
 									</span>
 								),
 							loading: passengerFlowLoading || totalCountLoading,
+							action: false,
 						}}
 					/>
 				</div>
