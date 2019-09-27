@@ -157,12 +157,16 @@ export default {
 			};
 		},
 		updateComponentsDetail(state, action) {
-			const { noUpdateLines, selectedShapeName, scopedComponents, isStep = false, updatePrecision = false, ...componentsDetail } = action.payload;
+			const { noUpdateLines, selectedShapeName, scopedComponents, nowShapeName, isStep = false, updatePrecision = false, ...componentsDetail } = action.payload;
 			const chooseShapeName = state.selectedShapeName;
 			let targetShapeName = selectedShapeName;
 			if (selectedShapeName === undefined) {
 				targetShapeName = chooseShapeName;
 			}
+			if (!targetShapeName) {
+				targetShapeName = nowShapeName;
+			}
+
 			const detail = {
 				...state.componentsDetail[targetShapeName],
 				...filterObject(componentsDetail[targetShapeName] || {})
