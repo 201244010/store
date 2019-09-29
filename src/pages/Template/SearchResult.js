@@ -150,11 +150,7 @@ class SearchResult extends Component {
 						},
 						() => {
 							resetFields();
-							window.open(
-								`/studio?id=${response.data.template_id}&screen=${
-									values.screen_type
-								}`
-							);
+							window.open(`/studio?id=${response.data.template_id}&screen=${values.screen_type}`);
 						}
 					);
 				}
@@ -208,11 +204,7 @@ class SearchResult extends Component {
 						},
 						() => {
 							resetFields();
-							window.open(
-								`/studio?id=${response.data.template_id}&screen=${
-									curRecord.screen_type
-								}`
-							);
+							window.open(`/studio?id=${response.data.template_id}&screen=${curRecord.screen_type}`);
 						}
 					);
 				}
@@ -227,7 +219,7 @@ class SearchResult extends Component {
 		} = this;
 		validateFields(['name'], async (errors, values) => {
 			if (!errors) {
-				const response = uploadTemplate({
+				const response = await uploadTemplate({
 					name: values.name,
 					template_model_name: templateInfo.type,
 					template_colour: templateInfo.type.indexOf('BWR') > -1 ? 7 : 3,
@@ -290,6 +282,16 @@ class SearchResult extends Component {
 	};
 
 	render() {
+		const formItemLayout = {
+			labelCol: {
+				xs: { span: 24 },
+				sm: { span: 6 },
+			},
+			wrapperCol: {
+				xs: { span: 24 },
+				sm: { span: 18 },
+			},
+		};
 		const {
 			props: {
 				searchFormValues,
@@ -366,16 +368,6 @@ class SearchResult extends Component {
 				),
 			},
 		];
-		const formItemLayout = {
-			labelCol: {
-				xs: { span: 24 },
-				sm: { span: 6 },
-			},
-			wrapperCol: {
-				xs: { span: 24 },
-				sm: { span: 18 },
-			},
-		};
 
 		return (
 			<div>
