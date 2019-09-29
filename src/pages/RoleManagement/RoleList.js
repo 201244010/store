@@ -32,6 +32,7 @@ const FormItem = Form.Item;
 	dispatch => ({
 		getRoleList: payload => dispatch({ type: 'role/getRoleList', payload }),
 		deleteRole: payload => dispatch({ type: 'role/deleteRole', payload }),
+		checkAdmin: () => dispatch({ type: 'role/checkAdmin' }),
 		changeAdmin: payload => dispatch({ type: 'role/changeAdmin', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
@@ -166,9 +167,10 @@ class RoleList extends React.Component {
 		];
 	}
 
-	componentDidMount() {
-		const { getRoleList } = this.props;
-		getRoleList();
+	async componentDidMount() {
+		const { getRoleList, checkAdmin } = this.props;
+		await checkAdmin();
+		await getRoleList();
 	}
 
 	deleteRole = async rowDetail => {
