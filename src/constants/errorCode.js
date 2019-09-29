@@ -33,6 +33,8 @@ export const ERR_SSO_USER_NOT_IN_COMPANY = 5400;
 
 export const ORDER_COMPLETED = 5503;
 
+export const SWITCH_SCEEN_NO_DELETE = 5347;
+
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',
 	'3': 'alert.code.send.fast',

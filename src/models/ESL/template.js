@@ -414,6 +414,45 @@ export default {
 			}
 			return response;
 		},
+		*uploadTemplate({ payload = {} }, { call, put, select }) {
+			const {
+				data,
+				pagination: { current },
+			} = yield select(state => state.template);
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			const response = yield call(TemplateService.uploadTemplate, payload);
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				yield put({
+					type: 'fetchTemplates',
+					payload: {
+						options: {
+							screen_type: -1,
+							colour: -1,
+							current: data.length > 1 ? current : current - 1,
+						},
+					},
+				});
+				message.success(formatMessage({ id: 'esl.device.template.action.upload.success' }));
+			} else {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				if (ALERT_NOTICE_MAP[response.code]) {
+					message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
+				} else {
+					message.error(formatMessage({ id: 'esl.device.template.action.upload.error' }));
+				}
+			}
+			return response;
+		},
 	},
 	reducers: {
 		updateState(state, action) {
