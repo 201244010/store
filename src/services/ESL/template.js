@@ -127,3 +127,12 @@ export const fetchScreenNameList = options => {
 
 	return fetchApi('getScreenNameList', opts).then(response => response.json());
 };
+
+export const uploadTemplate = options => {
+	const opts = {
+		method: 'POST',
+		body: options,
+	};
+
+	return fetchApi('upload', opts).then(response => response.json());
+};

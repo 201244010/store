@@ -12,6 +12,15 @@ const TEMPLATE_STATES = {
 	0: formatMessage({ id: 'esl.device.template.status.draft' }),
 	1: formatMessage({ id: 'esl.device.template.status.apply' }),
 };
+const COLOR_NAME = {
+	BWR: formatMessage({ id: 'esl-template-colour-BWR' }),
+	BW: formatMessage({ id: 'esl-template-colour-BW' }),
+};
+const SCREEN_NAME = {
+	'2.13': formatMessage({ id: 'esl-screen-2.13' }),
+	'2.6': formatMessage({ id: 'esl-screen-2.13' }),
+	'4.2': formatMessage({ id: 'esl-screen-4.2' }),
+};
 
 const widthMap = {
 	1: 348,
@@ -117,15 +126,6 @@ class SearchResult extends Component {
 		});
 	};
 
-	showUpload = info => {
-		this.setState({
-			uploadVisible: true,
-			curRecord: {
-				fileName: info.name
-			}
-		});
-	};
-
 	showClone = record => {
 		this.setState({
 			cloneVisible: true,
@@ -150,11 +150,7 @@ class SearchResult extends Component {
 						},
 						() => {
 							resetFields();
-							window.open(
-								`/studio?id=${response.data.template_id}&screen=${
-									values.screen_type
-								}`
-							);
+							window.open(`/studio?id=${response.data.template_id}&screen=${values.screen_type}`);
 						}
 					);
 				}
@@ -177,6 +173,7 @@ class SearchResult extends Component {
 	handleCancelUpload = () => {
 		this.setState({
 			uploadVisible: false,
+			uploadLoading: false
 		});
 	};
 
@@ -207,11 +204,7 @@ class SearchResult extends Component {
 						},
 						() => {
 							resetFields();
-							window.open(
-								`/studio?id=${response.data.template_id}&screen=${
-									curRecord.screen_type
-								}`
-							);
+							window.open(`/studio?id=${response.data.template_id}&screen=${curRecord.screen_type}`);
 						}
 					);
 				}
@@ -220,9 +213,26 @@ class SearchResult extends Component {
 	};
 
 	handleUpload = () => {
-		this.setState({
-			uploadVisible: false,
-			uploadLoading: false
+		const {
+			props: {form: { validateFields, resetFields }, uploadTemplate},
+			state: {curRecord: {templateInfo}}
+		} = this;
+		validateFields(['name'], async (errors, values) => {
+			if (!errors) {
+				const response = await uploadTemplate({
+					name: values.name,
+					template_model_name: templateInfo.type,
+					template_colour: templateInfo.type.indexOf('BWR') > -1 ? 7 : 3,
+					template: JSON.stringify(templateInfo),
+				});
+				if (response.code === ERROR_OK) {
+					this.setState({
+						uploadVisible: false,
+						uploadLoading: false
+					});
+					resetFields();
+				}
+			}
 		});
 	};
 
@@ -242,17 +252,46 @@ class SearchResult extends Component {
 	};
 
 	uploadJsonFileChange = (info) => {
-		if (info.file.status === 'done') {
-			this.showUpload(info.file);
-		} else if (info.file.status === 'error') {
-			message.error(`${info.file.name} file upload failed.`);
+		this.setState({
+			uploadVisible: true,
+			curRecord: {
+				fileName: info.file.name
+			}
+		});
+		const reader = new FileReader();
+		reader.readAsText(info.file, 'UTF-8');
+		reader.onload = (e) => {
+			const {curRecord} = this.state;
+			const fileString = e.target.result;
+			const templateInfo = JSON.parse(fileString);
+			if (!templateInfo || !templateInfo.type) {
+				message.warning(formatMessage({id: 'esl.device.template.action.upload.file.error'}));
+				return;
+			}
+
+			const typeArr = templateInfo.type.split('-');
 			this.setState({
-				uploadLoading: false
+				curRecord: {
+					...curRecord,
+					screen_type_name: SCREEN_NAME[typeArr[1]],
+					colour_name: COLOR_NAME[typeArr[0]],
+					templateInfo
+				}
 			});
-		}
+		};
 	};
 
 	render() {
+		const formItemLayout = {
+			labelCol: {
+				xs: { span: 24 },
+				sm: { span: 6 },
+			},
+			wrapperCol: {
+				xs: { span: 24 },
+				sm: { span: 18 },
+			},
+		};
 		const {
 			props: {
 				searchFormValues,
@@ -270,6 +309,7 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.template.name' }),
 				dataIndex: 'name',
+				render: text => <span>{formatMessage({ id: text })}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.template.size' }),
@@ -328,16 +368,6 @@ class SearchResult extends Component {
 				),
 			},
 		];
-		const formItemLayout = {
-			labelCol: {
-				xs: { span: 24 },
-				sm: { span: 6 },
-			},
-			wrapperCol: {
-				xs: { span: 24 },
-				sm: { span: 18 },
-			},
-		};
 
 		return (
 			<div>
@@ -375,10 +405,6 @@ class SearchResult extends Component {
 									<Upload
 										{...{
 											name: 'file',
-											action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-											headers: {
-												authorization: 'authorization-text',
-											},
 											showUploadList: false,
 											beforeUpload: (file) => {
 												this.setState({
@@ -391,7 +417,7 @@ class SearchResult extends Component {
 													});
 													message.error(formatMessage({id: 'esl.device.template.upload.file.type.error'}));
 												}
-												return isJson;
+												return false;
 											},
 											onChange: this.uploadJsonFileChange
 										}}
