@@ -139,6 +139,21 @@ const router = [
 			},
 
 			{
+				path: '/passengerAnalyze',
+				icon: 'blank',
+				name: 'passengerAnalyze',
+				routes: [
+					{ path: '/passengerAnalyze', redirect: '/passengerAnalyze/list' },
+					{
+						path: '/passengerAnalyze/list',
+						name: 'passengerAnalyze',
+						id: 'passengerAnalyze',
+						component: './PassengerAnalyze',
+					},
+				],
+			},
+
+			{
 				path: '/devices',
 				icon: 'blank',
 				name: 'devices',

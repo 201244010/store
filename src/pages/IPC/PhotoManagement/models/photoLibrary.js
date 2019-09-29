@@ -11,7 +11,7 @@ import {
 	readPhotoList,
 	saveFile,
 } from '../../services/photoLibrary';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, ERR_AGREEMENT_NOT_ACCEPT, ERR_AGREEMENT_NOT_LATEST } from '@/constants/errorCode';
 
 
 export default {
@@ -21,7 +21,8 @@ export default {
 		faceList: [],
 		total: 0,
 		checkList: [],
-		ageRange: []
+		ageRange: [],
+		isSignAgreement: true
 	},
 	reducers: {
 		readData(state, { payload }) {
@@ -52,7 +53,22 @@ export default {
 			const response = yield call(readPhotoList, request);
 			const { code, data:{ faceList, totalCount }} = response;
 			// console.log('list',faceList);
-			if(totalCount < pageNum * pageSize && code === ERROR_OK) {
+			if(code === ERR_AGREEMENT_NOT_ACCEPT || code === ERR_AGREEMENT_NOT_LATEST){
+				yield put({
+					type: 'readData',
+					payload: {
+						isSignAgreement: false
+					}
+				});
+			}else if(code !== ERROR_OK){
+				message.error(formatMessage({id: 'photoManagement.card.getListError'}));
+				yield put({
+					type: 'readData',
+					payload: {
+						isSignAgreement: true
+					}
+				});
+			}else if(totalCount < pageNum * pageSize && code === ERROR_OK) {
 				request.pageNum = Math.ceil(totalCount / pageSize);
 				const responseAgain = yield call(readPhotoList, request);
 				const list = responseAgain.data.faceList.map(item => map([{from: 'age', to: 'realAge'},{ from: 'ageRangeCode', to: 'age'}])(item));
@@ -63,6 +79,7 @@ export default {
 						// photoList: responseAgain.data.faceList,
 						photoList: list,
 						total: responseAgain.data.totalCount,
+						isSignAgreement: true
 					}
 				});
 			} else if(code === ERROR_OK) {
@@ -74,10 +91,9 @@ export default {
 						// photoList: faceList,
 						photoList: list,
 						total: totalCount,
+						isSignAgreement: true
 					}
 				});
-			} else {
-				message.error(formatMessage({id: 'photoManagement.card.getListError'}));
 			}
 		},
 		*getLibrary(_, {put, call}) {

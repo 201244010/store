@@ -29,6 +29,9 @@ import roleManagement from './zh-CN/role';
 import employee from './zh-CN/employee';
 import trade from './zh-CN/trade';
 import flow from './zh-CN/flow';
+import tradeShow from './zh-CN/tradeShow';
+
+import passengerAnalyze from './zh-CN/passengerAnalyze';
 
 export default {
 	'navBar.lang': '语言',
@@ -66,4 +69,6 @@ export default {
 	...network,
 	...trade,
 	...flow,
+	...tradeShow,
+	...passengerAnalyze,
 };

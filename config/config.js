@@ -2,8 +2,10 @@
 import { primaryColor } from '../src/defaultSettings';
 import routers from '../src/config/router';
 import uatRouters from '../src/config/router.uat';
-import env from '../src/config/env';
+import sysConfig from '../src/config/env';
 // import routers from './router';
+
+const {env} = sysConfig;
 
 const ROUTERS = {
 	uat: uatRouters,
@@ -80,6 +82,12 @@ export default {
 		APP_TYPE: process.env.APP_TYPE || '',
 		'process.env.UMI_ENV': process.env.UMI_ENV,
 		'process.env.COUNTRY': process.env.COUNTRY || 'china',
+	},
+	uglifyJSOptions(opts) {
+		if(['onl'].includes(env)){
+			opts.uglifyOptions.compress.drop_console = true;
+		}
+		return opts;
 	},
 	// Theme for antd
 	// https://ant.design/docs/react/customize-theme-cn

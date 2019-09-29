@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import moment from 'moment';
+import { formatMessage } from 'umi/locale';
+import { message } from 'antd';
 import SearchBar from './SearchBar';
 import SalseBar from './SalseBar';
 import SalseChart from './SalseChart';

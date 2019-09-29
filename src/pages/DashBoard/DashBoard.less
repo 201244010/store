@@ -73,15 +73,17 @@
 
 .salse-card,
 .overview-card {
-	min-width: 25%;
-	min-height: 130px;
+	flex: 1;
+}
+
+.width-action {
 	cursor: pointer;
 }
 
 .salse-info,
 .overview-info {
 	display: flex;
-	justify-content: center;
+	// justify-content: center;
 	align-items: flex-start;
 
 	.salse-content,
@@ -117,6 +119,23 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+
+	:global {
+		.ant-radio-button-wrapper-checked {
+			box-shadow: -1px 0 0 0 @font-color-primary;
+		}
+
+		.ant-radio-button-wrapper:hover {
+			color: @font-color-primary;
+		}
+
+		.ant-radio-group-solid {
+			.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+				background: @font-color-primary;
+				border-color: @font-color-primary;
+			}
+		}
+	}
 }
 
 .display-content {

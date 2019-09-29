@@ -86,20 +86,23 @@ export const readLibrary = async () =>
 	}).then(async (response) => {
 		// console.log(await response.json());
 		const { errcode, code, data } = await response.json();
+		// console.log(data);
 		if (errcode === 0 || code === ERROR_OK) {
 			// const { data } = response;
-			const result = data.group_list.map(dataFormatter);
+			const  groupList = data.group_list.map(dataFormatter);
+			const totalCapacity = data.total_capacity;
 			return {
 				code: ERROR_OK,
-				data: result
+				data: {
+					groupList,
+					totalCapacity
+				}
 			};
 		}
 		return {
 			code
 		};
-
-	})
-	;
+	});
 
 export const updateLibrary = async (params) => {
 	// const { userId, shopId, library } = params;

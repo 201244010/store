@@ -1,0 +1,73 @@
+.pay-chart {
+	position: relative;
+	.pay-chart-title {
+		font-family: PingFangSC-Semibold, sans-serif;
+		font-size: 20px;
+		color: #ffffff;
+	}
+	.pay-chart-lengend {
+		position: absolute;
+		top: 30px;
+		right: 0;
+		.lengend-oneList {
+			width: 210px;
+			height: 36px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			color: #ffffff;
+			.oneList-right {
+				display: flex;
+				align-items: center;
+				font-family: PingFangSC-Regular, sans-serif;
+				font-size: 16px;
+				.oneList-point {
+					display: 'inline-block';
+					width: 8px;
+					height: 8px;
+					border-radius: 50%;
+					margin-right: 16px;
+					margin-left: 13px;
+				}
+				.point-zhiFuBao {
+					background: #2D59F4;
+				}
+				.point-weChat {
+					background: #2DE29A;
+				}
+				.point-qrCode {
+					background: #FFDF66;
+				}
+				.point-card {
+					background: #FFC489;
+				}
+				.point-cash {
+					background: #BB99FF;
+				}
+				.point-other {
+					background: #6666FF;
+				}
+			}
+			.oneList-left {
+				font-family: Gotham-Bold, sans-serif;
+				font-size: 16px;
+				margin-right: 13px;
+			}
+		}
+		.oneList-lighter {
+			background: rgba(255,255,255,0.1);
+			border-radius: 8px;
+		}
+		
+	}
+	:global {
+		.g-guide {
+			.html-totalCount {
+				font-family: Gotham-Bold, sans-serif;
+				font-size: 20px;
+				color: #FFFFFF;
+				text-align: center;
+			}
+		}
+	}
+}

@@ -18,7 +18,9 @@ class LivePlayer extends React.Component{
 
 		this.currentSrc = '';
 		this.startTimestamp = 0;
+		this.metadataCount = 0;
 		this.relativeTimestamp = 0;
+		this.lastMetadataTimestamp = 0;
 		this.replayTimeout = 0;
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
 	}
@@ -75,6 +77,7 @@ class LivePlayer extends React.Component{
 
 		this.startTimestamp = moment().unix();
 		this.relativeTimestamp = 0;
+		this.metadataCount = 0;
 		this.toPause = false;
 	}
 
@@ -122,21 +125,8 @@ class LivePlayer extends React.Component{
 					const url = await getHistoryUrl(timestamp);
 					console.log('goto playhistory url: ', url);
 					if (url) {
-						const replay = (time) => {
-							this.replayTimeout = setTimeout(() => {
-								console.log('replay timeout', time);
-								const { videoplayer } = this;
-								if (videoplayer.paused()) {
-									this.src(url);
-									replay(time*2);
-								}else{
-									clearTimeout(this.replayTimeout);
-
-								}
-							}, time*1000);
-						};
 						this.src(url);
-						replay(2);
+						this.timeoutReplay();
 					}else{
 						console.log('回放未获取到url，当前时间戳为：', timestamp);
 					}
@@ -259,6 +249,16 @@ class LivePlayer extends React.Component{
 		return nextTimeStart;
 	}
 
+	onPlay = () => {
+		const { onLivePlay } = this.props;
+		const { isLive } = this.state;
+
+		this.metadataCount = 0;
+		if (isLive) {
+			onLivePlay();
+		}
+	}
+
 	onDateChange = async (timestamp) => {
 		this.pause();
 
@@ -341,19 +341,28 @@ class LivePlayer extends React.Component{
 				currentTimestamp
 			});
 
-			getCurrentTimestamp(this.relativeTimestamp + timestamp*1000);
+			const gap = (Math.round((timestamp - this.lastMetadataTimestamp)*1000*1000))/1000;
+			getCurrentTimestamp(this.relativeTimestamp + gap);
+
+			// console.log('relativeTimestamp: ', this.relativeTimestamp, 'timestamp: ', timestamp, 'lastMetadataTimestamp: ', this.lastMetadataTimestamp, 'gap: ', gap,  'total: ', this.relativeTimestamp + gap);
 		}
 
 	}
 
 	onMetadataArrived = (metadata) => {
 		const { onMetadataArrived } = this.props;
-
 		const { isLive } = this.state;
+		const { videoplayer: { player } } = this;
+
+		this.metadataCount++;
+		console.log('this.metadataCount++', this.metadataCount);
 
 		if (isLive) {
-			if (this.relativeTimestamp === 0) {
+
+			if (this.metadataCount === 2) {
+				// 只使用第二次到达的metadata
 				this.relativeTimestamp = metadata.relativeTime;
+				this.lastMetadataTimestamp = player.currentTime();
 			}
 
 			if (metadata.baseTime !== undefined && metadata.relativeTime !== undefined) {
@@ -367,7 +376,7 @@ class LivePlayer extends React.Component{
 				console.log('time gap=', now.valueOf() - (baseTime + relativeTime));
 			}
 
-			const { player } = this.videoplayer;
+			// const { player } = this.videoplayer;
 
 			// 仅flvjs播放器能使用此方式矫正播放进度
 			if (player.techName_ === 'Flvjs' && player.buffered &&  player.buffered().length > 0) {
@@ -409,6 +418,31 @@ class LivePlayer extends React.Component{
 	onError = () => {
 		console.log('liveplayer error handler');
 		this.src(this.currentSrc);
+		this.timeoutReplay();
+	}
+
+	// 超时重新播放
+	timeoutReplay = () => {
+		console.log('timeoutReplay');
+		// 首先检查当前video是否为playing
+		// 2秒后检查是否为play状态
+		// 为playing，则清除定时器；
+		// 不为playing，则重新赋值url，并执行2*time检查逻辑；
+		const { videoplayer } = this;
+		const replay = (time) => {
+			clearTimeout(this.replayTimeout);
+			this.replayTimeout = setTimeout(() => {
+				if (videoplayer.paused()) {
+					this.src(this.currentSrc);
+					replay(time*2);
+				} else {
+					clearTimeout(this.replayTimeout);
+				}
+
+			}, time * 1000);
+		};
+
+		replay(2);
 	}
 
 	render () {
@@ -439,6 +473,8 @@ class LivePlayer extends React.Component{
 
 				onDateChange={this.onDateChange}
 				onTimeUpdate={this.onTimeUpdate}
+
+				onPlay={this.onPlay}
 				onPause={this.onPause}
 				onError={this.onError}
 				onMetadataArrived={this.onMetadataArrived}
