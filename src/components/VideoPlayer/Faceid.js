@@ -11,11 +11,14 @@ class Faceid extends React.Component{
 		const tmp = faceidRects.filter(item => {
 			// console.log('timestamp: ', item.timestamp);
 			// if ( current - 300 < item.timestamp && item.timestamp < current + 500){
+			// console.log(item.timestamp - 300, current, item.timestamp + 1000);
 			if (item.timestamp - 300 < current && current < item.timestamp + 1000) {
 				return true;
 			}
 			return false;
 		});
+
+		console.log(tmp, current);
 
 		tmp.sort((a, b) => {
 			if (a.id !== b.id) {
@@ -113,7 +116,6 @@ class Faceid extends React.Component{
 							);
 						})
 				}
-				{/* </div> */}
 			</div>
 		);
 	}

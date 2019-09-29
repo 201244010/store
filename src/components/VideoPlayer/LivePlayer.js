@@ -249,6 +249,16 @@ class LivePlayer extends React.Component{
 		return nextTimeStart;
 	}
 
+	onPlay = () => {
+		const { onLivePlay } = this.props;
+		const { isLive } = this.state;
+
+		this.metadataCount = 0;
+		if (isLive) {
+			onLivePlay();
+		}
+	}
+
 	onDateChange = async (timestamp) => {
 		this.pause();
 
@@ -463,6 +473,8 @@ class LivePlayer extends React.Component{
 
 				onDateChange={this.onDateChange}
 				onTimeUpdate={this.onTimeUpdate}
+
+				onPlay={this.onPlay}
 				onPause={this.onPause}
 				onError={this.onError}
 				onMetadataArrived={this.onMetadataArrived}
