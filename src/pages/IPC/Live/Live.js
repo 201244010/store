@@ -183,7 +183,6 @@ class Live extends React.Component{
 
 		let sdStatus = true;
 		if (sn) {
-			// test();
 			clearList({ sn });
 			getAgeRangeList();
 
@@ -326,7 +325,6 @@ class Live extends React.Component{
 		}
 
 		const url = await getLiveUrl({ sn });
-		this.requestMetadata();
 		return url;
 	}
 
@@ -395,7 +393,7 @@ class Live extends React.Component{
 						currentPPI={currentPPI}
 						changePPI={this.changePPI}
 						ppiChanged={ppiChanged}
-
+						onLivePlay={this.requestMetadata}
 						getHistoryUrl={this.getHistoryUrl}
 						stopHistoryPlay={this.stopHistoryPlay}
 

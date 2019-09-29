@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { Card, Divider } from 'antd';
+import { Card } from 'antd';
 import { priceFormat } from '@/utils/utils';
 import { DASHBOARD } from './constants';
 import styles from './DashBoard.less';
@@ -16,7 +16,7 @@ const passengerFlowMessage = {
 	[RANGE.MONTH]: formatMessage({ id: 'lastMonth' }),
 };
 
-const SalseInfo = ({
+export const SalseInfo = ({
 	title = null,
 	icon = null,
 	content = null,
@@ -153,7 +153,7 @@ class SalseBar extends PureComponent {
 									<></>
 								) : (
 									<span>
-										{passengerFlowMessage[rangeType]}：{' '}
+										{passengerFlowMessage[rangeType]}：
 										{earlyAmountStore[rangeType] === '--'
 											? '--'
 											: priceFormat(earlyAmountStore[rangeType])}
@@ -166,7 +166,6 @@ class SalseBar extends PureComponent {
 								}),
 						}}
 					/>
-					<Divider type="vertical" />
 					<SalseInfo
 						{...{
 							icon: <img src={require('@/assets/icon/tradeCount.png')} />,
@@ -181,7 +180,7 @@ class SalseBar extends PureComponent {
 									<></>
 								) : (
 									<span>
-										{passengerFlowMessage[rangeType]}：{' '}
+										{passengerFlowMessage[rangeType]}：
 										{earlyCountStore[rangeType] === '--'
 											? '--'
 											: priceFormat(earlyCountStore[rangeType])}
@@ -194,7 +193,6 @@ class SalseBar extends PureComponent {
 								}),
 						}}
 					/>
-					<Divider type="vertical" />
 					<SalseInfo
 						{...{
 							icon: <img src={require('@/assets/icon/passengerFlow.png')} />,
@@ -205,7 +203,7 @@ class SalseBar extends PureComponent {
 									<></>
 								) : (
 									<span>
-										{passengerFlowMessage[rangeType]}：{' '}
+										{passengerFlowMessage[rangeType]}：
 										{earlyCount === '--' ? '--' : priceFormat(earlyCount)}
 									</span>
 								),
@@ -213,7 +211,6 @@ class SalseBar extends PureComponent {
 							onClick: () => goToPath('faceLog'),
 						}}
 					/>
-					<Divider type="vertical" />
 					<SalseInfo
 						{...{
 							icon: <img src={require('@/assets/icon/square.png')} />,
@@ -225,7 +222,7 @@ class SalseBar extends PureComponent {
 								) : (
 									<span>
 										{/* 临时方案，等待云端更新接口后计算昨日值 */}
-										{passengerFlowMessage[rangeType]}： {lastTradeRate}%
+										{passengerFlowMessage[rangeType]}：{lastTradeRate}%
 									</span>
 								),
 							loading: passengerFlowLoading || totalCountLoading,
