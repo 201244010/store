@@ -714,7 +714,19 @@ export default {
 				searchValue,
 				searchValue: { rangeType },
 			} = yield select(state => state.dashboard);
-			const [startTime, endTime] = getQueryTimeRange(searchValue);
+			// 云端接口修改后只需要传当天
+			let [startTime, endTime] = [
+				moment()
+					.startOf('day')
+					.unix(),
+				moment()
+					.endOf('day')
+					.unix(),
+			];
+
+			if (rangeType === RANGE.FREE) {
+				[startTime, endTime] = getQueryTimeRange(searchValue);
+			}
 
 			const { queryType = null, needLoading, loadingType } = payload;
 			const stateField = stateFields[queryType];

@@ -153,7 +153,7 @@ class SalseBar extends PureComponent {
 									<></>
 								) : (
 									<span>
-										{passengerFlowMessage[rangeType]}：{' '}
+										{passengerFlowMessage[rangeType]}：
 										{earlyAmountStore[rangeType] === '--'
 											? '--'
 											: priceFormat(earlyAmountStore[rangeType])}
@@ -180,7 +180,7 @@ class SalseBar extends PureComponent {
 									<></>
 								) : (
 									<span>
-										{passengerFlowMessage[rangeType]}：{' '}
+										{passengerFlowMessage[rangeType]}：
 										{earlyCountStore[rangeType] === '--'
 											? '--'
 											: priceFormat(earlyCountStore[rangeType])}
@@ -203,7 +203,7 @@ class SalseBar extends PureComponent {
 									<></>
 								) : (
 									<span>
-										{passengerFlowMessage[rangeType]}：{' '}
+										{passengerFlowMessage[rangeType]}：
 										{earlyCount === '--' ? '--' : priceFormat(earlyCount)}
 									</span>
 								),
@@ -222,7 +222,7 @@ class SalseBar extends PureComponent {
 								) : (
 									<span>
 										{/* 临时方案，等待云端更新接口后计算昨日值 */}
-										{passengerFlowMessage[rangeType]}： {lastTradeRate}%
+										{passengerFlowMessage[rangeType]}：{lastTradeRate}%
 									</span>
 								),
 							loading: passengerFlowLoading || totalCountLoading,

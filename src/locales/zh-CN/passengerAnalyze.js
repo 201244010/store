@@ -33,4 +33,7 @@ export default {
 	'passengerAnalyze.detail.top.time.rate': '时段人数占比',
 	'passengerAnalyze.detail.avg.time': '平均在店时间',
 	'passengerAnalyze.detail.rank': '第##rank##名',
+
+	'salse.type.drink': '酒水',
+	'salse.type.tabaco': '烟草',
 };

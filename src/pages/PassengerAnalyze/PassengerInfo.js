@@ -32,8 +32,7 @@ const PassengerAgeItemActive = ({ item, onClick = null }) => {
 			</div>
 			<div className={styles['age-content']}>
 				<div className={styles.title}>
-					{' '}
-					{formatMessage({ id: `common.${gender}` })} {ageRange}{' '}
+					{formatMessage({ id: `common.${gender}` })} {ageRange}
 					{formatMessage({ id: 'common.age' })}
 				</div>
 				<div className={styles['progress-wrapper']}>
@@ -60,7 +59,7 @@ const PassengerAgeItem = ({ item, onClick = null }) => {
 	return (
 		<div className={styles['age-item']} onClick={handleClick}>
 			<div className={styles.title}>
-				{formatMessage({ id: `common.${gender}` })} {ageRange}
+				{formatMessage({ id: `common.${gender}` })}{ageRange}
 			</div>
 			<div className={styles['progress-wrapper']}>
 				<Progress percent={genderRate} strokeWidth={10} strokeColor={strokeColor} />
