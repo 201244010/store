@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Col, Icon, Input, InputNumber, Row, Select, Radio } from 'antd';
+import { Col, Icon, Input, InputNumber, Row, Select, Radio, AutoComplete } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { SHAPE_TYPES, MAPS, FORMATS } from '@/constants/studio';
 // import { validEAN8Num, validEAN13Num } from '@/utils/studio';
@@ -69,9 +69,47 @@ export default class RightToolBox extends Component {
 		super(props);
 		this.state = {
 			x: 'o',
-			y: 'o'
+			y: 'o',
+			fontSize: '',
+			smallFontSize: ''
 		};
 	}
+
+	componentDidMount() {
+		this.initialValue(this.props);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		const {selectedShapeName: nowSelectedShapeName} = this.props;
+		if (nowSelectedShapeName !== nextProps.selectedShapeName) {
+			this.initialValue(nextProps);
+		}
+	}
+
+	componentWillUnmount() {
+		const { selectedShapeName, updateComponentsDetail } = this.props;
+		const { fontSize, smallFontSize } = this.state;
+		updateComponentsDetail({
+			isStep: true,
+			nowShapeName: selectedShapeName,
+			[selectedShapeName]: {
+				fontSize,
+				smallFontSize
+			},
+		});
+	}
+
+
+	initialValue = (props) => {
+		const { componentsDetail, selectedShapeName } = props;
+		const detail = componentsDetail[selectedShapeName];
+
+		this.setState({
+			fontSize: detail.fontSize.toString(),
+			smallFontSize: (detail.smallFontSize || 0).toString()
+		});
+	};
+
 
 	handleDetail = (key, value) => {
 		const {
@@ -104,9 +142,7 @@ export default class RightToolBox extends Component {
 			};
 			const detail = componentsDetail[selectedShapeName];
 			let canUpdate = true;
-			if (key === 'fontSize') {
-				newDetail.scaleY = value / MAPS.containerHeight[detail.type];
-			} else if (key === 'content' && selectedShapeName.indexOf(SHAPE_TYPES.PRICE) > -1) {
+			if (key === 'content' && selectedShapeName.indexOf(SHAPE_TYPES.PRICE) > -1) {
 				if (value === '') {
 					canUpdate = true;
 				} else {
@@ -126,6 +162,48 @@ export default class RightToolBox extends Component {
 				});
 			}
 		}
+	};
+
+	handleFontSize = (value) => {
+		const fontSize = (parseInt(value, 10) || '').toString();
+
+		this.setState({
+			fontSize
+		});
+	};
+
+	updateFontSize = () => {
+		const {componentsDetail, selectedShapeName, updateComponentsDetail} = this.props;
+		const {fontSize} = this.state;
+		const detail = componentsDetail[selectedShapeName];
+
+		updateComponentsDetail({
+			isStep: true,
+			[selectedShapeName]: {
+				fontSize,
+				scaleY: fontSize / MAPS.containerHeight[detail.type]
+			},
+		});
+	};
+
+	handleSmallFontSize = (value) => {
+		const smallFontSize = (parseInt(value, 10) || '').toString();
+
+		this.setState({
+			smallFontSize
+		});
+	};
+
+	updateSmallFontSize = () => {
+		const {selectedShapeName, updateComponentsDetail} = this.props;
+		const {smallFontSize} = this.state;
+
+		updateComponentsDetail({
+			isStep: true,
+			[selectedShapeName]: {
+				smallFontSize
+			},
+		});
 	};
 
 	handleCodec = (value) => {
@@ -422,7 +500,7 @@ export default class RightToolBox extends Component {
 
 	render() {
 		const { componentsDetail, selectedShapeName } = this.props;
-		const { x, y } = this.state;
+		const { x, y, fontSize, smallFontSize } = this.state;
 		const menuMap = this.getMenuMap();
 		const detail = componentsDetail[selectedShapeName];
 		const originFix = {};
@@ -519,14 +597,6 @@ export default class RightToolBox extends Component {
 							/>
 						</Col>
 					</Row>
-					{/*
-					<Row gutter={20}>
-						<Col span={12}>
-							<Input style={{width: 100}} addonAfter={<Icon type="undo"/>}/>
-						</Col>
-						<Col span={12}/>
-					</Row>
-					*/}
 				</div>
 				{menuMap.isRect ? (
 					<div className={styles['tool-box-block']}>
@@ -675,6 +745,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
+									<Option value="AlibabaSans">Alibaba Sans</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -685,38 +756,21 @@ export default class RightToolBox extends Component {
 								</span>
 							</Col>
 							<Col span={20}>
-								<Select
+								<AutoComplete
 									style={{ width: '100%' }}
+									dataSource={fontSizes.map(size => size.key.toString())}
 									placeholder={formatMessage({
 										id: 'studio.tool.label.font.size',
 									})}
-									value={detail.fontSize}
+									value={fontSize}
 									onChange={value => {
-										this.handleDetail('fontSize', value);
+										this.handleFontSize(value);
 									}}
-								>
-									{
-										fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-									}
-								</Select>
+									onBlur={() => {
+										this.updateFontSize();
+									}}
+								/>
 							</Col>
-							{/*
-									<Col span={2} />
-								<Col span={4}>
-									<span className={styles.title}>间距</span>
-								</Col>
-								<Col span={7}>
-									<InputNumber
-										style={{ width: "100%" }}
-										placeholder="间距"
-										min={0}
-										value={detail.letterSpacing}
-										onChange={value => {
-											this.handleDetail("letterSpacing", value);
-										}}
-									/>
-								</Col>
-									*/}
 						</Row>
 						<Row style={{ marginBottom: 10 }}>
 							<Col span={4}>
@@ -938,6 +992,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
+									<Option value="Alibaba Sans">Alibaba Sans</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -954,20 +1009,20 @@ export default class RightToolBox extends Component {
 												</span>
 											</Col>
 											<Col span={24}>
-												<Select
+												<AutoComplete
 													style={{ width: '100%' }}
+													dataSource={fontSizes.map(size => size.key.toString())}
 													placeholder={formatMessage({
 														id: 'studio.tool.label.font.size',
 													})}
-													value={detail.fontSize}
+													value={fontSize}
 													onChange={value => {
-														this.handleDetail('fontSize', value);
+														this.handleFontSize(value);
 													}}
-												>
-													{
-														fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-													}
-												</Select>
+													onBlur={() => {
+														this.updateFontSize();
+													}}
+												/>
 											</Col>
 										</Row>
 									</Col>
@@ -981,22 +1036,20 @@ export default class RightToolBox extends Component {
 												</span>
 											</Col>
 											<Col span={24}>
-												<Select
+												<AutoComplete
 													style={{ width: '100%' }}
+													dataSource={fontSizes.filter(size => size.value < detail.fontSize).map(size => size.key.toString())}
 													placeholder={formatMessage({
-														id: 'studio.tool.label.font.size.small',
+														id: 'studio.tool.label.font.size',
 													})}
-													value={detail.smallFontSize}
+													value={smallFontSize}
 													onChange={value => {
-														this.handleDetail('smallFontSize', value);
+														this.handleSmallFontSize(value);
 													}}
-												>
-													{
-														fontSizes
-															.filter(size => size.value < detail.fontSize)
-															.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-													}
-												</Select>
+													onBlur={() => {
+														this.updateSmallFontSize();
+													}}
+												/>
 											</Col>
 										</Row>
 									</Col>
@@ -1009,20 +1062,20 @@ export default class RightToolBox extends Component {
 										</span>
 									</Col>
 									<Col span={20}>
-										<Select
+										<AutoComplete
 											style={{ width: '100%' }}
+											dataSource={fontSizes.map(size => size.key.toString())}
 											placeholder={formatMessage({
 												id: 'studio.tool.label.font.size',
 											})}
-											value={detail.fontSize}
+											value={fontSize}
 											onChange={value => {
-												this.handleDetail('fontSize', value);
+												this.handleFontSize(value);
 											}}
-										>
-											{
-												fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-											}
-										</Select>
+											onBlur={() => {
+												this.updateFontSize();
+											}}
+										/>
 									</Col>
 								</Fragment>
 							)}

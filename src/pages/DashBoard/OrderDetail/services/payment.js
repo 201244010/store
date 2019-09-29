@@ -28,3 +28,25 @@ export const getDetailList = (options = {}) => {
 		.then(response => response.json())
 		.then(response => format('toCamel')(response));
 };
+
+export const getPurchaseTypeList = (options = {}) => {
+	const opt = {
+		body: {
+			...options,
+		},
+	};
+	return fetchApi('getPurchaseTypeList', opt)
+		.then(response => response.json())
+		.then(response => format('toCamel')(response));
+};
+
+export const getOrderTypeList = (options = {}) => {
+	const opt = {
+		body: {
+			...options,
+		},
+	};
+	return fetchApi('getOrderTypeList', opt)
+		.then(response => response.json())
+		.then(response => format('toCamel')(response));
+};

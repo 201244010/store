@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { getImagePromise, initTemplateDetail, purifyJsonOfBackEnd } from '@/utils/studio';
+import { getImagePromise, initTemplateDetail, purifyJsonOfBackEnd, downloadJsonAsDraft } from '@/utils/studio';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import * as TemplateService from '@/services/ESL/template';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
@@ -171,6 +171,27 @@ export default {
 				});
 				message.error(formatMessage({ id: 'esl.device.template.action.save.error' }));
 			}
+		},
+		*downloadAsDraft({ payload = {} }, { put, select }) {
+			const { curTemplate } = yield select(state => state.template);
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			const draft = {
+				encoding: 'UTF-8',
+				type: curTemplate.model_name,
+				backgroundColor: 'white',
+				fillFields: [],
+				layers: [],
+				layerCount: 0,
+			};
+			const result = purifyJsonOfBackEnd(payload.draft);
+			draft.fillFields = result.bindFields;
+			draft.layers = result.layers;
+			draft.layerCount = result.layers.length;
+
+			downloadJsonAsDraft(curTemplate.name, draft);
 		},
 		*fetchTemplateDetail({ payload = {} }, { call, put, select }) {
 			yield put({
