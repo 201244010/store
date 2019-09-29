@@ -6,6 +6,7 @@ COPY ./docker/localtime /etc/
 
 COPY . /app/src
 RUN npm cache clean --force
+RUN npm config set registry https://registry.npm.taobao.org
 RUN cd /app/src && npm install
 RUN cd /app/src && npm run build:test && ls && cp -r /app/src/dist/ /app/80
 RUN rm -r /app/src
