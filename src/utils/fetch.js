@@ -9,7 +9,7 @@ import * as CookieUtil from '@/utils/cookies';
 
 // import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
 
-const { API_ADDRESS, MD5_TOKEN, HTTP_PREFIX } = CONFIG;
+const { API_ADDRESS, MD5_TOKEN } = CONFIG;
 const ERR_INTERNET_DISCONNECTED = 9999;
 
 // const codeMessage = {
@@ -135,12 +135,7 @@ export const customizeFetch = (service = 'api', base) => {
 			};
 		}
 
-		let url = `${HTTP_PREFIX}//${baseUrl}/${service}/${api}`;
-
-		// TODO 因为 SSO 那边 https 证书的问题，因此对 SSO 的接口临时改成相对协议
-		if (baseUrl === 'api.test.sunmi.com') {
-			url = `//${baseUrl}/${service}/${api}`;
-		}
+		const url = `${baseUrl}/${service}/${api}`;
 		// const response = await fetch(url, opts);
 		const response = await fetchHandler(url, opts);
 		// console.log(response);
