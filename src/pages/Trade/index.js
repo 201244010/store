@@ -35,7 +35,7 @@ const mockData = {
 	table: [
 		{
 			id: '233',
-			productImg: 'http://test.cdn.sunmi.com/IMG/uploadicon/698745/1556108862_thumb.jpg',
+			productImg: '//test.cdn.sunmi.com/IMG/uploadicon/698745/1556108862_thumb.jpg',
 			productName: '云存储七天视频存储半年包',
 			productPrice: 69,
 			productNumber: 1,

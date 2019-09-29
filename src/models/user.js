@@ -68,11 +68,9 @@ export default {
 			return yield call(Actions.register, options);
 		},
 		*getUserInfo(_, { call, put }) {
-			const checkAdminResponse = yield put.resolve({ type: 'role/checkAdmin' });
 			const response = yield call(Actions.getUserInfo);
-			const checkAdmin = checkAdminResponse && checkAdminResponse.code === ERROR_OK ? 1 : 0;
 			if (response && response.code === ERROR_OK) {
-				const result = { ...response.data, checkAdmin } || { checkAdmin };
+				const result = { ...response.data };
 				CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, result);
 				yield put({
 					type: 'storeUserInfo',

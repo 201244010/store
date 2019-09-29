@@ -22,7 +22,7 @@ export const HTTP_PREFIX = {
 };
 
 export const WEB_SOCKET_PREFIX = {
-	'http:': 'ws:',
+	'http:': 'wss:',
 	'https:': 'wss:',
 };
 
@@ -81,13 +81,12 @@ const MD5_TOKEN = {
 };
 
 export default {
-	SSO_ADDRESS: SSO_ADDRESS[env],
-	API_ADDRESS: API_ADDRESS[env],
+	SSO_ADDRESS: `${HTTP_PREFIX[protocol]}//${SSO_ADDRESS[env]}`,
+	API_ADDRESS: `${HTTP_PREFIX[protocol]}//${API_ADDRESS[env]}`,
 	DES_KEY: DES_KEY[env],
 	DES_IV: DES_IV[env],
 	MD5_TOKEN: MD5_TOKEN[env],
-	IPC_SERVER: IPC_ADDRESS[env],
-	HTTP_PREFIX: HTTP_PREFIX[protocol] || 'http:',
+	IPC_SERVER: `${HTTP_PREFIX[protocol]}//${IPC_ADDRESS[env]}`,
 	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[protocol] || 'ws:',
 	COUNTRY_ADDRESS: COUNTRY_ADDRESS[country],
 };

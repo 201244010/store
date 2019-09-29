@@ -1,3 +1,5 @@
+
+
 export const DASHBOARD = {
 	PURCHASE_ORDER: ['支付宝', '微信', '银联二维码', '银行卡刷卡', '现金', '其他'],
 	PIE_COLOR: ['#4DBBFF', '#9BEB5E', '#FF9C66', '#FF6000', '#FF80B9', '#BB7CF7'],
@@ -12,6 +14,19 @@ export const DASHBOARD = {
 		RANGE: {
 			FREE: 'free',
 			TODAY: 'today',
+			WEEK: 'week',
+			MONTH: 'month',
+			YESTERDAY: 'yesterday',
+		},
+		RANGE_VALUE: {
+			TODAY: 1,
+			WEEK: 2,
+			MONTH: 3,
+			YESTERDAY: 4,
+		},
+		GROUP_RANGE: {
+			HOUR: 'hour',
+			DAY: 'day',
 			WEEK: 'week',
 			MONTH: 'month',
 		},
