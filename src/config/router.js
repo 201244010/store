@@ -139,14 +139,14 @@ const router = [
 			},
 
 			{
-				path: '/passengerAnalyze',
+				path: '/dataAnalyze',
 				icon: 'blank',
-				name: 'passengerAnalyze',
+				name: 'dataAnalyze',
 				routes: [
-					{ path: '/passengerAnalyze', redirect: '/passengerAnalyze/list' },
+					{ path: '/dataAnalyze', redirect: '/dataAnalyze/passenger' },
 					{
-						path: '/passengerAnalyze/list',
-						name: 'passengerAnalyze',
+						path: '/dataAnalyze/passenger',
+						name: 'passenger',
 						id: 'passengerAnalyze',
 						component: './PassengerAnalyze',
 					},

@@ -8,6 +8,7 @@ export const { env, country } = sysEnv;
 
 export const FIRST_MENU_ORDER = [
 	'dashboard',
+	'dataAnalyze',
 	'application',
 	'devices',
 	'esl',
