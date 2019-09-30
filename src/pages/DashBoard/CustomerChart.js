@@ -54,18 +54,8 @@ const CardTitle = ({ onChange = null }) => {
 	})
 )
 class CustomerChart extends PureComponent {
-	constructor(props) {
-		super(props);
-		this.state = {
-			flowType: PASSENGER_FLOW_TYPE.GENDER,
-		};
-	}
-
 	radioChange = async value => {
 		const { setSearchValue, fetchPassengerAgeByTimeRange } = this.props;
-		this.setState({
-			flowType: value,
-		});
 		await setSearchValue({
 			passengerFlowType: value,
 		});
@@ -139,8 +129,6 @@ class CustomerChart extends PureComponent {
 	};
 
 	render() {
-		const { flowType } = this.state;
-
 		const {
 			passengerFlowTypeLoading,
 			passengerAgeInfo: {
@@ -150,6 +138,7 @@ class CustomerChart extends PureComponent {
 				strangerCount = 0,
 				regularCount = 0,
 			} = {},
+			searchValue: { passengerFlowType },
 		} = this.props;
 
 		const displayPassengerList = this.formatPassengerList({
@@ -171,7 +160,7 @@ class CustomerChart extends PureComponent {
 		];
 
 		const geomColor =
-			flowType === PASSENGER_FLOW_TYPE.GENDER
+			passengerFlowType === PASSENGER_FLOW_TYPE.GENDER
 				? [
 					'title',
 					// eslint-disable-next-line no-shadow

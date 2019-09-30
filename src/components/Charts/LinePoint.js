@@ -9,6 +9,7 @@ class LinePoint extends PureComponent {
 			forceFit = true,
 			scale = {},
 			padding = 'auto',
+			animate = false,
 			axis: {
 				x: { name: xName = null, label: xLabel = {} } = {},
 				y: { name: yName = null, label: yLabel = {} } = {},
@@ -41,7 +42,14 @@ class LinePoint extends PureComponent {
 		} = this.props;
 
 		return (
-			<Chart height={height} data={data} forceFit={forceFit} scale={scale} padding={padding}>
+			<Chart
+				height={height}
+				data={data}
+				forceFit={forceFit}
+				scale={scale}
+				padding={padding}
+				animate={animate}
+			>
 				{Object.keys(legend).length > 0 && (
 					<Legend
 						custom={custom}
