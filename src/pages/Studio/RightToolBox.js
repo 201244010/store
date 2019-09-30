@@ -105,8 +105,8 @@ export default class RightToolBox extends Component {
 		const detail = componentsDetail[selectedShapeName];
 
 		this.setState({
-			fontSize: detail.fontSize.toString(),
-			smallFontSize: (detail.smallFontSize || 0).toString()
+			fontSize: (detail.fontSize || '').toString(),
+			smallFontSize: (detail.smallFontSize || '').toString()
 		});
 	};
 
