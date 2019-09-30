@@ -74,6 +74,7 @@ class LinePoint extends PureComponent {
 					shape={lineShape}
 					style={lineStyle}
 					tooltip={lineTooltip}
+					animate={animate}
 				/>
 				<Geom
 					type="point"
@@ -83,6 +84,7 @@ class LinePoint extends PureComponent {
 					color={pointColor}
 					style={pointStyle}
 					tooltip={pointTooltip}
+					animate={animate}
 				/>
 			</Chart>
 		);
