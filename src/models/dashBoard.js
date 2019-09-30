@@ -975,6 +975,7 @@ export default {
 						endQueryTime: moment()
 							.endOf('day')
 							.unix(),
+						passengerFlowType: PASSENGER_FLOW_TYPE.GENDER,
 						tradeTime: TRADE_TIME.AMOUNT,
 						paymentType: PAYMENT_TYPE.AMOUNT,
 					},
