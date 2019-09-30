@@ -84,7 +84,8 @@ class Studio extends Component {
 			dragCopy: {
 				left: -9999,
 				top: -9999
-			}
+			},
+			showMask: false
 		};
 		clearSteps();
 	}
@@ -878,6 +879,12 @@ class Studio extends Component {
 		toggleRightToolBox(config);
 	};
 
+	updateMask = (showMask) => {
+		this.setState({
+			showMask
+		});
+	};
+
 	render() {
 		const {
 			stageWidth,
@@ -905,7 +912,7 @@ class Studio extends Component {
 				},
 				template: { bindFields, curTemplate },
 			},
-			state: { dragging, dragCopy, dragName },
+			state: { dragging, dragCopy, dragName, showMask },
 		} = this;
 
 		const lines = getNearestLines(componentsDetail, selectedShapeName, scopedComponents);
@@ -1012,6 +1019,7 @@ class Studio extends Component {
 								</Layer>
 							) : null}
 						</Stage>
+						{showMask ? <div className={styles.mask} /> : <></>}
 					</div>
 					{selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1 ? (
 						<div className={styles['tool-box']}>
@@ -1023,6 +1031,7 @@ class Studio extends Component {
 									componentsDetail,
 									zoomScale,
 									templateInfo: curTemplate,
+									updateMask: this.updateMask,
 									updateComponentsDetail,
 									updateState,
 									deleteSelectedComponent,

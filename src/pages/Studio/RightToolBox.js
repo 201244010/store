@@ -80,33 +80,16 @@ export default class RightToolBox extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const {selectedShapeName: nowSelectedShapeName} = this.props;
-		if (nowSelectedShapeName !== nextProps.selectedShapeName) {
-			this.initialValue(nextProps);
-		}
+		this.initialValue(nextProps);
 	}
-
-	componentWillUnmount() {
-		const { selectedShapeName, updateComponentsDetail } = this.props;
-		const { fontSize, smallFontSize } = this.state;
-		updateComponentsDetail({
-			isStep: true,
-			nowShapeName: selectedShapeName,
-			[selectedShapeName]: {
-				fontSize,
-				smallFontSize
-			},
-		});
-	}
-
 
 	initialValue = (props) => {
 		const { componentsDetail, selectedShapeName } = props;
 		const detail = componentsDetail[selectedShapeName];
 
 		this.setState({
-			fontSize: detail.fontSize.toString(),
-			smallFontSize: (detail.smallFontSize || 0).toString()
+			fontSize: (detail.fontSize || '').toString(),
+			smallFontSize: (detail.smallFontSize || '').toString()
 		});
 	};
 
@@ -499,7 +482,7 @@ export default class RightToolBox extends Component {
 	};
 
 	render() {
-		const { componentsDetail, selectedShapeName } = this.props;
+		const { componentsDetail, selectedShapeName, updateMask } = this.props;
 		const { x, y, fontSize, smallFontSize } = this.state;
 		const menuMap = this.getMenuMap();
 		const detail = componentsDetail[selectedShapeName];
@@ -763,11 +746,15 @@ export default class RightToolBox extends Component {
 										id: 'studio.tool.label.font.size',
 									})}
 									value={fontSize}
+									onFocus={() => updateMask(true)}
 									onChange={value => {
 										this.handleFontSize(value);
 									}}
 									onBlur={() => {
 										this.updateFontSize();
+										setTimeout(() => {
+											updateMask(false);
+										}, 20);
 									}}
 								/>
 							</Col>
