@@ -9,7 +9,7 @@ export default {
 
 	'passenger.total': '全部',
 	'passenger.regular': '熟客',
-	'passenger.stranger': '生客',
+	'passenger.stranger': '新客',
 
 	'passengerAnalyze.rate.normal': '正常',
 	'passengerAnalyze.rate.heigh': '偏高',
