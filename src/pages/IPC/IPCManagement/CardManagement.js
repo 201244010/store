@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Form, Button, Modal, Spin, Progress } from 'antd';
+import { Card, Form, Button, Modal, Progress } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import styles from './CardManagement.less';
@@ -88,7 +88,8 @@ class CardManagement extends Component {
 	componentWillReceiveProps(nextProps) {
 		const {cardManagement:{
 			removeStatus,
-			formatStatus
+			formatStatus,
+			isLoading
 		}} = nextProps;
 
 		const {
@@ -97,6 +98,18 @@ class CardManagement extends Component {
 			formatTimeout,
 			timer
 		} = this.state;
+
+		const { setLoadingState } = this.props;
+
+		if(isLoading){
+			setLoadingState({
+				cardManagement: true
+			});
+		}else{
+			setLoadingState({
+				cardManagement: false
+			});
+		}
 
 		if (removeStatus === 'success' && this.removeConfirmInstance) {
 			clearTimeout(removeTimeout);
@@ -377,7 +390,7 @@ class CardManagement extends Component {
 	render() {
 		const {
 			cardManagement: {
-				isLoading,
+				// isLoading,
 				hasCard,
 				used, // 已用存储空间MB
 				total, // 总存储空间MB
@@ -393,77 +406,75 @@ class CardManagement extends Component {
 			<>
 				{
 					hasTFCard ?
-						<Spin spinning={isLoading}>
-							<Card title={formatMessage({ id: 'cardManagement.title' })} className={(!hasCard) && styles['transparnt-05']} id='tfCard'>
-								<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
-									<Form.Item label={formatMessage({ id: 'cardManagement.sizeLeft' })}>
-										{
-											hasCard && sd_status_code === 2 ?
-												<div>
-													<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}{this.cardSizeInfo(used)}/{this.cardSizeInfo(total)}</p>
-													<Progress
-														className={styles['form-progress']}
-														percent={this.percentage(used, total)}
-														showInfo={false}
-													/>
-												</div>
-												: <p>{ this.sdStatus2text(sd_status_code) }</p>
-										}
+						<Card title={formatMessage({ id: 'cardManagement.title' })} className={(!hasCard) && styles['transparnt-05']} id='tfCard'>
+							<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
+								<Form.Item label={formatMessage({ id: 'cardManagement.sizeLeft' })}>
+									{
+										hasCard && sd_status_code === 2 ?
+											<div>
+												<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}{this.cardSizeInfo(used)}/{this.cardSizeInfo(total)}</p>
+												<Progress
+													className={styles['form-progress']}
+													percent={this.percentage(used, total)}
+													showInfo={false}
+												/>
+											</div>
+											: <p>{ this.sdStatus2text(sd_status_code) }</p>
+									}
 
-									</Form.Item>
+								</Form.Item>
 
-									<Form.Item label={formatMessage({ id: 'cardManagement.daysCanUse' })}>
-										{
-											hasCard && sd_status_code === 2 ?
-												<p>
-													{this.hour2day(available_time)}<br />
-													{formatMessage({ id: 'cardManagement.daysUseTip' })}
-												</p>
-												: <p>{this.sdStatus2text(sd_status_code)}</p>
-										}
-									</Form.Item>
+								<Form.Item label={formatMessage({ id: 'cardManagement.daysCanUse' })}>
+									{
+										hasCard && sd_status_code === 2 ?
+											<p>
+												{this.hour2day(available_time)}<br />
+												{formatMessage({ id: 'cardManagement.daysUseTip' })}
+											</p>
+											: <p>{this.sdStatus2text(sd_status_code)}</p>
+									}
+								</Form.Item>
 
-									<Form.Item label={formatMessage({ id: 'cardManagement.removeSafely' })}>
-										{/* 未格式化的卡不能点移除 */}
-										<Button
-											disabled={!hasCard || (hasCard && sd_status_code === 1)}
-											onClick={(e) => {
-												e.target.blur();
-												this.removeConfirm();
-											}}
-										>{formatMessage({ id: 'cardManagement.removeImmediately' })}
-										</Button>
-									</Form.Item>
+								<Form.Item label={formatMessage({ id: 'cardManagement.removeSafely' })}>
+									{/* 未格式化的卡不能点移除 */}
+									<Button
+										disabled={!hasCard || (hasCard && sd_status_code === 1)}
+										onClick={(e) => {
+											e.target.blur();
+											this.removeConfirm();
+										}}
+									>{formatMessage({ id: 'cardManagement.removeImmediately' })}
+									</Button>
+								</Form.Item>
 
-									<Form.Item label={formatMessage({ id: 'cardManagement.format' })}>
-										<Button
-											disabled={!hasCard}
-											onClick={(e) => {
-												e.target.blur();
-												this.formatConfirm();
-											}}
-										>{formatMessage({ id: 'cardManagement.formatImmediately' })}
-										</Button>
-									</Form.Item>
+								<Form.Item label={formatMessage({ id: 'cardManagement.format' })}>
+									<Button
+										disabled={!hasCard}
+										onClick={(e) => {
+											e.target.blur();
+											this.formatConfirm();
+										}}
+									>{formatMessage({ id: 'cardManagement.formatImmediately' })}
+									</Button>
+								</Form.Item>
 
-									{/* 格式化中弹框 */}
-									<Modal
-										title={formatMessage({ id: 'cardManagement.formattingTitle' })}
-										visible={formattingModalVisible}
-										closable={false}
-										footer={null}
-										maskClosable={false}
-									>
-										<Progress
-											className={styles['form-progress']}
-											percent={formatProgress}
-											showInfo
-										/>
-										<p>{formatMessage({ id: 'cardManagement.formattingContent' })}</p>
-									</Modal>
-								</Form>
-							</Card>
-						</Spin>
+								{/* 格式化中弹框 */}
+								<Modal
+									title={formatMessage({ id: 'cardManagement.formattingTitle' })}
+									visible={formattingModalVisible}
+									closable={false}
+									footer={null}
+									maskClosable={false}
+								>
+									<Progress
+										className={styles['form-progress']}
+										percent={formatProgress}
+										showInfo
+									/>
+									<p>{formatMessage({ id: 'cardManagement.formattingContent' })}</p>
+								</Modal>
+							</Form>
+						</Card>
 						: null
 				}
 			</>
