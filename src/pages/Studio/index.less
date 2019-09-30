@@ -312,9 +312,18 @@
 		}
 
 		.board-stage {
+			position: relative;
 			float: left;
 			width: calc(100% - 520px);
 			height: 100%;
+			.mask {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				background: rgba(0, 0, 0, 0);
+			}
 		}
 
 		.tool-box {
