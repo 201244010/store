@@ -71,20 +71,8 @@ class ActiveDetection extends React.Component {
 
 	componentWillReceiveProps(props) {
 		const { form, activeDetection } = props;
-		const { setLoadingState } = this.props;
-		const { isReading, isSaving } = activeDetection;
 		const { getFieldValue, setFieldsValue } = form;
 		const { daysError } = this.state;
-
-		if(isReading || isSaving === 'saving'){
-			setLoadingState({
-				activeDetection: true
-			});
-		}else{
-			setLoadingState({
-				activeDetection: false
-			});
-		}
 
 		if (getFieldValue('isAuto') === 1 && getFieldValue('startTime') === null) {
 			setFieldsValue({ startTime: moment('1970-01-01').add(activeDetection.startTime, 's') });

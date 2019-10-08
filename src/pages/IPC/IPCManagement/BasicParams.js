@@ -115,18 +115,6 @@ class BasicParams extends Component {
 	componentWillReceiveProps = (props) => {
 
 		const { ipcBasicParams } = props;
-		const { setLoadingState } = this.props;
-		const { isReading, isSaving } = ipcBasicParams;
-
-		if(isReading || isSaving === 'saving'){
-			setLoadingState({
-				basicParams: true
-			});
-		}else{
-			setLoadingState({
-				basicParams: false
-			});
-		}
 
 		if (ipcBasicParams.isSaving === 'success') {
 			btnDisabled = true;

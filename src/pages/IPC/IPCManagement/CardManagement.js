@@ -88,8 +88,7 @@ class CardManagement extends Component {
 	componentWillReceiveProps(nextProps) {
 		const {cardManagement:{
 			removeStatus,
-			formatStatus,
-			isLoading
+			formatStatus
 		}} = nextProps;
 
 		const {
@@ -98,18 +97,6 @@ class CardManagement extends Component {
 			formatTimeout,
 			timer
 		} = this.state;
-
-		const { setLoadingState } = this.props;
-
-		if(isLoading){
-			setLoadingState({
-				cardManagement: true
-			});
-		}else{
-			setLoadingState({
-				cardManagement: false
-			});
-		}
 
 		if (removeStatus === 'success' && this.removeConfirmInstance) {
 			clearTimeout(removeTimeout);

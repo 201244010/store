@@ -126,19 +126,6 @@ class DeviceBasicInfo extends React.Component {
 		}
 	}
 
-	componentWillReceiveProps(nextProps) {
-		const { setLoadingState } = this.props;
-		const { basicInfo:{ status }} = nextProps;
-		if(status === 'loading'){
-			setLoadingState({
-				deviceBasicInfo: true
-			});
-		}else{
-			setLoadingState({
-				deviceBasicInfo: false
-			});
-		}
-	}
 
 	onSave = () => {
 		const { update, sn, form } = this.props;
