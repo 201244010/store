@@ -611,7 +611,7 @@ class SearchResult extends Component {
 								>
 									{(screenInfo || []).map(screen => (
 										<Select.Option key={screen.screen_num} value={screen.screen_num}>
-											{screen.screen_name}
+											{formatMessage({id: screen.screen_name})}
 										</Select.Option>
 									))}
 								</Select>
