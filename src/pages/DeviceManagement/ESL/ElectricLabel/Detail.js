@@ -20,17 +20,17 @@ export default function detail(props) {
 		name: screenPushInfo.page1_name,
 		template: formatMessage({id: screenPushInfo.page1_template_name || ' '}),
 		status: screenPushInfo.page1_push_status,
-		time: unixSecondToDate(screenPushInfo.page1_push_time)
+		time: screenPushInfo.page1_push_time ? unixSecondToDate(screenPushInfo.page1_push_time) : '--'
 	}, {
 		name: screenPushInfo.page2_name,
 		template: formatMessage({id: screenPushInfo.page2_template_name || ' '}),
 		status: screenPushInfo.page2_push_status,
-		time: unixSecondToDate(screenPushInfo.page2_push_time)
+		time: screenPushInfo.page2_push_time ? unixSecondToDate(screenPushInfo.page2_push_time) : '--'
 	}, {
 		name: screenPushInfo.page3_name,
 		template: formatMessage({id: screenPushInfo.page3_template_name || ' '}),
 		status: screenPushInfo.page3_push_status,
-		time: unixSecondToDate(screenPushInfo.page3_push_time)
+		time: screenPushInfo.page3_push_time ? unixSecondToDate(screenPushInfo.page3_push_time) : '--'
 	}];
 	const columns = [
 		{
@@ -128,14 +128,14 @@ export default function detail(props) {
 							{eslInfo.connect_time ? unixSecondToDate(eslInfo.connect_time) : '--'}
 						</span>
 					</div>
-					<div className={styles['detail-info-item']}>
-						<span className={styles['detail-info-label']}>
-							{formatMessage({ id: 'esl.device.esl.push.time' })}：
-						</span>
-						<span className={styles['detail-info-content']}>
-							{eslInfo.push_time ? unixSecondToDate(eslInfo.push_time) : '--'}
-						</span>
-					</div>
+					{/* <div className={styles['detail-info-item']}> */}
+					{/* <span className={styles['detail-info-label']}> */}
+					{/* {formatMessage({ id: 'esl.device.esl.push.time' })}： */}
+					{/* </span> */}
+					{/* <span className={styles['detail-info-content']}> */}
+					{/* {eslInfo.push_time ? unixSecondToDate(eslInfo.push_time) : '--'} */}
+					{/* </span> */}
+					{/* </div> */}
 				</Col>
 				<Col span={COL_SPAN}>
 					<div className={styles['detail-info-item']}>
@@ -158,7 +158,7 @@ export default function detail(props) {
 						<span className={styles['detail-info-label']}>
 							{formatMessage({ id: 'esl.device.esl.bind.product.name' })}：
 						</span>
-						<span className={styles['detail-info-content']}>
+						<span className={`${styles['detail-info-content']} ${styles['detail-info-limit']}`}>
 							{eslInfo.product_name || '--'}
 						</span>
 					</div>
