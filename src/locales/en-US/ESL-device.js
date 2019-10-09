@@ -44,6 +44,7 @@ export default {
 	'esl.device.esl.product.code': 'Barcode',
 	'esl.device.esl.template.name': 'Template',
 	'esl.device.esl.page.display': 'Page Name',
+	'normal_price_display': '价格显示',
 	'esl.device.esl.status': 'Status',
 	'esl.device.esl.push.time': 'Last Push Time',
 	'esl.device.esl.battery': 'Battery',

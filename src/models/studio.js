@@ -268,15 +268,12 @@ export default {
 		},
 		deleteSelectedComponent(state, action) {
 			state.selectedShapeName = '';
-			const {
-				selectedShapeName,
-				// isStep = true
-			} = action.payload;
+			const {selectedShapeName, isStep = true} = action.payload;
 			delete state.componentsDetail[selectedShapeName || action.payload];
-			// TODO 放开此处代码会报错，需要定位原因，暂时注释
-			// if (isStep) {
-			// 	saveNowStep(getLocationParam('id'), state.componentsDetail);
-			// }
+			const copyDetail = JSON.parse(JSON.stringify(state.componentsDetail));
+			if (isStep) {
+				saveNowStep(getLocationParam('id'), copyDetail);
+			}
 		},
 		zoomOutOrIn(state, action) {
 			const {

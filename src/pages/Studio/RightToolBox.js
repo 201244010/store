@@ -745,6 +745,7 @@ export default class RightToolBox extends Component {
 									placeholder={formatMessage({
 										id: 'studio.tool.label.font.size',
 									})}
+									defaultActiveFirstOption={false}
 									value={fontSize}
 									onFocus={() => updateMask(true)}
 									onChange={value => {
@@ -1002,6 +1003,7 @@ export default class RightToolBox extends Component {
 													placeholder={formatMessage({
 														id: 'studio.tool.label.font.size',
 													})}
+													defaultActiveFirstOption={false}
 													value={fontSize}
 													onChange={value => {
 														this.handleFontSize(value);
@@ -1029,6 +1031,7 @@ export default class RightToolBox extends Component {
 													placeholder={formatMessage({
 														id: 'studio.tool.label.font.size',
 													})}
+													defaultActiveFirstOption={false}
 													value={smallFontSize}
 													onChange={value => {
 														this.handleSmallFontSize(value);
@@ -1055,6 +1058,7 @@ export default class RightToolBox extends Component {
 											placeholder={formatMessage({
 												id: 'studio.tool.label.font.size',
 											})}
+											defaultActiveFirstOption={false}
 											value={fontSize}
 											onChange={value => {
 												this.handleFontSize(value);
