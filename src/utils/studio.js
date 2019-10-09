@@ -550,7 +550,7 @@ export const checkEAN13Num = (number) => {
 	return (10 - (res % 10)) % 10;
 };
 
-export const downloadJsonAsDraft = (name, data) => {
+export const downloadJsonAsDraft = (name = 'template', data) => {
 	const blob = new Blob([JSON.stringify(data)]);
 	const element = document.createElement('a');
 	element.download = `${name}-${+new Date()}.json`;
