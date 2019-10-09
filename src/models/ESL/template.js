@@ -1,10 +1,26 @@
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { getImagePromise, initTemplateDetail, purifyJsonOfBackEnd, downloadJsonAsDraft } from '@/utils/studio';
+import { getLocationParam } from '@/utils/utils';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import * as TemplateService from '@/services/ESL/template';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 import {IMAGE_TYPES, MAPS} from '@/constants/studio';
+
+function generateModelName() {
+	const SCREEN_TYPE = {
+		1: '2.13',
+		2: '2.6',
+		3: '4.2',
+	};
+	const COLOR_TYPE = {
+		3: 'BW',
+		7: 'BWR'
+	};
+	const studioType = getLocationParam('screen');
+	const colorType = getLocationParam('color');
+	return `${COLOR_TYPE[colorType]}-${SCREEN_TYPE[studioType]}`;
+}
 
 export default {
 	namespace: 'template',
@@ -180,7 +196,7 @@ export default {
 			});
 			const draft = {
 				encoding: 'UTF-8',
-				type: curTemplate.model_name,
+				type: curTemplate.model_name || generateModelName(),
 				backgroundColor: 'white',
 				fillFields: [],
 				layers: [],

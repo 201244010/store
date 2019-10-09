@@ -931,6 +931,7 @@ class Studio extends Component {
 					rightToolBoxPos,
 					copiedComponent,
 					scopedComponents,
+					noScopedComponents,
 					zoomScale,
 				},
 				template: { bindFields, curTemplate },
@@ -981,7 +982,8 @@ class Studio extends Component {
 							<Layer x={0} y={0} width={stageWidth} height={stageHeight}>
 								{Object.keys(componentsDetail).map(key => {
 									const targetDetail = componentsDetail[key];
-									if (targetDetail.name && targetDetail.name !== RECT_SELECT_NAME) {
+									const noScopedNames = [RECT_SELECT_NAME].concat(noScopedComponents.map(item => item.name));
+									if (targetDetail.name && !noScopedNames.includes(targetDetail.name)) {
 										return generateShape({
 											...targetDetail,
 											key,
@@ -1017,6 +1019,26 @@ class Studio extends Component {
 										}) :
 										null
 								}
+								{Object.keys(noScopedComponents).map(key => {
+									const targetDetail = noScopedComponents[key];
+									if (targetDetail.name) {
+										return generateShape({
+											...targetDetail,
+											key,
+											stageWidth,
+											stageHeight,
+											scaleX: targetDetail.scaleX || 1,
+											scaleY: targetDetail.scaleY || 1,
+											zoomScale,
+											ratio: targetDetail.ratio || 1,
+											selected: selectedShapeName === targetDetail.name,
+											onTransform: this.handleShapeTransform,
+											onTransformEnd: this.handleShapeTransformEnd,
+											onDblClick: this.handleShapeDblClick,
+										});
+									}
+									return undefined;
+								})}
 								{!dragging &&
 									selectedShapeName &&
 									componentsDetail[selectedShapeName].type !==
