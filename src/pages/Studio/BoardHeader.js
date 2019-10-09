@@ -132,14 +132,16 @@ export default class BoardHeader extends Component {
 						<Fragment>
 							{
 								templateInfo.name ?
-									<span className={styles['edit-content']}>{templateInfo.name}</span> :
+									<>
+										<span className={styles['edit-content']}>{templateInfo.name}</span>
+										<img
+											className={styles['edit-img']}
+											src={require('@/assets/studio/edit.svg')}
+											onClick={this.toChangeName}
+										/>
+									</> :
 									null
 							}
-							<img
-								className={styles['edit-img']}
-								src={require('@/assets/studio/edit.svg')}
-								onClick={this.toChangeName}
-							/>
 						</Fragment>
 					)}
 				</div>

@@ -21,6 +21,10 @@ const COLOR_NAME = {
 	BWR: formatMessage({ id: 'esl-template-colour-BWR' }),
 	BW: formatMessage({ id: 'esl-template-colour-BW' }),
 };
+const COLOR_TYPE = {
+	'BW': 3,
+	'BWR': 7
+};
 const SCREEN_NAME = {
 	'2.13': formatMessage({ id: 'esl-screen-2.13' }),
 	'2.6': formatMessage({ id: 'esl-screen-2.13' }),
@@ -81,13 +85,12 @@ class Guide extends Component {
 						const templateId = createRandomId();
 						localStorage.setItem(templateId, JSON.stringify({
 							id: templateId,
-							name: values.name,
 							screen_type_name: values.screen_type,
 							colour_name: values.colour,
 							model_name: '',
 							studio_info: JSON.stringify({})
 						}));
-						window.open(`/studio?type=alone&id=${templateId}&screen=${values.screen_type}`);
+						window.open(`/studio?type=alone&id=${templateId}&screen=${values.screen_type}&color=${values.colour}`);
 					}
 				);
 			}
@@ -112,16 +115,6 @@ class Guide extends Component {
 			curRecord: {}
 		});
 		resetFields();
-	};
-
-	validateTemplateName = (rule, value, callback) => {
-		// eslint-disable-next-line no-control-regex
-		const { length } = (value || '').replace(/[^\x00-\xff]/g, '01');
-		if (length <= 40) {
-			callback();
-		} else {
-			callback('长度超过限制(40个英文字母或20个汉字以内)');
-		}
 	};
 
 	uploadJsonFileChange = (info) => {
@@ -156,29 +149,24 @@ class Guide extends Component {
 
 	handleUpload = () => {
 		const {
-			props: {form: { validateFields, resetFields}},
+			props: {form: {resetFields}},
 			state: {curRecord}
 		} = this;
-		validateFields(['name'], async (errors, values) => {
-			if (!errors) {
-				const templateId = createRandomId();
-				localStorage.setItem(templateId, JSON.stringify({
-					id: templateId,
-					screen_type_name: curRecord.screen_type,
-					colour_name: curRecord.colour,
-					name: values.name,
-					model_name: '',
-					studio_info: JSON.stringify(curRecord.studioInfo)
-				}));
-				window.open(`/studio?type=alone&id=${templateId}&screen=${SCREEN_TYPE[curRecord.screen_type]}`);
+		const templateId = createRandomId();
+		localStorage.setItem(templateId, JSON.stringify({
+			id: templateId,
+			screen_type_name: curRecord.screen_type,
+			colour_name: curRecord.colour,
+			model_name: '',
+			studio_info: JSON.stringify(curRecord.studioInfo)
+		}));
+		window.open(`/studio?type=alone&id=${templateId}&screen=${SCREEN_TYPE[curRecord.screen_type]}&color=${COLOR_TYPE[curRecord.colour]}`);
 
-				this.setState({
-					uploadVisible: false,
-					uploadLoading: false
-				});
-				resetFields();
-			}
+		this.setState({
+			uploadVisible: false,
+			uploadLoading: false
 		});
+		resetFields();
 	};
 
 	render() {
@@ -244,27 +232,6 @@ class Guide extends Component {
 					onCancel={() => this.hideModal('new')}
 				>
 					<Form {...formItemLayout} style={{ padding: 24 }}>
-						<Form.Item label={formatMessage({ id: 'esl.device.template.name' })}>
-							{getFieldDecorator('name', {
-								rules: [
-									{
-										required: true,
-										message: formatMessage({
-											id: 'esl.device.template.name.require',
-										}),
-									},
-									{
-										validator: this.validateTemplateName,
-									},
-								],
-							})(
-								<Input
-									placeholder={formatMessage({
-										id: 'esl.device.template.name.require',
-									})}
-								/>
-							)}
-						</Form.Item>
 						<Form.Item label={formatMessage({ id: 'esl.device.template.size' })}>
 							{getFieldDecorator('screen_type', {
 								rules: [
@@ -327,27 +294,6 @@ class Guide extends Component {
 					<Form {...formItemLayout} style={{ padding: 24 }}>
 						<Form.Item label={formatMessage({ id: 'esl.device.template.upload.file' })}>
 							<Input value={curRecord.fileName} disabled />
-						</Form.Item>
-						<Form.Item label={formatMessage({ id: 'esl.device.template.name' })}>
-							{getFieldDecorator('name', {
-								rules: [
-									{
-										required: true,
-										message: formatMessage({
-											id: 'esl.device.template.name.require',
-										}),
-									},
-									{
-										validator: this.validateTemplateName,
-									},
-								],
-							})(
-								<Input
-									placeholder={formatMessage({
-										id: 'esl.device.template.name.require',
-									})}
-								/>
-							)}
 						</Form.Item>
 						<Form.Item label={formatMessage({ id: 'esl.device.template.size' })}>
 							<Input value={SCREEN_NAME[curRecord.screen_type]} disabled />
