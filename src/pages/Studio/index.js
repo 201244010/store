@@ -10,7 +10,7 @@ import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
-import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep } from '@/utils/studio';
+import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep } from '@/utils/studio';
 import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
@@ -219,6 +219,30 @@ class Studio extends Component {
 					}
 				}
 			}
+			// Ctrl + Y
+			if (keyCode === KEY.KEY_Y) {
+				this.nextStep();
+			}
+			// Ctrl + Z
+			if (keyCode === KEY.KEY_Z) {
+				this.preStep();
+			}
+		}
+	};
+
+	preStep = async () => {
+		const { props: { changeOneStep } } = this;
+		const result = await preStep(getLocationParam('id'));
+		if (result) {
+			changeOneStep(JSON.parse(result));
+		}
+	};
+
+	nextStep = async () => {
+		const { props: { changeOneStep } } = this;
+		const result = await nextStep(getLocationParam('id'));
+		if (result) {
+			changeOneStep(JSON.parse(result));
 		}
 	};
 
@@ -897,7 +921,6 @@ class Studio extends Component {
 				addComponent,
 				toggleRightToolBox,
 				zoomOutOrIn,
-				changeOneStep,
 				renameTemplate,
 				fetchTemplateDetail,
 				studio: {
@@ -929,7 +952,8 @@ class Studio extends Component {
 							saveAsDraft: this.handleSaveAsDraft,
 							downloadAsDraft: this.handleDownloadAsDraft,
 							zoomOutOrIn,
-							changeOneStep,
+							preStep: this.preStep,
+							nextStep: this.nextStep,
 							renameTemplate,
 							fetchTemplateDetail,
 						}}
