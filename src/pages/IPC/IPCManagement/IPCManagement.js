@@ -38,8 +38,9 @@ const Time = 15000;
 )
 class IPCManagement extends Component {
 
-	state={
-		timer: null
+	constructor(props) {
+		super(props);
+		this.timer = null;
 	}
 
 	componentDidMount(){
@@ -59,17 +60,11 @@ class IPCManagement extends Component {
 	}
 
 	timerHandler = () => {
-		let { timer } = this.state;
-		if(timer === null){
-			timer = setTimeout(this.showModalHandler,Time);
-			this.setState({
-				timer
-			});
+		if(this.timer === null){
+			this.timer = setTimeout(this.showModalHandler,Time);
 		}else{
-			clearTimeout(timer);
-			this.setState({
-				timer: null
-			});
+			clearTimeout(this.timer);
+			this.timer = null;
 		}
 	}
 
