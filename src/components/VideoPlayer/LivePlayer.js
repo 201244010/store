@@ -23,6 +23,8 @@ class LivePlayer extends React.Component{
 		this.lastMetadataTimestamp = 0;
 		this.replayTimeout = 0;
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
+
+		this.isPlaying = false; // video是否正在播放
 	}
 
 	componentDidMount () {
@@ -257,6 +259,9 @@ class LivePlayer extends React.Component{
 		if (isLive) {
 			onLivePlay();
 		}
+
+		console.log('LivePlayer onPlay');
+		this.isPlaying = true;
 	}
 
 	onDateChange = async (timestamp) => {
@@ -413,29 +418,39 @@ class LivePlayer extends React.Component{
 			console.log('非人为暂停!');
 			this.play();
 		}
+		this.isPlaying = false;
 	}
 
 	onError = () => {
 		console.log('liveplayer error handler');
-		this.src(this.currentSrc);
-		this.timeoutReplay();
+		this.isPlaying = false;
+
+		// 当前为直播
+		const { isLive } = this.state;
+		if (isLive) {
+			this.timeoutReplay();
+		}
+	}
+
+	onEnd = () => {
+		this.isPlaying = false;
 	}
 
 	// 超时重新播放
 	timeoutReplay = () => {
 		console.log('timeoutReplay');
-		// 首先检查当前video是否为playing
-		// 2秒后检查是否为play状态
-		// 为playing，则清除定时器；
-		// 不为playing，则重新赋值url，并执行2*time检查逻辑；
-		const { videoplayer } = this;
 		const replay = (time) => {
 			clearTimeout(this.replayTimeout);
-			this.replayTimeout = setTimeout(() => {
-				if (videoplayer.paused()) {
-					this.src(this.currentSrc);
-					replay(time*2);
-				} else {
+			this.replayTimeout = setTimeout(async() => {
+				const { isLive } = this.state;
+
+				console.log('isLive=', isLive);
+				console.log('this.isPlaying=', this.isPlaying);
+				if (!this.isPlaying && isLive) {
+					// await this.pauseLive(); // 新方案不必stoplive
+					await this.playLive();
+					replay(5);
+				} else if (this.isPlaying) {
 					clearTimeout(this.replayTimeout);
 				}
 
@@ -477,6 +492,7 @@ class LivePlayer extends React.Component{
 				onPlay={this.onPlay}
 				onPause={this.onPause}
 				onError={this.onError}
+				onEnd={this.onEnd}
 				onMetadataArrived={this.onMetadataArrived}
 
 				progressbar={
