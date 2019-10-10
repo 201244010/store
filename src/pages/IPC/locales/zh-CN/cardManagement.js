@@ -8,7 +8,7 @@ export default {
 	'cardManagement.sdStatus4': '存储卡被移除，请重新插入并刷新页面',
 
 	'cardManagement.sizeLeft': '存储卡空间容量',
-	'cardManagement.daysCanUse': '整张存储卡可存视频约为',
+	'cardManagement.daysCanUse': '循环存储天数约为',
 	'cardManagement.hasUsed': '已使用',
 	'cardManagement.day': '天',
 	'cardManagement.hour': '小时',
