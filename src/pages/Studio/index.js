@@ -189,13 +189,14 @@ class Studio extends Component {
 				if (copiedComponent.name) {
 					if (copiedComponent.type !== SHAPE_TYPES.RECT_SELECT) {
 						const newPosition = {};
-						if (!copiedComponent.copyCount) {
-							copiedComponent.copyCount = 1;
+						this.copyCountMap = this.copyCountMap || {};
+						if (!this.copyCountMap[copiedComponent.name]) {
+							this.copyCountMap[copiedComponent.name] = 1;
 						} else {
-							copiedComponent.copyCount++;
+							this.copyCountMap[copiedComponent.name]++;
 						}
-						newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
-						newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
+						newPosition.x = copiedComponent.x * (1 + this.copyCountMap[copiedComponent.name] / 10);
+						newPosition.y = copiedComponent.y * (1 + this.copyCountMap[copiedComponent.name] / 10);
 
 						addComponent({
 							...copiedComponent,
@@ -203,17 +204,19 @@ class Studio extends Component {
 							y: newPosition.y,
 						});
 					} else {
-						if (!copiedComponent.copyCount) {
-							copiedComponent.copyCount = 1;
+						this.copyCountMap = this.copyCountMap || {};
+						if (!this.copyCountMap[copiedComponent.name]) {
+							this.copyCountMap[copiedComponent.name] = 1;
 						} else {
-							copiedComponent.copyCount++;
+							this.copyCountMap[copiedComponent.name]++;
 						}
 						for (let i = 0; i < scopedComponents.length; i++) {
 							const {x, y, type, scaleY} = scopedComponents[i];
 							addComponent({
 								...scopedComponents[i],
 								x,
-								y: y + MAPS.height[type] * scaleY * zoomScale * copiedComponent.copyCount,
+								y: y + MAPS.height[type] * scaleY * zoomScale * this.copyCountMap[copiedComponent.name],
+								isStep: i === scopedComponents.length - 1
 							});
 						}
 					}
