@@ -12,6 +12,7 @@ const OverviewInfo = ({
 	subContent = null,
 	loading = true,
 	onClick = null,
+	action = true
 }) => {
 	const handleClick = e => {
 		if (onClick) {
@@ -24,7 +25,7 @@ const OverviewInfo = ({
 			title={null}
 			bordered={false}
 			loading={loading}
-			className={styles['overview-card']}
+			className={`${styles['overview-card']}  ${action ? styles['width-action'] : ''}`}
 			onClick={handleClick}
 		>
 			<div className={styles['overview-info']}>
