@@ -9,16 +9,17 @@ import BasicParams from './BasicParams';
 import SoftwareUpdate from './SoftwareUpdate';
 import InitialSetting from './InitialSetting';
 import CardManagement from './CardManagement';
+import NVRManagement from './NVRManagement';
 import styles from './IPCManagement.less';
 
 const Time = 15000;
 
 @connect(
 	state => {
-		const { 
-			activeDetection:{ isReading: isActiveDetectionReading, isSaving: isActiveDetectionSaving }, 
-			ipcBasicParams:{ isReading: isBasicParamsReading, isSaving: isBasicParamsSaving }, 
-			cardManagement:{ isLoading }, 
+		const {
+			activeDetection:{ isReading: isActiveDetectionReading, isSaving: isActiveDetectionSaving },
+			ipcBasicParams:{ isReading: isBasicParamsReading, isSaving: isBasicParamsSaving },
+			cardManagement:{ isLoading },
 			ipcBasicInfo:{ status } } = state;
 		const deviceBasicInfoLoading = status === 'loading' || false;
 		const activeDetectionLoading = isActiveDetectionReading || isActiveDetectionSaving === 'saving';
@@ -26,7 +27,7 @@ const Time = 15000;
 		const cardManagementLoading = isLoading;
 
 		const loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
-		
+
 		return {
 			loading
 		};
@@ -87,6 +88,7 @@ class IPCManagement extends Component {
 					<DeviceBasicInfo sn={sn} />
 					<ActiveDetection sn={sn} />
 					<BasicParams sn={sn} />
+					<NVRManagement sn={sn} />
 					<CardManagement sn={sn} />
 					<InitialSetting sn={sn} />
 					<SoftwareUpdate sn={sn} showModal={showModal} />

@@ -11,11 +11,11 @@ import defaultImage from '@/assets/imgs/default.jpeg';
 import styles from './DeviceBasicInfo.less';
 
 const mapStateToProps = (state) => {
-	const { ipcBasicInfo: basicInfo, ipcList } = state;
+	const { ipcBasicInfo: basicInfo, ipcList, loading } = state;
 	return {
 		basicInfo,
-		ipcList
-		// loading
+		ipcList,
+		loading
 	};
 };
 const mapDispatchToProps = (dispatch) => ({
@@ -95,19 +95,14 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
-@Form.create({
-	name: 'ipc-device-basic-info',
-	onValuesChange() {
-		// btnDisabled = false;
-	}
-})
+@Form.create()
 class DeviceBasicInfo extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			isEdit: false,
-			saving: false
+			// saving: false
 		};
 	}
 
@@ -126,7 +121,6 @@ class DeviceBasicInfo extends React.Component {
 		}
 	}
 
-
 	onSave = () => {
 		const { update, sn, form } = this.props;
 
@@ -135,16 +129,16 @@ class DeviceBasicInfo extends React.Component {
 		validateFields(async (errors) => {
 			if (!errors){
 				const name = getFieldValue('deviceName').trim();
-				this.setState({
-					saving: true
-				});
+				// this.setState({
+				// 	saving: true
+				// });
 
 				const result = await update( name, sn );
 
 				if (result) {
 					this.setState({
 						isEdit: false,
-						saving: false
+						// saving: false
 					});
 				}
 			}
@@ -221,11 +215,17 @@ class DeviceBasicInfo extends React.Component {
 	}
 
 	render() {
-		const { isEdit, saving } = this.state;
-		const { basicInfo, form, ipcList }  = this.props;
-		const { name, type, sn, img, /* mode, */ status } = basicInfo;
+		const { isEdit, /* saving */ } = this.state;
+		const { basicInfo, form, ipcList, loading }  = this.props;
+		const { name, type, sn, img, ip, mac, conntype } = basicInfo;
 
 		const { /* isFieldTouched, */ getFieldDecorator } = form;
+
+		const conntypes = {
+			0: formatMessage({ id: 'deviceBasicInfo.onconnt' }),
+			1: formatMessage({ id: 'deviceBasicInfo.wiredConnt'}),
+			2: formatMessage({ id: 'deviceBasicInfo.wirelessConnt'})
+		};
 
 		const image = img || defaultImage;
 
@@ -319,16 +319,35 @@ class DeviceBasicInfo extends React.Component {
 						</div>
 					</Form.Item>
 
-
 					<Form.Item label={formatMessage({id: 'deviceBasicInfo.type'})}>
 						<span>{type}</span>
 					</Form.Item>
 					<Form.Item label={formatMessage({id: 'deviceBasicInfo.sn'})}>
 						<span>{sn}</span>
 					</Form.Item>
+					{
+						ip ?
+							<Form.Item label={formatMessage({ id: 'deviceBasicInfo.ip'})}>
+								<span>{ip}</span>
+							</Form.Item>
+							: ''
+					}
 
+					{
+						mac ?
+							<Form.Item label={formatMessage({ id: 'deviceBasicInfo.mac'})}>
+								<span>{mac}</span>
+							</Form.Item>
+							: ''
+					}
+					{
+						conntype ?
+							<Form.Item label={formatMessage({ id: 'deviceBasicInfo.conntype'})}>
+								<span>{conntypes[conntype]}</span>
+							</Form.Item>
+							: ''
+					}
 					<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
-						{status ? '' : ''}
 						<div className={styles['btn-block']}>
 							<Button
 								type="primary"
@@ -338,8 +357,8 @@ class DeviceBasicInfo extends React.Component {
 								disabled={!isEdit}
 								className={styles['save-btn']}
 
-								// loading={loading.effects['ipcBasicInfo/update']}
-								loading={saving}
+								loading={loading.effects['ipcBasicInfo/update']}
+								// loading={saving}
 							>
 								{ formatMessage({id: 'deviceBasicInfo.save'}) }
 							</Button>
