@@ -211,13 +211,13 @@ class SalseChart extends PureComponent {
 									(time, orderCount) => ({
 										name: `${formatMessage({
 											id: 'salse.time',
-										})}:${formatXLabel(
+										})}：${formatXLabel(
 											time,
 											rangeType,
 											timeRangeStart,
 											timeRangeEnd
-										)}`,
-										value: orderCount,
+										)}<br />${formatMessage({id: 'dashboard.trade.count'})}：${orderCount}`,
+										// value: ``,
 									}),
 								],
 							},
