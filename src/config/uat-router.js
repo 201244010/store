@@ -56,8 +56,22 @@ const router = [
 				path: '/dashBoard',
 				name: 'dashBoard',
 				icon: 'blank',
-				component: './DashBoard',
-				id: 'dashBoard',
+				
+				routes: [
+					{
+						path: '/dashBoard',
+						id: 'dashBoard',
+						hideInMenu: true,
+						component: './DashBoard',
+					},
+					{
+						path: '/dashboard/detail',
+						id: 'orderDetail',
+						name: 'orderDetail',
+						hideInMenu: true,
+						component: './DashBoard/OrderDetail',
+					},
+				],
 			},
 
 			{

@@ -14,6 +14,19 @@ export const DASHBOARD = {
 			TODAY: 'today',
 			WEEK: 'week',
 			MONTH: 'month',
+			YESTERDAY: 'yesterday',
+		},
+		RANGE_VALUE: {
+			TODAY: 1,
+			WEEK: 2,
+			MONTH: 3,
+			YESTERDAY: 4,
+		},
+		GROUP_RANGE: {
+			HOUR: 'hour',
+			DAY: 'day',
+			WEEK: 'week',
+			MONTH: 'month',
 		},
 		TRADE_TIME: {
 			AMOUNT: 'amount',
@@ -22,6 +35,10 @@ export const DASHBOARD = {
 		PAYMENT_TYPE: {
 			AMOUNT: 'amount',
 			COUNT: 'count',
+		},
+		PASSENGER_FLOW_TYPE: {
+			GENDER: 'gender',
+			REGULAR: 'regular',
 		},
 	},
 	TIME_INTERVAL: {
@@ -43,6 +60,6 @@ export const DASHBOARD = {
 			'20:00',
 			'22:00',
 		],
-		MONTH: ['1', '4', '7', '10', '13', '16', '19', '22', '25', '28'],
+		MONTH: ['1', '4', '7', '10', '13', '16', '19', '22', '25', '28', '31'],
 	},
 };

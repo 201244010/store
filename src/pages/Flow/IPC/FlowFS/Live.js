@@ -301,11 +301,15 @@ class Live extends React.Component{
 			console.log('reloadPage faceidList=', faceidList);
 			console.log('reloadPage faceidList.slice(0, 7)=', faceidList.slice(0, 7));
 			localStorage.setItem('flowFace7', JSON.stringify(faceidList.slice(0, 7)));
+			const { livePlayer } = this;
 
 			// 先发stop，停止推流；（防止到达分流上限）
 			await this.stopLive();
+			await livePlayer.playLive();
 
-			window.location.reload();
+			this.reloadPage();
+
+			// window.location.reload();
 		}, 30 * 60 * 1000);
 	}
 
@@ -328,6 +332,7 @@ class Live extends React.Component{
 
 				<div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}`}>
 					<LivePlayer
+						ref={livePlayer => this.livePlayer = livePlayer}
 
 						pixelRatio={pixelRatio}
 
