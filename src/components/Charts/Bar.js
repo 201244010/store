@@ -30,7 +30,7 @@ class Bar extends Component {
 				>
 					<Axis name={x} label={xLabel} />
 					<Axis name={y} label={yLabel} />
-					<Tooltip crosshairs={false} {...toolTipStyle} />
+					<Tooltip crosshairs={false} {...toolTipStyle} showTitle={false} />
 					<Geom
 						size={dataSource.length > 31 ? 8 : 15}
 						type="interval"
