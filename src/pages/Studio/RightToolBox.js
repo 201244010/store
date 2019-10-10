@@ -1005,11 +1005,15 @@ export default class RightToolBox extends Component {
 													})}
 													defaultActiveFirstOption={false}
 													value={fontSize}
+													onFocus={() => updateMask(true)}
 													onChange={value => {
 														this.handleFontSize(value);
 													}}
 													onBlur={() => {
 														this.updateFontSize();
+														setTimeout(() => {
+															updateMask(false);
+														}, 20);
 													}}
 												/>
 											</Col>
@@ -1033,11 +1037,15 @@ export default class RightToolBox extends Component {
 													})}
 													defaultActiveFirstOption={false}
 													value={smallFontSize}
+													onFocus={() => updateMask(true)}
 													onChange={value => {
 														this.handleSmallFontSize(value);
 													}}
 													onBlur={() => {
 														this.updateSmallFontSize();
+														setTimeout(() => {
+															updateMask(false);
+														}, 20);
 													}}
 												/>
 											</Col>
@@ -1060,11 +1068,15 @@ export default class RightToolBox extends Component {
 											})}
 											defaultActiveFirstOption={false}
 											value={fontSize}
+											onFocus={() => updateMask(true)}
 											onChange={value => {
 												this.handleFontSize(value);
 											}}
 											onBlur={() => {
 												this.updateFontSize();
+												setTimeout(() => {
+													updateMask(false);
+												}, 20);
 											}}
 										/>
 									</Col>
