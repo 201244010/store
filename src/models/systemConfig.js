@@ -26,6 +26,13 @@ export default {
 		* updateScreenName({ payload = {} }, {put, call}) {
 			const response = yield call(Actions.updateScreenName, payload);
 			if (response && response.code === ERROR_OK) {
+				message.success(formatMessage({ id: 'esl.device.display.update.config.success' }));
+				yield put({
+					type: 'updateState',
+					payload: {},
+				});
+			} else {
+				message.error(formatMessage({ id: 'esl.device.display.update.config.fail' }));
 				yield put({
 					type: 'updateState',
 					payload: {},
