@@ -1,19 +1,12 @@
-// import { MESSAGE_TYPE } from '@/constants';
+import { MESSAGE_TYPE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 
 import { unbind, updateIPCName } from '../../services/IPCList';
 
-// const OPCODE = {
-// 	READ: '0x305b'
-// };
+const OPCODE = {
+	READ: '0x3126'
+};
 
-// const dataFormatter = (item) => ({
-// 	name: item.name,
-// 	type: item.type,
-// 	sn: item.sn,
-// 	img: item.img,
-// 	mode: item.mode || 1
-// });
 
 export default {
 	namespace: 'ipcBasicInfo',
@@ -22,19 +15,27 @@ export default {
 		img: '',
 		sn: '',
 		type: '',
-		status: 'loading'
+		status: 'normal',
+		ip: '',
+		mac: '',
+		conntype: ''
 	},
 	reducers: {
-		readData(state, action) {
-			const { payload: { name, img, type, sn } } = action;
-			// console.log(payload);
+		readData(state, { payload }) {
 			return {
-				name,
-				img,
-				type,
-				sn,
-				status: 'normal'
+				...state,
+				...payload
 			};
+		},
+		readNetwork(state, { payload }) {
+			const { sn } = payload;
+			if(state.sn === sn) {
+				return {
+					...state,
+					...payload
+				};
+			}
+			return state;
 		},
 		updateData(state, { payload: { name } }) {
 			state.name = name;
@@ -52,14 +53,34 @@ export default {
 					sn
 				}
 			});
-
+			const topicPublish = yield put.resolve({
+				type:'mqttIpc/generateTopic',
+				payload:{
+					deviceType: type,
+					messageType: 'request',
+					method: 'pub'
+				}
+			});
+			yield put({
+				type:'mqttIpc/publish',
+				payload:{
+					topic: topicPublish,
+					message: {
+						opcode: OPCODE.READ,
+						param: {
+							sn
+						}
+					}
+				}
+			});
 			yield put({
 				type:'readData',
 				payload: {
 					name,
 					img,
 					type,
-					sn
+					sn,
+					status: 'loading'
 				}
 			});
 
@@ -106,4 +127,35 @@ export default {
 			return false;
 		}
 	},
+	subscriptions: {
+		setup({ dispatch }) {
+			const listeners = [
+				{
+					opcode: OPCODE.READ,
+					type: MESSAGE_TYPE.RESPONSE,
+					handler: (topic, messages) => {
+						const msg = JSON.parse(JSON.stringify(messages));
+						if (msg.errcode === ERROR_OK) {
+							const { data: { sn, network, mac, conntype } } = msg;
+							dispatch({
+								type: 'readNetwork',
+								payload: {
+									sn,
+									ip: network ? network.lan.ipaddr : '',
+									mac,
+									conntype,
+									status: 'normal',
+								}
+							});
+						}
+					}
+				}
+			];
+
+			dispatch({
+				type: 'mqttIpc/addListener',
+				payload: listeners
+			});
+		}
+	}
 };

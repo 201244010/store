@@ -18,7 +18,7 @@ class Faceid extends React.Component{
 			return false;
 		});
 
-		console.log(tmp, current);
+		// console.log(tmp, current);
 
 		tmp.sort((a, b) => {
 			if (a.id !== b.id) {
