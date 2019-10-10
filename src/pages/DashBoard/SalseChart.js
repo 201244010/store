@@ -209,14 +209,14 @@ class SalseChart extends PureComponent {
 								tooltip: [
 									'time*orderCount',
 									(time, orderCount) => ({
-										name: `${formatMessage({
+										name: `<p>${formatMessage({
 											id: 'salse.time',
 										})}：${formatXLabel(
 											time,
 											rangeType,
 											timeRangeStart,
 											timeRangeEnd
-										)}<br />${formatMessage({id: 'dashboard.trade.count'})}：${orderCount}`,
+										)}</p><p>${formatMessage({id: 'dashboard.trade.count'})}：${orderCount}</p>`,
 										// value: ``,
 									}),
 								],
