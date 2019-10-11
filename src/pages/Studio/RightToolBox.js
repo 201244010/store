@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Col, Icon, Input, InputNumber, Row, Select, Radio, AutoComplete } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { KEY } from '@/constants';
 import { SHAPE_TYPES, MAPS, FORMATS } from '@/constants/studio';
 // import { validEAN8Num, validEAN13Num } from '@/utils/studio';
 import * as RegExp from '@/constants/regexp';
@@ -77,11 +78,24 @@ export default class RightToolBox extends Component {
 
 	componentDidMount() {
 		this.initialValue(this.props);
+		document.addEventListener('keydown', this.handleFontSizeEnter);
 	}
 
 	componentWillReceiveProps(nextProps) {
 		this.initialValue(nextProps);
 	}
+
+	componentWillUnmount() {
+		document.removeEventListener('keydown', this.handleFontSizeEnter);
+	}
+
+	handleFontSizeEnter = (ev) => {
+		const { keyCode, target: { className } } = ev;
+		if (keyCode === KEY.ENTER && className.includes('ant-select-search__field')) {
+			this.autoComplete.blur();
+			this.smallAutoComplete.blur();
+		}
+	};
 
 	initialValue = (props) => {
 		const { componentsDetail, selectedShapeName } = props;
@@ -740,6 +754,7 @@ export default class RightToolBox extends Component {
 							</Col>
 							<Col span={20}>
 								<AutoComplete
+									ref={(autoComplete) => {this.autoComplete = autoComplete;}}
 									style={{ width: '100%' }}
 									dataSource={fontSizes.map(size => size.key.toString())}
 									placeholder={formatMessage({
@@ -998,6 +1013,7 @@ export default class RightToolBox extends Component {
 											</Col>
 											<Col span={24}>
 												<AutoComplete
+													ref={(autoComplete) => {this.autoComplete = autoComplete;}}
 													style={{ width: '100%' }}
 													dataSource={fontSizes.map(size => size.key.toString())}
 													placeholder={formatMessage({
@@ -1030,6 +1046,7 @@ export default class RightToolBox extends Component {
 											</Col>
 											<Col span={24}>
 												<AutoComplete
+													ref={(autoComplete) => {this.smallAutoComplete = autoComplete;}}
 													style={{ width: '100%' }}
 													dataSource={fontSizes.filter(size => size.value < detail.fontSize).map(size => size.key.toString())}
 													placeholder={formatMessage({
@@ -1061,6 +1078,7 @@ export default class RightToolBox extends Component {
 									</Col>
 									<Col span={20}>
 										<AutoComplete
+											ref={(autoComplete) => {this.autoComplete = autoComplete;}}
 											style={{ width: '100%' }}
 											dataSource={fontSizes.map(size => size.key.toString())}
 											placeholder={formatMessage({
