@@ -4,7 +4,7 @@ stages:
 release_image:
   stage: release
   tags:
-    - docker
+    - runner01
   only:
     - test
     - dev
@@ -17,7 +17,7 @@ release_image:
 deploy_to_dev_test:
   stage: deploy
   tags:
-    - docker
+    - runner01
   only:
     - test
     - dev
