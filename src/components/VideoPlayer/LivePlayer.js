@@ -254,8 +254,8 @@ class LivePlayer extends React.Component{
 	onPlay = () => {
 		const { onLivePlay } = this.props;
 		const { isLive } = this.state;
-
-		this.metadataCount = 0;
+		// console.log('metadataCount reset onPlay ');
+		// this.metadataCount = 0;
 		if (isLive) {
 			onLivePlay();
 		}
