@@ -44,6 +44,8 @@ class VideoPlayerProgressBar extends React.Component{
 		});
 	}
 
+
+
 	// shouldComponentUpdate(nextProps, nextState) {
 	// 	// console.log(nextProps);
 	// 	return this.firstTime === true || this.state.timestamp !== nextState.timestamp || this.state.dragging !== nextState.dragging;
@@ -232,13 +234,6 @@ class VideoPlayerProgressBar extends React.Component{
 		// }, 1000);
 	}
 
-	UNSAFE_componentWillMount () {
-		const { current } = this.props;
-
-		this.getDuration(current);
-		this.generateTime();
-	}
-
 	async UNSAFE_componentWillReceiveProps(props) {
 		const { current } = props;
 		const { timeStart, dragging, /* timestamp */ } = this.state;
@@ -254,6 +249,15 @@ class VideoPlayerProgressBar extends React.Component{
 		if (!dragging) {
 			this.setPosition(current);
 		}
+	}
+
+	UNSAFE_componentWillMount() {
+		console.log('UNSAFE_componentWillMount');
+
+		const { current } = this.props;
+
+		this.getDuration(current);
+		this.generateTime();
 	}
 
 
