@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Form, Button, Modal, Progress } from 'antd';
+import { Card, Form, Button, Modal, Progress, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import styles from './CardManagement.less';
@@ -52,6 +52,15 @@ const mapDispatchToProps = (dispatch) => ({
 				sn
 			}
 		}).then(info => info);
+	},
+	checkBind: async (sn) => {
+		const result = await dispatch({
+			type: 'ipcList/checkBind',
+			payload: {
+				sn
+			}
+		});
+		return result;
 	}
 });
 
@@ -256,51 +265,64 @@ class CardManagement extends Component {
 	/**
 	 * 格式化确认弹框
 	 * */
-	formatConfirm = () => {
-		const that = this;
-		this.formatConfirmInstance = Modal.confirm({
-			icon: 'info-circle',
-			title: formatMessage({ id: 'cardManagement.formatTipTitle' }),
-			content: formatMessage({ id: 'cardManagement.formatTipContent' }),
-			okText: formatMessage({ id: 'cardManagement.modalOk' }),
-			cancelText: formatMessage({ id: 'cardManagement.modalCancel' }),
-			// centered: true,
-			onOk() {
-				console.log('formatConfirm ok');
-				that.formatting();
-			},
-			onCancel() {
-				console.log('formatConfirm cancel');
-			},
-		});
+	formatConfirm = async () => {
+		const { checkBind, sn } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			const that = this;
+			this.formatConfirmInstance = Modal.confirm({
+				icon: 'info-circle',
+				title: formatMessage({ id: 'cardManagement.formatTipTitle' }),
+				content: formatMessage({ id: 'cardManagement.formatTipContent' }),
+				okText: formatMessage({ id: 'cardManagement.modalOk' }),
+				cancelText: formatMessage({ id: 'cardManagement.modalCancel' }),
+				// centered: true,
+				onOk() {
+					console.log('formatConfirm ok');
+					that.formatting();
+				},
+				onCancel() {
+					console.log('formatConfirm cancel');
+				},
+			});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
+
 	}
 
 	/**
 	 * 移除确认弹框
 	 * */
-	removeConfirm = () => {
-		const that = this;
-		this.removeConfirmInstance = Modal.confirm({
-			icon: 'info-circle',
-			title: formatMessage({ id: 'cardManagement.removeTipTitle' }),
-			content: formatMessage({ id: 'cardManagement.removeTipContent' }),
-			okText: formatMessage({ id: 'cardManagement.modalOk' }),
-			cancelText: formatMessage({ id: 'cardManagement.modalCancel' }),
-			// centered: true,
-			onOk() {
-				console.log('removeConfirm ok');
-				that.removeConfirmInstance.update({
-					cancelButtonProps: { disabled: true } // 点击确定后，禁止点取消
-				});
+	removeConfirm = async () => {
+		const { checkBind, sn } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind){
+			const that = this;
+			this.removeConfirmInstance = Modal.confirm({
+				icon: 'info-circle',
+				title: formatMessage({ id: 'cardManagement.removeTipTitle' }),
+				content: formatMessage({ id: 'cardManagement.removeTipContent' }),
+				okText: formatMessage({ id: 'cardManagement.modalOk' }),
+				cancelText: formatMessage({ id: 'cardManagement.modalCancel' }),
+				// centered: true,
+				onOk() {
+					console.log('removeConfirm ok');
+					that.removeConfirmInstance.update({
+						cancelButtonProps: { disabled: true } // 点击确定后，禁止点取消
+					});
 
-				return new Promise(() => {
-					that.Removing();
-				}).catch((err) => console.log(err));
-			},
-			onCancel() {
-				console.log('confirm cancel');
-			},
-		});
+					return new Promise(() => {
+						that.Removing();
+					}).catch((err) => console.log(err));
+				},
+				onCancel() {
+					console.log('confirm cancel');
+				},
+			});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
 	}
 
 	/**

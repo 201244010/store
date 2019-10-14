@@ -115,6 +115,19 @@ export default {
 
 			return '';
 		},
-
+		*checkBind({ payload: { sn }}, { put }) {
+			const list = yield put.resolve({
+				type: 'read'
+			});
+			let isBind = false;
+			if(list) {
+				list.forEach(item => {
+					if(item.sn === sn) {
+						isBind = true;
+					}
+				});
+			}
+			return isBind;
+		}
 	}
 };

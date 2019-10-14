@@ -59,6 +59,15 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		}).then(info => info);
 	},
+	checkBind: async (sn) => {
+		const result = await dispatch({
+			type: 'ipcList/checkBind',
+			payload: {
+				sn
+			}
+		});
+		return result;
+	}
 });
 @connect(mapStateToProps, mapDispatchToProps)
 class InitialSetting extends Component {
@@ -227,22 +236,35 @@ class InitialSetting extends Component {
 		},10000);
 	}
 
-	showRebootModal = () => {
-		this.setStatus('normal');
-		this.setState({
-			rebootVisible: true,
-			resetVisible: false,
-			percent: 0
-		});
+	showRebootModal = async () => {
+		const { checkBind, sn } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			this.setStatus('normal');
+			this.setState({
+				rebootVisible: true,
+				resetVisible: false,
+				percent: 0
+			});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
+
 	}
 
-	showResetModal = () => {
-		this.setStatus('normal');
-		this.setState({
-			resetVisible: true,
-			rebootVisible: false,
-			percent: 0
-		});
+	showResetModal = async () => {
+		const { checkBind, sn } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			this.setStatus('normal');
+			this.setState({
+				resetVisible: true,
+				rebootVisible: false,
+				percent: 0
+			});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
 	}
 
 	hideRebootModal = () => {

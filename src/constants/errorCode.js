@@ -34,6 +34,7 @@ export const ERR_AGREEMENT_NOT_LATEST = 5411;
 export const ERR_SSO_USER_NOT_IN_COMPANY = 5400;
 
 export const ORDER_COMPLETED = 5503;
+export const UNBIND_CODE = 5510;
 
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',
