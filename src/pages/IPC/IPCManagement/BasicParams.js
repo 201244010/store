@@ -46,6 +46,15 @@ const mapDispatchToProps = (dispatch) => ({
 				WDRMode
 			}
 		});
+	},
+	checkBind: async (sn) => {
+		const result = await dispatch({
+			type: 'ipcList/checkBind',
+			payload: {
+				sn
+			}
+		});
+		return result;
 	}
 });
 
@@ -54,29 +63,7 @@ let btnDisabled = true;
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name:'basic-params-form',
-	// mapPropsToFields(props) {
-	// 	return {
-	// 		nightMode: Form.createFormField({
-	// 			value: props.ipcBasicParams.nightMode
-	// 		}),
-	// 		indicator: Form.createFormField({
-	// 			value: props.ipcBasicParams.indicator
-	// 		}),
-	// 		rotation: Form.createFormField({
-	// 			value: props.ipcBasicParams.rotation
-	// 		})
-	// 	};
-	// },
 	onValuesChange(){
-		// console.log(values);
-	// 	Object.keys(values).forEach(item => {
-	// 		const key = item;
-	// 		if (values[key] !== props.ipcBasicParams[key]) {
-	// 			isChange[key] = true;
-	// 		} else {
-	// 			isChange[key] = false;
-	// 		}
-	// 	});
 		btnDisabled = false;
 	}
 })
@@ -125,17 +112,21 @@ class BasicParams extends Component {
 		}
 	}
 
-
-	submit = () => {
-		const { form, sn } = this.props;
+	submit = async () => {
+		const { form, sn, checkBind } = this.props;
 		const values = form.getFieldsValue();
 		const { saveSetting } = this.props;
 
 		const { nightMode, indicator, rotation, WDRMode } = values;
 
-		saveSetting({
-			nightMode, indicator, rotation, sn, WDRMode
-		});
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			saveSetting({
+				nightMode, indicator, rotation, sn, WDRMode
+			});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
 		// btnDisabled = true;
 
 	}

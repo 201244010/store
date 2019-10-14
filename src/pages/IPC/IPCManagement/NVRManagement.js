@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card } from 'antd';
+import { Card, message } from 'antd';
 // import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import NVRTitle from './NVRTitle';
@@ -30,6 +30,15 @@ const mapDispatchToProps = (dispatch) => ({
 				nvrState
 			}
 		});
+	},
+	checkBind: async (sn) => {
+		const result = await dispatch({
+			type: 'ipcList/checkBind',
+			payload: {
+				sn
+			}
+		});
+		return result;
 	}
 });
 
@@ -41,9 +50,14 @@ class NVRManagement extends Component {
 		await read(sn);
 	}
 
-	nvrCheckedHandler = (checked) => {
-		const { sn, setNVRState } = this.props;
-		setNVRState(sn, checked);
+	nvrCheckedHandler = async (checked) => {
+		const { sn, setNVRState, checkBind } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			setNVRState(sn, checked);
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
 	}
 
 	render() {

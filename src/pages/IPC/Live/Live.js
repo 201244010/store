@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import { List, Avatar, Card, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { UNBIND_CODE } from '@/constants/errorCode';
 import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 
@@ -34,12 +35,16 @@ import styles from './Live.less';
 		return result;
 	},
 	async getLiveUrl({ sn }) {
-		const url = await dispatch({
+		const result = await dispatch({
 			type: 'live/getLiveUrl',
 			payload: {
 				sn
 			}
 		});
+		const { code, url } = result;
+		if( code === UNBIND_CODE) {
+			message.warning(formatMessage({ id: 'live.nobind' }));
+		}
 		return url;
 	},
 	// stopLive({ sn, streamId }) {

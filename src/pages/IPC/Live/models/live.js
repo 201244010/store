@@ -74,9 +74,15 @@ export default {
 					}
 				});
 
-				return url;
+				return {
+					url,
+					code: response.code
+				};
 			}
-			return '';
+			return {
+				url: '',
+				code: response.code
+			};
 		},
 		// *getLiveUrl({ payload: { sn }}, { call, put }) {
 

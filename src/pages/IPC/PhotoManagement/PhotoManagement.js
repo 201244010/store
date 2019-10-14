@@ -785,7 +785,7 @@ class PhotoManagement extends React.Component {
 						/>
 					))}
 				</Modal>
-				{!isSignAgreement && <AgreementModal visible path='faceidLibrary' refreshHandler={this.getList} />}
+				<AgreementModal visible={!isSignAgreement} path='faceidLibrary' refreshHandler={this.getList} />
 			</Card>
 		);
 	}

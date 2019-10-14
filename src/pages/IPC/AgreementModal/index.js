@@ -41,10 +41,6 @@ const AGREEMENT_TYPE = 'face';
 	}))
 class AgreementModal extends React.Component{
 
-	state = {
-		
-	}
-
 	constructor(props) {
 		super(props);
 		const { visible } = this.props;
@@ -58,6 +54,13 @@ class AgreementModal extends React.Component{
 		const { getLatestAgreement } = this.props;
 		const locale = getLocale();
 		await getLatestAgreement(AGREEMENT_TYPE, locale);
+	}
+
+	componentWillReceiveProps(nextProps){
+		const { visible } = nextProps;
+		this.state = {
+			visible
+		};
 	}
 
 	selectedHandler = (e) =>{

@@ -34,6 +34,15 @@ const mapDispatchToProps = (dispatch) => ({
 				...setting
 			}
 		});
+	},
+	checkBind: async (sn) => {
+		const result = await dispatch({
+			type: 'ipcList/checkBind',
+			payload: {
+				sn
+			}
+		});
+		return result;
 	}
 });
 
@@ -92,7 +101,7 @@ class ActiveDetection extends React.Component {
 		}
 	}
 
-	handleSubmit = (e) => {
+	handleSubmit = async (e) => {
 		e.preventDefault();
 		const { form } = this.props;
 		const { getFieldValue } = form;
@@ -102,7 +111,7 @@ class ActiveDetection extends React.Component {
 			// 开始或者结束的时间任一为空
 		} else {
 
-			const { saveSetting, sn } = this.props;
+			const { saveSetting, sn, checkBind } = this.props;
 			const values = form.getFieldsValue();
 			const startTime = values.startTime.format('X') - moment('1970-01-01').format('X');
 			const endTime = values.endTime.format('X') - moment('1970-01-01').format('X');
@@ -111,7 +120,15 @@ class ActiveDetection extends React.Component {
 				startTime,
 				endTime
 			};
-			saveSetting(sn, params);
+
+			const isBind = await checkBind(sn);
+			if(isBind) {
+				saveSetting(sn, params);
+			} else {
+				message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+			}
+
+			// btnDisabled = true;
 		}
 	};
 
