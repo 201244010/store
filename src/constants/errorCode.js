@@ -34,6 +34,7 @@ export const ERR_AGREEMENT_NOT_LATEST = 5411;
 export const ERR_SSO_USER_NOT_IN_COMPANY = 5400;
 
 export const ORDER_COMPLETED = 5503;
+export const UNBIND_CODE = 5510;
 
 export const SWITCH_SCEEN_NO_DELETE = 5347;
 
