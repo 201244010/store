@@ -20,13 +20,15 @@ const Time = 15000;
 			activeDetection:{ isReading: isActiveDetectionReading, isSaving: isActiveDetectionSaving },
 			ipcBasicParams:{ isReading: isBasicParamsReading, isSaving: isBasicParamsSaving },
 			cardManagement:{ isLoading },
-			ipcBasicInfo:{ status } } = state;
+			ipcBasicInfo:{ status },
+			nvrManagement: { loadState} } = state;
 		const deviceBasicInfoLoading = status === 'loading' || false;
 		const activeDetectionLoading = isActiveDetectionReading || isActiveDetectionSaving === 'saving';
 		const basicParamsLoading = isBasicParamsReading || isBasicParamsSaving === 'saving';
 		const cardManagementLoading = isLoading;
+		const nvrLoading = loadState;
 
-		const loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
+		const loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
 
 		return {
 			loading

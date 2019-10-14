@@ -22,7 +22,7 @@ export const HTTP_PREFIX = {
 };
 
 export const WEB_SOCKET_PREFIX = {
-	'http:': 'ws:',
+	'http:': 'wss:',
 	'https:': 'wss:',
 };
 
@@ -88,6 +88,6 @@ export default {
 	MD5_TOKEN: MD5_TOKEN[env],
 	IPC_SERVER: IPC_ADDRESS[env],
 	HTTP_PREFIX: HTTP_PREFIX[protocol] || 'http:',
-	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[protocol] || 'ws:',
+	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[protocol] || 'wss:',
 	COUNTRY_ADDRESS: COUNTRY_ADDRESS[country],
 };
