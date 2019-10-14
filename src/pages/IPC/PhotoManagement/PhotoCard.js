@@ -450,8 +450,8 @@ class PhotoCard extends React.Component {
 			groupId,
 			age,
 			gender,
-			count,
-			navigateTo
+			// count,
+			// navigateTo
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
 		const { isEdit, infoFormVisible, removeVisible, fileUrl, imageLoaded, isUpload } = this.state;
@@ -691,13 +691,7 @@ class PhotoCard extends React.Component {
 												{this.ageRange()}
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.frequency'})}>
-												{
-													count?
-														<span className={styles['frequency-label']} onClick={() => navigateTo('entryDetail',{ faceId: id })}>{this.handleInfo('count')}</span>
-														:
-														<span>{this.handleInfo('count')}</span>
-												}
-
+												{<span>{this.handleInfo('count')}</span>}
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.createTime'})}>
 												{this.handleInfo('createDate')}
