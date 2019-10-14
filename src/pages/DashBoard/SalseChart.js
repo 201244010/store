@@ -182,6 +182,7 @@ class SalseChart extends PureComponent {
 									position: 'time*passengerFlowRate',
 									color: ['passengerFlowRate', '#25B347'],
 									tooltip: chartTip,
+									shape: '',
 								},
 								point: {
 									position: 'time*passengerFlowRate',
