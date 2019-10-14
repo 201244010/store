@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Divider, Modal, Button, Form, Input, Select, Row, Col } from 'antd';
+import { Table, Divider, Modal, Button, Form, Input, Select, Row, Col, Upload, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { unixSecondToDate } from '@/utils/utils';
@@ -11,6 +11,15 @@ const { Option } = Select;
 const TEMPLATE_STATES = {
 	0: formatMessage({ id: 'esl.device.template.status.draft' }),
 	1: formatMessage({ id: 'esl.device.template.status.apply' }),
+};
+const COLOR_NAME = {
+	BWR: formatMessage({ id: 'esl-template-colour-BWR' }),
+	BW: formatMessage({ id: 'esl-template-colour-BW' }),
+};
+const SCREEN_NAME = {
+	'2.13': formatMessage({ id: 'esl-screen-2.13' }),
+	'2.6': formatMessage({ id: 'esl-screen-2.13' }),
+	'4.2': formatMessage({ id: 'esl-screen-4.2' }),
 };
 
 const widthMap = {
@@ -39,6 +48,8 @@ class SearchResult extends Component {
 			newVisible: false,
 			cloneVisible: false,
 			previewVisible: false,
+			uploadLoading: false,
+			uploadVisible: false,
 			curRecord: {},
 		};
 	}
@@ -139,11 +150,7 @@ class SearchResult extends Component {
 						},
 						() => {
 							resetFields();
-							window.open(
-								`/studio?id=${response.data.template_id}&screen=${
-									values.screen_type
-								}`
-							);
+							window.open(`/studio?id=${response.data.template_id}&screen=${values.screen_type}`);
 						}
 					);
 				}
@@ -160,6 +167,13 @@ class SearchResult extends Component {
 	handleCancelClone = () => {
 		this.setState({
 			cloneVisible: false,
+		});
+	};
+
+	handleCancelUpload = () => {
+		this.setState({
+			uploadVisible: false,
+			uploadLoading: false
 		});
 	};
 
@@ -190,13 +204,33 @@ class SearchResult extends Component {
 						},
 						() => {
 							resetFields();
-							window.open(
-								`/studio?id=${response.data.template_id}&screen=${
-									curRecord.screen_type
-								}`
-							);
+							window.open(`/studio?id=${response.data.template_id}&screen=${curRecord.screen_type}`);
 						}
 					);
+				}
+			}
+		});
+	};
+
+	handleUpload = () => {
+		const {
+			props: {form: { validateFields, resetFields }, uploadTemplate},
+			state: {curRecord: {templateInfo}}
+		} = this;
+		validateFields(['name'], async (errors, values) => {
+			if (!errors) {
+				const response = await uploadTemplate({
+					name: values.name,
+					template_model_name: templateInfo.type,
+					template_colour: templateInfo.type.indexOf('BWR') > -1 ? 7 : 3,
+					template: JSON.stringify(templateInfo),
+				});
+				if (response.code === ERROR_OK) {
+					this.setState({
+						uploadVisible: false,
+						uploadLoading: false
+					});
+					resetFields();
 				}
 			}
 		});
@@ -217,7 +251,47 @@ class SearchResult extends Component {
 		}
 	};
 
+	uploadJsonFileChange = (info) => {
+		this.setState({
+			uploadVisible: true,
+			curRecord: {
+				fileName: info.file.name
+			}
+		});
+		const reader = new FileReader();
+		reader.readAsText(info.file, 'UTF-8');
+		reader.onload = (e) => {
+			const {curRecord} = this.state;
+			const fileString = e.target.result;
+			const templateInfo = JSON.parse(fileString);
+			if (!templateInfo || !templateInfo.type) {
+				message.warning(formatMessage({id: 'esl.device.template.action.upload.file.error'}));
+				return;
+			}
+
+			const typeArr = templateInfo.type.split('-');
+			this.setState({
+				curRecord: {
+					...curRecord,
+					screen_type_name: SCREEN_NAME[typeArr[1]],
+					colour_name: COLOR_NAME[typeArr[0]],
+					templateInfo
+				}
+			});
+		};
+	};
+
 	render() {
+		const formItemLayout = {
+			labelCol: {
+				xs: { span: 24 },
+				sm: { span: 6 },
+			},
+			wrapperCol: {
+				xs: { span: 24 },
+				sm: { span: 18 },
+			},
+		};
 		const {
 			props: {
 				searchFormValues,
@@ -229,12 +303,13 @@ class SearchResult extends Component {
 				form: { getFieldDecorator },
 				fetchColors,
 			},
-			state: { newVisible, cloneVisible, previewVisible, curRecord },
+			state: { newVisible, cloneVisible, uploadVisible, uploadLoading, previewVisible, curRecord },
 		} = this;
 		const columns = [
 			{
 				title: formatMessage({ id: 'esl.device.template.name' }),
 				dataIndex: 'name',
+				render: text => <span>{formatMessage({ id: text })}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.template.size' }),
@@ -293,16 +368,6 @@ class SearchResult extends Component {
 				),
 			},
 		];
-		const formItemLayout = {
-			labelCol: {
-				xs: { span: 24 },
-				sm: { span: 6 },
-			},
-			wrapperCol: {
-				xs: { span: 24 },
-				sm: { span: 18 },
-			},
-		};
 
 		return (
 			<div>
@@ -337,6 +402,30 @@ class SearchResult extends Component {
 									>
 										{formatMessage({ id: 'esl.device.template.new' })}
 									</Button>
+									<Upload
+										{...{
+											name: 'file',
+											showUploadList: false,
+											beforeUpload: (file) => {
+												this.setState({
+													uploadLoading: true
+												});
+												const isJson = file.type === 'application/json';
+												if (!isJson) {
+													this.setState({
+														uploadLoading: false
+													});
+													message.error(formatMessage({id: 'esl.device.template.upload.file.type.error'}));
+												}
+												return false;
+											},
+											onChange: this.uploadJsonFileChange
+										}}
+									>
+										<Button type="default" icon="upload" loading={uploadLoading} className={styles['btn-margin-left']}>
+											{formatMessage({ id: 'esl.device.template.upload' })}
+										</Button>
+									</Upload>
 								</Form.Item>
 							</Col>
 						</Row>
@@ -503,6 +592,45 @@ class SearchResult extends Component {
 					onCancel={this.handleCancelClone}
 				>
 					<Form {...formItemLayout} style={{ padding: 24 }}>
+						<Form.Item label={formatMessage({ id: 'esl.device.template.name' })}>
+							{getFieldDecorator('name', {
+								rules: [
+									{
+										required: true,
+										message: formatMessage({
+											id: 'esl.device.template.name.require',
+										}),
+									},
+									{
+										validator: this.validateTemplateName,
+									},
+								],
+							})(
+								<Input
+									placeholder={formatMessage({
+										id: 'esl.device.template.name.require',
+									})}
+								/>
+							)}
+						</Form.Item>
+						<Form.Item label={formatMessage({ id: 'esl.device.template.size' })}>
+							<Input value={curRecord.screen_type_name} disabled />
+						</Form.Item>
+						<Form.Item label={formatMessage({ id: 'esl.device.template.color' })}>
+							<Input value={curRecord.colour_name} disabled />
+						</Form.Item>
+					</Form>
+				</Modal>
+				<Modal
+					title={formatMessage({ id: 'esl.device.template.upload' })}
+					visible={uploadVisible}
+					onOk={this.handleUpload}
+					onCancel={this.handleCancelUpload}
+				>
+					<Form {...formItemLayout} style={{ padding: 24 }}>
+						<Form.Item label={formatMessage({ id: 'esl.device.template.upload.file' })}>
+							<Input value={curRecord.fileName} disabled />
+						</Form.Item>
 						<Form.Item label={formatMessage({ id: 'esl.device.template.name' })}>
 							{getFieldDecorator('name', {
 								rules: [

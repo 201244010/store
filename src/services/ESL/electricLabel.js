@@ -112,3 +112,11 @@ export const switchScreen = options => {
 	};
 	return fetchApi('switchScreen', opts).then(response => response.json());
 };
+
+export const getScreenPushInfo = options => {
+	const opts = {
+		method: 'POST',
+		body: options,
+	};
+	return fetchApi('getScreenPushInfo', opts).then(response => response.json());
+};

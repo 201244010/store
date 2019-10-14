@@ -138,6 +138,7 @@ class CustomerChart extends PureComponent {
 				strangerCount = 0,
 				regularCount = 0,
 			} = {},
+			searchValue: { passengerFlowType },
 		} = this.props;
 
 		const displayPassengerList = this.formatPassengerList({
@@ -157,6 +158,25 @@ class CustomerChart extends PureComponent {
 			Math.floor(limit * 0.8),
 			limit,
 		];
+
+		const geomColor =
+			passengerFlowType === PASSENGER_FLOW_TYPE.GENDER
+				? [
+					'title',
+					// eslint-disable-next-line no-shadow
+					title =>
+						title.indexOf(formatMessage({ id: 'common.male' })) > -1
+							? '#2b7ac0'
+							: '#ff6666',
+				  ]
+				: [
+					'title',
+					// eslint-disable-next-line no-shadow
+					title =>
+						title.indexOf(formatMessage({ id: 'customer.stranger' })) > -1
+							? '#2b7ac0'
+							: '#ff6666',
+				  ];
 
 		return (
 			<Card
@@ -186,14 +206,7 @@ class CustomerChart extends PureComponent {
 						facet: { fields: ['title'] },
 						geom: {
 							position: 'ageRange*personCount',
-							color: [
-								'title',
-								// eslint-disable-next-line no-shadow
-								title =>
-									title.indexOf(formatMessage({ id: 'common.male' })) > -1
-										? '#2b7ac0'
-										: '#ff6666',
-							],
+							color: geomColor,
 							label: { content: 'personCount' },
 						},
 						assistGeom: { position: 'ageRange*limit' },

@@ -27,6 +27,13 @@ const router = [
 	},
 
 	{
+		path: '/StudioAlone',
+		component: '../layouts/BlankLayout',
+		id: 'StudioAlone',
+		routes: [{ path: '/studioAlone', component: './StudioAlone' }],
+	},
+
+	{
 		path: '/show',
 		component: '../layouts/BlankLayout',
 		id: 'show',
@@ -134,6 +141,21 @@ const router = [
 								component: './Trade/TradeResult',
 							},
 						],
+					},
+				],
+			},
+
+			{
+				path: '/dataAnalyze',
+				icon: 'blank',
+				name: 'dataAnalyze',
+				routes: [
+					{ path: '/dataAnalyze', redirect: '/dataAnalyze/passenger' },
+					{
+						path: '/dataAnalyze/passenger',
+						name: 'passenger',
+						id: 'passengerAnalyze',
+						component: './PassengerAnalyze',
 					},
 				],
 			},

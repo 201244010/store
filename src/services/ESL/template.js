@@ -1,4 +1,6 @@
 import { customizeFetch } from '@/utils/fetch';
+import { getLocationParam } from '@/utils/utils';
+import { ERROR_OK } from '@/constants/errorCode';
 
 const fetchApi = customizeFetch('esl/api/template');
 
@@ -66,6 +68,16 @@ export const saveAsDraft = options => {
 };
 
 export const fetchTemplateDetail = options => {
+	const studioType = getLocationParam('type');
+	if (studioType === 'alone') {
+		const templateInfo = localStorage.getItem(getLocationParam('id'));
+		return Promise.resolve({
+			code: ERROR_OK,
+			data: {
+				template_info: JSON.parse(templateInfo)
+			}
+		});
+	}
 	const opts = {
 		method: 'POST',
 		body: options,
@@ -126,4 +138,24 @@ export const fetchScreenNameList = options => {
 	};
 
 	return fetchApi('getScreenNameList', opts).then(response => response.json());
+};
+
+export const uploadTemplate = options => {
+	const studioType = getLocationParam('type');
+	if (studioType === 'alone') {
+		const templateInfo = localStorage.getItem(getLocationParam('id'));
+		return Promise.resolve({
+			code: ERROR_OK,
+			data: {
+				template_info: JSON.parse(templateInfo)
+			}
+		});
+	}
+
+	const opts = {
+		method: 'POST',
+		body: options,
+	};
+
+	return fetchApi('upload', opts).then(response => response.json());
 };

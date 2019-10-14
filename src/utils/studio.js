@@ -550,6 +550,17 @@ export const checkEAN13Num = (number) => {
 	return (10 - (res % 10)) % 10;
 };
 
+export const downloadJsonAsDraft = (name = 'template', data) => {
+	const blob = new Blob([JSON.stringify(data)]);
+	const element = document.createElement('a');
+	element.download = `${name}-${+new Date()}.json`;
+	element.style.display = 'none';
+	element.href = URL.createObjectURL(blob);
+	document.body.appendChild(element);
+	element.click();
+	document.body.removeChild(element);
+};
+
 export const validEAN8Num = (number) => {
 	console.log(checkEAN8Num(number));
 	return number.search(/^[0-9]{8}$/) !== -1 && +number[7] === checkEAN8Num(number);

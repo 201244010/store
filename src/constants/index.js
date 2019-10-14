@@ -35,6 +35,8 @@ export const KEY = {
 	KEY_C: 67,
 	KEY_V: 86,
 	KEY_X: 88,
+	KEY_Y: 89,
+	KEY_Z: 90,
 	KEY_LEFT: 37,
 	KEY_UP: 38,
 	KEY_RIGHT: 39,

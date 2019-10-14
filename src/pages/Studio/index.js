@@ -10,7 +10,7 @@ import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
-import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep } from '@/utils/studio';
+import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep } from '@/utils/studio';
 import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
@@ -66,6 +66,7 @@ const textMap = {
 		selectComponent: payload => dispatch({ type: 'studio/selectComponent', payload }),
 		fetchBindFields: payload => dispatch({ type: 'template/fetchBindFields', payload }),
 		saveAsDraft: payload => dispatch({ type: 'template/saveAsDraft', payload }),
+		downloadAsDraft: payload => dispatch({ type: 'template/downloadAsDraft', payload }),
 		fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
 		renameTemplate: payload => dispatch({ type: 'template/renameTemplate', payload }),
 		uploadImage: payload => dispatch({ type: 'template/uploadImage', payload }),
@@ -83,7 +84,8 @@ class Studio extends Component {
 			dragCopy: {
 				left: -9999,
 				top: -9999
-			}
+			},
+			showMask: false
 		};
 		clearSteps();
 	}
@@ -187,13 +189,14 @@ class Studio extends Component {
 				if (copiedComponent.name) {
 					if (copiedComponent.type !== SHAPE_TYPES.RECT_SELECT) {
 						const newPosition = {};
-						if (!copiedComponent.copyCount) {
-							copiedComponent.copyCount = 1;
+						this.copyCountMap = this.copyCountMap || {};
+						if (!this.copyCountMap[copiedComponent.name]) {
+							this.copyCountMap[copiedComponent.name] = 1;
 						} else {
-							copiedComponent.copyCount++;
+							this.copyCountMap[copiedComponent.name]++;
 						}
-						newPosition.x = copiedComponent.x * (1 + copiedComponent.copyCount / 10);
-						newPosition.y = copiedComponent.y * (1 + copiedComponent.copyCount / 10);
+						newPosition.x = copiedComponent.x * (1 + this.copyCountMap[copiedComponent.name] / 10);
+						newPosition.y = copiedComponent.y * (1 + this.copyCountMap[copiedComponent.name] / 10);
 
 						addComponent({
 							...copiedComponent,
@@ -201,22 +204,48 @@ class Studio extends Component {
 							y: newPosition.y,
 						});
 					} else {
-						if (!copiedComponent.copyCount) {
-							copiedComponent.copyCount = 1;
+						this.copyCountMap = this.copyCountMap || {};
+						if (!this.copyCountMap[copiedComponent.name]) {
+							this.copyCountMap[copiedComponent.name] = 1;
 						} else {
-							copiedComponent.copyCount++;
+							this.copyCountMap[copiedComponent.name]++;
 						}
 						for (let i = 0; i < scopedComponents.length; i++) {
 							const {x, y, type, scaleY} = scopedComponents[i];
 							addComponent({
 								...scopedComponents[i],
 								x,
-								y: y + MAPS.height[type] * scaleY * zoomScale * copiedComponent.copyCount,
+								y: y + MAPS.height[type] * scaleY * zoomScale * this.copyCountMap[copiedComponent.name],
+								isStep: i === scopedComponents.length - 1
 							});
 						}
 					}
 				}
 			}
+			// Ctrl + Y
+			if (keyCode === KEY.KEY_Y) {
+				this.nextStep();
+			}
+			// Ctrl + Z
+			if (keyCode === KEY.KEY_Z) {
+				this.preStep();
+			}
+		}
+	};
+
+	preStep = async () => {
+		const { props: { changeOneStep } } = this;
+		const result = await preStep(getLocationParam('id'));
+		if (result) {
+			changeOneStep(JSON.parse(result));
+		}
+	};
+
+	nextStep = async () => {
+		const { props: { changeOneStep } } = this;
+		const result = await nextStep(getLocationParam('id'));
+		if (result) {
+			changeOneStep(JSON.parse(result));
 		}
 	};
 
@@ -625,6 +654,25 @@ class Studio extends Component {
 		});
 	};
 
+	handleDownloadAsDraft = () => {
+		const { studio: { componentsDetail, zoomScale }, downloadAsDraft} = this.props;
+		const newDetails = {};
+		Object.keys(componentsDetail).forEach(key => {
+			const detail = componentsDetail[key];
+			if (detail.name) {
+				newDetails[key] = {
+					...detail,
+					zoomScale,
+				};
+			}
+		});
+
+		downloadAsDraft({
+			template_id: getLocationParam('id'),
+			draft: newDetails,
+		});
+	};
+
 	handleTextDblClick = e => {
 		const { updateComponentsDetail } = this.props;
 		const targetName = e.target.name();
@@ -858,6 +906,12 @@ class Studio extends Component {
 		toggleRightToolBox(config);
 	};
 
+	updateMask = (showMask) => {
+		this.setState({
+			showMask
+		});
+	};
+
 	render() {
 		const {
 			stageWidth,
@@ -870,7 +924,6 @@ class Studio extends Component {
 				addComponent,
 				toggleRightToolBox,
 				zoomOutOrIn,
-				changeOneStep,
 				renameTemplate,
 				fetchTemplateDetail,
 				studio: {
@@ -881,11 +934,12 @@ class Studio extends Component {
 					rightToolBoxPos,
 					copiedComponent,
 					scopedComponents,
+					noScopedComponents,
 					zoomScale,
 				},
 				template: { bindFields, curTemplate },
 			},
-			state: { dragging, dragCopy, dragName },
+			state: { dragging, dragCopy, dragName, showMask },
 		} = this;
 
 		const lines = getNearestLines(componentsDetail, selectedShapeName, scopedComponents);
@@ -900,8 +954,10 @@ class Studio extends Component {
 							templateInfo: curTemplate,
 							zoomScale,
 							saveAsDraft: this.handleSaveAsDraft,
+							downloadAsDraft: this.handleDownloadAsDraft,
 							zoomOutOrIn,
-							changeOneStep,
+							preStep: this.preStep,
+							nextStep: this.nextStep,
 							renameTemplate,
 							fetchTemplateDetail,
 						}}
@@ -929,7 +985,8 @@ class Studio extends Component {
 							<Layer x={0} y={0} width={stageWidth} height={stageHeight}>
 								{Object.keys(componentsDetail).map(key => {
 									const targetDetail = componentsDetail[key];
-									if (targetDetail.name && targetDetail.name !== RECT_SELECT_NAME) {
+									const noScopedNames = [RECT_SELECT_NAME].concat(noScopedComponents.map(item => item.name));
+									if (targetDetail.name && !noScopedNames.includes(targetDetail.name)) {
 										return generateShape({
 											...targetDetail,
 											key,
@@ -965,6 +1022,26 @@ class Studio extends Component {
 										}) :
 										null
 								}
+								{Object.keys(noScopedComponents).map(key => {
+									const targetDetail = noScopedComponents[key];
+									if (targetDetail.name) {
+										return generateShape({
+											...targetDetail,
+											key,
+											stageWidth,
+											stageHeight,
+											scaleX: targetDetail.scaleX || 1,
+											scaleY: targetDetail.scaleY || 1,
+											zoomScale,
+											ratio: targetDetail.ratio || 1,
+											selected: selectedShapeName === targetDetail.name,
+											onTransform: this.handleShapeTransform,
+											onTransformEnd: this.handleShapeTransformEnd,
+											onDblClick: this.handleShapeDblClick,
+										});
+									}
+									return undefined;
+								})}
 								{!dragging &&
 									selectedShapeName &&
 									componentsDetail[selectedShapeName].type !==
@@ -991,6 +1068,7 @@ class Studio extends Component {
 								</Layer>
 							) : null}
 						</Stage>
+						{showMask ? <div className={styles.mask} /> : <></>}
 					</div>
 					{selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1 ? (
 						<div className={styles['tool-box']}>
@@ -1002,6 +1080,7 @@ class Studio extends Component {
 									componentsDetail,
 									zoomScale,
 									templateInfo: curTemplate,
+									updateMask: this.updateMask,
 									updateComponentsDetail,
 									updateState,
 									deleteSelectedComponent,

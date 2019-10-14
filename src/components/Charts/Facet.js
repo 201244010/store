@@ -10,6 +10,7 @@ class FacetChart extends PureComponent {
 			forceFit = true,
 			scale = {},
 			chartPadding = 0,
+			animate = false,
 			axis: {
 				x: {
 					name: xName = null,
@@ -49,6 +50,7 @@ class FacetChart extends PureComponent {
 					scale={scale}
 					forceFit={forceFit}
 					padding={chartPadding}
+					animate={animate}
 				>
 					<Axis name={xName} line={xLine} tickLine={xTickLine} visible={xVisible} />
 					<Axis name={yName} line={yLine} tickLine={yTickLine} visible={yVisible} />

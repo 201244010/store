@@ -31,6 +31,8 @@ import trade from './zh-CN/trade';
 import flow from './zh-CN/flow';
 import tradeShow from './zh-CN/tradeShow';
 
+import passengerAnalyze from './zh-CN/passengerAnalyze';
+
 export default {
 	'navBar.lang': '语言',
 	'navBar.area': '地区',
@@ -68,4 +70,5 @@ export default {
 	...trade,
 	...flow,
 	...tradeShow,
+	...passengerAnalyze,
 };

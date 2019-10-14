@@ -14,7 +14,7 @@ export default {
 	},
 	effects: {
 		*read(action,{ put }) {
-		
+
 			const response = yield getDeviceList();
 
 			const {data : result , code} = response;
@@ -42,23 +42,23 @@ export default {
 			return result;
 
 		},
-		*getList(action,{ put }){
-			const response = yield getDeviceList();
-			const result = response.data;
-			if (response.code === ERROR_OK) {
-				yield put({
-					type: 'readData',
-					payload: result
-				});
-			}
-		},
+		// *getList(action,{ put }){
+		// 	const response = yield getDeviceList();
+		// 	const result = response.data;
+		// 	if (response.code === ERROR_OK) {
+		// 		yield put({
+		// 			type: 'readData',
+		// 			payload: result
+		// 		});
+		// 	}
+		// },
 		*getIpcList(_, { select, put}) {
 			let ipcList  = yield select((state) => state.ipcList);
 
 			if (ipcList.length === 0){
 				// console.log(ipcList.length);
 				yield put.resolve({
-					type: 'getList'
+					type: 'read'
 				});
 				ipcList  = yield select((state) => state.ipcList);
 			}

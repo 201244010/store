@@ -78,8 +78,13 @@ class SearchResult extends Component {
 
 	showDetail = async record => {
 		const { detailVisible } = this.state;
-		const { fetchESLDetails } = this.props;
+		const { fetchESLDetails, fetchScreenPushInfo } = this.props;
 		const response = await fetchESLDetails({
+			options: {
+				esl_id: record.id,
+			},
+		});
+		await fetchScreenPushInfo({
 			options: {
 				esl_id: record.id,
 			},
@@ -310,6 +315,7 @@ class SearchResult extends Component {
 			products,
 			productPagination,
 			screenInfo,
+			screenPushInfo,
 			fetchProductList,
 			bindESL,
 		} = this.props;
@@ -488,7 +494,7 @@ class SearchResult extends Component {
 				<Modal
 					title={formatMessage({ id: 'esl.device.esl.detail' })}
 					visible={detailVisible}
-					width={650}
+					width={750}
 					onCancel={() => this.closeModal('detailVisible')}
 					footer={[
 						<Button
@@ -500,7 +506,7 @@ class SearchResult extends Component {
 						</Button>,
 					]}
 				>
-					<Detail detailInfo={detailInfo} />
+					<Detail detailInfo={detailInfo} screenPushInfo={screenPushInfo} />
 				</Modal>
 				<Modal
 					title={formatMessage({ id: 'esl.device.esl.template.edit' })}
@@ -605,7 +611,7 @@ class SearchResult extends Component {
 								>
 									{(screenInfo || []).map(screen => (
 										<Select.Option key={screen.screen_num} value={screen.screen_num}>
-											{screen.screen_name}
+											{formatMessage({id: screen.screen_name})}
 										</Select.Option>
 									))}
 								</Select>
