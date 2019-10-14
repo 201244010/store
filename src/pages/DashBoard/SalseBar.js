@@ -208,7 +208,7 @@ class SalseBar extends PureComponent {
 									</span>
 								),
 							loading: passengerFlowLoading,
-							onClick: () => goToPath('faceLog'),
+							action: false,
 						}}
 					/>
 					<SalseInfo
