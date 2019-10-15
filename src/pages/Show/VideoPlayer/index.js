@@ -6,6 +6,31 @@ import styles from './VideoPlayer.less';
 
 class VideoPlayer extends React.Component {
 
+	componentDidMount(){
+		const { isActiveTimeState } = this.props;
+		if(isActiveTimeState){
+			this.trackplayler.play();
+		}else{
+			setTimeout(() => {
+				this.trackplayler.pause();
+			},5000);
+			
+		}
+	}
+
+	componentWillReceiveProps(nextProps){
+		const { isActiveTimeState } = this.props;
+		const { isActiveTimeState: nextState } = nextProps;
+		if(isActiveTimeState !== nextState){
+			if(nextState){
+				this.trackplayler.play();
+			}else{
+				this.trackplayler.pause();
+			}
+		}
+	}
+
+
 	onEnd = () => {
 		const { setActiveOrder } = this.props;
 		setActiveOrder();
@@ -23,6 +48,7 @@ class VideoPlayer extends React.Component {
 						url={videoUrl}
 						onEnd={this.onEnd}
 						ref={playler => this.trackplayler = playler}
+						autoPlay={false}
 					/>
 				</div>
 			</div>

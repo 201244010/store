@@ -88,7 +88,7 @@ class ShowTabContent extends React.Component {
 	};
 
 	render() {
-		const { time = 'today' } = this.props;
+		const { time = 'today', activeKey } = this.props;
 
 		return (
 			<>
@@ -99,7 +99,7 @@ class ShowTabContent extends React.Component {
 				/>
 				<div className={styles['content-body']}>
 					<div className={styles['body-chart']}>
-						<CashierAudit />
+						<CashierAudit time={time} activeTime={activeKey} />
 						{/* <ShowChart
 							chartName={formatMessage({ id: 'dashboard.order.show.sales' })}
 							saleType="amount"

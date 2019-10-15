@@ -60,15 +60,22 @@ const DAY = 30;
 
 class CashierAudit extends React.Component {
 
-	state = {
-		tradeList:[],
-		activeOrderId:'',
-		activeVideoInfo: {
-			videoUrl: '',
-			pixelRatio: '16:9'
-		},
-		activeOrderItem:{}
+	constructor(props) {
+		super(props);
+		const { time } = this.props;
+		this.state = {
+			tradeList:[],
+			activeOrderId:'',
+			activeVideoInfo: {
+				videoUrl: '',
+				pixelRatio: '16:9'
+			},
+			activeOrderItem:{},
+			time,
+			activeTime: 'today'
+		};
 	}
+
 
 	async componentDidMount(){
 		const { activeOrderId } = this.state;
@@ -77,6 +84,13 @@ class CashierAudit extends React.Component {
 			await this.setActiveOrder();
 		}
 		this.timerHandler();
+	}
+
+	componentWillReceiveProps(nextProps){
+		const { activeTime } = nextProps;
+		this.setState({
+			activeTime
+		});
 	}
 
 
@@ -206,12 +220,12 @@ class CashierAudit extends React.Component {
 	}
 
 	render(){
-		const { tradeList, activeOrderId, activeVideoInfo } = this.state;
+		const { tradeList, activeOrderId, activeVideoInfo, time, activeTime } = this.state;
 
 		return(
 			<div className={styles['trade-container']}>
 				<TimeLine tradeList={tradeList} activeOrderId={activeOrderId} />
-				<VideoPlayer activeVideoInfo={activeVideoInfo} setActiveOrder={this.setActiveOrder} />
+				<VideoPlayer activeVideoInfo={activeVideoInfo} setActiveOrder={this.setActiveOrder} isActiveTimeState={time === activeTime} />
 			</div>
 		);
 	}
