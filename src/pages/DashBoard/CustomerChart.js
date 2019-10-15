@@ -117,11 +117,11 @@ class CustomerChart extends PureComponent {
 				maleCount: pMaleCount = null,
 				regularCount: pRegularCount = null,
 				ageRange,
+				ageRangeCode,
 			} = passenger;
-
 			return {
 				...passenger,
-				ageRange: `${ageRange}${formatMessage({ id: 'common.age' })}`,
+				ageRange: `${ageRange}${ageRangeCode === 8 || ageRangeCode === 1? '': formatMessage({ id: 'common.age' })}`,
 				limit: totalCount === 0 ? 100 : totalCount * 2.5,
 				title: getTitle({ gender: pMaleCount, regular: pRegularCount }),
 			};

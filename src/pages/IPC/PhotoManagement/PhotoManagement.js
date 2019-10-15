@@ -538,8 +538,8 @@ class PhotoManagement extends React.Component {
 											<Option value={10}>
 												{formatMessage({ id: 'photoManagement.all' })}
 											</Option>
-											{ageRange.map((item, index) => (
-												<Option value={item.ageCode} key={index}>
+											{ageRange && ageRange.map((item, index) => (
+												<Option value={item.ageRangeCode} key={index}>
 													{item.ageRange}
 												</Option>
 											))}
@@ -639,7 +639,7 @@ class PhotoManagement extends React.Component {
 										name={item.name}
 										gender={item.gender}
 										age={item.age}
-										realAge={item.realAge}
+										ageRangeCode={item.ageRangeCode}
 										latestDate={item.lastArrivalTime}
 										createDate={item.createTime}
 										libraryName={this.groupName()}
