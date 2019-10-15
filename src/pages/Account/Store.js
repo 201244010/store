@@ -76,6 +76,11 @@ class Store extends Component {
 		return (
 			<Card style={{ marginTop: '15px' }}>
 				<h2>{formatMessage({ id: 'userCenter.store.title' })}</h2>
+				<div>
+					<Button type="dashed" icon="plus" block onClick={() => this.toPath('create')}>
+						{formatMessage({ id: 'userCenter.store.create' })}
+					</Button>
+				</div>
 				<List className={styles['list-wrapper']}>
 					{companyList.map(company => (
 						<List.Item key={company.company_id}>
@@ -95,11 +100,6 @@ class Store extends Component {
 						</List.Item>
 					))}
 				</List>
-				<div>
-					<Button type="dashed" icon="plus" block onClick={() => this.toPath('create')}>
-						{formatMessage({ id: 'userCenter.store.create' })}
-					</Button>
-				</div>
 				<Modal
 					visible={visible}
 					title={formatMessage({ id: 'merchantManagement.merchant.merchantMessage' })}
