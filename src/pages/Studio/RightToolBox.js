@@ -107,7 +107,6 @@ export default class RightToolBox extends Component {
 		});
 	};
 
-
 	handleDetail = (key, value) => {
 		const {
 			componentsDetail,
