@@ -5,6 +5,7 @@ import { formatMessage } from 'umi/locale';
 import { mbStringLength } from '@/utils/utils';
 import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
 import { spaceInput, emojiInput } from '@/constants/regexp';
+import { ERROR_OK, UNBIND_CODE } from '@/constants/errorCode';
 // import { FORM_ITEM_LAYOUT , TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 
 import defaultImage from '@/assets/imgs/default.jpeg';
@@ -33,14 +34,16 @@ const mapDispatchToProps = (dispatch) => ({
 				sn
 			}
 		}).then((result) => {
-			if (result) {
+			if (result === ERROR_OK) {
 				message.success(formatMessage({ id: 'ipcManagement.success'}));
-			}else{
+				return true;
+			} if(result === UNBIND_CODE) {
+				message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+			} else{
 				message.error(formatMessage({ id: 'ipcManagement.failed'}));
 			}
-			return result;
+			return false;
 		});
-
 		return data;
 	},
 	loadInfo: (sn) => {
@@ -57,15 +60,17 @@ const mapDispatchToProps = (dispatch) => ({
 			payload: {
 				sn
 			}
-		}).then((response) => {
-			if (response) {
+		}).then((responseCode) => {
+			if (responseCode === ERROR_OK) {
 				message.success(formatMessage({ id: 'ipcManagement.deleteSuccess'}));
 
 				setTimeout(() => {
 					callback();
 				}, 800);
 
-			}else{
+			}else if(responseCode === UNBIND_CODE){
+				message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+			} else {
 				message.error(formatMessage({ id: 'ipcManagement.deleteFailed'}));
 			}
 		});
@@ -134,7 +139,6 @@ class DeviceBasicInfo extends React.Component {
 				// });
 
 				const result = await update( name, sn );
-
 				if (result) {
 					this.setState({
 						isEdit: false,

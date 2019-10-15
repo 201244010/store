@@ -105,9 +105,9 @@ export default {
 						name
 					}
 				});
-				return true;
+				// return true;
 			}
-			return false;
+			return code;
 		},
 		*delete({ payload: { sn }}, { put, call }) {
 			const deviceId = yield put.resolve({
@@ -120,11 +120,12 @@ export default {
 			const { code } = yield call(unbind, {
 				deviceId
 			});
+			return code;
 
-			if (code === ERROR_OK) {
-				return true;
-			}
-			return false;
+			// if (code === ERROR_OK) {
+			// 	return true;
+			// }
+			// return false;
 		}
 	},
 	subscriptions: {
