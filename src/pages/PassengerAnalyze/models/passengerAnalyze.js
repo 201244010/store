@@ -15,7 +15,7 @@ export default {
 		searchValue: {
 			startTime: moment().format('YYYY-MM-DD'),
 			endTime: moment().format('YYYY-MM-DD'),
-			type: RANGE_VALUE.TODAY,
+			type: RANGE_VALUE.YESTERDAY,
 			groupBy: GROUP_RANGE.HOUR,
 		},
 		passengerFlowCount: {
@@ -54,7 +54,7 @@ export default {
 					searchValue: {
 						startTime: moment().format('YYYY-MM-DD'),
 						endTime: moment().format('YYYY-MM-DD'),
-						type: RANGE_VALUE.TODAY,
+						type: RANGE_VALUE.YESTERDAY,
 						gourpBy: GROUP_RANGE.HOUR,
 					},
 				},
