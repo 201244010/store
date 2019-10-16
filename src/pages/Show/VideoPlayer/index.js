@@ -48,7 +48,6 @@ class VideoPlayer extends React.Component {
 						url={videoUrl}
 						onEnd={this.onEnd}
 						ref={playler => this.trackplayler = playler}
-						autoPlay={false}
 					/>
 				</div>
 			</div>

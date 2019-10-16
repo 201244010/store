@@ -14,24 +14,18 @@ class TrackPlayer extends React.Component{
 	}
 
 	componentDidMount = () => {
-		const { url, autoPlay = true } = this.props;
+		const { url } = this.props;
 		const { videoplayer } = this;
 
 		videoplayer.src(url);
-		if(!autoPlay){
-			this.pause();
-		}
 	}
 
 	componentDidUpdate = (oldProps) => {
-		const { url, autoPlay = true } = this.props;
+		const { url } = this.props;
 		const { videoplayer } = this;
 
 		if (url && oldProps.url !== url) {
 			videoplayer.src(url);
-			if(!autoPlay){
-				this.pause();
-			}
 		}
 	}
 
