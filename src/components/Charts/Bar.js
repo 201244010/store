@@ -17,7 +17,7 @@ class Bar extends Component {
 		const { x = 'xAxis', y = 'yAxis', xLabel = {}, yLabel = {} } = axis;
 		const { height = 388, forceFit = true, padding = 'auto', scale = {} } = chartStyle;
 
-		const { barColor = '#FFAA60', barActive = false, position = '', tooltip = {} } = barStyle;
+		const { barColor = '#22A3FF', barActive = false, position = '', tooltip = {} } = barStyle;
 
 		return (
 			<div className={styles.chart}>

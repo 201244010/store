@@ -54,7 +54,6 @@ export default {
 			return response;
 		},
 
-		// TODO 等待交易转化率趋势接口
 		*getPassengerFlowOrderLatest({ payload }, { call, put }) {
 			const { type = 1 } = payload || {};
 			const response = yield call(
@@ -106,7 +105,6 @@ export default {
 				format('toSnake')(opts)
 			);
 
-			// TODO 云端可能会修正
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response || {};
 				const { countList = [] } = format('toCamel')(data);

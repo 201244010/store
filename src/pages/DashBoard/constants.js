@@ -62,4 +62,7 @@ export const DASHBOARD = {
 		],
 		MONTH: ['1', '4', '7', '10', '13', '16', '19', '22', '25', '28', '31'],
 	},
+	AGE_CODE_LIST_UNDER_18: [1, 2],
+	AGE_CODE_EQ_18: 3,
+	AGE_CODE_OVER_56: 8,
 };
