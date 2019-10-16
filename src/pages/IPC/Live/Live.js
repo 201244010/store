@@ -11,7 +11,7 @@ import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 import styles from './Live.less';
 
 @connect((state) => {
-	const { faceid: { rectangles, list }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
+	const { faceid: { rectangles, list,  ageRangeList }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
 
 	const rects = [];
 	rectangles.forEach(item => {
@@ -26,7 +26,8 @@ import styles from './Live.less';
 		currentPPI: ppi || '1080',
 		faceidRects: rects || [],
 		faceidList: list || [],
-		timeSlots: timeSlots || []
+		timeSlots: timeSlots || [],
+		ageRangeList:  ageRangeList || []
 	};
 }, (dispatch) => ({
 	async getTimeSlots({sn, timeStart, timeEnd}) {
@@ -141,7 +142,7 @@ import styles from './Live.less';
 				sn
 			}
 		});
-	}
+	},
 	// test: () => {
 	// 	dispatch({
 	// 		type:'faceid/test'
@@ -277,6 +278,36 @@ class Live extends React.Component{
 		});
 	}
 
+	mapAgeInfo(age, ageRangeCode) {
+
+		const { ageRangeList } = this.props;
+		let ageName = formatMessage({id: 'photoManagement.unKnown'});
+		if(age) {
+			ageName = `${age} ${formatMessage({id: 'live.age.unit'})}`;
+		} else {
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+					ageName = formatMessage({ id: 'photoManagement.ageMiddleInfo'});
+					break;
+				case 8:
+					ageName = formatMessage({ id: 'photoManagement.ageLargeInfo'});
+					break;
+				default:
+					if(ageRangeList){
+						ageRangeList.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = `${item.ageRange} ${formatMessage({id: 'live.age.unit'})}`;
+							}
+						});
+					}
+			}
+		}
+
+		return ageName;
+	}
+
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, /* navigateTo */ } = this.props;
 
@@ -350,7 +381,7 @@ class Live extends React.Component{
 													>
 														<p className={styles.name}>{ item.name }</p>
 														<p>
-															{ `(${ genders[item.gender] } ${ item.age }${item.ageRangeCode === 8 || item.ageRangeCode === 1 ?null:formatMessage({id: 'live.age.unit'})})` }
+															{ `(${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)})` }
 														</p>
 														<p>
 															<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
