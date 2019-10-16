@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
-import { Card, List, Button, Modal, Form } from 'antd';
+import { Card, List, Button, Modal, Form, Tag } from 'antd';
 import { connect } from 'dva';
 import * as CookieUtil from '@/utils/cookies';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
@@ -60,19 +60,21 @@ class Store extends Component {
 
 	render() {
 		const {
-			merchant: { companyList = [] },
+			merchant: { companyList = [], currentCompanyId },
 		} = this.props;
 
 		const {
 			visible,
-			selectedCompany: {
-				company_id: companyId,
-				contact_email: contactEmail,
-				contact_tel: contactTel,
-				company_name: companyName,
-				contact_person: contactPerson,
-			},
+			selectedCompany: { companyId, contactEmail, contactTel, companyName, contactPerson },
 		} = this.state;
+
+		const currentCompany =
+			companyList.find(company => company.companyId === currentCompanyId) || {};
+
+		const displayCompanyList =
+			companyList.filter(company => company.companyId !== currentCompanyId) || [];
+
+		displayCompanyList.unshift(currentCompany);
 
 		return (
 			<Card style={{ marginTop: '15px' }}>
@@ -83,19 +85,35 @@ class Store extends Component {
 					</Button>
 				</div>
 				<List className={styles['list-wrapper']}>
-					{companyList.map(company => (
+					{displayCompanyList.map((company, index) => (
 						<List.Item key={company.companyId}>
 							<div className={styles['list-item']}>
 								<div className={styles['title-wrapper-start']}>
 									<div className={styles['title-wrapper-icon']}>
 										<h4>{company.companyName}</h4>
+										{index === 0 && (
+											<Tag color="orange">
+												{formatMessage({ id: 'merchant.current' })}
+											</Tag>
+										)}
 									</div>
-									<a
-										href="javascript:void(0);"
-										onClick={() => this.viewStore(company)}
-									>
-										{formatMessage({ id: 'list.action.detail' })}
-									</a>
+									<div>
+										{index !== 0 && (
+											<a
+												className={styles['store-change']}
+												href="javascript:void(0);"
+												onClick={() => this.viewStore(company)}
+											>
+												{formatMessage({ id: 'merchant.change' })}
+											</a>
+										)}
+										<a
+											href="javascript:void(0);"
+											onClick={() => this.viewStore(company)}
+										>
+											{formatMessage({ id: 'list.action.detail' })}
+										</a>
+									</div>
 								</div>
 							</div>
 						</List.Item>

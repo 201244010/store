@@ -37,17 +37,33 @@
 
 		.title-wrapper-start {
 			display: flex;
-			align-items: center;	
+			align-items: center;
 			justify-content: space-between;
 			.title-wrapper-icon {
 				display: inline-flex;
+
+				:global {
+					.ant-tag {
+						background: #fff7e6;
+						border: 1px solid #ffd591;
+						font-size: 12px;
+						line-height: 12px;
+						margin-left: 10px;
+						display: flex;
+						align-items: center;
+					}
+				}
 			}
+
+			.store-change {
+				margin-right: 10px;
+			}
+
 			.button-more {
-				color: #1890FF;
+				color: #1890ff;
 				cursor: pointer;
 			}
 		}
-
 	}
 }
 
