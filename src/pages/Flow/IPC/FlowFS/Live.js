@@ -12,7 +12,7 @@ import { LIBRARY_STYLE } from './libraryName';
 import styles from './Live.less';
 
 @connect((state) => {
-	const { flowFaceid: { rectangles, list, libraryList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }, } = state;
+	const { flowFaceid: { rectangles, list, libraryList, ageRangeList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }, } = state;
 	const rects = [];
 
 	rectangles.forEach(item => {
@@ -30,6 +30,7 @@ import styles from './Live.less';
 		timeSlots: timeSlots || [],
 		location,
 		libraryList,
+		ageRangeList
 	};
 }, (dispatch) => ({
 	async getTimeSlots({sn, timeStart, timeEnd}) {
@@ -153,7 +154,7 @@ import styles from './Live.less';
 	loadList: () => dispatch({ type:'ipcList/read'}),
 	// test: () => {
 	// 	dispatch({
-	// 		type:'faceid/test'
+	// 		type:'flowFaceid/test'
 	// 	});
 	// }
 }))
@@ -313,6 +314,36 @@ class Live extends React.Component{
 		}, 30 * 60 * 1000);
 	}
 
+	mapAgeInfo(age, ageRangeCode) {
+
+		const { ageRangeList } = this.props;
+		let ageName = formatMessage({id: 'photoManagement.unKnown'});
+		if(age) {
+			ageName = `${age} ${formatMessage({id: 'flow.age.unit'})}`;
+		} else {
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+					ageName = formatMessage({ id: 'photoManagement.ageMiddleInfo'});
+					break;
+				case 8:
+					ageName = formatMessage({ id: 'photoManagement.ageLargeInfo'});
+					break;
+				default:
+					if(ageRangeList){
+						ageRangeList.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = `${item.ageRange} ${formatMessage({id: 'flow.age.unit'})}`;
+							}
+						});
+					}
+			}
+		}
+
+		return ageName;
+	}
+
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, libraryList } = this.props;
 
@@ -389,7 +420,7 @@ class Live extends React.Component{
 														className={styles.infos}
 													>
 														<p className={styles['infos-age']}>
-															{ `${ genders[item.gender] } ${ item.age }${item.ageRangeCode === 8 || item.ageRangeCode === 1 ? '':formatMessage({id: 'flow.age.unit'})}` }
+															{ `${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)}` }
 														</p>
 														<p className={styles['infos-time']}>
 															{/* <span>{formatMessage({id: 'live.last.arrival.time'})}</span> */}
