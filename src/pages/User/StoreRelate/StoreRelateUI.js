@@ -17,7 +17,7 @@ const MerchantCreate = props => {
 			<div className={styles['store-content']}>
 				<Form>
 					<Form.Item>
-						{getFieldDecorator('company_name', {
+						{getFieldDecorator('companyName', {
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -82,7 +82,7 @@ const MerchantInfo = props => {
 						<div className={styles['store-list']}>
 							{companyList.map((company, index) => (
 								<Button
-									key={company.company_id}
+									key={company.companyId}
 									onMouseOver={() => changeButtonStyles('add', index)}
 									onMouseLeave={() => changeButtonStyles('remove', index)}
 									onClick={() => enterSystem(company)}
@@ -90,7 +90,7 @@ const MerchantInfo = props => {
 									block
 								>
 									<span className={styles['btn-name']}>
-										{company.company_name}
+										{company.companyName}
 									</span>
 									<span
 										className={`${styles['btn-icon']}
@@ -164,8 +164,8 @@ class StoreRelate extends Component {
 
 	enterSystem = company => {
 		const { setCurrentCompany } = this.props;
-		CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, company.company_id);
-		setCurrentCompany({ companyId: company.company_id });
+		CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, company.companyId);
+		setCurrentCompany({ companyId: company.companyId });
 		this.checkStoreExist();
 	};
 
@@ -179,8 +179,8 @@ class StoreRelate extends Component {
 				const response = await companyCreate({ ...values });
 				if (response && response.code !== ERROR_OK) {
 					setFields({
-						company_name: {
-							value: values.company_name || '',
+						companyName: {
+							value: values.companyName || '',
 							errors: [
 								new Error(
 									formatMessage({ id: 'merchantManagement.merchant.existed' })

@@ -62,6 +62,7 @@ class Store extends Component {
 		const {
 			merchant: { companyList = [] },
 		} = this.props;
+
 		const {
 			visible,
 			selectedCompany: {
@@ -83,11 +84,11 @@ class Store extends Component {
 				</div>
 				<List className={styles['list-wrapper']}>
 					{companyList.map(company => (
-						<List.Item key={company.company_id}>
+						<List.Item key={company.companyId}>
 							<div className={styles['list-item']}>
 								<div className={styles['title-wrapper-start']}>
 									<div className={styles['title-wrapper-icon']}>
-										<h4>{company.company_name}</h4>
+										<h4>{company.companyName}</h4>
 									</div>
 									<a
 										href="javascript:void(0);"

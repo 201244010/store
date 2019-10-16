@@ -82,17 +82,17 @@ class EmployeeCU extends Component {
 		const shopList = await getShopListFromStorage();
 
 		const companyInfo =
-			companyList.find(company => company.company_id === currentCompanyId) || {};
+			companyList.find(company => company.companyId === currentCompanyId) || {};
 
 		const orgnizationTree = [
 			{
-				title: companyInfo.company_name,
-				value: companyInfo.company_id,
-				key: companyInfo.company_id,
+				title: companyInfo.companyName,
+				value: companyInfo.companyId,
+				key: companyInfo.companyId,
 				children: shopList.map(shop => ({
 					title: shop.shop_name,
-					value: `${companyInfo.company_id}-${shop.shop_id}`,
-					key: `${companyInfo.company_id}-${shop.shop_id}`,
+					value: `${companyInfo.companyId}-${shop.shop_id}`,
+					key: `${companyInfo.companyId}-${shop.shop_id}`,
 				})),
 			},
 		];
