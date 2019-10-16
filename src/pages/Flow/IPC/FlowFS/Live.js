@@ -389,7 +389,7 @@ class Live extends React.Component{
 														className={styles.infos}
 													>
 														<p className={styles['infos-age']}>
-															{ `${ genders[item.gender] } ${ item.age }${item.ageRangeCode === 8 || item.ageRangeCode === 1 ?null:formatMessage({id: 'flow.age.unit'})}` }
+															{ `${ genders[item.gender] } ${ item.age }${item.ageRangeCode === 8 || item.ageRangeCode === 1 ? '':formatMessage({id: 'flow.age.unit'})}` }
 														</p>
 														<p className={styles['infos-time']}>
 															{/* <span>{formatMessage({id: 'live.last.arrival.time'})}</span> */}

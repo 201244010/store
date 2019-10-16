@@ -350,7 +350,7 @@ class Live extends React.Component{
 													>
 														<p className={styles.name}>{ item.name }</p>
 														<p>
-															{ `(${ genders[item.gender] } ${ item.age }${item.ageRangeCode === 8 || item.ageRangeCode === 1 ?null:formatMessage({id: 'live.age.unit'})})` }
+															{ `(${ genders[item.gender] } ${ item.age }${item.ageRangeCode === 8 || item.ageRangeCode === 1 ? '':formatMessage({id: 'live.age.unit'})})` }
 														</p>
 														<p>
 															<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
