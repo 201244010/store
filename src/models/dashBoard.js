@@ -7,14 +7,13 @@ import { getDeviceList } from '@/pages/IPC/services/IPCList';
 
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 
-const AGE_CODE_LIST_UNDER_18 = [1, 2];
-const AGE_CODE_EQ_18 = 3;
-
 const {
 	QUERY_TYPE,
 	SEARCH_TYPE: { RANGE, TRADE_TIME, PAYMENT_TYPE, PASSENGER_FLOW_TYPE },
 	TIME_INTERVAL,
 	PURCHASE_ORDER,
+	AGE_CODE_LIST_UNDER_18,
+	AGE_CODE_EQ_18,
 } = DASHBOARD;
 
 const stateFields = {
@@ -694,8 +693,6 @@ export default {
 					};
 				}, {});
 
-				console.log(mergeItem);
-
 				const formattedList = (
 					countList.filter(item => !AGE_CODE_LIST_UNDER_18.includes(item.ageRangeCode)) ||
 					[]
@@ -727,8 +724,6 @@ export default {
 						};
 					})
 					.sort((a, b) => a.ageRangeCode - b.ageRangeCode);
-
-				console.log('formattedList:', formattedList);
 
 				if (passengerFlowType === PASSENGER_FLOW_TYPE.GENDER) {
 					const genderCount = getGenderCount(formattedList);
