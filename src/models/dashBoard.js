@@ -7,6 +7,9 @@ import { getDeviceList } from '@/pages/IPC/services/IPCList';
 
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 
+const AGE_CODE_LIST_UNDER_18 = [1, 2];
+const AGE_CODE_EQ_18 = 3;
+
 const {
 	QUERY_TYPE,
 	SEARCH_TYPE: { RANGE, TRADE_TIME, PAYMENT_TYPE, PASSENGER_FLOW_TYPE },
@@ -667,15 +670,65 @@ export default {
 				const { data = {} } = response;
 				const { countList = [] } = format('toCamel')(data) || {};
 
-				const formattedList = countList
+				const mergeItem = (
+					countList.filter(item => AGE_CODE_LIST_UNDER_18.includes(item.ageRangeCode)) ||
+					[]
+				).reduce((prev, cur) => {
+					if (passengerFlowType === 'gender') {
+						const { maleCount: pMaleCount = 0, femaleCount: pFemaleCount = 0 } = prev;
+						const { maleCount = 0, femaleCount = 0 } = cur;
+						return {
+							maleCount: maleCount + pMaleCount,
+							femaleCount: femaleCount + pFemaleCount,
+						};
+					}
+
+					const {
+						regularCount: pRegularCount = 0,
+						strangerCount: pStrangerCount = 0,
+					} = prev;
+					const { regularCount = 0, strangerCount = 0 } = cur;
+					return {
+						regularCount: regularCount + pRegularCount,
+						strangerCount: strangerCount + pStrangerCount,
+					};
+				}, {});
+
+				console.log(mergeItem);
+
+				const formattedList = (
+					countList.filter(item => !AGE_CODE_LIST_UNDER_18.includes(item.ageRangeCode)) ||
+					[]
+				)
 					.map(item => {
 						const { ageRangeCode } = item;
+						const ageRange = ageRangeMap[ageRangeCode] || '';
+						if (ageRangeCode === AGE_CODE_EQ_18) {
+							if (passengerFlowType === 'gender') {
+								const { maleCount, femaleCount } = mergeItem;
+								item = {
+									...item,
+									maleCount: maleCount + item.maleCount,
+									femaleCount: femaleCount + item.femaleCount,
+								};
+							} else {
+								const { regularCount, strangerCount } = mergeItem;
+								item = {
+									...item,
+									regularCount: regularCount + item.regularCount,
+									strangerCount: strangerCount + item.strangerCount,
+								};
+							}
+						}
+
 						return {
 							...item,
-							ageRange: ageRangeMap[ageRangeCode] || '',
+							ageRange,
 						};
 					})
 					.sort((a, b) => a.ageRangeCode - b.ageRangeCode);
+
+				console.log('formattedList:', formattedList);
 
 				if (passengerFlowType === PASSENGER_FLOW_TYPE.GENDER) {
 					const genderCount = getGenderCount(formattedList);
