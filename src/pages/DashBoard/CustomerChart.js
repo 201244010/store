@@ -8,6 +8,8 @@ import styles from './DashBoard.less';
 
 const {
 	SEARCH_TYPE: { PASSENGER_FLOW_TYPE },
+	AGE_CODE_EQ_18,
+	AGE_CODE_OVER_56,
 } = DASHBOARD;
 
 const CardTitle = ({ onChange = null }) => {
@@ -117,11 +119,19 @@ class CustomerChart extends PureComponent {
 				maleCount: pMaleCount = null,
 				regularCount: pRegularCount = null,
 				ageRange,
+				ageRangeCode,
 			} = passenger;
+
+			let ageRangeInfo = `${ageRange}${formatMessage({ id: 'common.age' })}`;
+			if (ageRangeCode === AGE_CODE_EQ_18) {
+				ageRangeInfo = formatMessage({ id: 'age.under.18' });
+			} else if (ageRangeCode === AGE_CODE_OVER_56) {
+				ageRangeInfo = formatMessage({ id: 'age.over.56' });
+			}
 
 			return {
 				...passenger,
-				ageRange: `${ageRange}${formatMessage({ id: 'common.age' })}`,
+				ageRange: ageRangeInfo,
 				limit: totalCount === 0 ? 100 : totalCount * 2.5,
 				title: getTitle({ gender: pMaleCount, regular: pRegularCount }),
 			};

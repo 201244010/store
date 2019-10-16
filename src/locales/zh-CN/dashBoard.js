@@ -100,4 +100,7 @@ export default {
 	'payment.list.action': '操作',
 	'payment.order.detail.expanded': '收起支付明细',
 	'payment.order.detail.show': '查看支付明细',
+
+	'age.under.18': '18岁以下',
+	'age.over.56': '56岁以上',
 };

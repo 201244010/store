@@ -72,5 +72,7 @@ export default {
 	'photoManagement.countOver2':'照片已达人脸分组容量上限，若想继续添加照片请修改分组容量或删除已有照片',
 	'menu.photoManagement': '照片管理',
 	'menu.photoManagement.photoList': '照片列表',
-	'photoManagement.firstInputFormat':'首位字符不能为空，请重新输入'
+	'photoManagement.firstInputFormat':'首位字符不能为空，请重新输入',
+	'photoManagement.ageSmallInfo':'7岁以下',
+	'photoManagement.ageLargeInfo':'56岁以上'
 };

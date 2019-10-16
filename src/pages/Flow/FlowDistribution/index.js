@@ -4,8 +4,11 @@ import { Chart, Facet, View, Geom, Axis } from 'bizcharts';
 import { formatMessage, getLocale } from 'umi/locale';
 import { getLabel, COLORS, GENDERS } from './distribution';
 
+import { DASHBOARD } from '@/pages/DashBoard/constants';
 // import DataSet from '@antv/data-set';
 import styles from './index.less';
+
+const { AGE_CODE_LIST_UNDER_18, AGE_CODE_EQ_18, AGE_CODE_OVER_56 } = DASHBOARD;
 
 @connect(
 	state => ({
@@ -35,7 +38,7 @@ class FlowDistribution extends React.PureComponent {
 		clearInterval(this.age);
 		this.age = setInterval(() => {
 			getPassengerAgeByGender();
-		},5000);
+		}, 5000);
 	}
 
 	componentWillUnmount() {
@@ -53,27 +56,47 @@ class FlowDistribution extends React.PureComponent {
 
 		let lightItem = [];
 		if (list.length > 0) {
-			const { ageRangeCode = 0, gender = '0'} = list[0];
-			const lightAge = `${ageRangeMap[ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`;
+			const { ageRangeCode = 0, gender = '0' } = list[0];
+			let lightAge = `${ageRangeMap[ageRangeCode]}${formatMessage({
+				id: 'flow.distribution.age',
+			})}`;
+
+			if (AGE_CODE_LIST_UNDER_18.includes(ageRangeCode) || ageRangeCode === AGE_CODE_EQ_18) {
+				lightAge = formatMessage({ id: 'age.under.18' });
+			} else if (ageRangeCode === AGE_CODE_OVER_56) {
+				lightAge = formatMessage({ id: 'age.over.56' });
+			}
+
 			const lightGender = GENDERS[gender];
-			lightItem = [ lightAge, lightGender ];
+			lightItem = [lightAge, lightGender];
 		}
-		
+
 		const data = [];
 		let male = 0;
 		let female = 0;
 		countListByGender.map(item => {
 			male += item.maleCount;
 			female += item.femaleCount;
+			const { ageRangeCode } = item;
+			let ageInfo = `${ageRangeMap[item.ageRangeCode]}${formatMessage({
+				id: 'flow.distribution.age',
+			})}`;
+
+			if (ageRangeCode === AGE_CODE_EQ_18) {
+				ageInfo = formatMessage({ id: 'age.under.18' });
+			} else if (ageRangeCode === AGE_CODE_OVER_56) {
+				ageInfo = formatMessage({ id: 'age.over.56' });
+			}
+
 			data.push(
 				{
-					age: `${ageRangeMap[item.ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`,
+					age: ageInfo,
 					visitor: item.maleCount,
 					gender: 'male',
 					max: 1,
 				},
 				{
-					age: `${ageRangeMap[item.ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`,
+					age: ageInfo,
 					visitor: item.femaleCount,
 					gender: 'female',
 					max: 1,
@@ -83,7 +106,7 @@ class FlowDistribution extends React.PureComponent {
 
 		let maxTicks = 0;
 		data.map(item => {
-			maxTicks = item.visitor > maxTicks ? item.visitor : maxTicks; 
+			maxTicks = item.visitor > maxTicks ? item.visitor : maxTicks;
 		});
 
 		this.cols = {
@@ -92,9 +115,9 @@ class FlowDistribution extends React.PureComponent {
 			},
 		};
 
-		const personTotal = (male + female) === 0 ? 1 : (male + female);
-		const malePercent = (male * 100/ personTotal).toFixed(1);
-		const femalePercent = (female * 100/ personTotal).toFixed(1);
+		const personTotal = male + female === 0 ? 1 : male + female;
+		const malePercent = ((male * 100) / personTotal).toFixed(1);
+		const femalePercent = ((female * 100) / personTotal).toFixed(1);
 
 		const guideData = [
 			{
@@ -106,12 +129,14 @@ class FlowDistribution extends React.PureComponent {
 				title: formatMessage({ id: 'flow.distribution.female' }),
 				percent: femalePercent,
 				num: female,
-			}
+			},
 		];
 
 		return (
 			<div className={styles['flow-distribution']}>
-				<p className={styles['distribution-title']}>{formatMessage({ id: 'flow.distribution.title' })}</p>
+				<p className={styles['distribution-title']}>
+					{formatMessage({ id: 'flow.distribution.title' })}
+				</p>
 				<Chart
 					width={400}
 					height={204}
@@ -119,7 +144,13 @@ class FlowDistribution extends React.PureComponent {
 					scale={this.cols}
 					padding={[-50, -53, -50, -53]}
 				>
-					<Axis name="age" visible line={null} tickLine={null} label={getLabel(currentLanguage)} />
+					<Axis
+						name="age"
+						visible
+						line={null}
+						tickLine={null}
+						label={getLabel(currentLanguage)}
+					/>
 					<Axis name="visitor" visible={false} />
 					<Axis name="max" visible={false} />
 					<Facet
@@ -163,7 +194,10 @@ class FlowDistribution extends React.PureComponent {
 										shadowOffsetY: 0,
 										shadowColor: (age, gender) => {
 											if (gender === 'male') {
-												if (lightItem[0] === age && lightItem[1] === gender) {
+												if (
+													lightItem[0] === age &&
+													lightItem[1] === gender
+												) {
 													return COLORS.MALE_SHADOW;
 												}
 											}
@@ -179,17 +213,21 @@ class FlowDistribution extends React.PureComponent {
 					</Facet>
 				</Chart>
 				<div className={styles['distribution-footer']}>
-					{
-						guideData.map(item => (
-							<div className={styles['footer-item']} key={item.title}>	
-								<p className={styles['item-content']}>
-									<span>{item.percent}%</span>
-									{!isEnglish&&<span className={styles['item-num']}>{`${item.num}${formatMessage({ id: 'flow.distribution.footer.unit' })}`}</span>}
-								</p>
-								<p className={styles['item-title']}>{item.title}</p>
-							</div>
-						))
-					}
+					{guideData.map(item => (
+						<div className={styles['footer-item']} key={item.title}>
+							<p className={styles['item-content']}>
+								<span>{item.percent}%</span>
+								{!isEnglish && (
+									<span className={styles['item-num']}>
+										{`${item.num}${formatMessage({
+											id: 'flow.distribution.footer.unit',
+										})}`}
+									</span>
+								)}
+							</p>
+							<p className={styles['item-title']}>{item.title}</p>
+						</div>
+					))}
 				</div>
 			</div>
 		);

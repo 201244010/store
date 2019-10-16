@@ -153,50 +153,48 @@ class Toolbar extends React.Component{
 									this.ppisWrapper = wrapper;
 								}}
 							/>
-							{
-								<Dropdown
-									disabled={!isLive}
-									overlay={
-										<Menu
-											selectedKeys={[currentPPI]}
-										>
-											{
-												ppis.map((item) => (
-													<Menu.Item
-														onClick={() => {
-															ppiChange(item.value);
-														}}
-														key={item.value}
-													>
-														{ item.name }
-													</Menu.Item>
-												))
-											}
-										</Menu>
-									}
-									overlayClassName={styles.dropdown}
-									placement="topCenter"
-									getPopupContainer={() => this.ppisWrapper}
-								>
-									<Button
-										className={`${styles['button-ppis']}`}
-										disabled={!isLive}
-										size='small'
-										type='primary'
+							<Dropdown
+								disabled={!isLive}
+								overlay={
+									<Menu
+										selectedKeys={[currentPPI]}
 									>
 										{
-											(() => {
-												const current = ppis.filter(item => item.value === currentPPI);
-
-												if (current.length > 0){
-													return current[0].name;
-												}
-												return ppis[0].name;
-											})()
+											ppis.map((item) => (
+												<Menu.Item
+													onClick={() => {
+														ppiChange(item.value);
+													}}
+													key={item.value}
+												>
+													{ item.name }
+												</Menu.Item>
+											))
 										}
-									</Button>
-								</Dropdown>
-							}
+									</Menu>
+								}
+								overlayClassName={styles.dropdown}
+								placement="topCenter"
+								getPopupContainer={() => this.ppisWrapper}
+							>
+								<Button
+									className={`${styles['button-ppis']}`}
+									disabled={!isLive}
+									size='small'
+									type='primary'
+								>
+									{
+										(() => {
+											const current = ppis.filter(item => item.value === currentPPI);
+
+											if (current.length > 0){
+												return current[0].name;
+											}
+											return ppis[0].name;
+										})()
+									}
+								</Button>
+							</Dropdown>
 						</div>
 						: ''
 				}

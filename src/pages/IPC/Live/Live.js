@@ -278,7 +278,7 @@ class Live extends React.Component{
 	}
 
 	render() {
-		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
+		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, /* navigateTo */ } = this.props;
 
 		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
 
@@ -287,8 +287,6 @@ class Live extends React.Component{
 			1: formatMessage({ id: 'live.genders.male'}),
 			2: formatMessage({ id: 'live.genders.female'})
 		};
-
-
 
 		return(
 			<div className={styles['live-wrapper']}>
@@ -352,7 +350,7 @@ class Live extends React.Component{
 													>
 														<p className={styles.name}>{ item.name }</p>
 														<p>
-															{ `(${ genders[item.gender] } ${ item.age }${formatMessage({id: 'live.age.unit'})})` }
+															{ `(${ genders[item.gender] } ${ item.age }${item.ageRangeCode === 8 || item.ageRangeCode === 1 ?null:formatMessage({id: 'live.age.unit'})})` }
 														</p>
 														<p>
 															<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
@@ -361,10 +359,10 @@ class Live extends React.Component{
 																	moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
 																}
 															</span>
-														</p>	
-														<p>
-															<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
 														</p>
+														{/* <p>
+															<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
+														</p> */}
 													</Card>
 												</List.Item>
 											)
@@ -373,11 +371,11 @@ class Live extends React.Component{
 								/>
 
 							</PerfectScrollbar>
-							<div className={styles['infos-more']}>
+							{/* <div className={styles['infos-more']}>
 								{
 									faceidList && faceidList.length? <span onClick={() => navigateTo('faceLog')}>{formatMessage({ id: 'live.logs'})}</span> : ''
 								}
-							</div>
+							</div> */}
 						</div>
 						: ''
 				}

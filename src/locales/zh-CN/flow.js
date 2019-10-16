@@ -23,4 +23,6 @@ export default {
 	'flow.faceid.employee': '店员',
 	'flow.faceid.blacklist': '黑名单',
 	'show.total.unit': '万',
+	'flow.ageSmallInfo':'7岁以下',
+	'flow.ageLargeInfo':'56岁以上'
 };
