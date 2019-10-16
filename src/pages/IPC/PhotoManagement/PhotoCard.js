@@ -388,7 +388,7 @@ class PhotoCard extends React.Component {
 	};
 
 	handleSelectInfo = type => {
-		const { gender, age, photoLibrary: { ageRange } } = this.props;
+		const { gender, ageRangeCode, photoLibrary: { ageRange } } = this.props;
 		let ageName = '';
 		switch (type) {
 			case 'gender':
@@ -401,7 +401,7 @@ class PhotoCard extends React.Component {
 				return ageName;
 			case 'age':
 				ageRange.forEach(item => {
-					if(item.ageRangeCode === age) {
+					if(item.ageRangeCode === ageRangeCode) {
 						ageName = item.ageRangeCode;
 					}
 				});
