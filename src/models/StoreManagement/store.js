@@ -1,9 +1,9 @@
-import * as Action from '@/services/storeManagement/storeList';
-import { ERROR_OK } from '@/constants/errorCode';
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
 import typecheck from '@konata9/typecheck.js';
 import Storage from '@konata9/storage.js';
+import * as Action from '@/services/storeManagement/storeList';
+import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
 
 const cascaderDataWash = (data, mapping) => {
@@ -56,6 +56,13 @@ export default {
 			createdTime: '',
 			modifiedTime: '',
 		},
+		pagination: {
+			current: 1,
+			pageSize: 10,
+			total: 0,
+			showSizeChanger: true,
+			showQuickJumper: true,
+		},
 	},
 
 	effects: {
@@ -92,12 +99,28 @@ export default {
 			});
 		},
 
-		*getStoreList({ payload }, { call, put, select }) {
-			const { options } = payload;
-			const { searchFormValue } = yield select(state => state.store);
+		*updatePagination({ payload = {} }, { put, select }) {
+			const { options = {} } = payload;
+			const { pagination } = yield select(state => state.store);
+			yield put({
+				type: 'updateState',
+				payload: {
+					pagination: {
+						...pagination,
+						...options,
+					},
+				},
+			});
+		},
+
+		*getStoreList({ payload = {} }, { call, put, select }) {
+			const { options: { current = 1 } = {}, options = {} } = payload;
+			const { searchFormValue, pagination } = yield select(state => state.store);
 			const opts = {
 				...searchFormValue,
+				...pagination,
 				...options,
+				page_size: 999,
 			};
 			yield put({
 				type: 'updateState',
@@ -110,6 +133,10 @@ export default {
 				const newPayload = {
 					loading: false,
 					storeList: shopList,
+					pagination: {
+						...pagination,
+						current,
+					},
 				};
 				if (opts.type !== 'search') {
 					newPayload.allStores = shopList;
@@ -335,6 +362,13 @@ export default {
 						keyword: '',
 						type_one: 0,
 						type_two: 0,
+					},
+					pagination: {
+						current: 1,
+						pageSize: 10,
+						total: 0,
+						showSizeChanger: true,
+						showQuickJumper: true,
 					},
 				},
 			});

@@ -8,10 +8,10 @@ import { priceFormat } from '@/utils/utils';
 import styles from './DashBoard.less';
 
 const TEXT = {
-	TOTAL_INFO: formatMessage({ id: 'dashBoard.overview.product.total.info' }),
-	ESL_INFO: formatMessage({ id: 'dashBoard.overview.esl.total.info' }),
-	AP_INFO: formatMessage({ id: 'dashBoard.overview.ap.total.info' }),
-	IPC_INFO: formatMessage({ id: 'dashBoard.overview.ipc.total.info' }),
+	TOTAL_INFO: formatMessage({ id: 'dashboard.overview.product.total.info' }),
+	ESL_INFO: formatMessage({ id: 'dashboard.overview.esl.total.info' }),
+	AP_INFO: formatMessage({ id: 'dashboard.overview.ap.total.info' }),
+	IPC_INFO: formatMessage({ id: 'dashboard.overview.ipc.total.info' }),
 };
 
 const overviewCardStyle = {
@@ -42,6 +42,7 @@ const Overview = props => {
 		// overviewProductLoading,
 		overviewDeviceLoading,
 		overviewIPCLoading,
+		overviewNetworkLoading,
 		// productOverview: { totalCount = '' } = {},
 		deviceOverView: {
 			eslTotalCount = '',
@@ -50,6 +51,10 @@ const Overview = props => {
 			apTotalCount = '',
 		} = {},
 		ipcOverView: { onLineCount = '', offLineCount = '' } = {},
+		networkOverview: {
+			onlineCount: deviceOnlineCount = '',
+			offlineCount: deviceOfflineCount = '',
+		},
 		goToPath,
 	} = props;
 
@@ -62,7 +67,7 @@ const Overview = props => {
 							onClick: () => goToPath('productList'),
 							loading: overviewProductLoading,
 							cardStyle: overviewCardStyle,
-							title: formatMessage({ id: 'dashBoard.overview.product' }),
+							title: formatMessage({ id: 'dashboard.overview.product' }),
 							infoContent: TEXT.TOTAL_INFO,
 							content: totalCount === '' ? '--' : priceFormat(totalCount),
 							extra: (
@@ -79,7 +84,7 @@ const Overview = props => {
 							onClick: overviewDeviceLoading ? null : () => goToPath('electricLabel'),
 							loading: overviewDeviceLoading,
 							cardStyle: overviewCardStyle,
-							title: formatMessage({ id: 'dashBoard.overview.esl.push' }),
+							title: formatMessage({ id: 'dashboard.overview.esl.push' }),
 							infoContent: TEXT.ESL_INFO,
 							content: (
 								<>
@@ -90,7 +95,7 @@ const Overview = props => {
 									</div>
 									<div style={descriptionStyle}>
 										{formatMessage({
-											id: 'dashBoard.overview.esl.push.failed',
+											id: 'dashboard.overview.esl.push.failed',
 										})}
 										<span style={decriptionNumStyle}>
 											{eslFailedCount === '' ? '--' : eslFailedCount}
@@ -112,9 +117,23 @@ const Overview = props => {
 							onClick: overviewDeviceLoading ? null : () => goToPath('electricLabel'),
 							loading: overviewDeviceLoading,
 							cardStyle: overviewCardStyle,
-							title: formatMessage({ id: 'dashBoard.overview.esl.push.total' }),
+							title: formatMessage({ id: 'dashboard.overview.esl.push.total' }),
 							infoContent: TEXT.ESL_INFO,
-							content: eslTotalCount === '' ? '--' : priceFormat(eslTotalCount),
+							content: (
+								<>
+									<div>
+										{eslTotalCount === '' ? '--' : priceFormat(eslTotalCount)}
+									</div>
+									<div style={descriptionStyle}>
+										{formatMessage({
+											id: 'dashboard.overview.ap.online',
+										})}
+										<span style={decriptionNumStyle}>
+											{apTotalCount === '' ? '--' : apTotalCount}
+										</span>
+									</div>
+								</>
+							),
 							extra: (
 								<div className={styles['card-extra-img']}>
 									<ExtraImage iconName="ESL.png" />
@@ -126,20 +145,26 @@ const Overview = props => {
 				<Col span={6}>
 					<DisplayCard
 						{...{
-							onClick: overviewDeviceLoading ? null : () => goToPath('baseStation'),
-							loading: overviewDeviceLoading,
+							onClick: overviewNetworkLoading ? null : () => goToPath('network'),
+							loading: overviewNetworkLoading,
 							cardStyle: overviewCardStyle,
-							title: formatMessage({ id: 'dashBoard.overview.ap.online' }),
+							title: formatMessage({ id: 'dashboard.overview.device.online' }),
 							infoContent: TEXT.AP_INFO,
 							content: (
 								<>
-									<div>{apTotalCount === '' ? '--' : apTotalCount}</div>
-									{/* <div style={descriptionStyle}>
+									<div>
+										{deviceOnlineCount === ''
+											? '--'
+											: priceFormat(deviceOnlineCount)}
+									</div>
+									<div style={descriptionStyle}>
 										{formatMessage({
-											id: 'dashBoard.overview.ap.offline',
+											id: 'dashboard.overview.device.offline',
 										})}
-										<span style={decriptionNumStyle}>0</span>
-									</div> */}
+										<span style={decriptionNumStyle}>
+											{deviceOfflineCount === '' ? '--' : deviceOfflineCount}
+										</span>
+									</div>
 								</>
 							),
 							extra: (
@@ -156,7 +181,7 @@ const Overview = props => {
 							onClick: overviewIPCLoading ? null : () => goToPath('deviceList'),
 							loading: overviewIPCLoading,
 							cardStyle: overviewCardStyle,
-							title: formatMessage({ id: 'dashBoard.overview.ipc.online' }),
+							title: formatMessage({ id: 'dashboard.overview.ipc.online' }),
 							infoContent: TEXT.IPC_INFO,
 							content: (
 								<>
@@ -165,7 +190,7 @@ const Overview = props => {
 									</div>
 									<div style={descriptionStyle}>
 										{formatMessage({
-											id: 'dashBoard.overview.ipc.offline',
+											id: 'dashboard.overview.ipc.offline',
 										})}
 										<span style={decriptionNumStyle}>
 											{offLineCount === '' ? '--' : offLineCount}

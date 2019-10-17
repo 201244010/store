@@ -3,7 +3,7 @@ import { Table, Form, Input, Button, Row, Col, Cascader, Divider, Card } from 'a
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
-import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
+import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import styles from './StoreManagement.less';
 import { formatEmptyWithoutZero } from '@/utils/utils';
 
@@ -16,6 +16,8 @@ const FormItem = Form.Item;
 	dispatch => ({
 		changeSearchFormValue: payload =>
 			dispatch({ type: 'store/changeSearchFormValue', payload }),
+		updatePagination: options =>
+			dispatch({ type: 'store/updatePagination', payload: { options } }),
 		clearSearch: () => dispatch({ type: 'store/clearSearch' }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
 		getShopTypeList: () => dispatch({ type: 'store/getShopTypeList' }),
@@ -25,102 +27,9 @@ const FormItem = Form.Item;
 	})
 )
 class StoreManagement extends Component {
-	componentDidMount() {
-		const { getShopTypeList, getRegionList, getStoreList, clearSearch } = this.props;
-		if (!Storage.get('__shopTypeList__', 'local')) {
-			getShopTypeList();
-		}
-
-		if (!Storage.get('__regionList__', 'local')) {
-			getRegionList();
-		}
-		clearSearch();
-		getStoreList({});
-	}
-
-	componentWillUnmount() {
-		const { clearSearch } = this.props;
-		clearSearch();
-	}
-
-	toPath = (target, shopId) => {
-		const { goToPath } = this.props;
-		const path = {
-			create: {
-				pathId: 'storeCreate',
-				urlParams: {
-					action: 'create',
-				},
-			},
-			viewInfo: {
-				pathId: 'storeInfo',
-				urlParams: {
-					shopId,
-				},
-			},
-			update: {
-				pathId: 'storeUpdate',
-				urlParams: {
-					shopId,
-					action: 'edit',
-				},
-			},
-		};
-
-		const { pathId, urlParams = {} } = path[target] || {};
-		goToPath(pathId, urlParams);
-	};
-
-	handleReset = async () => {
-		const { form, clearSearch, getStoreList } = this.props;
-		if (form) {
-			form.resetFields();
-		}
-		await clearSearch();
-		await getStoreList({
-			options: {
-				current: 1,
-			},
-		});
-	};
-
-	handleSubmit = () => {
-		const {
-			form: { validateFields },
-			changeSearchFormValue,
-			getStoreList,
-		} = this.props;
-
-		validateFields(async (err, values) => {
-			if (!err) {
-				await changeSearchFormValue({
-					options: {
-						keyword: values.keyword,
-						type_one: (values.shopType || [])[0] || 0,
-						type_two: (values.shopType || [])[1] || 0,
-					},
-				});
-				await getStoreList({
-					options: {
-						type: 'search',
-					},
-				});
-			}
-		});
-	};
-
-	render() {
-		const {
-			form: { getFieldDecorator },
-			store: {
-				storeList,
-				shopType_list,
-				searchFormValue: { keyword, type_one, type_two },
-				loading,
-			},
-		} = this.props;
-
-		const columns = [
+	constructor(props) {
+		super(props);
+		this.columns = [
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnId' }),
 				dataIndex: 'shop_id',
@@ -170,6 +79,12 @@ class StoreManagement extends Component {
 				key: 'type_name',
 			},
 			{
+				title: formatMessage({ id: 'storeManagement.list.area' }),
+				dataIndex: 'business_area',
+				key: 'business_area',
+				render: text => <span>{text === 0 ? '--' : `${text}㎡`}</span>,
+			},
+			{
 				title: formatMessage({ id: 'storeManagement.list.columnContacts' }),
 				dataIndex: 'contact_person',
 				key: 'contact_person',
@@ -179,7 +94,7 @@ class StoreManagement extends Component {
 				dataIndex: 'operation',
 				key: 'operation',
 				width: 120,
-				render: (text, record) => (
+				render: (_, record) => (
 					<span>
 						<a
 							onClick={() => this.toPath('viewInfo', record.shop_id)}
@@ -198,6 +113,105 @@ class StoreManagement extends Component {
 				),
 			},
 		];
+	}
+
+	componentDidMount() {
+		const { getShopTypeList, getRegionList, getStoreList, clearSearch } = this.props;
+		if (!Storage.get('__shopTypeList__', 'local')) {
+			getShopTypeList();
+		}
+
+		if (!Storage.get('__regionList__', 'local')) {
+			getRegionList();
+		}
+		clearSearch();
+		getStoreList({ current: 1 });
+	}
+
+	componentWillUnmount() {
+		const { clearSearch } = this.props;
+		clearSearch();
+	}
+
+	toPath = (target, shopId) => {
+		const { goToPath } = this.props;
+		const path = {
+			create: {
+				pathId: 'storeCreate',
+				urlParams: {
+					action: 'create',
+				},
+			},
+			viewInfo: {
+				pathId: 'storeInfo',
+				urlParams: {
+					shopId,
+				},
+			},
+			update: {
+				pathId: 'storeUpdate',
+				urlParams: {
+					shopId,
+					action: 'edit',
+				},
+			},
+		};
+
+		const { pathId, urlParams = {} } = path[target] || {};
+		goToPath(pathId, urlParams);
+	};
+
+	handleReset = async () => {
+		const { form, clearSearch, getStoreList } = this.props;
+		if (form) {
+			form.resetFields();
+		}
+		await clearSearch();
+		await getStoreList({ current: 1 });
+	};
+
+	handleSubmit = () => {
+		const {
+			form: { validateFields },
+			changeSearchFormValue,
+			getStoreList,
+		} = this.props;
+
+		validateFields(async (err, values) => {
+			if (!err) {
+				await changeSearchFormValue({
+					options: {
+						keyword: values.keyword,
+						type_one: (values.shopType || [])[0] || 0,
+						type_two: (values.shopType || [])[1] || 0,
+					},
+				});
+				await getStoreList({
+					options: {
+						type: 'search',
+					},
+				});
+			}
+		});
+	};
+
+	handleTableChange = pagination => {
+		const { current = 1, pageSize = 10 } = pagination;
+		const { updatePagination } = this.props;
+		updatePagination({ current, pageSize });
+	};
+
+	render() {
+		const {
+			form: { getFieldDecorator },
+			store: {
+				storeList,
+				shopType_list,
+				searchFormValue: { keyword, type_one, type_two },
+				loading,
+				pagination,
+			},
+		} = this.props;
 
 		const formattedList = storeList.map(store => formatEmptyWithoutZero(store, '--'));
 
@@ -206,7 +220,7 @@ class StoreManagement extends Component {
 				<div className={styles['search-bar']}>
 					<Form layout="inline">
 						<Row gutter={FORM_FORMAT.gutter}>
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<FormItem
 									label={formatMessage({ id: 'storeManagement.list.inputLabel' })}
 								>
@@ -214,6 +228,7 @@ class StoreManagement extends Component {
 										initialValue: keyword,
 									})(
 										<Input
+											maxLength={20}
 											placeholder={formatMessage({
 												id: 'storeManagement.list.inputPlaceHolder',
 											})}
@@ -221,7 +236,7 @@ class StoreManagement extends Component {
 									)}
 								</FormItem>
 							</Col>
-							<Col {...COL_THREE_NORMAL}>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<FormItem
 									label={formatMessage({
 										id: 'storeManagement.list.selectLabel',
@@ -239,13 +254,18 @@ class StoreManagement extends Component {
 									)}
 								</FormItem>
 							</Col>
-							<Col {...COL_THREE_NORMAL}>
-								<Button type="primary" onClick={this.handleSubmit}>
-									{formatMessage({ id: 'btn.query' })}
-								</Button>
-								<Button style={{ marginLeft: '20px' }} onClick={this.handleReset}>
-									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
-								</Button>
+							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+								<Form.Item className={styles['query-item']}>
+									<Button type="primary" onClick={this.handleSubmit}>
+										{formatMessage({ id: 'btn.query' })}
+									</Button>
+									<Button
+										style={{ marginLeft: '20px' }}
+										onClick={this.handleReset}
+									>
+										{formatMessage({ id: 'storeManagement.list.buttonReset' })}
+									</Button>
+								</Form.Item>
 							</Col>
 						</Row>
 					</Form>
@@ -259,7 +279,13 @@ class StoreManagement extends Component {
 					{formatMessage({ id: 'storeManagement.list.newBuiltStore' })}
 				</Button>
 				<div className={styles.table}>
-					<Table rowKey="shop_id" dataSource={formattedList} columns={columns} />
+					<Table
+						rowKey="shop_id"
+						dataSource={formattedList}
+						columns={this.columns}
+						pagination={pagination}
+						onChange={this.handleTableChange}
+					/>
 				</div>
 			</Card>
 		);

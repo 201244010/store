@@ -1,12 +1,32 @@
+import { formatMessage } from 'umi/locale';
 import { format } from '@konata9/milk-shake';
 import { customizeFetch } from '@/utils/fetch';
+import { ERROR_OK } from '@/constants/errorCode';
 import CONFIG from '@/config';
-import * as CookieUtil from '@/utils/cookies';
 
-const { IPC_SERVER, API_ADDRESS } = CONFIG;
+const { IPC_SERVER } = CONFIG;
 const request = customizeFetch('ipc/api/face/group', IPC_SERVER);
 const request1 = customizeFetch('ipc/api/face', IPC_SERVER);
 const range = customizeFetch('ipc/api/face/age', IPC_SERVER);
+
+const dataFormatter = (item) => {
+
+	let ageRange = '';
+	switch(item.age_range_code) {
+		case 1:
+			ageRange = formatMessage({ id: 'photoManagement.ageSmallInfo'});
+			break;
+		case 8 :
+			ageRange = formatMessage({ id: 'photoManagement.ageLargeInfo'});
+			break;
+		default:
+			ageRange = item.age_range;
+	}
+	return {
+		ageRangeCode: item.age_range_code,
+		ageRange
+	};
+};
 
 // 获取照片列表
 export const readPhotoList = async (params) => {
@@ -75,6 +95,16 @@ export const getRange = async () => (
 	range('getRangeList').then(
 		async response => {
 			const json = await response.json();
+			const { code, data } = json;
+			if(code === ERROR_OK) {
+				const result = data.age_range_list.map(dataFormatter);
+				return {
+					code,
+					data: {
+						ageRangeList: result
+					}
+				};
+			}
 			return format('toCamel')(json);
 
 		}
@@ -99,30 +129,42 @@ export const editInfo = async  (params) => {
 /* upload发请求
 	需要判断不同的环境，dev/test来发送不同的请求
  */
-export const handleUpload =  groupId => {
-	const token = CookieUtil.getCookieByKey(CookieUtil.TOKEN_KEY) || '';
-	const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY) || '';
-	const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || '';
-	// let IP = '47.96.240.44:35150';
-	// switch (env) {
-	// 	case 'dev': IP = '47.96.240.44:35150';break;
-	// 	case 'test': IP = '47.99.16.199:30401';break;
-	// 	default: break;
-	// }
-	const IP = IPC_SERVER || API_ADDRESS;
+// export const handleUpload =  groupId => {
+// 	const token = CookieUtil.getCookieByKey(CookieUtil.TOKEN_KEY) || '';
+// 	const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY) || '';
+// 	const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || '';
+// 	// let IP = '47.96.240.44:35150';
+// 	// switch (env) {
+// 	// 	case 'dev': IP = '47.96.240.44:35150';break;
+// 	// 	case 'test': IP = '47.99.16.199:30401';break;
+// 	// 	default: break;
+// 	// }
 
-	
 
-	return {
-		action: `${window.location.protocol}//${IP}/ipc/api/face/group/uploadFace`,
-		data: file => (format('toSnake')({
-			name: file.name,
-			companyId,
-			shopId,
-			groupId
-		})),
-		headers: { authorization: `Bearer ${token}` }
-	};
+// 	return {
+// 		action: `http://${IPC_SERVER}/ipc/api/face/group/uploadFace`,
+// 		data: file => (format('toSnake')({
+// 			name: file.name,
+// 			companyId,
+// 			shopId,
+// 			groupId
+// 		})),
+// 		headers: { authorization: `Bearer ${token}` }
+// 	};
+// };
+
+export const handleUpload = async (params) => {
+	const body = format('toSnake')(params);
+	return request('uploadFace', {
+		body: {
+			...body
+		}
+	}).then(
+		async response => {
+			const json = await response.json();
+			return format('toCamel')(json);
+		}
+	);
 };
 
 export const handleResponse =  fileList => {

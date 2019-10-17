@@ -54,6 +54,7 @@ class StoreInformation extends React.Component {
 			region = '--',
 			address = '--',
 			business_hours = '--',
+			business_area = '--',
 			contact_person = '--',
 			contact_tel = '--',
 			created_time = '--',
@@ -110,6 +111,12 @@ class StoreInformation extends React.Component {
 						label={formatMessage({ id: 'storeManagement.create.daysLabel' })}
 					>
 						{business_hours}
+					</Form.Item>
+					<Form.Item
+						className={styles['clear-margin']}
+						label={formatMessage({ id: 'storeManagement.create.area' })}
+					>
+						{business_area || '--'}㎡
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}

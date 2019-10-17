@@ -1,5 +1,5 @@
-import { customizeFetch } from '@/utils/fetch';
 import { format } from '@konata9/milk-shake';
+import { customizeFetch } from '@/utils/fetch';
 import CONFIG from '@/config';
 
 const { API_ADDRESS } = CONFIG;
@@ -20,7 +20,7 @@ export const getArrivalList = (params) => {
 	}).then(
 		async response => {
 			const result = await response.json();
-			return format('toCamel')(result); 
+			return format('toCamel')(result);
 		}
 	);
 };

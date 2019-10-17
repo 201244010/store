@@ -31,7 +31,7 @@ export default {
 	'storeManagement.create.address.detail': '详细地址',
 	'storeManagement.create.daysLabel': '营业时间',
 	'storeManagement.create.area': '营业面积',
-	'storeManagement.create.area.formatError': '请输入大于0的数字，最多支持小数点后2位',
+	'storeManagement.create.area.formatError': '请输入大于0并且小于1,000,000的数字，最多支持小数点后2位',
 	'storeManagement.create.daysAll': '全部',
 	'storeManagement.create.daysMon': '周一',
 	'storeManagement.create.daysTus': '周二',

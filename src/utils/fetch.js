@@ -1,17 +1,18 @@
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
+import router from 'umi/router';
+import { fetch } from 'whatwg-fetch';
 import CONFIG from '@/config';
 import { cbcEncryption, idDecode, md5Encryption } from '@/utils/utils';
 import { USER_NOT_LOGIN } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
-import router from 'umi/router';
 
 // import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
-import { fetch } from 'whatwg-fetch';
 
 const { API_ADDRESS, MD5_TOKEN } = CONFIG;
 const ERR_INTERNET_DISCONNECTED = 9999;
 const GATEWAY_ERR = 9998;
+const COMMON_ERROR = 11111;
 
 // const codeMessage = {
 //   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
@@ -141,12 +142,16 @@ export const customizeFetch = (service = 'api', base) => {
 		let response = await fetchHandler(url, opts);
 		// console.log(response);
 
-		if (response.status === 401) {
-			unAuthHandler();
-		} else if (response.status === 403) {
-			noAuthhandler();
-		} else if (response.status === 502) {
-			response = new Response(JSON.stringify({ code: GATEWAY_ERR }));
+		if (response.status !== 200) {
+			if (response.status === 401) {
+				unAuthHandler();
+			} else if (response.status === 403) {
+				noAuthhandler();
+			} else if (response.status === 502) {
+				response = new Response(JSON.stringify({ code: GATEWAY_ERR }));
+			} else {
+				response = new Response(JSON.stringify({ code: COMMON_ERROR }));
+			}
 		}
 
 		const result = await response.clone().json();

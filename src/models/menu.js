@@ -2,10 +2,10 @@ import memoizeOne from 'memoize-one';
 import isEqual from 'lodash/isEqual';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
+import Storage from '@konata9/storage.js';
 import Authorized from '@/utils/Authorized';
 import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
-import Storage from '@konata9/storage.js';
 // import routeConfig from '@/config/devRouter';
 import routeConfig from '@/config/uat-router';
 
@@ -18,6 +18,7 @@ const FIRST_MENU_ORDER = [
 	'application',
 	'devices',
 	'esl',
+	'network',
 	'basicData',
 	'faceidLibrary',
 ];
@@ -142,7 +143,6 @@ export default {
 			const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
 
 			let filteredMenuData = menuData;
-
 			// const permissionResult = yield put.resolve({
 			// 	type: 'role/getUserPermissionList',
 			// });

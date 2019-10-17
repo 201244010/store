@@ -41,6 +41,13 @@ const router = [
 	},
 
 	{
+		path: '/flow',
+		component: '../layouts/BlankLayout',
+		id: 'flow',
+		routes: [{ path: '/flow', component: '../layouts/PassengerFlowLayout.js' }],
+	},
+
+	{
 		path: '/',
 		component: '../layouts/BasicLayout',
 		id: 'root',
@@ -56,8 +63,22 @@ const router = [
 				path: '/dashBoard',
 				name: 'dashBoard',
 				icon: 'blank',
-				component: './DashBoard',
-				id: 'dashBoard',
+				
+				routes: [
+					{
+						path: '/dashBoard',
+						id: 'dashBoard',
+						hideInMenu: true,
+						component: './DashBoard',
+					},
+					{
+						path: '/dashboard/detail',
+						id: 'orderDetail',
+						name: 'orderDetail',
+						hideInMenu: true,
+						component: './DashBoard/OrderDetail',
+					},
+				],
 			},
 
 			{
@@ -208,6 +229,44 @@ const router = [
 				],
 			},
 
+			{
+				path: '/network',
+				name: 'network',
+				id: 'network',
+				icon: 'blank',
+				routes: [
+					{ path: '/network', redirect: '/network/list' },
+					{
+						path: '/network/list',
+						name: 'list',
+						id: 'networkList',
+						// hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkOverview',
+					},
+					{
+						path: '/network/detail',
+						name: 'detail',
+						id: 'networkDetail',
+						hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkOverview/NetworkDetail',
+					},
+					{
+						path: '/network/configManagement',
+						name: 'configManagement',
+						id: 'configManagement',
+						// hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkConfig',
+					},
+					{
+						path: '/network/clientList',
+						name: 'clientList',
+						id: 'clientList',
+						hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkOverview/ClientList',
+					},
+				],
+			},
+			
 			{
 				path: '/basicData',
 				name: 'basicData',
@@ -458,6 +517,7 @@ const router = [
 						path: '/faceidLibrary/faceLog',
 						name: 'faceLog',
 						id: 'faceLog',
+						hideInMenu: true,
 						// component: './IPC/FaceLog/index.js',
 						routes: [
 							{

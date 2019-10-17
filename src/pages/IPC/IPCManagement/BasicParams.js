@@ -3,20 +3,14 @@ import { Card, Radio, Switch, Button,Form, Spin, message } from 'antd';
 
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-
 import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
-
+// import {  FORM_ITEM_LAYOUT , TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 import styles from './BasicParams.less';
 
 const RadioGroup = Radio.Group;
 
-// const isChange = {
-// 	nightMode:false,
-// 	indicator:false,
-// 	rotation:false
-// };
 
-// let temp = {};
+
 const mapStateToProps = (state) => {
 	const { ipcBasicParams } = state;
 	return {
@@ -41,18 +35,21 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		}).then(info => info);
 	},
-	saveSetting: ({ nightMode, indicator, rotation, sn }) => {
+	saveSetting: ({ nightMode, indicator, rotation, sn, WDRMode }) => {
 		dispatch({
 			type: 'ipcBasicParams/update',
 			payload: {
 				sn,
 				nightMode,
 				indicator,
-				rotation
+				rotation,
+				WDRMode
 			}
 		});
 	}
 });
+
+let btnDisabled = true;
 
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
@@ -70,8 +67,8 @@ const mapDispatchToProps = (dispatch) => ({
 	// 		})
 	// 	};
 	// },
-	// onValuesChange(props,values){
-	// 	// console.log(values);
+	onValuesChange(){
+		// console.log(values);
 	// 	Object.keys(values).forEach(item => {
 	// 		const key = item;
 	// 		if (values[key] !== props.ipcBasicParams[key]) {
@@ -80,7 +77,8 @@ const mapDispatchToProps = (dispatch) => ({
 	// 			isChange[key] = false;
 	// 		}
 	// 	});
-	// }
+		btnDisabled = false;
+	}
 })
 class BasicParams extends Component {
 
@@ -88,7 +86,13 @@ class BasicParams extends Component {
 		super(props);
 		this.state = {
 			deviceInfo: {
-				rotate: []
+				rotate: [{
+					key: 0,
+					value: 0
+				},{
+					key: 1,
+					value: 180
+				}]
 			}
 		};
 	}
@@ -121,64 +125,60 @@ class BasicParams extends Component {
 	// 	}
 	// }
 
-	componentDidUpdate () {
-		const { ipcBasicParams } = this.props;
+	componentWillReceiveProps = (props) => {
 
+		const { ipcBasicParams } = props;
 		if (ipcBasicParams.isSaving === 'success') {
+			btnDisabled = true;
 			message.success(formatMessage({ id: 'ipcManagement.success'}));
 		}else if (ipcBasicParams.isSaving === 'failed') {
+			btnDisabled = false;
 			message.error(formatMessage({ id: 'ipcManagement.failed'}));
 		}
 	}
+
+
+	// componentDidUpdate () {
+	// 	const { ipcBasicParams } = this.props;
+
+	// 	if (ipcBasicParams.isSaving === 'success') {
+	// 		btnDisabled = true;
+	// 		message.success(formatMessage({ id: 'ipcManagement.success'}));
+	// 	}else if (ipcBasicParams.isSaving === 'failed') {
+	// 		btnDisabled = false;
+	// 		message.error(formatMessage({ id: 'ipcManagement.failed'}));
+	// 	}
+	// }
 
 	submit = () => {
 		const { form, sn } = this.props;
 		const values = form.getFieldsValue();
 		const { saveSetting } = this.props;
 
-		const { nightMode, indicator, rotation } = values;
+		const { nightMode, indicator, rotation, WDRMode } = values;
 
 		saveSetting({
-			nightMode, indicator, rotation, sn
+			nightMode, indicator, rotation, sn, WDRMode
 		});
-		// temp = values;
+		// btnDisabled = true;
 
-		// const list = Object.keys(isChange);
-		// list.forEach(name => {
-		// 	isChange[name] = false;
-		// });
 	}
 
-	// resetChange = () => {
-	// 	const { basicParams: values } = this.props;
-
-	// 	const list = Object.keys(temp);
-	// 	list.forEach((name, i) => {
-	// 		if(temp[i] !== values[i]){
-	// 			isChange[i] = true;
-	// 		}
-	// 	});
-	// }
-	// onAutoChange = (e) => {
-	// 	// console.log(e, e.target, value);
-	// 	return e.target.value;
-	// }
+	nightModeChange = (e) => {
+		const { form } = this.props;
+		if(e.target.value === 1) {
+			form.setFieldsValue({
+				'WDRMode': 0
+			});
+		}
+	}
 
 	render() {
 		const { form, ipcBasicParams } = this.props;
-		const { isReading, isSaving, nightMode, rotation, indicator } = ipcBasicParams;
+		const { isReading, isSaving, nightMode, rotation, indicator , WDRMode } = ipcBasicParams;
 		const { deviceInfo: { rotate }} = this.state;
-		// const { status } = basicParams;
-		// if( status === 'error'){
-		//  	this.resetChange();
-		// }
-
-		// let changes = false;
-		// Object.keys(isChange).forEach(item => {
-		// 	changes = changes || isChange[item];
-		// });
-		// console.log(rotation);
-		const { getFieldDecorator } = form;
+		// console.log(ipcBasicParams);
+		const { getFieldDecorator , getFieldValue } = form;
 		return (
 			<Spin spinning={isReading || isSaving === 'saving'}>
 				<Card bordered={false} className={styles.card} title={formatMessage({id: 'basicParams.title'})}>
@@ -188,7 +188,7 @@ class BasicParams extends Component {
 								getFieldDecorator('nightMode',{
 									initialValue: nightMode
 								})(
-									<RadioGroup>
+									<RadioGroup onChange={this.nightModeChange}>
 										<Radio value={2}>
 											{ formatMessage({id: 'basicParams.autoSwitch'}) }
 										</Radio>
@@ -203,6 +203,23 @@ class BasicParams extends Component {
 							}
 						</Form.Item>
 
+						<Form.Item label={formatMessage({ id: 'basicParams.wdr'})}>
+							{
+								getFieldDecorator('WDRMode',{
+									initialValue: WDRMode,
+								})(
+									<RadioGroup disabled={getFieldValue('nightMode') === 1}>
+										<Radio value={1}>
+											{ formatMessage({id: 'basicParams.open'}) }
+										</Radio>
+										<Radio value={0}>
+											{ formatMessage({id: 'basicParams.close'}) }
+										</Radio>
+
+									</RadioGroup>
+								)
+							}
+						</Form.Item>
 						<Form.Item label={formatMessage({id: 'basicParams.rotation'})}>
 							{
 								getFieldDecorator('rotation',{
@@ -245,13 +262,12 @@ class BasicParams extends Component {
 							}
 						</Form.Item>
 
-
-
 						<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
 							<Button
 								type='primary'
 								htmlType='submit'
-								disabled={!form.isFieldsTouched(['nightMode','indicator','rotation'])}
+								// disabled={!form.isFieldsTouched(['nightMode','indicator','rotation','WDRMode'])}
+								disabled={btnDisabled}
 
 								onClick={this.submit}
 

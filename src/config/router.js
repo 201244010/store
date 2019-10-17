@@ -34,6 +34,21 @@ const router = [
 	},
 
 	{
+
+		path: '/show',
+		component: '../layouts/BlankLayout',
+		id: 'show',
+		routes: [{ path: '/show', component: '../layouts/ShowLayout.js' }],
+	},
+
+	{
+		path: '/flow',
+		component: '../layouts/BlankLayout',
+		id: 'flow',
+		routes: [{ path: '/flow', component: '../layouts/PassengerFlowLayout.js' }],
+	},
+
+	{
 		path: '/',
 		component: '../layouts/BasicLayout',
 		id: 'root',
@@ -46,13 +61,26 @@ const router = [
 				component: './Index',
 			},
 			{
-				path: '/dashBoard',
-				name: 'dashBoard',
+				path: '/dashboard',
+				name: 'dashboard',
 				icon: 'blank',
-				component: './DashBoard',
-				id: 'dashBoard',
-			},
 
+				routes: [
+					{
+						path: '/dashboard',
+						id: 'dashboard',
+						hideInMenu: true,
+						component: './DashBoard',
+					},
+					{
+						path: '/dashboard/detail',
+						id: 'orderDetail',
+						name: 'orderDetail',
+						hideInMenu: true,
+						component: './DashBoard/OrderDetail',
+					},
+				],
+			},
 			{
 				path: '/application',
 				name: 'application',
@@ -90,6 +118,45 @@ const router = [
 								redirect: '/application/cashVerify/posList',
 							},
 						],
+					},
+					{
+						path: '/application/trade',
+						name: 'trade',
+						routes: [
+							{
+								path: '/application/trade',
+								id: 'trade',
+								hideInMenu: true,
+								component: './Trade',
+							},
+							{
+								path: '/application/trade/qrpay',
+								id: 'qrpay',
+								hideInMenu: true,
+								component: './Trade/QRCodePayment',
+							},
+							{
+								path: '/application/trade/result',
+								id: 'tradeResult',
+								hideInMenu: true,
+								component: './Trade/TradeResult',
+							},
+						],
+					},
+				],
+			},
+
+			{
+				path: '/dataAnalyze',
+				icon: 'blank',
+				name: 'dataAnalyze',
+				routes: [
+					{ path: '/dataAnalyze', redirect: '/dataAnalyze/passenger' },
+					{
+						path: '/dataAnalyze/passenger',
+						name: 'passenger',
+						id: 'passengerAnalyze',
+						component: './PassengerAnalyze',
 					},
 				],
 			},
@@ -209,6 +276,44 @@ const router = [
 			},
 
 			{
+				path: '/network',
+				name: 'network',
+				id: 'network',
+				icon: 'blank',
+				routes: [
+					{ path: '/network', redirect: '/network/list' },
+					{
+						path: '/network/list',
+						name: 'list',
+						id: 'networkList',
+						// hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkOverview',
+					},
+					{
+						path: '/network/detail',
+						name: 'detail',
+						id: 'networkDetail',
+						hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkOverview/NetworkDetail',
+					},
+					{
+						path: '/network/configManagement',
+						name: 'configManagement',
+						id: 'configManagement',
+						// hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkConfig',
+					},
+					{
+						path: '/network/clientList',
+						name: 'clientList',
+						id: 'clientList',
+						hideInMenu: true,
+						component: './DeviceManagement/Network/NetworkOverview/ClientList',
+					},
+				],
+			},
+
+			{
 				path: '/basicData',
 				name: 'basicData',
 				icon: 'blank',
@@ -220,20 +325,27 @@ const router = [
 					},
 					{
 						path: '/basicData/merchantManagement',
-						redirect: '/basicData/merchantManagement/view',
-					},
-					{
-						path: '/basicData/merchantManagement/view',
 						name: 'merchantManagement',
-						id: 'merchantView',
-						component: './MerchantManagement/MerchantView',
-					},
-					{
-						path: '/basicData/merchantManagement/modify',
-						name: 'merchantManagement',
-						id: 'merchantModify',
-						hideInMenu: true,
-						component: './MerchantManagement/MerchantModify',
+						routes: [
+							{
+								path: '/basicData/merchantManagement',
+								redirect: '/basicData/merchantManagement/view',
+							},
+							{
+								path: '/basicData/merchantManagement/view',
+								name: 'view',
+								id: 'merchantView',
+								hideInMenu: true,
+								component: './MerchantManagement/MerchantView',
+							},
+							{
+								path: '/basicData/merchantManagement/modify',
+								name: 'modify',
+								id: 'merchantModify',
+								hideInMenu: true,
+								component: './MerchantManagement/MerchantModify',
+							},
+						],
 					},
 					{
 						path: '/basicData/storeManagement',
@@ -461,7 +573,7 @@ const router = [
 						path: '/exception/404',
 						name: 'no-rescourse',
 						id: 'noRescourse',
-						component: './Exception/403',
+						component: './Exception/404',
 					},
 				],
 			},
@@ -479,22 +591,60 @@ const router = [
 				icon: 'blank',
 				// component: './index.js',
 				routes: [
+					{ path: '/faceidLibrary', redirect: '/faceidLibrary/faceidLibraryList' },
 					{
 						path: '/faceidLibrary/faceidLibraryList',
 						name: 'list',
-						id: 'faceidLibraryList',
-						component: './IPC/FaceidLibrary/LibraryList.js',
+						routes: [
+							{
+								path: '/faceidLibrary/faceidLibraryList/photoManagement',
+								name: 'photoManagement',
+								hideInMenu: true,
+								id: 'photoList',
+								component: './IPC/PhotoManagement/PhotoManagement.js',
+							},
+							{
+								path: '/faceidLibrary/faceidLibraryList',
+								id: 'faceidLibraryList',
+								component: './IPC/FaceidLibrary/LibraryList.js',
+							},
+						],
 					},
+					{
+						path: '/faceidLibrary/faceLog',
+						name: 'faceLog',
+						// id: 'faceLog',
+						// component: './IPC/FaceLog/index.js',
+						routes: [
+							{
+								path: '/faceidLibrary/faceLog/entryDetail',
+								name: 'entryDetail',
+								id: 'entryDetail',
+								hideInMenu: true,
+								component: './IPC/EntryDetail/index.js',
+							},
+							{
+								path: '/faceidLibrary/faceLog',
+								// name: 'faceLog',
+								id: 'faceLog',
+								component: './IPC/FaceLog/index.js',
+							},
+						],
+					},
+
+					// {
+					// 	path: '/faceidLibrary/entryDetail',
+					// 	name: 'entryDetail',
+					// 	id: 'entryDetail',
+					// 	hideInMenu: true,
+					// 	component: './IPC/EntryDetail/index.js',
+					// },
 					// {
 					// 	path: '/faceidLibrary/createLibrary',
 					// 	// name: 'faceidLibrary.create',
 					// 	id: 'createLibrary',
 					// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
 					// },
-					{
-						path: '/faceidLibrary',
-						redirect: '/faceidLibrary/faceidLibraryList',
-					},
 				],
 			},
 		],

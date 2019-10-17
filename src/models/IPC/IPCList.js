@@ -14,23 +14,8 @@ export default {
 	},
 	effects: {
 		*read(action,{ put }) {
-			const companyId = yield put.resolve({
-				type: 'global/getCompanyIdFromStorage'
-			});
-
-			const shopId = yield put.resolve({
-				type: 'global/getShopIdFromStorage'
-			});
-
-
-			if (!companyId || !shopId) {
-				return [];
-			}
-
-			const response = yield getDeviceList({
-				companyId,
-				shopId
-			});
+		
+			const response = yield getDeviceList();
 
 			const {data : result , code} = response;
 			if (code === ERROR_OK) {
@@ -67,13 +52,15 @@ export default {
 				});
 			}
 		},
-		*getIpcList(_, { select, take}) {
+		*getIpcList(_, { select, put}) {
 			let ipcList  = yield select((state) => state.ipcList);
 
 			if (ipcList.length === 0){
 				// console.log(ipcList.length);
-				const { payload } = yield take('readData');
-				ipcList = payload;
+				yield put.resolve({
+					type: 'getList'
+				});
+				ipcList  = yield select((state) => state.ipcList);
 			}
 
 			return ipcList;

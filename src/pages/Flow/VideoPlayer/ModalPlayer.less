@@ -1,0 +1,43 @@
+.live-wrapper {
+	// position: relative;
+	margin: auto;
+
+	height: calc(100vh - 200px);
+	// width: calc(100vh - 228px);
+	// height: 30%;
+	// width: 70%;
+	.close{
+		position: absolute;
+		z-index: 100;
+		color: white;
+		top: 0;
+		font-size: 16px;
+		right: 0;
+		margin: 12px;
+
+		border-radius: 50%;
+
+		padding: 8px;
+		width: 32px;
+		height: 32px;
+
+		background-color: #bbbbbb;
+
+		&:hover {
+			// opacity: 0.8;
+			background-color: #cccccc;
+		}
+	}
+
+	.video-player-container {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+}
+
+.video-player{
+	// position: absolute;
+	width: calc(100vh - 180px);
+	min-width: 480px;
+}

@@ -8,6 +8,7 @@ import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/
 import styles from './ActiveDetection.less';
 
 const RadioGroup = Radio.Group;
+
 const mapStateToProps = (state) => {
 	const { activeDetection } = state;
 	return {
@@ -16,14 +17,6 @@ const mapStateToProps = (state) => {
 	};
 };
 const mapDispatchToProps = (dispatch) => ({
-	// init: (sn) => {
-	// 	dispatch({
-	// 		type: 'activeDetection/init',
-	// 		payload: {
-	// 			sn
-	// 		}
-	// 	});
-	// },
 	loadSetting: (sn) => {
 		dispatch({
 			type: 'activeDetection/read',
@@ -44,7 +37,8 @@ const mapDispatchToProps = (dispatch) => ({
 	}
 });
 
-// var temp = {};
+let btnDisabled = true;
+
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name: 'active-detection-form',
@@ -85,8 +79,9 @@ const mapDispatchToProps = (dispatch) => ({
 	// onFieldsChange(props, fields) {
 
 	// },
-	// onValuesChange(props, values, allValues) {
-	// }
+	onValuesChange() {
+		btnDisabled = false;
+	}
 })
 class ActiveDetection extends React.Component {
 	constructor(props) {
@@ -110,7 +105,10 @@ class ActiveDetection extends React.Component {
 		// }
 		// console.log(sn);
 		// init(sn);
-		loadSetting(sn);
+		if(sn){
+			loadSetting(sn);
+		}
+
 	};
 
 	componentWillReceiveProps(props) {
@@ -127,17 +125,25 @@ class ActiveDetection extends React.Component {
 		if (getFieldValue('days').length !== 0 && daysError === true) {
 			this.setState({ daysError: false });
 		}
-	}
-
-	componentDidUpdate() {
-		const { activeDetection } = this.props;
-
 		if (activeDetection.isSaving === 'success') {
+			btnDisabled = true;
 			message.success(formatMessage({ id: 'ipcManagement.success'}));
 		}else if (activeDetection.isSaving === 'failed') {
+			btnDisabled = false;
 			message.error(formatMessage({ id: 'ipcManagement.failed'}));
 		}
 	}
+
+	// componentDidUpdate() {
+	// 	const { activeDetection } = this.props;
+
+	// 	if (activeDetection.isSaving === 'success') {
+	// 		message.success(formatMessage({ id: 'ipcManagement.success'}));
+	// 	}else if (activeDetection.isSaving === 'failed') {
+	// 		btnDisabled = false;
+	// 		message.error(formatMessage({ id: 'ipcManagement.failed'}));
+	// 	}
+	// }
 
 	handleSubmit = (e) => {
 		e.preventDefault();
@@ -161,6 +167,7 @@ class ActiveDetection extends React.Component {
 			};
 			// console.log('params', params);
 			saveSetting(sn, params);
+			// btnDisabled = true;
 		}
 	};
 
@@ -472,19 +479,20 @@ class ActiveDetection extends React.Component {
 								type="primary"
 								htmlType="submit"
 								loading={isSaving === 'saving'}
-								disabled={!form.isFieldsTouched(
-									[
-										'isSound',
-										'sSensitivity',
-										'isDynamic',
-										'mSensitivity',
-										'isAuto',
-										'startTime',
-										'endTime',
-										'all',
-										'days',
-									],
-								)}
+								// disabled={!form.isFieldsTouched(
+								// 	[
+								// 		'isSound',
+								// 		'sSensitivity',
+								// 		'isDynamic',
+								// 		'mSensitivity',
+								// 		'isAuto',
+								// 		'startTime',
+								// 		'endTime',
+								// 		'all',
+								// 		'days',
+								// 	],
+								// )}
+								disabled={btnDisabled}
 							>
 								{formatMessage({id: 'activeDetection.save'})}
 							</Button>

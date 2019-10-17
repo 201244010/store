@@ -1,4 +1,16 @@
-export const env = process.env.UMI_ENV;
+import sysEnv from './env';
+
+export const { env, country } = sysEnv;
+
+export const FIRST_MENU_ORDER = [
+	'dashboard',
+	'application',
+	'devices',
+	'esl',
+	'network',
+	'basicData',
+	'faceidLibrary',
+];
 
 const WEB_SOCKET_PREFIX = {
 	dev: 'ws',
@@ -9,8 +21,8 @@ const WEB_SOCKET_PREFIX = {
 };
 
 const SSO_ADDRESS = {
-	dev: 'api.api.sunmi.com',
-	test: 'test.api.sunmi.com',
+	dev: 'api.test.sunmi.com',
+	test: 'api.test.sunmi.com',
 	uat: 'api.uat.sunmi.com',
 	onl: 'api.sunmi.com',
 	local: '127.0.0.1:30001',
@@ -19,17 +31,23 @@ const SSO_ADDRESS = {
 
 const API_ADDRESS = {
 	dev: 'store.dev.sunmi.com',
-	test: 'test-store.sunmi.com:30301',
-	uat: 'uat-store.sunmi.com:443',
+	test: 'store.test.sunmi.com',
+	uat: 'store.uat.sunmi.com:443',
 	onl: 'store.sunmi.com:443',
 	local: '127.0.0.1:30001',
 	// local: '10.10.168.228:30001',
 };
 
+const COUNTRY_ADDRESS = {
+	china: API_ADDRESS[env],
+	southAmerica: '',
+};
+
 // ipc专用的测试和开发地址
 const IPC_ADDRESS = {
 	dev: 'store.dev.sunmi.com',
-	test: '47.99.16.199:30401',
+	// test: '47.99.16.199:30401',
+	test: 'store.test.sunmi.com',
 };
 
 const DES_KEY = {
@@ -64,4 +82,5 @@ export default {
 	MD5_TOKEN: MD5_TOKEN[env],
 	IPC_SERVER: IPC_ADDRESS[env],
 	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[env],
+	COUNTRY_ADDRESS: COUNTRY_ADDRESS[country],
 };
