@@ -14,7 +14,7 @@ export const FIRST_MENU_ORDER = [
 
 const WEB_SOCKET_PREFIX = {
 	dev: 'ws',
-	test: 'ws',
+	test: 'wss',
 	uat: 'wss',
 	onl: 'wss',
 	local: 'ws',
