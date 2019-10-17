@@ -29,7 +29,7 @@ const createApi = async () => {
 		if (d.code === 1){
 			const { data } = d;
 			return {
-				username: data.username,
+				username: data.login_name,
 				address: data.server_address,
 				password: data.password,
 				clientId: `${data.username  }_${  moment().format('X')}`
