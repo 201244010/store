@@ -6,11 +6,15 @@ import { formatMessage } from 'umi/locale';
 import { SHOP_ID_KEY, SHOP_LIST_KEY, getCookieByKey } from '@/utils/cookies';
 import ShowTabContent from '../ShowTabContent';
 import { ERROR_OK } from '@/constants/errorCode';
+import { DASHBOARD } from '@/pages/DashBoard/constants';
 
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 const ACTIVEKEY = ['today', 'week', 'month'];
+const {
+	TIME_INTERVAL: { HOUR },
+} = DASHBOARD;
 
 @connect(
 	state => ({
@@ -33,6 +37,7 @@ class ShowHeader extends React.PureComponent {
 	};
 
 	componentDidMount() {
+		this.startRefreshToken();
 		this.setTime = setInterval(() => {
 			const time = moment().format('YYYY-MM-DD HH:mm:ss');
 			this.setState({ time });
@@ -54,7 +59,7 @@ class ShowHeader extends React.PureComponent {
 			}
 
 			const nowTime = new Date().getTime();
-			if (nowTime - this.refreshTime > 72000000) {
+			if (nowTime - this.startTime > 5 * HOUR * 1000) {
 				this.startRefreshToken();
 			}
 		}, 1000);
