@@ -5,6 +5,11 @@ import { formatMessage } from 'umi/locale';
 import { getRange } from '../../services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
+const OPCODE = {
+	FACE_ID_STATUS: '0x4202',
+	FACE_COMPARE_STATUS: '0x4203'
+};
+
 export default {
 	namespace: 'faceid',
 	state: {
@@ -14,28 +19,20 @@ export default {
 		deviceSn: ''
 	},
 	reducers: {
-		drawRects({ rectangles, list, ageRangeList, deviceSn }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
+		drawRects(state, { payload: { rects, sn } }) {
+			const { deviceSn, rectangles } = state;
 
-			// todo 需要添加信息清除逻辑
-			const rect = rectangles;
-
-			return {
-				rectangles: [
-					...rect,
-					{
-						rects,
-						sn,
-						timestamp,
-						// reportTime
+			if (deviceSn === sn) {
+				state.rectangles = [
+					...rectangles,
+					...rects
+				];
 					}
-				],
-				list,
-				ageRangeList,
-				deviceSn
-			};
+
 		},
 		clearRects(state, { payload: { timestamp }}) {
 			const rectangles = [];
+
 			state.rectangles.forEach(item => {
 				if (item.timestamp > timestamp - 2000) {
 					rectangles.push(item);
@@ -72,17 +69,6 @@ export default {
 
 	},
 	effects: {
-		// *subscribe({ payload: { device }}, { select, call }) {
-		// 	const { userId, clientId } = yield select((state) => {
-		// 		return {
-		// 			userId: state.user.id,
-		// 			clientId: state.mqtt.clientId
-		// 		};
-		// 	});
-
-		// 	const topic = `/WEB/${ userId }/${clientId}/${device.type}/event/sub`;
-		// 	yield call(subscribe, topic);
-		// }
 		*getAgeRangeList(_,{ put, call }) {
 			const response = yield call(getRange);
 			const { code, data: { ageRangeList }} = response;
@@ -142,6 +128,70 @@ export default {
 				 }
 			});
 		},
+		*changeFaceidPushStatus ({ payload: { sn, status }}, { put }) {
+			// 直播页人脸加框开关
+			const deviceType = yield put.resolve({
+				type: 'ipcList/getDeviceType',
+				payload: {
+					sn
+				}
+			});
+
+			const topic = yield put.resolve({
+				type: 'mqttIpc/generateTopic',
+				payload: {
+					deviceType,
+					messageType: 'request',
+					method: 'pub'
+				}
+			});
+
+			yield put({
+				type: 'mqttIpc/publish',
+				payload: {
+					topic,
+					message: {
+						opcode: OPCODE.FACE_ID_STATUS,
+						param: {
+							sn,
+							action: status === true ? 1: 0
+						}
+					}
+				}
+			});
+		},
+		*changeFaceComparePushStatus ({ payload: { sn, status }}, { put }) {
+			// 直播页右侧人脸加框开关
+			const deviceType = yield put.resolve({
+				type: 'ipcList/getDeviceType',
+				payload: {
+					sn
+				}
+			});
+
+			const topic = yield put.resolve({
+				type: 'mqttIpc/generateTopic',
+				payload: {
+					deviceType,
+					messageType: 'request',
+					method: 'pub'
+				}
+			});
+
+			yield put({
+				type: 'mqttIpc/publish',
+				payload: {
+					topic,
+					message: {
+						opcode: OPCODE.FACE_COMPARE_STATUS,
+						param: {
+							sn,
+							action: status === true ? 1: 0
+						}
+					}
+				}
+			});
+		}
 		// *test(_, { put }) {
 		// 	console.log('in test');
 		// 	yield put({
@@ -169,11 +219,7 @@ export default {
 					handler: (topic, message) => {
 						const { data } = message;
 
-						const { rect = [], pts } = data;
-
-						if (rect === null) {
-							return;
-						}
+						const { rect, pts } = data;
 
 						const rects = rect.map(item => ({
 							id: item.face_id,

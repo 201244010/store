@@ -8,15 +8,17 @@ const { IPC_SERVER } = CONFIG;
 const requestStream = customizeFetch('ipc/api/media/stream', IPC_SERVER);
 const requestVideo = customizeFetch('ipc/api/media/video', IPC_SERVER);
 
-export const getLiveUrl = ({ clientId, sn }) => {
-	const result = requestStream('start', {
+export const getLiveUrl = ({ deviceId, clientId, resolution}) => {
+	const result = requestStream('live/start', {
 		body: {
+			device_id: deviceId,
 			client_id: clientId,
-			sn
+			resolution
 		}
 	}).then(async (response) => {
-		const { code, data: { url, stream_id: streamId, resolution } } = await response.json();
+		const { code, data } = await response.json();
 		if (code === ERROR_OK) {
+			const { url, stream_id: streamId } = data;
 			return {
 				code: ERROR_OK,
 				data: {
@@ -30,27 +32,51 @@ export const getLiveUrl = ({ clientId, sn }) => {
 			code
 		};
 	});
-
 	return result;
 };
+// export const getLiveUrl = ({ clientId, sn }) => {
+// 	const result = requestStream('start', {
+// 		body: {
+// 			client_id: clientId,
+// 			sn
+// 		}
+// 	}).then(async (response) => {
+// 		const { code, data: { url, stream_id: streamId, resolution } } = await response.json();
+// 		if (code === ERROR_OK) {
+// 			return {
+// 				code: ERROR_OK,
+// 				data: {
+// 					url,
+// 					streamId,
+// 					resolution
+// 				}
+// 			};
+// 		}
+// 		return {
+// 			code
+// 		};
+// 	});
 
-export const stopLive = ({ streamId, sn }) => {
-	const result = requestStream('stop', {
-		body: {
-			stream_id: streamId,
-			sn
-		}
-	}).then(async (response) => {
-		const { code } = await response.json();
-		if (code === ERROR_OK) {
-			return {
-				code: ERROR_OK,
-			};
-		}
-		return response;
-	});
-	return result;
-};
+// 	return result;
+// };
+
+// export const stopLive = ({ streamId, sn }) => {
+// 	const result = requestStream('stop', {
+// 		body: {
+// 			stream_id: streamId,
+// 			sn
+// 		}
+// 	}).then(async (response) => {
+// 		const { code } = await response.json();
+// 		if (code === ERROR_OK) {
+// 			return {
+// 				code: ERROR_OK,
+// 			};
+// 		}
+// 		return response;
+// 	});
+// 	return result;
+// };
 
 
 export const getTimeSlots = ({ deviceId, timeStart, timeEnd }) => {

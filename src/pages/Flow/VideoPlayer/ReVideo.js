@@ -33,8 +33,11 @@ class ReVideojs extends React.Component{
 				config: {
 					autoCleanupSourceBuffer: true,
 					enableStashBuffer: false,
+					// deferLoadAfterSourceOpen: false,
+					fixAudioTimestampGap: false,
 					isLive: true,
-					enableWorker: true,
+					cors: true,
+					// enableWorker: true,
 				}
 			}
 		});
@@ -90,6 +93,7 @@ class ReVideojs extends React.Component{
 				player.tech_.on('error', (e, data) => {
 					console.log('error: ', e, data);
 					// player.load();
+					console.log('player.tech_.on error');
 					onError(player);
 				});
 
