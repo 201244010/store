@@ -128,7 +128,7 @@ class SalseBar extends PureComponent {
 					: parseFloat((totalCountStore[rangeType] / latestCount) * 100).toFixed(2);
 
 		const lastTradeRate =
-			earlyCountStore[rangeType] === 0
+			earlyCount === 0
 				? 0
 				: parseInt((earlyCountStore[rangeType] / earlyCount) * 100, 10) > 100
 					? parseFloat(100).toFixed(2)
@@ -208,7 +208,7 @@ class SalseBar extends PureComponent {
 									</span>
 								),
 							loading: passengerFlowLoading,
-							onClick: () => goToPath('faceLog'),
+							action: false,
 						}}
 					/>
 					<SalseInfo

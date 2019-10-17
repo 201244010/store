@@ -21,8 +21,8 @@ const WEB_SOCKET_PREFIX = {
 };
 
 const SSO_ADDRESS = {
-	dev: 'test.api.sunmi.com',
-	test: 'test.api.sunmi.com',
+	dev: 'api.test.sunmi.com',
+	test: 'api.test.sunmi.com',
 	uat: 'api.uat.sunmi.com',
 	onl: 'api.sunmi.com',
 	local: '127.0.0.1:30001',
@@ -31,7 +31,7 @@ const SSO_ADDRESS = {
 
 const API_ADDRESS = {
 	dev: 'store.dev.sunmi.com',
-	test: 'test-store.sunmi.com',
+	test: 'store.test.sunmi.com',
 	uat: 'uat-store.sunmi.com:443',
 	onl: 'store.sunmi.com:443',
 	local: '127.0.0.1:30001',
@@ -47,7 +47,7 @@ const COUNTRY_ADDRESS = {
 const IPC_ADDRESS = {
 	dev: 'store.dev.sunmi.com',
 	// test: '47.99.16.199:30401',
-	test: 'test-store.sunmi.com',
+	test: 'store.test.sunmi.com',
 };
 
 const DES_KEY = {

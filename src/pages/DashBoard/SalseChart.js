@@ -216,7 +216,9 @@ class SalseChart extends PureComponent {
 											rangeType,
 											timeRangeStart,
 											timeRangeEnd
-										)}</p><p>${formatMessage({id: 'dashboard.trade.count'})}：${orderCount}</p>`,
+										)}</p><p>${formatMessage({
+											id: 'dashboard.trade.count',
+										})}：${orderCount}</p>`,
 										// value: ``,
 									}),
 								],

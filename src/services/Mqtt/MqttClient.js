@@ -55,7 +55,7 @@ class MqttClient {
 					password,
 					path,
 					reconnectPeriod,
-					keepalive: 600,
+					// keepalive: 600,
 				}
 			);
 
@@ -74,9 +74,9 @@ class MqttClient {
 
 			client.on('close', () => {
 				console.log('mqtt close');
-				if (this.reconnectTimes > 10) {
-					client.end(true);
-				}
+				// if (this.reconnectTimes > 10) {
+				// 	client.end(true);
+				// }
 			});
 
 			client.on('error', () => {

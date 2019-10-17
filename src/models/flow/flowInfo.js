@@ -3,6 +3,9 @@ import { format } from '@konata9/milk-shake';
 import * as Actions from '@/services/passengerFlow';
 import { getRange } from '@/pages/IPC/services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
+import { DASHBOARD } from '@/pages/DashBoard/constants';
+
+const { AGE_CODE_LIST_UNDER_18, AGE_CODE_EQ_18 } = DASHBOARD;
 
 export default {
 	namespace: 'flowInfo',
@@ -37,7 +40,10 @@ export default {
 		},
 
 		*getPassengerAgeByGender({ payload = {} }, { call, put }) {
-			const { startTime = moment().format('YYYY-MM-DD'), endTime = moment().format('YYYY-MM-DD') } = payload;
+			const {
+				startTime = moment().format('YYYY-MM-DD'),
+				endTime = moment().format('YYYY-MM-DD'),
+			} = payload;
 			const opts = { startTime, endTime };
 
 			const response = yield call(
@@ -49,21 +55,40 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response || {};
 				const { countList = [] } = format('toCamel')(data);
+				const mergeItem = (
+					countList.filter(item => AGE_CODE_LIST_UNDER_18.includes(item.ageRangeCode)) ||
+					[]
+				).reduce((prev, cur) => {
+					const { maleCount: pMaleCount = 0, femaleCount: pFemaleCount = 0 } = prev;
+					const { maleCount = 0, femaleCount = 0 } = cur;
+					return {
+						maleCount: maleCount + pMaleCount,
+						femaleCount: femaleCount + pFemaleCount,
+					};
+				}, {});
 
-				for (let j = 0; j < countList.length -1; j++) {
-					for( let i = 0; i < countList.length - j - 1; i++) {
-						if (countList[i].ageRangeCode < countList[i+1].ageRangeCode) {
-							const item = countList[i];
-							countList[i] = countList[i+1];
-							countList[i+1] = item;
+				const mergeList = (
+					countList.filter(item => !AGE_CODE_LIST_UNDER_18.includes(item.ageRangeCode)) ||
+					[]
+				)
+					.map(item => {
+						const { ageRangeCode } = item;
+						if (ageRangeCode === AGE_CODE_EQ_18) {
+							const { maleCount, femaleCount } = item;
+							item = {
+								...item,
+								maleCount: maleCount + mergeItem.maleCount,
+								femaleCount: femaleCount + mergeItem.femaleCount,
+							};
 						}
-					}
-				}
+						return item;
+					})
+					.sort((a, b) => b.ageRangeCode - a.ageRangeCode);
 
 				yield put({
 					type: 'updateState',
 					payload: {
-						countListByGender: countList,
+						countListByGender: mergeList,
 					},
 				});
 			}
@@ -72,7 +97,10 @@ export default {
 		},
 
 		*getPassengerAgeByRegular({ payload = {} }, { call, put }) {
-			const { startTime = moment().format('YYYY-MM-DD'), endTime = moment().format('YYYY-MM-DD') } = payload;
+			const {
+				startTime = moment().format('YYYY-MM-DD'),
+				endTime = moment().format('YYYY-MM-DD'),
+			} = payload;
 			const opts = { startTime, endTime };
 
 			const response = yield call(

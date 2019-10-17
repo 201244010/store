@@ -109,9 +109,9 @@ export default {
 			}
 		},
 		*mapFaceInfo({ payload }, { select, take, put }) {
-			const { libraryName, age, ageRangeCode, name } = payload;
+			const { libraryName, name } = payload;
 			let rangeList = yield select((state) => state.flowFaceid.ageRangeList);
-			let ageName = formatMessage({id: 'flow.unknown'});
+			// let ageName = formatMessage({id: 'flow.unknown'});
 			let libraryNameText = libraryName;
 
 			switch(libraryName) {
@@ -129,26 +129,26 @@ export default {
 					break;
 				default:
 			}
-
+			// console.log('tttttt', rangeList);
 			if(!rangeList || rangeList.length === 0){
-				const { payload: list } = yield take('flowReadAgeRangeList');
+				const { payload: list } = yield take('readAgeRangeList');
 				rangeList = list.ageRangeList;
 			}
-			if(age) {
-				ageName = age;
-			} else if(rangeList) {
-				rangeList.forEach(item => {
-					if(item.ageRangeCode === ageRangeCode) {
-						ageName = item.ageRange;
-					}
-				});
-			}
+			// if(age) {
+			// 	ageName = age;
+			// } else if(rangeList) {
+			// 	rangeList.forEach(item => {
+			// 		if(item.ageRangeCode === ageRangeCode) {
+			// 			ageName = item.ageRange;
+			// 		}
+			// 	});
+			// }
 			 yield put({
 				 type: 'updateList',
 				 payload: {
 					...payload,
 					 libraryName: libraryNameText,
-					 age: ageName,
+					//  age: ageName,
 					 name: name === 'undefined' ? formatMessage({id: 'flow.unknown'}) : name
 				 }
 			});
@@ -175,7 +175,7 @@ export default {
 		// 		type:'mapFaceInfo',
 		// 		payload: {
 		// 			age: 0,
-		// 			ageRangeCode: 4,
+		// 			ageRangeCode: 8,
 		// 			timestamp: 15652373226,
 		// 			libraryId: 3497,
 		// 			libraryName: 'stranger',
@@ -183,8 +183,8 @@ export default {
 		// 			id: 2751,
 		// 			name: 'undefined'
 		// 		}
-	// 		});
-	// 	}
+		// 	});
+		// }
 	},
 	subscriptions: {
 		mqtt ({ dispatch }) {

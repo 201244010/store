@@ -247,18 +247,29 @@ class PhotoCard extends React.Component {
 	};
 
 	ageRange = () => {
-		const { photoLibrary: {ageRange} , age, realAge } = this.props;
+		const { photoLibrary: { ageRange } , age, ageRangeCode } = this.props;
 		let ageName = formatMessage({id: 'photoManagement.unKnown'});
-		// console.log(ageRange);
-		if(realAge){
-			ageName = realAge;
+		if(age) {
+			ageName = age;
 		} else {
-			ageRange.forEach(item => {
-				if(item.ageCode === age) {
-					ageName = item.ageRange;
-				}
-			});
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+					ageName = formatMessage({id: 'photoManagement.ageMiddleInfo'});
+					break;
+				default:
+					if(ageRange) {
+						ageRange.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = item.ageRange;
+							}
+						});
+					}
+			}
 		}
+
+		// console.log('aaaaaaaaa',ageName);
 		return ageName;
 	};
 
@@ -388,9 +399,8 @@ class PhotoCard extends React.Component {
 	};
 
 	handleSelectInfo = type => {
-		const { gender, age, photoLibrary: { ageRange } } = this.props;
+		const { gender, ageRangeCode, photoLibrary: { ageRange } } = this.props;
 		let ageName = '';
-		// console.log(ageRange);
 		switch (type) {
 			case 'gender':
 				if(gender === 1) {
@@ -402,8 +412,8 @@ class PhotoCard extends React.Component {
 				return ageName;
 			case 'age':
 				ageRange.forEach(item => {
-					if(item.ageCode === age) {
-						ageName = item.ageCode;
+					if(item.ageRangeCode === ageRangeCode) {
+						ageName = item.ageRangeCode;
 					}
 				});
 				return ageName;
@@ -448,10 +458,11 @@ class PhotoCard extends React.Component {
 			form: {getFieldDecorator},
 			photoLibrary: { ageRange },
 			groupId,
-			age,
+			/* age, */
+			ageRangeCode,
 			gender,
-			count,
-			navigateTo
+			// count,
+			// navigateTo
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
 		const { isEdit, infoFormVisible, removeVisible, fileUrl, imageLoaded, isUpload } = this.state;
@@ -629,7 +640,7 @@ class PhotoCard extends React.Component {
 											<Form.Item label={formatMessage({id:'photoManagement.age'})}>
 												{getFieldDecorator('age', {
 													// initialValue: this.handleSelectInfo('age'),
-													initialValue: age === 0?'':age,
+													initialValue: ageRangeCode === 0?'':ageRangeCode,
 													rules: [
 														{
 															required: true,
@@ -640,7 +651,7 @@ class PhotoCard extends React.Component {
 													<Select>
 														{
 															ageRange.map((item, index)=>
-																<Option value={item.ageCode} key={index}>
+																<Option value={item.ageRangeCode} key={index}>
 																	{item.ageRange}
 																</Option>)
 														}
@@ -691,13 +702,7 @@ class PhotoCard extends React.Component {
 												{this.ageRange()}
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.frequency'})}>
-												{
-													count?
-														<span className={styles['frequency-label']} onClick={() => navigateTo('entryDetail',{ faceId: id })}>{this.handleInfo('count')}</span>
-														:
-														<span>{this.handleInfo('count')}</span>
-												}
-
+												<span>{this.handleInfo('count')}</span>
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.createTime'})}>
 												{this.handleInfo('createDate')}
