@@ -1,4 +1,6 @@
 export const ERROR_OK = 1;
+export const ORDER_OK = 1;
+export const MQTT_RES_OK = 0;
 export const TOKEN_EXPIRE = -2;
 
 export const SHOW_VCODE = 2;
@@ -27,7 +29,15 @@ export const ERR_ROLE_USED = 5037;
 
 export const NONE_IMPORTED_RECORD = 5013;
 
+export const ERR_AGREEMENT_NOT_ACCEPT = 5410;
+export const ERR_AGREEMENT_NOT_LATEST = 5411;
 export const ERR_SSO_USER_NOT_IN_COMPANY = 5400;
+
+export const ORDER_COMPLETED = 5503;
+
+export const SWITCH_SCEEN_NO_DELETE = 5347;
+
+export const NO_ANALYZE_DATA = 5087;
 
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',
@@ -52,4 +62,8 @@ export const ALERT_NOTICE_MAP = {
 export const ALERT_ROLE_MAP = {
 	[USER_NOT_EXIST]: 'alert.role.not.exist',
 	[ERR_SSO_USER_NOT_IN_COMPANY]: 'alert.sso.not.company',
+};
+
+export const ALTERT_TRADE_MAP = {
+	[ORDER_COMPLETED]: 'pay.order.completed',
 };

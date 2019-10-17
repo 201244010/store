@@ -3,6 +3,7 @@ import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 
 import CONFIG from '@/config';
+import { TIME } from '@/constants';
 
 const { DES_KEY, DES_IV } = CONFIG;
 
@@ -527,4 +528,105 @@ export const mbStringLength = s => {
 	}
 	// alert(totalLength);
 	return totalLength;
+};
+
+// 格式化网络速率，最多保留4位数字+单位
+export const formatSpeed = speed => {
+	const kSpeed = 1024;
+	const mSpeed = kSpeed * 1024;
+	const gSpeed = mSpeed * 1024;
+
+	speed = parseInt(speed, 10);
+	let unit = '';
+	if (speed >= gSpeed) {
+		const val = speed / gSpeed;
+		speed = val.toFixed(val > 99 ? 0 : 2);
+		unit = 'GB/s';
+	} else if (speed >= mSpeed) {
+		const val = speed / mSpeed;
+		speed = val.toFixed(val > 99 ? 0 : 2);
+		unit = 'MB/s';
+	} else {
+		speed = (speed / kSpeed).toFixed(0);
+		unit = 'KB/s';
+	}
+
+	return { speed, unit };
+};
+
+// 格式化时间，精确到天时分秒
+export const formatRelativeTime = timeStamp => {
+	const duration = moment.duration(timeStamp);
+	const years = duration.years();
+	const months = duration.months();
+	const days = duration.days();
+	const hours = duration.hours();
+	const minutes = duration.minutes();
+	const seconds = duration.seconds();
+	let yearStr = '';
+	let monthStr = '';
+	let dayStr = '';
+	let hourStr = '';
+	let minuteStr = '';
+	let secondStr = '';
+	if (years > 0) {
+		yearStr = `${years}${formatMessage({ id: 'common.time.year' })}`;
+	}
+
+	if (months > 0) {
+		monthStr = `${months}${formatMessage({ id: 'common.time.month' })}`;
+	}
+	if (days > 0) {
+		dayStr = `${days}${formatMessage({ id: 'common.time.day' })}`;
+	}
+	if (hours > 0) {
+		hourStr = `${hours}${formatMessage({ id: 'common.time.hour' })}`;
+	}
+	if (minutes > 0) {
+		minuteStr = `${minutes}${formatMessage({ id: 'common.time.minute' })}`;
+	}
+
+	if (seconds > 0) {
+		secondStr = `${seconds}${formatMessage({ id: 'common.time.second' })}`;
+	}
+
+	return `${yearStr}${monthStr}${dayStr}${hourStr}${minuteStr}${secondStr}`;
+};
+
+export const checkAnchor = (anchor = null) => {
+	if (!anchor) {
+		return null;
+	}
+	const anchorTag = document.createElement('a');
+	anchorTag.href = `#${anchor}`;
+	anchorTag.click();
+
+	return null;
+};
+
+export const getCountDown = (seconds, level = 'hour') => {
+	if (!seconds) {
+		console.error('Seconds is null');
+		return null;
+	}
+
+	const day = Math.floor(seconds / TIME.DAY);
+	const hour = Math.floor((seconds % TIME.DAY) / TIME.HOUR);
+	const minute = Math.floor(((seconds % TIME.DAY) % TIME.HOUR) / TIME.MINUTE);
+	const second = Math.floor(((seconds % TIME.DAY) % TIME.HOUR) % TIME.MINUTE);
+
+	if (level === 'day') {
+		return {
+			day,
+			hour,
+			minute,
+			second,
+		};
+	}
+
+	return {
+		hour: hour === 0 ? 24 : hour,
+		minute,
+		second,
+	};
 };

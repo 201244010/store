@@ -9,9 +9,9 @@ const WEB_SOCKET_PREFIX = {
 };
 
 const SSO_ADDRESS = {
-	dev: 'test.api.sunmi.com',
+	dev: 'api.api.sunmi.com',
 	test: 'test.api.sunmi.com',
-	uat: 'uat.api.sunmi.com',
+	uat: 'api.uat.sunmi.com',
 	onl: 'api.sunmi.com',
 	local: '127.0.0.1:30001',
 	// local: '10.10.168.228:30001',

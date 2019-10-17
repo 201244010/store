@@ -71,6 +71,7 @@ export const SIZES = {
 	DEFAULT_TEXT_CONTAINER_WIDTH: 100,
 	DEFAULT_TEXT_CONTAINER_HEIGHT: 18,
 	DEFAULT_TEXT_LETTER_SPACING: 0,
+	DEFAULT_TEXT_LINE_SPACING: 16,
 	DEFAULT_CODE_H_CONTAINER_WIDTH: 95,
 	DEFAULT_CODE_H_CONTAINER_HEIGHT: 14,
 	DEFAULT_CODE_V_CONTAINER_WIDTH: 14,
@@ -161,6 +162,9 @@ const strokeColorMap = {
 };
 const letterSpacingMap = {
 	[SHAPE_TYPES.TEXT]: SIZES.DEFAULT_TEXT_LETTER_SPACING,
+};
+const lineSpacingMap = {
+	[SHAPE_TYPES.TEXT]: SIZES.DEFAULT_TEXT_LINE_SPACING,
 };
 const cornerRadiusMap = {
 	[SHAPE_TYPES.RECT]: SIZES.DEFAULT_RECT_CORNER_RADIUS,
@@ -275,6 +279,7 @@ export const MAPS = {
 	strokeWidth: strokeWidthMap,
 	strokeColor: strokeColorMap,
 	letterSpacing: letterSpacingMap,
+	lineSpacing: lineSpacingMap,
 	cornerRadius: cornerRadiusMap,
 	containerWidth: containerWidthMap,
 	containerHeight: containerHeightMap,
