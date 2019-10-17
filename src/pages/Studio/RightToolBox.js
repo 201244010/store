@@ -238,7 +238,7 @@ export default class RightToolBox extends Component {
 	};
 
 	handleLineSpacing = (detail, value) => {
-		if ((!value || /^(0|[1-9][0-9]*)$/.test(value)) && value <= detail.fontSize * detail.zoomScale) {
+		if ((!value || /^(0|[1-9][0-9]*)$/.test(value))) {
 			const {selectedShapeName, updateComponentsDetail} = this.props;
 			const newDetail = {
 				lineSpacing: value,
@@ -1011,7 +1011,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Alibaba Sans">Alibaba Sans</Option>
+									<Option value="AlibabaSans">Alibaba Sans</Option>
 								</Select>
 							</Col>
 						</Row>
