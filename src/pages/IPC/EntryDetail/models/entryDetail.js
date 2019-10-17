@@ -8,7 +8,8 @@ export default {
 	state: {
 		arrivalList:[],
 		faceInfo:{},
-		total: 0
+		total: 0,
+		shopList: []
 	},
 	reducers: {
 		readData(state, { payload }) {
@@ -19,7 +20,24 @@ export default {
 		},
 	},
 	effects: {
-		*readArrivalList({ payload }, { put }) {
+		*getStoreList( _, { put }){
+			const result = yield put.resolve({
+				type:'store/getStoreList',
+				payload: {}
+			});
+
+			if (result && result.code === ERROR_OK) {
+				const data = result.data || {};
+				const shopList = data.shop_list || [];
+				yield put({
+					type: 'readData',
+					payload: {
+						shopList
+					}
+				});
+			}
+		},
+		*readArrivalList({ payload }, { put, select }) {
 			const { deviceId, faceId, pageNum, pageSize } = payload;
 			const response = yield getArrivalList({
 				deviceId,
@@ -27,20 +45,24 @@ export default {
 				pageNum,
 				pageSize
 			});
+
 			const { code, data: { historyList = [], totalCount } } = response;
-			const arrivalList = [];
-			for(let i=0;i<historyList.length;i++){
-				const shopName = yield put.resolve({
-					type:'store/getStoreNameById',
-					payload:{
-						shopId:historyList[i].shopId
+
+			const shopList = yield select(state => state.entryDetail.shopList); 
+
+			const arrivalList = historyList.map((item) => {
+				let shopName = '';
+				shopList.forEach(shopItem => {
+					if (shopItem.shop_id === item.shopId) {
+						shopName = shopItem.shop_name;
 					}
 				});
-				arrivalList.push({
+				return({
 					shopName,
-					...historyList[i]
+					...item
 				});
-			}
+			});
+			
 			if(code === ERROR_OK) {
 				yield put({
 					type: 'readData',

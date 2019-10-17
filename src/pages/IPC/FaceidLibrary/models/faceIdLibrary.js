@@ -6,22 +6,31 @@ import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
 	namespace: 'faceIdLibrary',
-	state: [],
+	state: {
+		list: [],
+		totalCapacity: 0
+	},
 	reducers: {
-		createData(state, action) {
+		createData({ list , totalCapacity}, action) {
 			const { payload } = action;
 			// console.log(payload);
-			return [...state, ...payload];
+			return {
+				list: [...list, ...payload],
+				totalCapacity
+			};
+			// return [...state, ...payload];
 		},
 		readData(state, action) {
-			const { payload } = action;
-			return [...payload];
+			const { payload: {list, totalCapacity} } = action;
+			state.list = [...list];
+			state.totalCapacity = totalCapacity;
+			// return [...payload];
 		},
 		updateData(state, action) {
 			const { payload } = action;
 			// console.log(payload);
-
-			const result = state.map(item => {
+			const { list } = state;
+			const result = list.map(item => {
 				if (payload.id === item.id) {
 					item = payload;
 					// return false;
@@ -29,15 +38,15 @@ export default {
 				// return true;
 				return item;
 			});
-
-			return [...result];
+			state.list = [...result];
+			// return [...result];
 		},
-		deleteData(state, action) {
+		deleteData({ list }, action) {
 			const { payload } = action;
 			const { id } = payload;
 
 			let target = -1;
-			state.every((item, index) => {
+			list.every((item, index) => {
 				if (item.id === id) {
 					target = index;
 					return false;
@@ -45,10 +54,13 @@ export default {
 				return true;
 			});
 
-			state.splice(target, 1);
+			list.splice(target, 1);
 
 			// return [...state];
 		},
+		readCapacity(state, { payload }) {
+			state.totalCapacity = payload;
+		}
 	},
 	effects: {
 		*create({payload: { library } }, { put }) {
@@ -80,11 +92,9 @@ export default {
 				// companyId,
 				// shopId,
 			});
-			const { data, code} = response;
-			const list = data.map(item => {
+			const { data: { groupList, totalCapacity }, code} = response;
+			const list = groupList.map(item => {
 				const { name, type } = item;
-
-
 				let nameText = name;
 				if (type === 1) {
 					nameText = formatMessage({id: 'faceid.stranger'});
@@ -105,7 +115,10 @@ export default {
 			if (code === ERROR_OK) {
 				yield put({
 					type: 'readData',
-					payload: list,
+					payload: {
+						list,
+						totalCapacity
+					}
 				});
 			}
 			// else {
@@ -166,6 +179,6 @@ export default {
 				});
 			}
 			return response.code;
-		},
+		}
 	},
 };
