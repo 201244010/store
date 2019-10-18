@@ -1,6 +1,7 @@
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
 import typecheck from '@konata9/typecheck.js';
+import { format } from '@konata9/milk-shake';
 import Storage from '@konata9/storage.js';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as Action from '@/services/storeManagement/storeList';
@@ -63,6 +64,7 @@ export default {
 			showSizeChanger: true,
 			showQuickJumper: true,
 		},
+		authKey: {},
 	},
 
 	effects: {
@@ -105,10 +107,10 @@ export default {
 			yield put({
 				type: 'updateState',
 				payload: {
-					pagination:{
+					pagination: {
 						...pagination,
 						...options,
-					}
+					},
 				},
 			});
 		},
@@ -377,6 +379,20 @@ export default {
 		*getImportedErpInfo(_, { call }) {
 			const response = yield call(Action.getImportedErpInfo, {});
 			return response;
+		},
+
+		*getAuthKey(_, { call, put }) {
+			const response = yield call(Action.getAuthKey);
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						authKey: format('toCamel')(data),
+					},
+				});
+			}
 		},
 	},
 

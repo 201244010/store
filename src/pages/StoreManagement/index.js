@@ -4,6 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
+import AuthKey from './AuthKey';
 import styles from './StoreManagement.less';
 import { formatEmptyWithoutZero } from '@/utils/utils';
 
@@ -278,6 +279,7 @@ class StoreManagement extends Component {
 				>
 					{formatMessage({ id: 'storeManagement.list.newBuiltStore' })}
 				</Button>
+				<AuthKey />
 				<div className={styles.table}>
 					<Table
 						rowKey="shop_id"
