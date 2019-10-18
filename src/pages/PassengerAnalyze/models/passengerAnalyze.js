@@ -8,6 +8,62 @@ const {
 	SEARCH_TYPE: { GROUP_RANGE, RANGE_VALUE },
 } = DASHBOARD;
 
+const fullfillCountList = (countList = [], type = null) => {
+	const [firstItem = null, ,] = countList;
+	if (!firstItem) {
+		return countList;
+	}
+
+	if (type === RANGE_VALUE.WEEK) {
+		if (countList.length === 7) {
+			return countList;
+		}
+		const { time } = firstItem;
+
+		const dateList = [];
+		for (let i = 0; i < 7; i++) {
+			dateList.push({
+				time: moment(time)
+					.day(i + 1)
+					.format('YYYY-MM-DD'),
+				totalCount: null,
+				regularCount: null,
+				strangerCount: null,
+			});
+		}
+
+		return dateList.map(date => {
+			const countItem = countList.find(item => item.time === date.time);
+			return countItem || date;
+		});
+	}
+	if (type === RANGE_VALUE.MONTH) {
+		const { time } = firstItem;
+		const daysOfMonth = moment(time).daysInMonth();
+		if (countList.length === daysOfMonth) {
+			return countList;
+		}
+
+		const dateList = [];
+		for (let i = 0; i < daysOfMonth; i++) {
+			dateList.push({
+				time: moment(time)
+					.day(i + 1)
+					.format('YYYY-MM-DD'),
+				totalCount: null,
+				regularCount: null,
+				strangerCount: null,
+			});
+		}
+
+		return dateList.map(date => {
+			const countItem = countList.find(item => item.time === date.time);
+			return countItem || date;
+		});
+	}
+	return countList;
+};
+
 export default {
 	namespace: 'passengerAnalyze',
 	state: {
@@ -15,7 +71,7 @@ export default {
 		searchValue: {
 			startTime: moment().format('YYYY-MM-DD'),
 			endTime: moment().format('YYYY-MM-DD'),
-			type: RANGE_VALUE.TODAY,
+			type: RANGE_VALUE.YESTERDAY,
 			groupBy: GROUP_RANGE.HOUR,
 		},
 		passengerFlowCount: {
@@ -33,7 +89,7 @@ export default {
 	effects: {
 		*setSearchValue({ payload }, { select, put }) {
 			const { searchValue } = yield select(state => state.passengerAnalyze);
-			const { type = RANGE_VALUE.TODAY, groupBy = GROUP_RANGE.HOUR } = payload;
+			const { type = RANGE_VALUE.YESTERDAY, groupBy = GROUP_RANGE.HOUR } = payload;
 			yield put({
 				type: 'updateState',
 				payload: {
@@ -54,8 +110,8 @@ export default {
 					searchValue: {
 						startTime: moment().format('YYYY-MM-DD'),
 						endTime: moment().format('YYYY-MM-DD'),
-						type: RANGE_VALUE.TODAY,
-						gourpBy: GROUP_RANGE.HOUR,
+						type: RANGE_VALUE.YESTERDAY,
+						groupBy: GROUP_RANGE.HOUR,
 					},
 				},
 			});
@@ -116,7 +172,10 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data: { countList = [] } = {} } = response || {};
 
-				const formattedList = countList.reduce((prev, cur) => {
+				const fullfilledList = fullfillCountList(countList, type);
+				console.log(fullfilledList);
+
+				const formattedList = fullfilledList.reduce((prev, cur) => {
 					const { time, totalCount = 0, regularCount = 0, strangerCount = 0 } = cur;
 
 					let _time = time;
