@@ -18,4 +18,5 @@ export default {
 	'merchantManagement.merchant.existed.error': '商户名称已存在',
 	'merchant.change': '切换商户',
 	'merchant.current': '当前商户',
+	'merchant.change.confirm': '确认要切换商户至【##companyName##】吗？',
 };

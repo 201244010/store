@@ -33,8 +33,10 @@ class Store extends Component {
 		});
 	};
 
-	openChangeCompany = company => {
-		console.log(company);
+	openChangeCompany = () => {
+		Modal.confirm({
+			title: formatMessage({ id: 'merchant.change.confirm' }),
+		});
 	};
 
 	closeChangeCompany = company => {
