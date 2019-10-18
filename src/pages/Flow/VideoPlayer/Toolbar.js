@@ -26,11 +26,13 @@ class Toolbar extends React.Component{
 		const isEqualProps = _.isEqual({
 			...oldProps,
 			today: 0,
-			progressbar: null
+			progressbar: null,
+			slots: oldProps.progressbar.props.timeSlots
 		}, {
 			...this.props,
 			today: 0,
-			progressbar: null
+			progressbar: null,
+			slots: progressbar.props.timeSlots
 		});
 
 		const isEqualState = _.isEqual(oldState, this.state);
@@ -100,8 +102,6 @@ class Toolbar extends React.Component{
 			modeText = t[0].name;
 		}
 
-		console.log(today, moment.unix(today).format('YYYY-MM-DD HH:mm:ss'));
-
 		return(
 			<div
 				className={styles.toolbar}
@@ -133,7 +133,7 @@ class Toolbar extends React.Component{
 
 				<div className={`${styles.control} ${styles['play-control']}`}>
 
-					<a className={`${styles.button} ${styles['button-play']} ${  playing ? styles.playing : ''} ${ playBtnDisabled ? styles.disabled : '' }`} href='javascript:void(0);' onClick={play}>
+					<a className={`${styles.button} ${styles['button-play']} ${  playing ? styles.playing : ''} ${ playBtnDisabled ? styles.disabled : '' }`} onClick={play}>
 						{
 							formatMessage({ id: 'videoPlayer.play' })
 						}
@@ -153,50 +153,48 @@ class Toolbar extends React.Component{
 									this.ppisWrapper = wrapper;
 								}}
 							/>
-							{
-								<Dropdown
-									disabled={!isLive}
-									overlay={
-										<Menu
-											selectedKeys={[currentPPI]}
-										>
-											{
-												ppis.map((item) => (
-													<Menu.Item
-														onClick={() => {
-															ppiChange(item.value);
-														}}
-														key={item.value}
-													>
-														{ item.name }
-													</Menu.Item>
-												))
-											}
-										</Menu>
-									}
-									overlayClassName={styles.dropdown}
-									placement="topCenter"
-									getPopupContainer={() => this.ppisWrapper}
-								>
-									<Button
-										className={`${styles['button-ppis']}`}
-										disabled={!isLive}
-										size='small'
-										type='primary'
+							<Dropdown
+								disabled={!isLive}
+								overlay={
+									<Menu
+										selectedKeys={[`${currentPPI}`]}
 									>
 										{
-											(() => {
-												const current = ppis.filter(item => item.value === currentPPI);
-
-												if (current.length > 0){
-													return current[0].name;
-												}
-												return ppis[0].name;
-											})()
+											ppis.map((item) => (
+												<Menu.Item
+													onClick={() => {
+														ppiChange(item.value);
+													}}
+													key={`${item.value}`}
+												>
+													{ item.name }
+												</Menu.Item>
+											))
 										}
-									</Button>
-								</Dropdown>
-							}
+									</Menu>
+								}
+								overlayClassName={styles.dropdown}
+								placement="topCenter"
+								getPopupContainer={() => this.ppisWrapper}
+							>
+								<Button
+									className={`${styles['button-ppis']}`}
+									disabled={!isLive}
+									size='small'
+									type='primary'
+								>
+									{
+										(() => {
+											const current = ppis.filter(item => item.value === currentPPI);
+
+											if (current.length > 0){
+												return current[0].name;
+											}
+											return ppis[0].name;
+										})()
+									}
+								</Button>
+							</Dropdown>
 						</div>
 						: ''
 				}
@@ -289,7 +287,7 @@ class Toolbar extends React.Component{
 									formatMessage({ id: 'videoPlayer.videoScreenShot' })
 								}
 							>
-								<a className={`${styles.button} ${styles['button-screenshot']}`} onClick={screenShot} href='javascript:void(0);'>
+								<a className={`${styles.button} ${styles['button-screenshot']}`} onClick={screenShot}>
 									{
 										formatMessage({ id: 'vidoePlayer.screenShot' })
 									}
@@ -318,7 +316,7 @@ class Toolbar extends React.Component{
 						placement="topCenter"
 						getPopupContainer={() => this.volumeDropdown}
 					>
-						<a className={`${styles.button} ${styles['button-volume']} ${ volumneValue === 0 ? styles.muted : ''}`} href='javascript:void(0);' onClick={mute}>
+						<a className={`${styles.button} ${styles['button-volume']} ${ volumneValue === 0 ? styles.muted : ''}`} onClick={mute}>
 							{
 								formatMessage({ id: 'videoPlayer.volume' })
 							}
@@ -338,7 +336,7 @@ class Toolbar extends React.Component{
 							`${ fullScreenStatus ? formatMessage({ id: 'videoPlayer.exitFullscreen' }) : formatMessage({ id: 'videoPlayer.enterFullscreen' }) }`
 						}
 					>
-						<a className={`${styles.button} ${styles['button-fullscreen']} ${ fullScreenStatus ? styles.fullscreen : ''}`} href='javascript:void(0);' onClick={fullScreen}>
+						<a className={`${styles.button} ${styles['button-fullscreen']} ${ fullScreenStatus ? styles.fullscreen : ''}`} onClick={fullScreen}>
 							{
 								formatMessage({ id: 'videoPlayer.enterFullscreen' })
 							}

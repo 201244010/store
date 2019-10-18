@@ -2,49 +2,35 @@ import { formatMessage } from 'umi/locale';
 import { getRange, readLibrary } from '@/pages/Flow/IPC/services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
-console.log('localStorage.getItem(flowFace7)=', localStorage.getItem('flowFace7'));
-
-const flowFace7str = localStorage.getItem('flowFace7');
-let flowFace7List = [];
-if (flowFace7str) {
-	flowFace7List = JSON.parse(flowFace7str);
-}
-
-console.log('flowFace7List=', flowFace7List);
+const OPCODE = {
+	FACE_ID_STATUS: '0x4202',
+	FACE_COMPARE_STATUS: '0x4203'
+};
 
 export default {
 	namespace: 'flowFaceid',
 	state: {
 		rectangles: [],
-		list: flowFace7List || [],
+		list: [],
 		ageRangeList: [],
 		deviceSn: '',
 		libraryList: [],
 	},
 	reducers: {
-		drawRects({ rectangles, list, ageRangeList, deviceSn, libraryList }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
+		drawRects(state, { payload: { rects, sn } }) {
+			const { deviceSn, rectangles } = state;
+			// console.log('rrrrrrrrrrrrrrrrrrrr',rects, rectangles);
+			if (deviceSn === sn) {
+				state.rectangles = [
+					...rectangles,
+					...rects
+				];
+			}
 
-			// todo 需要添加信息清除逻辑
-			const rect = rectangles;
-
-			return {
-				rectangles: [
-					...rect,
-					{
-						rects,
-						sn,
-						timestamp,
-						// reportTime
-					}
-				],
-				list,
-				ageRangeList,
-				deviceSn,
-				libraryList,
-			};
 		},
 		clearRects(state, { payload: { timestamp }}) {
 			const rectangles = [];
+
 			state.rectangles.forEach(item => {
 				if (item.timestamp > timestamp - 2000) {
 					rectangles.push(item);
@@ -85,17 +71,6 @@ export default {
 
 	},
 	effects: {
-		// *subscribe({ payload: { device }}, { select, call }) {
-		// 	const { userId, clientId } = yield select((state) => {
-		// 		return {
-		// 			userId: state.user.id,
-		// 			clientId: state.mqtt.clientId
-		// 		};
-		// 	});
-
-		// 	const topic = `/WEB/${ userId }/${clientId}/${device.type}/event/sub`;
-		// 	yield call(subscribe, topic);
-		// }
 		*getAgeRangeList(_,{ put, call }) {
 			const response = yield call(getRange);
 			const { code, data: { ageRangeList }} = response;
@@ -168,6 +143,73 @@ export default {
 			}
 			return response.code;
 		},
+
+		*changeFaceidPushStatus ({ payload: { sn, status }}, { put }) {
+			// 直播页人脸加框开关
+			const deviceType = yield put.resolve({
+				type: 'ipcList/getDeviceType',
+				payload: {
+					sn
+				}
+			});
+
+			const topic = yield put.resolve({
+				type: 'mqttIpc/generateTopic',
+				payload: {
+					deviceType,
+					messageType: 'request',
+					method: 'pub'
+				}
+			});
+			console.log('faceid', topic);
+
+			yield put({
+				type: 'mqttIpc/publish',
+				payload: {
+					topic,
+					message: {
+						opcode: OPCODE.FACE_ID_STATUS,
+						param: {
+							sn,
+							action: status === true ? 1: 0
+						}
+					}
+				}
+			});
+		},
+		*changeFaceComparePushStatus ({ payload: { sn, status }}, { put }) {
+			// 直播页右侧人脸加框开关
+			const deviceType = yield put.resolve({
+				type: 'ipcList/getDeviceType',
+				payload: {
+					sn
+				}
+			});
+
+			const topic = yield put.resolve({
+				type: 'mqttIpc/generateTopic',
+				payload: {
+					deviceType,
+					messageType: 'request',
+					method: 'pub'
+				}
+			});
+			console.log('compare', topic);
+
+			yield put({
+				type: 'mqttIpc/publish',
+				payload: {
+					topic,
+					message: {
+						opcode: OPCODE.FACE_COMPARE_STATUS,
+						param: {
+							sn,
+							action: status === true ? 1: 0
+						}
+					}
+				}
+			});
+		}
 		// *test(_, { put }) {
 		// 	console.log('in test');
 		// 	yield put({
