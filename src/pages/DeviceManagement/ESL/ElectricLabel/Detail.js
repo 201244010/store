@@ -17,17 +17,17 @@ const ESL_STATES = {
 export default function detail(props) {
 	const { detailInfo: eslInfo, screenPushInfo } = props;
 	const pushData = [{
-		name: screenPushInfo.page1_name,
+		name: formatMessage({id: screenPushInfo.page1_name || ' '}),
 		template: formatMessage({id: screenPushInfo.page1_template_name || ' '}),
 		status: screenPushInfo.page1_push_status,
 		time: screenPushInfo.page1_push_time ? unixSecondToDate(screenPushInfo.page1_push_time) : '--'
 	}, {
-		name: screenPushInfo.page2_name,
+		name: formatMessage({id: screenPushInfo.page2_name || ' '}),
 		template: formatMessage({id: screenPushInfo.page2_template_name || ' '}),
 		status: screenPushInfo.page2_push_status,
 		time: screenPushInfo.page2_push_time ? unixSecondToDate(screenPushInfo.page2_push_time) : '--'
 	}, {
-		name: screenPushInfo.page3_name,
+		name: formatMessage({id: screenPushInfo.page3_name || ' '}),
 		template: formatMessage({id: screenPushInfo.page3_template_name || ' '}),
 		status: screenPushInfo.page3_push_status,
 		time: screenPushInfo.page3_push_time ? unixSecondToDate(screenPushInfo.page3_push_time) : '--'

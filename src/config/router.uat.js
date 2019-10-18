@@ -111,19 +111,7 @@ const router = [
 								hideInMenu: true,
 								component: './IPC/IPCManagement/IPCManagement.js',
 							},
-							{
-								path: '/devices/ipcList',
-								// name: 'ipcList',
-								id: 'deviceList',
-								component: './IPC/IPCList/IPCList.js',
-							},
 						],
-					},
-					{
-						path: '/devices/motionMessage',
-						name: 'motionMessage',
-						id: 'motionMessage',
-						component: './IPC/MotionList/MotionList.js',
 					},
 					{
 						path: '/devices',
@@ -147,7 +135,6 @@ const router = [
 					{
 						path: '/esl/template',
 						name: 'template',
-						hideInMenu: true,
 						id: 'template',
 						component: './Template',
 					},
@@ -429,12 +416,6 @@ const router = [
 						name: 'list',
 						id: 'faceidLibraryList',
 						component: './IPC/FaceidLibrary/LibraryList.js',
-					},
-					{
-						path: '/faceidLibrary/createLibrary',
-						// name: 'faceidLibrary.create',
-						id: 'createLibrary',
-						component: './IPC/FaceidLibrary/CreateLibrary.js',
 					},
 					{
 						path: '/faceidLibrary',
