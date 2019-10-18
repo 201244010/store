@@ -14,6 +14,8 @@ import * as styles from './Account.less';
 	dispatch => ({
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		switchCompany: ({ companyId }) =>
+			dispatch({ type: 'merchant/switchCompany', payload: { companyId } }),
 	})
 )
 class Store extends Component {
@@ -34,7 +36,9 @@ class Store extends Component {
 	};
 
 	openChangeCompany = company => {
-		const { companyName } = company;
+		const { switchCompany } = this.props;
+		const { companyId, companyName } = company;
+
 		Modal.confirm({
 			title: replaceTemplateWithValue({
 				messageId: 'merchant.change.confirm',
@@ -43,6 +47,7 @@ class Store extends Component {
 			okText: formatMessage({ id: 'btn.confirm' }),
 			cancelText: formatMessage({ id: 'btn.cancel' }),
 			maskClosable: false,
+			onOk: () => switchCompany({ companyId }),
 		});
 	};
 

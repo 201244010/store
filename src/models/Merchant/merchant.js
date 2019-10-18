@@ -210,9 +210,40 @@ export default {
 
 		*switchCompany({ payload = {} }, { put }) {
 			const { companyId } = payload;
+
+			yield put({
+				type: 'setCompanyIdInCookie',
+				payload: { companyId },
+			});
+
 			yield put({
 				type: 'setCurrentCompany',
 				payload: { companyId },
+			});
+
+			const result = yield put.resolve({
+				type: 'store/getStoreList',
+			});
+			const { data: { shopList = [] } = {} } = format('toCamel')(result);
+			const [defaultShop, ,] = shopList;
+
+			if (defaultShop) {
+				yield put({
+					type: 'store/setShopIdInCookie',
+					payload: { shopId: defaultShop.shopId },
+				});
+			} else {
+				yield put({
+					type: 'store/removeShopIdInCookie',
+				});
+			}
+
+			yield put({
+				type: 'menu/goToPath',
+				payload: {
+					pathId: 'root',
+					linkType: 'href',
+				},
 			});
 		},
 	},
