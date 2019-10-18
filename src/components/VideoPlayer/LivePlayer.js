@@ -46,7 +46,7 @@ class LivePlayer extends React.Component{
 	pause = () => {
 		const { videoplayer } = this;
 		this.toPause = true;
-		videoplayer.pause();
+		videoplayer && videoplayer.pause();
 	}
 
 	paused = () => {
@@ -191,7 +191,7 @@ class LivePlayer extends React.Component{
 
 	showLoadingSpinner = () => {
 		const { videoplayer } = this;
-		videoplayer.showLoadingSpinner();
+		videoplayer && videoplayer.showLoadingSpinner();
 
 		this.setState({
 			playBtnDisabled: true
@@ -447,7 +447,7 @@ class LivePlayer extends React.Component{
 				console.log('isLive=', isLive);
 				console.log('this.isPlaying=', this.isPlaying);
 				if (!this.isPlaying && isLive) {
-					// await this.pauseLive(); // 新方案不必stoplive
+					await this.pauseLive(); // 新方案不必stoplive
 					await this.playLive();
 					replay(5);
 				} else if (this.isPlaying) {

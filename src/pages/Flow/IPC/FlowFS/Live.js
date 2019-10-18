@@ -54,18 +54,18 @@ import styles from './Live.less';
 		});
 		return url;
 	},
-	// stopLive({ sn, streamId }) {
-	// 	return dispatch({
-	// 		type: 'flowLive/stopLive',
-	// 		payload: {
-	// 			sn,
-	// 			streamId
-	// 		}
-	// 	}).then(() => {
-	// 		console.log('stopLive done.');
-	// 		return true;
-	// 	});
-	// },
+	stopLive({ sn, streamId }) {
+		return dispatch({
+			type: 'flowLive/stopLive',
+			payload: {
+				sn,
+				streamId
+			}
+		}).then(() => {
+			console.log('stopLive done.');
+			return true;
+		});
+	},
 	getDeviceInfo({ sn }) {
 		return dispatch({
 			type: 'ipcList/getDeviceInfo',
@@ -196,6 +196,8 @@ class Live extends React.Component{
 			liveTimestamp: 0,
 			sdStatus: true
 		};
+
+		this.refreshTimer = 0;
 	}
 
 	async componentDidMount () {
@@ -234,20 +236,24 @@ class Live extends React.Component{
 			});
 			// setTimeout(test, 1000);
 		}
+
+		this.reloadPage();
 	}
 
 	componentWillUnmount () {
-		const { stopHistoryPlay } = this.props;
-		const sn = this.getSN();
+		const { stopLive, streamId, location: { query }, stopHistoryPlay } = this.props;
+		const { sn } = query;
+		clearTimeout(this.refreshTimer);
+
 		if (sn) {
 			stopHistoryPlay({
 				sn
 			});
-
-			const hasFaceid = this.hasFaceid();
-			if (hasFaceid) {
-				this.stopFaceidPush();
-				this.stopFaceComparePush();
+			if (streamId) {
+				stopLive({
+					sn,
+					streamId
+				});
 			}
 		}
 	}
@@ -359,15 +365,15 @@ class Live extends React.Component{
 		return url;
 	}
 
-	// stopLive = async () => {
-	//	const { stopLive, streamId, location: { query }} = this.props;
-	//	const { sn } = query;
+	stopLive = async () => {
+		const { stopLive, streamId, location: { query }} = this.props;
+		const { sn } = query;
 
-	//	await stopLive({
-	//		sn,
-	//		streamId
-	//	});
-	// }
+		await stopLive({
+			sn,
+			streamId
+		});
+	}
 
 	getHistoryUrl = async  (timestamp) => {
 		const { getHistoryUrl } = this.props;
@@ -399,8 +405,28 @@ class Live extends React.Component{
 			ppi,
 			sn
 		});
+	}
 
-		return url;
+	// 定时刷新页面
+	reloadPage = () => {
+		console.log('reloadPage');
+		clearTimeout(this.refreshTimer);
+		this.refreshTimer = setTimeout(async () => {
+			const { faceidList } = this.props;
+
+			console.log('reloadPage faceidList=', faceidList);
+			console.log('reloadPage faceidList.slice(0, 7)=', faceidList.slice(0, 7));
+			localStorage.setItem('flowFace7', JSON.stringify(faceidList.slice(0, 7)));
+			const { livePlayer } = this;
+
+			// 先发stop，停止推流；（防止到达分流上限）
+			await this.stopLive();
+			await livePlayer.playLive();
+
+			this.reloadPage();
+
+			// window.location.reload();
+		}, 30 * 60 * 1000);
 	}
 
 
@@ -453,18 +479,19 @@ class Live extends React.Component{
 
 				<div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}`}>
 					<LivePlayer
+						ref={livePlayer => this.livePlayer = livePlayer}
 
 						pixelRatio={pixelRatio}
 
 						currentPPI={currentPPI}
 						changePPI={this.changePPI}
 						ppiChanged={ppiChanged}
-						onLivePlay={this.requestMetadata}
+
 						getHistoryUrl={this.getHistoryUrl}
 						stopHistoryPlay={this.stopHistoryPlay}
 
 						getLiveUrl={this.getLiveUrl}
-						// pauseLive={this.stopLive}
+						pauseLive={this.stopLive}
 
 						timeSlots={timeSlots}
 

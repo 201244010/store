@@ -44,18 +44,18 @@ import styles from './Live.less';
 		});
 		return url;
 	},
-	// stopLive({ sn, streamId }) {
-	// 	return dispatch({
-	// 		type: 'live/stopLive',
-	// 		payload: {
-	// 			sn,
-	// 			streamId
-	// 		}
-	// 	}).then(() => {
-	// 		console.log('stopLive done.');
-	// 		return true;
-	// 	});
-	// },
+	stopLive({ sn, streamId }) {
+		return dispatch({
+			type: 'live/stopLive',
+			payload: {
+				sn,
+				streamId
+			}
+		}).then(() => {
+			console.log('stopLive done.');
+			return true;
+		});
+	},
 	getDeviceInfo({ sn }) {
 		return dispatch({
 			type: 'ipcList/getDeviceInfo',
@@ -211,12 +211,19 @@ class Live extends React.Component{
 	}
 
 	componentWillUnmount () {
-		const { stopHistoryPlay } = this.props;
-		const sn = this.getSN();
+		const { stopLive, streamId, location: { query }, stopHistoryPlay } = this.props;
+		const { sn } = query;
 		if (sn) {
 			stopHistoryPlay({
 				sn
 			});
+
+			if (streamId) {
+				stopLive({
+					sn,
+					streamId
+				});
+			}
 
 			const hasFaceid = this.hasFaceid();
 			if (hasFaceid) {
@@ -329,13 +336,15 @@ class Live extends React.Component{
 		return url;
 	}
 
-	// stopLive = async () => {
-	// 	const hasFaceid = this.hasFaceid();
+	stopLive = async () => {
+		const { stopLive, streamId, location: { query }} = this.props;
+		const { sn } = query;
 
-	// 	if (hasFaceid) {
-	// 		this.stopFaceidPush();
-	// 	}
-	// }
+		await stopLive({
+			sn,
+			streamId
+		});
+	}
 
 	getHistoryUrl = async  (timestamp) => {
 		const { getHistoryUrl } = this.props;
@@ -428,7 +437,7 @@ class Live extends React.Component{
 						stopHistoryPlay={this.stopHistoryPlay}
 
 						getLiveUrl={this.getLiveUrl}
-						// pauseLive={this.stopLive}
+						pauseLive={this.stopLive}
 
 						timeSlots={timeSlots}
 

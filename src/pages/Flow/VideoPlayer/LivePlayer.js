@@ -46,7 +46,7 @@ class LivePlayer extends React.Component{
 	pause = () => {
 		const { videoplayer } = this;
 		this.toPause = true;
-		videoplayer.pause();
+		videoplayer && videoplayer.pause();
 	}
 
 	paused = () => {
@@ -191,7 +191,7 @@ class LivePlayer extends React.Component{
 
 	showLoadingSpinner = () => {
 		const { videoplayer } = this;
-		videoplayer.showLoadingSpinner();
+		videoplayer && videoplayer.showLoadingSpinner();
 
 		this.setState({
 			playBtnDisabled: true
@@ -439,15 +439,21 @@ class LivePlayer extends React.Component{
 	// 超时重新播放
 	timeoutReplay = () => {
 		console.log('timeoutReplay');
+		// 首先检查当前video是否为playing
+		// 2秒后检查是否为play状态
+		// 为playing，则清除定时器；
+		// 不为playing，则重新赋值url，并执行2*time检查逻辑；
 		const replay = (time) => {
 			clearTimeout(this.replayTimeout);
 			this.replayTimeout = setTimeout(async() => {
 				const { isLive } = this.state;
+				const { videoplayer } = this;
 
 				console.log('isLive=', isLive);
 				console.log('this.isPlaying=', this.isPlaying);
-				if (!this.isPlaying && isLive) {
-					// await this.pauseLive(); // 新方案不必stoplive
+				console.log('videoplayer.paused()=', videoplayer.paused());
+				if (!this.isPlaying) { // 断网时，视频画面不动，videoplayer.paused()为false
+					await this.pauseLive();
 					await this.playLive();
 					replay(5);
 				} else if (this.isPlaying) {

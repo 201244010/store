@@ -60,23 +60,23 @@ export const getLiveUrl = ({ deviceId, clientId, resolution}) => {
 // 	return result;
 // };
 
-// export const stopLive = ({ streamId, sn }) => {
-// 	const result = requestStream('stop', {
-// 		body: {
-// 			stream_id: streamId,
-// 			sn
-// 		}
-// 	}).then(async (response) => {
-// 		const { code } = await response.json();
-// 		if (code === ERROR_OK) {
-// 			return {
-// 				code: ERROR_OK,
-// 			};
-// 		}
-// 		return response;
-// 	});
-// 	return result;
-// };
+export const stopLive = ({ streamId, sn }) => {
+	const result = requestStream('stop', {
+		body: {
+			stream_id: streamId,
+			sn
+		}
+	}).then(async (response) => {
+		const { code } = await response.json();
+		if (code === ERROR_OK) {
+			return {
+				code: ERROR_OK,
+			};
+		}
+		return response;
+	});
+	return result;
+};
 
 
 export const getTimeSlots = ({ deviceId, timeStart, timeEnd }) => {

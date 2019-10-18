@@ -1,4 +1,4 @@
-import { getLiveUrl, /* stopLive, */ getTimeSlots, startPublish, stopPublish } from '../../services/live';
+import { getLiveUrl, stopLive, getTimeSlots, startPublish, stopPublish } from '../../services/live';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const PPIS = {
@@ -121,12 +121,12 @@ export default {
 		// 	return '';
 		// },
 
-		// *stopLive({ payload: { sn, /* streamId */ }}, { call }) {
-		// 	// yield call(stopLive, {
-		// 	// 	streamId,
-		// 	// 	sn
-		// 	// });
-		// },
+		*stopLive({ payload: { sn, streamId }}, { call }) {
+			yield call(stopLive, {
+				streamId,
+				sn
+			});
+		},
 		*changePPI({ payload: { ppi, sn } }, { put }) {
 			yield put.resolve({
 				type: 'updatePPI',
