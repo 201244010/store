@@ -48,18 +48,19 @@ class StoreInformation extends React.Component {
 		} = this.props;
 
 		const {
-			shop_id = '--',
-			shop_name = '--',
-			type_name = '--',
-			business_status = 0,
+			shop_id: shopId = '--',
+			sunmi_shop_no: sunmiShopNo = '--',
+			shop_name: shopName = '--',
+			type_name: typeName = '--',
+			business_status: businessStatus = 0,
 			region = '--',
 			address = '--',
-			business_hours = '--',
-			business_area = '--',
-			contact_person = '--',
-			contact_tel = '--',
-			created_time = '--',
-			modified_time = '--',
+			business_hours: businessHours = '--',
+			business_area: businessArea = '--',
+			contact_person: contactPerson = '--',
+			contact_tel: contactTel = '--',
+			created_time: createdTime = '--',
+			modified_time: modifiedTime = '--',
 		} = formatEmptyWithoutZero(storeInfo, '--');
 
 		return (
@@ -72,25 +73,25 @@ class StoreInformation extends React.Component {
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.id' })}
 					>
-						{shop_id}
+						{sunmiShopNo}
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.nameLabel' })}
 					>
-						{shop_name}
+						{shopName}
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.typeLabel' })}
 					>
-						{type_name}
+						{typeName}
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.statusLabel' })}
 					>
-						{business_status === 0
+						{businessStatus === 0
 							? formatMessage({ id: 'storeManagement.create.status.open' })
 							: formatMessage({ id: 'storeManagement.create.status.closed' })}
 					</Form.Item>
@@ -111,40 +112,40 @@ class StoreInformation extends React.Component {
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.daysLabel' })}
 					>
-						{business_hours}
+						{businessHours}
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.area' })}
 					>
-						{business_area || '--'}㎡
+						{businessArea || '--'}㎡
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.contactName' })}
 					>
-						{contact_person || '--'}
+						{contactPerson || '--'}
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.create.contactPhone' })}
 					>
-						{contact_tel}
+						{contactTel}
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.info.create' })}
 					>
-						{unixSecondToDate(created_time)}
+						{unixSecondToDate(createdTime)}
 					</Form.Item>
 					<Form.Item
 						className={styles['clear-margin']}
 						label={formatMessage({ id: 'storeManagement.info.update' })}
 					>
-						{unixSecondToDate(modified_time)}
+						{unixSecondToDate(modifiedTime)}
 					</Form.Item>
 					<Form.Item label={formatMessage({ id: 'store.auth' })}>
-						<AuthKey type="link" shopId={shop_id} />
+						<AuthKey type="link" shopId={shopId} />
 					</Form.Item>
 					<Form.Item className={styles['clear-margin']} label=" " colon={false}>
 						<Button type="primary" onClick={() => this.toPath('edit')}>
