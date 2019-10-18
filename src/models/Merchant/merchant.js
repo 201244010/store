@@ -1,6 +1,7 @@
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
+import { format } from '@konata9/milk-shake';
 import * as Actions from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
@@ -15,6 +16,16 @@ export default {
 	},
 
 	effects: {
+		setCompanyListInStorage({ payload = {} }) {
+			const { companyList = [] } = payload;
+			Storage.set({ [CookieUtil.COMPANY_LIST_KEY]: companyList }, 'local');
+		},
+
+		setCompanyIdInCookie({ payload = {} }) {
+			const { companyId } = payload;
+			CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, companyId);
+		},
+
 		*getCompanyNameById({ payload }, { take, select }) {
 			const { companyId } = payload;
 			let list = yield select(state => state.merchant.companyList);
@@ -31,9 +42,10 @@ export default {
 			});
 			return name;
 		},
+
 		*initialCompany({ payload = {} }, { call }) {
 			const { options = {} } = payload;
-			yield call(Actions.initialCompany, options);
+			yield call(Actions.initialCompany, format('toSnake')(options));
 		},
 
 		*setCurrentCompany({ payload }, { put }) {
@@ -52,8 +64,14 @@ export default {
 			const response = yield call(Actions.companyCreate, payload);
 			if (response && response.code === ERROR_OK) {
 				message.success(formatMessage({ id: 'create.success' }));
-				const data = response.data || {};
-				CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, data.company_id);
+				const { data = {} } = format('toCamel')(response);
+				const { companyId } = data;
+
+				yield put({
+					type: 'setCompanyIdInCookie',
+					payload: { companyId },
+				});
+
 				yield put({
 					type: 'updateState',
 					payload: { loading: false },
@@ -76,17 +94,29 @@ export default {
 			});
 			const response = yield call(Actions.getCompanyList);
 			if (response && response.code === ERROR_OK) {
-				const result = response.data || {};
-				const companyList = result.company_list || [];
-				Storage.set({ [CookieUtil.COMPANY_LIST_KEY]: companyList }, 'local');
+				const { data = {} } = response || {};
+				const { companyList = [] } = format('toCamel')(data);
+
+				yield put({
+					type: 'setCompanyListInStorage',
+					payload: {
+						companyList,
+					},
+				});
 
 				if (companyList.length === 1) {
 					const companyInfo = companyList[0] || {};
-					CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, companyInfo.company_id);
+					yield put({
+						type: 'setCompanyIdInCookie',
+						payload: {
+							companyId: companyInfo.companyId,
+						},
+					});
+
 					yield put({
 						type: 'setCurrentCompany',
 						payload: {
-							companyId: companyInfo.company_id,
+							companyId: companyInfo.companyId,
 						},
 					});
 				}
@@ -96,7 +126,7 @@ export default {
 					type: 'initialCompany',
 					payload: {
 						options: {
-							company_id_list: companyList.map(company => company.company_id),
+							companyIdList: companyList.map(company => company.companyId),
 						},
 					},
 				});
@@ -124,7 +154,7 @@ export default {
 				});
 				// router.push('/user/login');
 			}
-			
+
 			return response;
 		},
 
@@ -176,6 +206,45 @@ export default {
 				});
 			}
 			return response;
+		},
+
+		*switchCompany({ payload = {} }, { put }) {
+			const { companyId } = payload;
+
+			yield put({
+				type: 'setCompanyIdInCookie',
+				payload: { companyId },
+			});
+
+			yield put({
+				type: 'setCurrentCompany',
+				payload: { companyId },
+			});
+
+			const result = yield put.resolve({
+				type: 'store/getStoreList',
+			});
+			const { data: { shopList = [] } = {} } = format('toCamel')(result);
+			const [defaultShop, ,] = shopList;
+
+			if (defaultShop) {
+				yield put({
+					type: 'store/setShopIdInCookie',
+					payload: { shopId: defaultShop.shopId },
+				});
+			} else {
+				yield put({
+					type: 'store/removeShopIdInCookie',
+				});
+			}
+
+			yield put({
+				type: 'menu/goToPath',
+				payload: {
+					pathId: 'root',
+					linkType: 'href',
+				},
+			});
 		},
 	},
 
