@@ -33,7 +33,7 @@ export default {
 	effects: {
 		*setSearchValue({ payload }, { select, put }) {
 			const { searchValue } = yield select(state => state.passengerAnalyze);
-			const { type = RANGE_VALUE.TODAY, groupBy = GROUP_RANGE.HOUR } = payload;
+			const { type = RANGE_VALUE.YESTERDAY, groupBy = GROUP_RANGE.HOUR } = payload;
 			yield put({
 				type: 'updateState',
 				payload: {
@@ -55,7 +55,7 @@ export default {
 						startTime: moment().format('YYYY-MM-DD'),
 						endTime: moment().format('YYYY-MM-DD'),
 						type: RANGE_VALUE.YESTERDAY,
-						gourpBy: GROUP_RANGE.HOUR,
+						groupBy: GROUP_RANGE.HOUR,
 					},
 				},
 			});
@@ -115,6 +115,8 @@ export default {
 			const response = yield call(Actions.getPassengerFlowHistoryTrend, { type, groupBy });
 			if (response && response.code === ERROR_OK) {
 				const { data: { countList = [] } = {} } = response || {};
+
+				console.log(countList);
 
 				const formattedList = countList.reduce((prev, cur) => {
 					const { time, totalCount = 0, regularCount = 0, strangerCount = 0 } = cur;
