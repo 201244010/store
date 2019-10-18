@@ -73,11 +73,10 @@ class MerchantModify extends Component {
 			merchant: {
 				loading,
 				companyInfo: {
-					company_id,
-					company_name,
-					contact_person,
-					contact_tel,
-					contact_email,
+					company_name: companyName,
+					contact_person: contactPerson,
+					contact_tel: contactTel,
+					contact_email: contactEmail,
 				},
 			},
 		} = this.props;
@@ -87,15 +86,10 @@ class MerchantModify extends Component {
 				<div className={styles['form-content']}>
 					<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
 						<Form.Item
-							label={formatMessage({ id: 'merchantManagement.merchant.number' })}
-						>
-							<span>{company_id || '--'}</span>
-						</Form.Item>
-						<Form.Item
 							label={formatMessage({ id: 'merchantManagement.merchant.name' })}
 						>
 							{getFieldDecorator('companyName', {
-								initialValue: company_name,
+								initialValue: companyName,
 								validateTrigger: 'onBlur',
 								rules: [
 									{
@@ -113,7 +107,7 @@ class MerchantModify extends Component {
 							})}
 						>
 							{getFieldDecorator('contactPerson', {
-								initialValue: contact_person,
+								initialValue: contactPerson,
 							})(<Input />)}
 						</Form.Item>
 						<Form.Item
@@ -122,7 +116,7 @@ class MerchantModify extends Component {
 							})}
 						>
 							{getFieldDecorator('contactTel', {
-								initialValue: contact_tel,
+								initialValue: contactTel,
 								validateTrigger: 'onBlur',
 								rules: [
 									{
@@ -143,7 +137,7 @@ class MerchantModify extends Component {
 							})}
 						>
 							{getFieldDecorator('contactEmail', {
-								initialValue: contact_email,
+								initialValue: contactEmail,
 								validateTrigger: 'onBlur',
 								rules: [
 									{
