@@ -3,6 +3,7 @@ import { Form, Button, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { formatEmptyWithoutZero, getLocationParam, unixSecondToDate } from '@/utils/utils';
+import AuthKey from '@/pages/AuthKey';
 import styles from './StoreManagement.less';
 
 @connect(
@@ -142,12 +143,15 @@ class StoreInformation extends React.Component {
 					>
 						{unixSecondToDate(modified_time)}
 					</Form.Item>
+					<Form.Item label={formatMessage({ id: 'store.auth' })}>
+						<AuthKey type="link" shopId={shop_id} />
+					</Form.Item>
 					<Form.Item className={styles['clear-margin']} label=" " colon={false}>
 						<Button type="primary" onClick={() => this.toPath('edit')}>
 							{formatMessage({ id: 'storeManagement.info.modify' })}
 						</Button>
 						<Button
-							style={{ marginLeft: '20px' }}
+							className={styles['btn-margin-left']}
 							type="default"
 							onClick={() => this.toPath('back')}
 						>

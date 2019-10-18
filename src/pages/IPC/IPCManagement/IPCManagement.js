@@ -11,6 +11,7 @@ import InitialSetting from './InitialSetting';
 import CardManagement from './CardManagement';
 import NVRManagement from './NVRManagement';
 import styles from './IPCManagement.less';
+import ipcTypes from '@/constants/ipcTypes';
 
 const Time = 15000;
 
@@ -28,15 +29,30 @@ const Time = 15000;
 		const cardManagementLoading = isLoading;
 		const nvrLoading = loadState;
 
-		const loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
+		const loadingObj = {
+			deviceBasicInfoLoading,
+			activeDetectionLoading,
+			basicParamsLoading,
+			cardManagementLoading,
+			nvrLoading
+		};
+
+		// const loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
 
 		return {
-			loading
+			loadingObj
 		};
 	},
 	dispatch => ({
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		getDeviceType: async(sn) => {
+			const result = await dispatch({
+				type: 'ipcList/getDeviceType',
+				payload: {sn}
+			});
+			return result;
+		}
 	})
 )
 class IPCManagement extends Component {
@@ -44,18 +60,74 @@ class IPCManagement extends Component {
 	constructor(props) {
 		super(props);
 		this.timer = null;
+		this.state = {
+			loading: true,
+			ipcType:'FM020'
+		};
 	}
 
-	componentDidMount(){
-		const { loading } = this.props;
+	async componentDidMount(){
+		const { 
+			getDeviceType, 
+			location,
+			loadingObj:{
+				deviceBasicInfoLoading,
+				activeDetectionLoading,
+				basicParamsLoading,
+				cardManagementLoading,
+				nvrLoading
+			}
+		 } = this.props;
+		const { query: {sn} } = location;
+		const ipcType = await getDeviceType(sn);
+		let loading = true;
+
+		if(ipcTypes[ipcType].hasNVR){
+			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
+		}else{
+			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
+		}
+
 		if(loading){
 			this.timerHandler();
 		}
+		this.setState({
+			loading,
+			ipcType
+		});
 	}
 
 	componentWillReceiveProps(nextProps){
-		const { loading: nextLoading } = nextProps;
-		const { loading } = this.props;
+		const { loadingObj: nextLoadingObj } = nextProps;
+		const { loadingObj } = this.props;
+		const { ipcType } = this.state;
+		let loading;
+		let nextLoading;
+
+		const {
+			deviceBasicInfoLoading: nextDeviceBasicInfoLoading,
+			activeDetectionLoading: nextActiveDetectionLoading,
+			basicParamsLoading: nextBasicParamsLoading,
+			cardManagementLoading: nextCardManagementLoading,
+			nvrLoading: nextNvrLoading
+		} = nextLoadingObj;
+
+		const {
+			deviceBasicInfoLoading,
+			activeDetectionLoading,
+			basicParamsLoading,
+			cardManagementLoading,
+			nvrLoading
+		} = loadingObj;
+
+		if(ipcTypes[ipcType].hasNVR){
+			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
+			nextLoading = nextDeviceBasicInfoLoading || nextActiveDetectionLoading || nextBasicParamsLoading || nextCardManagementLoading || nextNvrLoading;
+		}else{
+			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
+			nextLoading = nextDeviceBasicInfoLoading || nextActiveDetectionLoading || nextBasicParamsLoading || nextCardManagementLoading;
+		}
+
 		// loading ^ nextLoading
 		if((!loading && nextLoading) || (loading && !nextLoading)){
 			this.timerHandler();
@@ -68,6 +140,9 @@ class IPCManagement extends Component {
 		}else{
 			clearTimeout(this.timer);
 			this.timer = null;
+			this.setState({
+				loading: false
+			});
 		}
 	}
 
@@ -82,7 +157,8 @@ class IPCManagement extends Component {
 	}
 
 	render() {
-		const { location, loading } = this.props;
+		const { location } = this.props;
+		const { loading, ipcType} = this.state;
 		const { query: {sn, showModal} } = location;
 		return (
 			<Spin spinning={loading}>
@@ -90,7 +166,7 @@ class IPCManagement extends Component {
 					<DeviceBasicInfo sn={sn} />
 					<ActiveDetection sn={sn} />
 					<BasicParams sn={sn} />
-					<NVRManagement sn={sn} />
+					{ipcTypes[ipcType].hasNVR&&<NVRManagement sn={sn} />}
 					<CardManagement sn={sn} />
 					<InitialSetting sn={sn} />
 					<SoftwareUpdate sn={sn} showModal={showModal} />
