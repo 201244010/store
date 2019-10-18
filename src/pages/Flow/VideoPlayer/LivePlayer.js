@@ -12,15 +12,12 @@ class LivePlayer extends React.Component{
 		this.state = {
 			isLive: true,
 			playBtnDisabled: true,
-			ppiChanged: false,
 			currentTimestamp: moment().unix()
 		};
 
 		this.currentSrc = '';
 		this.startTimestamp = 0;
-		this.metadataCount = 0;
 		this.relativeTimestamp = 0;
-		this.lastMetadataTimestamp = 0;
 		this.replayTimeout = 0;
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
 
@@ -31,22 +28,32 @@ class LivePlayer extends React.Component{
 		this.playLive();
 	}
 
-	componentDidUpdate (oldProps) {
+	componentDidUpdate = async(oldProps) => {
 		const { url } = this.props;
 		if (oldProps.url !== url) {
+			await this.pauseLive();
 			this.playLive();
 		}
 	}
 
+	componentWillUnmount () {
+		clearTimeout(this.replayTimeout);
+	}
+
+
 	play = () => {
 		const { videoplayer } = this;
-		videoplayer.play();
+		if (videoplayer) {
+			videoplayer.play();
+		}
 	}
 
 	pause = () => {
 		const { videoplayer } = this;
 		this.toPause = true;
-		videoplayer && videoplayer.pause();
+		if (videoplayer) {
+			videoplayer.pause();
+		}
 	}
 
 	paused = () => {
@@ -57,7 +64,9 @@ class LivePlayer extends React.Component{
 	src = (src) => {
 		const { videoplayer } = this;
 		this.currentSrc = src;
-		videoplayer.src(src);
+		if (videoplayer) {
+			videoplayer.src(src);
+		}
 	}
 
 	playLive = async () => {
@@ -67,7 +76,7 @@ class LivePlayer extends React.Component{
 		const url = await getLiveUrl();
 
 		if (!url) {
-			console.log('直播未能获取url！');
+			console.log('直播的URL未能成功获取！');
 			return;
 		}
 
@@ -79,7 +88,6 @@ class LivePlayer extends React.Component{
 
 		this.startTimestamp = moment().unix();
 		this.relativeTimestamp = 0;
-		this.metadataCount = 0;
 		this.toPause = false;
 	}
 
@@ -191,7 +199,7 @@ class LivePlayer extends React.Component{
 
 	showLoadingSpinner = () => {
 		const { videoplayer } = this;
-		videoplayer && videoplayer.showLoadingSpinner();
+		videoplayer.showLoadingSpinner();
 
 		this.setState({
 			playBtnDisabled: true
@@ -203,28 +211,9 @@ class LivePlayer extends React.Component{
 		videoplayer.showNoMediaCover();
 	}
 
-	ppiChange = async (ppi) => {
+	ppiChange = (ppi) => {
 		const { changePPI } = this.props;
-		const { videoplayer } = this;
-
-		this.pause();
-		const url = await changePPI(ppi);
-
-		if (url) {
-			videoplayer.src(url);
-
-			this.setState({
-				ppiChanged: true
-			});
-
-			setTimeout(() => {
-				this.setState({
-					ppiChanged: false
-				});
-			}, 3*1000);
-		}else{
-			console.log('切换分辨率，未获得url！');
-		}
+		changePPI(ppi);
 	}
 
 	isInsideSlots = (timestamp) => {
@@ -256,7 +245,7 @@ class LivePlayer extends React.Component{
 		const { isLive } = this.state;
 		// console.log('metadataCount reset onPlay ');
 		// this.metadataCount = 0;
-		if (isLive) {
+		if (isLive && onLivePlay) {
 			onLivePlay();
 		}
 
@@ -285,11 +274,11 @@ class LivePlayer extends React.Component{
 	onTimebarStopDrag = (timestamp) => {
 		this.toPause = true;
 
+		this.pause();
+
 		this.setState({
 			currentTimestamp: timestamp
 		});
-
-		this.pause();
 
 		const { getTimeStart, getTimeEnd } = this.timebar;
 		const timeStart = getTimeStart();
@@ -346,28 +335,20 @@ class LivePlayer extends React.Component{
 				currentTimestamp
 			});
 
-			const gap = (Math.round((timestamp - this.lastMetadataTimestamp)*1000*1000))/1000;
-			getCurrentTimestamp(this.relativeTimestamp + gap);
-
-			// console.log('relativeTimestamp: ', this.relativeTimestamp, 'timestamp: ', timestamp, 'lastMetadataTimestamp: ', this.lastMetadataTimestamp, 'gap: ', gap,  'total: ', this.relativeTimestamp + gap);
+			getCurrentTimestamp(this.relativeTimestamp + timestamp*1000);
 		}
 
 	}
 
 	onMetadataArrived = (metadata) => {
 		const { onMetadataArrived } = this.props;
+
 		const { isLive } = this.state;
 		const { videoplayer: { player } } = this;
 
-		this.metadataCount++;
-		console.log('this.metadataCount++', this.metadataCount);
-
 		if (isLive) {
-
-			if (this.metadataCount === 2) {
-				// 只使用第二次到达的metadata
+			if (this.relativeTimestamp === 0) {
 				this.relativeTimestamp = metadata.relativeTime;
-				this.lastMetadataTimestamp = player.currentTime();
 			}
 
 			if (metadata.baseTime !== undefined && metadata.relativeTime !== undefined) {
@@ -421,7 +402,7 @@ class LivePlayer extends React.Component{
 		this.isPlaying = false;
 	}
 
-	onError = () => {
+	onError = async() => {
 		console.log('liveplayer error handler');
 		this.isPlaying = false;
 
@@ -434,6 +415,11 @@ class LivePlayer extends React.Component{
 
 	onEnd = () => {
 		this.isPlaying = false;
+	}
+
+	onPlay = () => {
+		console.log('LivePlayer onPlay');
+		this.isPlaying = true;
 	}
 
 	// 超时重新播放
@@ -467,13 +453,13 @@ class LivePlayer extends React.Component{
 	}
 
 	render () {
-		const { timeSlots, plugin, currentPPI } = this.props;
-		const { currentTimestamp, isLive, ppiChanged, playBtnDisabled } = this.state;
+		const { timeSlots, plugin } = this.props;
+		const { currentTimestamp, isLive, playBtnDisabled } = this.state;
 
 		return (
 			<VideoPlayer
 				ref={videoplayer => this.videoplayer = videoplayer}
-				// {...this.props}
+				{...this.props}
 
 				current={currentTimestamp}
 
@@ -488,18 +474,16 @@ class LivePlayer extends React.Component{
 				backToLive={this.backToLive}
 				playHandler={this.playHandler}
 
-				currentPPI={currentPPI}
 				ppiChange={this.ppiChange}
-				ppiChanged={ppiChanged}
 
 				onDateChange={this.onDateChange}
 				onTimeUpdate={this.onTimeUpdate}
-
-				onPlay={this.onPlay}
 				onPause={this.onPause}
 				onError={this.onError}
 				onEnd={this.onEnd}
 				onMetadataArrived={this.onMetadataArrived}
+
+				onPlay={this.onPlay}
 
 				progressbar={
 					<Timebar
