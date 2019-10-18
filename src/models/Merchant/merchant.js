@@ -207,6 +207,14 @@ export default {
 			}
 			return response;
 		},
+
+		*switchCompany({ payload = {} }, { put }) {
+			const { companyId } = payload;
+			yield put({
+				type: 'setCurrentCompany',
+				payload: { companyId },
+			});
+		},
 	},
 
 	reducers: {

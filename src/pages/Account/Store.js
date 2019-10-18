@@ -4,7 +4,7 @@ import { Card, List, Button, Modal, Form, Tag } from 'antd';
 import { connect } from 'dva';
 import * as CookieUtil from '@/utils/cookies';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
-import { formatEmpty } from '@/utils/utils';
+import { formatEmpty, replaceTemplateWithValue } from '@/utils/utils';
 import * as styles from './Account.less';
 
 @connect(
@@ -33,14 +33,17 @@ class Store extends Component {
 		});
 	};
 
-	openChangeCompany = () => {
+	openChangeCompany = company => {
+		const { companyName } = company;
 		Modal.confirm({
-			title: formatMessage({ id: 'merchant.change.confirm' }),
+			title: replaceTemplateWithValue({
+				messageId: 'merchant.change.confirm',
+				valueList: [{ key: '##companyName##', value: companyName }],
+			}),
+			okText: formatMessage({ id: 'btn.confirm' }),
+			cancelText: formatMessage({ id: 'btn.cancel' }),
+			maskClosable: false,
 		});
-	};
-
-	closeChangeCompany = company => {
-		console.log(company);
 	};
 
 	toPath = target => {
