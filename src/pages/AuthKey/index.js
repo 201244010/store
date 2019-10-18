@@ -10,7 +10,7 @@ import styles from './authKey.less';
 		authKey: store.authKey,
 	}),
 	dispatch => ({
-		getAuthKey: () => dispatch({ type: 'store/getAuthKey' }),
+		getAuthKey: ({ shopId }) => dispatch({ type: 'store/getAuthKey', payload: { shopId } }),
 	})
 )
 class AuthKey extends PureComponent {
@@ -22,9 +22,9 @@ class AuthKey extends PureComponent {
 	}
 
 	openAuthModal = () => {
-		const { getAuthKey } = this.props;
+		const { getAuthKey, shopId = null } = this.props;
 		this.setState({ displayAuth: true });
-		getAuthKey();
+		getAuthKey({ shopId });
 	};
 
 	closeAuthModal = () => {
@@ -33,11 +33,15 @@ class AuthKey extends PureComponent {
 
 	render() {
 		const { displayAuth } = this.state;
-		const { authKey: { sunmiShopNo = null, sunmiShopKey = null } = {}, loading } = this.props;
+		const {
+			authKey: { sunmiShopNo = null, sunmiShopKey = null } = {},
+			loading,
+			className = '',
+		} = this.props;
 
 		return (
 			<>
-				<Button className={styles['btn-margin-left']} onClick={this.openAuthModal}>
+				<Button className={className} onClick={this.openAuthModal}>
 					{formatMessage({ id: 'store.get.authKey' })}
 				</Button>
 				<Modal

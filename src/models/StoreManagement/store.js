@@ -381,8 +381,13 @@ export default {
 			return response;
 		},
 
-		*getAuthKey(_, { call, put }) {
-			const response = yield call(Action.getAuthKey);
+		*getAuthKey({ payload = {} }, { call, put }) {
+			const currentShopId = yield put.resolve({
+				type: 'global/getShopIdFromStorage',
+			});
+
+			const { shopId = null } = payload;
+			const response = yield call(Action.getAuthKey, { shopId: shopId || currentShopId });
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 
