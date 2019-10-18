@@ -599,8 +599,9 @@ export const checkAnchor = (anchor = null) => {
 	}
 	const anchorTag = document.createElement('a');
 	anchorTag.href = `#${anchor}`;
+	document.body.appendChild(anchorTag);
 	anchorTag.click();
-
+	document.body.removeChild(anchorTag);
 	return null;
 };
 

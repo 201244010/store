@@ -177,7 +177,7 @@ export default class RightToolBox extends Component {
 			isStep: true,
 			[selectedShapeName]: {
 				fontSize,
-				scaleY: fontSize / MAPS.containerHeight[detail.type]
+				scaleY: Math.max(fontSize / MAPS.containerHeight[detail.type], detail.scaleY)
 			},
 		});
 	};
@@ -238,7 +238,7 @@ export default class RightToolBox extends Component {
 	};
 
 	handleLineSpacing = (detail, value) => {
-		if ((!value || /^(0|[1-9][0-9]*)$/.test(value)) && value <= detail.fontSize * detail.zoomScale) {
+		if ((!value || /^(0|[1-9][0-9]*)$/.test(value))) {
 			const {selectedShapeName, updateComponentsDetail} = this.props;
 			const newDetail = {
 				lineSpacing: value,
@@ -329,10 +329,28 @@ export default class RightToolBox extends Component {
 				});
 			};
 		}
-		if (this.hasSubString(SHAPE_TYPES.CODE_H) || this.hasSubString(SHAPE_TYPES.CODE_V)) {
+		if (this.hasSubString(SHAPE_TYPES.CODE_H)) {
 			const image = document.createElement('img');
 			JsBarcode(image, value, {
-				format: 'CODE128',
+				format: 'CODE39',
+				width: 3,
+				height: 100,
+				displayValue: false
+			});
+
+			updateComponentsDetail({
+				[selectedShapeName]: {
+					content: value,
+					image,
+					ratio: this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14,
+					height: detail.width * (this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14),
+				}
+			});
+		}
+		if (this.hasSubString(SHAPE_TYPES.CODE_V)) {
+			const image = document.createElement('img');
+			JsBarcode(image, value, {
+				format: 'CODE39',
 				width: MAPS.containerWidth[detail.type] * detail.scaleX * detail.zoomScale,
 				displayValue: false
 			});
@@ -341,8 +359,8 @@ export default class RightToolBox extends Component {
 				[selectedShapeName]: {
 					content: value,
 					image,
-					ratio: image.height / image.width,
-					height: (detail.width * image.height) / image.width,
+					ratio: this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14,
+					height: detail.width * (this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14),
 				}
 			});
 		}
@@ -785,7 +803,6 @@ export default class RightToolBox extends Component {
 									style={{ width: '100%' }}
 									placeholder={formatMessage({ id: 'studio.tool.label.line.spacing' })}
 									min={0}
-									max={detail.fontSize * detail.zoomScale}
 									value={detail.lineSpacing}
 									onChange={value => {
 										this.handleLineSpacing(detail, value);
@@ -994,7 +1011,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Alibaba Sans">Alibaba Sans</Option>
+									<Option value="AlibabaSans">Alibaba Sans</Option>
 								</Select>
 							</Col>
 						</Row>
