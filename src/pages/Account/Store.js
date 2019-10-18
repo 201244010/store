@@ -22,6 +22,7 @@ class Store extends Component {
 		this.state = {
 			selectedCompany: {},
 			visible: false,
+			// viewCompanyModal: false,
 		};
 	}
 
@@ -30,6 +31,14 @@ class Store extends Component {
 			selectedCompany: formatEmpty(company, '--'),
 			visible: true,
 		});
+	};
+
+	openChangeCompany = company => {
+		console.log(company);
+	};
+
+	closeChangeCompany = company => {
+		console.log(company);
 	};
 
 	toPath = target => {
@@ -102,7 +111,7 @@ class Store extends Component {
 											<a
 												className={styles['store-change']}
 												href="javascript:void(0);"
-												onClick={() => this.viewStore(company)}
+												onClick={() => this.openChangeCompany(company)}
 											>
 												{formatMessage({ id: 'merchant.change' })}
 											</a>
