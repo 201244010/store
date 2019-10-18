@@ -67,7 +67,6 @@ class FacetChart extends PureComponent {
 								type="interval"
 								position={assistPosition}
 								color={assistColor}
-								active={false}
 								tooltip={tooltip}
 							/>
 							<Geom
@@ -75,7 +74,6 @@ class FacetChart extends PureComponent {
 								type="interval"
 								position={position}
 								color={color}
-								active={false}
 							>
 								<Label content={content} />
 							</Geom>

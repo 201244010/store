@@ -22,7 +22,7 @@ const {
 class SearchBar extends PureComponent {
 	constructor(props) {
 		super(props);
-		this.state = { currentShopName: null, tempSelected: RANGE.TODAY };
+		this.state = { currentShopName: null, tempSelected: RANGE.YESTERDAY };
 	}
 
 	async componentDidMount() {
@@ -37,16 +37,13 @@ class SearchBar extends PureComponent {
 	}
 
 	handleRadioChange = async e => {
-		const { target: { value = RANGE.TODAY } = {} } = e;
+		const { target: { value = RANGE.YESTERDAY } = {} } = e;
 		const { setSearchValue, onSearchChange } = this.props;
 		this.setState({ tempSelected: value });
 
 		await setSearchValue({
 			type: RANGE_VALUE[value.toUpperCase()],
-			groupBy:
-				value === RANGE.TODAY || value === RANGE.YESTERDAY
-					? GROUP_RANGE.HOUR
-					: GROUP_RANGE.DAY,
+			groupBy: value === RANGE.YESTERDAY ? GROUP_RANGE.HOUR : GROUP_RANGE.DAY,
 		});
 		await onSearchChange();
 	};
@@ -64,9 +61,9 @@ class SearchBar extends PureComponent {
 							buttonStyle="solid"
 							onChange={this.handleRadioChange}
 						>
-							<Radio.Button value={RANGE.TODAY}>
+							{/* <Radio.Button value={RANGE.TODAY}>
 								{formatMessage({ id: 'dashboard.search.today' })}
-							</Radio.Button>
+							</Radio.Button> */}
 							<Radio.Button value={RANGE.YESTERDAY}>
 								{formatMessage({ id: 'dashboard.search.yesterday' })}
 							</Radio.Button>
