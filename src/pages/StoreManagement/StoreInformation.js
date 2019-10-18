@@ -143,8 +143,8 @@ class StoreInformation extends React.Component {
 					>
 						{unixSecondToDate(modified_time)}
 					</Form.Item>
-					<Form.Item label=" " colon={false}>
-						<AuthKey shopId={shop_id} />
+					<Form.Item label={formatMessage({ id: 'store.auth' })}>
+						<AuthKey type="link" shopId={shop_id} />
 					</Form.Item>
 					<Form.Item className={styles['clear-margin']} label=" " colon={false}>
 						<Button type="primary" onClick={() => this.toPath('edit')}>
