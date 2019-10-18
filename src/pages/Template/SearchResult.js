@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Divider, Modal, Button, Form, Input, Select, Row, Col, Upload, message } from 'antd';
+import { Table, Divider, Modal, Button, Form, Input, Select, Row, Col, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { unixSecondToDate } from '@/utils/utils';
@@ -305,6 +305,7 @@ class SearchResult extends Component {
 			},
 			state: { newVisible, cloneVisible, uploadVisible, uploadLoading, previewVisible, curRecord },
 		} = this;
+		console.log(uploadLoading);
 		const columns = [
 			{
 				title: formatMessage({ id: 'esl.device.template.name' }),
@@ -402,30 +403,30 @@ class SearchResult extends Component {
 									>
 										{formatMessage({ id: 'esl.device.template.new' })}
 									</Button>
-									<Upload
-										{...{
-											name: 'file',
-											showUploadList: false,
-											beforeUpload: (file) => {
-												this.setState({
-													uploadLoading: true
-												});
-												const isJson = file.type === 'application/json';
-												if (!isJson) {
-													this.setState({
-														uploadLoading: false
-													});
-													message.error(formatMessage({id: 'esl.device.template.upload.file.type.error'}));
-												}
-												return false;
-											},
-											onChange: this.uploadJsonFileChange
-										}}
-									>
-										<Button type="default" icon="upload" loading={uploadLoading} className={styles['btn-margin-left']}>
-											{formatMessage({ id: 'esl.device.template.upload' })}
-										</Button>
-									</Upload>
+									{/* <Upload */}
+									{/* {...{ */}
+									{/* name: 'file', */}
+									{/* showUploadList: false, */}
+									{/* beforeUpload: (file) => { */}
+									{/* this.setState({ */}
+									{/* uploadLoading: true */}
+									{/* }); */}
+									{/* const isJson = file.type === 'application/json'; */}
+									{/* if (!isJson) { */}
+									{/* this.setState({ */}
+									{/* uploadLoading: false */}
+									{/* }); */}
+									{/* message.error(formatMessage({id: 'esl.device.template.upload.file.type.error'})); */}
+									{/* } */}
+									{/* return false; */}
+									{/* }, */}
+									{/* onChange: this.uploadJsonFileChange */}
+									{/* }} */}
+									{/* > */}
+									{/* <Button type="default" icon="upload" loading={uploadLoading} className={styles['btn-margin-left']}> */}
+									{/* {formatMessage({ id: 'esl.device.template.upload' })} */}
+									{/* </Button> */}
+									{/* </Upload> */}
 								</Form.Item>
 							</Col>
 						</Row>
