@@ -19,20 +19,28 @@ export default {
 		deviceSn: ''
 	},
 	reducers: {
-		drawRects(state, { payload: { rects, sn } }) {
-			const { deviceSn, rectangles } = state;
+		drawRects({ rectangles, list, ageRangeList, deviceSn }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
 
-			if (deviceSn === sn) {
-				state.rectangles = [
-					...rectangles,
-					...rects
-				];
-			}
+			// todo 需要添加信息清除逻辑
+			const rect = rectangles;
 
+			return {
+				rectangles: [
+					...rect,
+					{
+						rects,
+						sn,
+						timestamp,
+						// reportTime
+					}
+				],
+				list,
+				ageRangeList,
+				deviceSn
+			};
 		},
 		clearRects(state, { payload: { timestamp }}) {
 			const rectangles = [];
-
 			state.rectangles.forEach(item => {
 				if (item.timestamp > timestamp - 2000) {
 					rectangles.push(item);

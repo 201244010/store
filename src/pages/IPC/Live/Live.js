@@ -13,12 +13,18 @@ import styles from './Live.less';
 @connect((state) => {
 	const { faceid: { rectangles, list,  ageRangeList }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
 
+	const rects = [];
+	rectangles.forEach(item => {
+		item.rects.forEach(rect => {
+			rects.push(rect);
+		});
+	});
 
 	return {
 		streamId,
 		ppiChanged,
 		currentPPI: ppi || '1080',
-		faceidRects: rectangles || [],
+		faceidRects: rects || [],
 		faceidList: list || [],
 		timeSlots: timeSlots || [],
 		ageRangeList:  ageRangeList || []
@@ -44,18 +50,18 @@ import styles from './Live.less';
 		});
 		return url;
 	},
-	// stopLive({ sn, streamId }) {
-	// 	return dispatch({
-	// 		type: 'live/stopLive',
-	// 		payload: {
-	// 			sn,
-	// 			streamId
-	// 		}
-	// 	}).then(() => {
-	// 		console.log('stopLive done.');
-	// 		return true;
-	// 	});
-	// },
+	stopLive({ sn, streamId }) {
+		return dispatch({
+			type: 'live/stopLive',
+			payload: {
+				sn,
+				streamId
+			}
+		}).then(() => {
+			console.log('stopLive done.');
+			return true;
+		});
+	},
 	getDeviceInfo({ sn }) {
 		return dispatch({
 			type: 'ipcList/getDeviceInfo',
@@ -64,15 +70,14 @@ import styles from './Live.less';
 			}
 		}).then(info => info);
 	},
-	async changePPI({ ppi, sn }) {
-		const url = await dispatch({
+	changePPI({ ppi, sn }) {
+		dispatch({
 			type: 'live/changePPI',
 			payload: {
 				ppi,
 				sn
 			}
 		});
-		return url;
 	},
 	async getHistoryUrl({ timestamp, sn }) {
 		const url = await dispatch({
@@ -138,32 +143,11 @@ import styles from './Live.less';
 			}
 		});
 	},
-	requestMetadata({ sn }) {
-		dispatch({
-			type: 'live/requestMetadata',
-			payload: {
-				sn
-			}
-		});
-	},
-	changeFaceidPushStatus({ sn, status }) {
-		dispatch({
-			type: 'faceid/changeFaceidPushStatus',
-			payload: {
-				sn,
-				status
-			}
-		});
-	},
-	changeFaceComparePushStatus({ sn, status }) {
-		dispatch({
-			type: 'faceid/changeFaceComparePushStatus',
-			payload: {
-				sn,
-				status
-			}
-		});
-	}
+	// test: () => {
+	// 	dispatch({
+	// 		type:'faceid/test'
+	// 	});
+	// }
 }))
 class Live extends React.Component{
 	constructor(props) {
@@ -179,10 +163,9 @@ class Live extends React.Component{
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, getAgeRangeList, getSdStatus, setDeviceSn, clearList } = this.props;
+		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList } = this.props;
 
-		const sn = this.getSN();
-
+		const {sn} = query;
 		let sdStatus = true;
 		if (sn) {
 			// test();
@@ -197,8 +180,6 @@ class Live extends React.Component{
 					message.info(formatMessage({ id: 'live.nosdInfo' }));
 					sdStatus = false;
 				}
-
-				this.startFaceComparePush();
 			}
 
 			this.setState({
@@ -211,25 +192,26 @@ class Live extends React.Component{
 	}
 
 	componentWillUnmount () {
-		const { stopHistoryPlay } = this.props;
-		const sn = this.getSN();
+		const { stopLive, streamId, location: { query }, stopHistoryPlay } = this.props;
+		const { sn } = query;
+
 		if (sn) {
 			stopHistoryPlay({
 				sn
 			});
-
-			const hasFaceid = this.hasFaceid();
-			if (hasFaceid) {
-				this.stopFaceidPush();
-				this.stopFaceComparePush();
+			if (streamId) {
+				stopLive({
+					sn,
+					streamId
+				});
 			}
 		}
 	}
 
 	onTimeChange = async (timeStart, timeEnd) => {
 
-		const { getTimeSlots } = this.props;
-		const sn = this.getSN();
+		const { getTimeSlots, location: { query } } = this.props;
+		const {sn} = query;
 
 		const result = await getTimeSlots({
 			sn,
@@ -253,122 +235,47 @@ class Live extends React.Component{
 		});
 	}
 
-	getSN = () => {
-		const { location: { query } } = this.props;
-		const { sn } = query;
-
-		return sn;
-	}
-
-	hasFaceid = async () => {
-		const { getDeviceInfo } = this.props;
-		const sn = this.getSN();
-		const deviceInfo = await getDeviceInfo({ sn });
-		const { hasFaceid } = deviceInfo;
-
-		return hasFaceid;
-	}
-
-	requestMetadata = () => {
-		const { requestMetadata } = this.props;
-		const sn = this.getSN();
-
-		requestMetadata({ sn });
-	}
-
-	startFaceidPush = () => {
-		const { changeFaceidPushStatus } = this.props;
-		const sn = this.getSN();
-
-		changeFaceidPushStatus({
-			sn,
-			status: true
-		});
-	}
-
-	stopFaceidPush = () => {
-		const { changeFaceidPushStatus } = this.props;
-		const sn = this.getSN();
-
-		changeFaceidPushStatus({
-			sn,
-			status: false
-		});
-	}
-
-	startFaceComparePush = () => {
-		const { changeFaceComparePushStatus } = this.props;
-		const sn = this.getSN();
-
-		changeFaceComparePushStatus({
-			sn,
-			status: true
-		});
-	}
-
-	stopFaceComparePush = () => {
-		const { changeFaceComparePushStatus } = this.props;
-		const sn = this.getSN();
-
-		changeFaceComparePushStatus({
-			sn,
-			status: false
-		});
-	}
-
 	getLiveUrl = async () => {
-		const { getLiveUrl } = this.props;
-		const sn = this.getSN();
-
-		const hasFaceid = this.hasFaceid();
-		if (hasFaceid) {
-			this.startFaceidPush();
-		}
+		const { getLiveUrl, location: { query }} = this.props;
+		const { sn } = query;
 
 		const url = await getLiveUrl({ sn });
 		return url;
 	}
 
-	// stopLive = async () => {
-	// 	const hasFaceid = this.hasFaceid();
+	stopLive = async () => {
+		const { stopLive, streamId, location: { query }} = this.props;
+		const { sn } = query;
 
-	// 	if (hasFaceid) {
-	// 		this.stopFaceidPush();
-	// 	}
-	// }
+		await stopLive({
+			sn,
+			streamId
+		});
+	}
 
 	getHistoryUrl = async  (timestamp) => {
-		const { getHistoryUrl } = this.props;
-		const sn = this.getSN();
+		const { getHistoryUrl, location: { query }} = this.props;
+		const { sn } = query;
 
 		const url = await getHistoryUrl({ sn, timestamp });
-
-		const hasFaceid = this.hasFaceid();
-
-		if (hasFaceid) {
-			this.stopFaceidPush();
-		}
-
 		return url;
 	}
 
 	stopHistoryPlay = async () => {
-		const { stopHistoryPlay } = this.props;
-		const sn = this.getSN();
+		const { stopHistoryPlay, location: { query } } = this.props;
+		const { sn } = query;
 
 		await stopHistoryPlay({ sn });
 	}
 
 	changePPI = (ppi) => {
-		const { changePPI } = this.props;
-		const sn = this.getSN();
+		const { changePPI, location:{ query } } = this.props;
+		const { sn } = query;
 
-		const url = changePPI({
+		changePPI({
 			ppi,
 			sn
 		});
-
-		return url;
 	}
 
 	mapAgeInfo(age, ageRangeCode) {
@@ -423,12 +330,12 @@ class Live extends React.Component{
 						currentPPI={currentPPI}
 						changePPI={this.changePPI}
 						ppiChanged={ppiChanged}
-						onLivePlay={this.requestMetadata}
+
 						getHistoryUrl={this.getHistoryUrl}
 						stopHistoryPlay={this.stopHistoryPlay}
 
 						getLiveUrl={this.getLiveUrl}
-						// pauseLive={this.stopLive}
+						pauseLive={this.stopLive}
 
 						timeSlots={timeSlots}
 
