@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Divider, Modal, Table, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { CustomSkeleton } from '@/components/Skeleton';
+import AuthKey from '@/pages/AuthKey';
 import { idEncode, unixSecondToDate } from '@/utils/utils';
 import * as CookieUtil from '@/utils/cookies';
 import * as styles from './ProductManagement.less';
@@ -82,7 +83,7 @@ class SearchResult extends Component {
 					},
 				});
 				this.setState({
-					selectedRowKeys:[]
+					selectedRowKeys: [],
 				});
 			},
 		});
@@ -192,6 +193,7 @@ class SearchResult extends Component {
 									{formatMessage({ id: 'btn.delete' })}
 								</Button>
 							)}
+							<AuthKey className={styles['btn-margin-left']} />
 						</>
 					)}
 				</div>

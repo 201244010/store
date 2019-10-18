@@ -1,3 +1,4 @@
+import { format } from '@konata9/milk-shake';
 import { customizeFetch } from '@/utils/fetch';
 
 const fetchApi = customizeFetch('api/shop');
@@ -71,4 +72,14 @@ export const getImportedErpInfo = (options = {}) => {
 	};
 
 	return fetchApi('getSaasDetailInfo', opt).then(response => response.json());
+};
+
+export const getAuthKey = (options = {}) => {
+	const opts = {
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('saas/getAuthKey', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
 };
