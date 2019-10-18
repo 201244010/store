@@ -1,7 +1,7 @@
 import React from 'react';
+import { formatMessage } from 'umi/locale';
 import { STATION_STATES } from '@/constants/mapping';
 import { unixSecondToDate } from '@/utils/utils';
-import { formatMessage } from 'umi/locale';
 import styles from './BaseStation.less';
 
 const BaseStationDetail = props => {
@@ -13,6 +13,18 @@ const BaseStationDetail = props => {
 					{formatMessage({ id: 'esl.device.ap.sn' })}：
 				</span>
 				<span className={styles['detail-info-content']}>{stationInfo.sn}</span>
+			</div>
+			<div className={styles['detail-info-item']}>
+				<span className={styles['detail-info-label']}>
+					{formatMessage({ id: 'esl.device.ap.mac' })}：
+				</span>
+				<span className={styles['detail-info-content']}>{stationInfo.mac}</span>
+			</div>
+			<div className={styles['detail-info-item']}>
+				<span className={styles['detail-info-label']}>
+					{formatMessage({ id: 'esl.device.ap.network.id' })}：
+				</span>
+				<span className={styles['detail-info-content']}>{stationInfo.network_id}</span>
 			</div>
 			<div className={styles['detail-info-item']}>
 				<span className={styles['detail-info-label']}>

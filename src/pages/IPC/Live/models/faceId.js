@@ -27,7 +27,7 @@ export default {
 					...rectangles,
 					...rects
 				];
-					}
+			}
 
 		},
 		clearRects(state, { payload: { timestamp }}) {

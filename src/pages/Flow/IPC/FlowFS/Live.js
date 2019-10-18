@@ -13,7 +13,7 @@ import styles from './Live.less';
 
 @connect((state) => {
 	const { flowFaceid: { rectangles, list, libraryList, ageRangeList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }, } = state;
-	//const rects = [];
+	// const rects = [];
 
 	// rectangles.forEach(item => {
 	// item.rects.forEach(rect => {

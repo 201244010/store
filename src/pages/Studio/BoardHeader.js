@@ -4,7 +4,6 @@ import { formatMessage } from 'umi/locale';
 import ButtonIcon from './ButtonIcon';
 import ZoomIcon from './ZoomIcon';
 import { getLocationParam } from '@/utils/utils';
-import { preStep, nextStep } from '@/utils/studio';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as styles from './index.less';
 
@@ -96,36 +95,30 @@ export default class BoardHeader extends Component {
 		}
 	};
 
-	preStep = async () => {
-		const { props: { changeOneStep } } = this;
-		const result = await preStep(getLocationParam('id'));
-		if (result) {
-			changeOneStep(JSON.parse(result));
-		}
-	};
-
-	nextStep = async () => {
-		const { props: { changeOneStep } } = this;
-		const result = await nextStep(getLocationParam('id'));
-		if (result) {
-			changeOneStep(JSON.parse(result));
-		}
-	};
-
 	render() {
 		const {
 			state: { editing, templateName },
-			props: { templateInfo = {}, zoomScale, saveAsDraft, zoomOutOrIn },
+			props: { templateInfo = {}, zoomScale, saveAsDraft, downloadAsDraft, zoomOutOrIn, preStep, nextStep },
 		} = this;
+		const studioType = getLocationParam('type');
 
 		return (
 			<Fragment>
 				<div className={styles['left-actions']}>
-					<ButtonIcon name="save" onClick={saveAsDraft} />
-					{/* <ButtonIcon name="check" /> */}
-					<span />
-					<ButtonIcon name="preStep" onClick={this.preStep} />
-					<ButtonIcon name="nextStep" onClick={this.nextStep} />
+					{
+						studioType !== 'alone' ?
+							<>
+								<ButtonIcon name="save" onClick={saveAsDraft} />
+								{/* <ButtonIcon name="check" /> */}
+								<span />
+							</> :
+							<>
+								<span />
+								<span />
+							</>
+					}
+					<ButtonIcon name="preStep" onClick={preStep} />
+					<ButtonIcon name="nextStep" onClick={nextStep} />
 				</div>
 				<div className={styles['title-edit']}>
 					{editing ? (
@@ -139,20 +132,23 @@ export default class BoardHeader extends Component {
 						<Fragment>
 							{
 								templateInfo.name ?
-									<span className={styles['edit-content']}>{formatMessage({id: templateInfo.name })}</span> :
+									<>
+										<span className={styles['edit-content']}>{formatMessage({id: templateInfo.name})}</span>
+										<img
+											className={styles['edit-img']}
+											src={require('@/assets/studio/edit.svg')}
+											onClick={this.toChangeName}
+										/>
+									</> :
 									null
 							}
-							<img
-								className={styles['edit-img']}
-								src={require('@/assets/studio/edit.svg')}
-								onClick={this.toChangeName}
-							/>
 						</Fragment>
 					)}
 				</div>
 				<div className={styles['right-actions']}>
 					<ZoomIcon zoomScale={zoomScale} zoomOutOrIn={zoomOutOrIn} />
 					{/* <ButtonIcon name="wrapper" /> */}
+					<ButtonIcon name="download" onClick={downloadAsDraft} />
 					{/* <ButtonIcon name="view" /> */}
 					{/* <ButtonIcon name="history" /> */}
 				</div>

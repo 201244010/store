@@ -181,7 +181,7 @@ class Live extends React.Component{
 	async componentDidMount () {
 		const { getDeviceInfo, getAgeRangeList, getSdStatus, setDeviceSn, clearList } = this.props;
 
-                const sn = this.getSN();
+		const sn = this.getSN();
 
 		let sdStatus = true;
 		if (sn) {

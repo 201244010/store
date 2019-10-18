@@ -25,7 +25,7 @@ export default {
 					...rectangles,
 					...rects
 				];
-					}
+			}
 
 		},
 		clearRects(state, { payload: { timestamp }}) {
@@ -143,7 +143,7 @@ export default {
 			}
 			return response.code;
 		},
-		
+
 		*changeFaceidPushStatus ({ payload: { sn, status }}, { put }) {
 			// 直播页人脸加框开关
 			const deviceType = yield put.resolve({
