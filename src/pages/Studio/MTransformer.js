@@ -17,6 +17,7 @@ export default class MTransformer extends Component {
 		const detail = componentsDetail[selectedShapeName];
 
 		if (selectedShapeName.indexOf(SHAPE_TYPES.LINE_V) === -1) {
+
 			if (newBoundBox.width < (detail.fontSize || 10) * zoomScale) {
 				newBoundBox.width = (detail.fontSize || 10) * zoomScale;
 				return oldBoundBox;

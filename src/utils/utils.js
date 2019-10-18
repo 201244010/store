@@ -554,8 +554,6 @@ export const formatSpeed = speed => {
 	return { speed, unit };
 };
 
-
-// 格式化时间，精确到天时分秒
 export const formatRelativeTime = timeStamp => {
 	const duration = moment.duration(timeStamp);
 	const years = duration.years();

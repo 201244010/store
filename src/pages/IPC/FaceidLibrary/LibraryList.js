@@ -58,7 +58,7 @@ class LibraryList extends React.Component {
 						case 4:
 							return formatMessage({id: 'faceid.blacklistInfo'});
 						default:
-							return '--';
+							return formatMessage({id: 'faceid.undefined'});
 					}
 
 				}
@@ -68,7 +68,10 @@ class LibraryList extends React.Component {
 				dataIndex: 'remarks',
 				render: (remark) => {
 					if (remark === '') {
-						return '--';
+						return formatMessage({id: 'faceid.unknown'});
+					}
+					if (remark === undefined){
+						return formatMessage({id: 'faceid.undefined'});
 					}
 					return remark;
 				}
@@ -82,8 +85,11 @@ class LibraryList extends React.Component {
 				title: formatMessage({ id: 'faceid.updateTime' }),
 				dataIndex: 'lastupdate',
 				render: lastupdate => {
-					if (!lastupdate) {
-						return '--';
+					if(lastupdate === 0){
+						return formatMessage({id: 'faceid.unknown'});
+					}
+					if(lastupdate === undefined){
+						return formatMessage({id: 'faceid.undefined'});
 					}
 					const d = moment(lastupdate * 1000);
 					return d.format('YYYY-MM-DD HH:mm:ss');
@@ -273,8 +279,8 @@ class LibraryList extends React.Component {
 
 	removeLibrary = (id) => {
 		// console.log('remove',id);
-		const { faceIdLibrary, removeLibrary } = this.props;
-		const target = faceIdLibrary.filter(item => {
+		const { faceIdLibrary : { list }, removeLibrary } = this.props;
+		const target = list.filter(item => {
 			if(item.id === id){
 				return true;
 			}
@@ -354,9 +360,9 @@ class LibraryList extends React.Component {
 	}
 
 	showEditForm(id) {
-		const { faceIdLibrary } = this.props;
+		const { faceIdLibrary: { list } } = this.props;
 
-		const row = faceIdLibrary.filter(item => {
+		const row = list.filter(item => {
 			if (id === item.id) {
 				return true;
 			}
@@ -379,19 +385,19 @@ class LibraryList extends React.Component {
 	render() {
 		// console.log(this.props);
 		const { createFormShown, editFormShown, selectedRow } = this.state;
-		const { faceIdLibrary, loading } = this.props;
-		const totalCapacity = 30000;
+		const { faceIdLibrary: { list, totalCapacity }, loading } = this.props;
+		// const totalCapacity = 30000;
 		// const noCustom = list.every((item) => {
 		// 	return item.isDefault === true;
 		// });
 
 		const restCapacity =
 			totalCapacity -
-			faceIdLibrary.reduce((total, item) => total + item.capacity, 0);
-		// console.log(this.props);
-		const list = faceIdLibrary;
-		// console.log(restCapacity);
-		// console.log(list);
+			list.reduce((total, item) => total + item.capacity, 0);
+
+		// console.log(list, totalCapacity, restCapacity);
+
+		// const list = faceIdLibrary;
 
 		return (
 			<div className="faceid-library-list">

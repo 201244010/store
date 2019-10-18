@@ -162,9 +162,6 @@ class VideoPlayer extends React.Component {
 	};
 
 	onPlay = () => {
-		console.log('VideoPlayer onPlay');
-		const { onPlay } = this.props;
-		onPlay();
 		// this.setState({
 		// 	playing: true,
 		// 	canScreenShot: this.canScreenShot(),
@@ -379,6 +376,7 @@ class VideoPlayer extends React.Component {
 			onPause,
 			onEnd,
 			onCanPlay,
+			onPlay,
 			onCanplayThrough,
 			plugin,
 		} = this.props;
@@ -400,7 +398,8 @@ class VideoPlayer extends React.Component {
 						getVideojsPlayer={vjs => (this.player = vjs)}
 						pixelRatio={pixelRatio}
 						fullScreen={fullScreen}
-						onPlay={this.onPlay}
+
+						onPlay={onPlay || this.onPlay}
 						onCanPlay={onCanPlay || this.onCanPlay}
 						onCanplayThrough={onCanplayThrough || this.onCanplayThrough}
 						onPause={onPause || this.onPause}

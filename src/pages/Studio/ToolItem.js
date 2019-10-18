@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import { SIZES, SHAPE_TYPES, IMAGE_TYPES, MAPS } from '@/constants/studio';
 import { formatMessage } from 'umi/locale';
+import { SIZES, SHAPE_TYPES, IMAGE_TYPES, MAPS } from '@/constants/studio';
 
 const contentMap = {
 	[SHAPE_TYPES.TEXT]: formatMessage({ id: 'studio.action.text.db.click' }),
@@ -81,6 +81,7 @@ export default class ToolItem extends Component {
 							strokeWidth: MAPS.strokeWidth[type],
 							strokeColor: MAPS.strokeColor[type],
 							letterSpacing: MAPS.letterSpacing[type],
+							lineSpacing: MAPS.lineSpacing[type],
 							align: MAPS.align[type],
 							fontFamily: MAPS.fontFamily[type],
 							fontColor: MAPS.fontColor[type],

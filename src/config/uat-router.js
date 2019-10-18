@@ -27,6 +27,13 @@ const router = [
 	},
 
 	{
+		path: '/studioAlone',
+		component: '../layouts/BlankLayout',
+		id: 'StudioAlone',
+		routes: [{ path: '/studioAlone', component: './StudioAlone' }],
+	},
+
+	{
 		path: '/show',
 		component: '../layouts/BlankLayout',
 		id: 'show',
