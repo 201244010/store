@@ -158,12 +158,6 @@ class Store extends Component {
 					<Form {...FORM_ITEM_LAYOUT_COMMON}>
 						<Form.Item
 							className={styles['margin-clear']}
-							label={formatMessage({ id: 'merchantManagement.merchant.number' })}
-						>
-							<span>{companyId}</span>
-						</Form.Item>
-						<Form.Item
-							className={styles['margin-clear']}
 							label={formatMessage({ id: 'merchantManagement.merchant.name' })}
 						>
 							<span>{companyName}</span>

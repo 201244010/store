@@ -32,8 +32,8 @@ class StoreManagement extends Component {
 		this.columns = [
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnId' }),
-				dataIndex: 'shop_id',
-				key: 'shop_id',
+				dataIndex: 'sunmi_shop_no',
+				key: 'sunmi_shop_no',
 			},
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnName' }),
