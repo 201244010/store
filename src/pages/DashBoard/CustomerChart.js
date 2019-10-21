@@ -186,32 +186,34 @@ class CustomerChart extends PureComponent {
 				}`}
 				loading={passengerFlowTypeLoading}
 			>
-				<Facet
-					{...{
-						data: displayPassengerList,
-						tooltip: { crosshairs: false },
-						scale: {
-							personCount: {
-								ticks,
+				<div className={styles['chart-wrapper']}>
+					<Facet
+						{...{
+							data: displayPassengerList,
+							tooltip: { crosshairs: false },
+							scale: {
+								personCount: {
+									ticks,
+								},
+								limit: {
+									ticks,
+								},
 							},
-							limit: {
-								ticks,
+							axis: {
+								x: { name: 'ageRange', line: null, tickLink: null },
+								y: { name: 'personCount', visible: false },
+								assist: { name: 'limit', visible: false },
 							},
-						},
-						axis: {
-							x: { name: 'ageRange', line: null, tickLink: null },
-							y: { name: 'personCount', visible: false },
-							assist: { name: 'limit', visible: false },
-						},
-						facet: { fields: ['title'] },
-						geom: {
-							position: 'ageRange*personCount',
-							color: geomColor,
-							label: { content: 'personCount' },
-						},
-						assistGeom: { position: 'ageRange*limit' },
-					}}
-				/>
+							facet: { fields: ['title'] },
+							geom: {
+								position: 'ageRange*personCount',
+								color: geomColor,
+								label: { content: 'personCount' },
+							},
+							assistGeom: { position: 'ageRange*limit' },
+						}}
+					/>
+				</div>
 			</Card>
 		);
 	}

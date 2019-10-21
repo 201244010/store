@@ -127,12 +127,18 @@ class SalseBar extends PureComponent {
 					? parseFloat(100).toFixed(2)
 					: parseFloat((totalCountStore[rangeType] / latestCount) * 100).toFixed(2);
 
-		const lastTradeRate =
-			earlyCountStore[rangeType] === 0
-				? 0
-				: parseInt((earlyCountStore[rangeType] / earlyCount) * 100, 10) > 100
+		let lastTradeRate = 0;
+		if (earlyCount === 0) {
+			lastTradeRate = '0%';
+		} else if (![null, undefined].includes(earlyCountStore[rangeType]) && earlyCount > 0) {
+			lastTradeRate = `${
+				parseInt((earlyCountStore[rangeType] / earlyCount) * 100, 10) > 100
 					? parseFloat(100).toFixed(2)
-					: parseFloat((earlyCountStore[rangeType] / earlyCount) * 100).toFixed(2);
+					: parseFloat((earlyCountStore[rangeType] / earlyCount) * 100).toFixed(2)
+			}%`;
+		} else {
+			lastTradeRate = '--';
+		}
 
 		return (
 			<Card title={null}>
@@ -221,8 +227,7 @@ class SalseBar extends PureComponent {
 									<></>
 								) : (
 									<span>
-										{/* 临时方案，等待云端更新接口后计算昨日值 */}
-										{passengerFlowMessage[rangeType]}：{lastTradeRate}%
+										{passengerFlowMessage[rangeType]}：{lastTradeRate}
 									</span>
 								),
 							loading: passengerFlowLoading || totalCountLoading,
