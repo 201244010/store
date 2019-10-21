@@ -8,17 +8,16 @@ const { IPC_SERVER } = CONFIG;
 const requestStream = customizeFetch('ipc/api/media/stream', IPC_SERVER);
 const requestVideo = customizeFetch('ipc/api/media/video', IPC_SERVER);
 
-export const getLiveUrl = ({ deviceId, clientId, resolution}) => {
-	const result = requestStream('live/start', {
+export const getLiveUrl = ({ clientId, sn }) => {
+	const result = requestStream('start', {
 		body: {
-			device_id: deviceId,
 			client_id: clientId,
-			resolution
+			sn
 		}
 	}).then(async (response) => {
 		const { code, data } = await response.json();
 		if (code === ERROR_OK) {
-			const { url, stream_id: streamId } = data;
+			const  { url, stream_id: streamId, resolution } = data;
 			return {
 				code: ERROR_OK,
 				data: {
@@ -32,6 +31,7 @@ export const getLiveUrl = ({ deviceId, clientId, resolution}) => {
 			code
 		};
 	});
+
 	return result;
 };
 

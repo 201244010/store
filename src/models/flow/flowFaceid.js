@@ -17,16 +17,26 @@ export default {
 		libraryList: [],
 	},
 	reducers: {
-		drawRects(state, { payload: { rects, sn } }) {
-			const { deviceSn, rectangles } = state;
-			// console.log('rrrrrrrrrrrrrrrrrrrr',rects, rectangles);
-			if (deviceSn === sn) {
-				state.rectangles = [
-					...rectangles,
-					...rects
-				];
-			}
+		drawRects({ rectangles, list, ageRangeList, deviceSn, libraryList }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
 
+			// todo 需要添加信息清除逻辑
+			const rect = rectangles;
+
+			return {
+				rectangles: [
+					...rect,
+					{
+						rects,
+						sn,
+						timestamp,
+						// reportTime
+					}
+				],
+				list,
+				ageRangeList,
+				deviceSn,
+				libraryList,
+			};
 		},
 		clearRects(state, { payload: { timestamp }}) {
 			const rectangles = [];
