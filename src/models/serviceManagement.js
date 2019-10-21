@@ -32,6 +32,9 @@ export default {
 			totalCount: 0,
 			list: [],
 		},
+		serviceDetail: {
+		
+		}
 	},
 	effects: {
 		*getServiceList({ payload }, { call, put, select }) {
