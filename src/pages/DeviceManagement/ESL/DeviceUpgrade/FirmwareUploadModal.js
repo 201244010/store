@@ -179,10 +179,11 @@ class FirmwareUploadModal extends Component {
 							this.uploadFile = new File([contentBlob], relativePath.split('/')[1], {type: fileType});
 						} catch (e) {
 							// this workaround edge
-							if (typeof window.navigator.msSaveBlob !== 'undefined') {
-								window.navigator.msSaveBlob(contentBlob, relativePath.split('/')[1]);
-								this.uploadFile = contentBlob;
-							}
+							// if (typeof window.navigator.msSaveBlob !== 'undefined') {
+							// 	window.navigator.msSaveBlob(contentBlob, relativePath.split('/')[1]);
+							//
+							// }
+							this.uploadFile = contentBlob;
 						}
 					} else {
 					    throw new Error('上传文件类型错误', relativePath, fileType);
