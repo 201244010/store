@@ -225,6 +225,12 @@ class DeviceBasicInfo extends React.Component {
 
 		const { /* isFieldTouched, */ getFieldDecorator } = form;
 
+		const conntypes = {
+			0: formatMessage({ id: 'deviceBasicInfo.onconnt' }),
+			1: formatMessage({ id: 'deviceBasicInfo.wiredConnt'}),
+			2: formatMessage({ id: 'deviceBasicInfo.wirelessConnt'})
+		};
+
 		const image = img || defaultImage;
 
 		return (
