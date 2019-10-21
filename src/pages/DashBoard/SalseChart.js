@@ -316,7 +316,9 @@ class SalseChart extends PureComponent {
 					passengerOrderLoading ? '' : styles['salse-chart']
 				}`}
 			>
-				<DataChart />
+				<div className={styles['chart-wrapper']}>
+					<DataChart />
+				</div>
 			</Card>
 		);
 	}
