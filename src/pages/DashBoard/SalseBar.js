@@ -130,7 +130,7 @@ class SalseBar extends PureComponent {
 		let lastTradeRate = 0;
 		if (earlyCount === 0) {
 			lastTradeRate = '0%';
-		} else if (earlyCountStore[rangeType] && earlyCount > 0) {
+		} else if (![null, undefined].includes(earlyCountStore[rangeType]) && earlyCount > 0) {
 			lastTradeRate = `${
 				parseInt((earlyCountStore[rangeType] / earlyCount) * 100, 10) > 100
 					? parseFloat(100).toFixed(2)

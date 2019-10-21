@@ -186,6 +186,7 @@ class SalseChart extends PureComponent {
 						tooltip: { itemTpl, useHtml: true },
 						dataSource: passengerOrderList,
 						barStyle: {
+							barColor: '#22A3FF',
 							barActive: true,
 							position: 'time*orderCount',
 							tooltip: chartTip,
@@ -239,6 +240,7 @@ class SalseChart extends PureComponent {
 						tooltip: { itemTpl, useHtml: true },
 						dataSource: passengerOrderList,
 						barStyle: {
+							barColor: '#22A3FF',
 							barActive: true,
 							position: 'time*passengerFlowCount',
 							tooltip: chartTip,
