@@ -701,7 +701,6 @@ class Studio extends Component {
 		inputObj.setAttribute('type', 'file');
 		inputObj.setAttribute('style', 'display: none');
 		document.body.appendChild(inputObj);
-		inputObj.click();
 
 		const fileChangeHandler = async changeEvent => {
 			const file = changeEvent.target.files[0];
@@ -732,6 +731,7 @@ class Studio extends Component {
 			image.src = imgPath;
 		};
 		inputObj.addEventListener('change', fileChangeHandler);
+		inputObj.click();
 	};
 
 	handlePriceDblClick = (e, type) => {
