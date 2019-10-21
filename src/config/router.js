@@ -142,6 +142,12 @@ const router = [
 							},
 						],
 					},
+					{
+						path: '/application/serviceManagement',
+						id: 'serviceManagement',
+						component: './ServiceManagement/ServiceList',
+						name: 'serviceManagement',
+					}
 				],
 			},
 
