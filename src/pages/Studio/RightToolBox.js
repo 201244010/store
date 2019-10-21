@@ -806,7 +806,7 @@ export default class RightToolBox extends Component {
 								<InputNumber
 									style={{ width: '100%' }}
 									placeholder={formatMessage({ id: 'studio.tool.label.line.spacing' })}
-									min={0}
+									min={detail.fontSize}
 									value={detail.lineSpacing}
 									onChange={value => {
 										this.handleLineSpacing(detail, value);
