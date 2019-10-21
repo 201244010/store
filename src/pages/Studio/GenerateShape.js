@@ -157,7 +157,7 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
-							offsetY: (option.lineSpacing - option.fontSize) * option.zoomScale / 2 || 0,
+							offsetY: ((option.lineSpacing - option.fontSize) * option.zoomScale / 2 || 0) - 4,
 							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,

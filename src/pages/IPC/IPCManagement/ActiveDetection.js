@@ -42,43 +42,6 @@ let btnDisabled = true;
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name: 'active-detection-form',
-	// mapPropsToFields(props) {
-	// 	const { activeDetection } = props;
-	// 	return {
-	// 		isSound: Form.createFormField({
-	// 			value: activeDetection.isSound
-	// 		}),
-	// 		sSensitivity: Form.createFormField({
-	// 			value: activeDetection.sSensitivity
-	// 		}),
-	// 		isDynamic: Form.createFormField({
-	// 			value: props.activeDetection.isDynamic
-	// 		}),
-	// 		mSensitivity: Form.createFormField({
-	// 			value: activeDetection.mSensitivity
-	// 		}),
-	// 		isAuto: Form.createFormField({
-	// 			value: activeDetection.isAuto
-	// 		}),
-	// 		startTime: Form.createFormField({
-	// 			// value: moment(props.activeDetection.startTime,'HH:mm')
-	// 			value: moment('1970-01-01').add(activeDetection.startTime, 's')
-	// 		}),
-	// 		endTime: Form.createFormField({
-	// 			// value: moment(props.activeDetection.endTime,'HH:mm')
-	// 			value: moment('1970-01-01').add(activeDetection.endTime, 's')
-	// 		}),
-	// 		days: Form.createFormField({
-	// 			value: activeDetection.days
-	// 		}),
-	// 		all: Form.createFormField({
-	// 			value: activeDetection.all
-	// 		}),
-	// 	};
-	// },
-	// onFieldsChange(props, fields) {
-
-	// },
 	onValuesChange() {
 		btnDisabled = false;
 	}
@@ -99,12 +62,7 @@ class ActiveDetection extends React.Component {
 
 
 	componentDidMount = async () => {
-		const { loadSetting, /* init, */ sn } = this.props;
-		// if (!sn) {
-		// 	message.error('sn号获取失败');
-		// }
-		// console.log(sn);
-		// init(sn);
+		const { loadSetting, sn } = this.props;
 		if(sn){
 			loadSetting(sn);
 		}
@@ -170,6 +128,19 @@ class ActiveDetection extends React.Component {
 			// btnDisabled = true;
 		}
 	};
+
+	onTimeSelect = (time) => {
+		let t = time;
+		if(time) {
+			const date = time.format('YYYY-MM-DD');
+			// console.log(date);
+			if(date !== '1970-01-01'){
+				const deviation = time.format('X') - moment(date).format('X');
+				t = moment('1970-01-01').add(deviation, 's');
+			}
+		}
+		return t;
+	}
 
 	onAutoChange = (e) => {
 		const { form } = this.props;
@@ -434,6 +405,7 @@ class ActiveDetection extends React.Component {
 								getFieldDecorator('startTime', {
 									// initialValue: moment('1970-01-01').add(0, 's'),
 									initialValue: moment('1970-01-01').add(startTime, 's'),
+									getValueFromEvent: this.onTimeSelect,
 									rules: [
 										{
 											required: true,
@@ -456,6 +428,7 @@ class ActiveDetection extends React.Component {
 								getFieldDecorator('endTime', {
 									// initialValue: moment('1970-01-01').add(0, 's'),
 									initialValue: moment('1970-01-01').add(endTime, 's'),
+									getValueFromEvent: this.onTimeSelect,
 									rules: [
 										{
 											required: true,

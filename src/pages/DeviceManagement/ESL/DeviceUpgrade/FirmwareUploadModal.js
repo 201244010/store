@@ -175,7 +175,17 @@ class FirmwareUploadModal extends Component {
 					const fileType = type === 'ESL' ? 'bin' : 'gz';
 					if (relativePath.indexOf(fileType) > -1) {
 						const contentBlob = await zipEntry.async('blob');
-						this.uploadFile = new File([contentBlob], relativePath.split('/')[1], {type: fileType});
+						try {
+							this.uploadFile = new File([contentBlob], relativePath.split('/')[1], {type: fileType});
+						} catch (e) {
+							// this workaround edge
+							if (typeof window.navigator.msSaveBlob !== 'undefined') {
+								window.navigator.msSaveBlob(contentBlob, relativePath.split('/')[1]);
+								this.uploadFile = contentBlob;
+							}
+						}
+					} else {
+					    throw new Error('上传文件类型错误', relativePath, fileType);
 					}
 				});
 				return false;
