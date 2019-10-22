@@ -239,6 +239,7 @@ class PhotoManagement extends React.Component {
 	hideRemove = () => {
 		this.setState({
 			removeLibraryShown: false,
+			removeRadioValue: 0
 		});
 	};
 
