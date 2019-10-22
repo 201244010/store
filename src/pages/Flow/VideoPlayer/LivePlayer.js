@@ -36,15 +36,24 @@ class LivePlayer extends React.Component{
 		}
 	}
 
+	componentWillUnmount () {
+		clearTimeout(this.replayTimeout);
+	}
+
+
 	play = () => {
 		const { videoplayer } = this;
-		videoplayer.play();
+		if (videoplayer) {
+			videoplayer.play();
+		}
 	}
 
 	pause = () => {
 		const { videoplayer } = this;
 		this.toPause = true;
-		videoplayer.pause();
+		if (videoplayer) {
+			videoplayer.pause();
+		}
 	}
 
 	paused = () => {
@@ -55,7 +64,9 @@ class LivePlayer extends React.Component{
 	src = (src) => {
 		const { videoplayer } = this;
 		this.currentSrc = src;
-		videoplayer.src(src);
+		if (videoplayer) {
+			videoplayer.src(src);
+		}
 	}
 
 	playLive = async () => {
@@ -84,7 +95,9 @@ class LivePlayer extends React.Component{
 		const { pauseLive } = this.props;
 		this.pause();
 
-		await pauseLive();
+		if (pauseLive) {
+			await pauseLive();
+		}
 	}
 
 	backToLive = async () => {
@@ -117,26 +130,28 @@ class LivePlayer extends React.Component{
 					console.log('pauseHistory done.');
 				}
 
+				setTimeout(async () => {
 				// 拖动到了有值的区域，则播放回放
-				const url = await getHistoryUrl(timestamp);
-				console.log('goto playhistory url: ', url);
+					const url = await getHistoryUrl(timestamp);
+					console.log('goto playhistory url: ', url);
+					if (url) {
+						this.src(url);
+						this.timeoutReplay();
+					}else{
+						console.log('回放未获取到url，当前时间戳为：', timestamp);
+					}
 
-				if (url) {
-					this.src(url);
-					// this.timeoutReplay();
-				}else{
-					console.log('回放未获取到url，当前时间戳为：', timestamp);
-				}
+					// 光标定位到当前回放位置，将状态调整我未非直播状态；
+					this.setState({
+						isLive: false,
+						playBtnDisabled: this.getTechName() !== 'flvjs',
+						currentTimestamp: timestamp
+					});
 
-				// 光标定位到当前回放位置，将状态调整我未非直播状态；
-				this.setState({
-					isLive: false,
-					playBtnDisabled: this.getTechName() !== 'flvjs',
-					currentTimestamp: timestamp
-				});
+					this.startTimestamp = timestamp;
+					this.toPause = false;
+				}, 800);
 
-				this.startTimestamp = timestamp;
-				this.toPause = false;
 			}
 			// 下面情况均为选中有值区域
 			else if (isInside === timestamp) {
@@ -225,6 +240,19 @@ class LivePlayer extends React.Component{
 		return nextTimeStart;
 	}
 
+	onPlay = () => {
+		const { onLivePlay } = this.props;
+		const { isLive } = this.state;
+		// console.log('metadataCount reset onPlay ');
+		// this.metadataCount = 0;
+		if (isLive && onLivePlay) {
+			onLivePlay();
+		}
+
+		console.log('LivePlayer onPlay');
+		this.isPlaying = true;
+	}
+
 	onDateChange = async (timestamp) => {
 		this.pause();
 
@@ -293,9 +321,8 @@ class LivePlayer extends React.Component{
 	}
 
 	onTimeUpdate = (timestamp) => {
-		console.log('onTimeUpdate this.isPlaying=', this.isPlaying);
 		const { getCurrentTimestamp } = this.props;
-
+		// console.log('onTimeUpdate: ', this.toPause);
 		if (this.toPause) {
 			return;
 		}

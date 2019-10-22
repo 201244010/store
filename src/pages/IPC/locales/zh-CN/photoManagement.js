@@ -24,7 +24,7 @@ export default {
 	'photoManagement.alreadyChoose': '已选',
 	'photoManagement.type': '项',
 	'photoManagement.clear': '清空',
-	'photoManagement.unKnown': '未知',
+	'photoManagement.unKnown': '--',
 	'photoManagement.buttonSearch': '查询',
 	'photoManagement.buttonReset': '重置',
 	'photoManagement.mention1': '点击或将文件拖拽到这里上传',

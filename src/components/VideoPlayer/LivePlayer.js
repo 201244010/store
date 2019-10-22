@@ -32,6 +32,10 @@ class LivePlayer extends React.Component{
 		}
 	}
 
+	componentWillUnmount () {
+		clearTimeout(this.replayTimeout);
+	}
+
 	play = () => {
 		const { videoplayer } = this;
 		videoplayer.play();
@@ -40,7 +44,9 @@ class LivePlayer extends React.Component{
 	pause = () => {
 		const { videoplayer } = this;
 		this.toPause = true;
-		videoplayer.pause();
+		if (videoplayer) {
+			videoplayer.pause();
+		}
 	}
 
 	paused = () => {
@@ -51,7 +57,9 @@ class LivePlayer extends React.Component{
 	src = (src) => {
 		const { videoplayer } = this;
 		this.currentSrc = src;
-		videoplayer.src(src);
+		if (videoplayer) {
+			videoplayer.src(src);
+		}
 	}
 
 	playLive = async () => {
@@ -80,7 +88,9 @@ class LivePlayer extends React.Component{
 		const { pauseLive } = this.props;
 		this.pause();
 
-		await pauseLive();
+		if (pauseLive) {
+			await pauseLive();
+		}
 	}
 
 	backToLive = async () => {
@@ -113,21 +123,28 @@ class LivePlayer extends React.Component{
 					console.log('pauseHistory done.');
 				}
 
-				// 拖动到了有值的区域，则播放回放
-				const url = await getHistoryUrl(timestamp);
-				console.log('goto playhistory url: ', url);
+				setTimeout(async () => {
+					// 拖动到了有值的区域，则播放回放
+					const url = await getHistoryUrl(timestamp);
+					console.log('goto playhistory url: ', url);
+					if (url) {
+						this.src(url);
+						this.timeoutReplay();
+					}else{
+						console.log('回放未获取到url，当前时间戳为：', timestamp);
+					}
 
-				this.src(url);
+					// 光标定位到当前回放位置，将状态调整我未非直播状态；
+					this.setState({
+						isLive: false,
+						playBtnDisabled: this.getTechName() !== 'flvjs',
+						currentTimestamp: timestamp
+					});
 
-				// 光标定位到当前回放位置，将状态调整我未非直播状态；
-				this.setState({
-					isLive: false,
-					playBtnDisabled: this.getTechName() !== 'flvjs',
-					currentTimestamp: timestamp
-				});
+					this.startTimestamp = timestamp;
+					this.toPause = false;
+				}, 800);
 
-				this.startTimestamp = timestamp;
-				this.toPause = false;
 			}
 			// 下面情况均为选中有值区域
 			else if (isInside === timestamp) {
@@ -175,7 +192,9 @@ class LivePlayer extends React.Component{
 
 	showLoadingSpinner = () => {
 		const { videoplayer } = this;
-		videoplayer.showLoadingSpinner();
+		if (videoplayer) {
+			videoplayer.showLoadingSpinner();
+		}
 
 		this.setState({
 			playBtnDisabled: true
@@ -216,6 +235,19 @@ class LivePlayer extends React.Component{
 		return nextTimeStart;
 	}
 
+	onPlay = () => {
+		const { onLivePlay } = this.props;
+		const { isLive } = this.state;
+		// console.log('metadataCount reset onPlay ');
+		// this.metadataCount = 0;
+		if (isLive && onLivePlay) {
+			onLivePlay();
+		}
+
+		console.log('LivePlayer onPlay');
+		this.isPlaying = true;
+	}
+
 	onDateChange = async (timestamp) => {
 		this.pause();
 
@@ -237,11 +269,11 @@ class LivePlayer extends React.Component{
 	onTimebarStopDrag = (timestamp) => {
 		this.toPause = true;
 
-		this.pause();
-
 		this.setState({
 			currentTimestamp: timestamp
 		});
+
+		this.pause();
 
 		const { getTimeStart, getTimeEnd } = this.timebar;
 		const timeStart = getTimeStart();
@@ -285,7 +317,7 @@ class LivePlayer extends React.Component{
 
 	onTimeUpdate = (timestamp) => {
 		const { getCurrentTimestamp } = this.props;
-
+		// console.log('onTimeUpdate: ', this.toPause);
 		if (this.toPause) {
 			return;
 		}
@@ -305,12 +337,46 @@ class LivePlayer extends React.Component{
 
 	onMetadataArrived = (metadata) => {
 		const { onMetadataArrived } = this.props;
-
 		const { isLive } = this.state;
+		const { videoplayer: { player } } = this;
+
+		this.metadataCount++;
+		console.log('this.metadataCount++', this.metadataCount);
 
 		if (isLive) {
+
 			if (this.relativeTimestamp === 0) {
 				this.relativeTimestamp = metadata.relativeTime;
+			}
+
+			if (metadata.baseTime !== undefined && metadata.relativeTime !== undefined) {
+				const baseTime = metadata.baseTime * 1000;
+				const { relativeTime } = metadata;
+				const videoTime = moment(baseTime + relativeTime).format('YYYY-MM-DD HH:mm:ss');
+				const now = moment();
+
+				console.log('系统时间=', now.format('YYYY-MM-DD HH:mm:ss'));
+				console.log('视频帧时间=', videoTime);
+				console.log('time gap=', now.valueOf() - (baseTime + relativeTime));
+			}
+
+			// const { player } = this.videoplayer;
+
+			// 仅flvjs播放器能使用此方式矫正播放进度
+			if (player.techName_ === 'Flvjs' && player.buffered &&  player.buffered().length > 0) {
+				const index = player.buffered().length -1;
+				const curTime = player.currentTime();
+				const endTime = player.buffered().end(index);
+
+				console.log('before curTime=', curTime);
+				console.log('endTime=', endTime);
+
+				// 离缓存间隔太小，会导致loading
+				if (endTime - 2 > curTime) {
+					console.log('endTime-curTime=', endTime - curTime);
+					player.currentTime(endTime - 2);
+					console.log('after player.currentTime()=', player.currentTime());
+				}
 			}
 
 			onMetadataArrived(metadata.relativeTime);
@@ -331,11 +397,46 @@ class LivePlayer extends React.Component{
 			console.log('非人为暂停!');
 			this.play();
 		}
+		this.isPlaying = false;
 	}
 
 	onError = () => {
 		console.log('liveplayer error handler');
-		this.src(this.currentSrc);
+		this.isPlaying = false;
+
+		// 当前为直播
+		const { isLive } = this.state;
+		if (isLive) {
+			this.timeoutReplay();
+		}
+	}
+
+	onEnd = () => {
+		this.isPlaying = false;
+	}
+
+	// 超时重新播放
+	timeoutReplay = () => {
+		console.log('timeoutReplay');
+		const replay = (time) => {
+			clearTimeout(this.replayTimeout);
+			this.replayTimeout = setTimeout(async() => {
+				const { isLive } = this.state;
+
+				console.log('isLive=', isLive);
+				console.log('this.isPlaying=', this.isPlaying);
+				if (!this.isPlaying && isLive) {
+					await this.pauseLive(); // 新方案不必stoplive
+					await this.playLive();
+					replay(5);
+				} else if (this.isPlaying) {
+					clearTimeout(this.replayTimeout);
+				}
+
+			}, time * 1000);
+		};
+
+		replay(2);
 	}
 
 	render () {
@@ -364,8 +465,11 @@ class LivePlayer extends React.Component{
 
 				onDateChange={this.onDateChange}
 				onTimeUpdate={this.onTimeUpdate}
+
+				onPlay={this.onPlay}
 				onPause={this.onPause}
 				onError={this.onError}
+				onEnd={this.onEnd}
 				onMetadataArrived={this.onMetadataArrived}
 
 				progressbar={

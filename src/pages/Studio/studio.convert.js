@@ -14,7 +14,7 @@ function convert(fileName) {
 		return;
 	}
 
-	if (jsonObject.layers[0].hasConverted || jsonObject.layers[0].startX !== undefined) {
+	if (jsonObject.layers[0].hasConverted || 'startX' in jsonObject.layers[0]) {
 		return;
 	}
 
@@ -42,6 +42,13 @@ function convert(fileName) {
 			layer.type = (types[0] || '').toLowerCase();
 			if (layer.type.indexOf('price') > -1) {
 				layer.subType = types[1];
+				if (!['super', 'sub', 'sup'].includes(layer.subType)) {
+					layer.subType = 'normal';
+					layer.smallFontSize = layer.fontSize;
+				}
+				if (layer.precision === undefined || layer.precision === '') {
+					layer.precision = 2;
+				}
 			}
 			if (layer.type.indexOf('line') > -1) {
 				layer.type = 'line';

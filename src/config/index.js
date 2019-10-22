@@ -14,7 +14,7 @@ export const FIRST_MENU_ORDER = [
 
 const WEB_SOCKET_PREFIX = {
 	dev: 'ws',
-	test: 'ws',
+	test: 'wss',
 	uat: 'wss',
 	onl: 'wss',
 	local: 'ws',
@@ -32,7 +32,7 @@ const SSO_ADDRESS = {
 const API_ADDRESS = {
 	dev: 'store.dev.sunmi.com',
 	test: 'store.test.sunmi.com',
-	uat: 'uat-store.sunmi.com:443',
+	uat: 'store.uat.sunmi.com:443',
 	onl: 'store.sunmi.com:443',
 	local: '127.0.0.1:30001',
 	// local: '10.10.168.228:30001',

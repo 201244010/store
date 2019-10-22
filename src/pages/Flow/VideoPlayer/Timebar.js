@@ -36,13 +36,6 @@ class VideoPlayerProgressBar extends React.Component{
 		// this.firstTime = true;
 	}
 
-	componentWillMount() {
-		const { current } = this.props;
-
-		this.getDuration(current);
-		this.generateTime();
-	}
-
 	componentDidMount() {
 		this.setPosition();
 
@@ -51,22 +44,7 @@ class VideoPlayerProgressBar extends React.Component{
 		});
 	}
 
-	async componentWillReceiveProps(props) {
-		const { current } = props;
-		const { timeStart, dragging, /* timestamp */ } = this.state;
-		const { offsetWidth } = this.wrapper;
-		const gap = offsetWidth/this.oneHourWidth/2*60*60;
 
-		if (current < timeStart + gap){
-			this.getDuration(current);
-			await this.generateTime();
-		}
-
-		// console.log('Timerbar componentWillReceiveProps: ', current);
-		if (!dragging) {
-			this.setPosition(current);
-		}
-	}
 
 	// shouldComponentUpdate(nextProps, nextState) {
 	// 	// console.log(nextProps);
@@ -254,6 +232,32 @@ class VideoPlayerProgressBar extends React.Component{
 		// 	clearTimeout(this.onDragChangeTimeout);
 		// 	onStopDrag(time);
 		// }, 1000);
+	}
+
+	async UNSAFE_componentWillReceiveProps(props) {
+		const { current } = props;
+		const { timeStart, dragging, /* timestamp */ } = this.state;
+		const { offsetWidth } = this.wrapper;
+		const gap = offsetWidth/this.oneHourWidth/2*60*60;
+
+		if (current < timeStart + gap){
+			this.getDuration(current);
+			await this.generateTime();
+		}
+
+		// console.log('Timerbar componentWillReceiveProps: ', current);
+		if (!dragging) {
+			this.setPosition(current);
+		}
+	}
+
+	UNSAFE_componentWillMount() {
+		console.log('UNSAFE_componentWillMount');
+
+		const { current } = this.props;
+
+		this.getDuration(current);
+		this.generateTime();
 	}
 
 

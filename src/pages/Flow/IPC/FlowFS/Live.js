@@ -208,6 +208,7 @@ class Live extends React.Component{
 	componentWillUnmount () {
 		const { stopLive, streamId, location: { query }, stopHistoryPlay } = this.props;
 		const { sn } = query;
+		clearTimeout(this.refreshTimer);
 
 		if (sn) {
 			stopHistoryPlay({

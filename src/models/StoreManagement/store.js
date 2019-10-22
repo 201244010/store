@@ -1,9 +1,9 @@
-import * as Action from '@/services/storeManagement/storeList';
-import { ERROR_OK } from '@/constants/errorCode';
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
 import typecheck from '@konata9/typecheck.js';
 import Storage from '@konata9/storage.js';
+import * as Action from '@/services/storeManagement/storeList';
+import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
 
 const cascaderDataWash = (data, mapping) => {
