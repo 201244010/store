@@ -67,7 +67,7 @@ class PassengerChart extends PureComponent {
 							tooltip: { itemTpl, useHtml: true },
 							height: 300,
 							padding: ['10%', '5%'],
-							legend: { position: 'top-right', offsetY: 25 },
+							legend: { position: 'top-right' },
 							line: {
 								position: 'time*count',
 								color: ['passengerTypeDisplay', ['#25B347', '#FEDA75', '#01CC99']],
