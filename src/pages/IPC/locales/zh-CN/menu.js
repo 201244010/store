@@ -9,6 +9,10 @@ export default {
 
 	'menu.devices': '智能摄像机',
 	'menu.devices.ipcList': '摄像机管理',
+	'menu.devices.cloudStorage':'云存储',
+	'menu.devices.cloudStorageService':'云存储',
+	'menu.devices.cloudStorage.subscriptionSuccess':'开通成功',
+	'menu.devices.cloudStorageService.subscriptionSuccess':'开通成功',
 	'menu.devices.motionMessage': '活动侦测',
 	'menu.devices.ipcList.live': '直播',
 	'menu.devices.ipcList.ipcManagement': '摄像机设置',

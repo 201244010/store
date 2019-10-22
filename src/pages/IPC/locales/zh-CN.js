@@ -22,6 +22,8 @@ import entryDetail from './zh-CN/entryDetail';
 import initialSetting from './zh-CN/initialSetting';
 import agreementModal from './zh-CN/agreementModal';
 import avrManagement from './zh-CN/avrManagement';
+import cloudStorage from './zh-CN/cloudStorage';
+import protocol from './zh-CN/protocol';
 
 export default {
 
@@ -48,5 +50,7 @@ export default {
 	...entryDetail,
 	...initialSetting,
 	...agreementModal,
-	...avrManagement
+	...avrManagement,
+	...cloudStorage,
+	...protocol
 };
