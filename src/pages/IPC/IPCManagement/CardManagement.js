@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { Card, Form, Button, Modal, Progress } from 'antd';
+import { Card, Form, Button, Modal, Progress, message, Divider } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import styles from './CardManagement.less';
 import { FORM_ITEM_LAYOUT_MANAGEMENT } from '@/constants/form';
 import AnchorWrapper from '@/components/Anchor';
+import { ERROR_OK } from '@/constants/errorCode';
 
+const statusCode = {
+	opened: 1,
+	nonactivated: 2,
+	expired: 3
+};
 
 const mapStateToProps = (state) => {
 	const { cardManagement } = state;
@@ -52,6 +58,39 @@ const mapDispatchToProps = (dispatch) => ({
 				sn
 			}
 		}).then(info => info);
+	},
+	checkBind: async (sn) => {
+		const result = await dispatch({
+			type: 'ipcList/checkBind',
+			payload: {
+				sn
+			}
+		});
+		return result;
+	},
+	navigateTo: (pathId, urlParams) => dispatch({
+		type: 'menu/goToPath',
+		payload: {
+			pathId,
+			urlParams
+		}
+	}),
+	readCloudInfo: async (sn) => {
+		const result = await dispatch({
+			type: 'ipcList/readCloudInfo',
+			payload: {
+				sn
+			}
+		});
+		const { code, data } = result;
+		if(code === ERROR_OK) {
+			return data;
+		}
+		message.error(formatMessage({ id: 'cardManagement.readCloudFaild'}));
+		return {
+			status: 0,
+			validTime: ''
+		};
 	}
 });
 
@@ -68,18 +107,41 @@ class CardManagement extends Component {
 			formatTimeout: null, // 格式化超时
 			removeTimeout: null, // 移除超时
 			deviceInfo: {
-				hasTFCard: true
-			}
+				hasTFCard: true,
+				hasCloud: false
+			},
+			cloudService: {
+				status: 0,
+				validTime: '',
+			},
+			isPay: false
 		};
 	}
 
 	componentDidMount = async () => {
-		const { sn, readCardInfo, getDeviceInfo } = this.props;
+		const { sn, readCardInfo, getDeviceInfo, readCloudInfo } = this.props;
 		if(sn){
+			let cloudService = {
+				status: 0,
+				validTime: ''
+			};
+			let isPay = false;
 			readCardInfo(sn);
 			const deviceInfo = await getDeviceInfo({ sn });
+			const { hasCloud } = deviceInfo;
+			if(hasCloud) {
+				cloudService = await readCloudInfo(sn);
+				const { validTime } = cloudService;
+				if(validTime) {
+					isPay = validTime/3600/24 < 3;
+				} else {
+					isPay = true;
+				}
+			}
 			this.setState({
-				deviceInfo
+				deviceInfo,
+				cloudService,
+				isPay,
 			});
 		}
 
@@ -256,51 +318,64 @@ class CardManagement extends Component {
 	/**
 	 * 格式化确认弹框
 	 * */
-	formatConfirm = () => {
-		const that = this;
-		this.formatConfirmInstance = Modal.confirm({
-			icon: 'info-circle',
-			title: formatMessage({ id: 'cardManagement.formatTipTitle' }),
-			content: formatMessage({ id: 'cardManagement.formatTipContent' }),
-			okText: formatMessage({ id: 'cardManagement.modalOk' }),
-			cancelText: formatMessage({ id: 'cardManagement.modalCancel' }),
-			// centered: true,
-			onOk() {
-				console.log('formatConfirm ok');
-				that.formatting();
-			},
-			onCancel() {
-				console.log('formatConfirm cancel');
-			},
-		});
+	formatConfirm = async () => {
+		const { checkBind, sn } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			const that = this;
+			this.formatConfirmInstance = Modal.confirm({
+				icon: 'info-circle',
+				title: formatMessage({ id: 'cardManagement.formatTipTitle' }),
+				content: formatMessage({ id: 'cardManagement.formatTipContent' }),
+				okText: formatMessage({ id: 'cardManagement.modalOk' }),
+				cancelText: formatMessage({ id: 'cardManagement.modalCancel' }),
+				// centered: true,
+				onOk() {
+					console.log('formatConfirm ok');
+					that.formatting();
+				},
+				onCancel() {
+					console.log('formatConfirm cancel');
+				},
+			});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
+
 	}
 
 	/**
 	 * 移除确认弹框
 	 * */
-	removeConfirm = () => {
-		const that = this;
-		this.removeConfirmInstance = Modal.confirm({
-			icon: 'info-circle',
-			title: formatMessage({ id: 'cardManagement.removeTipTitle' }),
-			content: formatMessage({ id: 'cardManagement.removeTipContent' }),
-			okText: formatMessage({ id: 'cardManagement.modalOk' }),
-			cancelText: formatMessage({ id: 'cardManagement.modalCancel' }),
-			// centered: true,
-			onOk() {
-				console.log('removeConfirm ok');
-				that.removeConfirmInstance.update({
-					cancelButtonProps: { disabled: true } // 点击确定后，禁止点取消
-				});
+	removeConfirm = async () => {
+		const { checkBind, sn } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind){
+			const that = this;
+			this.removeConfirmInstance = Modal.confirm({
+				icon: 'info-circle',
+				title: formatMessage({ id: 'cardManagement.removeTipTitle' }),
+				content: formatMessage({ id: 'cardManagement.removeTipContent' }),
+				okText: formatMessage({ id: 'cardManagement.modalOk' }),
+				cancelText: formatMessage({ id: 'cardManagement.modalCancel' }),
+				// centered: true,
+				onOk() {
+					console.log('removeConfirm ok');
+					that.removeConfirmInstance.update({
+						cancelButtonProps: { disabled: true } // 点击确定后，禁止点取消
+					});
 
-				return new Promise(() => {
-					that.Removing();
-				}).catch((err) => console.log(err));
-			},
-			onCancel() {
-				console.log('confirm cancel');
-			},
-		});
+					return new Promise(() => {
+						that.Removing();
+					}).catch((err) => console.log(err));
+				},
+				onCancel() {
+					console.log('confirm cancel');
+				},
+			});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
 	}
 
 	/**
@@ -374,6 +449,20 @@ class CardManagement extends Component {
 
 	}
 
+
+	dateToDuration = (time) => {
+		if(!time) return `${formatMessage({ id: 'cardManagement.unknown'})}`;
+		const duration = Math.floor(time/3600);
+		const days = Math.floor(duration/24);
+		const hours = duration%24;
+		// if(hours === 0) {
+		// 	return `${days} ${formatMessage({ id : 'cardManagement.day'})}`;
+		// } if (days === 0) {
+		// 	return `${hours} ${formatMessage({ id: 'cardManagement.hour'})}`;
+		// }
+		return `${days} ${formatMessage({ id : 'cardManagement.day'})} ${hours} ${formatMessage({ id: 'cardManagement.hour'})}`;
+	}
+
 	render() {
 		const {
 			cardManagement: {
@@ -384,16 +473,49 @@ class CardManagement extends Component {
 				available_time, // 可用时长h
 				sd_status_code, // sd卡状态码
 				// isOldDevice // 老款设备
-			}
+				// cloudStatus,
+				// expireTime,
+			},
+			navigateTo,
+			sn
 		} = this.props;
 
-		const { formattingModalVisible, formatProgress, deviceInfo: { hasTFCard } } = this.state;
+		const { formattingModalVisible, formatProgress, deviceInfo: { hasTFCard, hasCloud }, cloudService: { status: cloudStatus, validTime }, isPay } = this.state;
 
 		return (
-			<>
+
+			<Card title={formatMessage({ id: 'cardManagement.title' })} id='tfCard'>
+				{
+					hasCloud ?
+						<div>
+							<div className={styles['storage-title']}>{formatMessage({ id: 'cardManagement.cloudStorage'})}</div>
+							{
+								cloudStatus !==statusCode.nonactivated ?
+									<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
+										<Form.Item label={formatMessage({id: 'cardManagement.status'})}>
+											<span>{cloudStatus === statusCode.expired ? formatMessage({ id: 'cardManagement.expired'}) :formatMessage({ id: 'cardManagement.activated'})}</span>
+											<Button onClick={() => navigateTo('cloudStorage',{ sn, type: 'repay' })} className={styles['subscribe-button']} disabled={!isPay}>{formatMessage({ id: 'cardManagement.repay'})}</Button>
+										</Form.Item>
+										<Form.Item label={formatMessage({ id: 'cardManagement.validityPeriod'})}>
+											<span>{this.dateToDuration(validTime)}</span>
+										</Form.Item>
+									</Form>
+									:
+									<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
+										<Form.Item label={formatMessage({id: 'cardManagement.status'})}>
+											<span>{formatMessage({ id: 'cardManagement.nonactivated'})}</span>
+											<Button onClick={() => navigateTo('cloudStorage',{ sn, type: 'subscribe' })} className={styles['subscribe-button']}>{formatMessage({id: 'cardManagement.subscribeCloudService'})}</Button>
+										</Form.Item>
+									</Form>
+							}
+							<Divider />
+						</div>
+						: ''
+				}
 				{
 					hasTFCard ?
-						<Card title={formatMessage({ id: 'cardManagement.title' })} className={(!hasCard) && styles['transparnt-05']} id='tfCard'>
+						<div>
+							<div className={styles['storage-title']}>{formatMessage({ id: 'cardManagement.localStorage'})}</div>
 							<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
 								<Form.Item label={formatMessage({ id: 'cardManagement.sizeLeft' })}>
 									{
@@ -461,10 +583,10 @@ class CardManagement extends Component {
 									<p>{formatMessage({ id: 'cardManagement.formattingContent' })}</p>
 								</Modal>
 							</Form>
-						</Card>
-						: null
+						</div>
+						:''
 				}
-			</>
+			</Card>
 		);
 	}
 }
