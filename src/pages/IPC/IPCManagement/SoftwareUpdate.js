@@ -81,6 +81,15 @@ const mapDispatchToProps = (dispatch) => ({
 		dispatch({
 			type: 'ipcList/read'
 		});
+	},
+	checkBind: async (sn) => {
+		const result = await dispatch({
+			type: 'ipcList/checkBind',
+			payload: {
+				sn
+			}
+		});
+		return result;
 	}
 });
 
@@ -121,31 +130,37 @@ class SoftwareUpdate extends Component {
 	}
 
 
-	showModal = () => {
-		const { detect, sn, load } = this.props;
-		detect(sn);
+	showModal = async () => {
+		const { detect, sn, load, checkBind } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			detect(sn);
 
-		this.setState({
-			visible: true
-		});
-
-		setTimeout(async () => {
-			await load(sn);
 			this.setState({
-				showLoadingFlag:false
+				visible: true
 			});
-		}, 2000);
+
+			setTimeout(async () => {
+				await load(sn);
+				this.setState({
+					showLoadingFlag:false
+				});
+			}, 2000);
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
+
 	}
 
 	updateSoftware = async () => {
-		
+
 		const { update,  sn } = this.props;
-		const { deviceInfo: { OTATime: { 
+		const { deviceInfo: { OTATime: {
 			totalTime,
-			defaultDownloadTime, 
-			defaultFirmwareTime, 
-			defaultAIUpgradeTime, 
-			defaultRestartTime 
+			defaultDownloadTime,
+			defaultFirmwareTime,
+			defaultAIUpgradeTime,
+			defaultRestartTime
 		 },STATUS_PERCENT } } = this.state;
 		let visible = true;
 
@@ -155,10 +170,10 @@ class SoftwareUpdate extends Component {
 		this.interval = setInterval(() => {
 			let { percent } = this.state;
 			const { info: { updating, OTATime:{
-				downloadTime = defaultDownloadTime, 
-				firmwareTime = defaultFirmwareTime, 
-				aiUpgradeTime = defaultAIUpgradeTime, 
-				restartTime = defaultRestartTime 
+				downloadTime = defaultDownloadTime,
+				firmwareTime = defaultFirmwareTime,
+				aiUpgradeTime = defaultAIUpgradeTime,
+				restartTime = defaultRestartTime
 			} } } = this.props;
 
 			switch(updating){
@@ -235,7 +250,7 @@ class SoftwareUpdate extends Component {
 
 	hideModal = async() => {
 		this.setState({
-			confirmBtnShowLoadingFlag: true	
+			confirmBtnShowLoadingFlag: true
 		});
 		const { readIpcList, getDeviceInfo, sn } = this.props;
 		await readIpcList();
@@ -263,19 +278,19 @@ class SoftwareUpdate extends Component {
 
 	addTimeoutHandler(info, lastInfo){
 		const { updating, OTATime } = info;
-		const { updating: lastUpdating } = lastInfo; 
-		const { deviceInfo: { OTATime: { 
-			defaultDownloadTime, 
-			defaultFirmwareTime, 
-			defaultAIUpgradeTime, 
-			defaultRestartTime 
+		const { updating: lastUpdating } = lastInfo;
+		const { deviceInfo: { OTATime: {
+			defaultDownloadTime,
+			defaultFirmwareTime,
+			defaultAIUpgradeTime,
+			defaultRestartTime
 		}}} = this.state;
 
-		const { 
-			downloadTime = defaultDownloadTime, 
-			firmwareTime = defaultFirmwareTime, 
-			aiUpgradeTime = defaultAIUpgradeTime, 
-			restartTime = defaultRestartTime 
+		const {
+			downloadTime = defaultDownloadTime,
+			firmwareTime = defaultFirmwareTime,
+			aiUpgradeTime = defaultAIUpgradeTime,
+			restartTime = defaultRestartTime
 		} = OTATime;
 
 		if(lastUpdating === STATUS.NORMAL && updating === STATUS.BTNLOAD){
@@ -288,7 +303,7 @@ class SoftwareUpdate extends Component {
 						visible: false
 					});
 					message.error(formatMessage({ id: 'softwareUpdate.receive.fail' }));
-					this.setUpdatingStatus(STATUS.NORMAL);	
+					this.setUpdatingStatus(STATUS.NORMAL);
 				}
 			}, 10*1000);
 		}
@@ -337,7 +352,7 @@ class SoftwareUpdate extends Component {
 				const { info: { updating: newUpdating } } = this.props;
 				if (newUpdating === STATUS.RESTART) {
 					this.setUpdatingStatus(STATUS.FAIL);
-	
+
 				}
 			}, restartTime+15*1000);
 		}
@@ -346,11 +361,11 @@ class SoftwareUpdate extends Component {
 				const { info: { updating: newUpdating } } = this.props;
 				if (newUpdating === STATUS.RESTART) {
 					this.setUpdatingStatus(STATUS.FAIL);
-	
+
 				}
 			}, restartTime+15*1000);
 		}
-		
+
 	}
 
 	render() {
@@ -460,7 +475,7 @@ class SoftwareUpdate extends Component {
 															<p>{ formatMessage({ id: 'softwareUpdate.restartTips' }) }</p>
 														);
 													}
-													
+
 												}
 												if(percent > STATUS_PERCENT.FIRMWARE && percent < 100){
 													text = (

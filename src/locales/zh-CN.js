@@ -30,7 +30,7 @@ import employee from './zh-CN/employee';
 import trade from './zh-CN/trade';
 import flow from './zh-CN/flow';
 import tradeShow from './zh-CN/tradeShow';
-
+import serviceManagement from './zh-CN/serviceManagement';
 import passengerAnalyze from './zh-CN/passengerAnalyze';
 
 export default {
@@ -71,4 +71,5 @@ export default {
 	...flow,
 	...tradeShow,
 	...passengerAnalyze,
+	...serviceManagement,
 };

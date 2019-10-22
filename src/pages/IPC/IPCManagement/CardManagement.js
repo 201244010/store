@@ -16,47 +16,47 @@ const statusCode = {
 const mapStateToProps = (state) => {
 	const { cardManagement } = state;
 	return {
-		cardManagement
+		cardManagement,
 	};
 };
-const mapDispatchToProps = (dispatch) => ({
-	readCardInfo: (sn) => {
+const mapDispatchToProps = dispatch => ({
+	readCardInfo: sn => {
 		dispatch({
 			type: 'cardManagement/readCardInfo',
 			payload: {
-				sn
-			}
+				sn,
+			},
 		});
 	},
-	async removeCard (sn) {
+	async removeCard(sn) {
 		const result = await dispatch({
 			type: 'cardManagement/requestRemoveCard',
 			payload: {
-				sn
-			}
+				sn,
+			},
 		});
 		return result;
 	},
-	async formatCard (sn) {
+	async formatCard(sn) {
 		const result = await dispatch({
 			type: 'cardManagement/requestFormatCard',
 			payload: {
-				sn
-			}
+				sn,
+			},
 		});
 		return result;
 	},
 	resetState: () => {
 		dispatch({
-			type: 'cardManagement/resetState'
+			type: 'cardManagement/resetState',
 		});
 	},
 	getDeviceInfo({ sn }) {
 		return dispatch({
 			type: 'ipcList/getDeviceInfo',
 			payload: {
-				sn
-			}
+				sn,
+			},
 		}).then(info => info);
 	},
 	checkBind: async (sn) => {
@@ -95,8 +95,10 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 @AnchorWrapper
-@connect(mapStateToProps, mapDispatchToProps)
-
+@connect(
+	mapStateToProps,
+	mapDispatchToProps
+)
 class CardManagement extends Component {
 	constructor(props) {
 		super(props);
@@ -144,21 +146,14 @@ class CardManagement extends Component {
 				isPay,
 			});
 		}
-
-	}
+	};
 
 	componentWillReceiveProps(nextProps) {
-		const {cardManagement:{
-			removeStatus,
-			formatStatus
-		}} = nextProps;
-
 		const {
-			formattingModalVisible,
-			removeTimeout,
-			formatTimeout,
-			timer
-		} = this.state;
+			cardManagement: { removeStatus, formatStatus },
+		} = nextProps;
+
+		const { formattingModalVisible, removeTimeout, formatTimeout, timer } = this.state;
 
 		if (removeStatus === 'success' && this.removeConfirmInstance) {
 			clearTimeout(removeTimeout);
@@ -177,10 +172,10 @@ class CardManagement extends Component {
 
 			clearInterval(timer);
 			this.setState({
-				formatProgress: 100
+				formatProgress: 100,
 			});
 			this.setState({
-				formattingModalVisible: false
+				formattingModalVisible: false,
 			});
 			this.operateSuccess(formatMessage({ id: 'cardManagement.formatSuccess' }));
 		} else if (formatStatus === 'fail' && formattingModalVisible === true) {
@@ -188,7 +183,7 @@ class CardManagement extends Component {
 
 			clearInterval(timer);
 			this.setState({
-				formattingModalVisible: false
+				formattingModalVisible: false,
 			});
 			this.operateFail(formatMessage({ id: 'cardManagement.formatFail' }));
 		}
@@ -215,12 +210,12 @@ class CardManagement extends Component {
 			if (!num || !sum) {
 				return 0;
 			}
-			return 100 * num / sum;
-		} catch(err) {
+			return (100 * num) / sum;
+		} catch (err) {
 			console.error(err);
 			return 0;
 		}
-	}
+	};
 
 	/**
 	 * 移除卡
@@ -240,13 +235,13 @@ class CardManagement extends Component {
 			}, 15000);
 
 			this.setState({
-				removeTimeout: timer
+				removeTimeout: timer,
 			});
 		} catch (err) {
 			// 移除失败
 			that.operateFail(formatMessage({ id: 'cardManagement.removeFail' }));
 		}
-	}
+	};
 
 	/**
 	 * 格式化中
@@ -256,11 +251,11 @@ class CardManagement extends Component {
 			const { sn, formatCard } = this.props;
 
 			this.setState({
-				formatProgress: 0 // 格式化之前先置空进度条
+				formatProgress: 0, // 格式化之前先置空进度条
 			});
 
 			this.setState({
-				formattingModalVisible: true
+				formattingModalVisible: true,
 			});
 			this.runProgressBar();
 			await formatCard(sn);
@@ -271,26 +266,25 @@ class CardManagement extends Component {
 				if (formattingModalVisible === true) {
 					clearInterval(thisTimer);
 					this.setState({
-						formattingModalVisible: false
+						formattingModalVisible: false,
 					});
 					this.operateFail(formatMessage({ id: 'cardManagement.formatFail' }));
 				}
 			}, 15000);
 
 			this.setState({
-				formatTimeout: timer
+				formatTimeout: timer,
 			});
 		} catch (err) {
 			console.log(err);
 
 			// 弹窗格式化失败
 			this.setState({
-				formattingModalVisible: false
+				formattingModalVisible: false,
 			});
 			this.operateFail(formatMessage({ id: 'cardManagement.formatFail' }));
 		}
-
-	}
+	};
 
 	/**
 	 * 跑格式化进度条
@@ -305,15 +299,15 @@ class CardManagement extends Component {
 			} else {
 				const percent = formatProgress + 1;
 				this.setState({
-					formatProgress: percent
+					formatProgress: percent,
 				});
 			}
 		}, 150);
 
 		this.setState({
-			timer
+			timer,
 		});
-	}
+	};
 
 	/**
 	 * 格式化确认弹框
@@ -381,7 +375,7 @@ class CardManagement extends Component {
 	/**
 	 * 操作成功弹框
 	 * */
-	operateSuccess = (content) => {
+	operateSuccess = content => {
 		const modal = Modal.success({
 			content,
 			// centered: true,
@@ -389,12 +383,12 @@ class CardManagement extends Component {
 		setTimeout(() => {
 			modal.destroy();
 		}, 1000);
-	}
+	};
 
 	/**
 	 * 操作失败弹框
 	 * */
-	operateFail = (content) => {
+	operateFail = content => {
 		Modal.error({
 			content,
 			// centered: true,
@@ -402,13 +396,13 @@ class CardManagement extends Component {
 		// setTimeout(() => {
 		// 	modal.destroy();
 		// }, 1000);
-	}
+	};
 
 	/**
 	 * sd状态码转文字信息
 	 * */
-	sdStatus2text = (code) => {
-		switch(code) {
+	sdStatus2text = code => {
+		switch (code) {
 			case 0:
 				return formatMessage({ id: 'cardManagement.sdStatus0' });
 			case 1:
@@ -422,32 +416,31 @@ class CardManagement extends Component {
 			default:
 				return '';
 		}
-	}
+	};
 
 	/**
 	 * sd存储信息
 	 * */
-	cardSizeInfo = (num) => {
+	cardSizeInfo = num => {
 		if (num >= 1024) {
 			const size = Math.floor(num / 1024);
 			return `${size}GB`;
 		}
 		return `${num}MB`;
-
-	}
+	};
 
 	/**
 	 * 小时转天
 	 * */
-	hour2day = (h) => {
+	hour2day = h => {
 		if (h >= 24) {
 			return `${Math.floor(h / 24)} ${formatMessage({ id: 'cardManagement.day' })}`;
-		} if (h > 0) {
+		}
+		if (h > 0) {
 			return `0.5 ${formatMessage({ id: 'cardManagement.day' })}`;
 		}
 		return `0 ${formatMessage({ id: 'cardManagement.day' })}`;
-
-	}
+	};
 
 
 	dateToDuration = (time) => {

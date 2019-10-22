@@ -87,7 +87,8 @@ export default {
 	DES_KEY: DES_KEY[env],
 	DES_IV: DES_IV[env],
 	MD5_TOKEN: MD5_TOKEN[env],
+
 	IPC_SERVER: `${HTTP_PREFIX[protocol]}//${IPC_ADDRESS[env]}`,
-	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[protocol] || 'ws:',
+	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[protocol] || 'wss:',
 	COUNTRY_ADDRESS: COUNTRY_ADDRESS[country],
 };

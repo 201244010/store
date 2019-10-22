@@ -3,6 +3,7 @@ export  default {
 		hasFaceid: true,
 		hasTFCard: true,
 		hasCloud: false,
+		hasNVR: false,
 		pixelRatio: '16:9',
 		rotate: [{
 			key: 0,
@@ -36,6 +37,7 @@ export  default {
 		hasFaceid: true,
 		hasTFCard: true,
 		hasCloud: false,
+		hasNVR: false,
 		pixelRatio: '16:9',
 		rotate: [{
 			key: 0,
@@ -68,6 +70,7 @@ export  default {
 		hasFaceid: false,
 		hasTFCard: true,
 		hasCloud: true,
+		hasNVR: true,
 		pixelRatio: '1:1',
 		rotate: [{
 			key: 0,
@@ -106,6 +109,7 @@ export  default {
 		hasFaceid: false,
 		hasTFCard: true,
 		hasCloud: true,
+		hasNVR: true,
 		pixelRatio: '1:1',
 		rotate: [{
 			key: 0,

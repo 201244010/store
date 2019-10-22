@@ -213,11 +213,7 @@ class BasicLayout extends React.PureComponent {
 		const { goToPath, role: { userPermissionList = [] } = {} } = this.props;
 		const shopList = Storage.get(CookieUtil.SHOP_LIST_KEY, 'local') || [];
 		if (shopList.length === 0) {
-			if (
-				userPermissionList.some(
-					permission => permission.path === `${MENU_PREFIX.STORE}/list`
-				)
-			) {
+			if (userPermissionList.some(permission => permission.path === MENU_PREFIX.STORE)) {
 				message.warning(formatMessage({ id: 'alert.store.is.none' }));
 				goToPath('storeCreate', { action: 'create' });
 			} else {

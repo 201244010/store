@@ -165,7 +165,7 @@ class PhotoManagement extends React.Component {
 		getRange();
 		this.checkMQTTClient();
 	}
-	
+
 	componentWillUnmount() {
 		const { clearPhotoList, clearFileList, unsubscribeTopic } = this.props;
 		clearPhotoList();
@@ -308,7 +308,7 @@ class PhotoManagement extends React.Component {
 			}
 			return false;
 		});
-		// console.log('submit', fileList,list);
+
 		if(!this.isUpload) {
 			if (fileList.length === 0) {
 				message.error(formatMessage({ id: 'photoManagement.noPhotoAlert' }));
@@ -318,7 +318,7 @@ class PhotoManagement extends React.Component {
 				// console.log('save', response);
 				if (response === false) {
 					message.error(formatMessage({ id: 'photoManagement.addFailTitle' }));
-				} else if (response.data.failureList.length === 0) {
+				} else if (!response.data.failureList || response.data.failureList.length === 0) {
 					message.success(formatMessage({ id: 'photoManagement.card.saveSuccess' }));
 					this.setState({ uploadPhotoShown: false }, () => {
 						clearFileList();
@@ -526,7 +526,7 @@ class PhotoManagement extends React.Component {
 
 	render() {
 		const {
-			form: { getFieldDecorator }, 
+			form: { getFieldDecorator },
 		} = this.props;
 		const {
 			removeRadioValue,
@@ -786,7 +786,7 @@ class PhotoManagement extends React.Component {
 						/>
 					))}
 				</Modal>
-				{!isSignAgreement && <AgreementModal visible path='faceidLibrary' refreshHandler={this.getList} />}
+				<AgreementModal visible={!isSignAgreement} path='faceidLibrary' refreshHandler={this.getList} />
 			</Card>
 		);
 	}
