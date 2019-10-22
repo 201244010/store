@@ -15,7 +15,13 @@ class Bar extends Component {
 		} = this.props;
 
 		const { x = 'xAxis', y = 'yAxis', xLabel = {}, yLabel = {} } = axis;
-		const { height = 388, forceFit = true, padding = 'auto', scale = {} } = chartStyle;
+		const {
+			width = 300,
+			height = 388,
+			forceFit = true,
+			padding = 'auto',
+			scale = {},
+		} = chartStyle;
 
 		const {
 			barColor = '#FFAA60',
@@ -27,6 +33,7 @@ class Bar extends Component {
 		return (
 			<div className={styles.chart}>
 				<Chart
+					width={width}
 					height={height}
 					padding={padding}
 					scale={scale}
@@ -35,11 +42,7 @@ class Bar extends Component {
 				>
 					<Axis name={x} label={xLabel} />
 					<Axis name={y} label={yLabel} />
-					<Tooltip
-						showTitle={false}
-						crosshairs={false}
-						{...tooltip}
-					/>
+					<Tooltip showTitle={false} crosshairs={false} {...tooltip} />
 					<Geom
 						size={dataSource.length > 31 ? 8 : 15}
 						type="interval"
