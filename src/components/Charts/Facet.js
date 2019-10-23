@@ -5,6 +5,7 @@ import '@/components/Charts/Shape';
 class FacetChart extends PureComponent {
 	render() {
 		const {
+			width = 300,
 			height = 400,
 			data = [],
 			forceFit = true,
@@ -45,6 +46,7 @@ class FacetChart extends PureComponent {
 		return (
 			<div>
 				<Chart
+					width={width}
 					height={height}
 					data={data}
 					scale={scale}
@@ -69,12 +71,7 @@ class FacetChart extends PureComponent {
 								color={assistColor}
 								tooltip={tooltip}
 							/>
-							<Geom
-								size={size}
-								type="interval"
-								position={position}
-								color={color}
-							>
+							<Geom size={size} type="interval" position={position} color={color}>
 								<Label content={content} />
 							</Geom>
 						</View>
