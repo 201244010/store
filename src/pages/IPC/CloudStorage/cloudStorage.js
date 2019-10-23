@@ -94,7 +94,7 @@ class CloudStorage extends React.Component{
 								<div className={styles.title}>
 									<div className={styles['title-icon']} />
 									<div className={styles['title-text']}>
-										<span>{formatMessage({id: 'cloudStorage.title'})}</span>
+										<span>{formatMessage({id: 'cloudStorage.adv.price'})}</span>
 									</div>
 								</div>
 								<div className={styles['adv-detail']}>
