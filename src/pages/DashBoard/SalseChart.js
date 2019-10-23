@@ -184,6 +184,8 @@ class SalseChart extends PureComponent {
 				<Bar
 					{...{
 						chartStyle: {
+							width: chartWidth,
+							forceFit: false,
 							scale: chartScale,
 						},
 						axis: {
@@ -198,8 +200,6 @@ class SalseChart extends PureComponent {
 							barActive: true,
 							position: 'time*orderCount',
 							tooltip: chartTip,
-							forceFit: false,
-							width: chartWidth,
 						},
 					}}
 				/>
@@ -240,6 +240,8 @@ class SalseChart extends PureComponent {
 				<Bar
 					{...{
 						chartStyle: {
+							width: chartWidth,
+							forceFit: false,
 							scale: chartScale,
 						},
 						axis: {
@@ -254,8 +256,6 @@ class SalseChart extends PureComponent {
 							barActive: true,
 							position: 'time*passengerFlowCount',
 							tooltip: chartTip,
-							forceFit: false,
-							width: chartWidth,
 						},
 					}}
 				/>
