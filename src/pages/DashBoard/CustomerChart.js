@@ -54,6 +54,11 @@ const CardTitle = ({ onChange = null }) => {
 	})
 )
 class CustomerChart extends PureComponent {
+	constructor(props) {
+		super(props);
+		this.chartWrapper = React.createRef();
+	}
+
 	radioChange = async value => {
 		const { setSearchValue, fetchPassengerAgeByTimeRange } = this.props;
 		await setSearchValue({
@@ -141,6 +146,11 @@ class CustomerChart extends PureComponent {
 			searchValue: { passengerFlowType },
 		} = this.props;
 
+		const { current = {} } = this.chartWrapper;
+		const { clientWidth = null } = current || {};
+		const chartWidth = Math.round(clientWidth * 0.95);
+		console.log(chartWidth);
+
 		const displayPassengerList = this.formatPassengerList({
 			passengerList,
 			maleCount,
@@ -179,42 +189,46 @@ class CustomerChart extends PureComponent {
 				  ];
 
 		return (
-			<Card
-				title={<CardTitle onChange={this.radioChange} />}
-				className={`${styles['card-bar-wrapper']} ${
-					passengerFlowTypeLoading ? '' : styles['customer-chart']
-				}`}
-				loading={passengerFlowTypeLoading}
-			>
-				<div className={styles['chart-wrapper']}>
-					<Facet
-						{...{
-							data: displayPassengerList,
-							tooltip: { crosshairs: false },
-							scale: {
-								personCount: {
-									ticks,
+			<div ref={this.chartWrapper} className={styles['chart-wrapper']}>
+				<Card
+					title={<CardTitle onChange={this.radioChange} />}
+					className={`${styles['card-bar-wrapper']} ${
+						passengerFlowTypeLoading ? '' : styles['customer-chart']
+					}`}
+					loading={passengerFlowTypeLoading}
+				>
+					{chartWidth && (
+						<Facet
+							{...{
+								width: clientWidth,
+								forceFit: false,
+								data: displayPassengerList,
+								tooltip: { crosshairs: false },
+								scale: {
+									personCount: {
+										ticks,
+									},
+									limit: {
+										ticks,
+									},
 								},
-								limit: {
-									ticks,
+								axis: {
+									x: { name: 'ageRange', line: null, tickLink: null },
+									y: { name: 'personCount', visible: false },
+									assist: { name: 'limit', visible: false },
 								},
-							},
-							axis: {
-								x: { name: 'ageRange', line: null, tickLink: null },
-								y: { name: 'personCount', visible: false },
-								assist: { name: 'limit', visible: false },
-							},
-							facet: { fields: ['title'] },
-							geom: {
-								position: 'ageRange*personCount',
-								color: geomColor,
-								label: { content: 'personCount' },
-							},
-							assistGeom: { position: 'ageRange*limit' },
-						}}
-					/>
-				</div>
-			</Card>
+								facet: { fields: ['title'] },
+								geom: {
+									position: 'ageRange*personCount',
+									color: geomColor,
+									label: { content: 'personCount' },
+								},
+								assistGeom: { position: 'ageRange*limit' },
+							}}
+						/>
+					)}
+				</Card>
+			</div>
 		);
 	}
 }

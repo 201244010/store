@@ -37,7 +37,6 @@ class UserCenter extends Component {
 			user,
 			sso,
 			role: { userPermissionList = [] } = {},
-			merchant,
 			updateUsername,
 			changePassword,
 			updatePhone,
@@ -71,13 +70,7 @@ class UserCenter extends Component {
 				/>
 				{userPermissionList.find(
 					permission => permission.path === ROLE_MAPPING.COMPANY_LIST
-				) && (
-					<Store
-						{...{
-							merchant,
-						}}
-					/>
-				)}
+				) && <Store />}
 			</div>
 		);
 	}

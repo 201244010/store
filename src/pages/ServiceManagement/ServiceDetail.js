@@ -75,10 +75,10 @@ class ServiceDetail extends React.Component {
 									{serviceName}
 								</Form.Item>
 								<Form.Item label={formatMessage({id: 'serviceManagement.label.subscribeTime'})}>
-									{moment.unix(subscribeTime).format('YYYY-MM-DD hh:mm')}
+									{moment.unix(subscribeTime).format('YYYY-MM-DD')}
 								</Form.Item>
 								<Form.Item label={formatMessage({id: 'serviceManagement.label.expireTime'})}>
-									{moment.unix(expireTime).format('YYYY-MM-DD HH:mm')}
+									{moment.unix(expireTime).format('YYYY-MM-DD')}
 								</Form.Item>
 								<Form.Item label={formatMessage({id: 'serviceManagement.label.status'})}>
 									{STATUS[status]}

@@ -21,6 +21,7 @@ class Bar extends Component {
 			forceFit = true,
 			padding = 'auto',
 			scale = {},
+			animate = false,
 		} = chartStyle;
 
 		const {
@@ -39,6 +40,7 @@ class Bar extends Component {
 					scale={scale}
 					data={dataSource}
 					forceFit={forceFit}
+					animate={animate}
 				>
 					<Axis name={x} label={xLabel} />
 					<Axis name={y} label={yLabel} />
