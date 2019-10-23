@@ -184,6 +184,8 @@ class SalseChart extends PureComponent {
 				<Bar
 					{...{
 						chartStyle: {
+							width: chartWidth,
+							forceFit: false,
 							scale: chartScale,
 						},
 						axis: {
@@ -240,6 +242,8 @@ class SalseChart extends PureComponent {
 				<Bar
 					{...{
 						chartStyle: {
+							width: chartWidth,
+							forceFit: false,
 							scale: chartScale,
 						},
 						axis: {
