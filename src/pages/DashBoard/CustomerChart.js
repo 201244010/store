@@ -148,7 +148,7 @@ class CustomerChart extends PureComponent {
 
 		const { current = {} } = this.chartWrapper;
 		const { clientWidth = null } = current || {};
-		const chartWidth = Math.round(clientWidth * 0.45);
+		const chartWidth = Math.round(clientWidth * 0.95);
 		console.log(chartWidth);
 
 		const displayPassengerList = this.formatPassengerList({
