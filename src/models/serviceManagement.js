@@ -13,7 +13,9 @@ const handleOpt = (opt, value) => {
 	if(date !== undefined && date.length !== 0) {
 		opt.date = date;
 		opt.startTime = moment(date[0]).unix();
+		opt.startTime = moment.unix(opt.startTime).startOf('day').unix();
 		opt.endTime = moment(date[1]).unix();
+		opt.endTime = moment.unix(opt.endTime).endOf('day').unix();
 	}
 	if(status !== 0) {
 		opt.status = status;
