@@ -200,8 +200,6 @@ class SalseChart extends PureComponent {
 							barActive: true,
 							position: 'time*orderCount',
 							tooltip: chartTip,
-							forceFit: false,
-							width: chartWidth,
 						},
 					}}
 				/>
@@ -258,8 +256,6 @@ class SalseChart extends PureComponent {
 							barActive: true,
 							position: 'time*passengerFlowCount',
 							tooltip: chartTip,
-							forceFit: false,
-							width: chartWidth,
 						},
 					}}
 				/>
