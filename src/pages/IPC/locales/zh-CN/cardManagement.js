@@ -1,5 +1,5 @@
 export default {
-	'cardManagement.title': '存储卡管理',
+	'cardManagement.title': '存储管理',
 
 	'cardManagement.sdStatus0': '未插入存储卡',
 	'cardManagement.sdStatus1': '已插入存储卡，需格式化才能使用',
