@@ -21,7 +21,7 @@ export default {
 	'cloudStorage.confirm.subscribe':'确认订阅',
 	'cloudStorage.open.tips.first':'您即将开通/续费',
 	'cloudStorage.open.tips.second':'，有效期',
-	'cloudStorage.open.tips.third':'，请选择需要绑定的设备。显示免费订阅期间，剩余有效期小于3天才可续费',
+	'cloudStorage.open.tips.third':'，请选择需要绑定的设备。限时免费订阅期间，剩余有效期小于3天才可续费',
 	'cloudStorage.no.ipc':'暂无可绑定设备',
 	'cloudStorage.subscription.agreement.tips':'订阅前请阅读并同意',
 	'cloudStorage.subscription.agreement':'《商米服务协议》',
