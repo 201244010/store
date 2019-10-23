@@ -10,7 +10,7 @@ class FacetChart extends PureComponent {
 			data = [],
 			forceFit = true,
 			scale = {},
-			chartPadding = 0,
+			chartPadding = 'auto',
 			animate = false,
 			axis: {
 				x: {

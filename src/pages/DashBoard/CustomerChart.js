@@ -148,7 +148,7 @@ class CustomerChart extends PureComponent {
 
 		const { current = {} } = this.chartWrapper;
 		const { clientWidth = null } = current || {};
-		const chartWidth = Math.round(clientWidth * 0.45);
+		const chartWidth = Math.round(clientWidth * 0.95);
 		console.log(chartWidth);
 
 		const displayPassengerList = this.formatPassengerList({
@@ -197,38 +197,36 @@ class CustomerChart extends PureComponent {
 					}`}
 					loading={passengerFlowTypeLoading}
 				>
-					<div className={styles['chart-wrapper']}>
-						{chartWidth && (
-							<Facet
-								{...{
-									width: clientWidth,
-									forceFit: false,
-									data: displayPassengerList,
-									tooltip: { crosshairs: false },
-									scale: {
-										personCount: {
-											ticks,
-										},
-										limit: {
-											ticks,
-										},
+					{chartWidth && (
+						<Facet
+							{...{
+								width: clientWidth,
+								forceFit: false,
+								data: displayPassengerList,
+								tooltip: { crosshairs: false },
+								scale: {
+									personCount: {
+										ticks,
 									},
-									axis: {
-										x: { name: 'ageRange', line: null, tickLink: null },
-										y: { name: 'personCount', visible: false },
-										assist: { name: 'limit', visible: false },
+									limit: {
+										ticks,
 									},
-									facet: { fields: ['title'] },
-									geom: {
-										position: 'ageRange*personCount',
-										color: geomColor,
-										label: { content: 'personCount' },
-									},
-									assistGeom: { position: 'ageRange*limit' },
-								}}
-							/>
-						)}
-					</div>
+								},
+								axis: {
+									x: { name: 'ageRange', line: null, tickLink: null },
+									y: { name: 'personCount', visible: false },
+									assist: { name: 'limit', visible: false },
+								},
+								facet: { fields: ['title'] },
+								geom: {
+									position: 'ageRange*personCount',
+									color: geomColor,
+									label: { content: 'personCount' },
+								},
+								assistGeom: { position: 'ageRange*limit' },
+							}}
+						/>
+					)}
 				</Card>
 			</div>
 		);
