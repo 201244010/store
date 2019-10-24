@@ -5,29 +5,22 @@ import { connect } from 'dva';
 import { List, Avatar, Card, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { UNBIND_CODE } from '@/constants/errorCode';
 import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 
 import styles from './Live.less';
 
 @connect((state) => {
-	const { faceid: { rectangles, list,  ageRangeList }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
-
-	const rects = [];
-	rectangles.forEach(item => {
-		item.rects.forEach(rect => {
-			rects.push(rect);
-		});
-	});
+	const { faceid: { rectangles, list }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
 
 	return {
 		streamId,
 		ppiChanged,
 		currentPPI: ppi || '1080',
-		faceidRects: rects || [],
+		faceidRects: rectangles || [],
 		faceidList: list || [],
-		timeSlots: timeSlots || [],
-		ageRangeList:  ageRangeList || []
+		timeSlots: timeSlots || []
 	};
 }, (dispatch) => ({
 	async getTimeSlots({sn, timeStart, timeEnd}) {
@@ -42,26 +35,30 @@ import styles from './Live.less';
 		return result;
 	},
 	async getLiveUrl({ sn }) {
-		const url = await dispatch({
+		const result = await dispatch({
 			type: 'live/getLiveUrl',
 			payload: {
 				sn
 			}
 		});
+		const { code, url } = result;
+		if( code === UNBIND_CODE) {
+			message.warning(formatMessage({ id: 'live.nobind' }));
+		}
 		return url;
 	},
-	stopLive({ sn, streamId }) {
-		return dispatch({
-			type: 'live/stopLive',
-			payload: {
-				sn,
-				streamId
-			}
-		}).then(() => {
-			console.log('stopLive done.');
-			return true;
-		});
-	},
+	// stopLive({ sn, streamId }) {
+	// 	return dispatch({
+	// 		type: 'live/stopLive',
+	// 		payload: {
+	// 			sn,
+	// 			streamId
+	// 		}
+	// 	}).then(() => {
+	// 		console.log('stopLive done.');
+	// 		return true;
+	// 	});
+	// },
 	getDeviceInfo({ sn }) {
 		return dispatch({
 			type: 'ipcList/getDeviceInfo',
@@ -70,14 +67,15 @@ import styles from './Live.less';
 			}
 		}).then(info => info);
 	},
-	changePPI({ ppi, sn }) {
-		dispatch({
+	async changePPI({ ppi, sn }) {
+		const url = await dispatch({
 			type: 'live/changePPI',
 			payload: {
 				ppi,
 				sn
 			}
 		});
+		return url;
 	},
 	async getHistoryUrl({ timestamp, sn }) {
 		const url = await dispatch({
@@ -143,11 +141,32 @@ import styles from './Live.less';
 			}
 		});
 	},
-	// test: () => {
-	// 	dispatch({
-	// 		type:'faceid/test'
-	// 	});
-	// }
+	requestMetadata({ sn }) {
+		dispatch({
+			type: 'live/requestMetadata',
+			payload: {
+				sn
+			}
+		});
+	},
+	changeFaceidPushStatus({ sn, status }) {
+		dispatch({
+			type: 'faceid/changeFaceidPushStatus',
+			payload: {
+				sn,
+				status
+			}
+		});
+	},
+	changeFaceComparePushStatus({ sn, status }) {
+		dispatch({
+			type: 'faceid/changeFaceComparePushStatus',
+			payload: {
+				sn,
+				status
+			}
+		});
+	}
 }))
 class Live extends React.Component{
 	constructor(props) {
@@ -163,55 +182,58 @@ class Live extends React.Component{
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList } = this.props;
+		const { getDeviceInfo, getAgeRangeList, getSdStatus, setDeviceSn, clearList } = this.props;
 
-		const {sn} = query;
+		const sn = this.getSN();
+
 		let sdStatus = true;
 		if (sn) {
-			// test();
 			clearList({ sn });
 			getAgeRangeList();
+
 			const deviceInfo = await getDeviceInfo({ sn });
 			const { hasFaceid } = deviceInfo;
+
 			setDeviceSn({ sn });
+
 			if(hasFaceid){
 				const status = await getSdStatus({ sn });
 				if(status === 0) {
 					message.info(formatMessage({ id: 'live.nosdInfo' }));
 					sdStatus = false;
 				}
+
+				this.startFaceComparePush();
 			}
 
 			this.setState({
 				deviceInfo,
 				sdStatus
 			});
-
 			// setTimeout(test, 1000);
 		}
 	}
 
 	componentWillUnmount () {
-		const { stopLive, streamId, location: { query }, stopHistoryPlay } = this.props;
-		const { sn } = query;
-
+		const { stopHistoryPlay } = this.props;
+		const sn = this.getSN();
 		if (sn) {
 			stopHistoryPlay({
 				sn
 			});
-			if (streamId) {
-				stopLive({
-					sn,
-					streamId
-				});
+
+			const hasFaceid = this.hasFaceid();
+			if (hasFaceid) {
+				this.stopFaceidPush();
+				this.stopFaceComparePush();
 			}
 		}
 	}
 
 	onTimeChange = async (timeStart, timeEnd) => {
 
-		const { getTimeSlots, location: { query } } = this.props;
-		const {sn} = query;
+		const { getTimeSlots } = this.props;
+		const sn = this.getSN();
 
 		const result = await getTimeSlots({
 			sn,
@@ -235,81 +257,126 @@ class Live extends React.Component{
 		});
 	}
 
-	getLiveUrl = async () => {
-		const { getLiveUrl, location: { query }} = this.props;
+	getSN = () => {
+		const { location: { query } } = this.props;
 		const { sn } = query;
+
+		return sn;
+	}
+
+	hasFaceid = async () => {
+		const { getDeviceInfo } = this.props;
+		const sn = this.getSN();
+		const deviceInfo = await getDeviceInfo({ sn });
+		const { hasFaceid } = deviceInfo;
+
+		return hasFaceid;
+	}
+
+	requestMetadata = () => {
+		const { requestMetadata } = this.props;
+		const sn = this.getSN();
+
+		requestMetadata({ sn });
+	}
+
+	startFaceidPush = () => {
+		const { changeFaceidPushStatus } = this.props;
+		const sn = this.getSN();
+
+		changeFaceidPushStatus({
+			sn,
+			status: true
+		});
+	}
+
+	stopFaceidPush = () => {
+		const { changeFaceidPushStatus } = this.props;
+		const sn = this.getSN();
+
+		changeFaceidPushStatus({
+			sn,
+			status: false
+		});
+	}
+
+	startFaceComparePush = () => {
+		const { changeFaceComparePushStatus } = this.props;
+		const sn = this.getSN();
+
+		changeFaceComparePushStatus({
+			sn,
+			status: true
+		});
+	}
+
+	stopFaceComparePush = () => {
+		const { changeFaceComparePushStatus } = this.props;
+		const sn = this.getSN();
+
+		changeFaceComparePushStatus({
+			sn,
+			status: false
+		});
+	}
+
+	getLiveUrl = async () => {
+		const { getLiveUrl } = this.props;
+		const sn = this.getSN();
+
+		const hasFaceid = this.hasFaceid();
+		if (hasFaceid) {
+			this.startFaceidPush();
+		}
 
 		const url = await getLiveUrl({ sn });
 		return url;
 	}
 
-	stopLive = async () => {
-		const { stopLive, streamId, location: { query }} = this.props;
-		const { sn } = query;
+	// stopLive = async () => {
+	// 	const hasFaceid = this.hasFaceid();
 
-		await stopLive({
-			sn,
-			streamId
-		});
-	}
+	// 	if (hasFaceid) {
+	// 		this.stopFaceidPush();
+	// 	}
+	// }
 
 	getHistoryUrl = async  (timestamp) => {
-		const { getHistoryUrl, location: { query }} = this.props;
-		const { sn } = query;
+		const { getHistoryUrl } = this.props;
+		const sn = this.getSN();
 
 		const url = await getHistoryUrl({ sn, timestamp });
+
+		const hasFaceid = this.hasFaceid();
+
+		if (hasFaceid) {
+			this.stopFaceidPush();
+		}
+
 		return url;
 	}
 
 	stopHistoryPlay = async () => {
-		const { stopHistoryPlay, location: { query } } = this.props;
-		const { sn } = query;
+		const { stopHistoryPlay } = this.props;
+		const sn = this.getSN();
 
 		await stopHistoryPlay({ sn });
 	}
 
 	changePPI = (ppi) => {
-		const { changePPI, location:{ query } } = this.props;
-		const { sn } = query;
+		const { changePPI } = this.props;
+		const sn = this.getSN();
 
-		changePPI({
+		const url = changePPI({
 			ppi,
 			sn
 		});
-	}
 
-	mapAgeInfo(age, ageRangeCode) {
-
-		const { ageRangeList } = this.props;
-		let ageName = formatMessage({id: 'photoManagement.unKnown'});
-		if(age) {
-			ageName = `${age} ${formatMessage({id: 'live.age.unit'})}`;
-		} else {
-			switch(ageRangeCode) {
-				case 1:
-				case 2:
-				case 3:
-					ageName = formatMessage({ id: 'photoManagement.ageMiddleInfo'});
-					break;
-				case 8:
-					ageName = formatMessage({ id: 'photoManagement.ageLargeInfo'});
-					break;
-				default:
-					if(ageRangeList){
-						ageRangeList.forEach(item => {
-							if(item.ageRangeCode === ageRangeCode) {
-								ageName = `${item.ageRange} ${formatMessage({id: 'live.age.unit'})}`;
-							}
-						});
-					}
-			}
-		}
-
-		return ageName;
+		return url;
 	}
 
 	render() {
-		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, /* navigateTo */ } = this.props;
+		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
 		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
 
@@ -318,6 +385,7 @@ class Live extends React.Component{
 			1: formatMessage({ id: 'live.genders.male'}),
 			2: formatMessage({ id: 'live.genders.female'})
 		};
+
 
 		return(
 			<div className={styles['live-wrapper']}>
@@ -330,12 +398,12 @@ class Live extends React.Component{
 						currentPPI={currentPPI}
 						changePPI={this.changePPI}
 						ppiChanged={ppiChanged}
-
+						onLivePlay={this.requestMetadata}
 						getHistoryUrl={this.getHistoryUrl}
 						stopHistoryPlay={this.stopHistoryPlay}
 
 						getLiveUrl={this.getLiveUrl}
-						pauseLive={this.stopLive}
+						// pauseLive={this.stopLive}
 
 						timeSlots={timeSlots}
 
@@ -366,47 +434,73 @@ class Live extends React.Component{
 										faceidList
 									}
 									renderItem={
-										(item) =>
-											(
-												<List.Item key={item.id}>
-													<Card
-														title={
-															<div className={styles['avatar-container']}>
-																<div className={styles.type}>{ item.libraryName }</div>
-																<Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic}`} />
-															</div>
-														}
-														bordered={false}
-														className={styles.infos}
-													>
-														<p className={styles.name}>{ item.name }</p>
-														<p>
-															{ `(${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)})` }
-														</p>
-														<p>
-															<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
-															<span>
-																{
-																	moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
-																}
-															</span>
-														</p>
-														{/* <p>
-															<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
-														</p> */}
-													</Card>
-												</List.Item>
-											)
+										(item) => (
+											<List.Item key={item.id}>
+												<Card
+													title={
+														<div className={styles['avatar-container']}>
+															<div className={styles.type}>{ item.libraryName }</div>
+															<Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic}`} />
+														</div>
+													}
+													bordered={false}
 
+													className={styles.infos}
+												>
+													<p className={styles.name}>{ item.name }</p>
+													<p>
+														{ `(${ genders[item.gender] } ${ item.age }岁)` }
+													</p>
+													<p>
+														<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
+														<span>
+															{
+																moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
+															}
+														</span>
+													</p>
+
+													<p>
+														<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
+													</p>
+												</Card>
+												{/* <Card
+												bordered={false}
+												className={styles['faceid-card']}
+											>
+												<div className={styles['avatar-col']}>
+													<Avatar className={styles['avatar-img']} shape="square" size={89} src={`data:image/jpeg;base64,${item.pic}`} />
+												</div>
+												<div className={styles['info-col']}>
+													<span className={styles['info-label']}>{`${ formatMessage({id: 'live.name'}) } : ${ item.name }`}</span>
+													<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.group'}) } : ${ item.libraryName }`}</span>
+													<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.gender'}) } : ${genders[item.gender]}`}</span>
+													<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.age'}) } : ${item.age}`}</span>
+												</div>
+												<div className={styles['info-col']}>
+													<span>{`${formatMessage({id: 'live.last.arrival.time'})}: `}</span>
+													<span>
+														{
+															moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
+														}
+													</span>
+												</div>
+
+												<p>
+													<Link className={styles['button-infos']} to='./userinfo'>{formatMessage({ id: 'live.enter.details'})}</Link>
+												</p>
+											</Card> */}
+											</List.Item>
+										)
 									}
 								/>
 
 							</PerfectScrollbar>
-							{/* <div className={styles['infos-more']}>
+							<div className={styles['infos-more']}>
 								{
 									faceidList && faceidList.length? <span onClick={() => navigateTo('faceLog')}>{formatMessage({ id: 'live.logs'})}</span> : ''
 								}
-							</div> */}
+							</div>
 						</div>
 						: ''
 				}

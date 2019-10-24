@@ -12,25 +12,25 @@ import { LIBRARY_STYLE } from './libraryName';
 import styles from './Live.less';
 
 @connect((state) => {
-	const { flowFaceid: { rectangles, list, libraryList, ageRangeList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }, } = state;
-	const rects = [];
+	const { flowFaceid: { rectangles, list, libraryList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }} = state;
+	// const rects = [];
 
-	rectangles.forEach(item => {
-		item.rects.forEach(rect => {
-			rects.push(rect);
-		});
-	});
+	// rectangles.forEach(item => {
+	// item.rects.forEach(rect => {
+	// rects.push(rect);
+	// });
+	// });
 
 	return {
 		streamId,
 		ppiChanged,
 		currentPPI: ppi || '1080',
-		faceidRects: rects || [],
+		// faceidRects: rects || [],
+		faceidRects: rectangles || [],
 		faceidList: list || [],
 		timeSlots: timeSlots || [],
 		location,
 		libraryList,
-		ageRangeList
 	};
 }, (dispatch) => ({
 	async getTimeSlots({sn, timeStart, timeEnd}) {
@@ -53,18 +53,18 @@ import styles from './Live.less';
 		});
 		return url;
 	},
-	stopLive({ sn, streamId }) {
-		return dispatch({
-			type: 'flowLive/stopLive',
-			payload: {
-				sn,
-				streamId
-			}
-		}).then(() => {
-			console.log('stopLive done.');
-			return true;
-		});
-	},
+	// stopLive({ sn, streamId }) {
+	// 	return dispatch({
+	// 		type: 'flowLive/stopLive',
+	// 		payload: {
+	// 			sn,
+	// 			streamId
+	// 		}
+	// 	}).then(() => {
+	// 		console.log('stopLive done.');
+	// 		return true;
+	// 	});
+	// },
 	getDeviceInfo({ sn }) {
 		return dispatch({
 			type: 'ipcList/getDeviceInfo',
@@ -73,14 +73,15 @@ import styles from './Live.less';
 			}
 		}).then(info => info);
 	},
-	changePPI({ ppi, sn }) {
-		dispatch({
+	async changePPI({ ppi, sn }) {
+		const url = dispatch({
 			type: 'flowLive/changePPI',
 			payload: {
 				ppi,
 				sn
 			}
 		});
+		return url;
 	},
 	async getHistoryUrl({ timestamp, sn }) {
 		const url = await dispatch({
@@ -146,17 +147,38 @@ import styles from './Live.less';
 			}
 		});
 	},
+	requestMetadata({ sn }) {
+		dispatch({
+			type: 'flowLive/requestMetadata',
+			payload: {
+				sn
+			}
+		});
+	},
+	changeFaceidPushStatus({ sn, status }) {
+		dispatch({
+			type: 'flowFaceid/changeFaceidPushStatus',
+			payload: {
+				sn,
+				status
+			}
+		});
+	},
+	changeFaceComparePushStatus({ sn, status }) {
+		dispatch({
+			type: 'flowFaceid/changeFaceComparePushStatus',
+			payload: {
+				sn,
+				status
+			}
+		});
+	},
 	readLibraryType() {
 		dispatch({
 			type: 'flowFaceid/readLibraryType',
 		});
 	},
 	loadList: () => dispatch({ type:'ipcList/read'}),
-	// test: () => {
-	// 	dispatch({
-	// 		type:'flowFaceid/test'
-	// 	});
-	// }
 }))
 class Live extends React.Component{
 	constructor(props) {
@@ -168,65 +190,66 @@ class Live extends React.Component{
 			liveTimestamp: 0,
 			sdStatus: true
 		};
-
-		this.refreshTimer = 0;
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, readLibraryType, loadList } = this.props;
+		const { getDeviceInfo, getAgeRangeList, getSdStatus, setDeviceSn, clearList, readLibraryType, loadList } = this.props;
 
 		readLibraryType();
-		const {sn} = query;
+		const sn = this.getSN();
+
 		let sdStatus = true;
 		if (sn) {
 			// test();
-			// clearList({ sn });
+			clearList({ sn });
 			getAgeRangeList();
 			await loadList();
 			const deviceInfo = await getDeviceInfo({ sn });
 			const { hasFaceid } = deviceInfo;
+
 			setDeviceSn({ sn });
+
 			if(hasFaceid){
 				const status = await getSdStatus({ sn });
 				if(status === 0) {
 					message.info(formatMessage({ id: 'flow.nosdInfo' }));
 					sdStatus = false;
 				}
+				this.startFaceComparePush();
+				// setTimeout(() => {
+				// 	this.startFaceComparePush();
+				// }, 3000);
+
 			}
 
 			this.setState({
 				deviceInfo,
 				sdStatus
 			});
-
 			// setTimeout(test, 1000);
 		}
-
-		this.reloadPage();
 	}
 
 	componentWillUnmount () {
-		const { stopLive, streamId, location: { query }, stopHistoryPlay } = this.props;
-		const { sn } = query;
-		clearTimeout(this.refreshTimer);
-
+		const { stopHistoryPlay } = this.props;
+		const sn = this.getSN();
 		if (sn) {
 			stopHistoryPlay({
 				sn
 			});
-			if (streamId) {
-				stopLive({
-					sn,
-					streamId
-				});
+
+			const hasFaceid = this.hasFaceid();
+			if (hasFaceid) {
+				this.stopFaceidPush();
+				this.stopFaceComparePush();
 			}
 		}
 	}
 
 	onTimeChange = async (timeStart, timeEnd) => {
 
-		const { getTimeSlots, location: { query } } = this.props;
-		const {sn} = query;
+		const { getTimeSlots } = this.props;
+		const sn = this.getSN();
 
 		const result = await getTimeSlots({
 			sn,
@@ -250,99 +273,129 @@ class Live extends React.Component{
 		});
 	}
 
-	getLiveUrl = async () => {
-		const { getLiveUrl, location: { query }} = this.props;
+	getSN = () => {
+		const { location: { query } } = this.props;
 		const { sn } = query;
-
-		const url = await getLiveUrl({ sn });
-		return url;
+		return sn;
 	}
 
-	stopLive = async () => {
-		const { stopLive, streamId, location: { query }} = this.props;
-		const { sn } = query;
+	hasFaceid = async () => {
+		const { getDeviceInfo } = this.props;
+		const sn = this.getSN();
+		const deviceInfo = await getDeviceInfo({ sn });
+		const { hasFaceid } = deviceInfo;
 
-		await stopLive({
+		return hasFaceid;
+	}
+
+	requestMetadata = () => {
+		const { requestMetadata } = this.props;
+		const sn = this.getSN();
+
+		requestMetadata({ sn });
+	}
+
+	startFaceidPush = () => {
+		console.log('facied');
+		const { changeFaceidPushStatus } = this.props;
+		const sn = this.getSN();
+
+		changeFaceidPushStatus({
 			sn,
-			streamId
+			status: true
 		});
 	}
 
+	stopFaceidPush = () => {
+		const { changeFaceidPushStatus } = this.props;
+		const sn = this.getSN();
+
+		changeFaceidPushStatus({
+			sn,
+			status: false
+		});
+	}
+
+	startFaceComparePush = () => {
+		console.log('compare');
+		const { changeFaceComparePushStatus } = this.props;
+		const sn = this.getSN();
+
+		changeFaceComparePushStatus({
+			sn,
+			status: true
+		});
+	}
+
+	stopFaceComparePush = () => {
+		const { changeFaceComparePushStatus } = this.props;
+		const sn = this.getSN();
+
+		changeFaceComparePushStatus({
+			sn,
+			status: false
+		});
+	}
+
+	getLiveUrl = async () => {
+		const { getLiveUrl } = this.props;
+		const sn = this.getSN();
+
+		const hasFaceid = this.hasFaceid();
+		if (hasFaceid) {
+			this.startFaceidPush();
+			// setTimeout(() => {
+			// 	this.startFaceidPush();
+			// }, 3000);
+		}
+
+		const url = await getLiveUrl({ sn });
+		console.log('uuuuuuuu',url);
+		return url;
+	}
+
+	// stopLive = async () => {
+	//	const { stopLive, streamId, location: { query }} = this.props;
+	//	const { sn } = query;
+
+	//	await stopLive({
+	//		sn,
+	//		streamId
+	//	});
+	// }
+
 	getHistoryUrl = async  (timestamp) => {
-		const { getHistoryUrl, location: { query }} = this.props;
-		const { sn } = query;
+		const { getHistoryUrl } = this.props;
+		const sn = this.getSN();
 
 		const url = await getHistoryUrl({ sn, timestamp });
+
+		const hasFaceid = this.hasFaceid();
+
+		if (hasFaceid) {
+			this.stopFaceidPush();
+		}
+
 		return url;
 	}
 
 	stopHistoryPlay = async () => {
-		const { stopHistoryPlay, location: { query } } = this.props;
-		const { sn } = query;
+		const { stopHistoryPlay } = this.props;
+		const sn = this.getSN();
 
 		await stopHistoryPlay({ sn });
 	}
 
 	changePPI = (ppi) => {
-		const { changePPI, location:{ query } } = this.props;
-		const { sn } = query;
+		const { changePPI } = this.props;
+		const sn = this.getSN();
 
-		changePPI({
+		const url = changePPI({
 			ppi,
 			sn
 		});
-	}
 
-	// 定时刷新页面
-	reloadPage = () => {
-		console.log('reloadPage');
-		clearTimeout(this.refreshTimer);
-		this.refreshTimer = setTimeout(async () => {
-			const { faceidList } = this.props;
-
-			console.log('reloadPage faceidList=', faceidList);
-			console.log('reloadPage faceidList.slice(0, 7)=', faceidList.slice(0, 7));
-			localStorage.setItem('flowFace7', JSON.stringify(faceidList.slice(0, 7)));
-			const { livePlayer } = this;
-
-			// 先发stop，停止推流；（防止到达分流上限）
-			await this.stopLive();
-			await livePlayer.playLive();
-
-			this.reloadPage();
-
-			// window.location.reload();
-		}, 30 * 60 * 1000);
-	}
-
-	mapAgeInfo(age, ageRangeCode) {
-
-		const { ageRangeList } = this.props;
-		let ageName = formatMessage({id: 'photoManagement.unKnown'});
-		if(age) {
-			ageName = `${age} ${formatMessage({id: 'flow.age.unit'})}`;
-		} else {
-			switch(ageRangeCode) {
-				case 1:
-				case 2:
-				case 3:
-					ageName = formatMessage({ id: 'photoManagement.ageMiddleInfo'});
-					break;
-				case 8:
-					ageName = formatMessage({ id: 'photoManagement.ageLargeInfo'});
-					break;
-				default:
-					if(ageRangeList){
-						ageRangeList.forEach(item => {
-							if(item.ageRangeCode === ageRangeCode) {
-								ageName = `${item.ageRange} ${formatMessage({id: 'flow.age.unit'})}`;
-							}
-						});
-					}
-			}
-		}
-
-		return ageName;
+		return url;
 	}
 
 	render() {
@@ -364,19 +417,18 @@ class Live extends React.Component{
 
 				<div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}`}>
 					<LivePlayer
-						ref={livePlayer => this.livePlayer = livePlayer}
 
 						pixelRatio={pixelRatio}
 
 						currentPPI={currentPPI}
 						changePPI={this.changePPI}
 						ppiChanged={ppiChanged}
-
+						onLivePlay={this.requestMetadata}
 						getHistoryUrl={this.getHistoryUrl}
 						stopHistoryPlay={this.stopHistoryPlay}
 
 						getLiveUrl={this.getLiveUrl}
-						pauseLive={this.stopLive}
+						// pauseLive={this.stopLive}
 
 						timeSlots={timeSlots}
 
@@ -421,7 +473,7 @@ class Live extends React.Component{
 														className={styles.infos}
 													>
 														<p className={styles['infos-age']}>
-															{ `${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)}` }
+															{ `${ genders[item.gender] } ${ item.age }${formatMessage({id: 'flow.age.unit'})}` }
 														</p>
 														<p className={styles['infos-time']}>
 															{/* <span>{formatMessage({id: 'live.last.arrival.time'})}</span> */}

@@ -1,4 +1,3 @@
-import { formatMessage } from 'umi/locale';
 import { format } from '@konata9/milk-shake';
 import { customizeFetch } from '@/utils/fetch';
 import { ERROR_OK } from '@/constants/errorCode';
@@ -22,24 +21,6 @@ const dataFormatter = (item, index) => ({
 	lastupdate: item.last_modified_time,
 	warning: item.alarm_notified === 2
 });
-const dataFormatter2 = (item) => {
-
-	let ageRange = '';
-	switch(item.age_range_code) {
-		case 1:
-			ageRange = formatMessage({ id: 'flow.ageSmallInfo'});
-			break;
-		case 8 :
-			ageRange = formatMessage({ id: 'flow.ageLargeInfo'});
-			break;
-		default:
-			ageRange = item.age_range;
-	}
-	return {
-		ageRangeCode: item.age_range_code,
-		ageRange
-	};
-};
 
 // 获取照片列表
 export const readPhotoList = async (params) => {
@@ -108,17 +89,8 @@ export const getRange = async () => (
 	range('getRangeList').then(
 		async response => {
 			const json = await response.json();
-			const { code, data } = json;
-			if(code === ERROR_OK) {
-				const result = data.age_range_list.map(dataFormatter2);
-				return {
-					code,
-					data: {
-						ageRangeList: result
-					}
-				};
-			}
 			return format('toCamel')(json);
+
 		}
 	)
 );

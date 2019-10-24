@@ -19,28 +19,20 @@ export default {
 		deviceSn: ''
 	},
 	reducers: {
-		drawRects({ rectangles, list, ageRangeList, deviceSn }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
+		drawRects(state, { payload: { rects, sn } }) {
+			const { deviceSn, rectangles } = state;
 
-			// todo 需要添加信息清除逻辑
-			const rect = rectangles;
+			if (deviceSn === sn) {
+				state.rectangles = [
+					...rectangles,
+					...rects
+				];
+			}
 
-			return {
-				rectangles: [
-					...rect,
-					{
-						rects,
-						sn,
-						timestamp,
-						// reportTime
-					}
-				],
-				list,
-				ageRangeList,
-				deviceSn
-			};
 		},
 		clearRects(state, { payload: { timestamp }}) {
 			const rectangles = [];
+
 			state.rectangles.forEach(item => {
 				if (item.timestamp > timestamp - 2000) {
 					rectangles.push(item);
@@ -90,10 +82,10 @@ export default {
 			}
 		},
 		*mapFaceInfo({ payload }, { select, take, put }) {
-			const { libraryName, name } = payload;
+			const { libraryName, age, ageRangeCode, name } = payload;
 			let rangeList = yield select((state) => state.faceid.ageRangeList);
-			// console.log('rangeList',rangeList);
-			// let ageName = formatMessage({id: 'live.unknown'});
+			console.log('rangeList',rangeList);
+			let ageName = formatMessage({id: 'live.unknown'});
 			let libraryNameText = libraryName;
 
 			switch(libraryName) {
@@ -114,27 +106,27 @@ export default {
 
 			if(!rangeList || rangeList.length === 0){
 				const { payload: list } = yield take('readAgeRangeList');
-				// console.log('take list', list);
+				console.log('take list', list);
 				rangeList = list.ageRangeList;
 			}
-			// if(age) {
-			// 	ageName = age;
-			// } else if(rangeList) {
-			// 	rangeList.forEach(item => {
-			// 		if(item.ageRangeCode === ageRangeCode) {
-			// 			ageName = item.ageRange;
-			// 		}
-			// 	});
-			// }
+			if(age) {
+				ageName = age;
+			} else if(rangeList) {
+				rangeList.forEach(item => {
+					if(item.ageRangeCode === ageRangeCode) {
+						ageName = item.ageRange;
+					}
+				});
+			}
 			 yield put({
 				 type: 'updateList',
 				 payload: {
-					...payload,
+					 ...payload,
 					 libraryName: libraryNameText,
-					//  age: ageName,
+					 age: ageName,
 					 name: name === 'undefined' ? formatMessage({id: 'live.unknown'}) : name
 				 }
-			});
+			 });
 		},
 		*changeFaceidPushStatus ({ payload: { sn, status }}, { put }) {
 			// 直播页人脸加框开关
@@ -200,23 +192,6 @@ export default {
 				}
 			});
 		}
-		// *test(_, { put }) {
-		// 	console.log('in test');
-		// 	yield put({
-		// 		// type: 'updateList',
-		// 		type:'mapFaceInfo',
-		// 		payload: {
-		// 			age: 0,
-		// 			ageRangeCode: 8,
-		// 			timestamp: 15652373226,
-		// 			libraryId: 3497,
-		// 			libraryName: 'stranger',
-		// 			gender: 1,
-		// 			id: 2751,
-		// 			name: 'undefined'
-		// 		}
-		// 	});
-		// }
 	},
 	subscriptions: {
 		mqtt ({ dispatch }) {
