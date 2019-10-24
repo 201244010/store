@@ -92,8 +92,12 @@ export default class RightToolBox extends Component {
 	handleFontSizeEnter = (ev) => {
 		const { keyCode, target: { className } } = ev;
 		if (keyCode === KEY.ENTER && className.includes('ant-select-search__field')) {
-			this.autoComplete.blur();
-			this.smallAutoComplete.blur();
+		    if (this.autoComplete) {
+				this.autoComplete.blur();
+			}
+			if (this.smallAutoComplete) {
+				this.smallAutoComplete.blur();
+			}
 		}
 	};
 
@@ -802,7 +806,7 @@ export default class RightToolBox extends Component {
 								<InputNumber
 									style={{ width: '100%' }}
 									placeholder={formatMessage({ id: 'studio.tool.label.line.spacing' })}
-									min={0}
+									min={detail.fontSize}
 									value={detail.lineSpacing}
 									onChange={value => {
 										this.handleLineSpacing(detail, value);
