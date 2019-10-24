@@ -157,7 +157,7 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
-							offsetY: (option.lineSpacing - option.fontSize) * option.zoomScale / 2,
+							offsetY: ((option.lineSpacing - option.fontSize) * option.zoomScale / 2 || 0) - 4,
 							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,
@@ -169,7 +169,7 @@ export default function generateShape(option) {
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX * option.zoomScale,
 							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.scaleY * option.zoomScale,
-							lineHeight: ((option.lineSpacing || 0) / option.fontSize),
+							lineHeight: (option.lineSpacing / option.fontSize) || 1,
 							draggable: true,
 							onDblClick: option.onDblClick,
 							onMouseOver: () => {
