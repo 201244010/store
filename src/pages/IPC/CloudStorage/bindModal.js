@@ -213,8 +213,6 @@ class BindModal extends React.Component{
 				message.error( formatMessage({ id: 'cloudStorage.binding.err.service.subscribe'}));
 			}else if(code === ERR_IPC_NOT_EXIST){
 				message.error( formatMessage({ id: 'cloudStorage.binding.ipc.not.exist'}));
-			}else{
-				message.error( formatMessage({ id: 'cloudStorage.binding.fail'}));
 			}
 		}else{
 			this.onCancel();
