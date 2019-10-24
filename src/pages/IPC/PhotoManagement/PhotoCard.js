@@ -1,9 +1,10 @@
 import React from 'react';
 import { Card, Form, Checkbox, Modal, Radio, Upload, Row, Col, Avatar, Select, Input, Icon, message } from 'antd';
 // import PhotoForm from './PhotoForm';
-import {formatMessage} from 'umi/locale';
+import { formatMessage } from 'umi/locale';
 import {connect} from 'dva';
 import moment from 'moment';
+import { mbStringLength } from '@/utils/utils';
 import styles from './PhotoManagement.less';
 import { spaceInput } from '@/constants/regexp';
 
@@ -196,6 +197,7 @@ class PhotoCard extends React.Component {
 
 	hideRemove = () => {
 		this.setState({
+			targetLibrary: '',
 			removeVisible: false,
 		});
 	};
@@ -673,7 +675,15 @@ class PhotoCard extends React.Component {
 															message: formatMessage({id: 'photoManagement.firstInputFormat'})
 														},
 														{
-															max: 20,
+															// max: 20,
+															validator: (rule, value, callback) => {
+																const len = mbStringLength(value);
+																if(len <= 20) {
+																	callback();
+																} else {
+																	callback(false);
+																}
+															},
 															message: formatMessage({id:'photoManagement.card.alert2'})
 														},
 													],

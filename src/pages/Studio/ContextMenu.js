@@ -50,16 +50,12 @@ export default class ContextMenu extends Component {
 		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
 			deleteSelectedComponent(selectedShapeName);
 		} else if (scopedComponents.length) {
-			for (let i = 0; i < scopedComponents.length - 1; i++) {
+			for (let i = 0; i < scopedComponents.length; i++) {
 				deleteSelectedComponent({
 					selectedShapeName: scopedComponents[i].name,
-					isStep: false
+					isStep: i === scopedComponents.length - 1
 				});
 			}
-			deleteSelectedComponent({
-				selectedShapeName: scopedComponents[scopedComponents.length - 1].name,
-				isStep: true
-			});
 			updateComponentsDetail({
 				isStep: false,
 				selectedShapeName: RECT_SELECT_NAME,

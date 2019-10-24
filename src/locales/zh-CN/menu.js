@@ -15,6 +15,7 @@ export default {
 	'menu.application.trade': '服务下单',
 	'menu.application.trade.result': '支付结果',
 	'menu.application.trade.qrpay': '订单支付',
+	'menu.application.serviceManagement': '服务管理',
 	'menu.dataAnalyze': '数据分析',
 	'menu.dataAnalyze.passenger': '客群分析',
 	'menu.dataAnalyze.list': '客群分析',

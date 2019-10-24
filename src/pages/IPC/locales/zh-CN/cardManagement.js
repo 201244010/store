@@ -33,4 +33,15 @@ export default {
 
 	'cardManagement.formattingTitle': '格式化中',
 	'cardManagement.formattingContent': '请耐心等候，大约需要15秒可完成格式化操作',
+	'cardManagement.cloudStorage':'云存储',
+	'cardManagement.localStorage':'本地存储',
+	'cardManagement.status':'开通状态',
+	'cardManagement.activated':'已开通',
+	'cardManagement.nonactivated':'未开通',
+	'cardManagement.validityPeriod':'剩余有效期',
+	'cardManagement.subscribeCloudService':'开通云存储服务',
+	'cardManagement.repay':'续费',
+	'cardManagement.readCloudFaild':'获取云存储状态失败，请检查网络',
+	'cardManagement.expired':'已过期',
+	'cardManagement.unknown':'--'
 };
