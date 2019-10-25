@@ -113,6 +113,8 @@ class ServiceList extends React.Component {
 		this.setState({pageSize, pageNum});
 	};
 	
+	disabledDate = current => current && current > moment().endOf('day');
+	
 	render() {
 		const {
 			service: { serviceList: { list, totalCount }},
@@ -154,7 +156,9 @@ class ServiceList extends React.Component {
 								<Form.Item label={formatMessage({ id: 'serviceManagement.service.subscribe.date' })}>
 									{getFieldDecorator('date', {
 									})(
-										<RangePicker />
+										<RangePicker
+											disabledDate={this.disabledDate}
+										/>
 									)}
 								</Form.Item>
 							</Col>
