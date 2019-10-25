@@ -150,6 +150,91 @@ class BindModal extends React.Component{
 	}
 
 	async componentDidMount(){
+		await this.init();
+		// const { getStorageIpcList, sn } = this.props;
+		// const { isAgree } = this.state;
+		// const deviceList = await getStorageIpcList(sn);
+		// let selectedValue = '';
+		// let btnDisable = true;
+		// for(let i=0; i < deviceList.length; i++){
+		// 	if(deviceList[i].deviceSn === sn && deviceList[i].validTime < THREE_DAYS_SECONDS){
+		// 		selectedValue = sn;
+		// 		break;
+		// 	}
+		// }
+		// if(selectedValue && isAgree){
+		// 	btnDisable = false;
+		// }
+		// this.setState({
+		// 	btnDisable,
+		// 	selectedValue,
+		// });
+	}
+
+	async componentWillReceiveProps(nextProps){
+		const { visible } = this.props;
+		const { visible: nextVisible } = nextProps;
+		if(nextVisible === true && visible !== nextVisible ){
+			// await getStorageIpcList(sn);
+			await this.init();
+		}
+	}
+
+	onCancel= () =>{
+		const { handleCancel } = this.props;
+		this.setState({
+			selectedValue: '',
+			btnDisable: true,
+			isAgree: false
+		});
+		handleCancel();
+	}
+
+	onChange = e => {
+		const { isAgree } = this.state;
+		let btnDisable = true;
+		if(isAgree) btnDisable = false;
+		this.setState({
+		  selectedValue: e.target.value,
+		  btnDisable
+		});
+	};
+
+	handleOk = async() => {
+		const { navigateTo, storageIpcList, productNo } = this.props;
+		const { selectedValue } = this.state;
+		const { order } = this.props;
+		if(storageIpcList.length !== 0){
+			const response = await order(productNo, selectedValue);
+			const { code } = response;
+			if(code === ERROR_OK){
+				navigateTo('subscriptionSuccess');
+			}else if(code === ERR_SERVICE_SUBSCRIBE_ERROR){
+				message.error( formatMessage({ id: 'cloudStorage.binding.err.service.subscribe'}));
+			}else if(code === ERR_IPC_NOT_EXIST){
+				message.error( formatMessage({ id: 'cloudStorage.binding.ipc.not.exist'}));
+			}
+		}else{
+			this.onCancel();
+		}
+		
+	}
+
+	agreementChangeHandler = (e) =>{
+		const { selectedValue } = this.state;
+		const isAgree = e.target.checked;
+		let btnDisable = true;
+		if(isAgree && selectedValue !== ''){
+			btnDisable = false;
+		}
+		this.setState({
+			isAgree,
+			btnDisable
+		});
+		
+	}
+
+	async init(){
 		const { getStorageIpcList, sn } = this.props;
 		const { isAgree } = this.state;
 		const deviceList = await getStorageIpcList(sn);
@@ -170,65 +255,11 @@ class BindModal extends React.Component{
 		});
 	}
 
-	async componentWillReceiveProps(nextProps){
-		const { sn, getStorageIpcList, visible } = this.props;
-		const { visible: nextVisible } = nextProps;
-		if(nextVisible === true && visible !== nextVisible ){
-			await getStorageIpcList(sn);
-		}
-	}
-
-	onChange = e => {
-		const { isAgree } = this.state;
-		let btnDisable = true;
-		if(isAgree) btnDisable = false;
-		this.setState({
-		  selectedValue: e.target.value,
-		  btnDisable
-		});
-	};
-
-	handleOk = async() => {
-		const { navigateTo, storageIpcList, handleCancel, productNo } = this.props;
-		const { selectedValue } = this.state;
-		const { order } = this.props;
-		if(storageIpcList.length !== 0){
-			const response = await order(productNo, selectedValue);
-			const { code } = response;
-			if(code === ERROR_OK){
-				navigateTo('subscriptionSuccess');
-			}else if(code === ERR_SERVICE_SUBSCRIBE_ERROR){
-				message.error( formatMessage({ id: 'cloudStorage.binding.err.service.subscribe'}));
-			}else if(code === ERR_IPC_NOT_EXIST){
-				message.error( formatMessage({ id: 'cloudStorage.binding.ipc.not.exist'}));
-			}else{
-				message.error( formatMessage({ id: 'cloudStorage.binding.fail'}));
-			}
-		}else{
-			handleCancel();
-		}
-		
-	}
-
-	agreementChangeHandler = (e) =>{
-		const { selectedValue } = this.state;
-		const isAgree = e.target.checked;
-		let btnDisable = true;
-		if(isAgree && selectedValue !== ''){
-			btnDisable = false;
-		}
-		this.setState({
-			isAgree,
-			btnDisable
-		});
-		
-	}
-
 	
 
 	render(){
-		const { storageIpcList, productNo, visible, handleCancel, navigateTo, loading } = this.props;
-		const { selectedValue, btnDisable } = this.state;
+		const { storageIpcList, productNo, visible, navigateTo, loading } = this.props;
+		const { selectedValue, btnDisable, isAgree } = this.state;
 		return(
 			<Modal
 				title={formatMessage({ id:'cloudStorage.binding.ipc'})}
@@ -240,7 +271,7 @@ class BindModal extends React.Component{
 				okText={storageIpcList.length === 0 ? 
 					formatMessage({ id: 'cloudStorage.confirm'}) : 
 					formatMessage({ id: 'cloudStorage.confirm.subscribe'})}
-				onCancel={handleCancel}
+				onCancel={this.onCancel}
 				okButtonProps={{
 					disabled: storageIpcList.length === 0 ? false : btnDisable,
 					loading: loading.effects['cloudStorage/order']
@@ -276,7 +307,7 @@ class BindModal extends React.Component{
 							/>
 						</Radio.Group>
 						<div className={loading.effects['cloudStorage/getStorageIpcList'] ? styles['agreement-loading'] : styles.agreement}>
-							<Checkbox onChange={this.agreementChangeHandler}>
+							<Checkbox onChange={this.agreementChangeHandler} checked={isAgree}>
 								{formatMessage({id: 'cloudStorage.subscription.agreement.tips'})}
 								<a 
 									className={styles['agreement-content']} 
