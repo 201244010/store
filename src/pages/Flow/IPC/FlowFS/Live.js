@@ -12,9 +12,8 @@ import { LIBRARY_STYLE } from './libraryName';
 import styles from './Live.less';
 
 @connect((state) => {
-	const { flowFaceid: { rectangles, list, libraryList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }} = state;
+	const { flowFaceid: { rectangles, list, libraryList, ageRangeList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }} = state;
 	// const rects = [];
-
 	// rectangles.forEach(item => {
 	// item.rects.forEach(rect => {
 	// rects.push(rect);
@@ -29,6 +28,7 @@ import styles from './Live.less';
 		faceidRects: rectangles || [],
 		faceidList: list || [],
 		timeSlots: timeSlots || [],
+		ageRangeList: ageRangeList || [],
 		location,
 		libraryList,
 	};
@@ -398,6 +398,37 @@ class Live extends React.Component{
 		return url;
 	}
 
+	mapAgeInfo(age, ageRangeCode) {
+
+		const { ageRangeList } = this.props;
+		let ageName = formatMessage({id: 'photoManagement.unKnown'});
+		if(age) {
+			ageName = `${age} ${formatMessage({id: 'flow.age.unit'})}`;
+		} else {
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+				case 18:
+					ageName = formatMessage({ id: 'flow.ageLessInfo'});
+					break;
+				case 8:
+					ageName = formatMessage({ id: 'flow.ageLargeInfo'});
+					break;
+				default:
+					if(ageRangeList){
+						ageRangeList.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = `${item.ageRange} ${formatMessage({id: 'flow.age.unit'})}`;
+							}
+						});
+					}
+			}
+		}
+
+		return ageName;
+	}
+
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, libraryList } = this.props;
 
@@ -473,7 +504,7 @@ class Live extends React.Component{
 														className={styles.infos}
 													>
 														<p className={styles['infos-age']}>
-															{ `${ genders[item.gender] } ${ item.age }${formatMessage({id: 'flow.age.unit'})}` }
+															{ `(${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)})` }
 														</p>
 														<p className={styles['infos-time']}>
 															{/* <span>{formatMessage({id: 'live.last.arrival.time'})}</span> */}

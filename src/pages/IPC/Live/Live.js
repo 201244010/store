@@ -17,7 +17,7 @@ const statusCode = {
 	expired: 3
 };
 @connect((state) => {
-	const { faceid: { rectangles, list }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
+	const { faceid: { rectangles, list, ageRangeList }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
 
 	return {
 		streamId,
@@ -25,7 +25,8 @@ const statusCode = {
 		currentPPI: ppi || '1080',
 		faceidRects: rectangles || [],
 		faceidList: list || [],
-		timeSlots: timeSlots || []
+		timeSlots: timeSlots || [],
+		ageRangeList:  ageRangeList || []
 	};
 }, (dispatch) => ({
 	async getTimeSlots({sn, timeStart, timeEnd}) {
@@ -412,6 +413,37 @@ class Live extends React.Component{
 		return url;
 	}
 
+	mapAgeInfo(age, ageRangeCode) {
+
+		const { ageRangeList } = this.props;
+		let ageName = formatMessage({id: 'photoManagement.unKnown'});
+		if(age) {
+			ageName = `${age} ${formatMessage({id: 'live.age.unit'})}`;
+		} else {
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+				case 18:
+					ageName = formatMessage({ id: 'photoManagement.ageLessInfo'});
+					break;
+				case 8:
+					ageName = formatMessage({ id: 'photoManagement.ageLargeInfo'});
+					break;
+				default:
+					if(ageRangeList){
+						ageRangeList.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = `${item.ageRange} ${formatMessage({id: 'live.age.unit'})}`;
+							}
+						});
+					}
+			}
+		}
+
+		return ageName;
+	}
+
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
@@ -506,7 +538,7 @@ class Live extends React.Component{
 												>
 													<p className={styles.name}>{ item.name }</p>
 													<p>
-														{ `(${ genders[item.gender] } ${ item.age }岁)` }
+														{ `(${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)})` }
 													</p>
 													<p>
 														<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
