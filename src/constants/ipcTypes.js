@@ -70,7 +70,7 @@ export  default {
 		hasFaceid: false,
 		hasTFCard: true,
 		hasCloud: true,
-		hasNVR: true,
+		hasNVR: false,
 		pixelRatio: '1:1',
 		rotate: [{
 			key: 0,
@@ -108,8 +108,8 @@ export  default {
 	'FM010': {
 		hasFaceid: false,
 		hasTFCard: true,
+		hasNVR: false,
 		hasCloud: true,
-		hasNVR: true,
 		pixelRatio: '1:1',
 		rotate: [{
 			key: 0,
