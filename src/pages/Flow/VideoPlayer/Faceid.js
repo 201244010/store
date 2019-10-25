@@ -7,33 +7,36 @@ import styles from './Faceid.less';
 class Faceid extends React.Component{
 	render () {
 		const { current, faceidRects, pixelRatio, currentPPI } = this.props;
-		const times = faceidRects.filter(item => {
-			if ( current < item.timestamp && item.timestamp < current + 500){
+		// console.log('current', current);
+		const tmp = faceidRects.filter(item => {
+			// console.log('timestamp: ', item.timestamp);
+			// if ( current - 300 < item.timestamp && item.timestamp < current + 500){
+			// console.log(item.timestamp - 300, current, item.timestamp + 1000);
+			if (item.timestamp - 0 < current && current < item.timestamp + 1000) {
 				return true;
 			}
 			return false;
 		});
 
-		times.sort((a, b) => a.id - b.id);
+		// console.log(tmp, current);
 
-		let temp = null;
-		const rects = [];
-		times.forEach((item, index) => {
-			if (index === 0) {
-				temp = item;
-				rects.push(item);
-				return;
+		tmp.sort((a, b) => {
+			if (a.id !== b.id) {
+				return a.id - b.id;
 			}
-			if (temp.id === item.id) {
-				if (item.timestamp > temp.timestamp) {
-					rects.splice(rects.length - 1, 1, item);
-				}
-			}else{
-				rects.push(item);
-			}
-			temp = item;
-			rects.push(item);
+			return b.timestamp - a.timestamp;
 		});
+
+		const rects = [];
+		const hash = {};
+		tmp.forEach(item => {
+			if (hash[item.id] !== true) {
+				rects.push(item);
+				hash[item.id] = true;
+			}
+		});
+
+		// console.log('rects: ', rects);
 
 		return (
 			<div className={styles['faceid-container']} ref={(container) => this.container = container}>
@@ -113,7 +116,6 @@ class Faceid extends React.Component{
 							);
 						})
 				}
-				{/* </div> */}
 			</div>
 		);
 	}

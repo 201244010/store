@@ -3,7 +3,7 @@ export const password = /^(?=.*[a-zA-Z])(?=.*\d)[\s\S]{8,30}$/;
 export const mail = /^[a-zA-Z0-9_+.-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z0-9]{2,4}/;
 export const productionDate = /^\d{0,4}$/;
 // 匹配所有 ascii 字符
-export const normalInput = /^[a-zA-Z\\u0021-\\u007E]+$/;
+export const normalInput = /^[\u0021-\u007E]+$/;
 // export const productPrice = /^([0-9]{1,6})(\.[0-9]{0,2})?$/;
 export const productPrice = /^([0-9]{1,6})(\.[0-9]{1,2}){0,1}$/;
 export const cellphone = /^[1][356789][0-9]{9}$/;

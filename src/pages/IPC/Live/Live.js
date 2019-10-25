@@ -5,14 +5,19 @@ import { connect } from 'dva';
 import { List, Avatar, Card, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { UNBIND_CODE } from '@/constants/errorCode';
+import { UNBIND_CODE, ERROR_OK } from '@/constants/errorCode';
 import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 
 import styles from './Live.less';
 
+const statusCode = {
+	opened: 1,
+	nonactivated: 2,
+	expired: 3
+};
 @connect((state) => {
-	const { faceid: { rectangles, list }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
+	const { faceid: { rectangles, list, ageRangeList }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
 
 	return {
 		streamId,
@@ -20,7 +25,8 @@ import styles from './Live.less';
 		currentPPI: ppi || '1080',
 		faceidRects: rectangles || [],
 		faceidList: list || [],
-		timeSlots: timeSlots || []
+		timeSlots: timeSlots || [],
+		ageRangeList:  ageRangeList || []
 	};
 }, (dispatch) => ({
 	async getTimeSlots({sn, timeStart, timeEnd}) {
@@ -166,6 +172,32 @@ import styles from './Live.less';
 				status
 			}
 		});
+	},
+	getCloudInfo: async (sn) => {
+		const cloudStatus = await dispatch({
+			type: 'ipcList/readCloudInfo',
+			payload: {
+				sn
+			}
+		}).then((result) => {
+			const { code, data} = result;
+			if(code === ERROR_OK) {
+				const { status, validTime } = data;
+				if(status === statusCode.opened) {
+					const days = validTime/3600/24;
+					// console.log(days);
+					if (days < 3){
+						return 'willExpired';
+					}
+					return 'opened';
+				} if( status === statusCode.expired) {
+					return 'expired';
+				}
+				return 'closed';
+			}
+			return 'error';
+		});
+		return cloudStatus;
 	}
 }))
 class Live extends React.Component{
@@ -177,22 +209,24 @@ class Live extends React.Component{
 				pixelRatio: '16:9'
 			},
 			liveTimestamp: 0,
-			sdStatus: true
+			sdStatus: true,
+			cloudStatus: 'normal'
 		};
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, getAgeRangeList, getSdStatus, setDeviceSn, clearList } = this.props;
+		const { getDeviceInfo, getAgeRangeList, getSdStatus, setDeviceSn, clearList, getCloudInfo } = this.props;
 
 		const sn = this.getSN();
 
 		let sdStatus = true;
+		let cloudStatus = 'normal';
 		if (sn) {
 			clearList({ sn });
 			getAgeRangeList();
 
 			const deviceInfo = await getDeviceInfo({ sn });
-			const { hasFaceid } = deviceInfo;
+			const { hasFaceid, hasCloud } = deviceInfo;
 
 			setDeviceSn({ sn });
 
@@ -205,10 +239,14 @@ class Live extends React.Component{
 
 				this.startFaceComparePush();
 			}
+			if(hasCloud) {
+				cloudStatus = await getCloudInfo(sn);
+			}
 
 			this.setState({
 				deviceInfo,
-				sdStatus
+				sdStatus,
+				cloudStatus
 			});
 			// setTimeout(test, 1000);
 		}
@@ -375,10 +413,41 @@ class Live extends React.Component{
 		return url;
 	}
 
+	mapAgeInfo(age, ageRangeCode) {
+
+		const { ageRangeList } = this.props;
+		let ageName = formatMessage({id: 'photoManagement.unKnown'});
+		if(age) {
+			ageName = `${age} ${formatMessage({id: 'live.age.unit'})}`;
+		} else {
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+				case 18:
+					ageName = formatMessage({ id: 'photoManagement.ageLessInfo'});
+					break;
+				case 8:
+					ageName = formatMessage({ id: 'photoManagement.ageLargeInfo'});
+					break;
+				default:
+					if(ageRangeList){
+						ageRangeList.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = `${item.ageRange} ${formatMessage({id: 'live.age.unit'})}`;
+							}
+						});
+					}
+			}
+		}
+
+		return ageName;
+	}
+
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
-		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
+		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus } = this.state;
 
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
@@ -386,11 +455,14 @@ class Live extends React.Component{
 			2: formatMessage({ id: 'live.genders.female'})
 		};
 
+		const sn = this.getSN();
 
 		return(
 			<div className={styles['live-wrapper']}>
 
-				<div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}`}>
+				<div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}
+								${cloudStatus === 'closed' || cloudStatus === 'expired' || cloudStatus === 'willExpired' ? styles['has-cloud-info']:''}`}
+				>
 					<LivePlayer
 
 						pixelRatio={pixelRatio}
@@ -424,7 +496,24 @@ class Live extends React.Component{
 					/>
 
 				</div>
-
+				{
+					cloudStatus === 'closed' || cloudStatus === 'expired' || cloudStatus === 'willExpired'?
+						<div className={styles['cloud-service-info']}>
+							{
+								cloudStatus === 'closed' ?
+									<div>
+										<span>{formatMessage({ id: 'live.cloudServiceInfo' })}</span>
+										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'subscribe' })}>{formatMessage({ id: 'live.subscribeCloud'})}</span>
+									</div>
+									:
+									<div>
+										<span>{cloudStatus === 'expired'?formatMessage({ id: 'live.expired'}): formatMessage({ id: 'live.willExpired'})}</span>
+										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'repay' })}>{formatMessage({ id: 'live.pay'})}</span>
+									</div>
+							}
+						</div>
+						: ''
+				}
 				{
 					sdStatus && hasFaceid ?
 						<div className={styles['faceid-list-container']}>
@@ -449,7 +538,7 @@ class Live extends React.Component{
 												>
 													<p className={styles.name}>{ item.name }</p>
 													<p>
-														{ `(${ genders[item.gender] } ${ item.age }岁)` }
+														{ `(${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)})` }
 													</p>
 													<p>
 														<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
@@ -464,32 +553,6 @@ class Live extends React.Component{
 														<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
 													</p>
 												</Card>
-												{/* <Card
-												bordered={false}
-												className={styles['faceid-card']}
-											>
-												<div className={styles['avatar-col']}>
-													<Avatar className={styles['avatar-img']} shape="square" size={89} src={`data:image/jpeg;base64,${item.pic}`} />
-												</div>
-												<div className={styles['info-col']}>
-													<span className={styles['info-label']}>{`${ formatMessage({id: 'live.name'}) } : ${ item.name }`}</span>
-													<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.group'}) } : ${ item.libraryName }`}</span>
-													<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.gender'}) } : ${genders[item.gender]}`}</span>
-													<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.age'}) } : ${item.age}`}</span>
-												</div>
-												<div className={styles['info-col']}>
-													<span>{`${formatMessage({id: 'live.last.arrival.time'})}: `}</span>
-													<span>
-														{
-															moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
-														}
-													</span>
-												</div>
-
-												<p>
-													<Link className={styles['button-infos']} to='./userinfo'>{formatMessage({ id: 'live.enter.details'})}</Link>
-												</p>
-											</Card> */}
 											</List.Item>
 										)
 									}
@@ -505,7 +568,6 @@ class Live extends React.Component{
 						: ''
 				}
 			</div>
-
 		);
 	}
 };

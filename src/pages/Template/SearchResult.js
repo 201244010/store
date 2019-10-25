@@ -18,7 +18,7 @@ const COLOR_NAME = {
 };
 const SCREEN_NAME = {
 	'2.13': formatMessage({ id: 'esl-screen-2.13' }),
-	'2.6': formatMessage({ id: 'esl-screen-2.13' }),
+	'2.6': formatMessage({ id: 'esl-screen-2.6' }),
 	'4.2': formatMessage({ id: 'esl-screen-4.2' }),
 };
 
@@ -270,6 +270,7 @@ class SearchResult extends Component {
 			}
 
 			const typeArr = templateInfo.type.split('-');
+			console.log(typeArr);
 			this.setState({
 				curRecord: {
 					...curRecord,

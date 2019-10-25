@@ -2,6 +2,7 @@ export  default {
 	'FS1': {
 		hasFaceid: true,
 		hasTFCard: true,
+		hasCloud: false,
 		hasNVR: false,
 		pixelRatio: '16:9',
 		rotate: [{
@@ -35,6 +36,7 @@ export  default {
 	'FM020': {
 		hasFaceid: true,
 		hasTFCard: true,
+		hasCloud: false,
 		hasNVR: false,
 		pixelRatio: '16:9',
 		rotate: [{
@@ -67,6 +69,7 @@ export  default {
 	'SS1': {
 		hasFaceid: false,
 		hasTFCard: true,
+		hasCloud: true,
 		hasNVR: false,
 		pixelRatio: '1:1',
 		rotate: [{
@@ -106,6 +109,7 @@ export  default {
 		hasFaceid: false,
 		hasTFCard: true,
 		hasNVR: false,
+		hasCloud: true,
 		pixelRatio: '1:1',
 		rotate: [{
 			key: 0,

@@ -2,6 +2,11 @@ import { formatMessage } from 'umi/locale';
 import { getRange, readLibrary } from '@/pages/Flow/IPC/services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 
+const OPCODE = {
+	FACE_ID_STATUS: '0x4202',
+	FACE_COMPARE_STATUS: '0x4203'
+};
+
 export default {
 	namespace: 'flowFaceid',
 	state: {
@@ -12,29 +17,20 @@ export default {
 		libraryList: [],
 	},
 	reducers: {
-		drawRects({ rectangles, list, ageRangeList, deviceSn, libraryList }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
+		drawRects(state, { payload: { rects, sn } }) {
+			const { deviceSn, rectangles } = state;
+			// console.log('rrrrrrrrrrrrrrrrrrrr',rects, rectangles);
+			if (deviceSn === sn) {
+				state.rectangles = [
+					...rectangles,
+					...rects
+				];
+			}
 
-			// todo 需要添加信息清除逻辑
-			const rect = rectangles;
-
-			return {
-				rectangles: [
-					...rect,
-					{
-						rects,
-						sn,
-						timestamp,
-						// reportTime
-					}
-				],
-				list,
-				ageRangeList,
-				deviceSn,
-				libraryList,
-			};
 		},
 		clearRects(state, { payload: { timestamp }}) {
 			const rectangles = [];
+
 			state.rectangles.forEach(item => {
 				if (item.timestamp > timestamp - 2000) {
 					rectangles.push(item);
@@ -75,17 +71,6 @@ export default {
 
 	},
 	effects: {
-		// *subscribe({ payload: { device }}, { select, call }) {
-		// 	const { userId, clientId } = yield select((state) => {
-		// 		return {
-		// 			userId: state.user.id,
-		// 			clientId: state.mqtt.clientId
-		// 		};
-		// 	});
-
-		// 	const topic = `/WEB/${ userId }/${clientId}/${device.type}/event/sub`;
-		// 	yield call(subscribe, topic);
-		// }
 		*getAgeRangeList(_,{ put, call }) {
 			const response = yield call(getRange);
 			const { code, data: { ageRangeList }} = response;
@@ -99,9 +84,9 @@ export default {
 			}
 		},
 		*mapFaceInfo({ payload }, { select, take, put }) {
-			const { libraryName, age, ageRangeCode, name } = payload;
+			const { libraryName, name } = payload;
 			let rangeList = yield select((state) => state.flowFaceid.ageRangeList);
-			let ageName = formatMessage({id: 'flow.unknown'});
+			// const ageName = formatMessage({id: 'flow.unknown'});
 			let libraryNameText = libraryName;
 
 			switch(libraryName) {
@@ -124,21 +109,21 @@ export default {
 				const { payload: list } = yield take('flowReadAgeRangeList');
 				rangeList = list.ageRangeList;
 			}
-			if(age) {
-				ageName = age;
-			} else if(rangeList) {
-				rangeList.forEach(item => {
-					if(item.ageRangeCode === ageRangeCode) {
-						ageName = item.ageRange;
-					}
-				});
-			}
+			// if(age) {
+			// 	ageName = age;
+			// } else if(rangeList) {
+			// 	rangeList.forEach(item => {
+			// 		if(item.ageRangeCode === ageRangeCode) {
+			// 			ageName = item.ageRange;
+			// 		}
+			// 	});
+			// }
 			 yield put({
 				 type: 'updateList',
 				 payload: {
 					...payload,
 					 libraryName: libraryNameText,
-					 age: ageName,
+					//  age: ageName,
 					 name: name === 'undefined' ? formatMessage({id: 'flow.unknown'}) : name
 				 }
 			});
@@ -158,23 +143,73 @@ export default {
 			}
 			return response.code;
 		},
-		// *test(_, { put }) {
-		// 	console.log('in test');
-		// 	yield put({
-		// 		// type: 'updateList',
-		// 		type:'mapFaceInfo',
-		// 		payload: {
-		// 			age: 0,
-		// 			ageRangeCode: 4,
-		// 			timestamp: 15652373226,
-		// 			libraryId: 3497,
-		// 			libraryName: 'stranger',
-		// 			gender: 1,
-		// 			id: 2751,
-		// 			name: 'undefined'
-		// 		}
-	// 		});
-	// 	}
+
+		*changeFaceidPushStatus ({ payload: { sn, status }}, { put }) {
+			// 直播页人脸加框开关
+			const deviceType = yield put.resolve({
+				type: 'ipcList/getDeviceType',
+				payload: {
+					sn
+				}
+			});
+
+			const topic = yield put.resolve({
+				type: 'mqttIpc/generateTopic',
+				payload: {
+					deviceType,
+					messageType: 'request',
+					method: 'pub'
+				}
+			});
+			console.log('faceid', topic);
+
+			yield put({
+				type: 'mqttIpc/publish',
+				payload: {
+					topic,
+					message: {
+						opcode: OPCODE.FACE_ID_STATUS,
+						param: {
+							sn,
+							action: status === true ? 1: 0
+						}
+					}
+				}
+			});
+		},
+		*changeFaceComparePushStatus ({ payload: { sn, status }}, { put }) {
+			// 直播页右侧人脸加框开关
+			const deviceType = yield put.resolve({
+				type: 'ipcList/getDeviceType',
+				payload: {
+					sn
+				}
+			});
+
+			const topic = yield put.resolve({
+				type: 'mqttIpc/generateTopic',
+				payload: {
+					deviceType,
+					messageType: 'request',
+					method: 'pub'
+				}
+			});
+			console.log('compare', topic);
+
+			yield put({
+				type: 'mqttIpc/publish',
+				payload: {
+					topic,
+					message: {
+						opcode: OPCODE.FACE_COMPARE_STATUS,
+						param: {
+							sn,
+							action: status === true ? 1: 0
+						}
+					}
+				}
+			});
+		}
 	},
 	subscriptions: {
 		mqtt ({ dispatch }) {

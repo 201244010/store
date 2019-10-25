@@ -39,7 +39,6 @@ class MerchantView extends Component {
 		const {
 			merchant: {
 				companyInfo: {
-					company_id: companyId,
 					contact_email: contactEmail,
 					contact_tel: contactTel,
 					company_name: companyName,
@@ -54,12 +53,6 @@ class MerchantView extends Component {
 				<h1>{formatMessage({ id: 'merchantManagement.merchant.view' })}</h1>
 				<div className={styles['form-content']}>
 					<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
-						<Form.Item
-							className={styles['clear-margin']}
-							label={formatMessage({ id: 'merchantManagement.merchant.number' })}
-						>
-							<span>{companyId || '--'}</span>
-						</Form.Item>
 						<Form.Item
 							className={styles['clear-margin']}
 							label={formatMessage({ id: 'merchantManagement.merchant.name' })}

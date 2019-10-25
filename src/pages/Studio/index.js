@@ -138,7 +138,10 @@ class Studio extends Component {
 			if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) > -1) {
 			    deleteSelectedComponent(selectedShapeName);
 			    for (let i = 0; i < scopedComponents.length; i++) {
-			        deleteSelectedComponent(scopedComponents[i].name);
+			        deleteSelectedComponent({
+						selectedShapeName: scopedComponents[i].name,
+						isStep: i === scopedComponents.length - 1
+					});
 				}
 			}
 		}
