@@ -67,7 +67,7 @@ export  default {
 	'SS1': {
 		hasFaceid: false,
 		hasTFCard: true,
-		hasNVR: true,
+		hasNVR: false,
 		pixelRatio: '1:1',
 		rotate: [{
 			key: 0,
@@ -105,7 +105,7 @@ export  default {
 	'FM010': {
 		hasFaceid: false,
 		hasTFCard: true,
-		hasNVR: true,
+		hasNVR: false,
 		pixelRatio: '1:1',
 		rotate: [{
 			key: 0,
