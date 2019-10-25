@@ -299,20 +299,50 @@ class PhotoCard extends React.Component {
 	};
 
 	ageRange = () => {
-		const { photoLibrary: {ageRange} , age, realAge } = this.props;
+		const { photoLibrary: { ageRange } , age, ageRangeCode } = this.props;
 		let ageName = formatMessage({id: 'photoManagement.unKnown'});
-		// console.log(ageRange);
-		if(realAge){
-			ageName = realAge;
+		if(age) {
+			ageName = age;
 		} else {
-			ageRange.forEach(item => {
-				if(item.ageCode === age) {
-					ageName = item.ageRange;
-				}
-			});
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+				case 18:
+					ageName = formatMessage({id: 'photoManagement.ageLessInfo'});
+					break;
+				case 8:
+					ageName = formatMessage({ id: 'photoManagement.ageLargeInfo'});
+					break;
+				default:
+					if(ageRange) {
+						ageRange.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = item.ageRange;
+							}
+						});
+					}
+			}
 		}
+
+		// console.log('aaaaaaaaa',ageName);
 		return ageName;
 	};
+
+	mapAgeSelectInfo = (ageRangeCode, range) => {
+		let ageRange = '';
+		switch(ageRangeCode) {
+			case 18:
+				ageRange = formatMessage({id: 'photoManagement.ageLessInfo'});
+				break;
+			case 8:
+				ageRange = formatMessage({id: 'photoManagement.ageLargeInfo'});
+				break;
+			default:
+				ageRange = range;
+		}
+		return ageRange;
+	}
 
 	getBase64 = (img, callback) => {
 		const reader = new FileReader();
@@ -443,7 +473,7 @@ class PhotoCard extends React.Component {
 	};
 
 	handleSelectInfo = type => {
-		const { gender, age, photoLibrary: { ageRange } } = this.props;
+		const { gender, ageRangeCode } = this.props;
 		let ageName = '';
 		// console.log(ageRange);
 		switch (type) {
@@ -456,11 +486,18 @@ class PhotoCard extends React.Component {
 				}
 				return ageName;
 			case 'age':
-				ageRange.forEach(item => {
-					if(item.ageCode === age) {
-						ageName = item.ageCode;
-					}
-				});
+				// ageRange.forEach(item => {
+				// 	if(item.ageRangeCode === ageRangeCode) {
+				// 		ageName = item.ageRangeCode;
+				// 	}
+				// });
+				if(ageRangeCode === 1 || ageRangeCode === 2 || ageRangeCode === 3) {
+					ageName = 18;
+				} else if(ageRangeCode === 0) {
+					ageName = '';
+				} else {
+					ageName = ageRangeCode;
+				}
 				return ageName;
 			default: return 0;
 		}
@@ -503,7 +540,8 @@ class PhotoCard extends React.Component {
 			form: {getFieldDecorator},
 			photoLibrary: { ageRange },
 			groupId,
-			age,
+			/* age, */
+			// ageRangeCode,
 			gender,
 			count,
 			navigateTo
@@ -691,8 +729,8 @@ class PhotoCard extends React.Component {
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.age'})}>
 												{getFieldDecorator('age', {
-													// initialValue: this.handleSelectInfo('age'),
-													initialValue: age === 0?'':age,
+													initialValue: this.handleSelectInfo('age'),
+													// initialValue: ageRangeCode === 0?'':ageRangeCode,
 													rules: [
 														{
 															required: true,
@@ -703,8 +741,9 @@ class PhotoCard extends React.Component {
 													<Select>
 														{
 															ageRange.map((item, index)=>
-																<Option value={item.ageCode} key={index}>
-																	{item.ageRange}
+																<Option value={item.ageRangeCode} key={index}>
+																	{/* {item.ageRange} */}
+																	{this.mapAgeSelectInfo(item.ageRangeCode, item.ageRange)}
 																</Option>)
 														}
 													</Select>,

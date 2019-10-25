@@ -82,10 +82,10 @@ export default {
 			}
 		},
 		*mapFaceInfo({ payload }, { select, take, put }) {
-			const { libraryName, age, ageRangeCode, name } = payload;
+			const { libraryName, name } = payload;
 			let rangeList = yield select((state) => state.faceid.ageRangeList);
-			console.log('rangeList',rangeList);
-			let ageName = formatMessage({id: 'live.unknown'});
+			// console.log('rangeList',rangeList);
+			// let ageName = formatMessage({id: 'live.unknown'});
 			let libraryNameText = libraryName;
 
 			switch(libraryName) {
@@ -106,24 +106,24 @@ export default {
 
 			if(!rangeList || rangeList.length === 0){
 				const { payload: list } = yield take('readAgeRangeList');
-				console.log('take list', list);
+				// console.log('take list', list);
 				rangeList = list.ageRangeList;
 			}
-			if(age) {
-				ageName = age;
-			} else if(rangeList) {
-				rangeList.forEach(item => {
-					if(item.ageRangeCode === ageRangeCode) {
-						ageName = item.ageRange;
-					}
-				});
-			}
+			// if(age) {
+			// 	ageName = age;
+			// } else if(rangeList) {
+			// 	rangeList.forEach(item => {
+			// 		if(item.ageRangeCode === ageRangeCode) {
+			// 			ageName = item.ageRange;
+			// 		}
+			// 	});
+			// }
 			 yield put({
 				 type: 'updateList',
 				 payload: {
 					 ...payload,
 					 libraryName: libraryNameText,
-					 age: ageName,
+					//  age: ageName,
 					 name: name === 'undefined' ? formatMessage({id: 'live.unknown'}) : name
 				 }
 			 });

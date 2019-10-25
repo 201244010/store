@@ -71,25 +71,25 @@ export default {
 			}else if(totalCount < pageNum * pageSize && code === ERROR_OK) {
 				request.pageNum = Math.ceil(totalCount / pageSize);
 				const responseAgain = yield call(readPhotoList, request);
-				const list = responseAgain.data.faceList.map(item => map([{from: 'age', to: 'realAge'},{ from: 'ageRangeCode', to: 'age'}])(item));
-				console.log('model',list);
+				// const list = responseAgain.data.faceList.map(item => map([{from: 'age', to: 'realAge'},{ from: 'ageRangeCode', to: 'age'}])(item));
+				// console.log('model',list);
 				yield put({
 					type: 'readData',
 					payload: {
-						// photoList: responseAgain.data.faceList,
-						photoList: list,
+						photoList: responseAgain.data.faceList,
+						// photoList: list,
 						total: responseAgain.data.totalCount,
 						isSignAgreement: true
 					}
 				});
 			} else if(code === ERROR_OK) {
-				const list = faceList.map(item => map([{from: 'age', to: 'realAge'},{ from: 'ageRangeCode', to: 'age'}])(item));
-				console.log('model',list);
+				// const list = faceList.map(item => map([{from: 'age', to: 'realAge'},{ from: 'ageRangeCode', to: 'age'}])(item));
+				// console.log('model',list);
 				yield put({
 					type: 'readData',
 					payload: {
-						// photoList: faceList,
-						photoList: list,
+						photoList: faceList,
+						// photoList: list,
 						total: totalCount,
 						isSignAgreement: true
 					}
@@ -187,8 +187,8 @@ export default {
 			const response = yield call(getRange);
 			const { code, data: { ageRangeList } } = response;
 			if(code === ERROR_OK) {
-				const list = ageRangeList.map(item => map([{from: 'ageRangeCode', to: 'ageCode'}])(item));
-				// console.log(list);
+				// console.log(ageRangeList);
+				const list = ageRangeList.filter(item => item.ageRangeCode !== 1 && item.ageRangeCode !== 2 && item.ageRangeCode!== 3);
 				yield put({
 					type: 'readData',
 					payload: {
