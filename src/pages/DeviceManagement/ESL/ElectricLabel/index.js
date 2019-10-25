@@ -35,6 +35,9 @@ import SearchForm from './SearchForm';
 		deleteESL: payload => dispatch({ type: 'eslElectricLabel/deleteESL', payload }),
 		refreshFailedImage: () => dispatch({ type: 'eslElectricLabel/refreshFailedImage' }),
 		clearSearchValue: () => dispatch({ type: 'eslElectricLabel/clearSearchValue' }),
+		fetchSwitchScreenInfo: payload => dispatch({ type: 'eslElectricLabel/fetchSwitchScreenInfo', payload }),
+		fetchScreenPushInfo: payload => dispatch({ type: 'eslElectricLabel/fetchScreenPushInfo', payload }),
+		switchScreen: payload => dispatch({ type: 'eslElectricLabel/switchScreen', payload }),
 	})
 )
 class ElectricLabel extends Component {
@@ -78,6 +81,8 @@ class ElectricLabel extends Component {
 				templates4ESL,
 				flashModes,
 				overview: deviceOverview,
+				screenInfo,
+				screenPushInfo,
 			},
 			basicDataProduct: {
 				data: products,
@@ -97,6 +102,9 @@ class ElectricLabel extends Component {
 			flashLed,
 			deleteESL,
 			refreshFailedImage,
+			fetchSwitchScreenInfo,
+			fetchScreenPushInfo,
+			switchScreen
 		} = this.props;
 
 		return (
@@ -125,6 +133,7 @@ class ElectricLabel extends Component {
 							flashModes,
 							products,
 							productPagination,
+							screenPushInfo,
 							fetchElectricLabels,
 							fetchESLDetails,
 							fetchTemplatesByESLCode,
@@ -135,6 +144,10 @@ class ElectricLabel extends Component {
 							unbindESL,
 							flashLed,
 							deleteESL,
+							fetchSwitchScreenInfo,
+							fetchScreenPushInfo,
+							switchScreen,
+							screenInfo
 						}}
 					/>
 				</Card>

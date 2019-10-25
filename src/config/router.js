@@ -34,7 +34,6 @@ const router = [
 	},
 
 	{
-
 		path: '/show',
 		component: '../layouts/BlankLayout',
 		id: 'show',
@@ -147,14 +146,14 @@ const router = [
 			},
 
 			{
-				path: '/dataAnalyze',
+				path: '/passengerAnalyze',
 				icon: 'blank',
-				name: 'dataAnalyze',
+				name: 'passengerAnalyze',
 				routes: [
-					{ path: '/dataAnalyze', redirect: '/dataAnalyze/passenger' },
+					{ path: '/passengerAnalyze', redirect: '/passengerAnalyze/list' },
 					{
-						path: '/dataAnalyze/passenger',
-						name: 'passenger',
+						path: '/passengerAnalyze/list',
+						name: 'passengerAnalyze',
 						id: 'passengerAnalyze',
 						component: './PassengerAnalyze',
 					},
