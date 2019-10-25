@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { Card, List, Button, Modal, Form } from 'antd';
+import { connect } from 'dva';
 import * as CookieUtil from '@/utils/cookies';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
-import { connect } from 'dva';
 import { formatEmpty } from '@/utils/utils';
 import * as styles from './Account.less';
 
@@ -118,12 +118,6 @@ class Store extends Component {
 					}
 				>
 					<Form {...FORM_ITEM_LAYOUT_COMMON}>
-						<Form.Item
-							className={styles['margin-clear']}
-							label={formatMessage({ id: 'merchantManagement.merchant.number' })}
-						>
-							<span>{companyId}</span>
-						</Form.Item>
 						<Form.Item
 							className={styles['margin-clear']}
 							label={formatMessage({ id: 'merchantManagement.merchant.name' })}
