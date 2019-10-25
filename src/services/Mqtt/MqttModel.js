@@ -39,6 +39,10 @@ class MqttModel {
 	effects() {
 		const me = this;
 		return {
+			getClientId() {
+				return me.clientId || null;
+			},
+
 			checkClientExist() {
 				return !!me.clientId && !!me.address;
 			},
