@@ -63,7 +63,7 @@ const router = [
 				path: '/dashBoard',
 				name: 'dashBoard',
 				icon: 'blank',
-				
+
 				routes: [
 					{
 						path: '/dashBoard',
@@ -205,6 +205,12 @@ const router = [
 						component: './DeviceManagement/ESL/DeviceUpgrade'
 					},
 					{
+						path: '/esl/systemConfig',
+						name: 'systemConfig',
+						id: 'systemConfig',
+						component: './DeviceManagement/ESL/SystemConfig',
+					},
+					{
 						path: '/esl/deviceUpgrade/deviceESL',
 						name: 'deviceESL',
 						id: 'deviceESL',
@@ -266,7 +272,7 @@ const router = [
 					},
 				],
 			},
-			
+
 			{
 				path: '/basicData',
 				name: 'basicData',

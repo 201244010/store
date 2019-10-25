@@ -123,14 +123,14 @@ export default class BindModal extends Component {
 							</Col>
 							<Col span={20}>
 								<Select
-									placeholder="请选择模板"
+									placeholder={formatMessage({id: 'select.placeholder'})}
 									value={currentRecord.template_id}
 									style={{ width: '100%' }}
 									onChange={this.handleTemplateChange}
 								>
 									{templates4ESL.map(template => (
 										<Select.Option key={template.id} value={template.id}>
-											{template.name}
+											{formatMessage({id: template.name})}
 										</Select.Option>
 									))}
 								</Select>

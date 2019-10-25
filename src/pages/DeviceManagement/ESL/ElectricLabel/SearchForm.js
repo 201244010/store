@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import { FORM_FORMAT, SEARCH_FORM_COL } from '@/constants/form';
 import { formatMessage } from 'umi/locale';
+import { FORM_FORMAT, SEARCH_FORM_COL } from '@/constants/form';
 import styles from './index.less';
 
 @Form.create()

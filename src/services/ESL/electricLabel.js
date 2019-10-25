@@ -89,10 +89,34 @@ export const refreshFailedImage = () => {
 	return fetchApi('repushFailedImage', opts).then(response => response.json());
 };
 
-export const setScanTiem = options => {
+export const setScanTime = options => {
 	const opts = {
 		method: 'POST',
 		body: options,
 	};
 	return fetchApi('setScanTime', opts).then(response => response.json());
+};
+
+export const getSwitchScreenInfo = options => {
+	const opts = {
+		method: 'POST',
+		body: options,
+	};
+	return fetchApi('getSwitchScreenInfo', opts).then(response => response.json());
+};
+
+export const switchScreen = options => {
+	const opts = {
+		method: 'POST',
+		body: options,
+	};
+	return fetchApi('switchScreen', opts).then(response => response.json());
+};
+
+export const getScreenPushInfo = options => {
+	const opts = {
+		method: 'POST',
+		body: options,
+	};
+	return fetchApi('getScreenPushInfo', opts).then(response => response.json());
 };

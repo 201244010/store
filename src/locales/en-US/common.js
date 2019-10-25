@@ -40,6 +40,7 @@ export default {
 	'list.action.push.again': 'Update',
 	'list.action.more': 'More',
 	'list.action.apply': 'Apply',
+	'list.action.preview': 'Preview',
 	'list.action.clone': 'Clone',
 	'list.action.restart': 'Restart',
 	'list.action.upload.firmware': 'Upload bin',

@@ -1,10 +1,10 @@
+import { formatMessage } from 'umi/locale';
+import { message } from 'antd';
 import * as ESLServices from '@/services/ESL/electricLabel';
 import * as TemplateServices from '@/services/ESL/template';
 import * as ProductServices from '@/services/ESL/product';
-import { formatMessage } from 'umi/locale';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
-import { ERROR_OK } from '@/constants/errorCode';
-import { message } from 'antd';
+import { ERROR_OK, SWITCH_SCEEN_NO_DELETE } from '@/constants/errorCode';
 
 export default {
 	namespace: 'eslElectricLabel',
@@ -26,6 +26,8 @@ export default {
 		detailInfo: {},
 		templates4ESL: [],
 		flashModes: [],
+		screenInfo: [],
+		screenPushInfo: {}
 	},
 	effects: {
 		*changeSearchFormValue({ payload = {} }, { put }) {
@@ -310,10 +312,6 @@ export default {
 					DURATION_TIME
 				);
 				yield put({
-					type: 'updateState',
-					payload: { loading: false },
-				});
-				yield put({
 					type: 'fetchElectricLabels',
 					payload: {
 						options: {
@@ -321,13 +319,15 @@ export default {
 						},
 					},
 				});
+			} else if (response.code === SWITCH_SCEEN_NO_DELETE) {
+				message.error(formatMessage({ id: 'esl.device.esl.delete.fail.switch.screen' }), DURATION_TIME);
 			} else {
 				message.error(formatMessage({ id: 'esl.device.esl.delete.fail' }), DURATION_TIME);
-				yield put({
-					type: 'updateState',
-					payload: { loading: false },
-				});
 			}
+			yield put({
+				type: 'updateState',
+				payload: { loading: false },
+			});
 		},
 
 		*refreshFailedImage(_, { call, put }) {
@@ -354,7 +354,7 @@ export default {
 			});
 
 			const { options = {} } = payload;
-			const response = yield call(ESLServices.setScanTiem, options);
+			const response = yield call(ESLServices.setScanTime, options);
 			if (response.code === ERROR_OK) {
 				message.success(formatMessage({ id: 'esl.device.esl.set.scan.success' }));
 			}
@@ -363,6 +363,56 @@ export default {
 				type: 'updateState',
 				payload: { loading: false },
 			});
+		},
+
+		*fetchSwitchScreenInfo({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+
+			const response = yield call(ESLServices.getSwitchScreenInfo, options);
+			const result = response.data || {};
+			if (response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: {
+						screenInfo: result.esl_switch_screen_info_list || [],
+					},
+				});
+			}
+			return response;
+		},
+
+		*fetchScreenPushInfo({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+
+			const response = yield call(ESLServices.getScreenPushInfo, options);
+			const result = response.data || {};
+			if (response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: {
+						screenPushInfo: result.esl_screen_push_info || {},
+					},
+				});
+			}
+			return response;
+		},
+
+		*switchScreen({ payload = {} }, { call }) {
+			const { options = {} } = payload;
+
+			const response = yield call(ESLServices.switchScreen, options);
+			if (response.code === ERROR_OK) {
+				message.success(
+					formatMessage({ id: 'esl.device.esl.toggle.page.success' }),
+					DURATION_TIME
+				);
+			} else {
+				message.error(
+					formatMessage({ id: 'esl.device.esl.toggle.page.fail' }),
+					DURATION_TIME
+				);
+			}
+			return response;
 		},
 
 		*clearSearchValue(_, { put }) {
