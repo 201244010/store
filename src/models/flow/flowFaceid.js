@@ -17,26 +17,16 @@ export default {
 		libraryList: [],
 	},
 	reducers: {
-		drawRects({ rectangles, list, ageRangeList, deviceSn, libraryList }, { payload: { rects, sn, timestamp, /* reportTime */ } }) {
+		drawRects(state, { payload: { rects, sn } }) {
+			const { deviceSn, rectangles } = state;
+			// console.log('rrrrrrrrrrrrrrrrrrrr',rects, rectangles);
+			if (deviceSn === sn) {
+				state.rectangles = [
+					...rectangles,
+					...rects
+				];
+			}
 
-			// todo 需要添加信息清除逻辑
-			const rect = rectangles;
-
-			return {
-				rectangles: [
-					...rect,
-					{
-						rects,
-						sn,
-						timestamp,
-						// reportTime
-					}
-				],
-				list,
-				ageRangeList,
-				deviceSn,
-				libraryList,
-			};
 		},
 		clearRects(state, { payload: { timestamp }}) {
 			const rectangles = [];
@@ -94,9 +84,9 @@ export default {
 			}
 		},
 		*mapFaceInfo({ payload }, { select, take, put }) {
-			const { libraryName, name } = payload;
+			const { libraryName, age, ageRangeCode, name } = payload;
 			let rangeList = yield select((state) => state.flowFaceid.ageRangeList);
-			// let ageName = formatMessage({id: 'flow.unknown'});
+			let ageName = formatMessage({id: 'flow.unknown'});
 			let libraryNameText = libraryName;
 
 			switch(libraryName) {
@@ -114,26 +104,26 @@ export default {
 					break;
 				default:
 			}
-			// console.log('tttttt', rangeList);
+
 			if(!rangeList || rangeList.length === 0){
-				const { payload: list } = yield take('readAgeRangeList');
+				const { payload: list } = yield take('flowReadAgeRangeList');
 				rangeList = list.ageRangeList;
 			}
-			// if(age) {
-			// 	ageName = age;
-			// } else if(rangeList) {
-			// 	rangeList.forEach(item => {
-			// 		if(item.ageRangeCode === ageRangeCode) {
-			// 			ageName = item.ageRange;
-			// 		}
-			// 	});
-			// }
+			if(age) {
+				ageName = age;
+			} else if(rangeList) {
+				rangeList.forEach(item => {
+					if(item.ageRangeCode === ageRangeCode) {
+						ageName = item.ageRange;
+					}
+				});
+			}
 			 yield put({
 				 type: 'updateList',
 				 payload: {
 					...payload,
 					 libraryName: libraryNameText,
-					//  age: ageName,
+					 age: ageName,
 					 name: name === 'undefined' ? formatMessage({id: 'flow.unknown'}) : name
 				 }
 			});
@@ -220,23 +210,6 @@ export default {
 				}
 			});
 		}
-		// *test(_, { put }) {
-		// 	console.log('in test');
-		// 	yield put({
-		// 		// type: 'updateList',
-		// 		type:'mapFaceInfo',
-		// 		payload: {
-		// 			age: 0,
-		// 			ageRangeCode: 8,
-		// 			timestamp: 15652373226,
-		// 			libraryId: 3497,
-		// 			libraryName: 'stranger',
-		// 			gender: 1,
-		// 			id: 2751,
-		// 			name: 'undefined'
-		// 		}
-		// 	});
-		// }
 	},
 	subscriptions: {
 		mqtt ({ dispatch }) {
