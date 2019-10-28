@@ -80,6 +80,7 @@ class CashierAudit extends React.Component {
 		};
 	}
 
+
 	async componentDidMount(){
 		const { activeOrderId } = this.state;
 		await this.getTradeList();

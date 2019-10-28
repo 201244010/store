@@ -1,8 +1,12 @@
 import moment from 'moment';
+import { formatMessage } from 'umi/locale';
 import { format } from '@konata9/milk-shake';
 import * as Actions from '@/services/passengerFlow';
 import { getRange } from '@/pages/IPC/services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
+
+const UNDER18_CODE = [1, 2, 3];
+const ABOVE56_CODE = [8];
 
 export default {
 	namespace: 'flowInfo',
@@ -49,21 +53,35 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response || {};
 				const { countList = [] } = format('toCamel')(data);
+				let under18female = 0;
+				let under18male = 0;
+				let above56female = 0;
+				let above56male = 0;
+				let dataList = [];
 
-				for (let j = 0; j < countList.length -1; j++) {
-					for( let i = 0; i < countList.length - j - 1; i++) {
-						if (countList[i].ageRangeCode < countList[i+1].ageRangeCode) {
-							const item = countList[i];
-							countList[i] = countList[i+1];
-							countList[i+1] = item;
-						}
+				countList.map(item => {
+					if(UNDER18_CODE.includes(item.ageRangeCode)) {
+						under18female += item.femaleCount;
+						under18male += item.maleCount;
+					} else if (ABOVE56_CODE.includes(item.ageRangeCode)) {
+						above56female += item.femaleCount;
+						above56male += item.maleCount;
+					} else {
+						dataList.push(item);
 					}
-				}
+				});
 
+				dataList.push(
+					{ageRangeCode: 3, femaleCount: under18female, maleCount: under18male },
+					{ageRangeCode: 8, femaleCount: above56female, maleCount: above56male },
+				);
+				dataList = dataList.sort((a, b) => a.ageRangeCode - b.ageRangeCode);
+
+				console.log('dataList', dataList);
 				yield put({
 					type: 'updateState',
 					payload: {
-						countListByGender: countList,
+						countListByGender: dataList,
 					},
 				});
 			}
@@ -104,13 +122,24 @@ export default {
 				const { ageRangeList = [] } = format('toCamel')(data);
 
 				const ageRangeMap = ageRangeList.reduce((prev, cur) => {
-					const { ageRange, ageRangeCode } = cur;
+					const { ageRangeCode } = cur;
+					let { ageRange } = cur;
+					
+					if(UNDER18_CODE.includes(ageRangeCode)) {
+						ageRange = formatMessage({id: 'flow.ageSmallInfo'});
+					} else if (ABOVE56_CODE.includes(ageRangeCode)) {
+						ageRange = formatMessage({id: 'flow.ageLargeInfo'});
+					} else {
+						ageRange = `${ageRange}${formatMessage({ id: 'flow.distribution.age' })}`;
+					}
+
 					return {
 						...prev,
 						[ageRangeCode]: ageRange,
 					};
 				}, {});
 
+				console.log('ageRangeMap', ageRangeMap);
 				yield put({
 					type: 'updateState',
 					payload: {
