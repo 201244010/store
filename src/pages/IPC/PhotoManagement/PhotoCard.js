@@ -7,7 +7,8 @@ import moment from 'moment';
 // import { mbStringLength } from '@/utils/utils';
 import styles from './PhotoManagement.less';
 import { spaceInput } from '@/constants/regexp';
-
+import manImage from '@/assets/imgs/man.png';
+import womanImage from '@/assets/imgs/woman.png';
 
 
 const RadioGroup = Radio.Group;
@@ -234,7 +235,13 @@ class PhotoCard extends React.Component {
 						faceImgList: [fileName],
 						faceId: id
 					});
-					isUpload = response.data.failureList.length === 0;
+					// console.log(response);
+					if(response) {
+						isUpload = !response.data.failureList || response.data.failureList.length === 0;
+					} else {
+						isUpload = false;
+					}
+
 				}
 
 				const fields = form.getFieldsValue();
@@ -308,6 +315,7 @@ class PhotoCard extends React.Component {
 				case 1:
 				case 2:
 				case 3:
+				case 18:
 					ageName = formatMessage({id: 'photoManagement.ageMiddleInfo'});
 					break;
 				default:
@@ -454,7 +462,7 @@ class PhotoCard extends React.Component {
 	};
 
 	handleSelectInfo = type => {
-		const { gender, ageRangeCode, photoLibrary: { ageRange } } = this.props;
+		const { gender, ageRangeCode, /* photoLibrary: { ageRange } */ } = this.props;
 		let ageName = '';
 		switch (type) {
 			case 'gender':
@@ -466,12 +474,15 @@ class PhotoCard extends React.Component {
 				}
 				return ageName;
 			case 'age':
-				ageRange.forEach(item => {
-					if(item.ageRangeCode === ageRangeCode) {
-						ageName = item.ageRangeCode;
-					}
-				});
+				if(ageRangeCode === 1 || ageRangeCode === 2 || ageRangeCode === 3) {
+					ageName = 18;
+				} else if(ageRangeCode === 0) {
+					ageName = '';
+				} else {
+					ageName = ageRangeCode;
+				}
 				return ageName;
+				// return ageName;
 			default: return 0;
 		}
 	};
@@ -500,6 +511,24 @@ class PhotoCard extends React.Component {
 		return false;
 	};
 
+	mapAgeSelectInfo = (ageRangeCode, range) => {
+		let ageRange = '';
+		switch(ageRangeCode) {
+			case 1:
+				ageRange = formatMessage({ id: 'photoManagement.ageSmallInfo'});
+				break;
+			case 18:
+				ageRange = formatMessage({id: 'photoManagement.ageMiddleInfo'});
+				break;
+			case 8:
+				ageRange = formatMessage({id: 'photoManagement.ageLargeInfo'});
+				break;
+			default:
+				ageRange = range;
+		}
+		return ageRange;
+	}
+
 	dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>
 		date ? moment.unix(date).format(format) : undefined;
 
@@ -521,7 +550,13 @@ class PhotoCard extends React.Component {
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
 		const { isEdit, infoFormVisible, removeVisible, fileUrl, imageLoaded, isUpload } = this.state;
-		const imageUrl = fileUrl || image;
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
+		};
+		const src = image || images[gender];
+		const imageUrl = fileUrl || src;
 		// console.log('url',imageUrl);
 		// console.log(id, age, gender);
 		return (
@@ -543,7 +578,7 @@ class PhotoCard extends React.Component {
 			>
 				<div>
 					<div className={styles['pic-col']}>
-						<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={image} />
+						<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={src} />
 					</div>
 					<div className={styles['word-col']}>
 						<span className={styles['info-card-span']} title={this.handleInfo('name')}>
@@ -595,7 +630,7 @@ class PhotoCard extends React.Component {
 										showUploadList={false}
 									>
 										<div className={styles['upload-pic']}>
-											{image !== '' &&
+											{src !== '' &&
 											<div
 												style={{backgroundImage:`url("${imageUrl}")`}}
 												className={styles['edit-pic-col']}
@@ -705,9 +740,10 @@ class PhotoCard extends React.Component {
 												})(
 													<Select>
 														{
-															ageRange.map((item, index)=>
+															ageRange && ageRange.map((item, index)=>
 																<Option value={item.ageRangeCode} key={index}>
-																	{item.ageRange}
+																	{/* {item.ageRange} */}
+																	{this.mapAgeSelectInfo(item.ageRangeCode, item.ageRange)}
 																</Option>)
 														}
 													</Select>,
@@ -730,7 +766,7 @@ class PhotoCard extends React.Component {
 							<Row>
 								<Col span={10}>
 									<div className={styles['pic-col']}>
-										<Avatar shape="square" size={300} icon='user' className={styles['pic-col']} src={image} />
+										<Avatar shape="square" size={300} icon='user' className={styles['pic-col']} src={src} />
 									</div>
 								</Col>
 

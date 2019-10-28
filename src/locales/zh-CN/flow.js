@@ -16,7 +16,7 @@ export default {
 	'flow.genders.male':'男',
 	'flow.genders.female':'女',
 	'flow.age.unit':'岁',
-	'flow.unknown':'未知',
+	'flow.unknown':'--',
 	'flow.nosdInfo':'TF卡未插入，人脸识别相关功能将无法使用',
 	'flow.faceid.stranger': '新客',
 	'flow.faceid.regular': '熟客',
