@@ -254,10 +254,11 @@ class Live extends React.Component{
 	}
 
 	getHistoryUrl = async  (timestamp) => {
+		const time = parseInt(timestamp, 10);
 		const { getHistoryUrl, location: { query }} = this.props;
 		const { sn } = query;
 
-		const url = await getHistoryUrl({ sn, timestamp });
+		const url = await getHistoryUrl({ sn, timestamp: time });
 		return url;
 	}
 
