@@ -8,11 +8,13 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Faceid from '@/pages/Flow/VideoPlayer/Faceid';
 import LivePlayer from '@/pages/Flow/VideoPlayer/LivePlayer';
 import { LIBRARY_STYLE } from './libraryName';
+import manImage from '@/assets/imgs/man.png';
+import womanImage from '@/assets/imgs/woman.png';
 
 import styles from './Live.less';
 
 @connect((state) => {
-	const { flowFaceid: { rectangles, list, libraryList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }} = state;
+	const { flowFaceid: { rectangles, list, libraryList, ageRangeList  }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }} = state;
 	// const rects = [];
 
 	// rectangles.forEach(item => {
@@ -29,6 +31,7 @@ import styles from './Live.less';
 		faceidRects: rectangles || [],
 		faceidList: list || [],
 		timeSlots: timeSlots || [],
+		ageRangeList: ageRangeList || [],
 		location,
 		libraryList,
 	};
@@ -179,6 +182,12 @@ import styles from './Live.less';
 		});
 	},
 	loadList: () => dispatch({ type:'ipcList/read'}),
+	// test() {
+	// 	dispatch({
+	// 		type: 'flowFaceid/test',
+	// 		payload: {},
+	// 	});
+	// }
 }))
 class Live extends React.Component{
 	constructor(props) {
@@ -197,7 +206,6 @@ class Live extends React.Component{
 
 		readLibraryType();
 		const sn = this.getSN();
-
 		let sdStatus = true;
 		if (sn) {
 			// test();
@@ -398,6 +406,37 @@ class Live extends React.Component{
 		return url;
 	}
 
+	mapAgeInfo(age, ageRangeCode) {
+
+		const { ageRangeList } = this.props;
+		let ageName = formatMessage({id: 'flow.unknown'});
+		if(age) {
+			ageName = `${age} ${formatMessage({id: 'flow.age.unit'})}`;
+		} else {
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+				case 18:
+					ageName = formatMessage({ id: 'flow.ageSmallInfo'});
+					break;
+				case 8:
+					ageName = formatMessage({ id: 'flow.ageLargeInfo'});
+					break;
+				default:
+					if(ageRangeList){
+						ageRangeList.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = `${item.ageRange} ${formatMessage({id: 'flow.age.unit'})}`;
+							}
+						});
+					}
+			}
+		}
+
+		return ageName;
+	}
+
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, libraryList } = this.props;
 
@@ -410,6 +449,12 @@ class Live extends React.Component{
 			0: formatMessage({ id: 'flow.genders.unknown' }),
 			1: formatMessage({ id: 'flow.genders.male'}),
 			2: formatMessage({ id: 'flow.genders.female'})
+		};
+
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
 		};
 
 		return(
@@ -466,14 +511,15 @@ class Live extends React.Component{
 														title={
 															<div className={styles['avatar-container']}>
 																<div className={`${styles.type} ${styles[libraryType[item.libraryId]]}`}>{ item.libraryName }</div>
-																<Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic}`} />
+																{/* <Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic}`} /> */}
+																<Avatar className={styles.avatar} shape="square" size={128} src={item.pic ? item.pic : images[item.gender]} />
 															</div>
 														}
 														bordered={false}
 														className={styles.infos}
 													>
 														<p className={styles['infos-age']}>
-															{ `${ genders[item.gender] } ${ item.age }${formatMessage({id: 'flow.age.unit'})}` }
+															{ `${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)}` }
 														</p>
 														<p className={styles['infos-time']}>
 															{/* <span>{formatMessage({id: 'live.last.arrival.time'})}</span> */}

@@ -30,7 +30,7 @@ export default {
 			});
 		},
 		changeFileStatus({ fileList }, { payload: { response, status } }) {
-			// console.log('setFileStatus');
+			// console.log('setFileStatus', response, status);
 			fileList.forEach(item => {
 				// console.log(response.imgId,item, item.imgId, status);
 				if(response.imgId === item.imgId){

@@ -10,9 +10,11 @@ import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 
 import styles from './Live.less';
+import manImage from '@/assets/imgs/man.png';
+import womanImage from '@/assets/imgs/woman.png';
 
 @connect((state) => {
-	const { faceid: { rectangles, list }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
+	const { faceid: { rectangles, list, ageRangeList }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
 
 	return {
 		streamId,
@@ -20,7 +22,8 @@ import styles from './Live.less';
 		currentPPI: ppi || '1080',
 		faceidRects: rectangles || [],
 		faceidList: list || [],
-		timeSlots: timeSlots || []
+		timeSlots: timeSlots || [],
+		ageRangeList: ageRangeList || [],
 	};
 }, (dispatch) => ({
 	async getTimeSlots({sn, timeStart, timeEnd}) {
@@ -166,7 +169,13 @@ import styles from './Live.less';
 				status
 			}
 		});
-	}
+	},
+	// test() {
+	// 	dispatch({
+	// 		type: 'faceid/test',
+	// 		payload: {},
+	// 	});
+	// }
 }))
 class Live extends React.Component{
 	constructor(props) {
@@ -210,7 +219,7 @@ class Live extends React.Component{
 				deviceInfo,
 				sdStatus
 			});
-			// setTimeout(test, 1000);
+			// setTimeout(test, 100);
 		}
 	}
 
@@ -375,6 +384,37 @@ class Live extends React.Component{
 		return url;
 	}
 
+	mapAgeInfo(age, ageRangeCode) {
+
+		const { ageRangeList } = this.props;
+		let ageName = formatMessage({id: 'live.unknown'});
+		if(age) {
+			ageName = `${age} ${formatMessage({id: 'live.age.unit'})}`;
+		} else {
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+				case 18:
+					ageName = formatMessage({ id: 'live.ageLessInfo'});
+					break;
+				case 8:
+					ageName = formatMessage({ id: 'live.ageLargeInfo'});
+					break;
+				default:
+					if(ageRangeList){
+						ageRangeList.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = `${item.ageRange} ${formatMessage({id: 'live.age.unit'})}`;
+							}
+						});
+					}
+			}
+		}
+
+		return ageName;
+	}
+
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, /* navigateTo */ } = this.props;
 
@@ -384,6 +424,12 @@ class Live extends React.Component{
 			0: formatMessage({ id: 'live.genders.unknown' }),
 			1: formatMessage({ id: 'live.genders.male'}),
 			2: formatMessage({ id: 'live.genders.female'})
+		};
+
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
 		};
 
 
@@ -440,7 +486,8 @@ class Live extends React.Component{
 													title={
 														<div className={styles['avatar-container']}>
 															<div className={styles.type}>{ item.libraryName }</div>
-															<Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic}`} />
+															{/* <Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic}`} /> */}
+															<Avatar className={styles.avatar} shape="square" size={96} src={item.pic ? item.pic : images[item.gender]} />
 														</div>
 													}
 													bordered={false}
@@ -449,7 +496,7 @@ class Live extends React.Component{
 												>
 													<p className={styles.name}>{ item.name }</p>
 													<p>
-														{ `(${ genders[item.gender] } ${ item.age }岁)` }
+														{ `(${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)})` }
 													</p>
 													<p>
 														<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
@@ -496,11 +543,11 @@ class Live extends React.Component{
 								/>
 
 							</PerfectScrollbar>
-							<div className={styles['infos-more']}>
+							{/* <div className={styles['infos-more']}>
 								{
 									faceidList && faceidList.length? <span onClick={() => navigateTo('faceLog')}>{formatMessage({ id: 'live.logs'})}</span> : ''
 								}
-							</div>
+							</div> */}
 						</div>
 						: ''
 				}

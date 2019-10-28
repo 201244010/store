@@ -1,32 +1,11 @@
-import { formatMessage } from 'umi/locale';
 import { format } from '@konata9/milk-shake';
 import { customizeFetch } from '@/utils/fetch';
-import { ERROR_OK } from '@/constants/errorCode';
 import CONFIG from '@/config';
 
 const { IPC_SERVER } = CONFIG;
 const request = customizeFetch('ipc/api/face/group', IPC_SERVER);
 const request1 = customizeFetch('ipc/api/face', IPC_SERVER);
 const range = customizeFetch('ipc/api/face/age', IPC_SERVER);
-
-const dataFormatter = (item) => {
-
-	let ageRange = '';
-	switch(item.age_range_code) {
-		case 1:
-			ageRange = formatMessage({ id: 'photoManagement.ageSmallInfo'});
-			break;
-		case 8 :
-			ageRange = formatMessage({ id: 'photoManagement.ageLargeInfo'});
-			break;
-		default:
-			ageRange = item.age_range;
-	}
-	return {
-		ageRangeCode: item.age_range_code,
-		ageRange
-	};
-};
 
 // 获取照片列表
 export const readPhotoList = async (params) => {
@@ -95,17 +74,18 @@ export const getRange = async () => (
 	range('getRangeList').then(
 		async response => {
 			const json = await response.json();
-			const { code, data } = json;
-			if(code === ERROR_OK) {
-				const result = data.age_range_list.map(dataFormatter);
-				return {
-					code,
-					data: {
-						ageRangeList: result
-					}
-				};
-			}
+			// const { code, data } = json;
 			return format('toCamel')(json);
+			// if(code === ERROR_OK) {
+			// 	const result = data.age_range_list.map(dataFormatter);
+			// 	return {
+			// 		code,
+			// 		data: {
+			// 			ageRangeList: result
+			// 		}
+			// 	};
+			// }
+			// return format('toCamel')(json);
 
 		}
 	)

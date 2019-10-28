@@ -523,6 +523,24 @@ class PhotoManagement extends React.Component {
 		});
 	};
 
+	mapAgeSelectInfo = (ageRangeCode, range) => {
+		let ageRange = '';
+		switch(ageRangeCode) {
+			case 1:
+				ageRange = formatMessage({ id: 'photoManagement.ageSmallInfo'});
+				break;
+			case 18:
+				ageRange = formatMessage({id: 'photoManagement.ageMiddleInfo'});
+				break;
+			case 8:
+				ageRange = formatMessage({id: 'photoManagement.ageLargeInfo'});
+				break;
+			default:
+				ageRange = range;
+		}
+		return ageRange;
+	}
+
 	render() {
 		const {
 			form: { getFieldDecorator },
@@ -588,7 +606,8 @@ class PhotoManagement extends React.Component {
 											</Option>
 											{ageRange && ageRange.map((item, index) => (
 												<Option value={item.ageRangeCode} key={index}>
-													{item.ageRange}
+													{/* {item.ageRange} */}
+													{this.mapAgeSelectInfo(item.ageRangeCode, item.ageRange)}
 												</Option>
 											))}
 										</Select>
