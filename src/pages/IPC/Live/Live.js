@@ -376,7 +376,7 @@ class Live extends React.Component{
 	}
 
 	render() {
-		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
+		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, /* navigateTo */ } = this.props;
 
 		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
 
@@ -460,9 +460,9 @@ class Live extends React.Component{
 														</span>
 													</p>
 
-													<p>
+													{/* <p>
 														<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
-													</p>
+													</p> */}
 												</Card>
 												{/* <Card
 												bordered={false}
