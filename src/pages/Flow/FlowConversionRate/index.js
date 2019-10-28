@@ -125,7 +125,7 @@ class FlowConversionRate extends React.PureComponent {
 							content="flowCount"
 							htmlTemplate={(_, item) => {
 								const { point = {} } = item;
-								return parseInt(nowHour, 10) === parseInt(point.time, 10)
+								return parseInt(nowHour, 10) === parseInt(point.time, 10) && parseInt(nowHour, 10) > 7 && parseInt(nowHour, 10) < 20
 									? `<div class="template-title">
 										<div class="template-content">
 											<div class="template-top">${parseInt(point.flowCount, 10) !== 0 ? point.flowCount : ''}</div>
