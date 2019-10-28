@@ -235,7 +235,13 @@ class PhotoCard extends React.Component {
 						faceImgList: [fileName],
 						faceId: id
 					});
-					isUpload = response.data.failureList.length === 0;
+					// console.log(response);
+					if(response) {
+						isUpload = !response.data.failureList || response.data.failureList.length === 0;
+					} else {
+						isUpload = false;
+					}
+
 				}
 
 				const fields = form.getFieldsValue();
