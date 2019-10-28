@@ -71,7 +71,7 @@ class AuthKey extends PureComponent {
 							{sunmiShopNo}
 						</div>
 						<div className={styles['auth-info']}>
-							<span>{formatMessage({ id: 'auth.shop.no' })}</span>
+							<span>{formatMessage({ id: 'auth.shop.key' })}</span>
 							{sunmiShopKey}
 						</div>
 						<div className={`${styles['auth-info']} ${styles['auth-desc']}`}>
