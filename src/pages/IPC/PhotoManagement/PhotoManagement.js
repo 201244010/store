@@ -92,6 +92,29 @@ const redStyle = { color: 'red' };
 				type: 'photoUpload/clearFileList',
 			});
 		},
+		setUploadHandler: (handler) =>
+			dispatch({
+				type: 'photoUpload/setUploadHandler',
+				payload: {
+					handler
+				}
+			}),
+		checkClientExist: () =>
+			dispatch({
+				type: 'mqttStore/checkClientExist'
+			}),
+		unsubscribeTopic: () =>
+			dispatch({
+				type: 'photoUpload/unsubscribeTopic'
+			}),
+		changeFileList: (faceExtractList) => {
+			dispatch({
+				type: 'photoUpload/changeFileList',
+				payload: {
+					faceList: faceExtractList
+				}
+			});
+		}
 	})
 )
 @Form.create()
@@ -119,12 +142,13 @@ class PhotoManagement extends React.Component {
 				age: 10,
 				gender: -1,
 			},
+
 		};
 	}
 
 
 
-	componentDidMount() {
+	componentDidMount () {
 		const {
 			getLibrary,
 			getRange,
@@ -138,12 +162,33 @@ class PhotoManagement extends React.Component {
 		});
 		getLibrary();
 		getRange();
+		this.checkMQTTClient();
 	}
 
 	componentWillUnmount() {
-		const { clearPhotoList, clearFileList } = this.props;
+		const { clearPhotoList, clearFileList, unsubscribeTopic } = this.props;
 		clearPhotoList();
 		clearFileList();
+		unsubscribeTopic();
+	}
+
+	// { handler: this.apHandler }
+
+	// changeFileList = (faceExtractList) => {
+
+	// 	const { changeFileList } = this.props;
+	// 	changeFileList(faceExtractList);
+	// }
+
+	checkMQTTClient = async () => {
+		clearTimeout(this.checkTimer);
+		const { checkClientExist, setUploadHandler, changeFileList } = this.props;
+		const isClientExist = await checkClientExist();
+		if(isClientExist) {
+			setUploadHandler(changeFileList);
+		} else {
+			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
+		}
 	}
 
 	getList = () => {
@@ -193,6 +238,7 @@ class PhotoManagement extends React.Component {
 	hideRemove = () => {
 		this.setState({
 			removeLibraryShown: false,
+			removeRadioValue: 0
 		});
 	};
 
@@ -251,15 +297,17 @@ class PhotoManagement extends React.Component {
 		// let isUpload = false;
 		const list = fileList.map(item => {
 			const {
-				response: {
-					data: { verifyResult, fileName },
-				},
+				// response: {
+				// 	data: { verifyResult, fileName },
+				// },
+				response: { verifyResult, fileName }
 			} = item;
 			if (verifyResult === 1) {
 				return fileName;
 			}
 			return false;
 		});
+
 		if(!this.isUpload) {
 			if (fileList.length === 0) {
 				message.error(formatMessage({ id: 'photoManagement.noPhotoAlert' }));
@@ -269,7 +317,7 @@ class PhotoManagement extends React.Component {
 				// console.log('save', response);
 				if (response === false) {
 					message.error(formatMessage({ id: 'photoManagement.addFailTitle' }));
-				} else if (response.data.failureList.length === 0) {
+				} else if (!response.data.failureList || response.data.failureList.length === 0) {
 					message.success(formatMessage({ id: 'photoManagement.card.saveSuccess' }));
 					this.setState({ uploadPhotoShown: false }, () => {
 						clearFileList();
@@ -475,6 +523,24 @@ class PhotoManagement extends React.Component {
 		});
 	};
 
+	mapAgeSelectInfo = (ageRangeCode, range) => {
+		let ageRange = '';
+		switch(ageRangeCode) {
+			case 1:
+				ageRange = formatMessage({ id: 'photoManagement.ageSmallInfo'});
+				break;
+			case 18:
+				ageRange = formatMessage({id: 'photoManagement.ageMiddleInfo'});
+				break;
+			case 8:
+				ageRange = formatMessage({id: 'photoManagement.ageLargeInfo'});
+				break;
+			default:
+				ageRange = range;
+		}
+		return ageRange;
+	}
+
 	render() {
 		const {
 			form: { getFieldDecorator },
@@ -540,7 +606,8 @@ class PhotoManagement extends React.Component {
 											</Option>
 											{ageRange && ageRange.map((item, index) => (
 												<Option value={item.ageRangeCode} key={index}>
-													{item.ageRange}
+													{/* {item.ageRange} */}
+													{this.mapAgeSelectInfo(item.ageRangeCode, item.ageRange)}
 												</Option>
 											))}
 										</Select>

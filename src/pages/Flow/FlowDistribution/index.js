@@ -61,24 +61,71 @@ class FlowDistribution extends React.PureComponent {
 		const data = [];
 		let male = 0;
 		let female = 0;
+
+		const under18 = [1,2,3, 18];
+		const under18male = {
+			code: 1,
+			age: formatMessage({id: 'flow.ageSmallInfo'}),
+			visitor: 0,
+			gender: 'male',
+			max: 1,
+		};
+		const under18female = {
+			code: 1,
+			age: formatMessage({id: 'flow.ageSmallInfo'}),
+			visitor: 0,
+			gender: 'male',
+			max: 1,
+		};
+
+
+		const above56 = [8, 56];
+		const above56male = {
+			code: 56,
+			age: formatMessage({id: 'flow.ageLargeInfo'}),
+			visitor: 0,
+			gender: 'male',
+			max: 1,
+		};
+		const above56female = {
+			code: 56,
+			age: formatMessage({id: 'flow.ageLargeInfo'}),
+			visitor: 0,
+			gender: 'female',
+			max: 1,
+		};
+
 		countListByGender.map(item => {
 			male += item.maleCount;
 			female += item.femaleCount;
-			data.push(
-				{
-					age: `${ageRangeMap[item.ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`,
-					visitor: item.maleCount,
-					gender: 'male',
-					max: 1,
-				},
-				{
-					age: `${ageRangeMap[item.ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`,
-					visitor: item.femaleCount,
-					gender: 'female',
-					max: 1,
-				}
-			);
+
+			if (under18.includes(item.ageRangeCode)) {
+				under18male.visitor += item.maleCount;
+				under18female.visitor += item.femaleCount;
+			}else if (above56.includes(item.ageRangeCode)) {
+				above56male.visitor += item.maleCount;
+				above56male.visitor += item.femaleCount;
+			}else{
+				data.push(
+					{
+						code: item.ageRangeCode,
+						age: `${ageRangeMap[item.ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`,
+						visitor: item.maleCount,
+						gender: 'male',
+						max: 1,
+					},
+					{
+						code: item.ageRangeCode,
+						age: `${ageRangeMap[item.ageRangeCode]}${formatMessage({ id: 'flow.distribution.age' })}`,
+						visitor: item.femaleCount,
+						gender: 'female',
+						max: 1,
+					}
+				);
+			}
 		});
+		data.push(under18male, under18female, above56male, above56female);
+		data.sort((a, b ) => b.code - a.code);
 
 		let maxTicks = 0;
 		data.map(item => {

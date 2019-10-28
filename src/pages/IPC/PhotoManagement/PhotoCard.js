@@ -1,12 +1,14 @@
 import React from 'react';
 import { Card, Form, Checkbox, Modal, Radio, Upload, Row, Col, Avatar, Select, Input, Icon, message } from 'antd';
 // import PhotoForm from './PhotoForm';
-import {formatMessage} from 'umi/locale';
+import { formatMessage } from 'umi/locale';
 import {connect} from 'dva';
 import moment from 'moment';
+// import { mbStringLength } from '@/utils/utils';
 import styles from './PhotoManagement.less';
 import { spaceInput } from '@/constants/regexp';
-
+import manImage from '@/assets/imgs/man.png';
+import womanImage from '@/assets/imgs/woman.png';
 
 
 const RadioGroup = Radio.Group;
@@ -19,6 +21,7 @@ const { confirm } = Modal;
 @connect(
 	state => ({
 		photoLibrary: state.photoLibrary,
+		fileList: state.photoUpload.fileList
 	}),
 	dispatch => ({
 		deletePhoto: payload =>
@@ -61,14 +64,28 @@ const { confirm } = Modal;
 				payload
 			}),
 		editFile: (file, groupId ) => {
-			const result = dispatch({
-				type: 'photoUpload/editFile',
+			// console.log(file);
+			dispatch({
+				// type: 'photoUpload/editFile',
+				type: 'photoUpload/uploadFileList',
 				payload: {
-					file,
+					fileList: [file],
 					groupId
 				}
 			});
-			return result;
+		},
+		setFile: (file) => {
+			dispatch({
+				type: 'photoUpload/setFileList',
+				payload: {
+					fileList: [file]
+				}
+			});
+		},
+		clearFileList: () => {
+			dispatch({
+				type: 'photoUpload/clearFileList',
+			});
 		},
 		navigateTo: (pathId, urlParams) => dispatch({
 			type: 'menu/goToPath',
@@ -93,6 +110,7 @@ class PhotoCard extends React.Component {
 			// uploadFail: false,
 			// uploadSuccess: false,
 			isUpload: 0,
+			isMessage: false,
 			imageLoaded: false,
 		};
 	}
@@ -103,11 +121,39 @@ class PhotoCard extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const { image: src } = nextProps;
+		const { image: src, fileList } = nextProps;
 		const { image } = this.props;
+		// console.log('will', fileList);
+		const { isMessage } = this.state;
 		if (src !== image) {
 			this.preloadImage(src);
 		}
+		if(fileList && fileList.length !== 0){
+			const file = fileList[0];
+			// console.log('will',file);
+			if(file.response && file.response.verifyResult !== undefined && isMessage){
+				const { fileName, verifyResult } = file.response;
+				let isUpload = 0;
+				if(verifyResult === 1 ) {
+					message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
+					isUpload = 1;
+				} else {
+					message.error(formatMessage({id:'photoManagement.uploadFail'}));
+					isUpload = 2;
+				}
+				this.getBase64(file, imageUrl => {
+					this.setState({
+						fileUrl: imageUrl,
+						fileName,
+						isUpload,
+						isMessage: false,
+						file
+					});
+				});
+			}
+
+		}
+
 	}
 
 	preloadImage = (src) => {
@@ -137,8 +183,10 @@ class PhotoCard extends React.Component {
 	};
 
 	hideInfo = () => {
+		const { clearFileList } = this.props;
 		this.setState({ infoFormVisible: false, fileName: '' }, ()=> {
 			this.setState({isEdit: false, file: {}, isUpload: 0, fileUrl: ''});
+			clearFileList();
 		});
 	};
 
@@ -150,6 +198,7 @@ class PhotoCard extends React.Component {
 
 	hideRemove = () => {
 		this.setState({
+			targetLibrary: '',
 			removeVisible: false,
 		});
 	};
@@ -174,9 +223,27 @@ class PhotoCard extends React.Component {
 	// 处理保存编辑结果
 	handleSubmit = () => {
 		const { fileName, file} = this.state;
-		const { form, id , edit, libraryId, upload, groupId, getList } = this.props;
+		const { form, id , edit, libraryId, upload, groupId, getList, clearFileList } = this.props;
 		form.validateFields(async errors => {
 			if (!errors) {
+
+				let isUpload = true;
+
+				if(fileName !== '' && file.response !== undefined && file.response.verifyResult === 1) {
+					const response = await upload({
+						groupId,
+						faceImgList: [fileName],
+						faceId: id
+					});
+					// console.log(response);
+					if(response) {
+						isUpload = !response.data.failureList || response.data.failureList.length === 0;
+					} else {
+						isUpload = false;
+					}
+
+				}
+
 				const fields = form.getFieldsValue();
 				const isEdit = await edit({
 					faceId: id,
@@ -187,24 +254,16 @@ class PhotoCard extends React.Component {
 					age: fields.age
 				});
 
-				let isUpload = true;
-
-				if(fileName !== '' && file.response !== undefined && file.response.data.verifyResult === 1) {
-					isUpload = await upload({
-						groupId,
-						faceImgList: [fileName],
-						faceId: id
-					});
-				}
+				// console.log(isUpload);
 
 				if(isEdit && isUpload) {
 					message.success(formatMessage({id: 'photoManagement.card.editSuccess'}));
 				} else {
-
 					message.error(formatMessage({id: 'photoManagement.card.editError'}));
 				}
 				getList();
 				this.setState({infoFormVisible: false, isEdit: false, fileName: '', isUpload: 0, fileUrl: ''});
+				clearFileList();
 			}
 		});
 	};
@@ -256,6 +315,7 @@ class PhotoCard extends React.Component {
 				case 1:
 				case 2:
 				case 3:
+				case 18:
 					ageName = formatMessage({id: 'photoManagement.ageMiddleInfo'});
 					break;
 				default:
@@ -321,37 +381,37 @@ class PhotoCard extends React.Component {
 	// 	});
 	// };
 
-	editFile = async file => {
-		// console.log('file', file);
-		const { editFile, groupId } = this.props;
-		const response = await editFile(file, groupId);
-		const { code, data: {verifyResult}} = response;
-		let isUpload = 0;
-		if(verifyResult === 1 && code === 1 ) {
-			message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
-			isUpload = 1;
-		} else {
-			message.error(formatMessage({id:'photoManagement.uploadFail'}));
-			isUpload = 2;
-		}
-		this.getBase64(file,imageUrl => {
-			this.setState({
-				fileUrl: imageUrl,
-				fileName: response.data.fileName,
-				isUpload,
-				file:{
-					...file,
-					response,
-					status: 'done'
-				}
-			});
-		});
-	}
+	// editFile = async file => {
+	// console.log('file', file);
+	// 	const { editFile, groupId } = this.props;
+	// 	const response = await editFile(file, groupId);
+	// 	const { code, data: {verifyResult}} = response;
+	// 	let isUpload = 0;
+	// 	if(verifyResult === 1 && code === 1 ) {
+	// 		message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
+	// 		isUpload = 1;
+	// 	} else {
+	// 		message.error(formatMessage({id:'photoManagement.uploadFail'}));
+	// 		isUpload = 2;
+	// 	}
+	// 	this.getBase64(file,imageUrl => {
+	// 		this.setState({
+	// 			fileUrl: imageUrl,
+	// 			fileName: response.data.fileName,
+	// 			isUpload,
+	// 			file:{
+	// 				...file,
+	// 				response,
+	// 				status: 'done'
+	// 			}
+	// 		});
+	// 	});
+	// }
 
 
 	beforeUpload = file => {
 		// console.log('before',file);
-
+		const { editFile, groupId, setFile } = this.props;
 		const isLt1M = file.size / 1024 / 1024 < 1;
 		const isJPG = file.type === 'image/jpeg';
 		const isPNG = file.type === 'image/png';
@@ -365,11 +425,14 @@ class PhotoCard extends React.Component {
 			});
 		} else {
 			file.status = 'uploading';
-			this.editFile(file);
+			// this.editFile(file);
+			editFile(file, groupId);
 			this.setState({
 				file,
+				isMessage: true
 			});
 		}
+		setFile(file);
 		return false;
 	};
 
@@ -399,7 +462,7 @@ class PhotoCard extends React.Component {
 	};
 
 	handleSelectInfo = type => {
-		const { gender, ageRangeCode, photoLibrary: { ageRange } } = this.props;
+		const { gender, ageRangeCode, /* photoLibrary: { ageRange } */ } = this.props;
 		let ageName = '';
 		switch (type) {
 			case 'gender':
@@ -411,12 +474,15 @@ class PhotoCard extends React.Component {
 				}
 				return ageName;
 			case 'age':
-				ageRange.forEach(item => {
-					if(item.ageRangeCode === ageRangeCode) {
-						ageName = item.ageRangeCode;
-					}
-				});
+				if(ageRangeCode === 1 || ageRangeCode === 2 || ageRangeCode === 3) {
+					ageName = 18;
+				} else if(ageRangeCode === 0) {
+					ageName = '';
+				} else {
+					ageName = ageRangeCode;
+				}
 				return ageName;
+				// return ageName;
 			default: return 0;
 		}
 	};
@@ -434,16 +500,34 @@ class PhotoCard extends React.Component {
 
 	isUploaded = () => {
 		const { file: { status, response } } = this.state;
-		if(status === 'uploading' && status !== undefined) {
+		if((status === 'uploading' || status === 'error') && status !== undefined) {
 			return true;
 		}
 		if(status !== undefined ) {
-			if(response !== undefined && response.code !== 1) {
+			if(response !== undefined && response.verifyResult!== 1) {
 				return true;
 			}
 		}
 		return false;
 	};
+
+	mapAgeSelectInfo = (ageRangeCode, range) => {
+		let ageRange = '';
+		switch(ageRangeCode) {
+			case 1:
+				ageRange = formatMessage({ id: 'photoManagement.ageSmallInfo'});
+				break;
+			case 18:
+				ageRange = formatMessage({id: 'photoManagement.ageMiddleInfo'});
+				break;
+			case 8:
+				ageRange = formatMessage({id: 'photoManagement.ageLargeInfo'});
+				break;
+			default:
+				ageRange = range;
+		}
+		return ageRange;
+	}
 
 	dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>
 		date ? moment.unix(date).format(format) : undefined;
@@ -466,7 +550,13 @@ class PhotoCard extends React.Component {
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
 		const { isEdit, infoFormVisible, removeVisible, fileUrl, imageLoaded, isUpload } = this.state;
-		const imageUrl = fileUrl || image;
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
+		};
+		const src = image || images[gender];
+		const imageUrl = fileUrl || src;
 		// console.log('url',imageUrl);
 		// console.log(id, age, gender);
 		return (
@@ -488,7 +578,7 @@ class PhotoCard extends React.Component {
 			>
 				<div>
 					<div className={styles['pic-col']}>
-						<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={image} />
+						<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={src} />
 					</div>
 					<div className={styles['word-col']}>
 						<span className={styles['info-card-span']} title={this.handleInfo('name')}>
@@ -540,7 +630,7 @@ class PhotoCard extends React.Component {
 										showUploadList={false}
 									>
 										<div className={styles['upload-pic']}>
-											{image !== '' &&
+											{src !== '' &&
 											<div
 												style={{backgroundImage:`url("${imageUrl}")`}}
 												className={styles['edit-pic-col']}
@@ -650,9 +740,10 @@ class PhotoCard extends React.Component {
 												})(
 													<Select>
 														{
-															ageRange.map((item, index)=>
+															ageRange && ageRange.map((item, index)=>
 																<Option value={item.ageRangeCode} key={index}>
-																	{item.ageRange}
+																	{/* {item.ageRange} */}
+																	{this.mapAgeSelectInfo(item.ageRangeCode, item.ageRange)}
 																</Option>)
 														}
 													</Select>,
@@ -675,7 +766,7 @@ class PhotoCard extends React.Component {
 							<Row>
 								<Col span={10}>
 									<div className={styles['pic-col']}>
-										<Avatar shape="square" size={300} icon='user' className={styles['pic-col']} src={image} />
+										<Avatar shape="square" size={300} icon='user' className={styles['pic-col']} src={src} />
 									</div>
 								</Col>
 

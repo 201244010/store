@@ -32,8 +32,8 @@ class StoreManagement extends Component {
 		this.columns = [
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnId' }),
-				dataIndex: 'shop_id',
-				key: 'shop_id',
+				dataIndex: 'sunmi_shop_no',
+				key: 'sunmi_shop_no',
 			},
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnName' }),
@@ -82,7 +82,7 @@ class StoreManagement extends Component {
 				title: formatMessage({ id: 'storeManagement.list.area' }),
 				dataIndex: 'business_area',
 				key: 'business_area',
-				render: text => <span>{text === 0 ? '--' : `${text}㎡`}</span>,
+				render: text => <span>{text === 0 ? '--' : text}</span>,
 			},
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnContacts' }),
