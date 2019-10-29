@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row, Table } from 'antd';
+import { Col, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { unixSecondToDate } from '@/utils/utils';
 import styles from './index.less';
@@ -15,48 +15,51 @@ const ESL_STATES = {
 };
 
 export default function detail(props) {
-	const { detailInfo: eslInfo, screenPushInfo } = props;
-	const pushData = [{
-		name: formatMessage({id: screenPushInfo.page1_name || ' '}),
-		template: formatMessage({id: screenPushInfo.page1_template_name || ' '}),
-		status: screenPushInfo.page1_push_status,
-		time: screenPushInfo.page1_push_time ? unixSecondToDate(screenPushInfo.page1_push_time) : '--'
-	}, {
-		name: formatMessage({id: screenPushInfo.page2_name || ' '}),
-		template: formatMessage({id: screenPushInfo.page2_template_name || ' '}),
-		status: screenPushInfo.page2_push_status,
-		time: screenPushInfo.page2_push_time ? unixSecondToDate(screenPushInfo.page2_push_time) : '--'
-	}, {
-		name: formatMessage({id: screenPushInfo.page3_name || ' '}),
-		template: formatMessage({id: screenPushInfo.page3_template_name || ' '}),
-		status: screenPushInfo.page3_push_status,
-		time: screenPushInfo.page3_push_time ? unixSecondToDate(screenPushInfo.page3_push_time) : '--'
-	}];
-	const columns = [
-		{
-			title: formatMessage({id: 'esl.device.esl.title.name'}),
-			dataIndex: 'name',
-			key: 'name',
-		},
-		{
-			title: formatMessage({id: 'esl.device.esl.title.template'}),
-			dataIndex: 'template',
-			key: 'template',
-		},
-		{
-			title: formatMessage({id: 'esl.device.esl.title.status'}),
-			dataIndex: 'status',
-			key: 'status',
-			render: status => (
-				<span className={status === 4 ? styles['low-battery'] : ''}>{ESL_STATES[status]}</span>
-			),
-		},
-		{
-			title: formatMessage({id: 'esl.device.esl.title.push.time'}),
-			dataIndex: 'time',
-			key: 'time',
-		},
-	];
+	const {
+	    detailInfo: eslInfo,
+		// screenPushInfo
+	} = props;
+	// const pushData = [{
+	// 	name: formatMessage({id: screenPushInfo.page1_name || ' '}),
+	// 	template: formatMessage({id: screenPushInfo.page1_template_name || ' '}),
+	// 	status: screenPushInfo.page1_push_status,
+	// 	time: screenPushInfo.page1_push_time ? unixSecondToDate(screenPushInfo.page1_push_time) : '--'
+	// }, {
+	// 	name: formatMessage({id: screenPushInfo.page2_name || ' '}),
+	// 	template: formatMessage({id: screenPushInfo.page2_template_name || ' '}),
+	// 	status: screenPushInfo.page2_push_status,
+	// 	time: screenPushInfo.page2_push_time ? unixSecondToDate(screenPushInfo.page2_push_time) : '--'
+	// }, {
+	// 	name: formatMessage({id: screenPushInfo.page3_name || ' '}),
+	// 	template: formatMessage({id: screenPushInfo.page3_template_name || ' '}),
+	// 	status: screenPushInfo.page3_push_status,
+	// 	time: screenPushInfo.page3_push_time ? unixSecondToDate(screenPushInfo.page3_push_time) : '--'
+	// }];
+	// const columns = [
+	// 	{
+	// 		title: formatMessage({id: 'esl.device.esl.title.name'}),
+	// 		dataIndex: 'name',
+	// 		key: 'name',
+	// 	},
+	// 	{
+	// 		title: formatMessage({id: 'esl.device.esl.title.template'}),
+	// 		dataIndex: 'template',
+	// 		key: 'template',
+	// 	},
+	// 	{
+	// 		title: formatMessage({id: 'esl.device.esl.title.status'}),
+	// 		dataIndex: 'status',
+	// 		key: 'status',
+	// 		render: status => (
+	// 			<span className={status === 4 ? styles['low-battery'] : ''}>{ESL_STATES[status]}</span>
+	// 		),
+	// 	},
+	// 	{
+	// 		title: formatMessage({id: 'esl.device.esl.title.push.time'}),
+	// 		dataIndex: 'time',
+	// 		key: 'time',
+	// 	},
+	// ];
 
 	return (
 		<div className={styles['detail-info']}>
@@ -164,9 +167,9 @@ export default function detail(props) {
 					</div>
 				</Col>
 			</Row>
-			<Row className={styles.mt24}>
-				<Table dataSource={pushData} columns={columns} pagination={false} />
-			</Row>
+			{/* <Row className={styles.mt24}> */}
+			{/* <Table dataSource={pushData} columns={columns} pagination={false} /> */}
+			{/* </Row> */}
 		</div>
 	);
 }
