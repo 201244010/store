@@ -196,14 +196,14 @@ class DisplayConfig extends Component {
 						<Col span={4}>
 							<Input
 								maxLength={20}
-								value={page2Config.screen_name}
+								value={formatMessage({id: page2Config.screen_name || ' '})}
 								onChange={(e) => this.updatePageConfig('page2Config', 'screen_name', e)}
 							/>
 						</Col>
 						<Col span={4}>
 							<Input
 								maxLength={20}
-								value={page3Config.screen_name}
+								value={formatMessage({id: page3Config.screen_name || ' '})}
 								onChange={(e) => this.updatePageConfig('page3Config', 'screen_name', e)}
 							/>
 						</Col>
