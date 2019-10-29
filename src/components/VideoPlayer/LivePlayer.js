@@ -185,7 +185,7 @@ class LivePlayer extends React.Component{
 		}
 
 		if (this.paused()) {
-			await this.playHistory(parseInt(currentTimestamp, 10));
+			await this.playHistory(currentTimestamp);
 		}else{
 			await this.pauseHistory();
 		}
