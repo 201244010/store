@@ -510,7 +510,7 @@ class Live extends React.Component{
 													<Card
 														title={
 															<div className={styles['avatar-container']}>
-																<div className={`${styles.type} ${styles[libraryType[item.libraryId]]}`}>{ item.libraryName }</div>
+																<div className={`${styles.type} ${styles[libraryType[item.libraryId]]|| styles['type-first']}`}>{ item.libraryName }</div>
 																{/* <Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} /> */}
 																<Avatar className={styles.avatar} shape="square" size={128} src={item.pic ? item.pic : images[item.gender]} />
 															</div>
