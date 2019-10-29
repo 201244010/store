@@ -486,8 +486,8 @@ class Live extends React.Component{
 													title={
 														<div className={styles['avatar-container']}>
 															<div className={styles.type}>{ item.libraryName }</div>
-															<Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} />
-															{/* <Avatar className={styles.avatar} shape="square" size={96} src={item.pic ? item.pic : images[item.gender]} /> */}
+															{/* <Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} /> */}
+															<Avatar className={styles.avatar} shape="square" size={96} src={item.pic ? item.pic : images[item.gender]} />
 														</div>
 													}
 													bordered={false}
