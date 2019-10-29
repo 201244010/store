@@ -42,13 +42,12 @@ export default {
 				const { server_address: address } = token;
 				const clientId = `${currentCompanyId}_${id}_${moment().format('X')}`;
 
-				console.log(token);
-
 				yield put({
 					type: 'updateInfo',
 					payload: {
 						clientId,
 						...token,
+						username: token.login_name,
 						address,
 					},
 				});
