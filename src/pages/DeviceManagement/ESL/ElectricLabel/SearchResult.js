@@ -78,20 +78,17 @@ class SearchResult extends Component {
 
 	showDetail = async record => {
 		const { detailVisible } = this.state;
-		const {
-		    fetchESLDetails,
-			// fetchScreenPushInfo
-		} = this.props;
+		const { fetchESLDetails, fetchScreenPushInfo } = this.props;
 		const response = await fetchESLDetails({
 			options: {
 				esl_id: record.id,
 			},
 		});
-		// await fetchScreenPushInfo({
-		// 	options: {
-		// 		esl_id: record.id,
-		// 	},
-		// });
+		await fetchScreenPushInfo({
+			options: {
+				esl_id: record.id,
+			},
+		});
 		if (response && response.code === ERROR_OK) {
 			this.setState({
 				detailVisible: !detailVisible,
