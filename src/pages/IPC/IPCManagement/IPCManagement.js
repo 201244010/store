@@ -169,7 +169,7 @@ class IPCManagement extends Component {
 					{ipcTypes[ipcType].hasNVR&&<NVRManagement sn={sn} />}
 					<CardManagement sn={sn} />
 					<InitialSetting sn={sn} />
-					<SoftwareUpdate sn={sn} showModal={showModal} />
+					<SoftwareUpdate sn={sn} showModal={showModal} location={location} />
 					{/* <NetworkSetting sn={sn} /> */}
 					{/* <CloudService sn={sn} /> */}
 				</div>

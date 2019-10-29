@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import router from 'umi/router';
 import { Card, Button, Modal, Spin, Progress, Icon, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
@@ -21,6 +22,8 @@ const STATUS = {
 	NODOWNLOADRECEIVE: 'noDownloadReceive'
 };
 
+const LEAST_VERSION = '1.1.3';
+
 // const STATUS_PERCENT = {
 // 	DOWNLOAD: 37,
 // 	AI: 68,
@@ -36,8 +39,16 @@ const mapStateToProps = (state) => {
 	};
 };
 const mapDispatchToProps = (dispatch) => ({
-	load: (sn) => {
+	readStatus: (sn) => {
 		dispatch({
+			type: 'ipcSoftwareUpdate/readStatus',
+			payload: {
+				sn
+			}
+		});
+	},
+	load: async (sn) => {
+		await dispatch({
 			type: 'ipcSoftwareUpdate/load',
 			payload: {
 				sn
@@ -101,21 +112,27 @@ class SoftwareUpdate extends Component {
 		percent: 0,
 		deviceInfo: {},
 		showLoadingFlag: true,
-		confirmBtnShowLoadingFlag: false
+		confirmBtnShowLoadingFlag: false,
+		readStatusFailed: false
 	}
 
 	interval = 0
 
 	componentDidMount = async () => {
-		const { load, sn, getDeviceInfo, showModal } = this.props;
-
+		const { load, sn, getDeviceInfo, showModal, readStatus } = this.props;
 		if(sn){
 			const deviceInfo = await getDeviceInfo({ sn });
 			this.setState({
 				deviceInfo
 			});
 		}
+		// await readStatus(sn);
 		await load(sn);
+
+		const { info: { currentVersion }} = this.props;
+		if (this.comperareVersion(currentVersion, LEAST_VERSION) >= 0) {
+			await readStatus(sn);
+		}
 		if(showModal){
 			this.showModal();
 		}
@@ -125,13 +142,31 @@ class SoftwareUpdate extends Component {
 		const { info } = nextProps;
 		const { info: lastInfo } = this.props;
 		if(lastInfo.updating !== info.updating){
+			this.recoveryHandler(info, lastInfo);
 			this.addTimeoutHandler(info, lastInfo);
+		}
+	}
+
+	recoveryHandler = (info, lastInfo) =>{
+		// const { location } = this.props;
+		// console.log(location);
+		const { updating } = info;
+		const { updating: lastUpdating } = lastInfo;
+		if(lastUpdating === STATUS.NORMAL && updating !== STATUS.BTNLOAD){
+			const { location:{ pathname, search} } = this.props;
+			const initUrl = pathname + search;
+			const targetUrl = `${initUrl}#softwareUpdate`;
+			router.push(targetUrl);
+			this.intervalHandler();
+			this.setState({
+				showLoadingFlag: false
+			});
 		}
 	}
 
 
 	showModal = async () => {
-		const { detect, sn, load, checkBind } = this.props;
+		const { detect, readStatus, sn, load, checkBind, info: { currentVersion }  } = this.props;
 		const isBind = await checkBind(sn);
 		if(isBind) {
 			detect(sn);
@@ -140,21 +175,35 @@ class SoftwareUpdate extends Component {
 				visible: true
 			});
 
-			setTimeout(async () => {
-				await load(sn);
-				this.setState({
-					showLoadingFlag:false
-				});
-			}, 2000);
+			await load(sn);
+			if (this.comperareVersion(currentVersion, LEAST_VERSION) >= 0) {
+				await readStatus(sn);
+				setTimeout(async () => {
+					const { info: { readStatusLoading } } = this.props;
+					if(readStatusLoading === true){
+						this.setState({
+							showLoadingFlag:false,
+							readStatusFailed: true,
+						});
+					}
+					this.setState({
+						showLoadingFlag:false
+					});
+				}, 5000);
+			}else{
+				setTimeout(() => {
+					this.setState({
+						showLoadingFlag:false
+					});
+				}, 2000);
+			}
 		} else {
 			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
 		}
 
 	}
 
-	updateSoftware = async () => {
-
-		const { update,  sn } = this.props;
+	intervalHandler = () =>{
 		const { deviceInfo: { OTATime: {
 			totalTime,
 			defaultDownloadTime,
@@ -163,9 +212,6 @@ class SoftwareUpdate extends Component {
 			defaultRestartTime
 		 },STATUS_PERCENT } } = this.state;
 		let visible = true;
-
-		await update(sn);
-
 		clearInterval(this.interval);
 		this.interval = setInterval(() => {
 			let { percent } = this.state;
@@ -248,6 +294,12 @@ class SoftwareUpdate extends Component {
 		}, totalTime/100);
 	}
 
+	updateSoftware = async () => {
+		const { update,  sn } = this.props;
+		await update(sn);
+		this.intervalHandler();
+	}
+
 	hideModal = async() => {
 		this.setState({
 			confirmBtnShowLoadingFlag: true
@@ -276,6 +328,29 @@ class SoftwareUpdate extends Component {
 		});
 	}
 
+	comperareVersion = (l,r) => {
+		l = l.trim();
+		r = r.trim();
+		if(l === r){
+			return 0;
+		}
+		const lVers = l.split('.');
+		const rVers = r.split('.');
+		const length = Math.min(lVers.length, rVers.length);
+		for(let i = 0; i < length; i++){
+			if(lVers[i] !== rVers[i]){
+				return parseInt(lVers[i], 0) - parseInt(rVers[i], 0);
+			}
+		}
+		const  temp = lVers.length < rVers.length ? rVers : lVers;
+		for(let i = length; i < temp.length; i++){
+			if(parseInt(temp[i], 0) !== 0){
+				return lVers.length < rVers.length ? -1 : 1;
+			}
+		}
+		return 0;
+	}
+
 	addTimeoutHandler(info, lastInfo){
 		const { updating, OTATime } = info;
 		const { updating: lastUpdating } = lastInfo;
@@ -292,6 +367,37 @@ class SoftwareUpdate extends Component {
 			aiUpgradeTime = defaultAIUpgradeTime,
 			restartTime = defaultRestartTime
 		} = OTATime;
+
+		if(lastUpdating === STATUS.NORMAL){
+			switch(updating){
+				case STATUS.DOWNLOAD:
+					setTimeout(() => {
+						const { info: { updating: newUpdating } } = this.props;
+						if (newUpdating === STATUS.DOWNLOAD) {
+							this.setUpdatingStatus(STATUS.DOWNLOADFAIL);
+						}
+					}, downloadTime+15*1000);
+					break;
+				case STATUS.AI:
+					setTimeout(() => {
+						const { info: { updating: newUpdating } } = this.props;
+						if (newUpdating === STATUS.AI) {
+							this.setUpdatingStatus(STATUS.FAIL);
+						}
+					}, aiUpgradeTime+15*1000);
+					break;
+				case STATUS.FIRMWARE:
+					setTimeout(() => {
+						const { info: { updating: newUpdating } } = this.props;
+						if (newUpdating === STATUS.FIRMWARE) {
+							this.setUpdatingStatus(STATUS.RESTART);
+						}
+					}, firmwareTime);
+					break;
+				default:
+					break;
+			}
+		}
 
 		if(lastUpdating === STATUS.NORMAL && updating === STATUS.BTNLOAD){
 			setTimeout(() => {
@@ -370,7 +476,7 @@ class SoftwareUpdate extends Component {
 
 	render() {
 		const { info: { currentVersion, needUpdate, lastCheckTime, updating, newTimeValue }, loading } = this.props;
-		const { percent, visible, showLoadingFlag, deviceInfo:{ STATUS_PERCENT }, confirmBtnShowLoadingFlag } = this.state;
+		const { percent, visible, showLoadingFlag, deviceInfo:{ STATUS_PERCENT }, confirmBtnShowLoadingFlag, readStatusFailed } = this.state;
 		const showLoading = loading.effects['ipcSoftwareUpdate/detect']||showLoadingFlag;
 		return (
 			<div>
@@ -414,7 +520,7 @@ class SoftwareUpdate extends Component {
 							}
 							if (needUpdate && (updating === STATUS.NORMAL || updating === STATUS.BTNLOAD) && !showLoading) {
 								return (
-									<Button type="primary" onClick={this.updateSoftware} loading={updating === STATUS.BTNLOAD}>
+									<Button type="primary" onClick={this.updateSoftware} loading={updating === STATUS.BTNLOAD} disabled={readStatusFailed}>
 										{formatMessage({ id: 'softwareUpdate.update' })}
 									</Button>
 								);
@@ -531,6 +637,20 @@ class SoftwareUpdate extends Component {
 								);
 							}
 
+							if(readStatusFailed){
+								return(
+									<div className={`${styles['no-padding-bottom']} ${styles.info}`}>
+										<h3>
+											<Icon className={`${styles.icon} ${styles.error}`} type="close-circle" />
+											<span className={styles.text}>{formatMessage({ id: 'softwareUpdate.receive.fail'})}</span>
+										</h3>
+										<p>
+											{formatMessage({id: 'softwareUpdate.retry.tip'})}
+										</p>
+									</div>
+								);
+							}
+							
 							if (needUpdate) {
 								return (
 									<div className={`${styles['no-padding-bottom']} ${styles.info}`}>
