@@ -5,6 +5,7 @@ import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import moment from 'moment';
 import AnchorWrapper from '@/components/Anchor';
+import ipcTypes from '@/constants/ipcTypes';
 
 import styles from './SoftwareUpdate.less';
 
@@ -21,8 +22,6 @@ const STATUS = {
 	BTNLOAD: 'btnLoading',
 	NODOWNLOADRECEIVE: 'noDownloadReceive'
 };
-
-const LEAST_VERSION = '1.1.3';
 
 // const STATUS_PERCENT = {
 // 	DOWNLOAD: 37,
@@ -46,6 +45,13 @@ const mapDispatchToProps = (dispatch) => ({
 				sn
 			}
 		});
+	},
+	getDeviceType: async(sn) => {
+		const result = await dispatch({
+			type: 'ipcList/getDeviceType',
+			payload: {sn}
+		});
+		return result;
 	},
 	load: async (sn) => {
 		await dispatch({
@@ -119,7 +125,7 @@ class SoftwareUpdate extends Component {
 	interval = 0
 
 	componentDidMount = async () => {
-		const { load, sn, getDeviceInfo, showModal, readStatus } = this.props;
+		const { load, sn, getDeviceInfo, showModal, readStatus, getDeviceType } = this.props;
 		if(sn){
 			const deviceInfo = await getDeviceInfo({ sn });
 			this.setState({
@@ -130,7 +136,9 @@ class SoftwareUpdate extends Component {
 		await load(sn);
 
 		const { info: { currentVersion }} = this.props;
-		if (this.comperareVersion(currentVersion, LEAST_VERSION) >= 0) {
+		const ipcType = await getDeviceType(sn);
+		const leastVersion = ipcTypes[ipcType].leastVersion;
+		if (this.comperareVersion(currentVersion, leastVersion) >= 0) {
 			await readStatus(sn);
 		}
 		if(showModal){
@@ -166,7 +174,7 @@ class SoftwareUpdate extends Component {
 
 
 	showModal = async () => {
-		const { detect, readStatus, sn, load, checkBind, info: { currentVersion }  } = this.props;
+		const { detect, readStatus, sn, load, checkBind, info: { currentVersion }, getDeviceType } = this.props;
 		const isBind = await checkBind(sn);
 		if(isBind) {
 			detect(sn);
@@ -176,7 +184,9 @@ class SoftwareUpdate extends Component {
 			});
 
 			await load(sn);
-			if (this.comperareVersion(currentVersion, LEAST_VERSION) >= 0) {
+			const ipcType = await getDeviceType(sn);
+			const leastVersion = ipcTypes[ipcType].leastVersion;
+			if (this.comperareVersion(currentVersion, leastVersion) >= 0) {
 				await readStatus(sn);
 				setTimeout(async () => {
 					const { info: { readStatusLoading } } = this.props;

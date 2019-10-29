@@ -5,6 +5,7 @@ export  default {
 		hasCloud: false,
 		hasNVR: false,
 		pixelRatio: '16:9',
+		leastVersion: '1.1.3',
 		rotate: [{
 			key: 0,
 			value: 0
@@ -39,6 +40,7 @@ export  default {
 		hasCloud: false,
 		hasNVR: false,
 		pixelRatio: '16:9',
+		leastVersion: '1.1.3',
 		rotate: [{
 			key: 0,
 			value: 0
@@ -72,6 +74,7 @@ export  default {
 		hasCloud: true,
 		hasNVR: false,
 		pixelRatio: '1:1',
+		leastVersion: '1.2.6',
 		rotate: [{
 			key: 0,
 			value: 0
@@ -111,6 +114,7 @@ export  default {
 		hasNVR: false,
 		hasCloud: true,
 		pixelRatio: '1:1',
+		leastVersion: '1.2.6',
 		rotate: [{
 			key: 0,
 			value: 0
