@@ -441,17 +441,17 @@ class SearchResult extends Component {
 										</Menu.Item>
 									) : null}
 									{record.product_id ? <Menu.Divider /> : null}
-									<Menu.Item key="6">
-										<a
-											href="javascript: void (0);"
-											data-record={JSON.stringify(record)}
-										>
-											{formatMessage({
-												id: 'esl.device.esl.page.toggle',
-											})}
-										</a>
-									</Menu.Item>
-									<Menu.Divider />
+									{/* <Menu.Item key="6"> */}
+									{/* <a */}
+									{/* href="javascript: void (0);" */}
+									{/* data-record={JSON.stringify(record)} */}
+									{/* > */}
+									{/* {formatMessage({ */}
+									{/* id: 'esl.device.esl.page.toggle', */}
+									{/* })} */}
+									{/* </a> */}
+									{/* </Menu.Item> */}
+									{/* <Menu.Divider /> */}
 									<Menu.Item key="2">
 										<a href="javascript: void (0);" data-record-id={record.id}>
 											{formatMessage({ id: 'esl.device.esl.flash' })}

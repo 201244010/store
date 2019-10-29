@@ -10,8 +10,8 @@ import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 
 import styles from './Live.less';
-import manImage from '@/assets/imgs/man.png';
-import womanImage from '@/assets/imgs/woman.png';
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 @connect((state) => {
 	const { faceid: { rectangles, list, ageRangeList }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
@@ -486,8 +486,8 @@ class Live extends React.Component{
 													title={
 														<div className={styles['avatar-container']}>
 															<div className={styles.type}>{ item.libraryName }</div>
-															<Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} />
-															{/* <Avatar className={styles.avatar} shape="square" size={96} src={item.pic ? item.pic : images[item.gender]} /> */}
+															{/* <Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} /> */}
+															<Avatar className={styles.avatar} shape="square" size={96} src={item.pic ? item.pic : images[item.gender]} />
 														</div>
 													}
 													bordered={false}

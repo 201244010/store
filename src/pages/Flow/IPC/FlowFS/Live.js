@@ -8,8 +8,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Faceid from '@/pages/Flow/VideoPlayer/Faceid';
 import LivePlayer from '@/pages/Flow/VideoPlayer/LivePlayer';
 import { LIBRARY_STYLE } from './libraryName';
-import manImage from '@/assets/imgs/man.png';
-import womanImage from '@/assets/imgs/woman.png';
+import manImage from '@/assets/imgs/screen-male.png';
+import womanImage from '@/assets/imgs/screen-female.png';
 
 import styles from './Live.less';
 
@@ -208,7 +208,6 @@ class Live extends React.Component{
 		const sn = this.getSN();
 		let sdStatus = true;
 		if (sn) {
-			// test();
 			clearList({ sn });
 			getAgeRangeList();
 			await loadList();
@@ -227,6 +226,7 @@ class Live extends React.Component{
 				// setTimeout(() => {
 				// 	this.startFaceComparePush();
 				// }, 3000);
+				// test();
 
 			}
 
@@ -511,8 +511,8 @@ class Live extends React.Component{
 														title={
 															<div className={styles['avatar-container']}>
 																<div className={`${styles.type} ${styles[libraryType[item.libraryId]]|| styles['type-first']}`}>{ item.libraryName }</div>
-																<Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} />
-																{/* <Avatar className={styles.avatar} shape="square" size={128} src={item.pic ? item.pic : images[item.gender]} /> */}
+																{/* <Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} /> */}
+																<Avatar className={styles.avatar} shape="square" size={128} src={item.pic ? item.pic : images[item.gender]} />
 															</div>
 														}
 														bordered={false}
