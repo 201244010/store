@@ -7,8 +7,8 @@ import moment from 'moment';
 // import { mbStringLength } from '@/utils/utils';
 import styles from './PhotoManagement.less';
 import { spaceInput } from '@/constants/regexp';
-import manImage from '@/assets/imgs/man.png';
-import womanImage from '@/assets/imgs/woman.png';
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 
 const RadioGroup = Radio.Group;

@@ -10,8 +10,8 @@ import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 
 import styles from './Live.less';
-import manImage from '@/assets/imgs/man.png';
-import womanImage from '@/assets/imgs/woman.png';
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 @connect((state) => {
 	const { faceid: { rectangles, list, ageRangeList }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
