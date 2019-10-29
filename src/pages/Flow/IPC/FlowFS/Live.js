@@ -8,8 +8,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Faceid from '@/pages/Flow/VideoPlayer/Faceid';
 import LivePlayer from '@/pages/Flow/VideoPlayer/LivePlayer';
 import { LIBRARY_STYLE } from './libraryName';
-import manImage from '@/assets/imgs/screen-male.png';
-import womanImage from '@/assets/imgs/screen-female.png';
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 import styles from './Live.less';
 
