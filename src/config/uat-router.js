@@ -57,17 +57,17 @@ const router = [
 			{
 				path: '/index',
 				hideInMenu: true,
-				component: './Index',
+				component: './Index'
 			},
 			{
-				path: '/dashboard',
-				name: 'dashboard',
+				path: '/dashBoard',
+				name: 'dashBoard',
 				icon: 'blank',
 
 				routes: [
 					{
-						path: '/dashboard',
-						id: 'dashboard',
+						path: '/dashBoard',
+						id: 'dashBoard',
 						hideInMenu: true,
 						component: './DashBoard',
 					},
@@ -80,6 +80,7 @@ const router = [
 					},
 				],
 			},
+
 			{
 				path: '/application',
 				name: 'application',
@@ -117,45 +118,6 @@ const router = [
 								redirect: '/application/cashVerify/posList',
 							},
 						],
-					},
-					{
-						path: '/application/trade',
-						name: 'trade',
-						routes: [
-							{
-								path: '/application/trade',
-								id: 'trade',
-								hideInMenu: true,
-								component: './Trade',
-							},
-							{
-								path: '/application/trade/qrpay',
-								id: 'qrpay',
-								hideInMenu: true,
-								component: './Trade/QRCodePayment',
-							},
-							{
-								path: '/application/trade/result',
-								id: 'tradeResult',
-								hideInMenu: true,
-								component: './Trade/TradeResult',
-							},
-						],
-					},
-				],
-			},
-
-			{
-				path: '/passengerAnalyze',
-				icon: 'blank',
-				name: 'passengerAnalyze',
-				routes: [
-					{ path: '/passengerAnalyze', redirect: '/passengerAnalyze/list' },
-					{
-						path: '/passengerAnalyze/list',
-						name: 'passengerAnalyze',
-						id: 'passengerAnalyze',
-						component: './PassengerAnalyze',
 					},
 				],
 			},
@@ -240,35 +202,34 @@ const router = [
 						path: '/esl/deviceUpgrade',
 						name: 'deviceUpgrade',
 						id: 'deviceUpgrade',
-						routes: [
-							{
-								path: '/esl/deviceUpgrade',
-								name: 'overview',
-								id: 'deviceUpgradeOverview',
-								hideInMenu: true,
-								component: './DeviceManagement/ESL/DeviceUpgrade',
-							},
-							{
-								path: '/esl/deviceUpgrade/deviceESL',
-								name: 'deviceESL',
-								id: 'deviceESL',
-								hideInMenu: true,
-								component: './DeviceManagement/ESL/DeviceESL',
-							},
-							{
-								path: '/esl/deviceUpgrade/deviceAP',
-								name: 'deviceAP',
-								id: 'deviceAP',
-								hideInMenu: true,
-								component: './DeviceManagement/ESL/DeviceAP',
-							},
-						],
+						component: './DeviceManagement/ESL/DeviceUpgrade'
 					},
-					{
+          			{
 						path: '/esl/systemConfig',
 						name: 'systemConfig',
 						id: 'systemConfig',
 						component: './DeviceManagement/ESL/SystemConfig',
+					},
+					{
+						path: '/esl/deviceUpgrade/deviceESL',
+						name: 'deviceESL',
+						id: 'deviceESL',
+						hideInMenu: true,
+						component: './DeviceManagement/ESL/DeviceESL',
+					},
+					{
+						path: '/esl/deviceUpgrade',
+						name: 'overview',
+						id: 'deviceUpgradeOverview',
+						hideInMenu: true,
+						component: './DeviceManagement/ESL/DeviceUpgrade',
+					},
+					{
+						path: '/esl/deviceUpgrade/deviceAP',
+						name: 'deviceAP',
+						id: 'deviceAP',
+						hideInMenu: true,
+						component: './DeviceManagement/ESL/DeviceAP',
 					},
 					{ path: '/esl', redirect: '/esl/electricLabel' },
 				],
@@ -320,31 +281,24 @@ const router = [
 				routes: [
 					{
 						path: '/basicData',
-						redirect: '/basicData/merchantManagement/view',
+						redirect: '/basicData/merchantManagement',
 					},
 					{
 						path: '/basicData/merchantManagement',
+						redirect: '/basicData/merchantManagement/view',
+					},
+					{
+						path: '/basicData/merchantManagement/view',
 						name: 'merchantManagement',
-						routes: [
-							{
-								path: '/basicData/merchantManagement',
-								redirect: '/basicData/merchantManagement/view',
-							},
-							{
-								path: '/basicData/merchantManagement/view',
-								name: 'view',
-								id: 'merchantView',
-								hideInMenu: true,
-								component: './MerchantManagement/MerchantView',
-							},
-							{
-								path: '/basicData/merchantManagement/modify',
-								name: 'modify',
-								id: 'merchantModify',
-								hideInMenu: true,
-								component: './MerchantManagement/MerchantModify',
-							},
-						],
+						id: 'merchantView',
+						component: './MerchantManagement/MerchantView',
+					},
+					{
+						path: '/basicData/merchantManagement/modify',
+						name: 'merchantManagement',
+						id: 'merchantModify',
+						hideInMenu: true,
+						component: './MerchantManagement/MerchantModify',
 					},
 					{
 						path: '/basicData/storeManagement',
@@ -385,54 +339,9 @@ const router = [
 						],
 					},
 					{
-						path: '/basicData/employeeManagement',
-						name: 'employeeManagement',
-						id: 'employeeManagement',
-						routes: [
-							{
-								path: '/basicData/employeeManagement',
-								redirect: '/basicData/employeeManagement/list',
-							},
-							{
-								path: '/basicData/employeeManagement/list',
-								name: 'employeeList',
-								id: 'employeeList',
-								component: './BasicData/Employee',
-								hideInMenu: true,
-							},
-							{
-								path: '/basicData/employeeManagement/info',
-								name: 'employeeInfo',
-								id: 'employeeInfo',
-								component: './BasicData/Employee/EmployeeInfo',
-								hideInMenu: true,
-							},
-							{
-								path: '/basicData/employeeManagement/create',
-								name: 'employeeCreate',
-								id: 'employeeCreate',
-								component: './BasicData/Employee/EmployeeCU',
-								hideInMenu: true,
-							},
-							{
-								path: '/basicData/employeeManagement/update',
-								name: 'employeeUpdate',
-								id: 'employeeUpdate',
-								component: './BasicData/Employee/EmployeeCU',
-								hideInMenu: true,
-							},
-							{
-								path: '/basicData/employeeManagement/employeeTable',
-								name: 'employeeTable',
-								id: 'employeeTable',
-								component: './BasicData/Employee/EmployeeTable',
-								hideInMenu: true,
-							},
-						],
-					},
-					{
 						path: '/basicData/roleManagement',
 						name: 'roleManagement',
+						hideInMenu: true,
 						id: 'roleManagement',
 						routes: [
 							{
@@ -572,7 +481,7 @@ const router = [
 						path: '/exception/404',
 						name: 'no-rescourse',
 						id: 'noRescourse',
-						component: './Exception/404',
+						component: './Exception/403',
 					},
 				],
 			},
@@ -594,6 +503,7 @@ const router = [
 					{
 						path: '/faceidLibrary/faceidLibraryList',
 						name: 'list',
+						id: 'faceidLibraryList',
 						routes: [
 							{
 								path: '/faceidLibrary/faceidLibraryList/photoManagement',
@@ -606,13 +516,14 @@ const router = [
 								path: '/faceidLibrary/faceidLibraryList',
 								id: 'faceidLibraryList',
 								component: './IPC/FaceidLibrary/LibraryList.js',
-							},
-						],
+							}
+						]
 					},
 					{
 						path: '/faceidLibrary/faceLog',
 						name: 'faceLog',
-						// id: 'faceLog',
+						id: 'faceLog',
+						hideInMenu: true,
 						// component: './IPC/FaceLog/index.js',
 						routes: [
 							{
@@ -624,20 +535,14 @@ const router = [
 							},
 							{
 								path: '/faceidLibrary/faceLog',
+								hideInMenu: true,
 								// name: 'faceLog',
 								id: 'faceLog',
 								component: './IPC/FaceLog/index.js',
-							},
-						],
+							}
+						]
 					},
 
-					// {
-					// 	path: '/faceidLibrary/entryDetail',
-					// 	name: 'entryDetail',
-					// 	id: 'entryDetail',
-					// 	hideInMenu: true,
-					// 	component: './IPC/EntryDetail/index.js',
-					// },
 					// {
 					// 	path: '/faceidLibrary/createLibrary',
 					// 	// name: 'faceidLibrary.create',
