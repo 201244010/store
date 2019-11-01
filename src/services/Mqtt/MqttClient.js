@@ -127,7 +127,7 @@ class MqttClient {
 			const { msgIdMap } = this;
 			// console.log('random id ', generateMsgId());
 			// messages.id += 1;
-			const msgId = generateMsgId();
+			const msgId = parseInt(generateMsgId(), 10);
 			const { sn } = message.param || {};
 			const msg = JSON.stringify({
 				msg_id: msgId,
