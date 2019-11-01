@@ -3,7 +3,7 @@ import CONFIG from '@/config';
 
 const { WEB_SOCKET_PREFIX } = CONFIG;
 
-const generateMsgId = () => `${parseInt(Math.random() * 11 + 10, 10)}${`${+new Date()}`.substr(5)}`;
+const generateMsgId = () => Number(`${parseInt(Math.random() * 11 + 10, 10)}${`${+new Date()}`.substr(5)}`);
 
 class MqttClient {
 	constructor(config) {
@@ -127,7 +127,7 @@ class MqttClient {
 			const { msgIdMap } = this;
 			// console.log('random id ', generateMsgId());
 			// messages.id += 1;
-			const msgId = parseInt(generateMsgId(), 10);
+			const msgId = generateMsgId();
 			const { sn } = message.param || {};
 			const msg = JSON.stringify({
 				msg_id: msgId,
