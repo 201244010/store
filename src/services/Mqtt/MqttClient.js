@@ -3,7 +3,7 @@ import CONFIG from '@/config';
 
 const { WEB_SOCKET_PREFIX } = CONFIG;
 
-const generateMsgId = () => `${parseInt(Math.random() * 11 + 10, 10)}${`${+new Date()}`.substr(5)}`;
+const generateMsgId = () => Number(`${parseInt(Math.random() * 11 + 10, 10)}${`${+new Date()}`.substr(5)}`);
 
 class MqttClient {
 	constructor(config) {
