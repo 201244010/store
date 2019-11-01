@@ -8,6 +8,7 @@ import BoardHeader from './BoardHeader';
 import BoardTools from './BoardTools';
 import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
+import DragCopy from './DragCopy';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
 import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep } from '@/utils/studio';
@@ -15,27 +16,6 @@ import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
-
-const imageMap = {
-	text: require('@/assets/studio/text.svg'),
-	rect: require('@/assets/studio/rect.svg'),
-	'line@h': require('@/assets/studio/hLine.svg'),
-	'line@v': require('@/assets/studio/vLine.svg'),
-	image: require('@/assets/studio/image.svg'),
-	'barcode@h': require('@/assets/studio/code_h.svg'),
-	'barcode@v': require('@/assets/studio/code_v.svg'),
-	'barcode@qr': require('@/assets/studio/code_qr.svg'),
-};
-const textMap = {
-	text: formatMessage({ id: 'studio.component.text' }),
-	rect: formatMessage({ id: 'studio.component.rect' }),
-	'line@h': formatMessage({ id: 'studio.component.line.h' }),
-	'line@v': formatMessage({ id: 'studio.component.line.v' }),
-	image: formatMessage({ id: 'studio.component.image' }),
-	'barcode@h': formatMessage({ id: 'studio.component.barcode' }),
-	'barcode@v': formatMessage({ id: 'studio.component.barcode.v' }),
-	'barcode@qr': formatMessage({ id: 'studio.component.qrcode' }),
-};
 
 @connect(
 	state => ({
@@ -946,7 +926,7 @@ class Studio extends Component {
 		} = this;
 
 		const lines = getNearestLines(componentsDetail, selectedShapeName, scopedComponents);
-		const type = getTypeByName(dragName);
+		const componentDetail = componentsDetail[selectedShapeName] || {};
 
 		return (
 			<div className={styles.board}>
@@ -1096,9 +1076,9 @@ class Studio extends Component {
 				{showRightToolBox ? (
 					<ContextMenu
 						{...{
-							color: (componentsDetail[selectedShapeName] || {}).fontColor,
-							fontSize: (componentsDetail[selectedShapeName] || {}).fontSize,
-							text: (componentsDetail[selectedShapeName] || {}).context,
+							color: componentDetail.fontColor,
+							fontSize: componentDetail.fontSize,
+							text: componentDetail.context,
 							position: rightToolBoxPos,
 							componentsDetail,
 							selectedShapeName,
@@ -1113,21 +1093,7 @@ class Studio extends Component {
 						}}
 					/>
 				) : null}
-				{
-					type.indexOf(SHAPE_TYPES.PRICE) === -1 ?
-						<div className={styles['drag-copy-show']} style={{...dragCopy}}>
-							<img src={imageMap[type]} />
-							<span>{textMap[type]}</span>
-						</div> :
-						<div
-							className={`${styles['drag-copy-price-show']} ${type.indexOf('white') > -1 ? `${styles['drag-copy-price-white']}` : ''}`}
-							style={{...dragCopy}}
-						>
-							<span>
-								99.{type.indexOf('sup') > -1 ? <sup>00</sup> : (type.indexOf('sub') > -1 ? <sub>00</sub> : '00')}
-							</span>
-						</div>
-				}
+				<DragCopy dragCopy={dragCopy} dragName={dragName} componentsDetail={componentsDetail} zoomScale={zoomScale} />
 			</div>
 		);
 	}
