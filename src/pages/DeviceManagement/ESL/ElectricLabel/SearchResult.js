@@ -152,7 +152,7 @@ class SearchResult extends Component {
 	};
 
 	unbindESL = record => {
-		const { unbindESL } = this.props;
+		const { unbindESL, fetchDeviceOverview } = this.props;
 		const content = (
 			<div>
 				<div>{formatMessage({ id: 'esl.device.esl.unbind.message' })}</div>
@@ -164,16 +164,17 @@ class SearchResult extends Component {
 			title: formatMessage({ id: 'esl.device.esl.unbind.title' }),
 			content,
 			okText: formatMessage({ id: 'btn.unbind' }),
-			onOk() {
-				unbindESL({
+			onOk: async () => {
+				await unbindESL({
 					options: { esl_code: record.eslCode },
 				});
+				fetchDeviceOverview();
 			},
 		});
 	};
 
 	deleteESL = record => {
-		const { deleteESL } = this.props;
+		const { deleteESL, fetchDeviceOverview } = this.props;
 		const content = (
 			<div>
 				<div>{formatMessage({ id: 'esl.device.esl.delete.message1' })}</div>
@@ -186,10 +187,11 @@ class SearchResult extends Component {
 			title: formatMessage({ id: 'esl.device.esl.delete.title' }),
 			content,
 			okText: formatMessage({ id: 'btn.delete' }),
-			onOk() {
-				deleteESL({
+			onOk: async () => {
+				await deleteESL({
 					options: { esl_id: record.id },
 				});
+				fetchDeviceOverview();
 			},
 		});
 	};
@@ -225,7 +227,7 @@ class SearchResult extends Component {
 	};
 
 	handleMoreClick = async e => {
-		const { flashModes, flashLed, fetchTemplatesByESLCode } = this.props;
+		const { flashModes, flashLed, fetchTemplatesByESLCode, fetchDeviceOverview } = this.props;
 		const {
 			dataset: { recordId, record },
 		} = e.domEvent.target;
@@ -267,11 +269,13 @@ class SearchResult extends Component {
 		}
 		if (e.key === '4') {
 			const eslDetail = JSON.parse(record);
-			this.showBind(eslDetail);
+			await this.showBind(eslDetail);
+			fetchDeviceOverview();
 		}
 		if (e.key === '5') {
 			const eslDetail = JSON.parse(record);
-			this.flushESL(eslDetail);
+			await this.flushESL(eslDetail);
+			fetchDeviceOverview();
 		}
 		if (e.key === '6') {
 			const eslDetail = JSON.parse(record);
