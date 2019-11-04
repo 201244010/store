@@ -139,6 +139,7 @@ export default class RightToolBox extends Component {
 		} else {
 			const newDetail = {
 				[key]: value,
+				content: formatMessage({ id: bindFieldsLocaleMap[value] || ' '})
 			};
 			const detail = componentsDetail[selectedShapeName];
 			let canUpdate = true;
@@ -499,7 +500,7 @@ export default class RightToolBox extends Component {
 		}
 		if (this.hasSubString(SHAPE_TYPES.TEXT)) {
 			ret = bindFields.filter(
-				item => item.indexOf('Price') === -1 && item.indexOf('QrCode') === -1
+				item => item.indexOf('Price') === -1
 			);
 		}
 
