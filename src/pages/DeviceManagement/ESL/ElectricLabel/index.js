@@ -71,9 +71,10 @@ class ElectricLabel extends Component {
 	}
 
 	refreshFailed = async () => {
-		const { refreshFailedImage, fetchDeviceOverview } = this.props;
+		const { refreshFailedImage, fetchDeviceOverview, fetchElectricLabels } = this.props;
 		await refreshFailedImage();
 		await fetchDeviceOverview();
+		await fetchElectricLabels();
 	};
 
 	render() {
