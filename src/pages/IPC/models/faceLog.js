@@ -31,7 +31,11 @@ export default {
 			const { code, data: { ageRangeList = [] } } = response;
 
 			if(code === ERROR_OK) {
-				const list = ageRangeList.filter(item => item.ageRangeCode !== 1 && item.ageRangeCode !== 2 && item.ageRangeCode!== 3);
+				const list = ageRangeList.filter(item => item.ageRangeCode > 3 && item.ageRangeCode !== 18);
+				list.unshift({
+					ageRangeCode: 18,
+					ageRange: 'below18',
+				});
 				yield put({
 					type: 'readData',
 					payload: {
@@ -40,7 +44,7 @@ export default {
 				});
 				const ageRangeCodeMap = {};
 				for(let i=0; i<ageRangeList.length;i++){
-					if( ageRangeList[i].ageRangeCode === 1 || ageRangeList[i].ageRangeCode === 2 || ageRangeList[i].ageRangeCode === 3 || ageRangeList[i].ageRangeCode === 18) {
+					if( ageRangeList[i].ageRangeCode < 3 || ageRangeList[i].ageRangeCode === 18) {
 						ageRangeCodeMap[ageRangeList[i].ageRangeCode] = formatMessage({id: 'photoManagement.ageLessInfo'});
 					} else if (ageRangeList[i].ageRange === 8) {
 						ageRangeCodeMap[ageRangeList[i].ageRangeCode] = formatMessage({ id: 'photoManagement.ageLargeInfo'});

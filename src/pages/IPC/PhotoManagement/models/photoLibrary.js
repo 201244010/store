@@ -1,7 +1,7 @@
 
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { map } from '@konata9/milk-shake';
+// import { map } from '@konata9/milk-shake';
 import {
 	deletePhoto,
 	editInfo,
@@ -71,8 +71,6 @@ export default {
 			}else if(totalCount < pageNum * pageSize && code === ERROR_OK) {
 				request.pageNum = Math.ceil(totalCount / pageSize);
 				const responseAgain = yield call(readPhotoList, request);
-				// const list = responseAgain.data.faceList.map(item => map([{from: 'age', to: 'realAge'},{ from: 'ageRangeCode', to: 'age'}])(item));
-				// console.log('model',list);
 				yield put({
 					type: 'readData',
 					payload: {
@@ -83,8 +81,6 @@ export default {
 					}
 				});
 			} else if(code === ERROR_OK) {
-				// const list = faceList.map(item => map([{from: 'age', to: 'realAge'},{ from: 'ageRangeCode', to: 'age'}])(item));
-				// console.log('model',list);
 				yield put({
 					type: 'readData',
 					payload: {
@@ -188,7 +184,11 @@ export default {
 			const { code, data: { ageRangeList } } = response;
 			if(code === ERROR_OK) {
 				// console.log(ageRangeList);
-				const list = ageRangeList.filter(item => item.ageRangeCode !== 1 && item.ageRangeCode !== 2 && item.ageRangeCode!== 3);
+				const list = ageRangeList.filter(item => item.ageRangeCode > 3 && item.ageRangeCode !== 18);
+				list.unshift({
+					ageRangeCode: 18,
+					ageRange: 'below18',
+				});
 				yield put({
 					type: 'readData',
 					payload: {
@@ -205,9 +205,7 @@ export default {
 			return false;
 		},
 		*edit({payload}, { call }) {
-			const info = map([{from: 'age', to: 'ageRangeCode'}])(payload);
-			// const info = payload;
-			// console.log(info);
+			const info = payload;
 			const response = yield call(editInfo, info);
 			return response.code === ERROR_OK;
 		},
