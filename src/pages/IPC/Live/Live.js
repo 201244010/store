@@ -457,6 +457,8 @@ class Live extends React.Component{
 			2: formatMessage({ id: 'live.genders.female'})
 		};
 
+		const sn = this.getSN();
+
 		const images = {
 			0: manImage,
 			1: manImage,
