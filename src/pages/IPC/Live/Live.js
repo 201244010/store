@@ -10,6 +10,8 @@ import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 
 import styles from './Live.less';
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 const statusCode = {
 	opened: 1,
@@ -455,7 +457,12 @@ class Live extends React.Component{
 			2: formatMessage({ id: 'live.genders.female'})
 		};
 
-		const sn = this.getSN();
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
+		};
+
 
 		return(
 			<div className={styles['live-wrapper']}>
@@ -529,7 +536,8 @@ class Live extends React.Component{
 													title={
 														<div className={styles['avatar-container']}>
 															<div className={styles.type}>{ item.libraryName }</div>
-															<Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic}`} />
+															{/* <Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} /> */}
+															<Avatar className={styles.avatar} shape="square" size={96} src={item.pic ? item.pic : images[item.gender]} />
 														</div>
 													}
 													bordered={false}

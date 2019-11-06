@@ -7,7 +7,8 @@ import moment from 'moment';
 import { mbStringLength } from '@/utils/utils';
 import styles from './PhotoManagement.less';
 import { spaceInput } from '@/constants/regexp';
-
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 
 const RadioGroup = Radio.Group;
@@ -234,7 +235,13 @@ class PhotoCard extends React.Component {
 						faceImgList: [fileName],
 						faceId: id
 					});
-					isUpload = response.data.failureList.length === 0;
+					// console.log(response);
+					if(response) {
+						isUpload = !response.data.failureList || response.data.failureList.length === 0;
+					} else {
+						isUpload = false;
+					}
+
 				}
 
 				const fields = form.getFieldsValue();
@@ -548,8 +555,14 @@ class PhotoCard extends React.Component {
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
 		const { isEdit, infoFormVisible, removeVisible, fileUrl, imageLoaded, isUpload } = this.state;
-		const imageUrl = fileUrl || image;
-		// console.log('url',imageUrl);
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
+		};
+		const src = image || images[gender];
+		const imageUrl = fileUrl || src;
+		console.log('url',imageUrl);
 		// console.log(id, age, gender);
 		return (
 			<Card
@@ -570,7 +583,7 @@ class PhotoCard extends React.Component {
 			>
 				<div>
 					<div className={styles['pic-col']}>
-						<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={image} />
+						<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={src} />
 					</div>
 					<div className={styles['word-col']}>
 						<span className={styles['info-card-span']} title={this.handleInfo('name')}>
@@ -622,7 +635,7 @@ class PhotoCard extends React.Component {
 										showUploadList={false}
 									>
 										<div className={styles['upload-pic']}>
-											{image !== '' &&
+											{src !== '' &&
 												<div
 													style={{backgroundImage:`url("${imageUrl}")`}}
 													className={styles['edit-pic-col']}
@@ -766,7 +779,7 @@ class PhotoCard extends React.Component {
 							<Row>
 								<Col span={10}>
 									<div className={styles['pic-col']}>
-										<Avatar shape="square" size={300} icon='user' className={styles['pic-col']} src={image} />
+										<Avatar shape="square" size={300} icon='user' className={styles['pic-col']} src={src} />
 									</div>
 								</Col>
 
