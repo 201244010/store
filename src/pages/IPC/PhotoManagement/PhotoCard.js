@@ -529,8 +529,8 @@ class PhotoCard extends React.Component {
 			/* age, */
 			// ageRangeCode,
 			gender,
-			count,
-			navigateTo
+			// count,
+			// navigateTo
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
 		const { isEdit, infoFormVisible, removeVisible, fileUrl, imageLoaded, isUpload, isPickerOpen } = this.state;
@@ -786,12 +786,13 @@ class PhotoCard extends React.Component {
 												{this.ageRange()}
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.frequency'})}>
-												{
+												<span>{this.handleInfo('count')}</span>
+												{/* {
 													count?
 														<span className={styles['frequency-label']} onClick={() => navigateTo('entryDetail',{ faceId: id })}>{this.handleInfo('count')}</span>
 														:
 														<span>{this.handleInfo('count')}</span>
-												}
+												} */}
 
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.createTime'})}>
@@ -818,7 +819,7 @@ class PhotoCard extends React.Component {
 					<Row className={styles['move-modal']}>
 						<Col span={8}>
 							<div className={styles['pic-col']}>
-								<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={image} />
+								<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={src} />
 							</div>
 						</Col>
 						<Col span={16}>

@@ -418,7 +418,7 @@ class Live extends React.Component{
 	mapAgeInfo(age, ageRangeCode) {
 
 		const { ageRangeList } = this.props;
-		let ageName = formatMessage({id: 'photoManagement.unKnown'});
+		let ageName = formatMessage({id: 'live.unknown' });
 		if(age) {
 			ageName = `${age} ${formatMessage({id: 'live.age.unit'})}`;
 		} else {
@@ -557,9 +557,9 @@ class Live extends React.Component{
 														</span>
 													</p>
 
-													<p>
+													{/* <p>
 														<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
-													</p>
+													</p> */}
 												</Card>
 											</List.Item>
 										)
@@ -567,11 +567,11 @@ class Live extends React.Component{
 								/>
 
 							</PerfectScrollbar>
-							<div className={styles['infos-more']}>
+							{/* <div className={styles['infos-more']}>
 								{
 									faceidList && faceidList.length? <span onClick={() => navigateTo('faceLog')}>{formatMessage({ id: 'live.logs'})}</span> : ''
 								}
-							</div>
+							</div> */}
 						</div>
 						: ''
 				}
