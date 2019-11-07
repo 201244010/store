@@ -8,6 +8,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Faceid from '@/pages/Flow/VideoPlayer/Faceid';
 import LivePlayer from '@/pages/Flow/VideoPlayer/LivePlayer';
 import { LIBRARY_STYLE } from './libraryName';
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 import styles from './Live.less';
 
@@ -401,7 +403,7 @@ class Live extends React.Component{
 	mapAgeInfo(age, ageRangeCode) {
 
 		const { ageRangeList } = this.props;
-		let ageName = formatMessage({id: 'photoManagement.unKnown'});
+		let ageName = formatMessage({id: 'flow.unknown'});
 		if(age) {
 			ageName = `${age} ${formatMessage({id: 'flow.age.unit'})}`;
 		} else {
@@ -441,6 +443,12 @@ class Live extends React.Component{
 			0: formatMessage({ id: 'flow.genders.unknown' }),
 			1: formatMessage({ id: 'flow.genders.male'}),
 			2: formatMessage({ id: 'flow.genders.female'})
+		};
+
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
 		};
 
 		return(
@@ -497,7 +505,8 @@ class Live extends React.Component{
 														title={
 															<div className={styles['avatar-container']}>
 																<div className={`${styles.type} ${styles[libraryType[item.libraryId]]}`}>{ item.libraryName }</div>
-																<Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic}`} />
+																{/* <Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} /> */}
+																<Avatar className={styles.avatar} shape="square" size={128} src={item.pic ? item.pic : images[item.gender]} />
 															</div>
 														}
 														bordered={false}

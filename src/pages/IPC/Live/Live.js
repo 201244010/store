@@ -10,6 +10,8 @@ import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 
 import styles from './Live.less';
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 const statusCode = {
 	opened: 1,
@@ -416,7 +418,7 @@ class Live extends React.Component{
 	mapAgeInfo(age, ageRangeCode) {
 
 		const { ageRangeList } = this.props;
-		let ageName = formatMessage({id: 'photoManagement.unKnown'});
+		let ageName = formatMessage({id: 'live.unknown' });
 		if(age) {
 			ageName = `${age} ${formatMessage({id: 'live.age.unit'})}`;
 		} else {
@@ -456,6 +458,13 @@ class Live extends React.Component{
 		};
 
 		const sn = this.getSN();
+
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
+		};
+
 
 		return(
 			<div className={styles['live-wrapper']}>
@@ -529,7 +538,8 @@ class Live extends React.Component{
 													title={
 														<div className={styles['avatar-container']}>
 															<div className={styles.type}>{ item.libraryName }</div>
-															<Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic}`} />
+															{/* <Avatar className={styles.avatar} shape="square" size={96} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} /> */}
+															<Avatar className={styles.avatar} shape="square" size={96} src={item.pic ? item.pic : images[item.gender]} />
 														</div>
 													}
 													bordered={false}
@@ -549,9 +559,9 @@ class Live extends React.Component{
 														</span>
 													</p>
 
-													<p>
+													{/* <p>
 														<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
-													</p>
+													</p> */}
 												</Card>
 											</List.Item>
 										)
@@ -559,11 +569,11 @@ class Live extends React.Component{
 								/>
 
 							</PerfectScrollbar>
-							<div className={styles['infos-more']}>
+							{/* <div className={styles['infos-more']}>
 								{
 									faceidList && faceidList.length? <span onClick={() => navigateTo('faceLog')}>{formatMessage({ id: 'live.logs'})}</span> : ''
 								}
-							</div>
+							</div> */}
 						</div>
 						: ''
 				}
