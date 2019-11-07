@@ -57,6 +57,7 @@ class Studio extends Component {
 		super(props);
 		this.stageWidth = window.innerWidth - SIZES.TOOL_BOX_WIDTH * 2;
 		this.stageHeight = window.innerHeight - SIZES.HEADER_HEIGHT;
+		this.refComponents = {};
 		this.state = {
 			editing: false,
 			dragging: false,
@@ -411,6 +412,7 @@ class Studio extends Component {
 	};
 
 	handleStageShapeStart = e => {
+		this.startCtrlKey = e.evt.ctrlKey;
 		const { studio: { componentsDetail }, updateComponentDetail } = this.props;
 		this.setState({
 			dragging: true,
@@ -446,7 +448,7 @@ class Studio extends Component {
 		if (e.evt.ctrlKey && !e.evt.shiftKey) {
 			this.setState({
 				dragCopy: {
-					left: e.evt.clientX,
+					left: e.evt.clientX - 10,
 					top: e.evt.clientY
 				}
 			});
@@ -492,6 +494,10 @@ class Studio extends Component {
 		} = this.props;
 		this.setState({
 			dragging: false,
+			dragCopy: {
+				left: -9999,
+				top: -9999
+			}
 		});
 		this.shiftDrag = false;
 		const curComponent = componentsDetail[e.target.name()];
@@ -501,13 +507,7 @@ class Studio extends Component {
 				frozenY: false
 			}
 		});
-		if (e.evt.ctrlKey && !e.evt.shiftKey && curComponent) {
-			this.setState({
-				dragCopy: {
-					left: -9999,
-					top: -9999
-				}
-			});
+		if (this.startCtrlKey && e.evt.ctrlKey && !e.evt.shiftKey && curComponent) {
 			addComponent({
 				...curComponent,
 				x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
@@ -899,6 +899,7 @@ class Studio extends Component {
 		const {
 			stageWidth,
 			stageHeight,
+			refComponents,
 			props: {
 				updateComponentsDetail,
 				updateState,
@@ -971,6 +972,7 @@ class Studio extends Component {
 									const noScopedNames = [RECT_SELECT_NAME].concat(noScopedComponents.map(item => item.name));
 									if (targetDetail.name && !noScopedNames.includes(targetDetail.name)) {
 										return generateShape({
+											refComponents,
 											...targetDetail,
 											key,
 											stageWidth,
@@ -990,6 +992,7 @@ class Studio extends Component {
 								{
 									componentsDetail[RECT_SELECT_NAME] ?
 										generateShape({
+											refComponents,
 											...componentsDetail[RECT_SELECT_NAME],
 											key: RECT_SELECT_NAME,
 											stageWidth,
@@ -1009,6 +1012,7 @@ class Studio extends Component {
 									const targetDetail = noScopedComponents[key];
 									if (targetDetail.name) {
 										return generateShape({
+											refComponents,
 											...targetDetail,
 											key,
 											stageWidth,
@@ -1093,7 +1097,7 @@ class Studio extends Component {
 						}}
 					/>
 				) : null}
-				<DragCopy dragCopy={dragCopy} dragName={dragName} componentsDetail={componentsDetail} zoomScale={zoomScale} />
+				<DragCopy dragCopy={dragCopy} dragName={dragName} refComponents={refComponents} />
 			</div>
 		);
 	}
