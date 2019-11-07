@@ -139,7 +139,7 @@ export default class RightToolBox extends Component {
 		} else {
 			const newDetail = {
 				[key]: value,
-				content: formatMessage({ id: bindFieldsLocaleMap[value] || ' '})
+				content: formatMessage({ id: bindFieldsLocaleMap[value] || 'studio.action.text.db.click'})
 			};
 			const detail = componentsDetail[selectedShapeName];
 			let canUpdate = true;
