@@ -491,6 +491,10 @@ class PhotoCard extends React.Component {
 			this.setState({
 				isPickerOpen: true
 			});
+		} else {
+			this.setState({
+				isPickerOpen: false
+			});
 		}
 	};
 
