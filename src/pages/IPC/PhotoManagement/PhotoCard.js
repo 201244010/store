@@ -6,7 +6,8 @@ import moment from 'moment';
 import { mbStringLength } from '@/utils/utils';
 import styles from './PhotoManagement.less';
 import { spaceInput } from '@/constants/regexp';
-
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 
 const RadioGroup = Radio.Group;
@@ -234,7 +235,13 @@ class PhotoCard extends React.Component {
 						faceImgList: [fileName],
 						faceId: id
 					});
-					isUpload = response.data.failureList.length === 0;
+					// console.log(response);
+					if(response) {
+						isUpload = !response.data.failureList || response.data.failureList.length === 0;
+					} else {
+						isUpload = false;
+					}
+
 				}
 
 				const fields = form.getFieldsValue();
@@ -484,17 +491,31 @@ class PhotoCard extends React.Component {
 			this.setState({
 				isPickerOpen: true
 			});
+		} else {
+			this.setState({
+				isPickerOpen: false
+			});
 		}
 	};
 
 	handlePickerPanel = (value) => {
 		console.log('pnael>>>>', value);
-		this.setState({
-			isPickerOpen: false
-		});
+
 		const { form: { setFieldsValue } } = this.props;
-		setFieldsValue({ age: value });
+		if (value < moment()) {
+			this.setState({
+				isPickerOpen: false
+			});
+			setFieldsValue({ age: value });
+		}
 	};
+
+	handleDate = (time) => {
+		if(!time) {
+			return false;
+		}
+		return time < moment();
+	}
 
 	dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>
 		date ? moment.unix(date).format(format) : undefined;
@@ -512,12 +533,18 @@ class PhotoCard extends React.Component {
 			/* age, */
 			// ageRangeCode,
 			gender,
-			count,
-			navigateTo
+			// count,
+			// navigateTo
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
 		const { isEdit, infoFormVisible, removeVisible, fileUrl, imageLoaded, isUpload, isPickerOpen } = this.state;
-		const imageUrl = fileUrl || image;
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
+		};
+		const src = image || images[gender];
+		const imageUrl = fileUrl || src;
 		// console.log('url',imageUrl);
 		// console.log(id, age, gender);
 		return (
@@ -539,7 +566,7 @@ class PhotoCard extends React.Component {
 			>
 				<div>
 					<div className={styles['pic-col']}>
-						<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={image} />
+						<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={src} />
 					</div>
 					<div className={styles['word-col']}>
 						<span className={styles['info-card-span']} title={this.handleInfo('name')}>
@@ -591,7 +618,7 @@ class PhotoCard extends React.Component {
 										showUploadList={false}
 									>
 										<div className={styles['upload-pic']}>
-											{image !== '' &&
+											{src !== '' &&
 												<div
 													style={{backgroundImage:`url("${imageUrl}")`}}
 													className={styles['edit-pic-col']}
@@ -716,7 +743,7 @@ class PhotoCard extends React.Component {
 													// 			</Option>)
 													// 	}
 													// </Select>,
-													<DatePicker mode='year' format='YYYY' open={isPickerOpen} onOpenChange={this.handlePickerOpen} onPanelChange={this.handlePickerPanel} />
+													<DatePicker mode='year' format='YYYY' open={isPickerOpen} onOpenChange={this.handlePickerOpen} onPanelChange={this.handlePickerPanel} disabledDate={this.handleDate} />
 												)}
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.frequency'})}>
@@ -736,7 +763,7 @@ class PhotoCard extends React.Component {
 							<Row>
 								<Col span={10}>
 									<div className={styles['pic-col']}>
-										<Avatar shape="square" size={300} icon='user' className={styles['pic-col']} src={image} />
+										<Avatar shape="square" size={300} icon='user' className={styles['pic-col']} src={src} />
 									</div>
 								</Col>
 
@@ -763,12 +790,13 @@ class PhotoCard extends React.Component {
 												{this.ageRange()}
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.frequency'})}>
-												{
+												<span>{this.handleInfo('count')}</span>
+												{/* {
 													count?
 														<span className={styles['frequency-label']} onClick={() => navigateTo('entryDetail',{ faceId: id })}>{this.handleInfo('count')}</span>
 														:
 														<span>{this.handleInfo('count')}</span>
-												}
+												} */}
 
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.createTime'})}>
@@ -795,7 +823,7 @@ class PhotoCard extends React.Component {
 					<Row className={styles['move-modal']}>
 						<Col span={8}>
 							<div className={styles['pic-col']}>
-								<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={image} />
+								<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={src} />
 							</div>
 						</Col>
 						<Col span={16}>
