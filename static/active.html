@@ -35,28 +35,35 @@
                 el: '#app',
                 data() {
                 	return {
-                		resultType: 1
+                		resultType: 0
                     }
                 },
                 created() {
-                	var me = this;
-                	var params = {
-
-                    };
+					var me = this;
+					var params = {};
+                    var keyStr = window.location.search.substring(1);
+                    var keyMap = keyStr.split('&');
+                    for (var i = 0; i < keyMap.length; i++) {
+                        if (keyMap[i].indexOf('activation_code') > -1) {
+                        	var pa = keyMap[i].split('=');
+                        	params.activation_code = pa[1];
+                        }
+						if (keyMap[i].indexOf('cpu_id') > -1) {
+							var pa = keyMap[i].split('=');
+							params.cpu_id = pa[1];
+						}
+                    }
 
 					$.ajax({
 						type: "POST",
 						contentType: "application/json;charset=UTF-8",
-						url: "https://store.test.sunmi.com/esl/api/template/getList",
+						url: "https://store.test.sunmi.com/api/user/getCaptchas",
 						data: JSON.stringify(params),
 						success: function(result) {
-							console.log(result);
+							alert(result.code);
+							me.resultType = 0;
 						},
-						//请求失败，包含具体的错误信息
-						error: function(e){
-							console.log(e.status);
-							console.log(e.responseText);
-						}
+						error: function(e) {}
 					});
                 }
             });
