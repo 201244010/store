@@ -17,7 +17,7 @@
             <template v-if="resultType === 0">
                 <div class="info info1">请在数字店铺配置页中输入下列验证码</div>
                 <div class="input-wrapper">
-                    <div class="code">12312</div>
+                    <div class="code">{{captchas}}</div>
                 </div>
             </template>
             <template v-if="resultType === 1">
@@ -28,14 +28,17 @@
                 <div class="info info1">激活码已被使用，</div>
                 <div class="info">请在数字店铺中返回上一步重新输入</div>
             </template>
-            <div class="check-style-unequal-width"></div>
+            <template v-if="resultType === 3">
+                <div class="info info1">服务器繁忙，请稍后重试</div>
+            </template>
         </div>
         <script>
             new Vue({
                 el: '#app',
                 data() {
                 	return {
-                		resultType: 0
+                		resultType: 0,
+						captchas: ''
                     }
                 },
                 created() {
@@ -45,25 +48,33 @@
                     var keyMap = keyStr.split('&');
                     for (var i = 0; i < keyMap.length; i++) {
                         if (keyMap[i].indexOf('activation_code') > -1) {
-                        	var pa = keyMap[i].split('=');
-                        	params.activation_code = pa[1];
+                        	params.activation_code = keyMap[i].split('=')[1];
                         }
 						if (keyMap[i].indexOf('cpu_id') > -1) {
-							var pa = keyMap[i].split('=');
-							params.cpu_id = pa[1];
+							params.cpu_id = keyMap[i].split('=')[1];
 						}
                     }
 
 					$.ajax({
-						type: "POST",
-						contentType: "application/json;charset=UTF-8",
-						url: "https://store.test.sunmi.com/api/user/getCaptchas",
+						type: 'POST',
+						contentType: 'application/json;charset=UTF-8',
+						url: '/api/user/getCaptchas',
 						data: JSON.stringify(params),
 						success: function(result) {
-							alert(result.code);
-							me.resultType = 0;
+							if (result.code === 1) {
+								me.resultType = 0;
+								me.captchas = result.data.captchas;
+                            } else if (result.code === 5095) {
+								me.resultType = 1;
+                            } else if (result.code === 5096) {
+								me.resultType = 2;
+                            } else {
+								me.resultType = 3;
+                            }
 						},
-						error: function(e) {}
+						error: function() {
+							me.resultType = 3;
+                        }
 					});
                 }
             });
