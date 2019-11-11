@@ -58,7 +58,7 @@
 					$.ajax({
 						type: 'POST',
 						contentType: 'application/json;charset=UTF-8',
-						url: '/api/user/getCaptchas',
+						url: '/api/license/getCaptchas',
 						data: JSON.stringify(params),
 						success: function(result) {
 							if (result.code === 1) {
