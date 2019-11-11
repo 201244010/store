@@ -1,4 +1,4 @@
-FROM hub.sunmi.com/demo/esl-node-nginx
+FROM hub.sunmi.com/wifi/frontend-base:latest
 COPY nginx.conf /etc/nginx/nginx.conf
 
 COPY ./docker/timezone /etc/
