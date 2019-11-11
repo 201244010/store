@@ -5,7 +5,7 @@ COPY ./docker/timezone /etc/
 COPY ./docker/localtime /etc/
 
 COPY . /app/src
-RUN npm cache clean --force
+#RUN npm cache clean --force
 RUN cd /app/src && npm install
 RUN cd /app/src && npm run build:test && ls && cp -r /app/src/dist/ /app/80
 RUN rm -r /app/src
