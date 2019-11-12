@@ -98,6 +98,7 @@ class ElectricLabel extends Component {
 			},
 			changeSearchFormValue,
 			clearSearch,
+			fetchProductOverview,
 			fetchDeviceOverview,
 			fetchElectricLabels,
 			fetchESLDetails,
@@ -128,6 +129,7 @@ class ElectricLabel extends Component {
 							changeSearchFormValue,
 							clearSearch,
 							fetchElectricLabels,
+							fetchProductOverview,
 							fetchDeviceOverview,
 						}}
 					/>
@@ -142,6 +144,7 @@ class ElectricLabel extends Component {
 							products,
 							productPagination,
 							screenPushInfo,
+							fetchProductOverview,
 							fetchDeviceOverview,
 							fetchElectricLabels,
 							fetchESLDetails,

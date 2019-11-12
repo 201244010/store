@@ -152,7 +152,7 @@ class SearchResult extends Component {
 	};
 
 	unbindESL = record => {
-		const { unbindESL, fetchDeviceOverview } = this.props;
+		const { unbindESL, fetchProductOverview, fetchDeviceOverview } = this.props;
 		const content = (
 			<div>
 				<div>{formatMessage({ id: 'esl.device.esl.unbind.message' })}</div>
@@ -168,13 +168,14 @@ class SearchResult extends Component {
 				await unbindESL({
 					options: { esl_code: record.eslCode },
 				});
+				fetchProductOverview();
 				fetchDeviceOverview();
 			},
 		});
 	};
 
 	deleteESL = record => {
-		const { deleteESL, fetchDeviceOverview } = this.props;
+		const { deleteESL, fetchProductOverview, fetchDeviceOverview } = this.props;
 		const content = (
 			<div>
 				<div>{formatMessage({ id: 'esl.device.esl.delete.message1' })}</div>
@@ -191,6 +192,7 @@ class SearchResult extends Component {
 				await deleteESL({
 					options: { esl_id: record.id },
 				});
+				fetchProductOverview();
 				fetchDeviceOverview();
 			},
 		});
@@ -227,7 +229,7 @@ class SearchResult extends Component {
 	};
 
 	handleMoreClick = async e => {
-		const { flashModes, flashLed, fetchTemplatesByESLCode, fetchDeviceOverview } = this.props;
+		const { flashModes, flashLed, fetchTemplatesByESLCode, fetchProductOverview, fetchDeviceOverview } = this.props;
 		const {
 			dataset: { recordId, record },
 		} = e.domEvent.target;
@@ -270,11 +272,13 @@ class SearchResult extends Component {
 		if (e.key === '4') {
 			const eslDetail = JSON.parse(record);
 			await this.showBind(eslDetail);
+			fetchProductOverview();
 			fetchDeviceOverview();
 		}
 		if (e.key === '5') {
 			const eslDetail = JSON.parse(record);
 			await this.flushESL(eslDetail);
+			fetchProductOverview();
 			fetchDeviceOverview();
 		}
 		if (e.key === '6') {
