@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import AnchorWrapper from '@/components/Anchor';
 import ipcTypes from '@/constants/ipcTypes';
+import { comperareVersion } from '@/utils/utils';
 
 import styles from './SoftwareUpdate.less';
 
@@ -138,7 +139,7 @@ class SoftwareUpdate extends Component {
 		const { info: { currentVersion }} = this.props;
 		const ipcType = await getDeviceType(sn);
 		const leastVersion = ipcTypes[ipcType].leastVersion;
-		if (this.comperareVersion(currentVersion, leastVersion) >= 0) {
+		if (comperareVersion(currentVersion, leastVersion) >= 0) {
 			await readStatus(sn);
 		}
 		if(showModal){
@@ -186,7 +187,7 @@ class SoftwareUpdate extends Component {
 			await load(sn);
 			const ipcType = await getDeviceType(sn);
 			const leastVersion = ipcTypes[ipcType].leastVersion;
-			if (this.comperareVersion(currentVersion, leastVersion) >= 0) {
+			if (comperareVersion(currentVersion, leastVersion) >= 0) {
 				await readStatus(sn);
 				setTimeout(async () => {
 					const { info: { readStatusLoading } } = this.props;
@@ -338,28 +339,28 @@ class SoftwareUpdate extends Component {
 		});
 	}
 
-	comperareVersion = (l,r) => {
-		l = l.trim();
-		r = r.trim();
-		if(l === r){
-			return 0;
-		}
-		const lVers = l.split('.');
-		const rVers = r.split('.');
-		const length = Math.min(lVers.length, rVers.length);
-		for(let i = 0; i < length; i++){
-			if(lVers[i] !== rVers[i]){
-				return parseInt(lVers[i], 0) - parseInt(rVers[i], 0);
-			}
-		}
-		const  temp = lVers.length < rVers.length ? rVers : lVers;
-		for(let i = length; i < temp.length; i++){
-			if(parseInt(temp[i], 0) !== 0){
-				return lVers.length < rVers.length ? -1 : 1;
-			}
-		}
-		return 0;
-	}
+	// comperareVersion = (l,r) => {
+	// 	l = l.trim();
+	// 	r = r.trim();
+	// 	if(l === r){
+	// 		return 0;
+	// 	}
+	// 	const lVers = l.split('.');
+	// 	const rVers = r.split('.');
+	// 	const length = Math.min(lVers.length, rVers.length);
+	// 	for(let i = 0; i < length; i++){
+	// 		if(lVers[i] !== rVers[i]){
+	// 			return parseInt(lVers[i], 0) - parseInt(rVers[i], 0);
+	// 		}
+	// 	}
+	// 	const  temp = lVers.length < rVers.length ? rVers : lVers;
+	// 	for(let i = length; i < temp.length; i++){
+	// 		if(parseInt(temp[i], 0) !== 0){
+	// 			return lVers.length < rVers.length ? -1 : 1;
+	// 		}
+	// 	}
+	// 	return 0;
+	// }
 
 	addTimeoutHandler(info, lastInfo){
 		const { updating, OTATime } = info;

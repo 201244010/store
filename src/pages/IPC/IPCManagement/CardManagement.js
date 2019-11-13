@@ -5,7 +5,10 @@ import { connect } from 'dva';
 import styles from './CardManagement.less';
 import { FORM_ITEM_LAYOUT_MANAGEMENT } from '@/constants/form';
 import AnchorWrapper from '@/components/Anchor';
+import NVRTitle from './NVRTitle';
 import { ERROR_OK } from '@/constants/errorCode';
+import ipcTypes from '@/constants/ipcTypes';
+import { comperareVersion } from '@/utils/utils';
 
 const statusCode = {
 	opened: 1,
@@ -14,12 +17,45 @@ const statusCode = {
 };
 
 const mapStateToProps = (state) => {
-	const { cardManagement } = state;
+	const { cardManagement, nvrManagement: {nvrState, loadState} } = state;
 	return {
 		cardManagement,
+		nvrState,
+		loadState
 	};
 };
 const mapDispatchToProps = dispatch => ({
+	getCurrentVersion: async(sn) => {
+		const result = await dispatch({
+			type: 'ipcList/getCurrentVersion',
+			payload: {sn}
+		});
+		return result;
+	},
+	getDeviceType: async(sn) => {
+		const result = await dispatch({
+			type: 'ipcList/getDeviceType',
+			payload: {sn}
+		});
+		return result;
+	},
+	read: (sn) => {
+		dispatch({
+			type: 'nvrManagement/read',
+			payload: {
+				sn
+			}
+		});
+	},
+	setNVRState: (sn, nvrState) => {
+		dispatch({
+			type:'nvrManagement/setNVRState',
+			payload:{
+				sn,
+				nvrState
+			}
+		});
+	},
 	readCardInfo: sn => {
 		dispatch({
 			type: 'cardManagement/readCardInfo',
@@ -116,13 +152,21 @@ class CardManagement extends Component {
 				status: 0,
 				validTime: '',
 			},
-			isPay: false
+			isPay: false,
+			hasNVR: false,
 		};
 	}
 
 	componentDidMount = async () => {
-		const { sn, readCardInfo, getDeviceInfo, readCloudInfo } = this.props;
+		const { sn, readCardInfo, getDeviceInfo, readCloudInfo, read, getDeviceType, getCurrentVersion } = this.props;
 		if(sn){
+			const ipcType = await getDeviceType(sn) || 'FM020';
+			const { leastVersion } = ipcTypes[ipcType].hasNVR;
+			const currentVersion = await getCurrentVersion(sn);
+			const hasNVR = comperareVersion(currentVersion, leastVersion) >= 0;
+			if(hasNVR){
+				await read(sn);
+			}
 			let cloudService = {
 				status: 0,
 				validTime: ''
@@ -144,6 +188,7 @@ class CardManagement extends Component {
 				deviceInfo,
 				cloudService,
 				isPay,
+				hasNVR
 			});
 		}
 	};
@@ -200,6 +245,16 @@ class CardManagement extends Component {
 
 		this.removeConfirmInstance = null;
 		this.formatConfirmInstance = null;
+	}
+
+	nvrCheckedHandler = async (checked) => {
+		const { sn, setNVRState, checkBind } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			setNVRState(sn, checked);
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
 	}
 
 	/**
@@ -470,14 +525,24 @@ class CardManagement extends Component {
 				// expireTime,
 			},
 			navigateTo,
-			sn
+			sn,
+			nvrState,
+			loadState
 		} = this.props;
 
-		const { formattingModalVisible, formatProgress, deviceInfo: { hasTFCard, hasCloud }, cloudService: { status: cloudStatus, validTime }, isPay } = this.state;
+		const { formattingModalVisible, formatProgress, deviceInfo: { hasTFCard, hasCloud }, cloudService: { status: cloudStatus, validTime }, isPay, hasNVR } = this.state;
 
 		return (
 
 			<Card title={formatMessage({ id: 'cardManagement.title' })} id='tfCard'>
+				{
+					hasNVR? 
+						<div>
+							<div className={styles['storage-title']}><NVRTitle onChange={this.nvrCheckedHandler} checked={nvrState} loading={loadState} /></div>
+							<Divider />
+						</div>:
+						''
+				}
 				{
 					hasCloud ?
 						<div>

@@ -12,7 +12,7 @@ export default {
 	state:{
 		sn: '',
 		nvrState: false,
-		loadState: true
+		loadState: false
 	},
 	reducers:{
 		readData(state, { payload }) {
@@ -32,6 +32,12 @@ export default {
 	},
 	effects:{
 		*read({ payload: { sn }}, { put }) {
+			yield put({
+				type: 'readData',
+				payload: {
+					loadState: true
+				}
+			});
 			const type = yield put.resolve({
 				type:'ipcList/getDeviceType',
 				payload:{
