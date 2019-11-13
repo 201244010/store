@@ -11,7 +11,14 @@ export default class BindModal extends Component {
 	};
 
 	bindESL = async () => {
-		const { selectedProduct, currentRecord, bindESL, closeModal } = this.props;
+		const {
+			selectedProduct,
+			currentRecord,
+			bindESL,
+			closeModal,
+			fetchProductOverview,
+			fetchDeviceOverview
+		} = this.props;
 		if (selectedProduct && selectedProduct.id) {
 			const response = await bindESL({
 				options: {
@@ -23,6 +30,8 @@ export default class BindModal extends Component {
 
 			if (response && response.code === ERROR_OK) {
 				closeModal('bindVisible');
+				fetchProductOverview();
+				fetchDeviceOverview();
 			}
 		}
 	};

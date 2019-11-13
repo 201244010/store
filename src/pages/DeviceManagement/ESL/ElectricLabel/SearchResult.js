@@ -122,7 +122,7 @@ class SearchResult extends Component {
 
 	flushESL = async record => {
 		const { flushESL } = this.props;
-		flushESL({
+		await flushESL({
 			options: {
 				esl_code: record.esl_code,
 				product_id: record.product_id,
@@ -271,9 +271,7 @@ class SearchResult extends Component {
 		}
 		if (e.key === '4') {
 			const eslDetail = JSON.parse(record);
-			await this.showBind(eslDetail);
-			fetchProductOverview();
-			fetchDeviceOverview();
+			this.showBind(eslDetail);
 		}
 		if (e.key === '5') {
 			const eslDetail = JSON.parse(record);
@@ -325,6 +323,8 @@ class SearchResult extends Component {
 			screenInfo,
 			screenPushInfo,
 			fetchProductList,
+			fetchProductOverview,
+			fetchDeviceOverview,
 			bindESL,
 		} = this.props;
 		const {
@@ -640,6 +640,8 @@ class SearchResult extends Component {
 						fetchProductList,
 						selectedProduct,
 						bindESL,
+						fetchProductOverview,
+						fetchDeviceOverview,
 						closeModal: this.closeModal,
 						selectProduct: this.selectProduct,
 						updateProduct: this.updateProduct,
