@@ -71,10 +71,23 @@ class ElectricLabel extends Component {
 	}
 
 	refreshFailed = async () => {
-		const { refreshFailedImage, fetchDeviceOverview, fetchElectricLabels } = this.props;
+		const {
+			refreshFailedImage,
+			fetchProductOverview,
+			fetchDeviceOverview,
+			fetchElectricLabels
+		} = this.props;
 		await refreshFailedImage();
+		await fetchProductOverview();
 		await fetchDeviceOverview();
 		await fetchElectricLabels();
+	};
+
+	getDeviceOverview = () => {
+		const { fetchDeviceOverview } = this.props;
+		setTimeout(() => {
+			fetchDeviceOverview();
+		}, 1000);
 	};
 
 	render() {
@@ -99,7 +112,6 @@ class ElectricLabel extends Component {
 			changeSearchFormValue,
 			clearSearch,
 			fetchProductOverview,
-			fetchDeviceOverview,
 			fetchElectricLabels,
 			fetchESLDetails,
 			fetchTemplatesByESLCode,
@@ -130,7 +142,7 @@ class ElectricLabel extends Component {
 							clearSearch,
 							fetchElectricLabels,
 							fetchProductOverview,
-							fetchDeviceOverview,
+							fetchDeviceOverview: this.getDeviceOverview,
 						}}
 					/>
 					<SearchResult
@@ -145,7 +157,7 @@ class ElectricLabel extends Component {
 							productPagination,
 							screenPushInfo,
 							fetchProductOverview,
-							fetchDeviceOverview,
+							fetchDeviceOverview: this.getDeviceOverview,
 							fetchElectricLabels,
 							fetchESLDetails,
 							fetchTemplatesByESLCode,
