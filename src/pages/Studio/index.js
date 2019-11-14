@@ -1097,7 +1097,12 @@ class Studio extends Component {
 						}}
 					/>
 				) : null}
-				<DragCopy dragCopy={dragCopy} dragName={dragName} refComponents={refComponents} />
+				<DragCopy
+					dragCopy={dragCopy}
+					dragName={dragName}
+					refComponents={refComponents}
+					componentsDetail={componentsDetail}
+				/>
 			</div>
 		);
 	}

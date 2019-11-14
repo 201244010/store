@@ -122,7 +122,7 @@ class SearchResult extends Component {
 
 	flushESL = async record => {
 		const { flushESL } = this.props;
-		flushESL({
+		await flushESL({
 			options: {
 				esl_code: record.esl_code,
 				product_id: record.product_id,
@@ -152,7 +152,7 @@ class SearchResult extends Component {
 	};
 
 	unbindESL = record => {
-		const { unbindESL, fetchDeviceOverview } = this.props;
+		const { unbindESL, fetchProductOverview, fetchDeviceOverview } = this.props;
 		const content = (
 			<div>
 				<div>{formatMessage({ id: 'esl.device.esl.unbind.message' })}</div>
@@ -168,13 +168,14 @@ class SearchResult extends Component {
 				await unbindESL({
 					options: { esl_code: record.eslCode },
 				});
+				fetchProductOverview();
 				fetchDeviceOverview();
 			},
 		});
 	};
 
 	deleteESL = record => {
-		const { deleteESL, fetchDeviceOverview } = this.props;
+		const { deleteESL, fetchProductOverview, fetchDeviceOverview } = this.props;
 		const content = (
 			<div>
 				<div>{formatMessage({ id: 'esl.device.esl.delete.message1' })}</div>
@@ -191,6 +192,7 @@ class SearchResult extends Component {
 				await deleteESL({
 					options: { esl_id: record.id },
 				});
+				fetchProductOverview();
 				fetchDeviceOverview();
 			},
 		});
@@ -227,7 +229,7 @@ class SearchResult extends Component {
 	};
 
 	handleMoreClick = async e => {
-		const { flashModes, flashLed, fetchTemplatesByESLCode, fetchDeviceOverview } = this.props;
+		const { flashModes, flashLed, fetchTemplatesByESLCode, fetchProductOverview, fetchDeviceOverview } = this.props;
 		const {
 			dataset: { recordId, record },
 		} = e.domEvent.target;
@@ -269,12 +271,12 @@ class SearchResult extends Component {
 		}
 		if (e.key === '4') {
 			const eslDetail = JSON.parse(record);
-			await this.showBind(eslDetail);
-			fetchDeviceOverview();
+			this.showBind(eslDetail);
 		}
 		if (e.key === '5') {
 			const eslDetail = JSON.parse(record);
 			await this.flushESL(eslDetail);
+			fetchProductOverview();
 			fetchDeviceOverview();
 		}
 		if (e.key === '6') {
@@ -321,6 +323,8 @@ class SearchResult extends Component {
 			screenInfo,
 			screenPushInfo,
 			fetchProductList,
+			fetchProductOverview,
+			fetchDeviceOverview,
 			bindESL,
 		} = this.props;
 		const {
@@ -636,6 +640,8 @@ class SearchResult extends Component {
 						fetchProductList,
 						selectedProduct,
 						bindESL,
+						fetchProductOverview,
+						fetchDeviceOverview,
 						closeModal: this.closeModal,
 						selectProduct: this.selectProduct,
 						updateProduct: this.updateProduct,
