@@ -448,10 +448,10 @@ class PhotoCard extends React.Component {
 							birthday = moment().subtract(36, 'year');
 							break;
 						case 7:
-							birthday = moment().subtract(36, 'year');
+							birthday = moment().subtract(46, 'year');
 							break;
 						case 8:
-							birthday = moment().subtract(36, 'year');
+							birthday = moment().subtract(56, 'year');
 							break;
 						default: return moment();
 					}
