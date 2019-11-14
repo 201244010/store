@@ -24,7 +24,7 @@ const statusCode = {
 	return {
 		streamId,
 		ppiChanged,
-		currentPPI: ppi || '1080',
+		currentPPI: ppi || '720',
 		faceidRects: rectangles || [],
 		faceidList: list || [],
 		timeSlots: timeSlots || [],
@@ -212,7 +212,8 @@ class Live extends React.Component{
 			},
 			liveTimestamp: 0,
 			sdStatus: true,
-			cloudStatus: 'normal'
+			cloudStatus: 'normal',
+			historyPPI: '',
 		};
 	}
 
@@ -385,6 +386,7 @@ class Live extends React.Component{
 		const { getHistoryUrl } = this.props;
 		const sn = this.getSN();
 
+
 		const url = await getHistoryUrl({ sn, timestamp });
 
 		const hasFaceid = this.hasFaceid();
@@ -392,7 +394,9 @@ class Live extends React.Component{
 		if (hasFaceid) {
 			this.stopFaceidPush();
 		}
-
+		this.setState({
+			historyPPI: '1080'
+		});
 		return url;
 	}
 
@@ -401,6 +405,10 @@ class Live extends React.Component{
 		const sn = this.getSN();
 
 		await stopHistoryPlay({ sn });
+
+		this.setState({
+			historyPPI: ''
+		});
 	}
 
 	changePPI = (ppi) => {
@@ -449,7 +457,7 @@ class Live extends React.Component{
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
-		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus } = this.state;
+		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus, historyPPI } = this.state;
 
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
@@ -476,7 +484,7 @@ class Live extends React.Component{
 
 						pixelRatio={pixelRatio}
 
-						currentPPI={currentPPI}
+						currentPPI={historyPPI || currentPPI}
 						changePPI={this.changePPI}
 						ppiChanged={ppiChanged}
 						onLivePlay={this.requestMetadata}
