@@ -9,9 +9,10 @@ import BasicParams from './BasicParams';
 import SoftwareUpdate from './SoftwareUpdate';
 import InitialSetting from './InitialSetting';
 import CardManagement from './CardManagement';
-import NVRManagement from './NVRManagement';
+// import NVRManagement from './NVRManagement';
 import styles from './IPCManagement.less';
-import ipcTypes from '@/constants/ipcTypes';
+// import ipcTypes from '@/constants/ipcTypes';
+// import { comperareVersion } from '@/utils/utils';
 
 const Time = 15000;
 
@@ -26,15 +27,15 @@ const Time = 15000;
 		const deviceBasicInfoLoading = status === 'loading' || false;
 		const activeDetectionLoading = isActiveDetectionReading || isActiveDetectionSaving === 'saving';
 		const basicParamsLoading = isBasicParamsReading || isBasicParamsSaving === 'saving';
-		const cardManagementLoading = isLoading;
-		const nvrLoading = loadState;
+		const cardManagementLoading = isLoading || loadState;
+		// const nvrLoading = loadState;
 
 		const loadingObj = {
 			deviceBasicInfoLoading,
 			activeDetectionLoading,
 			basicParamsLoading,
 			cardManagementLoading,
-			nvrLoading
+			// nvrLoading
 		};
 
 		// const loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
@@ -61,55 +62,56 @@ class IPCManagement extends Component {
 		super(props);
 		this.timer = null;
 		this.state = {
-			loading: true,
-			ipcType:'FM020'
+			loading: false,
+			// ipcType:'FM020'
 		};
 	}
 
 	async componentDidMount(){
 		const { 
-			getDeviceType, 
-			location,
+			// getDeviceType, 
+			// location,
 			loadingObj:{
 				deviceBasicInfoLoading,
 				activeDetectionLoading,
 				basicParamsLoading,
 				cardManagementLoading,
-				nvrLoading
+				// nvrLoading
 			}
 		 } = this.props;
-		const { query: {sn} } = location;
-		const ipcType = await getDeviceType(sn);
-		let loading = true;
+		// const { query: {sn} } = location;
+		// const ipcType = await getDeviceType(sn);
+		// let loading = true;
 
-		if(ipcTypes[ipcType].hasNVR){
-			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
-		}else{
-			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
-		}
+		// if(ipcTypes[ipcType].hasNVR){
+		// 	loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
+		// }else{
+		const loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
+
+		// }
 
 		if(loading){
 			this.timerHandler();
 		}
-		this.setState({
-			loading,
-			ipcType
-		});
+		// this.setState({
+		// 	loading,
+		// 	// ipcType
+		// });
 	}
 
 	componentWillReceiveProps(nextProps){
 		const { loadingObj: nextLoadingObj } = nextProps;
 		const { loadingObj } = this.props;
-		const { ipcType } = this.state;
-		let loading;
-		let nextLoading;
+		// const { ipcType } = this.state;
+		// let loading;
+		// let nextLoading;
 
 		const {
 			deviceBasicInfoLoading: nextDeviceBasicInfoLoading,
 			activeDetectionLoading: nextActiveDetectionLoading,
 			basicParamsLoading: nextBasicParamsLoading,
 			cardManagementLoading: nextCardManagementLoading,
-			nvrLoading: nextNvrLoading
+			// nvrLoading: nextNvrLoading
 		} = nextLoadingObj;
 
 		const {
@@ -117,16 +119,16 @@ class IPCManagement extends Component {
 			activeDetectionLoading,
 			basicParamsLoading,
 			cardManagementLoading,
-			nvrLoading
+			// nvrLoading
 		} = loadingObj;
 
-		if(ipcTypes[ipcType].hasNVR){
-			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
-			nextLoading = nextDeviceBasicInfoLoading || nextActiveDetectionLoading || nextBasicParamsLoading || nextCardManagementLoading || nextNvrLoading;
-		}else{
-			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
-			nextLoading = nextDeviceBasicInfoLoading || nextActiveDetectionLoading || nextBasicParamsLoading || nextCardManagementLoading;
-		}
+		// if(ipcTypes[ipcType].hasNVR){
+		// 	loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
+		// 	nextLoading = nextDeviceBasicInfoLoading || nextActiveDetectionLoading || nextBasicParamsLoading || nextCardManagementLoading || nextNvrLoading;
+		// }else{
+		const loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
+		const nextLoading = nextDeviceBasicInfoLoading || nextActiveDetectionLoading || nextBasicParamsLoading || nextCardManagementLoading;
+		// }
 
 		// loading ^ nextLoading
 		if((!loading && nextLoading) || (loading && !nextLoading)){
@@ -137,6 +139,9 @@ class IPCManagement extends Component {
 	timerHandler = () => {
 		if(this.timer === null){
 			this.timer = setTimeout(this.showModalHandler,Time);
+			this.setState({
+				loading: true
+			});
 		}else{
 			clearTimeout(this.timer);
 			this.timer = null;
@@ -158,7 +163,7 @@ class IPCManagement extends Component {
 
 	render() {
 		const { location } = this.props;
-		const { loading, ipcType} = this.state;
+		const { loading } = this.state;
 		const { query: {sn, showModal} } = location;
 		return (
 			<Spin spinning={loading}>
@@ -166,7 +171,7 @@ class IPCManagement extends Component {
 					<DeviceBasicInfo sn={sn} />
 					<ActiveDetection sn={sn} />
 					<BasicParams sn={sn} />
-					{ipcTypes[ipcType].hasNVR&&<NVRManagement sn={sn} />}
+					{/* {ipcTypes[ipcType].hasNVR&&<NVRManagement sn={sn} />} */}
 					<CardManagement sn={sn} />
 					<InitialSetting sn={sn} />
 					<SoftwareUpdate sn={sn} showModal={showModal} location={location} />

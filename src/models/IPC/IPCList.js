@@ -154,7 +154,19 @@ export default {
 			return {
 				code
 			};
-		}
+		},
+		*getCurrentVersion({ payload: { sn }},{ put }){
+			const ipcList = yield put.resolve({
+				type: 'getIpcList'
+			});
+
+			for (let i = 0; i < ipcList.length; i++) {
+				if (ipcList[i].sn === sn) {
+					return ipcList[i].binVersion;
+				}
+			}
+			return '';
+		},
 
 	}
 };
