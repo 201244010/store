@@ -62,7 +62,7 @@ class IPCManagement extends Component {
 		super(props);
 		this.timer = null;
 		this.state = {
-			loading: true,
+			loading: false,
 			// ipcType:'FM020'
 		};
 	}
@@ -93,10 +93,10 @@ class IPCManagement extends Component {
 		if(loading){
 			this.timerHandler();
 		}
-		this.setState({
-			loading,
-			// ipcType
-		});
+		// this.setState({
+		// 	loading,
+		// 	// ipcType
+		// });
 	}
 
 	componentWillReceiveProps(nextProps){
@@ -139,6 +139,9 @@ class IPCManagement extends Component {
 	timerHandler = () => {
 		if(this.timer === null){
 			this.timer = setTimeout(this.showModalHandler,Time);
+			this.setState({
+				loading: true
+			});
 		}else{
 			clearTimeout(this.timer);
 			this.timer = null;

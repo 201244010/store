@@ -137,7 +137,7 @@ class SoftwareUpdate extends Component {
 		await load(sn);
 
 		const { info: { currentVersion }} = this.props;
-		const ipcType = await getDeviceType(sn);
+		const ipcType = await getDeviceType(sn) || 'FM020';
 		const leastVersion = ipcTypes[ipcType].leastVersion;
 		if (comperareVersion(currentVersion, leastVersion) >= 0) {
 			await readStatus(sn);
@@ -185,7 +185,7 @@ class SoftwareUpdate extends Component {
 			});
 
 			await load(sn);
-			const ipcType = await getDeviceType(sn);
+			const ipcType = await getDeviceType(sn) || 'FM020';
 			const leastVersion = ipcTypes[ipcType].leastVersion;
 			if (comperareVersion(currentVersion, leastVersion) >= 0) {
 				await readStatus(sn);
