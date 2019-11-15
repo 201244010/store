@@ -24,7 +24,7 @@ const fullfillCountList = (countList = [], type = null) => {
 		for (let i = 0; i < 7; i++) {
 			dateList.push({
 				time: moment(time)
-					.day(i + 1)
+					.add(i, 'days')
 					.format('YYYY-MM-DD'),
 				totalCount: null,
 				regularCount: null,
@@ -37,9 +37,11 @@ const fullfillCountList = (countList = [], type = null) => {
 			return countItem || date;
 		});
 	}
+
 	if (type === RANGE_VALUE.MONTH) {
 		const { time } = firstItem;
 		const daysOfMonth = moment(time).daysInMonth();
+
 		if (countList.length === daysOfMonth) {
 			return countList;
 		}
@@ -48,7 +50,7 @@ const fullfillCountList = (countList = [], type = null) => {
 		for (let i = 0; i < daysOfMonth; i++) {
 			dateList.push({
 				time: moment(time)
-					.day(i + 1)
+					.add(i, 'days')
 					.format('YYYY-MM-DD'),
 				totalCount: null,
 				regularCount: null,
