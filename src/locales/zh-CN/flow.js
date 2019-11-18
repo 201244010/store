@@ -24,5 +24,5 @@ export default {
 	'flow.faceid.blacklist': '黑名单',
 	'show.total.unit': '万',
 	'flow.ageSmallInfo':'18岁以下',
-	'flow.ageLargeInfo':'56岁以上'
+	'flow.ageLargeInfo':'56岁以上',
 };

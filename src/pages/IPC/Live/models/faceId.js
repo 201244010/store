@@ -106,7 +106,7 @@ export default {
 
 			if(!rangeList || rangeList.length === 0){
 				const { payload: list } = yield take('readAgeRangeList');
-				console.log('take list', list);
+				// console.log('take list', list);
 				rangeList = list.ageRangeList;
 			}
 			// if(age) {

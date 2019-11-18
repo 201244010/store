@@ -150,6 +150,7 @@ class LivePlayer extends React.Component{
 
 					this.startTimestamp = timestamp;
 					this.toPause = false;
+					this.play();
 				}, 800);
 
 			}

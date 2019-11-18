@@ -26,7 +26,7 @@ import styles from './Live.less';
 	return {
 		streamId,
 		ppiChanged,
-		currentPPI: ppi || '1080',
+		currentPPI: ppi || '720',
 		// faceidRects: rects || [],
 		faceidRects: rectangles || [],
 		faceidList: list || [],

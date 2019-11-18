@@ -19,7 +19,7 @@ import womanImage from '@/assets/imgs/female.png';
 	return {
 		streamId,
 		ppiChanged,
-		currentPPI: ppi || '1080',
+		currentPPI: ppi || '720',
 		faceidRects: rectangles || [],
 		faceidList: list || [],
 		timeSlots: timeSlots || [],
@@ -186,7 +186,8 @@ class Live extends React.Component{
 				pixelRatio: '16:9'
 			},
 			liveTimestamp: 0,
-			sdStatus: true
+			sdStatus: true,
+			historyPPI: '',
 		};
 	}
 
@@ -338,6 +339,10 @@ class Live extends React.Component{
 			this.startFaceidPush();
 		}
 
+		this.setState({
+			historyPPI: ''
+		});
+
 		const url = await getLiveUrl({ sn });
 		return url;
 	}
@@ -361,7 +366,9 @@ class Live extends React.Component{
 		if (hasFaceid) {
 			this.stopFaceidPush();
 		}
-
+		this.setState({
+			historyPPI: '1080'
+		});
 		return url;
 	}
 
@@ -370,6 +377,7 @@ class Live extends React.Component{
 		const sn = this.getSN();
 
 		await stopHistoryPlay({ sn });
+
 	}
 
 	changePPI = (ppi) => {
@@ -418,7 +426,7 @@ class Live extends React.Component{
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, /* navigateTo */ } = this.props;
 
-		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus } = this.state;
+		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, historyPPI } = this.state;
 
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
@@ -441,7 +449,7 @@ class Live extends React.Component{
 
 						pixelRatio={pixelRatio}
 
-						currentPPI={currentPPI}
+						currentPPI={historyPPI || currentPPI}
 						changePPI={this.changePPI}
 						ppiChanged={ppiChanged}
 						onLivePlay={this.requestMetadata}
@@ -511,32 +519,6 @@ class Live extends React.Component{
 														<span className={styles['button-infos']} onClick={() => navigateTo('entryDetail',{ faceId:item.id })}>{formatMessage({ id: 'live.enter.details'})}</span>
 													</p> */}
 												</Card>
-												{/* <Card
-												bordered={false}
-												className={styles['faceid-card']}
-											>
-												<div className={styles['avatar-col']}>
-													<Avatar className={styles['avatar-img']} shape="square" size={89} src={`data:image/jpeg;base64,${item.pic}`} />
-												</div>
-												<div className={styles['info-col']}>
-													<span className={styles['info-label']}>{`${ formatMessage({id: 'live.name'}) } : ${ item.name }`}</span>
-													<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.group'}) } : ${ item.libraryName }`}</span>
-													<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.gender'}) } : ${genders[item.gender]}`}</span>
-													<span className={styles['info-label']}>{`${ formatMessage({ id: 'live.age'}) } : ${item.age}`}</span>
-												</div>
-												<div className={styles['info-col']}>
-													<span>{`${formatMessage({id: 'live.last.arrival.time'})}: `}</span>
-													<span>
-														{
-															moment.unix(item.timestamp).format('MM-DD HH:mm:ss')
-														}
-													</span>
-												</div>
-
-												<p>
-													<Link className={styles['button-infos']} to='./userinfo'>{formatMessage({ id: 'live.enter.details'})}</Link>
-												</p>
-											</Card> */}
 											</List.Item>
 										)
 									}
@@ -552,7 +534,6 @@ class Live extends React.Component{
 						: ''
 				}
 			</div>
-
 		);
 	}
 };
