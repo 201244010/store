@@ -6,7 +6,7 @@ import styles from './Faceid.less';
 
 class Faceid extends React.Component{
 	render () {
-		const { current, faceidRects, pixelRatio, currentPPI } = this.props;
+		const { current, faceidRects } = this.props;
 		// console.log('current', current);
 		const tmp = faceidRects.filter(item => {
 			// console.log('timestamp: ', item.timestamp);
@@ -43,6 +43,9 @@ class Faceid extends React.Component{
 				{
 					!this.container ? '' :
 						rects.map((item, index) => {
+							// 任何分辨率下，设备端都按1080分辨率来上报人脸框，此处写成固定的1080下换算
+							const pixelRatio = '16:9';
+							const currentPPI = 1080;
 
 							const ps = pixelRatio.split(':');
 							const p = ps.map(obj => parseInt(obj, 10));
