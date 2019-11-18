@@ -601,7 +601,15 @@ class CardManagement extends Component {
 													/>
 												</div>
 												: <p>{ this.sdStatus2text(sd_status_code) }</p>)
-											:<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span>
+											:<div>
+												<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}
+													<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span>/<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span><span>GB</span>
+												</p>
+												<Progress
+													className={styles['form-progress']}
+													showInfo={false}
+												/>
+											 </div>
 									}
 
 								</Form.Item>
@@ -615,7 +623,10 @@ class CardManagement extends Component {
 													{formatMessage({ id: 'cardManagement.daysUseTip' })}
 												</p>
 												: <p>{this.sdStatus2text(sd_status_code)}</p>)
-											:<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span>
+											:<div>
+												<p><span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span><span>{formatMessage({id: 'cardManagement.day'})}</span></p>
+												<p>{formatMessage({ id: 'cardManagement.daysUseTip' })}</p>
+											 </div>
 									}
 								</Form.Item>
 
