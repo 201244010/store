@@ -24,13 +24,6 @@ const STATUS = {
 	NODOWNLOADRECEIVE: 'noDownloadReceive'
 };
 
-// const STATUS_PERCENT = {
-// 	DOWNLOAD: 37,
-// 	AI: 68,
-// 	FIRMWARE: 83,
-// 	RESTART : 95
-// };
-
 const mapStateToProps = (state) => {
 	const { ipcSoftwareUpdate: info, loading } = state;
 	return {
@@ -133,7 +126,6 @@ class SoftwareUpdate extends Component {
 				deviceInfo
 			});
 		}
-		// await readStatus(sn);
 		await load(sn);
 
 		const { info: { currentVersion }} = this.props;
@@ -157,8 +149,6 @@ class SoftwareUpdate extends Component {
 	}
 
 	recoveryHandler = (info, lastInfo) =>{
-		// const { location } = this.props;
-		// console.log(location);
 		const { updating } = info;
 		const { updating: lastUpdating } = lastInfo;
 		if(lastUpdating === STATUS.NORMAL && updating !== STATUS.BTNLOAD){
@@ -288,13 +278,6 @@ class SoftwareUpdate extends Component {
 					clearInterval(this.interval);
 					this.setUpdatingStatus(STATUS.NORMAL);
 					break;
-				// case STATUS.NODOWNLOADRECEIVE:
-				// 	percent = 0;
-				// 	visible = false;
-				// 	message.info(formatMessage({ id: 'softwareUpdate.receive.fail' }));
-				// 	clearInterval(this.interval);
-				// 	this.setUpdatingStatus(STATUS.NORMAL);
-				// 	break;
 				default:
 					break;
 			}
@@ -338,29 +321,6 @@ class SoftwareUpdate extends Component {
 			showLoadingFlag:true
 		});
 	}
-
-	// comperareVersion = (l,r) => {
-	// 	l = l.trim();
-	// 	r = r.trim();
-	// 	if(l === r){
-	// 		return 0;
-	// 	}
-	// 	const lVers = l.split('.');
-	// 	const rVers = r.split('.');
-	// 	const length = Math.min(lVers.length, rVers.length);
-	// 	for(let i = 0; i < length; i++){
-	// 		if(lVers[i] !== rVers[i]){
-	// 			return parseInt(lVers[i], 0) - parseInt(rVers[i], 0);
-	// 		}
-	// 	}
-	// 	const  temp = lVers.length < rVers.length ? rVers : lVers;
-	// 	for(let i = length; i < temp.length; i++){
-	// 		if(parseInt(temp[i], 0) !== 0){
-	// 			return lVers.length < rVers.length ? -1 : 1;
-	// 		}
-	// 	}
-	// 	return 0;
-	// }
 
 	addTimeoutHandler(info, lastInfo){
 		const { updating, OTATime } = info;
@@ -486,7 +446,7 @@ class SoftwareUpdate extends Component {
 	}
 
 	render() {
-		const { info: { currentVersion, needUpdate, lastCheckTime, updating, newTimeValue }, loading } = this.props;
+		const { info: { currentVersion, needUpdate, lastCheckTime, updating, newTimeValue }, loading, isOnline } = this.props;
 		const { percent, visible, showLoadingFlag, deviceInfo:{ STATUS_PERCENT }, confirmBtnShowLoadingFlag, readStatusFailed } = this.state;
 		const showLoading = loading.effects['ipcSoftwareUpdate/detect']||showLoadingFlag;
 		return (
@@ -502,7 +462,7 @@ class SoftwareUpdate extends Component {
 							{ `${formatMessage({ id: 'softwareUpdate.currentVersion' })}: ${currentVersion}` }
 						</p>
 						<p className={styles.center}>
-							<Button type="default" onClick={this.showModal}>
+							<Button type="default" onClick={this.showModal} disabled={!isOnline}>
 								{formatMessage({ id: 'softwareUpdate.check' })}
 							</Button>
 						</p>

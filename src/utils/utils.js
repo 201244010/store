@@ -633,8 +633,8 @@ export const getCountDown = (seconds, level = 'hour') => {
 };
 
 export const comperareVersion = (l,r) => {
-	l = l.trim();
-	r = r.trim();
+	l = l ? l.trim() : '';
+	r = r ? r.trim() : '';
 	if(l === r){
 		return 0;
 	}

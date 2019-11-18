@@ -15,7 +15,7 @@ class IPCItem extends React.Component {
 						<Card
 							className={styles.card}
 							bodyStyle={{ padding: 0, margin: 0 }}
-							cover={img && <img alt="example" src={img} />}
+							cover={img ? <img alt="example" src={img} /> : <div className={styles['no-pic']} />}
 						/>
 						{sn&&
 							<Button
