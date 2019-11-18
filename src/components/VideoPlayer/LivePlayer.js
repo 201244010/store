@@ -186,7 +186,7 @@ class LivePlayer extends React.Component{
 		}
 
 		if (this.paused()) {
-			await this.playHistory(parseInt(currentTimestamp, 10));
+			await this.playHistory(currentTimestamp);
 		}else{
 			await this.pauseHistory();
 		}
@@ -366,7 +366,7 @@ class LivePlayer extends React.Component{
 	}
 
 	onMetadataArrived = (metadata) => {
-		const { onMetadataArrived } = this.props;
+		const { onMetadataArrived, updateBasetime } = this.props;
 		const { isLive } = this.state;
 		const { videoplayer: { player } } = this;
 
@@ -412,6 +412,7 @@ class LivePlayer extends React.Component{
 			}
 
 			onMetadataArrived(metadata.relativeTime);
+			updateBasetime(metadata.baseTime);
 		} else {
 			const { creationdate } = metadata;
 			const timestamp = moment(creationdate.substring(0, creationdate.length - 4)).unix();
