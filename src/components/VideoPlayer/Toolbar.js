@@ -73,8 +73,11 @@ class Toolbar extends React.Component{
 			canScreenShot, screenShot,
 			backToLive, showBackToLive,
 			fullScreen, fullScreenStatus,
-			maxVolume, mute, changeVolume, volume: volumneValue
+			maxVolume, mute, changeVolume, volume: volumneValue,
+			isOnline,
 		} = this.props;
+
+		console.log('toolBar', playing);
 
 		const { clicked, datePickerVisiable } = this.state;
 
@@ -113,7 +116,7 @@ class Toolbar extends React.Component{
 			>
 				{
 					// 当前处于直播状态的提示
-					<div className={`${ styles['this-is-live'] } ${ isLive && !clicked ? '' : styles.hidden }`}>
+					<div className={`${ styles['this-is-live'] } ${ isLive && !clicked && isOnline ? '' : styles.hidden }`}>
 						<div className={styles.text}>{ formatMessage({ id: 'videoPlayer.thisIsLive'}) }</div>
 					</div>
 				}
@@ -131,9 +134,16 @@ class Toolbar extends React.Component{
 						: ''
 				}
 
+				{
+					// 离线时观看回放提示
+					<div className={`${ styles['this-is-live'] } ${ isLive && !clicked && !isOnline ? '' : styles.hidden }`}>
+						<div className={styles.text}>{ formatMessage({ id: 'videoPlayer.thisIsRePlay'}) }</div>
+					</div>
+				}
+
 				<div className={`${styles.control} ${styles['play-control']}`}>
 
-					<a className={`${styles.button} ${styles['button-play']} ${  playing ? styles.playing : ''} ${ playBtnDisabled ? styles.disabled : '' }`} onClick={play}>
+					<a className={`${styles.button} ${styles['button-play']} ${  playing ? styles.playing : '' } ${ playBtnDisabled ? styles.disabled : '' }`} onClick={play}>
 						{
 							formatMessage({ id: 'videoPlayer.play' })
 						}
@@ -154,7 +164,7 @@ class Toolbar extends React.Component{
 								}}
 							/>
 							<Dropdown
-								disabled={!isLive}
+								disabled={!isLive || !isOnline}
 								overlay={
 									<Menu
 										selectedKeys={[`${currentPPI}`]}
@@ -261,7 +271,7 @@ class Toolbar extends React.Component{
 											onClick={() => {
 												this.changeDatePicker(true);
 											}}
-											className={`${styles.button} ${styles['calendar-date']}`}
+											className={`${styles.button} ${styles['calendar-date']} ${ !isOnline ? styles['btn-disabled'] : '' }`}
 										>
 											<span className={styles.text}>
 												{ moment.unix(today).date() }
@@ -287,7 +297,7 @@ class Toolbar extends React.Component{
 									formatMessage({ id: 'videoPlayer.videoScreenShot' })
 								}
 							>
-								<a className={`${styles.button} ${styles['button-screenshot']}`} onClick={screenShot}>
+								<a className={`${styles.button} ${styles['button-screenshot']} ${ !isOnline ? styles['shot-disabled'] : '' }`} onClick={screenShot}>
 									{
 										formatMessage({ id: 'vidoePlayer.screenShot' })
 									}
@@ -316,7 +326,7 @@ class Toolbar extends React.Component{
 						placement="topCenter"
 						getPopupContainer={() => this.volumeDropdown}
 					>
-						<a className={`${styles.button} ${styles['button-volume']} ${ volumneValue === 0 ? styles.muted : ''}`} onClick={mute}>
+						<a className={`${styles.button} ${styles['button-volume']} ${ volumneValue === 0 ? styles.muted : ''} ${ !isOnline ? styles['vloume-disabled'] : '' }`} onClick={mute}>
 							{
 								formatMessage({ id: 'videoPlayer.volume' })
 							}
