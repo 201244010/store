@@ -3,7 +3,9 @@ export  default {
 		hasFaceid: true,
 		hasTFCard: true,
 		hasCloud: false,
-		hasNVR: false,
+		hasNVR: {
+			leastVersion: '1.2.1'
+		},
 		pixelRatio: '16:9',
 		leastVersion: '1.1.3',
 		rotate: [{
@@ -38,7 +40,9 @@ export  default {
 		hasFaceid: true,
 		hasTFCard: true,
 		hasCloud: false,
-		hasNVR: false,
+		hasNVR: {
+			leastVersion: '1.2.1'
+		},
 		pixelRatio: '16:9',
 		leastVersion: '1.1.3',
 		rotate: [{
@@ -72,7 +76,9 @@ export  default {
 		hasFaceid: false,
 		hasTFCard: true,
 		hasCloud: true,
-		hasNVR: false,
+		hasNVR: {
+			leastVersion: '1.3.0'
+		},
 		pixelRatio: '1:1',
 		leastVersion: '1.2.6',
 		rotate: [{
@@ -111,7 +117,9 @@ export  default {
 	'FM010': {
 		hasFaceid: false,
 		hasTFCard: true,
-		hasNVR: false,
+		hasNVR: {
+			leastVersion: '1.3.0'
+		},
 		hasCloud: true,
 		pixelRatio: '1:1',
 		leastVersion: '1.2.6',

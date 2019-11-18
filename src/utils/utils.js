@@ -631,3 +631,26 @@ export const getCountDown = (seconds, level = 'hour') => {
 		second,
 	};
 };
+
+export const comperareVersion = (l,r) => {
+	l = l ? l.trim() : '';
+	r = r ? r.trim() : '';
+	if(l === r){
+		return 0;
+	}
+	const lVers = l.split('.');
+	const rVers = r.split('.');
+	const length = Math.min(lVers.length, rVers.length);
+	for(let i = 0; i < length; i++){
+		if(lVers[i] !== rVers[i]){
+			return parseInt(lVers[i], 0) - parseInt(rVers[i], 0);
+		}
+	}
+	const  temp = lVers.length < rVers.length ? rVers : lVers;
+	for(let i = length; i < temp.length; i++){
+		if(parseInt(temp[i], 0) !== 0){
+			return lVers.length < rVers.length ? -1 : 1;
+		}
+	}
+	return 0;
+};

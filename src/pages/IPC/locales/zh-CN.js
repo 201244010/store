@@ -21,7 +21,7 @@ import faceLog from './zh-CN/faceLog';
 import entryDetail from './zh-CN/entryDetail';
 import initialSetting from './zh-CN/initialSetting';
 import agreementModal from './zh-CN/agreementModal';
-import avrManagement from './zh-CN/avrManagement';
+import nvrManagement from './zh-CN/nvrManagement';
 import cloudStorage from './zh-CN/cloudStorage';
 import protocol from './zh-CN/protocol';
 
@@ -50,7 +50,7 @@ export default {
 	...entryDetail,
 	...initialSetting,
 	...agreementModal,
-	...avrManagement,
+	...nvrManagement,
 	...cloudStorage,
 	...protocol
 };

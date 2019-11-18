@@ -9,9 +9,10 @@ import BasicParams from './BasicParams';
 import SoftwareUpdate from './SoftwareUpdate';
 import InitialSetting from './InitialSetting';
 import CardManagement from './CardManagement';
-import NVRManagement from './NVRManagement';
+// import NVRManagement from './NVRManagement';
 import styles from './IPCManagement.less';
-import ipcTypes from '@/constants/ipcTypes';
+// import ipcTypes from '@/constants/ipcTypes';
+// import { comperareVersion } from '@/utils/utils';
 
 const Time = 15000;
 
@@ -26,15 +27,15 @@ const Time = 15000;
 		const deviceBasicInfoLoading = status === 'loading' || false;
 		const activeDetectionLoading = isActiveDetectionReading || isActiveDetectionSaving === 'saving';
 		const basicParamsLoading = isBasicParamsReading || isBasicParamsSaving === 'saving';
-		const cardManagementLoading = isLoading;
-		const nvrLoading = loadState;
+		const cardManagementLoading = isLoading || loadState;
+		// const nvrLoading = loadState;
 
 		const loadingObj = {
 			deviceBasicInfoLoading,
 			activeDetectionLoading,
 			basicParamsLoading,
 			cardManagementLoading,
-			nvrLoading
+			// nvrLoading
 		};
 
 		// const loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
@@ -44,6 +45,14 @@ const Time = 15000;
 		};
 	},
 	dispatch => ({
+		getDeviceInfo({ sn }) {
+			return dispatch({
+				type: 'ipcList/getDeviceInfo',
+				payload: {
+					sn
+				}
+			}).then(info => info);
+		},
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		getDeviceType: async(sn) => {
@@ -62,54 +71,56 @@ class IPCManagement extends Component {
 		this.timer = null;
 		this.state = {
 			loading: true,
-			ipcType:'FM020'
+			isOnline: true,
 		};
 	}
 
 	async componentDidMount(){
 		const { 
-			getDeviceType, 
+			getDeviceInfo,
 			location,
 			loadingObj:{
 				deviceBasicInfoLoading,
 				activeDetectionLoading,
 				basicParamsLoading,
 				cardManagementLoading,
-				nvrLoading
+				// nvrLoading
 			}
 		 } = this.props;
 		const { query: {sn} } = location;
-		const ipcType = await getDeviceType(sn);
-		let loading = true;
+		const { isOnline } = await getDeviceInfo({sn});
+		// const ipcType = await getDeviceType(sn);
+		// let loading = true;
 
-		if(ipcTypes[ipcType].hasNVR){
-			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
-		}else{
-			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
-		}
+		// if(ipcTypes[ipcType].hasNVR){
+		// 	loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
+		// }else{
+		const loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
 
-		if(loading){
+		// }
+
+		if(loading && isOnline){
 			this.timerHandler();
 		}
 		this.setState({
-			loading,
-			ipcType
+			isOnline
 		});
 	}
 
 	componentWillReceiveProps(nextProps){
+		const { isOnline } = this.state;
 		const { loadingObj: nextLoadingObj } = nextProps;
 		const { loadingObj } = this.props;
-		const { ipcType } = this.state;
-		let loading;
-		let nextLoading;
+		// const { ipcType } = this.state;
+		// let loading;
+		// let nextLoading;
 
 		const {
 			deviceBasicInfoLoading: nextDeviceBasicInfoLoading,
 			activeDetectionLoading: nextActiveDetectionLoading,
 			basicParamsLoading: nextBasicParamsLoading,
 			cardManagementLoading: nextCardManagementLoading,
-			nvrLoading: nextNvrLoading
+			// nvrLoading: nextNvrLoading
 		} = nextLoadingObj;
 
 		const {
@@ -117,26 +128,31 @@ class IPCManagement extends Component {
 			activeDetectionLoading,
 			basicParamsLoading,
 			cardManagementLoading,
-			nvrLoading
+			// nvrLoading
 		} = loadingObj;
 
-		if(ipcTypes[ipcType].hasNVR){
-			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
-			nextLoading = nextDeviceBasicInfoLoading || nextActiveDetectionLoading || nextBasicParamsLoading || nextCardManagementLoading || nextNvrLoading;
-		}else{
-			loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
-			nextLoading = nextDeviceBasicInfoLoading || nextActiveDetectionLoading || nextBasicParamsLoading || nextCardManagementLoading;
-		}
+		// if(ipcTypes[ipcType].hasNVR){
+		// 	loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading || nvrLoading;
+		// 	nextLoading = nextDeviceBasicInfoLoading || nextActiveDetectionLoading || nextBasicParamsLoading || nextCardManagementLoading || nextNvrLoading;
+		// }else{
+		const loading = deviceBasicInfoLoading || activeDetectionLoading || basicParamsLoading || cardManagementLoading;
+		const nextLoading = nextDeviceBasicInfoLoading || nextActiveDetectionLoading || nextBasicParamsLoading || nextCardManagementLoading;
+		// }
 
 		// loading ^ nextLoading
 		if((!loading && nextLoading) || (loading && !nextLoading)){
-			this.timerHandler();
+			if(isOnline){
+				this.timerHandler();
+			}
 		}
 	}
 
 	timerHandler = () => {
 		if(this.timer === null){
 			this.timer = setTimeout(this.showModalHandler,Time);
+			this.setState({
+				loading: true
+			});
 		}else{
 			clearTimeout(this.timer);
 			this.timer = null;
@@ -158,18 +174,19 @@ class IPCManagement extends Component {
 
 	render() {
 		const { location } = this.props;
-		const { loading, ipcType} = this.state;
+		const { loading, isOnline } = this.state;
+
 		const { query: {sn, showModal} } = location;
 		return (
-			<Spin spinning={loading}>
+			<Spin spinning={isOnline && loading}>
 				<div className={styles.wrapper}>
-					<DeviceBasicInfo sn={sn} />
-					<ActiveDetection sn={sn} />
-					<BasicParams sn={sn} />
-					{ipcTypes[ipcType].hasNVR&&<NVRManagement sn={sn} />}
-					<CardManagement sn={sn} />
-					<InitialSetting sn={sn} />
-					<SoftwareUpdate sn={sn} showModal={showModal} location={location} />
+					<DeviceBasicInfo sn={sn} isOnline={isOnline} />
+					<ActiveDetection sn={sn} isOnline={isOnline} />
+					<BasicParams sn={sn} isOnline={isOnline} />
+					{/* {ipcTypes[ipcType].hasNVR&&<NVRManagement sn={sn} />} */}
+					<CardManagement sn={sn} isOnline={isOnline} />
+					<InitialSetting sn={sn} isOnline={isOnline} />
+					<SoftwareUpdate sn={sn} showModal={showModal} location={location} isOnline={isOnline} />
 					{/* <NetworkSetting sn={sn} /> */}
 					{/* <CloudService sn={sn} /> */}
 				</div>

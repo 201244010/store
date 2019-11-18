@@ -208,7 +208,7 @@ class ActiveDetection extends React.Component {
 
 
 	render() {
-		const { form, activeDetection /* , loading */ } = this.props;
+		const { form, activeDetection, isOnline /* , loading */ } = this.props;
 
 		const { getFieldDecorator, getFieldValue } = form;
 		const { isSaving, isSound, isDynamic, sSensitivity, mSensitivity, isAuto, startTime, endTime, all, days } = activeDetection;
@@ -230,7 +230,7 @@ class ActiveDetection extends React.Component {
 								// 	checkedChildren={formatMessage({id: 'activeDetection.label.open' })}
 								// 	unCheckedChildren={formatMessage({id:'activeDetection.label.close'})}
 								// />
-								<Switch />
+								<Switch disabled={!isOnline} />
 							)
 						}
 					</Form.Item>
@@ -248,6 +248,7 @@ class ActiveDetection extends React.Component {
 									className={styles['form-slider']}
 									step={null}
 									tooltipVisible={false}
+									disabled={!isOnline}
 								/>
 							)
 						}
@@ -263,7 +264,7 @@ class ActiveDetection extends React.Component {
 								// 	checkedChildren={formatMessage({id: 'activeDetection.label.open'})}
 								// 	unCheckedChildren={formatMessage({id: 'activeDetection.label.close' })}
 								// />
-								<Switch />
+								<Switch disabled={!isOnline} />
 							)
 						}
 					</Form.Item>
@@ -281,6 +282,7 @@ class ActiveDetection extends React.Component {
 									className={styles['form-slider']}
 									step={null}
 									tooltipVisible={false}
+									disabled={!isOnline}
 								/>
 							)
 						}
@@ -292,7 +294,7 @@ class ActiveDetection extends React.Component {
 								getValueFromEvent: this.onAutoChange,
 								initialValue: isAuto
 							})(
-								<RadioGroup onChange={this.onAutoChange}>
+								<RadioGroup onChange={this.onAutoChange} disabled={!isOnline}>
 									<Radio value={1}>
 										{formatMessage({id: 'activeDetection.auto' })}
 									</Radio>
@@ -310,7 +312,7 @@ class ActiveDetection extends React.Component {
 								valuePropName: 'checked',
 								getValueFromEvent: this.onSelectAll,
 							})(
-								<Checkbox disabled={getFieldValue('isAuto') !== 2}>
+								<Checkbox disabled={getFieldValue('isAuto') !== 2 || !isOnline}>
 									{formatMessage({id: 'activeDetection.all' })}
 								</Checkbox>
 							)
@@ -322,7 +324,7 @@ class ActiveDetection extends React.Component {
 								initialValue: days,
 								getValueFromEvent: this.dayControl,
 							})(
-								<Checkbox.Group className={styles['form-checkbox-group']} disabled={getFieldValue('isAuto') !== 2}>
+								<Checkbox.Group className={styles['form-checkbox-group']} disabled={getFieldValue('isAuto') !== 2 || !isOnline}>
 									<Row gutter={8}>
 										<Col span={3}>
 											<Checkbox value="1">
@@ -391,7 +393,7 @@ class ActiveDetection extends React.Component {
 								],
 							})(
 								<TimePicker
-									disabled={getFieldValue('isAuto') !== 2}
+									disabled={getFieldValue('isAuto') !== 2 || !isOnline}
 									format="HH:mm"
 									allowClear={getFieldValue('isAuto') === 2}
 								/>
@@ -414,7 +416,7 @@ class ActiveDetection extends React.Component {
 								],
 							})(
 								<TimePicker
-									disabled={getFieldValue('isAuto') !== 2}
+									disabled={getFieldValue('isAuto') !== 2 || !isOnline}
 									format={this.isNextDay()}
 									allowClear={getFieldValue('isAuto') === 2}
 								/>
@@ -440,7 +442,7 @@ class ActiveDetection extends React.Component {
 							// 		'days',
 							// 	],
 							// )}
-							disabled={btnDisabled}
+							disabled={btnDisabled || !isOnline}
 						>
 							{formatMessage({id: 'activeDetection.save'})}
 						</Button>
