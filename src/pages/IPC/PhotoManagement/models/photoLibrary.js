@@ -1,7 +1,7 @@
 
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { map } from '@konata9/milk-shake';
+// import { map } from '@konata9/milk-shake';
 import {
 	deletePhoto,
 	editInfo,
@@ -171,11 +171,15 @@ export default {
 			const { code, data: { ageRangeList } } = response;
 			if(code === ERROR_OK) {
 				// console.log(ageRangeList);
+				const list = ageRangeList.filter(item => item.ageRangeCode > 3 && item.ageRangeCode !== 18);
+				list.unshift({
+					ageRangeCode: 18,
+					ageRange: 'below18',
+				});
 				yield put({
 					type: 'readData',
 					payload: {
-						// ageRange: list
-						ageRange: ageRangeList
+						ageRange: list
 					}
 				});
 			}
@@ -188,9 +192,7 @@ export default {
 			return false;
 		},
 		*edit({payload}, { call }) {
-			const info = map([{from: 'age', to: 'ageRangeCode'}])(payload);
-			// const info = payload;
-			// console.log(info);
+			const info = payload;
 			const response = yield call(editInfo, info);
 			return response.code === ERROR_OK;
 		},

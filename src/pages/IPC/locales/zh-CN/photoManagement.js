@@ -73,7 +73,7 @@ export default {
 	'menu.photoManagement': '照片管理',
 	'menu.photoManagement.photoList': '照片列表',
 	'photoManagement.firstInputFormat':'首位字符不能为空，请重新输入',
-	'photoManagement.ageSmallInfo':'7岁以下',
-	'photoManagement.ageMiddleInfo':'18岁以下',
-	'photoManagement.ageLargeInfo':'56岁以上'
+	'photoManagement.ageLessInfo':'18岁以下',
+	'photoManagement.ageLargeInfo':'56岁以上',
+	'photoManagement.birthday':'出生年份',
 };
