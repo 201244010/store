@@ -527,7 +527,8 @@ class CardManagement extends Component {
 			navigateTo,
 			sn,
 			nvrState,
-			loadState
+			loadState,
+			isOnline
 		} = this.props;
 
 		const { formattingModalVisible, formatProgress, deviceInfo: { hasTFCard, hasCloud }, cloudService: { status: cloudStatus, validTime }, isPay, hasNVR } = this.state;
@@ -538,7 +539,7 @@ class CardManagement extends Component {
 				{
 					hasNVR? 
 						<div>
-							<div className={styles['storage-title']}><NVRTitle onChange={this.nvrCheckedHandler} checked={nvrState} loading={loadState} /></div>
+							<div className={styles['storage-title']}><NVRTitle onChange={this.nvrCheckedHandler} checked={nvrState} loading={loadState} isOnline={isOnline} /></div>
 							<Divider />
 						</div>:
 						''
@@ -552,7 +553,13 @@ class CardManagement extends Component {
 									<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
 										<Form.Item label={formatMessage({id: 'cardManagement.status'})}>
 											<span>{cloudStatus === statusCode.expired ? formatMessage({ id: 'cardManagement.expired'}) :formatMessage({ id: 'cardManagement.activated'})}</span>
-											<Button onClick={() => navigateTo('cloudStorage',{ sn, type: 'repay' })} className={styles['subscribe-button']} disabled={!isPay}>{formatMessage({ id: 'cardManagement.repay'})}</Button>
+											<Button
+												onClick={() => navigateTo('cloudStorage',{ sn, type: 'repay' })}
+												className={styles['subscribe-button']}
+												disabled={!isPay || !isOnline}
+											>
+												{formatMessage({ id: 'cardManagement.repay'})}
+											</Button>
 										</Form.Item>
 										<Form.Item label={formatMessage({ id: 'cardManagement.validityPeriod'})}>
 											<span>{this.dateToDuration(validTime)}</span>
@@ -562,7 +569,13 @@ class CardManagement extends Component {
 									<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
 										<Form.Item label={formatMessage({id: 'cardManagement.status'})}>
 											<span>{formatMessage({ id: 'cardManagement.nonactivated'})}</span>
-											<Button onClick={() => navigateTo('cloudStorage',{ sn, type: 'subscribe' })} className={styles['subscribe-button']}>{formatMessage({id: 'cardManagement.subscribeCloudService'})}</Button>
+											<Button
+												onClick={() => navigateTo('cloudStorage',{ sn, type: 'subscribe' })}
+												className={styles['subscribe-button']}
+												disabled={!isOnline}
+											>
+												{formatMessage({id: 'cardManagement.subscribeCloudService'})}
+											</Button>
 										</Form.Item>
 									</Form>
 							}
@@ -577,35 +590,50 @@ class CardManagement extends Component {
 							<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
 								<Form.Item label={formatMessage({ id: 'cardManagement.sizeLeft' })}>
 									{
-										hasCard && sd_status_code === 2 ?
-											<div>
-												<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}{this.cardSizeInfo(used)}/{this.cardSizeInfo(total)}</p>
+										isOnline ?
+											(hasCard && sd_status_code === 2 ?
+												<div>
+													<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}{this.cardSizeInfo(used)}/{this.cardSizeInfo(total)}</p>
+													<Progress
+														className={styles['form-progress']}
+														percent={this.percentage(used, total)}
+														showInfo={false}
+													/>
+												</div>
+												: <p>{ this.sdStatus2text(sd_status_code) }</p>)
+											:<div>
+												<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}
+													<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span>/<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span><span>GB</span>
+												</p>
 												<Progress
 													className={styles['form-progress']}
-													percent={this.percentage(used, total)}
 													showInfo={false}
 												/>
-											</div>
-											: <p>{ this.sdStatus2text(sd_status_code) }</p>
+											 </div>
 									}
 
 								</Form.Item>
 
 								<Form.Item label={formatMessage({ id: 'cardManagement.daysCanUse' })}>
 									{
-										hasCard && sd_status_code === 2 ?
-											<p>
-												{this.hour2day(available_time)}<br />
-												{formatMessage({ id: 'cardManagement.daysUseTip' })}
-											</p>
-											: <p>{this.sdStatus2text(sd_status_code)}</p>
+										isOnline ?
+											(hasCard && sd_status_code === 2 ?
+												<p>
+													{this.hour2day(available_time)}<br />
+													{formatMessage({ id: 'cardManagement.daysUseTip' })}
+												</p>
+												: <p>{this.sdStatus2text(sd_status_code)}</p>)
+											:<div>
+												<p><span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span><span>{formatMessage({id: 'cardManagement.day'})}</span></p>
+												<p>{formatMessage({ id: 'cardManagement.daysUseTip' })}</p>
+											 </div>
 									}
 								</Form.Item>
 
 								<Form.Item label={formatMessage({ id: 'cardManagement.removeSafely' })}>
 									{/* 未格式化的卡不能点移除 */}
 									<Button
-										disabled={!hasCard || (hasCard && sd_status_code === 1)}
+										disabled={!hasCard || (hasCard && sd_status_code === 1) || !isOnline}
 										onClick={(e) => {
 											e.target.blur();
 											this.removeConfirm();
@@ -616,7 +644,7 @@ class CardManagement extends Component {
 
 								<Form.Item label={formatMessage({ id: 'cardManagement.format' })}>
 									<Button
-										disabled={!hasCard}
+										disabled={!hasCard || !isOnline}
 										onClick={(e) => {
 											e.target.blur();
 											this.formatConfirm();

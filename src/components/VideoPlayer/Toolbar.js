@@ -73,8 +73,10 @@ class Toolbar extends React.Component{
 			canScreenShot, screenShot,
 			backToLive, showBackToLive,
 			fullScreen, fullScreenStatus,
-			maxVolume, mute, changeVolume, volume: volumneValue
+			maxVolume, mute, changeVolume, volume: volumneValue,
+			isOnline, cloudStatus,
 		} = this.props;
+
 
 		const { clicked, datePickerVisiable } = this.state;
 
@@ -113,7 +115,7 @@ class Toolbar extends React.Component{
 			>
 				{
 					// 当前处于直播状态的提示
-					<div className={`${ styles['this-is-live'] } ${ isLive && !clicked ? '' : styles.hidden }`}>
+					<div className={`${ styles['this-is-live'] } ${ isLive && !clicked && isOnline ? '' : styles.hidden }`}>
 						<div className={styles.text}>{ formatMessage({ id: 'videoPlayer.thisIsLive'}) }</div>
 					</div>
 				}
@@ -131,9 +133,16 @@ class Toolbar extends React.Component{
 						: ''
 				}
 
+				{
+					// 离线时观看回放提示
+					<div className={`${ styles['this-is-live'] } ${ isLive && !clicked && !isOnline && cloudStatus && cloudStatus !== 'closed' ? '' : styles.hidden }`}>
+						<div className={styles.text}>{ formatMessage({ id: 'videoPlayer.thisIsRePlay'}) }</div>
+					</div>
+				}
+
 				<div className={`${styles.control} ${styles['play-control']}`}>
 
-					<a className={`${styles.button} ${styles['button-play']} ${  playing ? styles.playing : ''} ${ playBtnDisabled ? styles.disabled : '' }`} onClick={play}>
+					<a className={`${styles.button} ${styles['button-play']} ${  playing ? styles.playing : '' } ${ playBtnDisabled ? styles.disabled : '' }`} onClick={play}>
 						{
 							formatMessage({ id: 'videoPlayer.play' })
 						}
@@ -154,7 +163,7 @@ class Toolbar extends React.Component{
 								}}
 							/>
 							<Dropdown
-								disabled={!isLive}
+								disabled={!isLive || !isOnline}
 								overlay={
 									<Menu
 										selectedKeys={[`${currentPPI}`]}
@@ -208,7 +217,7 @@ class Toolbar extends React.Component{
 									this.calendarWrapper = wrapper;
 								}}
 							/>
-							<div className={styles.button}>
+							<div className={`${styles.button} ${ !isOnline && isLive ? styles.disabled : '' }`}>
 								<Popover
 									content={
 										(
@@ -287,7 +296,7 @@ class Toolbar extends React.Component{
 									formatMessage({ id: 'videoPlayer.videoScreenShot' })
 								}
 							>
-								<a className={`${styles.button} ${styles['button-screenshot']}`} onClick={screenShot}>
+								<a className={`${styles.button} ${styles['button-screenshot']} ${ !isOnline && isLive ? styles.disabled : '' }`} onClick={screenShot}>
 									{
 										formatMessage({ id: 'vidoePlayer.screenShot' })
 									}
@@ -316,7 +325,7 @@ class Toolbar extends React.Component{
 						placement="topCenter"
 						getPopupContainer={() => this.volumeDropdown}
 					>
-						<a className={`${styles.button} ${styles['button-volume']} ${ volumneValue === 0 ? styles.muted : ''}`} onClick={mute}>
+						<a className={`${styles.button} ${styles['button-volume']} ${ volumneValue === 0 ? styles.muted : ''} ${ !isOnline && isLive ? styles.disabled : '' }`} onClick={mute}>
 							{
 								formatMessage({ id: 'videoPlayer.volume' })
 							}
@@ -336,7 +345,7 @@ class Toolbar extends React.Component{
 							`${ fullScreenStatus ? formatMessage({ id: 'videoPlayer.exitFullscreen' }) : formatMessage({ id: 'videoPlayer.enterFullscreen' }) }`
 						}
 					>
-						<a className={`${styles.button} ${styles['button-fullscreen']} ${ fullScreenStatus ? styles.fullscreen : ''}`} onClick={fullScreen}>
+						<a className={`${styles.button} ${styles['button-fullscreen']} ${ fullScreenStatus ? styles.fullscreen : ''} ${ !cloudStatus && !isOnline ? styles.disabled : ''}`} onClick={fullScreen}>
 							{
 								formatMessage({ id: 'videoPlayer.enterFullscreen' })
 							}

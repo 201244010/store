@@ -142,6 +142,7 @@ class LivePlayer extends React.Component{
 
 					this.startTimestamp = timestamp;
 					this.toPause = false;
+					this.play();
 				}, 800);
 
 			}
@@ -462,7 +463,7 @@ class LivePlayer extends React.Component{
 	}
 
 	render () {
-		const { timeSlots, plugin, currentPPI } = this.props;
+		const { timeSlots, plugin, currentPPI, isOnline, cloudStatus, navigateTo, sn } = this.props;
 		const { currentTimestamp, isLive, ppiChanged, playBtnDisabled } = this.state;
 
 		return (
@@ -495,6 +496,10 @@ class LivePlayer extends React.Component{
 				onError={this.onError}
 				onEnd={this.onEnd}
 				onMetadataArrived={this.onMetadataArrived}
+				isOnline={isOnline}
+				cloudStatus={cloudStatus}
+				navigateTo={navigateTo}
+				sn={sn}
 
 				progressbar={
 					<Timebar
@@ -507,6 +512,8 @@ class LivePlayer extends React.Component{
 						onStopDrag={this.onTimebarStopDrag}
 
 						onTimeChange={this.onTimeChange}
+						isOnline={isOnline}
+						cloudStatus={cloudStatus}
 					/>
 				}
 			/>

@@ -45,6 +45,14 @@ const Time = 15000;
 		};
 	},
 	dispatch => ({
+		getDeviceInfo({ sn }) {
+			return dispatch({
+				type: 'ipcList/getDeviceInfo',
+				payload: {
+					sn
+				}
+			}).then(info => info);
+		},
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		getDeviceType: async(sn) => {
@@ -62,15 +70,15 @@ class IPCManagement extends Component {
 		super(props);
 		this.timer = null;
 		this.state = {
-			loading: false,
-			// ipcType:'FM020'
+			loading: true,
+			isOnline: true,
 		};
 	}
 
 	async componentDidMount(){
 		const { 
-			// getDeviceType, 
-			// location,
+			getDeviceInfo,
+			location,
 			loadingObj:{
 				deviceBasicInfoLoading,
 				activeDetectionLoading,
@@ -79,7 +87,8 @@ class IPCManagement extends Component {
 				// nvrLoading
 			}
 		 } = this.props;
-		// const { query: {sn} } = location;
+		const { query: {sn} } = location;
+		const { isOnline } = await getDeviceInfo({sn});
 		// const ipcType = await getDeviceType(sn);
 		// let loading = true;
 
@@ -90,16 +99,16 @@ class IPCManagement extends Component {
 
 		// }
 
-		if(loading){
+		if(loading && isOnline){
 			this.timerHandler();
 		}
-		// this.setState({
-		// 	loading,
-		// 	// ipcType
-		// });
+		this.setState({
+			isOnline
+		});
 	}
 
 	componentWillReceiveProps(nextProps){
+		const { isOnline } = this.state;
 		const { loadingObj: nextLoadingObj } = nextProps;
 		const { loadingObj } = this.props;
 		// const { ipcType } = this.state;
@@ -132,7 +141,9 @@ class IPCManagement extends Component {
 
 		// loading ^ nextLoading
 		if((!loading && nextLoading) || (loading && !nextLoading)){
-			this.timerHandler();
+			if(isOnline){
+				this.timerHandler();
+			}
 		}
 	}
 
@@ -163,18 +174,19 @@ class IPCManagement extends Component {
 
 	render() {
 		const { location } = this.props;
-		const { loading } = this.state;
+		const { loading, isOnline } = this.state;
+
 		const { query: {sn, showModal} } = location;
 		return (
-			<Spin spinning={loading}>
+			<Spin spinning={isOnline && loading}>
 				<div className={styles.wrapper}>
-					<DeviceBasicInfo sn={sn} />
-					<ActiveDetection sn={sn} />
-					<BasicParams sn={sn} />
+					<DeviceBasicInfo sn={sn} isOnline={isOnline} />
+					<ActiveDetection sn={sn} isOnline={isOnline} />
+					<BasicParams sn={sn} isOnline={isOnline} />
 					{/* {ipcTypes[ipcType].hasNVR&&<NVRManagement sn={sn} />} */}
-					<CardManagement sn={sn} />
-					<InitialSetting sn={sn} />
-					<SoftwareUpdate sn={sn} showModal={showModal} location={location} />
+					<CardManagement sn={sn} isOnline={isOnline} />
+					<InitialSetting sn={sn} isOnline={isOnline} />
+					<SoftwareUpdate sn={sn} showModal={showModal} location={location} isOnline={isOnline} />
 					{/* <NetworkSetting sn={sn} /> */}
 					{/* <CloudService sn={sn} /> */}
 				</div>

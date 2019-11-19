@@ -197,7 +197,7 @@ const statusCode = {
 				}
 				return 'closed';
 			}
-			return 'error';
+			return '';
 		});
 		return cloudStatus;
 	}
@@ -212,9 +212,10 @@ class Live extends React.Component{
 			},
 			liveTimestamp: 0,
 			sdStatus: true,
+			cloudStatus: '',
 			baseTime: '', // 视频直播baseTime
-			cloudStatus: 'normal',
 			historyPPI: '',
+			isOnline: true,
 		};
 		this.timeInterval = 0; // 定时清空store中的人脸框
 	}
@@ -225,13 +226,15 @@ class Live extends React.Component{
 		const sn = this.getSN();
 
 		let sdStatus = true;
-		let cloudStatus = 'normal';
+		let cloudStatus = '';
 		if (sn) {
 			clearList({ sn });
 			getAgeRangeList();
 
 			const deviceInfo = await getDeviceInfo({ sn });
+			const { isOnline } = deviceInfo;
 			const { hasFaceid, hasCloud } = deviceInfo;
+			// console.log('Live', deviceInfo);
 
 			setDeviceSn({ sn });
 
@@ -249,9 +252,10 @@ class Live extends React.Component{
 			}
 
 			this.setState({
+				isOnline,
 				deviceInfo,
 				sdStatus,
-				cloudStatus
+				cloudStatus,
 			});
 			// setTimeout(test, 1000);
 		}
@@ -392,6 +396,10 @@ class Live extends React.Component{
 			this.startFaceidPush();
 		}
 
+		this.setState({
+			historyPPI: ''
+		});
+
 		const url = await getLiveUrl({ sn });
 		return url;
 	}
@@ -428,9 +436,6 @@ class Live extends React.Component{
 
 		await stopHistoryPlay({ sn });
 
-		this.setState({
-			historyPPI: ''
-		});
 	}
 
 	changePPI = (ppi) => {
@@ -479,7 +484,7 @@ class Live extends React.Component{
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
-		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus, historyPPI } = this.state;
+		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus, historyPPI, isOnline } = this.state;
 
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
@@ -532,6 +537,10 @@ class Live extends React.Component{
 						getCurrentTimestamp={this.syncLiveTimestamp}
 						onTimeChange={this.onTimeChange}
 						onMetadataArrived={this.onMetadataArrived}
+						isOnline={isOnline}
+						cloudStatus={cloudStatus}
+						navigateTo={navigateTo}
+						sn={sn}
 						updateBasetime={this.updateBasetime}
 					/>
 
