@@ -155,7 +155,9 @@ class VideoPlayer extends React.Component{
 
 		if (player) {
 			player.addClass('vjs-waiting');
-			player.loadingSpinner.show();
+			if(player.loadingSpinner) {
+				player.loadingSpinner.show();
+			}
 		}
 	}
 
