@@ -123,6 +123,21 @@ const router = [
 			},
 
 			{
+				path: '/dataAnalyze',
+				icon: 'blank',
+				name: 'dataAnalyze',
+				routes: [
+					{ path: '/dataAnalyze', redirect: '/dataAnalyze/passenger' },
+					{
+						path: '/dataAnalyze/passenger',
+						name: 'passenger',
+						id: 'passengerAnalyze',
+						component: './PassengerAnalyze',
+					},
+				],
+			},
+
+			{
 				path: '/devices',
 				icon: 'blank',
 				name: 'devices',
