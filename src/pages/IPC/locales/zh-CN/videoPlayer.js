@@ -1,5 +1,5 @@
 export default {
-	'videoPlayer.noMedia': '你所拖动的时间节点下没有回放视频，将为您跳转至最近一段回放视频节点',
+	'videoPlayer.noMedia': '您所拖动的时间节点下没有回放视频，将为您跳转至最近一段回放视频节点',
 	'videoPlayer.backToLive': '返回直播',
 	'videoPlayer.fullHighDefinition': '清晰',
 	'videoPlayer.highDefinition': '流畅',

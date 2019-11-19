@@ -197,7 +197,7 @@ const statusCode = {
 				}
 				return 'closed';
 			}
-			return 'error';
+			return '';
 		});
 		return cloudStatus;
 	}
@@ -212,9 +212,9 @@ class Live extends React.Component{
 			},
 			liveTimestamp: 0,
 			sdStatus: true,
-			cloudStatus: 'normal',
+			cloudStatus: '',
 			historyPPI: '',
-			isOnline: true,
+			isOnline: false,
 		};
 	}
 
@@ -224,7 +224,7 @@ class Live extends React.Component{
 		const sn = this.getSN();
 
 		let sdStatus = true;
-		let cloudStatus = 'normal';
+		let cloudStatus = '';
 		if (sn) {
 			clearList({ sn });
 			getAgeRangeList();
@@ -374,6 +374,10 @@ class Live extends React.Component{
 			this.startFaceidPush();
 		}
 
+		this.setState({
+			historyPPI: ''
+		});
+
 		const url = await getLiveUrl({ sn });
 		return url;
 	}
@@ -410,9 +414,6 @@ class Live extends React.Component{
 
 		await stopHistoryPlay({ sn });
 
-		this.setState({
-			historyPPI: ''
-		});
 	}
 
 	changePPI = (ppi) => {

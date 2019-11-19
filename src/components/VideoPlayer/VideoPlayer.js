@@ -482,6 +482,7 @@ class VideoPlayer extends React.Component{
 						backToLive={backToLive || this.backToLive}
 
 						isOnline={isOnline}
+						cloudStatus={cloudStatus}
 
 						progressbar={
 							progressbar

@@ -512,6 +512,7 @@ class LivePlayer extends React.Component{
 
 						onTimeChange={this.onTimeChange}
 						isOnline={isOnline}
+						cloudStatus={cloudStatus}
 					/>
 				}
 			/>

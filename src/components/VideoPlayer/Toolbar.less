@@ -117,11 +117,6 @@
 		background-image: url(../../assets/imgs/calendar.svg);
 		text-align: center;
 
-		&.btn-disabled {
-			pointer-events: none;
-			opacity: 0.3;
-		}
-
 		.text{
 			font-size: 12px;
 			color: #ffffff;
@@ -221,10 +216,6 @@
 		// composes: button;
 		background-image: url(../../assets/imgs/camera.svg);
 
-		&.shot-disabled {
-			opacity: 0.3;
-			pointer-events: none;
-		}
 	}
 
 
@@ -248,10 +239,6 @@
 			background-image: url(../../assets/imgs/volume-off.svg);
 		}
 
-		&.vloume-disabled {
-			opacity: 0.3;
-			pointer-events: none;
-		}
 	}
 
 	.volume-bar{
@@ -353,6 +340,7 @@
 
 		padding-bottom: 16px;
 
+
 		:global{
 			.ant-tooltip-arrow{
 				display: none;
@@ -364,5 +352,10 @@
 				min-height: 24px;
 			}
 		}
+	}
+
+	.disabled {
+		pointer-events: none;
+		opacity: 0.3;
 	}
 }
