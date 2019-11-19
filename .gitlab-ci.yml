@@ -11,6 +11,7 @@ release_image:
     - uat
     - onl
   script:
+    - IMAGETAG=`date "+%Y%m%d"`-${CI_COMMIT_SHA:0:6}
     - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build --pull -t $CI_REGISTRY/$CI_COMMIT_REF_NAME/$PROJECT_NAME .
     - docker push $CI_REGISTRY/$CI_COMMIT_REF_NAME/$PROJECT_NAME
