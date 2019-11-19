@@ -214,7 +214,7 @@ class Live extends React.Component{
 			sdStatus: true,
 			cloudStatus: '',
 			historyPPI: '',
-			isOnline: false,
+			isOnline: true,
 		};
 	}
 
