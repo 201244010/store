@@ -9,19 +9,9 @@ import { ERROR_OK } from '@/constants/errorCode';
 // import routeConfig from '@/config/devRouter';
 import routeConfig from '@/config/uat-router';
 
-import { env } from '@/config';
+import { env, FIRST_MENU_ORDER } from '@/config';
 
 const { check } = Authorized;
-
-const FIRST_MENU_ORDER = [
-	'dashBoard',
-	'application',
-	'devices',
-	'esl',
-	'network',
-	'basicData',
-	'faceidLibrary',
-];
 
 // Conversion router to menu.
 function formatter(data, parentAuthority, parentName) {
@@ -152,7 +142,7 @@ export default {
 				const response = yield call(MenuAction.getAuthMenu);
 				if (response && response.code === ERROR_OK) {
 					const { menu_list: menuList = [] } = response.data || {};
-					// console.log('menu control', menuList);
+					console.log('menu control', menuList);
 					if (menuList && menuList.length > 0) {
 						filteredMenuData = checkMenuAuth(
 							menuData,
