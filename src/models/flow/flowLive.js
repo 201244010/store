@@ -16,7 +16,7 @@ export default {
 	namespace: 'flowLive',
 	state: {
 		streamId: '',
-		ppi: '1080',
+		ppi: '720',
 		ppiChanged: false,
 		timeSlots: []
 	},

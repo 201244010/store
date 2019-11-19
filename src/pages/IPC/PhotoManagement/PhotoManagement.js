@@ -526,11 +526,8 @@ class PhotoManagement extends React.Component {
 	mapAgeSelectInfo = (ageRangeCode, range) => {
 		let ageRange = '';
 		switch(ageRangeCode) {
-			case 1:
-				ageRange = formatMessage({ id: 'photoManagement.ageSmallInfo'});
-				break;
 			case 18:
-				ageRange = formatMessage({id: 'photoManagement.ageMiddleInfo'});
+				ageRange = formatMessage({id: 'photoManagement.ageLessInfo'});
 				break;
 			case 8:
 				ageRange = formatMessage({id: 'photoManagement.ageLargeInfo'});

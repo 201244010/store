@@ -74,18 +74,7 @@ export const getRange = async () => (
 	range('getRangeList').then(
 		async response => {
 			const json = await response.json();
-			// const { code, data } = json;
 			return format('toCamel')(json);
-			// if(code === ERROR_OK) {
-			// 	const result = data.age_range_list.map(dataFormatter);
-			// 	return {
-			// 		code,
-			// 		data: {
-			// 			ageRangeList: result
-			// 		}
-			// 	};
-			// }
-			// return format('toCamel')(json);
 
 		}
 	)
