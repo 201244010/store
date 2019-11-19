@@ -4,6 +4,7 @@ import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 class LinePoint extends PureComponent {
 	render() {
 		const {
+			width = 300,
 			height = 400,
 			data = [],
 			forceFit = true,
@@ -43,6 +44,7 @@ class LinePoint extends PureComponent {
 
 		return (
 			<Chart
+				width={width}
 				height={height}
 				data={data}
 				forceFit={forceFit}
