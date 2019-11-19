@@ -10,6 +10,7 @@ export const FIRST_MENU_ORDER = [
 	'network',
 	'basicData',
 	'faceidLibrary',
+	'dataAnalyze'
 ];
 
 const WEB_SOCKET_PREFIX = {
