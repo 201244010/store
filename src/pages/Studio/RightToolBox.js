@@ -92,8 +92,12 @@ export default class RightToolBox extends Component {
 	handleFontSizeEnter = (ev) => {
 		const { keyCode, target: { className } } = ev;
 		if (keyCode === KEY.ENTER && className.includes('ant-select-search__field')) {
-			this.autoComplete.blur();
-			this.smallAutoComplete.blur();
+		    if (this.autoComplete) {
+				this.autoComplete.blur();
+			}
+			if (this.smallAutoComplete) {
+				this.smallAutoComplete.blur();
+			}
 		}
 	};
 
@@ -138,6 +142,9 @@ export default class RightToolBox extends Component {
 			};
 			const detail = componentsDetail[selectedShapeName];
 			let canUpdate = true;
+			if (key === 'bindField' && selectedShapeName.indexOf(SHAPE_TYPES.TEXT) > -1) {
+				newDetail.content = formatMessage({ id: bindFieldsLocaleMap[value] || 'studio.action.text.db.click'});
+			}
 			if (key === 'content' && selectedShapeName.indexOf(SHAPE_TYPES.PRICE) > -1) {
 				if (value === '') {
 					canUpdate = true;
@@ -495,7 +502,7 @@ export default class RightToolBox extends Component {
 		}
 		if (this.hasSubString(SHAPE_TYPES.TEXT)) {
 			ret = bindFields.filter(
-				item => item.indexOf('Price') === -1 && item.indexOf('QrCode') === -1
+				item => item.indexOf('Price') === -1
 			);
 		}
 
@@ -802,7 +809,7 @@ export default class RightToolBox extends Component {
 								<InputNumber
 									style={{ width: '100%' }}
 									placeholder={formatMessage({ id: 'studio.tool.label.line.spacing' })}
-									min={0}
+									min={detail.fontSize}
 									value={detail.lineSpacing}
 									onChange={value => {
 										this.handleLineSpacing(detail, value);
@@ -1282,39 +1289,54 @@ export default class RightToolBox extends Component {
 				{menuMap.isBarOrQrCode ? (
 					<div className={styles['tool-box-block']}>
 						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
-						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={24}>{formatMessage({ id: 'studio.tool.title.bind.value' })}</Col>
-							<Col span={24}>
-								<Input
-									placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
-									value={detail.content}
-									style={{ width: '100%' }}
-									maxLength={30}
-									onChange={e => {
-										this.handleBindValue(e.target.value);
-									}}
-								/>
-							</Col>
-						</Row>
 						{
 							menuMap.isCode ?
+								<>
+									<Row style={{ marginBottom: 10 }} gutter={20}>
+										<Col span={24}>{formatMessage({ id: 'studio.tool.title.bind.value' })}</Col>
+										<Col span={24}>
+											<Input
+												placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
+												value={detail.content}
+												style={{ width: '100%' }}
+												maxLength={30}
+												onChange={e => {
+													this.handleBindValue(e.target.value);
+												}}
+											/>
+										</Col>
+									</Row>
+									<Row style={{ marginBottom: 10 }} gutter={20}>
+										<Col span={24}>{formatMessage({ id: 'studio.tool.label.codec' })}</Col>
+										<Col span={24}>
+											<Select
+												style={{ width: '100%' }}
+												value={detail.codec}
+												onChange={value => {
+													this.handleCodec(value);
+												}}
+											>
+												<Option value="ean8">ean8</Option>
+												<Option value="ean13">ean13</Option>
+												<Option value="code128">code128</Option>
+											</Select>
+										</Col>
+									</Row>
+								</> :
 								<Row style={{ marginBottom: 10 }} gutter={20}>
-									<Col span={24}>{formatMessage({ id: 'studio.tool.label.codec' })}</Col>
+									<Col span={24}>{formatMessage({ id: 'studio.tool.title.qr.bind.value' })}</Col>
 									<Col span={24}>
-										<Select
+										<Input
+											placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
+											value={detail.content}
 											style={{ width: '100%' }}
-											value={detail.codec}
-											onChange={value => {
-												this.handleCodec(value);
+											maxLength={200}
+											onChange={e => {
+												this.handleBindValue(e.target.value);
 											}}
-										>
-											<Option value="ean8">ean8</Option>
-											<Option value="ean13">ean13</Option>
-											<Option value="code128">code128</Option>
-										</Select>
+										/>
 									</Col>
-								</Row> :
-								null
+								</Row>
 						}
 					</div>
 				) : null}

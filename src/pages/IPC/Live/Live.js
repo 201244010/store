@@ -213,9 +213,11 @@ class Live extends React.Component{
 			liveTimestamp: 0,
 			sdStatus: true,
 			cloudStatus: '',
+			baseTime: '', // 视频直播baseTime
 			historyPPI: '',
 			isOnline: true,
 		};
+		this.timeInterval = 0; // 定时清空store中的人脸框
 	}
 
 	async componentDidMount () {
@@ -273,6 +275,7 @@ class Live extends React.Component{
 				this.stopFaceComparePush();
 			}
 		}
+		clearInterval(this.timeInterval);
 	}
 
 	onTimeChange = async (timeStart, timeEnd) => {
@@ -287,6 +290,12 @@ class Live extends React.Component{
 		});
 
 		return result;
+	}
+
+	updateBasetime = (timestamp) => {
+		this.setState({
+			baseTime: timestamp
+		});
 	}
 
 	onMetadataArrived = (timestamp) => {
@@ -326,13 +335,25 @@ class Live extends React.Component{
 	}
 
 	startFaceidPush = () => {
-		const { changeFaceidPushStatus } = this.props;
+		const { changeFaceidPushStatus, clearRects } = this.props;
 		const sn = this.getSN();
 
 		changeFaceidPushStatus({
 			sn,
 			status: true
 		});
+
+		clearInterval(this.timeInterval);
+		// 定时清除store中的人脸框，避免内存不断增加
+		this.timeInterval = setInterval(() => {
+			const { baseTime } = this.state;
+			console.log('baseTime=', baseTime);
+			if (baseTime) {
+				clearRects({
+					timestamp: moment().valueOf() - baseTime - 30 * 1000
+				});
+			}
+		}, 10 * 1000);
 	}
 
 	stopFaceidPush = () => {
@@ -343,6 +364,7 @@ class Live extends React.Component{
 			sn,
 			status: false
 		});
+		clearInterval(this.timeInterval);
 	}
 
 	startFaceComparePush = () => {
@@ -519,6 +541,7 @@ class Live extends React.Component{
 						cloudStatus={cloudStatus}
 						navigateTo={navigateTo}
 						sn={sn}
+						updateBasetime={this.updateBasetime}
 					/>
 
 				</div>

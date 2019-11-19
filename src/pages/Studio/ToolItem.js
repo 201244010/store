@@ -12,9 +12,29 @@ const contentMap = {
 	[SHAPE_TYPES.PRICE_SUB_BLACK]: '99.00',
 };
 
+const imgMap = {
+	rect: require('@/assets/studio/rect.jpg'),
+	'line@h': require('@/assets/studio/line@h.jpg'),
+	'line@v': require('@/assets/studio/line@v.jpg'),
+	image: require('@/assets/studio/image.jpg'),
+	'barcode@h': require('@/assets/studio/barcode@h.jpg'),
+	'barcode@v': require('@/assets/studio/barcode@v.jpg'),
+	'barcode@qr': require('@/assets/studio/barcode@qr.jpg'),
+};
+
 export default class ToolItem extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			width: 0,
+			height: 0,
+			left: -9999,
+			top: -9999
+		};
+	}
+
 	componentDidMount() {
-		const { id, type, addComponent } = this.props;
+		const { id, type, addComponent }  = this.props;
 		const element = document.getElementById(id);
 
 		element.onmousedown = ev => {
@@ -30,14 +50,34 @@ export default class ToolItem extends Component {
 				top: elementInfo.top,
 				zIndex: elementInfo.zIndex,
 			};
+			const zoomScaleIcon = document.getElementById('zoomScale');
+			this.zoomScale = parseInt(zoomScaleIcon.innerText, 10) / 100;
+
+			this.setState({
+				width: MAPS.containerWidth[type] * this.zoomScale,
+				height: MAPS.containerHeight[type] * this.zoomScale
+			});
+
 			document.onmousemove = evt => {
 				this.newLeft = evt.clientX - disX;
 				this.newTop = evt.clientY - disY;
 				element.style.position = 'absolute';
 				element.style.left = `${this.newLeft}px`;
 				element.style.top = `${this.newTop}px`;
+
+				this.setState({
+					left: evt.clientX,
+					top: evt.clientY
+				});
 			};
-			document.onmouseup = () => {
+			document.onmouseup = evt => {
+				this.setState({
+					width: 0,
+					height: 0,
+					left: -9999,
+					top: -9999
+				});
+
 				document.onmouseup = null;
 				document.onmousemove = null;
 				element.style.left = originInfo.left;
@@ -45,8 +85,8 @@ export default class ToolItem extends Component {
 				element.style.zIndex = 'auto';
 
 				if (this.newLeft > SIZES.TOOL_BOX_WIDTH) {
-					const x = this.newLeft - SIZES.TOOL_BOX_WIDTH;
-					const y = this.newTop;
+					const x = evt.clientX - SIZES.TOOL_BOX_WIDTH;
+					const y = evt.clientY - SIZES.HEADER_HEIGHT - 20;
 
 					if (IMAGE_TYPES.includes(type)) {
 						const image = new Image();
@@ -99,13 +139,90 @@ export default class ToolItem extends Component {
 	}
 
 	render() {
-		const { id, className, children } = this.props;
+		const { id, type, className, children } = this.props;
+		const {width, height, left, top} = this.state;
+		let dragShape = null;
+		let backgroundColor = 'transparent';
+		if (imgMap[type]) {
+			dragShape = <img src={imgMap[type]} alt="" style={{width, height}} />;
+		}
+		if ([SHAPE_TYPES.TEXT].includes(type)) {
+			const textStyle = {
+				position: 'relative',
+				top: `${-3 * this.zoomScale}px`,
+				fontSize: MAPS.fontSize[type] * this.zoomScale,
+				fontFamily: 'Zfull-GB',
+				color: '#000',
+			};
+
+			dragShape = (
+				<span style={textStyle}>{contentMap[type]}</span>
+			);
+		}
+		if ([SHAPE_TYPES.PRICE_NORMAL_WHITE, SHAPE_TYPES.PRICE_NORMAL_BLACK].includes(type)) {
+			const textStyle = {
+				fontSize: `${MAPS.fontSize[type] * this.zoomScale}px`,
+				fontFamily: 'Zfull-GB',
+				color: SHAPE_TYPES.PRICE_NORMAL_WHITE === type ? '#000' : '#fff',
+				lineHeight: `${height}px`,
+			};
+			backgroundColor = SHAPE_TYPES.PRICE_NORMAL_WHITE === type ? '#fff' : '#000';
+
+			dragShape = (
+				<span style={textStyle}>{contentMap[type]}</span>
+			);
+		}
+		if ([SHAPE_TYPES.PRICE_SUPER_WHITE, SHAPE_TYPES.PRICE_SUPER_BLACK].includes(type)) {
+			const textStyle = {
+				position: 'relative',
+				top: `${-1 * this.zoomScale}px`,
+				fontSize: `${MAPS.fontSize[type] * this.zoomScale}px`,
+				fontFamily: 'Zfull-GB',
+				color: SHAPE_TYPES.PRICE_SUPER_WHITE === type ? '#000' : '#fff',
+				lineHeight: `${height}px`,
+			};
+			const smallTextStyle = {
+				position: 'relative',
+				top: `${-4 * this.zoomScale}px`,
+				left: `${-3 * this.zoomScale}px`,
+				fontSize: `${MAPS.smallFontSize[type] * this.zoomScale}px`,
+			};
+			backgroundColor = SHAPE_TYPES.PRICE_SUPER_WHITE === type ? '#fff' : '#000';
+
+			dragShape = (
+				<span style={textStyle}>99.<sup style={smallTextStyle}>00</sup></span>
+			);
+		}
+		if ([SHAPE_TYPES.PRICE_SUB_WHITE, SHAPE_TYPES.PRICE_SUB_BLACK].includes(type)) {
+			const textStyle = {
+				position: 'relative',
+				top: `${-1.5 * this.zoomScale}px`,
+				fontSize: `${MAPS.fontSize[type] * this.zoomScale}px`,
+				fontFamily: 'Zfull-GB',
+				color: SHAPE_TYPES.PRICE_SUB_WHITE === type ? '#000' : '#fff',
+				lineHeight: `${height}px`,
+			};
+			const smallTextStyle = {
+				position: 'relative',
+				top: `${-0.5 * this.zoomScale}px`,
+				left: `${-3 * this.zoomScale}px`,
+				fontSize: `${MAPS.smallFontSize[type] * this.zoomScale}px`,
+			};
+			backgroundColor = SHAPE_TYPES.PRICE_SUB_WHITE === type ? '#fff' : '#000';
+
+			dragShape = (
+				<span style={textStyle}>99.<sup style={smallTextStyle}>00</sup></span>
+			);
+		}
 
 		return (
 			<Fragment>
 				<div className={className}>{children}</div>
-				<div className={className} id={id}>
+				<div className={className} id={id} style={{opacity: 0}}>
 					{children}
+				</div>
+				<div style={{backgroundColor, position: 'fixed', zIndex: 100, width, height, left, top}}>
+					{dragShape}
 				</div>
 			</Fragment>
 		);

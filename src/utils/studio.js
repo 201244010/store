@@ -400,6 +400,11 @@ export const initTemplateDetail = (stage, layers, zoomScale) => {
 					layer.type = SHAPE_TYPES.LINE_V;
 				}
 			}
+			if (layer.type.indexOf(SHAPE_TYPES.TEXT) > -1) {
+				if (!layer.lineSpacing && layer.lineSpacing !== 0) {
+					layer.lineSpacing = layer.fontSize + 2;
+				}
+			}
 			if (layer.type.indexOf(SHAPE_TYPES.PRICE) > -1) {
 				if (!['sup', 'sub', 'super'].includes(layer.subType)) {
 					layer.subType = 'normal';
@@ -410,6 +415,9 @@ export const initTemplateDetail = (stage, layers, zoomScale) => {
 				}
 				const subType = (layer.subType === 'super' ? 'sup' : layer.subType);
 				layer.type = `price@${subType}@${backgroundColor}`;
+				if (!layer.precision && layer.precision !== 0) {
+					layer.precision = 2;
+				}
 			}
 			if (layer.type.indexOf(SHAPE_TYPES.CODE) > -1) {
 				if (layer.width - layer.height > 10) {
