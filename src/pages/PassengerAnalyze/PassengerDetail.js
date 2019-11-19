@@ -35,51 +35,51 @@ const columns = [
 		key: 'RegularRate',
 		footer: { type: INFO_FOOTER_TYPE.PROGRESS },
 	},
-	{
-		title: formatMessage({ id: 'passengerAnalyze.detail.rebuy.rate' }),
-		key: '',
-		footer: { type: INFO_FOOTER_TYPE.PROGRESS },
-	},
+	// {
+	// 	title: formatMessage({ id: 'passengerAnalyze.detail.rebuy.rate' }),
+	// 	key: '',
+	// 	footer: { type: INFO_FOOTER_TYPE.PROGRESS },
+	// },
 	// row 2
-	{
-		title: formatMessage({ id: 'passengerAnalyze.detail.payment.count' }),
-		key: '',
-		footer: { type: INFO_FOOTER_TYPE.PERCENT },
-	},
-	{
-		title: formatMessage({ id: 'passengerAnalyze.detail.payment.rate' }),
-		key: '',
-		footer: { type: INFO_FOOTER_TYPE.PROGRESS },
-	},
-	{
-		title: formatMessage({ id: 'passengerAnalyze.detail.salse.rate' }),
-		key: '',
-		footer: { type: INFO_FOOTER_TYPE.PROGRESS },
-	},
-	{
-		title: formatMessage({ id: 'passengerAnalyze.detail.unit.price' }),
-		key: '',
-		footer: { type: INFO_FOOTER_TYPE.RANK },
-	},
+	// {
+	// 	title: formatMessage({ id: 'passengerAnalyze.detail.payment.count' }),
+	// 	key: '',
+	// 	footer: { type: INFO_FOOTER_TYPE.PERCENT },
+	// },
+	// {
+	// 	title: formatMessage({ id: 'passengerAnalyze.detail.payment.rate' }),
+	// 	key: '',
+	// 	footer: { type: INFO_FOOTER_TYPE.PROGRESS },
+	// },
+	// {
+	// 	title: formatMessage({ id: 'passengerAnalyze.detail.salse.rate' }),
+	// 	key: '',
+	// 	footer: { type: INFO_FOOTER_TYPE.PROGRESS },
+	// },
+	// {
+	// 	title: formatMessage({ id: 'passengerAnalyze.detail.unit.price' }),
+	// 	key: '',
+	// 	footer: { type: INFO_FOOTER_TYPE.RANK },
+	// },
 	// row 3
-	{
-		title: formatMessage({ id: 'passengerAnalyze.detail.relate.type' }),
-		key: '',
-	},
-	{
-		title: formatMessage({ id: 'passengerAnalyze.detail.avg.salse.count' }),
-		key: '',
-		footer: { type: INFO_FOOTER_TYPE.RANK },
-	},
+	// {
+	// 	title: formatMessage({ id: 'passengerAnalyze.detail.relate.type' }),
+	// 	key: '',
+	// },
+	// {
+	// 	title: formatMessage({ id: 'passengerAnalyze.detail.avg.salse.count' }),
+	// 	key: '',
+	// 	footer: { type: INFO_FOOTER_TYPE.RANK },
+	// },
 	{
 		title: formatMessage({ id: 'passengerAnalyze.detail.top.time' }),
 		key: 'RushHour',
 	},
-	{
-		title: formatMessage({ id: 'passengerAnalyze.detail.avg.time' }),
-		key: '',
-		footer: {},
-	},
+	// {
+	// 	title: formatMessage({ id: 'passengerAnalyze.detail.avg.time' }),
+	// 	key: '',
+	// 	footer: {},
+	// },
 ];
 
 const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
