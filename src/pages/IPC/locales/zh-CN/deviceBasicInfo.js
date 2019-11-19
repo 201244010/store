@@ -20,5 +20,6 @@ export default {
 	'deviceBasicInfo.nosdInfo':'TF卡未插入，人脸识别相关功能将无法使用',
 	'deviceBasicInfo.onconnt':'未连接',
 	'deviceBasicInfo.wiredConnt':'有线连接',
-	'deviceBasicInfo.wirelessConnt':'无线连接'
+	'deviceBasicInfo.wirelessConnt':'无线连接',
+	'deviceBasicInfo.unknown': '--',
 };

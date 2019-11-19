@@ -6,11 +6,11 @@ import styles from './NVRManagement.less';
 
 class NVRTitle extends Component { 
 	render(){
-		const { onChange, checked, loading } = this.props;
+		const { onChange, checked, loading, isOnline } = this.props;
 		return(
 			<div className={styles['nvr-title']}>
 				<span className={styles['title-txt']}>{formatMessage({ id: 'nvrManagement.title' })}</span>
-				<Switch className={styles['nvr-switch']} defaultChecked onChange={onChange} checked={checked} loading={loading} />
+				<Switch className={styles['nvr-switch']} defaultChecked onChange={onChange} checked={checked} loading={isOnline&&loading} disabled={!isOnline} />
 				{checked &&
 				<Tooltip 
 					placement="right" 

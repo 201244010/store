@@ -92,8 +92,18 @@ class ServiceList extends React.Component {
 	};
 	
 	reset = () => {
-		const { form: { resetFields }} = this.props;
+		const { form: { resetFields }, getList} = this.props;
 		resetFields();
+		getList({
+			pageSize: 10,
+			pageNum: 1,
+			search: {
+				key: '',
+				status: 0,
+				date: [],
+			}
+		});
+		this.setState({pageNum: 1, pageSize: 10});
 	};
 	
 	closeModal = () => {

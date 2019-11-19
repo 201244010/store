@@ -69,9 +69,9 @@ const PassengerAgeItem = ({ item, onClick = null }) => {
 };
 
 const PassengerAgeBar = ({ data = [], activeIndex = 0, onClick = null }) => {
-	const handleClick = index => {
+	const handleClick = (index, item) => {
 		if (onClick) {
-			onClick(index);
+			onClick(index, item);
 		}
 	};
 
@@ -83,12 +83,12 @@ const PassengerAgeBar = ({ data = [], activeIndex = 0, onClick = null }) => {
 						<PassengerAgeItemActive
 							key={index}
 							item={item}
-							onClick={() => handleClick(index)}
+							onClick={() => handleClick(index, item)}
 						/>
 					);
 				}
 				return (
-					<PassengerAgeItem key={index} item={item} onClick={() => handleClick(index)} />
+					<PassengerAgeItem key={index} item={item} onClick={() => handleClick(index, item)} />
 				);
 			})}
 		</div>
@@ -98,31 +98,48 @@ const PassengerAgeBar = ({ data = [], activeIndex = 0, onClick = null }) => {
 @connect(({ loading, passengerAnalyze }) => ({
 	loading,
 	passengerAgeListByGender: passengerAnalyze.passengerAgeListByGender,
+	lastPassengerAgeListByGender: passengerAnalyze.lastPassengerAgeListByGender,
 	passengerDetailWithAgeAndGender: passengerAnalyze.passengerDetailWithAgeAndGender,
+}), dispatch => ({
+	getPassengerFlowAgeByGender: () => dispatch({ type: 'passengerAnalyze/getPassengerFlowAgeByGender' }),
+	getPassengerFlowHistoryWithAgeAndGender: () => dispatch({ type: 'passengerAnalyze/getPassengerFlowHistoryWithAgeAndGender' })
 }))
 class PassengerInfo extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {
 			activeIndex: 0,
+			activeContent: {}
 		};
 	}
 
-	activeBarClick = index => {
+	async componentDidMount() {
+		const { getPassengerFlowAgeByGender, getPassengerFlowHistoryWithAgeAndGender } = this.props;
+		getPassengerFlowHistoryWithAgeAndGender();
+		await getPassengerFlowAgeByGender();
+
+		const { passengerAgeListByGender } = this.props;
+		this.setState({
+			activeContent: passengerAgeListByGender[0] || {}
+		});
+	}
+
+	activeBarClick = (index, activeContent) => {
 		this.setState({
 			activeIndex: index,
+			activeContent
 		});
 	};
 
 	render() {
-		const { activeIndex } = this.state;
-		const { passengerAgeListByGender = [], loading } = this.props;
+		const { activeIndex, activeContent } = this.state;
+		const { passengerAgeListByGender = [], lastPassengerAgeListByGender = [], loading } = this.props;
 
 		return (
 			<div className={styles['passenger-info-wrapper']}>
 				<Card
 					bordered={false}
-					loading={loading.effects['passengerAnalyze/getPassengerFlowAgeByGender']}
+					loading={loading.effects['passengerAnalyze/getPassengerFlowAgeByGender'] || loading.effects['passengerAnalyze/getPassengerFlowHistoryWithAgeAndGender']}
 				>
 					<>
 						<h4>{formatMessage({ id: 'passengerAnalyze.analyze' })}</h4>
@@ -132,7 +149,7 @@ class PassengerInfo extends PureComponent {
 								activeIndex={activeIndex}
 								onClick={this.activeBarClick}
 							/>
-							<PassengerDetail />
+							<PassengerDetail data={activeContent} lastData={lastPassengerAgeListByGender} />
 						</div>
 					</>
 				</Card>

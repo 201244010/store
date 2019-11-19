@@ -220,7 +220,7 @@ class DeviceBasicInfo extends React.Component {
 
 	render() {
 		const { isEdit, /* saving */ } = this.state;
-		const { basicInfo, form, ipcList, loading }  = this.props;
+		const { basicInfo, form, ipcList, loading, isOnline }  = this.props;
 		const { name, type, sn, img, ip, mac, conntype } = basicInfo;
 
 		const { /* isFieldTouched, */ getFieldDecorator } = form;
@@ -330,26 +330,33 @@ class DeviceBasicInfo extends React.Component {
 						<span>{sn}</span>
 					</Form.Item>
 					{
-						ip ?
-							<Form.Item label={formatMessage({ id: 'deviceBasicInfo.ip'})}>
-								<span>{ip}</span>
-							</Form.Item>
-							: ''
+						isOnline ?
+							ip ?
+								<Form.Item label={formatMessage({ id: 'deviceBasicInfo.ip'})}>
+									<span>{ip}</span>
+								</Form.Item>
+								: ''
+							:<Form.Item label={formatMessage({ id: 'deviceBasicInfo.ip'})}><span className={styles['offline-info']}>{formatMessage({id: 'deviceBasicInfo.unknown'})}</span></Form.Item>
 					}
 
-					{
-						mac ?
-							<Form.Item label={formatMessage({ id: 'deviceBasicInfo.mac'})}>
-								<span>{mac}</span>
-							</Form.Item>
-							: ''
+					{	
+						isOnline ?
+							mac ?
+								<Form.Item label={formatMessage({ id: 'deviceBasicInfo.mac'})}>
+									<span>{mac}</span>
+								</Form.Item>
+								: ''
+							:<Form.Item label={formatMessage({ id: 'deviceBasicInfo.mac'})}><span className={styles['offline-info']}>{formatMessage({id: 'deviceBasicInfo.unknown'})}</span></Form.Item>
 					}
 					{
-						conntype ?
-							<Form.Item label={formatMessage({ id: 'deviceBasicInfo.conntype'})}>
-								<span>{conntypes[conntype]}</span>
-							</Form.Item>
-							: ''
+						isOnline ?
+							conntype ?
+								<Form.Item label={formatMessage({ id: 'deviceBasicInfo.conntype'})}>
+									<span>{conntypes[conntype]}</span>
+								</Form.Item>
+								: ''
+							:<Form.Item label={formatMessage({ id: 'deviceBasicInfo.conntype'})}><span className={styles['offline-info']}>{formatMessage({id: 'deviceBasicInfo.unknown'})}</span></Form.Item>
+
 					}
 					<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
 						<div className={styles['btn-block']}>

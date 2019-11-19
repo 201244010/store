@@ -48,7 +48,7 @@ export default {
 			state.readStatusLoading = loadingStatus;
 		},
 		setCurrentVersion (state, { payload: { sn, version }}) {
-			if(state.sn === sn){
+			if(state.sn === sn && version){
 				state.currentVersion = version;
 			}
 		},
