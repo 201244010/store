@@ -217,6 +217,16 @@ class Login extends Component {
 		const loginType = currentTab === 'tabAccount' ? 'login' : 'quickLogin';
 
 		validateFields(VALIDATE_FIELDS[currentTab], async (err, values) => {
+			const { username } = values;
+
+			let sendValues = { ...values };
+			if (!Regexp.normalInput.test(username)) {
+				sendValues = {
+					...values,
+					username: username.split('').filter(w => Regexp.normalInput.test(w)).join('') || ''
+				};
+			}
+
 			if (!err) {
 				if (errorTimes > 2 && currentTab === 'tabAccount') {
 					const code = getFieldValue('vcode');
@@ -235,7 +245,7 @@ class Login extends Component {
 						});
 
 						if (result && result.code === ERROR_OK) {
-							this.doLogin(loginType, values);
+							this.doLogin(loginType, sendValues);
 						} else {
 							if (Object.keys(ALERT_NOTICE_MAP).includes(`${result.code}`)) {
 								this.setState({
@@ -246,7 +256,7 @@ class Login extends Component {
 						}
 					}
 				} else {
-					this.doLogin(loginType, values);
+					this.doLogin(loginType, sendValues);
 				}
 			}
 		});

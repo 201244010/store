@@ -15,6 +15,8 @@ import styles from './passengerAnalyze.less';
 		hasData: passengerAnalyze.hasData,
 	}),
 	dispatch => ({
+		getPassengerFlowHistory: () => dispatch({ type: 'passengerAnalyze/getPassengerFlowHistory' }),
+		getPassengerFlowHistoryTrend: () => dispatch({ type: 'passengerAnalyze/getPassengerFlowHistoryTrend' }),
 		clearSearch: () => dispatch({ type: 'passengerAnalyze/clearSearch' }),
 		refreshPage: () => dispatch({ type: 'passengerAnalyze/refreshPage' }),
 	})
@@ -22,7 +24,10 @@ import styles from './passengerAnalyze.less';
 class PassengerAnalyze extends PureComponent {
 	componentDidMount() {
 		// TODO 云端接口好之后恢复
-		this.refreshPage();
+		// this.refreshPage();
+		const { getPassengerFlowHistory, getPassengerFlowHistoryTrend } = this.props;
+		getPassengerFlowHistory();
+		getPassengerFlowHistoryTrend();
 	}
 
 	componentWillUnmount() {
