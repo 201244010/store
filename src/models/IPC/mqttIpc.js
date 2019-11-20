@@ -144,6 +144,12 @@ export default {
 			});
 		},
 
+		registerReconnectHandler({payload}) {
+			const { handler } = payload;
+			console.log('handler=', handler);
+			model.client.registerReconnectHandler(handler);
+		},
+
 		addListener({ payload }) {
 			const listeners = payload;
 

@@ -4,6 +4,7 @@
 import { formatMessage } from 'umi/locale';
 import { getRange } from '../../services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
+import { getLocationParam } from '@/utils/utils';
 
 const OPCODE = {
 	FACE_ID_STATUS: '0x4202',
@@ -129,6 +130,8 @@ export default {
 			 });
 		},
 		*changeFaceidPushStatus ({ payload: { sn, status }}, { put }) {
+			console.log('changeFaceidPushStatus sn=', sn);
+			console.log('changeFaceidPushStatus status=', status);
 			// 直播页人脸加框开关
 			const deviceType = yield put.resolve({
 				type: 'ipcList/getDeviceType',
@@ -252,6 +255,30 @@ export default {
 			dispatch({
 				type: 'mqttIpc/addListener',
 				payload: listeners
+			});
+
+			console.log('faceId.js 注册订阅');
+			dispatch({
+				type: 'mqttIpc/registerReconnectHandler',
+				payload: {
+					handler: () => {
+						console.log('ReconnectHandler faceId.js');
+						if (window.location.pathname === '/devices/ipcList/live' || window.location.pathname === '/flow') {
+							console.log('当前是在直播页面');
+
+							const sn = getLocationParam('sn');
+
+							// 开启直播人脸框
+							dispatch({
+								type:'changeFaceidPushStatus',
+								payload: {
+									sn,
+									status: true
+								}
+							});
+						}
+					}
+				}
 			});
 		}
 	}
