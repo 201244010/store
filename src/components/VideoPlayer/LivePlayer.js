@@ -389,9 +389,13 @@ class LivePlayer extends React.Component{
 				const index = player.buffered().length -1;
 				const curTime = player.currentTime();
 				const endTime = player.buffered().end(index);
+				const startTime = player.buffered().start(index);
 
+				console.log('player.buffered().length=', player.buffered().length);
 				console.log('before curTime=', curTime);
 				console.log('endTime=', endTime);
+				console.log('startTime=', startTime);
+				console.log('endTime-startTime=', endTime-startTime);
 
 				// 离缓存间隔太小，会导致loading
 				if (endTime - 2 > curTime) {
@@ -463,7 +467,7 @@ class LivePlayer extends React.Component{
 	}
 
 	render () {
-		const { timeSlots, plugin, currentPPI, isOnline, cloudStatus, navigateTo, sn } = this.props;
+		const { timeSlots, plugin, currentPPI, isOnline, cloudStatus, navigateTo, sn, pixelRatio } = this.props;
 		const { currentTimestamp, isLive, ppiChanged, playBtnDisabled } = this.state;
 
 		return (
@@ -500,6 +504,8 @@ class LivePlayer extends React.Component{
 				cloudStatus={cloudStatus}
 				navigateTo={navigateTo}
 				sn={sn}
+
+				pixelRatio={pixelRatio}
 
 				progressbar={
 					<Timebar

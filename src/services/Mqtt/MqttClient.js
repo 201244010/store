@@ -37,6 +37,7 @@ class MqttClient {
 		this.registerMessageHandler = this.registerMessageHandler.bind(this);
 		this.registerTopicHandler = this.registerTopicHandler.bind(this);
 		this.registerErrorHandler = this.registerErrorHandler.bind(this);
+		this.registerReconnectHandler = this.registerReconnectHandler.bind(this);
 	}
 
 	connect({ address, username, password, clientId, path = '/mqtt', reconnectPeriod = 3 * 1000 }) {
@@ -179,6 +180,12 @@ class MqttClient {
 		const { client } = this;
 
 		client.on('error', errorHandler);
+	}
+
+	registerReconnectHandler(reconnectHandler) {
+		console.log('MqttClient registerReconnectHandler');
+		const { client } = this;
+		client && client.on('reconnect', reconnectHandler);
 	}
 
 	destroy() {

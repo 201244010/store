@@ -5,7 +5,7 @@ import { createEmqToken } from '@/services/user';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const namespace = 'mqttStore';
-const model = new MqttModel(namespace, { qos: 2 });
+const model = new MqttModel(namespace);
 
 export default {
 	namespace,
@@ -42,13 +42,12 @@ export default {
 				const { server_address: address } = token;
 				const clientId = `${currentCompanyId}_${id}_${moment().format('X')}`;
 
-				console.log(token);
-
 				yield put({
 					type: 'updateInfo',
 					payload: {
 						clientId,
 						...token,
+						username: token.login_name,
 						address,
 					},
 				});
@@ -122,7 +121,7 @@ export default {
 			});
 		},
 
-		*putMsg(_, { put}) {
+		*putMsg(_, { put }) {
 			const response = yield put({
 				type: 'putMsgMap',
 			});
@@ -135,5 +134,6 @@ export default {
 				payload,
 			});
 		},
+
 	},
 };
