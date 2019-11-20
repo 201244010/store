@@ -463,7 +463,7 @@ class LivePlayer extends React.Component{
 	}
 
 	render () {
-		const { timeSlots, plugin, currentPPI, isOnline, cloudStatus, navigateTo, sn } = this.props;
+		const { timeSlots, plugin, currentPPI, isOnline, cloudStatus, navigateTo, sn, pixelRatio } = this.props;
 		const { currentTimestamp, isLive, ppiChanged, playBtnDisabled } = this.state;
 
 		return (
@@ -500,6 +500,8 @@ class LivePlayer extends React.Component{
 				cloudStatus={cloudStatus}
 				navigateTo={navigateTo}
 				sn={sn}
+
+				pixelRatio={pixelRatio}
 
 				progressbar={
 					<Timebar
