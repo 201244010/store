@@ -1,7 +1,6 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
 import { Progress } from 'antd';
-import moment from 'moment';
 import styles from './passengerAnalyze.less';
 
 const INFO_CONTENT_TYPE = {
@@ -94,7 +93,7 @@ const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
 			</span>,
 		[INFO_FOOTER_TYPE.PROGRESS]: (content = '--') => (
 			<div className={styles['progress-footer']}>
-				<Progress percent={content} strokeColor={parseInt(content, 10) > 30 ? '#25b347' : '#ff6633'} />
+				<Progress percent={Math.round(content * 1)} strokeColor={parseInt(content, 10) > 30 ? '#25b347' : '#ff6633'} />
 			</div>
 		),
 		[INFO_FOOTER_TYPE.RANK]: (content = '--') => <span className={styles['rank-green']}>{content}</span>,
@@ -111,7 +110,7 @@ const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
 					{
 						FooterContent[INFO_FOOTER_TYPE.PERCENT](
 							lastTotalGender === 0
-								? 0 : parseInt(totalGender / lastTotalGender * 100, 10)
+								? 0 : Math.round(totalGender / lastTotalGender * 100, 10)
 						) || FooterContent[INFO_FOOTER_TYPE.DEFAULT]()
 					}
 				</div>
@@ -120,7 +119,7 @@ const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
 		[INFO_CONTENT_TYPE.GENDER_RATE]: (
 			<>
 				<div className={styles['info-content']}>
-					{genderRate}
+					{Math.round(genderRate * 1)}%
 				</div>
 				<div className={styles['info-footer']}>
 					{FooterContent[INFO_FOOTER_TYPE.PROGRESS](genderRate)
@@ -131,7 +130,7 @@ const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
 		[INFO_CONTENT_TYPE.REGULAR_RATE]: (
 			<>
 				<div className={styles['info-content']}>
-					{data[`${gender}${key}`]}%
+					{Math.round(data[`${gender}${key}`] * 1)}%
 				</div>
 				<div className={styles['info-footer']}>
 					{FooterContent[INFO_FOOTER_TYPE.PROGRESS](data[`${gender}${key}`])
@@ -142,10 +141,7 @@ const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
 		[INFO_CONTENT_TYPE.RUSH_HOUR]: (
 			<>
 				<div className={styles['info-content']}>
-					{data[`${gender}${key}`] === -1 ? '--' : moment.unix(data[`${gender}${key}`]).format('HH:mm')}
-				</div>
-				<div className={styles['info-footer']}>
-					{FooterContent[INFO_FOOTER_TYPE.DEFAULT]()}
+					{data[`${gender}${key}`] === -1 ? '--' : `${data[`${gender}${key}`]}:00`}
 				</div>
 			</>
 		),
@@ -165,17 +161,14 @@ const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
 	);
 };
 
-const PassengerDetail = ({ data, lastData = [] }) => {
-	const lastInfo = lastData.find(item => item.gender === data.gender && item.ageRangeCode === data.ageRangeCode) || {};
-	return (
-		<div className={styles['detail-wrapper']}>
-			{columns.map((item, index) => (
-				<div className={styles['detail-info']} key={index}>
-					<DetailInfo key={index} column={item} data={data} lastInfo={lastInfo} />
-				</div>
-			))}
-		</div>
-	);
-};
+const PassengerDetail = ({ data, lastData = [] }) => (
+	<div className={styles['detail-wrapper']}>
+		{columns.map((item, index) => (
+			<div className={styles['detail-info']} key={index}>
+				<DetailInfo key={index} column={item} data={data} lastInfo={lastData} />
+			</div>
+		))}
+	</div>
+);
 
 export default PassengerDetail;
