@@ -3,7 +3,7 @@ import sysEnv from './env';
 export const { env, country } = sysEnv;
 
 export const FIRST_MENU_ORDER = [
-	'dashboard',
+	'dashBoard',
 	'application',
 	'devices',
 	'esl',
