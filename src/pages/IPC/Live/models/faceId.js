@@ -256,14 +256,17 @@ export default {
 				type: 'mqttIpc/addListener',
 				payload: listeners
 			});
+		},
 
+		// mqtt重连时，再次开启人脸框和进店
+		mqttReconnect ({ dispatch }) {
 			console.log('faceId.js 注册订阅');
 			dispatch({
 				type: 'mqttIpc/registerReconnectHandler',
 				payload: {
 					handler: () => {
 						console.log('ReconnectHandler faceId.js');
-						if (window.location.pathname === '/devices/ipcList/live' || window.location.pathname === '/flow') {
+						if (window.location.pathname === '/devices/ipcList/live') {
 							console.log('当前是在直播页面');
 
 							const sn = getLocationParam('sn');
@@ -271,6 +274,15 @@ export default {
 							// 开启直播人脸框
 							dispatch({
 								type:'changeFaceidPushStatus',
+								payload: {
+									sn,
+									status: true
+								}
+							});
+
+							// 开启右侧进店
+							dispatch({
+								type:'changeFaceComparePushStatus',
 								payload: {
 									sn,
 									status: true
