@@ -151,7 +151,7 @@ export default {
 
 			let filteredMenuData = menuData;
 
-			if (env !== 'dev') {
+			if (!['dev', 'test'].includes(env)) {
 				const permissionResult = yield put.resolve({
 					type: 'role/getUserPermissionList',
 				});
