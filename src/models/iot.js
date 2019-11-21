@@ -10,6 +10,7 @@ export default {
 		netInfo: {},
 		printerInfo: {},
 		runningInfo: {},
+		warrantyInfo: {},
 		searchFormValues: {
 			keyword: '',
 			status: -1,
@@ -93,6 +94,25 @@ export default {
 					netInfo: result.net_info || {},
 					printerInfo: result.printer_info || {},
 					runningInfo: result.running_info || {},
+				},
+			});
+		},
+		*fetchWarrantyInfo({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+
+			const opts = Object.assign({}, options);
+			const response = yield call(IotServices.getWarrantyInfo, opts);
+			const result = response.data || {};
+			yield put({
+				type: 'updateState',
+				payload: {
+					loading: false,
+					warrantyInfo: result,
 				},
 			});
 		},

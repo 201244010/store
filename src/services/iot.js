@@ -7,4 +7,5 @@ const genPosService = genService(fetchApi);
 export default {
 	getPosList: genPosService('getList'),
 	getBaseInfo: genPosService('getBaseInfo'),
+	getWarrantyInfo: genPosService('getWarrantyInfo'),
 };
