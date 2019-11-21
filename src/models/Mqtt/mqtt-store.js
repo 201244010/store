@@ -49,6 +49,7 @@ export default {
 					payload: {
 						clientId,
 						...token,
+						username: token.login_name,
 						address,
 					},
 				});
