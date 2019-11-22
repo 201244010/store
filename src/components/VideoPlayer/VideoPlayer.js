@@ -110,6 +110,10 @@ class VideoPlayer extends React.Component{
 		player.load();
 
 		this.removeNoMediaCover();
+
+		this.setState({
+			playing: true
+		});
 	}
 
 	play = () => {
@@ -117,7 +121,7 @@ class VideoPlayer extends React.Component{
 		if (player) {
 			console.log('paused: ', player.paused());
 			player.play();
-
+			
 			this.setState({
 				playing: true
 			});

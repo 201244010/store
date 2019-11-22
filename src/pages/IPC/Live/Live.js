@@ -200,6 +200,16 @@ const statusCode = {
 			return '';
 		});
 		return cloudStatus;
+	},
+	checkOnlineStatus: async (sn) => {
+		console.log('update online');
+		const result = dispatch({
+			type: 'ipcList/checkOnlineStatus',
+			payload: {
+				sn
+			}
+		});
+		return result;
 	}
 }))
 class Live extends React.Component{
@@ -232,9 +242,9 @@ class Live extends React.Component{
 			getAgeRangeList();
 
 			const deviceInfo = await getDeviceInfo({ sn });
-			const { isOnline } = deviceInfo;
-			const { hasFaceid, hasCloud } = deviceInfo;
-			// console.log('Live', deviceInfo);
+			// const { isOnline } = deviceInfo;
+			const { hasFaceid, hasCloud, isOnline } = deviceInfo;
+			console.log('Live deviceInfo', deviceInfo);
 
 			setDeviceSn({ sn });
 
@@ -388,17 +398,22 @@ class Live extends React.Component{
 	}
 
 	getLiveUrl = async () => {
-		const { getLiveUrl } = this.props;
+		const { getLiveUrl, checkOnlineStatus } = this.props;
+		const { isOnline: online } = this.state;
+		let isOnline = online;
 		const sn = this.getSN();
+		if(!online) {
+			isOnline = await checkOnlineStatus(sn);
+		}
+		this.setState({
+			historyPPI: '',
+			isOnline,
+		});
 
 		const hasFaceid = this.hasFaceid();
 		if (hasFaceid) {
 			this.startFaceidPush();
 		}
-
-		this.setState({
-			historyPPI: ''
-		});
 
 		const url = await getLiveUrl({ sn });
 		return url;
