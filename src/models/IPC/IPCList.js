@@ -167,6 +167,21 @@ export default {
 			}
 			return '';
 		},
+		*checkOnlineStatus({ payload }, { put }) {
+			const { sn } = payload;
+			const ipcList = yield put.resolve({
+				type: 'read'
+			});
+			if(ipcList){
+				for(let i=0;i <ipcList.length; i++){
+					if(ipcList[i].sn === sn){
+						const { isOnline } = ipcList[i];
+						return isOnline;
+					}
+				}
+			}
+			return false;
+		}
 
 	}
 };
