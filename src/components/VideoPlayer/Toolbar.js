@@ -217,7 +217,7 @@ class Toolbar extends React.Component{
 									this.calendarWrapper = wrapper;
 								}}
 							/>
-							<div className={`${styles.button} ${ !isOnline && isLive ? styles.disabled : '' }`}>
+							<div className={`${styles.button} ${ !isOnline && (!cloudStatus || cloudStatus === 'closed') ? styles.disabled : '' }`}>
 								<Popover
 									content={
 										(
