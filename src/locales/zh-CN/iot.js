@@ -1,6 +1,6 @@
 export default {
-	'iot.pos.status.active': '在线',
-	'iot.pos.status.disabled': '离线',
+	'iot.pos.status.active': '在线Pos设备',
+	'iot.pos.status.disabled': '离线Pos设备',
 	'iot.pos.unit': '台',
 	'iot.pos.model': '机型',
 	'iot.pos.connect.status': '连接状态',
@@ -26,4 +26,6 @@ export default {
 	'iot.pos.system.has.used': '已用',
 	'iot.pos.active.status.yes': '已连接',
 	'iot.pos.active.status.no': '未连接',
+	'iot.pos.warranty.status.yes': '在保',
+	'iot.pos.warranty.status.no': '已过保',
 };

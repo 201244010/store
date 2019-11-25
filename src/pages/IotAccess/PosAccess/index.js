@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Card, Col, Row} from 'antd';
 import {connect} from 'dva';
 import { formatMessage } from 'umi/locale';
-import SearchForm from './SearchForm';
+// import SearchForm from './SearchForm';
 import SearchResult from './SearchResult';
 import * as styles from './index.less';
 
@@ -35,7 +35,7 @@ class PosAccess extends Component {
 									{formatMessage({ id: 'iot.pos.status.active' })}
 								</h4>
 								<div className={styles['overview-count']}>
-									45 <span className={styles.unit}>{formatMessage({id: 'iot.pos.unit'})}</span>
+									{data.filter(item => item.active_status).length} <span className={styles.unit}>{formatMessage({id: 'iot.pos.unit'})}</span>
 								</div>
 							</Card>
 						</Col>
@@ -45,21 +45,21 @@ class PosAccess extends Component {
 									{formatMessage({ id: 'iot.pos.status.disabled' })}
 								</h4>
 								<div className={styles['overview-count']}>
-									45 <span className={styles.unit}>{formatMessage({id: 'iot.pos.unit'})}</span>
+									{data.filter(item => !item.active_status).length} <span className={styles.unit}>{formatMessage({id: 'iot.pos.unit'})}</span>
 								</div>
 							</Card>
 						</Col>
 					</Row>
 				</div>
 				<Card bordered={false}>
-					<SearchForm
-						{...{
-							searchFormValues: o => o,
-							changeSearchFormValue: o => o,
-							clearSearch: o => o,
-							fetchElectricLabels: o => o,
-						}}
-					/>
+					{/* <SearchForm */}
+					{/* {...{ */}
+					{/* searchFormValues: o => o, */}
+					{/* changeSearchFormValue: o => o, */}
+					{/* clearSearch: o => o, */}
+					{/* fetchElectricLabels: o => o, */}
+					{/* }} */}
+					{/* /> */}
 					<SearchResult loading={loading} data={data} />
 				</Card>
 			</div>
