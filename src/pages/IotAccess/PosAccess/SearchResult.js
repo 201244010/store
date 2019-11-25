@@ -69,7 +69,7 @@ export default class SearchResult extends Component {
 		const {loading, data} = this.props;
 
 		return (
-			<Table className={styles['pos-table']} columns={columns} loading={loading} dataSource={data} />
+			<Table className={styles['pos-table']} columns={columns} loading={loading} dataSource={data} pagination={false} />
 		);
 	}
 }
