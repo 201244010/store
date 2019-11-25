@@ -56,16 +56,11 @@ const CardTitle = ({ onChange = null }) => {
 class CustomerChart extends PureComponent {
 	constructor(props) {
 		super(props);
-		this.state = {
-			flowType: PASSENGER_FLOW_TYPE.GENDER,
-		};
+		this.chartWrapper = React.createRef();
 	}
 
 	radioChange = async value => {
 		const { setSearchValue, fetchPassengerAgeByTimeRange } = this.props;
-		this.setState({
-			flowType: value,
-		});
 		await setSearchValue({
 			passengerFlowType: value,
 		});
@@ -139,8 +134,6 @@ class CustomerChart extends PureComponent {
 	};
 
 	render() {
-		const { flowType } = this.state;
-
 		const {
 			passengerFlowTypeLoading,
 			passengerAgeInfo: {
@@ -150,7 +143,13 @@ class CustomerChart extends PureComponent {
 				strangerCount = 0,
 				regularCount = 0,
 			} = {},
+			searchValue: { passengerFlowType },
 		} = this.props;
+
+		const { current = {} } = this.chartWrapper;
+		const { clientWidth = null } = current || {};
+		const chartWidth = Math.round(clientWidth * 0.95);
+		console.log(chartWidth);
 
 		const displayPassengerList = this.formatPassengerList({
 			passengerList,
@@ -171,7 +170,7 @@ class CustomerChart extends PureComponent {
 		];
 
 		const geomColor =
-			flowType === PASSENGER_FLOW_TYPE.GENDER
+			passengerFlowType === PASSENGER_FLOW_TYPE.GENDER
 				? [
 					'title',
 					// eslint-disable-next-line no-shadow
@@ -190,40 +189,46 @@ class CustomerChart extends PureComponent {
 				  ];
 
 		return (
-			<Card
-				title={<CardTitle onChange={this.radioChange} />}
-				className={`${styles['card-bar-wrapper']} ${
-					passengerFlowTypeLoading ? '' : styles['customer-chart']
-				}`}
-				loading={passengerFlowTypeLoading}
-			>
-				<Facet
-					{...{
-						data: displayPassengerList,
-						tooltip: { crosshairs: false },
-						scale: {
-							personCount: {
-								ticks,
-							},
-							limit: {
-								ticks,
-							},
-						},
-						axis: {
-							x: { name: 'ageRange', line: null, tickLink: null },
-							y: { name: 'personCount', visible: false },
-							assist: { name: 'limit', visible: false },
-						},
-						facet: { fields: ['title'] },
-						geom: {
-							position: 'ageRange*personCount',
-							color: geomColor,
-							label: { content: 'personCount' },
-						},
-						assistGeom: { position: 'ageRange*limit' },
-					}}
-				/>
-			</Card>
+			<div ref={this.chartWrapper} className={styles['chart-wrapper']}>
+				<Card
+					title={<CardTitle onChange={this.radioChange} />}
+					className={`${styles['card-bar-wrapper']} ${
+						passengerFlowTypeLoading ? '' : styles['customer-chart']
+					}`}
+					loading={passengerFlowTypeLoading}
+				>
+					{chartWidth && (
+						<Facet
+							{...{
+								width: clientWidth,
+								forceFit: false,
+								data: displayPassengerList,
+								tooltip: { crosshairs: false },
+								scale: {
+									personCount: {
+										ticks,
+									},
+									limit: {
+										ticks,
+									},
+								},
+								axis: {
+									x: { name: 'ageRange', line: null, tickLink: null },
+									y: { name: 'personCount', visible: false },
+									assist: { name: 'limit', visible: false },
+								},
+								facet: { fields: ['title'] },
+								geom: {
+									position: 'ageRange*personCount',
+									color: geomColor,
+									label: { content: 'personCount' },
+								},
+								assistGeom: { position: 'ageRange*limit' },
+							}}
+						/>
+					)}
+				</Card>
+			</div>
 		);
 	}
 }

@@ -5,11 +5,13 @@ import '@/components/Charts/Shape';
 class FacetChart extends PureComponent {
 	render() {
 		const {
+			width = 300,
 			height = 400,
 			data = [],
 			forceFit = true,
 			scale = {},
-			chartPadding = 0,
+			chartPadding = 'auto',
+			animate = false,
 			axis: {
 				x: {
 					name: xName = null,
@@ -44,11 +46,13 @@ class FacetChart extends PureComponent {
 		return (
 			<div>
 				<Chart
+					width={width}
 					height={height}
 					data={data}
 					scale={scale}
 					forceFit={forceFit}
 					padding={chartPadding}
+					animate={animate}
 				>
 					<Axis name={xName} line={xLine} tickLine={xTickLine} visible={xVisible} />
 					<Axis name={yName} line={yLine} tickLine={yTickLine} visible={yVisible} />
@@ -65,16 +69,9 @@ class FacetChart extends PureComponent {
 								type="interval"
 								position={assistPosition}
 								color={assistColor}
-								active={false}
 								tooltip={tooltip}
 							/>
-							<Geom
-								size={size}
-								type="interval"
-								position={position}
-								color={color}
-								active={false}
-							>
+							<Geom size={size} type="interval" position={position} color={color}>
 								<Label content={content} />
 							</Geom>
 						</View>

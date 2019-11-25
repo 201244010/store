@@ -41,11 +41,7 @@ const AccountLogin = props => {
 										})
 									);
 								}
-
-								if (!normalInput.test(value)) {
-									callback(formatMessage({ id: 'username.invalid.character' }));
-								}
-
+								
 								if (cellphone.test(value) || mail.test(value)) {
 									callback();
 								}
@@ -70,11 +66,16 @@ const AccountLogin = props => {
 					validateTrigger: 'onBlur',
 					rules: [
 						{
-							required: true,
-							message: formatMessage({
-								id: 'account.password.validate.isEmpty',
-							}),
-						},
+							validator: (_, value, callback) => {
+								if (!value) {
+									callback(formatMessage({ id: 'account.password.validate.isEmpty' }));
+								}
+								if (!normalInput.test(value)) {
+									callback(formatMessage({ id: 'username.invalid.character' }));
+								}
+								callback();
+							}
+						}
 					],
 				})(
 					<Input

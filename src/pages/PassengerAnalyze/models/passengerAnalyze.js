@@ -8,6 +8,123 @@ const {
 	SEARCH_TYPE: { GROUP_RANGE, RANGE_VALUE },
 } = DASHBOARD;
 
+const fullfillCountList = (countList = [], type = null) => {
+	const [firstItem = null, ,] = countList;
+	if (!firstItem) {
+		return countList;
+	}
+
+	if (type === RANGE_VALUE.WEEK) {
+		if (countList.length === 7) {
+			return countList;
+		}
+		const { time } = firstItem;
+
+		const dateList = [];
+		for (let i = 0; i < 7; i++) {
+			dateList.push({
+				time: moment(time)
+					.add(i, 'days')
+					.format('YYYY-MM-DD'),
+				totalCount: null,
+				regularCount: null,
+				strangerCount: null,
+			});
+		}
+
+		return dateList.map(date => {
+			const countItem = countList.find(item => item.time === date.time);
+			return countItem || date;
+		});
+	}
+
+	if (type === RANGE_VALUE.MONTH) {
+		const { time } = firstItem;
+		const daysOfMonth = moment(time).daysInMonth();
+
+		if (countList.length === daysOfMonth) {
+			return countList;
+		}
+
+		const dateList = [];
+		for (let i = 0; i < daysOfMonth; i++) {
+			dateList.push({
+				time: moment(time)
+					.add(i, 'days')
+					.format('YYYY-MM-DD'),
+				totalCount: null,
+				regularCount: null,
+				strangerCount: null,
+			});
+		}
+
+		return dateList.map(date => {
+			const countItem = countList.find(item => item.time === date.time);
+			return countItem || date;
+		});
+	}
+	return countList;
+};
+
+const formatPassengerCountList = (countList = [], ageRangeList) => {
+	const totalGender = countList.reduce((prev, cur) => {
+		const { maleCount = 0, femaleCount = 0 } = cur;
+		return (prev = prev + maleCount + femaleCount);
+	}, 0);
+
+	// const totalGender = countList.reduce((prev, cur) => {
+	// 	const { maleCount = 0, femaleCount = 0 } = cur;
+	// 	return (prev = prev + maleCount + femaleCount);
+	// }, 0);
+
+	const formattedList = countList
+		.reduce((prev, cur) => {
+			const { ageRangeCode, maleCount, femaleCount, femaleRegularCount, femaleRushHour, maleRegularCount, maleRushHour } = cur;
+
+			const { ageRange } = ageRangeList.find(
+				item => item.ageRangeCode === ageRangeCode
+			);
+
+			return prev.concat([
+				{
+					ageRange,
+					ageRangeCode,
+					maleCount,
+					maleRegularRate: maleCount === 0 ? 0 : parseInt((maleRegularCount / maleCount) * 100, 10),
+					maleRushHour,
+					maleGenderRate: totalGender === 0
+						? 0
+						: parseInt((maleCount / totalGender) * 100, 10),
+					genderRate:
+						totalGender === 0
+							? 0
+							: parseInt((maleCount / totalGender) * 100, 10),
+					gender: 'male',
+					totalGender
+				},
+				{
+					ageRange,
+					ageRangeCode,
+					femaleCount,
+					femaleRegularRate: femaleCount === 0 ? 0 : parseInt((femaleRegularCount / femaleCount) * 100, 10),
+					femaleRushHour,
+					femaleGenderRate: totalGender === 0
+						? 0
+						: parseInt((femaleCount / totalGender) * 100, 10),
+					genderRate:
+						totalGender === 0
+							? 0
+							: parseInt((femaleCount / totalGender) * 100, 10),
+					gender: 'female',
+					totalGender
+				},
+			]);
+		}, [])
+		.sort((a, b) => b.genderRate - a.genderRate);
+
+	return formattedList;
+};
+
 export default {
 	namespace: 'passengerAnalyze',
 	state: {
@@ -15,7 +132,7 @@ export default {
 		searchValue: {
 			startTime: moment().format('YYYY-MM-DD'),
 			endTime: moment().format('YYYY-MM-DD'),
-			type: RANGE_VALUE.TODAY,
+			type: RANGE_VALUE.YESTERDAY,
 			groupBy: GROUP_RANGE.HOUR,
 		},
 		passengerFlowCount: {
@@ -26,6 +143,7 @@ export default {
 		},
 		passengerFlowTrendList: [],
 		passengerAgeListByGender: [],
+		lastPassengerAgeListByGender: [],
 		// TODO 等待云端接口
 		passengerDetailWithAgeAndGender: {},
 	},
@@ -33,7 +151,8 @@ export default {
 	effects: {
 		*setSearchValue({ payload }, { select, put }) {
 			const { searchValue } = yield select(state => state.passengerAnalyze);
-			const { type = RANGE_VALUE.TODAY, groupBy = GROUP_RANGE.HOUR } = payload;
+			const { type = RANGE_VALUE.YESTERDAY, groupBy = GROUP_RANGE.HOUR } = payload;
+
 			yield put({
 				type: 'updateState',
 				payload: {
@@ -43,6 +162,10 @@ export default {
 						groupBy,
 					},
 				},
+			});
+
+			yield put({
+				type: 'getPassengerFlowHistoryWithAgeAndGender'
 			});
 		},
 
@@ -54,8 +177,8 @@ export default {
 					searchValue: {
 						startTime: moment().format('YYYY-MM-DD'),
 						endTime: moment().format('YYYY-MM-DD'),
-						type: RANGE_VALUE.TODAY,
-						gourpBy: GROUP_RANGE.HOUR,
+						type: RANGE_VALUE.YESTERDAY,
+						groupBy: GROUP_RANGE.HOUR,
 					},
 				},
 			});
@@ -116,7 +239,10 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data: { countList = [] } = {} } = response || {};
 
-				const formattedList = countList.reduce((prev, cur) => {
+				const fullfilledList = fullfillCountList(countList, type);
+				// console.log(fullfilledList);
+
+				const formattedList = fullfilledList.reduce((prev, cur) => {
 					const { time, totalCount = 0, regularCount = 0, strangerCount = 0 } = cur;
 
 					let _time = time;
@@ -176,42 +302,7 @@ export default {
 						data: { countList = [] },
 					} = response || {};
 
-					const totalGender = countList.reduce((prev, cur) => {
-						const { maleCount = 0, femaleCount = 0 } = cur;
-						return (prev = prev + maleCount + femaleCount);
-					}, 0);
-
-					const formattedList = countList
-						.reduce((prev, cur) => {
-							const { ageRangeCode, maleCount, femaleCount } = cur;
-
-							const { ageRange } = ageRangeList.find(
-								item => item.ageRangeCode === ageRangeCode
-							);
-
-							return prev.concat([
-								{
-									ageRange,
-									ageRangeCode,
-									genderRate:
-										totalGender === 0
-											? 0
-											: parseInt((maleCount / totalGender) * 100, 10),
-									gender: 'male',
-								},
-								{
-									ageRange,
-									ageRangeCode,
-									genderRate:
-										totalGender === 0
-											? 0
-											: parseInt((femaleCount / totalGender) * 100, 10),
-									gender: 'female',
-								},
-							]);
-						}, [])
-						.sort((a, b) => b.genderRate - a.genderRate)
-						.slice(0, 5);
+					const formattedList = formatPassengerCountList(countList, ageRangeList).slice(0, 5);
 
 					yield put({
 						type: 'updateState',
@@ -223,8 +314,46 @@ export default {
 			}
 		},
 
-		*getPassengerFlowHistoryWithAgeAndGender() {
-			// TODO 等待云端接口
+		*getPassengerFlowHistoryWithAgeAndGender(_, { select, put, call }) {
+			const {
+				searchValue: { type },
+			} = yield select(state => state.passengerAnalyze);
+
+			let [startTime, endTime] = [null, null];
+			if (type === RANGE_VALUE.YESTERDAY) {
+				const beforeYesterday = moment().subtract(2, 'days').format('YYYY-MM-DD');
+				startTime = beforeYesterday;
+				endTime = beforeYesterday;
+			} else if (type === RANGE_VALUE.WEEK) {
+				startTime = moment().subtract(1, 'weeks').startOf('week').format('YYYY-MM-DD');
+				endTime = moment().subtract(1, 'weeks').endOf('week').format('YYYY-MM-DD');
+			} else {
+				startTime = moment().subtract(1, 'month').startOf('month').format('YYYY-MM-DD');
+				endTime = moment().subtract(1, 'month').endOf('month').format('YYYY-MM-DD');
+			}
+
+			const result = yield put.resolve({
+				type: 'dashboard/getAgeRanges',
+			});
+
+			if (result && result.code === ERROR_OK) {
+				const { data: { ageRangeList = [] } = {} } = result;
+				const response = yield call(Actions.getPassengerFlowHistoryWithAgeAndGender, { startTime, endTime });
+				if (response && response.code === ERROR_OK) {
+					const {
+						data: { countList = [] },
+					} = response || {};
+
+					const formattedList = formatPassengerCountList(countList, ageRangeList);
+
+					yield put({
+						type: 'updateState',
+						payload: {
+							lastPassengerAgeListByGender: formattedList,
+						},
+					});
+				}
+			}
 		},
 	},
 

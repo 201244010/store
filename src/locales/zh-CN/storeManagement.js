@@ -68,4 +68,11 @@ export default {
 	'storeManagement.message.createFailed': '创建失败',
 	'storeManagement.message.createSuccess': '创建成功',
 	'storeManagement.message.name.exist': '门店名称已存在',
+
+	'store.auth': '门店对接',
+	'store.authKey': '对接凭证信息',
+	'store.get.authKey': '获取对接凭证',
+	'auth.shop.no': '对接店铺编号：',
+	'auth.shop.key': '对接店铺密钥：',
+	'auth.key.expire': '对接凭证信息有效时间为 24 小时',
 };

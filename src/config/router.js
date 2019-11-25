@@ -1,5 +1,13 @@
 const router = [
 	{
+		path: '/userProtocol',
+		// component: '../layouts/SunmiLayout',
+		id: 'userProtocol',
+		routes: [
+			{ path: '/userProtocol/serviceProtocol', component: './IPC/CloudStorage/protocol.js', id: 'serviceProtocol' }
+		],
+	},
+	{
 		path: '/user',
 		component: '../layouts/SunmiLayout',
 		id: 'user',
@@ -142,18 +150,24 @@ const router = [
 							},
 						],
 					},
+					{
+						path: '/application/serviceManagement',
+						id: 'serviceManagement',
+						component: './ServiceManagement/ServiceList',
+						name: 'serviceManagement',
+					}
 				],
 			},
 
 			{
-				path: '/passengerAnalyze',
+				path: '/dataAnalyze',
 				icon: 'blank',
-				name: 'passengerAnalyze',
+				name: 'dataAnalyze',
 				routes: [
-					{ path: '/passengerAnalyze', redirect: '/passengerAnalyze/list' },
+					{ path: '/dataAnalyze', redirect: '/dataAnalyze/passenger' },
 					{
-						path: '/passengerAnalyze/list',
-						name: 'passengerAnalyze',
+						path: '/dataAnalyze/passenger',
+						name: 'passenger',
 						id: 'passengerAnalyze',
 						component: './PassengerAnalyze',
 					},
@@ -201,6 +215,25 @@ const router = [
 					{
 						path: '/devices',
 						redirect: '/devices/ipcList',
+					},
+					
+					{
+						path:'/devices/cloudStorage',
+						name:'cloudStorageService',
+						routes:[
+							{
+								path:'/devices/cloudStorage/subscriptionSuccess',
+								name:'subscriptionSuccess',
+								id:'subscriptionSuccess',
+								hideInMenu: true,
+								component: './IPC/CloudStorage/subscriptionSuccess.js'
+							},
+							{
+								path: '/devices/cloudStorage',
+								id: 'cloudStorage',
+								component: './IPC/CloudStorage/cloudStorage.js',
+							}
+						]
 					},
 				],
 			},
@@ -670,6 +703,7 @@ const router = [
 			},
 		],
 	},
+	
 ];
 
 // export default router;

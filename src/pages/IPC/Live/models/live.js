@@ -15,7 +15,7 @@ export default {
 	namespace: 'live',
 	state: {
 		streamId: '',
-		ppi: '1080',
+		ppi: '720',
 		ppiChanged: false,
 		timeSlots: []
 	},
@@ -37,6 +37,7 @@ export default {
 		// 	state.ppiChanged = true;
 		// },
 		updateTimeSlots(state, { payload: { timeSlots } }) {
+			// console.log('update timeSlots');
 			state.timeSlots = timeSlots;
 		}
 	},
@@ -74,9 +75,15 @@ export default {
 					}
 				});
 
-				return url;
+				return {
+					url,
+					code: response.code
+				};
 			}
-			return '';
+			return {
+				url: '',
+				code: response.code
+			};
 		},
 		// *getLiveUrl({ payload: { sn }}, { call, put }) {
 
@@ -181,6 +188,7 @@ export default {
 		// },
 
 		*getTimeSlots({ payload: { sn, timeStart, timeEnd }}, { put, call }) {
+			// console.log('get timeSlots');
 			const deviceId = yield put.resolve({
 				type: 'ipcList/getDeviceId',
 				payload: {
@@ -209,6 +217,13 @@ export default {
 					type: 'updateTimeSlots',
 					payload: {
 						timeSlots: slots
+					}
+				});
+			} else {
+				yield put({
+					type: 'updateTimeSlots',
+					payload: {
+						timeSlots: []
 					}
 				});
 			}

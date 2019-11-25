@@ -1,6 +1,7 @@
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
 import typecheck from '@konata9/typecheck.js';
+import { format } from '@konata9/milk-shake';
 import Storage from '@konata9/storage.js';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as Action from '@/services/storeManagement/storeList';
@@ -63,9 +64,24 @@ export default {
 			showSizeChanger: true,
 			showQuickJumper: true,
 		},
+		authKey: {},
 	},
 
 	effects: {
+		setShopIdInCookie({ payload = {} }) {
+			const { shopId } = payload;
+			CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
+		},
+
+		removeShopIdInCookie() {
+			CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
+		},
+
+		setShopListInStorage({ payload }) {
+			const { shopList = [] } = payload;
+			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
+		},
+
 		*getStoreNameById({ payload }, { put }) {
 			const { shopId } = payload;
 			const response = yield put.resolve({
@@ -105,10 +121,10 @@ export default {
 			yield put({
 				type: 'updateState',
 				payload: {
-					pagination:{
+					pagination: {
 						...pagination,
 						...options,
-					}
+					},
 				},
 			});
 		},
@@ -141,6 +157,12 @@ export default {
 				if (opts.type !== 'search') {
 					newPayload.allStores = shopList;
 				}
+
+				yield put({
+					type: 'setShopListInStorage',
+					payload: { shopList },
+				});
+
 				yield put({
 					type: 'updateState',
 					payload: newPayload,
@@ -377,6 +399,25 @@ export default {
 		*getImportedErpInfo(_, { call }) {
 			const response = yield call(Action.getImportedErpInfo, {});
 			return response;
+		},
+
+		*getAuthKey({ payload = {} }, { call, put }) {
+			const currentShopId = yield put.resolve({
+				type: 'global/getShopIdFromStorage',
+			});
+
+			const { shopId = null } = payload;
+			const response = yield call(Action.getAuthKey, { shopId: shopId || currentShopId });
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						authKey: format('toCamel')(data),
+					},
+				});
+			}
 		},
 	},
 

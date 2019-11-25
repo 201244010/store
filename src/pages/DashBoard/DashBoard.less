@@ -33,6 +33,11 @@
 			.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
 				background: @font-color-primary;
 				border-color: @font-color-primary;
+
+				&:hover {
+					background: @font-color-primary;
+					border-color: @font-color-primary;
+				}
 			}
 		}
 	}
@@ -106,15 +111,6 @@
 	}
 }
 
-.salse-chart,
-.customer-chart {
-	:global {
-		.ant-card-body {
-			padding: 0;
-		}
-	}
-}
-
 .customer-card-header {
 	display: flex;
 	justify-content: space-between;
@@ -133,6 +129,11 @@
 			.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
 				background: @font-color-primary;
 				border-color: @font-color-primary;
+
+				&:hover {
+					background: @font-color-primary;
+					border-color: @font-color-primary;
+				}
 			}
 		}
 	}
@@ -157,6 +158,14 @@
 	:global {
 		.g2-tooltip {
 			background-color: rgba(44, 49, 68, 0.8) !important;
+		}
+	}
+}
+
+.customer-chart {
+	:global {
+		.ant-card-body {
+			padding: 0;
 		}
 	}
 }
@@ -353,4 +362,9 @@
 			}
 		}
 	}
+}
+
+.chart-wrapper {
+	width: 100%;
+	overflow: hidden;
 }

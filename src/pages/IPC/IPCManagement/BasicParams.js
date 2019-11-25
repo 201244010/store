@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Radio, Switch, Button,Form, Spin, message } from 'antd';
+import { Card, Radio, Switch, Button,Form, message } from 'antd';
 
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
@@ -46,6 +46,15 @@ const mapDispatchToProps = (dispatch) => ({
 				WDRMode
 			}
 		});
+	},
+	checkBind: async (sn) => {
+		const result = await dispatch({
+			type: 'ipcList/checkBind',
+			payload: {
+				sn
+			}
+		});
+		return result;
 	}
 });
 
@@ -54,29 +63,7 @@ let btnDisabled = true;
 @connect(mapStateToProps, mapDispatchToProps)
 @Form.create({
 	name:'basic-params-form',
-	// mapPropsToFields(props) {
-	// 	return {
-	// 		nightMode: Form.createFormField({
-	// 			value: props.ipcBasicParams.nightMode
-	// 		}),
-	// 		indicator: Form.createFormField({
-	// 			value: props.ipcBasicParams.indicator
-	// 		}),
-	// 		rotation: Form.createFormField({
-	// 			value: props.ipcBasicParams.rotation
-	// 		})
-	// 	};
-	// },
 	onValuesChange(){
-		// console.log(values);
-	// 	Object.keys(values).forEach(item => {
-	// 		const key = item;
-	// 		if (values[key] !== props.ipcBasicParams[key]) {
-	// 			isChange[key] = true;
-	// 		} else {
-	// 			isChange[key] = false;
-	// 		}
-	// 	});
 		btnDisabled = false;
 	}
 })
@@ -112,22 +99,10 @@ class BasicParams extends Component {
 
 	}
 
-	// componentWillReceiveProps = (props) => {
-	// 	const { ipcBasicParams: ipcBasicParamsNew } = props;
-	// 	const { ipcBasicParams: ipcBasicParamsOld } = this.props;
-
-	// 	if (ipcBasicParamsOld.isSaving === 'saving'){
-	// 		if (ipcBasicParamsNew.isSaving === 'suceess') {
-
-	// 		} else if (ipcBasicParamsNew.isSaving === 'failed'){
-
-	// 		}
-	// 	}
-	// }
-
 	componentWillReceiveProps = (props) => {
 
 		const { ipcBasicParams } = props;
+
 		if (ipcBasicParams.isSaving === 'success') {
 			btnDisabled = true;
 			message.success(formatMessage({ id: 'ipcManagement.success'}));
@@ -137,29 +112,21 @@ class BasicParams extends Component {
 		}
 	}
 
-
-	// componentDidUpdate () {
-	// 	const { ipcBasicParams } = this.props;
-
-	// 	if (ipcBasicParams.isSaving === 'success') {
-	// 		btnDisabled = true;
-	// 		message.success(formatMessage({ id: 'ipcManagement.success'}));
-	// 	}else if (ipcBasicParams.isSaving === 'failed') {
-	// 		btnDisabled = false;
-	// 		message.error(formatMessage({ id: 'ipcManagement.failed'}));
-	// 	}
-	// }
-
-	submit = () => {
-		const { form, sn } = this.props;
+	submit = async () => {
+		const { form, sn, checkBind } = this.props;
 		const values = form.getFieldsValue();
 		const { saveSetting } = this.props;
 
 		const { nightMode, indicator, rotation, WDRMode } = values;
 
-		saveSetting({
-			nightMode, indicator, rotation, sn, WDRMode
-		});
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			saveSetting({
+				nightMode, indicator, rotation, sn, WDRMode
+			});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
 		// btnDisabled = true;
 
 	}
@@ -174,111 +141,109 @@ class BasicParams extends Component {
 	}
 
 	render() {
-		const { form, ipcBasicParams } = this.props;
-		const { isReading, isSaving, nightMode, rotation, indicator , WDRMode } = ipcBasicParams;
+		const { form, ipcBasicParams, isOnline } = this.props;
+		const { isSaving, nightMode, rotation, indicator , WDRMode } = ipcBasicParams;
 		const { deviceInfo: { rotate }} = this.state;
 		// console.log(ipcBasicParams);
 		const { getFieldDecorator , getFieldValue } = form;
 		return (
-			<Spin spinning={isReading || isSaving === 'saving'}>
-				<Card bordered={false} className={styles.card} title={formatMessage({id: 'basicParams.title'})}>
-					<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
-						<Form.Item label={formatMessage({id: 'basicParams.nightMode'})}>
-							{
-								getFieldDecorator('nightMode',{
-									initialValue: nightMode
-								})(
-									<RadioGroup onChange={this.nightModeChange}>
-										<Radio value={2}>
-											{ formatMessage({id: 'basicParams.autoSwitch'}) }
-										</Radio>
-										<Radio value={1}>
-											{ formatMessage({id: 'basicParams.open'}) }
-										</Radio>
-										<Radio value={0}>
-											{ formatMessage({id: 'basicParams.close'}) }
-										</Radio>
-									</RadioGroup>
-								)
-							}
-						</Form.Item>
+			<Card bordered={false} className={styles.card} title={formatMessage({id: 'basicParams.title'})}>
+				<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
+					<Form.Item label={formatMessage({id: 'basicParams.nightMode'})}>
+						{
+							getFieldDecorator('nightMode',{
+								initialValue: nightMode
+							})(
+								<RadioGroup onChange={this.nightModeChange} disabled={!isOnline}>
+									<Radio value={2}>
+										{ formatMessage({id: 'basicParams.autoSwitch'}) }
+									</Radio>
+									<Radio value={1}>
+										{ formatMessage({id: 'basicParams.open'}) }
+									</Radio>
+									<Radio value={0}>
+										{ formatMessage({id: 'basicParams.close'}) }
+									</Radio>
+								</RadioGroup>
+							)
+						}
+					</Form.Item>
 
-						<Form.Item label={formatMessage({ id: 'basicParams.wdr'})}>
-							{
-								getFieldDecorator('WDRMode',{
-									initialValue: WDRMode,
-								})(
-									<RadioGroup disabled={getFieldValue('nightMode') === 1}>
-										<Radio value={1}>
-											{ formatMessage({id: 'basicParams.open'}) }
-										</Radio>
-										<Radio value={0}>
-											{ formatMessage({id: 'basicParams.close'}) }
-										</Radio>
+					<Form.Item label={formatMessage({ id: 'basicParams.wdr'})}>
+						{
+							getFieldDecorator('WDRMode',{
+								initialValue: WDRMode,
+							})(
+								<RadioGroup disabled={getFieldValue('nightMode') === 1 || !isOnline}>
+									<Radio value={1}>
+										{ formatMessage({id: 'basicParams.open'}) }
+									</Radio>
+									<Radio value={0}>
+										{ formatMessage({id: 'basicParams.close'}) }
+									</Radio>
 
-									</RadioGroup>
-								)
-							}
-						</Form.Item>
-						<Form.Item label={formatMessage({id: 'basicParams.rotation'})}>
-							{
-								getFieldDecorator('rotation',{
-									initialValue: rotation
-								})(
-									// <Switch
-									// 	checkedChildren={formatMessage({id: 'basicParams.label.open'})}
-									// 	unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
-									// />
-									// <Switch />
+								</RadioGroup>
+							)
+						}
+					</Form.Item>
+					<Form.Item label={formatMessage({id: 'basicParams.rotation'})}>
+						{
+							getFieldDecorator('rotation',{
+								initialValue: rotation
+							})(
+								// <Switch
+								// 	checkedChildren={formatMessage({id: 'basicParams.label.open'})}
+								// 	unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
+								// />
+								// <Switch />
 
-									<RadioGroup>
-										{
-											rotate && rotate.map(item =>
-												<Radio key={item.key} value={item.key}>{item.value}{ formatMessage({id: 'basicParams.degree'})}</Radio>
-											)
-										}
-										{/* <Radio value={0}>0{ formatMessage({id: 'basicParams.degree'})}</Radio>
+								<RadioGroup disabled={!isOnline}>
+									{
+										rotate && rotate.map(item =>
+											<Radio key={item.key} value={item.key}>{item.value}{ formatMessage({id: 'basicParams.degree'})}</Radio>
+										)
+									}
+									{/* <Radio value={0}>0{ formatMessage({id: 'basicParams.degree'})}</Radio>
 										<Radio value={1}>90{ formatMessage({id: 'basicParams.degree'})}</Radio>
 										<Radio value={2}>180{ formatMessage({id: 'basicParams.degree'})}</Radio>
 										<Radio value={3}>270{ formatMessage({id: 'basicParams.degree'})}</Radio> */}
-									</RadioGroup>
-								)
-							}
-						</Form.Item>
+								</RadioGroup>
+							)
+						}
+					</Form.Item>
 
-						<Form.Item label={formatMessage({id: 'basicParams.statusIndicator'})}>
-							{
-								getFieldDecorator('indicator',{
-									valuePropName: 'checked',
-									initialValue: indicator
-								})(
-									// <Switch
-									// 	checkedChildren={formatMessage({id: 'basicParams.label.open'})}
-									// 	unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
-									// />
-									<Switch />
-								)
+					<Form.Item label={formatMessage({id: 'basicParams.statusIndicator'})}>
+						{
+							getFieldDecorator('indicator',{
+								valuePropName: 'checked',
+								initialValue: indicator
+							})(
+								// <Switch
+								// 	checkedChildren={formatMessage({id: 'basicParams.label.open'})}
+								// 	unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
+								// />
+								<Switch disabled={!isOnline} />
+							)
 
-							}
-						</Form.Item>
+						}
+					</Form.Item>
 
-						<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
-							<Button
-								type='primary'
-								htmlType='submit'
-								// disabled={!form.isFieldsTouched(['nightMode','indicator','rotation','WDRMode'])}
-								disabled={btnDisabled}
+					<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
+						<Button
+							type='primary'
+							htmlType='submit'
+							// disabled={!form.isFieldsTouched(['nightMode','indicator','rotation','WDRMode'])}
+							disabled={btnDisabled || !isOnline}
 
-								onClick={this.submit}
+							onClick={this.submit}
 
-								loading={isSaving === 'saving'}
-							>
-								{formatMessage({id: 'basicParams.save'})}
-							</Button>
-						</Form.Item>
-					</Form>
-				</Card>
-			</Spin>
+							loading={isSaving === 'saving'}
+						>
+							{formatMessage({id: 'basicParams.save'})}
+						</Button>
+					</Form.Item>
+				</Form>
+			</Card>
 		);
 	}
 };

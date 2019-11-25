@@ -1,5 +1,5 @@
 export default {
-	'cardManagement.title': '存储卡管理',
+	'cardManagement.title': '存储管理',
 
 	'cardManagement.sdStatus0': '未插入存储卡',
 	'cardManagement.sdStatus1': '已插入存储卡，需格式化才能使用',
@@ -8,7 +8,7 @@ export default {
 	'cardManagement.sdStatus4': '存储卡被移除，请重新插入并刷新页面',
 
 	'cardManagement.sizeLeft': '存储卡空间容量',
-	'cardManagement.daysCanUse': '整张存储卡可存视频约为',
+	'cardManagement.daysCanUse': '循环存储天数约为',
 	'cardManagement.hasUsed': '已使用',
 	'cardManagement.day': '天',
 	'cardManagement.hour': '小时',
@@ -33,4 +33,15 @@ export default {
 
 	'cardManagement.formattingTitle': '格式化中',
 	'cardManagement.formattingContent': '请耐心等候，大约需要15秒可完成格式化操作',
+	'cardManagement.cloudStorage':'云存储',
+	'cardManagement.localStorage':'本地存储',
+	'cardManagement.status':'开通状态',
+	'cardManagement.activated':'已开通',
+	'cardManagement.nonactivated':'未开通',
+	'cardManagement.validityPeriod':'剩余有效期',
+	'cardManagement.subscribeCloudService':'开通云存储服务',
+	'cardManagement.repay':'续费',
+	'cardManagement.readCloudFaild':'获取云存储状态失败，请检查网络',
+	'cardManagement.expired':'已过期',
+	'cardManagement.unknown':'--'
 };

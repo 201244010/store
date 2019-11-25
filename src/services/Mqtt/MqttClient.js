@@ -3,13 +3,7 @@ import CONFIG from '@/config';
 
 const { WEB_SOCKET_PREFIX } = CONFIG;
 
-const MSG_ID_MAX = 2 ** 32 - 1;
-
-const generateMsgId = () => {
-	const randomId = parseInt(`${+new Date()}`.substr(4), 10) + parseInt(Math.random() * 10000, 10);
-	// console.log(randomId);
-	return randomId < MSG_ID_MAX ? randomId : generateMsgId();
-};
+const generateMsgId = () => Number(`${parseInt(Math.random() * 11 + 10, 10)}${`${+new Date()}`.substr(5)}`);
 
 class MqttClient {
 	constructor(config) {
@@ -24,8 +18,8 @@ class MqttClient {
 			...config,
 		};
 
-		// this._subscribeStack = [];
-		// this._publishStack = [];
+		this._subscribeStack = [];
+		this._publishStack = [];
 
 		this.listenerStack = [];
 
@@ -43,10 +37,11 @@ class MqttClient {
 		this.registerMessageHandler = this.registerMessageHandler.bind(this);
 		this.registerTopicHandler = this.registerTopicHandler.bind(this);
 		this.registerErrorHandler = this.registerErrorHandler.bind(this);
+		this.registerReconnectHandler = this.registerReconnectHandler.bind(this);
 	}
 
 	connect({ address, username, password, clientId, path = '/mqtt', reconnectPeriod = 3 * 1000 }) {
-		return new Promise((resolve, reject) => {
+		const promise = new Promise((resolve, reject) => {
 			const client = MQTT.connect(
 				`${WEB_SOCKET_PREFIX}//${address}`,
 				{
@@ -55,7 +50,6 @@ class MqttClient {
 					password,
 					path,
 					reconnectPeriod,
-					keepalive: 600,
 				}
 			);
 
@@ -63,21 +57,28 @@ class MqttClient {
 				console.log('mqtt connect');
 				this.reconnectTimes = 0;
 				console.log('established client: ', client);
+
+				this._publishStack.map(item => {
+					const { topic, message } = item;
+					this.publish(topic, message);
+				});
+				this._publishStack = [];
+
 				resolve(client);
 			});
 
 			client.on('reconnect', () => {
 				console.log(this);
 				console.log('mqtt reconnect', this.reconnectTimes);
-				this.reconnectTimes = this.reconnectTimes + 1;
+				this.reconnectTimes++;
 			});
 
-			client.on('close', () => {
-				console.log('mqtt close');
-				if (this.reconnectTimes > 10) {
-					client.end(true);
-				}
-			});
+			// client.on('close', () => {
+			// 	console.log('mqtt close');
+			// 	if (this.reconnectTimes > 10) {
+			// 		client.end(true);
+			// 	}
+			// });
 
 			client.on('error', () => {
 				console.log('mqtt error');
@@ -94,6 +95,8 @@ class MqttClient {
 
 			this.client = client;
 		});
+
+		return promise;
 	}
 
 	subscribe(topic) {
@@ -119,24 +122,33 @@ class MqttClient {
 	publish(topic, message = []) {
 		// const { messages } = this;
 		const { client } = this;
-		const { config } = this;
-		const { msgIdMap } = this;
-		// console.log('random id ', generateMsgId());
-		// messages.id += 1;
-		const msgId = generateMsgId();
-		const { sn } = message.param || {};
-		const msg = JSON.stringify({
-			msg_id: msgId,
-			params: Array.isArray(message) ? [...message] : [message],
-		});
-		client.publish(topic, msg, config, err => {
-			console.log('publish', topic, msg, err);
-			if (!err) {
-				console.log(sn);
-				msgIdMap.set(msgId, sn);
-				console.log(msgIdMap);
-			}
-		});
+		console.log('publish', client);
+		if (client) {
+			const { config } = this;
+			const { msgIdMap } = this;
+			// console.log('random id ', generateMsgId());
+			// messages.id += 1;
+			const msgId = generateMsgId();
+			const { sn } = message.param || {};
+			const msg = JSON.stringify({
+				msg_id: msgId,
+				params: Array.isArray(message) ? [...message] : [message],
+			});
+
+			client.publish(topic, msg, config, err => {
+				console.log('publish', topic, msg, err);
+				if (!err) {
+					console.log(sn);
+					msgIdMap.set(msgId, sn);
+					console.log(msgIdMap);
+				}
+			});
+		} else {
+			this._publishStack.push({
+				topic,
+				message,
+			});
+		}
 	}
 
 	registerTopicHandler(topic, topicHandler) {
@@ -168,6 +180,12 @@ class MqttClient {
 		const { client } = this;
 
 		client.on('error', errorHandler);
+	}
+
+	registerReconnectHandler(reconnectHandler) {
+		console.log('MqttClient registerReconnectHandler');
+		const { client } = this;
+		client && client.on('reconnect', reconnectHandler);
 	}
 
 	destroy() {

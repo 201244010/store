@@ -78,11 +78,13 @@ export default {
 	'trade.transfer.trend': '交易转化率趋势',
 	'trade.transfer.count.trend': '交易笔数趋势',
 	'trade.count.trend': '交易笔数趋势',
+	'customer.count.trend': '客流量趋势',
 	'customer.distribute': '客群分布',
 	'customer.sex': '性别',
 	'customer.newold': '新老',
 	'customer.stranger': '新客',
 	'customer.regular': '熟客',
+	'customer.count': '客流量',
 
 	// 订单详情页面
 	'order.search.rankdefault': '综合排序',

@@ -24,8 +24,8 @@ function MQTTWrapper(WrapperedComponent) {
 			destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
 			getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
 			getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
-			goToPath: (pathId, urlParams = {}) =>
-				dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+			goToPath: (pathId, urlParams = {}, anchorId) => 
+				dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, anchorId } }),
 			formatSdCard: sn => {
 				dispatch({ type: 'sdcard/formatSdCard', sn });
 			},

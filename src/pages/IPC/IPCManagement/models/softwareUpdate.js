@@ -7,6 +7,7 @@ const OPCODE = {
 	UPDATE_STATUS: '0x4103',
 	UPDATE_SUCCESS: '0x4200',
 	START_UPDATE: '0x3140',
+	GET_STATUS: '0x3141'
 };
 
 
@@ -34,6 +35,7 @@ export default {
 		newTimeValue:'',
 		url: '',
 		sn: '',
+		readStatusLoading: false,
 		OTATime:{
 			restartTime: 150000
 		}
@@ -42,8 +44,11 @@ export default {
 		init( state, { payload: { sn }} ) {
 			state.sn = sn;
 		},
+		setReadStatusLoadingStatus(state, { payload: { loadingStatus }}){
+			state.readStatusLoading = loadingStatus;
+		},
 		setCurrentVersion (state, { payload: { sn, version }}) {
-			if(state.sn === sn){
+			if(state.sn === sn && version){
 				state.currentVersion = version;
 			}
 		},
@@ -73,6 +78,42 @@ export default {
 
 	},
 	effects: {
+		*readStatus({ payload: {sn}}, { put }){
+			const type = yield put.resolve({
+				type:'ipcList/getDeviceType',
+				payload:{
+					sn
+				}
+			});
+
+			const topicPublish = yield put.resolve({
+				type:'mqttIpc/generateTopic',
+				payload:{
+					deviceType: type,
+					messageType: 'request',
+					method: 'pub'
+				}
+			});
+
+			yield put({
+				type:'mqttIpc/publish',
+				payload:{
+					topic: topicPublish,
+					message: {
+						opcode: OPCODE.GET_STATUS,
+						param: {
+							sn
+						}
+					}
+				}
+			});
+			yield put({
+				type: 'setReadStatusLoadingStatus',
+				payload: {
+					loadingStatus: true
+				}
+			});
+		},
 		*load ({ payload: { sn }}, { put }) {
 			const ipcInfo = yield put.resolve({
 				type: 'ipcList/getDeviceInfo',
@@ -335,6 +376,61 @@ export default {
 								}
 							});
 						}
+					}
+				},
+				{
+					opcode: OPCODE.GET_STATUS,
+					type: MESSAGE_TYPE.RESPONSE,
+					handler: async(topic, messages) => {
+						const msg = JSON.parse(JSON.stringify(messages));
+						const { errcode } = msg.data;
+					
+						if(errcode === ERROR_OK){
+							const { sn, status: statusCode, timeout, ai  } = msg.data;
+							let status;
+							switch(statusCode){
+								case 0:
+									status = STATUS.DOWNLOAD;
+									break;
+								case 1:
+									if(ai){
+										status = STATUS.AI;
+									}else{
+										status = STATUS.FIRMWARE;
+									}
+									break;
+								case 2:
+									status = STATUS.FIRMWARE;
+									break;
+								default:
+									status = STATUS.NORMAL;
+							}
+							dispatch({
+								type: 'setReadStatusLoadingStatus',
+								payload: {
+									loadingStatus: false
+								}
+							});
+
+							const newTime = { downloadTime: timeout? parseInt(timeout,0)*1000: timeout };
+							dispatch({
+								type: 'setOTATime',
+								payload: {
+									sn,
+									newTime
+								}
+							});
+
+							dispatch({
+								type: 'setUpdatingStatus',
+								payload: {
+									sn,
+									status
+								}
+							});
+
+						}
+
 					}
 				}
 

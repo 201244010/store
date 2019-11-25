@@ -1,21 +1,22 @@
 import React from 'react';
-import { Card, Icon, Button, Form, Input, Modal, Spin, /* Radio, */ message } from 'antd';
+import { Card, Icon, Button, Form, Input, Modal, /* Radio, */ message } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { mbStringLength } from '@/utils/utils';
 import { FORM_ITEM_LAYOUT_MANAGEMENT, TAIL_FORM_ITEM_LAYOUT } from '@/constants/form';
 import { spaceInput, emojiInput } from '@/constants/regexp';
+import { ERROR_OK, UNBIND_CODE } from '@/constants/errorCode';
 // import { FORM_ITEM_LAYOUT , TAIL_FORM_ITEM_LAYOUT } from './IPCManagement';
 
 import defaultImage from '@/assets/imgs/default.jpeg';
 import styles from './DeviceBasicInfo.less';
 
 const mapStateToProps = (state) => {
-	const { ipcBasicInfo: basicInfo, ipcList } = state;
+	const { ipcBasicInfo: basicInfo, ipcList, loading } = state;
 	return {
 		basicInfo,
-		ipcList
-		// loading
+		ipcList,
+		loading
 	};
 };
 const mapDispatchToProps = (dispatch) => ({
@@ -33,14 +34,16 @@ const mapDispatchToProps = (dispatch) => ({
 				sn
 			}
 		}).then((result) => {
-			if (result) {
+			if (result === ERROR_OK) {
 				message.success(formatMessage({ id: 'ipcManagement.success'}));
-			}else{
+				return true;
+			} if(result === UNBIND_CODE) {
+				message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+			} else{
 				message.error(formatMessage({ id: 'ipcManagement.failed'}));
 			}
-			return result;
+			return false;
 		});
-
 		return data;
 	},
 	loadInfo: (sn) => {
@@ -57,15 +60,17 @@ const mapDispatchToProps = (dispatch) => ({
 			payload: {
 				sn
 			}
-		}).then((response) => {
-			if (response) {
+		}).then((responseCode) => {
+			if (responseCode === ERROR_OK) {
 				message.success(formatMessage({ id: 'ipcManagement.deleteSuccess'}));
 
 				setTimeout(() => {
 					callback();
 				}, 800);
 
-			}else{
+			}else if(responseCode === UNBIND_CODE){
+				message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+			} else {
 				message.error(formatMessage({ id: 'ipcManagement.deleteFailed'}));
 			}
 		});
@@ -95,19 +100,14 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
-@Form.create({
-	name: 'ipc-device-basic-info',
-	onValuesChange() {
-		// btnDisabled = false;
-	}
-})
+@Form.create()
 class DeviceBasicInfo extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			isEdit: false,
-			saving: false
+			// saving: false
 		};
 	}
 
@@ -134,16 +134,15 @@ class DeviceBasicInfo extends React.Component {
 		validateFields(async (errors) => {
 			if (!errors){
 				const name = getFieldValue('deviceName').trim();
-				this.setState({
-					saving: true
-				});
+				// this.setState({
+				// 	saving: true
+				// });
 
 				const result = await update( name, sn );
-
 				if (result) {
 					this.setState({
 						isEdit: false,
-						saving: false
+						// saving: false
 					});
 				}
 			}
@@ -220,142 +219,172 @@ class DeviceBasicInfo extends React.Component {
 	}
 
 	render() {
-		const { isEdit, saving } = this.state;
-		const { basicInfo, form, ipcList }  = this.props;
-		const { name, type, sn, img, /* mode, */ status } = basicInfo;
+		const { isEdit, /* saving */ } = this.state;
+		const { basicInfo, form, ipcList, loading, isOnline }  = this.props;
+		const { name, type, sn, img, ip, mac, conntype } = basicInfo;
 
 		const { /* isFieldTouched, */ getFieldDecorator } = form;
+
+		const conntypes = {
+			0: formatMessage({ id: 'deviceBasicInfo.onconnt' }),
+			1: formatMessage({ id: 'deviceBasicInfo.wiredConnt'}),
+			2: formatMessage({ id: 'deviceBasicInfo.wirelessConnt'})
+		};
 
 		const image = img || defaultImage;
 
 		return (
-			<Spin spinning={status === 'loading'}>
-				<Card
-					bordered={false}
-					title={formatMessage({id: 'deviceBasicInfo.title'})}
-					className={styles['main-card']}
-				>
-					<img src={image} alt="main-camera" className={styles['main-image']} />
-					<Form {...FORM_ITEM_LAYOUT_MANAGEMENT} className={styles['info-form']}>
+			<Card
+				bordered={false}
+				title={formatMessage({id: 'deviceBasicInfo.title'})}
+				className={styles['main-card']}
+			>
+				<img src={image} alt="main-camera" className={styles['main-image']} />
+				<Form {...FORM_ITEM_LAYOUT_MANAGEMENT} className={styles['info-form']}>
 
-						<Form.Item
-							className={!isEdit ? styles.hidden : ''}
-							label={formatMessage({id: 'deviceBasicInfo.name'})}
-						>
-							{
-								getFieldDecorator('deviceName', {
-									initialValue: name,
-									rules: [
-										{ required: true, message: formatMessage({id: 'deviceBasicInfo.enterName'}) },
-										{
-											pattern: spaceInput,
-											message: formatMessage({id: 'deviceBasicInfo.firstInputFormat'})
+					<Form.Item
+						className={!isEdit ? styles.hidden : ''}
+						label={formatMessage({id: 'deviceBasicInfo.name'})}
+					>
+						{
+							getFieldDecorator('deviceName', {
+								initialValue: name,
+								rules: [
+									{ required: true, message: formatMessage({id: 'deviceBasicInfo.enterName'}) },
+									{
+										pattern: spaceInput,
+										message: formatMessage({id: 'deviceBasicInfo.firstInputFormat'})
+									},
+									{
+										validator: (rule, value,callback) => {
+											const invalidSymbol = emojiInput;
+											if(invalidSymbol.test(value)) {
+												callback(false);
+											} else {
+												callback();
+											}
 										},
-										{
-											validator: (rule, value,callback) => {
-												const invalidSymbol = emojiInput;
-												if(invalidSymbol.test(value)) {
-													callback(false);
-												} else {
-													callback();
-												}
-											},
-											message: formatMessage({ id: 'deviceBasicInfo.invalidSymbol'})
-										},
-										{
-											validator: (rule, value, callback) => {
-												let confictFlag = false;
-												ipcList.every(item => {
-													if (item.sn !== sn) {
-														if (item.name === value.trim()) {
-															confictFlag = true;
-															return false;
-														}
-														return true;
+										message: formatMessage({ id: 'deviceBasicInfo.invalidSymbol'})
+									},
+									{
+										validator: (rule, value, callback) => {
+											let confictFlag = false;
+											ipcList.every(item => {
+												if (item.sn !== sn) {
+													if (item.name === value.trim()) {
+														confictFlag = true;
+														return false;
 													}
-													return false;
-												});
-
-												if (confictFlag) {
-													callback('name-confict');
-												} else {
-													callback();
+													return true;
 												}
-											},
-											message: formatMessage({
-												id: 'deviceBasicInfo.deviceNameRule',
-											}),
+												return false;
+											});
+
+											if (confictFlag) {
+												callback('name-confict');
+											} else {
+												callback();
+											}
 										},
-										{
-											validator: (rule, value, callback) => {
-												const len = mbStringLength(value);
-												if (len <= 36) {
-													callback();
-												}else{
-													callback(false);
-												}
-											},
-											message: formatMessage({ id: 'deviceBasicInfo.maxLength'})// '设备名称不可以超过36字节'
+										message: formatMessage({
+											id: 'deviceBasicInfo.deviceNameRule',
+										}),
+									},
+									{
+										validator: (rule, value, callback) => {
+											const len = mbStringLength(value);
+											if (len <= 36) {
+												callback();
+											}else{
+												callback(false);
+											}
 										},
-									]
-								})(
-									<Input
-										ref={input => this.input = input}
-										// onPressEnter={this.onPressEnter}
-										onBlur={this.exitEditName}
-									/>
-								)
-							}
-						</Form.Item>
+										message: formatMessage({ id: 'deviceBasicInfo.maxLength'})// '设备名称不可以超过36字节'
+									},
+								]
+							})(
+								<Input
+									ref={input => this.input = input}
+									// onPressEnter={this.onPressEnter}
+									onBlur={this.exitEditName}
+								/>
+							)
+						}
+					</Form.Item>
 
-						<Form.Item
-							required='true'
-							label={formatMessage({id: 'deviceBasicInfo.name'})}
-							className={isEdit ? styles.hidden : ''}
-						>
-							<div className={styles['text-container']}>
-								<span className={styles.text}>{ name }</span>
-								<Icon type="edit" onClick={this.onClick} />
-							</div>
-						</Form.Item>
+					<Form.Item
+						required='true'
+						label={formatMessage({id: 'deviceBasicInfo.name'})}
+						className={isEdit ? styles.hidden : ''}
+					>
+						<div className={styles['text-container']}>
+							<span className={styles.text}>{ name }</span>
+							<Icon type="edit" onClick={this.onClick} />
+						</div>
+					</Form.Item>
 
+					<Form.Item label={formatMessage({id: 'deviceBasicInfo.type'})}>
+						<span>{type}</span>
+					</Form.Item>
+					<Form.Item label={formatMessage({id: 'deviceBasicInfo.sn'})}>
+						<span>{sn}</span>
+					</Form.Item>
+					{
+						isOnline ?
+							ip ?
+								<Form.Item label={formatMessage({ id: 'deviceBasicInfo.ip'})}>
+									<span>{ip}</span>
+								</Form.Item>
+								: ''
+							:<Form.Item label={formatMessage({ id: 'deviceBasicInfo.ip'})}><span className={styles['offline-info']}>{formatMessage({id: 'deviceBasicInfo.unknown'})}</span></Form.Item>
+					}
 
-						<Form.Item label={formatMessage({id: 'deviceBasicInfo.type'})}>
-							<span>{type}</span>
-						</Form.Item>
-						<Form.Item label={formatMessage({id: 'deviceBasicInfo.sn'})}>
-							<span>{sn}</span>
-						</Form.Item>
+					{	
+						isOnline ?
+							mac ?
+								<Form.Item label={formatMessage({ id: 'deviceBasicInfo.mac'})}>
+									<span>{mac}</span>
+								</Form.Item>
+								: ''
+							:<Form.Item label={formatMessage({ id: 'deviceBasicInfo.mac'})}><span className={styles['offline-info']}>{formatMessage({id: 'deviceBasicInfo.unknown'})}</span></Form.Item>
+					}
+					{
+						isOnline ?
+							conntype ?
+								<Form.Item label={formatMessage({ id: 'deviceBasicInfo.conntype'})}>
+									<span>{conntypes[conntype]}</span>
+								</Form.Item>
+								: ''
+							:<Form.Item label={formatMessage({ id: 'deviceBasicInfo.conntype'})}><span className={styles['offline-info']}>{formatMessage({id: 'deviceBasicInfo.unknown'})}</span></Form.Item>
 
-						<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
-							{status ? '' : ''}
-							<div className={styles['btn-block']}>
-								<Button
-									type="primary"
-									onClick={this.onSave}
-									// disabled={disabledControl}
-									// disabled={!isFieldTouched('deviceName')}
-									disabled={!isEdit}
-									className={styles['save-btn']}
+					}
+					<Form.Item {...TAIL_FORM_ITEM_LAYOUT}>
+						<div className={styles['btn-block']}>
+							<Button
+								type="primary"
+								onClick={this.onSave}
+								// disabled={disabledControl}
+								// disabled={!isFieldTouched('deviceName')}
+								disabled={!isEdit}
+								className={styles['save-btn']}
 
-									// loading={loading.effects['ipcBasicInfo/update']}
-									loading={saving}
-								>
-									{ formatMessage({id: 'deviceBasicInfo.save'}) }
-								</Button>
-								<Button
-									type="danger"
-									onClick={this.onShowModal}
-									className={styles['delete-btn']}
-								>
-									{ formatMessage({id: 'deviceBasicInfo.delete'}) }
-								</Button>
-							</div>
-						</Form.Item>
-					</Form>
+								loading={loading.effects['ipcBasicInfo/update']}
+								// loading={saving}
+							>
+								{ formatMessage({id: 'deviceBasicInfo.save'}) }
+							</Button>
+							<Button
+								type="danger"
+								onClick={this.onShowModal}
+								className={styles['delete-btn']}
+							>
+								{ formatMessage({id: 'deviceBasicInfo.delete'}) }
+							</Button>
+						</div>
+					</Form.Item>
+				</Form>
 
-				</Card>
-			</Spin>
+			</Card>
 		);
 	}
 }

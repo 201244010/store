@@ -29,7 +29,7 @@ const createApi = async () => {
 		if (d.code === 1){
 			const { data } = d;
 			return {
-				username: data.username,
+				username: data.login_name,
 				address: data.server_address,
 				password: data.password,
 				clientId: `${data.username  }_${  moment().format('X')}`
@@ -142,6 +142,12 @@ export default {
 					default:
 				}
 			});
+		},
+
+		registerReconnectHandler({payload}) {
+			const { handler } = payload;
+			console.log('handler=', handler);
+			model.client.registerReconnectHandler(handler);
 		},
 
 		addListener({ payload }) {

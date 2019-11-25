@@ -1,3 +1,4 @@
+import { formatMessage } from 'umi/locale';
 import { getFaceLogList } from '../services/faceLog';
 import { getLibrary, getRange, move } from '../services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
@@ -28,17 +29,31 @@ export default {
 		*readAgeRangeList(action, { call, put }) {
 			const response = yield call(getRange);
 			const { code, data: { ageRangeList = [] } } = response;
-			
+
 			if(code === ERROR_OK) {
+				const list = ageRangeList.filter(item => item.ageRangeCode > 3 && item.ageRangeCode !== 18);
+				list.unshift({
+					ageRangeCode: 18,
+					ageRange: 'below18',
+				});
 				yield put({
 					type: 'readData',
 					payload: {
-						ageRangeList
+						ageRangeList: list
 					}
 				});
 				const ageRangeCodeMap = {};
 				for(let i=0; i<ageRangeList.length;i++){
-					ageRangeCodeMap[ageRangeList[i].ageRangeCode] = ageRangeList[i].ageRange;
+					if( ageRangeList[i].ageRangeCode < 3 || ageRangeList[i].ageRangeCode === 18) {
+						ageRangeCodeMap[ageRangeList[i].ageRangeCode] = formatMessage({id: 'photoManagement.ageLessInfo'});
+					} else if (ageRangeList[i].ageRange === 8) {
+						ageRangeCodeMap[ageRangeList[i].ageRangeCode] = formatMessage({ id: 'photoManagement.ageLargeInfo'});
+					} else {
+						ageRangeCodeMap[ageRangeList[i].ageRangeCode] = ageRangeList[i].ageRange;
+					}
+				}
+				for(let j=1; j< 4; j++){
+					ageRangeCodeMap[j] = formatMessage({id: 'photoManagement.ageLessInfo'});
 				}
 				return ageRangeCodeMap;
 			}
@@ -49,14 +64,14 @@ export default {
 			const { code, data } = response;
 			let { faceList = [] } = data;
 			const { totalCount } = data;
-			
+
 			faceList = faceList === null ? [] : faceList;
 			const groupList = yield put.resolve({
 				type:'getLibrary'
 			});
 
 			const faceLogList = faceList.map(item => {
-				// O(n²) 
+				// O(n²)
 				let name;
 				for(let i=0; i<groupList.length; i++){
 					if(groupList[i].groupId === item.groupId){

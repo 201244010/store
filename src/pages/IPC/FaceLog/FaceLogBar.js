@@ -14,6 +14,21 @@ const { Option } = Select;
 
 class FaceLogBar extends React.Component {
 
+	mapAgeSelectInfo = (ageRangeCode, range) => {
+		let ageRange = '';
+		switch(ageRangeCode) {
+			case 18:
+				ageRange = formatMessage({id: 'photoManagement.ageLessInfo'});
+				break;
+			case 8:
+				ageRange = formatMessage({id: 'photoManagement.ageLargeInfo'});
+				break;
+			default:
+				ageRange = range;
+		}
+		return ageRange;
+	}
+
 	render(){
 		const { form, ageRangeList, faceLibraryList, handleLibraryName, searchHandler, resetHandler } = this.props;
 		const { getFieldDecorator } = form;
@@ -61,7 +76,10 @@ class FaceLogBar extends React.Component {
 											</Option>
 											{
 												ageRangeList && ageRangeList.map((item,index)=> (
-													<Option key={`age-range-selector${index}`} value={item.ageRangeCode}>{item.ageRange}</Option>
+													<Option key={`age-range-selector${index}`} value={item.ageRangeCode}>
+														{/* {item.ageRange} */}
+														{this.mapAgeSelectInfo(item.ageRangeCode, item.ageRange)}
+													</Option>
 												))
 											}
 										</Select>
