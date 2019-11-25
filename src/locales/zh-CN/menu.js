@@ -16,6 +16,9 @@ export default {
 	'menu.application.trade.result': '支付结果',
 	'menu.application.trade.qrpay': '订单支付',
 	'menu.application.serviceManagement': '服务管理',
+	'menu.passengerAnalyze': '客群分析',
+	'menu.passengerAnalyze.passengerAnalyze': '客群分析',
+	'menu.passengerAnalyze.list': '客群分析',
 	'menu.dataAnalyze': '数据分析',
 	'menu.dataAnalyze.passenger': '客群分析',
 	'menu.dataAnalyze.list': '客群分析',
@@ -113,6 +116,9 @@ export default {
 	'menu.roleManagement.view': '查看',
 	'menu.roleManagement.modify': '编辑',
 	'menu.roleManagement.roleList': '角色管理',
+
+	'menu.iotAccess': 'IoT设备接入',
+	'menu.iotAccess.posAccess': 'Pos设备接入',
 
 	'menu.exception': '错误处理',
 	'menu.exception.403': '403',
