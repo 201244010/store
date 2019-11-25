@@ -7,12 +7,14 @@ import styles from './Faceid.less';
 class Faceid extends React.Component{
 	render () {
 		const { current, faceidRects } = this.props;
-		// console.log('current', current);
+		// console.log('current=', current); // current约每250ms更新一次
+		// const currentVideoTime = moment(baseTime*1000 + Math.round(current)).format('YYYY-MM-DD HH:mm:ss.SSS');
+		// console.log('currentVideoTime=', currentVideoTime);
 		const tmp = faceidRects.filter(item => {
 			// console.log('timestamp: ', item.timestamp);
 			// if ( current - 300 < item.timestamp && item.timestamp < current + 500){
 			// console.log(item.timestamp - 300, current, item.timestamp + 1000);
-			if (item.timestamp - 0 < current && current < item.timestamp + 1000) {
+			if (item.timestamp + 300 < current && current < item.timestamp + 900) {
 				return true;
 			}
 			return false;
@@ -22,21 +24,27 @@ class Faceid extends React.Component{
 
 		tmp.sort((a, b) => {
 			if (a.id !== b.id) {
-				return a.id - b.id;
+				return a.id - b.id; // id从小到大排
 			}
-			return b.timestamp - a.timestamp;
+			return b.timestamp - a.timestamp; // 时间戳从大到小排
 		});
 
 		const rects = [];
 		const hash = {};
+		let i = 0;
 		tmp.forEach(item => {
+			// item.dateTime = moment(baseTime * 1000 + item.timestamp).format('YYYY-MM-DD HH:mm:ss.SSS');
 			if (hash[item.id] !== true) {
 				rects.push(item);
 				hash[item.id] = true;
+				i++;
+			} else if (Math.abs(item.timestamp - current) < Math.abs(rects[i-1].timestamp - current)) {
+				rects[i-1] = item;
 			}
 		});
 
-		// console.log('rects: ', rects);
+		// console.log('finally rects=', rects);
+		// console.log('finally hash=', hash);
 
 		return (
 			<div className={styles['faceid-container']} ref={(container) => this.container = container}>

@@ -38,6 +38,10 @@ class LivePlayer extends React.Component{
 		}
 	}
 
+	componentWillUnmount () {
+		clearTimeout(this.replayTimeout);
+	}
+
 	play = () => {
 		const { videoplayer } = this;
 		videoplayer.play();
@@ -355,7 +359,7 @@ class LivePlayer extends React.Component{
 	}
 
 	onMetadataArrived = (metadata) => {
-		const { onMetadataArrived, updateBasetime } = this.props;
+		const { onMetadataArrived, updateBasetime, getCurrentTimestamp } = this.props;
 		const { isLive } = this.state;
 		const { videoplayer: { player } } = this;
 
@@ -379,6 +383,11 @@ class LivePlayer extends React.Component{
 				console.log('系统时间=', now.format('YYYY-MM-DD HH:mm:ss'));
 				console.log('视频帧时间=', videoTime);
 				console.log('time gap=', now.valueOf() - (baseTime + relativeTime));
+
+				const gap = (Math.round((player.currentTime() - this.lastMetadataTimestamp)*1000*1000))/1000;
+				// console.log('player.currentTime()=', player.currentTime());
+				// console.log('player current时间=', moment(baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
+				getCurrentTimestamp(this.relativeTimestamp + gap);
 			}
 
 			// const { player } = this.videoplayer;
