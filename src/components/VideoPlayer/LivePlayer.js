@@ -20,6 +20,7 @@ class LivePlayer extends React.Component{
 		this.startTimestamp = 0;
 		this.metadataCount = 0;
 		this.relativeTimestamp = 0;
+		this.baseTime = 0;
 		this.lastMetadataTimestamp = 0;
 		this.replayTimeout = 0;
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
@@ -36,6 +37,10 @@ class LivePlayer extends React.Component{
 		if (oldProps.url !== url) {
 			this.playLive();
 		}
+	}
+
+	componentWillUnmount () {
+		clearTimeout(this.replayTimeout);
 	}
 
 	play = () => {
@@ -333,6 +338,7 @@ class LivePlayer extends React.Component{
 
 	onTimeUpdate = (timestamp) => {
 		const { getCurrentTimestamp } = this.props;
+		// console.log('onTimeUpdate timestamp=', timestamp); // 即ReVideo.js中的player.currentTime()单位s
 		// console.log('onTimeUpdate: ', this.toPause);
 		if (this.toPause) {
 			return;
@@ -347,7 +353,12 @@ class LivePlayer extends React.Component{
 			});
 
 			const gap = (Math.round((timestamp - this.lastMetadataTimestamp)*1000*1000))/1000;
+			// console.log('this.relativeTimestamp + gap=', this.relativeTimestamp + gap);
+			// console.log('player current时间=', moment(this.baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
 			getCurrentTimestamp(this.relativeTimestamp + gap);
+
+			// lastMetadataTimestamp：metadata到来时，video此时的播放进度时间；ms
+			// relativeTimestamp：metadata传过来的相对时间，ms
 
 			// console.log('relativeTimestamp: ', this.relativeTimestamp, 'timestamp: ', timestamp, 'lastMetadataTimestamp: ', this.lastMetadataTimestamp, 'gap: ', gap,  'total: ', this.relativeTimestamp + gap);
 		}
@@ -355,7 +366,7 @@ class LivePlayer extends React.Component{
 	}
 
 	onMetadataArrived = (metadata) => {
-		const { onMetadataArrived, updateBasetime } = this.props;
+		const { onMetadataArrived, updateBasetime, getCurrentTimestamp } = this.props;
 		const { isLive } = this.state;
 		const { videoplayer: { player } } = this;
 
@@ -373,12 +384,19 @@ class LivePlayer extends React.Component{
 			if (metadata.baseTime !== undefined && metadata.relativeTime !== undefined) {
 				const baseTime = metadata.baseTime * 1000;
 				const { relativeTime } = metadata;
-				const videoTime = moment(baseTime + relativeTime).format('YYYY-MM-DD HH:mm:ss');
+				const videoTime = moment(baseTime + relativeTime).format('YYYY-MM-DD HH:mm:ss.SSS');
 				const now = moment();
 
-				console.log('系统时间=', now.format('YYYY-MM-DD HH:mm:ss'));
+				// this.baseTime= baseTime;
+
+				console.log('系统时间=', now.format('YYYY-MM-DD HH:mm:ss.SSS'));
 				console.log('视频帧时间=', videoTime);
-				console.log('time gap=', now.valueOf() - (baseTime + relativeTime));
+				console.log('系统时间-视频帧画面时间=', now.valueOf() - (baseTime + relativeTime));
+
+				const gap = (Math.round((player.currentTime() - this.lastMetadataTimestamp)*1000*1000))/1000;
+				// console.log('player.currentTime()=', player.currentTime());
+				// console.log('player current时间=', moment(baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
+				getCurrentTimestamp(this.relativeTimestamp + gap);
 			}
 
 			// const { player } = this.videoplayer;
