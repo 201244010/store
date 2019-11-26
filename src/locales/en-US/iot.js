@@ -18,7 +18,7 @@ export default {
 	'iot.pos.detail.resolution': '分辨率',
 	'iot.pos.detail.location': '当前位置',
 	'iot.pos.modify.status': '保修状态',
-	'iot.pos.modify.active.date': '保修状态',
+	'iot.pos.modify.active.date': '激活日期',
 	'iot.pos.modify.expire.date': '过保日期',
 	'iot.pos.system.total.text': '共',
 	'iot.pos.system.cache': '内存',

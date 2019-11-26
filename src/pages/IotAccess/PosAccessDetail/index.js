@@ -15,7 +15,8 @@ function UsedProgress(props) {
 				type: 'circle',
 				width: 120,
 				percent,
-				strokeColor: percent >= 90 ? 'red' : strokeColor
+				strokeColor: percent >= 90 ? 'red' : strokeColor,
+				format: p => `${p}%`
 			}
 			}
 		/>
@@ -92,17 +93,25 @@ class PosAccessDetail extends Component {
 							SN：{deviceInfo.sn || '--'}
 						</Col>
 						<Col span={8}>
-							{formatMessage({id: 'iot.pos.detail.rom.version'})}：{deviceInfo.rom_version ? `Android ${deviceInfo.rom_version}` : '--'}
+							{formatMessage({id: 'iot.pos.detail.system.version'})}：{deviceInfo.system_version ? `Android ${deviceInfo.system_version}` : '--'}
 						</Col>
 						<Col span={8}>
-							{formatMessage({id: 'iot.pos.detail.system.version'})}：{deviceInfo.system_version || '--'}
+							{formatMessage({id: 'iot.pos.detail.rom.version'})}：{deviceInfo.rom_version || '--'}
 						</Col>
-						<Col span={8}>
-							{formatMessage({id: 'iot.pos.detail.battery'})}：<span style={{color: batteryColor}}>{runningInfo.battery_percent || <span style={{color: '#444'}}>--</span>}</span>
-						</Col>
-						<Col span={8}>
-							{formatMessage({id: 'iot.pos.detail.battery.temp'})}：{runningInfo.battery_temper || '--'}
-						</Col>
+						{
+							runningInfo.battery_percent !== undefined ?
+								<Col span={8}>
+									{formatMessage({id: 'iot.pos.detail.battery'})}：<span style={{color: batteryColor}}>{runningInfo.battery_percent || <span style={{color: '#444'}}>--</span>}</span>
+								</Col> :
+								null
+						}
+						{
+							runningInfo.battery_temper !== undefined ?
+								<Col span={8}>
+									{formatMessage({id: 'iot.pos.detail.battery.temp'})}：{runningInfo.battery_temper || '--'}
+								</Col> :
+								null
+						}
 						<Col span={8}>
 							IP{formatMessage({id: 'iot.pos.detail.address'})}：{netInfo.ip || '--'}
 						</Col>
@@ -110,7 +119,7 @@ class PosAccessDetail extends Component {
 							MAC{formatMessage({id: 'iot.pos.detail.address'})}：{netInfo.mac || '--'}
 						</Col>
 						<Col span={8}>
-							iIMEI{formatMessage({id: 'iot.pos.detail.address'})}：{deviceInfo.imei || '--'}
+							IMEI：{deviceInfo.imei || '--'}
 						</Col>
 						<Col span={8}>
 							{formatMessage({id: 'iot.pos.detail.resolution'})}：{deviceInfo.resolution || '--'}
