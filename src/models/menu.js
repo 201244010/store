@@ -142,11 +142,12 @@ export default {
 				const response = yield call(MenuAction.getAuthMenu);
 				if (response && response.code === ERROR_OK) {
 					const { menu_list: menuList = [] } = response.data || {};
+					const list = new Set(menuList);
 					console.log('menu control', menuList);
-					if (menuList && menuList.length > 0) {
+					if (list.length > 0) {
 						filteredMenuData = checkMenuAuth(
 							menuData,
-							FIRST_MENU_ORDER.filter(menu => menuList.includes(menu))
+							FIRST_MENU_ORDER.filter(menu => list.includes(menu))
 						);
 						Storage.set({ FILTERED_MENU: filteredMenuData }, 'local');
 					}

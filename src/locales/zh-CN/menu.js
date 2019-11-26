@@ -119,6 +119,11 @@ export default {
 	'menu.roleManagement.modify': '编辑',
 	'menu.roleManagement.roleList': '角色管理',
 
+	'menu.iotAccess': 'IoT设备接入',
+	'menu.iotAccess.posAccess': 'Pos设备接入',
+	'menu.iotAccess.posAccess.posAccessOverview': 'Pos设备接入',
+	'menu.iotAccess.posAccess.detail': '设备详情',
+
 	'menu.exception': '错误处理',
 	'menu.exception.403': '403',
 	'menu.exception.404': '404',

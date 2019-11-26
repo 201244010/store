@@ -1,0 +1,44 @@
+@import "~@/styles/common.less";
+
+.overview {
+	margin-bottom: 20px;
+	.card-title {
+		font-size: 18px;
+		color: #999;
+		line-height: 34px;
+		&.disabled {
+			&:before {
+				background: #999;
+			}
+		}
+		&:before {
+			position: relative;
+			top: 4px;
+			display: inline-block;
+			content: ' ';
+			width: 6px;
+			height: 20px;
+			margin-right: 6px;
+			background: #6dd13b;
+			border-radius: 3px;
+		}
+	}
+	.overview-count {
+		font-size: 48px;
+		font-weight: bold;
+		.unit {
+			font-size: 20px;
+			color: #333;
+			font-weight: normal;
+			margin-left: 10px;
+		}
+	}
+}
+
+.pos-table {
+	:global {
+		.ant-table-thead > tr > th .anticon-filter, .ant-table-thead > tr > th .ant-table-filter-icon {
+			right: auto;
+		}
+	}
+}

@@ -646,8 +646,38 @@ const router = [
 					// },
 				],
 			},
+			{
+				path: '/iotAccess',
+				name: 'iotAccess',
+				id: 'iotAccess',
+				icon: 'blank',
+				routes: [
+					{
+						path: '/iotAccess/posAccess',
+						name: 'posAccess',
+						id: 'posAccess',
+						routes: [
+							{
+								path: '/iotAccess/posAccess',
+								name: 'posAccessOverview',
+								id: 'posAccessOverview',
+								hideInMenu: true,
+								component: './IotAccess/PosAccess',
+							},
+							{
+								path: '/iotAccess/posAccess/detail',
+								name: 'detail',
+								id: 'posAccessDetail',
+								hideInMenu: true,
+								component: './IotAccess/PosAccessDetail',
+							},
+						]
+					},
+				],
+			},
 		],
 	},
+
 ];
 
 // export default router;
