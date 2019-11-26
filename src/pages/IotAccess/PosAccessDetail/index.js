@@ -16,8 +16,8 @@ function UsedProgress(props) {
 				type: 'circle',
 				width: 120,
 				percent,
-				strokeColor: percent >= 90 ? 'red' : strokeColor,
-				format: p => <span style={{color: percent >= 90 ? 'red' : 'rgba(0, 0, 0, 0.65)'}}>{p}%</span>
+				strokeColor: percent === '--' ? '#F3F3F3' : (percent >= 90 ? 'red' : strokeColor),
+				format: p => <span style={{color: percent >= 90 ? 'red' : 'rgba(0, 0, 0, 0.65)'}}>{p === '--' ? p : `${p}%`}</span>
 			}
 			}
 		/>
@@ -93,9 +93,9 @@ class PosAccessDetail extends Component {
 	render() {
 		const {iot: {deviceInfo, netInfo, runningInfo, warrantyInfo}} = this.props;
 		const {loading} = this.state;
-		const cpuPercent = parseFloat(runningInfo.used_cpu_percent);
-		const memoryPercent = parseFloat(runningInfo.used_mem_percent);
-		const sdPercent = this.calculateUsedProgress(runningInfo.used_sd, runningInfo.total_sd);
+		const cpuPercent = runningInfo.used_cpu_percent !== undefined ? parseFloat(runningInfo.used_cpu_percent) : '--';
+		const memoryPercent = runningInfo.used_mem_percent !== undefined ? parseFloat(runningInfo.used_mem_percent) : '--';
+		const sdPercent = runningInfo.used_sd !== undefined ? this.calculateUsedProgress(runningInfo.used_sd, runningInfo.total_sd) : '--';
 		const batteryPercent = parseFloat(runningInfo.battery_percent);
 		const batteryColor = batteryPercent > 20 ? '#444' : (batteryPercent > 10 ? '#FE6600' : 'red');
 
@@ -105,17 +105,17 @@ class PosAccessDetail extends Component {
 					<Col span={8}>
 						<UsedProgress percent={cpuPercent} strokeColor="#FF8B36" />
 						<div className={styles['device-info-type']}>CPU</div>
-						<div>{formatMessage({id: 'iot.pos.system.total.text'})}{runningInfo.cpu_frequency}</div>
+						<div>{formatMessage({id: 'iot.pos.system.total.text'})}{runningInfo.cpu_frequency || '--'}</div>
 					</Col>
 					<Col span={8}>
 						<UsedProgress percent={memoryPercent} strokeColor="#51B1E8" />
 						<div className={styles['device-info-type']}>{formatMessage({id: 'iot.pos.system.cache'})}</div>
-						<div>{formatMessage({id: 'iot.pos.system.has.used'})}{runningInfo.used_mem}，{formatMessage({id: 'iot.pos.system.total.text'})}{runningInfo.total_mem}</div>
+						<div>{formatMessage({id: 'iot.pos.system.has.used'})}{runningInfo.used_mem || '--'}，{formatMessage({id: 'iot.pos.system.total.text'})}{runningInfo.total_mem || '--'}</div>
 					</Col>
 					<Col span={8}>
 						<UsedProgress percent={sdPercent} strokeColor="#25C596" />
 						<div className={styles['device-info-type']}>{formatMessage({id: 'iot.pos.system.storage'})}</div>
-						<div>{formatMessage({id: 'iot.pos.system.has.used'})}{runningInfo.used_sd}，{formatMessage({id: 'iot.pos.system.total.text'})}{runningInfo.total_sd}</div>
+						<div>{formatMessage({id: 'iot.pos.system.has.used'})}{runningInfo.used_sd || '--'}，{formatMessage({id: 'iot.pos.system.total.text'})}{runningInfo.total_sd || '--'}</div>
 					</Col>
 				</Card>
 				<Card loading={loading} title={formatMessage({id: 'iot.pos.detail.device.title'})} bordered={false}>
