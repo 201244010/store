@@ -102,6 +102,7 @@ export default {
 					runningInfo: result.running_info || {},
 				},
 			});
+			return response;
 		},
 		*fetchWarrantyInfo({ payload = {} }, { call, put }) {
 			const { options = {} } = payload;
@@ -109,7 +110,6 @@ export default {
 			yield put({
 				type: 'updateState',
 				payload: {
-					loading: true,
 					warrantyInfo: {}
 				},
 			});
@@ -120,10 +120,10 @@ export default {
 			yield put({
 				type: 'updateState',
 				payload: {
-					loading: false,
 					warrantyInfo: result,
 				},
 			});
+			return response;
 		},
 	},
 	reducers: {

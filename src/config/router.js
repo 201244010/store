@@ -216,7 +216,7 @@ const router = [
 						path: '/devices',
 						redirect: '/devices/ipcList',
 					},
-					
+
 					{
 						path:'/devices/cloudStorage',
 						name:'cloudStorageService',
@@ -679,7 +679,6 @@ const router = [
 					// },
 				],
 			},
-
 			{
 				path: '/iotAccess',
 				name: 'iotAccess',
@@ -690,20 +689,28 @@ const router = [
 						path: '/iotAccess/posAccess',
 						name: 'posAccess',
 						id: 'posAccess',
-						component: './IotAccess/PosAccess',
-					},
-					{
-						path: '/iotAccess/posAccess/detail',
-						name: 'posAccessDetail',
-						hideInMenu: true,
-						id: 'posAccessDetail',
-						component: './IotAccess/PosAccessDetail',
+						routes: [
+							{
+								path: '/iotAccess/posAccess',
+								name: 'posAccessOverview',
+								id: 'posAccessOverview',
+								hideInMenu: true,
+								component: './IotAccess/PosAccess',
+							},
+							{
+								path: '/iotAccess/posAccess/detail',
+								name: 'detail',
+								id: 'posAccessDetail',
+								hideInMenu: true,
+								component: './IotAccess/PosAccessDetail',
+							},
+						]
 					},
 				],
 			},
 		],
 	},
-	
+
 ];
 
 // export default router;
