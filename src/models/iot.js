@@ -80,7 +80,13 @@ export default {
 
 			yield put({
 				type: 'updateState',
-				payload: { loading: true },
+				payload: {
+					loading: true,
+					deviceInfo: {},
+					netInfo: {},
+					printerInfo: {},
+					runningInfo: {},
+				},
 			});
 
 			const opts = Object.assign({}, options);
@@ -102,7 +108,10 @@ export default {
 
 			yield put({
 				type: 'updateState',
-				payload: { loading: true },
+				payload: {
+					loading: true,
+					warrantyInfo: {}
+				},
 			});
 
 			const opts = Object.assign({}, options);
