@@ -92,6 +92,8 @@ export default {
 
 	'menu.iotAccess': 'IoT设备接入',
 	'menu.iotAccess.posAccess': 'Pos设备接入',
+	'menu.iotAccess.posAccess.posAccessOverview': 'Pos设备接入',
+	'menu.iotAccess.posAccess.detail': '设备详情',
 
 	'menu.exception': '错误处理',
 	'menu.exception.403': '403',

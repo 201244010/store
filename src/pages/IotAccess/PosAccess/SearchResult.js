@@ -17,7 +17,7 @@ export default class SearchResult extends Component {
 				key: 'img_path',
 				width: 60,
 				render: (_, record) => (
-					<img style={{width: 60}} src={record.img_path} alt="" />
+					<img style={{width: 60}} src={record.img_path || require('@/assets/no-img.png')} alt="" />
 				)
 			},
 			{
