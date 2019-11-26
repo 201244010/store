@@ -2,7 +2,12 @@ export  default {
 	'FS1': {
 		hasFaceid: true,
 		hasTFCard: true,
+		hasCloud: false,
+		hasNVR: {
+			leastVersion: '9.9.9'
+		},
 		pixelRatio: '16:9',
+		leastVersion: '1.1.3',
 		rotate: [{
 			key: 0,
 			value: 0
@@ -34,7 +39,12 @@ export  default {
 	'FM020': {
 		hasFaceid: true,
 		hasTFCard: true,
+		hasCloud: false,
+		hasNVR: {
+			leastVersion: '9.9.9'
+		},
 		pixelRatio: '16:9',
+		leastVersion: '1.1.3',
 		rotate: [{
 			key: 0,
 			value: 0
@@ -65,7 +75,12 @@ export  default {
 	'SS1': {
 		hasFaceid: false,
 		hasTFCard: true,
+		hasCloud: true,
+		hasNVR: {
+			leastVersion: '9.9.9'
+		},
 		pixelRatio: '1:1',
+		leastVersion: '1.2.6',
 		rotate: [{
 			key: 0,
 			value: 0
@@ -102,7 +117,12 @@ export  default {
 	'FM010': {
 		hasFaceid: false,
 		hasTFCard: true,
+		hasNVR: {
+			leastVersion: '9.9.9'
+		},
+		hasCloud: true,
 		pixelRatio: '1:1',
+		leastVersion: '1.2.6',
 		rotate: [{
 			key: 0,
 			value: 0

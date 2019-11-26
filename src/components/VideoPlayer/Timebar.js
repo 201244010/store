@@ -263,7 +263,7 @@ class VideoPlayerProgressBar extends React.Component{
 
 	render() {
 		// let { sources } = this.props;
-		const { current, timeSlots } = this.props;
+		const { current, timeSlots, isOnline, cloudStatus } = this.props;
 		const { dragging, timestamp, direction, timeStart, timeEnd, position, hover } = this.state;
 
 		// console.log('timebar', timeSlots, position, timeStart, moment.unix(timeStart).format('YYYY-MM-DD HH:mm:ss'), timeEnd, moment.unix(timeEnd).format('YYYY-MM-DD HH:mm:ss'));
@@ -275,7 +275,7 @@ class VideoPlayerProgressBar extends React.Component{
 
 		return(
 			<div
-				className={`${styles['timebar-container']} ${hover || dragging ? styles.hover : ''}`}
+				className={`${styles['timebar-container']} ${hover || dragging ? styles.hover : ''} ${!isOnline && !cloudStatus ? styles.disabled : '' }`}
 				onMouseOver={() => {
 					this.setHover(true);
 				}}

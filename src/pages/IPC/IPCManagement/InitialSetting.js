@@ -59,6 +59,15 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		}).then(info => info);
 	},
+	checkBind: async (sn) => {
+		const result = await dispatch({
+			type: 'ipcList/checkBind',
+			payload: {
+				sn
+			}
+		});
+		return result;
+	}
 });
 @connect(mapStateToProps, mapDispatchToProps)
 class InitialSetting extends Component {
@@ -227,22 +236,35 @@ class InitialSetting extends Component {
 		},10000);
 	}
 
-	showRebootModal = () => {
-		this.setStatus('normal');
-		this.setState({
-			rebootVisible: true,
-			resetVisible: false,
-			percent: 0
-		});
+	showRebootModal = async () => {
+		const { checkBind, sn } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			this.setStatus('normal');
+			this.setState({
+				rebootVisible: true,
+				resetVisible: false,
+				percent: 0
+			});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
+
 	}
 
-	showResetModal = () => {
-		this.setStatus('normal');
-		this.setState({
-			resetVisible: true,
-			rebootVisible: false,
-			percent: 0
-		});
+	showResetModal = async () => {
+		const { checkBind, sn } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			this.setStatus('normal');
+			this.setState({
+				resetVisible: true,
+				rebootVisible: false,
+				percent: 0
+			});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
 	}
 
 	hideRebootModal = () => {
@@ -258,7 +280,7 @@ class InitialSetting extends Component {
 	}
 
 	render() {
-		const { initialSetting: { status, visible } } = this.props;
+		const { initialSetting: { status, visible }, isOnline } = this.props;
 		const { percent, rebootVisible,  resetVisible,  /* deviceInfo: { hasFaceid } */ } = this.state;
 		const hasFaceid = false;
 		return (
@@ -274,7 +296,7 @@ class InitialSetting extends Component {
 							:
 							<div className={styles['main-block']}>
 								<div className={styles['btn-block']}>
-									<Button className={styles['reboot-btn']} onClick={this.showRebootModal}>
+									<Button className={styles['reboot-btn']} onClick={this.showRebootModal} disabled={!isOnline}>
 										{formatMessage({ id: 'initialSetting.reboot'})}
 									</Button>
 									<span className={styles['info-span']}>
@@ -282,7 +304,7 @@ class InitialSetting extends Component {
 									</span>
 								</div>
 								<div className={styles['btn-block']}>
-									<Button className={styles['reset-btn']} onClick={this.showResetModal}>
+									<Button className={styles['reset-btn']} onClick={this.showResetModal} disabled={!isOnline}>
 										{formatMessage({ id: 'initialSetting.reset'})}
 									</Button>
 									<span className={styles['info-span']}>
