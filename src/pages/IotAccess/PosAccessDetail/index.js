@@ -16,7 +16,7 @@ function UsedProgress(props) {
 				width: 120,
 				percent,
 				strokeColor: percent >= 90 ? 'red' : strokeColor,
-				format: p => `${p}%`
+				format: p => <span style={{color: percent >= 90 ? 'red' : 'rgba(0, 0, 0, 0.65)'}}>{p}%</span>
 			}
 			}
 		/>
