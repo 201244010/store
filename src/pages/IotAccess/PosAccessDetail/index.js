@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {Card, Row, Col, Progress} from 'antd';
+import {Card, Row, Col, Progress, message} from 'antd';
 import {connect} from 'dva';
 import { formatMessage } from 'umi/locale';
 import { getLocationParam } from '@/utils/utils';
 import styles from './index.less';
+import {ERROR_OK} from '@/constants/errorCode';
 
 function UsedProgress(props) {
 	const {percent, strokeColor} = props;
@@ -33,17 +34,46 @@ function UsedProgress(props) {
 	})
 )
 class PosAccessDetail extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			loading: false
+		};
+	}
+
 	componentDidMount() {
 		const {fetchPosDetail, fetchWarrantyInfo} = this.props;
-		fetchPosDetail({
-			options: {
-				device_sn: getLocationParam('sn')
-			}
+
+		this.setState({
+			loading: true
 		});
-		fetchWarrantyInfo({
-			options: {
-				device_sn: getLocationParam('sn')
+		Promise.all([
+			fetchPosDetail({
+				options: {
+					device_sn: getLocationParam('sn')
+				}
+			}),
+			fetchWarrantyInfo({
+				options: {
+					device_sn: getLocationParam('sn')
+				}
+			})
+		]).then(result => {
+			const dr = result[0];
+			const wr = result[1];
+			if (dr.code !== ERROR_OK && wr.code === ERROR_OK) {
+				message.error('设备信息获取失败，请稍后重试');
 			}
+			if (dr.code === ERROR_OK && wr.code !== ERROR_OK) {
+				message.error('维修信息获取失败，请稍后重试');
+			}
+			if (dr.code !== ERROR_OK && wr.code !== ERROR_OK) {
+				message.error('设备详情获取失败，请稍后重试');
+			}
+		}).finally(() => {
+			this.setState({
+				loading: false
+			});
 		});
 	}
 
@@ -51,14 +81,18 @@ class PosAccessDetail extends Component {
 		const u = parseFloat(used);
 		const t = parseFloat(total);
 		let p = u / t * 100;
-		if (used.toUpperCase().indexOf('M') > -1 && used.toUpperCase().indexOf('G') > -1) {
+		if (used.toUpperCase().indexOf('M') > -1 && total.toUpperCase().indexOf('G') > -1) {
 			p /= 1024;
 		}
-		return (p || 0).toFixed();
+		if (!p) {
+			return '';
+		}
+		return p.toFixed();
 	};
 
 	render() {
-		const {iot: {loading, deviceInfo, netInfo, runningInfo, warrantyInfo}} = this.props;
+		const {iot: {deviceInfo, netInfo, runningInfo, warrantyInfo}} = this.props;
+		const {loading} = this.state;
 		const cpuPercent = parseFloat(runningInfo.used_cpu_percent);
 		const memoryPercent = parseFloat(runningInfo.used_mem_percent);
 		const sdPercent = this.calculateUsedProgress(runningInfo.used_sd, runningInfo.total_sd);
