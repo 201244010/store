@@ -1,4 +1,5 @@
 import { getDeviceList } from '@/pages/IPC/services/IPCList';
+import { getServiceInfo } from '@/pages/IPC/services/storageManagement';
 import { ERROR_OK } from '@/constants/errorCode';
 import ipcTypes from '@/constants/ipcTypes';
 
@@ -128,6 +129,59 @@ export default {
 				});
 			}
 			return isBind;
+		},
+		/**
+		 * 获取云服务的状态
+		 */
+		*readCloudInfo({ payload }, { call, put }) {
+			const { sn } = payload;
+			const deviceId = yield put.resolve({
+				type: 'getDeviceId',
+				payload: {
+					sn
+				}
+			});
+
+			const response = yield call(getServiceInfo, {
+				deviceId
+			});
+			// console.log(response);
+			const { code , /* data */ } = response;
+			if(code === ERROR_OK) {
+				// const { status, expireTime } = data;
+				return response;
+			}
+			return {
+				code
+			};
+		},
+		*getCurrentVersion({ payload: { sn }},{ put }){
+			const ipcList = yield put.resolve({
+				type: 'getIpcList'
+			});
+
+			for (let i = 0; i < ipcList.length; i++) {
+				if (ipcList[i].sn === sn) {
+					return ipcList[i].binVersion;
+				}
+			}
+			return '';
+		},
+		*checkOnlineStatus({ payload }, { put }) {
+			const { sn } = payload;
+			const ipcList = yield put.resolve({
+				type: 'read'
+			});
+			if(ipcList){
+				for(let i=0;i <ipcList.length; i++){
+					if(ipcList[i].sn === sn){
+						const { isOnline } = ipcList[i];
+						return isOnline;
+					}
+				}
+			}
+			return false;
 		}
+
 	}
 };

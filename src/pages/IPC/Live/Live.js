@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import { List, Avatar, Card, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { UNBIND_CODE } from '@/constants/errorCode';
+import { UNBIND_CODE, ERROR_OK } from '@/constants/errorCode';
 import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 
@@ -13,6 +13,11 @@ import styles from './Live.less';
 import manImage from '@/assets/imgs/male.png';
 import womanImage from '@/assets/imgs/female.png';
 
+const statusCode = {
+	opened: 1,
+	nonactivated: 2,
+	expired: 3
+};
 @connect((state) => {
 	const { faceid: { rectangles, list, ageRangeList }, live: { ppi, streamId, ppiChanged, timeSlots } } = state;
 
@@ -170,12 +175,42 @@ import womanImage from '@/assets/imgs/female.png';
 			}
 		});
 	},
-	// test() {
-	// 	dispatch({
-	// 		type: 'faceid/test',
-	// 		payload: {},
-	// 	});
-	// }
+	getCloudInfo: async (sn) => {
+		const cloudStatus = await dispatch({
+			type: 'ipcList/readCloudInfo',
+			payload: {
+				sn
+			}
+		}).then((result) => {
+			const { code, data} = result;
+			if(code === ERROR_OK) {
+				const { status, validTime } = data;
+				if(status === statusCode.opened) {
+					const days = validTime/3600/24;
+					// console.log(days);
+					if (days < 3){
+						return 'willExpired';
+					}
+					return 'opened';
+				} if( status === statusCode.expired) {
+					return 'expired';
+				}
+				return 'closed';
+			}
+			return '';
+		});
+		return cloudStatus;
+	},
+	checkOnlineStatus: async (sn) => {
+		console.log('update online');
+		const result = dispatch({
+			type: 'ipcList/checkOnlineStatus',
+			payload: {
+				sn
+			}
+		});
+		return result;
+	}
 }))
 class Live extends React.Component{
 	constructor(props) {
@@ -187,24 +222,29 @@ class Live extends React.Component{
 			},
 			liveTimestamp: 0,
 			sdStatus: true,
+			cloudStatus: '',
+			baseTime: '', // 视频直播baseTime
 			historyPPI: '',
-			baseTime: '' // 视频直播baseTime
+			isOnline: true,
 		};
 		this.timeInterval = 0; // 定时清空store中的人脸框
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, getAgeRangeList, getSdStatus, setDeviceSn, clearList } = this.props;
+		const { getDeviceInfo, getAgeRangeList, getSdStatus, setDeviceSn, clearList, getCloudInfo } = this.props;
 
 		const sn = this.getSN();
 
 		let sdStatus = true;
+		let cloudStatus = '';
 		if (sn) {
 			clearList({ sn });
 			getAgeRangeList();
 
 			const deviceInfo = await getDeviceInfo({ sn });
-			const { hasFaceid } = deviceInfo;
+			// const { isOnline } = deviceInfo;
+			const { hasFaceid, hasCloud, isOnline } = deviceInfo;
+			console.log('Live deviceInfo', deviceInfo);
 
 			setDeviceSn({ sn });
 
@@ -217,12 +257,17 @@ class Live extends React.Component{
 
 				this.startFaceComparePush();
 			}
+			if(hasCloud) {
+				cloudStatus = await getCloudInfo(sn);
+			}
 
 			this.setState({
+				isOnline,
 				deviceInfo,
-				sdStatus
+				sdStatus,
+				cloudStatus,
 			});
-			// setTimeout(test, 100);
+			// setTimeout(test, 1000);
 		}
 	}
 
@@ -352,17 +397,22 @@ class Live extends React.Component{
 	}
 
 	getLiveUrl = async () => {
-		const { getLiveUrl } = this.props;
+		const { getLiveUrl, checkOnlineStatus } = this.props;
+		const { isOnline: online } = this.state;
+		let isOnline = online;
 		const sn = this.getSN();
+		if(!online) {
+			isOnline = await checkOnlineStatus(sn);
+		}
+		this.setState({
+			historyPPI: '',
+			isOnline,
+		});
 
 		const hasFaceid = this.hasFaceid();
 		if (hasFaceid) {
 			this.startFaceidPush();
 		}
-
-		this.setState({
-			historyPPI: ''
-		});
 
 		const url = await getLiveUrl({ sn });
 		return url;
@@ -425,10 +475,10 @@ class Live extends React.Component{
 				case 2:
 				case 3:
 				case 18:
-					ageName = formatMessage({ id: 'live.ageLessInfo'});
+					ageName = formatMessage({ id: 'photoManagement.ageLessInfo'});
 					break;
 				case 8:
-					ageName = formatMessage({ id: 'live.ageLargeInfo'});
+					ageName = formatMessage({ id: 'photoManagement.ageLargeInfo'});
 					break;
 				default:
 					if(ageRangeList){
@@ -445,15 +495,17 @@ class Live extends React.Component{
 	}
 
 	render() {
-		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, /* navigateTo */ } = this.props;
+		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
-		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, historyPPI } = this.state;
+		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus, historyPPI, isOnline } = this.state;
 
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
 			1: formatMessage({ id: 'live.genders.male'}),
 			2: formatMessage({ id: 'live.genders.female'})
 		};
+
+		const sn = this.getSN();
 
 		const images = {
 			0: manImage,
@@ -465,6 +517,9 @@ class Live extends React.Component{
 		return(
 			<div className={styles['live-wrapper']}>
 
+				{/* <div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}
+								${cloudStatus === 'closed' || cloudStatus === 'expired' || cloudStatus === 'willExpired' ? styles['has-cloud-info']:''}`}
+				> */}
 				<div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}`}>
 					<LivePlayer
 
@@ -496,11 +551,32 @@ class Live extends React.Component{
 						getCurrentTimestamp={this.syncLiveTimestamp}
 						onTimeChange={this.onTimeChange}
 						onMetadataArrived={this.onMetadataArrived}
+						isOnline={isOnline}
+						cloudStatus={cloudStatus}
+						navigateTo={navigateTo}
+						sn={sn}
 						updateBasetime={this.updateBasetime}
 					/>
 
 				</div>
-
+				{/* {
+					cloudStatus === 'closed' || cloudStatus === 'expired' || cloudStatus === 'willExpired'?
+						<div className={styles['cloud-service-info']}>
+							{
+								cloudStatus === 'closed' ?
+									<div>
+										<span>{formatMessage({ id: 'live.cloudServiceInfo' })}</span>
+										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'subscribe' })}>{formatMessage({ id: 'live.subscribeCloud'})}</span>
+									</div>
+									:
+									<div>
+										<span>{cloudStatus === 'expired'?formatMessage({ id: 'live.expired'}): formatMessage({ id: 'live.willExpired'})}</span>
+										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'repay' })}>{formatMessage({ id: 'live.pay'})}</span>
+									</div>
+							}
+						</div>
+						: ''
+				} */}
 				{
 					sdStatus && hasFaceid ?
 						<div className={styles['faceid-list-container']}>
