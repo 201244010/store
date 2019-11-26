@@ -215,6 +215,7 @@
 	.button-screenshot{
 		// composes: button;
 		background-image: url(../../assets/imgs/camera.svg);
+
 	}
 
 
@@ -237,6 +238,7 @@
 		&.muted{
 			background-image: url(../../assets/imgs/volume-off.svg);
 		}
+
 	}
 
 	.volume-bar{
@@ -338,6 +340,7 @@
 
 		padding-bottom: 16px;
 
+
 		:global{
 			.ant-tooltip-arrow{
 				display: none;
@@ -349,5 +352,10 @@
 				min-height: 24px;
 			}
 		}
+	}
+
+	.disabled {
+		pointer-events: none;
+		opacity: 0.3;
 	}
 }

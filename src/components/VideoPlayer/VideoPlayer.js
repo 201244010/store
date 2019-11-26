@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
+// import { Button } from  'antd';
 import browser from 'browser-detect';
 
 import ReVideo from './ReVideo';
@@ -109,6 +110,10 @@ class VideoPlayer extends React.Component{
 		player.load();
 
 		this.removeNoMediaCover();
+
+		this.setState({
+			playing: true
+		});
 	}
 
 	play = () => {
@@ -367,7 +372,7 @@ class VideoPlayer extends React.Component{
 		const { pixelRatio, currentPPI, ppiChanged, progressbar, isLive,
 			onTimeUpdate, onMetadataArrived, onPlay, onError, onPause, onEnd, onCanPlay, onCanplayThrough, onDateChange, playHandler,
 			playBtnDisabled, showDatePicker, canPPIChange, showBackToLive, ppiChange, backToLive,
-			current, plugin
+			current, plugin, isOnline, cloudStatus, /* navigateTo, sn */
 		} = this.props;
 
 		const { playing, fullScreen, noMedia, volume,
@@ -397,6 +402,7 @@ class VideoPlayer extends React.Component{
 						onTimeUpdate={onTimeUpdate || this.onTimeUpdate}
 					/>
 
+
 					<div
 						style={
 							{
@@ -411,13 +417,37 @@ class VideoPlayer extends React.Component{
 						</div>
 					</div>
 
+
 					{
 						player && player.techName_ === 'Flvjs' ?
 							<div className={styles['plugin-container']}>
-								{ isLive ? plugin : '' }
+								{  isOnline && isLive ? plugin : '' }
 							</div>
 							: ''
 					}
+
+					<div
+						style={
+							{
+								display: !isOnline && !noMedia && isLive ? 'block': 'none'
+							}
+						}
+						className={styles['no-media']}
+					>
+						<div className={styles.content}>
+							<span className={styles.icon} />
+							{
+								cloudStatus === 'closed' ?
+									<div>
+										<span>{ formatMessage({ id: 'videoPlayer.noCloudService' }) }</span>
+										{/* <Button type='primary' className={styles['cloud-btn']} onClick={() => { navigateTo('cloudStorage',{ sn, type: 'subscribe' });}}>
+											{ formatMessage({ id: 'videoPlayer.subCloud' })}
+										</Button> */}
+									</div>
+									:<span>{ formatMessage({ id: 'videoPlayer.noPlay'}) }</span>
+							}
+						</div>
+					</div>
 
 				</div>
 
@@ -454,6 +484,9 @@ class VideoPlayer extends React.Component{
 
 						showBackToLive={showBackToLive}
 						backToLive={backToLive || this.backToLive}
+
+						isOnline={isOnline}
+						cloudStatus={cloudStatus}
 
 						progressbar={
 							progressbar

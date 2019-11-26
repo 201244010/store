@@ -271,16 +271,17 @@ class Live extends React.Component{
 		return result;
 	}
 
-	onMetadataArrived = (timestamp) => {
-		const { clearRects } = this.props;
-		clearRects(timestamp);
-	}
-
 	updateBasetime = (timestamp) => {
 		this.setState({
 			baseTime: timestamp
 		});
 	}
+
+	onMetadataArrived = (timestamp) => {
+		const { clearRects } = this.props;
+		clearRects(timestamp);
+	}
+
 
 	syncLiveTimestamp = (timestamp) => {
 		// console.log(timestamp);

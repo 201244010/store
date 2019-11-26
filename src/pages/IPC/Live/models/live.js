@@ -217,6 +217,13 @@ export default {
 						timeSlots: slots
 					}
 				});
+			} else {
+				yield put({
+					type: 'updateTimeSlots',
+					payload: {
+						timeSlots: []
+					}
+				});
 			}
 		},
 
