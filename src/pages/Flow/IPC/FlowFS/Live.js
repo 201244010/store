@@ -194,6 +194,7 @@ class Live extends React.Component{
 			baseTime: '' // 视频直播baseTime
 		};
 		this.timeInterval = 0; // 定时清空store中的人脸框
+		this.reloadTimer = 0; // 定时器刷新页面
 	}
 
 	async componentDidMount () {
@@ -232,6 +233,11 @@ class Live extends React.Component{
 			});
 			// setTimeout(test, 1000);
 		}
+
+		const now = moment().format('YYYY-MM-DD HH:mm:ss');
+		console.log('大屏加载now=', now);
+
+		this.timeToReload();
 	}
 
 	componentWillUnmount () {
@@ -249,6 +255,25 @@ class Live extends React.Component{
 			}
 		}
 		clearInterval(this.timeInterval);
+		clearInterval(this.reloadTimer);
+	}
+
+	// 每天凌晨4点多时，页面刷新一次
+	timeToReload = () => {
+		this.reloadTimer = setTimeout(() => {
+			const date = moment().format('YYYYMMDD');
+			const hour = moment().hour();
+			const reloadDate = localStorage.getItem('_sunmi_store_reload_date');
+			console.log('date=', date);
+			console.log('reloadDate=', reloadDate);
+
+			if (hour === 4 && date !== reloadDate) {
+				localStorage.setItem('_sunmi_store_reload_date', date);
+				window.location.reload();
+			}
+
+			this.timeToReload();
+		}, 30*60*1000);
 	}
 
 	onTimeChange = async (timeStart, timeEnd) => {
