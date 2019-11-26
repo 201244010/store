@@ -81,7 +81,7 @@ class PosAccessDetail extends Component {
 		const u = parseFloat(used);
 		const t = parseFloat(total);
 		let p = u / t * 100;
-		if (used.toUpperCase().indexOf('M') > -1 && used.toUpperCase().indexOf('G') > -1) {
+		if (used.toUpperCase().indexOf('M') > -1 && total.toUpperCase().indexOf('G') > -1) {
 			p /= 1024;
 		}
 		if (!p) {
