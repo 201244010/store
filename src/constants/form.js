@@ -140,6 +140,7 @@ export const FORM_ITEM_LAYOUT_BUSINESS = {
 	wrapperCol: { span: 6 },
 };
 
+
 export const FORM_ITEM_LAYOUT_QOS = {
 	labelCol: { span: 2},
 	wrapperCol: { span: 10 },

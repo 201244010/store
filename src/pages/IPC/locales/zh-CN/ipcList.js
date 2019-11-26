@@ -7,4 +7,8 @@ export default {
 	'ipcList.link.ipc': 'SUNMI LINK 连接摄像机',
 	'ipcList.noIPCName':'未命名',
 	'ipcList.noIPCType':'未知状态',
+	'ipcList.noLive':'摄像机已与该用户解除绑定，无法继续观看视频直播',
+	'ipcList.noSetting':'摄像机已于该用户解除绑定，请重新绑定后再操作',
+	'ipcList.devices.ss.outline.tips': '当前设备离线，仅支持查看云回放视频',
+	'ipcList.devices.fs.outline.tips': '当前设备离线',
 };
