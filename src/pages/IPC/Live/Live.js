@@ -221,7 +221,7 @@ class Live extends React.Component{
 				pixelRatio: '16:9'
 			},
 			liveTimestamp: 0,
-			sdStatus: true,
+			sdStatus: false,
 			cloudStatus: '',
 			baseTime: '', // 视频直播baseTime
 			historyPPI: '',
@@ -235,7 +235,7 @@ class Live extends React.Component{
 
 		const sn = this.getSN();
 
-		let sdStatus = true;
+		let sdStatus = false;
 		let cloudStatus = '';
 		if (sn) {
 			clearList({ sn });
@@ -248,14 +248,15 @@ class Live extends React.Component{
 
 			setDeviceSn({ sn });
 
-			if(hasFaceid){
+			if(hasFaceid && isOnline){
 				const status = await getSdStatus({ sn });
 				if(status === 0) {
 					message.info(formatMessage({ id: 'live.nosdInfo' }));
 					sdStatus = false;
+				} else {
+					sdStatus = true;
+					this.startFaceComparePush();
 				}
-
-				this.startFaceComparePush();
 			}
 			if(hasCloud) {
 				cloudStatus = await getCloudInfo(sn);
