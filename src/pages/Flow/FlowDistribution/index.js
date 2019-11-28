@@ -49,6 +49,7 @@ class FlowDistribution extends React.PureComponent {
 		} = this.props;
 
 		const currentLanguage = getLocale();
+		const isEnglish = currentLanguage === 'en-US';
 
 		let lightItem = [];
 		if (list.length > 0) {
@@ -181,7 +182,10 @@ class FlowDistribution extends React.PureComponent {
 					{
 						guideData.map(item => (
 							<div className={styles['footer-item']} key={item.title}>
-								<p className={styles['item-content']}><span>{item.percent}%</span><span className={styles['item-num']}>{`${item.num}${formatMessage({ id: 'flow.distribution.footer.unit' })}`}</span></p>
+								<p className={styles['item-content']}>
+									<span>{item.percent}%</span>
+									{!isEnglish&&<span className={styles['item-num']}>{`${item.num}${formatMessage({ id: 'flow.distribution.footer.unit' })}`}</span>}
+								</p>
 								<p className={styles['item-title']}>{item.title}</p>
 							</div>
 						))
