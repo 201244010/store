@@ -13,40 +13,41 @@ const EXPIRE_TIME_TYPE = {
 
 
 const seventDaysServiceList = [
+	// {
+	// 	productNo:'YCC0001',
+	// 	price:'20',
+	// 	isFree:true,
+	// 	type:EXPIRE_TIME_TYPE.ONE_MONTH, 
+	// },
 	{
-		productNo:'YCC0001',
-		price:'20',
-		isFree:true,
-		type:EXPIRE_TIME_TYPE.ONE_MONTH, 
+		productNo:'YCC0002',
+		price:'69',
+		isFree: true,
+		type: EXPIRE_TIME_TYPE.HALF_A_YEAR,
+		pricePerDay:0.38
 	},
 	{
-		productNo:3,
+		productNo:'YCC0003',
 		price:'119',
 		isFree: false,
 		type: EXPIRE_TIME_TYPE.ONE_YEAR,
 		pricePerDay:0.32
 	},
-	{
-		productNo:2,
-		price:'69',
-		isFree: false,
-		type: EXPIRE_TIME_TYPE.HALF_A_YEAR,
-		pricePerDay:0.38
-	}
+	
 ];
 
 const thirtyDaysServiceList = [
 	{
-		productNo:5,
-		price:'299',
-		isFree: false,
-		type: EXPIRE_TIME_TYPE.ONE_YEAR
-	},
-	{
-		productNo:4,
+		productNo:'YCC0004',
 		price: 159,
 		isFree: false,
 		type: EXPIRE_TIME_TYPE.HALF_A_YEAR
+	},
+	{
+		productNo:'YCC0005',
+		price:'299',
+		isFree: false,
+		type: EXPIRE_TIME_TYPE.ONE_YEAR
 	}
 ];
 
@@ -161,22 +162,47 @@ class CloudStorage extends React.Component{
 											<div className={styles['service-content']} key={`cloudStorage${index}`}>
 												<div className={`${styles.price} ${styles['free-price']}`}>
 													<span>¥0</span>
+													<span className={styles.unit}>{formatMessage({id: 'cloudStorage.unit'})}</span>
 													<div className={styles.tag} />
-													<div className={styles['init-price']}>
+													{/* <div className={styles['init-price']}>
 														<div className={styles['del-line']} />
 														<div className={styles['init-price-content']}>¥{item.price}</div>
-													</div>
+													</div> */}
 												</div>
 												<div className={styles['expire-time']}>
-													<span>{formatMessage({id: 'cloudStorage.validity.one.month'})}</span>
+													{
+														(() => {
+															switch(item.type){
+																case EXPIRE_TIME_TYPE.ONE_MONTH:
+																	return(
+																		<span>{formatMessage({id: 'cloudStorage.validity.one.month'})}</span>
+																	);
+																case EXPIRE_TIME_TYPE.HALF_A_YEAR:
+																	return(
+																		<span>{formatMessage({id: 'cloudStorage.validity.half.year'})}</span>
+																	);
+																case EXPIRE_TIME_TYPE.ONE_YEAR:
+																	return(
+																		<span>{formatMessage({id:'cloudStorage.validity.one.year'})}</span>
+																	);
+																default:
+																	return(
+																		<span>{formatMessage({id: 'cloudStorage.unknown'})}</span>
+																	);
+															}
+														})()
+													}
 												</div>
-												<Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">免费试用</Button>
+												<Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">{formatMessage({id:'cloudStorage.subscribe.now'})}</Button>
 											</div>
 										);
 									}
 									return(
 										<div className={styles['service-content']} key={`cloudStorage${index}`}>
-											<div className={styles.price}>¥<span>{item.price}</span></div>
+											<div className={styles.price}>
+												<span>¥{item.price}</span>
+												<span className={styles.unit}>{formatMessage({id: 'cloudStorage.unit'})}</span>
+											</div>
 											<div className={styles['expire-time']}>
 												{
 													(() => {
@@ -201,8 +227,9 @@ class CloudStorage extends React.Component{
 													})()
 												}
 											</div>
-											<Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.coming.soon'})}</Button>
-											{item.pricePerDay && <div className={styles.tips}>仅{item.pricePerDay}{formatMessage({id:'cloudStorage.money.per.day'})}</div>}
+											{/* <Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.subscribe.now'})}</Button> */}
+											<Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">{formatMessage({id:'cloudStorage.subscribe.now'})}</Button>
+											{/* {item.pricePerDay && <div className={styles.tips}>仅{item.pricePerDay}{formatMessage({id:'cloudStorage.money.per.day'})}</div>} */}
 										</div>
 									);
 									
@@ -216,7 +243,10 @@ class CloudStorage extends React.Component{
 							<div className={styles.services}>
 								{thirtyDaysServiceList.map((item,index) => (
 									<div className={styles['service-content']} key={`cloudStorage${index}`}>
-										<div className={styles.price}>¥<span>{item.price}</span></div>
+										<div className={styles.price}>
+											<span>¥{item.price}</span>
+											<span className={styles.unit}>{formatMessage({id: 'cloudStorage.unit'})}</span>
+										</div>
 										<div className={styles['expire-time']}>
 											{
 												(() => {
@@ -241,7 +271,8 @@ class CloudStorage extends React.Component{
 												})()
 											}
 										</div>
-										<Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.coming.soon'})}</Button>
+										{/* <Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.coming.soon'})}</Button> */}
+										<Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">{formatMessage({id:'cloudStorage.subscribe.now'})}</Button>
 									</div>
 								))}
 							</div>

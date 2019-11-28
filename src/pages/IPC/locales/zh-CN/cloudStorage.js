@@ -2,7 +2,7 @@ export default {
 	'cloudStorage.seven.days.service': '7天存储服务',
 	'cloudStorage.one.month': '30天',
 	'cloudStorage.half.year': '180天',
-	'cloudStorage.one.year': '365天',
+	'cloudStorage.one.year': '360天',
 	'cloudStorage.thirty.days.service': '30天存储服务',
 	'cloudStorage.device.name': '摄像头名称',
 	'cloudStorage.service.status': '服务状态',
@@ -36,7 +36,7 @@ export default {
 	'cloudStorage.safe.detail': '安全稳定的云服务器，支持海量视频存储。金融级数据加密，保障个人隐私数据安全。',
 	'cloudStorage.validity.one.month':'有效期30天',
 	'cloudStorage.validity.half.year':'有效期180天',
-	'cloudStorage.validity.one.year':'有效期365天',
+	'cloudStorage.validity.one.year':'有效期360天',
 	'cloudStorage.unknown':'未知',
 	'cloudStorage.coming.soon':'敬请期待',
 	'cloudStorage.money.per.day':'元/天',
@@ -46,5 +46,7 @@ export default {
 	'cloudStorage.service.tips.fourth': '4.云存储产品按单个设备开通与购买，即多个设备那么对应需要够买多个云存储产品。',
 	'cloudStorage.service.success.subscribe':'您已订阅成功',
 	'cloudStorage.service.management':'服务管理',
-	'cloudStorage.back': '返回'
+	'cloudStorage.back': '返回',
+	'cloudStorage.subscribe.now': '立即订阅',
+	'cloudStorage.unit': '/台',
 };
