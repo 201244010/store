@@ -35,8 +35,8 @@ import SearchForm from './SearchForm';
 		deleteESL: payload => dispatch({ type: 'eslElectricLabel/deleteESL', payload }),
 		refreshFailedImage: () => dispatch({ type: 'eslElectricLabel/refreshFailedImage' }),
 		clearSearchValue: () => dispatch({ type: 'eslElectricLabel/clearSearchValue' }),
-		fetchSwitchScreenInfo:
-				payload => dispatch({ type: 'eslElectricLabel/fetchSwitchScreenInfo', payload }),
+		fetchSwitchScreenInfo: payload => dispatch({ type: 'eslElectricLabel/fetchSwitchScreenInfo', payload }),
+		fetchScreenPushInfo: payload => dispatch({ type: 'eslElectricLabel/fetchScreenPushInfo', payload }),
 		switchScreen: payload => dispatch({ type: 'eslElectricLabel/switchScreen', payload }),
 	})
 )
@@ -70,6 +70,26 @@ class ElectricLabel extends Component {
 		clearSearchValue();
 	}
 
+	refreshFailed = async () => {
+		const {
+			refreshFailedImage,
+			fetchProductOverview,
+			fetchDeviceOverview,
+			fetchElectricLabels
+		} = this.props;
+		await refreshFailedImage();
+		await fetchProductOverview();
+		await fetchDeviceOverview();
+		await fetchElectricLabels();
+	};
+
+	getDeviceOverview = () => {
+		const { fetchDeviceOverview } = this.props;
+		setTimeout(() => {
+			fetchDeviceOverview();
+		}, 1000);
+	};
+
 	render() {
 		const {
 			eslElectricLabel: {
@@ -82,6 +102,7 @@ class ElectricLabel extends Component {
 				flashModes,
 				overview: deviceOverview,
 				screenInfo,
+				screenPushInfo,
 			},
 			basicDataProduct: {
 				data: products,
@@ -90,6 +111,7 @@ class ElectricLabel extends Component {
 			},
 			changeSearchFormValue,
 			clearSearch,
+			fetchProductOverview,
 			fetchElectricLabels,
 			fetchESLDetails,
 			fetchTemplatesByESLCode,
@@ -100,8 +122,8 @@ class ElectricLabel extends Component {
 			unbindESL,
 			flashLed,
 			deleteESL,
-			refreshFailedImage,
 			fetchSwitchScreenInfo,
+			fetchScreenPushInfo,
 			switchScreen
 		} = this.props;
 
@@ -110,7 +132,7 @@ class ElectricLabel extends Component {
 				<Overview
 					deviceOverview={deviceOverview}
 					productOverview={productOverview}
-					refreshFailedImage={refreshFailedImage}
+					refreshFailed={this.refreshFailed}
 				/>
 				<Card bordered={false}>
 					<SearchForm
@@ -119,6 +141,8 @@ class ElectricLabel extends Component {
 							changeSearchFormValue,
 							clearSearch,
 							fetchElectricLabels,
+							fetchProductOverview,
+							fetchDeviceOverview: this.getDeviceOverview,
 						}}
 					/>
 					<SearchResult
@@ -131,6 +155,9 @@ class ElectricLabel extends Component {
 							flashModes,
 							products,
 							productPagination,
+							screenPushInfo,
+							fetchProductOverview,
+							fetchDeviceOverview: this.getDeviceOverview,
 							fetchElectricLabels,
 							fetchESLDetails,
 							fetchTemplatesByESLCode,
@@ -142,6 +169,7 @@ class ElectricLabel extends Component {
 							flashLed,
 							deleteESL,
 							fetchSwitchScreenInfo,
+							fetchScreenPushInfo,
 							switchScreen,
 							screenInfo
 						}}

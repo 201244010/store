@@ -21,6 +21,7 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import PhotoCard from './PhotoCard';
 import PhotoUpload from './PhotoUpload';
+import AgreementModal from '../AgreementModal';
 // import { handleResponse, handleUpload } from '../services/photoLibrary';
 import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
 import styles from './PhotoManagement.less';
@@ -142,6 +143,7 @@ class PhotoManagement extends React.Component {
 				age: 10,
 				gender: -1,
 			},
+
 		};
 	}
 
@@ -237,6 +239,7 @@ class PhotoManagement extends React.Component {
 	hideRemove = () => {
 		this.setState({
 			removeLibraryShown: false,
+			removeRadioValue: 0
 		});
 	};
 
@@ -305,7 +308,7 @@ class PhotoManagement extends React.Component {
 			}
 			return false;
 		});
-		// console.log('submit', fileList,list);
+
 		if(!this.isUpload) {
 			if (fileList.length === 0) {
 				message.error(formatMessage({ id: 'photoManagement.noPhotoAlert' }));
@@ -315,7 +318,7 @@ class PhotoManagement extends React.Component {
 				// console.log('save', response);
 				if (response === false) {
 					message.error(formatMessage({ id: 'photoManagement.addFailTitle' }));
-				} else if (response.data.failureList.length === 0) {
+				} else if (!response.data.failureList || response.data.failureList.length === 0) {
 					message.success(formatMessage({ id: 'photoManagement.card.saveSuccess' }));
 					this.setState({ uploadPhotoShown: false }, () => {
 						clearFileList();
@@ -521,6 +524,21 @@ class PhotoManagement extends React.Component {
 		});
 	};
 
+	mapAgeSelectInfo = (ageRangeCode, range) => {
+		let ageRange = '';
+		switch(ageRangeCode) {
+			case 18:
+				ageRange = formatMessage({id: 'photoManagement.ageLessInfo'});
+				break;
+			case 8:
+				ageRange = formatMessage({id: 'photoManagement.ageLargeInfo'});
+				break;
+			default:
+				ageRange = range;
+		}
+		return ageRange;
+	}
+
 	render() {
 		const {
 			form: { getFieldDecorator },
@@ -538,6 +556,8 @@ class PhotoManagement extends React.Component {
 			saveBtnDisabled,
 			filter: { gender, name, age, pageNum, pageSize },
 		} = this.state;
+
+		const { photoLibrary: { isSignAgreement } } = this.props;
 
 		const {
 			photoLibrary: { photoList, faceList, total, checkList, ageRange },
@@ -584,9 +604,10 @@ class PhotoManagement extends React.Component {
 											<Option value={10}>
 												{formatMessage({ id: 'photoManagement.all' })}
 											</Option>
-											{ageRange.map((item, index) => (
-												<Option value={item.ageCode} key={index}>
-													{item.ageRange}
+											{ageRange && ageRange.map((item, index) => (
+												<Option value={item.ageRangeCode} key={index}>
+													{/* {item.ageRange} */}
+													{this.mapAgeSelectInfo(item.ageRangeCode, item.ageRange)}
 												</Option>
 											))}
 										</Select>
@@ -685,7 +706,7 @@ class PhotoManagement extends React.Component {
 										name={item.name}
 										gender={item.gender}
 										age={item.age}
-										realAge={item.realAge}
+										ageRangeCode={item.ageRangeCode}
 										latestDate={item.lastArrivalTime}
 										createDate={item.createTime}
 										libraryName={this.groupName()}
@@ -781,6 +802,7 @@ class PhotoManagement extends React.Component {
 						/>
 					))}
 				</Modal>
+				<AgreementModal visible={!isSignAgreement} path='faceidLibrary' refreshHandler={this.getList} />
 			</Card>
 		);
 	}

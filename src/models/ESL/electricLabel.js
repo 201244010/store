@@ -1,10 +1,10 @@
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
-import * as ESLServices from '@/services/ESL/electricLabel';
-import * as TemplateServices from '@/services/ESL/template';
+import ESLServices from '@/services/ESL/electricLabel';
+import TemplateServices from '@/services/ESL/template';
 import * as ProductServices from '@/services/ESL/product';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, SWITCH_SCEEN_NO_DELETE } from '@/constants/errorCode';
 
 export default {
 	namespace: 'eslElectricLabel',
@@ -26,7 +26,8 @@ export default {
 		detailInfo: {},
 		templates4ESL: [],
 		flashModes: [],
-		screenInfo: []
+		screenInfo: [],
+		screenPushInfo: {}
 	},
 	effects: {
 		*changeSearchFormValue({ payload = {} }, { put }) {
@@ -311,10 +312,6 @@ export default {
 					DURATION_TIME
 				);
 				yield put({
-					type: 'updateState',
-					payload: { loading: false },
-				});
-				yield put({
 					type: 'fetchElectricLabels',
 					payload: {
 						options: {
@@ -322,13 +319,15 @@ export default {
 						},
 					},
 				});
+			} else if (response.code === SWITCH_SCEEN_NO_DELETE) {
+				message.error(formatMessage({ id: 'esl.device.esl.delete.fail.switch.screen' }), DURATION_TIME);
 			} else {
 				message.error(formatMessage({ id: 'esl.device.esl.delete.fail' }), DURATION_TIME);
-				yield put({
-					type: 'updateState',
-					payload: { loading: false },
-				});
 			}
+			yield put({
+				type: 'updateState',
+				payload: { loading: false },
+			});
 		},
 
 		*refreshFailedImage(_, { call, put }) {
@@ -376,6 +375,22 @@ export default {
 					type: 'updateState',
 					payload: {
 						screenInfo: result.esl_switch_screen_info_list || [],
+					},
+				});
+			}
+			return response;
+		},
+
+		*fetchScreenPushInfo({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+
+			const response = yield call(ESLServices.getScreenPushInfo, options);
+			const result = response.data || {};
+			if (response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: {
+						screenPushInfo: result.esl_screen_push_info || {},
 					},
 				});
 			}

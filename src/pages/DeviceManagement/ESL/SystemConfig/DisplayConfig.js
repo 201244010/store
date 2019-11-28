@@ -196,14 +196,14 @@ class DisplayConfig extends Component {
 						<Col span={4}>
 							<Input
 								maxLength={20}
-								value={page2Config.screen_name}
+								value={formatMessage({id: page2Config.screen_name || ' '})}
 								onChange={(e) => this.updatePageConfig('page2Config', 'screen_name', e)}
 							/>
 						</Col>
 						<Col span={4}>
 							<Input
 								maxLength={20}
-								value={page3Config.screen_name}
+								value={formatMessage({id: page3Config.screen_name || ' '})}
 								onChange={(e) => this.updatePageConfig('page3Config', 'screen_name', e)}
 							/>
 						</Col>
@@ -221,7 +221,7 @@ class DisplayConfig extends Component {
 										<Option key={0} value={0}>{formatMessage({id: 'esl.device.display.config.not'})}</Option>
 										{
 											modelTemplateMap[config.model_name] && modelTemplateMap[config.model_name].map(model => (
-												<Option key={model.id} value={model.id}>{model.name}</Option>
+												<Option key={model.id} value={model.id}>{formatMessage({id: model.name})}</Option>
 											))
 										}
 									</Select>
@@ -235,7 +235,7 @@ class DisplayConfig extends Component {
 										<Option key={0} value={0}>{formatMessage({id: 'esl.device.display.config.not'})}</Option>
 										{
 											modelTemplateMap[config.model_name] && modelTemplateMap[config.model_name].map(model => (
-												<Option key={model.id} value={model.id}>{model.name}</Option>
+												<Option key={model.id} value={model.id}>{formatMessage({id: model.name})}</Option>
 											))
 										}
 									</Select>

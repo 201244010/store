@@ -16,8 +16,10 @@ class SearchForm extends Component {
 	};
 
 	search = () => {
-		const { fetchElectricLabels } = this.props;
+		const { fetchElectricLabels, fetchProductOverview, fetchDeviceOverview } = this.props;
 		fetchElectricLabels();
+		fetchProductOverview();
+		fetchDeviceOverview();
 	};
 
 	handleReset = async () => {

@@ -23,6 +23,30 @@
 			// padding-right: 178px;
 			padding-right: 176px;
 		}
+
+		&.has-cloud-info{
+			padding-top: 60px;
+		}
+
+	}
+
+	.cloud-service-info{
+		position: absolute;
+		top: 0;
+		width: 100%;
+		height: 40px;
+		background-color: #ffffff;
+		margin-bottom: 20px;
+		font-size: 14px;
+		padding: 0 16px;
+		line-height: 40px;
+		.cloud-action{
+			font-family: PingFangSC-Regular, sans-serif;
+			// font-size: 14px;
+			color: #4B7AFA;
+			float: right;
+			cursor: pointer;
+		}
 	}
 
 	.faceid-list-container{
@@ -37,9 +61,13 @@
 		overflow: hidden;
 
 		background-color: #ffffff;
-
-		.faceid-list{
+		&.has-cloud {
+			top: 60px;
 			height: calc(100% - 60px);
+		}
+		.faceid-list{
+			// height: calc(100% - 60px);
+			height: 100%;
 		}
 		.avatar-container{
 			position: relative;

@@ -564,13 +564,16 @@ export default {
 
 				const formattedList = countList.map(item => {
 					const { orderCount = 0, passengerFlowCount = 0, time } = item;
+					let passengerFlowRate = 0;
+					if (passengerFlowCount > 0) {
+						const rate = parseInt((orderCount / passengerFlowCount) * 100, 10);
+						passengerFlowRate = rate > 100 ? 100 : rate;
+					}
+
 					return {
 						...item,
 						time: formatTime(time, rangeType, timeRangeStart, timeRangeEnd),
-						passengerFlowRate:
-							passengerFlowCount === 0
-								? 0
-								: parseInt((orderCount / passengerFlowCount) * 100, 10),
+						passengerFlowRate,
 					};
 				});
 
@@ -711,7 +714,19 @@ export default {
 				searchValue,
 				searchValue: { rangeType },
 			} = yield select(state => state.dashboard);
-			const [startTime, endTime] = getQueryTimeRange(searchValue);
+			// 云端接口修改后只需要传当天
+			let [startTime, endTime] = [
+				moment()
+					.startOf('day')
+					.unix(),
+				moment()
+					.endOf('day')
+					.unix(),
+			];
+
+			if (rangeType === RANGE.FREE) {
+				[startTime, endTime] = getQueryTimeRange(searchValue);
+			}
 
 			const { queryType = null, needLoading, loadingType } = payload;
 			const stateField = stateFields[queryType];
@@ -960,6 +975,7 @@ export default {
 						endQueryTime: moment()
 							.endOf('day')
 							.unix(),
+						passengerFlowType: PASSENGER_FLOW_TYPE.GENDER,
 						tradeTime: TRADE_TIME.AMOUNT,
 						paymentType: PAYMENT_TYPE.AMOUNT,
 					},

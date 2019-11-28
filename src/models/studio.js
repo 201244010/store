@@ -28,6 +28,7 @@ export default {
 		},
 		copiedComponent: {},
 		scopedComponents: [],
+		noScopedComponents: [],
 		zoomScale: 1
 	},
 	effects: {
@@ -157,12 +158,16 @@ export default {
 			};
 		},
 		updateComponentsDetail(state, action) {
-			const { noUpdateLines, selectedShapeName, scopedComponents, isStep = false, updatePrecision = false, ...componentsDetail } = action.payload;
+			const { noUpdateLines, selectedShapeName, scopedComponents, nowShapeName, isStep = false, updatePrecision = false, ...componentsDetail } = action.payload;
 			const chooseShapeName = state.selectedShapeName;
 			let targetShapeName = selectedShapeName;
 			if (selectedShapeName === undefined) {
 				targetShapeName = chooseShapeName;
 			}
+			if (!targetShapeName) {
+				targetShapeName = nowShapeName;
+			}
+
 			const detail = {
 				...state.componentsDetail[targetShapeName],
 				...filterObject(componentsDetail[targetShapeName] || {})
@@ -264,15 +269,12 @@ export default {
 		},
 		deleteSelectedComponent(state, action) {
 			state.selectedShapeName = '';
-			const {
-				selectedShapeName,
-				// isStep = true
-			} = action.payload;
+			const {selectedShapeName, isStep = true} = action.payload;
 			delete state.componentsDetail[selectedShapeName || action.payload];
-			// TODO 放开此处代码会报错，需要定位原因，暂时注释
-			// if (isStep) {
-			// 	saveNowStep(getLocationParam('id'), state.componentsDetail);
-			// }
+			const copyDetail = JSON.parse(JSON.stringify(state.componentsDetail));
+			if (isStep) {
+				saveNowStep(getLocationParam('id'), copyDetail);
+			}
 		},
 		zoomOutOrIn(state, action) {
 			const {
@@ -327,6 +329,7 @@ export default {
 			const bound = {};
 
 			state.scopedComponents = [];
+			state.noScopedComponents = [];
 			Object.keys(componentsDetail).forEach(key => {
 				if (componentsDetail[key].name && componentsDetail[key].name.indexOf(SHAPE_TYPES.RECT_FIX) === -1 && key !== RECT_SELECT_NAME) {
 					const component = { ...componentsDetail[key] };
@@ -399,6 +402,11 @@ export default {
 				component.top = component.y;
 				component.right = component.x + realWidth;
 				component.bottom = component.y + realHeight;
+
+				componentsDetail[RECT_SELECT_NAME].left = component.left;
+				componentsDetail[RECT_SELECT_NAME].top = component.top;
+				componentsDetail[RECT_SELECT_NAME].right = component.right;
+				componentsDetail[RECT_SELECT_NAME].bottom = component.bottom;
 				componentsDetail[RECT_SELECT_NAME].x = component.left;
 				componentsDetail[RECT_SELECT_NAME].y = component.top;
 				componentsDetail[RECT_SELECT_NAME].width = component.right - component.left;
@@ -434,11 +442,36 @@ export default {
 					}
 				});
 				state.selectedShapeName = RECT_SELECT_NAME;
+				componentsDetail[RECT_SELECT_NAME].left = bound.left;
+				componentsDetail[RECT_SELECT_NAME].top = bound.top;
+				componentsDetail[RECT_SELECT_NAME].right = bound.right;
+				componentsDetail[RECT_SELECT_NAME].bottom = bound.bottom;
 				componentsDetail[RECT_SELECT_NAME].x = bound.left;
 				componentsDetail[RECT_SELECT_NAME].y = bound.top;
 				componentsDetail[RECT_SELECT_NAME].width = bound.right - bound.left;
 				componentsDetail[RECT_SELECT_NAME].height = bound.bottom - bound.top;
 			}
+
+			state.noScopedComponents = [];
+			const scopedNames = scopedComponents.map(item => item.name);
+			Object.keys(componentsDetail).forEach(name => {
+				if (name && (name !== RECT_SELECT_NAME && name.indexOf(SHAPE_TYPES.RECT_FIX) === -1)) {
+					const cd = componentsDetail[name];
+					const realWidth = MAPS.containerWidth[cd.type] * zoomScale * (cd.scaleX || 1);
+					let realHeight = MAPS.containerHeight[cd.type] * zoomScale * (cd.scaleY || 1);
+
+					if (cd.type === SHAPE_TYPES.IMAGE && cd.imgPath) {
+						realHeight = realWidth * cd.ratio;
+					}
+					cd.left = cd.x;
+					cd.top = cd.y;
+					cd.right = cd.x + realWidth;
+					cd.bottom = cd.y + realHeight;
+					if (isInComponent(cd, componentsDetail[RECT_SELECT_NAME]) && !scopedNames.includes(cd.name)) {
+						state.noScopedComponents.push(componentsDetail[name]);
+					}
+				}
+			});
 		},
 		resetScopedComponents(state) {
 			state.scopedComponents = [];

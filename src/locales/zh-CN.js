@@ -12,6 +12,7 @@ import userCenter from './zh-CN/userCenter';
 import storeManagement from './zh-CN/storeManagement';
 import notification from './zh-CN/notification';
 import studio from './zh-CN/studio';
+import iot from './zh-CN/iot';
 import dashboard from './zh-CN/dashBoard';
 import network from './zh-CN/network';
 
@@ -30,6 +31,8 @@ import employee from './zh-CN/employee';
 import trade from './zh-CN/trade';
 import flow from './zh-CN/flow';
 import tradeShow from './zh-CN/tradeShow';
+import serviceManagement from './zh-CN/serviceManagement';
+import passengerAnalyze from './zh-CN/passengerAnalyze';
 
 export default {
 	'navBar.lang': '语言',
@@ -68,4 +71,7 @@ export default {
 	...trade,
 	...flow,
 	...tradeShow,
+	...iot,
+	...passengerAnalyze,
+	...serviceManagement,
 };

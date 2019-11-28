@@ -6,40 +6,52 @@ import styles from './Faceid.less';
 
 class Faceid extends React.Component{
 	render () {
-		const { current, faceidRects, pixelRatio, currentPPI } = this.props;
-		const times = faceidRects.filter(item => {
-			if ( current < item.timestamp && item.timestamp < current + 500){
+		const { current, faceidRects } = this.props;
+		// console.log('current=', current); // current约每250ms更新一次
+		// const currentVideoTime = moment(baseTime*1000 + Math.round(current)).format('YYYY-MM-DD HH:mm:ss.SSS');
+		// console.log('currentVideoTime=', currentVideoTime);
+		const tmp = faceidRects.filter(item => {
+			// console.log('timestamp: ', item.timestamp);
+			// if ( current - 300 < item.timestamp && item.timestamp < current + 500){
+			// console.log(item.timestamp - 300, current, item.timestamp + 1000);
+			if (item.timestamp + 300 < current && current < item.timestamp + 900) {
 				return true;
 			}
 			return false;
 		});
 
-		times.sort((a, b) => a.id - b.id);
+		// console.log(tmp, current);
 
-		let temp = null;
-		const rects = [];
-		times.forEach((item, index) => {
-			if (index === 0) {
-				temp = item;
-				rects.push(item);
-				return;
+		tmp.sort((a, b) => {
+			if (a.id !== b.id) {
+				return a.id - b.id;
 			}
-			if (temp.id === item.id) {
-				if (item.timestamp > temp.timestamp) {
-					rects.splice(rects.length - 1, 1, item);
-				}
-			}else{
-				rects.push(item);
-			}
-			temp = item;
-			rects.push(item);
+			return b.timestamp - a.timestamp;
 		});
+
+		const rects = [];
+		const hash = {};
+		let i = 0;
+		tmp.forEach(item => {
+			if (hash[item.id] !== true) {
+				rects.push(item);
+				hash[item.id] = true;
+				i++;
+			} else if (Math.abs(item.timestamp - current) < Math.abs(rects[i-1].timestamp - current)) {
+				rects[i-1] = item;
+			}
+		});
+
+		// console.log('rects: ', rects);
 
 		return (
 			<div className={styles['faceid-container']} ref={(container) => this.container = container}>
 				{
 					!this.container ? '' :
 						rects.map((item, index) => {
+							// 任何分辨率下，设备端都按1080分辨率来上报人脸框，此处写成固定的1080下换算
+							const pixelRatio = '16:9';
+							const currentPPI = 1080;
 
 							const ps = pixelRatio.split(':');
 							const p = ps.map(obj => parseInt(obj, 10));
@@ -113,7 +125,6 @@ class Faceid extends React.Component{
 							);
 						})
 				}
-				{/* </div> */}
 			</div>
 		);
 	}

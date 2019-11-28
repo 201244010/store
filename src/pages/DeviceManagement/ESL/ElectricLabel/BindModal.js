@@ -11,7 +11,14 @@ export default class BindModal extends Component {
 	};
 
 	bindESL = async () => {
-		const { selectedProduct, currentRecord, bindESL, closeModal } = this.props;
+		const {
+			selectedProduct,
+			currentRecord,
+			bindESL,
+			closeModal,
+			fetchProductOverview,
+			fetchDeviceOverview
+		} = this.props;
 		if (selectedProduct && selectedProduct.id) {
 			const response = await bindESL({
 				options: {
@@ -23,6 +30,8 @@ export default class BindModal extends Component {
 
 			if (response && response.code === ERROR_OK) {
 				closeModal('bindVisible');
+				fetchProductOverview();
+				fetchDeviceOverview();
 			}
 		}
 	};
@@ -123,14 +132,14 @@ export default class BindModal extends Component {
 							</Col>
 							<Col span={20}>
 								<Select
-									placeholder="请选择模板"
+									placeholder={formatMessage({id: 'select.placeholder'})}
 									value={currentRecord.template_id}
 									style={{ width: '100%' }}
 									onChange={this.handleTemplateChange}
 								>
 									{templates4ESL.map(template => (
 										<Select.Option key={template.id} value={template.id}>
-											{template.name}
+											{formatMessage({id: template.name})}
 										</Select.Option>
 									))}
 								</Select>

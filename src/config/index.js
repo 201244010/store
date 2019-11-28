@@ -1,9 +1,14 @@
 import sysEnv from './env';
 
+const {
+	location: { protocol },
+} = window;
+
 export const { env, country } = sysEnv;
 
 export const FIRST_MENU_ORDER = [
 	'dashboard',
+	'dataAnalyze',
 	'application',
 	'devices',
 	'esl',
@@ -12,18 +17,20 @@ export const FIRST_MENU_ORDER = [
 	'faceidLibrary',
 ];
 
-const WEB_SOCKET_PREFIX = {
-	dev: 'ws',
-	test: 'ws',
-	uat: 'wss',
-	onl: 'wss',
-	local: 'ws',
+export const HTTP_PREFIX = {
+	'http:': 'https:',
+	'https:': 'https:',
+};
+
+export const WEB_SOCKET_PREFIX = {
+	'http:': 'wss:',
+	'https:': 'wss:',
 };
 
 const SSO_ADDRESS = {
-	dev: 'test.api.sunmi.com',
-	test: 'test.api.sunmi.com',
-	uat: 'uat.api.sunmi.com',
+	dev: 'api.test.sunmi.com',
+	test: 'api.test.sunmi.com',
+	uat: 'api.uat.sunmi.com',
 	onl: 'api.sunmi.com',
 	local: '127.0.0.1:30001',
 	// local: '10.10.168.228:30001',
@@ -31,9 +38,9 @@ const SSO_ADDRESS = {
 
 const API_ADDRESS = {
 	dev: 'store.dev.sunmi.com',
-	test: 'test-store.sunmi.com',
-	uat: 'uat-store.sunmi.com:443',
-	onl: 'store.sunmi.com:443',
+	test: 'store.test.sunmi.com',
+	uat: 'store.uat.sunmi.com',
+	onl: 'store.sunmi.com',
 	local: '127.0.0.1:30001',
 	// local: '10.10.168.228:30001',
 };
@@ -47,7 +54,7 @@ const COUNTRY_ADDRESS = {
 const IPC_ADDRESS = {
 	dev: 'store.dev.sunmi.com',
 	// test: '47.99.16.199:30401',
-	test: 'test-store.sunmi.com',
+	test: 'store.test.sunmi.com',
 };
 
 const DES_KEY = {
@@ -75,12 +82,13 @@ const MD5_TOKEN = {
 };
 
 export default {
-	SSO_ADDRESS: SSO_ADDRESS[env],
-	API_ADDRESS: API_ADDRESS[env],
+	SSO_ADDRESS: `${HTTP_PREFIX[protocol]}//${SSO_ADDRESS[env]}`,
+	API_ADDRESS: `${HTTP_PREFIX[protocol]}//${API_ADDRESS[env]}`,
 	DES_KEY: DES_KEY[env],
 	DES_IV: DES_IV[env],
 	MD5_TOKEN: MD5_TOKEN[env],
-	IPC_SERVER: IPC_ADDRESS[env],
-	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[env],
+
+	IPC_SERVER: `${HTTP_PREFIX[protocol]}//${IPC_ADDRESS[env]}`,
+	WEB_SOCKET_PREFIX: WEB_SOCKET_PREFIX[protocol] || 'wss:',
 	COUNTRY_ADDRESS: COUNTRY_ADDRESS[country],
 };

@@ -20,9 +20,12 @@ class LivePlayer extends React.Component{
 		this.startTimestamp = 0;
 		this.metadataCount = 0;
 		this.relativeTimestamp = 0;
+		this.baseTime = 0;
 		this.lastMetadataTimestamp = 0;
 		this.replayTimeout = 0;
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
+
+		this.isPlaying = false; // video是否正在播放
 	}
 
 	componentDidMount () {
@@ -34,6 +37,10 @@ class LivePlayer extends React.Component{
 		if (oldProps.url !== url) {
 			this.playLive();
 		}
+	}
+
+	componentWillUnmount () {
+		clearTimeout(this.replayTimeout);
 	}
 
 	play = () => {
@@ -125,21 +132,8 @@ class LivePlayer extends React.Component{
 					const url = await getHistoryUrl(timestamp);
 					console.log('goto playhistory url: ', url);
 					if (url) {
-						const replay = (time) => {
-							this.replayTimeout = setTimeout(() => {
-								console.log('replay timeout', time);
-								const { videoplayer } = this;
-								if (videoplayer.paused()) {
-									this.src(url);
-									replay(time*2);
-								}else{
-									clearTimeout(this.replayTimeout);
-
-								}
-							}, time*1000);
-						};
 						this.src(url);
-						replay(2);
+						this.timeoutReplay();
 					}else{
 						console.log('回放未获取到url，当前时间戳为：', timestamp);
 					}
@@ -153,6 +147,7 @@ class LivePlayer extends React.Component{
 
 					this.startTimestamp = timestamp;
 					this.toPause = false;
+					this.play();
 				}, 800);
 
 			}
@@ -262,6 +257,19 @@ class LivePlayer extends React.Component{
 		return nextTimeStart;
 	}
 
+	onPlay = () => {
+		const { onLivePlay } = this.props;
+		const { isLive } = this.state;
+		// console.log('metadataCount reset onPlay ');
+		// this.metadataCount = 0;
+		if (isLive) {
+			onLivePlay();
+		}
+
+		console.log('LivePlayer onPlay');
+		this.isPlaying = true;
+	}
+
 	onDateChange = async (timestamp) => {
 		this.pause();
 
@@ -331,6 +339,7 @@ class LivePlayer extends React.Component{
 
 	onTimeUpdate = (timestamp) => {
 		const { getCurrentTimestamp } = this.props;
+		// console.log('onTimeUpdate timestamp=', timestamp); // 即ReVideo.js中的player.currentTime()单位s
 		// console.log('onTimeUpdate: ', this.toPause);
 		if (this.toPause) {
 			return;
@@ -345,7 +354,12 @@ class LivePlayer extends React.Component{
 			});
 
 			const gap = (Math.round((timestamp - this.lastMetadataTimestamp)*1000*1000))/1000;
+			// console.log('this.relativeTimestamp + gap=', this.relativeTimestamp + gap);
+			// console.log('player current时间=', moment(this.baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
 			getCurrentTimestamp(this.relativeTimestamp + gap);
+
+			// lastMetadataTimestamp：metadata到来时，video此时的播放进度时间；ms
+			// relativeTimestamp：metadata传过来的相对时间，ms
 
 			// console.log('relativeTimestamp: ', this.relativeTimestamp, 'timestamp: ', timestamp, 'lastMetadataTimestamp: ', this.lastMetadataTimestamp, 'gap: ', gap,  'total: ', this.relativeTimestamp + gap);
 		}
@@ -353,7 +367,7 @@ class LivePlayer extends React.Component{
 	}
 
 	onMetadataArrived = (metadata) => {
-		const { onMetadataArrived } = this.props;
+		const { onMetadataArrived, updateBasetime, getCurrentTimestamp } = this.props;
 		const { isLive } = this.state;
 		const { videoplayer: { player } } = this;
 
@@ -371,12 +385,19 @@ class LivePlayer extends React.Component{
 			if (metadata.baseTime !== undefined && metadata.relativeTime !== undefined) {
 				const baseTime = metadata.baseTime * 1000;
 				const { relativeTime } = metadata;
-				const videoTime = moment(baseTime + relativeTime).format('YYYY-MM-DD HH:mm:ss');
+				const videoTime = moment(baseTime + relativeTime).format('YYYY-MM-DD HH:mm:ss.SSS');
 				const now = moment();
 
-				console.log('系统时间=', now.format('YYYY-MM-DD HH:mm:ss'));
+				// this.baseTime= baseTime;
+
+				console.log('系统时间=', now.format('YYYY-MM-DD HH:mm:ss.SSS'));
 				console.log('视频帧时间=', videoTime);
-				console.log('time gap=', now.valueOf() - (baseTime + relativeTime));
+				console.log('系统时间-视频帧画面时间=', now.valueOf() - (baseTime + relativeTime));
+
+				const gap = (Math.round((player.currentTime() - this.lastMetadataTimestamp)*1000*1000))/1000;
+				// console.log('player.currentTime()=', player.currentTime());
+				// console.log('player current时间=', moment(baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
+				getCurrentTimestamp(this.relativeTimestamp + gap);
 			}
 
 			// const { player } = this.videoplayer;
@@ -386,9 +407,13 @@ class LivePlayer extends React.Component{
 				const index = player.buffered().length -1;
 				const curTime = player.currentTime();
 				const endTime = player.buffered().end(index);
+				const startTime = player.buffered().start(index);
 
+				console.log('player.buffered().length=', player.buffered().length);
 				console.log('before curTime=', curTime);
 				console.log('endTime=', endTime);
+				console.log('startTime=', startTime);
+				console.log('endTime-startTime=', endTime-startTime);
 
 				// 离缓存间隔太小，会导致loading
 				if (endTime - 2 > curTime) {
@@ -399,6 +424,7 @@ class LivePlayer extends React.Component{
 			}
 
 			onMetadataArrived(metadata.relativeTime);
+			updateBasetime(metadata.baseTime);
 		} else {
 			const { creationdate } = metadata;
 			const timestamp = moment(creationdate.substring(0, creationdate.length - 4)).unix();
@@ -416,15 +442,50 @@ class LivePlayer extends React.Component{
 			console.log('非人为暂停!');
 			this.play();
 		}
+		this.isPlaying = false;
 	}
 
 	onError = () => {
 		console.log('liveplayer error handler');
-		this.src(this.currentSrc);
+		this.isPlaying = false;
+
+		// 当前为直播
+		const { isLive } = this.state;
+		if (isLive) {
+			this.timeoutReplay();
+		}
+	}
+
+	onEnd = () => {
+		this.isPlaying = false;
+	}
+
+	// 超时重新播放
+	timeoutReplay = () => {
+		console.log('timeoutReplay');
+		const replay = (time) => {
+			clearTimeout(this.replayTimeout);
+			this.replayTimeout = setTimeout(async() => {
+				const { isLive } = this.state;
+
+				console.log('isLive=', isLive);
+				console.log('this.isPlaying=', this.isPlaying);
+				if (!this.isPlaying && isLive) {
+					// await this.pauseLive(); // 新方案不必stoplive
+					await this.playLive();
+					replay(5);
+				} else if (this.isPlaying) {
+					clearTimeout(this.replayTimeout);
+				}
+
+			}, time * 1000);
+		};
+
+		replay(2);
 	}
 
 	render () {
-		const { timeSlots, plugin, currentPPI } = this.props;
+		const { timeSlots, plugin, currentPPI, isOnline, cloudStatus, navigateTo, sn, pixelRatio } = this.props;
 		const { currentTimestamp, isLive, ppiChanged, playBtnDisabled } = this.state;
 
 		return (
@@ -451,9 +512,18 @@ class LivePlayer extends React.Component{
 
 				onDateChange={this.onDateChange}
 				onTimeUpdate={this.onTimeUpdate}
+
+				onPlay={this.onPlay}
 				onPause={this.onPause}
 				onError={this.onError}
+				onEnd={this.onEnd}
 				onMetadataArrived={this.onMetadataArrived}
+				isOnline={isOnline}
+				cloudStatus={cloudStatus}
+				navigateTo={navigateTo}
+				sn={sn}
+
+				pixelRatio={pixelRatio}
 
 				progressbar={
 					<Timebar
@@ -466,6 +536,8 @@ class LivePlayer extends React.Component{
 						onStopDrag={this.onTimebarStopDrag}
 
 						onTimeChange={this.onTimeChange}
+						isOnline={isOnline}
+						cloudStatus={cloudStatus}
 					/>
 				}
 			/>

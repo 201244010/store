@@ -1,19 +1,29 @@
 import React, { PureComponent } from 'react';
-import { Chart, Geom, Axis, Tooltip } from 'bizcharts';
+import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 
 class LinePoint extends PureComponent {
 	render() {
 		const {
+			width = 300,
 			height = 400,
 			data = [],
 			forceFit = true,
 			scale = {},
-			padding = ['15%', '10%'],
+			padding = 'auto',
+			animate = false,
 			axis: {
 				x: { name: xName = null, label: xLabel = {} } = {},
 				y: { name: yName = null, label: yLabel = {} } = {},
 			} = {},
 			tooltip = {},
+			legend = {},
+			legend: {
+				position: legendPosition = 'bottom',
+				offsetX = 0,
+				offsetY = 0,
+				custom = false,
+				items = [],
+			} = {},
 			line: {
 				position: linePosition = null,
 				color: lineColor = null,
@@ -32,9 +42,25 @@ class LinePoint extends PureComponent {
 			} = {},
 		} = this.props;
 
-
 		return (
-			<Chart height={height} data={data} forceFit={forceFit} scale={scale} padding={padding}>
+			<Chart
+				width={width}
+				height={height}
+				data={data}
+				forceFit={forceFit}
+				scale={scale}
+				padding={padding}
+				animate={animate}
+			>
+				{Object.keys(legend).length > 0 && (
+					<Legend
+						custom={custom}
+						position={legendPosition}
+						items={items}
+						offsetY={offsetY}
+						offsetX={offsetX}
+					/>
+				)}
 				<Axis name={xName} label={xLabel} />
 				<Axis name={yName} label={yLabel} />
 				<Tooltip

@@ -14,7 +14,7 @@ function convert(fileName) {
 		return;
 	}
 
-	if (jsonObject.layers[0].hasConverted || jsonObject.layers[0].hasOwnProperty('startX')) {
+	if (jsonObject.layers[0].hasConverted || 'startX' in jsonObject.layers[0]) {
 		return;
 	}
 

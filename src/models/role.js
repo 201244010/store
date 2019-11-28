@@ -2,6 +2,7 @@ import { map, format } from '@konata9/milk-shake';
 import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
 import * as Actions from '@/services/role';
+import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_SIZE, USER_PERMISSION_LIST } from '@/constants';
 import { FIRST_MENU_ORDER } from '@/config';
@@ -65,10 +66,14 @@ export default {
 	},
 	effects: {
 		*getAllRoles(_, { put, call }) {
-			const response = yield call(Actions.handleRoleManagement, 'getList', {
-				page_num: 1,
-				page_size: 999,
-			});
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'getList',
+				format('toSnake')({
+					pageNum: 1,
+					pageSize: 999,
+				})
+			);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { roleList } = format('toCamel')(data);
@@ -88,13 +93,17 @@ export default {
 			const { keyword, current, pageSize } = payload;
 			const opts = {
 				keyword,
-				page_num: current,
-				page_size: pageSize,
+				pageNum: current,
+				pageSize,
 			};
-			const response = yield call(Actions.handleRoleManagement, 'getList', opts);
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'getList',
+				format('toSnake')(opts)
+			);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-				const { role_list: roleList, total_count: totalCount } = data;
+				const { roleList, totalCount } = format('toCamel')(data);
 				const formatList = roleList.map(item => format('toCamel')(item));
 				yield put({
 					type: 'updateState',
@@ -112,11 +121,12 @@ export default {
 		},
 
 		*getRoleInfo({ payload = {} }, { put, call }) {
-			const { roleId: role_id } = payload;
-			const opts = {
-				role_id,
-			};
-			const response = yield call(Actions.handleRoleManagement, 'getInfo', opts);
+			const { roleId } = payload;
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'getInfo',
+				format('toSnake')({ roleId })
+			);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const forData = format('toCamel')(data) || {};
@@ -191,33 +201,42 @@ export default {
 		},
 
 		*creatRole({ payload = {} }, { call }) {
-			const { name, permissionIdList: permission_id_list, username } = payload;
+			const { name, permissionIdList, username } = payload;
 			const opts = {
 				name,
-				permission_id_list,
+				permissionIdList,
 				username,
 			};
-			const response = yield call(Actions.handleRoleManagement, 'create', opts);
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'create',
+				format('toSnake')(opts)
+			);
 			return response;
 		},
 
 		*updateRole({ payload = {} }, { call }) {
-			const { name, roleId: role_id, permissionIdList: permission_id_list } = payload;
+			const { name, roleId, permissionIdList } = payload;
 			const opts = {
 				name,
-				role_id,
-				permission_id_list,
+				roleId,
+				permissionIdList,
 			};
-			const response = yield call(Actions.handleRoleManagement, 'update', opts);
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'update',
+				format('toSnake')(opts)
+			);
 			return response;
 		},
 
 		*deleteRole({ payload = {} }, { call }) {
-			const { roleId: role_id } = payload;
-			const opts = {
-				role_id,
-			};
-			const response = yield call(Actions.handleRoleManagement, 'delete', opts);
+			const { roleId } = payload;
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'delete',
+				format('toSnake')({ roleId })
+			);
 			return response;
 		},
 
@@ -252,11 +271,12 @@ export default {
 		},
 
 		*changeAdmin({ payload = {} }, { call, put }) {
-			const { targetSsoUsername: target_sso_username } = payload;
-			const opts = {
-				target_sso_username,
-			};
-			const response = yield call(Actions.handleRoleManagement, 'changeAdmin', opts);
+			const { targetSsoUsername } = payload;
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'changeAdmin',
+				format('toSnake')({ targetSsoUsername })
+			);
 			if (response && response.code === ERROR_OK) {
 				yield put({ type: 'getRoleList' });
 				yield put({
@@ -266,8 +286,19 @@ export default {
 			return response;
 		},
 
-		*checkAdmin(_, { call }) {
+		*checkAdmin(_, { select, call, put }) {
 			const response = yield call(Actions.handleRoleManagement, 'checkAdmin');
+			const checkAdmin = response && response.code === ERROR_OK ? 1 : 0;
+
+			const { currentUser } = yield select(state => state.user);
+			const result = { ...currentUser, checkAdmin } || { checkAdmin };
+			CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, result);
+
+			yield put({
+				type: 'user/storeUserInfo',
+				payload: result,
+			});
+
 			return response;
 		},
 	},

@@ -35,6 +35,7 @@ export default function generateShape(option) {
 			shape = (
 				<Rect
 					{...{
+						ref: ref => option.refComponents[option.name] = ref,
 						name: option.name,
 						x: option.x,
 						y: option.y,
@@ -68,6 +69,7 @@ export default function generateShape(option) {
 			shape = (
 				<Rect
 					{...{
+						ref: ref => option.refComponents[option.name] = ref,
 						name: option.name,
 						x: option.x,
 						y: option.y,
@@ -100,6 +102,7 @@ export default function generateShape(option) {
 			shape = (
 				<Rect
 					{...{
+						ref: ref => option.refComponents[option.name] = ref,
 						name: option.name,
 						x: option.x,
 						y: option.y,
@@ -124,7 +127,7 @@ export default function generateShape(option) {
 			break;
 		case SHAPE_TYPES.TEXT:
 			shape = (
-				<Group>
+				<Group ref={ref => option.refComponents[option.name] = ref}>
 					<Rect
 						{...{
 							name: option.name,
@@ -157,17 +160,19 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
+							offsetY: ((option.lineSpacing - option.fontSize) * option.zoomScale / 2 || 0) - 2,
 							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,
 							fontStyle: initFontStyle(option),
 							textDecoration: initTextDecoration(option),
+							wrap: 'char',
 							fill: option.fontColor,
 							align: option.align,
 							letterSpacing: option.letterSpacing,
 							width: MAPS.containerWidth[SHAPE_TYPES.TEXT] * option.scaleX * option.zoomScale,
 							height: MAPS.containerHeight[SHAPE_TYPES.TEXT] * option.scaleY * option.zoomScale,
-							lineHeight: 1 + ((option.lineSpacing || 0) / option.fontSize),
+							lineHeight: (option.lineSpacing / option.fontSize) || 1,
 							draggable: true,
 							onDblClick: option.onDblClick,
 							onMouseOver: () => {
@@ -189,6 +194,7 @@ export default function generateShape(option) {
 			shape = (
 				<Rect
 					{...{
+						ref: ref => option.refComponents[option.name] = ref,
 						name: option.name,
 						x: option.x,
 						y: option.y,
@@ -218,6 +224,7 @@ export default function generateShape(option) {
 			shape = (
 				<Rect
 					{...{
+						ref: ref => option.refComponents[option.name] = ref,
 						name: option.name,
 						x: option.x,
 						y: option.y,
@@ -246,7 +253,7 @@ export default function generateShape(option) {
 		case SHAPE_TYPES.IMAGE:
 			if (!option.imgPath) {
 				shape = (
-					<Group>
+					<Group ref={ref => option.refComponents[option.name] = ref}>
 						<Rect
 							{...{
 								name: option.name,
@@ -345,7 +352,7 @@ export default function generateShape(option) {
 				);
 			} else {
 				shape = (
-					<Group>
+					<Group ref={ref => option.refComponents[option.name] = ref}>
 						<Image
 							{...{
 								name: option.name,
@@ -427,7 +434,7 @@ export default function generateShape(option) {
 		case SHAPE_TYPES.PRICE_NORMAL_WHITE:
 		case SHAPE_TYPES.PRICE_NORMAL_BLACK:
 			shape = (
-				<Group>
+				<Group ref={ref => option.refComponents[option.name] = ref}>
 					<Rect
 						{...{
 							name: option.name,
@@ -491,7 +498,7 @@ export default function generateShape(option) {
 		case SHAPE_TYPES.PRICE_SUPER_WHITE:
 		case SHAPE_TYPES.PRICE_SUPER_BLACK:
 			shape = (
-				<Group>
+				<Group ref={ref => option.refComponents[option.name] = ref}>
 					<Rect
 						{...{
 							name: option.name,
@@ -600,7 +607,7 @@ export default function generateShape(option) {
 		case SHAPE_TYPES.PRICE_SUB_WHITE:
 		case SHAPE_TYPES.PRICE_SUB_BLACK:
 			shape = (
-				<Group>
+				<Group ref={ref => option.refComponents[option.name] = ref}>
 					<Rect
 						{...{
 							name: option.name,
@@ -711,6 +718,7 @@ export default function generateShape(option) {
 			shape = (
 				<Image
 					{...{
+						ref: ref => option.refComponents[option.name] = ref,
 						name: option.name,
 						x: option.x,
 						y: option.y,
@@ -739,7 +747,7 @@ export default function generateShape(option) {
 			break;
 		case SHAPE_TYPES.CODE_V:
 			shape = (
-				<Group>
+				<Group ref={ref => option.refComponents[option.name] = ref}>
 					<Shape
 						{...{
 							name: option.name,

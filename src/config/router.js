@@ -1,5 +1,13 @@
 const router = [
 	{
+		path: '/userProtocol',
+		// component: '../layouts/SunmiLayout',
+		id: 'userProtocol',
+		routes: [
+			{ path: '/userProtocol/serviceProtocol', component: './IPC/CloudStorage/protocol.js', id: 'serviceProtocol' }
+		],
+	},
+	{
 		path: '/user',
 		component: '../layouts/SunmiLayout',
 		id: 'user',
@@ -24,6 +32,13 @@ const router = [
 		component: '../layouts/BlankLayout',
 		id: 'studio',
 		routes: [{ path: '/studio', component: './Studio' }],
+	},
+
+	{
+		path: '/studioAlone',
+		component: '../layouts/BlankLayout',
+		id: 'StudioAlone',
+		routes: [{ path: '/studioAlone', component: './StudioAlone' }],
 	},
 
 	{
@@ -135,6 +150,27 @@ const router = [
 							},
 						],
 					},
+					{
+						path: '/application/serviceManagement',
+						id: 'serviceManagement',
+						component: './ServiceManagement/ServiceList',
+						name: 'serviceManagement',
+					}
+				],
+			},
+
+			{
+				path: '/dataAnalyze',
+				icon: 'blank',
+				name: 'dataAnalyze',
+				routes: [
+					{ path: '/dataAnalyze', redirect: '/dataAnalyze/passenger' },
+					{
+						path: '/dataAnalyze/passenger',
+						name: 'passenger',
+						id: 'passengerAnalyze',
+						component: './PassengerAnalyze',
+					},
 				],
 			},
 
@@ -179,6 +215,25 @@ const router = [
 					{
 						path: '/devices',
 						redirect: '/devices/ipcList',
+					},
+
+					{
+						path:'/devices/cloudStorage',
+						name:'cloudStorageService',
+						routes:[
+							{
+								path:'/devices/cloudStorage/subscriptionSuccess',
+								name:'subscriptionSuccess',
+								id:'subscriptionSuccess',
+								hideInMenu: true,
+								component: './IPC/CloudStorage/subscriptionSuccess.js'
+							},
+							{
+								path: '/devices/cloudStorage',
+								id: 'cloudStorage',
+								component: './IPC/CloudStorage/cloudStorage.js',
+							}
+						]
 					},
 				],
 			},
@@ -624,8 +679,38 @@ const router = [
 					// },
 				],
 			},
+			{
+				path: '/iotAccess',
+				name: 'iotAccess',
+				id: 'iotAccess',
+				icon: 'blank',
+				routes: [
+					{
+						path: '/iotAccess/posAccess',
+						name: 'posAccess',
+						id: 'posAccess',
+						routes: [
+							{
+								path: '/iotAccess/posAccess',
+								name: 'posAccessOverview',
+								id: 'posAccessOverview',
+								hideInMenu: true,
+								component: './IotAccess/PosAccess',
+							},
+							{
+								path: '/iotAccess/posAccess/detail',
+								name: 'detail',
+								id: 'posAccessDetail',
+								hideInMenu: true,
+								component: './IotAccess/PosAccessDetail',
+							},
+						]
+					},
+				],
+			},
 		],
 	},
+
 ];
 
 // export default router;

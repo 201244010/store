@@ -7,6 +7,8 @@ export default {
 		total: 0,
 		orderList: [],
 		detailList: [],
+		orderTypeList: [],
+		purchaseTypeList: [],
 	},
 	reducers: {
 		updateState(state, { payload }) {
@@ -17,6 +19,38 @@ export default {
 		},
 	},
 	effects: {
+		*getOrderTypeList(_, { put, call }) {
+			const response = yield call(Actions.getOrderTypeList);
+
+			if (response && response.code === ERROR_OK) {
+				const result = response.data || {};
+				const { orderTypeList } = result;
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						orderTypeList
+					},
+				});
+			}
+		},
+
+		*getPurchaseTypeList(_, { put, call }) {
+			const response = yield call(Actions.getPurchaseTypeList);
+
+			if (response && response.code === ERROR_OK) {
+				const result = response.data || {};
+				const { purchaseTypeList } = result;
+
+				yield put({
+					type: 'updateState',
+					payload: {
+						purchaseTypeList
+					},
+				});
+			}
+		},
+
 		*getList({ payload }, { put, call }) {
 			const { options = {} } = payload;
 			const {

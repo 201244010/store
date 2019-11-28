@@ -58,6 +58,11 @@ class SearchBar extends PureComponent {
 		});
 	}
 
+	componentWillUnmount() {
+		const { clearSearch } = this.props;
+		clearSearch();
+	}
+
 	disabledDate = current => current && current > moment().endOf('day');
 
 	handleRadioChange = e => {

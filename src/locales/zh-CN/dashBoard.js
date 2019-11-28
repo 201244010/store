@@ -1,5 +1,6 @@
 export default {
 	'dashboard.search.today': '今日',
+	'dashboard.search.yesterday': '昨日',
 	'dashboard.search.week': '本周',
 	'dashboard.search.month': '本月',
 	'dashboard.search.range.start': '开始日期',
@@ -77,11 +78,13 @@ export default {
 	'trade.transfer.trend': '交易转化率趋势',
 	'trade.transfer.count.trend': '交易笔数趋势',
 	'trade.count.trend': '交易笔数趋势',
+	'customer.count.trend': '客流量趋势',
 	'customer.distribute': '客群分布',
 	'customer.sex': '性别',
 	'customer.newold': '新老',
 	'customer.stranger': '新客',
 	'customer.regular': '熟客',
+	'customer.count': '客流量',
 
 	// 订单详情页面
 	'order.search.rankdefault': '综合排序',
@@ -93,10 +96,10 @@ export default {
 	'payment.order.type': '交易类型',
 	'order.goods': '商品',
 	'order.goods.amount': '数量',
-	'payment.order.id':'订单号',
-	'payment.order.amount':'交易金额',
-	'payment.order.time':'交易时间',
-	'payment.list.action':'操作',
-	'payment.order.detail.expanded':'收起支付明细',
-	'payment.order.detail.show':'查看支付明细',
+	'payment.order.id': '订单号',
+	'payment.order.amount': '交易金额',
+	'payment.order.time': '交易时间',
+	'payment.list.action': '操作',
+	'payment.order.detail.expanded': '收起支付明细',
+	'payment.order.detail.show': '查看支付明细',
 };

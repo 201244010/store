@@ -1,4 +1,5 @@
 import { getDeviceList } from '@/pages/IPC/services/IPCList';
+import { getServiceInfo } from '@/pages/IPC/services/storageManagement';
 import { ERROR_OK } from '@/constants/errorCode';
 import ipcTypes from '@/constants/ipcTypes';
 
@@ -14,7 +15,7 @@ export default {
 	},
 	effects: {
 		*read(action,{ put }) {
-		
+
 			const response = yield getDeviceList();
 
 			const {data : result , code} = response;
@@ -42,23 +43,23 @@ export default {
 			return result;
 
 		},
-		*getList(action,{ put }){
-			const response = yield getDeviceList();
-			const result = response.data;
-			if (response.code === ERROR_OK) {
-				yield put({
-					type: 'readData',
-					payload: result
-				});
-			}
-		},
+		// *getList(action,{ put }){
+		// 	const response = yield getDeviceList();
+		// 	const result = response.data;
+		// 	if (response.code === ERROR_OK) {
+		// 		yield put({
+		// 			type: 'readData',
+		// 			payload: result
+		// 		});
+		// 	}
+		// },
 		*getIpcList(_, { select, put}) {
 			let ipcList  = yield select((state) => state.ipcList);
 
 			if (ipcList.length === 0){
 				// console.log(ipcList.length);
 				yield put.resolve({
-					type: 'getList'
+					type: 'read'
 				});
 				ipcList  = yield select((state) => state.ipcList);
 			}
@@ -115,6 +116,72 @@ export default {
 
 			return '';
 		},
+		*checkBind({ payload: { sn }}, { put }) {
+			const list = yield put.resolve({
+				type: 'read'
+			});
+			let isBind = false;
+			if(list) {
+				list.forEach(item => {
+					if(item.sn === sn) {
+						isBind = true;
+					}
+				});
+			}
+			return isBind;
+		},
+		/**
+		 * 获取云服务的状态
+		 */
+		*readCloudInfo({ payload }, { call, put }) {
+			const { sn } = payload;
+			const deviceId = yield put.resolve({
+				type: 'getDeviceId',
+				payload: {
+					sn
+				}
+			});
+
+			const response = yield call(getServiceInfo, {
+				deviceId
+			});
+			// console.log(response);
+			const { code , /* data */ } = response;
+			if(code === ERROR_OK) {
+				// const { status, expireTime } = data;
+				return response;
+			}
+			return {
+				code
+			};
+		},
+		*getCurrentVersion({ payload: { sn }},{ put }){
+			const ipcList = yield put.resolve({
+				type: 'getIpcList'
+			});
+
+			for (let i = 0; i < ipcList.length; i++) {
+				if (ipcList[i].sn === sn) {
+					return ipcList[i].binVersion;
+				}
+			}
+			return '';
+		},
+		*checkOnlineStatus({ payload }, { put }) {
+			const { sn } = payload;
+			const ipcList = yield put.resolve({
+				type: 'read'
+			});
+			if(ipcList){
+				for(let i=0;i <ipcList.length; i++){
+					if(ipcList[i].sn === sn){
+						const { isOnline } = ipcList[i];
+						return isOnline;
+					}
+				}
+			}
+			return false;
+		}
 
 	}
 };

@@ -22,8 +22,8 @@ import styles from './Notification.less';
 		deleteNotification: payload =>
 			dispatch({ type: 'notification/deleteNotification', payload }),
 		clearSearchValue: () => dispatch({ type: 'notification/clearSearchValue' }),
-		goToPath: (pathId, urlParams = {}) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		goToPath: (pathId, urlParams = {}, anchorId) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, anchorId } }),
 	})
 )
 class NotificationCenter extends Component {

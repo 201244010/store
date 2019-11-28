@@ -4,6 +4,14 @@
 	color: red;
 }
 
+:global {
+	.ant-modal-title {
+		width: 80%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
 .detail-info {
 	padding: 24px;
 
@@ -17,9 +25,37 @@
 			text-align: right;
 		}
 
+		.detail-info-content {
+			width: 60%;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+
 		.detail-input-wrapper {
 			width: 250px;
 		}
+
+		.detail-info-limit {
+			width: 60%;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+	}
+
+	:global {
+		.ant-table-row {
+			td:nth-of-type(2) {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		}
+	}
+
+	.mt24 {
+		margin-top: 24px;
 	}
 }
 
@@ -51,7 +87,6 @@
 		cursor: not-allowed;
 	}
 }
-
 
 .overview {
 	margin-bottom: 20px;

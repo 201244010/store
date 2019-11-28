@@ -78,8 +78,13 @@ class SearchResult extends Component {
 
 	showDetail = async record => {
 		const { detailVisible } = this.state;
-		const { fetchESLDetails } = this.props;
+		const { fetchESLDetails, fetchScreenPushInfo } = this.props;
 		const response = await fetchESLDetails({
+			options: {
+				esl_id: record.id,
+			},
+		});
+		await fetchScreenPushInfo({
 			options: {
 				esl_id: record.id,
 			},
@@ -117,7 +122,7 @@ class SearchResult extends Component {
 
 	flushESL = async record => {
 		const { flushESL } = this.props;
-		flushESL({
+		await flushESL({
 			options: {
 				esl_code: record.esl_code,
 				product_id: record.product_id,
@@ -147,7 +152,7 @@ class SearchResult extends Component {
 	};
 
 	unbindESL = record => {
-		const { unbindESL } = this.props;
+		const { unbindESL, fetchProductOverview, fetchDeviceOverview } = this.props;
 		const content = (
 			<div>
 				<div>{formatMessage({ id: 'esl.device.esl.unbind.message' })}</div>
@@ -159,16 +164,18 @@ class SearchResult extends Component {
 			title: formatMessage({ id: 'esl.device.esl.unbind.title' }),
 			content,
 			okText: formatMessage({ id: 'btn.unbind' }),
-			onOk() {
-				unbindESL({
+			onOk: async () => {
+				await unbindESL({
 					options: { esl_code: record.eslCode },
 				});
+				fetchProductOverview();
+				fetchDeviceOverview();
 			},
 		});
 	};
 
 	deleteESL = record => {
-		const { deleteESL } = this.props;
+		const { deleteESL, fetchProductOverview, fetchDeviceOverview } = this.props;
 		const content = (
 			<div>
 				<div>{formatMessage({ id: 'esl.device.esl.delete.message1' })}</div>
@@ -181,10 +188,12 @@ class SearchResult extends Component {
 			title: formatMessage({ id: 'esl.device.esl.delete.title' }),
 			content,
 			okText: formatMessage({ id: 'btn.delete' }),
-			onOk() {
-				deleteESL({
+			onOk: async () => {
+				await deleteESL({
 					options: { esl_id: record.id },
 				});
+				fetchProductOverview();
+				fetchDeviceOverview();
 			},
 		});
 	};
@@ -220,7 +229,7 @@ class SearchResult extends Component {
 	};
 
 	handleMoreClick = async e => {
-		const { flashModes, flashLed, fetchTemplatesByESLCode } = this.props;
+		const { flashModes, flashLed, fetchTemplatesByESLCode, fetchProductOverview, fetchDeviceOverview } = this.props;
 		const {
 			dataset: { recordId, record },
 		} = e.domEvent.target;
@@ -266,7 +275,9 @@ class SearchResult extends Component {
 		}
 		if (e.key === '5') {
 			const eslDetail = JSON.parse(record);
-			this.flushESL(eslDetail);
+			await this.flushESL(eslDetail);
+			fetchProductOverview();
+			fetchDeviceOverview();
 		}
 		if (e.key === '6') {
 			const eslDetail = JSON.parse(record);
@@ -310,7 +321,10 @@ class SearchResult extends Component {
 			products,
 			productPagination,
 			screenInfo,
+			screenPushInfo,
 			fetchProductList,
+			fetchProductOverview,
+			fetchDeviceOverview,
 			bindESL,
 		} = this.props;
 		const {
@@ -488,7 +502,7 @@ class SearchResult extends Component {
 				<Modal
 					title={formatMessage({ id: 'esl.device.esl.detail' })}
 					visible={detailVisible}
-					width={650}
+					width={750}
 					onCancel={() => this.closeModal('detailVisible')}
 					footer={[
 						<Button
@@ -500,7 +514,7 @@ class SearchResult extends Component {
 						</Button>,
 					]}
 				>
-					<Detail detailInfo={detailInfo} />
+					<Detail detailInfo={detailInfo} screenPushInfo={screenPushInfo} />
 				</Modal>
 				<Modal
 					title={formatMessage({ id: 'esl.device.esl.template.edit' })}
@@ -605,7 +619,7 @@ class SearchResult extends Component {
 								>
 									{(screenInfo || []).map(screen => (
 										<Select.Option key={screen.screen_num} value={screen.screen_num}>
-											{screen.screen_name}
+											{formatMessage({id: screen.screen_name})}
 										</Select.Option>
 									))}
 								</Select>
@@ -626,6 +640,8 @@ class SearchResult extends Component {
 						fetchProductList,
 						selectedProduct,
 						bindESL,
+						fetchProductOverview,
+						fetchDeviceOverview,
 						closeModal: this.closeModal,
 						selectProduct: this.selectProduct,
 						updateProduct: this.updateProduct,

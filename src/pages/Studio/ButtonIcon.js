@@ -10,6 +10,7 @@ const nameMap = {
 	wrapper: formatMessage({ id: 'studio.action.wrapper' }),
 	view: formatMessage({ id: 'studio.action.view' }),
 	history: formatMessage({ id: 'studio.action.history' }),
+	download: formatMessage({ id: 'studio.action.download' }),
 };
 
 export default class ButtonIcon extends Component {

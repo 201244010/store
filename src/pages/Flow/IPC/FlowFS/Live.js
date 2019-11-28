@@ -8,26 +8,29 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Faceid from '@/pages/Flow/VideoPlayer/Faceid';
 import LivePlayer from '@/pages/Flow/VideoPlayer/LivePlayer';
 import { LIBRARY_STYLE } from './libraryName';
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 import styles from './Live.less';
 
 @connect((state) => {
-	const { flowFaceid: { rectangles, list, libraryList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }, } = state;
-	const rects = [];
-
-	rectangles.forEach(item => {
-		item.rects.forEach(rect => {
-			rects.push(rect);
-		});
-	});
+	const { flowFaceid: { rectangles, list, libraryList, ageRangeList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }} = state;
+	// const rects = [];
+	// rectangles.forEach(item => {
+	// item.rects.forEach(rect => {
+	// rects.push(rect);
+	// });
+	// });
 
 	return {
 		streamId,
 		ppiChanged,
-		currentPPI: ppi || '1080',
-		faceidRects: rects || [],
+		currentPPI: ppi || '720',
+		// faceidRects: rects || [],
+		faceidRects: rectangles || [],
 		faceidList: list || [],
 		timeSlots: timeSlots || [],
+		ageRangeList: ageRangeList || [],
 		location,
 		libraryList,
 	};
@@ -52,18 +55,18 @@ import styles from './Live.less';
 		});
 		return url;
 	},
-	stopLive({ sn, streamId }) {
-		return dispatch({
-			type: 'flowLive/stopLive',
-			payload: {
-				sn,
-				streamId
-			}
-		}).then(() => {
-			console.log('stopLive done.');
-			return true;
-		});
-	},
+	// stopLive({ sn, streamId }) {
+	// 	return dispatch({
+	// 		type: 'flowLive/stopLive',
+	// 		payload: {
+	// 			sn,
+	// 			streamId
+	// 		}
+	// 	}).then(() => {
+	// 		console.log('stopLive done.');
+	// 		return true;
+	// 	});
+	// },
 	getDeviceInfo({ sn }) {
 		return dispatch({
 			type: 'ipcList/getDeviceInfo',
@@ -72,14 +75,15 @@ import styles from './Live.less';
 			}
 		}).then(info => info);
 	},
-	changePPI({ ppi, sn }) {
-		dispatch({
+	async changePPI({ ppi, sn }) {
+		const url = dispatch({
 			type: 'flowLive/changePPI',
 			payload: {
 				ppi,
 				sn
 			}
 		});
+		return url;
 	},
 	async getHistoryUrl({ timestamp, sn }) {
 		const url = await dispatch({
@@ -145,17 +149,38 @@ import styles from './Live.less';
 			}
 		});
 	},
+	requestMetadata({ sn }) {
+		dispatch({
+			type: 'flowLive/requestMetadata',
+			payload: {
+				sn
+			}
+		});
+	},
+	changeFaceidPushStatus({ sn, status }) {
+		dispatch({
+			type: 'flowFaceid/changeFaceidPushStatus',
+			payload: {
+				sn,
+				status
+			}
+		});
+	},
+	changeFaceComparePushStatus({ sn, status }) {
+		dispatch({
+			type: 'flowFaceid/changeFaceComparePushStatus',
+			payload: {
+				sn,
+				status
+			}
+		});
+	},
 	readLibraryType() {
 		dispatch({
 			type: 'flowFaceid/readLibraryType',
 		});
 	},
 	loadList: () => dispatch({ type:'ipcList/read'}),
-	// test: () => {
-	// 	dispatch({
-	// 		type:'faceid/test'
-	// 	});
-	// }
 }))
 class Live extends React.Component{
 	constructor(props) {
@@ -165,15 +190,19 @@ class Live extends React.Component{
 				pixelRatio: '16:9'
 			},
 			liveTimestamp: 0,
-			sdStatus: true
+			sdStatus: true,
+			baseTime: '' // 视频直播baseTime
 		};
+		this.timeInterval = 0; // 定时清空store中的人脸框
+		this.reloadTimer = 0; // 定时器刷新页面
 	}
 
 	async componentDidMount () {
-		const { getDeviceInfo, location: { query }, getAgeRangeList, getSdStatus, setDeviceSn, clearList, readLibraryType, loadList } = this.props;
+		const { getDeviceInfo, getAgeRangeList, getSdStatus, setDeviceSn, clearList, readLibraryType, loadList } = this.props;
 
 		readLibraryType();
-		const {sn} = query;
+		const sn = this.getSN();
+
 		let sdStatus = true;
 		if (sn) {
 			// test();
@@ -182,45 +211,75 @@ class Live extends React.Component{
 			await loadList();
 			const deviceInfo = await getDeviceInfo({ sn });
 			const { hasFaceid } = deviceInfo;
+
 			setDeviceSn({ sn });
+
 			if(hasFaceid){
 				const status = await getSdStatus({ sn });
 				if(status === 0) {
 					message.info(formatMessage({ id: 'flow.nosdInfo' }));
 					sdStatus = false;
 				}
+				this.startFaceComparePush();
+				// setTimeout(() => {
+				// 	this.startFaceComparePush();
+				// }, 3000);
+
 			}
 
 			this.setState({
 				deviceInfo,
 				sdStatus
 			});
-
 			// setTimeout(test, 1000);
 		}
+
+		const now = moment().format('YYYY-MM-DD HH:mm:ss');
+		console.log('大屏加载now=', now);
+
+		this.timeToReload();
 	}
 
 	componentWillUnmount () {
-		const { stopLive, streamId, location: { query }, stopHistoryPlay } = this.props;
-		const { sn } = query;
-
+		const { stopHistoryPlay } = this.props;
+		const sn = this.getSN();
 		if (sn) {
 			stopHistoryPlay({
 				sn
 			});
-			if (streamId) {
-				stopLive({
-					sn,
-					streamId
-				});
+
+			const hasFaceid = this.hasFaceid();
+			if (hasFaceid) {
+				this.stopFaceidPush();
+				this.stopFaceComparePush();
 			}
 		}
+		clearInterval(this.timeInterval);
+		clearInterval(this.reloadTimer);
+	}
+
+	// 每天凌晨4点多时，页面刷新一次
+	timeToReload = () => {
+		this.reloadTimer = setTimeout(() => {
+			const date = moment().format('YYYYMMDD');
+			const hour = moment().hour();
+			const reloadDate = localStorage.getItem('_sunmi_store_reload_date');
+			console.log('date=', date);
+			console.log('reloadDate=', reloadDate);
+
+			if (hour === 4 && date !== reloadDate) {
+				localStorage.setItem('_sunmi_store_reload_date', date);
+				window.location.reload();
+			}
+
+			this.timeToReload();
+		}, 30*60*1000);
 	}
 
 	onTimeChange = async (timeStart, timeEnd) => {
 
-		const { getTimeSlots, location: { query } } = this.props;
-		const {sn} = query;
+		const { getTimeSlots } = this.props;
+		const sn = this.getSN();
 
 		const result = await getTimeSlots({
 			sn,
@@ -229,6 +288,12 @@ class Live extends React.Component{
 		});
 
 		return result;
+	}
+
+	updateBasetime = (timestamp) => {
+		this.setState({
+			baseTime: timestamp
+		});
 	}
 
 	onMetadataArrived = (timestamp) => {
@@ -244,47 +309,172 @@ class Live extends React.Component{
 		});
 	}
 
-	getLiveUrl = async () => {
-		const { getLiveUrl, location: { query }} = this.props;
+	getSN = () => {
+		const { location: { query } } = this.props;
 		const { sn } = query;
-
-		const url = await getLiveUrl({ sn });
-		return url;
+		return sn;
 	}
 
-	stopLive = async () => {
-		const { stopLive, streamId, location: { query }} = this.props;
-		const { sn } = query;
+	hasFaceid = async () => {
+		const { getDeviceInfo } = this.props;
+		const sn = this.getSN();
+		const deviceInfo = await getDeviceInfo({ sn });
+		const { hasFaceid } = deviceInfo;
 
-		await stopLive({
+		return hasFaceid;
+	}
+
+	requestMetadata = () => {
+		const { requestMetadata } = this.props;
+		const sn = this.getSN();
+
+		requestMetadata({ sn });
+	}
+
+	startFaceidPush = () => {
+		console.log('facied');
+		const { changeFaceidPushStatus, clearRects } = this.props;
+		const sn = this.getSN();
+
+		changeFaceidPushStatus({
 			sn,
-			streamId
+			status: true
+		});
+
+		clearInterval(this.timeInterval);
+		this.timeInterval = setInterval(() => {
+			const { baseTime } = this.state;
+			if (baseTime) {
+				clearRects({
+					timestamp: moment().valueOf() - baseTime - 30 * 1000
+				});
+			}
+		}, 10 * 1000);
+	}
+
+	stopFaceidPush = () => {
+		const { changeFaceidPushStatus } = this.props;
+		const sn = this.getSN();
+
+		changeFaceidPushStatus({
+			sn,
+			status: false
+		});
+
+		clearInterval(this.timeInterval);
+	}
+
+	startFaceComparePush = () => {
+		console.log('compare');
+		const { changeFaceComparePushStatus } = this.props;
+		const sn = this.getSN();
+
+		changeFaceComparePushStatus({
+			sn,
+			status: true
 		});
 	}
 
+	stopFaceComparePush = () => {
+		const { changeFaceComparePushStatus } = this.props;
+		const sn = this.getSN();
+
+		changeFaceComparePushStatus({
+			sn,
+			status: false
+		});
+	}
+
+	getLiveUrl = async () => {
+		const { getLiveUrl } = this.props;
+		const sn = this.getSN();
+
+		const hasFaceid = this.hasFaceid();
+		if (hasFaceid) {
+			this.startFaceidPush();
+			// setTimeout(() => {
+			// 	this.startFaceidPush();
+			// }, 3000);
+		}
+
+		const url = await getLiveUrl({ sn });
+		console.log('uuuuuuuu',url);
+		return url;
+	}
+
+	// stopLive = async () => {
+	//	const { stopLive, streamId, location: { query }} = this.props;
+	//	const { sn } = query;
+
+	//	await stopLive({
+	//		sn,
+	//		streamId
+	//	});
+	// }
+
 	getHistoryUrl = async  (timestamp) => {
-		const { getHistoryUrl, location: { query }} = this.props;
-		const { sn } = query;
+		const { getHistoryUrl } = this.props;
+		const sn = this.getSN();
 
 		const url = await getHistoryUrl({ sn, timestamp });
+
+		const hasFaceid = this.hasFaceid();
+
+		if (hasFaceid) {
+			this.stopFaceidPush();
+		}
+
 		return url;
 	}
 
 	stopHistoryPlay = async () => {
-		const { stopHistoryPlay, location: { query } } = this.props;
-		const { sn } = query;
+		const { stopHistoryPlay } = this.props;
+		const sn = this.getSN();
 
 		await stopHistoryPlay({ sn });
 	}
 
 	changePPI = (ppi) => {
-		const { changePPI, location:{ query } } = this.props;
-		const { sn } = query;
+		const { changePPI } = this.props;
+		const sn = this.getSN();
 
-		changePPI({
+		const url = changePPI({
 			ppi,
 			sn
 		});
+
+		return url;
+	}
+
+	mapAgeInfo(age, ageRangeCode) {
+
+		const { ageRangeList } = this.props;
+		let ageName = formatMessage({id: 'flow.unknown'});
+		if(age) {
+			ageName = `${age} ${formatMessage({id: 'flow.age.unit'})}`;
+		} else {
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+				case 18:
+					ageName = formatMessage({ id: 'flow.ageLessInfo'});
+					break;
+				case 8:
+					ageName = formatMessage({ id: 'flow.ageLargeInfo'});
+					break;
+				default:
+					if(ageRangeList){
+						ageRangeList.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = `${item.ageRange} ${formatMessage({id: 'flow.age.unit'})}`;
+							}
+						});
+					}
+			}
+		}
+
+		return ageName;
 	}
 
 	render() {
@@ -301,6 +491,12 @@ class Live extends React.Component{
 			2: formatMessage({ id: 'flow.genders.female'})
 		};
 
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
+		};
+
 		return(
 			<div className={styles['live-wrapper']}>
 
@@ -312,12 +508,12 @@ class Live extends React.Component{
 						currentPPI={currentPPI}
 						changePPI={this.changePPI}
 						ppiChanged={ppiChanged}
-
+						onLivePlay={this.requestMetadata}
 						getHistoryUrl={this.getHistoryUrl}
 						stopHistoryPlay={this.stopHistoryPlay}
 
 						getLiveUrl={this.getLiveUrl}
-						pauseLive={this.stopLive}
+						// pauseLive={this.stopLive}
 
 						timeSlots={timeSlots}
 
@@ -335,6 +531,7 @@ class Live extends React.Component{
 						getCurrentTimestamp={this.syncLiveTimestamp}
 						onTimeChange={this.onTimeChange}
 						onMetadataArrived={this.onMetadataArrived}
+						updateBasetime={this.updateBasetime}
 					/>
 
 				</div>
@@ -355,14 +552,15 @@ class Live extends React.Component{
 														title={
 															<div className={styles['avatar-container']}>
 																<div className={`${styles.type} ${styles[libraryType[item.libraryId]]}`}>{ item.libraryName }</div>
-																<Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic}`} />
+																{/* <Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} /> */}
+																<Avatar className={styles.avatar} shape="square" size={128} src={item.pic ? item.pic : images[item.gender]} />
 															</div>
 														}
 														bordered={false}
 														className={styles.infos}
 													>
 														<p className={styles['infos-age']}>
-															{ `${ genders[item.gender] } ${ item.age }${formatMessage({id: 'flow.age.unit'})}` }
+															{ `${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)}` }
 														</p>
 														<p className={styles['infos-time']}>
 															{/* <span>{formatMessage({id: 'live.last.arrival.time'})}</span> */}

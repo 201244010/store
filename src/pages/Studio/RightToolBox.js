@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { Col, Icon, Input, InputNumber, Row, Select, Radio } from 'antd';
+import { Col, Icon, Input, InputNumber, Row, Select, Radio, AutoComplete } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { KEY } from '@/constants';
 import { SHAPE_TYPES, MAPS, FORMATS } from '@/constants/studio';
 // import { validEAN8Num, validEAN13Num } from '@/utils/studio';
 import * as RegExp from '@/constants/regexp';
@@ -69,9 +70,46 @@ export default class RightToolBox extends Component {
 		super(props);
 		this.state = {
 			x: 'o',
-			y: 'o'
+			y: 'o',
+			fontSize: '',
+			smallFontSize: ''
 		};
 	}
+
+	componentDidMount() {
+		this.initialValue(this.props);
+		document.addEventListener('keydown', this.handleFontSizeEnter);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		this.initialValue(nextProps);
+	}
+
+	componentWillUnmount() {
+		document.removeEventListener('keydown', this.handleFontSizeEnter);
+	}
+
+	handleFontSizeEnter = (ev) => {
+		const { keyCode, target: { className } } = ev;
+		if (keyCode === KEY.ENTER && className.includes('ant-select-search__field')) {
+		    if (this.autoComplete) {
+				this.autoComplete.blur();
+			}
+			if (this.smallAutoComplete) {
+				this.smallAutoComplete.blur();
+			}
+		}
+	};
+
+	initialValue = (props) => {
+		const { componentsDetail, selectedShapeName } = props;
+		const detail = componentsDetail[selectedShapeName];
+
+		this.setState({
+			fontSize: (detail.fontSize || '').toString(),
+			smallFontSize: (detail.smallFontSize || '').toString()
+		});
+	};
 
 	handleDetail = (key, value) => {
 		const {
@@ -104,9 +142,10 @@ export default class RightToolBox extends Component {
 			};
 			const detail = componentsDetail[selectedShapeName];
 			let canUpdate = true;
-			if (key === 'fontSize') {
-				newDetail.scaleY = value / MAPS.containerHeight[detail.type];
-			} else if (key === 'content' && selectedShapeName.indexOf(SHAPE_TYPES.PRICE) > -1) {
+			if (key === 'bindField' && selectedShapeName.indexOf(SHAPE_TYPES.TEXT) > -1) {
+				newDetail.content = formatMessage({ id: bindFieldsLocaleMap[value] || 'studio.action.text.db.click'});
+			}
+			if (key === 'content' && selectedShapeName.indexOf(SHAPE_TYPES.PRICE) > -1) {
 				if (value === '') {
 					canUpdate = true;
 				} else {
@@ -126,6 +165,48 @@ export default class RightToolBox extends Component {
 				});
 			}
 		}
+	};
+
+	handleFontSize = (value) => {
+		const fontSize = (parseInt(value, 10) || '').toString();
+
+		this.setState({
+			fontSize
+		});
+	};
+
+	updateFontSize = () => {
+		const {componentsDetail, selectedShapeName, updateComponentsDetail} = this.props;
+		const {fontSize} = this.state;
+		const detail = componentsDetail[selectedShapeName];
+
+		updateComponentsDetail({
+			isStep: true,
+			[selectedShapeName]: {
+				fontSize,
+				scaleY: Math.max(fontSize / MAPS.containerHeight[detail.type], detail.scaleY)
+			},
+		});
+	};
+
+	handleSmallFontSize = (value) => {
+		const smallFontSize = (parseInt(value, 10) || '').toString();
+
+		this.setState({
+			smallFontSize
+		});
+	};
+
+	updateSmallFontSize = () => {
+		const {selectedShapeName, updateComponentsDetail} = this.props;
+		const {smallFontSize} = this.state;
+
+		updateComponentsDetail({
+			isStep: true,
+			[selectedShapeName]: {
+				smallFontSize
+			},
+		});
 	};
 
 	handleCodec = (value) => {
@@ -164,7 +245,7 @@ export default class RightToolBox extends Component {
 	};
 
 	handleLineSpacing = (detail, value) => {
-		if ((!value || /^(0|[1-9][0-9]*)$/.test(value)) && value <= detail.fontSize * detail.zoomScale) {
+		if ((!value || /^(0|[1-9][0-9]*)$/.test(value))) {
 			const {selectedShapeName, updateComponentsDetail} = this.props;
 			const newDetail = {
 				lineSpacing: value,
@@ -255,10 +336,28 @@ export default class RightToolBox extends Component {
 				});
 			};
 		}
-		if (this.hasSubString(SHAPE_TYPES.CODE_H) || this.hasSubString(SHAPE_TYPES.CODE_V)) {
+		if (this.hasSubString(SHAPE_TYPES.CODE_H)) {
 			const image = document.createElement('img');
 			JsBarcode(image, value, {
-				format: 'CODE128',
+				format: 'CODE39',
+				width: 3,
+				height: 100,
+				displayValue: false
+			});
+
+			updateComponentsDetail({
+				[selectedShapeName]: {
+					content: value,
+					image,
+					ratio: this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14,
+					height: detail.width * (this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14),
+				}
+			});
+		}
+		if (this.hasSubString(SHAPE_TYPES.CODE_V)) {
+			const image = document.createElement('img');
+			JsBarcode(image, value, {
+				format: 'CODE39',
 				width: MAPS.containerWidth[detail.type] * detail.scaleX * detail.zoomScale,
 				displayValue: false
 			});
@@ -267,8 +366,8 @@ export default class RightToolBox extends Component {
 				[selectedShapeName]: {
 					content: value,
 					image,
-					ratio: image.height / image.width,
-					height: (detail.width * image.height) / image.width,
+					ratio: this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14,
+					height: detail.width * (this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14),
 				}
 			});
 		}
@@ -403,7 +502,7 @@ export default class RightToolBox extends Component {
 		}
 		if (this.hasSubString(SHAPE_TYPES.TEXT)) {
 			ret = bindFields.filter(
-				item => item.indexOf('Price') === -1 && item.indexOf('QrCode') === -1
+				item => item.indexOf('Price') === -1
 			);
 		}
 
@@ -421,8 +520,8 @@ export default class RightToolBox extends Component {
 	};
 
 	render() {
-		const { componentsDetail, selectedShapeName } = this.props;
-		const { x, y } = this.state;
+		const { componentsDetail, selectedShapeName, updateMask } = this.props;
+		const { x, y, fontSize, smallFontSize } = this.state;
 		const menuMap = this.getMenuMap();
 		const detail = componentsDetail[selectedShapeName];
 		const originFix = {};
@@ -519,14 +618,6 @@ export default class RightToolBox extends Component {
 							/>
 						</Col>
 					</Row>
-					{/*
-					<Row gutter={20}>
-						<Col span={12}>
-							<Input style={{width: 100}} addonAfter={<Icon type="undo"/>}/>
-						</Col>
-						<Col span={12}/>
-					</Row>
-					*/}
 				</div>
 				{menuMap.isRect ? (
 					<div className={styles['tool-box-block']}>
@@ -675,6 +766,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
+									<Option value="AlibabaSans">Alibaba Sans</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -685,38 +777,27 @@ export default class RightToolBox extends Component {
 								</span>
 							</Col>
 							<Col span={20}>
-								<Select
+								<AutoComplete
+									ref={(autoComplete) => {this.autoComplete = autoComplete;}}
 									style={{ width: '100%' }}
+									dataSource={fontSizes.map(size => size.key.toString())}
 									placeholder={formatMessage({
 										id: 'studio.tool.label.font.size',
 									})}
-									value={detail.fontSize}
+									defaultActiveFirstOption={false}
+									value={fontSize}
+									onFocus={() => updateMask(true)}
 									onChange={value => {
-										this.handleDetail('fontSize', value);
+										this.handleFontSize(value);
 									}}
-								>
-									{
-										fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-									}
-								</Select>
+									onBlur={() => {
+										this.updateFontSize();
+										setTimeout(() => {
+											updateMask(false);
+										}, 20);
+									}}
+								/>
 							</Col>
-							{/*
-									<Col span={2} />
-								<Col span={4}>
-									<span className={styles.title}>间距</span>
-								</Col>
-								<Col span={7}>
-									<InputNumber
-										style={{ width: "100%" }}
-										placeholder="间距"
-										min={0}
-										value={detail.letterSpacing}
-										onChange={value => {
-											this.handleDetail("letterSpacing", value);
-										}}
-									/>
-								</Col>
-									*/}
 						</Row>
 						<Row style={{ marginBottom: 10 }}>
 							<Col span={4}>
@@ -728,8 +809,7 @@ export default class RightToolBox extends Component {
 								<InputNumber
 									style={{ width: '100%' }}
 									placeholder={formatMessage({ id: 'studio.tool.label.line.spacing' })}
-									min={0}
-									max={detail.fontSize * detail.zoomScale}
+									min={detail.fontSize}
 									value={detail.lineSpacing}
 									onChange={value => {
 										this.handleLineSpacing(detail, value);
@@ -938,6 +1018,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
+									<Option value="AlibabaSans">Alibaba Sans</Option>
 								</Select>
 							</Col>
 						</Row>
@@ -954,20 +1035,26 @@ export default class RightToolBox extends Component {
 												</span>
 											</Col>
 											<Col span={24}>
-												<Select
+												<AutoComplete
+													ref={(autoComplete) => {this.autoComplete = autoComplete;}}
 													style={{ width: '100%' }}
+													dataSource={fontSizes.map(size => size.key.toString())}
 													placeholder={formatMessage({
 														id: 'studio.tool.label.font.size',
 													})}
-													value={detail.fontSize}
+													defaultActiveFirstOption={false}
+													value={fontSize}
+													onFocus={() => updateMask(true)}
 													onChange={value => {
-														this.handleDetail('fontSize', value);
+														this.handleFontSize(value);
 													}}
-												>
-													{
-														fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-													}
-												</Select>
+													onBlur={() => {
+														this.updateFontSize();
+														setTimeout(() => {
+															updateMask(false);
+														}, 20);
+													}}
+												/>
 											</Col>
 										</Row>
 									</Col>
@@ -981,22 +1068,26 @@ export default class RightToolBox extends Component {
 												</span>
 											</Col>
 											<Col span={24}>
-												<Select
+												<AutoComplete
+													ref={(autoComplete) => {this.smallAutoComplete = autoComplete;}}
 													style={{ width: '100%' }}
+													dataSource={fontSizes.filter(size => size.value < detail.fontSize).map(size => size.key.toString())}
 													placeholder={formatMessage({
-														id: 'studio.tool.label.font.size.small',
+														id: 'studio.tool.label.font.size',
 													})}
-													value={detail.smallFontSize}
+													defaultActiveFirstOption={false}
+													value={smallFontSize}
+													onFocus={() => updateMask(true)}
 													onChange={value => {
-														this.handleDetail('smallFontSize', value);
+														this.handleSmallFontSize(value);
 													}}
-												>
-													{
-														fontSizes
-															.filter(size => size.value < detail.fontSize)
-															.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-													}
-												</Select>
+													onBlur={() => {
+														this.updateSmallFontSize();
+														setTimeout(() => {
+															updateMask(false);
+														}, 20);
+													}}
+												/>
 											</Col>
 										</Row>
 									</Col>
@@ -1009,20 +1100,26 @@ export default class RightToolBox extends Component {
 										</span>
 									</Col>
 									<Col span={20}>
-										<Select
+										<AutoComplete
+											ref={(autoComplete) => {this.autoComplete = autoComplete;}}
 											style={{ width: '100%' }}
+											dataSource={fontSizes.map(size => size.key.toString())}
 											placeholder={formatMessage({
 												id: 'studio.tool.label.font.size',
 											})}
-											value={detail.fontSize}
+											defaultActiveFirstOption={false}
+											value={fontSize}
+											onFocus={() => updateMask(true)}
 											onChange={value => {
-												this.handleDetail('fontSize', value);
+												this.handleFontSize(value);
 											}}
-										>
-											{
-												fontSizes.map(size => <Option key={size.key} value={size.key}>{size.value}</Option>)
-											}
-										</Select>
+											onBlur={() => {
+												this.updateFontSize();
+												setTimeout(() => {
+													updateMask(false);
+												}, 20);
+											}}
+										/>
 									</Col>
 								</Fragment>
 							)}
@@ -1192,39 +1289,54 @@ export default class RightToolBox extends Component {
 				{menuMap.isBarOrQrCode ? (
 					<div className={styles['tool-box-block']}>
 						<h4>{formatMessage({ id: 'studio.tool.title.style' })}</h4>
-						<Row style={{ marginBottom: 10 }} gutter={20}>
-							<Col span={24}>{formatMessage({ id: 'studio.tool.title.bind.value' })}</Col>
-							<Col span={24}>
-								<Input
-									placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
-									value={detail.content}
-									style={{ width: '100%' }}
-									maxLength={30}
-									onChange={e => {
-										this.handleBindValue(e.target.value);
-									}}
-								/>
-							</Col>
-						</Row>
 						{
 							menuMap.isCode ?
+								<>
+									<Row style={{ marginBottom: 10 }} gutter={20}>
+										<Col span={24}>{formatMessage({ id: 'studio.tool.title.bind.value' })}</Col>
+										<Col span={24}>
+											<Input
+												placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
+												value={detail.content}
+												style={{ width: '100%' }}
+												maxLength={30}
+												onChange={e => {
+													this.handleBindValue(e.target.value);
+												}}
+											/>
+										</Col>
+									</Row>
+									<Row style={{ marginBottom: 10 }} gutter={20}>
+										<Col span={24}>{formatMessage({ id: 'studio.tool.label.codec' })}</Col>
+										<Col span={24}>
+											<Select
+												style={{ width: '100%' }}
+												value={detail.codec}
+												onChange={value => {
+													this.handleCodec(value);
+												}}
+											>
+												<Option value="ean8">ean8</Option>
+												<Option value="ean13">ean13</Option>
+												<Option value="code128">code128</Option>
+											</Select>
+										</Col>
+									</Row>
+								</> :
 								<Row style={{ marginBottom: 10 }} gutter={20}>
-									<Col span={24}>{formatMessage({ id: 'studio.tool.label.codec' })}</Col>
+									<Col span={24}>{formatMessage({ id: 'studio.tool.title.qr.bind.value' })}</Col>
 									<Col span={24}>
-										<Select
+										<Input
+											placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
+											value={detail.content}
 											style={{ width: '100%' }}
-											value={detail.codec}
-											onChange={value => {
-												this.handleCodec(value);
+											maxLength={200}
+											onChange={e => {
+												this.handleBindValue(e.target.value);
 											}}
-										>
-											<Option value="ean8">ean8</Option>
-											<Option value="ean13">ean13</Option>
-											<Option value="code128">code128</Option>
-										</Select>
+										/>
 									</Col>
-								</Row> :
-								null
+								</Row>
 						}
 					</div>
 				) : null}

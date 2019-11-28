@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Divider, message, Modal, Table } from 'antd';
+import { Button, Divider, message, Modal, Table, Tag } from 'antd';
 import { formatMessage } from 'umi/locale';
 import BaseStationTag from './BaseStationTag';
 import BaseStationDetail from './BaseStationDetail';
@@ -20,6 +20,16 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.ap.sn' }),
 				dataIndex: 'sn',
+				render: (text, record) => (
+					<div>
+						<span style={{marginRight: 10}}>{text}</span>
+						{
+							parseInt(record.is_master, 10) === 1 ?
+								<Tag>{formatMessage({ id: 'esl.device.ap.sn.mater' })}</Tag> :
+								null
+						}
+					</div>
+				)
 			},
 			{
 				title: formatMessage({ id: 'esl.device.ap.name' }),

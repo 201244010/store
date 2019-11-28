@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Modal, Form, Input, Upload, Button, Icon, Row, Col, Spin } from 'antd';
+import { Modal, Form, Upload, Button, Icon, Row, Col, Spin } from 'antd';
+import JSZip from 'jszip';
 import { formatMessage } from 'umi/locale';
 import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import styles from './DeviceUpgrade.less';
@@ -31,6 +32,18 @@ const UploadVersionLowerError = ({ uploadStatus }) => (
 	<div className={styles['info-content']}>
 		<h3>{formatMessage({ id: 'esl.device.upload.fail' })}</h3>
 		<h3>{formatMessage({ id: 'esl.device.upload.version.low' })}</h3>
+		<div>
+			<Button type="primary" onClick={() => uploadStatus('init')}>
+				{formatMessage({ id: 'btn.know' })}
+			</Button>
+		</div>
+	</div>
+);
+
+const UploadModelWrongError = ({ uploadStatus }) => (
+	<div className={styles['info-content']}>
+		<h3>{formatMessage({ id: 'esl.device.upload.fail' })}</h3>
+		<h3>{formatMessage({ id: 'esl.device.upload.version.model.wrong' })}</h3>
 		<div>
 			<Button type="primary" onClick={() => uploadStatus('init')}>
 				{formatMessage({ id: 'btn.know' })}
@@ -74,20 +87,29 @@ class FirmwareUploadModal extends Component {
 	}
 
 	confirmUpload = () => {
-		const { onOk, form } = this.props;
-		const { fileList } = this.state;
-		form.validateFields((errors, values) => {
-			if (!errors) {
-				this.setState(
-					{
-						version: values.version,
-						file: values.firmware.file,
-						fileList: fileList.length > 1 ? [fileList] : [fileList.pop()],
-					},
-					() => onOk(values)
-				);
-			}
-		});
+		const { data, onOk, uploadStatus, form: { validateFields } } = this.props;
+		const { version, fileList } = this.state;
+		if (this.model && this.model.indexOf(data.model) === -1) {
+			uploadStatus('modelError');
+		} else {
+			validateFields((errors, values) => {
+				if (!errors) {
+					this.setState(
+						{
+							version,
+							file: values.firmware.file,
+							fileList: fileList.length > 1 ? [fileList] : [fileList.pop()],
+						},
+						() => onOk({
+							version,
+							firmware: {
+								file: this.uploadFile
+							}
+						})
+					);
+				}
+			});
+		}
 	};
 
 	onCancel = () => {
@@ -102,10 +124,48 @@ class FirmwareUploadModal extends Component {
 		);
 	};
 
+	unZip = async (uploadFile) => {
+	    const {type} = this.props;
+		const zip = await JSZip.loadAsync(uploadFile);
+		zip.forEach(async (relativePath, zipEntry) => {
+			if (relativePath.indexOf('.txt') > -1) {
+				const contentStr = await zipEntry.async('text');
+				const contentArr = contentStr.split(/[\s\n]/);
+				if (contentArr && contentArr.length) {
+					contentArr.forEach(item => {
+						if (item.indexOf('model') > -1) {
+							this.model = item;
+						}
+						if (item.indexOf('version') > -1) {
+							this.setState({
+								version: item.split('=')[1]
+							});
+						}
+					});
+				}
+			}
+			const fileType = type === 'ESL' ? 'bin' : 'gz';
+			if (relativePath.indexOf(fileType) > -1) {
+				const contentBlob = await zipEntry.async('blob');
+				try {
+					this.uploadFile = new File([contentBlob], relativePath.split('/')[1], {type: fileType});
+				} catch (e) {
+					// this workaround edge
+					// if (typeof window.navigator.msSaveBlob !== 'undefined') {
+					// 	window.navigator.msSaveBlob(contentBlob, relativePath.split('/')[1]);
+					//
+					// }
+					this.uploadFile = contentBlob;
+				}
+			} else {
+				// throw new Error('上传文件类型错误', relativePath, fileType);
+			}
+		});
+	};
+
 	render() {
 		const {
 			form: { getFieldDecorator, setFieldsValue },
-			type,
 			status,
 			data,
 			visible,
@@ -125,19 +185,20 @@ class FirmwareUploadModal extends Component {
 		};
 
 		const modalProps = status === 'init' ? modalInit : modalUpload;
-		const acceptFileType = type === 'ESL' ? '.bin' : '.gz';
 		const uploadProps = {
-			accept: acceptFileType,
+			accept: '.zip',
 			beforeUpload: (uploadFile, uploadFileList) => {
 				this.setState({
 					file: uploadFile,
 					fileList: uploadFileList,
 				});
+				this.unZip(uploadFile);
 				return false;
 			},
 			onRemove: () => {
 				this.setState(
 					{
+						version: null,
 						file: {},
 						fileList: [],
 					},
@@ -150,6 +211,7 @@ class FirmwareUploadModal extends Component {
 		const statusComponent = {
 			uploading: UploadingInfo,
 			commonError: UploadCommonError,
+			modelError: UploadModelWrongError,
 			versionLower: UploadVersionLowerError,
 			versionExist: UploadVersionExistError,
 			success: UploadSuccess,
@@ -169,55 +231,10 @@ class FirmwareUploadModal extends Component {
 				<div className={styles['custom-modal-wrapper']}>
 					{status === 'init' ? (
 						<Form {...{ ...FORM_ITEM_LAYOUT_COMMON }}>
-							<Form.Item
-								label={formatMessage({ id: 'esl.device.upload.device.model' })}
-							>
+							<Form.Item label={formatMessage({ id: 'esl.device.upload.device.model' })}>
 								<span>{data.model}</span>
 							</Form.Item>
-							<Form.Item
-								label={formatMessage({ id: 'esl.device.upload.device.version' })}
-							>
-								<Row gutter={5}>
-									<Col span={8}>
-										{getFieldDecorator('version', {
-											initialValue: version,
-											rules: [
-												{
-													required: true,
-													message: formatMessage({
-														id:
-															'esl.device.upload.device.version.require',
-													}),
-												},
-												{
-													pattern: /^(0{1}|[1-9][0-9]{0,2})\.(0{1}|[1-9][0-9]{0,2})\.(0{1}|[1-9][0-9]{0,2})$/,
-													message: formatMessage({
-														id:
-															'esl.device.upload.device.version.formatError',
-													}),
-												},
-											],
-										})(
-											<Input
-												placeholder={formatMessage({
-													id: 'esl.device.upload.device.version.input',
-												})}
-												maxLength={11}
-											/>
-										)}
-									</Col>
-									<Col span={12}>
-										<span className={styles['form-description']}>
-											{formatMessage({
-												id: 'esl.device.upload.device.version.notice',
-											})}
-										</span>
-									</Col>
-								</Row>
-							</Form.Item>
-							<Form.Item
-								label={formatMessage({ id: 'esl.device.upload.device.bin.choice' })}
-							>
+							<Form.Item label={formatMessage({ id: 'esl.device.upload.device.bin.choice' })}>
 								{getFieldDecorator('firmware', {
 									initialValue: { file, fileList },
 									rules: [
@@ -232,25 +249,11 @@ class FirmwareUploadModal extends Component {
 												if (Object.keys(value.file).length === 0) {
 													callback(
 														formatMessage({
-															id:
-																'esl.device.upload.device.bin.require',
+															id: 'esl.device.upload.device.bin.require',
 														})
 													);
 												} else {
-													const { name } = value.file;
-													const fileType =
-														`.${name.split('.').pop()}` || '';
-													const typeList = acceptFileType.split(',');
-													if (typeList.includes(fileType)) {
-														callback();
-													} else {
-														callback(
-															formatMessage({
-																id:
-																	'esl.device.upload.device.bin.error',
-															})
-														);
-													}
+													callback();
 												}
 											},
 										},
@@ -265,6 +268,13 @@ class FirmwareUploadModal extends Component {
 										</Button>
 									</Upload>
 								)}
+							</Form.Item>
+							<Form.Item label={formatMessage({ id: 'esl.device.upload.device.version' })}>
+								<Row gutter={5}>
+									<Col span={24}>
+										<span>{version || formatMessage({ id: 'esl.device.upload.device.version.text' })}</span>
+									</Col>
+								</Row>
 							</Form.Item>
 						</Form>
 					) : (

@@ -1,10 +1,26 @@
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { getImagePromise, initTemplateDetail, purifyJsonOfBackEnd } from '@/utils/studio';
+import { getImagePromise, initTemplateDetail, purifyJsonOfBackEnd, downloadJsonAsDraft } from '@/utils/studio';
+import { getLocationParam } from '@/utils/utils';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
-import * as TemplateService from '@/services/ESL/template';
+import TemplateService from '@/services/ESL/template';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 import {IMAGE_TYPES, MAPS} from '@/constants/studio';
+
+function generateModelName() {
+	const SCREEN_TYPE = {
+		1: '2.13',
+		2: '2.6',
+		3: '4.2',
+	};
+	const COLOR_TYPE = {
+		3: 'BW',
+		7: 'BWR'
+	};
+	const studioType = getLocationParam('screen');
+	const colorType = getLocationParam('color');
+	return `${COLOR_TYPE[colorType]}-${SCREEN_TYPE[studioType]}`;
+}
 
 export default {
 	namespace: 'template',
@@ -171,6 +187,27 @@ export default {
 				});
 				message.error(formatMessage({ id: 'esl.device.template.action.save.error' }));
 			}
+		},
+		*downloadAsDraft({ payload = {} }, { put, select }) {
+			const { curTemplate } = yield select(state => state.template);
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			const draft = {
+				encoding: 'UTF-8',
+				type: curTemplate.model_name || generateModelName(),
+				backgroundColor: 'white',
+				fillFields: [],
+				layers: [],
+				layerCount: 0,
+			};
+			const result = purifyJsonOfBackEnd(payload.draft);
+			draft.fillFields = result.bindFields;
+			draft.layers = result.layers;
+			draft.layerCount = result.layers.length;
+
+			downloadJsonAsDraft(curTemplate.name, draft);
 		},
 		*fetchTemplateDetail({ payload = {} }, { call, put, select }) {
 			yield put({
@@ -389,6 +426,45 @@ export default {
 					message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
 				} else {
 					message.error(formatMessage({ id: 'esl.device.template.action.modify.name.error' }));
+				}
+			}
+			return response;
+		},
+		*uploadTemplate({ payload = {} }, { call, put, select }) {
+			const {
+				data,
+				pagination: { current },
+			} = yield select(state => state.template);
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			const response = yield call(TemplateService.uploadTemplate, payload);
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				yield put({
+					type: 'fetchTemplates',
+					payload: {
+						options: {
+							screen_type: -1,
+							colour: -1,
+							current: data.length > 1 ? current : current - 1,
+						},
+					},
+				});
+				message.success(formatMessage({ id: 'esl.device.template.action.upload.success' }));
+			} else {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				if (ALERT_NOTICE_MAP[response.code]) {
+					message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
+				} else {
+					message.error(formatMessage({ id: 'esl.device.template.action.upload.error' }));
 				}
 			}
 			return response;

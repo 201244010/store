@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { /* Button, */ Row, Spin } from 'antd';
+import { /* Button, */ Row, Spin, message } from 'antd';
 import { connect } from 'dva';
-
+import { formatMessage } from 'umi/locale';
 // import { FormattedMessage } from 'umi/locale';
 
 import NoIPCList from './NoIPCList';
@@ -16,14 +16,25 @@ import styles from './IPCList.less';
 		loading
 	};
 },(dispatch) => ({
-	loadList: () => dispatch({ type:'ipcList/read'}),
+	loadList: () => {
+		dispatch({ type:'ipcList/read'});
+	},
 	navigateTo: (pathId, urlParams) => dispatch({
 		type: 'menu/goToPath',
 		payload: {
 			pathId,
 			urlParams
 		}
-	})
+	}),
+	checkBind: async (sn) => {
+		const result = await dispatch({
+			type: 'ipcList/checkBind',
+			payload: {
+				sn
+			}
+		});
+		return result;
+	}
 }))
 
 class IPCList extends React.Component {
@@ -33,14 +44,26 @@ class IPCList extends React.Component {
 		loadList();
 	}
 
-	onClickSetting = (sn) => {
-		const { navigateTo } = this.props;
-		navigateTo('ipcManagement', {sn});
+	onClickSetting = async (sn) => {
+		const { checkBind } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			const { navigateTo } = this.props;
+			navigateTo('ipcManagement', {sn});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
+		}
 	}
 
-	onClickPlay = (sn) => {
-		const { navigateTo } = this.props;
-		navigateTo('live', {sn});
+	onClickPlay = async  (sn) => {
+		const { checkBind } = this.props;
+		const isBind = await checkBind(sn);
+		if(isBind) {
+			const { navigateTo } = this.props;
+			navigateTo('live', {sn});
+		} else {
+			message.warning(formatMessage({ id: 'ipcList.noLive'}));
+		}
 	}
 
 	render() {

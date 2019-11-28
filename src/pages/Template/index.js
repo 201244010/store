@@ -17,6 +17,7 @@ import SearchResult from './SearchResult';
 		deleteTemplate: payload => dispatch({ type: 'template/deleteTemplate', payload }),
 		applyTemplate: payload => dispatch({ type: 'template/applyTemplate', payload }),
 		cloneTemplate: payload => dispatch({ type: 'template/cloneTemplate', payload }),
+		uploadTemplate: payload => dispatch({ type: 'template/uploadTemplate', payload }),
 	})
 )
 class Template extends Component {
@@ -49,6 +50,7 @@ class Template extends Component {
 			deleteTemplate,
 			applyTemplate,
 			cloneTemplate,
+			uploadTemplate,
 			template: { searchFormValues, screenTypes, colors, loading, data, pagination },
 		} = this.props;
 
@@ -68,7 +70,8 @@ class Template extends Component {
 						fetchTemplates,
 						deleteTemplate,
 						applyTemplate,
-						cloneTemplate
+						cloneTemplate,
+						uploadTemplate
 					}}
 				/>
 			</Card>
