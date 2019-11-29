@@ -233,17 +233,19 @@ export const getNearestLines = (componentsDetail, selectedShapeName, scopedCompo
 	if (minInScope.bottom < 10000) {
 		lines.push([0, minInScope.bottom, 10000, minInScope.bottom]);
 	}
-	if (minInScope.hasLeft) {
-		lines.push(componentsDetail[selectedShapeName].lines[0]);
-	}
-	if (minInScope.hasRight) {
-		lines.push(componentsDetail[selectedShapeName].lines[1]);
-	}
-	if (minInScope.hasTop) {
-		lines.push(componentsDetail[selectedShapeName].lines[2]);
-	}
-	if (minInScope.hasBottom) {
-		lines.push(componentsDetail[selectedShapeName].lines[3]);
+	if (componentsDetail[selectedShapeName].lines && componentsDetail[selectedShapeName].lines.length) {
+		if (minInScope.hasLeft) {
+			lines.push(componentsDetail[selectedShapeName].lines[0]);
+		}
+		if (minInScope.hasRight) {
+			lines.push(componentsDetail[selectedShapeName].lines[1]);
+		}
+		if (minInScope.hasTop) {
+			lines.push(componentsDetail[selectedShapeName].lines[2]);
+		}
+		if (minInScope.hasBottom) {
+			lines.push(componentsDetail[selectedShapeName].lines[3]);
+		}
 	}
 	return lines;
 };
@@ -304,7 +306,7 @@ export const getImagePromise = componentDetail =>
 			}
 			if ([SHAPE_TYPES.CODE_H, SHAPE_TYPES.CODE_V].includes(componentDetail.type)) {
 				JsBarcode(image, componentDetail.content, {
-					format: 'CODE128',
+					format: 'CODE39',
 					width: MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX * componentDetail.zoomScale,
 					displayValue: false
 				});

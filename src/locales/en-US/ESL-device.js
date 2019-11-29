@@ -13,6 +13,7 @@ export default {
 	'esl.device.ap.status.fail': 'Failed',
 	'esl.device.ap.inactivated.notice': 'Inactivated',
 	'esl.device.ap.esl_num': 'ESLs Connected',
+	'esl.device.ap.ip': 'IP Address',
 	'esl.device.ap.mac': 'MAC Address',
 	'esl.device.ap.network.id': 'Network ID',
 	'esl.device.ap.sn': 'AP SN',

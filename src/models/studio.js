@@ -262,6 +262,20 @@ export default {
 			};
 		},
 		copySelectedComponent(state, action) {
+			const copiedComponent = action.payload;
+			const {scopedComponents} = state;
+			let needCopyComponent = [];
+			if (copiedComponent.name) {
+				if (copiedComponent.name.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+					needCopyComponent = [copiedComponent];
+				} else if (scopedComponents.length) {
+					needCopyComponent = scopedComponents;
+				}
+			}
+
+			localStorage.setItem('__studio_copy_cross_template_id__', getLocationParam('id'));
+			localStorage.setItem('__studio_copy_cross_two_template__', JSON.stringify(needCopyComponent));
+
 			return {
 				...state,
 				copiedComponent: action.payload
