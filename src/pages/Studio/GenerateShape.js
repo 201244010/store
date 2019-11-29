@@ -29,6 +29,9 @@ const initTextDecoration = (option) => {
 
 export default function generateShape(option) {
 	let shape;
+	if (option.type === undefined) {
+		return null;
+	}
 
 	switch (option.type) {
 		case SHAPE_TYPES.RECT:

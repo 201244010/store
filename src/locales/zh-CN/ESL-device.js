@@ -15,6 +15,7 @@ export default {
 	'esl.device.ap.inactivated.notice':
 		'未激活，该设备添加后从未连接到云端，请检查设备的网络状况。',
 	'esl.device.ap.esl_num': '连接价签数量',
+	'esl.device.ap.ip': 'IP地址',
 	'esl.device.ap.mac': 'MAC地址',
 	'esl.device.ap.network.id': '网络ID',
 	'esl.device.ap.network.get.fail': '获取networkId失败',
