@@ -11,9 +11,9 @@ import RightToolBox from './RightToolBox';
 import DragCopy from './DragCopy';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
-import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep } from '@/utils/studio';
+import {getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep, getImagePromise} from '@/utils/studio';
 import { KEY } from '@/constants';
-import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME } from '@/constants/studio';
+import {SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME, IMAGE_TYPES} from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
 
@@ -90,6 +90,14 @@ class Studio extends Component {
 		});
 
 		document.addEventListener('keydown', this.handleComponentActions);
+
+		// 当页面关闭及刷新时，存储在localStorage中的待拷贝项需要清空
+		window.onunload = () => {
+			if (localStorage.getItem('__studio_copy_cross_template_id__') === getLocationParam('id')) {
+				localStorage.removeItem('__studio_copy_cross_template_id__');
+				localStorage.removeItem('__studio_copy_cross_two_template__');
+			}
+		};
 	}
 
 	componentWillUnmount() {
@@ -99,32 +107,21 @@ class Studio extends Component {
 	handleComponentActions = e => {
 		const { editing } = this.state;
 		const { keyCode, ctrlKey, target: { tagName } } = e;
+		const screenType = getLocationParam('screen');
+
 		// 编辑文本状态下无法操作
 		if (editing) {
 			return;
 		}
 		const {
 			studio: { selectedShapeName, componentsDetail, copiedComponent, scopedComponents, zoomScale },
-			deleteSelectedComponent,
-			copySelectedComponent,
 			addComponent,
 			updateComponentsDetail
 		} = this.props;
 		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
 		// 操作输入框时 无法删除
 		if ([KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT' && tagName.toUpperCase() !== 'TEXTAREA') {
-			if (canCopyOrDelete) {
-				deleteSelectedComponent(selectedShapeName);
-			}
-			if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) > -1) {
-			    deleteSelectedComponent(selectedShapeName);
-			    for (let i = 0; i < scopedComponents.length; i++) {
-			        deleteSelectedComponent({
-						selectedShapeName: scopedComponents[i].name,
-						isStep: i === scopedComponents.length - 1
-					});
-				}
-			}
+			this.handleDelete();
 		}
 		if (keyCode === KEY.KEY_LEFT) {
 			updateComponentsDetail({
@@ -158,14 +155,13 @@ class Studio extends Component {
 			// Ctrl + X
 			if (keyCode === KEY.KEY_X) {
 				if (canCopyOrDelete) {
-					copySelectedComponent(componentsDetail[selectedShapeName]);
-					deleteSelectedComponent(selectedShapeName);
+					this.handleCut();
 				}
 			}
 			// Ctrl + C
 			if (keyCode === KEY.KEY_C) {
 				if (canCopyOrDelete) {
-					copySelectedComponent(componentsDetail[selectedShapeName]);
+					this.handleCopy();
 				}
 			}
 			// Ctrl + V
@@ -187,7 +183,7 @@ class Studio extends Component {
 							x: newPosition.x,
 							y: newPosition.y,
 						});
-					} else {
+					} else if (scopedComponents.length) {
 						this.copyCountMap = this.copyCountMap || {};
 						if (!this.copyCountMap[copiedComponent.name]) {
 							this.copyCountMap[copiedComponent.name] = 1;
@@ -203,7 +199,21 @@ class Studio extends Component {
 								isStep: i === scopedComponents.length - 1
 							});
 						}
+					} else {
+						const {width, height} = MAPS.screen[screenType];
+
+						this.handleCrossTemplateCopy({
+							baseX: (this.stageWidth - width * zoomScale) / 2,
+							baseY: (this.stageHeight - height * zoomScale) / 2
+						});
 					}
+				} else {
+					const {width, height} = MAPS.screen[screenType];
+
+					this.handleCrossTemplateCopy({
+						baseX: (this.stageWidth - width * zoomScale) / 2,
+						baseY: (this.stageHeight - height * zoomScale) / 2
+					});
 				}
 			}
 			// Ctrl + Y
@@ -795,6 +805,168 @@ class Studio extends Component {
 		}
 	};
 
+	handleDelete = () => {
+		const {
+			studio: { selectedShapeName, scopedComponents },
+			deleteSelectedComponent,
+			updateComponentsDetail
+		} = this.props;
+		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+			deleteSelectedComponent(selectedShapeName);
+		} else if (scopedComponents.length) {
+			for (let i = 0; i < scopedComponents.length; i++) {
+				deleteSelectedComponent({
+					selectedShapeName: scopedComponents[i].name,
+					isStep: i === scopedComponents.length - 1
+				});
+			}
+			updateComponentsDetail({
+				isStep: false,
+				selectedShapeName: RECT_SELECT_NAME,
+				[RECT_SELECT_NAME]: {
+					width: 0,
+					height: 0
+				},
+			});
+			updateComponentsDetail({
+				selectedShapeName: ''
+			});
+		}
+		this.toggleRightToolBox({
+			showRightToolBox: false,
+			rightToolBoxPos: {
+				left: -9999,
+				top: -9999,
+			},
+		});
+	};
+
+	handleCut = () => {
+		const {studio: {selectedShapeName, componentsDetail}, copySelectedComponent} = this.props;
+
+		copySelectedComponent(componentsDetail[selectedShapeName]);
+		this.handleDelete();
+		this.toggleRightToolBox({
+			showRightToolBox: false,
+			rightToolBoxPos: {
+				left: -9999,
+				top: -9999,
+			},
+		});
+	};
+
+	handlePaste = () => {
+		const {
+			studio: {copiedComponent, scopedComponents, rightToolBoxPos, showRightToolBox},
+			addComponent,
+			updateComponentsDetail,
+		} = this.props;
+		if (copiedComponent.name) {
+			if (copiedComponent.name.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+				addComponent({
+					...copiedComponent,
+					x: rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH,
+					y: rightToolBoxPos.top - SIZES.HEADER_HEIGHT,
+				});
+			} else if (scopedComponents.length) {
+				const baseComponent = scopedComponents[0];
+				addComponent({
+					...baseComponent,
+					x: rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH,
+					y: rightToolBoxPos.top - SIZES.HEADER_HEIGHT,
+					isStep: false
+				});
+				for (let i = 1; i < scopedComponents.length; i++) {
+					addComponent({
+						...scopedComponents[i],
+						x: rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH + scopedComponents[i].x - baseComponent.x,
+						y: rightToolBoxPos.top - SIZES.HEADER_HEIGHT + scopedComponents[i].y - baseComponent.y,
+						isStep: i === scopedComponents.length - 1
+					});
+				}
+				updateComponentsDetail({
+					selectedShapeName: ''
+				});
+			} else {
+				this.handleCrossTemplateCopy({
+					baseX: rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH,
+					baseY: rightToolBoxPos.top - SIZES.HEADER_HEIGHT - 10
+				});
+			}
+		} else {
+			this.handleCrossTemplateCopy({
+				baseX: rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH,
+				baseY: rightToolBoxPos.top - SIZES.HEADER_HEIGHT - 10
+			});
+		}
+		if (showRightToolBox) {
+			this.toggleRightToolBox({
+				showRightToolBox: false,
+				rightToolBoxPos: {
+					left: -9999,
+					top: -9999,
+				},
+			});
+		}
+	};
+
+	handleCopy = () => {
+		const {studio: {componentsDetail, selectedShapeName}, copySelectedComponent} = this.props;
+		copySelectedComponent(componentsDetail[selectedShapeName]);
+		this.toggleRightToolBox({
+			showRightToolBox: false,
+			rightToolBoxPos: {
+				left: -9999,
+				top: -9999,
+			},
+		});
+	};
+
+	handleCrossTemplateCopy = ({baseX = 0, baseY = 0} = {}) => {
+		const { studio: { zoomScale }, addComponent } = this.props;
+
+		const needCopyComponents = JSON.parse(localStorage.getItem('__studio_copy_cross_two_template__'));
+		if (needCopyComponents && needCopyComponents.length) {
+			const baseComponent = needCopyComponents[0];
+			if (IMAGE_TYPES.includes(baseComponent.type)) {
+				getImagePromise(baseComponent).then((detail) => {
+					addComponent({
+						...detail,
+						x: baseX,
+						y: baseY,
+						isStep: false
+					});
+				});
+			} else {
+				addComponent({
+					...baseComponent,
+					x: baseX,
+					y: baseY,
+					isStep: false
+				});
+			}
+			for (let i = 1; i < needCopyComponents.length; i++) {
+				if (IMAGE_TYPES.includes(needCopyComponents[i].type)) {
+					getImagePromise(needCopyComponents[i]).then((detail) => {
+						addComponent({
+							...detail,
+							x: baseX + (detail.startX - baseComponent.startX) * zoomScale,
+							y: baseY + (detail.startY - baseComponent.startY) * zoomScale,
+							isStep: i === needCopyComponents.length - 1
+						});
+					});
+				} else {
+					addComponent({
+						...needCopyComponents[i],
+						x: baseX + (needCopyComponents[i].startX - baseComponent.startX) * zoomScale,
+						y: baseY + (needCopyComponents[i].startY - baseComponent.startY) * zoomScale,
+						isStep: i === needCopyComponents.length - 1
+					});
+				}
+			}
+		}
+	};
+
 	createInput = (e, type) => {
 		// type是为了区分价格组件、文本组件及其他
 		const targetName = e.target.name();
@@ -1094,6 +1266,10 @@ class Studio extends Component {
 							copySelectedComponent,
 							addComponent,
 							toggleRightToolBox,
+							onDeleteHandler: this.handleDelete,
+							onCutHandler: this.handleCut,
+							onPasteHandler: this.handlePaste,
+							onCopyHandler: this.handleCopy,
 						}}
 					/>
 				) : null}
