@@ -16,11 +16,14 @@ export default class SelectLang extends PureComponent {
 		const langMenu = (
 			<Menu className={styles.menu} selectedKeys={[selectedLang]} onClick={this.changeLang}>
 				<Menu.Item className={styles['menu-item']} key="zh-CN">
-					中国大陆
+					{formatMessage({ id: 'selectLang.chinaMainland'})}
 				</Menu.Item>
-				<Menu.Item className={styles['menu-item']} key="en-US">
-					其他地区
+				<Menu.Item className={styles['menu-item']} key="zh-TW">
+					{formatMessage({ id: 'selectLang.tw'})}
 				</Menu.Item>
+				{/* <Menu.Item className={styles['menu-item']} key="en-US">
+					{formatMessage({ id: 'selectLang.otherArea'})}
+				</Menu.Item> */}
 			</Menu>
 		);
 		return (

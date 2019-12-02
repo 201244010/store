@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedMessage, formatMessage, getLocale } from 'umi/locale';
 import { connect } from 'dva';
 import DocumentTitle from 'react-document-title';
-// import SelectLang from '@/components/SelectLang';
+import SelectLang from '@/components/SelectLang';
 import pathToRegexp from 'path-to-regexp';
 import { Menu, Avatar, Icon } from 'antd';
 import HeaderDropdown from '@/components/HeaderDropdown';
@@ -115,11 +115,11 @@ class SunmiLayout extends React.PureComponent {
 									currentLanguage === 'zh-CN' ? styles.logo : styles['logo-en']
 								}
 							/>
-							{/* {from !== 'accountCenter' && ( */}
-							{/* <div className={styles['lang-wrapper']}> */}
-							{/* <SelectLang className={styles['drop-down']} /> */}
-							{/* </div> */}
-							{/* )} */}
+							{from !== 'accountCenter' && (
+								<div className={styles['lang-wrapper']}>
+									<SelectLang className={styles['drop-down']} />
+								</div>
+							)}
 							{from === 'accountCenter' && (
 								<div className={styles['avater-wrapper']}>
 									{Object.keys(currentUser).length > 0 && (

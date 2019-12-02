@@ -28,6 +28,9 @@ import merchantManagement from './en-US/merchant';
 export default {
 	'navBar.lang': 'language',
 	'navBar.area': 'area',
+	'selectLang.chinaMainland': 'chinaMainland',
+	'selectLang.tw': 'Taiwan/Hong Kong/Macao',
+	'selectLang.otherArea': 'other regions',
 	'layout.user.link.help': 'help',
 	'layout.user.link.privacy': 'privacy',
 	'layout.user.link.terms': 'policy',
