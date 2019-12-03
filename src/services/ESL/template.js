@@ -15,11 +15,11 @@ export default {
 	createTemplate: genTemplateService('create'),
 	saveAsDraft: genTemplateService('saveAsDraft'),
 	uploadImage: genTemplateService('uploadImage'),
-	deleteTemplate: genTemplateService('deleteTemplate'),
-	renameTemplate: genTemplateService('renameTemplate'),
-	applyTemplate: genTemplateService('applyTemplate'),
-	cloneTemplate: genTemplateService('cloneTemplate'),
-	fetchScreenNameList: genTemplateService('fetchScreenNameList'),
+	deleteTemplate: genTemplateService('delete'),
+	renameTemplate: genTemplateService('rename'),
+	applyTemplate: genTemplateService('apply'),
+	cloneTemplate: genTemplateService('clone'),
+	fetchScreenNameList: genTemplateService('getScreenNameList'),
 	fetchTemplateDetail: options => {
 		const studioType = getLocationParam('type');
 		if (studioType === 'alone') {

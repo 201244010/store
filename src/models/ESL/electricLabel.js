@@ -116,6 +116,38 @@ export default {
 			}
 			return response;
 		},
+		*updateFlashLedConfig({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			const response = yield call(ESLServices.updateFlashLedConfig, options);
+			if (response.code === ERROR_OK) {
+				message.success(
+					formatMessage({ id: 'esl.device.led.update.config.success' }),
+					DURATION_TIME
+				);
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				yield put({
+					type: 'fetchFlashModes',
+				});
+			} else {
+				message.error(
+					formatMessage({ id: 'esl.device.led.update.config.error' }),
+					DURATION_TIME
+				);
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+			}
+			return response;
+		},
 		*fetchTemplatesByESLCode({ payload = {} }, { call, put }) {
 			const { options = {} } = payload;
 

@@ -11,9 +11,9 @@ import RightToolBox from './RightToolBox';
 import DragCopy from './DragCopy';
 import generateShape from './GenerateShape';
 import { getLocationParam } from '@/utils/utils';
-import {getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep, getImagePromise} from '@/utils/studio';
+import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep, getImagePromise } from '@/utils/studio';
 import { KEY } from '@/constants';
-import {SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME, IMAGE_TYPES} from '@/constants/studio';
+import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME, IMAGE_TYPES } from '@/constants/studio';
 import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
 
