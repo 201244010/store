@@ -20,6 +20,7 @@ export default {
 	deleteESL: genEslService('delete'),
 	fetchFlashModes: genEslService('getFlashModeList'),
 	flashLed: genEslService('flashLed'),
+	updateFlashLedConfig: genEslService('updateFlashLedConfig'),
 	getBindInfo: genEslService('getBindInfo'),
 	fetchDeviceOverview: genDeviceService('getOverview'),
 	refreshFailedImage: genEslService('repushFailedImage'),
