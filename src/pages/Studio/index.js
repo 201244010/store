@@ -107,14 +107,13 @@ class Studio extends Component {
 	handleComponentActions = e => {
 		const { editing } = this.state;
 		const { keyCode, ctrlKey, target: { tagName } } = e;
-		const screenType = getLocationParam('screen');
 
 		// 编辑文本状态下无法操作
 		if (editing) {
 			return;
 		}
 		const {
-			studio: { selectedShapeName, componentsDetail, copiedComponent, scopedComponents, zoomScale },
+			studio: { selectedShapeName, componentsDetail, copiedComponent, scopedComponents },
 			addComponent,
 			updateComponentsDetail
 		} = this.props;
@@ -175,8 +174,8 @@ class Studio extends Component {
 						} else {
 							this.copyCountMap[copiedComponent.name]++;
 						}
-						newPosition.x = copiedComponent.x * (1 + this.copyCountMap[copiedComponent.name] / 10);
-						newPosition.y = copiedComponent.y * (1 + this.copyCountMap[copiedComponent.name] / 10);
+						newPosition.x = copiedComponent.x  + 10 * this.copyCountMap[copiedComponent.name];
+						newPosition.y = copiedComponent.y + 10 * this.copyCountMap[copiedComponent.name];
 
 						addComponent({
 							...copiedComponent,
@@ -191,29 +190,18 @@ class Studio extends Component {
 							this.copyCountMap[copiedComponent.name]++;
 						}
 						for (let i = 0; i < scopedComponents.length; i++) {
-							const {x, y, type, scaleY} = scopedComponents[i];
 							addComponent({
 								...scopedComponents[i],
-								x,
-								y: y + MAPS.height[type] * scaleY * zoomScale * this.copyCountMap[copiedComponent.name],
+								x: scopedComponents[i].x + 10 * this.copyCountMap[copiedComponent.name],
+								y: scopedComponents[i].y + 10 * this.copyCountMap[copiedComponent.name],
 								isStep: i === scopedComponents.length - 1
 							});
 						}
 					} else {
-						const {width, height} = MAPS.screen[screenType];
-
-						this.handleCrossTemplateCopy({
-							baseX: (this.stageWidth - width * zoomScale) / 2,
-							baseY: (this.stageHeight - height * zoomScale) / 2
-						});
+						this.handleCrossTemplateCopy();
 					}
 				} else {
-					const {width, height} = MAPS.screen[screenType];
-
-					this.handleCrossTemplateCopy({
-						baseX: (this.stageWidth - width * zoomScale) / 2,
-						baseY: (this.stageHeight - height * zoomScale) / 2
-					});
+					this.handleCrossTemplateCopy();
 				}
 			}
 			// Ctrl + Y
@@ -888,16 +876,10 @@ class Studio extends Component {
 					selectedShapeName: ''
 				});
 			} else {
-				this.handleCrossTemplateCopy({
-					baseX: rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH,
-					baseY: rightToolBoxPos.top - SIZES.HEADER_HEIGHT - 10
-				});
+				this.handleCrossTemplateCopy('menu');
 			}
 		} else {
-			this.handleCrossTemplateCopy({
-				baseX: rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH,
-				baseY: rightToolBoxPos.top - SIZES.HEADER_HEIGHT - 10
-			});
+			this.handleCrossTemplateCopy('menu');
 		}
 		if (showRightToolBox) {
 			this.toggleRightToolBox({
@@ -922,8 +904,15 @@ class Studio extends Component {
 		});
 	};
 
-	handleCrossTemplateCopy = ({baseX = 0, baseY = 0} = {}) => {
-		const { studio: { zoomScale }, addComponent } = this.props;
+	handleCrossTemplateCopy = (type) => {
+		const { studio: { zoomScale, rightToolBoxPos }, addComponent } = this.props;
+		// 处理快捷键粘贴的位置
+		const screenType = getLocationParam('screen');
+		const px = (this.stageWidth - MAPS.screen[screenType].width * zoomScale) / 2;
+		const py = (this.stageHeight - MAPS.screen[screenType].height * zoomScale) / 2;
+		// 处理右键粘贴的位置
+		const baseX = rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH;
+		const baseY = rightToolBoxPos.top - SIZES.HEADER_HEIGHT - 10;
 
 		const needCopyComponents = JSON.parse(localStorage.getItem('__studio_copy_cross_two_template__'));
 		if (needCopyComponents && needCopyComponents.length) {
@@ -932,16 +921,16 @@ class Studio extends Component {
 				getImagePromise(baseComponent).then((detail) => {
 					addComponent({
 						...detail,
-						x: baseX,
-						y: baseY,
+						x: type === 'menu' ? baseX : px + detail.startX * zoomScale,
+						y: type === 'menu' ? baseY : py + detail.startY * zoomScale,
 						isStep: false
 					});
 				});
 			} else {
 				addComponent({
 					...baseComponent,
-					x: baseX,
-					y: baseY,
+					x: type === 'menu' ? baseX : px + baseComponent.startX * zoomScale,
+					y: type === 'menu' ? baseY : py + baseComponent.startY * zoomScale,
 					isStep: false
 				});
 			}
@@ -950,16 +939,16 @@ class Studio extends Component {
 					getImagePromise(needCopyComponents[i]).then((detail) => {
 						addComponent({
 							...detail,
-							x: baseX + (detail.startX - baseComponent.startX) * zoomScale,
-							y: baseY + (detail.startY - baseComponent.startY) * zoomScale,
+							x: type === 'menu' ? baseX + (detail.startX - baseComponent.startX) * zoomScale : px + detail.startX * zoomScale,
+							y: type === 'menu' ? baseY + (detail.startY - baseComponent.startY) * zoomScale : py + detail.startY * zoomScale,
 							isStep: i === needCopyComponents.length - 1
 						});
 					});
 				} else {
 					addComponent({
 						...needCopyComponents[i],
-						x: baseX + (needCopyComponents[i].startX - baseComponent.startX) * zoomScale,
-						y: baseY + (needCopyComponents[i].startY - baseComponent.startY) * zoomScale,
+						x: type === 'menu' ? baseX + (needCopyComponents[i].startX - baseComponent.startX) * zoomScale : px + needCopyComponents[i].startX * zoomScale,
+						y: type === 'menu' ? baseY + (needCopyComponents[i].startY - baseComponent.startY) * zoomScale : py + needCopyComponents[i].startY * zoomScale,
 						isStep: i === needCopyComponents.length - 1
 					});
 				}
