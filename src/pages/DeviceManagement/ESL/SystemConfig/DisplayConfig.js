@@ -75,10 +75,10 @@ class DisplayConfig extends Component {
 		updateScreenName({
 			name_info: [{
 				screen_id: page2Config.id,
-				screen_name: page2Config.screen_name
+				screen_name: formatMessage({id: page2Config.screen_name})
 			}, {
 				screen_id: page3Config.id,
-				screen_name: page3Config.screen_name
+				screen_name: formatMessage({id: page3Config.screen_name})
 			}]
 		});
 		const updatedTemplateConfig = [];
