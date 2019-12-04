@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card, Form, Select, InputNumber, Button } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT, BUTTON_FORM_ITEM_LAYOUT } from '@/constants/form';
+import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT_MIDDLE, BUTTON_FORM_ITEM_LAYOUT } from '@/constants/form';
 
 @connect(
 	state => ({
@@ -79,14 +79,14 @@ class LedConfig extends Component {
 
 		return (
 			<Card
-				title={formatMessage({id: flashMode.name || 'esl.device.led.default.title'})}
+				title={formatMessage({id: 'esl.device.led.default.title'})}
 				bordered={false}
 				style={{ width: '100%' }}
 			>
 				<Form
 					{...{
 						...FORM_FORMAT,
-						...HEAD_FORM_ITEM_LAYOUT,
+						...HEAD_FORM_ITEM_LAYOUT_MIDDLE,
 					}}
 				>
 					<Form.Item label={formatMessage({id: 'esl.device.led.color'})}>
