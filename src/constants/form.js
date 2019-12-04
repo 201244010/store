@@ -102,6 +102,21 @@ export const FORM_SEARCH_LAYOUT = {
 export const HEAD_FORM_ITEM_LAYOUT = {
 	labelCol: {
 		xs: { span: 24 },
+		sm: { span: 4 },
+		md: { span: 4 },
+		xxl: { span: 2 },
+	},
+	wrapperCol: {
+		xs: { span: 24 },
+		sm: { span: 8 },
+		md: { span: 8 },
+		xxl: { span: 6 },
+	},
+};
+
+export const HEAD_FORM_ITEM_LAYOUT_MIDDLE = {
+	labelCol: {
+		xs: { span: 24 },
 		sm: { span: 4, offset: 6 },
 		md: { span: 4, offset: 6 },
 		xxl: { span: 2, offset: 8 },
