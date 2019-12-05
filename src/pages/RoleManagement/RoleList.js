@@ -181,8 +181,7 @@ class RoleList extends React.Component {
 			getRoleList();
 		} else {
 			message.error(
-				formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
-					formatMessage({ id: 'roleManagement.role.deleteFail' })
+				formatMessage({ id: ALERT_NOTICE_MAP[response.code] || 'roleManagement.role.deleteFail' })
 			);
 		}
 	};
