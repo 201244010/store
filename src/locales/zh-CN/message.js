@@ -15,6 +15,8 @@ export default {
 	'alert.template.bound.esl': '模板上有绑定价签',
 	'alert.template.name.used': '模板名已被占用',
 	'alert.role.name.exist': '角色名称已存在',
+	'alert.role.with.employee': '角色已被员工关联，不可删除',
+	'alert.role.default.nodelete': '默认角色不可删除',
 	'alert.role.used': '角色名已被使用',
 	'alert.sso.not.company': '该账号未绑定此商户，请重新输入',
 	'alert.role.not.exist': '商米账号不存在，请重新输入',
