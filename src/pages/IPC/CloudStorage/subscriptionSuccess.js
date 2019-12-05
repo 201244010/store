@@ -13,7 +13,10 @@ import styles from './SubscriptionSuccess.less';
 				pathId,
 				urlParams
 			}
-		})
+		}),
+		// getStorageListByOrder: (orderId) => dispatch({
+		// 	type: ''
+		// })
 
 	}))
 class SubscriptionSuccess extends React.Component{
@@ -25,7 +28,7 @@ class SubscriptionSuccess extends React.Component{
 				<div className={styles['sucess-icon']} />
 				<div className={styles['success-tip']}>{formatMessage({id: 'cloudStorage.service.success.subscribe'})}</div>
 				<Button type="primary" onClick={() => navigateTo('serviceManagement')} className={styles.btn}>{formatMessage({id: 'cloudStorage.service.management'})}</Button>
-				<Button className={styles.btn} onClick={() => navigateTo('cloudStorage')}>{formatMessage({id: 'cloudStorage.back'})}</Button>
+				{/* <Button className={styles.btn} onClick={() => navigateTo('cloudStorage')}>{formatMessage({id: 'cloudStorage.back'})}</Button> */}
 			</Card>
 		);
 	}

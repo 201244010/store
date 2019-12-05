@@ -9,26 +9,26 @@ export const SERVICE_TYPE = {
 		price:'69',
 		isFree: true,
 		type: EXPIRE_TIME_TYPE.HALF_A_YEAR,
-		serviceType: 7,
+		serviceTag: 1, // 1:7天云存储；2:30天云存储
 	},
 	'YCC0003': {
 		productNo:'YCC0003',
 		price:'119',
 		isFree: false,
 		type: EXPIRE_TIME_TYPE.ONE_YEAR,
-		serviceType: 7,
+		serviceTag: 1,
 
 	},
 	'YCC0004': {
 		price: '159',
 		isFree: false,
 		type: EXPIRE_TIME_TYPE.HALF_A_YEAR,
-		serviceType: 30,
+		serviceTag: 2,
 	},
 	'YCC0005': {
 		price:'299',
 		isFree: false,
 		type: EXPIRE_TIME_TYPE.ONE_YEAR,
-		serviceType: 30,
+		serviceTag: 2,
 	},
 };

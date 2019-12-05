@@ -1,8 +1,8 @@
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-import { Table, Radio, /* message, */ Checkbox, Spin, Card, Form, Input, Button } from 'antd';
+import { Table, Radio, /* message, */ Checkbox, Spin, Card, Form, Input, Button, Modal } from 'antd';
 import React from 'react';
-// import { ERR_IPC_NOT_EXIST, ERR_SERVICE_SUBSCRIBE_ERROR , ERROR_OK } from '@/constants/errorCode';
+import { ERR_IPC_NOT_EXIST, ERR_SERVICE_SUBSCRIBE_ERROR , ERROR_OK } from '@/constants/errorCode';
 import { SERVICE_TYPE } from '@/constants/cloudStorage';
 import styles from './OrderSubmission.less';
 import { phone, mail } from '@/constants/regexp';
@@ -121,6 +121,7 @@ class OrderSubmission extends React.Component{
 			count: 0,
 			freeStatus: false,
 			storageIpcList: [],
+			isNeedCoverTip: false,
 			// isNeedInputReady: false,
 		};
 	}
@@ -128,10 +129,11 @@ class OrderSubmission extends React.Component{
 	componentDidMount(){
 		const { location, navigateTo } = this.props;
 		const { query: { sn, productNo } } = location;
-		if(!productNo){
+		if(!productNo || Object.keys(SERVICE_TYPE).indexOf(productNo) === -1){
 			navigateTo('cloudStorage');
 			return;
 		}
+
 		this.setState({
 			sn,
 			productNo,
@@ -174,45 +176,38 @@ class OrderSubmission extends React.Component{
 		});
 	};
 
-	handleOk = async() => {
-		// const { navigateTo,bundledStatus, form:{validateFieldsAndScroll}} = this.props;
-		// const { storageIpcList } = this.state;
-		// validateFieldsAndScroll(async(err, values) => {
-		// 	console.log(values);
-		// 	if (!err) {
-		// 		const { selectedValue, productNo, invoiceSelectValue, vbrkSelectValue } = this.state;
-		// 		const { order } = this.props;
-		// 		const invoiceInfo = invoiceSelectValue === 0 ? undefined : {
-		// 			...values,
-		// 			invoiceKind: invoiceSelectValue,
-		// 			titleType: vbrkSelectValue,
-		// 		};
-		// 		if(storageIpcList.length !== 0){
-		// 			// const response = await order({
-		// 			// 	ipcSelectedList: selectedValue,
-		// 			// 	invoiceInfo,
-		// 			// 	productNo,
-		// 			// 	bundledStatus
-		// 			// });
-		// 			// const { code } = response;
-		// 			const code = 1;
-		// 			const orderNo = 'TEST12324344';
-		// 			if(code === ERROR_OK){
-		// 				navigateTo('paymentPage', {
-		// 					orderNo,
-		// 				});
-		// 			}else if(code === ERR_SERVICE_SUBSCRIBE_ERROR){
-		// 				message.error( formatMessage({ id: 'cloudStorage.binding.err.service.subscribe'}));
-		// 			}else if(code === ERR_IPC_NOT_EXIST){
-		// 				message.error( formatMessage({ id: 'cloudStorage.binding.ipc.not.exist'}));
-		// 			}
-		// 		}else{
-		// 			this.onCancel();
-		// 		}
-		// 	}
-		// });
+	orderHandler = async() => {
+		const { form:{ getFieldsValue }} = this.props;
+		const { selectedValue, productNo, invoiceSelectValue, vbrkSelectValue, freeStatus } = this.state;
+		const { order } = this.props;
 		
-		
+		const invoiceInfo = invoiceSelectValue === 0 ? undefined : {
+			// ...values,
+			titleName: getFieldsValue().titleName,
+			taxRegisterNo: getFieldsValue().taxRegisterNo,
+			mobilePhone: vbrkSelectValue === 1 ? getFieldsValue().personalPhone : getFieldsValue().companyPhone,
+			email: vbrkSelectValue === 1 ? getFieldsValue().personalEmail : getFieldsValue().companyEmail,
+			invoiceKind: invoiceSelectValue,
+			titleType: vbrkSelectValue,
+		};
+		const response = await order({
+			ipcSelectedList: selectedValue,
+			invoiceInfo,
+			productNo,
+			bundledStatus: freeStatus
+		});
+		// return response;
+		const { code, data } = response;
+		if(code === ERROR_OK){
+			const { orderNo } = data;
+			return orderNo;
+		}
+		if(code === ERR_SERVICE_SUBSCRIBE_ERROR){
+			message.error( formatMessage({ id: 'cloudStorage.binding.err.service.subscribe'}));
+		}else if(code === ERR_IPC_NOT_EXIST){
+			message.error( formatMessage({ id: 'cloudStorage.binding.ipc.not.exist'}));
+		}
+		return '';
 	}
 
 	agreementChangeHandler = (e) =>{
@@ -270,9 +265,20 @@ class OrderSubmission extends React.Component{
 		});
 	}
 
-	freeSubscribeHandler = () => {
-		console.log('freeSubscribeHandler click');
-		this.checkHasServiceCover();
+	freeSubscribeHandler = async () => {
+		const { navigateTo } = this.props;
+		const isNeedCoverTip = this.checkHasServiceCover();
+		if(isNeedCoverTip){
+			this.setState({
+				isNeedCoverTip
+			});
+		}else{
+			const orderNo = await this.orderHandler();
+			if(orderNo !== ''){
+				navigateTo('subscriptionSuccess');
+			}
+		}
+		
 	}
 
 	formOnChangeHandler = () => {
@@ -280,9 +286,28 @@ class OrderSubmission extends React.Component{
 	}
 
 	checkHasServiceCover = () => {
-		const { selectedValue, storageIpcList } = this.state;
-		console.log(selectedValue);
-		console.log(storageIpcList);
+		const { selectedValue, storageIpcList, productNo } = this.state;
+		let isNeedCoverTip = false;
+		for(let i=0; i<selectedValue.length; i++){
+			for(let j=0; j<storageIpcList.length; j++){
+				if(storageIpcList[j].deviceSn === selectedValue[i] &&
+					SERVICE_TYPE[productNo] &&
+					storageIpcList[j].serviceTag === SERVICE_TYPE[productNo].serviceTag){
+					isNeedCoverTip = true;
+					break;
+				}
+			}
+		}
+		console.log(isNeedCoverTip);
+		return isNeedCoverTip;
+	}
+
+	confirmCoverHandler = async () => {
+		const { navigateTo } = this.props;
+		const orderNo = await this.orderHandler();
+		if(orderNo !== ''){
+			navigateTo('subscriptionSuccess');
+		}
 	}
 
 	async init(){
@@ -324,7 +349,7 @@ class OrderSubmission extends React.Component{
 	render(){
 
 		const { navigateTo, loading, form: { getFieldDecorator } } = this.props;
-		const { selectedValue, btnDisable, isAgree, invoiceSelectValue, vbrkSelectValue, unitPrice, count, freeStatus, storageIpcList } = this.state;
+		const { selectedValue, btnDisable, isAgree, invoiceSelectValue, vbrkSelectValue, unitPrice, count, freeStatus, storageIpcList, isNeedCoverTip } = this.state;
 		const emailValue = vbrkSelectValue === 2 ? 'companyEmail' : 'personalEmail';
 		const phoneValue = vbrkSelectValue === 2 ? 'companyPhone' : 'personalPhone';
 		return(
@@ -459,10 +484,15 @@ class OrderSubmission extends React.Component{
 					<div className={styles['price-container']}>
 						<div className={styles['total-price']}>
 							<span className={styles.text}>合计：</span>
-							<span className={styles.value}>¥{count*unitPrice}</span>
+							<span className={styles.value}>¥{count*unitPrice === 0 ? 0 : parseFloat(count*unitPrice).toFixed(2)}</span>
 						</div>
 						<div className={styles.btns}>
-							<Button className={styles['cancel-btn']}>取消</Button>
+							<Button
+								onClick={()=> navigateTo('cloudStorage')}
+								className={styles['cancel-btn']}
+							>
+								取消
+							</Button>
 							{ !freeStatus &&
 							<Button
 								type="primary"
@@ -483,6 +513,16 @@ class OrderSubmission extends React.Component{
 						</div>
 					</div>
 				</div>
+				<Modal
+					title='提示'
+					visible={isNeedCoverTip}
+					onOk={this.confirmCoverHandler}
+					onCancel={() => {this.setState({isNeedCoverTip:false});}}
+					okText='确认替代'
+					closable={false}
+				>
+					<p>您选择的服务与已生效的服务不一致，订阅后将替换原服务</p>
+				</Modal>
 			</>
 		);
 	}
