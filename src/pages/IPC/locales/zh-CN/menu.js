@@ -13,6 +13,11 @@ export default {
 	'menu.devices.cloudStorageService':'云存储',
 	'menu.devices.cloudStorage.subscriptionSuccess':'开通成功',
 	'menu.devices.cloudStorageService.subscriptionSuccess':'开通成功',
+	'menu.devices.cloudStorage.orderSubmission':'提交订单',
+	'menu.devices.cloudStorageService.orderSubmission':'提交订单',
+	'menu.devices.cloudStorage.orderSubmission.paymentPage':'支付',
+	'menu.devices.cloudStorageService.orderSubmission.paymentPage':'支付',
+
 	'menu.devices.motionMessage': '活动侦测',
 	'menu.devices.ipcList.live': '直播',
 	'menu.devices.ipcList.ipcManagement': '摄像机设置',

@@ -21,11 +21,11 @@
 
 	.radio-bg {
 		width: 200px;
-		height: 80px;
+		height: 64px;
 		padding: 5px 10px;
 		box-sizing: border-box;
 		border: 1px solid #cccccc;
-		border-radius: 10px;
+		border-radius: 4px;
 		background-repeat: no-repeat !important;
 		background-size: 90% auto !important;
 		background-position: center !important;
@@ -33,28 +33,43 @@
 	}
 
 	input:checked + .radio-bg {
-		border: 1px solid #ffa05c;
-		border-radius: 10px;
+		border: 2px solid #FF6000;
+		box-shadow: none;
 
-		&::before {
-			content: '';
+		// &::before {
+		// 	content: '';
+		// 	width: 0px;
+		// 	position: absolute;
+		// 	top: 0;
+		// 	right: 0;
+		// 	border: 10px solid red;
+		// 	border-left-color: transparent;
+		// 	border-top-color: transparent;
+		// 	border-bottom-right-radius: 10px;
+		// }
+
+		// &::after {
+		// 	content: url('./../../assets/icon/check.svg');
+		// 	width: px;
+		// 	height: 10px;
+		// 	position: absolute;
+		// 	top: 5px;
+		// 	right: 0;
+		// }
+		&::after {
+			content: '\2713';
+			display: block;
+			height: 0px;
 			width: 0px;
 			position: absolute;
-			top: 0;
+			bottom: 0;
 			right: 0;
-			border: 20px solid red;
-			border-left-color: transparent;
-			border-bottom-color: transparent;
-			border-top-right-radius: 10px;
-		}
-
-		&::after {
-			content: url('./../../assets/icon/check.svg');
-			width: 20px;
-			height: 20px;
-			position: absolute;
-			top: 5px;
-			right: 0;
+			color:#fff;
+			font-size: 12px;
+			line-height: 7px;
+			border: 12px solid;
+			border-color: transparent rgba(255,96,0,1) rgba(255,96,0,1) transparent;
+			border-bottom-right-radius: 4px;
 		}
 	}
 }

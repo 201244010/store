@@ -1,6 +1,7 @@
 import React from 'react';
-import { Row, Col, Card, Button } from 'antd';
+import { Row, Col, Card, Button, Spin } from 'antd';
 import { formatMessage } from 'umi-plugin-locale';
+import { connect } from 'dva';
 import BindModal from './bindModal';
 import styles from './CloudStorage.less';
 
@@ -51,6 +52,30 @@ const thirtyDaysServiceList = [
 	}
 ];
 
+@connect(
+	(state) => {
+		const { cloudStorage:{ bundledStatus }, loading } = state;
+		return {
+			loading,
+			bundledStatus
+		};
+	},
+	(dispatch) => ({
+		navigateTo: (pathId, urlParams) => dispatch({
+			type: 'menu/goToPath',
+			payload: {
+				pathId,
+				urlParams
+			}
+		}),
+		getStorageIpcList:(sn) => (dispatch({
+			type:'cloudStorage/getStorageIpcList',
+			payload: { 
+				sn
+			}
+		})),
+	}))
+
 class CloudStorage extends React.Component{
 
 	constructor(props){
@@ -62,19 +87,24 @@ class CloudStorage extends React.Component{
 		};
 	}
 
-	componentDidMount(){
-		const { location } = this.props;
+	async componentDidMount(){
+		const { location, getStorageIpcList } = this.props;
 		const { query: { sn } } = location;
+		!Array.isArray(sn) ? await getStorageIpcList(sn) : await getStorageIpcList();
 		this.setState({
 			sn
 		});
 	}
 
 	subscriptionHandler = (productNo) => {
-		this.setState({
-			productNo,
-			modalVisible: true
+		const { navigateTo } = this.props;
+		navigateTo('orderSubmission', {
+			productNo
 		});
+		// this.setState({
+		// 	productNo,
+		// 	modalVisible: true
+		// });
 	}
 
 	handleCancel = () => {
@@ -85,89 +115,126 @@ class CloudStorage extends React.Component{
 
 	render(){
 		const { productNo, modalVisible, sn } = this.state;
+		const { loading, bundledStatus } = this.props;
+		console.log(bundledStatus);
 		return(
-			<div className={styles['cloud-storage-container']}>
-				<div className={styles['page-title']}>{formatMessage({id: 'cloudStorage.title'})}</div>
-				<div className={styles['adv-container']}>
-					<Row gutter={24}>
-						<Col span={6}>
-							<Card className={styles['adv-card']} bordered={false}>
-								<div className={styles.title}>
-									<div className={styles['title-icon']} />
-									<div className={styles['title-text']}>
-										<span>{formatMessage({id: 'cloudStorage.adv.price'})}</span>
+			<Spin spinning={loading.effects['cloudStorage/getStorageIpcList']}>
+				<div className={styles['cloud-storage-container']}>
+					<div className={styles['page-title']}>{formatMessage({id: 'cloudStorage.title'})}</div>
+					<div className={styles['adv-container']}>
+						<Row gutter={24}>
+							<Col span={6}>
+								<Card className={styles['adv-card']} bordered={false}>
+									<div className={styles.title}>
+										<div className={styles['title-icon']} />
+										<div className={styles['title-text']}>
+											<span>{formatMessage({id: 'cloudStorage.adv.price'})}</span>
+										</div>
 									</div>
-								</div>
-								<div className={styles['adv-detail']}>
-									<p>{formatMessage({id: 'cloudStorage.price.detail'})}</p>
-								</div>
-								<div className={`${styles['bg-img']} ${styles.prince}`} />
-							</Card>
-						</Col>
-						<Col span={6}>
-							<Card className={styles['adv-card']} bordered={false}>
-								<div className={styles.title}>
-									<div className={styles['title-icon']} />
-									<div className={styles['title-text']}>
-										<span>{formatMessage({id: 'cloudStorage.adv.loss'})}</span>
+									<div className={styles['adv-detail']}>
+										<p>{formatMessage({id: 'cloudStorage.price.detail'})}</p>
 									</div>
-								</div>
-								<div className={styles['adv-detail']}>
-									<p>{formatMessage({id: 'cloudStorage.loss.detail'})}</p>
-								</div>
-								<div className={`${styles['bg-img']} ${styles.loss}`} />
-							</Card>
-						</Col>
-						<Col span={6}>
-							<Card className={styles['adv-card']} bordered={false}>
-								<div className={styles.title}>
-									<div className={styles['title-icon']} />
-									<div className={styles['title-text']}>
-										<span>{formatMessage({id: 'cloudStorage.adv.convenience'})}</span>
+									<div className={`${styles['bg-img']} ${styles.prince}`} />
+								</Card>
+							</Col>
+							<Col span={6}>
+								<Card className={styles['adv-card']} bordered={false}>
+									<div className={styles.title}>
+										<div className={styles['title-icon']} />
+										<div className={styles['title-text']}>
+											<span>{formatMessage({id: 'cloudStorage.adv.loss'})}</span>
+										</div>
 									</div>
-								</div>
-								<div className={styles['adv-detail']}>
-									<p>{formatMessage({id: 'cloudStorage.convenience.detail'})}</p>
-								</div>
-								<div className={`${styles['bg-img']} ${styles.convenience}`} />
-							</Card>
-						</Col>
-						<Col span={6}>
-							<Card className={styles['adv-card']} bordered={false}>
-								<div className={styles.title}>
-									<div className={styles['title-icon']} />
-									<div className={styles['title-text']}>
-										<span>{formatMessage({id: 'cloudStorage.adv.safe'})}</span>
+									<div className={styles['adv-detail']}>
+										<p>{formatMessage({id: 'cloudStorage.loss.detail'})}</p>
 									</div>
+									<div className={`${styles['bg-img']} ${styles.loss}`} />
+								</Card>
+							</Col>
+							<Col span={6}>
+								<Card className={styles['adv-card']} bordered={false}>
+									<div className={styles.title}>
+										<div className={styles['title-icon']} />
+										<div className={styles['title-text']}>
+											<span>{formatMessage({id: 'cloudStorage.adv.convenience'})}</span>
+										</div>
+									</div>
+									<div className={styles['adv-detail']}>
+										<p>{formatMessage({id: 'cloudStorage.convenience.detail'})}</p>
+									</div>
+									<div className={`${styles['bg-img']} ${styles.convenience}`} />
+								</Card>
+							</Col>
+							<Col span={6}>
+								<Card className={styles['adv-card']} bordered={false}>
+									<div className={styles.title}>
+										<div className={styles['title-icon']} />
+										<div className={styles['title-text']}>
+											<span>{formatMessage({id: 'cloudStorage.adv.safe'})}</span>
+										</div>
+									</div>
+									<div className={styles['adv-detail']}>
+										<p>{formatMessage({id: 'cloudStorage.safe.detail'})}</p>
+									</div>
+									<div className={`${styles['bg-img']} ${styles.safe}`} />
+								</Card>
+							</Col>
+						</Row>
+					</div>
+					<Card className={styles['service-container']} bordered={false}>
+						<div className={styles['service-wrapper']}>
+							<div className={styles['sevent-day']}>
+								<div className={styles.title}>
+									<span className={styles['title-text']}>{formatMessage({id:'cloudStorage.seven.days.service'})}</span>
 								</div>
-								<div className={styles['adv-detail']}>
-									<p>{formatMessage({id: 'cloudStorage.safe.detail'})}</p>
-								</div>
-								<div className={`${styles['bg-img']} ${styles.safe}`} />
-							</Card>
-						</Col>
-					</Row>
-				</div>
-				<Card className={styles['service-container']} bordered={false}>
-					<div className={styles['service-wrapper']}>
-						<div className={styles['sevent-day']}>
-							<div className={styles.title}>
-								<span className={styles['title-text']}>{formatMessage({id:'cloudStorage.seven.days.service'})}</span>
-							</div>
-							<div className={styles.services}>
-								{seventDaysServiceList.map((item,index) => {
+								<div className={styles.services}>
+									{seventDaysServiceList.map((item,index) => {
 									
-									if(item.isFree){
-										return(
-											<div className={styles['service-content']} key={`cloudStorage${index}`}>
-												<div className={`${styles.price} ${styles['free-price']}`}>
-													<span>¥0</span>
-													<span className={styles.unit}>{formatMessage({id: 'cloudStorage.unit'})}</span>
-													<div className={styles.tag} />
-													{/* <div className={styles['init-price']}>
+										if(item.isFree && bundledStatus === 1){
+											return(
+												<div className={styles['service-content']} key={`cloudStorage${index}`}>
+													<div className={`${styles.price} ${styles['free-price']}`}>
+														<span>¥0</span>
+														<span className={styles.unit}>{formatMessage({id: 'cloudStorage.unit'})}</span>
+														<div className={styles.tag} />
+														{/* <div className={styles['init-price']}>
 														<div className={styles['del-line']} />
 														<div className={styles['init-price-content']}>¥{item.price}</div>
 													</div> */}
+													</div>
+													<div className={styles['expire-time']}>
+														{
+															(() => {
+																switch(item.type){
+																	case EXPIRE_TIME_TYPE.ONE_MONTH:
+																		return(
+																			<span>{formatMessage({id: 'cloudStorage.validity.one.month'})}</span>
+																		);
+																	case EXPIRE_TIME_TYPE.HALF_A_YEAR:
+																		return(
+																			<span>{formatMessage({id: 'cloudStorage.validity.half.year'})}</span>
+																		);
+																	case EXPIRE_TIME_TYPE.ONE_YEAR:
+																		return(
+																			<span>{formatMessage({id:'cloudStorage.validity.one.year'})}</span>
+																		);
+																	default:
+																		return(
+																			<span>{formatMessage({id: 'cloudStorage.unknown'})}</span>
+																		);
+																}
+															})()
+														}
+													</div>
+													<Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">{formatMessage({id:'cloudStorage.subscribe.now'})}</Button>
+												</div>
+											);
+										}
+										return(
+											<div className={styles['service-content']} key={`cloudStorage${index}`}>
+												<div className={styles.price}>
+													<span>¥{item.price}</span>
+													<span className={styles.unit}>{formatMessage({id: 'cloudStorage.unit'})}</span>
 												</div>
 												<div className={styles['expire-time']}>
 													{
@@ -193,11 +260,21 @@ class CloudStorage extends React.Component{
 														})()
 													}
 												</div>
+												{/* <Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.subscribe.now'})}</Button> */}
 												<Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">{formatMessage({id:'cloudStorage.subscribe.now'})}</Button>
+												{/* {item.pricePerDay && <div className={styles.tips}>仅{item.pricePerDay}{formatMessage({id:'cloudStorage.money.per.day'})}</div>} */}
 											</div>
 										);
-									}
-									return(
+									
+									})}
+								</div>
+							</div>
+							<div className={styles['thirty-day']}>
+								<div className={styles.title}>
+									<span className={styles['title-text']}>{formatMessage({id:'cloudStorage.thirty.days.service'})}</span>
+								</div>
+								<div className={styles.services}>
+									{thirtyDaysServiceList.map((item,index) => (
 										<div className={styles['service-content']} key={`cloudStorage${index}`}>
 											<div className={styles.price}>
 												<span>¥{item.price}</span>
@@ -209,7 +286,7 @@ class CloudStorage extends React.Component{
 														switch(item.type){
 															case EXPIRE_TIME_TYPE.ONE_MONTH:
 																return(
-																	<span>{formatMessage({id: 'cloudStorage.validity.one.month'})}</span>
+																	<span>{formatMessage({id:'cloudStorage.validity.one.month'})}</span>
 																);
 															case EXPIRE_TIME_TYPE.HALF_A_YEAR:
 																return(
@@ -217,7 +294,7 @@ class CloudStorage extends React.Component{
 																);
 															case EXPIRE_TIME_TYPE.ONE_YEAR:
 																return(
-																	<span>{formatMessage({id:'cloudStorage.validity.one.year'})}</span>
+																	<span>{formatMessage({id: 'cloudStorage.validity.one.year'})}</span>
 																);
 															default:
 																return(
@@ -227,66 +304,23 @@ class CloudStorage extends React.Component{
 													})()
 												}
 											</div>
-											{/* <Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.subscribe.now'})}</Button> */}
+											{/* <Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.coming.soon'})}</Button> */}
 											<Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">{formatMessage({id:'cloudStorage.subscribe.now'})}</Button>
-											{/* {item.pricePerDay && <div className={styles.tips}>仅{item.pricePerDay}{formatMessage({id:'cloudStorage.money.per.day'})}</div>} */}
 										</div>
-									);
-									
-								})}
+									))}
+								</div>
 							</div>
 						</div>
-						<div className={styles['thirty-day']}>
-							<div className={styles.title}>
-								<span className={styles['title-text']}>{formatMessage({id:'cloudStorage.thirty.days.service'})}</span>
-							</div>
-							<div className={styles.services}>
-								{thirtyDaysServiceList.map((item,index) => (
-									<div className={styles['service-content']} key={`cloudStorage${index}`}>
-										<div className={styles.price}>
-											<span>¥{item.price}</span>
-											<span className={styles.unit}>{formatMessage({id: 'cloudStorage.unit'})}</span>
-										</div>
-										<div className={styles['expire-time']}>
-											{
-												(() => {
-													switch(item.type){
-														case EXPIRE_TIME_TYPE.ONE_MONTH:
-															return(
-																<span>{formatMessage({id:'cloudStorage.validity.one.month'})}</span>
-															);
-														case EXPIRE_TIME_TYPE.HALF_A_YEAR:
-															return(
-																<span>{formatMessage({id: 'cloudStorage.validity.half.year'})}</span>
-															);
-														case EXPIRE_TIME_TYPE.ONE_YEAR:
-															return(
-																<span>{formatMessage({id: 'cloudStorage.validity.one.year'})}</span>
-															);
-														default:
-															return(
-																<span>{formatMessage({id: 'cloudStorage.unknown'})}</span>
-															);
-													}
-												})()
-											}
-										</div>
-										{/* <Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.coming.soon'})}</Button> */}
-										<Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">{formatMessage({id:'cloudStorage.subscribe.now'})}</Button>
-									</div>
-								))}
-							</div>
+						<div className={styles['service-tips']}>
+							<p className={styles['service-tip']}>{formatMessage({id: 'cloudStorage.service.tips.first'})}</p>
+							<p className={styles['service-tip']}>{formatMessage({id: 'cloudStorage.service.tips.second'})}</p>
+							<p className={styles['service-tip']}>{formatMessage({id: 'cloudStorage.service.tips.third'})}</p>
+							<p className={styles['service-tip']}>{formatMessage({id: 'cloudStorage.service.tips.fourth'})}</p>
 						</div>
-					</div>
-					<div className={styles['service-tips']}>
-						<p className={styles['service-tip']}>{formatMessage({id: 'cloudStorage.service.tips.first'})}</p>
-						<p className={styles['service-tip']}>{formatMessage({id: 'cloudStorage.service.tips.second'})}</p>
-						<p className={styles['service-tip']}>{formatMessage({id: 'cloudStorage.service.tips.third'})}</p>
-						<p className={styles['service-tip']}>{formatMessage({id: 'cloudStorage.service.tips.fourth'})}</p>
-					</div>
-				</Card>
-				{productNo !== '' && <BindModal productNo={productNo} visible={modalVisible} handleCancel={this.handleCancel} sn={sn} />}
-			</div>
+					</Card>
+					{productNo !== '' && <BindModal productNo={productNo} visible={modalVisible} handleCancel={this.handleCancel} sn={sn} />}
+				</div>
+			</Spin>
 		);
 	}
 }

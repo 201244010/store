@@ -229,6 +229,26 @@ const router = [
 								component: './IPC/CloudStorage/subscriptionSuccess.js'
 							},
 							{
+								path:'/devices/cloudStorage/orderSubmission',
+								name:'orderSubmission',
+								hideInMenu: true,
+								routes: [
+									{
+										path:'/devices/cloudStorage/orderSubmission/paymentPage',
+										name:'paymentPage',
+										id:'paymentPage',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/paymentPage.js'
+									},
+									{
+										path: '/devices/cloudStorage/orderSubmission',
+										id: 'orderSubmission',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/orderSubmission.js'
+									}
+								]
+							},
+							{
 								path: '/devices/cloudStorage',
 								id: 'cloudStorage',
 								component: './IPC/CloudStorage/cloudStorage.js',

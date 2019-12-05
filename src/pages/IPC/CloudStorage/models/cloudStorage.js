@@ -6,7 +6,8 @@ import { ERROR_OK } from '@/constants/errorCode';
 export default {
 	namespace: 'cloudStorage',
 	state: {
-		storageIpcList: []
+		storageIpcList: [],
+		bundledStatus: 2, // 1: 存在未激活ipc, 2: 全部ipc已激活
 	},
 	reducers: {
 		readData(state, { payload }) {
@@ -19,22 +20,33 @@ export default {
 	effects: {
 		*getStorageIpcList({payload}, { put }) {
 			const { sn } = payload;
-			const response = yield getStorageIpcList();
+			const response = yield getStorageIpcList({
+				deviceSnList: sn ? [sn] : undefined,
+			});
 			const { code, data } = response;
-			let  { deviceList = [] } = data;
+			const { deviceList = [] } = data;
 		
 			if(code === ERROR_OK) {
-				for(let i = 0; i < deviceList.length ; i++){
-					if(deviceList[i].deviceSn === sn){
-						const item = deviceList.splice(i,1);
-						deviceList = item.concat(deviceList);
-						break;
-					}
-				}
+				// for(let i = 0; i < deviceList.length ; i++){
+				// 	if(deviceList[i].deviceSn === sn){
+				// 		const item = deviceList.splice(i,1);
+				// 		deviceList = item.concat(deviceList);
+				// 		break;
+				// 	}
+				// }
+				// true 为全部已激活，false 存在未激活的ipc
+				const bundledStatusBool = deviceList.every((item) => (
+					item.activeStatus === 2
+				));
+				// const storageIpcList = deviceList.filter((item) => (
+				// 	item.activeStatus === 1
+				// ));
+				
 				yield put({
 					type: 'readData',
 					payload: {
-						storageIpcList: deviceList
+						storageIpcList: deviceList,
+						bundledStatus: bundledStatusBool ? 2 : 1,
 					}
 				});
 				
@@ -44,14 +56,17 @@ export default {
 			return [];
 		},
 		*order({ payload }){
-			const { productNo, deviceSn } = payload;
-			const response = yield order({
+			const { ipcSelectedList, invoiceInfo, productNo, bundledStatus } = payload;
+			const productList = ipcSelectedList.map((sn) => ({
+				productNo,
+				deviceSn: sn,
 				productCnt: 1,
+				bundledStatus,
+			}));
+			const response = yield order({
 				orderSource: 1,
-				productList:[{
-					productNo,
-					deviceSn,
-				}]
+				productList,
+				invoiceInfo
 			});
 			
 			return response;

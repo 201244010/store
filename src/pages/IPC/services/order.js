@@ -4,7 +4,7 @@ import CONFIG from '@/config';
 
 const { API_ADDRESS } = CONFIG;
 
-const request = customizeFetch('api/order', API_ADDRESS);
+const request = customizeFetch('api/trade/order', API_ADDRESS);
 // const request = customizeFetch('api/order', 'http://localhost:8000');
 
 
