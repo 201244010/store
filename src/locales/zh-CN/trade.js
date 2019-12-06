@@ -20,6 +20,8 @@ export default {
 	'purchase-type-b2b-unionpay': '企业银联',
 	'purchase-type-wechat': '微信支付',
 	'purchase-type-alipay': '支付宝',
+	'purchase-type-wechat.guide': '微信APP',
+	'purchase-type-alipay.guide': '支付宝APP',
 	'purchase-type-b2c-unionpay': '银联支付',
 
 	'pay.confirm.title': '请确认订单的状态',

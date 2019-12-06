@@ -127,29 +127,74 @@ const router = [
 						],
 					},
 					{
-						path: '/application/trade',
-						name: 'trade',
-						routes: [
+						path:'/application/cloudStorage',
+						name:'cloudStorageService',
+						routes:[
 							{
-								path: '/application/trade',
-								id: 'trade',
+								path:'/application/cloudStorage/subscriptionSuccess',
+								name:'subscriptionSuccess',
+								id:'subscriptionSuccess',
 								hideInMenu: true,
-								component: './Trade',
+								component: './IPC/CloudStorage/subscriptionSuccess.js'
 							},
 							{
-								path: '/application/trade/qrpay',
-								id: 'qrpay',
+								path:'/application/cloudStorage/orderSubmission',
+								name:'orderSubmission',
 								hideInMenu: true,
-								component: './Trade/QRCodePayment',
+								routes: [
+									{
+										path: '/application/cloudStorage/orderSubmission/qrpay',
+										name:'qrpay',
+										id: 'qrpay',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/QRCodePayment.js',
+									},
+									{
+										path:'/application/cloudStorage/orderSubmission/paymentPage',
+										name:'paymentPage',
+										id:'paymentPage',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/paymentPage.js'
+									},
+									{
+										path: '/application/cloudStorage/orderSubmission',
+										id: 'orderSubmission',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/orderSubmission.js'
+									}
+								]
 							},
 							{
-								path: '/application/trade/result',
-								id: 'tradeResult',
-								hideInMenu: true,
-								component: './Trade/TradeResult',
-							},
-						],
+								path: '/application/cloudStorage',
+								id: 'cloudStorage',
+								component: './IPC/CloudStorage/cloudStorage.js',
+							}
+						]
 					},
+					// {
+					// 	path: '/application/trade',
+					// 	name: 'trade',
+					// 	routes: [
+					// 		{
+					// 			path: '/application/trade',
+					// 			id: 'trade',
+					// 			hideInMenu: true,
+					// 			component: './Trade',
+					// 		},
+					// 		{
+					// 			path: '/application/trade/qrpay',
+					// 			id: 'qrpay',
+					// 			hideInMenu: true,
+					// 			component: './Trade/QRCodePayment',
+					// 		},
+					// 		{
+					// 			path: '/application/trade/result',
+					// 			id: 'tradeResult',
+					// 			hideInMenu: true,
+					// 			component: './Trade/TradeResult',
+					// 		},
+					// 	],
+					// },
 					{
 						path: '/application/serviceManagement',
 						id: 'serviceManagement',
@@ -215,25 +260,6 @@ const router = [
 					{
 						path: '/devices',
 						redirect: '/devices/ipcList',
-					},
-
-					{
-						path:'/devices/cloudStorage',
-						name:'cloudStorageService',
-						routes:[
-							{
-								path:'/devices/cloudStorage/subscriptionSuccess',
-								name:'subscriptionSuccess',
-								id:'subscriptionSuccess',
-								hideInMenu: true,
-								component: './IPC/CloudStorage/subscriptionSuccess.js'
-							},
-							{
-								path: '/devices/cloudStorage',
-								id: 'cloudStorage',
-								component: './IPC/CloudStorage/cloudStorage.js',
-							}
-						]
 					},
 				],
 			},

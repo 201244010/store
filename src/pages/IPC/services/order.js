@@ -4,10 +4,8 @@ import CONFIG from '@/config';
 
 const { API_ADDRESS } = CONFIG;
 
-const request = customizeFetch('api/order', API_ADDRESS);
-// const request = customizeFetch('api/order', 'http://localhost:8000');
-
-
+const request = customizeFetch('api/trade/order', API_ADDRESS);
+// const request = customizeFetch('api/trade/order', 'http://localhost:8000');
 
 export const order = (params) => {
 
@@ -24,5 +22,13 @@ export const order = (params) => {
 			return format('toCamel')(result);
 		}
 	);
-
 };
+
+export const getOrderInfo = (params) => request('getInfo', {
+	body: format('toSnake')(params)
+}).then(
+	async response => {
+		const result = await response.json();
+		return format('toCamel')(result);
+	}
+);
