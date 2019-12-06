@@ -72,7 +72,7 @@ class OrderSubmission extends React.Component{
 				if(status === 3){
 					return(<span>{formatMessage({ id: 'cloudStorage.expired'})}</span>);
 				}
-				return(<span>已失效</span>);
+				return(<span>{formatMessage({ id: 'cloudStorage.failure'})}</span>);
 				
 			}
 		},
@@ -129,7 +129,8 @@ class OrderSubmission extends React.Component{
 	componentDidMount(){
 		const { location, navigateTo } = this.props;
 		const { query: { sn, productNo } } = location;
-		if(!productNo || Object.keys(SERVICE_TYPE).indexOf(productNo) === -1){
+		// Object.keys(SERVICE_TYPE).indexOf(productNo) === -1
+		if(!productNo || productNo !== 'YCC0002'){
 			navigateTo('cloudStorage');
 			return;
 		}
@@ -194,7 +195,7 @@ class OrderSubmission extends React.Component{
 			ipcSelectedList: selectedValue,
 			invoiceInfo,
 			productNo,
-			bundledStatus: freeStatus
+			bundledStatus: freeStatus ? 1 : 2
 		});
 		// return response;
 		const { code, data } = response;
@@ -290,7 +291,7 @@ class OrderSubmission extends React.Component{
 		}else{
 			const orderNo = await this.orderHandler();
 			if(orderNo !== ''){
-				navigateTo('subscriptionSuccess');
+				navigateTo('subscriptionSuccess', {orderNo});
 			}
 		}
 		
@@ -307,13 +308,13 @@ class OrderSubmission extends React.Component{
 			for(let j=0; j<storageIpcList.length; j++){
 				if(storageIpcList[j].deviceSn === selectedValue[i] &&
 					SERVICE_TYPE[productNo] &&
-					storageIpcList[j].serviceTag === SERVICE_TYPE[productNo].serviceTag){
+					storageIpcList[j].serviceTag === SERVICE_TYPE[productNo].serviceTag &&
+					storageIpcList[j].status === 1){
 					isNeedCoverTip = true;
 					break;
 				}
 			}
 		}
-		console.log(isNeedCoverTip);
 		return isNeedCoverTip;
 	}
 
@@ -379,7 +380,7 @@ class OrderSubmission extends React.Component{
 			<>
 				<Card title={null} bordered={false} className={styles['order-container']}>
 					<div className={styles['bind-container']}>
-						<h3 className={styles['bind-title']}>绑定摄像头</h3>
+						<h3 className={styles['bind-title']}>{formatMessage({id: 'cloudStorage.bind.ipc'})}</h3>
 						<Spin spinning={loading.effects['cloudStorage/order'] || loading.effects['cloudStorage/getStorageIpcList']}>
 							<div className={styles.content}>
 								<Checkbox.Group onChange={this.ipcSelectHandler} value={selectedValue}>
@@ -396,91 +397,91 @@ class OrderSubmission extends React.Component{
 									/>
 								</Checkbox.Group>
 								<div className={styles['price-and-num']}>
-									<div className={styles['per-price']}>单价：{unitPrice}</div>
-									<div>数量：{count}</div>
+									<div className={styles['per-price']}>{formatMessage({id: 'cloudStorage.per.price'})}{unitPrice}</div>
+									<div>{formatMessage({id: 'cloudStorage.num'})}{count}</div>
 								</div>
 							</div>
 						</Spin>
 					</div>
 					<div className={styles.invoice}>
-						<h3 className={styles['invoice-title']}>发票</h3>
+						<h3 className={styles['invoice-title']}>{formatMessage({id: 'cloudStorage.invoice'})}</h3>
 						<div className={styles['select-invoice']}>
 							<Radio.Group onChange={this.invoiceSelectHandler} defaultValue={0}>
-								<Radio.Button value={0}>无需发票</Radio.Button>
-								<Radio.Button value={1}>电子普通发票</Radio.Button>
-								<Radio.Button disabled value={2}>增值税普通发票</Radio.Button>
+								<Radio.Button value={0}>{formatMessage({id: 'cloudStorage.noNeed.invoice'})}</Radio.Button>
+								<Radio.Button value={1}>{formatMessage({id: 'cloudStorage.elec.invoice'})}</Radio.Button>
+								<Radio.Button disabled value={2}>{formatMessage({id: 'cloudStorage.normal.invoice'})}</Radio.Button>
 							</Radio.Group>
 						</div>
 						{invoiceSelectValue !== 0 &&
 						<div className={styles.vbrk}>
-							<h4 className={styles['vbrk-title']}>发票抬头</h4>
+							<h4 className={styles['vbrk-title']}>{formatMessage({id: 'cloudStorage.invoice.title'})}</h4>
 							<Radio.Group className={styles['vbrk-select']} onChange={this.vbrkSelectHandler} defaultValue={1}>
-								<Radio value={1}>个人</Radio>
-								<Radio value={2}>企业</Radio>
+								<Radio value={1}>{formatMessage({id: 'cloudStorage.invoice.personal'})}</Radio>
+								<Radio value={2}>{formatMessage({id: 'cloudStorage.invoice.company'})}</Radio>
 							</Radio.Group>
 							<Form layout='vertical' onChange={this.formOnChangeHandler}>
 								{vbrkSelectValue === 2 &&
 								<div className={styles['vbrk-company']}>
-									<Form.Item label='企业名称'>
+									<Form.Item label={formatMessage({id: 'cloudStorage.invoice.company.name'})}>
 										{
 											getFieldDecorator('titleName', {
 												rules: [
 													{
 														required: true,
-														message: '企业名称不能为空',
+														message: formatMessage({id: 'cloudStorage.no.invoice.company.name'}),
 													},
 												],
 											})(
-												<Input placeholder='请输入企业名称（必填）' />
+												<Input placeholder={formatMessage({id: 'cloudStorage.input.invoice.company.name'})} />
 											)
 										}
 									</Form.Item>
-									<Form.Item label='纳税人识别号'>
+									<Form.Item label={formatMessage({id: 'cloudStorage.invoice.taxRegisterNo'})}>
 										{
 											getFieldDecorator('taxRegisterNo', {
 												rules: [
 													{
 														required: true,
-														message: '纳税人识别号不能为空',
+														message: formatMessage({id: 'cloudStorage.no.invoice.taxRegisterNo'}),
 													},
 												],
 											})(
-												<Input placeholder='请输入纳税人识别号（必填）' />
+												<Input placeholder={formatMessage({id: 'cloudStorage.input.invoice.taxRegisterNo'})} />
 											)
 										}
 									</Form.Item>
 								</div>
 								}
 								<div className={styles['vbrk-personal']}>
-									<Form.Item label='邮箱'>
+									<Form.Item label={formatMessage({id: 'cloudStorage.email'})}>
 										{
 											getFieldDecorator(emailValue, {
 												rules: [
 													{
 														required: true,
-														message: '不能为空',
+														message: formatMessage({id: 'cloudStorage.no.email'}),
 													},
 													{
 														pattern: mail,
-														message: '邮箱地址格式错误',
+														message: formatMessage({id: 'cloudStorage.email.error'}),
 													},
 												],
 											})(
-												<Input placeholder='请输入收票人邮箱（必填）' />
+												<Input placeholder={formatMessage({id: 'cloudStorage.input.email'})} />
 											)
 										}
 									</Form.Item>
-									<Form.Item label='手机号'>
+									<Form.Item label={formatMessage({id: 'cloudStorage.phone'})}>
 										{
 											getFieldDecorator(phoneValue, {
 												rules: [
 													{
 														pattern: phone,
-														message: '手机号格式错误',
+														message: formatMessage({id: 'cloudStorage.phone.error'}),
 													},
 												],
 											})(
-												<Input placeholder='请输入收票人手机号码' />
+												<Input placeholder={formatMessage({id: 'cloudStorage.phone.placeholder'})} />
 											)
 										}
 									</Form.Item>
@@ -506,7 +507,7 @@ class OrderSubmission extends React.Component{
 					</div>
 					<div className={styles['price-container']}>
 						<div className={styles['total-price']}>
-							<span className={styles.text}>合计：</span>
+							<span className={styles.text}>{formatMessage({id: 'cloudStorage.sum'})}</span>
 							<span className={styles.value}>¥{count*unitPrice === 0 ? 0 : parseFloat(count*unitPrice).toFixed(2)}</span>
 						</div>
 						<div className={styles.btns}>
@@ -514,15 +515,16 @@ class OrderSubmission extends React.Component{
 								onClick={()=> navigateTo('cloudStorage')}
 								className={styles['cancel-btn']}
 							>
-								取消
+								{formatMessage({id: 'cloudStorage.cancel'})}
 							</Button>
 							{ !freeStatus &&
 							<Button
 								type="primary"
-								disabled={btnDisable}
+								// disabled={btnDisable}
+								disabled
 								onClick={this.payHandler}
 							>
-								去支付
+								{formatMessage({id: 'cloudStorage.pay'})}
 							</Button>}
 							{ freeStatus &&
 							<Button
@@ -530,21 +532,21 @@ class OrderSubmission extends React.Component{
 								disabled={btnDisable}
 								onClick={this.freeSubscribeHandler}
 							>
-								立即订阅
+								{formatMessage({id: 'cloudStorage.freeSubscribeHandler'})}
 							</Button>
 							}
 						</div>
 					</div>
 				</div>
 				<Modal
-					title='提示'
+					title={formatMessage({id: 'cloudStorage.tips'})}
 					visible={isNeedCoverTip}
 					onOk={this.confirmCoverHandler}
 					onCancel={() => {this.setState({isNeedCoverTip:false});}}
-					okText='确认替代'
+					okText={formatMessage({id: 'cloudStorage.confirmCover'})}
 					closable={false}
 				>
-					<p>您选择的服务与已生效的服务不一致，订阅后将替换原服务</p>
+					<p>{formatMessage({id: 'cloudStorage.confirmCover.tips'})}</p>
 				</Modal>
 			</>
 		);
