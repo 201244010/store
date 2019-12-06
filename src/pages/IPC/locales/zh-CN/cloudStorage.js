@@ -83,5 +83,12 @@ export default {
 	'cloudStorage.tips': '提示',
 	'cloudStorage.confirmCover': '确认替代',
 	'cloudStorage.confirmCover.tips': '您选择的服务与已生效的服务不一致，订阅后将替换原服务',
+	'cloudStorage.order.success': '订单提交成功',
+	'cloudStorage.orderNo': '订单号：',
+	'cloudStorage.pay.way': '支付方式',
+	'cloudStorage.use.tips': '使用',
+	'cloudStorage.scan.code.tips': '扫码完成支付'
 
+
+	
 };

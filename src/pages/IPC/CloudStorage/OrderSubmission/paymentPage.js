@@ -152,12 +152,12 @@ class PaymentPage extends React.Component{
 		return(
 			<>
 				<Card title={null} bordered={false} className={styles['payment-container']}>
-					<h3 className={styles['payment-title']}>订单提交成功</h3>
-					<p className={styles['order-num']}>订单号：{orderNo}</p>
+					<h3 className={styles['payment-title']}>{formatMessage({id: 'cloudStorage.order.success'})}</h3>
+					<p className={styles['order-num']}>{formatMessage({id: 'cloudStorage.orderNo'})}{orderNo}</p>
 					<Card
 						style={{ marginTop: 16 }}
 						type="inner"
-						title="支付方式"
+						title={formatMessage({id: 'cloudStorage.pay.way'})}
 					>
 						<div className={styles['payment-content']}>
 							{b2c.map(info => {
