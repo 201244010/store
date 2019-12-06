@@ -141,7 +141,7 @@ class BasicParams extends Component {
 	}
 
 	render() {
-		const { form, ipcBasicParams } = this.props;
+		const { form, ipcBasicParams, isOnline } = this.props;
 		const { isSaving, nightMode, rotation, indicator , WDRMode } = ipcBasicParams;
 		const { deviceInfo: { rotate }} = this.state;
 		// console.log(ipcBasicParams);
@@ -154,7 +154,7 @@ class BasicParams extends Component {
 							getFieldDecorator('nightMode',{
 								initialValue: nightMode
 							})(
-								<RadioGroup onChange={this.nightModeChange}>
+								<RadioGroup onChange={this.nightModeChange} disabled={!isOnline}>
 									<Radio value={2}>
 										{ formatMessage({id: 'basicParams.autoSwitch'}) }
 									</Radio>
@@ -174,7 +174,7 @@ class BasicParams extends Component {
 							getFieldDecorator('WDRMode',{
 								initialValue: WDRMode,
 							})(
-								<RadioGroup disabled={getFieldValue('nightMode') === 1}>
+								<RadioGroup disabled={getFieldValue('nightMode') === 1 || !isOnline}>
 									<Radio value={1}>
 										{ formatMessage({id: 'basicParams.open'}) }
 									</Radio>
@@ -197,7 +197,7 @@ class BasicParams extends Component {
 								// />
 								// <Switch />
 
-								<RadioGroup>
+								<RadioGroup disabled={!isOnline}>
 									{
 										rotate && rotate.map(item =>
 											<Radio key={item.key} value={item.key}>{item.value}{ formatMessage({id: 'basicParams.degree'})}</Radio>
@@ -222,7 +222,7 @@ class BasicParams extends Component {
 								// 	checkedChildren={formatMessage({id: 'basicParams.label.open'})}
 								// 	unCheckedChildren={formatMessage({id: 'basicParams.label.close'})}
 								// />
-								<Switch />
+								<Switch disabled={!isOnline} />
 							)
 
 						}
@@ -233,7 +233,7 @@ class BasicParams extends Component {
 							type='primary'
 							htmlType='submit'
 							// disabled={!form.isFieldsTouched(['nightMode','indicator','rotation','WDRMode'])}
-							disabled={btnDisabled}
+							disabled={btnDisabled || !isOnline}
 
 							onClick={this.submit}
 

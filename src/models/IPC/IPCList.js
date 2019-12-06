@@ -133,27 +133,62 @@ export default {
 		/**
 		 * 获取云服务的状态
 		 */
-		*readCloudInfo({ payload }, { call, put }) {
+		*readCloudInfo({ payload }, { call }) {
 			const { sn } = payload;
-			const deviceId = yield put.resolve({
-				type: 'getDeviceId',
-				payload: {
-					sn
-				}
-			});
+			// const deviceId = yield put.resolve({
+			// 	type: 'getDeviceId',
+			// 	payload: {
+			// 		sn
+			// 	}
+			// });
 
 			const response = yield call(getServiceInfo, {
-				deviceId
+				deviceSnList: [sn]
 			});
 			// console.log(response);
-			const { code , /* data */ } = response;
+			const { code , data } = response;
 			if(code === ERROR_OK) {
-				// const { status, expireTime } = data;
-				return response;
+				const { deviceList } = data;
+				const { status, validTime, activeStatus } = deviceList[0];
+				return {
+					code,
+					data: {
+						status,
+						validTime,
+						activeStatus
+					}
+				};
 			}
 			return {
 				code
 			};
+		},
+		*getCurrentVersion({ payload: { sn }},{ put }){
+			const ipcList = yield put.resolve({
+				type: 'getIpcList'
+			});
+
+			for (let i = 0; i < ipcList.length; i++) {
+				if (ipcList[i].sn === sn) {
+					return ipcList[i].binVersion;
+				}
+			}
+			return '';
+		},
+		*checkOnlineStatus({ payload }, { put }) {
+			const { sn } = payload;
+			const ipcList = yield put.resolve({
+				type: 'read'
+			});
+			if(ipcList){
+				for(let i=0;i <ipcList.length; i++){
+					if(ipcList[i].sn === sn){
+						const { isOnline } = ipcList[i];
+						return isOnline;
+					}
+				}
+			}
+			return false;
 		}
 
 	}

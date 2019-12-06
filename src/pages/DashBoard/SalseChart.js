@@ -86,6 +86,11 @@ const formatXLabel = (value, rangeType, timeRangeStart, timeRangeEnd) => {
 	})
 )
 class SalseChart extends PureComponent {
+	constructor(props) {
+		super(props);
+		this.chartRef = React.createRef();
+	}
+
 	async componentDidMount() {
 		const { ipcList, getShopIdFromStorage, getShopListFromStorage } = this.props;
 		const currentShopId = await getShopIdFromStorage();
@@ -116,6 +121,9 @@ class SalseChart extends PureComponent {
 			passengerOrderLoading,
 			passengerOrderList,
 		} = this.props;
+		const { current } = this.chartRef;
+		const { clientWidth = null } = current || {};
+		const chartWidth = Math.round(clientWidth * 0.95);
 
 		let chartScale = {
 			time: {
@@ -176,6 +184,8 @@ class SalseChart extends PureComponent {
 				<Bar
 					{...{
 						chartStyle: {
+							width: chartWidth,
+							forceFit: false,
 							scale: chartScale,
 						},
 						axis: {
@@ -230,6 +240,8 @@ class SalseChart extends PureComponent {
 				<Bar
 					{...{
 						chartStyle: {
+							width: chartWidth,
+							forceFit: false,
 							scale: chartScale,
 						},
 						axis: {
@@ -276,6 +288,8 @@ class SalseChart extends PureComponent {
 			DataChart = () => (
 				<LinePoint
 					{...{
+						width: chartWidth,
+						forceFit: false,
 						data: passengerOrderList,
 						scale: chartScale,
 						tooltip: { itemTpl, useHtml: true },
@@ -311,17 +325,17 @@ class SalseChart extends PureComponent {
 		}
 
 		return (
-			<Card
-				loading={passengerOrderLoading}
-				title={<CardTitle loading={passengerOrderLoading} mode={this.chartMode} />}
-				className={`${styles['card-bar-wrapper']}  ${
-					passengerOrderLoading ? '' : styles['salse-chart']
-				}`}
-			>
-				<div className={styles['chart-wrapper']}>
-					<DataChart />
-				</div>
-			</Card>
+			<div ref={this.chartRef}>
+				<Card
+					loading={passengerOrderLoading}
+					title={<CardTitle loading={passengerOrderLoading} mode={this.chartMode} />}
+					className={`${styles['card-bar-wrapper']}  ${
+						passengerOrderLoading ? '' : styles['salse-chart']
+					}`}
+				>
+					{chartWidth && <DataChart />}
+				</Card>
+			</div>
 		);
 	}
 }

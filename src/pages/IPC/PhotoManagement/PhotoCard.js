@@ -1,13 +1,13 @@
 import React from 'react';
-import { Card, Form, Checkbox, Modal, Radio, Upload, Row, Col, Avatar, Select, Input, Icon, message } from 'antd';
-// import PhotoForm from './PhotoForm';
+import { Card, Form, Checkbox, Modal, Radio, Upload, Row, Col, Avatar, Select, Input, Icon, message, DatePicker } from 'antd';
 import { formatMessage } from 'umi/locale';
 import {connect} from 'dva';
 import moment from 'moment';
 import { mbStringLength } from '@/utils/utils';
 import styles from './PhotoManagement.less';
 import { spaceInput } from '@/constants/regexp';
-
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 
 const RadioGroup = Radio.Group;
@@ -111,6 +111,7 @@ class PhotoCard extends React.Component {
 			isUpload: 0,
 			isMessage: false,
 			imageLoaded: false,
+			isPickerOpen: false,
 		};
 	}
 
@@ -234,17 +235,27 @@ class PhotoCard extends React.Component {
 						faceImgList: [fileName],
 						faceId: id
 					});
-					isUpload = response.data.failureList.length === 0;
+					// console.log(response);
+					if(response) {
+						isUpload = !response.data.failureList || response.data.failureList.length === 0;
+					} else {
+						isUpload = false;
+					}
+
 				}
 
 				const fields = form.getFieldsValue();
+				const birthday = form.getFieldValue('age');
+				const age = moment().diff(birthday, 'year');
+				console.log('age', age);
+
 				const isEdit = await edit({
 					faceId: id,
 					name:fields.name,
 					gender: fields.gender,
 					sourceGroupId: libraryId,
 					targetGroupId: fields.libraryName || libraryId,
-					age: fields.age
+					age,
 				});
 
 				// console.log(isUpload);
@@ -299,95 +310,56 @@ class PhotoCard extends React.Component {
 	};
 
 	ageRange = () => {
-		const { photoLibrary: {ageRange} , age, realAge } = this.props;
+		const { photoLibrary: { ageRange } , age, ageRangeCode } = this.props;
 		let ageName = formatMessage({id: 'photoManagement.unKnown'});
-		// console.log(ageRange);
-		if(realAge){
-			ageName = realAge;
+		if(age) {
+			ageName = age;
 		} else {
-			ageRange.forEach(item => {
-				if(item.ageCode === age) {
-					ageName = item.ageRange;
-				}
-			});
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+				case 18:
+					ageName = formatMessage({id: 'photoManagement.ageLessInfo'});
+					break;
+				case 8:
+					ageName = formatMessage({ id: 'photoManagement.ageLargeInfo'});
+					break;
+				default:
+					if(ageRange) {
+						ageRange.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = item.ageRange;
+							}
+						});
+					}
+			}
 		}
+
+		// console.log('aaaaaaaaa',ageName);
 		return ageName;
 	};
+
+	mapAgeSelectInfo = (ageRangeCode, range) => {
+		let ageRange = '';
+		switch(ageRangeCode) {
+			case 18:
+				ageRange = formatMessage({id: 'photoManagement.ageLessInfo'});
+				break;
+			case 8:
+				ageRange = formatMessage({id: 'photoManagement.ageLargeInfo'});
+				break;
+			default:
+				ageRange = range;
+		}
+		return ageRange;
+	}
 
 	getBase64 = (img, callback) => {
 		const reader = new FileReader();
 		reader.addEventListener('load', () => callback(reader.result));
 		reader.readAsDataURL(img);
 	};
-
-	// upload = async file => {
-	// 	const { editFile, groupId } = this.props;
-	// 	const response = await editFile(file, groupId);
-	// console.log('upload',file);
-	// 	// file = handleResponse(file);
-	// 	const { file: { status }} = file;
-	// 	let isUpload = 0;
-	// 	// console.log('upload',file);
-	// 	if (status === 'done') {
-	// 		// const { file: { response }} = file;
-	// 		const { code, data: {verifyResult}} = response;
-
-	// 		if(verifyResult === 1 && code === 1 ) {
-	// 			message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
-	// 			isUpload = 1;
-	// 			// this.setState({fileName: response.data.fileName, uploadSuccess: true});
-	// 		} else {
-	// 			message.error(formatMessage({id:'photoManagement.uploadFail'}));
-	// 			isUpload = 2;
-	// 			// this.setState({uploadFail: true});
-	// 		}
-	// 		this.getBase64(file.file.originFileObj,imageUrl => {
-	// 			// console.log(imageUrl);
-	// 			this.setState({
-	// 				fileUrl: imageUrl,
-	// 				fileName: response.data.fileName,
-	// 				isUpload,
-	// 			});
-	// 		});
-
-	// 	} else if (status === 'error') {
-	// 		message.error(formatMessage({id:'photoManagement.FailforOver'}));
-	// 		this.setState({
-	// 			// file: file.file,
-	// 			isUpload: 2
-	// 		});
-	// 	}
-	// 	this.setState({
-	// 		file:file.file
-	// 	});
-	// };
-
-	// editFile = async file => {
-	// 	console.log('file', file);
-	// 	const { editFile, groupId } = this.props;
-	// 	const response = await editFile(file, groupId);
-	// 	const { code, data: {verifyResult}} = response;
-	// 	let isUpload = 0;
-	// 	if(verifyResult === 1 && code === 1 ) {
-	// 		message.success(formatMessage({id:'photoManagement.uploadSuccess'}));
-	// 		isUpload = 1;
-	// 	} else {
-	// 		message.error(formatMessage({id:'photoManagement.uploadFail'}));
-	// 		isUpload = 2;
-	// 	}
-	// 	this.getBase64(file,imageUrl => {
-	// 		this.setState({
-	// 			fileUrl: imageUrl,
-	// 			fileName: response.data.fileName,
-	// 			isUpload,
-	// 			file:{
-	// 				...file,
-	// 				response,
-	// 				status: 'done'
-	// 			}
-	// 		});
-	// 	});
-	// }
 
 
 	beforeUpload = file => {
@@ -443,8 +415,8 @@ class PhotoCard extends React.Component {
 	};
 
 	handleSelectInfo = type => {
-		const { gender, age, photoLibrary: { ageRange } } = this.props;
-		let ageName = '';
+		const { gender, ageRangeCode, age } = this.props;
+		let birthday = '';
 		// console.log(ageRange);
 		switch (type) {
 			case 'gender':
@@ -454,14 +426,37 @@ class PhotoCard extends React.Component {
 				if(gender === 2) {
 					return 2;
 				}
-				return ageName;
+				return '';
 			case 'age':
-				ageRange.forEach(item => {
-					if(item.ageCode === age) {
-						ageName = item.ageCode;
+				if (age) {
+					birthday = moment().subtract(age, 'year');
+				} else {
+					switch(ageRangeCode) {
+						case 1:
+						case 2:
+						case 3:
+						case 18:
+							birthday = moment().subtract(18, 'year');
+							break;
+						case 4:
+							birthday = moment().subtract(19, 'year');
+							break;
+						case 5:
+							birthday = moment().subtract(29, 'year');
+							break;
+						case 6:
+							birthday = moment().subtract(36, 'year');
+							break;
+						case 7:
+							birthday = moment().subtract(46, 'year');
+							break;
+						case 8:
+							birthday = moment().subtract(56, 'year');
+							break;
+						default: return moment();
 					}
-				});
-				return ageName;
+				}
+				return birthday;
 			default: return 0;
 		}
 	};
@@ -490,6 +485,38 @@ class PhotoCard extends React.Component {
 		return false;
 	};
 
+	handlePickerOpen = (status) => {
+		console.log('open status', status);
+		if(status) {
+			this.setState({
+				isPickerOpen: true
+			});
+		} else {
+			this.setState({
+				isPickerOpen: false
+			});
+		}
+	};
+
+	handlePickerPanel = (value) => {
+		console.log('pnael>>>>', value);
+
+		const { form: { setFieldsValue } } = this.props;
+		if (value < moment()) {
+			this.setState({
+				isPickerOpen: false
+			});
+			setFieldsValue({ age: value });
+		}
+	};
+
+	handleDate = (time) => {
+		if(!time) {
+			return false;
+		}
+		return time < moment();
+	}
+
 	dateStrFormat = (date, format = 'YYYY-MM-DD HH:mm:ss') =>
 		date ? moment.unix(date).format(format) : undefined;
 
@@ -501,16 +528,23 @@ class PhotoCard extends React.Component {
 			image,
 			photoLibrary,
 			form: {getFieldDecorator},
-			photoLibrary: { ageRange },
+			// photoLibrary: { ageRange },
 			groupId,
-			age,
+			/* age, */
+			// ageRangeCode,
 			gender,
-			count,
-			navigateTo
+			// count,
+			// navigateTo
 		} = this.props;
 		const isChecked = photoLibrary.checkList.indexOf(id) >= 0;
-		const { isEdit, infoFormVisible, removeVisible, fileUrl, imageLoaded, isUpload } = this.state;
-		const imageUrl = fileUrl || image;
+		const { isEdit, infoFormVisible, removeVisible, fileUrl, imageLoaded, isUpload, isPickerOpen } = this.state;
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
+		};
+		const src = image || images[gender];
+		const imageUrl = fileUrl || src;
 		// console.log('url',imageUrl);
 		// console.log(id, age, gender);
 		return (
@@ -532,7 +566,7 @@ class PhotoCard extends React.Component {
 			>
 				<div>
 					<div className={styles['pic-col']}>
-						<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={image} />
+						<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={src} />
 					</div>
 					<div className={styles['word-col']}>
 						<span className={styles['info-card-span']} title={this.handleInfo('name')}>
@@ -584,7 +618,7 @@ class PhotoCard extends React.Component {
 										showUploadList={false}
 									>
 										<div className={styles['upload-pic']}>
-											{image !== '' &&
+											{src !== '' &&
 												<div
 													style={{backgroundImage:`url("${imageUrl}")`}}
 													className={styles['edit-pic-col']}
@@ -689,10 +723,10 @@ class PhotoCard extends React.Component {
 													</Select>,
 												)}
 											</Form.Item>
-											<Form.Item label={formatMessage({id:'photoManagement.age'})}>
+											<Form.Item label={formatMessage({id:'photoManagement.birthday'})}>
 												{getFieldDecorator('age', {
-													// initialValue: this.handleSelectInfo('age'),
-													initialValue: age === 0?'':age,
+													initialValue: this.handleSelectInfo('age'),
+													// initialValue: moment('01-01-1998','MM-DD-YYYY'),
 													rules: [
 														{
 															required: true,
@@ -700,14 +734,16 @@ class PhotoCard extends React.Component {
 														}
 													]
 												})(
-													<Select>
-														{
-															ageRange.map((item, index)=>
-																<Option value={item.ageCode} key={index}>
-																	{item.ageRange}
-																</Option>)
-														}
-													</Select>,
+													// <Select>
+													// 	{
+													// 		ageRange.map((item, index)=>
+													// 			<Option value={item.ageRangeCode} key={index}>
+													// 				{/* {item.ageRange} */}
+													// 				{this.mapAgeSelectInfo(item.ageRangeCode, item.ageRange)}
+													// 			</Option>)
+													// 	}
+													// </Select>,
+													<DatePicker mode='year' format='YYYY' open={isPickerOpen} onOpenChange={this.handlePickerOpen} onPanelChange={this.handlePickerPanel} disabledDate={this.handleDate} />
 												)}
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.frequency'})}>
@@ -727,7 +763,7 @@ class PhotoCard extends React.Component {
 							<Row>
 								<Col span={10}>
 									<div className={styles['pic-col']}>
-										<Avatar shape="square" size={300} icon='user' className={styles['pic-col']} src={image} />
+										<Avatar shape="square" size={300} icon='user' className={styles['pic-col']} src={src} />
 									</div>
 								</Col>
 
@@ -754,12 +790,13 @@ class PhotoCard extends React.Component {
 												{this.ageRange()}
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.frequency'})}>
-												{
+												<span>{this.handleInfo('count')}</span>
+												{/* {
 													count?
 														<span className={styles['frequency-label']} onClick={() => navigateTo('entryDetail',{ faceId: id })}>{this.handleInfo('count')}</span>
 														:
 														<span>{this.handleInfo('count')}</span>
-												}
+												} */}
 
 											</Form.Item>
 											<Form.Item label={formatMessage({id:'photoManagement.card.createTime'})}>
@@ -786,7 +823,7 @@ class PhotoCard extends React.Component {
 					<Row className={styles['move-modal']}>
 						<Col span={8}>
 							<div className={styles['pic-col']}>
-								<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={image} />
+								<Avatar shape="square" size={150} icon='user' className={styles['pic-col']} src={src} />
 							</div>
 						</Col>
 						<Col span={16}>

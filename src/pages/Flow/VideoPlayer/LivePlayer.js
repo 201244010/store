@@ -38,6 +38,10 @@ class LivePlayer extends React.Component{
 		}
 	}
 
+	componentWillUnmount () {
+		clearTimeout(this.replayTimeout);
+	}
+
 	play = () => {
 		const { videoplayer } = this;
 		videoplayer.play();
@@ -355,7 +359,7 @@ class LivePlayer extends React.Component{
 	}
 
 	onMetadataArrived = (metadata) => {
-		const { onMetadataArrived } = this.props;
+		const { onMetadataArrived, updateBasetime, getCurrentTimestamp } = this.props;
 		const { isLive } = this.state;
 		const { videoplayer: { player } } = this;
 
@@ -379,6 +383,11 @@ class LivePlayer extends React.Component{
 				console.log('系统时间=', now.format('YYYY-MM-DD HH:mm:ss'));
 				console.log('视频帧时间=', videoTime);
 				console.log('time gap=', now.valueOf() - (baseTime + relativeTime));
+
+				const gap = (Math.round((player.currentTime() - this.lastMetadataTimestamp)*1000*1000))/1000;
+				// console.log('player.currentTime()=', player.currentTime());
+				// console.log('player current时间=', moment(baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
+				getCurrentTimestamp(this.relativeTimestamp + gap);
 			}
 
 			// const { player } = this.videoplayer;
@@ -388,9 +397,13 @@ class LivePlayer extends React.Component{
 				const index = player.buffered().length -1;
 				const curTime = player.currentTime();
 				const endTime = player.buffered().end(index);
+				const startTime = player.buffered().start(index);
 
+				console.log('player.buffered().length=', player.buffered().length);
 				console.log('before curTime=', curTime);
 				console.log('endTime=', endTime);
+				console.log('startTime=', startTime);
+				console.log('endTime-startTime=', endTime-startTime);
 
 				// 离缓存间隔太小，会导致loading
 				if (endTime - 2 > curTime) {
@@ -401,6 +414,7 @@ class LivePlayer extends React.Component{
 			}
 
 			onMetadataArrived(metadata.relativeTime);
+			updateBasetime(metadata.baseTime);
 		} else {
 			const { creationdate } = metadata;
 			const timestamp = moment(creationdate.substring(0, creationdate.length - 4)).unix();

@@ -12,6 +12,7 @@ import userCenter from './zh-CN/userCenter';
 import storeManagement from './zh-CN/storeManagement';
 import notification from './zh-CN/notification';
 import studio from './zh-CN/studio';
+import iot from './zh-CN/iot';
 import dashboard from './zh-CN/dashBoard';
 import network from './zh-CN/network';
 
@@ -70,6 +71,7 @@ export default {
 	...trade,
 	...flow,
 	...tradeShow,
+	...iot,
 	...passengerAnalyze,
 	...serviceManagement,
 };

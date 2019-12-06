@@ -1,19 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import {
-	Card,
-	Select,
-	Form,
-	Button,
-	Switch,
-	message,
-	Tooltip,
-	Icon,
-	Input,
-	TimePicker,
-	Table,
-	Tag
-} from 'antd';
+import { Card, Select, Form, Button, Switch, message, Tooltip, Icon, Input, TimePicker, Table, Tag } from 'antd';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import DataEmpty from '@/components/BigIcon/DataEmpty';
@@ -79,7 +66,7 @@ class SystemConfig extends Component {
 			},
 			btnLoading: false
 		};
-		
+
 		this.columns = [{
 			title: formatMessage({id: 'esl.device.ap.sn'}),
 			dataIndex: 'sn',
@@ -89,7 +76,7 @@ class SystemConfig extends Component {
 					return <span>{text}  <Tag>{formatMessage({id: 'esl.device.ap.mainAP'})}</Tag></span>;
 				}
 				return text;
-				
+
 			}
 		}, {
 			title: formatMessage({id: 'esl.device.ap.name'}), dataIndex: 'name', key: 'name'
@@ -106,18 +93,18 @@ class SystemConfig extends Component {
 			}
 		}];
 	}
-	
+
 	async componentDidMount() {
 		const { getNetWorkIdList, getBaseStationList, getAPConfig } = this.props;
 		const networkIdList = await getNetWorkIdList();
 		await this.checkMQTTClient();
-		
+
 		if(networkIdList.length > 0) {
 			const stationList = await getBaseStationList({
 				pageNum: 1, status: -1, keyword: networkIdList[0].networkId
 			});
 			this.setState({networkId: networkIdList[0].networkId, configLoading: false});
-			
+
 			if(this.isMainApOnline(stationList)) {
 				this.setState({configShow: true, settingLoading: false});
 				const { networkId } = networkIdList[0] || {};
@@ -127,13 +114,13 @@ class SystemConfig extends Component {
 			}
 		}
 	}
-	
+
 	componentWillUnmount() {
 		clearTimeout(this.checkTimer);
 		const { unsubscribeTopic } = this.props;
 		unsubscribeTopic();
 	}
-	
+
 	isMainApOnline = array => {
 		if(array.length > 0) {
 			const mainAp = array.filter(item => item.isMaster === 1);
@@ -143,7 +130,7 @@ class SystemConfig extends Component {
 		}
 		return false;
 	};
-	
+
 	// 三个更新接口全部成功才拉取最新的配置并toast提示成功
 	apHandler = (errcode, action, receiveConfig, opcode) => {
 		const { networkId, isUpdateSuccess } = this.state;
@@ -151,7 +138,7 @@ class SystemConfig extends Component {
 		const updateSuccess = {
 			setApConfig: false, setClksync: false, setRefresh: false
 		};
-		
+
 		if (action === ACTION.UPDATE) {
 			if (errcode === ERROR_OK) {
 				switch (opcode) {
@@ -169,7 +156,7 @@ class SystemConfig extends Component {
 						break;
 					default: break;
 				}
-				
+
 				const {setApConfig, setClksync, setRefresh} = isUpdateSuccess;
 				if(setApConfig && setClksync && setRefresh) {
 					message.success(formatMessage({ id: 'esl.device.config.setting.success' }));
@@ -191,7 +178,7 @@ class SystemConfig extends Component {
 			}
 		}
 	};
-	
+
 	checkMQTTClient = async () => {
 		clearTimeout(this.checkTimer);
 		const {
@@ -201,7 +188,7 @@ class SystemConfig extends Component {
 			subscribe,
 		} = this.props;
 		const isClientExist = await checkClientExist();
-		
+
 		if (isClientExist) {
 			const apInfoTopic = await generateTopic({ service: 'ESL/response', action: 'sub' });
 			await subscribe({ topic: [apInfoTopic] });
@@ -210,10 +197,10 @@ class SystemConfig extends Component {
 			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
 		}
 	};
-	
+
 	handleSelectChange = networkId => {
 		const { getAPConfig, getBaseStationList } = this.props;
-		
+
 		this.setState(
 			{
 				networkId,
@@ -225,9 +212,9 @@ class SystemConfig extends Component {
 				const stationList = await getBaseStationList({
 					pageNum: 1, status: -1, keyword: networkId
 				});
-				
+
 				this.setState({configLoading: false});
-				
+
 				if(this.isMainApOnline(stationList)) {
 					getAPConfig({ networkId });
 					this.setState({configShow: true, settingLoading: false});
@@ -237,15 +224,15 @@ class SystemConfig extends Component {
 			}
 		);
 	};
-	
+
 	updateAPConfig = () => {
 		const {
 			form: { validateFields },
 			updateAPConfig,
 		} = this.props;
-		
+
 		const { networkId } = this.state;
-		
+
 		validateFields((err, values) => {
 			if (!err) {
 				this.setState({btnLoading: true}, () => {
@@ -257,7 +244,7 @@ class SystemConfig extends Component {
 			}
 		});
 	};
-	
+
 	render() {
 		const {
 			loading,
@@ -288,7 +275,7 @@ class SystemConfig extends Component {
 			'scanMulti',
 			'scanDeepSleep'
 		]);
-		
+
 		return (
 			<Card
 				bordered={false}
@@ -362,7 +349,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
+
 										<Form.Item
 											label={formatMessage({ id: 'esl.device.config.scan.green' })}
 										>
@@ -378,7 +365,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
+
 										<Form.Item
 											label={formatMessage({ id: 'esl.device.config.scan.greenRound' })}
 										>
@@ -397,7 +384,7 @@ class SystemConfig extends Component {
 												)}
 											</div>
 										</Form.Item>
-										
+
 										<Form.Item
 											label={formatMessage({ id: 'esl.device.config.sleep.round' })}
 										>
@@ -421,7 +408,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
+
 										<Form.Item
 											label={formatMessage({ id: 'esl.device.config.async.round' })}
 										>
@@ -468,7 +455,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
+
 										<Form.Item
 											label={formatMessage({
 												id: 'esl.device.config.self.refresh.round',
@@ -517,7 +504,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
+
 										<Form.Item
 											label={formatMessage({
 												id: 'esl.device.config.scan.refresh.time',
@@ -545,7 +532,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
+
 										<Form.Item label=" " colon={false}>
 											<Button
 												type="primary"
@@ -563,7 +550,7 @@ class SystemConfig extends Component {
 							}
 						</Card>
 					</>
-					
+
 				// 	<Card
 				// 	title={formatMessage({ id: 'esl.device.config.boardcast' })}
 				// 	loading={configLoading}
@@ -585,7 +572,7 @@ class SystemConfig extends Component {
 				// 	</Form.Item>
 				// 	</div>
 				// 	</Card>
-				
+
 				) : (
 					<DataEmpty />
 				)}

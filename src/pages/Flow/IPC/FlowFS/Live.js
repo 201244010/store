@@ -8,13 +8,14 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Faceid from '@/pages/Flow/VideoPlayer/Faceid';
 import LivePlayer from '@/pages/Flow/VideoPlayer/LivePlayer';
 import { LIBRARY_STYLE } from './libraryName';
+import manImage from '@/assets/imgs/male.png';
+import womanImage from '@/assets/imgs/female.png';
 
 import styles from './Live.less';
 
 @connect((state) => {
-	const { flowFaceid: { rectangles, list, libraryList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }} = state;
+	const { flowFaceid: { rectangles, list, libraryList, ageRangeList }, flowLive: { ppi, streamId, ppiChanged, timeSlots }, routing: { location }} = state;
 	// const rects = [];
-
 	// rectangles.forEach(item => {
 	// item.rects.forEach(rect => {
 	// rects.push(rect);
@@ -24,11 +25,12 @@ import styles from './Live.less';
 	return {
 		streamId,
 		ppiChanged,
-		currentPPI: ppi || '1080',
+		currentPPI: ppi || '720',
 		// faceidRects: rects || [],
 		faceidRects: rectangles || [],
 		faceidList: list || [],
 		timeSlots: timeSlots || [],
+		ageRangeList: ageRangeList || [],
 		location,
 		libraryList,
 	};
@@ -188,8 +190,11 @@ class Live extends React.Component{
 				pixelRatio: '16:9'
 			},
 			liveTimestamp: 0,
-			sdStatus: true
+			sdStatus: true,
+			baseTime: '' // 视频直播baseTime
 		};
+		this.timeInterval = 0; // 定时清空store中的人脸框
+		this.reloadTimer = 0; // 定时器刷新页面
 	}
 
 	async componentDidMount () {
@@ -228,6 +233,11 @@ class Live extends React.Component{
 			});
 			// setTimeout(test, 1000);
 		}
+
+		const now = moment().format('YYYY-MM-DD HH:mm:ss');
+		console.log('大屏加载now=', now);
+
+		this.timeToReload();
 	}
 
 	componentWillUnmount () {
@@ -244,6 +254,26 @@ class Live extends React.Component{
 				this.stopFaceComparePush();
 			}
 		}
+		clearInterval(this.timeInterval);
+		clearInterval(this.reloadTimer);
+	}
+
+	// 每天凌晨4点多时，页面刷新一次
+	timeToReload = () => {
+		this.reloadTimer = setTimeout(() => {
+			const date = moment().format('YYYYMMDD');
+			const hour = moment().hour();
+			const reloadDate = localStorage.getItem('_sunmi_store_reload_date');
+			console.log('date=', date);
+			console.log('reloadDate=', reloadDate);
+
+			if (hour === 4 && date !== reloadDate) {
+				localStorage.setItem('_sunmi_store_reload_date', date);
+				window.location.reload();
+			}
+
+			this.timeToReload();
+		}, 30*60*1000);
 	}
 
 	onTimeChange = async (timeStart, timeEnd) => {
@@ -258,6 +288,12 @@ class Live extends React.Component{
 		});
 
 		return result;
+	}
+
+	updateBasetime = (timestamp) => {
+		this.setState({
+			baseTime: timestamp
+		});
 	}
 
 	onMetadataArrived = (timestamp) => {
@@ -297,13 +333,23 @@ class Live extends React.Component{
 
 	startFaceidPush = () => {
 		console.log('facied');
-		const { changeFaceidPushStatus } = this.props;
+		const { changeFaceidPushStatus, clearRects } = this.props;
 		const sn = this.getSN();
 
 		changeFaceidPushStatus({
 			sn,
 			status: true
 		});
+
+		clearInterval(this.timeInterval);
+		this.timeInterval = setInterval(() => {
+			const { baseTime } = this.state;
+			if (baseTime) {
+				clearRects({
+					timestamp: moment().valueOf() - baseTime - 30 * 1000
+				});
+			}
+		}, 10 * 1000);
 	}
 
 	stopFaceidPush = () => {
@@ -314,6 +360,8 @@ class Live extends React.Component{
 			sn,
 			status: false
 		});
+
+		clearInterval(this.timeInterval);
 	}
 
 	startFaceComparePush = () => {
@@ -398,6 +446,37 @@ class Live extends React.Component{
 		return url;
 	}
 
+	mapAgeInfo(age, ageRangeCode) {
+
+		const { ageRangeList } = this.props;
+		let ageName = formatMessage({id: 'flow.unknown'});
+		if(age) {
+			ageName = `${age} ${formatMessage({id: 'flow.age.unit'})}`;
+		} else {
+			switch(ageRangeCode) {
+				case 1:
+				case 2:
+				case 3:
+				case 18:
+					ageName = formatMessage({ id: 'flow.ageLessInfo'});
+					break;
+				case 8:
+					ageName = formatMessage({ id: 'flow.ageLargeInfo'});
+					break;
+				default:
+					if(ageRangeList){
+						ageRangeList.forEach(item => {
+							if(item.ageRangeCode === ageRangeCode) {
+								ageName = `${item.ageRange} ${formatMessage({id: 'flow.age.unit'})}`;
+							}
+						});
+					}
+			}
+		}
+
+		return ageName;
+	}
+
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, libraryList } = this.props;
 
@@ -410,6 +489,12 @@ class Live extends React.Component{
 			0: formatMessage({ id: 'flow.genders.unknown' }),
 			1: formatMessage({ id: 'flow.genders.male'}),
 			2: formatMessage({ id: 'flow.genders.female'})
+		};
+
+		const images = {
+			0: manImage,
+			1: manImage,
+			2: womanImage
 		};
 
 		return(
@@ -446,6 +531,7 @@ class Live extends React.Component{
 						getCurrentTimestamp={this.syncLiveTimestamp}
 						onTimeChange={this.onTimeChange}
 						onMetadataArrived={this.onMetadataArrived}
+						updateBasetime={this.updateBasetime}
 					/>
 
 				</div>
@@ -466,14 +552,15 @@ class Live extends React.Component{
 														title={
 															<div className={styles['avatar-container']}>
 																<div className={`${styles.type} ${styles[libraryType[item.libraryId]]}`}>{ item.libraryName }</div>
-																<Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic}`} />
+																{/* <Avatar className={styles.avatar} shape="square" size={128} src={`data:image/jpeg;base64,${item.pic ? item.pic : images[item.gender]}`} /> */}
+																<Avatar className={styles.avatar} shape="square" size={128} src={item.pic ? item.pic : images[item.gender]} />
 															</div>
 														}
 														bordered={false}
 														className={styles.infos}
 													>
 														<p className={styles['infos-age']}>
-															{ `${ genders[item.gender] } ${ item.age }${formatMessage({id: 'flow.age.unit'})}` }
+															{ `${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)}` }
 														</p>
 														<p className={styles['infos-time']}>
 															{/* <span>{formatMessage({id: 'live.last.arrival.time'})}</span> */}

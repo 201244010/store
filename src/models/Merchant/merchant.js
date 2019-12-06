@@ -74,7 +74,7 @@ export default {
 
 				yield put({
 					type: 'updateState',
-					payload: { loading: false },
+					payload: { loading: false, currentCompanyId: companyId },
 				});
 			} else {
 				yield put({
@@ -210,7 +210,6 @@ export default {
 
 		*switchCompany({ payload = {} }, { put }) {
 			const { companyId } = payload;
-
 			yield put({
 				type: 'setCompanyIdInCookie',
 				payload: { companyId },

@@ -11,8 +11,17 @@ import styles from './passengerAnalyze.less';
 	passengerFlowTrendList: passengerAnalyze.passengerFlowTrendList,
 }))
 class PassengerChart extends PureComponent {
+	constructor(props) {
+		super(props);
+		this.chartWrapper = React.createRef();
+	}
+
 	render() {
 		const { passengerFlowTrendList, loading } = this.props;
+		const { current = {} } = this.chartWrapper;
+		const { clientWidth = null } = current || {};
+		const chartWidth = Math.round(clientWidth * 0.95);
+
 		const timeTicks = passengerFlowTrendList.reduce((prev, cur) => {
 			const { time } = cur;
 			if (!prev.includes(time)) {
@@ -52,7 +61,7 @@ class PassengerChart extends PureComponent {
 		];
 
 		return (
-			<div className={styles['passenger-chart-wrapper']}>
+			<div ref={this.chartWrapper} className={styles['passenger-chart-wrapper']}>
 				<Card
 					bordered={false}
 					loading={loading.effects['passengerAnalyze/getPassengerFlowHistoryTrend']}
@@ -60,26 +69,36 @@ class PassengerChart extends PureComponent {
 					<h4 className={styles['chart-header']}>
 						{formatMessage({ id: 'passengerAnalyze.trend' })}
 					</h4>
-					<LinePoint
-						{...{
-							data: passengerFlowTrendList,
-							scale: chartScale,
-							tooltip: { itemTpl, useHtml: true },
-							height: 300,
-							padding: ['10%', '5%'],
-							legend: { position: 'top-right', offsetY: 25 },
-							line: {
-								position: 'time*count',
-								color: ['passengerTypeDisplay', ['#25B347', '#FEDA75', '#01CC99']],
-								shape: '',
-							},
-							point: {
-								position: 'time*count',
-								color: ['passengerTypeDisplay', ['#25B347', '#FEDA75', '#01CC99']],
-								tooltip: chartTip,
-							},
-						}}
-					/>
+					{chartWidth && (
+						<LinePoint
+							{...{
+								width: chartWidth,
+								forceFit: false,
+								data: passengerFlowTrendList,
+								scale: chartScale,
+								tooltip: { itemTpl, useHtml: true },
+								height: 300,
+								padding: ['10%', '5%'],
+								legend: { position: 'top-right' },
+								line: {
+									position: 'time*count',
+									color: [
+										'passengerTypeDisplay',
+										['#25B347', '#FEDA75', '#01CC99'],
+									],
+									shape: '',
+								},
+								point: {
+									position: 'time*count',
+									color: [
+										'passengerTypeDisplay',
+										['#25B347', '#FEDA75', '#01CC99'],
+									],
+									tooltip: chartTip,
+								},
+							}}
+						/>
+					)}
 				</Card>
 			</div>
 		);

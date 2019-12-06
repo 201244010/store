@@ -4,6 +4,7 @@
 import { formatMessage } from 'umi/locale';
 import { getRange } from '../../services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
+import { getLocationParam } from '@/utils/utils';
 
 const OPCODE = {
 	FACE_ID_STATUS: '0x4202',
@@ -82,10 +83,10 @@ export default {
 			}
 		},
 		*mapFaceInfo({ payload }, { select, take, put }) {
-			const { libraryName, age, ageRangeCode, name } = payload;
+			const { libraryName, name } = payload;
 			let rangeList = yield select((state) => state.faceid.ageRangeList);
-			console.log('rangeList',rangeList);
-			let ageName = formatMessage({id: 'live.unknown'});
+			// console.log('rangeList',rangeList);
+			// let ageName = formatMessage({id: 'live.unknown'});
 			let libraryNameText = libraryName;
 
 			switch(libraryName) {
@@ -106,29 +107,31 @@ export default {
 
 			if(!rangeList || rangeList.length === 0){
 				const { payload: list } = yield take('readAgeRangeList');
-				console.log('take list', list);
+				// console.log('take list', list);
 				rangeList = list.ageRangeList;
 			}
-			if(age) {
-				ageName = age;
-			} else if(rangeList) {
-				rangeList.forEach(item => {
-					if(item.ageRangeCode === ageRangeCode) {
-						ageName = item.ageRange;
-					}
-				});
-			}
+			// if(age) {
+			// 	ageName = age;
+			// } else if(rangeList) {
+			// 	rangeList.forEach(item => {
+			// 		if(item.ageRangeCode === ageRangeCode) {
+			// 			ageName = item.ageRange;
+			// 		}
+			// 	});
+			// }
 			 yield put({
 				 type: 'updateList',
 				 payload: {
 					 ...payload,
 					 libraryName: libraryNameText,
-					 age: ageName,
+					//  age: ageName,
 					 name: name === 'undefined' ? formatMessage({id: 'live.unknown'}) : name
 				 }
 			 });
 		},
 		*changeFaceidPushStatus ({ payload: { sn, status }}, { put }) {
+			console.log('changeFaceidPushStatus sn=', sn);
+			console.log('changeFaceidPushStatus status=', status);
 			// 直播页人脸加框开关
 			const deviceType = yield put.resolve({
 				type: 'ipcList/getDeviceType',
@@ -252,6 +255,42 @@ export default {
 			dispatch({
 				type: 'mqttIpc/addListener',
 				payload: listeners
+			});
+		},
+
+		// mqtt重连时，再次开启人脸框和进店
+		mqttReconnect ({ dispatch }) {
+			console.log('faceId.js 注册订阅');
+			dispatch({
+				type: 'mqttIpc/registerReconnectHandler',
+				payload: {
+					handler: () => {
+						console.log('ReconnectHandler faceId.js');
+						if (window.location.pathname === '/devices/ipcList/live') {
+							console.log('当前是在直播页面');
+
+							const sn = getLocationParam('sn');
+
+							// 开启直播人脸框
+							dispatch({
+								type:'changeFaceidPushStatus',
+								payload: {
+									sn,
+									status: true
+								}
+							});
+
+							// 开启右侧进店
+							dispatch({
+								type:'changeFaceComparePushStatus',
+								payload: {
+									sn,
+									status: true
+								}
+							});
+						}
+					}
+				}
 			});
 		}
 	}

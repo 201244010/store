@@ -1,8 +1,8 @@
 export default {
-	'videoPlayer.noMedia': '此时摄像机离线，未拍摄到视频',
+	'videoPlayer.noMedia': '您所拖动的时间节点下没有回放视频，将为您跳转至最近一段回放视频节点',
 	'videoPlayer.backToLive': '返回直播',
-	'videoPlayer.fullHighDefinition': '超清',
-	'videoPlayer.highDefinition': '高清',
+	'videoPlayer.fullHighDefinition': '清晰',
+	'videoPlayer.highDefinition': '流畅',
 	'videoPlayer.standardDefinition': '标清',
 	'videoPlayer.thisIsLive': '当前为直播，拖动可查看回放',
 	'videoPlayer.pickDate': '日期选择',
@@ -12,5 +12,9 @@ export default {
 	'videoPlayer.play': '播放',
 	'videoPlayer.enterFullscreen': '进入全屏',
 	'videoPlayer.exitFullscreen': '退出全屏',
-	'videoPlayer.ppiChanged': '当前播放画面已切换为%mode%模式'
+	'videoPlayer.ppiChanged': '当前播放画面已切换为%mode%模式',
+	'videoPlayer.noPlay':'当前设备离线，无法为您播放直播',
+	'videoPlayer.noCloudService':'当前设备离线，无法为您播放直播画面。您可以通过开通云存储功能，查看云回放视频',
+	'videoPlayer.subCloud': '开通云存储',
+	'videoPlayer.thisIsRePlay':'拖动可查看云回放视频'
 };

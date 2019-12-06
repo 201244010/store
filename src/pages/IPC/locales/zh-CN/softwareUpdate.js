@@ -20,7 +20,8 @@ export default {
 	'softwareUpdate.upgradeWithAITips':'正在写入固件，需要4分钟左右，请保持设备在线，切勿断电！',
 	'softwareUpdate.restartTips':'正在重启，请保持设备在线，切勿断电！',
 	'softwareUpdate.download.fail':'固件下载失败，请检查网络后重试。',
-	'softwareUpdate.receive.fail':'网络异常'
+	'softwareUpdate.receive.fail':'网络异常',
+	'softwareUpdate.retry.tip':'请检查网络后重试。',
 	// 'softwareUpdate.downloadMsg': '正在下载固件，请保持设备在线，请勿断电',
 	// 'softwareUpdate.verificationMsg': '正在验证版本包，请耐心等待并保持设备在线，切勿断电',
 	// 'softwareUpdate.restartMsg': '验证完成，后续安装过程IPC会执行重启操作，请耐心等待'

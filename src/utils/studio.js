@@ -233,17 +233,19 @@ export const getNearestLines = (componentsDetail, selectedShapeName, scopedCompo
 	if (minInScope.bottom < 10000) {
 		lines.push([0, minInScope.bottom, 10000, minInScope.bottom]);
 	}
-	if (minInScope.hasLeft) {
-		lines.push(componentsDetail[selectedShapeName].lines[0]);
-	}
-	if (minInScope.hasRight) {
-		lines.push(componentsDetail[selectedShapeName].lines[1]);
-	}
-	if (minInScope.hasTop) {
-		lines.push(componentsDetail[selectedShapeName].lines[2]);
-	}
-	if (minInScope.hasBottom) {
-		lines.push(componentsDetail[selectedShapeName].lines[3]);
+	if (componentsDetail[selectedShapeName].lines && componentsDetail[selectedShapeName].lines.length) {
+		if (minInScope.hasLeft) {
+			lines.push(componentsDetail[selectedShapeName].lines[0]);
+		}
+		if (minInScope.hasRight) {
+			lines.push(componentsDetail[selectedShapeName].lines[1]);
+		}
+		if (minInScope.hasTop) {
+			lines.push(componentsDetail[selectedShapeName].lines[2]);
+		}
+		if (minInScope.hasBottom) {
+			lines.push(componentsDetail[selectedShapeName].lines[3]);
+		}
 	}
 	return lines;
 };
@@ -304,7 +306,7 @@ export const getImagePromise = componentDetail =>
 			}
 			if ([SHAPE_TYPES.CODE_H, SHAPE_TYPES.CODE_V].includes(componentDetail.type)) {
 				JsBarcode(image, componentDetail.content, {
-					format: 'CODE128',
+					format: 'CODE39',
 					width: MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX * componentDetail.zoomScale,
 					displayValue: false
 				});
@@ -400,6 +402,11 @@ export const initTemplateDetail = (stage, layers, zoomScale) => {
 					layer.type = SHAPE_TYPES.LINE_V;
 				}
 			}
+			if (layer.type.indexOf(SHAPE_TYPES.TEXT) > -1) {
+				if (!layer.lineSpacing && layer.lineSpacing !== 0) {
+					layer.lineSpacing = layer.fontSize + 2;
+				}
+			}
 			if (layer.type.indexOf(SHAPE_TYPES.PRICE) > -1) {
 				if (!['sup', 'sub', 'super'].includes(layer.subType)) {
 					layer.subType = 'normal';
@@ -410,6 +417,9 @@ export const initTemplateDetail = (stage, layers, zoomScale) => {
 				}
 				const subType = (layer.subType === 'super' ? 'sup' : layer.subType);
 				layer.type = `price@${subType}@${backgroundColor}`;
+				if (!layer.precision && layer.precision !== 0) {
+					layer.precision = 2;
+				}
 			}
 			if (layer.type.indexOf(SHAPE_TYPES.CODE) > -1) {
 				if (layer.width - layer.height > 10) {

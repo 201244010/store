@@ -1,6 +1,7 @@
 import { formatMessage } from 'umi/locale';
 import { getRange, readLibrary } from '@/pages/Flow/IPC/services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
+import { getLocationParam } from '@/utils/utils';
 
 const OPCODE = {
 	FACE_ID_STATUS: '0x4202',
@@ -84,9 +85,9 @@ export default {
 			}
 		},
 		*mapFaceInfo({ payload }, { select, take, put }) {
-			const { libraryName, age, ageRangeCode, name } = payload;
+			const { libraryName, name } = payload;
 			let rangeList = yield select((state) => state.flowFaceid.ageRangeList);
-			let ageName = formatMessage({id: 'flow.unknown'});
+			// const ageName = formatMessage({id: 'flow.unknown'});
 			let libraryNameText = libraryName;
 
 			switch(libraryName) {
@@ -109,21 +110,21 @@ export default {
 				const { payload: list } = yield take('flowReadAgeRangeList');
 				rangeList = list.ageRangeList;
 			}
-			if(age) {
-				ageName = age;
-			} else if(rangeList) {
-				rangeList.forEach(item => {
-					if(item.ageRangeCode === ageRangeCode) {
-						ageName = item.ageRange;
-					}
-				});
-			}
+			// if(age) {
+			// 	ageName = age;
+			// } else if(rangeList) {
+			// 	rangeList.forEach(item => {
+			// 		if(item.ageRangeCode === ageRangeCode) {
+			// 			ageName = item.ageRange;
+			// 		}
+			// 	});
+			// }
 			 yield put({
 				 type: 'updateList',
 				 payload: {
 					...payload,
 					 libraryName: libraryNameText,
-					 age: ageName,
+					//  age: ageName,
 					 name: name === 'undefined' ? formatMessage({id: 'flow.unknown'}) : name
 				 }
 			});
@@ -270,6 +271,42 @@ export default {
 			dispatch({
 				type: 'mqttIpc/addListener',
 				payload: listeners
+			});
+		},
+
+		// mqtt重连时，再次开启人脸框和进店
+		mqttReconnect ({ dispatch }) {
+			console.log('flowFaceId.js 注册订阅');
+			dispatch({
+				type: 'mqttIpc/registerReconnectHandler',
+				payload: {
+					handler: () => {
+						console.log('ReconnectHandler faceId.js');
+						if (window.location.pathname === '/flow') {
+							console.log('当前是在直播页面flow');
+
+							const sn = getLocationParam('sn');
+
+							// 开启直播人脸框
+							dispatch({
+								type:'changeFaceidPushStatus',
+								payload: {
+									sn,
+									status: true
+								}
+							});
+
+							// 开启右侧进店
+							dispatch({
+								type:'changeFaceComparePushStatus',
+								payload: {
+									sn,
+									status: true
+								}
+							});
+						}
+					}
+				}
 			});
 		}
 	}

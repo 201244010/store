@@ -280,7 +280,7 @@ class InitialSetting extends Component {
 	}
 
 	render() {
-		const { initialSetting: { status, visible } } = this.props;
+		const { initialSetting: { status, visible }, isOnline } = this.props;
 		const { percent, rebootVisible,  resetVisible,  /* deviceInfo: { hasFaceid } */ } = this.state;
 		const hasFaceid = false;
 		return (
@@ -296,7 +296,7 @@ class InitialSetting extends Component {
 							:
 							<div className={styles['main-block']}>
 								<div className={styles['btn-block']}>
-									<Button className={styles['reboot-btn']} onClick={this.showRebootModal}>
+									<Button className={styles['reboot-btn']} onClick={this.showRebootModal} disabled={!isOnline}>
 										{formatMessage({ id: 'initialSetting.reboot'})}
 									</Button>
 									<span className={styles['info-span']}>
@@ -304,7 +304,7 @@ class InitialSetting extends Component {
 									</span>
 								</div>
 								<div className={styles['btn-block']}>
-									<Button className={styles['reset-btn']} onClick={this.showResetModal}>
+									<Button className={styles['reset-btn']} onClick={this.showResetModal} disabled={!isOnline}>
 										{formatMessage({ id: 'initialSetting.reset'})}
 									</Button>
 									<span className={styles['info-span']}>

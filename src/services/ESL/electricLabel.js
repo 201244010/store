@@ -1,122 +1,31 @@
 import { customizeFetch } from '@/utils/fetch';
+import { genService } from '@/services/index';
 
 const fetchApi = customizeFetch('esl/api/device/esl');
 const fetchDeviceApi = customizeFetch('esl/api/device');
+const genEslService = genService(fetchApi);
+const genDeviceService = genService(fetchDeviceApi);
 
-export const fetchElectricLabels = options => {
-	const opts = {
-		method: 'POST',
-		body: {
-			page_num: options.current,
-			page_size: options.pageSize,
-			keyword: options.keyword,
-			status: options.status,
-			sort_key: options.sort_key,
-			desc: options.desc
-		},
-	};
-
-	return fetchApi('getList', opts).then(response => response.json());
-};
-
-export const fetchESLDetails = options => {
-	const opts = {
-		method: 'POST',
-		body: options,
-	};
-
-	return fetchApi('getInfo', opts).then(response => response.json());
-};
-
-export const changeTemplate = options => {
-	const opts = {
-		method: 'POST',
-		body: options,
-	};
-
-	return fetchApi('changeTemplate', opts).then(response => response.json());
-};
-
-export const deleteESL = options => {
-	const opts = {
-		method: 'POST',
-		body: options,
-	};
-
-	return fetchApi('delete', opts).then(response => response.json());
-};
-
-export const fetchFlashModes = options => {
-	const opts = {
-		method: 'POST',
-		body: options,
-	};
-
-	return fetchApi('getFlashModeList', opts).then(response => response.json());
-};
-
-export const flashLed = options => {
-	const opts = {
-		method: 'POST',
-		body: options,
-	};
-
-	return fetchApi('flashLed', opts).then(response => response.json());
-};
-
-export const getBindInfo = options => {
-	const opts = {
-		method: 'POST',
-		body: options,
-	};
-	return fetchApi('getBindInfo', opts).then(response => response.json());
-};
-
-export const fetchDeviceOverview = () => {
-	const opts = {
-		method: 'POST',
-		body: {},
-	};
-
-	return fetchDeviceApi('getOverview', opts).then(response => response.json());
-};
-
-export const refreshFailedImage = () => {
-	const opts = {
-		method: 'POST',
-		body: {},
-	};
-	return fetchApi('repushFailedImage', opts).then(response => response.json());
-};
-
-export const setScanTime = options => {
-	const opts = {
-		method: 'POST',
-		body: options,
-	};
-	return fetchApi('setScanTime', opts).then(response => response.json());
-};
-
-export const getSwitchScreenInfo = options => {
-	const opts = {
-		method: 'POST',
-		body: options,
-	};
-	return fetchApi('getSwitchScreenInfo', opts).then(response => response.json());
-};
-
-export const switchScreen = options => {
-	const opts = {
-		method: 'POST',
-		body: options,
-	};
-	return fetchApi('switchScreen', opts).then(response => response.json());
-};
-
-export const getScreenPushInfo = options => {
-	const opts = {
-		method: 'POST',
-		body: options,
-	};
-	return fetchApi('getScreenPushInfo', opts).then(response => response.json());
+export default {
+	fetchElectricLabels: genEslService('getList', options => ({
+		page_num: options.current,
+		page_size: options.pageSize,
+		keyword: options.keyword,
+		status: options.status,
+		sort_key: options.sort_key,
+		desc: options.desc
+	})),
+	fetchESLDetails: genEslService('getInfo'),
+	changeTemplate: genEslService('changeTemplate'),
+	deleteESL: genEslService('delete'),
+	fetchFlashModes: genEslService('getFlashModeList'),
+	flashLed: genEslService('flashLed'),
+	updateFlashLedConfig: genEslService('updateFlashLedConfig'),
+	getBindInfo: genEslService('getBindInfo'),
+	fetchDeviceOverview: genDeviceService('getOverview'),
+	refreshFailedImage: genEslService('repushFailedImage'),
+	setScanTime: genEslService('setScanTime'),
+	getSwitchScreenInfo: genEslService('getSwitchScreenInfo'),
+	switchScreen: genEslService('switchScreen'),
+	getScreenPushInfo: genEslService('getScreenPushInfo'),
 };

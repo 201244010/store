@@ -3,7 +3,7 @@ import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import { format } from '@konata9/milk-shake';
 import { ERROR_OK } from '@/constants/errorCode';
-import * as Actions from '@/services/ESL/baseStation';
+import StationServices from '@/services/ESL/baseStation';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { OPCODE } from '@/constants/mqttStore';
 
@@ -87,7 +87,7 @@ export default {
 				payload: { loading: true },
 			});
 			const opts = Object.assign({}, pagination, searchFormValues, payload);
-			const response = yield call(Actions.fetchBaseStations, opts);
+			const response = yield call(StationServices.fetchBaseStations, opts);
 			const result = response.data || {};
 			yield put({
 				type: 'updateState',
@@ -110,7 +110,7 @@ export default {
 				payload: { loading: true },
 			});
 
-			const response = yield call(Actions.getBaseStationDetail, options);
+			const response = yield call(StationServices.getBaseStationDetail, options);
 			const result = response.data || {};
 			if (response.code === ERROR_OK) {
 				yield put({
@@ -140,7 +140,7 @@ export default {
 			});
 
 			const targetPage = data.length === 1 ? 1 : current;
-			const response = yield call(Actions.deleteBaseStation, options);
+			const response = yield call(StationServices.deleteBaseStation, options);
 			if (response.code === ERROR_OK) {
 				message.success(
 					formatMessage({ id: 'esl.device.ap.delete.success' }),
@@ -174,7 +174,7 @@ export default {
 				payload: { loading: true },
 			});
 
-			const response = yield call(Actions.restartBaseStation, options);
+			const response = yield call(StationServices.restartBaseStation, options);
 			if (response.code === ERROR_OK) {
 				message.success(formatMessage({ id: 'esl.device.ap.restart.loading' }));
 				yield put({
@@ -196,7 +196,7 @@ export default {
 				payload: { loading: true },
 			});
 
-			const response = yield call(Actions.changeBaseStationName, options);
+			const response = yield call(StationServices.changeBaseStationName, options);
 			if (response.code === ERROR_OK) {
 				message.success(formatMessage({ id: 'esl.device.ap.change.name' }));
 				yield put({
@@ -212,20 +212,20 @@ export default {
 		},
 
 		*getNetWorkIdList(_, { put, call }) {
-			const response = yield call(Actions.deviceApHandler, 'getNetworkList');
+			const response = yield call(StationServices.deviceApHandler);
 			if (response.code === ERROR_OK) {
 				const { data = {} } = response || {};
 				const { networkList = [] } = format('toCamel')(data);
 				yield put({ type: 'updateState', payload: { networkIdList: networkList } });
 				return networkList;
 			}
-			
+
 			message.error(formatMessage({id: 'esl.device.ap.network.get.fail'}));
 			return [];
 		},
-		
+
 		*getBaseStationList({ payload }, { put, call }) {
-			const response = yield call(Actions.fetchBaseStations, payload);
+			const response = yield call(StationServices.fetchBaseStations, payload);
 			const formatResponse = format('toCamel')(response);
 			if(response.code === ERROR_OK) {
 				const {data: { apList = [] }} = formatResponse;
@@ -237,7 +237,7 @@ export default {
 				});
 				return apList;
 			}
-			
+
 			message.error(formatMessage({id: 'esl.device.ap.getList.fail'}));
 			yield put({
 				type: 'updateState',
@@ -246,7 +246,7 @@ export default {
 				}
 			});
 			return [];
-			
+
 		},
 
 		*unsubscribeTopic(_, { put }) {
@@ -285,7 +285,7 @@ export default {
 							'toCamel'
 						)(data[0] || {});
 						// 正常模式下扫描周期大于128则开启了节能模式，实际扫描时间减去128
-						
+
 						const action = opcode === OPCODE.GET_AP_CONFIG ? ACTION.QUERY : ACTION.UPDATE;
 						const hour = Math.floor(eslRefleshTime / 3600);
 						const minute = (eslRefleshTime % 3600) / 60;
@@ -361,7 +361,7 @@ export default {
 				eslRefleshPeriod: parseInt(eslRefleshPeriod, 10),
 				eslRefleshTime: refleshHour * 3600 + refleshMinute * 60,
 			});
-			
+
 			const requestTopic = yield put.resolve({
 				type: 'mqttStore/generateTopic',
 				payload: { service: 'ESL/request' },
@@ -399,7 +399,7 @@ export default {
 				},
 			});
 		},
-		
+
 		*setNetworkConfig({ payload }, { put }) {
 			const { networkConfig } = payload;
 			yield put({

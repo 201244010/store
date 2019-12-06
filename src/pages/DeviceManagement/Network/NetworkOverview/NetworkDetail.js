@@ -9,10 +9,15 @@ const rssiStyle = {
 	strong: { color: 'green' },
 	weak: { color: 'red' },
 };
-
 const ListContent = ({ data = {}, index = 0, parent = {} }) => {
-	const { mac = '', ip = '', location = '', rssi = '', role = '' } = data;
-	// console.log(parent);
+	const {
+		mac = '',
+		ip = '',
+		location = '',
+		rssi = '',
+		role = '',
+		connMode: { wired } = {},
+	} = data;
 	return (
 		<div
 			className={`${index > 0 ? '' : styles['list-content-first']}  ${
@@ -28,9 +33,9 @@ const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 					) : (
 						<span
 							className={styles.detail}
-							style={rssi > 20 ? rssiStyle.strong : rssiStyle.weak}
+							style={rssi > 20 || wired ? rssiStyle.strong : rssiStyle.weak}
 						>
-							{rssi > 20
+							{rssi > 20 || wired
 								? formatMessage({ id: 'network.rssi.strong' })
 								: formatMessage({ id: 'network.rssi.weak' })}
 						</span>
@@ -38,18 +43,18 @@ const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 				</div>
 				<div className={styles['info-content']}>
 					<span>IP:</span>
-					<span className={styles.detail}>{ip}</span>
+					<span className={styles.detail}>{ip || '--'}</span>
 				</div>
 				<div className={styles['info-content']}>
 					<span>MAC:</span>
-					<span className={styles.detail}>{mac}</span>
+					<span className={styles.detail}>{mac || '--'}</span>
 				</div>
 				<div className={styles['info-content']}>
 					<span>{formatMessage({ id: 'network.router.parent' })}:</span>
 					<span className={styles.detail}>
 						{`${role}` === '1'
 							? formatMessage({ id: 'network.router.parent.none' })
-							: parent.location || parent.devid}
+							: parent.location || parent.devid || '--'}
 					</span>
 				</div>
 			</div>

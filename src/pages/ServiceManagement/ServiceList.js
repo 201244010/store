@@ -92,8 +92,18 @@ class ServiceList extends React.Component {
 	};
 	
 	reset = () => {
-		const { form: { resetFields }} = this.props;
+		const { form: { resetFields }, getList} = this.props;
 		resetFields();
+		getList({
+			pageSize: 10,
+			pageNum: 1,
+			search: {
+				key: '',
+				status: 0,
+				date: [],
+			}
+		});
+		this.setState({pageNum: 1, pageSize: 10});
 	};
 	
 	closeModal = () => {
@@ -112,6 +122,8 @@ class ServiceList extends React.Component {
 		getList({pageNum, pageSize, search: null});
 		this.setState({pageSize, pageNum});
 	};
+	
+	disabledDate = current => current && current > moment().endOf('day');
 	
 	render() {
 		const {
@@ -154,7 +166,9 @@ class ServiceList extends React.Component {
 								<Form.Item label={formatMessage({ id: 'serviceManagement.service.subscribe.date' })}>
 									{getFieldDecorator('date', {
 									})(
-										<RangePicker />
+										<RangePicker
+											disabledDate={this.disabledDate}
+										/>
 									)}
 								</Form.Item>
 							</Col>

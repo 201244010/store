@@ -70,6 +70,26 @@ class ElectricLabel extends Component {
 		clearSearchValue();
 	}
 
+	refreshFailed = async () => {
+		const {
+			refreshFailedImage,
+			fetchProductOverview,
+			fetchDeviceOverview,
+			fetchElectricLabels
+		} = this.props;
+		await refreshFailedImage();
+		await fetchProductOverview();
+		await fetchDeviceOverview();
+		await fetchElectricLabels();
+	};
+
+	getDeviceOverview = () => {
+		const { fetchDeviceOverview } = this.props;
+		setTimeout(() => {
+			fetchDeviceOverview();
+		}, 1000);
+	};
+
 	render() {
 		const {
 			eslElectricLabel: {
@@ -91,6 +111,7 @@ class ElectricLabel extends Component {
 			},
 			changeSearchFormValue,
 			clearSearch,
+			fetchProductOverview,
 			fetchElectricLabels,
 			fetchESLDetails,
 			fetchTemplatesByESLCode,
@@ -101,7 +122,6 @@ class ElectricLabel extends Component {
 			unbindESL,
 			flashLed,
 			deleteESL,
-			refreshFailedImage,
 			fetchSwitchScreenInfo,
 			fetchScreenPushInfo,
 			switchScreen
@@ -112,7 +132,7 @@ class ElectricLabel extends Component {
 				<Overview
 					deviceOverview={deviceOverview}
 					productOverview={productOverview}
-					refreshFailedImage={refreshFailedImage}
+					refreshFailed={this.refreshFailed}
 				/>
 				<Card bordered={false}>
 					<SearchForm
@@ -121,6 +141,8 @@ class ElectricLabel extends Component {
 							changeSearchFormValue,
 							clearSearch,
 							fetchElectricLabels,
+							fetchProductOverview,
+							fetchDeviceOverview: this.getDeviceOverview,
 						}}
 					/>
 					<SearchResult
@@ -134,6 +156,8 @@ class ElectricLabel extends Component {
 							products,
 							productPagination,
 							screenPushInfo,
+							fetchProductOverview,
+							fetchDeviceOverview: this.getDeviceOverview,
 							fetchElectricLabels,
 							fetchESLDetails,
 							fetchTemplatesByESLCode,

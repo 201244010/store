@@ -28,6 +28,10 @@ class MqttClient {
 		this.initial();
 	}
 
+
+
+
+
 	initial() {
 		this.client = MQTT.connect(
 			`ws://${this.address}`,

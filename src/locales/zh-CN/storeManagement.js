@@ -31,7 +31,7 @@ export default {
 	'storeManagement.create.address.detail': '详细地址',
 	'storeManagement.create.daysLabel': '营业时间',
 	'storeManagement.create.area': '营业面积',
-	'storeManagement.create.area.formatError': '请输入大于0的数字，最多支持小数点后2位',
+	'storeManagement.create.area.formatError': '请输入大于0并且小于1,000,000的数字，最多支持小数点后2位',
 	'storeManagement.create.daysAll': '全部',
 	'storeManagement.create.daysMon': '周一',
 	'storeManagement.create.daysTus': '周二',
@@ -73,6 +73,6 @@ export default {
 	'store.authKey': '对接凭证信息',
 	'store.get.authKey': '获取对接凭证',
 	'auth.shop.no': '对接店铺编号：',
-	'auth.shop.key': '对接店铺 key：',
+	'auth.shop.key': '对接店铺密钥：',
 	'auth.key.expire': '对接凭证信息有效时间为 24 小时',
 };

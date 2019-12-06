@@ -75,10 +75,10 @@ class DisplayConfig extends Component {
 		updateScreenName({
 			name_info: [{
 				screen_id: page2Config.id,
-				screen_name: page2Config.screen_name
+				screen_name: formatMessage({id: page2Config.screen_name})
 			}, {
 				screen_id: page3Config.id,
-				screen_name: page3Config.screen_name
+				screen_name: formatMessage({id: page3Config.screen_name})
 			}]
 		});
 		const updatedTemplateConfig = [];
@@ -196,14 +196,14 @@ class DisplayConfig extends Component {
 						<Col span={4}>
 							<Input
 								maxLength={20}
-								value={page2Config.screen_name}
+								value={formatMessage({id: page2Config.screen_name || ' '})}
 								onChange={(e) => this.updatePageConfig('page2Config', 'screen_name', e)}
 							/>
 						</Col>
 						<Col span={4}>
 							<Input
 								maxLength={20}
-								value={page3Config.screen_name}
+								value={formatMessage({id: page3Config.screen_name || ' '})}
 								onChange={(e) => this.updatePageConfig('page3Config', 'screen_name', e)}
 							/>
 						</Col>

@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import * as styles from './index.less';
 
 export default function overview(props) {
-	const { productOverview = {}, deviceOverview = {}, refreshFailedImage } = props;
+	const { productOverview = {}, deviceOverview = {}, refreshFailed } = props;
 
 	return (
 		<div className={styles.overview}>
@@ -25,7 +25,7 @@ export default function overview(props) {
 									{deviceOverview.esl_failed_count}
 								</span>
 							</div>
-							<a href="javascript:void(0);" onClick={refreshFailedImage}>
+							<a href="javascript:void(0);" onClick={refreshFailed}>
 								{formatMessage({ id: 'esl.device.esl.push.all' })}
 							</a>
 						</div>

@@ -14,8 +14,12 @@ export default {
 	'live.unknown':'--',
 	'live.nobind':'摄像机已与该账户解除绑定，无法继续观看直播视频',
 	'live.subscribeCloud':'开通云存储服务',
-	'live.pay':'续费',
+	'live.pay':'立即续费',
 	'live.cloudServiceInfo':'30天长时间云端存储视频，便利回看门店监控。限时免费。',
 	'live.willExpired':'云存储服务剩余有效期小于3天，可免费续订试用服务',
-	'live.expired':'云存储服务已过期，可免费续订试用服务'
+	'live.expired':'云存储服务已过期，请及时续费防止视频丢失。',
+	'live.freeServiceInfo': '最长30天回看门店视频。视频云端存储防止丢失、金融级加密保障信息安全。限时免费',
+	'live.payServiceInfo': '最长30天回看门店视频。视频云端存储防止丢失、金融级加密保障信息安全。',
+	'live.freeSubscribe': '免费订阅',
+	'live.paySubscribe': '立即订阅'
 };

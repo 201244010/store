@@ -1,7 +1,7 @@
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
-import * as ESLServices from '@/services/ESL/electricLabel';
-import * as TemplateServices from '@/services/ESL/template';
+import ESLServices from '@/services/ESL/electricLabel';
+import TemplateServices from '@/services/ESL/template';
 import * as ProductServices from '@/services/ESL/product';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { ERROR_OK, SWITCH_SCEEN_NO_DELETE } from '@/constants/errorCode';
@@ -112,6 +112,38 @@ export default {
 					payload: {
 						flashModes: result.esl_flash_mode_list || [],
 					},
+				});
+			}
+			return response;
+		},
+		*updateFlashLedConfig({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			const response = yield call(ESLServices.updateFlashLedConfig, options);
+			if (response.code === ERROR_OK) {
+				message.success(
+					formatMessage({ id: 'esl.device.led.update.config.success' }),
+					DURATION_TIME
+				);
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				yield put({
+					type: 'fetchFlashModes',
+				});
+			} else {
+				message.error(
+					formatMessage({ id: 'esl.device.led.update.config.error' }),
+					DURATION_TIME
+				);
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
 				});
 			}
 			return response;

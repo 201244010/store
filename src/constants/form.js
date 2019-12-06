@@ -95,7 +95,7 @@ export const FORM_SEARCH_LAYOUT = {
 		md: { span: 21 },
 		lg: { span: 19 },
 		xl: { span: 18 },
-		xxl: { sapn: 20 },
+		xxl: { span: 20 },
 	},
 };
 
@@ -111,6 +111,30 @@ export const HEAD_FORM_ITEM_LAYOUT = {
 		sm: { span: 8 },
 		md: { span: 8 },
 		xxl: { span: 6 },
+	},
+};
+
+export const HEAD_FORM_ITEM_LAYOUT_MIDDLE = {
+	labelCol: {
+		xs: { span: 24 },
+		sm: { span: 4, offset: 6 },
+		md: { span: 4, offset: 6 },
+		xxl: { span: 2, offset: 8 },
+	},
+	wrapperCol: {
+		xs: { span: 24 },
+		sm: { span: 8 },
+		md: { span: 8 },
+		xxl: { span: 6 },
+	},
+};
+
+export const BUTTON_FORM_ITEM_LAYOUT = {
+	wrapperCol: {
+		xs: { span: 24 },
+		sm: { span: 4, offset: 10 },
+		md: { span: 4, offset: 10 },
+		xxl: { span: 2, offset: 10 },
 	},
 };
 

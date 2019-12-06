@@ -270,7 +270,6 @@ class SearchResult extends Component {
 			}
 
 			const typeArr = templateInfo.type.split('-');
-			console.log(typeArr);
 			this.setState({
 				curRecord: {
 					...curRecord,

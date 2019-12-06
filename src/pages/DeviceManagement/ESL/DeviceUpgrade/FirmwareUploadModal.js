@@ -124,10 +124,48 @@ class FirmwareUploadModal extends Component {
 		);
 	};
 
+	unZip = async (uploadFile) => {
+	    const {type} = this.props;
+		const zip = await JSZip.loadAsync(uploadFile);
+		zip.forEach(async (relativePath, zipEntry) => {
+			if (relativePath.indexOf('.txt') > -1) {
+				const contentStr = await zipEntry.async('text');
+				const contentArr = contentStr.split(/[\s\n]/);
+				if (contentArr && contentArr.length) {
+					contentArr.forEach(item => {
+						if (item.indexOf('model') > -1) {
+							this.model = item;
+						}
+						if (item.indexOf('version') > -1) {
+							this.setState({
+								version: item.split('=')[1]
+							});
+						}
+					});
+				}
+			}
+			const fileType = type === 'ESL' ? 'bin' : 'gz';
+			if (relativePath.indexOf(fileType) > -1) {
+				const contentBlob = await zipEntry.async('blob');
+				try {
+					this.uploadFile = new File([contentBlob], relativePath.split('/')[1], {type: fileType});
+				} catch (e) {
+					// this workaround edge
+					// if (typeof window.navigator.msSaveBlob !== 'undefined') {
+					// 	window.navigator.msSaveBlob(contentBlob, relativePath.split('/')[1]);
+					//
+					// }
+					this.uploadFile = contentBlob;
+				}
+			} else {
+				// throw new Error('上传文件类型错误', relativePath, fileType);
+			}
+		});
+	};
+
 	render() {
 		const {
 			form: { getFieldDecorator, setFieldsValue },
-			type,
 			status,
 			data,
 			visible,
@@ -149,35 +187,12 @@ class FirmwareUploadModal extends Component {
 		const modalProps = status === 'init' ? modalInit : modalUpload;
 		const uploadProps = {
 			accept: '.zip',
-			beforeUpload: async (uploadFile, uploadFileList) => {
+			beforeUpload: (uploadFile, uploadFileList) => {
 				this.setState({
 					file: uploadFile,
 					fileList: uploadFileList,
 				});
-				const zip = await JSZip.loadAsync(uploadFile);
-				zip.forEach(async (relativePath, zipEntry) => {
-					if (relativePath.indexOf('.txt') > -1) {
-						const contentStr = await zipEntry.async('text');
-						const contentArr = contentStr.split(/[\s\n]/);
-						if (contentArr && contentArr.length) {
-							contentArr.forEach(item => {
-								if (item.indexOf('model') > -1) {
-									this.model = item;
-								}
-								if (item.indexOf('version') > -1) {
-									this.setState({
-										version: item.split('=')[1]
-									});
-								}
-							});
-						}
-					}
-					const fileType = type === 'ESL' ? 'bin' : 'gz';
-					if (relativePath.indexOf(fileType) > -1) {
-						const contentBlob = await zipEntry.async('blob');
-						this.uploadFile = new File([contentBlob], relativePath.split('/')[1], {type: fileType});
-					}
-				});
+				this.unZip(uploadFile);
 				return false;
 			},
 			onRemove: () => {

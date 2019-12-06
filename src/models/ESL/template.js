@@ -3,7 +3,7 @@ import { formatMessage } from 'umi/locale';
 import { getImagePromise, initTemplateDetail, purifyJsonOfBackEnd, downloadJsonAsDraft } from '@/utils/studio';
 import { getLocationParam } from '@/utils/utils';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
-import * as TemplateService from '@/services/ESL/template';
+import TemplateService from '@/services/ESL/template';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 import {IMAGE_TYPES, MAPS} from '@/constants/studio';
 
@@ -136,6 +136,7 @@ export default {
 				page_num: opts.current,
 				page_size: opts.pageSize,
 			});
+			console.log('response', response);
 			const result = response.data || {};
 			yield put({
 				type: 'updateState',

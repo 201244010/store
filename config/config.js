@@ -1,5 +1,5 @@
 // ref: https://umijs.org/config/
-import { primaryColor } from '../src/defaultSettings';
+import {primaryColor} from '../src/defaultSettings';
 import routers from '../src/config/router';
 import uatRouters from '../src/config/router.uat';
 import sysConfig from '../src/config/env';
@@ -11,7 +11,7 @@ const ROUTERS = {
 	uat: uatRouters,
 	onl: uatRouters,
 	default: routers
-}
+};
 
 export default {
 	hash: true,
@@ -22,18 +22,18 @@ export default {
 				antd: true,
 				dva: {
 					hmr: true,
-					immer: true,
+					immer: true
 				},
 				locale: {
 					default: 'zh-CN', // default zh-CN
-					baseNavigator: false, // default true, when it is true, will use `navigator.language` overwrite default
+					baseNavigator: false // default true, when it is true, will use `navigator.language` overwrite default
 					// TODO 暂时强制限定中文
 					// baseNavigator: true, // default true, when it is true, will use `navigator.language` overwrite default
 				},
 				dynamicImport: {
-					loadingComponent: './components/PageLoading/index',
-				},
-			},
+					loadingComponent: './components/PageLoading/index'
+				}
+			}
 		],
 		[
 			'umi-plugin-pro-block',
@@ -41,33 +41,37 @@ export default {
 				moveMock: false,
 				moveService: false,
 				modifyRequest: true,
-				autoAddMenu: true,
-			},
-		],
+				autoAddMenu: true
+			}
+		]
 	],
 	copy: [
 		{
+			from: 'static',
+			to: 'static'
+		},
+		{
 			from: 'src/libs',
-			to: 'libs',
+			to: 'libs'
 		},
 		{
 			from: 'src/assets/swf',
-			to: 'swf',
+			to: 'swf'
 		},
 		{
 			from: 'src/assets/css',
-			to: 'css',
+			to: 'css'
 		},
 		{
 			from: 'src/assets/favicon.ico',
-			to:'static/favicon.ico'
+			to: 'static/favicon.ico'
 		},
 		{
 			from: 'src/assets/favicon.ico',
-			to:'favicon.ico'
+			to: 'favicon.ico'
 		}
 	],
-	targets: { ie: 9 },
+	targets: {ie: 9},
 	treeShaking: true,
 	/**
 	 * 路由相关配置
@@ -81,10 +85,10 @@ export default {
 	define: {
 		APP_TYPE: process.env.APP_TYPE || '',
 		'process.env.UMI_ENV': process.env.UMI_ENV,
-		'process.env.COUNTRY': process.env.COUNTRY || 'china',
+		'process.env.COUNTRY': process.env.COUNTRY || 'china'
 	},
 	uglifyJSOptions(opts) {
-		if(['onl'].includes(env)){
+		if (['onl'].includes(env)) {
 			opts.uglifyOptions.compress.drop_console = true;
 		}
 		return opts;
@@ -92,13 +96,13 @@ export default {
 	// Theme for antd
 	// https://ant.design/docs/react/customize-theme-cn
 	theme: {
-		'primary-color': primaryColor,
+		'primary-color': primaryColor
 	},
 	// externals: {
 	// 	'@antv/data-set': 'DataSet',
 	// },
 	ignoreMomentLocale: true,
 	lessLoaderOptions: {
-		javascriptEnabled: true,
-	},
+		javascriptEnabled: true
+	}
 };
