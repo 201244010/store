@@ -105,4 +105,5 @@ export const TIME = {
 	MINUTE: 60,
 	HOUR: 60 * 60,
 	DAY: 24 * 60 * 60,
+	HALF_HOUR: 30 * 60,
 };

@@ -113,9 +113,9 @@ class QRCodePayment extends PureComponent {
 					<div className={styles['qrCode-content']}>
 						<div>
 							<div className={styles['qrCode-refresh']}>
-								使用
+								{formatMessage({ id: 'cloudStorage.use.tips' })}
 								<span>{this.purchaseType ? formatMessage({ id: `${this.purchaseType}.guide` }) : null}</span>
-								扫码完成支付
+								{formatMessage({ id: 'cloudStorage.scan.code.tips' })}
 							</div>
 							<div className={styles['qrcode-data']} ref={this.qrContainer} />
 						</div>
