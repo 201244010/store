@@ -7,6 +7,7 @@ const PaymentRadio = ({
 	value = null,
 	id = null,
 	name = null,
+	selectValue=null,
 }) => {
 	const handleChange = () => {
 		if (onChange) {
@@ -22,6 +23,7 @@ const PaymentRadio = ({
 		<>
 			<label className={styles['radio-label']} htmlFor={id}>
 				<input
+					checked={value === selectValue}
 					type="radio"
 					name={name}
 					id={id}

@@ -5,7 +5,6 @@ import { formatMessage } from 'umi/locale';
 import { getCountDown } from '@/utils/utils';
 import PaymentRadio from '@/components/BigIcon/PaymentRadio';
 import styles from './PaymentPage.less';
-import { TIME } from '@/constants';
 import alipayPayment from '@/assets/icon/alipay-payment.svg';
 import wechatPayment from '@/assets/icon/wechat-payment.svg';
 
@@ -25,7 +24,7 @@ export const TRADE = {
 
 
 const {
-	PAYMENT: { B2B, B2C },
+	PAYMENT: { B2C },
 } = TRADE;
 
 const PURCHASE_TYPE = {
@@ -62,6 +61,8 @@ const PAYMENT_ICON = {
 			dispatch({ type: 'trade/payOrder', payload: { orderNo, purchaseType, source } }),
 		goToPath: (pathId, urlParams = {}, linkType = null) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, linkType } }),
+		getCountDownFromCloud: (orderNo) => 
+			dispatch({ type: 'cloudStorage/getCountDown', payload: {orderNo}})
 	})
 )
 
@@ -69,24 +70,28 @@ class PaymentPage extends React.Component{
 	constructor(props) {
 		super(props);
 		this.state = {
-			countDown: TIME.HALF_HOUR,
-			selectedPurchaseType: null,
+			countDown: undefined,
+			selectedPurchaseType: 'purchase-type-alipay',
 			orderNo: null
 		};
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		const {
 			routing: { location: { query: { orderNo = null } = {} } = {} },
-			goToPath
+			goToPath,
+			getCountDownFromCloud
 		} = this.props;
 		if(!orderNo){
 			goToPath('cloudStorage');
 		}
+		const countDown = await getCountDownFromCloud(orderNo);
 		this.setState({
-			orderNo
+			orderNo,
+			countDown
+		},() => {
+			this.startCountDown();
 		});
-		this.startCountDown();
 	}
 
 	componentWillUnmount() {
@@ -97,17 +102,20 @@ class PaymentPage extends React.Component{
 		clearTimeout(this.timer);
 		this.timer = setTimeout(() => {
 			const { countDown } = this.state;
-			this.setState(
-				{
+			if (countDown === 0) {
+				clearTimeout(this.timer);
+				this.locationToOrderDetail();
+			} else {
+				this.setState({
 					countDown: countDown - 1,
-				},
-				() => this.startCountDown()
-			);
+				},() => {
+					this.startCountDown();
+				});
+			}
 		}, 1000);
 	};
 
 	radioChange = value => {
-		console.log(value);
 		this.setState({
 			selectedPurchaseType: value,
 		});
@@ -120,26 +128,27 @@ class PaymentPage extends React.Component{
 			goToPath,
 		} = this.props;
 
-		// TODO 目前部分参数为写死的，今后会进行修改
 		const opts = {
 			orderNo,
 			purchaseType: selectedPurchaseType,
 			source: 1,
 		};
 
-		if ([B2B.UNIONPAY, B2C.UNIONPAY].includes(selectedPurchaseType)) {
-			this.handleUnionPay(opts);
-		} else {
-			goToPath('qrpay', {
-				...opts,
-			});
-		}
+		goToPath('qrpay', {
+			...opts,
+		});
 	};
+
+	locationToOrderDetail() {
+		const { goToPath } = this.props;
+		const { orderNo } = this.state;
+		goToPath('serviceOrderDetail', {orderNo});
+	}
 	
 	render(){
 		const { countDown, selectedPurchaseType, orderNo } = this.state;
 		const b2c = PURCHASE_TYPE.b2c;
-		const { minute = '--', second = '--' } = getCountDown(countDown);
+		const { minute = '--', second = '--' } = countDown ? getCountDown(countDown) : {};
 		return(
 			<>
 				<Card title={null} bordered={false} className={styles['payment-container']}>
@@ -163,6 +172,7 @@ class PaymentPage extends React.Component{
 												id,
 												value: tag,
 												onChange: this.radioChange,
+												selectValue: selectedPurchaseType
 											}}
 										/>
 									</div>

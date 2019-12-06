@@ -1,9 +1,66 @@
 export default {
+	'POST /api/trade/order/getInfo': {
+		code: 1,
+		data:{
+			'id': 123,
+			'order_name': '7天云存储服务',
+			'order_no': 'Test1234',
+			'purchase_type': 'purchase-type-alipay',
+			'issuer_id': 1234,
+			'issuer_account': 18817831994,
+			'payer_id': 1234,
+			'payer_account': '18817831994@163.com',
+			'purchase_amount': 85,
+			'payment_amount': 85,
+			'created_time': 1575431690,
+			'status': 1,
+			'remaining_time': 100,
+			'invoice_info': {
+				'invoice_kind': 'PLAIN',
+				'title_type': 1,
+				'title_name': '商米科技',
+				'tax_register_no': '1234',
+				'user_address': '1234',
+				'open_bank_name': '中国工商银行',
+				'open_bank_account': '63330121',
+				'mobile_phone':'18817831234',
+				'email':'18817831234@sunmi.com',
+			},
+			'service_list': [
+				{
+					'device_sn': '123456',
+					'device_name': '设备名称',
+					'img_url': '图片地址',
+					'device_status': 1,
+					'service_no': '服务编号'
+				},
+				{
+					'device_sn': '123457',
+					'device_name': '设备名称',
+					'img_url': '图片地址',
+					'device_status': 1,
+					'service_no': '服务编号'
+				},{
+					'device_sn': '123458',
+					'device_name': '设备名称',
+					'img_url': '图片地址',
+					'device_status': 1,
+					'service_no': '服务编号'
+				},{
+					'device_sn': '123459',
+					'device_name': '设备名称',
+					'img_url': '图片地址',
+					'device_status': 1,
+					'service_no': '服务编号'
+				}
+			]
+		}
+	},
 	'POST /api/trade/order/create': {
 		code:1,
 		msg:'',
 		data:{
-			order_no: 'LB1234567890',
+			order_no: '808563641250024494',
 		}
 	},
 	'POST /ipc/api/storage/getStorageList': {

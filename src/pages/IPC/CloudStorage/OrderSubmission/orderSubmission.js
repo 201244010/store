@@ -265,6 +265,21 @@ class OrderSubmission extends React.Component{
 		});
 	}
 
+	payHandler = async () => {
+		const { navigateTo } = this.props;
+		const isNeedCoverTip = this.checkHasServiceCover();
+		if(isNeedCoverTip){
+			this.setState({
+				isNeedCoverTip
+			});
+		}else{
+			const orderNo = await this.orderHandler();
+			navigateTo('paymentPage',{
+				orderNo,
+			});
+		}
+	}
+
 	freeSubscribeHandler = async () => {
 		const { navigateTo } = this.props;
 		const isNeedCoverTip = this.checkHasServiceCover();
@@ -304,10 +319,18 @@ class OrderSubmission extends React.Component{
 
 	confirmCoverHandler = async () => {
 		const { navigateTo } = this.props;
+		const { freeStatus } = this.state;
 		const orderNo = await this.orderHandler();
-		if(orderNo !== ''){
-			navigateTo('subscriptionSuccess');
+		if(freeStatus){
+			if(orderNo !== ''){
+				navigateTo('subscriptionSuccess');
+			}
+		}else{
+			navigateTo('paymentPage',{
+				orderNo,
+			});
 		}
+		
 	}
 
 	async init(){
@@ -497,7 +520,7 @@ class OrderSubmission extends React.Component{
 							<Button
 								type="primary"
 								disabled={btnDisable}
-								onClick={this.handleOk}
+								onClick={this.payHandler}
 							>
 								去支付
 							</Button>}

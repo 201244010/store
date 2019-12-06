@@ -44,9 +44,13 @@ export default {
 	'cloudStorage.service.tips.second': '2.云存储服务购买成功后，即表示您已同意云存储“服务协议”，开通后立即生效，不支持退换货，不支持退款。',
 	'cloudStorage.service.tips.third': '3.若绑定的智能摄像头设备软件版本过低不能使用，请升级设备软件后再开启云存储服务。',
 	'cloudStorage.service.tips.fourth': '4.云存储产品按单个设备开通与购买，即多个设备那么对应需要够买多个云存储产品。',
-	'cloudStorage.service.success.subscribe':'您已订阅成功',
+	'cloudStorage.service.success.subscribe':'订阅成功',
 	'cloudStorage.service.management':'服务管理',
 	'cloudStorage.back': '返回',
 	'cloudStorage.subscribe.now': '立即订阅',
 	'cloudStorage.unit': '/台',
+	'cloudStorage.year.unit': '年',
+	'cloudStorage.month.unit': '月',
+	'cloudStorage.day.unit': '日',
+
 };

@@ -1,4 +1,4 @@
-import { order } from '../../services/order';
+import { order, getOrderInfo } from '../../services/order';
 import { getStorageIpcList } from '../../services/cloudStorage';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -35,7 +35,7 @@ export default {
 				// 	}
 				// }
 				// true 为全部已激活，false 存在未激活的ipc
-				const bundledStatusBool = deviceList.every((item) => (
+				const bundledStatusBool = deviceList.length === 0 ? false : deviceList.every((item) => (
 					item.activeStatus === 2
 				));
 				// const storageIpcList = deviceList.filter((item) => (
@@ -70,6 +70,38 @@ export default {
 			});
 			
 			return response;
+		},
+		*getStorageListByOrder({payload}){
+			const { orderNo } = payload;
+			const orderInfoResult = yield getOrderInfo({
+				orderNo
+			});
+			const { code, data = {} } = orderInfoResult;
+			if(code === ERROR_OK){
+				const { serviceList = [] } = data;
+				const snList = serviceList.map((item) => item.deviceSn);
+				console.log(snList);
+				const response = yield getStorageIpcList({
+					deviceSnList: snList,
+				});
+				console.log(response);
+				const { code: successIpcListCode, data: { deviceList = [] } } = response;
+				if(successIpcListCode === ERROR_OK) {
+					return deviceList;
+				}
+			}
+			return [];
+		},
+		*getCountDown({ payload }){
+			const { orderNo } = payload;
+			const orderInfoResult = yield getOrderInfo({
+				orderNo
+			});
+			const { code, data = {} } = orderInfoResult;
+			if(code === ERROR_OK) {
+				return data.remainingTime;
+			}
+			return undefined;
 		}
 	},
 };
