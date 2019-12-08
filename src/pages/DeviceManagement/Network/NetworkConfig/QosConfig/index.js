@@ -30,7 +30,7 @@ class QosConfig extends React.PureComponent {
 
 					return enable ? (
 						<span>
-							{sunmiWeight}%/{whiteWeight}%/{normalWeight}%
+							{formatMessage({ id: 'network.qos.sunmiWeight'})}：{sunmiWeight}% {formatMessage({ id: 'network.qos.whitelistWeight'})}：{whiteWeight}% {formatMessage({ id: 'network.qos.normalWeight'})}：{normalWeight}%
 						</span>
 					) : (
 						formatMessage({ id: 'network.qos.unOpen' })

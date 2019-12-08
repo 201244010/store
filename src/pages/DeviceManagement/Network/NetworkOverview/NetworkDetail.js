@@ -16,6 +16,7 @@ const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 		location = '',
 		rssi = '',
 		role = '',
+		online = '',
 		connMode: { wired } = {},
 	} = data;
 	return (
@@ -28,9 +29,9 @@ const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 			<div className={styles['info-bar']}>
 				<div className={styles['info-content']}>
 					<span>{formatMessage({ id: 'network.rssi' })}:</span>
-					{`${role}` === '1' ? (
+					{Number(role) ? (
 						<span className={styles.detail}>--</span>
-					) : (
+					) : Number(online) ? (
 						<span
 							className={styles.detail}
 							style={rssi > 20 || wired ? rssiStyle.strong : rssiStyle.weak}
@@ -38,6 +39,10 @@ const ListContent = ({ data = {}, index = 0, parent = {} }) => {
 							{rssi > 20 || wired
 								? formatMessage({ id: 'network.rssi.strong' })
 								: formatMessage({ id: 'network.rssi.weak' })}
+						</span>
+					) : (
+						<span className={styles.detail}>
+							{formatMessage({ id: 'network.hasOffline' })}
 						</span>
 					)}
 				</div>
