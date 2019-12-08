@@ -56,7 +56,7 @@ class EmployeeInfo extends Component {
 				roleMap.set(`${companyId}-${shopId}`, {
 					companyName,
 					shopName,
-					roleName: [roleNames, roleName].toString(),
+					roleName: [roleNames, roleName].join('、'),
 				});
 			} else {
 				roleMap.set(`${companyId}-${shopId}`, { companyName, shopName, roleName });

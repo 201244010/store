@@ -37,10 +37,12 @@ class EmployeeTable extends Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.companyNumber' }),
 				dataIndex: 'number',
+				render: number => number || '--'
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.name' }),
 				dataIndex: 'name',
+				render: name => name || '--'
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.gender' }),
@@ -50,6 +52,7 @@ class EmployeeTable extends Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.employeePhone' }),
 				dataIndex: 'phone',
+				render: phone => phone || '--'
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.authorName' }),

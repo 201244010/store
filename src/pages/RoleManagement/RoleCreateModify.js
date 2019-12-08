@@ -58,7 +58,7 @@ class RoleModify extends React.Component {
 		let valueList = [];
 		permissionList.map(item => {
 			if (typeof item.valueList !== 'undefined') {
-				valueList = [...valueList, ...item.valueList];
+				valueList = [...new Set([...valueList, ...item.valueList])];
 			}
 		});
 
@@ -210,6 +210,7 @@ class RoleModify extends React.Component {
 													indeterminate={item.indeterminate}
 													defaultChecked={item.checkAll}
 													checked={item.checkAll}
+													disabled
 												>
 													{item.checkedList.label}
 												</Checkbox>
@@ -225,6 +226,7 @@ class RoleModify extends React.Component {
 															options={
 																item.checkedList.permissionList
 															}
+															disabled
 															value={item.valueList}
 														/>
 													)}
