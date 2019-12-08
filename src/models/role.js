@@ -104,7 +104,7 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { roleList, totalCount } = format('toCamel')(data);
-				const formatList = roleList.map(item => format('toCamel')(item));
+				const formatList = roleList.map(item => format('toCamel')(item)).sort((a, b) => b.createTime - a.createTime );
 				yield put({
 					type: 'updateState',
 					payload: {
