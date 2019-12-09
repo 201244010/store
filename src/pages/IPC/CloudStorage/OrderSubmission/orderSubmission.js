@@ -1,8 +1,8 @@
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-import { Table, Radio, /* message, */ Checkbox, Spin, Card, Form, Input, Button, Modal } from 'antd';
+import { Table, Radio, message, Checkbox, Spin, Card, Form, Input, Button, Modal } from 'antd';
 import React from 'react';
-import { ERR_IPC_NOT_EXIST, ERR_SERVICE_SUBSCRIBE_ERROR , ERROR_OK } from '@/constants/errorCode';
+import { ERR_IPC_NOT_EXIST, ERR_SERVICE_SUBSCRIBE_ERROR , ERROR_OK, ERR_FREE_SERVICE_USED } from '@/constants/errorCode';
 import { SERVICE_TYPE } from '@/constants/cloudStorage';
 import styles from './OrderSubmission.less';
 import { phone, mail } from '@/constants/regexp';
@@ -18,11 +18,12 @@ const FREE_PRODUCT_NO = 'YCC0002';
 		};
 	},
 	(dispatch) => ({
-		navigateTo: (pathId, urlParams) => dispatch({
+		navigateTo: (pathId, urlParams, linkType) => dispatch({
 			type: 'menu/goToPath',
 			payload: {
 				pathId,
-				urlParams
+				urlParams,
+				linkType
 			}
 		}),
 		getStorageIpcList:(sn) => (dispatch({
@@ -52,6 +53,7 @@ class OrderSubmission extends React.Component{
 			key:'deviceName',
 			title: formatMessage({ id: 'cloudStorage.device.name'}),
 			dataIndex: 'deviceName',
+			render:(deviceName) => (<div className={styles.deviceName}>{deviceName}</div>)
 		},
 		{
 			key: 'sn',
@@ -207,8 +209,10 @@ class OrderSubmission extends React.Component{
 			message.error( formatMessage({ id: 'cloudStorage.binding.err.service.subscribe'}));
 		}else if(code === ERR_IPC_NOT_EXIST){
 			message.error( formatMessage({ id: 'cloudStorage.binding.ipc.not.exist'}));
+		}else if(code === ERR_FREE_SERVICE_USED){
+			message.error( formatMessage({ id: 'cloudStorage.free.service.used'}));
 		}
-		return '';
+		return '-1';
 	}
 
 	agreementChangeHandler = (e) =>{
@@ -223,7 +227,8 @@ class OrderSubmission extends React.Component{
 
 	invoiceSelectHandler = (e) => {
 		this.setState({
-			invoiceSelectValue: e.target.value
+			invoiceSelectValue: e.target.value,
+			vbrkSelectValue: 1
 		}, ()=>{
 			this.checkedBtnDisable();
 		});
@@ -275,6 +280,9 @@ class OrderSubmission extends React.Component{
 			});
 		}else{
 			const orderNo = await this.orderHandler();
+			if(orderNo === '-1'){
+				return;
+			}
 			navigateTo('paymentPage',{
 				orderNo,
 			});
@@ -290,6 +298,9 @@ class OrderSubmission extends React.Component{
 			});
 		}else{
 			const orderNo = await this.orderHandler();
+			if(orderNo === '-1'){
+				return;
+			}
 			if(orderNo !== ''){
 				navigateTo('subscriptionSuccess', {orderNo});
 			}
@@ -322,6 +333,10 @@ class OrderSubmission extends React.Component{
 		const { navigateTo } = this.props;
 		const { freeStatus } = this.state;
 		const orderNo = await this.orderHandler();
+		if(orderNo === '-1'){
+			this.setState({isNeedCoverTip:false});
+			return;
+		}
 		if(freeStatus){
 			if(orderNo !== ''){
 				navigateTo('subscriptionSuccess');
@@ -397,7 +412,7 @@ class OrderSubmission extends React.Component{
 									/>
 								</Checkbox.Group>
 								<div className={styles['price-and-num']}>
-									<div className={styles['per-price']}>{formatMessage({id: 'cloudStorage.per.price'})}{unitPrice}</div>
+									<div className={styles['per-price']}>{formatMessage({id: 'cloudStorage.per.price'})}¥{unitPrice}</div>
 									<div>{formatMessage({id: 'cloudStorage.num'})}{count}</div>
 								</div>
 							</div>
@@ -498,7 +513,7 @@ class OrderSubmission extends React.Component{
 							<a 
 								className={styles['agreement-content']} 
 								onClick={() => {
-									navigateTo('serviceProtocol', 'open');
+									navigateTo('serviceProtocol',undefined, 'open');
 								}}
 							>
 								{formatMessage({id: 'cloudStorage.subscription.agreement'})}
