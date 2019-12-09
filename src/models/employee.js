@@ -1,5 +1,6 @@
 import { format, map } from '@konata9/milk-shake';
 import * as Action from '@/services/employee';
+import { handleRoleManagement } from '@/services/role';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -22,6 +23,7 @@ export default {
 		},
 		employeeList: [],
 		employeeInfo: {},
+		userId: ''
 	},
 	effects: {
 		*setSearchValue({ payload = {} }, { select, put }) {
@@ -82,7 +84,8 @@ export default {
 							},
 						])(employee)
 					)
-					.map(e => ({ ...e, username: e.phone || e.email }));
+					.map(e => ({ ...e, username: e.phone || e.email }))
+					.sort((a, b) => b.createTime - a.createTime);;
 
 				yield put({
 					type: 'updateState',
@@ -206,6 +209,27 @@ export default {
 
 			return response;
 		},
+
+		*getAdmin(_, { call, put }) {
+			const response = yield call(
+				handleRoleManagement,
+				'getAdmin'
+			);
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { userId } = format('toCamel')(data);
+				console.log(response);
+				yield put({
+					type: 'updateState',
+					payload: {
+						userId,
+					},
+				});
+			}
+
+			return response;
+		}
 	},
 	reducers: {
 		updateState(state, action) {

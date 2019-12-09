@@ -19,6 +19,7 @@ import styles from './Employee.less';
 		loading: state.loading,
 		employee: state.employee,
 		role: state.role,
+		query: state.routing.location.query,
 	}),
 	dispatch => ({
 		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
@@ -256,6 +257,7 @@ class EmployeeCU extends Component {
 					mappingList = [],
 				} = {},
 			} = {},
+			query: { isDefault },
 		} = this.props;
 		const { orgnizationTree } = this.state;
 		let decodedMapList = [];
@@ -263,7 +265,6 @@ class EmployeeCU extends Component {
 		if (this.action === 'edit') {
 			decodedMapList = this.decodeMappingList(mappingList);
 		}
-
 		return (
 			<Card bordered={false} loading={loading.effects['employee/getEmployeeInfo']}>
 				<h3>
@@ -366,67 +367,76 @@ class EmployeeCU extends Component {
 							initialValue: this.action === 'edit' ? ssoUsername : '',
 						})(<Input disabled={this.action === 'edit'} />)}
 					</Form.Item>
-					<Form.Item
-						label={formatMessage({ id: 'employee.orgnization' })}
-						labelCol={{ md: { span: 4 }, xxl: { span: 2 } }}
-						wrapperCol={{ md: { span: 16 }, xxl: { span: 12 } }}
-					>
-						{getFieldDecorator('mappingList', {
-							initialValue: this.action === 'edit' ? decodedMapList : [],
-							rules: [
-								{
-									required: true,
-									validator: (rule, value, callback) => {
-										// console.log('value', value);
-										if (value.length === 0) {
-											callback(
-												formatMessage({
-													id: 'employee.info.select.orgnizaion.isEmpty',
-												})
-											);
-										} else {
-											const objectKeys = Object.keys(value);
-											const hasEmpty = objectKeys.some(key => {
-												const { orgnization = null, role = [] } = value[
-													key
-												];
-												return !orgnization || role.length === 0;
-											});
-											let isSame = false;
-											objectKeys.forEach((item, index) => {
-												objectKeys.forEach((items, indexs) => {
-													if (
-														index !== indexs &&
-														value[item].orgnization ===
-															value[items].orgnization &&
-														JSON.stringify(value[item].role.sort()) ===
-															JSON.stringify(value[items].role.sort())
-													) {
-														isSame = true;
-													}
-												});
-											});
-											hasEmpty &&
+					{isDefault === 'true' ? (
+						''
+					) : (
+						<Form.Item
+							label={formatMessage({ id: 'employee.orgnization' })}
+							labelCol={{ md: { span: 4 }, xxl: { span: 2 } }}
+							wrapperCol={{ md: { span: 16 }, xxl: { span: 12 } }}
+						>
+							{getFieldDecorator('mappingList', {
+								initialValue: this.action === 'edit' ? decodedMapList : [],
+								rules: [
+									{
+										required: true,
+										validator: (rule, value, callback) => {
+											// console.log('value', value);
+											if (value.length === 0) {
 												callback(
 													formatMessage({
 														id:
 															'employee.info.select.orgnizaion.isEmpty',
 													})
 												);
-											isSame &&
-												callback(
-													formatMessage({
-														id:
-															'employee.info.select.orgnizaion.isSame',
-													})
-												);
-											callback();
-										}
+											} else {
+												const objectKeys = Object.keys(value);
+												const hasEmpty = objectKeys.some(key => {
+													const { orgnization = null, role = [] } = value[
+														key
+													];
+													return !orgnization || role.length === 0;
+												});
+												let isSame = false;
+												objectKeys.forEach((item, index) => {
+													objectKeys.forEach((items, indexs) => {
+														if (
+															index !== indexs &&
+															value[item].orgnization ===
+																value[items].orgnization &&
+															JSON.stringify(
+																value[item].role.sort()
+															) ===
+																JSON.stringify(
+																	value[items].role.sort()
+																)
+														) {
+															isSame = true;
+														}
+													});
+												});
+												hasEmpty &&
+													callback(
+														formatMessage({
+															id:
+																'employee.info.select.orgnizaion.isEmpty',
+														})
+													);
+												isSame &&
+													callback(
+														formatMessage({
+															id:
+																'employee.info.select.orgnizaion.isSame',
+														})
+													);
+												callback();
+											}
+										},
 									},
-								},
-							],
-						})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList }} />)}
-					</Form.Item>
+								],
+							})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList }} />)}
+						</Form.Item>
+					)}
 					<Form.Item label=" " colon={false}>
 						<Button
 							type="primary"

@@ -21,6 +21,8 @@ import SearchResult from './SerachResult';
 			dispatch({ type: 'employee/deleteEmployee', payload: { employeeIdList } }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		getAdmin: () =>
+			dispatch({ type: 'employee/getAdmin' }),
 	})
 )
 class EmployeeList extends Component {
@@ -34,11 +36,12 @@ class EmployeeList extends Component {
 
 	componentDidMount() {
 		this.createOrgnizationTree();
-		const { getEmployeeList } = this.props;
+		const { getEmployeeList, getAdmin} = this.props;
 		getEmployeeList({
 			current: 1,
 			pageSize: 10,
 		});
+		getAdmin();
 	}
 
 	componentWillUnmount() {
@@ -79,7 +82,7 @@ class EmployeeList extends Component {
 	render() {
 		const {
 			loading,
-			employee: { searchValue = {}, employeeList = [], pagination } = {},
+			employee: { searchValue = {}, employeeList = [], pagination, userId } = {},
 			setSearchValue,
 			clearSearchValue,
 			getEmployeeList,
@@ -109,6 +112,7 @@ class EmployeeList extends Component {
 						deleteEmployee,
 						goToPath,
 						getEmployeeList,
+						userId
 					}}
 				/>
 			</Card>
