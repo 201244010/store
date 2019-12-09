@@ -68,11 +68,11 @@ class RoleList extends React.Component {
 						</a>
 					),
 			},
-			{
-				title: formatMessage({ id: 'roleManagement.role.creator' }),
-				dataIndex: 'creatorName',
-				render: (_, record) => <div>{record.creatorName || '--'}</div>,
-			},
+			// {
+			// 	title: formatMessage({ id: 'roleManagement.role.creator' }),
+			// 	dataIndex: 'creatorName',
+			// 	render: (_, record) => <div>{record.creatorName || '--'}</div>,
+			// },
 			{
 				title: formatMessage({ id: 'roleManagement.role.createTime' }),
 				dataIndex: 'createTime',
