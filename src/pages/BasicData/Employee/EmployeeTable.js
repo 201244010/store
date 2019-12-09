@@ -97,15 +97,18 @@ class EmployeeTable extends Component {
 		getEmployeeList({ roleId: idDecode(roleId) });
 	};
 
-	handleReset = async () => {
+	handleReset = () => {
 		const {
 			form,
 			clearSearchValue,
+			getEmployeeList,
+			query: { roleId },
 		} = this.props;
 		if (form) {
 			form.resetFields();
 		}
-		await clearSearchValue();
+		clearSearchValue();
+		getEmployeeList({ roleId: idDecode(roleId) });
 	};
 
 	onTableChange = page => {

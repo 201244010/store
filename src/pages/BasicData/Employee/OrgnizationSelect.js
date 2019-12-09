@@ -53,12 +53,11 @@ class OrgnizationSelect extends Component {
 			orgnizationRoleList,
 		});
 		this.handleOnchange();
-	}
+	};
 
 	render() {
 		const { orgnizationRoleList } = this.state;
 		const { orgnizationTree = [], roleSelectList = [] } = this.props;
-		console.log('orgnizationRoleList', orgnizationRoleList, orgnizationTree);
 		return (
 			<>
 				{orgnizationRoleList.map((item, index) => (

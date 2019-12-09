@@ -200,21 +200,6 @@ class EmployeeCU extends Component {
 						return;
 					}
 
-					// if (ssoUsername) {
-					// 	const checkResponse = await checkSsoBinded({ ssoUsername });
-					// 	if (checkResponse && checkResponse.code === SSO_BINDED) {
-					// 		setFields({
-					// 			ssoUsername: {
-					// 				value: ssoUsername,
-					// 				errors: [
-					// 					new Error(formatMessage({ id: 'employee.sso.binded' })),
-					// 				],
-					// 			},
-					// 		});
-					// 		return;
-					// 	}
-					// }
-
 					const response = await createEmployee(submitData);
 					if (response && response.code === ERROR_OK) {
 						goToPath('employeeList');
@@ -275,7 +260,6 @@ class EmployeeCU extends Component {
 			query: { isDefault },
 		} = this.props;
 		const { orgnizationTree } = this.state;
-		console.log('orgnizationTree', orgnizationTree);
 		let decodedMapList = [];
 		// console.log(mappingList);
 		if (this.action === 'edit') {
