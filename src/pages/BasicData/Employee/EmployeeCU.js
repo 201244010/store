@@ -64,38 +64,37 @@ class EmployeeCU extends Component {
 		};
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		const { getAllRoles } = this.props;
 		getAllRoles();
-		this.createOrgnizationTree();
 		if (this.employeeId && this.action === 'edit') {
 			const { getEmployeeInfo } = this.props;
-			getEmployeeInfo({ employeeId: this.employeeId });
+			await getEmployeeInfo({ employeeId: this.employeeId });
 		}
+		this.createOrgnizationTree();
 	}
 
 	createOrgnizationTree = async () => {
 		const {
 			getCompanyIdFromStorage,
-			getShopListFromStorage,
+			// getShopListFromStorage,
 			getCompanyListFromStorage,
+			employee: { employeeInfo: { mappingList = [] } = {} } = {},
 		} = this.props;
 		const currentCompanyId = await getCompanyIdFromStorage();
 		const companyList = await getCompanyListFromStorage();
-		const shopList = await getShopListFromStorage();
-
+		// const shopList = await getShopListFromStorage();
 		const companyInfo =
 			companyList.find(company => company.companyId === currentCompanyId) || {};
-
 		const orgnizationTree = [
 			{
 				title: companyInfo.companyName,
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
-				children: shopList.map(shop => ({
-					title: shop.shop_name,
-					value: `${companyInfo.companyId}-${shop.shop_id}`,
-					key: `${companyInfo.companyId}-${shop.shop_id}`,
+				children: mappingList.map(shop => ({
+					title: shop.shopName,
+					value: `${companyInfo.companyId}-${shop.shopId}`,
+					key: `${companyInfo.companyId}-${shop.shopId}`,
 				})),
 			},
 		];
@@ -111,9 +110,9 @@ class EmployeeCU extends Component {
 			.filter(item => item.roleName !== 'admin')
 			.forEach(item => {
 				const { companyId = null, shopId = null, roleId = null } = item;
+
 				const orgnizationKey =
 					shopId === 0 || !shopId ? `${companyId}` : `${companyId}-${shopId}`;
-
 				if (orgnizationMap.has(orgnizationKey)) {
 					const { roleList = [] } = orgnizationMap.get(orgnizationKey);
 					orgnizationMap.set(orgnizationKey, {
@@ -276,6 +275,7 @@ class EmployeeCU extends Component {
 			query: { isDefault },
 		} = this.props;
 		const { orgnizationTree } = this.state;
+		console.log('orgnizationTree', orgnizationTree);
 		let decodedMapList = [];
 		// console.log(mappingList);
 		if (this.action === 'edit') {

@@ -187,7 +187,7 @@ class RoleModify extends React.Component {
 											}),
 										},
 									],
-								})(<Input maxLength={40} />)}
+								})(<Input maxLength={20} />)}
 							</Form.Item>
 							<Form.Item
 								label={formatMessage({ id: 'roleManagement.role.roleRoot' })}
