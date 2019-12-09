@@ -81,8 +81,16 @@ const SearchResult = props => {
 	);
 
 	const columns = [
-		{ title: formatMessage({ id: 'employee.number' }), dataIndex: 'number' },
-		{ title: formatMessage({ id: 'employee.name' }), dataIndex: 'name' },
+		{
+			title: formatMessage({ id: 'employee.number' }),
+			dataIndex: 'number',
+			render: number => number || '--',
+		},
+		{
+			title: formatMessage({ id: 'employee.name' }),
+			dataIndex: 'name',
+			render: name => name || '--',
+		},
 		{
 			title: formatMessage({ id: 'employee.gender' }),
 			dataIndex: 'gender',
@@ -123,8 +131,16 @@ const SearchResult = props => {
 				);
 			},
 		},
-		{ title: formatMessage({ id: 'employee.phone' }), dataIndex: 'username' },
-		{ title: formatMessage({ id: 'employee.sso.account' }), dataIndex: 'ssoUsername' },
+		{
+			title: formatMessage({ id: 'employee.phone' }),
+			dataIndex: 'username',
+			render: username => username || '--',
+		},
+		{
+			title: formatMessage({ id: 'employee.sso.account' }),
+			dataIndex: 'ssoUsername',
+			render: ssoUsername => ssoUsername || '--',
+		},
 		{
 			title: formatMessage({ id: 'list.action.title' }),
 			key: 'action',
