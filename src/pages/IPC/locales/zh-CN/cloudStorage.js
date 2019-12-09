@@ -17,6 +17,7 @@ export default {
 	'cloudStorage.binding.fail':'绑定失败',
 	'cloudStorage.binding.err.service.subscribe':'绑定失败，云存储服务剩余小于3天可以续费，请确认后重试。',
 	'cloudStorage.binding.ipc.not.exist':'绑定失败，该设备已解绑，请确认后重试',
+	'cloudStorage.free.service.used': '捆绑服务已被激活',
 	'cloudStorage.binding.ipc':'云存储服务订阅',
 	'cloudStorage.confirm':'确定',
 	'cloudStorage.confirm.subscribe':'确认订阅',
