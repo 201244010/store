@@ -377,7 +377,7 @@ class EmployeeCU extends Component {
 								{
 									required: true,
 									validator: (rule, value, callback) => {
-										// console.log(value);
+										// console.log('value', value);
 										if (value.length === 0) {
 											callback(
 												formatMessage({
@@ -385,20 +385,42 @@ class EmployeeCU extends Component {
 												})
 											);
 										} else {
-											const hasEmpty = Object.keys(value).some(key => {
+											const objectKeys = Object.keys(value);
+											const hasEmpty = objectKeys.some(key => {
 												const { orgnization = null, role = [] } = value[
 													key
 												];
 												return !orgnization || role.length === 0;
 											});
-											hasEmpty
-												? callback(
+											let isSame = false;
+											objectKeys.forEach((item, index) => {
+												objectKeys.forEach((items, indexs) => {
+													if (
+														index !== indexs &&
+														value[item].orgnization ===
+															value[items].orgnization &&
+														JSON.stringify(value[item].role.sort()) ===
+															JSON.stringify(value[items].role.sort())
+													) {
+														isSame = true;
+													}
+												});
+											});
+											hasEmpty &&
+												callback(
 													formatMessage({
 														id:
-																'employee.info.select.orgnizaion.isEmpty',
+															'employee.info.select.orgnizaion.isEmpty',
 													})
-												  )
-												: callback();
+												);
+											isSame &&
+												callback(
+													formatMessage({
+														id:
+															'employee.info.select.orgnizaion.isSame',
+													})
+												);
+											callback();
 										}
 									},
 								},
