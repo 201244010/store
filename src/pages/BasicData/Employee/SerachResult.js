@@ -96,7 +96,7 @@ const SearchResult = props => {
 		{
 			title: formatMessage({ id: 'employee.gender' }),
 			dataIndex: 'gender',
-			render: gender => <>{GENDER_MAP[gender]}</>,
+			render: gender => <>{GENDER_MAP[gender] || '--'}</>,
 		},
 		{
 			title: formatMessage({ id: 'employee.orgnization' }),

@@ -5,7 +5,7 @@ import { Card, Form, Input, Button, Radio, message } from 'antd';
 import OrgnizationSelect from './OrgnizationSelect';
 import { getLocationParam } from '@/utils/utils';
 import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { ERROR_OK, USER_EXIST, SSO_BINDED, EMPLOYEE_BINDED } from '@/constants/errorCode';
+import { ERROR_OK, USER_EXIST, EMPLOYEE_BINDED } from '@/constants/errorCode';
 import * as RegExp from '@/constants/regexp';
 import {
 	EMPLOYEE_NUMBER_LIMIT,
@@ -44,6 +44,8 @@ import styles from './Employee.less';
 		getAllRoles: () => dispatch({ type: 'role/getAllRoles' }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		getUserInfoByUsername: ({ username }) =>
+			dispatch({ type: 'employee/getUserInfoByUsername', payload: { username } }),
 	})
 )
 @Form.create()
@@ -156,7 +158,6 @@ class EmployeeCU extends Component {
 		const {
 			form: { validateFields, setFields },
 			checkUsernameExist,
-			checkSsoBinded,
 			createEmployee,
 			updateEmployee,
 			goToPath,
@@ -165,7 +166,7 @@ class EmployeeCU extends Component {
 		validateFields(async (err, values) => {
 			// console.log(values);
 			if (!err) {
-				const { mappingList = [], ssoUsername = '', username, number } = values;
+				const { mappingList = [], username, number } = values;
 				const submitData = {
 					...values,
 					number: number.toUpperCase(),
@@ -200,20 +201,20 @@ class EmployeeCU extends Component {
 						return;
 					}
 
-					if (ssoUsername) {
-						const checkResponse = await checkSsoBinded({ ssoUsername });
-						if (checkResponse && checkResponse.code === SSO_BINDED) {
-							setFields({
-								ssoUsername: {
-									value: ssoUsername,
-									errors: [
-										new Error(formatMessage({ id: 'employee.sso.binded' })),
-									],
-								},
-							});
-							return;
-						}
-					}
+					// if (ssoUsername) {
+					// 	const checkResponse = await checkSsoBinded({ ssoUsername });
+					// 	if (checkResponse && checkResponse.code === SSO_BINDED) {
+					// 		setFields({
+					// 			ssoUsername: {
+					// 				value: ssoUsername,
+					// 				errors: [
+					// 					new Error(formatMessage({ id: 'employee.sso.binded' })),
+					// 				],
+					// 			},
+					// 		});
+					// 		return;
+					// 	}
+					// }
 
 					const response = await createEmployee(submitData);
 					if (response && response.code === ERROR_OK) {
@@ -231,6 +232,21 @@ class EmployeeCU extends Component {
 				}
 			}
 		});
+	};
+
+	getUserInfoByUsername = async username => {
+		const {
+			getUserInfoByUsername,
+			form: { setFieldsValue },
+		} = this.props;
+		const response = await getUserInfoByUsername({ username });
+		if (response && response.code === ERROR_OK) {
+			const { data = {} } = response;
+			const { email, phone } = data;
+			setFieldsValue({
+				ssoUsername: email || phone,
+			});
+		}
 	};
 
 	handleCancel = () => {
@@ -355,6 +371,7 @@ class EmployeeCU extends Component {
 												formatMessage({ id: 'employee.phone.formatError' })
 											);
 										} else {
+											this.getUserInfoByUsername(value);
 											callback();
 										}
 									},
@@ -365,7 +382,7 @@ class EmployeeCU extends Component {
 					<Form.Item label={formatMessage({ id: 'employee.sso.account' })}>
 						{getFieldDecorator('ssoUsername', {
 							initialValue: this.action === 'edit' ? ssoUsername : '',
-						})(<Input disabled={this.action === 'edit'} />)}
+						})(<Input disabled />)}
 					</Form.Item>
 					{isDefault === 'true' ? (
 						''

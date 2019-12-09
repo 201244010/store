@@ -1,6 +1,7 @@
 import { format, map } from '@konata9/milk-shake';
 import * as Action from '@/services/employee';
 import { handleRoleManagement } from '@/services/role';
+import { getUserInfoByUsername } from '@/services/user';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -23,7 +24,7 @@ export default {
 		},
 		employeeList: [],
 		employeeInfo: {},
-		userId: ''
+		userId: '',
 	},
 	effects: {
 		*setSearchValue({ payload = {} }, { select, put }) {
@@ -85,7 +86,7 @@ export default {
 						])(employee)
 					)
 					.map(e => ({ ...e, username: e.phone || e.email }))
-					.sort((a, b) => b.createTime - a.createTime);;
+					.sort((a, b) => b.createTime - a.createTime);
 
 				yield put({
 					type: 'updateState',
@@ -211,10 +212,7 @@ export default {
 		},
 
 		*getAdmin(_, { call, put }) {
-			const response = yield call(
-				handleRoleManagement,
-				'getAdmin'
-			);
+			const response = yield call(handleRoleManagement, 'getAdmin');
 
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
@@ -229,7 +227,32 @@ export default {
 			}
 
 			return response;
-		}
+		},
+
+		*getUserInfoByUsername(
+			{
+				payload: { username },
+			},
+			{ select, put, call }
+		) {
+			const employeeInfo = yield select(state => state.employee.employeeInfo);
+			const response = yield call(getUserInfoByUsername, { username });
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { email, phone } = format('toCamel')(data);
+				yield put({
+					type: 'updateState',
+					payload: {
+						employeeInfo: {
+							...employeeInfo,
+							ssoUsername: email || phone,
+						},
+					},
+				});
+			}
+			return response;
+		},
 	},
 	reducers: {
 		updateState(state, action) {
