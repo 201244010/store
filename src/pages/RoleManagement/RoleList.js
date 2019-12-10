@@ -68,11 +68,11 @@ class RoleList extends React.Component {
 						</a>
 					),
 			},
-			{
-				title: formatMessage({ id: 'roleManagement.role.creator' }),
-				dataIndex: 'creatorName',
-				render: (_, record) => <div>{record.creatorName || '--'}</div>,
-			},
+			// {
+			// 	title: formatMessage({ id: 'roleManagement.role.creator' }),
+			// 	dataIndex: 'creatorName',
+			// 	render: (_, record) => <div>{record.creatorName || '--'}</div>,
+			// },
 			{
 				title: formatMessage({ id: 'roleManagement.role.createTime' }),
 				dataIndex: 'createTime',
@@ -80,89 +80,87 @@ class RoleList extends React.Component {
 			},
 			{
 				title: formatMessage({ id: 'list.action.title' }),
-				render: (_, record) => {
-					const {
-						user: {
-							currentUser: { checkAdmin },
-						},
-					} = this.props;
-					return (
-						<div>
-							<a
-								href="javascript:void(0);"
-								onClick={() => this.goPath(record, 'view')}
-							>
-								{formatMessage({ id: 'list.action.view' })}
-							</a>
-							{record.isDefault ? (
-								checkAdmin ? (
-									<span>
-										<Divider type="vertical" />
-										<Popconfirm
-											title={formatMessage({
-												id: 'roleManagement.role.changeRoleTitle',
-											})}
-											icon={
-												<Icon
-													theme="filled"
-													style={{ color: 'red' }}
-													type="close-circle"
-												/>
-											}
-											onConfirm={() => {
-												this.setState({
-													visible: true,
-												});
-											}}
-											okButtonProps={{
-												loading: loading.effects['role/deleteRole'],
-											}}
-										>
-											<a href="javascript:void(0);">
-												{formatMessage({
-													id: 'roleManagement.role.changeRole',
-												})}
-											</a>
-										</Popconfirm>
-									</span>
-								) : (
-									<></>
-								)
-							) : (
-								<span>
-									<Divider type="vertical" />
-									<a
-										href="javascript:void(0);"
-										onClick={() => this.goPath(record, 'modify')}
-									>
-										{formatMessage({ id: 'list.action.edit' })}
+				render: (_, record) => (
+					// const {
+					// 	user: {
+					// 		currentUser: { checkAdmin },
+					// 	},
+					// } = this.props;
+					// return (
+					<div>
+						<a href="javascript:void(0);" onClick={() => this.goPath(record, 'view')}>
+							{formatMessage({ id: 'list.action.view' })}
+						</a>
+						{record.isDefault ? (
+							// checkAdmin ? (
+							// 	<span>
+							// 		<Divider type="vertical" />
+							// 		<Popconfirm
+							// 			title={formatMessage({
+							// 				id: 'roleManagement.role.changeRoleTitle',
+							// 			})}
+							// 			icon={
+							// 				<Icon
+							// 					theme="filled"
+							// 					style={{ color: 'red' }}
+							// 					type="close-circle"
+							// 				/>
+							// 			}
+							// 			onConfirm={() => {
+							// 				this.setState({
+							// 					visible: true,
+							// 				});
+							// 			}}
+							// 			okButtonProps={{
+							// 				loading: loading.effects['role/deleteRole'],
+							// 			}}
+							// 		>
+							// 			<a href="javascript:void(0);">
+							// 				{formatMessage({
+							// 					id: 'roleManagement.role.changeRole',
+							// 				})}
+							// 			</a>
+							// 		</Popconfirm>
+							// 	</span>
+							// ) : (
+							// 	<></>
+							// )
+							<></>
+						) : (
+							<span>
+								<Divider type="vertical" />
+								<a
+									href="javascript:void(0);"
+									onClick={() => this.goPath(record, 'modify')}
+								>
+									{formatMessage({ id: 'list.action.edit' })}
+								</a>
+								<Divider type="vertical" />
+								<Popconfirm
+									title={formatMessage({
+										id: 'roleManagement.role.deleteRole',
+									})}
+									icon={
+										<Icon
+											theme="filled"
+											style={{ color: 'red' }}
+											type="close-circle"
+										/>
+									}
+									onConfirm={() => this.deleteRole(record)}
+									okButtonProps={{
+										loading: loading.effects['role/deleteRole'],
+									}}
+								>
+									<a href="javascript:void(0);">
+										{formatMessage({ id: 'list.action.delete' })}
 									</a>
-									<Divider type="vertical" />
-									<Popconfirm
-										title={formatMessage({
-											id: 'roleManagement.role.deleteRole',
-										})}
-										icon={
-											<Icon
-												theme="filled"
-												style={{ color: 'red' }}
-												type="close-circle"
-											/>
-										}
-										onConfirm={() => this.deleteRole(record)}
-										okButtonProps={{
-											loading: loading.effects['role/deleteRole'],
-										}}
-									>
-										<a href="javascript:void(0);">
-											{formatMessage({ id: 'list.action.delete' })}
-										</a>
-									</Popconfirm>
-								</span>
-							)}
-						</div>
-					);
-				},
+								</Popconfirm>
+							</span>
+						)}
+					</div>
+				),
+				// );
 			},
 		];
 	}
@@ -181,7 +179,9 @@ class RoleList extends React.Component {
 			getRoleList();
 		} else {
 			message.error(
-				formatMessage({ id: ALERT_NOTICE_MAP[response.code] || 'roleManagement.role.deleteFail' })
+				formatMessage({
+					id: ALERT_NOTICE_MAP[response.code] || 'roleManagement.role.deleteFail',
+				})
 			);
 		}
 	};
@@ -262,7 +262,9 @@ class RoleList extends React.Component {
 
 		validateFields(['keyword'], async (err, values) => {
 			if (!err) {
-				await getRoleList({ keyword: values.keyword });
+				const { keyword } = values;
+				this.keyword = keyword;
+				await getRoleList({ keyword });
 			}
 		});
 	};
@@ -272,6 +274,7 @@ class RoleList extends React.Component {
 		await getRoleList({
 			pageSize: pagination.pageSize,
 			current: pagination.current,
+			keyword: this.keyword,
 		});
 	};
 
