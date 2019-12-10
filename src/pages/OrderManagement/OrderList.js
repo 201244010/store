@@ -74,10 +74,10 @@ class OrderList extends React.Component {
 					}
 					
 					if(value === 0) {
-						return '￥0';
+						return `${formatMessage({id: 'orderManagement.yuan'})}0`;
 					}
 					
-					return `￥${value.toFixed(2)}`;
+					return `${formatMessage({id: 'orderManagement.yuan'})}${value.toFixed(2)}`;
 					
 				}
 			},{
@@ -90,14 +90,14 @@ class OrderList extends React.Component {
 							<div>
 								<a onClick={() => this.showDetail(record)}>{formatMessage({id: 'orderManagement.operation.detail'})}</a>
 								<Divider type="vertical" />
-								<a onClick={() => this.pay(record)}>立即付款</a>
+								<a onClick={() => this.pay(record)}>{formatMessage({id: 'orderManagement.operation.payImmediately'})}</a>
 							</div>
 						);
 						case 5: return (
 							<div>
 								<a onClick={() => this.showDetail(record)}>{formatMessage({id: 'orderManagement.operation.detail'})}</a>
 								<Divider type="vertical" />
-								<a onClick={this.bugAgain}>再次购买</a>
+								<a onClick={this.bugAgain}>{formatMessage({id: 'orderManagement.operation.purchaseAgain'})}</a>
 							</div>
 						);
 						default: return <a onClick={() => this.showDetail(record)}>{formatMessage({id: 'orderManagement.operation.detail'})}</a>;
@@ -108,7 +108,7 @@ class OrderList extends React.Component {
 	};
 	
 	componentDidMount() {
-		this.getList(10, 1, 0);
+		this.getList(10, 1, 'descend');
 	}
 	
 	getList = ( pageSize, pageNum, order ) => {
@@ -116,7 +116,7 @@ class OrderList extends React.Component {
 		getOrderList({
 			pageSize,
 			pageNum,
-			sortType: order === 1 ? 'ASC': 'DESC'
+			sortType: order
 		});
 		this.setState({
 			pageSize,
@@ -130,7 +130,7 @@ class OrderList extends React.Component {
 		const { order = 'descend' } = sort;
 		this.changeColumns(sort);
 		
-		this.getList( pageSize, current, order === 'descend' ? 0 : 1);
+		this.getList( pageSize, current, order);
 		
 	};
 	
@@ -166,7 +166,7 @@ class OrderList extends React.Component {
 				date: [],
 			}
 		});
-		this.getList(10, 1, 0);
+		this.getList(10, 1, 'descend');
 	};
 	
 	handleSearch = () => {

@@ -190,7 +190,7 @@ class OrderDetail extends React.Component {
 						status === 1 &&
 						<span className={styles['waiting-pay']}>
 							{formatMessage({id: 'orderManagement.detail.waitPay'})}
-							<span className={styles.price}>￥{purchaseAmount === 0 ? 0 : purchaseAmount.toFixed(2)}</span>
+							<span className={styles.price}>{formatMessage({id: 'orderManagement.yuan'})}{purchaseAmount === 0 ? 0 : purchaseAmount.toFixed(2)}</span>
 						</span>
 					}
 				</div>
@@ -222,8 +222,18 @@ class OrderDetail extends React.Component {
 								<li>
 									<span className={styles.title}>{formatMessage({id: 'orderManagement.detail.payInfo'})}</span>
 									<Row>
-										<Col span={8}>{formatMessage({id: 'orderManagement.detail.totalPay'})}{purchaseAmount === 0 ? '￥0' : `￥${purchaseAmount.toFixed(2)}`}</Col>
-										<Col span={8}>{formatMessage({id: 'orderManagement.detail.actualPay'})}{paymentAmount === 0 ? '￥0' : `￥${paymentAmount.toFixed(2)}`}</Col>
+										<Col span={8}>
+											{formatMessage({id: 'orderManagement.detail.totalPay'})}
+											{purchaseAmount === 0 ?
+												`${formatMessage({id: 'orderManagement.yuan'})}0` :
+												`${formatMessage({id: 'orderManagement.yuan'})}${purchaseAmount.toFixed(2)}`}
+										</Col>
+										<Col span={8}>
+											{formatMessage({id: 'orderManagement.detail.actualPay'})}
+											{paymentAmount === 0 ?
+												`${formatMessage({id: 'orderManagement.yuan'})}0` :
+												`${formatMessage({id: 'orderManagement.yuan'})}${paymentAmount.toFixed(2)}`}
+										</Col>
 									</Row>
 									<Divider className={styles.divide} />
 								</li>
@@ -265,6 +275,7 @@ class OrderDetail extends React.Component {
 										columns={this.columns}
 										dataSource={serviceList}
 										pagination={false}
+										rowKey='serviceNo'
 									/>
 								</li>
 						}

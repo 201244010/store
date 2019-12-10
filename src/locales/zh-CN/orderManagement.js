@@ -16,6 +16,8 @@ export default {
 	'orderManagement.operation.payImmediately': '立即付款',
 	'orderManagement.operation.purchaseAgain': '再次购买',
 	
+	'orderManagement.yuan': '￥',
+	
 	'orderManagement.detail.person': '个人',
 	'orderManagement.detail.enterprise': '企业',
 	'orderManagement.detail.normalTax': '电子普通发票',
