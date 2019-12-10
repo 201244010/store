@@ -125,6 +125,7 @@ const MerchantInfo = props => {
 		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
 	})
 )
 @Form.create()
@@ -144,7 +145,9 @@ class StoreRelate extends Component {
 			setShopListInStorage,
 			removeShopIdInCookie,
 			goToPath,
+			getCompanyList,
 		} = this.props;
+		await getCompanyList();
 		const response = await getStoreList({});
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
