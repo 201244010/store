@@ -98,9 +98,18 @@ class CloudStorage extends React.Component{
 
 	subscriptionHandler = (productNo) => {
 		const { navigateTo } = this.props;
-		navigateTo('orderSubmission', {
-			productNo
-		});
+		const { sn } = this.state;
+		if(sn){
+			navigateTo('orderSubmission', {
+				productNo,
+				sn
+			});
+		}else{
+			navigateTo('orderSubmission', {
+				productNo
+			});
+		}
+		
 		// this.setState({
 		// 	productNo,
 		// 	modalVisible: true
