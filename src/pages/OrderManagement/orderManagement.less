@@ -1,0 +1,97 @@
+.status-bar {
+	margin: -24px;
+	height: 60px;
+	padding: 16px 24px;
+	background: #fff;
+
+	.status-icon {
+		display: block;
+		float: left;
+		margin-top: 2px;
+		width: 24px;
+		height: 24px;
+	}
+
+	.status-title {
+		font-size: 20px;
+		font-weight: 500;
+		color: rgba(51,51,56,1);
+		margin: 0 12px;
+	}
+
+	.waiting-pay {
+		float: right;
+
+		.price {
+			color: rgba(255, 56, 56, 1);
+			font-weight: 500;
+			font-size: 20px;
+		}
+	}
+
+}
+
+.content {
+	margin-top: 48px;
+	//background:rgba(255,255,255,1);
+	//border-radius:2px;
+	ul,li {
+		padding: 0;
+		margin: 0;
+	}
+
+	.title {
+		font-size:16px;
+		font-family: PingFangSC-Medium, PingFang SC, serif;
+		font-weight:500;
+		color:rgba(48,53,64,1);
+	}
+
+	:global {
+		.ant-col-8 {
+			margin-top: 16px;
+			font-size:14px;
+			font-weight:400;
+			color:rgba(51,51,56,1);
+		}
+	}
+
+	.divide {
+		margin: 32px 0;
+	}
+
+	.success-icon {
+		width:24px;
+		height:24px;
+		background:rgba(54,198,38,1);
+	}
+}
+
+.bottom-bar {
+	position: fixed;
+	bottom: 24px;
+	margin: -24px;
+	background: #fff;
+	width: calc(100% - 256px);
+	height: 56px;
+	padding: 12px 24px;
+
+	.pay-at-once {
+		float: right;
+		margin-left: 20px;
+	}
+
+	.cancel-pay {
+		float: right;
+	}
+
+	.remain-time {
+		color: rgba(255, 56, 56, 1);;
+	}
+}
+
+.hold-pic {
+	width: 44px;
+	height: 44px;
+}
+
