@@ -8,6 +8,19 @@ export default {
 		total: 0,
 		tradeVideos:[],
 		paymentDeviceList:[],
+		paymentInfo: {
+			paymentMethod: '支付宝',
+			purchaseTime: 1573834194,
+			totalPrice: '245.00',
+			paymentDeviceName: 'T2',
+			details: [{
+				name:'东鹏特饮',
+				quantity:'286'
+			},{
+				name:'合味道虾仁',
+				quantity:'291'
+			}]
+		},
 		// paymentDetailList:[],
 		// ipcList:[]
 	},
@@ -38,6 +51,21 @@ export default {
 				return true;
 			});
 		},
+		readPaymentInfo(state, action){
+			const { payload: { orderId, detailList } } = action;
+
+			state.tradeVideos.forEach(item => {
+				// console.log(item.key, orderId);
+				if (item.key === orderId) {
+					item.details = [
+						...detailList
+					];
+					console.log('payment', item);
+					state.paymentInfo = item;
+				}
+			});
+		}
+
 	},
 	effects: {
 		*read({ payload }, { put, call }){
@@ -191,6 +219,28 @@ export default {
 				return info;
 			}
 			return {};
+		},
+		*getPaymentInfo({ payload }, { put }){
+			const { orderId } = payload;
+			const response = yield getPaymentDetailList({
+				orderId
+			});
+
+			const { code, data } = response;
+
+			if (code === ERROR_OK) {
+				// console.log(data);
+				yield put({
+					type: 'readPaymentInfo',
+					payload: {
+						orderId,
+						detailList: data
+					}
+				});
+
+				return data;
+			}
+			return [];
 		}
 	}
 };
