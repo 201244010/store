@@ -3,16 +3,19 @@ import { customizeFetch } from '@/utils/fetch';
 
 const fetchApi = customizeFetch('api/trade/order');
 
-const SORT_ARRAY = [
-	'descend', 'DESC', 'ASC'
-];
+const SORT = {
+	SORT_VALUE: 'descend',
+	IS_DESCEND: 'DESC',
+	IS_ASCEND: 'ASC',
+};
+
 
 export const getOrderList = (options = {}) => {
+	options.sortType = options.sortType === SORT.SORT_VALUE ? SORT.IS_DESCEND : SORT.IS_ASCEND;
 	options = format('toSnake')(options);
 	const opt = {
 		body: {
 			...options,
-			sort_type: options.sort_type === SORT_ARRAY[0] ? SORT_ARRAY[1] : SORT_ARRAY[2]
 		},
 	};
 	return fetchApi('getList', opt).then(response => response.json());
