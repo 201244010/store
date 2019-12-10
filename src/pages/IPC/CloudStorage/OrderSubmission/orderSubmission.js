@@ -209,6 +209,7 @@ class OrderSubmission extends React.Component{
 			message.info( formatMessage({ id: 'cloudStorage.binding.err.service.subscribe'}));
 		}else if(code === ERR_IPC_NOT_EXIST){
 			message.info( formatMessage({ id: 'cloudStorage.binding.ipc.not.exist'}));
+			await this.init();
 		}else if(code === ERR_FREE_SERVICE_USED){
 			message.info( formatMessage({ id: 'cloudStorage.free.service.used'}));
 		}
@@ -388,7 +389,7 @@ class OrderSubmission extends React.Component{
 	render(){
 
 		const { navigateTo, loading, form: { getFieldDecorator } } = this.props;
-		const { selectedValue, btnDisable, isAgree, invoiceSelectValue, vbrkSelectValue, unitPrice, count, freeStatus, storageIpcList, isNeedCoverTip } = this.state;
+		const { selectedValue, btnDisable, isAgree, invoiceSelectValue, vbrkSelectValue, unitPrice, count, freeStatus, storageIpcList, isNeedCoverTip, sn } = this.state;
 		const emailValue = vbrkSelectValue === 2 ? 'companyEmail' : 'personalEmail';
 		const phoneValue = vbrkSelectValue === 2 ? 'companyPhone' : 'personalPhone';
 		return(
@@ -527,7 +528,13 @@ class OrderSubmission extends React.Component{
 						</div>
 						<div className={styles.btns}>
 							<Button
-								onClick={()=> navigateTo('cloudStorage')}
+								onClick={()=> {
+									if(sn){
+										navigateTo('cloudStorage',{sn});
+									}else{
+										navigateTo('cloudStorage');
+									}
+								}}
 								className={styles['cancel-btn']}
 							>
 								{formatMessage({id: 'cloudStorage.cancel'})}
