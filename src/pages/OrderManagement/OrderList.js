@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE} from '../../constants';
 import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
 import global from '@/styles/common.less';
+import styles from './orderManagement.less';
 
 const { RangePicker } = DatePicker;
 const STATUS = [
@@ -58,10 +59,10 @@ class OrderList extends React.Component {
 				key: 'status',
 				render: value => {
 					switch (value) {
-						case 4: return <Badge color='rgba(96, 204, 19, 1)' text={STATUS[1].name} />;
-						case 1: return <Badge color='rgba(255, 96, 0, 1)' text={STATUS[2].name} />;
-						case 5: return <Badge color='rgba(133, 133, 138, 0.6)' text={STATUS[3].name} />;
-						default: return <Badge color='rgba(133, 133, 138, 0.6)' text={STATUS[3].name} />;
+						case 4: return <Badge status='success' text={STATUS[1].name} />;
+						case 1: return <Badge status='success' className={styles['waiting-dot']} text={STATUS[2].name} />;
+						case 5: return <Badge status='success' className={styles['fail-dot']} text={STATUS[3].name} />;
+						default: return <Badge status='success' className={styles['fail-dot']} text={STATUS[3].name} />;
 					}
 				}
 			},{

@@ -95,3 +95,26 @@
 	height: 44px;
 }
 
+.waiting-dot {
+	:global {
+		.ant-badge-status-dot {
+			background: rgba(255, 96, 0, 1);
+		}
+	}
+}
+
+.success-dot {
+	:global {
+		.ant-badge-status-dot {
+			background: rgba(96, 204, 19, 1);
+		}
+	}
+}
+
+.fail-dot {
+	:global {
+		.ant-badge-status-dot {
+			background: rgba(133, 133, 138, 0.6);
+		}
+	}
+}
