@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Card } from 'antd';
+import { format } from '@konata9/milk-shake';
 import SearchBar from './SearchBar';
 import SearchResult from './SerachResult';
+import { ERROR_OK } from '@/constants/errorCode';
 
 @connect(
 	state => ({
@@ -32,21 +34,32 @@ class EmployeeList extends Component {
 			orgnizationTree: [],
 			currentCompanyId: null,
 		};
+		this.userId = null;
 	}
 
 	componentDidMount() {
-		this.createOrgnizationTree();
-		const { getEmployeeList, getAdmin} = this.props;
+		const { getEmployeeList} = this.props;
 		getEmployeeList({
 			current: 1,
 			pageSize: 10,
 		});
-		getAdmin();
+		this.createOrgnizationTree();
+		this.getAdminUserId();
 	}
 
 	componentWillUnmount() {
 		const { clearSearchValue } = this.props;
 		clearSearchValue();
+	}
+
+	getAdminUserId = async () => {
+		const { getAdmin } = this.props;
+		const response = await getAdmin();
+		if (response && response.code === ERROR_OK) {
+			const { data = {} } = response;
+			const { userId } = format('toCamel')(data);
+			this.userId = userId;
+		}
 	}
 
 	createOrgnizationTree = async () => {
@@ -82,7 +95,7 @@ class EmployeeList extends Component {
 	render() {
 		const {
 			loading,
-			employee: { searchValue = {}, employeeList = [], pagination, userId } = {},
+			employee: { searchValue = {}, employeeList = [], pagination } = {},
 			setSearchValue,
 			clearSearchValue,
 			getEmployeeList,
@@ -112,7 +125,7 @@ class EmployeeList extends Component {
 						deleteEmployee,
 						goToPath,
 						getEmployeeList,
-						userId
+						userId: this.userId
 					}}
 				/>
 			</Card>

@@ -24,7 +24,6 @@ export default {
 		},
 		employeeList: [],
 		employeeInfo: {},
-		userId: '',
 	},
 	effects: {
 		*setSearchValue({ payload = {} }, { select, put }) {
@@ -211,21 +210,8 @@ export default {
 			return response;
 		},
 
-		*getAdmin(_, { call, put }) {
+		*getAdmin(_, { call }) {
 			const response = yield call(handleRoleManagement, 'getAdmin');
-
-			if (response && response.code === ERROR_OK) {
-				const { data = {} } = response;
-				const { userId } = format('toCamel')(data);
-				console.log(response);
-				yield put({
-					type: 'updateState',
-					payload: {
-						userId,
-					},
-				});
-			}
-
 			return response;
 		},
 
