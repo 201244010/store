@@ -147,14 +147,9 @@ class StoreRelate extends Component {
 			goToPath,
 			getCompanyList,
 		} = this.props;
-		console.log('1');
 		await getCompanyList();
-		console.log('2');
 		const response = await getStoreList({});
-		console.log('3');
-		console.log('4', response);
 		if (response && response.code === ERROR_OK) {
-			console.log('5', response);
 			const result = response.data || {};
 			const shopList = result.shopList || [];
 			setShopListInStorage({ shopList });

@@ -37,9 +37,9 @@ class MerchantModify extends Component {
 					options: {
 						company_id: CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY),
 						company_name: values.companyName,
-						contactPerson: values.contactPerson,
-						contactTel: values.contactTel,
-						contactEmail: values.contactEmail,
+						contact_person: values.contactPerson,
+						contact_tel: values.contactTel,
+						contact_email: values.contactEmail,
 					},
 				};
 				const response = await companyUpdate(payload);

@@ -56,10 +56,9 @@ export default {
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { searchValue, pagination } = yield select(state => state.employee);
 			const { current = 1, pageSize = 10, roleId = -1 } = payload;
-			const shopList = yield put.resolve({
+			const shopIdList = yield put.resolve({
 				type: 'global/getShopListFromStorage'
 			});
-			const { shopList: shopIdList } = format('toCamel')({ shopList });
 			const options = {
 				...searchValue,
 				pageNum: current,

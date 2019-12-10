@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { format } from '@konata9/milk-shake';
 import { Card, Form, Input, Button, Radio, message } from 'antd';
 import OrgnizationSelect from './OrgnizationSelect';
 import { getLocationParam } from '@/utils/utils';
@@ -92,13 +91,12 @@ class EmployeeCU extends Component {
 		const shopList = await getShopListFromStorage();
 		const companyInfo =
 			companyList.find(company => company.companyId === currentCompanyId) || {};
-		const { shopList: shopTree } = format('toCamel')({ shopList });
 		const orgnizationTree = [
 			{
 				title: companyInfo.companyName,
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
-				children: shopTree.map(shop => ({
+				children: shopList.map(shop => ({
 					title: shop.shopName,
 					value: `${companyInfo.companyId}-${shop.shopId}`,
 					key: `${companyInfo.companyId}-${shop.shopId}`,

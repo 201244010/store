@@ -170,7 +170,7 @@ export default {
 	'notif-system-task-erp-failure-content': '未能完成与##saas_name##的对接，请重试',
 
 	// modal
-	'notif-modal-content':'您当前处于【##currentCompanyName##-##currentshop_name##】，请将门店切换至【##targetCompanyName##-##targetshop_name##】后查看',
+	'notif-modal-content':'您当前处于【##currentCompanyName##-##currentShopName##】，请将门店切换至【##targetCompanyName##-##targetShopName##】后查看',
 	'notif-modal-title-info':'提示',
 	'notif-modal-known-text':'知道了'
 };

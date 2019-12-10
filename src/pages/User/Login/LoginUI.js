@@ -128,7 +128,6 @@ class Login extends Component {
 		const { getCompanyList, goToPath } = this.props;
 		const response = await getCompanyList({});
 		if (response && response.code === ERROR_OK) {
-			console.log('=========object', response);
 			const data = response.data || {};
 			const companyList = data.company_list || [];
 			const companys = companyList.length;
