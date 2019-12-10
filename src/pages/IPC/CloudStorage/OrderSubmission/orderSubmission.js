@@ -206,11 +206,11 @@ class OrderSubmission extends React.Component{
 			return orderNo;
 		}
 		if(code === ERR_SERVICE_SUBSCRIBE_ERROR){
-			message.error( formatMessage({ id: 'cloudStorage.binding.err.service.subscribe'}));
+			message.info( formatMessage({ id: 'cloudStorage.binding.err.service.subscribe'}));
 		}else if(code === ERR_IPC_NOT_EXIST){
-			message.error( formatMessage({ id: 'cloudStorage.binding.ipc.not.exist'}));
+			message.info( formatMessage({ id: 'cloudStorage.binding.ipc.not.exist'}));
 		}else if(code === ERR_FREE_SERVICE_USED){
-			message.error( formatMessage({ id: 'cloudStorage.free.service.used'}));
+			message.info( formatMessage({ id: 'cloudStorage.free.service.used'}));
 		}
 		return '-1';
 	}
