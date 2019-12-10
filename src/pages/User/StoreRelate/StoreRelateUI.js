@@ -147,11 +147,16 @@ class StoreRelate extends Component {
 			goToPath,
 			getCompanyList,
 		} = this.props;
+		console.log('1');
 		await getCompanyList();
+		console.log('2');
 		const response = await getStoreList({});
+		console.log('3');
+		console.log('4', response);
 		if (response && response.code === ERROR_OK) {
+			console.log('5', response);
 			const result = response.data || {};
-			const shopList = result.shop_list || [];
+			const shopList = result.shopList || [];
 			setShopListInStorage({ shopList });
 			// Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
@@ -161,8 +166,8 @@ class StoreRelate extends Component {
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
 				const defaultStore = shopList[0] || {};
-				setShopIdInCookie({ shopId: defaultStore.shop_id });
-				// CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
+				setShopIdInCookie({ shopId: defaultStore.shopId });
+				// CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
 				goToPath('root');
 				// router.push('/');
 			}

@@ -108,7 +108,7 @@ class Login extends Component {
 		const response = await getStoreList({});
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
-			const shopList = result.shop_list || [];
+			const shopList = result.shopList || [];
 			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
 				CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
@@ -117,7 +117,7 @@ class Login extends Component {
 			} else {
 				const lastStore = shopList.length;
 				const defaultStore = shopList[lastStore - 1] || {};
-				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
+				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
 				goToPath('root');
 				// router.push('/');
 			}
@@ -128,6 +128,7 @@ class Login extends Component {
 		const { getCompanyList, goToPath } = this.props;
 		const response = await getCompanyList({});
 		if (response && response.code === ERROR_OK) {
+			console.log('=========object', response);
 			const data = response.data || {};
 			const companyList = data.company_list || [];
 			const companys = companyList.length;

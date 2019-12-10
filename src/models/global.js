@@ -24,7 +24,9 @@ export default {
 		},
 
 		getShopListFromStorage() {
-			return Storage.get('__shop_list__', 'local') || [];
+			const a = Storage.get('__shop_list__', 'local') || [];
+			console.log('------------------', a);
+			return a;
 		},
 
 		getCompanyListFromStorage() {

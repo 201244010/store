@@ -10,7 +10,7 @@ export const getList = (options = {}) => {
 			...options,
 		},
 	};
-	return fetchApi('getList', opt).then(response => response.json());
+	return fetchApi('getList', opt).then(response => response.json()).then(res => format('toCamel')(res));
 };
 
 // 提交新建门店接口
