@@ -52,6 +52,7 @@ class OrderSubmission extends React.Component{
 			key:'deviceName',
 			title: formatMessage({ id: 'cloudStorage.device.name'}),
 			dataIndex: 'deviceName',
+			render:(deviceName) => (<div className={styles.deviceName}>{deviceName}</div>)
 		},
 		{
 			key: 'sn',
@@ -291,7 +292,7 @@ class OrderSubmission extends React.Component{
 		}else{
 			const orderNo = await this.orderHandler();
 			if(orderNo !== ''){
-				navigateTo('subscriptionSuccess', {orderNo});
+				navigateTo('subscriptionSuccess', {orderNo, status: 'success'});
 			}
 		}
 		
@@ -324,7 +325,7 @@ class OrderSubmission extends React.Component{
 		const orderNo = await this.orderHandler();
 		if(freeStatus){
 			if(orderNo !== ''){
-				navigateTo('subscriptionSuccess');
+				navigateTo('subscriptionSuccess', {orderNo, status: 'success'});
 			}
 		}else{
 			navigateTo('paymentPage',{
@@ -520,8 +521,8 @@ class OrderSubmission extends React.Component{
 							{ !freeStatus &&
 							<Button
 								type="primary"
-								// disabled={btnDisable}
-								disabled
+								disabled={btnDisable}
+								// disabled
 								onClick={this.payHandler}
 							>
 								{formatMessage({id: 'cloudStorage.pay'})}

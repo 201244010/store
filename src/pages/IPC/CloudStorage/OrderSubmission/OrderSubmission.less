@@ -10,6 +10,12 @@
 			color:rgba(48,53,64,1);
 			margin-bottom: 16px;
 		}
+		.deviceName{ 
+			white-space: nowrap;
+			width: 90%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 		.ipc-img{
 			height: 44px;
 			width: 44px;
@@ -25,12 +31,20 @@
 				padding: 16px 7px 16px 7px;
 			}
 			.ant-table-tbody > tr > td{
+				height: 59px;
 				// padding: 7px 7px;
 				padding: 7px 7px 7px 7px;
 				&:first-child{
 					width: 51px;
 					padding: 0;
 					text-align: center;
+				}
+				&:nth-child(2){
+					// white-space: nowrap;
+					// width: 30px;
+					// overflow: hidden;
+					// text-overflow: ellipsis;
+					// width: 300px;
 				}
 			}
 	

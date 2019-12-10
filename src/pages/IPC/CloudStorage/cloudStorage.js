@@ -260,8 +260,8 @@ class CloudStorage extends React.Component{
 														})()
 													}
 												</div>
-												<Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.coming.soon'})}</Button>
-												{/* <Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">{formatMessage({id:'cloudStorage.subscribe.now'})}</Button> */}
+												{/* <Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.coming.soon'})}</Button> */}
+												<Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">{formatMessage({id:'cloudStorage.subscribe.now'})}</Button>
 												{/* {item.pricePerDay && <div className={styles.tips}>仅{item.pricePerDay}{formatMessage({id:'cloudStorage.money.per.day'})}</div>} */}
 											</div>
 										);
@@ -304,8 +304,8 @@ class CloudStorage extends React.Component{
 													})()
 												}
 											</div>
-											<Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.coming.soon'})}</Button>
-											{/* <Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">{formatMessage({id:'cloudStorage.subscribe.now'})}</Button> */}
+											{/* <Button className={`${styles['sub-button']} ${styles.disabled}`} type="primary" disabled>{formatMessage({id:'cloudStorage.coming.soon'})}</Button> */}
+											<Button onClick={() => this.subscriptionHandler(item.productNo)} className={`${styles['sub-button']} ${styles.normal}`} type="primary">{formatMessage({id:'cloudStorage.subscribe.now'})}</Button>
 										</div>
 									))}
 								</div>

@@ -5,6 +5,7 @@ import { Card, message } from 'antd';
 import { format } from '@konata9/milk-shake';
 import { ERROR_OK, ALTERT_TRADE_MAP } from '@/constants/errorCode';
 import styles from './trade.less';
+import { ORDER_STATUS } from '../constant';
 
 @connect(
 	state => ({
@@ -19,6 +20,8 @@ import styles from './trade.less';
 			dispatch({ type: 'trade/getOrderDetail', payload: { orderNo }}),
 		goToPath: (pathId, urlParams = {}, linkType = null) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, linkType } }),
+		getOrderStatus: (orderNo) => 
+			dispatch({ type: 'cloudStorage/getOrderStatus', payload: { orderNo }}),
 	})
 )
 class QRCodePayment extends PureComponent {
@@ -29,7 +32,6 @@ class QRCodePayment extends PureComponent {
 		} = props;
 
 		this.qrContainer = React.createRef();
-		this.refreshTimer = null;
 		this.refreshCount = null;
 
 		this.orderNo = orderNo || null;
@@ -37,7 +39,7 @@ class QRCodePayment extends PureComponent {
 		this.source = parseInt(source, 10) || null;
 
 		this.state = {
-			refreshRemain: 120,
+			count: 0,
 		};
 	}
 
@@ -45,12 +47,12 @@ class QRCodePayment extends PureComponent {
 		const { getOrderDetail } = this.props;
 		await this.getQRCodeURL();
 		await getOrderDetail({ orderNo: this.orderNo });
-		this.countRefresh();
+		this.orderStatusRefresh();
 	}
 
 	componentWillUnmount() {
-		clearTimeout(this.refreshTimer);
-		clearInterval(this.refreshCount);
+		clearInterval(this.refreshOrderStatus);
+		clearInterval(this.refreshWaitSuccess);
 	}
 
 	getQRCodeURL = async () => {
@@ -73,23 +75,69 @@ class QRCodePayment extends PureComponent {
 		}
 	};
 
-	countRefresh = () => {
-		clearInterval(this.refreshCount);
-		this.refreshCount = setInterval(() => {
-			const { refreshRemain } = this.state;
-
-			if (refreshRemain === 0) {
-				this.getQRCodeURL();
-				this.setState({
-					refreshRemain: 120,
-				});
-			} else {
-				this.setState({
-					refreshRemain: refreshRemain - 1,
-				});
+	orderStatusRefresh = () => {
+		clearInterval(this.refreshOrderStatus);
+		this.refreshOrderStatus = setInterval(async () => {
+			const { getOrderStatus, goToPath } = this.props;
+			const status = await getOrderStatus(this.orderNo);
+			switch(status){
+				case ORDER_STATUS.SUBSCRIBING:
+					message.open({
+						content: formatMessage({ id: 'cloudStorage.waitting.sub' }),
+						duration: 0,
+						icon: <div className={styles['loading-icon']} />
+					});
+					clearInterval(this.refreshOrderStatus);
+					this.waitSuccessRefresh();
+					break;
+				case ORDER_STATUS.SUCCESS:
+					message.destroy();
+					clearInterval(this.refreshOrderStatus);
+					goToPath('subscriptionSuccess', {orderNo:this.orderNo, status: 'success'});
+					break;
+				case ORDER_STATUS.CLOSE:
+					message.destroy();
+					clearInterval(this.refreshOrderStatus);
+					goToPath('serviceOrderDetail', {orderNo:this.orderNo});
+					break;
+				default:
+					break;
 			}
+
+		}, 5000);
+	}
+
+	waitSuccessRefresh = () => {
+		clearInterval(this.refreshWaitSuccess);
+		this.refreshWaitSuccess = setInterval(async () => {
+			const { getOrderStatus, goToPath } = this.props;
+			const { count } = this.state;
+
+			const status = await getOrderStatus(this.orderNo);
+			switch(status){
+				case ORDER_STATUS.SUBSCRIBING:
+					if(count < 15){
+						this.setState({count: count+1});
+					}else{
+						this.setState({count: 0});
+						message.destroy();
+						clearInterval(this.refreshWaitSuccess);
+						goToPath('subscriptionSuccess', {orderNo:this.orderNo, status: 'waitting'});
+					}
+					break;
+				case ORDER_STATUS.SUCCESS:
+					message.destroy();
+					clearInterval(this.refreshWaitSuccess);
+					goToPath('subscriptionSuccess', {orderNo:this.orderNo, status: 'success'});
+					break;
+				default:
+					break;
+			}
+
 		}, 1000);
-	};
+	}
+
+
 
 	render() {
 		const { loading, goToPath, orderDetail } = this.props;
