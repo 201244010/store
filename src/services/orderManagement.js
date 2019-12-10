@@ -11,14 +11,15 @@ const SORT = {
 
 
 export const getOrderList = (options = {}) => {
-	options.sortType = options.sortType === SORT.SORT_VALUE ? SORT.IS_DESCEND : SORT.IS_ASCEND;
-	options = format('toSnake')(options);
+	const { sortType } = options;
 	const opt = {
 		body: {
 			...options,
+			sortType: sortType === SORT.SORT_VALUE ? SORT.IS_DESCEND : SORT.IS_ASCEND
 		},
 	};
-	return fetchApi('getList', opt).then(response => response.json());
+	const requestOpt = format('toSnake')(opt);
+	return fetchApi('getList', requestOpt).then(response => response.json());
 };
 
 export const getOrderDetail = (options = {}) => {
