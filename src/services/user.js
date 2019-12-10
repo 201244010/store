@@ -97,3 +97,12 @@ export const refreshStoreToken = (options = {}) => {
 	};
 	return fetchApi('refreshStoreToken', opts).then(response => response.json());
 };
+
+export const getUserInfoByUsername = (options = {}) => {
+	const opts = {
+		body: {
+			...options,
+		},
+	};
+	return fetchApi('getUserInfoByUsername', opts).then(response => response.json());
+};

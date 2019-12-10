@@ -17,6 +17,7 @@ const SearchResult = props => {
 		goToPath = null,
 		deleteEmployee = null,
 		getEmployeeList = null,
+		userId = ''
 	} = props;
 
 	const viewDetail = record => {
@@ -30,12 +31,13 @@ const SearchResult = props => {
 	};
 
 	const alterDetail = record => {
-		const { employeeId = null } = record;
+		const { employeeId = null, userId: recordUserId } = record;
 		if (employeeId) {
 			goToPath('employeeUpdate', {
 				employeeId,
 				action: 'edit',
 				from: 'list',
+				isDefault: userId === recordUserId
 			});
 		}
 	};
@@ -94,7 +96,7 @@ const SearchResult = props => {
 		{
 			title: formatMessage({ id: 'employee.gender' }),
 			dataIndex: 'gender',
-			render: gender => <>{GENDER_MAP[gender]}</>,
+			render: gender => <>{GENDER_MAP[gender] || '--'}</>,
 		},
 		{
 			title: formatMessage({ id: 'employee.orgnization' }),
