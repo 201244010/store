@@ -36,7 +36,7 @@ class AlterStore extends React.Component {
 		const shopId = getLocationParam('shopId');
 		const payload = {
 			options: {
-				shop_id: shopId,
+				shopId,
 			},
 		};
 		this.setState({ shopId });
@@ -61,17 +61,17 @@ class AlterStore extends React.Component {
 			const payload = {
 				options: {
 					company_id: companyId,
-					shop_id: shopId,
-					shop_name: formValue.storeName,
-					business_status:
+					shopId,
+					shopName: formValue.storeName,
+					businessStatus:
 						formValue.status ===
 						formatMessage({ id: 'storeManagement.create.statusValue1' })
 							? 0
 							: 1,
 					address: formValue.detailAddress,
-					business_hours: formValue.time,
-					contact_person: formValue.contactName,
-					contact_tel: formValue.contactPhone,
+					businessHours: formValue.time,
+					contactPerson: formValue.contactName,
+					contactTel: formValue.contactPhone,
 				},
 			};
 			alterStoreInformation(payload);

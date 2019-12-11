@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { Button, Form, Input } from 'antd';
+import Storage from '@konata9/storage.js';
 import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
-import Storage from '@konata9/storage.js';
 import styles from './StoreRelate.less';
 
 const MerchantCreate = props => {
@@ -138,7 +138,7 @@ class StoreRelate extends Component {
 		const response = await getStoreList({});
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
-			const shopList = result.shop_list || [];
+			const shopList = result.shopList || [];
 			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
 				CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
@@ -147,7 +147,7 @@ class StoreRelate extends Component {
 			} else {
 				const lastStore = shopList.length;
 				const defaultStore = shopList[lastStore - 1] || {};
-				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
+				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
 				goToPath('root');
 				// router.push('/');
 			}

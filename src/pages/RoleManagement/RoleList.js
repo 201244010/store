@@ -13,11 +13,11 @@ import {
 	Modal,
 	Card,
 } from 'antd';
-import { unixSecondToDate, idEncode } from '@/utils/utils';
+import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
+import { unixSecondToDate, idEncode } from '@/utils/utils';
 import { COL_THREE_NORMAL, FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { ERROR_OK, ALERT_NOTICE_MAP, ALERT_ROLE_MAP } from '@/constants/errorCode';
-import { connect } from 'dva';
 
 import styles from './Role.less';
 import global from '@/styles/common.less';

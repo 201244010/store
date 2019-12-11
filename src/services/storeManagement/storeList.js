@@ -10,7 +10,9 @@ export const getList = (options = {}) => {
 			...options,
 		},
 	};
-	return fetchApi('getList', opt).then(response => response.json());
+	return fetchApi('getList', opt)
+		.then(response => response.json())
+		.then(res => format('toCamel')(res));
 };
 
 // 提交新建门店接口
@@ -30,7 +32,9 @@ export const storeInformation = (options = {}) => {
 			...options,
 		},
 	};
-	return fetchApi('getInfo', opt).then(response => response.json());
+	return fetchApi('getInfo', opt)
+		.then(response => response.json())
+		.then(res => format('toCamel')(res));
 };
 
 // 修改门店信息接口
