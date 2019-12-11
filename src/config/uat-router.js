@@ -172,6 +172,30 @@ const router = [
 							}
 						]
 					},
+					{
+						path: '/application/serviceManagement',
+						id: 'serviceManagement',
+						component: './ServiceManagement/ServiceList',
+						name: 'serviceManagement',
+					},
+					{
+						path: '/application/orderManagement',
+						id: 'orderManagement',
+						name: 'orderManagement',
+						routes:[
+							{
+								path: '/application/orderManagement',
+								id: 'orderManagement',
+								component: './OrderManagement/OrderList'
+							},
+							{
+								path: '/application/orderManagement/orderDetail',
+								id: 'serviceOrderDetail',
+								component: './OrderManagement/OrderDetail',
+								hideInMenu: true
+							}
+						]
+					}
 				],
 			},
 
@@ -408,9 +432,55 @@ const router = [
 						],
 					},
 					{
+						path: '/basicData/employeeManagement',
+						name: 'employeeManagement',
+						id: 'employeeManagement',
+						routes: [
+							{
+								path: '/basicData/employeeManagement',
+								redirect: '/basicData/employeeManagement/list',
+							},
+							{
+								path: '/basicData/employeeManagement/list',
+								name: 'employeeList',
+								id: 'employeeList',
+								component: './BasicData/Employee',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/info',
+								name: 'employeeInfo',
+								id: 'employeeInfo',
+								component: './BasicData/Employee/EmployeeInfo',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/create',
+								name: 'employeeCreate',
+								id: 'employeeCreate',
+								component: './BasicData/Employee/EmployeeCU',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/update',
+								name: 'employeeUpdate',
+								id: 'employeeUpdate',
+								component: './BasicData/Employee/EmployeeCU',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/employeeTable',
+								name: 'employeeTable',
+								id: 'employeeTable',
+								component: './BasicData/Employee/EmployeeTable',
+								hideInMenu: true,
+							},
+						],
+					},
+					{
 						path: '/basicData/roleManagement',
 						name: 'roleManagement',
-						hideInMenu: true,
+						// hideInMenu: true,
 						id: 'roleManagement',
 						routes: [
 							{

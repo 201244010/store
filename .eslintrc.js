@@ -22,6 +22,7 @@ module.exports = {
 		'react/no-array-index-key': 0,
 		'jsx-a11y/mouse-events-have-key-events': 0,
 		'import/prefer-default-export': 0,
+		'import/extensions': 1,
 		'no-param-reassign': 0,
 		'import/no-unresolved': [2, { ignore: ['^@/', '^umi/'] }],
 		'jsx-a11y/no-noninteractive-element-interactions': 0,

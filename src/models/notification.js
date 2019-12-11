@@ -1,6 +1,6 @@
+import { message } from 'antd';
 import * as Actions from '@/services/notification';
 import { ERROR_OK } from '@/constants/errorCode';
-import { message } from 'antd';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 
 function* switchLoadingStatus(status, put) {

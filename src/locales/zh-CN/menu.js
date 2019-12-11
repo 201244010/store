@@ -71,6 +71,8 @@ export default {
 	'menu.basicData.roleManagement.view': '查看',
 	'menu.basicData.roleManagement.modify': '编辑',
 	'menu.basicData.roleManagement.roleList': '角色管理',
+	'menu.application.serviceManagement': '服务管理',
+	'menu.application.cloudStorage': '云存储',
 
 	'menu.basicData.employeeManagement': '员工管理',
 	'menu.basicData.employeeManagement.employeeList': '员工列表',
@@ -118,6 +120,9 @@ export default {
 	'menu.roleManagement.view': '查看',
 	'menu.roleManagement.modify': '编辑',
 	'menu.roleManagement.roleList': '角色管理',
+
+	'menu.application.orderManagement': '服务订单管理',
+	'menu.application.orderManagement.orderDetail': '订单详情',
 
 	'menu.iotAccess': 'IoT设备接入',
 	'menu.iotAccess.posAccess': 'Pos设备接入',

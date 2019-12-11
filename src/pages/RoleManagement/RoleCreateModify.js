@@ -1,8 +1,8 @@
 import React from 'react';
 import { Input, Checkbox, Button, Form, message, Spin, Card } from 'antd';
 import { connect } from 'dva';
-import { idDecode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
+import { idDecode } from '@/utils/utils';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 
@@ -58,7 +58,7 @@ class RoleModify extends React.Component {
 		let valueList = [];
 		permissionList.map(item => {
 			if (typeof item.valueList !== 'undefined') {
-				valueList = [...valueList, ...item.valueList];
+				valueList = [...new Set([...valueList, ...item.valueList])];
 			}
 		});
 
@@ -187,7 +187,7 @@ class RoleModify extends React.Component {
 											}),
 										},
 									],
-								})(<Input maxLength={40} />)}
+								})(<Input maxLength={20} />)}
 							</Form.Item>
 							<Form.Item
 								label={formatMessage({ id: 'roleManagement.role.roleRoot' })}
@@ -210,6 +210,7 @@ class RoleModify extends React.Component {
 													indeterminate={item.indeterminate}
 													defaultChecked={item.checkAll}
 													checked={item.checkAll}
+													disabled
 												>
 													{item.checkedList.label}
 												</Checkbox>
@@ -225,6 +226,7 @@ class RoleModify extends React.Component {
 															options={
 																item.checkedList.permissionList
 															}
+															disabled
 															value={item.valueList}
 														/>
 													)}
