@@ -36,7 +36,7 @@ export default {
 				// }
 				// true 为全部已激活，false 存在未激活的ipc
 				const bundledStatusBool = deviceList.length === 0 ? true : deviceList.every((item) => (
-					item.activeStatus === 2
+					item.activeStatus === 2 || !item.activeStatus
 				));
 				// const storageIpcList = deviceList.filter((item) => (
 				// 	item.activeStatus === 1

@@ -32,6 +32,7 @@ import trade from './zh-CN/trade';
 import flow from './zh-CN/flow';
 import tradeShow from './zh-CN/tradeShow';
 import serviceManagement from './zh-CN/serviceManagement';
+import orderManagement from './zh-CN/orderManagement';
 import passengerAnalyze from './zh-CN/passengerAnalyze';
 
 export default {
@@ -74,4 +75,5 @@ export default {
 	...iot,
 	...passengerAnalyze,
 	...serviceManagement,
+	...orderManagement,
 };

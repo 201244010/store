@@ -170,7 +170,7 @@ export const readLibrary = async () =>
 		body: {
 			// user_id: userId,
 			// company_id: companyId,
-			// shop_id: shopId
+			// shopId: shopId
 		}
 	}).then(async (response) => {
 		// console.log(await response.json());

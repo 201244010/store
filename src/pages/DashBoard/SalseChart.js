@@ -96,7 +96,7 @@ class SalseChart extends PureComponent {
 		const currentShopId = await getShopIdFromStorage();
 		const shopList = await getShopListFromStorage();
 
-		// console.log(shopList.filter(shop => shop.saas_exist === 1));
+		// console.log(shopList.filter(shop => shop.saasExist === 1));
 		const currentShopInfo = format('toCamel')(
 			shopList.find(shop => format('toCamel')(shop).shopId === currentShopId) || {}
 		);

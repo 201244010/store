@@ -5,7 +5,11 @@ import { Card, Form, Input, Button, Radio, message } from 'antd';
 import OrgnizationSelect from './OrgnizationSelect';
 import { getLocationParam } from '@/utils/utils';
 import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { ERROR_OK, USER_EXIST, EMPLOYEE_BINDED } from '@/constants/errorCode';
+import {
+	ERROR_OK,
+	USER_EXIST,
+	EMPLOYEE_BINDED,
+} from '@/constants/errorCode';
 import * as RegExp from '@/constants/regexp';
 import {
 	EMPLOYEE_NUMBER_LIMIT,
@@ -46,6 +50,8 @@ import styles from './Employee.less';
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		getUserInfoByUsername: ({ username }) =>
 			dispatch({ type: 'employee/getUserInfoByUsername', payload: { username } }),
+		checkNumberExist: ({ number }) =>
+			dispatch({ type: 'employee/checkNumberExist', payload: { number } }),
 	})
 )
 @Form.create()
@@ -77,13 +83,12 @@ class EmployeeCU extends Component {
 	createOrgnizationTree = async () => {
 		const {
 			getCompanyIdFromStorage,
-			// getShopListFromStorage,
-			getCompanyListFromStorage,
-			employee: { employeeInfo: { mappingList = [] } = {} } = {},
+			getShopListFromStorage,
+			getCompanyListFromStorage
 		} = this.props;
 		const currentCompanyId = await getCompanyIdFromStorage();
 		const companyList = await getCompanyListFromStorage();
-		// const shopList = await getShopListFromStorage();
+		const shopList = await getShopListFromStorage();
 		const companyInfo =
 			companyList.find(company => company.companyId === currentCompanyId) || {};
 		const orgnizationTree = [
@@ -91,7 +96,7 @@ class EmployeeCU extends Component {
 				title: companyInfo.companyName,
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
-				children: mappingList.map(shop => ({
+				children: shopList.map(shop => ({
 					title: shop.shopName,
 					value: `${companyInfo.companyId}-${shop.shopId}`,
 					key: `${companyInfo.companyId}-${shop.shopId}`,
@@ -160,19 +165,41 @@ class EmployeeCU extends Component {
 			createEmployee,
 			updateEmployee,
 			goToPath,
+			employee: {
+				employeeInfo: { mappingList: initMappingList, number: initNumber },
+			},
+			checkNumberExist,
+			query: { isDefault },
 		} = this.props;
-
 		validateFields(async (err, values) => {
-			// console.log(values);
 			if (!err) {
 				const { mappingList = [], username, number } = values;
+
 				const submitData = {
 					...values,
 					number: number.toUpperCase(),
-					mappingList: this.formatMappingList(mappingList),
+					mappingList:
+						isDefault === 'true'
+							? this.formatMappingList(this.decodeMappingList(initMappingList))
+							: this.formatMappingList(mappingList),
 				};
 
 				if (this.action === 'edit' && this.employeeId) {
+					if (initNumber !== number) {
+						const numberExistCheckResult = await checkNumberExist({ number });
+						if (numberExistCheckResult && numberExistCheckResult.code === ERROR_OK) {
+							setFields({
+								number: {
+									value: number,
+									errors: [
+										new Error(formatMessage({ id: 'employee.number.exist' })),
+									],
+								},
+							});
+							return;
+						}
+					}
+
 					const response = await updateEmployee({
 						employeeId: this.employeeId,
 						...submitData,
@@ -184,7 +211,12 @@ class EmployeeCU extends Component {
 							goToPath('employeeList');
 						}
 					} else if (response && response.code === EMPLOYEE_BINDED) {
-						message.error(formatMessage({ id: 'employee.info.binded.error' }));
+						setFields({
+							username: {
+								value: username,
+								errors: [new Error(formatMessage({ id: 'employee.phone.exist' }))],
+							},
+						});
 					} else {
 						message.error(formatMessage({ id: 'employee.info.update.failed' }));
 					}
@@ -229,6 +261,10 @@ class EmployeeCU extends Component {
 			const { email, phone } = data;
 			setFieldsValue({
 				ssoUsername: email || phone,
+			});
+		} else {
+			setFieldsValue({
+				ssoUsername: '',
 			});
 		}
 	};
