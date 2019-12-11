@@ -24,7 +24,7 @@ export default {
 	'network.guestNumber': '顾客接入数量',
 
 	'network.detail': '网络设备详情',
-	'network.rssi': '信号强度',
+	'network.rssi': '连接状态',
 	'network.rssi.strong': '较好',
 	'network.rssi.weak': '较差',
 	'network.router.parent': '上级路由',
@@ -34,6 +34,7 @@ export default {
 	'network.isUpgrading': '升级中',
 	'network.online': '在线',
 	'network.offline': '离线',
+	'network.hasOffline': '已离线',
 	'network.master': '主',
 	'network.noNetwork': '暂无网络',
 	'network.changeSuccess': '更改名称成功',
@@ -65,6 +66,9 @@ export default {
 	'network.qos.sunmi': '商米设备',
 	'network.qos.whitelist': '优先设备',
 	'network.qos.normal': '普通设备',
+	'network.qos.sunmiWeight': '商米',
+	'network.qos.whitelistWeight': '优先',
+	'network.qos.normalWeight': '普通',
 	'network.bandwidth.allocation': '带宽分配比例',
 
 	'network.switchOn': '开',
