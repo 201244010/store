@@ -1,5 +1,13 @@
 const router = [
 	{
+		path: '/userProtocol',
+		// component: '../layouts/SunmiLayout',
+		id: 'userProtocol',
+		routes: [
+			{ path: '/userProtocol/serviceProtocol', component: './IPC/CloudStorage/protocol.js', id: 'serviceProtocol' }
+		],
+	},
+	{
 		path: '/user',
 		component: '../layouts/SunmiLayout',
 		id: 'user',
@@ -118,6 +126,51 @@ const router = [
 								redirect: '/application/cashVerify/posList',
 							},
 						],
+					},
+					{
+						path:'/application/cloudStorage',
+						name:'cloudStorageService',
+						routes:[
+							{
+								path:'/application/cloudStorage/subscriptionSuccess',
+								name:'subscriptionSuccess',
+								id:'subscriptionSuccess',
+								hideInMenu: true,
+								component: './IPC/CloudStorage/subscriptionSuccess.js'
+							},
+							{
+								path:'/application/cloudStorage/orderSubmission',
+								name:'orderSubmission',
+								hideInMenu: true,
+								routes: [
+									{
+										path: '/application/cloudStorage/orderSubmission/qrpay',
+										name:'qrpay',
+										id: 'qrpay',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/QRCodePayment.js',
+									},
+									{
+										path:'/application/cloudStorage/orderSubmission/paymentPage',
+										name:'paymentPage',
+										id:'paymentPage',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/paymentPage.js'
+									},
+									{
+										path: '/application/cloudStorage/orderSubmission',
+										id: 'orderSubmission',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/orderSubmission.js'
+									}
+								]
+							},
+							{
+								path: '/application/cloudStorage',
+								id: 'cloudStorage',
+								component: './IPC/CloudStorage/cloudStorage.js',
+							}
+						]
 					},
 				],
 			},

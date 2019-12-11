@@ -18,6 +18,8 @@ export const TEMPLATE_NAME_USED = 5346;
 
 export const EMPLOYEE_BINDED = 5406;
 
+export const EMPLOYEE_NUMBER_BINDED = 5403;
+
 export const PRODUCT_SEQ_EXIST = 5051;
 export const PRODUCT_PLU_EXIST = 5000;
 export const STORE_EXIST = 5034;
@@ -43,7 +45,10 @@ export const SWITCH_SCEEN_NO_DELETE = 5347;
 export const NO_ANALYZE_DATA = 5087;
 
 export const ERR_SERVICE_SUBSCRIBE_ERROR = 5420;
+export const ERR_FREE_SERVICE_USED = 5422;
 
+export const ERR_DELETE_ROLE_WITH_EMPLOYEE = 5430;
+export const ERR_DELETE_DEFAULT_ROLE_DENIED = 5431;
 
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',
@@ -63,6 +68,8 @@ export const ALERT_NOTICE_MAP = {
 	[TEMPLATE_NAME_USED]: 'alert.template.name.used',
 	[ERR_ROLE_NAME_EXIST]: 'alert.role.name.exist',
 	[ERR_ROLE_USED]: 'alert.role.used',
+	[ERR_DELETE_ROLE_WITH_EMPLOYEE]: 'alert.role.with.employee',
+	[ERR_DELETE_DEFAULT_ROLE_DENIED]: 'alert.role.default.nodelete'
 };
 
 export const ALERT_ROLE_MAP = {
