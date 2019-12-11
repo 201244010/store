@@ -68,6 +68,20 @@ export default {
 	},
 
 	effects: {
+		setShopIdInCookie({ payload = {} }) {
+			const { shopId } = payload;
+			CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
+		},
+
+		removeShopIdInCookie() {
+			CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
+		},
+
+		setShopListInStorage({ payload }) {
+			const { shopList = [] } = payload;
+			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
+		},
+
 		*getStoreNameById({ payload }, { put }) {
 			const { shopId } = payload;
 			const response = yield put.resolve({
@@ -143,6 +157,12 @@ export default {
 				if (opts.type !== 'search') {
 					newPayload.allStores = shopList;
 				}
+
+				yield put({
+					type: 'setShopListInStorage',
+					payload: { shopList },
+				});
+
 				yield put({
 					type: 'updateState',
 					payload: newPayload,
@@ -445,7 +465,7 @@ export default {
 					contactPhone: store.contactTel,
 					shopId: store.shopId,
 					createdTime: store.createdTime,
-					modifiedTime: store.modifiedTime,
+					modifiedTime: store.modified_time,
 				},
 			};
 		},

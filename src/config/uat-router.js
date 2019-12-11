@@ -172,6 +172,29 @@ const router = [
 							}
 						]
 					},
+					{
+						path: '/application/serviceManagement',
+						id: 'serviceManagement',
+						component: './ServiceManagement/ServiceList',
+						name: 'serviceManagement',
+					},
+					{
+						path: '/application/orderManagement',
+						id: 'orderManagement',
+						routes:[
+							{
+								path: '/application/orderManagement',
+								id: 'orderManagement',
+								component: './OrderManagement/OrderList'
+							},
+							{
+								path: '/application/orderManagement/orderDetail',
+								id: 'serviceOrderDetail',
+								component: './OrderManagement/OrderDetail',
+								hideInMenu: true
+							}
+						]
+					}
 				],
 			},
 
