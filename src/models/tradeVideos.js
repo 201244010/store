@@ -8,6 +8,13 @@ export default {
 		total: 0,
 		tradeVideos:[],
 		paymentDeviceList:[],
+		paymentInfo: {
+			paymentMethod: '',
+			purchaseTime: '',
+			totalPrice: '',
+			paymentDeviceName: '',
+			details: []
+		},
 		// paymentDetailList:[],
 		// ipcList:[]
 	},
@@ -38,6 +45,21 @@ export default {
 				return true;
 			});
 		},
+		readPaymentInfo(state, action){
+			const { payload: { orderId, detailList } } = action;
+
+			state.tradeVideos.forEach(item => {
+				// console.log(item.key, orderId);
+				if (item.key === orderId) {
+					item.details = [
+						...detailList
+					];
+					console.log('payment', item);
+					state.paymentInfo = item;
+				}
+			});
+		}
+
 	},
 	effects: {
 		*read({ payload }, { put, call }){
@@ -191,6 +213,28 @@ export default {
 				return info;
 			}
 			return {};
+		},
+		*getPaymentInfo({ payload }, { put }){
+			const { orderId } = payload;
+			const response = yield getPaymentDetailList({
+				orderId
+			});
+
+			const { code, data } = response;
+
+			if (code === ERROR_OK) {
+				// console.log(data);
+				yield put({
+					type: 'readPaymentInfo',
+					payload: {
+						orderId,
+						detailList: data
+					}
+				});
+
+				return data;
+			}
+			return [];
 		}
 	}
 };
