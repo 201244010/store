@@ -1,7 +1,7 @@
 export default {
 	'orderManagement.orderId': '订单号',
 	'orderManagement.orderId.placeHolder': '请输入订单号查询',
-	'orderManagement.orderName': '订单名称',
+	'orderManagement.orderName': '服务名称',
 	'orderManagement.tradeStatus': '交易状态',
 	'orderManagement.createdTime': '下单时间',
 	'orderManagement.createdDate': '下单日期',
@@ -9,7 +9,7 @@ export default {
 	'orderManagement.status.all': '全部',
 	'orderManagement.status.success': '交易成功',
 	'orderManagement.status.waitingPay': '等待付款',
-	'orderManagement.status.fail': '交易失败',
+	'orderManagement.status.fail': '交易关闭',
 	'orderManagement.operation': '操作',
 	'orderManagement.operation.detail': '查看详情',
 	'orderManagement.service.detail': '服务详情',
@@ -25,7 +25,7 @@ export default {
 	'orderManagement.detail.7daysCloudStorage': '7天云存储',
 	'orderManagement.detail.30daysCloudStorage': '30天云存储',
 	
-	'orderManagement.detail.serviceType': '订单名称',
+	'orderManagement.detail.serviceType': '服务名称',
 	'orderManagement.detail.imgUrl': '监控区域',
 	'orderManagement.detail.deviceName': '摄像头名称',
 	'orderManagement.detail.expireTime': '到期时间',

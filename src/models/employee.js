@@ -59,12 +59,15 @@ export default {
 			const shopIdList = yield put.resolve({
 				type: 'global/getShopListFromStorage'
 			});
+			const adminResponse = yield put.resolve({
+				type: 'role/checkAdmin',
+			});
 			const options = {
 				...searchValue,
 				pageNum: current,
 				pageSize,
 				roleId,
-				shopIdList: shopIdList.map(item => item.shopId)
+				shopIdList: adminResponse && adminResponse.code === ERROR_OK ? [] : shopIdList.map(item => item.shopId)
 			};
 
 			const response = yield call(
