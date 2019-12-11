@@ -181,6 +181,7 @@ const router = [
 					{
 						path: '/application/orderManagement',
 						id: 'orderManagement',
+						name: 'orderManagement',
 						routes:[
 							{
 								path: '/application/orderManagement',

@@ -22,7 +22,9 @@ export const createStore = (options = {}) => {
 			...options,
 		},
 	};
-	return fetchApi('create', opt).then(response => response.json());
+	return fetchApi('create', opt)
+		.then(response => response.json())
+		.then(res => format('toCamel')(res));
 };
 
 // 查看门店信息
