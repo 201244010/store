@@ -80,9 +80,9 @@ class EmployeeList extends Component {
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
 				children: shopList.map(shop => ({
-					title: shop.shop_name,
-					value: `${companyInfo.companyId}-${shop.shop_id}`,
-					key: `${companyInfo.companyId}-${shop.shop_id}`,
+					title: shop.shopName,
+					value: `${companyInfo.companyId}-${shop.shopId}`,
+					key: `${companyInfo.companyId}-${shop.shopId}`,
 				})),
 			},
 		];

@@ -21,7 +21,7 @@ class StoreInformation extends React.Component {
 		const shopId = getLocationParam('shopId');
 		const { getStoreDetail } = this.props;
 
-		getStoreDetail({ options: { shop_id: shopId } });
+		getStoreDetail({ options: { shopId } });
 	}
 
 	toPath = target => {
@@ -48,18 +48,18 @@ class StoreInformation extends React.Component {
 		} = this.props;
 
 		const {
-			shop_id: shopId = '--',
-			sunmi_shop_no: sunmiShopNo = '--',
-			shop_name: shopName = '--',
-			type_name: typeName = '--',
-			business_status: businessStatus = 0,
+			shopId: shopId = '--',
+			sunmiShopNo: sunmiShopNo = '--',
+			shopName: shopName = '--',
+			typeName: typeName = '--',
+			businessStatus: businessStatus = 0,
 			region = '--',
 			address = '--',
-			business_hours: businessHours = '--',
-			business_area: businessArea = '--',
-			contact_person: contactPerson = '--',
-			contact_tel: contactTel = '--',
-			created_time: createdTime = '--',
+			businessHours: businessHours = '--',
+			businessArea: businessArea = '--',
+			contactPerson: contactPerson = '--',
+			contactTel: contactTel = '--',
+			createdTime: createdTime = '--',
 			modified_time: modifiedTime = '--',
 		} = formatEmptyWithoutZero(storeInfo, '--');
 

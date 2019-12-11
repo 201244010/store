@@ -56,12 +56,15 @@ export default {
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { searchValue, pagination } = yield select(state => state.employee);
 			const { current = 1, pageSize = 10, roleId = -1 } = payload;
-
+			const shopIdList = yield put.resolve({
+				type: 'global/getShopListFromStorage'
+			});
 			const options = {
 				...searchValue,
 				pageNum: current,
 				pageSize,
 				roleId,
+				shopIdList: shopIdList.map(item => item.shopId)
 			};
 
 			const response = yield call(
@@ -133,6 +136,11 @@ export default {
 
 		*checkUsernameExist({ payload: { username = '' } = {} }, { call }) {
 			const response = yield call(Action.handleEmployee, 'isUsernameExist', { username });
+			return response;
+		},
+
+		*checkNumberExist({ payload: { number = '' } = {} }, { call }) {
+			const response = yield call(Action.handleEmployee, 'isNumberExist', { number });
 			return response;
 		},
 
