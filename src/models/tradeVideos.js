@@ -9,17 +9,11 @@ export default {
 		tradeVideos:[],
 		paymentDeviceList:[],
 		paymentInfo: {
-			paymentMethod: '支付宝',
-			purchaseTime: 1573834194,
-			totalPrice: '245.00',
-			paymentDeviceName: 'T2',
-			details: [{
-				name:'东鹏特饮',
-				quantity:'286'
-			},{
-				name:'合味道虾仁',
-				quantity:'291'
-			}]
+			paymentMethod: '',
+			purchaseTime: '',
+			totalPrice: '',
+			paymentDeviceName: '',
+			details: []
 		},
 		// paymentDetailList:[],
 		// ipcList:[]

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Icon, Modal } from 'antd';
 import { formatMessage } from 'umi/locale';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import styles from './TradeVideoPlayer.less';
 import TrackPlayer from '@/components/VideoPlayer/TrackPlayer';
 
@@ -66,16 +67,18 @@ class TradeVideosPlayer extends React.Component {
 													<span>{totalPrice}</span>
 												</div>
 											</div>
-											<div className={styles['info-block']}>
+											<div className={`${styles['info-block']} ${styles.detail}`}>
 												<h1 className={styles.title}>{formatMessage({ id: 'tradeVideos.paymentDetail'})}</h1>
-												{
-													details && details.map(item =>
-														<div className={styles['info-item']}>
-															<span className={styles['detail-label']}>{item.name}</span>
-															<span>{item.quantity}</span>
-														</div>
-													)
-												}
+												<PerfectScrollbar className={styles['detail-block']}>
+													{
+														details && details.map(item =>
+															<div className={styles['info-item']}>
+																<span className={styles['detail-label']}>{item.name}</span>
+																<span>{item.quantity}</span>
+															</div>
+														)
+													}
+												</PerfectScrollbar>
 											</div>
 										</div>
 									</div>
