@@ -178,7 +178,7 @@ export default {
 				const {
 					msg_id: msgId,
 					company_id: companyId,
-					shop_id: shopId,
+					shopId,
 					level,
 					model_name: modelName,
 					title,
