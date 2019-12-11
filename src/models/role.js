@@ -1,18 +1,22 @@
+import { map, format } from '@konata9/milk-shake';
+import { formatMessage } from 'umi/locale';
+import Storage from '@konata9/storage.js';
 import * as Actions from '@/services/role';
+import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_SIZE, USER_PERMISSION_LIST } from '@/constants';
-import { map, format } from '@konata9/milk-shake';
-import Storage from '@konata9/storage.js';
+import { FIRST_MENU_ORDER } from '@/config';
 
 const getInitStatus = (permissionList, roleInfo) => {
 	const rolePermissionList = roleInfo.permissionList;
 	const initResult = {};
-	rolePermissionList.map(item => {
+	rolePermissionList.forEach(item => {
 		if (item.group === permissionList.label) {
 			initResult.valueList = item.valueList;
 			initResult.checkAll = item.checkAll;
 		}
 	});
+	// console.log('initResult', initResult);
 	return initResult;
 };
 
@@ -22,12 +26,23 @@ const formatData = data => {
 	tmp = tmp.map(item => {
 		if (item.permissionList) {
 			item.permissionList = item.permissionList.map(items =>
-				map([{ from: 'id', to: 'value' }, { from: 'name', to: 'label' }])(items)
+				map([{ from: 'id', to: 'value' }, { from: 'path', to: 'label' }])(items)
 			);
 		}
 		return item;
 	});
 	return tmp;
+};
+
+const formatPath = data => {
+	data.label = formatMessage({ id: `menu${data.label.split('/').join('.')}` });
+	data.permissionList.forEach(
+		item =>
+			(item.label = formatMessage({
+				id: `menu${item.label.split('/').join('.')}`,
+			}))
+	);
+	return data;
 };
 
 export default {
@@ -51,10 +66,14 @@ export default {
 	},
 	effects: {
 		*getAllRoles(_, { put, call }) {
-			const response = yield call(Actions.handleRoleManagement, 'getList', {
-				page_num: 1,
-				page_size: 999,
-			});
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'getList',
+				format('toSnake')({
+					pageNum: 1,
+					pageSize: 999,
+				})
+			);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { roleList } = format('toCamel')(data);
@@ -74,14 +93,20 @@ export default {
 			const { keyword, current, pageSize } = payload;
 			const opts = {
 				keyword,
-				page_num: current,
-				page_size: pageSize,
+				pageNum: current,
+				pageSize,
 			};
-			const response = yield call(Actions.handleRoleManagement, 'getList', opts);
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'getList',
+				format('toSnake')(opts)
+			);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-				const { role_list: roleList, total_count: totalCount } = data;
-				const formatList = roleList.map(item => format('toCamel')(item));
+				const { roleList, totalCount } = format('toCamel')(data);
+				const formatList = roleList
+					.map(item => format('toCamel')(item))
+					.sort((a, b) => a.createTime - b.createTime);
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -98,28 +123,31 @@ export default {
 		},
 
 		*getRoleInfo({ payload = {} }, { put, call }) {
-			const { roleId: role_id } = payload;
-			const opts = {
-				role_id,
-			};
-			const response = yield call(Actions.handleRoleManagement, 'getInfo', opts);
+			const { roleId } = payload;
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'getInfo',
+				format('toSnake')({ roleId })
+			);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-				const forData = format('toCamel')(data);
-				forData.permissionList = formatData(forData.permissionList).map(item =>
-					Object.assign(
-						{},
-						{
-							checkedList: item,
-							indeterminate: item.permissionList && true,
-							checkAll: false,
-							group: item.label,
-							valueList: item.permissionList
-								? item.permissionList.map(items => items.value)
-								: [item.value],
-						}
-					)
-				);
+				const forData = format('toCamel')(data) || {};
+				const { permissionList = [] } = forData || {};
+				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
+					permissionList.find(permission => permission.name === `/${menu}`)
+				).filter(item => !!item);
+				forData.permissionList = formatData(sortedPermission).map(item => {
+					const formatResult = formatPath(item);
+					return {
+						checkedList: formatResult,
+						indeterminate: formatResult.permissionList && true,
+						checkAll: false,
+						group: formatResult.label,
+						valueList: formatResult.permissionList
+							? formatResult.permissionList.map(items => items.value)
+							: [formatResult.value],
+					};
+				});
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -140,24 +168,34 @@ export default {
 			const response = yield call(Actions.handleRoleManagement, 'getPermissionList');
 			if (response && response.code === ERROR_OK) {
 				const roleInfo = yield select(state => state.role.roleInfo);
-
 				const { data = {} } = response;
-				const forData = format('toCamel')(data);
+				const { permissionList = [] } = format('toCamel')(data) || {};
 
-				const tmpList = formatData(forData.permissionList).map(item =>
-					Object.assign(
-						{},
-						{
-							checkedList: item,
-							indeterminate: item.permissionList && true,
-							checkAll:
-								type === 'modify' ? getInitStatus(item, roleInfo).checkAll : false,
-							group: item.label,
-							valueList:
-								type === 'modify' ? getInitStatus(item, roleInfo).valueList : [],
-						}
-					)
-				);
+				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
+					permissionList.find(permission => permission.name === `/${menu}`)
+				).filter(item => !!item);
+
+				const tmpList = formatData(sortedPermission).map(item => {
+					const formatResult = formatPath(item);
+					return {
+						checkedList: formatResult,
+						indeterminate: formatResult.permissionList && true,
+						checkAll:
+							type === 'modify'
+								? getInitStatus(formatResult, roleInfo).checkAll
+								: false,
+						group: formatResult.label,
+						// valueList:
+						// 	type === 'modify'
+						// 		? getInitStatus(formatResult, roleInfo).valueList
+						// 		: [],
+						valueList: permissionList
+							.map(permission => permission.permissionList.map(items => items.id))
+							.join()
+							.split(',')
+							.map(number => Number(number)),
+					};
+				});
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -168,33 +206,42 @@ export default {
 		},
 
 		*creatRole({ payload = {} }, { call }) {
-			const { name, permissionIdList: permission_id_list, username } = payload;
+			const { name, permissionIdList, username } = payload;
 			const opts = {
 				name,
-				permission_id_list,
+				permissionIdList,
 				username,
 			};
-			const response = yield call(Actions.handleRoleManagement, 'create', opts);
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'create',
+				format('toSnake')(opts)
+			);
 			return response;
 		},
 
 		*updateRole({ payload = {} }, { call }) {
-			const { name, roleId: role_id, permissionIdList: permission_id_list } = payload;
+			const { name, roleId, permissionIdList } = payload;
 			const opts = {
 				name,
-				role_id,
-				permission_id_list,
+				roleId,
+				permissionIdList,
 			};
-			const response = yield call(Actions.handleRoleManagement, 'update', opts);
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'update',
+				format('toSnake')(opts)
+			);
 			return response;
 		},
 
 		*deleteRole({ payload = {} }, { call }) {
-			const { roleId: role_id } = payload;
-			const opts = {
-				role_id,
-			};
-			const response = yield call(Actions.handleRoleManagement, 'delete', opts);
+			const { roleId } = payload;
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'delete',
+				format('toSnake')({ roleId })
+			);
 			return response;
 		},
 
@@ -228,12 +275,35 @@ export default {
 			return response;
 		},
 
-		*changeAdmin({ payload = {} }, { call }) {
-			const { targetSsoUsername: target_sso_username } = payload;
-			const opts = {
-				target_sso_username,
-			};
-			const response = yield call(Actions.handleRoleManagement, 'changeAdmin', opts);
+		*changeAdmin({ payload = {} }, { call, put }) {
+			const { targetSsoUsername } = payload;
+			const response = yield call(
+				Actions.handleRoleManagement,
+				'changeAdmin',
+				format('toSnake')({ targetSsoUsername })
+			);
+			if (response && response.code === ERROR_OK) {
+				yield put({ type: 'getRoleList' });
+				yield put({
+					type: 'getUserPermissionList',
+				});
+			}
+			return response;
+		},
+
+		*checkAdmin(_, { select, call, put }) {
+			const response = yield call(Actions.handleRoleManagement, 'checkAdmin');
+			const checkAdmin = response && response.code === ERROR_OK ? 1 : 0;
+
+			const { currentUser } = yield select(state => state.user);
+			const result = { ...currentUser, checkAdmin } || { checkAdmin };
+			CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, result);
+
+			yield put({
+				type: 'user/storeUserInfo',
+				payload: result,
+			});
+
 			return response;
 		},
 	},

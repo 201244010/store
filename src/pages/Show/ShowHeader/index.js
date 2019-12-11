@@ -92,7 +92,7 @@ class ShowHeader extends React.Component {
 
 		const shopList = JSON.parse(localStorage.getItem(SHOP_LIST_KEY));
 		const shopID = getCookieByKey(SHOP_ID_KEY);
-		const shopName = shopList.find(item => item.shop_id === shopID).shop_name;
+		const shopName = shopList.find(item => item.shopId === shopID).shopName;
 
 		return (
 			<div className={styles['show-header']}>

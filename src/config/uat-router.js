@@ -1,5 +1,13 @@
 const router = [
 	{
+		path: '/userProtocol',
+		// component: '../layouts/SunmiLayout',
+		id: 'userProtocol',
+		routes: [
+			{ path: '/userProtocol/serviceProtocol', component: './IPC/CloudStorage/protocol.js', id: 'serviceProtocol' }
+		],
+	},
+	{
 		path: '/user',
 		component: '../layouts/SunmiLayout',
 		id: 'user',
@@ -119,6 +127,75 @@ const router = [
 							},
 						],
 					},
+					{
+						path:'/application/cloudStorage',
+						name:'cloudStorageService',
+						routes:[
+							{
+								path:'/application/cloudStorage/subscriptionSuccess',
+								name:'subscriptionSuccess',
+								id:'subscriptionSuccess',
+								hideInMenu: true,
+								component: './IPC/CloudStorage/subscriptionSuccess.js'
+							},
+							{
+								path:'/application/cloudStorage/orderSubmission',
+								name:'orderSubmission',
+								hideInMenu: true,
+								routes: [
+									{
+										path: '/application/cloudStorage/orderSubmission/qrpay',
+										name:'qrpay',
+										id: 'qrpay',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/QRCodePayment.js',
+									},
+									{
+										path:'/application/cloudStorage/orderSubmission/paymentPage',
+										name:'paymentPage',
+										id:'paymentPage',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/paymentPage.js'
+									},
+									{
+										path: '/application/cloudStorage/orderSubmission',
+										id: 'orderSubmission',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/orderSubmission.js'
+									}
+								]
+							},
+							{
+								path: '/application/cloudStorage',
+								id: 'cloudStorage',
+								component: './IPC/CloudStorage/cloudStorage.js',
+							}
+						]
+					},
+					{
+						path: '/application/serviceManagement',
+						id: 'serviceManagement',
+						component: './ServiceManagement/ServiceList',
+						name: 'serviceManagement',
+					},
+					{
+						path: '/application/orderManagement',
+						id: 'orderManagement',
+						name: 'orderManagement',
+						routes:[
+							{
+								path: '/application/orderManagement',
+								id: 'orderManagement',
+								component: './OrderManagement/OrderList'
+							},
+							{
+								path: '/application/orderManagement/orderDetail',
+								id: 'serviceOrderDetail',
+								component: './OrderManagement/OrderDetail',
+								hideInMenu: true
+							}
+						]
+					}
 				],
 			},
 
@@ -355,9 +432,55 @@ const router = [
 						],
 					},
 					{
+						path: '/basicData/employeeManagement',
+						name: 'employeeManagement',
+						id: 'employeeManagement',
+						routes: [
+							{
+								path: '/basicData/employeeManagement',
+								redirect: '/basicData/employeeManagement/list',
+							},
+							{
+								path: '/basicData/employeeManagement/list',
+								name: 'employeeList',
+								id: 'employeeList',
+								component: './BasicData/Employee',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/info',
+								name: 'employeeInfo',
+								id: 'employeeInfo',
+								component: './BasicData/Employee/EmployeeInfo',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/create',
+								name: 'employeeCreate',
+								id: 'employeeCreate',
+								component: './BasicData/Employee/EmployeeCU',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/update',
+								name: 'employeeUpdate',
+								id: 'employeeUpdate',
+								component: './BasicData/Employee/EmployeeCU',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/employeeTable',
+								name: 'employeeTable',
+								id: 'employeeTable',
+								component: './BasicData/Employee/EmployeeTable',
+								hideInMenu: true,
+							},
+						],
+					},
+					{
 						path: '/basicData/roleManagement',
 						name: 'roleManagement',
-						hideInMenu: true,
+						// hideInMenu: true,
 						id: 'roleManagement',
 						routes: [
 							{

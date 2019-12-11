@@ -122,8 +122,8 @@ class SearchResult extends Component {
 				),
 			},
 			{
-				title: formatMessage({ id: 'basicData.product.modified_time' }),
-				dataIndex: 'modified_time',
+				title: formatMessage({ id: 'basicData.product.modifiedTime' }),
+				dataIndex: 'modifiedTime',
 				render: text => <span>{unixSecondToDate(text)}</span>,
 			},
 			{

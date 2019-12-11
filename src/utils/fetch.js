@@ -2,6 +2,7 @@ import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import { fetch } from 'whatwg-fetch';
+import { format } from '@konata9/milk-shake';
 import CONFIG from '@/config';
 import { cbcEncryption, idDecode, md5Encryption } from '@/utils/utils';
 import { USER_NOT_LOGIN } from '@/constants/errorCode';
@@ -98,11 +99,11 @@ const customizeParams = (options = {}) => {
 	const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY) || '';
 	const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || '';
 
-	const opts = {
-		company_id: companyId,
-		shop_id: shopId,
+	const opts =  format('toSnake')({
+		companyId,
+		shopId,
 		...options.body,
-	};
+	});
 
 	const formattedParams = normalizeParams(opts);
 	return formatParams(formattedParams || {});

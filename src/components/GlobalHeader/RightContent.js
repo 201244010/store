@@ -132,8 +132,8 @@ export default class GlobalHeaderRight extends PureComponent {
 					onChange={this.handleStoreChange}
 				>
 					{storeList.map(store => (
-						<Select.Option key={store.shop_id} value={store.shop_id}>
-							{store.shop_name || ''}
+						<Select.Option key={store.shopId} value={store.shopId}>
+							{store.shopName || ''}
 						</Select.Option>
 					))}
 				</Select>

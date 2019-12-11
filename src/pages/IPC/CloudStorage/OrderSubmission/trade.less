@@ -1,0 +1,147 @@
+.order-title {
+	padding-left: 20px;
+	margin-bottom: 20px;
+	font-weight: bold;
+}
+
+.product-info {
+	padding: 10px 0;
+	display: flex;
+	justify-content: flex-end;
+
+	.product-wrapper {
+		display: flex;
+		align-items: center;
+
+		.product-title {
+			min-width: 250px;
+			text-align: right;
+		}
+
+		.product-content {
+			min-width: 80px;
+			margin-left: 10px;
+			text-align: right;
+		}
+	}
+
+	.total-amount {
+		line-height: 40px;
+		font-size: 24px;
+		font-weight: bold;
+		color: lightcoral;
+		text-align: right;
+	}
+}
+
+.tab-content {
+	display: flex;
+	align-items: center;
+
+	.payment-radio-wrapper {
+		margin-right: 10px;
+	}
+}
+
+.noAuth-wrapper {
+	padding: 20px 10px;
+	text-align: center;
+	font-weight: bold;
+
+	.noAuth-btn {
+		margin-top: 30px;
+	}
+}
+
+.action-bar {
+	margin-top: 20px;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+
+	.rest-time {
+		margin-right: 20px;
+		color: red;
+	}
+}
+
+.icon-wrapper {
+	margin: 50px auto;
+}
+
+.qrCode-title {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+
+	.order-no {
+		font-weight: bold;
+	}
+
+	.order-price {
+		font-weight: bold;
+
+		.price {
+			color: lightcoral;
+		}
+	}
+}
+
+.qrCode-content {
+	width: 80%;
+	margin: 17px auto;
+	display: flex;
+	justify-content: space-between;
+
+	.qrCode-refresh {
+		margin-top: 33px;
+		text-align: center;
+		font-weight: bold;
+		color: #85858A;
+		font-size: 14px;
+		font-family:PingFangSC-Regular,PingFang SC,sans-serif;
+
+		span {
+			color: #FF3838;
+			margin: 0 3px;
+		}	
+	}
+	.qrcode-data{
+		height: 200px;
+		width: 200px;
+	}
+	.purchase-type-wechat-guide-pic{
+		width: 330px;
+		height: 330px;
+		background: center / contain no-repeat transparent url(../../../../assets/imgs/wechat-pay-guide.png);
+	}
+	.purchase-type-alipay-guide-pic{
+		width: 330px;
+		height: 330px;
+		background: center / contain no-repeat transparent url(../../../../assets/imgs/alipay-pay-guide.png);
+	}
+}
+
+.qrCode-footer {
+	margin-top: 20px;
+	a {
+		.back-icon{
+			// line-height: 20px;
+			// margin-top: 4px;
+			height: 12px;
+			width: 12px;
+			margin-right: 4px;
+			display: inline-block;
+			background: center / contain no-repeat transparent url(../../../../assets/icon/back-icon.png);
+		}
+		color: #85858A;
+		font-size:14px;
+		font-family:PingFangSC-Regular,PingFang SC, sans-serif;
+		font-weight:400;
+
+		&:hover{
+			color: #85858A;
+		}	
+	}
+}

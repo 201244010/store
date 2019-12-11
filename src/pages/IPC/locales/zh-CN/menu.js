@@ -9,6 +9,17 @@ export default {
 
 	'menu.devices': '智能摄像机',
 	'menu.devices.ipcList': '摄像机管理',
+	'menu.application.cloudStorage':'云存储',
+	'menu.application.cloudStorageService':'云存储',
+	'menu.application.cloudStorage.subscriptionSuccess':'开通成功',
+	'menu.application.cloudStorageService.subscriptionSuccess':'开通成功',
+	'menu.application.cloudStorage.orderSubmission':'提交订单',
+	'menu.application.cloudStorageService.orderSubmission':'提交订单',
+	'menu.application.cloudStorage.orderSubmission.qrpay':'支付',
+	'menu.application.cloudStorageService.orderSubmission.qrpay':'支付',
+	'menu.application.cloudStorage.orderSubmission.paymentPage': '支付',
+	'menu.application.cloudStorageService.orderSubmission.paymentPage':'支付',
+
 	'menu.devices.motionMessage': '活动侦测',
 	'menu.devices.ipcList.live': '直播',
 	'menu.devices.ipcList.ipcManagement': '摄像机设置',
