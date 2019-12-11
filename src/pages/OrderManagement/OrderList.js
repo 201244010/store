@@ -25,7 +25,8 @@ const STATUS = [
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		getOrderList: payload => dispatch({type: 'orderManagement/getOrderList', payload}),
-		updateState: payload => dispatch({type: 'orderManagement/updateState', payload})
+		updateState: payload => dispatch({type: 'orderManagement/updateState', payload}),
+		clearSearchValue: () => dispatch({type: 'orderManagement/clearSearchValue'}),
 	})
 )
 @Form.create()
@@ -109,6 +110,8 @@ class OrderList extends React.Component {
 	};
 	
 	componentDidMount() {
+		const { clearSearchValue } = this.props;
+		clearSearchValue();
 		this.getList(10, 1, 'descend');
 	}
 	
@@ -136,9 +139,9 @@ class OrderList extends React.Component {
 	};
 	
 	showDetail = record => {
-		const { orderNo } = record;
+		const { orderNo, status } = record;
 		const { goToPath } = this.props;
-		goToPath('serviceOrderDetail', { orderNo });
+		goToPath('serviceOrderDetail', { orderNo, orderStatus: status });
 	};
 	
 	changeColumns = sorter => {

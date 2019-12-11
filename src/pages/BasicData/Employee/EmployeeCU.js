@@ -5,11 +5,7 @@ import { Card, Form, Input, Button, Radio, message } from 'antd';
 import OrgnizationSelect from './OrgnizationSelect';
 import { getLocationParam } from '@/utils/utils';
 import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
-import {
-	ERROR_OK,
-	USER_EXIST,
-	EMPLOYEE_BINDED,
-} from '@/constants/errorCode';
+import { ERROR_OK, USER_EXIST, EMPLOYEE_BINDED } from '@/constants/errorCode';
 import * as RegExp from '@/constants/regexp';
 import {
 	EMPLOYEE_NUMBER_LIMIT,
@@ -84,7 +80,7 @@ class EmployeeCU extends Component {
 		const {
 			getCompanyIdFromStorage,
 			getShopListFromStorage,
-			getCompanyListFromStorage
+			getCompanyListFromStorage,
 		} = this.props;
 		const currentCompanyId = await getCompanyIdFromStorage();
 		const companyList = await getCompanyListFromStorage();
@@ -165,25 +161,19 @@ class EmployeeCU extends Component {
 			createEmployee,
 			updateEmployee,
 			goToPath,
-			employee: {
-				employeeInfo: { mappingList: initMappingList, number: initNumber },
-			},
 			checkNumberExist,
-			query: { isDefault },
+			employee: {
+				employeeInfo: { number: initNumber },
+			},
 		} = this.props;
 		validateFields(async (err, values) => {
 			if (!err) {
 				const { mappingList = [], username, number } = values;
-
 				const submitData = {
 					...values,
 					number: number.toUpperCase(),
-					mappingList:
-						isDefault === 'true'
-							? this.formatMappingList(this.decodeMappingList(initMappingList))
-							: this.formatMappingList(mappingList),
+					mappingList: this.formatMappingList(mappingList),
 				};
-
 				if (this.action === 'edit' && this.employeeId) {
 					if (initNumber !== number) {
 						const numberExistCheckResult = await checkNumberExist({ number });
@@ -293,7 +283,6 @@ class EmployeeCU extends Component {
 					mappingList = [],
 				} = {},
 			} = {},
-			query: { isDefault },
 		} = this.props;
 		const { orgnizationTree } = this.state;
 		let decodedMapList = [];
@@ -404,76 +393,68 @@ class EmployeeCU extends Component {
 							initialValue: this.action === 'edit' ? ssoUsername : '',
 						})(<Input disabled />)}
 					</Form.Item>
-					{isDefault === 'true' ? (
-						''
-					) : (
-						<Form.Item
-							label={formatMessage({ id: 'employee.orgnization' })}
-							labelCol={{ md: { span: 4 }, xxl: { span: 2 } }}
-							wrapperCol={{ md: { span: 16 }, xxl: { span: 12 } }}
-						>
-							{getFieldDecorator('mappingList', {
-								initialValue: this.action === 'edit' ? decodedMapList : [],
-								rules: [
-									{
-										required: true,
-										validator: (rule, value, callback) => {
-											// console.log('value', value);
-											if (value.length === 0) {
+					<Form.Item
+						label={formatMessage({ id: 'employee.orgnization' })}
+						labelCol={{ md: { span: 4 }, xxl: { span: 2 } }}
+						wrapperCol={{ md: { span: 16 }, xxl: { span: 12 } }}
+					>
+						{getFieldDecorator('mappingList', {
+							initialValue: this.action === 'edit' ? decodedMapList : [],
+							rules: [
+								{
+									required: true,
+									validator: (rule, value, callback) => {
+										// console.log('value', value);
+										if (value.length === 0) {
+											callback(
+												formatMessage({
+													id: 'employee.info.select.orgnizaion.isEmpty',
+												})
+											);
+										} else {
+											const objectKeys = Object.keys(value);
+											const hasEmpty = objectKeys.some(key => {
+												const { orgnization = null, role = [] } = value[
+													key
+												];
+												return !orgnization || role.length === 0;
+											});
+											let isSame = false;
+											objectKeys.forEach((item, index) => {
+												objectKeys.forEach((items, indexs) => {
+													if (
+														index !== indexs &&
+														value[item].orgnization ===
+															value[items].orgnization &&
+														JSON.stringify(value[item].role.sort()) ===
+															JSON.stringify(value[items].role.sort())
+													) {
+														isSame = true;
+													}
+												});
+											});
+											hasEmpty &&
 												callback(
 													formatMessage({
 														id:
 															'employee.info.select.orgnizaion.isEmpty',
 													})
 												);
-											} else {
-												const objectKeys = Object.keys(value);
-												const hasEmpty = objectKeys.some(key => {
-													const { orgnization = null, role = [] } = value[
-														key
-													];
-													return !orgnization || role.length === 0;
-												});
-												let isSame = false;
-												objectKeys.forEach((item, index) => {
-													objectKeys.forEach((items, indexs) => {
-														if (
-															index !== indexs &&
-															value[item].orgnization ===
-																value[items].orgnization &&
-															JSON.stringify(
-																value[item].role.sort()
-															) ===
-																JSON.stringify(
-																	value[items].role.sort()
-																)
-														) {
-															isSame = true;
-														}
-													});
-												});
-												hasEmpty &&
-													callback(
-														formatMessage({
-															id:
-																'employee.info.select.orgnizaion.isEmpty',
-														})
-													);
-												isSame &&
-													callback(
-														formatMessage({
-															id:
-																'employee.info.select.orgnizaion.isSame',
-														})
-													);
-												callback();
-											}
-										},
+											isSame &&
+												callback(
+													formatMessage({
+														id:
+															'employee.info.select.orgnizaion.isSame',
+													})
+												);
+											callback();
+										}
 									},
-								],
-							})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList }} />)}
-						</Form.Item>
-					)}
+								},
+							],
+						})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList }} />)}
+					</Form.Item>
+
 					<Form.Item label=" " colon={false}>
 						<Button
 							type="primary"
