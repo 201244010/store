@@ -60,7 +60,7 @@ class StoreInformation extends React.Component {
 			contactPerson: contactPerson = '--',
 			contactTel: contactTel = '--',
 			createdTime: createdTime = '--',
-			modified_time: modifiedTime = '--',
+			modifiedTime: modifiedTime = '--',
 		} = formatEmptyWithoutZero(storeInfo, '--');
 
 		return (

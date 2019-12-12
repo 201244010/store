@@ -66,17 +66,10 @@ export default {
 
 			if (response && response.code === ERROR_OK) {
 				const { data } = format('toCamel')(response);
-				const { serviceList, orderName } = data;
 				yield put({
 					type: 'updateState',
 					payload: {
-						orderDetail: {
-							...data,
-							serviceList: serviceList.map(item => ({
-								...item,
-								serviceName: orderName,
-							})),
-						},
+						orderDetail: data
 					},
 				});
 				return data;
