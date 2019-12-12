@@ -4,6 +4,7 @@ export const { env, country } = sysEnv;
 
 export const FIRST_MENU_ORDER = [
 	'dashBoard',
+	// 'dashboard',
 	'application',
 	'devices',
 	'esl',

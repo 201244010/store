@@ -165,6 +165,7 @@ export default {
 
 		*getPermissionList({ payload = {} }, { put, call, select }) {
 			const { type } = payload;
+			const routes = yield select(state => state.menu.breadcrumbNameMap);
 			const response = yield call(Actions.handleRoleManagement, 'getPermissionList');
 			if (response && response.code === ERROR_OK) {
 				const roleInfo = yield select(state => state.role.roleInfo);
@@ -175,7 +176,11 @@ export default {
 					permissionList.find(permission => permission.name === `/${menu}`)
 				).filter(item => !!item);
 
-				const tmpList = formatData(sortedPermission).map(item => {
+				const filterSortedPermission = sortedPermission.map(item => ({
+					...item,
+					permissionList: item.permissionList.filter(items => items.path in routes),
+				}));
+				const tmpList = formatData(filterSortedPermission).map(item => {
 					const formatResult = formatPath(item);
 					return {
 						checkedList: formatResult,
