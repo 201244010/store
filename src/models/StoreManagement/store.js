@@ -158,10 +158,10 @@ export default {
 					newPayload.allStores = shopList;
 				}
 
-				yield put({
-					type: 'setShopListInStorage',
-					payload: { shopList },
-				});
+				// yield put({
+				// 	type: 'setShopListInStorage',
+				// 	payload: { shopList },
+				// });
 
 				yield put({
 					type: 'updateState',
