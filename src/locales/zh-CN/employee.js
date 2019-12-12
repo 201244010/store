@@ -28,6 +28,7 @@ export default {
 	'employee.info.select.role': '请选择角色',
 	'employee.info.select.orgnizaion': '请选择组织',
 	'employee.info.select.orgnizaion.isEmpty': '组织和角色都不能为空',
+	'employee.info.select.orgnizaion.isSame': '所属组织和角色不能相同',
 
 	'employee.info.delete': '确定要删除该员工？',
 	'employee.info.delete.confirm': '请确认是否要删除员工',
