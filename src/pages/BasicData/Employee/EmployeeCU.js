@@ -81,22 +81,41 @@ class EmployeeCU extends Component {
 			getCompanyIdFromStorage,
 			getShopListFromStorage,
 			getCompanyListFromStorage,
+			employee: {
+				employeeInfo: { mappingList = [] },
+			},
 		} = this.props;
 		const currentCompanyId = await getCompanyIdFromStorage();
 		const companyList = await getCompanyListFromStorage();
 		const shopList = await getShopListFromStorage();
 		const companyInfo =
 			companyList.find(company => company.companyId === currentCompanyId) || {};
+		const shopNameList = shopList.map(item => item.shopName);
+		const tmpObj = {};
+		const tmpMappingList = mappingList
+			.filter(item => !shopNameList.includes(item.shopName) && item.shopName !== '')
+			.reduce((items, next) => {
+				tmpObj[next.shopId] ? '' : (tmpObj[next.shopId] = true && items.push(next));
+				return items;
+			}, []);
 		const orgnizationTree = [
 			{
 				title: companyInfo.companyName,
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
-				children: shopList.map(shop => ({
-					title: shop.shopName,
-					value: `${companyInfo.companyId}-${shop.shopId}`,
-					key: `${companyInfo.companyId}-${shop.shopId}`,
-				})),
+				children: [
+					...shopList.map(shop => ({
+						title: shop.shopName,
+						value: `${companyInfo.companyId}-${shop.shopId}`,
+						key: `${companyInfo.companyId}-${shop.shopId}`,
+					})),
+					...tmpMappingList.map(shop => ({
+						title: shop.shopName,
+						value: `${companyInfo.companyId}-${shop.shopId}`,
+						key: `${companyInfo.companyId}-${shop.shopId}`,
+						disabled: true,
+					})),
+				],
 			},
 		];
 		this.setState({
