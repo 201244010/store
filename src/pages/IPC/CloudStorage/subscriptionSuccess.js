@@ -41,6 +41,7 @@ class SubscriptionSuccess extends React.Component{
 			key:'deviceName',
 			title: formatMessage({ id: 'cloudStorage.device.name'}),
 			dataIndex: 'deviceName',
+			render:(deviceName) => (<div className={styles.deviceName}>{deviceName}</div>)
 		},
 		{
 			key: 'sn',
