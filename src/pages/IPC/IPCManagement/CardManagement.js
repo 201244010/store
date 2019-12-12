@@ -138,6 +138,7 @@ const mapDispatchToProps = dispatch => ({
 class CardManagement extends Component {
 	constructor(props) {
 		super(props);
+		this.cloudInterval = '';
 		this.state = {
 			formattingModalVisible: false, // 格式化进度弹框
 			timer: null, // 进度条定时器
@@ -152,7 +153,7 @@ class CardManagement extends Component {
 				status: 0,
 				validTime: '',
 			},
-			isPay: false,
+			// isPay: false,
 			hasNVR: false,
 		};
 	}
@@ -171,23 +172,18 @@ class CardManagement extends Component {
 				status: 0,
 				validTime: ''
 			};
-			let isPay = false;
+			// let isPay = false;
 			readCardInfo(sn);
 			const deviceInfo = await getDeviceInfo({ sn });
 			const { hasCloud } = deviceInfo;
 			if(hasCloud) {
 				cloudService = await readCloudInfo(sn);
-				const { validTime } = cloudService;
-				if(validTime) {
-					isPay = validTime/3600/24 < 3;
-				} else {
-					isPay = true;
-				}
+				this.checkCloudStatus();
 			}
 			this.setState({
 				deviceInfo,
 				cloudService,
-				isPay,
+				// isPay,
 				hasNVR
 			});
 		}
@@ -242,6 +238,7 @@ class CardManagement extends Component {
 		clearInterval(timer);
 		clearTimeout(formatTimeout);
 		clearTimeout(removeTimeout);
+		clearInterval(this.cloudInterval);
 
 		this.removeConfirmInstance = null;
 		this.formatConfirmInstance = null;
@@ -255,6 +252,17 @@ class CardManagement extends Component {
 		} else {
 			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
 		}
+	}
+
+	checkCloudStatus = () => {
+		clearInterval(this.cloudInterval);
+		this.cloudInterval = setInterval(async () => {
+			const { readCloudInfo, sn } = this.props;
+			const cloudService = await readCloudInfo(sn);
+			this.setState({
+				cloudService
+			});
+		}, 10000);
 	}
 
 	/**
@@ -531,13 +539,13 @@ class CardManagement extends Component {
 			isOnline
 		} = this.props;
 
-		const { formattingModalVisible, formatProgress, deviceInfo: { hasTFCard, /* hasCloud */}, cloudService: { status: cloudStatus, validTime }, isPay, hasNVR } = this.state;
+		const { formattingModalVisible, formatProgress, deviceInfo: { hasTFCard, hasCloud }, cloudService: { status: cloudStatus, validTime }, hasNVR } = this.state;
 
 		return (
 
 			<Card title={formatMessage({ id: 'cardManagement.title' })} id='tfCard'>
 				{
-					hasNVR? 
+					hasNVR?
 						<div>
 							<div className={styles['storage-title']}><NVRTitle onChange={this.nvrCheckedHandler} checked={nvrState} loading={loadState} isOnline={isOnline} /></div>
 							<Divider />
@@ -545,7 +553,7 @@ class CardManagement extends Component {
 						''
 				}
 				{
-					false ?
+					hasCloud ?
 						<div>
 							<div className={styles['storage-title']}>{formatMessage({ id: 'cardManagement.cloudStorage'})}</div>
 							{
@@ -556,14 +564,19 @@ class CardManagement extends Component {
 											<Button
 												onClick={() => navigateTo('cloudStorage',{ sn, type: 'repay' })}
 												className={styles['subscribe-button']}
-												disabled={!isPay || !isOnline}
+												disabled={!isOnline}
 											>
 												{formatMessage({ id: 'cardManagement.repay'})}
 											</Button>
 										</Form.Item>
-										<Form.Item label={formatMessage({ id: 'cardManagement.validityPeriod'})}>
-											<span>{this.dateToDuration(validTime)}</span>
-										</Form.Item>
+										{
+											cloudStatus === statusCode.expired ?
+												'' :
+												<Form.Item label={formatMessage({ id: 'cardManagement.validityPeriod'})}>
+													<span>{this.dateToDuration(validTime)}</span>
+												</Form.Item>
+										}
+
 									</Form>
 									:
 									<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>

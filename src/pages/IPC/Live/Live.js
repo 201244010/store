@@ -182,20 +182,17 @@ const statusCode = {
 				sn
 			}
 		}).then((result) => {
-			const { code, data} = result;
+			const { code, data } = result;
 			if(code === ERROR_OK) {
-				const { status, validTime } = data;
+				const { status, activeStatus } = data;
 				if(status === statusCode.opened) {
-					const days = validTime/3600/24;
-					// console.log(days);
-					if (days < 3){
-						return 'willExpired';
-					}
 					return 'opened';
 				} if( status === statusCode.expired) {
 					return 'expired';
+				} if(activeStatus === 1) {
+					return 'freeClosed';
 				}
-				return 'closed';
+				return 'payClosed';
 			}
 			return '';
 		});
@@ -303,16 +300,17 @@ class Live extends React.Component{
 		return result;
 	}
 
-	onMetadataArrived = (timestamp) => {
-		const { clearRects } = this.props;
-		clearRects(timestamp);
-	}
-
 	updateBasetime = (timestamp) => {
 		this.setState({
 			baseTime: timestamp
 		});
 	}
+
+	onMetadataArrived = (timestamp) => {
+		const { clearRects } = this.props;
+		clearRects(timestamp);
+	}
+
 
 	syncLiveTimestamp = (timestamp) => {
 		// console.log(timestamp);
@@ -467,7 +465,7 @@ class Live extends React.Component{
 	mapAgeInfo(age, ageRangeCode) {
 
 		const { ageRangeList } = this.props;
-		let ageName = formatMessage({id: 'live.unknown'});
+		let ageName = formatMessage({id: 'live.unknown' });
 		if(age) {
 			ageName = `${age} ${formatMessage({id: 'live.age.unit'})}`;
 		} else {
@@ -518,10 +516,9 @@ class Live extends React.Component{
 		return(
 			<div className={styles['live-wrapper']}>
 
-				{/* <div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}
-								${cloudStatus === 'closed' || cloudStatus === 'expired' || cloudStatus === 'willExpired' ? styles['has-cloud-info']:''}`}
-				> */}
-				<div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}`}>
+				<div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}
+								${cloudStatus === 'freeClosed' || cloudStatus === 'expired' || cloudStatus === 'payClosed' ? styles['has-cloud-info']:''}`}
+				>
 					<LivePlayer
 
 						pixelRatio={pixelRatio}
@@ -553,31 +550,33 @@ class Live extends React.Component{
 						onTimeChange={this.onTimeChange}
 						onMetadataArrived={this.onMetadataArrived}
 						isOnline={isOnline}
-						cloudStatus={cloudStatus}
+						cloudStatus={cloudStatus === 'payClosed' || cloudStatus === 'freeClosed' ? 'closed' : cloudStatus}
 						navigateTo={navigateTo}
 						sn={sn}
 						updateBasetime={this.updateBasetime}
 					/>
 
 				</div>
-				{/* {
-					cloudStatus === 'closed' || cloudStatus === 'expired' || cloudStatus === 'willExpired'?
+				{
+					cloudStatus === 'freeClosed' || cloudStatus === 'payClosed' || cloudStatus === 'expired' ?
 						<div className={styles['cloud-service-info']}>
 							{
-								cloudStatus === 'closed' ?
+								cloudStatus === 'expired' ?
 									<div>
-										<span>{formatMessage({ id: 'live.cloudServiceInfo' })}</span>
-										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'subscribe' })}>{formatMessage({ id: 'live.subscribeCloud'})}</span>
+										<span>{formatMessage({ id: 'live.expired'})}</span>
+										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'repay' })}>{formatMessage({ id: 'live.pay'})}</span>
 									</div>
 									:
 									<div>
-										<span>{cloudStatus === 'expired'?formatMessage({ id: 'live.expired'}): formatMessage({ id: 'live.willExpired'})}</span>
-										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'repay' })}>{formatMessage({ id: 'live.pay'})}</span>
+										<span>{cloudStatus === 'freeClosed' ? formatMessage({ id: 'live.freeServiceInfo' }) : formatMessage({ id: 'live.payServiceInfo' })}</span>
+										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'subscribe' })}>
+											{cloudStatus === 'freeClosed' ? formatMessage({ id: 'live.freeSubscribe'}): formatMessage({ id: 'live.paySubscribe'}) }
+										</span>
 									</div>
 							}
 						</div>
 						: ''
-				} */}
+				}
 				{
 					sdStatus && hasFaceid ?
 						<div className={styles['faceid-list-container']}>
