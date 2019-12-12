@@ -259,9 +259,7 @@ class OrderDetail extends React.Component {
 								{status === 4 && (
 									<Col span={8}>
 										{formatMessage({ id: 'orderManagement.detail.payPerson' })}
-										{payerAccount === undefined || payerAccount === ''
-											? issuerAccount
-											: payerAccount}
+										{payerAccount || '--'}
 									</Col>
 								)}
 							</Row>
@@ -304,7 +302,7 @@ class OrderDetail extends React.Component {
 										{formatMessage({
 											id: 'orderManagement.detail.invoiceType',
 										})}
-										{invoiceKinds[invoiceInfo.invoiceKind]}(
+										{invoiceKinds[invoiceInfo.invoiceKind - 1]}(
 										{invoiceTitleType[invoiceInfo.titleType - 1]})
 									</Col>
 									<Col span={8}>
