@@ -125,6 +125,7 @@ const MerchantInfo = props => {
 		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
 	})
 )
 @Form.create()
@@ -144,11 +145,13 @@ class StoreRelate extends Component {
 			setShopListInStorage,
 			removeShopIdInCookie,
 			goToPath,
+			getCompanyList,
 		} = this.props;
+		await getCompanyList();
 		const response = await getStoreList({});
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
-			const shopList = result.shop_list || [];
+			const shopList = result.shopList || [];
 			setShopListInStorage({ shopList });
 			// Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
@@ -158,8 +161,8 @@ class StoreRelate extends Component {
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
 				const defaultStore = shopList[0] || {};
-				setShopIdInCookie({ shopId: defaultStore.shop_id });
-				// CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
+				setShopIdInCookie({ shopId: defaultStore.shopId });
+				// CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
 				goToPath('root');
 				// router.push('/');
 			}

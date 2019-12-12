@@ -200,6 +200,24 @@ const router = [
 						id: 'serviceManagement',
 						component: './ServiceManagement/ServiceList',
 						name: 'serviceManagement',
+					},
+					{
+						path: '/application/orderManagement',
+						id: 'orderManagement',
+						name: 'orderManagement',
+						routes:[
+							{
+								path: '/application/orderManagement',
+								id: 'orderManagement',
+								component: './OrderManagement/OrderList'
+							},
+							{
+								path: '/application/orderManagement/orderDetail',
+								id: 'serviceOrderDetail',
+								component: './OrderManagement/OrderDetail',
+								hideInMenu: true
+							}
+						]
 					}
 				],
 			},

@@ -110,6 +110,9 @@ export default {
 	'menu.cashVerify.posList': '设备绑定列表',
 	'menu.cashVerify.bindPOSDevice': '绑定收银设备',
 	'menu.cashVerify.videos': '交易视频',
+	
+	'menu.application.orderManagement': '服务订单管理',
+	'menu.application.orderManagement.orderDetail': '订单详情',
 
 	'menu.roleManagement': '角色管理',
 	'menu.roleManagement.create': '添加角色',

@@ -1,5 +1,7 @@
 import { format, map } from '@konata9/milk-shake';
 import * as Action from '@/services/employee';
+import { handleRoleManagement } from '@/services/role';
+import { getUserInfoByUsername } from '@/services/user';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -54,12 +56,18 @@ export default {
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { searchValue, pagination } = yield select(state => state.employee);
 			const { current = 1, pageSize = 10, roleId = -1 } = payload;
-
+			const shopIdList = yield put.resolve({
+				type: 'global/getShopListFromStorage'
+			});
+			const adminResponse = yield put.resolve({
+				type: 'role/checkAdmin',
+			});
 			const options = {
 				...searchValue,
 				pageNum: current,
 				pageSize,
 				roleId,
+				shopIdList: adminResponse && adminResponse.code === ERROR_OK ? [] : shopIdList.map(item => item.shopId)
 			};
 
 			const response = yield call(
@@ -82,7 +90,8 @@ export default {
 							},
 						])(employee)
 					)
-					.map(e => ({ ...e, username: e.phone || e.email }));
+					.map(e => ({ ...e, username: e.phone || e.email }))
+					.sort((a, b) => b.createTime - a.createTime);
 
 				yield put({
 					type: 'updateState',
@@ -130,6 +139,11 @@ export default {
 
 		*checkUsernameExist({ payload: { username = '' } = {} }, { call }) {
 			const response = yield call(Action.handleEmployee, 'isUsernameExist', { username });
+			return response;
+		},
+
+		*checkNumberExist({ payload: { number = '' } = {} }, { call }) {
+			const response = yield call(Action.handleEmployee, 'isNumberExist', { number });
 			return response;
 		},
 
@@ -204,6 +218,36 @@ export default {
 				});
 			}
 
+			return response;
+		},
+
+		*getAdmin(_, { call }) {
+			const response = yield call(handleRoleManagement, 'getAdmin');
+			return response;
+		},
+
+		*getUserInfoByUsername(
+			{
+				payload: { username },
+			},
+			{ select, put, call }
+		) {
+			const employeeInfo = yield select(state => state.employee.employeeInfo);
+			const response = yield call(getUserInfoByUsername, { username });
+
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { email, phone } = format('toCamel')(data);
+				yield put({
+					type: 'updateState',
+					payload: {
+						employeeInfo: {
+							...employeeInfo,
+							ssoUsername: email || phone,
+						},
+					},
+				});
+			}
 			return response;
 		},
 	},

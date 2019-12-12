@@ -5,7 +5,7 @@ import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import {
 	EMPLOYEE_NUMBER_LIMIT,
 	EMPLOYEE_NAME_LIMIT,
-	EMPLOYEE_PHONE_LIMIT,
+	EMPLOYEE_PHONE_EMAIL_LIMIT,
 } from './constants';
 import styles from './Employee.less';
 
@@ -84,7 +84,7 @@ const SearchBar = ({
 					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.phone' })}>
 							<Input
-								maxLength={EMPLOYEE_PHONE_LIMIT}
+								maxLength={EMPLOYEE_PHONE_EMAIL_LIMIT}
 								value={username}
 								onChange={e => handleSearchChange('username', e.target.value)}
 							/>

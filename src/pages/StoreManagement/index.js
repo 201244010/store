@@ -32,18 +32,18 @@ class StoreManagement extends Component {
 		this.columns = [
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnId' }),
-				dataIndex: 'sunmi_shop_no',
-				key: 'sunmi_shop_no',
+				dataIndex: 'sunmiShopNo',
+				key: 'sunmiShopNo',
 			},
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnName' }),
-				dataIndex: 'shop_name',
-				key: 'shop_name',
+				dataIndex: 'shopName',
+				key: 'shopName',
 			},
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnStatus' }),
-				dataIndex: 'business_status',
-				key: 'business_status',
+				dataIndex: 'businessStatus',
+				key: 'businessStatus',
 				render: text => (
 					<span>
 						{text === 0
@@ -75,19 +75,19 @@ class StoreManagement extends Component {
 			},
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnTypes' }),
-				dataIndex: 'type_name',
-				key: 'type_name',
+				dataIndex: 'typeName',
+				key: 'typeName',
 			},
 			{
 				title: formatMessage({ id: 'storeManagement.list.area' }),
-				dataIndex: 'business_area',
-				key: 'business_area',
+				dataIndex: 'businessArea',
+				key: 'businessArea',
 				render: text => <span>{text === 0 ? '--' : text}</span>,
 			},
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnContacts' }),
-				dataIndex: 'contact_person',
-				key: 'contact_person',
+				dataIndex: 'contactPerson',
+				key: 'contactPerson',
 			},
 			{
 				title: formatMessage({ id: 'storeManagement.list.columnOperation' }),
@@ -97,14 +97,14 @@ class StoreManagement extends Component {
 				render: (_, record) => (
 					<span>
 						<a
-							onClick={() => this.toPath('viewInfo', record.shop_id)}
+							onClick={() => this.toPath('viewInfo', record.shopId)}
 							className={styles.infoAnchor}
 						>
 							{formatMessage({ id: 'storeManagement.list.operation1' })}
 						</a>
 						<Divider type="vertical" />
 						<a
-							onClick={() => this.toPath('update', record.shop_id)}
+							onClick={() => this.toPath('update', record.shopId)}
 							className={styles.infoAnchor}
 						>
 							{formatMessage({ id: 'storeManagement.list.operation2' })}
@@ -182,8 +182,8 @@ class StoreManagement extends Component {
 				await changeSearchFormValue({
 					options: {
 						keyword: values.keyword,
-						type_one: (values.shopType || [])[0] || 0,
-						type_two: (values.shopType || [])[1] || 0,
+						typeOne: (values.shopType || [])[0] || 0,
+						typeTwo: (values.shopType || [])[1] || 0,
 					},
 				});
 				await getStoreList({
@@ -207,7 +207,7 @@ class StoreManagement extends Component {
 			store: {
 				storeList,
 				shopType_list,
-				searchFormValue: { keyword, type_one, type_two },
+				searchFormValue: { keyword, typeOne, typeTwo },
 				loading,
 				pagination,
 			},
@@ -243,7 +243,7 @@ class StoreManagement extends Component {
 									})}
 								>
 									{getFieldDecorator('shopType', {
-										initialValue: type_one ? [type_one, type_two] : undefined,
+										initialValue: typeOne ? [typeOne, typeTwo] : undefined,
 									})(
 										<Cascader
 											placeholder={formatMessage({
@@ -280,7 +280,7 @@ class StoreManagement extends Component {
 				</Button>
 				<div className={styles.table}>
 					<Table
-						rowKey="shop_id"
+						rowKey="shopId"
 						dataSource={formattedList}
 						columns={this.columns}
 						pagination={pagination}

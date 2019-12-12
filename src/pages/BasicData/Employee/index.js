@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Card } from 'antd';
+import { format } from '@konata9/milk-shake';
 import SearchBar from './SearchBar';
 import SearchResult from './SerachResult';
+import { ERROR_OK } from '@/constants/errorCode';
 
 @connect(
 	state => ({
@@ -21,6 +23,8 @@ import SearchResult from './SerachResult';
 			dispatch({ type: 'employee/deleteEmployee', payload: { employeeIdList } }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		getAdmin: () =>
+			dispatch({ type: 'employee/getAdmin' }),
 	})
 )
 class EmployeeList extends Component {
@@ -30,20 +34,32 @@ class EmployeeList extends Component {
 			orgnizationTree: [],
 			currentCompanyId: null,
 		};
+		this.userId = null;
 	}
 
 	componentDidMount() {
-		this.createOrgnizationTree();
-		const { getEmployeeList } = this.props;
+		const { getEmployeeList} = this.props;
 		getEmployeeList({
 			current: 1,
 			pageSize: 10,
 		});
+		this.createOrgnizationTree();
+		this.getAdminUserId();
 	}
 
 	componentWillUnmount() {
 		const { clearSearchValue } = this.props;
 		clearSearchValue();
+	}
+
+	getAdminUserId = async () => {
+		const { getAdmin } = this.props;
+		const response = await getAdmin();
+		if (response && response.code === ERROR_OK) {
+			const { data = {} } = response;
+			const { userId } = format('toCamel')(data);
+			this.userId = userId;
+		}
 	}
 
 	createOrgnizationTree = async () => {
@@ -64,9 +80,9 @@ class EmployeeList extends Component {
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
 				children: shopList.map(shop => ({
-					title: shop.shop_name,
-					value: `${companyInfo.companyId}-${shop.shop_id}`,
-					key: `${companyInfo.companyId}-${shop.shop_id}`,
+					title: shop.shopName,
+					value: `${companyInfo.companyId}-${shop.shopId}`,
+					key: `${companyInfo.companyId}-${shop.shopId}`,
 				})),
 			},
 		];
@@ -109,6 +125,7 @@ class EmployeeList extends Component {
 						deleteEmployee,
 						goToPath,
 						getEmployeeList,
+						userId: this.userId
 					}}
 				/>
 			</Card>
