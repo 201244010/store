@@ -133,23 +133,31 @@ export default {
 		/**
 		 * 获取云服务的状态
 		 */
-		*readCloudInfo({ payload }, { call, put }) {
+		*readCloudInfo({ payload }, { call }) {
 			const { sn } = payload;
-			const deviceId = yield put.resolve({
-				type: 'getDeviceId',
-				payload: {
-					sn
-				}
-			});
+			// const deviceId = yield put.resolve({
+			// 	type: 'getDeviceId',
+			// 	payload: {
+			// 		sn
+			// 	}
+			// });
 
 			const response = yield call(getServiceInfo, {
-				deviceId
+				deviceSnList: [sn]
 			});
 			// console.log(response);
-			const { code , /* data */ } = response;
+			const { code , data } = response;
 			if(code === ERROR_OK) {
-				// const { status, expireTime } = data;
-				return response;
+				const { deviceList } = data;
+				const { status, validTime, activeStatus } = deviceList[0];
+				return {
+					code,
+					data: {
+						status,
+						validTime,
+						activeStatus
+					}
+				};
 			}
 			return {
 				code
