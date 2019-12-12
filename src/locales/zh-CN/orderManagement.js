@@ -1,7 +1,7 @@
 export default {
 	'orderManagement.orderId': '订单号',
 	'orderManagement.orderId.placeHolder': '请输入订单号查询',
-	'orderManagement.orderName': '服务名称',
+	'orderManagement.orderName': '订单名称',
 	'orderManagement.tradeStatus': '交易状态',
 	'orderManagement.createdTime': '下单时间',
 	'orderManagement.createdDate': '下单日期',

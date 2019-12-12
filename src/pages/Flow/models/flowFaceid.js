@@ -210,7 +210,7 @@ export default {
 					}
 				}
 			});
-		}
+		},
 	},
 	subscriptions: {
 		mqtt ({ dispatch }) {
