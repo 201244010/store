@@ -144,20 +144,6 @@ const ProductCUWeight = props => {
 						<Row>
 							<Col span={8}>
 								<Form.Item style={noneBottom}>
-									{getFieldDecorator('weighInfo.isDiscount', {
-										valuePropName: 'checked',
-										initialValue: isDiscount !== '0',
-									})(
-										<Checkbox>
-											{formatMessage({
-												id: 'basicData.weightProduct.isDiscount',
-											})}
-										</Checkbox>
-									)}
-								</Form.Item>
-							</Col>
-							<Col span={8}>
-								<Form.Item style={noneBottom}>
 									{getFieldDecorator('weighInfo.isAlterPrice', {
 										valuePropName: 'checked',
 										initialValue: isAlterPrice !== '0',
@@ -165,6 +151,20 @@ const ProductCUWeight = props => {
 										<Checkbox>
 											{formatMessage({
 												id: 'basicData.weightProduct.isAlterPrice',
+											})}
+										</Checkbox>
+									)}
+								</Form.Item>
+							</Col>
+							<Col span={8}>
+								<Form.Item style={noneBottom}>
+									{getFieldDecorator('weighInfo.isDiscount', {
+										valuePropName: 'checked',
+										initialValue: isDiscount !== '0',
+									})(
+										<Checkbox>
+											{formatMessage({
+												id: 'basicData.weightProduct.isDiscount',
 											})}
 										</Checkbox>
 									)}
