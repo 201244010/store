@@ -214,7 +214,7 @@ export default {
 			return response;
 		},
 
-		*updateStore({ payload }, { select, call, put }) {
+		*updateStore({ payload }, { call, put }) {
 			const { options } = payload;
 			yield put({
 				type: 'updateState',
@@ -224,12 +224,20 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
 
-				yield put({
+				// yield put({
+				// 	type: 'getStoreList',
+				// 	payload: {},
+				// });
+				// const { storeList } = yield select(state => state.store);
+				// Storage.set({ [CookieUtil.SHOP_LIST_KEY]: storeList }, 'local');
+				const res = yield put.resolve({
 					type: 'getStoreList',
 					payload: {},
 				});
-				const { storeList } = yield select(state => state.store);
-				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: storeList }, 'local');
+
+				const { data: { shopList } = {} } = res || {};
+				// const { storeList } = yield select(state => state.store);
+				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 
 				yield put({
 					type: 'menu/goToPath',
