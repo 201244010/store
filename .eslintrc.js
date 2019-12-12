@@ -43,6 +43,7 @@ module.exports = {
 		'react/jsx-indent': ['error', 'tab'],
 		'react/jsx-indent-props': ['error', 'tab'],
 		'react/no-find-dom-node': 0,
+		'no-unused-expressions': 0,
 		'react/prefer-stateless-function': 0,
 		semi: ['error', 'always'],
 		'no-underscore-dangle': 0,
