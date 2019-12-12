@@ -81,7 +81,11 @@ class ServiceList extends React.Component {
 	
 	componentDidMount() {
 		const { getList } = this.props;
-		getList({pageSize: 10, pageNum: 1, search: null});
+		getList({pageSize: 10, pageNum: 1, search: {
+			key: '',
+			status: 0,
+			date: [],
+		}});
 	}
 	
 	onSearch = () => {
