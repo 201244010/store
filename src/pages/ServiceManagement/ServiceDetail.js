@@ -18,7 +18,7 @@ const LAY_OUT = {
 		sm: { span: 10 },
 	},
 	wrapperCol:{
-		sm: { span: 10 },
+		sm: { span: 13 },
 	}
 };
 
