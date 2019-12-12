@@ -191,7 +191,9 @@ export default {
 					payload: { companyInfo: options, loading: false },
 				});
 				message.success(formatMessage({ id: 'modify.success' }));
-
+				yield put({
+					type: 'getCompanyList',
+				});
 				yield put({
 					type: 'menu/goToPath',
 					payload: {
