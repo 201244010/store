@@ -49,7 +49,7 @@ export const getMotionList = async (params) => {
 				code: ERROR_OK,
 				data: {
 					list: result,
-					total: data.count
+					total: data.total_count
 				}
 			};
 		}
