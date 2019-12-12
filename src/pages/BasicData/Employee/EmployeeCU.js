@@ -76,65 +76,52 @@ class EmployeeCU extends Component {
 		this.createOrgnizationTree();
 	}
 
+	
 	createOrgnizationTree = async () => {
 		const {
 			getCompanyIdFromStorage,
 			getShopListFromStorage,
 			getCompanyListFromStorage,
+			employee: {
+				employeeInfo: { mappingList = [] },
+			},
 		} = this.props;
 		const currentCompanyId = await getCompanyIdFromStorage();
 		const companyList = await getCompanyListFromStorage();
 		const shopList = await getShopListFromStorage();
 		const companyInfo =
 			companyList.find(company => company.companyId === currentCompanyId) || {};
+		const shopNameList = shopList.map(item => item.shopName);
+		const tmpObj = {};
+		const tmpMappingList = mappingList
+			.filter(item => !shopNameList.includes(item.shopName) && item.shopName !== '')
+			.reduce((items, next) => {
+				tmpObj[next.shopId] ? '' : (tmpObj[next.shopId] = true && items.push(next));
+				return items;
+			}, []);
 		const orgnizationTree = [
 			{
 				title: companyInfo.companyName,
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
-				children: shopList.map(shop => ({
-					title: shop.shopName,
-					value: `${companyInfo.companyId}-${shop.shopId}`,
-					key: `${companyInfo.companyId}-${shop.shopId}`,
-				})),
+				children: [
+					...shopList.map(shop => ({
+						title: shop.shopName,
+						value: `${companyInfo.companyId}-${shop.shopId}`,
+						key: `${companyInfo.companyId}-${shop.shopId}`,
+					})),
+					...tmpMappingList.map(shop => ({
+						title: shop.shopName,
+						value: `${companyInfo.companyId}-${shop.shopId}`,
+						key: `${companyInfo.companyId}-${shop.shopId}`,
+						disabled: true,
+					})),
+				],
 			},
 		];
 		this.setState({
 			orgnizationTree,
 		});
-	};
-
-	decodeMappingList = mappingList => {
-		// console.log(mappingList);
-		const orgnizationMap = new Map();
-		mappingList
-			.filter(item => item.roleName !== 'admin')
-			.forEach(item => {
-				const { companyId = null, shopId = null, roleId = null } = item;
-
-				const orgnizationKey =
-					shopId === 0 || !shopId ? `${companyId}` : `${companyId}-${shopId}`;
-				if (orgnizationMap.has(orgnizationKey)) {
-					const { roleList = [] } = orgnizationMap.get(orgnizationKey);
-					orgnizationMap.set(orgnizationKey, {
-						roleList: [...roleList, roleId],
-					});
-				} else {
-					orgnizationMap.set(orgnizationKey, {
-						roleList: [roleId],
-					});
-				}
-			});
-
-		const result = [...orgnizationMap.keys()].map(key => {
-			const { roleList = [] } = orgnizationMap.get(key);
-			return {
-				orgnization: key,
-				role: roleList,
-			};
-		});
-		// console.log(result);
-		return result;
 	};
 
 	formatMappingList = mappingList => {
