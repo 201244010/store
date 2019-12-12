@@ -14,7 +14,7 @@ export default {
 	'videoPlayer.exitFullscreen': '退出全屏',
 	'videoPlayer.ppiChanged': '当前播放画面已切换为%mode%模式',
 	'videoPlayer.noPlay':'当前设备离线，无法为您播放直播',
-	'videoPlayer.noCloudService':'当前设备离线，无法为您播放直播画面，您可以通过商米助手APP开通云存储来查看云回放视频。',
+	'videoPlayer.noCloudService':'当前设备离线，无法为您播放直播画面。您可以通过开通云存储功能，查看云回放视频',
 	'videoPlayer.subCloud': '开通云存储',
-	'videoPlayer.thisIsRePlay':'拖动可查看云回放视频'
+	'videoPlayer.thisIsRePlay':'拖动可查看云回放视频',
 };
