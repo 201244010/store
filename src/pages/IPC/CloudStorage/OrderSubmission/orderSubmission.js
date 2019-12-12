@@ -124,6 +124,7 @@ class OrderSubmission extends React.Component{
 			freeStatus: false,
 			storageIpcList: [],
 			isNeedCoverTip: false,
+			noChange: false,
 			// isNeedInputReady: false,
 		};
 	}
@@ -168,6 +169,9 @@ class OrderSubmission extends React.Component{
 		const { sn } = this.state;
 		if(checkedValues.indexOf(sn) === -1 && !Array.isArray(sn) && sn){
 			checkedValues.push(sn);
+			this.setState({
+				noChange: true
+			});
 		}
 
 
@@ -368,6 +372,9 @@ class OrderSubmission extends React.Component{
 		for(let i=0; i < storageIpcList.length; i++){
 			if(storageIpcList[i].deviceSn === sn){
 				selectedValue = [sn];
+				this.setState({
+					noChange: true
+				});
 				break;
 			}
 		}
@@ -389,7 +396,7 @@ class OrderSubmission extends React.Component{
 	render(){
 
 		const { navigateTo, loading, form: { getFieldDecorator } } = this.props;
-		const { selectedValue, btnDisable, isAgree, invoiceSelectValue, vbrkSelectValue, unitPrice, count, freeStatus, storageIpcList, isNeedCoverTip, sn } = this.state;
+		const { selectedValue, btnDisable, isAgree, invoiceSelectValue, vbrkSelectValue, unitPrice, count, freeStatus, storageIpcList, isNeedCoverTip, sn, noChange } = this.state;
 		const emailValue = vbrkSelectValue === 2 ? 'companyEmail' : 'personalEmail';
 		const phoneValue = vbrkSelectValue === 2 ? 'companyPhone' : 'personalPhone';
 		return(
@@ -399,7 +406,7 @@ class OrderSubmission extends React.Component{
 						<h3 className={styles['bind-title']}>{formatMessage({id: 'cloudStorage.bind.ipc'})}</h3>
 						<Spin spinning={loading.effects['cloudStorage/order'] || loading.effects['cloudStorage/getStorageIpcList']}>
 							<div className={styles.content}>
-								<Checkbox.Group onChange={this.ipcSelectHandler} value={selectedValue}>
+								<Checkbox.Group onChange={this.ipcSelectHandler} value={selectedValue} disabled={noChange}>
 									<Table
 										className={styles.table}
 										bordered 
@@ -424,7 +431,7 @@ class OrderSubmission extends React.Component{
 						<div className={styles['select-invoice']}>
 							<Radio.Group onChange={this.invoiceSelectHandler} defaultValue={0}>
 								<Radio.Button value={0}>{formatMessage({id: 'cloudStorage.noNeed.invoice'})}</Radio.Button>
-								<Radio.Button value={1}>{formatMessage({id: 'cloudStorage.elec.invoice'})}</Radio.Button>
+								<Radio.Button value={1} disabled={freeStatus}>{formatMessage({id: 'cloudStorage.elec.invoice'})}</Radio.Button>
 								<Radio.Button disabled value={2}>{formatMessage({id: 'cloudStorage.normal.invoice'})}</Radio.Button>
 							</Radio.Group>
 						</div>
