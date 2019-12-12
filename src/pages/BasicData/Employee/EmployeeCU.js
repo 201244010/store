@@ -76,7 +76,6 @@ class EmployeeCU extends Component {
 		this.createOrgnizationTree();
 	}
 
-	
 	createOrgnizationTree = async () => {
 		const {
 			getCompanyIdFromStorage,
@@ -122,6 +121,39 @@ class EmployeeCU extends Component {
 		this.setState({
 			orgnizationTree,
 		});
+	};
+
+	decodeMappingList = mappingList => {
+		// console.log(mappingList);
+		const orgnizationMap = new Map();
+		mappingList
+			.filter(item => item.roleName !== 'admin')
+			.forEach(item => {
+				const { companyId = null, shopId = null, roleId = null } = item;
+
+				const orgnizationKey =
+					shopId === 0 || !shopId ? `${companyId}` : `${companyId}-${shopId}`;
+				if (orgnizationMap.has(orgnizationKey)) {
+					const { roleList = [] } = orgnizationMap.get(orgnizationKey);
+					orgnizationMap.set(orgnizationKey, {
+						roleList: [...roleList, roleId],
+					});
+				} else {
+					orgnizationMap.set(orgnizationKey, {
+						roleList: [roleId],
+					});
+				}
+			});
+
+		const result = [...orgnizationMap.keys()].map(key => {
+			const { roleList = [] } = orgnizationMap.get(key);
+			return {
+				orgnization: key,
+				role: roleList,
+			};
+		});
+		// console.log(result);
+		return result;
 	};
 
 	formatMappingList = mappingList => {
@@ -237,7 +269,7 @@ class EmployeeCU extends Component {
 			const { data = {} } = response;
 			const { email, phone } = data;
 			setFieldsValue({
-				ssoUsername: email || phone,
+				ssoUsername: phone || email,
 			});
 		} else {
 			setFieldsValue({
@@ -420,25 +452,20 @@ class EmployeeCU extends Component {
 													}
 												});
 											});
-											
-											if (hasEmpty) {
+											hasEmpty &&
 												callback(
 													formatMessage({
 														id:
 															'employee.info.select.orgnizaion.isEmpty',
 													})
 												);
-											}
-											
-											if (isSame) {
+											isSame &&
 												callback(
 													formatMessage({
 														id:
 															'employee.info.select.orgnizaion.isSame',
 													})
 												);
-											}
-												
 											callback();
 										}
 									},
