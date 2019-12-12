@@ -95,15 +95,31 @@ const formatParams = (options = {}) => {
 	return formData;
 };
 
-const customizeParams = (options = {}) => {
+const customizeParams = (options = {}, toSnake = true) => {
 	const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY) || '';
 	const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || '';
 
-	const opts =  format('toSnake')({
-		companyId,
-		shopId,
-		...options.body,
-	});
+	// const opts =  format('toSnake')({
+	// 	companyId,
+	// 	shopId,
+	// 	...options.body,
+	// });
+	let opts = {};
+	if (toSnake) {
+		opts = format('toSnake')({
+			companyId,
+			shopId,
+			...options.body,
+		});
+	} else {
+		opts = {
+			...format('toSnake')({
+				companyId,
+				shopId,
+			}),
+			...options.body,
+		};
+	}
 
 	const formattedParams = normalizeParams(opts);
 	return formatParams(formattedParams || {});
@@ -118,10 +134,10 @@ const fetchHandler = async (url, opts) => {
 	}
 };
 
-export const customizeFetch = (service = 'api', base) => {
+export const customizeFetch = (service = 'api', base, toSnake) => {
 	const baseUrl = base || API_ADDRESS;
 	return async (api, options = {}, withAuth = true) => {
-		const customizedParams = customizeParams(options);
+		const customizedParams = customizeParams(options, toSnake);
 		const token = CookieUtil.getCookieByKey(CookieUtil.TOKEN_KEY) || '';
 		const opts = {
 			method: options.method || 'POST',
