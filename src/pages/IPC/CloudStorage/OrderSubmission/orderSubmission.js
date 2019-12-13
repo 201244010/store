@@ -7,7 +7,7 @@ import { SERVICE_TYPE } from '@/constants/cloudStorage';
 import styles from './OrderSubmission.less';
 import { phone, mail } from '@/constants/regexp';
 
-const FREE_PRODUCT_NO = 'YCC0002';
+const FREE_PRODUCT_NO = 'A08000075';
 
 @connect(
 	(state) => {
@@ -132,8 +132,7 @@ class OrderSubmission extends React.Component{
 	componentDidMount(){
 		const { location, navigateTo } = this.props;
 		const { query: { sn, productNo } } = location;
-		// Object.keys(SERVICE_TYPE).indexOf(productNo) === -1
-		if(!productNo || productNo !== 'YCC0002'){
+		if(!productNo || Object.keys(SERVICE_TYPE).indexOf(productNo) === -1){
 			navigateTo('cloudStorage');
 			return;
 		}
@@ -307,7 +306,7 @@ class OrderSubmission extends React.Component{
 				return;
 			}
 			if(orderNo !== ''){
-				navigateTo('subscriptionSuccess', {orderNo});
+				navigateTo('subscriptionSuccess', {orderNo, status: 'success'});
 			}
 		}
 		
@@ -344,7 +343,7 @@ class OrderSubmission extends React.Component{
 		}
 		if(freeStatus){
 			if(orderNo !== ''){
-				navigateTo('subscriptionSuccess');
+				navigateTo('subscriptionSuccess', {orderNo, status: 'success'});
 			}
 		}else{
 			navigateTo('paymentPage',{
@@ -549,8 +548,8 @@ class OrderSubmission extends React.Component{
 							{ !freeStatus &&
 							<Button
 								type="primary"
-								// disabled={btnDisable}
-								disabled
+								disabled={btnDisable}
+								// disabled
 								onClick={this.payHandler}
 							>
 								{formatMessage({id: 'cloudStorage.pay'})}
