@@ -21,14 +21,14 @@ const seventDaysServiceList = [
 	// 	type:EXPIRE_TIME_TYPE.ONE_MONTH, 
 	// },
 	{
-		productNo:'YCC0002',
+		productNo:'A08000075',
 		price:'69',
 		isFree: true,
 		type: EXPIRE_TIME_TYPE.HALF_A_YEAR,
 		pricePerDay:0.38
 	},
 	{
-		productNo:'YCC0003',
+		productNo:'A08000076',
 		price:'119',
 		isFree: false,
 		type: EXPIRE_TIME_TYPE.ONE_YEAR,
@@ -39,13 +39,13 @@ const seventDaysServiceList = [
 
 const thirtyDaysServiceList = [
 	{
-		productNo:'YCC0004',
+		productNo:'A08000077',
 		price: 159,
 		isFree: false,
 		type: EXPIRE_TIME_TYPE.HALF_A_YEAR
 	},
 	{
-		productNo:'YCC0005',
+		productNo:'A08000078',
 		price:'299',
 		isFree: false,
 		type: EXPIRE_TIME_TYPE.ONE_YEAR

@@ -7,7 +7,7 @@ import { SERVICE_TYPE } from '@/constants/cloudStorage';
 import styles from './OrderSubmission.less';
 import { phone, mail } from '@/constants/regexp';
 
-const FREE_PRODUCT_NO = 'YCC0002';
+const FREE_PRODUCT_NO = 'A08000075';
 
 @connect(
 	(state) => {
@@ -447,7 +447,6 @@ class OrderSubmission extends React.Component{
 									<Form.Item label={formatMessage({id: 'cloudStorage.invoice.company.name'})}>
 										{
 											getFieldDecorator('titleName', {
-												validateTrigger: 'onBlur',
 												rules: [
 													{
 														required: true,
@@ -462,7 +461,6 @@ class OrderSubmission extends React.Component{
 									<Form.Item label={formatMessage({id: 'cloudStorage.invoice.taxRegisterNo'})}>
 										{
 											getFieldDecorator('taxRegisterNo', {
-												validateTrigger: 'onBlur',
 												rules: [
 													{
 														required: true,
@@ -480,7 +478,6 @@ class OrderSubmission extends React.Component{
 									<Form.Item label={formatMessage({id: 'cloudStorage.email'})}>
 										{
 											getFieldDecorator(emailValue, {
-												validateTrigger: 'onBlur',
 												rules: [
 													{
 														required: true,
@@ -499,7 +496,6 @@ class OrderSubmission extends React.Component{
 									<Form.Item label={formatMessage({id: 'cloudStorage.phone'})}>
 										{
 											getFieldDecorator(phoneValue, {
-												validateTrigger: 'onBlur',
 												rules: [
 													{
 														pattern: phone,

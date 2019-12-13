@@ -91,9 +91,16 @@ class QRCodePayment extends PureComponent {
 					this.waitSuccessRefresh();
 					break;
 				case ORDER_STATUS.SUCCESS:
-					message.destroy();
+					message.open({
+						content: formatMessage({ id: 'cloudStorage.waitting.sub' }),
+						duration: 0,
+						icon: <div className={styles['loading-icon']} />
+					});
 					clearInterval(this.refreshOrderStatus);
-					goToPath('subscriptionSuccess', {orderNo:this.orderNo, status: 'success'});
+					setTimeout(()=>{
+						message.destroy();
+						goToPath('subscriptionSuccess', {orderNo:this.orderNo, status: 'success'});
+					},1000);
 					break;
 				case ORDER_STATUS.CLOSE:
 					message.destroy();
@@ -126,9 +133,16 @@ class QRCodePayment extends PureComponent {
 					}
 					break;
 				case ORDER_STATUS.SUCCESS:
-					message.destroy();
+					message.open({
+						content: formatMessage({ id: 'cloudStorage.waitting.sub' }),
+						duration: 0,
+						icon: <div className={styles['loading-icon']} />
+					});
 					clearInterval(this.refreshWaitSuccess);
-					goToPath('subscriptionSuccess', {orderNo:this.orderNo, status: 'success'});
+					setTimeout(()=>{
+						message.destroy();
+						goToPath('subscriptionSuccess', {orderNo:this.orderNo, status: 'success'});
+					},1000);
 					break;
 				default:
 					break;

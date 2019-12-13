@@ -6,7 +6,7 @@ import { formatMessage } from 'umi-plugin-locale';
 import styles from './SubscriptionSuccess.less';
 
 @connect(
-	_,
+	null,
 	(dispatch) => ({
 		navigateTo: (pathId, urlParams) => dispatch({
 			type: 'menu/goToPath',
@@ -87,6 +87,7 @@ class SubscriptionSuccess extends React.Component{
 			key:'deviceName',
 			title: formatMessage({ id: 'cloudStorage.device.name'}),
 			dataIndex: 'deviceName',
+			render:(deviceName) => (<div className={styles.deviceName}>{deviceName}</div>)
 		},
 		{
 			key: 'sn',
