@@ -51,34 +51,56 @@ class TradeVideosPlayer extends React.Component {
 							detailVisible ?
 								<div className={styles['video-detail-wrapper']}>
 									<div className={styles['video-detail-container']}>
-										<div className={`${styles['video-detail-board']} ${pixelRatio === '16:9' ? '': styles.resolution }`}>
-											<div className={styles['info-block']}>
-												<h1 className={styles.title}>{formatMessage({ id: 'tradeVideos.cashierInfo'})}</h1>
-												<div className={styles['info-item']}>
-													<span className={styles['info-label']}>{formatMessage({ id: 'tradeVideos.paymentMethod'})}</span>
-													<span>{paymentMethod}</span>
+										<div className={`${styles['video-detail-board']} ${pixelRatio === '16:9' ? styles.resolution : '' }`}>
+											<div className={styles['detail-board-content']}>
+												<div className={styles['info-block']}>
+													<h1>
+														<span className={`${styles.title} ${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.cashierInfo'})}</span>
+													</h1>
+													<div className={styles['info-item']}>
+														<div className={styles['info-label']}>
+															<span className={`${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.paymentMethod'})}</span>
+														</div>
+														<div className={styles['info-label-value']}>
+															<span className={`${styles['scale-text']}`}>{paymentMethod}</span>
+														</div>
+													</div>
+													<div className={styles['info-item']}>
+														<div className={styles['info-label']}>
+															<span className={`${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.purchaseTime'})}</span>
+														</div>
+														<div className={styles['info-label-value']}>
+															<span className={`${styles['scale-text']}`}>{orderTime}</span>
+														</div>
+													</div>
+													<div className={styles['info-item']}>
+														<div className={styles['info-label']}>
+															<span className={`${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.total'})}</span>
+														</div>
+														<div className={styles['info-label-value']}>
+															<span className={`${styles['scale-text']}`}>{totalPrice}</span>
+														</div>
+													</div>
 												</div>
-												<div className={styles['info-item']}>
-													<span className={styles['info-label']}>{formatMessage({ id: 'tradeVideos.purchaseTime'})}</span>
-													<span>{orderTime}</span>
+												<div className={`${styles['info-block']} ${styles.detail}`}>
+													<h1>
+														<span className={`${styles.title} ${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.paymentDetail'})}</span>
+													</h1>
+													<PerfectScrollbar className={styles['detail-block']}>
+														{
+															details && details.map(item =>
+																<div className={styles['info-item']}>
+																	<div className={styles['detail-label']}>
+																		<span className={`${styles['scale-text']}`}>{item.name}</span>
+																	</div>
+																	<div className={styles['detail-label-value']}>
+																		<span className={`${styles['scale-text']}`}>{item.quantity}</span>
+																	</div>
+																</div>
+															)
+														}
+													</PerfectScrollbar>
 												</div>
-												<div className={styles['info-item']}>
-													<span className={styles['info-label']}>{formatMessage({ id: 'tradeVideos.total'})}</span>
-													<span>{totalPrice}</span>
-												</div>
-											</div>
-											<div className={`${styles['info-block']} ${styles.detail}`}>
-												<h1 className={styles.title}>{formatMessage({ id: 'tradeVideos.paymentDetail'})}</h1>
-												<PerfectScrollbar className={styles['detail-block']}>
-													{
-														details && details.map(item =>
-															<div className={styles['info-item']}>
-																<span className={styles['detail-label']}>{item.name}</span>
-																<span>{item.quantity}</span>
-															</div>
-														)
-													}
-												</PerfectScrollbar>
 											</div>
 										</div>
 									</div>
