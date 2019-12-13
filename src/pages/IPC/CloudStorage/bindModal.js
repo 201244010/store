@@ -13,19 +13,19 @@ const SERVICE = {
 		expireTime: formatMessage({id: 'cloudStorage.one.month'})
 	},
 	// 以下都是未确定product_no的
-	'YCC0002': {
+	'A08000075': {
 		serviceName: formatMessage({id: 'cloudStorage.seven.days.service'}),
 		expireTime:  formatMessage({id: 'cloudStorage.half.year'}),
 	},
-	'YCC0003': { 
+	'A08000076': { 
 		serviceName: formatMessage({id: 'cloudStorage.seven.days.service'}),
 		expireTime: formatMessage({id: 'cloudStorage.one.year'}),
 	},
-	'YCC0004': {
+	'A08000077': {
 		serviceName: formatMessage({id: 'cloudStorage.thirty.days.service'}),
 		expireTime: formatMessage({id: 'cloudStorage.half.year'}),
 	},
-	'YCC0005': { 
+	'A08000078': { 
 		serviceName: formatMessage({id: 'cloudStorage.thirty.days.service'}),
 		expireTime: formatMessage({id: 'cloudStorage.one.year'}),
 	}

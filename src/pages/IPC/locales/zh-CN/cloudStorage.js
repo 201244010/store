@@ -88,8 +88,8 @@ export default {
 	'cloudStorage.orderNo': '订单号：',
 	'cloudStorage.pay.way': '支付方式',
 	'cloudStorage.use.tips': '使用',
-	'cloudStorage.scan.code.tips': '扫码完成支付'
-
+	'cloudStorage.scan.code.tips': '扫码完成支付',
+	'cloudStorage.waitting.sub': '正在订阅服务...',
 
 	
 };
