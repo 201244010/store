@@ -53,16 +53,17 @@
 					background-color: rgba(0,0,0,0.50);
 					// background-color: red;
 					border-radius: 4px;
-					width: 25%;
-					height: 52%;
-					top: 26%;
+					width: 35%;
+					height: 86%;
+					top: 10%;
+					right: 5%;
 
-					right: 2%;
 					color: #ffffff;
 					padding: 2%;
 
-					font-size: 6px;
 					font-family: PingFangSC-Light, sans-serif;
+
+					font-size: 12px;
 
 					.info-block {
 						margin-bottom: 10px;
@@ -70,7 +71,7 @@
 						height: 15%;
 						// border: 1px solid red;
 						.title {
-							font-size: 8px;
+							font-size: 14px;
 							font-family: PingFangSC-Semibold, sans-serif;
 							color: #ffffff;
 							margin-bottom: 0;
@@ -112,24 +113,10 @@
 						}
 					}
 
-
+					/* 16:9 样式 */
 					&.resolution {
-						width: 35%;
-						height: 86%;
-						top: 10%;
-						right: 5%;
-						font-size: 10px;
-
-						.info-block {
-							height: 14%;
-							.title {
-								font-size: 12px;
-							}
-						}
-
-						.detail {
-							height: 84%;
-						}
+						transform: scale(0.65, 0.65);
+						transform-origin: 120% 40%;
 					}
 				}
 			}

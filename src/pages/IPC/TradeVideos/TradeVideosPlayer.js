@@ -51,7 +51,7 @@ class TradeVideosPlayer extends React.Component {
 							detailVisible ?
 								<div className={styles['video-detail-wrapper']}>
 									<div className={styles['video-detail-container']}>
-										<div className={`${styles['video-detail-board']} ${pixelRatio === '16:9' ? '': styles.resolution }`}>
+										<div className={`${styles['video-detail-board']} ${pixelRatio === '16:9' ? styles.resolution : '' }`}>
 											<div className={styles['info-block']}>
 												<h1 className={styles.title}>{formatMessage({ id: 'tradeVideos.cashierInfo'})}</h1>
 												<div className={styles['info-item']}>
