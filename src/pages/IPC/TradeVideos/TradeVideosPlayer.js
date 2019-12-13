@@ -55,7 +55,7 @@ class TradeVideosPlayer extends React.Component {
 											<div className={styles['detail-board-content']}>
 												<div className={styles['info-block']}>
 													<h1>
-														<span className={`${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.cashierInfo'})}</span>
+														<span className={`${styles.title} ${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.cashierInfo'})}</span>
 													</h1>
 													<div className={styles['info-item']}>
 														<div className={styles['info-label']}>
@@ -84,7 +84,7 @@ class TradeVideosPlayer extends React.Component {
 												</div>
 												<div className={`${styles['info-block']} ${styles.detail}`}>
 													<h1>
-														<span className={`${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.paymentDetail'})}</span>
+														<span className={`${styles.title} ${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.paymentDetail'})}</span>
 													</h1>
 													<PerfectScrollbar className={styles['detail-block']}>
 														{
