@@ -109,7 +109,7 @@ class OrderDetail extends React.Component {
 			},
 			getOrderDetail,
 		} = this.props;
-		if ( Number(orderStatus) === 5 ) {
+		if ( Number(orderStatus) === 5 || Number(orderStatus) === 1 ) {
 			this.columns = this.columns.splice(0,4);
 		}
 		const response = await getOrderDetail({ orderNo });

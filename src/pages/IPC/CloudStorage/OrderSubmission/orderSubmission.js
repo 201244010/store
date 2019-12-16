@@ -323,7 +323,7 @@ class OrderSubmission extends React.Component{
 			for(let j=0; j<storageIpcList.length; j++){
 				if(storageIpcList[j].deviceSn === selectedValue[i] &&
 					SERVICE_TYPE[productNo] &&
-					storageIpcList[j].serviceTag === SERVICE_TYPE[productNo].serviceTag &&
+					storageIpcList[j].serviceTag !== SERVICE_TYPE[productNo].serviceTag &&
 					storageIpcList[j].status === 1){
 					isNeedCoverTip = true;
 					break;
@@ -419,7 +419,7 @@ class OrderSubmission extends React.Component{
 									/>
 								</Checkbox.Group>
 								<div className={styles['price-and-num']}>
-									<div className={styles['per-price']}>{formatMessage({id: 'cloudStorage.per.price'})}¥{unitPrice}</div>
+									<div className={styles['per-price']}>{formatMessage({id: 'cloudStorage.per.price'})}¥{unitPrice === 0 ? 0 : parseFloat(unitPrice).toFixed(2)}</div>
 									<div>{formatMessage({id: 'cloudStorage.num'})}{count}</div>
 								</div>
 							</div>

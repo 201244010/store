@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { Card, message } from 'antd';
+import { Card, message, Modal } from 'antd';
 import { format } from '@konata9/milk-shake';
 import { ERROR_OK, ALTERT_TRADE_MAP } from '@/constants/errorCode';
 import styles from './trade.less';
@@ -44,15 +44,30 @@ class QRCodePayment extends PureComponent {
 	}
 
 	async componentDidMount() {
-		const { getOrderDetail } = this.props;
-		await this.getQRCodeURL();
+		const { getOrderDetail, goToPath } = this.props;
 		await getOrderDetail({ orderNo: this.orderNo });
+		const { orderDetail: { status } } = this.props;
+		if(status === 4) {
+			Modal.info({
+				title: formatMessage({id: 'cloudStorage.info'}),
+				content: (
+					<div>
+						<p>{formatMessage({id: 'cloudStorage.info.tips'})}</p>
+					</div>
+				),
+				okText: formatMessage({id: 'cloudStorage.ok.text'}),
+				onOk() { goToPath('serviceManagement');},
+			});
+			return;
+		}
+		await this.getQRCodeURL();
 		this.orderStatusRefresh();
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.refreshOrderStatus);
 		clearInterval(this.refreshWaitSuccess);
+		Modal.destroyAll();
 	}
 
 	getQRCodeURL = async () => {
@@ -157,10 +172,11 @@ class QRCodePayment extends PureComponent {
 		const { loading, goToPath, orderDetail } = this.props;
 
 		return (
-			<Card title={formatMessage({ id: 'pay.order.commit' })}>
+			<Card title={null}>
 				<div className={styles['qrCode-title']}>
-					<div className={styles['order-no']}>
-						{formatMessage({ id: 'pay.order.no' })}：{this.orderNo}
+					<div>
+						<h3 className={styles['payment-title']}>{this.purchaseType ? formatMessage({ id: `${this.purchaseType  }.pay` }) : null}</h3>
+						<p className={styles['order-num']}>{formatMessage({id: 'cloudStorage.orderNo'})}{this.orderNo}</p>
 					</div>
 					<div className={styles['order-price']}>
 						{formatMessage({ id: 'pay.true.price' })}：
@@ -169,7 +185,7 @@ class QRCodePayment extends PureComponent {
 				</div>
 				<Card
 					type="inner"
-					title={this.purchaseType ? formatMessage({ id: this.purchaseType }) : null}
+					title={this.purchaseType ? formatMessage({ id: `${this.purchaseType}.scan.pay` }) : null}
 					loading={loading.effects['trade/payOrder']}
 				>
 					<div className={styles['qrCode-content']}>

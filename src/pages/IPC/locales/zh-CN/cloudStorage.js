@@ -90,6 +90,8 @@ export default {
 	'cloudStorage.use.tips': '使用',
 	'cloudStorage.scan.code.tips': '扫码完成支付',
 	'cloudStorage.waitting.sub': '正在订阅服务...',
-
+	'cloudStorage.info': '提示',
+	'cloudStorage.info.tips': '订单已支付，请勿重复操作',
+	'cloudStorage.ok.text': '知道了',
 	
 };
