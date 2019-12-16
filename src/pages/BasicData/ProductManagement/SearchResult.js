@@ -58,7 +58,7 @@ class SearchResult extends Component {
 			erpImport: {
 				pathId: 'erpImport',
 				urlParams: {},
-			},
+			}
 		};
 
 		const { pathId, urlParams = {} } = urlMap[name] || {};
@@ -123,7 +123,7 @@ class SearchResult extends Component {
 			},
 			{
 				title: formatMessage({ id: 'basicData.product.modifiedTime' }),
-				dataIndex: 'modifiedTime',
+				dataIndex: 'modified_time',
 				render: text => <span>{unixSecondToDate(text)}</span>,
 			},
 			{
