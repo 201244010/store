@@ -351,7 +351,9 @@ class CreateStore extends React.Component {
 							rules: [
 								{
 									validator: (rule, value, callback) => {
-										if (!Number(value) || !RegExp.area.test(value)) {
+										if (value === '' || value === null) {
+											callback();
+										} else if (!Number(value) || !RegExp.area.test(value)) {
 											callback(
 												formatMessage({
 													id: 'storeManagement.create.area.formatError',
