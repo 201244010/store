@@ -46,7 +46,10 @@ class QRCodePayment extends PureComponent {
 	async componentDidMount() {
 		const { getOrderDetail } = this.props;
 		await this.getQRCodeURL();
-		await getOrderDetail({ orderNo: this.orderNo });
+		const { orderDetail: { paymentAmount }} = this.props;
+		if(!paymentAmount){
+			await getOrderDetail({ orderNo: this.orderNo });
+		}
 		this.orderStatusRefresh();
 	}
 
@@ -157,10 +160,11 @@ class QRCodePayment extends PureComponent {
 		const { loading, goToPath, orderDetail } = this.props;
 
 		return (
-			<Card title={formatMessage({ id: 'pay.order.commit' })}>
+			<Card title={null}>
 				<div className={styles['qrCode-title']}>
-					<div className={styles['order-no']}>
-						{formatMessage({ id: 'pay.order.no' })}：{this.orderNo}
+					<div>
+						<h3 className={styles['payment-title']}>{this.purchaseType ? formatMessage({ id: `${this.purchaseType  }.pay` }) : null}</h3>
+						<p className={styles['order-num']}>{formatMessage({id: 'cloudStorage.orderNo'})}{this.orderNo}</p>
 					</div>
 					<div className={styles['order-price']}>
 						{formatMessage({ id: 'pay.true.price' })}：
@@ -169,7 +173,7 @@ class QRCodePayment extends PureComponent {
 				</div>
 				<Card
 					type="inner"
-					title={this.purchaseType ? formatMessage({ id: this.purchaseType }) : null}
+					title={this.purchaseType ? formatMessage({ id: `${this.purchaseType}.scan.pay` }) : null}
 					loading={loading.effects['trade/payOrder']}
 				>
 					<div className={styles['qrCode-content']}>

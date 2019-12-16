@@ -54,14 +54,9 @@ class SubscriptionSuccess extends React.Component{
 			dataIndex:'expireTime',
 			render:(expireTime) => {
 				if(expireTime){
-					const year = moment.unix(expireTime).year();
-					const month = moment.unix(expireTime).month();
-					const day = moment.unix(expireTime).day();
 					return (
 						<span>
-							{year}{formatMessage({ id: 'cloudStorage.year.unit'})}
-							{month}{formatMessage({ id: 'cloudStorage.month.unit'})}
-							{day}{formatMessage({ id: 'cloudStorage.day.unit'})}
+							{moment.unix(expireTime).format('YYYY-MM-DD')}
 						</span>);
 				}
 				return '--';

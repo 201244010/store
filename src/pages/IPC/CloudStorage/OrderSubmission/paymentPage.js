@@ -54,6 +54,7 @@ const PAYMENT_ICON = {
 		loading: state.loading,
 		trade: state.trade,
 		routing: state.routing,
+		orderDetail: state.trade.orderDetail,
 	}),
 	dispatch => ({
 		getPurchaseType: () => dispatch({ type: 'trade/getPurchaseType' }),
@@ -62,7 +63,9 @@ const PAYMENT_ICON = {
 		goToPath: (pathId, urlParams = {}, linkType = null) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, linkType } }),
 		getCountDownFromCloud: (orderNo) => 
-			dispatch({ type: 'cloudStorage/getCountDown', payload: {orderNo}})
+			dispatch({ type: 'cloudStorage/getCountDown', payload: {orderNo}}),
+		getOrderDetail: ({ orderNo }) => 
+			dispatch({ type: 'trade/getOrderDetail', payload: { orderNo }}),
 	})
 )
 
@@ -80,10 +83,15 @@ class PaymentPage extends React.Component{
 		const {
 			routing: { location: { query: { orderNo = null } = {} } = {} },
 			goToPath,
-			getCountDownFromCloud
+			getCountDownFromCloud,
+			getOrderDetail
 		} = this.props;
 		if(!orderNo){
 			goToPath('cloudStorage');
+		}
+		const { orderDetail: { paymentAmount }} = this.props;
+		if(!paymentAmount){
+			await getOrderDetail({ orderNo });
 		}
 		const countDown = await getCountDownFromCloud(orderNo);
 		this.setState({
@@ -146,14 +154,23 @@ class PaymentPage extends React.Component{
 	}
 	
 	render(){
+		const { orderDetail } = this.props;
 		const { countDown, selectedPurchaseType, orderNo } = this.state;
 		const b2c = PURCHASE_TYPE.b2c;
 		const { minute = '--', second = '--' } = countDown ? getCountDown(countDown) : {};
 		return(
 			<>
 				<Card title={null} bordered={false} className={styles['payment-container']}>
-					<h3 className={styles['payment-title']}>{formatMessage({id: 'cloudStorage.order.success'})}</h3>
-					<p className={styles['order-num']}>{formatMessage({id: 'cloudStorage.orderNo'})}{orderNo}</p>
+					<div className={styles['qrCode-title']}>
+						<div>
+							<h3 className={styles['payment-title']}>{formatMessage({id: 'cloudStorage.order.success'})}</h3>
+							<p className={styles['order-num']}>{formatMessage({id: 'cloudStorage.orderNo'})}{orderNo}</p>
+						</div>
+						<div className={styles['order-price']}>
+							{formatMessage({ id: 'pay.true.price' })}：
+							<span className={styles.price}>{orderDetail.paymentAmount ? `¥${Number(orderDetail.paymentAmount).toFixed(2)}` : '--'}</span>
+						</div>
+					</div>
 					<Card
 						style={{ marginTop: 16 }}
 						type="inner"
