@@ -8,6 +8,7 @@ export default {
 	'serviceManagement.status.unActivate': '待激活',
 	'serviceManagement.status.activated': '已激活',
 	'serviceManagement.status.disabled': '已过期',
+	'serviceManagement.status.unused': '已失效',
 	
 	'serviceManagement.placeholder.search': '请输入服务名称、服务编号查询',
 	
