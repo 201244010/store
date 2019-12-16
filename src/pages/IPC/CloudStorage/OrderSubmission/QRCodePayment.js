@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { Card, message } from 'antd';
+import { Card, message, Modal } from 'antd';
 import { format } from '@konata9/milk-shake';
 import { ERROR_OK, ALTERT_TRADE_MAP } from '@/constants/errorCode';
 import styles from './trade.less';
@@ -44,18 +44,30 @@ class QRCodePayment extends PureComponent {
 	}
 
 	async componentDidMount() {
-		const { getOrderDetail } = this.props;
-		await this.getQRCodeURL();
-		const { orderDetail: { paymentAmount }} = this.props;
-		if(!paymentAmount){
-			await getOrderDetail({ orderNo: this.orderNo });
+		const { getOrderDetail, goToPath } = this.props;
+		await getOrderDetail({ orderNo: this.orderNo });
+		const { orderDetail: { status } } = this.props;
+		if(status === 4) {
+			Modal.info({
+				title: formatMessage({id: 'cloudStorage.info'}),
+				content: (
+					<div>
+						<p>{formatMessage({id: 'cloudStorage.info.tips'})}</p>
+					</div>
+				),
+				okText: formatMessage({id: 'cloudStorage.ok.text'}),
+				onOk() { goToPath('serviceManagement');},
+			});
+			return;
 		}
+		await this.getQRCodeURL();
 		this.orderStatusRefresh();
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.refreshOrderStatus);
 		clearInterval(this.refreshWaitSuccess);
+		Modal.destroyAll();
 	}
 
 	getQRCodeURL = async () => {
