@@ -26,7 +26,8 @@ const STATUS = [
 	formatMessage({id: 'serviceManagement.status.all'}),
 	formatMessage({id: 'serviceManagement.status.unActivate'}),
 	formatMessage({id: 'serviceManagement.status.activated'}),
-	formatMessage({id: 'serviceManagement.status.disabled'})
+	formatMessage({id: 'serviceManagement.status.disabled'}),
+	formatMessage({id: 'serviceManagement.status.unused'})
 ];
 
 @connect(
