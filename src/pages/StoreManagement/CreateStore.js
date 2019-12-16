@@ -7,6 +7,7 @@ import * as CookieUtil from '@/utils/cookies';
 import { getLocationParam } from '@/utils/utils';
 import { customValidate } from '@/utils/customValidate';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
+import * as RegExp from '@/constants/regexp';
 import { STORE_EXIST } from '@/constants/errorCode';
 
 const FormItem = Form.Item;
@@ -350,10 +351,7 @@ class CreateStore extends React.Component {
 							rules: [
 								{
 									validator: (rule, value, callback) => {
-										if (
-											value &&
-											!/^(([1-9]\d{0,5})|0)(\.\d{1,2})?$/.test(value)
-										) {
+										if (!Number(value) || !RegExp.area.test(value)) {
 											callback(
 												formatMessage({
 													id: 'storeManagement.create.area.formatError',
