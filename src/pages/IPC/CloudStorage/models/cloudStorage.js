@@ -27,20 +27,10 @@ export default {
 			const { deviceList = [] } = data;
 		
 			if(code === ERROR_OK) {
-				// for(let i = 0; i < deviceList.length ; i++){
-				// 	if(deviceList[i].deviceSn === sn){
-				// 		const item = deviceList.splice(i,1);
-				// 		deviceList = item.concat(deviceList);
-				// 		break;
-				// 	}
-				// }
 				// true 为全部已激活，false 存在未激活的ipc
 				const bundledStatusBool = deviceList.length === 0 ? true : deviceList.every((item) => (
 					item.activeStatus === 2 || !item.activeStatus
 				));
-				// const storageIpcList = deviceList.filter((item) => (
-				// 	item.activeStatus === 1
-				// ));
 				
 				yield put({
 					type: 'readData',
