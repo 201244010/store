@@ -400,6 +400,25 @@ const router = [
 						redirect: '/basicData/merchantManagement/view',
 					},
 					{
+						path: '/basicData/systemSetting',
+						name: 'systemSetting',
+						id: 'systemSetting',
+						routes: [
+							{
+								path: '/basicData/systemSetting/companyInfo',
+								name: 'companyInfo',
+								id: 'companyInfo',
+								component: './Organization/CompanyInfo',
+							},
+							{
+								path: '/basicData/systemSetting/organization',
+								name: 'organization',
+								id: 'organization',
+								component: './Organization/OrganizationTable',
+							},
+						],
+					},
+					{
 						path: '/basicData/merchantManagement',
 						name: 'merchantManagement',
 						routes: [
