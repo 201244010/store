@@ -26,7 +26,7 @@ export default {
 	'serviceManagement.label.deviceName': '绑定设备名称',
 	'serviceManagement.label.deviceSn': '绑定设备SN',
 	'serviceManagement.label.serviceDuration': '有效期',
-	'serviceManagement.label.orderNo': '关联订单号',
+	'serviceManagement.label.orderNo': '最新关联订单号',
 	'serviceManagement.label.deviceModel': '绑定设备型号',
 	'serviceManagement.label.store.belong': '所属店铺',
 	
