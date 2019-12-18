@@ -18,7 +18,7 @@
 	'iot.pos.detail.resolution': '解析度',
 	'iot.pos.detail.location': '當前位置',
 	'iot.pos.modify.status': '保修狀態',
-	'iot.pos.modify.active.date': '啟動日期',
+	'iot.pos.modify.active.date': '激活日期',
 	'iot.pos.modify.expire.date': '過保日期',
 	'iot.pos.system.total.text': '共',
 	'iot.pos.system.cache': '記憶體',

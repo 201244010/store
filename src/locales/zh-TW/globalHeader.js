@@ -14,5 +14,5 @@
 	'component.noticeIcon.clear': '清空',
 	'component.noticeIcon.cleared': '清空了',
 	'component.noticeIcon.empty': '暫無數據',
-	'component.noticeIcon.view-more': '查看全部'
+	'component.noticeIcon.view-more': '查看全部',
 };

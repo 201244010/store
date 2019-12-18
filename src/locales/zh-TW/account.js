@@ -4,11 +4,10 @@
 	'account.validate.isEmpty': '請輸入手機號或郵箱',
 	'account.password.validate.isEmpty': '請輸入密碼',
 	'account.merge.title': '提示',
-	'account.merge.content':
-		'檢測到您在商米不同平臺中註冊了多個帳戶，為了更好的維護帳戶安全，需要對您的帳戶進行合併，點擊確定前往合併',
+	'account.merge.content': '檢測到您在商米不同平臺中註冊了多個賬戶，為了更好的維護賬戶安全，需要對您的賬戶進行合併，點擊確定前往合併',
 	'mobile.placeholder': '11位手機號',
 	'mobile.code.placeholder': '短信驗證碼',
-	'username.invalid.character': '內容中包含非法字元，請嘗試手動輸入',
+	'username.invalid.character': '內容中包含非法字符，請嘗試手動輸入',
 	'password.placeholder': '8-30位密碼，區分大小寫',
 	'password.input.error': '登錄密碼錯誤',
 	'confirm.placeholder': '確認密碼',

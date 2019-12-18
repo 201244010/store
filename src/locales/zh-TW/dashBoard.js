@@ -1,22 +1,20 @@
 ﻿export default {
 	'dashboard.search.today': '今日',
 	'dashboard.search.yesterday': '昨日',
-	'dashboard.search.week': '本周',
+	'dashboard.search.week': '本週',
 	'dashboard.search.month': '本月',
 	'dashboard.search.range.start': '開始日期',
 	'dashboard.search.range.end': '結束日期',
 	'dashboard.search.range.overflow': '時間跨度最大為 60 個自然日',
 	'dashboard.last.modify.date': '最後更新時間',
 	'dashboard.refresh.too.fast': '刷新過於頻繁，請稍後再試',
-
 	'dashboard.order.sales': '按銷售額',
 	'dashboard.order.show.sales': '交易時間分佈（按銷售額）',
 	'dashboard.order.count': '按訂單數',
 	'dashboard.order.show.count': '交易時間分佈（按訂單數）',
 	'dashboard.order.d2d': '日環比',
-	'dashboard.order.w2w': '周環比',
+	'dashboard.order.w2w': '週環比',
 	'dashboard.order.m2m': '月同比',
-
 	'dashboard.overview.product': '商品數',
 	'dashboard.overview.esl.push': '待推送',
 	'dashboard.overview.esl.push.failed': '推送失敗',
@@ -29,12 +27,10 @@
 	'dashboard.overview.ipc.online': '線上智能攝像機',
 	'dashboard.overview.ipc.offline': '離線',
 	'dashboard.overview.ipc.show.title': '攝像機數',
-
 	'dashboard.overview.product.total.info': '詳情及規則說明',
 	'dashboard.overview.esl.total.info': '詳情及規則說明',
 	'dashboard.overview.ap.total.info': '詳情及規則說明',
 	'dashboard.overview.ipc.total.info': '詳情及規則說明',
-
 	'dashboard.total.sales': '總銷售額',
 	'dashboard.total.sales.info': '詳情及規則說明',
 	'dashboard.total.count': '總筆數',
@@ -43,22 +39,15 @@
 	'dashboard.customer.unit.price.info': '詳情及規則說明',
 	'dashboard.total.refund.count': '退款筆數',
 	'dashboard.total.refund.count.info': '詳情及規則說明',
-
 	'dashboard.trade.time': '交易時間分佈',
-
 	'dashboard.sku.rate': '商品銷量排行',
 	'dashboard.payment': '支付方式',
-
 	'dashboard.trade.date': '交易日期',
 	'dashboard.trade.date.unit': '日',
 	'dashboard.trade.amount': '交易金額',
 	'dashboard.trade.count': '交易筆數',
-
-	// 訂單類型
 	'payment-order-type-normal': '正常銷售',
 	'payment-order-type-refund': '退款',
-
-	// 支付類型
 	'payment-purchase-type-cash': '現金',
 	'payment-purchase-type-alipay': '支付寶',
 	'payment-purchase-type-wechat': '微信',
@@ -67,8 +56,6 @@
 	'payment-purchase-type-other': '其他',
 	'payment-purchase-type-qqwallet': 'QQ錢包',
 	'payment-purchase-type-jdwallet': '京東錢包',
-
-	// 銷售
 	'salse.total': '總銷售額',
 	'salse.count': '交易筆數',
 	'shop.customers': '進店客流',
@@ -85,8 +72,6 @@
 	'customer.stranger': '新客',
 	'customer.regular': '熟客',
 	'customer.count': '客流量',
-
-	// 訂單詳情頁面
 	'order.search.rankdefault': '綜合排序',
 	'order.search.price.desc': '金額倒序',
 	'order.search.price.asc': '金額正序',

@@ -39,7 +39,7 @@
 	'storeManagement.create.daysThr': '週四',
 	'storeManagement.create.daysFri': '週五',
 	'storeManagement.create.daysSat': '週六',
-	'storeManagement.create.daysSun': '周日',
+	'storeManagement.create.daysSun': '週日',
 	'storeManagement.create.startTime': '開始時間',
 	'storeManagement.create.endTime': '結束時間',
 	'storeManagement.create.fullDay': '全天',
@@ -68,7 +68,6 @@
 	'storeManagement.message.createFailed': '創建失敗',
 	'storeManagement.message.createSuccess': '創建成功',
 	'storeManagement.message.name.exist': '門店名稱已存在',
-
 	'store.auth': '門店對接',
 	'store.authKey': '對接憑證資訊',
 	'store.get.authKey': '獲取對接憑證',

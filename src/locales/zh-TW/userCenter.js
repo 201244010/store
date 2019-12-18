@@ -1,10 +1,10 @@
 ﻿export default {
 	'userCenter.basicInfo.title': '基本設置',
-	'userCenter.basicInfo.nameChange.success': '昵稱修改成功',
-	'userCenter.basicInfo.nameChange.fail': '昵稱修改失敗',
+	'userCenter.basicInfo.nameChange.success': '暱稱修改成功',
+	'userCenter.basicInfo.nameChange.fail': '暱稱修改失敗',
 	'userCenter.security.title': '安全設置',
 	'userCenter.security.password': '登錄密碼',
-	'userCenter.security.password.description': '安全性高的密碼可以使帳號更安全，建議您定期更換密碼',
+	'userCenter.security.password.description': '安全性高的密碼可以使賬號更安全，建議您定期更換密碼',
 	'userCenter.security.mobile': '手機綁定',
 	'userCenter.security.mobile.description': '已綁定手機：',
 	'userCenter.security.mail': '郵箱綁定',
@@ -42,5 +42,5 @@
 	'modify.success': '修改成功',
 	'modify.fail': '修改失敗',
 	'create.success': '創建成功',
-	'create.fail': '創建失敗'
+	'create.fail': '創建失敗',
 };

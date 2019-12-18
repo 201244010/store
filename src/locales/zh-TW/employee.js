@@ -12,8 +12,8 @@
 	'employee.gender.isEmpty': '性別不能為空',
 	'employee.gender.male': '男',
 	'employee.gender.female': '女',
-	'employee.sso.account': '商米帳號',
-	'employee.sso.binded': '帳號已存被綁定',
+	'employee.sso.account': '商米賬號',
+	'employee.sso.binded': '賬號已存被綁定',
 	'employee.phone': '手機號或郵箱',
 	'employee.phone.exist': '手機號已存在',
 	'employee.create': '新建員工',
@@ -28,7 +28,6 @@
 	'employee.info.select.role': '請選擇角色',
 	'employee.info.select.orgnizaion': '請選擇組織',
 	'employee.info.select.orgnizaion.isEmpty': '組織和角色都不能為空',
-
 	'employee.info.delete': '確定要刪除該員工？',
 	'employee.info.delete.confirm': '請確認是否要刪除員工',
 	'employee.info.delete.success': '員工刪除成功',
@@ -36,5 +35,5 @@
 	'employee.info.delete.failed.reason': '超級管理員角色無法刪除',
 	'employee.info.create.failed': '員工創建失敗',
 	'employee.info.update.failed': '員工更新失敗',
-	'employee.info.binded.error': '員工工號/手機/郵箱/商米帳號已被綁定',
+	'employee.info.binded.error': '員工工號/手機/郵箱/商米賬號已被綁定',
 };
