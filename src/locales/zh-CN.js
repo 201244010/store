@@ -23,6 +23,7 @@ import baseStation from './zh-CN/ESL-device';
 
 // BasicData
 import productManagement from './zh-CN/BasicData-product';
+import companyInfo from './zh-CN/companyInfo';
 
 import merchantManagement from './zh-CN/merchant';
 
@@ -76,4 +77,5 @@ export default {
 	...passengerAnalyze,
 	...serviceManagement,
 	...orderManagement,
+	...companyInfo,
 };
