@@ -58,7 +58,6 @@ class OrgnizationSelect extends Component {
 	render() {
 		const { orgnizationRoleList } = this.state;
 		const { orgnizationTree = [], roleSelectList = [] } = this.props;
-
 		return (
 			<>
 				{orgnizationRoleList.map((item, index) => (

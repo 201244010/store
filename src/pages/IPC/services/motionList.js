@@ -32,7 +32,7 @@ export const getMotionList = async (params) => {
 	return request('getList', {
 		body: {
 			// company_id:companyId,
-			// shop_id:shopId,
+			// shopId:shopId,
 			time_range_start: startTime,
 			time_range_end: endTime,
 			id: deviceId,
@@ -49,7 +49,7 @@ export const getMotionList = async (params) => {
 				code: ERROR_OK,
 				data: {
 					list: result,
-					total: data.count
+					total: data.total_count
 				}
 			};
 		}

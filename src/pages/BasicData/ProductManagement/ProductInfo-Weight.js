@@ -55,19 +55,19 @@ const ProductInfoWeight = ({ productWeight = {} }) => {
 
 				<div className={`${styles['card-item']}`}>
 					<span className={styles['item-label']}>
-						{formatMessage({ id: isDiscount.label })}：
+						{formatMessage({ id: isAlterPrice.label })}：
 					</span>
 					<span className={styles['item-content']}>
-						{isDiscount.value === '0'
+						{isAlterPrice.value === '0'
 							? formatMessage({ id: 'text.no' })
 							: formatMessage({ id: 'text.yes' })}
 					</span>
 
 					<span className={styles['item-label']}>
-						{formatMessage({ id: isAlterPrice.label })}：
+						{formatMessage({ id: isDiscount.label })}：
 					</span>
 					<span className={styles['item-content']}>
-						{isAlterPrice.value === '0'
+						{isDiscount.value === '0'
 							? formatMessage({ id: 'text.no' })
 							: formatMessage({ id: 'text.yes' })}
 					</span>

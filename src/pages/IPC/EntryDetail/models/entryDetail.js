@@ -28,7 +28,7 @@ export default {
 
 			if (result && result.code === ERROR_OK) {
 				const data = result.data || {};
-				const shopList = data.shop_list || [];
+				const shopList = data.shopList || [];
 				yield put({
 					type: 'readData',
 					payload: {
@@ -53,8 +53,8 @@ export default {
 			const arrivalList = historyList.map((item) => {
 				let shopName = '';
 				shopList.forEach(shopItem => {
-					if (shopItem.shop_id === item.shopId) {
-						shopName = shopItem.shop_name;
+					if (shopItem.shopId === item.shopId) {
+						shopName = shopItem.shopName;
 					}
 				});
 				return({

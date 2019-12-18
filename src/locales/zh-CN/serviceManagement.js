@@ -8,6 +8,7 @@ export default {
 	'serviceManagement.status.unActivate': '待激活',
 	'serviceManagement.status.activated': '已激活',
 	'serviceManagement.status.disabled': '已过期',
+	'serviceManagement.status.unused': '已失效',
 	
 	'serviceManagement.placeholder.search': '请输入服务名称、服务编号查询',
 	
@@ -25,7 +26,7 @@ export default {
 	'serviceManagement.label.deviceName': '绑定设备名称',
 	'serviceManagement.label.deviceSn': '绑定设备SN',
 	'serviceManagement.label.serviceDuration': '有效期',
-	'serviceManagement.label.orderNo': '关联订单号',
+	'serviceManagement.label.orderNo': '最新关联订单号',
 	'serviceManagement.label.deviceModel': '绑定设备型号',
 	'serviceManagement.label.store.belong': '所属店铺',
 	

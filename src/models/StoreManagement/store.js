@@ -32,8 +32,8 @@ export default {
 		allStores: Storage.get(CookieUtil.SHOP_LIST_KEY, 'local') || [],
 		searchFormValue: {
 			keyword: '',
-			type_one: 0,
-			type_two: 0,
+			typeOne: 0,
+			typeTwo: 0,
 		},
 		// TODO 下一个准备修改
 		getList: {
@@ -91,10 +91,10 @@ export default {
 			let name = '';
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
-				const shopList = data.shop_list || [];
+				const shopList = data.shopList || [];
 				shopList.map(item => {
-					if (item.shop_id === shopId) {
-						name = item.shop_name;
+					if (item.shopId === shopId) {
+						name = item.shopName;
 					}
 				});
 			}
@@ -145,7 +145,7 @@ export default {
 			const response = yield call(Action.getList, opts);
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
-				const shopList = data.shop_list || [];
+				const shopList = data.shopList || [];
 				const newPayload = {
 					loading: false,
 					storeList: shopList,
@@ -158,10 +158,10 @@ export default {
 					newPayload.allStores = shopList;
 				}
 
-				yield put({
-					type: 'setShopListInStorage',
-					payload: { shopList },
-				});
+				// yield put({
+				// 	type: 'setShopListInStorage',
+				// 	payload: { shopList },
+				// });
 
 				yield put({
 					type: 'updateState',
@@ -187,7 +187,7 @@ export default {
 				message.success(formatMessage({ id: 'storeManagement.message.createSuccess' }));
 				const data = response.data || {};
 				if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
-					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.shop_id);
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.shopId);
 				}
 
 				const res = yield put.resolve({
@@ -195,9 +195,9 @@ export default {
 					payload: {},
 				});
 
-				const { data: { shop_list } = {} } = res || {};
+				const { data: { shopList } = {} } = res || {};
 				// const { storeList } = yield select(state => state.store);
-				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shop_list }, 'local');
+				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 
 				yield put({
 					type: 'menu/goToPath',
@@ -382,8 +382,8 @@ export default {
 				payload: {
 					searchFormValue: {
 						keyword: '',
-						type_one: 0,
-						type_two: 0,
+						typeOne: 0,
+						typeTwo: 0,
 					},
 					pagination: {
 						current: 1,
@@ -433,15 +433,15 @@ export default {
 			const {
 				payload: { data },
 			} = action;
-			const arrayList = data.data.shop_list;
+			const arrayList = data.data.shopList;
 			let array = [];
 			array = arrayList.map(value => ({
 				address: value.address,
-				status: value.business_status,
-				shopId: value.shop_id,
-				name: value.shop_name,
-				type: value.type_name,
-				contactPerson: value.contact_person,
+				status: value.businessStatus,
+				shopId: value.shopId,
+				name: value.shopName,
+				type: value.typeName,
+				contactPerson: value.contactPerson,
 				key: value.id,
 			}));
 			return {
@@ -456,15 +456,15 @@ export default {
 			return {
 				...state,
 				alter: {
-					name: store.shop_name,
-					type: store.type_name,
-					status: store.business_status,
+					name: store.shopName,
+					type: store.typeName,
+					status: store.businessStatus,
 					address: store.address,
-					time: store.business_hours,
-					contactPerson: store.contact_person,
-					contactPhone: store.contact_tel,
-					shopId: store.shop_id,
-					createdTime: store.created_time,
+					time: store.businessHours,
+					contactPerson: store.contactPerson,
+					contactPhone: store.contactTel,
+					shopId: store.shopId,
+					createdTime: store.createdTime,
 					modifiedTime: store.modified_time,
 				},
 			};

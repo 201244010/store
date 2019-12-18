@@ -82,7 +82,7 @@ export default class GlobalHeaderRight extends PureComponent {
 		// router.push(`/notificationInfo?msgId=${msg_id}`);
 	};
 
-	handleStoreChange = storeId => {
+	handleStoreChange = (storeId) => {
 		const { goToPath } = this.props;
 		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeId);
 		goToPath('root', {}, 'href');
@@ -132,8 +132,8 @@ export default class GlobalHeaderRight extends PureComponent {
 					onChange={this.handleStoreChange}
 				>
 					{storeList.map(store => (
-						<Select.Option key={store.shop_id} value={store.shop_id}>
-							{store.shop_name || ''}
+						<Select.Option key={store.shopId} value={store.shopId}>
+							{store.shopName || ''}
 						</Select.Option>
 					))}
 				</Select>

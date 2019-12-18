@@ -25,7 +25,7 @@ class MerchantCreate extends Component {
 		const { getStoreList, goToPath } = this.props;
 		const response = await getStoreList({});
 		const result = response.data || {};
-		const shopList = result.shop_list || [];
+		const shopList = result.shopList || [];
 		Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 		if (shopList.length === 0) {
 			CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
@@ -33,7 +33,7 @@ class MerchantCreate extends Component {
 			// router.push(`${MENU_PREFIX.STORE}/createStore`);
 		} else {
 			const defaultStore = shopList[0] || {};
-			CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
+			CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
 			goToPath('root');
 			// router.push('/');
 		}

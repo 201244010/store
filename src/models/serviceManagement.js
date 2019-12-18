@@ -91,6 +91,12 @@ export default {
 					}
 				});
 			} else {
+				yield put({
+					type: 'updateState',
+					payload: {
+						serviceDetail: {}
+					}
+				});
 				message.error(formatMessage({id: 'serviceManagement.error.getDetail'}));
 			}
 		},

@@ -182,20 +182,17 @@ const statusCode = {
 				sn
 			}
 		}).then((result) => {
-			const { code, data} = result;
+			const { code, data } = result;
 			if(code === ERROR_OK) {
-				const { status, validTime } = data;
+				const { status, activeStatus } = data;
 				if(status === statusCode.opened) {
-					const days = validTime/3600/24;
-					// console.log(days);
-					if (days < 3){
-						return 'willExpired';
-					}
 					return 'opened';
 				} if( status === statusCode.expired) {
 					return 'expired';
+				} if(activeStatus === 1) {
+					return 'freeClosed';
 				}
-				return 'closed';
+				return 'payClosed';
 			}
 			return '';
 		});
@@ -221,7 +218,7 @@ class Live extends React.Component{
 				pixelRatio: '16:9'
 			},
 			liveTimestamp: 0,
-			sdStatus: true,
+			sdStatus: false,
 			cloudStatus: '',
 			baseTime: '', // 视频直播baseTime
 			historyPPI: '',
@@ -235,7 +232,7 @@ class Live extends React.Component{
 
 		const sn = this.getSN();
 
-		let sdStatus = true;
+		let sdStatus = false;
 		let cloudStatus = '';
 		if (sn) {
 			clearList({ sn });
@@ -248,14 +245,15 @@ class Live extends React.Component{
 
 			setDeviceSn({ sn });
 
-			if(hasFaceid){
+			if(hasFaceid && isOnline){
 				const status = await getSdStatus({ sn });
 				if(status === 0) {
 					message.info(formatMessage({ id: 'live.nosdInfo' }));
 					sdStatus = false;
+				} else {
+					sdStatus = true;
+					this.startFaceComparePush();
 				}
-
-				this.startFaceComparePush();
 			}
 			if(hasCloud) {
 				cloudStatus = await getCloudInfo(sn);
@@ -520,7 +518,7 @@ class Live extends React.Component{
 			<div className={styles['live-wrapper']}>
 
 				<div className={`${styles['video-player-container']} ${sdStatus && hasFaceid ? styles['has-faceid'] : ''}
-								${cloudStatus === 'closed' || cloudStatus === 'expired' || cloudStatus === 'willExpired' ? styles['has-cloud-info']:''}`}
+								${cloudStatus === 'freeClosed' || cloudStatus === 'expired' || cloudStatus === 'payClosed' ? styles['has-cloud-info']:''}`}
 				>
 					<LivePlayer
 
@@ -553,7 +551,7 @@ class Live extends React.Component{
 						onTimeChange={this.onTimeChange}
 						onMetadataArrived={this.onMetadataArrived}
 						isOnline={isOnline}
-						cloudStatus={cloudStatus}
+						cloudStatus={cloudStatus === 'payClosed' || cloudStatus === 'freeClosed' ? 'closed' : cloudStatus}
 						navigateTo={navigateTo}
 						sn={sn}
 						updateBasetime={this.updateBasetime}
@@ -561,18 +559,20 @@ class Live extends React.Component{
 
 				</div>
 				{
-					cloudStatus === 'closed' || cloudStatus === 'expired' || cloudStatus === 'willExpired'?
+					cloudStatus === 'freeClosed' || cloudStatus === 'payClosed' || cloudStatus === 'expired' ?
 						<div className={styles['cloud-service-info']}>
 							{
-								cloudStatus === 'closed' ?
+								cloudStatus === 'expired' ?
 									<div>
-										<span>{formatMessage({ id: 'live.cloudServiceInfo' })}</span>
-										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'subscribe' })}>{formatMessage({ id: 'live.subscribeCloud'})}</span>
+										<span>{formatMessage({ id: 'live.expired'})}</span>
+										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'repay' })}>{formatMessage({ id: 'live.pay'})}</span>
 									</div>
 									:
 									<div>
-										<span>{cloudStatus === 'expired'?formatMessage({ id: 'live.expired'}): formatMessage({ id: 'live.willExpired'})}</span>
-										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'repay' })}>{formatMessage({ id: 'live.pay'})}</span>
+										<span>{cloudStatus === 'freeClosed' ? formatMessage({ id: 'live.freeServiceInfo' }) : formatMessage({ id: 'live.payServiceInfo' })}</span>
+										<span className={styles['cloud-action']} onClick={() => navigateTo('cloudStorage',{ sn, type: 'subscribe' })}>
+											{cloudStatus === 'freeClosed' ? formatMessage({ id: 'live.freeSubscribe'}): formatMessage({ id: 'live.paySubscribe'}) }
+										</span>
 									</div>
 							}
 						</div>

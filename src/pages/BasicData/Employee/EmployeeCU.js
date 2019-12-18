@@ -5,7 +5,7 @@ import { Card, Form, Input, Button, Radio, message } from 'antd';
 import OrgnizationSelect from './OrgnizationSelect';
 import { getLocationParam } from '@/utils/utils';
 import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { ERROR_OK, USER_EXIST, SSO_BINDED, EMPLOYEE_BINDED } from '@/constants/errorCode';
+import { ERROR_OK, USER_EXIST, EMPLOYEE_BINDED } from '@/constants/errorCode';
 import * as RegExp from '@/constants/regexp';
 import {
 	EMPLOYEE_NUMBER_LIMIT,
@@ -19,6 +19,7 @@ import styles from './Employee.less';
 		loading: state.loading,
 		employee: state.employee,
 		role: state.role,
+		query: state.routing.location.query,
 	}),
 	dispatch => ({
 		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
@@ -43,6 +44,10 @@ import styles from './Employee.less';
 		getAllRoles: () => dispatch({ type: 'role/getAllRoles' }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		getUserInfoByUsername: ({ username }) =>
+			dispatch({ type: 'employee/getUserInfoByUsername', payload: { username } }),
+		checkNumberExist: ({ number }) =>
+			dispatch({ type: 'employee/checkNumberExist', payload: { number } }),
 	})
 )
 @Form.create()
@@ -61,14 +66,14 @@ class EmployeeCU extends Component {
 		};
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		const { getAllRoles } = this.props;
 		getAllRoles();
-		this.createOrgnizationTree();
 		if (this.employeeId && this.action === 'edit') {
 			const { getEmployeeInfo } = this.props;
-			getEmployeeInfo({ employeeId: this.employeeId });
+			await getEmployeeInfo({ employeeId: this.employeeId });
 		}
+		this.createOrgnizationTree();
 	}
 
 	createOrgnizationTree = async () => {
@@ -76,24 +81,41 @@ class EmployeeCU extends Component {
 			getCompanyIdFromStorage,
 			getShopListFromStorage,
 			getCompanyListFromStorage,
+			employee: {
+				employeeInfo: { mappingList = [] },
+			},
 		} = this.props;
 		const currentCompanyId = await getCompanyIdFromStorage();
 		const companyList = await getCompanyListFromStorage();
 		const shopList = await getShopListFromStorage();
-
 		const companyInfo =
 			companyList.find(company => company.companyId === currentCompanyId) || {};
-
+		const shopNameList = shopList.map(item => item.shopName);
+		const tmpObj = {};
+		const tmpMappingList = mappingList
+			.filter(item => !shopNameList.includes(item.shopName) && item.shopName !== '')
+			.reduce((items, next) => {
+				tmpObj[next.shopId] ? '' : (tmpObj[next.shopId] = true && items.push(next));
+				return items;
+			}, []);
 		const orgnizationTree = [
 			{
 				title: companyInfo.companyName,
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
-				children: shopList.map(shop => ({
-					title: shop.shop_name,
-					value: `${companyInfo.companyId}-${shop.shop_id}`,
-					key: `${companyInfo.companyId}-${shop.shop_id}`,
-				})),
+				children: [
+					...shopList.map(shop => ({
+						title: shop.shopName,
+						value: `${companyInfo.companyId}-${shop.shopId}`,
+						key: `${companyInfo.companyId}-${shop.shopId}`,
+					})),
+					...tmpMappingList.map(shop => ({
+						title: shop.shopName,
+						value: `${companyInfo.companyId}-${shop.shopId}`,
+						key: `${companyInfo.companyId}-${shop.shopId}`,
+						disabled: true,
+					})),
+				],
 			},
 		];
 		this.setState({
@@ -108,9 +130,9 @@ class EmployeeCU extends Component {
 			.filter(item => item.roleName !== 'admin')
 			.forEach(item => {
 				const { companyId = null, shopId = null, roleId = null } = item;
+
 				const orgnizationKey =
 					shopId === 0 || !shopId ? `${companyId}` : `${companyId}-${shopId}`;
-
 				if (orgnizationMap.has(orgnizationKey)) {
 					const { roleList = [] } = orgnizationMap.get(orgnizationKey);
 					orgnizationMap.set(orgnizationKey, {
@@ -155,23 +177,38 @@ class EmployeeCU extends Component {
 		const {
 			form: { validateFields, setFields },
 			checkUsernameExist,
-			checkSsoBinded,
 			createEmployee,
 			updateEmployee,
 			goToPath,
+			checkNumberExist,
+			employee: {
+				employeeInfo: { number: initNumber },
+			},
 		} = this.props;
-
 		validateFields(async (err, values) => {
-			// console.log(values);
 			if (!err) {
-				const { mappingList = [], ssoUsername = '', username, number } = values;
+				const { mappingList = [], username, number } = values;
 				const submitData = {
 					...values,
 					number: number.toUpperCase(),
 					mappingList: this.formatMappingList(mappingList),
 				};
-
 				if (this.action === 'edit' && this.employeeId) {
+					if (initNumber !== number) {
+						const numberExistCheckResult = await checkNumberExist({ number });
+						if (numberExistCheckResult && numberExistCheckResult.code === ERROR_OK) {
+							setFields({
+								number: {
+									value: number,
+									errors: [
+										new Error(formatMessage({ id: 'employee.number.exist' })),
+									],
+								},
+							});
+							return;
+						}
+					}
+
 					const response = await updateEmployee({
 						employeeId: this.employeeId,
 						...submitData,
@@ -183,7 +220,12 @@ class EmployeeCU extends Component {
 							goToPath('employeeList');
 						}
 					} else if (response && response.code === EMPLOYEE_BINDED) {
-						message.error(formatMessage({ id: 'employee.info.binded.error' }));
+						setFields({
+							username: {
+								value: username,
+								errors: [new Error(formatMessage({ id: 'employee.phone.exist' }))],
+							},
+						});
 					} else {
 						message.error(formatMessage({ id: 'employee.info.update.failed' }));
 					}
@@ -197,21 +239,6 @@ class EmployeeCU extends Component {
 							},
 						});
 						return;
-					}
-
-					if (ssoUsername) {
-						const checkResponse = await checkSsoBinded({ ssoUsername });
-						if (checkResponse && checkResponse.code === SSO_BINDED) {
-							setFields({
-								ssoUsername: {
-									value: ssoUsername,
-									errors: [
-										new Error(formatMessage({ id: 'employee.sso.binded' })),
-									],
-								},
-							});
-							return;
-						}
 					}
 
 					const response = await createEmployee(submitData);
@@ -230,6 +257,25 @@ class EmployeeCU extends Component {
 				}
 			}
 		});
+	};
+
+	getUserInfoByUsername = async username => {
+		const {
+			getUserInfoByUsername,
+			form: { setFieldsValue },
+		} = this.props;
+		const response = await getUserInfoByUsername({ username });
+		if (response && response.code === ERROR_OK) {
+			const { data = {} } = response;
+			const { email, phone } = data;
+			setFieldsValue({
+				ssoUsername: email || phone,
+			});
+		} else {
+			setFieldsValue({
+				ssoUsername: '',
+			});
+		}
 	};
 
 	handleCancel = () => {
@@ -263,7 +309,6 @@ class EmployeeCU extends Component {
 		if (this.action === 'edit') {
 			decodedMapList = this.decodeMappingList(mappingList);
 		}
-
 		return (
 			<Card bordered={false} loading={loading.effects['employee/getEmployeeInfo']}>
 				<h3>
@@ -354,6 +399,7 @@ class EmployeeCU extends Component {
 												formatMessage({ id: 'employee.phone.formatError' })
 											);
 										} else {
+											this.getUserInfoByUsername(value);
 											callback();
 										}
 									},
@@ -364,7 +410,7 @@ class EmployeeCU extends Component {
 					<Form.Item label={formatMessage({ id: 'employee.sso.account' })}>
 						{getFieldDecorator('ssoUsername', {
 							initialValue: this.action === 'edit' ? ssoUsername : '',
-						})(<Input disabled={this.action === 'edit'} />)}
+						})(<Input disabled />)}
 					</Form.Item>
 					<Form.Item
 						label={formatMessage({ id: 'employee.orgnization' })}
@@ -377,7 +423,7 @@ class EmployeeCU extends Component {
 								{
 									required: true,
 									validator: (rule, value, callback) => {
-										// console.log(value);
+										// console.log('value', value);
 										if (value.length === 0) {
 											callback(
 												formatMessage({
@@ -385,26 +431,49 @@ class EmployeeCU extends Component {
 												})
 											);
 										} else {
-											const hasEmpty = Object.keys(value).some(key => {
+											const objectKeys = Object.keys(value);
+											const hasEmpty = objectKeys.some(key => {
 												const { orgnization = null, role = [] } = value[
 													key
 												];
 												return !orgnization || role.length === 0;
 											});
-											hasEmpty
-												? callback(
+											let isSame = false;
+											objectKeys.forEach((item, index) => {
+												objectKeys.forEach((items, indexs) => {
+													if (
+														index !== indexs &&
+														value[item].orgnization ===
+															value[items].orgnization &&
+														JSON.stringify(value[item].role.sort()) ===
+															JSON.stringify(value[items].role.sort())
+													) {
+														isSame = true;
+													}
+												});
+											});
+											hasEmpty &&
+												callback(
 													formatMessage({
 														id:
-																'employee.info.select.orgnizaion.isEmpty',
+															'employee.info.select.orgnizaion.isEmpty',
 													})
-												  )
-												: callback();
+												);
+											isSame &&
+												callback(
+													formatMessage({
+														id:
+															'employee.info.select.orgnizaion.isSame',
+													})
+												);
+											callback();
 										}
 									},
 								},
 							],
 						})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList }} />)}
 					</Form.Item>
+
 					<Form.Item label=" " colon={false}>
 						<Button
 							type="primary"

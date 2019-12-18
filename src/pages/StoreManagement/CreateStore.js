@@ -46,7 +46,7 @@ class CreateStore extends React.Component {
 		if (action === 'create') {
 			clearState();
 		} else if (action === 'edit') {
-			getStoreDetail({ options: { shop_id: shopId } });
+			getStoreDetail({ options: { shopId } });
 		}
 
 		if (!Storage.get('__shopTypeList__', 'local')) {
@@ -150,9 +150,9 @@ class CreateStore extends React.Component {
 		} = this.props;
 
 		if (response && response.code === STORE_EXIST) {
-			const storeName = getFieldValue('shop_name');
+			const storeName = getFieldValue('shopName');
 			setFields({
-				shop_name: {
+				shopName: {
 					value: storeName,
 					errors: [
 						new Error(formatMessage({ id: 'storeManagement.message.name.exist' })),
@@ -187,10 +187,10 @@ class CreateStore extends React.Component {
 
 				const options = {
 					...values,
-					shop_id: shopId,
+					shopId,
 					company_id: companyId,
-					type_one: values.shopType[0] || null,
-					type_two: values.shopType[1] || null,
+					typeOne: values.shopType[0] || null,
+					typeTwo: values.shopType[1] || null,
 					province: values.region[0] || null,
 					city: values.region[1] || null,
 					area: values.region[2] || null,
@@ -221,18 +221,18 @@ class CreateStore extends React.Component {
 				regionList,
 				loading,
 				storeInfo: {
-					shop_name,
-					type_one = null,
-					type_two = null,
-					business_status,
+					shopName,
+					typeOne = null,
+					typeTwo = null,
+					businessStatus,
 					province = null,
 					city = null,
 					area = null,
 					address = null,
-					business_hours,
-					business_area = null,
-					contact_person,
-					contact_tel,
+					businessHours,
+					businessArea = null,
+					contactPerson,
+					contactTel,
 				},
 			},
 			goToPath,
@@ -263,8 +263,8 @@ class CreateStore extends React.Component {
 					}}
 				>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.nameLabel' })}>
-						{getFieldDecorator('shop_name', {
-							initialValue: shop_name,
+						{getFieldDecorator('shopName', {
+							initialValue: shopName,
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -286,8 +286,8 @@ class CreateStore extends React.Component {
 					<FormItem label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
 						{getFieldDecorator('shopType', {
 							initialValue: [
-								type_one ? `${type_one}` : null,
-								type_two ? `${type_two}` : null,
+								typeOne ? `${typeOne}` : null,
+								typeTwo ? `${typeTwo}` : null,
 							],
 						})(
 							<Cascader
@@ -299,8 +299,8 @@ class CreateStore extends React.Component {
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
-						{getFieldDecorator('business_status', {
-							initialValue: business_status || 0,
+						{getFieldDecorator('businessStatus', {
+							initialValue: businessStatus || 0,
 						})(
 							<Radio.Group>
 								<Radio value={0}>
@@ -339,18 +339,18 @@ class CreateStore extends React.Component {
 						)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>
-						{getFieldDecorator('business_hours', {
-							initialValue: business_hours,
+						{getFieldDecorator('businessHours', {
+							initialValue: businessHours,
 						})(<Input />)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.area' })}>
-						{getFieldDecorator('business_area', {
-							initialValue: business_area || null,
+						{getFieldDecorator('businessArea', {
+							initialValue: businessArea || null,
 							validateTrigger: 'onBlur',
 							rules: [
 								{
 									validator: (rule, value, callback) => {
-										if (value && !/^[1-9]\d*(\.\d{1,2})?$/.test(value)) {
+										if (value && !/^(([1-9]\d{0,5})|0)(\.\d{1,2})?$/.test(value)) {
 											callback(
 												formatMessage({
 													id: 'storeManagement.create.area.formatError',
@@ -365,13 +365,13 @@ class CreateStore extends React.Component {
 						})(<Input suffix="㎡" />)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.contactName' })}>
-						{getFieldDecorator('contact_person', {
-							initialValue: contact_person,
+						{getFieldDecorator('contactPerson', {
+							initialValue: contactPerson,
 						})(<Input />)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.contactPhone' })}>
-						{getFieldDecorator('contact_tel', {
-							initialValue: contact_tel,
+						{getFieldDecorator('contactTel', {
+							initialValue: contactTel,
 							validateTrigger: 'onBlur',
 							rules: [
 								{
