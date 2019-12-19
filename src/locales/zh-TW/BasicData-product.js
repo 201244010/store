@@ -59,7 +59,7 @@
 	'basicData.weightProduct.barcodeCode': '條碼號',
 	'basicData.weightProduct.barCode.formatError': '條碼號為 0-99 的數字',
 	'basicData.weightProduct.chargeUnit': '計價單位',
-	'basicData.weightProduct.weight.price.isEmpty': '商品計價區分不能為空',
+	'basicData.weightProduct.weight.price.isEmpty': '商品計價區間不能為空',
 	'basicData.weightProduct.weight.price.count': '計數',
 	'basicData.weightProduct.weight.price.kg': 'Kg',
 	'basicData.weightProduct.weight.price.100g': '元/100g',

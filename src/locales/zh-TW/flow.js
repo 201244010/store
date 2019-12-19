@@ -6,7 +6,7 @@
 	'flow.distribution.age': '歲',
 	'flow.distribution.footer.unit': '人',
 	'flow.proportion.rate': '新老客流占比',
-	'flow.proportion.rule': '規則介紹規則介紹',
+	'flow.proportion.rule': '規則介紹',
 	'flow.proportion.title.new': '新客',
 	'flow.proportion.title.old': '熟客',
 	'flow.totalCount.today': '今日進店客流總數',

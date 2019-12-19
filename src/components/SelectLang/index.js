@@ -21,9 +21,9 @@ export default class SelectLang extends PureComponent {
 				<Menu.Item className={styles['menu-item']} key="zh-TW">
 					{formatMessage({ id: 'selectLang.tw'})}
 				</Menu.Item>
-				{/* <Menu.Item className={styles['menu-item']} key="en-US">
+				<Menu.Item className={styles['menu-item']} key="en-US">
 					{formatMessage({ id: 'selectLang.otherArea'})}
-				</Menu.Item> */}
+				</Menu.Item>
 			</Menu>
 		);
 		return (

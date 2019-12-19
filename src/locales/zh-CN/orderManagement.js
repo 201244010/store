@@ -15,16 +15,13 @@ export default {
 	'orderManagement.service.detail': '服务详情',
 	'orderManagement.operation.payImmediately': '立即付款',
 	'orderManagement.operation.purchaseAgain': '再次购买',
-	
 	'orderManagement.yuan': '￥',
-	
 	'orderManagement.detail.person': '个人',
 	'orderManagement.detail.enterprise': '企业',
 	'orderManagement.detail.normalTax': '电子普通发票',
 	'orderManagement.detail.addValueTax': '增值税普通发票',
 	'orderManagement.detail.7daysCloudStorage': '7天云存储',
 	'orderManagement.detail.30daysCloudStorage': '30天云存储',
-	
 	'orderManagement.detail.serviceType': '服务名称',
 	'orderManagement.detail.imgUrl': '监控区域',
 	'orderManagement.detail.deviceName': '摄像头名称',
@@ -51,11 +48,9 @@ export default {
 	'orderManagement.detail.cancelOrder': '取消订单',
 	'orderManagement.detail.tip': '提示',
 	'orderManagement.detail.tipContent': '确定取消开通云存储服务？',
-	
 	'orderManagement.title.success': '交易成功',
 	'orderManagement.title.waiting': '等待付款',
 	'orderManagement.title.closed': '交易关闭',
 	'orderManagement.list.error': '获取订单列表失败',
 	'orderManagement.detail.error': '获取订单详情失败',
-	
 };

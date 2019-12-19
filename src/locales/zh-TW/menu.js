@@ -96,6 +96,8 @@
 	'menu.cashVerify.posList': '設備綁定列表',
 	'menu.cashVerify.bindPOSDevice': '綁定收銀設備',
 	'menu.cashVerify.videos': '交易視頻',
+	'menu.application.orderManagement': '服務訂單管理',
+	'menu.application.orderManagement.orderDetail': '訂單詳情',
 	'menu.roleManagement': '角色管理',
 	'menu.roleManagement.create': '添加角色',
 	'menu.roleManagement.view': '查看',

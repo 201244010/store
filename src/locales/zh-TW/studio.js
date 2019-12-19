@@ -55,5 +55,5 @@
 	'studio.tool.label.small.type': '小數顯示類型',
 	'studio.tool.label.codec': '編碼類型',
 	'studio.tool.error.price.format': '輸入價格不正確',
-	'studio.tool.error.image.format': '上次圖片支持格式支持jpg/jpeg/png',
+	'studio.tool.error.image.format': '上傳圖片支持格式支持jpg/jpeg/png',
 };

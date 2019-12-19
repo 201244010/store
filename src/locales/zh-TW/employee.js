@@ -28,6 +28,7 @@
 	'employee.info.select.role': '請選擇角色',
 	'employee.info.select.orgnizaion': '請選擇組織',
 	'employee.info.select.orgnizaion.isEmpty': '組織和角色都不能為空',
+	'employee.info.select.orgnizaion.isSame': '所屬組織和角色不能相同',
 	'employee.info.delete': '確定要刪除該員工？',
 	'employee.info.delete.confirm': '請確認是否要刪除員工',
 	'employee.info.delete.success': '員工刪除成功',

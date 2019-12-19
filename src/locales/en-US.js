@@ -14,6 +14,7 @@ import notification from './en-US/notification';
 import studio from './en-US/studio';
 import iot from './en-US/iot';
 import dashboard from './en-US/dashBoard';
+import network from './en-US/network';
 
 import VideoPlayer from './en-US/videoPlayer';
 
@@ -25,47 +26,30 @@ import productManagement from './en-US/BasicData-product';
 
 import merchantManagement from './en-US/merchant';
 
+import roleManagement from './en-US/role';
+import employee from './en-US/employee';
+import trade from './en-US/trade';
+import flow from './en-US/flow';
+import tradeShow from './en-US/tradeShow';
+import serviceManagement from './en-US/serviceManagement';
+import orderManagement from './en-US/orderManagement';
+import passengerAnalyze from './en-US/passengerAnalyze';
+
 export default {
-	'navBar.lang': 'language',
-	'navBar.area': 'area',
-	'selectLang.chinaMainland': 'chinaMainland',
-	'selectLang.tw': 'Taiwan/Hong Kong/Macao',
-	'selectLang.otherArea': 'other regions',
-	'layout.user.link.help': 'help',
-	'layout.user.link.privacy': 'privacy',
-	'layout.user.link.terms': 'policy',
-	'app.home.introduce': 'introduce',
-	'layout.user.footer': '2019 Shanghai SUNMI Technology Co',
-	'app.exception.description.404': 'The visited page does not exist.',
-	'app.exception.back': 'Back To Home',
-	'flow.conversionRate.title': 'Trend of customer flow',
-	'flow.distribution.title': 'Distribution of customers (age)',
-	'flow.distribution.male': 'Male',
-	'flow.distribution.female': 'Female',
-	'flow.distribution.age': ' ',
-	'flow.distribution.footer.unit': '(Qty)',
-	'flow.proportion.rate': 'The percentage of total customers',
-	'flow.proportion.rule': ' ',
-	'flow.proportion.title.new': 'New',
-	'flow.proportion.title.old': 'Regular',
-	'flow.totalCount.today': 'Count of total customers',
-	'flow.totalCount.yesterday': 'Count of regular customers',
-	'flow.fs.privacy': 'Privacy notes：The pictures taken by FaceSense are only used for live',
-	'flow.libraryName.new': 'New',
-	'flow.libraryName.old': 'Regular',
-	'flow.libraryName.clerk': 'Staff',
-	'flow.libraryName.blackList': 'Blacklist',
-	'flow.libraryName.vip': 'VIP',
-	'flow.genders.unknown':'N/A',
-	'flow.genders.male':'Male',
-	'flow.genders.female':'Female',
-	'flow.age.unit':' ',
-	'flow.unknown':'N/A',
-	'flow.nosdInfo':'TF card is not inserted, the functions related to face recognition will not be available.',
-	'flow.faceid.stranger': 'New',
-	'flow.faceid.regular': 'Regular',
-	'flow.faceid.employee': 'Staff',
-	'flow.faceid.blacklist': 'Blacklist',
+	'navBar.lang': 'Language',
+	'navBar.area': 'Area',
+	'selectLang.chinaMainland': 'China Mainland',
+	'selectLang.tw': 'Taiwan/HongKong/Macao',
+	'selectLang.otherArea': 'Other Area',
+	'layout.user.link.help': 'Help',
+	'layout.user.link.privacy': 'Privacy',
+	'layout.user.link.terms': 'Terms',
+	'app.home.introduce': 'Introduction',
+	'layout.user.footer': '2019 Shanghai SUNMI Technology Co., Ltd. All rights reserved. 沪ICP备16006543',
+	'app.exception.description.404': 'The page you requested doesn‘t existed',
+	'app.exception.description.403': 'You don‘t have permission to do this',
+	'app.exception.back': 'Return Home',
+	'app.network.disconnect': 'Oops！Please check your network',
 	...globalHeader,
 	...common,
 	...menu,
@@ -84,6 +68,15 @@ export default {
 	...notification,
 	...VideoPlayer,
 	...studio,
-	...iot,
+	...roleManagement,
 	...dashboard,
+	...employee,
+	...network,
+	...trade,
+	...flow,
+	...tradeShow,
+	...iot,
+	...passengerAnalyze,
+	...serviceManagement,
+	...orderManagement,
 };

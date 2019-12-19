@@ -4,8 +4,7 @@ export default {
 	'account.validate.isEmpty': '请输入手机号或邮箱',
 	'account.password.validate.isEmpty': '请输入密码',
 	'account.merge.title': '提示',
-	'account.merge.content':
-		'检测到您在商米不同平台中注册了多个账户，为了更好的维护账户安全，需要对您的账户进行合并，点击确定前往合并',
+	'account.merge.content': '检测到您在商米不同平台中注册了多个账户，为了更好的维护账户安全，需要对您的账户进行合并，点击确定前往合并',
 	'mobile.placeholder': '11位手机号',
 	'mobile.code.placeholder': '短信验证码',
 	'username.invalid.character': '内容中包含非法字符，请尝试手动输入',
