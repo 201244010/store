@@ -160,9 +160,7 @@ export const customizeFetch = (service = 'api', base, toSnake) => {
 		// console.log(response);
 
 		if (response.status !== 200) {
-			if (response.status === 400) {
-				unAuthHandler();
-			} else if (response.status === 401) {
+			if (response.status === 401) {
 				unAuthHandler();
 			} else if (response.status === 403) {
 				noAuthhandler();
