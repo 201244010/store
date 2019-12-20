@@ -48,7 +48,7 @@ export const getLayerByUser = (params) =>
 	);
 
 export const isDeprecatable = (params) =>
-	request('isDeprecatable', {
+	request('checkDisabled', {
 		body: format('toSnake')(params)
 	}).then(
 		async response => {
@@ -58,7 +58,7 @@ export const isDeprecatable = (params) =>
 	);
 
 export const deprecate = (params) =>
-	request('deprecate', {
+	request('disable', {
 		body: format('toSnake')(params)
 	}).then(
 		async response => {

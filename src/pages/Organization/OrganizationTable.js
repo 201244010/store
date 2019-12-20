@@ -43,6 +43,7 @@ class OrganizationTable extends React.Component {
 			title: formatMessage({ id: 'organization.org.contact.person'}),
 			dataIndex: 'contactPerson',
 			key: 'contactPerson',
+			render: (item) => item || '--'
 		},
 		{
 			title: formatMessage({ id: 'organization.org.action'}),

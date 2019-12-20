@@ -28,7 +28,7 @@ const traversalTreeData = (originalList, targetList, hash, maxHeight) => {
 		});
 	}
 };
-// 获得每个结点的高度
+// 获得每个结点的深度
 // 维护一个height hashTable 保存每个组织的height
 const getTreeHeight = (original) => {
 	if(original.children && original.children.length) {
@@ -227,7 +227,7 @@ export default {
 			// 		orgPid: '1',
 			// 		orgName: '12',
 			// 		orgId: '12',
-			// 		orgStatus: 0,
+			// 		orgStatus: 1,
 			// 		level: 1,
 			// 		children: [{
 			// 			orgPid: '12',
@@ -317,11 +317,7 @@ export default {
 			const response = yield call(isDeprecatable, {
 				orgId
 			});
-			const { code } = response;
-			if(code === ERROR_OK) {
-				return true;
-			}
-			return false;
+			return response;
 
 		},
 		*enable({ payload }, { call }) {

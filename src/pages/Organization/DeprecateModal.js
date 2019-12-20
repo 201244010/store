@@ -2,6 +2,7 @@ import  React  from 'react';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { Modal, Tree, message   } from 'antd';
+import { ERROR_OK, ORGANIZATION_NO_DESABLED } from '@/constants/errorCode';
 import styles from './Organization.less';
 
 const mapStateToProps = (state) => {
@@ -66,8 +67,9 @@ class DeprecateModal extends React.Component {
 
 		const { check } = this.props;
 		const { orgId } = target;
-		const isDeprecate = await check(orgId);
-		if(isDeprecate) {
+		const result = await check(orgId);
+		const { code } = result;
+		if(code === ERROR_OK) {
 			Modal.confirm({
 				title: formatMessage({ id: 'organization.confirm.modal.title'}),
 				content: formatMessage({ id: 'organization.confirm.modal.content'}),
@@ -89,12 +91,14 @@ class DeprecateModal extends React.Component {
 					});
 				},
 			});
-		} else {
+		} else if(code === ORGANIZATION_NO_DESABLED){
 			Modal.info({
 				title: formatMessage({ id: 'organization.confirm.modal.title'}),
 				content: formatMessage({ id: 'organization.info.modal.content'}),
 				onOk() {},
 			});
+		} else {
+			message.error(formatMessage({ id: 'organizetion.action.error'}));
 		}
 	}
 
