@@ -80,3 +80,9 @@ export const ALERT_ROLE_MAP = {
 export const ALTERT_TRADE_MAP = {
 	[ORDER_COMPLETED]: 'pay.order.completed',
 };
+
+export const ERR_SDCARD_NOT_PLUGGED = -1002; // SD卡未插入
+export const ERR_SDCARD_INVALID = -1003; // SD卡不可用
+export const ERR_SDCARD_FORMAT_FAILED = -1004; // SD卡格式化失败
+export const ERR_SDCARD_UMOUNT_FAILED = -1005; // SD卡移除失败
+export const ERR_SDCARD_UNFARMATTED = -1006; // SD卡未格式化
