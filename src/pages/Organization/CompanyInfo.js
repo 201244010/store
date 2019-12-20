@@ -111,7 +111,7 @@ class CompanyInfo extends React.Component {
 		const { companyInfo: { orgInfo: { businessHours }}} = this.props;
 		if(nextBusinessHours !== businessHours){
 			this.setState({
-				allDayChecked: nextBusinessHours === '00:00~24:00'
+				allDayChecked: nextBusinessHours === '00:00~23:59'
 			});
 		}
 	}
@@ -259,6 +259,14 @@ class CompanyInfo extends React.Component {
 	}
 
 	allDayCheckChange = (e) => {
+		const { form: { setFieldsValue } } = this.props;
+		if(e.target.checked){
+			setFieldsValue({
+				startTime: moment('00:00','HH:mm'),
+				endTime: moment('23:59','HH:mm'),
+			});
+		}
+
 		this.setState({
 			allDayChecked: e.target.checked
 		});
@@ -352,7 +360,6 @@ class CompanyInfo extends React.Component {
 			}
 		} = this.props;
 		const { treeData, allDayChecked, orgPidParams } = this.state;
-		console.log(treeData);
 		const { addressSearchResult, organizationType, isDisabled } = this.state;
 		const [action = 'create'] = [getLocationParam('action')];
 		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => (
@@ -486,7 +493,7 @@ class CompanyInfo extends React.Component {
 										<Radio value={0}>
 											{formatMessage({ id: 'storeManagement.create.status.open' })}
 										</Radio>
-										<Radio value={1}>
+										<Radio value={1} disabled={action==='create'}>
 											{formatMessage({ id: 'storeManagement.create.status.closed' })}
 										</Radio>
 									</Radio.Group>
@@ -585,7 +592,7 @@ class CompanyInfo extends React.Component {
 						<FormItem label='联系人'>
 							{getFieldDecorator('contactPerson', {
 								initialValue: contactPerson,
-							})(<Input placeholder="请输入联系人" />)}
+							})(<Input maxLength={20} placeholder="请输入联系人" />)}
 						</FormItem>
 						<FormItem label='联系号码'>
 							{getFieldDecorator('contactTel', {
