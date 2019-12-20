@@ -7,8 +7,8 @@ import { customizeFetch } from '@/utils/fetch';
 // const request = customizeFetch('api/organization', API_ADDRESS);
 const request = customizeFetch('api/organization', 'http://localhost:8000');
 
-export const getOrgList = (params) => 
-	request('getList', { 
+export const getOrgList = (params) =>
+	request('getList', {
 		body: format('toSnake')(params)
 	}).then(
 		async response => {
@@ -17,8 +17,8 @@ export const getOrgList = (params) =>
 		}
 	);
 
-export const getOrganizationInfo = (params) => 
-	request('getInfo', { 
+export const getOrganizationInfo = (params) =>
+	request('getInfo', {
 		body: format('toSnake')(params)
 	}).then(
 		async response => {
@@ -27,8 +27,8 @@ export const getOrganizationInfo = (params) =>
 		}
 	);
 
-export const createOrganization = (params) => 
-	request('create', { 
+export const createOrganization = (params) =>
+	request('create', {
 		body: format('toSnake')(params)
 	}).then(
 		async response => {
@@ -37,8 +37,8 @@ export const createOrganization = (params) =>
 		}
 	);
 
-export const updateOrganization = (params) => 
-	request('update', { 
+export const getLayerByUser = (params) =>
+	request('getLayerByUser', {
 		body: format('toSnake')(params)
 	}).then(
 		async response => {
@@ -47,8 +47,58 @@ export const updateOrganization = (params) =>
 		}
 	);
 
-export const getOrganizationTree = (params) => 
-	request('getLayerByUser', { 
+export const isDeprecatable = (params) =>
+	request('checkDisabled', {
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+
+export const deprecate = (params) =>
+	request('disable', {
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+
+export const move = (params) =>
+	request('move', {
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+
+export const enable = () =>
+	request('enable', {
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+
+export const updateOrganization = (params) =>
+	request('update', {
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+
+export const getOrganizationTree = (params) =>
+	request('getLayerByUser', {
 		body: format('toSnake')(params)
 	}).then(
 		async response => {

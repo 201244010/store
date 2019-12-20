@@ -446,7 +446,7 @@ const router = [
 							{
 								path: '/basicData/organizationManagement',
 								id: 'organizationList',
-								component: './Organization/OrganizationTable',
+								component: './Organization/OrganizationList',
 							}
 						],
 					},

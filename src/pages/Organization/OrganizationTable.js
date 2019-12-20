@@ -1,121 +1,100 @@
 import  React  from 'react';
-// import { formatMessage } from 'umi/locale';
-import { Table, Divider, Button } from 'antd';
-import { connect } from 'dva';
+import { formatMessage } from 'umi/locale';
+import { Table, Divider, Badge } from 'antd';
+import styles from './Organization.less';
 
-@connect(
-	null,
-	dispatch => ({
-		goToPath: (pathId, urlParams = {}) =>
-			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
-	})
-)
 class OrganizationTable extends React.Component {
 
 	columns = [
 		{
-			title: '组织',
-			dataIndex: 'name',
-			key: 'name',
+			title: formatMessage({ id: 'organization.org.name'}),
+			dataIndex: 'orgName',
+			key: 'orgName',
 		},
 		{
-			title: '组织属性',
-			dataIndex: 'attribute',
-			key: 'attribute',
+			title: formatMessage({ id: 'organization.org.tag'}),
+			dataIndex: 'orgTag',
+			key: 'orgTag',
+			render: (item) => item ? formatMessage({ id: 'organization.department'}) : formatMessage({ id: 'organization.store'})
 		},
 		{
-			title: '状态',
-			dataIndex: 'status',
-			key: 'status',
+			title: formatMessage({ id: 'organization.org.status'}),
+			dataIndex: 'orgStatus',
+			key: 'orgStatus',
+			render: (item) => (
+				<Badge
+					status={item ? 'default' : 'success'}
+					text={item ? formatMessage({ id: 'organization.disabled'}) : formatMessage({ id: 'organization.enable'})}
+				/>
+			)
 		},
 		{
-			title: '地址',
+			title: formatMessage({ id: 'organization.org.address'}),
 			dataIndex: 'address',
 			key: 'address',
+			render: (item) => item || '--'
 		},
+		// {
+		// 	title: '员工',
+		// 	dataIndex: 'province',
+		// 	key: 'province',
+		// },
 		{
-			title: '员工',
-			dataIndex: 'employee',
-			key: 'employee',
-		},
-		{
-			title: '联系人',
+			title: formatMessage({ id: 'organization.org.contact.person'}),
 			dataIndex: 'contactPerson',
 			key: 'contactPerson',
+			render: (item) => item || '--'
 		},
 		{
-			title: '操作',
+			title: formatMessage({ id: 'organization.org.action'}),
 			key: 'action',
-			render: () => (
-				<span>
-					<a href="javascript:;">查看</a>
-					<Divider type="vertical" />
-					<a href="javascript:;">修改</a>
-					<Divider type="vertical" />
-					<a href="javascript:;">停用</a>
-				</span>
-			),
+			render: (item) => {
+				const { handleDeprecate, handleModify, handleViewInfo, handleEnable } = this.props;
+				return (
+					<span>
+						<a href="javascript:;" onClick={()=>handleViewInfo(item)}>{formatMessage({ id: 'organization.action.check'})}</a>
+						<Divider type="vertical" />
+						<a href="javascript:;" onClick={() => handleModify(item)}>{formatMessage({ id: 'organization.action.modify'})}</a>
+						<Divider type="vertical" />
+						{/* <a href="javascript:;" className={`${styles['deprecate-btn']} ${item.orgStatus ? styles.disabled: ''}`} onClick={() => handleDeprecate(item)}>停用</a> */}
+						<a href="javascript:;" onClick={() => item.orgStatus ? handleEnable(item) : handleDeprecate(item)}>
+							{item.orgStatus ? formatMessage({ id: 'organization.action.enable'}) :formatMessage({ id: 'organization.action.disabled'})}
+						</a>
+					</span>
+				);
+
+			},
 		}
 	];
 
-	dataSource = [{
-		name: 'tea',
-		attribute: '门店',
-		status: '营业',
-		address: '深圳南山区',
-		employee: '2',
-		contactPerson: '张三',
-		children: [{
-			name: 'hea tea',
-			attribute: '门店',
-			status: '营业',
-			address: '深圳南山区',
-			employee: '2',
-			contactPerson: '李四',
-		}]
-	}];
-
 	rowSelection = {
-		onChange: (selectedRowKeys, selectedRows) => {
-			console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+		onChange: (selectedRowKeys) => {
+			const { setSelectedKeys } = this.props;
+			setSelectedKeys(selectedRowKeys);
 		},
-		onSelect: (record, selected, selectedRows) => {
-			console.log(record, selected, selectedRows);
+		onSelect: (record, selected) => {
+			const { setSelectedList } = this.props;
+			setSelectedList(record, selected);
 		},
-		onSelectAll: (selected, selectedRows, changeRows) => {
-			console.log(selected, selectedRows, changeRows);
-		},
+		onSelectAll: (selected) => {
+			const { onSelectAll } = this.props;
+			onSelectAll(selected);
+		}
 	};
 
-	expandedRowRender = (record) => {
-		console.log('-------record------',record);
-		return (<Table columns={this.columns} dataSource={record} />);
-	}
-
 	render() {
-		const { goToPath } = this.props;
+		const { dataSource, expandedRowKeys, loading } = this.props;
 		return(
-			<div>
-				<Button onClick={() => goToPath('editOrganization',{
-					action : 'edit',
-					orgId: 11,
-				})}
-				>
-					修改
-				</Button>
-				<Button onClick={() => goToPath('newOrganization',{
-					action : 'create',
-				})}
-				>
-					新增
-				</Button>
-				<Button onClick={() => goToPath('detail',{
-					orgId: 11,
-				})}
-				>
-					详情
-				</Button>
-			</div>
+			<Table
+				className={styles['org-table']}
+				rowKey={record => record.orgId}
+				columns={this.columns}
+				dataSource={dataSource}
+				rowSelection={this.rowSelection}
+				pagination={false}
+				defaultExpandedRowKeys={expandedRowKeys}
+				loading={loading}
+			/>
 		);
 	}
 }

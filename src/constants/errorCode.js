@@ -50,6 +50,8 @@ export const ERR_FREE_SERVICE_USED = 5422;
 export const ERR_DELETE_ROLE_WITH_EMPLOYEE = 5430;
 export const ERR_DELETE_DEFAULT_ROLE_DENIED = 5431;
 
+export const ORGANIZATION_NO_DESABLED = 5440;
+
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',
 	'3': 'alert.code.send.fast',
