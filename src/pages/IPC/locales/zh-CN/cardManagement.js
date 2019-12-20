@@ -40,7 +40,7 @@ export default {
 	'cardManagement.nonactivated':'未开通',
 	'cardManagement.validityPeriod':'剩余有效期',
 	'cardManagement.subscribeCloudService':'开通云存储服务',
-	'cardManagement.repay':'续费',
+	'cardManagement.repay':'立即续费',
 	'cardManagement.readCloudFaild':'获取云存储状态失败，请检查网络',
 	'cardManagement.expired':'已过期',
 	'cardManagement.unknown':'--'

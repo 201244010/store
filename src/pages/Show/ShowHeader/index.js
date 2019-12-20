@@ -2,11 +2,11 @@ import React from 'react';
 import { Tabs } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
-import { ERROR_OK } from '@/constants/errorCode';
 import { formatMessage } from 'umi/locale';
 import { SHOP_ID_KEY, SHOP_LIST_KEY, getCookieByKey } from '@/utils/cookies';
 import { DASHBOARD } from '@/pages/DashBoard/constants';
 import ShowTabContent from '../ShowTabContent';
+import { ERROR_OK } from '@/constants/errorCode';
 
 import styles from './index.less';
 
@@ -92,7 +92,7 @@ class ShowHeader extends React.Component {
 
 		const shopList = JSON.parse(localStorage.getItem(SHOP_LIST_KEY));
 		const shopID = getCookieByKey(SHOP_ID_KEY);
-		const shopName = shopList.find(item => item.shop_id === shopID).shop_name;
+		const shopName = shopList.find(item => item.shopId === shopID).shopName;
 
 		return (
 			<div className={styles['show-header']}>

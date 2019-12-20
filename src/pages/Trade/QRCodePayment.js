@@ -6,16 +6,17 @@ import { format } from '@konata9/milk-shake';
 import { ERROR_OK, ALTERT_TRADE_MAP } from '@/constants/errorCode';
 import styles from './trade.less';
 
-import qrPayment from '@/assets/qrpaycode.jpg';
-
 @connect(
 	state => ({
 		loading: state.loading,
 		routing: state.routing,
+		orderDetail: state.trade.orderDetail,
 	}),
 	dispatch => ({
 		payOrder: ({ orderNo, purchaseType, source }) =>
 			dispatch({ type: 'trade/payOrder', payload: { orderNo, purchaseType, source } }),
+		getOrderDetail: ({ orderNo }) => 
+			dispatch({ type: 'trade/getOrderDetail', payload: { orderNo }}),
 		goToPath: (pathId, urlParams = {}, linkType = null) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, linkType } }),
 	})
@@ -41,7 +42,9 @@ class QRCodePayment extends PureComponent {
 	}
 
 	async componentDidMount() {
+		const { getOrderDetail } = this.props;
 		await this.getQRCodeURL();
+		await getOrderDetail({ orderNo: this.orderNo });
 		this.countRefresh();
 	}
 
@@ -89,8 +92,7 @@ class QRCodePayment extends PureComponent {
 	};
 
 	render() {
-		const { loading, goToPath } = this.props;
-		const { refreshRemain } = this.state;
+		const { loading, goToPath, orderDetail } = this.props;
 
 		return (
 			<Card title={formatMessage({ id: 'pay.order.commit' })}>
@@ -100,7 +102,7 @@ class QRCodePayment extends PureComponent {
 					</div>
 					<div className={styles['order-price']}>
 						{formatMessage({ id: 'pay.true.price' })}：
-						<span className={styles.price}>69.00</span>
+						<span className={styles.price}>{orderDetail.paymentAmount ? `¥${Number(orderDetail.paymentAmount).toFixed(2)}` : '--'}</span>
 					</div>
 				</div>
 				<Card
@@ -111,19 +113,19 @@ class QRCodePayment extends PureComponent {
 					<div className={styles['qrCode-content']}>
 						<div>
 							<div className={styles['qrCode-refresh']}>
-								{formatMessage({ id: 'qrcode.refresh.remain' })}
-								<span>{refreshRemain}</span>
-								{formatMessage({ id: 'common.time.second' })}
+								使用
+								<span>{this.purchaseType ? formatMessage({ id: `${this.purchaseType}.guide` }) : null}</span>
+								扫码完成支付
 							</div>
 							<div className={styles['qrcode-data']} ref={this.qrContainer} />
 						</div>
-						<img className={styles['qrcode-info']} src={qrPayment} />
+						<div className={styles[`${this.purchaseType}-guide-pic`]} />
 					</div>
 				</Card>
 
 				<div className={styles['qrCode-footer']}>
-					<a href="javascript:void(0);" onClick={() => goToPath('trade')}>
-						{formatMessage({ id: 'pay.retry' })}
+					<a href="javascript:void(0);" onClick={() => goToPath('paymentPage', {orderNo: this.orderNo})}>
+						<span className={styles['back-icon']} />{formatMessage({ id: 'pay.retry' })}
 					</a>
 				</div>
 			</Card>

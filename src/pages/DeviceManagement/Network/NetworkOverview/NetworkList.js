@@ -29,7 +29,6 @@ class NetworkList extends React.PureComponent {
 			const response = await updateAlias({ networkId, networkAlias });
 			if (response && response.code === ERROR_OK) {
 				message.success(formatMessage({ id: 'network.changeSuccess' }));
-				this.fetchApMessage();
 			}
 		}
 		await getList();

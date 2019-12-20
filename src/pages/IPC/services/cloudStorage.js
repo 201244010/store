@@ -4,13 +4,14 @@ import CONFIG from '@/config';
 
 const { API_ADDRESS } = CONFIG;
 
-const request = customizeFetch('ipc/api/storage', API_ADDRESS);
+const request = customizeFetch('ipc/api/device', API_ADDRESS);
 // const request = customizeFetch('ipc/api/storage', 'http://localhost:8000');
 
 
 export const getStorageIpcList = (params) => 
 	// params:{ deviceId } or params:{}
-	request('getList', {
+	// getStorageList
+	request('getStorageList', { 
 		body: format('toSnake')(params)
 	}).then(
 		async response => {
