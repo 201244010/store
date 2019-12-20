@@ -70,6 +70,8 @@ export default {
 
 		*initOrgList(_, { call, put }) {
 
+			console.log('---init orgList');
+
 			const response = yield call(getOrgList);
 			const { code, data } = response;
 			if(code === ERROR_OK) {
@@ -82,98 +84,9 @@ export default {
 				});
 			}
 
-			// const orgList = [{
-			// 	orgPid: '1',
-			// 	orgName: '一级',
-			// 	orgTag: 0,
-			// 	orgStatus: 0,
-			// 	address: '',
-			// 	contactPerson: '张三',
-			// 	orgId: '11',
-			// 	level: 1,
-			// 	children: [{
-			// 		orgPid: '11',
-			// 		orgName: '二级1',
-			// 		orgTag: 0,
-			// 		orgStatus: 0,
-			// 		address: '深圳南山区',
-			// 		contactPerson: '张三',
-			// 		orgId: '111',
-			// 		level: 2,
-			// 		children: [{
-			// 			orgPid: '111',
-			// 			orgName: '三级',
-			// 			orgTag: 0,
-			// 			orgStatus: 0,
-			// 			address: '深圳南山区',
-			// 			contactPerson: '张三',
-			// 			orgId: '1111',
-			// 			level: 3,
-			// 			children: [{
-			// 				orgPid: '1111',
-			// 				orgName: '四级',
-			// 				orgTag: 0,
-			// 				orgStatus: 0,
-			// 				address: '深圳南山区',
-			// 				contactPerson: '张三',
-			// 				orgId: '11111',
-			// 				level: 4,
-			// 			}]
-			// 		}]
-			// 	}, {
-			// 		orgPid: '11',
-			// 		orgName: '二级2',
-			// 		orgTag: 0,
-			// 		orgStatus: 0,
-			// 		address: '深圳南山区',
-			// 		contactPerson: '张三',
-			// 		orgId: '112',
-			// 		level: 2,
-			// 	}]
-			// }, {
-			// 	orgPid: '1',
-			// 	orgName: 'tea',
-			// 	orgTag: 0,
-			// 	orgStatus: 1,
-			// 	address: '深圳南山区',
-			// 	province: 13,
-			// 	contactPerson: '张三',
-			// 	orgId: '12',
-			// 	level: 1,
-			// 	children: [{
-			// 		orgPid: '12',
-			// 		orgName: 'tea',
-			// 		orgTag: 0,
-			// 		orgStatus: 0,
-			// 		address: '深圳南山区',
-			// 		province: 13,
-			// 		contactPerson: '张三',
-			// 		orgId: '121',
-			// 		level: 1,
-			// 		children: [{
-			// 			orgPid: '121',
-			// 			orgName: 'tea',
-			// 			orgTag: 0,
-			// 			orgStatus: 0,
-			// 			address: '深圳南山区',
-			// 			province: 13,
-			// 			contactPerson: '张三',
-			// 			orgId: '1211',
-			// 			level: 3
-			// 		}]
-			// 	}]
-			// }];
-
-			// yield put({
-			// 	type: 'updateOrgList',
-			// 	payload: {
-			// 		orgList,
-			// 	},
-			// });
-
 		},
 		*initLayerTree(_, { call, put }) {
-
+			console.log('---iinitLayerTree');
 			const response = yield call(getLayerByUser);
 			const { code, data } = response;
 			if(code === ERROR_OK) {
@@ -184,76 +97,10 @@ export default {
 					}
 				});
 			}
-			// const Layer = {
-			// 	orgPid: '',
-			// 	orgName: '1',
-			// 	orgId: '1',
-			// 	orgStatus: 0,
-			// 	level: 0,
-			// 	children: [{
-			// 		orgPid: '1',
-			// 		orgName: '11',
-			// 		orgId: '11',
-			// 		orgStatus: 0,
-			// 		level: 1,
-			// 		children: [{
-			// 			orgPid: '11',
-			// 			orgName: '111',
-			// 			orgId: '111',
-			// 			orgStatus: 0,
-			// 			level: 2,
-			// 			children: [{
-			// 				orgPid: '111',
-			// 				orgName: '1111',
-			// 				orgId: '1111',
-			// 				orgStatus: 0,
-			// 				level: 3,
-			// 				children: [{
-			// 					orgPid: '1111',
-			// 					orgName: '11111',
-			// 					orgId: '11111',
-			// 					orgStatus: 0,
-			// 					level: 4,
-			// 				}]
-			// 			}],
-			// 		}, {
-			// 			orgPid: '11',
-			// 			orgName: '112',
-			// 			orgId: '112',
-			// 			orgStatus: 0,
-			// 			level: 2,
-			// 		}]
-			// 	}, {
-			// 		orgPid: '1',
-			// 		orgName: '12',
-			// 		orgId: '12',
-			// 		orgStatus: 1,
-			// 		level: 1,
-			// 		children: [{
-			// 			orgPid: '12',
-			// 			orgName: '121',
-			// 			orgId: '121',
-			// 			orgStatus: 0,
-			// 			level: 2,
-			// 			children: [{
-			// 				orgPid: '121',
-			// 				orgName: '1211',
-			// 				orgId: '1211',
-			// 				orgStatus: 0,
-			// 				level: 3,
-			// 			}]
-			// 		}]
-			// 	}]
-			// };
-			// yield put({
-			// 	type: 'updateOriginalLayerTree',
-			// 	payload: {
-			// 		treeList: [Layer]
-			// 	}
-			// });
 		},
 		*setTreeData({ payload }, { put, select }) {
 			const { originalLayerTree } = yield select(state => state.organization);
+			console.log('----setTreeDate----');
 			const { selectedList, type } = payload;
 			const targetList = [];
 			const hash = {};
@@ -285,7 +132,6 @@ export default {
 		*deprecate({ payload }, { call }) {
 			const { targetPId, selectedOrgId } = payload;
 			console.log('-----deprecate---', targetPId, selectedOrgId);
-			// return true;
 
 			const response = yield call(deprecate, {
 				orgId: selectedOrgId,
@@ -299,7 +145,7 @@ export default {
 		},
 		*move({ payload }, { call }) {
 			const { selectedIdList, targetPId } = payload;
-
+			console.log('----move---', selectedIdList, targetPId);
 			const response = yield call(move, {
 				orgCidList: selectedIdList,
 				orgPid: targetPId
@@ -313,7 +159,6 @@ export default {
 		*check({ payload }, { call }) {
 			const { orgId } = payload;
 			console.log('-----check orgId', orgId);
-			// return true;
 			const response = yield call(isDeprecatable, {
 				orgId
 			});
@@ -322,6 +167,7 @@ export default {
 		},
 		*enable({ payload }, { call }) {
 			const { orgId } = payload;
+			console.log('----enable---',orgId);
 			const response = yield call(enable, {
 				orgId
 			});

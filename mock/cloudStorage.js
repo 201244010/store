@@ -61,5 +61,177 @@ export default {
 				}
 			]
 		}
-	}
+	},
+	'POST /api/organization/getList': {
+		code: 1,
+		msg: '',
+		data: {
+			orgList: [{
+				orgPid: '1',
+				orgName: '一级',
+				orgTag: 0,
+				orgStatus: 0,
+				address: '',
+				contactPerson: '张三',
+				orgId: '11',
+				level: 1,
+				children: [{
+					orgPid: '11',
+					orgName: '二级1',
+					orgTag: 0,
+					orgStatus: 0,
+					address: '深圳南山区',
+					contactPerson: '张三',
+					orgId: '111',
+					level: 2,
+					children: [{
+						orgPid: '111',
+						orgName: '三级',
+						orgTag: 0,
+						orgStatus: 0,
+						address: '深圳南山区',
+						contactPerson: '张三',
+						orgId: '1111',
+						level: 3,
+						children: [{
+							orgPid: '1111',
+							orgName: '四级',
+							orgTag: 0,
+							orgStatus: 0,
+							address: '深圳南山区',
+							contactPerson: '张三',
+							orgId: '11111',
+							level: 4,
+						}]
+					}]
+				}, {
+					orgPid: '11',
+					orgName: '二级2',
+					orgTag: 0,
+					orgStatus: 0,
+					address: '深圳南山区',
+					contactPerson: '张三',
+					orgId: '112',
+					level: 2,
+				}]
+			}, {
+				orgPid: '1',
+				orgName: '一级2',
+				orgTag: 0,
+				orgStatus: 1,
+				address: '深圳南山区',
+				province: 13,
+				contactPerson: '张三',
+				orgId: '12',
+				level: 1,
+				children: [{
+					orgPid: '12',
+					orgName: '一级21',
+					orgTag: 0,
+					orgStatus: 0,
+					address: '深圳南山区',
+					province: 13,
+					contactPerson: '张三',
+					orgId: '121',
+					level: 1,
+					children: [{
+						orgPid: '121',
+						orgName: '一级211',
+						orgTag: 0,
+						orgStatus: 0,
+						address: '深圳南山区',
+						province: 13,
+						contactPerson: '张三',
+						orgId: '1211',
+						level: 3
+					}]
+				}]
+			}]
+		}
+	},
+	'POST /api/organization/getLayerByUser': {
+		code: 1,
+		msg: '',
+		data: {
+			orgPid: '',
+			orgName: '1',
+			orgId: '1',
+			orgStatus: 0,
+			level: 0,
+			children: [{
+				orgPid: '1',
+				orgName: '一级',
+				orgId: '11',
+				orgStatus: 0,
+				level: 1,
+				children: [{
+					orgPid: '11',
+					orgName: '二级1',
+					orgId: '111',
+					orgStatus: 0,
+					level: 2,
+					children: [{
+						orgPid: '111',
+						orgName: '三级',
+						orgId: '1111',
+						orgStatus: 0,
+						level: 3,
+						children: [{
+							orgPid: '1111',
+							orgName: '四级',
+							orgId: '11111',
+							orgStatus: 0,
+							level: 4,
+						}]
+					}],
+				}, {
+					orgPid: '11',
+					orgName: '二级2',
+					orgId: '112',
+					orgStatus: 0,
+					level: 2,
+				}]
+			}, {
+				orgPid: '1',
+				orgName: '一级2',
+				orgId: '12',
+				orgStatus: 1,
+				level: 1,
+				children: [{
+					orgPid: '12',
+					orgName: '一级21',
+					orgId: '121',
+					orgStatus: 0,
+					level: 2,
+					children: [{
+						orgPid: '121',
+						orgName: '一级211',
+						orgId: '1211',
+						orgStatus: 0,
+						level: 3,
+					}]
+				}]
+			}]
+		}
+	},
+	'POST /api/organization/checkDisabled': {
+		code: 1,
+		msg: '',
+		data: {}
+	},
+	'POST /api/organization/move': {
+		code: 1,
+		msg: '',
+		data: {}
+	},
+	'POST /api/organization/disable': {
+		code: 1,
+		msg: '',
+		data: {}
+	},
+	'POST /api/organization/enable': {
+		code: 1,
+		msg: '',
+		data: {}
+	},
 };

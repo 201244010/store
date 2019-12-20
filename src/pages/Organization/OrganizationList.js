@@ -67,7 +67,6 @@ class OrganizationList extends React.Component {
 		super(props);
 		this.state = {
 			moveModalVisible: false,
-			// deprecateModalVisible: false,
 			selectedList: [], // 被选择的子树集合
 			selectedIdList: [], // 被选择的id集合
 			targetPId: '', // 目标父节点
