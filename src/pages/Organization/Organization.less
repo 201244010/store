@@ -1,0 +1,76 @@
+
+.action-container {
+	margin: 0 0 20px;
+
+	.action-btn-left {
+		margin-right: 20px;
+	}
+}
+
+.tree-select {
+	width: 300px;
+}
+
+.confirm-modal {
+	:global {
+		.ant-modal-confirm-body {
+			.anticon-exclamation-circle {
+				color: #ff3838;
+			}
+
+		}
+	}
+}
+
+.tree-modal {
+
+	max-height: 75%;
+	.tree-modal-info {
+		font-family:PingFangSC-Regular,PingFang SC, sans-serif;
+		color:rgba(133,133,138,1);
+		line-height:20px;
+		font-size: 14px;
+	}
+	:global {
+		.ant-tree {
+			.ant-tree-node-content-wrapper {
+				&:hover {
+					background-color: #ECF1FE;
+				}
+				&.ant-tree-node-selected {
+					color: #6694FF;
+					background-color: #ffffff;
+					&:after {
+						content: '';
+						float: right;
+						display: block;
+						width: 24px;
+						height: 24px;
+						background-image: url(../../assets/icon/tick.png);
+						background-size: 100%;
+					}
+				}
+			}
+		}
+	}
+}
+
+.deprecate-btn {
+	&.disabled {
+		color: #a1a7b3;
+		pointer-events: none;
+	}
+}
+
+.org-table {
+	:global {
+		.ant-table-row-level-1,
+		.ant-table-row-level-2,
+		.ant-table-row-level-3,
+		.ant-table-row-level-4,
+		.ant-table-row-level-5,
+		.ant-table-row-level-6 {
+			background-color: #F9FBFF;
+		}
+	}
+}

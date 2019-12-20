@@ -8,8 +8,8 @@ const request = customizeFetch('api/organization', API_ADDRESS);
 // const request = customizeFetch('api/organization', 'http://localhost:8000');
 
 
-export const createOrganization = (params) => 
-	request('create', { 
+export const createOrganization = (params) =>
+	request('create', {
 		body: format('toSnake')(params)
 	}).then(
 		async response => {
@@ -18,7 +18,67 @@ export const createOrganization = (params) =>
 		}
 	);
 
-// export const getOrganizationTree = () => 
+
+export const getOrgList = (params) =>
+	request('getOrgList', {
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+
+export const getLayerByUser = (params) =>
+	request('getLayerByUser', {
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+
+export const isDeprecatable = (params) =>
+	request('isDeprecatable', {
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+
+export const deprecate = (params) =>
+	request('deprecate', {
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+
+export const move = (params) =>
+	request('move', {
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+
+export const enable = () =>
+	request('enable', {
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+// export const getOrganizationTree = () =>
 // 	request('getTree').then(
 // 		async response => {
 // 			const result = {

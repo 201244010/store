@@ -36,6 +36,8 @@ import serviceManagement from './zh-CN/serviceManagement';
 import orderManagement from './zh-CN/orderManagement';
 import passengerAnalyze from './zh-CN/passengerAnalyze';
 
+import orgnization from './zh-CN/organization';
+
 export default {
 	'navBar.lang': '语言',
 	'navBar.area': '地区',
@@ -78,4 +80,5 @@ export default {
 	...serviceManagement,
 	...orderManagement,
 	...companyInfo,
+	...orgnization,
 };

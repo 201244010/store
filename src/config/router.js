@@ -414,7 +414,7 @@ const router = [
 								path: '/basicData/systemSetting/organization',
 								name: 'organization',
 								id: 'organization',
-								component: './Organization/OrganizationTable',
+								component: './Organization/OrganizationList',
 							},
 						],
 					},

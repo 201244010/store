@@ -18,12 +18,12 @@ export const FIRST_MENU_ORDER = [
 ];
 
 export const HTTP_PREFIX = {
-	'http:': 'https:',
+	'http:': 'http:',
 	'https:': 'https:',
 };
 
 export const WEB_SOCKET_PREFIX = {
-	'http:': 'wss:',
+	'http:': 'ws:',
 	'https:': 'wss:',
 };
 
