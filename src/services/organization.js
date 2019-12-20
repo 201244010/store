@@ -77,7 +77,7 @@ export const move = (params) =>
 		}
 	);
 
-export const enable = () =>
+export const enable = (params) =>
 	request('enable', {
 		body: format('toSnake')(params)
 	}).then(
