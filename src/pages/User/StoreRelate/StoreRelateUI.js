@@ -157,7 +157,7 @@ class StoreRelate extends Component {
 			if (shopList.length === 0) {
 				removeShopIdInCookie();
 				// CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
-				goToPath('storeCreate');
+				goToPath('newOrganization');
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
 				const defaultStore = shopList[0] || {};

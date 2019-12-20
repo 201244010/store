@@ -104,7 +104,9 @@ export default {
 		*setTreeData({ payload }, { put, select }) {
 			const { originalLayerTree } = yield select(state => state.organization);
 			console.log('----setTreeDate----');
+			console.log(originalLayerTree);
 			const { selectedList, type } = payload;
+			console.log('----selectedList----',selectedList);
 			const targetList = [];
 			const hash = {};
 			let maxHeight = 0;

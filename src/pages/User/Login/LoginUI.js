@@ -112,7 +112,7 @@ class Login extends Component {
 			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
 				CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
-				goToPath('storeCreate');
+				goToPath('newOrganization');
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
 				const lastStore = shopList.length;
