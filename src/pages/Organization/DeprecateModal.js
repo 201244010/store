@@ -140,7 +140,7 @@ class DeprecateModal extends React.Component {
 	render() {
 
 		const { deprecateModalVisible } = this.state;
-		const { organization: {  treeData } } = this.props;
+		const { organization: {  treeData, expandedTreeKeys } } = this.props;
 		return(
 			<Modal
 				title={formatMessage({id: 'organization.tree.modal.title.deprecate'})}
@@ -154,6 +154,7 @@ class DeprecateModal extends React.Component {
 					{formatMessage({id: 'organization.tree.modal.disable.info'})}
 				</span>
 				<Tree
+					defaultExpandedKeys={expandedTreeKeys}
 					treeData={treeData}
 					onSelect={this.handleSelectTree}
 					className={styles['layer-tree']}

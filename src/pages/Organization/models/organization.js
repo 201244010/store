@@ -52,6 +52,7 @@ export default {
 		originalOrgList: [],
 		originalLayerTree: [],
 		expandedRowKeys: [],
+		expandedTreeKeys: [],
 	},
 	reducers: {
 		updateOrgList(state, { payload }) {
@@ -61,6 +62,7 @@ export default {
 		updateTreeData(state, { payload }) {
 			const { treeData } = payload;
 			state.treeData = [...treeData];
+			state.expandedTreeKeys = [treeData[0].key];
 		},
 		updateOriginalLayerTree(state, { payload }) {
 			const { treeList } = payload;
