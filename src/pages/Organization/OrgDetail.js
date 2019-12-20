@@ -216,7 +216,7 @@ class OrgDetail extends React.Component {
 		const { orgId: locationOrgId } = this.state;
 		return(
 			<div className={styles['detail-container']}>
-				<Card title='组织详情' className={styles['org-detail']} loading={loading.effects['companyInfo/getOrganizationInfo']}>
+				<Card title={formatMessage({id: 'orgDetail.org.detail'})} className={styles['org-detail']} loading={loading.effects['companyInfo/getOrganizationInfo']}>
 					<div className={styles['detail-body']}>
 						<div className={styles.row}>
 							<div className={`${styles.col} ${styles.orgId}`}>{formatMessage({id: 'orgDetail.org.id'})}{orgId || '--'}</div>
@@ -287,29 +287,31 @@ class OrgDetail extends React.Component {
 						</Button>
 					</div>
 				</Card>
-				<Card title={formatMessage({id: 'orgDetail.employee.info'})} className={styles['employee-info']}>
-					<Button
-						className={styles['add-btn']}
-						type="primary"
-						icon="plus"
-						onClick={() =>
-							goToPath('employeeCreate', { action: 'create', from: 'list' })
-						}
-					>
-						{formatMessage({ id: 'employee.create' })}
-					</Button>
-					<SearchResult
-						{...{
-							loading,
-							data: employeeList,
-							pagination,
-							deleteEmployee,
-							goToPath,
-							getEmployeeList,
-							userId: this.userId
-						}}
-					/>
-				</Card>
+				{orgStatus === 0 ? 
+					<Card title={formatMessage({id: 'orgDetail.employee.info'})} className={styles['employee-info']}>
+						<Button
+							className={styles['add-btn']}
+							type="primary"
+							icon="plus"
+							onClick={() =>
+								goToPath('employeeCreate', { action: 'create', from: 'list' })
+							}
+						>
+							{formatMessage({ id: 'employee.create' })}
+						</Button>
+						<SearchResult
+							{...{
+								loading,
+								data: employeeList,
+								pagination,
+								deleteEmployee,
+								goToPath,
+								getEmployeeList,
+								userId: this.userId
+							}}
+						/>
+					</Card>: ''
+				}
 				<DeprecateModal onRef={modal => { this.deprecateModal = modal; }} init={this.init} />
 			</div>
 		);

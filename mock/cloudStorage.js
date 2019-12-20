@@ -167,7 +167,7 @@ export default {
 			'level': 3,
 			'org_id': 1111,
 			'org_name': '三级',
-			'org_status': 0,
+			'org_status': 1,
 			'org_pname': '',
 			'sunmi_shop_no': '',
 			'business_status': 1,

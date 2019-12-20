@@ -24,4 +24,5 @@ export default {
 	'orgDetail.modify': '修改',
 	'orgDetail.new.sub.org': '新增下级组织',
 	'orgDetail.employee.info': '员工信息',
+	'orgDetail.org.detail': '组织详情',
 };
