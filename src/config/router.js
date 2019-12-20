@@ -400,22 +400,54 @@ const router = [
 						redirect: '/basicData/merchantManagement/view',
 					},
 					{
-						path: '/basicData/systemSetting',
-						name: 'systemSetting',
-						id: 'systemSetting',
+						path: '/basicData/organizationManagement',
+						name: 'organizationManagement',
 						routes: [
 							{
-								path: '/basicData/systemSetting/companyInfo',
-								name: 'companyInfo',
-								id: 'companyInfo',
+								path: '/basicData/organizationManagement/newOrganization',
+								name: 'newOrganization',
+								id: 'newOrganization',
 								component: './Organization/CompanyInfo',
+								hideInMenu: true,
 							},
 							{
-								path: '/basicData/systemSetting/organization',
-								name: 'organization',
-								id: 'organization',
-								component: './Organization/OrganizationTable',
+								path: '/basicData/organizationManagement/editOrganization',
+								name: 'editOrganization',
+								id: 'editOrganization',
+								component: './Organization/CompanyInfo',
+								hideInMenu: true,
 							},
+							{
+								path: '/basicData/organizationManagement/detail',
+								name: 'orgDetail',
+								hideInMenu: true,
+								routes: [
+									{
+										path: '/basicData/organizationManagement/detail/edit',
+										name: 'editDetail',
+										id: 'editDetail',
+										component: './Organization/CompanyInfo',
+										hideInMenu: true,
+									},
+									{
+										path: '/basicData/organizationManagement/detail/newSubOrganization',
+										name: 'newSubOrganization',
+										id: 'newSubOrganization',
+										component: './Organization/CompanyInfo',
+										hideInMenu: true,
+									},
+									{
+										path: '/basicData/organizationManagement/detail',
+										id: 'detail',
+										component: './Organization/OrgDetail',
+									},
+								]
+							},
+							{
+								path: '/basicData/organizationManagement',
+								id: 'organizationList',
+								component: './Organization/OrganizationTable',
+							}
 						],
 					},
 					{

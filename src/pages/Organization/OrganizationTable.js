@@ -1,8 +1,15 @@
 import  React  from 'react';
 // import { formatMessage } from 'umi/locale';
-import { Table, Divider } from 'antd';
+import { Table, Divider, Button } from 'antd';
+import { connect } from 'dva';
 
-
+@connect(
+	null,
+	dispatch => ({
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+	})
+)
 class OrganizationTable extends React.Component {
 
 	columns = [
@@ -86,14 +93,28 @@ class OrganizationTable extends React.Component {
 	}
 
 	render() {
+		const { goToPath } = this.props;
 		return(
 			<div>
-				<Table
-					columns={this.columns}
-					dataSource={this.dataSource}
-					expandedRowRender={(record) => {this.expandedRowRender(record.children);}}
-					rowSelection={this.rowSelection}
-				/>
+				<Button onClick={() => goToPath('editOrganization',{
+					action : 'edit',
+					orgId: 11,
+				})}
+				>
+					修改
+				</Button>
+				<Button onClick={() => goToPath('newOrganization',{
+					action : 'create',
+				})}
+				>
+					新增
+				</Button>
+				<Button onClick={() => goToPath('detail',{
+					orgId: 11,
+				})}
+				>
+					详情
+				</Button>
 			</div>
 		);
 	}
