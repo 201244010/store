@@ -8,6 +8,7 @@ import { formatMessage } from 'umi/locale';
 import styles from './OrgDetail.less';
 import { getLocationParam } from '@/utils/utils';
 import { ERROR_OK } from '@/constants/errorCode';
+import DeprecateModal from './DeprecateModal';
 import SearchResult from '../BasicData/Employee/SerachResult';
 
 
@@ -33,6 +34,8 @@ import SearchResult from '../BasicData/Employee/SerachResult';
 			dispatch({ type: 'employee/deleteEmployee', payload: { employeeIdList } }),
 		getAdmin: () =>
 			dispatch({ type: 'employee/getAdmin' }),
+		enable: async (orgId) => dispatch({ type: 'organization/enable', payload: { orgId } }),
+		getOrgTreeByOrgId: orgId => dispatch({ type: 'companyInfo/getOrgTreeByOrgId', payload: { orgId } }),
 	})
 )
 
@@ -68,6 +71,13 @@ class OrgDetail extends React.Component {
 	componentWillUnmount() {
 		const { clearSearchValue } = this.props;
 		clearSearchValue();
+	}
+
+	handleDeprecate = async () => {
+		const { orgId } = this.state;
+		const { getOrgTreeByOrgId } = this.props;
+		const obj = await getOrgTreeByOrgId(orgId);
+		this.deprecateModal.handleDeprecate(obj);
 	}
 
 	getAdminUserId = async () => {
@@ -114,6 +124,23 @@ class OrgDetail extends React.Component {
 		return hourStr;
 	}
 
+	handleEnable = async () => {
+		const { orgId } = this.state;
+		const { enable } = this.props;
+		const result = await enable(orgId);
+		if(result) {
+			this.init();
+			message.success(formatMessage({ id: 'organization.enable.result.success'}));
+		} else {
+			message.error(formatMessage({ id: 'organization.enable.result.error'}));
+		}
+	}
+
+	init(){
+		const { orgId } = this.state;
+		getOrganizationInfo(orgId);
+	}
+
 	addressHandler(province, city, area, address){
 		let detailAddress = '';
 		const { companyInfo: { regionList }} = this.props;
@@ -146,6 +173,8 @@ class OrgDetail extends React.Component {
 		return detailAddress;
 	}
 
+	
+
 	render() {
 		const { goToPath } = this.props;
 		const {
@@ -168,7 +197,8 @@ class OrgDetail extends React.Component {
 					createdTime,
 					typeName,
 					modifiedTime,
-					orgStatus
+					orgStatus,
+					level
 				},
 			}
 		} = this.props;
@@ -224,11 +254,13 @@ class OrgDetail extends React.Component {
 							修改
 						</Button>
 						<Button
+							onClick={() => orgStatus ? this.handleEnable() : this.handleDeprecate()}
 							className={styles.btn}
-						>停用
+						>
+							{orgStatus ? formatMessage({ id: 'organization.action.enable'}) :formatMessage({ id: 'organization.action.disabled'})}
 						</Button>
 						<Button
-							className={styles.btn}
+							className={level === 6 ? styles.noShow: styles.btn}
 							onClick={() => goToPath('newSubOrganization',{
 								action: 'create',
 								orgPid: locationOrgId,
@@ -261,6 +293,7 @@ class OrgDetail extends React.Component {
 						}}
 					/>
 				</Card>
+				<DeprecateModal onRef={modal => { this.deprecateModal = modal; }} init={this.init} />
 			</div>
 		);
 	}

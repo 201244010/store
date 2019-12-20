@@ -254,6 +254,15 @@ export default {
 			const result = addDisableHandler(currentLevel, organizationTree, orgId);
 			return result;
 		},
+		*getOrgTreeByOrgId({ payload }){
+			const { orgId } = payload;
+			const response = yield getOrganizationTree({orgId});
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				return data;
+			}
+			return {};
+		}
 
 	},
 
