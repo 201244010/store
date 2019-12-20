@@ -10,6 +10,8 @@ class OrganizationTable extends React.Component {
 			title: formatMessage({ id: 'organization.org.name'}),
 			dataIndex: 'orgName',
 			key: 'orgName',
+			className: styles['org-name-column'],
+			render: (item) => <div className={styles['org-name']}>{item || '--'}</div>
 		},
 		{
 			title: formatMessage({ id: 'organization.org.tag'}),

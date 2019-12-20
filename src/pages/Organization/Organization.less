@@ -63,6 +63,16 @@
 }
 
 .org-table {
+	.org-name-column {
+		.org-name {
+			white-space: nowrap;
+			max-width: calc(100% - 25px);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: inline-block;
+			vertical-align: top;
+		}
+	}
 	:global {
 		.ant-table-row-level-1,
 		.ant-table-row-level-2,
@@ -71,6 +81,35 @@
 		.ant-table-row-level-5,
 		.ant-table-row-level-6 {
 			background-color: #F9FBFF;
+		}
+
+		.ant-table-row-level-1 {
+			td:nth-child(2) {
+				div {
+					max-width: calc(100% - 45px);
+				}
+			}
+		}
+		.ant-table-row-level-2 {
+			td:nth-child(2) {
+				div {
+					max-width: calc(100% - 65px);
+				}
+			}
+		}
+		.ant-table-row-level-3 {
+			td:nth-child(2) {
+				div {
+					max-width: calc(100% - 85px);
+				}
+			}
+		}
+		.ant-table-row-level-4 {
+			td:nth-child(2) {
+				div {
+					max-width: calc(100% - 105px);
+				}
+			}
 		}
 	}
 }

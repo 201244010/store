@@ -126,7 +126,8 @@ class DeprecateModal extends React.Component {
 	// 取消停用
 	handleDeprecateCancel = () => {
 		this.setState({
-			deprecateModalVisible: false
+			deprecateModalVisible: false,
+			targetPId: '',
 		});
 	}
 
@@ -139,7 +140,7 @@ class DeprecateModal extends React.Component {
 
 	render() {
 
-		const { deprecateModalVisible } = this.state;
+		const { deprecateModalVisible, targetPId } = this.state;
 		const { organization: {  treeData, expandedTreeKeys } } = this.props;
 		return(
 			<Modal
@@ -149,6 +150,7 @@ class DeprecateModal extends React.Component {
 				onOk={this.handleDeprecateOk}
 				onCancel={this.handleDeprecateCancel}
 				className={styles['tree-modal']}
+				okButtonProps={{ disabled: !targetPId}}
 			>
 				<span className={styles['tree-modal-info']}>
 					{formatMessage({id: 'organization.tree.modal.disable.info'})}
