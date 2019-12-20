@@ -34,8 +34,9 @@ const getTreeHeight = (original) => {
 	if(original.children && original.children.length) {
 		const heights = [];
 		original.children.map((item) => {
-			item.height = getTreeHeight(item) + 1;
-			heights.push(item.height);
+			// item.height = getTreeHeight(item) + 1;
+			const height = getTreeHeight(item) + 1;
+			heights.push(height);
 			return item;
 		});
 		return Math.max(...heights);
@@ -51,6 +52,7 @@ export default {
 		originalOrgList: [],
 		originalLayerTree: [],
 		expandedRowKeys: [],
+		expandedTreeKeys: [],
 	},
 	reducers: {
 		updateOrgList(state, { payload }) {
@@ -60,6 +62,7 @@ export default {
 		updateTreeData(state, { payload }) {
 			const { treeData } = payload;
 			state.treeData = [...treeData];
+			state.expandedTreeKeys = [treeData[0].key];
 		},
 		updateOriginalLayerTree(state, { payload }) {
 			const { treeList } = payload;

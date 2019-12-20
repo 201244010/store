@@ -246,7 +246,7 @@ class OrganizationList extends React.Component {
 
 	render() {
 		const { moveModalVisible, /* modalInfoVisible, */ selectedIdList } = this.state;
-		const { organization: { orgList, treeData, expandedRowKeys }, loading } = this.props;
+		const { organization: { orgList, treeData, expandedRowKeys, expandedTreeKeys }, loading } = this.props;
 		return (
 			<div>
 				<Card bordered={false}>
@@ -292,6 +292,7 @@ class OrganizationList extends React.Component {
 						${selectedIdList.length}${formatMessage({ id: 'organization.tree.modal.move.info.suf'})}`}
 					</span>
 					<Tree
+						defaultExpandedKeys={expandedTreeKeys}
 						treeData={treeData}
 						onSelect={this.handleSelectTree}
 						className={styles['layer-tree']}
