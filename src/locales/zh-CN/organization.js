@@ -1,7 +1,9 @@
 export default {
 	'organization.tree.modal.title.move': '批量移动',
 	'organization.tree.modal.title.deprecate':'移动组织',
-	'organization.tree.modal.info':'选择包含6个下级组织，请重新选择其上级组织',
+	'organization.tree.modal.disable.info':'当前组织包含下级组织，需要移动到：',
+	'organization.tree.modal.move.info.pre': '已选择批量移动',
+	'organization.tree.modal.move.info.suf': '个组织，需要移动到：',
 	'organization.action.btn.add':'+ 新建',
 	'organization.action.btn.move':'批量移动',
 	'organization.confirm.modal.title':'提示',

@@ -40,11 +40,7 @@ const mapDispatchToProps = (dispatch) => ({
 			type: 'organization/move',
 			payload: params
 		});
-		if(result) {
-			message.success(formatMessage({ id: 'organization.move.result.success'}));
-		} else {
-			message.error(formatMessage({ id: 'organization.move.result.error'}));
-		}
+		return result;
 	},
 	enable: async (orgId) => {
 		const result = await dispatch({
@@ -53,11 +49,7 @@ const mapDispatchToProps = (dispatch) => ({
 				orgId
 			}
 		});
-		if(result) {
-			message.success(formatMessage({ id: 'organization.enable.result.success'}));
-		} else {
-			message.error(formatMessage({ id: 'organization.enable.result.error'}));
-		}
+		return result;
 	},
 	navigateTo: (pathId, urlParams) => dispatch({
 		type: 'menu/goToPath',
@@ -134,16 +126,22 @@ class OrganizationList extends React.Component {
 	}
 
 	// 确认移动
-	handleMoveOk = () => {
-		this.setState({
-			moveModalVisible: false
-		});
-
+	handleMoveOk = async () => {
 		const { selectedIdList, targetPId } = this.state;
 		const { move } = this.props;
 		console.log('-----确认移动-----', selectedIdList, targetPId);
-		move({
+		const result = await move({
 			selectedIdList, targetPId
+		});
+		if(result) {
+			this.init();
+			message.success(formatMessage({ id: 'organization.move.result.success'}));
+		} else {
+			message.error(formatMessage({ id: 'organization.move.result.error'}));
+		}
+		this.setState({
+			moveModalVisible: false,
+			targetPId: '',
 		});
 	}
 
@@ -161,11 +159,23 @@ class OrganizationList extends React.Component {
 		this.deprecateModal.handleDeprecate(target);
 	}
 
-	handleEnable = (target) => {
+	init = () => {
+		const { initOrgList, initLayerTree } = this.props;
+		initOrgList();
+		initLayerTree();
+	}
+
+	handleEnable = async (target) => {
 		console.log('-----enable----', target);
 		const { orgId } = target;
 		const { enable } = this.props;
-		enable(orgId);
+		const result = await enable(orgId);
+		if(result) {
+			this.init();
+			message.success(formatMessage({ id: 'organization.enable.result.success'}));
+		} else {
+			message.error(formatMessage({ id: 'organization.enable.result.error'}));
+		}
 	}
 
 	// 获取要移动的子树列表
@@ -276,9 +286,11 @@ class OrganizationList extends React.Component {
 					onOk={this.handleMoveOk}
 					onCancel={this.handleMoveCancel}
 					className={styles['tree-modal']}
+					okButtonProps={{ loading: loading.effects['organization/move'] }}
 				>
 					<span className={styles['tree-modal-info']}>
-						{formatMessage({id: 'organization.tree.modal.info'})}
+						{`${formatMessage({id: 'organization.tree.modal.move.info.pre'})}
+						${selectedIdList.length}${formatMessage({ id: 'organization.tree.modal.move.info.suf'})}`}
 					</span>
 					<Tree
 						treeData={treeData}
@@ -287,7 +299,7 @@ class OrganizationList extends React.Component {
 						blockNode
 					/>
 				</Modal>
-				<DeprecateModal onRef={modal => { this.deprecateModal = modal; }} />
+				<DeprecateModal onRef={modal => { this.deprecateModal = modal; }} init={this.init} />
 			</div>
 
 		);

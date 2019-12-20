@@ -36,11 +36,7 @@ const mapDispatchToProps = (dispatch) => ({
 			type: 'organization/deprecate',
 			payload: params
 		});
-		if(result) {
-			message.success(formatMessage({ id: 'organization.deprecate.result.success'}));
-		} else {
-			message.error(formatMessage({ id: 'organization.deprecate.result.error'}));
-		}
+		return result;
 	},
 });
 
@@ -70,26 +66,15 @@ class DeprecateModal extends React.Component {
 		const result = await check(orgId);
 		const { code } = result;
 		if(code === ERROR_OK) {
-			Modal.confirm({
-				title: formatMessage({ id: 'organization.confirm.modal.title'}),
-				content: formatMessage({ id: 'organization.confirm.modal.content'}),
-				cancelText: formatMessage({ id: 'organization.confirm.modal.cancel'}),
-				okText: formatMessage({ id: 'organization.confirm.modal.ok'}),
-				okType: 'danger',
-				// className: styles['confirm-modal'],
-				// icon: <Icon type="exclamation-circle" />,
-				onOk: async () =>  {
-					const selectedList = [target];
-					const { updateTreeData } = this.props;
-					await updateTreeData({
-						selectedList,
-						type: 'deprecate'
-					});
-					this.setState({
-						deprecateModalVisible: true,
-						selectedOrgId: orgId
-					});
-				},
+			const selectedList = [target];
+			const { updateTreeData } = this.props;
+			await updateTreeData({
+				selectedList,
+				type: 'deprecate'
+			});
+			this.setState({
+				deprecateModalVisible: true,
+				selectedOrgId: orgId
 			});
 		} else if(code === ORGANIZATION_NO_DESABLED){
 			Modal.info({
@@ -103,15 +88,37 @@ class DeprecateModal extends React.Component {
 	}
 
 	// 确认停用
-	handleDeprecateOk = () => {
-		const { deprecate } = this.props;
-		const { selectedOrgId, targetPId } = this.state;
+	handleDeprecateOk = async () => {
 		this.setState({
-			deprecateModalVisible: false
+			deprecateModalVisible: false,
 		});
-		deprecate({
-			selectedOrgId,
-			targetPId
+		Modal.confirm({
+			title: formatMessage({ id: 'organization.confirm.modal.title'}),
+			content: formatMessage({ id: 'organization.confirm.modal.content'}),
+			cancelText: formatMessage({ id: 'organization.confirm.modal.cancel'}),
+			okText: formatMessage({ id: 'organization.confirm.modal.ok'}),
+			okType: 'danger',
+			// className: styles['confirm-modal'],
+			// icon: <Icon type="exclamation-circle" />,
+			onOk: async () =>  {
+				const { deprecate } = this.props;
+				const { selectedOrgId, targetPId } = this.state;
+				const result = await deprecate({
+					selectedOrgId,
+					targetPId
+				});
+				if(result) {
+					const { init } = this.props;
+					init();
+					message.success(formatMessage({ id: 'organization.deprecate.result.success'}));
+				} else {
+					message.error(formatMessage({ id: 'organization.deprecate.result.error'}));
+				}
+				this.setState({
+					deprecateModalVisible: false,
+					targetPId: ''
+				});
+			},
 		});
 
 	}
@@ -144,7 +151,7 @@ class DeprecateModal extends React.Component {
 				className={styles['tree-modal']}
 			>
 				<span className={styles['tree-modal-info']}>
-					{formatMessage({id: 'organization.tree.modal.info'})}
+					{formatMessage({id: 'organization.tree.modal.disable.info'})}
 				</span>
 				<Tree
 					treeData={treeData}
