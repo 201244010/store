@@ -1,11 +1,85 @@
-import { formatMessage } from 'umi/locale';
-import { message } from 'antd';
 import typecheck from '@konata9/typecheck.js';
 import { format } from '@konata9/milk-shake';
 import Storage from '@konata9/storage.js';
 import { ERROR_OK } from '@/constants/errorCode';
-import * as Action from '@/services/storeManagement/storeList';
-import * as CookieUtil from '@/utils/cookies';
+import { getOrganizationTree, createOrganization, updateOrganization, getOrganizationInfo, getOrgList } from '@/services/organization';
+
+
+function getHeight(arr, len) {
+	let flag = false;
+	const arr1 = [];
+	for (let i = 0; i< arr.length; i++) {
+		const isAry = Array.isArray(arr[i].children);
+		if (isAry) {
+			for(let j = 0; j< arr[i].children.length; j ++) {
+				arr1.push(arr[i].children[j]);
+			}
+			flag = true;
+		}
+	}
+	if (flag) {
+		len ++;
+		return getHeight(arr1,len);
+	}
+	return len;
+  
+}
+
+function allDisable(obj, excludeId, level) {
+	let children = [];
+	if(obj.children && obj.children.length > 0){
+		const arr = obj.children.map(item => allDisable(item,excludeId));
+		children = arr;
+	}
+	if(obj.value === excludeId && (obj.level && (obj.level + level) <= 6) && obj.orgStatus !== 1){
+		return {
+			...obj,
+			key: obj.value,
+			children,
+		};
+	}
+	return {
+		...obj,
+		disabled: true,
+		key: obj.value,
+		children,
+	};
+}
+
+function addDisableHandler(level, obj, targetId) {
+	let children = [];
+	if(obj.value === targetId){
+		if(obj.children && obj.children.length > 0){
+			return allDisable(obj,obj.value, level);
+		}
+	}
+	if(obj.children && obj.children.length > 0 && obj.value !== targetId){
+		const arr = obj.children.map(item => addDisableHandler(level, item, targetId));
+		children = arr;
+	}
+	if((obj.level && (obj.level + level) > 6) || obj.orgStatus === 1){
+		return {
+			...obj,
+			disabled: true,
+			key: obj.value,
+			children,
+		};
+	}
+
+	return {
+		...obj,
+		key: obj.value,
+		children
+	};
+}
+
+function getOrgName(list) {
+	return list.reduce((result, item) => {
+		let arr = result.concat(item.orgName, []);
+		arr = arr.concat(item.children && item.children.length > 0 ? getOrgName(item.children) : []);
+		return arr;
+	}, []);
+}
 
 const cascaderDataWash = (data, mapping) => {
 	const formatData = [...data];
@@ -28,276 +102,83 @@ const cascaderDataWash = (data, mapping) => {
 export default {
 	namespace: 'companyInfo',
 	state: {
-		storeList: Storage.get(CookieUtil.SHOP_LIST_KEY, 'local') || [],
-		allStores: Storage.get(CookieUtil.SHOP_LIST_KEY, 'local') || [],
-		searchFormValue: {
-			keyword: '',
-			typeOne: 0,
-			typeTwo: 0,
-		},
-		// TODO 下一个准备修改
-		getList: {
-			data: [],
-		},
-		saasBindInfo: {},
-		loading: false,
-		getOption: {},
 		shopTypeList: Storage.get('__shopTypeList__', 'local') || [],
 		regionList: Storage.get('__regionList__', 'local') || [],
-		storeInfo: {},
-		alter: {
-			name: '',
-			type: '',
-			status: 1,
-			address: '',
-			time: '',
-			contactPerson: '',
-			contactPhone: '',
-			shopId: '',
-			createdTime: '',
-			modifiedTime: '',
-		},
-		pagination: {
-			current: 1,
-			pageSize: 10,
-			total: 0,
-			showSizeChanger: true,
-			showQuickJumper: true,
-		},
-		authKey: {},
+		orgInfo: {},
+		organizationTree: {},
+		orgNameList: [],
 	},
 
 	effects: {
-		setShopIdInCookie({ payload = {} }) {
-			const { shopId } = payload;
-			CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
-		},
-
-		removeShopIdInCookie() {
-			CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
-		},
-
-		setShopListInStorage({ payload }) {
-			const { shopList = [] } = payload;
-			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
-		},
-
-		*getStoreNameById({ payload }, { put }) {
-			const { shopId } = payload;
-			const response = yield put.resolve({
-				type: 'getStoreList',
-				payload: {},
-			});
-			let name = '';
+		*getCurrentHeight(payload){
+			const { orgId } = payload;
+			const response = yield getOrganizationTree({orgId});
 			if (response && response.code === ERROR_OK) {
-				const data = response.data || {};
-				const shopList = data.shopList || [];
-				shopList.map(item => {
-					if (item.shopId === shopId) {
-						name = item.shopName;
-					}
-				});
+				const { data = {} } = response;
+				if(data.children && data.children.length > 0){
+					return getHeight(data.children, 0) + 1;
+				}
+				return 1;
 			}
-			// console.log(name);
-			return name;
+			return 6;
 		},
-		*changeSearchFormValue({ payload }, { put, select }) {
-			const { options = {} } = payload;
-			const { searchFormValue } = yield select(state => state.store);
+		*clearState(_, { put }) {
 			yield put({
 				type: 'updateState',
 				payload: {
-					searchFormValue: {
-						...searchFormValue,
-						...options,
-					},
+					orgInfo: {},
 				},
 			});
 		},
-
-		*updatePagination({ payload = {} }, { put, select }) {
-			const { options = {} } = payload;
-			const { pagination } = yield select(state => state.store);
-			yield put({
-				type: 'updateState',
-				payload: {
-					pagination: {
-						...pagination,
-						...options,
-					},
-				},
+		*getAllOrgName(_, { put }) {
+			const response = yield getOrgList({
+				keyword: '',
+				orgTag: -1,
+				businessStatus: -1,
 			});
-		},
-
-		*getStoreList({ payload = {} }, { call, put, select }) {
-			const { options: { current = 1 } = {}, options = {} } = payload;
-			const { searchFormValue, pagination } = yield select(state => state.store);
-			const opts = {
-				...searchFormValue,
-				...pagination,
-				...options,
-				page_size: 999,
-			};
-			yield put({
-				type: 'updateState',
-				payload: { loading: true },
-			});
-			const response = yield call(Action.getList, opts);
-			if (response && response.code === ERROR_OK) {
-				const data = response.data || {};
-				const shopList = data.shopList || [];
-				const newPayload = {
-					loading: false,
-					storeList: shopList,
-					pagination: {
-						...pagination,
-						current,
-					},
-				};
-				if (opts.type !== 'search') {
-					newPayload.allStores = shopList;
-				}
-
-				// yield put({
-				// 	type: 'setShopListInStorage',
-				// 	payload: { shopList },
-				// });
+			const { code } = response;
+			if(code === ERROR_OK){
+				const { data: { orgList = []}} = response;
+				const result = getOrgName(orgList);
 
 				yield put({
 					type: 'updateState',
-					payload: newPayload,
-				});
-			} else {
-				yield put({
-					type: 'updateState',
-					payload: { loading: false },
+					payload: {
+						orgNameList: result,
+					},
 				});
 			}
+			
+
+		},
+		*createOrganization({ payload }) {
+			const { options } = payload;
+			const response = yield createOrganization(options);
 			return response;
 		},
 
-		*createNewStore({ payload }, { call, put }) {
+		*updateOrganization({ payload }) {
 			const { options } = payload;
-			yield put({
-				type: 'updateState',
-				payload: { loading: true },
-			});
-			const response = yield call(Action.createStore, options);
-			if (response && response.code === ERROR_OK) {
-				message.success(formatMessage({ id: 'storeManagement.message.createSuccess' }));
-				const data = response.data || {};
-				if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
-					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.shopId);
-				}
-
-				const res = yield put.resolve({
-					type: 'getStoreList',
-					payload: {},
-				});
-
-				const { data: { shopList } = {} } = res || {};
-				// const { storeList } = yield select(state => state.store);
-				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
-
-				yield put({
-					type: 'menu/goToPath',
-					payload: {
-						pathId: 'storeList',
-					},
-				});
-			} else {
-				yield put({
-					type: 'updateState',
-					payload: { loading: false },
-				});
-			}
+			const response = yield updateOrganization(options);
 			return response;
 		},
 
-		*updateStore({ payload }, { select, call, put }) {
-			const { options } = payload;
-			yield put({
-				type: 'updateState',
-				payload: { loading: true },
-			});
-			const response = yield call(Action.alterStore, options);
-			if (response && response.code === ERROR_OK) {
-				message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
-
-				yield put({
-					type: 'getStoreList',
-					payload: {},
-				});
-				const { storeList } = yield select(state => state.store);
-				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: storeList }, 'local');
-
-				yield put({
-					type: 'menu/goToPath',
-					payload: {
-						pathId: 'storeList',
-					},
-				});
-				// router.push(`${MENU_PREFIX.STORE}/list`);
-			} else {
-				yield put({
-					type: 'updateState',
-					payload: { loading: false },
-				});
-			}
-			return response;
-		},
-
-		*getStoreDetail({ payload }, { call, put }) {
-			const { options } = payload;
-			yield put({
-				type: 'updateState',
-				payload: { loading: true },
-			});
-			const response = yield call(Action.storeInformation, options);
+		*getOrganizationInfo({ payload }, { put }) {
+			console.log('!!!!!!!!!!!!!!!!!');
+			console.log('come in');
+			console.log(payload);
+			const response = yield getOrganizationInfo(payload);
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
+				console.log(data);
 				yield put({
 					type: 'updateState',
 					payload: {
-						loading: false,
-						storeInfo: data,
-					},
-				});
-			} else {
-				yield put({
-					type: 'updateState',
-					payload: { loading: false },
-				});
-			}
-		},
-
-		*getStoreInformation({ payload }, { call, put }) {
-			const { options } = payload;
-			const response = yield call(Action.storeInformation, options);
-			if (response && response.code === ERROR_OK) {
-				yield put({
-					type: 'saveNewStore',
-					payload: {
-						data: response,
+						orgInfo: data,
 					},
 				});
 			}
 		},
-
-		*alterStoreInformation({ payload }, { call, put }) {
-			const { options } = payload;
-			const response = yield call(Action.alterStore, options);
-			if (response && response.code === ERROR_OK) {
-				message.success(formatMessage({ id: 'storeManagement.message.alterSuccess' }));
-				yield put({
-					type: 'alterStore',
-					payload: {
-						data: response,
-					},
-				});
-			}
-		},
-
 		*getShopTypeList(_, { call, put }) {
 			const response = yield call(Action.getShopTypeList);
 			if (response && response.code === ERROR_OK) {
@@ -339,86 +220,41 @@ export default {
 				});
 			}
 		},
-
-		*getSaasBindInfo(_, { call, put }) {
-			yield put({
-				type: 'updateState',
-				payload: { loading: true },
-			});
-
-			const response = yield call(Action.getSaasBindInfo);
-			if (response && response.code === ERROR_OK) {
-				const data = response.data || {};
-				const { is_bind: isBind = false, saas_info: saasInfo } = data;
-				yield put({
-					type: 'updateState',
-					payload: {
-						saasBindInfo: {
-							isBind,
-							saasInfo,
-						},
-					},
-				});
-			}
-
-			yield put({
-				type: 'updateState',
-				payload: { loading: false },
-			});
-		},
-
-		*clearState(_, { put }) {
-			yield put({
-				type: 'updateState',
-				payload: {
-					storeInfo: {},
-				},
-			});
-		},
-
-		*clearSearch(_, { put }) {
-			yield put({
-				type: 'updateState',
-				payload: {
-					searchFormValue: {
-						keyword: '',
-						typeOne: 0,
-						typeTwo: 0,
-					},
-					pagination: {
-						current: 1,
-						pageSize: 10,
-						total: 0,
-						showSizeChanger: true,
-						showQuickJumper: true,
-					},
-				},
-			});
-		},
-
-		*getImportedErpInfo(_, { call }) {
-			const response = yield call(Action.getImportedErpInfo, {});
-			return response;
-		},
-
-		*getAuthKey({ payload = {} }, { call, put }) {
-			const currentShopId = yield put.resolve({
-				type: 'global/getShopIdFromStorage',
-			});
-
-			const { shopId = null } = payload;
-			const response = yield call(Action.getAuthKey, { shopId: shopId || currentShopId });
+		*getOrganizationTreeByUser(_, { put }) {
+			const response = yield getOrganizationTree();
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
-
+				const targetData = format((key) => {
+					if(key === 'orgId'){
+						return 'value';
+					}
+					if(key === 'orgName'){
+						return 'title';
+					}
+					return key;
+				})(data);
 				yield put({
 					type: 'updateState',
 					payload: {
-						authKey: format('toCamel')(data),
+						organizationTree: targetData,
 					},
 				});
 			}
 		},
+		*getOrganizationTreeByCompanyInfo({payload}, { select, put }) {
+			const { currentLevel, orgId } = payload;
+			let organizationTree = yield select((state) => state.companyInfo.organizationTree);
+
+			if (!organizationTree.value){
+				yield put.resolve({
+					type: 'getOrganizationTreeByUser'
+				});
+				organizationTree  = yield select((state) => state.companyInfo.organizationTree);
+			}
+			const result = addDisableHandler(currentLevel, organizationTree, orgId);
+			return result;
+		},
+
 	},
 
 	reducers: {
@@ -426,52 +262,6 @@ export default {
 			return {
 				...state,
 				...action.payload,
-			};
-		},
-
-		saveStoreList(state, action) {
-			const {
-				payload: { data },
-			} = action;
-			const arrayList = data.data.shopList;
-			let array = [];
-			array = arrayList.map(value => ({
-				address: value.address,
-				status: value.businessStatus,
-				shopId: value.shopId,
-				name: value.shopName,
-				type: value.typeName,
-				contactPerson: value.contactPerson,
-				key: value.id,
-			}));
-			return {
-				...state,
-				getList: {
-					data: array,
-				},
-			};
-		},
-		saveNewStore(state, action) {
-			const store = action.payload.data.data;
-			return {
-				...state,
-				alter: {
-					name: store.shopName,
-					type: store.typeName,
-					status: store.businessStatus,
-					address: store.address,
-					time: store.businessHours,
-					contactPerson: store.contactPerson,
-					contactPhone: store.contactTel,
-					shopId: store.shopId,
-					createdTime: store.createdTime,
-					modifiedTime: store.modified_time,
-				},
-			};
-		},
-		alterStore(state) {
-			return {
-				...state,
 			};
 		},
 	},

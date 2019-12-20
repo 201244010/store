@@ -185,7 +185,7 @@ class OrganizationList extends React.Component {
 	// 全选是想要移动的子树是整个列表
 	onSelectAll = (selected) => {
 		if(selected) {
-			const { orgList } = this.props;
+			const { organization: { orgList } } = this.props;
 			this.setState({
 				selectedList: [...orgList]
 			});
@@ -218,14 +218,21 @@ class OrganizationList extends React.Component {
 		console.log('------modify-----', target);
 		const { navigateTo } = this.props;
 		const { orgId } = target;
-		navigateTo('companyInfo',{ type: 'edit', orgId });
+		navigateTo('editOrganization',{ action: 'edit', orgId });
 
 	}
 
 	// 查看
 	handleViewInfo = (target) => {
 		console.log('------check-----', target);
-		// const { navigateTo } = this.props;
+		const { navigateTo } = this.props;
+		const { orgId } = target;
+		navigateTo('detail', { orgId });
+	}
+
+	handleAdd = () => {
+		const { navigateTo } = this.props;
+		navigateTo('newOrganization', { action: 'create' });
 	}
 
 	render() {
@@ -242,7 +249,7 @@ class OrganizationList extends React.Component {
 						handleSearch={this.handleSearch}
 					/> */}
 					<div className={styles['action-container']}>
-						<Button className={styles['action-btn-left']} type="primary">
+						<Button className={styles['action-btn-left']} type="primary" onClick={this.handleAdd}>
 							{formatMessage({id: 'organization.action.btn.add'})}
 						</Button>
 						<Button onClick={this.handleMove} disabled={selectedIdList.length === 0}>
