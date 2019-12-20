@@ -8,6 +8,7 @@ import Captcha from '@/components/Captcha';
 import ImgCaptchaModal from '@/components/Captcha/ImgCaptchaModal';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
+import * as RegExp from '@/constants/regexp';
 import { ERROR_OK, ALERT_NOTICE_MAP, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 import { MAIL_LIST } from '@/constants';
 import { env } from '@/config';
@@ -278,7 +279,7 @@ class Register extends Component {
 															}),
 														},
 														{
-															pattern: /^1\d{10}$/,
+															pattern: RegExp.phone,
 															message: formatMessage({
 																id: 'mobile.validate.isFormatted',
 															}),
