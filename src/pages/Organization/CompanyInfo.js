@@ -6,6 +6,7 @@ import Storage from '@konata9/storage.js';
 import moment from 'moment';
 import { getLocationParam } from '@/utils/utils';
 import { customValidate } from '@/utils/customValidate';
+import * as CookieUtil from '@/utils/cookies';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK } from '@/constants/errorCode';
 import { mail } from '@/constants/regexp';
@@ -159,7 +160,8 @@ class CompanyInfo extends React.Component {
 			form: { getFieldValue },
 		} = this.props;
 		const regionValue = getFieldValue('region');
-		const cityInfo = this.deepFindCity(regionValue);
+		const cityInfo = regionValue ? this.deepFindCity(regionValue) : {};
+
 		const { name = null } = cityInfo || {};
 
 		AMap.plugin('AMap.Autocomplete', () => {
@@ -186,7 +188,8 @@ class CompanyInfo extends React.Component {
 
 		const regionValue = getFieldValue('region');
 		const address = getFieldValue('address');
-		const cityInfo = this.deepFindCity(regionValue);
+
+		const cityInfo = regionValue ? this.deepFindCity(regionValue) : {};
 		const { name = null } = cityInfo || {};
 
 		const inputAddress = addressSearchResult.find(
@@ -277,6 +280,7 @@ class CompanyInfo extends React.Component {
 			getLocationParam('action'),
 			Number(getLocationParam('orgId')),
 		];
+		const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY);
 		const {
 			form: { validateFields },
 			createOrganization,
@@ -289,7 +293,7 @@ class CompanyInfo extends React.Component {
 				const { address, startTime, endTime, allDaysSelect } = values;
 				let businessHours = null;
 				if(allDaysSelect){
-					businessHours = '00:00~24:00';
+					businessHours = '00:00~23:59';
 				}else if(startTime && endTime){
 					businessHours = `${startTime.format('HH:mm')}~${endTime.format('HH:mm')}`;
 				}
@@ -302,6 +306,7 @@ class CompanyInfo extends React.Component {
 				const options = {
 					...values,
 					orgId,
+					companyId,
 					typeOne: values.shopType ? values.shopType[0] || null : null,
 					typeTwo: values.shopType ? values.shopType[1] || null : null,
 					province: values.region ? values.region[0] || null : null,
@@ -319,6 +324,8 @@ class CompanyInfo extends React.Component {
 					if(code === ERROR_OK){
 						message.success('修改成功');
 						goToPath('organizationList');
+					}else{
+						message.success('修改失败');
 					}
 					
 				}else{
@@ -327,6 +334,8 @@ class CompanyInfo extends React.Component {
 					if(code === ERROR_OK){
 						message.success('保存成功');
 						goToPath('organizationList');
+					}else{
+						message.success('保存失败');
 					}
 				}
 			}
@@ -360,6 +369,7 @@ class CompanyInfo extends React.Component {
 			}
 		} = this.props;
 		const { treeData, allDayChecked, orgPidParams } = this.state;
+		console.log(treeData);
 		const { addressSearchResult, organizationType, isDisabled } = this.state;
 		const [action = 'create'] = [getLocationParam('action')];
 		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => (
@@ -380,8 +390,8 @@ class CompanyInfo extends React.Component {
 				<Card 
 					bordered={false} 
 					title={action === 'create'
-						? (orgPidParams ? '新建下级组织' : formatMessage({ id: 'companyInfo.create.title' }))
-						: '修改组织详情'}
+						? (orgPidParams ? formatMessage({ id: 'companyInfo.create.sub.title' }) : formatMessage({ id: 'companyInfo.create.title' }))
+						: formatMessage({ id: 'companyInfo.create.title' })}
 				>
 					<Form
 						{...{
@@ -389,14 +399,14 @@ class CompanyInfo extends React.Component {
 							...HEAD_FORM_ITEM_LAYOUT,
 						}}
 					>
-						<FormItem label='组织名称'>
+						<FormItem label={formatMessage({ id: 'companyInfo.org.name' })}>
 							{getFieldDecorator('orgName', {
 								validateTrigger: 'onBlur',
 								initialValue: orgName,
 								rules: [
 									{
 										required: true,
-										message: '组织名称为不能空',
+										message: formatMessage({ id: 'companyInfo.no.input.name' }),
 									},
 									{
 										validator: (rule, value, callback) => {
@@ -409,31 +419,31 @@ class CompanyInfo extends React.Component {
 												return true;
 											});
 
-											if (confictFlag) {
+											if (confictFlag && action === 'create') {
 												callback('name-confict');
 											} else {
 												callback();
 											}
 										},
-										message: '已存在该组织名称',
+										message: formatMessage({ id: 'companyInfo.name.exit' }),
 									},
 								],
 							})(
 								<Input
 									onChange={(e) => this.submitButtonDisableHandler(e, 'orgName')}
 									maxLength={20}
-									placeholder='例如：星巴克杨浦店'
+									placeholder={formatMessage({ id: 'companyInfo.name.placeholder' })}
 								/>
 							)}
 						</FormItem>
-						<FormItem label='上级组织'>
+						<FormItem label={formatMessage({ id: 'companyInfo.org.parent.label' })}>
 							{getFieldDecorator('orgPid', {
 							// validateTrigger: 'onSelect',
 								initialValue: orgPidParams || orgPid,
 								rules: [
 									{
 										required: true,
-										message: '请选择上级组织',
+										message: formatMessage({ id: 'companyInfo.org.parent.no.input' }),
 									},
 								],
 							})(
@@ -443,30 +453,30 @@ class CompanyInfo extends React.Component {
 									onSelect={this.onSelectHandler}
 									onChange={(e) => this.submitButtonDisableHandler(e, 'orgPid')}
 									treeData={[treeData]}
-									placeholder='请选择'
-									treeDefaultExpandAll
+									placeholder={formatMessage({ id: 'companyInfo.please.select' })}
+									treeDefaultExpandedKeys={[treeData.value]}
 								/>
 							)}
 						</FormItem>
-						<FormItem label='组织属性'>
+						<FormItem label={formatMessage({ id: 'companyInfo.org.tag.label' })}>
 							{getFieldDecorator('orgTag', {
 								validateTrigger: 'onBlur',
 								initialValue: businessStatus || 0,
 								rules: [
 									{
 										required: true,
-										message: '请选择组织属性',
+										message: formatMessage({ id: 'companyInfo.org.tag.select' }),
 									},
 								],
 							})(
 								<Select
 								// onSelect={this.selectTest}
 								// onBlur={this.blurTest}
-									placeholder="请选择"
+									placeholder={formatMessage({ id: 'companyInfo.please.select' })}
 									onChange={this.onTypeChangeHandler}
 								>
-									<Option value={0}>门店</Option>
-									<Option value={1}>部门</Option>
+									<Option value={0}>{formatMessage({ id: 'companyInfo.shop' })}</Option>
+									<Option value={1}>{formatMessage({ id: 'companyInfo.department' })}</Option>
 								</Select>
 							)}
 						</FormItem>
@@ -480,12 +490,12 @@ class CompanyInfo extends React.Component {
 									],
 								})(
 									<Cascader
-										placeholder='请输入'
+										placeholder={formatMessage({ id: 'companyInfo.please.input' })}
 										options={shopTypeList}
 									/>
 								)}
 							</FormItem>
-							<FormItem label={formatMessage({ id: 'storeManagement.create.statusLabel' })}>
+							<FormItem label={formatMessage({ id: 'companyInfo.businessStatus' })}>
 								{getFieldDecorator('businessStatus', {
 									initialValue: businessStatus || 0,
 								})(
@@ -509,22 +519,28 @@ class CompanyInfo extends React.Component {
 								})(
 									<Cascader
 										options={regionList}
-										placeholder="省/市/区"
+										placeholder={formatMessage({ id: 'companyInfo.region.placeholder' })}
 									/>
 								)}
 							</FormItem>
 							<FormItem label=" " colon={false}>
 								{getFieldDecorator('address', {
 									initialValue: address,
+									rules: [
+										{
+											max: 60,
+											message: formatMessage({ id: 'companyInfo.max.length' }),
+										},
+									],
 								})(
 									<AutoComplete
-										placeholder="请输入详细地址"
+										placeholder={formatMessage({ id: 'companyInfo.please.input.detail.address' })}
 										dataSource={autoCompleteSelection}
 										onChange={this.handleSelectSearch}
 									/>
 								)}
 							</FormItem>
-							<Form.Item label='营业时间' className={styles['open-time']}>
+							<Form.Item label={formatMessage({ id: 'companyInfo.open.time' })} className={styles['open-time']}>
 								<Form.Item className={styles['time-picker']}>
 									{
 										getFieldDecorator('startTime',{
@@ -534,7 +550,7 @@ class CompanyInfo extends React.Component {
 										})(
 											<TimePicker
 												disabled={allDayChecked}
-												placeholder='开始时间'
+												placeholder={formatMessage({ id: 'companyInfo.start.time' })}
 												format="HH:mm"
 											/>
 										)
@@ -550,7 +566,7 @@ class CompanyInfo extends React.Component {
 										})(
 											<TimePicker
 												disabled={allDayChecked}
-												placeholder='结束时间'
+												placeholder={formatMessage({ id: 'companyInfo.end.time' })}
 												format={this.isNextDay()}
 											/>
 										)
@@ -560,7 +576,7 @@ class CompanyInfo extends React.Component {
 									{
 										getFieldDecorator('allDaysSelect', {
 										})(
-											<Checkbox checked={allDayChecked} onChange={this.allDayCheckChange}>全天</Checkbox>
+											<Checkbox checked={allDayChecked} onChange={this.allDayCheckChange}>{formatMessage({ id: 'companyInfo.allDay' })}</Checkbox>
 										)
 									}
 								</Form.Item>
@@ -584,17 +600,17 @@ class CompanyInfo extends React.Component {
 											},
 										},
 									],
-								})(<Input placeholder="请输入营业面积" suffix="㎡" />)}
+								})(<Input placeholder={formatMessage({ id: 'companyInfo.please.input.businessArea' })} suffix="㎡" />)}
 							</FormItem>
 						</div>
 						}
 					
-						<FormItem label='联系人'>
+						<FormItem label={formatMessage({ id: 'companyInfo.contactPerson.label' })}>
 							{getFieldDecorator('contactPerson', {
 								initialValue: contactPerson,
-							})(<Input maxLength={20} placeholder="请输入联系人" />)}
+							})(<Input maxLength={40} placeholder={formatMessage({ id: 'companyInfo.please.input.contactPerson' })} />)}
 						</FormItem>
-						<FormItem label='联系号码'>
+						<FormItem label={formatMessage({ id: 'companyInfo.contactTel.label' })}>
 							{getFieldDecorator('contactTel', {
 								initialValue: contactTel,
 								validateTrigger: 'onBlur',
@@ -609,9 +625,9 @@ class CompanyInfo extends React.Component {
 											}),
 									},
 								],
-							})(<Input placeholder="请输入联系号码" />)}
+							})(<Input placeholder={formatMessage({ id: 'companyInfo.please.input.contactTel' })} />)}
 						</FormItem>
-						<FormItem label='联系人邮箱'>
+						<FormItem label={formatMessage({ id: 'companyInfo.contactEmail.label' })}>
 							{
 								getFieldDecorator('contactEmail', {
 									initialValue: contactEmail,
@@ -623,12 +639,18 @@ class CompanyInfo extends React.Component {
 										},
 									],
 								})(
-									<Input placeholder="请输入联系人邮箱" />
+									<Input placeholder={formatMessage({ id: 'companyInfo.please.input.contactEmail' })} />
 								)
 							}
 						</FormItem>
 						<FormItem label=" " colon={false}>
-							<Button type="primary" onClick={this.handleSubmit} disabled={isDisabled}>
+							<Button
+								loading={!!(loading.effects['companyInfo/createOrganization'] ||
+								loading.effects['companyInfo/updateOrganization'])}
+								type="primary" 
+								onClick={this.handleSubmit} 
+								disabled={isDisabled}
+							>
 								{formatMessage({ id: 'btn.save' })}
 							</Button>
 							<Button

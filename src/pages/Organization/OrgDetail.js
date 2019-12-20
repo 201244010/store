@@ -36,6 +36,7 @@ import SearchResult from '../BasicData/Employee/SerachResult';
 			dispatch({ type: 'employee/getAdmin' }),
 		enable: async (orgId) => dispatch({ type: 'organization/enable', payload: { orgId } }),
 		getOrgTreeByOrgId: orgId => dispatch({ type: 'companyInfo/getOrgTreeByOrgId', payload: { orgId } }),
+		initLayerTree: () => dispatch({ type: 'organization/initLayerTree' }),
 	})
 )
 
@@ -51,9 +52,9 @@ class OrgDetail extends React.Component {
 
 	componentDidMount(){
 		const orgId = Number(getLocationParam('orgId'));
-		const { getRegionList, getOrganizationInfo } = this.props;
+		const { getRegionList } = this.props;
 		// console.log(getOrganizationInfo);
-		getOrganizationInfo(orgId);
+		this.init();
 		if (!Storage.get('__regionList__', 'local')) {
 			getRegionList();
 		}
@@ -118,7 +119,7 @@ class OrgDetail extends React.Component {
 			const hourArr = hourStr.split('~');
 			const result = this.compareTimeFormatHHmm(hourArr[0], hourArr[1]);
 			if(result === 0 || result === 1){
-				return `${hourStr}（次日）`;
+				return `${hourStr}${formatMessage({id: 'activeDetection.nextDay'})}`;
 			}
 		}
 		return hourStr;
@@ -136,9 +137,11 @@ class OrgDetail extends React.Component {
 		}
 	}
 
-	init(){
+	init = async() => {
 		const { orgId } = this.state;
-		getOrganizationInfo(orgId);
+		const { initLayerTree, getOrganizationInfo } = this.props;
+		await initLayerTree();
+		await getOrganizationInfo(orgId);
 	}
 
 	addressHandler(province, city, area, address){
@@ -198,7 +201,8 @@ class OrgDetail extends React.Component {
 					typeName,
 					modifiedTime,
 					orgStatus,
-					level
+					level,
+					businessArea,
 				},
 			}
 		} = this.props;
@@ -215,32 +219,45 @@ class OrgDetail extends React.Component {
 				<Card title='组织详情' className={styles['org-detail']} loading={loading.effects['companyInfo/getOrganizationInfo']}>
 					<div className={styles['detail-body']}>
 						<div className={styles.row}>
-							<div className={`${styles.col} ${styles.orgId}`}>组织编号：{orgId || '--'}</div>
-							<div className={`${styles.col} ${styles.orgName}`}>组织名称：{orgName || '--'}</div>
-							<div className={`${styles.col} ${styles.orgPname}`}>上级组织：{orgPname || '--'}</div>
+							<div className={`${styles.col} ${styles.orgId}`}>{formatMessage({id: 'orgDetail.org.id'})}{orgId || '--'}</div>
+							<div className={`${styles.col} ${styles.orgName}`}>{formatMessage({id: 'orgDetail.org.name'})}{orgName || '--'}</div>
+							<div className={`${styles.col} ${styles.orgPname}`}>{formatMessage({id: 'orgDetail.org.parent'})}{orgPname || '--'}</div>
 						</div>
 						<div className={styles.row}>
-							<div className={`${styles.col} ${styles.orgTag}`}>组织属性：{(orgTag === 0 && '门店' || orgTag === 1 && '部门') || '--'}</div>
-							<div className={`${styles.col} ${styles.orgStatus}`}>组织状态：{(orgStatus === 0 && '使用中' || orgStatus === 1 && '停用') || '--'}</div>
-							<div className={`${styles.col} ${styles.contactPerson}`}>联系人：{contactPerson || '--'}</div>
+							<div className={`${styles.col} ${styles.orgTag}`}>
+								{formatMessage({id: 'orgDetail.org.tag'})}
+								{(orgTag === 0 && formatMessage({id: 'orgDetail.shop'}) ||
+								orgTag === 1 && formatMessage({id: 'orgDetail.department'})) || '--'}
+							</div>
+							<div className={`${styles.col} ${styles.orgStatus}`}>
+								{formatMessage({id: 'orgDetail.org.status'})}
+								{(orgStatus === 0 && formatMessage({id: 'orgDetail.org.status.using'}) ||
+								orgStatus === 1 && formatMessage({id: 'orgDetail.org.status.stop.use'})) || '--'}
+							</div>
+							<div className={`${styles.col} ${styles.contactPerson}`}>{formatMessage({id: 'orgDetail.contactPerson'})}{contactPerson || '--'}</div>
 						</div>
 						<div className={styles.row}>
-							<div className={`${styles.col} ${styles.contactTel}`}>联系电话：{contactTel || '--'}</div>
-							<div className={`${styles.col} ${styles.contactEmail}`}>联系邮箱：{contactEmail || '--'}</div>
-							<div className={`${styles.col} ${styles.createdTime}`}>创建时间：{createdTime ? moment.unix(createdTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
+							<div className={`${styles.col} ${styles.contactTel}`}>{formatMessage({id: 'orgDetail.contactTel'})}{contactTel || '--'}</div>
+							<div className={`${styles.col} ${styles.contactEmail}`}>{formatMessage({id: 'orgDetail.contactEmail'})}{contactEmail || '--'}</div>
+							<div className={`${styles.col} ${styles.createdTime}`}>{formatMessage({id: 'orgDetail.createdTime'})}{createdTime ? moment.unix(createdTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
 						</div>
 						<div className={styles.row}>
-							<div className={`${styles.col} ${styles.modifiedTime}`}>更新时间：{modifiedTime ? moment.unix(modifiedTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
+							<div className={`${styles.col} ${styles.modifiedTime}`}>{formatMessage({id: 'orgDetail.modifiedTime'})}{modifiedTime ? moment.unix(modifiedTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
 							<div className={styles.col} />
 							<div className={styles.col} />
 						</div>
 						<div className={styles.row}>
-							<div className={`${styles.col} ${styles.typeName}`}>经营品类：{typeName || '--'}</div>
-							<div className={`${styles.col} ${styles.businessStatus}`}>营业状态：{(businessStatus === 0 && '营业' || businessStatus === 1 && '停业') || '--'}</div>
-							<div className={`${styles.col} ${styles.businessHours}`}>营业时间：{businessHours ? this.format(businessHours) : '--'}</div>
+							<div className={`${styles.col} ${styles.typeName}`}>{formatMessage({id: 'orgDetail.typeName'})}{typeName || '--'}</div>
+							<div className={`${styles.col} ${styles.businessStatus}`}>{formatMessage({id: 'orgDetail.businessStatus'})}
+								{(businessStatus === 0 && formatMessage({id: 'orgDetail.businessStatus.open'}) || 
+								businessStatus === 1 && formatMessage({id: 'orgDetail.businessStatus.close'})) || '--'}
+							</div>
+							<div className={`${styles.col} ${styles.businessHours}`}>{formatMessage({id: 'orgDetail.businessHours'})}{businessHours ? this.format(businessHours) : '--'}</div>
 						</div>
 						<div className={styles.row}>
-							<div className={`${styles.col} ${styles.address}`}>地址：{this.addressHandler(province, city, area, address)}</div>
+							<div className={`${styles.col} ${styles.businessArea}`}>{formatMessage({id: 'orgDetail.businessArea'})}{`${businessArea}㎡` || '--'}</div>
+							<div className={`${styles.col} ${styles.address}`}>{formatMessage({id: 'orgDetail.address'})}{this.addressHandler(province, city, area, address)}</div>
+							<div className={styles.col} />
 						</div>
 					</div>
 					<div className={styles.footer}>
@@ -251,7 +268,7 @@ class OrgDetail extends React.Component {
 								orgId: locationOrgId,
 							})}
 						>
-							修改
+							{formatMessage({id: 'orgDetail.modify'})}
 						</Button>
 						<Button
 							onClick={() => orgStatus ? this.handleEnable() : this.handleDeprecate()}
@@ -266,11 +283,11 @@ class OrgDetail extends React.Component {
 								orgPid: locationOrgId,
 							})}
 						>
-							新增下级组织
+							{formatMessage({id: 'orgDetail.new.sub.org'})}
 						</Button>
 					</div>
 				</Card>
-				<Card title='员工信息' className={styles['employee-info']}>
+				<Card title={formatMessage({id: 'orgDetail.employee.info'})} className={styles['employee-info']}>
 					<Button
 						className={styles['add-btn']}
 						type="primary"

@@ -1,4 +1,14 @@
 export default {
+	'POST /api/organization/create': {
+		code:1,
+		msg:'',
+		data:{}
+	},
+	'POST /api/organization/update': {
+		code:1,
+		msg:'',
+		data:{}
+	},
 	'POST /api/order/create': {
 		code:2,
 		msg:'',
@@ -148,6 +158,39 @@ export default {
 				}]
 			}]
 		}
+	},
+	'POST /api/organization/getInfo': {
+		'code': 1,
+		'data': {
+			'org_pid': 111,
+			'org_tag': 1,
+			'level': 3,
+			'org_id': 1111,
+			'org_name': '三级',
+			'org_status': 0,
+			'org_pname': '',
+			'sunmi_shop_no': '',
+			'business_status': 1,
+			'province': 13,
+			'city': 10,
+			'area': 345,
+			'lat': '',
+			'lng':'',
+			'address': '一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十',
+			'business_area': 34,
+			'region': '1',
+			'type_one': 1,
+			'type_two': 15,
+			'type_name': '',
+			'business_hours': '早上9点',
+			'contact_person': '34345',
+			'contact_tel': '13226653553',
+			'contact_email': '11@qq.com',
+			'created_time': 1556441829,
+			'modified_time': 1576492881,
+			'saas_exist': 0,
+		},
+		'msg': ''
 	},
 	'POST /api/organization/getLayerByUser': {
 		code: 1,

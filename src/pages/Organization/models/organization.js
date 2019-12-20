@@ -34,8 +34,9 @@ const getTreeHeight = (original) => {
 	if(original.children && original.children.length) {
 		const heights = [];
 		original.children.map((item) => {
-			item.height = getTreeHeight(item) + 1;
-			heights.push(item.height);
+			// item.height = getTreeHeight(item) + 1;
+			const height = getTreeHeight(item) + 1;
+			heights.push(height);
 			return item;
 		});
 		return Math.max(...heights);
@@ -101,7 +102,9 @@ export default {
 		*setTreeData({ payload }, { put, select }) {
 			const { originalLayerTree } = yield select(state => state.organization);
 			console.log('----setTreeDate----');
+			console.log(originalLayerTree);
 			const { selectedList, type } = payload;
+			console.log('----selectedList----',selectedList);
 			const targetList = [];
 			const hash = {};
 			let maxHeight = 0;
