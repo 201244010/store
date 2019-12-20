@@ -79,5 +79,5 @@ export default {
 	'common.person': 'Person',
 	'common.male': 'Male',
 	'common.female': 'Female',
-	'common.age': 'Age',
+	'common.age': ' ',
 };

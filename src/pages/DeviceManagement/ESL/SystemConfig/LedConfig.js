@@ -20,35 +20,35 @@ class LedConfig extends Component {
 
 		this.flashColors = [{
 			value: 1,
-			color: '白'
+			color: formatMessage({id: 'esl.device.led.flash.color.white'})
 		}, {
 			value: 2,
-			color: '蓝'
+			color: formatMessage({id: 'esl.device.led.flash.color.blue'})
 		}, {
 			value: 4,
-			color: '绿'
+			color: formatMessage({id: 'esl.device.led.flash.color.green'})
 		}, {
 			value: 8,
-			color: '红'
+			color: formatMessage({id: 'esl.device.led.flash.color.red'})
 		}, {
 			value: 512,
-			color: '青'
+			color: formatMessage({id: 'esl.device.led.flash.color.cyan'})
 		}, {
 			value: 1024,
-			color: '紫'
+			color: formatMessage({id: 'esl.device.led.flash.color.purple'})
 		}, {
 			value: 2048,
-			color: '黄'
+			color: formatMessage({id: 'esl.device.led.flash.color.yellow'})
 		}];
 		this.frequency = [{
 			value: 50,
-			text: '快'
+			text: formatMessage({id: 'esl.device.led.flash.frequency.quick'})
 		}, {
 			value: 100,
-			text: '中'
+			text: formatMessage({id: 'esl.device.led.flash.frequency.middle'})
 		}, {
 			value: 200,
-			text: '慢'
+			text: formatMessage({id: 'esl.device.led.flash.frequency.slow'})
 		}];
 	}
 

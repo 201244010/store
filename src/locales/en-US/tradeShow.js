@@ -1,7 +1,7 @@
 export default {
-	'trade.show.title': 'Transaction amount:',
+	'trade.show.title': 'Amount:',
 	'trade.show.unknown': '--',
-	'trade.show.unit': '',
+	'trade.show.unit': ' ',
 	'trade.show.ten.thousand.unit': 'K',
-	'trade.show.tips': 'Generating the transaction video…',
+	'trade.show.tips': 'Generating the video…',
 };

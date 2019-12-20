@@ -1,0 +1,23 @@
+export default {
+	'initialSetting.title':'Initialize settings',
+	'initialSetting.reboot':'Restart now',
+	'initialSetting.reset':'Restore default settings',
+	'initialSetting.rebootConfirm':'Are you sure you want to restart the camera now?',
+	'initialSetting.rebootInfo':'It takes about 2 minutes to restart，surveillance video cannot be stored during restart.',
+	'initialSetting.confirm':'Confirm',
+	'initialSetting.cancel':'Cancel',
+	'initialSetting.resetConfirm':'Are you sure you want to restore the default settings?',
+	'initialSetting.resetInfo':'This process takes about 2 minutes, if the camera is connected using a wireless network, you will need to reconfigure the network for use.',
+	'initialSetting.reseting':'Restoring default settings',
+	'initialSetting.resetingInfo':'The camera is restoring default settings, please do not power off',
+	'initialSetting.rebooting':'Restarting',
+	'initialSetting.rebootingInfo':'The camera is restarting, please be patient',
+	'initialSetting.rebootWarning':'The camera will restart and go online, and the camera configuration remains unchanged',
+	'initialSetting.resetWarning':'The camera configuration will be restored to the default settings, but the camera is still bound and the TF card content will not be affected',
+	'initialSetting.error':'Network anomaly',
+	'initialSetting.rebootSuccess':'Camera restarted successfully',
+	'initialSetting.resetSuccess':'Camera restored default Settings successfully',
+	'initialSetting.rebootFailed':'Unable to restart, please check the camera network and try again',
+	'initialSetting.resetFailed':'Cannot restore default settings, please check camera network and try again',
+	'initialSetting.warningInfo':'FM020 function has not been turned on yet, please be patient'
+};

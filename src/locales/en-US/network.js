@@ -16,7 +16,7 @@ export default {
 	'network.downSpeed': 'Download speed',
 	'network.Internet': 'Internet',
 	'network.client': 'Customer devices',
-	'network.unit': '',
+	'network.unit': ' ',
 	'network.router': 'Router',
 	'network.viewMore': 'View details',
 	'network.guestNumber': 'Customers accessed',

@@ -38,9 +38,9 @@ import passengerAnalyze from './zh-TW/passengerAnalyze';
 export default {
 	'navBar.lang': '語言',
 	'navBar.area': '地區',
-	'selectLang.chinaMainland': '中國大陸',
-	'selectLang.tw': '台灣/香港/澳門',
-	'selectLang.otherArea': '其他地區',
+	'selectLang.chinaMainland': '中文簡體',
+	'selectLang.tw': '中文繁體',
+	'selectLang.otherArea': '英文',
 	'layout.user.link.help': '幫助',
 	'layout.user.link.privacy': '隱私',
 	'layout.user.link.terms': '條款',

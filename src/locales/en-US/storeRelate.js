@@ -1,7 +1,7 @@
 export default {
-	'relatedStore.none': 'You have not joined in any merchant. Do you want to create a merchant?',
-	'relatedStore.create': 'Welcome! Please create a mercant first.',
-	'relatedStore.notice': 'You can also contact the administrator of the merchant you want to join in to be a member of that merchant.',
-	'relatedStore.choose': 'Please confirm the merchant you are logging in',
+	'relatedStore.none': 'You do not belong to any company, will you create a company?',
+	'relatedStore.create': 'Welcome, please create a company at first',
+	'relatedStore.notice': 'Or contact the administrator of target company to add you under it',
+	'relatedStore.choose': 'Select company',
 	'relatedStore.entry': 'Enter',
 };

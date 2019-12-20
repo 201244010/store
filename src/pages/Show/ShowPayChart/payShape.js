@@ -1,7 +1,6 @@
 import { Shape } from 'bizcharts';
-import { DASHBOARD } from '@/pages/DashBoard/constants';
 
-const { PURCHASE_ORDER } = DASHBOARD;
+const PURCHASE_ORDER = ['payment-purchase-type-alipay', 'payment-purchase-type-wechat', 'payment-purchase-type-unionpayqr', 'payment-purchase-type-card', 'payment-purchase-type-cash', 'payment-purchase-type-other'];
 
 export function shape(maxItem) {
 	Shape.registerShape('interval', 'sliceShape', {
@@ -65,7 +64,7 @@ export const COLORS = {
 		[PURCHASE_ORDER[2]]: 'l(45) 0:#FFB366 1:#FFE16B',
 		[PURCHASE_ORDER[3]]: 'l(45) 0:#FF8989 1:#FF9B82',
 		[PURCHASE_ORDER[4]]: 'l(45) 0:#AA80FF 1:#CC99FF',
-		[PURCHASE_ORDER[5]]: 'l(45) 0:#827DFF 1:#6670FF',	
+		[PURCHASE_ORDER[5]]: 'l(45) 0:#827DFF 1:#6670FF',
 	},
 	STROKE: '#FFFFFF',
 	SHADOW_LIGHT: 'rgba(255,255,255,1)',
