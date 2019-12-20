@@ -458,7 +458,7 @@ class Login extends Component {
 												}),
 											},
 											{
-												pattern: /^1\d{10}$/,
+												pattern: Regexp.phone,
 												message: formatMessage({
 													id: 'mobile.validate.isFormatted',
 												}),
