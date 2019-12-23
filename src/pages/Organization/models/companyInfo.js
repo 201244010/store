@@ -2,7 +2,13 @@ import typecheck from '@konata9/typecheck.js';
 import { format } from '@konata9/milk-shake';
 import Storage from '@konata9/storage.js';
 import { ERROR_OK } from '@/constants/errorCode';
-import { getOrganizationTree, createOrganization, updateOrganization, getOrganizationInfo, getOrgList } from '@/services/organization';
+import * as CookieUtil from '@/utils/cookies';
+import { getOrganizationTree,
+	createOrganization,
+	updateOrganization, 
+	getOrganizationInfo,
+	getOrgList
+} from '@/services/organization';
 
 
 function getHeight(arr, len) {
@@ -81,6 +87,14 @@ function getOrgName(list) {
 	}, []);
 }
 
+function flattenOrgList(list) {
+	return list.reduce((result, item) => {
+		let arr = result.concat(item, []);
+		arr = arr.concat(item.children && item.children.length > 0 ? flattenOrgList(item.children): []);
+		return arr;
+	}, []);
+}
+
 const cascaderDataWash = (data, mapping) => {
 	const formatData = [...data];
 	return formatData.map(item => {
@@ -134,11 +148,15 @@ export default {
 			});
 		},
 		*getAllOrgName(_, { put }) {
-			const response = yield getOrgList({
-				keyword: '',
-				orgTag: -1,
-				businessStatus: -1,
-			});
+			const { id: userId } = yield put.resolve({
+				type: 'global/getUserInfoFromStorage',
+			}) || {};
+
+			const companyId = yield put.resolve({
+				type: 'global/getCompanyIdFromStorage',
+			}) || {};
+
+			const response = yield getOrgList({userId, companyId});
 			const { code } = response;
 			if(code === ERROR_OK){
 				const { data: { orgList = []}} = response;
@@ -154,15 +172,55 @@ export default {
 			
 
 		},
-		*createOrganization({ payload }) {
+		*createOrganization({ payload },{ put }) {
 			const { options } = payload;
+			const { orgId } = options;
 			const response = yield createOrganization(options);
+			if (response && response.code === ERROR_OK) {
+				if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, orgId);
+				}
+				yield put.resolve({
+					type: 'updateOrgList'
+				});
+			}
 			return response;
 		},
+		// 当前 key 还是 shopList
+		*updateOrgList(_, { put }){
+			const { id: userId } = yield put.resolve({
+				type: 'global/getUserInfoFromStorage',
+			}) || {};
 
+			const companyId = yield put.resolve({
+				type: 'global/getCompanyIdFromStorage',
+			}) || {};
+
+			const response = yield getOrgList({userId, companyId});
+			if (response && response.code === ERROR_OK) {
+				const { data } = response;
+				const targetData = format((key) => {
+					if(key === 'orgId'){
+						return 'shopId';
+					}
+					if(key === 'orgName'){
+						return 'shopName';
+					}
+					return key;
+				})(data);
+				const { orgList= [] } = targetData;
+				const result = flattenOrgList(orgList);
+				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: result }, 'local');
+			}
+		},
 		*updateOrganization({ payload }) {
 			const { options } = payload;
 			const response = yield updateOrganization(options);
+			if (response && response.code === ERROR_OK) {
+				yield put.resolve({
+					type: 'updateOrgList'
+				});
+			}
 			return response;
 		},
 
@@ -219,7 +277,7 @@ export default {
 				});
 			}
 		},
-		*getOrganizationTreeByUser(_, { put, dispatch }) {
+		*getOrganizationTreeByUser(_, { put }) {
 			const response = yield getOrganizationTree();
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
@@ -232,15 +290,26 @@ export default {
 					}
 					return key;
 				})(data);
-				console.log(targetData);
-				const companyId = yield dispatch({
-					type: 'global/getCompanyIdFromStorage'
+				const companyId = yield put.resolve({
+					type: 'global/getCompanyIdFromStorage',
 				});
-				console.log(companyId);
+				const companyName = yield put.resolve({
+					type: 'merchant/getCompanyNameById',
+					payload: {
+						companyId
+					}
+				});
+
+				const { orgLayer=[] } = targetData;
+				const organizationTree = {
+					title: companyName,
+					value: 0,
+					children: orgLayer,
+				};
 				yield put({
 					type: 'updateState',
 					payload: {
-						organizationTree: targetData,
+						organizationTree,
 					},
 				});
 			}
