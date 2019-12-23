@@ -77,9 +77,9 @@ class OrgDetail extends React.Component {
 	handleDeprecate = async () => {
 		const { orgId } = this.state;
 		const { getOrgTreeByOrgId } = this.props;
-		const list = await getOrgTreeByOrgId(orgId);
-		if(list && list.length > 0 && list[0].orgId === orgId){
-			const obj = list[0];
+		const { orgLayer } = await getOrgTreeByOrgId(orgId);
+		if(orgLayer && orgLayer.length > 0 && orgLayer[0].orgId === orgId){
+			const obj = orgLayer[0];
 			this.deprecateModal.handleDeprecate(obj);
 		}
 	}
