@@ -114,12 +114,15 @@ export default {
 			const { orgId } = payload;
 			const response = yield getOrganizationTree({orgId});
 			if (response && response.code === ERROR_OK) {
-				const { data = {} } = response;
-				if(data.children && data.children.length > 0){
-					return getHeight(data.children, 0) + 1;
+				const { data:{ orgLayer=[] }} = response;
+				if(orgLayer[0] && orgLayer[0].orgId === orgId){
+					if(orgLayer[0].children && orgLayer[0].children.length > 0){
+						return getHeight(data.children, 0) + 1;
+					}
+					return 1;
 				}
-				return 1;
 			}
+			// response code !== 0 或者 orgLayer[0].orgId !== orgId 上级组织不可选
 			return 6;
 		},
 		*clearState(_, { put }) {
@@ -164,13 +167,9 @@ export default {
 		},
 
 		*getOrganizationInfo({ payload }, { put }) {
-			console.log('!!!!!!!!!!!!!!!!!');
-			console.log('come in');
-			console.log(payload);
 			const response = yield getOrganizationInfo(payload);
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
-				console.log(data);
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -220,7 +219,7 @@ export default {
 				});
 			}
 		},
-		*getOrganizationTreeByUser(_, { put }) {
+		*getOrganizationTreeByUser(_, { put, dispatch }) {
 			const response = yield getOrganizationTree();
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
@@ -233,6 +232,11 @@ export default {
 					}
 					return key;
 				})(data);
+				console.log(targetData);
+				const companyId = yield dispatch({
+					type: 'global/getCompanyIdFromStorage'
+				});
+				console.log(companyId);
 				yield put({
 					type: 'updateState',
 					payload: {
