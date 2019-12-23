@@ -1,12 +1,12 @@
 export default {
-	'login.useAccount': 'Account login',
-	'login.useMobile': 'Verify code login',
+	'login.useAccount': 'Login with password',
+	'login.useMobile': 'Login with verification code',
 	'register.title': 'Register',
-	'register.success': 'Register Success',
-	'register.account': 'Your Account:',
-	'register.mail.success': 'Register Success',
-	'register.mail.notice': '激活邮件已发送到你的邮箱中，邮件有效期为24小时。请及时登录邮箱，点击邮件中的链接激活帐户。',
-	'register.countDown': 'go to the login page',
-	'vcode.title': 'Safety valid',
-	'vcode.description': 'Please enter the valid code'
+	'register.success': 'Congrats! The account has been successfully registered!',
+	'register.account': 'Your account:',
+	'register.mail.success': 'Account registered',
+	'register.mail.notice': 'The email with an activation link has been sent to your email box, which is valid for 24 hours. Please check your email to activate your account.',
+	'register.countDown': 'seconds later, you will login in automatically',
+	'vcode.title': 'Security verification',
+	'vcode.description': 'Please enter the verification code in the pic',
 };
