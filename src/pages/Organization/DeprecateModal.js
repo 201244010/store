@@ -1,7 +1,8 @@
 import  React  from 'react';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-import { Modal, Tree, message   } from 'antd';
+import { Modal, Tree, message } from 'antd';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import { ERROR_OK, ORGANIZATION_NO_DESABLED } from '@/constants/errorCode';
 import styles from './Organization.less';
 
@@ -132,7 +133,7 @@ class DeprecateModal extends React.Component {
 				onOk() {},
 			});
 		} else {
-			message.error(formatMessage({ id: 'organizetion.action.error'}));
+			message.error(formatMessage({ id: 'organization.action.error'}));
 		}
 	}
 
@@ -177,13 +178,15 @@ class DeprecateModal extends React.Component {
 				<span className={styles['tree-modal-info']}>
 					{formatMessage({id: 'organization.tree.modal.disable.info'})}
 				</span>
-				<Tree
-					defaultExpandedKeys={expandedTreeKeys}
-					treeData={treeData}
-					onSelect={this.handleSelectTree}
-					className={styles['layer-tree']}
-					blockNode
-				/>
+				<PerfectScrollbar>
+					<Tree
+						defaultExpandedKeys={expandedTreeKeys}
+						treeData={treeData}
+						onSelect={this.handleSelectTree}
+						className={styles['layer-tree']}
+						blockNode
+					/>
+				</PerfectScrollbar>
 			</Modal>
 		);
 	}

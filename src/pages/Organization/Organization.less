@@ -23,15 +23,26 @@
 }
 
 .tree-modal {
-
-	max-height: 75%;
+	// position: absolute;
+	// left: 0;
+	// top: 12.5%;
+	// right: 0;
+	// bottom: 12.5%;
+	// height: 100%;
 	.tree-modal-info {
 		font-family:PingFangSC-Regular,PingFang SC, sans-serif;
 		color:rgba(133,133,138,1);
 		line-height:20px;
 		font-size: 14px;
 	}
+
+	.layer-tree {
+		max-height: calc(75vh - 176px);
+	}
 	:global {
+		.scrollbar-container .ps__rail-y {
+			display: none;
+		}
 		.ant-tree {
 			.ant-tree-node-content-wrapper {
 				&:hover {

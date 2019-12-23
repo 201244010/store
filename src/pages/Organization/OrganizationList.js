@@ -2,6 +2,7 @@ import  React  from 'react';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { Card, Button, Modal, Tree, message } from 'antd';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import OrganizationTable from './OrganizationTable';
 import DeprecateModal from './DeprecateModal';
 // import OrganizationSearchBar from './OrganizationSearchBar';
@@ -280,6 +281,7 @@ class OrganizationList extends React.Component {
 						loading={loading.effects['organization/initOrgList']}
 					/>
 				</Card>
+
 				<Modal
 					title={formatMessage({id: 'organization.tree.modal.title.move'})}
 					destroyOnClose
@@ -287,19 +289,22 @@ class OrganizationList extends React.Component {
 					onOk={this.handleMoveOk}
 					onCancel={this.handleMoveCancel}
 					className={styles['tree-modal']}
+					// bodyStyle={{ maxHeight: '75%', overflowY: 'scroll' }}
 					okButtonProps={{ loading: loading.effects['organization/move'], disabled: !targetPId && targetPId !== 0 }}
 				>
 					<span className={styles['tree-modal-info']}>
 						{`${formatMessage({id: 'organization.tree.modal.move.info.pre'})}
 						${selectedIdList.length}${formatMessage({ id: 'organization.tree.modal.move.info.suf'})}`}
 					</span>
-					<Tree
-						defaultExpandedKeys={expandedTreeKeys}
-						treeData={treeData}
-						onSelect={this.handleSelectTree}
-						className={styles['layer-tree']}
-						blockNode
-					/>
+					<PerfectScrollbar>
+						<Tree
+							defaultExpandedKeys={expandedTreeKeys}
+							treeData={treeData}
+							onSelect={this.handleSelectTree}
+							className={styles['layer-tree']}
+							blockNode
+						/>
+					</PerfectScrollbar>
 				</Modal>
 				<DeprecateModal onRef={modal => { this.deprecateModal = modal; }} init={this.init} />
 			</div>
