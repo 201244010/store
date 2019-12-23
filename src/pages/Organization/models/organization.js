@@ -152,6 +152,7 @@ export default {
 					treeData: targetList
 				}
 			});
+			return '';
 		},
 		*deprecate({ payload }, { call }) {
 			console.log('-----deprecate---', payload);

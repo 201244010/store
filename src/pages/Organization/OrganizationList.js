@@ -22,7 +22,6 @@ const mapDispatchToProps = (dispatch) => ({
 			type: 'organization/setTreeData',
 			payload: params
 		});
-
 		return result;
 	},
 	// 初始化数据
@@ -289,7 +288,6 @@ class OrganizationList extends React.Component {
 					onOk={this.handleMoveOk}
 					onCancel={this.handleMoveCancel}
 					className={styles['tree-modal']}
-					// bodyStyle={{ maxHeight: '75%', overflowY: 'scroll' }}
 					okButtonProps={{ loading: loading.effects['organization/move'], disabled: !targetPId && targetPId !== 0 }}
 				>
 					<span className={styles['tree-modal-info']}>
