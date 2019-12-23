@@ -31,23 +31,16 @@ function getHeight(arr, len) {
   
 }
 
-function allDisable(obj, excludeId, level) {
+function allDisable(obj) {
 	let children = [];
 	if(obj.children && obj.children.length > 0){
-		const arr = obj.children.map(item => allDisable(item,excludeId));
+		const arr = obj.children.map(item => allDisable(item));
 		children = arr;
-	}
-	if(obj.value === excludeId && (obj.level && (obj.level + level) <= 6) && obj.orgStatus !== 1){
-		return {
-			...obj,
-			key: obj.value,
-			children,
-		};
 	}
 	return {
 		...obj,
 		disabled: true,
-		key: obj.value,
+		key: `${obj.value}`,
 		children,
 	};
 }
@@ -56,32 +49,35 @@ function addDisableHandler(level, obj, targetId) {
 	let children = [];
 	if(obj.value === targetId){
 		if(obj.children && obj.children.length > 0){
-			return allDisable(obj,obj.value, level);
+			return allDisable(obj);
 		}
 	}
 	if(obj.children && obj.children.length > 0 && obj.value !== targetId){
 		const arr = obj.children.map(item => addDisableHandler(level, item, targetId));
 		children = arr;
 	}
-	if((obj.level && (obj.level + level) > 6) || obj.orgStatus === 1){
+	if((obj.level && (obj.level + level) > 5) || obj.orgStatus === 1){
 		return {
 			...obj,
 			disabled: true,
-			key: obj.value,
+			key: `${obj.value}`,
 			children,
 		};
 	}
 
 	return {
 		...obj,
-		key: obj.value,
+		key: `${obj.value}`,
 		children
 	};
 }
 
 function getOrgName(list) {
 	return list.reduce((result, item) => {
-		let arr = result.concat(item.orgName, []);
+		let arr = result.concat({
+			id: item.orgId,
+			name: item.orgName
+		}, []);
 		arr = arr.concat(item.children && item.children.length > 0 ? getOrgName(item.children) : []);
 		return arr;
 	}, []);
@@ -128,10 +124,11 @@ export default {
 			const { orgId } = payload;
 			const response = yield getOrganizationTree({orgId});
 			if (response && response.code === ERROR_OK) {
-				const { data:{ orgLayer=[] }} = response;
+				const { data } = response;
+				const { orgLayer = [] } = data;
 				if(orgLayer[0] && orgLayer[0].orgId === orgId){
 					if(orgLayer[0].children && orgLayer[0].children.length > 0){
-						return getHeight(data.children, 0) + 1;
+						return getHeight(orgLayer[0].children, 0) + 1;
 					}
 					return 1;
 				}
@@ -224,8 +221,9 @@ export default {
 			return response;
 		},
 
-		*getOrganizationInfo({ payload }, { put }) {
-			const response = yield getOrganizationInfo(payload);
+		*getOrganizationInfo( payload , { put }) {
+			const { orgId } = payload;
+			const response = yield getOrganizationInfo({orgId});
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
 				yield put({
@@ -304,6 +302,7 @@ export default {
 				const organizationTree = {
 					title: companyName,
 					value: 0,
+					level: 0,
 					children: orgLayer,
 				};
 				yield put({

@@ -53,8 +53,6 @@ class OrgDetail extends React.Component {
 	componentDidMount(){
 		const orgId = Number(getLocationParam('orgId'));
 		const { getRegionList } = this.props;
-		// console.log(getOrganizationInfo);
-		this.init();
 		if (!Storage.get('__regionList__', 'local')) {
 			getRegionList();
 		}
@@ -66,6 +64,8 @@ class OrgDetail extends React.Component {
 		this.getAdminUserId();
 		this.setState({
 			orgId,
+		}, () => {
+			this.init();
 		});
 	}
 
@@ -255,7 +255,7 @@ class OrgDetail extends React.Component {
 							<div className={`${styles.col} ${styles.businessHours}`}>{formatMessage({id: 'orgDetail.businessHours'})}{businessHours ? this.format(businessHours) : '--'}</div>
 						</div>
 						<div className={styles.row}>
-							<div className={`${styles.col} ${styles.businessArea}`}>{formatMessage({id: 'orgDetail.businessArea'})}{`${businessArea}㎡` || '--'}</div>
+							<div className={`${styles.col} ${styles.businessArea}`}>{formatMessage({id: 'orgDetail.businessArea'})}{businessArea ? `${businessArea}㎡` : '--'}</div>
 							<div className={`${styles.col} ${styles.address}`}>{formatMessage({id: 'orgDetail.address'})}{this.addressHandler(province, city, area, address)}</div>
 							<div className={styles.col} />
 						</div>
@@ -277,7 +277,9 @@ class OrgDetail extends React.Component {
 							{orgStatus ? formatMessage({ id: 'organization.action.enable'}) :formatMessage({ id: 'organization.action.disabled'})}
 						</Button>
 						<Button
-							className={level === 6 ? styles.noShow: styles.btn}
+							className={level >= 5 ? styles.noShow: styles.btn}
+							loading={!!(loading.effects['companyInfo/createOrganization'] ||
+								loading.effects['companyInfo/updateOrganization'])}
 							onClick={() => goToPath('newSubOrganization',{
 								action: 'create',
 								orgPid: locationOrgId,

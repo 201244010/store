@@ -260,7 +260,13 @@ class OrganizationList extends React.Component {
 						handleSearch={this.handleSearch}
 					/> */}
 					<div className={styles['action-container']}>
-						<Button className={styles['action-btn-left']} type="primary" onClick={this.handleAdd}>
+						<Button
+							className={styles['action-btn-left']}
+							type="primary"
+							onClick={this.handleAdd}
+							loading={!!(loading.effects['companyInfo/createOrganization'] ||
+								loading.effects['companyInfo/updateOrganization'])}
+						>
 							{formatMessage({id: 'organization.action.btn.add'})}
 						</Button>
 						<Button onClick={this.handleMove} disabled={selectedIdList.length === 0}>
