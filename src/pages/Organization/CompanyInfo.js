@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-restricted-globals */
 import React from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Button, Input, Radio, Cascader, Card, AutoComplete, TreeSelect, Select, TimePicker, Checkbox, message, Spin } from 'antd';
@@ -419,6 +421,29 @@ class CompanyInfo extends React.Component {
 									{
 										required: true,
 										message: formatMessage({ id: 'companyInfo.no.input.name' }),
+									},
+									{
+										validator: (rule, value, callback) => {
+											let illegalFlag = false;
+											for(const word of value){
+												if(isNaN(word.charCodeAt(1)) === false){
+													illegalFlag = true;
+													break;
+												}
+												if(word.charCodeAt(0) >= 8203 &&
+													word.charCodeAt(0) <= 8205 && isNaN(word.charCodeAt(1)) === true){
+													illegalFlag = true;
+													break;
+												}
+											}
+
+											if (illegalFlag) {
+												callback('name-illegal');
+											} else {
+												callback();
+											}
+										},
+										message: formatMessage({ id: 'organization.name.illegal' }),
 									},
 									{
 										validator: (rule, value, callback) => {
