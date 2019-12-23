@@ -34,4 +34,5 @@ export default {
 	'companyInfo.newSubOrganization.success': '新增成功',
 	'companyInfo.newSubOrganization.fail': '新增失败',
 	'companyInfo.message.name.exist': '组织名称已存在',
+	'companyInfo.message.level.limited': '总层数超过6层',
 };
