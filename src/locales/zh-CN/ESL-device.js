@@ -112,6 +112,7 @@ export default {
 	'esl.device.esl.title.status': '状态',
 	'esl.device.esl.title.push.time': '推送时间',
 	'esl.device.template.new': '新建模板',
+	'esl.device.template.title': '商米价签模板Studio',
 	'esl.device.template.upload': '上传模板',
 	'esl.device.template.upload.file.type.error': '只能上传json格式的文件',
 	'esl.device.template.clone': '克隆模板',

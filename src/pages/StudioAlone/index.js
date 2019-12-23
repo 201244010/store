@@ -181,7 +181,7 @@ class Guide extends Component {
 
 		return (
 			<div className={styles['guide-wrap']}>
-				<h1 className={styles.title}>商米价签模板Studio</h1>
+				<h1 className={styles.title}>{formatMessage({id: 'esl.device.template.title'})}</h1>
 				<Card>
 					<Button
 						className={styles.mb24}

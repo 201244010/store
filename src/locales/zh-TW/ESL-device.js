@@ -112,6 +112,7 @@
 	'esl.device.esl.title.status': '狀態',
 	'esl.device.esl.title.push.time': '推送時間',
 	'esl.device.template.new': '新建模板',
+	'esl.device.template.title': '商米價簽模板Studio',
 	'esl.device.template.upload': '上傳模板',
 	'esl.device.template.upload.file.type.error': '只能上傳json格式的檔',
 	'esl.device.template.clone': '克隆模板',

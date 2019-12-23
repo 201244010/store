@@ -112,6 +112,7 @@ export default {
 	'esl.device.esl.title.status': 'Status',
 	'esl.device.esl.title.push.time': 'Time pushed',
 	'esl.device.template.new': 'Create template',
+	'esl.device.template.title': 'SUNMI ESL Template Studio',
 	'esl.device.template.upload': 'Upload template',
 	'esl.device.template.upload.file.type.error': 'Only files in JSON format can be uploaded.',
 	'esl.device.template.clone': 'Clone a template',
