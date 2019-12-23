@@ -149,13 +149,13 @@ class OrgDetail extends React.Component {
 		const { companyInfo: { regionList }} = this.props;
 		if(province && city && area){
 			for(let i=0; i<regionList.length; i++){
-				if(regionList[i].value === province){
+				if(Number(regionList[i].value) === province){
 					detailAddress += regionList[i].name;
 					for(let j=0; j<regionList[i].children.length; j++){
-						if(regionList[i].children[j].value === city){
+						if(Number(regionList[i].children[j].value) === city){
 							detailAddress += regionList[i].children[j].name;
 							for(let k=0; k<regionList[i].children[j].children; k++){
-								if(regionList[i].children[j].children[k].value === area){
+								if(Number(regionList[i].children[j].children[k].value) === area){
 									detailAddress += regionList[i].children[j].children[k].name;
 									break;
 								}
@@ -277,7 +277,7 @@ class OrgDetail extends React.Component {
 							{orgStatus ? formatMessage({ id: 'organization.action.enable'}) :formatMessage({ id: 'organization.action.disabled'})}
 						</Button>
 						<Button
-							className={level >= 5 ? styles.noShow: styles.btn}
+							className={(level >= 5 || orgStatus === 1 ) ? styles.noShow: styles.btn}
 							loading={!!(loading.effects['companyInfo/createOrganization'] ||
 								loading.effects['companyInfo/updateOrganization'])}
 							onClick={() => goToPath('newSubOrganization',{
