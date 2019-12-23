@@ -10,7 +10,7 @@ import { getLocationParam } from '@/utils/utils';
 import { customValidate } from '@/utils/customValidate';
 import * as CookieUtil from '@/utils/cookies';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, STORE_EXIST } from '@/constants/errorCode';
 import { mail } from '@/constants/regexp';
 
 import styles from './CompanyInfo.less';
@@ -52,11 +52,16 @@ class CompanyInfo extends React.Component {
 			allDayChecked: false,
 			isDisabled: true,
 			orgPidParams: undefined,
+			orgId: undefined,
+			action: undefined,
 		};
 	}
 
 	async componentDidMount() {
 		const { getShopTypeList, getRegionList, getOrganizationInfo, getOrganizationTreeByCompanyInfo, getAllOrgName, clearState, getCurrentHeight, getPathId } = this.props;
+		let treeData = {};
+		let isDisabled = true;
+		let orgPidParams;
 		getAllOrgName();
 		const [action = 'create', orgId, orgPid] = [
 			getLocationParam('action'),
@@ -68,9 +73,7 @@ class CompanyInfo extends React.Component {
 		} = window;
 		const pathId = await getPathId(pathname);
 		if(pathId === 'newSubOrganization') {
-			this.setState({
-				orgPidParams: orgPid,
-			});
+			orgPidParams = orgPid;
 		}
 		
 		// 获得当前操作类型和organizationId
@@ -78,26 +81,19 @@ class CompanyInfo extends React.Component {
 
 		if(action === 'create') {
 			clearState();
-			const treeData = await getOrganizationTreeByCompanyInfo({
+			treeData = await getOrganizationTreeByCompanyInfo({
 				currentLevel: 1
-			});
-			this.setState({
-				treeData,
 			});
 		}
 
 		if (action === 'edit') {
 			getOrganizationInfo(orgId);
 			const height = await getCurrentHeight(orgId);
-			const treeData = await getOrganizationTreeByCompanyInfo({
+			treeData = await getOrganizationTreeByCompanyInfo({
 				currentLevel: height,
 				orgId,
 			});
-			
-			this.setState({
-				treeData,
-				isDisabled: false,
-			});
+			isDisabled = false;
 		}
 
 		if (!Storage.get('__shopTypeList__', 'local')) {
@@ -107,6 +103,14 @@ class CompanyInfo extends React.Component {
 		if (!Storage.get('__regionList__', 'local')) {
 			getRegionList();
 		}
+
+		this.setState({
+			treeData,
+			isDisabled,
+			orgPidParams,
+			orgId,
+			action,
+		});
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -234,8 +238,11 @@ class CompanyInfo extends React.Component {
 			location: { pathname },
 		} = window;
 		const pathId = await getPathId(pathname);
+		const { orgPidParams } = this.state;
 		if(pathId === 'editDetail' || pathId ===  'newSubOrganization'){
-			goToPath('detail');
+			goToPath('detail',{
+				orgId: orgPidParams,
+			});
 		}else{
 			goToPath('organizationList');
 		}
@@ -323,6 +330,7 @@ class CompanyInfo extends React.Component {
 					location: { pathname },
 				} = window;
 				const pathId = await getPathId(pathname);
+				const { orgPidParams } = this.state;
 				
 
 				let response = null;
@@ -331,7 +339,9 @@ class CompanyInfo extends React.Component {
 					const { code } = response;
 					if(code === ERROR_OK){
 						if(pathId === 'editDetail'){
-							goToPath('detail');
+							goToPath('detail',{
+								orgId: orgPidParams,
+							});
 						}else{
 							goToPath('organizationList');
 						}
@@ -345,13 +355,16 @@ class CompanyInfo extends React.Component {
 					const { code } = response;
 					if(code === ERROR_OK){
 						if(pathId === 'newSubOrganization') {
-							goToPath('detail');
+							goToPath('detail', {
+								orgId: orgPidParams,
+							});
+							message.success(formatMessage({id: 'companyInfo.newSubOrganization.success'}));
 						}else{
 							goToPath('organizationList');
+							message.success(formatMessage({id: 'companyInfo.save.success'}));
 						}
-						message.success(formatMessage({id: 'companyInfo.save.success'}));
-					}else{
-						message.error(formatMessage({id: 'companyInfo.save.fail'}));
+					}else if(code === STORE_EXIST){
+						message.error(formatMessage({id: 'companyInfo.message.name.exist'}));
 					}
 				}
 			}
@@ -385,8 +398,7 @@ class CompanyInfo extends React.Component {
 			}
 		} = this.props;
 		const { treeData, allDayChecked, orgPidParams } = this.state;
-		const { addressSearchResult, organizationType, isDisabled } = this.state;
-		const [action = 'create'] = [getLocationParam('action')];
+		const { addressSearchResult, organizationType, isDisabled, action, orgId } = this.state;
 		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => (
 			<AutoComplete.Option
 				key={`${index}-${addressInfo.id}`}
@@ -450,14 +462,18 @@ class CompanyInfo extends React.Component {
 										validator: (rule, value, callback) => {
 											let confictFlag = false;
 											orgNameList.every(item => {
-												if (item === value) {
+												if (item.name === value && action === 'create') {
+													confictFlag = true;
+													return false;
+												}
+												if(item.name === value && action === 'edit' && item.id !== orgId){
 													confictFlag = true;
 													return false;
 												}
 												return true;
 											});
 
-											if (confictFlag && action === 'create') {
+											if (confictFlag) {
 												callback('name-confict');
 											} else {
 												callback();
@@ -492,7 +508,8 @@ class CompanyInfo extends React.Component {
 									onChange={(e) => this.submitButtonDisableHandler(e, 'orgPid')}
 									treeData={[treeData]}
 									placeholder={formatMessage({ id: 'companyInfo.please.select' })}
-									treeDefaultExpandedKeys={[treeData.value]}
+									treeDefaultExpandedKeys={[`${treeData.key}`]}
+									dropdownStyle={{maxHeight:288}}
 								/>
 							)}
 						</FormItem>

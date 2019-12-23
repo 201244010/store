@@ -31,4 +31,7 @@ export default {
 	'companyInfo.please.input.contactEmail': '请输入联系人邮箱',
 	'companyInfo.save.success': '保存成功',
 	'companyInfo.save.fail': '保存失败',
+	'companyInfo.newSubOrganization.success': '新增成功',
+	'companyInfo.newSubOrganization.fail': '新增失败',
+	'companyInfo.message.name.exist': '组织名称已存在',
 };
