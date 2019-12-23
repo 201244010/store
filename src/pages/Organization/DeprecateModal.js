@@ -57,6 +57,46 @@ class DeprecateModal extends React.Component {
 		onRef(this);
 	}
 
+	showConfirmModal = () => {
+		Modal.confirm({
+			title: formatMessage({ id: 'organization.confirm.modal.title'}),
+			content: formatMessage({ id: 'organization.confirm.modal.content'}),
+			cancelText: formatMessage({ id: 'organization.confirm.modal.cancel'}),
+			okText: formatMessage({ id: 'organization.confirm.modal.ok'}),
+			okType: 'danger',
+			// className: styles['confirm-modal'],
+			// icon: <Icon type="exclamation-circle" />,
+			onOk: async () =>  {
+				const { deprecate } = this.props;
+				const { selectedOrgId, targetPId } = this.state;
+				let opt = {};
+				if(targetPId) {
+					opt = {
+						orgId: selectedOrgId,
+						targetOrgPid: targetPId
+					};
+				} else {
+					opt = {
+						orgId: selectedOrgId,
+					};
+				}
+				const result = await deprecate(opt);
+
+				if(result) {
+					const { init } = this.props;
+					init();
+					message.success(formatMessage({ id: 'organization.deprecate.result.success'}));
+				} else {
+					message.error(formatMessage({ id: 'organization.deprecate.result.error'}));
+				}
+				this.setState({
+					deprecateModalVisible: false,
+					targetPId: ''
+				});
+			},
+		});
+	}
+
 	// 停用
 	handleDeprecate = async (target) => {
 		console.log('------deprecate-----', target);
@@ -66,16 +106,25 @@ class DeprecateModal extends React.Component {
 		const result = await check(orgId);
 		const { code } = result;
 		if(code === ERROR_OK) {
-			const selectedList = [target];
-			const { updateTreeData } = this.props;
-			await updateTreeData({
-				selectedList,
-				type: 'deprecate'
-			});
-			this.setState({
-				deprecateModalVisible: true,
-				selectedOrgId: orgId
-			});
+			const { children } = target;
+			if(children && children.length) {
+				const selectedList = [target];
+				const { updateTreeData } = this.props;
+				await updateTreeData({
+					selectedList,
+					type: 'deprecate'
+				});
+				this.setState({
+					deprecateModalVisible: true,
+					selectedOrgId: orgId
+				});
+			} else {
+				this.setState({
+					selectedOrgId: orgId
+				});
+				this.showConfirmModal();
+			}
+
 		} else if(code === ORGANIZATION_NO_DESABLED){
 			Modal.info({
 				title: formatMessage({ id: 'organization.confirm.modal.title'}),
@@ -92,35 +141,7 @@ class DeprecateModal extends React.Component {
 		this.setState({
 			deprecateModalVisible: false,
 		});
-		Modal.confirm({
-			title: formatMessage({ id: 'organization.confirm.modal.title'}),
-			content: formatMessage({ id: 'organization.confirm.modal.content'}),
-			cancelText: formatMessage({ id: 'organization.confirm.modal.cancel'}),
-			okText: formatMessage({ id: 'organization.confirm.modal.ok'}),
-			okType: 'danger',
-			// className: styles['confirm-modal'],
-			// icon: <Icon type="exclamation-circle" />,
-			onOk: async () =>  {
-				const { deprecate } = this.props;
-				const { selectedOrgId, targetPId } = this.state;
-				const result = await deprecate({
-					selectedOrgId,
-					targetPId
-				});
-				if(result) {
-					const { init } = this.props;
-					init();
-					message.success(formatMessage({ id: 'organization.deprecate.result.success'}));
-				} else {
-					message.error(formatMessage({ id: 'organization.deprecate.result.error'}));
-				}
-				this.setState({
-					deprecateModalVisible: false,
-					targetPId: ''
-				});
-			},
-		});
-
+		this.showConfirmModal();
 	}
 
 	// 取消停用
@@ -132,9 +153,10 @@ class DeprecateModal extends React.Component {
 	}
 
 	handleSelectTree = (selectedKeys) => {
-		console.log('----selected tree----', selectedKeys);
+		const targetPId = parseInt(selectedKeys[0], 0);
+		console.log('----selected tree----', targetPId);
 		this.setState({
-			targetPId: selectedKeys[0],
+			targetPId,
 		});
 	}
 
@@ -150,7 +172,7 @@ class DeprecateModal extends React.Component {
 				onOk={this.handleDeprecateOk}
 				onCancel={this.handleDeprecateCancel}
 				className={styles['tree-modal']}
-				okButtonProps={{ disabled: !targetPId}}
+				okButtonProps={{ disabled: !targetPId && targetPId !== 0 }}
 			>
 				<span className={styles['tree-modal-info']}>
 					{formatMessage({id: 'organization.tree.modal.disable.info'})}

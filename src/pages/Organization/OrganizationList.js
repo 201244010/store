@@ -217,9 +217,10 @@ class OrganizationList extends React.Component {
 
 	// 选择父组织
 	handleSelectTree = (selectedKeys) => {
-		console.log('----selected tree----', selectedKeys);
+		const targetPId = parseInt(selectedKeys[0], 0);
+		console.log('----selected tree----', targetPId);
 		this.setState({
-			targetPId: selectedKeys[0],
+			targetPId,
 		});
 	}
 
@@ -286,7 +287,7 @@ class OrganizationList extends React.Component {
 					onOk={this.handleMoveOk}
 					onCancel={this.handleMoveCancel}
 					className={styles['tree-modal']}
-					okButtonProps={{ loading: loading.effects['organization/move'], disabled: !targetPId }}
+					okButtonProps={{ loading: loading.effects['organization/move'], disabled: !targetPId && targetPId !== 0 }}
 				>
 					<span className={styles['tree-modal-info']}>
 						{`${formatMessage({id: 'organization.tree.modal.move.info.pre'})}

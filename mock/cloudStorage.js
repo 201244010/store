@@ -77,92 +77,92 @@ export default {
 		msg: '',
 		data: {
 			orgList: [{
-				orgPid: '1',
+				orgPid: 1,
 				orgName: '一级',
 				orgTag: 0,
 				orgStatus: 0,
 				address: '',
 				contactPerson: '张三',
-				orgId: '11',
+				orgId: 11,
 				level: 1,
 				children: [{
-					orgPid: '11',
+					orgPid: 11,
 					orgName: '二级1',
 					orgTag: 0,
 					orgStatus: 0,
 					address: '深圳南山区',
 					contactPerson: '张三',
-					orgId: '111',
+					orgId: 111,
 					level: 2,
 					children: [{
-						orgPid: '111',
+						orgPid: 111,
 						orgName: '三级',
 						orgTag: 0,
 						orgStatus: 0,
 						address: '深圳南山区',
 						contactPerson: '张三',
-						orgId: '1111',
+						orgId: 1111,
 						level: 3,
 						children: [{
-							orgPid: '1111',
+							orgPid: 1111,
 							orgName: '四级',
 							orgTag: 0,
 							orgStatus: 0,
 							address: '深圳南山区',
 							contactPerson: '张三',
-							orgId: '11111',
+							orgId: 11111,
 							level: 4,
 							children: [{
-								orgPid: '11111',
+								orgPid: 11111,
 								orgName: '五级',
 								orgTag: 0,
 								orgStatus: 0,
 								address: '深圳南山区',
 								contactPerson: '张三',
-								orgId: '111111',
+								orgId: 111111,
 								level: 5,
 							}]
 						}]
 					}]
 				}, {
-					orgPid: '11',
+					orgPid: 11,
 					orgName: '二级2',
 					orgTag: 0,
 					orgStatus: 0,
 					address: '深圳南山区',
 					contactPerson: '张三',
-					orgId: '112',
+					orgId: 112,
 					level: 2,
 				}]
 			}, {
-				orgPid: '1',
+				orgPid: 1,
 				orgName: '一级2',
 				orgTag: 0,
 				orgStatus: 1,
 				address: '深圳南山区',
 				province: 13,
 				contactPerson: '张三',
-				orgId: '12',
+				orgId: 12,
 				level: 1,
 				children: [{
-					orgPid: '12',
+					orgPid: 12,
 					orgName: '一级21',
 					orgTag: 0,
 					orgStatus: 0,
 					address: '深圳南山区',
 					province: 13,
 					contactPerson: '张三',
-					orgId: '121',
+					orgId: 121,
 					level: 1,
 					children: [{
-						orgPid: '121',
+						orgPid: 121,
 						orgName: '一级211',
 						orgTag: 0,
 						orgStatus: 0,
 						address: '深圳南山区',
 						province: 13,
 						contactPerson: '张三',
-						orgId: '1211',
+						orgId: 1211,
 						level: 3
 					}]
 				}]
@@ -203,148 +203,71 @@ export default {
 		'msg': ''
 	},
 	'POST /api/organization/getLayerByUser': {
-		'data':{
-			'org_layer':[
-				{
-					'org_id':20760,
-					'org_pid':0,
-					'level':1,
-					'org_tag':0,
-					'org_status':0,
-					'sunmi_shop_no':'200227200600',
-					'business_area':0,
-					'user_bind_status':1,
-					'org_name':'有一个门店',
-					'children':[
-						{
-							'org_id':20761,
-							'org_pid':20760,
-							'level':2,
-							'org_tag':0,
-							'org_status':0,
-							'sunmi_shop_no':'200227200601',
-							'business_area':0,
-							'user_bind_status':1,
-							'org_name':'新的门店',
-							'children':[
-	
-							]
-						}
-					]
-				},
-				{
-					'org_id':20768,
-					'org_pid':0,
-					'level':1,
-					'org_tag':0,
-					'org_status':0,
-					'sunmi_shop_no':'',
-					'business_area':0,
-					'user_bind_status':1,
-					'org_name':'eee',
-					'children':[
-	
-					]
-				},
-				{
-					'org_id':7856,
-					'org_pid':0,
-					'level':1,
-					'org_tag':0,
-					'org_status':0,
-					'sunmi_shop_no':'200228070506',
-					'business_area':10,
-					'user_bind_status':1,
-					'org_name':'www',
-					'children':[
-						{
-							'org_id':9031,
-							'org_pid':7856,
-							'level':2,
-							'org_tag':0,
-							'org_status':0,
-							'sunmi_shop_no':'200220090301',
-							'business_area':0,
-							'user_bind_status':1,
-							'org_name':'我的又一个新店',
-							'children':[
-	
-							]
-						},
-						{
-							'org_id':20780,
-							'org_pid':7856,
-							'level':2,
-							'org_tag':1,
-							'org_status':0,
-							'sunmi_shop_no':'000000000000',
-							'business_area':0,
-							'user_bind_status':1,
-							'org_name':'department',
-							'children':[
-	
-							]
-						}
-					]
-				},
-				{
-					'org_id':9594,
-					'org_pid':0,
-					'level':1,
-					'org_tag':0,
-					'org_status':0,
-					'sunmi_shop_no':'200225090904',
-					'business_area':0,
-					'user_bind_status':1,
-					'org_name':'myshop',
-					'children':[
-	
-					]
-				},
-				{
-					'org_id':9690,
-					'org_pid':0,
-					'level':1,
-					'org_tag':0,
-					'org_status':0,
-					'sunmi_shop_no':'200226090900',
-					'business_area':0,
-					'user_bind_status':1,
-					'org_name':'EMPLOYEE_SHOP',
-					'children':[
-						{
-							'org_id':9694,
-							'org_pid':9690,
-							'level':2,
-							'org_tag':0,
-							'org_status':0,
-							'sunmi_shop_no':'200226090904',
-							'business_area':0,
-							'user_bind_status':1,
-							'org_name':'other company',
-							'children':[
-								{
-									'org_id':9695,
-									'org_pid':9694,
-									'level':3,
-									'org_tag':0,
-									'org_status':0,
-									'sunmi_shop_no':'200226090905',
-									'business_area':0,
-									'user_bind_status':1,
-									'org_name':'other shop',
-									'children':[
-	
-									]
-								}
-							]
-						}
-					]
-				}
-			]
-		},
-		'code':1,
-		'msg':''
+		code: 1,
+		msg: '',
+		data: {
+			org_layer: [{
+				orgPid: 1,
+				orgName: '一级',
+				orgId: 11,
+				orgStatus: 0,
+				level: 1,
+				children: [{
+					orgPid: 11,
+					orgName: '二级1',
+					orgId: 111,
+					orgStatus: 0,
+					level: 2,
+					children: [{
+						orgPid: 111,
+						orgName: '三级',
+						orgId: 1111,
+						orgStatus: 0,
+						level: 3,
+						children: [{
+							orgPid: 1111,
+							orgName: '四级',
+							orgId: 11111,
+							orgStatus: 0,
+							level: 4,
+							children: [{
+								orgPid: 11111,
+								orgName: '五级',
+								orgId: 111111,
+								orgStatus: 0,
+								level: 5,
+							}]
+						}]
+					}],
+				}, {
+					orgPid: 11,
+					orgName: '二级2',
+					orgId: 112,
+					orgStatus: 0,
+					level: 2,
+				}]
+			}, {
+				orgPid: 1,
+				orgName: '一级2',
+				orgId: 12,
+				orgStatus: 1,
+				level: 1,
+				children: [{
+					orgPid: 12,
+					orgName: '一级21',
+					orgId: 121,
+					orgStatus: 0,
+					level: 2,
+					children: [{
+						orgPid: 121,
+						orgName: '一级211',
+						orgId: 1211,
+						orgStatus: 0,
+						level: 3,
+					}]
+				}]
+			}]
+		}
 	},
 	'POST /api/organization/checkDisabled': {
 		code: 1,
