@@ -69,30 +69,31 @@ class OrganizationTable extends React.Component {
 		}
 	];
 
-	rowSelection = {
-		onChange: (selectedRowKeys) => {
-			const { setSelectedKeys } = this.props;
-			setSelectedKeys(selectedRowKeys);
-		},
-		onSelect: (record, selected) => {
-			const { setSelectedList } = this.props;
-			setSelectedList(record, selected);
-		},
-		onSelectAll: (selected) => {
-			const { onSelectAll } = this.props;
-			onSelectAll(selected);
-		}
-	};
 
 	render() {
-		const { dataSource, expandedRowKeys, loading } = this.props;
+		const { dataSource, expandedRowKeys, loading, selectedIdList } = this.props;
+		const rowSelection = {
+			selectedRowKeys: selectedIdList,
+			onChange: (selectedRowKeys) => {
+				const { setSelectedKeys } = this.props;
+				setSelectedKeys(selectedRowKeys);
+			},
+			onSelect: (record, selected) => {
+				const { setSelectedList } = this.props;
+				setSelectedList(record, selected);
+			},
+			onSelectAll: (selected) => {
+				const { onSelectAll } = this.props;
+				onSelectAll(selected);
+			}
+		};
 		return(
 			<Table
 				className={styles['org-table']}
 				rowKey={record => record.orgId}
 				columns={this.columns}
 				dataSource={dataSource}
-				rowSelection={this.rowSelection}
+				rowSelection={rowSelection}
 				pagination={false}
 				defaultExpandedRowKeys={expandedRowKeys}
 				loading={loading}

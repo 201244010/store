@@ -141,6 +141,8 @@ class OrganizationList extends React.Component {
 		this.setState({
 			moveModalVisible: false,
 			targetPId: '',
+			selectedList: [],
+			selectedIdList: []
 		});
 	}
 
@@ -284,6 +286,7 @@ class OrganizationList extends React.Component {
 						onSelectAll={this.onSelectAll}
 						handleEnable={this.handleEnable}
 						loading={loading.effects['organization/initOrgList']}
+						selectedIdList={selectedIdList}
 					/>
 				</Card>
 

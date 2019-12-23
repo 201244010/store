@@ -169,7 +169,7 @@ export default {
 			console.log('----move---', selectedIdList, targetPId);
 			const response = yield call(move, {
 				orgCidList: selectedIdList,
-				orgPid: targetPId
+				targetOrgPid: targetPId
 			});
 			const { code } = response;
 			if(code === ERROR_OK) {
