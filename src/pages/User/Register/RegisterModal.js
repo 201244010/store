@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Alert, Modal, message } from 'antd';
 import { Result } from 'ant-design-pro';
-import { connect } from 'dva';
 import { formatMessage, getLocale } from 'umi/locale';
+import { connect } from 'dva';
 import ResultInfo from '@/components/ResultInfo';
 import Captcha from '@/components/Captcha';
 import ImgCaptchaModal from '@/components/Captcha/ImgCaptchaModal';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
+import * as RegExp from '@/constants/regexp';
 import { ERROR_OK, ALERT_NOTICE_MAP, SHOW_VCODE, VCODE_ERROR } from '@/constants/errorCode';
 import { MAIL_LIST } from '@/constants';
 import { env } from '@/config';
@@ -63,12 +64,12 @@ const MailRegisterSuccess = ({ props }) => {
 	state => ({
 		user: state.user,
 		sso: state.sso,
-		loading: state.loading
+		loading: state.loading,
 	}),
 	dispatch => ({
 		register: payload => dispatch({ type: 'user/register', payload }),
 		sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
-	}),
+	})
 )
 @Form.create()
 class Register extends Component {
@@ -278,7 +279,7 @@ class Register extends Component {
 															}),
 														},
 														{
-															pattern: /^1\d{10}$/,
+															pattern: RegExp.phone,
 															message: formatMessage({
 																id: 'mobile.validate.isFormatted',
 															}),
@@ -292,7 +293,7 @@ class Register extends Component {
 														placeholder={formatMessage({
 															id: 'mobile.placeholder',
 														})}
-													/>,
+													/>
 												)}
 											</Form.Item>
 
@@ -348,7 +349,7 @@ class Register extends Component {
 																	},
 																	onClick: this.getCode,
 																}}
-															/>,
+															/>
 														)}
 													</Form.Item>
 												</>
@@ -379,7 +380,7 @@ class Register extends Component {
 													placeholder={formatMessage({
 														id: 'mail.placeholder',
 													})}
-												/>,
+												/>
 											)}
 										</Form.Item>
 									)}
@@ -405,7 +406,7 @@ class Register extends Component {
 												placeholder={formatMessage({
 													id: 'password.placeholder',
 												})}
-											/>,
+											/>
 										)}
 									</Form.Item>
 									<Form.Item>
@@ -433,16 +434,14 @@ class Register extends Component {
 												placeholder={formatMessage({
 													id: 'confirm.placeholder',
 												})}
-											/>,
+											/>
 										)}
 									</Form.Item>
 								</Form>
 								<div className={styles['register-footer']}>
 									<Button
-										className={
-											`${styles['primary-btn']}
-											${styles['footer-btn']}`
-										}
+										className={`${styles['primary-btn']}
+											${styles['footer-btn']}`}
 										type="primary"
 										size="large"
 										block
