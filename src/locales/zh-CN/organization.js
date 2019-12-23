@@ -31,5 +31,6 @@ export default {
 	'organization.action.modify':'修改',
 	'organization.action.disabled':'停用',
 	'organization.action.enable':'启用',
-	'organizetion.action.error':'操作失败，请重新尝试'
+	'organization.action.error':'操作失败，请重新尝试',
+	'organization.name.illegal': '包含非法字符，请重新输入',
 };
