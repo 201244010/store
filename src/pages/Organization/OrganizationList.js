@@ -148,6 +148,7 @@ class OrganizationList extends React.Component {
 	handleMoveCancel = () => {
 		this.setState({
 			moveModalVisible: false,
+			targetPId: ''
 		});
 	}
 
@@ -245,7 +246,7 @@ class OrganizationList extends React.Component {
 	}
 
 	render() {
-		const { moveModalVisible, /* modalInfoVisible, */ selectedIdList } = this.state;
+		const { moveModalVisible, /* modalInfoVisible, */ selectedIdList, targetPId } = this.state;
 		const { organization: { orgList, treeData, expandedRowKeys, expandedTreeKeys }, loading } = this.props;
 		return (
 			<div>
@@ -285,7 +286,7 @@ class OrganizationList extends React.Component {
 					onOk={this.handleMoveOk}
 					onCancel={this.handleMoveCancel}
 					className={styles['tree-modal']}
-					okButtonProps={{ loading: loading.effects['organization/move'] }}
+					okButtonProps={{ loading: loading.effects['organization/move'], disabled: !targetPId }}
 				>
 					<span className={styles['tree-modal-info']}>
 						{`${formatMessage({id: 'organization.tree.modal.move.info.pre'})}

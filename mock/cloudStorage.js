@@ -112,6 +112,16 @@ export default {
 							contactPerson: '张三',
 							orgId: '11111',
 							level: 4,
+							children: [{
+								orgPid: '11111',
+								orgName: '五级',
+								orgTag: 0,
+								orgStatus: 0,
+								address: '深圳南山区',
+								contactPerson: '张三',
+								orgId: '111111',
+								level: 5,
+							}]
 						}]
 					}]
 				}, {
@@ -225,6 +235,13 @@ export default {
 							orgId: '11111',
 							orgStatus: 0,
 							level: 4,
+							children: [{
+								orgPid: '11111',
+								orgName: '五级',
+								orgId: '111111',
+								orgStatus: 0,
+								level: 5,
+							}]
 						}]
 					}],
 				}, {
