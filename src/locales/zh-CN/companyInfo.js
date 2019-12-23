@@ -29,4 +29,6 @@ export default {
 	'companyInfo.please.input.contactTel': '请输入联系电话',
 	'companyInfo.contactEmail.label': '联系人邮箱',
 	'companyInfo.please.input.contactEmail': '请输入联系人邮箱',
+	'companyInfo.save.success': '保存成功',
+	'companyInfo.save.fail': '保存失败',
 };

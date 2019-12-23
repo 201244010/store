@@ -316,26 +316,39 @@ class CompanyInfo extends React.Component {
 					lng: lng ? `${lng}` : null,
 					businessHours, 
 				};
+				const {
+					location: { pathname },
+				} = window;
+				const pathId = await getPathId(pathname);
+				
 
 				let response = null;
 				if (action === 'edit') {
 					response = await updateOrganization({ options });
 					const { code } = response;
 					if(code === ERROR_OK){
-						message.success('修改成功');
-						goToPath('organizationList');
+						if(pathId === 'editDetail'){
+							goToPath('detail');
+						}else{
+							goToPath('organizationList');
+						}
+						message.success(formatMessage({id: 'companyInfo.save.success'}));
 					}else{
-						message.success('修改失败');
+						message.error(formatMessage({id: 'companyInfo.save.fail'}));
 					}
 					
 				}else{
 					response = await createOrganization({ options });
 					const { code } = response;
 					if(code === ERROR_OK){
-						message.success('保存成功');
-						goToPath('organizationList');
+						if(pathId === 'newSubOrganization') {
+							goToPath('detail');
+						}else{
+							goToPath('organizationList');
+						}
+						message.success(formatMessage({id: 'companyInfo.save.success'}));
 					}else{
-						message.success('保存失败');
+						message.error(formatMessage({id: 'companyInfo.save.fail'}));
 					}
 				}
 			}
@@ -369,7 +382,6 @@ class CompanyInfo extends React.Component {
 			}
 		} = this.props;
 		const { treeData, allDayChecked, orgPidParams } = this.state;
-		console.log(treeData);
 		const { addressSearchResult, organizationType, isDisabled } = this.state;
 		const [action = 'create'] = [getLocationParam('action')];
 		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => (
@@ -391,7 +403,7 @@ class CompanyInfo extends React.Component {
 					bordered={false} 
 					title={action === 'create'
 						? (orgPidParams ? formatMessage({ id: 'companyInfo.create.sub.title' }) : formatMessage({ id: 'companyInfo.create.title' }))
-						: formatMessage({ id: 'companyInfo.create.title' })}
+						: formatMessage({ id: 'companyInfo.alter.title' })}
 				>
 					<Form
 						{...{
