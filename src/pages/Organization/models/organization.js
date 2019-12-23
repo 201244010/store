@@ -1,5 +1,4 @@
-
-import { getOrgList, getLayerByUser, deprecate, move, isDeprecatable, enable } from '../../../services/organization';
+import { getOrgList, getLayerByUser, deprecate, move, isDeprecatable, enable } from '@/services/organization';
 import { ERROR_OK } from '@/constants/errorCode';
 
 // 初始化组织树
@@ -10,14 +9,13 @@ const traversalTreeData = (originalList, targetList, hash, maxHeight) => {
 			let overHeight = false;
 			// 判断是否超过6层
 			overHeight = maxHeight + level >= 6;
-			console.log('overheight', overHeight, 'level', level);
 			// 如果父节点是被选项，则其子结点不可选。
 			if(hash[orgPid]) {
 				hash[orgId] = true;
 			}
 			const target = {
 				title: orgName,
-				key: orgId,
+				key: orgId.toString(),
 				disabled: !!orgStatus || !!hash[orgId] || overHeight,
 				children: [],
 			};
@@ -53,6 +51,7 @@ export default {
 		originalLayerTree: [],
 		expandedRowKeys: [],
 		expandedTreeKeys: [],
+		currentCompany: {},
 	},
 	reducers: {
 		updateOrgList(state, { payload }) {
@@ -90,16 +89,36 @@ export default {
 		},
 		*initLayerTree(_, { call, put }) {
 			console.log('---iinitLayerTree');
+			const companyId = yield put.resolve({
+				type: 'global/getCompanyIdFromStorage'
+			});
+			const companyName = yield put.resolve({
+				type: 'merchant/getCompanyNameById',
+				payload: {
+					companyId
+				}
+			});
+			const company = {
+				orgId: 0,
+				orgName: companyName,
+				orgStatus: 0,
+				level: 0,
+				orgPid: '',
+			};
 			const response = yield call(getLayerByUser);
 			const { code, data } = response;
 			if(code === ERROR_OK) {
+				const { orgLayer } = data;
+				company.children = orgLayer;
+				console.log('----company', company);
 				yield put({
 					type: 'updateOriginalLayerTree',
 					payload: {
-						treeList: [data]
+						treeList: [company]
 					}
 				});
 			}
+
 		},
 		*setTreeData({ payload }, { put, select }) {
 			const { originalLayerTree } = yield select(state => state.organization);
@@ -135,13 +154,9 @@ export default {
 			});
 		},
 		*deprecate({ payload }, { call }) {
-			const { targetPId, selectedOrgId } = payload;
-			console.log('-----deprecate---', targetPId, selectedOrgId);
+			console.log('-----deprecate---', payload);
 
-			const response = yield call(deprecate, {
-				orgId: selectedOrgId,
-				targetOrgPid: targetPId
-			});
+			const response = yield call(deprecate, payload);
 			const { code } = response;
 			if(code === ERROR_OK) {
 				return true;
