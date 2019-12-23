@@ -604,6 +604,7 @@ class CompanyInfo extends React.Component {
 												moment(businessHours.split('~')[0], 'HH:mm') : undefined,
 										})(
 											<TimePicker
+												allowClear
 												disabled={allDayChecked}
 												placeholder={formatMessage({ id: 'companyInfo.start.time' })}
 												format="HH:mm"
@@ -620,6 +621,7 @@ class CompanyInfo extends React.Component {
 												moment(businessHours.split('~')[1], this.isNextDay()) : undefined,
 										})(
 											<TimePicker
+												allowClear
 												disabled={allDayChecked}
 												placeholder={formatMessage({ id: 'companyInfo.end.time' })}
 												format={this.isNextDay()}
