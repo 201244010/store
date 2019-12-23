@@ -287,6 +287,7 @@ class CompanyInfo extends React.Component {
 			form: { validateFields },
 			createOrganization,
 			updateOrganization,
+			getPathId
 		} = this.props;
 
 		validateFields(async (err, values) => {
