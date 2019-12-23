@@ -5,27 +5,27 @@ export const EXPIRE_TIME_TYPE = {
 };
 
 export const SERVICE_TYPE = {
-	'YCC0002': {
+	'A08000075': {
 		price:'69',
 		isFree: true,
 		type: EXPIRE_TIME_TYPE.HALF_A_YEAR,
 		serviceTag: 1, // 1:7天云存储；2:30天云存储
 	},
-	'YCC0003': {
-		productNo:'YCC0003',
+	'A08000076': {
+		productNo:'A08000076',
 		price:'119',
 		isFree: false,
 		type: EXPIRE_TIME_TYPE.ONE_YEAR,
 		serviceTag: 1,
 
 	},
-	'YCC0004': {
+	'A08000077': {
 		price: '159',
 		isFree: false,
 		type: EXPIRE_TIME_TYPE.HALF_A_YEAR,
 		serviceTag: 2,
 	},
-	'YCC0005': {
+	'A08000078': {
 		price:'299',
 		isFree: false,
 		type: EXPIRE_TIME_TYPE.ONE_YEAR,

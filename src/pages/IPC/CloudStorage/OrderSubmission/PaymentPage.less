@@ -1,19 +1,42 @@
 .payment-container{
-	.payment-title{
-		font-size:20px;
-		font-family:PingFangSC-Medium,PingFang SC, sans-serif;
-		font-weight:500;
-		color:rgba(48,53,64,1);
+	.qrCode-title {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20px;
+	
+		.payment-title{
+			font-size:20px;
+			font-family:PingFangSC-Medium,PingFang SC, sans-serif;
+			font-weight:500;
+			color:rgba(48,53,64,1);
+		}
+		.order-num{
+			font-family:PingFangSC-Regular,PingFang SC, sans-serif;
+			font-weight:400;
+			color:rgba(133,133,138,1);
+			margin: 0;
+		}
+
+		.order-price {
+			font-size:14px;
+			font-family:PingFangSC-Regular,PingFang SC, sans-serif;
+			font-weight:400;
+			color:rgba(133,133,138,1);
+	
+			.price {
+				font-size:20px;
+				font-family:PingFangSC-Medium, PingFang SC, sans-serif;
+				font-weight:500;
+				color:rgba(255,56,56,1);
+			}
+		}
 	}
-	.order-num{
-		font-size:14px;
-		font-family:PingFangSC-Regular,PingFang SC, sans-serif;
-		font-weight:400;
-		color:rgba(133,133,138,1);
-	}
+	
 	.payment-content {
 		display: flex;
 		align-items: center;
+		margin: 11px 0 1px 0;
 	
 		.payment-radio-wrapper {
 			margin-right: 10px;

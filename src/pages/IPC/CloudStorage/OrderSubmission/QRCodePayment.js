@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { Card, message } from 'antd';
+import { Card, message, Modal } from 'antd';
 import { format } from '@konata9/milk-shake';
 import { ERROR_OK, ALTERT_TRADE_MAP } from '@/constants/errorCode';
 import styles from './trade.less';
+import { ORDER_STATUS } from '../constant';
 
 @connect(
 	state => ({
@@ -19,6 +20,8 @@ import styles from './trade.less';
 			dispatch({ type: 'trade/getOrderDetail', payload: { orderNo }}),
 		goToPath: (pathId, urlParams = {}, linkType = null) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, linkType } }),
+		getOrderStatus: (orderNo) => 
+			dispatch({ type: 'cloudStorage/getOrderStatus', payload: { orderNo }}),
 	})
 )
 class QRCodePayment extends PureComponent {
@@ -29,7 +32,6 @@ class QRCodePayment extends PureComponent {
 		} = props;
 
 		this.qrContainer = React.createRef();
-		this.refreshTimer = null;
 		this.refreshCount = null;
 
 		this.orderNo = orderNo || null;
@@ -37,20 +39,35 @@ class QRCodePayment extends PureComponent {
 		this.source = parseInt(source, 10) || null;
 
 		this.state = {
-			refreshRemain: 120,
+			count: 0,
 		};
 	}
 
 	async componentDidMount() {
-		const { getOrderDetail } = this.props;
-		await this.getQRCodeURL();
+		const { getOrderDetail, goToPath } = this.props;
 		await getOrderDetail({ orderNo: this.orderNo });
-		this.countRefresh();
+		const { orderDetail: { status } } = this.props;
+		if(status === 4) {
+			Modal.info({
+				title: formatMessage({id: 'cloudStorage.info'}),
+				content: (
+					<div>
+						<p>{formatMessage({id: 'cloudStorage.info.tips'})}</p>
+					</div>
+				),
+				okText: formatMessage({id: 'cloudStorage.ok.text'}),
+				onOk() { goToPath('serviceManagement');},
+			});
+			return;
+		}
+		await this.getQRCodeURL();
+		this.orderStatusRefresh();
 	}
 
 	componentWillUnmount() {
-		clearTimeout(this.refreshTimer);
-		clearInterval(this.refreshCount);
+		clearInterval(this.refreshOrderStatus);
+		clearInterval(this.refreshWaitSuccess);
+		Modal.destroyAll();
 	}
 
 	getQRCodeURL = async () => {
@@ -73,32 +90,93 @@ class QRCodePayment extends PureComponent {
 		}
 	};
 
-	countRefresh = () => {
-		clearInterval(this.refreshCount);
-		this.refreshCount = setInterval(() => {
-			const { refreshRemain } = this.state;
-
-			if (refreshRemain === 0) {
-				this.getQRCodeURL();
-				this.setState({
-					refreshRemain: 120,
-				});
-			} else {
-				this.setState({
-					refreshRemain: refreshRemain - 1,
-				});
+	orderStatusRefresh = () => {
+		clearInterval(this.refreshOrderStatus);
+		this.refreshOrderStatus = setInterval(async () => {
+			const { getOrderStatus, goToPath } = this.props;
+			const status = await getOrderStatus(this.orderNo);
+			switch(status){
+				case ORDER_STATUS.SUBSCRIBING:
+					message.open({
+						content: formatMessage({ id: 'cloudStorage.waitting.sub' }),
+						duration: 0,
+						icon: <div className={styles['loading-icon']} />
+					});
+					clearInterval(this.refreshOrderStatus);
+					this.waitSuccessRefresh();
+					break;
+				case ORDER_STATUS.SUCCESS:
+					message.open({
+						content: formatMessage({ id: 'cloudStorage.waitting.sub' }),
+						duration: 0,
+						icon: <div className={styles['loading-icon']} />
+					});
+					clearInterval(this.refreshOrderStatus);
+					setTimeout(()=>{
+						message.destroy();
+						goToPath('subscriptionSuccess', {orderNo:this.orderNo, status: 'success'});
+					},1000);
+					break;
+				case ORDER_STATUS.CLOSE:
+					message.destroy();
+					clearInterval(this.refreshOrderStatus);
+					goToPath('serviceOrderDetail', {orderNo:this.orderNo});
+					break;
+				default:
+					break;
 			}
+
+		}, 5000);
+	}
+
+	waitSuccessRefresh = () => {
+		clearInterval(this.refreshWaitSuccess);
+		this.refreshWaitSuccess = setInterval(async () => {
+			const { getOrderStatus, goToPath } = this.props;
+			const { count } = this.state;
+
+			const status = await getOrderStatus(this.orderNo);
+			switch(status){
+				case ORDER_STATUS.SUBSCRIBING:
+					if(count < 15){
+						this.setState({count: count+1});
+					}else{
+						this.setState({count: 0});
+						message.destroy();
+						clearInterval(this.refreshWaitSuccess);
+						goToPath('subscriptionSuccess', {orderNo:this.orderNo, status: 'waitting'});
+					}
+					break;
+				case ORDER_STATUS.SUCCESS:
+					message.open({
+						content: formatMessage({ id: 'cloudStorage.waitting.sub' }),
+						duration: 0,
+						icon: <div className={styles['loading-icon']} />
+					});
+					clearInterval(this.refreshWaitSuccess);
+					setTimeout(()=>{
+						message.destroy();
+						goToPath('subscriptionSuccess', {orderNo:this.orderNo, status: 'success'});
+					},1000);
+					break;
+				default:
+					break;
+			}
+
 		}, 1000);
-	};
+	}
+
+
 
 	render() {
 		const { loading, goToPath, orderDetail } = this.props;
 
 		return (
-			<Card title={formatMessage({ id: 'pay.order.commit' })}>
+			<Card title={null}>
 				<div className={styles['qrCode-title']}>
-					<div className={styles['order-no']}>
-						{formatMessage({ id: 'pay.order.no' })}：{this.orderNo}
+					<div>
+						<h3 className={styles['payment-title']}>{this.purchaseType ? formatMessage({ id: `${this.purchaseType  }.pay` }) : null}</h3>
+						<p className={styles['order-num']}>{formatMessage({id: 'cloudStorage.orderNo'})}{this.orderNo}</p>
 					</div>
 					<div className={styles['order-price']}>
 						{formatMessage({ id: 'pay.true.price' })}：
@@ -107,7 +185,7 @@ class QRCodePayment extends PureComponent {
 				</div>
 				<Card
 					type="inner"
-					title={this.purchaseType ? formatMessage({ id: this.purchaseType }) : null}
+					title={this.purchaseType ? formatMessage({ id: `${this.purchaseType}.scan.pay` }) : null}
 					loading={loading.effects['trade/payOrder']}
 				>
 					<div className={styles['qrCode-content']}>
