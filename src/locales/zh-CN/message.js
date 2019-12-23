@@ -8,7 +8,7 @@ export default {
 	'alert.code.error': '验证码错误，请重新输入',
 	'alert.code.expired': '验证码已过期，请重新获取',
 	'alert.vcode.error': '图形验证码错误，请重新输入',
-	'alert.code.send.fast': '验证码发送太快，请稍作等待后再次发送',
+	'alert.code.send.fast': '验证码发送过于频繁，请稍作等待后再次发送',
 	'alert.store.is.none': '您尚未创建门店，请先创建门店后再进行操作',
 	'alert.template.name.not.empty': '模板名称不能为空',
 	'alert.template.name.too.long': '模板名称超出长度',

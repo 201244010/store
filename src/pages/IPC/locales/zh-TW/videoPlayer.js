@@ -1,0 +1,20 @@
+export default {
+	'videoPlayer.noMedia': '您所拖動的時間節點下沒有回放視頻，將為您跳轉至最近一段回放視頻節點',
+	'videoPlayer.backToLive': '返回直播',
+	'videoPlayer.fullHighDefinition': '清晰',
+	'videoPlayer.highDefinition': '流暢',
+	'videoPlayer.standardDefinition': '標清',
+	'videoPlayer.thisIsLive': '當前為直播，拖動可查看回放',
+	'videoPlayer.pickDate': '日期選擇',
+	'videoPlayer.videoScreenShot': '視頻截圖',
+	'vidoePlayer.screenShot': '截圖',
+	'videoPlayer.volume': '音量',
+	'videoPlayer.play': '播放',
+	'videoPlayer.enterFullscreen': '進入全屏',
+	'videoPlayer.exitFullscreen': '退出全屏',
+	'videoPlayer.ppiChanged': '當前播放畫面已切換為%mode%模式',
+	'videoPlayer.noPlay':'當前設備離線，無法為您播放直播',
+	'videoPlayer.noCloudService':'當前設備離線，無法為您播放直播畫面。您可以通過開通雲存儲功能，查看雲回放視頻',
+	'videoPlayer.subCloud': '開通雲存儲',
+	'videoPlayer.thisIsRePlay':'拖動可查看雲回放視頻'
+};
