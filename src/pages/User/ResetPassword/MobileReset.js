@@ -7,6 +7,7 @@ import ImgCaptchaModal from '@/components/Captcha/ImgCaptchaModal';
 import ResultInfo from '@/components/ResultInfo';
 import { customValidate } from '@/utils/customValidate';
 import { encryption } from '@/utils/utils';
+import * as RegExp from '@/constants/regexp';
 import { ERROR_OK, SHOW_VCODE, VCODE_ERROR, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 import { env } from '@/config';
 import styles from './ResetPassword.less';
@@ -189,7 +190,7 @@ class MobileReset extends Component {
 											}),
 										},
 										{
-											pattern: /^1\d{10}$/,
+											pattern: RegExp.phone,
 											message: formatMessage({
 												id: 'mobile.validate.isFormatted',
 											}),
@@ -233,6 +234,7 @@ class MobileReset extends Component {
 													trigger,
 													validateTarget: getFieldValue('username') || '',
 													inputProps: {
+														maxLength: 4,
 														size: 'large',
 														placeholder: formatMessage({
 															id: 'mobile.code.placeholder',

@@ -1,4 +1,4 @@
-export class FontDetector {
+export default class FontDetector {
 	constructor() {
 		this.baseFonts = ['monospace', 'sans-serif', 'serif'];
 		this.testString = 'mmmmmmmmmmlli';
@@ -32,5 +32,17 @@ export class FontDetector {
 		});
 
 		return detected;
+	}
+
+	static loadFont = () => {
+		const fontUrl = 'https://store.test.sunmi.com/static/Zfull-GB.ttf';
+		const newStyle = document.createElement('style');
+		newStyle.appendChild(document.createTextNode(`
+			@font-face {
+				font-family: 'Zfull-GB';
+				src: url('${fontUrl}');
+			}
+		`));
+		document.head.appendChild(newStyle);
 	}
 }
