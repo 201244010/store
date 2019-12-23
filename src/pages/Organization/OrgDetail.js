@@ -1,5 +1,5 @@
 import  React  from 'react';
-import { Button, Card } from 'antd';
+import { Button, Card, message } from 'antd';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import moment from 'moment';
