@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, formatMessage } from 'umi/locale';
-import { Spin, Tag, Menu, Icon, Avatar, Select } from 'antd';
+import { Spin, Tag, Menu, Icon, Avatar, /* Select, */ TreeSelect } from 'antd';
 // import moment from 'moment';
 // import router from 'umi/router';
 import groupBy from 'lodash/groupBy';
@@ -100,7 +100,7 @@ export default class GlobalHeaderRight extends PureComponent {
 			onMenuClick,
 			onNoticeClear,
 			theme,
-			store: { allStores: storeList },
+			store: { /* allStores: storeList, */ treeData },
 			selectedStore,
 		} = this.props;
 
@@ -126,7 +126,15 @@ export default class GlobalHeaderRight extends PureComponent {
 
 		return (
 			<div className={className}>
-				<Select
+				<TreeSelect
+					style={{ width: '250px' }}
+					treeData={treeData}
+					value={selectedStore}
+					onChange={this.handleStoreChange}
+					treeDefaultExpandedKeys={[`${selectedStore}`]}
+					dropdownStyle={{ maxHeight: '50vh'}}
+				/>
+				{/* <Select
 					value={selectedStore}
 					style={{ width: '250px' }}
 					onChange={this.handleStoreChange}
@@ -136,7 +144,7 @@ export default class GlobalHeaderRight extends PureComponent {
 							{store.shopName || ''}
 						</Select.Option>
 					))}
-				</Select>
+				</Select> */}
 				{/* <HeaderSearch */}
 				{/* className={`${styles.action} ${styles.search}`} */}
 				{/* placeholder={formatMessage({ id: 'component.globalHeader.search' })} */}
