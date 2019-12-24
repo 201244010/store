@@ -19,6 +19,11 @@ export default {
 	'cardManagement.removeTipContent': '移除TF卡后，摄像机不能使用TF卡存储相关功能',
 	'cardManagement.removeSuccess': '移除成功',
 	'cardManagement.removeFail': '移除失败',
+
+	'cardManagement.failNotPlugged': 'TF卡未插入，请插入TF卡后再重新操作',
+	'cardManagement.failInvalid': 'TF卡不可用，请插入新的TF后再重新操作',
+	'cardManagement.failUnformatted': 'TF卡未格式化，请格式化后重新操作',
+
 	'cardManagement.format': '格式化',
 	'cardManagement.formatImmediately': '立即格式化',
 	'cardManagement.formatTipTitle': '确定要格式化TF卡？',
