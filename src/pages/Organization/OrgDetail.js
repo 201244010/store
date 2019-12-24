@@ -28,8 +28,8 @@ import SearchResult from '../BasicData/Employee/SerachResult';
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
 		setSearchValue: payload => dispatch({ type: 'employee/setSearchValue', payload }),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
-		getEmployeeList: ({ current = 1, pageSize = 10 }) =>
-			dispatch({ type: 'employee/getEmployeeList', payload: { current, pageSize } }),
+		getEmployeeList: ({ current = 1, pageSize = 10, shopIdList = [] }) =>
+			dispatch({ type: 'employee/getEmployeeList', payload: { current, pageSize, shopIdList } }),
 		deleteEmployee: ({ employeeIdList }) =>
 			dispatch({ type: 'employee/deleteEmployee', payload: { employeeIdList } }),
 		getAdmin: () =>
@@ -60,6 +60,7 @@ class OrgDetail extends React.Component {
 		getEmployeeList({
 			current: 1,
 			pageSize: 10,
+			shopIdList: [orgId]
 		});
 		this.getAdminUserId();
 		this.setState({

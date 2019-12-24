@@ -55,7 +55,7 @@ export default {
 
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { searchValue, pagination } = yield select(state => state.employee);
-			const { current = 1, pageSize = 10, roleId = -1 } = payload;
+			const { current = 1, pageSize = 10, roleId = -1, shopIdList: shopIdListParams = [] } = payload;
 			const tmpShopIdList = yield put.resolve({
 				type: 'global/getShopListFromStorage',
 			});
@@ -63,7 +63,8 @@ export default {
 				type: 'role/checkAdmin',
 			});
 			let tmpShopList = [];
-			const { shopIdList } = searchValue;
+			const { shopIdList: searchShopIdList } = searchValue;
+			const shopIdList = shopIdListParams.length > 0 ? shopIdListParams : searchShopIdList;
 			if (shopIdList.length) {
 				tmpShopList = shopIdList;
 			} else if (adminResponse && adminResponse.code !== ERROR_OK) {
