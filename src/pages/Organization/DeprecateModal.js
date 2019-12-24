@@ -71,7 +71,7 @@ class DeprecateModal extends React.Component {
 				const { deprecate } = this.props;
 				const { selectedOrgId, targetPId } = this.state;
 				let opt = {};
-				if(targetPId) {
+				if(targetPId !== '') {
 					opt = {
 						orgId: selectedOrgId,
 						targetOrgPid: targetPId
