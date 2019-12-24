@@ -5,7 +5,7 @@ import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
 import { getOrganizationTree,
 	createOrganization,
-	updateOrganization, 
+	updateOrganization,
 	getOrganizationInfo,
 	getOrgList
 } from '@/services/organization';
@@ -28,7 +28,7 @@ function getHeight(arr, len) {
 		return getHeight(arr1,len);
 	}
 	return len;
-  
+
 }
 
 function allDisable(obj) {
@@ -166,7 +166,7 @@ export default {
 					},
 				});
 			}
-			
+
 
 		},
 		*createOrganization({ payload },{ put }) {
@@ -193,6 +193,9 @@ export default {
 				type: 'global/getCompanyIdFromStorage',
 			}) || {};
 
+			yield put({
+				type: 'store/getOrgLayer'
+			});
 			const response = yield getOrgList({userId, companyId});
 			if (response && response.code === ERROR_OK) {
 				const { data } = response;
