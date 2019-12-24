@@ -23,7 +23,6 @@ export default {
 	'posList.deviceSN': '设备SN号',
 	'posList.monitorBlock': '监控区域',
 	'posList.posDevice': '收银设备',
-
 	// 'posList.video': '交易视频',
 	'posList.records': '交易记录',
 	'posList.alias': '区域名称',
@@ -47,7 +46,6 @@ export default {
 	'posList.bindSuccess': '绑定成功！',
 	'posList.bindFailed': '绑定失败，请稍候重试！',
 	'posList.maxBindNumber': '每台摄像机只能添加8台收银设备，请重新选择！',
-
 	'posList.deleteSuccess': '删除成功！',
 	'posList.deleteFailed': '删除失败，请检查网络连接并重试。',
 	'posList.unbindSuccess': '解绑成功！',
@@ -61,16 +59,12 @@ export default {
 	'posList.posNotBelong': '该收银设备不属于当前店铺，请重新输入。',
 	'posList.posNoSN': '无法查询到该SN号，请重新输入。',
 	'posList.addFailed': '设备添加失败。',
-
 	'posList.deleteConfirm': '你确定要删除该设备吗？',
 	'posList.deleteMsg': '删除设备后，需要重新进行验证。',
 	'posList.delete': '删除',
-
 	'posList.notVerified': '您的设备尚未进行验证，请验证后重新绑定！',
-
 	'posList.warningNotBinded': '您还尚未完成收银设备绑定',
 	'posList.confirmGoBack': '确认要返回至上一步吗？',
 	'posList.noCamera':'您还未绑定任何摄像机设备，请在手机端下载“商米助手”APP进行绑定。',
 	'posList.myCamera':'My Camera'
-
 };

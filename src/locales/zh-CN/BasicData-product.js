@@ -59,7 +59,7 @@ export default {
 	'basicData.weightProduct.barcodeCode': '条形码号',
 	'basicData.weightProduct.barCode.formatError': '条形码号为 0-99 的数字',
 	'basicData.weightProduct.chargeUnit': '计价单位',
-	'basicData.weightProduct.weight.price.isEmpty': '商品计价区分不能为空',
+	'basicData.weightProduct.weight.price.isEmpty': '商品计价区间不能为空',
 	'basicData.weightProduct.weight.price.count': '计数',
 	'basicData.weightProduct.weight.price.kg': 'Kg',
 	'basicData.weightProduct.weight.price.100g': '元/100g',
@@ -89,10 +89,8 @@ export default {
 	'basicData.erp.api.user.number': '用户编号',
 	'basicData.erp.api.shop.number': '店铺号',
 	'basicData.erp.description.list1': '1. 可以通过对接ERP来新建和更新商品；',
-	'basicData.erp.description.list2':
-		'2. 初次完成对接，或修改对接平台信息后，原有商品信息将被清空；',
-	'basicData.erp.description.list3':
-		'3. 完成对接后，无法在SUNMI Store中修改商品信息，请在ERP中进行修改；',
+	'basicData.erp.description.list2': '2. 初次完成对接，或修改对接平台信息后，原有商品信息将被清空；',
+	'basicData.erp.description.list3': '3. 完成对接后，无法在SUNMI Store中修改商品信息，请在ERP中进行修改；',
 	'basicData.erp.import.success': '对接成功，正在同步商品信息…',
 	'basicData.erp.import.fail': '数据导入失败',
 	'basicData.erp.import.task.failed': 'ERP对接的配置信息输入错误，请重新输入',

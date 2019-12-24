@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatMessage } from 'umi/locale';
+import { formatMessage, getLocale } from 'umi/locale';
 import styles from './card.less';
 
 class Card extends React.PureComponent {
@@ -17,12 +17,19 @@ class Card extends React.PureComponent {
 			monthCompare,
 		} = this.props;
 
+		const currentLanguage = getLocale();
+		const isChina = currentLanguage === 'zh-CN';
+
 		let { num = '0' } = this.props;
 		num = num.toString().replace(/,/g, '');
 
 		let showUnit = false;
 		if (parseFloat(num) >= 10000 || parseFloat(num) <= -10000) {
-			num = (parseFloat(num) / 10000).toFixed(2);
+			if(!isChina) {
+				num = (parseFloat(num) / 1000).toFixed(2);
+			} else {
+				num = (parseFloat(num) / 10000).toFixed(2);
+			}
 			showUnit = true;
 		}
 

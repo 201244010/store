@@ -1,22 +1,18 @@
 export default {
 	'cardManagement.title': '存储管理',
-
 	'cardManagement.sdStatus0': '未插入存储卡',
 	'cardManagement.sdStatus1': '已插入存储卡，需格式化才能使用',
 	'cardManagement.sdStatus2': 'TF卡已格式化，已挂载',
 	'cardManagement.sdStatus3': '未识别到存储卡',
 	'cardManagement.sdStatus4': '存储卡被移除，请重新插入并刷新页面',
-
 	'cardManagement.sizeLeft': '存储卡空间容量',
 	'cardManagement.daysCanUse': '循环存储天数约为',
 	'cardManagement.hasUsed': '已使用',
 	'cardManagement.day': '天',
 	'cardManagement.hour': '小时',
 	'cardManagement.daysUseTip': '(备注：存储卡容量到达上限后，会以循环存储的方式存视频，即新的直播回放视频会自动覆盖最早的视频)',
-
 	'cardManagement.modalOk': '确定',
 	'cardManagement.modalCancel': '取消',
-
 	'cardManagement.removeSafely': '安全移除',
 	'cardManagement.removeImmediately': '立即移除',
 	'cardManagement.removeTipTitle': '确定要移除TF卡？',
@@ -24,13 +20,16 @@ export default {
 	'cardManagement.removeSuccess': '移除成功',
 	'cardManagement.removeFail': '移除失败',
 
+	'cardManagement.failNotPlugged': 'TF卡未插入，请插入TF卡后再重新操作',
+	'cardManagement.failInvalid': 'TF卡不可用，请插入新的TF后再重新操作',
+	'cardManagement.failUnformatted': 'TF卡未格式化，请格式化后重新操作',
+
 	'cardManagement.format': '格式化',
 	'cardManagement.formatImmediately': '立即格式化',
 	'cardManagement.formatTipTitle': '确定要格式化TF卡？',
 	'cardManagement.formatTipContent': '格式化操作后，TF卡里的资料将会被清空，请提前保存TF卡内重要资料',
 	'cardManagement.formatSuccess': '格式化成功',
 	'cardManagement.formatFail': '格式化失败，请检查网络后重新操作',
-
 	'cardManagement.formattingTitle': '格式化中',
 	'cardManagement.formattingContent': '请耐心等候，大约需要15秒可完成格式化操作',
 	'cardManagement.cloudStorage':'云存储',
