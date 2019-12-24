@@ -94,6 +94,7 @@ class PaymentPage extends React.Component{
 			await getOrderDetail({ orderNo });
 		}
 		const countDown = await getCountDownFromCloud(orderNo);
+		if(countDown <= 0) this.locationToOrderDetail(orderNo);
 		this.setState({
 			orderNo,
 			countDown
@@ -109,10 +110,10 @@ class PaymentPage extends React.Component{
 	startCountDown = () => {
 		clearTimeout(this.timer);
 		this.timer = setTimeout(() => {
-			const { countDown } = this.state;
-			if (countDown === 0) {
+			const { countDown, orderNo } = this.state;
+			if (countDown <= 0) {
 				clearTimeout(this.timer);
-				this.locationToOrderDetail();
+				this.locationToOrderDetail(orderNo);
 			} else {
 				this.setState({
 					countDown: countDown - 1,
@@ -147,9 +148,8 @@ class PaymentPage extends React.Component{
 		});
 	};
 
-	locationToOrderDetail() {
+	locationToOrderDetail(orderNo) {
 		const { goToPath } = this.props;
-		const { orderNo } = this.state;
 		goToPath('serviceOrderDetail', {orderNo});
 	}
 	

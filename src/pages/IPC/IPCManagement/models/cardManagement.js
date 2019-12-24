@@ -20,7 +20,8 @@ export default {
 		sd_status_code: null, // sd卡状态码
 
 		removeStatus: 'normal', // normal初始值 pending格式化进行中 success格式化成功 fail格式化失败
-		formatStatus: 'normal' // normal初始值 pending格式化进行中 success格式化成功 fail格式化失败
+		formatStatus: 'normal', // normal初始值 pending格式化进行中 success格式化成功 fail格式化失败
+		errCode: null, // 错误码
 	},
 
 	reducers: {
@@ -65,7 +66,8 @@ export default {
 				sd_status_code: null,
 
 				removeStatus: 'normal',
-				formatStatus: 'normal'
+				formatStatus: 'normal',
+				errCode: null
 			};
 		},
 	},
@@ -287,7 +289,8 @@ export default {
 									sn,
 									hasCard: false,
 									sd_status_code,
-									removeStatus: 'success'
+									removeStatus: 'success',
+									errCode: msg.errcode
 								}
 							});
 
@@ -297,7 +300,8 @@ export default {
 								type: 'updateState',
 								payload: {
 									sn,
-									removeStatus: 'fail'
+									removeStatus: 'fail',
+									errCode: msg.errcode
 								}
 							});
 						};
@@ -327,7 +331,8 @@ export default {
 								type: 'updateState',
 								payload: {
 									sn,
-									formatStatus: 'success'
+									formatStatus: 'success',
+									errCode: msg.errcode
 								}
 							});
 
@@ -343,7 +348,8 @@ export default {
 								type: 'updateState',
 								payload: {
 									sn,
-									formatStatus: 'fail'
+									formatStatus: 'fail',
+									errCode: msg.errcode
 								}
 							});
 						};

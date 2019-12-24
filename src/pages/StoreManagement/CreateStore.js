@@ -2,11 +2,13 @@ import React from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Button, Input, Radio, Cascader, Card, AutoComplete } from 'antd';
 import { connect } from 'dva';
+import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import * as CookieUtil from '@/utils/cookies';
 import { getLocationParam } from '@/utils/utils';
 import { customValidate } from '@/utils/customValidate';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
+import * as RegExp from '@/constants/regexp';
 import { STORE_EXIST } from '@/constants/errorCode';
 
 const FormItem = Form.Item;
@@ -62,11 +64,11 @@ class CreateStore extends React.Component {
 		const [province, city, ,] = regionValues;
 		const regionList = Storage.get('__regionList__', 'local') || [];
 		if (province && city) {
-			const findedCity = (
+			const foundCity = (
 				(regionList.find(provinceInfo => provinceInfo.province === province) || {})
 					.children || []
 			).find(cityInfo => cityInfo.city === city);
-			return findedCity;
+			return foundCity;
 		}
 		return null;
 	};
@@ -209,6 +211,7 @@ class CreateStore extends React.Component {
 				}
 
 				this.handleResponse(response);
+				router.goBack();
 			}
 		});
 	};
@@ -236,7 +239,6 @@ class CreateStore extends React.Component {
 					contactTel,
 				},
 			},
-			goToPath,
 		} = this.props;
 		const { addressSearchResult } = this.state;
 		const [action = 'create'] = [getLocationParam('action')];
@@ -332,6 +334,7 @@ class CreateStore extends React.Component {
 					<FormItem label=" " colon={false}>
 						{getFieldDecorator('address', {
 							initialValue: address,
+							getValueFromEvent: (val) => (val || '').slice(0, 60)
 						})(
 							<AutoComplete
 								dataSource={autoCompleteSelection}
@@ -342,7 +345,7 @@ class CreateStore extends React.Component {
 					<FormItem label={formatMessage({ id: 'storeManagement.create.daysLabel' })}>
 						{getFieldDecorator('businessHours', {
 							initialValue: businessHours,
-						})(<Input />)}
+						})(<Input maxLength={30} />)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.area' })}>
 						{getFieldDecorator('businessArea', {
@@ -351,7 +354,9 @@ class CreateStore extends React.Component {
 							rules: [
 								{
 									validator: (rule, value, callback) => {
-										if (value && !/^(([1-9]\d{0,5})|0)(\.\d{1,2})?$/.test(value)) {
+										if (value === '' || value === null) {
+											callback();
+										} else if (!Number(value) || !RegExp.area.test(value)) {
 											callback(
 												formatMessage({
 													id: 'storeManagement.create.area.formatError',
@@ -368,7 +373,7 @@ class CreateStore extends React.Component {
 					<FormItem label={formatMessage({ id: 'storeManagement.create.contactName' })}>
 						{getFieldDecorator('contactPerson', {
 							initialValue: contactPerson,
-						})(<Input />)}
+						})(<Input maxLength={30} />)}
 					</FormItem>
 					<FormItem label={formatMessage({ id: 'storeManagement.create.contactPhone' })}>
 						{getFieldDecorator('contactTel', {
@@ -385,7 +390,7 @@ class CreateStore extends React.Component {
 										}),
 								},
 							],
-						})(<Input />)}
+						})(<Input maxLength={30} />)}
 					</FormItem>
 					<FormItem label=" " colon={false}>
 						<Button loading={loading} type="primary" onClick={this.handleSubmit}>
@@ -394,7 +399,7 @@ class CreateStore extends React.Component {
 						<Button
 							style={{ marginLeft: '20px' }}
 							htmlType="button"
-							onClick={() => goToPath('storeList')}
+							onClick={() => router.goBack()}
 						>
 							{formatMessage({ id: 'btn.cancel' })}
 						</Button>

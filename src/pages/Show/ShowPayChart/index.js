@@ -33,14 +33,15 @@ class ShowPayChart extends React.PureComponent {
 
 		let totalCount = 0;
 		const maxItem = { item: '', count: 0 };
+		console.log('purchaseTypeList', purchaseTypeList);
 		const data = purchaseTypeList.map(item => {
 			totalCount += item.count;
 			if (item.count > maxItem.count) {
-				maxItem.item = item.purchaseTypeName;
+				maxItem.item = item.purchaseTypeTag;
 				maxItem.count = item.count;
 			}
 			return {
-				item: item.purchaseTypeName,
+				item: item.purchaseTypeTag,
 				count: item.count,
 			};
 		});
@@ -63,7 +64,7 @@ class ShowPayChart extends React.PureComponent {
 		});
 
 		shape(maxItem);
-
+		console.log('data', data);
 		return (
 			<div className={styles['pay-chart']}>
 				<div className={styles['pay-chart-title']}>
@@ -83,7 +84,7 @@ class ShowPayChart extends React.PureComponent {
 									<span
 										className={`${styles['oneList-point']} ${styles[COLORS.POINT_COLOR[item.item]]}`}
 									/>
-									{item.item}
+									{formatMessage({ id: item.item })}
 								</div>
 								<div className={styles['oneList-left']}>
 									{(

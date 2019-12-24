@@ -5,6 +5,7 @@ import { FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import Captcha from '@/components/Captcha';
 import ImgCaptchaModal from '@/components/Captcha/ImgCaptchaModal';
 import { encryption } from '@/utils/utils';
+import * as RegExp from '@/constants/regexp';
 import {
 	ALERT_NOTICE_MAP,
 	ERROR_OK,
@@ -186,7 +187,7 @@ class ChangeMobile extends Component {
 									message: formatMessage({ id: 'mobile.validate.isEmpty' }),
 								},
 								{
-									pattern: /^1\d{10}$/,
+									pattern: RegExp.phone,
 									message: formatMessage({ id: 'mobile.validate.isFormatted' }),
 								},
 							],
