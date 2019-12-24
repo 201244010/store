@@ -238,10 +238,10 @@ class CompanyInfo extends React.Component {
 			location: { pathname },
 		} = window;
 		const pathId = await getPathId(pathname);
-		const { orgPidParams } = this.state;
+		const { orgPidParams, orgId } = this.state;
 		if(pathId === 'editDetail' || pathId ===  'newSubOrganization'){
 			goToPath('detail',{
-				orgId: orgPidParams,
+				orgId: pathId ===  'newSubOrganization' ? orgPidParams : orgId,
 			});
 		}else{
 			goToPath('organizationList');
@@ -282,6 +282,34 @@ class CompanyInfo extends React.Component {
 		this.setState({
 			allDayChecked: e.target.checked
 		});
+	}
+
+	startTimeHandler = (rule, value, callback) => {
+		const { form:{ getFieldValue, setFieldsValue }} = this.props;
+		if(!value && getFieldValue('endTime')){
+			callback('startTime-empty');
+		}
+		if(!value && !getFieldValue('endTime')){
+			setFieldsValue({
+				endTime: null,
+			});
+			callback();
+		}
+		callback();
+	}
+
+	endTimeHandler = (rule, value, callback) => {
+		const { form:{ getFieldValue, setFieldsValue }} = this.props;
+		if(!value && getFieldValue('startTime')){
+			callback('endTime-empty');
+		}
+		if( !value && !getFieldValue('startTime')){
+			setFieldsValue({
+				startTime: null,
+			});
+			callback();
+		}
+		callback();
 	}
 
 	handleSubmit = () => {
@@ -330,17 +358,17 @@ class CompanyInfo extends React.Component {
 					location: { pathname },
 				} = window;
 				const pathId = await getPathId(pathname);
-				const { orgPidParams } = this.state;
 				
-
+				
 				let response = null;
 				if (action === 'edit') {
 					response = await updateOrganization({ options });
 					const { code } = response;
 					if(code === ERROR_OK){
 						if(pathId === 'editDetail'){
-							goToPath('detail',{
-								orgId: orgPidParams,
+							const { orgId: orgIdValue } = this.state;
+							goToPath('detail', {
+								orgId: orgIdValue,
 							});
 						}else{
 							goToPath('organizationList');
@@ -355,6 +383,7 @@ class CompanyInfo extends React.Component {
 					const { code } = response;
 					if(code === ERROR_OK){
 						if(pathId === 'newSubOrganization') {
+							const { orgPidParams } = this.state;
 							goToPath('detail', {
 								orgId: orgPidParams,
 							});
@@ -604,6 +633,12 @@ class CompanyInfo extends React.Component {
 											initialValue: (typeof(businessHours) === 'string' &&
 											businessHours.indexOf('~') !== -1) ?
 												moment(businessHours.split('~')[0], 'HH:mm') : undefined,
+											rules: [
+												{
+													validator: this.startTimeHandler,
+													message: formatMessage({id: 'companyInfo.please.select.startTime'}),
+												},
+											]
 										})(
 											<TimePicker
 												allowClear
@@ -619,8 +654,14 @@ class CompanyInfo extends React.Component {
 									{
 										getFieldDecorator('endTime', {
 											initialValue: (typeof(businessHours) === 'string' &&
-										businessHours.indexOf('~') !== -1) ?
+											businessHours.indexOf('~') !== -1) ?
 												moment(businessHours.split('~')[1], this.isNextDay()) : undefined,
+											rules: [
+												{
+													validator: this.endTimeHandler,
+													message: formatMessage({id: 'companyInfo.please.select.endTime'}),
+												},
+											]
 										})(
 											<TimePicker
 												allowClear

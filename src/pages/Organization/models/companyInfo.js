@@ -210,7 +210,7 @@ export default {
 				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: result }, 'local');
 			}
 		},
-		*updateOrganization({ payload }) {
+		*updateOrganization({ payload },{ put }) {
 			const { options } = payload;
 			const response = yield updateOrganization(options);
 			if (response && response.code === ERROR_OK) {

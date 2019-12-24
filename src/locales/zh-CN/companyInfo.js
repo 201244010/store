@@ -34,5 +34,7 @@ export default {
 	'companyInfo.newSubOrganization.success': '新增成功',
 	'companyInfo.newSubOrganization.fail': '新增失败',
 	'companyInfo.message.name.exist': '组织名称已存在',
-	'companyInfo.message.level.limited': '总层数超过6层',
+	'companyInfo.message.level.limited': '组织层级超过最大限制',
+	'companyInfo.please.select.startTime': '请选择开始时间',
+	'companyInfo.please.select.endTime': '请选择结束时间',
 };
