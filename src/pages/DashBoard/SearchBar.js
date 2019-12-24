@@ -44,6 +44,8 @@ class SearchBar extends PureComponent {
 		this.state = {
 			tempSelected: RANGE.TODAY,
 			currentShopName: null,
+			timeRangeStart: null,
+			timeRangeEnd: null,
 		};
 	}
 
@@ -90,7 +92,6 @@ class SearchBar extends PureComponent {
 	handleTimeRangeChange = dates => {
 		const { setSearchValue, onSearchChanged } = this.props;
 		const [startTime, endTime] = dates;
-
 		if (
 			moment(endTime)
 				.subtract(60, 'days')
@@ -104,15 +105,19 @@ class SearchBar extends PureComponent {
 			tempSelected: RANGE.FREE,
 		});
 
-		setSearchValue({
-			rangeType: RANGE.FREE,
+		this.setState({
 			timeRangeStart: startTime,
 			timeRangeEnd: endTime,
-			startQueryTime: moment(startTime).unix(),
-			endQueryTime: moment(endTime).unix(),
 		});
 
 		if (startTime && endTime) {
+			setSearchValue({
+				rangeType: RANGE.FREE,
+				timeRangeStart: startTime,
+				timeRangeEnd: endTime,
+				startQueryTime: moment(startTime).unix(),
+				endQueryTime: moment(endTime).unix(),
+			});
 			onSearchChanged();
 		}
 	};
@@ -120,11 +125,10 @@ class SearchBar extends PureComponent {
 	render() {
 		const { tempSelected, currentShopName } = this.state;
 		const {
-			searchValue: { timeRangeStart, timeRangeEnd } = {},
 			lastModifyTime,
 			doHandRefresh,
 		} = this.props;
-
+		const { timeRangeStart, timeRangeEnd } = this.state;
 		return (
 			<>
 				<h2 className={styles['dashboard-title']}>{currentShopName}</h2>

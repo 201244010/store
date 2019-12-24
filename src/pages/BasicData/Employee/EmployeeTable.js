@@ -27,6 +27,7 @@ const GENDER_MAP = {
 				payload: { current, pageSize, roleId },
 			}),
 		setSearchValue: payload => dispatch({ type: 'employee/setSearchValue', payload }),
+		setGetInfoValue: payload => dispatch({ type: 'employee/setGetInfoValue', payload }),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
 	})
 )
@@ -92,8 +93,9 @@ class EmployeeTable extends Component {
 		const {
 			getEmployeeList,
 			query: { roleId },
+			setGetInfoValue
 		} = this.props;
-
+		setGetInfoValue();
 		getEmployeeList({ roleId: idDecode(roleId) });
 	};
 
