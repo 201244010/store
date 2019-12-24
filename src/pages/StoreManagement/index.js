@@ -137,7 +137,7 @@ class StoreManagement extends Component {
 		const { goToPath } = this.props;
 		const path = {
 			create: {
-				pathId: 'storeCreate',
+				pathId: 'newOrganization',
 				urlParams: {
 					action: 'create',
 				},

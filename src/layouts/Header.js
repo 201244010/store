@@ -25,11 +25,12 @@ class HeaderView extends PureComponent {
 	}
 
 	componentDidMount() {
-		const { getStoreList } = this.props;
+		const { getStoreList, getOrgLayer } = this.props;
 		document.addEventListener('scroll', this.handScroll, { passive: true });
 		const token = CookieUtil.getCookieByKey(CookieUtil.TOKEN_KEY);
 		if (token) {
 			getStoreList({});
+			getOrgLayer({});
 		}
 	}
 
@@ -151,6 +152,7 @@ export default connect(
 	dispatch => ({
 		logout: () => dispatch({ type: 'user/logout' }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		getOrgLayer: payload => dispatch({ type: 'store/getOrgLayer', payload }),
 		getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
 		getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
 		goToPath: (pathId, urlParams = {}, linkType = null) =>

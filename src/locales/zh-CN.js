@@ -23,6 +23,7 @@ import baseStation from './zh-CN/ESL-device';
 
 // BasicData
 import productManagement from './zh-CN/BasicData-product';
+import companyInfo from './zh-CN/companyInfo';
 
 import merchantManagement from './zh-CN/merchant';
 
@@ -34,6 +35,9 @@ import tradeShow from './zh-CN/tradeShow';
 import serviceManagement from './zh-CN/serviceManagement';
 import orderManagement from './zh-CN/orderManagement';
 import passengerAnalyze from './zh-CN/passengerAnalyze';
+
+import orgnization from './zh-CN/organization';
+import orgDetail from './zh-CN/orgDetail';
 
 export default {
 	'navBar.lang': '语言',
@@ -79,4 +83,7 @@ export default {
 	...passengerAnalyze,
 	...serviceManagement,
 	...orderManagement,
+	...companyInfo,
+	...orgnization,
+	...orgDetail,
 };
