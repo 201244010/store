@@ -139,6 +139,11 @@ export default {
 	},
 
 	effects: {
+		getPathId({ payload }) {
+			const { path } = payload;
+			const { id: pathId } = flattedRoutes.find(route => route.path === path) || {};
+			return pathId;
+		},
 		*getAuthMenu(_, { call }) {
 			const response = yield call(MenuAction.getAuthMenu);
 			return response;
