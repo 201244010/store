@@ -1,0 +1,6 @@
+export const ORDER_STATUS = {
+	UNPAID: 1,
+	SUBSCRIBING: 2,
+	SUCCESS: 4,
+	CLOSE: 5
+};

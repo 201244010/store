@@ -4,6 +4,15 @@
 	color: red;
 }
 
+:global {
+	.ant-modal-title {
+		width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
 .detail-info {
 	padding: 24px;
 
@@ -33,6 +42,16 @@
 			overflow: hidden;
 			white-space: nowrap;
 			text-overflow: ellipsis;
+		}
+	}
+
+	:global {
+		.ant-table-row {
+			td:nth-of-type(2) {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
 		}
 	}
 
@@ -103,6 +122,13 @@
 		color: #1890FF;
 	}
 
+}
+
+.preview-img-title {
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .preview-img {

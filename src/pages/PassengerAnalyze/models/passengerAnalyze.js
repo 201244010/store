@@ -90,15 +90,15 @@ const formatPassengerCountList = (countList = [], ageRangeList) => {
 					ageRange,
 					ageRangeCode,
 					maleCount,
-					maleRegularRate: maleCount === 0 ? 0 : Math.round((maleRegularCount / maleCount) * 100, 10),
+					maleRegularRate: maleCount === 0 ? 0 : Math.round((maleRegularCount / maleCount) * 100),
 					maleRushHour,
 					maleGenderRate: totalGender === 0
 						? 0
-						: Math.round((maleCount / totalGender) * 100, 10),
+						: Math.round((maleCount / totalGender) * 100),
 					genderRate:
 						totalGender === 0
 							? 0
-							: Math.round((maleCount / totalGender) * 100, 10),
+							: Math.round((maleCount / totalGender) * 100),
 					gender: 'male',
 					totalGender
 				},
@@ -106,15 +106,15 @@ const formatPassengerCountList = (countList = [], ageRangeList) => {
 					ageRange,
 					ageRangeCode,
 					femaleCount,
-					femaleRegularRate: femaleCount === 0 ? 0 : Math.round((femaleRegularCount / femaleCount) * 100, 10),
+					femaleRegularRate: femaleCount === 0 ? 0 : Math.round((femaleRegularCount / femaleCount) * 100),
 					femaleRushHour,
 					femaleGenderRate: totalGender === 0
 						? 0
-						: Math.round((femaleCount / totalGender) * 100, 10),
+						: Math.round((femaleCount / totalGender) * 100),
 					genderRate:
 						totalGender === 0
 							? 0
-							: Math.round((femaleCount / totalGender) * 100, 10),
+							: Math.round((femaleCount / totalGender) * 100),
 					gender: 'female',
 					totalGender
 				},

@@ -12,8 +12,6 @@ const {
 	SEARCH_TYPE: { RANGE, TRADE_TIME, PAYMENT_TYPE, PASSENGER_FLOW_TYPE },
 	TIME_INTERVAL,
 	PURCHASE_ORDER,
-	AGE_CODE_LIST_UNDER_18,
-	AGE_CODE_EQ_18,
 } = DASHBOARD;
 
 const stateFields = {
@@ -669,58 +667,12 @@ export default {
 				const { data = {} } = response;
 				const { countList = [] } = format('toCamel')(data) || {};
 
-				const mergeItem = (
-					countList.filter(item => AGE_CODE_LIST_UNDER_18.includes(item.ageRangeCode)) ||
-					[]
-				).reduce((prev, cur) => {
-					if (passengerFlowType === 'gender') {
-						const { maleCount: pMaleCount = 0, femaleCount: pFemaleCount = 0 } = prev;
-						const { maleCount = 0, femaleCount = 0 } = cur;
-						return {
-							maleCount: maleCount + pMaleCount,
-							femaleCount: femaleCount + pFemaleCount,
-						};
-					}
-
-					const {
-						regularCount: pRegularCount = 0,
-						strangerCount: pStrangerCount = 0,
-					} = prev;
-					const { regularCount = 0, strangerCount = 0 } = cur;
-					return {
-						regularCount: regularCount + pRegularCount,
-						strangerCount: strangerCount + pStrangerCount,
-					};
-				}, {});
-
-				const formattedList = (
-					countList.filter(item => !AGE_CODE_LIST_UNDER_18.includes(item.ageRangeCode)) ||
-					[]
-				)
+				const formattedList = countList
 					.map(item => {
 						const { ageRangeCode } = item;
-						const ageRange = ageRangeMap[ageRangeCode] || '';
-						if (ageRangeCode === AGE_CODE_EQ_18) {
-							if (passengerFlowType === 'gender') {
-								const { maleCount, femaleCount } = mergeItem;
-								item = {
-									...item,
-									maleCount: maleCount + item.maleCount,
-									femaleCount: femaleCount + item.femaleCount,
-								};
-							} else {
-								const { regularCount, strangerCount } = mergeItem;
-								item = {
-									...item,
-									regularCount: regularCount + item.regularCount,
-									strangerCount: strangerCount + item.strangerCount,
-								};
-							}
-						}
-
 						return {
 							...item,
-							ageRange,
+							ageRange: ageRangeMap[ageRangeCode] || '',
 						};
 					})
 					.sort((a, b) => a.ageRangeCode - b.ageRangeCode);

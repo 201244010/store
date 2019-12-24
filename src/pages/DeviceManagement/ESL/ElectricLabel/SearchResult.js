@@ -494,7 +494,7 @@ class SearchResult extends Component {
 				<Modal
 					title={formatMessage({ id: 'esl.device.esl.detail' })}
 					visible={detailVisible}
-					width={750}
+					width={1000}
 					onCancel={() => this.closeModal('detailVisible')}
 					footer={[
 						<Button
@@ -638,7 +638,11 @@ class SearchResult extends Component {
 					}}
 				/>
 				<Modal
-					title={currentRecord.template_name}
+					title={
+						<div className={styles['preview-img-title']}>
+							{currentRecord.template_name}
+						</div>
+					}
 					width={widthMap[currentRecord.model_size]}
 					visible={previewVisible}
 					onCancel={() => this.closeModal('previewVisible')}
