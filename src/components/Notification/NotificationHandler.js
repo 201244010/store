@@ -122,7 +122,7 @@ const palyMotion = async ({ params }) => {
 };
 
 const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
-	const { shopId: shopId = null, company_id: companyId = null } =
+	const { shop_id: shopId = null, company_id: companyId = null } =
 		convertArrayPrams(params) || {};
 
 	const {
@@ -214,11 +214,14 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
+		console.log(params);
 		const currentShopId = await getCurrentShopId();
 		const targetShopId = parseInt(shopId, 0);
+		console.log('---------------------');
+		console.log(currentShopId,shopId, targetShopId);
 		if (currentShopId === targetShopId) {
 			const status = await getSdStatus(deviceSn);
 			if (status === 1) {
@@ -295,7 +298,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const currentShopId = await getCurrentShopId();
@@ -372,7 +375,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
@@ -449,7 +452,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
@@ -526,7 +529,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
@@ -603,7 +606,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
