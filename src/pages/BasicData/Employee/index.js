@@ -16,6 +16,7 @@ import { ERROR_OK } from '@/constants/errorCode';
 		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
 		setSearchValue: payload => dispatch({ type: 'employee/setSearchValue', payload }),
+		setGetInfoValue: payload => dispatch({ type: 'employee/setGetInfoValue', payload }),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
 		getEmployeeList: ({ current = 1, pageSize = 10 }) =>
 			dispatch({ type: 'employee/getEmployeeList', payload: { current, pageSize } }),
@@ -97,6 +98,7 @@ class EmployeeList extends Component {
 			loading,
 			employee: { searchValue = {}, employeeList = [], pagination } = {},
 			setSearchValue,
+			setGetInfoValue,
 			clearSearchValue,
 			getEmployeeList,
 			deleteEmployee,
@@ -112,6 +114,7 @@ class EmployeeList extends Component {
 						orgnizationTree,
 						searchValue,
 						setSearchValue,
+						setGetInfoValue,
 						clearSearchValue,
 						getEmployeeList,
 						goToPath,
