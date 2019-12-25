@@ -95,7 +95,7 @@ const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
 			</span>,
 		[INFO_FOOTER_TYPE.PROGRESS]: (content = '--') => (
 			<div className={styles['progress-footer']}>
-				<Progress percent={Math.round(content * 1)} strokeColor={parseInt(content, 10) > 30 ? '#25b347' : '#ff6633'} />
+				<Progress percent={Math.round(content * 1)} strokeColor={parseInt(content, 10) > 30 ? '#25b347' : '#ff6633'} format={percent => `${percent}%`} />
 			</div>
 		),
 		[INFO_FOOTER_TYPE.RANK]: (content = '--') => <span className={styles['rank-green']}>{content}</span>,
@@ -111,7 +111,7 @@ const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
 				<div className={styles['info-footer']}>
 					{
 						FooterContent[INFO_FOOTER_TYPE.PERCENT](
-							lastCount === 0 ? '--' : Math.round((nowCount - lastCount) / lastCount * 100)
+							lastCount === 0 ? 0 : Math.round((nowCount - lastCount) / lastCount * 100)
 						) || FooterContent[INFO_FOOTER_TYPE.DEFAULT]()
 					}
 				</div>
