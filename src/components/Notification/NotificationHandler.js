@@ -122,7 +122,7 @@ const palyMotion = async ({ params }) => {
 };
 
 const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
-	const { shopId: shopId = null, company_id: companyId = null } =
+	const { shop_id: shopId = null, company_id: companyId = null } =
 		convertArrayPrams(params) || {};
 
 	const {
@@ -214,7 +214,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const currentShopId = await getCurrentShopId();
@@ -224,7 +224,7 @@ const ACTION_MAP = {
 			if (status === 1) {
 				formatSdCard(deviceSn);
 			}
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -295,13 +295,13 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const currentShopId = await getCurrentShopId();
 		const targetShopId = parseInt(shopId, 0);
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -372,13 +372,13 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -449,13 +449,13 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -526,13 +526,13 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn, showModal: true });
+			goToPath('ipcManagement', { sn: deviceSn, showModal: true },'softwareUpdate');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -603,7 +603,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
