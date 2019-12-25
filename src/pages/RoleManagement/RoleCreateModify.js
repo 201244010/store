@@ -68,7 +68,6 @@ class RoleModify extends React.Component {
 		}
 		validateFields(async (err, values) => {
 			if (!err) {
-				console.log('come in~~~~~~~~~');
 				if (action === 'modify') {
 					const roleId = idDecode(id);
 					const response = await updateRole({
