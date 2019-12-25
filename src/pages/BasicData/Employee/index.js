@@ -13,7 +13,8 @@ import { ERROR_OK } from '@/constants/errorCode';
 	}),
 	dispatch => ({
 		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
-		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		// getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		getOrgnazationTree: () => dispatch({ type: 'store/getOrgnazationTree' }),
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
 		setSearchValue: payload => dispatch({ type: 'employee/setSearchValue', payload }),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
@@ -62,15 +63,39 @@ class EmployeeList extends Component {
 		}
 	}
 
+	traversalTreeData = (originalList, targetList, companyId) => {
+		if (originalList instanceof Array) {
+			originalList.forEach((item) => {
+				const { orgName, orgId } = item;
+				const target = {
+					title: orgName,
+					value: `${companyId}-${orgId}`,
+					key: `${companyId}-${orgId}`,
+					children: [],
+				};
+				targetList.push(target);
+				if(item.children && item.children.length) {
+					this.traversalTreeData(item.children, target.children, companyId);
+				}
+			});
+		}
+	};
+
 	createOrgnizationTree = async () => {
 		const {
 			getCompanyIdFromStorage,
-			getShopListFromStorage,
+			// getShopListFromStorage,
 			getCompanyListFromStorage,
+			getOrgnazationTree,
 		} = this.props;
 		const currentCompanyId = await getCompanyIdFromStorage();
 		const companyList = await getCompanyListFromStorage();
-		const shopList = await getShopListFromStorage();
+		// const shopList = await getShopListFromStorage();
+		const originalTree = await getOrgnazationTree();
+		const targetTree = [];
+		if(originalTree && originalTree.length) {
+			this.traversalTreeData(originalTree, targetTree, currentCompanyId);
+		}
 		const companyInfo =
 			companyList.find(company => company.companyId === currentCompanyId) || {};
 
@@ -79,11 +104,7 @@ class EmployeeList extends Component {
 				title: companyInfo.companyName,
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
-				children: shopList.map(shop => ({
-					title: shop.shopName,
-					value: `${companyInfo.companyId}-${shop.shopId}`,
-					key: `${companyInfo.companyId}-${shop.shopId}`,
-				})),
+				children: targetTree,
 			},
 		];
 		this.setState({

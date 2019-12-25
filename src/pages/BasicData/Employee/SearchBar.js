@@ -53,6 +53,7 @@ const SearchBar = ({
 								value={
 									shopId ? `${currentCompanyId}-${shopId}` : `${currentCompanyId}`
 								}
+								dropdownStyle={{ maxHeight: '50vh'}}
 								treeDefaultExpandAll
 								treeData={orgnizationTree}
 								onChange={(value, label, extra) =>
