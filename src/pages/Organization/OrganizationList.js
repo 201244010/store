@@ -1,6 +1,7 @@
 import  React  from 'react';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
+import Storage from '@konata9/storage.js';
 import { Card, Button, Modal, Tree, message } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import OrganizationTable from './OrganizationTable';
@@ -9,9 +10,10 @@ import DeprecateModal from './DeprecateModal';
 import styles from './Organization.less';
 
 const mapStateToProps = (state) => {
-	const { organization, loading } = state;
+	const { organization, loading, companyInfo } = state;
 	return {
 		organization,
+		companyInfo,
 		loading
 	};
 };
@@ -57,7 +59,10 @@ const mapDispatchToProps = (dispatch) => ({
 			pathId,
 			urlParams
 		}
-	})
+	}),
+	getRegionList: () => dispatch({
+		type: 'companyInfo/getRegionList'
+	}),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -75,9 +80,12 @@ class OrganizationList extends React.Component {
 	}
 
 	componentDidMount = () => {
-		const { initOrgList, initLayerTree } = this.props;
+		const { initOrgList, initLayerTree, getRegionList } = this.props;
 		initOrgList();
 		initLayerTree();
+		if (!Storage.get('__regionList__', 'local')) {
+			getRegionList();
+		}
 	}
 
 	// 根据搜索条件获取列表
@@ -250,7 +258,7 @@ class OrganizationList extends React.Component {
 
 	render() {
 		const { moveModalVisible, /* modalInfoVisible, */ selectedIdList, targetPId } = this.state;
-		const { organization: { orgList, treeData, expandedRowKeys, expandedTreeKeys }, loading } = this.props;
+		const { organization: { orgList, treeData, expandedRowKeys, expandedTreeKeys }, loading, companyInfo: { regionList } } = this.props;
 		return (
 			<div>
 				<Card bordered={false}>
@@ -287,6 +295,7 @@ class OrganizationList extends React.Component {
 						handleEnable={this.handleEnable}
 						loading={loading.effects['organization/initOrgList']}
 						selectedIdList={selectedIdList}
+						regionList={regionList}
 					/>
 				</Card>
 
