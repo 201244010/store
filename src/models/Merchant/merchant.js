@@ -228,6 +228,11 @@ export default {
 			const { data: { shopList = [] } = {} } = format('toCamel')(result);
 			const [defaultShop, ,] = shopList;
 
+			yield put({
+				type: 'store/setShopListInStorage',
+				payload: { shopList },
+			});
+
 			if (defaultShop) {
 				yield put({
 					type: 'store/setShopIdInCookie',

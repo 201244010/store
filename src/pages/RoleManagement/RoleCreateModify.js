@@ -3,6 +3,7 @@ import { Input, Checkbox, Button, Form, message, Spin, Card } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { idDecode } from '@/utils/utils';
+import { normalInput } from '@/constants/regexp';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 
@@ -81,8 +82,8 @@ class RoleModify extends React.Component {
 						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
 						message.error(
-							formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
-								formatMessage({ id: 'roleManagement.role.modifyFail' })
+							ALERT_NOTICE_MAP.hasOwnProperty(response.code) ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) 
+								: formatMessage({ id: 'roleManagement.role.modifyFail' })
 						);
 					}
 				} else {
@@ -97,8 +98,8 @@ class RoleModify extends React.Component {
 						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
 						message.error(
-							formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
-								formatMessage({ id: 'roleManagement.role.createFail' })
+							ALERT_NOTICE_MAP.hasOwnProperty(response.code) ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] })
+								: formatMessage({ id: 'roleManagement.role.createFail' })
 						);
 					}
 				}
@@ -185,6 +186,21 @@ class RoleModify extends React.Component {
 											message: formatMessage({
 												id: 'roleManagement.role.roleNameEmpty',
 											}),
+										},
+										{
+											validator: (_, value, callback) => {
+												if (!value) {
+													callback();
+												}
+		
+												if (!normalInput.test(value)) {
+													callback(
+														formatMessage({ id: 'roleManagement.input.illegal' }),
+													);
+												}
+		
+												callback();
+											},
 										},
 									],
 								})(<Input maxLength={20} />)}

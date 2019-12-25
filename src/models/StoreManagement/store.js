@@ -5,7 +5,7 @@ import { format } from '@konata9/milk-shake';
 import Storage from '@konata9/storage.js';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as Action from '@/services/storeManagement/storeList';
-import { getLayerByUser, getOrgList } from '@/services/organization';
+import { getLayerByUser, getOrgList, getLayer } from '@/services/organization';
 import * as CookieUtil from '@/utils/cookies';
 
 const cascaderDataWash = (data, mapping) => {
@@ -515,6 +515,15 @@ export default {
 				});
 			}
 		},
+		*getOrgnazationTree(_, { call }) {
+			const response = yield call(getLayer);
+			const { code, data } = response;
+			if(response && code === ERROR_OK) {
+				const { orgLayer } = data;
+				return orgLayer;
+			}
+			return [];
+		}
 	},
 
 	reducers: {

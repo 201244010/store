@@ -47,6 +47,15 @@ export const getLayerByUser = (params) =>
 		}
 	);
 
+export const getLayer = () =>
+	request('getLayer', {
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
+		}
+	);
+
 export const isDeprecatable = (params) =>
 	request('checkDisabled', {
 		body: format('toSnake')(params)
