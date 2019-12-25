@@ -56,4 +56,6 @@ export default {
 	'studio.tool.label.codec': '编码类型',
 	'studio.tool.error.price.format': '输入价格不正确',
 	'studio.tool.error.image.format': '上次图片支持格式支持jpg/jpeg/png',
+	'studio.tool.font.download.title': '字体安装文件下载',
+	'studio.tool.font.download.alert': '如果已经安装下列字体，请刷新页面进行重新加载',
 };

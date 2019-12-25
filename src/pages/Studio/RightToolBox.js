@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import { Col, Icon, Input, InputNumber, Row, Select, Radio, AutoComplete } from 'antd';
+import { Col, Icon, Input, InputNumber, Row, Select, Radio, AutoComplete, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { KEY } from '@/constants';
 import { SHAPE_TYPES, MAPS, FORMATS } from '@/constants/studio';
-// import { validEAN8Num, validEAN13Num } from '@/utils/studio';
+import { checkEan8Num, checkEan13Num } from '@/utils/studio';
 import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
 
@@ -64,6 +64,11 @@ const fontSizes = [{
 	key: 72,
 	value: 72
 }];
+const BARCODE_LENGTH = {
+	ean8: 7,
+	ean13: 12,
+	code128: 30
+};
 
 export default class RightToolBox extends Component {
 	constructor(props) {
@@ -210,15 +215,43 @@ export default class RightToolBox extends Component {
 	};
 
 	handleCodec = (value) => {
-		const {selectedShapeName, updateComponentsDetail} = this.props;
-		const newDetail = {
-			codec: value,
-		};
+		const {componentsDetail, selectedShapeName, updateComponentsDetail} = this.props;
+		const detail = componentsDetail[selectedShapeName];
 
-		updateComponentsDetail({
-			isStep: true,
-			[selectedShapeName]: newDetail,
-		});
+		if (!detail.content) {
+			updateComponentsDetail({
+				isStep: true,
+				[selectedShapeName]: {
+					codec: value,
+				},
+			});
+			return;
+		}
+		const image = document.createElement('img');
+
+		try {
+			JsBarcode(image, value, {
+				format: value,
+				width: MAPS.containerWidth[detail.type] * detail.scaleX * detail.zoomScale,
+				displayValue: false
+			});
+
+			updateComponentsDetail({
+				isStep: true,
+				[selectedShapeName]: {
+					codec: value,
+					image
+				},
+			});
+		} catch (e) {
+			message.error(e);
+			updateComponentsDetail({
+				isStep: true,
+				[selectedShapeName]: {
+					codec: value,
+				},
+			});
+		}
 	};
 
 	handleLineWidth = (detail, value) => {
@@ -284,18 +317,6 @@ export default class RightToolBox extends Component {
 		}
 
 		const detail = componentsDetail[selectedShapeName];
-		// const valid = {
-		// 	EAN8: validEAN8Num,
-		// 	EAN13: validEAN13Num
-		// };
-		// if (valid[detail.codec] && !valid[detail.codec](value)) {
-		// 	updateComponentsDetail({
-		// 		[selectedShapeName]: {
-		// 			content: value,
-		// 		}
-		// 	});
-		// 	return;
-		// }
 
 		if (value === '') {
 			const image = new Image();
@@ -336,40 +357,60 @@ export default class RightToolBox extends Component {
 				});
 			};
 		}
-		if (this.hasSubString(SHAPE_TYPES.CODE_H)) {
-			const image = document.createElement('img');
-			JsBarcode(image, value, {
-				format: 'CODE39',
-				width: 3,
-				height: 100,
-				displayValue: false
-			});
 
-			updateComponentsDetail({
-				[selectedShapeName]: {
-					content: value,
-					image,
-					ratio: this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14,
-					height: detail.width * (this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14),
-				}
-			});
+		const genValue = ['ean8', 'ean13'].includes(detail.codec) && value && value.length === BARCODE_LENGTH[detail.codec] ?
+			value + {'ean8': checkEan8Num, 'ean13': checkEan13Num}[detail.codec](value) : value;
+		const image = document.createElement('img');
+
+		if (this.hasSubString(SHAPE_TYPES.CODE_H)) {
+			try {
+				JsBarcode(image, genValue, {
+					format: detail.codec,
+					width: 3,
+					height: 100,
+					displayValue: false
+				});
+
+				updateComponentsDetail({
+					[selectedShapeName]: {
+						content: value,
+						image,
+						ratio: this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14,
+						height: detail.width * (this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14),
+					}
+				});
+			} catch (e) {
+				updateComponentsDetail({
+					[selectedShapeName]: {
+						content: value,
+					}
+				});
+			}
 		}
 		if (this.hasSubString(SHAPE_TYPES.CODE_V)) {
-			const image = document.createElement('img');
-			JsBarcode(image, value, {
-				format: 'CODE39',
-				width: MAPS.containerWidth[detail.type] * detail.scaleX * detail.zoomScale,
-				displayValue: false
-			});
+			try {
+				JsBarcode(image, genValue, {
+					format: detail.codec,
+					width: MAPS.containerWidth[detail.type] * detail.scaleX * detail.zoomScale,
+					displayValue: false
+				});
 
-			updateComponentsDetail({
-				[selectedShapeName]: {
-					content: value,
-					image,
-					ratio: this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14,
-					height: detail.width * (this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14),
-				}
-			});
+				updateComponentsDetail({
+					[selectedShapeName]: {
+						content: value,
+						image,
+						ratio: this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14,
+						height: detail.width * (this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14),
+					}
+				});
+			} catch (e) {
+				updateComponentsDetail({
+					[selectedShapeName]: {
+						content: value,
+					}
+				});
+			}
+
 		}
 	};
 
@@ -1299,7 +1340,7 @@ export default class RightToolBox extends Component {
 												placeholder={formatMessage({ id: 'studio.placeholder.bind.value' })}
 												value={detail.content}
 												style={{ width: '100%' }}
-												maxLength={30}
+												maxLength={BARCODE_LENGTH[detail.codec]}
 												onChange={e => {
 													this.handleBindValue(e.target.value);
 												}}
