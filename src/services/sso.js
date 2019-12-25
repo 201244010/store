@@ -3,7 +3,7 @@ import CONFIG from '@/config';
 
 const { SSO_ADDRESS } = CONFIG;
 
-const fetchApi = customizeFetch('api/sso/app/sso/1.0/?service=', SSO_ADDRESS);
+const fetchApi = customizeFetch('api/sso/app/sso/1.0/?service=', SSO_ADDRESS, false);
 
 export const sendCode = (options = {}) => {
 	const opts = {

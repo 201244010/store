@@ -36,8 +36,8 @@ export default {
 				list = result;
 			}
 			list.forEach(item => {
-				if (item.company_id === companyId) {
-					name = item.company_name;
+				if (item.companyId === companyId) {
+					name = item.companyName;
 				}
 			});
 			return name;
