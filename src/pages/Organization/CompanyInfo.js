@@ -632,7 +632,7 @@ class CompanyInfo extends React.Component {
 										getFieldDecorator('startTime',{
 											initialValue: (typeof(businessHours) === 'string' &&
 											businessHours.indexOf('~') !== -1) ?
-												moment(businessHours.split('~')[0], 'HH:mm') : undefined,
+												moment(businessHours.split('~')[0], 'HH:mm') : null,
 											rules: [
 												{
 													validator: this.startTimeHandler,
@@ -655,7 +655,7 @@ class CompanyInfo extends React.Component {
 										getFieldDecorator('endTime', {
 											initialValue: (typeof(businessHours) === 'string' &&
 											businessHours.indexOf('~') !== -1) ?
-												moment(businessHours.split('~')[1], this.isNextDay()) : undefined,
+												moment(businessHours.split('~')[1], this.isNextDay()) : null,
 											rules: [
 												{
 													validator: this.endTimeHandler,
@@ -746,7 +746,8 @@ class CompanyInfo extends React.Component {
 						<FormItem label=" " colon={false}>
 							<Button
 								loading={!!(loading.effects['companyInfo/createOrganization'] ||
-								loading.effects['companyInfo/updateOrganization'])}
+								!!loading.effects['companyInfo/updateOrganization'] ||
+								!!loading.effects['menu/getPathId'])}
 								type="primary" 
 								onClick={this.handleSubmit} 
 								disabled={isDisabled}

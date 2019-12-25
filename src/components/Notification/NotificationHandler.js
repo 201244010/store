@@ -122,7 +122,7 @@ const palyMotion = async ({ params }) => {
 };
 
 const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
-	const { shopId: shopId = null, company_id: companyId = null } =
+	const { shop_id: shopId = null, company_id: companyId = null } =
 		convertArrayPrams(params) || {};
 
 	const {
@@ -214,7 +214,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const currentShopId = await getCurrentShopId();
@@ -295,7 +295,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const currentShopId = await getCurrentShopId();
@@ -372,7 +372,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
@@ -449,7 +449,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
@@ -526,7 +526,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
@@ -603,7 +603,7 @@ const ACTION_MAP = {
 	}) => {
 		const {
 			device_sn: deviceSn = null,
-			shopId: shopId = null,
+			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
 		const targetShopId = parseInt(shopId, 0);
