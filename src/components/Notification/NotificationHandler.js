@@ -217,17 +217,14 @@ const ACTION_MAP = {
 			shop_id: shopId = null,
 			company_id: companyId = null,
 		} = convertArrayPrams(params);
-		console.log(params);
 		const currentShopId = await getCurrentShopId();
 		const targetShopId = parseInt(shopId, 0);
-		console.log('---------------------');
-		console.log(currentShopId,shopId, targetShopId);
 		if (currentShopId === targetShopId) {
 			const status = await getSdStatus(deviceSn);
 			if (status === 1) {
 				formatSdCard(deviceSn);
 			}
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -304,7 +301,7 @@ const ACTION_MAP = {
 		const currentShopId = await getCurrentShopId();
 		const targetShopId = parseInt(shopId, 0);
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -381,7 +378,7 @@ const ACTION_MAP = {
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -458,7 +455,7 @@ const ACTION_MAP = {
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn });
+			goToPath('ipcManagement', { sn: deviceSn }, 'tfCard');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
@@ -535,7 +532,7 @@ const ACTION_MAP = {
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
-			goToPath('ipcManagement', { sn: deviceSn, showModal: true });
+			goToPath('ipcManagement', { sn: deviceSn, showModal: true },'softwareUpdate');
 			if (removeNotification) {
 				const { key } = extra;
 				removeNotification(key);
