@@ -6,12 +6,12 @@ import { Form, Button, Input, Radio, Cascader, Card, AutoComplete, TreeSelect, S
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import moment from 'moment';
-import { normalInput , mail } from '@/constants/regexp';
 import { getLocationParam } from '@/utils/utils';
 import { customValidate } from '@/utils/customValidate';
 import * as CookieUtil from '@/utils/cookies';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK, STORE_EXIST, ORGANIZATION_LEVEL_LIMITED } from '@/constants/errorCode';
+// import { mail } from '@/constants/regexp';
 
 import styles from './CompanyInfo.less';
 
@@ -47,7 +47,7 @@ class CompanyInfo extends React.Component {
 		super(props);
 		this.state = {
 			addressSearchResult: [],
-			organizationType: 0,
+			organizationType: undefined,
 			treeData: {},
 			allDayChecked: false,
 			isDisabled: true,
@@ -114,19 +114,13 @@ class CompanyInfo extends React.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const { companyInfo: { orgInfo: { businessHours: nextBusinessHours, orgTag: nextOrgTag }}} = nextProps;
-		const { companyInfo: { orgInfo: { businessHours, orgTag }}} = this.props;
-		let { allDayChecked, organizationType } = this.state;
+		const { companyInfo: { orgInfo: { businessHours: nextBusinessHours }}} = nextProps;
+		const { companyInfo: { orgInfo: { businessHours }}} = this.props;
 		if(nextBusinessHours !== businessHours){
-			allDayChecked = nextBusinessHours === '00:00~23:59';
+			this.setState({
+				allDayChecked: nextBusinessHours === '00:00~23:59'
+			});
 		}
-		if(nextOrgTag !== orgTag){
-			organizationType = nextOrgTag;
-		}
-		this.setState({
-			allDayChecked,
-			organizationType
-		});
 	}
 
 	onTypeChangeHandler = (value) => {
@@ -431,13 +425,12 @@ class CompanyInfo extends React.Component {
 					businessArea = null,
 					contactPerson,
 					contactTel,
-					contactEmail,
+					// contactEmail,
 				},
 			}
 		} = this.props;
 		const { treeData, allDayChecked, orgPidParams } = this.state;
 		const { addressSearchResult, organizationType, isDisabled, action, orgId } = this.state;
-		console.log('organizationType-----',organizationType);
 		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => (
 			<AutoComplete.Option
 				key={`${index}-${addressInfo.id}`}
@@ -446,7 +439,8 @@ class CompanyInfo extends React.Component {
 				{`${addressInfo.name}${addressInfo.address}`}
 			</AutoComplete.Option>
 		));
-
+		const tagValue = organizationType === undefined ? orgTag : organizationType;
+		const showShopInfo = tagValue === undefined ? true : tagValue === 0;
 		return (
 			<Spin spinning={!!(loading.effects['companyInfo/getAllOrgName'] ||
 				loading.effects['companyInfo/getOrganizationTreeByCompanyInfo'] ||
@@ -475,19 +469,32 @@ class CompanyInfo extends React.Component {
 										message: formatMessage({ id: 'companyInfo.no.input.name' }),
 									},
 									{
-										validator: (_, value, callback) => {
-											if (!value) {
+										validator: (rule, value, callback) => {
+											let illegalFlag = false;
+											for(const word of value){
+												if(isNaN(word.charCodeAt(1)) === false){
+													illegalFlag = true;
+													break;
+												}
+												if((word.charCodeAt(0) >= 8203 && word.charCodeAt(0) <= 8205) ||
+												(word.charCodeAt(0) >= 8232 && word.charCodeAt(0) <= 8238) ||
+												(word.charCodeAt(0) >= 8 && word.charCodeAt(0) <= 13) ||
+												(word.charCodeAt(0) >= 8 && word.charCodeAt(0) <= 13) ||
+												word.charCodeAt(0) === 34 || word.charCodeAt(0) === 39 ||
+												word.charCodeAt(0) === 92 || word.charCodeAt(0) === 160 ||
+												word.charCodeAt(0) === 65279 && isNaN(word.charCodeAt(1)) === true){
+													illegalFlag = true;
+													break;
+												}
+											}
+
+											if (illegalFlag) {
+												callback('name-illegal');
+											} else {
 												callback();
 											}
-	
-											if (!normalInput.test(value)) {
-												callback(
-													formatMessage({ id: 'organization.name.illegal' }),
-												);
-											}
-	
-											callback();
 										},
+										message: formatMessage({ id: 'organization.name.illegal' }),
 									},
 									{
 										validator: (rule, value, callback) => {
@@ -566,7 +573,7 @@ class CompanyInfo extends React.Component {
 								</Select>
 							)}
 						</FormItem>
-						{organizationType === 0 &&
+						{showShopInfo &&
 						<div>
 							<FormItem label={formatMessage({ id: 'storeManagement.create.typeLabel' })}>
 								{getFieldDecorator('shopType', {
@@ -727,7 +734,7 @@ class CompanyInfo extends React.Component {
 								],
 							})(<Input placeholder={formatMessage({ id: 'companyInfo.please.input.contactTel' })} />)}
 						</FormItem>
-						<FormItem label={formatMessage({ id: 'companyInfo.contactEmail.label' })}>
+						{/* <FormItem label={formatMessage({ id: 'companyInfo.contactEmail.label' })}>
 							{
 								getFieldDecorator('contactEmail', {
 									initialValue: contactEmail,
@@ -742,7 +749,7 @@ class CompanyInfo extends React.Component {
 									<Input placeholder={formatMessage({ id: 'companyInfo.please.input.contactEmail' })} />
 								)
 							}
-						</FormItem>
+						</FormItem> */}
 						<FormItem label=" " colon={false}>
 							<Button
 								loading={!!(loading.effects['companyInfo/createOrganization'] ||

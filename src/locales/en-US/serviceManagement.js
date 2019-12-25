@@ -7,7 +7,7 @@ export default {
 	'serviceManagement.status.unActivate': 'To be activated',
 	'serviceManagement.status.activated': 'Activated',
 	'serviceManagement.status.disabled': 'Expired',
-	'serviceManagement.placeholder.search': 'Please enter service name or service number to search',
+	'serviceManagement.placeholder.search': 'Enter service name or number',
 	'serviceManagement.column.name': 'Service Name',
 	'serviceManagement.column.no': 'Service Number',
 	'serviceManagement.column.subscribeDate': 'Subscription Date',

@@ -200,7 +200,7 @@ class OrgDetail extends React.Component {
 					address = null,
 					contactPerson,
 					contactTel,
-					contactEmail,
+					// contactEmail,
 					createdTime,
 					typeName,
 					modifiedTime,
@@ -242,14 +242,15 @@ class OrgDetail extends React.Component {
 						</div>
 						<div className={styles.row}>
 							<div className={`${styles.col} ${styles.contactTel}`}>{formatMessage({id: 'orgDetail.contactTel'})}{contactTel || '--'}</div>
-							<div className={`${styles.col} ${styles.contactEmail}`}>{formatMessage({id: 'orgDetail.contactEmail'})}{contactEmail || '--'}</div>
+							{/* <div className={`${styles.col} ${styles.contactEmail}`}>{formatMessage({id: 'orgDetail.contactEmail'})}{contactEmail || '--'}</div> */}
 							<div className={`${styles.col} ${styles.createdTime}`}>{formatMessage({id: 'orgDetail.createdTime'})}{createdTime ? moment.unix(createdTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
+							<div className={`${styles.col} ${styles.modifiedTime}`}>{formatMessage({id: 'orgDetail.modifiedTime'})}{modifiedTime ? moment.unix(modifiedTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
 						</div>
-						<div className={styles.row}>
+						{/* <div className={styles.row}>
 							<div className={`${styles.col} ${styles.modifiedTime}`}>{formatMessage({id: 'orgDetail.modifiedTime'})}{modifiedTime ? moment.unix(modifiedTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
 							<div className={styles.col} />
 							<div className={styles.col} />
-						</div>
+						</div> */}
 						{
 							orgTag === 0 &&
 							<div>

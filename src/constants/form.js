@@ -119,7 +119,7 @@ export const HEAD_FORM_ITEM_LAYOUT_MIDDLE = {
 		xs: { span: 24 },
 		sm: { span: 4, offset: 6 },
 		md: { span: 4, offset: 6 },
-		xxl: { span: 2, offset: 8 },
+		xxl: { span: 3, offset: 7 },
 	},
 	wrapperCol: {
 		xs: { span: 24 },
@@ -160,7 +160,7 @@ export const FORM_ITEM_LONGER = {
 };
 
 export const FORM_ITEM_LAYOUT_BUSINESS = {
-	labelCol: { span: 2 },
+	labelCol: { span: 3 },
 	wrapperCol: { span: 6 },
 };
 
