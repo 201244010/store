@@ -39,7 +39,7 @@ export default {
 	'esl.device.ap.all': 'in total ',
 	'esl.device.ap.total': ' AP(s)',
 	'esl.device.esl.list': 'ESL List',
-	'esl.device.esl.search.placeholder': 'ESL ID or the ID/name of the bound product',
+	'esl.device.esl.search.placeholder': 'ESL ID / Bounded Product ID or Name',
 	'esl.device.esl.search.info': 'ESL Information',
 	'esl.device.esl.id': 'ESL ID',
 	'esl.device.esl.sn': 'ESL SN',
