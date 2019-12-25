@@ -23,7 +23,8 @@ import styles from './Employee.less';
 	}),
 	dispatch => ({
 		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
-		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		// getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		getOrgnazationTree: () => dispatch({ type: 'store/getOrgnazationTree' }),
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
 		checkUsernameExist: ({ username }) =>
 			dispatch({ type: 'employee/checkUsernameExist', payload: { username } }),
@@ -76,45 +77,56 @@ class EmployeeCU extends Component {
 		this.createOrgnizationTree();
 	}
 
+	traversalTreeData = (originalList, targetList, companyId) => {
+		if (originalList instanceof Array) {
+			originalList.forEach((item) => {
+				const { orgName, orgId, orgStatus } = item;
+				const target = {
+					title: orgName,
+					value: `${companyId}-${orgId}`,
+					key: `${companyId}-${orgId}`,
+					disabled: !!orgStatus,
+					children: [],
+				};
+				targetList.push(target);
+				if(item.children && item.children.length) {
+					this.traversalTreeData(item.children, target.children, companyId);
+				}
+			});
+		}
+	};
+
 	createOrgnizationTree = async () => {
 		const {
 			getCompanyIdFromStorage,
-			getShopListFromStorage,
 			getCompanyListFromStorage,
-			employee: {
-				employeeInfo: { mappingList = [] },
-			},
+			getOrgnazationTree,
 		} = this.props;
 		const currentCompanyId = await getCompanyIdFromStorage();
 		const companyList = await getCompanyListFromStorage();
-		const shopList = await getShopListFromStorage();
 		const companyInfo =
 			companyList.find(company => company.companyId === currentCompanyId) || {};
-		const shopNameList = shopList.map(item => item.shopName);
-		const tmpObj = {};
-		const tmpMappingList = mappingList
-			.filter(item => !shopNameList.includes(item.shopName) && item.shopName !== '')
-			.reduce((items, next) => {
-				tmpObj[next.shopId] ? '' : (tmpObj[next.shopId] = true && items.push(next));
-				return items;
-			}, []);
+		// const shopNameList = shopList.map(item => item.shopName);
+		// const tmpObj = {};
+		// const tmpMappingList = mappingList
+		// 	.filter(item => !shopNameList.includes(item.shopName) && item.shopName !== '')
+		// 	.reduce((items, next) => {
+		// 		tmpObj[next.shopId] ? '' : (tmpObj[next.shopId] = true && items.push(next));
+		// 		return items;
+		// 	}, []);
+		const originalTree = await getOrgnazationTree();
+		const targetTree = [];
+		if(originalTree && originalTree.length) {
+			this.traversalTreeData(originalTree, targetTree, currentCompanyId);
+		}
+		console.log('------originalTree----', targetTree);
 		const orgnizationTree = [
 			{
 				title: companyInfo.companyName,
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
 				children: [
-					...shopList.map(shop => ({
-						title: shop.shopName,
-						value: `${companyInfo.companyId}-${shop.shopId}`,
-						key: `${companyInfo.companyId}-${shop.shopId}`,
-					})),
-					...tmpMappingList.map(shop => ({
-						title: shop.shopName,
-						value: `${companyInfo.companyId}-${shop.shopId}`,
-						key: `${companyInfo.companyId}-${shop.shopId}`,
-						disabled: true,
-					})),
+					...targetTree,
 				],
 			},
 		];

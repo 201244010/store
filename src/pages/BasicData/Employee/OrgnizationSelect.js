@@ -70,6 +70,7 @@ class OrgnizationSelect extends Component {
 									id: 'employee.info.select.orgnizaion',
 								})}
 								treeData={orgnizationTree}
+								dropdownStyle={{ maxHeight: '40vh'}}
 								onChange={value => this.handleTreeChange(item, index, value)}
 							/>
 						</Col>
