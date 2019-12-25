@@ -104,11 +104,17 @@ class SalseChart extends PureComponent {
 		this.hasFsDevice = ipcList.some(ipc => ipc.hasFaceid);
 		this.saasExist = currentShopInfo.saasExist || 0;
 
-		this.chartMode = CHART_MODE.TRADE_TRANS;
+		this.chartMode = CHART_MODE.TRADE_BAR;
 		if (this.hasFsDevice && !this.saasExist) {
 			this.chartMode = CHART_MODE.CUSTOMER_BAR;
-		} else if (!this.hasFsDevice && this.saasExist) {
+		}
+
+		if (!this.hasFsDevice && this.saasExist) {
 			this.chartMode = CHART_MODE.TRADE_BAR;
+		}
+
+		if (this.hasFsDevice && this.saasExist) {
+			this.chartMode = CHART_MODE.TRADE_TRANS;
 		}
 		console.log('has fs: ', this.hasFsDevice);
 		console.log('has saas: ', this.saasExist);
@@ -124,7 +130,6 @@ class SalseChart extends PureComponent {
 		const { current } = this.chartRef;
 		const { clientWidth = null } = current || {};
 		const chartWidth = Math.round(clientWidth * 0.95);
-
 		let chartScale = {
 			time: {
 				...(TIME_SCALE[rangeType] || {
@@ -191,7 +196,7 @@ class SalseChart extends PureComponent {
 						axis: {
 							x: 'time',
 							y: 'orderCount',
-							xLabel: { formatter: val => formatXLabel(val, rangeType) },
+							xLabel: { formatter: val => formatXLabel(val, rangeType, timeRangeStart, timeRangeEnd) },
 						},
 						tooltip: { itemTpl, useHtml: true },
 						dataSource: passengerOrderList,
@@ -247,7 +252,7 @@ class SalseChart extends PureComponent {
 						axis: {
 							x: 'time',
 							y: 'passengerFlowCount',
-							xLabel: { formatter: val => formatXLabel(val, rangeType) },
+							xLabel: { formatter: val => formatXLabel(val, rangeType, timeRangeStart, timeRangeEnd) },
 						},
 						tooltip: { itemTpl, useHtml: true },
 						dataSource: passengerOrderList,
