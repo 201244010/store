@@ -49,7 +49,7 @@ function allDisable(obj) {
 function addDisableHandler(level, obj, targetId) {
 	let children = [];
 	if(obj.value === targetId){
-		if(obj.children && obj.children.length > 0){
+		if(obj.children){
 			return allDisable(obj);
 		}
 	}
