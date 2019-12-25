@@ -1,8 +1,8 @@
 import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
-import { format } from '@konata9/milk-shake';
 import { fetch } from 'whatwg-fetch';
+import { format } from '@konata9/milk-shake';
 import CONFIG from '@/config';
 import { cbcEncryption, idDecode, md5Encryption } from '@/utils/utils';
 import { USER_NOT_LOGIN } from '@/constants/errorCode';
@@ -12,6 +12,8 @@ import * as CookieUtil from '@/utils/cookies';
 
 const { API_ADDRESS, MD5_TOKEN } = CONFIG;
 const ERR_INTERNET_DISCONNECTED = 9999;
+const GATEWAY_ERR = 9998;
+const COMMON_ERROR = 11111;
 
 // const codeMessage = {
 //   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
@@ -93,15 +95,31 @@ const formatParams = (options = {}) => {
 	return formData;
 };
 
-const customizeParams = (options = {}) => {
+const customizeParams = (options = {}, toSnake = true) => {
 	const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY) || '';
 	const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || '';
 
-	const opts = format('toSnake')({
-		companyId,
-		shopId,
-		...options.body,
-	});
+	// const opts =  format('toSnake')({
+	// 	companyId,
+	// 	shopId,
+	// 	...options.body,
+	// });
+	let opts = {};
+	if (toSnake) {
+		opts = format('toSnake')({
+			companyId,
+			shopId,
+			...options.body,
+		});
+	} else {
+		opts = {
+			...format('toSnake')({
+				companyId,
+				shopId,
+			}),
+			...options.body,
+		};
+	}
 
 	const formattedParams = normalizeParams(opts);
 	return formatParams(formattedParams || {});
@@ -116,10 +134,10 @@ const fetchHandler = async (url, opts) => {
 	}
 };
 
-export const customizeFetch = (service = 'api', base) => {
+export const customizeFetch = (service = 'api', base, toSnake) => {
 	const baseUrl = base || API_ADDRESS;
 	return async (api, options = {}, withAuth = true) => {
-		const customizedParams = customizeParams(options);
+		const customizedParams = customizeParams(options, toSnake);
 		const token = CookieUtil.getCookieByKey(CookieUtil.TOKEN_KEY) || '';
 		const opts = {
 			method: options.method || 'POST',
@@ -138,13 +156,19 @@ export const customizeFetch = (service = 'api', base) => {
 
 		const url = `${baseUrl}/${service}/${api}`;
 		// const response = await fetch(url, opts);
-		const response = await fetchHandler(url, opts);
+		let response = await fetchHandler(url, opts);
 		// console.log(response);
 
-		if (response.status === 401) {
-			unAuthHandler();
-		} else if (response.status === 403) {
-			noAuthhandler();
+		if (response.status !== 200) {
+			if (response.status === 401) {
+				unAuthHandler();
+			} else if (response.status === 403) {
+				noAuthhandler();
+			} else if (response.status === 502) {
+				response = new Response(JSON.stringify({ code: GATEWAY_ERR }));
+			} else {
+				response = new Response(JSON.stringify({ code: COMMON_ERROR }));
+			}
 		}
 
 		const result = await response.clone().json();

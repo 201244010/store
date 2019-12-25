@@ -13,6 +13,7 @@ const SearchBar = ({
 	currentCompanyId = null,
 	orgnizationTree = [],
 	searchValue: { shopIdList = [], name = null, number = null, username = null } = {},
+	setGetInfoValue = null,
 	setSearchValue = null,
 	getEmployeeList = null,
 	clearSearchValue = null,
@@ -35,6 +36,7 @@ const SearchBar = ({
 	};
 
 	const handleQuery = async () => {
+		setGetInfoValue();
 		await getEmployeeList({ current: 1 });
 	};
 
