@@ -4,7 +4,7 @@ export  default {
 		hasTFCard: true,
 		hasCloud: false,
 		hasNVR: {
-			leastVersion: '9.9.9'
+			leastVersion: '1.2.5'
 		},
 		pixelRatio: '16:9',
 		leastVersion: '1.1.3',
@@ -41,7 +41,7 @@ export  default {
 		hasTFCard: true,
 		hasCloud: false,
 		hasNVR: {
-			leastVersion: '9.9.9'
+			leastVersion: '1.2.5'
 		},
 		pixelRatio: '16:9',
 		leastVersion: '1.1.3',
@@ -77,7 +77,7 @@ export  default {
 		hasTFCard: true,
 		hasCloud: true,
 		hasNVR: {
-			leastVersion: '9.9.9'
+			leastVersion: '1.3.2'
 		},
 		pixelRatio: '1:1',
 		leastVersion: '1.2.6',
@@ -118,7 +118,7 @@ export  default {
 		hasFaceid: false,
 		hasTFCard: true,
 		hasNVR: {
-			leastVersion: '9.9.9'
+			leastVersion: '1.3.2'
 		},
 		hasCloud: true,
 		pixelRatio: '1:1',
