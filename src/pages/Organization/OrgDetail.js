@@ -250,19 +250,25 @@ class OrgDetail extends React.Component {
 							<div className={styles.col} />
 							<div className={styles.col} />
 						</div>
-						<div className={styles.row}>
-							<div className={`${styles.col} ${styles.typeName}`}>{formatMessage({id: 'orgDetail.typeName'})}{typeName || '--'}</div>
-							<div className={`${styles.col} ${styles.businessStatus}`}>{formatMessage({id: 'orgDetail.businessStatus'})}
-								{(businessStatus === 0 && formatMessage({id: 'orgDetail.businessStatus.open'}) || 
+						{
+							orgTag === 0 &&
+							<div>
+								<div className={styles.row}>
+									<div className={`${styles.col} ${styles.typeName}`}>{formatMessage({id: 'orgDetail.typeName'})}{typeName || '--'}</div>
+									<div className={`${styles.col} ${styles.businessStatus}`}>{formatMessage({id: 'orgDetail.businessStatus'})}
+										{(businessStatus === 0 && formatMessage({id: 'orgDetail.businessStatus.open'}) || 
 								businessStatus === 1 && formatMessage({id: 'orgDetail.businessStatus.close'})) || '--'}
+									</div>
+									<div className={`${styles.col} ${styles.businessHours}`}>{formatMessage({id: 'orgDetail.businessHours'})}{businessHours ? this.format(businessHours) : '--'}</div>
+								</div>
+								<div className={styles.row}>
+									<div className={`${styles.col} ${styles.businessArea}`}>{formatMessage({id: 'orgDetail.businessArea'})}{businessArea ? `${businessArea}㎡` : '--'}</div>
+									<div className={`${styles.col} ${styles.address}`}>{formatMessage({id: 'orgDetail.address'})}{this.addressHandler(province, city, area, address)}</div>
+									<div className={styles.col} />
+								</div>
 							</div>
-							<div className={`${styles.col} ${styles.businessHours}`}>{formatMessage({id: 'orgDetail.businessHours'})}{businessHours ? this.format(businessHours) : '--'}</div>
-						</div>
-						<div className={styles.row}>
-							<div className={`${styles.col} ${styles.businessArea}`}>{formatMessage({id: 'orgDetail.businessArea'})}{businessArea ? `${businessArea}㎡` : '--'}</div>
-							<div className={`${styles.col} ${styles.address}`}>{formatMessage({id: 'orgDetail.address'})}{this.addressHandler(province, city, area, address)}</div>
-							<div className={styles.col} />
-						</div>
+						}
+						
 					</div>
 					<div className={styles.footer}>
 						<Button 
