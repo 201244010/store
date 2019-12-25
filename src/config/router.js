@@ -474,44 +474,44 @@ const router = [
 							},
 						],
 					},
-					{
-						path: '/basicData/storeManagement',
-						name: 'storeManagement',
-						routes: [
-							{
-								path: '/basicData/storeManagement',
-								redirect: '/basicData/storeManagement/list',
-							},
-							{
-								path: '/basicData/storeManagement/list',
-								name: 'list',
-								id: 'storeList',
-								component: './StoreManagement',
-								hideInMenu: true,
-							},
-							{
-								path: '/basicData/storeManagement/createStore',
-								component: './StoreManagement/CreateStore.js',
-								name: 'createStore',
-								id: 'storeCreate',
-								hideInMenu: true,
-							},
-							{
-								path: '/basicData/storeManagement/storeInformation',
-								component: './StoreManagement/StoreInformation.js',
-								name: 'storeManagement',
-								id: 'storeInfo',
-								hideInMenu: true,
-							},
-							{
-								path: '/basicData/storeManagement/alterStore',
-								component: './StoreManagement/CreateStore.js',
-								name: 'storeManagement',
-								id: 'storeUpdate',
-								hideInMenu: true,
-							},
-						],
-					},
+					// {
+					// 	path: '/basicData/storeManagement',
+					// 	name: 'storeManagement',
+					// 	routes: [
+					// 		{
+					// 			path: '/basicData/storeManagement',
+					// 			redirect: '/basicData/storeManagement/list',
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/list',
+					// 			name: 'list',
+					// 			id: 'storeList',
+					// 			component: './StoreManagement',
+					// 			hideInMenu: true,
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/createStore',
+					// 			component: './StoreManagement/CreateStore.js',
+					// 			name: 'createStore',
+					// 			id: 'storeCreate',
+					// 			hideInMenu: true,
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/storeInformation',
+					// 			component: './StoreManagement/StoreInformation.js',
+					// 			name: 'storeManagement',
+					// 			id: 'storeInfo',
+					// 			hideInMenu: true,
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/alterStore',
+					// 			component: './StoreManagement/CreateStore.js',
+					// 			name: 'storeManagement',
+					// 			id: 'storeUpdate',
+					// 			hideInMenu: true,
+					// 		},
+					// 	],
+					// },
 					{
 						path: '/basicData/employeeManagement',
 						name: 'employeeManagement',

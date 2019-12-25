@@ -3,6 +3,7 @@ import { format } from '@konata9/milk-shake';
 import Storage from '@konata9/storage.js';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
+import * as Action from '@/services/storeManagement/storeList';
 import { getOrganizationTree,
 	createOrganization,
 	updateOrganization, 
@@ -152,7 +153,6 @@ export default {
 			const companyId = yield put.resolve({
 				type: 'global/getCompanyIdFromStorage',
 			}) || {};
-
 			const response = yield getOrgList({userId, companyId});
 			const { code } = response;
 			if(code === ERROR_OK){
@@ -171,11 +171,11 @@ export default {
 		},
 		*createOrganization({ payload },{ put }) {
 			const { options } = payload;
-			const { orgId } = options;
 			const response = yield createOrganization(options);
 			if (response && response.code === ERROR_OK) {
+				const data = response.data || {};
 				if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
-					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, orgId);
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.orgId);
 				}
 				yield put.resolve({
 					type: 'updateOrgList'

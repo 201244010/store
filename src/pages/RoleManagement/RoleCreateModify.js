@@ -68,6 +68,7 @@ class RoleModify extends React.Component {
 		}
 		validateFields(async (err, values) => {
 			if (!err) {
+				console.log('come in~~~~~~~~~');
 				if (action === 'modify') {
 					const roleId = idDecode(id);
 					const response = await updateRole({
@@ -81,8 +82,8 @@ class RoleModify extends React.Component {
 						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
 						message.error(
-							formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
-								formatMessage({ id: 'roleManagement.role.modifyFail' })
+							ALERT_NOTICE_MAP.hasOwnProperty(response.code) ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) 
+								: formatMessage({ id: 'roleManagement.role.modifyFail' })
 						);
 					}
 				} else {
@@ -97,8 +98,8 @@ class RoleModify extends React.Component {
 						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
 						message.error(
-							formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
-								formatMessage({ id: 'roleManagement.role.createFail' })
+							ALERT_NOTICE_MAP.hasOwnProperty(response.code) ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] })
+								: formatMessage({ id: 'roleManagement.role.createFail' })
 						);
 					}
 				}
