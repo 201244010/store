@@ -199,12 +199,12 @@ export default {
 				// const { storeList } = yield select(state => state.store);
 				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 
-				yield put({
-					type: 'menu/goToPath',
-					payload: {
-						pathId: 'storeList',
-					},
-				});
+				// yield put({
+				// 	type: 'menu/goToPath',
+				// 	payload: {
+				// 		pathId: 'storeList',
+				// 	},
+				// });
 			} else {
 				yield put({
 					type: 'updateState',
@@ -239,12 +239,12 @@ export default {
 				// const { storeList } = yield select(state => state.store);
 				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 
-				yield put({
-					type: 'menu/goToPath',
-					payload: {
-						pathId: 'storeList',
-					},
-				});
+				// yield put({
+				// 	type: 'menu/goToPath',
+				// 	payload: {
+				// 		pathId: 'storeList',
+				// 	},
+				// });
 				// router.push(`${MENU_PREFIX.STORE}/list`);
 			} else {
 				yield put({
