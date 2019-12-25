@@ -34,7 +34,10 @@ class OrganizationTable extends React.Component {
 			title: formatMessage({ id: 'organization.org.address'}),
 			dataIndex: 'address',
 			key: 'address',
-			render: (item) => item || '--'
+			render: (text, record) => {
+				const { province, city, area, address } = record;
+				return <span>{this.addressHandler(province, city, area, address)}</span>;
+			},
 		},
 		// {
 		// 	title: '员工',
@@ -68,6 +71,38 @@ class OrganizationTable extends React.Component {
 			},
 		}
 	];
+
+	addressHandler(province, city, area, address){
+		let detailAddress = '';
+		const { regionList } = this.props;
+		if(province && city && area){
+			for(let i=0; i<regionList.length; i++){
+				if(Number(regionList[i].value) === province){
+					detailAddress += `${regionList[i].name} `;
+					for(let j=0; j<regionList[i].children.length; j++){
+						if(Number(regionList[i].children[j].value) === city){
+							detailAddress += `${regionList[i].children[j].name} `;
+							for(let k=0; k<regionList[i].children[j].children.length; k++){
+								if(Number(regionList[i].children[j].children[k].value) === area){
+									detailAddress += `${regionList[i].children[j].children[k].name} `;
+									break;
+								}
+							}
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+		if(address){
+			detailAddress += address;
+		}
+		if(detailAddress === ''){
+			return '--';
+		}
+		return detailAddress;
+	}
 
 
 	render() {
