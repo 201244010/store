@@ -111,7 +111,7 @@ const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
 				<div className={styles['info-footer']}>
 					{
 						FooterContent[INFO_FOOTER_TYPE.PERCENT](
-							lastCount === 0 ? 0 : Math.round((nowCount - lastCount) / lastCount * 100)
+							lastCount === 0 ? '--' : Math.round((nowCount - lastCount) / lastCount * 100)
 						) || FooterContent[INFO_FOOTER_TYPE.DEFAULT]()
 					}
 				</div>
