@@ -1,0 +1,146 @@
+.live-wrapper {
+	// position: relative;
+	margin: auto;
+
+	height: calc(100vh - 200px);
+	// width: calc(100vh - 228px);
+	// height: 30%;
+	// width: 70%;
+	.close{
+		position: absolute;
+		z-index: 100;
+		color: white;
+		top: 0;
+		font-size: 16px;
+		right: 0;
+		margin: 12px;
+
+		border-radius: 50%;
+
+		padding: 8px;
+		width: 32px;
+		height: 32px;
+
+		background-color: #bbbbbb;
+
+		&:hover {
+			// opacity: 0.8;
+			background-color: #cccccc;
+		}
+	}
+
+	.video-player-container {
+		display: block;
+		width: 100%;
+		height: 100%;
+		position: relative;
+
+		.video-detail-wrapper {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			padding-bottom: 60px;
+			top: 0;
+			left: 0;
+
+			.video-detail-container {
+				position: relative;
+				width: 100%;
+				height: 100%;
+
+				.video-detail-board {
+					position: absolute;
+					background-color: rgba(0,0,0,0.50);
+					// background-color: red;
+					border-radius: 4px;
+					width: 25%;
+					height: 52%;
+					top: 26%;
+
+					right: 2%;
+					color: #ffffff;
+					padding: 2%;
+
+					font-size: 6px;
+					font-family: PingFangSC-Light, sans-serif;
+
+					.info-block {
+						margin-bottom: 10px;
+						width: 100%;
+						height: 15%;
+						// border: 1px solid red;
+						.title {
+							font-size: 8px;
+							font-family: PingFangSC-Semibold, sans-serif;
+							color: #ffffff;
+							margin-bottom: 0;
+						}
+
+						.info-item {
+							display: inline-flex;
+							width: 100%;
+							.info-label {
+								width: 40%;
+								// display: block;
+							}
+							.detail-label {
+								width: 50%;
+							}
+						}
+					}
+
+
+					.detail {
+						overflow: hidden;
+						width: 100%;
+						height: 80%;
+						margin-bottom: 0;
+						.title {
+							height: 5%;
+						}
+
+						.detail-block {
+							height: 95%;
+
+							:global {
+								.ps__thumb-y {
+									width: 4px;
+									background-color:rgba(255,255,255,0.3);
+									border-radius:2px;
+								}
+							}
+						}
+					}
+
+
+					&.resolution {
+						width: 35%;
+						height: 86%;
+						top: 10%;
+						right: 5%;
+						font-size: 10px;
+
+						.info-block {
+							height: 14%;
+							.title {
+								font-size: 12px;
+							}
+						}
+
+						.detail {
+							height: 84%;
+						}
+					}
+				}
+			}
+		}
+
+
+	}
+}
+
+.video-player{
+	// position: absolute;
+	width: calc(100vh - 180px);
+	min-width: 480px;
+}
