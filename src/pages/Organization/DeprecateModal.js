@@ -82,12 +82,12 @@ class DeprecateModal extends React.Component {
 					};
 				}
 				const result = await deprecate(opt);
-
+				const { init } = this.props;
 				if(result) {
-					const { init } = this.props;
 					init();
 					message.success(formatMessage({ id: 'organization.deprecate.result.success'}));
 				} else {
+					init();
 					message.error(formatMessage({ id: 'organization.deprecate.result.error'}));
 				}
 				this.setState({

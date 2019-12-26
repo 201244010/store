@@ -23,7 +23,7 @@ import styles from './Employee.less';
 	}),
 	dispatch => ({
 		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
-		// getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
 		getOrgnazationTree: () => dispatch({ type: 'store/getOrgnazationTree' }),
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
 		checkUsernameExist: ({ username }) =>
@@ -65,11 +65,17 @@ class EmployeeCU extends Component {
 
 		this.state = {
 			orgnizationTree: [],
+			shopIdList: [],
 		};
 	}
 
 	async componentDidMount() {
-		const { getAllRoles } = this.props;
+		const { getAllRoles, getShopListFromStorage } = this.props;
+		const shopList = await getShopListFromStorage();
+		const shopIdList = shopList.map(item => item.orgId);
+		this.setState({
+			shopIdList
+		});
 		getAllRoles();
 		if (this.employeeId && this.action === 'edit') {
 			const { getEmployeeInfo } = this.props;
@@ -444,12 +450,14 @@ class EmployeeCU extends Component {
 												})
 											);
 										} else {
+											const { shopIdList } = this.state;
 											const objectKeys = Object.keys(value);
+
 											const hasEmpty = objectKeys.some(key => {
 												const { orgnization = null, role = [] } = value[
 													key
 												];
-												return !orgnization || role.length === 0;
+												return (!orgnization && shopIdList.indexOf(Number(this.orgId)) === -1) || role.length === 0;
 											});
 											let isSame = false;
 											objectKeys.forEach((item, index) => {

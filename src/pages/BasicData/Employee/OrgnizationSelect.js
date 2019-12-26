@@ -19,16 +19,20 @@ class OrgnizationSelect extends Component {
 		this.state = {
 			orgnizationRoleList: value.length > 0 ? value : [{ orgnization: null, role: [] }],
 			orgId: props.orgId,
-			companyId: undefined,
 		};
 	}
 
 	async componentDidMount(){
 		const { getCompanyIdFromStorage } = this.props;
+		const { orgId } = this.state;
 		const companyId = await getCompanyIdFromStorage();
-		this.setState({
-			companyId
-		});
+		if(orgId){
+			const orgnizationRoleList = [{ orgnization: `${companyId}-${orgId}`, role: [] }];
+			this.setState({
+				orgnizationRoleList
+			});
+		}
+		
 	}
 
 	handleOnchange = () => {
@@ -76,7 +80,7 @@ class OrgnizationSelect extends Component {
 	};
 
 	render() {
-		const { orgnizationRoleList, companyId, orgId } = this.state;
+		const { orgnizationRoleList } = this.state;
 		const { orgnizationTree = [], roleSelectList = [] } = this.props;
 		return (
 			<>
@@ -85,7 +89,7 @@ class OrgnizationSelect extends Component {
 						<Col span={12}>
 							<TreeSelect
 								treeDefaultExpandAll
-								value={item.orgnization || (companyId && orgId &&`${companyId}-${orgId}`)}
+								value={item.orgnization}
 								placeholder={formatMessage({
 									id: 'employee.info.select.orgnizaion',
 								})}
