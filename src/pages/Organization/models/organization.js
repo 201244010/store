@@ -99,6 +99,9 @@ export default {
 						orgList,
 					},
 				});
+				yield put({
+					type: 'store/getOrgLayer'
+				});
 			}
 
 		},
