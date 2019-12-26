@@ -41,6 +41,20 @@ const getTreeHeight = (original) => {
 	}
 	return 0;
 };
+// 遍历组织列表
+const traversalOrgList = (originalList) => {
+	if (originalList instanceof Array) {
+		originalList.forEach((item) => {
+			if(item.children) {
+				if(item.children.length === 0) {
+					delete item.children;
+				} else {
+					traversalOrgList(item.children);
+				}
+			}
+		});
+	}
+};
 
 export default {
 	namespace: 'organization',
@@ -78,6 +92,7 @@ export default {
 			const { code, data } = response;
 			if(code === ERROR_OK) {
 				const { orgList } = data;
+				traversalOrgList(orgList);
 				yield put({
 					type: 'updateOrgList',
 					payload: {
