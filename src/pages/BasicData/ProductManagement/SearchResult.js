@@ -59,6 +59,10 @@ class SearchResult extends Component {
 				pathId: 'erpImport',
 				urlParams: {},
 			},
+			excelUpload: {
+				pathId: 'excelUpload',
+				urlParams: {},
+			},
 		};
 
 		const { pathId, urlParams = {} } = urlMap[name] || {};
@@ -194,6 +198,12 @@ class SearchResult extends Component {
 								</Button>
 							)}
 							<AuthKey className={styles['btn-margin-left']} />
+							{/* <Button */}
+							{/* className={styles['function-btn']} */}
+							{/* onClick={() => this.toPath('excelUpload')} */}
+							{/* > */}
+							{/* {formatMessage({ id: 'btn.excel.upload' })} */}
+							{/* </Button> */}
 						</>
 					)}
 				</div>

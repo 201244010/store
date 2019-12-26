@@ -589,6 +589,13 @@ const router = [
 								hideInMenu: true,
 								component: './BasicData/ProductManagement/ERPImport',
 							},
+							{
+								path: '/basicData/productManagement/list/excelUpload',
+								name: 'list',
+								id: 'excelUpload',
+								hideInMenu: true,
+								component: './BasicData/ProductManagement/ExcelUpload',
+							},
 							{ path: '/basicData', redirect: '/basicData/productManagement' },
 						],
 					},

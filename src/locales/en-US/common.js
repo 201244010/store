@@ -23,6 +23,7 @@ export default {
 	'btn.restart': 'Restart',
 	'btn.erp.import': 'Import',
 	'btn.erp.import.manage': 'Manage Import',
+	'btn.excel.upload': 'Excel Upload',
 	'btn.detail': 'Detail',
 	'btn.more': 'More',
 	'btn.know': 'Knew',
