@@ -22,6 +22,7 @@ export default {
 	'btn.import': 'Improt',
 	'btn.multi.edit': 'Change in bulk',
 	'btn.select': 'Select',
+	'btn.excel.upload': 'Excel Upload',
 	'btn.restart': 'Reboot',
 	'btn.erp.import': 'Interface with ERP',
 	'btn.erp.import.manage': 'ERP Management',

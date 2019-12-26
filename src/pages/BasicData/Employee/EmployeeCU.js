@@ -56,10 +56,11 @@ class EmployeeCU extends Component {
 	constructor(props) {
 		super(props);
 
-		[this.employeeId, this.action, this.from] = [
+		[this.employeeId, this.action, this.from, this.orgId] = [
 			getLocationParam('employeeId') || null,
 			getLocationParam('action') || 'create',
 			getLocationParam('from') || 'list',
+			getLocationParam('orgId') || undefined,
 		];
 
 		this.state = {
@@ -483,7 +484,7 @@ class EmployeeCU extends Component {
 									},
 								},
 							],
-						})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList }} />)}
+						})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList, orgId: this.orgId }} />)}
 					</Form.Item>
 
 					<Form.Item label=" " colon={false}>

@@ -189,7 +189,7 @@ class OrgDetail extends React.Component {
 			companyInfo: {
 				orgInfo: {
 					orgName = undefined,
-					orgId = undefined,
+					sunmiShopNo = undefined,
 					orgPname = undefined,
 					orgTag = undefined,
 					businessStatus,
@@ -223,28 +223,51 @@ class OrgDetail extends React.Component {
 				<Card title={formatMessage({id: 'orgDetail.org.detail'})} className={styles['org-detail']} loading={loading.effects['companyInfo/getOrganizationInfo']}>
 					<div className={styles['detail-body']}>
 						<div className={styles.row}>
-							<div className={`${styles.col} ${styles.orgId}`}>{formatMessage({id: 'orgDetail.org.id'})}{orgId || '--'}</div>
-							<div className={`${styles.col} ${styles.orgName}`}>{formatMessage({id: 'orgDetail.org.name'})}{orgName || '--'}</div>
-							<div className={`${styles.col} ${styles.orgPname}`}>{formatMessage({id: 'orgDetail.org.parent'})}{orgPname || '--'}</div>
+							<div className={`${styles.col} ${styles.orgId}`}>
+								<div className={styles.label}>{formatMessage({id: 'orgDetail.org.id'})}</div>
+								<div>{sunmiShopNo || '--'}</div>
+							</div>
+							<div className={`${styles.col} ${styles.orgName}`}>
+								<div className={styles.label}>{formatMessage({id: 'orgDetail.org.name'})}</div>
+								<div>{orgName || '--'}</div>
+							</div>
+							<div className={`${styles.col} ${styles.orgPname}`}>
+								<div>{formatMessage({id: 'orgDetail.org.parent'})}</div>
+								<div>{orgPname || '--'}</div>
+							</div>
 						</div>
 						<div className={styles.row}>
 							<div className={`${styles.col} ${styles.orgTag}`}>
-								{formatMessage({id: 'orgDetail.org.tag'})}
-								{(orgTag === 0 && formatMessage({id: 'orgDetail.shop'}) ||
+								<div className={styles.label}>{formatMessage({id: 'orgDetail.org.tag'})}</div>
+								<div>{(orgTag === 0 && formatMessage({id: 'orgDetail.shop'}) ||
 								orgTag === 1 && formatMessage({id: 'orgDetail.department'})) || '--'}
+								</div>
 							</div>
 							<div className={`${styles.col} ${styles.orgStatus}`}>
-								{formatMessage({id: 'orgDetail.org.status'})}
-								{(orgStatus === 0 && formatMessage({id: 'orgDetail.org.status.using'}) ||
+								<div className={styles.label}>{formatMessage({id: 'orgDetail.org.status'})}</div>
+								<div>{(orgStatus === 0 && formatMessage({id: 'orgDetail.org.status.using'}) ||
 								orgStatus === 1 && formatMessage({id: 'orgDetail.org.status.stop.use'})) || '--'}
+								</div>
 							</div>
-							<div className={`${styles.col} ${styles.contactPerson}`}>{formatMessage({id: 'orgDetail.contactPerson'})}{contactPerson || '--'}</div>
+							<div className={`${styles.col} ${styles.contactPerson}`}>
+								<div className={styles.label}>{formatMessage({id: 'orgDetail.contactPerson'})}</div>
+								<div>{contactPerson || '--'}</div>
+							</div>
 						</div>
 						<div className={styles.row}>
-							<div className={`${styles.col} ${styles.contactTel}`}>{formatMessage({id: 'orgDetail.contactTel'})}{contactTel || '--'}</div>
+							<div className={`${styles.col} ${styles.contactTel}`}>
+								<div className={styles.label}>{formatMessage({id: 'orgDetail.contactTel'})}</div>
+								<div>{contactTel || '--'}</div>
+							</div>
 							{/* <div className={`${styles.col} ${styles.contactEmail}`}>{formatMessage({id: 'orgDetail.contactEmail'})}{contactEmail || '--'}</div> */}
-							<div className={`${styles.col} ${styles.createdTime}`}>{formatMessage({id: 'orgDetail.createdTime'})}{createdTime ? moment.unix(createdTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
-							<div className={`${styles.col} ${styles.modifiedTime}`}>{formatMessage({id: 'orgDetail.modifiedTime'})}{modifiedTime ? moment.unix(modifiedTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
+							<div className={`${styles.col} ${styles.createdTime}`}>
+								<div className={styles.label}>{formatMessage({id: 'orgDetail.createdTime'})}</div>
+								<div>{createdTime ? moment.unix(createdTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
+							</div>
+							<div className={`${styles.col} ${styles.modifiedTime}`}>
+								<div className={styles.label}>{formatMessage({id: 'orgDetail.modifiedTime'})}</div>
+								<div>{modifiedTime ? moment.unix(modifiedTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
+							</div>
 						</div>
 						{/* <div className={styles.row}>
 							<div className={`${styles.col} ${styles.modifiedTime}`}>{formatMessage({id: 'orgDetail.modifiedTime'})}{modifiedTime ? moment.unix(modifiedTime).format('YYYY-MM-DD HH:mm:ss') : '--'}</div>
@@ -255,16 +278,30 @@ class OrgDetail extends React.Component {
 							orgTag === 0 &&
 							<div>
 								<div className={styles.row}>
-									<div className={`${styles.col} ${styles.typeName}`}>{formatMessage({id: 'orgDetail.typeName'})}{typeName || '--'}</div>
-									<div className={`${styles.col} ${styles.businessStatus}`}>{formatMessage({id: 'orgDetail.businessStatus'})}
-										{(businessStatus === 0 && formatMessage({id: 'orgDetail.businessStatus.open'}) || 
-								businessStatus === 1 && formatMessage({id: 'orgDetail.businessStatus.close'})) || '--'}
+									<div className={`${styles.col} ${styles.typeName}`}>
+										<div className={styles.label}>{formatMessage({id: 'orgDetail.typeName'})}</div>
+										<div>{typeName ? typeName.replace(',','-') : '--'}</div>
 									</div>
-									<div className={`${styles.col} ${styles.businessHours}`}>{formatMessage({id: 'orgDetail.businessHours'})}{businessHours ? this.format(businessHours) : '--'}</div>
+									<div className={`${styles.col} ${styles.businessStatus}`}>
+										<div className={styles.label}>{formatMessage({id: 'orgDetail.businessStatus'})}</div>
+										<div>{(businessStatus === 0 && formatMessage({id: 'orgDetail.businessStatus.open'}) || 
+								businessStatus === 1 && formatMessage({id: 'orgDetail.businessStatus.close'})) || '--'}
+										</div>
+									</div>
+									<div className={`${styles.col} ${styles.businessHours}`}>
+										<div className={styles.label}>{formatMessage({id: 'orgDetail.businessHours'})}</div>
+										<div>{businessHours ? this.format(businessHours) : '--'}</div>
+									</div>
 								</div>
 								<div className={styles.row}>
-									<div className={`${styles.col} ${styles.businessArea}`}>{formatMessage({id: 'orgDetail.businessArea'})}{businessArea ? `${businessArea}㎡` : '--'}</div>
-									<div className={`${styles.col} ${styles.address}`}>{formatMessage({id: 'orgDetail.address'})}{this.addressHandler(province, city, area, address)}</div>
+									<div className={`${styles.col} ${styles.businessArea}`}>
+										<div className={styles.label}>{formatMessage({id: 'orgDetail.businessArea'})}</div>
+										<div>{businessArea ? `${businessArea}㎡` : '--'}</div>
+									</div>
+									<div className={`${styles.col} ${styles.address}`}>
+										<div className={styles.label}>{formatMessage({id: 'orgDetail.address'})}</div>
+										<div>{this.addressHandler(province, city, area, address)}</div>
+									</div>
 									<div className={styles.col} />
 								</div>
 							</div>
@@ -307,7 +344,7 @@ class OrgDetail extends React.Component {
 							type="primary"
 							icon="plus"
 							onClick={() =>
-								goToPath('employeeCreate', { action: 'create', from: 'list' })
+								goToPath('employeeCreate', { action: 'create', from: 'list', orgId: locationOrgId })
 							}
 						>
 							{formatMessage({ id: 'employee.create' })}

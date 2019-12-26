@@ -25,6 +25,7 @@ export default {
 	'btn.restart': '重启',
 	'btn.erp.import': '对接ERP',
 	'btn.erp.import.manage': '对接ERP管理',
+	'btn.excel.upload': 'Excel批量上传',
 	'btn.detail': '详情',
 	'btn.more': '更多',
 	'btn.know': '知道了',
