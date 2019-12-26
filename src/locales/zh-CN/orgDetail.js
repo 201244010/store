@@ -13,7 +13,7 @@ export default {
 	'orgDetail.contactTel': '联系电话：',
 	'orgDetail.contactEmail': '联系人邮箱：',
 	'orgDetail.createdTime': '创建时间：',
-	'orgDetail.modifiedTime': '创建时间：',
+	'orgDetail.modifiedTime': '更新时间：',
 	'orgDetail.typeName': '经营品类：',
 	'orgDetail.businessStatus': '营业状态：',
 	'orgDetail.businessStatus.open': '营业',
