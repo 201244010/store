@@ -11,7 +11,7 @@ import { customValidate } from '@/utils/customValidate';
 import * as CookieUtil from '@/utils/cookies';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK, STORE_EXIST, ORGANIZATION_LEVEL_LIMITED } from '@/constants/errorCode';
-// import { mail } from '@/constants/regexp';
+import * as RegExp from '@/constants/regexp';
 
 import styles from './CompanyInfo.less';
 
@@ -695,7 +695,9 @@ class CompanyInfo extends React.Component {
 									rules: [
 										{
 											validator: (rule, value, callback) => {
-												if (value && !/^(([1-9]\d{0,5})|0)(\.\d{1,2})?$/.test(value)) {
+												if (value === '' || value === null) {
+													callback();
+												} else if (!Number(value) || !RegExp.area.test(value)) {
 													callback(
 														formatMessage({
 															id: 'storeManagement.create.area.formatError',
