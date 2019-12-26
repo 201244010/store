@@ -153,19 +153,29 @@ export default {
 			const companyId = yield put.resolve({
 				type: 'global/getCompanyIdFromStorage',
 			}) || {};
-			const response = yield getOrgList({userId, companyId});
-			const { code } = response;
-			if(code === ERROR_OK){
-				const { data: { orgList = []}} = response;
-				const result = getOrgName(orgList);
-
+			if(userId && companyId){
+				const response = yield getOrgList({userId, companyId});
+				const { code } = response;
+				if(code === ERROR_OK){
+					const { data: { orgList = []}} = response;
+					const result = getOrgName(orgList);
+	
+					yield put({
+						type: 'updateState',
+						payload: {
+							orgNameList: result,
+						},
+					});
+				}
+			}else{
 				yield put({
 					type: 'updateState',
 					payload: {
-						orgNameList: result,
+						orgNameList: [],
 					},
 				});
 			}
+			
 
 
 		},
