@@ -36,8 +36,8 @@ export default {
 				list = result;
 			}
 			list.forEach(item => {
-				if (item.company_id === companyId) {
-					name = item.company_name;
+				if (item.companyId === companyId) {
+					name = item.companyName;
 				}
 			});
 			return name;
@@ -195,6 +195,10 @@ export default {
 					type: 'getCompanyList',
 				});
 				yield put({
+					type: 'store/updateCompany',
+					payload: options
+				});
+				yield put({
 					type: 'menu/goToPath',
 					payload: {
 						pathId: 'merchantView',
@@ -227,6 +231,11 @@ export default {
 			});
 			const { data: { shopList = [] } = {} } = format('toCamel')(result);
 			const [defaultShop, ,] = shopList;
+
+			yield put({
+				type: 'store/setShopListInStorage',
+				payload: { shopList },
+			});
 
 			if (defaultShop) {
 				yield put({

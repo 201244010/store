@@ -1,11 +1,11 @@
 export default {
 	'reset.title': 'Reset password',
-	'reset.by.mobile': '手机号重置',
-	'reset.by.mail': '邮箱重置',
-	'reset.success': '恭喜，密码重置成功！',
-	'reset.countDown': '秒后将返回登录页',
-	'reset.mail.placeholder': '请输入注册／绑定的邮箱',
-	'reset.vcode.placeholder': '图形验证码',
-	'reset.mail.notice': '重置密码邮件已发送到你的邮箱中，邮件有效期为24小时。请及时登录邮箱，点击邮件中的链接继续完成密码重置',
-	'reset.mail.account': '重置账号'
+	'reset.by.mobile': 'Reset phone number',
+	'reset.by.mail': 'Reset email address',
+	'reset.success': 'Congratulations! Your password has been reset!',
+	'reset.countDown': 'Return to login page in XX second(s)',
+	'reset.mail.placeholder': 'Please enter the registered/bound email address',
+	'reset.vcode.placeholder': 'Graphic verification code',
+	'reset.mail.notice': 'The email contains a link to reset your password has been sent to your emailbox, which is valid for 24 hours. Please check your email and click the link to complete password reset.',
+	'reset.mail.account': 'Reset account',
 };

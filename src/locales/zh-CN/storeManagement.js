@@ -68,7 +68,6 @@ export default {
 	'storeManagement.message.createFailed': '创建失败',
 	'storeManagement.message.createSuccess': '创建成功',
 	'storeManagement.message.name.exist': '门店名称已存在',
-
 	'store.auth': '门店对接',
 	'store.authKey': '对接凭证信息',
 	'store.get.authKey': '获取对接凭证',

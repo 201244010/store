@@ -8,7 +8,6 @@ export default {
 	'dashboard.search.range.overflow': '时间跨度最大为 60 个自然日',
 	'dashboard.last.modify.date': '最后更新时间',
 	'dashboard.refresh.too.fast': '刷新过于频繁，请稍后再试',
-
 	'dashboard.order.sales': '按销售额',
 	'dashboard.order.show.sales': '交易时间分布（按销售额）',
 	'dashboard.order.count': '按订单数',
@@ -16,7 +15,6 @@ export default {
 	'dashboard.order.d2d': '日环比',
 	'dashboard.order.w2w': '周环比',
 	'dashboard.order.m2m': '月同比',
-
 	'dashboard.overview.product': '商品数',
 	'dashboard.overview.esl.push': '待推送',
 	'dashboard.overview.esl.push.failed': '推送失败',
@@ -29,12 +27,10 @@ export default {
 	'dashboard.overview.ipc.online': '在线智能摄像机',
 	'dashboard.overview.ipc.offline': '离线',
 	'dashboard.overview.ipc.show.title': '摄像机数',
-
 	'dashboard.overview.product.total.info': '详情及规则说明',
 	'dashboard.overview.esl.total.info': '详情及规则说明',
 	'dashboard.overview.ap.total.info': '详情及规则说明',
 	'dashboard.overview.ipc.total.info': '详情及规则说明',
-
 	'dashboard.total.sales': '总销售额',
 	'dashboard.total.sales.info': '详情及规则说明',
 	'dashboard.total.count': '总笔数',
@@ -43,22 +39,15 @@ export default {
 	'dashboard.customer.unit.price.info': '详情及规则说明',
 	'dashboard.total.refund.count': '退款笔数',
 	'dashboard.total.refund.count.info': '详情及规则说明',
-
 	'dashboard.trade.time': '交易时间分布',
-
 	'dashboard.sku.rate': '商品销量排行',
 	'dashboard.payment': '支付方式',
-
 	'dashboard.trade.date': '交易日期',
 	'dashboard.trade.date.unit': '日',
 	'dashboard.trade.amount': '交易金额',
 	'dashboard.trade.count': '交易笔数',
-
-	// 订单类型
 	'payment-order-type-normal': '正常销售',
 	'payment-order-type-refund': '退款',
-
-	// 支付类型
 	'payment-purchase-type-cash': '现金',
 	'payment-purchase-type-alipay': '支付宝',
 	'payment-purchase-type-wechat': '微信',
@@ -67,8 +56,6 @@ export default {
 	'payment-purchase-type-other': '其他',
 	'payment-purchase-type-qqwallet': 'QQ钱包',
 	'payment-purchase-type-jdwallet': '京东钱包',
-
-	// 销售
 	'salse.total': '总销售额',
 	'salse.count': '交易笔数',
 	'shop.customers': '进店客流',
@@ -85,8 +72,6 @@ export default {
 	'customer.stranger': '新客',
 	'customer.regular': '熟客',
 	'customer.count': '客流量',
-
-	// 订单详情页面
 	'order.search.rankdefault': '综合排序',
 	'order.search.price.desc': '金额倒序',
 	'order.search.price.asc': '金额正序',

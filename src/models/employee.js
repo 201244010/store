@@ -22,6 +22,13 @@ export default {
 			username: null,
 			roleId: -1,
 		},
+		getInfoValue: {
+			shopIdList: [],
+			name: null,
+			number: null,
+			username: null,
+			roleId: -1,
+		},
 		employeeList: [],
 		employeeInfo: {},
 	},
@@ -39,23 +46,37 @@ export default {
 			});
 		},
 
-		*clearSearchValue(_, { put }) {
+		*setGetInfoValue({ payload = {} }, { select, put }) {
+			const { searchValue } = yield select(state => state.employee);
 			yield put({
 				type: 'updateState',
 				payload: {
-					searchValue: {
-						shopIdList: [],
-						name: null,
-						number: null,
-						username: null,
+					getInfoValue: {
+						...searchValue,
+						...payload,
 					},
+				},
+			});
+		},
+		*clearSearchValue(_, { put }) {
+			const initStatus = {
+				shopIdList: [],
+				name: null,
+				number: null,
+				username: null,
+			};
+			yield put({
+				type: 'updateState',
+				payload: {
+					searchValue: initStatus,
+					getInfoValue: initStatus
 				},
 			});
 		},
 
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
-			const { searchValue, pagination } = yield select(state => state.employee);
-			const { current = 1, pageSize = 10, roleId = -1 } = payload;
+			const { getInfoValue, pagination } = yield select(state => state.employee);
+			const { current = 1, pageSize = 10, roleId = -1, shopIdList: shopIdListParams = [] } = payload;
 			const tmpShopIdList = yield put.resolve({
 				type: 'global/getShopListFromStorage',
 			});
@@ -63,7 +84,7 @@ export default {
 				type: 'role/checkAdmin',
 			});
 			let tmpShopList = [];
-			const { shopIdList } = searchValue;
+			const { shopIdList } = getInfoValue;
 			if (shopIdList.length) {
 				tmpShopList = shopIdList;
 			} else if (adminResponse && adminResponse.code !== ERROR_OK) {
@@ -71,11 +92,11 @@ export default {
 			}
 
 			const options = {
-				...searchValue,
+				...getInfoValue,
 				pageNum: current,
 				pageSize,
 				roleId,
-				shopIdList: tmpShopList,
+				shopIdList: shopIdListParams.length > 0 ? shopIdListParams : tmpShopList,
 			};
 
 			const response = yield call(

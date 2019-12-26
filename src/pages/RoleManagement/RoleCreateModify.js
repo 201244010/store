@@ -1,8 +1,11 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-restricted-syntax */
 import React from 'react';
 import { Input, Checkbox, Button, Form, message, Spin, Card } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { idDecode } from '@/utils/utils';
+// import { normalInput } from '@/constants/regexp';
 import { FORM_ITEM_LAYOUT_BUSINESS } from '@/constants/form';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
 
@@ -81,8 +84,8 @@ class RoleModify extends React.Component {
 						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
 						message.error(
-							formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
-								formatMessage({ id: 'roleManagement.role.modifyFail' })
+							ALERT_NOTICE_MAP.hasOwnProperty(response.code) ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) 
+								: formatMessage({ id: 'roleManagement.role.modifyFail' })
 						);
 					}
 				} else {
@@ -97,8 +100,8 @@ class RoleModify extends React.Component {
 						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
 						message.error(
-							formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
-								formatMessage({ id: 'roleManagement.role.createFail' })
+							ALERT_NOTICE_MAP.hasOwnProperty(response.code) ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] })
+								: formatMessage({ id: 'roleManagement.role.createFail' })
 						);
 					}
 				}
@@ -185,6 +188,34 @@ class RoleModify extends React.Component {
 											message: formatMessage({
 												id: 'roleManagement.role.roleNameEmpty',
 											}),
+										},
+										{
+											validator: (rule, value, callback) => {
+												let illegalFlag = false;
+												for(const word of value){
+													if(isNaN(word.charCodeAt(1)) === false){
+														illegalFlag = true;
+														break;
+													}
+													if((word.charCodeAt(0) >= 8203 && word.charCodeAt(0) <= 8205) ||
+													(word.charCodeAt(0) >= 8232 && word.charCodeAt(0) <= 8238) ||
+													(word.charCodeAt(0) >= 8 && word.charCodeAt(0) <= 13) ||
+													(word.charCodeAt(0) >= 8 && word.charCodeAt(0) <= 13) ||
+													word.charCodeAt(0) === 34 || word.charCodeAt(0) === 39 ||
+													word.charCodeAt(0) === 92 || word.charCodeAt(0) === 160 ||
+													word.charCodeAt(0) === 65279 && isNaN(word.charCodeAt(1)) === true){
+														illegalFlag = true;
+														break;
+													}
+												}
+	
+												if (illegalFlag) {
+													callback('name-illegal');
+												} else {
+													callback();
+												}
+											},
+											message: formatMessage({ id: 'roleManagement.input.illegal' }),
 										},
 									],
 								})(<Input maxLength={20} />)}

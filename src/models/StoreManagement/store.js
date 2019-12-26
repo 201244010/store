@@ -5,6 +5,7 @@ import { format } from '@konata9/milk-shake';
 import Storage from '@konata9/storage.js';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as Action from '@/services/storeManagement/storeList';
+import { getLayerByUser, getOrgList, getLayer } from '@/services/organization';
 import * as CookieUtil from '@/utils/cookies';
 
 const cascaderDataWash = (data, mapping) => {
@@ -23,6 +24,41 @@ const cascaderDataWash = (data, mapping) => {
 
 		return temp;
 	});
+};
+
+const traversalTreeData = (originalList, targetList) => {
+	if (originalList instanceof Array) {
+		originalList.forEach((item) => {
+			const { orgName, orgId, userBindStatus } = item;
+			const target = {
+				title: orgName,
+				value: orgId,
+				disabled: !userBindStatus,
+				children: [],
+			};
+			targetList.push(target);
+			if(item.children && item.children.length) {
+				traversalTreeData(item.children, target.children);
+			}
+		});
+	}
+};
+
+const mapTreetoArray = (originalTree, targetList) => {
+	if (originalTree instanceof Array) {
+		originalTree.forEach((item) => {
+			const { orgId, orgName } = item;
+			const target = {
+				...item,
+				shopId: orgId,
+				shopName: orgName,
+			};
+			targetList.push(target);
+			if(item.children && item.children.length) {
+				mapTreetoArray(item.children, targetList);
+			}
+		});
+	}
 };
 
 export default {
@@ -65,6 +101,7 @@ export default {
 			showQuickJumper: true,
 		},
 		authKey: {},
+		treeData: [],
 	},
 
 	effects: {
@@ -142,20 +179,37 @@ export default {
 				type: 'updateState',
 				payload: { loading: true },
 			});
-			const response = yield call(Action.getList, opts);
+			// yield put({
+			// 	type: 'getOrgLayer'
+			// });
+			// const response2 = yield call(Action.getList, opts);
+			const response = yield call(getOrgList);
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
-				const shopList = data.shopList || [];
+				// const shopList = data.shopList || [];
+				// const newPayload = {
+				// 	loading: false,
+				// 	storeList: shopList,
+				// 	pagination: {
+				// 		...pagination,
+				// 		current,
+				// 	},
+				// };
+
+				const { orgList = {} } = data;
+				const targetList = [];
+				mapTreetoArray(orgList, targetList);
+				console.log('------shopList----', targetList);
 				const newPayload = {
 					loading: false,
-					storeList: shopList,
+					storeList: targetList,
 					pagination: {
 						...pagination,
 						current,
 					},
 				};
 				if (opts.type !== 'search') {
-					newPayload.allStores = shopList;
+					newPayload.allStores = targetList;
 				}
 
 				// yield put({
@@ -167,12 +221,18 @@ export default {
 					type: 'updateState',
 					payload: newPayload,
 				});
-			} else {
-				yield put({
-					type: 'updateState',
-					payload: { loading: false },
-				});
+				return {
+					code: response.code,
+					data: {
+						shopList: targetList,
+					}
+				};
 			}
+			yield put({
+				type: 'updateState',
+				payload: { loading: false },
+			});
+
 			return response;
 		},
 
@@ -419,6 +479,69 @@ export default {
 				});
 			}
 		},
+
+		*getOrgLayer(_, { call, put }) {
+			const companyId = yield put.resolve({
+				type: 'global/getCompanyIdFromStorage'
+			});
+			const companyName = yield put.resolve({
+				type: 'merchant/getCompanyNameById',
+				payload: {
+					companyId
+				}
+			});
+			const company = {
+				orgId: 0,
+				orgName: companyName,
+				orgStatus: 0,
+				level: 0,
+				orgPid: '',
+				userBindStatus: 0,
+			};
+			const response = yield call(getLayerByUser);
+			const { code, data } = response;
+			if(response && code === ERROR_OK) {
+				const { orgLayer } = data;
+				company.children = orgLayer;
+				const originalList = [company];
+				const targetList = [];
+				traversalTreeData(originalList, targetList);
+				console.log('-------original--targetList', targetList);
+				yield put({
+					type: 'updateTreeData',
+					payload: {
+						treeData: targetList
+					}
+				});
+			}
+		},
+		*getOrgnazationTree(_, { call }) {
+			const response = yield call(getLayer);
+			const { code, data } = response;
+			if(response && code === ERROR_OK) {
+				const { orgLayer } = data;
+				return orgLayer;
+			}
+			return [];
+		},
+		*updateCompany({ payload }, { put, select }) {
+			const { companyName } = format('toCamel')(payload);
+			const { treeData } = yield select(state => state.store);
+			const { children } = treeData[0];
+			const company = {
+				title: companyName,
+				value: 0,
+				disabled: true,
+				children,
+			};
+			const newTree = [company];
+			yield put({
+				type: 'updateTreeData',
+				payload: {
+					treeData: newTree
+				}
+			});
+		}
 	},
 
 	reducers: {
@@ -474,5 +597,9 @@ export default {
 				...state,
 			};
 		},
+		updateTreeData(state, action) {
+			const { payload: { treeData }} = action;
+			state.treeData = treeData;
+		}
 	},
 };

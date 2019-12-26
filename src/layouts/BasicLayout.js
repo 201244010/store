@@ -81,7 +81,7 @@ class BasicLayout extends React.PureComponent {
 			location: { pathname },
 		} = window;
 
-		if (![`${MENU_PREFIX.STORE}/createStore`, '/account'].includes(pathname)) {
+		if (![`${MENU_PREFIX.STORE}/newOrganization`, '/account'].includes(pathname)) {
 			this.checkStore();
 		}
 
@@ -215,7 +215,7 @@ class BasicLayout extends React.PureComponent {
 		if (shopList.length === 0) {
 			if (userPermissionList.some(permission => permission.path === MENU_PREFIX.STORE)) {
 				message.warning(formatMessage({ id: 'alert.store.is.none' }));
-				goToPath('storeCreate', { action: 'create' });
+				goToPath('newOrganization', { action: 'create' });
 			} else {
 				goToPath('account');
 			}

@@ -93,5 +93,4 @@ export default {
 	'cloudStorage.info': '提示',
 	'cloudStorage.info.tips': '订单已支付，请勿重复操作',
 	'cloudStorage.ok.text': '知道了',
-	
 };

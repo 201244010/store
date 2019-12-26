@@ -105,7 +105,7 @@ class CreateStore extends React.Component {
 
 		const regionValue = getFieldValue('region');
 		const address = getFieldValue('address');
-
+		console.log(regionValue);
 		const cityInfo = this.deepFindCity(regionValue);
 		const { name = null } = cityInfo || {};
 
@@ -180,6 +180,7 @@ class CreateStore extends React.Component {
 			// console.log(values);
 			if (!err) {
 				const { address } = values;
+				console.log(address);
 				const { poiList: { pois = [] } = {} } =
 					(await this.getAddressLocation(address)) || {};
 

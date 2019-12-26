@@ -13,6 +13,7 @@ const SearchBar = ({
 	currentCompanyId = null,
 	orgnizationTree = [],
 	searchValue: { shopIdList = [], name = null, number = null, username = null } = {},
+	setGetInfoValue = null,
 	setSearchValue = null,
 	getEmployeeList = null,
 	clearSearchValue = null,
@@ -35,6 +36,7 @@ const SearchBar = ({
 	};
 
 	const handleQuery = async () => {
+		setGetInfoValue();
 		await getEmployeeList({ current: 1 });
 	};
 
@@ -53,6 +55,7 @@ const SearchBar = ({
 								value={
 									shopId ? `${currentCompanyId}-${shopId}` : `${currentCompanyId}`
 								}
+								dropdownStyle={{ maxHeight: '50vh'}}
 								treeDefaultExpandAll
 								treeData={orgnizationTree}
 								onChange={(value, label, extra) =>
