@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-// import { Button } from  'antd';
+import { Button } from  'antd';
 import browser from 'browser-detect';
 
 import ReVideo from './ReVideo';
@@ -159,7 +159,9 @@ class VideoPlayer extends React.Component{
 
 		if (player) {
 			player.addClass('vjs-waiting');
-			player.loadingSpinner.show();
+			if(player.loadingSpinner) {
+				player.loadingSpinner.show();
+			}
 		}
 	}
 
@@ -372,7 +374,7 @@ class VideoPlayer extends React.Component{
 		const { pixelRatio, currentPPI, ppiChanged, progressbar, isLive,
 			onTimeUpdate, onMetadataArrived, onPlay, onError, onPause, onEnd, onCanPlay, onCanplayThrough, onDateChange, playHandler,
 			playBtnDisabled, showDatePicker, canPPIChange, showBackToLive, ppiChange, backToLive,
-			current, plugin, isOnline, cloudStatus, /* navigateTo, sn */
+			current, plugin, isOnline, cloudStatus, navigateTo, sn
 		} = this.props;
 
 		const { playing, fullScreen, noMedia, volume,
@@ -440,9 +442,9 @@ class VideoPlayer extends React.Component{
 								cloudStatus === 'closed' ?
 									<div>
 										<span>{ formatMessage({ id: 'videoPlayer.noCloudService' }) }</span>
-										{/* <Button type='primary' className={styles['cloud-btn']} onClick={() => { navigateTo('cloudStorage',{ sn, type: 'subscribe' });}}>
+										<Button type='primary' className={styles['cloud-btn']} onClick={() => { navigateTo('cloudStorage',{ sn, type: 'subscribe' });}}>
 											{ formatMessage({ id: 'videoPlayer.subCloud' })}
-										</Button> */}
+										</Button>
 									</div>
 									:<span>{ formatMessage({ id: 'videoPlayer.noPlay'}) }</span>
 							}
