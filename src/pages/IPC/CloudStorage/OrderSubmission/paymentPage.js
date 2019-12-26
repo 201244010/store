@@ -66,6 +66,8 @@ const PAYMENT_ICON = {
 			dispatch({ type: 'cloudStorage/getCountDown', payload: {orderNo}}),
 		getOrderDetail: ({ orderNo }) => 
 			dispatch({ type: 'trade/getOrderDetail', payload: { orderNo }}),
+		clearOrderDetail: () => 
+			dispatch({ type: 'trade/clearOrderDetail'}),
 	})
 )
 
@@ -89,10 +91,8 @@ class PaymentPage extends React.Component{
 		if(!orderNo){
 			goToPath('cloudStorage');
 		}
-		const { orderDetail: { paymentAmount }} = this.props;
-		if(!paymentAmount){
-			await getOrderDetail({ orderNo });
-		}
+		await getOrderDetail({ orderNo });
+	
 		const countDown = await getCountDownFromCloud(orderNo);
 		if(countDown <= 0) this.locationToOrderDetail(orderNo);
 		this.setState({
@@ -104,7 +104,9 @@ class PaymentPage extends React.Component{
 	}
 
 	componentWillUnmount() {
+		const { clearOrderDetail } = this.props;
 		clearTimeout(this.timer);
+		clearOrderDetail();
 	}
 
 	startCountDown = () => {
