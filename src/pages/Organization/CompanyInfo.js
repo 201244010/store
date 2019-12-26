@@ -58,6 +58,20 @@ class CompanyInfo extends React.Component {
 	}
 
 	async componentDidMount() {
+		await this.init();
+	}
+
+	componentWillReceiveProps(nextProps) {
+		const { companyInfo: { orgInfo: { businessHours: nextBusinessHours }}} = nextProps;
+		const { companyInfo: { orgInfo: { businessHours }}} = this.props;
+		if(nextBusinessHours !== businessHours){
+			this.setState({
+				allDayChecked: nextBusinessHours === '00:00~23:59'
+			});
+		}
+	}
+
+	init = async() => {
 		const { getShopTypeList, getRegionList, getOrganizationInfo, getOrganizationTreeByCompanyInfo, getAllOrgName, clearState, getCurrentHeight, getPathId } = this.props;
 		let treeData = {};
 		let isDisabled = true;
@@ -111,16 +125,6 @@ class CompanyInfo extends React.Component {
 			orgId,
 			action,
 		});
-	}
-
-	componentWillReceiveProps(nextProps) {
-		const { companyInfo: { orgInfo: { businessHours: nextBusinessHours }}} = nextProps;
-		const { companyInfo: { orgInfo: { businessHours }}} = this.props;
-		if(nextBusinessHours !== businessHours){
-			this.setState({
-				allDayChecked: nextBusinessHours === '00:00~23:59'
-			});
-		}
 	}
 
 	onTypeChangeHandler = (value) => {
@@ -376,6 +380,7 @@ class CompanyInfo extends React.Component {
 						message.success(formatMessage({id: 'companyInfo.save.success'}));
 					}else{
 						message.error(formatMessage({id: 'companyInfo.save.fail'}));
+						await this.init();
 					}
 					
 				}else{
@@ -394,8 +399,10 @@ class CompanyInfo extends React.Component {
 						}
 					}else if(code === STORE_EXIST){
 						message.error(formatMessage({id: 'companyInfo.message.name.exist'}));
+						await this.init();
 					}else if(code === ORGANIZATION_LEVEL_LIMITED){
 						message.error(formatMessage({id: 'companyInfo.message.level.limited'}));
+						await this.init();
 					}
 				}
 			}
