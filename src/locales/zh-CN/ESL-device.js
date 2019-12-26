@@ -244,6 +244,12 @@ export default {
 	'esl.device.config.scan.refresh.time.desc': '自刷新时间点可根据门店营业时间设置。',
 	'esl.device.config.boardcast': '注册广播',
 	'esl.device.config.boardcast.startTime': '开启时长',
+	'esl.device.config.scan.window': '价签扫描窗口',
+	'esl.device.config.scan.window.model.performance': '性能模式',
+	'esl.device.config.scan.window.model.save.energy': '节能模式',
+	'esl.device.config.scan.window.model.balance': '均衡模式',
+	'esl.device.config.scan.window.desc':
+		'配置价签唤醒时间长度，可依据应用场景选择',
 	'esl.device.config.boardcast.startTime.desc': '开启注册广播后，所有基站将只发送注册广播，方便价签注册。注册广播开启时长到期后，将自动关闭',
 	'esl.device.led.title': 'LED灯配置',
 	'esl.device.led.flash.color.white': '白',
