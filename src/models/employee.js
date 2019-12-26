@@ -76,7 +76,7 @@ export default {
 
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { getInfoValue, pagination } = yield select(state => state.employee);
-			const { current = 1, pageSize = 10, roleId = -1 } = payload;
+			const { current = 1, pageSize = 10, roleId = -1, shopIdList: shopIdListParams = [] } = payload;
 			const tmpShopIdList = yield put.resolve({
 				type: 'global/getShopListFromStorage',
 			});
@@ -96,7 +96,7 @@ export default {
 				pageNum: current,
 				pageSize,
 				roleId,
-				shopIdList: tmpShopList,
+				shopIdList: shopIdListParams.length > 0 ? shopIdListParams : tmpShopList,
 			};
 
 			const response = yield call(
