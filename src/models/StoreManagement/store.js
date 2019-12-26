@@ -506,7 +506,7 @@ export default {
 				const originalList = [company];
 				const targetList = [];
 				traversalTreeData(originalList, targetList);
-				console.log('-------original--targetList', originalList, targetList);
+				console.log('-------original--targetList', targetList);
 				yield put({
 					type: 'updateTreeData',
 					payload: {
@@ -523,6 +523,24 @@ export default {
 				return orgLayer;
 			}
 			return [];
+		},
+		*updateCompany({ payload }, { put, select }) {
+			const { companyName } = format('toCamel')(payload);
+			const { treeData } = yield select(state => state.store);
+			const { children } = treeData[0];
+			const company = {
+				title: companyName,
+				value: 0,
+				disabled: true,
+				children,
+			};
+			const newTree = [company];
+			yield put({
+				type: 'updateTreeData',
+				payload: {
+					treeData: newTree
+				}
+			});
 		}
 	},
 
