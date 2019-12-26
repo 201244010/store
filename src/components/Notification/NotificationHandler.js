@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Modal, Spin } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { format } from '@konata9/milk-shake';
 import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
 
 import { formatMessageTemplate, convertArrayPrams, replaceTemplateWithValue } from '@/utils/utils';
@@ -122,8 +123,10 @@ const palyMotion = async ({ params }) => {
 };
 
 const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
-	const { shop_id: shopId = null, company_id: companyId = null } =
-		convertArrayPrams(params) || {};
+	const {
+		shopId = null,
+		companyId = null,
+	} = format('toCamel')(convertArrayPrams(params));
 
 	const {
 		getCurrentCompanyId,
@@ -213,10 +216,10 @@ const ACTION_MAP = {
 		extra,
 	}) => {
 		const {
-			device_sn: deviceSn = null,
-			shop_id: shopId = null,
-			company_id: companyId = null,
-		} = convertArrayPrams(params);
+			deviceSn = null,
+			shopId = null,
+			companyId = null,
+		} = format('toCamel')(convertArrayPrams(params));
 		const currentShopId = await getCurrentShopId();
 		const targetShopId = parseInt(shopId, 0);
 		if (currentShopId === targetShopId) {
@@ -294,10 +297,10 @@ const ACTION_MAP = {
 		extra,
 	}) => {
 		const {
-			device_sn: deviceSn = null,
-			shop_id: shopId = null,
-			company_id: companyId = null,
-		} = convertArrayPrams(params);
+			deviceSn = null,
+			shopId = null,
+			companyId = null,
+		} = format('toCamel')(convertArrayPrams(params));
 		const currentShopId = await getCurrentShopId();
 		const targetShopId = parseInt(shopId, 0);
 		if (currentShopId === targetShopId) {
@@ -371,10 +374,10 @@ const ACTION_MAP = {
 		extra,
 	}) => {
 		const {
-			device_sn: deviceSn = null,
-			shop_id: shopId = null,
-			company_id: companyId = null,
-		} = convertArrayPrams(params);
+			deviceSn = null,
+			shopId = null,
+			companyId = null,
+		} = format('toCamel')(convertArrayPrams(params));
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
@@ -448,10 +451,10 @@ const ACTION_MAP = {
 		extra,
 	}) => {
 		const {
-			device_sn: deviceSn = null,
-			shop_id: shopId = null,
-			company_id: companyId = null,
-		} = convertArrayPrams(params);
+			deviceSn = null,
+			shopId = null,
+			companyId = null,
+		} = format('toCamel')(convertArrayPrams(params));
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
@@ -525,10 +528,10 @@ const ACTION_MAP = {
 		extra,
 	}) => {
 		const {
-			device_sn: deviceSn = null,
-			shop_id: shopId = null,
-			company_id: companyId = null,
-		} = convertArrayPrams(params);
+			deviceSn = null,
+			shopId = null,
+			companyId = null,
+		} = format('toCamel')(convertArrayPrams(params));
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {
@@ -602,10 +605,10 @@ const ACTION_MAP = {
 		extra,
 	}) => {
 		const {
-			device_sn: deviceSn = null,
-			shop_id: shopId = null,
-			company_id: companyId = null,
-		} = convertArrayPrams(params);
+			deviceSn = null,
+			shopId = null,
+			companyId = null,
+		} = format('toCamel')(convertArrayPrams(params));
 		const targetShopId = parseInt(shopId, 0);
 		const currentShopId = await getCurrentShopId();
 		if (currentShopId === targetShopId) {

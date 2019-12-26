@@ -23,5 +23,8 @@ export default {
 	'tradeVideos.unknownDevice': '未知设备',
 	'tradeVideos.viewDetails': '查看明细',
 	'tradeVideos.closeDetails': '收起明细',
-	'tradeVideos.myCamera':'My Camera'
+	'tradeVideos.myCamera':'My Camera',
+	'tradeVideos.cashierInfo': '收银信息',
+	'tradeVideos.total':'总金额',
+	'tradeVideos.paymentDetail':'支付明细'
 };

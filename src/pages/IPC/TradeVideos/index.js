@@ -6,7 +6,8 @@ import moment from 'moment';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import SearchBox from './SearchBox';
 import TradeVideosTable from './TradeVideosTable';
-import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
+// import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
+import TradeVideosPlayer from './TradeVideosPlayer';
 
 import styles from './TradeVideos.less';
 
@@ -102,6 +103,14 @@ import styles from './TradeVideos.less';
 			});
 
 			return url;
+		},
+		getPaymentInfo(orderId) {
+			dispatch({
+				type: 'tradeVideos/getPaymentInfo',
+				payload: {
+					orderId,
+				}
+			});
 		}
 
 	})
@@ -110,6 +119,7 @@ class TradeVideos extends React.Component {
 
 	state = {
 		isWatchVideo: false,
+		detailVisible: false,
 		deviceInfo: {
 			pixelRatio: '16:9',
 		},
@@ -254,11 +264,13 @@ class TradeVideos extends React.Component {
 		this.getTradeVideos(currentPage, pageSize);
 	};
 
-	watchVideoHandler = async (sn, url) => {
+	watchVideoHandler = async (sn, url, key) => {
 		if (url) {
-			const { getDeviceInfoByPosSN /* , getTradeVideo */ } = this.props;
+			const { getDeviceInfoByPosSN /* , getTradeVideo */, getPaymentInfo } = this.props;
+			const { tradeVideos: { tradeVideos } } = this.props;
 			const deviceInfo = await getDeviceInfoByPosSN(sn);
-			// console.log(type);
+			await getPaymentInfo(key);
+			console.log('tradeVideos', tradeVideos);
 
 			// const url = await getTradeVideo(orderId);
 			// console.log(url);
@@ -303,14 +315,21 @@ class TradeVideos extends React.Component {
 	watchVideoClose = () => {
 		this.setState({
 			isWatchVideo: false,
+			detailVisible: false
 		});
 	};
 
+	showPaymentInfo = () => {
+		console.log('show');
+		this.setState({
+			detailVisible: true
+		});
+	}
 
 
 	render() {
 		const { ipcList, loading } = this.props;
-		const { tradeVideos: { tradeVideos, paymentDeviceList, total } } = this.props;
+		const { tradeVideos: { tradeVideos, paymentDeviceList, total, paymentInfo } } = this.props;
 		const {
 			isWatchVideo,
 			/* ipcSelected, paymentDeviceSelected, ipcType, */
@@ -319,7 +338,9 @@ class TradeVideos extends React.Component {
 			currentPage,
 			pageSize,
 			expandedRowKeys,
+			detailVisible
 		} = this.state;
+		// console.log('tradeVideo', tradeVideos);
 		return(
 			<Card bordered={false}>
 				<div
@@ -350,13 +371,23 @@ class TradeVideos extends React.Component {
 						loading={loading.effects['tradeVideos/read']}
 					/>
 				</div>
-				<ModalPlayer
+				{/* <ModalPlayer
 					className={styles.video}
 					visible={isWatchVideo}
 					onClose={this.watchVideoClose}
 					url={videoUrl}
 
 					pixelRatio={pixelRatio}
+				/> */}
+				<TradeVideosPlayer
+					className={styles.video}
+					visible={isWatchVideo}
+					onClose={this.watchVideoClose}
+					url={videoUrl}
+					paymentInfo={paymentInfo}
+					pixelRatio={pixelRatio}
+					detailVisible={detailVisible}
+					showPaymentInfo={this.showPaymentInfo}
 				/>
 			</Card>
 		);
