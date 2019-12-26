@@ -154,13 +154,13 @@ class OrgDetail extends React.Component {
 		if(province && city && area){
 			for(let i=0; i<regionList.length; i++){
 				if(Number(regionList[i].value) === province){
-					detailAddress += regionList[i].name;
+					detailAddress += `${regionList[i].name} `;
 					for(let j=0; j<regionList[i].children.length; j++){
 						if(Number(regionList[i].children[j].value) === city){
-							detailAddress += regionList[i].children[j].name;
-							for(let k=0; k<regionList[i].children[j].children; k++){
+							detailAddress += `${regionList[i].children[j].name} `;
+							for(let k=0; k<regionList[i].children[j].children.length; k++){
 								if(Number(regionList[i].children[j].children[k].value) === area){
-									detailAddress += regionList[i].children[j].children[k].name;
+									detailAddress += `${regionList[i].children[j].children[k].name} `;
 									break;
 								}
 							}
