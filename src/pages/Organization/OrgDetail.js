@@ -232,7 +232,7 @@ class OrgDetail extends React.Component {
 								<div>{orgName || '--'}</div>
 							</div>
 							<div className={`${styles.col} ${styles.orgPname}`}>
-								<div>{formatMessage({id: 'orgDetail.org.parent'})}</div>
+								<div className={styles.label}>{formatMessage({id: 'orgDetail.org.parent'})}</div>
 								<div>{orgPname || '--'}</div>
 							</div>
 						</div>
