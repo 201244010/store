@@ -255,7 +255,7 @@
 	'esl.device.led.flash.color.yellow': '黃',
 	'esl.device.led.flash.frequency.quick': '快',
 	'esl.device.led.flash.frequency.middle': '中',
-	'esl.device.led.flash.color.frequency.slow': '慢',
+	'esl.device.led.flash.frequency.slow': '慢',
 	'esl.device.led.default.title': '默認閃燈模式',
 	'esl.device.led.color':'LED燈顏色',
 	'esl.device.led.frequency': '閃燈頻率',

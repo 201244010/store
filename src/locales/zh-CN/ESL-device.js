@@ -261,7 +261,7 @@ export default {
 	'esl.device.led.flash.color.yellow': '黄',
 	'esl.device.led.flash.frequency.quick': '快',
 	'esl.device.led.flash.frequency.middle': '中',
-	'esl.device.led.flash.color.frequency.slow': '慢',
+	'esl.device.led.flash.frequency.slow': '慢',
 	'esl.device.led.default.title': '默认闪灯模式',
 	'esl.device.led.color': 'LED灯颜色',
 	'esl.device.led.frequency': '闪灯频率',
