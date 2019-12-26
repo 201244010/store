@@ -189,7 +189,7 @@ class OrgDetail extends React.Component {
 			companyInfo: {
 				orgInfo: {
 					orgName = undefined,
-					orgId = undefined,
+					sunmiShopNo = undefined,
 					orgPname = undefined,
 					orgTag = undefined,
 					businessStatus,
@@ -225,7 +225,7 @@ class OrgDetail extends React.Component {
 						<div className={styles.row}>
 							<div className={`${styles.col} ${styles.orgId}`}>
 								<div className={styles.label}>{formatMessage({id: 'orgDetail.org.id'})}</div>
-								<div>{orgId || '--'}</div>
+								<div>{sunmiShopNo || '--'}</div>
 							</div>
 							<div className={`${styles.col} ${styles.orgName}`}>
 								<div className={styles.label}>{formatMessage({id: 'orgDetail.org.name'})}</div>
@@ -280,7 +280,7 @@ class OrgDetail extends React.Component {
 								<div className={styles.row}>
 									<div className={`${styles.col} ${styles.typeName}`}>
 										<div className={styles.label}>{formatMessage({id: 'orgDetail.typeName'})}</div>
-										<div>{typeName || '--'}</div>
+										<div>{typeName ? typeName.replace(',','-') : '--'}</div>
 									</div>
 									<div className={`${styles.col} ${styles.businessStatus}`}>
 										<div className={styles.label}>{formatMessage({id: 'orgDetail.businessStatus'})}</div>
@@ -344,7 +344,7 @@ class OrgDetail extends React.Component {
 							type="primary"
 							icon="plus"
 							onClick={() =>
-								goToPath('employeeCreate', { action: 'create', from: 'list' })
+								goToPath('employeeCreate', { action: 'create', from: 'list', orgId: locationOrgId })
 							}
 						>
 							{formatMessage({ id: 'employee.create' })}

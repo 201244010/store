@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
 import { Row, Col, TreeSelect, Select, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { connect } from 'dva';
+
+
+@connect(
+	null,
+	dispatch => ({
+		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
+
+	})
+)
 
 class OrgnizationSelect extends Component {
 	constructor(props) {
@@ -8,7 +18,17 @@ class OrgnizationSelect extends Component {
 		const value = props.value || [];
 		this.state = {
 			orgnizationRoleList: value.length > 0 ? value : [{ orgnization: null, role: [] }],
+			orgId: props.orgId,
+			companyId: undefined,
 		};
+	}
+
+	async componentDidMount(){
+		const { getCompanyIdFromStorage } = this.props;
+		const companyId = await getCompanyIdFromStorage();
+		this.setState({
+			companyId
+		});
 	}
 
 	handleOnchange = () => {
@@ -56,7 +76,7 @@ class OrgnizationSelect extends Component {
 	};
 
 	render() {
-		const { orgnizationRoleList } = this.state;
+		const { orgnizationRoleList, companyId, orgId } = this.state;
 		const { orgnizationTree = [], roleSelectList = [] } = this.props;
 		return (
 			<>
@@ -65,7 +85,7 @@ class OrgnizationSelect extends Component {
 						<Col span={12}>
 							<TreeSelect
 								treeDefaultExpandAll
-								value={item.orgnization}
+								value={item.orgnization || (companyId && orgId &&`${companyId}-${orgId}`)}
 								placeholder={formatMessage({
 									id: 'employee.info.select.orgnizaion',
 								})}
