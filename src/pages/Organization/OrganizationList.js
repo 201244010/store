@@ -145,6 +145,7 @@ class OrganizationList extends React.Component {
 			this.init();
 			message.success(formatMessage({ id: 'organization.move.result.success'}));
 		} else {
+			this.init();
 			message.error(formatMessage({ id: 'organization.move.result.error'}));
 		}
 		this.setState({
