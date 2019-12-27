@@ -146,8 +146,8 @@ class OrderDetail extends React.Component {
 	countDownFormat = remainTime => {
 		const minutes = Math.floor(remainTime / 60);
 		const seconds = remainTime % 60;
-
-		return `${minutes}分${seconds}秒`;
+		
+		return `${minutes}${formatMessage({id: 'minute.unit'})}${seconds}${formatMessage({id: 'second.unit'})}`;
 	};
 
 	showDetail = record => {
@@ -196,7 +196,15 @@ class OrderDetail extends React.Component {
 		const { goToPath } = this.props;
 		goToPath('cloudStorage');
 	};
-
+	
+	purchaseTypeText = type => {
+		switch (type) {
+			case 'purchase-type-alipay': return formatMessage({ id: 'orderManagement.detail.aliPay' });
+			case 'purchase-type-wechat': return formatMessage({ id: 'orderManagement.detail.wechatPay' });
+			default: return '--';
+		}
+	};
+	
 	render() {
 		const { showDetail, showModal, remainTime } = this.state;
 		const {
@@ -247,9 +255,7 @@ class OrderDetail extends React.Component {
 								{status === 4 && (
 									<Col span={8}>
 										{formatMessage({ id: 'orderManagement.detail.payType' })}
-										{purchaseType === 'purchase-type-alipay'
-											? formatMessage({ id: 'orderManagement.detail.aliPay' })
-											: '--'}
+										{this.purchaseTypeText(purchaseType)}
 									</Col>
 								)}
 								<Col span={8}>
