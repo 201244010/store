@@ -407,7 +407,7 @@ export default {
 				payload: {
 					service: 'W1/response',
 					handler: receivedMessage => {
-						const { data = [] } = JSON.parse(receivedMessage);
+						const { data = [] } = format('toCamel')(JSON.parse(receivedMessage));
 						// console.log(data);
 						const [dataContent, ,] = data;
 						const { result: { sonconnect: { devices = [] } = {} } = {}, errcode } =
