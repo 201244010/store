@@ -230,7 +230,7 @@ export default class RightToolBox extends Component {
 		const image = document.createElement('img');
 
 		try {
-			JsBarcode(image, value, {
+			JsBarcode(image, detail.content, {
 				format: value,
 				width: MAPS.containerWidth[detail.type] * detail.scaleX * detail.zoomScale,
 				displayValue: false
@@ -244,7 +244,7 @@ export default class RightToolBox extends Component {
 				},
 			});
 		} catch (e) {
-			message.error(e);
+			message.error(`${detail.content}在当前编码(${value})下不是一个合法的输入，请检查`);
 			updateComponentsDetail({
 				isStep: true,
 				[selectedShapeName]: {
