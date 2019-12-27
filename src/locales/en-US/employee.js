@@ -18,7 +18,7 @@ export default {
 	'employee.phone.exist': 'The phone number already exists',
 	'employee.create': 'Create an employee',
 	'employee.alter': 'Edit employee data',
-	'employee.phone.or.email': 'Phone number or email address',
+	'employee.phone.or.email': 'Phone/Email',
 	'employee.phone.or.email.isEmpty': 'Phone number or email address is required',
 	'employee.phone.formatError': 'Wrong phone number or email address format',
 	'employee.info': 'Employee details',

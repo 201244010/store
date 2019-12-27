@@ -69,7 +69,7 @@ export default {
 	'esl.device.esl.bind.product.code': '绑定商品编号',
 	'esl.device.esl.bind.product.name': '绑定商品名称',
 	'esl.device.esl.all': '共',
-	'esl.device.esl.total': '个价签',
+	'esl.device.esl.total': '个模板',
 	'esl.device.esl.detail': '价签详情',
 	'esl.device.esl.delete.title': '确定要删除价签？',
 	'esl.device.esl.delete.message1': '删除后价签将从该账户中解除绑定。',
