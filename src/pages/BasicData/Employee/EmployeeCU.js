@@ -288,7 +288,7 @@ class EmployeeCU extends Component {
 			const { data = {} } = response;
 			const { email, phone } = data;
 			setFieldsValue({
-				ssoUsername: email || phone,
+				ssoUsername: phone || email,
 			});
 		} else {
 			setFieldsValue({
