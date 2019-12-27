@@ -23,7 +23,7 @@ export const MENU_PREFIX = {
 	PRODUCT: '/product/list',
 	// MERCHANT: '/basicData/merchantManagement',
 	MERCHANT: '/company/merchantManagement',
-	STORE: '/basicData/storeManagement',
+	STORE: '/basicData/organizationManagement',
 	// STORE: '/company/storeManagement',
 	ROLE: '/roleManagement',
 };

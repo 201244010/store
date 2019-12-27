@@ -29,8 +29,7 @@ class MerchantCreate extends Component {
 		Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 		if (shopList.length === 0) {
 			CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
-			goToPath('storeCreate');
-			// router.push(`${MENU_PREFIX.STORE}/createStore`);
+			goToPath('newOrganization');
 		} else {
 			const defaultStore = shopList[0] || {};
 			CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
