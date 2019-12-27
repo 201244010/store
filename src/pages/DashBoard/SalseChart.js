@@ -83,6 +83,7 @@ const formatXLabel = (value, rangeType, timeRangeStart, timeRangeEnd) => {
 	dispatch => ({
 		getShopIdFromStorage: () => dispatch({ type: 'global/getShopIdFromStorage' }),
 		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		getIpcList: () => dispatch({ type: 'ipcList/getIpcList' })
 	})
 )
 class SalseChart extends PureComponent {
@@ -92,7 +93,8 @@ class SalseChart extends PureComponent {
 	}
 
 	async componentDidMount() {
-		const { ipcList, getShopIdFromStorage, getShopListFromStorage } = this.props;
+		const { getShopIdFromStorage, getShopListFromStorage, getIpcList } = this.props;
+		const ipcList = await getIpcList();
 		const currentShopId = await getShopIdFromStorage();
 		const shopList = await getShopListFromStorage();
 
@@ -104,7 +106,7 @@ class SalseChart extends PureComponent {
 		this.hasFsDevice = ipcList.some(ipc => ipc.hasFaceid);
 		this.saasExist = currentShopInfo.saasExist || 0;
 
-		this.chartMode = CHART_MODE.TRADE_BAR;
+		this.chartMode = CHART_MODE.TRADE_TRANS;
 		if (this.hasFsDevice && !this.saasExist) {
 			this.chartMode = CHART_MODE.CUSTOMER_BAR;
 		}
@@ -148,6 +150,7 @@ class SalseChart extends PureComponent {
 						})
 						.map(item => item.time),
 				}),
+				range: [0.03, 0.97]
 			},
 		};
 		let chartTip = {};
@@ -160,7 +163,7 @@ class SalseChart extends PureComponent {
 			const orderTicks =
 				maxOrderCount < 5
 					? { ticks: [1, 2, 3, 4, 5] }
-					: { tickInterval: Math.ceil(maxOrderCount / 5) };
+					: { tickInterval: Math.ceil(maxOrderCount / 25) * 5 };
 
 			chartScale = {
 				...chartScale,
@@ -196,7 +199,7 @@ class SalseChart extends PureComponent {
 						axis: {
 							x: 'time',
 							y: 'orderCount',
-							xLabel: { formatter: val => formatXLabel(val, rangeType, timeRangeStart, timeRangeEnd) },
+							xLabel: { formatter: val => formatXLabel(val, rangeType, timeRangeStart, timeRangeEnd)},
 						},
 						tooltip: { itemTpl, useHtml: true },
 						dataSource: passengerOrderList,
@@ -216,8 +219,7 @@ class SalseChart extends PureComponent {
 			const flowTicks =
 				maxFlowCount < 5
 					? { ticks: [1, 2, 3, 4, 5] }
-					: { tickInterval: Math.ceil(maxFlowCount / 5) };
-
+					: { tickInterval: Math.ceil(maxFlowCount / 25) * 5 };
 			chartScale = {
 				...chartScale,
 				passengerFlowCount: {
@@ -252,7 +254,7 @@ class SalseChart extends PureComponent {
 						axis: {
 							x: 'time',
 							y: 'passengerFlowCount',
-							xLabel: { formatter: val => formatXLabel(val, rangeType, timeRangeStart, timeRangeEnd) },
+							xLabel: { formatter: val => formatXLabel(val, rangeType, timeRangeStart, timeRangeEnd)},
 						},
 						tooltip: { itemTpl, useHtml: true },
 						dataSource: passengerOrderList,
