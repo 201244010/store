@@ -648,25 +648,28 @@ class PhotoManagement extends React.Component {
 					</Form>
 				</div>
 
-				<Button
-					type="primary"
-					onClick={this.showUpload}
-					className={styles['add-photo-btn']}
-				>
-					{formatMessage({ id: 'photoManagement.addPhoto' })}
-				</Button>
+				<div>
+					<Button
+						type="primary"
+						onClick={this.showUpload}
+						className={styles['add-photo-btn']}
+					>
+						{formatMessage({ id: 'photoManagement.addPhoto' })}
+					</Button>
 
-				<Button
-					className={styles['add-photo-btn']}
-					onClick={this.showRemove}
-					disabled={checkList.length === 0}
-				>
-					{formatMessage({ id: 'photoManagement.plentyMove' })}
-				</Button>
+					<Button
+						className={styles['add-photo-btn']}
+						onClick={this.showRemove}
+						disabled={checkList.length === 0}
+					>
+						{formatMessage({ id: 'photoManagement.plentyMove' })}
+					</Button>
 
-				<Button onClick={this.showDelete} disabled={checkList.length === 0}>
-					{formatMessage({ id: 'photoManagement.plentyDelete' })}
-				</Button>
+					<Button onClick={this.showDelete} disabled={checkList.length === 0}>
+						{formatMessage({ id: 'photoManagement.plentyDelete' })}
+					</Button>
+				</div>
+
 
 				<Alert
 					message={

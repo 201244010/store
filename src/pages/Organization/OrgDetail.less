@@ -1,0 +1,69 @@
+.detail-container{
+	.org-detail{
+		margin-bottom: 16px;
+		:global {
+			.ant-card-body {
+				padding: 0;
+			}
+		}
+		.detail-body{
+			padding: 32px;
+			font-size:14px;
+			font-family:PingFangSC-Regular,PingFang SC, sans-serif;
+			font-weight:400;
+			color:rgba(51,51,56,1);
+			.row{
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+				.col{
+					word-wrap: break-word ;
+					overflow-wrap: break-word ;
+					
+					width: 32%;
+					min-height: 22px;
+					line-height: 22px;
+					text-align: left;
+					margin-bottom: 16px;
+					display: flex;
+					.label{
+						min-width: 70px;
+					}
+					div{
+						overflow: auto;
+					}
+				}
+				.contactPerson{
+					.label{
+						min-width: 60px;
+					}
+				}
+				.address{
+					.label{
+						min-width: 45px;
+					}
+					margin-bottom: 0;
+				}
+			}
+		}
+		.footer{
+			padding: 20px 24px;
+			width: 100%;
+			height: 72px;
+			border-top: 1px solid #E9E9E9;
+			.btn{
+				margin-right: 20px;
+			}
+			.noShow{
+				display: none;
+			}
+		}
+	}
+	.employee-info{
+		.add-btn{
+			margin-bottom: 20px;
+		}
+	}
+	
+}
+

@@ -109,7 +109,7 @@ class Login extends Component {
 			const shopList = result.shopList || [];
 			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
-				goToPath('storeCreate');
+				goToPath('newOrganization');
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
 				const lastStore = shopList.length;

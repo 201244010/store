@@ -195,6 +195,10 @@ export default {
 					type: 'getCompanyList',
 				});
 				yield put({
+					type: 'store/updateCompany',
+					payload: options
+				});
+				yield put({
 					type: 'menu/goToPath',
 					payload: {
 						pathId: 'merchantView',
