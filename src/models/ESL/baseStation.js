@@ -341,7 +341,8 @@ export default {
 				clksyncPeriod,
 				eslRefleshPeriod,
 				eslRefleshTime,
-				scanDeepSleep
+				scanDeepSleep,
+				wakePeriod
 			} = payload;
 			const [refleshHour = 4, refleshMinute = 0 ] = [eslRefleshTime.hour(), eslRefleshTime.minutes()];
 			const param1 = format('toSnake')({
@@ -350,7 +351,8 @@ export default {
 					? parseInt(scanPeriod, 10) + IN_ENERGY_SAVE
 					: parseInt(scanPeriod, 10),
 				scanMulti,
-				scanDeepSleep
+				scanDeepSleep,
+				wakePeriod
 			});
 			const param2 = format('toSnake')({
 				networkId,
