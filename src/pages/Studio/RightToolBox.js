@@ -244,7 +244,7 @@ export default class RightToolBox extends Component {
 				},
 			});
 		} catch (e) {
-			message.error(`${detail.content}在当前编码(${value})下不是一个合法的输入，请检查`);
+			message.error(`${detail.content}${formatMessage({id: 'studio.error.codec.value.wrong'})}`);
 			updateComponentsDetail({
 				isStep: true,
 				[selectedShapeName]: {
