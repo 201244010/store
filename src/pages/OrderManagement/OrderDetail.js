@@ -147,7 +147,7 @@ class OrderDetail extends React.Component {
 		const minutes = Math.floor(remainTime / 60);
 		const seconds = remainTime % 60;
 
-		return `${minutes}分${seconds}秒`;
+		return `${minutes}${formatMessage({id: 'minute.unit'})}${seconds}${formatMessage({id: 'second.unit'})}`;
 	};
 
 	showDetail = record => {
