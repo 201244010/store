@@ -196,6 +196,14 @@ class OrderDetail extends React.Component {
 		const { goToPath } = this.props;
 		goToPath('cloudStorage');
 	};
+	
+	purchaseTypeText = type => {
+		switch (type) {
+			case 'purchase-type-alipay': return formatMessage({ id: 'orderManagement.detail.aliPay' });
+			case 'purchase-type-wechat': return formatMessage({ id: 'orderManagement.detail.wechatPay' });
+			default: return '--';
+		}
+	};
 
 	render() {
 		const { showDetail, showModal, remainTime } = this.state;
@@ -247,9 +255,7 @@ class OrderDetail extends React.Component {
 								{status === 4 && (
 									<Col span={8}>
 										{formatMessage({ id: 'orderManagement.detail.payType' })}
-										{purchaseType === 'purchase-type-alipay'
-											? formatMessage({ id: 'orderManagement.detail.aliPay' })
-											: '--'}
+										{this.purchaseTypeText(purchaseType)}
 									</Col>
 								)}
 								<Col span={8}>
