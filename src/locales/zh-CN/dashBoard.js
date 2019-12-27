@@ -79,6 +79,7 @@ export default {
 	'trade.transfer.count.trend': '交易笔数趋势',
 	'trade.count.trend': '交易笔数趋势',
 	'customer.count.trend': '客流量趋势',
+	'customer.count': '客流量',
 	'customer.distribute': '客群分布',
 	'customer.sex': '性别',
 	'customer.newold': '新老',
