@@ -54,7 +54,7 @@ export default {
 	'list.action.clone': 'Clone',
 	'list.action.restart': 'Reboot',
 	'list.action.upload.firmware': 'Upload Firmware',
-	'pagination.total.prefix': 'Total',
+	'pagination.total.prefix': ' ',
 	'select.all': 'All',
 	'select.placeholder': 'Please select',
 	'safety.validate': 'Security validation',

@@ -69,7 +69,7 @@
 	'esl.device.esl.bind.product.code': '綁定商品編號',
 	'esl.device.esl.bind.product.name': '綁定商品名稱',
 	'esl.device.esl.all': '共',
-	'esl.device.esl.total': '個價簽',
+	'esl.device.esl.total': '個模板',
 	'esl.device.esl.detail': '價簽詳情',
 	'esl.device.esl.delete.title': '確定要刪除價簽？',
 	'esl.device.esl.delete.message1': '刪除後價簽將從該賬戶中解除綁定。',
