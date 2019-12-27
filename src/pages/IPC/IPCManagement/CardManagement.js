@@ -6,7 +6,7 @@ import styles from './CardManagement.less';
 import { FORM_ITEM_LAYOUT_MANAGEMENT } from '@/constants/form';
 import AnchorWrapper from '@/components/Anchor';
 import NVRTitle from './NVRTitle';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, ERR_SDCARD_NOT_PLUGGED, ERR_SDCARD_INVALID, ERR_SDCARD_UMOUNT_FAILED, ERR_SDCARD_UNFARMATTED } from '@/constants/errorCode';
 import ipcTypes from '@/constants/ipcTypes';
 import { comperareVersion } from '@/utils/utils';
 
@@ -191,8 +191,9 @@ class CardManagement extends Component {
 
 	componentWillReceiveProps(nextProps) {
 		const {
-			cardManagement: { removeStatus, formatStatus },
+			cardManagement: { removeStatus, formatStatus, errCode },
 		} = nextProps;
+		console.log('errCode=', errCode);
 
 		const { formattingModalVisible, removeTimeout, formatTimeout, timer } = this.state;
 
@@ -205,7 +206,25 @@ class CardManagement extends Component {
 			clearTimeout(removeTimeout);
 
 			this.removeConfirmInstance.destroy();
-			this.operateFail(formatMessage({ id: 'cardManagement.removeFail' }));
+
+			let errMessage;
+			switch(errCode) {
+				case ERR_SDCARD_NOT_PLUGGED:
+					errMessage = formatMessage({ id: 'cardManagement.failNotPlugged' });
+					break;
+				case ERR_SDCARD_INVALID:
+					errMessage = formatMessage({ id: 'cardManagement.failInvalid' });
+					break;
+				case ERR_SDCARD_UMOUNT_FAILED:
+					errMessage = formatMessage({ id: 'cardManagement.failNotPlugged' });
+					break;
+				case ERR_SDCARD_UNFARMATTED:
+					errMessage = formatMessage({ id: 'cardManagement.failUnformatted' });
+					break;
+				default:
+					errMessage = formatMessage({ id: 'cardManagement.removeFail' });
+			}
+			this.operateFail(errMessage);
 		}
 
 		if (formatStatus === 'success' && formattingModalVisible === true) {
@@ -226,7 +245,19 @@ class CardManagement extends Component {
 			this.setState({
 				formattingModalVisible: false,
 			});
-			this.operateFail(formatMessage({ id: 'cardManagement.formatFail' }));
+
+			let errMessage;
+			switch(errCode) {
+				case ERR_SDCARD_NOT_PLUGGED:
+					errMessage = formatMessage({ id: 'cardManagement.failNotPlugged' });
+					break;
+				case ERR_SDCARD_INVALID:
+					errMessage = formatMessage({ id: 'cardManagement.failInvalid' });
+					break;
+				default:
+					errMessage = formatMessage({ id: 'cardManagement.formatFail' });
+			}
+			this.operateFail(errMessage);
 		}
 	}
 
