@@ -468,7 +468,7 @@ class OrderSubmission extends React.Component{
 													},
 												],
 											})(
-												<Input placeholder={formatMessage({id: 'cloudStorage.input.invoice.taxRegisterNo'})} />
+												<Input maxLength={20} placeholder={formatMessage({id: 'cloudStorage.input.invoice.taxRegisterNo'})} />
 											)
 										}
 									</Form.Item>
