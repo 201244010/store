@@ -17,7 +17,7 @@ const SearchResult = props => {
 		goToPath = null,
 		deleteEmployee = null,
 		getEmployeeList = null,
-		userId = ''
+		userId = '',
 	} = props;
 
 	const viewDetail = record => {
@@ -167,8 +167,9 @@ const SearchResult = props => {
 	const onTableChange = page => {
 		// console.log(page);
 		const { current = 1, pageSize = 10 } = page;
+		const { shopIdList = [] } = props;
 		if (getEmployeeList) {
-			getEmployeeList({ current, pageSize });
+			getEmployeeList({ current, pageSize, shopIdList });
 		}
 	};
 

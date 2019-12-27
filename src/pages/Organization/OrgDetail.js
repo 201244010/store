@@ -357,6 +357,7 @@ class OrgDetail extends React.Component {
 								deleteEmployee,
 								goToPath,
 								getEmployeeList,
+								shopIdList: [locationOrgId],
 								userId: this.userId
 							}}
 						/>

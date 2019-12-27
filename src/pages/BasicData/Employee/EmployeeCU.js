@@ -26,6 +26,7 @@ import styles from './Employee.less';
 		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
 		getOrgnazationTree: () => dispatch({ type: 'store/getOrgnazationTree' }),
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
+		getOrgLayer: () => dispatch({ type: 'store/getOrgLayer'}),
 		checkUsernameExist: ({ username }) =>
 			dispatch({ type: 'employee/checkUsernameExist', payload: { username } }),
 		checkSsoBinded: ({ ssoUsername }) =>
@@ -198,6 +199,7 @@ class EmployeeCU extends Component {
 			checkUsernameExist,
 			createEmployee,
 			updateEmployee,
+			getOrgLayer,
 			goToPath,
 			checkNumberExist,
 			employee: {
@@ -233,6 +235,7 @@ class EmployeeCU extends Component {
 						...submitData,
 					});
 					if (response && response.code === ERROR_OK) {
+						getOrgLayer();
 						if (this.from === 'detail' && this.employeeId) {
 							goToPath('employeeInfo', { employeeId: this.employeeId });
 						} else {
