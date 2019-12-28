@@ -26,7 +26,7 @@ export default {
 	'cloudStorage.open.tips.third':'，请选择需要绑定的设备。限时免费订阅期间，剩余有效期小于3天才可续费',
 	'cloudStorage.no.ipc':'暂无可绑定设备',
 	'cloudStorage.subscription.agreement.tips':'订阅前请阅读并同意',
-	'cloudStorage.subscription.agreement':'《商米服务协议》',
+	'cloudStorage.subscription.agreement':'《商米云存储服务协议》',
 	'cloudStorage.title':'云存储',
 	'cloudStorage.adv.price':'超值价格 存储灵活',
 	'cloudStorage.price.detail':'商米云存储服务，包年低至0.32元/天。海量存储空间，实时对录像视频循环保存7/30天。',
