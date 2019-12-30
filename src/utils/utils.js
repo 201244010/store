@@ -654,3 +654,11 @@ export const comperareVersion = (l,r) => {
 	}
 	return 0;
 };
+
+export const downloadFileByClick = (downloadUrl) => {
+	const element = document.createElement('a');
+	element.href = downloadUrl;
+	document.body.appendChild(element);
+	element.click();
+	document.body.removeChild(element);
+};

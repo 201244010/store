@@ -102,3 +102,25 @@ export const erpImport = (options = {}) => {
 
 	return fetchApi('import', opts).then(response => response.json());
 };
+
+export const importByExcel = (options = {}) => {
+	const opts = {
+		method: 'POST',
+		body: {
+			...options,
+		},
+	};
+
+	return fetchApi('importByExcel', opts).then(response => response.json());
+};
+
+export const downloadExcelTemplate = (options = {}) => {
+	const opts = {
+		method: 'POST',
+		body: {
+			...options,
+		},
+	};
+
+	return fetchApi('downloadTemplate', opts).then(response => response.json());
+};

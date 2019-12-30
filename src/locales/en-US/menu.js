@@ -62,6 +62,7 @@ export default {
 	'menu.basicData.productManagement.list.productUpdate': 'Edit product',
 	'menu.basicData.productManagement.list.productInfo': 'Product details',
 	'menu.basicData.productManagement.list.erpImport': 'Interface with ERP',
+	'menu.basicData.productManagement.list.excelUpload': 'Excel Upload',
 	'menu.basicData.merchantManagement': 'Merchant management',
 	'menu.basicData.merchantManagement.merchantManagement': 'Merchant management',
 	'menu.basicData.merchantManagement.view': 'Check merchant',

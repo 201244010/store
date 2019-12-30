@@ -62,6 +62,7 @@ export default {
 	'menu.basicData.productManagement.list.productUpdate': '修改商品',
 	'menu.basicData.productManagement.list.productInfo': '商品详情',
 	'menu.basicData.productManagement.list.erpImport': '对接ERP',
+	'menu.basicData.productManagement.list.excelUpload': 'Excel批量上传',
 	'menu.basicData.organizationManagement': '组织管理',
 	'menu.basicData.organizationManagement.newOrganization': '新建组织',
 	'menu.basicData.organizationManagement.editOrganization': '修改',

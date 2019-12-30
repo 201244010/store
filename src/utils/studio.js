@@ -574,11 +574,3 @@ export const downloadJsonAsDraft = (name = 'template', data) => {
 	element.click();
 	document.body.removeChild(element);
 };
-
-export const downloadFontFile = (downloadUrl) => {
-	const element = document.createElement('a');
-	element.href = downloadUrl;
-	document.body.appendChild(element);
-	element.click();
-	document.body.removeChild(element);
-};
