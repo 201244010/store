@@ -144,6 +144,15 @@ class MqttModel {
 				yield call(me.client.registerErrorHandler, handler);
 			},
 
+			*registerReconnectHandler(
+				{
+					payload: { handler },
+				},
+				{ call }
+			) {
+				yield call(me.client.registerReconnectHandler, handler);
+			},
+
 			putMsgMap() {
 				return me.client.msgIdMap;
 			},

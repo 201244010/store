@@ -26,7 +26,7 @@ class OrgnizationSelect extends Component {
 		const { getCompanyIdFromStorage } = this.props;
 		const { orgId } = this.state;
 		const companyId = await getCompanyIdFromStorage();
-		if(orgId){
+		if(orgId && orgId !== 'NAN'){
 			const orgnizationRoleList = [{ orgnization: `${companyId}-${orgId}`, role: [] }];
 			this.setState({
 				orgnizationRoleList
