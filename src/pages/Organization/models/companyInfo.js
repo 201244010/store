@@ -146,13 +146,19 @@ export default {
 			});
 		},
 		*getAllOrgName(_, { put }) {
-			const { id: userId } = yield put.resolve({
+			const userInfo = yield put.resolve({
 				type: 'global/getUserInfoFromStorage',
-			}) || {};
+			});
+			let userId;
+			if(userInfo){
+				const { id } = userInfo;
+				userId = id;
+			}
 
 			const companyId = yield put.resolve({
 				type: 'global/getCompanyIdFromStorage',
 			}) || {};
+
 			if(userId && companyId){
 				const response = yield getOrgList({userId, companyId});
 				const { code } = response;
