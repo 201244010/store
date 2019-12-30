@@ -37,4 +37,6 @@ export default {
 	'employee.info.create.failed': '员工创建失败',
 	'employee.info.update.failed': '员工更新失败',
 	'employee.info.binded.error': '员工工号/手机/邮箱/商米账号已被绑定',
+	'employee.create.success': '员工创建成功',
+	'employee.update.success': '员工修改成功',
 };
