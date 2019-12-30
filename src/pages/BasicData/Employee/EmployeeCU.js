@@ -394,9 +394,12 @@ class EmployeeCU extends Component {
 										if (value === '') {
 											callback();
 										}
+
 										if (value === 0) {
 											callback(formatMessage({ id: 'employee.gender.isEmpty' }));
 										}
+
+										callback();
 									},
 								},
 							],
