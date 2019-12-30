@@ -13,7 +13,6 @@ import * as CookieUtil from '@/utils/cookies';
 const { API_ADDRESS, MD5_TOKEN } = CONFIG;
 const ERR_INTERNET_DISCONNECTED = 9999;
 const GATEWAY_ERR = 9998;
-const COMMON_ERROR = 11111;
 
 // const codeMessage = {
 //   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
@@ -166,8 +165,6 @@ export const customizeFetch = (service = 'api', base, toSnake) => {
 				noAuthhandler();
 			} else if (response.status === 502) {
 				response = new Response(JSON.stringify({ code: GATEWAY_ERR }));
-			} else {
-				response = new Response(JSON.stringify({ code: COMMON_ERROR }));
 			}
 		}
 
