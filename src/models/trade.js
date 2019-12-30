@@ -53,13 +53,11 @@ export default {
 
 		*getOrderDetail({ payload }, { call, put }) {
 			const { orderNo } = payload || {};
-			console.log(orderNo);
 			const response = yield call(
 				Actions.handleTradeManagement,
 				'order/getInfo',
 				format('toSnake')({ orderNo })
 			);
-			console.log(response);
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response || {};
 				yield put({
@@ -67,6 +65,12 @@ export default {
 					payload: { orderDetail: format('toCamel')(data) || {}},
 				});
 			}
+		},
+		*clearOrderDetail(_, {put}){
+			yield put({
+				type: 'updateState',
+				payload: { orderDetail: {}},
+			});
 		}
 	},
 	reducers: {

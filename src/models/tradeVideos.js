@@ -8,17 +8,17 @@ export default {
 		total: 0,
 		tradeVideos:[],
 		paymentDeviceList:[],
-		posList:[]
+		paymentInfo: {
+			paymentMethod: '',
+			purchaseTime: '',
+			totalPrice: '',
+			paymentDeviceName: '',
+			details: []
+		},
 		// paymentDetailList:[],
 		// ipcList:[]
 	},
 	reducers: {
-		readPostList(state, { payload }) {
-			return {
-				...state,
-				...payload
-			};
-		},
 		readData(state, action){
 			const { payload: { list, total} } = action;
 			// console.log(payload);
@@ -45,6 +45,21 @@ export default {
 				return true;
 			});
 		},
+		readPaymentInfo(state, action){
+			const { payload: { orderId, detailList } } = action;
+
+			state.tradeVideos.forEach(item => {
+				// console.log(item.key, orderId);
+				if (item.key === orderId) {
+					item.details = [
+						...detailList
+					];
+					console.log('payment', item);
+					state.paymentInfo = item;
+				}
+			});
+		}
+
 	},
 	effects: {
 		*read({ payload }, { put, call }){
@@ -109,23 +124,13 @@ export default {
 			}
 			return {};
 		},
-		*getPOSList({ payload: { startTime, endTime } }, { select, call, put }) {
-			let posList = yield select((state) => state.tradeVideos.posList);
-			if(posList.length === 0){
-				const response = yield call(getPOSList, { startTime, endTime });
-				if(response.code === ERROR_OK){
-					posList = response.data;
-					yield put({
-						type: 'readPostList',
-						payload: {
-							posList
-						}
-					});
-					return posList;
-				}
+		*getPOSList({ payload: { startTime, endTime } }, { call }) {
+			const response = yield call(getPOSList, { startTime, endTime });
+			if(response.code === ERROR_OK){
+				const posList = response.data;
+				return posList;
 			}
-			
-			return posList;
+			return [];
 		},
 		*getPaymentDeviceList({ payload: { ipcId, startTime, endTime } },{ put }){
 			const posList = yield put.resolve({
@@ -208,6 +213,28 @@ export default {
 				return info;
 			}
 			return {};
+		},
+		*getPaymentInfo({ payload }, { put }){
+			const { orderId } = payload;
+			const response = yield getPaymentDetailList({
+				orderId
+			});
+
+			const { code, data } = response;
+
+			if (code === ERROR_OK) {
+				// console.log(data);
+				yield put({
+					type: 'readPaymentInfo',
+					payload: {
+						orderId,
+						detailList: data
+					}
+				});
+
+				return data;
+			}
+			return [];
 		}
 	}
 };

@@ -27,10 +27,11 @@ class StoreRelate extends Component {
 			const shopList = result.shopList || [];
 			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
-				router.push(`${MENU_PREFIX.STORE}/createStore`);
+				router.push(`${MENU_PREFIX.STORE}/newOrganization`);
 			} else {
-				const lastStore = shopList.length;
-				const defaultStore = shopList[lastStore - 1] || {};
+				// const lastStore = shopList.length;
+				// const defaultStore = shopList[lastStore - 1] || {};
+				const defaultStore = shopList.find(item => item.userBindStatus) || {};
 				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
 				router.push('/');
 			}

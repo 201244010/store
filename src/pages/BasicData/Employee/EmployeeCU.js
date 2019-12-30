@@ -24,7 +24,9 @@ import styles from './Employee.less';
 	dispatch => ({
 		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
 		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		getOrgnazationTree: () => dispatch({ type: 'store/getOrgnazationTree' }),
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
+		getOrgLayer: () => dispatch({ type: 'store/getOrgLayer'}),
 		checkUsernameExist: ({ username }) =>
 			dispatch({ type: 'employee/checkUsernameExist', payload: { username } }),
 		checkSsoBinded: ({ ssoUsername }) =>
@@ -55,19 +57,26 @@ class EmployeeCU extends Component {
 	constructor(props) {
 		super(props);
 
-		[this.employeeId, this.action, this.from] = [
+		[this.employeeId, this.action, this.from, this.orgId] = [
 			getLocationParam('employeeId') || null,
 			getLocationParam('action') || 'create',
 			getLocationParam('from') || 'list',
+			getLocationParam('orgId') || undefined,
 		];
 
 		this.state = {
 			orgnizationTree: [],
+			shopIdList: [],
 		};
 	}
 
 	async componentDidMount() {
-		const { getAllRoles } = this.props;
+		const { getAllRoles, getShopListFromStorage } = this.props;
+		const shopList = await getShopListFromStorage();
+		const shopIdList = shopList.map(item => item.orgId);
+		this.setState({
+			shopIdList
+		});
 		getAllRoles();
 		if (this.employeeId && this.action === 'edit') {
 			const { getEmployeeInfo } = this.props;
@@ -76,45 +85,56 @@ class EmployeeCU extends Component {
 		this.createOrgnizationTree();
 	}
 
+	traversalTreeData = (originalList, targetList, companyId) => {
+		if (originalList instanceof Array) {
+			originalList.forEach((item) => {
+				const { orgName, orgId, orgStatus } = item;
+				const target = {
+					title: orgName,
+					value: `${companyId}-${orgId}`,
+					key: `${companyId}-${orgId}`,
+					disabled: !!orgStatus,
+					children: [],
+				};
+				targetList.push(target);
+				if(item.children && item.children.length) {
+					this.traversalTreeData(item.children, target.children, companyId);
+				}
+			});
+		}
+	};
+
 	createOrgnizationTree = async () => {
 		const {
 			getCompanyIdFromStorage,
-			getShopListFromStorage,
 			getCompanyListFromStorage,
-			employee: {
-				employeeInfo: { mappingList = [] },
-			},
+			getOrgnazationTree,
 		} = this.props;
 		const currentCompanyId = await getCompanyIdFromStorage();
 		const companyList = await getCompanyListFromStorage();
-		const shopList = await getShopListFromStorage();
 		const companyInfo =
 			companyList.find(company => company.companyId === currentCompanyId) || {};
-		const shopNameList = shopList.map(item => item.shopName);
-		const tmpObj = {};
-		const tmpMappingList = mappingList
-			.filter(item => !shopNameList.includes(item.shopName) && item.shopName !== '')
-			.reduce((items, next) => {
-				tmpObj[next.shopId] ? '' : (tmpObj[next.shopId] = true && items.push(next));
-				return items;
-			}, []);
+		// const shopNameList = shopList.map(item => item.shopName);
+		// const tmpObj = {};
+		// const tmpMappingList = mappingList
+		// 	.filter(item => !shopNameList.includes(item.shopName) && item.shopName !== '')
+		// 	.reduce((items, next) => {
+		// 		tmpObj[next.shopId] ? '' : (tmpObj[next.shopId] = true && items.push(next));
+		// 		return items;
+		// 	}, []);
+		const originalTree = await getOrgnazationTree();
+		const targetTree = [];
+		if(originalTree && originalTree.length) {
+			this.traversalTreeData(originalTree, targetTree, currentCompanyId);
+		}
+		console.log('------originalTree----', targetTree);
 		const orgnizationTree = [
 			{
 				title: companyInfo.companyName,
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
 				children: [
-					...shopList.map(shop => ({
-						title: shop.shopName,
-						value: `${companyInfo.companyId}-${shop.shopId}`,
-						key: `${companyInfo.companyId}-${shop.shopId}`,
-					})),
-					...tmpMappingList.map(shop => ({
-						title: shop.shopName,
-						value: `${companyInfo.companyId}-${shop.shopId}`,
-						key: `${companyInfo.companyId}-${shop.shopId}`,
-						disabled: true,
-					})),
+					...targetTree,
 				],
 			},
 		];
@@ -179,6 +199,7 @@ class EmployeeCU extends Component {
 			checkUsernameExist,
 			createEmployee,
 			updateEmployee,
+			getOrgLayer,
 			goToPath,
 			checkNumberExist,
 			employee: {
@@ -214,6 +235,7 @@ class EmployeeCU extends Component {
 						...submitData,
 					});
 					if (response && response.code === ERROR_OK) {
+						getOrgLayer();
 						if (this.from === 'detail' && this.employeeId) {
 							goToPath('employeeInfo', { employeeId: this.employeeId });
 						} else {
@@ -431,12 +453,14 @@ class EmployeeCU extends Component {
 												})
 											);
 										} else {
+											const { shopIdList } = this.state;
 											const objectKeys = Object.keys(value);
+
 											const hasEmpty = objectKeys.some(key => {
 												const { orgnization = null, role = [] } = value[
 													key
 												];
-												return !orgnization || role.length === 0;
+												return (!orgnization && shopIdList.indexOf(Number(this.orgId)) === -1) || role.length === 0;
 											});
 											let isSame = false;
 											objectKeys.forEach((item, index) => {
@@ -471,7 +495,7 @@ class EmployeeCU extends Component {
 									},
 								},
 							],
-						})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList }} />)}
+						})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList, orgId: this.orgId }} />)}
 					</Form.Item>
 
 					<Form.Item label=" " colon={false}>

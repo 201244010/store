@@ -127,6 +127,11 @@ export default {
 	},
 
 	effects: {
+		getPathId({ payload }) {
+			const { path } = payload;
+			const { id: pathId } = flattedRoutes.find(route => route.path === path) || {};
+			return pathId;
+		},
 		*getMenuData({ payload }, { put }) {
 			const { routes, authority } = payload;
 			const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
@@ -137,9 +142,9 @@ export default {
 			const permissionResult = yield put.resolve({
 				type: 'role/getUserPermissionList',
 			});
-			
+
 			if (!['dev', 'test'].includes(env)) {
-				
+
 				const authMenuResult = yield put.resolve({ type: 'getAuthMenu' });
 
 				if (

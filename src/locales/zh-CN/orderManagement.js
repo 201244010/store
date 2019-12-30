@@ -36,6 +36,7 @@ export default {
 	'orderManagement.detail.createdTime': '下单时间：',
 	'orderManagement.detail.payType': '支付方式：',
 	'orderManagement.detail.aliPay': '支付宝',
+	'orderManagement.detail.wechatPay': '微信',
 	'orderManagement.detail.createdPerson': '下单用户：',
 	'orderManagement.detail.payPerson': '付款用户：',
 	'orderManagement.detail.payInfo': '付款信息',

@@ -8,6 +8,7 @@ const generateMsgId = () => Number(`${parseInt(Math.random() * 11 + 10, 10)}${`$
 class MqttClient {
 	constructor(config) {
 		this.client = null;
+		this.registerReconnectCount = 0;
 
 		this.messages = {
 			id: 0,
@@ -37,6 +38,7 @@ class MqttClient {
 		this.registerMessageHandler = this.registerMessageHandler.bind(this);
 		this.registerTopicHandler = this.registerTopicHandler.bind(this);
 		this.registerErrorHandler = this.registerErrorHandler.bind(this);
+		this.registerReconnectHandler = this.registerReconnectHandler.bind(this);
 	}
 
 	connect({ address, username, password, clientId, path = '/mqtt', reconnectPeriod = 3 * 1000 }) {
@@ -179,6 +181,20 @@ class MqttClient {
 		const { client } = this;
 
 		client.on('error', errorHandler);
+	}
+
+	registerReconnectHandler(reconnectHandler) {
+		console.log('MqttClient registerReconnectHandler');
+		const { client } = this;
+
+		if (client) {
+			client.on('reconnect', reconnectHandler);
+		} else if (this.registerReconnectCount < 10) {
+			setTimeout(() => {
+				this.registerReconnectCount += 1;
+				this.registerReconnectHandler(reconnectHandler);
+			}, 5*1000);
+		}
 	}
 
 	destroy() {
