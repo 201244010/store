@@ -112,8 +112,9 @@ class Login extends Component {
 				goToPath('newOrganization');
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
-				const lastStore = shopList.length;
-				const defaultStore = shopList[lastStore - 1] || {};
+				// const lastStore = shopList.length;
+				// const defaultStore = shopList[lastStore - 1] || {};
+				const defaultStore = shopList.find(item => item.userBindStatus) || {};
 				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
 				goToPath('root');
 				// router.push('/');

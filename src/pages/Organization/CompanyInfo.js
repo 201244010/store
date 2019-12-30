@@ -380,6 +380,7 @@ class CompanyInfo extends React.Component {
 						message.success(formatMessage({id: 'companyInfo.save.success'}));
 					}else{
 						message.error(formatMessage({id: 'companyInfo.save.fail'}));
+						await this.init();
 					}
 
 				}else{

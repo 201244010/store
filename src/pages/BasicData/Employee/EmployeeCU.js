@@ -235,6 +235,7 @@ class EmployeeCU extends Component {
 						...submitData,
 					});
 					if (response && response.code === ERROR_OK) {
+						message.success(formatMessage({ id: 'employee.update.success' }));
 						getOrgLayer();
 						if (this.from === 'detail' && this.employeeId) {
 							goToPath('employeeInfo', { employeeId: this.employeeId });
@@ -265,6 +266,7 @@ class EmployeeCU extends Component {
 
 					const response = await createEmployee(submitData);
 					if (response && response.code === ERROR_OK) {
+						message.success(formatMessage({ id: 'employee.create.success' }));
 						goToPath('employeeList');
 					} else if (response && response.code === EMPLOYEE_BINDED) {
 						setFields({
@@ -386,6 +388,16 @@ class EmployeeCU extends Component {
 								{
 									required: true,
 									message: formatMessage({ id: 'employee.gender.isEmpty' }),
+								},
+								{
+									validator: (rule, value, callback) => {
+										if (value === '') {
+											callback();
+										}
+										if (value === 0) {
+											callback(formatMessage({ id: 'employee.gender.isEmpty' }));
+										}
+									},
 								},
 							],
 						})(

@@ -10,6 +10,7 @@ import { getLocationParam } from '@/utils/utils';
 import { ERROR_OK } from '@/constants/errorCode';
 import DeprecateModal from './DeprecateModal';
 import SearchResult from '../BasicData/Employee/SerachResult';
+import AuthKey from '@/pages/AuthKey';
 
 
 @connect(
@@ -335,6 +336,9 @@ class OrgDetail extends React.Component {
 						>
 							{formatMessage({id: 'orgDetail.new.sub.org'})}
 						</Button>
+						<div className={styles['auth-btn']}>
+							<AuthKey type="link" shopId={locationOrgId} />
+						</div>
 					</div>
 				</Card>
 				{orgStatus === 0 ?
