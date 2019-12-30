@@ -23,7 +23,6 @@ const formatBreadcrumbs = (breadcrumbs, menuData, prefix = 'menu') => {
 			const firstLevelMenu = menuData.find(menu => menu.path === key);
 			if (firstLevelMenu) {
 				const { children = [] } = firstLevelMenu;
-				console.log('firstLevelMenu', children);
 				formattedBread.match.realPath = (children[0] || {}).path || url;
 			}
 
