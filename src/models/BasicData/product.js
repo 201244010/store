@@ -331,6 +331,22 @@ export default {
 			}
 			return response;
 		},
+		*importByExcel({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			const response = yield call(Actions.importByExcel, options);
+			yield put({
+				type: 'updateState',
+				payload: { loading: false },
+			});
+			return response;
+		},
+		*downloadExcelTemplate(_, { call }) {
+			return yield call(Actions.downloadExcelTemplate);
+		},
 	},
 	reducers: {
 		updateState(state, action) {

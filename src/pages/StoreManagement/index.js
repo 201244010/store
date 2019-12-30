@@ -64,7 +64,7 @@ class StoreManagement extends Component {
 							<>
 								<span>
 									{record.region !== '--'
-										? record.region.split(',').join(' ')
+										? (record.region || '').split(',').join(' ')
 										: ''}{' '}
 								</span>
 								<span>{text !== '--' ? text : ''}</span>

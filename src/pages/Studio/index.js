@@ -10,10 +10,8 @@ import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import DragCopy from './DragCopy';
 import generateShape from './GenerateShape';
-import { getLocationParam } from '@/utils/utils';
-import {
-	getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep, getImagePromise, downloadFontFile
-} from '@/utils/studio';
+import { getLocationParam, downloadFileByClick } from '@/utils/utils';
+import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep, getImagePromise } from '@/utils/studio';
 import FontDetector from '@/utils/FontDetector';
 import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME, IMAGE_TYPES } from '@/constants/studio';
@@ -104,7 +102,7 @@ class Studio extends Component {
 			}
 		};
 
-		// this.detectFonts();
+		this.detectFonts();
 	}
 
 	componentWillUnmount() {
@@ -1073,7 +1071,7 @@ class Studio extends Component {
 	}
 
 	downloadFont = (font) => {
-		downloadFontFile(`${Config.API_ADDRESS}/static/${font}.ttf`);
+		downloadFileByClick(`${Config.API_ADDRESS}/static/${font}.ttf`);
 	};
 
 	render() {
@@ -1298,7 +1296,7 @@ class Studio extends Component {
 					<div className={styles['font-download-main']}>
 						{
 							hasNoFonts.map(font => (
-								<p className={styles['font-download-item']}>
+								<p className={styles['font-download-item']} key={font}>
 									<span>{font}</span>
 									<span className={styles['font-download-icon']} onClick={() => this.downloadFont(font)}>
 										<Icon type="download" />
