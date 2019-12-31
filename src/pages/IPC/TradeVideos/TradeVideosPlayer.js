@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon, Modal } from 'antd';
-import { formatMessage } from 'umi/locale';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+// import { formatMessage } from 'umi/locale';
+// import PerfectScrollbar from 'react-perfect-scrollbar';
 import styles from './TradeVideoPlayer.less';
 import TrackPlayer from '@/components/VideoPlayer/TrackPlayer';
 
@@ -26,7 +26,7 @@ class TradeVideosPlayer extends React.Component {
 
 	render() {
 		const { url, pixelRatio, visible, defaultDuration, paymentInfo, detailVisible, showPaymentInfo } = this.props;
-		const { totalPrice, details, orderTime, paymentMethod } = paymentInfo;
+		// const { totalPrice, details, orderTime, paymentMethod } = paymentInfo;
 		return (
 			<Modal
 				className={styles['video-player']}
@@ -46,8 +46,11 @@ class TradeVideosPlayer extends React.Component {
 							url={url}
 							ref={playler => this.trackplayler = playler}
 							showPaymentInfo={showPaymentInfo}
+							detailVisible={detailVisible}
+							paymentInfo={paymentInfo}
+							fullScreenFlagShow
 						/>
-						{
+						{/* {
 							detailVisible ?
 								<div className={styles['video-detail-wrapper']}>
 									<div className={styles['video-detail-container']}>
@@ -108,7 +111,7 @@ class TradeVideosPlayer extends React.Component {
 								</div>
 								: ''
 
-						}
+						} */}
 
 					</div>
 				</div>
