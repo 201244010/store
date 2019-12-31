@@ -16,6 +16,7 @@ const dataFormatter = (item) => {
 
 	const purchaseTime = moment.unix(item.purchase_time).format('YYYY-MM-DD HH:mm');
 	// const purchaseTime = moment.unix(item.start_time).format('YYYY-MM-DD HH:mm');
+	const orderTime = moment.unix(item.purchase_time).format('YYYY-MM-DD HH:mm:ss');
 	const totalPrice = (Math.floor(item.amount*100)/100).toFixed(2);
 	// 后面取或的都是现在接口还没有的，但是页面已经使用上了。
 	return {
@@ -28,7 +29,7 @@ const dataFormatter = (item) => {
 		orderId: item.id,
 		orderNo: item.order_no,
 		paymentDeviceSn: item.payment_device_sn,
-
+		orderTime,
 		// ipcId: item.ipc_device_Id,
 		// paymentDeviceId: item.payment_device_Id,
 		details: item.details
