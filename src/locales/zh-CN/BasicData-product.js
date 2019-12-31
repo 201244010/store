@@ -155,7 +155,7 @@ export default {
 	'product.expire_time.isFormatted': '请输入正确的保质期',
 	'product.create.error': '商品创建失败',
 	'product.update.error': '商品更新失败',
-	'product.excel.import.error.format': '只支持上传xlsx文件，请重新选择文件',
+	'product.excel.import.error.format': '无法解析，请上传正确的商品数据文件',
 	'product.excel.import.placeholder.select': '选择文件',
 	'product.excel.import.tip.download': '下载导入模板',
 	'product.excel.import.tip.desc1': '仅支持导入.xlsx和.xls的表格文件；',
