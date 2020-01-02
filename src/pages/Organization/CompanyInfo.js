@@ -438,14 +438,17 @@ class CompanyInfo extends React.Component {
 		} = this.props;
 		const { treeData, allDayChecked, orgPidParams } = this.state;
 		const { addressSearchResult, organizationType, isDisabled, action, orgId } = this.state;
-		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => (
-			<AutoComplete.Option
-				key={`${index}-${addressInfo.id}`}
-				value={`${addressInfo.name}${addressInfo.address}`}
-			>
-				{`${addressInfo.name}${addressInfo.address}`}
-			</AutoComplete.Option>
-		));
+		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => {
+			const finalAddress = addressInfo.address && addressInfo.address.length > 0 ? addressInfo.address : addressInfo.district;
+			return (
+				<AutoComplete.Option
+					key={`${index}-${addressInfo.id}`}
+					value={`${addressInfo.name} ${finalAddress}`}
+				>
+					{`${addressInfo.name} ${finalAddress}`}
+				</AutoComplete.Option>
+			);
+		});
 		const tagValue = organizationType === undefined ? orgTag : organizationType;
 		const showShopInfo = tagValue === undefined ? true : tagValue === 0;
 		return (
