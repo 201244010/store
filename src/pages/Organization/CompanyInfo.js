@@ -437,7 +437,6 @@ class CompanyInfo extends React.Component {
 			}
 		} = this.props;
 		const { treeData, allDayChecked, orgPidParams } = this.state;
-		console.log(treeData);
 		const { addressSearchResult, organizationType, isDisabled, action, orgId } = this.state;
 		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => {
 			const finalAddress = addressInfo.address && addressInfo.address.length > 0 ? addressInfo.address : addressInfo.district;
