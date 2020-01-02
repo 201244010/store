@@ -553,7 +553,7 @@ class SearchResult extends Component {
 								>
 									{screenTypes.map(type => (
 										<Option key={type.id} value={type.id}>
-											{type.name}
+											{formatMessage({id: type.name})}
 										</Option>
 									))}
 								</Select>
@@ -577,7 +577,7 @@ class SearchResult extends Component {
 								>
 									{colors.map(type => (
 										<Option key={type.id} value={type.id}>
-											{type.name}
+											{formatMessage({id: type.name})}
 										</Option>
 									))}
 								</Select>
