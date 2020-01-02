@@ -437,6 +437,7 @@ class CompanyInfo extends React.Component {
 			}
 		} = this.props;
 		const { treeData, allDayChecked, orgPidParams } = this.state;
+		console.log(treeData);
 		const { addressSearchResult, organizationType, isDisabled, action, orgId } = this.state;
 		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => {
 			const finalAddress = addressInfo.address && addressInfo.address.length > 0 ? addressInfo.address : addressInfo.district;
@@ -541,7 +542,7 @@ class CompanyInfo extends React.Component {
 						<FormItem label={formatMessage({ id: 'companyInfo.org.parent.label' })}>
 							{getFieldDecorator('orgPid', {
 							// validateTrigger: 'onSelect',
-								initialValue: orgPidParams || orgPid,
+								initialValue: treeData && treeData.value &&(orgPidParams || orgPid),
 								rules: [
 									{
 										required: true,
