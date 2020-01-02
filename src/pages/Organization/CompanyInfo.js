@@ -541,7 +541,7 @@ class CompanyInfo extends React.Component {
 						<FormItem label={formatMessage({ id: 'companyInfo.org.parent.label' })}>
 							{getFieldDecorator('orgPid', {
 							// validateTrigger: 'onSelect',
-								initialValue: orgPidParams || orgPid,
+								initialValue: treeData && treeData.value &&(orgPidParams || orgPid),
 								rules: [
 									{
 										required: true,
