@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Card, Steps, Form, Upload, Button, Icon, Progress, message} from 'antd';
+import {Card, Steps, Form, Upload, Button, Icon, Progress, Modal, Table, message} from 'antd';
 import {connect} from 'dva';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
@@ -33,7 +33,9 @@ class ExcelUpload extends Component {
 			disabled: true,
 			readLoading: false,
 			percent: 50,
-			result: {}
+			result: {},
+			errorVisible: false,
+			errorData: []
 		};
 	}
 
@@ -83,11 +85,29 @@ class ExcelUpload extends Component {
 		this.setState({
 			readLoading: true
 		});
-		this.handleFile(file).then(() => {
-			this.setState({
-				disabled: false,
-				readLoading: false
+		this.handleFile(file).then((data) => {
+			let errorData = [];
+			Object.keys(data).forEach(key => {
+				errorData = data[key].filter(item => !item[0] || !item[2] || !item[11]).map(item => ({
+					seqNum: item[0],
+					name: item[2],
+					price: item[11]
+				}));
+				this.setState({
+					errorData
+				});
 			});
+			if (!errorData.length) {
+				this.setState({
+					disabled: false,
+					readLoading: false,
+				});
+			} else {
+				this.setState({
+					errorVisible: true,
+					readLoading: false
+				});
+			}
 		}).catch(() => {
 			this.setState({
 				readLoading: false
@@ -114,12 +134,35 @@ class ExcelUpload extends Component {
 	};
 
 	downloadErrorItems = () => {
+		const {result} = this.state;
+
 		downloadFileByClick(result.download_failed_file_address);
 	};
 
 	render() {
-		const {current, fileList, disabled, readLoading, percent, result} = this.state;
+		const {current, fileList, disabled, readLoading, percent, result, errorVisible, errorData} = this.state;
 		const {form: {getFieldDecorator}} = this.props;
+
+		const columns = [
+			{
+				title: formatMessage({id: 'basicData.product.seqNum'}),
+				dataIndex: 'seqNum',
+				key: 'seqNum',
+				render: (text) => <span style={text ? {} : {color: 'red'}}>{text || formatMessage({id: 'product.excel.import.error.modal.require'})}</span>
+			},
+			{
+				title: formatMessage({id: 'basicData.product.name'}),
+				dataIndex: 'name',
+				key: 'name',
+				render: (text) => <span style={text ? {} : {color: 'red'}}>{text || formatMessage({id: 'product.excel.import.error.modal.require'})}</span>
+			},
+			{
+				title: formatMessage({id: 'basicData.product.price'}),
+				dataIndex: 'price',
+				key: 'price',
+				render: (text) => <span style={text ? {} : {color: 'red'}}>{text || formatMessage({id: 'product.excel.import.error.modal.require'})}</span>
+			},
+		];
 
 		const FirstStep = (
 			<Form {...formItemLayout}>
@@ -160,7 +203,7 @@ class ExcelUpload extends Component {
 		const ThirdStep = (
 			<div className={styles['third-step']}>
 				<img src={require('@/assets/imgs/success.png')} alt="success" />
-				<p className={styles['upload-success']}>{result.total_num}{formatMessage({id: 'product.excel.import.result.success'})}</p>
+				<p className={styles['upload-success']}>{result.total_num - result.failed_num}{formatMessage({id: 'product.excel.import.result.success'})}</p>
 				<p className={styles['upload-fail']}>
 					{result.failed_num}{formatMessage({id: 'product.excel.import.result.fail'})}{result.failed_num !== 0 ? <span>，<a href="javascript: void(0);" onClick={this.downloadErrorItems}>{formatMessage({id: 'product.excel.import.result.fail.download'})}</a></span> : null}
 				</p>
@@ -184,6 +227,27 @@ class ExcelUpload extends Component {
 								ThirdStep
 					}
 				</div>
+				<Modal
+					width={750}
+					title={formatMessage({id: 'product.excel.import.error.modal.title'})}
+					visible={errorVisible}
+					closable={false}
+					footer={[
+						<Button
+							key="ok"
+							onClick={() => {
+								this.setState({
+									errorVisible: false
+								});
+
+							}}
+						>
+							{formatMessage({id: 'btn.confirm'})}
+						</Button>
+					]}
+				>
+					<Table dataSource={errorData} columns={columns} pagination={false} />
+				</Modal>
 			</Card>
 		);
 	}

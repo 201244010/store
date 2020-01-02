@@ -17,8 +17,8 @@ const imgMap = {
 	'line@h': require('@/assets/studio/line@h.jpg'),
 	'line@v': require('@/assets/studio/line@v.jpg'),
 	image: require('@/assets/studio/image.jpg'),
-	'barcode@h': require('@/assets/studio/barcode@h.jpg'),
-	'barcode@v': require('@/assets/studio/barcode@v.jpg'),
+	'barcode@h': require('@/assets/studio/code_h.jpg'),
+	'barcode@v': require('@/assets/studio/code_v.jpg'),
 	'barcode@qr': require('@/assets/studio/barcode@qr.jpg'),
 };
 
@@ -144,7 +144,15 @@ export default class ToolItem extends Component {
 		let dragShape = null;
 		let backgroundColor = 'transparent';
 		if (imgMap[type]) {
-			dragShape = <img src={imgMap[type]} alt="" style={{width, height}} />;
+			let genStyle = {};
+			if (type === SHAPE_TYPES.CODE_H) {
+				genStyle = {width: 'auto', height};
+			} else if (type === SHAPE_TYPES.CODE_V) {
+				genStyle = {width, height: 'auto'};
+			} else {
+				genStyle = {width, height};
+			}
+			dragShape = <img src={imgMap[type]} alt="" style={genStyle} />;
 		}
 		if ([SHAPE_TYPES.TEXT].includes(type)) {
 			const textStyle = {

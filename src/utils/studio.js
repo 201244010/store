@@ -308,7 +308,8 @@ export const getImagePromise = componentDetail =>
 				try {
 					JsBarcode(image, componentDetail.content, {
 						format: componentDetail.codec,
-						width: MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX * componentDetail.zoomScale,
+						height: MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY * componentDetail.zoomScale,
+						margin: 0,
 						displayValue: false
 					});
 				} catch (e) {
