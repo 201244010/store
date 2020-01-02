@@ -40,6 +40,7 @@ class ModalPlayer extends React.Component {
 					<Icon className={styles.close} type="close" onClick={this.close} />
 					<div className={styles['video-player-container']}>
 						<TrackPlayer
+							fullScreenFlagShow
 							defaultDuration={defaultDuration}
 							pixelRatio={pixelRatio}
 							url={url}
