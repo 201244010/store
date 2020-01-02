@@ -146,20 +146,26 @@ export default {
 			});
 		},
 		*getAllOrgName(_, { put }) {
-			const { id: userId } = yield put.resolve({
+			const userInfo = yield put.resolve({
 				type: 'global/getUserInfoFromStorage',
-			}) || {};
+			});
+			let userId;
+			if(userInfo){
+				const { id } = userInfo;
+				userId = id;
+			}
 
 			const companyId = yield put.resolve({
 				type: 'global/getCompanyIdFromStorage',
 			}) || {};
+
 			if(userId && companyId){
 				const response = yield getOrgList({userId, companyId});
 				const { code } = response;
 				if(code === ERROR_OK){
 					const { data: { orgList = []}} = response;
 					const result = getOrgName(orgList);
-	
+
 					yield put({
 						type: 'updateState',
 						payload: {
@@ -175,7 +181,7 @@ export default {
 					},
 				});
 			}
-			
+
 
 
 		},
@@ -271,8 +277,8 @@ export default {
 			const response = yield call(Action.getRegionList);
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
-				const region_list = data.region_list || [];
-				const formattedRegionList = cascaderDataWash(region_list, [
+				const regionList = data.regionList || [];
+				const formattedRegionList = cascaderDataWash(regionList, [
 					{ from: 'name', to: 'label' },
 					{ from: 'children', to: 'children' },
 					{ from: 'province', to: 'value' },
