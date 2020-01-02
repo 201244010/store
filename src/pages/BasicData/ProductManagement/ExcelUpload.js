@@ -80,6 +80,9 @@ class ExcelUpload extends Component {
 	beforeUpload = (file) => {
 		if (file.name.indexOf('.xlsx') === -1 && file.name.indexOf('.xls') === -1) {
 			message.error(formatMessage({id: 'product.excel.import.error.format'}));
+			this.setState({
+				disabled: true
+			});
 			return false;
 		}
 		this.setState({
@@ -88,7 +91,12 @@ class ExcelUpload extends Component {
 		this.handleFile(file).then((data) => {
 			let errorData = [];
 			Object.keys(data).forEach(key => {
-				errorData = data[key].filter(item => !item[0] || !item[2] || !item[11]).map(item => ({
+				errorData = data[key].filter(item => {
+					if (item.length) {
+						return !item[0] || !item[2] || !item[11];
+					}
+					return false;
+				}).map(item => ({
 					seqNum: item[0],
 					name: item[2],
 					price: item[11]
