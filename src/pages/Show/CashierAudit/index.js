@@ -9,6 +9,8 @@ import styles from './CashierAudit.less';
 
 const TIMER = 60000;
 const DAY = 30;
+const PAGE_SIZE = 10;
+const PAGE_NUM = 1;
 
 /**
  * unit
@@ -19,12 +21,14 @@ const DAY = 30;
 
 @connect(null,
 	dispatch => ({
-		getTradeList({ startTime, endTime }) {
+		getTradeList({ startTime, endTime, currentPage, pageSize }) {
 			return dispatch({
 				type: 'tradeVideos/read',
 				payload: {
 					startTime,
-					endTime
+					endTime,
+					currentPage,
+					pageSize
 				}
 			});
 		},
@@ -60,15 +64,22 @@ const DAY = 30;
 
 class CashierAudit extends React.Component {
 
-	state = {
-		tradeList:[],
-		activeOrderId:'',
-		activeVideoInfo: {
-			videoUrl: '',
-			pixelRatio: '16:9'
-		},
-		activeOrderItem:{}
+	constructor(props) {
+		super(props);
+		const { time } = this.props;
+		this.state = {
+			tradeList:[],
+			activeOrderId:'',
+			activeVideoInfo: {
+				videoUrl: '',
+				pixelRatio: '16:9'
+			},
+			activeOrderItem:{},
+			time,
+			activeTime: 'today'
+		};
 	}
+
 
 	async componentDidMount(){
 		const { activeOrderId } = this.state;
@@ -79,6 +90,12 @@ class CashierAudit extends React.Component {
 		this.timerHandler();
 	}
 
+	componentWillReceiveProps(nextProps){
+		const { activeTime } = nextProps;
+		this.setState({
+			activeTime
+		});
+	}
 
 	getTradeList = async () => {
 
@@ -87,7 +104,7 @@ class CashierAudit extends React.Component {
 		const endTime = moment().unix();
 		const startTime = moment().subtract(DAY, 'days').unix();
 		const { getTradeList } = this.props;
-		const { list = [] } = await getTradeList({startTime, endTime});
+		const { list = [] } = await getTradeList({startTime, endTime, currentPage:PAGE_NUM, pageSize:PAGE_SIZE});
 		let tradeList = [];
 
 		if(list.length >= 6){
@@ -206,12 +223,11 @@ class CashierAudit extends React.Component {
 	}
 
 	render(){
-		const { tradeList, activeOrderId, activeVideoInfo } = this.state;
-
+		const { tradeList, activeOrderId, activeVideoInfo, time, activeTime } = this.state;
 		return(
 			<div className={styles['trade-container']}>
 				<TimeLine tradeList={tradeList} activeOrderId={activeOrderId} />
-				<VideoPlayer activeVideoInfo={activeVideoInfo} setActiveOrder={this.setActiveOrder} />
+				<VideoPlayer activeVideoInfo={activeVideoInfo} setActiveOrder={this.setActiveOrder} isActiveTimeState={time === activeTime} />
 			</div>
 		);
 	}
