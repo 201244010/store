@@ -232,17 +232,20 @@ export default class RightToolBox extends Component {
 		try {
 			JsBarcode(image, detail.content, {
 				format: value,
-				width: MAPS.containerWidth[detail.type] * detail.scaleX * detail.zoomScale,
+				height: MAPS.containerHeight[detail.type] * detail.scaleY * detail.zoomScale,
+				margin: 0,
 				displayValue: false
 			});
 
-			updateComponentsDetail({
-				isStep: true,
-				[selectedShapeName]: {
-					codec: value,
-					image
-				},
-			});
+			setTimeout(() => {
+				updateComponentsDetail({
+					isStep: true,
+					[selectedShapeName]: {
+						codec: value,
+						image
+					},
+				});
+			}, 100);
 		} catch (e) {
 			message.error(`${detail.content}${formatMessage({id: 'studio.error.codec.value.wrong'})}`);
 			updateComponentsDetail({
@@ -366,19 +369,19 @@ export default class RightToolBox extends Component {
 			try {
 				JsBarcode(image, genValue, {
 					format: detail.codec,
-					width: 3,
-					height: 100,
+					height: MAPS.containerHeight[detail.type] * detail.scaleY * detail.zoomScale,
+					margin: 0,
 					displayValue: false
 				});
 
-				updateComponentsDetail({
-					[selectedShapeName]: {
-						content: value,
-						image,
-						ratio: this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14,
-						height: detail.width * (this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14),
-					}
-				});
+				setTimeout(() => {
+					updateComponentsDetail({
+						[selectedShapeName]: {
+							content: value,
+							image,
+						}
+					});
+				}, 100);
 			} catch (e) {
 				updateComponentsDetail({
 					[selectedShapeName]: {
@@ -391,18 +394,19 @@ export default class RightToolBox extends Component {
 			try {
 				JsBarcode(image, genValue, {
 					format: detail.codec,
-					width: MAPS.containerWidth[detail.type] * detail.scaleX * detail.zoomScale,
+					height: MAPS.containerHeight[detail.type] * detail.scaleY * detail.zoomScale,
+					margin: 0,
 					displayValue: false
 				});
 
-				updateComponentsDetail({
-					[selectedShapeName]: {
-						content: value,
-						image,
-						ratio: this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14,
-						height: detail.width * (this.hasSubString(SHAPE_TYPES.CODE_H) ? 14 / 95 : 95 / 14),
-					}
-				});
+				setTimeout(() => {
+					updateComponentsDetail({
+						[selectedShapeName]: {
+							content: value,
+							image,
+						}
+					});
+				}, 100);
 			} catch (e) {
 				updateComponentsDetail({
 					[selectedShapeName]: {

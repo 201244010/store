@@ -171,4 +171,6 @@ export default {
 	'product.excel.import.step3': '导入完成',
 	'product.excel.import.desc.title': '导入说明',
 	'product.excel.import.loading': '正在导入商品数据，请耐心等待...',
+	'product.excel.import.error.modal.title': '错误数据，请修改后再上传',
+	'product.excel.import.error.modal.require': '必填',
 };

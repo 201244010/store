@@ -722,7 +722,6 @@ export default function generateShape(option) {
 				</Group>
 			);
 			break;
-		case SHAPE_TYPES.CODE_H:
 		case SHAPE_TYPES.CODE_QR:
 			shape = (
 				<Image
@@ -754,6 +753,63 @@ export default function generateShape(option) {
 				/>
 			);
 			break;
+		case SHAPE_TYPES.CODE_H:
+			shape = (
+				<Group ref={ref => option.refComponents[option.name] = ref}>
+					<Rect
+						{...{
+							name: option.name,
+							x: option.x,
+							y: option.y,
+							width: option.image.width,
+							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							scaleX: option.scaleX,
+							scaleY: option.scaleY,
+							fill: '#ffffff',
+							draggable: true,
+							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
+						}}
+					/>
+					<Image
+						{...{
+							name: option.name,
+							x: option.x,
+							y: option.y,
+							width: option.image.width,
+							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							scaleX: option.scaleX,
+							scaleY: option.scaleY,
+							image: option.image,
+							rotation: 0,
+							draggable: true,
+							onTransform: option.onTransform,
+							onTransformEnd: option.onTransformEnd,
+							onMouseOver: () => {
+								document.body.style.cursor = 'pointer';
+							},
+							onMouseOut: () => {
+								document.body.style.cursor = 'default';
+							},
+							dragBoundFunc: (pos) => ({
+								x: option.frozenX ? option.x : pos.x,
+								y: option.frozenY ? option.y : pos.y
+							})
+						}}
+					/>
+				</Group>
+			);
+			break;
 		case SHAPE_TYPES.CODE_V:
 			shape = (
 				<Group ref={ref => option.refComponents[option.name] = ref}>
@@ -763,13 +819,13 @@ export default function generateShape(option) {
 							x: option.x,
 							y: option.y,
 							width: MAPS.containerWidth[option.type] * option.zoomScale,
-							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							height: option.image.width,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
 							sceneFunc(context) {
 								context.rotate(Math.PI / 2);
 								context.translate(0, -MAPS.containerWidth[option.type] * option.zoomScale);
-								context.drawImage(option.image, 0, 0, MAPS.containerHeight[option.type] * option.zoomScale, MAPS.containerWidth[option.type] * option.zoomScale);
+								context.drawImage(option.image, 0, 0, option.image.width, MAPS.containerWidth[option.type] * option.zoomScale);
 							},
 							draggable: true,
 							onTransform: option.onTransform,
@@ -792,7 +848,7 @@ export default function generateShape(option) {
 							x: option.x,
 							y: option.y,
 							width: MAPS.containerWidth[option.type] * option.zoomScale,
-							height: MAPS.containerHeight[option.type] * option.zoomScale,
+							height: option.image.width,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
 							draggable: true,
