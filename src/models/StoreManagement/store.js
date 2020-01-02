@@ -5,6 +5,7 @@ import { format } from '@konata9/milk-shake';
 import Storage from '@konata9/storage.js';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as Action from '@/services/storeManagement/storeList';
+import { getLayerByUser, getOrgList, getLayer } from '@/services/organization';
 import * as CookieUtil from '@/utils/cookies';
 
 const cascaderDataWash = (data, mapping) => {
@@ -25,6 +26,41 @@ const cascaderDataWash = (data, mapping) => {
 	});
 };
 
+const traversalTreeData = (originalList, targetList) => {
+	if (originalList instanceof Array) {
+		originalList.forEach((item) => {
+			const { orgName, orgId, userBindStatus } = item;
+			const target = {
+				title: orgName,
+				value: orgId,
+				disabled: !userBindStatus,
+				children: [],
+			};
+			targetList.push(target);
+			if(item.children && item.children.length) {
+				traversalTreeData(item.children, target.children);
+			}
+		});
+	}
+};
+
+const mapTreetoArray = (originalTree, targetList) => {
+	if (originalTree instanceof Array) {
+		originalTree.forEach((item) => {
+			const { orgId, orgName } = item;
+			const target = {
+				...item,
+				shopId: orgId,
+				shopName: orgName,
+			};
+			targetList.push(target);
+			if(item.children && item.children.length) {
+				mapTreetoArray(item.children, targetList);
+			}
+		});
+	}
+};
+
 export default {
 	namespace: 'store',
 	state: {
@@ -32,8 +68,8 @@ export default {
 		allStores: Storage.get(CookieUtil.SHOP_LIST_KEY, 'local') || [],
 		searchFormValue: {
 			keyword: '',
-			type_one: 0,
-			type_two: 0,
+			typeOne: 0,
+			typeTwo: 0,
 		},
 		// TODO 下一个准备修改
 		getList: {
@@ -65,6 +101,7 @@ export default {
 			showQuickJumper: true,
 		},
 		authKey: {},
+		treeData: [],
 	},
 
 	effects: {
@@ -91,10 +128,10 @@ export default {
 			let name = '';
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
-				const shopList = data.shop_list || [];
+				const shopList = data.shopList || [];
 				shopList.map(item => {
-					if (item.shop_id === shopId) {
-						name = item.shop_name;
+					if (item.shopId === shopId) {
+						name = item.shopName;
 					}
 				});
 			}
@@ -142,37 +179,60 @@ export default {
 				type: 'updateState',
 				payload: { loading: true },
 			});
-			const response = yield call(Action.getList, opts);
+			// yield put({
+			// 	type: 'getOrgLayer'
+			// });
+			// const response2 = yield call(Action.getList, opts);
+			const response = yield call(getOrgList);
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
-				const shopList = data.shop_list || [];
+				// const shopList = data.shopList || [];
+				// const newPayload = {
+				// 	loading: false,
+				// 	storeList: shopList,
+				// 	pagination: {
+				// 		...pagination,
+				// 		current,
+				// 	},
+				// };
+
+				const { orgList = {} } = data;
+				const targetList = [];
+				mapTreetoArray(orgList, targetList);
+				console.log('------shopList----', targetList);
 				const newPayload = {
 					loading: false,
-					storeList: shopList,
+					storeList: targetList,
 					pagination: {
 						...pagination,
 						current,
 					},
 				};
 				if (opts.type !== 'search') {
-					newPayload.allStores = shopList;
+					newPayload.allStores = targetList;
 				}
 
-				yield put({
-					type: 'setShopListInStorage',
-					payload: { shopList },
-				});
+				// yield put({
+				// 	type: 'setShopListInStorage',
+				// 	payload: { shopList },
+				// });
 
 				yield put({
 					type: 'updateState',
 					payload: newPayload,
 				});
-			} else {
-				yield put({
-					type: 'updateState',
-					payload: { loading: false },
-				});
+				return {
+					code: response.code,
+					data: {
+						shopList: targetList,
+					}
+				};
 			}
+			yield put({
+				type: 'updateState',
+				payload: { loading: false },
+			});
+
 			return response;
 		},
 
@@ -187,7 +247,7 @@ export default {
 				message.success(formatMessage({ id: 'storeManagement.message.createSuccess' }));
 				const data = response.data || {};
 				if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
-					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.shop_id);
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.shopId);
 				}
 
 				const res = yield put.resolve({
@@ -195,9 +255,9 @@ export default {
 					payload: {},
 				});
 
-				const { data: { shop_list } = {} } = res || {};
+				const { data: { shopList } = {} } = res || {};
 				// const { storeList } = yield select(state => state.store);
-				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shop_list }, 'local');
+				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 
 				yield put({
 					type: 'menu/goToPath',
@@ -231,12 +291,12 @@ export default {
 				const { storeList } = yield select(state => state.store);
 				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: storeList }, 'local');
 
-				yield put({
-					type: 'menu/goToPath',
-					payload: {
-						pathId: 'storeList',
-					},
-				});
+				// yield put({
+				// 	type: 'menu/goToPath',
+				// 	payload: {
+				// 		pathId: 'storeList',
+				// 	},
+				// });
 				// router.push(`${MENU_PREFIX.STORE}/list`);
 			} else {
 				yield put({
@@ -302,8 +362,8 @@ export default {
 			const response = yield call(Action.getShopTypeList);
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
-				const shopType_list = data.shopType_list || [];
-				const formattedShopType = cascaderDataWash(shopType_list, [
+				const shopTypeList = data.shopTypeList || [];
+				const formattedShopType = cascaderDataWash(shopTypeList, [
 					{ from: 'id', to: 'value' },
 					{ from: 'name', to: 'label' },
 					{ from: 'child', to: 'children' },
@@ -322,8 +382,8 @@ export default {
 			const response = yield call(Action.getRegionList);
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
-				const region_list = data.region_list || [];
-				const formattedRegionList = cascaderDataWash(region_list, [
+				const regionList = data.regionList || [];
+				const formattedRegionList = cascaderDataWash(regionList, [
 					{ from: 'name', to: 'label' },
 					{ from: 'children', to: 'children' },
 					{ from: 'province', to: 'value' },
@@ -382,8 +442,8 @@ export default {
 				payload: {
 					searchFormValue: {
 						keyword: '',
-						type_one: 0,
-						type_two: 0,
+						typeOne: 0,
+						typeTwo: 0,
 					},
 					pagination: {
 						current: 1,
@@ -419,6 +479,69 @@ export default {
 				});
 			}
 		},
+
+		*getOrgLayer(_, { call, put }) {
+			const companyId = yield put.resolve({
+				type: 'global/getCompanyIdFromStorage'
+			});
+			const companyName = yield put.resolve({
+				type: 'merchant/getCompanyNameById',
+				payload: {
+					companyId
+				}
+			});
+			const company = {
+				orgId: 0,
+				orgName: companyName,
+				orgStatus: 0,
+				level: 0,
+				orgPid: '',
+				userBindStatus: 0,
+			};
+			const response = yield call(getLayerByUser);
+			const { code, data } = response;
+			if(response && code === ERROR_OK) {
+				const { orgLayer } = data;
+				company.children = orgLayer;
+				const originalList = [company];
+				const targetList = [];
+				traversalTreeData(originalList, targetList);
+				console.log('-------original--targetList', targetList);
+				yield put({
+					type: 'updateTreeData',
+					payload: {
+						treeData: targetList
+					}
+				});
+			}
+		},
+		*getOrgnazationTree(_, { call }) {
+			const response = yield call(getLayer);
+			const { code, data } = response;
+			if(response && code === ERROR_OK) {
+				const { orgLayer } = data;
+				return orgLayer;
+			}
+			return [];
+		},
+		*updateCompany({ payload }, { put, select }) {
+			const { companyName } = format('toCamel')(payload);
+			const { treeData } = yield select(state => state.store);
+			const { children } = treeData[0];
+			const company = {
+				title: companyName,
+				value: 0,
+				disabled: true,
+				children,
+			};
+			const newTree = [company];
+			yield put({
+				type: 'updateTreeData',
+				payload: {
+					treeData: newTree
+				}
+			});
+		}
 	},
 
 	reducers: {
@@ -433,15 +556,15 @@ export default {
 			const {
 				payload: { data },
 			} = action;
-			const arrayList = data.data.shop_list;
+			const arrayList = data.data.shopList;
 			let array = [];
 			array = arrayList.map(value => ({
 				address: value.address,
-				status: value.business_status,
-				shopId: value.shop_id,
-				name: value.shop_name,
-				type: value.type_name,
-				contactPerson: value.contact_person,
+				status: value.businessStatus,
+				shopId: value.shopId,
+				name: value.shopName,
+				type: value.typeName,
+				contactPerson: value.contactPerson,
 				key: value.id,
 			}));
 			return {
@@ -456,15 +579,15 @@ export default {
 			return {
 				...state,
 				alter: {
-					name: store.shop_name,
-					type: store.type_name,
-					status: store.business_status,
+					name: store.shopName,
+					type: store.typeName,
+					status: store.businessStatus,
 					address: store.address,
-					time: store.business_hours,
-					contactPerson: store.contact_person,
-					contactPhone: store.contact_tel,
-					shopId: store.shop_id,
-					createdTime: store.created_time,
+					time: store.businessHours,
+					contactPerson: store.contactPerson,
+					contactPhone: store.contactTel,
+					shopId: store.shopId,
+					createdTime: store.createdTime,
 					modifiedTime: store.modified_time,
 				},
 			};
@@ -474,5 +597,9 @@ export default {
 				...state,
 			};
 		},
+		updateTreeData(state, action) {
+			const { payload: { treeData }} = action;
+			state.treeData = treeData;
+		}
 	},
 };

@@ -7,7 +7,7 @@ export default {
 	'employee.number': '工号',
 	'employee.number.isEmpty': '请输入员工工号',
 	'employee.number.exist': '员工工号已存在',
-	'employee.number.formatError': '员工工号为数字和字母的组合',
+	'employee.number.formatError': '员工工号为数字、字母或数字字母的组合',
 	'employee.gender': '性别',
 	'employee.gender.isEmpty': '性别不能为空',
 	'employee.gender.male': '男',
@@ -15,7 +15,7 @@ export default {
 	'employee.sso.account': '商米账号',
 	'employee.sso.binded': '账号已存被绑定',
 	'employee.phone': '手机号或邮箱',
-	'employee.phone.exist': '手机号已存在',
+	'employee.phone.exist': '手机号或邮箱已存在',
 	'employee.create': '新建员工',
 	'employee.alter': '修改员工',
 	'employee.phone.or.email': '手机号或邮箱',
@@ -28,7 +28,7 @@ export default {
 	'employee.info.select.role': '请选择角色',
 	'employee.info.select.orgnizaion': '请选择组织',
 	'employee.info.select.orgnizaion.isEmpty': '组织和角色都不能为空',
-
+	'employee.info.select.orgnizaion.isSame': '所属组织和角色不能相同',
 	'employee.info.delete': '确定要删除该员工？',
 	'employee.info.delete.confirm': '请确认是否要删除员工',
 	'employee.info.delete.success': '员工删除成功',
@@ -37,4 +37,6 @@ export default {
 	'employee.info.create.failed': '员工创建失败',
 	'employee.info.update.failed': '员工更新失败',
 	'employee.info.binded.error': '员工工号/手机/邮箱/商米账号已被绑定',
+	'employee.create.success': '员工创建成功',
+	'employee.update.success': '员工修改成功',
 };

@@ -1,0 +1,16 @@
+export default {
+	'SDCard.noSDCard.title': ' SD card not detected',
+	'SDCard.noSDCard.content': 'SD card is not detected, the video cannot be saved locally.',
+	'SDCard.noSDCard.okText': 'Confirm',
+	'SDCard.format.title': ' Format SD card',
+	'SDCard.format.content': 'SD card was detected and needs to be formatted before use, please save important information in advance!',
+	'SDCard.format.okText': 'Formatting',
+	'SDCard.format.cancelText': 'Cancel',
+	'SDCard.unknown.title': ' SD card can not be recognized',
+	'SDCard.unknown.content': 'The SD card you inserted cannot be recognized, please change the SD card and try again',
+	'SDCard.unknown.okText': 'Continue',
+	'SDCard.format.success.title': ' Formatting Success!',
+	'SDCard.format.success.content': 'Your SD card has been successfully formatted and can be used.',
+	'SDCard.format.failed.title': ' Formatting Failed!',
+	'SDCard.format.failed.content': 'Your SD card cannot be formatted. Please replace the SD card and try again.',
+};

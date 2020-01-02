@@ -53,7 +53,6 @@ export default {
 			pageSize: DEFAULT_PAGE_SIZE,
 			total: 0,
 			showSizeChanger: true,
-			showQuickJumper: true,
 		},
 		roleList: [],
 		roleSelectList: [],
@@ -104,7 +103,9 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { roleList, totalCount } = format('toCamel')(data);
-				const formatList = roleList.map(item => format('toCamel')(item));
+				const formatList = roleList
+					.map(item => format('toCamel')(item))
+					.sort((a, b) => a.createTime - b.createTime);
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -134,7 +135,6 @@ export default {
 				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
 					permissionList.find(permission => permission.name === `/${menu}`)
 				).filter(item => !!item);
-
 				forData.permissionList = formatData(sortedPermission).map(item => {
 					const formatResult = formatPath(item);
 					return {
@@ -167,7 +167,6 @@ export default {
 			const response = yield call(Actions.handleRoleManagement, 'getPermissionList');
 			if (response && response.code === ERROR_OK) {
 				const roleInfo = yield select(state => state.role.roleInfo);
-
 				const { data = {} } = response;
 				const { permissionList = [] } = format('toCamel')(data) || {};
 
@@ -185,10 +184,15 @@ export default {
 								? getInitStatus(formatResult, roleInfo).checkAll
 								: false,
 						group: formatResult.label,
-						valueList:
-							type === 'modify'
-								? getInitStatus(formatResult, roleInfo).valueList
-								: [],
+						// valueList:
+						// 	type === 'modify'
+						// 		? getInitStatus(formatResult, roleInfo).valueList
+						// 		: [],
+						valueList: permissionList
+							.map(permission => permission.permissionList.map(items => items.id))
+							.join()
+							.split(',')
+							.map(number => Number(number)),
 					};
 				});
 				yield put({

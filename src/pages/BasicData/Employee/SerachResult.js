@@ -17,6 +17,7 @@ const SearchResult = props => {
 		goToPath = null,
 		deleteEmployee = null,
 		getEmployeeList = null,
+		userId = '',
 	} = props;
 
 	const viewDetail = record => {
@@ -30,12 +31,13 @@ const SearchResult = props => {
 	};
 
 	const alterDetail = record => {
-		const { employeeId = null } = record;
+		const { employeeId = null, userId: recordUserId } = record;
 		if (employeeId) {
 			goToPath('employeeUpdate', {
 				employeeId,
 				action: 'edit',
 				from: 'list',
+				isDefault: userId === recordUserId
 			});
 		}
 	};
@@ -81,12 +83,20 @@ const SearchResult = props => {
 	);
 
 	const columns = [
-		{ title: formatMessage({ id: 'employee.number' }), dataIndex: 'number' },
-		{ title: formatMessage({ id: 'employee.name' }), dataIndex: 'name' },
+		{
+			title: formatMessage({ id: 'employee.number' }),
+			dataIndex: 'number',
+			render: number => number || '--',
+		},
+		{
+			title: formatMessage({ id: 'employee.name' }),
+			dataIndex: 'name',
+			render: name => name || '--',
+		},
 		{
 			title: formatMessage({ id: 'employee.gender' }),
 			dataIndex: 'gender',
-			render: gender => <>{GENDER_MAP[gender]}</>,
+			render: gender => <>{GENDER_MAP[gender] || '--'}</>,
 		},
 		{
 			title: formatMessage({ id: 'employee.orgnization' }),
@@ -123,8 +133,16 @@ const SearchResult = props => {
 				);
 			},
 		},
-		{ title: formatMessage({ id: 'employee.phone' }), dataIndex: 'username' },
-		{ title: formatMessage({ id: 'employee.sso.account' }), dataIndex: 'ssoUsername' },
+		{
+			title: formatMessage({ id: 'employee.phone' }),
+			dataIndex: 'username',
+			render: username => username || '--',
+		},
+		{
+			title: formatMessage({ id: 'employee.sso.account' }),
+			dataIndex: 'ssoUsername',
+			render: ssoUsername => ssoUsername || '--',
+		},
 		{
 			title: formatMessage({ id: 'list.action.title' }),
 			key: 'action',
@@ -149,8 +167,9 @@ const SearchResult = props => {
 	const onTableChange = page => {
 		// console.log(page);
 		const { current = 1, pageSize = 10 } = page;
+		const { shopIdList = [] } = props;
 		if (getEmployeeList) {
-			getEmployeeList({ current, pageSize });
+			getEmployeeList({ current, pageSize, shopIdList });
 		}
 	};
 

@@ -1,14 +1,23 @@
 .subscription-success-container{
 	text-align: center;
-	padding: 0px 128px;
+	padding: 0 128px;
 	// height: 654px;
-	.sucess-icon{
+	.success-icon{
 		margin-top: 105px;
 		display: inline-block;
 		width:72px;
 		height: 72px;
 		// margin: 0 auto;
 		background: url('@/assets/imgs/success.png');
+		background-size:100%;
+	}
+	.waitting-icon{
+		margin-top: 105px;
+		display: inline-block;
+		width:72px;
+		height: 72px;
+		// margin: 0 auto;
+		background: url('@/assets/imgs/waitting-status.png');
 		background-size:100%;
 	}
 	.success-tip{
@@ -22,6 +31,7 @@
 	.btn{
 		display: block;
 		margin: 32px auto;
+		margin-bottom: 179px;
 		width: 160px;
 		height: 32px;
 		font-family: PingFangSC-Regular, sans-serif;
@@ -33,6 +43,12 @@
 	.btn:first-child{
 		margin-top: 28px;
 	}
+	.deviceName{
+		white-space: nowrap;
+		width: 90%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 	.ipc-img{
 		height: 44px;
 		width: 44px;
@@ -40,7 +56,8 @@
 	.no-img{
 		height: 44px;
 		width: 44px;
-		background-color: black;
+		background: center / contain no-repeat transparent url(../../../assets/icon/mountain.png);
+
 	}
 	
 	:global {

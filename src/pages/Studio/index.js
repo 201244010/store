@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import { connect } from 'dva';
-import { Spin, message } from 'antd';
+import { Spin, Modal, Alert,	 Icon, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import MTransformer from './MTransformer';
 import BoardHeader from './BoardHeader';
@@ -10,10 +10,12 @@ import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import DragCopy from './DragCopy';
 import generateShape from './GenerateShape';
-import { getLocationParam } from '@/utils/utils';
+import { getLocationParam, downloadFileByClick } from '@/utils/utils';
 import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep, getImagePromise } from '@/utils/studio';
+import FontDetector from '@/utils/FontDetector';
 import { KEY } from '@/constants';
 import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME, IMAGE_TYPES } from '@/constants/studio';
+import Config from '@/config';
 import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
 
@@ -66,7 +68,8 @@ class Studio extends Component {
 				left: -9999,
 				top: -9999
 			},
-			showMask: false
+			showMask: false,
+			hasNoFonts: []
 		};
 		clearSteps();
 	}
@@ -98,6 +101,8 @@ class Studio extends Component {
 				localStorage.removeItem('__studio_copy_cross_two_template__');
 			}
 		};
+
+		this.detectFonts();
 	}
 
 	componentWillUnmount() {
@@ -1056,6 +1061,19 @@ class Studio extends Component {
 		});
 	};
 
+	detectFonts = () => {
+		const fonts = ['Zfull-GB'];
+		const fontDetector = new FontDetector();
+
+		this.setState({
+			hasNoFonts: fonts.filter(font => !fontDetector.detect(font))
+		});
+	}
+
+	downloadFont = (font) => {
+		downloadFileByClick(`${Config.API_ADDRESS}/static/${font}.ttf`);
+	};
+
 	render() {
 		const {
 			stageWidth,
@@ -1084,7 +1102,7 @@ class Studio extends Component {
 				},
 				template: { bindFields, curTemplate },
 			},
-			state: { dragging, dragCopy, dragName, showMask },
+			state: { dragging, dragCopy, dragName, showMask, hasNoFonts },
 		} = this;
 
 		const lines = getNearestLines(componentsDetail, selectedShapeName, scopedComponents);
@@ -1268,6 +1286,26 @@ class Studio extends Component {
 					refComponents={refComponents}
 					componentsDetail={componentsDetail}
 				/>
+				<Modal
+					title={formatMessage({id: 'studio.tool.font.download.title'})}
+					closable={false}
+					footer={null}
+					visible={!!hasNoFonts.length}
+				>
+					<Alert message={formatMessage({id: 'studio.tool.font.download.alert'})} type="info" showIcon />
+					<div className={styles['font-download-main']}>
+						{
+							hasNoFonts.map(font => (
+								<p className={styles['font-download-item']} key={font}>
+									<span>{font}</span>
+									<span className={styles['font-download-icon']} onClick={() => this.downloadFont(font)}>
+										<Icon type="download" />
+									</span>
+								</p>
+							))
+						}
+					</div>
+				</Modal>
 			</div>
 		);
 	}

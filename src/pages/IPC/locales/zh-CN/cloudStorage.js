@@ -16,7 +16,8 @@ export default {
 	'cloudStorage.monitoringArea.img':'监控区域',
 	'cloudStorage.binding.fail':'绑定失败',
 	'cloudStorage.binding.err.service.subscribe':'绑定失败，云存储服务剩余小于3天可以续费，请确认后重试。',
-	'cloudStorage.binding.ipc.not.exist':'绑定失败，该设备已解绑，请确认后重试',
+	'cloudStorage.binding.ipc.not.exist':'部分所选设备已解绑，请确认后重试',
+	'cloudStorage.free.service.used': '捆绑服务已被激活',
 	'cloudStorage.binding.ipc':'云存储服务订阅',
 	'cloudStorage.confirm':'确定',
 	'cloudStorage.confirm.subscribe':'确认订阅',
@@ -25,7 +26,7 @@ export default {
 	'cloudStorage.open.tips.third':'，请选择需要绑定的设备。限时免费订阅期间，剩余有效期小于3天才可续费',
 	'cloudStorage.no.ipc':'暂无可绑定设备',
 	'cloudStorage.subscription.agreement.tips':'订阅前请阅读并同意',
-	'cloudStorage.subscription.agreement':'《商米服务协议》',
+	'cloudStorage.subscription.agreement':'《商米云存储服务协议》',
 	'cloudStorage.title':'云存储',
 	'cloudStorage.adv.price':'超值价格 存储灵活',
 	'cloudStorage.price.detail':'商米云存储服务，包年低至0.32元/天。海量存储空间，实时对录像视频循环保存7/30天。',
@@ -87,8 +88,9 @@ export default {
 	'cloudStorage.orderNo': '订单号：',
 	'cloudStorage.pay.way': '支付方式',
 	'cloudStorage.use.tips': '使用',
-	'cloudStorage.scan.code.tips': '扫码完成支付'
-
-
-	
+	'cloudStorage.scan.code.tips': '扫码完成支付',
+	'cloudStorage.waitting.sub': '正在订阅服务...',
+	'cloudStorage.info': '提示',
+	'cloudStorage.info.tips': '订单已支付，请勿重复操作',
+	'cloudStorage.ok.text': '知道了',
 };

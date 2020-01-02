@@ -52,7 +52,7 @@ const router = [
 		path: '/flow',
 		component: '../layouts/BlankLayout',
 		id: 'flow',
-		routes: [{ path: '/flow', component: '../layouts/PassengerFlowLayout.js' }],
+		routes: [{ path: '/flow', component: './Flow/PassengerFlowLayout/PassengerFlowLayout.js' }],
 	},
 
 	{
@@ -200,6 +200,24 @@ const router = [
 						id: 'serviceManagement',
 						component: './ServiceManagement/ServiceList',
 						name: 'serviceManagement',
+					},
+					{
+						path: '/application/orderManagement',
+						id: 'orderManagement',
+						name: 'orderManagement',
+						routes:[
+							{
+								path: '/application/orderManagement',
+								id: 'orderManagement',
+								component: './OrderManagement/OrderList'
+							},
+							{
+								path: '/application/orderManagement/orderDetail',
+								id: 'serviceOrderDetail',
+								component: './OrderManagement/OrderDetail',
+								hideInMenu: true
+							}
+						]
 					}
 				],
 			},
@@ -382,6 +400,57 @@ const router = [
 						redirect: '/basicData/merchantManagement/view',
 					},
 					{
+						path: '/basicData/organizationManagement',
+						name: 'organizationManagement',
+						routes: [
+							{
+								path: '/basicData/organizationManagement/newOrganization',
+								name: 'newOrganization',
+								id: 'newOrganization',
+								component: './Organization/CompanyInfo',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/organizationManagement/editOrganization',
+								name: 'editOrganization',
+								id: 'editOrganization',
+								component: './Organization/CompanyInfo',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/organizationManagement/detail',
+								name: 'orgDetail',
+								hideInMenu: true,
+								routes: [
+									{
+										path: '/basicData/organizationManagement/detail/edit',
+										name: 'editDetail',
+										id: 'editDetail',
+										component: './Organization/CompanyInfo',
+										hideInMenu: true,
+									},
+									{
+										path: '/basicData/organizationManagement/detail/newSubOrganization',
+										name: 'newSubOrganization',
+										id: 'newSubOrganization',
+										component: './Organization/CompanyInfo',
+										hideInMenu: true,
+									},
+									{
+										path: '/basicData/organizationManagement/detail',
+										id: 'detail',
+										component: './Organization/OrgDetail',
+									},
+								]
+							},
+							{
+								path: '/basicData/organizationManagement',
+								id: 'organizationList',
+								component: './Organization/OrganizationList',
+							}
+						],
+					},
+					{
 						path: '/basicData/merchantManagement',
 						name: 'merchantManagement',
 						routes: [
@@ -405,44 +474,44 @@ const router = [
 							},
 						],
 					},
-					{
-						path: '/basicData/storeManagement',
-						name: 'storeManagement',
-						routes: [
-							{
-								path: '/basicData/storeManagement',
-								redirect: '/basicData/storeManagement/list',
-							},
-							{
-								path: '/basicData/storeManagement/list',
-								name: 'list',
-								id: 'storeList',
-								component: './StoreManagement',
-								hideInMenu: true,
-							},
-							{
-								path: '/basicData/storeManagement/createStore',
-								component: './StoreManagement/CreateStore.js',
-								name: 'createStore',
-								id: 'storeCreate',
-								hideInMenu: true,
-							},
-							{
-								path: '/basicData/storeManagement/storeInformation',
-								component: './StoreManagement/StoreInformation.js',
-								name: 'storeManagement',
-								id: 'storeInfo',
-								hideInMenu: true,
-							},
-							{
-								path: '/basicData/storeManagement/alterStore',
-								component: './StoreManagement/CreateStore.js',
-								name: 'storeManagement',
-								id: 'storeUpdate',
-								hideInMenu: true,
-							},
-						],
-					},
+					// {
+					// 	path: '/basicData/storeManagement',
+					// 	name: 'storeManagement',
+					// 	routes: [
+					// 		{
+					// 			path: '/basicData/storeManagement',
+					// 			redirect: '/basicData/storeManagement/list',
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/list',
+					// 			name: 'list',
+					// 			id: 'storeList',
+					// 			component: './StoreManagement',
+					// 			hideInMenu: true,
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/createStore',
+					// 			component: './StoreManagement/CreateStore.js',
+					// 			name: 'createStore',
+					// 			id: 'storeCreate',
+					// 			hideInMenu: true,
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/storeInformation',
+					// 			component: './StoreManagement/StoreInformation.js',
+					// 			name: 'storeManagement',
+					// 			id: 'storeInfo',
+					// 			hideInMenu: true,
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/alterStore',
+					// 			component: './StoreManagement/CreateStore.js',
+					// 			name: 'storeManagement',
+					// 			id: 'storeUpdate',
+					// 			hideInMenu: true,
+					// 		},
+					// 	],
+					// },
 					{
 						path: '/basicData/employeeManagement',
 						name: 'employeeManagement',
@@ -570,6 +639,13 @@ const router = [
 								id: 'erpImport',
 								hideInMenu: true,
 								component: './BasicData/ProductManagement/ERPImport',
+							},
+							{
+								path: '/basicData/productManagement/list/excelUpload',
+								name: 'list',
+								id: 'excelUpload',
+								hideInMenu: true,
+								component: './BasicData/ProductManagement/ExcelUpload',
 							},
 							{ path: '/basicData', redirect: '/basicData/productManagement' },
 						],

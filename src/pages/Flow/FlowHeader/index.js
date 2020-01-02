@@ -67,7 +67,7 @@ class FlowHeader extends React.PureComponent {
 
 		const shopList = JSON.parse(localStorage.getItem(SHOP_LIST_KEY)) || [];
 		const shopID = getCookieByKey(SHOP_ID_KEY) || '';
-		const { shop_name: shopName = '' } = shopList.find(item => item.shop_id === shopID) || {};
+		const { shopName = '' } = shopList.find(item => item.shopId === shopID) || {};
 
 		return (
 			<div className={styles['flow-header']}>

@@ -75,15 +75,30 @@
 	align-items: center;
 	margin-bottom: 20px;
 
-	.order-no {
-		font-weight: bold;
+	.payment-title{
+		font-size:20px;
+		font-family:PingFangSC-Medium,PingFang SC, sans-serif;
+		font-weight:500;
+		color:rgba(48,53,64,1);
+	}
+	.order-num{
+		font-family:PingFangSC-Regular,PingFang SC, sans-serif;
+		font-weight:400;
+		color:rgba(133,133,138,1);
+		margin: 0;
 	}
 
 	.order-price {
-		font-weight: bold;
+		font-size:14px;
+		font-family:PingFangSC-Regular,PingFang SC, sans-serif;
+		font-weight:400;
+		color:rgba(133,133,138,1);
 
 		.price {
-			color: lightcoral;
+			font-size:20px;
+			font-family:PingFangSC-Medium, PingFang SC, sans-serif;
+			font-weight:500;
+			color:rgba(255,56,56,1);
 		}
 	}
 }
@@ -96,6 +111,7 @@
 
 	.qrCode-refresh {
 		margin-top: 33px;
+		margin-bottom: 8px;
 		text-align: center;
 		font-weight: bold;
 		color: #85858A;
@@ -144,4 +160,13 @@
 			color: #85858A;
 		}	
 	}
+}
+
+.loading-icon{
+	display: inline-block;
+	margin-right: 4px;
+	margin-bottom: -1px;
+	height: 14px;
+	width: 14px;
+	background: center / contain no-repeat transparent url(../../../../assets/icon/loading-icon.png);
 }

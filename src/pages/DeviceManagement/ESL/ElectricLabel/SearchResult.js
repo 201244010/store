@@ -648,7 +648,11 @@ class SearchResult extends Component {
 					}}
 				/>
 				<Modal
-					title={currentRecord.template_name}
+					title={
+						<div className={styles['preview-img-title']}>
+							{currentRecord.template_name}
+						</div>
+					}
 					width={widthMap[currentRecord.model_size]}
 					visible={previewVisible}
 					onCancel={() => this.closeModal('previewVisible')}

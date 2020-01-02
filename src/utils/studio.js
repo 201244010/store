@@ -305,11 +305,15 @@ export const getImagePromise = componentDetail =>
 				image.src = canvas.toDataURL();
 			}
 			if ([SHAPE_TYPES.CODE_H, SHAPE_TYPES.CODE_V].includes(componentDetail.type)) {
-				JsBarcode(image, componentDetail.content, {
-					format: 'CODE39',
-					width: MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX * componentDetail.zoomScale,
-					displayValue: false
-				});
+				try {
+					JsBarcode(image, componentDetail.content, {
+						format: componentDetail.codec,
+						width: MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX * componentDetail.zoomScale,
+						displayValue: false
+					});
+				} catch (e) {
+					image.src = MAPS.imgPath[componentDetail.type];
+				}
 			}
 		} else {
 			image.src = componentDetail.imgPath || MAPS.imgPath[componentDetail.type];
@@ -536,7 +540,7 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 	};
 };
 
-export const checkEAN8Num = (number) => {
+export const checkEan8Num = (number) => {
 	const res = number
 		.substr(0, 7)
 		.split('')
@@ -548,7 +552,7 @@ export const checkEAN8Num = (number) => {
 	return (10 - (res % 10)) % 10;
 };
 
-export const checkEAN13Num = (number) => {
+export const checkEan13Num = (number) => {
 	const res = number
 		.substr(0, 12)
 		.split('')
@@ -569,14 +573,4 @@ export const downloadJsonAsDraft = (name = 'template', data) => {
 	document.body.appendChild(element);
 	element.click();
 	document.body.removeChild(element);
-};
-
-export const validEAN8Num = (number) => {
-	console.log(checkEAN8Num(number));
-	return number.search(/^[0-9]{8}$/) !== -1 && +number[7] === checkEAN8Num(number);
-};
-
-export const validEAN13Num = (number) => {
-	console.log(checkEAN13Num(number));
-	return number.search(/^[0-9]{13}$/) !== -1 && +number[12] === checkEAN13Num(number);
 };

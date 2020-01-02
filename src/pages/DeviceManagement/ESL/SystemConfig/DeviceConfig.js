@@ -15,6 +15,16 @@ const TIMEPICKER_STYLE = { width: '180px' };
 const SCAN_PERIODS = [5, 10, 15];
 const SLEEP_PERIODS = [60, 120, 180];
 const SAVE_PERIODS = [30, 45, 60];
+const SCAN_WINDOWS = [{
+	label: formatMessage({id: 'esl.device.config.scan.window.model.performance'}),
+	value: 1
+}, {
+	label: formatMessage({id: 'esl.device.config.scan.window.model.balance'}),
+	value: 2
+}, {
+	label: formatMessage({id: 'esl.device.config.scan.window.model.save.energy'}),
+	value: 3
+}];
 const ACTION = {
 	QUERY: 'query',
 	UPDATE: 'update'
@@ -255,7 +265,8 @@ class SystemConfig extends Component {
 				scanMulti,
 				eslRefleshPeriod,
 				eslRefleshTime,
-				clksyncPeriod
+				clksyncPeriod,
+				wakePeriod
 			} },
 			form: { getFieldDecorator, isFieldsTouched },
 		} = this.props;
@@ -273,7 +284,8 @@ class SystemConfig extends Component {
 			'eslRefleshPeriod',
 			'eslRefleshTime',
 			'scanMulti',
-			'scanDeepSleep'
+			'scanDeepSleep',
+			'wakePeriod'
 		]);
 
 		return (
@@ -326,9 +338,7 @@ class SystemConfig extends Component {
 							{configShow ?
 								<Form {...FORM_SETTING_LAYOUT} hideRequiredMark>
 									<div className={styles['display-content']}>
-										<Form.Item
-											label={formatMessage({ id: 'esl.device.config.scan.round' })}
-										>
+										<Form.Item label={formatMessage({ id: 'esl.device.config.scan.round' })}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('scanPeriod', {
 													initialValue: scanPeriod || 15,
@@ -349,10 +359,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-
-										<Form.Item
-											label={formatMessage({ id: 'esl.device.config.scan.green' })}
-										>
+										<Form.Item label={formatMessage({ id: 'esl.device.config.scan.green' })}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('isEnergySave', {
 													initialValue: isEnergySave,
@@ -365,10 +372,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-
-										<Form.Item
-											label={formatMessage({ id: 'esl.device.config.scan.greenRound' })}
-										>
+										<Form.Item label={formatMessage({ id: 'esl.device.config.scan.greenRound' })}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('scanMulti', {
 													initialValue: scanMulti || 30,
@@ -384,10 +388,7 @@ class SystemConfig extends Component {
 												)}
 											</div>
 										</Form.Item>
-
-										<Form.Item
-											label={formatMessage({ id: 'esl.device.config.sleep.round' })}
-										>
+										<Form.Item label={formatMessage({ id: 'esl.device.config.sleep.round' })}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('scanDeepSleep', {
 													initialValue: scanDeepSleep || 60,
@@ -408,10 +409,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-
-										<Form.Item
-											label={formatMessage({ id: 'esl.device.config.async.round' })}
-										>
+										<Form.Item label={formatMessage({ id: 'esl.device.config.async.round' })}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('clksyncPeriod', {
 													initialValue: clksyncPeriod || 3,
@@ -455,12 +453,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-
-										<Form.Item
-											label={formatMessage({
-												id: 'esl.device.config.self.refresh.round',
-											})}
-										>
+										<Form.Item label={formatMessage({id: 'esl.device.config.self.refresh.round'})}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('eslRefleshPeriod', {
 													initialValue: eslRefleshPeriod || 1,
@@ -504,12 +497,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-
-										<Form.Item
-											label={formatMessage({
-												id: 'esl.device.config.scan.refresh.time',
-											})}
-										>
+										<Form.Item label={formatMessage({id: 'esl.device.config.scan.refresh.time'})}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('eslRefleshTime', {
 													initialValue:
@@ -532,7 +520,26 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-
+										<Form.Item label={formatMessage({ id: 'esl.device.config.scan.window' })}>
+											<div className={styles['form-item-wrapper']}>
+												{getFieldDecorator('wakePeriod', {
+													initialValue: wakePeriod || 2,
+												})(
+													<Select style={SELECT_STYLE}>
+														{SCAN_WINDOWS.map((item, index) => (
+															<Select.Option key={index} value={item.value}>
+																{item.label}
+															</Select.Option>
+														))}
+													</Select>
+												)}
+												<FormTip
+													text={formatMessage({
+														id: 'esl.device.config.scan.window.desc',
+													})}
+												/>
+											</div>
+										</Form.Item>
 										<Form.Item label=" " colon={false}>
 											<Button
 												type="primary"
@@ -544,8 +551,7 @@ class SystemConfig extends Component {
 											</Button>
 										</Form.Item>
 									</div>
-								</Form>
-								:
+								</Form> :
 								<DataEmpty dataEmpty={formatMessage({id: 'esl.device.ap.empty'})} />
 							}
 						</Card>

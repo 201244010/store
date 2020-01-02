@@ -16,14 +16,16 @@ export default {
 	'account.no.certify.info1': '该账户尚未进行商户/企业资质认证',
 	'account.no.certify.info2': '点击可跳转前往认证，认证成功后可选择商户/企业账户支付',
 	'account.to.certify': '前往资质认证',
-
 	'purchase-type-b2b-unionpay': '企业银联',
 	'purchase-type-wechat': '微信支付',
 	'purchase-type-alipay': '支付宝',
+	'purchase-type-wechat.pay': '微信支付',
+	'purchase-type-alipay.pay': '支付宝支付',
+	'purchase-type-wechat.scan.pay': '微信扫码支付',
+	'purchase-type-alipay.scan.pay': '支付宝扫码支付',
 	'purchase-type-wechat.guide': '微信APP',
 	'purchase-type-alipay.guide': '支付宝APP',
 	'purchase-type-b2c-unionpay': '银联支付',
-
 	'pay.confirm.title': '请确认订单的状态',
 	'pay.order.commit': '订单提交',
 	'pay.success': '支付成功',
@@ -33,7 +35,6 @@ export default {
 	'pay.back.order': '订单管理',
 	'pay.back.service': '服务管理',
 	'pay.check.detail': '查看订单详情',
-
 	'pay.order.no': '订单编号',
 	'pay.true.price': '实付款',
 	'pay.order.completed': '该订单已支付完成',

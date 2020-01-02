@@ -1,6 +1,6 @@
 import React from 'react';
 // import moment from 'moment';
-import { formatMessage } from 'umi/locale';
+import { formatMessage, getLocale } from 'umi/locale';
 
 import styles from './TimeLine.less';
 
@@ -8,7 +8,8 @@ class TimeLine extends React.Component {
 
 	render(){
 		const { tradeList, activeOrderId } = this.props;
-
+		const currentLanguage = getLocale();
+		const isChina = currentLanguage === 'zh-CN';
 
 		return(
 			<div className={styles.timeline}>
@@ -17,11 +18,11 @@ class TimeLine extends React.Component {
 				</div>
 				<div className={styles['times-container']}>
 					{ tradeList.map((item, index) => (
-						<div 
+						<div
 							key={index}
 							className={item.orderId === activeOrderId ? styles.active : styles.normal}
 						>
-							
+
 							<div className={item.hasVideo? styles.dot : styles['waiting-video-dot']} />
 							<div className={item.hasVideo? styles.border : styles['waiting-video-border']}>
 								<div className={item.hasVideo? styles['normal-content'] : styles['waiting-video-content']}>
@@ -31,11 +32,11 @@ class TimeLine extends React.Component {
 									</div>
 									<div className={styles.amount}>
 										<span className={styles.title}>{formatMessage({id: 'trade.show.title'})}</span>
-										<span className={styles.price}>{item.amount === -1 ? formatMessage({id: 'trade.show.unknown'}) : item.amount}</span>
+										<span className={styles.price}>{item.amount === -1 ? formatMessage({id: 'trade.show.unknown'}) : (!isChina)&&(item.unit !== 0)? item.amount * 10 : item.amount}</span>
 										<span className={styles.unit}>{item.unit === 0 ? formatMessage({id: 'trade.show.unit'}) : formatMessage({id: 'trade.show.ten.thousand.unit'})}</span>
 									</div>
 									{
-										item.hasVideo ? 
+										item.hasVideo ?
 											'' :
 											<div className={styles.tips}>{formatMessage({id: 'trade.show.tips'})}</div>
 									}

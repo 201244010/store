@@ -6,19 +6,15 @@ export default {
 	'passengerAnalyze.trend': '客流变化趋势',
 	'passengerAnalyze.analyze': '客群分析',
 	'passengerAnalyze.analyzing': '数据正在分析中，请稍候...',
-
 	'passenger.total': '全部',
 	'passenger.regular': '熟客',
 	'passenger.stranger': '新客',
-
 	'passengerAnalyze.rate.normal': '正常',
 	'passengerAnalyze.rate.heigh': '偏高',
 	'passengerAnalyze.rate.low': '偏低',
-
 	'passengerAnalyze.chart.date': '日期',
 	'passengerAnalyze.chart.passenger': '客群',
 	'passengerAnalyze.chart.count': '数量',
-
 	'passengerAnalyze.detail.comein': '进店人数',
 	'passengerAnalyze.detail.total.rate': '总人数占比',
 	'passengerAnalyze.detail.regular.rate': '熟客占比',
@@ -33,7 +29,6 @@ export default {
 	'passengerAnalyze.detail.top.time.rate': '时段人数占比',
 	'passengerAnalyze.detail.avg.time': '平均在店时间',
 	'passengerAnalyze.detail.rank': '第##rank##名',
-
 	'salse.type.drink': '酒水',
 	'salse.type.tabaco': '烟草',
 };

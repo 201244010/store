@@ -10,7 +10,7 @@ import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
-import { formatMessage, getLocale } from 'umi/locale';
+import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import MQTTWrapper from '@/components/MQTT';
@@ -22,7 +22,7 @@ import SiderMenu from '@/components/SiderMenu';
 import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/logo-big.png';
-import logoEN from '../assets/menuLogoEN.png';
+// import logoEN from '../assets/menuLogoEN.png';
 import { env } from '@/config';
 
 import 'react-perfect-scrollbar/dist/css/styles.css';
@@ -81,7 +81,7 @@ class BasicLayout extends React.PureComponent {
 			location: { pathname },
 		} = window;
 
-		if (![`${MENU_PREFIX.STORE}/createStore`, '/account'].includes(pathname)) {
+		if (![`${MENU_PREFIX.STORE}/newOrganization`, '/account'].includes(pathname)) {
 			this.checkStore();
 		}
 
@@ -215,7 +215,7 @@ class BasicLayout extends React.PureComponent {
 		if (shopList.length === 0) {
 			if (userPermissionList.some(permission => permission.path === MENU_PREFIX.STORE)) {
 				message.warning(formatMessage({ id: 'alert.store.is.none' }));
-				goToPath('storeCreate', { action: 'create' });
+				goToPath('newOrganization', { action: 'create' });
 			} else {
 				goToPath('account');
 			}
@@ -235,14 +235,13 @@ class BasicLayout extends React.PureComponent {
 			breadcrumbNameMap,
 			fixedHeader,
 		} = this.props;
-		const currentLanguage = getLocale();
 		const isTop = PropsLayout === 'topmenu';
 		const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
 		const layout = (
 			<Layout>
 				{isTop && !isMobile ? null : (
 					<SiderMenu
-						logo={currentLanguage === 'zh-CN' ? logo : logoEN}
+						logo={logo}
 						theme={navTheme}
 						onCollapse={this.handleMenuCollapse}
 						menuData={menuData}

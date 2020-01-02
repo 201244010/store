@@ -90,15 +90,15 @@ const formatPassengerCountList = (countList = [], ageRangeList) => {
 					ageRange,
 					ageRangeCode,
 					maleCount,
-					maleRegularRate: maleCount === 0 ? 0 : parseInt((maleRegularCount / maleCount) * 100, 10),
+					maleRegularRate: maleCount === 0 ? 0 : Math.round((maleRegularCount / maleCount) * 100),
 					maleRushHour,
 					maleGenderRate: totalGender === 0
 						? 0
-						: parseInt((maleCount / totalGender) * 100, 10),
+						: Math.round((maleCount / totalGender) * 100),
 					genderRate:
 						totalGender === 0
 							? 0
-							: parseInt((maleCount / totalGender) * 100, 10),
+							: Math.round((maleCount / totalGender) * 100),
 					gender: 'male',
 					totalGender
 				},
@@ -106,15 +106,15 @@ const formatPassengerCountList = (countList = [], ageRangeList) => {
 					ageRange,
 					ageRangeCode,
 					femaleCount,
-					femaleRegularRate: femaleCount === 0 ? 0 : parseInt((femaleRegularCount / femaleCount) * 100, 10),
+					femaleRegularRate: femaleCount === 0 ? 0 : Math.round((femaleRegularCount / femaleCount) * 100),
 					femaleRushHour,
 					femaleGenderRate: totalGender === 0
 						? 0
-						: parseInt((femaleCount / totalGender) * 100, 10),
+						: Math.round((femaleCount / totalGender) * 100),
 					genderRate:
 						totalGender === 0
 							? 0
-							: parseInt((femaleCount / totalGender) * 100, 10),
+							: Math.round((femaleCount / totalGender) * 100),
 					gender: 'female',
 					totalGender
 				},
@@ -146,6 +146,8 @@ export default {
 		lastPassengerAgeListByGender: [],
 		// TODO 等待云端接口
 		passengerDetailWithAgeAndGender: {},
+		activeIndex: 0,
+		activeContent: {}
 	},
 
 	effects: {
@@ -180,6 +182,30 @@ export default {
 						type: RANGE_VALUE.YESTERDAY,
 						groupBy: GROUP_RANGE.HOUR,
 					},
+				},
+			});
+		},
+
+		*updateActiveIndex({ payload }, { put, select }) {
+			const { activeIndex } = payload;
+			const { passengerAgeListByGender } = yield select(state => state.passengerAnalyze);
+
+			yield put({
+				type: 'updateState',
+				payload: {
+					activeIndex,
+					activeContent: passengerAgeListByGender[activeIndex]
+				},
+			});
+		},
+
+		*updateActiveContent({ payload }, { put }) {
+			const { activeContent } = payload;
+
+			yield put({
+				type: 'updateState',
+				payload: {
+					activeContent
 				},
 			});
 		},
@@ -308,6 +334,8 @@ export default {
 						type: 'updateState',
 						payload: {
 							passengerAgeListByGender: formattedList,
+							activeIndex: 0,
+							activeContent: formattedList[0]
 						},
 					});
 				}

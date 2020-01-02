@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
 import { Row, Col, TreeSelect, Select, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { connect } from 'dva';
+
+
+@connect(
+	null,
+	dispatch => ({
+		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
+
+	})
+)
 
 class OrgnizationSelect extends Component {
 	constructor(props) {
@@ -8,7 +18,21 @@ class OrgnizationSelect extends Component {
 		const value = props.value || [];
 		this.state = {
 			orgnizationRoleList: value.length > 0 ? value : [{ orgnization: null, role: [] }],
+			orgId: props.orgId,
 		};
+	}
+
+	async componentDidMount(){
+		const { getCompanyIdFromStorage } = this.props;
+		const { orgId } = this.state;
+		const companyId = await getCompanyIdFromStorage();
+		if(orgId && orgId !== 'NAN'){
+			const orgnizationRoleList = [{ orgnization: `${companyId}-${orgId}`, role: [] }];
+			this.setState({
+				orgnizationRoleList
+			});
+		}
+		
 	}
 
 	handleOnchange = () => {
@@ -58,7 +82,6 @@ class OrgnizationSelect extends Component {
 	render() {
 		const { orgnizationRoleList } = this.state;
 		const { orgnizationTree = [], roleSelectList = [] } = this.props;
-
 		return (
 			<>
 				{orgnizationRoleList.map((item, index) => (
@@ -71,6 +94,7 @@ class OrgnizationSelect extends Component {
 									id: 'employee.info.select.orgnizaion',
 								})}
 								treeData={orgnizationTree}
+								dropdownStyle={{ maxHeight: '40vh'}}
 								onChange={value => this.handleTreeChange(item, index, value)}
 							/>
 						</Col>

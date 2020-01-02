@@ -18,6 +18,8 @@ export const TEMPLATE_NAME_USED = 5346;
 
 export const EMPLOYEE_BINDED = 5406;
 
+export const EMPLOYEE_NUMBER_BINDED = 5403;
+
 export const PRODUCT_SEQ_EXIST = 5051;
 export const PRODUCT_PLU_EXIST = 5000;
 export const STORE_EXIST = 5034;
@@ -43,9 +45,13 @@ export const SWITCH_SCEEN_NO_DELETE = 5347;
 export const NO_ANALYZE_DATA = 5087;
 
 export const ERR_SERVICE_SUBSCRIBE_ERROR = 5420;
+export const ERR_FREE_SERVICE_USED = 5422;
 
 export const ERR_DELETE_ROLE_WITH_EMPLOYEE = 5430;
 export const ERR_DELETE_DEFAULT_ROLE_DENIED = 5431;
+
+export const ORGANIZATION_NO_DESABLED = 5440;
+export const ORGANIZATION_LEVEL_LIMITED = 5442;
 
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',
@@ -77,3 +83,9 @@ export const ALERT_ROLE_MAP = {
 export const ALTERT_TRADE_MAP = {
 	[ORDER_COMPLETED]: 'pay.order.completed',
 };
+
+export const ERR_SDCARD_NOT_PLUGGED = -1002; // SD卡未插入
+export const ERR_SDCARD_INVALID = -1003; // SD卡不可用
+export const ERR_SDCARD_FORMAT_FAILED = -1004; // SD卡格式化失败
+export const ERR_SDCARD_UMOUNT_FAILED = -1005; // SD卡移除失败
+export const ERR_SDCARD_UNFARMATTED = -1006; // SD卡未格式化

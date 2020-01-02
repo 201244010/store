@@ -1,7 +1,7 @@
 import { order, getOrderInfo } from '../../services/order';
 import { getStorageIpcList } from '../../services/cloudStorage';
 import { ERROR_OK } from '@/constants/errorCode';
-
+import { ORDER_STATUS } from '../constant';
 
 export default {
 	namespace: 'cloudStorage',
@@ -27,20 +27,10 @@ export default {
 			const { deviceList = [] } = data;
 		
 			if(code === ERROR_OK) {
-				// for(let i = 0; i < deviceList.length ; i++){
-				// 	if(deviceList[i].deviceSn === sn){
-				// 		const item = deviceList.splice(i,1);
-				// 		deviceList = item.concat(deviceList);
-				// 		break;
-				// 	}
-				// }
 				// true 为全部已激活，false 存在未激活的ipc
-				const bundledStatusBool = deviceList.length === 0 ? false : deviceList.every((item) => (
-					item.activeStatus === 2
+				const bundledStatusBool = deviceList.length === 0 ? true : deviceList.every((item) => (
+					item.activeStatus === 2 || !item.activeStatus
 				));
-				// const storageIpcList = deviceList.filter((item) => (
-				// 	item.activeStatus === 1
-				// ));
 				
 				yield put({
 					type: 'readData',
@@ -80,11 +70,9 @@ export default {
 			if(code === ERROR_OK){
 				const { serviceList = [] } = data;
 				const snList = serviceList.map((item) => item.deviceSn);
-				console.log(snList);
 				const response = yield getStorageIpcList({
 					deviceSnList: snList,
 				});
-				console.log(response);
 				const { code: successIpcListCode, data: { deviceList = [] } } = response;
 				if(successIpcListCode === ERROR_OK) {
 					return deviceList;
@@ -102,6 +90,33 @@ export default {
 				return data.remainingTime;
 			}
 			return undefined;
+		},
+		*getOrderStatus({ payload }){
+			const { orderNo } = payload;
+			const response = yield getOrderInfo({
+				orderNo
+			});
+			const { code, data = {} } = response;
+			if(code === ERROR_OK){
+				const { status, serviceList = [] } = data;
+				if(status === 1){
+					return ORDER_STATUS.UNPAID;
+				}
+				if(status === 4){
+					const serviceStatus = serviceList.length === 0 ? false : serviceList.every((item) => (
+						item.subscribeStatus === 1
+					));
+					if(serviceStatus){
+						return ORDER_STATUS.SUCCESS;
+					}
+					return ORDER_STATUS.SUBSCRIBING;
+				}
+				if(status === 5){
+					return ORDER_STATUS.CLOSE;
+				}
+				return '';
+			}
+			return '';
 		}
 	},
 };

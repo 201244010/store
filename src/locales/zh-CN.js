@@ -23,6 +23,7 @@ import baseStation from './zh-CN/ESL-device';
 
 // BasicData
 import productManagement from './zh-CN/BasicData-product';
+import companyInfo from './zh-CN/companyInfo';
 
 import merchantManagement from './zh-CN/merchant';
 
@@ -32,11 +33,18 @@ import trade from './zh-CN/trade';
 import flow from './zh-CN/flow';
 import tradeShow from './zh-CN/tradeShow';
 import serviceManagement from './zh-CN/serviceManagement';
+import orderManagement from './zh-CN/orderManagement';
 import passengerAnalyze from './zh-CN/passengerAnalyze';
+
+import orgnization from './zh-CN/organization';
+import orgDetail from './zh-CN/orgDetail';
 
 export default {
 	'navBar.lang': '语言',
 	'navBar.area': '地区',
+	'selectLang.chinaMainland': '中文简体',
+	'selectLang.tw': '中文繁体',
+	'selectLang.otherArea': '英文',
 	'layout.user.link.help': '帮助',
 	'layout.user.link.privacy': '隐私',
 	'layout.user.link.terms': '条款',
@@ -74,4 +82,8 @@ export default {
 	...iot,
 	...passengerAnalyze,
 	...serviceManagement,
+	...orderManagement,
+	...companyInfo,
+	...orgnization,
+	...orgDetail,
 };

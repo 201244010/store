@@ -60,6 +60,7 @@ class DeviceList extends React.PureComponent {
 			{
 				title: formatMessage({ id: 'network.onlineTime' }),
 				dataIndex: 'uptime',
+				width: 196,
 				render: (_, record) => {
 					const { uptime, activeStatus } = record;
 					return <span>{activeStatus && uptime ? formatRelativeTime(uptime * 1000) : '--'}</span>;

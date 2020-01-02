@@ -1,13 +1,13 @@
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-import { Table, Radio, /* message, */ Checkbox, Spin, Card, Form, Input, Button, Modal } from 'antd';
+import { Table, Radio, message, Checkbox, Spin, Card, Form, Input, Button, Modal } from 'antd';
 import React from 'react';
-import { ERR_IPC_NOT_EXIST, ERR_SERVICE_SUBSCRIBE_ERROR , ERROR_OK } from '@/constants/errorCode';
+import { ERR_IPC_NOT_EXIST, ERR_SERVICE_SUBSCRIBE_ERROR , ERROR_OK, ERR_FREE_SERVICE_USED } from '@/constants/errorCode';
 import { SERVICE_TYPE } from '@/constants/cloudStorage';
 import styles from './OrderSubmission.less';
 import { phone, mail } from '@/constants/regexp';
 
-const FREE_PRODUCT_NO = 'YCC0002';
+const FREE_PRODUCT_NO = 'A08000075';
 
 @connect(
 	(state) => {
@@ -18,11 +18,12 @@ const FREE_PRODUCT_NO = 'YCC0002';
 		};
 	},
 	(dispatch) => ({
-		navigateTo: (pathId, urlParams) => dispatch({
+		navigateTo: (pathId, urlParams, linkType) => dispatch({
 			type: 'menu/goToPath',
 			payload: {
 				pathId,
-				urlParams
+				urlParams,
+				linkType
 			}
 		}),
 		getStorageIpcList:(sn) => (dispatch({
@@ -52,6 +53,7 @@ class OrderSubmission extends React.Component{
 			key:'deviceName',
 			title: formatMessage({ id: 'cloudStorage.device.name'}),
 			dataIndex: 'deviceName',
+			render:(deviceName) => (<div className={styles.deviceName}>{deviceName}</div>)
 		},
 		{
 			key: 'sn',
@@ -122,6 +124,7 @@ class OrderSubmission extends React.Component{
 			freeStatus: false,
 			storageIpcList: [],
 			isNeedCoverTip: false,
+			noChange: false,
 			// isNeedInputReady: false,
 		};
 	}
@@ -129,8 +132,7 @@ class OrderSubmission extends React.Component{
 	componentDidMount(){
 		const { location, navigateTo } = this.props;
 		const { query: { sn, productNo } } = location;
-		// Object.keys(SERVICE_TYPE).indexOf(productNo) === -1
-		if(!productNo || productNo !== 'YCC0002'){
+		if(!productNo || Object.keys(SERVICE_TYPE).indexOf(productNo) === -1){
 			navigateTo('cloudStorage');
 			return;
 		}
@@ -166,6 +168,9 @@ class OrderSubmission extends React.Component{
 		const { sn } = this.state;
 		if(checkedValues.indexOf(sn) === -1 && !Array.isArray(sn) && sn){
 			checkedValues.push(sn);
+			this.setState({
+				noChange: true
+			});
 		}
 
 
@@ -204,11 +209,14 @@ class OrderSubmission extends React.Component{
 			return orderNo;
 		}
 		if(code === ERR_SERVICE_SUBSCRIBE_ERROR){
-			message.error( formatMessage({ id: 'cloudStorage.binding.err.service.subscribe'}));
+			message.warning( formatMessage({ id: 'cloudStorage.binding.err.service.subscribe'}));
 		}else if(code === ERR_IPC_NOT_EXIST){
-			message.error( formatMessage({ id: 'cloudStorage.binding.ipc.not.exist'}));
+			message.warning( formatMessage({ id: 'cloudStorage.binding.ipc.not.exist'}));
+			await this.init();
+		}else if(code === ERR_FREE_SERVICE_USED){
+			message.warning( formatMessage({ id: 'cloudStorage.free.service.used'}));
 		}
-		return '';
+		return '-1';
 	}
 
 	agreementChangeHandler = (e) =>{
@@ -223,7 +231,8 @@ class OrderSubmission extends React.Component{
 
 	invoiceSelectHandler = (e) => {
 		this.setState({
-			invoiceSelectValue: e.target.value
+			invoiceSelectValue: e.target.value,
+			vbrkSelectValue: 1
 		}, ()=>{
 			this.checkedBtnDisable();
 		});
@@ -275,6 +284,9 @@ class OrderSubmission extends React.Component{
 			});
 		}else{
 			const orderNo = await this.orderHandler();
+			if(orderNo === '-1'){
+				return;
+			}
 			navigateTo('paymentPage',{
 				orderNo,
 			});
@@ -290,8 +302,11 @@ class OrderSubmission extends React.Component{
 			});
 		}else{
 			const orderNo = await this.orderHandler();
+			if(orderNo === '-1'){
+				return;
+			}
 			if(orderNo !== ''){
-				navigateTo('subscriptionSuccess', {orderNo});
+				navigateTo('subscriptionSuccess', {orderNo, status: 'success'});
 			}
 		}
 		
@@ -308,7 +323,7 @@ class OrderSubmission extends React.Component{
 			for(let j=0; j<storageIpcList.length; j++){
 				if(storageIpcList[j].deviceSn === selectedValue[i] &&
 					SERVICE_TYPE[productNo] &&
-					storageIpcList[j].serviceTag === SERVICE_TYPE[productNo].serviceTag &&
+					storageIpcList[j].serviceTag !== SERVICE_TYPE[productNo].serviceTag &&
 					storageIpcList[j].status === 1){
 					isNeedCoverTip = true;
 					break;
@@ -322,9 +337,13 @@ class OrderSubmission extends React.Component{
 		const { navigateTo } = this.props;
 		const { freeStatus } = this.state;
 		const orderNo = await this.orderHandler();
+		if(orderNo === '-1'){
+			this.setState({isNeedCoverTip:false});
+			return;
+		}
 		if(freeStatus){
 			if(orderNo !== ''){
-				navigateTo('subscriptionSuccess');
+				navigateTo('subscriptionSuccess', {orderNo, status: 'success'});
 			}
 		}else{
 			navigateTo('paymentPage',{
@@ -352,6 +371,9 @@ class OrderSubmission extends React.Component{
 		for(let i=0; i < storageIpcList.length; i++){
 			if(storageIpcList[i].deviceSn === sn){
 				selectedValue = [sn];
+				this.setState({
+					noChange: true
+				});
 				break;
 			}
 		}
@@ -373,7 +395,7 @@ class OrderSubmission extends React.Component{
 	render(){
 
 		const { navigateTo, loading, form: { getFieldDecorator } } = this.props;
-		const { selectedValue, btnDisable, isAgree, invoiceSelectValue, vbrkSelectValue, unitPrice, count, freeStatus, storageIpcList, isNeedCoverTip } = this.state;
+		const { selectedValue, btnDisable, isAgree, invoiceSelectValue, vbrkSelectValue, unitPrice, count, freeStatus, storageIpcList, isNeedCoverTip, sn, noChange } = this.state;
 		const emailValue = vbrkSelectValue === 2 ? 'companyEmail' : 'personalEmail';
 		const phoneValue = vbrkSelectValue === 2 ? 'companyPhone' : 'personalPhone';
 		return(
@@ -383,7 +405,7 @@ class OrderSubmission extends React.Component{
 						<h3 className={styles['bind-title']}>{formatMessage({id: 'cloudStorage.bind.ipc'})}</h3>
 						<Spin spinning={loading.effects['cloudStorage/order'] || loading.effects['cloudStorage/getStorageIpcList']}>
 							<div className={styles.content}>
-								<Checkbox.Group onChange={this.ipcSelectHandler} value={selectedValue}>
+								<Checkbox.Group onChange={this.ipcSelectHandler} value={selectedValue} disabled={noChange}>
 									<Table
 										className={styles.table}
 										bordered 
@@ -397,7 +419,7 @@ class OrderSubmission extends React.Component{
 									/>
 								</Checkbox.Group>
 								<div className={styles['price-and-num']}>
-									<div className={styles['per-price']}>{formatMessage({id: 'cloudStorage.per.price'})}{unitPrice}</div>
+									<div className={styles['per-price']}>{formatMessage({id: 'cloudStorage.per.price'})}¥{unitPrice === 0 ? 0 : parseFloat(unitPrice).toFixed(2)}</div>
 									<div>{formatMessage({id: 'cloudStorage.num'})}{count}</div>
 								</div>
 							</div>
@@ -408,7 +430,7 @@ class OrderSubmission extends React.Component{
 						<div className={styles['select-invoice']}>
 							<Radio.Group onChange={this.invoiceSelectHandler} defaultValue={0}>
 								<Radio.Button value={0}>{formatMessage({id: 'cloudStorage.noNeed.invoice'})}</Radio.Button>
-								<Radio.Button value={1}>{formatMessage({id: 'cloudStorage.elec.invoice'})}</Radio.Button>
+								<Radio.Button value={1} disabled={freeStatus}>{formatMessage({id: 'cloudStorage.elec.invoice'})}</Radio.Button>
 								<Radio.Button disabled value={2}>{formatMessage({id: 'cloudStorage.normal.invoice'})}</Radio.Button>
 							</Radio.Group>
 						</div>
@@ -446,7 +468,7 @@ class OrderSubmission extends React.Component{
 													},
 												],
 											})(
-												<Input placeholder={formatMessage({id: 'cloudStorage.input.invoice.taxRegisterNo'})} />
+												<Input maxLength={20} placeholder={formatMessage({id: 'cloudStorage.input.invoice.taxRegisterNo'})} />
 											)
 										}
 									</Form.Item>
@@ -498,7 +520,7 @@ class OrderSubmission extends React.Component{
 							<a 
 								className={styles['agreement-content']} 
 								onClick={() => {
-									navigateTo('serviceProtocol', 'open');
+									navigateTo('serviceProtocol',undefined, 'open');
 								}}
 							>
 								{formatMessage({id: 'cloudStorage.subscription.agreement'})}
@@ -512,7 +534,13 @@ class OrderSubmission extends React.Component{
 						</div>
 						<div className={styles.btns}>
 							<Button
-								onClick={()=> navigateTo('cloudStorage')}
+								onClick={()=> {
+									if(sn){
+										navigateTo('cloudStorage',{sn});
+									}else{
+										navigateTo('cloudStorage');
+									}
+								}}
 								className={styles['cancel-btn']}
 							>
 								{formatMessage({id: 'cloudStorage.cancel'})}
@@ -520,8 +548,8 @@ class OrderSubmission extends React.Component{
 							{ !freeStatus &&
 							<Button
 								type="primary"
-								// disabled={btnDisable}
-								disabled
+								disabled={btnDisable}
+								// disabled
 								onClick={this.payHandler}
 							>
 								{formatMessage({id: 'cloudStorage.pay'})}
