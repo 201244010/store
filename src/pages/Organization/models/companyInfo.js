@@ -277,8 +277,8 @@ export default {
 			const response = yield call(Action.getRegionList);
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
-				const region_list = data.region_list || [];
-				const formattedRegionList = cascaderDataWash(region_list, [
+				const regionList = data.regionList || [];
+				const formattedRegionList = cascaderDataWash(regionList, [
 					{ from: 'name', to: 'label' },
 					{ from: 'children', to: 'children' },
 					{ from: 'province', to: 'value' },

@@ -7,6 +7,7 @@ import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
 import styles from './MotionList.less';
 import global from '@/styles/common.less';
 
+
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -23,14 +24,9 @@ const SEARCH_FORM_BUTTON = {
 	wrappedComponentRef:true
 })
 class MotionListSearchBar extends React.Component {
-	
-	disabledDate = (value) =>{
-		if(!value) return false;
-		return value.set({'hour': 0, 'minute': 0, 'second':0}).valueOf() > moment().valueOf();
-	}
 
-	
-	
+	disabledDate = (current) => (current && current > moment().endOf('day'));
+
 	render(){
 		const { ipcList, loading, form, searchHandler, resetHandler } = this.props;
 
