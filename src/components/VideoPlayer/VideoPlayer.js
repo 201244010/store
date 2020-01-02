@@ -4,6 +4,7 @@ import { formatMessage } from 'umi/locale';
 import { Button } from  'antd';
 import browser from 'browser-detect';
 
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import ReVideo from './ReVideo';
 import Toolbar from './Toolbar';
 
@@ -121,7 +122,7 @@ class VideoPlayer extends React.Component{
 		if (player) {
 			console.log('paused: ', player.paused());
 			player.play();
-			
+
 			this.setState({
 				playing: true
 			});
@@ -375,12 +376,15 @@ class VideoPlayer extends React.Component{
 			onTimeUpdate, onMetadataArrived, onPlay, onError, onPause, onEnd, onCanPlay, onCanplayThrough, onDateChange, playHandler,
 			playBtnDisabled, showDatePicker, canPPIChange, showBackToLive, ppiChange, backToLive,
 			current, plugin, isOnline, cloudStatus, navigateTo, sn, fullScreenFlagShow,
+			detailVisible, paymentInfo = {}
 		} = this.props;
 
 		const { playing, fullScreen, noMedia, volume,
 			// playBtnDisabled, showDatePicker, canPPIChange, showBackToLive,
 			maxVolume, canScreenShot
 		} = this.state;
+
+		const { totalPrice, details, orderTime, paymentMethod } = paymentInfo;
 
 		const { player } = this;
 
@@ -451,6 +455,67 @@ class VideoPlayer extends React.Component{
 						</div>
 					</div>
 
+					{
+						detailVisible ?
+							<div className={styles['video-detail-wrapper']}>
+								<div className={styles['video-detail-container']}>
+									<div className={`${styles['video-detail-board']} ${pixelRatio === '16:9' ? styles.resolution : '' }`}>
+										<div className={styles['detail-board-content']}>
+											<div className={styles['info-block']}>
+												<h1>
+													<span className={`${styles.title} ${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.cashierInfo'})}</span>
+												</h1>
+												<div className={styles['info-item']}>
+													<div className={styles['info-label']}>
+														<span className={`${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.paymentMethod'})}</span>
+													</div>
+													<div className={styles['info-label-value']}>
+														<span className={`${styles['scale-text']}`}>{paymentMethod}</span>
+													</div>
+												</div>
+												<div className={styles['info-item']}>
+													<div className={styles['info-label']}>
+														<span className={`${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.purchaseTime'})}</span>
+													</div>
+													<div className={styles['info-label-value']}>
+														<span className={`${styles['scale-text']}`}>{orderTime}</span>
+													</div>
+												</div>
+												<div className={styles['info-item']}>
+													<div className={styles['info-label']}>
+														<span className={`${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.total'})}</span>
+													</div>
+													<div className={styles['info-label-value']}>
+														<span className={`${styles['scale-text']}`}>{totalPrice}</span>
+													</div>
+												</div>
+											</div>
+											<div className={`${styles['info-block']} ${styles.detail}`}>
+												<h1>
+													<span className={`${styles.title} ${styles['scale-text']}`}>{formatMessage({ id: 'tradeVideos.paymentDetail'})}</span>
+												</h1>
+												<PerfectScrollbar className={styles['detail-block']}>
+													{
+														details && details.map((item, index) =>
+															<div className={styles['info-item']} key={index}>
+																<div className={styles['detail-label']}>
+																	<span className={`${styles['scale-text']}`}>{item.name}</span>
+																</div>
+																<div className={styles['detail-label-value']}>
+																	<span className={`${styles['scale-text']}`}>{item.quantity}</span>
+																</div>
+															</div>
+														)
+													}
+												</PerfectScrollbar>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+							: ''
+					}
 				</div>
 
 				<div className={styles['toolbar-container']}>
