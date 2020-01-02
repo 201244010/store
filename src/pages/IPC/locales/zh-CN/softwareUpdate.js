@@ -2,7 +2,7 @@ export default {
 	'softwareUpdate.title': '固件更新',
 	'softwareUpdate.currentVersion': '当前版本',
 	'softwareUpdate.check': '获得最新版本',
-	'softwareUpdate.checkWaitingMsg': '正在检查你的设备版本，请稍后',
+	'softwareUpdate.checkWaitingMsg': '正在检查你的设备版本，请稍侯',
 	'softwareUpdate.checkDate': '上次检查时间',
 	'softwareUpdate.update': '现在更新',
 	'softwareUpdate.hasUpdate': '您的设备有更新可用',

@@ -46,6 +46,7 @@ class TradeVideosPlayer extends React.Component {
 							url={url}
 							ref={playler => this.trackplayler = playler}
 							showPaymentInfo={showPaymentInfo}
+							fullScreenFlagShow
 						/>
 						{
 							detailVisible ?

@@ -374,7 +374,7 @@ class VideoPlayer extends React.Component{
 		const { pixelRatio, currentPPI, ppiChanged, progressbar, isLive,
 			onTimeUpdate, onMetadataArrived, onPlay, onError, onPause, onEnd, onCanPlay, onCanplayThrough, onDateChange, playHandler,
 			playBtnDisabled, showDatePicker, canPPIChange, showBackToLive, ppiChange, backToLive,
-			current, plugin, isOnline, cloudStatus, navigateTo, sn
+			current, plugin, isOnline, cloudStatus, navigateTo, sn, fullScreenFlagShow,
 		} = this.props;
 
 		const { playing, fullScreen, noMedia, volume,
@@ -489,6 +489,8 @@ class VideoPlayer extends React.Component{
 
 						isOnline={isOnline}
 						cloudStatus={cloudStatus}
+
+						fullScreenFlagShow={fullScreenFlagShow}
 
 						progressbar={
 							progressbar

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { Card, message, Modal } from 'antd';
+import { Card, message, Modal, Spin } from 'antd';
 import { format } from '@konata9/milk-shake';
 import { ERROR_OK, ALTERT_TRADE_MAP } from '@/constants/errorCode';
 import styles from './trade.less';
@@ -183,30 +183,32 @@ class QRCodePayment extends PureComponent {
 						<span className={styles.price}>{orderDetail.paymentAmount ? `¥${Number(orderDetail.paymentAmount).toFixed(2)}` : '--'}</span>
 					</div>
 				</div>
-				<Card
-					type="inner"
-					title={this.purchaseType ? formatMessage({ id: `${this.purchaseType}.scan.pay` }) : null}
-					loading={loading.effects['trade/payOrder']}
-				>
-					<div className={styles['qrCode-content']}>
-						<div>
-							<div className={styles['qrCode-refresh']}>
-								{formatMessage({ id: 'cloudStorage.use.tips' })}
-								<span>{this.purchaseType ? formatMessage({ id: `${this.purchaseType}.guide` }) : null}</span>
-								{formatMessage({ id: 'cloudStorage.scan.code.tips' })}
+				<Spin spinning={loading.effects['trade/payOrder']}>
+					<Card
+						type="inner"
+						title={this.purchaseType ? formatMessage({ id: `${this.purchaseType}.scan.pay` }) : null}
+					// loading={loading.effects['trade/payOrder']}
+					>
+						<div className={styles['qrCode-content']}>
+							<div>
+								<div className={styles['qrCode-refresh']}>
+									{formatMessage({ id: 'cloudStorage.use.tips' })}
+									<span>{this.purchaseType ? formatMessage({ id: `${this.purchaseType}.guide` }) : null}</span>
+									{formatMessage({ id: 'cloudStorage.scan.code.tips' })}
+								</div>
+								<div className={styles['qrcode-data']} ref={this.qrContainer} />
 							</div>
-							<div className={styles['qrcode-data']} ref={this.qrContainer} />
+							<div className={styles[`${this.purchaseType}-guide-pic`]} />
 						</div>
-						<div className={styles[`${this.purchaseType}-guide-pic`]} />
-					</div>
-				</Card>
-
+					</Card>
+				</Spin>
 				<div className={styles['qrCode-footer']}>
 					<a href="javascript:void(0);" onClick={() => goToPath('paymentPage', {orderNo: this.orderNo})}>
 						<span className={styles['back-icon']} />{formatMessage({ id: 'pay.retry' })}
 					</a>
 				</div>
 			</Card>
+			
 		);
 	}
 }

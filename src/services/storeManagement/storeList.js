@@ -55,14 +55,14 @@ export const getShopTypeList = (options = {}) => {
 			...options,
 		},
 	};
-	return fetchApi('getShopTypeList', opt).then(response => response.json());
+	return fetchApi('getShopTypeList', opt).then(response => response.json()).then(res => format('toCamel')(res));;
 };
 
 export const getRegionList = (options = {}) => {
 	const opt = {
 		body: { ...options },
 	};
-	return fetchApi('getRegionList', opt).then(response => response.json());
+	return fetchApi('getRegionList', opt).then(response => response.json()).then(res => format('toCamel')(res));;
 };
 
 export const getSaasBindInfo = (options = {}) => {

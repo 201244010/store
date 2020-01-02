@@ -10,6 +10,7 @@ import { getLocationParam } from '@/utils/utils';
 import { ERROR_OK } from '@/constants/errorCode';
 import DeprecateModal from './DeprecateModal';
 import SearchResult from '../BasicData/Employee/SerachResult';
+import AuthKey from '@/pages/AuthKey';
 
 
 @connect(
@@ -180,7 +181,7 @@ class OrgDetail extends React.Component {
 		return detailAddress;
 	}
 
-	
+
 
 	render() {
 		const { goToPath } = this.props;
@@ -284,7 +285,7 @@ class OrgDetail extends React.Component {
 									</div>
 									<div className={`${styles.col} ${styles.businessStatus}`}>
 										<div className={styles.label}>{formatMessage({id: 'orgDetail.businessStatus'})}</div>
-										<div>{(businessStatus === 0 && formatMessage({id: 'orgDetail.businessStatus.open'}) || 
+										<div>{(businessStatus === 0 && formatMessage({id: 'orgDetail.businessStatus.open'}) ||
 								businessStatus === 1 && formatMessage({id: 'orgDetail.businessStatus.close'})) || '--'}
 										</div>
 									</div>
@@ -306,11 +307,11 @@ class OrgDetail extends React.Component {
 								</div>
 							</div>
 						}
-						
+
 					</div>
 					<div className={styles.footer}>
-						<Button 
-							className={styles.btn} 
+						<Button
+							className={styles.btn}
 							onClick={() => goToPath('editDetail',{
 								action : 'edit',
 								orgId: locationOrgId,
@@ -335,6 +336,9 @@ class OrgDetail extends React.Component {
 						>
 							{formatMessage({id: 'orgDetail.new.sub.org'})}
 						</Button>
+						{/* <div className={styles['auth-btn']}> */}
+						<AuthKey type="link" shopId={locationOrgId} />
+						{/* </div> */}
 					</div>
 				</Card>
 				{orgStatus === 0 ? 
@@ -357,6 +361,7 @@ class OrgDetail extends React.Component {
 								deleteEmployee,
 								goToPath,
 								getEmployeeList,
+								shopIdList: [locationOrgId],
 								userId: this.userId
 							}}
 						/>

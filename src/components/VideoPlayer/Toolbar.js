@@ -74,7 +74,7 @@ class Toolbar extends React.Component{
 			backToLive, showBackToLive,
 			fullScreen, fullScreenStatus,
 			maxVolume, mute, changeVolume, volume: volumneValue,
-			isOnline, cloudStatus,
+			isOnline, cloudStatus, fullScreenFlagShow
 		} = this.props;
 
 
@@ -345,7 +345,7 @@ class Toolbar extends React.Component{
 							`${ fullScreenStatus ? formatMessage({ id: 'videoPlayer.exitFullscreen' }) : formatMessage({ id: 'videoPlayer.enterFullscreen' }) }`
 						}
 					>
-						<a className={`${styles.button} ${styles['button-fullscreen']} ${ fullScreenStatus ? styles.fullscreen : ''} ${ !cloudStatus && !isOnline ? styles.disabled : ''}`} onClick={fullScreen}>
+						<a className={`${styles.button} ${styles['button-fullscreen']} ${ fullScreenStatus ? styles.fullscreen : ''} ${ !fullScreenFlagShow ? (!cloudStatus && !isOnline ? styles.disabled : '') : ''}`} onClick={fullScreen}>
 							{
 								formatMessage({ id: 'videoPlayer.enterFullscreen' })
 							}
