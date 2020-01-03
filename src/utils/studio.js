@@ -496,11 +496,11 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 			componentDetail.width = backWidth;
 			componentDetail.height = backWidth * componentDetail.ratio;
 		} else if (SHAPE_TYPES.CODE_H === componentDetail.type) {
-			componentDetail.width = componentDetail.image.width / (componentDetail.oZoomScale || oZoomScale);
+			componentDetail.width = Math.round(componentDetail.image.width * componentDetail.scaleX / (componentDetail.oZoomScale || oZoomScale));
 			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
 		} else if (SHAPE_TYPES.CODE_V === componentDetail.type) {
 			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
-			componentDetail.height = componentDetail.image.width / (componentDetail.oZoomScale || oZoomScale);
+			componentDetail.height = Math.round(componentDetail.image.width * componentDetail.scaleX / (componentDetail.oZoomScale || oZoomScale));
 		} else {
 			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
