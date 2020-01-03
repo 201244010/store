@@ -73,10 +73,10 @@ class MerchantModify extends Component {
 			merchant: {
 				loading,
 				companyInfo: {
-					company_name: companyName,
-					contact_person: contactPerson,
-					contact_tel: contactTel,
-					contact_email: contactEmail,
+					companyName,
+					contactPerson,
+					contactTel,
+					contactEmail,
 				},
 			},
 		} = this.props;
