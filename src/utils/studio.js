@@ -310,6 +310,9 @@ export const getImagePromise = componentDetail =>
 						format: componentDetail.codec,
 						height: MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY * componentDetail.zoomScale,
 						margin: 0,
+						textPosition: 'top',
+						fontSize: 0,
+						textMargin: 0,
 						displayValue: false
 					});
 				} catch (e) {
