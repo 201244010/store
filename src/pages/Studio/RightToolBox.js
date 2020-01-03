@@ -234,6 +234,9 @@ export default class RightToolBox extends Component {
 				format: value,
 				height: MAPS.containerHeight[detail.type] * detail.scaleY * detail.zoomScale,
 				margin: 0,
+				textPosition: 'top',
+				fontSize: 0,
+				textMargin: 0,
 				displayValue: false
 			});
 
@@ -371,6 +374,9 @@ export default class RightToolBox extends Component {
 					format: detail.codec,
 					height: MAPS.containerHeight[detail.type] * detail.scaleY * detail.zoomScale,
 					margin: 0,
+					textPosition: 'top',
+					fontSize: 0,
+					textMargin: 0,
 					displayValue: false
 				});
 
@@ -396,6 +402,9 @@ export default class RightToolBox extends Component {
 					format: detail.codec,
 					height: MAPS.containerHeight[detail.type] * detail.scaleY * detail.zoomScale,
 					margin: 0,
+					textPosition: 'top',
+					fontSize: 0,
+					textMargin: 0,
 					displayValue: false
 				});
 
