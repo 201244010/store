@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Group, Rect, Text, Image, Shape } from 'react-konva';
+import { getLocationParam } from '@/utils/utils';
 import { SHAPE_TYPES, SIZES, MAPS } from '@/constants/studio';
 
 const initFontStyle = (option) => {
@@ -31,6 +32,12 @@ export default function generateShape(option) {
 	let shape;
 	if (option.type === undefined) {
 		return null;
+	}
+
+	const screenType = getLocationParam('screen');
+	const oZoomScale = MAPS.screen[screenType].zoomScale;
+	if (!option.oZoomScale) {
+		option.oZoomScale = oZoomScale;
 	}
 
 	switch (option.type) {
