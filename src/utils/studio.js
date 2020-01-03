@@ -488,14 +488,19 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 		}
 
 		// 计算height, width
+		const screenType = getLocationParam('screen');
+		const oZoomScale = MAPS.screen[screenType].zoomScale;
+
 		if (SHAPE_TYPES.IMAGE === componentDetail.type) {
 			const backWidth = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.width = backWidth;
 			componentDetail.height = backWidth * componentDetail.ratio;
 		} else if (SHAPE_TYPES.CODE_H === componentDetail.type) {
-			componentDetail.width = componentDetail.image.width / componentDetail.oZoomScale;
+			componentDetail.width = componentDetail.image.width / (componentDetail.oZoomScale || oZoomScale);
+			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
 		} else if (SHAPE_TYPES.CODE_V === componentDetail.type) {
-			componentDetail.height = componentDetail.image.width / componentDetail.oZoomScale;
+			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
+			componentDetail.height = componentDetail.image.width / (componentDetail.oZoomScale || oZoomScale);
 		} else {
 			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
