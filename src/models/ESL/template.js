@@ -136,7 +136,6 @@ export default {
 				page_num: opts.current,
 				page_size: opts.pageSize,
 			});
-			console.log('response', response);
 			const result = response.data || {};
 			yield put({
 				type: 'updateState',
