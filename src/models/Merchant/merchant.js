@@ -165,7 +165,7 @@ export default {
 				payload: { loading: true },
 			});
 			if (response && response.code === ERROR_OK) {
-				const result = response.data || {};
+				const result =  format('toCamel')(response.data) || {};
 				yield put({
 					type: 'updateState',
 					payload: { companyInfo: result, loading: false },

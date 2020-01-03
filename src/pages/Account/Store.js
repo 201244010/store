@@ -84,7 +84,7 @@ class Store extends Component {
 
 		const {
 			visible,
-			selectedCompany: { companyId, contactEmail, contactTel, companyName, contactPerson },
+			selectedCompany: { companyId, contactEmail, contactTel, companyName, contactPerson, sunmiCompanyNo },
 		} = this.state;
 
 		const currentCompany =
@@ -158,9 +158,15 @@ class Store extends Component {
 					<Form {...FORM_ITEM_LAYOUT_COMMON}>
 						<Form.Item
 							className={styles['margin-clear']}
+							label={formatMessage({ id: 'merchantManagement.merchant.number' })}
+						>
+							<span>{sunmiCompanyNo || '--'}</span>
+						</Form.Item>
+						<Form.Item
+							className={styles['margin-clear']}
 							label={formatMessage({ id: 'merchantManagement.merchant.name' })}
 						>
-							<span>{companyName}</span>
+							<span>{companyName || '--'}</span>
 						</Form.Item>
 						<Form.Item
 							className={styles['margin-clear']}
@@ -168,7 +174,7 @@ class Store extends Component {
 								id: 'merchantManagement.merchant.contactPerson',
 							})}
 						>
-							<span>{contactPerson}</span>
+							<span>{contactPerson || '--'}</span>
 						</Form.Item>
 						<Form.Item
 							className={styles['margin-clear']}
@@ -176,7 +182,7 @@ class Store extends Component {
 								id: 'merchantManagement.merchant.contactPhone',
 							})}
 						>
-							<span>{contactTel}</span>
+							<span>{contactTel || '--'}</span>
 						</Form.Item>
 						<Form.Item
 							className={styles['margin-clear']}
@@ -184,7 +190,7 @@ class Store extends Component {
 								id: 'merchantManagement.merchant.contactEmail',
 							})}
 						>
-							<span>{contactEmail}</span>
+							<span>{contactEmail || '--'}</span>
 						</Form.Item>
 					</Form>
 				</Modal>
