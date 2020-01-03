@@ -156,6 +156,7 @@ export default {
 	'product.create.error': '商品创建失败',
 	'product.update.error': '商品更新失败',
 	'product.excel.import.error.format': '无法解析，请上传正确的商品数据文件',
+	'product.excel.import.error.content': '商品数据导入失败，无法解析文件，请使用模板填写商品信息后上传',
 	'product.excel.import.placeholder.select': '选择文件',
 	'product.excel.import.tip.download': '下载导入模板',
 	'product.excel.import.tip.desc1': '仅支持导入.xlsx和.xls的表格文件；',

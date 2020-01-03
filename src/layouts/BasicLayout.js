@@ -23,6 +23,7 @@ import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/logo-big.png';
 // import logoEN from '../assets/menuLogoEN.png';
+import { ERROR_OK } from '@/constants/errorCode';
 import { env } from '@/config';
 
 import 'react-perfect-scrollbar/dist/css/styles.css';
@@ -74,6 +75,18 @@ class BasicLayout extends React.PureComponent {
 
 	componentDidMount() {
 		this.dataInitial();
+		const { getUserInfo, getStoreList, getOrgLayer, initOrgList } = this.props;
+		window.addEventListener('storage', async () => {  
+			getUserInfo();
+			getOrgLayer({});
+			initOrgList();
+			const response = await getStoreList({});
+			if (response && response.code === ERROR_OK) {
+				const result = response.data || {};
+				const shopList = result.shopList || [];
+				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
+			}
+		});
 	}
 
 	componentWillReceiveProps() {
@@ -313,8 +326,11 @@ export default connect(
 	}),
 	dispatch => ({
 		logout: () => dispatch({ type: 'user/logout' }),
+		getUserInfo: () => dispatch({ type: 'user/getUserInfo' }),
 		getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		getOrgLayer: payload => dispatch({ type: 'store/getOrgLayer', payload }),
+		initOrgList: payload => dispatch({ type: 'organization/initOrgList', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		dispatch,
