@@ -492,6 +492,10 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 			const backWidth = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.width = backWidth;
 			componentDetail.height = backWidth * componentDetail.ratio;
+		} else if (SHAPE_TYPES.CODE_H === componentDetail.type) {
+			componentDetail.width = componentDetail.image.width / componentDetail.oZoomScale;
+		} else if (SHAPE_TYPES.CODE_V === componentDetail.type) {
+			componentDetail.height = componentDetail.image.width / componentDetail.oZoomScale;
 		} else {
 			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);

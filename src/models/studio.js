@@ -122,7 +122,8 @@ export default {
 					],
 					startX,
 					startY,
-					zoomScale
+					zoomScale,
+					oZoomScale: zoomScale
 				}
 			};
 			if (isStep) {

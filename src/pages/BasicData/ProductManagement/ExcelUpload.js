@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Card, Steps, Form, Upload, Button, Icon, Progress, Modal, Table, message} from 'antd';
+import {Card, Steps, Form, Upload, Button, Icon, Progress, message} from 'antd';
 import {connect} from 'dva';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
@@ -31,11 +31,8 @@ class ExcelUpload extends Component {
 			current: 0,
 			fileList: [],
 			disabled: true,
-			readLoading: false,
 			percent: 50,
 			result: {},
-			errorVisible: false,
-			errorData: []
 		};
 	}
 
@@ -86,40 +83,7 @@ class ExcelUpload extends Component {
 			return false;
 		}
 		this.setState({
-			readLoading: true
-		});
-		this.handleFile(file).then((data) => {
-			let errorData = [];
-			Object.keys(data).forEach(key => {
-				errorData = data[key].filter(item => {
-					if (item.length) {
-						return !item[0] || !item[2] || !item[11];
-					}
-					return false;
-				}).map(item => ({
-					seqNum: item[0],
-					name: item[2],
-					price: item[11]
-				}));
-				this.setState({
-					errorData
-				});
-			});
-			if (!errorData.length) {
-				this.setState({
-					disabled: false,
-					readLoading: false,
-				});
-			} else {
-				this.setState({
-					errorVisible: true,
-					readLoading: false
-				});
-			}
-		}).catch(() => {
-			this.setState({
-				readLoading: false
-			});
+			disabled: false,
 		});
 
 		return false;
@@ -131,7 +95,13 @@ class ExcelUpload extends Component {
 		fileList = fileList.slice(-1);
 
 		this.setState({fileList});
-		this.uploadFile = fileList[0].originFileObj;
+		if (fileList[0]) {
+			this.uploadFile = fileList[0].originFileObj;
+		} else {
+			this.setState({
+				disabled: true
+			});
+		}
 	}
 
 	handleDownloadTemplate = async () => {
@@ -144,33 +114,14 @@ class ExcelUpload extends Component {
 	downloadErrorItems = () => {
 		const {result} = this.state;
 
-		downloadFileByClick(result.download_failed_file_address);
+		if (result.download_failed_file_address) {
+			downloadFileByClick(result.download_failed_file_address);
+		}
 	};
 
 	render() {
-		const {current, fileList, disabled, readLoading, percent, result, errorVisible, errorData} = this.state;
+		const {current, fileList, disabled, percent, result} = this.state;
 		const {form: {getFieldDecorator}} = this.props;
-
-		const columns = [
-			{
-				title: formatMessage({id: 'basicData.product.seqNum'}),
-				dataIndex: 'seqNum',
-				key: 'seqNum',
-				render: (text) => <span style={text ? {} : {color: 'red'}}>{text || formatMessage({id: 'product.excel.import.error.modal.require'})}</span>
-			},
-			{
-				title: formatMessage({id: 'basicData.product.name'}),
-				dataIndex: 'name',
-				key: 'name',
-				render: (text) => <span style={text ? {} : {color: 'red'}}>{text || formatMessage({id: 'product.excel.import.error.modal.require'})}</span>
-			},
-			{
-				title: formatMessage({id: 'basicData.product.price'}),
-				dataIndex: 'price',
-				key: 'price',
-				render: (text) => <span style={text ? {} : {color: 'red'}}>{text || formatMessage({id: 'product.excel.import.error.modal.require'})}</span>
-			},
-		];
 
 		const FirstStep = (
 			<Form {...formItemLayout}>
@@ -196,7 +147,7 @@ class ExcelUpload extends Component {
 					<p className={styles['upload-desc']}>3.{formatMessage({id: 'product.excel.import.tip.desc3'})}</p>
 				</Form.Item>
 				<Form.Item wrapperCol={{span: 12, offset: 6}}>
-					<Button type="primary" onClick={this.nextStep} loading={readLoading} disabled={disabled}>
+					<Button type="primary" onClick={this.nextStep} disabled={disabled}>
 						{formatMessage({id: 'product.excel.import.btn.next'})}
 					</Button>
 				</Form.Item>
@@ -235,27 +186,6 @@ class ExcelUpload extends Component {
 								ThirdStep
 					}
 				</div>
-				<Modal
-					width={750}
-					title={formatMessage({id: 'product.excel.import.error.modal.title'})}
-					visible={errorVisible}
-					closable={false}
-					footer={[
-						<Button
-							key="ok"
-							onClick={() => {
-								this.setState({
-									errorVisible: false
-								});
-
-							}}
-						>
-							{formatMessage({id: 'btn.confirm'})}
-						</Button>
-					]}
-				>
-					<Table dataSource={errorData} columns={columns} pagination={false} />
-				</Modal>
 			</Card>
 		);
 	}
