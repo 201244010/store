@@ -4,7 +4,7 @@ import {connect} from 'dva';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import { downloadFileByClick } from '@/utils/utils';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, PRODUCT_EXCEL_WRONG } from '@/constants/errorCode';
 import * as styles from './ExcelUpload.less';
 
 const {Step} = Steps;
@@ -52,6 +52,15 @@ class ExcelUpload extends Component {
 				percent: 100,
 				current: 2,
 				result: response.data
+			});
+		}
+		if (response && response.code === PRODUCT_EXCEL_WRONG) {
+			this.setState({
+				percent: 100,
+				current: 2,
+				result: {
+					code: PRODUCT_EXCEL_WRONG
+				}
 			});
 		}
 	}
@@ -123,6 +132,8 @@ class ExcelUpload extends Component {
 		const {current, fileList, disabled, percent, result} = this.state;
 		const {form: {getFieldDecorator}} = this.props;
 
+		console.log(result);
+
 		const FirstStep = (
 			<Form {...formItemLayout}>
 				<Form.Item label={formatMessage({id: 'product.excel.import.placeholder.select'})}>
@@ -161,11 +172,20 @@ class ExcelUpload extends Component {
 		);
 		const ThirdStep = (
 			<div className={styles['third-step']}>
-				<img src={require('@/assets/imgs/success.png')} alt="success" />
-				<p className={styles['upload-success']}>{result.total_num - result.failed_num}{formatMessage({id: 'product.excel.import.result.success'})}</p>
-				<p className={styles['upload-fail']}>
-					{result.failed_num}{formatMessage({id: 'product.excel.import.result.fail'})}{result.failed_num !== 0 ? <span>，<a href="javascript: void(0);" onClick={this.downloadErrorItems}>{formatMessage({id: 'product.excel.import.result.fail.download'})}</a></span> : null}
-				</p>
+				{
+					result.code === PRODUCT_EXCEL_WRONG ?
+						<>
+							<img src={require('@/assets/icon/failed.svg')} alt="fail" />
+							<p className={styles['upload-success']}>{formatMessage({id: 'product.excel.import.error.content'})}</p>
+						</> :
+						<>
+							<img src={require('@/assets/icon/success.svg')} alt="fail" />
+							<p className={styles['upload-success']}>{result.total_num - result.failed_num}{formatMessage({id: 'product.excel.import.result.success'})}</p>
+							<p className={styles['upload-fail']}>
+								{result.failed_num}{formatMessage({id: 'product.excel.import.result.fail'})}{result.failed_num !== 0 ? <span>，<a href="javascript: void(0);" onClick={this.downloadErrorItems}>{formatMessage({id: 'product.excel.import.result.fail.download'})}</a></span> : null}
+							</p>
+						</>
+				}
 				<Button type="primary" onClick={() => router.goBack()}>{formatMessage({id: 'product.excel.import.btn.back'})}</Button>
 			</div>
 		);
