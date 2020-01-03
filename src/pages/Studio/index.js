@@ -1062,7 +1062,7 @@ class Studio extends Component {
 	};
 
 	detectFonts = () => {
-		const fonts = ['Zfull-GB'];
+		const fonts = ['Zfull-GB', 'Alibaba Sans'];
 		const fontDetector = new FontDetector();
 
 		this.setState({
@@ -1071,7 +1071,11 @@ class Studio extends Component {
 	}
 
 	downloadFont = (font) => {
-		downloadFileByClick(`${Config.API_ADDRESS}/static/${font}.ttf`);
+		const fontUrls = {
+			'Zfull-GB': 'Zfull-GB.ttf',
+			'Alibaba Sans': 'AlibabaSans.otf'
+		};
+		downloadFileByClick(`${Config.API_ADDRESS}/static/${fontUrls[font]}`);
 	};
 
 	render() {
