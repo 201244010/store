@@ -7,6 +7,7 @@
 	'serviceManagement.status.unActivate': '待激活',
 	'serviceManagement.status.activated': '已激活',
 	'serviceManagement.status.disabled': '已過期',
+	'serviceManagement.status.unused': '已失效',
 	'serviceManagement.placeholder.search': '請輸入服務名稱、服務編號查詢',
 	'serviceManagement.column.name': '服務名稱',
 	'serviceManagement.column.no': '服務編號',
