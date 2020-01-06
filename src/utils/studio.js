@@ -503,7 +503,7 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
 		} else if (SHAPE_TYPES.CODE_V === componentDetail.type) {
 			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
-			componentDetail.height = Math.round(componentDetail.image.width * componentDetail.scaleX / (componentDetail.oZoomScale || oZoomScale));
+			componentDetail.height = Math.round(componentDetail.image.width * componentDetail.scaleY / (componentDetail.oZoomScale || oZoomScale));
 		} else {
 			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
