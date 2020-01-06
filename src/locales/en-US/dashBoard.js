@@ -6,7 +6,7 @@ export default {
 	'dashboard.search.range.start': 'Start date',
 	'dashboard.search.range.end': 'End date',
 	'dashboard.search.range.overflow': 'The time span must be within 60 calendar days',
-	'dashboard.last.modify.date': 'Last updated',
+	'dashboard.last.modify.date': 'Last Updated',
 	'dashboard.refresh.too.fast': 'please don\'t fresh too frequently and try again later.',
 	'dashboard.order.sales': 'Per sales',
 	'dashboard.order.show.sales': 'Transaction time (sales)',

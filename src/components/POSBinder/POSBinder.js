@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert } from 'antd';
 import Draggable from 'react-draggable';
+import { formatMessage } from 'umi/locale';
 
 import styles from './POSBinder.less';
 
@@ -207,7 +208,7 @@ class POSBinder extends React.Component {
 						<div className={styles.info}>
 							<Alert
 								className={styles.alert}
-								message='请拖动下方虚线框已框选对应收银设备。'
+								message={formatMessage({id: 'posList.notificationDesc'})}
 								type='info'
 								showIcon
 								closable

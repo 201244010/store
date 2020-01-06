@@ -27,7 +27,7 @@ export default {
 	'basicData.product.expire_time.day': 'Day (s)',
 	'basicData.product.qrCode.link': 'QR Code Link',
 	'basicData.product.qrCode': 'QR Code Link',
-	'basicData.product.modified_time': 'Last updated',
+	'basicData.product.modified_time': 'Last Updated',
 	'basicData.product.customize': 'Customize',
 	'basicData.product.image': 'Product Image',
 	'basicData.product.extraInfo.isEmpty': 'The customized field cannot be empty',

@@ -6,7 +6,7 @@ export default{
 	'motionList.soundAndImage': 'Sound and Image',
 	'motionList.else': 'Else',
 	'motionList.detectedTime': 'Detection time',
-	'motionList.action': 'Operation',
+	'motionList.action': 'Action',
 	'motionList.watch':'Check',
 	'motionList.select.detectedTime':'Please select the filter date',
 	'motionList.select.ipcName':'Select camera name',
