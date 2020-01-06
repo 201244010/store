@@ -5,7 +5,7 @@ export default {
 	'deviceBasicInfo.sn': 'SN',
 	'deviceBasicInfo.ip':'IP Address',
 	'deviceBasicInfo.mac':'MAC Address',
-	'deviceBasicInfo.conntype':'Network connect tyep',
+	'deviceBasicInfo.conntype':'Network Connection',
 	'deviceBasicInfo.save': 'Save',
 	'deviceBasicInfo.delete': 'Delete Device',
 	'deviceBasicInfo.deleteConfirmPre':'It will not work after deletion,',

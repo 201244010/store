@@ -10,5 +10,5 @@ export default {
 	'ipcList.noLive':'The camera has been unbound to the user and cannot continue to watch the live video',
 	'ipcList.noSetting':'The camera has been unbound by this user, please re-bind before operating',
 	'ipcList.devices.ss.outline.tips': 'The current device is offline and only supports viewing cloud playback videos',
-	'ipcList.devices.fs.outline.tips': 'The current device is offline',
+	'ipcList.devices.fs.outline.tips': 'Currently offline',
 };

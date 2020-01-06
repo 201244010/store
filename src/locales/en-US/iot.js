@@ -1,7 +1,7 @@
 export default {
-	'iot.pos.status.active': 'Online Pos Devices',
-	'iot.pos.status.disabled': 'Offline Pos Devices',
-	'iot.pos.unit': 'Set',
+	'iot.pos.status.active': 'Online POS Devices',
+	'iot.pos.status.disabled': 'Offline POS Devices',
+	'iot.pos.unit': 'Unit',
 	'iot.pos.model': 'Model',
 	'iot.pos.connect.status': 'Connection Status',
 	'iot.pos.view.detail': 'Check Details',
