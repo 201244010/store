@@ -37,4 +37,6 @@ export default {
 	'employee.info.create.failed': 'Failed to create the employee',
 	'employee.info.update.failed': 'Failed to update the employee',
 	'employee.info.binded.error': 'The employee ID/phone/email/SUNMI account has been bound already',
+	'employee.create.success': '员工创建成功',
+	'employee.update.success': '员工修改成功',
 };
