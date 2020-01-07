@@ -23,6 +23,7 @@ import baseStation from './en-US/ESL-device';
 
 // BasicData
 import productManagement from './en-US/BasicData-product';
+import companyInfo from './en-US/companyInfo';
 
 import merchantManagement from './en-US/merchant';
 
@@ -34,6 +35,9 @@ import tradeShow from './en-US/tradeShow';
 import serviceManagement from './en-US/serviceManagement';
 import orderManagement from './en-US/orderManagement';
 import passengerAnalyze from './en-US/passengerAnalyze';
+
+import orgnization from './en-US/organization';
+import orgDetail from './en-US/orgDetail';
 
 export default {
 	'navBar.lang': 'Language',
@@ -79,4 +83,7 @@ export default {
 	...passengerAnalyze,
 	...serviceManagement,
 	...orderManagement,
+	...orgDetail,
+	...orgnization,
+	...companyInfo,
 };
