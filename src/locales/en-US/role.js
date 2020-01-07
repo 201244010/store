@@ -30,4 +30,5 @@ export default {
 	'roleManagement.role.authTime': 'Authorize Time',
 	'roleManagement.role.employeePhone': 'Employee Phone Number',
 	'roleManagement.role.telePhone': 'Employee Phone Number',
+	'roleManagement.input.illegal': '内容含有非法字符，请重新输入',
 };

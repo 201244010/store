@@ -28,4 +28,7 @@ export default {
 	'iot.pos.active.status.no': 'Unconnected',
 	'iot.pos.warranty.status.yes': 'On Insurance',
 	'iot.pos.warranty.status.no': 'Over Insurance',
+	'iot.pos.device.info.fetch.error': '设备信息获取失败，请稍后重试',
+	'iot.pos.device.modify.info.fetch.error': '维修信息获取失败，请稍后重试',
+	'iot.pos.device.detail.info.error': '设备详情获取失败，请稍后重试',
 };

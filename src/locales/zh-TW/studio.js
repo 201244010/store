@@ -56,4 +56,7 @@
 	'studio.tool.label.codec': '編碼類型',
 	'studio.tool.error.price.format': '輸入價格不正確',
 	'studio.tool.error.image.format': '上傳圖片支持格式支持jpg/jpeg/png',
+	'studio.tool.font.download.title': '字體安裝文件下載',
+	'studio.tool.font.download.alert': '如果已經安裝下列字體，請重啟瀏覽器進行重新加載',
+	'studio.error.codec.value.wrong': '輸入不符合當前編碼方式，請檢查',
 };
