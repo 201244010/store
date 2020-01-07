@@ -30,7 +30,6 @@ import merchantManagement from './en-US/merchant';
 import roleManagement from './en-US/role';
 import employee from './en-US/employee';
 import trade from './en-US/trade';
-import flow from './en-US/flow';
 import tradeShow from './en-US/tradeShow';
 import serviceManagement from './en-US/serviceManagement';
 import orderManagement from './en-US/orderManagement';
@@ -77,7 +76,6 @@ export default {
 	...employee,
 	...network,
 	...trade,
-	...flow,
 	...tradeShow,
 	...iot,
 	...passengerAnalyze,

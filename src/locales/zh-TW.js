@@ -30,7 +30,6 @@ import merchantManagement from './zh-TW/merchant';
 import roleManagement from './zh-TW/role';
 import employee from './zh-TW/employee';
 import trade from './zh-TW/trade';
-import flow from './zh-TW/flow';
 import tradeShow from './zh-TW/tradeShow';
 import serviceManagement from './zh-TW/serviceManagement';
 import orderManagement from './zh-TW/orderManagement';
@@ -77,7 +76,6 @@ export default {
 	...employee,
 	...network,
 	...trade,
-	...flow,
 	...tradeShow,
 	...iot,
 	...passengerAnalyze,
