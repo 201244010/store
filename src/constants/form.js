@@ -40,11 +40,11 @@ export const FORM_ITEM_DETAIL = {
 export const FORM_SETTING_LAYOUT = {
 	labelCol: {
 		sm: { span: 24 },
-		md: { span: 8 },
+		md: { span: 10 },
 	},
 	wrapperCol: {
 		sm: { span: 24 },
-		md: { span: 16 },
+		md: { span: 14 },
 	},
 };
 
