@@ -1,6 +1,6 @@
 ﻿export default {
 	'menu.index': 'Loading...',
-	'menu.dashBoard': ' ',
+	'menu.dashBoard': '首頁',
 	'menu.dashboard': '首頁',
 	'menu.dashboard.detail': '交易詳情',
 	'menu.dashboard.orderDetail': '訂單詳情',
