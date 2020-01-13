@@ -1,6 +1,6 @@
 export default {
 	'menu.index': 'Loading…',
-	'menu.dashBoard': ' ',
+	'menu.dashBoard': 'Home',
 	'menu.dashboard': 'Home',
 	'menu.dashboard.detail': 'Transaction details',
 	'menu.dashboard.orderDetail': 'Order details',
