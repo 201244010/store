@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-restricted-globals */
 import React from 'react';
-import { formatMessage } from 'umi/locale';
+import { formatMessage , getLocale } from 'umi/locale';
 import { Form, Button, Input, Radio, Cascader, Card, AutoComplete, TreeSelect, Select, TimePicker, Checkbox, message, Spin } from 'antd';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
@@ -109,8 +109,10 @@ class CompanyInfo extends React.Component {
 			});
 			isDisabled = false;
 		}
-
-		if (!Storage.get('__shopTypeList__', 'local')) {
+		const currentLanguage = getLocale();
+		const storageLanaguage = Storage.get('__lang__', 'local');
+		if (!Storage.get('__shopTypeList__', 'local') || currentLanguage !== storageLanaguage) {
+			Storage.set({ __lang__: currentLanguage }, 'local');
 			getShopTypeList();
 		}
 
