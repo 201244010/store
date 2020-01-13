@@ -4,14 +4,14 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 
-const LAY_OUT_OFFSET = {
-	labelCol: {
-		sm: { span: 10, offset: 2 },
-	},
-	wrapperCol:{
-		sm: { span: 10 },
-	}
-};
+// const LAY_OUT_OFFSET = {
+// 	labelCol: {
+// 		sm: { span: 10, offset: 2 },
+// 	},
+// 	wrapperCol:{
+// 		sm: { span: 10 },
+// 	}
+// };
 
 const LAY_OUT = {
 	labelCol: {
@@ -41,7 +41,7 @@ class ServiceDetail extends React.Component {
 		super(props);
 		this.state = {};
 	}
-	
+
 	handleTime = time => {
 		let hours = Math.floor( time / 3600);
 		if(hours >= 24) {
@@ -51,12 +51,11 @@ class ServiceDetail extends React.Component {
 		}
 		return hours + formatMessage({id: 'hour.unit'});
 	};
-	
+
 	render() {
 		const { loading, closeModal, detail: { serviceDetail: {
 			serviceName, serviceNo, subscribeTime, serviceDuration, expireTime, status, orderNo, deviceName, deviceModel, deviceSn, validTime
 		}}} = this.props;
-		
 		return (
 			<Modal
 				visible
@@ -70,8 +69,8 @@ class ServiceDetail extends React.Component {
 			>
 				<Spin spinning={loading.effects['serviceManagement/getServiceDetail']}>
 					<Row>
-						<Col span={12}>
-							<Form {...LAY_OUT_OFFSET}>
+						<Col span={24}>
+							<Form {...LAY_OUT}>
 								<Form.Item label={formatMessage({id: 'serviceManagement.column.name'})}>
 									{serviceName}
 								</Form.Item>
@@ -92,7 +91,7 @@ class ServiceDetail extends React.Component {
 								</Form.Item>
 							</Form>
 						</Col>
-						<Col span={12}>
+						<Col span={24}>
 							<Form {...LAY_OUT}>
 								<Form.Item label={formatMessage({id: 'serviceManagement.column.no'})}>
 									{serviceNo}

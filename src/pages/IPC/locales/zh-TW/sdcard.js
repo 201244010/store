@@ -1,0 +1,16 @@
+export default {
+	'SDCard.noSDCard.title': ' SD卡未檢測到',
+	'SDCard.noSDCard.content': '未檢測到SD卡，本地將無法保存視頻。 ',
+	'SDCard.noSDCard.okText': '確定',
+	'SDCard.format.title': ' SD卡格式化',
+	'SDCard.format.content': '檢測到SD卡插入，需要格式化才能使用。請提前保存重要資料！ ',
+	'SDCard.format.okText': '格式化',
+	'SDCard.format.cancelText': '取消',
+	'SDCard.unknown.title': ' SD卡無法識別',
+	'SDCard.unknown.content': '您插入的SD卡無法識別，請更換SD卡並重新嘗試。 ',
+	'SDCard.unknown.okText': '繼續',
+	'SDCard.format.success.title': ' 格式化成功！ ',
+	'SDCard.format.success.content': '您的SD卡已經被成功格式化，可以正常使用。 ',
+	'SDCard.format.failed.title': ' 格式化失敗！ ',
+	'SDCard.format.failed.content': '您的SD卡無法被格式化，請更換SD卡並重新嘗試。 ',
+};
