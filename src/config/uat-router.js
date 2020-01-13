@@ -37,14 +37,14 @@ const router = [
 		path: '/show',
 		component: '../layouts/BlankLayout',
 		id: 'show',
-		routes: [{ path: '/show', redirect: '/showcase' },],
+		routes: [{ path: '/show', redirect: '/showcase/login' },],
 	},
 
 	{
 		path: '/flow',
 		component: '../layouts/BlankLayout',
 		id: 'flow',
-		routes: [{ path: '/flow', redirect: '/showcase' }],
+		routes: [{ path: '/flow', redirect: '/showcase/login' }],
 	},
 
 	{

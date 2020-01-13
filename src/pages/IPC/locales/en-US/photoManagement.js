@@ -63,7 +63,7 @@ export default {
 	'photoManagement.card.uploadFail': 'Failed to change the profile picture, please re-upload the clear face picture',
 	'photoManagement.card.uploadSuccess': 'Change the profile picture successfully',
 	'photoManagement.card.stranger': 'New Customer',
-	'photoManagement.card.regular': 'Frequent Customer',
+	'photoManagement.card.regular': 'Repeat Visitor',
 	'photoManagement.card.employee': 'Employee',
 	'photoManagement.card.blacklist': 'Blacklist',
 	'photoManagement.card.genderMessage': 'Please select gender',

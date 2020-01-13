@@ -22,7 +22,7 @@ export default {
 	'serviceManagement.label.deviceName': 'Bound Device Name',
 	'serviceManagement.label.deviceSn': 'Bound Device SN',
 	'serviceManagement.label.serviceDuration': 'Validity',
-	'serviceManagement.label.orderNo': 'Order Number Associated',
+	'serviceManagement.label.orderNo': 'Order No. Associated',
 	'serviceManagement.label.deviceModel': 'Bound Device Model',
 	'serviceManagement.label.store.belong': 'Store Subordinate to',
 	'serviceManagement.detail': 'Service Details',
