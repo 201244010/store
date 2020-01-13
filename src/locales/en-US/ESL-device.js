@@ -69,7 +69,7 @@ export default {
 	'esl.device.esl.bind.product.code': 'The Bound Product ID',
 	'esl.device.esl.bind.product.name': 'The Bound Product Name',
 	'esl.device.esl.all': ' ',
-	'esl.device.esl.total': ' Temple(s) in total',
+	'esl.device.esl.total': ' temple(s) in total',
 	'esl.device.esl.detail': 'ESL Details',
 	'esl.device.esl.delete.title': 'Are you sure you want to delete the ESL?',
 	'esl.device.esl.delete.message1': 'The ESL will be unbound from the account after being deleted.',
