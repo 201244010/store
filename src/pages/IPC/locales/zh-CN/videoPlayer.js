@@ -16,5 +16,5 @@ export default {
 	'videoPlayer.noPlay':'当前设备离线，无法为您播放直播',
 	'videoPlayer.noCloudService':'当前设备离线，无法为您播放直播画面。您可以通过开通云存储功能，查看云回放视频',
 	'videoPlayer.subCloud': '开通云存储',
-	'videoPlayer.thisIsRePlay':'拖动可查看云回放视频',
+	'videoPlayer.thisIsRePlay':'拖动可查看云回放视频'
 };

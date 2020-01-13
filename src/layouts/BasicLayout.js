@@ -10,7 +10,7 @@ import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
-import { formatMessage, getLocale } from 'umi/locale';
+import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -22,7 +22,7 @@ import SiderMenu from '@/components/SiderMenu';
 import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/logo-big.png';
-import logoEN from '../assets/menuLogoEN.png';
+// import logoEN from '../assets/menuLogoEN.png';
 import { env } from '@/config';
 
 import 'react-perfect-scrollbar/dist/css/styles.css';
@@ -225,14 +225,13 @@ class BasicLayout extends React.PureComponent {
 			breadcrumbNameMap,
 			fixedHeader,
 		} = this.props;
-		const currentLanguage = getLocale();
 		const isTop = PropsLayout === 'topmenu';
 		const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
 		const layout = (
 			<Layout>
 				{isTop && !isMobile ? null : (
 					<SiderMenu
-						logo={currentLanguage === 'zh-CN' ? logo : logoEN}
+						logo={logo}
 						theme={navTheme}
 						onCollapse={this.handleMenuCollapse}
 						menuData={menuData}

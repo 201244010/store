@@ -1,7 +1,7 @@
 export default {
 	'network.shopNetwork': '店内网络',
 	'network.deviceList': '网络设备列表',
-	'network.deviceId': '设备网络ID',
+	'network.deviceId': '网络设备ID',
 	'network.deviceSN': '网络设备SN',
 	'network.softwareVersion': '软件版本号',
 	'network.cpuUsage': 'CPU使用率',
@@ -11,8 +11,6 @@ export default {
 	'network.operation': '操作',
 	'menu.network.clientList': '客户端列表',
 	'menu.network.clientListTitle': '当前客户端列表',
-	
-
 	'network.networkId': '网络ID',
 	'network.upSpeed': '上传速度',
 	'network.downSpeed': '下载速度',
@@ -22,7 +20,6 @@ export default {
 	'network.router': '路由器',
 	'network.viewMore': '查看详情',
 	'network.guestNumber': '顾客接入数量',
-
 	'network.detail': '网络设备详情',
 	'network.rssi': '连接状态',
 	'network.rssi.strong': '较好',
@@ -39,13 +36,11 @@ export default {
 	'network.noNetwork': '暂无网络',
 	'network.changeSuccess': '更改名称成功',
 	'network.onlineTime': '运行时长',
-
 	'network.readyReboot': '重启中...',
 	'network.readyUpgrade': '升级中...',
 	'network.rebootTitle': '您确定将此设备重新启动？',
 	'network.upgradeTitle': '您确定将此设备升级？',
 	'network.noMeshDevice': '暂无数据或设备版本过低',
-
 	'network.ruleName': '规则名称',
 	'network.bandversion': '双频合一',
 	'network.mainNetwork.switch': '主网络开关',
@@ -59,7 +54,6 @@ export default {
 	'network.belongNetwork': '所属网络',
 	'network.onlineStatus': '在线状态',
 	'network.currentVersion': '当前软件版本',
-
 	'network.qos.upBandwidth': '上行带宽',
 	'network.qos.downBandwidth': '下行带宽',
 	'network.qos.QoS': '网速智能分配',
@@ -70,12 +64,10 @@ export default {
 	'network.qos.whitelistWeight': '优先',
 	'network.qos.normalWeight': '普通',
 	'network.bandwidth.allocation': '带宽分配比例',
-
 	'network.switchOn': '开',
 	'network.switchOff': '关',
 	'network.switch.tip': '设置网络拥堵时，客户端最低保障的网络带宽比例',
 	'network.name': '名称',
-
 	'network.qos.noEmpty.ruleName': '规则名称不能为空',
 	'network.qos.noEmpty.upBandwidth': '上行带宽不能为空',
 	'network.qos.noEmpty.downBandwidth': '下行带宽不能为空',
@@ -85,24 +77,20 @@ export default {
 	'network.qos.bandradio.scape': '带宽比例范围应在1-100之间',
 	'network.qos.bandwidth.number': '请输入整数',
 	'network.qos.createConfig': '新增配置',
-
 	'network.return': '返回',
 	'network.apply': '立即应用',
 	'network.sure.delete': '你确定要删除本条配置吗？',
-
 	'network.qos.unOpen': '未开启',
 	'network.qos.setSuccess': '配置应用成功',
 	'network.qos.setFail': '配置应用失败',
 	'network.qos.delete.success': '删除成功',
 	'network.qos.delete.fail': '删除失败',
-	
 	'network.hostName': '客户端名称',
 	'network.macAddress': 'MAC地址',
 	'network.ipAddress': 'IP地址',
 	'network.routerMac': '接入路由器',
 	'network.connectMode': '接入方式',
 	'network.ontime': '已接入时间',
-	
 	'network.routerEvent.title': '事件列表',
 	'network.routerEvent.noRouter': '--',
 	'network.connect.time': '时间',

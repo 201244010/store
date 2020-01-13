@@ -58,8 +58,8 @@ class LibraryForm extends React.Component {
 				<Form
 					className={styles['form-wrapper']}
 					// title={formatMessage({id: 'faceid.createLibrary'})}
-					labelCol={{span: 6}}
-					wrapperCol={{span: 16}}
+					labelCol={{span: 7}}
+					wrapperCol={{span: 17}}
 				>
 					<Form.Item
 						label={formatMessage({id: 'faceid.libraryName'})}
@@ -219,6 +219,8 @@ class LibraryForm extends React.Component {
 									// 生客
 									return (
 										<Form.Item
+											labelCol={{span: 10}}
+											wrapperCol={{span: 14}}
 											label={formatMessage({id: 'faceid.transferCondit' })}
 										>
 											<Form.Item className={`${styles.inline} ${styles.number}`}>

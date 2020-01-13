@@ -1,0 +1,23 @@
+export default {
+	'entry.detail.delete.success':'刪除成功',
+	'entry.detail.delete.fail':'刪除失敗',
+	'entry.detail.capture.face':'抓拍人臉',
+	'entry.detail.capture.time':'抓拍時間',
+	'entry.detail.shop':'門店',
+	'entry.detail.ipc':'智能攝像機',
+	'entry.detail.action':'操作',
+	'entry.detail.delete.confirm.title':'確認要刪除該人臉數據嗎?',
+	'entry.detail.delete.confirm.content':'刪除後將無法撤回，請謹慎操作',
+	'entry.detail.delete':'刪除',
+	'entry.detail.cancel':'取消',
+	'entry.detail.user.info':'用戶信息',
+	'entry.detail.user.name':'用戶姓名',
+	'entry.detail.user.group':'用戶分組',
+	'entry.detail.arrival.count':'進店次數',
+	'entry.detail.arrival.record':'進店記錄',
+	'entry.detail.confirm':'確定',
+	'entry.detail.reset':'重置',
+	'entry.detail.myCamera':'My Camera',
+	'entry.detail.unknown':'--',
+	'entry.detail.undefined':'--'
+};
