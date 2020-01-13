@@ -1,0 +1,23 @@
+export default {
+	'initialSetting.title':'初始化設置',
+	'initialSetting.reboot':'立即重啟',
+	'initialSetting.reset':'恢復默認設置',
+	'initialSetting.rebootConfirm':'確認要立即重啟攝像機嗎？ ',
+	'initialSetting.rebootInfo':'重啟大約需要2分鐘，重啟期間無法存儲監控視頻',
+	'initialSetting.confirm':'確認',
+	'initialSetting.cancel':'取消',
+	'initialSetting.resetConfirm':'確認要恢復默認設置嗎？ ',
+	'initialSetting.resetInfo':'此過程大約需要2分鐘，如果攝像機使用無線網絡接入，隨後需要重新配網才能正常使用',
+	'initialSetting.reseting':'恢復默認設置中',
+	'initialSetting.resetingInfo':'攝像機正在恢復默認設置，請勿斷電',
+	'initialSetting.rebooting':'重啟中',
+	'initialSetting.rebootingInfo':'攝像機正在重啟中，請耐心等待',
+	'initialSetting.rebootWarning':'攝像機會重新開機上線，攝像機配置保持不變',
+	'initialSetting.resetWarning':'攝像機各項配置會恢復到默認設置，但是攝像機仍處於綁定狀態，且TF卡內容不受影響',
+	'initialSetting.error':'網絡異常',
+	'initialSetting.rebootSuccess':'攝像機重啟成功',
+	'initialSetting.resetSuccess':'攝像機恢復默認設置成功',
+	'initialSetting.rebootFailed':'無法重啟，請檢查攝像機網絡後重新操作',
+	'initialSetting.resetFailed':'無法恢復默認設置，請檢查攝像機網絡後重新操作',
+	'initialSetting.warningInfo':'FM020功能暫未開啟，請耐心等候'
+};
