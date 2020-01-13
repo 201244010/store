@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Form, Input, Button, Row, Col, Cascader, Divider, Card } from 'antd';
-import { formatMessage } from 'umi/locale';
+import { formatMessage, getLocale } from 'umi/locale';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
@@ -117,7 +117,10 @@ class StoreManagement extends Component {
 
 	componentDidMount() {
 		const { getShopTypeList, getRegionList, getStoreList, clearSearch } = this.props;
-		if (!Storage.get('__shopTypeList__', 'local')) {
+		const currentLanguage = getLocale();
+		const storageLanaguage = Storage.get('__lang__', 'local');
+		if (!Storage.get('__shopTypeList__', 'local') || currentLanguage !== storageLanaguage) {
+			Storage.set({ __lang__: currentLanguage }, 'local');
 			getShopTypeList();
 		}
 
