@@ -120,7 +120,7 @@ export default {
 	'esl.device.template.2.6.inch': '2.6 inch',
 	'esl.device.template.4.2.inch': '4.2 inch',
 	'esl.device.template.id': 'Template ID',
-	'esl.device.template.name': 'Template Name',
+	'esl.device.template.name': 'Name',
 	'esl.device.template.upload.file': 'Template file',
 	'esl.device.template.size': 'ESL Size',
 	'esl.device.template.color.support': 'Color',
