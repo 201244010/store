@@ -1,13 +1,19 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
 import { Form, Row, Col, TreeSelect, Input, Button } from 'antd';
-import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
+import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
+import {
+	EMPLOYEE_NUMBER_LIMIT,
+	EMPLOYEE_NAME_LIMIT,
+	EMPLOYEE_PHONE_EMAIL_LIMIT,
+} from './constants';
 import styles from './Employee.less';
 
 const SearchBar = ({
 	currentCompanyId = null,
 	orgnizationTree = [],
 	searchValue: { shopIdList = [], name = null, number = null, username = null } = {},
+	setGetInfoValue = null,
 	setSearchValue = null,
 	getEmployeeList = null,
 	clearSearchValue = null,
@@ -30,6 +36,7 @@ const SearchBar = ({
 	};
 
 	const handleQuery = async () => {
+		setGetInfoValue();
 		await getEmployeeList({ current: 1 });
 	};
 
@@ -42,12 +49,13 @@ const SearchBar = ({
 		<div className={styles['search-bar']}>
 			<Form layout="inline">
 				<Row gutter={FORM_FORMAT.gutter}>
-					<Col {...COL_THREE_NORMAL}>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.orgnization' })}>
 							<TreeSelect
 								value={
 									shopId ? `${currentCompanyId}-${shopId}` : `${currentCompanyId}`
 								}
+								dropdownStyle={{ maxHeight: '50vh'}}
 								treeDefaultExpandAll
 								treeData={orgnizationTree}
 								onChange={(value, label, extra) =>
@@ -56,17 +64,19 @@ const SearchBar = ({
 							/>
 						</Form.Item>
 					</Col>
-					<Col {...COL_THREE_NORMAL}>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.name' })}>
 							<Input
+								maxLength={EMPLOYEE_NAME_LIMIT}
 								value={name}
 								onChange={e => handleSearchChange('name', e.target.value)}
 							/>
 						</Form.Item>
 					</Col>
-					<Col {...COL_THREE_NORMAL}>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.number' })}>
 							<Input
+								maxLength={EMPLOYEE_NUMBER_LIMIT}
 								value={number}
 								onChange={e => handleSearchChange('number', e.target.value)}
 							/>
@@ -74,16 +84,18 @@ const SearchBar = ({
 					</Col>
 				</Row>
 				<Row gutter={FORM_FORMAT.gutter}>
-					<Col {...COL_THREE_NORMAL}>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item label={formatMessage({ id: 'employee.phone' })}>
 							<Input
+								maxLength={EMPLOYEE_PHONE_EMAIL_LIMIT}
 								value={username}
 								onChange={e => handleSearchChange('username', e.target.value)}
 							/>
 						</Form.Item>
 					</Col>
-					<Col {...COL_THREE_NORMAL}>
-						<Form.Item>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD} />
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+						<Form.Item className={styles['query-item']}>
 							<Button type="primary" onClick={handleQuery}>
 								{formatMessage({ id: 'btn.query' })}
 							</Button>
@@ -94,7 +106,7 @@ const SearchBar = ({
 					</Col>
 				</Row>
 				<Row gutter={FORM_FORMAT.gutter}>
-					<Col {...COL_THREE_NORMAL}>
+					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 						<Form.Item>
 							<Button
 								type="primary"

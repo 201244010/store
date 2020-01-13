@@ -29,7 +29,7 @@ export const getDeviceList = async () => {
 	const list = request('getDetailList',{
 		// body:{
 		// 	company_id: companyId,
-		// 	shop_id: shopId
+		// 	shopId: shopId
 		// }
 
 	}).then(async (response) => {

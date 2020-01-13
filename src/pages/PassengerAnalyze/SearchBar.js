@@ -30,9 +30,9 @@ class SearchBar extends PureComponent {
 		const shopList = await getShopListFromStorage();
 		const shopId = await getShopIdFromStorage();
 
-		const currentShop = shopList.find(shop => shop.shop_id === shopId) || {};
+		const currentShop = shopList.find(shop => shop.shopId === shopId) || {};
 		this.setState({
-			currentShopName: currentShop.shop_name || null,
+			currentShopName: currentShop.shopName || null,
 		});
 	}
 

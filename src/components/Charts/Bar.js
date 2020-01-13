@@ -10,34 +10,48 @@ class Bar extends Component {
 			chartStyle = {},
 			dataSource = [],
 			barStyle = {},
-			toolTipStyle = {},
+			tooltip = {},
 			axis = {},
 		} = this.props;
 
 		const { x = 'xAxis', y = 'yAxis', xLabel = {}, yLabel = {} } = axis;
-		const { height = 388, forceFit = true, padding = 'auto', scale = {} } = chartStyle;
+		const {
+			width = 300,
+			height = 388,
+			forceFit = true,
+			padding = 'auto',
+			scale = {},
+			animate = false,
+		} = chartStyle;
 
-		const { barColor = '#22A3FF', barActive = false, position = '', tooltip = {} } = barStyle;
-
+		const {
+			barColor = '#FFAA60',
+			barActive = false,
+			position = '',
+			tooltip: barTooltip = {},
+		} = barStyle;
+		console.log('scale', scale);
 		return (
 			<div className={styles.chart}>
 				<Chart
+					width={width}
 					height={height}
 					padding={padding}
 					scale={scale}
 					data={dataSource}
 					forceFit={forceFit}
+					animate={animate}
 				>
 					<Axis name={x} label={xLabel} />
 					<Axis name={y} label={yLabel} />
-					<Tooltip crosshairs={false} {...toolTipStyle} showTitle={false} />
+					<Tooltip showTitle={false} crosshairs={false} {...tooltip} />
 					<Geom
 						size={dataSource.length > 31 ? 8 : 15}
 						type="interval"
 						color={barColor}
 						active={barActive}
 						position={position}
-						tooltip={tooltip}
+						tooltip={barTooltip}
 					/>
 				</Chart>
 			</div>

@@ -13,14 +13,13 @@ import {
 	Modal,
 	Card,
 } from 'antd';
-import { unixSecondToDate, idEncode } from '@/utils/utils';
 import { formatMessage } from 'umi/locale';
-import { COL_THREE_NORMAL, FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
-import { ERROR_OK, ALERT_NOTICE_MAP, ALERT_ROLE_MAP } from '@/constants/errorCode';
 import { connect } from 'dva';
+import { unixSecondToDate, idEncode } from '@/utils/utils';
+import { SEARCH_FORM_COL, FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
+import { ERROR_OK, ALERT_NOTICE_MAP, ALERT_ROLE_MAP } from '@/constants/errorCode';
 
 import styles from './Role.less';
-import global from '@/styles/common.less';
 
 const FormItem = Form.Item;
 
@@ -28,13 +27,16 @@ const FormItem = Form.Item;
 	state => ({
 		role: state.role,
 		loading: state.loading,
+		user: state.user,
 	}),
 	dispatch => ({
 		getRoleList: payload => dispatch({ type: 'role/getRoleList', payload }),
 		deleteRole: payload => dispatch({ type: 'role/deleteRole', payload }),
+		checkAdmin: () => dispatch({ type: 'role/checkAdmin' }),
 		changeAdmin: payload => dispatch({ type: 'role/changeAdmin', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		getUserInfo: () => dispatch({ type: 'user/getUserInfo' }),
 	})
 )
 @Form.create()
@@ -54,17 +56,23 @@ class RoleList extends React.Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.userCount' }),
 				dataIndex: 'userCount',
-				render: (_, record) => (
-					<a href="javascript:void(0);" onClick={() => this.goPath(record, 'employee')}>
-						{record.userCount}
-					</a>
-				),
+				render: (_, record) =>
+					record.isDefault ? (
+						'--'
+					) : (
+						<a
+							href="javascript:void(0);"
+							onClick={() => this.goPath(record, 'employee')}
+						>
+							{record.userCount}
+						</a>
+					),
 			},
-			{
-				title: formatMessage({ id: 'roleManagement.role.creator' }),
-				dataIndex: 'creatorName',
-				render: (_, record) => <div>{record.creatorName || '--'}</div>,
-			},
+			// {
+			// 	title: formatMessage({ id: 'roleManagement.role.creator' }),
+			// 	dataIndex: 'creatorName',
+			// 	render: (_, record) => <div>{record.creatorName || '--'}</div>,
+			// },
 			{
 				title: formatMessage({ id: 'roleManagement.role.createTime' }),
 				dataIndex: 'createTime',
@@ -73,40 +81,52 @@ class RoleList extends React.Component {
 			{
 				title: formatMessage({ id: 'list.action.title' }),
 				render: (_, record) => (
+					// const {
+					// 	user: {
+					// 		currentUser: { checkAdmin },
+					// 	},
+					// } = this.props;
+					// return (
 					<div>
 						<a href="javascript:void(0);" onClick={() => this.goPath(record, 'view')}>
 							{formatMessage({ id: 'list.action.view' })}
 						</a>
-						{record.isDefault && (
-							<span>
-								<Divider type="vertical" />
-								<Popconfirm
-									title={formatMessage({
-										id: 'roleManagement.role.changeRoleTitle',
-									})}
-									icon={
-										<Icon
-											theme="filled"
-											style={{ color: 'red' }}
-											type="close-circle"
-										/>
-									}
-									onConfirm={() => {
-										this.setState({
-											visible: true,
-										});
-									}}
-									okButtonProps={{
-										loading: loading.effects['role/deleteRole'],
-									}}
-								>
-									<a href="javascript:void(0);">
-										{formatMessage({ id: 'roleManagement.role.changeRole' })}
-									</a>
-								</Popconfirm>
-							</span>
-						)}
-						{!record.isDefault && (
+						{record.isDefault ? (
+							// checkAdmin ? (
+							// 	<span>
+							// 		<Divider type="vertical" />
+							// 		<Popconfirm
+							// 			title={formatMessage({
+							// 				id: 'roleManagement.role.changeRoleTitle',
+							// 			})}
+							// 			icon={
+							// 				<Icon
+							// 					theme="filled"
+							// 					style={{ color: 'red' }}
+							// 					type="close-circle"
+							// 				/>
+							// 			}
+							// 			onConfirm={() => {
+							// 				this.setState({
+							// 					visible: true,
+							// 				});
+							// 			}}
+							// 			okButtonProps={{
+							// 				loading: loading.effects['role/deleteRole'],
+							// 			}}
+							// 		>
+							// 			<a href="javascript:void(0);">
+							// 				{formatMessage({
+							// 					id: 'roleManagement.role.changeRole',
+							// 				})}
+							// 			</a>
+							// 		</Popconfirm>
+							// 	</span>
+							// ) : (
+							// 	<></>
+							// )
+							<></>
+						) : (
 							<span>
 								<Divider type="vertical" />
 								<a
@@ -117,7 +137,9 @@ class RoleList extends React.Component {
 								</a>
 								<Divider type="vertical" />
 								<Popconfirm
-									title={formatMessage({ id: 'roleManagement.role.deleteRole' })}
+									title={formatMessage({
+										id: 'roleManagement.role.deleteRole',
+									})}
 									icon={
 										<Icon
 											theme="filled"
@@ -138,13 +160,15 @@ class RoleList extends React.Component {
 						)}
 					</div>
 				),
+				// );
 			},
 		];
 	}
 
-	componentDidMount() {
-		const { getRoleList } = this.props;
-		getRoleList();
+	async componentDidMount() {
+		const { getRoleList, checkAdmin } = this.props;
+		await checkAdmin();
+		await getRoleList();
 	}
 
 	deleteRole = async rowDetail => {
@@ -155,8 +179,9 @@ class RoleList extends React.Component {
 			getRoleList();
 		} else {
 			message.error(
-				formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) ||
-					formatMessage({ id: 'roleManagement.role.deleteFail' })
+				formatMessage({
+					id: ALERT_NOTICE_MAP[response.code] || 'roleManagement.role.deleteFail',
+				})
 			);
 		}
 	};
@@ -165,7 +190,6 @@ class RoleList extends React.Component {
 		const {
 			form: { validateFields, setFields },
 			changeAdmin,
-			getRoleList,
 		} = this.props;
 		validateFields(['account'], async (err, values) => {
 			if (!err) {
@@ -189,7 +213,7 @@ class RoleList extends React.Component {
 					this.setState({
 						visible: false,
 					});
-					getRoleList({});
+					window.location.reload();
 				}
 			}
 		});
@@ -238,7 +262,9 @@ class RoleList extends React.Component {
 
 		validateFields(['keyword'], async (err, values) => {
 			if (!err) {
-				await getRoleList({ keyword: values.keyword });
+				const { keyword } = values;
+				this.keyword = keyword;
+				await getRoleList({ keyword });
 			}
 		});
 	};
@@ -248,6 +274,7 @@ class RoleList extends React.Component {
 		await getRoleList({
 			pageSize: pagination.pageSize,
 			current: pagination.current,
+			keyword: this.keyword,
 		});
 	};
 
@@ -261,10 +288,10 @@ class RoleList extends React.Component {
 		return (
 			<Card bordered={false}>
 				<div className={styles.wrapper}>
-					<div className={global['search-bar']}>
+					<div className={styles['search-bar']}>
 						<Form layout="inline">
 							<Row gutter={FORM_FORMAT.gutter}>
-								<Col {...COL_THREE_NORMAL}>
+								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 									<FormItem
 										label={formatMessage({
 											id: 'roleManagement.role.roleName',
@@ -272,6 +299,7 @@ class RoleList extends React.Component {
 									>
 										{getFieldDecorator('keyword', {})(
 											<Input
+												maxLength={40}
 												placeholder={formatMessage({
 													id: 'esl.device.upload.device.version.input',
 												})}
@@ -279,10 +307,13 @@ class RoleList extends React.Component {
 										)}
 									</FormItem>
 								</Col>
-								<Col {...COL_THREE_NORMAL}>
-									<Button type="primary" onClick={this.handleSubmit}>
-										{formatMessage({ id: 'btn.query' })}
-									</Button>
+								<Col {...SEARCH_FORM_COL.ONE_THIRD} />
+								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+									<Form.Item className={styles['query-item']}>
+										<Button type="primary" onClick={this.handleSubmit}>
+											{formatMessage({ id: 'btn.query' })}
+										</Button>
+									</Form.Item>
 								</Col>
 							</Row>
 						</Form>

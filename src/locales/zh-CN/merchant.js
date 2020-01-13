@@ -15,5 +15,8 @@ export default {
 	'merchantManagement.merchant.inputMerchant': '请输入企业或商户名称',
 	'merchantManagement.merchant.existed': '商户名称已存在，请重新输入或联系管理员加入商户',
 	'merchantManagement.merchant.joinMerchant': '或联系您要加入的商户的管理员，将您加入商户',
-	'merchantManagement.merchant.existed.error': '商户名称已存在'
+	'merchantManagement.merchant.existed.error': '商户名称已存在',
+	'merchant.change': '切换商户',
+	'merchant.current': '当前商户',
+	'merchant.change.confirm': '确认要切换商户至【##companyName##】吗？',
 };

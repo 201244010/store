@@ -6,7 +6,7 @@ import styles from './CardManagement.less';
 import { FORM_ITEM_LAYOUT_MANAGEMENT } from '@/constants/form';
 import AnchorWrapper from '@/components/Anchor';
 import NVRTitle from './NVRTitle';
-import { ERROR_OK } from '@/constants/errorCode';
+import { ERROR_OK, ERR_SDCARD_NOT_PLUGGED, ERR_SDCARD_INVALID, ERR_SDCARD_UMOUNT_FAILED, ERR_SDCARD_UNFARMATTED } from '@/constants/errorCode';
 import ipcTypes from '@/constants/ipcTypes';
 import { comperareVersion } from '@/utils/utils';
 
@@ -138,6 +138,7 @@ const mapDispatchToProps = dispatch => ({
 class CardManagement extends Component {
 	constructor(props) {
 		super(props);
+		this.cloudInterval = '';
 		this.state = {
 			formattingModalVisible: false, // 格式化进度弹框
 			timer: null, // 进度条定时器
@@ -152,7 +153,7 @@ class CardManagement extends Component {
 				status: 0,
 				validTime: '',
 			},
-			isPay: false,
+			// isPay: false,
 			hasNVR: false,
 		};
 	}
@@ -171,23 +172,18 @@ class CardManagement extends Component {
 				status: 0,
 				validTime: ''
 			};
-			let isPay = false;
+			// let isPay = false;
 			readCardInfo(sn);
 			const deviceInfo = await getDeviceInfo({ sn });
 			const { hasCloud } = deviceInfo;
 			if(hasCloud) {
 				cloudService = await readCloudInfo(sn);
-				const { validTime } = cloudService;
-				if(validTime) {
-					isPay = validTime/3600/24 < 3;
-				} else {
-					isPay = true;
-				}
+				this.checkCloudStatus();
 			}
 			this.setState({
 				deviceInfo,
 				cloudService,
-				isPay,
+				// isPay,
 				hasNVR
 			});
 		}
@@ -195,8 +191,9 @@ class CardManagement extends Component {
 
 	componentWillReceiveProps(nextProps) {
 		const {
-			cardManagement: { removeStatus, formatStatus },
+			cardManagement: { removeStatus, formatStatus, errCode },
 		} = nextProps;
+		console.log('errCode=', errCode);
 
 		const { formattingModalVisible, removeTimeout, formatTimeout, timer } = this.state;
 
@@ -209,7 +206,25 @@ class CardManagement extends Component {
 			clearTimeout(removeTimeout);
 
 			this.removeConfirmInstance.destroy();
-			this.operateFail(formatMessage({ id: 'cardManagement.removeFail' }));
+
+			let errMessage;
+			switch(errCode) {
+				case ERR_SDCARD_NOT_PLUGGED:
+					errMessage = formatMessage({ id: 'cardManagement.failNotPlugged' });
+					break;
+				case ERR_SDCARD_INVALID:
+					errMessage = formatMessage({ id: 'cardManagement.failInvalid' });
+					break;
+				case ERR_SDCARD_UMOUNT_FAILED:
+					errMessage = formatMessage({ id: 'cardManagement.failNotPlugged' });
+					break;
+				case ERR_SDCARD_UNFARMATTED:
+					errMessage = formatMessage({ id: 'cardManagement.failUnformatted' });
+					break;
+				default:
+					errMessage = formatMessage({ id: 'cardManagement.removeFail' });
+			}
+			this.operateFail(errMessage);
 		}
 
 		if (formatStatus === 'success' && formattingModalVisible === true) {
@@ -230,7 +245,19 @@ class CardManagement extends Component {
 			this.setState({
 				formattingModalVisible: false,
 			});
-			this.operateFail(formatMessage({ id: 'cardManagement.formatFail' }));
+
+			let errMessage;
+			switch(errCode) {
+				case ERR_SDCARD_NOT_PLUGGED:
+					errMessage = formatMessage({ id: 'cardManagement.failNotPlugged' });
+					break;
+				case ERR_SDCARD_INVALID:
+					errMessage = formatMessage({ id: 'cardManagement.failInvalid' });
+					break;
+				default:
+					errMessage = formatMessage({ id: 'cardManagement.formatFail' });
+			}
+			this.operateFail(errMessage);
 		}
 	}
 
@@ -242,6 +269,7 @@ class CardManagement extends Component {
 		clearInterval(timer);
 		clearTimeout(formatTimeout);
 		clearTimeout(removeTimeout);
+		clearInterval(this.cloudInterval);
 
 		this.removeConfirmInstance = null;
 		this.formatConfirmInstance = null;
@@ -255,6 +283,17 @@ class CardManagement extends Component {
 		} else {
 			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
 		}
+	}
+
+	checkCloudStatus = () => {
+		clearInterval(this.cloudInterval);
+		this.cloudInterval = setInterval(async () => {
+			const { readCloudInfo, sn } = this.props;
+			const cloudService = await readCloudInfo(sn);
+			this.setState({
+				cloudService
+			});
+		}, 10000);
 	}
 
 	/**
@@ -531,13 +570,13 @@ class CardManagement extends Component {
 			isOnline
 		} = this.props;
 
-		const { formattingModalVisible, formatProgress, deviceInfo: { hasTFCard, /* hasCloud */}, cloudService: { status: cloudStatus, validTime }, isPay, hasNVR } = this.state;
+		const { formattingModalVisible, formatProgress, deviceInfo: { hasTFCard, hasCloud }, cloudService: { status: cloudStatus, validTime }, hasNVR } = this.state;
 
 		return (
 
 			<Card title={formatMessage({ id: 'cardManagement.title' })} id='tfCard'>
 				{
-					hasNVR? 
+					hasNVR?
 						<div>
 							<div className={styles['storage-title']}><NVRTitle onChange={this.nvrCheckedHandler} checked={nvrState} loading={loadState} isOnline={isOnline} /></div>
 							<Divider />
@@ -545,7 +584,7 @@ class CardManagement extends Component {
 						''
 				}
 				{
-					false ?
+					hasCloud ?
 						<div>
 							<div className={styles['storage-title']}>{formatMessage({ id: 'cardManagement.cloudStorage'})}</div>
 							{
@@ -556,14 +595,19 @@ class CardManagement extends Component {
 											<Button
 												onClick={() => navigateTo('cloudStorage',{ sn, type: 'repay' })}
 												className={styles['subscribe-button']}
-												disabled={!isPay || !isOnline}
+												disabled={!isOnline}
 											>
 												{formatMessage({ id: 'cardManagement.repay'})}
 											</Button>
 										</Form.Item>
-										<Form.Item label={formatMessage({ id: 'cardManagement.validityPeriod'})}>
-											<span>{this.dateToDuration(validTime)}</span>
-										</Form.Item>
+										{
+											cloudStatus === statusCode.expired ?
+												'' :
+												<Form.Item label={formatMessage({ id: 'cardManagement.validityPeriod'})}>
+													<span>{this.dateToDuration(validTime)}</span>
+												</Form.Item>
+										}
+
 									</Form>
 									:
 									<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>

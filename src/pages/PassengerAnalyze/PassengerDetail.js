@@ -82,18 +82,20 @@ const columns = [
 ];
 
 const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
-	const { gender, genderRate, totalGender = 0 } = data;
-	const { totalGender: lastTotalGender = 0 } = lastInfo;
+	const { gender, genderRate} = data;
 	const { title = null, key = null } = column;
+
+	const nowCount = data[`${data.gender}Count`];
+	const lastCount = lastInfo[`${lastInfo.gender}Count`];
 
 	const FooterContent = {
 		[INFO_FOOTER_TYPE.PERCENT]: (content = '--') =>
-			<span className={`${parseInt(content, 10) > 100 ? styles['precent-green'] : styles['precent-red']}`}>
-				{`${parseInt(content, 10) > 100 || parseInt(content, 10) === 0 ? content : -1 * content}%`}
+			<span className={`${parseInt(content, 10) > 0 ? styles['percent-green'] : parseInt(content, 10) < 0 ? styles['percent-red'] : styles['percent-gray']}`}>
+				{`${parseInt(content, 10) > 0 ? `+${content}` : content}%`}
 			</span>,
 		[INFO_FOOTER_TYPE.PROGRESS]: (content = '--') => (
 			<div className={styles['progress-footer']}>
-				<Progress percent={Math.round(content * 1)} strokeColor={parseInt(content, 10) > 30 ? '#25b347' : '#ff6633'} />
+				<Progress percent={Math.round(content * 1)} strokeColor={parseInt(content, 10) > 30 ? '#25b347' : '#ff6633'} format={percent => `${percent}%`} />
 			</div>
 		),
 		[INFO_FOOTER_TYPE.RANK]: (content = '--') => <span className={styles['rank-green']}>{content}</span>,
@@ -109,8 +111,7 @@ const DetailInfo = ({ data = {}, column = {}, lastInfo = {} }) => {
 				<div className={styles['info-footer']}>
 					{
 						FooterContent[INFO_FOOTER_TYPE.PERCENT](
-							lastTotalGender === 0
-								? 0 : Math.round(totalGender / lastTotalGender * 100, 10)
+							lastCount === 0 ? '--' : Math.round((nowCount - lastCount) / lastCount * 100)
 						) || FooterContent[INFO_FOOTER_TYPE.DEFAULT]()
 					}
 				</div>

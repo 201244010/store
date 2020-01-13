@@ -62,13 +62,13 @@ class PosAccessDetail extends Component {
 			const dr = result[0];
 			const wr = result[1];
 			if (dr.code !== ERROR_OK && wr.code === ERROR_OK) {
-				message.error('设备信息获取失败，请稍后重试');
+				message.error(formatMessage({id: 'iot.pos.device.info.fetch.error'}));
 			}
 			if (dr.code === ERROR_OK && wr.code !== ERROR_OK) {
-				message.error('维修信息获取失败，请稍后重试');
+				message.error(formatMessage({id: 'iot.pos.device.modify.info.fetch.error'}));
 			}
 			if (dr.code !== ERROR_OK && wr.code !== ERROR_OK) {
-				message.error('设备详情获取失败，请稍后重试');
+				message.error(formatMessage({id: 'iot.pos.device.detail.info.error'}));
 			}
 		}).finally(() => {
 			this.setState({

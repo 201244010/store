@@ -29,6 +29,9 @@ const initTextDecoration = (option) => {
 
 export default function generateShape(option) {
 	let shape;
+	if (option.type === undefined) {
+		return null;
+	}
 
 	switch (option.type) {
 		case SHAPE_TYPES.RECT:
@@ -157,7 +160,7 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
-							offsetY: ((option.lineSpacing - option.fontSize) * option.zoomScale / 2 || 0) - 4,
+							offsetY: ((option.lineSpacing - option.fontSize) * option.zoomScale / 2 || 0) - 2,
 							text: option.content,
 							fontFamily: option.fontFamily,
 							fontSize: option.fontSize * option.zoomScale,
@@ -263,16 +266,6 @@ export default function generateShape(option) {
 								onTransform: option.onTransform,
 								onTransformEnd: option.onTransformEnd,
 								onDblClick: option.onDblClick,
-								onMouseOver: () => {
-									document.body.style.cursor = 'pointer';
-								},
-								onMouseOut: () => {
-									document.body.style.cursor = 'default';
-								},
-								dragBoundFunc: (pos) => ({
-									x: option.frozenX ? option.x : pos.x,
-									y: option.frozenY ? option.y : pos.y
-								})
 							}}
 						/>
 						<Image
@@ -284,6 +277,22 @@ export default function generateShape(option) {
 								scaleX: option.scaleX,
 								scaleY: option.scaleY,
 								image: option.image,
+							}}
+						/>
+						<Rect
+							{...{
+								name: option.name,
+								x: option.x,
+								y: option.y,
+								width: MAPS.containerWidth[SHAPE_TYPES.IMAGE] * option.zoomScale,
+								height: MAPS.containerHeight[SHAPE_TYPES.IMAGE] * option.zoomScale,
+								scaleX: option.scaleX,
+								scaleY: option.scaleY,
+								fill: 'rgba(0, 0, 0, 0)',
+								draggable: true,
+								onTransform: option.onTransform,
+								onTransformEnd: option.onTransformEnd,
+								onDblClick: option.onDblClick,
 								onMouseOver: () => {
 									document.body.style.cursor = 'pointer';
 								},

@@ -27,7 +27,7 @@ export default {
 	'basicData.product.expire_time.day': '天',
 	'basicData.product.qrCode.link': '二维码链接',
 	'basicData.product.qrCode': '二维码链接',
-	'basicData.product.modified_time': '最后修改时间',
+	'basicData.product.modifiedTime': '最后修改时间',
 	'basicData.product.customize': '自定义',
 	'basicData.product.image': '商品图片',
 	'basicData.product.extraInfo.isEmpty': '自定义字段不能为空',

@@ -1,0 +1,253 @@
+
+.order-container{
+	margin-bottom: 100px;
+	.bind-container{
+		margin-bottom: 32px;
+		.bind-title{
+			font-size:16px;
+			font-family:PingFangSC-Medium, sans-serif;
+			font-weight:500;
+			color:rgba(48,53,64,1);
+			margin-bottom: 16px;
+		}
+		.deviceName{ 
+			white-space: nowrap;
+			width: 90%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.ipc-img{
+			height: 44px;
+			width: 44px;
+		}
+		.no-img{
+			height: 44px;
+			width: 44px;
+			background: center / contain no-repeat transparent url(../../../../assets/icon/mountain.png);
+
+		}
+		
+		:global {
+			.ant-table-thead > tr > th{
+				padding: 16px 7px 16px 7px;
+			}
+			.ant-table-tbody > tr > td{
+				height: 59px;
+				// padding: 7px 7px;
+				padding: 7px 7px 7px 7px;
+				&:first-child{
+					width: 51px;
+					padding: 0;
+					text-align: center;
+				}
+				&:nth-child(2){
+					// white-space: nowrap;
+					// width: 30px;
+					// overflow: hidden;
+					// text-overflow: ellipsis;
+					// width: 300px;
+				}
+			}
+	
+			.ant-radio-wrapper{
+				margin: 0;
+				display: flex;
+				justify-content: center;
+				align-content: center;
+			}
+			
+			.ant-radio-group{
+				width: 100%;
+			}
+		
+			.ant-table-pagination.ant-pagination{
+				margin: 20px auto 0 auto;
+			}
+		
+			
+			.ant-table-content{
+				.ant-table-placeholder{
+					font-family: PingFangSC-Regular, sans-serif;
+					font-size: 14px;
+					color: #333C4F;
+				}
+			}
+		}
+	
+		.content{
+			position: relative;
+			:global {
+				.ant-checkbox-group{
+					width: 100%;
+				}
+			}
+			.time{
+				font-family: PingFangSC-Medium, sans-serif;
+				font-size: 14px;
+				color: #15151A;
+				line-height: 20px;
+			}
+			.tips{
+				font-family: PingFangSC-Regular, sans-serif;
+				font-size: 14px;
+				color: #333338;
+			}
+			.table{
+				width: 100%;
+			}
+			.agreement{
+				position: absolute;
+				bottom: 15px;
+			}
+			.agreement-loading{
+				display: none;
+			}
+			.price-and-num{
+				margin-top: 12px;
+				font-size:14px;
+				font-family:PingFangSC-Regular,sans-serif;
+				font-weight:400;
+				color:rgba(51,51,56,1);
+				.per-price{
+					margin-bottom: 4px;
+				}
+			}
+		}
+	}
+	.invoice{
+		.select-invoice{
+			margin-bottom: 24px;
+			:global {
+				.ant-radio-button-wrapper{
+					margin-right: 20px;
+					width:160px;
+					height:32px;
+					background:rgba(255,255,255,1);
+					border-radius:4px;
+					border:1px solid rgba(214,217,222,1);
+					text-align: center;
+					font-size:14px;
+					font-weight:400;
+					color:rgba(48,53,64,1);
+					&::before{
+						display: none;
+					}
+				}
+				.ant-radio-button-wrapper-checked{
+					width:160px;
+					height:32px;
+					border:2px solid rgba(255,96,0,1);
+					box-shadow: none;
+					&::after {
+						content: '\2713';
+						display: block;
+						height: 0;
+						width: 0;
+						position: absolute;
+						bottom: 0;
+						right: 0;
+						color:#fff;
+						font-size: 10px;
+						line-height: 10px;
+						border: 10px solid;
+						border-color: transparent rgba(255,96,0,1) rgba(255,96,0,1) transparent;
+					}
+				}
+				.ant-radio-button-wrapper-disabled{
+					width:160px;
+					height:32px;
+					background:rgba(255,255,255,1);
+					border-radius:4px;
+					border:1px solid rgba(214,217,222,1);
+					color:rgba(133,133,138,0.6);
+				}
+			}
+		}
+		.vbrk{
+			.vbrk-title{
+				font-size:14px;
+				font-family:PingFangSC-Regular, sans-serif;
+				font-weight:400;
+				color:rgba(51,51,56,1);
+				margin-bottom: 14px;
+			}
+			.vbrk-select{
+				margin-bottom: 24px;
+			}
+			.vbrk-company{
+				// height: 60px;
+				// margin-bottom: 24px;
+				:global{
+					.ant-form-item{
+						display: inline-block;
+						width: 294px;
+						margin-right: 72px;
+					}
+					.ant-form-item-required::before{
+						display: none;
+					}
+				}
+			}
+			.vbrk-personal{
+				// height: 60px;
+				// margin-bottom: 24px;
+				:global{
+					.ant-form-item{
+						display: inline-block;
+						width: 294px;
+						margin-right: 72px;
+					}
+					.ant-form-item-required::before{
+						display: none;
+					}
+				}
+			}
+		}
+	}
+}
+.footer{
+	// width: 100%;
+	z-index: 100;
+	height: 100px;
+	position: fixed;
+	bottom: 0;
+	left: 256px;
+	right: 0;
+	background-color: #ffffff;
+	.protocol{
+		padding: 12px 24px;
+		height: 44px;
+		box-shadow:0 -1px 2px 0 rgba(0,0,0,0.03),0 1px 0 0 rgba(240,242,245,1);
+	}
+	.price-container{
+		padding: 12px 24px;
+		display: flex;
+		justify-content: space-between;
+		.total-price{
+			width: 142px;
+			height: 32px;
+			.text{
+				height:20px;
+				font-size:14px;
+				font-family:PingFangSC-Regular,PingFang SC, sans-serif;
+				font-weight:400;
+				color:rgba(133,133,138,1);
+				line-height:20px;
+			}
+			.value{
+				height:32px;
+				font-size:24px;
+				font-family:PingFangSC-Medium,PingFang SC, sans-serif;
+				font-weight:500;
+				color:rgba(255,96,0,1);
+				line-height:32px;
+			}
+		}
+		.btns{
+			.cancel-btn{
+				margin-right: 8px;
+			}
+		}
+	}
+}
+

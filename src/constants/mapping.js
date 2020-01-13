@@ -24,5 +24,5 @@ export const PRODUCT_PRICE_EXTRA = {
 };
 
 export const ROLE_MAPPING = {
-	COMPANY_LIST: '/basicData/merchantManagement/view',
+	COMPANY_LIST: '/basicData/merchantManagement',
 };

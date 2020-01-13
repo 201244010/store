@@ -11,11 +11,11 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage, getLocale } from 'umi/locale';
-import MQTTWrapper from '@/components/MQTT';
-import * as CookieUtil from '@/utils/cookies';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import * as CookieUtil from '@/utils/cookies';
+import MQTTWrapper from '@/components/MQTT';
 import Header from './Header';
 import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
@@ -80,8 +80,7 @@ class BasicLayout extends React.PureComponent {
 		const {
 			location: { pathname },
 		} = window;
-
-		if (![`${MENU_PREFIX.STORE}/createStore`, '/account'].includes(pathname)) {
+		if (![`${MENU_PREFIX.STORE}/newOrganization`, '/account'].includes(pathname)) {
 			this.checkStore();
 		}
 
@@ -209,7 +208,7 @@ class BasicLayout extends React.PureComponent {
 		const shopList = Storage.get(CookieUtil.SHOP_LIST_KEY, 'local') || [];
 		if (shopList.length === 0) {
 			message.warning(formatMessage({ id: 'alert.store.is.none' }));
-			goToPath('storeCreate', { action: 'create' });
+			goToPath('newOrganization', { action: 'create' });
 			// router.push(`${MENU_PREFIX.STORE}/createStore?action=create`);
 		}
 	};

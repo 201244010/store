@@ -1,5 +1,13 @@
 const router = [
 	{
+		path: '/userProtocol',
+		// component: '../layouts/SunmiLayout',
+		id: 'userProtocol',
+		routes: [
+			{ path: '/userProtocol/serviceProtocol', component: './IPC/CloudStorage/protocol.js', id: 'serviceProtocol' }
+		],
+	},
+	{
 		path: '/user',
 		component: '../layouts/SunmiLayout',
 		id: 'user',
@@ -44,7 +52,7 @@ const router = [
 		path: '/flow',
 		component: '../layouts/BlankLayout',
 		id: 'flow',
-		routes: [{ path: '/flow', component: '../layouts/PassengerFlowLayout.js' }],
+		routes: [{ path: '/flow', component: './Flow/PassengerFlowLayout/PassengerFlowLayout.js' }],
 	},
 
 	{
@@ -119,6 +127,75 @@ const router = [
 							},
 						],
 					},
+					{
+						path:'/application/cloudStorage',
+						name:'cloudStorageService',
+						routes:[
+							{
+								path:'/application/cloudStorage/subscriptionSuccess',
+								name:'subscriptionSuccess',
+								id:'subscriptionSuccess',
+								hideInMenu: true,
+								component: './IPC/CloudStorage/subscriptionSuccess.js'
+							},
+							{
+								path:'/application/cloudStorage/orderSubmission',
+								name:'orderSubmission',
+								hideInMenu: true,
+								routes: [
+									{
+										path: '/application/cloudStorage/orderSubmission/qrpay',
+										name:'qrpay',
+										id: 'qrpay',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/QRCodePayment.js',
+									},
+									{
+										path:'/application/cloudStorage/orderSubmission/paymentPage',
+										name:'paymentPage',
+										id:'paymentPage',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/paymentPage.js'
+									},
+									{
+										path: '/application/cloudStorage/orderSubmission',
+										id: 'orderSubmission',
+										hideInMenu: true,
+										component: './IPC/CloudStorage/OrderSubmission/orderSubmission.js'
+									}
+								]
+							},
+							{
+								path: '/application/cloudStorage',
+								id: 'cloudStorage',
+								component: './IPC/CloudStorage/cloudStorage.js',
+							}
+						]
+					},
+					{
+						path: '/application/serviceManagement',
+						id: 'serviceManagement',
+						component: './ServiceManagement/ServiceList',
+						name: 'serviceManagement',
+					},
+					{
+						path: '/application/orderManagement',
+						id: 'orderManagement',
+						name: 'orderManagement',
+						routes:[
+							{
+								path: '/application/orderManagement',
+								id: 'orderManagement',
+								component: './OrderManagement/OrderList'
+							},
+							{
+								path: '/application/orderManagement/orderDetail',
+								id: 'serviceOrderDetail',
+								component: './OrderManagement/OrderDetail',
+								hideInMenu: true
+							}
+						]
+					}
 				],
 			},
 
@@ -300,6 +377,57 @@ const router = [
 						redirect: '/basicData/merchantManagement',
 					},
 					{
+						path: '/basicData/organizationManagement',
+						name: 'organizationManagement',
+						routes: [
+							{
+								path: '/basicData/organizationManagement/newOrganization',
+								name: 'newOrganization',
+								id: 'newOrganization',
+								component: './Organization/CompanyInfo',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/organizationManagement/editOrganization',
+								name: 'editOrganization',
+								id: 'editOrganization',
+								component: './Organization/CompanyInfo',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/organizationManagement/detail',
+								name: 'orgDetail',
+								hideInMenu: true,
+								routes: [
+									{
+										path: '/basicData/organizationManagement/detail/edit',
+										name: 'editDetail',
+										id: 'editDetail',
+										component: './Organization/CompanyInfo',
+										hideInMenu: true,
+									},
+									{
+										path: '/basicData/organizationManagement/detail/newSubOrganization',
+										name: 'newSubOrganization',
+										id: 'newSubOrganization',
+										component: './Organization/CompanyInfo',
+										hideInMenu: true,
+									},
+									{
+										path: '/basicData/organizationManagement/detail',
+										id: 'detail',
+										component: './Organization/OrgDetail',
+									},
+								]
+							},
+							{
+								path: '/basicData/organizationManagement',
+								id: 'organizationList',
+								component: './Organization/OrganizationList',
+							}
+						],
+					},
+					{
 						path: '/basicData/merchantManagement',
 						redirect: '/basicData/merchantManagement/view',
 					},
@@ -316,40 +444,86 @@ const router = [
 						hideInMenu: true,
 						component: './MerchantManagement/MerchantModify',
 					},
+					// {
+					// 	path: '/basicData/storeManagement',
+					// 	name: 'storeManagement',
+					// 	routes: [
+					// 		{
+					// 			path: '/basicData/storeManagement',
+					// 			redirect: '/basicData/storeManagement/list',
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/list',
+					// 			name: 'list',
+					// 			id: 'storeList',
+					// 			component: './StoreManagement',
+					// 			hideInMenu: true,
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/createStore',
+					// 			component: './StoreManagement/CreateStore.js',
+					// 			name: 'createStore',
+					// 			id: 'storeCreate',
+					// 			hideInMenu: true,
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/storeInformation',
+					// 			component: './StoreManagement/StoreInformation.js',
+					// 			name: 'storeManagement',
+					// 			id: 'storeInfo',
+					// 			hideInMenu: true,
+					// 		},
+					// 		{
+					// 			path: '/basicData/storeManagement/alterStore',
+					// 			component: './StoreManagement/CreateStore.js',
+					// 			name: 'storeManagement',
+					// 			id: 'storeUpdate',
+					// 			hideInMenu: true,
+					// 		},
+					// 	],
+					// },
 					{
-						path: '/basicData/storeManagement',
-						name: 'storeManagement',
+						path: '/basicData/employeeManagement',
+						name: 'employeeManagement',
+						id: 'employeeManagement',
 						routes: [
 							{
-								path: '/basicData/storeManagement',
-								redirect: '/basicData/storeManagement/list',
+								path: '/basicData/employeeManagement',
+								redirect: '/basicData/employeeManagement/list',
 							},
 							{
-								path: '/basicData/storeManagement/list',
-								name: 'list',
-								id: 'storeList',
-								component: './StoreManagement',
+								path: '/basicData/employeeManagement/list',
+								name: 'employeeList',
+								id: 'employeeList',
+								component: './BasicData/Employee',
 								hideInMenu: true,
 							},
 							{
-								path: '/basicData/storeManagement/createStore',
-								component: './StoreManagement/CreateStore.js',
-								name: 'createStore',
-								id: 'storeCreate',
+								path: '/basicData/employeeManagement/info',
+								name: 'employeeInfo',
+								id: 'employeeInfo',
+								component: './BasicData/Employee/EmployeeInfo',
 								hideInMenu: true,
 							},
 							{
-								path: '/basicData/storeManagement/storeInformation',
-								component: './StoreManagement/StoreInformation.js',
-								name: 'storeManagement',
-								id: 'storeInfo',
+								path: '/basicData/employeeManagement/create',
+								name: 'employeeCreate',
+								id: 'employeeCreate',
+								component: './BasicData/Employee/EmployeeCU',
 								hideInMenu: true,
 							},
 							{
-								path: '/basicData/storeManagement/alterStore',
-								component: './StoreManagement/CreateStore.js',
-								name: 'storeManagement',
-								id: 'storeUpdate',
+								path: '/basicData/employeeManagement/update',
+								name: 'employeeUpdate',
+								id: 'employeeUpdate',
+								component: './BasicData/Employee/EmployeeCU',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/employeeManagement/employeeTable',
+								name: 'employeeTable',
+								id: 'employeeTable',
+								component: './BasicData/Employee/EmployeeTable',
 								hideInMenu: true,
 							},
 						],
@@ -357,7 +531,7 @@ const router = [
 					{
 						path: '/basicData/roleManagement',
 						name: 'roleManagement',
-						hideInMenu: true,
+						// hideInMenu: true,
 						id: 'roleManagement',
 						routes: [
 							{

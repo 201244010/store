@@ -53,7 +53,7 @@ export const createLibrary = async (params) => {
 		body: {
 			// user_id: userId,
 			// company_id: companyId,
-			// shop_id: shopId,
+			// shopId: shopId,
 			facedb_list: [...list]
 		}
 	}).then(async (response) => {
@@ -81,7 +81,7 @@ export const readLibrary = async () =>
 		body: {
 			// user_id: userId,
 			// company_id: companyId,
-			// shop_id: shopId
+			// shopId: shopId
 		}
 	}).then(async (response) => {
 		// console.log(await response.json());
@@ -115,7 +115,7 @@ export const updateLibrary = async (params) => {
 		body: {
 			// user_id: userId,
 			// company_id: companyId,
-			// shop_id: shopId,
+			// shopId: shopId,
 			...target
 		}
 	}).then(async (response) => {
@@ -144,7 +144,7 @@ export const deleteLibrary = async (params) => {
 		body: {
 			// user_id: userId,
 			// company_id: companyId,
-			// shop_id: shopId,
+			// shopId: shopId,
 			group_id: libraryId
 		}
 	}).then(async (response) => {

@@ -1,0 +1,79 @@
+.subscription-success-container{
+	text-align: center;
+	padding: 0 128px;
+	// height: 654px;
+	.success-icon{
+		margin-top: 105px;
+		display: inline-block;
+		width:72px;
+		height: 72px;
+		// margin: 0 auto;
+		background: url('@/assets/imgs/success.png');
+		background-size:100%;
+	}
+	.waitting-icon{
+		margin-top: 105px;
+		display: inline-block;
+		width:72px;
+		height: 72px;
+		// margin: 0 auto;
+		background: url('@/assets/imgs/waitting-status.png');
+		background-size:100%;
+	}
+	.success-tip{
+		margin-top: 12px;
+		font-family: PingFangSC-Medium, sans-serif;
+		font-size: 24px;
+		color: #333338;
+		line-height: 32px;
+		margin-bottom: 24px;
+	}
+	.btn{
+		display: block;
+		margin: 32px auto;
+		margin-bottom: 179px;
+		width: 160px;
+		height: 32px;
+		font-family: PingFangSC-Regular, sans-serif;
+		font-size: 16px;
+		// color: #FFFFFF;
+		text-align: center;
+		line-height: 24px;
+	}
+	.btn:first-child{
+		margin-top: 28px;
+	}
+	.deviceName{
+		white-space: nowrap;
+		width: 90%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.ipc-img{
+		height: 44px;
+		width: 44px;
+	}
+	.no-img{
+		height: 44px;
+		width: 44px;
+		background: center / contain no-repeat transparent url(../../../assets/icon/mountain.png);
+
+	}
+	
+	:global {
+		.ant-table-thead > tr > th{
+			padding: 16px 7px 16px 7px;
+		}
+		.ant-table-tbody > tr > td{
+			padding: 7px 7px 7px 7px;
+		}
+
+		.ant-table-content{
+			.ant-table-placeholder{
+				font-family: PingFangSC-Regular, sans-serif;
+				font-size: 14px;
+				color: #333C4F;
+			}
+		}
+	}
+}

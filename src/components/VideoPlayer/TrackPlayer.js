@@ -67,7 +67,11 @@ class TrackPlayer extends React.Component{
 	}
 
 	onCanPlay = () => {
+		const { showPaymentInfo } = this.props;
 		console.log('onCanPlay', this.generateDuration());
+		if(showPaymentInfo) {
+			showPaymentInfo();
+		}
 		this.setState({
 			duration: this.generateDuration()
 		});

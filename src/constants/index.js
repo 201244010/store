@@ -23,7 +23,7 @@ export const MENU_PREFIX = {
 	PRODUCT: '/product/list',
 	// MERCHANT: '/basicData/merchantManagement',
 	MERCHANT: '/company/merchantManagement',
-	STORE: '/basicData/storeManagement',
+	STORE: '/basicData/organizationManagement',
 	// STORE: '/company/storeManagement',
 	ROLE: '/roleManagement',
 };
@@ -105,4 +105,5 @@ export const TIME = {
 	MINUTE: 60,
 	HOUR: 60 * 60,
 	DAY: 24 * 60 * 60,
+	HALF_HOUR: 30 * 60,
 };

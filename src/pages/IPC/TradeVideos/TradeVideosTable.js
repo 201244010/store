@@ -70,7 +70,7 @@ class TradeVideosTable extends React.Component {
 							}`}
 							href="javascript:void(0);"
 							onClick={() =>
-								watchVideoHandler(record.paymentDeviceSn, record.url)
+								watchVideoHandler(record.paymentDeviceSn, record.url, record.key)
 							}
 						>
 							{record.url

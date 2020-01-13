@@ -4,7 +4,6 @@ import { connect } from 'dva';
 import { Button, Form, Input } from 'antd';
 import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
-import Storage from '@konata9/storage.js';
 import styles from './StoreRelate.less';
 
 const MerchantCreate = props => {
@@ -17,7 +16,7 @@ const MerchantCreate = props => {
 			<div className={styles['store-content']}>
 				<Form>
 					<Form.Item>
-						{getFieldDecorator('company_name', {
+						{getFieldDecorator('companyName', {
 							validateTrigger: 'onBlur',
 							rules: [
 								{
@@ -82,7 +81,7 @@ const MerchantInfo = props => {
 						<div className={styles['store-list']}>
 							{companyList.map((company, index) => (
 								<Button
-									key={company.company_id}
+									key={company.companyId}
 									onMouseOver={() => changeButtonStyles('add', index)}
 									onMouseLeave={() => changeButtonStyles('remove', index)}
 									onClick={() => enterSystem(company)}
@@ -90,7 +89,7 @@ const MerchantInfo = props => {
 									block
 								>
 									<span className={styles['btn-name']}>
-										{company.company_name}
+										{company.companyName}
 									</span>
 									<span
 										className={`${styles['btn-icon']}
@@ -117,10 +116,16 @@ const MerchantInfo = props => {
 	}),
 	dispatch => ({
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		setShopIdInCookie: ({ shopId }) =>
+			dispatch({ type: 'store/setShopIdInCookie', payload: { shopId } }),
+		setShopListInStorage: ({ shopList }) =>
+			dispatch({ type: 'store/setShopListInStorage', payload: { shopList } }),
+		removeShopIdInCookie: () => dispatch({ type: 'store/removeShopIdInCookie' }),
 		companyCreate: payload => dispatch({ type: 'merchant/companyCreate', payload }),
 		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
 	})
 )
 @Form.create()
@@ -134,20 +139,31 @@ class StoreRelate extends Component {
 	}
 
 	checkStoreExist = async () => {
-		const { getStoreList, goToPath } = this.props;
+		const {
+			getStoreList,
+			setShopIdInCookie,
+			setShopListInStorage,
+			removeShopIdInCookie,
+			goToPath,
+			getCompanyList,
+		} = this.props;
+		await getCompanyList();
 		const response = await getStoreList({});
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
-			const shopList = result.shop_list || [];
-			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
+			const shopList = result.shopList || [];
+			setShopListInStorage({ shopList });
+			// Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
-				CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
-				goToPath('storeCreate');
+				removeShopIdInCookie();
+				// CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
+				goToPath('newOrganization');
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
-				const lastStore = shopList.length;
-				const defaultStore = shopList[lastStore - 1] || {};
-				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shop_id);
+				// const defaultStore = shopList[0] || {};
+				const defaultStore = shopList.find(item => item.userBindStatus);
+				setShopIdInCookie({ shopId: defaultStore.shopId });
+				// CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
 				goToPath('root');
 				// router.push('/');
 			}
@@ -163,8 +179,8 @@ class StoreRelate extends Component {
 
 	enterSystem = company => {
 		const { setCurrentCompany } = this.props;
-		CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, company.company_id);
-		setCurrentCompany({ companyId: company.company_id });
+		CookieUtil.setCookieByKey(CookieUtil.COMPANY_ID_KEY, company.companyId);
+		setCurrentCompany({ companyId: company.companyId });
 		this.checkStoreExist();
 	};
 
@@ -178,8 +194,8 @@ class StoreRelate extends Component {
 				const response = await companyCreate({ ...values });
 				if (response && response.code !== ERROR_OK) {
 					setFields({
-						company_name: {
-							value: values.company_name || '',
+						companyName: {
+							value: values.companyName || '',
 							errors: [
 								new Error(
 									formatMessage({ id: 'merchantManagement.merchant.existed' })

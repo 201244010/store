@@ -10,7 +10,9 @@ export const getList = (options = {}) => {
 			...options,
 		},
 	};
-	return fetchApi('getList', opt).then(response => response.json());
+	return fetchApi('getList', opt)
+		.then(response => response.json())
+		.then(res => format('toCamel')(res));
 };
 
 // 提交新建门店接口
@@ -20,7 +22,9 @@ export const createStore = (options = {}) => {
 			...options,
 		},
 	};
-	return fetchApi('create', opt).then(response => response.json());
+	return fetchApi('create', opt)
+		.then(response => response.json())
+		.then(res => format('toCamel')(res));
 };
 
 // 查看门店信息
@@ -30,7 +34,9 @@ export const storeInformation = (options = {}) => {
 			...options,
 		},
 	};
-	return fetchApi('getInfo', opt).then(response => response.json());
+	return fetchApi('getInfo', opt)
+		.then(response => response.json())
+		.then(res => format('toCamel')(res));
 };
 
 // 修改门店信息接口
@@ -49,14 +55,14 @@ export const getShopTypeList = (options = {}) => {
 			...options,
 		},
 	};
-	return fetchApi('getShopTypeList', opt).then(response => response.json());
+	return fetchApi('getShopTypeList', opt).then(response => response.json()).then(res => format('toCamel')(res));;
 };
 
 export const getRegionList = (options = {}) => {
 	const opt = {
 		body: { ...options },
 	};
-	return fetchApi('getRegionList', opt).then(response => response.json());
+	return fetchApi('getRegionList', opt).then(response => response.json()).then(res => format('toCamel')(res));;
 };
 
 export const getSaasBindInfo = (options = {}) => {

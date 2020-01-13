@@ -4,7 +4,7 @@ import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import Authorized from '@/utils/Authorized';
-import * as MenuAction from '@/services/Merchant/merchant';
+// import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 // import routeConfig from '@/config/devRouter';
 import routeConfig from '@/config/uat-router';
@@ -127,32 +127,80 @@ export default {
 	},
 
 	effects: {
-		*getMenuData({ payload }, { put, call }) {
+		getPathId({ payload }) {
+			const { path } = payload;
+			const { id: pathId } = flattedRoutes.find(route => route.path === path) || {};
+			return pathId;
+		},
+		*getMenuData({ payload }, { put }) {
 			const { routes, authority } = payload;
 			const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
 			const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
 
 			let filteredMenuData = menuData;
-			// const permissionResult = yield put.resolve({
-			// 	type: 'role/getUserPermissionList',
-			// });
-			// console.log(permissionResult);
 
-			if (env !== 'dev') {
-				const response = yield call(MenuAction.getAuthMenu);
-				if (response && response.code === ERROR_OK) {
-					const { menu_list: menuList = [] } = response.data || {};
-					const list = new Set(menuList);
-					console.log('menu control', menuList);
-					if (list.length > 0) {
-						filteredMenuData = checkMenuAuth(
-							menuData,
-							FIRST_MENU_ORDER.filter(menu => list.includes(menu))
-						);
-						Storage.set({ FILTERED_MENU: filteredMenuData }, 'local');
+			const permissionResult = yield put.resolve({
+				type: 'role/getUserPermissionList',
+			});
+
+			if (!['dev', 'test'].includes(env)) {
+
+				const authMenuResult = yield put.resolve({ type: 'getAuthMenu' });
+
+				if (
+					permissionResult &&
+					permissionResult.code === ERROR_OK &&
+					authMenuResult &&
+					authMenuResult.code === ERROR_OK
+				) {
+					const { data: permissionData = {} } = permissionResult || {};
+					const { permissionList = [] } = format('toCamel')(permissionData);
+					console.log('permissionList, ', permissionList);
+
+					if (permissionList.length === 0) {
+						filteredMenuData = [];
+					} else {
+						const formattedPermissionList = permissionList.map(item => ({
+							base: ((item.path || '').slice(1).split('/') || [])[0],
+							path: item.path,
+						}));
+						console.log('formattedPermissionList: ', formattedPermissionList);
+
+						const { data: authMenuData = {} } = authMenuResult || {};
+						const { menuList = [] } = format('toCamel')(authMenuData);
+						console.log('menu control: ', menuList);
+
+						const filteredPermissionList = formattedPermissionList.filter(item => {
+							if (env === 'dev') {
+								return FIRST_MENU_ORDER.includes(item.base);
+							}
+							return (menuList || []).includes(item.base);
+						});
+
+						console.log('filteredPermissionList: ', filteredPermissionList);
+
+						if (filteredPermissionList.length > 0) {
+							filteredMenuData = checkMenuAuth(menuData, filteredPermissionList);
+						}
 					}
 				}
 			}
+
+			// if (env !== 'dev') {
+			// 	const response = yield call(MenuAction.getAuthMenu);
+			// 	if (response && response.code === ERROR_OK) {
+			// 		const { menu_list: menuList = [] } = response.data || {};
+			// 		const list = new Set(menuList);
+			// 		console.log('menu control', menuList);
+			// 		if (list.length > 0) {
+			// 			filteredMenuData = checkMenuAuth(
+			// 				menuData,
+			// 				FIRST_MENU_ORDER.filter(menu => list.includes(menu))
+			// 			);
+			// 			Storage.set({ FILTERED_MENU: filteredMenuData }, 'local');
+			// 		}
+			// 	}
+			// }
 
 			yield put({
 				type: 'save',

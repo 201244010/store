@@ -1,6 +1,6 @@
+import { message } from 'antd';
 import * as Actions from '@/services/notification';
 import { ERROR_OK } from '@/constants/errorCode';
-import { message } from 'antd';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 
 function* switchLoadingStatus(status, put) {
@@ -178,7 +178,7 @@ export default {
 				const {
 					msg_id: msgId,
 					company_id: companyId,
-					shop_id: shopId,
+					shopId,
 					level,
 					model_name: modelName,
 					title,

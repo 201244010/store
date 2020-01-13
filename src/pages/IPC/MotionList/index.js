@@ -60,7 +60,7 @@ class MotionList extends React.Component {
 	};
 
 	async componentDidMount(){
-		const { currentPage, pageSize } = this.props;
+		const { currentPage, pageSize } = this.state;
 		this.getCurrentMotionList(currentPage, pageSize);
 	}
 

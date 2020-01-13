@@ -24,6 +24,10 @@ export default {
 	'cardManagement.removeSuccess': '移除成功',
 	'cardManagement.removeFail': '移除失败',
 
+	'cardManagement.failNotPlugged': 'TF卡未插入，请插入TF卡后再重新操作',
+	'cardManagement.failInvalid': 'TF卡不可用，请插入新的TF后再重新操作',
+	'cardManagement.failUnformatted': 'TF卡未格式化，请格式化后重新操作',
+
 	'cardManagement.format': '格式化',
 	'cardManagement.formatImmediately': '立即格式化',
 	'cardManagement.formatTipTitle': '确定要格式化TF卡？',
@@ -40,7 +44,7 @@ export default {
 	'cardManagement.nonactivated':'未开通',
 	'cardManagement.validityPeriod':'剩余有效期',
 	'cardManagement.subscribeCloudService':'开通云存储服务',
-	'cardManagement.repay':'续费',
+	'cardManagement.repay':'立即续费',
 	'cardManagement.readCloudFaild':'获取云存储状态失败，请检查网络',
 	'cardManagement.expired':'已过期',
 	'cardManagement.unknown':'--'

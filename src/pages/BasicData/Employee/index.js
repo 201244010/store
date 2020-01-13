@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Card } from 'antd';
+import { format } from '@konata9/milk-shake';
 import SearchBar from './SearchBar';
 import SearchResult from './SerachResult';
+import { ERROR_OK } from '@/constants/errorCode';
 
 @connect(
 	state => ({
@@ -11,9 +13,11 @@ import SearchResult from './SerachResult';
 	}),
 	dispatch => ({
 		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
-		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		// getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		getOrgnazationTree: () => dispatch({ type: 'store/getOrgnazationTree' }),
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
 		setSearchValue: payload => dispatch({ type: 'employee/setSearchValue', payload }),
+		setGetInfoValue: payload => dispatch({ type: 'employee/setGetInfoValue', payload }),
 		clearSearchValue: () => dispatch({ type: 'employee/clearSearchValue' }),
 		getEmployeeList: ({ current = 1, pageSize = 10 }) =>
 			dispatch({ type: 'employee/getEmployeeList', payload: { current, pageSize } }),
@@ -21,6 +25,8 @@ import SearchResult from './SerachResult';
 			dispatch({ type: 'employee/deleteEmployee', payload: { employeeIdList } }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
+		getAdmin: () =>
+			dispatch({ type: 'employee/getAdmin' }),
 	})
 )
 class EmployeeList extends Component {
@@ -30,15 +36,17 @@ class EmployeeList extends Component {
 			orgnizationTree: [],
 			currentCompanyId: null,
 		};
+		this.userId = null;
 	}
 
 	componentDidMount() {
-		this.createOrgnizationTree();
-		const { getEmployeeList } = this.props;
+		const { getEmployeeList} = this.props;
 		getEmployeeList({
 			current: 1,
 			pageSize: 10,
 		});
+		this.createOrgnizationTree();
+		this.getAdminUserId();
 	}
 
 	componentWillUnmount() {
@@ -46,29 +54,58 @@ class EmployeeList extends Component {
 		clearSearchValue();
 	}
 
+	getAdminUserId = async () => {
+		const { getAdmin } = this.props;
+		const response = await getAdmin();
+		if (response && response.code === ERROR_OK) {
+			const { data = {} } = response;
+			const { userId } = format('toCamel')(data);
+			this.userId = userId;
+		}
+	}
+
+	traversalTreeData = (originalList, targetList, companyId) => {
+		if (originalList instanceof Array) {
+			originalList.forEach((item) => {
+				const { orgName, orgId } = item;
+				const target = {
+					title: orgName,
+					value: `${companyId}-${orgId}`,
+					key: `${companyId}-${orgId}`,
+					children: [],
+				};
+				targetList.push(target);
+				if(item.children && item.children.length) {
+					this.traversalTreeData(item.children, target.children, companyId);
+				}
+			});
+		}
+	};
+
 	createOrgnizationTree = async () => {
 		const {
 			getCompanyIdFromStorage,
-			getShopListFromStorage,
+			// getShopListFromStorage,
 			getCompanyListFromStorage,
+			getOrgnazationTree,
 		} = this.props;
 		const currentCompanyId = await getCompanyIdFromStorage();
 		const companyList = await getCompanyListFromStorage();
-		const shopList = await getShopListFromStorage();
-
+		// const shopList = await getShopListFromStorage();
+		const originalTree = await getOrgnazationTree();
+		const targetTree = [];
+		if(originalTree && originalTree.length) {
+			this.traversalTreeData(originalTree, targetTree, currentCompanyId);
+		}
 		const companyInfo =
-			companyList.find(company => company.company_id === currentCompanyId) || {};
+			companyList.find(company => company.companyId === currentCompanyId) || {};
 
 		const orgnizationTree = [
 			{
-				title: companyInfo.company_name,
-				value: companyInfo.company_id,
-				key: companyInfo.company_id,
-				children: shopList.map(shop => ({
-					title: shop.shop_name,
-					value: `${companyInfo.company_id}-${shop.shop_id}`,
-					key: `${companyInfo.company_id}-${shop.shop_id}`,
-				})),
+				title: companyInfo.companyName,
+				value: companyInfo.companyId,
+				key: companyInfo.companyId,
+				children: targetTree,
 			},
 		];
 		this.setState({
@@ -82,6 +119,7 @@ class EmployeeList extends Component {
 			loading,
 			employee: { searchValue = {}, employeeList = [], pagination } = {},
 			setSearchValue,
+			setGetInfoValue,
 			clearSearchValue,
 			getEmployeeList,
 			deleteEmployee,
@@ -97,6 +135,7 @@ class EmployeeList extends Component {
 						orgnizationTree,
 						searchValue,
 						setSearchValue,
+						setGetInfoValue,
 						clearSearchValue,
 						getEmployeeList,
 						goToPath,
@@ -110,6 +149,7 @@ class EmployeeList extends Component {
 						deleteEmployee,
 						goToPath,
 						getEmployeeList,
+						userId: this.userId
 					}}
 				/>
 			</Card>

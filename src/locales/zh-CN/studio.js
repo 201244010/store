@@ -28,6 +28,7 @@ export default {
 	'studio.placeholder.bind.value': '请输入绑定的值',
 	'studio.tool.title.bind.field': '绑定字段',
 	'studio.tool.title.bind.value': '条码',
+	'studio.tool.title.qr.bind.value': '二维码',
 	'studio.component.barcode.v': '竖向条码',
 	'studio.tool.title.style': '样式',
 	'studio.tool.title.fill.color': '填充颜色',
