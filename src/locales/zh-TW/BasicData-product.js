@@ -27,7 +27,7 @@
 	'basicData.product.expire_time.day': '天',
 	'basicData.product.qrCode.link': '二維碼鏈接',
 	'basicData.product.qrCode': '二維碼鏈接',
-	'basicData.product.modified_time': '最後修改時間',
+	'basicData.product.modifiedTime': '最後修改時間',
 	'basicData.product.customize': '自定義',
 	'basicData.product.image': '商品圖片',
 	'basicData.product.extraInfo.isEmpty': '自定義字段不能為空',

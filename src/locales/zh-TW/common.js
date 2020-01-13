@@ -25,6 +25,7 @@
 	'btn.restart': '重啟',
 	'btn.erp.import': '對接ERP',
 	'btn.erp.import.manage': '對接ERP管理',
+	'btn.excel.upload': 'Excel批量上傳',
 	'btn.detail': '詳情',
 	'btn.more': '更多',
 	'btn.know': '知道了',
