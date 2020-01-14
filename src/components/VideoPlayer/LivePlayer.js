@@ -23,6 +23,8 @@ class LivePlayer extends React.Component{
 		this.baseTime = 0;
 		this.lastMetadataTimestamp = 0;
 		this.replayTimeout = 0;
+		this.playbackTimeout = 0; // 视频回放异常处理定时器
+		this.playHistoryTimestamp = ''; // 暂存视频回放时间戳
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
 
 		this.isPlaying = false; // video是否正在播放
@@ -41,6 +43,7 @@ class LivePlayer extends React.Component{
 
 	componentWillUnmount () {
 		clearTimeout(this.replayTimeout);
+		clearTimeout(this.playbackTimeout);
 	}
 
 	play = () => {
@@ -104,6 +107,7 @@ class LivePlayer extends React.Component{
 
 	playHistory = async (timestamp) => {
 		// console.log('timestamp', timestamp, moment.unix(timestamp).format('YYYY-MM-DD HH:mm:ss'));
+		this.playHistoryTimestamp = timestamp;
 		if (moment().valueOf()/1000 - timestamp <= 60 ){
 			// 拖到了直播
 			console.log('goto playLive.');
@@ -234,8 +238,9 @@ class LivePlayer extends React.Component{
 	}
 
 	isInsideSlots = (timestamp) => {
-		const { timeSlots } = this.props;
+		const { timeSlots: timeSlotsArray } = this.props;
 
+		const timeSlots = JSON.parse(JSON.stringify(timeSlotsArray));
 		timeSlots.sort((a, b) => b.timeStart - a.timeStart);
 
 		let nextTimeStart = timestamp;
@@ -453,6 +458,8 @@ class LivePlayer extends React.Component{
 		const { isLive } = this.state;
 		if (isLive) {
 			this.timeoutReplay();
+		} else {
+			this.playbackErrorHander();
 		}
 	}
 
@@ -482,6 +489,42 @@ class LivePlayer extends React.Component{
 		};
 
 		replay(2);
+	}
+
+	// 回放异常处理
+	playbackErrorHander() {
+		console.log('playbackErrorHander this.currentSrc=', this.currentSrc);
+
+		if (this.currentSrc) {
+			this.src(this.currentSrc);
+		}
+
+		const replay = (time) => {
+			clearTimeout(this.playbackTimeout);
+			this.playbackTimeout = setTimeout(() => {
+				console.log('this.playbackTimeout');
+				const { isLive } = this.state;
+				if (this.isPlaying) {
+					clearTimeout(this.playbackTimeout);
+				} else if (!isLive) {
+					// 当前为回放
+
+					// if (this.currentSrc) {
+					// 	this.src(this.currentSrc);
+					// }
+
+					// start history
+					console.log('this.playHistoryTimestamp=', this.playHistoryTimestamp);
+					if (this.playHistoryTimestamp) {
+						this.playHistory(this.playHistoryTimestamp);
+					}
+
+					replay(5);
+				}
+			}, time * 1000);
+		};
+
+		replay(5);
 	}
 
 	render () {
