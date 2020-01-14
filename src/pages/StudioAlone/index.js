@@ -29,6 +29,7 @@ const SCREEN_NAME = {
 	'2.13': formatMessage({ id: 'esl-screen-2.13' }),
 	'2.6': formatMessage({ id: 'esl-screen-2.13' }),
 	'4.2': formatMessage({ id: 'esl-screen-4.2' }),
+	'7.5': formatMessage({ id: 'esl-screen-7.5' }),
 };
 const SCREEN_TYPE = {
 	'2.13': 1,

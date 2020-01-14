@@ -282,6 +282,7 @@ export default {
 	'esl-screen-2.13': '2.13 inch',
 	'esl-screen-2.6': '2.6 inch',
 	'esl-screen-4.2': '4.2 inch',
+	'esl-screen-7.5': '7.5 inch',
 	'esl-default-template-BWR-2.13': '2.13 inch, black & white & red template',
 	'esl-default-template-BW-2.6': '2.6 inch, black & white template',
 	'esl-default-template-BWR-2.6': '2.6 inch, black & white & red template',
