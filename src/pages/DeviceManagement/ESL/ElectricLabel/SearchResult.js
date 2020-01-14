@@ -528,26 +528,26 @@ class SearchResult extends Component {
 				>
 					<div className={styles['custom-modal-wrapper']}>
 						<Row className={styles.row}>
-							<Col span={6} className={styles.title}>{formatMessage({ id: 'esl.device.esl.id' })}：</Col>
-							<Col span={18}>{currentRecord.esl_code}</Col>
+							<Col span={8} className={styles.title}>{formatMessage({ id: 'esl.device.esl.id' })}：</Col>
+							<Col span={16}>{currentRecord.esl_code}</Col>
 						</Row>
 						<Row className={styles.row}>
-							<Col span={6} className={styles.title}>
+							<Col span={8} className={styles.title}>
 								{formatMessage({ id: 'esl.device.esl.product.seq.num' })}：
 							</Col>
-							<Col span={18}>{currentRecord.product_seq_num || '---'}</Col>
+							<Col span={16}>{currentRecord.product_seq_num || '---'}</Col>
 						</Row>
 						<Row className={styles.row}>
-							<Col span={6} className={styles.title}>
+							<Col span={8} className={styles.title}>
 								{formatMessage({ id: 'esl.device.esl.product.name' })}：
 							</Col>
-							<Col span={18}>{currentRecord.product_name || '---'}</Col>
+							<Col span={16}>{currentRecord.product_name || '---'}</Col>
 						</Row>
 						<Row className={styles.row}>
-							<Col span={6} className={styles.title}>
+							<Col span={8} className={styles.title}>
 								{formatMessage({ id: 'esl.device.esl.template.name' })}：
 							</Col>
-							<Col span={18}>
+							<Col span={16}>
 								<Select
 									style={{ width: '100%' }}
 									value={currentRecord.template_id}
