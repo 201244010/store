@@ -3,6 +3,7 @@ import { Button, Divider, message, Modal, Table, Menu, Dropdown, Row, Col, Selec
 import { formatMessage } from 'umi/locale';
 import { DURATION_TIME } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
+import { PREVIEW_MAP } from '@/constants/studio';
 import { unixSecondToDate } from '@/utils/utils';
 import Detail from './Detail';
 import BindModal from './BindModal';
@@ -14,24 +15,6 @@ const ESL_STATES = {
 	2: formatMessage({ id: 'esl.device.esl.push.wait' }),
 	3: formatMessage({ id: 'esl.device.esl.push.success' }),
 	4: formatMessage({ id: 'esl.device.esl.push.fail' }),
-};
-
-const widthMap = {
-	1: 348,
-	2: 442,
-	3: 510
-};
-
-const styleMap = {
-	1: 'img-213',
-	2: 'img-26',
-	3: 'img-42'
-};
-
-const imgMap = {
-	1: require('../../../../assets/studio/2.13.png'),
-	2: require('../../../../assets/studio/2.6.png'),
-	3: require('../../../../assets/studio/4.2.png'),
 };
 
 class SearchResult extends Component {
@@ -483,10 +466,17 @@ class SearchResult extends Component {
 			},
 		];
 
+		const rowSelection = {
+			onChange: (selectedRowKeys, selectedRows) => {
+				console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+			}
+		};
+
 		return (
 			<div>
 				<Table
 					rowKey="id"
+					rowSelection={rowSelection}
 					loading={loading}
 					columns={columns}
 					dataSource={data}
@@ -536,26 +526,26 @@ class SearchResult extends Component {
 				>
 					<div className={styles['custom-modal-wrapper']}>
 						<Row className={styles.row}>
-							<Col span={6} className={styles.title}>{formatMessage({ id: 'esl.device.esl.id' })}：</Col>
-							<Col span={18}>{currentRecord.esl_code}</Col>
+							<Col span={8} className={styles.title}>{formatMessage({ id: 'esl.device.esl.id' })}：</Col>
+							<Col span={16}>{currentRecord.esl_code}</Col>
 						</Row>
 						<Row className={styles.row}>
-							<Col span={6} className={styles.title}>
+							<Col span={8} className={styles.title}>
 								{formatMessage({ id: 'esl.device.esl.product.seq.num' })}：
 							</Col>
-							<Col span={18}>{currentRecord.product_seq_num || '---'}</Col>
+							<Col span={16}>{currentRecord.product_seq_num || '---'}</Col>
 						</Row>
 						<Row className={styles.row}>
-							<Col span={6} className={styles.title}>
+							<Col span={8} className={styles.title}>
 								{formatMessage({ id: 'esl.device.esl.product.name' })}：
 							</Col>
-							<Col span={18}>{currentRecord.product_name || '---'}</Col>
+							<Col span={16}>{currentRecord.product_name || '---'}</Col>
 						</Row>
 						<Row className={styles.row}>
-							<Col span={6} className={styles.title}>
+							<Col span={8} className={styles.title}>
 								{formatMessage({ id: 'esl.device.esl.template.name' })}：
 							</Col>
-							<Col span={18}>
+							<Col span={16}>
 								<Select
 									style={{ width: '100%' }}
 									value={currentRecord.template_id}
@@ -650,10 +640,10 @@ class SearchResult extends Component {
 				<Modal
 					title={
 						<div className={styles['preview-img-title']}>
-							{currentRecord.template_name}
+							{formatMessage({id: currentRecord.template_name || ' '})}
 						</div>
 					}
-					width={widthMap[currentRecord.model_size]}
+					width={PREVIEW_MAP.SCREEN_ID_WIDTH[currentRecord.model_size]}
 					visible={previewVisible}
 					onCancel={() => this.closeModal('previewVisible')}
 					onOk={() => this.closeModal('previewVisible')}
@@ -664,8 +654,8 @@ class SearchResult extends Component {
 					]}
 				>
 					<div className={styles['preview-img']}>
-						<img className={`${styles['wrap-img}']} ${styles[styleMap[currentRecord.model_size]]}`} src={imgMap[currentRecord.model_size]} alt="" />
-						<img className={`${styles['content-img']} ${styles[styleMap[currentRecord.model_size]]}`} src={currentRecord.address} alt="" />
+						<img className={`${styles['wrap-img}']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[currentRecord.model_size]]}`} src={PREVIEW_MAP.SCREEN_ID_IMAGE[currentRecord.model_size]} alt="" />
+						<img className={`${styles['content-img']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[currentRecord.model_size]]}`} src={currentRecord.address} alt="" />
 					</div>
 				</Modal>
 			</div>

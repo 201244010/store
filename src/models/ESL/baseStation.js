@@ -338,7 +338,7 @@ export default {
 				scanPeriod,
 				isEnergySave,
 				scanMulti,
-				clksyncPeriod,
+				// clksyncPeriod,
 				eslRefleshPeriod,
 				eslRefleshTime,
 				scanDeepSleep,
@@ -354,10 +354,10 @@ export default {
 				scanDeepSleep,
 				wakePeriod
 			});
-			const param2 = format('toSnake')({
-				networkId,
-				clksyncPeriod: parseInt(clksyncPeriod, 10) * 24 * 3600,
-			});
+			// const param2 = format('toSnake')({
+			// 	networkId,
+			// 	clksyncPeriod: parseInt(clksyncPeriod, 10) * 24 * 3600,
+			// });
 			const param3 = format('toSnake')({
 				networkId,
 				eslRefleshPeriod: parseInt(eslRefleshPeriod, 10),
@@ -379,16 +379,16 @@ export default {
 				},
 			});
 
-			yield put({
-				type: 'mqttStore/publish',
-				payload: {
-					topic: requestTopic,
-					message: {
-						opcode: OPCODE.SET_CLKSYNC,
-						param: param2
-					},
-				},
-			});
+			// yield put({
+			// 	type: 'mqttStore/publish',
+			// 	payload: {
+			// 		topic: requestTopic,
+			// 		message: {
+			// 			opcode: OPCODE.SET_CLKSYNC,
+			// 			param: param2
+			// 		},
+			// 	},
+			// });
 
 			yield put({
 				type: 'mqttStore/publish',
