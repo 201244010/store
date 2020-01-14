@@ -53,6 +53,7 @@ export const ERR_DELETE_DEFAULT_ROLE_DENIED = 5431;
 
 export const ORGANIZATION_NO_DESABLED = 5440;
 export const ORGANIZATION_LEVEL_LIMITED = 5442;
+export const ORGANIZATION_DISABLED = 5443;
 
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',
