@@ -277,6 +277,7 @@
 	'esl-screen-2.13': '2.13寸',
 	'esl-screen-2.6': '2.6寸',
 	'esl-screen-4.2': '4.2寸',
+	'esl-screen-7.5': '7.5寸',
 	'esl-default-template-BWR-2.13': '2.13寸黑白紅模板',
 	'esl-default-template-BW-2.6': '2.6寸黑白模板',
 	'esl-default-template-BWR-2.6': '2.6寸黑白紅模板',

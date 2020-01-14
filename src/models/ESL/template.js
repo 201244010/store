@@ -469,6 +469,9 @@ export default {
 			}
 			return response;
 		},
+		*previewTemplate({ payload = {} }, { call }) {
+			return yield call(TemplateService.previewTemplate, payload);
+		},
 	},
 	reducers: {
 		updateState(state, action) {

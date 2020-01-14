@@ -71,7 +71,7 @@ class SystemConfig extends Component {
 			settingLoading: true,
 			isUpdateSuccess: {
 				setApConfig: false,
-				setClksync: false,
+				// setClksync: false,
 				setRefresh: false
 			},
 			btnLoading: false
@@ -146,7 +146,9 @@ class SystemConfig extends Component {
 		const { networkId, isUpdateSuccess } = this.state;
 		const { getAPConfig, setNetworkConfig } = this.props;
 		const updateSuccess = {
-			setApConfig: false, setClksync: false, setRefresh: false
+			setApConfig: false,
+			// setClksync: false,
+			setRefresh: false
 		};
 
 		if (action === ACTION.UPDATE) {
@@ -167,8 +169,12 @@ class SystemConfig extends Component {
 					default: break;
 				}
 
-				const {setApConfig, setClksync, setRefresh} = isUpdateSuccess;
-				if(setApConfig && setClksync && setRefresh) {
+				const {
+					setApConfig,
+					// setClksync,
+					setRefresh
+				} = isUpdateSuccess;
+				if(setApConfig && setRefresh) {
 					message.success(formatMessage({ id: 'esl.device.config.setting.success' }));
 					getAPConfig({ networkId });
 					this.setState({isUpdateSuccess: updateSuccess, btnLoading: false});
@@ -444,6 +450,7 @@ class SystemConfig extends Component {
 													<Input
 														suffix={formatMessage({ id: 'day.unit' })}
 														style={SELECT_STYLE}
+														disabled
 													/>
 												)}
 												<FormTip
