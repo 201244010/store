@@ -100,6 +100,7 @@ export default {
 	'esl.device.esl.push.wait': 'To be arrived',
 	'esl.device.esl.push.success': 'Pushed',
 	'esl.device.esl.push.fail': 'Push Failed',
+	'esl.device.esl.push.exception': 'Push Exception',
 	'esl.device.esl.inactivated': 'Unactivated',
 	'esl.device.esl.week.fail': 'Push Failed',
 	'esl.device.esl.push.all': 'Re-push',

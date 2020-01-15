@@ -418,7 +418,7 @@ class SystemConfig extends Component {
 										<Form.Item label={formatMessage({ id: 'esl.device.config.async.round' })}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('clksyncPeriod', {
-													initialValue: clksyncPeriod || 3,
+													initialValue: 1 || clksyncPeriod,
 													validateTrigger: 'onBlur',
 													rules: [
 														{
