@@ -302,7 +302,7 @@ export const PREVIEW_MAP = {
 		'esl-screen-2.13': 348,
 		'esl-screen-2.6': 442,
 		'esl-screen-4.2': 510,
-		'esl-screen-7.5': 510,
+		'esl-screen-7.5': 712,
 	},
 	TYPE_NAME_STYLE: {
 		'esl-screen-2.13': 'img-213',
@@ -314,13 +314,13 @@ export const PREVIEW_MAP = {
 		'esl-screen-2.13': require('@/assets/studio/2.13.png'),
 		'esl-screen-2.6': require('@/assets/studio/2.6.png'),
 		'esl-screen-4.2': require('@/assets/studio/4.2.png'),
-		'esl-screen-7.5': require('@/assets/studio/4.2.png'),
+		'esl-screen-7.5': require('@/assets/studio/7.5.png'),
 	},
 	SCREEN_ID_WIDTH: {
 		1: 348,
 		2: 442,
 		3: 510,
-		4: 510
+		4: 712
 	},
 	SCREEN_ID_STYLE: {
 		1: 'img-213',
@@ -332,6 +332,6 @@ export const PREVIEW_MAP = {
 		1: require('@/assets/studio/2.13.png'),
 		2: require('@/assets/studio/2.6.png'),
 		3: require('@/assets/studio/4.2.png'),
-		4: require('@/assets/studio/4.2.png'),
+		4: require('@/assets/studio/7.5.png'),
 	},
 };
