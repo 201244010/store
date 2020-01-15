@@ -100,6 +100,7 @@ export default {
 	'esl.device.esl.push.wait': '待推送',
 	'esl.device.esl.push.success': '推送成功',
 	'esl.device.esl.push.fail': '推送失败',
+	'esl.device.esl.push.exception': '异常价签',
 	'esl.device.esl.inactivated': '未激活',
 	'esl.device.esl.week.fail': '推送失败',
 	'esl.device.esl.push.all': '重推',

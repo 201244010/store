@@ -351,7 +351,7 @@ class SearchResult extends Component {
 				title: formatMessage({ id: 'esl.device.esl.template.name' }),
 				dataIndex: 'template_name',
 				render: text => (
-					<span>{formatMessage({id: text})}</span>
+					<span>{formatMessage({id: text || ' '})}</span>
 				),
 			},
 			{
