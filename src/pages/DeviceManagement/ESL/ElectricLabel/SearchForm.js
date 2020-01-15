@@ -76,6 +76,9 @@ class SearchForm extends Component {
 									<Select.Option value={4}>
 										{formatMessage({ id: 'esl.device.esl.push.fail' })}
 									</Select.Option>
+									<Select.Option value={5}>
+										{formatMessage({ id: 'esl.device.esl.push.exception' })}
+									</Select.Option>
 								</Select>
 							</Form.Item>
 						</Col>
