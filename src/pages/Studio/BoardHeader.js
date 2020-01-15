@@ -191,7 +191,7 @@ export default class BoardHeader extends Component {
 					]}
 				>
 					<div className={styles['preview-img']}>
-						<img className={`${styles['wrap-img}']} ${styles[PREVIEW_MAP.TYPE_NAME_STYLE[templateInfo.screen_type_name]]}`} src={PREVIEW_MAP.TYPE_NAME_IMAGE[templateInfo.screen_type_name]} alt="" />
+						<img className={`${styles['wrap-img']} ${styles[PREVIEW_MAP.TYPE_NAME_STYLE[templateInfo.screen_type_name]]}`} src={PREVIEW_MAP.TYPE_NAME_IMAGE[templateInfo.screen_type_name]} alt="" />
 						<img className={`${styles['content-img']} ${styles[PREVIEW_MAP.TYPE_NAME_STYLE[templateInfo.screen_type_name]]}`} src={imageUrl} alt="" />
 					</div>
 				</Modal>
