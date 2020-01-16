@@ -265,7 +265,7 @@ const screenMap = {
 		zoomScale: 1.5,
 	},
 	4: {
-		width: 600,
+		width: 640,
 		height: 384,
 		zoomScale: 1,
 	},

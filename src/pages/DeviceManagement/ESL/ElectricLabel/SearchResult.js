@@ -36,17 +36,22 @@ class SearchResult extends Component {
 		const { fetchElectricLabels } = this.props;
 		const { field, order } = sorter;
 		let desc = -1;
-		if (field === 'push_time') {
+		if (['push_time'].includes(field)) {
 			desc = order === 'ascend' ? 1 : (order === 'descend' ? 0 : -1);
 		} else {
 			desc = order === 'ascend' ? 0 : (order === 'descend' ? 1 : -1);
 		}
 
+		const sortKeyMap = {
+			battery: 1,
+			push_time: 2,
+		};
+
 		fetchElectricLabels({
 			options: {
 				current: pagination.current,
 				pageSize: pagination.pageSize,
-				sort_key: field === 'battery' ? 1 : (field === 'push_time' ? 2 : -1),
+				sort_key: sortKeyMap[field],
 				desc
 			},
 		});
@@ -328,6 +333,7 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.esl.model.name' }),
 				dataIndex: 'model_name',
+				sorter: true,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.esl.battery' }),
@@ -357,6 +363,7 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.esl.status' }),
 				dataIndex: 'status',
+				sorter: true,
 				render: text => (
 					<span style={{ color: `${text}` === '4' ? 'red' : 'rgba(0, 0, 0, 0.65)' }}>
 						{ESL_STATES[text]}
