@@ -51,7 +51,7 @@ class SearchResult extends Component {
 			options: {
 				current: pagination.current,
 				pageSize: pagination.pageSize,
-				sort_key: sortKeyMap[field],
+				sort_key: sortKeyMap[field] || -1,
 				desc
 			},
 		});
