@@ -25,6 +25,8 @@ class VideoPlayerProgressBar extends React.Component{
 			timeEnd: 0
 		};
 
+		this.getTimeSlotsInterval = 0; // 定时获取TimeSlots
+
 		this.days = 10;	// 用来向前记录渲染了多少日期；
 
 		this.onDragChangeTimeout = 0;
@@ -42,6 +44,16 @@ class VideoPlayerProgressBar extends React.Component{
 		window.addEventListener('resize', () => {
 			this.setPosition();
 		});
+
+		// 定时更新播放进度条
+		this.getTimeSlotsInterval = setInterval(() => {
+			console.log('getTimeSlotsInterval');
+			this.generateTime();
+		}, 5 * 60 * 1000);
+	}
+
+	componentWillUnmount () {
+		clearInterval(this.getTimeSlotsInterval);
 	}
 
 
