@@ -54,7 +54,35 @@ class SearchForm extends Component {
 								/>
 							</Form.Item>
 						</Col>
-						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+						<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
+							<Form.Item label={formatMessage({ id: 'esl.device.esl.title.template' })}>
+								<Select
+									placeholder={formatMessage({ id: 'select.placeholder' })}
+									value={searchFormValues.status}
+									onChange={val => this.changeFormValues('select', 'status', val)}
+								>
+									<Select.Option value={-1}>
+										{formatMessage({ id: 'select.all' })}
+									</Select.Option>
+									<Select.Option value={1}>
+										{formatMessage({ id: 'esl.device.esl.push.wait.bind' })}
+									</Select.Option>
+									<Select.Option value={2}>
+										{formatMessage({ id: 'esl.device.esl.push.wait' })}
+									</Select.Option>
+									<Select.Option value={3}>
+										{formatMessage({ id: 'esl.device.esl.push.success' })}
+									</Select.Option>
+									<Select.Option value={4}>
+										{formatMessage({ id: 'esl.device.esl.push.fail' })}
+									</Select.Option>
+									<Select.Option value={5}>
+										{formatMessage({ id: 'esl.device.esl.push.exception' })}
+									</Select.Option>
+								</Select>
+							</Form.Item>
+						</Col>
+						<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
 							<Form.Item label={formatMessage({ id: 'esl.device.esl.status' })}>
 								<Select
 									placeholder={formatMessage({ id: 'select.placeholder' })}
@@ -82,7 +110,35 @@ class SearchForm extends Component {
 								</Select>
 							</Form.Item>
 						</Col>
-						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+						<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
+							<Form.Item label={formatMessage({ id: 'esl.device.esl.model.name' })}>
+								<Select
+									placeholder={formatMessage({ id: 'select.placeholder' })}
+									value={searchFormValues.status}
+									onChange={val => this.changeFormValues('select', 'status', val)}
+								>
+									<Select.Option value={-1}>
+										{formatMessage({ id: 'select.all' })}
+									</Select.Option>
+									<Select.Option value={1}>
+										{formatMessage({ id: 'esl.device.esl.push.wait.bind' })}
+									</Select.Option>
+									<Select.Option value={2}>
+										{formatMessage({ id: 'esl.device.esl.push.wait' })}
+									</Select.Option>
+									<Select.Option value={3}>
+										{formatMessage({ id: 'esl.device.esl.push.success' })}
+									</Select.Option>
+									<Select.Option value={4}>
+										{formatMessage({ id: 'esl.device.esl.push.fail' })}
+									</Select.Option>
+									<Select.Option value={5}>
+										{formatMessage({ id: 'esl.device.esl.push.exception' })}
+									</Select.Option>
+								</Select>
+							</Form.Item>
+						</Col>
+						<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
 							<Form.Item className={styles['query-item']}>
 								<Button type="primary" onClick={this.search}>
 									{formatMessage({ id: 'btn.query' })}
@@ -98,6 +154,23 @@ class SearchForm extends Component {
 						</Col>
 					</Row>
 				</Form>
+				<div className={styles.mb24}>
+					<Button type="primary" onClick={this.search} className={styles.mr16}>
+						{formatMessage({ id: 'btn.delete' })}
+					</Button>
+					<Button type="primary" onClick={this.search} className={styles.mr16}>
+						{formatMessage({ id: 'btn.unbind' })}
+					</Button>
+					<Button type="primary" onClick={this.search} className={styles.mr16}>
+						{formatMessage({ id: 'btn.reflush' })}
+					</Button>
+					<Button type="primary" onClick={this.search} className={styles.mr16}>
+						{formatMessage({ id: 'esl.device.esl.flash' })}
+					</Button>
+					<Button type="primary" onClick={this.search} className={styles.mr16}>
+						{formatMessage({ id: 'esl.device.esl.template.edit' })}
+					</Button>
+				</div>
 			</div>
 		);
 	}
