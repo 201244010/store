@@ -4,8 +4,8 @@ import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
 import { PREVIEW_MAP } from '@/constants/studio';
 import { unixSecondToDate } from '@/utils/utils';
-import * as styles from './index.less';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT, SEARCH_FORM_COL } from '@/constants/form';
+import * as styles from './index.less';
 
 const { Option } = Select;
 
@@ -54,7 +54,9 @@ class SearchResult extends Component {
 				[type]: value,
 			},
 		});
-		this.search();
+		this.search({
+			current: 1
+		});
 	};
 
 	onTableChange = pagination => {
@@ -220,9 +222,11 @@ class SearchResult extends Component {
 		});
 	};
 
-	search = () => {
+	search = (options = {}) => {
 		const { fetchTemplates } = this.props;
-		fetchTemplates();
+		fetchTemplates({
+			options
+		});
 	};
 
 	validateTemplateName = (rule, value, callback) => {
@@ -374,7 +378,7 @@ class SearchResult extends Component {
 							<Col {...SEARCH_FORM_COL.ONE_THIRD} />
 							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<Form.Item className={styles['query-item']}>
-									<Button loading={loading} type="primary" onClick={this.search}>
+									<Button loading={loading} type="primary" onClick={() => this.search()}>
 										{formatMessage({ id: 'btn.query' })}
 									</Button>
 									<Button
