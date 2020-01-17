@@ -59,4 +59,5 @@ export default {
 	'studio.tool.font.download.title': '字体安装文件下载',
 	'studio.tool.font.download.alert': '如果已经安装下列字体，请重启浏览器进行重新加载',
 	'studio.error.codec.value.wrong': '输入不符合当前编码方式，请检查',
+	'studio.error.exceed.max': '模板组件数量不能超过50',
 };

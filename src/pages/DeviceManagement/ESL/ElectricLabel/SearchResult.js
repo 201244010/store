@@ -664,7 +664,7 @@ class SearchResult extends Component {
 					]}
 				>
 					<div className={styles['preview-img']}>
-						<img className={`${styles['wrap-img}']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[currentRecord.model_size]]}`} src={PREVIEW_MAP.SCREEN_ID_IMAGE[currentRecord.model_size]} alt="" />
+						<img className={`${styles['wrap-img']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[currentRecord.model_size]]}`} src={PREVIEW_MAP.SCREEN_ID_IMAGE[currentRecord.model_size]} />
 						<img className={`${styles['content-img']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[currentRecord.model_size]]}`} src={currentRecord.address} alt="" />
 					</div>
 				</Modal>
