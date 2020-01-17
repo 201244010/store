@@ -3,8 +3,6 @@ import { Table } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 
-
-
 import styles from './MotionList.less';
 
 

@@ -53,7 +53,6 @@ export default {
 			pageSize: DEFAULT_PAGE_SIZE,
 			total: 0,
 			showSizeChanger: true,
-			showQuickJumper: true,
 		},
 		roleList: [],
 		roleSelectList: [],

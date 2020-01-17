@@ -10,7 +10,7 @@ import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
-import { formatMessage, getLocale } from 'umi/locale';
+import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import MQTTWrapper from '@/components/MQTT';
@@ -22,7 +22,8 @@ import SiderMenu from '@/components/SiderMenu';
 import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/logo-big.png';
-import logoEN from '../assets/menuLogoEN.png';
+// import logoEN from '../assets/menuLogoEN.png';
+import { ERROR_OK } from '@/constants/errorCode';
 import { env } from '@/config';
 
 import 'react-perfect-scrollbar/dist/css/styles.css';
@@ -74,6 +75,18 @@ class BasicLayout extends React.PureComponent {
 
 	componentDidMount() {
 		this.dataInitial();
+		const { getUserInfo, getStoreList, getOrgLayer, initOrgList } = this.props;
+		window.addEventListener('storage', async () => {  
+			getUserInfo();
+			getOrgLayer({});
+			initOrgList();
+			const response = await getStoreList({});
+			if (response && response.code === ERROR_OK) {
+				const result = response.data || {};
+				const shopList = result.shopList || [];
+				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
+			}
+		});
 	}
 
 	componentWillReceiveProps() {
@@ -235,14 +248,13 @@ class BasicLayout extends React.PureComponent {
 			breadcrumbNameMap,
 			fixedHeader,
 		} = this.props;
-		const currentLanguage = getLocale();
 		const isTop = PropsLayout === 'topmenu';
 		const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
 		const layout = (
 			<Layout>
 				{isTop && !isMobile ? null : (
 					<SiderMenu
-						logo={currentLanguage === 'zh-CN' ? logo : logoEN}
+						logo={logo}
 						theme={navTheme}
 						onCollapse={this.handleMenuCollapse}
 						menuData={menuData}
@@ -314,8 +326,11 @@ export default connect(
 	}),
 	dispatch => ({
 		logout: () => dispatch({ type: 'user/logout' }),
+		getUserInfo: () => dispatch({ type: 'user/getUserInfo' }),
 		getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		getOrgLayer: payload => dispatch({ type: 'store/getOrgLayer', payload }),
+		initOrgList: payload => dispatch({ type: 'organization/initOrgList', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		dispatch,

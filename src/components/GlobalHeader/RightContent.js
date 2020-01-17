@@ -82,7 +82,7 @@ export default class GlobalHeaderRight extends PureComponent {
 		// router.push(`/notificationInfo?msgId=${msg_id}`);
 	};
 
-	handleStoreChange = (storeId) => {
+	handleStoreChange = storeId => {
 		const { goToPath } = this.props;
 		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeId);
 		goToPath('root', {}, 'href');
@@ -123,13 +123,12 @@ export default class GlobalHeaderRight extends PureComponent {
 		if (theme === 'dark') {
 			className = `${styles.right}  ${styles.dark}`;
 		}
-
 		return (
 			<div className={className}>
 				<TreeSelect
 					style={{ width: '250px' }}
 					treeData={treeData}
-					value={selectedStore}
+					value={treeData && treeData.length > 0 ? `${selectedStore}` : ''}
 					onChange={this.handleStoreChange}
 					treeDefaultExpandedKeys={[`${selectedStore}`]}
 					dropdownStyle={{ maxHeight: '50vh'}}

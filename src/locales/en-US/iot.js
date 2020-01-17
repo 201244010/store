@@ -1,7 +1,7 @@
 export default {
-	'iot.pos.status.active': 'Online Pos Devices',
-	'iot.pos.status.disabled': 'Offline Pos Devices',
-	'iot.pos.unit': 'Set',
+	'iot.pos.status.active': 'Online POS Devices',
+	'iot.pos.status.disabled': 'Offline POS Devices',
+	'iot.pos.unit': 'Unit',
 	'iot.pos.model': 'Model',
 	'iot.pos.connect.status': 'Connection Status',
 	'iot.pos.view.detail': 'Check Details',
@@ -28,4 +28,7 @@ export default {
 	'iot.pos.active.status.no': 'Unconnected',
 	'iot.pos.warranty.status.yes': 'On Insurance',
 	'iot.pos.warranty.status.no': 'Over Insurance',
+	'iot.pos.device.info.fetch.error': '设备信息获取失败，请稍后重试',
+	'iot.pos.device.modify.info.fetch.error': '维修信息获取失败，请稍后重试',
+	'iot.pos.device.detail.info.error': '设备详情获取失败，请稍后重试',
 };

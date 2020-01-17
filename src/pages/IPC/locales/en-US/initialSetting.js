@@ -1,7 +1,7 @@
 export default {
 	'initialSetting.title':'Initialize settings',
-	'initialSetting.reboot':'Restart now',
-	'initialSetting.reset':'Restore default settings',
+	'initialSetting.reboot':'Restart',
+	'initialSetting.reset':'Restore',
 	'initialSetting.rebootConfirm':'Are you sure you want to restart the camera now?',
 	'initialSetting.rebootInfo':'It takes about 2 minutes to restart，surveillance video cannot be stored during restart.',
 	'initialSetting.confirm':'Confirm',

@@ -6,6 +6,7 @@ import browser from 'browser-detect';
 
 import ReVideo from './ReVideo';
 import Toolbar from './Toolbar';
+import DetailBoard from './DetailBoard';
 
 import styles from './VideoPlayer.less';
 
@@ -121,7 +122,7 @@ class VideoPlayer extends React.Component{
 		if (player) {
 			console.log('paused: ', player.paused());
 			player.play();
-			
+
 			this.setState({
 				playing: true
 			});
@@ -374,13 +375,16 @@ class VideoPlayer extends React.Component{
 		const { pixelRatio, currentPPI, ppiChanged, progressbar, isLive,
 			onTimeUpdate, onMetadataArrived, onPlay, onError, onPause, onEnd, onCanPlay, onCanplayThrough, onDateChange, playHandler,
 			playBtnDisabled, showDatePicker, canPPIChange, showBackToLive, ppiChange, backToLive,
-			current, plugin, isOnline, cloudStatus, navigateTo, sn
+			current, plugin, isOnline, cloudStatus, navigateTo, sn, fullScreenFlagShow,
+			detailVisible, paymentInfo = {}
 		} = this.props;
 
 		const { playing, fullScreen, noMedia, volume,
 			// playBtnDisabled, showDatePicker, canPPIChange, showBackToLive,
 			maxVolume, canScreenShot
 		} = this.state;
+
+		// const { totalPrice, details, orderTime, paymentMethod } = paymentInfo;
 
 		const { player } = this;
 
@@ -451,6 +455,11 @@ class VideoPlayer extends React.Component{
 						</div>
 					</div>
 
+					{
+						detailVisible ?
+							<DetailBoard paymentInfo={paymentInfo} pixelRatio={pixelRatio} />
+							: ''
+					}
 				</div>
 
 				<div className={styles['toolbar-container']}>
@@ -489,6 +498,8 @@ class VideoPlayer extends React.Component{
 
 						isOnline={isOnline}
 						cloudStatus={cloudStatus}
+
+						fullScreenFlagShow={fullScreenFlagShow}
 
 						progressbar={
 							progressbar

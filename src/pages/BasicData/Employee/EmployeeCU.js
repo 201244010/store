@@ -23,9 +23,10 @@ import styles from './Employee.less';
 	}),
 	dispatch => ({
 		getCompanyIdFromStorage: () => dispatch({ type: 'global/getCompanyIdFromStorage' }),
-		// getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
+		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
 		getOrgnazationTree: () => dispatch({ type: 'store/getOrgnazationTree' }),
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
+		getOrgLayer: () => dispatch({ type: 'store/getOrgLayer'}),
 		checkUsernameExist: ({ username }) =>
 			dispatch({ type: 'employee/checkUsernameExist', payload: { username } }),
 		checkSsoBinded: ({ ssoUsername }) =>
@@ -65,11 +66,17 @@ class EmployeeCU extends Component {
 
 		this.state = {
 			orgnizationTree: [],
+			shopIdList: [],
 		};
 	}
 
 	async componentDidMount() {
-		const { getAllRoles } = this.props;
+		const { getAllRoles, getShopListFromStorage } = this.props;
+		const shopList = await getShopListFromStorage();
+		const shopIdList = shopList.map(item => item.orgId);
+		this.setState({
+			shopIdList
+		});
 		getAllRoles();
 		if (this.employeeId && this.action === 'edit') {
 			const { getEmployeeInfo } = this.props;
@@ -192,6 +199,7 @@ class EmployeeCU extends Component {
 			checkUsernameExist,
 			createEmployee,
 			updateEmployee,
+			getOrgLayer,
 			goToPath,
 			checkNumberExist,
 			employee: {
@@ -227,6 +235,8 @@ class EmployeeCU extends Component {
 						...submitData,
 					});
 					if (response && response.code === ERROR_OK) {
+						message.success(formatMessage({ id: 'employee.update.success' }));
+						getOrgLayer();
 						if (this.from === 'detail' && this.employeeId) {
 							goToPath('employeeInfo', { employeeId: this.employeeId });
 						} else {
@@ -256,6 +266,7 @@ class EmployeeCU extends Component {
 
 					const response = await createEmployee(submitData);
 					if (response && response.code === ERROR_OK) {
+						message.success(formatMessage({ id: 'employee.create.success' }));
 						goToPath('employeeList');
 					} else if (response && response.code === EMPLOYEE_BINDED) {
 						setFields({
@@ -282,7 +293,7 @@ class EmployeeCU extends Component {
 			const { data = {} } = response;
 			const { email, phone } = data;
 			setFieldsValue({
-				ssoUsername: email || phone,
+				ssoUsername: phone || email,
 			});
 		} else {
 			setFieldsValue({
@@ -378,6 +389,19 @@ class EmployeeCU extends Component {
 									required: true,
 									message: formatMessage({ id: 'employee.gender.isEmpty' }),
 								},
+								{
+									validator: (rule, value, callback) => {
+										if (value === '') {
+											callback();
+										}
+
+										if (value === 0) {
+											callback(formatMessage({ id: 'employee.gender.isEmpty' }));
+										}
+
+										callback();
+									},
+								},
 							],
 						})(
 							<Radio.Group>
@@ -444,12 +468,14 @@ class EmployeeCU extends Component {
 												})
 											);
 										} else {
+											const { shopIdList } = this.state;
 											const objectKeys = Object.keys(value);
+
 											const hasEmpty = objectKeys.some(key => {
 												const { orgnization = null, role = [] } = value[
 													key
 												];
-												return !orgnization || role.length === 0;
+												return (!orgnization && shopIdList.indexOf(Number(this.orgId)) === -1) || role.length === 0;
 											});
 											let isSame = false;
 											objectKeys.forEach((item, index) => {

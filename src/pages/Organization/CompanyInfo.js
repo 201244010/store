@@ -10,7 +10,7 @@ import { getLocationParam } from '@/utils/utils';
 import { customValidate } from '@/utils/customValidate';
 import * as CookieUtil from '@/utils/cookies';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { ERROR_OK, STORE_EXIST, ORGANIZATION_LEVEL_LIMITED } from '@/constants/errorCode';
+import { ERROR_OK, STORE_EXIST, ORGANIZATION_LEVEL_LIMITED, ORGANIZATION_DISABLED } from '@/constants/errorCode';
 import * as RegExp from '@/constants/regexp';
 
 import styles from './CompanyInfo.less';
@@ -58,6 +58,20 @@ class CompanyInfo extends React.Component {
 	}
 
 	async componentDidMount() {
+		await this.init();
+	}
+
+	componentWillReceiveProps(nextProps) {
+		const { companyInfo: { orgInfo: { businessHours: nextBusinessHours }}} = nextProps;
+		const { companyInfo: { orgInfo: { businessHours }}} = this.props;
+		if(nextBusinessHours !== businessHours){
+			this.setState({
+				allDayChecked: nextBusinessHours === '00:00~23:59'
+			});
+		}
+	}
+
+	init = async() => {
 		const { getShopTypeList, getRegionList, getOrganizationInfo, getOrganizationTreeByCompanyInfo, getAllOrgName, clearState, getCurrentHeight, getPathId } = this.props;
 		let treeData = {};
 		let isDisabled = true;
@@ -75,9 +89,9 @@ class CompanyInfo extends React.Component {
 		if(pathId === 'newSubOrganization') {
 			orgPidParams = orgPid;
 		}
-		
+
 		// 获得当前操作类型和organizationId
-		
+
 
 		if(action === 'create') {
 			clearState();
@@ -111,16 +125,6 @@ class CompanyInfo extends React.Component {
 			orgId,
 			action,
 		});
-	}
-
-	componentWillReceiveProps(nextProps) {
-		const { companyInfo: { orgInfo: { businessHours: nextBusinessHours }}} = nextProps;
-		const { companyInfo: { orgInfo: { businessHours }}} = this.props;
-		if(nextBusinessHours !== businessHours){
-			this.setState({
-				allDayChecked: nextBusinessHours === '00:00~23:59'
-			});
-		}
 	}
 
 	onTypeChangeHandler = (value) => {
@@ -352,14 +356,14 @@ class CompanyInfo extends React.Component {
 					area: values.region ? values.region[2] || null : null,
 					lat: lat ? `${lat}` : null,
 					lng: lng ? `${lng}` : null,
-					businessHours, 
+					businessHours,
 				};
 				const {
 					location: { pathname },
 				} = window;
 				const pathId = await getPathId(pathname);
-				
-				
+
+
 				let response = null;
 				if (action === 'edit') {
 					response = await updateOrganization({ options });
@@ -376,8 +380,9 @@ class CompanyInfo extends React.Component {
 						message.success(formatMessage({id: 'companyInfo.save.success'}));
 					}else{
 						message.error(formatMessage({id: 'companyInfo.save.fail'}));
+						await this.init();
 					}
-					
+
 				}else{
 					response = await createOrganization({ options });
 					const { code } = response;
@@ -394,8 +399,13 @@ class CompanyInfo extends React.Component {
 						}
 					}else if(code === STORE_EXIST){
 						message.error(formatMessage({id: 'companyInfo.message.name.exist'}));
+						await this.init();
 					}else if(code === ORGANIZATION_LEVEL_LIMITED){
 						message.error(formatMessage({id: 'companyInfo.message.level.limited'}));
+						await this.init();
+					}else if(code === ORGANIZATION_DISABLED){
+						message.error(formatMessage({id: 'companyInfo.message.pOrg.disabled'}));
+						await this.init();
 					}
 				}
 			}
@@ -431,14 +441,17 @@ class CompanyInfo extends React.Component {
 		} = this.props;
 		const { treeData, allDayChecked, orgPidParams } = this.state;
 		const { addressSearchResult, organizationType, isDisabled, action, orgId } = this.state;
-		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => (
-			<AutoComplete.Option
-				key={`${index}-${addressInfo.id}`}
-				value={`${addressInfo.name}${addressInfo.address}`}
-			>
-				{`${addressInfo.name}${addressInfo.address}`}
-			</AutoComplete.Option>
-		));
+		const autoCompleteSelection = addressSearchResult.map((addressInfo, index) => {
+			const finalAddress = addressInfo.address && addressInfo.address.length > 0 ? addressInfo.address : addressInfo.district;
+			return (
+				<AutoComplete.Option
+					key={`${index}-${addressInfo.id}`}
+					value={`${addressInfo.name} ${finalAddress}`}
+				>
+					{`${addressInfo.name} ${finalAddress}`}
+				</AutoComplete.Option>
+			);
+		});
 		const tagValue = organizationType === undefined ? orgTag : organizationType;
 		const showShopInfo = tagValue === undefined ? true : tagValue === 0;
 		return (
@@ -447,8 +460,8 @@ class CompanyInfo extends React.Component {
 				loading.effects['companyInfo/getCurrentHeight'] ||
 				loading.effects['companyInfo/getOrganizationInfo' ])}
 			>
-				<Card 
-					bordered={false} 
+				<Card
+					bordered={false}
 					title={action === 'create'
 						? (orgPidParams ? formatMessage({ id: 'companyInfo.create.sub.title' }) : formatMessage({ id: 'companyInfo.create.title' }))
 						: formatMessage({ id: 'companyInfo.alter.title' })}
@@ -531,7 +544,7 @@ class CompanyInfo extends React.Component {
 						<FormItem label={formatMessage({ id: 'companyInfo.org.parent.label' })}>
 							{getFieldDecorator('orgPid', {
 							// validateTrigger: 'onSelect',
-								initialValue: orgPidParams || orgPid,
+								initialValue: treeData && treeData.value &&(orgPidParams || orgPid),
 								rules: [
 									{
 										required: true,
@@ -540,7 +553,7 @@ class CompanyInfo extends React.Component {
 								],
 							})(
 								<TreeSelect
-									disabled={!!orgPidParams} 
+									disabled={!!orgPidParams}
 									onBlur={this.blurHandler}
 									onSelect={this.onSelectHandler}
 									onChange={(e) => this.submitButtonDisableHandler(e, 'orgPid')}
@@ -713,7 +726,7 @@ class CompanyInfo extends React.Component {
 							</FormItem>
 						</div>
 						}
-					
+
 						<FormItem label={formatMessage({ id: 'companyInfo.contactPerson.label' })}>
 							{getFieldDecorator('contactPerson', {
 								initialValue: contactPerson,
@@ -757,8 +770,8 @@ class CompanyInfo extends React.Component {
 								loading={!!(loading.effects['companyInfo/createOrganization'] ||
 								!!loading.effects['companyInfo/updateOrganization'] ||
 								!!loading.effects['menu/getPathId'])}
-								type="primary" 
-								onClick={this.handleSubmit} 
+								type="primary"
+								onClick={this.handleSubmit}
 								disabled={isDisabled}
 							>
 								{formatMessage({ id: 'btn.save' })}

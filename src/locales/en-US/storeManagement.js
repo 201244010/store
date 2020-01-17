@@ -71,7 +71,7 @@ export default {
 	'store.auth': 'Store interfacing',
 	'store.authKey': 'Interfacing voucher',
 	'store.get.authKey': 'Get interfacing voucher',
-	'auth.shop.no': 'Store ID',
-	'auth.shop.key': 'Store secret key',
+	'auth.shop.no': 'Store ID: ',
+	'auth.shop.key': 'Store secret key: ',
 	'auth.key.expire': 'An interfacing voucher is valid for 24 hours',
 };

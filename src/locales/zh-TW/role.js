@@ -30,4 +30,5 @@
 	'roleManagement.role.authTime': '授權時間',
 	'roleManagement.role.employeePhone': '員工手機號',
 	'roleManagement.role.telePhone': '員工手機號',
+	'roleManagement.input.illegal': '內容含有非法字符，請重新輸入',
 };

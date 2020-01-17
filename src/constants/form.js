@@ -8,8 +8,8 @@ export const MAX_LENGTH = {
 };
 
 export const FORM_ITEM_LAYOUT_COMMON = {
-	labelCol: { span: 5 },
-	wrapperCol: { span: 18 },
+	labelCol: { span: 8 },
+	wrapperCol: { span: 16 },
 };
 
 export const FORM_FORMAT = {
@@ -40,11 +40,11 @@ export const FORM_ITEM_DETAIL = {
 export const FORM_SETTING_LAYOUT = {
 	labelCol: {
 		sm: { span: 24 },
-		md: { span: 8 },
+		md: { span: 10 },
 	},
 	wrapperCol: {
 		sm: { span: 24 },
-		md: { span: 16 },
+		md: { span: 14 },
 	},
 };
 
@@ -68,17 +68,17 @@ export const FORM_ITEM_LAYOUT_TWICE = {
 export const FORM_ITEM_LAYOUT = {
 	labelCol: {
 		sm: { span: 24 },
-		md: { span: 6 },
-		lg: { span: 5 },
-		xl: { span: 5 },
-		xxl: { span: 4 },
+		md: { span: 24 },
+		lg: { span: 9 },
+		xl: { span: 8 },
+		xxl: { span: 6 },
 	},
 	wrapperCol: {
 		sm: { span: 24 },
-		md: { span: 18 },
-		lg: { span: 19 },
-		xl: { span: 19 },
-		xxl: { span: 20 },
+		md: { span: 24 },
+		lg: { span: 15 },
+		xl: { span: 16 },
+		xxl: { span: 18 },
 	},
 };
 
@@ -166,7 +166,7 @@ export const FORM_ITEM_LAYOUT_BUSINESS = {
 
 
 export const FORM_ITEM_LAYOUT_QOS = {
-	labelCol: { span: 2},
+	labelCol: { span: 3},
 	wrapperCol: { span: 10 },
 };
 

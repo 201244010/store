@@ -73,7 +73,8 @@ class OrganizationList extends React.Component {
 		this.state = {
 			moveModalVisible: false,
 			selectedList: [], // 被选择的子树集合
-			selectedIdList: [], // 被选择的id集合
+			selectedIdList: [], // 被选择的需要移动的id集合
+			checkedIdList: [], // 显示勾选的id集合
 			targetPId: '', // 目标父节点
 			// selectedOrgId: '' // 停用的目标结点
 		};
@@ -121,7 +122,7 @@ class OrganizationList extends React.Component {
 	handleMove = async () => {
 		const { selectedList } = this.state;
 		const { updateTreeData } = this.props;
-		console.log('-----open move -----', selectedList);
+		console.log('-----打开移动选框 -----', selectedList);
 		// 根据选项重新计算disbled的树结点
 		await updateTreeData({
 			selectedList,
@@ -144,13 +145,15 @@ class OrganizationList extends React.Component {
 			this.init();
 			message.success(formatMessage({ id: 'organization.move.result.success'}));
 		} else {
+			this.init();
 			message.error(formatMessage({ id: 'organization.move.result.error'}));
 		}
 		this.setState({
 			moveModalVisible: false,
 			targetPId: '',
 			selectedList: [],
-			selectedIdList: []
+			selectedIdList: [],
+			checkedIdList: []
 		});
 	}
 
@@ -190,13 +193,30 @@ class OrganizationList extends React.Component {
 
 	// 获取要移动的子树列表
 	setSelectedList = (seletedRecord, selected) => {
-		const { selectedList } = this.state;
+		const { selectedList, selectedIdList, checkedIdList } = this.state;
+		const { orgId } = seletedRecord;
+		const temp = [];
+		this.getTreeChildrens(seletedRecord, temp);
 		if(selected) {
-			selectedList.push(seletedRecord);
-		} else {
-			const list = selectedList.filter(item => item.orgId !== seletedRecord.orgId);
+			// selectedList.push(seletedRecord);
+			// selectedIdList.push(orgId);
+
+			// 选了父组织，子组织被移除
+			const list = selectedIdList.filter(item => !temp.includes(item) && item !== orgId);
+			const list2 = selectedList.filter(item => !temp.includes(item.orgId) && item.orgId !== orgId);
 			this.setState({
-				selectedList: list
+				selectedList: [...list2,seletedRecord],
+				selectedIdList: [...list,orgId],
+				checkedIdList: [...checkedIdList,orgId,...temp]
+			});
+		} else {
+			const list = selectedList.filter(item => item.orgId !== orgId);
+			const list2 = selectedIdList.filter(item => item !== orgId);
+			const list3 = checkedIdList.filter(item => !temp.includes(item) && item !== orgId);
+			this.setState({
+				selectedList: list,
+				selectedIdList: list2,
+				checkedIdList: list3,
 			});
 		}
 
@@ -206,12 +226,16 @@ class OrganizationList extends React.Component {
 	onSelectAll = (selected) => {
 		if(selected) {
 			const { organization: { orgList } } = this.props;
+			const list = orgList.map(item =>  item.orgId);
 			this.setState({
-				selectedList: [...orgList]
+				selectedList: [...orgList],
+				selectedIdList: list,
 			});
 		} else {
 			this.setState({
-				selectedList: []
+				selectedList: [],
+				selectedIdList: [],
+				checkedIdList: [],
 			});
 		}
 	}
@@ -219,9 +243,9 @@ class OrganizationList extends React.Component {
 	// 获取被选项的id列表
 	setSelectedKeys = (idList) => {
 
-		console.log('----selected item id----', idList);
+		// console.log('----selected item id----', idList);
 		this.setState({
-			selectedIdList: [...idList]
+			checkedIdList: [...idList]
 		});
 	}
 
@@ -256,8 +280,36 @@ class OrganizationList extends React.Component {
 		navigateTo('newOrganization', { action: 'create' });
 	}
 
+	// 获取子树的所有子结点id
+	getTreeChildrens = (node, temp) => {
+		// console.log('----node',node);
+		if(node.children && node.children.length) {
+			const { children } = node;
+			children.forEach((item) => {
+				const { orgId } = item;
+				temp.push(orgId);
+				this.getTreeChildrens(item, temp);
+			});
+		}
+	}
+
+	// 获取子树的所有父节点
+	getTreeParents = (orgList, orgId, temp) =>  {
+		for(let i = 0; i < orgList.length; i++){
+			const item = orgList[i];
+			if(item.orgId === orgId) {
+				temp.push(item.orgPid);
+				const { organization: { orgList: orignalList } } = this.props;
+				this.getTreeParents(orignalList, item.orgPid, temp);
+				break;
+			} else if(item.children && item.children.length) {
+				this.getTreeParents(item.children, orgId, temp);
+			}
+		}
+	}
+
 	render() {
-		const { moveModalVisible, /* modalInfoVisible, */ selectedIdList, targetPId } = this.state;
+		const { moveModalVisible, /* modalInfoVisible, */ selectedIdList, checkedIdList, targetPId } = this.state;
 		const { organization: { orgList, treeData, expandedRowKeys, expandedTreeKeys }, loading, companyInfo: { regionList } } = this.props;
 		return (
 			<div>
@@ -294,7 +346,7 @@ class OrganizationList extends React.Component {
 						onSelectAll={this.onSelectAll}
 						handleEnable={this.handleEnable}
 						loading={loading.effects['organization/initOrgList']}
-						selectedIdList={selectedIdList}
+						selectedIdList={checkedIdList}
 						regionList={regionList}
 					/>
 				</Card>

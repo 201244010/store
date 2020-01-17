@@ -72,6 +72,7 @@ class OrganizationTable extends React.Component {
 		}
 	];
 
+
 	addressHandler(province, city, area, address){
 		let detailAddress = '';
 		const { regionList } = this.props;
@@ -105,6 +106,7 @@ class OrganizationTable extends React.Component {
 	}
 
 
+
 	render() {
 		const { dataSource, expandedRowKeys, loading, selectedIdList } = this.props;
 		const rowSelection = {
@@ -120,6 +122,15 @@ class OrganizationTable extends React.Component {
 			onSelectAll: (selected) => {
 				const { onSelectAll } = this.props;
 				onSelectAll(selected);
+			},
+			getCheckboxProps: (record) => {
+				const { orgPid } = record;
+				if(selectedIdList.includes(orgPid)) {
+					return {
+						disabled: true,
+					};
+				}
+				return {};
 			}
 		};
 		return(

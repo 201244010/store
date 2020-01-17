@@ -28,4 +28,7 @@
 	'iot.pos.active.status.no': '未連接',
 	'iot.pos.warranty.status.yes': '在保',
 	'iot.pos.warranty.status.no': '已過保',
+	'iot.pos.device.info.fetch.error': '設備信息獲取失敗，請稍後重試',
+	'iot.pos.device.modify.info.fetch.error': '維修信息獲取失敗，請稍後重試',
+	'iot.pos.device.detail.info.error': '設備詳情獲取失敗，請稍後重試',
 };

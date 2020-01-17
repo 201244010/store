@@ -23,17 +23,20 @@ import baseStation from './zh-TW/ESL-device';
 
 // BasicData
 import productManagement from './zh-TW/BasicData-product';
+import companyInfo from './zh-TW/companyInfo';
 
 import merchantManagement from './zh-TW/merchant';
 
 import roleManagement from './zh-TW/role';
 import employee from './zh-TW/employee';
 import trade from './zh-TW/trade';
-import flow from './zh-TW/flow';
 import tradeShow from './zh-TW/tradeShow';
 import serviceManagement from './zh-TW/serviceManagement';
 import orderManagement from './zh-TW/orderManagement';
 import passengerAnalyze from './zh-TW/passengerAnalyze';
+
+import orgnization from './zh-TW/organization';
+import orgDetail from './zh-TW/orgDetail';
 
 export default {
 	'navBar.lang': '語言',
@@ -73,10 +76,12 @@ export default {
 	...employee,
 	...network,
 	...trade,
-	...flow,
 	...tradeShow,
 	...iot,
 	...passengerAnalyze,
 	...serviceManagement,
 	...orderManagement,
+	...orgDetail,
+	...orgnization,
+	...companyInfo,
 };

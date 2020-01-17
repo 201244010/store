@@ -35,7 +35,6 @@ export default {
 	'companyInfo.newSubOrganization.fail': '新增失败',
 	'companyInfo.message.name.exist': '组织名称已存在',
 	'companyInfo.message.level.limited': '组织层级超过最大限制',
-	'companyInfo.message.pOrg.disabled': '新建组织的父级组织状态受限，禁用的组织不能挂载下级节点',
 	'companyInfo.please.select.startTime': '请选择开始时间',
 	'companyInfo.please.select.endTime': '请选择结束时间',
 };
