@@ -56,4 +56,5 @@
 	'studio.tool.label.codec': '編碼類型',
 	'studio.tool.error.price.format': '輸入價格不正確',
 	'studio.tool.error.image.format': '上傳圖片支持格式支持jpg/jpeg/png',
+	'studio.error.exceed.max': '模板组件数量不能超过50',
 };
