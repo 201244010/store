@@ -84,7 +84,7 @@ export default {
 			// name为组件名，若被原始定义，则用，否则，则生成
 			const { componentsDetail, zoomScale } = state;
 			// 限制拖动总数为50，超过不添加，剔除fix/select/undefined
-			if (Object.keys(componentsDetail).filter(n => n && ![RECT_FIX_NAME, RECT_SELECT_NAME, 'undefined'].includes(n)).length >= 5) {
+			if (Object.keys(componentsDetail).filter(n => n && ![RECT_FIX_NAME, RECT_SELECT_NAME, 'undefined'].includes(n)).length >= 50) {
 				message.warning(formatMessage({id: 'studio.error.exceed.max'}));
 				return {
 					...state

@@ -54,9 +54,7 @@ class SearchResult extends Component {
 				[type]: value,
 			},
 		});
-		this.search({
-			current: 1
-		});
+		this.search();
 	};
 
 	onTableChange = pagination => {
@@ -222,10 +220,12 @@ class SearchResult extends Component {
 		});
 	};
 
-	search = (options = {}) => {
+	search = () => {
 		const { fetchTemplates } = this.props;
 		fetchTemplates({
-			options
+			options: {
+				current: 1
+			}
 		});
 	};
 
