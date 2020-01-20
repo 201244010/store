@@ -166,6 +166,7 @@ class VideoPlayerProgressBar extends React.Component{
 	}
 
 	onStartDrag = (e, dragger) => {
+		console.log('onStartDrag dragger=', dragger);
 		const { oneHourWidth } = this;
 		const { onStartDrag } = this.props;
 		const { timeEnd } = this.state;
@@ -174,15 +175,19 @@ class VideoPlayerProgressBar extends React.Component{
 		// console.log('dragger.x: ',dragger.x);
 		const time = timeEnd - ((Math.abs(dragger.x) - this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60;
 		this.setState({
+			direction: '',
 			dragging: true,
 			timestamp: time
 		});
+
+		this.draggerStartX = dragger.x;
 
 		// this.firstTime = false;
 		onStartDrag(time);
 	}
 
 	onMoveDrag = (e, dragger) => {
+		console.log('onMoveDrag dragger=', dragger);
 		const { onMoveDrag } = this.props;
 		const { x, lastX, deltaX } = dragger;
 
@@ -193,9 +198,11 @@ class VideoPlayerProgressBar extends React.Component{
 
 			const time = timeEnd - ((Math.abs(x) - this.wrapper.offsetWidth/2 )/oneHourWidth)*60*60;
 			let drct = 'left';
-			if ( x <= lastX){
+			if ( x < lastX){
 				drct = 'right';
-			};
+			} else if (x === lastX) {
+				drct = '';
+			}
 			// this.firstTime = false;
 
 			this.setState({
@@ -210,6 +217,7 @@ class VideoPlayerProgressBar extends React.Component{
 	}
 
 	onStopDrag = async (e, dragger) => {
+		console.log('onStopDrag dragger=', dragger);
 		const { oneHourWidth } = this;
 		const { timeStart, timeEnd } = this.state;
 
@@ -244,6 +252,19 @@ class VideoPlayerProgressBar extends React.Component{
 		// 	clearTimeout(this.onDragChangeTimeout);
 		// 	onStopDrag(time);
 		// }, 1000);
+	}
+
+	dragStop = (e, dragger) => {
+		console.log('dragStop dragger=', dragger);
+		this.draggerStopX = dragger.x;
+		if (this.draggerStopX === this.draggerStartX) {
+			console.log('未拖动');
+			this.setState({
+				dragging: false
+			});
+		} else {
+			this.onStopDrag(e, dragger);
+		}
 	}
 
 	async UNSAFE_componentWillReceiveProps(props) {
@@ -319,7 +340,8 @@ class VideoPlayerProgressBar extends React.Component{
 									this.onMoveDrag
 								}
 								onStop={
-									this.onStopDrag
+									// this.onStopDrag
+									this.dragStop
 								}
 							>
 
@@ -352,7 +374,7 @@ class VideoPlayerProgressBar extends React.Component{
 						placement='top'
 						title={
 							<>
-								<span className={`${styles.icon} ${ direction === 'left' ? styles.backward : ''} }`} />
+								<span className={`${styles.icon} ${ direction === 'left' ? styles.backward : ''} ${ direction === 'right' ? styles.forward : ''} }`} />
 								<span>{ moment.unix(timestamp).format('HH:mm') }</span>
 							</>
 						}
