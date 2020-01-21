@@ -28,7 +28,10 @@ class SearchResult extends Component {
 			bindVisible: false,
 			currentRecord: {},
 			selectedProduct: {},
-			selectedScreen: undefined
+			selectedScreen: undefined,
+			selectedRowKeys: [],
+			selectedRows: [],
+			batchChangeVisible: false
 		};
 	}
 
@@ -299,6 +302,130 @@ class SearchResult extends Component {
 		this.closeToggle();
 	};
 
+	batchDeleteESL = () => {
+		const { selectedRowKeys } = this.state;
+		if (selectedRowKeys && selectedRowKeys.length) {
+			const { batchDeleteESL, fetchProductOverview, fetchDeviceOverview } = this.props;
+			const content = (
+				<div>
+					<div>{formatMessage({ id: 'esl.device.esl.delete.message1' })}</div>
+					<div>{formatMessage({ id: 'esl.device.esl.delete.message2' })}</div>
+				</div>
+			);
+
+			Modal.confirm({
+				icon: 'info-circle',
+				title: formatMessage({ id: 'esl.device.esl.delete.title' }),
+				content,
+				okText: formatMessage({ id: 'btn.delete' }),
+				onOk: async () => {
+					const response = await batchDeleteESL({
+						options: { esl_id_list: selectedRowKeys },
+					});
+					this.setState({
+						selectedRowKeys: response.data.failure_esl_id_list || []
+					});
+					fetchProductOverview();
+					fetchDeviceOverview();
+				},
+			});
+		}
+	};
+
+	batchUnbindESL = () => {
+		const { selectedRowKeys } = this.state;
+		if (selectedRowKeys && selectedRowKeys.length) {
+			const { batchUnbindESL, fetchProductOverview, fetchDeviceOverview } = this.props;
+			const content = (
+				<div>
+					<div>{formatMessage({ id: 'esl.device.esl.unbind.message' })}</div>
+				</div>
+			);
+
+			Modal.confirm({
+				icon: 'info-circle',
+				title: formatMessage({ id: 'esl.device.esl.unbind.title' }),
+				content,
+				okText: formatMessage({ id: 'btn.unbind' }),
+				onOk: async () => {
+					await batchUnbindESL({
+						options: { esl_code_list: selectedRowKeys },
+					});
+					fetchProductOverview();
+					fetchDeviceOverview();
+				},
+			});
+		}
+	};
+
+	batchFlushESL = async () => {
+		const { selectedRows, selectedRowKeys } = this.state;
+		const { batchFlushESL } = this.props;
+		const productIds = new Set(selectedRows.map(item => item.product_id));
+		if (productIds.size === 1) {
+			await batchFlushESL({
+				options: {
+					esl_code_list: selectedRowKeys,
+					product_id: selectedRows[0].product_id,
+				},
+			});
+		} else {
+			message.warning(formatMessage({id: 'esl.device.esl.batch.push.product.warning'}));
+		}
+	};
+
+	batchFlashLed = async () => {
+		const { selectedRowKeys } = this.state;
+		const { flashModes, flashLed } = this.props;
+
+		await flashLed({
+			options: {
+				mode_id: flashModes[0].id,
+				esl_id_list: selectedRowKeys,
+			},
+		});
+	}
+
+	batchChangeTemplate = async () => {
+		const { selectedRows } = this.state;
+		const { fetchTemplatesByESLCode } = this.props;
+		const modelIds = new Set(selectedRows.map(item => item.model_id));
+		if (modelIds.size === 1) {
+			await fetchTemplatesByESLCode({
+				options: {
+					esl_code: selectedRows[0].esl_code,
+				},
+			});
+			this.setState({
+				batchChangeVisible: true,
+				currentRecord: {
+					template_id: undefined
+				}
+			});
+		} else {
+			message.warning(formatMessage({id: 'esl.device.esl.batch.toggle.template.warning'}));
+		}
+	};
+
+	closeBatchChangeTemplate = () => {
+		this.setState({
+			batchChangeVisible: false
+		});
+	};
+
+	confirmBatchChangeTemplate = () => {
+		const { selectedRowKeys, currentRecord } = this.state;
+		const { batchChangeTemplate } = this.props;
+
+		batchChangeTemplate({
+			options: {
+				template_id: currentRecord.template_id,
+				esl_code_list: selectedRowKeys,
+			},
+		});
+		this.closeModal('batchChangeVisible');
+	};
+
 	render() {
 		const {
 			loading,
@@ -323,7 +450,10 @@ class SearchResult extends Component {
 			bindVisible,
 			currentRecord,
 			selectedProduct,
-			selectedScreen
+			selectedScreen,
+			selectedRowKeys,
+			selectedRows,
+			batchChangeVisible
 		} = this.state;
 		const columns = [
 			{
@@ -399,57 +529,38 @@ class SearchResult extends Component {
 							overlay={
 								<Menu onClick={this.handleMoreClick}>
 									<Menu.Item key="4">
-										<a
-											href="javascript: void (0);"
-											data-record={JSON.stringify(record)}
-										>
-											{formatMessage({ id: 'list.action.bind' })}
+										<a href="javascript: void (0);" data-record={JSON.stringify(record)}>
+											{formatMessage({ id: 'list.action.bind'})}
 										</a>
 									</Menu.Item>
 									<Menu.Divider />
 									{record.product_id ? (
 										<Menu.Item key="5">
-											<a
-												href="javascript: void (0);"
-												data-record={JSON.stringify(record)}
-											>
-												{formatMessage({ id: 'list.action.push.again' })}
+											<a href="javascript: void (0);" data-record={JSON.stringify(record)}>
+												{formatMessage({ id: 'list.action.push.again'})}
 											</a>
 										</Menu.Item>
 									) : null}
 									{record.product_id ? <Menu.Divider /> : null}
 									{record.product_id ? (
 										<Menu.Item key="0">
-											<a
-												href="javascript: void (0);"
-												data-record={JSON.stringify(record)}
-											>
-												{formatMessage({ id: 'esl.device.esl.unbind' })}
+											<a href="javascript: void (0);" data-record={JSON.stringify(record)}>
+												{formatMessage({ id: 'esl.device.esl.unbind'})}
 											</a>
 										</Menu.Item>
 									) : null}
 									{record.product_id ? <Menu.Divider /> : null}
 									{record.product_id ? (
 										<Menu.Item key="1">
-											<a
-												href="javascript: void (0);"
-												data-record={JSON.stringify(record)}
-											>
-												{formatMessage({
-													id: 'esl.device.esl.template.edit',
-												})}
+											<a href="javascript: void (0);" data-record={JSON.stringify(record)}>
+												{formatMessage({ id: 'esl.device.esl.template.edit'})}
 											</a>
 										</Menu.Item>
 									) : null}
 									{record.product_id ? <Menu.Divider /> : null}
 									<Menu.Item key="6">
-										<a
-											href="javascript: void (0);"
-											data-record={JSON.stringify(record)}
-										>
-											{formatMessage({
-												id: 'esl.device.esl.page.toggle',
-											})}
+										<a href="javascript: void (0);" data-record={JSON.stringify(record)}>
+											{formatMessage({ id: 'esl.device.esl.page.toggle'})}
 										</a>
 									</Menu.Item>
 									<Menu.Divider />
@@ -475,15 +586,62 @@ class SearchResult extends Component {
 				),
 			},
 		];
+		const toggleColumns = [
+			{
+				title: formatMessage({ id: 'esl.device.esl.id' }),
+				dataIndex: 'esl_code',
+			},
+			{
+				title: formatMessage({ id: 'esl.device.esl.model.name' }),
+				dataIndex: 'model_name',
+			},
+			{
+				title: formatMessage({ id: 'esl.device.esl.product.seq.num' }),
+				dataIndex: 'product_seq_num',
+			},
+			{
+				title: formatMessage({ id: 'esl.device.esl.product.name' }),
+				dataIndex: 'product_name',
+			},
+			{
+				title: formatMessage({ id: 'esl.device.esl.template.name' }),
+				dataIndex: 'template_name',
+				render: text => (
+					<span>{formatMessage({id: text || ' '})}</span>
+				),
+			},
+		];
 
 		const rowSelection = {
-			onChange: (selectedRowKeys, selectedRows) => {
-				console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+			selectedRowKeys,
+			onChange: (selectedKeys, selected) => {
+				this.setState({
+					selectedRowKeys: selectedKeys,
+					selectedRows: selected
+				});
 			}
 		};
+		const batchButtonDisabled = !selectedRowKeys || !selectedRowKeys.length;
 
 		return (
 			<div>
+				<div className={styles.mb24}>
+					<Button type="primary" onClick={this.batchDeleteESL} disabled={batchButtonDisabled} className={styles.mr16}>
+						{formatMessage({ id: 'btn.delete' })}
+					</Button>
+					<Button type="primary" onClick={this.batchUnbindESL} disabled={batchButtonDisabled} className={styles.mr16}>
+						{formatMessage({ id: 'btn.unbind' })}
+					</Button>
+					<Button type="primary" onClick={this.batchFlushESL} disabled={batchButtonDisabled} className={styles.mr16}>
+						{formatMessage({ id: 'btn.reflush' })}
+					</Button>
+					<Button type="primary" onClick={this.batchFlashLed} disabled={batchButtonDisabled} className={styles.mr16}>
+						{formatMessage({ id: 'esl.device.esl.flash' })}
+					</Button>
+					<Button type="primary" onClick={this.batchChangeTemplate} disabled={batchButtonDisabled} className={styles.mr16}>
+						{formatMessage({ id: 'esl.device.esl.template.edit' })}
+					</Button>
+				</div>
 				<Table
 					rowKey="id"
 					rowSelection={rowSelection}
@@ -620,6 +778,48 @@ class SearchResult extends Component {
 									{(screenInfo || []).map(screen => (
 										<Select.Option key={screen.screen_num} value={screen.screen_num}>
 											{formatMessage({id: screen.screen_name})}
+										</Select.Option>
+									))}
+								</Select>
+							</Col>
+						</Row>
+					</div>
+				</Modal>
+				<Modal
+					title={formatMessage({ id: 'esl.device.esl.template.edit' })}
+					visible={batchChangeVisible}
+					width={750}
+					onCancel={() => this.closeBatchChangeTemplate()}
+					footer={[
+						<Button key="cancel" type="default" onClick={() => this.closeBatchChangeTemplate()}>
+							{formatMessage({ id: 'btn.cancel' })}
+						</Button>,
+						<Button key="submit" type="primary" onClick={this.confirmBatchChangeTemplate}>
+							{formatMessage({ id: 'btn.confirm' })}
+						</Button>,
+					]}
+				>
+					<div className={styles['custom-modal-wrapper']}>
+						<Table
+							rowKey="id"
+							columns={toggleColumns}
+							dataSource={selectedRows}
+							pagination={false}
+						/>
+						<Row className={`${styles.row} ${styles.mt24}`}>
+							<Col span={3} className={styles.title}>
+								{formatMessage({ id: 'esl.device.esl.template.name.select' })}：
+							</Col>
+							<Col span={21}>
+								<Select
+									style={{ width: '100%' }}
+									placeholder={formatMessage({id: 'select.placeholder'})}
+									value={currentRecord.template_id}
+									onChange={id => this.updateProduct(id)}
+								>
+									{templates4ESL.map(template => (
+										<Select.Option key={template.id} value={template.id}>
+											{template.name}
 										</Select.Option>
 									))}
 								</Select>
