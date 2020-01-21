@@ -48,6 +48,9 @@ class SearchResult extends Component {
 		const sortKeyMap = {
 			battery: 1,
 			push_time: 2,
+			product_seq_num: 3,
+			status: 4,
+			model_name: 5
 		};
 
 		fetchElectricLabels({
@@ -478,6 +481,7 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.esl.product.seq.num' }),
 				dataIndex: 'product_seq_num',
+				sorter: true,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.esl.product.name' }),
