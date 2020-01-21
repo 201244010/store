@@ -34,7 +34,7 @@
 	'esl.device.ap.restart.notice': '確定要重啟基站？',
 	'esl.device.ap.restart.loading': '基站正在重啟，請稍等',
 	'esl.device.ap.change.name': '基站名修改成功',
-	'esl.device.ap.empty': '基站離線，無法進行配置，請在基站上線後重試',
+	'esl.device.ap.empty': '無主基站或基站離線，無法進行配置，請在基站上線後重試',
 	'esl.device.ap.name.limit': '基站名長度超過限制(20個中英文字符)',
 	'esl.device.ap.all': '共',
 	'esl.device.ap.total': '個基站',

@@ -20,6 +20,15 @@ export const unbindESL = options => {
 	return fetchApi('unbindEsl', opts).then(response => response.json());
 };
 
+export const batchUnbindESL = options => {
+	const opts = {
+		method: 'POST',
+		body: options,
+	};
+
+	return fetchApi('batchUnbindEsl', opts).then(response => response.json());
+};
+
 export const flushESL = options => {
 	const opts = {
 		method: 'POST',
@@ -27,4 +36,13 @@ export const flushESL = options => {
 	};
 
 	return fetchApi('flushEsl', opts).then(response => response.json());
+};
+
+export const batchFlushESL = options => {
+	const opts = {
+		method: 'POST',
+		body: options,
+	};
+
+	return fetchApi('batchFlushEsl', opts).then(response => response.json());
 };
