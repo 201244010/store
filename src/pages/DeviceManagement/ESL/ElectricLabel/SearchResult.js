@@ -48,6 +48,9 @@ class SearchResult extends Component {
 		const sortKeyMap = {
 			battery: 1,
 			push_time: 2,
+			product_seq_num: 3,
+			status: 4,
+			model_name: 5
 		};
 
 		fetchElectricLabels({
@@ -349,7 +352,7 @@ class SearchResult extends Component {
 				okText: formatMessage({ id: 'btn.unbind' }),
 				onOk: async () => {
 					await batchUnbindESL({
-						options: { esl_code_list: selectedRowKeys },
+						options: { esl_id_list: selectedRowKeys },
 					});
 					fetchProductOverview();
 					fetchDeviceOverview();
@@ -365,7 +368,7 @@ class SearchResult extends Component {
 		if (productIds.size === 1) {
 			await batchFlushESL({
 				options: {
-					esl_code_list: selectedRowKeys,
+					esl_id_list: selectedRowKeys,
 					product_id: selectedRows[0].product_id,
 				},
 			});
@@ -420,7 +423,7 @@ class SearchResult extends Component {
 		batchChangeTemplate({
 			options: {
 				template_id: currentRecord.template_id,
-				esl_code_list: selectedRowKeys,
+				esl_id_list: selectedRowKeys,
 			},
 		});
 		this.closeModal('batchChangeVisible');
@@ -478,6 +481,7 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.esl.product.seq.num' }),
 				dataIndex: 'product_seq_num',
+				sorter: true,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.esl.product.name' }),

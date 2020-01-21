@@ -106,7 +106,7 @@ class LivePlayer extends React.Component{
 	}
 
 	playHistory = async (timestamp) => {
-		// console.log('timestamp', timestamp, moment.unix(timestamp).format('YYYY-MM-DD HH:mm:ss'));
+		console.log('playHistory timestamp', timestamp, moment.unix(timestamp).format('YYYY-MM-DD HH:mm:ss'));
 		this.playHistoryTimestamp = timestamp;
 		if (moment().valueOf()/1000 - timestamp <= 60 ){
 			// 拖到了直播
