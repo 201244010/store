@@ -135,6 +135,7 @@ const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
 		getStoreNameById,
 		getStoreList,
 		goToPath,
+		fetchElectricLabels
 	} = handlers || {};
 
 	const {
@@ -167,6 +168,9 @@ const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
 			targetCompanyName,
 			targetShopName,
 		});
+	}
+	if (target === 'electricLabel') {
+		fetchElectricLabels();
 	}
 };
 
