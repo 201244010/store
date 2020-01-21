@@ -59,6 +59,8 @@ const option = {
 		getCompanyNameById: companyId =>
 			dispatch({ type: 'merchant/getCompanyNameById', payload: { companyId } }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		fetchElectricLabels: payload =>
+			dispatch({ type: 'eslElectricLabel/fetchElectricLabels', payload }),
 	})
 )
 class Notification extends React.Component {
@@ -91,6 +93,7 @@ class Notification extends React.Component {
 			getStoreNameById,
 			getCompanyNameById,
 			getStoreList,
+			fetchElectricLabels
 		} = this.props;
 
 		return (
@@ -121,6 +124,7 @@ class Notification extends React.Component {
 									getCurrentShopId,
 									getStoreNameById,
 									getCompanyNameById,
+									fetchElectricLabels
 								},
 							}}
 						/>
@@ -139,6 +143,7 @@ class Notification extends React.Component {
 									getStoreNameById,
 									getCompanyNameById,
 									getStoreList,
+									fetchElectricLabels
 								},
 								type: 'primary',
 								style: { marginLeft: minorButtonName ? '20px' : '0' },
