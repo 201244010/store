@@ -12,6 +12,7 @@ export default {
 		page_size: options.pageSize,
 		keyword: options.keyword,
 		status: options.status,
+		model_id: options.modelId,
 		sort_key: options.sort_key,
 		desc: options.desc
 	})),
@@ -28,4 +29,7 @@ export default {
 	getSwitchScreenInfo: genEslService('getSwitchScreenInfo'),
 	switchScreen: genEslService('switchScreen'),
 	getScreenPushInfo: genEslService('getScreenPushInfo'),
+	getModelList: genDeviceService('getModelList'),
+	batchDeleteESL: genEslService('batchDelete'),
+	batchChangeTemplate: genEslService('batchChangeTemplate'),
 };
