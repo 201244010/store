@@ -24,7 +24,7 @@ function MQTTWrapper(WrapperedComponent) {
 			destroyClient: () => dispatch({ type: 'mqttStore/destroyClient' }),
 			getNotificationCount: () => dispatch({ type: 'notification/getNotificationCount' }),
 			getUnreadNotification: () => dispatch({ type: 'notification/getUnreadNotification' }),
-			goToPath: (pathId, urlParams = {}, anchorId) => 
+			goToPath: (pathId, urlParams = {}, anchorId) =>
 				dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams, anchorId } }),
 			formatSdCard: sn => {
 				dispatch({ type: 'sdcard/formatSdCard', sn });
@@ -43,6 +43,8 @@ function MQTTWrapper(WrapperedComponent) {
 			getCompanyNameById: companyId =>
 				dispatch({ type: 'merchant/getCompanyNameById', payload: { companyId } }),
 			getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+			fetchElectricLabels: payload =>
+				dispatch({ type: 'eslElectricLabel/fetchElectricLabels', payload }),
 		})
 	)
 	@Ipc
@@ -98,6 +100,7 @@ function MQTTWrapper(WrapperedComponent) {
 				getStoreNameById,
 				getCompanyNameById,
 				getStoreList,
+				fetchElectricLabels
 			} = this.props;
 
 			const messageData = JSON.parse(data.toString()) || {};
@@ -129,6 +132,7 @@ function MQTTWrapper(WrapperedComponent) {
 							getStoreNameById,
 							getCompanyNameById,
 							removeNotification: this.removeNotification,
+							fetchElectricLabels
 						},
 					});
 				} else if (opcode && opcode === OPCODE.TRADE_NOTIFICATION) {
