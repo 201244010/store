@@ -349,7 +349,7 @@ class SearchResult extends Component {
 				okText: formatMessage({ id: 'btn.unbind' }),
 				onOk: async () => {
 					await batchUnbindESL({
-						options: { esl_code_list: selectedRowKeys },
+						options: { esl_id_list: selectedRowKeys },
 					});
 					fetchProductOverview();
 					fetchDeviceOverview();
@@ -365,7 +365,7 @@ class SearchResult extends Component {
 		if (productIds.size === 1) {
 			await batchFlushESL({
 				options: {
-					esl_code_list: selectedRowKeys,
+					esl_id_list: selectedRowKeys,
 					product_id: selectedRows[0].product_id,
 				},
 			});
@@ -420,7 +420,7 @@ class SearchResult extends Component {
 		batchChangeTemplate({
 			options: {
 				template_id: currentRecord.template_id,
-				esl_code_list: selectedRowKeys,
+				esl_id_list: selectedRowKeys,
 			},
 		});
 		this.closeModal('batchChangeVisible');
