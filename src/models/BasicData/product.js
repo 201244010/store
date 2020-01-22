@@ -347,6 +347,9 @@ export default {
 		*downloadExcelTemplate(_, { call }) {
 			return yield call(Actions.downloadExcelTemplate);
 		},
+		*getImportProgress(_, { call }) {
+			return yield call(Actions.getImportProgress);
+		},
 	},
 	reducers: {
 		updateState(state, action) {
