@@ -39,7 +39,7 @@ export default {
 	'esl.device.ap.all': '共',
 	'esl.device.ap.total': '个基站',
 	'esl.device.esl.list': '价签列表',
-	'esl.device.esl.search.placeholder': '价签ID或绑定商品的编号/名称',
+	'esl.device.esl.search.placeholder': '价签ID/SN、绑定商品的编号/名称或模板名称',
 	'esl.device.esl.search.info': '价签信息',
 	'esl.device.esl.id': '价签ID',
 	'esl.device.esl.sn': '价签SN',

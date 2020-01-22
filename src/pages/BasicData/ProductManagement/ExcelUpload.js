@@ -21,6 +21,7 @@ const formItemLayout = {
 	dispatch => ({
 		importByExcel: payload => dispatch({ type: 'basicDataProduct/importByExcel', payload }),
 		downloadExcelTemplate: () => dispatch({ type: 'basicDataProduct/downloadExcelTemplate' }),
+		getImportProgress: () => dispatch({ type: 'basicDataProduct/getImportProgress' }),
 	})
 )
 @Form.create()
@@ -31,13 +32,13 @@ class ExcelUpload extends Component {
 			current: 0,
 			fileList: [],
 			disabled: true,
-			percent: 50,
+			percent: 0,
 			result: {},
 		};
 	}
 
 	nextStep = async () => {
-		const { importByExcel } = this.props;
+		const { importByExcel, getImportProgress } = this.props;
 		this.setState({
 			current: 1
 		});
@@ -49,14 +50,46 @@ class ExcelUpload extends Component {
 		});
 		if (response && response.code === ERROR_OK) {
 			this.setState({
-				percent: 100,
-				current: 2,
-				result: response.data
+				percent: 0,
+				current: 1,
 			});
+			clearInterval(this.pTimer);
+			this.pTimer = setInterval(async () => {
+				const progressResponse = await getImportProgress();
+				if (progressResponse && progressResponse.code === ERROR_OK) {
+					this.setState({
+						percent: progressResponse.data.current_count / progressResponse.data.total_count
+					});
+					if (progressResponse.data.current_count === progressResponse.data.total_count) {
+						clearInterval(this.pTimer);
+						this.setState({
+							current: 2,
+							result: progressResponse.data
+						});
+					} else {
+						this.setState({
+							percent: 0,
+							current: 2,
+							result: {
+								code: PRODUCT_EXCEL_WRONG
+							}
+						});
+					}
+				} else {
+					clearInterval(this.pTimer);
+					this.setState({
+						percent: 0,
+						current: 2,
+						result: {
+							code: PRODUCT_EXCEL_WRONG
+						}
+					});
+				}
+			}, 500);
 		}
 		if (response && response.code === PRODUCT_EXCEL_WRONG) {
 			this.setState({
-				percent: 100,
+				percent: 0,
 				current: 2,
 				result: {
 					code: PRODUCT_EXCEL_WRONG
@@ -117,7 +150,7 @@ class ExcelUpload extends Component {
 		const { downloadExcelTemplate } = this.props;
 
 		const response = await downloadExcelTemplate();
-		downloadFileByClick(response.data.downloadUrl);
+		downloadFileByClick(response.data.download_url);
 	};
 
 	downloadErrorItems = () => {
@@ -131,8 +164,6 @@ class ExcelUpload extends Component {
 	render() {
 		const {current, fileList, disabled, percent, result} = this.state;
 		const {form: {getFieldDecorator}} = this.props;
-
-		console.log(result);
 
 		const FirstStep = (
 			<Form {...formItemLayout}>
@@ -180,9 +211,9 @@ class ExcelUpload extends Component {
 						</> :
 						<>
 							<img src={require('@/assets/icon/success.svg')} alt="fail" />
-							<p className={styles['upload-success']}>{result.total_num - result.failed_num}{formatMessage({id: 'product.excel.import.result.success'})}</p>
+							<p className={styles['upload-success']}>{result.total_count - result.failed_count}{formatMessage({id: 'product.excel.import.result.success'})}</p>
 							<p className={styles['upload-fail']}>
-								{result.failed_num}{formatMessage({id: 'product.excel.import.result.fail'})}{result.failed_num !== 0 ? <span>，<a href="javascript: void(0);" onClick={this.downloadErrorItems}>{formatMessage({id: 'product.excel.import.result.fail.download'})}</a></span> : null}
+								{result.failed_count}{formatMessage({id: 'product.excel.import.result.fail'})}{result.failed_count !== 0 ? <span>，<a href="javascript: void(0);" onClick={this.downloadErrorItems}>{formatMessage({id: 'product.excel.import.result.fail.download'})}</a></span> : null}
 							</p>
 						</>
 				}
