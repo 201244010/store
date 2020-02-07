@@ -57,8 +57,9 @@ class ExcelUpload extends Component {
 			this.pTimer = setInterval(async () => {
 				const progressResponse = await getImportProgress();
 				if (progressResponse && progressResponse.code === ERROR_OK) {
+					const percent = (progressResponse.data.current_count / progressResponse.data.total_count * 100).toFixed(0);
 					this.setState({
-						percent: progressResponse.data.current_count / progressResponse.data.total_count
+						percent
 					});
 					if (progressResponse.data.current_count === progressResponse.data.total_count) {
 						clearInterval(this.pTimer);
@@ -66,15 +67,16 @@ class ExcelUpload extends Component {
 							current: 2,
 							result: progressResponse.data
 						});
-					} else {
-						this.setState({
-							percent: 0,
-							current: 2,
-							result: {
-								code: PRODUCT_EXCEL_WRONG
-							}
-						});
 					}
+					// else {
+					// 	this.setState({
+					// 		percent: 0,
+					// 		current: 2,
+					// 		result: {
+					// 			code: PRODUCT_EXCEL_WRONG
+					// 		}
+					// 	});
+					// }
 				} else {
 					clearInterval(this.pTimer);
 					this.setState({
