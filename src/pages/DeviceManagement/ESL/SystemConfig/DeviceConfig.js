@@ -1,33 +1,30 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import {
-	Card,
-	Select,
-	Form,
-	Button,
-	Switch,
-	message,
-	Tooltip,
-	Icon,
-	Input,
-	TimePicker,
-	Table,
-	Tag
-} from 'antd';
+import { Card, Select, Form, Button, Switch, message, Tooltip, Icon, Input, TimePicker, Table, Tag, Row, Col } from 'antd';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import DataEmpty from '@/components/BigIcon/DataEmpty';
 import { FORM_SETTING_LAYOUT } from '@/constants/form';
 import { ERROR_OK } from '@/constants/errorCode';
 import tagCircle from '@/components/Tag/index';
-import styles from './index.less';
 import { OPCODE } from '@/constants/mqttStore';
+import styles from './index.less';
 
 const SELECT_STYLE = { maxWidth: '180px' };
 const TIMEPICKER_STYLE = { width: '180px' };
 const SCAN_PERIODS = [5, 10, 15];
 const SLEEP_PERIODS = [60, 120, 180];
 const SAVE_PERIODS = [30, 45, 60];
+const SCAN_WINDOWS = [{
+	label: formatMessage({id: 'esl.device.config.scan.window.model.performance'}),
+	value: 1
+}, {
+	label: formatMessage({id: 'esl.device.config.scan.window.model.balance'}),
+	value: 2
+}, {
+	label: formatMessage({id: 'esl.device.config.scan.window.model.save.energy'}),
+	value: 3
+}];
 const ACTION = {
 	QUERY: 'query',
 	UPDATE: 'update'
@@ -59,7 +56,10 @@ const FormTip = ({ text = '', pos = 'right', style = {} }) => (
 		unsubscribeTopic: () => dispatch({ type: 'eslBaseStation/unsubscribeTopic' }),
 		checkClientExist: () => dispatch({ type: 'mqttStore/checkClientExist' }),
 		getBaseStationList: payload => dispatch({ type: 'eslBaseStation/getBaseStationList', payload}),
-		setNetworkConfig: payload => dispatch({type: 'eslBaseStation/setNetworkConfig', payload})
+		setNetworkConfig: payload => dispatch({type: 'eslBaseStation/setNetworkConfig', payload}),
+		setBlueToothConfig: payload => dispatch({ type: 'eslBaseStation/setBlueToothConfig', payload }),
+		getBlueToothConfig: ({ sn, networkId }) =>
+			dispatch({ type: 'eslBaseStation/getBlueToothConfig', payload: { sn, networkId } }),
 	})
 )
 @Form.create()
@@ -74,12 +74,21 @@ class SystemConfig extends Component {
 			settingLoading: true,
 			isUpdateSuccess: {
 				setApConfig: false,
-				setClksync: false,
+				// setClksync: false,
 				setRefresh: false
 			},
-			btnLoading: false
+			btnLoading: false,
+			curBaseStation: {},
+			blueToothStatus: {
+				status0: undefined,
+				status1: undefined,
+				status2: undefined,
+				status3: undefined,
+			},
+			blueToothBtnDisabled: true,
+			blueToothBtnLoading: false
 		};
-		
+
 		this.columns = [{
 			title: formatMessage({id: 'esl.device.ap.sn'}),
 			dataIndex: 'sn',
@@ -89,10 +98,12 @@ class SystemConfig extends Component {
 					return <span>{text}  <Tag>{formatMessage({id: 'esl.device.ap.mainAP'})}</Tag></span>;
 				}
 				return text;
-				
+
 			}
 		}, {
-			title: formatMessage({id: 'esl.device.ap.name'}), dataIndex: 'name', key: 'name'
+			title: formatMessage({id: 'esl.device.ap.name'}),
+			dataIndex: 'name',
+			key: 'name'
 		}, {
 			title: formatMessage({id: 'esl.device.ap.status'}),
 			dataIndex: 'status',
@@ -106,18 +117,18 @@ class SystemConfig extends Component {
 			}
 		}];
 	}
-	
+
 	async componentDidMount() {
 		const { getNetWorkIdList, getBaseStationList, getAPConfig } = this.props;
 		const networkIdList = await getNetWorkIdList();
 		await this.checkMQTTClient();
-		
+
 		if(networkIdList.length > 0) {
 			const stationList = await getBaseStationList({
 				pageNum: 1, status: -1, keyword: networkIdList[0].networkId
 			});
 			this.setState({networkId: networkIdList[0].networkId, configLoading: false});
-			
+
 			if(this.isMainApOnline(stationList)) {
 				this.setState({configShow: true, settingLoading: false});
 				const { networkId } = networkIdList[0] || {};
@@ -127,13 +138,13 @@ class SystemConfig extends Component {
 			}
 		}
 	}
-	
+
 	componentWillUnmount() {
 		clearTimeout(this.checkTimer);
 		const { unsubscribeTopic } = this.props;
 		unsubscribeTopic();
 	}
-	
+
 	isMainApOnline = array => {
 		if(array.length > 0) {
 			const mainAp = array.filter(item => item.isMaster === 1);
@@ -143,15 +154,17 @@ class SystemConfig extends Component {
 		}
 		return false;
 	};
-	
+
 	// 三个更新接口全部成功才拉取最新的配置并toast提示成功
-	apHandler = (errcode, action, receiveConfig, opcode) => {
+	apHandler = (errcode, action, receiveConfig, opcode, data) => {
 		const { networkId, isUpdateSuccess } = this.state;
 		const { getAPConfig, setNetworkConfig } = this.props;
 		const updateSuccess = {
-			setApConfig: false, setClksync: false, setRefresh: false
+			setApConfig: false,
+			// setClksync: false,
+			setRefresh: false
 		};
-		
+
 		if (action === ACTION.UPDATE) {
 			if (errcode === ERROR_OK) {
 				switch (opcode) {
@@ -167,11 +180,38 @@ class SystemConfig extends Component {
 						isUpdateSuccess.setRefresh = true;
 						this.setState({isUpdateSuccess});
 						break;
+					case OPCODE.GET_BLUE_TOOTH_CONFIG:
+						this.setState({
+							blueToothBtnDisabled: false,
+							blueToothBtnLoading: false,
+							blueToothStatus: {
+								status0: data.adv_status_ble0,
+								status1: data.adv_status_ble1,
+								status2: data.adv_status_ble2,
+								status3: data.adv_status_ble3,
+							}
+						});
+						break;
+					case OPCODE.SET_BLUE_TOOTH_CONFIG:
+						if (data.push_status === 1) {
+							message.success(formatMessage({id: 'esl.device.config.baseStation.setting.success'}));
+						} else {
+							message.error(formatMessage({id: 'esl.device.config.baseStation.setting.fail'}));
+						}
+						this.setState({
+							blueToothBtnDisabled: false,
+							blueToothBtnLoading: false,
+						});
+						break;
 					default: break;
 				}
-				
-				const {setApConfig, setClksync, setRefresh} = isUpdateSuccess;
-				if(setApConfig && setClksync && setRefresh) {
+
+				const {
+					setApConfig,
+					// setClksync,
+					setRefresh
+				} = isUpdateSuccess;
+				if(setApConfig && setRefresh) {
 					message.success(formatMessage({ id: 'esl.device.config.setting.success' }));
 					getAPConfig({ networkId });
 					this.setState({isUpdateSuccess: updateSuccess, btnLoading: false});
@@ -191,7 +231,7 @@ class SystemConfig extends Component {
 			}
 		}
 	};
-	
+
 	checkMQTTClient = async () => {
 		clearTimeout(this.checkTimer);
 		const {
@@ -201,7 +241,7 @@ class SystemConfig extends Component {
 			subscribe,
 		} = this.props;
 		const isClientExist = await checkClientExist();
-		
+
 		if (isClientExist) {
 			const apInfoTopic = await generateTopic({ service: 'ESL/response', action: 'sub' });
 			await subscribe({ topic: [apInfoTopic] });
@@ -210,10 +250,10 @@ class SystemConfig extends Component {
 			this.checkTimer = setTimeout(() => this.checkMQTTClient(), 1000);
 		}
 	};
-	
+
 	handleSelectChange = networkId => {
 		const { getAPConfig, getBaseStationList } = this.props;
-		
+
 		this.setState(
 			{
 				networkId,
@@ -225,9 +265,9 @@ class SystemConfig extends Component {
 				const stationList = await getBaseStationList({
 					pageNum: 1, status: -1, keyword: networkId
 				});
-				
+
 				this.setState({configLoading: false});
-				
+
 				if(this.isMainApOnline(stationList)) {
 					getAPConfig({ networkId });
 					this.setState({configShow: true, settingLoading: false});
@@ -237,15 +277,15 @@ class SystemConfig extends Component {
 			}
 		);
 	};
-	
+
 	updateAPConfig = () => {
 		const {
 			form: { validateFields },
 			updateAPConfig,
 		} = this.props;
-		
+
 		const { networkId } = this.state;
-		
+
 		validateFields((err, values) => {
 			if (!err) {
 				this.setState({btnLoading: true}, () => {
@@ -257,7 +297,58 @@ class SystemConfig extends Component {
 			}
 		});
 	};
-	
+
+	handleSelectBaseStation = (value) => {
+		this.setState({
+			blueToothBtnDisabled: false,
+			blueToothBtnLoading: true,
+			blueToothStatus: {
+				status0: undefined,
+				status1: undefined,
+				status2: undefined,
+				status3: undefined,
+			}
+		});
+		const {networkId} = this.state;
+		const {eslBaseStation: { baseStationList}, getBlueToothConfig} = this.props;
+		const curBaseStation = baseStationList.find(item => item.id === value);
+		this.setState({
+			curBaseStation
+		});
+
+		getBlueToothConfig({
+			sn: curBaseStation.sn,
+			networkId
+		});
+	};
+
+	changeBlueTooth = (key, value) => {
+		const {blueToothStatus} = this.state;
+
+		this.setState({
+			blueToothStatus: {
+				...blueToothStatus,
+				[key]: value
+			}
+		});
+	};
+
+	saveBlueTooth = () => {
+		this.setState({
+			blueToothBtnDisabled: false,
+			blueToothBtnLoading: true,
+		});
+		const {networkId, curBaseStation, blueToothStatus} = this.state;
+		const {setBlueToothConfig} = this.props;
+
+		setBlueToothConfig({
+			sn: curBaseStation.sn,
+			networkId,
+			...blueToothStatus
+		});
+
+	};
+
 	render() {
 		const {
 			loading,
@@ -268,7 +359,8 @@ class SystemConfig extends Component {
 				scanMulti,
 				eslRefleshPeriod,
 				eslRefleshTime,
-				clksyncPeriod
+				clksyncPeriod,
+				wakePeriod
 			} },
 			form: { getFieldDecorator, isFieldsTouched },
 		} = this.props;
@@ -277,7 +369,11 @@ class SystemConfig extends Component {
 			configShow,
 			settingLoading,
 			networkId,
-			btnLoading
+			btnLoading,
+			curBaseStation,
+			blueToothStatus,
+			blueToothBtnDisabled,
+			blueToothBtnLoading
 		} = this.state;
 		const hasTouched = isFieldsTouched([
 			'scanPeriod',
@@ -286,9 +382,11 @@ class SystemConfig extends Component {
 			'eslRefleshPeriod',
 			'eslRefleshTime',
 			'scanMulti',
-			'scanDeepSleep'
+			'scanDeepSleep',
+			'wakePeriod'
 		]);
-		
+		const ableStationList = baseStationList.filter(item => item.status === 1);
+
 		return (
 			<Card
 				bordered={false}
@@ -331,6 +429,126 @@ class SystemConfig extends Component {
 							</div>
 						</Card>
 						<Card
+							title={formatMessage({ id: 'esl.device.config.baseStation.setting' })}
+							bordered={false}
+							loading={configLoading}
+							className={styles['content-card']}
+						>
+							{ableStationList.length ?
+								<Form className={styles['device-info']}>
+									<Row gutter={24}>
+										<Col span={6}>
+											<Form.Item label={formatMessage({id: 'esl.device.config.baseStation.select'})}>
+												<Select
+													style={{width: '100%'}}
+													placeholder={formatMessage({id: 'select.placeholder'})}
+													value={curBaseStation.id}
+													onChange={this.handleSelectBaseStation}
+												>
+													{
+														ableStationList.map(
+															item => <Select.Option key={item.id} value={item.id}>{item.name} {item.mac}</Select.Option>
+														)
+													}
+												</Select>
+											</Form.Item>
+										</Col>
+										<Col span={4}>
+											<Form.Item label={`${formatMessage({id: 'esl.device.config.baseStation.blueTooth.channel'})}0`}>
+												<Select
+													style={{width: '100%'}}
+													value={blueToothStatus.status0}
+													placeholder={formatMessage({id: 'select.placeholder'})}
+													onChange={(value) => this.changeBlueTooth('status0', value)}
+												>
+													<Select.Option key={0} value={0}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.open'})}
+													</Select.Option>
+													<Select.Option key={1} value={1}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.close'})}
+													</Select.Option>
+													<Select.Option key={2} value={2}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.force.open'})}
+													</Select.Option>
+												</Select>
+											</Form.Item>
+										</Col>
+										<Col span={4}>
+											<Form.Item label={`${formatMessage({id: 'esl.device.config.baseStation.blueTooth.channel'})}1`}>
+												<Select
+													style={{width: '100%'}}
+													value={blueToothStatus.status1}
+													placeholder={formatMessage({id: 'select.placeholder'})}
+													onChange={(value) => this.changeBlueTooth('status1', value)}
+												>
+													<Select.Option key={0} value={0}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.open'})}
+													</Select.Option>
+													<Select.Option key={1} value={1}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.close'})}
+													</Select.Option>
+													<Select.Option key={2} value={2}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.force.open'})}
+													</Select.Option>
+												</Select>
+											</Form.Item>
+										</Col>
+										<Col span={4}>
+											<Form.Item label={`${formatMessage({id: 'esl.device.config.baseStation.blueTooth.channel'})}2`}>
+												<Select
+													style={{width: '100%'}}
+													value={blueToothStatus.status2}
+													placeholder={formatMessage({id: 'select.placeholder'})}
+													onChange={(value) => this.changeBlueTooth('status2', value)}
+												>
+													<Select.Option key={0} value={0}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.open'})}
+													</Select.Option>
+													<Select.Option key={1} value={1}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.close'})}
+													</Select.Option>
+													<Select.Option key={2} value={2}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.force.open'})}
+													</Select.Option>
+												</Select>
+											</Form.Item>
+										</Col>
+										<Col span={4}>
+											<Form.Item label={`${formatMessage({id: 'esl.device.config.baseStation.blueTooth.channel'})}3`}>
+												<Select
+													style={{width: '100%'}}
+													value={blueToothStatus.status3}
+													placeholder={formatMessage({id: 'select.placeholder'})}
+													onChange={(value) => this.changeBlueTooth('status3', value)}
+												>
+													<Select.Option key={0} value={0}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.open'})}
+													</Select.Option>
+													<Select.Option key={1} value={1}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.close'})}
+													</Select.Option>
+													<Select.Option key={2} value={2}>
+														{formatMessage({id: 'esl.device.config.baseStation.blueTooth.force.open'})}
+													</Select.Option>
+												</Select>
+											</Form.Item>
+										</Col>
+										<Col span={2} className={styles.pt44}>
+											<Button
+												type="primary"
+												onClick={this.saveBlueTooth}
+												disabled={blueToothBtnDisabled}
+												loading={blueToothBtnLoading}
+											>
+												{formatMessage({id: 'btn.save'})}
+											</Button>
+										</Col>
+									</Row>
+								</Form> :
+								<DataEmpty dataEmpty={formatMessage({id: 'esl.device.ap.empty'})} />
+							}
+						</Card>
+						<Card
 							title={formatMessage({ id: 'esl.device.config.setting' })}
 							bordered={false}
 							loading={settingLoading}
@@ -339,9 +557,7 @@ class SystemConfig extends Component {
 							{configShow ?
 								<Form {...FORM_SETTING_LAYOUT} hideRequiredMark>
 									<div className={styles['display-content']}>
-										<Form.Item
-											label={formatMessage({ id: 'esl.device.config.scan.round' })}
-										>
+										<Form.Item label={formatMessage({ id: 'esl.device.config.scan.round' })}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('scanPeriod', {
 													initialValue: scanPeriod || 15,
@@ -362,10 +578,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
-										<Form.Item
-											label={formatMessage({ id: 'esl.device.config.scan.green' })}
-										>
+										<Form.Item label={formatMessage({ id: 'esl.device.config.scan.green' })}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('isEnergySave', {
 													initialValue: isEnergySave,
@@ -378,10 +591,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
-										<Form.Item
-											label={formatMessage({ id: 'esl.device.config.scan.greenRound' })}
-										>
+										<Form.Item label={formatMessage({ id: 'esl.device.config.scan.greenRound' })}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('scanMulti', {
 													initialValue: scanMulti || 30,
@@ -397,10 +607,7 @@ class SystemConfig extends Component {
 												)}
 											</div>
 										</Form.Item>
-										
-										<Form.Item
-											label={formatMessage({ id: 'esl.device.config.sleep.round' })}
-										>
+										<Form.Item label={formatMessage({ id: 'esl.device.config.sleep.round' })}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('scanDeepSleep', {
 													initialValue: scanDeepSleep || 60,
@@ -421,13 +628,10 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
-										<Form.Item
-											label={formatMessage({ id: 'esl.device.config.async.round' })}
-										>
+										<Form.Item label={formatMessage({ id: 'esl.device.config.async.round' })}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('clksyncPeriod', {
-													initialValue: clksyncPeriod || 3,
+													initialValue: 1 || clksyncPeriod,
 													validateTrigger: 'onBlur',
 													rules: [
 														{
@@ -459,6 +663,7 @@ class SystemConfig extends Component {
 													<Input
 														suffix={formatMessage({ id: 'day.unit' })}
 														style={SELECT_STYLE}
+														disabled
 													/>
 												)}
 												<FormTip
@@ -468,12 +673,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
-										<Form.Item
-											label={formatMessage({
-												id: 'esl.device.config.self.refresh.round',
-											})}
-										>
+										<Form.Item label={formatMessage({id: 'esl.device.config.self.refresh.round'})}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('eslRefleshPeriod', {
 													initialValue: eslRefleshPeriod || 1,
@@ -517,12 +717,7 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
-										<Form.Item
-											label={formatMessage({
-												id: 'esl.device.config.scan.refresh.time',
-											})}
-										>
+										<Form.Item label={formatMessage({id: 'esl.device.config.scan.refresh.time'})}>
 											<div className={styles['form-item-wrapper']}>
 												{getFieldDecorator('eslRefleshTime', {
 													initialValue:
@@ -545,7 +740,26 @@ class SystemConfig extends Component {
 												/>
 											</div>
 										</Form.Item>
-										
+										<Form.Item label={formatMessage({ id: 'esl.device.config.scan.window' })}>
+											<div className={styles['form-item-wrapper']}>
+												{getFieldDecorator('wakePeriod', {
+													initialValue: wakePeriod || 2,
+												})(
+													<Select style={SELECT_STYLE}>
+														{SCAN_WINDOWS.map((item, index) => (
+															<Select.Option key={index} value={item.value}>
+																{item.label}
+															</Select.Option>
+														))}
+													</Select>
+												)}
+												<FormTip
+													text={formatMessage({
+														id: 'esl.device.config.scan.window.desc',
+													})}
+												/>
+											</div>
+										</Form.Item>
 										<Form.Item label=" " colon={false}>
 											<Button
 												type="primary"
@@ -557,13 +771,12 @@ class SystemConfig extends Component {
 											</Button>
 										</Form.Item>
 									</div>
-								</Form>
-								:
+								</Form> :
 								<DataEmpty dataEmpty={formatMessage({id: 'esl.device.ap.empty'})} />
 							}
 						</Card>
 					</>
-					
+
 				// 	<Card
 				// 	title={formatMessage({ id: 'esl.device.config.boardcast' })}
 				// 	loading={configLoading}
@@ -585,7 +798,7 @@ class SystemConfig extends Component {
 				// 	</Form.Item>
 				// 	</div>
 				// 	</Card>
-				
+
 				) : (
 					<DataEmpty />
 				)}

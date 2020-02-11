@@ -53,7 +53,7 @@ const SearchBar = ({
 						<Form.Item label={formatMessage({ id: 'employee.orgnization' })}>
 							<TreeSelect
 								value={
-									shopId ? `${currentCompanyId}-${shopId}` : `${currentCompanyId}`
+									orgnizationTree && orgnizationTree.length > 0 && (shopId ? `${currentCompanyId}-${shopId}` : `${currentCompanyId}`)
 								}
 								dropdownStyle={{ maxHeight: '50vh'}}
 								treeDefaultExpandAll

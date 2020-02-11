@@ -1,7 +1,7 @@
 import { formatMessage } from 'umi/locale';
 import { message } from 'antd';
 import * as ESLServices from '@/services/ESL/electricLabel';
-import * as TemplateServices from '@/services/ESL/template';
+import TemplateServices from '@/services/ESL/template';
 import * as ProductServices from '@/services/ESL/product';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE, DURATION_TIME } from '@/constants';
 import { ERROR_OK, SWITCH_SCEEN_NO_DELETE } from '@/constants/errorCode';

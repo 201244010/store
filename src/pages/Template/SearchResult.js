@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Table, Divider, Modal, Button, Form, Input, Select, Row, Col, Upload, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { ERROR_OK } from '@/constants/errorCode';
+import { PREVIEW_MAP } from '@/constants/studio';
 import { unixSecondToDate } from '@/utils/utils';
-import * as styles from './index.less';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT, SEARCH_FORM_COL } from '@/constants/form';
+import * as styles from './index.less';
 
 const { Option } = Select;
 
@@ -20,24 +21,7 @@ const SCREEN_NAME = {
 	'2.13': formatMessage({ id: 'esl-screen-2.13' }),
 	'2.6': formatMessage({ id: 'esl-screen-2.6' }),
 	'4.2': formatMessage({ id: 'esl-screen-4.2' }),
-};
-
-const widthMap = {
-	1: 348,
-	2: 442,
-	3: 510
-};
-
-const styleMap = {
-	1: 'img-213',
-	2: 'img-26',
-	3: 'img-42'
-};
-
-const imgMap = {
-	1: require('../../assets/studio/2.13.png'),
-	2: require('../../assets/studio/2.6.png'),
-	3: require('../../assets/studio/4.2.png'),
+	'7.5': formatMessage({ id: 'esl-screen-7.5' }),
 };
 
 @Form.create()
@@ -238,7 +222,11 @@ class SearchResult extends Component {
 
 	search = () => {
 		const { fetchTemplates } = this.props;
-		fetchTemplates();
+		fetchTemplates({
+			options: {
+				current: 1
+			}
+		});
 	};
 
 	validateTemplateName = (rule, value, callback) => {
@@ -390,7 +378,7 @@ class SearchResult extends Component {
 							<Col {...SEARCH_FORM_COL.ONE_THIRD} />
 							<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 								<Form.Item className={styles['query-item']}>
-									<Button loading={loading} type="primary" onClick={this.search}>
+									<Button loading={loading} type="primary" onClick={() => this.search()}>
 										{formatMessage({ id: 'btn.query' })}
 									</Button>
 									<Button
@@ -408,26 +396,21 @@ class SearchResult extends Component {
 											showUploadList: false,
 											beforeUpload: (file) => {
 												this.setState({
-													uploadLoading: true,
+													uploadLoading: true
 												});
 												const isJson = file.type === 'application/json';
 												if (!isJson) {
 													this.setState({
-														uploadLoading: false,
+														uploadLoading: false
 													});
-													message.error(formatMessage({ id: 'esl.device.template.upload.file.type.error' }));
+													message.error(formatMessage({id: 'esl.device.template.upload.file.type.error'}));
 												}
 												return false;
 											},
-											onChange: this.uploadJsonFileChange,
+											onChange: this.uploadJsonFileChange
 										}}
 									>
-										<Button
-											type="default"
-											icon="upload"
-											loading={uploadLoading}
-											className={styles['btn-margin-left']}
-										>
+										<Button type="default" icon="upload" loading={uploadLoading} className={styles['btn-margin-left']}>
 											{formatMessage({ id: 'esl.device.template.upload' })}
 										</Button>
 									</Upload>
@@ -558,7 +541,7 @@ class SearchResult extends Component {
 								>
 									{screenTypes.map(type => (
 										<Option key={type.id} value={type.id}>
-											{type.name}
+											{formatMessage({id: type.name})}
 										</Option>
 									))}
 								</Select>
@@ -582,7 +565,7 @@ class SearchResult extends Component {
 								>
 									{colors.map(type => (
 										<Option key={type.id} value={type.id}>
-											{type.name}
+											{formatMessage({id: type.name})}
 										</Option>
 									))}
 								</Select>
@@ -666,8 +649,8 @@ class SearchResult extends Component {
 					</Form>
 				</Modal>
 				<Modal
-					title={curRecord.name}
-					width={widthMap[curRecord.screen_type]}
+					title={formatMessage({id: curRecord.name || ' '})}
+					width={PREVIEW_MAP.SCREEN_ID_WIDTH[curRecord.screen_type]}
 					visible={previewVisible}
 					onOk={this.handleCancelPreview}
 					onCancel={this.handleCancelPreview}
@@ -678,8 +661,8 @@ class SearchResult extends Component {
 					]}
 				>
 					<div className={styles['preview-img']}>
-						<img className={`${styles['wrap-img}']} ${styles[styleMap[curRecord.screen_type]]}`} src={imgMap[curRecord.screen_type]} alt="" />
-						<img className={`${styles['content-img']} ${styles[styleMap[curRecord.screen_type]]}`} src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" alt="" />
+						<img className={`${styles['wrap-img}']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[curRecord.screen_type]]}`} src={PREVIEW_MAP.SCREEN_ID_IMAGE[curRecord.screen_type]} alt="" />
+						<img className={`${styles['content-img']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[curRecord.screen_type]]}`} src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" alt="" />
 					</div>
 				</Modal>
 			</div>
