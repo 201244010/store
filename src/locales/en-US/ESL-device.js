@@ -294,6 +294,7 @@ export default {
 	'esl-default-template-BW-2.6': '2.6 inch, black & white template',
 	'esl-default-template-BWR-2.6': '2.6 inch, black & white & red template',
 	'esl-default-template-BWR-4.2': '4.2 inch, black & white & red template',
+	'esl-default-template-BWR-7.5': '7.5 inch, black & white & red template',
 	'esl-default-template-normal-2.13': '2.13 inch normal template',
 	'esl-default-template-promotion-2.13': '2.13 inch promotional template',
 	'esl-default-template-normal-2.6': '2.6 inch normal template',
