@@ -231,6 +231,7 @@ export default {
 	'esl.device.config.baseStation.select': '选择基站',
 	'esl.device.config.baseStation.setting.success': '基站控制设置成功',
 	'esl.device.config.baseStation.setting.fail': '基站控制设置失败',
+	'esl.device.config.baseStation.offline.fail': '基站离线，设置失败',
 	'esl.device.config.baseStation.blueTooth.channel': '蓝牙通道',
 	'esl.device.config.baseStation.blueTooth.open': '打开',
 	'esl.device.config.baseStation.blueTooth.close': '关闭',
