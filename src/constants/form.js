@@ -166,7 +166,7 @@ export const FORM_ITEM_LAYOUT_BUSINESS = {
 
 
 export const FORM_ITEM_LAYOUT_QOS = {
-	labelCol: { span: 3 },
+	labelCol: { span: 3},
 	wrapperCol: { span: 10 },
 };
 

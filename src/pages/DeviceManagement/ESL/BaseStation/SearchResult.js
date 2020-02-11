@@ -40,6 +40,14 @@ class SearchResult extends Component {
 			// 	dataIndex: 'esl_number',
 			// },
 			{
+				title: formatMessage({ id: 'esl.device.ap.mac' }),
+				dataIndex: 'mac',
+			},
+			{
+				title: formatMessage({ id: 'esl.device.ap.ip' }),
+				dataIndex: 'ip',
+			},
+			{
 				title: formatMessage({ id: 'esl.device.ap.network.id' }),
 				dataIndex: 'network_id',
 			},

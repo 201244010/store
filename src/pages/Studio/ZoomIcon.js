@@ -28,7 +28,7 @@ export default class ZoomIcon extends Component {
 			<div className={styles['zoom-icon-wrapper']}>
 				<div className={styles['zoom-icon']}>
 					<Icon type="minus" onClick={() => this.handleZoom('in')} />
-					<span>{(zoomScale * 100).toFixed()}%</span>
+					<span id="zoomScale">{(zoomScale * 100).toFixed()}%</span>
 					<Icon type="plus" style={{background: '#5085e3', color: '#fff'}} onClick={() => this.handleZoom('out')} />
 				</div>
 				<span className={styles.name}>{formatMessage({ id: 'studio.action.zoom' })}</span>

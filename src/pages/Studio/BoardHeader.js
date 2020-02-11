@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from 'react';
-import { message } from 'antd';
+import {Modal, message, Button} from 'antd';
 import { formatMessage } from 'umi/locale';
 import ButtonIcon from './ButtonIcon';
 import ZoomIcon from './ZoomIcon';
 import { getLocationParam } from '@/utils/utils';
 import { ERROR_OK } from '@/constants/errorCode';
+import { PREVIEW_MAP } from '@/constants/studio';
 import * as styles from './index.less';
 
 export default class BoardHeader extends Component {
@@ -13,6 +14,8 @@ export default class BoardHeader extends Component {
 		this.state = {
 			editing: false,
 			templateName: '',
+			previewVisible: false,
+			imageUrl: ''
 		};
 	}
 
@@ -95,9 +98,28 @@ export default class BoardHeader extends Component {
 		}
 	};
 
+	closeModal = () => {
+		this.setState({
+			previewVisible: false,
+		});
+	};
+
+	previewTemplate = async () => {
+		const { templateInfo, previewTemplate } = this.props;
+
+		const response = await previewTemplate({
+			template_id: templateInfo.id
+		});
+
+		this.setState({
+			previewVisible: true,
+			imageUrl: response.data.image_addr
+		});
+	};
+
 	render() {
 		const {
-			state: { editing, templateName },
+			state: { editing, templateName, previewVisible, imageUrl },
 			props: { templateInfo = {}, zoomScale, saveAsDraft, downloadAsDraft, zoomOutOrIn, preStep, nextStep },
 		} = this;
 		const studioType = getLocationParam('type');
@@ -149,9 +171,30 @@ export default class BoardHeader extends Component {
 					<ZoomIcon zoomScale={zoomScale} zoomOutOrIn={zoomOutOrIn} />
 					{/* <ButtonIcon name="wrapper" /> */}
 					<ButtonIcon name="download" onClick={downloadAsDraft} />
-					{/* <ButtonIcon name="view" /> */}
+					<ButtonIcon name="view" onClick={this.previewTemplate} />
 					{/* <ButtonIcon name="history" /> */}
 				</div>
+				<Modal
+					title={
+						<div className={styles['preview-img-title']}>
+							{formatMessage({id: templateInfo.name || ' '})}
+						</div>
+					}
+					width={PREVIEW_MAP.TYPE_NAME_WIDTH[templateInfo.screen_type_name]}
+					visible={previewVisible}
+					onCancel={() => this.closeModal()}
+					onOk={() => this.closeModal()}
+					footer={[
+						<Button key="submit" type="primary" onClick={() => this.closeModal()}>
+							{formatMessage({ id: 'btn.confirm' })}
+						</Button>
+					]}
+				>
+					<div className={styles['preview-img']}>
+						<img className={`${styles['wrap-img']} ${styles[PREVIEW_MAP.TYPE_NAME_STYLE[templateInfo.screen_type_name]]}`} src={PREVIEW_MAP.TYPE_NAME_IMAGE[templateInfo.screen_type_name]} alt="" />
+						<img className={`${styles['content-img']} ${styles[PREVIEW_MAP.TYPE_NAME_STYLE[templateInfo.screen_type_name]]}`} src={imageUrl} alt="" />
+					</div>
+				</Modal>
 			</Fragment>
 		);
 	}
