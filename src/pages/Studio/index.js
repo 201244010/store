@@ -3,6 +3,13 @@ import { Stage, Layer, Line } from 'react-konva';
 import { connect } from 'dva';
 import { Spin, Modal, Alert,	 Icon, message } from 'antd';
 import { formatMessage } from 'umi/locale';
+import * as RegExp from '@/constants/regexp';
+import { getLocationParam, downloadFileByClick } from '@/utils/utils';
+import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep, getImagePromise } from '@/utils/studio';
+import FontDetector from '@/utils/FontDetector';
+import { KEY } from '@/constants';
+import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME, IMAGE_TYPES } from '@/constants/studio';
+import Config from '@/config';
 import MTransformer from './MTransformer';
 import BoardHeader from './BoardHeader';
 import BoardTools from './BoardTools';
@@ -10,13 +17,6 @@ import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import DragCopy from './DragCopy';
 import generateShape from './GenerateShape';
-import { getLocationParam, downloadFileByClick } from '@/utils/utils';
-import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep, getImagePromise } from '@/utils/studio';
-import FontDetector from '@/utils/FontDetector';
-import { KEY } from '@/constants';
-import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME, IMAGE_TYPES } from '@/constants/studio';
-import Config from '@/config';
-import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
 
 @connect(
@@ -1076,7 +1076,8 @@ class Studio extends Component {
 			'Zfull-GB': 'Zfull-GB.ttf',
 			'Alibaba Sans': 'AlibabaSans.otf'
 		};
-		downloadFileByClick(`${Config.API_ADDRESS}/static/${fontUrls[font]}`);
+		const baseUrl = Config.API_ADDRESS.split(':')[0];
+		downloadFileByClick(`http://${baseUrl}/static/${fontUrls[font]}`);
 	};
 
 	render() {
