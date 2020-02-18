@@ -177,7 +177,7 @@ class CompanyInfo extends React.Component {
 		const { name = null } = cityInfo || {};
 
 		AMap.plugin('AMap.Autocomplete', () => {
-			const opts = { city: name || '全国', citylimit: true };
+			const opts = { city: name || formatMessage({id: 'companyInfo.whole.country'}), citylimit: true };
 			const autoComplete = new AMap.Autocomplete(opts);
 			autoComplete.search(value, (status, result) => {
 				// 搜索成功时，result即是对应的匹配数据
@@ -211,7 +211,7 @@ class CompanyInfo extends React.Component {
 
 		return new Promise(resolve => {
 			AMap.plugin('AMap.PlaceSearch', () => {
-				const opts = { city: name || '全国', citylimit: true, pageSize: 50 };
+				const opts = { city: name || formatMessage({id: 'companyInfo.whole.country'}), citylimit: true, pageSize: 50 };
 				const placeSearch = new AMap.PlaceSearch(opts);
 
 				if (inputAddress && inputAddress.id) {

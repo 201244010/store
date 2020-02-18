@@ -37,4 +37,5 @@ export default {
 	'companyInfo.message.level.limited': '组织层级超过最大限制',
 	'companyInfo.please.select.startTime': '请选择开始时间',
 	'companyInfo.please.select.endTime': '请选择结束时间',
+	'companyInfo.whole.country': '全国',
 };
