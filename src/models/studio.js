@@ -1,4 +1,6 @@
-import {IMAGE_TYPES, MAPS, SHAPE_TYPES, SIZES, RECT_SELECT_NAME, RECT_FIX_NAME} from '@/constants/studio';
+import { message } from 'antd';
+import { formatMessage } from 'umi/locale';
+import { IMAGE_TYPES, MAPS, SHAPE_TYPES, SIZES, RECT_SELECT_NAME, RECT_FIX_NAME } from '@/constants/studio';
 import { filterObject, getLocationParam } from '@/utils/utils';
 import { getImagePromise, saveNowStep, isInComponent } from '@/utils/studio';
 
@@ -81,6 +83,13 @@ export default {
 		addComponent(state, action) {
 			// name为组件名，若被原始定义，则用，否则，则生成
 			const { componentsDetail, zoomScale } = state;
+			// 限制拖动总数为50，超过不添加，剔除fix/select/undefined
+			if (Object.keys(componentsDetail).filter(n => n && ![RECT_FIX_NAME, RECT_SELECT_NAME, 'undefined'].includes(n)).length >= 50) {
+				message.warning(formatMessage({id: 'studio.error.exceed.max'}));
+				return {
+					...state
+				};
+			}
 			const { x, y, type, name: preName, scaleX, scaleY, isStep = true} = action.payload;
 			let maxIndex = 0;
 			let name = preName;
@@ -122,7 +131,8 @@ export default {
 					],
 					startX,
 					startY,
-					zoomScale
+					zoomScale,
+					oZoomScale: zoomScale
 				}
 			};
 			if (isStep) {
@@ -262,6 +272,20 @@ export default {
 			};
 		},
 		copySelectedComponent(state, action) {
+			const copiedComponent = action.payload;
+			const {scopedComponents} = state;
+			let needCopyComponent = [];
+			if (copiedComponent.name) {
+				if (copiedComponent.name.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+					needCopyComponent = [copiedComponent];
+				} else if (scopedComponents.length) {
+					needCopyComponent = scopedComponents;
+				}
+			}
+
+			localStorage.setItem('__studio_copy_cross_template_id__', getLocationParam('id'));
+			localStorage.setItem('__studio_copy_cross_two_template__', JSON.stringify(needCopyComponent));
+
 			return {
 				...state,
 				copiedComponent: action.payload

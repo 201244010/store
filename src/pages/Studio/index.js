@@ -1,41 +1,23 @@
 import React, {Component} from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import { connect } from 'dva';
-import { Spin, message } from 'antd';
+import { Spin, Modal, Alert,	 Icon, message } from 'antd';
 import { formatMessage } from 'umi/locale';
+import * as RegExp from '@/constants/regexp';
+import { getLocationParam, downloadFileByClick } from '@/utils/utils';
+import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep, getImagePromise } from '@/utils/studio';
+import FontDetector from '@/utils/FontDetector';
+import { KEY } from '@/constants';
+import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME, IMAGE_TYPES } from '@/constants/studio';
+import Config from '@/config';
 import MTransformer from './MTransformer';
 import BoardHeader from './BoardHeader';
 import BoardTools from './BoardTools';
 import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
+import DragCopy from './DragCopy';
 import generateShape from './GenerateShape';
-import { getLocationParam } from '@/utils/utils';
-import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep } from '@/utils/studio';
-import { KEY } from '@/constants';
-import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME } from '@/constants/studio';
-import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
-
-const imageMap = {
-	text: require('@/assets/studio/text.svg'),
-	rect: require('@/assets/studio/rect.svg'),
-	'line@h': require('@/assets/studio/hLine.svg'),
-	'line@v': require('@/assets/studio/vLine.svg'),
-	image: require('@/assets/studio/image.svg'),
-	'barcode@h': require('@/assets/studio/code_h.svg'),
-	'barcode@v': require('@/assets/studio/code_v.svg'),
-	'barcode@qr': require('@/assets/studio/code_qr.svg'),
-};
-const textMap = {
-	text: formatMessage({ id: 'studio.component.text' }),
-	rect: formatMessage({ id: 'studio.component.rect' }),
-	'line@h': formatMessage({ id: 'studio.component.line.h' }),
-	'line@v': formatMessage({ id: 'studio.component.line.v' }),
-	image: formatMessage({ id: 'studio.component.image' }),
-	'barcode@h': formatMessage({ id: 'studio.component.barcode' }),
-	'barcode@v': formatMessage({ id: 'studio.component.barcode.v' }),
-	'barcode@qr': formatMessage({ id: 'studio.component.qrcode' }),
-};
 
 @connect(
 	state => ({
@@ -70,6 +52,7 @@ const textMap = {
 		fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
 		renameTemplate: payload => dispatch({ type: 'template/renameTemplate', payload }),
 		uploadImage: payload => dispatch({ type: 'template/uploadImage', payload }),
+		previewTemplate: payload => dispatch({ type: 'template/previewTemplate', payload }),
 	})
 )
 class Studio extends Component {
@@ -77,6 +60,7 @@ class Studio extends Component {
 		super(props);
 		this.stageWidth = window.innerWidth - SIZES.TOOL_BOX_WIDTH * 2;
 		this.stageHeight = window.innerHeight - SIZES.HEADER_HEIGHT;
+		this.refComponents = {};
 		this.state = {
 			editing: false,
 			dragging: false,
@@ -85,7 +69,8 @@ class Studio extends Component {
 				left: -9999,
 				top: -9999
 			},
-			showMask: false
+			showMask: false,
+			hasNoFonts: []
 		};
 		clearSteps();
 	}
@@ -109,6 +94,16 @@ class Studio extends Component {
 		});
 
 		document.addEventListener('keydown', this.handleComponentActions);
+
+		// 当页面关闭及刷新时，存储在localStorage中的待拷贝项需要清空
+		window.onunload = () => {
+			if (localStorage.getItem('__studio_copy_cross_template_id__') === getLocationParam('id')) {
+				localStorage.removeItem('__studio_copy_cross_template_id__');
+				localStorage.removeItem('__studio_copy_cross_two_template__');
+			}
+		};
+
+		this.detectFonts();
 	}
 
 	componentWillUnmount() {
@@ -118,32 +113,20 @@ class Studio extends Component {
 	handleComponentActions = e => {
 		const { editing } = this.state;
 		const { keyCode, ctrlKey, target: { tagName } } = e;
+
 		// 编辑文本状态下无法操作
 		if (editing) {
 			return;
 		}
 		const {
-			studio: { selectedShapeName, componentsDetail, copiedComponent, scopedComponents, zoomScale },
-			deleteSelectedComponent,
-			copySelectedComponent,
+			studio: { selectedShapeName, componentsDetail, copiedComponent, scopedComponents },
 			addComponent,
 			updateComponentsDetail
 		} = this.props;
 		const canCopyOrDelete = selectedShapeName && selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) === -1;
 		// 操作输入框时 无法删除
 		if ([KEY.DELETE, KEY.BACKSPACE].includes(keyCode) && tagName.toUpperCase() !== 'INPUT' && tagName.toUpperCase() !== 'TEXTAREA') {
-			if (canCopyOrDelete) {
-				deleteSelectedComponent(selectedShapeName);
-			}
-			if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) > -1) {
-			    deleteSelectedComponent(selectedShapeName);
-			    for (let i = 0; i < scopedComponents.length; i++) {
-			        deleteSelectedComponent({
-						selectedShapeName: scopedComponents[i].name,
-						isStep: i === scopedComponents.length - 1
-					});
-				}
-			}
+			this.handleDelete();
 		}
 		if (keyCode === KEY.KEY_LEFT) {
 			updateComponentsDetail({
@@ -177,14 +160,13 @@ class Studio extends Component {
 			// Ctrl + X
 			if (keyCode === KEY.KEY_X) {
 				if (canCopyOrDelete) {
-					copySelectedComponent(componentsDetail[selectedShapeName]);
-					deleteSelectedComponent(selectedShapeName);
+					this.handleCut();
 				}
 			}
 			// Ctrl + C
 			if (keyCode === KEY.KEY_C) {
 				if (canCopyOrDelete) {
-					copySelectedComponent(componentsDetail[selectedShapeName]);
+					this.handleCopy();
 				}
 			}
 			// Ctrl + V
@@ -198,15 +180,15 @@ class Studio extends Component {
 						} else {
 							this.copyCountMap[copiedComponent.name]++;
 						}
-						newPosition.x = copiedComponent.x * (1 + this.copyCountMap[copiedComponent.name] / 10);
-						newPosition.y = copiedComponent.y * (1 + this.copyCountMap[copiedComponent.name] / 10);
+						newPosition.x = copiedComponent.x  + 10 * this.copyCountMap[copiedComponent.name];
+						newPosition.y = copiedComponent.y + 10 * this.copyCountMap[copiedComponent.name];
 
 						addComponent({
 							...copiedComponent,
 							x: newPosition.x,
 							y: newPosition.y,
 						});
-					} else {
+					} else if (scopedComponents.length) {
 						this.copyCountMap = this.copyCountMap || {};
 						if (!this.copyCountMap[copiedComponent.name]) {
 							this.copyCountMap[copiedComponent.name] = 1;
@@ -214,15 +196,18 @@ class Studio extends Component {
 							this.copyCountMap[copiedComponent.name]++;
 						}
 						for (let i = 0; i < scopedComponents.length; i++) {
-							const {x, y, type, scaleY} = scopedComponents[i];
 							addComponent({
 								...scopedComponents[i],
-								x,
-								y: y + MAPS.height[type] * scaleY * zoomScale * this.copyCountMap[copiedComponent.name],
+								x: scopedComponents[i].x + 10 * this.copyCountMap[copiedComponent.name],
+								y: scopedComponents[i].y + 10 * this.copyCountMap[copiedComponent.name],
 								isStep: i === scopedComponents.length - 1
 							});
 						}
+					} else {
+						this.handleCrossTemplateCopy();
 					}
+				} else {
+					this.handleCrossTemplateCopy();
 				}
 			}
 			// Ctrl + Y
@@ -431,6 +416,7 @@ class Studio extends Component {
 	};
 
 	handleStageShapeStart = e => {
+		this.startCtrlKey = e.evt.ctrlKey;
 		const { studio: { componentsDetail }, updateComponentDetail } = this.props;
 		this.setState({
 			dragging: true,
@@ -466,7 +452,7 @@ class Studio extends Component {
 		if (e.evt.ctrlKey && !e.evt.shiftKey) {
 			this.setState({
 				dragCopy: {
-					left: e.evt.clientX,
+					left: e.evt.clientX - 10,
 					top: e.evt.clientY
 				}
 			});
@@ -512,6 +498,10 @@ class Studio extends Component {
 		} = this.props;
 		this.setState({
 			dragging: false,
+			dragCopy: {
+				left: -9999,
+				top: -9999
+			}
 		});
 		this.shiftDrag = false;
 		const curComponent = componentsDetail[e.target.name()];
@@ -521,13 +511,7 @@ class Studio extends Component {
 				frozenY: false
 			}
 		});
-		if (e.evt.ctrlKey && !e.evt.shiftKey && curComponent) {
-			this.setState({
-				dragCopy: {
-					left: -9999,
-					top: -9999
-				}
-			});
+		if (this.startCtrlKey && e.evt.ctrlKey && !e.evt.shiftKey && curComponent) {
 			addComponent({
 				...curComponent,
 				x: e.evt.clientX - SIZES.TOOL_BOX_WIDTH,
@@ -815,6 +799,169 @@ class Studio extends Component {
 		}
 	};
 
+	handleDelete = () => {
+		const {
+			studio: { selectedShapeName, scopedComponents },
+			deleteSelectedComponent,
+			updateComponentsDetail
+		} = this.props;
+		if (selectedShapeName.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+			deleteSelectedComponent(selectedShapeName);
+		} else if (scopedComponents.length) {
+			for (let i = 0; i < scopedComponents.length; i++) {
+				deleteSelectedComponent({
+					selectedShapeName: scopedComponents[i].name,
+					isStep: i === scopedComponents.length - 1
+				});
+			}
+			updateComponentsDetail({
+				isStep: false,
+				selectedShapeName: RECT_SELECT_NAME,
+				[RECT_SELECT_NAME]: {
+					width: 0,
+					height: 0
+				},
+			});
+			updateComponentsDetail({
+				selectedShapeName: ''
+			});
+		}
+		this.toggleRightToolBox({
+			showRightToolBox: false,
+			rightToolBoxPos: {
+				left: -9999,
+				top: -9999,
+			},
+		});
+	};
+
+	handleCut = () => {
+		const {studio: {selectedShapeName, componentsDetail}, copySelectedComponent} = this.props;
+
+		copySelectedComponent(componentsDetail[selectedShapeName]);
+		this.handleDelete();
+		this.toggleRightToolBox({
+			showRightToolBox: false,
+			rightToolBoxPos: {
+				left: -9999,
+				top: -9999,
+			},
+		});
+	};
+
+	handlePaste = () => {
+		const {
+			studio: {copiedComponent, scopedComponents, rightToolBoxPos, showRightToolBox},
+			addComponent,
+			updateComponentsDetail,
+		} = this.props;
+		if (copiedComponent.name) {
+			if (copiedComponent.name.indexOf(SHAPE_TYPES.RECT_SELECT) === -1) {
+				addComponent({
+					...copiedComponent,
+					x: rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH,
+					y: rightToolBoxPos.top - SIZES.HEADER_HEIGHT,
+				});
+			} else if (scopedComponents.length) {
+				const baseComponent = scopedComponents[0];
+				addComponent({
+					...baseComponent,
+					x: rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH,
+					y: rightToolBoxPos.top - SIZES.HEADER_HEIGHT,
+					isStep: false
+				});
+				for (let i = 1; i < scopedComponents.length; i++) {
+					addComponent({
+						...scopedComponents[i],
+						x: rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH + scopedComponents[i].x - baseComponent.x,
+						y: rightToolBoxPos.top - SIZES.HEADER_HEIGHT + scopedComponents[i].y - baseComponent.y,
+						isStep: i === scopedComponents.length - 1
+					});
+				}
+				updateComponentsDetail({
+					selectedShapeName: ''
+				});
+			} else {
+				this.handleCrossTemplateCopy('menu');
+			}
+		} else {
+			this.handleCrossTemplateCopy('menu');
+		}
+		if (showRightToolBox) {
+			this.toggleRightToolBox({
+				showRightToolBox: false,
+				rightToolBoxPos: {
+					left: -9999,
+					top: -9999,
+				},
+			});
+		}
+	};
+
+	handleCopy = () => {
+		const {studio: {componentsDetail, selectedShapeName}, copySelectedComponent} = this.props;
+		copySelectedComponent(componentsDetail[selectedShapeName]);
+		this.toggleRightToolBox({
+			showRightToolBox: false,
+			rightToolBoxPos: {
+				left: -9999,
+				top: -9999,
+			},
+		});
+	};
+
+	handleCrossTemplateCopy = (type) => {
+		const { studio: { zoomScale, rightToolBoxPos }, addComponent } = this.props;
+		// 处理快捷键粘贴的位置
+		const screenType = getLocationParam('screen');
+		const px = (this.stageWidth - MAPS.screen[screenType].width * zoomScale) / 2;
+		const py = (this.stageHeight - MAPS.screen[screenType].height * zoomScale) / 2;
+		// 处理右键粘贴的位置
+		const baseX = rightToolBoxPos.left - SIZES.TOOL_BOX_WIDTH;
+		const baseY = rightToolBoxPos.top - SIZES.HEADER_HEIGHT - 10;
+
+		const needCopyComponents = JSON.parse(localStorage.getItem('__studio_copy_cross_two_template__'));
+		if (needCopyComponents && needCopyComponents.length) {
+			const baseComponent = needCopyComponents[0];
+			if (IMAGE_TYPES.includes(baseComponent.type)) {
+				getImagePromise(baseComponent).then((detail) => {
+					addComponent({
+						...detail,
+						x: type === 'menu' ? baseX : px + detail.startX * zoomScale,
+						y: type === 'menu' ? baseY : py + detail.startY * zoomScale,
+						isStep: false
+					});
+				});
+			} else {
+				addComponent({
+					...baseComponent,
+					x: type === 'menu' ? baseX : px + baseComponent.startX * zoomScale,
+					y: type === 'menu' ? baseY : py + baseComponent.startY * zoomScale,
+					isStep: false
+				});
+			}
+			for (let i = 1; i < needCopyComponents.length; i++) {
+				if (IMAGE_TYPES.includes(needCopyComponents[i].type)) {
+					getImagePromise(needCopyComponents[i]).then((detail) => {
+						addComponent({
+							...detail,
+							x: type === 'menu' ? baseX + (detail.startX - baseComponent.startX) * zoomScale : px + detail.startX * zoomScale,
+							y: type === 'menu' ? baseY + (detail.startY - baseComponent.startY) * zoomScale : py + detail.startY * zoomScale,
+							isStep: i === needCopyComponents.length - 1
+						});
+					});
+				} else {
+					addComponent({
+						...needCopyComponents[i],
+						x: type === 'menu' ? baseX + (needCopyComponents[i].startX - baseComponent.startX) * zoomScale : px + needCopyComponents[i].startX * zoomScale,
+						y: type === 'menu' ? baseY + (needCopyComponents[i].startY - baseComponent.startY) * zoomScale : py + needCopyComponents[i].startY * zoomScale,
+						isStep: i === needCopyComponents.length - 1
+					});
+				}
+			}
+		}
+	};
+
 	createInput = (e, type) => {
 		// type是为了区分价格组件、文本组件及其他
 		const targetName = e.target.name();
@@ -915,10 +1062,29 @@ class Studio extends Component {
 		});
 	};
 
+	detectFonts = () => {
+		const fonts = ['Zfull-GB', 'Alibaba Sans'];
+		const fontDetector = new FontDetector();
+
+		this.setState({
+			hasNoFonts: fonts.filter(font => !fontDetector.detect(font))
+		});
+	}
+
+	downloadFont = (font) => {
+		const fontUrls = {
+			'Zfull-GB': 'Zfull-GB.ttf',
+			'Alibaba Sans': 'AlibabaSans.otf'
+		};
+		const baseUrl = Config.API_ADDRESS.split(':')[0];
+		downloadFileByClick(`http://${baseUrl}/static/${fontUrls[font]}`);
+	};
+
 	render() {
 		const {
 			stageWidth,
 			stageHeight,
+			refComponents,
 			props: {
 				updateComponentsDetail,
 				updateState,
@@ -929,6 +1095,7 @@ class Studio extends Component {
 				zoomOutOrIn,
 				renameTemplate,
 				fetchTemplateDetail,
+				previewTemplate,
 				studio: {
 					selectedShapeName,
 					selectedComponent,
@@ -942,11 +1109,11 @@ class Studio extends Component {
 				},
 				template: { bindFields, curTemplate },
 			},
-			state: { dragging, dragCopy, dragName, showMask },
+			state: { dragging, dragCopy, dragName, showMask, hasNoFonts },
 		} = this;
 
 		const lines = getNearestLines(componentsDetail, selectedShapeName, scopedComponents);
-		const type = getTypeByName(dragName);
+		const componentDetail = componentsDetail[selectedShapeName] || {};
 
 		return (
 			<div className={styles.board}>
@@ -963,6 +1130,7 @@ class Studio extends Component {
 							nextStep: this.nextStep,
 							renameTemplate,
 							fetchTemplateDetail,
+							previewTemplate
 						}}
 					/>
 				</div>
@@ -991,6 +1159,7 @@ class Studio extends Component {
 									const noScopedNames = [RECT_SELECT_NAME].concat(noScopedComponents.map(item => item.name));
 									if (targetDetail.name && !noScopedNames.includes(targetDetail.name)) {
 										return generateShape({
+											refComponents,
 											...targetDetail,
 											key,
 											stageWidth,
@@ -1010,6 +1179,7 @@ class Studio extends Component {
 								{
 									componentsDetail[RECT_SELECT_NAME] ?
 										generateShape({
+											refComponents,
 											...componentsDetail[RECT_SELECT_NAME],
 											key: RECT_SELECT_NAME,
 											stageWidth,
@@ -1029,6 +1199,7 @@ class Studio extends Component {
 									const targetDetail = noScopedComponents[key];
 									if (targetDetail.name) {
 										return generateShape({
+											refComponents,
 											...targetDetail,
 											key,
 											stageWidth,
@@ -1096,9 +1267,9 @@ class Studio extends Component {
 				{showRightToolBox ? (
 					<ContextMenu
 						{...{
-							color: (componentsDetail[selectedShapeName] || {}).fontColor,
-							fontSize: (componentsDetail[selectedShapeName] || {}).fontSize,
-							text: (componentsDetail[selectedShapeName] || {}).context,
+							color: componentDetail.fontColor,
+							fontSize: componentDetail.fontSize,
+							text: componentDetail.context,
 							position: rightToolBoxPos,
 							componentsDetail,
 							selectedShapeName,
@@ -1110,24 +1281,39 @@ class Studio extends Component {
 							copySelectedComponent,
 							addComponent,
 							toggleRightToolBox,
+							onDeleteHandler: this.handleDelete,
+							onCutHandler: this.handleCut,
+							onPasteHandler: this.handlePaste,
+							onCopyHandler: this.handleCopy,
 						}}
 					/>
 				) : null}
-				{
-					type.indexOf(SHAPE_TYPES.PRICE) === -1 ?
-						<div className={styles['drag-copy-show']} style={{...dragCopy}}>
-							<img src={imageMap[type]} />
-							<span>{textMap[type]}</span>
-						</div> :
-						<div
-							className={`${styles['drag-copy-price-show']} ${type.indexOf('white') > -1 ? `${styles['drag-copy-price-white']}` : ''}`}
-							style={{...dragCopy}}
-						>
-							<span>
-								99.{type.indexOf('sup') > -1 ? <sup>00</sup> : (type.indexOf('sub') > -1 ? <sub>00</sub> : '00')}
-							</span>
-						</div>
-				}
+				<DragCopy
+					dragCopy={dragCopy}
+					dragName={dragName}
+					refComponents={refComponents}
+					componentsDetail={componentsDetail}
+				/>
+				<Modal
+					title={formatMessage({id: 'studio.tool.font.download.title'})}
+					closable={false}
+					footer={null}
+					visible={!!hasNoFonts.length}
+				>
+					<Alert message={formatMessage({id: 'studio.tool.font.download.alert'})} type="info" showIcon />
+					<div className={styles['font-download-main']}>
+						{
+							hasNoFonts.map(font => (
+								<p className={styles['font-download-item']} key={font}>
+									<span>{font}</span>
+									<span className={styles['font-download-icon']} onClick={() => this.downloadFont(font)}>
+										<Icon type="download" />
+									</span>
+								</p>
+							))
+						}
+					</div>
+				</Modal>
 			</div>
 		);
 	}

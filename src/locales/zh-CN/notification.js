@@ -115,6 +115,11 @@ export default {
 	'notif-system-task-erp-finish-content': '已于##timestamp##完成与（##saas_name##）的对接，成功获取##total_count##条商品信息',
 	'notif-system-task-erp-failure-content': '未能完成与##saas_name##的对接，请重试',
 	'notif-modal-content':'您当前处于【##currentCompanyName##-##currentShopName##】，请将门店切换至【##targetCompanyName##-##targetShopName##】后查看',
+	'notif-device-esl-image-push-status-title': '检测到推图失败',
+	'notif-model-device-esl-image-push-status': '推图状态',
+	'notif-device-esl-image-push-status-desc': '【##company_name##-##shop_name##】商品##product_name##价签##esl_code##推送失败',
+	'notif-device-esl-image-push-status-content': '与价签##esl_code##绑定的商品##product_name##于##push_time##推送失败',
+	'notif-device-esl-image-push-status-btn1': '查看状态',
 	'notif-modal-title-info':'提示',
 	'notif-modal-known-text':'知道了',
 };

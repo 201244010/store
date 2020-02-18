@@ -36,7 +36,7 @@ const PassengerAgeItemActive = ({ item, onClick = null }) => {
 					{formatMessage({ id: 'common.age' })}
 				</div>
 				<div className={styles['progress-wrapper']}>
-					<Progress percent={Math.round(genderRate * 1)} strokeWidth={15} strokeColor={strokeColor} />
+					<Progress percent={Math.round(genderRate * 1)} strokeWidth={15} strokeColor={strokeColor} format={percent => `${percent}%`} />
 				</div>
 			</div>
 		</div>
@@ -62,7 +62,7 @@ const PassengerAgeItem = ({ item, onClick = null }) => {
 				{formatMessage({ id: `common.${gender}` })}{ageRange}
 			</div>
 			<div className={styles['progress-wrapper']}>
-				<Progress percent={Math.round(genderRate * 1)} strokeWidth={10} strokeColor={strokeColor} />
+				<Progress percent={Math.round(genderRate * 1)} strokeWidth={10} strokeColor={strokeColor} format={percent => `${percent}%`} />
 			</div>
 		</div>
 	);

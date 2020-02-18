@@ -554,6 +554,7 @@ export const formatSpeed = speed => {
 	return { speed, unit };
 };
 
+// 格式化时间，精确到天时分秒
 export const formatRelativeTime = timeStamp => {
 	const duration = moment.duration(timeStamp);
 	const years = duration.years();
@@ -652,4 +653,12 @@ export const comperareVersion = (l,r) => {
 		}
 	}
 	return 0;
+};
+
+export const downloadFileByClick = (downloadUrl) => {
+	const element = document.createElement('a');
+	element.href = downloadUrl;
+	document.body.appendChild(element);
+	element.click();
+	document.body.removeChild(element);
 };
