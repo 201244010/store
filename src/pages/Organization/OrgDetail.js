@@ -5,12 +5,12 @@ import Storage from '@konata9/storage.js';
 import moment from 'moment';
 import { format } from '@konata9/milk-shake';
 import { formatMessage } from 'umi/locale';
-import styles from './OrgDetail.less';
 import { getLocationParam } from '@/utils/utils';
 import { ERROR_OK } from '@/constants/errorCode';
+import AuthKey from '@/pages/AuthKey';
+import styles from './OrgDetail.less';
 import DeprecateModal from './DeprecateModal';
 import SearchResult from '../BasicData/Employee/SerachResult';
-import AuthKey from '@/pages/AuthKey';
 
 
 @connect(
@@ -219,6 +219,7 @@ class OrgDetail extends React.Component {
 		} = this.props;
 
 		const { orgId: locationOrgId } = this.state;
+		// const currentLanguage = getLocale();
 		return(
 			<div className={styles['detail-container']}>
 				<Card title={formatMessage({id: 'orgDetail.org.detail'})} className={styles['org-detail']} loading={loading.effects['companyInfo/getOrganizationInfo']}>
@@ -250,7 +251,7 @@ class OrgDetail extends React.Component {
 								orgStatus === 1 && formatMessage({id: 'orgDetail.org.status.stop.use'})) || '--'}
 								</div>
 							</div>
-							<div className={`${styles.col} ${styles.contactPerson}`}>
+							<div className={`${styles.col} ${styles.contactPerson} ${styles.en}`}>
 								<div className={styles.label}>{formatMessage({id: 'orgDetail.contactPerson'})}</div>
 								<div>{contactPerson || '--'}</div>
 							</div>
@@ -299,7 +300,7 @@ class OrgDetail extends React.Component {
 										<div className={styles.label}>{formatMessage({id: 'orgDetail.businessArea'})}</div>
 										<div>{businessArea ? `${businessArea}㎡` : '--'}</div>
 									</div>
-									<div className={`${styles.col} ${styles.address}`}>
+									<div className={`${styles.col} ${styles.address} ${styles.en}`}>
 										<div className={styles.label}>{formatMessage({id: 'orgDetail.address'})}</div>
 										<div>{this.addressHandler(province, city, area, address)}</div>
 									</div>

@@ -157,7 +157,7 @@ class Register extends Component {
 			this.setState({
 				registerSuccess: true,
 			});
-		} else if (response && Object.keys(ALERT_NOTICE_MAP).includes(response.code)) {
+		} else if (response && Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
 			this.setState({
 				notice: response.code,
 				registerSuccess: false,
@@ -171,11 +171,13 @@ class Register extends Component {
 			register,
 		} = this.props;
 		const fields = ['username', 'code', 'password', 'confirm'];
+		const currentLanguage = getLocale();
 		validateFields(fields, async (err, values) => {
 			if (!err) {
 				const options = {
 					...values,
 					password: encryption(values.password),
+					countryCode: currentLanguage === 'zh-CN' ? 1 : 2,
 				};
 
 				const response = await register({ options });
@@ -184,6 +186,14 @@ class Register extends Component {
 		});
 	};
 
+	onCancelHandler = () => {
+		const { onCancel } = this.props;
+		this.setState({
+			registerSuccess: false,
+		});
+		onCancel();
+	}
+
 	render() {
 		const {
 			form,
@@ -191,7 +201,7 @@ class Register extends Component {
 			sso: { imgCaptcha },
 			visible,
 			loading,
-			onCancel,
+			// onCancel,
 		} = this.props;
 		const { location } = window;
 		const { notice, registerSuccess, trigger, showImgCaptchaModal } = this.state;
@@ -205,13 +215,13 @@ class Register extends Component {
 				maskClosable={false}
 				title={null}
 				footer={null}
-				onCancel={onCancel}
+				onCancel={this.onCancelHandler}
 				wrapClassName={styles['register-modal-wrapper']}
 				destroyOnClose
 			>
 				<div className={styles['custom-modal-wrapper']}>
 					<div className={styles['custom-modal-header']}>
-						<div className={styles['close-icon']} onClick={onCancel} />
+						<div className={styles['close-icon']} onClick={this.onCancelHandler} />
 					</div>
 					<div className={styles['custom-modal-content']}>
 						{registerSuccess ? (
@@ -454,7 +464,7 @@ class Register extends Component {
 										<a
 											className={styles['footer-link']}
 											href="javascript:void(0);"
-											onClick={onCancel}
+											onClick={this.onCancelHandler}
 										>
 											{formatMessage({ id: 'link.to.login' })}
 										</a>
