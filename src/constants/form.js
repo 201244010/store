@@ -114,6 +114,21 @@ export const HEAD_FORM_ITEM_LAYOUT = {
 	},
 };
 
+export const HEAD_FORM_ITEM_LAYOUT_EN = {
+	labelCol: {
+		xs: { span: 24 },
+		sm: { span: 4 },
+		md: { span: 5 },
+		xxl: { span: 2 },
+	},
+	wrapperCol: {
+		xs: { span: 24 },
+		sm: { span: 8 },
+		md: { span: 8 },
+		xxl: { span: 6 },
+	},
+};
+
 export const HEAD_FORM_ITEM_LAYOUT_MIDDLE = {
 	labelCol: {
 		xs: { span: 24 },
