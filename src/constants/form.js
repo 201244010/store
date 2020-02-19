@@ -103,7 +103,7 @@ export const HEAD_FORM_ITEM_LAYOUT = {
 	labelCol: {
 		xs: { span: 24 },
 		sm: { span: 4 },
-		md: { span: 6 },
+		md: { span: 4 },
 		xxl: { span: 2 },
 	},
 	wrapperCol: {
