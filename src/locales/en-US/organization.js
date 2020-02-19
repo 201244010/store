@@ -4,7 +4,7 @@ export default {
 	'organization.tree.modal.disable.info':'Please select a new position',
 	'organization.tree.modal.move.info.pre': '？have been selected, Please select a new position',
 	'organization.tree.modal.move.info.suf': ' ',
-	'organization.action.btn.add':'add',
+	'organization.action.btn.add':'Add',
 	'organization.action.btn.move':'Batch Move',
 	'organization.confirm.modal.title':'Notice',
 	'organization.confirm.modal.content':'Make sure to disable the organization',

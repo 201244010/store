@@ -41,7 +41,7 @@ const MailRegisterSuccess = ({ props }) => {
 			}
 			actions={
 				<div className={styles['result-action-wrapper']}>
-					{existedMail.length > 0 && (
+					{existedMail && existedMail.length > 0 && (
 						<Button
 							type="primary"
 							size="large"
