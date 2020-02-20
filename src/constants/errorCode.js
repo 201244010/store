@@ -69,7 +69,6 @@ export const ALERT_NOTICE_MAP = {
 	'201': 'alert.account.error',
 	'208': 'alert.code.expired',
 	'216': 'alert.mobile.existed',
-	'204': 'alert.mail.existed',
 	[TEMPLATE_BOUND_ESL]: 'alert.template.bound.esl',
 	[TEMPLATE_NAME_USED]: 'alert.template.name.used',
 	[ERR_ROLE_NAME_EXIST]: 'alert.role.name.exist',

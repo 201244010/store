@@ -10,12 +10,13 @@ import {
 	Button,
 	DatePicker,
 	TimePicker,
+	message,
 } from 'antd';
 import { formatMessage } from 'umi/locale';
+import moment from 'moment';
 import { customValidate } from '@/utils/customValidate';
 import { MAX_LENGTH, FORM_ITEM_LAYOUT_TWICE } from '@/constants/form';
 import { getRandomString } from '@/utils/utils';
-import moment from 'moment';
 import {
 	chargeUnitType,
 	dateFormat,
@@ -43,13 +44,13 @@ const ProductCUWeight = props => {
 				productWeigh = null,
 				tareCode = null,
 				tare = null,
-				packDist = '0',
+				packDist = '1',
 				packType = '1',
 				packDays = null,
-				usebyDist = '0',
+				usebyDist = '1',
 				usebyType = '1',
 				usebyDays = null,
-				limitDist = '0',
+				limitDist = '1',
 				limitType = '1',
 				limitDays = null,
 				exttextCode = null,
@@ -88,8 +89,13 @@ const ProductCUWeight = props => {
 
 	const addExtraList = () => {
 		const randomKey = getRandomString();
-		setExtraTextList([...extraTextList, randomKey]);
-		setExtValueList([...extValueList, null]);
+
+		if (extraTextList.length < 4) {
+			setExtraTextList([...extraTextList, randomKey]);
+			setExtValueList([...extValueList, null]);
+		} else {
+			message.info(formatMessage({ id: 'basicData.weightProduct.extraText.onLimit' }));
+		}
 	};
 
 	const removeExtraList = key => {
@@ -138,20 +144,6 @@ const ProductCUWeight = props => {
 						<Row>
 							<Col span={8}>
 								<Form.Item style={noneBottom}>
-									{getFieldDecorator('weighInfo.isDiscount', {
-										valuePropName: 'checked',
-										initialValue: isDiscount !== '0',
-									})(
-										<Checkbox>
-											{formatMessage({
-												id: 'basicData.weightProduct.isDiscount',
-											})}
-										</Checkbox>
-									)}
-								</Form.Item>
-							</Col>
-							<Col span={8}>
-								<Form.Item style={noneBottom}>
 									{getFieldDecorator('weighInfo.isAlterPrice', {
 										valuePropName: 'checked',
 										initialValue: isAlterPrice !== '0',
@@ -159,6 +151,20 @@ const ProductCUWeight = props => {
 										<Checkbox>
 											{formatMessage({
 												id: 'basicData.weightProduct.isAlterPrice',
+											})}
+										</Checkbox>
+									)}
+								</Form.Item>
+							</Col>
+							<Col span={8}>
+								<Form.Item style={noneBottom}>
+									{getFieldDecorator('weighInfo.isDiscount', {
+										valuePropName: 'checked',
+										initialValue: isDiscount !== '0',
+									})(
+										<Checkbox>
+											{formatMessage({
+												id: 'basicData.weightProduct.isDiscount',
 											})}
 										</Checkbox>
 									)}
@@ -394,9 +400,6 @@ const ProductCUWeight = props => {
 					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.packDays' })}>
 						{selectedPackType === '1'
 							? getFieldDecorator('weighInfo.packDays', {
-								initialValue: !packDays ? null : moment(packDays, dateFormat),
-							  })(<DatePicker format={dateFormat} />)
-							: getFieldDecorator('weighInfo.packDays', {
 								initialValue: packDays,
 								validateTrigger: 'onBlur',
 								rules: [
@@ -416,7 +419,10 @@ const ProductCUWeight = props => {
 										id: 'basicData.product.expire_time.day',
 									})}
 								/>
-							  )}
+							  )
+							: getFieldDecorator('weighInfo.packDays', {
+								initialValue: !packDays ? null : moment(packDays, dateFormat),
+							  })(<DatePicker format={dateFormat} />)}
 					</Form.Item>
 				</Col>
 			</Row>
@@ -475,11 +481,6 @@ const ProductCUWeight = props => {
 					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.usebyDays' })}>
 						{selectedUseByType === '1' &&
 							getFieldDecorator('weighInfo.usebyDays', {
-								initialValue: !usebyDays ? null : moment(usebyDays, dateFormat),
-							})(<DatePicker format={dateFormat} />)}
-
-						{selectedUseByType === '2' &&
-							getFieldDecorator('weighInfo.usebyDays', {
 								initialValue: usebyDays,
 								validateTrigger: 'onBlur',
 								rules: [
@@ -500,6 +501,11 @@ const ProductCUWeight = props => {
 									})}
 								/>
 							)}
+
+						{selectedUseByType === '2' &&
+							getFieldDecorator('weighInfo.usebyDays', {
+								initialValue: !usebyDays ? null : moment(usebyDays, dateFormat),
+							})(<DatePicker format={dateFormat} />)}
 
 						{selectedUseByType === '3' &&
 							getFieldDecorator('weighInfo.usebyDays', {
@@ -563,11 +569,6 @@ const ProductCUWeight = props => {
 					<Form.Item label={formatMessage({ id: 'basicData.weightProduct.limitDays' })}>
 						{selectedLimitType === '1' &&
 							getFieldDecorator('weighInfo.limitDays', {
-								initialValue: !limitDays ? null : moment(limitDays, dateFormat),
-							})(<DatePicker format={dateFormat} />)}
-
-						{selectedLimitType === '2' &&
-							getFieldDecorator('weighInfo.limitDays', {
 								initialValue: limitDays,
 								validateTrigger: 'onBlur',
 								rules: [
@@ -588,6 +589,11 @@ const ProductCUWeight = props => {
 									})}
 								/>
 							)}
+
+						{selectedLimitType === '2' &&
+							getFieldDecorator('weighInfo.limitDays', {
+								initialValue: !limitDays ? null : moment(limitDays, dateFormat),
+							})(<DatePicker format={dateFormat} />)}
 
 						{selectedLimitType === '3' &&
 							getFieldDecorator('weighInfo.limitDays', {
@@ -654,13 +660,11 @@ const ProductCUWeight = props => {
 				</Form.Item>
 			))}
 
-			{extraTextList.length < 4 && (
-				<Form.Item label=" " colon={false} {...FORM_ITEM_LAYOUT_TWICE}>
-					<Button type="dashed" icon="plus" block onClick={addExtraList}>
-						{formatMessage({ id: 'btn.create' })}
-					</Button>
-				</Form.Item>
-			)}
+			<Form.Item label=" " colon={false} {...FORM_ITEM_LAYOUT_TWICE}>
+				<Button type="dashed" icon="plus" block onClick={addExtraList}>
+					{formatMessage({ id: 'btn.create' })}
+				</Button>
+			</Form.Item>
 		</Card>
 	);
 };

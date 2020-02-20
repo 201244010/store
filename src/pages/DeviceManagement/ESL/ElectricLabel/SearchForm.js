@@ -16,8 +16,10 @@ class SearchForm extends Component {
 	};
 
 	search = () => {
-		const { fetchElectricLabels } = this.props;
+		const { fetchElectricLabels, fetchProductOverview, fetchDeviceOverview } = this.props;
 		fetchElectricLabels();
+		fetchProductOverview();
+		fetchDeviceOverview();
 	};
 
 	handleReset = async () => {
@@ -34,7 +36,7 @@ class SearchForm extends Component {
 	};
 
 	render() {
-		const { searchFormValues } = this.props;
+		const { searchFormValues, modelList } = this.props;
 
 		return (
 			<div className={styles['search-bar']}>
@@ -52,7 +54,27 @@ class SearchForm extends Component {
 								/>
 							</Form.Item>
 						</Col>
-						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+						<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
+							<Form.Item label={formatMessage({ id: 'esl.device.esl.model.name' })}>
+								<Select
+									placeholder={formatMessage({ id: 'select.placeholder' })}
+									value={searchFormValues.modelId}
+									onChange={val => this.changeFormValues('select', 'modelId', val)}
+								>
+									<Select.Option value={-1}>
+										{formatMessage({ id: 'select.all' })}
+									</Select.Option>
+									{
+										modelList.map(model =>
+											<Select.Option value={model.id} key={model.id}>
+												{model.name}
+											</Select.Option>
+										)
+									}
+								</Select>
+							</Form.Item>
+						</Col>
+						<Col {...SEARCH_FORM_COL.ONE_SIXTH}>
 							<Form.Item label={formatMessage({ id: 'esl.device.esl.status' })}>
 								<Select
 									placeholder={formatMessage({ id: 'select.placeholder' })}

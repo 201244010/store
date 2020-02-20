@@ -1,9 +1,9 @@
 import React from 'react';
 import { Avatar, List } from 'antd';
-import { AVATA_IMG } from '@/constants/index';
 import classNames from 'classnames';
-import styles from './NoticeList.less';
+import { AVATA_IMG } from '@/constants/index';
 import { formatMessageTemplate } from '@/utils/utils';
+import styles from './NoticeList.less';
 
 export default function NoticeList({
 	data = [],
