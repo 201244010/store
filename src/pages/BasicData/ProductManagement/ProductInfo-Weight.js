@@ -55,19 +55,19 @@ const ProductInfoWeight = ({ productWeight = {} }) => {
 
 				<div className={`${styles['card-item']}`}>
 					<span className={styles['item-label']}>
-						{formatMessage({ id: isDiscount.label })}：
+						{formatMessage({ id: isAlterPrice.label })}：
 					</span>
 					<span className={styles['item-content']}>
-						{isDiscount.value === '0'
+						{isAlterPrice.value === '0'
 							? formatMessage({ id: 'text.no' })
 							: formatMessage({ id: 'text.yes' })}
 					</span>
 
 					<span className={styles['item-label']}>
-						{formatMessage({ id: isAlterPrice.label })}：
+						{formatMessage({ id: isDiscount.label })}：
 					</span>
 					<span className={styles['item-content']}>
-						{isAlterPrice.value === '0'
+						{isDiscount.value === '0'
 							? formatMessage({ id: 'text.no' })
 							: formatMessage({ id: 'text.yes' })}
 					</span>
@@ -164,7 +164,7 @@ const ProductInfoWeight = ({ productWeight = {} }) => {
 					</span>
 					<span className={styles['item-content']}>
 						{packDays.value}
-						{packType.value === '2' && packDays.value
+						{packType.value === '1' && packDays.value
 							? formatMessage({ id: 'basicData.product.expire_time.day' })
 							: ''}
 					</span>
@@ -198,7 +198,7 @@ const ProductInfoWeight = ({ productWeight = {} }) => {
 					</span>
 					<span className={styles['item-content']}>
 						{usebyDays.value}
-						{usebyType.value === '2' && usebyDays.value
+						{usebyType.value === '1' && usebyDays.value
 							? formatMessage({ id: 'basicData.product.expire_time.day' })
 							: ''}
 					</span>
@@ -232,7 +232,7 @@ const ProductInfoWeight = ({ productWeight = {} }) => {
 					</span>
 					<span className={styles['item-content']}>
 						{limitDays.value}
-						{limitType.value === '2' && limitDays.value
+						{limitType.value === '1' && limitDays.value
 							? formatMessage({ id: 'basicData.product.expire_time.day' })
 							: ''}
 					</span>

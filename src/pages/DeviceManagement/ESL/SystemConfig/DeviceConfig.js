@@ -346,7 +346,20 @@ class SystemConfig extends Component {
 			networkId,
 			...blueToothStatus
 		});
+		this.isSaveBlueToothTimeOut();
+	};
 
+	isSaveBlueToothTimeOut = () => {
+		clearTimeout(this.saveBlueToothTimer);
+		this.saveBlueToothTimer = setTimeout(() => {
+			const {blueToothBtnLoading} = this.state;
+			if (blueToothBtnLoading) {
+			 	message.error(formatMessage({id: 'esl.device.config.baseStation.offline.fail'}));
+			}
+			this.setState({
+				blueToothBtnLoading: false
+			});
+		}, 30 * 1000);
 	};
 
 	render() {

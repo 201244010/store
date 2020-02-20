@@ -4,12 +4,12 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { melt, format, map, shake } from '@konata9/milk-shake';
 import moment from 'moment';
+import { getLocationParam, idDecode } from '@/utils/utils';
+import { FORM_ITEM_LAYOUT } from '@/constants/form';
+import { ERROR_OK, PRODUCT_SEQ_EXIST, PRODUCT_PLU_EXIST } from '@/constants/errorCode';
 import ProductCUBasic from './ProductCU-Basic';
 import ProductCUWeight from './ProductCU-Weight';
 import ProductCUPrice from './ProductCU-Price';
-import { getLocationParam, idDecode } from '@/utils/utils';
-import { FORM_ITEM_LAYOUT } from '@/constants/form';
-import { ERROR_OK, PRODUCT_SEQ_EXIST } from '@/constants/errorCode';
 import * as styles from './ProductManagement.less';
 
 @connect(
@@ -52,7 +52,7 @@ class ProductCU extends Component {
 				const result = map([{ from: 'Type', to: 'type' }])(
 					format('toCamel')(response.data || {})
 				);
-				console.log(result);
+				// console.log(result);
 				this.setState({
 					productType: result.type || 0,
 					productBasicExtra: result.extraInfo,
@@ -152,7 +152,7 @@ class ProductCU extends Component {
 								weighInfo: { usebyType, usebyDays },
 							} = values;
 							if (data && moment.isMoment(usebyDays)) {
-								return usebyType === '1'
+								return usebyType === '2'
 									? usebyDays.format('YYYY-MM-DD')
 									: usebyDays.format('HH:mm');
 							}
@@ -173,7 +173,7 @@ class ProductCU extends Component {
 							} = values;
 
 							if (data && moment.isMoment(limitDays)) {
-								return limitType === '1'
+								return limitType === '2'
 									? limitDays.format('YYYY-MM-DD')
 									: limitDays.format('HH:mm');
 							}
@@ -217,6 +217,7 @@ class ProductCU extends Component {
 			form: { validateFields, setFields },
 		} = this.props;
 		validateFields(async (err, values) => {
+			// console.log(values);
 			if (!err) {
 				const submitValue = this.formatSubmitValue(values);
 				const response = await submitFunction[action]({
@@ -231,6 +232,19 @@ class ProductCU extends Component {
 						seqNum: {
 							values: values.seqNum,
 							errors: [new Error(formatMessage({ id: 'product.seq_num.isExist' }))],
+						},
+					});
+				} else if (response && response.code === PRODUCT_PLU_EXIST) {
+					setFields({
+						'weighInfo.pluCode': {
+							values: values['weighInfo.pluCode'],
+							errors: [
+								new Error(
+									formatMessage({
+										id: 'basicData.weightProduct.pluCode.exist',
+									})
+								),
+							],
 						},
 					});
 				}

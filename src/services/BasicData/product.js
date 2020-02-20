@@ -102,3 +102,36 @@ export const erpImport = (options = {}) => {
 
 	return fetchApi('import', opts).then(response => response.json());
 };
+
+export const importByExcel = (options = {}) => {
+	const opts = {
+		method: 'POST',
+		body: {
+			...options,
+		},
+	};
+
+	return fetchApi('importExcel', opts).then(response => response.json());
+};
+
+export const downloadExcelTemplate = (options = {}) => {
+	const opts = {
+		method: 'POST',
+		body: {
+			...options,
+		},
+	};
+
+	return fetchApi('getExcelExample', opts).then(response => response.json());
+};
+
+export const getImportProgress = (options = {}) => {
+	const opts = {
+		method: 'POST',
+		body: {
+			...options,
+		},
+	};
+
+	return fetchApi('getImportProgress', opts).then(response => response.json());
+};

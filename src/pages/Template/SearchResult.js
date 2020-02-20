@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Divider, Modal, Button, Form, Input, Select, Row, Col, Upload, message } from 'antd';
 import { formatMessage } from 'umi/locale';
+import formatedMessage from '@/constants/templateNames';
 import { ERROR_OK } from '@/constants/errorCode';
 import { PREVIEW_MAP } from '@/constants/studio';
 import { unixSecondToDate } from '@/utils/utils';
@@ -297,7 +298,7 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.template.name' }),
 				dataIndex: 'name',
-				render: text => <span>{formatMessage({ id: text })}</span>,
+				render: text => <span>{formatedMessage(text)}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.template.size' }),
@@ -649,7 +650,7 @@ class SearchResult extends Component {
 					</Form>
 				</Modal>
 				<Modal
-					title={formatMessage({id: curRecord.name || ' '})}
+					title={formatedMessage(curRecord.name)}
 					width={PREVIEW_MAP.SCREEN_ID_WIDTH[curRecord.screen_type]}
 					visible={previewVisible}
 					onOk={this.handleCancelPreview}
