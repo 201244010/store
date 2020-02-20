@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import {Modal, message, Button} from 'antd';
 import { formatMessage } from 'umi/locale';
-import ButtonIcon from './ButtonIcon';
-import ZoomIcon from './ZoomIcon';
+import formatedMessage from '@/constants/templateNames';
 import { getLocationParam } from '@/utils/utils';
 import { ERROR_OK } from '@/constants/errorCode';
 import { PREVIEW_MAP } from '@/constants/studio';
+import ButtonIcon from './ButtonIcon';
+import ZoomIcon from './ZoomIcon';
 import * as styles from './index.less';
 
 export default class BoardHeader extends Component {
@@ -155,7 +156,7 @@ export default class BoardHeader extends Component {
 							{
 								templateInfo.name ?
 									<>
-										<span className={styles['edit-content']}>{formatMessage({id: templateInfo.name})}</span>
+										<span className={styles['edit-content']}>{formatedMessage(templateInfo.name)}</span>
 										<img
 											className={styles['edit-img']}
 											src={require('@/assets/studio/edit.svg')}
@@ -177,7 +178,7 @@ export default class BoardHeader extends Component {
 				<Modal
 					title={
 						<div className={styles['preview-img-title']}>
-							{formatMessage({id: templateInfo.name || ' '})}
+							{formatedMessage(templateInfo.name)}
 						</div>
 					}
 					width={PREVIEW_MAP.TYPE_NAME_WIDTH[templateInfo.screen_type_name]}
