@@ -1,5 +1,5 @@
 export default {
-	'merchantManagement.merchant.view': 'Check Merchant',
+	'merchantManagement.merchant.view': 'Merchant Details',
 	'merchantManagement.merchant.modify': 'Edit Merchant',
 	'merchantManagement.merchant.number': 'Merchant No.',
 	'merchantManagement.merchant.name': 'Merchant Name',
@@ -8,7 +8,7 @@ export default {
 	'merchantManagement.merchant.contactEmail': 'Contact Email',
 	'merchantManagement.merchant.createTime': 'Create Time',
 	'merchantManagement.merchant.updateTime': 'Update Time',
-	'merchantManagement.merchant.viewMerchant': 'Check Merchant',
+	'merchantManagement.merchant.viewMerchant': 'Merchant Details',
 	'merchantManagement.merchant.merchantMessage': 'Merchant Information',
 	'merchantManagement.merchant.welcome': 'Welcome! Please create a merchant.',
 	'merchantManagement.merchant.createMerchant': 'Create a merchant',

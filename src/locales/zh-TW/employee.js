@@ -37,4 +37,6 @@
 	'employee.info.create.failed': '員工創建失敗',
 	'employee.info.update.failed': '員工更新失敗',
 	'employee.info.binded.error': '員工工號/手機/郵箱/商米賬號已被綁定',
+	'employee.create.success': '員工創建成功',
+	'employee.update.success': '員工修改成功',
 };

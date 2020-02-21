@@ -22,6 +22,7 @@ export const EMPLOYEE_NUMBER_BINDED = 5403;
 
 export const PRODUCT_SEQ_EXIST = 5051;
 export const PRODUCT_PLU_EXIST = 5000;
+export const PRODUCT_EXCEL_WRONG = 5005;
 export const STORE_EXIST = 5034;
 export const ERR_FIRMWARE_EXIST = 5801;
 export const ERR_FIRMWARE_VERSION_LOWER = 5802;
@@ -52,6 +53,7 @@ export const ERR_DELETE_DEFAULT_ROLE_DENIED = 5431;
 
 export const ORGANIZATION_NO_DESABLED = 5440;
 export const ORGANIZATION_LEVEL_LIMITED = 5442;
+export const ORGANIZATION_DISABLED = 5443;
 
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',

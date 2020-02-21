@@ -10,7 +10,7 @@ import { getLocationParam } from '@/utils/utils';
 import { customValidate } from '@/utils/customValidate';
 import * as CookieUtil from '@/utils/cookies';
 import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
-import { ERROR_OK, STORE_EXIST, ORGANIZATION_LEVEL_LIMITED } from '@/constants/errorCode';
+import { ERROR_OK, STORE_EXIST, ORGANIZATION_LEVEL_LIMITED, ORGANIZATION_DISABLED } from '@/constants/errorCode';
 import * as RegExp from '@/constants/regexp';
 
 import styles from './CompanyInfo.less';
@@ -402,6 +402,9 @@ class CompanyInfo extends React.Component {
 						await this.init();
 					}else if(code === ORGANIZATION_LEVEL_LIMITED){
 						message.error(formatMessage({id: 'companyInfo.message.level.limited'}));
+						await this.init();
+					}else if(code === ORGANIZATION_DISABLED){
+						message.error(formatMessage({id: 'companyInfo.message.pOrg.disabled'}));
 						await this.init();
 					}
 				}

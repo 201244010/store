@@ -310,6 +310,9 @@ export const getImagePromise = componentDetail =>
 						format: componentDetail.codec,
 						height: MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY * componentDetail.zoomScale,
 						margin: 0,
+						textPosition: 'top',
+						fontSize: 0,
+						textMargin: 0,
 						displayValue: false
 					});
 				} catch (e) {
@@ -488,10 +491,19 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 		}
 
 		// 计算height, width
+		const screenType = getLocationParam('screen');
+		const oZoomScale = MAPS.screen[screenType].zoomScale;
+
 		if (SHAPE_TYPES.IMAGE === componentDetail.type) {
 			const backWidth = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.width = backWidth;
 			componentDetail.height = backWidth * componentDetail.ratio;
+		} else if (SHAPE_TYPES.CODE_H === componentDetail.type) {
+			componentDetail.width = Math.round(componentDetail.image.width * componentDetail.scaleX / (componentDetail.oZoomScale || oZoomScale));
+			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
+		} else if (SHAPE_TYPES.CODE_V === componentDetail.type) {
+			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
+			componentDetail.height = Math.round(componentDetail.image.width * componentDetail.scaleY / (componentDetail.oZoomScale || oZoomScale));
 		} else {
 			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);

@@ -135,6 +135,7 @@ const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
 		getStoreNameById,
 		getStoreList,
 		goToPath,
+		fetchElectricLabels
 	} = handlers || {};
 
 	const {
@@ -168,6 +169,9 @@ const switchPage = async ({ target = null, handlers = {}, params = '' }) => {
 			targetShopName,
 		});
 	}
+	if (target === 'electricLabel') {
+		fetchElectricLabels();
+	}
 };
 
 const ACTION_MAP = {
@@ -182,6 +186,9 @@ const ACTION_MAP = {
 
 	'notif-system-task-erp-btn1': ({ handlers, params }) =>
 		switchPage({ target: 'productList', handlers, params }),
+
+	'notif-device-esl-image-push-status-btn1': ({ handlers, params }) =>
+		switchPage({ target: 'electricLabel', handlers, params }),
 
 	'notif-device-ipc-motion-detect-video-btn1': palyMotion,
 	'notif-device-ipc-motion-detect-audio-btn1': palyMotion,
@@ -682,8 +689,8 @@ const NotificationHandler = props => {
 
 	const handleAction = () => {
 		if (buttonName) {
-			const hander = ACTION_MAP[buttonName] || (() => null);
-			hander({ handlers, params: buttonParams, extra });
+			const handler = ACTION_MAP[buttonName] || (() => null);
+			handler({ handlers, params: buttonParams, extra });
 		}
 	};
 

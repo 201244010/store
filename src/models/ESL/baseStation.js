@@ -306,7 +306,7 @@ export default {
 							};
 						}
 
-						handler(errcode, action, networkConfig, opcode);
+						handler(errcode, action, networkConfig, opcode, data[0].result || {});
 					},
 				},
 			});
@@ -338,7 +338,7 @@ export default {
 				scanPeriod,
 				isEnergySave,
 				scanMulti,
-				clksyncPeriod,
+				// clksyncPeriod,
 				eslRefleshPeriod,
 				eslRefleshTime,
 				scanDeepSleep,
@@ -354,10 +354,10 @@ export default {
 				scanDeepSleep,
 				wakePeriod
 			});
-			const param2 = format('toSnake')({
-				networkId,
-				clksyncPeriod: parseInt(clksyncPeriod, 10) * 24 * 3600,
-			});
+			// const param2 = format('toSnake')({
+			// 	networkId,
+			// 	clksyncPeriod: parseInt(clksyncPeriod, 10) * 24 * 3600,
+			// });
 			const param3 = format('toSnake')({
 				networkId,
 				eslRefleshPeriod: parseInt(eslRefleshPeriod, 10),
@@ -379,16 +379,16 @@ export default {
 				},
 			});
 
-			yield put({
-				type: 'mqttStore/publish',
-				payload: {
-					topic: requestTopic,
-					message: {
-						opcode: OPCODE.SET_CLKSYNC,
-						param: param2
-					},
-				},
-			});
+			// yield put({
+			// 	type: 'mqttStore/publish',
+			// 	payload: {
+			// 		topic: requestTopic,
+			// 		message: {
+			// 			opcode: OPCODE.SET_CLKSYNC,
+			// 			param: param2
+			// 		},
+			// 	},
+			// });
 
 			yield put({
 				type: 'mqttStore/publish',
@@ -410,7 +410,55 @@ export default {
 					networkConfig
 				}
 			});
-		}
+		},
+
+		*getBlueToothConfig({ payload }, { put }) {
+			const { networkId, sn } = payload;
+			const requestTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'ESL/request' },
+			});
+
+			yield put({
+				type: 'mqttStore/publish',
+				payload: {
+					topic: requestTopic,
+					message: {
+						opcode: OPCODE.GET_BLUE_TOOTH_CONFIG,
+						param: {
+							network_id: networkId,
+							sn
+						},
+					},
+				},
+			});
+		},
+
+		*setBlueToothConfig({ payload }, { put }) {
+			const { networkId, sn, status0,  status1, status2, status3 } = payload;
+			const requestTopic = yield put.resolve({
+				type: 'mqttStore/generateTopic',
+				payload: { service: 'ESL/request' },
+			});
+
+			yield put({
+				type: 'mqttStore/publish',
+				payload: {
+					topic: requestTopic,
+					message: {
+						opcode: OPCODE.SET_BLUE_TOOTH_CONFIG,
+						param: {
+							network_id: networkId,
+							sn,
+							adv_status_ble_0: status0,
+							adv_status_ble_1: status1,
+							adv_status_ble_2: status2,
+							adv_status_ble_3: status3
+						},
+					},
+				},
+			});
+		},
 	},
 	reducers: {
 		updateState(state, action) {

@@ -234,6 +234,9 @@ export default class RightToolBox extends Component {
 				format: value,
 				height: MAPS.containerHeight[detail.type] * detail.scaleY * detail.zoomScale,
 				margin: 0,
+				textPosition: 'top',
+				fontSize: 0,
+				textMargin: 0,
 				displayValue: false
 			});
 
@@ -371,6 +374,9 @@ export default class RightToolBox extends Component {
 					format: detail.codec,
 					height: MAPS.containerHeight[detail.type] * detail.scaleY * detail.zoomScale,
 					margin: 0,
+					textPosition: 'top',
+					fontSize: 0,
+					textMargin: 0,
 					displayValue: false
 				});
 
@@ -396,6 +402,9 @@ export default class RightToolBox extends Component {
 					format: detail.codec,
 					height: MAPS.containerHeight[detail.type] * detail.scaleY * detail.zoomScale,
 					margin: 0,
+					textPosition: 'top',
+					fontSize: 0,
+					textMargin: 0,
 					displayValue: false
 				});
 
@@ -580,9 +589,9 @@ export default class RightToolBox extends Component {
 		const realWidth = detail.scaleX ? Math.round(MAPS.containerWidth[detail.type] * detail.scaleX) : '';
 		const realHeight = detail.scaleY ? Math.round(MAPS.containerHeight[detail.type] * detail.scaleY) : '';
 
-		const disabled = selectedShapeName.indexOf(SHAPE_TYPES.RECT_FIX) > -1;
-		const widthDisabled = disabled || selectedShapeName.indexOf(SHAPE_TYPES.LINE_V) > -1;
-		const heightDisabled = disabled || selectedShapeName.indexOf(SHAPE_TYPES.IMAGE) > -1 || selectedShapeName.indexOf(SHAPE_TYPES.LINE_H) > -1;
+		const disabled = [SHAPE_TYPES.RECT_FIX].includes(detail.type);
+		const widthDisabled = disabled || [SHAPE_TYPES.LINE_V, SHAPE_TYPES.CODE_H].includes(detail.type);
+		const heightDisabled = disabled || [SHAPE_TYPES.IMAGE, SHAPE_TYPES.LINE_H, SHAPE_TYPES.CODE_V].includes(detail.type);
 		const hasRed = this.hasRed();
 		const bindFields = this.getRealBindFields();
 
@@ -811,7 +820,7 @@ export default class RightToolBox extends Component {
 									}}
 								>
 									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="AlibabaSans">Alibaba Sans</Option>
+									<Option value="Alibaba Sans">Alibaba Sans</Option>
 								</Select>
 							</Col>
 						</Row>

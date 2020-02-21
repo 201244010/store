@@ -14,6 +14,7 @@ export default {
 		searchFormValues: {
 			keyword: '',
 			status: -1,
+			modelId: -1
 		},
 		pagination: {
 			current: 1,
@@ -23,6 +24,7 @@ export default {
 			showSizeChanger: true,
 			showQuickJumper: true,
 		},
+		modelList: [],
 		detailInfo: {},
 		templates4ESL: [],
 		flashModes: [],
@@ -46,6 +48,7 @@ export default {
 					searchFormValues: {
 						keyword: '',
 						status: -1,
+						modelId: -1
 					},
 				},
 			});
@@ -101,6 +104,21 @@ export default {
 			}
 			return response;
 		},
+		*fetchModelList({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+			const response = yield call(ESLServices.getModelList, options);
+			const result = response.data || {};
+			if (response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: {
+						modelList: result.model_list || [],
+					},
+				});
+			}
+			return response;
+		},
+
 		*fetchFlashModes({ payload = {} }, { call, put }) {
 			const { options = {} } = payload;
 
@@ -454,9 +472,142 @@ export default {
 					searchFormValues: {
 						keyword: '',
 						status: -1,
+						modelId: -1
 					},
 				},
 			});
+		},
+
+		*batchDeleteESL({ payload = {} }, { call, put, select }) {
+			const {
+				pagination: { current },
+				data,
+			} = yield select(state => state.eslElectricLabel);
+			const { options = {} } = payload;
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+
+			const targetPage = data.length === 1 ? 1 : current;
+			const response = yield call(ESLServices.batchDeleteESL, options);
+			if (response.code === ERROR_OK) {
+				message.success(
+					formatMessage({ id: 'esl.device.esl.delete.success' }),
+					DURATION_TIME
+				);
+				yield put({
+					type: 'fetchElectricLabels',
+					payload: {
+						options: {
+							current: targetPage,
+						},
+					},
+				});
+			} else if (response.code === SWITCH_SCEEN_NO_DELETE) {
+				message.error(formatMessage({ id: 'esl.device.esl.delete.fail.switch.screen' }), DURATION_TIME);
+			} else {
+				message.error(formatMessage({ id: 'esl.device.esl.delete.fail' }), DURATION_TIME);
+			}
+			yield put({
+				type: 'updateState',
+				payload: { loading: false },
+			});
+
+			return response;
+		},
+
+		*batchUnbindESL({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+
+			const response = yield call(ProductServices.batchUnbindESL, options);
+			if (response.code === ERROR_OK) {
+				message.success(
+					formatMessage({ id: 'esl.device.esl.unbind.success' }),
+					DURATION_TIME
+				);
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				yield put({
+					type: 'fetchElectricLabels',
+				});
+			} else {
+				message.error(formatMessage({ id: 'esl.device.esl.unbind.fail' }), DURATION_TIME);
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+			}
+		},
+
+		*batchFlushESL({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+
+			const response = yield call(ProductServices.batchFlushESL, options);
+			if (response.code === ERROR_OK) {
+				message.success(
+					formatMessage({ id: 'esl.device.esl.flush.success' }),
+					DURATION_TIME
+				);
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				yield put({
+					type: 'fetchElectricLabels',
+				});
+			} else {
+				message.error(formatMessage({ id: 'esl.device.esl.flush.fail' }), DURATION_TIME);
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+			}
+
+			return response;
+		},
+
+		*batchChangeTemplate({ payload = {} }, { call, put }) {
+			const { options = {} } = payload;
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+
+			const response = yield call(ESLServices.batchChangeTemplate, options);
+			if (response.code === ERROR_OK) {
+				message.success(
+					formatMessage({ id: 'esl.device.esl.change.template.success' }),
+					DURATION_TIME
+				);
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				yield put({
+					type: 'fetchElectricLabels',
+				});
+			} else {
+				message.error(
+					formatMessage({ id: 'esl.device.esl.change.template.fail' }),
+					DURATION_TIME
+				);
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+			}
+			return response;
 		},
 	},
 	reducers: {

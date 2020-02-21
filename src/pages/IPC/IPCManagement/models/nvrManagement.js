@@ -12,7 +12,8 @@ export default {
 	state:{
 		sn: '',
 		nvrState: false,
-		loadState: false
+		loadState: false,
+		setState: false, // 暂存用户设置值
 	},
 	reducers:{
 		readData(state, { payload }) {
@@ -22,13 +23,13 @@ export default {
 			};
 		},
 		setOppoSiteState(state){
-			const { nvrState } = state;
+			const { setState } = state;
 			return{
 				...state,
-				nvrState: !nvrState
+				nvrState: setState
 			};
 		}
-		
+
 	},
 	effects:{
 		*read({ payload: { sn }}, { put }) {
@@ -108,7 +109,8 @@ export default {
 			yield put({
 				type: 'readData',
 				payload: {
-					loadState: true
+					loadState: true,
+					setState: nvrState
 				}
 			});
 

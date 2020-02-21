@@ -52,6 +52,7 @@ import * as styles from './index.less';
 		fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
 		renameTemplate: payload => dispatch({ type: 'template/renameTemplate', payload }),
 		uploadImage: payload => dispatch({ type: 'template/uploadImage', payload }),
+		previewTemplate: payload => dispatch({ type: 'template/previewTemplate', payload }),
 	})
 )
 class Studio extends Component {
@@ -1062,7 +1063,7 @@ class Studio extends Component {
 	};
 
 	detectFonts = () => {
-		const fonts = ['Zfull-GB'];
+		const fonts = ['Zfull-GB', 'Alibaba Sans'];
 		const fontDetector = new FontDetector();
 
 		this.setState({
@@ -1071,7 +1072,11 @@ class Studio extends Component {
 	}
 
 	downloadFont = (font) => {
-		downloadFileByClick(`${Config.API_ADDRESS}/static/${font}.ttf`);
+		const fontUrls = {
+			'Zfull-GB': 'Zfull-GB.ttf',
+			'Alibaba Sans': 'AlibabaSans.otf'
+		};
+		downloadFileByClick(`${Config.API_ADDRESS}/static/${fontUrls[font]}`);
 	};
 
 	render() {
@@ -1089,6 +1094,7 @@ class Studio extends Component {
 				zoomOutOrIn,
 				renameTemplate,
 				fetchTemplateDetail,
+				previewTemplate,
 				studio: {
 					selectedShapeName,
 					selectedComponent,
@@ -1123,6 +1129,7 @@ class Studio extends Component {
 							nextStep: this.nextStep,
 							renameTemplate,
 							fetchTemplateDetail,
+							previewTemplate
 						}}
 					/>
 				</div>

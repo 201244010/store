@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Transformer } from 'react-konva';
 import { getTypeByName } from '@/utils/studio';
-import { SHAPE_TYPES, IMAGE_TYPES } from '@/constants/studio';
+import { SHAPE_TYPES } from '@/constants/studio';
 
 export default class MTransformer extends Component {
 	componentDidMount() {
@@ -16,16 +16,25 @@ export default class MTransformer extends Component {
 		const { componentsDetail, selectedShapeName, zoomScale } = this.props;
 		const detail = componentsDetail[selectedShapeName];
 
-		if (selectedShapeName.indexOf(SHAPE_TYPES.LINE_V) === -1) {
-
+		if (detail.type !== SHAPE_TYPES.LINE_V) {
 			if (newBoundBox.width < (detail.fontSize || 10) * zoomScale) {
 				newBoundBox.width = (detail.fontSize || 10) * zoomScale;
 				return oldBoundBox;
 			}
 		}
-		if (selectedShapeName.indexOf(SHAPE_TYPES.LINE_H) === -1) {
+		if (detail.type !== SHAPE_TYPES.LINE_H) {
 			if (newBoundBox.height < (detail.fontSize || 10) * zoomScale) {
 				newBoundBox.height = (detail.fontSize || 10) * zoomScale;
+				return oldBoundBox;
+			}
+		}
+		if (detail.type === SHAPE_TYPES.CODE_H) {
+			if (newBoundBox.height > newBoundBox.width - 10) {
+				return oldBoundBox;
+			}
+		}
+		if (detail.type === SHAPE_TYPES.CODE_V) {
+			if (newBoundBox.width > newBoundBox.height - 10) {
 				return oldBoundBox;
 			}
 		}
@@ -58,7 +67,7 @@ export default class MTransformer extends Component {
 		const { selectedShapeName } = this.props;
 		const type = getTypeByName(selectedShapeName);
 
-		if (IMAGE_TYPES.includes(type)) {
+		if ([SHAPE_TYPES.IMAGE, SHAPE_TYPES.CODE_QR].includes(type)) {
 			return (
 				<Transformer
 					ref={node => {
@@ -69,6 +78,36 @@ export default class MTransformer extends Component {
 					rotateAnchorOffset={20}
 					rotateEnabled={false}
 					enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+					boundBoxFunc={this.boundBoxFunc}
+				/>
+			);
+		}
+		if ([SHAPE_TYPES.CODE_H].includes(type)) {
+			return (
+				<Transformer
+					ref={node => {
+						this.transformer = node;
+					}}
+					anchorSize={6}
+					anchorCornerRadius={3}
+					rotateAnchorOffset={20}
+					rotateEnabled={false}
+					enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right', 'top-center', 'bottom-center']}
+					boundBoxFunc={this.boundBoxFunc}
+				/>
+			);
+		}
+		if ([SHAPE_TYPES.CODE_V].includes(type)) {
+			return (
+				<Transformer
+					ref={node => {
+						this.transformer = node;
+					}}
+					anchorSize={6}
+					anchorCornerRadius={3}
+					rotateAnchorOffset={20}
+					rotateEnabled={false}
+					enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right', 'middle-right', 'middle-left']}
 					boundBoxFunc={this.boundBoxFunc}
 				/>
 			);

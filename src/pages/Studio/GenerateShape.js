@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Group, Rect, Text, Image, Shape } from 'react-konva';
+import { getLocationParam } from '@/utils/utils';
 import { SHAPE_TYPES, SIZES, MAPS } from '@/constants/studio';
 
 const initFontStyle = (option) => {
@@ -31,6 +32,12 @@ export default function generateShape(option) {
 	let shape;
 	if (option.type === undefined) {
 		return null;
+	}
+
+	const screenType = getLocationParam('screen');
+	const oZoomScale = MAPS.screen[screenType].zoomScale;
+	if (!option.oZoomScale) {
+		option.oZoomScale = oZoomScale;
 	}
 
 	switch (option.type) {
@@ -761,7 +768,7 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
-							width: option.image.width,
+							width: option.image.width * option.zoomScale / option.oZoomScale,
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
@@ -786,7 +793,7 @@ export default function generateShape(option) {
 							name: option.name,
 							x: option.x,
 							y: option.y,
-							width: option.image.width,
+							width: option.image.width * option.zoomScale / option.oZoomScale,
 							height: MAPS.containerHeight[option.type] * option.zoomScale,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
@@ -819,13 +826,13 @@ export default function generateShape(option) {
 							x: option.x,
 							y: option.y,
 							width: MAPS.containerWidth[option.type] * option.zoomScale,
-							height: option.image.width,
+							height: option.image.width * option.zoomScale / option.oZoomScale,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
 							sceneFunc(context) {
 								context.rotate(Math.PI / 2);
 								context.translate(0, -MAPS.containerWidth[option.type] * option.zoomScale);
-								context.drawImage(option.image, 0, 0, option.image.width, MAPS.containerWidth[option.type] * option.zoomScale);
+								context.drawImage(option.image, 0, 0, option.image.width * option.zoomScale / option.oZoomScale, MAPS.containerWidth[option.type] * option.zoomScale);
 							},
 							draggable: true,
 							onTransform: option.onTransform,
@@ -848,7 +855,7 @@ export default function generateShape(option) {
 							x: option.x,
 							y: option.y,
 							width: MAPS.containerWidth[option.type] * option.zoomScale,
-							height: option.image.width,
+							height: option.image.width * option.zoomScale / option.oZoomScale,
 							scaleX: option.scaleX,
 							scaleY: option.scaleY,
 							draggable: true,

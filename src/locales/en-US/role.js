@@ -1,9 +1,9 @@
 export default {
-	'roleManagement.role.roleName': 'Role name',
-	'roleManagement.role.roleRoot': 'Role permission',
+	'roleManagement.role.roleName': 'Role Name',
+	'roleManagement.role.roleRoot': 'Role Permission',
 	'roleManagement.role.userCount': 'Employee',
 	'roleManagement.role.creator': 'Creator',
-	'roleManagement.role.createTime': 'Create time',
+	'roleManagement.role.createTime': 'Create Time',
 	'roleManagement.role.operation': 'Action',
 	'roleManagement.role.addRole': 'Add a role',
 	'roleManagement.role.roleNameEmpty': 'A role name is required',
@@ -19,7 +19,7 @@ export default {
 	'roleManagement.role.placeholder': 'Please modify a role',
 	'roleManagement.role.changeRole': 'Transfer permission',
 	'roleManagement.role.changeRole.success': 'Transferred!',
-	'roleManagement.role.sunmiAccount': 'SUNMI account',
+	'roleManagement.role.sunmiAccount': 'SUNMI Account',
 	'roleManagement.role.accountPlaceholder': 'Please enter new system administrator account',
 	'roleManagement.role.accountNotExist': 'Invalid SUNMI account. Please check and enter again.',
 	'roleManagement.role.accountNotEmpty': 'A SUNMI account is required',
@@ -30,4 +30,5 @@ export default {
 	'roleManagement.role.authTime': 'Authorize Time',
 	'roleManagement.role.employeePhone': 'Employee Phone Number',
 	'roleManagement.role.telePhone': 'Employee Phone Number',
+	'roleManagement.input.illegal': '内容含有非法字符，请重新输入',
 };
