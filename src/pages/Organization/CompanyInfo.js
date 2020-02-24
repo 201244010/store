@@ -27,7 +27,7 @@ const { Option } = Select;
 	dispatch => ({
 		createOrganization: payload => dispatch({ type: 'companyInfo/createOrganization', payload }),
 		updateOrganization: payload => dispatch({ type: 'companyInfo/updateOrganization', payload }),
-		getShopTypeList: () => dispatch({ type: 'companyInfo/getShopTypeList' }),
+		getShopTypeList: (language) => dispatch({ type: 'companyInfo/getShopTypeList', language }),
 		getRegionList: () => dispatch({ type: 'companyInfo/getRegionList' }),
 		getOrganizationInfo: orgId => dispatch({ type: 'companyInfo/getOrganizationInfo', orgId }),
 		getAllOrgName: () => dispatch({ type: 'companyInfo/getAllOrgName' }),
@@ -113,7 +113,7 @@ class CompanyInfo extends React.Component {
 		const storageLanaguage = Storage.get('__lang__', 'local');
 		if (!Storage.get('__shopTypeList__', 'local') || currentLanguage !== storageLanaguage) {
 			Storage.set({ __lang__: currentLanguage }, 'local');
-			getShopTypeList();
+			getShopTypeList(currentLanguage);
 		}
 
 		if (!Storage.get('__regionList__', 'local')) {
