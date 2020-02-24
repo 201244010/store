@@ -113,7 +113,9 @@ class CompanyInfo extends React.Component {
 		const storageLanaguage = Storage.get('__lang__', 'local');
 		if (!Storage.get('__shopTypeList__', 'local') || currentLanguage !== storageLanaguage) {
 			Storage.set({ __lang__: currentLanguage }, 'local');
-			getShopTypeList(currentLanguage);
+			currentLanguage === 'zh-CN'
+				? getShopTypeList()
+				: getShopTypeList(currentLanguage);
 		}
 
 		if (!Storage.get('__regionList__', 'local')) {
