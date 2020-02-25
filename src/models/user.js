@@ -66,9 +66,10 @@ export default {
 		*register({ payload }, { call }) {
 			const { options } = payload;
 			const response = yield call(Actions.register, options);
-			if (response && response.code !== ERROR_OK) {
-				message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
-			}
+			// 通过Alert提示
+			// if (response && response.code !== ERROR_OK && ALERT_NOTICE_MAP[response.code]) {
+			// 		message.error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }));
+			// }
 			return response;
 		},
 		*getUserInfo(_, { call, put }) {
@@ -88,6 +89,11 @@ export default {
 		*resetPassword({ payload }, { call }) {
 			const { options } = payload;
 			return yield call(Actions.resetPassword, options);
+		},
+		*sendRecoveryEmail({ payload }, { call }) {
+			const { options = {} } = payload;
+			const response = yield call(Actions.sendRecoveryEmail, options);
+			return response;
 		},
 		*updateUsername({ payload }, { call, put, select }) {
 			const { options } = payload;

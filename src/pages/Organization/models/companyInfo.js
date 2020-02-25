@@ -253,8 +253,9 @@ export default {
 				});
 			}
 		},
-		*getShopTypeList(_, { call, put }) {
-			const response = yield call(Action.getShopTypeList);
+		*getShopTypeList(payload, { call, put }) {
+			const { language } = payload;
+			const response = yield call(Action.getShopTypeList, {language});
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
 				const shopTypeList = data.shopTypeList || [];

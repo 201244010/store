@@ -1,34 +1,57 @@
 import React, { Component } from 'react';
-import { formatMessage } from 'umi/locale';
+import { formatMessage, getLocale } from 'umi/locale';
 import { Form, Input, Button, Alert } from 'antd';
 import { connect } from 'dva';
-import { Result } from 'ant-design-pro';
 import ImgCaptcha from '@/components/Captcha/ImgCaptcha';
+import { Result } from 'ant-design-pro';
 import * as RegExp from '@/constants/regexp';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
+import { MAIL_LIST } from '@/constants';
 import styles from './ResetPassword.less';
 
-const MailActive = () => (
-	<Result
-		className={styles['result-wrapper']}
-		type="success"
-		description={
-			<div className={styles['result-content']}>
-				{formatMessage({ id: 'reset.mail.notice' })}
-			</div>
-		}
-		actions={
-			<div className={styles['result-action-wrapper']}>
-				<Button type="primary" size="large">
-					{formatMessage({ id: 'btn.mail.check' })}
-				</Button>
-				<Button type="default" size="large" href="/user/login">
-					{formatMessage({ id: 'btn.back.index' })}
-				</Button>
-			</div>
-		}
-	/>
-);
+const MailActive = ({ mail }) => {
+	const mailTail = mail
+		? mail
+			.split('@')
+			.slice(1)
+			.toString()
+		: '';
+	const existedMail = Object.keys(MAIL_LIST).find(mailKey => mailKey === mailTail);
+
+	return (
+		<Result
+			className={styles['result-wrapper']}
+			type="success"
+			description={
+				<div className={styles['result-content']}>
+					{formatMessage({ id: 'reset.mail.notice' })}
+				</div>
+			}
+			actions={
+				<div className={styles['result-action-wrapper']}>
+					{existedMail.length > 0 && (
+						<Button
+							type="primary"
+							size="large"
+							href={MAIL_LIST[mailTail]}
+							target="_blank"
+						>
+							{formatMessage({ id: 'btn.mail.check' })}
+						</Button>
+					)}
+					<Button
+						type="default"
+						size="large"
+						href="/user/login"
+						style={{ marginLeft: existedMail.length > 0 ? '20px' : 0 }}
+					>
+						{formatMessage({ id: 'btn.back.index' })}
+					</Button>
+				</div>
+			}
+		/>
+	);
+};
 
 @connect(
 	state => ({
@@ -39,7 +62,9 @@ const MailActive = () => (
 		getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
 		sendCode: payload => dispatch({ type: 'sso/sendCode', payload }),
 		checkImgCode: payload => dispatch({ type: 'user/checkImgCode', payload }),
-	}),
+		sendRecoveryEmail: options =>
+			dispatch({ type: 'user/sendRecoveryEmail', payload: { options } }),
+	})
 )
 @Form.create()
 class MailReset extends Component {
@@ -66,24 +91,51 @@ class MailReset extends Component {
 	};
 
 	handleResponse = response => {
+		const {
+			form: { setFields, getFieldValue },
+			getImageCode,
+		} = this.props;
 		if (response && response.code === ERROR_OK) {
 			this.setState({
 				resetSuccess: true,
 			});
+		} else if (Object.keys(ALERT_NOTICE_MAP).includes(`${response.code}`)) {
+			setFields({
+				email: {
+					value: getFieldValue('email'),
+					errors: [new Error(formatMessage({ id: ALERT_NOTICE_MAP[response.code] }))],
+				},
+			});
+			getImageCode();
 		}
 	};
 
 	onSubmit = () => {
 		const {
-			form: { validateFields },
+			form: { validateFields, setFields },
+			getImageCode,
+			sendRecoveryEmail,
 		} = this.props;
 		validateFields(async (err, values) => {
 			if (!err) {
+				const currentLan = getLocale() || 'zh-CN';
 				const result = await this.checkImgCode(values);
 				if (result && result.code === ERROR_OK) {
-					// TODO 发送重置邮件的接口要等
-					// const response = await resetPassword({ options: values });
-					// this.handleResponse(response);
+					const response = await sendRecoveryEmail({
+						...values,
+						country_code: currentLan === 'zh-CN' ? 1 : 2,
+					});
+					this.handleResponse(response);
+				} else if (Object.keys(ALERT_NOTICE_MAP).includes(`${result.code}`)) {
+					setFields({
+						code: {
+							value: null,
+							errors: [
+								new Error(formatMessage({ id: ALERT_NOTICE_MAP[result.code] })),
+							],
+						},
+					});
+					getImageCode();
 				}
 			}
 		});
@@ -92,7 +144,7 @@ class MailReset extends Component {
 	render() {
 		const { notice, resetSuccess } = this.state;
 		const {
-			form: { getFieldDecorator },
+			form: { getFieldDecorator, getFieldValue },
 			sso: { imgCode },
 			getImageCode,
 		} = this.props;
@@ -100,7 +152,7 @@ class MailReset extends Component {
 		return (
 			<>
 				{resetSuccess ? (
-					<MailActive />
+					<MailActive mail={getFieldValue('email') || null} />
 				) : (
 					<>
 						<h1 className={styles['reset-title']}>
@@ -119,7 +171,7 @@ class MailReset extends Component {
 							<Form.Item
 								className={notice ? '' : `${styles['formItem-with-margin']}`}
 							>
-								{getFieldDecorator('username', {
+								{getFieldDecorator('email', {
 									validateTrigger: 'onBlur',
 									rules: [
 										{
@@ -137,7 +189,7 @@ class MailReset extends Component {
 									<Input
 										size="large"
 										placeholder={formatMessage({ id: 'mail.placeholder' })}
-									/>,
+									/>
 								)}
 							</Form.Item>
 							<Form.Item>
@@ -152,17 +204,16 @@ class MailReset extends Component {
 												}),
 											},
 											getImageCode,
+											refreshCode: getImageCode,
 										}}
-									/>,
+									/>
 								)}
 							</Form.Item>
 						</Form>
 						<div className={styles['reset-footer']}>
 							<Button
-								className={
-									`${styles['primary-btn']}
-									${styles['reset-confirm-btn']}`
-								}
+								className={`${styles['primary-btn']}
+									${styles['reset-confirm-btn']}`}
 								type="primary"
 								size="large"
 								block
