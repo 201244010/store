@@ -166,10 +166,12 @@ class Register extends Component {
 			register,
 		} = this.props;
 		const fields = ['username', 'code', 'password', 'confirm'];
+		const currentLanguage = getLocale();
 		validateFields(fields, async (err, values) => {
 			if (!err) {
 				const options = {
 					...values,
+					countryCode: currentLanguage === 'zh-CN' ? 1 : 2,
 					password: encryption(values.password),
 				};
 

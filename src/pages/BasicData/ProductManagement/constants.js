@@ -16,22 +16,22 @@ export const dateFormat = 'YYYY-MM-DD';
 
 export const timeFormat = 'HH:mm';
 
-export const packDateType = [{ key: 'date', value: '1' }, { key: 'days', value: '2' }];
+export const packDateType = [{ key: 'days', value: '1' }, { key: 'date', value: '2' }];
 
 export const usebyDateType = [
-	{ key: 'date', value: '1' },
-	{ key: 'days', value: '2' },
+	{ key: 'days', value: '1' },
+	{ key: 'date', value: '2' },
 	{ key: 'time', value: '3' },
 ];
 
 export const limitDateType = [
-	{ key: 'date', value: '1' },
-	{ key: 'days', value: '2' },
+	{ key: 'days', value: '1' },
+	{ key: 'date', value: '2' },
 	{ key: 'time', value: '3' },
 ];
 
 export const dateMap = {
-	'1': 'date',
-	'2': 'days',
+	'1': 'days',
+	'2': 'date',
 	'3': 'time',
 };

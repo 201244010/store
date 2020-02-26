@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { COL_THREE_NORMAL, FORM_FORMAT } from '@/constants/form';
+import { SEARCH_FORM_COL, FORM_FORMAT } from '@/constants/form';
 import styles from './ProductManagement.less';
 
 class SearchForm extends Component {
@@ -33,6 +33,7 @@ class SearchForm extends Component {
 		await fetchProductList({
 			options: {
 				current: 1,
+				keyword: null,
 			},
 		});
 	};
@@ -44,7 +45,7 @@ class SearchForm extends Component {
 			<div className={styles['search-bar']}>
 				<Form layout="inline">
 					<Row gutter={FORM_FORMAT.gutter}>
-						<Col {...COL_THREE_NORMAL}>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item
 								label={formatMessage({ id: 'basicData.product.search.product' })}
 							>
@@ -58,15 +59,13 @@ class SearchForm extends Component {
 								/>
 							</Form.Item>
 						</Col>
-						<Col {...COL_THREE_NORMAL}>
-							<Form.Item>
+						<Col {...SEARCH_FORM_COL.ONE_THIRD} />
+						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+							<Form.Item className={styles['query-item']}>
 								<Button type="primary" onClick={this.search}>
 									{formatMessage({ id: 'btn.query' })}
 								</Button>
-								<Button
-									style={{ marginLeft: '20px' }}
-									onClick={this.handleReset}
-								>
+								<Button style={{ marginLeft: '20px' }} onClick={this.handleReset}>
 									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
 								</Button>
 							</Form.Item>
