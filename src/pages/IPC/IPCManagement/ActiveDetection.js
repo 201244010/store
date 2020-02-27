@@ -208,10 +208,10 @@ class ActiveDetection extends React.Component {
 
 
 	render() {
-		const { form, activeDetection, isOnline /* , loading */ } = this.props;
+		const { form, activeDetection, isOnline  /* , loading */ } = this.props;
 
 		const { getFieldDecorator, getFieldValue } = form;
-		const { isSaving, isSound, isDynamic, sSensitivity, mSensitivity, isAuto, startTime, endTime, all, days } = activeDetection;
+		const { isSaving, isSound, isDynamic, sSensitivity, mSensitivity, isAuto, startTime, endTime, all, days, isCustomer, hasCustomer } = activeDetection;
 		const { marks, daysError } = this.state;
 
 		return (
@@ -270,6 +270,20 @@ class ActiveDetection extends React.Component {
 					</Form.Item>
 
 					<Form.Item
+						label={formatMessage({id: 'activeDetection.customerDetection' })}
+						className={getFieldValue('isDynamic') && hasCustomer ? '' : styles.hidden}
+					>
+						{
+							getFieldDecorator('isCustomer', {
+								valuePropName: 'checked',
+								initialValue: isCustomer,
+							})(
+								<Checkbox disabled={!isOnline} />
+							)
+						}
+					</Form.Item>
+
+					<Form.Item
 						label={formatMessage({id: 'activeDetection.sensitivity'})}
 						className={getFieldValue('isDynamic') ? '' : styles.hidden}
 					>
@@ -282,7 +296,7 @@ class ActiveDetection extends React.Component {
 									className={styles['form-slider']}
 									step={null}
 									tooltipVisible={false}
-									disabled={!isOnline}
+									disabled={!isOnline || getFieldValue('isCustomer')}
 								/>
 							)
 						}
