@@ -5,6 +5,7 @@ import { DURATION_TIME } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 import { PREVIEW_MAP } from '@/constants/studio';
 import { unixSecondToDate } from '@/utils/utils';
+import formatedMessage from '@/constants/templateNames';
 import Detail from './Detail';
 import BindModal from './BindModal';
 import styles from './index.less';
@@ -491,7 +492,7 @@ class SearchResult extends Component {
 				title: formatMessage({ id: 'esl.device.esl.template.name' }),
 				dataIndex: 'template_name',
 				render: text => (
-					<span>{formatMessage({id: text || ' '})}</span>
+					<span>{formatedMessage(text)}</span>
 				),
 			},
 			{
@@ -611,7 +612,7 @@ class SearchResult extends Component {
 				title: formatMessage({ id: 'esl.device.esl.template.name' }),
 				dataIndex: 'template_name',
 				render: text => (
-					<span>{formatMessage({id: text || ' '})}</span>
+					<span>{formatedMessage(text)}</span>
 				),
 			},
 		];
@@ -854,7 +855,7 @@ class SearchResult extends Component {
 				<Modal
 					title={
 						<div className={styles['preview-img-title']}>
-							{formatMessage({id: currentRecord.template_name || ' '})}
+							{formatedMessage(currentRecord.template_name)}
 						</div>
 					}
 					width={PREVIEW_MAP.SCREEN_ID_WIDTH[currentRecord.model_size]}

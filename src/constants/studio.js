@@ -1,3 +1,15 @@
+export const SCREEN_TYPE = {
+	1: '2.13',
+	2: '2.6',
+	3: '4.2',
+	4: '7.5'
+};
+
+export const COLOR_TYPE = {
+	3: 'BW',
+	7: 'BWR'
+};
+
 export const SHAPE_TYPES = {
 	RECT: 'rect',
 	RECT_FIX: 'rect@fix',

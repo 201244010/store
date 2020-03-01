@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Table, Divider, Modal, Button, Form, Input, Select, Row, Col, Upload, message } from 'antd';
+import { Table, Divider, Modal, Button, Form, Input, Select, Row, Col, Upload, message, Icon } from 'antd';
 import { formatMessage } from 'umi/locale';
+import formatedMessage from '@/constants/templateNames';
 import { ERROR_OK } from '@/constants/errorCode';
 import { PREVIEW_MAP } from '@/constants/studio';
 import { unixSecondToDate } from '@/utils/utils';
 import { FORM_FORMAT, FORM_ITEM_LAYOUT, FORM_LABEL_LEFT, SEARCH_FORM_COL } from '@/constants/form';
+import PreviewList from './PreviewList';
 import * as styles from './index.less';
 
 const { Option } = Select;
@@ -89,10 +91,18 @@ class SearchResult extends Component {
 		});
 	};
 
-	previewTemplate = (record) => {
+	previewTemplate = async (record) => {
+		const {previewTemplate} = this.props;
+
+		const response = await previewTemplate({
+			template_id: record.id
+		});
 		this.setState({
 			previewVisible: true,
-			curRecord: record,
+			curRecord: {
+				...record,
+				address: response.data.preview_addr
+			},
 		});
 	};
 
@@ -269,6 +279,20 @@ class SearchResult extends Component {
 		};
 	};
 
+	toggleViewType = async () => {
+		const {viewType, changeViewType, fetchTemplates} = this.props;
+
+		changeViewType({
+			viewType: viewType === 'table' ? 'picture' : 'table'
+		});
+
+		fetchTemplates({
+			options: {
+				current: 1,
+			},
+		});
+	};
+
 	render() {
 		const formItemLayout = {
 			labelCol: {
@@ -289,6 +313,7 @@ class SearchResult extends Component {
 				data,
 				pagination,
 				form: { getFieldDecorator },
+				viewType,
 				fetchColors,
 			},
 			state: { newVisible, cloneVisible, uploadVisible, uploadLoading, previewVisible, curRecord },
@@ -297,17 +322,17 @@ class SearchResult extends Component {
 			{
 				title: formatMessage({ id: 'esl.device.template.name' }),
 				dataIndex: 'name',
-				render: text => <span>{formatMessage({ id: text })}</span>,
+				render: text => <span>{formatedMessage(text)}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.template.size' }),
 				dataIndex: 'screen_type_name',
-				render: text => <span>{formatMessage({ id: text })}</span>,
+				render: text => <span>{formatedMessage(text)}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.template.color' }),
 				dataIndex: 'colour_name',
-				render: text => <span>{formatMessage({ id: text })}</span>,
+				render: text => <span>{formatedMessage(text)}</span>,
 			},
 			{
 				title: formatMessage({ id: 'esl.device.template.esl.num' }),
@@ -328,6 +353,10 @@ class SearchResult extends Component {
 				key: 'action',
 				render: (_, record) => (
 					<span>
+						<a href="javascript: void (0);" onClick={() => this.previewTemplate(record)}>
+							{formatMessage({ id: 'list.action.preview' })}
+						</a>
+						<Divider type="vertical" />
 						<a href="javascript: void (0);" onClick={() => this.editDetail(record)}>
 							{formatMessage({ id: 'list.action.edit' })}
 						</a>
@@ -474,24 +503,42 @@ class SearchResult extends Component {
 									{formatMessage({ id: color.name })}
 								</Button>
 							))}
+							<div style={{float: 'right', cursor: 'pointer'}} onClick={this.toggleViewType}>
+								<Icon type="appstore" style={{ fontSize: '20px' }} />
+							</div>
 						</div>
 					</Form>
 				</div>
-				<Table
-					style={{ marginTop: '20px' }}
-					rowKey="id"
-					loading={loading}
-					columns={columns}
-					dataSource={data}
-					pagination={{
-						...pagination,
-						showTotal: total =>
-							`${formatMessage({ id: 'esl.device.esl.all' })}${total}${formatMessage({
-								id: 'esl.device.esl.total',
-							})}`,
-					}}
-					onChange={this.onTableChange}
-				/>
+				<div style={{ marginTop: '20px' }}>
+					{
+						viewType === 'table' ?
+							<Table
+								rowKey="id"
+								loading={loading}
+								columns={columns}
+								dataSource={data}
+								pagination={{
+									...pagination,
+									showTotal: total =>
+										`${formatMessage({ id: 'esl.device.esl.all' })}${total}${formatMessage({
+											id: 'esl.device.esl.total',
+										})}`,
+								}}
+								onChange={this.onTableChange}
+							/> :
+							<PreviewList
+								data={data}
+								loading={loading}
+								pagination={pagination}
+								onEdit={this.editDetail}
+								onApply={this.applyTemplate}
+								onClone={this.showClone}
+								onDelete={this.deleteTemplate}
+								onChange={this.onTableChange}
+								onPreview={this.previewTemplate}
+							/>
+					}
+				</div>
 				<Modal
 					title={formatMessage({ id: 'esl.device.template.new' })}
 					visible={newVisible}
@@ -602,10 +649,10 @@ class SearchResult extends Component {
 							)}
 						</Form.Item>
 						<Form.Item label={formatMessage({ id: 'esl.device.template.size' })}>
-							<Input value={curRecord.screen_type_name} disabled />
+							<Input value={formatedMessage(curRecord.screen_type_name)} disabled />
 						</Form.Item>
 						<Form.Item label={formatMessage({ id: 'esl.device.template.color' })}>
-							<Input value={curRecord.colour_name} disabled />
+							<Input value={formatedMessage(curRecord.colour_name)} disabled />
 						</Form.Item>
 					</Form>
 				</Modal>
@@ -641,15 +688,15 @@ class SearchResult extends Component {
 							)}
 						</Form.Item>
 						<Form.Item label={formatMessage({ id: 'esl.device.template.size' })}>
-							<Input value={curRecord.screen_type_name} disabled />
+							<Input value={formatedMessage(curRecord.screen_type_name)} disabled />
 						</Form.Item>
 						<Form.Item label={formatMessage({ id: 'esl.device.template.color' })}>
-							<Input value={curRecord.colour_name} disabled />
+							<Input value={formatedMessage(curRecord.colour_name)} disabled />
 						</Form.Item>
 					</Form>
 				</Modal>
 				<Modal
-					title={formatMessage({id: curRecord.name || ' '})}
+					title={formatedMessage(curRecord.name)}
 					width={PREVIEW_MAP.SCREEN_ID_WIDTH[curRecord.screen_type]}
 					visible={previewVisible}
 					onOk={this.handleCancelPreview}
@@ -662,7 +709,7 @@ class SearchResult extends Component {
 				>
 					<div className={styles['preview-img']}>
 						<img className={`${styles['wrap-img}']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[curRecord.screen_type]]}`} src={PREVIEW_MAP.SCREEN_ID_IMAGE[curRecord.screen_type]} alt="" />
-						<img className={`${styles['content-img']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[curRecord.screen_type]]}`} src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" alt="" />
+						<img className={`${styles['content-img']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[curRecord.screen_type]]}`} src={curRecord.address} alt="" />
 					</div>
 				</Modal>
 			</div>
