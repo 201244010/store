@@ -76,7 +76,7 @@ class IPCManagement extends Component {
 	}
 
 	async componentDidMount(){
-		const { 
+		const {
 			getDeviceInfo,
 			location,
 			loadingObj:{
@@ -144,6 +144,12 @@ class IPCManagement extends Component {
 			if(isOnline){
 				this.timerHandler();
 			}
+		}
+	}
+
+	componentWillUnmount() {
+		if(this.timer !== null) {
+			clearTimeout(this.timer);
 		}
 	}
 

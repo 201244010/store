@@ -18,6 +18,9 @@ export default {
 		total: 0, // 总存储空间MB
 		available_time: 0, // 可用时长h
 		sd_status_code: null, // sd卡状态码
+		video_end: null,
+		video_start: null,
+		video_total_length: null,
 
 		removeStatus: 'normal', // normal初始值 pending格式化进行中 success格式化成功 fail格式化失败
 		formatStatus: 'normal', // normal初始值 pending格式化进行中 success格式化成功 fail格式化失败
@@ -64,6 +67,10 @@ export default {
 				total: 0,
 				available_time: 0,
 				sd_status_code: null,
+				video_end: null,
+				video_start: null,
+				video_total_length: null,
+
 
 				removeStatus: 'normal',
 				formatStatus: 'normal',
@@ -226,7 +233,10 @@ export default {
 							const {
 								used,
 								total,
-								available_time
+								available_time,
+								video_end,
+								video_start,
+								video_total_length,
 							} = msg.data;
 
 							const payloadData = {};
@@ -238,6 +248,15 @@ export default {
 							}
 							if (available_time !== undefined) {
 								payloadData.available_time = available_time;
+							}
+							if (video_end !== undefined) {
+								payloadData.video_end = video_end;
+							}
+							if (video_start !== undefined) {
+								payloadData.video_start = video_start;
+							}
+							if (video_total_length !== undefined) {
+								payloadData.video_total_length = video_total_length;
 							}
 
 							dispatch({

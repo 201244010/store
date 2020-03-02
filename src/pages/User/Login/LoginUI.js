@@ -4,16 +4,16 @@ import { connect } from 'dva';
 import { Tabs, Form, Button, Modal } from 'antd';
 import Storage from '@konata9/storage.js';
 import { encryption } from '@/utils/utils';
-import * as CookieUtil from '@/utils/cookies';
-import AccountLogin from './AccountLogin';
-import AccountLoginLocal from './AccountLoginLocal';
-import MobileLogin from './MobileLogin';
 import RegisterModal from '@/pages/User/Register/RegisterModal';
 import ResetModal from '@/pages/User/ResetPassword/ResetModal';
+import * as CookieUtil from '@/utils/cookies';
 import * as Regexp from '@/constants/regexp';
 import { ERROR_OK, ALERT_NOTICE_MAP, USER_NOT_EXIST } from '@/constants/errorCode';
 import { KEY } from '@/constants';
 import { env } from '@/config';
+import AccountLogin from './AccountLogin';
+import AccountLoginLocal from './AccountLoginLocal';
+import MobileLogin from './MobileLogin';
 import styles from './Login.less';
 
 const VALIDATE_FIELDS = {
@@ -349,7 +349,7 @@ class Login extends Component {
 					</Form.Item>
 				</Form>
 				<div className={styles['login-footer']}>
-					{currentLanguage === 'zh-CN' ? (
+					{/* {currentLanguage === 'zh-CN' ? ( */}
 						<a
 							onClick={() => this.openModalForm('reset')}
 							href="javascript:void(0);"
@@ -357,9 +357,9 @@ class Login extends Component {
 						>
 							{formatMessage({ id: 'link.forgot.password' })}
 						</a>
-					) : (
+					{/* ) : (
 						<div />
-					)}
+					)} */}
 					<a
 						onClick={() => this.openModalForm('register')}
 						href="javascript:void(0);"

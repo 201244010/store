@@ -60,6 +60,15 @@ const dataSerializer = (item) => {
 		default: break;
 	}
 
+	if (item.people_detect_status) {
+		object.isDynamic = true; // 开关展开
+		object.isCustomer = true; // customer勾选
+	} 
+	
+	if (typeof item.people_detect_status !== 'undefined') {
+		object.hasCustomer = true;
+	}
+
 	const arr = item.weekday.toString(2).split('').reverse();
 	// console.log(arr);
 	// console.log(object);
@@ -116,8 +125,15 @@ const paramSerializer = (item) => {
 		}
 	}
 
+	if(item.isCustomer) {
+		object.people_detect_status = 1;
+	} else {
+		object.people_detect_status = 0;
+	}
+
 	if (item.isDynamic === false) {
 		object.motion_level = 0;
+		object.people_detect_status = 0;
 	} else {
 		switch (item.mSensitivity) {
 			case 0:
@@ -130,6 +146,7 @@ const paramSerializer = (item) => {
 				break;
 		}
 	}
+
 
 	// console.log(item.days);
 	let arr = ['0', '0', '0', '0', '0', '0', '0', '0'];
@@ -153,7 +170,6 @@ const paramSerializer = (item) => {
 	// console.log(object.weekday);
 	object.sn = item.sn;
 
-	// console.log('object: ', object);
 	return object;
 };
 
@@ -165,14 +181,17 @@ export default {
 		endTime: 0,
 		days: ['1', '2', '3', '4', '5', '6', '7'],
 		all: true,
-		isAuto:1,
+		isAuto: 1,
 		isSound:true,
 		isDynamic:true,
-		sSensitivity:50,
-		mSensitivity:50,
+		isCustomer: false,
+		hasCustomer: false,
+		sSensitivity: 50,
+		mSensitivity: 50,
 		sn: '',
 		isReading: true,
-		isSaving: 'normal'
+		isSaving: 'normal',
+		isMotion: false,
 	},
 	reducers: {
 		init( state, { payload: { sn }} ) {
@@ -294,7 +313,8 @@ export default {
 				}
 			});
 
-			// console.log(paramSerializer(payload));
+			// console.log('----payload----',paramSerializer(payload));
+			console.log('----payload----',paramSerializer(payload));
 			yield put({
 				type:'mqttIpc/publish',
 				payload:{
