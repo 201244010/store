@@ -3,6 +3,13 @@ import { Stage, Layer, Line } from 'react-konva';
 import { connect } from 'dva';
 import { Spin, Modal, Alert,	 Icon, message } from 'antd';
 import { formatMessage } from 'umi/locale';
+import * as RegExp from '@/constants/regexp';
+import { getLocationParam, downloadFileByClick } from '@/utils/utils';
+import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep, getImagePromise } from '@/utils/studio';
+import FontDetector from '@/utils/FontDetector';
+import { KEY } from '@/constants';
+import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME, IMAGE_TYPES } from '@/constants/studio';
+import Config from '@/config';
 import MTransformer from './MTransformer';
 import BoardHeader from './BoardHeader';
 import BoardTools from './BoardTools';
@@ -10,13 +17,6 @@ import ContextMenu from './ContextMenu';
 import RightToolBox from './RightToolBox';
 import DragCopy from './DragCopy';
 import generateShape from './GenerateShape';
-import { getLocationParam, downloadFileByClick } from '@/utils/utils';
-import { getTypeByName, getNearestLines, getNearestPosition, clearSteps, saveNowStep, preStep, nextStep, getImagePromise } from '@/utils/studio';
-import FontDetector from '@/utils/FontDetector';
-import { KEY } from '@/constants';
-import { SIZES, SHAPE_TYPES, NORMAL_PRICE_TYPES, MAPS, RECT_SELECT_NAME, IMAGE_TYPES } from '@/constants/studio';
-import Config from '@/config';
-import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
 
 @connect(
@@ -52,7 +52,7 @@ import * as styles from './index.less';
 		fetchTemplateDetail: payload => dispatch({ type: 'template/fetchTemplateDetail', payload }),
 		renameTemplate: payload => dispatch({ type: 'template/renameTemplate', payload }),
 		uploadImage: payload => dispatch({ type: 'template/uploadImage', payload }),
-		previewTemplate: payload => dispatch({ type: 'template/previewTemplate', payload }),
+		realTimePreview: payload => dispatch({ type: 'template/realTimePreview', payload }),
 	})
 )
 class Studio extends Component {
@@ -1094,7 +1094,7 @@ class Studio extends Component {
 				zoomOutOrIn,
 				renameTemplate,
 				fetchTemplateDetail,
-				previewTemplate,
+				realTimePreview,
 				studio: {
 					selectedShapeName,
 					selectedComponent,
@@ -1121,6 +1121,7 @@ class Studio extends Component {
 					<BoardHeader
 						{...{
 							templateInfo: curTemplate,
+							componentsDetail,
 							zoomScale,
 							saveAsDraft: this.handleSaveAsDraft,
 							downloadAsDraft: this.handleDownloadAsDraft,
@@ -1129,7 +1130,7 @@ class Studio extends Component {
 							nextStep: this.nextStep,
 							renameTemplate,
 							fetchTemplateDetail,
-							previewTemplate
+							realTimePreview
 						}}
 					/>
 				</div>

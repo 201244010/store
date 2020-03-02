@@ -1,6 +1,7 @@
 import React from 'react';
 import { Col, Row, Table } from 'antd';
 import { formatMessage } from 'umi/locale';
+import formatedMessage from '@/constants/templateNames';
 import { unixSecondToDate } from '@/utils/utils';
 import styles from './index.less';
 
@@ -17,18 +18,18 @@ const ESL_STATES = {
 export default function detail(props) {
 	const { detailInfo: eslInfo, screenPushInfo } = props;
 	const pushData = [{
-		name: formatMessage({id: screenPushInfo.page1_name || ' '}),
-		template: formatMessage({id: screenPushInfo.page1_template_name || ' '}),
+		name: formatedMessage(screenPushInfo.page1_name),
+		template: formatedMessage(screenPushInfo.page1_template_name),
 		status: screenPushInfo.page1_push_status,
 		time: screenPushInfo.page1_push_time ? unixSecondToDate(screenPushInfo.page1_push_time) : '--'
 	}, {
-		name: formatMessage({id: screenPushInfo.page2_name || ' '}),
-		template: formatMessage({id: screenPushInfo.page2_template_name || ' '}),
+		name: formatedMessage(screenPushInfo.page2_name),
+		template: formatedMessage(screenPushInfo.page2_template_name),
 		status: screenPushInfo.page2_push_status,
 		time: screenPushInfo.page2_push_time ? unixSecondToDate(screenPushInfo.page2_push_time) : '--'
 	}, {
-		name: formatMessage({id: screenPushInfo.page3_name || ' '}),
-		template: formatMessage({id: screenPushInfo.page3_template_name || ' '}),
+		name: formatedMessage(screenPushInfo.page3_name),
+		template: formatedMessage(screenPushInfo.page3_template_name),
 		status: screenPushInfo.page3_push_status,
 		time: screenPushInfo.page3_push_time ? unixSecondToDate(screenPushInfo.page3_push_time) : '--'
 	}];
