@@ -17,7 +17,7 @@ export default class PreviewList extends Component {
 					splitData.map((rowData, index) => (
 						<Row gutter={16} key={index}>
 							{
-								rowData.map(({id, name, preview_addr: previewUrl, screen_type: screenType, screen_type_name: screenTypeName, colour_name: colourName}) => {
+								rowData.map(({id, name, preview_addr: previewUrl, screen_type: screenType, screen_type_name: screenTypeName, colour_name: colourName, is_default: isDefault, esl_num: eslNum}) => {
 									const screen = SCREEN_TYPE[screenType];
 									return (
 										<Col span={6} key={id} className={styles.mb20}>
@@ -35,7 +35,17 @@ export default class PreviewList extends Component {
 													<div onClick={() => onEdit({id, screen_type: screenType})}>{formatMessage({id: 'list.action.edit'})}</div>,
 													<div onClick={() => onApply({id})}>{formatMessage({id: 'list.action.apply'})}</div>,
 													<div onClick={() => onClone({id, screen_type_name: formatedMessage(screenTypeName), colour_name: formatedMessage(colourName), screen_type: screenType})}>{formatMessage({id: 'list.action.clone'})}</div>,
-													<div onClick={() => onDelete({id})}>{formatMessage({id: 'list.action.delete'})}</div>,
+													<div>
+														{isDefault === 1 || eslNum > 1 ? (
+															<a href="javascript: void (0);" className={styles.disabled}>
+																{formatMessage({ id: 'list.action.delete' })}
+															</a>
+														) : (
+															<a href="javascript: void (0);" onClick={() => onDelete({id})}>
+																{formatMessage({ id: 'list.action.delete' })}
+															</a>
+														)}
+													</div>,
 												]}
 											/>
 										</Col>
