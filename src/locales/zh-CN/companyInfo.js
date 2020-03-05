@@ -38,4 +38,5 @@ export default {
 	'companyInfo.message.pOrg.disabled': '新建组织的父级组织状态受限，禁用的组织不能挂载下级节点',
 	'companyInfo.please.select.startTime': '请选择开始时间',
 	'companyInfo.please.select.endTime': '请选择结束时间',
+	'companyInfo.whole.country': '全国',
 };

@@ -5,18 +5,9 @@ import { getLocationParam } from '@/utils/utils';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import TemplateService from '@/services/ESL/template';
 import { ERROR_OK, ALERT_NOTICE_MAP } from '@/constants/errorCode';
-import {IMAGE_TYPES, MAPS} from '@/constants/studio';
+import {IMAGE_TYPES, MAPS, SCREEN_TYPE, COLOR_TYPE} from '@/constants/studio';
 
 function generateModelName() {
-	const SCREEN_TYPE = {
-		1: '2.13',
-		2: '2.6',
-		3: '4.2',
-	};
-	const COLOR_TYPE = {
-		3: 'BW',
-		7: 'BWR'
-	};
 	const studioType = getLocationParam('screen');
 	const colorType = getLocationParam('color');
 	return `${COLOR_TYPE[colorType]}-${SCREEN_TYPE[studioType]}`;
@@ -45,6 +36,7 @@ export default {
 			showQuickJumper: true,
 		},
 		curTemplate: {},
+		viewType: 'table'
 	},
 	effects: {
 		*changeSearchFormValue({ payload = {} }, { put }) {
@@ -53,6 +45,14 @@ export default {
 				type: 'setSearchFormValue',
 				payload: {
 					...options,
+				},
+			});
+		},
+		*changeViewType({ payload = {} }, { put }) {
+			yield put({
+				type: 'updateState',
+				payload: {
+					viewType: payload.viewType
 				},
 			});
 		},
@@ -123,7 +123,7 @@ export default {
 		},
 		*fetchTemplates({ payload = {} }, { call, put, select }) {
 			const { options = {} } = payload;
-			const { pagination, searchFormValues } = yield select(state => state.template);
+			const { pagination, searchFormValues, viewType } = yield select(state => state.template);
 
 			yield put({
 				type: 'updateState',
@@ -131,10 +131,10 @@ export default {
 			});
 
 			const opts = Object.assign({}, pagination, searchFormValues, options);
-			const response = yield call(TemplateService.fetchTemplates, {
+			const response = yield call(viewType === 'picture' ? TemplateService.fetchPreviewList : TemplateService.fetchTemplates, {
 				...opts,
 				page_num: opts.current,
-				page_size: opts.pageSize,
+				page_size: viewType === 'picture' ? 8 : opts.pageSize,
 			});
 			const result = response.data || {};
 			yield put({
@@ -471,6 +471,25 @@ export default {
 		},
 		*previewTemplate({ payload = {} }, { call }) {
 			return yield call(TemplateService.previewTemplate, payload);
+		},
+		*realTimePreview({ payload = {} }, { call, select }) {
+			const { curTemplate } = yield select(state => state.template);
+			const draft = {
+				encoding: 'UTF-8',
+				type: curTemplate.model_name,
+				backgroundColor: 'white',
+				fillFields: [],
+				layers: [],
+				layerCount: 0,
+			};
+			const result = purifyJsonOfBackEnd(payload.draft);
+			draft.fillFields = result.bindFields;
+			draft.layers = result.layers;
+			draft.layerCount = result.layers.length;
+			return yield call(TemplateService.realTimePreview, {
+				...payload,
+				draft: JSON.stringify(draft),
+			});
 		},
 	},
 	reducers: {

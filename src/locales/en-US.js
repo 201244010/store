@@ -41,8 +41,8 @@ import orgDetail from './en-US/orgDetail';
 export default {
 	'navBar.lang': 'Language',
 	'navBar.area': 'Area',
-	'selectLang.chinaMainland': 'zh-CN',
-	'selectLang.tw': 'zh-TW',
+	'selectLang.chinaMainland': '简体中文',
+	'selectLang.tw': '繁體中文',
 	'selectLang.otherArea': 'English',
 	'layout.user.link.help': 'Help',
 	'layout.user.link.privacy': 'Privacy',

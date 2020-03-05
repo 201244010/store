@@ -89,6 +89,11 @@ export const createEmqToken = () => {
 	return fetchApi('createEmqToken', opts).then(response => response.json());
 };
 
+export const sendRecoveryEmail = (options = {}) => {
+	const opts = { body: { ...options } };
+	return fetchApi('sendRecoveryEmail', opts).then(response => response.json());
+};
+
 export const refreshStoreToken = (options = {}) => {
 	const opts = {
 		body: {
