@@ -1,6 +1,7 @@
 import { formatMessage } from 'umi/locale';
 
 const templates =  {
+	'normal-price-display': '价格显示',
 	'out_of_store': '缺货',
 	'out-of-store': '缺货',
 	'stock-tacking': '盘点',

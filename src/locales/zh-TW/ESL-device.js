@@ -19,7 +19,7 @@
   	'esl.device.ap.network.id': '網絡ID',
 	'esl.device.ap.network.get.fail': '獲取networkId失敗',
 	'esl.device.ap.sn': '基站SN',
-	'esl.device.ap.sn.mater': '主基站',
+	'esl.device.ap.sn.master': '主基站',
 	'esl.device.ap.model': '基站型號',
 	'esl.device.ap.version': '固件版本',
 	'esl.device.ap.disconnect_time': '最後通信時間',
