@@ -41,9 +41,9 @@ import orgDetail from './zh-TW/orgDetail';
 export default {
 	'navBar.lang': '語言',
 	'navBar.area': '地區',
-	'selectLang.chinaMainland': '中文簡體',
-	'selectLang.tw': '中文繁體',
-	'selectLang.otherArea': '英文',
+	'selectLang.chinaMainland': '简体中文',
+	'selectLang.tw': '繁體中文',
+	'selectLang.otherArea': 'English',
 	'layout.user.link.help': '幫助',
 	'layout.user.link.privacy': '隱私',
 	'layout.user.link.terms': '條款',
