@@ -22,6 +22,7 @@ import SiderMenu from '@/components/SiderMenu';
 import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/logo-big.png';
+import { ERROR_OK } from '@/constants/errorCode';
 // import logoEN from '../assets/menuLogoEN.png';
 import { env } from '@/config';
 
@@ -74,6 +75,19 @@ class BasicLayout extends React.PureComponent {
 
 	componentDidMount() {
 		this.dataInitial();
+		const { getUserInfo, getStoreList, getOrgLayer, initOrgList, setCurrentCompany } = this.props;
+		window.addEventListener('storage', async () => {  
+			getUserInfo();
+			setCurrentCompany({ companyId: CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY) });
+			getOrgLayer({});
+			initOrgList();
+			const response = await getStoreList({});
+			if (response && response.code === ERROR_OK) {
+				const result = response.data || {};
+				const shopList = result.shopList || [];
+				Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
+			}
+		});
 	}
 
 	componentWillReceiveProps() {
@@ -295,7 +309,11 @@ export default connect(
 	dispatch => ({
 		logout: () => dispatch({ type: 'user/logout' }),
 		getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
+		getUserInfo: () => dispatch({ type: 'user/getUserInfo' }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
+		getOrgLayer: payload => dispatch({ type: 'store/getOrgLayer', payload }),
+		initOrgList: payload => dispatch({ type: 'organization/initOrgList', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		dispatch,
