@@ -75,9 +75,10 @@ class BasicLayout extends React.PureComponent {
 
 	componentDidMount() {
 		this.dataInitial();
-		const { getUserInfo, getStoreList, getOrgLayer, initOrgList } = this.props;
+		const { getUserInfo, getStoreList, getOrgLayer, initOrgList, setCurrentCompany } = this.props;
 		window.addEventListener('storage', async () => {  
 			getUserInfo();
+			setCurrentCompany({ companyId: CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY) });
 			getOrgLayer({});
 			initOrgList();
 			const response = await getStoreList({});
@@ -329,6 +330,7 @@ export default connect(
 		getUserInfo: () => dispatch({ type: 'user/getUserInfo' }),
 		getMenuData: payload => dispatch({ type: 'menu/getMenuData', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
 		getOrgLayer: payload => dispatch({ type: 'store/getOrgLayer', payload }),
 		initOrgList: payload => dispatch({ type: 'organization/initOrgList', payload }),
 		goToPath: (pathId, urlParams = {}) =>
