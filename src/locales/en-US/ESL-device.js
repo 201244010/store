@@ -19,7 +19,7 @@ export default {
 	'esl.device.ap.network.id': 'Network ID',
 	'esl.device.ap.network.get.fail': 'Failed to obtain networkId',
 	'esl.device.ap.sn': 'AP SN',
-	'esl.device.ap.sn.mater': 'Primary AP',
+	'esl.device.ap.sn.master': 'Primary AP',
 	'esl.device.ap.model': 'AP Model',
 	'esl.device.ap.version': 'Firmware Version',
 	'esl.device.ap.disconnect_time': 'Last Communication',

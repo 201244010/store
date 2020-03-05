@@ -603,10 +603,10 @@ class SearchResult extends Component {
 							)}
 						</Form.Item>
 						<Form.Item label={formatMessage({ id: 'esl.device.template.size' })}>
-							<Input value={curRecord.screen_type_name} disabled />
+							<Input value={formatedMessage(curRecord.screen_type_name)} disabled />
 						</Form.Item>
 						<Form.Item label={formatMessage({ id: 'esl.device.template.color' })}>
-							<Input value={curRecord.colour_name} disabled />
+							<Input value={formatedMessage(curRecord.colour_name)} disabled />
 						</Form.Item>
 					</Form>
 				</Modal>

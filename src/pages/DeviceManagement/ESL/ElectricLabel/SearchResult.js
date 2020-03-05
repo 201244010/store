@@ -726,7 +726,7 @@ class SearchResult extends Component {
 								>
 									{templates4ESL.map(template => (
 										<Select.Option key={template.id} value={template.id}>
-											{template.name}
+											{formatedMessage(template.name)}
 										</Select.Option>
 									))}
 								</Select>
@@ -782,7 +782,7 @@ class SearchResult extends Component {
 								>
 									{(screenInfo || []).map(screen => (
 										<Select.Option key={screen.screen_num} value={screen.screen_num}>
-											{formatMessage({id: screen.screen_name})}
+											{formatedMessage(screen.screen_name)}
 										</Select.Option>
 									))}
 								</Select>
@@ -824,7 +824,7 @@ class SearchResult extends Component {
 								>
 									{templates4ESL.map(template => (
 										<Select.Option key={template.id} value={template.id}>
-											{template.name}
+											{formatedMessage(template.name)}
 										</Select.Option>
 									))}
 								</Select>

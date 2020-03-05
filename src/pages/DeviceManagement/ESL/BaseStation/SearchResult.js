@@ -25,7 +25,7 @@ class SearchResult extends Component {
 						<span style={{marginRight: 10}}>{text}</span>
 						{
 							parseInt(record.is_master, 10) === 1 ?
-								<Tag>{formatMessage({ id: 'esl.device.ap.sn.mater' })}</Tag> :
+								<Tag>{formatMessage({ id: 'esl.device.ap.sn.master' })}</Tag> :
 								null
 						}
 					</div>
