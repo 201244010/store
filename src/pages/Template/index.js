@@ -8,8 +8,8 @@ import SearchResult from './SearchResult';
 		template: state.template,
 	}),
 	dispatch => ({
-		changeSearchFormValue: payload =>
-			dispatch({ type: 'template/changeSearchFormValue', payload }),
+		changeSearchFormValue: payload => dispatch({ type: 'template/changeSearchFormValue', payload }),
+		changeViewType: payload => dispatch({ type: 'template/changeViewType', payload }),
 		fetchScreenTypes: payload => dispatch({ type: 'template/fetchScreenTypes', payload }),
 		fetchColors: payload => dispatch({ type: 'template/fetchColors', payload }),
 		createTemplate: payload => dispatch({ type: 'template/createTemplate', payload }),
@@ -18,6 +18,7 @@ import SearchResult from './SearchResult';
 		applyTemplate: payload => dispatch({ type: 'template/applyTemplate', payload }),
 		cloneTemplate: payload => dispatch({ type: 'template/cloneTemplate', payload }),
 		uploadTemplate: payload => dispatch({ type: 'template/uploadTemplate', payload }),
+		previewTemplate: payload => dispatch({ type: 'template/previewTemplate', payload }),
 	})
 )
 class Template extends Component {
@@ -45,13 +46,15 @@ class Template extends Component {
 		const {
 			fetchColors,
 			changeSearchFormValue,
+			changeViewType,
 			fetchTemplates,
 			createTemplate,
 			deleteTemplate,
 			applyTemplate,
 			cloneTemplate,
 			uploadTemplate,
-			template: { searchFormValues, screenTypes, colors, loading, data, pagination },
+			previewTemplate,
+			template: { searchFormValues, screenTypes, colors, loading, data, pagination, viewType },
 		} = this.props;
 
 		return (
@@ -64,14 +67,17 @@ class Template extends Component {
 						loading,
 						data,
 						pagination,
+						viewType,
 						fetchColors,
 						changeSearchFormValue,
+						changeViewType,
 						createTemplate,
 						fetchTemplates,
 						deleteTemplate,
 						applyTemplate,
 						cloneTemplate,
-						uploadTemplate
+						uploadTemplate,
+						previewTemplate
 					}}
 				/>
 			</Card>

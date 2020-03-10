@@ -58,4 +58,6 @@ export default {
 		return fetchApi('upload', opts).then(response => response.json());
 	},
 	previewTemplate: genTemplateService('preview'),
+	realTimePreview: genTemplateService('realTimePreview'),
+	fetchPreviewList: genTemplateService('getPreviewList'),
 };
