@@ -1,3 +1,15 @@
+export const SCREEN_TYPE = {
+	1: '2.13',
+	2: '2.6',
+	3: '4.2',
+	4: '7.5'
+};
+
+export const COLOR_TYPE = {
+	3: 'BW',
+	7: 'BWR'
+};
+
 export const SHAPE_TYPES = {
 	RECT: 'rect',
 	RECT_FIX: 'rect@fix',
@@ -320,7 +332,7 @@ export const PREVIEW_MAP = {
 		1: 348,
 		2: 442,
 		3: 510,
-		4: 712
+		4: 740
 	},
 	SCREEN_ID_STYLE: {
 		1: 'img-213',

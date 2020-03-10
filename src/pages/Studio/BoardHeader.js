@@ -105,16 +105,28 @@ export default class BoardHeader extends Component {
 		});
 	};
 
-	previewTemplate = async () => {
-		const { templateInfo, previewTemplate } = this.props;
+	realTimePreview = async () => {
+		const { templateInfo, componentsDetail, zoomScale, realTimePreview } = this.props;
 
-		const response = await previewTemplate({
-			template_id: templateInfo.id
+		const newDetails = {};
+		Object.keys(componentsDetail).forEach(key => {
+			const detail = componentsDetail[key];
+			if (detail.name) {
+				newDetails[key] = {
+					...detail,
+					zoomScale,
+				};
+			}
+		});
+
+		const response = await realTimePreview({
+			template_id: templateInfo.id,
+			draft: newDetails,
 		});
 
 		this.setState({
 			previewVisible: true,
-			imageUrl: response.data.image_addr
+			imageUrl: response.data.preview_addr
 		});
 	};
 
@@ -172,7 +184,7 @@ export default class BoardHeader extends Component {
 					<ZoomIcon zoomScale={zoomScale} zoomOutOrIn={zoomOutOrIn} />
 					{/* <ButtonIcon name="wrapper" /> */}
 					<ButtonIcon name="download" onClick={downloadAsDraft} />
-					<ButtonIcon name="view" onClick={this.previewTemplate} />
+					<ButtonIcon name="view" onClick={this.realTimePreview} />
 					{/* <ButtonIcon name="history" /> */}
 				</div>
 				<Modal
