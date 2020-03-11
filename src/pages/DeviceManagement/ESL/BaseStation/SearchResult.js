@@ -7,6 +7,7 @@ import BaseStationEdit from './BaseStationEdit';
 import { DURATION_TIME } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 import { STATION_STATES } from '@/constants/mapping';
+import './BaseStation.less';
 
 class SearchResult extends Component {
 	constructor(props) {
