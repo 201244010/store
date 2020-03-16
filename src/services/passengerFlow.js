@@ -53,3 +53,14 @@ export const getPassengerFlowHistoryWithAgeAndGender = options => {
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
 };
+
+export const getLatestPassengerFlow = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/getLatest', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
