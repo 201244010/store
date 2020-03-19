@@ -2,14 +2,13 @@ import moment from 'moment';
 import { format } from '@konata9/milk-shake';
 import {
 	getLatestPassengerFlow,
-	getPassengerFlowOrderLatest,
-	getPassengerFlowOrderByRange,
 	getTimeRangePassengerFlow,
 	getHistoryPassengerTypeCount,
 	getLatestOrderList,
 	getTimeRangeOrderList,
 	getHistoryEnteringDistribution,
 	getHistoryFrequencyList,
+	handlePassengerFlowManagement,
 } from '@/services/passengerFlow';
 import { handleDashBoard } from '@/services/dashBoard';
 import { ERROR_OK } from '@/constants/errorCode';
@@ -66,8 +65,8 @@ const getQueryTimeRange = (searchValue = {}) => {
 export default {
 	namespace: 'databoard',
 	state: {
-		searchValue: {
-			rangeType: RANGE.YESTERDAY,
+		realDataSearchValue: {
+			rangeType: RANGE.DAY,
 			timeRangeStart: moment()
 				.startOf('day')
 				.unix(),
@@ -75,6 +74,15 @@ export default {
 				.endOf('day')
 				.unix(),
 		},
+		passengerFlowSearchValue: {
+			rangeType: RANGE.YESTERDAY,
+			timeRangeStart: moment()
+				.startOf('day')
+				.unix(),
+			timeRangeEnd: moment()
+				.endOf('day')
+				.unix(),
+		}
 	},
 	effects: {
 		// 获取门店客流数 && 进店率 OK
@@ -210,7 +218,7 @@ export default {
 			const {
 				searchValue: { rangeType }
 			} = yield select(state => state.databoard);
-			if(rangeType === RANGE.FREE || rangeType === RANGE.TODAY) return; 
+			if(rangeType === RANGE.FREE || rangeType === RANGE.TODAY) return;
 			const opt = {
 				type: queryRangeType[rangeType],
 				groupBy: groupBy[rangeType],
@@ -237,7 +245,7 @@ export default {
 			const {
 				searchValue: { rangeType }
 			} = yield select(state => state.databoard);
-			if(rangeType === RANGE.FREE || rangeType === RANGE.TODAY) return; 
+			if(rangeType === RANGE.FREE || rangeType === RANGE.TODAY) return;
 			let upper = 10;
 			if(rangeType === RANGE.YESTERDAY) upper = 4;
 			const opt = {
@@ -266,11 +274,18 @@ export default {
 			}
 		},
 		// 获取实时销售额
-		*getTotalAmount({ payload }, { call, put, select }) {
+		*getTotalAmount(_, { call, put, select }) {
 			const {
-				searchValue,
+				realDataSearchValue,
+				realDataSearchValue: { rangeType }
 			} = yield select(state => state.databoard);
-			const [startTime, endTime] = getQueryTimeRange(searchValue);
+			let startTime;
+			let endTime;
+			if(rangeType === RANGE.FREE) {
+				[startTime, endTime] = getQueryTimeRange(realDataSearchValue);
+			} else {
+				[startTime, endTime] = getQueryTimeRange({...realDataSearchValue, rangeType: RANGE.DAY });
+			}
 
 			const options = {
 				timeRangeStart: startTime,
@@ -282,7 +297,11 @@ export default {
 				format('toSnake')(options)
 			);
 			if (response && response.code === ERROR_OK) {
-				const { dayAmount, yesterdayAmount, weekAmount, lastWeekAmount, monthAmount, lastMonthAmount } = payload;
+				const { data = {} } = response;
+				const { dayAmount, yesterdayAmount,
+					weekAmount, lastWeekAmount,
+					monthAmount, lastMonthAmount
+				} = format('toCamel')(data);
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -299,11 +318,18 @@ export default {
 			}
 		},
 		// 获取实时交易量
-		*getTotalCount({ payload }, { call, put }) {
+		*getTotalCount(_, { call, put, select }) {
 			const {
-				searchValue,
+				realDataSearchValue,
+				realDataSearchValue: { rangeType }
 			} = yield select(state => state.databoard);
-			const [startTime, endTime] = getQueryTimeRange(searchValue);
+			let startTime;
+			let endTime;
+			if(rangeType === RANGE.FREE) {
+				[startTime, endTime] = getQueryTimeRange(realDataSearchValue);
+			} else {
+				[startTime, endTime] = getQueryTimeRange({...realDataSearchValue, rangeType: RANGE.DAY });
+			}
 			const options = {
 				timeRangeStart: startTime,
 				timeRangeEnd: endTime
@@ -314,7 +340,10 @@ export default {
 				format('toSnake')(options)
 			);
 			if (response && response.code === ERROR_OK) {
-				const { dayCount, yesterdayCount, weekCount, lastWeekCount, monthCount, lastMonthCount } = payload;
+				const { data = {} } = response;
+				const { dayCount, yesterdayCount,
+					weekCount, lastWeekCount,
+					monthCount, lastMonthCount } = format('toCamel')(data);
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -331,11 +360,11 @@ export default {
 			}
 		},
 		// 获取交易分布（销售额和交易量按时间分布）
-		*getTimeDistribution(_, { call }) {
+		*getTimeDistribution(_, { call, select }) {
 			const {
-				searchValue,
+				realDataSearchValue,
 			} = yield select(state => state.databoard);
-			const [startTime, endTime] = getQueryTimeRange(searchValue);
+			const [startTime, endTime] = getQueryTimeRange(realDataSearchValue);
 			const timeInterval = 3600;
 			const options = {
 				startTime,
@@ -357,12 +386,12 @@ export default {
 			}
 		},
 		// 交易转化率分布 （客流量和交易量按时间分布）
-		*getPassengerOrderLatest(_, { call }) {
+		*getPassengerOrderLatest(_, { call, select }) {
 			const {
-				searchValue,
-				searchValue: { rangeType }
+				realDataSearchValue,
+				realDataSearchValue: { rangeType }
 			} = yield select(state => state.databoard);
-			const [startTime, endTime] = getQueryTimeRange(searchValue);
+			const [startTime, endTime] = getQueryTimeRange(realDataSearchValue);
 			let response = {};
 			let opt = {};
 			if(rangeType !== RANGE.FREE) {
@@ -370,8 +399,9 @@ export default {
 					type: queryRangeType(rangeType)
 				};
 				response = yield call(
-					getPassengerFlowOrderLatest,
-					opt
+					handlePassengerFlowManagement,
+					'statistic/order/getLatest',
+					format('toSnake')(opt)
 				);
 			} else {
 				opt = {
@@ -379,8 +409,9 @@ export default {
 					endTime: moment.unix(endTime).format('YYYY-MM-DD')
 				};
 				response = yield call(
-					getPassengerFlowOrderByRange,
-					opt
+					handlePassengerFlowManagement,
+					'statistic/order/getByTimeRange',
+					format('toSnake')(opt)
 				);
 			}
 			if (response && response.code === ERROR_OK) {
@@ -392,7 +423,64 @@ export default {
 				// });
 			}
 
-		}
+		},
+		// 年龄性别分布实时客流数据
+		*getPassengerByAgeGender(_, { call, select }) {
+			const {
+				realDataSearchValue,
+			} = yield select(state => state.databoard);
+			const [startTime, endTime] = getQueryTimeRange(realDataSearchValue);
+			const opt = {
+				startTime,
+				endTime,
+			};
+			const response = yield call(
+				handlePassengerFlowManagement,
+				'statistic/age/getByGender',
+				format('toSnake')(opt)
+			);
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { countList = [] } = format('toCamel')(data) || {};
+				const maleList = [];
+				const femaleList = [];
+				countList.forEach((item) => {
+					const { maleCount, femaleCount, ageRangeCode } = item;
+					maleList.push({
+						count: maleCount,
+						ageRangeCode,
+					});
+					femaleList.push({
+						count: femaleCount,
+						ageRangeCode,
+					});
+				});
+			}
+		},
+
+		// 生熟客分布实时客流数据
+		*getPassengerByRegular(_, { call, select }) {
+			const {
+				realDataSearchValue,
+			} = yield select(state => state.databoard);
+			const [startTime, endTime] = getQueryTimeRange(realDataSearchValue);
+			const opt = {
+				startTime,
+				endTime,
+			};
+			const response = yield call(
+				handlePassengerFlowManagement,
+				'statistic/age/getByRegular',
+				format('toSnake')(opt)
+			);
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { countList = [] } = format('toCamel')(data) || {};
+				const totalRegular = countList.reduce((prev, cur) => prev + cur.regularCount, 0);
+				const totalStranger = countList.reduce((prev, cur) => prev + cur.strangerCount, 0);
+				console.log('==', totalRegular, totalStranger);
+			}
+		},
 	},
 	reducers: {
 		updateState(state, action) {
