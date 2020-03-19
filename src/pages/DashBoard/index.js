@@ -20,11 +20,13 @@ const { LAST_HAND_REFRESH_TIME } = DASHBOARD;
 		fetchAllData: ({ needLoading }) =>
 			dispatch({ type: 'dashboard/fetchAllData', payload: { needLoading } }),
 		getAgeRanges: () => dispatch({ type: 'dashboard/getAgeRanges' }),
+		getPassengerData: () => dispatch({ type: 'databoard/getFrequencyList' })
 	})
 )
 class DashBoard extends PureComponent {
 	async componentDidMount() {
-		const { fetchAllData, getAgeRanges } = this.props;
+		const { fetchAllData, getAgeRanges, getPassengerData } = this.props;
+		getPassengerData();
 		await getAgeRanges();
 		await fetchAllData({ needLoading: true });
 	}

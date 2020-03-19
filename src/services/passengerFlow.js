@@ -64,3 +64,91 @@ export const getLatestPassengerFlow = options => {
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
 };
+
+export const getTimeRangePassengerFlow = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/getByTimeRange', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
+
+export const getHistoryPassengerFlow = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/history/getList', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
+
+export const getHistoryTimeRangePassengerFlow = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/history/getListByTimeRange', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
+
+export const getLatestOrderList = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/order/getLatest', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
+
+export const getTimeRangeOrderList = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/order/getByTimeRange', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
+
+export const getHistoryPassengerTypeCount = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/history/getByTimeRange', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
+
+export const getHistoryEnteringDistribution = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/history/getEnteringDistribution', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
+
+export const getHistoryFrequencyList = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/history/getFrequencyList', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
