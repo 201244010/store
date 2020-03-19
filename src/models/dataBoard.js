@@ -66,7 +66,7 @@ export default {
 	namespace: 'databoard',
 	state: {
 		realDataSearchValue: {
-			rangeType: RANGE.DAY,
+			rangeType: RANGE.TODAY,
 			timeRangeStart: moment()
 				.startOf('day')
 				.unix(),
@@ -273,6 +273,8 @@ export default {
 				console.log('到店次数:', frequencyList);
 			}
 		},
+
+
 		// 获取实时销售额
 		*getTotalAmount(_, { call, put, select }) {
 			const {
@@ -284,12 +286,13 @@ export default {
 			if(rangeType === RANGE.FREE) {
 				[startTime, endTime] = getQueryTimeRange(realDataSearchValue);
 			} else {
-				[startTime, endTime] = getQueryTimeRange({...realDataSearchValue, rangeType: RANGE.DAY });
+				[startTime, endTime] = getQueryTimeRange({...realDataSearchValue, rangeType: RANGE.TODAY });
 			}
 
 			const options = {
 				timeRangeStart: startTime,
-				timeRangeEnd: endTime
+				timeRangeEnd: endTime,
+				rateRequired: 1,
 			};
 			const response = yield call(
 				handleDashBoard,
@@ -302,6 +305,7 @@ export default {
 					weekAmount, lastWeekAmount,
 					monthAmount, lastMonthAmount
 				} = format('toCamel')(data);
+				console.log('====总销售额====', data);
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -328,11 +332,12 @@ export default {
 			if(rangeType === RANGE.FREE) {
 				[startTime, endTime] = getQueryTimeRange(realDataSearchValue);
 			} else {
-				[startTime, endTime] = getQueryTimeRange({...realDataSearchValue, rangeType: RANGE.DAY });
+				[startTime, endTime] = getQueryTimeRange({...realDataSearchValue, rangeType: RANGE.TODAY });
 			}
 			const options = {
 				timeRangeStart: startTime,
-				timeRangeEnd: endTime
+				timeRangeEnd: endTime,
+				rateRequired: 1,
 			};
 			const response = yield call(
 				handleDashBoard,
@@ -344,6 +349,7 @@ export default {
 				const { dayCount, yesterdayCount,
 					weekCount, lastWeekCount,
 					monthCount, lastMonthCount } = format('toCamel')(data);
+				console.log('====总销售量====', data);
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -377,6 +383,17 @@ export default {
 				format('toSnake')(options)
 			);
 			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { orderList = [] } = format('toCamel')(data);
+				const amountList = orderList.map(item => ({
+					time: item.time,
+					value: item.amount,
+				}));
+				const countList = orderList.map(item => ({
+					time: item.time,
+					value: item.count
+				}));
+				console.log('销售额 订单数 分布',amountList, countList);
 				// yield put({
 				// 	type: 'updateState',
 				// 	payload: {
@@ -391,7 +408,6 @@ export default {
 				realDataSearchValue,
 				realDataSearchValue: { rangeType }
 			} = yield select(state => state.databoard);
-			const [startTime, endTime] = getQueryTimeRange(realDataSearchValue);
 			let response = {};
 			let opt = {};
 			if(rangeType !== RANGE.FREE) {
@@ -404,6 +420,7 @@ export default {
 					format('toSnake')(opt)
 				);
 			} else {
+				const [startTime, endTime] = getQueryTimeRange(realDataSearchValue);
 				opt = {
 					startTime: moment.unix(startTime).format('YYYY-MM-DD'),
 					endTime: moment.unix(endTime).format('YYYY-MM-DD')
@@ -415,6 +432,17 @@ export default {
 				);
 			}
 			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { countList = [] } = format('toCamel')(data);
+				const orderRateList = countList.map(item => {
+					const { orderCount = 0, passengerFlowCount = 0, entryHeadCount = 0, time } = item;
+					const totalPassenger = passengerFlowCount + entryHeadCount;
+					return {
+						time,
+						value: totalPassenger ? orderCount / totalPassenger : 0,
+					};
+				});
+				console.log('交易转化率', orderRateList);
 				// yield put({
 				// 	type: 'updateState',
 				// 	payload: {
@@ -457,7 +485,6 @@ export default {
 				});
 			}
 		},
-
 		// 生熟客分布实时客流数据
 		*getPassengerByRegular(_, { call, select }) {
 			const {
@@ -481,6 +508,114 @@ export default {
 				console.log('==', totalRegular, totalStranger);
 			}
 		},
+
+		// 客流趋势
+		*getPassengerHistoryTrend(_, { call, select }) {
+			const {
+				passengerFlowSearchValue: rangeType,
+			} = yield select(state => state.databoard);
+			const opt = {
+				type: queryRangeType(rangeType),
+				groupBy: groupBy(rangeType)
+			};
+			const response = yield call(
+				handlePassengerFlowManagement,
+				'statistic/history/getList',
+				format('toSnake')(opt)
+			);
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { countList = [] } = format('toCamel')(data);
+				const totalList = countList.map(item => ({
+					time: item.time,
+					value: item.totalCount + entryHeadCount
+				}));
+				const regularList = countList.map(item => ({
+					time: item.time,
+					value: item.regularCount
+				}));
+				const strangerList = countList.map(item => ({
+					time: item.time,
+					value: item.strangerCount
+				}));
+				console.log('===历史客流， 总人数===', totalList);
+				console.log('===历史客流， 熟客人数===', regularList);
+				console.log('===历史客流， 生客人数===', strangerList);
+			}
+		},
+		// 客群平均到店频次
+		*getFrequencyWithAgeAndGender(_, { call, select }) {
+			const {
+				passengerFlowSearchValue: rangeType,
+			} = yield select(state => state.databoard);
+			const opt = {
+				type: queryRangeType(rangeType),
+			};
+			const response = yield call(
+				handlePassengerFlowManagement,
+				'statistic/history/getFrequencyWithAgeAndGender',
+				format('toSnake')(opt)
+			);
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { frequencyList = [] } = format('toCamel')(data);
+				console.log('===到店频次===', frequencyList);
+			}
+		},
+
+		// 主力客群画像
+		*getHistoryByGender(_, { call, select }) {
+			const {
+				passengerFlowSearchValue: rangeType
+			} = yield select(state => state.databoard);
+			const opt = {
+				type: queryRangeType(rangeType),
+			};
+			const response = yield call(
+				handlePassengerFlowManagement,
+				'statistic/age/getHistoryByGender',
+				format('toSnake')(opt)
+			);
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { countList = [] } = format('toCamel')(data);
+				const totalCount = countList.reduce((prev, cur) => {
+					const { maleCount = 0, femaleCount = 0 } = cur;
+					return prev + maleCount + femaleCount;
+				}, 0);
+				const targetList = countList
+					.reduce((prev, cur) => {
+						const {
+							ageRangeCode,
+							maleCount, maleRegularCount, maleRushHour, maleUniqCount,
+							femaleCount, femaleRegularCount, femaleRushHour, femaleUniqCount,
+						} = cur;
+						return prev.concat([{
+							ageRangeCode,
+							count: maleCount,
+							rushHour: maleRushHour,
+							regularCount: maleRegularCount,
+							uniqCount: maleUniqCount,
+							passengerRate: totalCount ? Math.round((maleCount / totalCount) * 100) : 0,
+							regularRate: maleCount ? Math.round((maleRegularCount / maleCount) * 100) : 0,
+							frequency: maleUniqCount ? Math.round((maleCount / maleUniqCount) * 10) / 10 : 0,
+							gender: GENDER.MALE,
+						}, {
+							ageRangeCode,
+							count: femaleCount,
+							rushHour: femaleRushHour,
+							regularCount: femaleRegularCount,
+							uniqCount: femaleUniqCount,
+							passengerRate: totalCount ? Math.round((femaleCount / totalCount) * 100) : 0,
+							regularRate: femaleCount ? Math.round((femaleRegularCount / femaleCount) * 100) : 0,
+							frequency: femaleUniqCount ? Math.round(femaleCount / femaleUniqCount * 10) / 10 : 0,
+							gender: GENDER.FEMALE,
+						}]);
+					}, []).sort((a, b) => b.count - a.count);
+				console.log('====', targetList);
+			}
+		}
+
 	},
 	reducers: {
 		updateState(state, action) {
