@@ -96,12 +96,40 @@ export default {
 					},
 				});
 			}
-			
+
 		},
-		*fetchRealTimeCard({ payload }, { put }) {
+		*fetchRealTimeCard({ payload }, { put, select }) {
 			yield put({
 				type: 'getPassengerData',
 				payload,
+			});
+			yield put({
+				type: 'getTotalAmount',
+				payload,
+			});
+			yield put({
+				type: 'getTotalCount',
+				payload,
+			});
+			yield put({
+				type: 'getTransactionRate',
+				payload,
+			});
+			const {
+				passengerCount, paymentTotalAmount, paymentTotalCount, transactionRate
+			} = yield select(state => state.databoard);
+			console.log('===fetchRealTimeCard===', passengerCount, paymentTotalCount, paymentTotalAmount, transactionRate);
+			yield put({
+				type: 'updateState',
+				realTimeCard: [{
+					...passengerCount,
+				}, {
+					...paymentTotalAmount,
+				}, {
+					...paymentTotalCount
+				}, {
+					...transactionRate,
+				}]
 			});
 		},
 		*fetchPassengerCard({ payload }, { put }) {
@@ -311,19 +339,18 @@ export default {
 			}
 		},
 
-
 		// 获取实时销售额
-		*getTotalAmount(_, { call, put, select }) {
+		*getTotalAmount({ payload = {} }, { call, put }) {
 			const {
-				realDataSearchValue,
-				realDataSearchValue: { rangeType }
-			} = yield select(state => state.databoard);
+				searchValue,
+				searchValue: { rangeType }
+			} = payload;
 			let startTime;
 			let endTime;
 			if(rangeType === RANGE.FREE) {
-				[startTime, endTime] = getQueryTimeRange(realDataSearchValue);
+				[startTime, endTime] = getQueryTimeRange(searchValue);
 			} else {
-				[startTime, endTime] = getQueryTimeRange({...realDataSearchValue, rangeType: RANGE.TODAY });
+				[startTime, endTime] = getQueryTimeRange({...searchValue, rangeType: RANGE.TODAY });
 			}
 
 			const options = {
@@ -350,14 +377,17 @@ export default {
 							[RANGE.TODAY]: {
 								count: dayAmount,
 								earlyCount: yesterdayAmount,
+								label: 'totalAmount',
 							},
 							[RANGE.WEEK]: {
 								count: weekAmount,
 								earlyCount: lastWeekAmount,
+								label: 'totalAmount',
 							},
 							[RANGE.MONTH]: {
 								count: monthAmount,
 								earlyCount: lastMonthAmount,
+								label: 'totalAmount',
 							},
 						},
 					},
@@ -365,17 +395,17 @@ export default {
 			}
 		},
 		// 获取实时交易量
-		*getTotalCount(_, { call, put, select }) {
+		*getTotalCount({ payload = {} }, { call, put }) {
 			const {
-				realDataSearchValue,
-				realDataSearchValue: { rangeType }
-			} = yield select(state => state.databoard);
+				searchValue,
+				searchValue: { rangeType }
+			} = payload;
 			let startTime;
 			let endTime;
 			if(rangeType === RANGE.FREE) {
-				[startTime, endTime] = getQueryTimeRange(realDataSearchValue);
+				[startTime, endTime] = getQueryTimeRange(searchValue);
 			} else {
-				[startTime, endTime] = getQueryTimeRange({...realDataSearchValue, rangeType: RANGE.TODAY });
+				[startTime, endTime] = getQueryTimeRange({...searchValue, rangeType: RANGE.TODAY });
 			}
 			const options = {
 				timeRangeStart: startTime,
@@ -400,14 +430,17 @@ export default {
 							[RANGE.TODAY]: {
 								count: dayCount,
 								earlyCount: yesterdayCount,
+								label: 'totalCount',
 							},
 							[RANGE.WEEK]: {
 								count: weekCount,
 								earlyCount: lastWeekCount,
+								label: 'totalCount',
 							},
 							[RANGE.MONTH]: {
 								count: monthCount,
 								earlyCount: lastMonthCount,
+								label: 'totalCount',
 							},
 						},
 					},
@@ -415,16 +448,18 @@ export default {
 			}
 		},
 		// 计算总交易转化率
-		*getTransactionRate(_, { put, select }) {
+		*getTransactionRate({ payload = {} }, { put, select }) {
 			const {
-				realDataSearchValue: { rangeType },
-				totalPassenger,
+				passengerCount,
 				paymentTotalCount,
 			} = yield select(state => state.databoard);
-			const { count: passengerCount, earlyCount: earlyPassengerCount } = totalPassenger;
+			const {
+				searchValue: { rangeType }
+			} = payload;
+			const { count: passCount, earlyCount: earlyPassengerCount } = passengerCount;
 			const { count: paymentCount, earlyCount: earlyPaymentCount } = paymentTotalCount[rangeType];
-			const rate = passengerCount ? paymentCount / passengerCount : 0;
-			const earlyRate = earlyPassengerCount ? earlyPaymentCount / earlyPassengerCount : 0;
+			const rate = passCount ? paymentCount / passCount : undefined;
+			const earlyRate = earlyPassengerCount ? earlyPaymentCount / earlyPassengerCount : undefined;
 			yield put({
 				type: 'updateState',
 				payload: {
@@ -438,11 +473,11 @@ export default {
 			});
 		},
 		// 获取交易分布（销售额和交易量按时间分布）
-		*getTimeDistribution(_, { call, select }) {
+		*getTimeDistribution({ payload = {} }, { call }) {
 			const {
-				realDataSearchValue,
-			} = yield select(state => state.databoard);
-			const [startTime, endTime] = getQueryTimeRange(realDataSearchValue);
+				searchValue
+			} = payload;
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
 			const timeInterval = 3600;
 			const options = {
 				startTime,
@@ -460,26 +495,29 @@ export default {
 				const amountList = orderList.map(item => ({
 					time: item.time,
 					value: item.amount,
+					name: 'amount',
 				}));
 				const countList = orderList.map(item => ({
 					time: item.time,
-					value: item.count
+					value: item.count,
+					name: count
 				}));
-				console.log('销售额 订单数 分布',amountList, countList);
-				// yield put({
-				// 	type: 'updateState',
-				// 	payload: {
-				// 		passengerFlowCount: { latestCount },
-				// 	},
-				// });
+				console.log('销售额 订单数 分布', amountList, countList);
+				yield put({
+					type: 'updateState',
+					payload: {
+						amountList,
+						countList
+					},
+				});
 			}
 		},
 		// 交易转化率分布 （客流量和交易量按时间分布）
-		*getPassengerOrderLatest(_, { call, select }) {
+		*getPassengerOrderLatest(_, { call }) {
 			const {
-				realDataSearchValue,
-				realDataSearchValue: { rangeType }
-			} = yield select(state => state.databoard);
+				searchValue,
+				searchValue: { rangeType }
+			} = payload;
 			let response = {};
 			let opt = {};
 			if(rangeType !== RANGE.FREE) {
@@ -492,7 +530,7 @@ export default {
 					format('toSnake')(opt)
 				);
 			} else {
-				const [startTime, endTime] = getQueryTimeRange(realDataSearchValue);
+				const [startTime, endTime] = getQueryTimeRange(searchValue);
 				opt = {
 					startTime: moment.unix(startTime).format('YYYY-MM-DD'),
 					endTime: moment.unix(endTime).format('YYYY-MM-DD')
