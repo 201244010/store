@@ -37,6 +37,7 @@ const groupBy = {
 };
 
 
+
 export const getQueryDate = rangeType => [
 	moment()
 		.startOf(rangeType)
@@ -66,11 +67,12 @@ const getQueryTimeRange = (searchValue = {}) => {
 export default {
 	namespace: 'databoard',
 	state: {
-
+		passengerCount: {},
+		enteringRate: {},
 	},
 	effects: {
 		*fetchAllData(_, { put }) {
-			const type = 'realTime';
+			const type = 1; // type 1 实时； 2 客流分析
 			const searchValue = {
 				rangeType: RANGE.TODAY,
 				timeRangeStart: moment()
@@ -80,19 +82,22 @@ export default {
 					.endOf('day')
 					.unix(),
 			};
-			if (type === 'realTime') {
+
+			if (type === 1) {
 				yield put({
 					type: 'fetchRealTimeData',
 					payload: {
-						searchValue
+						searchValue,
+						type,
 					},
 				});
 			}
-			if(type === 'passenger') {
+			if(type === 2) {
 				yield put({
 					type: 'fetchPassengerData',
 					payload: {
-						searchValue
+						searchValue,
+						type,
 					},
 				});
 			}
@@ -123,8 +128,9 @@ export default {
 			});
 		},
 		// 获取门店客流数 && 进店率 OK
-		*getPassengerData({ payload = {} }, { call }) {
+		*getPassengerData({ payload = {} }, { call, put }) {
 			const {
+				type,
 				searchValue,
 				searchValue: { rangeType }
 			} = payload;
@@ -157,11 +163,58 @@ export default {
 				const totalEarlyCount = earlyCount + earlyEntryHeadCount;
 				const lastestEntryRate = (totalLastestCount + latestPassCount) === 0 ? undefined : totalLastestCount / (totalLastestCount + latestPassCount) * 100;
 				const earlyEntryRate = (totalEarlyCount + earlyPassCount) === 0 ? undefined : totalEarlyCount / (totalEarlyCount + earlyPassCount) * 100;
+				const passengerCompareValue = !(totalEarlyCount && totalLastestCount) ? undefined : (totalLastestCount - totalEarlyCount) / totalEarlyCount;
+				const entryCompareValue = !(lastestEntryRate && earlyEntryRate)? undefined : (lastestEntryRate - earlyEntryRate) / earlyEntryRate;
 				// ByTimeRange 无上次进店客流（未处理）
 				console.log('最新进店客流：', totalLastestCount);
 				console.log('上次进店客流: ', totalEarlyCount);
 				console.log('最新进店率：', lastestEntryRate);
 				console.log('上次进店率: ', earlyEntryRate);
+				console.log('进店客流较上次：', passengerCompareValue);
+				console.log('进店率较上次：', entryCompareValue);
+				if (type === 1) {
+					yield put({
+						type: 'updateState',
+						payload: {
+							passengerCount: {
+								label: 'passengerCount',
+								count: totalLastestCount,
+								earlyCount: totalEarlyCount,
+								compareRate: false,
+								unit: 'default'
+							},
+							enteringRate: {
+								label: 'enteringRate',
+								count: lastestEntryRate,
+								earlyCount: earlyEntryRate,
+								compareRate: false,
+								unit: 'percent'
+							},
+						},
+					});
+				}
+				if(type === 2) {
+					yield put({
+						type: 'updateState',
+						payload: {
+							passengerCount: {
+								label: 'passengerCount',
+								count: totalLastestCount,
+								earlyCount: passengerCompareValue,
+								compareRate: true,
+								unit: 'default'
+							},
+							enteringRate: {
+								label: 'enteringRate',
+								count: lastestEntryRate,
+								earlyCount: entryCompareValue,
+								compareRate: true,
+								unit: 'percent'
+							},
+						},
+					});
+				}
+				
 			}
 		},
 		// 获取门店客流趋势 OK
