@@ -36,6 +36,7 @@ const groupBy = {
 	[RANGE.FREE]: 'day',
 };
 
+
 export const getQueryDate = rangeType => [
 	moment()
 		.startOf(rangeType)
@@ -65,32 +66,68 @@ const getQueryTimeRange = (searchValue = {}) => {
 export default {
 	namespace: 'databoard',
 	state: {
-		realDataSearchValue: {
-			rangeType: RANGE.TODAY,
-			timeRangeStart: moment()
-				.startOf('day')
-				.unix(),
-			timeRangeEnd: moment()
-				.endOf('day')
-				.unix(),
-		},
-		passengerFlowSearchValue: {
-			rangeType: RANGE.YESTERDAY,
-			timeRangeStart: moment()
-				.startOf('day')
-				.unix(),
-			timeRangeEnd: moment()
-				.endOf('day')
-				.unix(),
-		}
+
 	},
 	effects: {
+		*fetchAllData(_, { put }) {
+			const type = 'realTime';
+			const searchValue = {
+				rangeType: RANGE.TODAY,
+				timeRangeStart: moment()
+					.startOf('day')
+					.unix(),
+				timeRangeEnd: moment()
+					.endOf('day')
+					.unix(),
+			};
+			if (type === 'realTime') {
+				yield put({
+					type: 'fetchRealTimeData',
+					payload: {
+						searchValue
+					},
+				});
+			}
+			if(type === 'passenger') {
+				yield put({
+					type: 'fetchPassengerData',
+					payload: {
+						searchValue
+					},
+				});
+			}
+			
+		},
+		*fetchRealTimeCard({ payload }, { put }) {
+			yield put({
+				type: 'getPassengerData',
+				payload,
+			});
+		},
+		*fetchPassengerCard({ payload }, { put }) {
+			yield put({
+				type: 'getPassengerData',
+				payload,
+			});
+		},
+		*fetchRealTimeData({ payload }, { put }) {
+			yield put({
+				type: 'fetchRealTimeCard',
+				payload,
+			});
+		},
+		*fetchPassengerData({ payload }, { put }) {
+			yield put({
+				type: 'fetchPassengerCard',
+				payload,
+			});
+		},
 		// 获取门店客流数 && 进店率 OK
-		*getPassengerData(_, { call, select }) {
+		*getPassengerData({ payload = {} }, { call }) {
 			const {
 				searchValue,
 				searchValue: { rangeType }
-			} = yield select(state => state.databoard);
+			} = payload;
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 			let response = {};
 			let opt = {};
@@ -128,11 +165,11 @@ export default {
 			}
 		},
 		// 获取门店客流趋势 OK
-		*getPassengerFlow(_, { call, select }) {
+		*getPassengerFlow({ payload = {} }, { call }) {
 			const {
 				searchValue,
 				searchValue: { rangeType }
-			} = yield select(state => state.databoard);
+			} = payload;
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 			let response = {};
 			let opt = {};
@@ -163,10 +200,10 @@ export default {
 			}
 		},
 		// 获取熟客数 Todo: 数据处理，日期范围确认
-		*getRegularCount(_, { call, select }) {
+		*getRegularCount({ payload = {} }, { call }) {
 			const {
 				searchValue: { rangeType }
-			} = yield select(state => state.databoard);
+			} = payload;
 			let opt = {};
 			let lastOpt = {};
 			if(rangeType === RANGE.TODAY || rangeType === RANGE.FREE) return;
@@ -214,10 +251,10 @@ export default {
 			console.log(lastResponse);
 		},
 		// 进店率 OK
-		*getEnteringDistribution(_, { call, select }) {
+		*getEnteringDistribution({ payload = {} }, { call }) {
 			const {
 				searchValue: { rangeType }
-			} = yield select(state => state.databoard);
+			} = payload;
 			if(rangeType === RANGE.FREE || rangeType === RANGE.TODAY) return;
 			const opt = {
 				type: queryRangeType[rangeType],
@@ -241,10 +278,10 @@ export default {
 			}
 		},
 		// 到店次数分布 OK
-		*getFrequencyList(_, { call, select }) {
+		*getFrequencyList({ payload = {} }, { call }) {
 			const {
 				searchValue: { rangeType }
-			} = yield select(state => state.databoard);
+			} = payload;
 			if(rangeType === RANGE.FREE || rangeType === RANGE.TODAY) return;
 			let upper = 10;
 			if(rangeType === RANGE.YESTERDAY) upper = 4;
