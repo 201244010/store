@@ -20,7 +20,7 @@ const { LAST_HAND_REFRESH_TIME } = DASHBOARD;
 		fetchAllData: ({ needLoading }) =>
 			dispatch({ type: 'dashboard/fetchAllData', payload: { needLoading } }),
 		getAgeRanges: () => dispatch({ type: 'dashboard/getAgeRanges' }),
-		getPassengerData: () => dispatch({ type: 'databoard/getFrequencyList' })
+		getPassengerData: () => dispatch({ type: 'databoard/fetchAllData' })
 	})
 )
 class DashBoard extends PureComponent {
