@@ -310,12 +310,18 @@ export default {
 					type: 'updateState',
 					payload: {
 						paymentTotalAmount: {
-							dayAmount,
-							yesterdayAmount,
-							weekAmount,
-							lastWeekAmount,
-							monthAmount,
-							lastMonthAmount,
+							[RANGE.TODAY]: {
+								count: dayAmount,
+								earlyCount: yesterdayAmount,
+							},
+							[RANGE.WEEK]: {
+								count: weekAmount,
+								earlyCount: lastWeekAmount,
+							},
+							[RANGE.MONTH]: {
+								count: monthAmount,
+								earlyCount: lastMonthAmount,
+							},
 						},
 					},
 				});
@@ -354,16 +360,45 @@ export default {
 					type: 'updateState',
 					payload: {
 						paymentTotalCount: {
-							dayCount,
-							yesterdayCount,
-							weekCount,
-							lastWeekCount,
-							monthCount,
-							lastMonthCount,
+							[RANGE.TODAY]: {
+								count: dayCount,
+								earlyCount: yesterdayCount,
+							},
+							[RANGE.WEEK]: {
+								count: weekCount,
+								earlyCount: lastWeekCount,
+							},
+							[RANGE.MONTH]: {
+								count: monthCount,
+								earlyCount: lastMonthCount,
+							},
 						},
 					},
 				});
 			}
+		},
+		// 计算总交易转化率
+		*getTransactionRate(_, { put, select }) {
+			const {
+				realDataSearchValue: { rangeType },
+				totalPassenger,
+				paymentTotalCount,
+			} = yield select(state => state.databoard);
+			const { count: passengerCount, earlyCount: earlyPassengerCount } = totalPassenger;
+			const { count: paymentCount, earlyCount: earlyPaymentCount } = paymentTotalCount[rangeType];
+			const rate = passengerCount ? paymentCount / passengerCount : 0;
+			const earlyRate = earlyPassengerCount ? earlyPaymentCount / earlyPassengerCount : 0;
+			yield put({
+				type: 'updateState',
+				payload: {
+					transactionRate: {
+						count: rate,
+						earlyCount: earlyRate,
+						label: 'transactionRate',
+						unit: 'percent'
+					}
+				}
+			});
 		},
 		// 获取交易分布（销售额和交易量按时间分布）
 		*getTimeDistribution(_, { call, select }) {
