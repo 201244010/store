@@ -36,6 +36,18 @@ const groupBy = {
 	[RANGE.FREE]: 'day',
 };
 
+const rangeTimeInterval = {
+	[RANGE.TODAY]: 3600,
+	[RANGE.WEEK]: 24 * 3600,
+	[RANGE.MONTH]: 24 * 3600,
+	[RANGE.YESTERDAY]: 3600,
+	[RANGE.FREE]: 24 * 3600,
+};
+
+const GENDER = {
+	MALE: 1,
+	FEMALE: 2,
+};
 
 
 export const getQueryDate = rangeType => [
@@ -74,7 +86,7 @@ export default {
 		*fetchAllData(_, { put }) {
 			const type = 1; // type 1 实时； 2 客流分析
 			const searchValue = {
-				rangeType: RANGE.TODAY,
+				rangeType: RANGE.MONTH,
 				timeRangeStart: moment()
 					.startOf('day')
 					.unix(),
@@ -104,37 +116,47 @@ export default {
 
 		},
 		*fetchRealTimeCard({ payload }, { put, select }) {
-			yield put({
+			// const {
+			// 	searchValue: { rangeType }
+			// } = payload;
+			yield put.resolve({
 				type: 'getPassengerData',
 				payload,
 			});
-			yield put({
+			yield put.resolve({
 				type: 'getTotalAmount',
 				payload,
 			});
-			yield put({
+			yield put.resolve({
 				type: 'getTotalCount',
 				payload,
 			});
-			yield put({
+			yield put.resolve({
 				type: 'getTransactionRate',
-				payload,
+				payload
 			});
 			const {
-				passengerCount, paymentTotalAmount, paymentTotalCount, transactionRate
+				RTPassengerCount, paymentTotalAmount,  paymentTotalCount, transactionRate,
 			} = yield select(state => state.databoard);
-			console.log('===fetchRealTimeCard===', passengerCount, paymentTotalCount, paymentTotalAmount, transactionRate);
+			// const { count: passCount, earlyCount: earlyPassengerCount } = passengerCount;
+			// const { count: paymentCount, earlyCount: earlyPaymentCount } = paymentTotalCount[rangeType];
+			// const rate = passCount ? paymentCount / passCount : undefined;
+			// const earlyRate = earlyPassengerCount ? earlyPaymentCount / earlyPassengerCount : undefined;
+			console.log('===fetchRealTimeCard===', RTPassengerCount, paymentTotalCount, paymentTotalAmount, transactionRate);
 			yield put({
 				type: 'updateState',
-				realTimeCard: [{
-					...passengerCount,
-				}, {
-					...paymentTotalAmount,
-				}, {
-					...paymentTotalCount
-				}, {
-					...transactionRate,
-				}]
+				realTimeCard: [
+					RTPassengerCount,
+					paymentTotalAmount,
+					paymentTotalCount,
+					transactionRate,
+					// {
+					// 	count: rate,
+					// 	earlyCount: earlyRate,
+					// 	label: 'transactionRate',
+					// 	unit: 'percent',
+					// }
+				]
 			});
 		},
 		*fetchPassengerCard({ payload }, { put }) {
@@ -148,11 +170,39 @@ export default {
 				type: 'fetchRealTimeCard',
 				payload,
 			});
+			yield put({
+				type: 'getTimeDistribution',
+				payload,
+			});
+			yield put({
+				type: 'getPassengerOrderLatest',
+				payload,
+			});
+			yield put({
+				type: 'getPassengerByAgeGender',
+				payload,
+			});
+			yield put({
+				type: 'getPassengerByRegular',
+				payload,
+			});
 		},
 		*fetchPassengerData({ payload }, { put }) {
 			yield put({
 				type: 'fetchPassengerCard',
 				payload,
+			});
+			yield put({
+				type: 'getHistoryByGender',
+				payload
+			});
+			yield put({
+				type: 'getPassengerHistoryTrend',
+				payload
+			});
+			yield put({
+				type: 'getFrequencyWithAgeAndGender',
+				payload
 			});
 		},
 		// 获取门店客流数 && 进店率 OK
@@ -242,7 +292,7 @@ export default {
 						},
 					});
 				}
-				
+
 			}
 		},
 		// 获取门店客流趋势 OK
@@ -392,6 +442,10 @@ export default {
 			}
 		},
 
+
+
+
+
 		// 获取实时销售额
 		*getTotalAmount({ payload = {} }, { call, put }) {
 			const {
@@ -500,19 +554,21 @@ export default {
 				});
 			}
 		},
+
 		// 计算总交易转化率
 		*getTransactionRate({ payload = {} }, { put, select }) {
 			const {
-				passengerCount,
+				RTPassengerCount,
 				paymentTotalCount,
 			} = yield select(state => state.databoard);
 			const {
 				searchValue: { rangeType }
 			} = payload;
-			const { count: passCount, earlyCount: earlyPassengerCount } = passengerCount;
+			const { count: passCount, earlyCount: earlyPassengerCount } = RTPassengerCount;
 			const { count: paymentCount, earlyCount: earlyPaymentCount } = paymentTotalCount[rangeType];
 			const rate = passCount ? paymentCount / passCount : undefined;
 			const earlyRate = earlyPassengerCount ? earlyPaymentCount / earlyPassengerCount : undefined;
+			console.log('====总交易转化率===', rate, earlyRate);
 			yield put({
 				type: 'updateState',
 				payload: {
@@ -525,13 +581,16 @@ export default {
 				}
 			});
 		},
+
+
 		// 获取交易分布（销售额和交易量按时间分布）
-		*getTimeDistribution({ payload = {} }, { call }) {
+		*getTimeDistribution({ payload = {} }, { call, put }) {
 			const {
-				searchValue
+				searchValue,
+				searchValue: { rangeType }
 			} = payload;
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
-			const timeInterval = 3600;
+			const timeInterval = rangeTimeInterval[rangeType];
 			const options = {
 				startTime,
 				endTime,
@@ -545,15 +604,15 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { orderList = [] } = format('toCamel')(data);
-				const amountList = orderList.map(item => ({
-					time: item.time,
+				const amountList = orderList.map((item, index) => ({
+					time: index + 1,
 					value: item.amount,
 					name: 'amount',
 				}));
-				const countList = orderList.map(item => ({
-					time: item.time,
+				const countList = orderList.map((item, index) => ({
+					time: index + 1,
 					value: item.count,
-					name: count
+					name: 'count'
 				}));
 				console.log('销售额 订单数 分布', amountList, countList);
 				yield put({
@@ -566,7 +625,7 @@ export default {
 			}
 		},
 		// 交易转化率分布 （客流量和交易量按时间分布）
-		*getPassengerOrderLatest(_, { call }) {
+		*getPassengerOrderLatest({ payload = {} }, { call, put }) {
 			const {
 				searchValue,
 				searchValue: { rangeType }
@@ -575,7 +634,7 @@ export default {
 			let opt = {};
 			if(rangeType !== RANGE.FREE) {
 				opt = {
-					type: queryRangeType(rangeType)
+					type: queryRangeType[rangeType]
 				};
 				response = yield call(
 					handlePassengerFlowManagement,
@@ -606,24 +665,24 @@ export default {
 					};
 				});
 				console.log('交易转化率', orderRateList);
-				// yield put({
-				// 	type: 'updateState',
-				// 	payload: {
-				// 		passengerFlowCount: { latestCount },
-				// 	},
-				// });
+				yield put({
+					type: 'updateState',
+					payload: {
+						orderRateList
+					},
+				});
 			}
 
 		},
 		// 年龄性别分布实时客流数据
-		*getPassengerByAgeGender(_, { call, select }) {
+		*getPassengerByAgeGender({ payload = {} }, { call, put }) {
 			const {
-				realDataSearchValue,
-			} = yield select(state => state.databoard);
-			const [startTime, endTime] = getQueryTimeRange(realDataSearchValue);
+				searchValue
+			} = payload;
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
 			const opt = {
-				startTime,
-				endTime,
+				startTime: moment.unix(startTime).format('YYYY-MM-DD'),
+				endTime: moment.unix(endTime).format('YYYY-MM-DD')
 			};
 			const response = yield call(
 				handlePassengerFlowManagement,
@@ -633,30 +692,45 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { countList = [] } = format('toCamel')(data) || {};
-				const maleList = [];
-				const femaleList = [];
-				countList.forEach((item) => {
-					const { maleCount, femaleCount, ageRangeCode } = item;
-					maleList.push({
-						count: maleCount,
-						ageRangeCode,
-					});
-					femaleList.push({
-						count: femaleCount,
-						ageRangeCode,
-					});
+				const [aObj, bObj, cObj, ...tail] = countList.sort((a, b) => a.ageRangeCode - b.ageRangeCode);
+				const below = [aObj, bObj, cObj].reduce((prev, cur) => {
+					const { maleCount, femaleCount } = prev;
+					return {
+						...prev,
+						maleCount: maleCount + cur.maleCount,
+						femaleCount: femaleCount + cur.femaleCount
+					};
+				});
+				const targetList = [below, ...tail].reduce((prev, cur) => {
+					const { maleCount, femaleCount, ageRangeCode } = cur;
+					return prev.concat([{
+						gender: 'male',
+						range: ageRangeCode,
+						count: maleCount
+					}, {
+						gender: 'female',
+						range: ageRangeCode,
+						count: femaleCount
+					}]);
+				}, []);
+				console.log('=====年龄性别分布实时客流数据====', targetList);
+				yield put({
+					type: 'updateState',
+					payload: {
+						ageGenderList: targetList
+					}
 				});
 			}
 		},
 		// 生熟客分布实时客流数据
-		*getPassengerByRegular(_, { call, select }) {
+		*getPassengerByRegular({ payload = {} }, { call, put }) {
 			const {
-				realDataSearchValue,
-			} = yield select(state => state.databoard);
-			const [startTime, endTime] = getQueryTimeRange(realDataSearchValue);
+				searchValue
+			} = payload;
+			const [startTime, endTime] = getQueryTimeRange(searchValue);
 			const opt = {
-				startTime,
-				endTime,
+				startTime: moment.unix(startTime).format('YYYY-MM-DD'),
+				endTime: moment.unix(endTime).format('YYYY-MM-DD')
 			};
 			const response = yield call(
 				handlePassengerFlowManagement,
@@ -668,18 +742,30 @@ export default {
 				const { countList = [] } = format('toCamel')(data) || {};
 				const totalRegular = countList.reduce((prev, cur) => prev + cur.regularCount, 0);
 				const totalStranger = countList.reduce((prev, cur) => prev + cur.strangerCount, 0);
-				console.log('==', totalRegular, totalStranger);
+				console.log('==生熟客分布实时客流数据==', totalRegular, totalStranger);
+				yield put({
+					type: 'updateState',
+					payload: {
+						regularList: [{
+							name: 'regular',
+							value: totalRegular,
+						}, {
+							name: 'stranger',
+							value: totalStranger
+						}]
+					}
+				});
 			}
 		},
 
 		// 客流趋势
-		*getPassengerHistoryTrend(_, { call, select }) {
+		*getPassengerHistoryTrend({ payload = {} }, { call, put }) {
 			const {
-				passengerFlowSearchValue: rangeType,
-			} = yield select(state => state.databoard);
+				searchValue: { rangeType }
+			} = payload;
 			const opt = {
-				type: queryRangeType(rangeType),
-				groupBy: groupBy(rangeType)
+				type: queryRangeType[rangeType],
+				groupBy: groupBy[rangeType]
 			};
 			const response = yield call(
 				handlePassengerFlowManagement,
@@ -689,50 +775,106 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { countList = [] } = format('toCamel')(data);
-				const totalList = countList.map(item => ({
-					time: item.time,
-					value: item.totalCount + entryHeadCount
-				}));
-				const regularList = countList.map(item => ({
-					time: item.time,
-					value: item.regularCount
-				}));
-				const strangerList = countList.map(item => ({
-					time: item.time,
-					value: item.strangerCount
-				}));
-				console.log('===历史客流， 总人数===', totalList);
-				console.log('===历史客流， 熟客人数===', regularList);
-				console.log('===历史客流， 生客人数===', strangerList);
+				const passengerFlowList = countList.reduce((prev, cur, index) => {
+					const { /* time, */totalCount, entryHeadCount, regularCount, strangerCount } = cur;
+					return prev.concat([{
+						time: index + 1,
+						value: totalCount + entryHeadCount,
+						name: 'total'
+					},{
+						time: index + 1,
+						value: regularCount,
+						name: 'regular'
+					},{
+						time: index + 1,
+						value: strangerCount,
+						name: 'stranger'
+					}]);
+				}, []);
+				console.log('===历史客流===', passengerFlowList);
+				yield put({
+					type: 'updateState',
+					payload: {
+						passengerFlowList
+					}
+				});
 			}
 		},
 		// 客群平均到店频次
-		*getFrequencyWithAgeAndGender(_, { call, select }) {
+		*getFrequencyWithAgeAndGender({ payload = {} }, { call, put }) {
 			const {
-				passengerFlowSearchValue: rangeType,
-			} = yield select(state => state.databoard);
-			const opt = {
-				type: queryRangeType(rangeType),
-			};
-			const response = yield call(
-				handlePassengerFlowManagement,
-				'statistic/history/getFrequencyWithAgeAndGender',
-				format('toSnake')(opt)
-			);
-			if (response && response.code === ERROR_OK) {
-				const { data = {} } = response;
-				const { frequencyList = [] } = format('toCamel')(data);
-				console.log('===到店频次===', frequencyList);
+				searchValue: { rangeType }
+			} = payload;
+			if(rangeType!== RANGE.YESTERDAY) {
+				const opt = {
+					type: queryRangeType[rangeType],
+				};
+				const response = yield call(
+					handlePassengerFlowManagement,
+					'statistic/history/getFrequencyWithAgeAndGender',
+					format('toSnake')(opt)
+				);
+				if (response && response.code === ERROR_OK) {
+					const { data = {} } = response;
+					const { frequencyList = [] } = format('toCamel')(data);
+					const femaleList = frequencyList.filter(item => item.gender === 2);
+					const maleList = frequencyList.filter(item => item.gender === 1);
+
+					const femalePassenger = femaleList.reduce((prev, cur) => prev + cur.passengerCount, 0);
+					const femaleUniqPassenger = femaleList.reduce((prev, cur) => prev + cur.uniqPassengerCount, 0);
+					const malePassenger = maleList.reduce((prev, cur) => prev + cur.passengerCount, 0);
+					const maleUniqPassenger = maleList.reduce((prev, cur) => prev + cur.uniqPassengerCount, 0);
+					const femaleFrequency = femaleUniqPassenger ? femalePassenger / femaleUniqPassenger : 0;
+					const maleFrequency = maleUniqPassenger ? malePassenger / maleUniqPassenger : 0;
+
+					const [code1, code2, code3, ...femalTail] = femaleList.sort((a, b) => a.ageRangeCode - b.ageRangeCode);
+					const [code4, code5, code6, ...maleTail] = maleList.sort((a, b) => a.ageRangeCode - b.ageRangeCode);
+					const femaleObj = [code1, code2, code3].reduce((prev, cur) => ({
+						passengerCount: prev.passengerCount + cur.passengerCount,
+						uniqPassengerCount: prev.uniqPassengerCount + cur.uniqPassengerCount,
+						ageRangeCode: 1,
+						gender: prev.gender,
+					}));
+					const maleObj = [code4, code5, code6].reduce((prev, cur) => ({
+						passengerCount: prev.passengerCount + cur.passengerCount,
+						uniqPassengerCount: prev.uniqPassengerCount + cur.uniqPassengerCount,
+						ageRangeCode: 1,
+						gender: prev.gender,
+					}));
+
+					const targetList = [femaleObj, maleObj, ...femalTail, ...maleTail].map(item => ({
+						value: item.uniqPassengerCount ? item.passengerCount / item.uniqPassengerCount : 0,
+						gender: item.gender === 1 ? 'male' : 'female',
+						range: item.ageRangeCode
+					}));
+
+					console.log('===到店频次===', targetList, femaleFrequency, maleFrequency);
+					yield put({
+						type: 'updateState',
+						payload: {
+							customerDistri: {
+								data: targetList,
+								frequency: {
+									male: maleFrequency,
+									female: femaleFrequency,
+								}
+							}
+						}
+					});
+
+				}
 			}
+
 		},
 
 		// 主力客群画像
-		*getHistoryByGender(_, { call, select }) {
+		*getHistoryByGender({ payload = {} }, { call, put, select }) {
 			const {
-				passengerFlowSearchValue: rangeType
-			} = yield select(state => state.databoard);
+				searchValue: { rangeType }
+			} = payload;
+			const { passengerCount: { count: totalCount } } = yield select(state => state.databoard);
 			const opt = {
-				type: queryRangeType(rangeType),
+				type: queryRangeType[rangeType],
 			};
 			const response = yield call(
 				handlePassengerFlowManagement,
@@ -742,10 +884,15 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { countList = [] } = format('toCamel')(data);
-				const totalCount = countList.reduce((prev, cur) => {
-					const { maleCount = 0, femaleCount = 0 } = cur;
-					return prev + maleCount + femaleCount;
-				}, 0);
+				// const totalCount = countList.reduce((prev, cur) => {
+				// 	const { maleCount = 0, femaleCount = 0 } = cur;
+				// 	return prev + maleCount + femaleCount;
+				// }, 0);
+				// const [aObj, bObj, cObj, ...tail] = countList.sort((a, b) => a.ageRangeCode - b.ageRangeCode);
+				// console.log('======', [aObj, bObj, cObj], tail);
+				// const below = [aObj, bObj, cObj].reduce((prev, cur) => {
+				// 	const { }
+				// });
 				const targetList = countList
 					.reduce((prev, cur) => {
 						const {
@@ -756,26 +903,33 @@ export default {
 						return prev.concat([{
 							ageRangeCode,
 							count: maleCount,
-							rushHour: maleRushHour,
+							hotTime: maleRushHour,
 							regularCount: maleRegularCount,
 							uniqCount: maleUniqCount,
-							passengerRate: totalCount ? Math.round((maleCount / totalCount) * 100) : 0,
-							regularRate: maleCount ? Math.round((maleRegularCount / maleCount) * 100) : 0,
-							frequency: maleUniqCount ? Math.round((maleCount / maleUniqCount) * 10) / 10 : 0,
+							totalPercent: totalCount ? maleCount / totalCount : 0,
+							regularPercent: maleCount ? maleRegularCount / maleCount : 0,
+							frequency: maleUniqCount ? maleCount / maleUniqCount : 0,
 							gender: GENDER.MALE,
 						}, {
 							ageRangeCode,
 							count: femaleCount,
-							rushHour: femaleRushHour,
+							hotTime: femaleRushHour,
 							regularCount: femaleRegularCount,
 							uniqCount: femaleUniqCount,
-							passengerRate: totalCount ? Math.round((femaleCount / totalCount) * 100) : 0,
-							regularRate: femaleCount ? Math.round((femaleRegularCount / femaleCount) * 100) : 0,
-							frequency: femaleUniqCount ? Math.round(femaleCount / femaleUniqCount * 10) / 10 : 0,
+							totalPercent: totalCount ? femaleCount / totalCount : 0,
+							regularPercent: femaleCount ? femaleRegularCount / femaleCount : 0,
+							frequency: femaleUniqCount ? femaleCount / femaleUniqCount : 0,
 							gender: GENDER.FEMALE,
 						}]);
 					}, []).sort((a, b) => b.count - a.count);
-				console.log('====', targetList);
+				const majorList = targetList.slice(0, 3);
+				console.log('====主力客群画像===', majorList);
+				yield put({
+					type: 'updateState',
+					payload: {
+						majorList
+					}
+				});
 			}
 		}
 
