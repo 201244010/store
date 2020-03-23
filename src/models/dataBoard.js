@@ -91,11 +91,26 @@ export default {
 		avgFrequency: {}, // 到店频次（客流）
 		enteringList: [], // 进店率（折线图-客流）
 		frequencyList: [], // 到店次数分布（柱状图-客流）
-		frequencyTrend: [] // 到店频次趋势（折线图-客流）
+		frequencyTrend: [], // 到店频次趋势（折线图-客流）
+
+		paymentTotalAmount: {}, // 日月周-总销售额-实时
+		paymentTotalCount: {}, // 日月周-总销量-实时
+		transactionRate: {}, // 总交易转化率-实时
+		RTOverviewCard: [], // 顶部卡片-实时
+		amountList: [], // 销售额分布-实时
+		countList: [], // 销售量分布-实时
+		transactionRateList: [], // 交易转化率分布-实时
+		ageGenderList: [], // 性别年龄分布-实时
+		regularList: [], // 生熟客分布-实时
+		passengerFlowList: [], // 客流量分布-客流
+		customerDistri: {}, // 客群平均到店频次-客流
+		majorList: [], // 主力客群卡片-客流
+		passOverviewCard: [] // 顶部卡片-客流
+
 	},
 	effects: {
 		*fetchAllData(_, { put }) {
-			const type = 1; // type 1 实时； 2 客流分析
+			const type = 2; // type 1 实时； 2 客流分析
 			const searchValue = {
 				rangeType: RANGE.WEEK,
 				timeRangeStart: moment()
@@ -126,6 +141,64 @@ export default {
 			}
 
 		},
+
+		*fetchRealTimeData({ payload }, { put }) {
+			yield put({
+				type: 'fetchRealTimeCard',
+				payload,
+			});
+			yield put({
+				type: 'getTimeDistribution',
+				payload,
+			});
+			yield put({
+				type: 'getPassengerOrderLatest',
+				payload,
+			});
+			yield put({
+				type: 'getPassengerByAgeGender',
+				payload,
+			});
+			yield put({
+				type: 'getPassengerByRegular',
+				payload,
+			});
+			yield put({
+				type: 'getPassengerFlow',
+				payload,
+			});
+		},
+		*fetchPassengerData({ payload }, { put }) {
+			yield put.resolve({
+				type: 'fetchPassengerCard',
+				payload,
+			});
+			yield put({
+				type: 'getHistoryByGender',
+				payload
+			});
+			yield put({
+				type: 'getPassengerHistoryTrend',
+				payload
+			});
+			yield put({
+				type: 'getFrequencyWithAgeAndGender',
+				payload
+			});
+			yield put({
+				type: 'getEnteringDistribution',
+				payload,
+			});
+			yield put({
+				type: 'getFrequencyList',
+				payload,
+			});
+			yield put({
+				type: 'getFrequencyDistribution',
+				payload,
+			});
+		},
+
 		*fetchRealTimeCard({ payload }, { put, select }) {
 			// const {
 			// 	searchValue: { rangeType }
@@ -156,18 +229,20 @@ export default {
 			console.log('===fetchRealTimeCard===', RTPassengerCount, paymentTotalCount, paymentTotalAmount, transactionRate);
 			yield put({
 				type: 'updateState',
-				realTimeCard: [
-					RTPassengerCount,
-					paymentTotalAmount,
-					paymentTotalCount,
-					transactionRate,
-					// {
-					// 	count: rate,
-					// 	earlyCount: earlyRate,
-					// 	label: 'transactionRate',
-					// 	unit: 'percent',
-					// }
-				]
+				payload: {
+					RTOverviewCard: [
+						RTPassengerCount,
+						paymentTotalAmount,
+						paymentTotalCount,
+						transactionRate,
+						// {
+						// 	count: rate,
+						// 	earlyCount: earlyRate,
+						// 	label: 'transactionRate',
+						// 	unit: 'percent',
+						// }
+					]
+				},
 			});
 		},
 		// 客流统计顶部卡片总览 OK
@@ -245,6 +320,34 @@ export default {
 							compareRate: true,
 							unit: 'frequency'
 						},
+						passOverviewCard: [
+							{
+								label: 'passengerCount',
+								count: latestTotalPassengerCount,
+								earlyCount: comparePassengerCount,
+								compareRate: true,
+							},
+							{
+								label: 'regularCount',
+								count: latestRegularPassengerCount,
+								earlyCount: compareRegularCount,
+								compareRate: true,
+							},
+							{
+								label: 'enteringRate',
+								count: latestEnteringRate,
+								earlyCount: compareEarlyEnteringRate,
+								compareRate: true,
+								unit: 'percent'
+							},
+							{
+								label: 'avgFrequency',
+								count: latestAvgFrequecy,
+								earlyCount: compareAvgFrequecy,
+								compareRate: true,
+								unit: 'frequency'
+							}
+						]
 					},
 				});
 				console.log({passengerCount: {
@@ -275,62 +378,6 @@ export default {
 				},
 				});
 			}
-		},
-		*fetchRealTimeData({ payload }, { put }) {
-			yield put({
-				type: 'fetchRealTimeCard',
-				payload,
-			});
-			yield put({
-				type: 'getTimeDistribution',
-				payload,
-			});
-			yield put({
-				type: 'getPassengerOrderLatest',
-				payload,
-			});
-			yield put({
-				type: 'getPassengerByAgeGender',
-				payload,
-			});
-			yield put({
-				type: 'getPassengerByRegular',
-				payload,
-			});
-			yield put({
-				type: 'getPassengerFlow',
-				payload,
-			});
-		},
-		*fetchPassengerData({ payload }, { put }) {
-			yield put({
-				type: 'fetchPassengerCard',
-				payload,
-			});
-			yield put({
-				type: 'getHistoryByGender',
-				payload
-			});
-			yield put({
-				type: 'getPassengerHistoryTrend',
-				payload
-			});
-			yield put({
-				type: 'getFrequencyWithAgeAndGender',
-				payload
-			});
-			yield put({
-				type: 'getEnteringDistribution',
-				payload,
-			});
-			yield put({
-				type: 'getFrequencyList',
-				payload,
-			});
-			yield put({
-				type: 'getFrequencyDistribution',
-				payload,
-			});
 		},
 		// 获取门店客流数 && 进店率 OK
 		*getPassengerData({ payload = {} }, { call, put }) {
@@ -690,7 +737,7 @@ export default {
 				const { frequencyList: dataArr = [] } = data;
 				let frequencyList = [];
 				frequencyList = dataArr.map((item, index) => ({
-					frequency: index + 1,
+					time: index + 1,
 					// 柱状图 分母为0 显示 0
 					value: item.uniqPassengerCount === 0 ? 0 : item.passengerCount / item.uniqPassengerCount,
 				}));
@@ -918,19 +965,20 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { countList = [] } = format('toCamel')(data);
-				const orderRateList = countList.map(item => {
+				const transactionRateList = countList.map(item => {
 					const { orderCount = 0, passengerFlowCount = 0, entryHeadCount = 0, time } = item;
 					const totalPassenger = passengerFlowCount + entryHeadCount;
 					return {
+						name: 'transactionRate',
 						time,
 						value: totalPassenger ? orderCount / totalPassenger : 0,
 					};
 				});
-				console.log('交易转化率', orderRateList);
+				console.log('交易转化率', transactionRateList);
 				yield put({
 					type: 'updateState',
 					payload: {
-						orderRateList
+						transactionRateList
 					},
 				});
 			}
