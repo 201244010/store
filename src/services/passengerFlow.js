@@ -152,3 +152,25 @@ export const getHistoryFrequencyList = options => {
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
 };
+
+export const getPassengerOverview = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/history/getOverview', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
+
+export const getFrequencyDistribution = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/history/getFrequencyDistribution', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
