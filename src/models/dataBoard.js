@@ -10,6 +10,7 @@ import {
 	getHistoryFrequencyList,
 	handlePassengerFlowManagement,
 	getPassengerOverview,
+	getFrequencyDistribution,
 } from '@/services/passengerFlow';
 import { handleDashBoard } from '@/services/dashBoard';
 import { ERROR_OK } from '@/constants/errorCode';
@@ -68,18 +69,23 @@ const getQueryTimeRange = (searchValue = {}) => {
 export default {
 	namespace: 'databoard',
 	state: {
-		passengerCount: {},
-		enteringRate: {},
-		regularCount: {},
-		avgFrequency: {},
-		enteringList: [],
-		passengerFlowList: [],
+		RTEnteringRate: {}, // 进店率（实时）
+		RTPassengerCount: {}, // 进店客流（实时）
+		RTDeviceCount: {}, // 总设备数（实时）
+		RTPassengerFlowList: [], // 客流趋势（折线图-实时）
+		passengerCount: {}, // 进店客流（客流）
+		enteringRate: {}, // 进店率（客流）
+		regularCount: {}, // 熟客人数 （客流）
+		avgFrequency: {}, // 到店频次（客流）
+		enteringList: [], // 进店率（折线图-客流）
+		frequencyList: [], // 到店次数分布（柱状图-客流）
+		frequencyTrend: [] // 到店频次趋势（折线图-客流）
 	},
 	effects: {
 		*fetchAllData(_, { put }) {
-			const type = 2; // type 1 实时； 2 客流分析
+			const type = 1; // type 1 实时； 2 客流分析
 			const searchValue = {
-				rangeType: RANGE.YESTERDAY,
+				rangeType: RANGE.WEEK,
 				timeRangeStart: moment()
 					.startOf('day')
 					.unix(),
@@ -144,15 +150,14 @@ export default {
 				} = data;
 				const latestTotalPassengerCount = latestPassengerCount + latestEntryHeadCount;
 				const earlyTotalPassengerCount = earlyPassengerCount + earlyEntryHeadCount;
-				const comparePassengerCount = !(latestTotalPassengerCount && earlyTotalPassengerCount) ? undefined : (latestTotalPassengerCount - earlyTotalPassengerCount) / earlyTotalPassengerCount;
-				const compareRegularCount = !(latestRegularPassengerCount && earlyRegularPassengerCount) ? undefined : (latestRegularPassengerCount - earlyRegularPassengerCount) / earlyRegularPassengerCount;
+				const comparePassengerCount = (!earlyTotalPassengerCount || latestTotalPassengerCount === undefined) ? undefined : (latestTotalPassengerCount - earlyTotalPassengerCount) / earlyTotalPassengerCount;
+				const compareRegularCount = (!earlyRegularPassengerCount || latestRegularPassengerCount === undefined) ? undefined : (latestRegularPassengerCount - earlyRegularPassengerCount) / earlyRegularPassengerCount;
 				const latestEnteringRate = (latestTotalPassengerCount + latestPassPassengerCount) === 0 ? undefined : latestTotalPassengerCount / (latestTotalPassengerCount + latestPassPassengerCount);
 				const earlyEnteringRate = (earlyTotalPassengerCount + earlyPassPassengerCount) === 0 ? undefined : earlyTotalPassengerCount / (earlyTotalPassengerCount + earlyPassPassengerCount);
-				const compareEarlyEnteringRate = !(latestEnteringRate && earlyEnteringRate) ? undefined : (latestEnteringRate - earlyEnteringRate) / earlyEnteringRate;
-				// 进店人次包括人头数吗 ？？？
+				const compareEarlyEnteringRate = (!earlyEnteringRate || latestEnteringRate === undefined) ? undefined : (latestEnteringRate - earlyEnteringRate) / earlyEnteringRate;
 				const latestAvgFrequecy = latestUniqPassengerCount ? latestPassengerCount / latestUniqPassengerCount : undefined;
 				const earlyAvgFrequecy = earlyUniqPassengerCount ? earlyPassengerCount / earlyUniqPassengerCount : undefined;
-				const compareAvgFrequecy = !(latestAvgFrequecy && earlyAvgFrequecy) ? undefined : (latestAvgFrequecy - earlyAvgFrequecy) / earlyAvgFrequecy;
+				const compareAvgFrequecy =  (!earlyAvgFrequecy || latestAvgFrequecy === undefined) ? undefined : (latestAvgFrequecy - earlyAvgFrequecy) / earlyAvgFrequecy;
 				console.log('进店客流', latestTotalPassengerCount);
 				console.log('进店客流较上次:', comparePassengerCount);
 				console.log('熟客人数', latestRegularPassengerCount);
@@ -192,6 +197,33 @@ export default {
 						},
 					},
 				});
+				console.log({passengerCount: {
+					label: 'passengerCount',
+					count: latestTotalPassengerCount,
+					earlyCount: comparePassengerCount,
+					compareRate: true,
+				},
+				regularCount: {
+					label: 'regularCount',
+					count: latestRegularPassengerCount,
+					earlyCount: compareRegularCount,
+					compareRate: true,
+				},
+				enteringRate: {
+					label: 'enteringRate',
+					count: latestEnteringRate,
+					earlyCount: compareEarlyEnteringRate,
+					compareRate: true,
+					unit: 'percent'
+				},
+				avgFrequency: {
+					label: 'avgFrequency',
+					count: latestAvgFrequecy,
+					earlyCount: compareAvgFrequecy,
+					compareRate: true,
+					unit: 'frequency'
+				},
+				});
 			}
 		},
 		*fetchRealTimeData({ payload }, { put }) {
@@ -216,6 +248,10 @@ export default {
 			});
 			yield put({
 				type: 'getFrequencyList',
+				payload,
+			});
+			yield put({
+				type: 'getFrequencyDistribution',
 				payload,
 			});
 		},
@@ -283,8 +319,8 @@ export default {
 				const totalEarlyCount = earlyCount + earlyEntryHeadCount;
 				const lastestEntryRate = (totalLastestCount + latestPassCount) === 0 ? undefined : totalLastestCount / (totalLastestCount + latestPassCount) * 100;
 				const earlyEntryRate = (totalEarlyCount + earlyPassCount) === 0 ? undefined : totalEarlyCount / (totalEarlyCount + earlyPassCount) * 100;
-				const passengerCompareValue = !(totalEarlyCount && totalLastestCount) ? undefined : (totalLastestCount - totalEarlyCount) / totalEarlyCount;
-				const entryCompareValue = !(lastestEntryRate && earlyEntryRate)? undefined : (lastestEntryRate - earlyEntryRate) / earlyEntryRate;
+				const passengerCompareValue = (!totalEarlyCount || totalLastestCount === undefined) ? undefined : (totalLastestCount - totalEarlyCount) / totalEarlyCount;
+				const entryCompareValue = (!earlyEntryRate || lastestEntryRate === undefined) ? undefined : (lastestEntryRate - earlyEntryRate) / earlyEntryRate;
 				// ByTimeRange 无上次进店客流（未处理）
 				console.log('最新进店客流：', totalLastestCount);
 				console.log('上次进店客流: ', totalEarlyCount);
@@ -296,12 +332,12 @@ export default {
 					yield put({
 						type: 'updateState',
 						payload: {
-							passengerCount: {
+							RTPassengerCount: {
 								label: 'passengerCount',
 								count: totalLastestCount,
 								earlyCount: totalEarlyCount,
 							},
-							enteringRate: {
+							RTEnteringRate: {
 								label: 'enteringRate',
 								count: lastestEntryRate,
 								earlyCount: earlyEntryRate,
@@ -310,6 +346,19 @@ export default {
 						},
 					});
 				}
+				console.log({
+					RTPassengerCount: {
+						label: 'passengerCount',
+						count: totalLastestCount,
+						earlyCount: totalEarlyCount,
+					},
+					RTEnteringRate: {
+						label: 'enteringRate',
+						count: lastestEntryRate,
+						earlyCount: earlyEntryRate,
+						unit: 'percent'
+					},
+				});
 				if(type === 2) {
 					yield put({
 						type: 'updateState',
@@ -334,7 +383,7 @@ export default {
 			}
 		},
 		// 获取门店客流趋势 OK
-		*getPassengerFlow({ payload = {} }, { call }) {
+		*getPassengerFlow({ payload = {} }, { call, put }) {
 			const {
 				searchValue,
 				searchValue: { rangeType }
@@ -365,16 +414,16 @@ export default {
 				console.log('----门店客流趋势----');
 				const { data = {} } = response;
 				const { countList = [] } = data;
-				const passengerFlowList = countList.map(item => ({
+				const RTPassengerFlowList = countList.map(item => ({
 					name: 'passenger',
 					time: item.time,
 					value: item.passengerFlowCount + item.entryHeadCount,
 				}));
-				console.log('门店客流趋势:', passengerFlowList);
+				console.log('门店客流趋势:', RTPassengerFlowList);
 				yield put({
 					type: 'updateState',
 					payload: {
-						passengerFlowList
+						RTPassengerFlowList
 					},
 				});
 			}
@@ -500,7 +549,7 @@ export default {
 			}
 		},
 		// 到店次数分布 OK
-		*getFrequencyList({ payload = {} }, { call }) {
+		*getFrequencyList({ payload = {} }, { call, put }) {
 			const {
 				searchValue: { rangeType }
 			} = payload;
@@ -519,7 +568,7 @@ export default {
 				const { data = {} } = response;
 				const { frequencyList: dataArr = [] } = data;
 				console.log('到店次数原始数据:', dataArr);
-				const frequencyList = [];
+				let frequencyList = [];
 				for (let i = 0; i < dataArr.length; i += 1) {
 					if (dataArr[i].frequency <= upper && dataArr[i].frequency >= 1) {
 						frequencyList[dataArr[i].frequency - 1] = dataArr[i].uniqPassengerCount;
@@ -529,10 +578,55 @@ export default {
 							? frequencyList[upper] + dataArr[i].uniqPassengerCount : dataArr[i].uniqPassengerCount;
 					}
 				}
+				frequencyList = frequencyList.map((item, index) => ({
+					frequency: index + 1,
+					value: item,
+				}));
 				console.log('到店次数:', frequencyList);
+				yield put({
+					type: 'updateState',
+					payload: {
+						frequencyList,
+					},
+				});
+
 			}
 		},
 
+		// 周（月）到店频次趋势
+		*getFrequencyDistribution({ payload = {} }, { call, put }) {
+			const {
+				searchValue: { rangeType }
+			} = payload;
+			if(!(rangeType === RANGE.WEEK || rangeType === RANGE.MONTH)) return;
+			const opt = {
+				type: queryRangeType[rangeType],
+				groupBy: rangeType === RANGE.WEEK ? 'day' : 'week',
+			};
+			const response = yield call(
+				getFrequencyDistribution,
+				opt
+			);
+			if (response && response.code === ERROR_OK) {
+				console.log('----周（月）到店频次趋势----');
+				const { data = {} } = response;
+				const { frequencyList: dataArr = [] } = data;
+				let frequencyList = [];
+				frequencyList = dataArr.map((item, index) => ({
+					frequency: index + 1,
+					// 柱状图 分母为0 显示 0
+					value: item.uniqPassengerCount === 0 ? 0 : item.passengerCount / item.uniqPassengerCount,
+				}));
+				console.log('到店频次趋势:', frequencyList);
+				
+				yield put({
+					type: 'updateState',
+					payload: {
+						frequencyTrend: frequencyList,
+					},
+				});
+			}
+		},
 
 		// 获取实时销售额
 		*getTotalAmount(_, { call, put, select }) {

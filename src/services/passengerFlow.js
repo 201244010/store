@@ -163,3 +163,14 @@ export const getPassengerOverview = options => {
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
 };
+
+export const getFrequencyDistribution = options => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('statistic/history/getFrequencyDistribution', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
