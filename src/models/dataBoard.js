@@ -169,7 +169,7 @@ export default {
 			});
 		},
 		*fetchPassengerData({ payload }, { put }) {
-			yield put.resolve({
+			yield put({
 				type: 'fetchPassengerCard',
 				payload,
 			});
@@ -199,23 +199,25 @@ export default {
 			});
 		},
 
-		*fetchRealTimeCard({ payload }, { put, select }) {
+		*fetchRealTimeCard({ payload }, { put, select, take }) {
 			// const {
 			// 	searchValue: { rangeType }
 			// } = payload;
-			yield put.resolve({
+			yield put({
 				type: 'getPassengerData',
 				payload,
 			});
-			yield put.resolve({
+			yield put({
 				type: 'getTotalAmount',
 				payload,
 			});
-			yield put.resolve({
+			yield put({
 				type: 'getTotalCount',
 				payload,
 			});
-			yield put.resolve({
+			yield take('getPassengerData/@@end');
+			yield take('getTotalCount/@@end');
+			yield put({
 				type: 'getTransactionRate',
 				payload
 			});
@@ -865,7 +867,7 @@ export default {
 		},
 
 		// 计算总交易转化率
-		*getTransactionRate({ payload = {} }, { put, select }) {
+		*getTransactionRate({ payload = {} }, { put, select, /* take */ }) {
 			const {
 				RTPassengerCount,
 				paymentTotalCount,
@@ -873,11 +875,15 @@ export default {
 			const {
 				searchValue: { rangeType }
 			} = payload;
+			// if(!RTPassengerCount.hasOwnProperty('count') || !paymentTotalCount.hasOwnProperty('count')) {
+			// 	yield take('getPassengerData/@@end');
+			// 	yield take('getTotalCount/@@end');
+			// }
 			const { count: passCount, earlyCount: earlyPassengerCount } = RTPassengerCount;
 			const { count: paymentCount, earlyCount: earlyPaymentCount } = paymentTotalCount[rangeType];
 			const rate = passCount ? paymentCount / passCount : undefined;
 			const earlyRate = earlyPassengerCount ? earlyPaymentCount / earlyPassengerCount : undefined;
-			console.log('====总交易转化率===', rate, earlyRate);
+			console.log('====总交易转化率===', RTPassengerCount, paymentTotalCount, rate, earlyRate);
 			yield put({
 				type: 'updateState',
 				payload: {
@@ -1071,17 +1077,39 @@ export default {
 		// 客流趋势
 		*getPassengerHistoryTrend({ payload = {} }, { call, put }) {
 			const {
+				searchValue,
 				searchValue: { rangeType }
 			} = payload;
-			const opt = {
-				type: queryRangeType[rangeType],
-				groupBy: groupBy[rangeType]
-			};
-			const response = yield call(
-				handlePassengerFlowManagement,
-				'statistic/history/getList',
-				format('toSnake')(opt)
-			);
+			// const opt = {
+			// 	type: queryRangeType[rangeType],
+			// 	groupBy: groupBy[rangeType]
+			// };
+			let response = {};
+			let opt = {};
+			if(rangeType === RANGE.FREE) {
+				const [startTime, endTime] = getQueryTimeRange(searchValue);
+				opt = {
+					startTime: moment.unix(startTime).format('YYYY-MM-DD'),
+					endTime: moment.unix(endTime).format('YYYY-MM-DD'),
+					groupBy: groupBy[rangeType],
+				};
+				response = yield call(
+					handlePassengerFlowManagement,
+					'statistic/history/getListByTimeRange',
+					format('toSnake')(opt)
+				);
+			} else {
+				opt = {
+					type: queryRangeType[rangeType],
+					groupBy: groupBy[rangeType]
+				};
+				response = yield call(
+					handlePassengerFlowManagement,
+					'statistic/history/getList',
+					format('toSnake')(opt)
+				);
+			}
+
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { countList = [] } = format('toCamel')(data);
@@ -1115,7 +1143,7 @@ export default {
 			const {
 				searchValue: { rangeType }
 			} = payload;
-			if(rangeType!== RANGE.YESTERDAY) {
+			if(rangeType!== RANGE.YESTERDAY && rangeType !== RANGE.TODAY) {
 				const opt = {
 					type: queryRangeType[rangeType],
 				};

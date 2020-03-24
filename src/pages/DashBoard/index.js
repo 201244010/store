@@ -15,18 +15,19 @@ import { DASHBOARD } from './constants';
 const { LAST_HAND_REFRESH_TIME } = DASHBOARD;
 
 @connect(
-	null,
+	// null,
+	state => ({
+		databoard: state.databoard
+	}),
 	dispatch => ({
 		fetchAllData: ({ needLoading }) =>
 			dispatch({ type: 'dashboard/fetchAllData', payload: { needLoading } }),
 		getAgeRanges: () => dispatch({ type: 'dashboard/getAgeRanges' }),
-		getPassengerData: () => dispatch({ type: 'databoard/fetchAllData' })
 	})
 )
 class DashBoard extends PureComponent {
 	async componentDidMount() {
-		const { fetchAllData, getAgeRanges, getPassengerData } = this.props;
-		getPassengerData();
+		const { fetchAllData, getAgeRanges } = this.props;
 		await getAgeRanges();
 		await fetchAllData({ needLoading: true });
 	}
