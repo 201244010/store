@@ -15,10 +15,7 @@ import { DASHBOARD } from './constants';
 const { LAST_HAND_REFRESH_TIME } = DASHBOARD;
 
 @connect(
-	// null,
-	state => ({
-		databoard: state.databoard
-	}),
+	null,
 	dispatch => ({
 		fetchAllData: ({ needLoading }) =>
 			dispatch({ type: 'dashboard/fetchAllData', payload: { needLoading } }),
