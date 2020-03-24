@@ -79,6 +79,7 @@ export default {
 	define: {
 		APP_TYPE: process.env.APP_TYPE || '',
 		'process.env.UMI_ENV': process.env.UMI_ENV,
+		'process.env.COUNTRY': process.env.COUNTRY || 'china',
 	},
 	uglifyJSOptions(opts) {
 		if(['onl'].includes(env)){
