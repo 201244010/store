@@ -85,14 +85,6 @@ export default {
 		RTPassengerCount: {}, // 进店客流（实时）
 		RTDeviceCount: {}, // 总设备数（实时）
 		RTPassengerFlowList: [], // 客流趋势（折线图-实时）
-		passengerCount: {}, // 进店客流（客流）
-		enteringRate: {}, // 进店率（客流）
-		regularCount: {}, // 熟客人数 （客流）
-		avgFrequency: {}, // 到店频次（客流）
-		enteringList: [], // 进店率（折线图-客流）
-		frequencyList: [], // 到店次数分布（柱状图-客流）
-		frequencyTrend: [], // 到店频次趋势（折线图-客流）
-
 		paymentTotalAmount: {}, // 日月周-总销售额-实时
 		paymentTotalCount: {}, // 日月周-总销量-实时
 		transactionRate: {}, // 总交易转化率-实时
@@ -102,24 +94,52 @@ export default {
 		transactionRateList: [], // 交易转化率分布-实时
 		ageGenderList: [], // 性别年龄分布-实时
 		regularList: [], // 生熟客分布-实时
+
+		RTPassLoading: false,
+		RTDevicesLoading: false,
+		totalAmountLoading: false,
+		totalCountLoading: false,
+		totalRateLoading: false,
+		RTPassengerFlowLoading: false,
+		transactionCountLoading: false,
+		transactionRateLoading: false,
+		regularDistriLoading: false,
+		genderAndAgeLoading: false,
+
+		passengerCount: {}, // 进店客流（客流）
+		enteringRate: {}, // 进店率（客流）
+		regularCount: {}, // 熟客人数 （客流）
+		avgFrequency: {}, // 到店频次（客流）
+		enteringList: [], // 进店率（折线图-客流）
+		frequencyList: [], // 到店次数分布（柱状图-客流）
+		frequencyTrend: [], // 到店频次趋势（折线图-客流）
 		passengerFlowList: [], // 客流量分布-客流
 		customerDistri: {}, // 客群平均到店频次-客流
 		majorList: [], // 主力客群卡片-客流
-		passOverviewCard: [] // 顶部卡片-客流
+		passOverviewCard: [], // 顶部卡片-客流
+
+		passengerLoading: false,
+		passengerFlowLoading: false,
+		enteringRateLoading: false,
+		entryCountLoading: false,
+		frequencyTrendLoading: false,
+		passFrenquencyLoading: false,
+		majorLoading: false,
 
 	},
 	effects: {
-		*fetchAllData(_, { put }) {
-			const type = 2; // type 1 实时； 2 客流分析
-			const searchValue = {
-				rangeType: RANGE.WEEK,
-				timeRangeStart: moment()
-					.startOf('day')
-					.unix(),
-				timeRangeEnd: moment()
-					.endOf('day')
-					.unix(),
-			};
+		*switchLoading({ payload }, { put }) {
+			const { loadingType, loadingStatus } = payload;
+			yield put({
+				type: 'updateState',
+				payload: {
+					[loadingType]: loadingStatus,
+				},
+			});
+		},
+
+		*fetchAllData({ payload = {} }, { put }) {
+			const { type, searchValue } = payload;
 
 			if (type === 1) {
 				yield put({
@@ -139,64 +159,67 @@ export default {
 					},
 				});
 			}
-
 		},
 
-		*fetchRealTimeData({ payload }, { put }) {
-			yield put({
-				type: 'fetchRealTimeCard',
-				payload,
-			});
-			yield put({
-				type: 'getTimeDistribution',
-				payload,
-			});
-			yield put({
-				type: 'getPassengerOrderLatest',
-				payload,
-			});
-			yield put({
-				type: 'getPassengerByAgeGender',
-				payload,
-			});
-			yield put({
-				type: 'getPassengerByRegular',
-				payload,
-			});
-			yield put({
-				type: 'getPassengerFlow',
-				payload,
-			});
+		*fetchRealTimeData({ payload }, { all, put }) {
+			yield all([
+				put({
+					type: 'fetchRealTimeCard',
+					payload,
+				}),
+				put({
+					type: 'getTimeDistribution',
+					payload,
+				}),
+				put({
+					type: 'getPassengerOrderLatest',
+					payload,
+				}),
+				put({
+					type: 'getPassengerByAgeGender',
+					payload,
+				}),
+				put({
+					type: 'getPassengerByRegular',
+					payload,
+				}),
+				put({
+					type: 'getPassengerFlow',
+					payload,
+				})
+			]);
 		},
-		*fetchPassengerData({ payload }, { put }) {
-			yield put({
-				type: 'fetchPassengerCard',
-				payload,
-			});
-			yield put({
-				type: 'getHistoryByGender',
-				payload
-			});
-			yield put({
-				type: 'getPassengerHistoryTrend',
-				payload
-			});
-			yield put({
-				type: 'getFrequencyWithAgeAndGender',
-				payload
-			});
-			yield put({
-				type: 'getEnteringDistribution',
-				payload,
-			});
-			yield put({
-				type: 'getFrequencyList',
-				payload,
-			});
-			yield put({
-				type: 'getFrequencyDistribution',
-				payload,
-			});
+		*fetchPassengerData({ payload }, { all, put }) {
+			yield all([
+				put({
+					type: 'fetchPassengerCard',
+					payload,
+				}),
+				put({
+					type: 'getPassengerHistoryTrend',
+					payload,
+				}),
+				put({
+					type: 'getFrequencyWithAgeAndGender',
+					payload,
+				}),
+				put({
+					type: 'getEnteringDistribution',
+					payload,
+				}),
+				put({
+					type: 'getFrequencyList',
+					payload,
+				}),
+				put({
+					type: 'getFrequencyDistribution',
+					payload,
+				}),
+				put({
+					type: 'getHistoryByGender',
+					payload,
+				}),
+			]);
 		},
 
 		*fetchRealTimeCard({ payload }, { put, select, take }) {
@@ -250,12 +273,22 @@ export default {
 		// 客流统计顶部卡片总览 OK
 		*fetchPassengerCard({ payload }, { put, call }) {
 			const {
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
 			if(rangeType === RANGE.FREE || rangeType === RANGE.TODAY) return;
 			const opt = {
 				type: queryRangeType[rangeType],
 			};
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'passengerLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			const response = yield call(
 				getPassengerOverview,
 				opt
@@ -349,7 +382,8 @@ export default {
 								compareRate: true,
 								unit: 'frequency'
 							}
-						]
+						],
+						passengerLoading: false,
 					},
 				});
 				console.log({passengerCount: {
@@ -386,12 +420,22 @@ export default {
 			const {
 				type,
 				searchValue,
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 			let response = {};
 			let earlyResponse = {};
 			let opt = {};
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'RTPassLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			if(rangeType !== RANGE.FREE && rangeType !== RANGE.YESTERDAY) {
 				opt = {
 					type: queryRangeType[rangeType]
@@ -469,6 +513,7 @@ export default {
 								earlyCount: earlyEntryRate,
 								unit: 'percent'
 							},
+							RTPassLoading: false,
 						},
 					});
 				}
@@ -512,8 +557,18 @@ export default {
 		*getPassengerFlow({ payload = {} }, { call, put }) {
 			const {
 				searchValue,
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'RTPassengerFlowLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 			let response = {};
 			let opt = {};
@@ -549,7 +604,8 @@ export default {
 				yield put({
 					type: 'updateState',
 					payload: {
-						RTPassengerFlowList
+						RTPassengerFlowList,
+						RTPassengerFlowLoading: false,
 					},
 				});
 			}
@@ -640,9 +696,19 @@ export default {
 		// 进店率分布 OK
 		*getEnteringDistribution({ payload = {} }, { call, put }) {
 			const {
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
 			if(rangeType === RANGE.FREE || rangeType === RANGE.TODAY) return;
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'enteringRateLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			const opt = {
 				type: queryRangeType[rangeType],
 				groupBy: groupBy[rangeType],
@@ -669,7 +735,8 @@ export default {
 				yield put({
 					type: 'updateState',
 					payload: {
-						enteringList
+						enteringList,
+						enteringRateLoading: false,
 					},
 				});
 			}
@@ -677,9 +744,19 @@ export default {
 		// 到店次数分布 OK
 		*getFrequencyList({ payload = {} }, { call, put }) {
 			const {
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
 			if(rangeType === RANGE.FREE || rangeType === RANGE.TODAY) return;
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'entryCountLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			let upper = 10;
 			if(rangeType === RANGE.YESTERDAY) upper = 4;
 			const opt = {
@@ -713,6 +790,7 @@ export default {
 					type: 'updateState',
 					payload: {
 						frequencyList,
+						entryCountLoading: false,
 					},
 				});
 
@@ -722,9 +800,19 @@ export default {
 		// 周（月）到店频次趋势
 		*getFrequencyDistribution({ payload = {} }, { call, put }) {
 			const {
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
 			if(!(rangeType === RANGE.WEEK || rangeType === RANGE.MONTH)) return;
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'frequencyTrendLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			const opt = {
 				type: queryRangeType[rangeType],
 				groupBy: rangeType === RANGE.WEEK ? 'day' : 'week',
@@ -749,20 +837,30 @@ export default {
 					type: 'updateState',
 					payload: {
 						frequencyTrend: frequencyList,
+						frequencyTrendLoading: false,
 					},
 				});
 			}
 		},
 
 
-
-
 		// 获取实时销售额
 		*getTotalAmount({ payload = {} }, { call, put }) {
 			const {
 				searchValue,
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
+
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'totalAmountLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			let startTime;
 			let endTime;
 			if(rangeType === RANGE.FREE) {
@@ -808,6 +906,7 @@ export default {
 								label: 'totalAmount',
 							},
 						},
+						totalAmountLoading: false,
 					},
 				});
 			}
@@ -816,8 +915,18 @@ export default {
 		*getTotalCount({ payload = {} }, { call, put }) {
 			const {
 				searchValue,
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'totalCountLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			let startTime;
 			let endTime;
 			if(rangeType === RANGE.FREE) {
@@ -861,11 +970,11 @@ export default {
 								label: 'totalCount',
 							},
 						},
+						totalCountLoading: false,
 					},
 				});
 			}
 		},
-
 		// 计算总交易转化率
 		*getTransactionRate({ payload = {} }, { put, select, /* take */ }) {
 			const {
@@ -873,12 +982,18 @@ export default {
 				paymentTotalCount,
 			} = yield select(state => state.databoard);
 			const {
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
-			// if(!RTPassengerCount.hasOwnProperty('count') || !paymentTotalCount.hasOwnProperty('count')) {
-			// 	yield take('getPassengerData/@@end');
-			// 	yield take('getTotalCount/@@end');
-			// }
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'totalRateLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			const { count: passCount, earlyCount: earlyPassengerCount } = RTPassengerCount;
 			const { count: paymentCount, earlyCount: earlyPaymentCount } = paymentTotalCount[rangeType];
 			const rate = passCount ? paymentCount / passCount : undefined;
@@ -892,18 +1007,27 @@ export default {
 						earlyCount: earlyRate,
 						label: 'transactionRate',
 						unit: 'percent'
-					}
+					},
+					totalRateLoading: false,
 				}
 			});
 		},
-
-
 		// 获取交易分布（销售额和交易量按时间分布）
 		*getTimeDistribution({ payload = {} }, { call, put }) {
 			const {
 				searchValue,
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'transactionCountLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 			const timeInterval = rangeTimeInterval[rangeType];
 			const options = {
@@ -934,7 +1058,8 @@ export default {
 					type: 'updateState',
 					payload: {
 						amountList,
-						countList
+						countList,
+						transactionCountLoading: false,
 					},
 				});
 			}
@@ -943,10 +1068,20 @@ export default {
 		*getPassengerOrderLatest({ payload = {} }, { call, put }) {
 			const {
 				searchValue,
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
 			let response = {};
 			let opt = {};
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'transactionRateLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			if(rangeType !== RANGE.FREE) {
 				opt = {
 					type: queryRangeType[rangeType]
@@ -984,7 +1119,8 @@ export default {
 				yield put({
 					type: 'updateState',
 					payload: {
-						transactionRateList
+						transactionRateList,
+						transactionRateLoading: false,
 					},
 				});
 			}
@@ -993,8 +1129,18 @@ export default {
 		// 年龄性别分布实时客流数据
 		*getPassengerByAgeGender({ payload = {} }, { call, put }) {
 			const {
-				searchValue
+				searchValue,
+				needLoading
 			} = payload;
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'genderAndAgeLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 			const opt = {
 				startTime: moment.unix(startTime).format('YYYY-MM-DD'),
@@ -1033,7 +1179,8 @@ export default {
 				yield put({
 					type: 'updateState',
 					payload: {
-						ageGenderList: targetList
+						ageGenderList: targetList,
+						genderAndAgeLoading: true,
 					}
 				});
 			}
@@ -1041,8 +1188,18 @@ export default {
 		// 生熟客分布实时客流数据
 		*getPassengerByRegular({ payload = {} }, { call, put }) {
 			const {
-				searchValue
+				searchValue,
+				needLoading
 			} = payload;
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'regularDistriLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
 			const opt = {
 				startTime: moment.unix(startTime).format('YYYY-MM-DD'),
@@ -1068,7 +1225,8 @@ export default {
 						}, {
 							name: 'stranger',
 							value: totalStranger
-						}]
+						}],
+						regularDistriLoading: false,
 					}
 				});
 			}
@@ -1078,12 +1236,18 @@ export default {
 		*getPassengerHistoryTrend({ payload = {} }, { call, put }) {
 			const {
 				searchValue,
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
-			// const opt = {
-			// 	type: queryRangeType[rangeType],
-			// 	groupBy: groupBy[rangeType]
-			// };
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'passengerFlowLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			let response = {};
 			let opt = {};
 			if(rangeType === RANGE.FREE) {
@@ -1133,7 +1297,8 @@ export default {
 				yield put({
 					type: 'updateState',
 					payload: {
-						passengerFlowList
+						passengerFlowList,
+						passengerFlowLoading: false,
 					}
 				});
 			}
@@ -1141,9 +1306,19 @@ export default {
 		// 客群平均到店频次
 		*getFrequencyWithAgeAndGender({ payload = {} }, { call, put }) {
 			const {
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
 			if(rangeType!== RANGE.YESTERDAY && rangeType !== RANGE.TODAY) {
+				if(needLoading) {
+					yield put({
+						type: 'switchLoading',
+						payload: {
+							loadingType: 'passFrenquencyLoading',
+							loadingStatus: true,
+						},
+					});
+				}
 				const opt = {
 					type: queryRangeType[rangeType],
 				};
@@ -1196,7 +1371,8 @@ export default {
 									male: maleFrequency,
 									female: femaleFrequency,
 								}
-							}
+							},
+							passFrenquencyLoading: false,
 						}
 					});
 
@@ -1208,8 +1384,18 @@ export default {
 		// 主力客群画像
 		*getHistoryByGender({ payload = {} }, { call, put, select }) {
 			const {
-				searchValue: { rangeType }
+				searchValue: { rangeType },
+				needLoading
 			} = payload;
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'majorLoading',
+						loadingStatus: true,
+					},
+				});
+			}
 			const { passengerCount: { count: totalCount } } = yield select(state => state.databoard);
 			const opt = {
 				type: queryRangeType[rangeType],
@@ -1265,7 +1451,8 @@ export default {
 				yield put({
 					type: 'updateState',
 					payload: {
-						majorList
+						majorList,
+						majorLoading: false,
 					}
 				});
 			}
