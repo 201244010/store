@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Col, Icon, Input, InputNumber, Row, Select, Radio, AutoComplete, message } from 'antd';
+import { Col, Icon, Input, InputNumber, Row, Select, Radio, AutoComplete, Divider, Modal, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { KEY } from '@/constants';
 import { SHAPE_TYPES, MAPS, FORMATS } from '@/constants/studio';
@@ -573,8 +573,34 @@ export default class RightToolBox extends Component {
 		return templateInfo.model_name.toUpperCase().indexOf('R') > -1;
 	};
 
+	toUploadFont = () => {
+		Modal.confirm({
+			title: formatMessage({id: 'studio.upload.font.warning'}),
+			content: formatMessage({id: 'studio.upload.font.warning.message'}),
+			okText: formatMessage({id: 'btn.confirm'}),
+			cancelText: formatMessage({id: 'btn.cancel'}),
+			onOk: () => {
+				if (this.fileSelect) {
+					this.fileSelect.click();
+				}
+			}
+		});
+	};
+
+	uploadFont = (file) => {
+		const { uploadFont } = this.props;
+		// ttf、otf、ttc
+		if (!['ttf', 'otf', 'ttc'].includes(file.name.split('.').reverse()[0])) {
+			message.warning(formatMessage({id: 'studio.upload.font.accept.file'}));
+		} else {
+			uploadFont({
+				file
+			});
+		}
+	};
+
 	render() {
-		const { componentsDetail, selectedShapeName, updateMask } = this.props;
+		const { componentsDetail, selectedShapeName, updateMask, fontList } = this.props;
 		const { x, y, fontSize, smallFontSize } = this.state;
 		const menuMap = this.getMenuMap();
 		const detail = componentsDetail[selectedShapeName];
@@ -812,16 +838,37 @@ export default class RightToolBox extends Component {
 								</span>
 							</Col>
 							<Col span={20}>
-								<Select
-									style={{ width: '100%' }}
-									value={detail.fontFamily}
-									onChange={value => {
-										this.handleDetail('fontFamily', value);
+								<div
+									onMouseDown={(e) => {
+										e.preventDefault();
+										return false;
 									}}
 								>
-									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="Alibaba Sans">Alibaba Sans</Option>
-								</Select>
+									<Select
+										style={{ width: '100%' }}
+										value={detail.fontFamily}
+										onChange={value => {
+											this.handleDetail('fontFamily', value);
+										}}
+										dropdownRender={menu => (
+											<div>
+												{menu}
+												<Divider style={{ margin: 0 }} />
+												<a style={{ padding: '8px', display: 'block' }} onClick={this.toUploadFont}>
+													{formatMessage({id: 'studio.upload.font'})}
+												</a>
+											</div>
+										)}
+									>
+										<Option value="Zfull-GB">Zfull-GB</Option>
+										<Option value="Alibaba Sans">Alibaba Sans</Option>
+										{
+											fontList.map(
+												font => <Option key={font.font_id} value={font.name.split('.')[0]}>{font.name.split('.')[0]}</Option>
+											)
+										}
+									</Select>
+								</div>
 							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }}>
@@ -1064,16 +1111,37 @@ export default class RightToolBox extends Component {
 								</span>
 							</Col>
 							<Col span={20}>
-								<Select
-									style={{ width: '100%' }}
-									value={detail.fontFamily}
-									onChange={value => {
-										this.handleDetail('fontFamily', value);
+								<div
+									onMouseDown={(e) => {
+										e.preventDefault();
+										return false;
 									}}
 								>
-									<Option value="Zfull-GB">Zfull-GB</Option>
-									<Option value="AlibabaSans">Alibaba Sans</Option>
-								</Select>
+									<Select
+										style={{ width: '100%' }}
+										value={detail.fontFamily}
+										onChange={value => {
+											this.handleDetail('fontFamily', value);
+										}}
+										dropdownRender={menu => (
+											<div>
+												{menu}
+												<Divider style={{ margin: 0 }} />
+												<a style={{ padding: '8px', display: 'block' }} onClick={this.toUploadFont}>
+													{formatMessage({id: 'studio.upload.font'})}
+												</a>
+											</div>
+										)}
+									>
+										<Option value="Zfull-GB">Zfull-GB</Option>
+										<Option value="Alibaba Sans">Alibaba Sans</Option>
+										{
+											fontList.map(
+												font => <Option key={font.font_id} value={font.name.split('.')[0]}>{font.name.split('.')[0]}</Option>
+											)
+										}
+									</Select>
+								</div>
 							</Col>
 						</Row>
 						<Row style={{ marginBottom: 10 }} gutter={10}>
@@ -1394,6 +1462,14 @@ export default class RightToolBox extends Component {
 						}
 					</div>
 				) : null}
+				<input
+					type="file"
+					ref={(fileSelect) => {this.fileSelect = fileSelect;}}
+					style={{display: 'none'}}
+					onChange={(e) => {
+						this.uploadFont(e.target.files[0]);
+					}}
+				/>
 			</Fragment>
 		);
 	}
