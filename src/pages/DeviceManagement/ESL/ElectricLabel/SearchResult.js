@@ -737,7 +737,7 @@ class SearchResult extends Component {
 				<Modal
 					title={formatMessage({ id: 'esl.device.esl.page.toggle' })}
 					visible={toggleVisible}
-					width={500}
+					width={700}
 					onCancel={() => this.closeToggle()}
 					footer={[
 						<Button

@@ -123,7 +123,41 @@ const router = [
 						name: 'cloudStorage',
 						id: 'cloudStorage',
 						component: './IPC/CloudStorage/cloudStorage.js',
-					}
+					},
+					{
+						path: '/storeMonitor/cloudStorage/subscriptionSuccess',
+						name: 'subscriptionSuccess',
+						id: 'subscriptionSuccess',
+						hideInMenu: true,
+						component: './IPC/CloudStorage/subscriptionSuccess.js',
+					},
+					{
+						path: '/storeMonitor/cloudStorage/orderSubmission',
+						name: 'orderSubmission',
+						hideInMenu: true,
+						routes: [
+							{
+								path: '/storeMonitor/cloudStorage/orderSubmission/qrpay',
+								name: 'qrpay',
+								id: 'qrpay',
+								hideInMenu: true,
+								component: './IPC/CloudStorage/OrderSubmission/QRCodePayment.js',
+							},
+							{
+								path: '/storeMonitor/cloudStorage/orderSubmission/paymentPage',
+								name: 'paymentPage',
+								id: 'paymentPage',
+								hideInMenu: true,
+								component: './IPC/CloudStorage/OrderSubmission/paymentPage.js',
+							},
+							{
+								path: '/storeMonitor/cloudStorage/orderSubmission',
+								id: 'orderSubmission',
+								hideInMenu: true,
+								component: './IPC/CloudStorage/OrderSubmission/orderSubmission.js',
+							},
+						],
+					},
 				],
 			},
 
