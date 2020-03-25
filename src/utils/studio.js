@@ -463,7 +463,7 @@ export const initTemplateDetail = (stage, layers, zoomScale) => {
 	});
 };
 
-export const purifyJsonOfBackEnd = (componentsDetail) => {
+export const purifyJsonOfBackEnd = (componentsDetail, fontList = []) => {
 	const layers = [];
 	const originOffset = {};
 	const bindFields = [];
@@ -507,6 +507,15 @@ export const purifyJsonOfBackEnd = (componentsDetail) => {
 		} else {
 			componentDetail.width = Math.round(MAPS.containerWidth[componentDetail.type] * componentDetail.scaleX);
 			componentDetail.height = Math.round(MAPS.containerHeight[componentDetail.type] * componentDetail.scaleY);
+		}
+
+		// font family处理
+		if (componentDetail.fontFamily) {
+			fontList.map(item => {
+				if (item.name.indexOf(componentDetail.fontFamily) > -1) {
+					componentDetail.fontPath = item.path;
+				}
+			});
 		}
 
 		// 图片，条码及二维码 codec 处理
