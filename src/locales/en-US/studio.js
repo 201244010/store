@@ -23,7 +23,7 @@ export default {
 	'studio.action.history': 'Version',
 	'studio.action.download': 'Download',
 	'studio.action.zoom': 'Zoom',
-	'studio.action.text.db.click': 'Double click to edit the text',
+	'studio.action.text.db.click': 'DbClick to edit',
 	'studio.placeholder.bind.field': 'Please select the fields to be bound',
 	'studio.placeholder.bind.value': 'Please enter the values to be bound',
 	'studio.tool.title.bind.field': 'Fields to be bound',

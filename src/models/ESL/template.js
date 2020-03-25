@@ -474,7 +474,7 @@ export default {
 			return yield call(TemplateService.previewTemplate, payload);
 		},
 		*realTimePreview({ payload = {} }, { call, select }) {
-			const { curTemplate } = yield select(state => state.template);
+			const { curTemplate, fontList } = yield select(state => state.template);
 			const draft = {
 				encoding: 'UTF-8',
 				type: curTemplate.model_name,
@@ -483,7 +483,7 @@ export default {
 				layers: [],
 				layerCount: 0,
 			};
-			const result = purifyJsonOfBackEnd(payload.draft);
+			const result = purifyJsonOfBackEnd(payload.draft, fontList);
 			draft.fillFields = result.bindFields;
 			draft.layers = result.layers;
 			draft.layerCount = result.layers.length;

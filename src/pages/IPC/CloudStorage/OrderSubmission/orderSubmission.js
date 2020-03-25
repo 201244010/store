@@ -4,8 +4,8 @@ import { Table, Radio, message, Checkbox, Spin, Card, Form, Input, Button, Modal
 import React from 'react';
 import { ERR_IPC_NOT_EXIST, ERR_SERVICE_SUBSCRIBE_ERROR , ERROR_OK, ERR_FREE_SERVICE_USED } from '@/constants/errorCode';
 import { SERVICE_TYPE } from '@/constants/cloudStorage';
-import styles from './OrderSubmission.less';
 import { phone, mail } from '@/constants/regexp';
+import styles from './OrderSubmission.less';
 
 const FREE_PRODUCT_NO = 'A08000075';
 
@@ -28,7 +28,7 @@ const FREE_PRODUCT_NO = 'A08000075';
 		}),
 		getStorageIpcList:(sn) => (dispatch({
 			type:'cloudStorage/getStorageIpcList',
-			payload: { 
+			payload: {
 				sn
 			}
 		})),
@@ -75,7 +75,7 @@ class OrderSubmission extends React.Component{
 					return(<span>{formatMessage({ id: 'cloudStorage.expired'})}</span>);
 				}
 				return(<span>{formatMessage({ id: 'cloudStorage.failure'})}</span>);
-				
+
 			}
 		},
 		{
@@ -186,7 +186,7 @@ class OrderSubmission extends React.Component{
 		const { form:{ getFieldsValue }} = this.props;
 		const { selectedValue, productNo, invoiceSelectValue, vbrkSelectValue, freeStatus } = this.state;
 		const { order } = this.props;
-		
+
 		const invoiceInfo = invoiceSelectValue === 0 ? undefined : {
 			// ...values,
 			titleName: getFieldsValue().titleName,
@@ -226,7 +226,7 @@ class OrderSubmission extends React.Component{
 		},() => {
 			this.checkedBtnDisable();
 		});
-		
+
 	}
 
 	invoiceSelectHandler = (e) => {
@@ -309,7 +309,7 @@ class OrderSubmission extends React.Component{
 				navigateTo('subscriptionSuccess', {orderNo, status: 'success'});
 			}
 		}
-		
+
 	}
 
 	formOnChangeHandler = () => {
@@ -350,7 +350,7 @@ class OrderSubmission extends React.Component{
 				orderNo,
 			});
 		}
-		
+
 	}
 
 	async init(){
@@ -365,7 +365,7 @@ class OrderSubmission extends React.Component{
 				item.activeStatus === 1
 			));
 		}
-		
+
 		let selectedValue = [];
 		let btnDisable = true;
 		for(let i=0; i < storageIpcList.length; i++){
@@ -380,7 +380,7 @@ class OrderSubmission extends React.Component{
 		if(selectedValue.length > 0 && isAgree){
 			btnDisable = false;
 		}
-		
+
 		this.setState({
 			btnDisable,
 			selectedValue,
@@ -390,7 +390,7 @@ class OrderSubmission extends React.Component{
 		});
 	}
 
-	
+
 
 	render(){
 
@@ -408,7 +408,7 @@ class OrderSubmission extends React.Component{
 								<Checkbox.Group onChange={this.ipcSelectHandler} value={selectedValue} disabled={noChange}>
 									<Table
 										className={styles.table}
-										bordered 
+										bordered
 										columns={this.columns}
 										locale={{
 											emptyText: formatMessage({id: 'cloudStorage.no.ipc'})
@@ -517,8 +517,8 @@ class OrderSubmission extends React.Component{
 					<div className={styles.protocol}>
 						<Checkbox onChange={this.agreementChangeHandler} checked={isAgree}>
 							{formatMessage({id: 'cloudStorage.subscription.agreement.tips'})}
-							<a 
-								className={styles['agreement-content']} 
+							<a
+								className={styles['agreement-content']}
 								onClick={() => {
 									navigateTo('serviceProtocol',undefined, 'open');
 								}}
