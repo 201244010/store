@@ -16,15 +16,15 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import MQTTWrapper from '@/components/MQTT';
 import * as CookieUtil from '@/utils/cookies';
 // import router from 'umi/router';
-import Header from './Header';
-import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
 import { MENU_PREFIX } from '@/constants';
+import { ERROR_OK } from '@/constants/errorCode';
+import { env } from '@/config';
+import Header from './Header';
+import Context from './MenuContext';
 import styles from './BasicLayout.less';
 import logo from '../assets/logo-big.png';
 // import logoEN from '../assets/menuLogoEN.png';
-import { ERROR_OK } from '@/constants/errorCode';
-import { env } from '@/config';
 
 import 'react-perfect-scrollbar/dist/css/styles.css';
 
@@ -76,7 +76,7 @@ class BasicLayout extends React.PureComponent {
 	componentDidMount() {
 		this.dataInitial();
 		const { getUserInfo, getStoreList, getOrgLayer, initOrgList } = this.props;
-		window.addEventListener('storage', async () => {  
+		window.addEventListener('storage', async () => {
 			getUserInfo();
 			getOrgLayer({});
 			initOrgList();

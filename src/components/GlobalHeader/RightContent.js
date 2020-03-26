@@ -128,7 +128,7 @@ export default class GlobalHeaderRight extends PureComponent {
 				<TreeSelect
 					style={{ width: '250px' }}
 					treeData={treeData}
-					value={treeData && treeData.length > 0 && selectedStore}
+					value={treeData && treeData.length > 0 ? `${selectedStore}` : ''}
 					onChange={this.handleStoreChange}
 					treeDefaultExpandedKeys={[`${selectedStore}`]}
 					dropdownStyle={{ maxHeight: '50vh'}}
