@@ -7,7 +7,7 @@ import styles from './index.less';
 
 class DistriChart extends PureComponent {
 	render() {
-		const { regularList } = this.props;
+		const { regularList, ageGenderList } = this.props;
 		// console.log('=====pie', regularList);
 		const colorArray = ['rgba(255, 128, 0, 1)', 'rgba(90, 151, 252, 1)'];
 		return(
@@ -18,7 +18,7 @@ class DistriChart extends PureComponent {
 				</div>
 				<div className={styles['age-chart']}>
 					{/* <h4>性别年龄占比</h4> */}
-					<DataAgeGender />
+					<DataAgeGender ageGenderList={ageGenderList} />
 				</div>
 			</Card>
 		);

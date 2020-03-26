@@ -1,7 +1,7 @@
 import React from 'react';
 import { DataView } from '@antv/data-set';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
-import { DataAgeGender } from './mock';
+// import { DataAgeGender } from './mock';
 import styles from '../chartsCommon.less';
 
 export default class AgeGenderBar extends React.Component {
@@ -13,12 +13,13 @@ export default class AgeGenderBar extends React.Component {
 
 	render() {
 		// const { data, scale = {}, tooltip } = this.props;
+		const { ageGenderList } = this.props;
 		const { formatToolTipAxisX, formatLabelX } = this;
 		const chartTitle = '性别年龄占比';
 
 		const dv = new DataView();
 		const data = dv
-			.source(DataAgeGender)
+			.source(ageGenderList)
 			.transform({
 				type: 'map',
 				callback(row) {

@@ -4,19 +4,19 @@ import styles from './mainCustomerCard.less';
 
 class MainCustomerCard extends React.Component {
 	render() {
-		const { type = 'man', age = '19~28岁', num = '0', totalPercent = 50, scene = 'single', frequentPercent = 60, frequencyOfArrival = '1.2', shopPeak = '12-13点'} = this.props;
+		const { gender = 1, age = '19~28岁', count = 0, totalPercent = 50, scene = 'single', regularPercent = 60, frequency = 1.2, hotTime = '12-13点'} = this.props;
 		const singleFooter = [
 			{
 				title: '熟客占比',
-				value: `${frequentPercent  }%`,
+				value: `${regularPercent  }%`,
 			},
 			{
 				title: '到店频次',
-				value: `${frequencyOfArrival  }次/日`,
+				value: `${frequency  }次/日`,
 			},
 			{
 				title: '到店高峰',
-				value: shopPeak,
+				value: hotTime,
 			},
 		];
 
@@ -24,12 +24,12 @@ class MainCustomerCard extends React.Component {
 			<div className={styles['card-body']}>
 				<div className={styles['card-header']}>
 					<div className={styles['card-header-right']}>
-						<div className={styles['card-img']} style={{backgroundImage: `url(${type === 'man'? require('./man.png'):require('./woman.png')})`}} />
-						<span className={styles['card-sex']}>{type === 'man'? '男':'女'}</span>
+						<div className={styles['card-img']} style={{backgroundImage: `url(${gender === 1? require('./man.png'):require('./woman.png')})`}} />
+						<span className={styles['card-sex']}>{gender === 1? '男':'女'}</span>
 						<span className={styles['card-line']} />
 						<span className={styles['card-age']}>{age}</span>
 					</div>
-					<span className={styles['card-header-left']}>{num}人</span>
+					<span className={styles['card-header-left']}>{count}人</span>
 				</div>
 				<div className={styles['card-footer']}>
 					<div className={styles['card-content-label']}>
@@ -50,10 +50,10 @@ class MainCustomerCard extends React.Component {
 						<div className={styles['card-footer']}>
 							<div className={styles['card-content-label']}>
 								<span className={styles['label-title']}>熟客占比</span>
-								<span className={styles['label-percent']}>{frequentPercent}%</span>
+								<span className={styles['label-percent']}>{regularPercent}%</span>
 							</div>
 							<Progress
-								percent={frequentPercent}
+								percent={regularPercent}
 								strokeColor={{
 									'0%': '#FF8133',
 									'100%': '#FFB066',

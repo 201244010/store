@@ -7,11 +7,11 @@ class OverviewCard extends PureComponent {
 
 	render() {
 		const {
-			loading, RTEnteringRate, RTPassengerCount,
+			loading, RTEnteringRate, RTPassengerCount, RTDeviceCount,
 			paymentTotalAmount, paymentTotalCount, transactionRate,
 		} = this.props;
 		console.log('=======RTOverviewCard', RTPassengerCount, paymentTotalAmount );
-		const firstRow = [RTPassengerCount, RTEnteringRate];
+		const firstRow = [RTPassengerCount, RTEnteringRate, RTDeviceCount];
 		const secondRow = [paymentTotalAmount, paymentTotalCount, transactionRate];
 
 		return (

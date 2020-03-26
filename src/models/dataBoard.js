@@ -13,6 +13,7 @@ import {
 	getFrequencyDistribution,
 } from '@/services/passengerFlow';
 import { handleDashBoard } from '@/services/dashBoard';
+import { getDeviceOverview } from '@/services/device';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const RANGE = {
@@ -188,6 +189,7 @@ export default {
 			const { type, searchValue } = payload;
 
 			if (type === 1) {
+				console.log('comin ');
 				yield put({
 					type: 'fetchRealTimeData',
 					payload: {
@@ -275,9 +277,6 @@ export default {
 		},
 
 		*fetchRealTimeCard({ payload }, { put, /* select, */ take }) {
-			// const {
-			// 	searchValue: { rangeType }
-			// } = payload;
 			yield put({
 				type: 'getPassengerData',
 				payload,
@@ -290,39 +289,16 @@ export default {
 				type: 'getTotalCount',
 				payload,
 			});
+			yield put({
+				type: 'getDeviceCount',
+				payload,
+			});
 			yield take('getPassengerData/@@end');
 			yield take('getTotalCount/@@end');
 			yield put({
 				type: 'getTransactionRate',
 				payload
 			});
-			// yield take('getTransactionRate/@@end');
-			// const {
-			// 	RTPassengerCount, RTEnteringRate, paymentTotalAmount,  paymentTotalCount, transactionRate,
-			// } = yield select(state => state.databoard);
-			// // const { count: passCount, earlyCount: earlyPassengerCount } = passengerCount;
-			// // const { count: paymentCount, earlyCount: earlyPaymentCount } = paymentTotalCount[rangeType];
-			// // const rate = passCount ? paymentCount / passCount : undefined;
-			// // const earlyRate = earlyPassengerCount ? earlyPaymentCount / earlyPassengerCount : undefined;
-			// console.log('===fetchRealTimeCard===', RTPassengerCount, paymentTotalCount, paymentTotalAmount, transactionRate);
-			// yield put({
-			// 	type: 'updateState',
-			// 	payload: {
-			// 		RTOverviewCard: [
-			// 			RTPassengerCount,
-			// 			RTEnteringRate,
-			// 			paymentTotalAmount[rangeType],
-			// 			paymentTotalCount[rangeType],
-			// 			transactionRate,
-			// 			// {
-			// 			// 	count: rate,
-			// 			// 	earlyCount: earlyRate,
-			// 			// 	label: 'transactionRate',
-			// 			// 	unit: 'percent',
-			// 			// }
-			// 		]
-			// 	},
-			// });
 		},
 		// 客流统计顶部卡片总览 OK
 		*fetchPassengerCard({ payload }, { put, call }) {
@@ -386,58 +362,31 @@ export default {
 						passengerCount: {
 							label: 'passengerCount',
 							count: latestTotalPassengerCount,
-							earlyCount: comparePassengerCount,
+							earlyCount: earlyTotalPassengerCount,
 							compareRate: true,
 						},
 						regularCount: {
 							label: 'regularCount',
 							count: latestRegularPassengerCount,
-							earlyCount: compareRegularCount,
+							earlyCount: earlyRegularPassengerCount,
 							compareRate: true,
 						},
 						enteringRate: {
 							label: 'enteringRate',
 							count: latestEnteringRate,
-							earlyCount: compareEarlyEnteringRate,
+							earlyCount: earlyEnteringRate,
 							compareRate: true,
 							unit: 'percent'
 						},
 						avgFrequency: {
 							label: 'avgFrequency',
 							count: latestAvgFrequecy,
-							earlyCount: compareAvgFrequecy,
+							earlyCount: earlyAvgFrequecy,
 							compareRate: true,
 							unit: 'frequency'
 						},
 						passengerLoading: false,
 					},
-				});
-				console.log({passengerCount: {
-					label: 'passengerCount',
-					count: latestTotalPassengerCount,
-					earlyCount: comparePassengerCount,
-					compareRate: true,
-				},
-				regularCount: {
-					label: 'regularCount',
-					count: latestRegularPassengerCount,
-					earlyCount: compareRegularCount,
-					compareRate: true,
-				},
-				enteringRate: {
-					label: 'enteringRate',
-					count: latestEnteringRate,
-					earlyCount: compareEarlyEnteringRate,
-					compareRate: true,
-					unit: 'percent'
-				},
-				avgFrequency: {
-					label: 'avgFrequency',
-					count: latestAvgFrequecy,
-					earlyCount: compareAvgFrequecy,
-					compareRate: true,
-					unit: 'frequency'
-				},
 				});
 			}
 		},
@@ -718,7 +667,46 @@ export default {
 				},
 			});
 		},
-		// 获取总设备数 NO
+		// 获取总设备数 OK
+		*getDeviceCount({ payload = {} }, { call, put }) {
+			const { needLoading } = payload;
+			if(needLoading) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'RTDevicesLoading',
+						loadingStatus: true,
+					},
+				});
+			}
+			const options = {
+				source: 1,
+			};
+			const response = yield call(
+				getDeviceOverview,
+				options,
+			);
+			const { data: { dataList = [] }} = response;
+			const { onlineCount, offlineCount } = dataList[0];
+			console.log('-------设备数-------');
+			console.log({
+				label: 'deviceCount',
+				count: onlineCount + offlineCount,
+				earlyCount: offlineCount,
+			});
+			yield put({
+				type: 'updateState',
+				payload: {
+					RTDeviceCount: {
+						label: 'deviceCount',
+						count: onlineCount + offlineCount,
+						earlyCount: offlineCount,
+					},
+					RTDevicesLoading: false,
+				},
+			});
+
+		},
 		// 进店率分布 OK
 		*getEnteringDistribution({ payload = {} }, { call, put }) {
 			const {

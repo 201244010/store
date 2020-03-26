@@ -67,7 +67,7 @@ class TransactionTrend extends PureComponent {
 				type: 'area',
 				position: 'time*value',
 			},
-			linesize: 3,
+			linesize: 4,
 			// innerTitle: 'chart title area=true',
 			chartScale: {
 				time: {

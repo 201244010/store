@@ -124,26 +124,21 @@ class RTDataBoard extends PureComponent {
 
 	render() {
 		const { databoard: {
-			RTPassLoading, /* RTDevicesLoading, */
+			RTPassLoading, RTDevicesLoading,
 			totalAmountLoading, totalCountLoading, totalRateLoading,
 			RTPassengerFlowLoading,
 			transactionCountLoading, transactionRateLoading,
 			regularDistriLoading, genderAndAgeLoading
 		}} = this.props;
-		// const loading = RTPassLoading || RTDevicesLoading ||
-		// 	totalAmountLoading || totalCountLoading || totalRateLoading ||
-		// 	RTPassengerFlowLoading ||
-		// 	transactionCountLoading || transactionRateLoading ||
-		// 	regularDistriLoading || genderAndAgeLoading;
-		const loading = RTPassLoading ||
+		const loading = RTPassLoading || RTDevicesLoading ||
 			totalAmountLoading || totalCountLoading || totalRateLoading ||
 			RTPassengerFlowLoading ||
 			transactionCountLoading || transactionRateLoading ||
 			regularDistriLoading || genderAndAgeLoading;
 		const { searchValue: { rangeType } } = this.state;
 		const { databoard: {
-			regularList, RTPassengerFlowList, lastModifyTime,
-			RTPassengerCount, RTEnteringRate,
+			regularList, RTPassengerFlowList, lastModifyTime, ageGenderList,
+			RTPassengerCount, RTEnteringRate, RTDeviceCount,
 			paymentTotalAmount, paymentTotalCount, transactionRate,
 			amountList, countList, transactionRateList,
 		} } = this.props;
@@ -162,7 +157,7 @@ class RTDataBoard extends PureComponent {
 					<OverviewCard
 						loading={loading}
 						{...{
-							RTPassengerCount, RTEnteringRate,
+							RTPassengerCount, RTEnteringRate, RTDeviceCount,
 							paymentTotalAmount: paymentTotalAmount[rangeType],
 							paymentTotalCount: paymentTotalCount[rangeType],
 							transactionRate
@@ -190,7 +185,7 @@ class RTDataBoard extends PureComponent {
 							/>
 						</Col>
 					</Row>
-					<DistriChart regularList={regularList} />
+					<DistriChart regularList={regularList} ageGenderList={ageGenderList} />
 				</div>
 
 			</div>
