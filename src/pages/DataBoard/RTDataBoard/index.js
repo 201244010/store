@@ -7,7 +7,8 @@ import { message, Card, Row, Col, Radio } from 'antd';
 import SearchBar from './SearchBar';
 import OverviewCard from './OverviewCard';
 import styles from './index.less';
-
+import DistriChart from './DistriChart';
+import PassengerTrendLine from './PassengerTrendLine';
 // const { Meta } = Card;
 
 const RANGE = {
@@ -144,6 +145,7 @@ class RTDataBoard extends PureComponent {
 			transactionCountLoading || transactionRateLoading ||
 			regularDistriLoading || genderAndAgeLoading;
 		const { currentTab } = this.state;
+		const { databoard: { regularList, RTPassengerCount, RTPassengerFlowList } } = this.props;
 		return(
 			<div className={styles['databoard-wrapper']}>
 				<SearchBar
@@ -153,12 +155,10 @@ class RTDataBoard extends PureComponent {
 					}}
 				/>
 				<div className={styles['charts-container']}>
-					<OverviewCard loading={loading} />
+					<OverviewCard loading={loading} RTPassengerCount={RTPassengerCount} />
 					<Row gutter={24}>
 						<Col span={12}>
-							<Card className={styles['line-chart-wrapper']} title="客流趋势" loading={loading}>
-							客流趋势
-							</Card>
+							<PassengerTrendLine data={RTPassengerFlowList} loading={loading} />
 						</Col>
 						<Col span={12}>
 							<Card
@@ -183,7 +183,7 @@ class RTDataBoard extends PureComponent {
 							</Card>
 						</Col>
 					</Row>
-					<Card title="客群分布" className={styles['distri-chart-wrapper']}>客群分布</Card>
+					<DistriChart regularList={regularList} />
 				</div>
 
 			</div>
