@@ -1445,9 +1445,9 @@ export default {
 							hotTime: maleRushHour,
 							regularCount: maleRegularCount,
 							uniqCount: maleUniqCount,
-							totalPercent: totalCount ? maleCount / totalCount : 0,
-							regularPercent: maleCount ? maleRegularCount / maleCount : 0,
-							frequency: maleUniqCount ? maleCount / maleUniqCount : 0,
+							totalPercent: totalCount ? maleCount / totalCount : undefined,
+							regularPercent: maleCount ? maleRegularCount / maleCount : undefined,
+							frequency: maleUniqCount ? maleCount / maleUniqCount : undefined,
 							gender: GENDER.MALE,
 						}, {
 							ageRangeCode,
@@ -1455,9 +1455,9 @@ export default {
 							hotTime: femaleRushHour,
 							regularCount: femaleRegularCount,
 							uniqCount: femaleUniqCount,
-							totalPercent: totalCount ? femaleCount / totalCount : 0,
-							regularPercent: femaleCount ? femaleRegularCount / femaleCount : 0,
-							frequency: femaleUniqCount ? femaleCount / femaleUniqCount : 0,
+							totalPercent: totalCount ? femaleCount / totalCount : undefined,
+							regularPercent: femaleCount ? femaleRegularCount / femaleCount : undefined,
+							frequency: femaleUniqCount ? femaleCount / femaleUniqCount : undefined,
 							gender: GENDER.FEMALE,
 						}]);
 					}, []).sort((a, b) => b.count - a.count);

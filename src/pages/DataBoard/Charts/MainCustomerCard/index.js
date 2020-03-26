@@ -1,6 +1,7 @@
 import React from 'react';
 import { Progress } from 'antd';
 import styles from './mainCustomerCard.less';
+import { formatFrequency, formatPassengerRate } from '../../format';
 
 const frequencyUnit = {
 	1: '次/日',
@@ -34,18 +35,18 @@ class MainCustomerCard extends React.Component {
 	render() {
 		const { gender = 1, ageRangeCode = 1, count = 0,
 			totalPercent = 0.5, scene = 'single', regularPercent = 0.6,
-			frequency = 1.2, hotTime = 12,
+			frequency = 1.0, hotTime = 12,
 			timeType = 1,
 		} = this.props;
 		const singleFooter = [
 			{
 				title: '熟客占比',
-				value: `${(regularPercent * 100).toFixed(0)}`,
+				value: `${formatPassengerRate(regularPercent)}`,
 				unit: '%'
 			},
 			{
 				title: '到店频次',
-				value: `${frequency.toFixed(1)}`,
+				value: `${formatFrequency(frequency)}`,
 				unit: frequencyUnit[timeType],
 			},
 			{
@@ -69,7 +70,7 @@ class MainCustomerCard extends React.Component {
 				<div className={styles['card-footer']}>
 					<div className={styles['card-content-label']}>
 						<span className={styles['label-title']}>总客流占比</span>
-						<span className={styles['label-percent']}>{(totalPercent * 100).toFixed(0)}<span className={styles['label-percent-unit']}>%</span></span>
+						<span className={styles['label-percent']}>{formatPassengerRate(totalPercent)}<span className={styles['label-percent-unit']}>%</span></span>
 					</div>
 					<Progress
 						percent={totalPercent * 100}
@@ -85,7 +86,7 @@ class MainCustomerCard extends React.Component {
 						<div className={styles['card-footer']}>
 							<div className={styles['card-content-label']}>
 								<span className={styles['label-title']}>熟客占比</span>
-								<span className={styles['label-percent']}>{regularPercent * 100}%</span>
+								<span className={styles['label-percent']}>{formatPassengerRate(regularPercent)}%</span>
 							</div>
 							<Progress
 								percent={regularPercent}
