@@ -70,7 +70,7 @@ export default {
 	'storeManagement.message.name.exist': 'The store name already exists',
 	'store.auth': 'Store interfacing',
 	'store.authKey': 'Interfacing voucher',
-	'store.get.authKey': 'Get interfacing voucher',
+	'store.get.authKey': 'Get Interfacing Voucher',
 	'auth.shop.no': 'Store ID: ',
 	'auth.shop.key': 'Store secret key: ',
 	'auth.key.expire': 'An interfacing voucher is valid for 24 hours',

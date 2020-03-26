@@ -4,12 +4,12 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { melt, format, map, shake } from '@konata9/milk-shake';
 import moment from 'moment';
-import ProductCUBasic from './ProductCU-Basic';
-import ProductCUWeight from './ProductCU-Weight';
-import ProductCUPrice from './ProductCU-Price';
 import { getLocationParam, idDecode } from '@/utils/utils';
 import { FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK, PRODUCT_SEQ_EXIST, PRODUCT_PLU_EXIST } from '@/constants/errorCode';
+import ProductCUBasic from './ProductCU-Basic';
+import ProductCUWeight from './ProductCU-Weight';
+import ProductCUPrice from './ProductCU-Price';
 import * as styles from './ProductManagement.less';
 
 @connect(
