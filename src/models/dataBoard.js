@@ -13,6 +13,7 @@ import {
 	getFrequencyDistribution,
 } from '@/services/passengerFlow';
 import { handleDashBoard } from '@/services/dashBoard';
+import { getDeviceOverview } from '@/services/device';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const RANGE = {
@@ -95,6 +96,7 @@ export default {
 			};
 
 			if (type === 1) {
+				console.log('comin ');
 				yield put({
 					type: 'fetchRealTimeData',
 					payload: {
@@ -115,6 +117,11 @@ export default {
 			
 		},
 		*fetchRealTimeCard({ payload }, { put }) {
+			console.log('========================card');
+			yield put({
+				type: 'getDeviceCount',
+				payload,
+			});
 			yield put({
 				type: 'getPassengerData',
 				payload,
@@ -172,70 +179,45 @@ export default {
 						passengerCount: {
 							label: 'passengerCount',
 							count: latestTotalPassengerCount,
-							earlyCount: comparePassengerCount,
+							earlyCount: earlyTotalPassengerCount,
 							compareRate: true,
 						},
 						regularCount: {
 							label: 'regularCount',
 							count: latestRegularPassengerCount,
-							earlyCount: compareRegularCount,
+							earlyCount: earlyRegularPassengerCount,
 							compareRate: true,
 						},
 						enteringRate: {
 							label: 'enteringRate',
 							count: latestEnteringRate,
-							earlyCount: compareEarlyEnteringRate,
+							earlyCount: earlyEnteringRate,
 							compareRate: true,
 							unit: 'percent'
 						},
 						avgFrequency: {
 							label: 'avgFrequency',
 							count: latestAvgFrequecy,
-							earlyCount: compareAvgFrequecy,
+							earlyCount: earlyAvgFrequecy,
 							compareRate: true,
 							unit: 'frequency'
 						},
 					},
 				});
-				console.log({passengerCount: {
-					label: 'passengerCount',
-					count: latestTotalPassengerCount,
-					earlyCount: comparePassengerCount,
-					compareRate: true,
-				},
-				regularCount: {
-					label: 'regularCount',
-					count: latestRegularPassengerCount,
-					earlyCount: compareRegularCount,
-					compareRate: true,
-				},
-				enteringRate: {
-					label: 'enteringRate',
-					count: latestEnteringRate,
-					earlyCount: compareEarlyEnteringRate,
-					compareRate: true,
-					unit: 'percent'
-				},
-				avgFrequency: {
-					label: 'avgFrequency',
-					count: latestAvgFrequecy,
-					earlyCount: compareAvgFrequecy,
-					compareRate: true,
-					unit: 'frequency'
-				},
-				});
 			}
 		},
 		*fetchRealTimeData({ payload }, { put }) {
+			console.log('xxxx');
 			yield put({
 				type: 'fetchRealTimeCard',
 				payload,
 			});
-			
+			console.log('xxss');
 			yield put({
 				type: 'getPassengerFlow',
 				payload,
 			});
+
 		},
 		*fetchPassengerData({ payload }, { put }) {
 			yield put({
@@ -510,7 +492,29 @@ export default {
 				},
 			});
 		},
-		// 获取总设备数 NO
+		// 获取总设备数 OK
+		*getDeviceCount(_, { call, put }) {
+			const options = {
+				source: 1,
+			};
+			const response = yield call(
+				getDeviceOverview,
+				options,
+			);
+			const { data: { dataList = [] }} = response;
+			const { onlineCount, offlineCount } = dataList[0];
+			yield put({
+				type: 'updateState',
+				payload: {
+					RTDeviceCount: {
+						label: 'deviceCount',
+						count: onlineCount + offlineCount,
+						earlyCount: offlineCount,
+					},
+				},
+			});
+
+		},
 		// 进店率分布 OK
 		*getEnteringDistribution({ payload = {} }, { call, put }) {
 			const {
