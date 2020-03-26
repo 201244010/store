@@ -4,12 +4,12 @@ import { Spin, Tag, Menu, Icon, Avatar, /* Select, */ TreeSelect } from 'antd';
 // import moment from 'moment';
 // import router from 'umi/router';
 import groupBy from 'lodash/groupBy';
-import NoticeIcon from '../NoticeIcon';
+import { MENU_PREFIX } from '@/constants';
 import * as CookieUtil from '@/utils/cookies';
 import { formatTimeMessage } from '@/utils/utils';
 // import HeaderSearch from '../HeaderSearch';
+import NoticeIcon from '../NoticeIcon';
 import HeaderDropdown from '../HeaderDropdown';
-import { MENU_PREFIX } from '@/constants';
 
 import styles from './index.less';
 

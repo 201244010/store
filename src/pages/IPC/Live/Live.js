@@ -354,7 +354,6 @@ class Live extends React.Component{
 		// 定时清除store中的人脸框，避免内存不断增加
 		this.timeInterval = setInterval(() => {
 			const { baseTime } = this.state;
-			console.log('baseTime=', baseTime);
 			if (baseTime) {
 				clearRects({
 					timestamp: moment().valueOf() - baseTime - 30 * 1000
@@ -427,7 +426,6 @@ class Live extends React.Component{
 	getHistoryUrl = async  (timestamp) => {
 		const { getHistoryUrl } = this.props;
 		const sn = this.getSN();
-
 
 		const url = await getHistoryUrl({ sn, timestamp });
 

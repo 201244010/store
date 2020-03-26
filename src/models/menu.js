@@ -12,6 +12,15 @@ import routeConfig from '@/config/router';
 
 const { check } = Authorized;
 
+const CompanyView = [
+	{ base: 'dashboard', path: '/dashboard' },
+	{ base: 'dataAnalyze', path: '/dataAnalyze/passenger' },
+	{ base: 'basicData', path: '/basicData/merchantManagement' },
+	{ base: 'basicData', path: '/basicData/organizationManagement' },
+	{ base: 'basicData', path: '/basicData/roleManagement' },
+	{ base: 'basicData', path: '/basicData/employeeManagement' },
+];
+
 // Conversion router to menu.
 function formatter(data, parentAuthority, parentName) {
 	return data
@@ -94,17 +103,14 @@ const getBreadcrumbNameMap = menuData => {
 
 const memoizeOneGetBreadcrumbNameMap = memoizeOne(getBreadcrumbNameMap, isEqual);
 
-const checkChildrenAuth = (children, authMenuList) =>
-	children.filter(child => authMenuList.some(authMenu => authMenu.path.indexOf(child.path) > -1));
-
 const checkMenuAuth = (menuData, authMenuList = []) =>
 	menuData
-		.filter(menu => authMenuList.some(authMenu => authMenu.base === menu.path.slice(1)))
+		.filter(menu => authMenuList.some(authMenu => authMenu.path.indexOf(menu.path) > -1))
 		.map(menu => {
 			const { children = [] } = menu;
 			return {
 				...menu,
-				children: checkChildrenAuth(children, authMenuList),
+				children: checkMenuAuth(children, authMenuList),
 			};
 		});
 
@@ -147,7 +153,8 @@ export default {
 			return response;
 		},
 
-		*getMenuData({ payload }, { put }) {
+		*getMenuData({ payload }, { put, select }) {
+			const { storeList } = yield select(state => state.store);
 			const { routes, authority } = payload;
 			const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
 			const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
@@ -166,12 +173,17 @@ export default {
 				if (permissionList.length === 0) {
 					filteredMenuData = [];
 				} else {
-					const formattedPermissionList = permissionList.map(item => ({
-						base: ((item.path || '').slice(1).split('/') || [])[0],
-						path: item.path,
-					}));
+					const isCompanyView = permissionList.find(item => item.path === '/companyView');
+					let formattedPermissionList;
+					if (isCompanyView && (storeList.length > 1)) {
+						formattedPermissionList = CompanyView;
+					} else {
+						formattedPermissionList = permissionList.map(item => ({
+							base: ((item.path || '').slice(1).split('/') || [])[0],
+							path: item.path,
+						}));
+					}
 					console.log('formattedPermissionList: ', formattedPermissionList);
-
 					if (formattedPermissionList.length > 0) {
 						filteredMenuData = checkMenuAuth(menuData, formattedPermissionList);
 					}

@@ -23,6 +23,8 @@ const { Option } = Select;
 	state => ({
 		loading: state.loading,
 		companyInfo: state.companyInfo,
+		menu: state.menu,
+		store: state.store
 	}),
 	dispatch => ({
 		createOrganization: payload => dispatch({ type: 'companyInfo/createOrganization', payload }),
@@ -328,10 +330,14 @@ class CompanyInfo extends React.Component {
 		const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY);
 		const {
 			form: { validateFields },
+			store: { storeList },
+			menu: { permissionList },
 			createOrganization,
 			updateOrganization,
 			getPathId
 		} = this.props;
+
+		console.log(permissionList, storeList);
 
 		validateFields(async (err, values) => {
 			const { goToPath } = this.props;
@@ -391,6 +397,11 @@ class CompanyInfo extends React.Component {
 					response = await createOrganization({ options });
 					const { code } = response;
 					if(code === ERROR_OK){
+						const isCompanyView = permissionList.find(item => item.path === '/companyView');
+						if (isCompanyView && (storeList.length > 1)) {
+							goToPath('root', {}, 'href');
+							return;
+						}
 						if(pathId === 'newSubOrganization') {
 							const { orgPidParams } = this.state;
 							goToPath('detail', {
