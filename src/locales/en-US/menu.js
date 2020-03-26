@@ -6,6 +6,8 @@ export default {
 	'menu.dashboard': 'Home',
 	'menu.dashboard.detail': 'Transaction details',
 	'menu.dashboard.orderDetail': 'Order details',
+	'menu.dashBoard.detail': 'Transaction details',
+	'menu.dashBoard.orderDetail': 'Order details',
 	'menu.account': 'Personal center',
 	'menu.account.logout': 'Log out',
 	'menu.serviceApplication': 'Service application',
