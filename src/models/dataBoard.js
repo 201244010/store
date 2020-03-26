@@ -243,7 +243,7 @@ export default {
 				})
 			]);
 		},
-		*fetchPassengerData({ payload }, { all, put }) {
+		*fetchPassengerData({ payload }, { all, put, take }) {
 			yield all([
 				put({
 					type: 'fetchPassengerCard',
@@ -269,11 +269,12 @@ export default {
 					type: 'getFrequencyDistribution',
 					payload,
 				}),
-				put({
-					type: 'getHistoryByGender',
-					payload,
-				}),
 			]);
+			yield take('fetchPassengerCard/@@end');
+			yield put({
+				type: 'getHistoryByGender',
+				payload,
+			});
 		},
 
 		*fetchRealTimeCard({ payload }, { put, /* select, */ take }) {
