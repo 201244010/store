@@ -1,0 +1,124 @@
+@import '~@/styles/common.less';
+
+.dashboard-wrapper {
+	margin: -24px;
+}
+
+.display-content {
+	margin: 24px;
+}
+
+.customer-card-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	:global {
+		.ant-radio-button-wrapper-checked {
+			box-shadow: -1px 0 0 0 @font-color-primary;
+		}
+
+		.ant-radio-button-wrapper:hover {
+			color: @font-color-primary;
+		}
+
+		.ant-radio-group-solid {
+			.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+				background: @font-color-primary;
+				border-color: @font-color-primary;
+
+				&:hover {
+					background: @font-color-primary;
+					border-color: @font-color-primary;
+				}
+			}
+		}
+	}
+}
+
+:global {
+	.g2-tooltip {
+		visibility: visible;
+		padding: 8px 12px !important;
+	}
+	.g2-tooltip-list {
+		.detail {
+			// padding: 8px;
+			.item {
+				margin: 0;
+				&__name {
+					font-size: 14px;
+					font-family: PingFangSC-Regular, PingFang SC, sans-serif;
+					font-weight: 400;
+					color: rgba(119, 126, 140, 1);
+					line-height: 20px;
+				}
+
+				&__value {
+					font-size: 20px;
+					font-family: Gotham-Bold, Gotham, sans-serif;
+					font-weight: bold;
+					color: rgba(48, 53, 64, 1);
+					line-height: 25px;
+				}
+
+				&__labelX {
+					font-size: 12px;
+					font-family: PingFangSC-Regular, PingFang SC, sans-serif;
+					font-weight: 400;
+					color: rgba(119, 126, 140, 1);
+					line-height: 16px;
+				}
+			}
+		}
+	}
+}
+
+.top-data-card {
+	.card {
+		padding: 24px;
+	}
+	:global {
+		.ant-card {
+			border-radius: 8px;
+		}
+		.ant-col {
+			padding-top: 12px;
+			padding-bottom: 12px;
+		}
+		.value {
+			color: #303540;
+			font-weight: bold;
+			&__number {
+				font-size: 38px;
+			}
+			&__unit {
+				font-size: 24px;
+			}
+		}
+		.early-value {
+			line-height: 22px;
+			display: flex;
+			align-items: center;
+			&__icon__rise {
+				width: 16px;
+				height: 16px;
+				background: center / contain transparent no-repeat url(~@/assets/icon/rise.png);
+			}
+			&__icon__down {
+				width: 16px;
+				height: 16px;
+				background: center / contain transparent no-repeat url(~@/assets/icon/down.png);
+			}
+		}
+		.tooltip {
+			&__icon {
+				position: absolute;
+				top: 24px;
+				right: 24px;
+				color: #777e8c;
+				// transform: translate(-50%, -50%);
+			}
+		}
+	}
+}

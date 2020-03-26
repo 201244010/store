@@ -89,6 +89,22 @@ const router = [
 				],
 			},
 			{
+				path: '/databoard',
+				name: 'rtdataboard',
+				icon: 'blank',
+				routes: [{
+					path: '/databoard/realtime',
+					id: 'rtdataboard',
+					hideInMenu: true,
+					component: './DataBoard/RTDataBoard',
+				}, {
+					path: '/databoard/passenger',
+					id: 'pdataboard',
+					hideInMenu: true,
+					component: './DataBoard/PassengerDataBoard',
+				}],
+			},
+			{
 				path: '/application',
 				name: 'application',
 				icon: 'blank',
