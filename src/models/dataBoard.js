@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { format } from '@konata9/milk-shake';
+// import { formatMessage } from 'umi/locale';
 import {
 	getLatestPassengerFlow,
 	getTimeRangePassengerFlow,
@@ -81,6 +82,23 @@ const getQueryTimeRange = (searchValue = {}) => {
 	return [startTime, endTime];
 };
 
+const generateTipText = (hasFS, isSaasAuth) => {
+	let text = '';
+	if (hasFS) {
+		if (!isSaasAuth) {
+			text = '请前往子门店添加AI识客摄像机并导入软件订单数据即可查看总部数据';
+			// text = formatMessage({ id: 'databoard.abnormalText1' });
+		}
+	} else if (isSaasAuth) {
+		text = '请前往子门店添加AI识客摄像机即可查看总部数据';
+		// text = formatMessage({ id: 'databoard.abnormalText2' });
+	} else {
+		text = '请前往子门店添加AI识客摄像机并导入软件订单数据即可查看总部数据';
+		// text = formatMessage({ id: 'databoard.abnormalText1' });
+	}
+	return text;
+};
+
 export default {
 	namespace: 'databoard',
 	state: {
@@ -132,6 +150,7 @@ export default {
 		// isNormal: true, // 是否为正常状态
 		hasFS: true, // 当前company下是否有FS设备
 		isSaasAuth: true, // 是否有saas授权
+		tipText: '', // 异常时的提示文案
 	},
 	effects: {
 		*switchLoading({ payload }, { put }) {
@@ -1469,6 +1488,7 @@ export default {
 		// 检查是否异常
 		*checkIsNormal(_, { all, put }) {
 			console.log('checkIsNormal');
+
 			// 判断当前是总部还是单门店
 			// 总部
 			yield all([
@@ -1481,16 +1501,17 @@ export default {
 			]);
 
 			// 单门店
-			yield all([
-				put({
-					type: 'getShopDevices',
-				}),
-				put({
-					type: 'getShopSaasList',
-				}),
-			]);
+			// yield all([
+			// 	put({
+			// 		type: 'getShopDevices',
+			// 	}),
+			// 	put({
+			// 		type: 'getShopSaasList',
+			// 	}),
+			// ]);
 		},
-		*getCompanyDevices(_, { call, put }) {
+		// 总部视角获取设备列表
+		*getCompanyDevices(_, { call, put, select }) {
 			let hasFS = false;
 			const devicesResponse = yield call(
 				getCompanyDevices,
@@ -1508,15 +1529,18 @@ export default {
 					});
 				}
 			}
+			const { isSaasAuth } = yield select(state => state.databoard);
 			yield put({
 				type: 'updateState',
 				payload: {
-					hasFS
+					hasFS,
+					tipText: generateTipText(hasFS, isSaasAuth)
 				}
 			});
 			return hasFS;
 		},
-		*getShopDevices(_, { call, put }) {
+		// 单门店获取设备列表
+		*getShopDevices(_, { call, put, select }) {
 			let hasFS = false;
 			const devicesResponse = yield call(
 				getDeviceList,
@@ -1534,15 +1558,18 @@ export default {
 					});
 				}
 			}
+			const { isSaasAuth } = yield select(state => state.databoard);
 			yield put({
 				type: 'updateState',
 				payload: {
-					hasFS
+					hasFS,
+					tipText: generateTipText(hasFS, isSaasAuth)
 				}
 			});
 			return hasFS;
 		},
-		*getCompanySaasList(_, { call, put }) {
+		// 总部视角获取saas授权列表
+		*getCompanySaasList(_, { call, put, select }) {
 			let isSaasImport = false;
 			const saasResponse = yield call(
 				getCompanySaasList,
@@ -1560,15 +1587,18 @@ export default {
 					});
 				}
 			}
+			const { hasFS } = yield select(state => state.databoard);
 			yield put({
 				type: 'updateState',
 				payload: {
-					isSaasAuth: isSaasImport
+					isSaasAuth: isSaasImport,
+					tipText: generateTipText(hasFS, isSaasImport),
 				}
 			});
 			return isSaasImport;
 		},
-		*getShopSaasList(_, { call, put }) {
+		// 单门店获取saas授权列表
+		*getShopSaasList(_, { call, put, select }) {
 			let isSaasImport = false;
 			const saasResponse = yield call(
 				getShopSaasList,
@@ -1586,10 +1616,12 @@ export default {
 					});
 				}
 			}
+			const { hasFS } = yield select(state => state.databoard);
 			yield put({
 				type: 'updateState',
 				payload: {
-					isSaasAuth: isSaasImport
+					isSaasAuth: isSaasImport,
+					tipText: generateTipText(hasFS, isSaasImport),
 				}
 			});
 			return isSaasImport;
@@ -1602,5 +1634,13 @@ export default {
 				...action.payload,
 			};
 		},
+		resetCheckNormal(state) {
+			return {
+				...state,
+				hasFS: true,
+				isSaasAuth: true,
+				tipText: '',
+			};
+		}
 	},
 };

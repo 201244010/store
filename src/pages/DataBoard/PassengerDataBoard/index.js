@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import { Card, Row, Col } from 'antd';
 import SearchBar from './SearchBar';
 // import OverviewCard from './OverviewCard';
+import AbnormalTip from '../RTDataBoard/AbnormalTip';
 
 import styles from './index.less';
 
@@ -32,6 +33,12 @@ const RANGE = {
 				needLoading
 			}
 		}),
+		checkIsNormal: () => dispatch({
+			type: 'databoard/checkIsNormal',
+		}),
+		resetCheckState: () => dispatch({
+			type: 'databoard/resetCheckNormal',
+		}),
 	})
 )
 class RTDataBoard extends PureComponent {
@@ -46,18 +53,21 @@ class RTDataBoard extends PureComponent {
 	// }
 
 	async componentDidMount() {
-		const { fetchAllData } = this.props;
+		const { fetchAllData, checkIsNormal } = this.props;
 		await fetchAllData({
 			searchValue: {
 				rangeType: RANGE.YESTERDAY,
 			},
 			needLoading: true
 		});
+		await checkIsNormal();
 	}
 
-	// componentWillUnmount() {
-	// 	clearTimeout(this.timer);
-	// }
+	componentWillUnmount() {
+		// clearTimeout(this.timer);
+		const { resetCheckState } = this.props;
+		resetCheckState();
+	}
 
 	// startAutoRefresh = () => {
 	// 	const { fetchAllData } = this.props;
@@ -92,7 +102,7 @@ class RTDataBoard extends PureComponent {
 			passengerLoading,
 			passengerFlowLoading, enteringRateLoading,
 			entryCountLoading, frequencyTrendLoading, passFrenquencyLoading,
-			majorLoading
+			majorLoading, hasFS, isSaasAuth, tipText
 		}} = this.props;
 		const loading = passengerLoading ||
 			passengerFlowLoading || enteringRateLoading ||
@@ -101,31 +111,36 @@ class RTDataBoard extends PureComponent {
 		return(
 			<div className={styles['databoard-wrapper']}>
 				<SearchBar onSearchChanged={this.onSearchChanged} />
-				<div className={styles['charts-container']}>
-					<Row gutter={24}>
-						<Col span={8}>
-							<Card className={styles['overview-card']} loading={loading}>test</Card>
-						</Col>
-						<Col span={8}>
-							<Card className={styles['overview-card']} loading={loading}>test</Card>
-						</Col>
-						<Col span={8}>
-							<Card className={styles['overview-card']} loading={loading}>test</Card>
-						</Col>
-					</Row>
-					<Row gutter={24}>
-						<Col span={12}>
-							<Card className={styles['line-chart-wrapper']} title="客流趋势" loading={loading}>
-								客流趋势
-							</Card>
-						</Col>
-						<Col span={12}>
-							<Card className={styles['line-chart-wrapper']} title="客流趋势">客流趋势</Card>
-						</Col>
-					</Row>
-					<Card title="客群到店频次" className={styles['distri-chart-wrapper']}>客群到店频次</Card>
-					<Card title="主力客群" className={styles['major-chart-wrapper']}>主力客群</Card>
-				</div>
+				{
+					hasFS && isSaasAuth ?
+						<div className={styles['charts-container']}>
+							<Row gutter={24}>
+								<Col span={8}>
+									<Card className={styles['overview-card']} loading={loading}>test</Card>
+								</Col>
+								<Col span={8}>
+									<Card className={styles['overview-card']} loading={loading}>test</Card>
+								</Col>
+								<Col span={8}>
+									<Card className={styles['overview-card']} loading={loading}>test</Card>
+								</Col>
+							</Row>
+							<Row gutter={24}>
+								<Col span={12}>
+									<Card className={styles['line-chart-wrapper']} title="客流趋势" loading={loading}>
+										客流趋势
+									</Card>
+								</Col>
+								<Col span={12}>
+									<Card className={styles['line-chart-wrapper']} title="客流趋势">客流趋势</Card>
+								</Col>
+							</Row>
+							<Card title="客群到店频次" className={styles['distri-chart-wrapper']}>客群到店频次</Card>
+							<Card title="主力客群" className={styles['major-chart-wrapper']}>主力客群</Card>
+						</div>
+						:
+						<AbnormalTip tipText={tipText} />
+				}
 			</div>
 		);
 	}

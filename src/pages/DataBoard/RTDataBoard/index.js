@@ -43,7 +43,10 @@ const LAST_REFRESH_TIME = 'lastRefreshTime';
 		}),
 		checkIsNormal: () => dispatch({
 			type: 'databoard/checkIsNormal',
-		})
+		}),
+		resetCheckState: () => dispatch({
+			type: 'databoard/resetCheckNormal',
+		}),
 	})
 )
 class RTDataBoard extends PureComponent {
@@ -71,6 +74,8 @@ class RTDataBoard extends PureComponent {
 
 	componentWillUnmount() {
 		clearTimeout(this.timer);
+		const { resetCheckState } = this.props;
+		resetCheckState();
 	}
 
 	startAutoRefresh = () => {
@@ -142,7 +147,8 @@ class RTDataBoard extends PureComponent {
 			totalAmountLoading, totalCountLoading, totalRateLoading,
 			RTPassengerFlowLoading,
 			transactionCountLoading, transactionRateLoading,
-			regularDistriLoading, genderAndAgeLoading
+			regularDistriLoading, genderAndAgeLoading,
+			hasFS, isSaasAuth, tipText
 		}} = this.props;
 		const loading = RTPassLoading || RTDevicesLoading ||
 			totalAmountLoading || totalCountLoading || totalRateLoading ||
@@ -159,38 +165,42 @@ class RTDataBoard extends PureComponent {
 						handleRefresh: this.handleRefresh,
 					}}
 				/>
-				<div className={styles['charts-container']}>
-					<OverviewCard loading={loading} RTPassengerCount={RTPassengerCount} />
-					<Row gutter={24}>
-						<Col span={12}>
-							<PassengerTrendLine data={RTPassengerFlowList} loading={loading} />
-						</Col>
-						<Col span={12}>
-							<Card
-								className={styles['line-chart-wrapper']}
-								title="客流趋势"
-								extra={
-									<Radio.Group
-										value={currentTab}
-										onChange={this.handleSwitchTab}
-									>
-										<Radio.Button className={styles['chart-tab']} value={TAB.AMOUNT}>
-											销售额
-										</Radio.Button>
-										<Radio.Button className={styles['chart-tab']} value={TAB.COUNT}>
-											交易笔数
-										</Radio.Button>
-										<Radio.Button className={styles['chart-tab']} value={TAB.RATE}>
-											转化率
-										</Radio.Button>
-									</Radio.Group>}
-							>经营趋势
-							</Card>
-						</Col>
-					</Row>
-					<DistriChart regularList={regularList} />
-				</div>
-				<AbnormalTip />
+				{
+					hasFS && isSaasAuth ?
+						<div className={styles['charts-container']}>
+							<OverviewCard loading={loading} RTPassengerCount={RTPassengerCount} />
+							<Row gutter={24}>
+								<Col span={12}>
+									<PassengerTrendLine data={RTPassengerFlowList} loading={loading} />
+								</Col>
+								<Col span={12}>
+									<Card
+										className={styles['line-chart-wrapper']}
+										title="客流趋势"
+										extra={
+											<Radio.Group
+												value={currentTab}
+												onChange={this.handleSwitchTab}
+											>
+												<Radio.Button className={styles['chart-tab']} value={TAB.AMOUNT}>
+													销售额
+												</Radio.Button>
+												<Radio.Button className={styles['chart-tab']} value={TAB.COUNT}>
+													交易笔数
+												</Radio.Button>
+												<Radio.Button className={styles['chart-tab']} value={TAB.RATE}>
+													转化率
+												</Radio.Button>
+											</Radio.Group>}
+									>经营趋势
+									</Card>
+								</Col>
+							</Row>
+							<DistriChart regularList={regularList} />
+						</div>
+						:
+						<AbnormalTip tipText={tipText} />
+				}
 			</div>
 		);
 	}
