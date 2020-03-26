@@ -16,6 +16,7 @@ const CheckboxGroup = Checkbox.Group;
 		query: state.routing.location.query,
 	}),
 	dispatch => ({
+		getPermissionList: payload => dispatch({ type: 'role/getPermissionList', payload }),
 		getRoleInfo: payload => dispatch({ type: 'role/getRoleInfo', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
@@ -23,13 +24,15 @@ const CheckboxGroup = Checkbox.Group;
 )
 @Form.create()
 class RoleView extends React.Component {
-	componentDidMount() {
+	async componentDidMount() {
 		const {
 			getRoleInfo,
+			getPermissionList,
 			query: { id },
 		} = this.props;
 		const roleId = idDecode(id);
-		getRoleInfo({ roleId });
+		await getPermissionList();
+		await getRoleInfo({ roleId });
 	}
 
 	confirm = () => {

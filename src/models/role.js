@@ -121,7 +121,8 @@ export default {
 			}
 		},
 
-		*getRoleInfo({ payload = {} }, { put, call }) {
+		*getRoleInfo({ payload = {} }, { put, call, select }) {
+			const { permissionList: allPermissionList } = yield select(state => state.role);
 			const { roleId } = payload;
 			const response = yield call(
 				Actions.handleRoleManagement,
@@ -137,14 +138,20 @@ export default {
 				).filter(item => !!item);
 				forData.permissionList = formatData(sortedPermission).map(item => {
 					const formatResult = formatPath(item);
+					const valueList = formatResult.permissionList
+						? formatResult.permissionList.map(items => items.value)
+						: [formatResult.value];
+					const matchedPermission = (allPermissionList.find(a => a.group === item.label) || {}).valueList || 0;
+					const indeterminate =
+						valueList.length === 0 ?
+							false :
+							valueList.length < matchedPermission.length;
 					return {
 						checkedList: formatResult,
-						indeterminate: formatResult.permissionList && true,
-						checkAll: false,
+						indeterminate,
+						checkAll: valueList.length === matchedPermission.length,
 						group: formatResult.label,
-						valueList: formatResult.permissionList
-							? formatResult.permissionList.map(items => items.value)
-							: [formatResult.value],
+						valueList,
 					};
 				});
 				yield put({
@@ -188,11 +195,9 @@ export default {
 						// 	type === 'modify'
 						// 		? getInitStatus(formatResult, roleInfo).valueList
 						// 		: [],
-						valueList: permissionList
-							.map(permission => permission.permissionList.map(items => items.id))
-							.join()
-							.split(',')
-							.map(number => Number(number)),
+						valueList: formatResult.permissionList
+							? formatResult.permissionList.map(items => items.value)
+							: [formatResult.value],
 					};
 				});
 				yield put({
@@ -249,6 +254,16 @@ export default {
 				type: 'updateState',
 				payload: {
 					payload,
+				},
+			});
+		},
+
+		*updateRoleInfo({ payload = {} }, { put }) {
+			const { roleInfo } = payload;
+			yield put({
+				type: 'updateState',
+				payload: {
+					roleInfo,
 				},
 			});
 		},

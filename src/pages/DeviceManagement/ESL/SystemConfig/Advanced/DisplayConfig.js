@@ -1,10 +1,16 @@
 import React, {Component} from 'react';
-import {Card, Row, Col, Select, Button} from 'antd';
+import {Card, Icon, Tooltip, Row, Col, Input, Select, Button} from 'antd';
 import { formatMessage } from 'umi/locale';
 import {connect} from 'dva';
-import styles from './index.less';
+import styles from '../index.less';
 
 const { Option } = Select;
+
+const FormTip = ({ text = '', pos = 'right', style = {} }) => (
+	<Tooltip placement={pos} title={text}>
+		<Icon type="question-circle" style={{ marginLeft: '20px', ...style }} />
+	</Tooltip>
+);
 
 @connect(
 	state => ({
@@ -103,6 +109,25 @@ class DisplayConfig extends Component {
 		}
 	};
 
+	updatePageConfig = (config, key, e) => {
+		const { page2Config, page3Config } = this.state;
+		if (config === 'page2Config') {
+			this.setState({
+				page2Config: {
+					...page2Config,
+					[key]: e.target.value
+				}
+			});
+		} else {
+			this.setState({
+				page3Config: {
+					...page3Config,
+					[key]: e.target.value
+				}
+			});
+		}
+	};
+
 	updatePageTemplateConfig = (configName, templateConfig, value) => {
 		const { page2Config, page3Config } = this.state;
 
@@ -144,15 +169,50 @@ class DisplayConfig extends Component {
 		return (
 			<div className={styles['display-config']}>
 				<Card
-					title={formatMessage({id: 'esl.device.display.unbind.template'})}
+					title={
+						<div>
+							<span>{formatMessage({id: 'esl.device.display.page.toggle.title'})}</span>
+							<FormTip
+								text={formatMessage({id: 'esl.device.display.page.toggle.tooltip'})}
+							/>
+						</div>
+					}
 					bordered={false}
 					style={{ width: '100%' }}
 				>
+					<Row gutter={10} className={styles['m-b-15']}>
+						<Col span={4} offset={8} className={styles.title}>
+							{formatMessage({id: 'esl.device.display.page.toggle.page.two'})}
+						</Col>
+						<Col span={4} className={styles.title}>
+							{formatMessage({id: 'esl.device.display.page.toggle.page.three'})}
+							<FormTip
+								text={formatMessage({id: 'esl.device.display.page.toggle.page.three.tooltip'})}
+							/>
+						</Col>
+					</Row>
+					<Row gutter={10} className={styles['m-b-15']}>
+						<Col span={8} className={styles['page-name']}>{formatMessage({id: 'esl.device.display.page.name'})}：</Col>
+						<Col span={4}>
+							<Input
+								maxLength={20}
+								value={formatMessage({id: page2Config.screen_name || ' '})}
+								onChange={(e) => this.updatePageConfig('page2Config', 'screen_name', e)}
+							/>
+						</Col>
+						<Col span={4}>
+							<Input
+								maxLength={20}
+								value={formatMessage({id: page3Config.screen_name || ' '})}
+								onChange={(e) => this.updatePageConfig('page3Config', 'screen_name', e)}
+							/>
+						</Col>
+					</Row>
 					{
-						(page2Config.template_config || []).map((config) => (
+						(page2Config.template_config || []).map((config, index) => (
 							<Row gutter={10} className={styles['m-b-15']} key={config.model_id}>
 								<Col span={8} className={styles['page-name']}>{config.model_name}：</Col>
-								<Col span={8}>
+								<Col span={4}>
 									<Select
 										style={{width: '100%'}}
 										value={config.template_id}
@@ -166,12 +226,36 @@ class DisplayConfig extends Component {
 										}
 									</Select>
 								</Col>
+								<Col span={4}>
+									<Select
+										style={{width: '100%'}}
+										value={(page3TemplateConfig[config.model_name] || {}).template_id}
+										onChange={(id) => this.updatePageTemplateConfig('page3Config', config, id)}
+									>
+										<Option key={0} value={0}>{formatMessage({id: 'esl.device.display.config.not'})}</Option>
+										{
+											modelTemplateMap[config.model_name] && modelTemplateMap[config.model_name].map(model => (
+												<Option key={model.id} value={model.id}>{formatMessage({id: model.name})}</Option>
+											))
+										}
+									</Select>
+								</Col>
+								{
+									index === 0 ?
+										<Col span={4}>
+											<FormTip
+												text={formatMessage({id: 'esl.device.display.sl121.tooltip'})}
+												style={{lineHeight: '32px'}}
+											/>
+										</Col> :
+										null
+								}
 							</Row>
 						))
 					}
 					<Row gutter={10} className={styles['m-b-15']}>
 						<Col span={4} offset={8}>
-							<Button type="primary" loading={loading} onClick={this.submit}>{formatMessage({id: 'btn.save'})}</Button>
+							<Button type="primary" loading={loading} onClick={this.submit}>{formatMessage({id: 'btn.submit'})}</Button>
 						</Col>
 					</Row>
 				</Card>
