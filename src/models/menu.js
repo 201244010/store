@@ -9,17 +9,18 @@ import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 // import routeConfig from '@/config/devRouter';
 import routeConfig from '@/config/router';
+import * as CookieUtil from '@/utils/cookies';
 
 const { check } = Authorized;
-//
-// const CompanyView = [
-// 	{ base: 'dashboard', path: '/dashboard' },
-// 	{ base: 'dataAnalyze', path: '/dataAnalyze/passenger' },
-// 	{ base: 'basicData', path: '/basicData/merchantManagement' },
-// 	{ base: 'basicData', path: '/basicData/organizationManagement' },
-// 	{ base: 'basicData', path: '/basicData/roleManagement' },
-// 	{ base: 'basicData', path: '/basicData/employeeManagement' },
-// ];
+
+const CompanyView = [
+	{ base: 'dashboard', path: '/dashboard' },
+	{ base: 'dataAnalyze', path: '/dataAnalyze/passenger' },
+	{ base: 'basicData', path: '/basicData/merchantManagement' },
+	{ base: 'basicData', path: '/basicData/organizationManagement' },
+	{ base: 'basicData', path: '/basicData/roleManagement' },
+	{ base: 'basicData', path: '/basicData/employeeManagement' },
+];
 
 // Conversion router to menu.
 function formatter(data, parentAuthority, parentName) {
@@ -153,8 +154,8 @@ export default {
 			return response;
 		},
 
-		*getMenuData({ payload }, { put }) {
-			// const { storeList } = yield select(state => state.store);
+		*getMenuData({ payload }, { put, select }) {
+			const { storeList } = yield select(state => state.store);
 			const { routes, authority } = payload;
 			const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
 			const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
@@ -173,20 +174,18 @@ export default {
 				if (permissionList.length === 0) {
 					filteredMenuData = [];
 				} else {
-					// const isCompanyView = permissionList.find(item => item.path === '/companyView');
-					// let formattedPermissionList;
-					// if (isCompanyView && (storeList.length > 1)) {
-					// 	formattedPermissionList = CompanyView;
-					// } else {
-					// 	formattedPermissionList = permissionList.map(item => ({
-					// 		base: ((item.path || '').slice(1).split('/') || [])[0],
-					// 		path: item.path,
-					// 	}));
-					// }
-					const formattedPermissionList = permissionList.map(item => ({
-						base: ((item.path || '').slice(1).split('/') || [])[0],
-						path: item.path,
-					}));
+					const isCompanyView = permissionList.find(item => item.path === '/companyView');
+					const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
+
+					let formattedPermissionList;
+					if (isCompanyView && (shopId === 0) && (storeList.length > 1)) {
+						formattedPermissionList = CompanyView;
+					} else {
+						formattedPermissionList = permissionList.map(item => ({
+							base: ((item.path || '').slice(1).split('/') || [])[0],
+							path: item.path,
+						}));
+					}
 					console.log('formattedPermissionList: ', formattedPermissionList);
 					if (formattedPermissionList.length > 0) {
 						filteredMenuData = checkMenuAuth(menuData, formattedPermissionList);
