@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Card, Row, Col } from 'antd';
+import { formatMessage } from 'umi/locale';
+
 import FrequencyBar from '../Charts/Bars/FrequencyBar';
 import SingleLine from '../Charts/Line/SingleLine';
 import FrequencyAgeGenderBar from '../Charts/Bars/FrequencyAgeGenderBar';
@@ -37,7 +39,7 @@ class CustomerFrequency extends PureComponent {
 			},
 		};
 		return(
-			<Card bordered={false} title="客群到店频次" className={styles['distri-chart-wrapper']} loading={loading}>
+			<Card bordered={false} title={formatMessage({ id: 'databoard.passenger.frequency.title'})} className={styles['distri-chart-wrapper']} loading={loading}>
 				{
 					timeType === 1? <FrequencyBar data={frequencyList} /> : ''
 				}

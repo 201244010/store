@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Card, Radio } from 'antd';
+import { formatMessage } from 'umi/locale';
 import SingleLine from '../Charts/Line/SingleLine';
 import styles from './index.less';
 
@@ -103,7 +104,7 @@ class TransactionTrend extends PureComponent {
 			<Card
 				bordered={false}
 				className={styles['line-chart-wrapper']}
-				title="经营趋势"
+				title={formatMessage({ id: 'databoard.transaction.trend.title'})}
 				loading={loading}
 				extra={
 					<Radio.Group
@@ -111,13 +112,13 @@ class TransactionTrend extends PureComponent {
 						onChange={this.handleSwitchTab}
 					>
 						<Radio.Button className={styles['chart-tab']} value={TAB.AMOUNT}>
-							销售额
+							{formatMessage({ id: 'databoard.order.sales'})}
 						</Radio.Button>
 						<Radio.Button className={styles['chart-tab']} value={TAB.COUNT}>
-							交易笔数
+							{formatMessage({ id: 'databoard.order.count'})}
 						</Radio.Button>
 						<Radio.Button className={styles['chart-tab']} value={TAB.RATE}>
-							转化率
+							{formatMessage({ id: 'databoard.order.rate'})}
 						</Radio.Button>
 					</Radio.Group>}
 			>

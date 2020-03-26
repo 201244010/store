@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Card } from 'antd';
+import { formatMessage } from 'umi/locale';
 import SingleLine from '../Charts/Line/SingleLine';
 
 import styles from './index.less';
@@ -50,7 +51,7 @@ class PassengerTrend extends PureComponent {
 			},
 		};
 		return(
-			<Card bordered={false} className={styles['line-chart-wrapper']} title="客流趋势" loading={loading}>
+			<Card bordered={false} className={styles['line-chart-wrapper']} title={formatMessage({id: 'databoard.passenger.trend.title'})} loading={loading}>
 				<SingleLine {...chartOption} />
 			</Card>
 		);

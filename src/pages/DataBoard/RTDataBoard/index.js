@@ -61,6 +61,7 @@ class RTDataBoard extends PureComponent {
 			needLoading: true,
 			searchValue,
 		});
+		this.startAutoRefresh();
 		// console.log('==========', this.props);
 	}
 
@@ -97,6 +98,7 @@ class RTDataBoard extends PureComponent {
 			},
 			needLoading: true
 		});
+		this.startAutoRefresh();
 	}
 
 	handleRefresh = async () => {

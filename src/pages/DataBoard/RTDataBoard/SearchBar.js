@@ -62,13 +62,13 @@ class SearchBar extends PureComponent {
 							onChange={this.handleRadioChange}
 						>
 							<Radio.Button value={RANGE.TODAY}>
-								{formatMessage({ id: 'dashboard.search.today' })}
+								{formatMessage({ id: 'databoard.search.today' })}
 							</Radio.Button>
 							<Radio.Button value={RANGE.WEEK}>
-								{formatMessage({ id: 'dashboard.search.week' })}
+								{formatMessage({ id: 'databoard.search.week' })}
 							</Radio.Button>
 							<Radio.Button value={RANGE.MONTH}>
-								{formatMessage({ id: 'dashboard.search.month' })}
+								{formatMessage({ id: 'databoard.search.month' })}
 							</Radio.Button>
 						</Radio.Group>
 
@@ -76,7 +76,7 @@ class SearchBar extends PureComponent {
 
 					<div className={styles['right-content']}>
 						<span>
-							{formatMessage({ id: 'dashboard.last.modify.date' })}: {lastModifyTime}
+							{formatMessage({ id: 'databoard.last.modify.date' })}: {lastModifyTime}
 						</span>
 						<div className={styles['icon-wrapper']} onClick={handleRefresh}>
 							<Icon component={Refresh} style={{ fontSize: '24px' }} />

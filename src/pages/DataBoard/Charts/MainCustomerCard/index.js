@@ -1,12 +1,13 @@
 import React from 'react';
 import { Progress } from 'antd';
+import { formatMessage } from 'umi/locale';
 import styles from './mainCustomerCard.less';
 import { formatFrequency, formatPassengerRate } from '../../format';
 
 const frequencyUnit = {
-	1: '次/日',
-	2: '次/周',
-	3: '次/月',
+	1: formatMessage({id: 'databoard.frequency.day.unit'}),
+	2: formatMessage({id: 'databoard.frequency.week.unit'}),
+	3: formatMessage({id: 'databoard.frequency.month.unit'}),
 };
 
 class MainCustomerCard extends React.Component {
