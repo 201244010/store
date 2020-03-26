@@ -4,6 +4,8 @@ export default {
 	'menu.companyView': '总部视角',
 	'menu.dashBoard': '首页',
 	'menu.dashboard': '首页',
+	'menu.dashboard.detail': '交易详情',
+	'menu.dashboard.orderDetail': '订单详情',
 	'menu.dashBoard.detail': '交易详情',
 	'menu.dashBoard.orderDetail': '订单详情',
 	'menu.account': '个人中心',

@@ -337,8 +337,6 @@ class CompanyInfo extends React.Component {
 			getPathId
 		} = this.props;
 
-		console.log(permissionList, storeList);
-
 		validateFields(async (err, values) => {
 			const { goToPath } = this.props;
 			if (!err) {
