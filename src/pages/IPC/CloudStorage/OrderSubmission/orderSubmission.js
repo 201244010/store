@@ -28,7 +28,7 @@ const FREE_PRODUCT_NO = 'A08000075';
 		}),
 		getStorageIpcList:(sn) => (dispatch({
 			type:'cloudStorage/getStorageIpcList',
-			payload: {
+			payload: { 
 				sn
 			}
 		})),

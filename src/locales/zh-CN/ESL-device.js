@@ -19,7 +19,7 @@ export default {
 	'esl.device.ap.network.id': '网络ID',
 	'esl.device.ap.network.get.fail': '获取networkId失败',
 	'esl.device.ap.sn': '基站SN',
-	'esl.device.ap.sn.mater': '主基站',
+	'esl.device.ap.sn.master': '主基站',
 	'esl.device.ap.model': '基站型号',
 	'esl.device.ap.version': '固件版本',
 	'esl.device.ap.disconnect_time': '最后通信时间',
