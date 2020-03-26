@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Radio, Icon } from 'antd';
 import { formatMessage } from 'umi/locale';
 
-import moment from 'moment';
+// import moment from 'moment';
 import styles from './index.less';
 
 const RANGE = {
@@ -49,8 +49,8 @@ class SearchBar extends PureComponent {
 
 	render() {
 		const { tempSelected } = this.state;
-		const lastModifyTime = moment().format('YYYY-MM-DD hh:mm:ss');
-		const { handleRefresh } = this.props;
+		// const lastModifyTime = moment().format('YYYY-MM-DD hh:mm:ss');
+		const { handleRefresh, lastModifyTime } = this.props;
 		return (
 			<>
 				{/* <h2 className={styles['dashboard-title']}>{1}</h2> */}

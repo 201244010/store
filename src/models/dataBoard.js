@@ -85,15 +85,57 @@ export default {
 		RTPassengerCount: {}, // 进店客流（实时）
 		RTDeviceCount: {}, // 总设备数（实时）
 		RTPassengerFlowList: [], // 客流趋势（折线图-实时）
-		paymentTotalAmount: {}, // 日月周-总销售额-实时
-		paymentTotalCount: {}, // 日月周-总销量-实时
-		transactionRate: {}, // 总交易转化率-实时
-		RTOverviewCard: [], // 顶部卡片-实时
+		// 日月周-总销售额-实时
+		paymentTotalAmount: {
+			[RANGE.TODAY]: {
+				count: 0,
+				earlyCount: 0,
+				label: 'totalAmount',
+			},
+			[RANGE.WEEK]: {
+				count: 0,
+				earlyCount: 0,
+				label: 'totalAmount',
+			},
+			[RANGE.MONTH]: {
+				count: 0,
+				earlyCount: 0,
+				label: 'totalAmount',
+			},
+		},
+		// 日月周-总销量-实时
+		paymentTotalCount: {
+			[RANGE.TODAY]: {
+				count: 0,
+				earlyCount: 0,
+				label: 'totalCount',
+			},
+			[RANGE.WEEK]: {
+				count: 0,
+				earlyCount: 0,
+				label: 'totalCount',
+			},
+			[RANGE.MONTH]: {
+				count: 0,
+				earlyCount: 0,
+				label: 'totalCount',
+			},
+		},
+		// 总交易转化率-实时
+		transactionRate: {
+			count: 0,
+			earlyCount: 0,
+			label: 'transactionRate',
+			unit: 'percent'
+		},
+		// RTOverviewCard: [], // 顶部卡片-实时
 		amountList: [], // 销售额分布-实时
 		countList: [], // 销售量分布-实时
 		transactionRateList: [], // 交易转化率分布-实时
 		ageGenderList: [], // 性别年龄分布-实时
 		regularList: [], // 生熟客分布-实时
+
+		lastModifyTime: moment().format('YYYY-MM-DD HH:mm:ss'),
 
 		RTPassLoading: false,
 		RTDevicesLoading: false,
@@ -114,7 +156,11 @@ export default {
 		frequencyList: [], // 到店次数分布（柱状图-客流）
 		frequencyTrend: [], // 到店频次趋势（折线图-客流）
 		passengerFlowList: [], // 客流量分布-客流
-		customerDistri: {}, // 客群平均到店频次-客流
+		// 客群平均到店频次-客流
+		customerDistri: {
+			data: [],
+			frequency: {},
+		},
 		majorList: [], // 主力客群卡片-客流
 		passOverviewCard: [], // 顶部卡片-客流
 
@@ -148,6 +194,12 @@ export default {
 						searchValue,
 						type
 					},
+				});
+				yield put({
+					type: 'updateState',
+					payload: {
+						lastModifyTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+					}
 				});
 			}
 			if(type === 2) {
@@ -222,7 +274,7 @@ export default {
 			]);
 		},
 
-		*fetchRealTimeCard({ payload }, { put, select, take }) {
+		*fetchRealTimeCard({ payload }, { put, /* select, */ take }) {
 			// const {
 			// 	searchValue: { rangeType }
 			// } = payload;
@@ -244,31 +296,33 @@ export default {
 				type: 'getTransactionRate',
 				payload
 			});
-			const {
-				RTPassengerCount, paymentTotalAmount,  paymentTotalCount, transactionRate,
-			} = yield select(state => state.databoard);
-			// const { count: passCount, earlyCount: earlyPassengerCount } = passengerCount;
-			// const { count: paymentCount, earlyCount: earlyPaymentCount } = paymentTotalCount[rangeType];
-			// const rate = passCount ? paymentCount / passCount : undefined;
-			// const earlyRate = earlyPassengerCount ? earlyPaymentCount / earlyPassengerCount : undefined;
-			console.log('===fetchRealTimeCard===', RTPassengerCount, paymentTotalCount, paymentTotalAmount, transactionRate);
-			yield put({
-				type: 'updateState',
-				payload: {
-					RTOverviewCard: [
-						RTPassengerCount,
-						paymentTotalAmount,
-						paymentTotalCount,
-						transactionRate,
-						// {
-						// 	count: rate,
-						// 	earlyCount: earlyRate,
-						// 	label: 'transactionRate',
-						// 	unit: 'percent',
-						// }
-					]
-				},
-			});
+			// yield take('getTransactionRate/@@end');
+			// const {
+			// 	RTPassengerCount, RTEnteringRate, paymentTotalAmount,  paymentTotalCount, transactionRate,
+			// } = yield select(state => state.databoard);
+			// // const { count: passCount, earlyCount: earlyPassengerCount } = passengerCount;
+			// // const { count: paymentCount, earlyCount: earlyPaymentCount } = paymentTotalCount[rangeType];
+			// // const rate = passCount ? paymentCount / passCount : undefined;
+			// // const earlyRate = earlyPassengerCount ? earlyPaymentCount / earlyPassengerCount : undefined;
+			// console.log('===fetchRealTimeCard===', RTPassengerCount, paymentTotalCount, paymentTotalAmount, transactionRate);
+			// yield put({
+			// 	type: 'updateState',
+			// 	payload: {
+			// 		RTOverviewCard: [
+			// 			RTPassengerCount,
+			// 			RTEnteringRate,
+			// 			paymentTotalAmount[rangeType],
+			// 			paymentTotalCount[rangeType],
+			// 			transactionRate,
+			// 			// {
+			// 			// 	count: rate,
+			// 			// 	earlyCount: earlyRate,
+			// 			// 	label: 'transactionRate',
+			// 			// 	unit: 'percent',
+			// 			// }
+			// 		]
+			// 	},
+			// });
 		},
 		// 客流统计顶部卡片总览 OK
 		*fetchPassengerCard({ payload }, { put, call }) {
@@ -355,34 +409,6 @@ export default {
 							compareRate: true,
 							unit: 'frequency'
 						},
-						passOverviewCard: [
-							{
-								label: 'passengerCount',
-								count: latestTotalPassengerCount,
-								earlyCount: comparePassengerCount,
-								compareRate: true,
-							},
-							{
-								label: 'regularCount',
-								count: latestRegularPassengerCount,
-								earlyCount: compareRegularCount,
-								compareRate: true,
-							},
-							{
-								label: 'enteringRate',
-								count: latestEnteringRate,
-								earlyCount: compareEarlyEnteringRate,
-								compareRate: true,
-								unit: 'percent'
-							},
-							{
-								label: 'avgFrequency',
-								count: latestAvgFrequecy,
-								earlyCount: compareAvgFrequecy,
-								compareRate: true,
-								unit: 'frequency'
-							}
-						],
 						passengerLoading: false,
 					},
 				});
@@ -1180,7 +1206,7 @@ export default {
 					type: 'updateState',
 					payload: {
 						ageGenderList: targetList,
-						genderAndAgeLoading: true,
+						genderAndAgeLoading: false,
 					}
 				});
 			}

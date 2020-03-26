@@ -3,13 +3,14 @@ import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import { message, Card, Row, Col, Radio } from 'antd';
+import { message, Row, Col, } from 'antd';
 import SearchBar from './SearchBar';
 import OverviewCard from './OverviewCard';
-import styles from './index.less';
 import DistriChart from './DistriChart';
 import PassengerTrendLine from './PassengerTrendLine';
-// const { Meta } = Card;
+import TransactionTrend from './TransactionTrend';
+
+import styles from './index.less';
 
 const RANGE = {
 	TODAY: 'day',
@@ -19,10 +20,10 @@ const RANGE = {
 	YESTERDAY: 'yesterday'
 };
 
-const TAB = {
-	AMOUNT: 'amount',
-	COUNT: 'count',
-	RATE: 'rate',
+const queryTimeType = {
+	[RANGE.TODAY]: 1,
+	[RANGE.WEEK]: 2,
+	[RANGE.MONTH]: 3,
 };
 
 const LAST_REFRESH_TIME = 'lastRefreshTime';
@@ -50,7 +51,6 @@ class RTDataBoard extends PureComponent {
 			searchValue: {
 				rangeType: RANGE.TODAY,
 			},
-			currentTab: TAB.AMOUNT
 		};
 	}
 
@@ -61,7 +61,7 @@ class RTDataBoard extends PureComponent {
 			needLoading: true,
 			searchValue,
 		});
-		console.log('==========', this.props);
+		// console.log('==========', this.props);
 	}
 
 	componentWillUnmount() {
@@ -122,65 +122,72 @@ class RTDataBoard extends PureComponent {
 		}
 	}
 
-	handleSwitchTab = (e) => {
-		const {
-			target: { value },
-		} = e;
-		this.setState({
-			currentTab: value
-		});
-	}
-
 	render() {
 		const { databoard: {
-			RTPassLoading, RTDevicesLoading,
+			RTPassLoading, /* RTDevicesLoading, */
 			totalAmountLoading, totalCountLoading, totalRateLoading,
 			RTPassengerFlowLoading,
 			transactionCountLoading, transactionRateLoading,
 			regularDistriLoading, genderAndAgeLoading
 		}} = this.props;
-		const loading = RTPassLoading || RTDevicesLoading ||
+		// const loading = RTPassLoading || RTDevicesLoading ||
+		// 	totalAmountLoading || totalCountLoading || totalRateLoading ||
+		// 	RTPassengerFlowLoading ||
+		// 	transactionCountLoading || transactionRateLoading ||
+		// 	regularDistriLoading || genderAndAgeLoading;
+		const loading = RTPassLoading ||
 			totalAmountLoading || totalCountLoading || totalRateLoading ||
 			RTPassengerFlowLoading ||
 			transactionCountLoading || transactionRateLoading ||
 			regularDistriLoading || genderAndAgeLoading;
-		const { currentTab } = this.state;
-		const { databoard: { regularList, RTPassengerCount, RTPassengerFlowList } } = this.props;
+		const { searchValue: { rangeType } } = this.state;
+		const { databoard: {
+			regularList, RTPassengerFlowList, lastModifyTime,
+			RTPassengerCount, RTEnteringRate,
+			paymentTotalAmount, paymentTotalCount, transactionRate,
+			amountList, countList, transactionRateList,
+		} } = this.props;
+		const timeType = queryTimeType[rangeType];
+		console.log('=====', this.props);
 		return(
 			<div className={styles['databoard-wrapper']}>
 				<SearchBar
 					{...{
 						onSearchChanged: this.onSearchChanged,
 						handleRefresh: this.handleRefresh,
+						lastModifyTime,
 					}}
 				/>
 				<div className={styles['charts-container']}>
-					<OverviewCard loading={loading} RTPassengerCount={RTPassengerCount} />
+					<OverviewCard
+						loading={loading}
+						{...{
+							RTPassengerCount, RTEnteringRate,
+							paymentTotalAmount: paymentTotalAmount[rangeType],
+							paymentTotalCount: paymentTotalCount[rangeType],
+							transactionRate
+						}}
+					/>
 					<Row gutter={24}>
 						<Col span={12}>
-							<PassengerTrendLine data={RTPassengerFlowList} loading={loading} />
+							<PassengerTrendLine
+								{...{
+									timeType,
+									RTPassengerFlowList,
+									loading
+								}}
+							/>
 						</Col>
 						<Col span={12}>
-							<Card
-								className={styles['line-chart-wrapper']}
-								title="客流趋势"
-								extra={
-									<Radio.Group
-										value={currentTab}
-										onChange={this.handleSwitchTab}
-									>
-										<Radio.Button className={styles['chart-tab']} value={TAB.AMOUNT}>
-											销售额
-										</Radio.Button>
-										<Radio.Button className={styles['chart-tab']} value={TAB.COUNT}>
-											交易笔数
-										</Radio.Button>
-										<Radio.Button className={styles['chart-tab']} value={TAB.RATE}>
-											转化率
-										</Radio.Button>
-									</Radio.Group>}
-							>经营趋势
-							</Card>
+							<TransactionTrend
+								{...{
+									timeType,
+									amountList,
+									countList,
+									transactionRateList,
+									loading
+								}}
+							/>
 						</Col>
 					</Row>
 					<DistriChart regularList={regularList} />

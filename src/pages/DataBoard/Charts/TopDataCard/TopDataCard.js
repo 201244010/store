@@ -18,7 +18,7 @@ const handleEarlyLabelText = (dataType, timeType) => {
 
 const handleUnitText = (unit, timeType) => {
 	if (unit === 'frequency') {
-		return UNIT_FREQUENCY(timeType);
+		return UNIT_FREQUENCY[timeType];
 	}
 	return '';
 };
@@ -48,11 +48,11 @@ const EarlyData = ({ count, earlyCount, compareRate }) => {
 	);
 };
 
-const TopDataCard = ({ data, dataType, timeType }) => {
+const TopDataCard = ({ data, dataType, timeType, loading }) => {
 	const { label, unit, count, earlyCount, compareRate, toolTipText } = data;
 
 	return (
-		<Card bordered={false} className={styles['top-data-card']}>
+		<Card bordered={false} className={styles['top-data-card']} loading={loading}>
 			<div className="label">{label}</div>
 			<div className="value">
 				<span className="value__number">{count}</span>
