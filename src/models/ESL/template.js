@@ -509,7 +509,7 @@ export default {
 			Modal.info({
 				title: formatMessage({id: 'studio.upload.font'}),
 				content: formatMessage({id: 'studio.upload.font.waiting.message'}),
-				okText: formatMessage({id: 'btn.confirm'})
+				okText: formatMessage({id: 'btn.confirm'}),
 			});
 			const response = yield call(TemplateService.uploadFont, payload);
 			Modal.destroyAll();
@@ -534,7 +534,10 @@ export default {
 				});
 				Modal.error({
 					title: formatMessage({id: 'studio.upload.font.fail.title'}),
-					content: formatMessage({id: 'studio.upload.font.fail'}),
+					content:
+						response.code === 5351 ?
+							formatMessage({id: 'studio.upload.font.fail.again'}) :
+							formatMessage({id: 'studio.upload.font.fail'}),
 					okText: formatMessage({id: 'btn.confirm'})
 				});
 			}

@@ -579,6 +579,7 @@ export default class RightToolBox extends Component {
 			content: formatMessage({id: 'studio.upload.font.warning.message'}),
 			okText: formatMessage({id: 'btn.confirm'}),
 			cancelText: formatMessage({id: 'btn.cancel'}),
+			icon: <Icon type="info-circle" />,
 			onOk: () => {
 				if (this.fileSelect) {
 					this.fileSelect.click();
