@@ -9,6 +9,7 @@ import OverviewCard from './OverviewCard';
 import styles from './index.less';
 import DistriChart from './DistriChart';
 import PassengerTrendLine from './PassengerTrendLine';
+import AbnormalTip from './AbnormalTip';
 // const { Meta } = Card;
 
 const RANGE = {
@@ -40,6 +41,9 @@ const LAST_REFRESH_TIME = 'lastRefreshTime';
 				needLoading
 			}
 		}),
+		checkIsNormal: () => dispatch({
+			type: 'databoard/checkIsNormal',
+		})
 	})
 )
 class RTDataBoard extends PureComponent {
@@ -55,12 +59,13 @@ class RTDataBoard extends PureComponent {
 	}
 
 	async componentDidMount() {
-		const { fetchAllData } = this.props;
+		const { fetchAllData, checkIsNormal } = this.props;
 		const { searchValue } = this.state;
 		await fetchAllData({
 			needLoading: true,
 			searchValue,
 		});
+		await checkIsNormal();
 		console.log('==========', this.props);
 	}
 
@@ -185,7 +190,7 @@ class RTDataBoard extends PureComponent {
 					</Row>
 					<DistriChart regularList={regularList} />
 				</div>
-
+				<AbnormalTip />
 			</div>
 		);
 	}
