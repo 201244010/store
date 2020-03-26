@@ -393,6 +393,13 @@ const router = [
 								id: 'systemConfig',
 								component: './DeviceManagement/ESL/SystemConfig',
 							},
+							{
+								path: '/deviceManagement/esl/advSystemConfig',
+								name: 'advancedSystemConfig',
+								id: 'advancedSystemConfig',
+								component: './DeviceManagement/ESL/SystemConfig/Advanced',
+								hideInMenu: true,
+							},
 						],
 					},
 					// 网络设备

@@ -217,6 +217,7 @@ export default {
 	'esl.device.display.sl121.tooltip': 'The function of page changing will be enabled after the template has been selected. The corresponding template will be displayed after changing page; if you choose not to display, the ESL can only show the 1st page.',
 	'esl.device.display.config.close': 'Close',
 	'esl.device.display.config.not': 'Not to display',
+	'esl.device.display.unbind.template': 'Unbind Template',
 	'esl.device.config.title': 'Device Configuration',
 	'esl.device.config.info': 'Device information',
 	'esl.device.config.info.fail': 'Failed to obtain the device information',

@@ -67,6 +67,7 @@ export default {
 	'studio.upload.font.warning.message': '商米数字店铺作为开放平台支持用户上传字体文件，请您确认是上传字体文件的权利人或者已获得合法授权，避免因侵权导致包括诉讼在内的法律风险。',
 	'studio.upload.font.success': '您可以使用上传的字体设计模板',
 	'studio.upload.font.fail': '请检查字体文件重新上传',
+	'studio.upload.font.fail.again': '上传的字体已经存在，请检查字体文件重新上传',
 	'studio.upload.font.waiting.message': '正在上传字体，请等待...',
 	'studio.upload.font.accept.file': '上传字体格式支持ttf、otf、ttc',
 };

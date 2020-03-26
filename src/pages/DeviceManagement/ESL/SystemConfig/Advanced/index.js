@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Card, Tabs} from 'antd';
 import { formatMessage } from 'umi/locale';
 import DisplayConfig from './DisplayConfig';
-import LedConfig from './LedConfig';
+import DeviceConfig from './DeviceConfig';
 
 const {TabPane} = Tabs;
 
@@ -14,8 +14,8 @@ export default class SystemConfig extends Component {
 					<TabPane tab={formatMessage({id: 'esl.device.display.title'})} key="1">
 						<DisplayConfig />
 					</TabPane>
-					<TabPane tab={formatMessage({id: 'esl.device.led.title'})} key="3">
-						<LedConfig />
+					<TabPane tab={formatMessage({id: 'esl.device.config.title'})} key="2">
+						<DeviceConfig />
 					</TabPane>
 				</Tabs>
 			</Card>

@@ -67,6 +67,7 @@ export default {
 	'studio.upload.font.warning.message': 'As an open platform, shangmi digital store supports users to upload font files. Please confirm that it is the owner of the uploaded font files or has obtained legal authorization to avoid legal risks including litigation due to infringement.',
 	'studio.upload.font.success': 'You can use the uploaded font design template',
 	'studio.upload.font.fail': 'Please check the font file and upload again',
+	'studio.upload.font.fail.again': 'The uploaded font already exists, please check the font file to re-upload',
 	'studio.upload.font.waiting.message': 'Uploading font, please wait...',
 	'studio.upload.font.accept.file': 'Upload font format supports ttf/otf/ttc',
 };
