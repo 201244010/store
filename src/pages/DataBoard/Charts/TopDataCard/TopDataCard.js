@@ -1,13 +1,12 @@
 import React from 'react';
 import { Tooltip, Card, Icon } from 'antd';
-import { formater } from '@/utils/format';
+import { formatFloatByPermile, frequencyFormat, passengerNumFormat, saleMoneyFormat } from '@/utils/format';
 import { DATABOARD } from '../constants';
 // import { formatMessage } from 'umi/locale';
 import styles from '../chartsCommon.less';
 
 
 const { DATA_TYPE, UNIT_FREQUENCY, EARLY_LABEL_CURRENT, EARLY_LABEL_HISTORY, FREQUENCY_TYPE, LABEL_TEXT } = DATABOARD;
-const { formatFloatByPermile, frequencyFormat, passengerNumFormat, saleMoneyFormat } = formater;
 
 const handleEarlyLabelText = (timeType, dataType) => {
 	if (dataType === DATA_TYPE.current) {

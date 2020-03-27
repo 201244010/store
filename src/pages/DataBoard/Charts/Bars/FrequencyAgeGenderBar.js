@@ -1,10 +1,9 @@
 import React from 'react';
 import { Progress } from 'antd';
-import { formater } from '@/utils/format';
+import { frequencyFormat } from '@/utils/format';
 // import { customerDistriData } from './mock';
 import styles from '../chartsCommon.less';
 
-const { frequencyFormat } = formater;
 // {
 // foramtScaleRange ageCode 1 2 3 4 进行转换
 // 	/* <FrequencyAgeGenderBar data={data} timeType={timeType} foramtScaleRange={code => {}} /> */

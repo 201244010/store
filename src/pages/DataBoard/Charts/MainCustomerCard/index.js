@@ -1,7 +1,7 @@
 import React from 'react';
 import { Progress } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { formater } from '@/utils/format';
+import { formatFloatByPercent, frequencyFormat, passengerNumFormat } from '@/utils/format';
 import styles from '../chartsCommon.less';
 
 const frequencyUnit = {
@@ -9,8 +9,6 @@ const frequencyUnit = {
 	2: 'week',
 	3: 'month',
 };
-
-const { formatFloatByPercent, frequencyFormat, passengerNumFormat } = formater;
 
 class MainCustomerCard extends React.Component {
 
