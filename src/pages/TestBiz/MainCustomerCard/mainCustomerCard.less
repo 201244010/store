@@ -1,0 +1,91 @@
+@font-face{
+	font-family: 'Gotham-Medium';
+	src:url('@/assets/font/Gotham-Medium.otf');
+}
+@font-face{
+	font-family: 'Gotham-Bold';
+	src:url('@/assets/font/Gotham-Bold.otf');
+}
+.card-body {
+	width: 507px;
+	height: 216px;
+	padding: 16px 24px 0 16px;
+	border-radius: 8px;
+	background:rgba(250,250,250,1);
+	border:1px solid rgba(230,232,235,1);
+	.card-header {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		.card-header-right {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			color: #303540;
+			.card-img {
+				display: inline-block;
+				width: 64px;
+				height: 64px;
+				margin-right: 16px;
+				background-repeat: no-repeat;
+				background-size: contain;
+			}
+			.card-sex, .card-age {
+				font-size: 14px;
+				font-family: 'Gotham-Medium', 'Gotham', sans-serif;
+			}
+			.card-line {
+				height:10px;
+				border-radius:1px;
+				border: 1px solid rgba(48,53,64,1);
+				margin: 0 8px;
+			}
+		}
+		.card-header-left {
+			font-size: 20px;
+			font-family: 'Gotham-Bold', 'Gotham', sans-serif;
+			color: #525866;
+		}
+	}
+	.card-footer {
+		padding-left: 8px;
+		.card-content-label {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			color: #525866;
+			margin: 13px 0 0;
+			.label-title {
+				font-size: 14px;
+				line-height: 14px;
+				font-family: PingFangSC-Light,PingFang SC, sans-serif;
+			}
+			.label-percent {
+				font-size:20px;
+				line-height: 20px;
+				font-family:'Gotham-Bold', 'Gotham', sans-serif;
+			}
+		}
+	}
+	.footer-list {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 12px;
+		.list-item {
+			display: flex;
+			flex-direction: column;
+			.item-title {
+				font-size: 14px;
+				font-family: 'PingFangSC-Light', 'PingFang SC', sans-serif;
+				color:rgba(82,88,102,1);
+			}
+			.item-value {
+				font-size: 20px;
+				font-family: 'Gotham-Bold', 'Gotham', sans-serif;
+				color:rgba(75,122,250,1);
+			}
+		}
+	}
+}
