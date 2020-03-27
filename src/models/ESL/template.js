@@ -510,6 +510,7 @@ export default {
 				title: formatMessage({id: 'studio.upload.font'}),
 				content: formatMessage({id: 'studio.upload.font.waiting.message'}),
 				okText: formatMessage({id: 'btn.confirm'}),
+				okButtonProps: { style: { display: 'none' } },
 			});
 			const response = yield call(TemplateService.uploadFont, payload);
 			Modal.destroyAll();
