@@ -15,7 +15,7 @@ import {
 } from '@/services/passengerFlow';
 import { handleDashBoard } from '@/services/dashBoard';
 import { getDeviceOverview } from '@/services/device';
-import { getCompanySaasList, getShopSaasList, getCompanyDevices, getShopDevices } from '@/services/checkDeviceNormal';
+import { getShopSaasList, getShopDevices } from '@/services/checkDeviceNormal';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const RANGE = {
@@ -1531,35 +1531,35 @@ export default {
 
 		},
 		// 总部视角获取设备列表
-		*getCompanyDevices(_, { call, put, select }) {
-			let hasFS = false;
-			const devicesResponse = yield call(
-				getCompanyDevices,
-				{}
-			);
-			console.log('getCompanyDevices devicesResponse=', devicesResponse);
-			if (devicesResponse && devicesResponse.code === ERROR_OK && devicesResponse.data) {
-				const { deviceList } = format('toCamel')(devicesResponse.data);
-				console.log('deviceList=', deviceList);
-				if (deviceList && deviceList.length > 0) {
-					deviceList.forEach(device => {
-						if (device.model === 'FM020') {
-							hasFS = true;
-						}
-					});
-				}
-				console.log('hasFS=', hasFS);
-			}
-			const { isSaasAuth } = yield select(state => state.databoard);
-			yield put({
-				type: 'updateState',
-				payload: {
-					hasFS,
-					tipText: generateTipText(hasFS, isSaasAuth)
-				}
-			});
-			return hasFS;
-		},
+		// *getCompanyDevices(_, { call, put, select }) {
+		// 	let hasFS = false;
+		// 	const devicesResponse = yield call(
+		// 		getCompanyDevices,
+		// 		{}
+		// 	);
+		// 	console.log('getCompanyDevices devicesResponse=', devicesResponse);
+		// 	if (devicesResponse && devicesResponse.code === ERROR_OK && devicesResponse.data) {
+		// 		const { deviceList } = format('toCamel')(devicesResponse.data);
+		// 		console.log('deviceList=', deviceList);
+		// 		if (deviceList && deviceList.length > 0) {
+		// 			deviceList.forEach(device => {
+		// 				if (device.model === 'FM020') {
+		// 					hasFS = true;
+		// 				}
+		// 			});
+		// 		}
+		// 		console.log('hasFS=', hasFS);
+		// 	}
+		// 	const { isSaasAuth } = yield select(state => state.databoard);
+		// 	yield put({
+		// 		type: 'updateState',
+		// 		payload: {
+		// 			hasFS,
+		// 			tipText: generateTipText(hasFS, isSaasAuth)
+		// 		}
+		// 	});
+		// 	return hasFS;
+		// },
 		// 单门店获取设备列表
 		*getShopDevices(_, { call, put, select }) {
 			let hasFS = false;
@@ -1587,35 +1587,35 @@ export default {
 			return hasFS;
 		},
 		// 总部视角获取saas授权列表
-		*getCompanySaasList(_, { call, put, select }) {
-			let isSaasImport = false;
-			const saasResponse = yield call(
-				getCompanySaasList,
-				{}
-			);
-			console.log('getCompanySaasList saasResponse=', saasResponse);
+		// *getCompanySaasList(_, { call, put, select }) {
+		// 	let isSaasImport = false;
+		// 	const saasResponse = yield call(
+		// 		getCompanySaasList,
+		// 		{}
+		// 	);
+		// 	console.log('getCompanySaasList saasResponse=', saasResponse);
 
-			if (saasResponse && saasResponse.code === ERROR_OK && saasResponse.data) {
-				const { authorizedList } = format('toCamel')(saasResponse.data);
-				if (authorizedList && authorizedList.length > 0) {
-					authorizedList.forEach(item => {
-						if (item.importStatus === 2) {
-							isSaasImport = true;
-						}
-					});
-				}
-			}
-			console.log('isSaasImport=', isSaasImport);
-			const { hasFS } = yield select(state => state.databoard);
-			yield put({
-				type: 'updateState',
-				payload: {
-					isSaasAuth: isSaasImport,
-					tipText: generateTipText(hasFS, isSaasImport),
-				}
-			});
-			return isSaasImport;
-		},
+		// 	if (saasResponse && saasResponse.code === ERROR_OK && saasResponse.data) {
+		// 		const { authorizedList } = format('toCamel')(saasResponse.data);
+		// 		if (authorizedList && authorizedList.length > 0) {
+		// 			authorizedList.forEach(item => {
+		// 				if (item.importStatus === 2) {
+		// 					isSaasImport = true;
+		// 				}
+		// 			});
+		// 		}
+		// 	}
+		// 	console.log('isSaasImport=', isSaasImport);
+		// 	const { hasFS } = yield select(state => state.databoard);
+		// 	yield put({
+		// 		type: 'updateState',
+		// 		payload: {
+		// 			isSaasAuth: isSaasImport,
+		// 			tipText: generateTipText(hasFS, isSaasImport),
+		// 		}
+		// 	});
+		// 	return isSaasImport;
+		// },
 		// 单门店获取saas授权列表
 		*getShopSaasList(_, { call, put, select }) {
 			let isSaasImport = false;
