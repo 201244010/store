@@ -5,6 +5,7 @@ import { getUserInfoByUsername } from '@/services/user';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
+import { getLocationParam } from '@/utils/utils';
 
 export default {
 	namespace: 'employee',
@@ -78,7 +79,7 @@ export default {
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { getInfoValue, pagination } = yield select(state => state.employee);
 			const { storeList } = yield select(state => state.store);
-			const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].orgId || '';
+			const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].shopId || '';
 			const { current = 1, pageSize = 10, roleId = -1, shopIdList: shopIdListParams = [] } = payload;
 			const tmpShopIdList = yield put.resolve({
 				type: 'global/getShopListFromStorage',
@@ -86,12 +87,15 @@ export default {
 			const adminResponse = yield put.resolve({
 				type: 'role/checkAdmin',
 			});
+			const orgId = Number(getLocationParam('orgId'));
 			let tmpShopList = [];
 			const { shopIdList } = getInfoValue;
 			if (shopIdList.length) {
 				tmpShopList = shopIdList;
 			} else if (adminResponse && adminResponse.code !== ERROR_OK) {
 				tmpShopList = tmpShopIdList.map(item => item.shopId);
+			} else if (orgId) {
+				tmpShopList = [orgId];
 			}
 
 			const options = {
@@ -141,11 +145,14 @@ export default {
 			}
 		},
 
-		*getEmployeeInfo({ payload: { employeeId = null } = {} }, { call, put }) {
+		*getEmployeeInfo({ payload: { employeeId = null } = {} }, { call, put, select }) {
+			const { storeList } = yield select(state => state.store);
+			const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].orgId || '';
+
 			const response = yield call(
 				Action.handleEmployee,
 				'getInfo',
-				format('toSnake')({ employeeId })
+				format('toSnake')({ employeeId, shopId })
 			);
 
 			if (response && response.code === ERROR_OK) {
@@ -204,6 +211,7 @@ export default {
 					gender: gender || 0,
 					ssoUsername,
 					mappingList,
+					shopId: mappingList[0].shopId
 				})
 			);
 

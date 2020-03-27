@@ -23,7 +23,7 @@ const { Option } = Select;
 	state => ({
 		loading: state.loading,
 		companyInfo: state.companyInfo,
-		menu: state.menu,
+		role: state.role,
 		store: state.store
 	}),
 	dispatch => ({
@@ -40,7 +40,6 @@ const { Option } = Select;
 		getPathId: (path) =>
 			dispatch({ type: 'menu/getPathId', payload: { path } }),
 		getCurrentHeight: orgId => dispatch({ type: 'companyInfo/getCurrentHeight', orgId }),
-		getOrgName: orgId => dispatch({ type: 'companyInfo/getOrgName', orgId }),
 	})
 )
 @Form.create()
@@ -60,6 +59,9 @@ class CompanyInfo extends React.Component {
 	}
 
 	async componentDidMount() {
+		const { form:{ resetFields } } = this.props;
+		resetFields();
+		await this.getPagePathId();
 		await this.init();
 	}
 
@@ -73,28 +75,29 @@ class CompanyInfo extends React.Component {
 		}
 	}
 
+	getPagePathId = async () => {
+		const { getPathId } = this.props;
+		const {
+			location: { pathname },
+		} = window;
+		this.pathId = await getPathId(pathname);
+	};
+
 	init = async() => {
-		const { getShopTypeList, getRegionList, getOrganizationInfo, getOrganizationTreeByCompanyInfo, getAllOrgName, clearState, getCurrentHeight, getPathId } = this.props;
+		const { getShopTypeList, getRegionList, getOrganizationInfo, getOrganizationTreeByCompanyInfo, getAllOrgName, clearState, getCurrentHeight } = this.props;
 		let treeData = {};
 		let isDisabled = true;
-		let orgPidParams;
+
 		getAllOrgName();
 		const [action = 'create', orgId, orgPid] = [
 			getLocationParam('action'),
 			Number(getLocationParam('orgId')),
 			Number(getLocationParam('orgPid')),
 		];
-		const {
-			location: { pathname },
-		} = window;
-		const pathId = await getPathId(pathname);
-		if(pathId === 'newSubOrganization') {
-			orgPidParams = orgPid;
-		}
+
+		const orgPidParams = orgPid;
 
 		// 获得当前操作类型和organizationId
-
-
 		if(action === 'create') {
 			clearState();
 			treeData = await getOrganizationTreeByCompanyInfo({
@@ -131,7 +134,7 @@ class CompanyInfo extends React.Component {
 			orgId,
 			action,
 		});
-	}
+	};
 
 	onTypeChangeHandler = (value) => {
 		this.setState({
@@ -331,7 +334,7 @@ class CompanyInfo extends React.Component {
 		const {
 			form: { validateFields },
 			store: { storeList },
-			menu: { permissionList },
+			role: { permissionList },
 			createOrganization,
 			updateOrganization,
 			getPathId
@@ -370,7 +373,6 @@ class CompanyInfo extends React.Component {
 					location: { pathname },
 				} = window;
 				const pathId = await getPathId(pathname);
-
 
 				let response = null;
 				if (action === 'edit') {
@@ -435,7 +437,6 @@ class CompanyInfo extends React.Component {
 				orgNameList,
 				orgInfo: {
 					orgName = undefined,
-					orgPid = undefined,
 					typeOne = null,
 					typeTwo = null,
 					businessStatus,
@@ -469,6 +470,7 @@ class CompanyInfo extends React.Component {
 		const showShopInfo = tagValue === undefined ? true : tagValue === 0;
 		const currentLanguage = getLocale();
 		const FORM_LAYOUT = currentLanguage === 'zh-CN' ? HEAD_FORM_ITEM_LAYOUT : HEAD_FORM_ITEM_LAYOUT_EN;
+
 		return (
 			<Spin spinning={!!(loading.effects['companyInfo/getAllOrgName'] ||
 				loading.effects['companyInfo/getOrganizationTreeByCompanyInfo'] ||
@@ -559,7 +561,7 @@ class CompanyInfo extends React.Component {
 						<FormItem label={formatMessage({ id: 'companyInfo.org.parent.label' })}>
 							{getFieldDecorator('orgPid', {
 							// validateTrigger: 'onSelect',
-								initialValue: treeData && treeData.value &&(orgPidParams || orgPid),
+								initialValue: orgPidParams || 0,
 								rules: [
 									{
 										required: true,
@@ -568,7 +570,7 @@ class CompanyInfo extends React.Component {
 								],
 							})(
 								<TreeSelect
-									disabled={!!orgPidParams}
+									disabled={this.pathId === 'newSubOrganization'}
 									onBlur={this.blurHandler}
 									onSelect={this.onSelectHandler}
 									onChange={(e) => this.submitButtonDisableHandler(e, 'orgPid')}

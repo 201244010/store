@@ -337,11 +337,11 @@ class OrgDetail extends React.Component {
 							{formatMessage({id: 'orgDetail.new.sub.org'})}
 						</Button>
 						{/* <div className={styles['auth-btn']}> */}
-						<AuthKey type="link" shopId={locationOrgId} />
+						<AuthKey shopId={locationOrgId} />
 						{/* </div> */}
 					</div>
 				</Card>
-				{orgStatus === 0 ? 
+				{orgStatus === 0 ?
 					<Card title={formatMessage({id: 'orgDetail.employee.info'})} className={styles['employee-info']}>
 						<Button
 							className={styles['add-btn']}
