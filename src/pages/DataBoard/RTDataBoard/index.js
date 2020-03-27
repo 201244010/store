@@ -11,7 +11,7 @@ import PassengerTrendLine from './PassengerTrendLine';
 import TransactionTrend from './TransactionTrend';
 import AbnormalTip from './AbnormalTip';
 import styles from './index.less';
-import { formater } from '@/utils/format';
+// import { formater } from '@/utils/format';
 
 const RANGE = {
 	TODAY: 'day',
@@ -75,7 +75,7 @@ class RTDataBoard extends PureComponent {
 		this.startAutoRefresh();
 		// console.log('==========', this.props);
 
-		console.log('formater=', formater);
+		// console.log('formater=', formater);
 	}
 
 	componentWillUnmount() {
@@ -180,7 +180,8 @@ class RTDataBoard extends PureComponent {
 									RTPassengerCount, RTEnteringRate, RTDeviceCount,
 									paymentTotalAmount: paymentTotalAmount[rangeType],
 									paymentTotalCount: paymentTotalCount[rangeType],
-									transactionRate
+									transactionRate,
+									timeType
 								}}
 							/>
 							<Row gutter={24}>
@@ -205,7 +206,7 @@ class RTDataBoard extends PureComponent {
 									/>
 								</Col>
 							</Row>
-							<DistriChart regularList={regularList} ageGenderList={ageGenderList} />
+							<DistriChart regularList={regularList} ageGenderList={ageGenderList} loading={loading} />
 						</div>
 						:
 						<AbnormalTip />

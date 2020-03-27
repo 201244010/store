@@ -9,11 +9,11 @@ import styles from './index.less';
 
 class DistriChart extends PureComponent {
 	render() {
-		const { regularList, ageGenderList } = this.props;
+		const { regularList, ageGenderList, loading } = this.props;
 		// console.log('=====pie', regularList);
 		const colorArray = ['rgba(255, 128, 0, 1)', 'rgba(90, 151, 252, 1)'];
 		return(
-			<Card title={formatMessage({ id: 'databoard.passenger.distri.title'})} className={styles['distri-chart-wrapper']}>
+			<Card title={formatMessage({ id: 'databoard.passenger.distri.title'})} className={styles['distri-chart-wrapper']} loading={loading}>
 				<div className={styles['regular-chart']}>
 					<h4 className={styles['regular-title']}>{formatMessage({ id: 'databoard.passenger.regular.title'})}</h4>
 					<Pie data={regularList} colorArray={colorArray} />

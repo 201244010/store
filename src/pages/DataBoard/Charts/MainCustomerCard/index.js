@@ -1,14 +1,16 @@
 import React from 'react';
 import { Progress } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { formater } from '@/utils/format';
 import styles from './mainCustomerCard.less';
-import { formatFrequency, formatPassengerRate } from '../../format';
 
 const frequencyUnit = {
-	1: formatMessage({id: 'databoard.frequency.day.unit'}),
-	2: formatMessage({id: 'databoard.frequency.week.unit'}),
-	3: formatMessage({id: 'databoard.frequency.month.unit'}),
+	1: 'day',
+	2: 'week',
+	3: 'month',
 };
+
+const { formatFloatByPercent, frequencyFormat, passengerNumFormat } = formater;
 
 class MainCustomerCard extends React.Component {
 
@@ -33,6 +35,35 @@ class MainCustomerCard extends React.Component {
 		}
 	}
 
+	formatPercent = (value) => {
+		if(value !== undefined) {
+			const { int, point, float, percent } = formatFloatByPercent({ value, returnType: 'split'});
+			return {
+				value: `${int}${point}${float}`,
+				unit: percent
+			};
+		}
+		return {
+			value: '--',
+			unit: '',
+		};
+	}
+
+	formatFrequency = (value, timeType) => {
+		if(value !== undefined) {
+			const type = frequencyUnit[timeType];
+			const { int, point, float, unit } = frequencyFormat({ value, returnType: 'split'})[type];
+			return {
+				value: `${int}${point}${float}`,
+				unit,
+			};
+		}
+		return {
+			value: '--',
+			unit: '',
+		};
+	}
+
 	render() {
 		const { gender, ageRangeCode, count,
 			totalPercent = 0, scene = 'single', regularPercent,
@@ -42,13 +73,11 @@ class MainCustomerCard extends React.Component {
 		const singleFooter = [
 			{
 				title: formatMessage({ id: 'databoard.regular.rate'}),
-				value: regularPercent !== undefined ? `${formatPassengerRate(regularPercent)}` : '--',
-				unit: regularPercent !== undefined ? '%' : ''
+				...this.formatPercent(regularPercent),
 			},
 			{
 				title: formatMessage({ id: 'databoard.passenger.frequency'}),
-				value: frequency !== undefined ? `${formatFrequency(frequency)}`: '--',
-				unit: frequency !== undefined ? frequencyUnit[timeType] : '',
+				...this.formatFrequency(frequency, timeType),
 			},
 			{
 				title: formatMessage({ id: 'databoard.hot.time'}),
@@ -66,12 +95,18 @@ class MainCustomerCard extends React.Component {
 						<span className={styles['card-line']} />
 						<span className={styles['card-age']}>{`${this.formatAge(ageRangeCode)}${formatMessage({id: 'databoard.age.unit'})}`}</span>
 					</div>
-					<span className={styles['card-header-left']}>{count}<span className={styles['card-header-unit']}>{formatMessage({id: 'databoard.passenger.unit'})}</span></span>
+					<span className={styles['card-header-left']}>
+						{passengerNumFormat({value: count, returnType: 'join'})}
+						<span className={styles['card-header-unit']}>{formatMessage({id: 'databoard.passenger.unit'})}</span>
+					</span>
 				</div>
 				<div className={styles['card-footer']}>
 					<div className={styles['card-content-label']}>
 						<span className={styles['label-title']}>{formatMessage({ id: 'databoard.passenger.rate'})}</span>
-						<span className={styles['label-percent']}>{formatPassengerRate(totalPercent)}<span className={styles['label-percent-unit']}>%</span></span>
+						<span className={styles['label-percent']}>
+							{this.formatPercent(totalPercent).value}
+							<span className={styles['label-percent-unit']}>{this.formatPercent(totalPercent).unit}</span>
+						</span>
 					</div>
 					<Progress
 						percent={totalPercent * 100}
@@ -87,10 +122,13 @@ class MainCustomerCard extends React.Component {
 						<div className={styles['card-footer']}>
 							<div className={styles['card-content-label']}>
 								<span className={styles['label-title']}>{formatMessage({ id: 'databoard.regular.rate'})}</span>
-								<span className={styles['label-percent']}>{formatPassengerRate(regularPercent)}%</span>
+								<span className={styles['label-percent']}>
+									{this.formatPercent(regularPercent).value}
+									<span className={styles['label-percent-unit']}>{this.formatPercent(totalPercent).unit}</span>
+								</span>
 							</div>
 							<Progress
-								percent={regularPercent}
+								percent={regularPercent * 100}
 								strokeColor={{
 									'0%': '#FF8133',
 									'100%': '#FFB066',

@@ -1,6 +1,5 @@
 import moment from 'moment';
 import { format } from '@konata9/milk-shake';
-// import { formatMessage } from 'umi/locale';
 import {
 	getLatestPassengerFlow,
 	getTimeRangePassengerFlow,
@@ -81,29 +80,27 @@ const getQueryTimeRange = (searchValue = {}) => {
 	return [startTime, endTime];
 };
 
-const generateTipText = (hasFS, isSaasAuth) => {
-	let text = '';
-	if (hasFS) {
-		if (!isSaasAuth) {
-			text = '请前往子门店添加AI识客摄像机并导入软件订单数据即可查看总部数据';
-			// text = formatMessage({ id: 'databoard.abnormalText1' });
-		}
-	} else if (isSaasAuth) {
-		text = '请前往子门店添加AI识客摄像机即可查看总部数据';
-		// text = formatMessage({ id: 'databoard.abnormalText2' });
-	} else {
-		text = '请前往子门店添加AI识客摄像机并导入软件订单数据即可查看总部数据';
-		// text = formatMessage({ id: 'databoard.abnormalText1' });
-	}
-	return text;
-};
-
 export default {
 	namespace: 'databoard',
 	state: {
-		RTEnteringRate: {}, // 进店率（实时）
-		RTPassengerCount: {}, // 进店客流（实时）
-		RTDeviceCount: {}, // 总设备数（实时）
+		// 进店率（实时）
+		RTEnteringRate: {
+			label: 'enteringRate',
+			count: 0,
+			earlyCount: 0,
+			unit: 'percent'
+		},
+		// 进店客流（实时）
+		RTPassengerCount: {
+			label: 'passengerCount',
+			count: 0,
+			earlyCount: 0
+		},
+		RTDeviceCount: {
+			label: 'deviceCount',
+			count: 0,
+			earlyCount: 0,
+		}, // 总设备数（实时）
 		RTPassengerFlowList: [], // 客流趋势（折线图-实时）
 		// 日月周-总销售额-实时
 		paymentTotalAmount: {
@@ -157,16 +154,16 @@ export default {
 
 		lastModifyTime: moment().format('YYYY-MM-DD HH:mm:ss'),
 
-		RTPassLoading: false,
-		RTDevicesLoading: false,
-		totalAmountLoading: false,
-		totalCountLoading: false,
-		totalRateLoading: false,
-		RTPassengerFlowLoading: false,
-		transactionCountLoading: false,
-		transactionRateLoading: false,
-		regularDistriLoading: false,
-		genderAndAgeLoading: false,
+		RTPassLoading: true,
+		RTDevicesLoading: true,
+		totalAmountLoading: true,
+		totalCountLoading: true,
+		totalRateLoading: true,
+		RTPassengerFlowLoading: true,
+		transactionCountLoading: true,
+		transactionRateLoading: true,
+		regularDistriLoading: true,
+		genderAndAgeLoading: true,
 
 		passengerCount: {}, // 进店客流（客流）
 		enteringRate: {}, // 进店率（客流）
@@ -184,18 +181,16 @@ export default {
 		majorList: [], // 主力客群卡片-客流
 		passOverviewCard: [], // 顶部卡片-客流
 
-		passengerLoading: false,
-		passengerFlowLoading: false,
-		enteringRateLoading: false,
-		entryCountLoading: false,
-		frequencyTrendLoading: false,
-		passFrenquencyLoading: false,
-		majorLoading: false,
+		passengerLoading: true,
+		passengerFlowLoading: true,
+		enteringRateLoading: true,
+		entryCountLoading: true,
+		frequencyTrendLoading: true,
+		passFrenquencyLoading: true,
+		majorLoading: true,
 
-		// isNormal: true, // 是否为正常状态
 		hasFS: true, // 当前company下是否有FS设备
 		isSaasAuth: true, // 是否有saas授权
-		tipText: '', // 异常时的提示文案
 	},
 	effects: {
 		*switchLoading({ payload }, { put }) {
@@ -269,10 +264,6 @@ export default {
 		*fetchPassengerData({ payload }, { all, put, take }) {
 			yield all([
 				put({
-					type: 'fetchPassengerCard',
-					payload,
-				}),
-				put({
 					type: 'getPassengerHistoryTrend',
 					payload,
 				}),
@@ -293,6 +284,10 @@ export default {
 					payload,
 				}),
 			]);
+			yield put({
+				type: 'fetchPassengerCard',
+				payload,
+			});
 			yield take('fetchPassengerCard/@@end');
 			yield put({
 				type: 'getHistoryByGender',
@@ -300,24 +295,26 @@ export default {
 			});
 		},
 
-		*fetchRealTimeCard({ payload }, { put, /* select, */ take }) {
+		*fetchRealTimeCard({ payload }, { put, all, take }) {
+			yield all([
+				put({
+					type: 'getTotalAmount',
+					payload,
+				}),
+				put({
+					type: 'getDeviceCount',
+					payload,
+				})
+			]);
 			yield put({
 				type: 'getPassengerData',
 				payload,
 			});
-			yield put({
-				type: 'getTotalAmount',
-				payload,
-			});
+			yield take('getPassengerData/@@end');
 			yield put({
 				type: 'getTotalCount',
 				payload,
 			});
-			yield put({
-				type: 'getDeviceCount',
-				payload,
-			});
-			yield take('getPassengerData/@@end');
 			yield take('getTotalCount/@@end');
 			yield put({
 				type: 'getTransactionRate',
@@ -486,8 +483,8 @@ export default {
 				}
 				const totalLastestCount = latestCount + latestEntryHeadCount;
 				const totalEarlyCount = earlyCount + earlyEntryHeadCount;
-				const lastestEntryRate = (totalLastestCount + latestPassCount) === 0 ? undefined : totalLastestCount / (totalLastestCount + latestPassCount) * 100;
-				const earlyEntryRate = (totalEarlyCount + earlyPassCount) === 0 ? undefined : totalEarlyCount / (totalEarlyCount + earlyPassCount) * 100;
+				const lastestEntryRate = (totalLastestCount + latestPassCount) === 0 ? undefined : totalLastestCount / (totalLastestCount + latestPassCount);
+				const earlyEntryRate = (totalEarlyCount + earlyPassCount) === 0 ? undefined : totalEarlyCount / (totalEarlyCount + earlyPassCount);
 				const passengerCompareValue = (!totalEarlyCount || totalLastestCount === undefined) ? undefined : (totalLastestCount - totalEarlyCount) / totalEarlyCount;
 				const entryCompareValue = (!earlyEntryRate || lastestEntryRate === undefined) ? undefined : (lastestEntryRate - earlyEntryRate) / earlyEntryRate;
 				// ByTimeRange 无上次进店客流（未处理）
@@ -710,26 +707,27 @@ export default {
 				getDeviceOverview,
 				options,
 			);
-			const { data: { dataList = [] }} = response;
-			const { onlineCount, offlineCount } = dataList[0];
-			console.log('-------设备数-------');
-			console.log({
-				label: 'deviceCount',
-				count: onlineCount + offlineCount,
-				earlyCount: offlineCount,
-			});
-			yield put({
-				type: 'updateState',
-				payload: {
-					RTDeviceCount: {
-						label: 'deviceCount',
-						count: onlineCount + offlineCount,
-						earlyCount: offlineCount,
+			if(response && response.code === ERROR_OK) {
+				const { data: { dataList = [] }} = response;
+				const { onlineCount, offlineCount } = dataList[0];
+				console.log('-------设备数-------');
+				console.log({
+					label: 'deviceCount',
+					count: onlineCount + offlineCount,
+					earlyCount: offlineCount,
+				});
+				yield put({
+					type: 'updateState',
+					payload: {
+						RTDeviceCount: {
+							label: 'deviceCount',
+							count: onlineCount + offlineCount,
+							earlyCount: offlineCount,
+						},
+						RTDevicesLoading: false,
 					},
-					RTDevicesLoading: false,
-				},
-			});
-
+				});
+			}
 		},
 		// 进店率分布 OK
 		*getEnteringDistribution({ payload = {} }, { call, put }) {
@@ -841,7 +839,16 @@ export default {
 				searchValue: { rangeType },
 				needLoading
 			} = payload;
-			if(!(rangeType === RANGE.WEEK || rangeType === RANGE.MONTH)) return;
+			if(!(rangeType === RANGE.WEEK || rangeType === RANGE.MONTH)) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'frequencyTrendLoading',
+						loadingStatus: false,
+					},
+				});
+				return;
+			};
 			if(needLoading) {
 				yield put({
 					type: 'switchLoading',
@@ -1415,6 +1422,14 @@ export default {
 					});
 
 				}
+			} else {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'passFrenquencyLoading',
+						loadingStatus: false,
+					},
+				});
 			}
 
 		},
@@ -1502,14 +1517,22 @@ export default {
 			const { type } = payload;
 			// 判断当前是总部还是单门店
 			// 总部
-			// yield all([
-			// 	put({
-			// 		type: 'getCompanyDevices',
-			// 	}),
-			// 	put({
-			// 		type: 'getCompanySaasList',
-			// 	}),
-			// ]);
+			// if(type === 1) {
+			// 	yield all([
+			// 		put({
+			// 			type: 'getCompanyDevices',
+			// 		}),
+			// 		put({
+			// 			type: 'getCompanySaasList',
+			// 		}),
+			// 	]);
+			// } else {
+			// 	yield all([
+			// 		put({
+			// 			type: 'getCompanyDevices',
+			// 		}),
+			// 	]);
+			// }
 
 			// 单门店
 			if(type === 1) {
@@ -1531,7 +1554,7 @@ export default {
 
 		},
 		// 总部视角获取设备列表
-		// *getCompanyDevices(_, { call, put, select }) {
+		// *getCompanyDevices(_, { call, put }) {
 		// 	let hasFS = false;
 		// 	const devicesResponse = yield call(
 		// 		getCompanyDevices,
@@ -1550,18 +1573,16 @@ export default {
 		// 		}
 		// 		console.log('hasFS=', hasFS);
 		// 	}
-		// 	const { isSaasAuth } = yield select(state => state.databoard);
 		// 	yield put({
 		// 		type: 'updateState',
 		// 		payload: {
 		// 			hasFS,
-		// 			tipText: generateTipText(hasFS, isSaasAuth)
 		// 		}
 		// 	});
 		// 	return hasFS;
 		// },
 		// 单门店获取设备列表
-		*getShopDevices(_, { call, put, select }) {
+		*getShopDevices(_, { call, put }) {
 			let hasFS = false;
 			const devicesResponse = yield call(
 				getShopDevices,
@@ -1576,18 +1597,16 @@ export default {
 				}
 			}
 			console.log('hasFS=', hasFS);
-			const { isSaasAuth } = yield select(state => state.databoard);
 			yield put({
 				type: 'updateState',
 				payload: {
-					hasFS,
-					tipText: generateTipText(hasFS, isSaasAuth)
+					hasFS
 				}
 			});
 			return hasFS;
 		},
 		// 总部视角获取saas授权列表
-		// *getCompanySaasList(_, { call, put, select }) {
+		// *getCompanySaasList(_, { call, put }) {
 		// 	let isSaasImport = false;
 		// 	const saasResponse = yield call(
 		// 		getCompanySaasList,
@@ -1606,18 +1625,16 @@ export default {
 		// 		}
 		// 	}
 		// 	console.log('isSaasImport=', isSaasImport);
-		// 	const { hasFS } = yield select(state => state.databoard);
 		// 	yield put({
 		// 		type: 'updateState',
 		// 		payload: {
 		// 			isSaasAuth: isSaasImport,
-		// 			tipText: generateTipText(hasFS, isSaasImport),
 		// 		}
 		// 	});
 		// 	return isSaasImport;
 		// },
 		// 单门店获取saas授权列表
-		*getShopSaasList(_, { call, put, select }) {
+		*getShopSaasList(_, { call, put }) {
 			let isSaasImport = false;
 			const saasResponse = yield call(
 				getShopSaasList,
@@ -1636,12 +1653,10 @@ export default {
 				}
 			}
 			console.log('isSaasImport=', isSaasImport);
-			const { hasFS } = yield select(state => state.databoard);
 			yield put({
 				type: 'updateState',
 				payload: {
 					isSaasAuth: isSaasImport,
-					tipText: generateTipText(hasFS, isSaasImport),
 				}
 			});
 			return isSaasImport;
@@ -1659,7 +1674,6 @@ export default {
 				...state,
 				hasFS: true,
 				isSaasAuth: true,
-				tipText: '',
 			};
 		}
 	},
