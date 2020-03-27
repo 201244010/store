@@ -3,9 +3,13 @@ import { connect } from 'dva';
 // import Storage from '@konata9/storage.js';
 // import moment from 'moment';
 // import { formatMessage } from 'umi/locale';
-import { Card, Row, Col } from 'antd';
+import { Row, Col } from 'antd';
 import SearchBar from './SearchBar';
-// import OverviewCard from './OverviewCard';
+import OverviewCard from './OverviewCard';
+import PassengerTrend from './PassengerTrend';
+import EnteringRateTrend from './EnteringRateTrend';
+import CustomerFrequency from './CustomerFrequency';
+import MajorCustomer from './MajorCustomer';
 import AbnormalTip from '../RTDataBoard/AbnormalTip';
 
 import styles from './index.less';
@@ -16,6 +20,12 @@ const RANGE = {
 	MONTH: 'month',
 	FREE: 'free',
 	YESTERDAY: 'yesterday'
+};
+
+const queryTimeType = {
+	[RANGE.YESTERDAY]: 1,
+	[RANGE.WEEK]: 2,
+	[RANGE.MONTH]: 3,
 };
 
 // const LAST_REFRESH_TIME = 'lastRefreshTime';
@@ -41,23 +51,22 @@ const RANGE = {
 		}),
 	})
 )
-class RTDataBoard extends PureComponent {
+class PassengerDataBoard extends PureComponent {
 
-	// constructor(props) {
-	// 	super(props);
-	// 	this.state = {
-	// 		searchValue: {
-	// 			rangeType: RANGE.TODAY,
-	// 		},
-	// 	};
-	// }
-
-	async componentDidMount() {
-		const { fetchAllData, checkIsNormal } = this.props;
-		await fetchAllData({
+	constructor(props) {
+		super(props);
+		this.state = {
 			searchValue: {
 				rangeType: RANGE.YESTERDAY,
 			},
+		};
+	}
+
+	async componentDidMount() {
+		const { fetchAllData, checkIsNormal } = this.props;
+		const { searchValue } = this.state;
+		await fetchAllData({
+			searchValue,
 			needLoading: true
 		});
 		await checkIsNormal();
@@ -83,12 +92,11 @@ class RTDataBoard extends PureComponent {
 	onSearchChanged = (value) => {
 		console.log('======searchValue====', value);
 		const { fetchAllData } = this.props;
-		clearTimeout(this.timer);
-		// this.setState({
-		// 	searchValue: {
-		// 		rangeType: value,
-		// 	}
-		// });
+		this.setState({
+			searchValue: {
+				rangeType: value,
+			}
+		});
 		fetchAllData({
 			searchValue: {
 				rangeType: value,
@@ -108,35 +116,29 @@ class RTDataBoard extends PureComponent {
 			passengerFlowLoading || enteringRateLoading ||
 			entryCountLoading || frequencyTrendLoading || passFrenquencyLoading ||
 			majorLoading;
+		const { databoard: { passengerCount, enteringRate, regularCount, avgFrequency,
+			passengerFlowList, enteringList, frequencyList, frequencyTrend, customerDistri, majorList
+		}} = this.props;
+		const { searchValue: { rangeType }} = this.state;
+		const timeType = queryTimeType[rangeType];
+		console.log('+++++++++++++', this.props);
 		return(
 			<div className={styles['databoard-wrapper']}>
 				<SearchBar onSearchChanged={this.onSearchChanged} />
 				{
 					hasFS && isSaasAuth ?
 						<div className={styles['charts-container']}>
-							<Row gutter={24}>
-								<Col span={8}>
-									<Card className={styles['overview-card']} loading={loading}>test</Card>
-								</Col>
-								<Col span={8}>
-									<Card className={styles['overview-card']} loading={loading}>test</Card>
-								</Col>
-								<Col span={8}>
-									<Card className={styles['overview-card']} loading={loading}>test</Card>
-								</Col>
-							</Row>
+							<OverviewCard {...{passengerCount, enteringRate, regularCount, avgFrequency, loading}} />
 							<Row gutter={24}>
 								<Col span={12}>
-									<Card className={styles['line-chart-wrapper']} title="客流趋势" loading={loading}>
-										客流趋势
-									</Card>
+									<PassengerTrend passengerFlowList={passengerFlowList} timeType={timeType} loading={loading} />
 								</Col>
 								<Col span={12}>
-									<Card className={styles['line-chart-wrapper']} title="客流趋势">客流趋势</Card>
+									<EnteringRateTrend enteringList={enteringList} timeType={timeType} loading={loading} />
 								</Col>
 							</Row>
-							<Card title="客群到店频次" className={styles['distri-chart-wrapper']}>客群到店频次</Card>
-							<Card title="主力客群" className={styles['major-chart-wrapper']}>主力客群</Card>
+							<CustomerFrequency {...{frequencyList, frequencyTrend, customerDistri, timeType, loading}} />
+							<MajorCustomer {...{majorList, timeType, loading}} />
 						</div>
 						:
 						<AbnormalTip tipText={tipText} />
@@ -145,4 +147,4 @@ class RTDataBoard extends PureComponent {
 		);
 	}
 }
-export default RTDataBoard;
+export default PassengerDataBoard;

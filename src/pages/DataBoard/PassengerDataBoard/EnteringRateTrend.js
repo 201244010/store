@@ -5,17 +5,17 @@ import SingleLine from '../Charts/Line/SingleLine';
 
 import styles from './index.less';
 
-class PassengerTrendLine extends PureComponent {
+class EnteringRateTrend extends PureComponent {
 	render() {
-		const { RTPassengerFlowList, loading, timeType } = this.props;
+		const { enteringList, loading, timeType } = this.props;
 		const chartOption = {
 			timeType,
-			data: RTPassengerFlowList,
-			lineColor: ['value', 'rgb(75,122,250)'],
+			data: enteringList,
+			lineColor: ['value', '#FF8133'],
 			area: {
 				// 是否填充面积
-				show: true,
-				color: ['l (90) 0:rgba(75,122,250, 1) 1:rgba(75,122,250,0)'],
+				show: false,
+				color: ['l (90) 0:rgba(75,122,250, 1) 1:rgba(75,122,250,0.1)'],
 				type: 'area',
 				position: 'time*value',
 			},
@@ -36,10 +36,10 @@ class PassengerTrendLine extends PureComponent {
 			},
 		};
 		return(
-			<Card bordered={false} className={styles['line-chart-wrapper']} title={formatMessage({ id: 'databoard.passenger.trend.title'})} loading={loading}>
+			<Card bordered={false} className={styles['line-chart-wrapper']} title={formatMessage({ id: 'databoard.entering.rate.title'})} loading={loading}>
 				<SingleLine {...chartOption} />
 			</Card>
 		);
 	}
 }
-export default PassengerTrendLine;
+export default EnteringRateTrend;

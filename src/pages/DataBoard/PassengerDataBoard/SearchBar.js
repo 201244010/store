@@ -47,13 +47,13 @@ class SearchBar extends PureComponent {
 							onChange={this.handleRadioChange}
 						>
 							<Radio.Button value={RANGE.YESTERDAY}>
-								昨日
+								{formatMessage({ id: 'databoard.search.yesterday' })}
 							</Radio.Button>
 							<Radio.Button value={RANGE.WEEK}>
-								{formatMessage({ id: 'dashboard.search.week' })}
+								{formatMessage({ id: 'databoard.search.week' })}
 							</Radio.Button>
 							<Radio.Button value={RANGE.MONTH}>
-								{formatMessage({ id: 'dashboard.search.month' })}
+								{formatMessage({ id: 'databoard.search.month' })}
 							</Radio.Button>
 						</Radio.Group>
 
