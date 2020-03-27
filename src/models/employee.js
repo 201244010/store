@@ -4,6 +4,7 @@ import { handleRoleManagement } from '@/services/role';
 import { getUserInfoByUsername } from '@/services/user';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
+import * as CookieUtil from '@/utils/cookies';
 
 export default {
 	namespace: 'employee',
@@ -76,6 +77,8 @@ export default {
 
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { getInfoValue, pagination } = yield select(state => state.employee);
+			const { storeList } = yield select(state => state.store);
+			const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].orgId || '';
 			const { current = 1, pageSize = 10, roleId = -1, shopIdList: shopIdListParams = [] } = payload;
 			const tmpShopIdList = yield put.resolve({
 				type: 'global/getShopListFromStorage',
@@ -96,6 +99,7 @@ export default {
 				pageNum: current,
 				pageSize,
 				roleId,
+				shopId,
 				shopIdList: shopIdListParams.length > 0 ? shopIdListParams : tmpShopList,
 			};
 

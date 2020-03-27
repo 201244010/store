@@ -119,6 +119,12 @@ const router = [
 						component: './IPC/MotionList/index.js',
 					},
 					{
+						path: '/storeMonitor/liveReplay',
+						name: 'liveReplay',
+						id: 'liveReplay',
+						component: './IPC/IPCList/index.js',
+					},
+					{
 						path: '/storeMonitor/cloudStorage',
 						name: 'cloudStorage',
 						id: 'cloudStorage',
@@ -484,6 +490,30 @@ const router = [
 						redirect: '/basicData/merchantManagement/view',
 					},
 					{
+						path: '/basicData/merchantManagement',
+						name: 'merchantManagement',
+						routes: [
+							{
+								path: '/basicData/merchantManagement',
+								redirect: '/basicData/merchantManagement/view',
+							},
+							{
+								path: '/basicData/merchantManagement/view',
+								name: 'view',
+								id: 'merchantView',
+								hideInMenu: true,
+								component: './MerchantManagement/MerchantView',
+							},
+							{
+								path: '/basicData/merchantManagement/modify',
+								name: 'modify',
+								id: 'merchantModify',
+								hideInMenu: true,
+								component: './MerchantManagement/MerchantModify',
+							},
+						],
+					},
+					{
 						path: '/basicData/organizationManagement',
 						name: 'organizationManagement',
 						routes: [
@@ -532,30 +562,6 @@ const router = [
 								id: 'organizationList',
 								component: './Organization/OrganizationList',
 							}
-						],
-					},
-					{
-						path: '/basicData/merchantManagement',
-						name: 'merchantManagement',
-						routes: [
-							{
-								path: '/basicData/merchantManagement',
-								redirect: '/basicData/merchantManagement/view',
-							},
-							{
-								path: '/basicData/merchantManagement/view',
-								name: 'view',
-								id: 'merchantView',
-								hideInMenu: true,
-								component: './MerchantManagement/MerchantView',
-							},
-							{
-								path: '/basicData/merchantManagement/modify',
-								name: 'modify',
-								id: 'merchantModify',
-								hideInMenu: true,
-								component: './MerchantManagement/MerchantModify',
-							},
 						],
 					},
 					{

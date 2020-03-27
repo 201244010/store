@@ -29,6 +29,7 @@ export default {
 	'menu.dataAnalyze.list': 'Customer Analysis',
 	'menu.storeMonitor': 'Store Monitor',
 	'menu.storeMonitor.motionMessage': 'Motion Message',
+	'menu.storeMonitor.liveReplay': 'Live Replay',
 	'menu.storeMonitor.cloudStorage': 'Cloud Storage',
 	'menu.storeMonitor.subscriptionSuccess': 'Subscription results',
 	'menu.storeMonitor.orderSubmission': 'Submit Order',
