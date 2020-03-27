@@ -41,7 +41,7 @@ export default class AgeGenderBar extends React.Component {
 
 		return (
 			<div>
-				<Chart height={336} data={data} forceFit>
+				<Chart height={266} data={data} forceFit>
 					<h1 className={styles['chart-title']}>{chartTitle}</h1>
 					<Axis name="range" label={{ formatter: formatLabelX }} />
 					<Axis name="value" />
