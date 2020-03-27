@@ -662,3 +662,12 @@ export const downloadFileByClick = (downloadUrl) => {
 	element.click();
 	document.body.removeChild(element);
 };
+
+export const hasCompanyViewPermission = (
+	permissionList = [],
+	storeList = [],
+) => {
+	const isCompanyView = permissionList.find(item => (item.name === '/company' || item.path === '/companyView'));
+
+	return isCompanyView && (storeList.length > 1);
+};

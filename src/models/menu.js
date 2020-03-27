@@ -9,6 +9,7 @@ import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 // import routeConfig from '@/config/devRouter';
 import routeConfig from '@/config/router';
+import { hasCompanyViewPermission } from '@/utils/utils';
 import * as CookieUtil from '@/utils/cookies';
 
 const { check } = Authorized;
@@ -174,11 +175,9 @@ export default {
 				if (permissionList.length === 0) {
 					filteredMenuData = [];
 				} else {
-					const isCompanyView = permissionList.find(item => item.path === '/companyView');
 					const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
-
 					let formattedPermissionList;
-					if (isCompanyView && (shopId === 0) && (storeList.length > 1)) {
+					if (hasCompanyViewPermission(permissionList, storeList) && shopId === 0) {
 						formattedPermissionList = CompanyView;
 					} else {
 						formattedPermissionList = permissionList.map(item => ({
