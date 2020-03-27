@@ -40,9 +40,11 @@ class RoleModify extends React.Component {
 			query: { id },
 		} = this.props;
 
-		const roleId = idDecode(id);
+		if (id) {
+			const roleId = idDecode(id);
+			await getRoleInfo({ roleId });
+		}
 		await getPermissionList();
-		await getRoleInfo({ roleId });
 	}
 
 	editRole = () => {
