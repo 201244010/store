@@ -1497,9 +1497,9 @@ export default {
 		},
 
 		// 检查是否异常
-		*checkIsNormal(_, { all, put }) {
+		*checkIsNormal({ payload = {} }, { all, put }) {
 			console.log('checkIsNormal');
-
+			const { type } = payload;
 			// 判断当前是总部还是单门店
 			// 总部
 			// yield all([
@@ -1512,14 +1512,23 @@ export default {
 			// ]);
 
 			// 单门店
-			yield all([
-				put({
-					type: 'getShopDevices',
-				}),
-				put({
-					type: 'getShopSaasList',
-				}),
-			]);
+			if(type === 1) {
+				yield all([
+					put({
+						type: 'getShopDevices',
+					}),
+					put({
+						type: 'getShopSaasList',
+					}),
+				]);
+			} else {
+				yield all([
+					put({
+						type: 'getShopDevices',
+					}),
+				]);
+			}
+
 		},
 		// 总部视角获取设备列表
 		*getCompanyDevices(_, { call, put, select }) {

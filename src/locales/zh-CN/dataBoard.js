@@ -16,4 +16,17 @@ export default {
 	'databoard.frequency.day.unit': '次/日',
 	'databoard.frequency.week.unit': '次/周',
 	'databoard.frequency.month.unit': '次/月',
+	'databoard.regular.rate': '熟客占比',
+	'databoard.passenger.frequency': '到店频次',
+	'databoard.hot.time': '到店高峰',
+	'databoard.hot.time.unit': '点',
+	'databoard.gender.male': '男',
+	'databoard.gender.female': '女',
+	'databoard.age.unit': '岁',
+	'databoard.passenger.unit': '人',
+	'databoard.passenger.rate': '总客流占比',
+	'databoard.nodata.tip1':'暂无门店数据',
+	'databoard.realtime.nodata.tip2':'您可以尝试添加AI识客摄像机并导入软件订单数据即可查看门店数据',
+	'databoard.passenger.nodata.tip2': '您可以尝试添加AI识客摄像机即可查看门店数据'
+
 };
