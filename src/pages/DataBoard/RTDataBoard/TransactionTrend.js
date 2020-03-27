@@ -31,6 +31,7 @@ class TransactionTrend extends PureComponent {
 		const { amountList, countList, transactionRateList, loading, timeType} = this.props;
 		const { currentTab } = this.state;
 		const amountChartOption = {
+			chartHeight: 370,
 			timeType,
 			data: amountList,
 			lineColor: ['value', 'rgb(255,129,51)'],
@@ -58,6 +59,7 @@ class TransactionTrend extends PureComponent {
 			},
 		};
 		const rateChartOption = {
+			chartHeight: 370,
 			timeType,
 			data: transactionRateList,
 			lineColor: ['value', 'rgb(255,188,80)'],
@@ -85,6 +87,7 @@ class TransactionTrend extends PureComponent {
 			},
 		};
 		const countChartOption = {
+			chartHeight: 370,
 			timeType,
 			data: countList,
 			lineColor: 'l(270) 0:rgba(255,161,102,1) 1:rgba(255,129,51,1)',
