@@ -75,7 +75,7 @@ class RTDataBoard extends PureComponent {
 		this.startAutoRefresh();
 		// console.log('==========', this.props);
 
-		console.log('formater=', formater);
+		// console.log('formater=', formater);
 	}
 
 	componentWillUnmount() {
