@@ -1503,24 +1503,24 @@ export default {
 
 			// 判断当前是总部还是单门店
 			// 总部
-			yield all([
-				put({
-					type: 'getCompanyDevices',
-				}),
-				put({
-					type: 'getCompanySaasList',
-				}),
-			]);
-
-			// 单门店
 			// yield all([
 			// 	put({
-			// 		type: 'getShopDevices',
+			// 		type: 'getCompanyDevices',
 			// 	}),
 			// 	put({
-			// 		type: 'getShopSaasList',
+			// 		type: 'getCompanySaasList',
 			// 	}),
 			// ]);
+
+			// 单门店
+			yield all([
+				put({
+					type: 'getShopDevices',
+				}),
+				put({
+					type: 'getShopSaasList',
+				}),
+			]);
 		},
 		// 总部视角获取设备列表
 		*getCompanyDevices(_, { call, put, select }) {
@@ -1540,6 +1540,7 @@ export default {
 						}
 					});
 				}
+				console.log('hasFS=', hasFS);
 			}
 			const { isSaasAuth } = yield select(state => state.databoard);
 			yield put({
@@ -1570,6 +1571,7 @@ export default {
 					});
 				}
 			}
+			console.log('hasFS=', hasFS);
 			const { isSaasAuth } = yield select(state => state.databoard);
 			yield put({
 				type: 'updateState',
@@ -1599,6 +1601,7 @@ export default {
 					});
 				}
 			}
+			console.log('isSaasImport=', isSaasImport);
 			const { hasFS } = yield select(state => state.databoard);
 			yield put({
 				type: 'updateState',
@@ -1628,6 +1631,7 @@ export default {
 					});
 				}
 			}
+			console.log('isSaasImport=', isSaasImport);
 			const { hasFS } = yield select(state => state.databoard);
 			yield put({
 				type: 'updateState',
