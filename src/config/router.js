@@ -236,7 +236,13 @@ const router = [
 					},
 				],
 			},
-
+			{
+				path: '/test',
+				icon: 'blank',
+				name: 'test',
+				id: 'test',
+				component: './TestBiz',
+			},
 			{
 				path: '/devices',
 				icon: 'blank',
