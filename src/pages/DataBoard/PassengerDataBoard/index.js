@@ -10,6 +10,7 @@ import PassengerTrend from './PassengerTrend';
 import EnteringRateTrend from './EnteringRateTrend';
 import CustomerFrequency from './CustomerFrequency';
 import MajorCustomer from './MajorCustomer';
+import AbnormalTip from '../RTDataBoard/AbnormalTip';
 
 import styles from './index.less';
 
@@ -42,6 +43,12 @@ const queryTimeType = {
 				needLoading
 			}
 		}),
+		checkIsNormal: () => dispatch({
+			type: 'databoard/checkIsNormal',
+		}),
+		resetCheckState: () => dispatch({
+			type: 'databoard/resetCheckNormal',
+		}),
 	})
 )
 class PassengerDataBoard extends PureComponent {
@@ -56,17 +63,20 @@ class PassengerDataBoard extends PureComponent {
 	}
 
 	async componentDidMount() {
-		const { fetchAllData } = this.props;
+		const { fetchAllData, checkIsNormal } = this.props;
 		const { searchValue } = this.state;
 		await fetchAllData({
 			searchValue,
 			needLoading: true
 		});
+		await checkIsNormal();
 	}
 
-	// componentWillUnmount() {
-	// 	clearTimeout(this.timer);
-	// }
+	componentWillUnmount() {
+		// clearTimeout(this.timer);
+		const { resetCheckState } = this.props;
+		resetCheckState();
+	}
 
 	// startAutoRefresh = () => {
 	// 	const { fetchAllData } = this.props;
@@ -100,7 +110,7 @@ class PassengerDataBoard extends PureComponent {
 			passengerLoading,
 			passengerFlowLoading, enteringRateLoading,
 			entryCountLoading, frequencyTrendLoading, passFrenquencyLoading,
-			majorLoading
+			majorLoading, hasFS, isSaasAuth, tipText
 		}} = this.props;
 		const loading = passengerLoading ||
 			passengerFlowLoading || enteringRateLoading ||
@@ -115,19 +125,24 @@ class PassengerDataBoard extends PureComponent {
 		return(
 			<div className={styles['databoard-wrapper']}>
 				<SearchBar onSearchChanged={this.onSearchChanged} />
-				<div className={styles['charts-container']}>
-					<OverviewCard {...{passengerCount, enteringRate, regularCount, avgFrequency, loading}} />
-					<Row gutter={24}>
-						<Col span={12}>
-							<PassengerTrend passengerFlowList={passengerFlowList} timeType={timeType} loading={loading} />
-						</Col>
-						<Col span={12}>
-							<EnteringRateTrend enteringList={enteringList} timeType={timeType} loading={loading} />
-						</Col>
-					</Row>
-					<CustomerFrequency {...{frequencyList, frequencyTrend, customerDistri, timeType, loading}} />
-					<MajorCustomer {...{majorList, timeType, loading}} />
-				</div>
+				{
+					hasFS && isSaasAuth ?
+						<div className={styles['charts-container']}>
+							<OverviewCard {...{passengerCount, enteringRate, regularCount, avgFrequency, loading}} />
+							<Row gutter={24}>
+								<Col span={12}>
+									<PassengerTrend passengerFlowList={passengerFlowList} timeType={timeType} loading={loading} />
+								</Col>
+								<Col span={12}>
+									<EnteringRateTrend enteringList={enteringList} timeType={timeType} loading={loading} />
+								</Col>
+							</Row>
+							<CustomerFrequency {...{frequencyList, frequencyTrend, customerDistri, timeType, loading}} />
+							<MajorCustomer {...{majorList, timeType, loading}} />
+						</div>
+						:
+						<AbnormalTip tipText={tipText} />
+				}
 			</div>
 		);
 	}

@@ -9,7 +9,7 @@ import OverviewCard from './OverviewCard';
 import DistriChart from './DistriChart';
 import PassengerTrendLine from './PassengerTrendLine';
 import TransactionTrend from './TransactionTrend';
-
+import AbnormalTip from './AbnormalTip';
 import styles from './index.less';
 
 const RANGE = {
@@ -41,6 +41,12 @@ const LAST_REFRESH_TIME = 'lastRefreshTime';
 				needLoading
 			}
 		}),
+		checkIsNormal: () => dispatch({
+			type: 'databoard/checkIsNormal',
+		}),
+		resetCheckState: () => dispatch({
+			type: 'databoard/resetCheckNormal',
+		}),
 	})
 )
 class RTDataBoard extends PureComponent {
@@ -55,18 +61,21 @@ class RTDataBoard extends PureComponent {
 	}
 
 	async componentDidMount() {
-		const { fetchAllData } = this.props;
+		const { fetchAllData, checkIsNormal } = this.props;
 		const { searchValue } = this.state;
 		await fetchAllData({
 			needLoading: true,
 			searchValue,
 		});
+		await checkIsNormal();
 		this.startAutoRefresh();
 		// console.log('==========', this.props);
 	}
 
 	componentWillUnmount() {
 		clearTimeout(this.timer);
+		const { resetCheckState } = this.props;
+		resetCheckState();
 	}
 
 	startAutoRefresh = () => {
@@ -130,7 +139,8 @@ class RTDataBoard extends PureComponent {
 			totalAmountLoading, totalCountLoading, totalRateLoading,
 			RTPassengerFlowLoading,
 			transactionCountLoading, transactionRateLoading,
-			regularDistriLoading, genderAndAgeLoading
+			regularDistriLoading, genderAndAgeLoading,
+			hasFS, isSaasAuth, tipText
 		}} = this.props;
 		const loading = RTPassLoading || RTDevicesLoading ||
 			totalAmountLoading || totalCountLoading || totalRateLoading ||
@@ -155,41 +165,45 @@ class RTDataBoard extends PureComponent {
 						lastModifyTime,
 					}}
 				/>
-				<div className={styles['charts-container']}>
-					<OverviewCard
-						loading={loading}
-						{...{
-							RTPassengerCount, RTEnteringRate, RTDeviceCount,
-							paymentTotalAmount: paymentTotalAmount[rangeType],
-							paymentTotalCount: paymentTotalCount[rangeType],
-							transactionRate
-						}}
-					/>
-					<Row gutter={24}>
-						<Col span={12}>
-							<PassengerTrendLine
+				{
+					hasFS && isSaasAuth ?
+						<div className={styles['charts-container']}>
+							<OverviewCard
+								loading={loading}
 								{...{
-									timeType,
-									RTPassengerFlowList,
-									loading
+									RTPassengerCount, RTEnteringRate, RTDeviceCount,
+									paymentTotalAmount: paymentTotalAmount[rangeType],
+									paymentTotalCount: paymentTotalCount[rangeType],
+									transactionRate
 								}}
 							/>
-						</Col>
-						<Col span={12}>
-							<TransactionTrend
-								{...{
-									timeType,
-									amountList,
-									countList,
-									transactionRateList,
-									loading
-								}}
-							/>
-						</Col>
-					</Row>
-					<DistriChart regularList={regularList} ageGenderList={ageGenderList} />
-				</div>
-
+							<Row gutter={24}>
+								<Col span={12}>
+									<PassengerTrendLine
+										{...{
+											timeType,
+											RTPassengerFlowList,
+											loading
+										}}
+									/>
+								</Col>
+								<Col span={12}>
+									<TransactionTrend
+										{...{
+											timeType,
+											amountList,
+											countList,
+											transactionRateList,
+											loading
+										}}
+									/>
+								</Col>
+							</Row>
+							<DistriChart regularList={regularList} ageGenderList={ageGenderList} />
+						</div>
+						:
+						<AbnormalTip tipText={tipText} />
+				}
 			</div>
 		);
 	}
