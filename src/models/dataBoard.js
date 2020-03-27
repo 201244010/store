@@ -284,10 +284,6 @@ export default {
 		*fetchPassengerData({ payload }, { all, put, take }) {
 			yield all([
 				put({
-					type: 'fetchPassengerCard',
-					payload,
-				}),
-				put({
 					type: 'getPassengerHistoryTrend',
 					payload,
 				}),
@@ -308,6 +304,10 @@ export default {
 					payload,
 				}),
 			]);
+			yield put({
+				type: 'fetchPassengerCard',
+				payload,
+			});
 			yield take('fetchPassengerCard/@@end');
 			yield put({
 				type: 'getHistoryByGender',
@@ -315,24 +315,26 @@ export default {
 			});
 		},
 
-		*fetchRealTimeCard({ payload }, { put, /* select, */ take }) {
+		*fetchRealTimeCard({ payload }, { put, all, take }) {
+			yield all([
+				put({
+					type: 'getTotalAmount',
+					payload,
+				}),
+				put({
+					type: 'getDeviceCount',
+					payload,
+				})
+			]);
 			yield put({
 				type: 'getPassengerData',
 				payload,
 			});
-			yield put({
-				type: 'getTotalAmount',
-				payload,
-			});
+			yield take('getPassengerData/@@end');
 			yield put({
 				type: 'getTotalCount',
 				payload,
 			});
-			yield put({
-				type: 'getDeviceCount',
-				payload,
-			});
-			yield take('getPassengerData/@@end');
 			yield take('getTotalCount/@@end');
 			yield put({
 				type: 'getTransactionRate',
@@ -501,8 +503,8 @@ export default {
 				}
 				const totalLastestCount = latestCount + latestEntryHeadCount;
 				const totalEarlyCount = earlyCount + earlyEntryHeadCount;
-				const lastestEntryRate = (totalLastestCount + latestPassCount) === 0 ? undefined : totalLastestCount / (totalLastestCount + latestPassCount) * 100;
-				const earlyEntryRate = (totalEarlyCount + earlyPassCount) === 0 ? undefined : totalEarlyCount / (totalEarlyCount + earlyPassCount) * 100;
+				const lastestEntryRate = (totalLastestCount + latestPassCount) === 0 ? undefined : totalLastestCount / (totalLastestCount + latestPassCount);
+				const earlyEntryRate = (totalEarlyCount + earlyPassCount) === 0 ? undefined : totalEarlyCount / (totalEarlyCount + earlyPassCount);
 				const passengerCompareValue = (!totalEarlyCount || totalLastestCount === undefined) ? undefined : (totalLastestCount - totalEarlyCount) / totalEarlyCount;
 				const entryCompareValue = (!earlyEntryRate || lastestEntryRate === undefined) ? undefined : (lastestEntryRate - earlyEntryRate) / earlyEntryRate;
 				// ByTimeRange 无上次进店客流（未处理）

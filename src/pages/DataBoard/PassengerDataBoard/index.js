@@ -131,7 +131,7 @@ class PassengerDataBoard extends PureComponent {
 				{
 					hasFS ?
 						<div className={styles['charts-container']}>
-							<OverviewCard {...{passengerCount, enteringRate, regularCount, avgFrequency, loading}} />
+							<OverviewCard {...{passengerCount, enteringRate, regularCount, avgFrequency, loading, timeType}} />
 							<Row gutter={24}>
 								<Col span={12}>
 									<PassengerTrend passengerFlowList={passengerFlowList} timeType={timeType} loading={loading} />
