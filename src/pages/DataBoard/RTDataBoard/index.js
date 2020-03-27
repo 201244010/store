@@ -86,15 +86,15 @@ class RTDataBoard extends PureComponent {
 
 	startAutoRefresh = () => {
 		const { fetchAllData } = this.props;
-		const { searchValue } = this.state;
 		clearTimeout(this.timer);
 		this.timer = setTimeout(async () => {
+			const { searchValue } = this.state;
 			await fetchAllData({
 				searchValue,
 				needLoading: false,
 			});
 			this.startAutoRefresh();
-			console.log('refreshed');
+			console.log('refreshed', searchValue);
 		}, 1000 * 60 * 2);
 	}
 
