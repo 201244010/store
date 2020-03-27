@@ -1,50 +1,67 @@
 import React from 'react';
 import { DataView } from '@antv/data-set';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
-// import { DataAgeGender } from './mock';
 import styles from '../chartsCommon.less';
 
+const UNIT = '人';
 export default class AgeGenderBar extends React.Component {
-	formatLabelX = val => `text[${val}]`;
+	formatAgeCode = range => {
+		switch (range) {
+			case 1:
+				return '18岁以下';
+			case 4:
+				return '19-28岁';
+			case 5:
+				return '29-35岁';
+			case 6:
+				return '36-45岁';
+			case 7:
+				return '46-55岁';
+			case 8:
+				return '56岁以上';
+			default:
+				return '18岁以下';
+		}
+	};
+
+	formatLabelX = val => `${val}`;
 
 	formatToolTipAxisX = ageCode =>
 		// x
-		`年龄：text[${ageCode}]`;
+		`${ageCode}`;
 
 	render() {
 		// const { data, scale = {}, tooltip } = this.props;
 		const { ageGenderList } = this.props;
+		// const ageGenderList = DataAgeGender;
+		const { formatAgeCode } = this;
+		console.log('wx_', ageGenderList);
 		const { formatToolTipAxisX, formatLabelX } = this;
 		const chartTitle = '性别年龄占比';
 
 		const dv = new DataView();
-		const data = dv
-			.source(ageGenderList)
-			.transform({
-				type: 'map',
-				callback(row) {
-					if (row.gender === 'male') {
-						row.gender = '男性';
-					}
-					if (row.gender === 'female') {
-						row.gender = '女性';
-					}
-					return row;
-				},
-			})
-			.transform({
-				type: 'fold',
-				fields: ['range1', 'range2', 'range3', 'range4', 'range5'],
-				key: 'range',
-				value: 'value',
-			});
+		const data = dv.source(ageGenderList.sort()).transform({
+			type: 'map',
+			callback(row) {
+				row.rangeKey = formatAgeCode(row.range);
+				if (row.gender === 'male') {
+					row.gender = '男性';
+				}
+				if (row.gender === 'female') {
+					row.gender = '女性';
+				}
+				return row;
+			},
+		});
+
+		console.log('wx______:', data);
 
 		return (
 			<div>
 				<Chart height={266} data={data} forceFit>
 					<h1 className={styles['chart-title']}>{chartTitle}</h1>
-					<Axis name="range" label={{ formatter: formatLabelX }} />
-					<Axis name="value" />
+					<Axis name="rangeKey" label={{ formatter: formatLabelX }} />
+					<Axis name="count" />
 					<Tooltip
 						shared={false}
 						{...{
@@ -53,7 +70,7 @@ export default class AgeGenderBar extends React.Component {
 				 </div>`,
 							itemTpl: `<li class="detail" data-index={index}>
 					<p class="item item__name">{name}</p>
-					<p class="item item__value">{value}</p>
+					<p class="item item__value">{value}${UNIT}</p>
 					<p class="item item__labelX">{ageInterval}</p>
 				</li>`,
 						}}
@@ -63,15 +80,15 @@ export default class AgeGenderBar extends React.Component {
 					/>
 					<Geom
 						type="interval"
-						position="range*value"
+						position="rangeKey*count"
 						color={['gender', ['#4B7AFA', '#FF6666']]}
 						adjust={[
 							{
 								type: 'dodge',
-								marginRatio: 0,
+								marginRatio: 1 / 30,
 							},
 						]}
-						size={30}
+						size={20}
 						active={[
 							true,
 							{
@@ -82,7 +99,7 @@ export default class AgeGenderBar extends React.Component {
 							},
 						]}
 						tooltip={[
-							'gender*range*value',
+							'gender*rangeKey*count',
 							(name, labelX, value) =>
 								// array
 								({
