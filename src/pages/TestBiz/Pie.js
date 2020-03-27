@@ -11,10 +11,11 @@ class Pie extends Component {
 		const {
 			data,
 			chartStyle = {},
-			colorArray
+			colorArray,
+			chartName = 'pieChart'
 		} = this.props;
 		const {
-			height = 160,
+			height = 140,
 			scale = {
 				x: {
 					type: 'cat',
@@ -39,7 +40,7 @@ class Pie extends Component {
 		});
 		const percent = parseInt(maxItem.value * 100 / total, 10);
 		
-		G2.Shape.registerShape("interval", "sliceShape", {
+		G2.Shape.registerShape("interval", chartName, {
 			draw(cfg, container) {
 				const points = cfg.points;
 				const origin = cfg.origin._origin;
@@ -96,14 +97,14 @@ class Pie extends Component {
 						color={['name', colorArray]}
 						// style={{ lineWidth: 2, stroke: '#fff' }}
 						// active={active}
-						shape='sliceShape'
+						shape={chartName}
 						select={false}
 					/>
 				</Chart>
 				
 				<div className={styles.total}>
 					<span className={styles.title}>{maxItem.name}占比</span>
-					<span className={styles.percent}>{percent}</span>
+					<span className={styles.percent}>{percent || 0}</span>
 				</div>
 				
 				<div className={styles.legend}>

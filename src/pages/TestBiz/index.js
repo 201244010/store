@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, Table, Form, Row, Col, Select, Button, Icon } from 'antd';
+import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } from 'antd';
+// import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Pie from './Pie';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
@@ -28,26 +29,30 @@ const GROUP_BY = [
 	[
 		{label: '女性', key: 'femaleCount'}, {label: '男性', key: 'maleCount'}],
 	[
-		{label: '18岁以下', key: ''},
-		{label: '19-28岁', key: ''},
-		{label: '29-35岁', key: ''},
-		{label: '36-45岁', key: ''},
-		{label: '46-55岁', key: ''},
-		{label: '56岁以上', key: ''},
+		{label: '18岁以下', key: 'ageRangeOne'},
+		{label: '19-28岁', key: 'ageRangeTwo'},
+		{label: '29-35岁', key: 'ageRangeThree'},
+		{label: '36-45岁', key: 'ageRangeFour'},
+		{label: '46-55岁', key: 'ageRangeFive'},
+		{label: '56岁以上', key: 'ageRangeSix'},
 		]
-]
+];
 const { Option } = Select;
+const { MonthPicker, WeekPicker } = DatePicker;
+const DATE_FORMAT = 'YYYY-MM-DD';
 
 @Form.create()
 @connect(
 	state => ({
 		headPassenger: state.headAnglePassenger,
+		loading: state.loading
 	}),
 	dispatch => ({
 		getHeadPassengerByRegular: payload => dispatch({ type: 'headAnglePassenger/getHeadPassengerByRegular', payload}),
 		getHeadPassengerByGender: payload => dispatch({ type: 'headAnglePassenger/getHeadPassengerByGender', payload}),
 		getHeadShopListByRegular: payload => dispatch({ type: 'headAnglePassenger/getHeadShopListByRegular', payload}),
 		getHeadShopListByGender: payload => dispatch({ type: 'headAnglePassenger/getHeadShopListByGender', payload}),
+		getHeadShopListByAge: payload => dispatch({ type: 'headAnglePassenger/getHeadShopListByAge', payload}),
 	})
 )
 class BizchartDemo extends React.Component {
@@ -55,6 +60,8 @@ class BizchartDemo extends React.Component {
 		super(props);
 		
 		this.state = {
+			dateType: 1,
+			startTime: 0,
 			chosenCard: 0,
 			currentOptions: GROUP_BY[0],
 			dataSource: []
@@ -86,26 +93,46 @@ class BizchartDemo extends React.Component {
 	}
 	
 	componentDidMount() {
-		const { getHeadPassengerByRegular, getHeadPassengerByGender, getHeadShopListByGender, getHeadShopListByRegular } = this.props;
-		getHeadPassengerByGender({ startTime: moment().format('YYYY-MM-DD'), type: 3 });
-		getHeadPassengerByRegular({ startTime: moment().format('YYYY-MM-DD'), type: 3 });
-		// getHeadShopListByGender({ startTime: moment().format('YYYY-MM-DD'), type: 3 });
-		getHeadShopListByRegular({ startTime: moment().format('YYYY-MM-DD'), type: 3 });
+		const startTime = moment().subtract(1, 'day').format(DATE_FORMAT);
+		this.initGetData(startTime, 1);
 	}
 	
-	handleChosenCardChange = index => {
-		const { form: { setFieldsValue }, getHeadShopListByGender, getHeadShopListByRegular } = this.props;
-		const { chosenCard } = this.state;
+	initGetData = async(startTime, type = 1) => {
+		const { getHeadPassengerByRegular, getHeadPassengerByGender, getHeadShopListByRegular } = this.props;
+		getHeadPassengerByGender({ startTime, type });
+		getHeadPassengerByRegular({ startTime, type });
 		
-		if(index !== chosenCard) {
-			switch(chosenCard) {
-				case 0:
-					getHeadShopListByRegular({ startTime: moment().format('YYYY-MM-DD'), type: 3 });
-					break;
-				case 1:
-					getHeadShopListByGender({ startTime: moment().format('YYYY-MM-DD'), type: 3 });
-					break;
-			}
+		this.setState({ startTime, dateType: type, chosenCard: 0, currentOptions: GROUP_BY[0] }, () => {this.handleChosenCardChange(0, true)});
+	};
+	
+	handleRadioChange = e => {
+		console.log('e', e)
+		const { target: { value = 1 } } = e;
+		
+		this.setState({
+			dateType: value
+		})
+	};
+	
+	handleDateChange = (date, _, type) => {
+		console.log(moment(date).format(DATE_FORMAT))
+		let startTime = '';
+		switch (type) {
+			case 1:startTime = moment(date).format(DATE_FORMAT);break;
+			case 2:startTime = moment(date).startOf('week').format(DATE_FORMAT);break;
+			case 3:startTime = moment(date).startOf('month').format(DATE_FORMAT);break;
+			default: break;
+		}
+		
+		this.initGetData(startTime, type)
+	};
+	
+	handleChosenCardChange = async(index, isInit) => {
+		console.log('i', index)
+		const { form: { setFieldsValue }, getHeadShopListByGender, getHeadShopListByRegular, getHeadShopListByAge } = this.props;
+		const { chosenCard, startTime, dateType } = this.state;
+		
+		if(index !== chosenCard || isInit) {
 			this.setState({
 				chosenCard: index,
 				currentOptions: GROUP_BY[index],
@@ -113,7 +140,24 @@ class BizchartDemo extends React.Component {
 			setFieldsValue({
 				shopId: -1,
 				guest: GROUP_BY[index][0].label
-			})
+			});
+			
+			switch(index) {
+				case 0:
+					await getHeadShopListByRegular({ startTime, type: dateType });
+					this.handleTableDataSource();
+					break;
+				case 1:
+					await getHeadShopListByGender({ startTime, type: dateType });
+					this.handleTableDataSource();
+					break;
+				case 2:
+					await getHeadShopListByAge({ startTime, type: dateType });
+					this.handleTableDataSource();
+					break;
+				default: break;
+			}
+			
 		}
 	};
 	
@@ -157,7 +201,7 @@ class BizchartDemo extends React.Component {
 		
 		console.log(resultArray, 'result')
 		this.columns[2] = {
-			title: guest,
+			title: guest + '人数',
 			dataIndex: keyword
 		};
 		this.setState({ dataSource: resultArray });
@@ -167,31 +211,82 @@ class BizchartDemo extends React.Component {
 		this.handleTableDataSource()
 	};
 	
+	disabledDate = current => current && current > moment().endOf('day');
+	
 	render() {
 		// todo pie外面的卡片可以切出来作为组件
-		const { headPassenger: { byFrequencyArray, byGenderArray, shopList }, form: { getFieldDecorator } } = this.props;
-		const { chosenCard, currentOptions, dataSource } = this.state;
-		console.log('ss', dataSource)
+		const { headPassenger: { byFrequencyArray, byGenderArray, shopList }, form: { getFieldDecorator }, loading } = this.props;
+		const { dateType, chosenCard, currentOptions, dataSource } = this.state;
+		console.log('ss', loading.effects['headAnglePassenger/getHeadShopListByRegular']
+			, loading.effects['headAnglePassenger/getHeadShopListByGender']
+			,loading.effects['headAnglePassenger/getHeadShopListByAge'])
 		
 		return (
-			<div>
+			<div className={styles.main}>
+				<div className={styles['passengerAnalyze-title']}>
+					<div>
+						<Radio.Group
+							buttonStyle="solid"
+							value={dateType}
+							onChange={this.handleRadioChange}
+						>
+							<Radio.Button value={1}>
+								{formatMessage({ id: 'dashboard.search.yesterday' })}
+							</Radio.Button>
+							<Radio.Button value={2}>
+								{formatMessage({ id: 'dashboard.search.week' })}
+							</Radio.Button>
+							<Radio.Button value={3}>
+								{formatMessage({ id: 'dashboard.search.month' })}
+							</Radio.Button>
+						</Radio.Group>
+						{
+							dateType === 1 &&
+							<DatePicker
+								allowClear={false}
+								disabledDate={this.disabledDate}
+								onChange={(date, dateString) => {this.handleDateChange(date, dateString, 1)}}
+							/>
+						}
+						{
+							dateType === 2 &&
+							<WeekPicker
+								allowClear={false}
+								disabledDate={this.disabledDate}
+								onChange={(date, dateString) => {this.handleDateChange(date, dateString, 2)}}
+							/>
+						}
+						{
+							dateType === 3 &&
+							<MonthPicker
+								allowClear={false}
+								disabledDate={this.disabledDate}
+								onChange={(date, dateString) => {this.handleDateChange(date, dateString, 3)}}
+							/>
+						}
+					</div>
+				</div>
 				<div className={styles['overview-bar']}>
 				</div>
-				<Card title='客群分布'>
+				<Card title='客群分布' className={styles['chart-bar']}>
 					<div className={styles.guest}>
 						{
 							GUEST_OPTIONS.TITLE.map((item, index) =>
-								<div
-									className={styles['pie-card']}
-									key={index}
-									style={chosenCard === index ? {border: '1px solid  rgba(255,129,51,1)'} : {}}
-									onClick={() => {this.handleChosenCardChange(index)}}
-								>
-									<Pie
-										data={this.handlePieDataSource(index)}
-										colorArray={GUEST_OPTIONS.COLOR_ARRAY[index]}
-									/>
-								</div>
+								
+									<div
+										className={styles['pie-card']}
+										key={index}
+										style={chosenCard === index ? {border: '1px solid  rgba(255,129,51,1)'} : {}}
+										onClick={() => {this.handleChosenCardChange(index)}}
+									>
+										{/*<Spin spinning={loading.effects['headAnglePassenger/getHeadPassengerByRegular'] || loading.effects['headAnglePassenger/getHeadPassengerByGender'] }>*/}
+											<Pie
+												data={this.handlePieDataSource(index)}
+												chartName={`pie${index}`}
+												colorArray={GUEST_OPTIONS.COLOR_ARRAY[index]}
+											/>
+										{/*</Spin>*/}
+									</div>
 							)
 						}
 					</div>
@@ -218,7 +313,7 @@ class BizchartDemo extends React.Component {
 									<Form.Item label={'客群'}>
 										{
 											getFieldDecorator('guest', {
-											
+												initialValue: '熟客'
 											})(
 												<Select>
 													{
@@ -245,14 +340,22 @@ class BizchartDemo extends React.Component {
 						</Form>
 						<Button icon='download' type='primary'>EXCEL</Button>
 					</div>
-					<Table
-						dataSource={dataSource}
-						columns={this.columns}
-						pagination={{
-							pageSize: 5,
-							hideOnSinglePage: true
-						}}
-					/>
+					<Spin
+						spinning={
+							loading.effects['headAnglePassenger/getHeadShopListByRegular']
+							|| (loading.effects['headAnglePassenger/getHeadShopListByGender'] || false)
+							|| (loading.effects['headAnglePassenger/getHeadShopListByAge'] || false)
+						}
+					>
+						<Table
+							dataSource={dataSource}
+							columns={this.columns}
+							pagination={{
+								pageSize: 5,
+								hideOnSinglePage: true
+							}}
+						/>
+					</Spin>
 				</Card>
 			</div>
 			

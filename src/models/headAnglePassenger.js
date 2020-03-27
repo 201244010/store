@@ -104,6 +104,7 @@ export default {
 			}
 		},
 		*getHeadShopListByGender({ payload }, { call, put }) {
+			console.log('chosenGender')
 			const response = yield call(Actions.getHeadShopListByGender, payload);
 			
 			if(response && response.code === ERROR_OK) {
@@ -127,6 +128,61 @@ export default {
 						shopId,
 						femaleCount,
 						maleCount
+					}
+				});
+				
+				yield put({
+					type: 'updateState',
+					payload: {
+						shopList: shopArray
+					}
+				});
+				
+				console.log('shop', shopList)
+			}
+		},
+		*getHeadShopListByAge({ payload }, { call, put }) {
+			console.log('chosenGender')
+			const response = yield call(Actions.getHeadShopListByRegular, payload);
+			
+			if(response && response.code === ERROR_OK) {
+				const { data: { shopList } } = response;
+				
+				const shopArray = shopList.map(item => {
+					const { shopName, shopId, countList } = item;
+					let ageRangeArray = [0, 0, 0, 0, 0, 0];
+					countList.forEach(item => {
+						const { ageRangeCode, strangerUniqCount, regularUniqCount } = item;
+						const total = strangerUniqCount + regularUniqCount;
+						
+						switch (ageRangeCode) {
+							case 1:
+							case 2:
+							case 3:
+								ageRangeArray[0] += total;
+								break;
+							case 4:
+							case 5:
+							case 6:
+							case 7:
+							case 8:
+								ageRangeArray[ageRangeCode - 3] += total;
+								break;
+							default: break;
+						}
+					});
+					const [ageRangeOne, ageRangeTwo, ageRangeThree, ageRangeFour, ageRangeFive, ageRangeSix] = ageRangeArray;
+					
+					
+					return {
+						shopName,
+						shopId,
+						ageRangeOne,
+						ageRangeTwo,
+						ageRangeThree,
+						ageRangeFour,
+						ageRangeFive,
+						ageRangeSix
 					}
 				});
 				
