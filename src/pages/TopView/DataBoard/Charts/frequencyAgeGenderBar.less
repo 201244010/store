@@ -1,0 +1,86 @@
+.frequency-age-gender-bar {
+	height: 336px;
+	:global {
+		.chart-wrapper {
+			height: 100%;
+			width: 100%;
+			margin-top: 22px;
+			// border: 1px solid black;
+		}
+		.chart-title {
+			font-size: 14px;
+			font-family: PingFangSC-Medium, PingFang SC, sans-serif;
+			font-weight: 500;
+			color: rgba(82, 88, 102, 1);
+			line-height: 20px;
+		}
+		.overview-bar {
+			display: flex;
+			justify-content: space-between;
+			p {
+				margin: 0;
+			}
+			.value-wrapper {
+				height: 26px;
+				line-height: 26px;
+				font-weight: bold;
+				font-size: 24px;
+				font-family: Gotham-Bold, Gotham, sans-serif;
+				margin-bottom: 6px;
+			}
+			.left {
+				color: rgba(75, 122, 250, 1);
+			}
+			.right {
+				color: #ff6666;
+				text-align: right;
+			}
+			.label__male {
+				font-family: PingFangSC-Light, PingFang SC, sans-serif;
+				font-weight: 300;
+				color: rgba(75, 122, 250, 1);
+				font-size: 14px;
+				line-height: 16px;
+				height: 20px;
+			}
+			.label__female {
+				font-family: PingFangSC-Light, PingFang SC, sans-serif;
+				font-weight: 300;
+				font-size: 14px;
+				line-height: 16px;
+				height: 20px;
+			}
+		}
+		.bar-wrapper-row {
+			padding: 8px;
+			line-height: 16px;
+			display: flex;
+			align-items: center;
+			// justify-content: space-around;
+			// flex: 1;
+			.scale {
+				padding: 0 5px;
+			}
+			.left,
+			.right {
+				flex: 1;
+			}
+			.left {
+				transform: rotateY(180deg);
+				.ant-progress-text {
+					transform: rotateY(180deg);
+				}
+			}
+			.right {
+				.ant-progress-text {
+					text-align: right;
+				}
+			}
+		}
+		.ant-progress-text {
+			font-family: Gotham-Light, Gotham, sans-serif;
+			font-weight: 300;
+			color: #525866 !important;
+		}
+	}
+}

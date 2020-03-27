@@ -87,4 +87,5 @@ export default {
 	'payment.list.action': '操作',
 	'payment.order.detail.expanded': '收起支付明细',
 	'payment.order.detail.show': '查看支付明细',
+	'dashboard.emptydata': '请前往子门店添加AI识客摄像机并导入软件订单数据即可查看总部数据',
 };
