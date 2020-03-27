@@ -41,12 +41,12 @@ export default class FrequencyBar extends React.Component {
 		const { formatToolTipAxisX, formatLabelX, barWidthFit } = this;
 		const chartTitle = '到店次数分布';
 		// const data = frequencyData;
-		const { data, chartHeight = 320 } = this.props;
-		console.log('ssssssss:', data);
+		const { data, chartHeight = 250 } = this.props;
 		const barAmout = data.length;
 		return (
 			<div>
 				<Chart
+					padding="auto"
 					height={chartHeight}
 					data={data}
 					forceFit
@@ -55,13 +55,12 @@ export default class FrequencyBar extends React.Component {
 							type: 'linear',
 							nice: false,
 							range: [0.09, 0.91],
-							tickCount: barAmout,
+							// tickCount: barAmout,
 						},
 					}}
 				>
 					<h1 className={styles['chart-title']}>{chartTitle}</h1>
 					<Axis name="frequency" label={{ formatter: formatLabelX(barAmout) }} />
-					<Axis name="frequency" />
 					<Axis name="value" />
 					<Tooltip
 						shared={false}
@@ -79,7 +78,7 @@ export default class FrequencyBar extends React.Component {
 					<Geom
 						type="interval"
 						position="frequency*value"
-						color="l(270) 0:rgba(255,161,102,1) 1:rgba(255,129,51,1)"
+						color="#FFD0B3"
 						size={barWidthFit(barAmout)}
 						active={[
 							true,

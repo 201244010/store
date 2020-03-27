@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Card, Row, Col } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { frequencyFormat } from '@/utils/format';
 
 import FrequencyBar from '../Charts/Bars/FrequencyBar';
 import SingleLine from '../Charts/Line/SingleLine';
@@ -8,13 +9,18 @@ import FrequencyAgeGenderBar from '../Charts/Bars/FrequencyAgeGenderBar';
 
 import styles from './index.less';
 
+const CHART_HEIGHT = 250;
 class CustomerFrequency extends PureComponent {
 	render() {
 		const { frequencyList, frequencyTrend, customerDistri, loading, timeType } = this.props;
+		const dataAddName = frequencyTrend.map(item => ({
+			...item,
+			name: 'customerFrequency',
+		}));
 		const chartOption = {
-			chartHeight: 280,
+			chartHeight: CHART_HEIGHT,
 			timeType,
-			data: frequencyTrend,
+			data: dataAddName,
 			lineColor: ['value', '#FF8133'],
 			area: {
 				// 是否填充面积
@@ -23,7 +29,7 @@ class CustomerFrequency extends PureComponent {
 				type: 'area',
 				position: 'time*value',
 			},
-			linesize: 4,
+			lineSize: 3,
 			innerTitle: '周到店频次',
 			chartScale: {
 				time: {
@@ -38,21 +44,48 @@ class CustomerFrequency extends PureComponent {
 					min: 0,
 				},
 			},
+			formatToolTipValue: value => {
+				if (!value) return value;
+				const val = frequencyFormat({ value, returnType: 'join' });
+				if (timeType === 1) {
+					return val.day;
+				}
+				if (timeType === 2) {
+					return val.week;
+				}
+				if (timeType === 3) {
+					return val.month;
+				}
+				return val.day;
+			},
 		};
-		return(
-			<Card bordered={false} title={formatMessage({ id: 'databoard.passenger.frequency.title'})} className={styles['distri-chart-wrapper']} loading={loading}>
-				{
-					timeType === 1? <FrequencyBar data={frequencyList} /> : ''
-				}
-				{
-					timeType !== 1?
-						<Row>
-							<Col span={8}><FrequencyBar data={frequencyList} /></Col>
-							<Col span={8}><SingleLine {...chartOption} /></Col>
-							<Col span={8}><FrequencyAgeGenderBar data={customerDistri} timeType={timeType} /></Col>
-						</Row>
-						: ''
-				}
+		return (
+			<Card
+				bordered={false}
+				title={formatMessage({ id: 'databoard.passenger.frequency.title' })}
+				className={styles['distri-chart-wrapper']}
+				loading={loading}
+			>
+				{timeType === 1 ? <FrequencyBar data={frequencyList} /> : ''}
+				{timeType !== 1 ? (
+					<Row>
+						<Col span={8}>
+							<FrequencyBar data={frequencyList} chartHeight={CHART_HEIGHT} />
+						</Col>
+						<Col span={8}>
+							<SingleLine {...chartOption} />
+						</Col>
+						<Col span={8}>
+							<FrequencyAgeGenderBar
+								data={customerDistri}
+								chartHeight={CHART_HEIGHT}
+								timeType={timeType}
+							/>
+						</Col>
+					</Row>
+				) : (
+					''
+				)}
 			</Card>
 		);
 	}

@@ -1,10 +1,13 @@
 import React, { PureComponent } from 'react';
 import { Card } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { formatFloatByPermile } from '@/utils/format';
 import SingleLine from '../Charts/Line/SingleLine';
+import { DATABOARD } from '../Charts/constants';
 
 import styles from './index.less';
 
+const { LINE_SIZE } = DATABOARD;
 class EnteringRateTrend extends PureComponent {
 	render() {
 		const { enteringList, loading, timeType, chartHeight = 400 } = this.props;
@@ -20,7 +23,7 @@ class EnteringRateTrend extends PureComponent {
 				type: 'area',
 				position: 'time*value',
 			},
-			linesize: 4,
+			lineSize: LINE_SIZE,
 			// innerTitle: 'chart title area=true',
 			chartScale: {
 				time: {
@@ -31,10 +34,14 @@ class EnteringRateTrend extends PureComponent {
 				},
 				value: {
 					type: 'linear',
-					nice: true,
+					nice: false,
 					min: 0,
+					max: 100,
 				},
 			},
+			// eslint-disable-next-line arrow-body-style
+			formatToolTipValue: value =>
+				formatFloatByPermile({ value: value / 100, returnType: 'join' }),
 		};
 		return (
 			<Card

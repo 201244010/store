@@ -8,12 +8,14 @@ class MajorCustomer extends PureComponent {
 	render() {
 		const { majorList, loading, timeType } = this.props;
 		console.log('=========主力客群======', majorList);
-		return(
+		return (
 			<Card title="主力客群" className={styles['major-chart-wrapper']} loading={loading}>
 				<Row gutter={24}>
-					{
-						majorList.map((item,index) => <Col span={8} key={index}><MainCustomerCard {...item} timeType={timeType} /></Col>)
-					}
+					{majorList.map((item, index) => (
+						<Col span={8} key={index}>
+							<MainCustomerCard {...item} timeType={timeType} />
+						</Col>
+					))}
 				</Row>
 			</Card>
 		);

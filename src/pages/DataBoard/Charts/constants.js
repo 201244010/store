@@ -26,7 +26,7 @@ export const DATABOARD = {
 	FREQUENCY_TYPE: {
 		1: 'day',
 		2: 'week',
-		3: 'month'
+		3: 'month',
 	},
 	LABEL_TEXT: {
 		passengerCount: '进店客流',
@@ -36,6 +36,7 @@ export const DATABOARD = {
 		totalAmount: '销售额',
 		enteringRate: '进店率',
 		transactionRate: '交易转化率',
-		avgFrequency: '到店频次'
-	}
+		avgFrequency: '到店频次',
+	},
+	LINE_SIZE: 3,
 };
