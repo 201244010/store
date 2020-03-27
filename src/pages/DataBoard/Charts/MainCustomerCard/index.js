@@ -1,7 +1,7 @@
 import React from 'react';
 import { Progress } from 'antd';
-import { formater } from '@/utils/format';
 import { formatMessage } from 'umi/locale';
+import { formater } from '@/utils/format';
 import styles from './mainCustomerCard.less';
 
 const frequencyUnit = {
