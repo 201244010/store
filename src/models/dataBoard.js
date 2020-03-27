@@ -15,8 +15,7 @@ import {
 } from '@/services/passengerFlow';
 import { handleDashBoard } from '@/services/dashBoard';
 import { getDeviceOverview } from '@/services/device';
-import { getCompanySaasList, getShopSaasList, getCompanyDevices } from '@/services/checkDeviceNormal';
-import { getDeviceList } from '@/pages/IPC/services/IPCList';
+import { getCompanySaasList, getShopSaasList, getCompanyDevices, getShopDevices } from '@/services/checkDeviceNormal';
 import { ERROR_OK } from '@/constants/errorCode';
 
 const RANGE = {
@@ -1556,19 +1555,15 @@ export default {
 		*getShopDevices(_, { call, put, select }) {
 			let hasFS = false;
 			const devicesResponse = yield call(
-				getDeviceList,
+				getShopDevices,
 				{}
 			);
 			console.log('getShopDevices devicesResponse=', devicesResponse);
 			if (devicesResponse && devicesResponse.code === ERROR_OK && devicesResponse.data) {
-				const deviceList = format('toCamel')(devicesResponse.data);
+				const { fsList: deviceList } = format('toCamel')(devicesResponse.data);
 				console.log('deviceList=', deviceList);
 				if (deviceList && deviceList.length > 0) {
-					deviceList.forEach(device => {
-						if (device.type === 'FM020') {
-							hasFS = true;
-						}
-					});
+					hasFS = true;
 				}
 			}
 			console.log('hasFS=', hasFS);
