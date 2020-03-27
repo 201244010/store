@@ -35,11 +35,12 @@
 }
 
 .overview-bar {
-	margin: 24px;
+	margin: 12px !important;
 }
 
 .chart-bar {
 	margin: 24px;
+	border-radius: 8px;
 
 	.guest {
 		display: flex;
@@ -66,3 +67,16 @@
 }
 
 
+.footer-cards {
+	border-radius: 8px;
+	margin: 24px;
+	.footer-cards-list {
+		display: flex;
+		justify-content: space-between;
+	}
+	:global {
+		.ant-card-head {
+			border-bottom: 1px solid rgba(240,242,245,1);
+		}
+	}
+}

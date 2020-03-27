@@ -40,44 +40,67 @@ class Pie extends Component {
 		});
 		const percent = parseInt(maxItem.value * 100 / total, 10);
 		
-		G2.Shape.registerShape("interval", chartName, {
-			draw(cfg, container) {
-				const points = cfg.points;
-				const origin = cfg.origin._origin;
-				
-				let path = [];
-				if(origin.value === maxItem.value) {
-					path.push(["M", 5 / 7, points[0].y]);
-					path.push(["L", 5 / 7, points[1].y]);
-					path.push(["L", 1, points[2].y]);
-					path.push(["L", 1, points[3].y]);
+		if(maxItem.value === 0) {
+			G2.Shape.registerShape("interval", chartName, {
+				draw(cfg, container) {
+					const points = cfg.points;
+					
+					let path = [];
+					path.push(["M", 6 / 7, 0]);
+					path.push(["L", 6 / 7, 1]);
+					path.push(["L", 1, 1]);
+					path.push(["L", 1, 0]);
 					path.push("Z");
 					path = this.parsePath(path);
 					
 					return container.addShape("path", {
 						attrs: {
-							fill: cfg.color,
+							fill: 'rgba(230, 232, 235, 1)',
 							path: path
 						}
 					});
-				} else {
-					path.push(["M", 66 / 70, points[0].y]);
-					path.push(["L", 66 / 70, points[1].y]);
-					path.push(["L", 54 / 70, points[2].y]);
-					path.push(["L", 54 / 70, points[3].y]);
-					path.push("Z");
-					path = this.parsePath(path);
 					
-					return container.addShape("path", {
-						attrs: {
-							fill: cfg.color,
-							path: path
-						}
-					});
 				}
-				
-			}
-		});
+			});
+		} else {
+			G2.Shape.registerShape("interval", chartName, {
+				draw(cfg, container) {
+					const points = cfg.points;
+					const origin = cfg.origin._origin;
+					let path = [];
+					if(origin.value === maxItem.value) {
+						path.push(["M", 5 / 7, points[0].y]);
+						path.push(["L", 5 / 7, points[1].y]);
+						path.push(["L", 1, points[2].y]);
+						path.push(["L", 1, points[3].y]);
+						path.push("Z");
+						path = this.parsePath(path);
+						
+						return container.addShape("path", {
+							attrs: {
+								fill: cfg.color,
+								path: path
+							}
+						});
+					} else {
+						path.push(["M", 66 / 70, points[0].y]);
+						path.push(["L", 66 / 70, points[1].y]);
+						path.push(["L", 54 / 70, points[2].y]);
+						path.push(["L", 54 / 70, points[3].y]);
+						path.push("Z");
+						path = this.parsePath(path);
+						
+						return container.addShape("path", {
+							attrs: {
+								fill: cfg.color,
+								path: path
+							}
+						});
+					}
+					
+				}
+			});
+		}
 	
 		return (
 			

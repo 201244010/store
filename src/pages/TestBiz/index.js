@@ -2,6 +2,8 @@ import React from 'react';
 import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } from 'antd';
 // import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Pie from './Pie';
+import MainCustomerCard from './MainCustomerCard';
+import TopDataCard from '../TopView/DataBoard/TopDataCard';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -58,7 +60,7 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 class BizchartDemo extends React.Component {
 	constructor(props) {
 		super(props);
-		
+
 		this.state = {
 			dateType: 1,
 			startTime: 0,
@@ -88,10 +90,10 @@ class BizchartDemo extends React.Component {
 				render: operation => <a href={operation}>查看门店详情</a>,
 			},
 		];
-		
+
 		this.shopListOptions = JSON.parse(localStorage.getItem('__shop_list__'));
 	}
-	
+
 	componentDidMount() {
 		const startTime = moment().subtract(1, 'day').format(DATE_FORMAT);
 		this.initGetData(startTime, 1);
@@ -169,36 +171,36 @@ class BizchartDemo extends React.Component {
 			name: GROUP_BY[index][itemIndex].label,
 			value: item
 		}));
-		
+
 		return dataArray;
 	};
-	
+
 	handleTableDataSource = () => {
 		const { form: { getFieldsValue }, headPassenger: { shopList } } = this.props;
 		const { currentOptions } = this.state;
-		
+
 		let keyword = '';
-		
+
 		console.log('ss', getFieldsValue());
 		const { shopId, guest } = getFieldsValue();
 		let resultArray = shopList.map(item => Object.assign({}, item));
-		
+
 		currentOptions.forEach(item => {
 			if(item.label === guest ) {
 				keyword = item.key;
 			}
 		});
-		
+
 		if(shopId !== -1 && shopId !== undefined) resultArray = resultArray.filter(item => item.shopId === shopId);
-		
+
 		resultArray.sort((a, b) =>
 			b[keyword] - a[keyword]
 		);
-		
+
 		resultArray.forEach((item, index) => {
 			item.sortIndex = index + 1;
 		})
-		
+
 		console.log(resultArray, 'result')
 		this.columns[2] = {
 			title: guest + '人数',
@@ -211,15 +213,23 @@ class BizchartDemo extends React.Component {
 		this.handleTableDataSource()
 	};
 	
+	handleReset = () => {
+		const { form: { setFieldsValue } } = this.props;
+		const { chosenCard } = this.state;
+		
+		setFieldsValue({
+			shopId: -1,
+			guest: GROUP_BY[chosenCard][0].label
+		});
+		this.handleTableDataSource();
+	};
+	
 	disabledDate = current => current && current > moment().endOf('day');
 	
 	render() {
 		// todo pie外面的卡片可以切出来作为组件
 		const { headPassenger: { byFrequencyArray, byGenderArray, shopList }, form: { getFieldDecorator }, loading } = this.props;
 		const { dateType, chosenCard, currentOptions, dataSource } = this.state;
-		console.log('ss', loading.effects['headAnglePassenger/getHeadShopListByRegular']
-			, loading.effects['headAnglePassenger/getHeadShopListByGender']
-			,loading.effects['headAnglePassenger/getHeadShopListByAge'])
 		
 		return (
 			<div className={styles.main}>
@@ -266,8 +276,48 @@ class BizchartDemo extends React.Component {
 						}
 					</div>
 				</div>
-				<div className={styles['overview-bar']}>
-				</div>
+				<Row gutter={24} justify='space-between' className={styles['overview-bar']}>
+					<Col span={6}>
+						<TopDataCard data={{
+							label: '总客流量',
+							unit: '',
+							count: 123,
+							earlyCount: 123,
+							compareRate: false,
+							toolTipText: 'toolTipText',}}
+						/>
+					</Col>
+					<Col span={6}>
+						<TopDataCard data={{
+							label: '总客流量',
+							unit: '',
+							count: 123,
+							earlyCount: 123,
+							compareRate: false,
+							toolTipText: 'toolTipText',}}
+						/>
+					</Col>
+					<Col span={6}>
+						<TopDataCard data={{
+							label: '总客流量',
+							unit: '',
+							count: 123,
+							earlyCount: 123,
+							compareRate: false,
+							toolTipText: 'toolTipText',}}
+						/>
+					</Col>
+					<Col span={6}>
+						<TopDataCard data={{
+							label: '总客流量',
+							unit: '',
+							count: 123,
+							earlyCount: 123,
+							compareRate: false,
+							toolTipText: 'toolTipText',}}
+						/>
+					</Col>
+				</Row>
 				<Card title='客群分布' className={styles['chart-bar']}>
 					<div className={styles.guest}>
 						{
@@ -356,9 +406,18 @@ class BizchartDemo extends React.Component {
 							}}
 						/>
 					</Spin>
+					
+				</Card>
+				
+				<Card title='主力客群' className={styles['footer-cards']}>
+					<div className={styles['footer-cards-list']}>
+						<MainCustomerCard scene='total'/>
+						<MainCustomerCard scene='total'/>
+						<MainCustomerCard scene='total'/>
+					</div>
 				</Card>
 			</div>
-			
+
 		);
 	}
 }
