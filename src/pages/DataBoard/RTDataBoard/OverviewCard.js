@@ -10,7 +10,7 @@ class OverviewCard extends PureComponent {
 			loading, RTEnteringRate, RTPassengerCount, RTDeviceCount,
 			paymentTotalAmount, paymentTotalCount, transactionRate,
 		} = this.props;
-		console.log('=======RTOverviewCard', RTPassengerCount, paymentTotalAmount );
+		console.log('=======RTOverviewCard', RTPassengerCount, paymentTotalAmount, loading );
 		const firstRow = [RTPassengerCount, RTEnteringRate, RTDeviceCount];
 		const secondRow = [paymentTotalAmount, paymentTotalCount, transactionRate];
 

@@ -12,7 +12,7 @@ class OverviewCard extends PureComponent {
 		} = this.props;
 		// console.log('=======RTOverviewCard', RTPassengerCount, paymentTotalAmount );
 		const firstRow = [passengerCount, regularCount, enteringRate, avgFrequency];
-		console.log('=======card=====', firstRow);
+		console.log('=======card=====', firstRow, loading);
 		return (
 			<div className={styles.overview}>
 				<Row gutter={24} className={styles['overview-row']}>

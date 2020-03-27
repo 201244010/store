@@ -101,9 +101,24 @@ const generateTipText = (hasFS, isSaasAuth) => {
 export default {
 	namespace: 'databoard',
 	state: {
-		RTEnteringRate: {}, // 进店率（实时）
-		RTPassengerCount: {}, // 进店客流（实时）
-		RTDeviceCount: {}, // 总设备数（实时）
+		// 进店率（实时）
+		RTEnteringRate: {
+			label: 'enteringRate',
+			count: 0,
+			earlyCount: 0,
+			unit: 'percent'
+		},
+		// 进店客流（实时）
+		RTPassengerCount: {
+			label: 'passengerCount',
+			count: 0,
+			earlyCount: 0
+		},
+		RTDeviceCount: {
+			label: 'deviceCount',
+			count: 0,
+			earlyCount: 0,
+		}, // 总设备数（实时）
 		RTPassengerFlowList: [], // 客流趋势（折线图-实时）
 		// 日月周-总销售额-实时
 		paymentTotalAmount: {
@@ -157,16 +172,16 @@ export default {
 
 		lastModifyTime: moment().format('YYYY-MM-DD HH:mm:ss'),
 
-		RTPassLoading: false,
-		RTDevicesLoading: false,
-		totalAmountLoading: false,
-		totalCountLoading: false,
-		totalRateLoading: false,
-		RTPassengerFlowLoading: false,
-		transactionCountLoading: false,
-		transactionRateLoading: false,
-		regularDistriLoading: false,
-		genderAndAgeLoading: false,
+		RTPassLoading: true,
+		RTDevicesLoading: true,
+		totalAmountLoading: true,
+		totalCountLoading: true,
+		totalRateLoading: true,
+		RTPassengerFlowLoading: true,
+		transactionCountLoading: true,
+		transactionRateLoading: true,
+		regularDistriLoading: true,
+		genderAndAgeLoading: true,
 
 		passengerCount: {}, // 进店客流（客流）
 		enteringRate: {}, // 进店率（客流）
@@ -184,13 +199,13 @@ export default {
 		majorList: [], // 主力客群卡片-客流
 		passOverviewCard: [], // 顶部卡片-客流
 
-		passengerLoading: false,
-		passengerFlowLoading: false,
-		enteringRateLoading: false,
-		entryCountLoading: false,
-		frequencyTrendLoading: false,
-		passFrenquencyLoading: false,
-		majorLoading: false,
+		passengerLoading: true,
+		passengerFlowLoading: true,
+		enteringRateLoading: true,
+		entryCountLoading: true,
+		frequencyTrendLoading: true,
+		passFrenquencyLoading: true,
+		majorLoading: true,
 
 		// isNormal: true, // 是否为正常状态
 		hasFS: true, // 当前company下是否有FS设备
@@ -710,26 +725,27 @@ export default {
 				getDeviceOverview,
 				options,
 			);
-			const { data: { dataList = [] }} = response;
-			const { onlineCount, offlineCount } = dataList[0];
-			console.log('-------设备数-------');
-			console.log({
-				label: 'deviceCount',
-				count: onlineCount + offlineCount,
-				earlyCount: offlineCount,
-			});
-			yield put({
-				type: 'updateState',
-				payload: {
-					RTDeviceCount: {
-						label: 'deviceCount',
-						count: onlineCount + offlineCount,
-						earlyCount: offlineCount,
+			if(response && response.code === ERROR_OK) {
+				const { data: { dataList = [] }} = response;
+				const { onlineCount, offlineCount } = dataList[0];
+				console.log('-------设备数-------');
+				console.log({
+					label: 'deviceCount',
+					count: onlineCount + offlineCount,
+					earlyCount: offlineCount,
+				});
+				yield put({
+					type: 'updateState',
+					payload: {
+						RTDeviceCount: {
+							label: 'deviceCount',
+							count: onlineCount + offlineCount,
+							earlyCount: offlineCount,
+						},
+						RTDevicesLoading: false,
 					},
-					RTDevicesLoading: false,
-				},
-			});
-
+				});
+			}
 		},
 		// 进店率分布 OK
 		*getEnteringDistribution({ payload = {} }, { call, put }) {
@@ -841,7 +857,16 @@ export default {
 				searchValue: { rangeType },
 				needLoading
 			} = payload;
-			if(!(rangeType === RANGE.WEEK || rangeType === RANGE.MONTH)) return;
+			if(!(rangeType === RANGE.WEEK || rangeType === RANGE.MONTH)) {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'frequencyTrendLoading',
+						loadingStatus: false,
+					},
+				});
+				return;
+			};
 			if(needLoading) {
 				yield put({
 					type: 'switchLoading',
@@ -1415,6 +1440,14 @@ export default {
 					});
 
 				}
+			} else {
+				yield put({
+					type: 'switchLoading',
+					payload: {
+						loadingType: 'passFrenquencyLoading',
+						loadingStatus: false,
+					},
+				});
 			}
 
 		},
