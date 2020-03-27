@@ -12,7 +12,7 @@ class NoDataTip extends PureComponent {
 				<div className={styles['tip-img']} />
 				<div className={styles['tip-text']}>
 					<span>{formatMessage({ id: 'databoard.nodata.tip1'})}</span>
-					<span>{formatMessage({ id: 'databoard.realtime.nodata.tip2'})}</span>
+					<span>{formatMessage({ id: 'databoard.passenger.nodata.tip2'})}</span>
 				</div>
 			</div>
 		);

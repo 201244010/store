@@ -10,7 +10,7 @@ import PassengerTrend from './PassengerTrend';
 import EnteringRateTrend from './EnteringRateTrend';
 import CustomerFrequency from './CustomerFrequency';
 import MajorCustomer from './MajorCustomer';
-import AbnormalTip from '../RTDataBoard/AbnormalTip';
+import AbnormalTip from './AbnormalTip';
 
 import styles from './index.less';
 
@@ -45,6 +45,9 @@ const queryTimeType = {
 		}),
 		checkIsNormal: () => dispatch({
 			type: 'databoard/checkIsNormal',
+			payload: {
+				type: 2
+			}
 		}),
 		resetCheckState: () => dispatch({
 			type: 'databoard/resetCheckNormal',
@@ -110,7 +113,7 @@ class PassengerDataBoard extends PureComponent {
 			passengerLoading,
 			passengerFlowLoading, enteringRateLoading,
 			entryCountLoading, frequencyTrendLoading, passFrenquencyLoading,
-			majorLoading, hasFS, isSaasAuth, tipText
+			majorLoading, hasFS
 		}} = this.props;
 		const loading = passengerLoading ||
 			passengerFlowLoading || enteringRateLoading ||
@@ -126,7 +129,7 @@ class PassengerDataBoard extends PureComponent {
 			<div className={styles['databoard-wrapper']}>
 				<SearchBar onSearchChanged={this.onSearchChanged} />
 				{
-					hasFS && isSaasAuth ?
+					hasFS ?
 						<div className={styles['charts-container']}>
 							<OverviewCard {...{passengerCount, enteringRate, regularCount, avgFrequency, loading}} />
 							<Row gutter={24}>
@@ -141,7 +144,7 @@ class PassengerDataBoard extends PureComponent {
 							<MajorCustomer {...{majorList, timeType, loading}} />
 						</div>
 						:
-						<AbnormalTip tipText={tipText} />
+						<AbnormalTip />
 				}
 			</div>
 		);

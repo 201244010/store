@@ -34,26 +34,26 @@ class MainCustomerCard extends React.Component {
 	}
 
 	render() {
-		const { gender = 1, ageRangeCode = 1, count = 0,
-			totalPercent = 0.5, scene = 'single', regularPercent = 0.6,
-			frequency = 1.0, hotTime = 12,
+		const { gender, ageRangeCode, count,
+			totalPercent = 0, scene = 'single', regularPercent,
+			frequency, hotTime,
 			timeType = 1,
 		} = this.props;
 		const singleFooter = [
 			{
 				title: formatMessage({ id: 'databoard.regular.rate'}),
-				value: `${formatPassengerRate(regularPercent)}`,
-				unit: '%'
+				value: regularPercent !== undefined ? `${formatPassengerRate(regularPercent)}` : '--',
+				unit: regularPercent !== undefined ? '%' : ''
 			},
 			{
 				title: formatMessage({ id: 'databoard.passenger.frequency'}),
-				value: `${formatFrequency(frequency)}`,
-				unit: frequencyUnit[timeType],
+				value: frequency !== undefined ? `${formatFrequency(frequency)}`: '--',
+				unit: frequency !== undefined ? frequencyUnit[timeType] : '',
 			},
 			{
 				title: formatMessage({ id: 'databoard.hot.time'}),
-				value: `${hotTime}-${hotTime + 1}`,
-				unit: formatMessage({ id: 'databoard.hot.time.unit'})
+				value: hotTime !== -1 ? `${hotTime}-${hotTime + 1}` : '--',
+				unit: hotTime !== -1 ? formatMessage({ id: 'databoard.hot.time.unit'}) : ''
 			},
 		];
 
@@ -101,8 +101,8 @@ class MainCustomerCard extends React.Component {
 						:
 						<div className={`${styles['card-footer']} ${styles['footer-list']}`}>
 							{
-								singleFooter.map(item => (
-									<div className={styles['list-item']}>
+								singleFooter.map((item, index) => (
+									<div className={styles['list-item']} key={index}>
 										<div className={styles['item-title']}>{item.title}</div>
 										<div className={styles['item-value']}>{item.value}<span className={styles['item-unit']}>{item.unit}</span></div>
 									</div>

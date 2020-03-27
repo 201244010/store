@@ -43,6 +43,9 @@ const LAST_REFRESH_TIME = 'lastRefreshTime';
 		}),
 		checkIsNormal: () => dispatch({
 			type: 'databoard/checkIsNormal',
+			payload: {
+				type: 1
+			}
 		}),
 		resetCheckState: () => dispatch({
 			type: 'databoard/resetCheckNormal',
@@ -140,7 +143,7 @@ class RTDataBoard extends PureComponent {
 			RTPassengerFlowLoading,
 			transactionCountLoading, transactionRateLoading,
 			regularDistriLoading, genderAndAgeLoading,
-			hasFS, isSaasAuth, tipText
+			hasFS, isSaasAuth
 		}} = this.props;
 		const loading = RTPassLoading || RTDevicesLoading ||
 			totalAmountLoading || totalCountLoading || totalRateLoading ||
@@ -202,7 +205,7 @@ class RTDataBoard extends PureComponent {
 							<DistriChart regularList={regularList} ageGenderList={ageGenderList} />
 						</div>
 						:
-						<AbnormalTip tipText={tipText} />
+						<AbnormalTip />
 				}
 			</div>
 		);
