@@ -7,9 +7,10 @@ import styles from './index.less';
 
 class EnteringRateTrend extends PureComponent {
 	render() {
-		const { enteringList, loading, timeType } = this.props;
+		const { enteringList, loading, timeType, chartHeight = 400 } = this.props;
 		const chartOption = {
 			timeType,
+			chartHeight,
 			data: enteringList,
 			lineColor: ['value', '#FF8133'],
 			area: {
@@ -35,8 +36,13 @@ class EnteringRateTrend extends PureComponent {
 				},
 			},
 		};
-		return(
-			<Card bordered={false} className={styles['line-chart-wrapper']} title={formatMessage({ id: 'databoard.entering.rate.title'})} loading={loading}>
+		return (
+			<Card
+				bordered={false}
+				className={styles['line-chart-wrapper']}
+				title={formatMessage({ id: 'databoard.entering.rate.title' })}
+				loading={loading}
+			>
 				<SingleLine {...chartOption} />
 			</Card>
 		);

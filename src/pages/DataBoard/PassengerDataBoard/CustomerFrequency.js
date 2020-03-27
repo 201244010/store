@@ -12,6 +12,7 @@ class CustomerFrequency extends PureComponent {
 	render() {
 		const { frequencyList, frequencyTrend, customerDistri, loading, timeType } = this.props;
 		const chartOption = {
+			chartHeight: 280,
 			timeType,
 			data: frequencyTrend,
 			lineColor: ['value', '#FF8133'],

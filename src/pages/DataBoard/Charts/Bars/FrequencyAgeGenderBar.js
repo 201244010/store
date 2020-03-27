@@ -8,12 +8,41 @@ import styles from '../chartsCommon.less';
 // foramtScaleRange ageCode 1 2 3 4 进行转换
 // 	/* <FrequencyAgeGenderBar data={data} timeType={timeType} foramtScaleRange={code => {}} /> */
 // }
+const ageCodeToIndex = range => {
+	switch (range) {
+		case 1:
+			return 0;
+		case 4:
+			return 1;
+		case 5:
+			return 2;
+		case 6:
+			return 3;
+		case 7:
+			return 4;
+		case 8:
+			return 5;
+		default:
+			return 0;
+	}
+};
+
+const AGE_RANGE_LABEL = {
+	0: '18岁以下',
+	1: '19-28岁',
+	2: '29-35岁',
+	3: '36-45岁',
+	4: '46-55岁',
+	5: '56岁以上',
+};
+
 export default class FrequencyAgeGenderBar extends React.Component {
 	formatData = data => {
 		const dataByGender = { male: [], female: [] };
 		data.forEach(item => {
-			const { gender, value, range } = item;
-			dataByGender[gender][range - 1] = value;
+			const { gender, range } = item;
+			const index = ageCodeToIndex(range);
+			dataByGender[gender][index] = item.value.toFixed(1, 10);
 		});
 		const maleMax = Math.max(...dataByGender.male);
 		const femaleMax = Math.max(...dataByGender.female);
@@ -50,18 +79,18 @@ export default class FrequencyAgeGenderBar extends React.Component {
 	};
 
 	foramtValUnitByTime = (value, timeType) => {
-		if(value === undefined) {
+		if (value === undefined) {
 			return {
 				value: '--',
 				unit: '',
 			};
 		}
-		const obj = frequencyFormat({ value, returnType: 'split'});
+		const obj = frequencyFormat({ value, returnType: 'split' });
 		if (timeType === 2) {
 			const { int, float, point, unit } = obj.week;
 			return {
 				value: `${int}${point}${float}`,
-				unit
+				unit,
 			};
 			// return '次/周';
 		}
@@ -69,7 +98,7 @@ export default class FrequencyAgeGenderBar extends React.Component {
 			const { int, float, point, unit } = obj.month;
 			return {
 				value: `${int}${point}${float}`,
-				unit
+				unit,
 			};
 			// return '次/月';
 		}
@@ -81,14 +110,14 @@ export default class FrequencyAgeGenderBar extends React.Component {
 	};
 
 	render() {
-		const { data, foramtAgeRange = val => val, timeType } = this.props;
+		const { data, timeType } = this.props;
 
 		const { formatData, strokeColor, foramtValUnitByTime } = this;
 		const { data: detailData, frequency: frequencyGender } = data;
 		const dataByRange = formatData(detailData);
+		// console.log('qqqqqq:', dataByRange);
 		const maleValue = foramtValUnitByTime(frequencyGender.male, timeType);
 		const femaleValue = foramtValUnitByTime(frequencyGender.female, timeType);
-		console.log('----------wx:', dataByRange);
 		const barItems = dataByRange.map((frequency, index) => {
 			const { maleVal, femaleVal, maleLineLength, femaleLineLength } = frequency;
 			return (
@@ -101,7 +130,7 @@ export default class FrequencyAgeGenderBar extends React.Component {
 							format={() => maleVal}
 						/>
 					</div>
-					<div className="scale">{foramtAgeRange(index + 1)}</div>
+					<div className="scale">{AGE_RANGE_LABEL[index]}</div>
 					<div className="right">
 						<Progress
 							strokeColor={strokeColor('female', femaleLineLength)}

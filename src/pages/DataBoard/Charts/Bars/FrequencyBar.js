@@ -6,26 +6,33 @@ import styles from '../chartsCommon.less';
 const FREQUENCY_MAX = [5, 11];
 
 export default class FrequencyBar extends React.Component {
-	formatLabelX = val => {
-		if (FREQUENCY_MAX.includes(val - 0)) {
-			return `${val - 1}以上`;
+	formatLabelX = barAmout => val => {
+		if (FREQUENCY_MAX.includes(barAmout)) {
+			// 5组数据 or 11组数据时 最后一组 xxx以上 X轴
+			val -= 0;
+			if (val === barAmout) {
+				return `${val - 1}以上`;
+			}
 		}
 		return val;
 	};
 
-	formatToolTipAxisX = x => {
-		if (FREQUENCY_MAX.includes(x - 0)) {
-			return `${x - 1}次以上`;
+	formatToolTipAxisX = (x, barAmout) => {
+		// 提示框
+		if (FREQUENCY_MAX.includes(barAmout)) {
+			if (x === barAmout) {
+				return `${x - 1}次以上`;
+			}
 		}
 		return `${x}次`;
 	};
 
-	barWidthFit = i => {
-		if (i > 5) {
-			return 40;
+	barWidthFit = barAmout => {
+		if (barAmout > 10) {
+			return 12;
 		}
-		if (i > 10) {
-			return 20;
+		if (barAmout > 4) {
+			return 25;
 		}
 		return 20;
 	};
@@ -34,17 +41,27 @@ export default class FrequencyBar extends React.Component {
 		const { formatToolTipAxisX, formatLabelX, barWidthFit } = this;
 		const chartTitle = '到店次数分布';
 		// const data = frequencyData;
-		const { data } = this.props;
+		const { data, chartHeight = 320 } = this.props;
+		console.log('ssssssss:', data);
+		const barAmout = data.length;
 		return (
 			<div>
 				<Chart
-					height={400}
+					height={chartHeight}
 					data={data}
 					forceFit
-					scale={{ frequency: { type: 'cat', nice: false } }}
+					scale={{
+						frequency: {
+							type: 'linear',
+							nice: false,
+							range: [0.09, 0.91],
+							tickCount: barAmout,
+						},
+					}}
 				>
 					<h1 className={styles['chart-title']}>{chartTitle}</h1>
-					<Axis name="frequency" label={{ formatter: formatLabelX }} />
+					<Axis name="frequency" label={{ formatter: formatLabelX(barAmout) }} />
+					<Axis name="frequency" />
 					<Axis name="value" />
 					<Tooltip
 						shared={false}
@@ -63,7 +80,7 @@ export default class FrequencyBar extends React.Component {
 						type="interval"
 						position="frequency*value"
 						color="l(270) 0:rgba(255,161,102,1) 1:rgba(255,129,51,1)"
-						size={barWidthFit(data.length)}
+						size={barWidthFit(barAmout)}
 						active={[
 							true,
 							{
@@ -80,7 +97,7 @@ export default class FrequencyBar extends React.Component {
 								({
 									value,
 									name: labelX,
-									labelX: formatToolTipAxisX(labelX),
+									labelX: formatToolTipAxisX(labelX, barAmout),
 								}),
 						]}
 					/>
