@@ -11,6 +11,7 @@ import PassengerTrendLine from './PassengerTrendLine';
 import TransactionTrend from './TransactionTrend';
 import AbnormalTip from './AbnormalTip';
 import styles from './index.less';
+import { formater } from '@/utils/format';
 
 const RANGE = {
 	TODAY: 'day',
@@ -70,6 +71,8 @@ class RTDataBoard extends PureComponent {
 		await checkIsNormal();
 		this.startAutoRefresh();
 		// console.log('==========', this.props);
+
+		console.log('formater=', formater);
 	}
 
 	componentWillUnmount() {
