@@ -1,5 +1,8 @@
 /* 首页或客流趋势，检查是否异常 */
 import { customizeFetch } from '@/utils/fetch';
+import CONFIG from '@/config';
+
+const { IPC_SERVER } = CONFIG;
 
 // 查询company_id下的saas
 export const getCompanySaasList = (options = {}) => {
@@ -37,4 +40,14 @@ export const getCompanyDevices = (options = {}) => {
 	};
 
 	return fetchApi('device/company/getList', opts).then(response => response.json());
+};
+
+export const getShopDevices = (options = {}) => {
+	const fetchApi = customizeFetch('ipc/api/device', IPC_SERVER);
+	const opts = {
+		body: {
+			...options,
+		},
+	};
+	return fetchApi('getDetailList', opts).then(response => response.json());
 };
