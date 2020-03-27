@@ -181,16 +181,14 @@ export default {
 					},
 				});
 			}
-
-
-
 		},
 		*createOrganization({ payload },{ put }) {
 			const { options } = payload;
 			const response = yield createOrganization(options);
 			if (response && response.code === ERROR_OK) {
 				const data = response.data || {};
-				if (!CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY)) {
+				const shopIdInCookie = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
+				if (!shopIdInCookie && shopIdInCookie !== 0) {
 					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, data.orgId);
 				}
 				yield put.resolve({

@@ -36,25 +36,21 @@ class AuthKey extends PureComponent {
 		const {
 			authKey: { sunmiShopNo = null, sunmiShopKey = null } = {},
 			loading,
-			// type = 'button',
-			// className = '',
+			type = 'button',
+			className = '',
 		} = this.props;
 
 		return (
 			<>
-				{/* {type === 'link' ? ( */}
-				{/* <a */}
-				{/* href="javascript:void(0);" */}
-				{/* className={className} */}
-				{/* onClick={this.openAuthModal} */}
-				{/* > */}
-				{/* {formatMessage({ id: 'store.get.authKey' })} */}
-				{/* </a> */}
-				{/* ) : ( */}
-				{/* <Button className={className} onClick={this.openAuthModal}> */}
-				{/* {formatMessage({ id: 'store.get.authKey' })} */}
-				{/* </Button> */}
-				{/* )} */}
+				 {type === 'link' ? (
+					 <a className={className} onClick={this.openAuthModal}>
+						 {formatMessage({ id: 'store.get.authKey' })}
+					 </a>
+				 ) : (
+					 <Button className={className} onClick={this.openAuthModal}>
+						 {formatMessage({ id: 'store.get.authKey' })}
+					 </Button>
+				 )}
 				<Modal
 					title={formatMessage({ id: 'store.authKey' })}
 					visible={displayAuth}
