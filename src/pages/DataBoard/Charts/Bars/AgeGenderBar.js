@@ -58,12 +58,18 @@ export default class AgeGenderBar extends React.Component {
 
 		return (
 			<div>
-				<Chart height={266} data={data} forceFit>
+				<Chart height={250} data={data} forceFit padding="auto">
 					<h1 className={styles['chart-title']}>{chartTitle}</h1>
 					<Axis name="rangeKey" label={{ formatter: formatLabelX }} />
 					<Axis name="count" />
 					<Tooltip
 						shared={false}
+						crosshairs={{
+							type: 'rect',
+							// style: {
+							// 	fill,
+							// },
+						}}
 						{...{
 							containerTpl: `<div class="g2-tooltip">
 					<ul class="g2-tooltip-list data-chart-list"></ul>
@@ -89,15 +95,15 @@ export default class AgeGenderBar extends React.Component {
 							},
 						]}
 						size={20}
-						active={[
-							true,
-							{
-								highlight: true,
-								style: {
-									fill: 'l(270) 0:rgba(255,161,102,1) 1:rgba(255,129,51,1)',
-								},
-							},
-						]}
+						// active={[
+						// 	// true,
+						// 	{
+						// 		// highlight: true,
+						// 		style: {
+						// 			fill: 'l(270) 0:rgba(255,161,102,1) 1:rgba(255,129,51,1)',
+						// 		},
+						// 	},
+						// ]}
 						tooltip={[
 							'gender*rangeKey*count',
 							(name, labelX, value) =>

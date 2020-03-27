@@ -25,8 +25,17 @@ export default {
 	'databoard.age.unit': '岁',
 	'databoard.passenger.unit': '人',
 	'databoard.passenger.rate': '总客流占比',
-	'databoard.nodata.tip1':'暂无门店数据',
-	'databoard.realtime.nodata.tip2':'您可以尝试添加AI识客摄像机并导入软件订单数据即可查看门店数据',
-	'databoard.passenger.nodata.tip2': '您可以尝试添加AI识客摄像机即可查看门店数据'
-
+	'databoard.nodata.tip1': '暂无门店数据',
+	'databoard.realtime.nodata.tip2':
+		'您可以尝试添加AI识客摄像机并导入软件订单数据即可查看门店数据',
+	'databoard.passenger.nodata.tip2': '您可以尝试添加AI识客摄像机即可查看门店数据',
+	'databoard.data.entering': '进店率',
+	'databoard.data.total': '全部客流',
+	'databoard.data.stranger': '熟客',
+	'databoard.data.regular': '新客',
+	'databoard.data.passenger': '进店客流',
+	'databoard.data.amount': '销售额度',
+	'databoard.data.count': '交易笔数',
+	'databoard.data.transactionRate': '进店率',
+	'databoard.data.customerFrequency': '到店频次',
 };

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Card, Radio } from 'antd';
+import { formatFloatByPermile } from '@/utils/format';
 import { formatMessage } from 'umi/locale';
 import SingleLine from '../Charts/Line/SingleLine';
 import styles from './index.less';
@@ -14,21 +15,21 @@ class TransactionTrend extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.state = {
-			currentTab: TAB.AMOUNT
+			currentTab: TAB.AMOUNT,
 		};
 	}
 
-	handleSwitchTab = (e) => {
+	handleSwitchTab = e => {
 		const {
 			target: { value },
 		} = e;
 		this.setState({
-			currentTab: value
+			currentTab: value,
 		});
-	}
+	};
 
 	render() {
-		const { amountList, countList, transactionRateList, loading, timeType} = this.props;
+		const { amountList, countList, transactionRateList, loading, timeType } = this.props;
 		const { currentTab } = this.state;
 		const amountChartOption = {
 			chartHeight: 370,
@@ -42,7 +43,7 @@ class TransactionTrend extends PureComponent {
 				type: 'area',
 				position: 'time*value',
 			},
-			linesize: 4,
+			lineSize: 3,
 			// innerTitle: 'chart title area=true',
 			chartScale: {
 				time: {
@@ -61,7 +62,7 @@ class TransactionTrend extends PureComponent {
 		const rateChartOption = {
 			chartHeight: 370,
 			timeType,
-			data: transactionRateList,
+			data: transactionRateList.map(item => ({ ...item, value: item.value * 100 })),
 			lineColor: ['value', 'rgb(255,188,80)'],
 			area: {
 				// 是否填充面积
@@ -70,7 +71,7 @@ class TransactionTrend extends PureComponent {
 				type: 'area',
 				position: 'time*value',
 			},
-			linesize: 4,
+			lineSize: 3,
 			// innerTitle: 'chart title area=true',
 			chartScale: {
 				time: {
@@ -81,10 +82,14 @@ class TransactionTrend extends PureComponent {
 				},
 				value: {
 					type: 'linear',
-					nice: true,
+					nice: false,
 					min: 0,
+					max: 100,
 				},
 			},
+			// eslint-disable-next-line arrow-body-style
+			formatToolTipValue: value =>
+				formatFloatByPermile({ value: value / 100, returnType: 'join' }),
 		};
 		const countChartOption = {
 			chartHeight: 370,
@@ -103,37 +108,29 @@ class TransactionTrend extends PureComponent {
 				},
 			],
 		};
-		return(
+		return (
 			<Card
 				bordered={false}
 				className={styles['line-chart-wrapper']}
-				title={formatMessage({ id: 'databoard.transaction.trend.title'})}
+				title={formatMessage({ id: 'databoard.transaction.trend.title' })}
 				loading={loading}
 				extra={
-					<Radio.Group
-						value={currentTab}
-						onChange={this.handleSwitchTab}
-					>
+					<Radio.Group value={currentTab} onChange={this.handleSwitchTab}>
 						<Radio.Button className={styles['chart-tab']} value={TAB.AMOUNT}>
-							{formatMessage({ id: 'databoard.order.sales'})}
+							{formatMessage({ id: 'databoard.order.sales' })}
 						</Radio.Button>
 						<Radio.Button className={styles['chart-tab']} value={TAB.COUNT}>
-							{formatMessage({ id: 'databoard.order.count'})}
+							{formatMessage({ id: 'databoard.order.count' })}
 						</Radio.Button>
 						<Radio.Button className={styles['chart-tab']} value={TAB.RATE}>
-							{formatMessage({ id: 'databoard.order.rate'})}
+							{formatMessage({ id: 'databoard.order.rate' })}
 						</Radio.Button>
-					</Radio.Group>}
+					</Radio.Group>
+				}
 			>
-				{
-					currentTab === TAB.AMOUNT ? <SingleLine {...amountChartOption} /> : ''
-				}
-				{
-					currentTab === TAB.COUNT ? <SingleLine {...countChartOption} /> : ''
-				}
-				{
-					currentTab === TAB.RATE ? <SingleLine {...rateChartOption} /> : ''
-				}
+				{currentTab === TAB.AMOUNT ? <SingleLine {...amountChartOption} /> : ''}
+				{currentTab === TAB.COUNT ? <SingleLine {...countChartOption} /> : ''}
+				{currentTab === TAB.RATE ? <SingleLine {...rateChartOption} /> : ''}
 			</Card>
 		);
 	}

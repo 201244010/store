@@ -37,7 +37,7 @@
 		font-size: 16px;
 		font-family: PingFangSC-Medium, PingFang SC, sans-serif;
 		font-weight: 500;
-		color: rgba(119,126,140,1);
+		color: rgba(119, 126, 140, 1);
 
 		span {
 			display: block;
@@ -48,7 +48,7 @@
 
 .line-chart-wrapper {
 	min-height: 476px;
-	border-radius:8px;
+	border-radius: 8px;
 	// width: 796px;
 	// div {
 	// 	height: 400px;
@@ -88,8 +88,12 @@
 .distri-chart-wrapper {
 	margin-top: 24px;
 	min-height: 392px;
-	border-radius:8px;
-
+	border-radius: 8px;
+	:global {
+		.ant-card-body {
+			height: 336px;
+		}
+	}
 
 	.regular-chart,
 	.age-chart {
@@ -160,10 +164,9 @@
 	// height: 344px;
 	.overview-card {
 		height: 160px;
-		border-radius:8px;
+		border-radius: 8px;
 	}
 	.overview-row {
 		margin-bottom: 24px;
 	}
 }
-

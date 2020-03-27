@@ -50,7 +50,7 @@
 
 .line-chart-wrapper {
 	min-height: 476px;
-	border-radius:8px;
+	border-radius: 8px;
 	margin-bottom: 24px;
 	// width: 796px;
 	// div {
@@ -60,7 +60,12 @@
 .distri-chart-wrapper {
 	min-height: 392px;
 	margin-bottom: 24px;
-	border-radius:8px;
+	border-radius: 8px;
+	:global {
+		.ant-card-body {
+			height: 336px;
+		}
+	}
 	// .chart-container {
 	// 	.frequency-count {
 	// 		display: inline-block;
@@ -74,7 +79,7 @@
 }
 .major-chart-wrapper {
 	min-height: 320px;
-	border-radius:8px;
+	border-radius: 8px;
 }
 
 .no-data-tip {
@@ -100,7 +105,7 @@
 		font-size: 16px;
 		font-family: PingFangSC-Medium, PingFang SC, sans-serif;
 		font-weight: 500;
-		color: rgba(119,126,140,1);
+		color: rgba(119, 126, 140, 1);
 
 		span {
 			display: block;

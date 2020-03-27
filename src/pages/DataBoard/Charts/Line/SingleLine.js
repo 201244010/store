@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { formatMessage } from 'umi/locale';
-// import moment from 'moment';
+import moment from 'moment';
 import { DataView } from '@antv/data-set';
 import LinePoint from './BaseLine';
 import { DATABOARD } from '../constants';
@@ -26,7 +26,9 @@ const latestDataSuppl = (data, timeType) => {
 		dataPoint = 7;
 	}
 	if (timeType === TIME_TYPE.MONTH) {
-		dataPoint = 31;
+		dataPoint = moment()
+			.endOf('month')
+			.format('D');
 	}
 
 	const nameList = [];
@@ -79,8 +81,22 @@ export default class Line extends Component {
 			}
 			return `时间：${valToTime(time - 1)} - ${valToTime(time)}`;
 		}
-		return `时间：${time} convert 几月几号 缺周数，月份`;
+		if (timeType === TIME_TYPE.WEEK) {
+			return `时间：${moment()
+				.startOf('week')
+				.add(time, 'day')
+				.format('MM.DD')}`;
+		}
+		if (timeType === TIME_TYPE.MONTH) {
+			return `时间：${moment()
+				.startOf('month')
+				.add(time, 'day')
+				.format('MM.DD')}`;
+		}
+		return time;
 	};
+
+	formatToolTipName = name => formatMessage({ id: `databoard.data.${name}` });
 
 	formatXLabel = (val, timeType) => {
 		if (val < 0) {
@@ -140,7 +156,13 @@ export default class Line extends Component {
 	};
 
 	render() {
-		const { formatXLabel, formatToolTipAxisX, foramtData, barWidthFit } = this;
+		const {
+			formatXLabel,
+			formatToolTipAxisX,
+			foramtData,
+			barWidthFit,
+			formatToolTipName,
+		} = this;
 
 		const {
 			timeType = 1,
@@ -151,27 +173,35 @@ export default class Line extends Component {
 			type = 'lineStack',
 			legend = {},
 			innerTitle: title,
+			formatToolTipValue = val => val,
 			lineTooltip = [
 				'name*time*value',
 				(name, labelX, value) =>
 					// array
 					({
-						value,
+						value: formatToolTipValue(value),
 						timeRange: formatToolTipAxisX(labelX, timeType),
-						name,
+						name: formatToolTipName(name),
 					}),
 			],
-			chartScale = {},
+
 			crosshairs = {},
 			lineActive,
 			chartHeight,
 		} = this.props;
 
-		let { lineSize } = this.props;
-
+		let { lineSize, chartScale = {} } = this.props;
 		const dataForamtted = foramtData(data, timeType);
 		if (type === 'interval') {
 			lineSize = barWidthFit(timeType);
+			chartScale = {
+				time: {
+					type: 'linear',
+					nice: false,
+					range: [0.09, 0.91],
+					// tickCount: barAmout,
+				},
+			};
 		}
 
 		return (
@@ -196,7 +226,7 @@ export default class Line extends Component {
 					},
 					tooltip: {
 						shared: false,
-						// useHtml: true,
+						useHtml: true,
 						containerTpl: `<div class="g2-tooltip">
 						    <ul class="g2-tooltip-list data-chart-list"></ul>
 						 </div>`,
