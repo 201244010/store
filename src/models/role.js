@@ -172,11 +172,13 @@ export default {
 		*getPermissionList({ payload = {} }, { put, call, select }) {
 			const { type } = payload;
 			const response = yield call(Actions.handleRoleManagement, 'getPermissionList');
+			let retPermissionList = [];
 			if (response && response.code === ERROR_OK) {
 				const roleInfo = yield select(state => state.role.roleInfo);
 				const { data = {} } = response;
 				const { permissionList = [] } = format('toCamel')(data) || {};
 
+				retPermissionList = permissionList;
 				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
 					permissionList.find(permission => permission.name === `/${menu}`)
 				).filter(item => !!item);
@@ -207,6 +209,8 @@ export default {
 					},
 				});
 			}
+
+			return retPermissionList;
 		},
 
 		*creatRole({ payload = {} }, { call }) {

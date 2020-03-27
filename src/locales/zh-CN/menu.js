@@ -29,6 +29,7 @@ export default {
 	'menu.dataAnalyze.list': '客流分析',
 	'menu.storeMonitor': '门店监控',
 	'menu.storeMonitor.motionMessage': '活动侦测',
+	'menu.storeMonitor.liveReplay': '直播回放',
 	'menu.storeMonitor.cloudStorage': '云存储',
 	'menu.storeMonitor.subscriptionSuccess': '订阅结果',
 	'menu.storeMonitor.orderSubmission': '提交订单',
