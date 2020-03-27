@@ -3,14 +3,13 @@ import { connect } from 'dva';
 import { Row, Col } from 'antd';
 import TopDataCard from './TopDataCard';
 
-@connect(({ topview }) => {
+@connect(({ topview, loading }) => {
 	const {
 		deviceOverView,
 		latestCustomerCount,
 		earlyCustomerCount,
 		latestOrderInfo,
 		earlyOrderInfo,
-		overViewStatusLoading: loading,
 	} = topview;
 	return {
 		deviceOverView,
@@ -86,7 +85,14 @@ class OverViewBar extends Component {
 
 		const listItems = itemListData.map((item, index) => (
 			<Col span={colSpan} key={index}>
-				<TopDataCard {...{ data: item, timeType, dataType, loading }} />
+				<TopDataCard
+					{...{
+						data: item,
+						timeType,
+						dataType,
+						loading: loading.effects['topview/getDeviceOverView'],
+					}}
+				/>
 			</Col>
 		));
 

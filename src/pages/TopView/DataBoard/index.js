@@ -14,7 +14,7 @@ import { DATABOARD } from './constants';
 const { LAST_HAND_REFRESH_TIME } = DATABOARD;
 
 @connect(
-	({ topview }) => {
+	({ topview, loading }) => {
 		const {
 			hasCustomerData,
 			hasOrderData,
@@ -30,6 +30,7 @@ const { LAST_HAND_REFRESH_TIME } = DATABOARD;
 			latestOrderAmoutData,
 			latestCustomerByShop,
 			latestOrderAmoutByShop,
+			loading,
 		};
 	},
 	dispatch => ({
@@ -84,8 +85,6 @@ class DataBoard extends Component {
 		return tabelData;
 	};
 
-	
-
 	startAutoRefresh = () => {
 		const { fetchAllData } = this.props;
 		clearTimeout(this.timer);
@@ -123,6 +122,7 @@ class DataBoard extends Component {
 			latestOrderAmoutData,
 			latestCustomerByShop,
 			latestOrderAmoutByShop,
+			loading,
 		} = this.props;
 		const columns = [
 			{
@@ -147,12 +147,18 @@ class DataBoard extends Component {
 					<OverViewBar />
 					<Row gutter={20}>
 						<Col span={12}>
-							<Card title="客流趋势">
+							<Card
+								title="客流趋势"
+								loading={loading.effects['topview/getLatestPassengerTrend']}
+							>
 								<CurrentCustomerLine data={latestCustomerData} />
 							</Card>
 						</Col>
 						<Col span={12}>
-							<Card title="经营趋势">
+							<Card
+								title="经营趋势"
+								loading={loading.effects['topview/getLatestOrderTrend']}
+							>
 								<CurrentSalesLine data={latestOrderAmoutData} />
 							</Card>
 						</Col>

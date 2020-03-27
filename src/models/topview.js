@@ -39,48 +39,37 @@ export default {
 		},
 	},
 	effects: {
-		*fetchAllData(_, { all, put }) {
-			yield all([
-				put({
-					type: 'getPermessionPassengerFlow',
-				}),
-				put({
-					type: 'getCompanySaasInfo',
-				}),
-				put({
-					type: 'getOverViewStatus',
-					payload: {
-						needLoading: true,
-					},
-				}),
-				// put({
-				// 	type: 'getDeviceOverView',
-				// }),
-				// put({
-				// 	type: 'getLatestOrderInfo',
-				// }),
-				// put({
-				// 	type: 'getEarlyOrderInfo',
-				// }),
-				put({
-					type: 'getLatestOrderTrend',
-				}),
-				put({
-					type: 'getShopListLatestOrderAmout',
-				}),
-				// put({
-				// 	type: 'getLatestPassenger',
-				// }),
-				// put({
-				// 	type: 'getEarlyPassenger',
-				// }),
-				put({
-					type: 'getLatestPassengerTrend',
-				}),
-				put({
-					type: 'getShopListLatestPassengerTrend',
-				}),
-			]);
+		*fetchAllData(_, { put }) {
+			yield put({
+				type: 'getPermessionPassengerFlow',
+			});
+			yield put({
+				type: 'getCompanySaasInfo',
+			});
+			yield put({
+				type: 'getOverViewStatus',
+				payload: {
+					needLoading: true,
+				},
+			});
+			yield put({
+				type: 'getPermessionPassengerFlow',
+			});
+			yield put({
+				type: 'getCompanySaasInfo',
+			});
+			yield put({
+				type: 'getLatestOrderTrend',
+			});
+			yield put({
+				type: 'getShopListLatestOrderAmout',
+			});
+			yield put({
+				type: 'getLatestPassengerTrend',
+			});
+			yield put({
+				type: 'getShopListLatestPassengerTrend',
+			});
 			yield put({
 				type: 'updateState',
 				payload: {
