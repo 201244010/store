@@ -1,8 +1,10 @@
 import React from 'react';
 import { Progress } from 'antd';
+import { formater } from '@/utils/format';
 // import { customerDistriData } from './mock';
 import styles from './frequencyAgeGenderBar.less';
 
+const { frequencyFormat } = formater;
 // {
 // foramtScaleRange ageCode 1 2 3 4 进行转换
 // 	/* <FrequencyAgeGenderBar data={data} timeType={timeType} foramtScaleRange={code => {}} /> */
@@ -48,14 +50,26 @@ export default class FrequencyAgeGenderBar extends React.Component {
 		return 'red';
 	};
 
-	foramtValUnitByTime = timeType => {
+	foramtValUnitByTime = (value, timeType) => {
+		const obj = frequencyFormat({ value, returnType: 'split'});
 		if (timeType === 2) {
-			return '次/周';
+			const { int, float, point, unit } = obj.week;
+			return {
+				value: `${int}${point}${float}`,
+				unit
+			};
+			// return '次/周';
 		}
 		if (timeType === 3) {
-			return '次/月';
+			const { int, float, point, unit } = obj.month;
+			return {
+				value: `${int}${point}${float}`,
+				unit
+			};
+			// return '次/月';
 		}
-		return '次';
+		return '';
+		// return '次';
 	};
 
 	render() {
@@ -64,7 +78,8 @@ export default class FrequencyAgeGenderBar extends React.Component {
 		const { formatData, strokeColor, foramtValUnitByTime } = this;
 		const { data: detailData, frequency: frequencyGender } = data;
 		const dataByRange = formatData(detailData);
-		const valUnit = foramtValUnitByTime(timeType);
+		const maleValue = foramtValUnitByTime(frequencyGender.male, timeType);
+		const femaleValue = foramtValUnitByTime(frequencyGender.female, timeType);
 		console.log('----------wx:', dataByRange);
 		const barItems = dataByRange.map((frequency, index) => {
 			const { maleVal, femaleVal, maleLineLength, femaleLineLength } = frequency;
@@ -98,15 +113,15 @@ export default class FrequencyAgeGenderBar extends React.Component {
 					<div className="overview-bar">
 						<div className="left">
 							<p className="value-wrapper">
-								<span className="value">{frequencyGender.male}</span>
-								<span className="unit">{valUnit}</span>
+								<span className="value">{maleValue.value}</span>
+								<span className="unit">{maleValue.unit}</span>
 							</p>
 							<p className="label__male">男性</p>
 						</div>
 						<div className="right">
 							<p className="value-wrapper">
-								<span className="value">{frequencyGender.female}</span>
-								<span className="unit">{valUnit}</span>
+								<span className="value">{femaleValue.value}</span>
+								<span className="unit">{femaleValue.unit}</span>
 							</p>
 							<p className="label__female">女性</p>
 						</div>
