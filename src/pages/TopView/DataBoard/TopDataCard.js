@@ -61,7 +61,7 @@ const TopDataCard = ({ data, dataType, timeType, loading }) => {
 			<div className="early-value">
 				<div>
 					{/* // 昨日 上周 上月 、 较前一日 */}
-					<span>{handleEarlyLabelText(timeType, dataType)}</span>
+					<span className='early-value-label'>{handleEarlyLabelText(timeType, dataType)}</span>
 				</div>
 				<EarlyData {...{ count, earlyCount, compareRate }} />
 			</div>

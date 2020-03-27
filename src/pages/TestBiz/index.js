@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Table, Form, Row, Col, Select, Button, Icon } from 'antd';
 import Pie from './Pie';
+import MainCustomerCard from './MainCustomerCard';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -53,7 +54,7 @@ const { Option } = Select;
 class BizchartDemo extends React.Component {
 	constructor(props) {
 		super(props);
-		
+
 		this.state = {
 			chosenCard: 0,
 			currentOptions: GROUP_BY[0],
@@ -81,10 +82,10 @@ class BizchartDemo extends React.Component {
 				render: operation => <a href={operation}>查看门店详情</a>,
 			},
 		];
-		
+
 		this.shopListOptions = JSON.parse(localStorage.getItem('__shop_list__'));
 	}
-	
+
 	componentDidMount() {
 		const { getHeadPassengerByRegular, getHeadPassengerByGender, getHeadShopListByGender, getHeadShopListByRegular } = this.props;
 		getHeadPassengerByGender({ startTime: moment().format('YYYY-MM-DD'), type: 3 });
@@ -92,11 +93,11 @@ class BizchartDemo extends React.Component {
 		// getHeadShopListByGender({ startTime: moment().format('YYYY-MM-DD'), type: 3 });
 		getHeadShopListByRegular({ startTime: moment().format('YYYY-MM-DD'), type: 3 });
 	}
-	
+
 	handleChosenCardChange = index => {
 		const { form: { setFieldsValue }, getHeadShopListByGender, getHeadShopListByRegular } = this.props;
 		const { chosenCard } = this.state;
-		
+
 		if(index !== chosenCard) {
 			switch(chosenCard) {
 				case 0:
@@ -116,8 +117,8 @@ class BizchartDemo extends React.Component {
 			})
 		}
 	};
-	
-	
+
+
 	handlePieDataSource = (index) => {
 		const { headPassenger: { byFrequencyArray, byGenderArray, byAgeArray } } = this.props;
 		const valueArray = [byFrequencyArray, byGenderArray, byAgeArray];
@@ -125,36 +126,36 @@ class BizchartDemo extends React.Component {
 			name: GROUP_BY[index][itemIndex].label,
 			value: item
 		}));
-		
+
 		return dataArray;
 	};
-	
+
 	handleTableDataSource = () => {
 		const { form: { getFieldsValue }, headPassenger: { shopList } } = this.props;
 		const { currentOptions } = this.state;
-		
+
 		let keyword = '';
-		
+
 		console.log('ss', getFieldsValue());
 		const { shopId, guest } = getFieldsValue();
 		let resultArray = shopList.map(item => Object.assign({}, item));
-		
+
 		currentOptions.forEach(item => {
 			if(item.label === guest ) {
 				keyword = item.key;
 			}
 		});
-		
+
 		if(shopId !== -1 && shopId !== undefined) resultArray = resultArray.filter(item => item.shopId === shopId);
-		
+
 		resultArray.sort((a, b) =>
 			b[keyword] - a[keyword]
 		);
-		
+
 		resultArray.forEach((item, index) => {
 			item.sortIndex = index + 1;
 		})
-		
+
 		console.log(resultArray, 'result')
 		this.columns[2] = {
 			title: guest,
@@ -162,17 +163,17 @@ class BizchartDemo extends React.Component {
 		};
 		this.setState({ dataSource: resultArray });
 	};
-	
+
 	handleSearch = () => {
 		this.handleTableDataSource()
 	};
-	
+
 	render() {
 		// todo pie外面的卡片可以切出来作为组件
 		const { headPassenger: { byFrequencyArray, byGenderArray, shopList }, form: { getFieldDecorator } } = this.props;
 		const { chosenCard, currentOptions, dataSource } = this.state;
 		console.log('ss', dataSource)
-		
+
 		return (
 			<div>
 				<div className={styles['overview-bar']}>
@@ -218,7 +219,7 @@ class BizchartDemo extends React.Component {
 									<Form.Item label={'客群'}>
 										{
 											getFieldDecorator('guest', {
-											
+
 											})(
 												<Select>
 													{
@@ -254,8 +255,15 @@ class BizchartDemo extends React.Component {
 						}}
 					/>
 				</Card>
+				<Card title='主力客群' className={styles['footer-cards']}>
+					<div className={styles['footer-cards-list']}>
+						<MainCustomerCard />
+						<MainCustomerCard />
+						<MainCustomerCard />
+					</div>
+				</Card>
 			</div>
-			
+
 		);
 	}
 }
