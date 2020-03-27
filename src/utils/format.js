@@ -20,10 +20,9 @@ const formatWithComma = value => d3.format(',')(value);
 /**
  * 中文 数字达到万后换算为万，到亿后换算为亿，始终保留2位小数（eg:销售额，客单价）
  */
-const formatFloatByMillionUnit = ({ value, returnType }) => {
+const formatFloatByMillionUnit = ({ value, returnType = RETURNModel.join }) => {
 	let result = value;
 	let unit = '';
-	const returnModel = returnType || RETURNModel.join;
 	if (Math.abs(result) < 10000) {
 		result = formatTo2float(result);
 	} else if (Math.abs(result) >= 10000 && Math.abs(result) < 100000000) {
@@ -34,7 +33,7 @@ const formatFloatByMillionUnit = ({ value, returnType }) => {
 		unit = '亿';
 	}
 
-	if (returnModel === RETURNModel.split) {
+	if (returnType === RETURNModel.split) {
 		return {
 			...splitString(result),
 			unit,
@@ -46,10 +45,9 @@ const formatFloatByMillionUnit = ({ value, returnType }) => {
 /**
  * 英文 整数部分千位分隔, 达到百万用m单位，始终保留2位小数（eg:销售额，客单价）
  */
-const formatFloatWithComma = ({ value, returnType }) => {
+const formatFloatWithComma = ({ value, returnType = RETURNModel.join }) => {
 	let result = value;
 	let unit = '';
-	const returnModel = returnType || RETURNModel.join;
 	if (Math.abs(result) < 1000000) {
 		result = formatTo2floatWithComma(result);
 	} else if (Math.abs(result) >= 1000000) {
@@ -57,7 +55,7 @@ const formatFloatWithComma = ({ value, returnType }) => {
 		unit = 'm';
 	}
 
-	if (returnModel === RETURNModel.split) {
+	if (returnType === RETURNModel.split) {
 		return {
 			...splitString(result),
 			unit,
@@ -69,10 +67,9 @@ const formatFloatWithComma = ({ value, returnType }) => {
 /**
  * 中文 数字达到万后换算为万，到亿后换算为亿，转换单位后显示小数点后两位（eg:客流流量、订单数、退款笔数，整数）
  */
-const formatInterByMillionUnit = ({ value, returnType }) => {
+const formatInterByMillionUnit = ({ value, returnType = RETURNModel.join }) => {
 	let result = value;
 	let unit = '';
-	const returnModel = returnType || RETURNModel.join;
 	if (Math.abs(result) >= 10000 && Math.abs(result) < 100000000) {
 		result = formatTo2float(result / 10000);
 		unit = '万';
@@ -81,7 +78,7 @@ const formatInterByMillionUnit = ({ value, returnType }) => {
 		unit = '亿';
 	}
 
-	if (returnModel === RETURNModel.split) {
+	if (returnType === RETURNModel.split) {
 		return {
 			...splitString(result),
 			unit,
@@ -93,10 +90,9 @@ const formatInterByMillionUnit = ({ value, returnType }) => {
 /**
  * 英文 整数部分千位分隔, 达到百万用m单位，转换单位后显示小数点后两位（eg:客流流量、订单数、退款笔数，整数）
  */
-const formatInterWithComma = ({ value, returnType }) => {
+const formatInterWithComma = ({ value, returnType = RETURNModel.join }) => {
 	let result = value;
 	let unit = '';
-	const returnModel = returnType || RETURNModel.join;
 	if (Math.abs(result) < 1000000) {
 		result = formatWithComma(result);
 	} else if (Math.abs(result) >= 1000000) {
@@ -104,7 +100,7 @@ const formatInterWithComma = ({ value, returnType }) => {
 		unit = 'm';
 	}
 
-	if (returnModel === RETURNModel.split) {
+	if (returnType === RETURNModel.split) {
 		return {
 			...ReturnResultSplit,
 			...splitString(result),
@@ -118,9 +114,8 @@ const formatInterWithComma = ({ value, returnType }) => {
  * 输入[数值]和[单位]，往数值后追加单位。若数值为小数则保留1位，若为整数则不要小数位（eg:进店频率）
  * value:待格式化的数, returnType: join返回字符串 split返回对象{int:'', point:'', float:'', unit:''}
  */
-const formatNumWithStr = ({ value, returnType, unit }) => {
+const formatNumWithStr = ({ value, returnType = RETURNModel.join, unit }) => {
 	let result = value;
-	const returnModel = returnType || RETURNModel.join;
 	const str = value.toString();
 	const decReg = /(\.0+)$/; // 小数点后都为0
 	if (str.indexOf('.') === -1 || decReg.test(value.str)) {
@@ -131,7 +126,7 @@ const formatNumWithStr = ({ value, returnType, unit }) => {
 		result = d3.format('.1f')(result);
 	}
 
-	if (returnModel === RETURNModel.split) {
+	if (returnType === RETURNModel.split) {
 		return {
 			...ReturnResultSplit,
 			...splitString(result),
@@ -141,16 +136,10 @@ const formatNumWithStr = ({ value, returnType, unit }) => {
 	return `${result}${unit}`;
 };
 
-let language = getLocale();
+const language = getLocale();
 const zhCN = 'zh-CN';
 console.log('language=', language);
 export const formater = {
-	// 设置语言
-	setLang(lang) {
-		console.log('set', lang);
-		language = lang;
-	},
-
 	/**
 	 * 销售额格式化 eg:销售额，客单价
 	 * @param {number} obj.value - 待处理的数值
@@ -228,16 +217,15 @@ export const formater = {
 	 * @returns {string|object}
 	 * eg: join返回字符串0.01% split返回对象{int:'0', point:'.', float:'01', percent:'%'}
 	 */
-	formatFloatByPermile({ value, returnType }) {
+	formatFloatByPermile({ value, returnType = RETURNModel.join }) {
 		let result = value;
-		const returnModel = returnType || RETURNModel.join;
 		if (Math.abs(result * 100) >= 0.01 || result === 0) {
 			result = formatTo2floatPercent(result);
 		} else if (Math.abs(result) > 0 && Math.abs(result * 100) < 0.01) {
 			result = `${(result * 1000).toFixed(2)}‰`;
 		}
 
-		if (returnModel === RETURNModel.split) {
+		if (returnType === RETURNModel.split) {
 			return {
 				...ReturnResultSplit,
 				...splitString(result),
@@ -253,9 +241,8 @@ export const formater = {
 	 * @returns {string|object}
 	 * eg: join返回字符串1% split返回对象{int:'1', point:'', float:'', percent:'%'}
 	 */
-	formatFloatByPercent({ value, returnType }) {
+	formatFloatByPercent({ value, returnType = RETURNModel.join }) {
 		let result = value;
-		const returnModel = returnType || RETURNModel.join;
 		if (result === 0) {
 			result = '0%';
 		} else if (Math.abs(result * 100) >= 1) {
@@ -264,7 +251,7 @@ export const formater = {
 			result = formatTo2floatPercent(result);
 		}
 
-		if (returnModel === RETURNModel.split) {
+		if (returnType === RETURNModel.split) {
 			return {
 				...ReturnResultSplit,
 				...splitString(result),
