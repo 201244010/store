@@ -41,19 +41,19 @@ class MainCustomerCard extends React.Component {
 		} = this.props;
 		const singleFooter = [
 			{
-				title: '熟客占比',
+				title: formatMessage({ id: 'databoard.regular.rate'}),
 				value: `${formatPassengerRate(regularPercent)}`,
 				unit: '%'
 			},
 			{
-				title: '到店频次',
+				title: formatMessage({ id: 'databoard.passenger.frequency'}),
 				value: `${formatFrequency(frequency)}`,
 				unit: frequencyUnit[timeType],
 			},
 			{
-				title: '到店高峰',
+				title: formatMessage({ id: 'databoard.hot.time'}),
 				value: `${hotTime}-${hotTime + 1}`,
-				unit: '点'
+				unit: formatMessage({ id: 'databoard.hot.time.unit'})
 			},
 		];
 
@@ -62,15 +62,15 @@ class MainCustomerCard extends React.Component {
 				<div className={styles['card-header']}>
 					<div className={styles['card-header-right']}>
 						<div className={styles['card-img']} style={{backgroundImage: `url(${gender === 1? require('./man.png'):require('./woman.png')})`}} />
-						<span className={styles['card-sex']}>{gender === 1? '男':'女'}</span>
+						<span className={styles['card-sex']}>{gender === 1? formatMessage({id: 'databoard.gender.male'}): formatMessage({id: 'databoard.gender.male'})}</span>
 						<span className={styles['card-line']} />
-						<span className={styles['card-age']}>{`${this.formatAge(ageRangeCode)}岁`}</span>
+						<span className={styles['card-age']}>{`${this.formatAge(ageRangeCode)}${formatMessage({id: 'databoard.age.unit'})}`}</span>
 					</div>
-					<span className={styles['card-header-left']}>{count}<span className={styles['card-header-unit']}>人</span></span>
+					<span className={styles['card-header-left']}>{count}<span className={styles['card-header-unit']}>{formatMessage({id: 'databoard.passenger.unit'})}</span></span>
 				</div>
 				<div className={styles['card-footer']}>
 					<div className={styles['card-content-label']}>
-						<span className={styles['label-title']}>总客流占比</span>
+						<span className={styles['label-title']}>{formatMessage({ id: 'databoard.passenger.rate'})}</span>
 						<span className={styles['label-percent']}>{formatPassengerRate(totalPercent)}<span className={styles['label-percent-unit']}>%</span></span>
 					</div>
 					<Progress
@@ -86,7 +86,7 @@ class MainCustomerCard extends React.Component {
 					scene === 'total'?
 						<div className={styles['card-footer']}>
 							<div className={styles['card-content-label']}>
-								<span className={styles['label-title']}>熟客占比</span>
+								<span className={styles['label-title']}>{formatMessage({ id: 'databoard.regular.rate'})}</span>
 								<span className={styles['label-percent']}>{formatPassengerRate(regularPercent)}%</span>
 							</div>
 							<Progress

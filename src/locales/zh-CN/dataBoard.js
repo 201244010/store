@@ -16,4 +16,14 @@ export default {
 	'databoard.frequency.day.unit': '次/日',
 	'databoard.frequency.week.unit': '次/周',
 	'databoard.frequency.month.unit': '次/月',
+	'databoard.regular.rate': '熟客占比',
+	'databoard.passenger.frequency': '到店频次',
+	'databoard.hot.time': '到店高峰',
+	'databoard.hot.time.unit': '点',
+	'databoard.gender.male': '男',
+	'databoard.gender.female': '女',
+	'databoard.age.unit': '岁',
+	'databoard.passenger.unit': '人',
+	'databoard.passenger.rate': '总客流占比',
+
 };
