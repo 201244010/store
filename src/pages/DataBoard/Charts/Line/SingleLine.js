@@ -196,7 +196,7 @@ export default class Line extends Component {
 					},
 					tooltip: {
 						shared: false,
-						// useHtml: true,
+						useHtml: true,
 						containerTpl: `<div class="g2-tooltip">
 						    <ul class="g2-tooltip-list data-chart-list"></ul>
 						 </div>`,
