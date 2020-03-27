@@ -4,7 +4,11 @@ const router = [
 		// component: '../layouts/SunmiLayout',
 		id: 'userProtocol',
 		routes: [
-			{ path: '/userProtocol/serviceProtocol', component: './IPC/CloudStorage/protocol.js', id: 'serviceProtocol' }
+			{
+				path: '/userProtocol/serviceProtocol',
+				component: './IPC/CloudStorage/protocol.js',
+				id: 'serviceProtocol',
+			},
 		],
 	},
 	{
@@ -45,7 +49,7 @@ const router = [
 		path: '/show',
 		component: '../layouts/BlankLayout',
 		id: 'show',
-		routes: [{ path: '/show', redirect: '/showcase/login' },],
+		routes: [{ path: '/show', redirect: '/showcase/login' }],
 	},
 
 	{
@@ -89,6 +93,33 @@ const router = [
 				],
 			},
 			{
+				path: '/topview',
+				name: 'topview',
+				icon: 'blank',
+				routes: [
+					// {
+					// 	path: '/topview',
+					// 	id: 'topview',
+					// 	// hideInMenu: true,
+					// 	component: './TopView',
+					// },
+					{
+						path: '/topview/current',
+						id: 'topCurrentData',
+						name: 'topCurrentData',
+						// hideInMenu: true,
+						component: './TopView/DataBoard',
+					},
+					{
+						path: '/topview/passenger',
+						id: 'topPassenger',
+						name: 'topPassenger',
+						// hideInMenu: true,
+						component: './TopView/PassengerAnalyze',
+					},
+				],
+			},
+			{
 				path: '/application',
 				name: 'application',
 				icon: 'blank',
@@ -127,49 +158,53 @@ const router = [
 						],
 					},
 					{
-						path:'/application/cloudStorage',
-						name:'cloudStorageService',
-						routes:[
+						path: '/application/cloudStorage',
+						name: 'cloudStorageService',
+						routes: [
 							{
-								path:'/application/cloudStorage/subscriptionSuccess',
-								name:'subscriptionSuccess',
-								id:'subscriptionSuccess',
+								path: '/application/cloudStorage/subscriptionSuccess',
+								name: 'subscriptionSuccess',
+								id: 'subscriptionSuccess',
 								hideInMenu: true,
-								component: './IPC/CloudStorage/subscriptionSuccess.js'
+								component: './IPC/CloudStorage/subscriptionSuccess.js',
 							},
 							{
-								path:'/application/cloudStorage/orderSubmission',
-								name:'orderSubmission',
+								path: '/application/cloudStorage/orderSubmission',
+								name: 'orderSubmission',
 								hideInMenu: true,
 								routes: [
 									{
 										path: '/application/cloudStorage/orderSubmission/qrpay',
-										name:'qrpay',
+										name: 'qrpay',
 										id: 'qrpay',
 										hideInMenu: true,
-										component: './IPC/CloudStorage/OrderSubmission/QRCodePayment.js',
+										component:
+											'./IPC/CloudStorage/OrderSubmission/QRCodePayment.js',
 									},
 									{
-										path:'/application/cloudStorage/orderSubmission/paymentPage',
-										name:'paymentPage',
-										id:'paymentPage',
+										path:
+											'/application/cloudStorage/orderSubmission/paymentPage',
+										name: 'paymentPage',
+										id: 'paymentPage',
 										hideInMenu: true,
-										component: './IPC/CloudStorage/OrderSubmission/paymentPage.js'
+										component:
+											'./IPC/CloudStorage/OrderSubmission/paymentPage.js',
 									},
 									{
 										path: '/application/cloudStorage/orderSubmission',
 										id: 'orderSubmission',
 										hideInMenu: true,
-										component: './IPC/CloudStorage/OrderSubmission/orderSubmission.js'
-									}
-								]
+										component:
+											'./IPC/CloudStorage/OrderSubmission/orderSubmission.js',
+									},
+								],
 							},
 							{
 								path: '/application/cloudStorage',
 								id: 'cloudStorage',
 								component: './IPC/CloudStorage/cloudStorage.js',
-							}
-						]
+							},
+						],
 					},
 					// {
 					// 	path: '/application/trade',
@@ -205,20 +240,20 @@ const router = [
 						path: '/application/orderManagement',
 						id: 'orderManagement',
 						name: 'orderManagement',
-						routes:[
+						routes: [
 							{
 								path: '/application/orderManagement',
 								id: 'orderManagement',
-								component: './OrderManagement/OrderList'
+								component: './OrderManagement/OrderList',
 							},
 							{
 								path: '/application/orderManagement/orderDetail',
 								id: 'serviceOrderDetail',
 								component: './OrderManagement/OrderDetail',
-								hideInMenu: true
-							}
-						]
-					}
+								hideInMenu: true,
+							},
+						],
+					},
 				],
 			},
 
@@ -430,7 +465,8 @@ const router = [
 										hideInMenu: true,
 									},
 									{
-										path: '/basicData/organizationManagement/detail/newSubOrganization',
+										path:
+											'/basicData/organizationManagement/detail/newSubOrganization',
 										name: 'newSubOrganization',
 										id: 'newSubOrganization',
 										component: './Organization/CompanyInfo',
@@ -441,13 +477,13 @@ const router = [
 										id: 'detail',
 										component: './Organization/OrgDetail',
 									},
-								]
+								],
 							},
 							{
 								path: '/basicData/organizationManagement',
 								id: 'organizationList',
 								component: './Organization/OrganizationList',
-							}
+							},
 						],
 					},
 					{
@@ -806,13 +842,12 @@ const router = [
 								hideInMenu: true,
 								component: './IotAccess/PosAccessDetail',
 							},
-						]
+						],
 					},
 				],
 			},
 		],
 	},
-
 ];
 
 // export default router;
