@@ -9,6 +9,7 @@ class PassengerTrendLine extends PureComponent {
 	render() {
 		const { RTPassengerFlowList, loading, timeType } = this.props;
 		const chartOption = {
+			chartHeight: 370,
 			timeType,
 			data: RTPassengerFlowList,
 			lineColor: ['value', 'rgb(75,122,250)'],

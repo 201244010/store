@@ -15,25 +15,60 @@ const valToTime = val => {
 	return t > 9 ? `${t}:00` : `0${t}:00`;
 };
 
-const latestDataSuppl = (data, timeType = 1) => {
-	// 实时数据为空的进行补全
-	const length = data.length;
+const latestDataSuppl = (data, timeType) => {
+	// return data;
+	let dataPoint;
+	const ponitSuppl = [];
 	if (timeType === TIME_TYPE.DAY) {
-		if (length < 24) {
-			return [...data, { time: 24 }];
-		}
+		dataPoint = 24;
 	}
 	if (timeType === TIME_TYPE.WEEK) {
-		if (length < 7) {
-			return [...data, { time: 7 }];
-		}
+		dataPoint = 7;
 	}
 	if (timeType === TIME_TYPE.MONTH) {
-		if (length < 31) {
-			return [...data, { time: 31 }];
+		dataPoint = 31;
+	}
+
+	const nameList = [];
+	data.forEach(item => {
+		const { name } = item;
+		if (name) {
+			nameList.push(name);
+		}
+	});
+
+	if (nameList.length > 0) {
+		const dataGroupByName = {};
+		data.forEach(item => {
+			const { name } = item;
+			dataGroupByName[name]
+				? dataGroupByName[name].push(item)
+				: (dataGroupByName[name] = [item]);
+		});
+		console.log('wx:', dataGroupByName);
+		Object.keys(dataGroupByName).forEach(name => {
+			const dataList = dataGroupByName[name];
+			if (timeType === TIME_TYPE.DAY) {
+				// 日维度补0点
+				ponitSuppl.push({ name, time: 0, value: 0 });
+			}
+			if (dataList.length < dataPoint) {
+				// 实时数据补上最后一个点
+				ponitSuppl.push({ name, time: dataPoint });
+			}
+		});
+	} else {
+		// eslint-disable-next-line no-lonely-if
+		if (timeType === TIME_TYPE.DAY) {
+			// 日维度补0点
+			ponitSuppl.push({ time: 0, value: 0 });
+		}
+		if (data.length < dataPoint) {
+			// 实时数据补上最后一个点
+			ponitSuppl.push({ time: dataPoint });
 		}
 	}
-	return data;
+	return [...data, ...ponitSuppl];
 };
 
 export default class Line extends Component {
@@ -73,7 +108,13 @@ export default class Line extends Component {
 	foramtData = (data, timeType) => {
 		// time修正
 		const dv = new DataView();
-		dv.source(latestDataSuppl(data, timeType)).transform({
+		const dataSuppl = latestDataSuppl(data, timeType);
+		if (timeType === TIME_TYPE.DAY) {
+			dataSuppl.forEach(item => {
+				item.time += 1;
+			});
+		}
+		dv.source(dataSuppl).transform({
 			type: 'map',
 			callback(row) {
 				// 数据从0开始
@@ -81,6 +122,7 @@ export default class Line extends Component {
 				return row;
 			},
 		});
+		console.log('wx:----after foramtData', dv);
 		return dv;
 	};
 
@@ -122,6 +164,7 @@ export default class Line extends Component {
 			chartScale = {},
 			crosshairs = {},
 			lineActive,
+			chartHeight,
 		} = this.props;
 
 		let { lineSize } = this.props;
@@ -177,6 +220,7 @@ export default class Line extends Component {
 					areaColor,
 					legend,
 					title,
+					height: chartHeight,
 				}}
 			/>
 		);

@@ -2,7 +2,7 @@ import React from 'react';
 import { Progress } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { formater } from '@/utils/format';
-import styles from './mainCustomerCard.less';
+import styles from '../chartsCommon.less';
 
 const frequencyUnit = {
 	1: 'day',
