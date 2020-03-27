@@ -1382,8 +1382,8 @@ export default {
 					const femaleUniqPassenger = femaleList.reduce((prev, cur) => prev + cur.uniqPassengerCount, 0);
 					const malePassenger = maleList.reduce((prev, cur) => prev + cur.passengerCount, 0);
 					const maleUniqPassenger = maleList.reduce((prev, cur) => prev + cur.uniqPassengerCount, 0);
-					const femaleFrequency = femaleUniqPassenger ? femalePassenger / femaleUniqPassenger : 0;
-					const maleFrequency = maleUniqPassenger ? malePassenger / maleUniqPassenger : 0;
+					const femaleFrequency = femaleUniqPassenger ? femalePassenger / femaleUniqPassenger : undefined;
+					const maleFrequency = maleUniqPassenger ? malePassenger / maleUniqPassenger : undefined;
 
 					const [code1, code2, code3, ...femalTail] = femaleList.sort((a, b) => a.ageRangeCode - b.ageRangeCode);
 					const [code4, code5, code6, ...maleTail] = maleList.sort((a, b) => a.ageRangeCode - b.ageRangeCode);

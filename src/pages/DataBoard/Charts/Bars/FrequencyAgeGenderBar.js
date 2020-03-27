@@ -51,6 +51,12 @@ export default class FrequencyAgeGenderBar extends React.Component {
 	};
 
 	foramtValUnitByTime = (value, timeType) => {
+		if(value === undefined) {
+			return {
+				value: '--',
+				unit: '',
+			};
+		}
 		const obj = frequencyFormat({ value, returnType: 'split'});
 		if (timeType === 2) {
 			const { int, float, point, unit } = obj.week;
@@ -68,7 +74,10 @@ export default class FrequencyAgeGenderBar extends React.Component {
 			};
 			// return '次/月';
 		}
-		return '';
+		return {
+			value: '--',
+			unit: '',
+		};
 		// return '次';
 	};
 
