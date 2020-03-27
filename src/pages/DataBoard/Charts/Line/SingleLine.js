@@ -184,16 +184,24 @@ export default class Line extends Component {
 						name: formatToolTipName(name),
 					}),
 			],
-			chartScale = {},
+
 			crosshairs = {},
 			lineActive,
 			chartHeight,
 		} = this.props;
 
-		let { lineSize } = this.props;
+		let { lineSize, chartScale = {} } = this.props;
 		const dataForamtted = foramtData(data, timeType);
 		if (type === 'interval') {
 			lineSize = barWidthFit(timeType);
+			chartScale = {
+				time: {
+					type: 'linear',
+					nice: false,
+					range: [0.09, 0.91],
+					// tickCount: barAmout,
+				},
+			};
 		}
 
 		return (
