@@ -2,7 +2,7 @@ import React from 'react';
 import { Progress } from 'antd';
 import { formater } from '@/utils/format';
 // import { customerDistriData } from './mock';
-import styles from './frequencyAgeGenderBar.less';
+import styles from '../chartsCommon.less';
 
 const { frequencyFormat } = formater;
 // {

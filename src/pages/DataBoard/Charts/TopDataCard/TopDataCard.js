@@ -3,7 +3,7 @@ import { Tooltip, Card, Icon } from 'antd';
 import { formater } from '@/utils/format';
 import { DATABOARD } from '../constants';
 // import { formatMessage } from 'umi/locale';
-import styles from './topView.less';
+import styles from '../chartsCommon.less';
 
 
 const { DATA_TYPE, UNIT_FREQUENCY, EARLY_LABEL_CURRENT, EARLY_LABEL_HISTORY, FREQUENCY_TYPE, LABEL_TEXT } = DATABOARD;
