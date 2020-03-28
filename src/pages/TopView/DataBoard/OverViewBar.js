@@ -36,7 +36,7 @@ class OverViewBar extends Component {
 
 		const itemListData = [
 			{
-				label: 'passengerCount',
+				label: 'totalPassengerCount',
 				unit: '',
 				count: latestCustomerCount,
 				earlyCount: earlyCustomerCount,

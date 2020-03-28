@@ -43,6 +43,7 @@ const handleCountFormat = (count, label, timeType) => {
 	}
 	// let int, point, float;
 	switch(label) {
+		case 'totalPassengerCount':
 		case 'passengerCount':
 		case 'deviceCount':
 		case 'totalCount':
