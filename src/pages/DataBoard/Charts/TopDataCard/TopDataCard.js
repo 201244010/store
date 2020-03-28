@@ -9,6 +9,7 @@ import styles from '../chartsCommon.less';
 const { DATA_TYPE, UNIT_FREQUENCY, EARLY_LABEL_CURRENT, EARLY_LABEL_HISTORY, FREQUENCY_TYPE, LABEL_TEXT } = DATABOARD;
 
 const handleEarlyLabelText = (timeType, dataType) => {
+	console.log('timeType', timeType, 'dataType', dataType);
 	if (dataType === DATA_TYPE.current) {
 		return `${EARLY_LABEL_CURRENT[timeType]}`;
 	}

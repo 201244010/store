@@ -3,7 +3,6 @@ import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } 
 // import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Pie from './Pie';
 import MainCustomerCard from './MainCustomerCard';
-// import TopDataCard from '../TopView/DataBoard/TopDataCard';
 import TopDataCard from '../DataBoard/Charts/TopDataCard/TopDataCard';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
@@ -312,43 +311,59 @@ class BizchartDemo extends React.Component {
 				</div>
 				<Row gutter={24} justify='space-between' className={styles['overview-bar']}>
 					<Col span={6}>
-						<TopDataCard data={{
-							label: '总客流量',
-							unit: '',
-							count: todayTotalCount,
-							earlyCount: earlyTotalCount,
-							compareRate: true,
-							toolTipText: 'toolTipText',}}
+						<TopDataCard
+							data={{
+								label: 'totalPassengerCount',
+								unit: '',
+								count: todayTotalCount,
+								earlyCount: earlyTotalCount,
+								compareRate: true,
+								toolTipText: 'toolTipText',
+							}}
+							timeType={dateType}
+							dataType={2}
 						/>
 					</Col>
 					<Col span={6}>
-						<TopDataCard data={{
-							label: '进店率',
-							unit: '',
-							count: todayEnterPercent,
-							earlyCount: earlyEnterPercent,
-							compareRate: true,
-							toolTipText: 'toolTipText',}}
+						<TopDataCard
+							data={{
+								label: 'enteringRate',
+								unit: '',
+								count: todayEnterPercent,
+								earlyCount: earlyEnterPercent,
+								compareRate: true,
+								toolTipText: 'toolTipText',
+							}}
+							timeType={dateType}
+							dataType={2}
 						/>
 					</Col>
 					<Col span={6}>
-						<TopDataCard data={{
-							label: '新客人数',
-							unit: '',
-							count: newGuest,
-							earlyCount: earlyNewGuest,
-							compareRate: true,
-							toolTipText: 'toolTipText',}}
+						<TopDataCard
+							data={{
+								label: 'strangeCount',
+								unit: '',
+								count: newGuest,
+								earlyCount: earlyNewGuest,
+								compareRate: true,
+								toolTipText: 'toolTipText',
+							}}
+							timeType={dateType}
+							dataType={2}
 						/>
 					</Col>
 					<Col span={6}>
-						<TopDataCard data={{
-							label: '熟客人数',
-							unit: '',
-							count: regularGuest,
-							earlyCount: earlyRegularGuest,
-							compareRate: true,
-							toolTipText: 'toolTipText',}}
+						<TopDataCard
+							data={{
+								label: 'regularCount',
+								unit: '',
+								count: regularGuest,
+								earlyCount: earlyRegularGuest,
+								compareRate: true,
+								toolTipText: 'toolTipText',
+							}}
+							timeType={dateType}
+							dataType={2}
 						/>
 					</Col>
 				</Row>

@@ -35,6 +35,7 @@ export const DATABOARD = {
 		regularCount: '熟客人数',
 		totalAmount: '销售额',
 		enteringRate: '进店率',
+		strangeCount: '新客人数',
 		transactionRate: '交易转化率',
 		avgFrequency: '到店频次',
 		totalPassengerCount: '总客流量',
