@@ -81,7 +81,7 @@ const router = [
 						path: '/dashboard',
 						id: 'dashboard',
 						hideInMenu: true,
-						component: './DashBoard',
+						component: './DataBoard/RTDataBoard',
 					},
 					{
 						path: '/dashboard/detail',
@@ -92,6 +92,22 @@ const router = [
 					},
 				],
 			},
+			// {
+			// 	path: '/databoard',
+			// 	name: 'rtdataboard',
+			// 	icon: 'blank',
+			// 	routes: [{
+			// 		path: '/databoard/realtime',
+			// 		id: 'rtdataboard',
+			// 		hideInMenu: true,
+			// 		component: './DataBoard/RTDataBoard',
+			// 	}, {
+			// 		path: '/databoard/passenger',
+			// 		id: 'pdataboard',
+			// 		hideInMenu: true,
+			// 		component: './DataBoard/PassengerDataBoard',
+			// 	}],
+			// },
 			{
 				path: '/topview',
 				name: 'topview',
@@ -267,7 +283,7 @@ const router = [
 						path: '/dataAnalyze/passenger',
 						name: 'passenger',
 						id: 'passengerAnalyze',
-						component: './PassengerAnalyze',
+						component: './DataBoard/PassengerDataBoard',
 					},
 				],
 			},
