@@ -1,5 +1,6 @@
 import React from 'react';
 import { Progress } from 'antd';
+import { formatMessage } from 'umi/locale';
 import { frequencyFormat } from '@/utils/format';
 // import { customerDistriData } from './mock';
 import styles from '../chartsCommon.less';
@@ -28,12 +29,12 @@ const ageCodeToIndex = range => {
 };
 
 const AGE_RANGE_LABEL = {
-	0: '18岁以下',
-	1: '19-28岁',
-	2: '29-35岁',
-	3: '36-45岁',
-	4: '46-55岁',
-	5: '56岁以上',
+	0: formatMessage('databoard.age.range.1'),
+	1: formatMessage('databoard.age.range.4'),
+	2: formatMessage('databoard.age.range.5'),
+	3: formatMessage('databoard.age.range.6'),
+	4: formatMessage('databoard.age.range.7'),
+	5: formatMessage('databoard.age.range.8'),
 };
 
 export default class FrequencyAgeGenderBar extends React.Component {
@@ -145,7 +146,9 @@ export default class FrequencyAgeGenderBar extends React.Component {
 
 		return (
 			<div className={styles['frequency-age-gender-bar']}>
-				<h1 className="chart-title">客群平均到店频次</h1>
+				<h1 className="chart-title">
+					{formatMessage({ id: 'databoard.chart.ageGenderFrequency' })}
+				</h1>
 				<div className="chart-wrapper">
 					<div className="overview-bar">
 						<div className="left">
@@ -153,14 +156,18 @@ export default class FrequencyAgeGenderBar extends React.Component {
 								<span className="value">{maleValue.value}</span>
 								<span className="unit">{maleValue.unit}</span>
 							</p>
-							<p className="label__male">男性</p>
+							<p className="label__male">
+								{formatMessage({ id: 'databoard.chart.gender.male' })}
+							</p>
 						</div>
 						<div className="right">
 							<p className="value-wrapper">
 								<span className="value">{femaleValue.value}</span>
 								<span className="unit">{femaleValue.unit}</span>
 							</p>
-							<p className="label__female">女性</p>
+							<p className="label__female">
+								{formatMessage({ id: 'databoard.chart.gender.female' })}
+							</p>
 						</div>
 					</div>
 					<div className="bar-wrapper">{barItems}</div>

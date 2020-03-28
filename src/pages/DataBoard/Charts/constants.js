@@ -1,3 +1,5 @@
+import { formatMessage } from 'umi/locale';
+
 export const DATABOARD = {
 	TIME_TYPE: {
 		DAY: 1,
@@ -9,19 +11,19 @@ export const DATABOARD = {
 		history: 2,
 	},
 	UNIT_FREQUENCY: {
-		1: '次/日',
-		2: '次/周',
-		3: '次/月',
+		1: formatMessage({ id: 'databoard.frequency.day.unit' }),
+		2: formatMessage({ id: 'databoard.frequency.week.unit' }),
+		3: formatMessage({ id: 'databoard.frequency.month.unit' }),
 	},
 	EARLY_LABEL_CURRENT: {
-		1: '昨日',
-		2: '上周',
-		3: '上月',
+		1: formatMessage({ id: 'databoard.search.yesterday' }),
+		2: formatMessage({ id: 'databoard.search.week.last' }),
+		3: formatMessage({ id: 'databoard.search.month.last' }),
 	},
 	EARLY_LABEL_HISTORY: {
-		1: '较前一日',
-		2: '较前一周',
-		3: '较前一月',
+		1: formatMessage({ id: 'databoard.data.compare.yesterday' }),
+		2: formatMessage({ id: 'databoard.data.compare.week' }),
+		3: formatMessage({ id: 'databoard.data.compare.month' }),
 	},
 	FREQUENCY_TYPE: {
 		1: 'day',
@@ -29,15 +31,15 @@ export const DATABOARD = {
 		3: 'month',
 	},
 	LABEL_TEXT: {
-		passengerCount: '进店客流',
-		deviceCount: '总设备数',
-		totalCount: '交易笔数',
-		regularCount: '熟客人数',
-		totalAmount: '销售额',
-		enteringRate: '进店率',
-		transactionRate: '交易转化率',
-		avgFrequency: '到店频次',
-		totalPassengerCount: '总客流量',
+		passengerCount: formatMessage({ id: 'databoard.data.passenger' }),
+		deviceCount: formatMessage({ id: 'databoard.device.totalCount' }),
+		totalCount: formatMessage({ id: 'databoard.order.count' }),
+		regularCount: formatMessage({ id: 'databoard.order.regularCount' }),
+		totalAmount: formatMessage({ id: 'databoard.order.sales' }),
+		enteringRate: formatMessage({ id: 'databoard.data.entering' }),
+		transactionRate: formatMessage({ id: 'databoard.order.transactionRate' }),
+		avgFrequency: formatMessage({ id: 'databoard.passenger.frequency' }),
+		totalPassengerCount: formatMessage({ id: 'databoard.order.totalPassengerCount' }),
 	},
 	LINE_SIZE: 3,
 };

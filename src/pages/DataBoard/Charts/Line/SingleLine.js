@@ -77,18 +77,20 @@ export default class Line extends Component {
 	formatToolTipAxisX = (time, timeType) => {
 		if (timeType === TIME_TYPE.DAY) {
 			if (time === 0) {
-				return `时间：${valToTime(time)}`;
+				return `${formatMessage({ id: 'databoard.time' })}：${valToTime(time)}`;
 			}
-			return `时间：${valToTime(time - 1)} - ${valToTime(time)}`;
+			return `${formatMessage({ id: 'databoard.time' })}：${valToTime(
+				time - 1
+			)} - ${valToTime(time)}`;
 		}
 		if (timeType === TIME_TYPE.WEEK) {
-			return `时间：${moment()
+			return `${formatMessage({ id: 'databoard.time' })}：${moment()
 				.startOf('week')
 				.add(time, 'day')
 				.format('MM.DD')}`;
 		}
 		if (timeType === TIME_TYPE.MONTH) {
-			return `时间：${moment()
+			return `${formatMessage({ id: 'databoard.time' })}：${moment()
 				.startOf('month')
 				.add(time, 'day')
 				.format('MM.DD')}`;

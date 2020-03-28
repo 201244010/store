@@ -1,5 +1,6 @@
 import React from 'react';
 import { Chart, Geom, Axis, Tooltip } from 'bizcharts';
+import { formatMessage } from 'umi/locale';
 // import { frequencyData } from './mock';
 import styles from '../chartsCommon.less';
 
@@ -11,7 +12,7 @@ export default class FrequencyBar extends React.Component {
 			// 5组数据 or 11组数据时 最后一组 xxx以上 X轴
 			val -= 0;
 			if (val === barAmout) {
-				return `${val - 1}以上`;
+				return `${val - 1}${formatMessage({ id: 'databoard.chart.above' })}`;
 			}
 		}
 		return val;
@@ -21,10 +22,10 @@ export default class FrequencyBar extends React.Component {
 		// 提示框
 		if (FREQUENCY_MAX.includes(barAmout)) {
 			if (x === barAmout) {
-				return `${x - 1}次以上`;
+				return `${x - 1}${formatMessage({ id: 'databoard.chart.frequency.above' })}`;
 			}
 		}
-		return `${x}次`;
+		return `${x}${formatMessage({ id: 'databoard.data.frequency.unit' })}`;
 	};
 
 	barWidthFit = barAmout => {
@@ -39,7 +40,7 @@ export default class FrequencyBar extends React.Component {
 
 	render() {
 		const { formatToolTipAxisX, formatLabelX, barWidthFit } = this;
-		const chartTitle = '到店次数分布';
+		const chartTitle = formatMessage({ id: 'databoard.chart.title.frequencyDistri' });
 		// const data = frequencyData;
 		const { data, chartHeight = 250 } = this.props;
 		const barAmout = data.length;
@@ -69,9 +70,9 @@ export default class FrequencyBar extends React.Component {
 					<ul class="g2-tooltip-list data-chart-list"></ul>
 				 </div>`,
 							itemTpl: `<li class="detail" data-index={index}>
-					<p class="item item__name">到店人数</p>
+					<p class="item item__name">${formatMessage({ id: 'databoard.chart.passengerEnterCount' })}</p>
 					<p class="item item__value">{value}人</p>
-					<p class="item item__labelX">频次：{labelX}</p>
+					<p class="item item__labelX">${formatMessage({ id: 'databoard.chart.frequency' })}：{labelX}</p>
 				</li>`,
 						}}
 					/>

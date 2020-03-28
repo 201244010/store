@@ -1,5 +1,6 @@
 import React from 'react';
 import { DataView } from '@antv/data-set';
+import { formatMessage } from 'umi/locale';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import styles from '../chartsCommon.less';
 
@@ -8,19 +9,19 @@ export default class AgeGenderBar extends React.Component {
 	formatAgeCode = range => {
 		switch (range) {
 			case 1:
-				return '18岁以下';
+				return formatMessage({ id: 'databoard.age.range.1' });
 			case 4:
-				return '19-28岁';
+				return formatMessage({ id: 'databoard.age.range.4' });
 			case 5:
-				return '29-35岁';
+				return formatMessage({ id: 'databoard.age.range.5' });
 			case 6:
-				return '36-45岁';
+				return formatMessage({ id: 'databoard.age.range.6' });
 			case 7:
-				return '46-55岁';
+				return formatMessage({ id: 'databoard.age.range.7' });
 			case 8:
-				return '56岁以上';
+				return formatMessage({ id: 'databoard.age.range.8' });
 			default:
-				return '18岁以下';
+				return formatMessage({ id: 'databoard.age.range.1' });
 		}
 	};
 
@@ -37,7 +38,7 @@ export default class AgeGenderBar extends React.Component {
 		const { formatAgeCode } = this;
 		console.log('wx_', ageGenderList);
 		const { formatToolTipAxisX, formatLabelX } = this;
-		const chartTitle = '性别年龄占比';
+		const chartTitle = formatMessage({ id: 'databoard.chart.ageGender' });
 
 		const dv = new DataView();
 		const data = dv.source(ageGenderList.sort()).transform({
@@ -45,10 +46,10 @@ export default class AgeGenderBar extends React.Component {
 			callback(row) {
 				row.rangeKey = formatAgeCode(row.range);
 				if (row.gender === 'male') {
-					row.gender = '男性';
+					row.gender = formatMessage({ id: 'databoard.chart.gender.male' });
 				}
 				if (row.gender === 'female') {
-					row.gender = '女性';
+					row.gender = formatMessage({ id: 'databoard.chart.gender.female' });
 				}
 				return row;
 			},

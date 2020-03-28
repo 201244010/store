@@ -1,12 +1,24 @@
 import React from 'react';
 import { Tooltip, Card, Icon } from 'antd';
-import { formatFloatByPermile, frequencyFormat, passengerNumFormat, saleMoneyFormat } from '@/utils/format';
+import { formatMessage } from 'umi/locale';
+import {
+	formatFloatByPermile,
+	frequencyFormat,
+	passengerNumFormat,
+	saleMoneyFormat,
+} from '@/utils/format';
 import { DATABOARD } from '../constants';
 // import { formatMessage } from 'umi/locale';
 import styles from '../chartsCommon.less';
 
-
-const { DATA_TYPE, UNIT_FREQUENCY, EARLY_LABEL_CURRENT, EARLY_LABEL_HISTORY, FREQUENCY_TYPE, LABEL_TEXT } = DATABOARD;
+const {
+	DATA_TYPE,
+	UNIT_FREQUENCY,
+	EARLY_LABEL_CURRENT,
+	EARLY_LABEL_HISTORY,
+	FREQUENCY_TYPE,
+	LABEL_TEXT,
+} = DATABOARD;
 
 const handleEarlyLabelText = (timeType, dataType) => {
 	if (dataType === DATA_TYPE.current) {
@@ -19,7 +31,7 @@ const handleEarlyLabelText = (timeType, dataType) => {
 };
 
 const handleUnitText = (unit, count, timeType) => {
-	if(count === undefined) {
+	if (count === undefined) {
 		return '';
 	}
 	if (unit === 'frequency') {
@@ -28,21 +40,21 @@ const handleUnitText = (unit, count, timeType) => {
 	if (unit === 'percent') {
 		return '%';
 	}
-	const { unit: countUnit } = passengerNumFormat({ value: count, returnType: 'split'});
+	const { unit: countUnit } = passengerNumFormat({ value: count, returnType: 'split' });
 	return countUnit;
 };
 
 const handleFormat = (count, fn) => {
-	const { int, point, float } = fn({ value: count, returnType: 'split'});
+	const { int, point, float } = fn({ value: count, returnType: 'split' });
 	return `${int}${point}${float}`;
 };
 
 const handleCountFormat = (count, label, timeType) => {
-	if(count === undefined) {
+	if (count === undefined) {
 		return '--';
 	}
 	// let int, point, float;
-	switch(label) {
+	switch (label) {
 		case 'totalPassengerCount':
 		case 'passengerCount':
 		case 'deviceCount':
@@ -57,29 +69,36 @@ const handleCountFormat = (count, label, timeType) => {
 			return handleFormat(count, formatFloatByPermile);
 		case 'avgFrequency': {
 			const type = FREQUENCY_TYPE[timeType];
-			const { int, point, float } = frequencyFormat({ value: count, returnType: 'split'})[type];
+			const { int, point, float } = frequencyFormat({ value: count, returnType: 'split' })[
+				type
+			];
 			return `${int}${point}${float}`;
 		}
-		default: return count;
+		default:
+			return count;
 	}
 };
 
 const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) => {
 	if (compareRate) {
 		const changeRate = earlyCount ? (count - earlyCount) / earlyCount : undefined;
-		const formatRate = formatFloatByPermile({ value: Math.abs((count - earlyCount) / earlyCount), returnType: 'join' });
+		const formatRate = formatFloatByPermile({
+			value: Math.abs((count - earlyCount) / earlyCount),
+			returnType: 'join',
+		});
 		return (
 			<>
-				{
-					changeRate === undefined ? ''
-						: <div
-							className={
-								changeRate > 0 ? 'early-value__icon__rise' : 'early-value__icon__down'
-							}
-						/>
-				}
+				{changeRate === undefined ? (
+					''
+				) : (
+					<div
+						className={
+							changeRate > 0 ? 'early-value__icon__rise' : 'early-value__icon__down'
+						}
+					/>
+				)}
 				<div>
-					<span>{changeRate === undefined ? '--': formatRate}</span>
+					<span>{changeRate === undefined ? '--' : formatRate}</span>
 				</div>
 			</>
 		);
@@ -94,11 +113,16 @@ const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) =>
 	);
 };
 
-const TopDataCard = ({ data, dataType, timeType, loading, onClick = null, }) => {
+const TopDataCard = ({ data, dataType, timeType, loading, onClick = null }) => {
 	const { label, unit, count, earlyCount, compareRate, toolTipText } = data;
 
 	return (
-		<Card bordered={false} className={styles['top-data-card']} loading={loading} onClick={onClick}>
+		<Card
+			bordered={false}
+			className={styles['top-data-card']}
+			loading={loading}
+			onClick={onClick}
+		>
 			<div className="label">{LABEL_TEXT[label]}</div>
 			<div className="value">
 				<span className="value__number">{handleCountFormat(count, label, timeType)}</span>
@@ -107,10 +131,11 @@ const TopDataCard = ({ data, dataType, timeType, loading, onClick = null, }) => 
 			<div className="early-value">
 				<div>
 					{/* // 昨日 上周 上月 、 较前一日 */}
-					{
-						label !== 'deviceCount'?
-							<span>{handleEarlyLabelText(timeType, dataType)} </span> : <span>在线设备数 </span>
-					}
+					{label !== 'deviceCount' ? (
+						<span>{handleEarlyLabelText(timeType, dataType)} </span>
+					) : (
+						<span>{formatMessage({ id: 'databoard.onlineDeviceCount' })} </span>
+					)}
 				</div>
 				<EarlyData {...{ count, earlyCount, compareRate, label, unit, timeType }} />
 			</div>
