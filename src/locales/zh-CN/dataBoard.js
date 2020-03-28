@@ -82,4 +82,5 @@ export default {
 	'databoard.order.transactionRate': '交易转化率',
 	'databoard.order.regularCount': '熟客人数',
 	'databoard.order.totalPassengerCount': '总客流量',
+	'databoard.order.strangeCount': '新客人数',
 };
