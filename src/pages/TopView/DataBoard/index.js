@@ -51,6 +51,12 @@ class DataBoard extends Component {
 		clearTimeout(this.timer);
 	}
 
+	handleTabelFilters = data =>
+		data.map(({ shopName }, index) => ({
+			text: shopName,
+			value: index,
+		}));
+
 	foramtTabelData = (data, dataType) => {
 		const tabelData = data
 			.map(item => {
@@ -116,7 +122,7 @@ class DataBoard extends Component {
 	};
 
 	render() {
-		const { handleRefresh, foramtTabelData } = this;
+		const { handleRefresh, foramtTabelData, handleTabelFilters } = this;
 		const {
 			latestCustomerData,
 			latestOrderAmoutData,
@@ -124,6 +130,8 @@ class DataBoard extends Component {
 			latestOrderAmoutByShop,
 			loading,
 		} = this.props;
+		const columnsFilter = handleTabelFilters(foramtTabelData(latestCustomerByShop));
+		console.log('columnsFilter:', columnsFilter);
 		const columns = [
 			{
 				title: '排名',
@@ -133,6 +141,8 @@ class DataBoard extends Component {
 			{
 				title: '门店',
 				dataIndex: 'shopName',
+				filters: columnsFilter,
+				onFilter: (value, record) => record.key === value,
 			},
 			{ title: 'value', dataIndex: 'value' },
 		];
