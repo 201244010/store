@@ -2,9 +2,25 @@ import React from 'react';
 import { Progress } from 'antd';
 import styles from './mainCustomerCard.less';
 
+const GENDER = {
+	1: '男',
+	2: '女',
+}
+const AGERANGE = {
+	1: "0~6岁",
+	2: "7~12岁",
+	3: "13~18岁",
+	4: "19~28岁",
+	5: "29~35岁",
+	6: "36~45岁",
+	7: "46~55岁",
+	8: "56~100岁",
+};
+
 class MainCustomerCard extends React.Component {
 	render() {
-		const { type = 'man', age = '19~28岁', num = '0', totalPercent = 50, scene = 'single', frequentPercent = 60, frequencyOfArrival = '1.2', shopPeak = '12-13点'} = this.props;
+		const { gender = 1, age = 1, num = '0', totalPercent = 50, scene = 'single', frequentPercent = 60, frequencyOfArrival = '1.2', shopPeak = '12-13点'} = this.props;
+
 		const singleFooter = [
 			{
 				title: '熟客占比',
@@ -24,10 +40,10 @@ class MainCustomerCard extends React.Component {
 			<div className={styles['card-body']}>
 				<div className={styles['card-header']}>
 					<div className={styles['card-header-right']}>
-						<div className={styles['card-img']} style={{backgroundImage: `url(${type === 'man'? require('./man.png'):require('./woman.png')})`}}></div>
-						<span className={styles['card-sex']}>{type === 'man'? '男':'女'}</span>
+						<div className={styles['card-img']} style={{backgroundImage: `url(${gender === 1? require('./man.png'):require('./woman.png')})`}}></div>
+						<span className={styles['card-sex']}>{GENDER[gender]}</span>
 						<span className={styles['card-line']}></span>
-						<span className={styles['card-age']}>{age}</span>
+						<span className={styles['card-age']}>{AGERANGE[age]}</span>
 					</div>
 					<span className={styles['card-header-left']}>{num}人</span>
 				</div>

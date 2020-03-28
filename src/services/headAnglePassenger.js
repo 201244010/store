@@ -3,12 +3,23 @@ import { customizeFetch } from '@/utils/fetch';
 
 const fetchApi = customizeFetch('api/passengerFlow/company/statistic/history');
 
+export const getHeadPassengerSurvey = ( options = {}) => {
+	const opts = {
+		method: 'POST',
+		body: { ...format('toSnake')(options) },
+	};
+
+	return fetchApi('getByDate', opts)
+		.then(response => response.json())
+		.then(data => format('toCamel')(data));
+};
+
 export const getHeadPassengerByRegular = ( options = {}) => {
 	const opts = {
 		method: 'POST',
 		body: { ...format('toSnake')(options) },
 	};
-	
+
 	return fetchApi('ageRegular/getByDate', opts)
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
@@ -19,7 +30,7 @@ export const getHeadPassengerByGender = ( options = {}) => {
 		method: 'POST',
 		body: { ...format('toSnake')(options) },
 	};
-	
+
 	return fetchApi('ageGender/getByDate', opts)
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
@@ -30,7 +41,7 @@ export const getHeadShopListByRegular = ( options = {}) => {
 		method: 'POST',
 		body: { ...format('toSnake')(options) },
 	};
-	
+
 	return fetchApi('ageRegular/branch/getByDate', opts)
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
@@ -41,7 +52,7 @@ export const getHeadShopListByGender = ( options = {}) => {
 		method: 'POST',
 		body: { ...format('toSnake')(options) },
 	};
-	
+
 	return fetchApi('ageGender/branch/getByDate', opts)
 		.then(response => response.json())
 		.then(data => format('toCamel')(data));
