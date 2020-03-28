@@ -51,4 +51,6 @@ export default {
 	'databoaed.transaction.rate.tip': '本门店成功付款的订单数/进店人数',
 	'databoaed.regular.tip': '非第一次进店的客户人数之和',
 	'databoaed.frequency.tip': '本门店顾客的平均到店次数',
+	'databoard.regular': '熟客',
+	'databoard.stranger': '新客'
 };
