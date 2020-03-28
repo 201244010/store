@@ -48,10 +48,16 @@ class PassengerTrend extends PureComponent {
 				offsetY: 0,
 				custom: false,
 				marker: 'circle',
+				itemFormatter: val => formatMessage({ id: `databoard.data.${val}` }), // val 为每个图例项的文本值
 			},
 		};
-		return(
-			<Card bordered={false} className={styles['line-chart-wrapper']} title={formatMessage({id: 'databoard.passenger.trend.title'})} loading={loading}>
+		return (
+			<Card
+				bordered={false}
+				className={styles['line-chart-wrapper']}
+				title={formatMessage({ id: 'databoard.passenger.trend.title' })}
+				loading={loading}
+			>
 				<SingleLine {...chartOption} />
 			</Card>
 		);

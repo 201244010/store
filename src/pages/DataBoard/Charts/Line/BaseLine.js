@@ -44,6 +44,7 @@ class LinePoint extends PureComponent {
 				custom = false,
 				items = [],
 				marker: legendMarker = 'circle',
+				itemFormatter = val => val,
 			} = {},
 			line: {
 				type: lineType = 'line',
@@ -83,6 +84,7 @@ class LinePoint extends PureComponent {
 						offsetY={offsetY}
 						offsetX={offsetX}
 						marker={legendMarker}
+						itemFormatter={itemFormatter}
 					/>
 				)}
 				<Axis name={xName} label={xLabel} />
