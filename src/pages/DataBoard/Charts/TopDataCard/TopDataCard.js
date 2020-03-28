@@ -47,6 +47,7 @@ const handleCountFormat = (count, label, timeType) => {
 		case 'passengerCount':
 		case 'deviceCount':
 		case 'totalCount':
+		case 'strangerCount':
 		case 'regularCount':
 			return handleFormat(count, passengerNumFormat);
 		case 'totalAmount':

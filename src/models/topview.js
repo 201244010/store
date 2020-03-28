@@ -29,6 +29,7 @@ export default {
 		latestCustomerByShop: [],
 		latestOrderAmoutByShop: [],
 		overViewStatusLoading: false,
+		customerDistri: {},
 	},
 	reducers: {
 		updateState(state, { payload }) {
@@ -94,6 +95,9 @@ export default {
 				}),
 				put({
 					type: 'getEarlyPassenger',
+				}),
+				put({
+					type: 'getEarlyPassengerAgeRegular',
 				}),
 			]);
 			// yield put({
@@ -199,6 +203,63 @@ export default {
 					},
 				});
 			}
+		},
+
+		// 昨（日）客流生熟分布
+		*getEarlyPassengerAgeRegular(_, { call, put }) {
+			const currentOptions = {
+				startTime: moment().format('YYYY-MM-DD'),
+				type: 1,
+			};
+			const response = yield call(
+				handleTopViewPassengerFlow,
+				'history/ageRegular/getByDate',
+				format('toSnake')(currentOptions)
+			);
+			let currentDistri;
+			let earlyDistri;
+			if (response && response.code === ERROR_OK) {
+				const { data = {} } = response;
+				const { countList } = format('toCamel')(data);
+				currentDistri = countList.reduce((pre, cur) => {
+					return {
+						strangerUniqCount: cur.strangerUniqCount + pre.strangerUniqCount,
+						regularUniqCount: cur.regularUniqCount + pre.regularUniqCount,
+					};
+				});
+			}
+			const earlyOptions = {
+				startTime: moment()
+					.add(-1, 'days')
+					.format('YYYY-MM-DD'),
+				type: 1,
+			};
+			const res = yield call(
+				handleTopViewPassengerFlow,
+				'history/ageRegular/getByDate',
+				format('toSnake')(earlyOptions)
+			);
+			if (res && res.code === ERROR_OK) {
+				const { data = {} } = res;
+				const { countList } = format('toCamel')(data);
+				earlyDistri = countList.reduce((pre, cur) => {
+					return {
+						strangerUniqCount: cur.strangerUniqCount + pre.strangerUniqCount,
+						regularUniqCount: cur.regularUniqCount + pre.regularUniqCount,
+					};
+				});
+			}
+			yield put({
+				type: 'updateState',
+				payload: {
+					customerDistri: {
+						earlyStranger: earlyDistri.strangerUniqCount,
+						earlyRegular: earlyDistri.regularUniqCount,
+						currentStranger: currentDistri.strangerUniqCount,
+						currentRegular: currentDistri.regularUniqCount,
+					},
+				},
+			});
 		},
 
 		// 实时交易概况
