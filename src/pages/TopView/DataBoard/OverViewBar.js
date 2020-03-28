@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { formatMessage } from 'umi/locale';
 import { Row, Col } from 'antd';
 import TopDataCard from '@/pages/DataBoard/Charts/TopDataCard/TopDataCard';
 
@@ -51,7 +52,7 @@ class OverViewBar extends Component {
 			count: latestCustomerCount,
 			earlyCount: earlyCustomerCount,
 			compareRate: false,
-			toolTipText: 'toolTipText',
+			toolTipText: formatMessage({ id: 'databoard.top.totalPassengerCount' }),
 		};
 		const strangerCount = {
 			label: 'strangerCount',
@@ -59,7 +60,7 @@ class OverViewBar extends Component {
 			count: customerDistri.currentStranger,
 			earlyCount: customerDistri.earlyStranger,
 			compareRate: false,
-			toolTipText: 'toolTipText',
+			toolTipText: formatMessage({ id: 'databoard.top.strangerCount' }),
 		};
 		const regularCount = {
 			label: 'regularCount',
@@ -67,7 +68,7 @@ class OverViewBar extends Component {
 			count: customerDistri.currentRegular,
 			earlyCount: customerDistri.earlyRegular,
 			compareRate: false,
-			toolTipText: 'toolTipText',
+			toolTipText: formatMessage({ id: 'databoard.top.regularCount' }),
 		};
 		// const regularCount = {
 		// 	label: 'strangerCount',
@@ -83,7 +84,7 @@ class OverViewBar extends Component {
 			count: latestOrderInfo.latestOrderAmount,
 			earlyCount: earlyOrderInfo.earlyOrderAmount,
 			compareRate: false,
-			toolTipText: 'toolTipText',
+			toolTipText: formatMessage({ id: 'databoard.top.totalAmount' }),
 		};
 		const totalCount = {
 			label: 'totalCount',
@@ -91,7 +92,7 @@ class OverViewBar extends Component {
 			count: latestOrderInfo.latestOrderCount,
 			earlyCount: earlyOrderInfo.earlyOrderCount,
 			compareRate: false,
-			toolTipText: 'toolTipText',
+			toolTipText: formatMessage({ id: 'databoard.top.totalCount' }),
 		};
 		const deviceCount = {
 			label: 'deviceCount',
@@ -99,7 +100,7 @@ class OverViewBar extends Component {
 			count: deviceOverView.offline + deviceOverView.online,
 			earlyCount: deviceOverView.offline,
 			compareRate: false,
-			toolTipText: 'toolTipText',
+			toolTipText: formatMessage({ id: 'databoard.top.deviceCount' }),
 		};
 		// if (!hasCustomerData && !hasOrderData) return;
 		if (hasCustomerData && hasOrderData) {

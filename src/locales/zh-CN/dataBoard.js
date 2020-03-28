@@ -83,4 +83,19 @@ export default {
 	'databoard.order.regularCount': '熟客人数',
 	'databoard.order.totalPassengerCount': '总客流量',
 	'databoard.order.strangeCount': '新客人数',
+	'databoard.top.totalPassengerCount': '0点至当前时间，所有门店的客流量之和',
+	'databoard.top.strangerCount': '0点至当前时间',
+	'databoard.top.regularCount': '0点至当前时间',
+	'databoard.top.totalAmount': '0点至当前时间，所有门店的之和',
+	'databoard.top.totalCount':
+		'0点至当前时间，所有门店的成功付款交易笔数之和（一个订单对应唯一一个订单号）',
+	'databoard.top.deviceCount': '0点至当前时间，所有门店的设备数量之和',
+	'databoard.top.rank': '排名',
+	'databoard.top.shop': '门店',
+	'databoard.top.customer.count': '客流量',
+	'databoard.top.rank.customer': '客流量排行',
+	'databoard.top.rank.customer.tip':
+		'0点至当前时间，所有具备客流统计的门店正向排名情况（若有门店未绑定智能AI识客摄像机，则无法查看其客流量排行',
+	'databoard.top.rank.sales': '销售额排行',
+	'databoard.top.rank.sales.tip': '0点至当前时间，所有门店成功付款金额的正向排名情况',
 };

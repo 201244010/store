@@ -139,33 +139,33 @@ class DataBoard extends Component {
 		} = this.props;
 		const columnsCustomer = [
 			{
-				title: '排名',
+				title: formatMessage({ id: 'databoard.top.rank' }),
 				dataIndex: 'rank',
 				sorter: (a, b) => a.value - b.value,
 			},
 			{
-				title: '门店',
+				title: formatMessage({ id: 'databoard.top.shop' }),
 				dataIndex: 'shopName',
 				filters: handleTabelFilters(foramtTabelData(latestCustomerByShop)),
 				onFilter: (value, record) => record.key === value,
 				render: text => <a onClick={toggleShop}>{text}</a>,
 			},
-			{ title: '客流量', dataIndex: 'value' },
+			{ title: formatMessage({ id: 'databoard.top.customer.count' }), dataIndex: 'value' },
 		];
 		const columnsOrder = [
 			{
-				title: '排名',
+				title: formatMessage({ id: 'databoard.top.rank' }),
 				dataIndex: 'rank',
 				sorter: (a, b) => a.value - b.value,
 			},
 			{
-				title: '门店',
+				title: formatMessage({ id: 'databoard.top.shop' }),
 				dataIndex: 'shopName',
 				filters: handleTabelFilters(foramtTabelData(latestOrderAmoutByShop)),
 				onFilter: (value, record) => record.key === value,
 				render: text => <a onClick={toggleShop}>{text}</a>,
 			},
-			{ title: '销售额', dataIndex: 'value' },
+			{ title: formatMessage({ id: 'databoard.order.sales' }), dataIndex: 'value' },
 		];
 
 		return (
@@ -193,7 +193,9 @@ class DataBoard extends Component {
 							{hasCustomerData && (
 								<Col span={12}>
 									<Card
-										title="客流趋势"
+										title={formatMessage({
+											id: 'databoard.passenger.trend.title',
+										})}
 										loading={loading.effects['topview/getLatestPassengerTrend']}
 									>
 										<CurrentCustomerLine data={latestCustomerData} />
@@ -203,7 +205,9 @@ class DataBoard extends Component {
 							{hasCustomerData && (
 								<Col span={12}>
 									<Card
-										title="经营趋势"
+										title={formatMessage({
+											id: 'databoard.transaction.trend.title',
+										})}
 										loading={loading.effects['topview/getLatestOrderTrend']}
 									>
 										<CurrentSalesLine data={latestOrderAmoutData} />
@@ -215,8 +219,17 @@ class DataBoard extends Component {
 									<Card
 										title={
 											<>
-												<span>客流量排行</span>
-												<Tooltip title={'x'} className="tooltip__icon">
+												<span>
+													{formatMessage({
+														id: 'databoard.top.rank.customer',
+													})}
+												</span>
+												<Tooltip
+													title={formatMessage({
+														id: 'databoard.top.rank.customer.tip',
+													})}
+													className="tooltip__icon"
+												>
 													<Icon type="info-circle" />
 												</Tooltip>
 											</>
@@ -242,8 +255,17 @@ class DataBoard extends Component {
 									<Card
 										title={
 											<>
-												<span>销售额排行</span>
-												<Tooltip title={'x'} className="tooltip__icon">
+												<span>
+													{formatMessage({
+														id: 'databoard.top.rank.sales',
+													})}
+												</span>
+												<Tooltip
+													title={formatMessage({
+														id: 'databoard.top.rank.sales.tip',
+													})}
+													className="tooltip__icon"
+												>
 													<Icon type="info-circle" />
 												</Tooltip>
 											</>
