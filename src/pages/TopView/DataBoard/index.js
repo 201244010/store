@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import { message, Row, Col, Card, Table } from 'antd';
+import { message, Row, Col, Card, Table, Tooltip, Icon } from 'antd';
 import CurrentCustomerLine from './CurrentCustomerLine';
 import CurrentSalesLine from './CurrentSalesLine';
 import StatusBar from './StatusBar';
@@ -145,7 +145,7 @@ class DataBoard extends Component {
 				/>
 				<div className={styles['display-content']}>
 					<OverViewBar />
-					<Row gutter={20}>
+					<Row gutter={20} className={styles['data-detail']}>
 						<Col span={12}>
 							<Card
 								title="客流趋势"
@@ -162,10 +162,18 @@ class DataBoard extends Component {
 								<CurrentSalesLine data={latestOrderAmoutData} />
 							</Card>
 						</Col>
-					</Row>
-					<Row gutter={20}>
 						<Col span={12}>
-							<Card title="客流量排行" className="tabel-wrapper">
+							<Card
+								title={
+									<>
+										<span>客流量排行</span>
+										<Tooltip title={'x'} className="tooltip__icon">
+											<Icon type="info-circle" />
+										</Tooltip>
+									</>
+								}
+								className="tabel-wrapper"
+							>
 								<Table
 									dataSource={foramtTabelData(latestCustomerByShop, 'customer')}
 									columns={columns}
@@ -176,7 +184,17 @@ class DataBoard extends Component {
 							</Card>
 						</Col>
 						<Col span={12}>
-							<Card title="销售额排行" className="tabel-wrapper">
+							<Card
+								title={
+									<>
+										<span>销售额排行</span>
+										<Tooltip title={'x'} className="tooltip__icon">
+											<Icon type="info-circle" />
+										</Tooltip>
+									</>
+								}
+								className="tabel-wrapper"
+							>
 								<Table
 									dataSource={foramtTabelData(latestOrderAmoutByShop, 'order')}
 									columns={columns}

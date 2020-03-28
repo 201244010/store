@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import { Icon } from 'antd';
 
-import styles from './DashBoard.less';
+import styles from './topView.less';
 
 const Refresh = () => (
 	<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1">

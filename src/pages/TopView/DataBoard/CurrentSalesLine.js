@@ -1,22 +1,28 @@
 // 生熟客折线分布
 import React from 'react';
-import SingleLine from './Charts/SingleLine';
+// import SingleLine from '@/pages/DataBoard/Charts/Line/SingleLine';
+import SingleLine from './SingleLine';
 // import { SyncCustomerData } from './Charts/mock';
 
 // Params:timeType,data
-const foramtData = data =>
-	[{ time: 1, orderAmout: 0 }, ...data].map((item, index) => {
-		item.name = '销售额';
-		item.time = index;
-		item.value = item.orderAmount;
-		return item;
+const foramtData = data => {
+	let currentTotal = 0;
+	return data.map((item, index) => {
+		const { orderAmount: value } = item;
+		currentTotal += value;
+		return {
+			value: currentTotal,
+			name: 'amount',
+			time: index + 1,
+		};
 	});
-
+};
 const CurrentSalesLine = ({ data }) => {
-	console.log('wxxxxxx:', data);
+	// console.log('wx----总部CurrentSalesLine:', data);
 	return (
 		<SingleLine
 			{...{
+				chartHeight: 370,
 				timeType: 1,
 				data: foramtData(data),
 				lineColor: ['value', 'rgb(255,129,51)'],
