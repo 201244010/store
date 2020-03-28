@@ -52,6 +52,8 @@ const queryTimeType = {
 		resetCheckState: () => dispatch({
 			type: 'databoard/resetCheckNormal',
 		}),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class PassengerDataBoard extends PureComponent {
@@ -114,7 +116,7 @@ class PassengerDataBoard extends PureComponent {
 			passengerFlowLoading, enteringRateLoading,
 			entryCountLoading, frequencyTrendLoading, passFrenquencyLoading,
 			majorLoading, hasFS
-		}} = this.props;
+		}, goToPath} = this.props;
 		const loading = passengerLoading ||
 			passengerFlowLoading || enteringRateLoading ||
 			entryCountLoading || frequencyTrendLoading || passFrenquencyLoading ||
@@ -131,7 +133,7 @@ class PassengerDataBoard extends PureComponent {
 				{
 					hasFS ?
 						<div className={styles['charts-container']}>
-							<OverviewCard {...{passengerCount, enteringRate, regularCount, avgFrequency, loading, timeType}} />
+							<OverviewCard {...{passengerCount, enteringRate, regularCount, avgFrequency, loading, timeType, goToPath}} />
 							<Row gutter={24}>
 								<Col span={12}>
 									<PassengerTrend passengerFlowList={passengerFlowList} timeType={timeType} loading={loading} />

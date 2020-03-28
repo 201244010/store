@@ -93,11 +93,11 @@ const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) =>
 	);
 };
 
-const TopDataCard = ({ data, dataType, timeType, loading }) => {
+const TopDataCard = ({ data, dataType, timeType, loading, onClick = null, }) => {
 	const { label, unit, count, earlyCount, compareRate, toolTipText } = data;
 
 	return (
-		<Card bordered={false} className={styles['top-data-card']} loading={loading}>
+		<Card bordered={false} className={styles['top-data-card']} loading={loading} onClick={onClick}>
 			<div className="label">{LABEL_TEXT[label]}</div>
 			<div className="value">
 				<span className="value__number">{handleCountFormat(count, label, timeType)}</span>

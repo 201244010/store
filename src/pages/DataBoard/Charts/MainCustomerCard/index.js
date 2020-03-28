@@ -89,7 +89,7 @@ class MainCustomerCard extends React.Component {
 				<div className={styles['card-header']}>
 					<div className={styles['card-header-right']}>
 						<div className={styles['card-img']} style={{backgroundImage: `url(${gender === 1? require('./man.png'):require('./woman.png')})`}} />
-						<span className={styles['card-sex']}>{gender === 1? formatMessage({id: 'databoard.gender.male'}): formatMessage({id: 'databoard.gender.male'})}</span>
+						<span className={styles['card-sex']}>{gender === 1? formatMessage({id: 'databoard.gender.male'}): formatMessage({id: 'databoard.gender.female'})}</span>
 						<span className={styles['card-line']} />
 						<span className={styles['card-age']}>{`${this.formatAge(ageRangeCode)}${formatMessage({id: 'databoard.age.unit'})}`}</span>
 					</div>
