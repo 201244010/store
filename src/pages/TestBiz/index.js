@@ -3,7 +3,7 @@ import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } 
 // import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Pie from './Pie';
 import MainCustomerCard from './MainCustomerCard';
-import TopDataCard from '../TopView/DataBoard/TopDataCard';
+import TopDataCard from '../DataBoard/Charts/TopDataCard/TopDataCard';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -55,6 +55,7 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 		getHeadShopListByRegular: payload => dispatch({ type: 'headAnglePassenger/getHeadShopListByRegular', payload}),
 		getHeadShopListByGender: payload => dispatch({ type: 'headAnglePassenger/getHeadShopListByGender', payload}),
 		getHeadShopListByAge: payload => dispatch({ type: 'headAnglePassenger/getHeadShopListByAge', payload}),
+		getHeadPassengerSurvey: payload => dispatch({ type: 'headAnglePassenger/getHeadPassengerSurvey', payload}),
 	})
 )
 class BizchartDemo extends React.Component {
@@ -98,24 +99,31 @@ class BizchartDemo extends React.Component {
 		const startTime = moment().subtract(1, 'day').format(DATE_FORMAT);
 		this.initGetData(startTime, 1);
 	}
-	
+
 	initGetData = async(startTime, type = 1) => {
-		const { getHeadPassengerByRegular, getHeadPassengerByGender, getHeadShopListByRegular } = this.props;
+		const { getHeadPassengerByRegular, getHeadPassengerByGender, getHeadShopListByRegular, getHeadPassengerSurvey } = this.props;
 		getHeadPassengerByGender({ startTime, type });
 		getHeadPassengerByRegular({ startTime, type });
-		
+		getHeadPassengerSurvey({ startTime, type });
 		this.setState({ startTime, dateType: type, chosenCard: 0, currentOptions: GROUP_BY[0] }, () => {this.handleChosenCardChange(0, true)});
 	};
-	
+
 	handleRadioChange = e => {
-		console.log('e', e)
-		const { target: { value = 1 } } = e;
-		
 		this.setState({
-			dateType: value
-		})
+			dateType: e.target.value
+		});
+
+		const startTime = moment().subtract(1, 'day').format(DATE_FORMAT);
+		const STARTTIME = {
+			1: moment().subtract(1, 'days').format('YYYY-MM-DD'),
+			2: moment().subtract(0, 'weeks').format('YYYY-MM-DD'),
+			3: moment().subtract(0, 'months').format('YYYY-MM-DD'),
+		};
+		console.log('STARTTIME', STARTTIME);
+
+		this.initGetData(STARTTIME[e.target.value], e.target.value);
 	};
-	
+
 	handleDateChange = (date, _, type) => {
 		console.log(moment(date).format(DATE_FORMAT))
 		let startTime = '';
@@ -125,15 +133,15 @@ class BizchartDemo extends React.Component {
 			case 3:startTime = moment(date).startOf('month').format(DATE_FORMAT);break;
 			default: break;
 		}
-		
+
 		this.initGetData(startTime, type)
 	};
-	
+
 	handleChosenCardChange = async(index, isInit) => {
 		console.log('i', index)
 		const { form: { setFieldsValue }, getHeadShopListByGender, getHeadShopListByRegular, getHeadShopListByAge } = this.props;
 		const { chosenCard, startTime, dateType } = this.state;
-		
+
 		if(index !== chosenCard || isInit) {
 			this.setState({
 				chosenCard: index,
@@ -143,7 +151,7 @@ class BizchartDemo extends React.Component {
 				shopId: -1,
 				guest: GROUP_BY[index][0].label
 			});
-			
+
 			switch(index) {
 				case 0:
 					await getHeadShopListByRegular({ startTime, type: dateType });
@@ -159,11 +167,11 @@ class BizchartDemo extends React.Component {
 					break;
 				default: break;
 			}
-			
+
 		}
 	};
-	
-	
+
+
 	handlePieDataSource = (index) => {
 		const { headPassenger: { byFrequencyArray, byGenderArray, byAgeArray } } = this.props;
 		const valueArray = [byFrequencyArray, byGenderArray, byAgeArray];
@@ -208,29 +216,54 @@ class BizchartDemo extends React.Component {
 		};
 		this.setState({ dataSource: resultArray });
 	};
-	
+
 	handleSearch = () => {
 		this.handleTableDataSource()
 	};
-	
+
 	handleReset = () => {
 		const { form: { setFieldsValue } } = this.props;
 		const { chosenCard } = this.state;
-		
+
 		setFieldsValue({
 			shopId: -1,
 			guest: GROUP_BY[chosenCard][0].label
 		});
 		this.handleTableDataSource();
 	};
-	
+
 	disabledDate = current => current && current > moment().endOf('day');
-	
+
 	render() {
 		// todo pie外面的卡片可以切出来作为组件
-		const { headPassenger: { byFrequencyArray, byGenderArray, shopList }, form: { getFieldDecorator }, loading } = this.props;
+		const {
+			headPassenger: {
+				byFrequencyArray,
+				earlyByFrequencyArray,
+				byGenderArray,
+				shopList,
+				passengerCount,
+				earlyPassengerCount,
+				passHeadCount,
+				earlyPassHeadCount,
+				mainGuestList,
+			},
+			form: {
+				getFieldDecorator,
+			},
+			loading,
+		} = this.props;
 		const { dateType, chosenCard, currentOptions, dataSource } = this.state;
-		
+		const todayTotalCount = passengerCount + passHeadCount;
+		const earlyTotalCount = earlyPassengerCount + earlyPassHeadCount;
+		const todayEnterPercent = passengerCount/todayTotalCount;
+		const earlyEnterPercent = earlyPassengerCount/earlyTotalCount;
+		const newGuest = byFrequencyArray[1];
+		const earlyNewGuest = earlyByFrequencyArray[1];
+		const regularGuest = byFrequencyArray[0];
+		const earlyRegularGuest = earlyByFrequencyArray[0];
+
+		console.log('mainGuestList', mainGuestList);
 		return (
 			<div className={styles.main}>
 				<div className={styles['passengerAnalyze-title']}>
@@ -278,43 +311,59 @@ class BizchartDemo extends React.Component {
 				</div>
 				<Row gutter={24} justify='space-between' className={styles['overview-bar']}>
 					<Col span={6}>
-						<TopDataCard data={{
-							label: '总客流量',
-							unit: '',
-							count: 123,
-							earlyCount: 123,
-							compareRate: false,
-							toolTipText: 'toolTipText',}}
+						<TopDataCard
+							data={{
+								label: 'totalPassengerCount',
+								unit: '',
+								count: todayTotalCount,
+								earlyCount: earlyTotalCount,
+								compareRate: true,
+								toolTipText: 'toolTipText',
+							}}
+							timeType={dateType}
+							dataType={2}
 						/>
 					</Col>
 					<Col span={6}>
-						<TopDataCard data={{
-							label: '总客流量',
-							unit: '',
-							count: 123,
-							earlyCount: 123,
-							compareRate: false,
-							toolTipText: 'toolTipText',}}
+						<TopDataCard
+							data={{
+								label: 'enteringRate',
+								unit: '',
+								count: todayEnterPercent,
+								earlyCount: earlyEnterPercent,
+								compareRate: true,
+								toolTipText: 'toolTipText',
+							}}
+							timeType={dateType}
+							dataType={2}
 						/>
 					</Col>
 					<Col span={6}>
-						<TopDataCard data={{
-							label: '总客流量',
-							unit: '',
-							count: 123,
-							earlyCount: 123,
-							compareRate: false,
-							toolTipText: 'toolTipText',}}
+						<TopDataCard
+							data={{
+								label: 'strangeCount',
+								unit: '',
+								count: newGuest,
+								earlyCount: earlyNewGuest,
+								compareRate: true,
+								toolTipText: 'toolTipText',
+							}}
+							timeType={dateType}
+							dataType={2}
 						/>
 					</Col>
 					<Col span={6}>
-						<TopDataCard data={{
-							label: '总客流量',
-							unit: '',
-							count: 123,
-							earlyCount: 123,
-							compareRate: false,
-							toolTipText: 'toolTipText',}}
+						<TopDataCard
+							data={{
+								label: 'regularCount',
+								unit: '',
+								count: regularGuest,
+								earlyCount: earlyRegularGuest,
+								compareRate: true,
+								toolTipText: 'toolTipText',
+							}}
+							timeType={dateType}
+							dataType={2}
 						/>
 					</Col>
 				</Row>
@@ -322,7 +371,7 @@ class BizchartDemo extends React.Component {
 					<div className={styles.guest}>
 						{
 							GUEST_OPTIONS.TITLE.map((item, index) =>
-								
+
 									<div
 										className={styles['pie-card']}
 										key={index}
@@ -406,14 +455,27 @@ class BizchartDemo extends React.Component {
 							}}
 						/>
 					</Spin>
-					
+
 				</Card>
-				
+
 				<Card title='主力客群' className={styles['footer-cards']}>
 					<div className={styles['footer-cards-list']}>
-						<MainCustomerCard scene='total'/>
-						<MainCustomerCard scene='total'/>
-						<MainCustomerCard scene='total'/>
+						{
+							mainGuestList.map(item => {
+								const totalPercent= Math.round((item.uniqCount/todayTotalCount) * 100);
+								const frequentPercent = Math.round((item.regularUniqCount/todayTotalCount)*100);
+								return (
+									<MainCustomerCard
+										scene='total'
+										gender = {item.gender}
+										num={item.uniqCount}
+										totalPercent={totalPercent}
+										frequentPercent={frequentPercent}
+										age={item.ageRangeCode}
+									/>
+								);
+							})
+						}
 					</div>
 				</Card>
 			</div>

@@ -21,6 +21,7 @@ const {
 } = DATABOARD;
 
 const handleEarlyLabelText = (timeType, dataType) => {
+	console.log('timeType', timeType, 'dataType', dataType);
 	if (dataType === DATA_TYPE.current) {
 		return `${EARLY_LABEL_CURRENT[timeType]}`;
 	}
