@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Row, Col } from 'antd';
-import TopDataCard from './TopDataCard';
+import TopDataCard from '@/pages/DataBoard/Charts/TopDataCard/TopDataCard';
 
 @connect(({ topview, loading }) => {
 	const {
@@ -10,6 +10,9 @@ import TopDataCard from './TopDataCard';
 		earlyCustomerCount,
 		latestOrderInfo,
 		earlyOrderInfo,
+		hasCustomerData,
+		hasOrderData,
+		customerDistri,
 	} = topview;
 	return {
 		deviceOverView,
@@ -18,6 +21,9 @@ import TopDataCard from './TopDataCard';
 		latestOrderInfo,
 		earlyOrderInfo,
 		loading,
+		hasCustomerData,
+		hasOrderData,
+		customerDistri,
 	};
 })
 class OverViewBar extends Component {
@@ -32,43 +38,79 @@ class OverViewBar extends Component {
 			latestOrderInfo,
 			earlyOrderInfo,
 			loading,
+			customerDistri,
+			hasCustomerData,
+			hasOrderData,
 		} = this.props;
 
-		const itemListData = [
-			{
-				label: '总客流量',
-				unit: '',
-				count: latestCustomerCount,
-				earlyCount: earlyCustomerCount,
-				compareRate: false,
-				toolTipText: 'toolTipText',
-			},
-			{
-				label: '总销售额',
-				unit: '',
-				count: latestOrderInfo.latestOrderAmount,
-				earlyCount: earlyOrderInfo.earlyOrderAmount,
-				compareRate: false,
-				toolTipText: 'toolTipText',
-			},
-			{
-				label: '总交易笔数',
-				unit: '',
-				count: latestOrderInfo.latestOrderCount,
-				earlyCount: earlyOrderInfo.earlyOrderAmount,
-				compareRate: false,
-				toolTipText: 'toolTipText',
-			},
-			{
-				label: '总设备数',
-				unit: '',
-				count: deviceOverView.offline + deviceOverView.online,
-				earlyCount: deviceOverView.offline,
-				compareRate: false,
-				toolTipText: 'toolTipText',
-			},
-		];
+		let itemListData = [];
 
+		const totalPassengerCount = {
+			label: 'totalPassengerCount',
+			unit: '',
+			count: latestCustomerCount,
+			earlyCount: earlyCustomerCount,
+			compareRate: false,
+			toolTipText: 'toolTipText',
+		};
+		const strangerCount = {
+			label: 'strangerCount',
+			unit: '',
+			count: customerDistri.currentStranger,
+			earlyCount: customerDistri.earlyStranger,
+			compareRate: false,
+			toolTipText: 'toolTipText',
+		};
+		const regularCount = {
+			label: 'regularCount',
+			unit: '',
+			count: customerDistri.currentRegular,
+			earlyCount: customerDistri.earlyRegular,
+			compareRate: false,
+			toolTipText: 'toolTipText',
+		};
+		// const regularCount = {
+		// 	label: 'strangerCount',
+		// 	unit: '',
+		// 	count: latestCustomerCount,
+		// 	earlyCount: earlyCustomerCount,
+		// 	compareRate: false,
+		// 	toolTipText: 'toolTipText',
+		// };
+		const totalAmount = {
+			label: 'totalAmount',
+			unit: '',
+			count: latestOrderInfo.latestOrderAmount,
+			earlyCount: earlyOrderInfo.earlyOrderAmount,
+			compareRate: false,
+			toolTipText: 'toolTipText',
+		};
+		const totalCount = {
+			label: 'totalCount',
+			unit: '',
+			count: latestOrderInfo.latestOrderCount,
+			earlyCount: earlyOrderInfo.earlyOrderCount,
+			compareRate: false,
+			toolTipText: 'toolTipText',
+		};
+		const deviceCount = {
+			label: 'deviceCount',
+			unit: '',
+			count: deviceOverView.offline + deviceOverView.online,
+			earlyCount: deviceOverView.offline,
+			compareRate: false,
+			toolTipText: 'toolTipText',
+		};
+		// if (!hasCustomerData && !hasOrderData) return;
+		if (hasCustomerData && hasOrderData) {
+			itemListData = [totalPassengerCount, totalAmount, totalCount, deviceCount];
+		}
+		if (!hasOrderData && hasCustomerData) {
+			itemListData = [totalPassengerCount, strangerCount, regularCount];
+		}
+		if (!hasCustomerData && hasOrderData) {
+			itemListData = [totalAmount, totalCount, deviceCount];
+		}
 		// const itemMock = {
 		// 	label: '标题',
 		// 	unit: 'percent',
@@ -78,11 +120,11 @@ class OverViewBar extends Component {
 		// 	toolTipText: 'toolTipText',
 		// };
 		// const itemListData = [1, 2, 3, 4].map(() => itemMock);
+		console.log('--------OverView_Bar------:', itemListData);
 
 		const CardTotal = itemListData.length;
 		const rowGutter = 24;
 		const colSpan = rowGutter / CardTotal;
-
 		const listItems = itemListData.map((item, index) => (
 			<Col span={colSpan} key={index}>
 				<TopDataCard

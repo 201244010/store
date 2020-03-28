@@ -3,7 +3,8 @@ import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import { message, Row, Col, Card, Table, Tooltip, Icon } from 'antd';
+import { message, Row, Col, Card, Table, Tooltip, Icon, Spin } from 'antd';
+import PageEmpty from '@/components/BigIcon/PageEmpty';
 import CurrentCustomerLine from './CurrentCustomerLine';
 import CurrentSalesLine from './CurrentSalesLine';
 import StatusBar from './StatusBar';
@@ -50,6 +51,16 @@ class DataBoard extends Component {
 	componentWillUnmount() {
 		clearTimeout(this.timer);
 	}
+
+	toggleShop = () => {
+		alert('切换门店');
+	};
+
+	handleTabelFilters = data =>
+		data.map(({ shopName }, index) => ({
+			text: shopName,
+			value: index,
+		}));
 
 	foramtTabelData = (data, dataType) => {
 		const tabelData = data
@@ -116,15 +127,17 @@ class DataBoard extends Component {
 	};
 
 	render() {
-		const { handleRefresh, foramtTabelData } = this;
+		const { handleRefresh, foramtTabelData, handleTabelFilters, toggleShop } = this;
 		const {
 			latestCustomerData,
 			latestOrderAmoutData,
 			latestCustomerByShop,
 			latestOrderAmoutByShop,
 			loading,
+			hasOrderData,
+			hasCustomerData,
 		} = this.props;
-		const columns = [
+		const columnsCustomer = [
 			{
 				title: '排名',
 				dataIndex: 'rank',
@@ -133,9 +146,28 @@ class DataBoard extends Component {
 			{
 				title: '门店',
 				dataIndex: 'shopName',
+				filters: handleTabelFilters(foramtTabelData(latestCustomerByShop)),
+				onFilter: (value, record) => record.key === value,
+				render: text => <a onClick={toggleShop}>{text}</a>,
 			},
-			{ title: 'value', dataIndex: 'value' },
+			{ title: '客流量', dataIndex: 'value' },
 		];
+		const columnsOrder = [
+			{
+				title: '排名',
+				dataIndex: 'rank',
+				sorter: (a, b) => a.value - b.value,
+			},
+			{
+				title: '门店',
+				dataIndex: 'shopName',
+				filters: handleTabelFilters(foramtTabelData(latestOrderAmoutByShop)),
+				onFilter: (value, record) => record.key === value,
+				render: text => <a onClick={toggleShop}>{text}</a>,
+			},
+			{ title: '销售额', dataIndex: 'value' },
+		];
+
 		return (
 			<div className={styles['dashboard-wrapper']}>
 				<StatusBar
@@ -145,66 +177,95 @@ class DataBoard extends Component {
 				/>
 				<div className={styles['display-content']}>
 					<OverViewBar />
-					<Row gutter={20} className={styles['data-detail']}>
-						<Col span={12}>
-							<Card
-								title="客流趋势"
-								loading={loading.effects['topview/getLatestPassengerTrend']}
-							>
-								<CurrentCustomerLine data={latestCustomerData} />
-							</Card>
-						</Col>
-						<Col span={12}>
-							<Card
-								title="经营趋势"
-								loading={loading.effects['topview/getLatestOrderTrend']}
-							>
-								<CurrentSalesLine data={latestOrderAmoutData} />
-							</Card>
-						</Col>
-						<Col span={12}>
-							<Card
-								title={
-									<>
-										<span>客流量排行</span>
-										<Tooltip title={'x'} className="tooltip__icon">
-											<Icon type="info-circle" />
-										</Tooltip>
-									</>
-								}
-								className="tabel-wrapper"
-							>
-								<Table
-									dataSource={foramtTabelData(latestCustomerByShop, 'customer')}
-									columns={columns}
-									pagination={{
-										pageSize: 5,
-									}}
-								/>
-							</Card>
-						</Col>
-						<Col span={12}>
-							<Card
-								title={
-									<>
-										<span>销售额排行</span>
-										<Tooltip title={'x'} className="tooltip__icon">
-											<Icon type="info-circle" />
-										</Tooltip>
-									</>
-								}
-								className="tabel-wrapper"
-							>
-								<Table
-									dataSource={foramtTabelData(latestOrderAmoutByShop, 'order')}
-									columns={columns}
-									pagination={{
-										pageSize: 5,
-									}}
-								/>
-							</Card>
-						</Col>
-					</Row>
+					<Spin spinning={loading.effects['topview/getDeviceOverView']}>
+						<Row gutter={20} className={styles['data-detail']}>
+							{!(
+								hasCustomerData ||
+								hasOrderData ||
+								loading.effects['topview/getDeviceOverView']
+							) && (
+								<div>
+									<PageEmpty
+										description={formatMessage({ id: 'dashboard.emptydata' })}
+									/>
+								</div>
+							)}
+							{hasCustomerData && (
+								<Col span={12}>
+									<Card
+										title="客流趋势"
+										loading={loading.effects['topview/getLatestPassengerTrend']}
+									>
+										<CurrentCustomerLine data={latestCustomerData} />
+									</Card>
+								</Col>
+							)}
+							{hasCustomerData && (
+								<Col span={12}>
+									<Card
+										title="经营趋势"
+										loading={loading.effects['topview/getLatestOrderTrend']}
+									>
+										<CurrentSalesLine data={latestOrderAmoutData} />
+									</Card>
+								</Col>
+							)}
+							{hasCustomerData && (
+								<Col span={12}>
+									<Card
+										title={
+											<>
+												<span>客流量排行</span>
+												<Tooltip title={'x'} className="tooltip__icon">
+													<Icon type="info-circle" />
+												</Tooltip>
+											</>
+										}
+										className="tabel-wrapper"
+									>
+										<Table
+											dataSource={foramtTabelData(
+												latestCustomerByShop,
+												'customer'
+											)}
+											columns={columnsCustomer}
+											pagination={{
+												pageSize: 5,
+												hideOnSinglePage: true,
+											}}
+										/>
+									</Card>
+								</Col>
+							)}
+							{hasOrderData && (
+								<Col span={12}>
+									<Card
+										title={
+											<>
+												<span>销售额排行</span>
+												<Tooltip title={'x'} className="tooltip__icon">
+													<Icon type="info-circle" />
+												</Tooltip>
+											</>
+										}
+										className="tabel-wrapper"
+									>
+										<Table
+											dataSource={foramtTabelData(
+												latestOrderAmoutByShop,
+												'order'
+											)}
+											columns={columnsOrder}
+											pagination={{
+												hideOnSinglePage: true,
+												pageSize: 5,
+											}}
+										/>
+									</Card>
+								</Col>
+							)}
+						</Row>
+					</Spin>
 				</div>
 			</div>
 		);

@@ -4,6 +4,7 @@ import Storage from '@konata9/storage.js';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { message, Row, Col, } from 'antd';
+import { getQueryDate } from '@/models/dataBoard';
 import SearchBar from './SearchBar';
 import OverviewCard from './OverviewCard';
 import DistriChart from './DistriChart';
@@ -51,6 +52,8 @@ const LAST_REFRESH_TIME = 'lastRefreshTime';
 		resetCheckState: () => dispatch({
 			type: 'databoard/resetCheckNormal',
 		}),
+		goToPath: (pathId, urlParams = {}) =>
+			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class RTDataBoard extends PureComponent {
@@ -60,6 +63,12 @@ class RTDataBoard extends PureComponent {
 		this.state = {
 			searchValue: {
 				rangeType: RANGE.TODAY,
+				startQueryTime: moment()
+					.startOf('day')
+					.unix(),
+				endQueryTime: moment()
+					.endOf('day')
+					.unix(),
 			},
 		};
 	}
@@ -102,9 +111,12 @@ class RTDataBoard extends PureComponent {
 		console.log('======searchValue====', value);
 		const { fetchAllData } = this.props;
 		clearTimeout(this.timer);
+		const [startQueryTime, endQueryTime] = getQueryDate(value);
 		this.setState({
 			searchValue: {
 				rangeType: value,
+				startQueryTime,
+				endQueryTime
 			}
 		});
 		fetchAllData({
@@ -147,13 +159,15 @@ class RTDataBoard extends PureComponent {
 			transactionCountLoading, transactionRateLoading,
 			regularDistriLoading, genderAndAgeLoading,
 			hasFS, isSaasAuth
-		}} = this.props;
+		}, goToPath } = this.props;
 		const loading = RTPassLoading || RTDevicesLoading ||
 			totalAmountLoading || totalCountLoading || totalRateLoading ||
 			RTPassengerFlowLoading ||
 			transactionCountLoading || transactionRateLoading ||
 			regularDistriLoading || genderAndAgeLoading;
-		const { searchValue: { rangeType } } = this.state;
+			
+		const { searchValue: { rangeType, startQueryTime, endQueryTime } } = this.state;
+
 		const { databoard: {
 			regularList, RTPassengerFlowList, lastModifyTime, ageGenderList,
 			RTPassengerCount, RTEnteringRate, RTDeviceCount,
@@ -161,7 +175,6 @@ class RTDataBoard extends PureComponent {
 			amountList, countList, transactionRateList,
 		} } = this.props;
 		const timeType = queryTimeType[rangeType];
-		console.log('=====', this.props);
 		return(
 			<div className={styles['databoard-wrapper']}>
 				<SearchBar
@@ -181,7 +194,10 @@ class RTDataBoard extends PureComponent {
 									paymentTotalAmount: paymentTotalAmount[rangeType],
 									paymentTotalCount: paymentTotalCount[rangeType],
 									transactionRate,
-									timeType
+									timeType,
+									goToPath,
+									startQueryTime,
+									endQueryTime,
 								}}
 							/>
 							<Row gutter={24}>

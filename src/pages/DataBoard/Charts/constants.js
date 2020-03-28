@@ -37,6 +37,7 @@ export const DATABOARD = {
 		enteringRate: '进店率',
 		transactionRate: '交易转化率',
 		avgFrequency: '到店频次',
+		totalPassengerCount: '总客流量',
 	},
 	LINE_SIZE: 3,
 };

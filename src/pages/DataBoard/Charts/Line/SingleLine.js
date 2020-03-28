@@ -121,19 +121,27 @@ export default class Line extends Component {
 		return val;
 	};
 
+	formatYLabel = (val, chartType) => {
+		if (chartType === 'rate') {
+			return `${val}%`;
+		}
+		return val;
+	};
+
 	foramtData = (data, timeType) => {
 		// time修正
 		const dv = new DataView();
 		const dataSuppl = latestDataSuppl(data, timeType);
-		if (timeType === TIME_TYPE.DAY) {
-			dataSuppl.forEach(item => {
-				item.time += 1;
-			});
-		}
+		// if (timeType === TIME_TYPE.DAY) {
+		// 	dataSuppl.forEach(item => {
+		// 		item.time += 1;
+		// 	});
+		// }
 		dv.source(dataSuppl).transform({
 			type: 'map',
 			callback(row) {
 				// 数据从0开始
+				if (timeType === TIME_TYPE.DAY) return row;
 				row.time -= 1;
 				return row;
 			},
@@ -158,6 +166,7 @@ export default class Line extends Component {
 	render() {
 		const {
 			formatXLabel,
+			formatYLabel,
 			formatToolTipAxisX,
 			foramtData,
 			barWidthFit,
@@ -166,6 +175,7 @@ export default class Line extends Component {
 
 		const {
 			timeType = 1,
+			chartType = 'value',
 			data = [],
 			area = false,
 			areaColor = ['l (90) 0:rgba(75,122,250, 1) 1:rgba(75,122,250,0.1)'],
@@ -219,9 +229,9 @@ export default class Line extends Component {
 						},
 						y: {
 							name: 'value',
-							// label: {
-							// 	formatter: val => `${val}%`,
-							// },
+							label: {
+								formatter: val => formatYLabel(val, chartType),
+							},
 						},
 					},
 					tooltip: {

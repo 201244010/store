@@ -17,6 +17,7 @@ const foramtData = data => {
 		};
 	});
 };
+// eslint-disable-next-line arrow-body-style
 const CurrentSalesLine = ({ data }) => {
 	// console.log('wx----总部CurrentSalesLine:', data);
 	return (
