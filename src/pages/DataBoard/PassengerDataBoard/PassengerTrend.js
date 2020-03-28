@@ -8,6 +8,7 @@ import styles from './index.less';
 class PassengerTrend extends PureComponent {
 	render() {
 		const { passengerFlowList, loading, timeType } = this.props;
+		console.log('PassengerTrend:', passengerFlowList);
 		const chartOption = {
 			timeType,
 			data: passengerFlowList,

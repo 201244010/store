@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Row, Col } from 'antd';
-import TopDataCard from './TopDataCard';
+import TopDataCard from '@/pages/DataBoard/Charts/TopDataCard/TopDataCard';
 
 @connect(({ topview, loading }) => {
 	const {
@@ -36,7 +36,7 @@ class OverViewBar extends Component {
 
 		const itemListData = [
 			{
-				label: '总客流量',
+				label: 'passengerCount',
 				unit: '',
 				count: latestCustomerCount,
 				earlyCount: earlyCustomerCount,
@@ -44,7 +44,7 @@ class OverViewBar extends Component {
 				toolTipText: 'toolTipText',
 			},
 			{
-				label: '总销售额',
+				label: 'totalAmount',
 				unit: '',
 				count: latestOrderInfo.latestOrderAmount,
 				earlyCount: earlyOrderInfo.earlyOrderAmount,
@@ -52,15 +52,15 @@ class OverViewBar extends Component {
 				toolTipText: 'toolTipText',
 			},
 			{
-				label: '总交易笔数',
+				label: 'totalCount',
 				unit: '',
 				count: latestOrderInfo.latestOrderCount,
-				earlyCount: earlyOrderInfo.earlyOrderAmount,
+				earlyCount: earlyOrderInfo.earlyOrderCount,
 				compareRate: false,
 				toolTipText: 'toolTipText',
 			},
 			{
-				label: '总设备数',
+				label: 'deviceCount',
 				unit: '',
 				count: deviceOverView.offline + deviceOverView.online,
 				earlyCount: deviceOverView.offline,
@@ -78,11 +78,11 @@ class OverViewBar extends Component {
 		// 	toolTipText: 'toolTipText',
 		// };
 		// const itemListData = [1, 2, 3, 4].map(() => itemMock);
+		console.log('--------OverView_Bar------:', itemListData);
 
 		const CardTotal = itemListData.length;
 		const rowGutter = 24;
 		const colSpan = rowGutter / CardTotal;
-
 		const listItems = itemListData.map((item, index) => (
 			<Col span={colSpan} key={index}>
 				<TopDataCard

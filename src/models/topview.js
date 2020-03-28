@@ -17,11 +17,11 @@ export default {
 		hasOrderData: false,
 		timeType: 1, // 日维度
 		deviceOverView: {
-			offline: null,
-			online: null,
+			offline: 0,
+			online: 0,
 		},
-		latestCustomerCount: null,
-		earlyCustomerCount: null,
+		latestCustomerCount: 0,
+		earlyCustomerCount: 0,
 		latestOrderInfo: {},
 		earlyOrderInfo: {},
 		latestCustomerData: [],
@@ -78,17 +78,7 @@ export default {
 			});
 		},
 
-		*getOverViewStatus({ payload }, { put, all }) {
-			const { needLoading } = payload;
-			if (needLoading) {
-				// yield put({
-				// 	type: 'updateState',
-				// 	payload: {
-				// 		// loadingType: 'overViewStatusLoading',
-				// 		overViewStatusLoading: true,
-				// 	},
-				// });
-			}
+		*getOverViewStatus(_, { put, all }) {
 			yield all([
 				put({
 					type: 'getDeviceOverView',
