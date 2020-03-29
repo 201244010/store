@@ -4,7 +4,11 @@ const router = [
 		// component: '../layouts/SunmiLayout',
 		id: 'userProtocol',
 		routes: [
-			{ path: '/userProtocol/serviceProtocol', component: './IPC/CloudStorage/protocol.js', id: 'serviceProtocol' }
+			{
+				path: '/userProtocol/serviceProtocol',
+				component: './IPC/CloudStorage/protocol.js',
+				id: 'serviceProtocol',
+			},
 		],
 	},
 	{
@@ -45,7 +49,7 @@ const router = [
 		path: '/show',
 		component: '../layouts/BlankLayout',
 		id: 'show',
-		routes: [{ path: '/show', redirect: '/showcase/login' },],
+		routes: [{ path: '/show', redirect: '/showcase/login' }],
 	},
 
 	{
@@ -77,7 +81,7 @@ const router = [
 						path: '/dashboard',
 						id: 'dashboard',
 						hideInMenu: true,
-						component: './DashBoard',
+						component: './DataBoard',
 					},
 					{
 						path: '/dashboard/detail',
@@ -544,7 +548,8 @@ const router = [
 										hideInMenu: true,
 									},
 									{
-										path: '/basicData/organizationManagement/detail/newSubOrganization',
+										path:
+											'/basicData/organizationManagement/detail/newSubOrganization',
 										name: 'newSubOrganization',
 										id: 'newSubOrganization',
 										component: './Organization/CompanyInfo',
@@ -555,13 +560,13 @@ const router = [
 										id: 'detail',
 										component: './Organization/OrgDetail',
 									},
-								]
+								],
 							},
 							{
 								path: '/basicData/organizationManagement',
 								id: 'organizationList',
 								component: './Organization/OrganizationList',
-							}
+							},
 						],
 					},
 					{
@@ -733,7 +738,6 @@ const router = [
 			},
 		],
 	},
-
 ];
 
 // export default router;
