@@ -98,4 +98,7 @@ export default {
 		'0点至当前时间，所有具备客流统计的门店正向排名情况（若有门店未绑定智能AI识客摄像机，则无法查看其客流量排行',
 	'databoard.top.rank.sales': '销售额排行',
 	'databoard.top.rank.sales.tip': '0点至当前时间，所有门店成功付款金额的正向排名情况',
+	'databoard.top.data.empty.current':
+		'请前往子门店添加AI识客摄像机并导入软件订单数据即可查看总部数据',
+	'databoard.top.data.empty.history': '请前往子门店添加AI识客摄像机即可查看总部数据',
 };

@@ -31,7 +31,6 @@ class TransactionTrend extends PureComponent {
 	render() {
 		const { amountList, countList, transactionRateList, loading, timeType } = this.props;
 		const { currentTab } = this.state;
-		console.log('amountList:', amountList);
 		const amountChartOption = {
 			chartHeight: 370,
 			timeType,

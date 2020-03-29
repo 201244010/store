@@ -1,13 +1,14 @@
 import React from 'react';
 import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } from 'antd';
 // import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import Pie from './Pie';
-import MainCustomerCard from './MainCustomerCard';
-import TopDataCard from '../DataBoard/Charts/TopDataCard/TopDataCard';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
+import PageEmpty from '@/components/BigIcon/PageEmpty';
 import { connect } from 'dva';
 import { FORM_FORMAT, SEARCH_FORM_COL } from '@/constants/form';
+import TopDataCard from '../DataBoard/Charts/TopDataCard/TopDataCard';
+import MainCustomerCard from './MainCustomerCard';
+import Pie from './Pie';
 import styles from './index.less';
 
 const GUEST_OPTIONS = {
@@ -21,23 +22,21 @@ const GUEST_OPTIONS = {
 			'rgba(122, 98, 245, 1)',
 			'rgba(184, 122, 245, 1)',
 			'rgba(255, 102, 128, 1)',
-			'rgba(255, 136, 77, 1)'
-		]
-	]
+			'rgba(255, 136, 77, 1)',
+		],
+	],
 };
 const GROUP_BY = [
+	[{ label: '熟客', key: 'regularCount' }, { label: '新客', key: 'newCount' }],
+	[{ label: '女性', key: 'femaleCount' }, { label: '男性', key: 'maleCount' }],
 	[
-		{label: '熟客', key: 'regularCount'}, {label: '新客', key: 'newCount'}],
-	[
-		{label: '女性', key: 'femaleCount'}, {label: '男性', key: 'maleCount'}],
-	[
-		{label: '18岁以下', key: 'ageRangeOne'},
-		{label: '19-28岁', key: 'ageRangeTwo'},
-		{label: '29-35岁', key: 'ageRangeThree'},
-		{label: '36-45岁', key: 'ageRangeFour'},
-		{label: '46-55岁', key: 'ageRangeFive'},
-		{label: '56岁以上', key: 'ageRangeSix'},
-		]
+		{ label: '18岁以下', key: 'ageRangeOne' },
+		{ label: '19-28岁', key: 'ageRangeTwo' },
+		{ label: '29-35岁', key: 'ageRangeThree' },
+		{ label: '36-45岁', key: 'ageRangeFour' },
+		{ label: '46-55岁', key: 'ageRangeFive' },
+		{ label: '56岁以上', key: 'ageRangeSix' },
+	],
 ];
 const { Option } = Select;
 const { MonthPicker, WeekPicker } = DatePicker;
@@ -47,15 +46,32 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 @connect(
 	state => ({
 		headPassenger: state.headAnglePassenger,
-		loading: state.loading
+		loading: state.loading,
+		hasCustomerData: state.topview.hasCustomerData,
+		hasOrderData: state.topview.hasOrderData,
 	}),
 	dispatch => ({
-		getHeadPassengerByRegular: payload => dispatch({ type: 'headAnglePassenger/getHeadPassengerByRegular', payload}),
-		getHeadPassengerByGender: payload => dispatch({ type: 'headAnglePassenger/getHeadPassengerByGender', payload}),
-		getHeadShopListByRegular: payload => dispatch({ type: 'headAnglePassenger/getHeadShopListByRegular', payload}),
-		getHeadShopListByGender: payload => dispatch({ type: 'headAnglePassenger/getHeadShopListByGender', payload}),
-		getHeadShopListByAge: payload => dispatch({ type: 'headAnglePassenger/getHeadShopListByAge', payload}),
-		getHeadPassengerSurvey: payload => dispatch({ type: 'headAnglePassenger/getHeadPassengerSurvey', payload}),
+		getHeadPassengerByRegular: payload =>
+			dispatch({ type: 'headAnglePassenger/getHeadPassengerByRegular', payload }),
+		getHeadPassengerByGender: payload =>
+			dispatch({ type: 'headAnglePassenger/getHeadPassengerByGender', payload }),
+		getHeadShopListByRegular: payload =>
+			dispatch({ type: 'headAnglePassenger/getHeadShopListByRegular', payload }),
+		getHeadShopListByGender: payload =>
+			dispatch({ type: 'headAnglePassenger/getHeadShopListByGender', payload }),
+		getHeadShopListByAge: payload =>
+			dispatch({ type: 'headAnglePassenger/getHeadShopListByAge', payload }),
+		getHeadPassengerSurvey: payload =>
+			dispatch({ type: 'headAnglePassenger/getHeadPassengerSurvey', payload }),
+		goToPath: (pathId, urlParams = {}, anchorId) =>
+			dispatch({
+				type: 'menu/goToPath',
+				payload: {
+					pathId,
+					urlParams,
+					anchorId,
+				},
+			}),
 	})
 )
 class BizchartDemo extends React.Component {
@@ -67,7 +83,7 @@ class BizchartDemo extends React.Component {
 			startTime: 0,
 			chosenCard: 0,
 			currentOptions: GROUP_BY[0],
-			dataSource: []
+			dataSource: [],
 		};
 		this.columns = [
 			{
@@ -88,7 +104,15 @@ class BizchartDemo extends React.Component {
 			{
 				title: '操作',
 				key: 'operation',
-				render: operation => <a href={operation}>查看门店详情</a>,
+				render: (operation, item) => (
+					<a
+						onClick={() => {
+							toggleShop(item);
+						}}
+					>
+						查看门店详情
+					</a>
+				),
 			},
 		];
 
@@ -96,28 +120,56 @@ class BizchartDemo extends React.Component {
 	}
 
 	componentDidMount() {
-		const startTime = moment().subtract(1, 'day').format(DATE_FORMAT);
+		const startTime = moment()
+			.subtract(1, 'day')
+			.format(DATE_FORMAT);
 		this.initGetData(startTime, 1);
 	}
 
-	initGetData = async(startTime, type = 1) => {
-		const { getHeadPassengerByRegular, getHeadPassengerByGender, getHeadShopListByRegular, getHeadPassengerSurvey } = this.props;
+	toggleShop = shopInfo => {
+		// console.log(`goToPath${shopInfo}`);
+		const { shopId } = shopInfo;
+		const { goToPath } = this.props;
+		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
+		goToPath('passengerAnalyze', {}, 'href');
+	};
+
+	initGetData = async (startTime, type = 1) => {
+		const {
+			getHeadPassengerByRegular,
+			getHeadPassengerByGender,
+			// getHeadShopListByRegular,
+			getHeadPassengerSurvey,
+		} = this.props;
 		getHeadPassengerByGender({ startTime, type });
 		getHeadPassengerByRegular({ startTime, type });
 		getHeadPassengerSurvey({ startTime, type });
-		this.setState({ startTime, dateType: type, chosenCard: 0, currentOptions: GROUP_BY[0] }, () => {this.handleChosenCardChange(0, true)});
+		this.setState(
+			{ startTime, dateType: type, chosenCard: 0, currentOptions: GROUP_BY[0] },
+			() => {
+				this.handleChosenCardChange(0, true);
+			}
+		);
 	};
 
 	handleRadioChange = e => {
 		this.setState({
-			dateType: e.target.value
+			dateType: e.target.value,
 		});
 
-		const startTime = moment().subtract(1, 'day').format(DATE_FORMAT);
+		// const startTime = moment()
+		// 	.subtract(1, 'day')
+		// 	.format(DATE_FORMAT);
 		const STARTTIME = {
-			1: moment().subtract(1, 'days').format('YYYY-MM-DD'),
-			2: moment().subtract(0, 'weeks').format('YYYY-MM-DD'),
-			3: moment().subtract(0, 'months').format('YYYY-MM-DD'),
+			1: moment()
+				.subtract(1, 'days')
+				.format('YYYY-MM-DD'),
+			2: moment()
+				.subtract(0, 'weeks')
+				.format('YYYY-MM-DD'),
+			3: moment()
+				.subtract(0, 'months')
+				.format('YYYY-MM-DD'),
 		};
 		console.log('STARTTIME', STARTTIME);
 
@@ -125,34 +177,50 @@ class BizchartDemo extends React.Component {
 	};
 
 	handleDateChange = (date, _, type) => {
-		console.log(moment(date).format(DATE_FORMAT))
+		console.log(moment(date).format(DATE_FORMAT));
 		let startTime = '';
 		switch (type) {
-			case 1:startTime = moment(date).format(DATE_FORMAT);break;
-			case 2:startTime = moment(date).startOf('week').format(DATE_FORMAT);break;
-			case 3:startTime = moment(date).startOf('month').format(DATE_FORMAT);break;
-			default: break;
+			case 1:
+				startTime = moment(date).format(DATE_FORMAT);
+				break;
+			case 2:
+				startTime = moment(date)
+					.startOf('week')
+					.format(DATE_FORMAT);
+				break;
+			case 3:
+				startTime = moment(date)
+					.startOf('month')
+					.format(DATE_FORMAT);
+				break;
+			default:
+				break;
 		}
 
-		this.initGetData(startTime, type)
+		this.initGetData(startTime, type);
 	};
 
-	handleChosenCardChange = async(index, isInit) => {
-		console.log('i', index)
-		const { form: { setFieldsValue }, getHeadShopListByGender, getHeadShopListByRegular, getHeadShopListByAge } = this.props;
+	handleChosenCardChange = async (index, isInit) => {
+		console.log('i', index);
+		const {
+			form: { setFieldsValue },
+			getHeadShopListByGender,
+			getHeadShopListByRegular,
+			getHeadShopListByAge,
+		} = this.props;
 		const { chosenCard, startTime, dateType } = this.state;
 
-		if(index !== chosenCard || isInit) {
+		if (index !== chosenCard || isInit) {
 			this.setState({
 				chosenCard: index,
 				currentOptions: GROUP_BY[index],
 			});
 			setFieldsValue({
 				shopId: -1,
-				guest: GROUP_BY[index][0].label
+				guest: GROUP_BY[index][0].label,
 			});
 
-			switch(index) {
+			switch (index) {
 				case 0:
 					await getHeadShopListByRegular({ startTime, type: dateType });
 					this.handleTableDataSource();
@@ -165,26 +233,30 @@ class BizchartDemo extends React.Component {
 					await getHeadShopListByAge({ startTime, type: dateType });
 					this.handleTableDataSource();
 					break;
-				default: break;
+				default:
+					break;
 			}
-
 		}
 	};
 
-
-	handlePieDataSource = (index) => {
-		const { headPassenger: { byFrequencyArray, byGenderArray, byAgeArray } } = this.props;
+	handlePieDataSource = index => {
+		const {
+			headPassenger: { byFrequencyArray, byGenderArray, byAgeArray },
+		} = this.props;
 		const valueArray = [byFrequencyArray, byGenderArray, byAgeArray];
 		const dataArray = valueArray[index].map((item, itemIndex) => ({
 			name: GROUP_BY[index][itemIndex].label,
-			value: item
+			value: item,
 		}));
 
 		return dataArray;
 	};
 
 	handleTableDataSource = () => {
-		const { form: { getFieldsValue }, headPassenger: { shopList } } = this.props;
+		const {
+			form: { getFieldsValue },
+			headPassenger: { shopList },
+		} = this.props;
 		const { currentOptions } = this.state;
 
 		let keyword = '';
@@ -194,40 +266,41 @@ class BizchartDemo extends React.Component {
 		let resultArray = shopList.map(item => Object.assign({}, item));
 
 		currentOptions.forEach(item => {
-			if(item.label === guest ) {
+			if (item.label === guest) {
 				keyword = item.key;
 			}
 		});
 
-		if(shopId !== -1 && shopId !== undefined) resultArray = resultArray.filter(item => item.shopId === shopId);
+		if (shopId !== -1 && shopId !== undefined)
+			resultArray = resultArray.filter(item => item.shopId === shopId);
 
-		resultArray.sort((a, b) =>
-			b[keyword] - a[keyword]
-		);
+		resultArray.sort((a, b) => b[keyword] - a[keyword]);
 
 		resultArray.forEach((item, index) => {
 			item.sortIndex = index + 1;
-		})
+		});
 
-		console.log(resultArray, 'result')
+		console.log(resultArray, 'result');
 		this.columns[2] = {
-			title: guest + '人数',
-			dataIndex: keyword
+			title: `${guest}人数`,
+			dataIndex: keyword,
 		};
 		this.setState({ dataSource: resultArray });
 	};
 
 	handleSearch = () => {
-		this.handleTableDataSource()
+		this.handleTableDataSource();
 	};
 
 	handleReset = () => {
-		const { form: { setFieldsValue } } = this.props;
+		const {
+			form: { setFieldsValue },
+		} = this.props;
 		const { chosenCard } = this.state;
 
 		setFieldsValue({
 			shopId: -1,
-			guest: GROUP_BY[chosenCard][0].label
+			guest: GROUP_BY[chosenCard][0].label,
 		});
 		this.handleTableDataSource();
 	};
@@ -240,24 +313,23 @@ class BizchartDemo extends React.Component {
 			headPassenger: {
 				byFrequencyArray,
 				earlyByFrequencyArray,
-				byGenderArray,
-				shopList,
+				// byGenderArray,
+				// shopList,
 				passengerCount,
 				earlyPassengerCount,
 				passHeadCount,
 				earlyPassHeadCount,
 				mainGuestList,
 			},
-			form: {
-				getFieldDecorator,
-			},
+			form: { getFieldDecorator },
 			loading,
+			hasCustomerData,
 		} = this.props;
 		const { dateType, chosenCard, currentOptions, dataSource } = this.state;
 		const todayTotalCount = passengerCount + passHeadCount;
 		const earlyTotalCount = earlyPassengerCount + earlyPassHeadCount;
-		const todayEnterPercent = passengerCount/todayTotalCount;
-		const earlyEnterPercent = earlyPassengerCount/earlyTotalCount;
+		const todayEnterPercent = passengerCount / todayTotalCount;
+		const earlyEnterPercent = earlyPassengerCount / earlyTotalCount;
 		const newGuest = byFrequencyArray[1];
 		const earlyNewGuest = earlyByFrequencyArray[1];
 		const regularGuest = byFrequencyArray[0];
@@ -283,206 +355,237 @@ class BizchartDemo extends React.Component {
 								{formatMessage({ id: 'dashboard.search.month' })}
 							</Radio.Button>
 						</Radio.Group>
-						{
-							dateType === 1 &&
+						{dateType === 1 && (
 							<DatePicker
 								allowClear={false}
 								disabledDate={this.disabledDate}
-								onChange={(date, dateString) => {this.handleDateChange(date, dateString, 1)}}
+								onChange={(date, dateString) => {
+									this.handleDateChange(date, dateString, 1);
+								}}
 							/>
-						}
-						{
-							dateType === 2 &&
+						)}
+						{dateType === 2 && (
 							<WeekPicker
 								allowClear={false}
 								disabledDate={this.disabledDate}
-								onChange={(date, dateString) => {this.handleDateChange(date, dateString, 2)}}
+								onChange={(date, dateString) => {
+									this.handleDateChange(date, dateString, 2);
+								}}
 							/>
-						}
-						{
-							dateType === 3 &&
+						)}
+						{dateType === 3 && (
 							<MonthPicker
 								allowClear={false}
 								disabledDate={this.disabledDate}
-								onChange={(date, dateString) => {this.handleDateChange(date, dateString, 3)}}
+								onChange={(date, dateString) => {
+									this.handleDateChange(date, dateString, 3);
+								}}
 							/>
-						}
+						)}
 					</div>
 				</div>
-				<Row gutter={24} justify='space-between' className={styles['overview-bar']}>
-					<Col span={6}>
-						<TopDataCard
-							data={{
-								label: 'totalPassengerCount',
-								unit: '',
-								count: todayTotalCount,
-								earlyCount: earlyTotalCount,
-								compareRate: true,
-								toolTipText: 'toolTipText',
-							}}
-							timeType={dateType}
-							dataType={2}
+				{!hasCustomerData && (
+					<div>
+						<PageEmpty
+							description={formatMessage({
+								id: 'databoard.top.data.empty.history',
+							})}
 						/>
-					</Col>
-					<Col span={6}>
-						<TopDataCard
-							data={{
-								label: 'enteringRate',
-								unit: '',
-								count: todayEnterPercent,
-								earlyCount: earlyEnterPercent,
-								compareRate: true,
-								toolTipText: 'toolTipText',
-							}}
-							timeType={dateType}
-							dataType={2}
-						/>
-					</Col>
-					<Col span={6}>
-						<TopDataCard
-							data={{
-								label: 'strangeCount',
-								unit: '',
-								count: newGuest,
-								earlyCount: earlyNewGuest,
-								compareRate: true,
-								toolTipText: 'toolTipText',
-							}}
-							timeType={dateType}
-							dataType={2}
-						/>
-					</Col>
-					<Col span={6}>
-						<TopDataCard
-							data={{
-								label: 'regularCount',
-								unit: '',
-								count: regularGuest,
-								earlyCount: earlyRegularGuest,
-								compareRate: true,
-								toolTipText: 'toolTipText',
-							}}
-							timeType={dateType}
-							dataType={2}
-						/>
-					</Col>
-				</Row>
-				<Card title='客群分布' className={styles['chart-bar']}>
-					<div className={styles.guest}>
-						{
-							GUEST_OPTIONS.TITLE.map((item, index) =>
-
+					</div>
+				)}
+				{hasCustomerData && (
+					<>
+						<Row gutter={24} justify="space-between" className={styles['overview-bar']}>
+							<Col span={6}>
+								<TopDataCard
+									data={{
+										label: 'totalPassengerCount',
+										unit: '',
+										count: todayTotalCount,
+										earlyCount: earlyTotalCount,
+										compareRate: true,
+										toolTipText: 'toolTipText',
+									}}
+									timeType={dateType}
+									dataType={2}
+								/>
+							</Col>
+							<Col span={6}>
+								<TopDataCard
+									data={{
+										label: 'enteringRate',
+										unit: '',
+										count: todayEnterPercent,
+										earlyCount: earlyEnterPercent,
+										compareRate: true,
+										toolTipText: 'toolTipText',
+									}}
+									timeType={dateType}
+									dataType={2}
+								/>
+							</Col>
+							<Col span={6}>
+								<TopDataCard
+									data={{
+										label: 'strangeCount',
+										unit: '',
+										count: newGuest,
+										earlyCount: earlyNewGuest,
+										compareRate: true,
+										toolTipText: 'toolTipText',
+									}}
+									timeType={dateType}
+									dataType={2}
+								/>
+							</Col>
+							<Col span={6}>
+								<TopDataCard
+									data={{
+										label: 'regularCount',
+										unit: '',
+										count: regularGuest,
+										earlyCount: earlyRegularGuest,
+										compareRate: true,
+										toolTipText: 'toolTipText',
+									}}
+									timeType={dateType}
+									dataType={2}
+								/>
+							</Col>
+						</Row>
+						<Card title="客群分布" className={styles['chart-bar']}>
+							<div className={styles.guest}>
+								{GUEST_OPTIONS.TITLE.map((item, index) => (
 									<div
 										className={styles['pie-card']}
 										key={index}
-										style={chosenCard === index ? {border: '1px solid  rgba(255,129,51,1)'} : {}}
-										onClick={() => {this.handleChosenCardChange(index)}}
-									>
-										{/*<Spin spinning={loading.effects['headAnglePassenger/getHeadPassengerByRegular'] || loading.effects['headAnglePassenger/getHeadPassengerByGender'] }>*/}
-											<Pie
-												data={this.handlePieDataSource(index)}
-												chartName={`pie${index}`}
-												colorArray={GUEST_OPTIONS.COLOR_ARRAY[index]}
-											/>
-										{/*</Spin>*/}
-									</div>
-							)
-						}
-					</div>
-					<div className={styles['search-bar']}>
-						<Form layout="inline">
-							<Row gutter={FORM_FORMAT.gutter}>
-								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-									<Form.Item label={'门店'}>
-										{ getFieldDecorator('shopId', {
-											initialValue: -1
-										})(
-											<Select>
-												<Option value={-1} key={-1}>全部门店</Option>
-												{
-													this.shopListOptions.map(item =>(
-														<Option value={item.shopId} key={item.shopId}>{item.shopName}</Option>
-													))
-												}
-											</Select>
-										)}
-									</Form.Item>
-								</Col>
-								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-									<Form.Item label={'客群'}>
-										{
-											getFieldDecorator('guest', {
-												initialValue: '熟客'
-											})(
-												<Select>
-													{
-														currentOptions.map((item, index) =>(
-															<Option value={item.label} key={index}>{item.label}</Option>
-														))
-													}
-												</Select>
-											)
+										style={
+											chosenCard === index
+												? { border: '1px solid  rgba(255,129,51,1)' }
+												: {}
 										}
-									</Form.Item>
-								</Col>
-								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-									<Form.Item className={styles['query-item']}>
-										<Button type="primary" onClick={this.handleSearch}>
-											{formatMessage({ id: 'btn.query' })}
-										</Button>
-										<Button className={styles['btn-margin-left']} onClick={this.handleReset}>
-											{formatMessage({ id: 'btn.reset' })}
-										</Button>
-									</Form.Item>
-								</Col>
-							</Row>
-						</Form>
-						<Button icon='download' type='primary'>EXCEL</Button>
-					</div>
-					<Spin
-						spinning={
-							loading.effects['headAnglePassenger/getHeadShopListByRegular']
-							|| (loading.effects['headAnglePassenger/getHeadShopListByGender'] || false)
-							|| (loading.effects['headAnglePassenger/getHeadShopListByAge'] || false)
-						}
-					>
-						<Table
-							dataSource={dataSource}
-							columns={this.columns}
-							pagination={{
-								pageSize: 5,
-								hideOnSinglePage: true
-							}}
-						/>
-					</Spin>
-
-				</Card>
-
-				<Card title='主力客群' className={styles['footer-cards']}>
-					<div className={styles['footer-cards-list']}>
-						{
-							mainGuestList.map(item => {
-								const totalPercent= Math.round((item.uniqCount/todayTotalCount) * 100);
-								const frequentPercent = Math.round((item.regularUniqCount/todayTotalCount)*100);
-								return (
-									<MainCustomerCard
-										scene='total'
-										gender = {item.gender}
-										num={item.uniqCount}
-										totalPercent={totalPercent}
-										frequentPercent={frequentPercent}
-										age={item.ageRangeCode}
-									/>
-								);
-							})
-						}
-					</div>
-				</Card>
+										onClick={() => {
+											this.handleChosenCardChange(index);
+										}}
+									>
+										{/* <Spin spinning={loading.effects['headAnglePassenger/getHeadPassengerByRegular'] || loading.effects['headAnglePassenger/getHeadPassengerByGender'] }> */}
+										<Pie
+											data={this.handlePieDataSource(index)}
+											chartName={`pie${index}`}
+											colorArray={GUEST_OPTIONS.COLOR_ARRAY[index]}
+										/>
+										{/* </Spin> */}
+									</div>
+								))}
+							</div>
+							<div className={styles['search-bar']}>
+								<Form layout="inline">
+									<Row gutter={FORM_FORMAT.gutter}>
+										<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+											<Form.Item label="门店">
+												{getFieldDecorator('shopId', {
+													initialValue: -1,
+												})(
+													<Select>
+														<Option value={-1} key={-1}>
+															全部门店
+														</Option>
+														{this.shopListOptions.map(item => (
+															<Option
+																value={item.shopId}
+																key={item.shopId}
+															>
+																{item.shopName}
+															</Option>
+														))}
+													</Select>
+												)}
+											</Form.Item>
+										</Col>
+										<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+											<Form.Item label="客群">
+												{getFieldDecorator('guest', {
+													initialValue: '熟客',
+												})(
+													<Select>
+														{currentOptions.map((item, index) => (
+															<Option value={item.label} key={index}>
+																{item.label}
+															</Option>
+														))}
+													</Select>
+												)}
+											</Form.Item>
+										</Col>
+										<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+											<Form.Item className={styles['query-item']}>
+												<Button type="primary" onClick={this.handleSearch}>
+													{formatMessage({ id: 'btn.query' })}
+												</Button>
+												<Button
+													className={styles['btn-margin-left']}
+													onClick={this.handleReset}
+												>
+													{formatMessage({ id: 'btn.reset' })}
+												</Button>
+											</Form.Item>
+										</Col>
+									</Row>
+								</Form>
+								<Button icon="download" type="primary">
+									EXCEL
+								</Button>
+							</div>
+							<Spin
+								spinning={
+									loading.effects[
+										'headAnglePassenger/getHeadShopListByRegular'
+									] ||
+									(loading.effects[
+										'headAnglePassenger/getHeadShopListByGender'
+									] ||
+										false) ||
+									(loading.effects['headAnglePassenger/getHeadShopListByAge'] ||
+										false)
+								}
+							>
+								<Table
+									dataSource={dataSource}
+									columns={this.columns}
+									pagination={{
+										pageSize: 5,
+										hideOnSinglePage: true,
+									}}
+								/>
+							</Spin>
+						</Card>
+						<Card title="主力客群" className={styles['footer-cards']}>
+							<div className={styles['footer-cards-list']}>
+								{mainGuestList.map(item => {
+									const totalPercent = Math.round(
+										(item.uniqCount / todayTotalCount) * 100
+									);
+									const frequentPercent = Math.round(
+										(item.regularUniqCount / todayTotalCount) * 100
+									);
+									return (
+										<MainCustomerCard
+											scene="total"
+											gender={item.gender}
+											num={item.uniqCount}
+											totalPercent={totalPercent}
+											frequentPercent={frequentPercent}
+											age={item.ageRangeCode}
+										/>
+									);
+								})}
+							</div>
+						</Card>
+					</>
+				)}
 			</div>
-
 		);
 	}
 }
-
 
 export default BizchartDemo;

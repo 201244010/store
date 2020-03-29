@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
+import * as CookieUtil from '@/utils/cookies';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { message, Row, Col, Card, Table, Tooltip, Icon, Spin } from 'antd';
@@ -15,7 +16,7 @@ import { DATABOARD } from './constants';
 const { LAST_HAND_REFRESH_TIME } = DATABOARD;
 
 @connect(
-	({ topview, loading }) => {
+	({ topview, loading, store }) => {
 		const {
 			hasCustomerData,
 			hasOrderData,
@@ -24,6 +25,7 @@ const { LAST_HAND_REFRESH_TIME } = DATABOARD;
 			latestCustomerByShop,
 			latestOrderAmoutByShop,
 		} = topview;
+		const { storeList } = store;
 		return {
 			hasCustomerData,
 			hasOrderData,
@@ -32,11 +34,22 @@ const { LAST_HAND_REFRESH_TIME } = DATABOARD;
 			latestCustomerByShop,
 			latestOrderAmoutByShop,
 			loading,
+			storeList,
 		};
 	},
 	dispatch => ({
 		fetchAllData: () => dispatch({ type: 'topview/fetchAllData' }),
 		getAgeRanges: () => dispatch({ type: 'dashboard/getAgeRanges' }),
+		getShopIdFromStorage: () => dispatch({ type: 'global/getShopIdFromStorage' }),
+		goToPath: (pathId, urlParams = {}, anchorId) =>
+			dispatch({
+				type: 'menu/goToPath',
+				payload: {
+					pathId,
+					urlParams,
+					anchorId,
+				},
+			}),
 	})
 )
 class DataBoard extends Component {
@@ -52,8 +65,16 @@ class DataBoard extends Component {
 		clearTimeout(this.timer);
 	}
 
-	toggleShop = () => {
-		alert('切换门店');
+	isTopView = () => {
+		const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
+		return shopId === 0;
+	};
+
+	toggleShop = shopInfo => {
+		const { shopId } = shopInfo;
+		const { goToPath } = this.props;
+		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
+		goToPath('dashboard', {}, 'href');
 	};
 
 	handleTabelFilters = data =>
@@ -65,7 +86,7 @@ class DataBoard extends Component {
 	foramtTabelData = (data, dataType) => {
 		const tabelData = data
 			.map(item => {
-				const { shopName } = item;
+				const { shopName, shopId } = item;
 				let value;
 				if (dataType) {
 					if (dataType === 'order') {
@@ -80,16 +101,18 @@ class DataBoard extends Component {
 				return {
 					value,
 					shopName,
+					shopId,
 				};
 			})
 			.sort((a, b) => b.value - a.value)
 			.map((item, index) => {
-				const { value, shopName } = item;
+				const { value, shopName, shopId } = item;
 				return {
 					rank: index + 1,
 					key: index,
 					shopName,
 					value,
+					shopId,
 				};
 			});
 
@@ -127,7 +150,7 @@ class DataBoard extends Component {
 	};
 
 	render() {
-		const { handleRefresh, foramtTabelData, handleTabelFilters, toggleShop } = this;
+		const { handleRefresh, foramtTabelData, handleTabelFilters, toggleShop, isTopView } = this;
 		const {
 			latestCustomerData,
 			latestOrderAmoutData,
@@ -137,6 +160,12 @@ class DataBoard extends Component {
 			hasOrderData,
 			hasCustomerData,
 		} = this.props;
+
+		// 总部状态
+		if (isTopView()) {
+			console.log('======================总部视角');
+		}
+
 		const columnsCustomer = [
 			{
 				title: formatMessage({ id: 'databoard.top.rank' }),
@@ -148,7 +177,7 @@ class DataBoard extends Component {
 				dataIndex: 'shopName',
 				filters: handleTabelFilters(foramtTabelData(latestCustomerByShop)),
 				onFilter: (value, record) => record.key === value,
-				render: text => <a onClick={toggleShop}>{text}</a>,
+				render: (text, record) => <a onClick={() => toggleShop(record)}>{text}</a>,
 			},
 			{ title: formatMessage({ id: 'databoard.top.customer.count' }), dataIndex: 'value' },
 		];
@@ -186,7 +215,9 @@ class DataBoard extends Component {
 							) && (
 								<div>
 									<PageEmpty
-										description={formatMessage({ id: 'dashboard.emptydata' })}
+										description={formatMessage({
+											id: 'databoard.top.data.empty.current',
+										})}
 									/>
 								</div>
 							)}
@@ -202,7 +233,7 @@ class DataBoard extends Component {
 									</Card>
 								</Col>
 							)}
-							{hasCustomerData && (
+							{hasOrderData && (
 								<Col span={12}>
 									<Card
 										title={formatMessage({
