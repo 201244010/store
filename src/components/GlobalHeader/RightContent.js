@@ -4,12 +4,12 @@ import { Spin, Tag, Menu, Icon, Avatar, /* Select, */ TreeSelect } from 'antd';
 // import moment from 'moment';
 // import router from 'umi/router';
 import groupBy from 'lodash/groupBy';
-import NoticeIcon from '../NoticeIcon';
+import { MENU_PREFIX } from '@/constants';
 import * as CookieUtil from '@/utils/cookies';
 import { formatTimeMessage } from '@/utils/utils';
 // import HeaderSearch from '../HeaderSearch';
+import NoticeIcon from '../NoticeIcon';
 import HeaderDropdown from '../HeaderDropdown';
-import { MENU_PREFIX } from '@/constants';
 
 import styles from './index.less';
 
@@ -128,7 +128,7 @@ export default class GlobalHeaderRight extends PureComponent {
 				<TreeSelect
 					style={{ width: '250px' }}
 					treeData={treeData}
-					value={treeData && treeData.length > 0 && selectedStore}
+					value={treeData && treeData.length > 0 ? `${selectedStore !== undefined ? selectedStore : ''}` : ''}
 					onChange={this.handleStoreChange}
 					treeDefaultExpandedKeys={[`${selectedStore}`]}
 					dropdownStyle={{ maxHeight: '50vh'}}

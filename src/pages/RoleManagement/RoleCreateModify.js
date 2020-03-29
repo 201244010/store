@@ -26,31 +26,32 @@ const CheckboxGroup = Checkbox.Group;
 		updateRole: payload => dispatch({ type: 'role/updateRole', payload }),
 		creatRole: payload => dispatch({ type: 'role/creatRole', payload }),
 		updatePermissionList: payload => dispatch({ type: 'role/updatePermissionList', payload }),
+		updateRoleInfo: payload => dispatch({ type: 'role/updateRoleInfo', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 @Form.create()
 class RoleModify extends React.Component {
-	componentDidMount() {
+	async componentDidMount() {
 		const {
 			getRoleInfo,
 			getPermissionList,
-			query: { action, id },
+			query: { id },
 		} = this.props;
-		if (action === 'modify') {
+
+		if (id) {
 			const roleId = idDecode(id);
-			getRoleInfo({ roleId });
-		} else {
-			getPermissionList();
+			await getRoleInfo({ roleId });
 		}
+		await getPermissionList();
 	}
 
 	editRole = () => {
 		const {
 			updateRole,
 			form: { validateFields },
-			role: { permissionList },
+			role: { roleInfo: { permissionList } },
 			user: {
 				currentUser: { username },
 			},
@@ -84,7 +85,7 @@ class RoleModify extends React.Component {
 						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
 						message.error(
-							ALERT_NOTICE_MAP.hasOwnProperty(response.code) ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] }) 
+							ALERT_NOTICE_MAP.hasOwnProperty(response.code) ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] })
 								: formatMessage({ id: 'roleManagement.role.modifyFail' })
 						);
 					}
@@ -115,51 +116,65 @@ class RoleModify extends React.Component {
 		// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 	};
 
-	handleGroupChange = (checklist, group) => {
+	handleGroupChange = (checklist, item) => {
 		const {
-			role: { permissionList },
-			updatePermissionList,
+			role: { permissionList, roleInfo },
+			updateRoleInfo,
 		} = this.props;
 
-		const tmpList = permissionList.map(item => {
-			if (item.group === group) {
-				const plainLength = item.checkedList.permissionList.length;
-				item.checkAll = checklist.length === plainLength;
-				item.indeterminate = !!checklist.length && checklist.length < plainLength;
-				item.valueList = checklist;
-			}
-			return item;
-		});
+		const per = permissionList.find(permission => permission.group === item.group);
+		const myPer = roleInfo.permissionList.find(permission => permission.group === item.group);
 
-		updatePermissionList(tmpList);
+		if (myPer) {
+			myPer.valueList = checklist;
+			myPer.checkAll = checklist.length === per.valueList.length;
+			myPer.indeterminate = checklist.length === 0 ? false : checklist.length < per.valueList.length;
+		} else {
+			roleInfo.permissionList.push({
+				group: item.group,
+				valueList: checklist,
+				checkAll: checklist.length === per.valueList.length,
+				indeterminate: checklist.length === 0 ? false : checklist.length < per.valueList.length
+			});
+		}
+
+		updateRoleInfo({
+			roleInfo
+		});
 	};
 
-	onCheckAllChange = (e, group) => {
+	onCheckAllChange = (e, item) => {
 		const {
-			role: { permissionList },
-			updatePermissionList,
+			role: { permissionList, roleInfo },
+			updateRoleInfo,
 		} = this.props;
-		const tmpList = permissionList.map(item => {
-			if (item.group === group) {
-				const permission = item.checkedList.permissionList;
-				const totalList = permission
-					? permission.map(items => items.value)
-					: [item.checkedList.value];
-				item.checkAll = e.target.checked;
-				item.indeterminate = false;
-				item.valueList = e.target.checked ? totalList : [];
-			}
-			return item;
-		});
 
-		updatePermissionList(tmpList);
+		if (!roleInfo.permissionList) {
+			roleInfo.permissionList = [];
+		}
+		const per = permissionList.find(permission => permission.group === item.group);
+		const myPer = roleInfo.permissionList.find(permission => permission.group === item.group);
+		if (myPer) {
+			myPer.checkAll = e.target.checked;
+			myPer.indeterminate = false;
+			myPer.valueList = e.target.checked ? per.valueList : [];
+		} else {
+			e.target.checked && roleInfo.permissionList.push({
+				...per,
+				checkAll: true,
+				indeterminate: false
+			});
+		}
+		updateRoleInfo({
+			roleInfo
+		});
 	};
 
 	render() {
 		const {
 			role: {
 				permissionList,
-				roleInfo: { name },
+				roleInfo: { name, permissionList: pList },
 			},
 			loading,
 			form: { getFieldDecorator },
@@ -208,7 +223,7 @@ class RoleModify extends React.Component {
 														break;
 													}
 												}
-	
+
 												if (illegalFlag) {
 													callback('name-illegal');
 												} else {
@@ -232,38 +247,38 @@ class RoleModify extends React.Component {
 									],
 								})(
 									<div>
-										{permissionList.map((item, key) => (
-											<div key={key} style={{ marginBottom: '30px' }}>
-												<Checkbox
-													onChange={e =>
-														this.onCheckAllChange(e, item.group)
-													}
-													indeterminate={item.indeterminate}
-													defaultChecked={item.checkAll}
-													checked={item.checkAll}
-													disabled
-												>
-													{item.checkedList.label}
-												</Checkbox>
-												<div>
-													{item.checkedList.permissionList && (
-														<CheckboxGroup
-															onChange={e =>
-																this.handleGroupChange(
-																	e,
-																	item.group
-																)
-															}
-															options={
-																item.checkedList.permissionList
-															}
-															disabled
-															value={item.valueList}
-														/>
-													)}
+										{permissionList.map((item, key) => {
+											const mappedItem = pList.find(p => p.group === item.group) || {};
+											return (
+												<div key={key} style={{ marginBottom: '30px' }}>
+													<Checkbox
+														onChange={e =>
+															this.onCheckAllChange(e, item)
+														}
+														indeterminate={mappedItem.indeterminate}
+														checked={mappedItem.checkAll}
+													>
+														{item.checkedList.label}
+													</Checkbox>
+													<div>
+														{item.checkedList.permissionList && (
+															<CheckboxGroup
+																onChange={e =>
+																	this.handleGroupChange(
+																		e,
+																		item
+																	)
+																}
+																options={
+																	item.checkedList.permissionList
+																}
+																value={mappedItem.valueList}
+															/>
+														)}
+													</div>
 												</div>
-											</div>
-										))}
+											);
+										})}
 									</div>
 								)}
 							</Form.Item>

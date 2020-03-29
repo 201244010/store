@@ -1,5 +1,5 @@
-import { getLiveUrl, /* stopLive, */ getTimeSlots, startPublish, stopPublish } from '../../services/live';
 import { ERROR_OK } from '@/constants/errorCode';
+import { getLiveUrl, getTimeSlots, startPublish, stopPublish } from '../../services/live';
 
 const PPIS = {
 	'1080': 0,
@@ -37,7 +37,6 @@ export default {
 		// 	state.ppiChanged = true;
 		// },
 		updateTimeSlots(state, { payload: { timeSlots } }) {
-			// console.log('update timeSlots');
 			state.timeSlots = timeSlots;
 		}
 	},
@@ -188,7 +187,6 @@ export default {
 		// },
 
 		*getTimeSlots({ payload: { sn, timeStart, timeEnd }}, { put, call }) {
-			// console.log('get timeSlots');
 			const deviceId = yield put.resolve({
 				type: 'ipcList/getDeviceId',
 				payload: {
