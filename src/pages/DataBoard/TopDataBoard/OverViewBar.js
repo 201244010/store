@@ -60,7 +60,7 @@ class OverViewBar extends Component {
 			count: customerDistri.currentStranger,
 			earlyCount: customerDistri.earlyStranger,
 			compareRate: false,
-			toolTipText: formatMessage({ id: 'databoard.top.strangeCount' }),
+			toolTipText: formatMessage({ id: 'databoard.top.strangerCount' }),
 		};
 		const regularCount = {
 			label: 'regularCount',
@@ -122,7 +122,7 @@ class OverViewBar extends Component {
 		// 	toolTipText: 'toolTipText',
 		// };
 		// const itemListData = [1, 2, 3, 4].map(() => itemMock);
-		console.log('--------OverView_Bar------:', itemListData);
+		// console.log('--------OverView_Bar------:', itemListData);
 
 		const CardTotal = itemListData.length;
 		const rowGutter = 24;

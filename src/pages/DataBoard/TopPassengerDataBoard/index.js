@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } from 'antd';
 // import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import * as CookieUtil from '@/utils/cookies';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
 import PageEmpty from '@/components/BigIcon/PageEmpty';
@@ -117,7 +118,7 @@ class TopPassengerDataBoard extends React.Component {
 				render: (operation, item) => (
 					<a
 						onClick={() => {
-							toggleShop(item);
+							this.toggleShop(item);
 						}}
 					>
 						{formatMessage({ id: 'databoard.top.passenger.shop.showDetail' })}
@@ -345,7 +346,7 @@ class TopPassengerDataBoard extends React.Component {
 		const regularGuest = byFrequencyArray[0];
 		const earlyRegularGuest = earlyByFrequencyArray[0];
 
-		console.log('mainGuestList', mainGuestList);
+		// console.log('mainGuestList', mainGuestList);
 		return (
 			<div className={styles.main}>
 				<div className={styles['passengerAnalyze-title']}>

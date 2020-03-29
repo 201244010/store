@@ -110,11 +110,18 @@ export default {
 
 		*getPermessionPassengerFlow(_, { put, call }) {
 			const response = yield call(getCompanyIPCList);
+			let status = false;
 			if (response && response.code === ERROR_OK) {
 				const {
 					data: { deviceList },
 				} = response;
-				const status = deviceList.length > 0;
+				if (deviceList && deviceList.length > 0) {
+					deviceList.forEach(device => {
+						if (device.model === 'FM020') {
+							status = true;
+						}
+					});
+				}
 				yield put({
 					type: 'updateState',
 					payload: {

@@ -11,7 +11,7 @@ class DashBoard extends React.Component {
 
 	render() {
 		const { isTopView } = this;
-		let view = <div>xxwwwwwxxxx</div>;
+		let view = <div />;
 		// 总部状态
 		if (isTopView()) {
 			console.log('======================总部视角');
