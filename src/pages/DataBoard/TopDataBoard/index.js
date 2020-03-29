@@ -72,9 +72,10 @@ class TopDataBoard extends Component {
 
 	toggleShop = shopInfo => {
 		const { shopId } = shopInfo;
-		const { goToPath } = this.props;
+		// const { goToPath } = this.props;
 		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
-		goToPath('dashboard', {}, 'href');
+		window.location.reload();
+		// goToPath('dashboard', {}, 'href');
 	};
 
 	handleTabelFilters = data =>

@@ -140,9 +140,10 @@ class TopPassengerDataBoard extends React.Component {
 	toggleShop = shopInfo => {
 		// console.log(`goToPath${shopInfo}`);
 		const { shopId } = shopInfo;
-		const { goToPath } = this.props;
+		// const { goToPath } = this.props;
 		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
-		goToPath('passengerAnalyze', {}, 'href');
+		window.location.reload();
+		// goToPath('passengerAnalyze', {}, 'href');
 	};
 
 	initGetData = async (startTime, type = 1) => {
