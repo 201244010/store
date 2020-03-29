@@ -43,4 +43,5 @@ export const DATABOARD = {
 		strangeCount: formatMessage({ id: 'databoard.order.strangeCount' }),
 	},
 	LINE_SIZE: 3,
+	LAST_HAND_REFRESH_TIME: 'lastHandRefreshTime',
 };

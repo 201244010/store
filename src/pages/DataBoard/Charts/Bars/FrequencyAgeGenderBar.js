@@ -29,12 +29,12 @@ const ageCodeToIndex = range => {
 };
 
 const AGE_RANGE_LABEL = {
-	0: formatMessage('databoard.age.range.1'),
-	1: formatMessage('databoard.age.range.4'),
-	2: formatMessage('databoard.age.range.5'),
-	3: formatMessage('databoard.age.range.6'),
-	4: formatMessage('databoard.age.range.7'),
-	5: formatMessage('databoard.age.range.8'),
+	0: formatMessage({ id: 'databoard.age.range.1' }),
+	1: formatMessage({ id: 'databoard.age.range.4' }),
+	2: formatMessage({ id: 'databoard.age.range.5' }),
+	3: formatMessage({ id: 'databoard.age.range.6' }),
+	4: formatMessage({ id: 'databoard.age.range.7' }),
+	5: formatMessage({ id: 'databoard.age.range.8' }),
 };
 
 export default class FrequencyAgeGenderBar extends React.Component {

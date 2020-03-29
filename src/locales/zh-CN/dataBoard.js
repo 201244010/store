@@ -92,6 +92,7 @@ export default {
 	'databoard.top.deviceCount': '0点至当前时间，所有门店的设备数量之和',
 	'databoard.top.rank': '排名',
 	'databoard.top.shop': '门店',
+	'databoard.top.operation': '操作',
 	'databoard.top.customer.count': '客流量',
 	'databoard.top.rank.customer': '客流量排行',
 	'databoard.top.rank.customer.tip':
@@ -101,4 +102,11 @@ export default {
 	'databoard.top.data.empty.current':
 		'请前往子门店添加AI识客摄像机并导入软件订单数据即可查看总部数据',
 	'databoard.top.data.empty.history': '请前往子门店添加AI识客摄像机即可查看总部数据',
+	'databoard.top.passenger.title.genderRate': '性别占比',
+	'databoard.top.passenger.title.ageRate': '年龄占比',
+	'databoard.top.passenger.title.regularRate': '新老占比',
+	'databoard.top.passenger.title.customer': '客群',
+	'databoard.top.passenger.title.customer.major': '主力客群',
+	'databoard.top.passenger.shop.toal': '全部门店',
+	'databoard.top.passenger.shop.showDetail': '查看门店详情',
 };

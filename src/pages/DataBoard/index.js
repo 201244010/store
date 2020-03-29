@@ -1,7 +1,7 @@
 import React from 'react';
 import * as CookieUtil from '@/utils/cookies';
-import PassengerDataBoard from '@/pages/DataBoard/PassengerDataBoard';
-import TopPassengerDataBoard from '@/pages/DataBoard/TopPassengerDataBoard';
+import TopDataBoard from './TopDataBoard';
+import RTDataBoard from './RTDataBoard';
 
 class DashBoard extends React.Component {
 	isTopView = () => {
@@ -11,15 +11,15 @@ class DashBoard extends React.Component {
 
 	render() {
 		const { isTopView } = this;
-		let view = <PassengerDataBoard />;
+		let view = <div>xxwwwwwxxxx</div>;
 		// 总部状态
 		if (isTopView()) {
 			console.log('======================总部视角');
-			view = <TopPassengerDataBoard />;
+			view = <TopDataBoard />;
 		} else {
 			console.log('======================单门店视角');
-			// view = <TopPassengerDataBoard />;
-			view = <PassengerDataBoard />;
+			// view = <TopDataBoard />;
+			view = <RTDataBoard />;
 		}
 		return view;
 	}

@@ -3,8 +3,8 @@ import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import { message, Row, Col, } from 'antd';
-import { getQueryDate } from '@/models/dataBoard';
+import { message, Row, Col } from 'antd';
+import { getQueryDate } from '@/models/DataBoard/dataBoard';
 import SearchBar from './SearchBar';
 import OverviewCard from './OverviewCard';
 import DistriChart from './DistriChart';
@@ -19,7 +19,7 @@ const RANGE = {
 	WEEK: 'week',
 	MONTH: 'month',
 	FREE: 'free',
-	YESTERDAY: 'yesterday'
+	YESTERDAY: 'yesterday',
 };
 
 const queryTimeType = {
@@ -32,32 +32,34 @@ const LAST_REFRESH_TIME = 'lastRefreshTime';
 
 @connect(
 	state => ({
-		databoard: state.databoard
+		databoard: state.databoard,
 	}),
 	dispatch => ({
-		fetchAllData: ({ searchValue, needLoading }) => dispatch({
-			type: 'databoard/fetchAllData',
-			payload: {
-				type: 1,
-				searchValue,
-				needLoading
-			}
-		}),
-		checkIsNormal: () => dispatch({
-			type: 'databoard/checkIsNormal',
-			payload: {
-				type: 1
-			}
-		}),
-		resetCheckState: () => dispatch({
-			type: 'databoard/resetCheckNormal',
-		}),
+		fetchAllData: ({ searchValue, needLoading }) =>
+			dispatch({
+				type: 'databoard/fetchAllData',
+				payload: {
+					type: 1,
+					searchValue,
+					needLoading,
+				},
+			}),
+		checkIsNormal: () =>
+			dispatch({
+				type: 'databoard/checkIsNormal',
+				payload: {
+					type: 1,
+				},
+			}),
+		resetCheckState: () =>
+			dispatch({
+				type: 'databoard/resetCheckNormal',
+			}),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
 )
 class RTDataBoard extends PureComponent {
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -105,9 +107,9 @@ class RTDataBoard extends PureComponent {
 			this.startAutoRefresh();
 			console.log('refreshed', searchValue);
 		}, 1000 * 60 * 2);
-	}
+	};
 
-	onSearchChanged = (value) => {
+	onSearchChanged = value => {
 		console.log('======searchValue====', value);
 		const { fetchAllData } = this.props;
 		clearTimeout(this.timer);
@@ -116,17 +118,17 @@ class RTDataBoard extends PureComponent {
 			searchValue: {
 				rangeType: value,
 				startQueryTime,
-				endQueryTime
-			}
+				endQueryTime,
+			},
 		});
 		fetchAllData({
 			searchValue: {
 				rangeType: value,
 			},
-			needLoading: true
+			needLoading: true,
 		});
 		this.startAutoRefresh();
-	}
+	};
 
 	handleRefresh = async () => {
 		const { fetchAllData } = this.props;
@@ -149,33 +151,61 @@ class RTDataBoard extends PureComponent {
 			message.warning(formatMessage({ id: 'dashboard.refresh.too.fast' }));
 			this.startAutoRefresh();
 		}
-	}
+	};
 
 	render() {
-		const { databoard: {
-			RTPassLoading, RTDevicesLoading,
-			totalAmountLoading, totalCountLoading, totalRateLoading,
-			RTPassengerFlowLoading,
-			transactionCountLoading, transactionRateLoading,
-			regularDistriLoading, genderAndAgeLoading,
-			hasFS, isSaasAuth
-		}, goToPath } = this.props;
-		const loading = RTPassLoading || RTDevicesLoading ||
-			totalAmountLoading || totalCountLoading || totalRateLoading ||
+		const {
+			databoard: {
+				RTPassLoading,
+				RTDevicesLoading,
+				totalAmountLoading,
+				totalCountLoading,
+				totalRateLoading,
+				RTPassengerFlowLoading,
+				transactionCountLoading,
+				transactionRateLoading,
+				regularDistriLoading,
+				genderAndAgeLoading,
+				hasFS,
+				isSaasAuth,
+			},
+			goToPath,
+		} = this.props;
+		const loading =
+			RTPassLoading ||
+			RTDevicesLoading ||
+			totalAmountLoading ||
+			totalCountLoading ||
+			totalRateLoading ||
 			RTPassengerFlowLoading ||
-			transactionCountLoading || transactionRateLoading ||
-			regularDistriLoading || genderAndAgeLoading;
-			
-		const { searchValue: { rangeType, startQueryTime, endQueryTime } } = this.state;
+			transactionCountLoading ||
+			transactionRateLoading ||
+			regularDistriLoading ||
+			genderAndAgeLoading;
 
-		const { databoard: {
-			regularList, RTPassengerFlowList, lastModifyTime, ageGenderList,
-			RTPassengerCount, RTEnteringRate, RTDeviceCount,
-			paymentTotalAmount, paymentTotalCount, transactionRate,
-			amountList, countList, transactionRateList,
-		} } = this.props;
+		const {
+			searchValue: { rangeType, startQueryTime, endQueryTime },
+		} = this.state;
+
+		const {
+			databoard: {
+				regularList,
+				RTPassengerFlowList,
+				lastModifyTime,
+				ageGenderList,
+				RTPassengerCount,
+				RTEnteringRate,
+				RTDeviceCount,
+				paymentTotalAmount,
+				paymentTotalCount,
+				transactionRate,
+				amountList,
+				countList,
+				transactionRateList,
+			},
+		} = this.props;
 		const timeType = queryTimeType[rangeType];
-		return(
+		return (
 			<div className={styles['databoard-wrapper']}>
 				<SearchBar
 					{...{
@@ -184,49 +214,54 @@ class RTDataBoard extends PureComponent {
 						lastModifyTime,
 					}}
 				/>
-				{
-					hasFS && isSaasAuth ?
-						<div className={styles['charts-container']}>
-							<OverviewCard
-								loading={loading}
-								{...{
-									RTPassengerCount, RTEnteringRate, RTDeviceCount,
-									paymentTotalAmount: paymentTotalAmount[rangeType],
-									paymentTotalCount: paymentTotalCount[rangeType],
-									transactionRate,
-									timeType,
-									goToPath,
-									startQueryTime,
-									endQueryTime,
-								}}
-							/>
-							<Row gutter={24}>
-								<Col span={12}>
-									<PassengerTrendLine
-										{...{
-											timeType,
-											RTPassengerFlowList,
-											loading
-										}}
-									/>
-								</Col>
-								<Col span={12}>
-									<TransactionTrend
-										{...{
-											timeType,
-											amountList,
-											countList,
-											transactionRateList,
-											loading
-										}}
-									/>
-								</Col>
-							</Row>
-							<DistriChart regularList={regularList} ageGenderList={ageGenderList} loading={loading} />
-						</div>
-						:
-						<AbnormalTip />
-				}
+				{hasFS && isSaasAuth ? (
+					<div className={styles['charts-container']}>
+						<OverviewCard
+							loading={loading}
+							{...{
+								RTPassengerCount,
+								RTEnteringRate,
+								RTDeviceCount,
+								paymentTotalAmount: paymentTotalAmount[rangeType],
+								paymentTotalCount: paymentTotalCount[rangeType],
+								transactionRate,
+								timeType,
+								goToPath,
+								startQueryTime,
+								endQueryTime,
+							}}
+						/>
+						<Row gutter={24}>
+							<Col span={12}>
+								<PassengerTrendLine
+									{...{
+										timeType,
+										RTPassengerFlowList,
+										loading,
+									}}
+								/>
+							</Col>
+							<Col span={12}>
+								<TransactionTrend
+									{...{
+										timeType,
+										amountList,
+										countList,
+										transactionRateList,
+										loading,
+									}}
+								/>
+							</Col>
+						</Row>
+						<DistriChart
+							regularList={regularList}
+							ageGenderList={ageGenderList}
+							loading={loading}
+						/>
+					</div>
+				) : (
+					<AbnormalTip />
+				)}
 			</div>
 		);
 	}

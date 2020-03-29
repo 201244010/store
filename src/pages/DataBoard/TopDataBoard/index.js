@@ -11,7 +11,7 @@ import CurrentSalesLine from './CurrentSalesLine';
 import StatusBar from './StatusBar';
 import OverViewBar from './OverViewBar';
 import styles from './topView.less';
-import { DATABOARD } from './constants';
+import { DATABOARD } from '../Charts/constants';
 
 const { LAST_HAND_REFRESH_TIME } = DATABOARD;
 
@@ -52,12 +52,12 @@ const { LAST_HAND_REFRESH_TIME } = DATABOARD;
 			}),
 	})
 )
-class DataBoard extends Component {
+class TopDataBoard extends Component {
 	async componentDidMount() {
 		const { fetchAllData } = this.props;
 		// await getAgeRanges();
 		const { startAutoRefresh } = this;
-		await fetchAllData({ needLoading: true });
+		await fetchAllData();
 		startAutoRefresh();
 	}
 
@@ -123,7 +123,7 @@ class DataBoard extends Component {
 		const { fetchAllData } = this.props;
 		clearTimeout(this.timer);
 		this.timer = setTimeout(async () => {
-			await fetchAllData({ needLoading: false });
+			await fetchAllData();
 			this.startAutoRefresh();
 			console.log('refreshed');
 		}, 1000 * 60 * 2);
@@ -141,7 +141,7 @@ class DataBoard extends Component {
 				.isAfter(moment(lastHandRefreshTime))
 		) {
 			Storage.set({ [LAST_HAND_REFRESH_TIME]: moment().format('YYYY-MM-DD HH:mm:ss') });
-			await fetchAllData({ needLoading: true });
+			await fetchAllData();
 			this.startAutoRefresh();
 		} else {
 			message.warning(formatMessage({ id: 'dashboard.refresh.too.fast' }));
@@ -206,7 +206,8 @@ class DataBoard extends Component {
 				/>
 				<div className={styles['display-content']}>
 					<OverViewBar />
-					<Spin spinning={loading.effects['topview/getDeviceOverView']}>
+					{/* <Spin spinning={loading.effects['topview/getDeviceOverView']}> */}
+					<Spin spinning={loading.effects['topview/getLatestPassengerTrend']}>
 						<Row gutter={20} className={styles['data-detail']}>
 							{!(
 								hasCustomerData ||
@@ -325,4 +326,4 @@ class DataBoard extends Component {
 	}
 }
 
-export default DataBoard;
+export default TopDataBoard;

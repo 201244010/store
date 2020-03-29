@@ -6,13 +6,17 @@ import moment from 'moment';
 import PageEmpty from '@/components/BigIcon/PageEmpty';
 import { connect } from 'dva';
 import { FORM_FORMAT, SEARCH_FORM_COL } from '@/constants/form';
-import TopDataCard from '../DataBoard/Charts/TopDataCard/TopDataCard';
+import TopDataCard from '../Charts/TopDataCard/TopDataCard';
 import MainCustomerCard from './MainCustomerCard';
-import Pie from './Pie';
+import Pie from '../Charts/Pie/Pie';
 import styles from './index.less';
 
 const GUEST_OPTIONS = {
-	TITLE: ['新老占比', '性别占比', '年龄占比'],
+	TITLE: [
+		formatMessage({ id: 'databoard.top.passenger.title.regularRate' }),
+		formatMessage({ id: 'databoard.top.passenger.title.genderRate' }),
+		formatMessage({ id: 'databoard.top.passenger.title.ageRate' }),
+	],
 	COLOR_ARRAY: [
 		['rgba(90, 151, 252, 1)', 'rgba(255, 128, 0, 1)'],
 		['rgba(255, 102, 102, 1)', 'rgba(75, 122, 250, 1)'],
@@ -27,15 +31,21 @@ const GUEST_OPTIONS = {
 	],
 };
 const GROUP_BY = [
-	[{ label: '熟客', key: 'regularCount' }, { label: '新客', key: 'newCount' }],
-	[{ label: '女性', key: 'femaleCount' }, { label: '男性', key: 'maleCount' }],
 	[
-		{ label: '18岁以下', key: 'ageRangeOne' },
-		{ label: '19-28岁', key: 'ageRangeTwo' },
-		{ label: '29-35岁', key: 'ageRangeThree' },
-		{ label: '36-45岁', key: 'ageRangeFour' },
-		{ label: '46-55岁', key: 'ageRangeFive' },
-		{ label: '56岁以上', key: 'ageRangeSix' },
+		{ label: formatMessage({ id: 'databoard.data.regular' }), key: 'regularCount' },
+		{ label: formatMessage({ id: 'databoard.data.stranger' }), key: 'newCount' },
+	],
+	[
+		{ label: formatMessage({ id: 'databoard.chart.gender.female' }), key: 'femaleCount' },
+		{ label: formatMessage({ id: 'databoard.chart.gender.male' }), key: 'maleCount' },
+	],
+	[
+		{ label: formatMessage({ id: 'databoard.age.range.1' }), key: 'ageRangeOne' },
+		{ label: formatMessage({ id: 'databoard.age.range.4' }), key: 'ageRangeTwo' },
+		{ label: formatMessage({ id: 'databoard.age.range.5' }), key: 'ageRangeThree' },
+		{ label: formatMessage({ id: 'databoard.age.range.6' }), key: 'ageRangeFour' },
+		{ label: formatMessage({ id: 'databoard.age.range.7' }), key: 'ageRangeFive' },
+		{ label: formatMessage({ id: 'databoard.age.range.8' }), key: 'ageRangeSix' },
 	],
 ];
 const { Option } = Select;
@@ -74,7 +84,7 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 			}),
 	})
 )
-class BizchartDemo extends React.Component {
+class TopPassengerDataBoard extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -87,13 +97,13 @@ class BizchartDemo extends React.Component {
 		};
 		this.columns = [
 			{
-				title: '排名',
+				title: formatMessage({ id: 'databoard.top.rank' }),
 				dataIndex: 'sortIndex',
 				key: 'sortIndex',
 				render: key => <span>{key}</span>,
 			},
 			{
-				title: '门店',
+				title: formatMessage({ id: 'databoard.top.shop' }),
 				dataIndex: 'shopName',
 				key: 'shopName',
 			},
@@ -102,7 +112,7 @@ class BizchartDemo extends React.Component {
 				dataIndex: 'compareItem',
 			},
 			{
-				title: '操作',
+				title: formatMessage({ id: 'databoard.top.operation' }),
 				key: 'operation',
 				render: (operation, item) => (
 					<a
@@ -110,7 +120,7 @@ class BizchartDemo extends React.Component {
 							toggleShop(item);
 						}}
 					>
-						查看门店详情
+						{formatMessage({ id: 'databoard.top.passenger.shop.showDetail' })}
 					</a>
 				),
 			},
@@ -453,7 +463,10 @@ class BizchartDemo extends React.Component {
 								/>
 							</Col>
 						</Row>
-						<Card title="客群分布" className={styles['chart-bar']}>
+						<Card
+							title={formatMessage({ id: 'databoard.passenger.distri.title' })}
+							className={styles['chart-bar']}
+						>
 							<div className={styles.guest}>
 								{GUEST_OPTIONS.TITLE.map((item, index) => (
 									<div
@@ -488,7 +501,10 @@ class BizchartDemo extends React.Component {
 												})(
 													<Select>
 														<Option value={-1} key={-1}>
-															全部门店
+															{formatMessage({
+																id:
+																	'databoard.top.passenger.shop.toal',
+															})}
 														</Option>
 														{this.shopListOptions.map(item => (
 															<Option
@@ -503,9 +519,15 @@ class BizchartDemo extends React.Component {
 											</Form.Item>
 										</Col>
 										<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-											<Form.Item label="客群">
+											<Form.Item
+												label={formatMessage({
+													id: 'databoard.top.passenger.title.customer',
+												})}
+											>
 												{getFieldDecorator('guest', {
-													initialValue: '熟客',
+													initialValue: formatMessage({
+														id: 'databoard.data.regular',
+													}),
 												})(
 													<Select>
 														{currentOptions.map((item, index) => (
@@ -559,7 +581,12 @@ class BizchartDemo extends React.Component {
 								/>
 							</Spin>
 						</Card>
-						<Card title="主力客群" className={styles['footer-cards']}>
+						<Card
+							title={formatMessage({
+								id: 'databoard.top.passenger.title.customer.major',
+							})}
+							className={styles['footer-cards']}
+						>
 							<div className={styles['footer-cards-list']}>
 								{mainGuestList.map(item => {
 									const totalPercent = Math.round(
@@ -588,4 +615,4 @@ class BizchartDemo extends React.Component {
 	}
 }
 
-export default BizchartDemo;
+export default TopPassengerDataBoard;

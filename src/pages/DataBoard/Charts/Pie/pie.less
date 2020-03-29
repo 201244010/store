@@ -1,11 +1,3 @@
-@font-face{
-	font-family: 'Gotham-Medium';
-	src:url('@/assets/font/Gotham-Medium.otf');
-}
-@font-face{
-	font-family: 'Gotham-Bold';
-	src:url('@/assets/font/Gotham-Bold.otf');
-}
 .chart {
 	position: relative;
 
@@ -49,8 +41,9 @@
 		position: absolute;
 		top: 50%;
 		left: calc(40% + 120px);
+		width: 150px;
 		color: #fff;
-		transform: translate(-50%, -50%);
+		transform: translate(-40%, -50%);
 		font-size: 14px;
 
 		.item-name {
@@ -63,7 +56,7 @@
 			padding-left: 8px;
 			color: rgba(82, 88, 102, 1);
 			font-weight: bold;
-			font-family: 'Gotham-Medium', 'Gotham', sans-serif;
+			font-family:'Gotham-Bold', 'Gotham', sans-serif;
 		}
 
 		:global {

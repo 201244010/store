@@ -55,12 +55,12 @@ class OverViewBar extends Component {
 			toolTipText: formatMessage({ id: 'databoard.top.totalPassengerCount' }),
 		};
 		const strangerCount = {
-			label: 'strangerCount',
+			label: 'strangeCount',
 			unit: '',
 			count: customerDistri.currentStranger,
 			earlyCount: customerDistri.earlyStranger,
 			compareRate: false,
-			toolTipText: formatMessage({ id: 'databoard.top.strangerCount' }),
+			toolTipText: formatMessage({ id: 'databoard.top.strangeCount' }),
 		};
 		const regularCount = {
 			label: 'regularCount',
@@ -112,6 +112,7 @@ class OverViewBar extends Component {
 		if (!hasCustomerData && hasOrderData) {
 			itemListData = [totalAmount, totalCount, deviceCount];
 		}
+
 		// const itemMock = {
 		// 	label: '标题',
 		// 	unit: 'percent',

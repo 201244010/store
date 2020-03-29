@@ -221,12 +221,10 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { countList } = format('toCamel')(data);
-				currentDistri = countList.reduce((pre, cur) => {
-					return {
-						strangerUniqCount: cur.strangerUniqCount + pre.strangerUniqCount,
-						regularUniqCount: cur.regularUniqCount + pre.regularUniqCount,
-					};
-				});
+				currentDistri = countList.reduce((pre, cur) => ({
+					strangerUniqCount: cur.strangerUniqCount + pre.strangerUniqCount,
+					regularUniqCount: cur.regularUniqCount + pre.regularUniqCount,
+				}));
 			}
 			const earlyOptions = {
 				startTime: moment()
@@ -242,12 +240,10 @@ export default {
 			if (res && res.code === ERROR_OK) {
 				const { data = {} } = res;
 				const { countList } = format('toCamel')(data);
-				earlyDistri = countList.reduce((pre, cur) => {
-					return {
-						strangerUniqCount: cur.strangerUniqCount + pre.strangerUniqCount,
-						regularUniqCount: cur.regularUniqCount + pre.regularUniqCount,
-					};
-				});
+				earlyDistri = countList.reduce((pre, cur) => ({
+					strangerUniqCount: cur.strangerUniqCount + pre.strangerUniqCount,
+					regularUniqCount: cur.regularUniqCount + pre.regularUniqCount,
+				}));
 			}
 			yield put({
 				type: 'updateState',
