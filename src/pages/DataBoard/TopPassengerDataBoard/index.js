@@ -143,12 +143,30 @@ class TopPassengerDataBoard extends React.Component {
 	}
 
 	toggleShop = shopInfo => {
-		// console.log(`goToPath${shopInfo}`);
 		const { shopId } = shopInfo;
+		const { shopListOptions } = this;
+		const hasAdmin = shopListOptions.find(shop => shop.shopId === shopId);
 		// const { goToPath } = this.props;
-		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
-		window.location.reload();
-		// goToPath('passengerAnalyze', {}, 'href');
+		if (hasAdmin) {
+			Modal.confirm({
+				title: formatMessage({ id: 'databoard.top.toggleShop.confirm' }),
+				okText: formatMessage({ id: 'list.action.view' }),
+				cancelText: formatMessage({ id: 'btn.cancel' }),
+				maskClosable: false,
+				onOk: () => {
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
+					window.location.reload();
+				},
+			});
+		} else {
+			Modal.info({
+				title: formatMessage({ id: 'databoard.top.toggleShop.info' }),
+				okText: formatMessage({ id: 'btn.confirm' }),
+				maskClosable: false,
+			});
+		}
+
+		// goToPath('dashboard', {}, 'href');
 	};
 
 	initGetData = async (startTime, type = 1) => {

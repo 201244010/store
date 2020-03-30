@@ -36,7 +36,7 @@ export default {
 	'databoard.data.stranger': '新客',
 	'databoard.data.regular': '熟客',
 	'databoard.data.passenger': '进店客流',
-	'databoard.data.amount': '销售额度',
+	'databoard.data.amount': '销售额',
 	'databoard.data.count': '交易笔数',
 	'databoard.data.transactionRate': '进店率',
 	'databoard.data.customerFrequency': '到店频次',
@@ -84,8 +84,8 @@ export default {
 	'databoard.order.totalPassengerCount': '进店客流',
 	'databoard.order.strangeCount': '新客人数',
 	'databoard.top.totalPassengerCount': '0点至当前时间，所有门店的客流量之和',
-	'databoard.top.strangerCount': '0点至当前时间',
-	'databoard.top.regularCount': '0点至当前时间',
+	'databoard.top.strangerCount': '0点至当前时间,所有门店的客流量中，第一次进店的客户人数之和',
+	'databoard.top.regularCount': '0点至当前时间,所有门店的客流量中，非第一次进店的客户人数之和',
 	'databoard.top.totalAmount': '0点至当前时间，所有门店的之和',
 	'databoard.top.totalCount':
 		'0点至当前时间，所有门店的成功付款交易笔数之和（一个订单对应唯一一个订单号）',
@@ -96,9 +96,9 @@ export default {
 	'databoard.top.customer.count': '客流量',
 	'databoard.top.rank.customer': '客流量排行',
 	'databoard.top.rank.customer.tip':
-		'0点至当前时间，所有具备客流统计的门店正向排名情况（若有门店未绑定智能AI识客摄像机，则无法查看其客流量排行',
+		'0点至当前时间，所有具备客流统计的门店排名情况（若有门店未绑定智能AI识客摄像机，则无法查看其客流量排行',
 	'databoard.top.rank.sales': '销售额排行',
-	'databoard.top.rank.sales.tip': '0点至当前时间，所有门店成功付款金额的正向排名情况',
+	'databoard.top.rank.sales.tip': '0点至当前时间，所有门店成功付款金额的排名情况',
 	'databoard.top.data.empty.current':
 		'请前往子门店添加AI识客摄像机并导入软件订单数据即可查看总部数据',
 	'databoard.top.data.empty.history': '请前往子门店添加AI识客摄像机即可查看总部数据',
@@ -109,4 +109,6 @@ export default {
 	'databoard.top.passenger.title.customer.major': '主力客群',
 	'databoard.top.passenger.shop.toal': '全部门店',
 	'databoard.top.passenger.shop.showDetail': '查看门店详情',
+	'databoard.top.toggleShop.confirm':'若要查看该门店更详细的指标，将会离开总部视角跳转至对应门店。',
+	'databoard.top.toggleShop.info':'您尚不具备查看该门店详情数据的权限。',
 };
