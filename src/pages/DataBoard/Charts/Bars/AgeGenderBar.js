@@ -1,5 +1,4 @@
 import React from 'react';
-import { DataView } from '@antv/data-set';
 import { formatMessage } from 'umi/locale';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import styles from '../chartsCommon.less';
@@ -40,19 +39,22 @@ export default class AgeGenderBar extends React.Component {
 		const { formatToolTipAxisX, formatLabelX } = this;
 		const chartTitle = formatMessage({ id: 'databoard.chart.ageGender' });
 
-		const dv = new DataView();
-		const data = dv.source(ageGenderList.sort()).transform({
-			type: 'map',
-			callback(row) {
-				row.rangeKey = formatAgeCode(row.range);
-				if (row.gender === 'male') {
-					row.gender = formatMessage({ id: 'databoard.chart.gender.male' });
-				}
-				if (row.gender === 'female') {
-					row.gender = formatMessage({ id: 'databoard.chart.gender.female' });
-				}
-				return row;
-			},
+		const data = ageGenderList.sort().map(row => {
+			const { gender, range, count } = row;
+			const rangeKey = formatAgeCode(row.range);
+			let genderFormat;
+			if (gender === 'male') {
+				genderFormat = formatMessage({ id: 'databoard.chart.gender.male' });
+			}
+			if (gender === 'female') {
+				genderFormat = formatMessage({ id: 'databoard.chart.gender.female' });
+			}
+			return {
+				gender: genderFormat,
+				range,
+				count,
+				rangeKey,
+			};
 		});
 
 		console.log('wx______:', data);
