@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { Card, Form, Button, Modal, Progress, message, Divider } from 'antd';
+import { Card, Form, Button, Modal, Progress, message, Divider, Icon, Tooltip } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-import styles from './CardManagement.less';
+import moment from 'moment';
 import { FORM_ITEM_LAYOUT_MANAGEMENT } from '@/constants/form';
 import AnchorWrapper from '@/components/Anchor';
-import NVRTitle from './NVRTitle';
 import { ERROR_OK, ERR_SDCARD_NOT_PLUGGED, ERR_SDCARD_INVALID, ERR_SDCARD_UMOUNT_FAILED, ERR_SDCARD_UNFARMATTED } from '@/constants/errorCode';
 import ipcTypes from '@/constants/ipcTypes';
 import { comperareVersion } from '@/utils/utils';
+import styles from './CardManagement.less';
+import NVRTitle from './NVRTitle';
 
 const statusCode = {
 	opened: 1,
@@ -517,8 +518,14 @@ class CardManagement extends Component {
 	 * */
 	cardSizeInfo = num => {
 		if (num >= 1024) {
-			const size = Math.floor(num / 1024);
-			return `${size}GB`;
+			if (num % 1024 === 0) {
+				const size1 = (num / 1024).toFixed(2);
+				return `${size1}GB`;
+			}
+			// 保留2位小数 向下取
+			const size2 = (Math.floor((num / 1024) * 100) / 100).toFixed(2);
+			return `${size2}GB`;
+
 		}
 		return `${num}MB`;
 	};
@@ -536,6 +543,47 @@ class CardManagement extends Component {
 		return `0 ${formatMessage({ id: 'cardManagement.day' })}`;
 	};
 
+	/**
+	 * 分钟转天/时/分
+	 * */
+	minute2DHM = minu => {
+		if (!minu) {
+			return `0${formatMessage({id:'cardManagement.day'})}0${formatMessage({id:'cardManagement.hour'})}0${formatMessage({id:'cardManagement.minute'})}`;
+		}
+		let m = 0;
+		let h = 0;
+		let d = 0;
+		m = minu % 60;
+		h = Math.floor(minu / 60);
+		h %= 24;
+		d = Math.floor(minu / 60 / 24);
+
+		return `${d}${formatMessage({id:'cardManagement.day'})}${h}${formatMessage({id:'cardManagement.hour'})}${m}${formatMessage({id:'cardManagement.minute'})}`;
+	};
+
+	/**
+	 * 时间戳转年月日时分秒
+	 * */
+	timestampFormat = timestamp => {
+		try {
+			console.log('timestampFormat=', moment.unix(timestamp).format('YYYY-MM-DD HH:mm:ss'));
+			if (!timestamp) {
+				return formatMessage({id: 'cardManagement.unknown'});
+			}
+			const dateObj = moment.unix(timestamp).toObject();
+			const year = `${dateObj.years}${formatMessage({id:'cardManagement.dateYear'})}`;
+			const month = `${dateObj.months + 1}${formatMessage({id:'cardManagement.dateMonth'})}`;
+			const day = `${dateObj.date}${formatMessage({id:'cardManagement.dateDay'})}`;
+			const hour = `${dateObj.hours}${formatMessage({id:'cardManagement.dateHour'})}`;
+			const minute = `${dateObj.minutes}${formatMessage({id:'cardManagement.dateMinute'})}`;
+			const second = `${dateObj.seconds}${formatMessage({id:'cardManagement.dateSecond'})}`;
+
+			return `${year}${month}${day}${hour}${minute}${second}`;
+
+		} catch (err) {
+			return formatMessage({id: 'cardManagement.unknown'});
+		}
+	}
 
 	dateToDuration = (time) => {
 		if(!time) return `${formatMessage({ id: 'cardManagement.unknown'})}`;
@@ -559,6 +607,9 @@ class CardManagement extends Component {
 				total, // 总存储空间MB
 				available_time, // 可用时长h
 				sd_status_code, // sd卡状态码
+				video_end, // 存储视频结束时间戳 秒
+				video_start, // 存储视频开始时间戳 秒
+				video_total_length, // 视频文件数量(1个文件1分钟)
 				// isOldDevice // 老款设备
 				// cloudStatus,
 				// expireTime,
@@ -634,18 +685,17 @@ class CardManagement extends Component {
 							<Form {...FORM_ITEM_LAYOUT_MANAGEMENT}>
 								<Form.Item label={formatMessage({ id: 'cardManagement.sizeLeft' })}>
 									{
-										isOnline ?
-											(hasCard && sd_status_code === 2 ?
-												<div>
-													<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}{this.cardSizeInfo(used)}/{this.cardSizeInfo(total)}</p>
-													<Progress
-														className={styles['form-progress']}
-														percent={this.percentage(used, total)}
-														showInfo={false}
-													/>
-												</div>
-												: <p>{ this.sdStatus2text(sd_status_code) }</p>)
-											:<div>
+										isOnline && hasCard && sd_status_code === 2 ?
+											<div>
+												<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}{this.cardSizeInfo(used)}/{this.cardSizeInfo(total)}</p>
+												<Progress
+													className={styles['form-progress']}
+													percent={this.percentage(used, total)}
+													showInfo={false}
+												/>
+											</div>
+											:
+											<div>
 												<p className={`${styles['text-align-right']  } ${  styles['form-progress']  } ${  styles['no-margin']}`}>{formatMessage({ id: 'cardManagement.hasUsed' })}
 													<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span>/<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span><span>GB</span>
 												</p>
@@ -653,26 +703,89 @@ class CardManagement extends Component {
 													className={styles['form-progress']}
 													showInfo={false}
 												/>
-											 </div>
+											</div>
 									}
 
 								</Form.Item>
 
-								<Form.Item label={formatMessage({ id: 'cardManagement.daysCanUse' })}>
-									{
-										isOnline ?
-											(hasCard && sd_status_code === 2 ?
-												<p>
-													{this.hour2day(available_time)}<br />
-													{formatMessage({ id: 'cardManagement.daysUseTip' })}
-												</p>
-												: <p>{this.sdStatus2text(sd_status_code)}</p>)
-											:<div>
-												<p><span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span><span>{formatMessage({id: 'cardManagement.day'})}</span></p>
-												<p>{formatMessage({ id: 'cardManagement.daysUseTip' })}</p>
-											 </div>
-									}
-								</Form.Item>
+								{
+									// 设备在线
+									isOnline ?
+										(
+											// sd卡状态正常
+											hasCard && sd_status_code === 2 ?
+												(
+													// 新固件
+													(video_end  || video_end === 0) &&
+													(video_start  || video_start === 0) &&
+													(video_total_length  || video_total_length === 0)?
+														<>
+															<Form.Item label={formatMessage({ id: 'cardManagement.videoTimeLength' })}>
+																<div className={styles['flex-v-center']}>
+																	<span>{this.minute2DHM(video_total_length)}</span>
+																	<Tooltip
+																		placement="right"
+																		title={formatMessage({ id: 'cardManagement.videoTimeLengthTip' })}
+																		overlayClassName={styles.tooltip}
+																	>
+																		<Icon
+																			className={styles['info-icon']}
+																			type="info-circle"
+																		/>
+																	</Tooltip>
+																</div>
+															</Form.Item>
+
+															<Form.Item label={formatMessage({ id: 'cardManagement.videoStartTime' })}>
+																<span>{this.timestampFormat(video_start)}</span>
+															</Form.Item>
+
+															<Form.Item label={formatMessage({ id: 'cardManagement.videoEndTime' })}>
+																<span>{this.timestampFormat(video_end)}</span>
+															</Form.Item>
+														</>
+
+														// 老固件
+														:
+														<Form.Item label={formatMessage({ id: 'cardManagement.daysCanUse' })}>
+															<p>
+																{this.hour2day(available_time)}<br />
+																{formatMessage({ id: 'cardManagement.daysUseTip' })}
+															</p>
+														</Form.Item>
+												)
+
+												// sd卡状态异常
+												:<>
+													<Form.Item label={formatMessage({ id: 'cardManagement.videoTimeLength' })}>
+														<span>{this.sdStatus2text(sd_status_code)}</span>
+													</Form.Item>
+
+													<Form.Item label={formatMessage({ id: 'cardManagement.videoStartTime' })}>
+														<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span>
+													</Form.Item>
+
+													<Form.Item label={formatMessage({ id: 'cardManagement.videoEndTime' })}>
+														<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span>
+													</Form.Item>
+												 </>
+										)
+
+										// 设备离线
+										:<>
+											<Form.Item label={formatMessage({ id: 'cardManagement.videoTimeLength' })}>
+												<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span>
+											</Form.Item>
+
+											<Form.Item label={formatMessage({ id: 'cardManagement.videoStartTime' })}>
+												<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span>
+											</Form.Item>
+
+											<Form.Item label={formatMessage({ id: 'cardManagement.videoEndTime' })}>
+												<span className={styles['offline-info']}>{formatMessage({id: 'cardManagement.unknown'})}</span>
+											</Form.Item>
+										 </>
+								}
 
 								<Form.Item label={formatMessage({ id: 'cardManagement.removeSafely' })}>
 									{/* 未格式化的卡不能点移除 */}
