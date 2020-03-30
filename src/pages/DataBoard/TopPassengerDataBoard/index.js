@@ -1,11 +1,11 @@
 import React from 'react';
+import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } from 'antd';
+// import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import moment from 'moment';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import moment from 'moment';
-import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } from 'antd';
-import * as CookieUtil from '@/utils/cookies';
-// import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import PageEmpty from '@/components/BigIcon/PageEmpty';
+import * as CookieUtil from '@/utils/cookies';
 import { FORM_FORMAT, SEARCH_FORM_COL } from '@/constants/form';
 import TopDataCard from '../Charts/TopDataCard/TopDataCard';
 import MainCustomerCard from './MainCustomerCard';
@@ -97,6 +97,7 @@ class TopPassengerDataBoard extends React.Component {
 			chosenCard: 0,
 			currentOptions: GROUP_BY[0],
 			dataSource: [],
+			isSelected: false,
 		};
 		this.columns = [
 			{
@@ -182,20 +183,22 @@ class TopPassengerDataBoard extends React.Component {
 				.subtract(1, 'days')
 				.format('YYYY-MM-DD'),
 			2: moment()
-				.subtract(0, 'weeks')
+				.subtract(1, 'days')
+				.startOf('week')
 				.format('YYYY-MM-DD'),
 			3: moment()
-				.subtract(0, 'months')
+				.subtract(1, 'days')
+				.startOf('month')
 				.format('YYYY-MM-DD'),
 		};
-		console.log('STARTTIME', STARTTIME);
 
+		this.setState({ isSelected: false });
 		this.initGetData(STARTTIME[e.target.value], e.target.value);
 	};
 
 	handleDateChange = (date, _, type) => {
-		console.log(moment(date).format(DATE_FORMAT));
 		let startTime = '';
+		
 		switch (type) {
 			case 1:
 				startTime = moment(date).format(DATE_FORMAT);
@@ -214,11 +217,11 @@ class TopPassengerDataBoard extends React.Component {
 				break;
 		}
 
+		this.setState({ isSelected: true });
 		this.initGetData(startTime, type);
 	};
 
 	handleChosenCardChange = async (index, isInit) => {
-		console.log('i', index);
 		const {
 			form: { setFieldsValue },
 			getHeadShopListByGender,
@@ -278,7 +281,6 @@ class TopPassengerDataBoard extends React.Component {
 
 		let keyword = '';
 
-		console.log('ss', getFieldsValue());
 		const { shopId, guest } = getFieldsValue();
 		let resultArray = shopList.map(item => Object.assign({}, item));
 
@@ -297,9 +299,8 @@ class TopPassengerDataBoard extends React.Component {
 			item.sortIndex = index + 1;
 		});
 
-		console.log(resultArray, 'result');
 		this.columns[2] = {
-			title: `${guest}人数`,
+			title: `${guest}${formatMessage({id: 'databoard.data.personCount'})}`,
 			dataIndex: keyword,
 		};
 		this.setState({ dataSource: resultArray });
@@ -320,6 +321,41 @@ class TopPassengerDataBoard extends React.Component {
 			guest: GROUP_BY[chosenCard][0].label,
 		});
 		this.handleTableDataSource();
+	};
+	
+	tooltipFormText = (index) => {
+		const { dateType, isSelected } = this.state;
+		let text = ''; 
+		let dateText = '';
+		
+		switch (dateType) {
+			case 1: dateText = formatMessage({ id: 'databoard.tooltip.lastDay' });break;
+			case 2: dateText = formatMessage({ id: 'databoard.tooltip.lastWeek' });break;
+			case 3: dateText = formatMessage({ id: 'databoard.tooltip.lastMonth' });break;
+			default: break;
+		}
+		
+		if(isSelected) {
+			dateText = formatMessage({ id: 'databoard.tooltip.inRange'});
+		};
+		
+		switch (index) {
+			case 1:
+				text = dateText + formatMessage({ id: 'databoard.tooltip.totalGuest' });
+				break;
+			case 2:
+				text = dateText + formatMessage({ id: 'databoard.tooltip.getInShopRate' });
+				break;
+			case 3:
+				text = dateText + formatMessage({ id: 'databoard.tooltip.newGuest' });
+				break;
+			case 4:
+				text = dateText + formatMessage({ id: 'databoard.tooltip.regularGuest' });
+				break;
+			default: break;
+		}
+		
+		return text;
 	};
 
 	disabledDate = current => current && current > moment().endOf('day');
@@ -352,7 +388,6 @@ class TopPassengerDataBoard extends React.Component {
 		const regularGuest = byFrequencyArray[0];
 		const earlyRegularGuest = earlyByFrequencyArray[0];
 
-		// console.log('mainGuestList', mainGuestList);
 		return (
 			<div className={styles.main}>
 				<div className={styles['passengerAnalyze-title']}>
@@ -421,7 +456,7 @@ class TopPassengerDataBoard extends React.Component {
 										count: todayTotalCount,
 										earlyCount: earlyTotalCount,
 										compareRate: true,
-										toolTipText: 'toolTipText',
+										toolTipText: this.tooltipFormText(1),
 									}}
 									timeType={dateType}
 									dataType={2}
@@ -435,8 +470,8 @@ class TopPassengerDataBoard extends React.Component {
 										count: todayEnterPercent,
 										earlyCount: earlyEnterPercent,
 										compareRate: true,
+										toolTipText: this.tooltipFormText(2),
 										chainRate: true,
-										toolTipText: 'toolTipText',
 									}}
 									timeType={dateType}
 									dataType={2}
@@ -450,7 +485,7 @@ class TopPassengerDataBoard extends React.Component {
 										count: newGuest,
 										earlyCount: earlyNewGuest,
 										compareRate: true,
-										toolTipText: 'toolTipText',
+										toolTipText: this.tooltipFormText(3),
 									}}
 									timeType={dateType}
 									dataType={2}
@@ -464,7 +499,7 @@ class TopPassengerDataBoard extends React.Component {
 										count: regularGuest,
 										earlyCount: earlyRegularGuest,
 										compareRate: true,
-										toolTipText: 'toolTipText',
+										toolTipText: this.tooltipFormText(4),
 									}}
 									timeType={dateType}
 									dataType={2}
@@ -478,24 +513,34 @@ class TopPassengerDataBoard extends React.Component {
 							<div className={styles.guest}>
 								{GUEST_OPTIONS.TITLE.map((item, index) => (
 									<div
-										className={styles['pie-card']}
 										key={index}
-										style={
-											chosenCard === index
-												? { border: '1px solid  rgba(255,129,51,1)' }
-												: {}
-										}
+										className={styles['chart-bar-card']}
 										onClick={() => {
 											this.handleChosenCardChange(index);
 										}}
 									>
-										{/* <Spin spinning={loading.effects['headAnglePassenger/getHeadPassengerByRegular'] || loading.effects['headAnglePassenger/getHeadPassengerByGender'] }> */}
-										<Pie
-											data={this.handlePieDataSource(index)}
-											chartName={`pie${index}`}
-											colorArray={GUEST_OPTIONS.COLOR_ARRAY[index]}
-										/>
-										{/* </Spin> */}
+										<div
+											style={chosenCard === index ? { color: 'rgba(255, 129, 51, 1)'} : {}}
+											className={styles['pie-title']}
+										>
+											{item}
+										</div>
+										<div
+											className={styles['pie-card']}
+											style={
+												chosenCard === index
+													? { border: '1px solid  rgba(255,129,51,1)' }
+													: {}
+											}
+										>
+											{/* <Spin spinning={loading.effects['headAnglePassenger/getHeadPassengerByRegular'] || loading.effects['headAnglePassenger/getHeadPassengerByGender'] }> */}
+											<Pie
+												data={this.handlePieDataSource(index)}
+												chartName={`pie${index}`}
+												colorArray={GUEST_OPTIONS.COLOR_ARRAY[index]}
+											/>
+											{/* </Spin> */}
+										</div>
 									</div>
 								))}
 							</div>
@@ -562,9 +607,11 @@ class TopPassengerDataBoard extends React.Component {
 										</Col>
 									</Row>
 								</Form>
-								<Button icon="download" type="primary">
-									EXCEL
-								</Button>
+
+								{/* <Button icon="download" type="primary"> */}
+								{/* EXCEL */}
+								{/* </Button> */}
+
 							</div>
 							<Spin
 								spinning={
