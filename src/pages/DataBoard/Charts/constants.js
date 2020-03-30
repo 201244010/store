@@ -1,11 +1,12 @@
 import { formatMessage } from 'umi/locale';
 
+const TIME_TYPE = {
+	DAY: 1,
+	WEEK: 2,
+	MONTH: 3,
+};
 export const DATABOARD = {
-	TIME_TYPE: {
-		DAY: 1,
-		WEEK: 2,
-		MONTH: 3,
-	},
+	TIME_TYPE,
 	DATA_TYPE: {
 		current: 1,
 		history: 2,
@@ -44,4 +45,10 @@ export const DATABOARD = {
 	},
 	LINE_SIZE: 3,
 	LAST_HAND_REFRESH_TIME: 'lastHandRefreshTime',
+	BAR_WIDTH: {
+		[TIME_TYPE.DAY]: 15,
+		[TIME_TYPE.WEEK]: 20,
+		[TIME_TYPE.MONTH]: 15,
+	},
+	VALUE_THICK_INTERVAL: 6,
 };

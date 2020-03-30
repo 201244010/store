@@ -3,7 +3,7 @@ import { formatMessage } from 'umi/locale';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import styles from '../chartsCommon.less';
 
-const UNIT = '人';
+const UNIT = formatMessage({ id: 'databoard.passenger.unit' });
 export default class AgeGenderBar extends React.Component {
 	formatAgeCode = range => {
 		switch (range) {
@@ -39,23 +39,25 @@ export default class AgeGenderBar extends React.Component {
 		const { formatToolTipAxisX, formatLabelX } = this;
 		const chartTitle = formatMessage({ id: 'databoard.chart.ageGender' });
 
-		const data = ageGenderList.sort().map(row => {
-			const { gender, range, count } = row;
-			const rangeKey = formatAgeCode(row.range);
-			let genderFormat;
-			if (gender === 'male') {
-				genderFormat = formatMessage({ id: 'databoard.chart.gender.male' });
-			}
-			if (gender === 'female') {
-				genderFormat = formatMessage({ id: 'databoard.chart.gender.female' });
-			}
-			return {
-				gender: genderFormat,
-				range,
-				count,
-				rangeKey,
-			};
-		});
+		const data = ageGenderList
+			.map(row => {
+				const { gender, range, count } = row;
+				const rangeKey = formatAgeCode(row.range);
+				let genderFormat;
+				if (gender === 'male') {
+					genderFormat = formatMessage({ id: 'databoard.chart.gender.male' });
+				}
+				if (gender === 'female') {
+					genderFormat = formatMessage({ id: 'databoard.chart.gender.female' });
+				}
+				return {
+					gender: genderFormat,
+					range,
+					count,
+					rangeKey,
+				};
+			})
+			.sort((a, b) => a.range - b.range);
 
 		console.log('wx______:', data);
 
@@ -85,7 +87,7 @@ export default class AgeGenderBar extends React.Component {
 						}}
 					/>
 					<Legend
-						{...{ position: 'top-right', offsetX: 0, offsetY: 10, marker: 'circle' }}
+						{...{ position: 'top-right', offsetX: 0, offsetY: 30, marker: 'circle' }}
 					/>
 					<Geom
 						type="interval"

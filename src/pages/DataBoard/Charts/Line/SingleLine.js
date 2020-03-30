@@ -9,13 +9,27 @@ const { TIME_TYPE } = DATABOARD;
 
 // 基于时间维度（小时，日，月）的折线图
 
+const THICK_INTERVAL_TIME = {
+	[TIME_TYPE.DAY]: 2,
+	[TIME_TYPE.WEEK]: 1,
+	[TIME_TYPE.MONTH]: 2,
+};
+
+const BAR_WIDTH = {
+	[TIME_TYPE.DAY]: 15,
+	[TIME_TYPE.WEEK]: 20,
+	[TIME_TYPE.MONTH]: 15,
+};
+
+const THICK_INTERVAL_VALUE = 6;
+
 const valToTime = val => {
 	// 1->00:00 2->01:00
 	const t = parseInt(val, 10);
-	return t > 9 ? `${t}:00` : `0${t}:00`;
+	return t > 9 ? `${t}:00` : `${t}:00`;
 };
 
-const latestDataSuppl = (data, timeType) => {
+const latestDataSuppl = (data, timeType, chartType) => {
 	// return data;
 	let dataPoint;
 	const ponitSuppl = [];
@@ -26,9 +40,13 @@ const latestDataSuppl = (data, timeType) => {
 		dataPoint = 7;
 	}
 	if (timeType === TIME_TYPE.MONTH) {
-		dataPoint = moment()
-			.endOf('month')
-			.format('D');
+		if (chartType === 'weekFrequency') {
+			dataPoint = 5;
+		} else {
+			dataPoint = moment()
+				.endOf('month')
+				.format('D');
+		}
 	}
 
 	const nameList = [];
@@ -100,19 +118,23 @@ export default class Line extends Component {
 
 	formatToolTipName = name => formatMessage({ id: `databoard.data.${name}` });
 
-	formatXLabel = (val, timeType) => {
+	formatXLabel = (val, timeType, chartType) => {
 		if (val < 0) {
 			return '';
 		}
 		if (timeType === TIME_TYPE.DAY) {
 			const t = parseInt(val, 10);
-			return t > 9 ? `${t}:00` : `0${t}:00`;
+			return t > 9 ? `${t}:00` : `${t}:00`;
 		}
 		if (timeType === TIME_TYPE.WEEK) {
 			const t = parseInt(val, 10) + 1;
 			return formatMessage({ id: `common.week.${t}` });
 		}
 		if (timeType === TIME_TYPE.MONTH) {
+			if (chartType === 'weekFrequency') {
+				const t = parseInt(val, 10) + 1;
+				return formatMessage({ id: `databoard.top.time.month.week.${t}` });
+			}
 			const t = parseInt(val, 10) + 1;
 			return t;
 			// return moment()
@@ -120,20 +142,13 @@ export default class Line extends Component {
 			// 	.add(val - 1, 'day')
 			// 	.format('MM/DD');
 		}
-		return val;
+		return '';
 	};
 
-	formatYLabel = (val, chartType) => {
-		if (chartType === 'rate') {
-			return `${val}%`;
-		}
-		return val;
-	};
-
-	foramtData = (data, timeType) => {
+	foramtData = (data, timeType, chartType) => {
 		// time修正
 		const dv = new DataView();
-		const dataSuppl = latestDataSuppl(data, timeType);
+		const dataSuppl = latestDataSuppl(data, timeType, chartType);
 		// if (timeType === TIME_TYPE.DAY) {
 		// 	dataSuppl.forEach(item => {
 		// 		item.time += 1;
@@ -152,28 +167,8 @@ export default class Line extends Component {
 		return dv;
 	};
 
-	barWidthFit = timeType => {
-		if (timeType === TIME_TYPE.DAY) {
-			return 5;
-		}
-		if (timeType === TIME_TYPE.WEEK) {
-			return undefined;
-		}
-		if (timeType === TIME_TYPE.MONTH) {
-			return 5;
-		}
-		return undefined;
-	};
-
 	render() {
-		const {
-			formatXLabel,
-			formatYLabel,
-			formatToolTipAxisX,
-			foramtData,
-			barWidthFit,
-			formatToolTipName,
-		} = this;
+		const { formatToolTipAxisX, foramtData, formatToolTipName } = this;
 
 		const {
 			timeType = 1,
@@ -200,18 +195,51 @@ export default class Line extends Component {
 			crosshairs = {},
 			lineActive,
 			chartHeight,
+			// eslint-disable-next-line no-shadow
+			formatYLabel = (val, chartType) => {
+				if (chartType === 'rate') {
+					return `${val}%`;
+				}
+				return val;
+			},
+			formatXLabel = this.formatXLabel,
 		} = this.props;
 
 		let { lineSize, chartScale = {} } = this.props;
-		const dataForamtted = foramtData(data, timeType);
+		const dataForamtted = foramtData(data, timeType, chartType);
+
+		// X轴为时间 调整轴标签间距
+		chartScale = {
+			...chartScale,
+			time: {
+				type: 'linear',
+				nice: false,
+				min: 0,
+				tickInterval: THICK_INTERVAL_TIME[timeType],
+			},
+			value: {
+				type: 'linear',
+				nice: true,
+				tickCount: THICK_INTERVAL_VALUE,
+				// range: [0.09, 0.91],
+			},
+		};
+		// 柱状图
 		if (type === 'interval') {
-			lineSize = barWidthFit(timeType);
+			lineSize = BAR_WIDTH[timeType];
 			chartScale = {
 				time: {
 					type: 'linear',
 					nice: false,
-					range: [0.09, 0.91],
+					range: [0.05, 0.95],
+					tickInterval: THICK_INTERVAL_TIME[timeType],
 					// tickCount: barAmout,
+				},
+				value: {
+					type: 'linear',
+					nice: true,
+					tickCount: THICK_INTERVAL_VALUE,
+					// range: [0.09, 0.91],
 				},
 			};
 		}
@@ -226,7 +254,7 @@ export default class Line extends Component {
 						x: {
 							name: 'time',
 							label: {
-								formatter: val => formatXLabel(val, timeType),
+								formatter: val => formatXLabel(val, timeType, chartType),
 							},
 						},
 						y: {

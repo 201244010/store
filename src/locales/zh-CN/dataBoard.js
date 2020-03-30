@@ -109,6 +109,12 @@ export default {
 	'databoard.top.passenger.title.customer.major': '主力客群',
 	'databoard.top.passenger.shop.toal': '全部门店',
 	'databoard.top.passenger.shop.showDetail': '查看门店详情',
-	'databoard.top.toggleShop.confirm':'若要查看该门店更详细的指标，将会离开总部视角跳转至对应门店。',
-	'databoard.top.toggleShop.info':'您尚不具备查看该门店详情数据的权限。',
+	'databoard.top.toggleShop.confirm':
+		'若要查看该门店更详细的指标，将会离开总部视角跳转至对应门店。',
+	'databoard.top.toggleShop.info': '您尚不具备查看该门店详情数据的权限。',
+	'databoard.top.time.month.week.1': '第一周',
+	'databoard.top.time.month.week.2': '第二周',
+	'databoard.top.time.month.week.3': '第三周',
+	'databoard.top.time.month.week.4': '第四周',
+	'databoard.top.time.month.week.5': '第五周',
 };

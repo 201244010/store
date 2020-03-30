@@ -4,6 +4,9 @@ import { formatMessage } from 'umi/locale';
 // import { frequencyData } from './mock';
 import styles from '../chartsCommon.less';
 
+import { DATABOARD } from '../constants';
+
+const { VALUE_THICK_INTERVAL } = DATABOARD;
 const FREQUENCY_MAX = [5, 11];
 
 export default class FrequencyBar extends React.Component {
@@ -58,6 +61,11 @@ export default class FrequencyBar extends React.Component {
 							range: [0.09, 0.91],
 							// tickCount: barAmout,
 						},
+						value: {
+							type: 'linear',
+							nice: true,
+							tickCount: VALUE_THICK_INTERVAL,
+						},
 					}}
 				>
 					<h1 className={styles['chart-title']}>{chartTitle}</h1>
@@ -65,6 +73,9 @@ export default class FrequencyBar extends React.Component {
 					<Axis name="value" />
 					<Tooltip
 						shared={false}
+						crosshairs={{
+							type: 'rect',
+						}}
 						{...{
 							containerTpl: `<div class="g2-tooltip">
 					<ul class="g2-tooltip-list data-chart-list"></ul>

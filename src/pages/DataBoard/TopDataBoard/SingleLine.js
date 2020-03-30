@@ -104,7 +104,7 @@ export default class Line extends Component {
 		}
 		if (timeType === TIME_TYPE.DAY) {
 			const t = parseInt(val, 10);
-			return t > 9 ? `${t}:00` : `0${t}:00`;
+			return t > 9 ? `${t}:00` : `${t}:00`;
 		}
 		if (timeType === TIME_TYPE.WEEK) {
 			const t = parseInt(val, 10) + 1;
@@ -191,6 +191,20 @@ export default class Line extends Component {
 		} = this.props;
 
 		let { lineSize, chartScale = {} } = this.props;
+		chartScale = {
+			time: {
+				type: 'linear',
+				nice: false,
+				min: 0,
+				tickInterval: 2,
+			},
+			value: {
+				type: 'linear',
+				nice: true,
+				tickCount: 6,
+				// range: [0.09, 0.91],
+			},
+		};
 		const dataForamtted = foramtData(data, timeType);
 		if (type === 'interval') {
 			lineSize = barWidthFit(timeType);

@@ -723,7 +723,7 @@ export default {
 						RTDeviceCount: {
 							label: 'deviceCount',
 							count: onlineCount + offlineCount,
-							earlyCount: offlineCount,
+							earlyCount: onlineCount,
 						},
 						RTDevicesLoading: false,
 					},

@@ -19,6 +19,7 @@ class CustomerFrequency extends PureComponent {
 		}));
 		const chartOption = {
 			chartHeight: CHART_HEIGHT,
+			chartType: 'weekFrequency',
 			timeType,
 			data: dataAddName,
 			lineColor: ['value', '#FF8133'],

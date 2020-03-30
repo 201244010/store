@@ -3,6 +3,7 @@ import React from 'react';
 // import SingleLine from '@/pages/DataBoard/Charts/Line/SingleLine';
 import SingleLine from './SingleLine';
 // import { SyncCustomerData } from './Charts/mock';
+import { saleMoneyFormat } from '@/utils/format';
 
 // Params:timeType,data
 const foramtData = data => {
@@ -49,6 +50,9 @@ const CurrentSalesLine = ({ data }) => {
 						min: 0,
 					},
 				},
+				formatYLabel: value => saleMoneyFormat({ value, returnType: 'join' }),
+				formatToolTipValue: value =>
+					saleMoneyFormat({ value, returnType: 'join' }),
 			}}
 		/>
 	);

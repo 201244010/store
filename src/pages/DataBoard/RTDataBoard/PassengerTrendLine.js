@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import SingleLine from '../Charts/Line/SingleLine';
+import { passengerNumFormat } from '@/utils/format';
 
 import styles from './index.less';
 
@@ -35,9 +36,16 @@ class PassengerTrendLine extends PureComponent {
 					min: 0,
 				},
 			},
+			formatYLabel: value => passengerNumFormat({ value, returnType: 'join' }),
+			formatToolTipValue: value => passengerNumFormat({ value, returnType: 'join' }),
 		};
-		return(
-			<Card bordered={false} className={styles['line-chart-wrapper']} title={formatMessage({ id: 'databoard.passenger.trend.title'})} loading={loading}>
+		return (
+			<Card
+				bordered={false}
+				className={styles['line-chart-wrapper']}
+				title={formatMessage({ id: 'databoard.passenger.trend.title' })}
+				loading={loading}
+			>
 				<SingleLine {...chartOption} />
 			</Card>
 		);
