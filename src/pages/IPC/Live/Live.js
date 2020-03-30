@@ -8,10 +8,9 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { UNBIND_CODE, ERROR_OK } from '@/constants/errorCode';
 import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
-
-import styles from './Live.less';
 import manImage from '@/assets/imgs/male.png';
 import womanImage from '@/assets/imgs/female.png';
+import styles from './Live.less';
 
 const statusCode = {
 	opened: 1,
@@ -28,7 +27,7 @@ const statusCode = {
 		faceidRects: rectangles || [],
 		faceidList: list || [],
 		timeSlots: timeSlots || [],
-		ageRangeList: ageRangeList || [],
+		ageRangeList:  ageRangeList || []
 	};
 }, (dispatch) => ({
 	async getTimeSlots({sn, timeStart, timeEnd}) {
@@ -247,7 +246,7 @@ class Live extends React.Component{
 
 			if(hasFaceid && isOnline){
 				const status = await getSdStatus({ sn });
-				if(status === 0 || status === 4) {
+				if(status === 0) {
 					message.info(formatMessage({ id: 'live.nosdInfo' }));
 					sdStatus = false;
 				} else {
@@ -371,7 +370,6 @@ class Live extends React.Component{
 			sn,
 			status: false
 		});
-
 		clearInterval(this.timeInterval);
 	}
 
@@ -605,7 +603,7 @@ class Live extends React.Component{
 														{ `(${ genders[item.gender] } ${this.mapAgeInfo(item.age, item.ageRangeCode)})` }
 													</p>
 													<p>
-														<span>{formatMessage({id: 'live.last.arrival.time'})}</span>
+														<span>{formatMessage({id: 'live.last.arrival.time'})}</span>&nbsp;&nbsp;
 														<span>
 															{
 																moment.unix(item.timestamp).format('MM-DD HH:mm:ss')

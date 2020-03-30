@@ -63,7 +63,7 @@ class SubscriptionSuccess extends React.Component{
 
 			}
 		},
-		
+
 	];
 
 	waitColumns = [
@@ -113,12 +113,12 @@ class SubscriptionSuccess extends React.Component{
 		const { successStorageIpcList, status } = this.state;
 		return(
 			<Card className={styles['subscription-success-container']} bordered={false}>
-				{status === 'success' && 
+				{status === 'success' &&
 				<>
 					<div className={styles['success-icon']} />
 					<div className={styles['success-tip']}>{formatMessage({id: 'cloudStorage.service.success.subscribe'})}</div>
 				</>}
-				{status === 'waitting' && 
+				{status === 'waitting' &&
 				<>
 					<div className={styles['waitting-icon']} />
 					<div className={styles['success-tip']}>{formatMessage({id: 'cloudStorage.waitting.sub'})}</div>
@@ -127,7 +127,7 @@ class SubscriptionSuccess extends React.Component{
 
 				<Table
 					className={styles.table}
-					bordered 
+					bordered
 					columns={status === 'waitting' ? this.waitColumns : this.successColumns}
 					locale={{
 						emptyText: formatMessage({id: 'cloudStorage.no.ipc'})
