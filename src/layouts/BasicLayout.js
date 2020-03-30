@@ -98,6 +98,8 @@ class BasicLayout extends React.PureComponent {
 			this.checkStore();
 		}
 
+		console.log('jiangwu', CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY));
+
 		this.setState({
 			selectedStore: CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY),
 		});
