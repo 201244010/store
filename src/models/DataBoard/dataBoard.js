@@ -397,6 +397,7 @@ export default {
 							count: latestEnteringRate,
 							earlyCount: earlyEnteringRate,
 							compareRate: true,
+							chainRate: true,
 							unit: 'percent'
 						},
 						avgFrequency: {

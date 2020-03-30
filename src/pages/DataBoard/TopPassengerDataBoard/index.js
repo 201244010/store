@@ -1,11 +1,11 @@
 import React from 'react';
-import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } from 'antd';
-// import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import * as CookieUtil from '@/utils/cookies';
+import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
+import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } from 'antd';
+import * as CookieUtil from '@/utils/cookies';
+// import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import PageEmpty from '@/components/BigIcon/PageEmpty';
-import { connect } from 'dva';
 import { FORM_FORMAT, SEARCH_FORM_COL } from '@/constants/form';
 import TopDataCard from '../Charts/TopDataCard/TopDataCard';
 import MainCustomerCard from './MainCustomerCard';
@@ -59,7 +59,7 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 		headPassenger: state.headAnglePassenger,
 		loading: state.loading,
 		hasCustomerData: state.topview.hasCustomerData,
-		hasOrderData: state.topview.hasOrderData,
+		// hasOrderData: state.topview.hasOrderData,
 	}),
 	dispatch => ({
 		getHeadPassengerByRegular: payload =>
@@ -83,6 +83,8 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 					anchorId,
 				},
 			}),
+		getPermessionPassengerFlow: () => dispatch({ type: 'topview/getPermessionPassengerFlow' }),
+		// getCompanySaasInfo: () => dispatch({ type: 'topview/getCompanySaasInfo' }),
 	})
 )
 class TopPassengerDataBoard extends React.Component {
@@ -130,10 +132,13 @@ class TopPassengerDataBoard extends React.Component {
 		this.shopListOptions = JSON.parse(localStorage.getItem('__shop_list__'));
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		const startTime = moment()
 			.subtract(1, 'day')
 			.format(DATE_FORMAT);
+		const { getPermessionPassengerFlow } = this.props;
+		await getPermessionPassengerFlow();
+		// await getCompanySaasInfo();
 		this.initGetData(startTime, 1);
 	}
 
@@ -329,8 +334,8 @@ class TopPassengerDataBoard extends React.Component {
 				// shopList,
 				passengerCount,
 				earlyPassengerCount,
-				passHeadCount,
-				earlyPassHeadCount,
+				// passHeadCount,
+				// earlyPassHeadCount,
 				mainGuestList,
 			},
 			form: { getFieldDecorator },
@@ -338,8 +343,8 @@ class TopPassengerDataBoard extends React.Component {
 			hasCustomerData,
 		} = this.props;
 		const { dateType, chosenCard, currentOptions, dataSource } = this.state;
-		const todayTotalCount = passengerCount + passHeadCount;
-		const earlyTotalCount = earlyPassengerCount + earlyPassHeadCount;
+		const todayTotalCount = passengerCount;
+		const earlyTotalCount = earlyPassengerCount;
 		const todayEnterPercent = passengerCount / todayTotalCount;
 		const earlyEnterPercent = earlyPassengerCount / earlyTotalCount;
 		const newGuest = byFrequencyArray[1];
@@ -396,7 +401,7 @@ class TopPassengerDataBoard extends React.Component {
 						)}
 					</div>
 				</div>
-				{!hasCustomerData && (
+				{!hasCustomerData && !loading.effects['topview/getPermessionPassengerFlow'] && (
 					<div>
 						<PageEmpty
 							description={formatMessage({
@@ -426,10 +431,11 @@ class TopPassengerDataBoard extends React.Component {
 								<TopDataCard
 									data={{
 										label: 'enteringRate',
-										unit: '',
+										unit: 'percent',
 										count: todayEnterPercent,
 										earlyCount: earlyEnterPercent,
 										compareRate: true,
+										chainRate: true,
 										toolTipText: 'toolTipText',
 									}}
 									timeType={dateType}

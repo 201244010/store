@@ -118,7 +118,7 @@ class DeviceBasicInfo extends React.Component {
 			const { hasFaceid } = deviceInfo;
 			if(hasFaceid){
 				const status = await getSdStatus({ sn });
-				if(status === 0 && hasFaceid) {
+				if((status === 0 || status === 4 )&& hasFaceid) {
 					message.info(formatMessage({ id: 'deviceBasicInfo.nosdInfo' }));
 				}
 			}
@@ -339,7 +339,7 @@ class DeviceBasicInfo extends React.Component {
 							:<Form.Item label={formatMessage({ id: 'deviceBasicInfo.ip'})}><span className={styles['offline-info']}>{formatMessage({id: 'deviceBasicInfo.unknown'})}</span></Form.Item>
 					}
 
-					{	
+					{
 						isOnline ?
 							mac ?
 								<Form.Item label={formatMessage({ id: 'deviceBasicInfo.mac'})}>
