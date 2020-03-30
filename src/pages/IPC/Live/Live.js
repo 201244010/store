@@ -246,7 +246,7 @@ class Live extends React.Component{
 
 			if(hasFaceid && isOnline){
 				const status = await getSdStatus({ sn });
-				if(status === 0) {
+				if(status === 0 || status === 4) {
 					message.info(formatMessage({ id: 'live.nosdInfo' }));
 					sdStatus = false;
 				} else {
