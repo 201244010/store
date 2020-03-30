@@ -80,13 +80,21 @@ const handleCountFormat = (count, label, timeType) => {
 	}
 };
 
-const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) => {
+const EarlyData = ({ count, earlyCount, compareRate, chainRate, label, unit, timeType }) => {
 	if (compareRate) {
-		const changeRate = earlyCount ? (count - earlyCount) / earlyCount : undefined;
-		const formatRate = formatFloatByPermile({
-			value: Math.abs((count - earlyCount) / earlyCount),
-			returnType: 'join',
-		});
+		let changeRate;
+		if (chainRate) {
+			// 环比
+			changeRate = earlyCount ? count - earlyCount : undefined;
+		} else {
+			changeRate = earlyCount ? (count - earlyCount) / earlyCount : undefined;
+		}
+		const formatRate =
+			changeRate &&
+			formatFloatByPermile({
+				value: Math.abs(changeRate),
+				returnType: 'join',
+			});
 		return (
 			<>
 				{changeRate === undefined ? (
@@ -94,7 +102,7 @@ const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) =>
 				) : (
 					<div
 						className={
-							changeRate > 0 ? 'early-value__icon__rise' : 'early-value__icon__down'
+							changeRate < 0 ? 'early-value__icon__down' : 'early-value__icon__rise'
 						}
 					/>
 				)}
@@ -115,7 +123,7 @@ const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) =>
 };
 
 const TopDataCard = ({ data, dataType, timeType, loading, onClick = null }) => {
-	const { label, unit, count, earlyCount, compareRate, toolTipText } = data;
+	const { label, unit, count, earlyCount, compareRate, toolTipText, chainRate } = data;
 
 	return (
 		<Card
@@ -138,7 +146,9 @@ const TopDataCard = ({ data, dataType, timeType, loading, onClick = null }) => {
 						<span>{formatMessage({ id: 'databoard.onlineDeviceCount' })} </span>
 					)}
 				</div>
-				<EarlyData {...{ count, earlyCount, compareRate, label, unit, timeType }} />
+				<EarlyData
+					{...{ count, earlyCount, compareRate, label, unit, timeType, chainRate }}
+				/>
 			</div>
 			<Tooltip title={toolTipText}>
 				<Icon type="info-circle" className="tooltip__icon" />

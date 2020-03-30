@@ -334,8 +334,8 @@ class TopPassengerDataBoard extends React.Component {
 				// shopList,
 				passengerCount,
 				earlyPassengerCount,
-				passHeadCount,
-				earlyPassHeadCount,
+				// passHeadCount,
+				// earlyPassHeadCount,
 				mainGuestList,
 			},
 			form: { getFieldDecorator },
@@ -343,8 +343,8 @@ class TopPassengerDataBoard extends React.Component {
 			hasCustomerData,
 		} = this.props;
 		const { dateType, chosenCard, currentOptions, dataSource } = this.state;
-		const todayTotalCount = passengerCount + passHeadCount;
-		const earlyTotalCount = earlyPassengerCount + earlyPassHeadCount;
+		const todayTotalCount = passengerCount;
+		const earlyTotalCount = earlyPassengerCount;
 		const todayEnterPercent = passengerCount / todayTotalCount;
 		const earlyEnterPercent = earlyPassengerCount / earlyTotalCount;
 		const newGuest = byFrequencyArray[1];
@@ -431,10 +431,11 @@ class TopPassengerDataBoard extends React.Component {
 								<TopDataCard
 									data={{
 										label: 'enteringRate',
-										unit: '',
+										unit: 'percent',
 										count: todayEnterPercent,
 										earlyCount: earlyEnterPercent,
 										compareRate: true,
+										chainRate: true,
 										toolTipText: 'toolTipText',
 									}}
 									timeType={dateType}
