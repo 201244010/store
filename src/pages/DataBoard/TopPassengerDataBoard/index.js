@@ -98,6 +98,7 @@ class TopPassengerDataBoard extends React.Component {
 			currentOptions: GROUP_BY[0],
 			dataSource: [],
 			isSelected: false,
+			pageNum: 1
 		};
 		this.columns = [
 			{
@@ -234,6 +235,7 @@ class TopPassengerDataBoard extends React.Component {
 			this.setState({
 				chosenCard: index,
 				currentOptions: GROUP_BY[index],
+				pageNum: 1
 			});
 			setFieldsValue({
 				shopId: [],
@@ -320,6 +322,7 @@ class TopPassengerDataBoard extends React.Component {
 			shopId: [],
 			guest: GROUP_BY[chosenCard][0].label,
 		});
+		this.setState({ pageNum: 1 });
 		this.handleTableDataSource();
 	};
 	
@@ -357,6 +360,10 @@ class TopPassengerDataBoard extends React.Component {
 		
 		return text;
 	};
+	
+	handlePageChange = (current) => {
+		this.setState({ pageNum: current });
+	};
 
 	disabledDate = current => current && current > moment().endOf('day');
 
@@ -378,7 +385,7 @@ class TopPassengerDataBoard extends React.Component {
 			loading,
 			hasCustomerData,
 		} = this.props;
-		const { dateType, chosenCard, currentOptions, dataSource } = this.state;
+		const { dateType, chosenCard, currentOptions, dataSource, pageNum } = this.state;
 		const todayTotalCount = passengerCount;
 		const earlyTotalCount = earlyPassengerCount;
 		const todayEnterPercent = passengerCount / todayTotalCount;
@@ -626,6 +633,8 @@ class TopPassengerDataBoard extends React.Component {
 									pagination={{
 										pageSize: 5,
 										hideOnSinglePage: true,
+										current: pageNum,
+										onChange: this.handlePageChange
 									}}
 								/>
 							</Spin>
