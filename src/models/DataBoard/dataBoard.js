@@ -1075,10 +1075,11 @@ export default {
 				});
 			}
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
+			console.log('======endTime====', endTime);
 			const timeInterval = rangeTimeInterval[rangeType];
 			const options = {
 				startTime,
-				endTime,
+				endTime: moment().unix(),
 				timeInterval
 			};
 			const response = yield call(
