@@ -41,7 +41,7 @@ class Pie extends Component {
 
 			total += item.value;
 		});
-		const percent = parseInt((maxItem.value * 100) / total, 10);
+		const percent = Math.round((maxItem.value * 100 / total));
 
 		if (maxItem.value === 0) {
 			G2.Shape.registerShape('interval', chartName, {
