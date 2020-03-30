@@ -21,7 +21,7 @@ const {
 } = DATABOARD;
 
 const handleEarlyLabelText = (timeType, dataType) => {
-	console.log('timeType', timeType, 'dataType', dataType);
+	// console.log('timeType', timeType, 'dataType', dataType);
 	if (dataType === DATA_TYPE.current) {
 		return `${EARLY_LABEL_CURRENT[timeType]}`;
 	}
@@ -80,13 +80,21 @@ const handleCountFormat = (count, label, timeType) => {
 	}
 };
 
-const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) => {
+const EarlyData = ({ count, earlyCount, compareRate, chainRate, label, unit, timeType }) => {
 	if (compareRate) {
-		const changeRate = earlyCount ? (count - earlyCount) / earlyCount : undefined;
-		const formatRate = formatFloatByPermile({
-			value: Math.abs((count - earlyCount) / earlyCount),
-			returnType: 'join',
-		});
+		let changeRate;
+		if (chainRate) {
+			// 环比
+			changeRate = earlyCount ? count - earlyCount : undefined;
+		} else {
+			changeRate = earlyCount ? (count - earlyCount) / earlyCount : undefined;
+		}
+		const formatRate =
+			changeRate &&
+			formatFloatByPermile({
+				value: Math.abs(changeRate),
+				returnType: 'join',
+			});
 		return (
 			<>
 				{changeRate === undefined ? (
@@ -94,7 +102,7 @@ const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) =>
 				) : (
 					<div
 						className={
-							changeRate > 0 ? 'early-value__icon__rise' : 'early-value__icon__down'
+							changeRate < 0 ? 'early-value__icon__down' : 'early-value__icon__rise'
 						}
 					/>
 				)}
@@ -106,16 +114,16 @@ const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) =>
 	}
 	return (
 		<>
-			<div>
+			<div className="text">
 				<span>{handleCountFormat(earlyCount, label, timeType)}</span>
-				<span>{handleUnitText(unit, count, timeType)}</span>
+				<span>{handleUnitText(unit, earlyCount, timeType)}</span>
 			</div>
 		</>
 	);
 };
 
 const TopDataCard = ({ data, dataType, timeType, loading, onClick = null }) => {
-	const { label, unit, count, earlyCount, compareRate, toolTipText } = data;
+	const { label, unit, count, earlyCount, compareRate, toolTipText, chainRate } = data;
 
 	return (
 		<Card
@@ -130,7 +138,7 @@ const TopDataCard = ({ data, dataType, timeType, loading, onClick = null }) => {
 				<span className="value__unit">{handleUnitText(unit, count, timeType)}</span>
 			</div>
 			<div className="early-value">
-				<div>
+				<div className="label">
 					{/* // 昨日 上周 上月 、 较前一日 */}
 					{label !== 'deviceCount' ? (
 						<span>{handleEarlyLabelText(timeType, dataType)} </span>
@@ -138,7 +146,9 @@ const TopDataCard = ({ data, dataType, timeType, loading, onClick = null }) => {
 						<span>{formatMessage({ id: 'databoard.onlineDeviceCount' })} </span>
 					)}
 				</div>
-				<EarlyData {...{ count, earlyCount, compareRate, label, unit, timeType }} />
+				<EarlyData
+					{...{ count, earlyCount, compareRate, label, unit, timeType, chainRate }}
+				/>
 			</div>
 			<Tooltip title={toolTipText}>
 				<Icon type="info-circle" className="tooltip__icon" />

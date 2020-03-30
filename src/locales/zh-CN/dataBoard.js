@@ -81,7 +81,7 @@ export default {
 	'databoard.data.regular.month': '较前一月',
 	'databoard.order.transactionRate': '交易转化率',
 	'databoard.order.regularCount': '熟客人数',
-	'databoard.order.totalPassengerCount': '总客流量',
+	'databoard.order.totalPassengerCount': '进店客流',
 	'databoard.order.strangeCount': '新客人数',
 	'databoard.top.totalPassengerCount': '0点至当前时间，所有门店的客流量之和',
 	'databoard.top.strangerCount': '0点至当前时间',
