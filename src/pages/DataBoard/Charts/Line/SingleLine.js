@@ -47,7 +47,7 @@ const latestDataSuppl = (data, timeType) => {
 				? dataGroupByName[name].push(item)
 				: (dataGroupByName[name] = [item]);
 		});
-		console.log('wx:', dataGroupByName);
+		// console.log('wx:', dataGroupByName);
 		Object.keys(dataGroupByName).forEach(name => {
 			const dataList = dataGroupByName[name];
 			if (timeType === TIME_TYPE.DAY) {
@@ -148,7 +148,7 @@ export default class Line extends Component {
 				return row;
 			},
 		});
-		console.log('wx:----after foramtData', dv);
+		// console.log('wx:----after foramtData', dv);
 		return dv;
 	};
 

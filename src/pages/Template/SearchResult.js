@@ -520,8 +520,8 @@ class SearchResult extends Component {
 								pagination={{
 									...pagination,
 									showTotal: total =>
-										`${formatMessage({ id: 'esl.device.esl.all' })}${total}${formatMessage({
-											id: 'esl.device.esl.total',
+										`${formatMessage({ id: 'esl.device.template.all' })}${total}${formatMessage({
+											id: 'esl.device.template.total',
 										})}`,
 								}}
 								onChange={this.onTableChange}

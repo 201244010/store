@@ -107,20 +107,30 @@
 }
 
 .top-data-card {
-	border-radius: 8px;
 	height: 160px;
 	.card {
 		padding: 24px;
 	}
 	:global {
+		.label {
+			font-size: 14px;
+			font-family: 'PingFangSC-Regular', 'PingFang SC', sans-serif;
+			font-weight: 400;
+			color: rgba(119, 126, 140, 1);
+		}
+		.ant-card {
+			border-radius: 8px;
+		}
 		.ant-col {
 			padding-top: 12px;
 			padding-bottom: 12px;
 		}
 		.value {
+			height: 48px;
+			margin: 4px 0 13px;
 			color: #303540;
 			font-weight: bold;
-			margin: 4px 0 13px 0;
+			font-family: 'Gotham-Bold', 'Gotham', sans-serif;
 			&__number {
 				font-size: 38px;
 			}
@@ -132,14 +142,19 @@
 			line-height: 22px;
 			display: flex;
 			align-items: center;
+			.label {
+				margin-right: 4px;
+			}
 			&__icon__rise {
 				width: 16px;
 				height: 16px;
+				margin-right: 4px;
 				background: center / contain transparent no-repeat url(~@/assets/icon/rise.png);
 			}
 			&__icon__down {
 				width: 16px;
 				height: 16px;
+				margin-right: 4px;
 				background: center / contain transparent no-repeat url(~@/assets/icon/down.png);
 			}
 		}

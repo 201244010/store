@@ -670,6 +670,26 @@ const router = [
 							},
 						],
 					},
+					{
+						path: '/basicData/faceLog',
+						name: 'faceLog',
+						routes: [
+							{
+								path: '/basicData/faceLog',
+								name: 'faceLog',
+								id: 'faceLog',
+								component: './IPC/FaceLog/index.js',
+							},
+							{
+								path: '/basicData/faceLog/entryDetail',
+								name: 'entryDetail',
+								id: 'entryDetail',
+								hideInMenu: true,
+								component: './IPC/EntryDetail/index.js',
+							},
+						],
+					},
+
 				],
 			},
 
