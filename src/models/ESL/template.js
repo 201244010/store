@@ -1,4 +1,4 @@
-import { message } from 'antd';
+import { Modal, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { getImagePromise, initTemplateDetail, purifyJsonOfBackEnd, downloadJsonAsDraft } from '@/utils/studio';
 import { getLocationParam } from '@/utils/utils';
@@ -36,7 +36,8 @@ export default {
 			showQuickJumper: true,
 		},
 		curTemplate: {},
-		viewType: 'table'
+		viewType: 'table',
+		fontList: []
 	},
 	effects: {
 		*changeSearchFormValue({ payload = {} }, { put }) {
@@ -152,7 +153,7 @@ export default {
 			});
 		},
 		*saveAsDraft({ payload = {} }, { call, put, select }) {
-			const { curTemplate } = yield select(state => state.template);
+			const { curTemplate, fontList } = yield select(state => state.template);
 			yield put({
 				type: 'updateState',
 				payload: { loading: true },
@@ -165,7 +166,7 @@ export default {
 				layers: [],
 				layerCount: 0,
 			};
-			const result = purifyJsonOfBackEnd(payload.draft);
+			const result = purifyJsonOfBackEnd(payload.draft, fontList);
 			draft.fillFields = result.bindFields;
 			draft.layers = result.layers;
 			draft.layerCount = result.layers.length;
@@ -473,7 +474,7 @@ export default {
 			return yield call(TemplateService.previewTemplate, payload);
 		},
 		*realTimePreview({ payload = {} }, { call, select }) {
-			const { curTemplate } = yield select(state => state.template);
+			const { curTemplate, fontList } = yield select(state => state.template);
 			const draft = {
 				encoding: 'UTF-8',
 				type: curTemplate.model_name,
@@ -482,7 +483,7 @@ export default {
 				layers: [],
 				layerCount: 0,
 			};
-			const result = purifyJsonOfBackEnd(payload.draft);
+			const result = purifyJsonOfBackEnd(payload.draft, fontList);
 			draft.fillFields = result.bindFields;
 			draft.layers = result.layers;
 			draft.layerCount = result.layers.length;
@@ -490,6 +491,58 @@ export default {
 				...payload,
 				draft: JSON.stringify(draft),
 			});
+		},
+		*fetchFontList({ payload = {} }, { call, put }) {
+			const response = yield call(TemplateService.getFontList, payload);
+			yield put({
+				type: 'updateState',
+				payload: {
+					fontList: response.data.font_list || [],
+				},
+			});
+		},
+		*uploadFont({ payload = {} }, { call, put }) {
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			Modal.info({
+				title: formatMessage({id: 'studio.upload.font'}),
+				content: formatMessage({id: 'studio.upload.font.waiting.message'}),
+				okText: formatMessage({id: 'btn.confirm'}),
+				okButtonProps: { style: { display: 'none' } },
+			});
+			const response = yield call(TemplateService.uploadFont, payload);
+			Modal.destroyAll();
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				yield put({
+					type: 'fetchFontList',
+					payload: {},
+				});
+				Modal.success({
+					title: formatMessage({id: 'studio.upload.font.success.title'}),
+					content: formatMessage({id: 'studio.upload.font.success'}),
+					okText: formatMessage({id: 'btn.confirm'})
+				});
+			} else {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				Modal.error({
+					title: formatMessage({id: 'studio.upload.font.fail.title'}),
+					content:
+						response.code === 5351 ?
+							formatMessage({id: 'studio.upload.font.fail.again'}) :
+							formatMessage({id: 'studio.upload.font.fail'}),
+					okText: formatMessage({id: 'btn.confirm'})
+				});
+			}
+			return response;
 		},
 	},
 	reducers: {

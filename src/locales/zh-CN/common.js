@@ -67,6 +67,7 @@ export default {
 	'common.time.hour': '小时',
 	'common.time.minute': '分',
 	'common.time.second': '秒',
+	'common.time.week': '周',
 	'yesterday': '昨日',
 	'lastWeek': '上周',
 	'lastMonth': '上月',

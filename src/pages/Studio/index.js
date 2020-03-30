@@ -53,6 +53,8 @@ import * as styles from './index.less';
 		renameTemplate: payload => dispatch({ type: 'template/renameTemplate', payload }),
 		uploadImage: payload => dispatch({ type: 'template/uploadImage', payload }),
 		realTimePreview: payload => dispatch({ type: 'template/realTimePreview', payload }),
+		fetchFontList: payload => dispatch({ type: 'template/fetchFontList', payload }),
+		uploadFont: payload => dispatch({ type: 'template/uploadFont', payload }),
 	})
 )
 class Studio extends Component {
@@ -76,7 +78,7 @@ class Studio extends Component {
 	}
 
 	async componentDidMount() {
-		const {stageWidth, stageHeight, props: {fetchTemplateDetail, fetchBindFields, updateState}} = this;
+		const {stageWidth, stageHeight, props: {fetchTemplateDetail, fetchBindFields, fetchFontList, updateState}} = this;
 		fetchBindFields();
 		const screenType = getLocationParam('screen');
 		updateState({
@@ -92,6 +94,7 @@ class Studio extends Component {
 			height: stageHeight,
 			screenType,
 		});
+		fetchFontList();
 
 		document.addEventListener('keydown', this.handleComponentActions);
 
@@ -1069,7 +1072,7 @@ class Studio extends Component {
 		this.setState({
 			hasNoFonts: fonts.filter(font => !fontDetector.detect(font))
 		});
-	}
+	};
 
 	downloadFont = (font) => {
 		const fontUrls = {
@@ -1096,6 +1099,7 @@ class Studio extends Component {
 				renameTemplate,
 				fetchTemplateDetail,
 				realTimePreview,
+				uploadFont,
 				studio: {
 					selectedShapeName,
 					selectedComponent,
@@ -1107,7 +1111,7 @@ class Studio extends Component {
 					noScopedComponents,
 					zoomScale,
 				},
-				template: { bindFields, curTemplate },
+				template: { bindFields, curTemplate, fontList },
 			},
 			state: { dragging, dragCopy, dragName, showMask, hasNoFonts },
 		} = this;
@@ -1254,12 +1258,14 @@ class Studio extends Component {
 									selectedComponent,
 									componentsDetail,
 									zoomScale,
+									fontList,
 									templateInfo: curTemplate,
 									updateMask: this.updateMask,
 									updateComponentsDetail,
 									updateState,
 									deleteSelectedComponent,
 									addComponent,
+									uploadFont
 								}}
 							/>
 						</div>
