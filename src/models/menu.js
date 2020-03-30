@@ -176,20 +176,15 @@ export default {
 					filteredMenuData = [];
 				} else {
 					const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
-					console.log('jiangwu', shopId);
-					console.log('jiangwu', typeof shopId);
-					console.log('jiangwu', shopId === 0);
 					let formattedPermissionList;
 					if (hasCompanyViewPermission(permissionList, storeList) && shopId === 0) {
 						formattedPermissionList = CompanyView;
-						console.log('jiangwu 1', CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY));
 					} else {
 						formattedPermissionList = permissionList.map(item => ({
 							base: ((item.path || '').slice(1).split('/') || [])[0],
 							path: item.path,
 						}));
 						// CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId || storeList[0].shopId);
-						console.log('jiangwu 2', CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY));
 					}
 					console.log('formattedPermissionList: ', formattedPermissionList);
 					if (formattedPermissionList.length > 0) {
