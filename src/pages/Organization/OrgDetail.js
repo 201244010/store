@@ -220,8 +220,6 @@ class OrgDetail extends React.Component {
 
 		const { orgId: locationOrgId } = this.state;
 		const currentLanguage = getLocale();
-		console.log('xxx');
-		console.log(currentLanguage);
 		return(
 			<div className={styles['detail-container']}>
 				<Card title={formatMessage({id: 'orgDetail.org.detail'})} className={styles['org-detail']} loading={loading.effects['companyInfo/getOrganizationInfo']}>
