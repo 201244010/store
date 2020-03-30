@@ -18,8 +18,8 @@ class DashBoard extends React.Component {
 			view = <TopPassengerDataBoard />;
 		} else {
 			console.log('======================单门店视角');
-			// view = <TopPassengerDataBoard />;
-			view = <PassengerDataBoard />;
+			view = <TopPassengerDataBoard />;
+			// view = <PassengerDataBoard />;
 		}
 		return view;
 	}

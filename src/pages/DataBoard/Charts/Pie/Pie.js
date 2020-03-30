@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import { Chart, Geom, Coord } from 'bizcharts';
 import { Badge } from 'antd';
+import { formatMessage } from 'umi/locale';
 import autoHeight from './autoHeight';
-
 import styles from './pie.less';
+
+const PIE_PADDING = {
+	top: 0,
+	bottom: 0,
+	left: 0,
+	right: '30%'
+};
 
 @autoHeight()
 class Pie extends Component {
@@ -63,7 +70,8 @@ class Pie extends Component {
 					const points = cfg.points;
 					const origin = cfg.origin._origin;
 					let path = [];
-					if (origin.value === maxItem.value) {
+					
+					if (origin.value === maxItem.value && origin.name === maxItem.name) {
 						path.push(['M', 5 / 7, points[0].y]);
 						path.push(['L', 5 / 7, points[1].y]);
 						path.push(['L', 1, points[2].y]);
@@ -103,7 +111,7 @@ class Pie extends Component {
 					height={height}
 					forceFit={forceFit}
 					data={data}
-					padding={{ top: 0, bottom: 0, left: 0, right: '30%' }}
+					padding={PIE_PADDING}
 					animate={animate}
 				>
 					<Coord type="theta" innerRadius={0} />
@@ -119,7 +127,7 @@ class Pie extends Component {
 				</Chart>
 
 				<div className={styles.total}>
-					<span className={styles.title}>{maxItem.name}占比</span>
+					<span className={styles.title}>{maxItem.name}{formatMessage({id: 'databoard.data.percent'})}</span>
 					<span className={styles.percent}>{percent || 0}</span>
 				</div>
 
