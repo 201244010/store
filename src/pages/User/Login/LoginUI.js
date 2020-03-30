@@ -3,7 +3,7 @@ import { formatMessage, getLocale } from 'umi/locale';
 import { connect } from 'dva';
 import { Tabs, Form, Button, Modal } from 'antd';
 import Storage from '@konata9/storage.js';
-import { encryption } from '@/utils/utils';
+import { encryption, hasCompanyViewPermission } from '@/utils/utils';
 import RegisterModal from '@/pages/User/Register/RegisterModal';
 import ResetModal from '@/pages/User/ResetPassword/ResetModal';
 import * as CookieUtil from '@/utils/cookies';
@@ -35,6 +35,7 @@ const tabBarStyle = {
 		merchant: state.merchant,
 		store: state.store,
 		loading: state.loading,
+		role: state.role
 	}),
 	dispatch => ({
 		clearStorage: () => dispatch({ type: 'global/clearStorage' }),
@@ -45,6 +46,7 @@ const tabBarStyle = {
 		getImageCode: () => dispatch({ type: 'sso/getImageCode' }),
 		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		getPermissionList: payload => dispatch({ type: 'role/getPermissionList', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
@@ -104,8 +106,9 @@ class Login extends Component {
 	};
 
 	checkStoreExist = async () => {
-		const { getStoreList, goToPath } = this.props;
+		const { getStoreList, getPermissionList, goToPath } = this.props;
 		const response = await getStoreList({});
+
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
 			const shopList = result.shopList || [];
@@ -115,9 +118,15 @@ class Login extends Component {
 				goToPath('newOrganization');
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
-				const lastStore = shopList.length;
-				const defaultStore = shopList[lastStore - 1] || {};
-				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
+				const permissionList = await getPermissionList();
+
+				if (hasCompanyViewPermission(permissionList, shopList)) {
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, 0);
+				} else {
+					const lastStore = shopList.length;
+					const defaultStore = shopList[lastStore - 1] || {};
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
+				}
 				goToPath('root');
 				// router.push('/');
 			}
@@ -350,13 +359,12 @@ class Login extends Component {
 				</Form>
 				<div className={styles['login-footer']}>
 					{/* {currentLanguage === 'zh-CN' ? ( */}
-						<a
-							onClick={() => this.openModalForm('reset')}
-							href="javascript:void(0);"
-							className={`${styles['link-common']}`}
-						>
-							{formatMessage({ id: 'link.forgot.password' })}
-						</a>
+					<a
+						onClick={() => this.openModalForm('reset')}
+						className={`${styles['link-common']}`}
+					>
+						{formatMessage({ id: 'link.forgot.password' })}
+					</a>
 					{/* ) : (
 						<div />
 					)} */}
