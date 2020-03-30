@@ -2,6 +2,15 @@ import sysEnv from './env';
 
 export const { env, country } = sysEnv;
 
+const {
+	location: { protocol },
+} = window;
+
+export const HTTP_PREFIX = {
+	'http:': 'https:',
+	'https:': 'https:',
+};
+
 export const FIRST_MENU_ORDER = [
 	'dashBoard',
 	// 'dashboard',
@@ -42,7 +51,11 @@ const API_ADDRESS = {
 
 const COUNTRY_ADDRESS = {
 	china: API_ADDRESS[env],
-	southAmerica: '',
+	southAmerica: 'store.sunmi.com',
+	sg: 'store.sg.sunmi.com',
+	us: 'store.us.sunmi.com',
+	germany: 'store.ge.sunmi.com',
+	dubai: 'store.du.sunmi.com',
 };
 
 // ipc专用的测试和开发地址
@@ -77,8 +90,10 @@ const MD5_TOKEN = {
 };
 
 export default {
-	SSO_ADDRESS: SSO_ADDRESS[env],
-	API_ADDRESS: API_ADDRESS[env],
+	SSO_ADDRESS: `${HTTP_PREFIX[protocol]}//${SSO_ADDRESS[env]}`,
+	API_ADDRESS: `${HTTP_PREFIX[protocol]}//${COUNTRY_ADDRESS[country]}`,
+	// SSO_ADDRESS: SSO_ADDRESS[env],
+	// API_ADDRESS: API_ADDRESS[env],
 	DES_KEY: DES_KEY[env],
 	DES_IV: DES_IV[env],
 	MD5_TOKEN: MD5_TOKEN[env],

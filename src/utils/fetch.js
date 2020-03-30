@@ -153,7 +153,7 @@ export const customizeFetch = (service = 'api', base, toSnake) => {
 			};
 		}
 
-		const url = `https://${baseUrl}/${service}/${api}`;
+		const url = `${baseUrl}/${service}/${api}`;
 		// const response = await fetch(url, opts);
 		let response = await fetchHandler(url, opts);
 		// console.log(response);
