@@ -51,6 +51,7 @@ export default {
 	'esl.device.esl.template.name.select': 'Select Template',
 	'esl.device.esl.page.display': 'Page Displayed',
 	'normal-price-display': 'Price Displayed',
+	'normal_price_display': 'Price Displayed',
 	'out_of_store': 'Out of Store',
 	'out-of-store': 'Out of Stock',
 	'stock-tacking': 'Check Inventory',

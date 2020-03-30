@@ -233,14 +233,10 @@ const router = [
 				routes: [
 					{
 						path: '/transManagement',
-						redirect: '/transManagement/posList',
+						redirect: '/transManagement/cashVerify',
 					},
 					{
 						path: '/transManagement/cashVerify',
-						redirect: '/transManagement/cashVerify/posList',
-					},
-					{
-						path: '/transManagement/cashVerify/posList',
 						name: 'posList',
 						id: 'posList',
 						component: './IPC/POSManagement/POSList.js',
@@ -328,7 +324,7 @@ const router = [
 								component: './IPC/Live/Live.js',
 							},
 							{
-								path: '/deviceManagement/ipcList/ipcManagement',
+								path: '/deviceManagement/ipcList/deviceList/ipcManagement',
 								name: 'ipcManagement',
 								id: 'ipcManagement',
 								hideInMenu: true,
@@ -422,9 +418,8 @@ const router = [
 							{ path: '/deviceManagement/network', redirect: '/deviceManagement/network/list' },
 							{
 								path: '/deviceManagement/network/list',
-								name: 'list',
+								name: 'networkList',
 								id: 'networkList',
-								// hideInMenu: true,
 								component: './DeviceManagement/Network/NetworkOverview',
 							},
 							{
