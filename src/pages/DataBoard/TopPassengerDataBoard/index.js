@@ -236,7 +236,7 @@ class TopPassengerDataBoard extends React.Component {
 				currentOptions: GROUP_BY[index],
 			});
 			setFieldsValue({
-				shopId: -1,
+				shopId: [],
 				guest: GROUP_BY[index][0].label,
 			});
 
@@ -280,7 +280,7 @@ class TopPassengerDataBoard extends React.Component {
 		const { currentOptions } = this.state;
 
 		let keyword = '';
-
+		
 		const { shopId, guest } = getFieldsValue();
 		let resultArray = shopList.map(item => Object.assign({}, item));
 
@@ -290,8 +290,8 @@ class TopPassengerDataBoard extends React.Component {
 			}
 		});
 
-		if (shopId !== -1 && shopId !== undefined)
-			resultArray = resultArray.filter(item => item.shopId === shopId);
+		if (shopId.length !== 0 && shopId !== undefined)
+			resultArray = resultArray.filter(item => shopId.indexOf(item.shopId) > -1);
 
 		resultArray.sort((a, b) => b[keyword] - a[keyword]);
 
@@ -317,7 +317,7 @@ class TopPassengerDataBoard extends React.Component {
 		const { chosenCard } = this.state;
 
 		setFieldsValue({
-			shopId: -1,
+			shopId: [],
 			guest: GROUP_BY[chosenCard][0].label,
 		});
 		this.handleTableDataSource();
@@ -325,7 +325,7 @@ class TopPassengerDataBoard extends React.Component {
 	
 	tooltipFormText = (index) => {
 		const { dateType, isSelected } = this.state;
-		let text = ''; 
+		let text = '';
 		let dateText = '';
 		
 		switch (dateType) {
@@ -548,17 +548,11 @@ class TopPassengerDataBoard extends React.Component {
 								<Form layout="inline">
 									<Row gutter={FORM_FORMAT.gutter}>
 										<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-											<Form.Item label="门店">
+											<Form.Item label={formatMessage({ id: 'databoard.top.shop' })}>
 												{getFieldDecorator('shopId', {
-													initialValue: -1,
+													initialValue: [],
 												})(
-													<Select>
-														<Option value={-1} key={-1}>
-															{formatMessage({
-																id:
-																	'databoard.top.passenger.shop.toal',
-															})}
-														</Option>
+													<Select mode="multiple">
 														{this.shopListOptions.map(item => (
 															<Option
 																value={item.shopId}
