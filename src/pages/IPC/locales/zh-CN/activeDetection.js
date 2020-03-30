@@ -1,7 +1,8 @@
 export default {
 	'activeDetection.title': '活动侦测',
 	'activeDetection.soundDetection': '声音异常侦测',
-	'activeDetection.motionDetection': '动态异常侦测',
+	'activeDetection.motionDetection': '画面异常侦测',
+	'activeDetection.customerDetection': '启动人形侦测',
 	'activeDetection.sensitivity': '灵敏度',
 	'activeDetection.levelLow': '低',
 	'activeDetection.levelMiddle': '中',
