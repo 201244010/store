@@ -51,6 +51,7 @@ export default {
 	'esl.device.esl.template.name.select': '选择模板',
 	'esl.device.esl.page.display': '显示页面',
 	'normal-price-display': '价格显示',
+	'normal_price_display': '价格显示',
 	'out_of_store': '缺货',
 	'out-of-store': '缺货',
 	'stock-tacking': '盘点',
