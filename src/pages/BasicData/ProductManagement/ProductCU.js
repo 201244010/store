@@ -10,6 +10,9 @@ import { ERROR_OK, PRODUCT_SEQ_EXIST, PRODUCT_PLU_EXIST } from '@/constants/erro
 import ProductCUBasic from './ProductCU-Basic';
 import ProductCUWeight from './ProductCU-Weight';
 import ProductCUPrice from './ProductCU-Price';
+// import ExtraInfo from './ProductCU-ExtraInfo';
+// import ExtraPrice from './ProductCU-ExtraPrice';
+// import ExtraCustom from './ProductCU-ExtraCustom';
 import * as styles from './ProductManagement.less';
 
 @connect(
@@ -220,6 +223,7 @@ class ProductCU extends Component {
 			// console.log(values);
 			if (!err) {
 				const submitValue = this.formatSubmitValue(values);
+				console.log('submitValue', submitValue);
 				const response = await submitFunction[action]({
 					options: {
 						...submitValue,
@@ -279,6 +283,7 @@ class ProductCU extends Component {
 			loading,
 		} = this.props;
 		const action = getLocationParam('action');
+		console.log('ProductCU', productInfo);
 
 		return (
 			<Card
@@ -310,7 +315,24 @@ class ProductCU extends Component {
 							remove: this.extraInfoRemove,
 						}}
 					/>
-
+					{/* <ExtraInfo
+						{...{
+							form,
+							productInfo,
+						}}
+					/>
+					<ExtraPrice
+						{...{
+							form,
+							productInfo,
+						}}
+					/>
+					<ExtraCustom
+						{...{
+							form,
+							productInfo,
+						}}
+					/> */}
 					<Card title={null} bordered={false}>
 						<Row>
 							<Col span={12}>
