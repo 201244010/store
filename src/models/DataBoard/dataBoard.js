@@ -1049,8 +1049,8 @@ export default {
 				type: 'updateState',
 				payload: {
 					transactionRate: {
-						count: rate,
-						earlyCount: earlyRate,
+						count: rate > 1 ? 1 : rate,
+						earlyCount: earlyRate > 1 ? 1 : earlyRate,
 						label: 'transactionRate',
 						unit: 'percent'
 					},
@@ -1156,10 +1156,11 @@ export default {
 				const transactionRateList = countList.map(item => {
 					const { orderCount = 0, passengerFlowCount = 0, entryHeadCount = 0, time } = item;
 					const totalPassenger = passengerFlowCount + entryHeadCount;
+					const rate = totalPassenger ? orderCount / totalPassenger : 0;
 					return {
 						name: 'transactionRate',
 						time,
-						value: totalPassenger ? orderCount / totalPassenger : 0,
+						value: rate > 1 ? 1 : rate,
 					};
 				});
 				console.log('交易转化率', transactionRateList);
