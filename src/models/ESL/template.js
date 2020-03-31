@@ -37,7 +37,8 @@ export default {
 		},
 		curTemplate: {},
 		viewType: 'table',
-		fontList: []
+		fontList: [],
+		templateConfig: {}
 	},
 	effects: {
 		*changeSearchFormValue({ payload = {} }, { put }) {
@@ -541,6 +542,49 @@ export default {
 							formatMessage({id: 'studio.upload.font.fail'}),
 					okText: formatMessage({id: 'btn.confirm'})
 				});
+			}
+			return response;
+		},
+		*fetchCustomTemplateConfig({ payload = {} }, { call, put }) {
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			const response = yield call(TemplateService.getCustomTemplateConfig, payload);
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: {
+						loading: false,
+						templateConfig: response.data.custom_tmpl_config || [],
+					},
+				});
+			} else {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+			}
+			return response;
+		},
+		*updateCustomTemplateConfig({ payload = {} }, { call, put }) {
+			yield put({
+				type: 'updateState',
+				payload: { loading: true },
+			});
+			const response = yield call(TemplateService.updateCustomTemplateConfig, payload);
+			if (response && response.code === ERROR_OK) {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				message.success(formatMessage({ id: 'esl.device.template.action.apply.default.success' }));
+			} else {
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				message.error(formatMessage({ id: 'esl.device.template.action.apply.default.error' }));
 			}
 			return response;
 		},
