@@ -18,6 +18,7 @@ export default {
 		passHeadCount: 0,
 		earlyPassHeadCount: 0,
 		mainGuestList: [],
+		uniqCountTotal: 0,
 	},
 	effects: {
 		*getHeadPassengerSurvey({ payload }, { put, call }) {
@@ -156,6 +157,7 @@ export default {
 						female += uniqCount;
 					}
 				});
+				const uniqCountTotal = male + female;
 
 				let uniqCount_male = 0;
 				let uniqCount_female = 0;
@@ -195,6 +197,7 @@ export default {
 					payload: {
 						byGenderArray: [female, male],
 						mainGuestList: finalMainGuestList,
+						uniqCountTotal,
 					},
 				});
 			}

@@ -355,6 +355,7 @@ class TopPassengerDataBoard extends React.Component {
 				// passHeadCount,
 				// earlyPassHeadCount,
 				mainGuestList,
+				uniqCountTotal,
 			},
 			form: { getFieldDecorator },
 			loading,
@@ -617,10 +618,10 @@ class TopPassengerDataBoard extends React.Component {
 									mainGuestList.length !== 0 ?
 										mainGuestList.map((item, index) => {
 											const totalPercent = Math.round(
-												(item.uniqCount / todayTotalCount) * 100
+												(item.uniqCount / uniqCountTotal) * 100
 											);
 											const frequentPercent = Math.round(
-												(item.regularUniqCount / todayTotalCount) * 100
+												(item.regularUniqCount / item.uniqCount) * 100
 											);
 											return (
 												<MainCustomerCard
