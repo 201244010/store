@@ -7,53 +7,29 @@ const ExtraPrice = props => {
 	const {
 		form: { getFieldDecorator },
 		productInfo: {
-			extraPriceInfo: {
-				customPrice1 = '',
-				customPrice2 = '',
-				customPrice3 = '',
-				customPrice1Description = '',
-				customPrice2Description = '',
-				customPrice3Description = '',
-				promoteStartDate = '',
-				promoteStartTime = '',
-				promoteEndDate = '',
-				promoteEndTime = '',
-				memberPromoteStartDate = '',
-				memberPromoteStartTime = '',
-				memberPromoteEndDate = '',
-				memberPromoteEndTime = '',
-				memberPoint = '',
-				promoteReason = '',
-				promoteFlag = '',
-			} = {},
+			extraPriceInfo = [],
 		} = {},
 	} = props;
 
-	// const productInfo = props.productInfo || {};
-	// const extraPriceInfo = productInfo.extraPriceInfo || [];
-	// const {
-	// 	form: { getFieldDecorator },
-	// } = props;
-
-	// const {
-	// 	customPrice1 = '',
-	// 	customPrice2 = '',
-	// 	customPrice3 = '',
-	// 	customPrice1Description = '',
-	// 	customPrice2Description = '',
-	// 	customPrice3Description = '',
-	// 	promoteStartDate = '',
-	// 	promoteStartTime = '',
-	// 	promoteEndDate = '',
-	// 	promoteEndTime = '',
-	// 	memberPromoteStartDate = '',
-	// 	memberPromoteStartTime = '',
-	// 	memberPromoteEndDate = '',
-	// 	memberPromoteEndTime = '',
-	// 	memberPoint = '',
-	// 	promoteReason = '',
-	// 	promoteFlag = '',
-	// } = extraPriceInfo[0];
+	const {
+		customPrice1 = '',
+		customPrice2 = '',
+		customPrice3 = '',
+		customPrice1Description = '',
+		customPrice2Description = '',
+		customPrice3Description = '',
+		promoteStartDate = '',
+		promoteStartTime = '',
+		promoteEndDate = '',
+		promoteEndTime = '',
+		memberPromoteStartDate = '',
+		memberPromoteStartTime = '',
+		memberPromoteEndDate = '',
+		memberPromoteEndTime = '',
+		memberPoint = '',
+		promoteReason = '',
+		promoteFlag = '',
+	} = extraPriceInfo[0] || {};
 
 	const extraPriceInfoList = [
 		[
