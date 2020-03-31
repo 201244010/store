@@ -98,7 +98,7 @@ class TopPassengerDataBoard extends React.Component {
 			currentOptions: GROUP_BY[0],
 			dataSource: [],
 			isSelected: false,
-			pageNum: 1
+			pageNum: 1,
 		};
 		this.columns = [
 			{
@@ -220,7 +220,7 @@ class TopPassengerDataBoard extends React.Component {
 
 	handleDateChange = (date, _, type) => {
 		let startTime = '';
-		
+
 		switch (type) {
 			case 1:
 				startTime = moment(date).format(DATE_FORMAT);
@@ -256,7 +256,7 @@ class TopPassengerDataBoard extends React.Component {
 			this.setState({
 				chosenCard: index,
 				currentOptions: GROUP_BY[index],
-				pageNum: 1
+				pageNum: 1,
 			});
 			setFieldsValue({
 				shopId: [],
@@ -303,7 +303,7 @@ class TopPassengerDataBoard extends React.Component {
 		const { currentOptions } = this.state;
 
 		let keyword = '';
-		
+
 		const { shopId, guest } = getFieldsValue();
 		let resultArray = shopList.map(item => Object.assign({}, item));
 
@@ -313,7 +313,7 @@ class TopPassengerDataBoard extends React.Component {
 			}
 		});
 
-		if (shopId.length !== 0 && shopId !== undefined)
+		if (shopId !== undefined && shopId.length !== 0)
 			resultArray = resultArray.filter(item => shopId.indexOf(item.shopId) > -1);
 
 		resultArray.sort((a, b) => b[keyword] - a[keyword]);
@@ -323,7 +323,7 @@ class TopPassengerDataBoard extends React.Component {
 		});
 
 		this.columns[2] = {
-			title: `${guest}${formatMessage({id: 'databoard.data.personCount'})}`,
+			title: `${guest}${formatMessage({ id: 'databoard.data.personCount' })}`,
 			dataIndex: keyword,
 			width: 150,
 		};
@@ -347,23 +347,30 @@ class TopPassengerDataBoard extends React.Component {
 		this.setState({ pageNum: 1 });
 		this.handleTableDataSource();
 	};
-	
-	tooltipFormText = (index) => {
+
+	tooltipFormText = index => {
 		const { dateType, isSelected } = this.state;
 		let text = '';
 		let dateText = '';
-		
+
 		switch (dateType) {
-			case 1: dateText = formatMessage({ id: 'databoard.tooltip.lastDay' });break;
-			case 2: dateText = formatMessage({ id: 'databoard.tooltip.lastWeek' });break;
-			case 3: dateText = formatMessage({ id: 'databoard.tooltip.lastMonth' });break;
-			default: break;
+			case 1:
+				dateText = formatMessage({ id: 'databoard.tooltip.lastDay' });
+				break;
+			case 2:
+				dateText = formatMessage({ id: 'databoard.tooltip.lastWeek' });
+				break;
+			case 3:
+				dateText = formatMessage({ id: 'databoard.tooltip.lastMonth' });
+				break;
+			default:
+				break;
 		}
-		
-		if(isSelected) {
-			dateText = formatMessage({ id: 'databoard.tooltip.inRange'});
-		};
-		
+
+		if (isSelected) {
+			dateText = formatMessage({ id: 'databoard.tooltip.inRange' });
+		}
+
 		switch (index) {
 			case 1:
 				text = dateText + formatMessage({ id: 'databoard.tooltip.totalGuest' });
@@ -377,13 +384,14 @@ class TopPassengerDataBoard extends React.Component {
 			case 4:
 				text = dateText + formatMessage({ id: 'databoard.tooltip.regularGuest' });
 				break;
-			default: break;
+			default:
+				break;
 		}
-		
+
 		return text;
 	};
-	
-	handlePageChange = (current) => {
+
+	handlePageChange = current => {
 		this.setState({ pageNum: current });
 	};
 
@@ -550,7 +558,11 @@ class TopPassengerDataBoard extends React.Component {
 										}}
 									>
 										<div
-											style={chosenCard === index ? { color: 'rgba(255, 129, 51, 1)'} : {}}
+											style={
+												chosenCard === index
+													? { color: 'rgba(255, 129, 51, 1)' }
+													: {}
+											}
 											className={styles['pie-title']}
 										>
 											{item}
@@ -578,7 +590,9 @@ class TopPassengerDataBoard extends React.Component {
 								<Form layout="inline">
 									<Row gutter={FORM_FORMAT.gutter}>
 										<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-											<Form.Item label={formatMessage({ id: 'databoard.top.shop' })}>
+											<Form.Item
+												label={formatMessage({ id: 'databoard.top.shop' })}
+											>
 												{getFieldDecorator('shopId', {
 													initialValue: [],
 												})(
@@ -635,7 +649,6 @@ class TopPassengerDataBoard extends React.Component {
 								{/* <Button icon="download" type="primary"> */}
 								{/* EXCEL */}
 								{/* </Button> */}
-
 							</div>
 							<Spin
 								spinning={
@@ -657,7 +670,7 @@ class TopPassengerDataBoard extends React.Component {
 										pageSize: 5,
 										hideOnSinglePage: true,
 										current: pageNum,
-										onChange: this.handlePageChange
+										onChange: this.handlePageChange,
 									}}
 								/>
 							</Spin>
@@ -669,32 +682,29 @@ class TopPassengerDataBoard extends React.Component {
 							className={styles['footer-cards']}
 						>
 							<div className={styles['footer-cards-list']}>
-								{
-									mainGuestList.length !== 0 ?
-										mainGuestList.map((item, index) => {
-											const totalPercent = Math.round(
-												(item.uniqCount / uniqCountTotal) * 100
-											);
-											const frequentPercent = Math.round(
-												(item.regularUniqCount / item.uniqCount) * 100
-											);
-											return (
-												<MainCustomerCard
-													key={index}
-													scene="total"
-													gender={item.gender}
-													num={item.uniqCount}
-													totalPercent={totalPercent}
-													frequentPercent={frequentPercent}
-													age={item.ageRangeCode}
-												/>
-											);
-										})
-										:
-										<MainCustomerCard
-											scene="totalDefault"
-										/>
-								}
+								{mainGuestList.length !== 0 ? (
+									mainGuestList.map((item, index) => {
+										const totalPercent = Math.round(
+											(item.uniqCount / uniqCountTotal) * 100
+										);
+										const frequentPercent = Math.round(
+											(item.regularUniqCount / item.uniqCount) * 100
+										);
+										return (
+											<MainCustomerCard
+												key={index}
+												scene="total"
+												gender={item.gender}
+												num={item.uniqCount}
+												totalPercent={totalPercent}
+												frequentPercent={frequentPercent}
+												age={item.ageRangeCode}
+											/>
+										);
+									})
+								) : (
+									<MainCustomerCard scene="totalDefault" />
+								)}
 							</div>
 						</Card>
 					</>
