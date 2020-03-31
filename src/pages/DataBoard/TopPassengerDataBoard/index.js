@@ -399,8 +399,8 @@ class TopPassengerDataBoard extends React.Component {
 				// shopList,
 				passengerCount,
 				earlyPassengerCount,
-				// passHeadCount,
-				// earlyPassHeadCount,
+				passHeadCount,
+				earlyPassHeadCount,
 				mainGuestList,
 				uniqCountTotal,
 			},
@@ -409,8 +409,8 @@ class TopPassengerDataBoard extends React.Component {
 			hasCustomerData,
 		} = this.props;
 		const { dateType, chosenCard, currentOptions, dataSource, pageNum } = this.state;
-		const todayTotalCount = passengerCount;
-		const earlyTotalCount = earlyPassengerCount;
+		const todayTotalCount = passengerCount + passHeadCount;
+		const earlyTotalCount = earlyPassengerCount + earlyPassHeadCount;
 		const todayEnterPercent = passengerCount / todayTotalCount;
 		const earlyEnterPercent = earlyPassengerCount / earlyTotalCount;
 		const newGuest = byFrequencyArray[1];
