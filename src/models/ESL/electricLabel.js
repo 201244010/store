@@ -492,18 +492,25 @@ export default {
 			const targetPage = data.length === 1 ? 1 : current;
 			const response = yield call(ESLServices.batchDeleteESL, options);
 			if (response.code === ERROR_OK) {
-				message.success(
-					formatMessage({ id: 'esl.device.esl.delete.success' }),
-					DURATION_TIME
-				);
-				yield put({
-					type: 'fetchElectricLabels',
-					payload: {
-						options: {
-							current: targetPage,
+				if (response.data.failure_esl_id_list && response.data.failure_esl_id_list.length) {
+					message.error(
+						formatMessage({ id: 'esl.device.esl.delete.fail' }),
+						DURATION_TIME
+					);
+				} else {
+					message.success(
+						formatMessage({ id: 'esl.device.esl.delete.success' }),
+						DURATION_TIME
+					);
+					yield put({
+						type: 'fetchElectricLabels',
+						payload: {
+							options: {
+								current: targetPage,
+							},
 						},
-					},
-				});
+					});
+				}
 			} else if (response.code === SWITCH_SCEEN_NO_DELETE) {
 				message.error(formatMessage({ id: 'esl.device.esl.delete.fail.switch.screen' }), DURATION_TIME);
 			} else {
