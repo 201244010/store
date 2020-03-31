@@ -184,7 +184,7 @@ export default {
 							base: ((item.path || '').slice(1).split('/') || [])[0],
 							path: item.path,
 						}));
-						CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeList[0].shopId);
+						// CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId || storeList[0].shopId);
 					}
 					console.log('formattedPermissionList: ', formattedPermissionList);
 					if (formattedPermissionList.length > 0) {

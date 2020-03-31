@@ -388,7 +388,7 @@ class SearchResult extends Component {
 				esl_id_list: selectedRowKeys,
 			},
 		});
-	}
+	};
 
 	batchChangeTemplate = async () => {
 		const { selectedRows } = this.state;
@@ -583,7 +583,7 @@ class SearchResult extends Component {
 								</Menu>
 							}
 						>
-							<a className="ant-dropdown-link" href="javascript: void (0)">
+							<a className="ant-dropdown-link">
 								{formatMessage({ id: 'list.action.more' })}
 							</a>
 						</Dropdown>
@@ -726,7 +726,7 @@ class SearchResult extends Component {
 								>
 									{templates4ESL.map(template => (
 										<Select.Option key={template.id} value={template.id}>
-											{template.name}
+											{formatedMessage(template.name)}
 										</Select.Option>
 									))}
 								</Select>
@@ -782,7 +782,7 @@ class SearchResult extends Component {
 								>
 									{(screenInfo || []).map(screen => (
 										<Select.Option key={screen.screen_num} value={screen.screen_num}>
-											{formatMessage({id: screen.screen_name})}
+											{formatedMessage(screen.screen_name)}
 										</Select.Option>
 									))}
 								</Select>
@@ -824,7 +824,7 @@ class SearchResult extends Component {
 								>
 									{templates4ESL.map(template => (
 										<Select.Option key={template.id} value={template.id}>
-											{template.name}
+											{formatedMessage(template.name)}
 										</Select.Option>
 									))}
 								</Select>

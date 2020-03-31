@@ -497,7 +497,7 @@ export default {
 				orgStatus: 0,
 				level: 0,
 				orgPid: '',
-				userBindStatus: !!storeList.length,
+				userBindStatus: storeList.length <= 1 ? 0 : 1,
 			};
 			const response = yield call(getLayerByUser);
 			const { code, data } = response;

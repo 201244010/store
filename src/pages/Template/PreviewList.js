@@ -60,7 +60,7 @@ export default class PreviewList extends Component {
 					pageSize={8}
 					total={pagination.total}
 					current={pagination.current}
-					showTotal={total => `${formatMessage({ id: 'esl.device.esl.all' })}${total}${formatMessage({id: 'esl.device.esl.total'})}`}
+					showTotal={total => `${formatMessage({ id: 'esl.device.template.all' })}${total}${formatMessage({id: 'esl.device.template.total'})}`}
 					onChange={pageNum => onChange({
 						current: pageNum
 					})}

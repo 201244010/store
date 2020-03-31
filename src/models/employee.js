@@ -199,8 +199,9 @@ export default {
 
 		*createEmployee(
 			{ payload: { name, number, username, gender, ssoUsername, mappingList } = {} },
-			{ call }
+			{ call, select }
 		) {
+			const { storeList } = yield select(state => state.store);
 			const response = yield call(
 				Action.handleEmployee,
 				'create',
@@ -211,7 +212,7 @@ export default {
 					gender: gender || 0,
 					ssoUsername,
 					mappingList,
-					shopId: mappingList[0].shopId
+					shopId: mappingList[0].shopId || storeList[0].shopId
 				})
 			);
 
@@ -220,8 +221,9 @@ export default {
 
 		*updateEmployee(
 			{ payload: { employeeId, name, number, username, gender, mappingList } = {} },
-			{ call }
+			{ call, select }
 		) {
+			const { storeList } = yield select(state => state.store);
 			const response = yield call(
 				Action.handleEmployee,
 				'update',
@@ -232,6 +234,7 @@ export default {
 					username,
 					gender,
 					mappingList,
+					shopId: mappingList[0].shopId || storeList[0].shopId
 				})
 			);
 

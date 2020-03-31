@@ -124,9 +124,31 @@ const router = [
 					},
 					{
 						path: '/storeMonitor/liveReplay',
-						name: 'liveReplay',
 						id: 'liveReplay',
-						component: './IPC/IPCList/index.js',
+						name: 'liveReplay',
+						routes: [
+							{
+								path: '/storeMonitor/liveReplay',
+								name: 'liveDeviceList',
+								hideInMenu: true,
+								id: 'liveDeviceList',
+								component: './IPC/IPCList/index.js',
+							},
+							{
+								path: '/storeMonitor/liveReplay/live',
+								name: 'liveReplayLive',
+								id: 'liveReplayLive',
+								hideInMenu: true,
+								component: './IPC/Live/Live.js',
+							},
+							{
+								path: '/storeMonitor/liveReplay/ipcManagement',
+								name: 'liveReplayManagement',
+								id: 'liveReplayManagement',
+								hideInMenu: true,
+								component: './IPC/IPCManagement/IPCManagement.js',
+							},
+						],
 					},
 					{
 						path: '/storeMonitor/cloudStorage',
@@ -233,14 +255,10 @@ const router = [
 				routes: [
 					{
 						path: '/transManagement',
-						redirect: '/transManagement/posList',
+						redirect: '/transManagement/cashVerify',
 					},
 					{
 						path: '/transManagement/cashVerify',
-						redirect: '/transManagement/cashVerify/posList',
-					},
-					{
-						path: '/transManagement/cashVerify/posList',
 						name: 'posList',
 						id: 'posList',
 						component: './IPC/POSManagement/POSList.js',
@@ -321,14 +339,14 @@ const router = [
 								component: './IPC/IPCList/index.js',
 							},
 							{
-								path: '/deviceManagement/ipcList/live',
+								path: '/deviceManagement/ipcList/deviceList/live',
 								name: 'live',
 								id: 'live',
 								hideInMenu: true,
 								component: './IPC/Live/Live.js',
 							},
 							{
-								path: '/deviceManagement/ipcList/ipcManagement',
+								path: '/deviceManagement/ipcList/deviceList/ipcManagement',
 								name: 'ipcManagement',
 								id: 'ipcManagement',
 								hideInMenu: true,
@@ -422,9 +440,8 @@ const router = [
 							{ path: '/deviceManagement/network', redirect: '/deviceManagement/network/list' },
 							{
 								path: '/deviceManagement/network/list',
-								name: 'list',
+								name: 'networkList',
 								id: 'networkList',
-								// hideInMenu: true,
 								component: './DeviceManagement/Network/NetworkOverview',
 							},
 							{
@@ -675,6 +692,26 @@ const router = [
 							},
 						],
 					},
+					{
+						path: '/basicData/faceLog',
+						name: 'faceLog',
+						routes: [
+							{
+								path: '/basicData/faceLog',
+								name: 'faceLog',
+								id: 'faceLog',
+								component: './IPC/FaceLog/index.js',
+							},
+							{
+								path: '/basicData/faceLog/entryDetail',
+								name: 'entryDetail',
+								id: 'entryDetail',
+								hideInMenu: true,
+								component: './IPC/EntryDetail/index.js',
+							},
+						],
+					},
+
 				],
 			},
 
