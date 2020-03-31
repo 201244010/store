@@ -17,7 +17,6 @@ class CustomerFrequency extends PureComponent {
 			...item,
 			name: 'customerFrequency',
 		}));
-		console.log('dataAddName', dataAddName);
 		const chartOption = {
 			chartHeight: CHART_HEIGHT,
 			chartType: 'weekFrequency',

@@ -97,7 +97,7 @@ class TransactionTrend extends PureComponent {
 			chartHeight: 370,
 			timeType,
 			data: countList,
-			lineColor: 'l(270) 0:rgba(255,161,102,1) 1:rgba(255,129,51,1)',
+			lineColor: '#FFD0B3',
 			type: 'interval',
 			// innerTitle: 'Bar AxisX：时间维度',
 			lineActive: [

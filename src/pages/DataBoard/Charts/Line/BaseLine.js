@@ -1,10 +1,23 @@
 import React, { PureComponent } from 'react';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
+import _ from 'lodash';
 
 import styles from '../chartsCommon.less';
 
 class LinePoint extends PureComponent {
+	pointShow = (data, type) => {
+		// console.log('before-lodash', data.rows);
+		if (type !== 'interval') {
+			const dataList = _.groupBy(data.rows, 'time');
+			//  只有一个时刻有数据，无法连线
+			// console.log('lodash', dataList);
+			return Object.keys(dataList).length === 1;
+		}
+		return false;
+	};
+
 	render() {
+		const { pointShow } = this;
 		const {
 			width = 300,
 			height = 400,
@@ -115,6 +128,20 @@ class LinePoint extends PureComponent {
 						color={areaColor}
 						tooltip={false}
 						active={false}
+					/>
+				)}
+				{pointShow(data, lineType) && (
+					<Geom
+						type="point"
+						position="time*value"
+						size={4}
+						shape="circle"
+						color={lineColor}
+						style={{
+							stroke: '#fff',
+							lineWidth: 1,
+						}}
+						tooltip={lineTooltip}
 					/>
 				)}
 				{/* {Object.keys(point).length > 0 && (

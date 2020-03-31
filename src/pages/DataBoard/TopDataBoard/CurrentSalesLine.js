@@ -51,8 +51,7 @@ const CurrentSalesLine = ({ data }) => {
 					},
 				},
 				formatYLabel: value => saleMoneyFormat({ value, returnType: 'join' }),
-				formatToolTipValue: value =>
-					saleMoneyFormat({ value, returnType: 'join' }),
+				formatToolTipValue: value => saleMoneyFormat({ value, returnType: 'join' }),
 			}}
 		/>
 	);
