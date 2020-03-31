@@ -74,7 +74,7 @@ export default {
 	'menu.deviceManagement.esl.template.list': 'Template List',
 	'menu.deviceManagement.esl.commRecord': 'Comm Record',
 	'menu.deviceManagement.esl.systemConfig': 'System Config',
-	'menu.deviceManagement.esl.advancedSystemConfig': 'Advanced System Config',
+	'menu.deviceManagement.esl.advSystemConfig': 'Advanced System Config',
 	'menu.deviceManagement.esl.baseStation': 'Base Station',
 	'menu.deviceManagement.esl.deviceUpgrade': 'Device Upgrade',
 	'menu.deviceManagement.esl.deviceUpgrade.overview': 'Device Upgrade',
