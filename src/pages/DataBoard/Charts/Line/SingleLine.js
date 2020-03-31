@@ -18,9 +18,9 @@ const THICK_INTERVAL_TIME = {
 };
 
 const BAR_WIDTH = {
-	[TIME_TYPE.DAY]: 15,
+	[TIME_TYPE.DAY]: 12,
 	[TIME_TYPE.WEEK]: 20,
-	[TIME_TYPE.MONTH]: 15,
+	[TIME_TYPE.MONTH]: 12,
 };
 
 const THICK_INTERVAL_VALUE = 6;
@@ -31,23 +31,41 @@ const valToTime = val => {
 	return t > 9 ? `${t}:00` : `${t}:00`;
 };
 
-const latestDataSuppl = (data, timeType, chartType) => {
-	// return data;
-	let dataPoint;
-	const ponitSuppl = [];
+const thickTimeMax = (timeType, chartType) => {
+	// day: 24->24 week 7->6 month: 31->30
+	let max;
 	if (timeType === TIME_TYPE.DAY) {
-		dataPoint = 24;
+		max = 24;
 	}
 	if (timeType === TIME_TYPE.WEEK) {
-		dataPoint = 7;
+		max = 6;
 	}
 	if (timeType === TIME_TYPE.MONTH) {
 		if (chartType === 'weekFrequency') {
-			dataPoint = 5;
+			max = 4;
 		} else {
-			dataPoint = localMoment.endOf('month').format('D');
+			max = localMoment.endOf('month').format('D') - 1;
 		}
 	}
+	return max;
+};
+
+// 只有一个数据点时，补全时间轴最大范围内的点
+const latestDataSuppl = (data, timeType) => {
+	// return data;
+	// let dataPoint;
+	const ponitSuppl = [];
+	// if (timeType === TIME_TYPE.DAY) {
+	// 	dataPoint = 24;
+	// }
+	// if (timeType === TIME_TYPE.WEEK) {
+	// 	dataPoint = 7;
+	// }
+	// if (timeType === TIME_TYPE.MONTH) {
+	// 	dataPoint = moment()
+	// 		.endOf('month')
+	// 		.format('D');
+	// }
 
 	const nameList = [];
 	data.forEach(item => {
@@ -67,15 +85,15 @@ const latestDataSuppl = (data, timeType, chartType) => {
 		});
 		// console.log('wx:', dataGroupByName);
 		Object.keys(dataGroupByName).forEach(name => {
-			const dataList = dataGroupByName[name];
+			// const dataList = dataGroupByName[name];
 			if (timeType === TIME_TYPE.DAY) {
 				// 日维度补0点
 				ponitSuppl.push({ name, time: 0, value: 0 });
 			}
-			if (dataList.length < dataPoint) {
-				// 实时数据补上最后一个点
-				ponitSuppl.push({ name, time: dataPoint });
-			}
+			// if (dataList.length < dataPoint) {
+			// 	// 实时数据补上最后一个点
+			// 	ponitSuppl.push({ name, time: dataPoint });
+			// }
 		});
 	} else {
 		// eslint-disable-next-line no-lonely-if
@@ -83,10 +101,10 @@ const latestDataSuppl = (data, timeType, chartType) => {
 			// 日维度补0点
 			ponitSuppl.push({ time: 0, value: 0 });
 		}
-		if (data.length < dataPoint) {
-			// 实时数据补上最后一个点
-			ponitSuppl.push({ time: dataPoint });
-		}
+		// if (data.length < dataPoint) {
+		// 	// 实时数据补上最后一个点
+		// 	ponitSuppl.push({ time: dataPoint });
+		// }
 	}
 	return [...data, ...ponitSuppl];
 };
@@ -115,6 +133,7 @@ const formatToolTipTime = (time, timeFormat) => {
 };
 
 export default class Line extends Component {
+	// toopTip内· 时间： x-x
 	formatToolTipAxisX = (time, timeType, name, timeFormat) => {
 		if (timeType === TIME_TYPE.DAY) {
 			if (time === 0) {
@@ -143,8 +162,10 @@ export default class Line extends Component {
 		return time;
 	};
 
+	// toopTip内· 标题
 	formatToolTipName = name => formatMessage({ id: `databoard.data.${name}` });
 
+	// x轴刻度文本
 	formatXLabel = (val, timeType, chartType) => {
 		if (val < 0) {
 			return '';
@@ -171,6 +192,9 @@ export default class Line extends Component {
 		}
 		return '';
 	};
+
+	/* 对处理的x轴坐标进行调整，数据从x轴原点开始绘制。
+	 {x:0,y:value},{x:1,y:value} */
 
 	foramtData = (data, timeType, chartType) => {
 		// time修正
@@ -210,13 +234,24 @@ export default class Line extends Component {
 			formatToolTipValue = val => val,
 			lineTooltip = [
 				'name*time*value*timeFormat',
-				(name, labelX, value, timeFormat) =>
+				(name, labelX, value, timeFormat) => {
+					const valString = formatToolTipValue(value);
+					const valReg = /^\d*.?\d+(?=\D+$)/;
+					const unitReg = /(?<=\d*.?\d+)\D+$/;
+					let val = valString;
+					let unit = '';
+					if (typeof valString === 'string') {
+						val = valString.match(valReg) ? valString.match(valReg)[0] : valString;
+						unit = valString.match(unitReg) ? valString.match(unitReg)[0] : '';
+					}
 					// array
-					({
-						value: formatToolTipValue(value),
+					return {
+						value: val,
 						timeRange: formatToolTipAxisX(labelX, timeType, name, timeFormat),
 						name: formatToolTipName(name),
-					}),
+						unit,
+					};
+				},
 			],
 
 			crosshairs = {},
@@ -243,6 +278,7 @@ export default class Line extends Component {
 				nice: false,
 				min: 0,
 				tickInterval: THICK_INTERVAL_TIME[timeType],
+				max: thickTimeMax(timeType, chartType),
 			},
 			value: {
 				type: 'linear',
@@ -260,6 +296,7 @@ export default class Line extends Component {
 					nice: false,
 					range: [0.05, 0.95],
 					tickInterval: THICK_INTERVAL_TIME[timeType],
+					max: thickTimeMax(timeType, chartType),
 					// tickCount: barAmout,
 				},
 				value: {
@@ -303,7 +340,7 @@ export default class Line extends Component {
 						 </div>`,
 						itemTpl: `<li class="detail" data-index={index}>
 						    <p class="item item__name">{name}</p>
-						    <p class="item item__value">{value}</p>
+						    <p class="item item__value">{value}<span class="unit">{unit}</span></p>
 						    <p class="item item__labelX">{timeRange}</p>
 						</li>`,
 						crosshairs,

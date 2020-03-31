@@ -114,6 +114,7 @@ class LinePoint extends PureComponent {
 						position={areaPositon}
 						color={areaColor}
 						tooltip={false}
+						active={false}
 					/>
 				)}
 				{/* {Object.keys(point).length > 0 && (

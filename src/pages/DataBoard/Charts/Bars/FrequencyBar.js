@@ -8,6 +8,7 @@ import { DATABOARD } from '../constants';
 
 const { VALUE_THICK_INTERVAL } = DATABOARD;
 const FREQUENCY_MAX = [5, 11];
+const UNIT = formatMessage({ id: 'databoard.passenger.unit' });
 
 export default class FrequencyBar extends React.Component {
 	formatLabelX = barAmout => val => {
@@ -82,7 +83,7 @@ export default class FrequencyBar extends React.Component {
 				 </div>`,
 							itemTpl: `<li class="detail" data-index={index}>
 					<p class="item item__name">${formatMessage({ id: 'databoard.chart.passengerEnterCount' })}</p>
-					<p class="item item__value">{value}人</p>
+					<p class="item item__value">{value}<span class="unit">${UNIT}</span></p>
 					<p class="item item__labelX">${formatMessage({ id: 'databoard.chart.frequency' })}：{labelX}</p>
 				</li>`,
 						}}

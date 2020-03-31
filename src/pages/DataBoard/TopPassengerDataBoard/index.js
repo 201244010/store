@@ -103,6 +103,7 @@ class TopPassengerDataBoard extends React.Component {
 				title: formatMessage({ id: 'databoard.top.rank' }),
 				dataIndex: 'sortIndex',
 				key: 'sortIndex',
+				width: 150,
 				render: key => <span>{key}</span>,
 			},
 			{
@@ -113,10 +114,12 @@ class TopPassengerDataBoard extends React.Component {
 			{
 				title: 'compareItem',
 				dataIndex: 'compareItem',
+				width: 150,
 			},
 			{
 				title: formatMessage({ id: 'databoard.top.operation' }),
 				key: 'operation',
+				width: 150,
 				render: (operation, item) => (
 					<a
 						onClick={() => {
@@ -319,6 +322,7 @@ class TopPassengerDataBoard extends React.Component {
 		this.columns[2] = {
 			title: `${guest}人数`,
 			dataIndex: keyword,
+			width: 150,
 		};
 		this.setState({ dataSource: resultArray });
 	};

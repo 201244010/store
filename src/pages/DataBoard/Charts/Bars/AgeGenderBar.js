@@ -81,7 +81,7 @@ export default class AgeGenderBar extends React.Component {
 				 </div>`,
 							itemTpl: `<li class="detail" data-index={index}>
 					<p class="item item__name">{name}</p>
-					<p class="item item__value">{value}${UNIT}</p>
+					<p class="item item__value">{value}<span class="unit">${UNIT}</span></p>
 					<p class="item item__labelX">{ageInterval}</p>
 				</li>`,
 						}}
