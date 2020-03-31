@@ -876,6 +876,7 @@ export default {
 					time: index + 1,
 					// 柱状图 分母为0 显示 0
 					value: item.uniqPassengerCount === 0 ? 0 : item.passengerCount / item.uniqPassengerCount,
+					timeFormat: item.time,
 				}));
 				console.log('到店频次趋势:', frequencyList);
 

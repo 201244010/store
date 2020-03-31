@@ -6,6 +6,8 @@ import LinePoint from './BaseLine';
 import { DATABOARD } from '../constants';
 
 const { TIME_TYPE } = DATABOARD;
+const localMoment = moment();
+localMoment.locale('zh-cn');
 
 // 基于时间维度（小时，日，月）的折线图
 
@@ -43,9 +45,7 @@ const latestDataSuppl = (data, timeType, chartType) => {
 		if (chartType === 'weekFrequency') {
 			dataPoint = 5;
 		} else {
-			dataPoint = moment()
-				.endOf('month')
-				.format('D');
+			dataPoint = localMoment.endOf('month').format('D');
 		}
 	}
 
@@ -91,8 +91,31 @@ const latestDataSuppl = (data, timeType, chartType) => {
 	return [...data, ...ponitSuppl];
 };
 
+// 客群周到店频次分析
+const formatToolTipTime = (time, timeFormat) => {
+	// time: 0,1,2,3,4
+	const startTime = moment(timeFormat).format('MM.DD');
+	let endTime;
+	if (time === 0) {
+		endTime = localMoment
+			.startOf('month')
+			.endOf('week')
+			.format('MM.DD');
+	} else {
+		endTime = moment(timeFormat).add(7, 'days');
+		const duration = moment().endOf('month') - endTime;
+		// if (duration < 0 || time ===4) {
+		if (duration < 0) {
+			// 一周后时间超出月末时间
+			endTime = moment().endOf('month');
+		}
+		endTime = endTime.format('MM.DD');
+	}
+	return `${formatMessage({ id: 'databoard.time' })}：${startTime}-${endTime}`;
+};
+
 export default class Line extends Component {
-	formatToolTipAxisX = (time, timeType) => {
+	formatToolTipAxisX = (time, timeType, name, timeFormat) => {
 		if (timeType === TIME_TYPE.DAY) {
 			if (time === 0) {
 				return `${formatMessage({ id: 'databoard.time' })}：${valToTime(time)}`;
@@ -102,13 +125,17 @@ export default class Line extends Component {
 			)} - ${valToTime(time)}`;
 		}
 		if (timeType === TIME_TYPE.WEEK) {
-			return `${formatMessage({ id: 'databoard.time' })}：${moment()
+			return `${formatMessage({ id: 'databoard.time' })}：${localMoment
 				.startOf('week')
 				.add(time, 'day')
 				.format('MM.DD')}`;
 		}
 		if (timeType === TIME_TYPE.MONTH) {
-			return `${formatMessage({ id: 'databoard.time' })}：${moment()
+			if (name === 'customerFrequency') {
+				localMoment.startOf('month');
+				return formatToolTipTime(time, timeFormat);
+			}
+			return `${formatMessage({ id: 'databoard.time' })}：${localMoment
 				.startOf('month')
 				.add(time, 'day')
 				.format('MM.DD')}`;
@@ -182,12 +209,12 @@ export default class Line extends Component {
 			innerTitle: title,
 			formatToolTipValue = val => val,
 			lineTooltip = [
-				'name*time*value',
-				(name, labelX, value) =>
+				'name*time*value*timeFormat',
+				(name, labelX, value, timeFormat) =>
 					// array
 					({
 						value: formatToolTipValue(value),
-						timeRange: formatToolTipAxisX(labelX, timeType),
+						timeRange: formatToolTipAxisX(labelX, timeType, name, timeFormat),
 						name: formatToolTipName(name),
 					}),
 			],
@@ -242,6 +269,10 @@ export default class Line extends Component {
 					// range: [0.09, 0.91],
 				},
 			};
+		}
+		// 月维度时以周为维度
+		if (chartType === 'weekFrequency') {
+			chartScale.time.tickInterval = 1;
 		}
 
 		return (

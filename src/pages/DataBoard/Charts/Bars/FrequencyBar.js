@@ -59,7 +59,7 @@ export default class FrequencyBar extends React.Component {
 							type: 'linear',
 							nice: false,
 							range: [0.09, 0.91],
-							// tickCount: barAmout,
+							tickCount: barAmout,
 						},
 						value: {
 							type: 'linear',

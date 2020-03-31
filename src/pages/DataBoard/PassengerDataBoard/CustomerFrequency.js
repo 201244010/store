@@ -17,6 +17,7 @@ class CustomerFrequency extends PureComponent {
 			...item,
 			name: 'customerFrequency',
 		}));
+		console.log('dataAddName', dataAddName);
 		const chartOption = {
 			chartHeight: CHART_HEIGHT,
 			chartType: 'weekFrequency',
@@ -31,7 +32,10 @@ class CustomerFrequency extends PureComponent {
 				position: 'time*value',
 			},
 			lineSize: 3,
-			innerTitle: '周到店频次',
+			innerTitle:
+				timeType === 2
+					? formatMessage({ id: 'databoard.passenger.enter.frequency.week' })
+					: formatMessage({ id: 'databoard.passenger.enter.frequency.month' }),
 			chartScale: {
 				time: {
 					type: 'linear',
