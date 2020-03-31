@@ -73,7 +73,7 @@ export default {
 	'menu.deviceManagement.esl.template.list': '模板列表',
 	'menu.deviceManagement.esl.commRecord': '通信记录',
 	'menu.deviceManagement.esl.systemConfig': '系统配置',
-	'menu.deviceManagement.esl.advancedSystemConfig': '高级系统配置',
+	'menu.deviceManagement.esl.advSystemConfig': '高级系统配置',
 	'menu.deviceManagement.esl.baseStation': '基站管理',
 	'menu.deviceManagement.esl.deviceUpgrade': '设备升级',
 	'menu.deviceManagement.esl.deviceUpgrade.overview': '设备升级',
