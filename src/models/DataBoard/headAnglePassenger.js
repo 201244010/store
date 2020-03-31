@@ -44,19 +44,20 @@ export default {
 			}
 		},
 		*getHeadPassengerByRegular({ payload }, { put, call }) {
-			const { type } = payload;
+			const { type, startTime } = payload;
 			const earlyTime = {
-				1: moment()
-					.subtract(2, 'days')
+				1: moment(startTime, 'YYYY-MM-DD')
+					.subtract(1, 'days')
 					.format('YYYY-MM-DD'),
-				2: moment()
+				2: moment(startTime, 'YYYY-MM-DD')
 					.subtract(1, 'weeks')
 					.format('YYYY-MM-DD'),
-				3: moment()
+				3: moment(startTime, 'YYYY-MM-DD')
 					.subtract(1, 'months')
 					.format('YYYY-MM-DD'),
 			};
 			const response = yield call(Actions.getHeadPassengerByRegular, payload);
+			
 			if (response && response.code === ERROR_OK) {
 				let regularGuest = 0;
 				let newGuest = 0;

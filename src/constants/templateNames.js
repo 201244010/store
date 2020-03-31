@@ -22,6 +22,7 @@ const templates =  {
 	'esl-default-template-BW-2.6': '2.6寸黑白模板',
 	'esl-default-template-BWR-2.6': '2.6寸黑白红模板',
 	'esl-default-template-BWR-4.2': '4.2寸黑白红模板',
+	'esl-default-template-BWR-7.5': '7.5寸黑白红模板',
 	'esl-default-template-normal-2.13': '2.13寸正常模板',
 	'esl-default-template-promotion-2.13': '2.13寸促销模板',
 	'esl-default-template-normal-2.6': '2.6寸正常模板',
