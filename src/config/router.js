@@ -124,9 +124,31 @@ const router = [
 					},
 					{
 						path: '/storeMonitor/liveReplay',
-						name: 'liveReplay',
 						id: 'liveReplay',
-						component: './IPC/IPCList/index.js',
+						name: 'liveReplay',
+						routes: [
+							{
+								path: '/storeMonitor/liveReplay',
+								name: 'liveDeviceList',
+								hideInMenu: true,
+								id: 'liveDeviceList',
+								component: './IPC/IPCList/index.js',
+							},
+							{
+								path: '/storeMonitor/liveReplay/live',
+								name: 'liveReplayLive',
+								id: 'liveReplayLive',
+								hideInMenu: true,
+								component: './IPC/Live/Live.js',
+							},
+							{
+								path: '/storeMonitor/liveReplay/ipcManagement',
+								name: 'liveReplayManagement',
+								id: 'liveReplayManagement',
+								hideInMenu: true,
+								component: './IPC/IPCManagement/IPCManagement.js',
+							},
+						],
 					},
 					{
 						path: '/storeMonitor/cloudStorage',
@@ -317,7 +339,7 @@ const router = [
 								component: './IPC/IPCList/index.js',
 							},
 							{
-								path: '/deviceManagement/ipcList/live',
+								path: '/deviceManagement/ipcList/deviceList/live',
 								name: 'live',
 								id: 'live',
 								hideInMenu: true,

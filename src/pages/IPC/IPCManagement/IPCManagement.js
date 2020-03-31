@@ -166,7 +166,7 @@ class IPCManagement extends Component {
 				loading: false
 			});
 		}
-	}
+	};
 
 	showModalHandler = () => {
 		const { goToPath } = this.props;
@@ -174,9 +174,16 @@ class IPCManagement extends Component {
 			title: formatMessage({ id: 'ipcManagement.operate.fail'}),
 			content: formatMessage({ id: 'ipcManagement.loading.fail.tips'}),
 			okText: formatMessage({ id: 'ipcManagemet.confirm'}),
-			onOk:() => goToPath('deviceList')
+			onOk:() => {
+				const { location: { pathname } } = window;
+				if (pathname.indexOf('liveReplay') > -1) {
+					goToPath('liveDeviceList');
+				} else {
+					goToPath('deviceList');
+				}
+			}
 		});
-	}
+	};
 
 	render() {
 		const { location } = this.props;

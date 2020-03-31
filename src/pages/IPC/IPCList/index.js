@@ -49,22 +49,32 @@ class IPCList extends React.Component {
 		const isBind = await checkBind(sn);
 		if(isBind) {
 			const { navigateTo } = this.props;
-			navigateTo('ipcManagement', {sn});
+			const { location: { pathname } } = window;
+			if (pathname.indexOf('liveReplay') > -1) {
+				navigateTo('liveReplayManagement', {sn});
+			} else {
+				navigateTo('ipcManagement', {sn});
+			}
 		} else {
 			message.warning(formatMessage({ id: 'ipcList.noSetting'}));
 		}
-	}
+	};
 
 	onClickPlay = async  (sn) => {
 		const { checkBind } = this.props;
 		const isBind = await checkBind(sn);
 		if(isBind) {
 			const { navigateTo } = this.props;
-			navigateTo('live', {sn});
+			const { location: { pathname } } = window;
+			if (pathname.indexOf('liveReplay') > -1) {
+				navigateTo('liveReplayLive', {sn});
+			} else {
+				navigateTo('live', {sn});
+			}
 		} else {
 			message.warning(formatMessage({ id: 'ipcList.noLive'}));
 		}
-	}
+	};
 
 	render() {
 		const { ipcList: list, loading } = this.props;
