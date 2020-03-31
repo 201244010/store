@@ -354,7 +354,7 @@ class TopPassengerDataBoard extends React.Component {
 				earlyPassengerCount,
 				// passHeadCount,
 				// earlyPassHeadCount,
-				// mainGuestList,
+				mainGuestList,
 			},
 			form: { getFieldDecorator },
 			loading,
