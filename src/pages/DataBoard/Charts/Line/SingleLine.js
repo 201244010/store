@@ -252,7 +252,7 @@ export default class Line extends Component {
 						unit,
 					};
 				},
-			],			
+			],
 			crosshairs = {},
 			lineActive,
 			chartHeight,

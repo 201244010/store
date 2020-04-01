@@ -396,7 +396,7 @@ export default {
 							label: 'enteringRate',
 							count: latestEnteringRate,
 							earlyCount: earlyEnteringRate,
-							compareRate: true,
+							compareRate: false,
 							chainRate: true,
 							unit: 'percent'
 						},

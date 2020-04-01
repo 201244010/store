@@ -21,10 +21,15 @@ export const DATABOARD = {
 		2: formatMessage({ id: 'databoard.search.week.last' }),
 		3: formatMessage({ id: 'databoard.search.month.last' }),
 	},
-	EARLY_LABEL_HISTORY: {
+	EARLY_LABEL_HISTORY_COMPARE: {
 		1: formatMessage({ id: 'databoard.data.compare.yesterday' }),
 		2: formatMessage({ id: 'databoard.data.compare.week' }),
 		3: formatMessage({ id: 'databoard.data.compare.month' }),
+	},
+	EARLY_LABEL_HISTORY_COMMON: {
+		1: formatMessage({ id: 'databoard.data.history.day' }),
+		2: formatMessage({ id: 'databoard.data.history.week' }),
+		3: formatMessage({ id: 'databoard.data.history.month' }),
 	},
 	FREQUENCY_TYPE: {
 		1: 'day',

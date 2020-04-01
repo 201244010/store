@@ -503,27 +503,12 @@ class TopPassengerDataBoard extends React.Component {
 							<Col span={6}>
 								<TopDataCard
 									data={{
-										label: 'enteringRate',
-										unit: 'percent',
-										count: todayEnterPercent,
-										earlyCount: earlyEnterPercent,
-										compareRate: true,
-										toolTipText: this.tooltipFormText(2),
-										chainRate: true,
-									}}
-									timeType={dateType}
-									dataType={2}
-								/>
-							</Col>
-							<Col span={6}>
-								<TopDataCard
-									data={{
 										label: 'strangeCount',
 										unit: '',
 										count: newGuest,
 										earlyCount: earlyNewGuest,
 										compareRate: true,
-										toolTipText: this.tooltipFormText(3),
+										toolTipText: '',
 									}}
 									timeType={dateType}
 									dataType={2}
@@ -537,7 +522,22 @@ class TopPassengerDataBoard extends React.Component {
 										count: regularGuest,
 										earlyCount: earlyRegularGuest,
 										compareRate: true,
-										toolTipText: this.tooltipFormText(4),
+										toolTipText: '',
+									}}
+									timeType={dateType}
+									dataType={2}
+								/>
+							</Col>
+							<Col span={6}>
+								<TopDataCard
+									data={{
+										label: 'enteringRate',
+										unit: 'percent',
+										count: todayEnterPercent,
+										earlyCount: earlyEnterPercent,
+										// compareRate: true,
+										toolTipText: this.tooltipFormText(2),
+										chainRate: true,
 									}}
 									timeType={dateType}
 									dataType={2}

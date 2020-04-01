@@ -24,7 +24,7 @@ class OverviewCard extends PureComponent {
 				toolTipText = `${TIME_TIP[timeType]}${formatMessage({ id: 'databoaed.entering.tip'})}`;
 				break;
 			case 'regularCount':
-				toolTipText = `${TIME_TIP[timeType]}${formatMessage({ id: 'databoaed.regular.tip'})}`;
+				toolTipText = '';
 				break;
 			case 'avgFrequency':
 				toolTipText = `${TIME_TIP[timeType]}${formatMessage({ id: 'databoaed.frequency.tip'})}`;
@@ -43,7 +43,7 @@ class OverviewCard extends PureComponent {
 			regularCount, avgFrequency, timeType,
 		} = this.props;
 		// console.log('=======RTOverviewCard', RTPassengerCount, paymentTotalAmount );
-		const firstRow = [passengerCount, regularCount, enteringRate, avgFrequency];
+		const firstRow = [passengerCount, regularCount, avgFrequency, enteringRate];
 		console.log('=======card=====', firstRow, loading);
 		return (
 			<div className={styles.overview}>
