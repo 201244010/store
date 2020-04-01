@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } from 'antd';
+import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio, Modal } from 'antd';
 // import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -490,6 +490,9 @@ class TopPassengerDataBoard extends React.Component {
 								<TopDataCard
 									data={{
 										label: 'totalPassengerCount',
+										labelText: formatMessage({
+											id: 'databoard.top.label.totalPassengerCount',
+										}),
 										unit: '',
 										count: todayTotalCount,
 										earlyCount: earlyTotalCount,
@@ -504,6 +507,9 @@ class TopPassengerDataBoard extends React.Component {
 								<TopDataCard
 									data={{
 										label: 'strangeCount',
+										labelText: formatMessage({
+											id: 'databoard.top.label.totalStrangeCount',
+										}),
 										unit: '',
 										count: newGuest,
 										earlyCount: earlyNewGuest,
@@ -518,6 +524,9 @@ class TopPassengerDataBoard extends React.Component {
 								<TopDataCard
 									data={{
 										label: 'regularCount',
+										labelText: formatMessage({
+											id: 'databoard.top.label.totalRegularCount',
+										}),
 										unit: '',
 										count: regularGuest,
 										earlyCount: earlyRegularGuest,
@@ -532,6 +541,9 @@ class TopPassengerDataBoard extends React.Component {
 								<TopDataCard
 									data={{
 										label: 'enteringRate',
+										labelText: formatMessage({
+											id: 'databoard.top.label.totalEnteringRate',
+										}),
 										unit: 'percent',
 										count: todayEnterPercent,
 										earlyCount: earlyEnterPercent,
