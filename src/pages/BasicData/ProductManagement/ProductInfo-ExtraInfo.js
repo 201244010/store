@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { normalizeInfo } from '@/utils/utils';
 import * as styles from '@/pages/BasicData/ProductManagement/ProductManagement.less';
 
 const ProductInfoExtraInfo = props => {
@@ -44,7 +45,7 @@ const ProductInfoExtraInfo = props => {
 		categoryLevel3Name = '',
 		categoryLevel4Name = '',
 		categoryLevel5Name = '',
-	} = extraInfo[0] || {};
+	} = normalizeInfo(extraInfo[0] || {});
 
 	const extraInfoList = [
 		{

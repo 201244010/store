@@ -1,46 +1,48 @@
 import React from 'react';
 import { Card } from 'antd';
 import { formatMessage } from 'umi/locale';
+import { normalizeInfo } from '@/utils/utils';
 import * as styles from '@/pages/BasicData/ProductManagement/ProductManagement.less';
 
 const ProductInfoExtraCustom = props => {
 	const {
 		productInfo: {
-			extraCustomInfo: {
-				customText1 = '',
-				customText2 = '',
-				customText3 = '',
-				customText4 = '',
-				customText5 = '',
-				customText6 = '',
-				customText7 = '',
-				customText8 = '',
-				customText9 = '',
-				customText10 = '',
-				customText11 = '',
-				customText12 = '',
-				customText13 = '',
-				customText14 = '',
-				customText15 = '',
-				customText16 = '',
-				customText17 = '',
-				customText18 = '',
-				customText19 = '',
-				customText20 = '',
-				customInt1 = '',
-				customInt2 = '',
-				customInt3 = '',
-				customInt4 = '',
-				customInt5 = '',
-				customDec1 = '',
-				customDec2 = '',
-				customDec3 = '',
-				customDec4 = '',
-				customDec5 = '',
-				others = '',
-			} = {},
+			extraCustomInfo = {},
 		} = {},
 	} = props;
+	const {
+		customText1 = '',
+		customText2 = '',
+		customText3 = '',
+		customText4 = '',
+		customText5 = '',
+		customText6 = '',
+		customText7 = '',
+		customText8 = '',
+		customText9 = '',
+		customText10 = '',
+		customText11 = '',
+		customText12 = '',
+		customText13 = '',
+		customText14 = '',
+		customText15 = '',
+		customText16 = '',
+		customText17 = '',
+		customText18 = '',
+		customText19 = '',
+		customText20 = '',
+		customInt1 = '',
+		customInt2 = '',
+		customInt3 = '',
+		customInt4 = '',
+		customInt5 = '',
+		customDec1 = '',
+		customDec2 = '',
+		customDec3 = '',
+		customDec4 = '',
+		customDec5 = '',
+		others = '',
+	} = normalizeInfo(extraCustomInfo);
 
 	const extraCustomInfoList = [
 		{
