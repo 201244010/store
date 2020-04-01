@@ -11,7 +11,6 @@ const ExtraInfo = props => {
 		} = {},
 	} = props;
 
-	console.log(productInfo, 'extraInfo', extraInfo);
 	const {
 		packSize = '',
 		stock = '',
@@ -371,7 +370,7 @@ const ExtraInfo = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel2Name' }),
-				getFieldName: 'categoryLevel2Name	',
+				getFieldName: 'categoryLevel2Name',
 				value: categoryLevel2Name,
 				required: false,
 				message: '',
