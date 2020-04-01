@@ -158,4 +158,5 @@ export default {
 	'databoard.top.label.totalStrangeCount': '总生客人数',
 	'databoard.top.label.totalRegularCount': '总熟客人数',
 	'databoard.top.label.totalEnteringRate': '总进店率',
+	'databoard.passenger.nodata':'暂无客流数据'
 };

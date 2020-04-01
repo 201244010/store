@@ -1487,8 +1487,8 @@ export default {
 							hotTime: maleRushHour,
 							regularCount: maleRegularCount,
 							uniqCount: maleUniqCount,
-							totalPercent: totalCount ? maleCount / totalCount : undefined,
-							regularPercent: maleCount ? maleRegularCount / maleCount : undefined,
+							totalPercent: totalCount ? maleCount / totalCount : 0,
+							regularPercent: maleCount ? maleRegularCount / maleCount : 0,
 							frequency: maleUniqCount ? maleCount / maleUniqCount : undefined,
 							gender: GENDER.MALE,
 						}, {
@@ -1497,13 +1497,26 @@ export default {
 							hotTime: femaleRushHour,
 							regularCount: femaleRegularCount,
 							uniqCount: femaleUniqCount,
-							totalPercent: totalCount ? femaleCount / totalCount : undefined,
-							regularPercent: femaleCount ? femaleRegularCount / femaleCount : undefined,
+							totalPercent: totalCount ? femaleCount / totalCount : 0,
+							regularPercent: femaleCount ? femaleRegularCount / femaleCount : 0,
 							frequency: femaleUniqCount ? femaleCount / femaleUniqCount : undefined,
 							gender: GENDER.FEMALE,
 						}]);
 					}, []).sort((a, b) => b.count - a.count);
-				const majorList = targetList.slice(0, 3);
+				const majorList = targetList.slice(0, 3).filter(item => item.count > 0);
+				if(!majorList.length) {
+					majorList.push({
+						ageRangeCode: 0,
+						count: 0,
+						hotTime: -1,
+						regularCount: 0,
+						uniqCount: 0,
+						totalPercent: 0,
+						regularPercent: 0,
+						frequency: undefined,
+						gender: 0
+					});
+				}
 				console.log('====主力客群画像===', majorList);
 				yield put({
 					type: 'updateState',
