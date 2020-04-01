@@ -47,6 +47,10 @@ const ProductCUBasic = props => {
 			brand = '',
 			expireTime = '',
 			qrCode = '',
+			status = '',
+			description = '',
+			promotePriceDescription = '',
+			memberPriceDescription = '',
 		},
 		onSelectChange,
 		// productBasicExtra,
@@ -227,6 +231,38 @@ const ProductCUBasic = props => {
 					<Form.Item label={formatMessage({ id: 'basicData.product.qrCode' })}>
 						{getFieldDecorator('qrCode', {
 							initialValue: qrCode,
+						})(<Input maxLength={MAX_LENGTH['200']} />)}
+					</Form.Item>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.product.status' })}>
+						{getFieldDecorator('status', {
+							initialValue: status,
+						})(<Input maxLength={MAX_LENGTH['200']} />)}
+					</Form.Item>
+				</Col>
+				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.product.description' })}>
+						{getFieldDecorator('description', {
+							initialValue: description,
+						})(<Input maxLength={MAX_LENGTH['200']} />)}
+					</Form.Item>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.product.promotePriceDescription' })}>
+						{getFieldDecorator('promotePriceDescription', {
+							initialValue: promotePriceDescription,
+						})(<Input maxLength={MAX_LENGTH['200']} />)}
+					</Form.Item>
+				</Col>
+				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.product.memberPriceDescription' })}>
+						{getFieldDecorator('memberPriceDescription', {
+							initialValue: memberPriceDescription,
 						})(<Input maxLength={MAX_LENGTH['200']} />)}
 					</Form.Item>
 				</Col>
