@@ -405,13 +405,13 @@ class TopPassengerDataBoard extends React.Component {
 							onChange={this.handleRadioChange}
 						>
 							<Radio.Button value={1}>
-								{formatMessage({ id: 'databoard.search.yesterday' })}
+								{formatMessage({ id: 'databoard.unit.days' })}
 							</Radio.Button>
 							<Radio.Button value={2}>
-								{formatMessage({ id: 'databoard.search.week' })}
+								{formatMessage({ id: 'databoard.unit.weeks' })}
 							</Radio.Button>
 							<Radio.Button value={3}>
-								{formatMessage({ id: 'databoard.search.month' })}
+								{formatMessage({ id: 'databoard.unit.months' })}
 							</Radio.Button>
 						</Radio.Group>
 						{dateType === 1 && (

@@ -54,6 +54,7 @@ export default {
 	'menu.transManagement.videos': 'Checkout video',
 	'menu.transManagement.cashVerify.bindPOSDevice': 'Binded POS devices',
 	'menu.transManagement.cashVerify.videos': 'Checkout video',
+	'menu.transManagement.orderDetail': 'Order Detail',
 	'menu.serviceManagement': 'Service Management',
 	'menu.serviceManagement.list': 'Service Management',
 	'menu.serviceManagement.serviceList': 'Service Management',

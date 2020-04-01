@@ -39,7 +39,6 @@ class DisplayConfig extends Component {
 
 		const response = await fetchCustomTemplateConfig();
 		const templateConfig = response.data.custom_tmpl_config || [];
-		templateConfig.forEach(config => config.template_id = 0);
 		this.setState({
 			templateConfig: JSON.parse(JSON.stringify(templateConfig)),
 		});
