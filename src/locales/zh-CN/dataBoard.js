@@ -148,4 +148,5 @@ export default {
 	'databoard.tooltip.newGuest': '所有门店的客流量中，第一次进店的客户人数之和',
 	'databoard.tooltip.regularGuest': '所有门店的客流量中，非第一次进店的客户人数之和',
 	'databoard.tooltip.inRange': '筛选时间内，',
+	'databoard.passenger.nodata':'暂无客流数据'
 };

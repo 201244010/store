@@ -93,7 +93,7 @@ class MainCustomerCard extends React.Component {
 						<div className={`${styles['card-img']} ${gender === 1 ? styles.male : ''} ${gender === 2 ? styles.female: ''}`} />
 						{
 							!gender?
-								<span className={styles['card-sex']}>暂无客流数据</span>
+								<span className={styles['card-sex']}>{formatMessage({ id: 'databoard.passenger.nodata'})}</span>
 								:
 								<>
 									<span className={styles['card-sex']}>{gender === 1? formatMessage({id: 'databoard.gender.male'}): formatMessage({id: 'databoard.gender.female'})}</span>
