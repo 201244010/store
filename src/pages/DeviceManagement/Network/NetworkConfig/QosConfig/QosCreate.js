@@ -130,6 +130,7 @@ class QosCreate extends React.PureComponent {
 		} = this.props;
 		const { selectedRowKeys } = this.state;
 		await this.checkMQTTClient();
+		console.log('object');
 		validateFields(async (err, values) => {
 			if (!err) {
 				const {
@@ -183,9 +184,7 @@ class QosCreate extends React.PureComponent {
 						},
 					});
 				});
-				if (selectedRowKeys.length === 0) {
-					await getQosList();
-				}
+				await getQosList();
 			}
 		});
 	};
