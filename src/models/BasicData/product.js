@@ -136,6 +136,7 @@ export default {
 
 			const response = yield call(Actions.getProductDetail, format('toSnake')(options));
 			if (response && response.code === ERROR_OK) {
+
 				const { data = {} } = response;
 				const formattedData = shake(data)(
 					format('toCamel'),
@@ -144,6 +145,7 @@ export default {
 						{ from: 'weighInfo', to: 'weighInfo', rule: dataItem => dataItem || {} },
 					])
 				);
+				console.log('getProductDetail', formattedData);
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -167,6 +169,7 @@ export default {
 			});
 			const response = yield call(Actions.createProduct, format('toSnake')(options));
 			if (response && response.code === ERROR_OK) {
+				console.log('createProduct', response);
 				yield put({
 					type: 'updateState',
 					payload: { loading: false },
@@ -198,6 +201,7 @@ export default {
 			});
 			const response = yield call(Actions.updateProduct, format('toSnake')(options));
 			if (response && response.code === ERROR_OK) {
+				console.log('updateProduct', response);
 				const { data = {} } = response;
 				yield put({
 					type: 'updateState',

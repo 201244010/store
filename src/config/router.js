@@ -83,13 +83,6 @@ const router = [
 						hideInMenu: true,
 						component: './DataBoard',
 					},
-					{
-						path: '/dashboard/detail',
-						id: 'orderDetail',
-						name: 'orderDetail',
-						hideInMenu: true,
-						component: './DashBoard/OrderDetail',
-					},
 				],
 			},
 
@@ -262,6 +255,12 @@ const router = [
 						name: 'posList',
 						id: 'posList',
 						component: './IPC/POSManagement/POSList.js',
+					},
+					{
+						path: '/transManagement/orderDetail',
+						id: 'orderDetail',
+						name: 'orderDetail',
+						component: './DashBoard/OrderDetail',
 					},
 					{
 						path: '/transManagement/cashVerify/bindPOSDevice',

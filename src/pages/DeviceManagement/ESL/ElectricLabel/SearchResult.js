@@ -394,6 +394,11 @@ class SearchResult extends Component {
 		const { selectedRows } = this.state;
 		const { fetchTemplatesByESLCode } = this.props;
 		const modelIds = new Set(selectedRows.map(item => item.model_id));
+		const noTemplate = selectedRows.filter(item => !item.template_id);
+		if (noTemplate.length) {
+			message.warning(formatMessage({id: 'esl.device.esl.batch.toggle.template.no.template.warning'}));
+			return;
+		}
 		if (modelIds.size === 1) {
 			await fetchTemplatesByESLCode({
 				options: {
