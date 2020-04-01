@@ -163,7 +163,13 @@ class TopPassengerDataBoard extends React.Component {
 			getHeadPassengerSurvey,
 		} = this.props;
 		
-		Promise.all([getHeadPassengerByGender({ startTime, type }), getHeadPassengerByRegular({ startTime, type }), getHeadPassengerSurvey({ startTime, type })]).then(()=> {
+		Promise.all([
+			getHeadPassengerByGender({ startTime, type }),
+			getHeadPassengerByRegular({ startTime, type }),
+			getHeadPassengerSurvey({ startTime, type })
+		]).then(()=> {
+			this.setState({ fullPageLoading: false });
+		}, () => {
 			this.setState({ fullPageLoading: false });
 		});
 		this.setState(
