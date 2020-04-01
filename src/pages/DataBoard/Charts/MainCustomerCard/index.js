@@ -15,7 +15,7 @@ class MainCustomerCard extends React.Component {
 	formatAge = (range) => {
 		switch(range) {
 			case 1:
-				return '0-7';
+				return '0-6';
 			case 2:
 				return '7-11';
 			case 3:
@@ -28,8 +28,10 @@ class MainCustomerCard extends React.Component {
 				return '36-45';
 			case 7:
 				return '46-55';
-			default:
+			case 8:
 				return '56-100';
+			default:
+				return '';
 		}
 	}
 
@@ -88,10 +90,17 @@ class MainCustomerCard extends React.Component {
 			<div className={styles['card-body']}>
 				<div className={styles['card-header']}>
 					<div className={styles['card-header-right']}>
-						<div className={styles['card-img']} style={{backgroundImage: `url(${gender === 1? require('./man.png'):require('./woman.png')})`}} />
-						<span className={styles['card-sex']}>{gender === 1? formatMessage({id: 'databoard.gender.male'}): formatMessage({id: 'databoard.gender.female'})}</span>
-						<span className={styles['card-line']} />
-						<span className={styles['card-age']}>{`${this.formatAge(ageRangeCode)}${formatMessage({id: 'databoard.age.unit'})}`}</span>
+						<div className={`${styles['card-img']} ${gender === 1 ? styles.male : ''} ${gender === 2 ? styles.female: ''}`} />
+						{
+							!gender?
+								<span className={styles['card-sex']}>暂无客流数据</span>
+								:
+								<>
+									<span className={styles['card-sex']}>{gender === 1? formatMessage({id: 'databoard.gender.male'}): formatMessage({id: 'databoard.gender.female'})}</span>
+									<span className={styles['card-line']} />
+									<span className={styles['card-age']}>{`${this.formatAge(ageRangeCode)}${formatMessage({id: 'databoard.age.unit'})}`}</span>
+								</>
+						}
 					</div>
 					<span className={styles['card-header-left']}>
 						{passengerNumFormat({value: count, returnType: 'join'})}
