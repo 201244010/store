@@ -11,62 +11,6 @@ const FREQUENCY_MAX = [5, 11];
 const UNIT = formatMessage({ id: 'databoard.passenger.unit' });
 
 export default class FrequencyBar extends React.Component {
-	thickInterval = (scale, data) => {
-		if (!data.length)
-			return {
-				...scale,
-				value: {
-					type: 'linear',
-					nice: true,
-					min: 0,
-					// tickCount: 6,
-				},
-			};
-		// 计算y轴最大值,最小值
-		const max = _.maxBy(data, o => o.value).value;
-		const min = _.minBy(data, o => o.value).value;
-		console.log('groupBy', max, min, data.rows);
-		// return scale;
-		if (min < 0) {
-			// 自适应
-			return scale;
-		}
-		if (max < 10) {
-			return {
-				...scale,
-				value: {
-					type: 'linear',
-					nice: false,
-					max: 10,
-					tickCount: 6,
-				},
-			};
-		}
-		if (max < 50) {
-			return {
-				...scale,
-				value: {
-					type: 'linear',
-					nice: true,
-					max: 50,
-					tickCount: 6,
-				},
-			};
-		}
-		//  max > 50 计算数字位数n * 10
-		const mul = 10 ** Math.floor(Math.log10(max / 5));
-		const tickInterval = Math.ceil(max / 5 / mul) * mul;
-		return {
-			...scale,
-			value: {
-				type: 'linear',
-				nice: true,
-				tickInterval,
-				max: tickInterval * 5,
-			},
-		};
-	};
-
 	formatLabelX = barAmout => val => {
 		if (FREQUENCY_MAX.includes(barAmout)) {
 			// 5组数据 or 11组数据时 最后一组 xxx以上 X轴
@@ -99,7 +43,7 @@ export default class FrequencyBar extends React.Component {
 	};
 
 	render() {
-		const { formatToolTipAxisX, formatLabelX, barWidthFit, thickInterval } = this;
+		const { formatToolTipAxisX, formatLabelX, barWidthFit } = this;
 		const chartTitle = formatMessage({ id: 'databoard.chart.title.frequencyDistri' });
 		// const data = frequencyData;
 		const { data, chartHeight = 250 } = this.props;
@@ -119,13 +63,7 @@ export default class FrequencyBar extends React.Component {
 		};
 		return (
 			<div>
-				<Chart
-					padding="auto"
-					height={chartHeight}
-					data={data}
-					forceFit
-					scale={thickInterval(scale, data)}
-				>
+				<Chart padding="auto" height={chartHeight} data={data} forceFit scale={scale}>
 					<h1 className={styles['chart-title']}>{chartTitle}</h1>
 					<Axis name="frequency" label={{ formatter: formatLabelX(barAmout) }} />
 					<Axis name="value" />
