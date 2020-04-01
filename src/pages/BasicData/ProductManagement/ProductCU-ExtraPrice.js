@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Col, Form, Input, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { customValidate } from '@/utils/customValidate';
+import { normalizeInfo } from '@/utils/utils';
 
 const ExtraPrice = props => {
 	const {
@@ -29,7 +30,7 @@ const ExtraPrice = props => {
 		memberPoint = '',
 		promoteReason = '',
 		promoteFlag = '',
-	} = extraPriceInfo[0] || {};
+	} = normalizeInfo(extraPriceInfo[0] || {});
 
 	const extraPriceInfoList = [
 		[

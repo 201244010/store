@@ -15,6 +15,96 @@ import ExtraPrice from './ProductCU-ExtraPrice';
 import ExtraCustom from './ProductCU-ExtraCustom';
 import * as styles from './ProductManagement.less';
 
+const ExtraInfoFields = [
+	'packSize',
+	'stock',
+	'safetyStock',
+	'dailyMeanSales',
+	'todaySalesQty',
+	'cumulatedSalesQty',
+	'onOrderQty',
+	'shelfQty',
+	'shelfCode',
+	'shelfTier',
+	'shelfColumn',
+	'displayLocation',
+	'supplierCode',
+	'supplierName',
+	'manufacturer',
+	'manufacturerAddress',
+	'expiryDate',
+	'shelfLife',
+	'ingredientTable',
+	'freshItemCode',
+	'supervisedBy',
+	'supervisionHotline',
+	'pricingStaff',
+	'categoryLevel1Code',
+	'categoryLevel2Code',
+	'categoryLevel3Code',
+	'categoryLevel4Code',
+	'categoryLevel5Code',
+	'categoryLevel1Name',
+	'categoryLevel2Name',
+	'categoryLevel3Name',
+	'categoryLevel4Name',
+	'categoryLevel5Name',
+];
+
+const ExtraPriceInfoFields = [
+	'customPrice1',
+	'customPrice2',
+	'customPrice3',
+	'customPrice1Description',
+	'customPrice2Description',
+	'customPrice3Description',
+	'promoteStartDate',
+	'promoteStartTime',
+	'promoteEndDate',
+	'promoteEndTime',
+	'memberPromoteStartDate',
+	'memberPromoteStartTime',
+	'memberPromoteEndDate',
+	'memberPromoteEndTime',
+	'memberPoint',
+	'promoteReason',
+	'promoteFlag',
+];
+
+const ExtraCustomInfoFields = [
+	'customText1',
+	'customText2',
+	'customText3',
+	'customText4',
+	'customText5',
+	'customText6',
+	'customText7',
+	'customText8',
+	'customText9',
+	'customText10',
+	'customText11',
+	'customText12',
+	'customText13',
+	'customText14',
+	'customText15',
+	'customText16',
+	'customText17',
+	'customText18',
+	'customText19',
+	'customText20' ,
+	'customInt1',
+	'customInt2',
+	'customInt3',
+	'customInt4',
+	'customInt5',
+	'customDec1',
+	'customDec2',
+	'customDec3',
+	'customDec4',
+	'customDec5',
+	'others',
+];
+
 @connect(
 	state => ({
 		loading: state.loading,
@@ -88,9 +178,10 @@ class ProductCU extends Component {
 	};
 
 	formatSubmitValue = values => {
-		const { weighInfo } = values;
-
-		let formattedValue = values;
+		let formattedValue = {
+			...values
+		};
+		const { weighInfo } = formattedValue;
 
 		if (weighInfo) {
 			formattedValue = shake(formattedValue)(
@@ -135,7 +226,7 @@ class ProductCU extends Component {
 						rule: data => {
 							const {
 								weighInfo: { packDays },
-							} = values;
+							} = formattedValue;
 							if (data && moment.isMoment(packDays)) {
 								return packDays.format('YYYY-MM-DD');
 							}
@@ -153,7 +244,7 @@ class ProductCU extends Component {
 						rule: data => {
 							const {
 								weighInfo: { usebyType, usebyDays },
-							} = values;
+							} = formattedValue;
 							if (data && moment.isMoment(usebyDays)) {
 								return usebyType === '2'
 									? usebyDays.format('YYYY-MM-DD')
@@ -173,7 +264,7 @@ class ProductCU extends Component {
 						rule: data => {
 							const {
 								weighInfo: { limitType, limitDays },
-							} = values;
+							} = formattedValue;
 
 							if (data && moment.isMoment(limitDays)) {
 								return limitType === '2'
@@ -223,7 +314,28 @@ class ProductCU extends Component {
 			// console.log(values);
 			if (!err) {
 				const submitValue = this.formatSubmitValue(values);
-				console.log('validateFieldsValues', values);
+				submitValue.extraInfo = {};
+				ExtraInfoFields.forEach(field => {
+					if (submitValue[field]) {
+						submitValue.extraInfo[field] = submitValue[field];
+					}
+					delete submitValue[field];
+				});
+				submitValue.extraPriceInfo = {};
+				ExtraPriceInfoFields.forEach(field => {
+					if (submitValue[field]) {
+						submitValue.extraPriceInfo[field] = submitValue[field];
+					}
+					delete submitValue[field];
+				});
+				submitValue.extraCustomInfo = {};
+				ExtraCustomInfoFields.forEach(field => {
+					if (submitValue[field]) {
+						submitValue.extraCustomInfo[field] = submitValue[field];
+					}
+					delete submitValue[field];
+				});
+				console.log('validateFieldsValues', submitValue);
 				const response = await submitFunction[action]({
 					options: {
 						...submitValue,
@@ -283,7 +395,6 @@ class ProductCU extends Component {
 			loading,
 		} = this.props;
 		const action = getLocationParam('action');
-		console.log('ProductCU123', productInfo);
 
 		return (
 			<Card

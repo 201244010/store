@@ -112,6 +112,7 @@ export default {
 	'esl.device.esl.toggle.page.fail': '模板修改失败',
 	'esl.device.esl.batch.push.product.warning': '请选择同一商品下的价签',
 	'esl.device.esl.batch.toggle.template.warning': '请选择同一型号下的价签',
+	'esl.device.esl.batch.toggle.template.no.template.warning': '请选择绑定商品的价签',
 	'esl.device.esl.title.name': '页面',
 	'esl.device.esl.title.template': '模板',
 	'esl.device.esl.title.status': '状态',

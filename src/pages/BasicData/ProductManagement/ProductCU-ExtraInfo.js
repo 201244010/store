@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Col, Form, Input, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { customValidate } from '@/utils/customValidate';
+import { normalizeInfo } from '@/utils/utils';
 
 const ExtraInfo = props => {
 	const {
@@ -11,7 +12,6 @@ const ExtraInfo = props => {
 		} = {},
 	} = props;
 
-	console.log(productInfo, 'extraInfo', extraInfo);
 	const {
 		packSize = '',
 		stock = '',
@@ -46,7 +46,7 @@ const ExtraInfo = props => {
 		categoryLevel3Name = '',
 		categoryLevel4Name = '',
 		categoryLevel5Name = '',
-	} = extraInfo[0] || {};
+	} = normalizeInfo(extraInfo[0] || {});
 
 	const extraInfoList = [
 		[
@@ -371,7 +371,7 @@ const ExtraInfo = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel2Name' }),
-				getFieldName: 'categoryLevel2Name	',
+				getFieldName: 'categoryLevel2Name',
 				value: categoryLevel2Name,
 				required: false,
 				message: '',
