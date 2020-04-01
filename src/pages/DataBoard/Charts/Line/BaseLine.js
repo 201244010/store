@@ -164,7 +164,13 @@ class LinePoint extends PureComponent {
 					/>
 				)}
 				<Axis name={xName} label={xLabel} />
-				<Axis name={yName} label={yLabel} />
+				<Axis
+					name={yName}
+					label={yLabel}
+					grid={{
+						hightLightZero: false,
+					}}
+				/>
 				<Tooltip
 					// htmlContent={htmlContent}
 					shared={shared}
