@@ -158,5 +158,8 @@ export default {
 	'databoard.top.label.totalStrangeCount': '总生客人数',
 	'databoard.top.label.totalRegularCount': '总熟客人数',
 	'databoard.top.label.totalEnteringRate': '进店率',
-	'databoard.passenger.nodata':'暂无客流数据'
+	'databoard.passenger.nodata':'暂无客流数据',
+	'databoard.top.tip.text.confirm': '确认',
+	'databoard.top.tip.text.info': '提醒',
+	'databoard.top.tip.text.content': '当前默认展示商户汇总视角，您也可以在此处切换至各个门店视角或回到商户汇总视角。',
 };
