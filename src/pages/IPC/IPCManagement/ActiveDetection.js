@@ -311,7 +311,7 @@ class ActiveDetection extends React.Component {
 									className={styles['form-slider']}
 									step={null}
 									tooltipVisible={false}
-									disabled={!isOnline || getFieldValue('isCustomer')}
+									disabled={!isOnline || hasCustomer && hasFaceid && getFieldValue('isCustomer')}
 								/>
 							)
 						}
