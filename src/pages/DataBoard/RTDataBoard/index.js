@@ -214,10 +214,12 @@ class RTDataBoard extends PureComponent {
 						lastModifyTime,
 					}}
 				/>
-				{hasFS && isSaasAuth ? (
+				{hasFS || isSaasAuth ? (
 					<div className={styles['charts-container']}>
 						<OverviewCard
 							loading={loading}
+							hasFS={hasFS}
+							hasOrder={isSaasAuth}
 							{...{
 								RTPassengerCount,
 								RTEnteringRate,
@@ -232,32 +234,44 @@ class RTDataBoard extends PureComponent {
 							}}
 						/>
 						<Row gutter={24}>
-							<Col span={12}>
-								<PassengerTrendLine
-									{...{
-										timeType,
-										RTPassengerFlowList,
-										loading,
-									}}
-								/>
-							</Col>
-							<Col span={12}>
-								<TransactionTrend
-									{...{
-										timeType,
-										amountList,
-										countList,
-										transactionRateList,
-										loading,
-									}}
-								/>
-							</Col>
+							{
+								hasFS ?
+									<Col span={hasFS && isSaasAuth ? 12 : 24}>
+										<PassengerTrendLine
+											{...{
+												timeType,
+												RTPassengerFlowList,
+												loading,
+											}}
+										/>
+									</Col>
+									: ''
+							}
+							{
+								isSaasAuth ?
+									<Col span={hasFS && isSaasAuth ? 12 : 24}>
+										<TransactionTrend
+											{...{
+												timeType,
+												amountList,
+												countList,
+												transactionRateList,
+												loading,
+											}}
+										/>
+									</Col>
+									: ''
+							}
 						</Row>
-						<DistriChart
-							regularList={regularList}
-							ageGenderList={ageGenderList}
-							loading={loading}
-						/>
+						{
+							hasFS ?
+								<DistriChart
+									regularList={regularList}
+									ageGenderList={ageGenderList}
+									loading={loading}
+								/>
+								: ''
+						}
 					</div>
 				) : (
 					<AbnormalTip />
