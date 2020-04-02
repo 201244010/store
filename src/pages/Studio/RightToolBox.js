@@ -8,6 +8,7 @@ import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
 
 const { Option } = Select;
+const { Option: AutoOption } = AutoComplete;
 
 const bindFieldsLocaleMap = {
 	productSeqNum: 'basicData.product.seqNum',
@@ -644,6 +645,21 @@ export default class RightToolBox extends Component {
 								</Option>
 							))}
 						</Select>
+						<AutoComplete
+							placeholder={formatMessage({ id: 'studio.placeholder.bind.field' })}
+							style={{ width: 220 }}
+							value={detail.bindField}
+							dataSource={
+								bindFields.map(field =>
+									<AutoOption key={field} value={field}>
+										{formatMessage({ id: bindFieldsLocaleMap[field] })}
+									</AutoOption>
+								)
+							}
+							onChange={value => {
+								this.handleDetail('bindField', value);
+							}}
+						/>
 					</div>
 				) : null}
 				<div className={styles['tool-box-block']}>
