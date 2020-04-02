@@ -47,7 +47,7 @@ class OverviewCard extends PureComponent {
 		const {
 			loading, RTEnteringRate, RTPassengerCount, RTDeviceCount,
 			paymentTotalAmount, paymentTotalCount, transactionRate, timeType, goToPath,
-			startQueryTime, endQueryTime
+			startQueryTime, endQueryTime, hasFS, hasOrder
 		} = this.props;
 		console.log('=======RTOverviewCard', RTPassengerCount, paymentTotalAmount, loading );
 		const firstRow = [RTPassengerCount, RTEnteringRate, RTDeviceCount];
@@ -55,49 +55,57 @@ class OverviewCard extends PureComponent {
 
 		return (
 			<div className={styles.overview}>
-				<Row gutter={24} className={styles['overview-row']}>
-					{
-						firstRow.map((item, index) =>
-							<Col span={8} key={`1-${index}`}>
-								<TopDataCard data={this.handleAddToolTip(item)} timeType={timeType} loading={loading} dataType={1} />
-							</Col>)
-					}
-				</Row>
-				<Row gutter={24} className={styles['overview-row']}>
-					<Col span={8}>
-						<TopDataCard
-							{...{
-								data: this.handleAddToolTip(paymentTotalAmount),
-								timeType,
-								loading,
-								dataType: 1,
-								onClick: () =>
-									goToPath('orderDetail', {
-										timeRangeStart: startQueryTime,
-										timeRangeEnd: endQueryTime,
-									}),
-							}}
-						/>
-					</Col>
-					<Col span={8}>
-						<TopDataCard
-							{...{
-								data: this.handleAddToolTip(paymentTotalCount),
-								timeType,
-								loading,
-								dataType: 1,
-								onClick: () =>
-									goToPath('orderDetail', {
-										timeRangeStart: startQueryTime,
-										timeRangeEnd: endQueryTime,
-									}),
-							}}
-						/>
-					</Col>
-					<Col span={8}>
-						<TopDataCard data={this.handleAddToolTip(transactionRate)} timeType={timeType} loading={loading} dataType={1} />
-					</Col>
-				</Row>
+				{
+					hasFS ?
+						<Row gutter={24} className={styles['overview-row']}>
+							{
+								firstRow.map((item, index) =>
+									<Col span={8} key={`1-${index}`}>
+										<TopDataCard data={this.handleAddToolTip(item)} timeType={timeType} loading={loading} dataType={1} />
+									</Col>)
+							}
+						</Row>
+						: ''
+				}
+				{
+					hasOrder ?
+						<Row gutter={24} className={styles['overview-row']}>
+							<Col span={8}>
+								<TopDataCard
+									{...{
+										data: this.handleAddToolTip(paymentTotalAmount),
+										timeType,
+										loading,
+										dataType: 1,
+										onClick: () =>
+											goToPath('orderDetail', {
+												timeRangeStart: startQueryTime,
+												timeRangeEnd: endQueryTime,
+											}),
+									}}
+								/>
+							</Col>
+							<Col span={8}>
+								<TopDataCard
+									{...{
+										data: this.handleAddToolTip(paymentTotalCount),
+										timeType,
+										loading,
+										dataType: 1,
+										onClick: () =>
+											goToPath('orderDetail', {
+												timeRangeStart: startQueryTime,
+												timeRangeEnd: endQueryTime,
+											}),
+									}}
+								/>
+							</Col>
+							<Col span={8}>
+								<TopDataCard data={this.handleAddToolTip(transactionRate)} timeType={timeType} loading={loading} dataType={1} />
+							</Col>
+						</Row>
+						: ''
+				}
 			</div>
 		);
 	}

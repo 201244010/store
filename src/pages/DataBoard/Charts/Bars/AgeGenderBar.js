@@ -1,10 +1,9 @@
 import React from 'react';
-import { DataView } from '@antv/data-set';
 import { formatMessage } from 'umi/locale';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import styles from '../chartsCommon.less';
 
-const UNIT = '人';
+const UNIT = formatMessage({ id: 'databoard.passenger.unit' });
 export default class AgeGenderBar extends React.Component {
 	formatAgeCode = range => {
 		switch (range) {
@@ -40,20 +39,25 @@ export default class AgeGenderBar extends React.Component {
 		const { formatToolTipAxisX, formatLabelX } = this;
 		const chartTitle = formatMessage({ id: 'databoard.chart.ageGender' });
 
-		const dv = new DataView();
-		const data = dv.source(ageGenderList.sort()).transform({
-			type: 'map',
-			callback(row) {
-				row.rangeKey = formatAgeCode(row.range);
-				if (row.gender === 'male') {
-					row.gender = formatMessage({ id: 'databoard.chart.gender.male' });
+		const data = ageGenderList
+			.map(row => {
+				const { gender, range, count } = row;
+				const rangeKey = formatAgeCode(row.range);
+				let genderFormat;
+				if (gender === 'male') {
+					genderFormat = formatMessage({ id: 'databoard.chart.gender.male' });
 				}
-				if (row.gender === 'female') {
-					row.gender = formatMessage({ id: 'databoard.chart.gender.female' });
+				if (gender === 'female') {
+					genderFormat = formatMessage({ id: 'databoard.chart.gender.female' });
 				}
-				return row;
-			},
-		});
+				return {
+					gender: genderFormat,
+					range,
+					count,
+					rangeKey,
+				};
+			})
+			.sort((a, b) => a.range - b.range);
 
 		console.log('wx______:', data);
 
@@ -77,13 +81,13 @@ export default class AgeGenderBar extends React.Component {
 				 </div>`,
 							itemTpl: `<li class="detail" data-index={index}>
 					<p class="item item__name">{name}</p>
-					<p class="item item__value">{value}${UNIT}</p>
+					<p class="item item__value">{value}<span class="unit">${UNIT}</span></p>
 					<p class="item item__labelX">{ageInterval}</p>
 				</li>`,
 						}}
 					/>
 					<Legend
-						{...{ position: 'top-right', offsetX: 0, offsetY: 10, marker: 'circle' }}
+						{...{ position: 'top-right', offsetX: 0, offsetY: 30, marker: 'circle' }}
 					/>
 					<Geom
 						type="interval"

@@ -15,18 +15,22 @@ const {
 	DATA_TYPE,
 	UNIT_FREQUENCY,
 	EARLY_LABEL_CURRENT,
-	EARLY_LABEL_HISTORY,
+	EARLY_LABEL_HISTORY_COMPARE,
+	EARLY_LABEL_HISTORY_COMMON,
 	FREQUENCY_TYPE,
 	LABEL_TEXT,
 } = DATABOARD;
 
-const handleEarlyLabelText = (timeType, dataType) => {
-	console.log('timeType', timeType, 'dataType', dataType);
+const handleEarlyLabelText = (timeType, dataType, label) => {
+	// console.log('timeType', timeType, 'dataType', dataType);
 	if (dataType === DATA_TYPE.current) {
 		return `${EARLY_LABEL_CURRENT[timeType]}`;
 	}
 	if (dataType === DATA_TYPE.history) {
-		return `${EARLY_LABEL_HISTORY[timeType]}`;
+		if (label === 'enteringRate') {
+			return `${EARLY_LABEL_HISTORY_COMMON[timeType]}`;
+		}
+		return `${EARLY_LABEL_HISTORY_COMPARE[timeType]}`;
 	}
 	return '';
 };
@@ -60,7 +64,7 @@ const handleCountFormat = (count, label, timeType) => {
 		case 'passengerCount':
 		case 'deviceCount':
 		case 'totalCount':
-		case 'strangeCount':
+		case 'strangerCount':
 		case 'regularCount':
 			return handleFormat(count, passengerNumFormat);
 		case 'totalAmount':
@@ -80,13 +84,31 @@ const handleCountFormat = (count, label, timeType) => {
 	}
 };
 
-const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) => {
+const EarlyLabel = ({ label, dataType, timeType }) => {
+	switch (label) {
+		case 'deviceCount':
+			return <span>{formatMessage({ id: 'databoard.onlineDeviceCount' })} </span>;
+		default:
+			return <span>{handleEarlyLabelText(timeType, dataType, label)} </span>;
+	}
+};
+
+const EarlyData = ({ count, earlyCount, compareRate, chainRate, label, unit, timeType }) => {
 	if (compareRate) {
-		const changeRate = earlyCount ? (count - earlyCount) / earlyCount : undefined;
-		const formatRate = formatFloatByPermile({
-			value: Math.abs((count - earlyCount) / earlyCount),
-			returnType: 'join',
-		});
+		if (!count || !earlyCount) return '--';
+		let changeRate;
+		if (chainRate) {
+			// 环比
+			changeRate = earlyCount ? count - earlyCount : undefined;
+		} else {
+			changeRate = earlyCount ? (count - earlyCount) / earlyCount : undefined;
+		}
+		const formatRate =
+			changeRate &&
+			formatFloatByPermile({
+				value: Math.abs(changeRate),
+				returnType: 'join',
+			});
 		return (
 			<>
 				{changeRate === undefined ? (
@@ -94,7 +116,7 @@ const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) =>
 				) : (
 					<div
 						className={
-							changeRate > 0 ? 'early-value__icon__rise' : 'early-value__icon__down'
+							changeRate < 0 ? 'early-value__icon__down' : 'early-value__icon__rise'
 						}
 					/>
 				)}
@@ -106,16 +128,20 @@ const EarlyData = ({ count, earlyCount, compareRate, label, unit, timeType }) =>
 	}
 	return (
 		<>
-			<div>
-				<span>{handleCountFormat(earlyCount, label, timeType)}</span>
-				<span>{handleUnitText(unit, count, timeType)}</span>
-			</div>
+			{earlyCount ? (
+				<div className="text">
+					<span>{handleCountFormat(earlyCount, label, timeType)}</span>
+					<span>{handleUnitText(unit, earlyCount, timeType)}</span>
+				</div>
+			) : (
+				'--'
+			)}
 		</>
 	);
 };
 
 const TopDataCard = ({ data, dataType, timeType, loading, onClick = null }) => {
-	const { label, unit, count, earlyCount, compareRate, toolTipText } = data;
+	const { label, unit, count, earlyCount, compareRate, toolTipText, chainRate, labelText } = data;
 
 	return (
 		<Card
@@ -124,25 +150,25 @@ const TopDataCard = ({ data, dataType, timeType, loading, onClick = null }) => {
 			loading={loading}
 			onClick={onClick}
 		>
-			<div className="label">{LABEL_TEXT[label]}</div>
+			<div className="label">{labelText || LABEL_TEXT[label]}</div>
 			<div className="value">
 				<span className="value__number">{handleCountFormat(count, label, timeType)}</span>
 				<span className="value__unit">{handleUnitText(unit, count, timeType)}</span>
 			</div>
 			<div className="early-value">
-				<div>
+				<div className="label">
 					{/* // 昨日 上周 上月 、 较前一日 */}
-					{label !== 'deviceCount' ? (
-						<span>{handleEarlyLabelText(timeType, dataType)} </span>
-					) : (
-						<span>{formatMessage({ id: 'databoard.onlineDeviceCount' })} </span>
-					)}
+					<EarlyLabel {...{ label, dataType, timeType }} />
 				</div>
-				<EarlyData {...{ count, earlyCount, compareRate, label, unit, timeType }} />
+				<EarlyData
+					{...{ count, earlyCount, compareRate, label, unit, timeType, chainRate }}
+				/>
 			</div>
-			<Tooltip title={toolTipText}>
-				<Icon type="info-circle" className="tooltip__icon" />
-			</Tooltip>
+			{toolTipText && (
+				<Tooltip title={toolTipText}>
+					<Icon type="info-circle" className="tooltip__icon" />
+				</Tooltip>
+			)}
 		</Card>
 	);
 };

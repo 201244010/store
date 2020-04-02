@@ -12,6 +12,7 @@ class EnteringRateTrend extends PureComponent {
 	render() {
 		const { enteringList, loading, timeType, chartHeight = 400 } = this.props;
 		const chartOption = {
+			chartType: 'rate',
 			timeType,
 			chartHeight,
 			data: enteringList,

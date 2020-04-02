@@ -13,7 +13,7 @@ import TopDataCard from '@/pages/DataBoard/Charts/TopDataCard/TopDataCard';
 		earlyOrderInfo,
 		hasCustomerData,
 		hasOrderData,
-		customerDistri,
+		// customerDistri,
 	} = topview;
 	return {
 		deviceOverView,
@@ -24,7 +24,7 @@ import TopDataCard from '@/pages/DataBoard/Charts/TopDataCard/TopDataCard';
 		loading,
 		hasCustomerData,
 		hasOrderData,
-		customerDistri,
+		// customerDistri,
 	};
 })
 class OverViewBar extends Component {
@@ -39,7 +39,7 @@ class OverViewBar extends Component {
 			latestOrderInfo,
 			earlyOrderInfo,
 			loading,
-			customerDistri,
+			// customerDistri,
 			hasCustomerData,
 			hasOrderData,
 		} = this.props;
@@ -48,28 +48,29 @@ class OverViewBar extends Component {
 
 		const totalPassengerCount = {
 			label: 'totalPassengerCount',
+			labelText: formatMessage({ id: 'databoard.top.label.totalPassengerCount' }),
 			unit: '',
 			count: latestCustomerCount,
 			earlyCount: earlyCustomerCount,
 			compareRate: false,
 			toolTipText: formatMessage({ id: 'databoard.top.totalPassengerCount' }),
 		};
-		const strangerCount = {
-			label: 'strangeCount',
-			unit: '',
-			count: customerDistri.currentStranger,
-			earlyCount: customerDistri.earlyStranger,
-			compareRate: false,
-			toolTipText: formatMessage({ id: 'databoard.top.strangerCount' }),
-		};
-		const regularCount = {
-			label: 'regularCount',
-			unit: '',
-			count: customerDistri.currentRegular,
-			earlyCount: customerDistri.earlyRegular,
-			compareRate: false,
-			toolTipText: formatMessage({ id: 'databoard.top.regularCount' }),
-		};
+		// const strangerCount = {
+		// 	label: 'strangerCount',
+		// 	unit: '',
+		// 	count: customerDistri.currentStranger,
+		// 	earlyCount: customerDistri.earlyStranger,
+		// 	compareRate: false,
+		// 	toolTipText: formatMessage({ id: 'databoard.top.strangerCount' }),
+		// };
+		// const regularCount = {
+		// 	label: 'regularCount',
+		// 	unit: '',
+		// 	count: customerDistri.currentRegular,
+		// 	earlyCount: customerDistri.earlyRegular,
+		// 	compareRate: false,
+		// 	toolTipText: formatMessage({ id: 'databoard.top.regularCount' }),
+		// };
 		// const regularCount = {
 		// 	label: 'strangerCount',
 		// 	unit: '',
@@ -80,25 +81,28 @@ class OverViewBar extends Component {
 		// };
 		const totalAmount = {
 			label: 'totalAmount',
+			labelText: formatMessage({ id: 'databoard.top.label.totalAmount' }),
 			unit: '',
 			count: latestOrderInfo.latestOrderAmount,
-			earlyCount: earlyOrderInfo.earlyOrderAmount,
+			earlyCount: earlyOrderInfo.orderAmount,
 			compareRate: false,
 			toolTipText: formatMessage({ id: 'databoard.top.totalAmount' }),
 		};
 		const totalCount = {
 			label: 'totalCount',
+			labelText: formatMessage({ id: 'databoard.top.label.totalCount' }),
 			unit: '',
 			count: latestOrderInfo.latestOrderCount,
-			earlyCount: earlyOrderInfo.earlyOrderCount,
+			earlyCount: earlyOrderInfo.orderCount,
 			compareRate: false,
 			toolTipText: formatMessage({ id: 'databoard.top.totalCount' }),
 		};
 		const deviceCount = {
 			label: 'deviceCount',
+			labelText: formatMessage({ id: 'databoard.top.label.deviceCount' }),
 			unit: '',
 			count: deviceOverView.offline + deviceOverView.online,
-			earlyCount: deviceOverView.offline,
+			earlyCount: deviceOverView.online,
 			compareRate: false,
 			toolTipText: formatMessage({ id: 'databoard.top.deviceCount' }),
 		};
@@ -107,11 +111,12 @@ class OverViewBar extends Component {
 			itemListData = [totalPassengerCount, totalAmount, totalCount, deviceCount];
 		}
 		if (!hasOrderData && hasCustomerData) {
-			itemListData = [totalPassengerCount, strangerCount, regularCount];
+			itemListData = [totalPassengerCount, deviceCount];
 		}
 		if (!hasCustomerData && hasOrderData) {
 			itemListData = [totalAmount, totalCount, deviceCount];
 		}
+		// itemListData = [totalPassengerCount, deviceCount];
 
 		// const itemMock = {
 		// 	label: '标题',

@@ -1,11 +1,12 @@
 import { formatMessage } from 'umi/locale';
 
+const TIME_TYPE = {
+	DAY: 1,
+	WEEK: 2,
+	MONTH: 3,
+};
 export const DATABOARD = {
-	TIME_TYPE: {
-		DAY: 1,
-		WEEK: 2,
-		MONTH: 3,
-	},
+	TIME_TYPE,
 	DATA_TYPE: {
 		current: 1,
 		history: 2,
@@ -20,10 +21,15 @@ export const DATABOARD = {
 		2: formatMessage({ id: 'databoard.search.week.last' }),
 		3: formatMessage({ id: 'databoard.search.month.last' }),
 	},
-	EARLY_LABEL_HISTORY: {
+	EARLY_LABEL_HISTORY_COMPARE: {
 		1: formatMessage({ id: 'databoard.data.compare.yesterday' }),
 		2: formatMessage({ id: 'databoard.data.compare.week' }),
 		3: formatMessage({ id: 'databoard.data.compare.month' }),
+	},
+	EARLY_LABEL_HISTORY_COMMON: {
+		1: formatMessage({ id: 'databoard.data.history.day' }),
+		2: formatMessage({ id: 'databoard.data.history.week' }),
+		3: formatMessage({ id: 'databoard.data.history.month' }),
 	},
 	FREQUENCY_TYPE: {
 		1: 'day',
@@ -40,8 +46,14 @@ export const DATABOARD = {
 		transactionRate: formatMessage({ id: 'databoard.order.transactionRate' }),
 		avgFrequency: formatMessage({ id: 'databoard.passenger.frequency' }),
 		totalPassengerCount: formatMessage({ id: 'databoard.order.totalPassengerCount' }),
-		strangeCount: formatMessage({ id: 'databoard.order.strangeCount' }),
+		strangerCount: formatMessage({ id: 'databoard.order.strangerCount' }),
 	},
 	LINE_SIZE: 3,
 	LAST_HAND_REFRESH_TIME: 'lastHandRefreshTime',
+	BAR_WIDTH: {
+		[TIME_TYPE.DAY]: 15,
+		[TIME_TYPE.WEEK]: 20,
+		[TIME_TYPE.MONTH]: 15,
+	},
+	VALUE_THICK_INTERVAL: 6,
 };

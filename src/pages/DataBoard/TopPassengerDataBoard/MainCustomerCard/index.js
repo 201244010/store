@@ -1,20 +1,38 @@
 import React from 'react';
 import { Progress } from 'antd';
+import { formatMessage } from 'umi/locale';
 import styles from './mainCustomerCard.less';
 
 const GENDER = {
-	1: '男',
-	2: '女',
+	1: formatMessage({id: 'databoard.top.mainCustomerCard.gender.male'}),
+	2: formatMessage({id: 'databoard.top.mainCustomerCard.gender.female'}),
 };
 const AGERANGE = {
-	1: '0~6岁',
-	2: '7~12岁',
-	3: '13~18岁',
-	4: '19~28岁',
-	5: '29~35岁',
-	6: '36~45岁',
-	7: '46~55岁',
-	8: '56~100岁',
+	3: formatMessage({id: 'databoard.top.mainCustomerCard.ageRange18'}),
+	4: formatMessage({id: 'databoard.top.mainCustomerCard.ageRange19'}),
+	5: formatMessage({id: 'databoard.top.mainCustomerCard.ageRange29'}),
+	6: formatMessage({id: 'databoard.top.mainCustomerCard.ageRange36'}),
+	7: formatMessage({id: 'databoard.top.mainCustomerCard.ageRange46'}),
+	8: formatMessage({id: 'databoard.top.mainCustomerCard.ageRange56'}),
+};
+
+const SCENETYPE = {
+	single: {
+		type: 'single',
+		isDefault: false,
+	},
+	singleDefault: {
+		type: 'single',
+		isDefault: true,
+	},
+	total: {
+		type: 'total',
+		isDefault: false,
+	},
+	totalDefault: {
+		type: 'total',
+		isDefault: true,
+	},
 };
 
 class MainCustomerCard extends React.Component {
@@ -23,24 +41,27 @@ class MainCustomerCard extends React.Component {
 			gender = 1,
 			age = 1,
 			num = '0',
-			totalPercent = 50,
+			totalPercent = 0,
 			scene = 'single',
-			frequentPercent = 60,
-			frequencyOfArrival = '1.2',
-			shopPeak = '12-13点',
+			frequentPercent = 0,
+			frequencyOfArrival = '0',
+			shopPeak = formatMessage({id: 'databoard.top.mainCustomerCard.shopPeak.value'}),
 		} = this.props;
+
+		const type = SCENETYPE[scene].type;
+		const isDefault = SCENETYPE[scene].isDefault;
 
 		const singleFooter = [
 			{
-				title: '熟客占比',
+				title: formatMessage({id: 'databoard.top.mainCustomerCard.frequentPercent'}),
 				value: `${frequentPercent}%`,
 			},
 			{
-				title: '到店频次',
-				value: `${frequencyOfArrival}次/日`,
+				title: formatMessage({id: 'databoard.top.mainCustomerCard.frequencyOfArrival'}),
+				value: `${frequencyOfArrival}${formatMessage({id: 'databoard.top.mainCustomerCard.frequencyOfArrival.unit'})}`,
 			},
 			{
-				title: '到店高峰',
+				title: formatMessage({id: 'databoard.top.mainCustomerCard.shopPeak.title'}),
 				value: shopPeak,
 			},
 		];
@@ -53,20 +74,33 @@ class MainCustomerCard extends React.Component {
 							className={styles['card-img']}
 							style={{
 								backgroundImage: `url(${
-									gender === 1 ? require('./man.png') : require('./woman.png')
+									isDefault? require('./default.png') : gender === 1 ? require('./man.png') : require('./woman.png')
 								})`,
 							}}
 						/>
-						<span className={styles['card-sex']}>{GENDER[gender]}</span>
-						<span className={styles['card-line']} />
-						<span className={styles['card-age']}>{AGERANGE[age]}</span>
+						{
+							isDefault?
+								<span className={styles['card-default']}>{formatMessage({id: 'databoard.top.mainCustomerCard.default.title'})}</span>
+								:
+								<>
+									<span className={styles['card-sex']}>{GENDER[gender]}</span>
+									<span className={styles['card-line']} />
+									<span className={styles['card-age']}>{AGERANGE[age]}</span>
+								</>
+						}
 					</div>
-					<span className={styles['card-header-left']}>{num}人</span>
+					<span className={styles['card-header-left']}>
+						<span>{num}</span>
+						<span className={styles['card-header-left-unit']}>{formatMessage({id: 'databoard.top.mainCustomerCard.person.unit'})}</span>
+					</span>
 				</div>
 				<div className={styles['card-footer']}>
 					<div className={styles['card-content-label']}>
-						<span className={styles['label-title']}>总客流占比</span>
-						<span className={styles['label-percent']}>{totalPercent}%</span>
+						<span className={styles['label-title']}>{formatMessage({id: 'databoard.top.mainCustomerCard.totalPercent'})}</span>
+						<span className={styles['label-percent']}>
+							<span>{totalPercent}</span>
+							<span className={styles['label-percent-unit']}>%</span>
+						</span>
 					</div>
 					<Progress
 						percent={totalPercent}
@@ -77,11 +111,14 @@ class MainCustomerCard extends React.Component {
 						showInfo={false}
 					/>
 				</div>
-				{scene === 'total' ? (
+				{type === 'total' ? (
 					<div className={styles['card-footer']}>
 						<div className={styles['card-content-label']}>
-							<span className={styles['label-title']}>熟客占比</span>
-							<span className={styles['label-percent']}>{frequentPercent}%</span>
+							<span className={styles['label-title']}>{formatMessage({id: 'databoard.top.mainCustomerCard.frequentPercent'})}</span>
+							<span className={styles['label-percent']}>
+								<span>{frequentPercent}</span>
+								<span className={styles['label-percent-unit']}>%</span>
+							</span>
 						</div>
 						<Progress
 							percent={frequentPercent}

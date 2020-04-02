@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
-import * as CookieUtil from '@/utils/cookies';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import { message, Row, Col, Card, Table, Tooltip, Icon, Spin } from 'antd';
+import { message, Row, Col, Card, Table, Tooltip, Icon, Spin, Modal } from 'antd';
 import PageEmpty from '@/components/BigIcon/PageEmpty';
 import CurrentCustomerLine from './CurrentCustomerLine';
 import CurrentSalesLine from './CurrentSalesLine';
+import * as CookieUtil from '@/utils/cookies';
 import StatusBar from './StatusBar';
 import OverViewBar from './OverViewBar';
 import styles from './topView.less';
 import { DATABOARD } from '../Charts/constants';
+import { passengerNumFormat, saleMoneyFormat } from '@/utils/format';
 
 const { LAST_HAND_REFRESH_TIME } = DATABOARD;
 
@@ -59,6 +60,8 @@ class TopDataBoard extends Component {
 		const { startAutoRefresh } = this;
 		await fetchAllData();
 		startAutoRefresh();
+		this.shopListOptions = JSON.parse(localStorage.getItem('__shop_list__'));
+		console.log('shopListOptions:', this.shopListOptions);
 	}
 
 	componentWillUnmount() {
@@ -72,9 +75,28 @@ class TopDataBoard extends Component {
 
 	toggleShop = shopInfo => {
 		const { shopId } = shopInfo;
+		const { shopListOptions } = this;
+		const hasAdmin = shopListOptions.find(shop => shop.shopId === shopId);
 		// const { goToPath } = this.props;
-		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
-		window.location.reload();
+		if (hasAdmin) {
+			Modal.confirm({
+				title: formatMessage({ id: 'databoard.top.toggleShop.confirm' }),
+				okText: formatMessage({ id: 'list.action.view' }),
+				cancelText: formatMessage({ id: 'btn.cancel' }),
+				maskClosable: false,
+				onOk: () => {
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
+					window.location.reload();
+				},
+			});
+		} else {
+			Modal.info({
+				title: formatMessage({ id: 'databoard.top.toggleShop.info' }),
+				okText: formatMessage({ id: 'btn.confirm' }),
+				maskClosable: false,
+			});
+		}
+
 		// goToPath('dashboard', {}, 'href');
 	};
 
@@ -108,12 +130,17 @@ class TopDataBoard extends Component {
 			.sort((a, b) => b.value - a.value)
 			.map((item, index) => {
 				const { value, shopName, shopId } = item;
+				const valueFormat =
+					dataType === 'order'
+						? saleMoneyFormat({ value, returnType: 'join' })
+						: passengerNumFormat({ value, returnType: 'join' });
 				return {
 					rank: index + 1,
 					key: index,
 					shopName,
 					value,
 					shopId,
+					valueFormat,
 				};
 			});
 
@@ -171,7 +198,8 @@ class TopDataBoard extends Component {
 			{
 				title: formatMessage({ id: 'databoard.top.rank' }),
 				dataIndex: 'rank',
-				sorter: (a, b) => a.value - b.value,
+				width: 100,
+				sorter: (a, b) => a.rank - b.rank,
 			},
 			{
 				title: formatMessage({ id: 'databoard.top.shop' }),
@@ -180,12 +208,17 @@ class TopDataBoard extends Component {
 				onFilter: (value, record) => record.key === value,
 				render: (text, record) => <a onClick={() => toggleShop(record)}>{text}</a>,
 			},
-			{ title: formatMessage({ id: 'databoard.top.customer.count' }), dataIndex: 'value' },
+			{
+				title: formatMessage({ id: 'databoard.top.customer.count' }),
+				width: 100,
+				dataIndex: 'valueFormat',
+			},
 		];
 		const columnsOrder = [
 			{
 				title: formatMessage({ id: 'databoard.top.rank' }),
 				dataIndex: 'rank',
+				width: 100,
 				sorter: (a, b) => a.value - b.value,
 			},
 			{
@@ -193,9 +226,13 @@ class TopDataBoard extends Component {
 				dataIndex: 'shopName',
 				filters: handleTabelFilters(foramtTabelData(latestOrderAmoutByShop)),
 				onFilter: (value, record) => record.key === value,
-				render: text => <a onClick={toggleShop}>{text}</a>,
+				render: (text, record) => <a onClick={() => toggleShop(record)}>{text}</a>,
 			},
-			{ title: formatMessage({ id: 'databoard.order.sales' }), dataIndex: 'value' },
+			{
+				title: formatMessage({ id: 'databoard.order.sales' }),
+				width: 100,
+				dataIndex: 'valueFormat',
+			},
 		];
 
 		return (

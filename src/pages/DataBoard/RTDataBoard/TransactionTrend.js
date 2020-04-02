@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Card, Radio } from 'antd';
-import { formatFloatByPermile } from '@/utils/format';
 import { formatMessage } from 'umi/locale';
+import { saleMoneyFormat, passengerNumFormat, formatFloatByPermile } from '@/utils/format';
 import SingleLine from '../Charts/Line/SingleLine';
 import styles from './index.less';
 
@@ -58,6 +58,8 @@ class TransactionTrend extends PureComponent {
 					min: 0,
 				},
 			},
+			formatYLabel: value => saleMoneyFormat({ value, returnType: 'join' }),
+			formatToolTipValue: value => saleMoneyFormat({ value, returnType: 'join' }),
 		};
 		const rateChartOption = {
 			chartHeight: 370,
@@ -88,7 +90,6 @@ class TransactionTrend extends PureComponent {
 					max: 100,
 				},
 			},
-			// eslint-disable-next-line arrow-body-style
 			formatToolTipValue: value =>
 				formatFloatByPermile({ value: value / 100, returnType: 'join' }),
 		};
@@ -96,7 +97,7 @@ class TransactionTrend extends PureComponent {
 			chartHeight: 370,
 			timeType,
 			data: countList,
-			lineColor: 'l(270) 0:rgba(255,161,102,1) 1:rgba(255,129,51,1)',
+			lineColor: '#FFD0B3',
 			type: 'interval',
 			// innerTitle: 'Bar AxisX：时间维度',
 			lineActive: [
@@ -108,6 +109,11 @@ class TransactionTrend extends PureComponent {
 					},
 				},
 			],
+			crosshairs: {
+				type: 'rect',
+			},
+			formatYLabel: value => passengerNumFormat({ value, returnType: 'join' }),
+			formatToolTipValue: value => passengerNumFormat({ value, returnType: 'join' }),
 		};
 		return (
 			<Card

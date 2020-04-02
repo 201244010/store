@@ -43,7 +43,15 @@ const mapDispatchToProps = (dispatch) => ({
 			}
 		});
 		return result;
-	}
+	},
+	getDeviceInfo({ sn }) {
+		return dispatch({
+			type: 'ipcList/getDeviceInfo',
+			payload: {
+				sn
+			}
+		}).then(info => info);
+	},
 });
 
 let btnDisabled = true;
@@ -66,14 +74,19 @@ class ActiveDetection extends React.Component {
 				100: formatMessage({ id: 'activeDetection.levelHigh' }),
 			},
 			daysError: false,
+			hasFaceid: false,
 		};
 	}
 
 
 	componentDidMount = async () => {
-		const { loadSetting, sn } = this.props;
+		const { loadSetting, sn, getDeviceInfo } = this.props;
 		if(sn){
 			loadSetting(sn);
+			const { hasFaceid } = await getDeviceInfo({ sn });
+			this.setState({
+				hasFaceid
+			});
 		}
 
 	};
@@ -212,7 +225,9 @@ class ActiveDetection extends React.Component {
 
 		const { getFieldDecorator, getFieldValue } = form;
 		const { isSaving, isSound, isDynamic, sSensitivity, mSensitivity, isAuto, startTime, endTime, all, days, isCustomer, hasCustomer } = activeDetection;
-		const { marks, daysError } = this.state;
+		const { marks, daysError, hasFaceid } = this.state;
+
+
 
 		return (
 			<Card bordered={false} title={formatMessage({id: 'activeDetection.title' })}>
@@ -271,7 +286,7 @@ class ActiveDetection extends React.Component {
 
 					<Form.Item
 						label={formatMessage({id: 'activeDetection.customerDetection' })}
-						className={getFieldValue('isDynamic') && hasCustomer ? '' : styles.hidden}
+						className={getFieldValue('isDynamic') && hasCustomer && hasFaceid ? '' : styles.hidden}
 					>
 						{
 							getFieldDecorator('isCustomer', {

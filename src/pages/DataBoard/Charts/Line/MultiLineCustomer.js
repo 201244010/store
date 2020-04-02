@@ -2,6 +2,7 @@
 import React from 'react';
 import SingleLine from './SingleLine';
 import { CustomerData } from '../mock';
+import { passengerNumFormat } from '@/utils/format';
 
 // Params:timeType,data
 
@@ -46,6 +47,8 @@ const MultiLineOption = {
 		custom: false,
 		marker: 'circle',
 	},
+	formatYLabel: value => passengerNumFormat({ value, returnType: 'join' }),
+	formatToolTipValue: value => passengerNumFormat({ value, returnType: 'join' }),
 };
 
 const MultiLineCustomer = () => {

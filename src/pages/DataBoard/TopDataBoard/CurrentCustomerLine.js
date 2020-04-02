@@ -2,6 +2,7 @@
 import React from 'react';
 import SingleLine from './SingleLine';
 // import { SyncCustomerData } from './Charts/mock';
+import { passengerNumFormat } from '@/utils/format';
 
 // Params:timeType,data
 
@@ -48,6 +49,8 @@ const CurrentCustomerLine = ({ data }) => {
 				min: 0,
 			},
 		},
+		formatYLabel: value => passengerNumFormat({ value, returnType: 'join' }),
+		formatToolTipValue: value => passengerNumFormat({ value, returnType: 'join' }),
 	};
 
 	return <SingleLine {...chartOption} />;

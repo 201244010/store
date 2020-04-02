@@ -121,7 +121,7 @@ class PassengerDataBoard extends PureComponent {
 			passengerFlowLoading || enteringRateLoading ||
 			entryCountLoading || frequencyTrendLoading || passFrenquencyLoading ||
 			majorLoading;
-		const { databoard: { passengerCount, enteringRate, regularCount, avgFrequency,
+		const { databoard: { passengerCount, enteringRate, regularCount, avgFrequency, strangerCount,
 			passengerFlowList, enteringList, frequencyList, frequencyTrend, customerDistri, majorList
 		}} = this.props;
 		const { searchValue: { rangeType }} = this.state;
@@ -133,7 +133,7 @@ class PassengerDataBoard extends PureComponent {
 				{
 					hasFS ?
 						<div className={styles['charts-container']}>
-							<OverviewCard {...{passengerCount, enteringRate, regularCount, avgFrequency, loading, timeType, goToPath}} />
+							<OverviewCard {...{passengerCount, strangerCount, enteringRate, regularCount, avgFrequency, loading, timeType, goToPath}} />
 							<Row gutter={24}>
 								<Col span={12}>
 									<PassengerTrend passengerFlowList={passengerFlowList} timeType={timeType} loading={loading} />

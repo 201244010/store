@@ -167,6 +167,7 @@ export default {
 
 		passengerCount: {}, // 进店客流（客流）
 		enteringRate: {}, // 进店率（客流）
+		strangerCount: {}, // 新客人数 （客流）
 		regularCount: {}, // 熟客人数 （客流）
 		avgFrequency: {}, // 到店频次（客流）
 		enteringList: [], // 进店率（折线图-客流）
@@ -358,6 +359,10 @@ export default {
 					earlyRegularPassengerCount,
 					latestEntryHeadCount,
 					earlyEntryHeadCount,
+					latestMemberPassengerCount,
+					earlyMemberPassengerCount,
+					latestStrangerPassengerCount,
+					earlyStrangerPassengerCount,
 				} = data;
 				const latestTotalPassengerCount = latestPassengerCount + latestEntryHeadCount;
 				const earlyTotalPassengerCount = earlyPassengerCount + earlyEntryHeadCount;
@@ -386,17 +391,24 @@ export default {
 							earlyCount: earlyTotalPassengerCount,
 							compareRate: true,
 						},
+						strangerCount: {
+							label: 'strangerCount',
+							count: latestStrangerPassengerCount,
+							earlyCount: earlyStrangerPassengerCount,
+							compareRate: true,
+						},
 						regularCount: {
 							label: 'regularCount',
-							count: latestRegularPassengerCount,
-							earlyCount: earlyRegularPassengerCount,
+							count: latestRegularPassengerCount + latestMemberPassengerCount,
+							earlyCount: earlyRegularPassengerCount + earlyMemberPassengerCount,
 							compareRate: true,
 						},
 						enteringRate: {
 							label: 'enteringRate',
 							count: latestEnteringRate,
 							earlyCount: earlyEnteringRate,
-							compareRate: true,
+							compareRate: false,
+							chainRate: true,
 							unit: 'percent'
 						},
 						avgFrequency: {
@@ -722,7 +734,7 @@ export default {
 						RTDeviceCount: {
 							label: 'deviceCount',
 							count: onlineCount + offlineCount,
-							earlyCount: offlineCount,
+							earlyCount: onlineCount,
 						},
 						RTDevicesLoading: false,
 					},
@@ -875,6 +887,7 @@ export default {
 					time: index + 1,
 					// 柱状图 分母为0 显示 0
 					value: item.uniqPassengerCount === 0 ? 0 : item.passengerCount / item.uniqPassengerCount,
+					timeFormat: item.time,
 				}));
 				console.log('到店频次趋势:', frequencyList);
 
@@ -1048,8 +1061,8 @@ export default {
 				type: 'updateState',
 				payload: {
 					transactionRate: {
-						count: rate,
-						earlyCount: earlyRate,
+						count: rate > 1 ? 1 : rate,
+						earlyCount: earlyRate > 1 ? 1 : earlyRate,
 						label: 'transactionRate',
 						unit: 'percent'
 					},
@@ -1074,10 +1087,11 @@ export default {
 				});
 			}
 			const [startTime, endTime] = getQueryTimeRange(searchValue);
+			console.log('======endTime====', endTime);
 			const timeInterval = rangeTimeInterval[rangeType];
 			const options = {
 				startTime,
-				endTime,
+				endTime: moment().unix(),
 				timeInterval
 			};
 			const response = yield call(
@@ -1154,10 +1168,11 @@ export default {
 				const transactionRateList = countList.map(item => {
 					const { orderCount = 0, passengerFlowCount = 0, entryHeadCount = 0, time } = item;
 					const totalPassenger = passengerFlowCount + entryHeadCount;
+					const rate = totalPassenger ? orderCount / totalPassenger : 0;
 					return {
 						name: 'transactionRate',
 						time,
-						value: totalPassenger ? orderCount / totalPassenger : 0,
+						value: rate > 1 ? 1 : rate,
 					};
 				});
 				console.log('交易转化率', transactionRateList);
@@ -1483,8 +1498,8 @@ export default {
 							hotTime: maleRushHour,
 							regularCount: maleRegularCount,
 							uniqCount: maleUniqCount,
-							totalPercent: totalCount ? maleCount / totalCount : undefined,
-							regularPercent: maleCount ? maleRegularCount / maleCount : undefined,
+							totalPercent: totalCount ? maleCount / totalCount : 0,
+							regularPercent: maleCount ? maleRegularCount / maleCount : 0,
 							frequency: maleUniqCount ? maleCount / maleUniqCount : undefined,
 							gender: GENDER.MALE,
 						}, {
@@ -1493,13 +1508,26 @@ export default {
 							hotTime: femaleRushHour,
 							regularCount: femaleRegularCount,
 							uniqCount: femaleUniqCount,
-							totalPercent: totalCount ? femaleCount / totalCount : undefined,
-							regularPercent: femaleCount ? femaleRegularCount / femaleCount : undefined,
+							totalPercent: totalCount ? femaleCount / totalCount : 0,
+							regularPercent: femaleCount ? femaleRegularCount / femaleCount : 0,
 							frequency: femaleUniqCount ? femaleCount / femaleUniqCount : undefined,
 							gender: GENDER.FEMALE,
 						}]);
 					}, []).sort((a, b) => b.count - a.count);
-				const majorList = targetList.slice(0, 3);
+				const majorList = targetList.slice(0, 3).filter(item => item.count > 0);
+				if(!majorList.length) {
+					majorList.push({
+						ageRangeCode: 0,
+						count: 0,
+						hotTime: -1,
+						regularCount: 0,
+						uniqCount: 0,
+						totalPercent: 0,
+						regularPercent: 0,
+						frequency: undefined,
+						gender: 0
+					});
+				}
 				console.log('====主力客群画像===', majorList);
 				yield put({
 					type: 'updateState',
