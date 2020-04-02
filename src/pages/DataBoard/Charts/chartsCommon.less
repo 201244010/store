@@ -145,6 +145,9 @@
 			.label {
 				margin-right: 4px;
 			}
+			.text {
+				font-family: 'Gotham-Book', 'Gotham', sans-serif;
+			}
 			&__icon__rise {
 				width: 16px;
 				height: 16px;
@@ -194,6 +197,9 @@
 					font-weight: bold;
 					color: rgba(48, 53, 64, 1);
 					line-height: 25px;
+					.unit {
+						font-size: 14px;
+					}
 				}
 
 				&__labelX {
@@ -232,6 +238,14 @@
 				margin-right: 16px;
 				background-repeat: no-repeat;
 				background-size: contain;
+				background-image: url(./MainCustomerCard/noman.png);
+
+				&.male {
+					background-image: url(./MainCustomerCard/man.png);
+				}
+				&.female {
+					background-image: url(./MainCustomerCard/woman.png);
+				}
 			}
 			.card-sex,
 			.card-age {

@@ -48,6 +48,7 @@ class OverViewBar extends Component {
 
 		const totalPassengerCount = {
 			label: 'totalPassengerCount',
+			labelText: formatMessage({ id: 'databoard.top.label.totalPassengerCount' }),
 			unit: '',
 			count: latestCustomerCount,
 			earlyCount: earlyCustomerCount,
@@ -55,7 +56,7 @@ class OverViewBar extends Component {
 			toolTipText: formatMessage({ id: 'databoard.top.totalPassengerCount' }),
 		};
 		// const strangerCount = {
-		// 	label: 'strangeCount',
+		// 	label: 'strangerCount',
 		// 	unit: '',
 		// 	count: customerDistri.currentStranger,
 		// 	earlyCount: customerDistri.earlyStranger,
@@ -80,6 +81,7 @@ class OverViewBar extends Component {
 		// };
 		const totalAmount = {
 			label: 'totalAmount',
+			labelText: formatMessage({ id: 'databoard.top.label.totalAmount' }),
 			unit: '',
 			count: latestOrderInfo.latestOrderAmount,
 			earlyCount: earlyOrderInfo.orderAmount,
@@ -88,6 +90,7 @@ class OverViewBar extends Component {
 		};
 		const totalCount = {
 			label: 'totalCount',
+			labelText: formatMessage({ id: 'databoard.top.label.totalCount' }),
 			unit: '',
 			count: latestOrderInfo.latestOrderCount,
 			earlyCount: earlyOrderInfo.orderCount,
@@ -96,6 +99,7 @@ class OverViewBar extends Component {
 		};
 		const deviceCount = {
 			label: 'deviceCount',
+			labelText: formatMessage({ id: 'databoard.top.label.deviceCount' }),
 			unit: '',
 			count: deviceOverView.offline + deviceOverView.online,
 			earlyCount: deviceOverView.online,

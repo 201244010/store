@@ -1,8 +1,12 @@
 import React from 'react';
-import { Card, Col, Form, Input, Row } from 'antd';
+import { Card, Col, DatePicker, Form, Input, InputNumber, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { customValidate } from '@/utils/customValidate';
 import { normalizeInfo } from '@/utils/utils';
+import * as RegExp from '@/constants/regexp';
+
+const { RangePicker } = DatePicker;
+
+const dateFormat = 'YYYY-MM-DD';
 
 const ExtraPrice = props => {
 	const {
@@ -20,13 +24,13 @@ const ExtraPrice = props => {
 		customPrice2Description = '',
 		customPrice3Description = '',
 		promoteStartDate = '',
-		promoteStartTime = '',
-		promoteEndDate = '',
-		promoteEndTime = '',
-		memberPromoteStartDate = '',
-		memberPromoteStartTime = '',
+		// promoteStartTime = '',
+		// promoteEndDate = '',
+		// promoteEndTime = '',
+		// memberPromoteStartDate = '',
+		// memberPromoteStartTime = '',
 		memberPromoteEndDate = '',
-		memberPromoteEndTime = '',
+		// memberPromoteEndTime = '',
 		memberPoint = '',
 		promoteReason = '',
 		promoteFlag = '',
@@ -37,21 +41,23 @@ const ExtraPrice = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.price.customPrice1' }),
+				type: 'InputNumber',
 				getFieldName: 'customPrice1',
 				value: customPrice1,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.price.customPrice2' }),
 				getFieldName: 'customPrice2',
+				type: 'InputNumber',
 				value: customPrice2,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 		],
@@ -60,10 +66,11 @@ const ExtraPrice = props => {
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.price.customPrice3' }),
 				getFieldName: 'customPrice3',
+				type: 'InputNumber',
 				value: customPrice3,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 			{
@@ -102,8 +109,9 @@ const ExtraPrice = props => {
 		[
 			{
 				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.price.promoteStartDate' }),
-				getFieldName: 'promoteStartDate',
+				label: formatMessage({ id: 'basicData.product.extra.price.promoteDate' }),
+				type: 'RangePicker',
+				getFieldName: 'promoteDate',
 				value: promoteStartDate,
 				required: false,
 				message: '',
@@ -112,75 +120,10 @@ const ExtraPrice = props => {
 			},
 			{
 				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.price.promoteStartTime' }),
-				getFieldName: 'promoteStartTime',
-				value: promoteStartTime,
-				required: false,
-				message: '',
-				validator: false,
-				field: '',
-			},
-		],
-		[
-			{
-				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.price.promoteEndDate' }),
-				getFieldName: 'promoteEndDate',
-				value: promoteEndDate,
-				required: false,
-				message: '',
-				validator: false,
-				field: '',
-			},
-			{
-				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.price.promoteEndTime' }),
-				getFieldName: 'promoteEndTime',
-				value: promoteEndTime,
-				required: false,
-				message: '',
-				validator: false,
-				field: '',
-			},
-		],
-		[
-			{
-				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.price.memberPromoteStartDate' }),
-				getFieldName: 'memberPromoteStartDate',
-				value: memberPromoteStartDate,
-				required: false,
-				message: '',
-				validator: false,
-				field: '',
-			},
-			{
-				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.price.memberPromoteStartTime' }),
-				getFieldName: 'memberPromoteStartTime',
-				value: memberPromoteStartTime,
-				required: false,
-				message: '',
-				validator: false,
-				field: '',
-			},
-		],
-		[
-			{
-				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.price.memberPromoteEndDate' }),
-				getFieldName: 'memberPromoteEndDate',
+				label: formatMessage({ id: 'basicData.product.extra.price.memberPromoteDate' }),
+				type: 'RangePicker',
+				getFieldName: 'memberPromoteDate',
 				value: memberPromoteEndDate,
-				required: false,
-				message: '',
-				validator: false,
-				field: '',
-			},
-			{
-				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.price.memberPromoteEndTime' }),
-				getFieldName: 'memberPromoteEndTime',
-				value: memberPromoteEndTime,
 				required: false,
 				message: '',
 				validator: false,
@@ -191,11 +134,12 @@ const ExtraPrice = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.price.memberPoint' }),
+				type: 'InputNumber',
 				getFieldName: 'memberPoint',
 				value: memberPoint,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 			{
@@ -213,11 +157,12 @@ const ExtraPrice = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.price.promoteFlag' }),
+				type: 'InputNumber',
 				getFieldName: 'promoteFlag',
 				value: promoteFlag,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 		],
@@ -235,14 +180,67 @@ const ExtraPrice = props => {
 								}
 								if(item.validator) {
 									itemRules.push({
-										validator: (rule, value, callback) =>
-											customValidate({
-												field: item.field,
-												rule,
-												value,
-												callback,
-											}),
+										validator: (rule, value, callback) => {
+											if (!value) {
+												callback();
+											} else if (!RegExp.productInfo.test(value)) {
+												const message = `basicData.product.error.${item.getFieldName}`;
+												callback(formatMessage({ id: message }));
+											} else {
+												callback();
+											}
+										},
 									});
+								}
+								if (item.type === 'InputNumber') {
+									const numProps = {};
+									if (item.hasOwnProperty('min')) {
+										numProps.min = item.min;
+									}
+									if (item.hasOwnProperty('precision')) {
+										numProps.precision = item.precision;
+									}
+									return (
+										<Col span={item.colSpan} key={item.label}>
+											<Form.Item label={item.label}>
+												{getFieldDecorator(item.getFieldName, {
+													initialValue: item.value,
+													validateTrigger: 'onBlur',
+													rules: itemRules,
+												})(
+													<InputNumber
+														{...numProps}
+														style={{width: '100%'}}
+													/>)}
+											</Form.Item>
+										</Col>
+									);
+								}
+								if (item.type === 'DatePicker') {
+									return (
+										<Col span={item.colSpan} key={item.label}>
+											<Form.Item label={item.label}>
+												{getFieldDecorator(item.getFieldName, {
+													initialValue: item.value,
+													validateTrigger: 'onBlur',
+													rules: itemRules,
+												})(<DatePicker style={{width: '100%'}} format={dateFormat} />)}
+											</Form.Item>
+										</Col>
+									);
+								}
+								if (item.type === 'RangePicker') {
+									return (
+										<Col span={item.colSpan} key={item.label}>
+											<Form.Item label={item.label}>
+												{getFieldDecorator(item.getFieldName, {
+													initialValue: item.value,
+													validateTrigger: 'onBlur',
+													rules: itemRules,
+												})(<RangePicker showTime={{ format: 'HH:mm' }} style={{width: '100%'}} format="YYYY-MM-DD HH:mm" />)}
+											</Form.Item>
+										</Col>
+									);
 								}
 								return (
 									<Col span={item.colSpan} key={item.label}>

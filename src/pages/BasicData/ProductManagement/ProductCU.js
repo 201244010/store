@@ -145,6 +145,7 @@ class ProductCU extends Component {
 				const result = map([{ from: 'Type', to: 'type' }])(
 					format('toCamel')(response.data || {})
 				);
+				console.log('response.data', response.data);
 				// console.log(result);
 				this.setState({
 					productType: result.type || 0,
@@ -317,7 +318,13 @@ class ProductCU extends Component {
 				submitValue.extraInfo = {};
 				ExtraInfoFields.forEach(field => {
 					if (submitValue[field]) {
-						submitValue.extraInfo[field] = submitValue[field];
+						if (field === 'expiryDate') {
+							console.log('expiryDate', moment(submitValue[field]).format('YYYY-MM-DD'));
+							console.log('expiryDate', values[field].format);
+							submitValue.extraInfo[field] = values[field].format('YYYY-MM-DD');
+						} else {
+							submitValue.extraInfo[field] = submitValue[field];
+						}
 					}
 					delete submitValue[field];
 				});

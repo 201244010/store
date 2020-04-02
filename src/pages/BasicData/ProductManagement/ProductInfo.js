@@ -5,6 +5,9 @@ import { formatMessage } from 'umi/locale';
 import ProductInfoBasic from './ProductInfo-Basic';
 import ProductInfoWeight from './ProductInfo-Weight';
 import ProductInfoPrice from './ProductInfo-Price';
+import ProductInfoExtraCustom from './ProductInfo-ExtraCustom';
+import ProductInfoExtraInfo from './ProductInfo-ExtraInfo';
+import ProductInfoExtraPrice from './ProductInfo-ExtraPrice';
 import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
 import * as styles from './ProductManagement.less';
 
@@ -167,6 +170,21 @@ class ProductInfo extends Component {
 					{...{
 						productPrice,
 						productPriceExtra,
+					}}
+				/>
+				<ProductInfoExtraCustom
+					{...{
+						productInfo,
+					}}
+				/>
+				<ProductInfoExtraInfo
+					{...{
+						productInfo,
+					}}
+				/>
+				<ProductInfoExtraPrice
+					{...{
+						productInfo,
 					}}
 				/>
 				<div className={styles.footer}>

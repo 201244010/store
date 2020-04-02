@@ -51,7 +51,7 @@ class RoleModify extends React.Component {
 		const {
 			updateRole,
 			form: { validateFields },
-			role: { roleInfo: { permissionList } },
+			role: { permissionList: pList, roleInfo: { permissionList: rpList } },
 			user: {
 				currentUser: { username },
 			},
@@ -60,6 +60,7 @@ class RoleModify extends React.Component {
 			goToPath,
 		} = this.props;
 		let valueList = [];
+		const permissionList = action === 'modify' ? rpList : pList;
 		permissionList.map(item => {
 			if (typeof item.valueList !== 'undefined') {
 				valueList = [...new Set([...valueList, ...item.valueList])];
@@ -248,15 +249,17 @@ class RoleModify extends React.Component {
 								})(
 									<div>
 										{permissionList.map((item, key) => {
-											const mappedItem = pList.find(p => p.group === item.group) || {};
+											const finalList = action === 'modify' ? pList : permissionList;
+											const mappedItem = finalList.find(p => p.group === item.group) || {};
 											return (
 												<div key={key} style={{ marginBottom: '30px' }}>
 													<Checkbox
 														onChange={e =>
 															this.onCheckAllChange(e, item)
 														}
-														indeterminate={mappedItem.indeterminate}
-														checked={mappedItem.checkAll}
+														indeterminate={action === 'create' ? false : mappedItem.indeterminate}
+														checked={action === 'create' ? true : mappedItem.checkAll}
+														disabled={action === 'create'}
 													>
 														{item.checkedList.label}
 													</Checkbox>
@@ -273,6 +276,7 @@ class RoleModify extends React.Component {
 																	item.checkedList.permissionList
 																}
 																value={mappedItem.valueList}
+																disabled={action === 'create'}
 															/>
 														)}
 													</div>

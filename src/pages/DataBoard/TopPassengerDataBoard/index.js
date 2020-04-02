@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } from 'antd';
+import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio, Modal } from 'antd';
 // import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -98,13 +98,15 @@ class TopPassengerDataBoard extends React.Component {
 			currentOptions: GROUP_BY[0],
 			dataSource: [],
 			isSelected: false,
-			pageNum: 1
+			pageNum: 1,
+			fullPageLoading: false,
 		};
 		this.columns = [
 			{
 				title: formatMessage({ id: 'databoard.top.rank' }),
 				dataIndex: 'sortIndex',
 				key: 'sortIndex',
+				width: 150,
 				render: key => <span>{key}</span>,
 			},
 			{
@@ -115,10 +117,12 @@ class TopPassengerDataBoard extends React.Component {
 			{
 				title: 'compareItem',
 				dataIndex: 'compareItem',
+				width: 150,
 			},
 			{
 				title: formatMessage({ id: 'databoard.top.operation' }),
 				key: 'operation',
+				width: 150,
 				render: (operation, item) => (
 					<a
 						onClick={() => {
@@ -141,16 +145,35 @@ class TopPassengerDataBoard extends React.Component {
 		const { getPermessionPassengerFlow } = this.props;
 		await getPermessionPassengerFlow();
 		// await getCompanySaasInfo();
+		this.setState({ fullPageLoading: true });
 		this.initGetData(startTime, 1);
 	}
 
 	toggleShop = shopInfo => {
-		// console.log(`goToPath${shopInfo}`);
 		const { shopId } = shopInfo;
+		const { shopListOptions } = this;
+		const hasAdmin = shopListOptions.find(shop => shop.shopId === shopId);
 		// const { goToPath } = this.props;
-		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
-		window.location.reload();
-		// goToPath('passengerAnalyze', {}, 'href');
+		if (hasAdmin) {
+			Modal.confirm({
+				title: formatMessage({ id: 'databoard.top.toggleShop.confirm' }),
+				okText: formatMessage({ id: 'list.action.view' }),
+				cancelText: formatMessage({ id: 'btn.cancel' }),
+				maskClosable: false,
+				onOk: () => {
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
+					window.location.reload();
+				},
+			});
+		} else {
+			Modal.info({
+				title: formatMessage({ id: 'databoard.top.toggleShop.info' }),
+				okText: formatMessage({ id: 'btn.confirm' }),
+				maskClosable: false,
+			});
+		}
+
+		// goToPath('dashboard', {}, 'href');
 	};
 
 	initGetData = async (startTime, type = 1) => {
@@ -160,9 +183,19 @@ class TopPassengerDataBoard extends React.Component {
 			// getHeadShopListByRegular,
 			getHeadPassengerSurvey,
 		} = this.props;
-		getHeadPassengerByGender({ startTime, type });
-		getHeadPassengerByRegular({ startTime, type });
-		getHeadPassengerSurvey({ startTime, type });
+
+		Promise.all([
+			getHeadPassengerByGender({ startTime, type }),
+			getHeadPassengerByRegular({ startTime, type }),
+			getHeadPassengerSurvey({ startTime, type }),
+		]).then(
+			() => {
+				this.setState({ fullPageLoading: false });
+			},
+			() => {
+				this.setState({ fullPageLoading: false });
+			}
+		);
 		this.setState(
 			{ startTime, dateType: type, chosenCard: 0, currentOptions: GROUP_BY[0] },
 			() => {
@@ -193,13 +226,13 @@ class TopPassengerDataBoard extends React.Component {
 				.format('YYYY-MM-DD'),
 		};
 
-		this.setState({ isSelected: false });
+		this.setState({ isSelected: false, fullPageLoading: true });
 		this.initGetData(STARTTIME[e.target.value], e.target.value);
 	};
 
 	handleDateChange = (date, _, type) => {
 		let startTime = '';
-		
+
 		switch (type) {
 			case 1:
 				startTime = moment(date).format(DATE_FORMAT);
@@ -218,7 +251,7 @@ class TopPassengerDataBoard extends React.Component {
 				break;
 		}
 
-		this.setState({ isSelected: true });
+		this.setState({ isSelected: true, fullPageLoading: true });
 		this.initGetData(startTime, type);
 	};
 
@@ -235,7 +268,7 @@ class TopPassengerDataBoard extends React.Component {
 			this.setState({
 				chosenCard: index,
 				currentOptions: GROUP_BY[index],
-				pageNum: 1
+				pageNum: 1,
 			});
 			setFieldsValue({
 				shopId: [],
@@ -282,7 +315,7 @@ class TopPassengerDataBoard extends React.Component {
 		const { currentOptions } = this.state;
 
 		let keyword = '';
-		
+
 		const { shopId, guest } = getFieldsValue();
 		let resultArray = shopList.map(item => Object.assign({}, item));
 
@@ -292,7 +325,7 @@ class TopPassengerDataBoard extends React.Component {
 			}
 		});
 
-		if (shopId.length !== 0 && shopId !== undefined)
+		if (shopId !== undefined && shopId.length !== 0)
 			resultArray = resultArray.filter(item => shopId.indexOf(item.shopId) > -1);
 
 		resultArray.sort((a, b) => b[keyword] - a[keyword]);
@@ -302,13 +335,15 @@ class TopPassengerDataBoard extends React.Component {
 		});
 
 		this.columns[2] = {
-			title: `${guest}${formatMessage({id: 'databoard.data.personCount'})}`,
+			title: `${guest}${formatMessage({ id: 'databoard.data.personCount' })}`,
 			dataIndex: keyword,
+			width: 150,
 		};
 		this.setState({ dataSource: resultArray });
 	};
 
 	handleSearch = () => {
+		this.setState({ pageNum: 1 });
 		this.handleTableDataSource();
 	};
 
@@ -325,23 +360,30 @@ class TopPassengerDataBoard extends React.Component {
 		this.setState({ pageNum: 1 });
 		this.handleTableDataSource();
 	};
-	
-	tooltipFormText = (index) => {
+
+	tooltipFormText = index => {
 		const { dateType, isSelected } = this.state;
 		let text = '';
 		let dateText = '';
-		
+
 		switch (dateType) {
-			case 1: dateText = formatMessage({ id: 'databoard.tooltip.lastDay' });break;
-			case 2: dateText = formatMessage({ id: 'databoard.tooltip.lastWeek' });break;
-			case 3: dateText = formatMessage({ id: 'databoard.tooltip.lastMonth' });break;
-			default: break;
+			case 1:
+				dateText = formatMessage({ id: 'databoard.tooltip.lastDay' });
+				break;
+			case 2:
+				dateText = formatMessage({ id: 'databoard.tooltip.lastWeek' });
+				break;
+			case 3:
+				dateText = formatMessage({ id: 'databoard.tooltip.lastMonth' });
+				break;
+			default:
+				break;
 		}
-		
-		if(isSelected) {
-			dateText = formatMessage({ id: 'databoard.tooltip.inRange'});
-		};
-		
+
+		if (isSelected) {
+			dateText = formatMessage({ id: 'databoard.tooltip.inRange' });
+		}
+
 		switch (index) {
 			case 1:
 				text = dateText + formatMessage({ id: 'databoard.tooltip.totalGuest' });
@@ -355,17 +397,18 @@ class TopPassengerDataBoard extends React.Component {
 			case 4:
 				text = dateText + formatMessage({ id: 'databoard.tooltip.regularGuest' });
 				break;
-			default: break;
+			default:
+				break;
 		}
-		
+
 		return text;
 	};
-	
-	handlePageChange = (current) => {
+
+	handlePageChange = current => {
 		this.setState({ pageNum: current });
 	};
 
-	disabledDate = current => current && current > moment().endOf('day');
+	disabledDate = current => current && current > moment().startOf('day');
 
 	render() {
 		// todo pie外面的卡片可以切出来作为组件
@@ -377,17 +420,25 @@ class TopPassengerDataBoard extends React.Component {
 				// shopList,
 				passengerCount,
 				earlyPassengerCount,
-				// passHeadCount,
-				// earlyPassHeadCount,
+				passHeadCount,
+				earlyPassHeadCount,
 				mainGuestList,
+				uniqCountTotal,
 			},
 			form: { getFieldDecorator },
 			loading,
 			hasCustomerData,
 		} = this.props;
-		const { dateType, chosenCard, currentOptions, dataSource, pageNum } = this.state;
-		const todayTotalCount = passengerCount;
-		const earlyTotalCount = earlyPassengerCount;
+		const {
+			dateType,
+			chosenCard,
+			currentOptions,
+			dataSource,
+			pageNum,
+			fullPageLoading,
+		} = this.state;
+		const todayTotalCount = passengerCount + passHeadCount;
+		const earlyTotalCount = earlyPassengerCount + earlyPassHeadCount;
 		const todayEnterPercent = passengerCount / todayTotalCount;
 		const earlyEnterPercent = earlyPassengerCount / earlyTotalCount;
 		const newGuest = byFrequencyArray[1];
@@ -397,277 +448,314 @@ class TopPassengerDataBoard extends React.Component {
 
 		return (
 			<div className={styles.main}>
-				<div className={styles['passengerAnalyze-title']}>
-					<div>
-						<Radio.Group
-							buttonStyle="solid"
-							value={dateType}
-							onChange={this.handleRadioChange}
-						>
-							<Radio.Button value={1}>
-								{formatMessage({ id: 'databoard.unit.days' })}
-							</Radio.Button>
-							<Radio.Button value={2}>
-								{formatMessage({ id: 'databoard.unit.weeks' })}
-							</Radio.Button>
-							<Radio.Button value={3}>
-								{formatMessage({ id: 'databoard.unit.months' })}
-							</Radio.Button>
-						</Radio.Group>
-						{dateType === 1 && (
-							<DatePicker
-								allowClear={false}
-								disabledDate={this.disabledDate}
-								onChange={(date, dateString) => {
-									this.handleDateChange(date, dateString, 1);
-								}}
-							/>
-						)}
-						{dateType === 2 && (
-							<WeekPicker
-								allowClear={false}
-								disabledDate={this.disabledDate}
-								onChange={(date, dateString) => {
-									this.handleDateChange(date, dateString, 2);
-								}}
-							/>
-						)}
-						{dateType === 3 && (
-							<MonthPicker
-								allowClear={false}
-								disabledDate={this.disabledDate}
-								onChange={(date, dateString) => {
-									this.handleDateChange(date, dateString, 3);
-								}}
-							/>
-						)}
-					</div>
-				</div>
-				{!hasCustomerData && !loading.effects['topview/getPermessionPassengerFlow'] && (
-					<div>
-						<PageEmpty
-							description={formatMessage({
-								id: 'databoard.top.data.empty.history',
-							})}
-						/>
-					</div>
-				)}
-				{hasCustomerData && (
-					<>
-						<Row gutter={24} justify="space-between" className={styles['overview-bar']}>
-							<Col span={6}>
-								<TopDataCard
-									data={{
-										label: 'totalPassengerCount',
-										unit: '',
-										count: todayTotalCount,
-										earlyCount: earlyTotalCount,
-										compareRate: true,
-										toolTipText: this.tooltipFormText(1),
-									}}
-									timeType={dateType}
-									dataType={2}
-								/>
-							</Col>
-							<Col span={6}>
-								<TopDataCard
-									data={{
-										label: 'enteringRate',
-										unit: 'percent',
-										count: todayEnterPercent,
-										earlyCount: earlyEnterPercent,
-										compareRate: true,
-										toolTipText: this.tooltipFormText(2),
-										chainRate: true,
-									}}
-									timeType={dateType}
-									dataType={2}
-								/>
-							</Col>
-							<Col span={6}>
-								<TopDataCard
-									data={{
-										label: 'strangeCount',
-										unit: '',
-										count: newGuest,
-										earlyCount: earlyNewGuest,
-										compareRate: true,
-										toolTipText: this.tooltipFormText(3),
-									}}
-									timeType={dateType}
-									dataType={2}
-								/>
-							</Col>
-							<Col span={6}>
-								<TopDataCard
-									data={{
-										label: 'regularCount',
-										unit: '',
-										count: regularGuest,
-										earlyCount: earlyRegularGuest,
-										compareRate: true,
-										toolTipText: this.tooltipFormText(4),
-									}}
-									timeType={dateType}
-									dataType={2}
-								/>
-							</Col>
-						</Row>
-						<Card
-							title={formatMessage({ id: 'databoard.passenger.distri.title' })}
-							className={styles['chart-bar']}
-						>
-							<div className={styles.guest}>
-								{GUEST_OPTIONS.TITLE.map((item, index) => (
-									<div
-										key={index}
-										className={styles['chart-bar-card']}
-										onClick={() => {
-											this.handleChosenCardChange(index);
-										}}
-									>
-										<div
-											style={chosenCard === index ? { color: 'rgba(255, 129, 51, 1)'} : {}}
-											className={styles['pie-title']}
-										>
-											{item}
-										</div>
-										<div
-											className={styles['pie-card']}
-											style={
-												chosenCard === index
-													? { border: '1px solid  rgba(255,129,51,1)' }
-													: {}
-											}
-										>
-											{/* <Spin spinning={loading.effects['headAnglePassenger/getHeadPassengerByRegular'] || loading.effects['headAnglePassenger/getHeadPassengerByGender'] }> */}
-											<Pie
-												data={this.handlePieDataSource(index)}
-												chartName={`pie${index}`}
-												colorArray={GUEST_OPTIONS.COLOR_ARRAY[index]}
-											/>
-											{/* </Spin> */}
-										</div>
-									</div>
-								))}
-							</div>
-							<div className={styles['search-bar']}>
-								<Form layout="inline">
-									<Row gutter={FORM_FORMAT.gutter}>
-										<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-											<Form.Item label={formatMessage({ id: 'databoard.top.shop' })}>
-												{getFieldDecorator('shopId', {
-													initialValue: [],
-												})(
-													<Select mode="multiple">
-														{this.shopListOptions.map(item => (
-															<Option
-																value={item.shopId}
-																key={item.shopId}
-															>
-																{item.shopName}
-															</Option>
-														))}
-													</Select>
-												)}
-											</Form.Item>
-										</Col>
-										<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-											<Form.Item
-												label={formatMessage({
-													id: 'databoard.top.passenger.title.customer',
-												})}
-											>
-												{getFieldDecorator('guest', {
-													initialValue: formatMessage({
-														id: 'databoard.data.regular',
-													}),
-												})(
-													<Select>
-														{currentOptions.map((item, index) => (
-															<Option value={item.label} key={index}>
-																{item.label}
-															</Option>
-														))}
-													</Select>
-												)}
-											</Form.Item>
-										</Col>
-										<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-											<Form.Item className={styles['query-item']}>
-												<Button type="primary" onClick={this.handleSearch}>
-													{formatMessage({ id: 'btn.query' })}
-												</Button>
-												<Button
-													className={styles['btn-margin-left']}
-													onClick={this.handleReset}
-												>
-													{formatMessage({ id: 'btn.reset' })}
-												</Button>
-											</Form.Item>
-										</Col>
-									</Row>
-								</Form>
-
-								{/* <Button icon="download" type="primary"> */}
-								{/* EXCEL */}
-								{/* </Button> */}
-
-							</div>
-							<Spin
-								spinning={
-									loading.effects[
-										'headAnglePassenger/getHeadShopListByRegular'
-									] ||
-									(loading.effects[
-										'headAnglePassenger/getHeadShopListByGender'
-									] ||
-										false) ||
-									(loading.effects['headAnglePassenger/getHeadShopListByAge'] ||
-										false)
-								}
+				<Spin spinning={fullPageLoading}>
+					<div className={styles['passengerAnalyze-title']}>
+						<div>
+							<Radio.Group
+								buttonStyle="solid"
+								value={dateType}
+								onChange={this.handleRadioChange}
 							>
-								<Table
-									dataSource={dataSource}
-									columns={this.columns}
-									pagination={{
-										pageSize: 5,
-										hideOnSinglePage: true,
-										current: pageNum,
-										onChange: this.handlePageChange
+								<Radio.Button value={1}>
+									{formatMessage({ id: 'databoard.search.yesterday' })}
+								</Radio.Button>
+								<Radio.Button value={2}>
+									{formatMessage({ id: 'databoard.search.week' })}
+								</Radio.Button>
+								<Radio.Button value={3}>
+									{formatMessage({ id: 'databoard.search.month' })}
+								</Radio.Button>
+							</Radio.Group>
+							{dateType === 1 && (
+								<DatePicker
+									allowClear={false}
+									disabledDate={this.disabledDate}
+									onChange={(date, dateString) => {
+										this.handleDateChange(date, dateString, 1);
 									}}
 								/>
-							</Spin>
-						</Card>
-						<Card
-							title={formatMessage({
-								id: 'databoard.top.passenger.title.customer.major',
-							})}
-							className={styles['footer-cards']}
-						>
-							<div className={styles['footer-cards-list']}>
-								{mainGuestList.map(item => {
-									const totalPercent = Math.round(
-										(item.uniqCount / todayTotalCount) * 100
-									);
-									const frequentPercent = Math.round(
-										(item.regularUniqCount / todayTotalCount) * 100
-									);
-									return (
-										<MainCustomerCard
-											scene="total"
-											gender={item.gender}
-											num={item.uniqCount}
-											totalPercent={totalPercent}
-											frequentPercent={frequentPercent}
-											age={item.ageRangeCode}
-										/>
-									);
+							)}
+							{dateType === 2 && (
+								<WeekPicker
+									allowClear={false}
+									disabledDate={this.disabledDate}
+									onChange={(date, dateString) => {
+										this.handleDateChange(date, dateString, 2);
+									}}
+								/>
+							)}
+							{dateType === 3 && (
+								<MonthPicker
+									allowClear={false}
+									disabledDate={this.disabledDate}
+									onChange={(date, dateString) => {
+										this.handleDateChange(date, dateString, 3);
+									}}
+								/>
+							)}
+						</div>
+					</div>
+					{!hasCustomerData && !loading.effects['topview/getPermessionPassengerFlow'] && (
+						<div>
+							<PageEmpty
+								description={formatMessage({
+									id: 'databoard.top.data.empty.history',
 								})}
-							</div>
-						</Card>
-					</>
-				)}
+							/>
+						</div>
+					)}
+					{hasCustomerData && (
+						<>
+							<Row
+								gutter={24}
+								justify="space-between"
+								className={styles['overview-bar']}
+							>
+								<Col span={6}>
+									<TopDataCard
+										data={{
+											label: 'totalPassengerCount',
+											unit: '',
+											count: todayTotalCount,
+											earlyCount: earlyTotalCount,
+											compareRate: true,
+											toolTipText: this.tooltipFormText(1),
+											labelText: formatMessage({
+												id: 'databoard.top.label.totalPassengerCount',
+											}),
+										}}
+										timeType={dateType}
+										dataType={2}
+									/>
+								</Col>
+								<Col span={6}>
+									<TopDataCard
+										data={{
+											label: 'strangerCount',
+											labelText: formatMessage({
+												id: 'databoard.top.label.totalStrangeCount',
+											}),
+											unit: '',
+											count: newGuest,
+											earlyCount: earlyNewGuest,
+											compareRate: true,
+											toolTipText: '',
+										}}
+										timeType={dateType}
+										dataType={2}
+									/>
+								</Col>
+								<Col span={6}>
+									<TopDataCard
+										data={{
+											label: 'regularCount',
+											labelText: formatMessage({
+												id: 'databoard.top.label.totalRegularCount',
+											}),
+											unit: '',
+											count: regularGuest,
+											earlyCount: earlyRegularGuest,
+											compareRate: true,
+											toolTipText: '',
+										}}
+										timeType={dateType}
+										dataType={2}
+									/>
+								</Col>
+								<Col span={6}>
+									<TopDataCard
+										data={{
+											label: 'enteringRate',
+											labelText: formatMessage({
+												id: 'databoard.top.label.totalEnteringRate',
+											}),
+											unit: 'percent',
+											count: todayEnterPercent,
+											earlyCount: earlyEnterPercent,
+											// compareRate: true,
+											toolTipText: this.tooltipFormText(2),
+											chainRate: true,
+										}}
+										timeType={dateType}
+										dataType={2}
+									/>
+								</Col>
+							</Row>
+							<Card
+								title={formatMessage({ id: 'databoard.passenger.distri.title' })}
+								className={styles['chart-bar']}
+							>
+								<div className={styles.guest}>
+									{GUEST_OPTIONS.TITLE.map((item, index) => (
+										<div
+											key={index}
+											className={styles['chart-bar-card']}
+											onClick={() => {
+												this.handleChosenCardChange(index);
+											}}
+										>
+											<div
+												style={
+													chosenCard === index
+														? { color: 'rgba(255, 129, 51, 1)' }
+														: {}
+												}
+												className={styles['pie-title']}
+											>
+												{item}
+											</div>
+											<div
+												className={styles['pie-card']}
+												style={
+													chosenCard === index
+														? {
+															border:
+																	'1px solid  rgba(255,129,51,1)',
+														  }
+														: {}
+												}
+											>
+												{/* <Spin spinning={loading.effects['headAnglePassenger/getHeadPassengerByRegular'] || loading.effects['headAnglePassenger/getHeadPassengerByGender'] }> */}
+												<Pie
+													data={this.handlePieDataSource(index)}
+													chartName={`pie${index}`}
+													colorArray={GUEST_OPTIONS.COLOR_ARRAY[index]}
+												/>
+												{/* </Spin> */}
+											</div>
+										</div>
+									))}
+								</div>
+								<div className={styles['search-bar']}>
+									<Form layout="inline">
+										<Row gutter={FORM_FORMAT.gutter}>
+											<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+												<Form.Item
+													label={formatMessage({
+														id: 'databoard.top.shop',
+													})}
+												>
+													{getFieldDecorator('shopId', {
+														initialValue: [],
+													})(
+														<Select mode="multiple">
+															{this.shopListOptions.map(item => (
+																<Option
+																	value={item.shopId}
+																	key={item.shopId}
+																>
+																	{item.shopName}
+																</Option>
+															))}
+														</Select>
+													)}
+												</Form.Item>
+											</Col>
+											<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+												<Form.Item
+													label={formatMessage({
+														id:
+															'databoard.top.passenger.title.customer',
+													})}
+												>
+													{getFieldDecorator('guest', {
+														initialValue: formatMessage({
+															id: 'databoard.data.regular',
+														}),
+													})(
+														<Select>
+															{currentOptions.map((item, index) => (
+																<Option
+																	value={item.label}
+																	key={index}
+																>
+																	{item.label}
+																</Option>
+															))}
+														</Select>
+													)}
+												</Form.Item>
+											</Col>
+											<Col {...SEARCH_FORM_COL.ONE_THIRD}>
+												<Form.Item className={styles['query-item']}>
+													<Button
+														type="primary"
+														onClick={this.handleSearch}
+													>
+														{formatMessage({ id: 'btn.query' })}
+													</Button>
+													<Button
+														className={styles['btn-margin-left']}
+														onClick={this.handleReset}
+													>
+														{formatMessage({ id: 'btn.reset' })}
+													</Button>
+												</Form.Item>
+											</Col>
+										</Row>
+									</Form>
+
+									{/* <Button icon="download" type="primary"> */}
+									{/* EXCEL */}
+									{/* </Button> */}
+								</div>
+								<Spin
+									spinning={
+										loading.effects[
+											'headAnglePassenger/getHeadShopListByRegular'
+										] ||
+										(loading.effects[
+											'headAnglePassenger/getHeadShopListByGender'
+										] ||
+											false) ||
+										(loading.effects[
+											'headAnglePassenger/getHeadShopListByAge'
+										] ||
+											false)
+									}
+								>
+									<Table
+										dataSource={dataSource}
+										columns={this.columns}
+										pagination={{
+											pageSize: 5,
+											hideOnSinglePage: true,
+											current: pageNum,
+											onChange: this.handlePageChange,
+										}}
+									/>
+								</Spin>
+							</Card>
+							<Card
+								title={formatMessage({
+									id: 'databoard.top.passenger.title.customer.major',
+								})}
+								className={styles['footer-cards']}
+							>
+								<div className={styles['footer-cards-list']}>
+									{mainGuestList.map(item => {
+										const totalPercent = Math.round(
+											(item.uniqCount / uniqCountTotal) * 100
+										);
+										const frequentPercent = Math.round(
+											(item.regularUniqCount / uniqCountTotal) * 100
+										);
+										return (
+											<MainCustomerCard
+												scene="total"
+												gender={item.gender}
+												num={item.uniqCount}
+												totalPercent={totalPercent}
+												frequentPercent={frequentPercent}
+												age={item.ageRangeCode}
+											/>
+										);
+									})}
+								</div>
+							</Card>
+						</>
+					)}
+				</Spin>
 			</div>
 		);
 	}

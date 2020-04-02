@@ -1,10 +1,82 @@
 import React, { PureComponent } from 'react';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
+import _ from 'lodash';
 
 import styles from '../chartsCommon.less';
 
 class LinePoint extends PureComponent {
+	thickInterval = (scale, data) => {
+		if (!data.rows.length)
+			return {
+				...scale,
+				value: {
+					type: 'linear',
+					nice: true,
+					min: 0,
+					// tickCount: 6,
+				},
+			};
+		// 计算y轴最大值,最小值
+		const max = _.maxBy(data.rows, o => o.value).value;
+		const min = _.minBy(data.rows, o => o.value).value;
+		// console.log('groupBy', max, min, data.rows);
+		// return scale;
+		if (min < 0) {
+			// 自适应
+			return scale;
+		}
+		if (max < 10) {
+			return {
+				...scale,
+				value: {
+					type: 'linear',
+					nice: false,
+					max: 10,
+					tickCount: 6,
+				},
+			};
+		}
+		if (max < 50) {
+			return {
+				...scale,
+				value: {
+					type: 'linear',
+					nice: true,
+					max: 50,
+					tickCount: 6,
+				},
+			};
+		}
+		//  max > 50 计算数字位数n * 10
+		// const mul = 10 ** Math.floor(Math.log10(max / 5));
+		// const tickInterval = Math.ceil(max / 5 / mul) * mul;
+		// console.log('groupBy calc:Max', tickInterval * 5);
+		return {
+			...scale,
+			value: {
+				type: 'linear',
+				nice: true,
+				tickCount: 6,
+				// tickInterval,
+				// max: tickInterval * 5,
+				// max: 20,
+			},
+		};
+	};
+
+	pointShow = (data, type) => {
+		// console.log('before-lodash', data.rows);
+		if (type !== 'interval') {
+			const dataList = _.groupBy(data.rows, 'time');
+			//  只有一个时刻有数据，无法连线
+			// console.log('lodash', dataList);
+			return Object.keys(dataList).length === 1;
+		}
+		return false;
+	};
+
 	render() {
+		const { pointShow, thickInterval } = this;
 		const {
 			width = 300,
 			height = 400,
@@ -65,13 +137,17 @@ class LinePoint extends PureComponent {
 			title,
 		} = this.props;
 
+		const scaleFormat = thickInterval(scale, data);
+		// const min = _.minBy(data.rows, o => o.value).value;
+		// console.log('thickInterval-min-scaleMax:', min, scaleFormat.value.max);
+
 		return (
 			<Chart
 				width={width}
 				height={height}
+				scale={scaleFormat}
 				data={data}
 				forceFit={forceFit}
-				scale={scale}
 				padding={padding}
 				animate={animate}
 			>
@@ -88,7 +164,13 @@ class LinePoint extends PureComponent {
 					/>
 				)}
 				<Axis name={xName} label={xLabel} />
-				<Axis name={yName} label={yLabel} />
+				<Axis
+					name={yName}
+					label={yLabel}
+					grid={{
+						hightLightZero: false,
+					}}
+				/>
 				<Tooltip
 					// htmlContent={htmlContent}
 					shared={shared}
@@ -114,6 +196,21 @@ class LinePoint extends PureComponent {
 						position={areaPositon}
 						color={areaColor}
 						tooltip={false}
+						active={false}
+					/>
+				)}
+				{pointShow(data, lineType) && (
+					<Geom
+						type="point"
+						position="time*value"
+						size={4}
+						shape="circle"
+						color={lineColor}
+						style={{
+							stroke: '#fff',
+							lineWidth: 1,
+						}}
+						tooltip={lineTooltip}
 					/>
 				)}
 				{/* {Object.keys(point).length > 0 && (

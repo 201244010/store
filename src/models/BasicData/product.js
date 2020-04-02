@@ -19,6 +19,7 @@ export default {
 		data: [],
 		erpEnable: false,
 		productInfo: {},
+		extraCustomInfo: {},
 		sassInfoList: [],
 		bindEsl: [],
 		bindEslInfo: {},
@@ -136,7 +137,6 @@ export default {
 
 			const response = yield call(Actions.getProductDetail, format('toSnake')(options));
 			if (response && response.code === ERROR_OK) {
-
 				const { data = {} } = response;
 				const formattedData = shake(data)(
 					format('toCamel'),
@@ -145,7 +145,6 @@ export default {
 						{ from: 'weighInfo', to: 'weighInfo', rule: dataItem => dataItem || {} },
 					])
 				);
-				console.log('getProductDetail', formattedData);
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -357,6 +356,7 @@ export default {
 	},
 	reducers: {
 		updateState(state, action) {
+			console.log('jiangwu', action.payload);
 			return {
 				...state,
 				...action.payload,

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, Col, Form, Input, Row } from 'antd';
+import { Card, Col, Form, Input, InputNumber, Row } from 'antd';
 import { formatMessage } from 'umi/locale';
-import { customValidate } from '@/utils/customValidate';
 import { normalizeInfo } from '@/utils/utils';
+import * as RegExp from '@/constants/regexp';
 
 const ExtraCustom = props => {
 	const {
@@ -270,6 +270,8 @@ const ExtraCustom = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.custom.integer1' }),
+				type: 'InputNumber',
+				precision: 0,
 				getFieldName: 'customInt1',
 				value: customInt1,
 				required: false,
@@ -280,6 +282,8 @@ const ExtraCustom = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.custom.integer2' }),
+				type: 'InputNumber',
+				precision: 0,
 				getFieldName: 'customInt2',
 				value: customInt2,
 				required: false,
@@ -292,6 +296,8 @@ const ExtraCustom = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.custom.integer3' }),
+				type: 'InputNumber',
+				precision: 0,
 				getFieldName: 'customInt3',
 				value: customInt3,
 				required: false,
@@ -302,6 +308,8 @@ const ExtraCustom = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.custom.integer4' }),
+				type: 'InputNumber',
+				precision: 0,
 				getFieldName: 'customInt4',
 				value: customInt4,
 				required: false,
@@ -314,6 +322,8 @@ const ExtraCustom = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.custom.integer5' }),
+				type: 'InputNumber',
+				precision: 0,
 				getFieldName: 'customInt5',
 				value: customInt5,
 				required: false,
@@ -324,11 +334,12 @@ const ExtraCustom = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.custom.decimal1' }),
+				type: 'InputNumber',
 				getFieldName: 'customDec1',
 				value: customDec1,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 		],
@@ -336,11 +347,12 @@ const ExtraCustom = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.custom.decimal2' }),
+				type: 'InputNumber',
 				getFieldName: 'customDec2',
 				value: customDec2,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 			{
@@ -350,7 +362,7 @@ const ExtraCustom = props => {
 				value: customDec3,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 		],
@@ -358,21 +370,23 @@ const ExtraCustom = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.custom.decimal4' }),
+				type: 'InputNumber',
 				getFieldName: 'customDec4',
 				value: customDec4,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.custom.decimal5' }),
+				type: 'InputNumber',
 				getFieldName: 'customDec5',
 				value: customDec5,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 		],
@@ -402,14 +416,41 @@ const ExtraCustom = props => {
 								}
 								if(item.validator) {
 									itemRules.push({
-										validator: (rule, value, callback) =>
-											customValidate({
-												field: item.field,
-												rule,
-												value,
-												callback,
-											}),
+										validator: (rule, value, callback) => {
+											if (!value) {
+												callback();
+											} else if (!RegExp.productInfo.test(value)) {
+												const message = `basicData.product.error.${item.getFieldName}`;
+												callback(formatMessage({ id: message }));
+											} else {
+												callback();
+											}
+										},
 									});
+								}
+								if (item.type === 'InputNumber') {
+									const numProps = {};
+									if (item.hasOwnProperty('min')) {
+										numProps.min = item.min;
+									}
+									if (item.hasOwnProperty('precision')) {
+										numProps.precision = item.precision;
+									}
+									return (
+										<Col span={item.colSpan} key={item.label}>
+											<Form.Item label={item.label}>
+												{getFieldDecorator(item.getFieldName, {
+													initialValue: item.value,
+													validateTrigger: 'onBlur',
+													rules: itemRules,
+												})(
+													<InputNumber
+														{...numProps}
+														style={{width: '100%'}}
+													/>)}
+											</Form.Item>
+										</Col>
+									);
 								}
 								return (
 									<Col span={item.colSpan} key={item.label}>

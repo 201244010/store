@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Card, Form, Select, InputNumber, Button } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { FORM_FORMAT, HEAD_FORM_ITEM_LAYOUT_MIDDLE, BUTTON_FORM_ITEM_LAYOUT } from '@/constants/form';
 
 @connect(
 	state => ({
@@ -76,6 +75,22 @@ class LedConfig extends Component {
 	render() {
 		const {form: {getFieldDecorator}, eslElectricLabel: {loading, flashModes}} = this.props;
 		const flashMode = flashModes[0] || {};
+		const formItemLayout = {
+			labelCol: {
+				xs: { span: 24 },
+				sm: { span: 8 },
+			},
+			wrapperCol: {
+				xs: { span: 24 },
+				sm: { span: 8 },
+			},
+		};
+		const buttonFormLayout = {
+			wrapperCol: {
+				xs: { span: 24 },
+				sm: { span: 4, offset: 8 },
+			},
+		};
 
 		return (
 			<Card
@@ -83,12 +98,7 @@ class LedConfig extends Component {
 				bordered={false}
 				style={{ width: '100%' }}
 			>
-				<Form
-					{...{
-						...FORM_FORMAT,
-						...HEAD_FORM_ITEM_LAYOUT_MIDDLE,
-					}}
-				>
+				<Form {...formItemLayout}>
 					<Form.Item label={formatMessage({id: 'esl.device.led.color'})}>
 						{getFieldDecorator('channel', {
 							rules: [
@@ -141,7 +151,7 @@ class LedConfig extends Component {
 							/>
 						)}
 					</Form.Item>
-					<Form.Item {...BUTTON_FORM_ITEM_LAYOUT}>
+					<Form.Item {...buttonFormLayout}>
 						<Button type="primary" loading={loading} onClick={this.handleSave}>{formatMessage({id: 'btn.save'})}</Button>
 					</Form.Item>
 				</Form>
