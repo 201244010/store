@@ -38,6 +38,8 @@ import passengerAnalyze from './en-US/passengerAnalyze';
 import orgnization from './en-US/organization';
 import orgDetail from './en-US/orgDetail';
 
+import dataBoard from './zh-CN/dataBoard';
+
 export default {
 	'navBar.lang': 'Language',
 	'navBar.area': 'Area',
@@ -84,4 +86,5 @@ export default {
 	...orgDetail,
 	...orgnization,
 	...companyInfo,
+	...dataBoard,
 };
