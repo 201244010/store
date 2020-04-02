@@ -607,7 +607,7 @@ export const checkAnchor = (anchor = null) => {
 
 export const normalizeInfo = (info) => {
 	Object.keys(info).forEach(key => {
-		if (Number(info[key])) {
+		if (Number(info[key]) === -1) {
 			info[key] = undefined;
 		}
 	});
