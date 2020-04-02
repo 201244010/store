@@ -56,7 +56,7 @@ class OverViewBar extends Component {
 			toolTipText: formatMessage({ id: 'databoard.top.totalPassengerCount' }),
 		};
 		// const strangerCount = {
-		// 	label: 'strangeCount',
+		// 	label: 'strangerCount',
 		// 	unit: '',
 		// 	count: customerDistri.currentStranger,
 		// 	earlyCount: customerDistri.earlyStranger,

@@ -46,7 +46,7 @@ export const DATABOARD = {
 		transactionRate: formatMessage({ id: 'databoard.order.transactionRate' }),
 		avgFrequency: formatMessage({ id: 'databoard.passenger.frequency' }),
 		totalPassengerCount: formatMessage({ id: 'databoard.order.totalPassengerCount' }),
-		strangeCount: formatMessage({ id: 'databoard.order.strangeCount' }),
+		strangerCount: formatMessage({ id: 'databoard.order.strangerCount' }),
 	},
 	LINE_SIZE: 3,
 	LAST_HAND_REFRESH_TIME: 'lastHandRefreshTime',

@@ -506,7 +506,7 @@ class TopPassengerDataBoard extends React.Component {
 							<Col span={6}>
 								<TopDataCard
 									data={{
-										label: 'strangeCount',
+										label: 'strangerCount',
 										labelText: formatMessage({
 											id: 'databoard.top.label.totalStrangeCount',
 										}),

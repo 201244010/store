@@ -167,6 +167,7 @@ export default {
 
 		passengerCount: {}, // 进店客流（客流）
 		enteringRate: {}, // 进店率（客流）
+		strangerCount: {}, // 新客人数 （客流）
 		regularCount: {}, // 熟客人数 （客流）
 		avgFrequency: {}, // 到店频次（客流）
 		enteringList: [], // 进店率（折线图-客流）
@@ -358,6 +359,10 @@ export default {
 					earlyRegularPassengerCount,
 					latestEntryHeadCount,
 					earlyEntryHeadCount,
+					latestMemberPassengerCount,
+					earlyMemberPassengerCount,
+					latestStrangerPassengerCount,
+					earlyStrangerPassengerCount,
 				} = data;
 				const latestTotalPassengerCount = latestPassengerCount + latestEntryHeadCount;
 				const earlyTotalPassengerCount = earlyPassengerCount + earlyEntryHeadCount;
@@ -386,10 +391,16 @@ export default {
 							earlyCount: earlyTotalPassengerCount,
 							compareRate: true,
 						},
+						strangerCount: {
+							label: 'strangerCount',
+							count: latestStrangerPassengerCount,
+							earlyCount: earlyStrangerPassengerCount,
+							compareRate: true,
+						},
 						regularCount: {
 							label: 'regularCount',
-							count: latestRegularPassengerCount,
-							earlyCount: earlyRegularPassengerCount,
+							count: latestRegularPassengerCount + latestMemberPassengerCount,
+							earlyCount: earlyRegularPassengerCount + earlyMemberPassengerCount,
 							compareRate: true,
 						},
 						enteringRate: {

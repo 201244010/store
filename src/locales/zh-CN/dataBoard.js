@@ -90,7 +90,7 @@ export default {
 	'databoard.order.transactionRate': '交易转化率',
 	'databoard.order.regularCount': '熟客人数',
 	'databoard.order.totalPassengerCount': '进店客流',
-	'databoard.order.strangeCount': '新客人数',
+	'databoard.order.strangerCount': '新客人数',
 	'databoard.top.totalPassengerCount': '0点至当前时间，所有门店进店客流之和',
 	'databoard.top.strangerCount': '',
 	'databoard.top.regularCount': '',
