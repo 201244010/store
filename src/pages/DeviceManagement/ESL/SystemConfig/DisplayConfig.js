@@ -97,7 +97,7 @@ class DisplayConfig extends Component {
 				>
 					{
 						(templateConfig || []).map((config) => (
-							<Row gutter={10} className={styles['m-b-15']} key={config.model_id}>
+							<Row gutter={10} className={styles['m-b-24']} key={config.model_id}>
 								<Col span={8} className={styles['page-name']}>{config.model_name}：</Col>
 								<Col span={8}>
 									<Select
@@ -116,7 +116,7 @@ class DisplayConfig extends Component {
 							</Row>
 						))
 					}
-					<Row gutter={10} className={styles['m-b-15']}>
+					<Row gutter={10} className={styles['m-b-24']}>
 						<Col span={4} offset={8}>
 							<Button type="primary" loading={loading} onClick={this.submit}>{formatMessage({id: 'btn.save'})}</Button>
 						</Col>
