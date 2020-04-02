@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio } from 'antd';
+import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio, Modal } from 'antd';
 // import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -99,13 +99,14 @@ class TopPassengerDataBoard extends React.Component {
 			dataSource: [],
 			isSelected: false,
 			pageNum: 1,
-			fullPageLoading: false
+			fullPageLoading: false,
 		};
 		this.columns = [
 			{
 				title: formatMessage({ id: 'databoard.top.rank' }),
 				dataIndex: 'sortIndex',
 				key: 'sortIndex',
+				width: 150,
 				render: key => <span>{key}</span>,
 			},
 			{
@@ -116,10 +117,12 @@ class TopPassengerDataBoard extends React.Component {
 			{
 				title: 'compareItem',
 				dataIndex: 'compareItem',
+				width: 150,
 			},
 			{
 				title: formatMessage({ id: 'databoard.top.operation' }),
 				key: 'operation',
+				width: 150,
 				render: (operation, item) => (
 					<a
 						onClick={() => {
@@ -147,12 +150,30 @@ class TopPassengerDataBoard extends React.Component {
 	}
 
 	toggleShop = shopInfo => {
-		// console.log(`goToPath${shopInfo}`);
 		const { shopId } = shopInfo;
+		const { shopListOptions } = this;
+		const hasAdmin = shopListOptions.find(shop => shop.shopId === shopId);
 		// const { goToPath } = this.props;
-		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
-		window.location.reload();
-		// goToPath('passengerAnalyze', {}, 'href');
+		if (hasAdmin) {
+			Modal.confirm({
+				title: formatMessage({ id: 'databoard.top.toggleShop.confirm' }),
+				okText: formatMessage({ id: 'list.action.view' }),
+				cancelText: formatMessage({ id: 'btn.cancel' }),
+				maskClosable: false,
+				onOk: () => {
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
+					window.location.reload();
+				},
+			});
+		} else {
+			Modal.info({
+				title: formatMessage({ id: 'databoard.top.toggleShop.info' }),
+				okText: formatMessage({ id: 'btn.confirm' }),
+				maskClosable: false,
+			});
+		}
+
+		// goToPath('dashboard', {}, 'href');
 	};
 
 	initGetData = async (startTime, type = 1) => {
@@ -162,16 +183,19 @@ class TopPassengerDataBoard extends React.Component {
 			// getHeadShopListByRegular,
 			getHeadPassengerSurvey,
 		} = this.props;
-		
+
 		Promise.all([
 			getHeadPassengerByGender({ startTime, type }),
 			getHeadPassengerByRegular({ startTime, type }),
-			getHeadPassengerSurvey({ startTime, type })
-		]).then(()=> {
-			this.setState({ fullPageLoading: false });
-		}, () => {
-			this.setState({ fullPageLoading: false });
-		});
+			getHeadPassengerSurvey({ startTime, type }),
+		]).then(
+			() => {
+				this.setState({ fullPageLoading: false });
+			},
+			() => {
+				this.setState({ fullPageLoading: false });
+			}
+		);
 		this.setState(
 			{ startTime, dateType: type, chosenCard: 0, currentOptions: GROUP_BY[0] },
 			() => {
@@ -208,7 +232,7 @@ class TopPassengerDataBoard extends React.Component {
 
 	handleDateChange = (date, _, type) => {
 		let startTime = '';
-		
+
 		switch (type) {
 			case 1:
 				startTime = moment(date).format(DATE_FORMAT);
@@ -244,7 +268,7 @@ class TopPassengerDataBoard extends React.Component {
 			this.setState({
 				chosenCard: index,
 				currentOptions: GROUP_BY[index],
-				pageNum: 1
+				pageNum: 1,
 			});
 			setFieldsValue({
 				shopId: [],
@@ -291,7 +315,7 @@ class TopPassengerDataBoard extends React.Component {
 		const { currentOptions } = this.state;
 
 		let keyword = '';
-		
+
 		const { shopId, guest } = getFieldsValue();
 		let resultArray = shopList.map(item => Object.assign({}, item));
 
@@ -301,7 +325,7 @@ class TopPassengerDataBoard extends React.Component {
 			}
 		});
 
-		if (shopId.length !== 0 && shopId !== undefined)
+		if (shopId !== undefined && shopId.length !== 0)
 			resultArray = resultArray.filter(item => shopId.indexOf(item.shopId) > -1);
 
 		resultArray.sort((a, b) => b[keyword] - a[keyword]);
@@ -311,8 +335,9 @@ class TopPassengerDataBoard extends React.Component {
 		});
 
 		this.columns[2] = {
-			title: `${guest}${formatMessage({id: 'databoard.data.personCount'})}`,
+			title: `${guest}${formatMessage({ id: 'databoard.data.personCount' })}`,
 			dataIndex: keyword,
+			width: 150,
 		};
 		this.setState({ dataSource: resultArray });
 	};
@@ -335,23 +360,30 @@ class TopPassengerDataBoard extends React.Component {
 		this.setState({ pageNum: 1 });
 		this.handleTableDataSource();
 	};
-	
-	tooltipFormText = (index) => {
+
+	tooltipFormText = index => {
 		const { dateType, isSelected } = this.state;
 		let text = '';
 		let dateText = '';
-		
+
 		switch (dateType) {
-			case 1: dateText = formatMessage({ id: 'databoard.tooltip.lastDay' });break;
-			case 2: dateText = formatMessage({ id: 'databoard.tooltip.lastWeek' });break;
-			case 3: dateText = formatMessage({ id: 'databoard.tooltip.lastMonth' });break;
-			default: break;
+			case 1:
+				dateText = formatMessage({ id: 'databoard.tooltip.lastDay' });
+				break;
+			case 2:
+				dateText = formatMessage({ id: 'databoard.tooltip.lastWeek' });
+				break;
+			case 3:
+				dateText = formatMessage({ id: 'databoard.tooltip.lastMonth' });
+				break;
+			default:
+				break;
 		}
-		
-		if(isSelected) {
-			dateText = formatMessage({ id: 'databoard.tooltip.inRange'});
-		};
-		
+
+		if (isSelected) {
+			dateText = formatMessage({ id: 'databoard.tooltip.inRange' });
+		}
+
 		switch (index) {
 			case 1:
 				text = dateText + formatMessage({ id: 'databoard.tooltip.totalGuest' });
@@ -365,13 +397,14 @@ class TopPassengerDataBoard extends React.Component {
 			case 4:
 				text = dateText + formatMessage({ id: 'databoard.tooltip.regularGuest' });
 				break;
-			default: break;
+			default:
+				break;
 		}
-		
+
 		return text;
 	};
-	
-	handlePageChange = (current) => {
+
+	handlePageChange = current => {
 		this.setState({ pageNum: current });
 	};
 
@@ -387,17 +420,25 @@ class TopPassengerDataBoard extends React.Component {
 				// shopList,
 				passengerCount,
 				earlyPassengerCount,
-				// passHeadCount,
-				// earlyPassHeadCount,
+				passHeadCount,
+				earlyPassHeadCount,
 				mainGuestList,
+				uniqCountTotal,
 			},
 			form: { getFieldDecorator },
 			loading,
 			hasCustomerData,
 		} = this.props;
-		const { dateType, chosenCard, currentOptions, dataSource, pageNum, fullPageLoading } = this.state;
-		const todayTotalCount = passengerCount;
-		const earlyTotalCount = earlyPassengerCount;
+		const {
+			dateType,
+			chosenCard,
+			currentOptions,
+			dataSource,
+			pageNum,
+			fullPageLoading,
+		} = this.state;
+		const todayTotalCount = passengerCount + passHeadCount;
+		const earlyTotalCount = earlyPassengerCount + earlyPassHeadCount;
 		const todayEnterPercent = passengerCount / todayTotalCount;
 		const earlyEnterPercent = earlyPassengerCount / earlyTotalCount;
 		const newGuest = byFrequencyArray[1];
@@ -416,13 +457,13 @@ class TopPassengerDataBoard extends React.Component {
 								onChange={this.handleRadioChange}
 							>
 								<Radio.Button value={1}>
-									{formatMessage({ id: 'databoard.unit.days' })}
+									{formatMessage({ id: 'databoard.search.yesterday' })}
 								</Radio.Button>
 								<Radio.Button value={2}>
-									{formatMessage({ id: 'databoard.unit.weeks' })}
+									{formatMessage({ id: 'databoard.search.week' })}
 								</Radio.Button>
 								<Radio.Button value={3}>
-									{formatMessage({ id: 'databoard.unit.months' })}
+									{formatMessage({ id: 'databoard.search.month' })}
 								</Radio.Button>
 							</Radio.Group>
 							{dateType === 1 && (
@@ -465,7 +506,11 @@ class TopPassengerDataBoard extends React.Component {
 					)}
 					{hasCustomerData && (
 						<>
-							<Row gutter={24} justify="space-between" className={styles['overview-bar']}>
+							<Row
+								gutter={24}
+								justify="space-between"
+								className={styles['overview-bar']}
+							>
 								<Col span={6}>
 									<TopDataCard
 										data={{
@@ -475,6 +520,9 @@ class TopPassengerDataBoard extends React.Component {
 											earlyCount: earlyTotalCount,
 											compareRate: true,
 											toolTipText: this.tooltipFormText(1),
+											labelText: formatMessage({
+												id: 'databoard.top.label.totalPassengerCount',
+											}),
 										}}
 										timeType={dateType}
 										dataType={2}
@@ -483,27 +531,15 @@ class TopPassengerDataBoard extends React.Component {
 								<Col span={6}>
 									<TopDataCard
 										data={{
-											label: 'enteringRate',
-											unit: 'percent',
-											count: todayEnterPercent,
-											earlyCount: earlyEnterPercent,
-											compareRate: true,
-											toolTipText: this.tooltipFormText(2),
-											chainRate: true,
-										}}
-										timeType={dateType}
-										dataType={2}
-									/>
-								</Col>
-								<Col span={6}>
-									<TopDataCard
-										data={{
-											label: 'strangeCount',
+											label: 'strangerCount',
+											labelText: formatMessage({
+												id: 'databoard.top.label.totalStrangeCount',
+											}),
 											unit: '',
 											count: newGuest,
 											earlyCount: earlyNewGuest,
 											compareRate: true,
-											toolTipText: this.tooltipFormText(3),
+											toolTipText: '',
 										}}
 										timeType={dateType}
 										dataType={2}
@@ -513,11 +549,32 @@ class TopPassengerDataBoard extends React.Component {
 									<TopDataCard
 										data={{
 											label: 'regularCount',
+											labelText: formatMessage({
+												id: 'databoard.top.label.totalRegularCount',
+											}),
 											unit: '',
 											count: regularGuest,
 											earlyCount: earlyRegularGuest,
 											compareRate: true,
-											toolTipText: this.tooltipFormText(4),
+											toolTipText: '',
+										}}
+										timeType={dateType}
+										dataType={2}
+									/>
+								</Col>
+								<Col span={6}>
+									<TopDataCard
+										data={{
+											label: 'enteringRate',
+											labelText: formatMessage({
+												id: 'databoard.top.label.totalEnteringRate',
+											}),
+											unit: 'percent',
+											count: todayEnterPercent,
+											earlyCount: earlyEnterPercent,
+											// compareRate: true,
+											toolTipText: this.tooltipFormText(2),
+											chainRate: true,
 										}}
 										timeType={dateType}
 										dataType={2}
@@ -538,7 +595,11 @@ class TopPassengerDataBoard extends React.Component {
 											}}
 										>
 											<div
-												style={chosenCard === index ? { color: 'rgba(255, 129, 51, 1)'} : {}}
+												style={
+													chosenCard === index
+														? { color: 'rgba(255, 129, 51, 1)' }
+														: {}
+												}
 												className={styles['pie-title']}
 											>
 												{item}
@@ -547,7 +608,10 @@ class TopPassengerDataBoard extends React.Component {
 												className={styles['pie-card']}
 												style={
 													chosenCard === index
-														? { border: '1px solid  rgba(255,129,51,1)' }
+														? {
+															border:
+																	'1px solid  rgba(255,129,51,1)',
+														  }
 														: {}
 												}
 											>
@@ -566,7 +630,11 @@ class TopPassengerDataBoard extends React.Component {
 									<Form layout="inline">
 										<Row gutter={FORM_FORMAT.gutter}>
 											<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-												<Form.Item label={formatMessage({ id: 'databoard.top.shop' })}>
+												<Form.Item
+													label={formatMessage({
+														id: 'databoard.top.shop',
+													})}
+												>
 													{getFieldDecorator('shopId', {
 														initialValue: [],
 													})(
@@ -586,7 +654,8 @@ class TopPassengerDataBoard extends React.Component {
 											<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 												<Form.Item
 													label={formatMessage({
-														id: 'databoard.top.passenger.title.customer',
+														id:
+															'databoard.top.passenger.title.customer',
 													})}
 												>
 													{getFieldDecorator('guest', {
@@ -596,7 +665,10 @@ class TopPassengerDataBoard extends React.Component {
 													})(
 														<Select>
 															{currentOptions.map((item, index) => (
-																<Option value={item.label} key={index}>
+																<Option
+																	value={item.label}
+																	key={index}
+																>
 																	{item.label}
 																</Option>
 															))}
@@ -606,7 +678,10 @@ class TopPassengerDataBoard extends React.Component {
 											</Col>
 											<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 												<Form.Item className={styles['query-item']}>
-													<Button type="primary" onClick={this.handleSearch}>
+													<Button
+														type="primary"
+														onClick={this.handleSearch}
+													>
 														{formatMessage({ id: 'btn.query' })}
 													</Button>
 													<Button
@@ -619,11 +694,10 @@ class TopPassengerDataBoard extends React.Component {
 											</Col>
 										</Row>
 									</Form>
-	
+
 									{/* <Button icon="download" type="primary"> */}
 									{/* EXCEL */}
 									{/* </Button> */}
-	
 								</div>
 								<Spin
 									spinning={
@@ -634,7 +708,9 @@ class TopPassengerDataBoard extends React.Component {
 											'headAnglePassenger/getHeadShopListByGender'
 										] ||
 											false) ||
-										(loading.effects['headAnglePassenger/getHeadShopListByAge'] ||
+										(loading.effects[
+											'headAnglePassenger/getHeadShopListByAge'
+										] ||
 											false)
 									}
 								>
@@ -645,7 +721,7 @@ class TopPassengerDataBoard extends React.Component {
 											pageSize: 5,
 											hideOnSinglePage: true,
 											current: pageNum,
-											onChange: this.handlePageChange
+											onChange: this.handlePageChange,
 										}}
 									/>
 								</Spin>
@@ -659,10 +735,10 @@ class TopPassengerDataBoard extends React.Component {
 								<div className={styles['footer-cards-list']}>
 									{mainGuestList.map(item => {
 										const totalPercent = Math.round(
-											(item.uniqCount / todayTotalCount) * 100
+											(item.uniqCount / uniqCountTotal) * 100
 										);
 										const frequentPercent = Math.round(
-											(item.regularUniqCount / todayTotalCount) * 100
+											(item.regularUniqCount / uniqCountTotal) * 100
 										);
 										return (
 											<MainCustomerCard

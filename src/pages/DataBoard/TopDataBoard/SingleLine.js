@@ -15,21 +15,28 @@ const valToTime = val => {
 	return t > 9 ? `${t}:00` : `0${t}:00`;
 };
 
-const latestDataSuppl = (data, timeType) => {
-	// return data;
-	let dataPoint;
-	const ponitSuppl = [];
+const thickTimeMax = (timeType, chartType) => {
+	// day: 24->24 week 7->6 month: 31->30
+	let max;
 	if (timeType === TIME_TYPE.DAY) {
-		dataPoint = 24;
+		max = 24;
 	}
 	if (timeType === TIME_TYPE.WEEK) {
-		dataPoint = 7;
+		max = 6;
 	}
 	if (timeType === TIME_TYPE.MONTH) {
-		dataPoint = moment()
-			.endOf('month')
-			.format('D');
+		if (chartType === 'weekFrequency') {
+			max = 4;
+		} else {
+			max = localMoment.endOf('month').format('D') - 1;
+		}
 	}
+	return max;
+};
+
+const latestDataSuppl = (data, timeType) => {
+	// return data;
+	const ponitSuppl = [];
 
 	const nameList = [];
 	data.forEach(item => {
@@ -49,14 +56,9 @@ const latestDataSuppl = (data, timeType) => {
 		});
 		// console.log('wx:', dataGroupByName);
 		Object.keys(dataGroupByName).forEach(name => {
-			const dataList = dataGroupByName[name];
 			if (timeType === TIME_TYPE.DAY) {
 				// 日维度补0点
 				ponitSuppl.push({ name, time: 0, value: 0 });
-			}
-			if (dataList.length < dataPoint) {
-				// 实时数据补上最后一个点
-				ponitSuppl.push({ name, time: dataPoint });
 			}
 		});
 	} else {
@@ -64,10 +66,6 @@ const latestDataSuppl = (data, timeType) => {
 		if (timeType === TIME_TYPE.DAY) {
 			// 日维度补0点
 			ponitSuppl.push({ time: 0, value: 0 });
-		}
-		if (data.length < dataPoint) {
-			// 实时数据补上最后一个点
-			ponitSuppl.push({ time: dataPoint });
 		}
 	}
 	return [...data, ...ponitSuppl];
@@ -104,7 +102,7 @@ export default class Line extends Component {
 		}
 		if (timeType === TIME_TYPE.DAY) {
 			const t = parseInt(val, 10);
-			return t > 9 ? `${t}:00` : `0${t}:00`;
+			return t > 9 ? `${t}:00` : `${t}:00`;
 		}
 		if (timeType === TIME_TYPE.WEEK) {
 			const t = parseInt(val, 10) + 1;
@@ -176,13 +174,24 @@ export default class Line extends Component {
 			formatToolTipValue = val => val,
 			lineTooltip = [
 				'name*time*value',
-				(name, labelX, value) =>
+				(name, labelX, value) => {
+					const valString = formatToolTipValue(value);
+					const valReg = /^\d*.?\d+(?=\D+$)/;
+					const unitReg = /(?<=\d*.?\d+)\D+$/;
+					let val = valString;
+					let unit = '';
+					if (typeof valString === 'string') {
+						val = valString.match(valReg) ? valString.match(valReg)[0] : valString;
+						unit = valString.match(unitReg) ? valString.match(unitReg)[0] : '';
+					}
 					// array
-					({
-						value: formatToolTipValue(value),
+					return {
+						value: val,
 						timeRange: formatToolTipAxisX(labelX, timeType),
 						name: formatToolTipName(name),
-					}),
+						unit,
+					};
+				},
 			],
 
 			crosshairs = {},
@@ -191,6 +200,21 @@ export default class Line extends Component {
 		} = this.props;
 
 		let { lineSize, chartScale = {} } = this.props;
+		chartScale = {
+			time: {
+				type: 'linear',
+				nice: false,
+				min: 0,
+				tickInterval: 2,
+				max: thickTimeMax(timeType),
+			},
+			value: {
+				type: 'linear',
+				nice: true,
+				tickCount: 6,
+				// range: [0.09, 0.91],
+			},
+		};
 		const dataForamtted = foramtData(data, timeType);
 		if (type === 'interval') {
 			lineSize = barWidthFit(timeType);
@@ -232,7 +256,7 @@ export default class Line extends Component {
 						 </div>`,
 						itemTpl: `<li class="detail" data-index={index}>
 						    <p class="item item__name">{name}</p>
-						    <p class="item item__value">{value}</p>
+						    <p class="item item__value">{value}<span class="unit">{unit}</span></p>
 						    <p class="item item__labelX">{timeRange}</p>
 						</li>`,
 						crosshairs,

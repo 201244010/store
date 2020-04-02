@@ -18,6 +18,7 @@ export default {
 		passHeadCount: 0,
 		earlyPassHeadCount: 0,
 		mainGuestList: [],
+		uniqCountTotal: 0,
 	},
 	effects: {
 		*getHeadPassengerSurvey({ payload }, { put, call }) {
@@ -157,16 +158,47 @@ export default {
 						female += uniqCount;
 					}
 				});
+				const uniqCountTotal = male + female;
 
-				const mainGuestList = countList
-					.sort((a, b) => b.uniqCount - a.uniqCount)
-					.slice(0, 3);
+				let uniqCount_male = 0;
+				let uniqCount_female = 0;
+				let regularUniqCount_male = 0;
+				let regularUniqCount_female = 0;
+				countList.map(item => {
+					if(item.ageRangeCode <= 3) {
+						if(item.gender === 1) {
+							uniqCount_male += item.uniqCount;
+							regularUniqCount_male += item.regularUniqCount;
+						} else {
+							uniqCount_female += item.uniqCount;
+							regularUniqCount_female += item.regularUniqCount;
+						}
+					}
+				});
+
+				const mainGuestList = countList.filter(item => item.ageRangeCode > 3);
+				mainGuestList.push(
+					{
+						ageRangeCode: 3,
+						gender: 1,
+						uniqCount: uniqCount_male,
+						regularUniqCount: regularUniqCount_male,
+					},
+					{
+						ageRangeCode: 3,
+						gender: 2,
+						uniqCount: uniqCount_female,
+						regularUniqCount: regularUniqCount_female,
+					}
+				);
+				const finalMainGuestList = mainGuestList.sort((a, b) => b.uniqCount - a.uniqCount).slice(0, 3).filter(item => item.uniqCount > 0);
 
 				yield put({
 					type: 'updateState',
 					payload: {
 						byGenderArray: [female, male],
-						mainGuestList,
+						mainGuestList: finalMainGuestList,
+						uniqCountTotal,
 					},
 				});
 			}

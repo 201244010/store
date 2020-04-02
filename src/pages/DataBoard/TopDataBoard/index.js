@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import { message, Row, Col, Card, Table, Tooltip, Icon, Spin } from 'antd';
+import { message, Row, Col, Card, Table, Tooltip, Icon, Spin, Modal } from 'antd';
 import PageEmpty from '@/components/BigIcon/PageEmpty';
 import CurrentCustomerLine from './CurrentCustomerLine';
 import CurrentSalesLine from './CurrentSalesLine';
@@ -75,9 +75,28 @@ class TopDataBoard extends Component {
 
 	toggleShop = shopInfo => {
 		const { shopId } = shopInfo;
+		const { shopListOptions } = this;
+		const hasAdmin = shopListOptions.find(shop => shop.shopId === shopId);
 		// const { goToPath } = this.props;
-		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
-		window.location.reload();
+		if (hasAdmin) {
+			Modal.confirm({
+				title: formatMessage({ id: 'databoard.top.toggleShop.confirm' }),
+				okText: formatMessage({ id: 'list.action.view' }),
+				cancelText: formatMessage({ id: 'btn.cancel' }),
+				maskClosable: false,
+				onOk: () => {
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId);
+					window.location.reload();
+				},
+			});
+		} else {
+			Modal.info({
+				title: formatMessage({ id: 'databoard.top.toggleShop.info' }),
+				okText: formatMessage({ id: 'btn.confirm' }),
+				maskClosable: false,
+			});
+		}
+
 		// goToPath('dashboard', {}, 'href');
 	};
 
@@ -207,7 +226,7 @@ class TopDataBoard extends Component {
 				dataIndex: 'shopName',
 				filters: handleTabelFilters(foramtTabelData(latestOrderAmoutByShop)),
 				onFilter: (value, record) => record.key === value,
-				render: text => <a onClick={toggleShop}>{text}</a>,
+				render: (text, record) => <a onClick={() => toggleShop(record)}>{text}</a>,
 			},
 			{
 				title: formatMessage({ id: 'databoard.order.sales' }),

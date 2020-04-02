@@ -18,6 +18,9 @@ const chartOption = {
 			},
 		},
 	],
+	crosshairs: {
+		type: 'rect',
+	},
 };
 
 const BarSales = () => {

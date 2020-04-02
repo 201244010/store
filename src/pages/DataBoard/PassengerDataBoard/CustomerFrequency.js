@@ -19,6 +19,7 @@ class CustomerFrequency extends PureComponent {
 		}));
 		const chartOption = {
 			chartHeight: CHART_HEIGHT,
+			chartType: 'weekFrequency',
 			timeType,
 			data: dataAddName,
 			lineColor: ['value', '#FF8133'],
@@ -30,7 +31,10 @@ class CustomerFrequency extends PureComponent {
 				position: 'time*value',
 			},
 			lineSize: 3,
-			innerTitle: '周到店频次',
+			innerTitle:
+				timeType === 2
+					? formatMessage({ id: 'databoard.passenger.enter.frequency.week' })
+					: formatMessage({ id: 'databoard.passenger.enter.frequency.month' }),
 			chartScale: {
 				time: {
 					type: 'linear',
