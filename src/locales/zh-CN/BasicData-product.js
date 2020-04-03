@@ -259,7 +259,7 @@ export default {
 	'basicData.product.extra.price.memberPromoteEndDate': '会员促销结束日期',
 	'basicData.product.extra.price.memberPromoteEndTime': '会员促销结束时间',
 	'basicData.product.extra.price.promoteDate': '促销时间',
-	'basicData.product.extra.price.memberPromoteDate': '会员促销日期',
+	'basicData.product.extra.price.memberPromoteDate': '会员促销时间',
 	'basicData.product.extra.price.memberPoint': '会员积分',
 	'basicData.product.extra.price.promoteReason': '促销原因',
 	'basicData.product.extra.price.promoteFlag': '促销标识',
