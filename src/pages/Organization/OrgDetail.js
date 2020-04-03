@@ -208,6 +208,7 @@ class OrgDetail extends React.Component {
 					orgStatus,
 					level,
 					businessArea,
+					orgPid,
 				},
 			}
 		} = this.props;
@@ -316,6 +317,7 @@ class OrgDetail extends React.Component {
 							onClick={() => goToPath('editDetail',{
 								action : 'edit',
 								orgId: locationOrgId,
+								orgPid,
 							})}
 						>
 							{formatMessage({id: 'orgDetail.modify'})}
