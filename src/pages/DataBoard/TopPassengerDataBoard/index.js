@@ -526,6 +526,7 @@ class TopPassengerDataBoard extends React.Component {
 												id: 'databoard.top.label.totalPassengerCount',
 											}),
 										}}
+										loading={fullPageLoading}
 										timeType={dateType}
 										dataType={2}
 									/>
@@ -543,6 +544,7 @@ class TopPassengerDataBoard extends React.Component {
 											compareRate: true,
 											toolTipText: '',
 										}}
+										loading={fullPageLoading}
 										timeType={dateType}
 										dataType={2}
 									/>
@@ -560,6 +562,7 @@ class TopPassengerDataBoard extends React.Component {
 											compareRate: true,
 											toolTipText: '',
 										}}
+										loading={fullPageLoading}
 										timeType={dateType}
 										dataType={2}
 									/>
@@ -578,6 +581,7 @@ class TopPassengerDataBoard extends React.Component {
 											toolTipText: this.tooltipFormText(2),
 											chainRate: true,
 										}}
+										loading={fullPageLoading}
 										timeType={dateType}
 										dataType={2}
 									/>

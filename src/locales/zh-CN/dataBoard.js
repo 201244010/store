@@ -35,7 +35,7 @@ export default {
 		'您可以尝试添加AI识客摄像机并导入软件订单数据即可查看门店数据',
 	'databoard.passenger.nodata.tip2': '您可以尝试添加AI识客摄像机即可查看门店数据',
 	'databoard.data.entering': '进店率',
-	'databoard.data.total': '全部',
+	'databoard.data.total': '进店客流',
 	'databoard.data.stranger': '新客',
 	'databoard.data.regular': '熟客',
 	'databoard.data.passenger': '进店客流',
