@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
+import _ from 'lodash';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import styles from '../chartsCommon.less';
 
@@ -59,11 +60,33 @@ export default class AgeGenderBar extends React.Component {
 			})
 			.sort((a, b) => a.range - b.range);
 
-		console.log('wx______:', data);
+		// console.log('wx______:', data);
+
+		const max = _.maxBy(data, o => o.count).count;
+
+		const scale =
+			max === 0
+				? {
+					count: {
+						type: 'linear',
+						nice: false,
+						min: 0,
+						max: 500,
+						tickCount: 6,
+					},
+				  }
+				: {
+					count: {
+						type: 'linear',
+						nice: true,
+						min: 0,
+						tickCount: 6,
+					},
+				};
 
 		return (
 			<div>
-				<Chart height={250} data={data} forceFit padding="auto">
+				<Chart height={250} data={data} scale={scale} forceFit padding="auto">
 					<h1 className={styles['chart-title']}>{chartTitle}</h1>
 					<Axis name="rangeKey" label={{ formatter: formatLabelX }} />
 					<Axis name="count" />
