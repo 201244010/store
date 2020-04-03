@@ -469,6 +469,7 @@ class TopPassengerDataBoard extends React.Component {
 							{dateType === 1 && (
 								<DatePicker
 									allowClear={false}
+									defaultValue={moment().subtract(1, 'days')}
 									disabledDate={this.disabledDate}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 1);
@@ -478,6 +479,7 @@ class TopPassengerDataBoard extends React.Component {
 							{dateType === 2 && (
 								<WeekPicker
 									allowClear={false}
+									defaultValue={moment().subtract(1, 'days').startOf('week')}
 									disabledDate={this.disabledDate}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 2);
@@ -487,6 +489,7 @@ class TopPassengerDataBoard extends React.Component {
 							{dateType === 3 && (
 								<MonthPicker
 									allowClear={false}
+									defaultValue={moment().subtract(1, 'days').startOf('month')}
 									disabledDate={this.disabledDate}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 3);
