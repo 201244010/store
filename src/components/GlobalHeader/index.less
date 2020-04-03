@@ -55,7 +55,7 @@
 	height: @layout-header-height;
 	cursor: pointer;
 	transition: all 0.3s, padding 0s;
-	padding:~'calc((@{layout-header-height} - 20px) / 2)'24px;
+	padding: ~'calc((@{layout-header-height} - 20px) / 2)' 24px;
 
 	&:hover {
 		background: @pro-header-hover-bg;
@@ -66,6 +66,23 @@
 	float: right;
 	height: 100%;
 	overflow: hidden;
+	display: flex;
+	align-items: center;
+
+	.select-store {
+		display: flex;
+		align-items: center;
+		&.white {
+			z-index: 1001;
+			position: relative;
+			height: 50px;
+			background-color: #ffffff;
+			border-radius: 6px;
+			padding: 0 4px;
+			// :global .ant-select {
+			// }
+		}
+	}
 
 	.action {
 		cursor: pointer;
@@ -74,7 +91,7 @@
 		transition: all 0.3s;
 		height: 100%;
 
-		>i {
+		> i {
 			vertical-align: middle;
 			color: @text-color;
 		}
@@ -98,7 +115,7 @@
 
 	.account {
 		.avatar {
-			margin:~'calc((@{layout-header-height} - 24px) / 2)'0;
+			margin: ~'calc((@{layout-header-height} - 24px) / 2)' 0;
 			margin-right: 8px;
 			color: @primary-color;
 			background: rgba(255, 255, 255, 0.85);
@@ -113,7 +130,7 @@
 	.action {
 		color: rgba(255, 255, 255, 0.85);
 
-		>i {
+		> i {
 			color: rgba(255, 255, 255, 0.85);
 		}
 
@@ -159,6 +176,44 @@
 					margin-right: 0;
 				}
 			}
+		}
+	}
+}
+
+:global {
+	// 总部视角切换门店modal提示
+	.ant-modal.info-select-store {
+		position: absolute;
+		top: 80px;
+		right: 162px;
+		.ant-modal-confirm {
+			&-title {
+				font-size: 16px;
+				font-weight: 500;
+				font-family: PingFangSC-Medium, PingFang SC, sans-serif;
+				color: rgba(48, 53, 64, 1);
+			}
+			&-content {
+				margin: 8px 0 0 0 !important;
+				font-size: 14px;
+				font-family: PingFangSC-Regular, PingFang SC, sans-serif;
+				font-weight: 400;
+				line-height: 22px;
+				color: rgba(82, 88, 102, 1);
+			}
+			&-btns {
+				margin-top: 8px;
+				button {
+					height: 24px;
+					width: 58px;
+					padding: 0;
+					text-align: center;
+				}
+			}
+		}
+		.ant-modal-body {
+			padding: 16px 24px;
+			min-height: 118px;
 		}
 	}
 }
