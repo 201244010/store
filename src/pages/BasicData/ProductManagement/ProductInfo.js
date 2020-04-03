@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { Button, Card } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
+import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
 import ProductInfoBasic from './ProductInfo-Basic';
 import ProductInfoWeight from './ProductInfo-Weight';
 import ProductInfoPrice from './ProductInfo-Price';
 import ProductInfoExtraCustom from './ProductInfo-ExtraCustom';
 import ProductInfoExtraInfo from './ProductInfo-ExtraInfo';
 import ProductInfoExtraPrice from './ProductInfo-ExtraPrice';
-import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
 import * as styles from './ProductManagement.less';
 
 const PRODUCT_BASIC = {
@@ -172,17 +172,17 @@ class ProductInfo extends Component {
 						productPriceExtra,
 					}}
 				/>
-				<ProductInfoExtraCustom
-					{...{
-						productInfo,
-					}}
-				/>
 				<ProductInfoExtraInfo
 					{...{
 						productInfo,
 					}}
 				/>
 				<ProductInfoExtraPrice
+					{...{
+						productInfo,
+					}}
+				/>
+				<ProductInfoExtraCustom
 					{...{
 						productInfo,
 					}}

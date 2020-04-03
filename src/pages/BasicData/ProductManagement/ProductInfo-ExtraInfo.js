@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card } from 'antd';
+import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { normalizeInfo } from '@/utils/utils';
 import * as styles from '@/pages/BasicData/ProductManagement/ProductManagement.less';
@@ -114,7 +115,7 @@ const ProductInfoExtraInfo = props => {
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.info.expiryDate' }),
-			value: expiryDate,
+			value: expiryDate ? moment.unix(expiryDate).format('YYYY-MM-DD') : '',
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.info.shelfLife' }),

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Col, DatePicker, Form, Input, InputNumber, Row } from 'antd';
+import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { normalizeInfo } from '@/utils/utils';
 import * as RegExp from '@/constants/regexp';
@@ -24,13 +25,9 @@ const ExtraPrice = props => {
 		customPrice2Description = '',
 		customPrice3Description = '',
 		promoteStartDate = '',
-		// promoteStartTime = '',
-		// promoteEndDate = '',
-		// promoteEndTime = '',
-		// memberPromoteStartDate = '',
-		// memberPromoteStartTime = '',
+		promoteEndDate = '',
+		memberPromoteStartDate = '',
 		memberPromoteEndDate = '',
-		// memberPromoteEndTime = '',
 		memberPoint = '',
 		promoteReason = '',
 		promoteFlag = '',
@@ -112,7 +109,7 @@ const ExtraPrice = props => {
 				label: formatMessage({ id: 'basicData.product.extra.price.promoteDate' }),
 				type: 'RangePicker',
 				getFieldName: 'promoteDate',
-				value: promoteStartDate,
+				value: [promoteStartDate ? moment.unix(promoteStartDate) : '', promoteEndDate ? moment.unix(promoteEndDate) : ''],
 				required: false,
 				message: '',
 				validator: false,
@@ -123,7 +120,7 @@ const ExtraPrice = props => {
 				label: formatMessage({ id: 'basicData.product.extra.price.memberPromoteDate' }),
 				type: 'RangePicker',
 				getFieldName: 'memberPromoteDate',
-				value: memberPromoteEndDate,
+				value: [memberPromoteStartDate ? moment.unix(memberPromoteStartDate) : '', memberPromoteEndDate ? moment.unix(memberPromoteEndDate) : ''],
 				required: false,
 				message: '',
 				validator: false,

@@ -63,9 +63,13 @@ const dataSerializer = (item) => {
 	if (item.people_detect_status) {
 		object.isDynamic = true; // 开关展开
 		object.isCustomer = true; // customer勾选
-	} 
-	
-	if (typeof item.people_detect_status !== 'undefined') {
+	}
+
+	// 没有这个字段，则是旧版本或者ss
+	if (typeof item.people_detect_status === 'undefined') {
+		object.isCustomer = 0;
+		object.hasCustomer = false;
+	} else {
 		object.hasCustomer = true;
 	}
 

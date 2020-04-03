@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card } from 'antd';
+import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { normalizeInfo } from '@/utils/utils';
 import * as styles from '@/pages/BasicData/ProductManagement/ProductManagement.less';
@@ -19,13 +20,9 @@ const ProductInfoExtraPrice = props => {
 		customPrice2Description = '',
 		customPrice3Description = '',
 		promoteStartDate = '',
-		promoteStartTime = '',
 		promoteEndDate = '',
-		promoteEndTime = '',
 		memberPromoteStartDate = '',
-		memberPromoteStartTime = '',
 		memberPromoteEndDate = '',
-		memberPromoteEndTime = '',
 		memberPoint = '',
 		promoteReason = '',
 		promoteFlag = '',
@@ -58,35 +55,19 @@ const ProductInfoExtraPrice = props => {
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.price.promoteStartDate' }),
-			value: promoteStartDate,
-		},
-		{
-			label: formatMessage({ id: 'basicData.product.extra.price.promoteStartTime' }),
-			value: promoteStartTime,
+			value: promoteStartDate ? moment.unix(promoteStartDate).format('YYYY-MM-DD HH:mm') : '',
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.price.promoteEndDate' }),
-			value: promoteEndDate,
-		},
-		{
-			label: formatMessage({ id: 'basicData.product.extra.price.promoteEndTime' }),
-			value: promoteEndTime,
+			value: promoteEndDate ? moment.unix(promoteEndDate).format('YYYY-MM-DD HH:mm') : '',
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.price.memberPromoteStartDate' }),
-			value: memberPromoteStartDate,
-		},
-		{
-			label: formatMessage({ id: 'basicData.product.extra.price.memberPromoteStartTime' }),
-			value: memberPromoteStartTime,
+			value: memberPromoteStartDate ? moment.unix(memberPromoteStartDate).format('YYYY-MM-DD HH:mm') : '',
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.price.memberPromoteEndDate' }),
-			value: memberPromoteEndDate,
-		},
-		{
-			label: formatMessage({ id: 'basicData.product.extra.price.memberPromoteEndTime' }),
-			value: memberPromoteEndTime,
+			value: memberPromoteEndDate ? moment.unix(memberPromoteEndDate).format('YYYY-MM-DD HH:mm') : '',
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.price.memberPoint' }),

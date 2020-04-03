@@ -106,7 +106,7 @@ class Studio extends Component {
 			}
 		};
 
-		this.detectFonts();
+		// this.detectFonts();
 	}
 
 	componentWillUnmount() {
