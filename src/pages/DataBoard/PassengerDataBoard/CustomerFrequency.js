@@ -55,7 +55,7 @@ class CustomerFrequency extends PureComponent {
 					return val.day;
 				}
 				if (timeType === 2) {
-					return val.week;
+					return val.day;
 				}
 				if (timeType === 3) {
 					return val.week;
