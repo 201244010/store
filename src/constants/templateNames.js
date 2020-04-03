@@ -5,6 +5,8 @@ const templates =  {
 	'out-of-store': '缺货',
 	'stock-tacking': '盘点',
 	'stock_tacking': '盘点',
+	'normal-price-display': '价格显示',
+	'normal_price_display': '价格显示',
 	'Default_Mode_White': '预置白色闪灯模式',
 	'Default_Mode_Blue': '预置蓝色闪灯模式',
 	'Default_Mode_Green': '预置绿色闪灯模式',

@@ -86,7 +86,7 @@ const router = [
 				],
 			},
 
-			// 客户中心
+			// 客流
 			{
 				path: '/dataAnalyze',
 				icon: 'blank',
@@ -102,7 +102,7 @@ const router = [
 				],
 			},
 
-			// 门店监控
+			// 监控
 			{
 				path: '/storeMonitor',
 				icon: 'blank',
@@ -186,7 +186,7 @@ const router = [
 				],
 			},
 
-			// 商品管理
+			// 商品
 			{
 				path: '/productManagement',
 				icon: 'blank',
@@ -240,7 +240,7 @@ const router = [
 				],
 			},
 
-			// 交易管理
+			// 交易
 			{
 				path: '/transManagement',
 				icon: 'blank',
@@ -279,7 +279,7 @@ const router = [
 				],
 			},
 
-			// 服务管理
+			// 服务
 			{
 				path: '/serviceManagement',
 				name: 'serviceManagement',
@@ -310,7 +310,7 @@ const router = [
 				],
 			},
 
-			// 设备管理
+			// 设备
 			{
 				path: '/deviceManagement',
 				name: 'deviceManagement',
@@ -444,7 +444,7 @@ const router = [
 								component: './DeviceManagement/Network/NetworkOverview',
 							},
 							{
-								path: '/deviceManagement/network/detail',
+								path: '/deviceManagement/network/list/detail',
 								name: 'detail',
 								id: 'networkDetail',
 								hideInMenu: true,
@@ -458,7 +458,7 @@ const router = [
 								component: './DeviceManagement/Network/NetworkConfig',
 							},
 							{
-								path: '/deviceManagement/network/clientList',
+								path: '/deviceManagement/network/list/clientList',
 								name: 'clientList',
 								id: 'clientList',
 								hideInMenu: true,
@@ -507,7 +507,7 @@ const router = [
 				routes: [
 					{
 						path: '/basicData',
-						redirect: '/basicData/merchantManagement/view',
+						redirect: '/basicData/merchantManagement',
 					},
 					{
 						path: '/basicData/merchantManagement',
@@ -515,10 +515,6 @@ const router = [
 						routes: [
 							{
 								path: '/basicData/merchantManagement',
-								redirect: '/basicData/merchantManagement/view',
-							},
-							{
-								path: '/basicData/merchantManagement/view',
 								name: 'view',
 								id: 'merchantView',
 								hideInMenu: true,
@@ -592,10 +588,6 @@ const router = [
 						routes: [
 							{
 								path: '/basicData/employeeManagement',
-								redirect: '/basicData/employeeManagement/list',
-							},
-							{
-								path: '/basicData/employeeManagement/list',
 								name: 'employeeList',
 								id: 'employeeList',
 								component: './BasicData/Employee',
@@ -638,10 +630,6 @@ const router = [
 						routes: [
 							{
 								path: '/basicData/roleManagement',
-								redirect: '/basicData/roleManagement/roleList',
-							},
-							{
-								path: '/basicData/roleManagement/roleList',
 								name: 'roleList',
 								id: 'roleList',
 								component: './RoleManagement/RoleList',
@@ -676,18 +664,18 @@ const router = [
 						id: 'faceidLibrary',
 						// component: './index.js',
 						routes: [
-							{ path: '/basicData/faceidLibrary', redirect: '/basicData/faceidLibrary/faceidLibraryList' },
 							{
-								path: '/basicData/faceidLibrary/faceidLibraryList/photoManagement',
-								name: 'photoManagement',
-								hideInMenu: true,
-								id: 'photoList',
-								component: './IPC/PhotoManagement/PhotoManagement.js',
-							},
-							{
-								path: '/basicData/faceidLibrary/faceidLibraryList',
+								path: '/basicData/faceidLibrary',
 								id: 'faceidLibraryList',
 								component: './IPC/FaceidLibrary/LibraryList.js',
+								hideInMenu: true,
+							},
+							{
+								path: '/basicData/faceidLibrary/photoManagement',
+								name: 'photoManagement',
+								id: 'photoList',
+								component: './IPC/PhotoManagement/PhotoManagement.js',
+								hideInMenu: true,
 							},
 						],
 					},

@@ -181,7 +181,7 @@ class DisplayConfig extends Component {
 					bordered={false}
 					style={{ width: '100%' }}
 				>
-					<Row gutter={10} className={styles['m-b-15']}>
+					<Row gutter={10} className={styles['m-b-24']}>
 						<Col span={4} offset={8} className={styles.title}>
 							{formatMessage({id: 'esl.device.display.page.toggle.page.two'})}
 						</Col>
@@ -192,7 +192,7 @@ class DisplayConfig extends Component {
 							/>
 						</Col>
 					</Row>
-					<Row gutter={10} className={styles['m-b-15']}>
+					<Row gutter={10} className={styles['m-b-24']}>
 						<Col span={8} className={styles['page-name']}>{formatMessage({id: 'esl.device.display.page.name'})}：</Col>
 						<Col span={4}>
 							<Input
@@ -211,7 +211,7 @@ class DisplayConfig extends Component {
 					</Row>
 					{
 						(page2Config.template_config || []).map((config, index) => (
-							<Row gutter={10} className={styles['m-b-15']} key={config.model_id}>
+							<Row gutter={10} className={styles['m-b-24']} key={config.model_id}>
 								<Col span={8} className={styles['page-name']}>{config.model_name}：</Col>
 								<Col span={4}>
 									<Select
@@ -254,7 +254,7 @@ class DisplayConfig extends Component {
 							</Row>
 						))
 					}
-					<Row gutter={10} className={styles['m-b-15']}>
+					<Row gutter={10} className={styles['m-b-24']}>
 						<Col span={4} offset={8}>
 							<Button type="primary" loading={loading} onClick={this.submit}>{formatMessage({id: 'btn.submit'})}</Button>
 						</Col>

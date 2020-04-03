@@ -58,14 +58,8 @@ const ExtraPriceInfoFields = [
 	'customPrice1Description',
 	'customPrice2Description',
 	'customPrice3Description',
-	'promoteStartDate',
-	'promoteStartTime',
-	'promoteEndDate',
-	'promoteEndTime',
-	'memberPromoteStartDate',
-	'memberPromoteStartTime',
-	'memberPromoteEndDate',
-	'memberPromoteEndTime',
+	'promoteDate',
+	'memberPromoteDate',
 	'memberPoint',
 	'promoteReason',
 	'promoteFlag',
@@ -145,6 +139,7 @@ class ProductCU extends Component {
 				const result = map([{ from: 'Type', to: 'type' }])(
 					format('toCamel')(response.data || {})
 				);
+				console.log('response.data', response.data);
 				// console.log(result);
 				this.setState({
 					productType: result.type || 0,
@@ -317,14 +312,26 @@ class ProductCU extends Component {
 				submitValue.extraInfo = {};
 				ExtraInfoFields.forEach(field => {
 					if (submitValue[field]) {
-						submitValue.extraInfo[field] = submitValue[field];
+						if (field === 'expiryDate') {
+							submitValue.extraInfo[field] = values[field].unix();
+						} else {
+							submitValue.extraInfo[field] = submitValue[field];
+						}
 					}
 					delete submitValue[field];
 				});
 				submitValue.extraPriceInfo = {};
 				ExtraPriceInfoFields.forEach(field => {
 					if (submitValue[field]) {
-						submitValue.extraPriceInfo[field] = submitValue[field];
+					    if (field === 'promoteDate') {
+						    submitValue.extraPriceInfo.promoteStartDate = values[field][0].unix();
+						    submitValue.extraPriceInfo.promoteEndDate = values[field][1].unix();
+						} else if (field === 'memberPromoteDate') {
+						    submitValue.extraPriceInfo.memberPromoteStartDate = values[field][0].unix();
+						    submitValue.extraPriceInfo.memberPromoteEndDate = values[field][1].unix();
+					    } else {
+							submitValue.extraPriceInfo[field] = submitValue[field];
+						}
 					}
 					delete submitValue[field];
 				});
@@ -335,7 +342,6 @@ class ProductCU extends Component {
 					}
 					delete submitValue[field];
 				});
-				console.log('validateFieldsValues', submitValue);
 				const response = await submitFunction[action]({
 					options: {
 						...submitValue,

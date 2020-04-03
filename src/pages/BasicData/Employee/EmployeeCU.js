@@ -193,9 +193,9 @@ class EmployeeCU extends Component {
 		return formattedList;
 	};
 
-	handleSubmit = () => {
+	handleSubmit = async () => {
 		const {
-			form: { validateFields, setFields },
+			form: { validateFields, setFields, getFieldValue },
 			checkUsernameExist,
 			createEmployee,
 			updateEmployee,
@@ -206,6 +206,7 @@ class EmployeeCU extends Component {
 				employeeInfo: { number: initNumber },
 			},
 		} = this.props;
+		await this.getUserInfoByUsername(getFieldValue('username'));
 		validateFields(async (err, values) => {
 			if (!err) {
 				const { mappingList = [], username, number } = values;

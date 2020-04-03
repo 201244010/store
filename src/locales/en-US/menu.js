@@ -31,6 +31,7 @@ export default {
 	'menu.storeMonitor.motionMessage': 'Motion Message',
 	'menu.storeMonitor.liveReplay': 'Live Replay',
 	'menu.storeMonitor.cloudStorage': 'Cloud Storage',
+	'menu.storeMonitor.cloudStorage.orderSubmission': 'Submit Order',
 	'menu.storeMonitor.subscriptionSuccess': 'Subscription results',
 	'menu.storeMonitor.orderSubmission': 'Submit Order',
 	'menu.storeMonitor.orderSubmission.qrpay': 'Pay',

@@ -184,7 +184,10 @@ export default {
 							base: ((item.path || '').slice(1).split('/') || [])[0],
 							path: item.path,
 						}));
-						// CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, shopId || storeList[0].shopId);
+						if (storeList.length === 1) {
+							CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeList[0].shopId);
+						}
+						console.log('shopId', CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY));
 					}
 					console.log('formattedPermissionList: ', formattedPermissionList);
 					if (formattedPermissionList.length > 0) {

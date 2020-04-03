@@ -459,18 +459,19 @@ class TopPassengerDataBoard extends React.Component {
 								onChange={this.handleRadioChange}
 							>
 								<Radio.Button value={1}>
-									{formatMessage({ id: 'databoard.search.yesterday' })}
+									{formatMessage({ id: 'databoard.unit.days' })}
 								</Radio.Button>
 								<Radio.Button value={2}>
-									{formatMessage({ id: 'databoard.search.week' })}
+									{formatMessage({ id: 'databoard.unit.weeks' })}
 								</Radio.Button>
 								<Radio.Button value={3}>
-									{formatMessage({ id: 'databoard.search.month' })}
+									{formatMessage({ id: 'databoard.unit.months' })}
 								</Radio.Button>
 							</Radio.Group>
 							{dateType === 1 && (
 								<DatePicker
 									allowClear={false}
+									defaultValue={moment().subtract(1, 'days')}
 									disabledDate={this.disabledDate}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 1);
@@ -480,6 +481,7 @@ class TopPassengerDataBoard extends React.Component {
 							{dateType === 2 && (
 								<WeekPicker
 									allowClear={false}
+									defaultValue={moment().subtract(1, 'days').startOf('week')}
 									disabledDate={this.disabledDate}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 2);
@@ -489,6 +491,7 @@ class TopPassengerDataBoard extends React.Component {
 							{dateType === 3 && (
 								<MonthPicker
 									allowClear={false}
+									defaultValue={moment().subtract(1, 'days').startOf('month')}
 									disabledDate={this.disabledDate}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 3);
@@ -723,6 +726,7 @@ class TopPassengerDataBoard extends React.Component {
 									<Table
 										dataSource={dataSource}
 										columns={this.columns}
+										rowKey='shopId'
 										pagination={{
 											pageSize: 5,
 											hideOnSinglePage: true,

@@ -1,8 +1,11 @@
 import React from 'react';
-import { Card, Col, Form, Input, Row } from 'antd';
+import { Card, Row, Col, Form, Input, InputNumber, DatePicker } from 'antd';
+import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import { customValidate } from '@/utils/customValidate';
 import { normalizeInfo } from '@/utils/utils';
+import * as RegExp from '@/constants/regexp';
+
+const dateFormat = 'YYYY-MM-DD';
 
 const ExtraInfo = props => {
 	const {
@@ -53,6 +56,9 @@ const ExtraInfo = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.packSize' }),
+				type: 'InputNumber',
+				min: 1,
+				precision: 0,
 				getFieldName: 'packSize',
 				value: packSize,
 				required: false,
@@ -63,11 +69,12 @@ const ExtraInfo = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.stock' }),
+				type: 'InputNumber',
 				getFieldName: 'stock',
 				value: stock,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 		],
@@ -75,21 +82,23 @@ const ExtraInfo = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.safetyStock' }),
+				type: 'InputNumber',
 				getFieldName: 'safetyStock',
 				value: safetyStock,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.dailyMeanSales' }),
+				type: 'InputNumber',
 				getFieldName: 'dailyMeanSales',
 				value: dailyMeanSales,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 		],
@@ -97,21 +106,23 @@ const ExtraInfo = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.todaySalesQty' }),
+				type: 'InputNumber',
 				getFieldName: 'todaySalesQty',
 				value: todaySalesQty,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.cumulatedSalesQty' }),
+				type: 'InputNumber',
 				getFieldName: 'cumulatedSalesQty',
 				value: cumulatedSalesQty,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 		],
@@ -119,21 +130,23 @@ const ExtraInfo = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.onOrderQty' }),
+				type: 'InputNumber',
 				getFieldName: 'onOrderQty',
 				value: onOrderQty,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.shelfQty' }),
+				type: 'InputNumber',
 				getFieldName: 'shelfQty',
 				value: shelfQty,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 		],
@@ -229,8 +242,9 @@ const ExtraInfo = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.expiryDate' }),
+				type: 'DatePicker',
 				getFieldName: 'expiryDate',
-				value: expiryDate,
+				value: expiryDate ? moment.unix(expiryDate) : '',
 				required: false,
 				message: '',
 				validator: false,
@@ -273,11 +287,12 @@ const ExtraInfo = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.supervisedBy' }),
+				type: 'InputNumber',
 				getFieldName: 'supervisedBy',
 				value: supervisedBy,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 			{
@@ -417,7 +432,7 @@ const ExtraInfo = props => {
 	return (
 		<Card title={formatMessage({ id: 'basicData.product.extra.info.title' })} bordered={false}>
 			{
-				extraInfoList.map((itemList,index) => (
+				extraInfoList.map((itemList, index) => (
 					<Row key={index}>
 						{
 							itemList.map(item => {
@@ -427,14 +442,54 @@ const ExtraInfo = props => {
 								}
 								if(item.validator) {
 									itemRules.push({
-										validator: (rule, value, callback) =>
-											customValidate({
-												field: item.field,
-												rule,
-												value,
-												callback,
-											}),
+										validator: (rule, value, callback) => {
+											if (!value) {
+												callback();
+											} else if (!RegExp.productInfo.test(value)) {
+												const message = `basicData.product.error.${item.getFieldName}`;
+												callback(formatMessage({ id: message }));
+											} else {
+												callback();
+											}
+										},
 									});
+								}
+								if (item.type === 'InputNumber') {
+									const numProps = {};
+									if (item.hasOwnProperty('min')) {
+										numProps.min = item.min;
+									}
+									if (item.hasOwnProperty('precision')) {
+										numProps.precision = item.precision;
+									}
+									return (
+										<Col span={item.colSpan} key={item.label}>
+											<Form.Item label={item.label}>
+												{getFieldDecorator(item.getFieldName, {
+													initialValue: item.value,
+													validateTrigger: 'onBlur',
+													rules: itemRules,
+												})(
+													<InputNumber
+														{...numProps}
+														style={{width: '100%'}}
+													/>)}
+											</Form.Item>
+										</Col>
+									);
+								}
+								if (item.type === 'DatePicker') {
+									return (
+										<Col span={item.colSpan} key={item.label}>
+											<Form.Item label={item.label}>
+												{getFieldDecorator(item.getFieldName, {
+													initialValue: item.value,
+													validateTrigger: 'onBlur',
+													rules: itemRules,
+												})(<DatePicker style={{width: '100%'}} format={dateFormat} />)}
+											</Form.Item>
+										</Col>
+									);
 								}
 								return (
 									<Col span={item.colSpan} key={item.label}>
