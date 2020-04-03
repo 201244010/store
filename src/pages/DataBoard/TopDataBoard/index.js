@@ -210,7 +210,7 @@ class TopDataBoard extends Component {
 			},
 			{
 				title: formatMessage({ id: 'databoard.top.customer.count' }),
-				width: 100,
+				width: 160,
 				dataIndex: 'valueFormat',
 			},
 		];
@@ -230,7 +230,7 @@ class TopDataBoard extends Component {
 			},
 			{
 				title: formatMessage({ id: 'databoard.order.sales' }),
-				width: 100,
+				width: 160,
 				dataIndex: 'valueFormat',
 			},
 		];

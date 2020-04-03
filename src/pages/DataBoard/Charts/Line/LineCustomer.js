@@ -16,7 +16,7 @@ const chartOption = {
 		type: 'area',
 		position: 'time*value',
 	},
-	linesize: 3,
+	lineSize: 3,
 	innerTitle: 'chart title area=true',
 	chartScale: {
 		time: {
