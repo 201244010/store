@@ -101,8 +101,8 @@ export default {
 	'databoard.top.rank': '排名',
 	'databoard.top.shop': '门店',
 	'databoard.top.operation': '操作',
-	'databoard.top.customer.count': '进客流量',
-	'databoard.top.rank.customer': '进店流量排行',
+	'databoard.top.customer.count': '进店客流',
+	'databoard.top.rank.customer': '进店客流排行',
 	'databoard.top.rank.customer.tip':
 		'0点至当前时间，所有门店进店客流排名情况（若某门店尚未绑定AI识客摄像机，则无相关进店客流数据）',
 	'databoard.top.rank.sales': '销售额排行',
