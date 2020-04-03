@@ -132,13 +132,21 @@ class Pie extends Component {
 				</div>
 
 				<div className={styles.legend}>
-					{data.map((item, index) => (
-						<div key={index}>
-							<Badge color={colorArray[index]} />
-							<span className={styles['item-name']}>{item.name}</span>
-							<span className={styles['item-value']}>{item.value}</span>
-						</div>
-					))}
+					<div>
+						{data.map((item, index) => (
+							<div key={index}>
+								<Badge color={colorArray[index]} />
+								<span className={styles['item-name']}>{item.name}</span>
+							</div>
+						))}
+					</div>
+					<div>
+						{data.map((item, index) => (
+							<div key={index}>
+								<span className={styles['item-value']}>{item.value}</span>
+							</div>
+						))}
+					</div>
 				</div>
 			</div>
 		);
