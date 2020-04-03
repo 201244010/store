@@ -606,13 +606,14 @@ export const checkAnchor = (anchor = null) => {
 };
 
 export const normalizeInfo = (info) => {
-	Object.keys(info).forEach(key => {
-		if (Number(info[key]) === -1) {
-			info[key] = undefined;
+	const copyInfo = JSON.parse(JSON.stringify(info));
+	Object.keys(copyInfo).forEach(key => {
+		if (Number(copyInfo[key]) === -1) {
+			copyInfo[key] = undefined;
 		}
 	});
 
-	return info;
+	return copyInfo;
 };
 
 export const getCountDown = (seconds, level = 'hour') => {

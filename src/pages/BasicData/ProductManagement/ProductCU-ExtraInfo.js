@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Row, Col, Form, Input, InputNumber, DatePicker } from 'antd';
+import moment from 'moment';
 import { formatMessage } from 'umi/locale';
 import { normalizeInfo } from '@/utils/utils';
 import * as RegExp from '@/constants/regexp';
@@ -243,7 +244,7 @@ const ExtraInfo = props => {
 				label: formatMessage({ id: 'basicData.product.extra.info.expiryDate' }),
 				type: 'DatePicker',
 				getFieldName: 'expiryDate',
-				value: expiryDate,
+				value: expiryDate ? moment(expiryDate) : '',
 				required: false,
 				message: '',
 				validator: false,

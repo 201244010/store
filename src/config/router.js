@@ -86,7 +86,7 @@ const router = [
 				],
 			},
 
-			// 客户中心
+			// 客流
 			{
 				path: '/dataAnalyze',
 				icon: 'blank',
@@ -102,7 +102,7 @@ const router = [
 				],
 			},
 
-			// 门店监控
+			// 监控
 			{
 				path: '/storeMonitor',
 				icon: 'blank',
@@ -186,7 +186,7 @@ const router = [
 				],
 			},
 
-			// 商品管理
+			// 商品
 			{
 				path: '/productManagement',
 				icon: 'blank',
@@ -240,7 +240,7 @@ const router = [
 				],
 			},
 
-			// 交易管理
+			// 交易
 			{
 				path: '/transManagement',
 				icon: 'blank',
@@ -279,7 +279,7 @@ const router = [
 				],
 			},
 
-			// 服务管理
+			// 服务
 			{
 				path: '/serviceManagement',
 				name: 'serviceManagement',
@@ -310,7 +310,7 @@ const router = [
 				],
 			},
 
-			// 设备管理
+			// 设备
 			{
 				path: '/deviceManagement',
 				name: 'deviceManagement',

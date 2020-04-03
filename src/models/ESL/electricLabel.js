@@ -593,17 +593,24 @@ export default {
 
 			const response = yield call(ESLServices.batchChangeTemplate, options);
 			if (response.code === ERROR_OK) {
-				message.success(
-					formatMessage({ id: 'esl.device.esl.change.template.success' }),
-					DURATION_TIME
-				);
-				yield put({
-					type: 'updateState',
-					payload: { loading: false },
-				});
-				yield put({
-					type: 'fetchElectricLabels',
-				});
+				if (response.data.failure_esl_id_list && response.data.failure_esl_id_list.length) {
+					message.error(
+						formatMessage({ id: 'esl.device.esl.change.template.fail' }),
+						DURATION_TIME
+					);
+				} else {
+					message.success(
+						formatMessage({ id: 'esl.device.esl.change.template.success' }),
+						DURATION_TIME
+					);
+					yield put({
+						type: 'updateState',
+						payload: { loading: false },
+					});
+					yield put({
+						type: 'fetchElectricLabels',
+					});
+				}
 			} else {
 				message.error(
 					formatMessage({ id: 'esl.device.esl.change.template.fail' }),
