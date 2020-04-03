@@ -1,0 +1,145 @@
+@font-face {
+	font-family: 'Gotham-Bold';
+	src: url('@/assets/font/Gotham-Bold.otf');
+}
+@import '~@/styles/common.less';
+
+.dashboard-wrapper {
+	margin: -24px;
+}
+
+.empty-wrapper {
+	margin-top: 240px;
+}
+
+.display-content {
+	margin: 24px;
+	.data-detail {
+		:global {
+			.ant-col {
+				margin-bottom: 24px;
+			}
+		}
+	}
+	:global {
+		.overview-bar,
+		.ant-row {
+			margin-bottom: 24px;
+		}
+		.tabel-wrapper {
+			min-height: 476px;
+		}
+		.shop-name {
+			color: #4b7afa;
+		}
+		.ant-card {
+			border-radius: 8px;
+		}
+		.ant-card-head-title {
+			span {
+				font-size: 16px;
+				font-family: PingFangSC-Medium, PingFang SC, sans-serif;
+				font-weight: 500;
+				color: rgba(48, 53, 64, 1);
+				line-height: 24px;
+			}
+		}
+		.tooltip__icon {
+			color: #777e8c;
+			font-size: 14px;
+			margin-left: 12px;
+		}
+		.g2-tooltip {
+			// visibility: visible;
+			padding: 8px 12px !important;
+			box-shadow: 0 2px 4px 0 rgba(51, 60, 79, 0.1) !important;
+			border-radius: 8px !important;
+		}
+		.g2-tooltip-list {
+			.detail {
+				// padding: 8px;
+				.item {
+					margin: 0;
+					&__name {
+						font-size: 14px;
+						font-family: PingFangSC-Regular, PingFang SC, sans-serif;
+						font-weight: 400;
+						color: rgba(119, 126, 140, 1);
+						line-height: 20px;
+					}
+
+					&__value {
+						font-size: 20px;
+						font-family: Gotham-Bold, Gotham, sans-serif;
+						font-weight: bold;
+						color: rgba(48, 53, 64, 1);
+						line-height: 25px;
+					}
+
+					&__labelX {
+						font-size: 12px;
+						font-family: PingFangSC-Regular, PingFang SC, sans-serif;
+						font-weight: 400;
+						color: rgba(119, 126, 140, 1);
+						line-height: 16px;
+					}
+				}
+			}
+		}
+	}
+}
+
+.status-bar {
+	width: 100%;
+	height: 64px;
+	padding: 16px 24px;
+	background: #ffffff;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	// .left-content {
+	// }
+	.right-content {
+		display: flex;
+		align-items: center;
+	}
+
+	.icon-wrapper {
+		width: 24px;
+		height: 24px;
+		margin-left: 24px;
+
+		text-align: center;
+		cursor: pointer;
+	}
+}
+
+.customer-card-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	:global {
+		.ant-radio-button-wrapper-checked {
+			box-shadow: -1px 0 0 0 @font-color-primary;
+		}
+
+		.ant-radio-button-wrapper:hover {
+			color: @font-color-primary;
+		}
+
+		.ant-radio-group-solid {
+			.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+				background: @font-color-primary;
+				border-color: @font-color-primary;
+
+				&:hover {
+					background: @font-color-primary;
+					border-color: @font-color-primary;
+				}
+			}
+		}
+	}
+}

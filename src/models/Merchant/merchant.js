@@ -229,24 +229,18 @@ export default {
 			const result = yield put.resolve({
 				type: 'store/getStoreList',
 			});
+
 			const { data: { shopList = [] } = {} } = format('toCamel')(result);
-			const [defaultShop, ,] = shopList;
 
 			yield put({
 				type: 'store/setShopListInStorage',
 				payload: { shopList },
 			});
 
-			if (defaultShop) {
-				yield put({
-					type: 'store/setShopIdInCookie',
-					payload: { shopId: defaultShop.shopId },
-				});
-			} else {
-				yield put({
-					type: 'store/removeShopIdInCookie',
-				});
-			}
+			yield put({
+				type: 'store/setShopIdInCookie',
+				payload: { shopId: 0 },
+			});
 
 			yield put({
 				type: 'menu/goToPath',

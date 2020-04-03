@@ -1,18 +1,26 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, formatMessage } from 'umi/locale';
-import { Spin, Tag, Menu, Icon, Avatar, /* Select, */ TreeSelect } from 'antd';
+import { Spin, Tag, Menu, Icon, Avatar, /* Select, */ TreeSelect, Modal } from 'antd';
 // import moment from 'moment';
 // import router from 'umi/router';
 import groupBy from 'lodash/groupBy';
+import { MENU_PREFIX } from '@/constants';
 import * as CookieUtil from '@/utils/cookies';
 import { formatTimeMessage } from '@/utils/utils';
-import { MENU_PREFIX } from '@/constants';
 // import HeaderSearch from '../HeaderSearch';
-import HeaderDropdown from '../HeaderDropdown';
 import NoticeIcon from '../NoticeIcon';
+import HeaderDropdown from '../HeaderDropdown';
+
 import styles from './index.less';
 
 export default class GlobalHeaderRight extends PureComponent {
+	constructor() {
+		super();
+		this.state = {
+			showSelectStoreTip: false,
+		};
+	}
+
 	componentDidMount() {
 		const { dispatch } = this.props;
 		dispatch({
@@ -88,6 +96,31 @@ export default class GlobalHeaderRight extends PureComponent {
 		// window.location.reload();
 	};
 
+	showTopViewTip = () => {
+		const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
+		if (shopId === 0) {
+			const flag = localStorage.getItem('__menuToggleTipHide__');
+			if (!flag) {
+				this.setState({ showSelectStoreTip: true });
+				Modal.info({
+					className: 'info-select-store',
+					icon: '',
+					title: formatMessage({ id: 'databoard.top.tip.text.info' }),
+					content: formatMessage({ id: 'databoard.top.tip.text.content' }),
+					okText: formatMessage({ id: 'databoard.top.tip.text.confirm' }),
+					maskClosable: false,
+					onOk: () => {
+						this.setState({ showSelectStoreTip: false });
+					},
+				});
+				localStorage.setItem('__menuToggleTipHide__', true);
+				return true;
+			}
+			return false;
+		}
+		return false;
+	};
+
 	render() {
 		const {
 			currentUser,
@@ -102,6 +135,8 @@ export default class GlobalHeaderRight extends PureComponent {
 			store: { /* allStores: storeList, */ treeData },
 			selectedStore,
 		} = this.props;
+
+		const { showSelectStoreTip } = this.state;
 
 		const menu = (
 			<Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
@@ -122,16 +157,29 @@ export default class GlobalHeaderRight extends PureComponent {
 		if (theme === 'dark') {
 			className = `${styles.right}  ${styles.dark}`;
 		}
+		this.showTopViewTip();
 		return (
 			<div className={className}>
-				<TreeSelect
-					style={{ width: '250px' }}
-					treeData={treeData}
-					value={treeData && treeData.length > 0 && selectedStore}
-					onChange={this.handleStoreChange}
-					treeDefaultExpandedKeys={[`${selectedStore}`]}
-					dropdownStyle={{ maxHeight: '50vh'}}
-				/>
+				<div
+					className={`${styles['select-store']} ${
+						showSelectStoreTip ? styles.white : ''
+					}`}
+				>
+					{/* <div className={`${styles['select-store']} ${styles.white}`}> */}
+					<TreeSelect
+						style={{ width: '250px' }}
+						treeData={treeData}
+						value={
+							treeData && treeData.length > 0
+								? `${selectedStore !== undefined ? selectedStore : ''}`
+								: ''
+						}
+						onChange={this.handleStoreChange}
+						treeDefaultExpandedKeys={[`${selectedStore}`]}
+						dropdownStyle={{ maxHeight: '50vh' }}
+						disabled={showSelectStoreTip}
+					/>
+				</div>
 				{/* <Select
 					value={selectedStore}
 					style={{ width: '250px' }}

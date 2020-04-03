@@ -4,8 +4,8 @@ import { Form, Button, Input } from 'antd';
 import { connect } from 'dva';
 import Storage from '@konata9/storage.js';
 import * as CookieUtil from '@/utils/cookies';
-import styles from './Merchant.less';
 import { ERROR_OK } from '@/constants/errorCode';
+import styles from './Merchant.less';
 
 @connect(
 	state => ({
@@ -30,6 +30,7 @@ class MerchantCreate extends Component {
 		if (shopList.length === 0) {
 			CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
 			goToPath('newOrganization');
+			// router.push(`${MENU_PREFIX.STORE}/createStore`);
 		} else {
 			const defaultStore = shopList[0] || {};
 			CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);

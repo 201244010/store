@@ -11,20 +11,20 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage } from 'umi/locale';
-import router from 'umi/router';
+import SiderMenu from '@/components/SiderMenu';
+import { MENU_PREFIX } from '@/constants';
+import { ERROR_OK } from '@/constants/errorCode';
+import { env } from '@/config';
+// import router from 'umi/router';
 import Storage from '@konata9/storage.js';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import * as CookieUtil from '@/utils/cookies';
 import MQTTWrapper from '@/components/MQTT';
 import Header from './Header';
 import Context from './MenuContext';
-import SiderMenu from '@/components/SiderMenu';
-import { MENU_PREFIX } from '@/constants';
 import styles from './BasicLayout.less';
 import logo from '../assets/logo-big.png';
-import { ERROR_OK } from '@/constants/errorCode';
 // import logoEN from '../assets/menuLogoEN.png';
-import { env } from '@/config';
 
 import 'react-perfect-scrollbar/dist/css/styles.css';
 
@@ -94,6 +94,7 @@ class BasicLayout extends React.PureComponent {
 		const {
 			location: { pathname },
 		} = window;
+
 		if (![`${MENU_PREFIX.STORE}/newOrganization`, '/account'].includes(pathname)) {
 			this.checkStore();
 		}
@@ -111,13 +112,12 @@ class BasicLayout extends React.PureComponent {
 			this.handleMenuCollapse(false);
 		}
 
-		if (this.dom){
+		if (this.dom) {
 			const erd = ResizeDetecor();
 			erd.listenTo(this.dom, () => {
 				this.scrollbar._ps.update();
 			});
 		}
-
 	}
 
 	getContext() {
@@ -151,7 +151,12 @@ class BasicLayout extends React.PureComponent {
 					inMenuChecking: false,
 				});
 			} else {
-				router.goBack();
+				goToPath('noPermission');
+				this.setState({
+					inMenuChecking: false,
+				});
+				// goToPath('noPermission');
+				// router.goBack();
 			}
 		}
 	};
@@ -204,6 +209,7 @@ class BasicLayout extends React.PureComponent {
 		if (fixSiderbar && layout !== 'topmenu' && !isMobile) {
 			return {
 				paddingLeft: collapsed ? '80px' : '256px',
+				minHeight: '100vh',
 			};
 		}
 		return null;
@@ -256,7 +262,6 @@ class BasicLayout extends React.PureComponent {
 				<Layout
 					style={{
 						...this.getLayoutStyle(),
-						minHeight: '100vh',
 					}}
 				>
 					<Header
@@ -297,13 +302,14 @@ class BasicLayout extends React.PureComponent {
 }
 
 export default connect(
-	({ global, setting, menu, user, store: storeData }) => ({
+	({ global, setting, menu, user, store: storeData, role }) => ({
 		collapsed: global.collapsed,
 		layout: setting.layout,
 		menuData: menu.menuData,
 		breadcrumbNameMap: menu.breadcrumbNameMap,
 		user,
 		storeData,
+		role,
 		...setting,
 	}),
 	dispatch => ({

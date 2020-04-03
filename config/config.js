@@ -1,7 +1,7 @@
 // ref: https://umijs.org/config/
 import { primaryColor } from '../src/defaultSettings';
 // import routers from '../src/config/router';
-import routers from '../src/config/uat-router';
+import routers from '../src/config/router';
 // import routers from './router';
 import sysConfig from '../src/config/env';
 

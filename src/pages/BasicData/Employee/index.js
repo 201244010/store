@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Card } from 'antd';
 import { format } from '@konata9/milk-shake';
+import { ERROR_OK } from '@/constants/errorCode';
 import SearchBar from './SearchBar';
 import SearchResult from './SerachResult';
-import { ERROR_OK } from '@/constants/errorCode';
 
 @connect(
 	state => ({

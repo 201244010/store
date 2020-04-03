@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
+import { formatMessage } from 'umi/locale';
 import Tag from '@/components/Tag';
 import { STATES } from '@/constants/mapping';
-import { formatMessage } from 'umi/locale';
 import { getLocationParam, compareVersion } from '@/utils/utils';
 
 export default class SearchResult extends Component {

@@ -1079,8 +1079,7 @@ class Studio extends Component {
 			'Zfull-GB': 'Zfull-GB.ttf',
 			'Alibaba Sans': 'AlibabaSans.otf'
 		};
-		const baseUrl = Config.API_ADDRESS.split(':')[0];
-		downloadFileByClick(`http://${baseUrl}/static/${fontUrls[font]}`);
+		downloadFileByClick(`${Config.API_ADDRESS}/static/${fontUrls[font]}`);
 	};
 
 	render() {

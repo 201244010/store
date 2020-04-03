@@ -3,15 +3,25 @@ import isEqual from 'lodash/isEqual';
 import { formatMessage } from 'umi/locale';
 import router from 'umi/router';
 import Storage from '@konata9/storage.js';
+import { format } from '@konata9/milk-shake';
 import Authorized from '@/utils/Authorized';
-// import * as MenuAction from '@/services/Merchant/merchant';
+import * as MenuAction from '@/services/Merchant/merchant';
 import { ERROR_OK } from '@/constants/errorCode';
 // import routeConfig from '@/config/devRouter';
-import routeConfig from '@/config/uat-router';
-
-import { env, FIRST_MENU_ORDER } from '@/config';
+import routeConfig from '@/config/router';
+import { hasCompanyViewPermission } from '@/utils/utils';
+import * as CookieUtil from '@/utils/cookies';
 
 const { check } = Authorized;
+
+const CompanyView = [
+	{ base: 'dashboard', path: '/dashboard' },
+	{ base: 'dataAnalyze', path: '/dataAnalyze/passenger' },
+	{ base: 'basicData', path: '/basicData/merchantManagement' },
+	{ base: 'basicData', path: '/basicData/organizationManagement' },
+	{ base: 'basicData', path: '/basicData/roleManagement' },
+	{ base: 'basicData', path: '/basicData/employeeManagement' },
+];
 
 // Conversion router to menu.
 function formatter(data, parentAuthority, parentName) {
@@ -96,7 +106,15 @@ const getBreadcrumbNameMap = menuData => {
 const memoizeOneGetBreadcrumbNameMap = memoizeOne(getBreadcrumbNameMap, isEqual);
 
 const checkMenuAuth = (menuData, authMenuList = []) =>
-	menuData.filter(menu => authMenuList.includes(menu.path.slice(1)));
+	menuData
+		.filter(menu => authMenuList.some(authMenu => authMenu.path.indexOf(menu.path) > -1))
+		.map(menu => {
+			const { children = [] } = menu;
+			return {
+				...menu,
+				children: checkMenuAuth(children, authMenuList),
+			};
+		});
 
 const flatRoutes = routesList => {
 	let result = [];
@@ -132,7 +150,13 @@ export default {
 			const { id: pathId } = flattedRoutes.find(route => route.path === path) || {};
 			return pathId;
 		},
-		*getMenuData({ payload }, { put }) {
+		*getAuthMenu(_, { call }) {
+			const response = yield call(MenuAction.getAuthMenu);
+			return response;
+		},
+
+		*getMenuData({ payload }, { put, select }) {
+			const { storeList } = yield select(state => state.store);
 			const { routes, authority } = payload;
 			const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
 			const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
@@ -143,64 +167,34 @@ export default {
 				type: 'role/getUserPermissionList',
 			});
 
-			if (!['dev', 'test'].includes(env)) {
+			if ( permissionResult && permissionResult.code === ERROR_OK ) {
+				const { data: permissionData = {} } = permissionResult || {};
+				const { permissionList = [] } = format('toCamel')(permissionData);
+				console.log('permissionList, ', permissionList);
 
-				const authMenuResult = yield put.resolve({ type: 'getAuthMenu' });
-
-				if (
-					permissionResult &&
-					permissionResult.code === ERROR_OK &&
-					authMenuResult &&
-					authMenuResult.code === ERROR_OK
-				) {
-					const { data: permissionData = {} } = permissionResult || {};
-					const { permissionList = [] } = format('toCamel')(permissionData);
-					console.log('permissionList, ', permissionList);
-
-					if (permissionList.length === 0) {
-						filteredMenuData = [];
+				if (permissionList.length === 0) {
+					filteredMenuData = [];
+				} else {
+					const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
+					let formattedPermissionList;
+					if (hasCompanyViewPermission(permissionList, storeList) && shopId === 0) {
+						formattedPermissionList = CompanyView;
 					} else {
-						const formattedPermissionList = permissionList.map(item => ({
+						formattedPermissionList = permissionList.map(item => ({
 							base: ((item.path || '').slice(1).split('/') || [])[0],
 							path: item.path,
 						}));
-						console.log('formattedPermissionList: ', formattedPermissionList);
-
-						const { data: authMenuData = {} } = authMenuResult || {};
-						const { menuList = [] } = format('toCamel')(authMenuData);
-						console.log('menu control: ', menuList);
-
-						const filteredPermissionList = formattedPermissionList.filter(item => {
-							if (env === 'dev') {
-								return FIRST_MENU_ORDER.includes(item.base);
-							}
-							return (menuList || []).includes(item.base);
-						});
-
-						console.log('filteredPermissionList: ', filteredPermissionList);
-
-						if (filteredPermissionList.length > 0) {
-							filteredMenuData = checkMenuAuth(menuData, filteredPermissionList);
+						if (storeList.length === 1) {
+							CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeList[0].shopId);
 						}
+						console.log('shopId', CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY));
+					}
+					console.log('formattedPermissionList: ', formattedPermissionList);
+					if (formattedPermissionList.length > 0) {
+						filteredMenuData = checkMenuAuth(menuData, formattedPermissionList);
 					}
 				}
 			}
-
-			// if (env !== 'dev') {
-			// 	const response = yield call(MenuAction.getAuthMenu);
-			// 	if (response && response.code === ERROR_OK) {
-			// 		const { menu_list: menuList = [] } = response.data || {};
-			// 		const list = new Set(menuList);
-			// 		console.log('menu control', menuList);
-			// 		if (list.length > 0) {
-			// 			filteredMenuData = checkMenuAuth(
-			// 				menuData,
-			// 				FIRST_MENU_ORDER.filter(menu => list.includes(menu))
-			// 			);
-			// 			Storage.set({ FILTERED_MENU: filteredMenuData }, 'local');
-			// 		}
-			// 	}
-			// }
 
 			yield put({
 				type: 'save',
@@ -215,7 +209,7 @@ export default {
 		},
 
 		goToPath({ payload = {} }) {
-			const { pathId = null, urlParams = {}, linkType = null } = payload;
+			const { pathId = null, urlParams = {}, linkType = null, anchorId = null } = payload;
 
 			const { path } = flattedRoutes.find(route => route.id === pathId) || {};
 
@@ -231,6 +225,10 @@ export default {
 			if (keyList.length > 0) {
 				const query = keyList.map(key => `${key}=${urlParams[key]}`).join('&');
 				targetPath = `${path}?${query}`;
+			}
+
+			if (anchorId) {
+				targetPath = `${targetPath}#${anchorId}`;
 			}
 
 			const { open, location, origin } = window;

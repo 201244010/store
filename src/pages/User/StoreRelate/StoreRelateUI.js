@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import { Button, Form, Input } from 'antd';
 import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
+import { hasCompanyViewPermission } from '@/utils/utils';
 import styles from './StoreRelate.less';
 
 const MerchantCreate = props => {
@@ -113,9 +114,11 @@ const MerchantInfo = props => {
 	state => ({
 		merchant: state.merchant,
 		store: state.store,
+		role: state.role,
 	}),
 	dispatch => ({
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		getPermissionList: payload => dispatch({ type: 'role/getPermissionList', payload }),
 		setShopIdInCookie: ({ shopId }) =>
 			dispatch({ type: 'store/setShopIdInCookie', payload: { shopId } }),
 		setShopListInStorage: ({ shopList }) =>
@@ -141,6 +144,7 @@ class StoreRelate extends Component {
 	checkStoreExist = async () => {
 		const {
 			getStoreList,
+			getPermissionList,
 			setShopIdInCookie,
 			setShopListInStorage,
 			removeShopIdInCookie,
@@ -149,6 +153,7 @@ class StoreRelate extends Component {
 		} = this.props;
 		await getCompanyList();
 		const response = await getStoreList({});
+		const permissionList = await getPermissionList();
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
 			const shopList = result.shopList || [];
@@ -160,9 +165,12 @@ class StoreRelate extends Component {
 				goToPath('newOrganization');
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
-				// const defaultStore = shopList[0] || {};
-				const defaultStore = shopList.find(item => item.userBindStatus);
-				setShopIdInCookie({ shopId: defaultStore.shopId });
+				if (hasCompanyViewPermission(permissionList, shopList)) {
+					setShopIdInCookie({ shopId: 0 });
+				} else {
+					const defaultStore = shopList[0] || {};
+					setShopIdInCookie({ shopId: defaultStore.shopId });
+				}
 				// CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
 				goToPath('root');
 				// router.push('/');
