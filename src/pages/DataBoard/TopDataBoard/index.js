@@ -243,23 +243,23 @@ class TopDataBoard extends Component {
 					}}
 				/>
 				<div className={styles['display-content']}>
+					{!(
+						hasCustomerData ||
+						hasOrderData ||
+						loading.effects['topview/getDeviceOverView']
+					) && (
+						<div className={styles['empty-wrapper']}>
+							<PageEmpty
+								description={formatMessage({
+									id: 'databoard.top.data.empty.current',
+								})}
+							/>
+						</div>
+					)}
 					<OverViewBar />
 					{/* <Spin spinning={loading.effects['topview/getDeviceOverView']}> */}
 					<Spin spinning={loading.effects['topview/getLatestPassengerTrend']}>
 						<Row gutter={20} className={styles['data-detail']}>
-							{!(
-								hasCustomerData ||
-								hasOrderData ||
-								loading.effects['topview/getDeviceOverView']
-							) && (
-								<div>
-									<PageEmpty
-										description={formatMessage({
-											id: 'databoard.top.data.empty.current',
-										})}
-									/>
-								</div>
-							)}
 							{hasCustomerData && (
 								<Col span={12}>
 									<Card

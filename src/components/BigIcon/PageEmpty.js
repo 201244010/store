@@ -9,7 +9,7 @@ const PageEmpty = ({ description }) => (
 		image={storeIcon}
 		description={description}
 		imageStyle={{
-			height: 300,
+			height: 342,
 		}}
 	/>
 );

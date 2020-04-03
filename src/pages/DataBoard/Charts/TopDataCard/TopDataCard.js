@@ -36,7 +36,7 @@ const handleEarlyLabelText = (timeType, dataType, label) => {
 };
 
 const handleUnitText = (unit, count, timeType) => {
-	if (count === undefined || typeof count !== 'number') {
+	if (count === undefined || typeof count !== 'number' || Number.isNaN(count)) {
 		return '';
 	}
 	if (unit === 'frequency') {
@@ -55,7 +55,7 @@ const handleFormat = (count, fn) => {
 };
 
 const handleCountFormat = (count, label, timeType) => {
-	if (count === undefined || typeof count !== 'number') {
+	if (count === undefined || typeof count !== 'number' || Number.isNaN(count)) {
 		return '--';
 	}
 	// let int, point, float;

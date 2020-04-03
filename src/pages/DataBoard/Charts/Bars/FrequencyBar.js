@@ -1,6 +1,7 @@
 import React from 'react';
 import { Chart, Geom, Axis, Tooltip } from 'bizcharts';
 import { formatMessage } from 'umi/locale';
+import _ from 'lodash';
 // import { frequencyData } from './mock';
 import styles from '../chartsCommon.less';
 
@@ -48,8 +49,10 @@ export default class FrequencyBar extends React.Component {
 		// const data = frequencyData;
 		const { data, chartHeight = 250 } = this.props;
 		const barAmout = data.length;
+
+		const max = _.maxBy(data, o => o.value).value;
 		const scale =
-			barAmout === 0
+			max < 10
 				? {
 					frequency: {
 						type: 'linear',
@@ -61,7 +64,7 @@ export default class FrequencyBar extends React.Component {
 						type: 'linear',
 						nice: true,
 						min: 0,
-						max: 5,
+						max: 10,
 						tickCount: VALUE_THICK_INTERVAL,
 					},
 				  }

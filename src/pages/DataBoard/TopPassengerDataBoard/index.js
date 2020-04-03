@@ -505,7 +505,7 @@ class TopPassengerDataBoard extends React.Component {
 						</div>
 					</div>
 					{!hasCustomerData && !loading.effects['topview/getPermessionPassengerFlow'] && (
-						<div>
+						<div className={styles['empty-wrapper']}>
 							<PageEmpty
 								description={formatMessage({
 									id: 'databoard.top.data.empty.history',
