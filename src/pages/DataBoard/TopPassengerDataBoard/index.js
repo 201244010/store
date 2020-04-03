@@ -720,6 +720,7 @@ class TopPassengerDataBoard extends React.Component {
 									<Table
 										dataSource={dataSource}
 										columns={this.columns}
+										rowKey='shopId'
 										pagination={{
 											pageSize: 5,
 											hideOnSinglePage: true,
@@ -736,7 +737,7 @@ class TopPassengerDataBoard extends React.Component {
 								className={styles['footer-cards']}
 							>
 								<div className={styles['footer-cards-list']}>
-									{mainGuestList.map(item => {
+									{mainGuestList.map((item, index) => {
 										const totalPercent = Math.round(
 											(item.uniqCount / uniqCountTotal) * 100
 										);
@@ -746,6 +747,7 @@ class TopPassengerDataBoard extends React.Component {
 										return (
 											<MainCustomerCard
 												scene="total"
+												key={index}
 												gender={item.gender}
 												num={item.uniqCount}
 												totalPercent={totalPercent}
