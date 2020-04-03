@@ -320,12 +320,12 @@ class OrgDetail extends React.Component {
 						>
 							{formatMessage({id: 'orgDetail.modify'})}
 						</Button>
-						{/* <Button
+						<Button
 							onClick={() => orgStatus ? this.handleEnable() : this.handleDeprecate()}
 							className={styles.btn}
 						>
 							{orgStatus ? formatMessage({ id: 'organization.action.enable'}) :formatMessage({ id: 'organization.action.disabled'})}
-						</Button> */}
+						</Button>
 						<Button
 							className={(level >= 5 || orgStatus === 1 ) ? styles.noShow: styles.btn}
 							loading={!!(loading.effects['companyInfo/createOrganization'] ||

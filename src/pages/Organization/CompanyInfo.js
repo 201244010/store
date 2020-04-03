@@ -470,7 +470,7 @@ class CompanyInfo extends React.Component {
 		const showShopInfo = tagValue === undefined ? true : tagValue === 0;
 		const currentLanguage = getLocale();
 		const FORM_LAYOUT = currentLanguage === 'zh-CN' ? HEAD_FORM_ITEM_LAYOUT : HEAD_FORM_ITEM_LAYOUT_EN;
-
+		console.log('orgPidParams', orgPidParams);
 		return (
 			<Spin spinning={!!(loading.effects['companyInfo/getAllOrgName'] ||
 				loading.effects['companyInfo/getOrganizationTreeByCompanyInfo'] ||
@@ -561,7 +561,7 @@ class CompanyInfo extends React.Component {
 						<FormItem label={formatMessage({ id: 'companyInfo.org.parent.label' })}>
 							{getFieldDecorator('orgPid', {
 							// validateTrigger: 'onSelect',
-								initialValue: orgPidParams || 0,
+								initialValue: orgPidParams === undefined ? '' : (orgPidParams || 0),
 								rules: [
 									{
 										required: true,

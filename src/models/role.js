@@ -182,6 +182,14 @@ export default {
 				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
 					permissionList.find(permission => permission.name === `/${menu}`)
 				).filter(item => !!item);
+				// 滤除后台脏数据
+				const basicData = sortedPermission.find(item => item.name === '/basicData');
+				if (basicData && basicData.permissionList.length) {
+					const index = basicData.permissionList.findIndex(item => item.path.indexOf('storeManagement') > -1);
+					if (index >= 0) {
+						basicData.permissionList.splice(index, 1);
+					}
+				}
 
 				const tmpList = formatData(sortedPermission).map(item => {
 					const formatResult = formatPath(item);
