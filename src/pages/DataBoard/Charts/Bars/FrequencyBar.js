@@ -48,19 +48,37 @@ export default class FrequencyBar extends React.Component {
 		// const data = frequencyData;
 		const { data, chartHeight = 250 } = this.props;
 		const barAmout = data.length;
-		const scale = {
-			frequency: {
-				type: 'linear',
-				nice: false,
-				range: [0.09, 0.91],
-				tickCount: barAmout,
-			},
-			value: {
-				type: 'linear',
-				nice: true,
-				tickCount: VALUE_THICK_INTERVAL,
-			},
-		};
+		const scale =
+			barAmout === 0
+				? {
+					frequency: {
+						type: 'linear',
+						nice: false,
+						range: [0.09, 0.91],
+						tickCount: barAmout,
+					},
+					value: {
+						type: 'linear',
+						nice: true,
+						min: 0,
+						max: 5,
+						tickCount: VALUE_THICK_INTERVAL,
+					},
+				  }
+				: {
+					frequency: {
+						type: 'linear',
+						nice: false,
+						range: [0.09, 0.91],
+						tickCount: barAmout,
+					},
+					value: {
+						type: 'linear',
+						nice: true,
+						min: 0,
+						tickCount: VALUE_THICK_INTERVAL,
+					},
+				  };
 		return (
 			<div>
 				<Chart padding="auto" height={chartHeight} data={data} forceFit scale={scale}>
