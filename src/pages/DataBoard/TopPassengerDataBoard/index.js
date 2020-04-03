@@ -481,7 +481,9 @@ class TopPassengerDataBoard extends React.Component {
 							{dateType === 2 && (
 								<WeekPicker
 									allowClear={false}
-									defaultValue={moment().subtract(1, 'days').startOf('week')}
+									defaultValue={moment()
+										.subtract(1, 'days')
+										.startOf('week')}
 									disabledDate={this.disabledDate}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 2);
@@ -491,7 +493,9 @@ class TopPassengerDataBoard extends React.Component {
 							{dateType === 3 && (
 								<MonthPicker
 									allowClear={false}
-									defaultValue={moment().subtract(1, 'days').startOf('month')}
+									defaultValue={moment()
+										.subtract(1, 'days')
+										.startOf('month')}
 									disabledDate={this.disabledDate}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 3);
@@ -726,7 +730,7 @@ class TopPassengerDataBoard extends React.Component {
 									<Table
 										dataSource={dataSource}
 										columns={this.columns}
-										rowKey='shopId'
+										rowKey="shopId"
 										pagination={{
 											pageSize: 5,
 											hideOnSinglePage: true,
@@ -742,29 +746,31 @@ class TopPassengerDataBoard extends React.Component {
 								})}
 								className={styles['footer-cards']}
 							>
-								{mainGuestList.length !== 0 ? (
-									mainGuestList.map((item, index) => {
-										const totalPercent = Math.round(
-											(item.uniqCount / uniqCountTotal) * 100
-										);
-										const frequentPercent = Math.round(
-											(item.regularUniqCount / item.uniqCount) * 100
-										);
-										return (
-											<MainCustomerCard
-												key={index}
-												scene="total"
-												gender={item.gender}
-												num={item.uniqCount}
-												totalPercent={totalPercent}
-												frequentPercent={frequentPercent}
-												age={item.ageRangeCode}
-											/>
-										);
-									})
-								) : (
-									<MainCustomerCard scene="totalDefault" />
-								)}
+								<div className={styles['footer-cards-list']}>
+									{mainGuestList.length !== 0 ? (
+										mainGuestList.map((item, index) => {
+											const totalPercent = Math.round(
+												(item.uniqCount / uniqCountTotal) * 100
+											);
+											const frequentPercent = Math.round(
+												(item.regularUniqCount / item.uniqCount) * 100
+											);
+											return (
+												<MainCustomerCard
+													key={index}
+													scene="total"
+													gender={item.gender}
+													num={item.uniqCount}
+													totalPercent={totalPercent}
+													frequentPercent={frequentPercent}
+													age={item.ageRangeCode}
+												/>
+											);
+										})
+									) : (
+										<MainCustomerCard scene="totalDefault" />
+									)}
+								</div>
 							</Card>
 						</>
 					)}
