@@ -95,7 +95,7 @@ const EarlyLabel = ({ label, dataType, timeType }) => {
 
 const EarlyData = ({ count, earlyCount, compareRate, chainRate, label, unit, timeType }) => {
 	if (compareRate) {
-		if (!count || !earlyCount) return '--';
+		if (!earlyCount) return '--';
 		let changeRate;
 		if (chainRate) {
 			// 环比
@@ -104,7 +104,7 @@ const EarlyData = ({ count, earlyCount, compareRate, chainRate, label, unit, tim
 			changeRate = earlyCount ? (count - earlyCount) / earlyCount : undefined;
 		}
 		const formatRate =
-			changeRate &&
+			typeof changeRate === 'number' &&
 			formatFloatByPermile({
 				value: Math.abs(changeRate),
 				returnType: 'join',
@@ -128,14 +128,10 @@ const EarlyData = ({ count, earlyCount, compareRate, chainRate, label, unit, tim
 	}
 	return (
 		<>
-			{earlyCount ? (
-				<div className="text">
-					<span>{handleCountFormat(earlyCount, label, timeType)}</span>
-					<span>{handleUnitText(unit, earlyCount, timeType)}</span>
-				</div>
-			) : (
-				'--'
-			)}
+			<div className="text">
+				<span>{handleCountFormat(earlyCount, label, timeType)}</span>
+				<span>{handleUnitText(unit, earlyCount, timeType)}</span>
+			</div>
 		</>
 	);
 };
