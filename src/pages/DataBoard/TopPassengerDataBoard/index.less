@@ -1,0 +1,97 @@
+@import '~@/styles/common.less';
+
+.main {
+	margin: -24px;
+}
+
+.empty-wrapper{
+	margin-top: 240px;
+}
+
+.passengerAnalyze-title {
+	padding: 16px 24px;
+	margin: 0;
+	background: #fff;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	:global {
+		.ant-radio-group {
+			margin-right: 24px;
+		}
+
+		.ant-radio-button-wrapper-checked {
+			box-shadow: -1px 0 0 0 @font-color-primary;
+		}
+
+		.ant-radio-button-wrapper:hover {
+			color: @font-color-primary;
+		}
+
+		.ant-radio-group-solid {
+			.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+				background: @font-color-primary;
+				border-color: @font-color-primary;
+			}
+		}
+	}
+}
+
+.overview-bar {
+	margin: 24px 12px 24px !important;
+}
+
+.chart-bar {
+	margin: 24px;
+	border-radius: 8px;
+
+	.guest {
+		display: flex;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+
+		.chart-bar-card {
+			width: calc((100% - 48px) / 3);
+		}
+
+		.chart-bar-card:hover {
+			color: #ff8133;
+
+			.pie-card {
+				border: 1px solid rgba(255, 129, 51, 1);
+			}
+		}
+
+		.pie-title {
+			font-weight: 500;
+		}
+
+		.pie-card {
+			margin-top: 8px;
+			border-radius: 8px;
+			border: 1px solid rgba(230, 232, 235, 1);
+			padding: 32px 0;
+			//height: 224px;
+			cursor: pointer;
+		}
+	}
+
+	.search-bar {
+		margin: 24px 0;
+	}
+}
+
+.footer-cards {
+	border-radius: 8px;
+	margin: 24px;
+	.footer-cards-list {
+		display: flex;
+		justify-content: space-between;
+	}
+	:global {
+		.ant-card-head {
+			border-bottom: 1px solid rgba(240, 242, 245, 1);
+		}
+	}
+}

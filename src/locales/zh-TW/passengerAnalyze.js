@@ -4,7 +4,7 @@
 	'passengerAnalyze.regular': '進店熟客',
 	'passengerAnalyze.member': '進店會員數',
 	'passengerAnalyze.trend': '客流變化趨勢',
-	'passengerAnalyze.analyze': '客群分析',
+	'passengerAnalyze.analyze': '客流分析',
 	'passengerAnalyze.analyzing': '數據正在分析中，請稍候...',
 	'passenger.total': '全部',
 	'passenger.regular': '熟客',

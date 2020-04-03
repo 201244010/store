@@ -605,6 +605,17 @@ export const checkAnchor = (anchor = null) => {
 	return null;
 };
 
+export const normalizeInfo = (info) => {
+	const copyInfo = JSON.parse(JSON.stringify(info));
+	Object.keys(copyInfo).forEach(key => {
+		if (Number(copyInfo[key]) === -1) {
+			copyInfo[key] = undefined;
+		}
+	});
+
+	return copyInfo;
+};
+
 export const getCountDown = (seconds, level = 'hour') => {
 	if (!seconds) {
 		console.error('Seconds is null');

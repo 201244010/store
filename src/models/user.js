@@ -90,7 +90,7 @@ export default {
 		*getUserInfo(_, { call, put }) {
 			const response = yield call(Actions.getUserInfo);
 			if (response && response.code === ERROR_OK) {
-				const result = response.data || {};
+				const result = { ...response.data };
 				CookieUtil.setCookieByKey(CookieUtil.USER_INFO_KEY, result);
 				yield put({
 					type: 'storeUserInfo',

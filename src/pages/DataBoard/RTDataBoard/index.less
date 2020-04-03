@@ -1,0 +1,172 @@
+@import '~@/styles/common.less';
+
+.databoard-wrapper {
+	margin: -24px;
+}
+
+.dashboard-title {
+	padding: 16px 24px 0 24px;
+	margin: 0;
+	background: #fff;
+}
+
+.charts-container {
+	padding: 24px;
+}
+
+.no-data-tip {
+	position: absolute;
+	top: 368px;
+	right: 0;
+	// bottom: 0;
+	left: 256px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	.tip-img {
+		width: 417px;
+		height: 342px;
+		margin: 0 auto;
+		background: url(../../../assets/left-bg.png) no-repeat center center / cover;
+	}
+	.tip-text {
+		line-height: 22px;
+		margin-top: -44px;
+		font-size: 16px;
+		font-family: PingFangSC-Medium, PingFang SC, sans-serif;
+		font-weight: 500;
+		color: rgba(119, 126, 140, 1);
+
+		span {
+			display: block;
+			text-align: center;
+		}
+	}
+}
+
+.line-chart-wrapper {
+	min-height: 476px;
+	border-radius: 8px;
+	// width: 796px;
+	// div {
+	// 	height: 400px;
+	// }
+
+	.chart-tab {
+		width: 88px;
+		text-align: center;
+	}
+
+	:global {
+		.ant-radio-button-wrapper-checked {
+			box-shadow: -1px 0 0 0 @font-color-primary;
+			color: @font-color-primary;
+		}
+
+		.ant-radio-button-wrapper:hover {
+			color: @font-color-primary;
+		}
+
+		.ant-radio-group {
+			.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+				// background: @font-color-primary;
+				border-color: @font-color-primary;
+
+				&:hover {
+					// background: @font-color-primary;
+					border-color: @font-color-primary;
+				}
+			}
+		}
+		.ant-card-extra {
+			padding: 12px 0;
+		}
+	}
+}
+.distri-chart-wrapper {
+	margin-top: 24px;
+	min-height: 392px;
+	border-radius: 8px;
+	:global {
+		.ant-card-body {
+			height: 336px;
+		}
+	}
+
+	// .regular-chart,
+	// .age-chart {
+	// 	display: inline-block;
+	// 	// vertical-align: middle;
+	// }
+	.regular-chart {
+		.regular-title {
+			margin-bottom: 76px;
+			color: #525866;
+		}
+		// width: 33%;
+	}
+	// .age-chart {
+	// 	width: 67%;
+	// }
+}
+
+.search-bar {
+	width: 100%;
+	height: 64px;
+	padding: 16px 24px;
+	background: #ffffff;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	:global {
+		.ant-radio-button-wrapper-checked {
+			box-shadow: -1px 0 0 0 @font-color-primary;
+		}
+
+		.ant-radio-button-wrapper:hover {
+			color: @font-color-primary;
+		}
+
+		.ant-radio-group-solid {
+			.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+				background: @font-color-primary;
+				border-color: @font-color-primary;
+
+				&:hover {
+					background: @font-color-primary;
+					border-color: @font-color-primary;
+				}
+			}
+		}
+	}
+
+	.right-content {
+		display: flex;
+		align-items: center;
+	}
+
+	.icon-wrapper {
+		width: 24px;
+		height: 24px;
+		margin-left: 24px;
+
+		text-align: center;
+		cursor: pointer;
+	}
+}
+
+.overview {
+	// margin-top: 24px;
+	// height: 344px;
+	.overview-card {
+		height: 160px;
+		border-radius: 8px;
+	}
+	.overview-row {
+		margin-bottom: 24px;
+	}
+}

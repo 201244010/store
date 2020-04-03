@@ -6,7 +6,6 @@ export const login = (type, options = {}) => {
 	const opts = {
 		body: {
 			...options,
-			// 配合 APP 单点登录修改
 			app_type: 1,
 		},
 	};

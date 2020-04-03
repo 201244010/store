@@ -5,9 +5,9 @@ import { formatMessage } from 'umi/locale';
 import { unixSecondToDate, getLocationParam } from '@/utils/utils';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
-
-import styles from './index.less';
 import global from '@/styles/common.less';
+import styles from './index.less';
+
 
 const PURCHASECODE = {
 	ALL: '0',

@@ -262,9 +262,8 @@ class OrganizationList extends React.Component {
 	handleModify = (target) => {
 		console.log('------modify-----', target);
 		const { navigateTo } = this.props;
-		const { orgId } = target;
-		navigateTo('editOrganization',{ action: 'edit', orgId });
-
+		const { orgId, orgPid } = target;
+		navigateTo('editOrganization',{ action: 'edit', orgId, orgPid });
 	}
 
 	// 查看

@@ -1,27 +1,28 @@
 import sysEnv from './env';
 
-export const { env, country } = sysEnv;
-
 const {
 	location: { protocol },
 } = window;
+
+export const { env, country } = sysEnv;
+
+export const FIRST_MENU_ORDER = [
+	'company',
+	'dashboard',
+	'customerCenter',
+	'storeMonitor',
+	'productManagement',
+	'transManagement',
+	'serviceManagement',
+	'deviceManagement',
+	'basicData',
+];
 
 export const HTTP_PREFIX = {
 	'http:': 'https:',
 	'https:': 'https:',
 };
 
-export const FIRST_MENU_ORDER = [
-	'dashBoard',
-	// 'dashboard',
-	'application',
-	'devices',
-	'esl',
-	'network',
-	'basicData',
-	'faceidLibrary',
-	'dataAnalyze'
-];
 
 const WEB_SOCKET_PREFIX = {
 	dev: 'ws',

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { ROLE_MAPPING } from '@/constants/mapping';
 import BasicInfo from './BasicInfo';
 import Security from './Security';
 import Store from './Store';
-import { ROLE_MAPPING } from '@/constants/mapping';
 import * as styles from './Account.less';
 
 @connect(

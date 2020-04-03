@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import { format } from '@konata9/milk-shake';
 import * as Actions from '@/services/network';
 import { formatSpeed } from '@/utils/utils';
@@ -38,7 +39,8 @@ export default {
 			if (response && response.code === ERROR_OK) {
 				const { data = {} } = response;
 				const { networkList: getList } = format('toCamel')(data);
-				const { networkList } = yield select(state => state.network);
+				const { networkList: nwList } = yield select(state => state.network);
+				const networkList = lodash.cloneDeep(nwList);
 				const tmpList =
 					networkList.length > 0
 						? networkList.map(item => {

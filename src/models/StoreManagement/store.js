@@ -488,7 +488,7 @@ export default {
 			}
 		},
 
-		*getOrgLayer(_, { call, put }) {
+		*getOrgLayer(_, { call, put, select }) {
 			const companyId = yield put.resolve({
 				type: 'global/getCompanyIdFromStorage'
 			});
@@ -498,13 +498,14 @@ export default {
 					companyId
 				}
 			});
+			const { storeList } = yield select(state => state.store);
 			const company = {
 				orgId: 0,
 				orgName: companyName,
 				orgStatus: 0,
 				level: 0,
 				orgPid: '',
-				userBindStatus: 0,
+				userBindStatus: storeList.length <= 1 ? 0 : 1,
 			};
 			const response = yield call(getLayerByUser);
 			const { code, data } = response;

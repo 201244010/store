@@ -2,8 +2,8 @@ import React from 'react';
 import { Card, Tabs, Icon } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { IconBandwidth } from '@/components/IconSvg';
 import { STATUS } from '@/constants/index';
+import { IconBandwidth } from '@/components/IconSvg';
 import QosConfig from './QosConfig';
 import QosCreate from './QosConfig/QosCreate';
 

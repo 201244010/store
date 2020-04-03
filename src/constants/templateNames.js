@@ -1,11 +1,12 @@
 import { formatMessage } from 'umi/locale';
 
 const templates =  {
-	'normal-price-display': '价格显示',
 	'out_of_store': '缺货',
 	'out-of-store': '缺货',
 	'stock-tacking': '盘点',
 	'stock_tacking': '盘点',
+	'normal-price-display': '价格显示',
+	'normal_price_display': '价格显示',
 	'Default_Mode_White': '预置白色闪灯模式',
 	'Default_Mode_Blue': '预置蓝色闪灯模式',
 	'Default_Mode_Green': '预置绿色闪灯模式',
@@ -23,6 +24,7 @@ const templates =  {
 	'esl-default-template-BW-2.6': '2.6寸黑白模板',
 	'esl-default-template-BWR-2.6': '2.6寸黑白红模板',
 	'esl-default-template-BWR-4.2': '4.2寸黑白红模板',
+	'esl-default-template-BWR-7.5': '7.5寸黑白红模板',
 	'esl-default-template-normal-2.13': '2.13寸正常模板',
 	'esl-default-template-promotion-2.13': '2.13寸促销模板',
 	'esl-default-template-normal-2.6': '2.6寸正常模板',

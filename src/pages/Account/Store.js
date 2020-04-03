@@ -160,7 +160,7 @@ class Store extends Component {
 							className={styles['margin-clear']}
 							label={formatMessage({ id: 'merchantManagement.merchant.name' })}
 						>
-							<span>{companyName}</span>
+							<span>{companyName || '--'}</span>
 						</Form.Item>
 						<Form.Item
 							className={styles['margin-clear']}
@@ -168,7 +168,7 @@ class Store extends Component {
 								id: 'merchantManagement.merchant.contactPerson',
 							})}
 						>
-							<span>{contactPerson}</span>
+							<span>{contactPerson || '--'}</span>
 						</Form.Item>
 						<Form.Item
 							className={styles['margin-clear']}
@@ -176,7 +176,7 @@ class Store extends Component {
 								id: 'merchantManagement.merchant.contactPhone',
 							})}
 						>
-							<span>{contactTel}</span>
+							<span>{contactTel || '--'}</span>
 						</Form.Item>
 						<Form.Item
 							className={styles['margin-clear']}
@@ -184,7 +184,7 @@ class Store extends Component {
 								id: 'merchantManagement.merchant.contactEmail',
 							})}
 						>
-							<span>{contactEmail}</span>
+							<span>{contactEmail || '--'}</span>
 						</Form.Item>
 					</Form>
 				</Modal>
