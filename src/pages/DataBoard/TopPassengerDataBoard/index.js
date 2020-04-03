@@ -437,6 +437,8 @@ class TopPassengerDataBoard extends React.Component {
 			pageNum,
 			fullPageLoading,
 		} = this.state;
+		const todayTotalCustomer = passengerCount;
+		const earlyTotalCustomer = earlyPassengerCount;
 		const todayTotalCount = passengerCount + passHeadCount;
 		const earlyTotalCount = earlyPassengerCount + earlyPassHeadCount;
 		const todayEnterPercent = passengerCount / todayTotalCount;
@@ -479,7 +481,9 @@ class TopPassengerDataBoard extends React.Component {
 							{dateType === 2 && (
 								<WeekPicker
 									allowClear={false}
-									defaultValue={moment().subtract(1, 'days').startOf('week')}
+									defaultValue={moment()
+										.subtract(1, 'days')
+										.startOf('week')}
 									disabledDate={this.disabledDate}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 2);
@@ -489,7 +493,9 @@ class TopPassengerDataBoard extends React.Component {
 							{dateType === 3 && (
 								<MonthPicker
 									allowClear={false}
-									defaultValue={moment().subtract(1, 'days').startOf('month')}
+									defaultValue={moment()
+										.subtract(1, 'days')
+										.startOf('month')}
 									disabledDate={this.disabledDate}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 3);
@@ -519,14 +525,15 @@ class TopPassengerDataBoard extends React.Component {
 										data={{
 											label: 'totalPassengerCount',
 											unit: '',
-											count: todayTotalCount,
-											earlyCount: earlyTotalCount,
+											count: todayTotalCustomer,
+											earlyCount: earlyTotalCustomer,
 											compareRate: true,
 											toolTipText: this.tooltipFormText(1),
 											labelText: formatMessage({
 												id: 'databoard.top.label.totalPassengerCount',
 											}),
 										}}
+										loading={fullPageLoading}
 										timeType={dateType}
 										dataType={2}
 									/>
@@ -544,6 +551,7 @@ class TopPassengerDataBoard extends React.Component {
 											compareRate: true,
 											toolTipText: '',
 										}}
+										loading={fullPageLoading}
 										timeType={dateType}
 										dataType={2}
 									/>
@@ -561,6 +569,7 @@ class TopPassengerDataBoard extends React.Component {
 											compareRate: true,
 											toolTipText: '',
 										}}
+										loading={fullPageLoading}
 										timeType={dateType}
 										dataType={2}
 									/>
@@ -579,6 +588,7 @@ class TopPassengerDataBoard extends React.Component {
 											toolTipText: this.tooltipFormText(2),
 											chainRate: true,
 										}}
+										loading={fullPageLoading}
 										timeType={dateType}
 										dataType={2}
 									/>
@@ -720,7 +730,7 @@ class TopPassengerDataBoard extends React.Component {
 									<Table
 										dataSource={dataSource}
 										columns={this.columns}
-										rowKey='shopId'
+										rowKey="shopId"
 										pagination={{
 											pageSize: 5,
 											hideOnSinglePage: true,
@@ -737,25 +747,29 @@ class TopPassengerDataBoard extends React.Component {
 								className={styles['footer-cards']}
 							>
 								<div className={styles['footer-cards-list']}>
-									{mainGuestList.map((item, index) => {
-										const totalPercent = Math.round(
-											(item.uniqCount / uniqCountTotal) * 100
-										);
-										const frequentPercent = Math.round(
-											(item.regularUniqCount / uniqCountTotal) * 100
-										);
-										return (
-											<MainCustomerCard
-												scene="total"
-												key={index}
-												gender={item.gender}
-												num={item.uniqCount}
-												totalPercent={totalPercent}
-												frequentPercent={frequentPercent}
-												age={item.ageRangeCode}
-											/>
-										);
-									})}
+									{mainGuestList.length !== 0 ? (
+										mainGuestList.map((item, index) => {
+											const totalPercent = Math.round(
+												(item.uniqCount / uniqCountTotal) * 100
+											);
+											const frequentPercent = Math.round(
+												(item.regularUniqCount / item.uniqCount) * 100
+											);
+											return (
+												<MainCustomerCard
+													key={index}
+													scene="total"
+													gender={item.gender}
+													num={item.uniqCount}
+													totalPercent={totalPercent}
+													frequentPercent={frequentPercent}
+													age={item.ageRangeCode}
+												/>
+											);
+										})
+									) : (
+										<MainCustomerCard scene="totalDefault" />
+									)}
 								</div>
 							</Card>
 						</>

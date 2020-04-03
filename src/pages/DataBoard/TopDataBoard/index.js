@@ -219,7 +219,7 @@ class TopDataBoard extends Component {
 				title: formatMessage({ id: 'databoard.top.rank' }),
 				dataIndex: 'rank',
 				width: 100,
-				sorter: (a, b) => a.value - b.value,
+				sorter: (a, b) => a.rank - b.rank,
 			},
 			{
 				title: formatMessage({ id: 'databoard.top.shop' }),

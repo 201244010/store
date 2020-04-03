@@ -13,7 +13,8 @@ class LinePoint extends PureComponent {
 					type: 'linear',
 					nice: true,
 					min: 0,
-					// tickCount: 6,
+					max: 5,
+					tickCount: 6,
 				},
 			};
 		// 计算y轴最大值,最小值
