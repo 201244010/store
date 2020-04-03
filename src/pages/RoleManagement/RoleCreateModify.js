@@ -175,7 +175,10 @@ class RoleModify extends React.Component {
 		const {
 			role: {
 				permissionList,
-				roleInfo: { name, permissionList: pList },
+				roleInfo: {
+					name,
+					// permissionList: pList
+				},
 			},
 			loading,
 			form: { getFieldDecorator },
@@ -249,7 +252,8 @@ class RoleModify extends React.Component {
 								})(
 									<div>
 										{permissionList.map((item, key) => {
-											const finalList = action === 'modify' ? pList : permissionList;
+											// const finalList = action === 'modify' ? pList : permissionList;
+											const finalList = permissionList;
 											const mappedItem = finalList.find(p => p.group === item.group) || {};
 											return (
 												<div key={key} style={{ marginBottom: '30px' }}>
@@ -259,7 +263,7 @@ class RoleModify extends React.Component {
 														}
 														indeterminate={action === 'create' ? false : mappedItem.indeterminate}
 														checked={action === 'create' ? true : mappedItem.checkAll}
-														disabled={action === 'create'}
+														disabled
 													>
 														{item.checkedList.label}
 													</Checkbox>
@@ -276,7 +280,7 @@ class RoleModify extends React.Component {
 																	item.checkedList.permissionList
 																}
 																value={mappedItem.valueList}
-																disabled={action === 'create'}
+																disabled
 															/>
 														)}
 													</div>
