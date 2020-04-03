@@ -437,6 +437,8 @@ class TopPassengerDataBoard extends React.Component {
 			pageNum,
 			fullPageLoading,
 		} = this.state;
+		const todayTotalCustomer = passengerCount;
+		const earlyTotalCustomer = earlyPassengerCount;
 		const todayTotalCount = passengerCount + passHeadCount;
 		const earlyTotalCount = earlyPassengerCount + earlyPassHeadCount;
 		const todayEnterPercent = passengerCount / todayTotalCount;
@@ -516,8 +518,8 @@ class TopPassengerDataBoard extends React.Component {
 										data={{
 											label: 'totalPassengerCount',
 											unit: '',
-											count: todayTotalCount,
-											earlyCount: earlyTotalCount,
+											count: todayTotalCustomer,
+											earlyCount: earlyTotalCustomer,
 											compareRate: true,
 											toolTipText: this.tooltipFormText(1),
 											labelText: formatMessage({
@@ -732,16 +734,17 @@ class TopPassengerDataBoard extends React.Component {
 								})}
 								className={styles['footer-cards']}
 							>
-								<div className={styles['footer-cards-list']}>
-									{mainGuestList.map(item => {
+								{mainGuestList.length !== 0 ? (
+									mainGuestList.map((item, index) => {
 										const totalPercent = Math.round(
 											(item.uniqCount / uniqCountTotal) * 100
 										);
 										const frequentPercent = Math.round(
-											(item.regularUniqCount / uniqCountTotal) * 100
+											(item.regularUniqCount / item.uniqCount) * 100
 										);
 										return (
 											<MainCustomerCard
+												key={index}
 												scene="total"
 												gender={item.gender}
 												num={item.uniqCount}
@@ -750,8 +753,10 @@ class TopPassengerDataBoard extends React.Component {
 												age={item.ageRangeCode}
 											/>
 										);
-									})}
-								</div>
+									})
+								) : (
+									<MainCustomerCard scene="totalDefault" />
+								)}
 							</Card>
 						</>
 					)}
