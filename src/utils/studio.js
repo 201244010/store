@@ -399,7 +399,7 @@ export const initTemplateDetail = (stage, layers, zoomScale) => {
 		if (layer.bindField && layer.bindField.indexOf('{{') > -1) {
 			layer.bindField = layer.bindField.substring(2, layer.bindField.length - 2);
 		} else {
-			layer.bindField = undefined;
+			layer.bindField = 'no';
 		}
 		if (layer.type) {
 			layer.type = layer.type.toLowerCase();
@@ -483,7 +483,7 @@ export const purifyJsonOfBackEnd = (componentsDetail, fontList = []) => {
 			originOffset.x = componentDetail.x;
 			originOffset.y = componentDetail.y;
 		}
-		if (componentDetail.bindField) {
+		if (componentDetail.bindField && componentDetail.bindField !== 'no') {
 			bindFields.push(componentDetail.bindField);
 			componentDetail.bindField = `{{${componentDetail.bindField}}}`;
 		} else {

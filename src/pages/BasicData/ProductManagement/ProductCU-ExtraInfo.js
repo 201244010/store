@@ -244,7 +244,7 @@ const ExtraInfo = props => {
 				label: formatMessage({ id: 'basicData.product.extra.info.expiryDate' }),
 				type: 'DatePicker',
 				getFieldName: 'expiryDate',
-				value: expiryDate ? moment(expiryDate) : '',
+				value: expiryDate ? moment.unix(expiryDate) : '',
 				required: false,
 				message: '',
 				validator: false,
