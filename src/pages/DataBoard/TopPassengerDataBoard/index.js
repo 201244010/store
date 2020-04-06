@@ -4,6 +4,7 @@ import { Card, Table, Form, Row, Col, Select, Button, DatePicker, Spin, Radio, M
 import moment from 'moment';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
+import { passengerNumFormat } from '@/utils/format';
 import PageEmpty from '@/components/BigIcon/PageEmpty';
 import * as CookieUtil from '@/utils/cookies';
 import { FORM_FORMAT, SEARCH_FORM_COL } from '@/constants/form';
@@ -338,6 +339,7 @@ class TopPassengerDataBoard extends React.Component {
 			title: `${guest}${formatMessage({ id: 'databoard.data.personCount' })}`,
 			dataIndex: keyword,
 			width: 150,
+			render: value => passengerNumFormat({ value, returnType: 'join' }),
 		};
 		this.setState({ dataSource: resultArray });
 	};
