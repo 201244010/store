@@ -95,7 +95,7 @@ const EarlyLabel = ({ label, dataType, timeType }) => {
 
 const EarlyData = ({ count, earlyCount, compareRate, chainRate, label, unit, timeType }) => {
 	if (compareRate) {
-		if (!earlyCount) return '--';
+		if (!earlyCount || !count) return '--';
 		let changeRate;
 		if (chainRate) {
 			// 环比

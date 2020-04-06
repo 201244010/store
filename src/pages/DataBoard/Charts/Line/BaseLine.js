@@ -11,7 +11,7 @@ class LinePoint extends PureComponent {
 				...scale,
 				value: {
 					type: 'linear',
-					nice: true,
+					nice: false,
 					min: 0,
 					max: 5,
 					tickCount: 6,
@@ -32,6 +32,7 @@ class LinePoint extends PureComponent {
 				value: {
 					type: 'linear',
 					nice: false,
+					min: 0,
 					max: 10,
 					tickCount: 6,
 				},
@@ -42,25 +43,25 @@ class LinePoint extends PureComponent {
 				...scale,
 				value: {
 					type: 'linear',
-					nice: true,
+					nice: false,
+					min: 0,
 					max: 50,
 					tickCount: 6,
 				},
 			};
 		}
 		//  max > 50 计算数字位数n * 10
-		// const mul = 10 ** Math.floor(Math.log10(max / 5));
-		// const tickInterval = Math.ceil(max / 5 / mul) * mul;
-		// console.log('groupBy calc:Max', tickInterval * 5);
+		const mul = 10 ** Math.floor(Math.log10(max / 5));
+		const tickInterval = Math.ceil(max / 5 / mul) * mul;
 		return {
 			...scale,
 			value: {
 				type: 'linear',
-				nice: true,
-				tickCount: 6,
-				// tickInterval,
-				// max: tickInterval * 5,
-				// max: 20,
+				nice: false,
+				// tickCount: 6,
+				tickInterval,
+				min: 0,
+				max: tickInterval * 5,
 			},
 		};
 	};
@@ -139,8 +140,6 @@ class LinePoint extends PureComponent {
 		} = this.props;
 
 		const scaleFormat = thickInterval(scale, data);
-		// const min = _.minBy(data.rows, o => o.value).value;
-		// console.log('thickInterval-min-scaleMax:', min, scaleFormat.value.max);
 
 		return (
 			<Chart
