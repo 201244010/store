@@ -104,7 +104,7 @@ export default class FrequencyBar extends React.Component {
 		return (
 			<div>
 				<Chart
-					padding="auto"
+					padding={['auto', 'auto', 45, 'auto']}
 					height={chartHeight}
 					data={data}
 					forceFit
