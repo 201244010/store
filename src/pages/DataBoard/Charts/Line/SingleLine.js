@@ -228,6 +228,7 @@ export default class Line extends Component {
 		const { formatToolTipAxisX, foramtData, formatToolTipName } = this;
 
 		const {
+			padding = 'auto',
 			timeType = 1,
 			chartType = 'value',
 			data = [],
@@ -320,6 +321,7 @@ export default class Line extends Component {
 		return (
 			<LinePoint
 				{...{
+					padding,
 					forceFit: true,
 					data: dataForamtted,
 					scale: chartScale,
