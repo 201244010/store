@@ -3,7 +3,7 @@ import { formatMessage, getLocale } from 'umi/locale';
 import { connect } from 'dva';
 import { Tabs, Form, Button, Modal } from 'antd';
 import Storage from '@konata9/storage.js';
-import { encryption } from '@/utils/utils';
+import { encryption, hasCompanyViewPermission } from '@/utils/utils';
 import RegisterModal from '@/pages/User/Register/RegisterModal';
 import ResetModal from '@/pages/User/ResetPassword/ResetModal';
 import * as CookieUtil from '@/utils/cookies';
@@ -35,8 +35,10 @@ const tabBarStyle = {
 		merchant: state.merchant,
 		store: state.store,
 		loading: state.loading,
+		role: state.role
 	}),
 	dispatch => ({
+		clearStorage: () => dispatch({ type: 'global/clearStorage' }),
 		userLogin: payload => dispatch({ type: 'user/login', payload }),
 		checkImgCode: payload => dispatch({ type: 'user/checkImgCode', payload }),
 		checkUser: payload => dispatch({ type: 'sso/checkUser', payload }),
@@ -45,6 +47,7 @@ const tabBarStyle = {
 		getCompanyList: () => dispatch({ type: 'merchant/getCompanyList' }),
 		setCurrentCompany: payload => dispatch({ type: 'merchant/setCurrentCompany', payload }),
 		getStoreList: payload => dispatch({ type: 'store/getStoreList', payload }),
+		getPermissionList: payload => dispatch({ type: 'role/getPermissionList', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 	})
@@ -62,6 +65,8 @@ class Login extends Component {
 	}
 
 	componentDidMount() {
+		const { clearStorage } = this.props;
+		clearStorage();
 		document.addEventListener('keydown', this.handleKeyDown);
 	}
 
@@ -102,20 +107,27 @@ class Login extends Component {
 	};
 
 	checkStoreExist = async () => {
-		const { getStoreList, goToPath } = this.props;
+		const { getStoreList, getPermissionList, goToPath } = this.props;
 		const response = await getStoreList({});
+
 		if (response && response.code === ERROR_OK) {
 			const result = response.data || {};
 			const shopList = result.shopList || [];
 			Storage.set({ [CookieUtil.SHOP_LIST_KEY]: shopList }, 'local');
 			if (shopList.length === 0) {
+				CookieUtil.removeCookieByKey(CookieUtil.SHOP_ID_KEY);
 				goToPath('newOrganization');
 				// router.push(`${MENU_PREFIX.STORE}/createStore`);
 			} else {
-				// const lastStore = shopList.length;
-				// const defaultStore = shopList[lastStore - 1] || {};
-				const defaultStore = shopList.find(item => item.userBindStatus) || {};
-				CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
+				const permissionList = await getPermissionList();
+
+				if (hasCompanyViewPermission(permissionList, shopList)) {
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, 0);
+				} else {
+					const lastStore = shopList.length;
+					const defaultStore = shopList[lastStore - 1] || {};
+					CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, defaultStore.shopId);
+				}
 				goToPath('root');
 				// router.push('/');
 			}
@@ -343,7 +355,6 @@ class Login extends Component {
 					{/* {currentLanguage === 'zh-CN' ? ( */}
 					<a
 						onClick={() => this.openModalForm('reset')}
-						href="javascript:void(0);"
 						className={`${styles['link-common']}`}
 					>
 						{formatMessage({ id: 'link.forgot.password' })}

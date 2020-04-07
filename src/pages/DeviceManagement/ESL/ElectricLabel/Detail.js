@@ -38,6 +38,9 @@ export default function detail(props) {
 			title: formatMessage({id: 'esl.device.esl.title.name'}),
 			dataIndex: 'name',
 			key: 'name',
+			render: name => (
+				<span>{formatedMessage(name)}</span>
+			)
 		},
 		{
 			title: formatMessage({id: 'esl.device.esl.title.template'}),
