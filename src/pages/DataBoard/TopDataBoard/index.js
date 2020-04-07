@@ -207,6 +207,7 @@ class TopDataBoard extends Component {
 				filters: handleTabelFilters(foramtTabelData(latestCustomerByShop)),
 				onFilter: (value, record) => record.key === value,
 				render: (text, record) => <a onClick={() => toggleShop(record)}>{text}</a>,
+				className: 'shop-name-item',
 			},
 			{
 				title: formatMessage({ id: 'databoard.top.customer.count' }),
@@ -227,6 +228,7 @@ class TopDataBoard extends Component {
 				filters: handleTabelFilters(foramtTabelData(latestOrderAmoutByShop)),
 				onFilter: (value, record) => record.key === value,
 				render: (text, record) => <a onClick={() => toggleShop(record)}>{text}</a>,
+				className: 'shop-name-item',
 			},
 			{
 				title: formatMessage({ id: 'databoard.order.sales' }),
@@ -304,7 +306,7 @@ class TopDataBoard extends Component {
 												</Tooltip>
 											</>
 										}
-										className="tabel-wrapper"
+										className="table-wrapper"
 									>
 										<Table
 											dataSource={foramtTabelData(
@@ -340,7 +342,7 @@ class TopDataBoard extends Component {
 												</Tooltip>
 											</>
 										}
-										className="tabel-wrapper"
+										className="table-wrapper"
 									>
 										<Table
 											dataSource={foramtTabelData(

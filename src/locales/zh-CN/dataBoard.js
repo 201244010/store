@@ -96,7 +96,7 @@ export default {
 	'databoard.top.regularCount': '',
 	'databoard.top.totalAmount': '0点至当前时间，所有门店销售额之和（包含退款金额）',
 	'databoard.top.totalCount':
-		'0点至当前时间，所有门店的成功付款交易笔数之和（一个订单对应唯一一个订单号）',
+		'0点至当前时间，所有门店的成功付款交易笔数之和',
 	'databoard.top.deviceCount': '所有门店设备数量之和',
 	'databoard.top.rank': '排名',
 	'databoard.top.shop': '门店',
