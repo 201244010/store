@@ -6,7 +6,7 @@ import styles from './index.less';
 
 export default class SearchResult extends Component {
 	toRouter = (record) => {
-		router.push(`/iotAccess/posAccess/detail?sn=${record.sn}`);
+		router.push(`/deviceManagement/iotAccess/posAccess/detail?sn=${record.sn}`);
 	};
 
 	render() {
