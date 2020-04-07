@@ -176,8 +176,8 @@ export default class Line extends Component {
 				'name*time*value',
 				(name, labelX, value) => {
 					const valString = formatToolTipValue(value);
-					const valReg = /^\d*.?\d+(?=\D+$)/;
-					const unitReg = /(?<=\d*.?\d+)\D+$/;
+					const valReg = /^\d*\.?\d*/;
+					const unitReg = /\D+$/;
 					let val = valString;
 					let unit = '';
 					if (typeof valString === 'string') {
