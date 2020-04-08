@@ -6,8 +6,6 @@ import LinePoint from './BaseLine';
 import { DATABOARD } from '../constants';
 
 const { TIME_TYPE } = DATABOARD;
-const localMoment = moment();
-localMoment.locale('zh-cn');
 
 // 基于时间维度（小时，日，月）的折线图
 
@@ -44,7 +42,10 @@ const thickTimeMax = (timeType, chartType) => {
 		if (chartType === 'weekFrequency') {
 			max = 4;
 		} else {
-			max = localMoment.endOf('month').format('D') - 1;
+			max =
+				moment()
+					.endOf('month')
+					.format('D') - 1;
 		}
 	}
 	return max;
@@ -111,6 +112,9 @@ const latestDataSuppl = (data, timeType) => {
 
 // 客群周到店频次分析
 const formatToolTipTime = (time, timeFormat) => {
+	const localMoment = moment();
+	localMoment.locale('zh-cn');
+
 	// time: 0,1,2,3,4
 	const startTime = moment(timeFormat).format('MM.DD');
 	let endTime;
@@ -135,6 +139,8 @@ const formatToolTipTime = (time, timeFormat) => {
 export default class Line extends Component {
 	// toopTip内· 时间： x-x
 	formatToolTipAxisX = (time, timeType, name, timeFormat) => {
+		const localMoment = moment();
+		localMoment.locale('zh-cn');
 		if (timeType === TIME_TYPE.DAY) {
 			if (time === 0) {
 				return `${formatMessage({ id: 'databoard.time' })}：${valToTime(time)}`;
@@ -151,10 +157,10 @@ export default class Line extends Component {
 		}
 		if (timeType === TIME_TYPE.MONTH) {
 			if (name === 'customerFrequency') {
-				localMoment.startOf('month');
+				moment().startOf('month');
 				return formatToolTipTime(time, timeFormat);
 			}
-			return `${formatMessage({ id: 'databoard.time' })}：${localMoment
+			return `${formatMessage({ id: 'databoard.time' })}：${moment()
 				.startOf('month')
 				.add(time, 'day')
 				.format('MM.DD')}`;
@@ -222,6 +228,7 @@ export default class Line extends Component {
 		const { formatToolTipAxisX, foramtData, formatToolTipName } = this;
 
 		const {
+			padding = 'auto',
 			timeType = 1,
 			chartType = 'value',
 			data = [],
@@ -236,8 +243,8 @@ export default class Line extends Component {
 				'name*time*value*timeFormat',
 				(name, labelX, value, timeFormat) => {
 					const valString = formatToolTipValue(value);
-					const valReg = /^\d*.?\d+(?=\D+$)/;
-					const unitReg = /(?<=\d*.?\d+)\D+$/;
+					const valReg = /^\d*\.?\d*/;
+					const unitReg = /\D+$/;
 					let val = valString;
 					let unit = '';
 					if (typeof valString === 'string') {
@@ -314,6 +321,7 @@ export default class Line extends Component {
 		return (
 			<LinePoint
 				{...{
+					padding,
 					forceFit: true,
 					data: dataForamtted,
 					scale: chartScale,
