@@ -38,6 +38,16 @@
 	}
 }
 
+.date-picker {
+	:global {
+		.ant-calendar-today {
+			.ant-calendar-date {
+				border: 1px solid rgb(245, 245, 245) !important;
+			}
+		}
+	}
+}
+
 .overview-bar {
 	margin: 24px 12px 24px !important;
 }
@@ -68,6 +78,7 @@
 		}
 
 		.pie-card {
+			position: relative;
 			margin-top: 8px;
 			border-radius: 8px;
 			border: 1px solid rgba(230, 232, 235, 1);

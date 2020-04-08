@@ -473,6 +473,8 @@ class TopPassengerDataBoard extends React.Component {
 									allowClear={false}
 									defaultValue={moment().subtract(1, 'days')}
 									disabledDate={this.disabledDate}
+									showToday={false}
+									dropdownClassName={styles['date-picker']}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 1);
 									}}
@@ -485,6 +487,7 @@ class TopPassengerDataBoard extends React.Component {
 										.subtract(1, 'days')
 										.startOf('week')}
 									disabledDate={this.disabledDate}
+									showToday={false}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 2);
 									}}
@@ -497,6 +500,7 @@ class TopPassengerDataBoard extends React.Component {
 										.subtract(1, 'days')
 										.startOf('month')}
 									disabledDate={this.disabledDate}
+									showToday={false}
 									onChange={(date, dateString) => {
 										this.handleDateChange(date, dateString, 3);
 									}}
@@ -628,13 +632,11 @@ class TopPassengerDataBoard extends React.Component {
 														: {}
 												}
 											>
-												{/* <Spin spinning={loading.effects['headAnglePassenger/getHeadPassengerByRegular'] || loading.effects['headAnglePassenger/getHeadPassengerByGender'] }> */}
 												<Pie
 													data={this.handlePieDataSource(index)}
 													chartName={`pie${index}`}
 													colorArray={GUEST_OPTIONS.COLOR_ARRAY[index]}
 												/>
-												{/* </Spin> */}
 											</div>
 										</div>
 									))}
@@ -651,7 +653,7 @@ class TopPassengerDataBoard extends React.Component {
 													{getFieldDecorator('shopId', {
 														initialValue: [],
 													})(
-														<Select mode="multiple">
+														<Select mode="multiple" showArrow>
 															{this.shopListOptions.map(item => (
 																<Option
 																	value={item.shopId}
