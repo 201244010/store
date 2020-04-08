@@ -9,7 +9,7 @@ import FrequencyAgeGenderBar from '../Charts/Bars/FrequencyAgeGenderBar';
 
 import styles from './index.less';
 
-const CHART_HEIGHT = 250;
+const CHART_HEIGHT = 280;
 class CustomerFrequency extends PureComponent {
 	render() {
 		const { frequencyList, frequencyTrend, customerDistri, loading, timeType } = this.props;
@@ -18,6 +18,7 @@ class CustomerFrequency extends PureComponent {
 			name: 'customerFrequency',
 		}));
 		const chartOption = {
+			padding: ['auto', 'auto', 45, 'auto'],
 			chartHeight: CHART_HEIGHT,
 			chartType: 'weekFrequency',
 			timeType,
@@ -55,7 +56,7 @@ class CustomerFrequency extends PureComponent {
 					return val.day;
 				}
 				if (timeType === 2) {
-					return val.week;
+					return val.day;
 				}
 				if (timeType === 3) {
 					return val.week;

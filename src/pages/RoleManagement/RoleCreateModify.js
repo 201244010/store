@@ -51,7 +51,10 @@ class RoleModify extends React.Component {
 		const {
 			updateRole,
 			form: { validateFields },
-			role: { permissionList: pList, roleInfo: { permissionList: rpList } },
+			role: {
+			    permissionList,
+				// roleInfo: { permissionList: rpList }
+			},
 			user: {
 				currentUser: { username },
 			},
@@ -60,7 +63,7 @@ class RoleModify extends React.Component {
 			goToPath,
 		} = this.props;
 		let valueList = [];
-		const permissionList = action === 'modify' ? rpList : pList;
+		// const permissionList = action === 'modify' ? rpList : pList;
 		permissionList.map(item => {
 			if (typeof item.valueList !== 'undefined') {
 				valueList = [...new Set([...valueList, ...item.valueList])];
@@ -86,7 +89,7 @@ class RoleModify extends React.Component {
 						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
 						message.error(
-							ALERT_NOTICE_MAP.hasOwnProperty(response.code) ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] })
+							ALERT_NOTICE_MAP[response.code] ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] })
 								: formatMessage({ id: 'roleManagement.role.modifyFail' })
 						);
 					}
@@ -102,7 +105,7 @@ class RoleModify extends React.Component {
 						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
 						message.error(
-							ALERT_NOTICE_MAP.hasOwnProperty(response.code) ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] })
+							ALERT_NOTICE_MAP[response.code] ? formatMessage({ id: ALERT_NOTICE_MAP[response.code] })
 								: formatMessage({ id: 'roleManagement.role.createFail' })
 						);
 					}

@@ -36,7 +36,7 @@ const handleEarlyLabelText = (timeType, dataType, label) => {
 };
 
 const handleUnitText = (unit, count, timeType) => {
-	if (count === undefined || typeof count !== 'number') {
+	if (count === undefined || typeof count !== 'number' || Number.isNaN(count)) {
 		return '';
 	}
 	if (unit === 'frequency') {
@@ -55,7 +55,7 @@ const handleFormat = (count, fn) => {
 };
 
 const handleCountFormat = (count, label, timeType) => {
-	if (count === undefined || typeof count !== 'number') {
+	if (count === undefined || typeof count !== 'number' || Number.isNaN(count)) {
 		return '--';
 	}
 	// let int, point, float;
@@ -95,7 +95,7 @@ const EarlyLabel = ({ label, dataType, timeType }) => {
 
 const EarlyData = ({ count, earlyCount, compareRate, chainRate, label, unit, timeType }) => {
 	if (compareRate) {
-		if (!earlyCount) return '--';
+		if (!earlyCount || !count) return '--';
 		let changeRate;
 		if (chainRate) {
 			// 环比

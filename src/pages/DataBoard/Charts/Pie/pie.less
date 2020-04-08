@@ -37,7 +37,7 @@
 	}
 
 	.legend {
-		display: block;
+		display: flex;
 		position: absolute;
 		top: 50%;
 		left: calc(40% + 120px);
@@ -52,9 +52,12 @@
 		}
 
 		.item-value {
-			padding-left: 8px;
 			color: rgba(82, 88, 102, 1);
 			font-family:'Gotham-Bold', 'Gotham', sans-serif;
+			line-height: 21px;
+			padding-left: 10px;
+			position: relative;
+			top: 1px;
 		}
 
 		:global {

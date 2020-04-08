@@ -207,10 +207,11 @@ class TopDataBoard extends Component {
 				filters: handleTabelFilters(foramtTabelData(latestCustomerByShop)),
 				onFilter: (value, record) => record.key === value,
 				render: (text, record) => <a onClick={() => toggleShop(record)}>{text}</a>,
+				className: 'shop-name-item',
 			},
 			{
 				title: formatMessage({ id: 'databoard.top.customer.count' }),
-				width: 100,
+				width: 160,
 				dataIndex: 'valueFormat',
 			},
 		];
@@ -227,10 +228,11 @@ class TopDataBoard extends Component {
 				filters: handleTabelFilters(foramtTabelData(latestOrderAmoutByShop)),
 				onFilter: (value, record) => record.key === value,
 				render: (text, record) => <a onClick={() => toggleShop(record)}>{text}</a>,
+				className: 'shop-name-item',
 			},
 			{
 				title: formatMessage({ id: 'databoard.order.sales' }),
-				width: 100,
+				width: 160,
 				dataIndex: 'valueFormat',
 			},
 		];
@@ -243,23 +245,23 @@ class TopDataBoard extends Component {
 					}}
 				/>
 				<div className={styles['display-content']}>
+					{!(
+						hasCustomerData ||
+						hasOrderData ||
+						loading.effects['topview/getDeviceOverView']
+					) && (
+						<div className={styles['empty-wrapper']}>
+							<PageEmpty
+								description={formatMessage({
+									id: 'databoard.top.data.empty.current',
+								})}
+							/>
+						</div>
+					)}
 					<OverViewBar />
 					{/* <Spin spinning={loading.effects['topview/getDeviceOverView']}> */}
 					<Spin spinning={loading.effects['topview/getLatestPassengerTrend']}>
 						<Row gutter={20} className={styles['data-detail']}>
-							{!(
-								hasCustomerData ||
-								hasOrderData ||
-								loading.effects['topview/getDeviceOverView']
-							) && (
-								<div>
-									<PageEmpty
-										description={formatMessage({
-											id: 'databoard.top.data.empty.current',
-										})}
-									/>
-								</div>
-							)}
 							{hasCustomerData && (
 								<Col span={12}>
 									<Card
@@ -304,7 +306,7 @@ class TopDataBoard extends Component {
 												</Tooltip>
 											</>
 										}
-										className="tabel-wrapper"
+										className="table-wrapper"
 									>
 										<Table
 											dataSource={foramtTabelData(
@@ -340,7 +342,7 @@ class TopDataBoard extends Component {
 												</Tooltip>
 											</>
 										}
-										className="tabel-wrapper"
+										className="table-wrapper"
 									>
 										<Table
 											dataSource={foramtTabelData(

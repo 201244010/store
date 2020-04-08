@@ -96,13 +96,13 @@ export default {
 	'databoard.top.regularCount': '',
 	'databoard.top.totalAmount': '0点至当前时间，所有门店销售额之和（包含退款金额）',
 	'databoard.top.totalCount':
-		'0点至当前时间，所有门店的成功付款交易笔数之和（一个订单对应唯一一个订单号）',
+		'0点至当前时间，所有门店的成功付款交易笔数之和',
 	'databoard.top.deviceCount': '所有门店设备数量之和',
 	'databoard.top.rank': '排名',
 	'databoard.top.shop': '门店',
 	'databoard.top.operation': '操作',
-	'databoard.top.customer.count': '进客流量',
-	'databoard.top.rank.customer': '进店流量排行',
+	'databoard.top.customer.count': '进店客流',
+	'databoard.top.rank.customer': '进店客流排行',
 	'databoard.top.rank.customer.tip':
 		'0点至当前时间，所有门店进店客流排名情况（若某门店尚未绑定AI识客摄像机，则无相关进店客流数据）',
 	'databoard.top.rank.sales': '销售额排行',

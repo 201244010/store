@@ -182,7 +182,6 @@ export default {
 				...state.componentsDetail[targetShapeName],
 				...filterObject(componentsDetail[targetShapeName] || {})
 			};
-
 			const { x, y, type } = detail;
 			if (!noUpdateLines) {
 				detail.lines = [

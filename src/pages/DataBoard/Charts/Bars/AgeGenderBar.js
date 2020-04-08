@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatMessage } from 'umi/locale';
+import _ from 'lodash';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import styles from '../chartsCommon.less';
 
@@ -30,12 +31,53 @@ export default class AgeGenderBar extends React.Component {
 		// x
 		`${ageCode}`;
 
+	formatScale = data => {
+		// 计算y轴最大值,最小值
+		const max = _.maxBy(data, o => o.count).count;
+		// console.log('groupBy', max, min, data);
+		// return scale;
+		if (max < 10) {
+			return {
+				count: {
+					type: 'linear',
+					nice: false,
+					min: 0,
+					max: 10,
+					tickCount: 6,
+				},
+			};
+		}
+		if (max < 50) {
+			return {
+				count: {
+					type: 'linear',
+					nice: true,
+					min: 0,
+					max: 50,
+					tickCount: 6,
+				},
+			};
+		}
+		//  max > 50 计算数字位数n * 10
+		const mul = 10 ** Math.floor(Math.log10(max / 5));
+		const tickInterval = Math.ceil(max / 5 / mul) * mul;
+		return {
+			count: {
+				type: 'linear',
+				nice: true,
+				tickInterval,
+				min: 0,
+				max: tickInterval * 5,
+			},
+		};
+	};
+
 	render() {
 		// const { data, scale = {}, tooltip } = this.props;
 		const { ageGenderList } = this.props;
 		// const ageGenderList = DataAgeGender;
 		const { formatAgeCode } = this;
-		console.log('wx_', ageGenderList);
+		// console.log('wx_', ageGenderList);
 		const { formatToolTipAxisX, formatLabelX } = this;
 		const chartTitle = formatMessage({ id: 'databoard.chart.ageGender' });
 
@@ -59,11 +101,15 @@ export default class AgeGenderBar extends React.Component {
 			})
 			.sort((a, b) => a.range - b.range);
 
-		console.log('wx______:', data);
-
 		return (
 			<div>
-				<Chart height={250} data={data} forceFit padding="auto">
+				<Chart
+					height={250}
+					data={data}
+					scale={this.formatScale(data)}
+					forceFit
+					padding="auto"
+				>
 					<h1 className={styles['chart-title']}>{chartTitle}</h1>
 					<Axis name="rangeKey" label={{ formatter: formatLabelX }} />
 					<Axis name="count" />

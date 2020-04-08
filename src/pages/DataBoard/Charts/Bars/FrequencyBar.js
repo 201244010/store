@@ -1,12 +1,10 @@
 import React from 'react';
 import { Chart, Geom, Axis, Tooltip } from 'bizcharts';
 import { formatMessage } from 'umi/locale';
+import _ from 'lodash';
 // import { frequencyData } from './mock';
 import styles from '../chartsCommon.less';
 
-import { DATABOARD } from '../constants';
-
-const { VALUE_THICK_INTERVAL } = DATABOARD;
 const FREQUENCY_MAX = [5, 11];
 const UNIT = formatMessage({ id: 'databoard.passenger.unit' });
 
@@ -42,46 +40,76 @@ export default class FrequencyBar extends React.Component {
 		return 20;
 	};
 
+	formatScale = data => {
+		const barAmout = data.length;
+
+		const thickX = {
+			frequency: {
+				type: 'linear',
+				nice: false,
+				range: [0.09, 0.91],
+				tickCount: barAmout,
+			},
+		};
+		// 计算y轴最大值,最小值
+		const max = _.maxBy(data, o => o.value).value;
+		// console.log('groupBy', max, min, data);
+		// return scale;
+		if (max < 10) {
+			return {
+				...thickX,
+				value: {
+					type: 'linear',
+					nice: false,
+					min: 0,
+					max: 10,
+					tickCount: 6,
+				},
+			};
+		}
+		if (max < 50) {
+			return {
+				...thickX,
+				value: {
+					type: 'linear',
+					nice: true,
+					min: 0,
+					max: 50,
+					tickCount: 6,
+				},
+			};
+		}
+		//  max > 50 计算数字位数n * 10
+		const mul = 10 ** Math.floor(Math.log10(max / 5));
+		const tickInterval = Math.ceil(max / 5 / mul) * mul;
+		return {
+			...thickX,
+			value: {
+				type: 'linear',
+				nice: true,
+				tickInterval,
+				min: 0,
+				max: tickInterval * 5,
+			},
+		};
+	};
+
 	render() {
 		const { formatToolTipAxisX, formatLabelX, barWidthFit } = this;
 		const chartTitle = formatMessage({ id: 'databoard.chart.title.frequencyDistri' });
 		// const data = frequencyData;
 		const { data, chartHeight = 250 } = this.props;
 		const barAmout = data.length;
-		const scale =
-			barAmout === 0
-				? {
-					frequency: {
-						type: 'linear',
-						nice: false,
-						range: [0.09, 0.91],
-						tickCount: barAmout,
-					},
-					value: {
-						type: 'linear',
-						nice: true,
-						min: 0,
-						max: 5,
-						tickCount: VALUE_THICK_INTERVAL,
-					},
-				  }
-				: {
-					frequency: {
-						type: 'linear',
-						nice: false,
-						range: [0.09, 0.91],
-						tickCount: barAmout,
-					},
-					value: {
-						type: 'linear',
-						nice: true,
-						min: 0,
-						tickCount: VALUE_THICK_INTERVAL,
-					},
-				  };
+
 		return (
 			<div>
-				<Chart padding="auto" height={chartHeight} data={data} forceFit scale={scale}>
+				<Chart
+					padding={['auto', 'auto', 45, 'auto']}
+					height={chartHeight}
+					data={data}
+					forceFit
+					scale={this.formatScale(data)}
+				>
 					<h1 className={styles['chart-title']}>{chartTitle}</h1>
 					<Axis name="frequency" label={{ formatter: formatLabelX(barAmout) }} />
 					<Axis name="value" />

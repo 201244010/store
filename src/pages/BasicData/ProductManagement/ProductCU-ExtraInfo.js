@@ -253,11 +253,13 @@ const ExtraInfo = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.shelfLife' }),
+				type: 'InputNumber',
+				precision: 0,
 				getFieldName: 'shelfLife',
 				value: shelfLife,
 				required: false,
 				message: '',
-				validator: false,
+				validator: true,
 				field: '',
 			},
 		],
@@ -287,12 +289,11 @@ const ExtraInfo = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.supervisedBy' }),
-				type: 'InputNumber',
 				getFieldName: 'supervisedBy',
 				value: supervisedBy,
 				required: false,
 				message: '',
-				validator: true,
+				validator: false,
 				field: '',
 			},
 			{
@@ -456,8 +457,10 @@ const ExtraInfo = props => {
 								}
 								if (item.type === 'InputNumber') {
 									const numProps = {};
-									if (item.hasOwnProperty('min')) {
-										numProps.min = item.min;
+									if (item.hasOwnProperty('max')) {
+										numProps.min = item.max;
+									} else {
+										numProps.max = 99999999;
 									}
 									if (item.hasOwnProperty('precision')) {
 										numProps.precision = item.precision;

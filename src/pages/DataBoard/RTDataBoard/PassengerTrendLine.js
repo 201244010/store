@@ -21,7 +21,7 @@ class PassengerTrendLine extends PureComponent {
 				type: 'area',
 				position: 'time*value',
 			},
-			linesize: 4,
+			lineSize: 3,
 			// innerTitle: 'chart title area=true',
 			chartScale: {
 				time: {

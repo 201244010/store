@@ -4,6 +4,10 @@
 	margin: -24px;
 }
 
+.empty-wrapper{
+	margin-top: 240px;
+}
+
 .passengerAnalyze-title {
 	padding: 16px 24px;
 	margin: 0;
@@ -29,6 +33,16 @@
 			.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
 				background: @font-color-primary;
 				border-color: @font-color-primary;
+			}
+		}
+	}
+}
+
+.date-picker {
+	:global {
+		.ant-calendar-today {
+			.ant-calendar-date {
+				border: 1px solid rgb(245, 245, 245) !important;
 			}
 		}
 	}
@@ -64,6 +78,7 @@
 		}
 
 		.pie-card {
+			position: relative;
 			margin-top: 8px;
 			border-radius: 8px;
 			border: 1px solid rgba(230, 232, 235, 1);
