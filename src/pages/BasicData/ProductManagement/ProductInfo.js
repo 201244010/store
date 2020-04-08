@@ -25,6 +25,10 @@ const PRODUCT_BASIC = {
 	brand: null,
 	expireTime: null,
 	qrCode: null,
+	status: null,
+	description: null,
+	promotePriceDescription: null,
+	memberPriceDescription: null
 };
 
 const PRODUCT_WEIGHT = {

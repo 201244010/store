@@ -154,7 +154,7 @@ export default {
 			const listeners = payload;
 
 			const { listenerStack } = model.client;
-			listeners.forEach(({ opcode, handler,  /* models, */ type }) => {
+			listeners.forEach(({ opcode, handler, /* models, */ type }) => {
 
 				// console.log(opcode, models, type);
 				// const messageType = type === undefined ? [] : Array.isArray(type) ? type : [type];

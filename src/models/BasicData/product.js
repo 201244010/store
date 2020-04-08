@@ -19,7 +19,6 @@ export default {
 		data: [],
 		erpEnable: false,
 		productInfo: {},
-		extraCustomInfo: {},
 		sassInfoList: [],
 		bindEsl: [],
 		bindEslInfo: {},
@@ -168,7 +167,6 @@ export default {
 			});
 			const response = yield call(Actions.createProduct, format('toSnake')(options));
 			if (response && response.code === ERROR_OK) {
-				console.log('createProduct', response);
 				yield put({
 					type: 'updateState',
 					payload: { loading: false },
@@ -200,7 +198,6 @@ export default {
 			});
 			const response = yield call(Actions.updateProduct, format('toSnake')(options));
 			if (response && response.code === ERROR_OK) {
-				console.log('updateProduct', response);
 				const { data = {} } = response;
 				yield put({
 					type: 'updateState',
@@ -356,7 +353,6 @@ export default {
 	},
 	reducers: {
 		updateState(state, action) {
-			console.log('jiangwu', action.payload);
 			return {
 				...state,
 				...action.payload,

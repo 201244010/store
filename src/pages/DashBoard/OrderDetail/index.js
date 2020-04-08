@@ -129,7 +129,7 @@ class OrderDetail extends Component {
 
 		// 展开订单无详情时拉取一次
 		if (!record.detail || !record.detail[0]) {
-			this.getDetailList(record.orderId);
+			this.getDetailList(record.id);
 		}
 	};
 
@@ -170,7 +170,8 @@ class OrderDetail extends Component {
 		list.forEach(item => {
 			const obj = {};
 			obj.key = item.id;
-			obj.orderId = item.id;
+			obj.orderId = item.orderNo;
+			obj.id = item.id;
 			obj.orderType = item.orderType;
 			obj.orderTypeId = item.orderTypeId;
 			obj.purchaseType = item.purchaseType;
