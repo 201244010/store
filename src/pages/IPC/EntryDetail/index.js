@@ -58,6 +58,44 @@ const { Meta } = Card;
 }))
 
 class EntryDetail extends React.Component {
+
+	columns = [
+		{
+			title: formatMessage({id: 'entry.detail.capture.face'}),
+			dataIndex: 'imgUrl',
+			key: 'imgUrl',
+			render: img => <div className={styles['img-wrapper']}>{img&&img !== ''?<img src={img} />:<Avatar shape="square" size={50} icon="user" />}</div>,
+		},
+		{
+			title: formatMessage({id: 'entry.detail.capture.time'}),
+			dataIndex:'arrivalTime',
+			key:'arrivalTime',
+			render:(time) => (
+				<span>{moment.unix(time).format('YYYY.MM.DD HH:mm:ss')}</span>
+			)
+		},
+		{
+			title: formatMessage({id: 'entry.detail.shop'}),
+			dataIndex:'shopName',
+			key:'shopName'
+		},
+		{
+			title: formatMessage({id: 'entry.detail.ipc'}),
+			dataIndex:'deviceName',
+			key:'deviceName',
+			render: (item) => item || formatMessage({ id: 'entry.detail.myCamera'}),
+			filters: () => {
+				const { ipcList } = this.props;
+				return ipcList.map(item => ({
+					text: item.name,
+					value: item.deviceId
+				}));
+			},
+			onFilter:  (value, record) => record.deviceId === value,
+			filterMultiple:false,
+		}
+	];
+
 	state= {
 		currentPage: 1,
 		deviceId: undefined,
@@ -162,52 +200,18 @@ class EntryDetail extends React.Component {
 
 
 	render(){
-		const { arrivalList, total, loading, ipcList } = this.props;
+		const { arrivalList, total, loading } = this.props;
 
 		const { currentPage, pageSize, faceInfo } = this.state;
-		const { name } = faceInfo;
+		// const { name } = faceInfo;
+		let { name } = faceInfo;
 
-		const filterList = ipcList.map(item => ({
-			text: item.name,
-			value: item.deviceId
-		}));
-
-		if(name === ''){
-			faceInfo.name = formatMessage({id: 'entry.detail.unknown'});
-		}else if(name === undefined){
-			faceInfo.name = formatMessage({id: 'entry.detail.undefined'});
+		if(faceInfo.name === ''){
+			name = formatMessage({id: 'entry.detail.unknown'});
+		}else if(faceInfo.name === undefined){
+			name = formatMessage({id: 'entry.detail.undefined'});
 		}
 
-		const columns = [
-			{
-				title: formatMessage({id: 'entry.detail.capture.face'}),
-				dataIndex: 'imgUrl',
-				key: 'imgUrl',
-				render: img => <div className={styles['img-wrapper']}>{img&&img !== ''?<img src={img} />:<Avatar shape="square" size={50} icon="user" />}</div>,
-			},
-			{
-				title: formatMessage({id: 'entry.detail.capture.time'}),
-				dataIndex:'arrivalTime',
-				key:'arrivalTime',
-				render:(time) => (
-					<span>{moment.unix(time).format('YYYY.MM.DD HH:mm:ss')}</span>
-				)
-			},
-			{
-				title: formatMessage({id: 'entry.detail.shop'}),
-				dataIndex:'shopName',
-				key:'shopName'
-			},
-			{
-				title: formatMessage({id: 'entry.detail.ipc'}),
-				dataIndex:'deviceName',
-				key:'deviceName',
-				render: (item) => item || formatMessage({ id: 'entry.detail.myCamera'}),
-				filters: filterList,
-				onFilter:  (value, record) => record.deviceId === value,
-				filterMultiple:false,
-			}
-		];
 		return(
 			<Spin spinning={
 				loading.effects['entryDetail/getFaceInfo']||
@@ -224,7 +228,7 @@ class EntryDetail extends React.Component {
 										{faceInfo.imgUrl&&faceInfo.imgUrl !==''?<img className={styles['user-avatar']} src={faceInfo.imgUrl} />:<Avatar shape="square" size={50} icon="user" />}
 									</Col>
 									<Col span={7}>
-										<div>{formatMessage({id: 'entry.detail.user.name'})} : {faceInfo.name}</div>
+										<div>{formatMessage({id: 'entry.detail.user.name'})} : {name}</div>
 									</Col>
 									<Col span={7}>
 										<div>{formatMessage({id: 'entry.detail.user.group'})} : {this.handleLibraryName(faceInfo.groupName)}</div>
@@ -243,7 +247,7 @@ class EntryDetail extends React.Component {
 						// loading={loading.effects['entryDetail/readArrivalList']}
 						rowKey={record => record.historyId}
 						dataSource={arrivalList}
-						columns={columns}
+						columns={this.columns}
 						pagination={
 							{
 								current: currentPage,
