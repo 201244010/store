@@ -30,7 +30,6 @@ class DisplayConfig extends Component {
 	}
 
 	componentDidMount() {
-
 		this.getPageConfig();
 	}
 

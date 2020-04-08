@@ -191,8 +191,10 @@ const ExtraPrice = props => {
 								}
 								if (item.type === 'InputNumber') {
 									const numProps = {};
-									if (item.hasOwnProperty('min')) {
-										numProps.min = item.min;
+									if (item.hasOwnProperty('max')) {
+										numProps.min = item.max;
+									} else {
+										numProps.max = 99999999;
 									}
 									if (item.hasOwnProperty('precision')) {
 										numProps.precision = item.precision;

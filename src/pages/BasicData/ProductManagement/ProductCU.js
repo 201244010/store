@@ -313,7 +313,7 @@ class ProductCU extends Component {
 				ExtraInfoFields.forEach(field => {
 					if (submitValue[field]) {
 						if (field === 'expiryDate') {
-							submitValue.extraInfo[field] = values[field].unix();
+							submitValue.extraInfo[field] = values[field] ? values[field].unix() : undefined;
 						} else {
 							submitValue.extraInfo[field] = submitValue[field];
 						}
@@ -324,11 +324,11 @@ class ProductCU extends Component {
 				ExtraPriceInfoFields.forEach(field => {
 					if (submitValue[field]) {
 					    if (field === 'promoteDate') {
-						    submitValue.extraPriceInfo.promoteStartDate = values[field][0].unix();
-						    submitValue.extraPriceInfo.promoteEndDate = values[field][1].unix();
+						    submitValue.extraPriceInfo.promoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
+						    submitValue.extraPriceInfo.promoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
 						} else if (field === 'memberPromoteDate') {
-						    submitValue.extraPriceInfo.memberPromoteStartDate = values[field][0].unix();
-						    submitValue.extraPriceInfo.memberPromoteEndDate = values[field][1].unix();
+						    submitValue.extraPriceInfo.memberPromoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
+						    submitValue.extraPriceInfo.memberPromoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
 					    } else {
 							submitValue.extraPriceInfo[field] = submitValue[field];
 						}
