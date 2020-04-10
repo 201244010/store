@@ -16,6 +16,7 @@ const templates =  {
 	'Default_Mode_Yellow': '预置黄色闪灯模式',
 	'esl-template-colour-BW': '黑白',
 	'esl-template-colour-BWR': '黑白红',
+	'esl-screen-1.54': '1.54寸',
 	'esl-screen-2.13': '2.13寸',
 	'esl-screen-2.6': '2.6寸',
 	'esl-screen-4.2': '4.2寸',

@@ -297,6 +297,7 @@
 	'esl.device.led.update.config.error': '更新配寘失敗',
 	'esl-template-colour-BW': '黑白',
 	'esl-template-colour-BWR': '黑白紅',
+	'esl-screen-1.54': '1.54寸',
 	'esl-screen-2.13': '2.13寸',
 	'esl-screen-2.6': '2.6寸',
 	'esl-screen-4.2': '4.2寸',

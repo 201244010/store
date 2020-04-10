@@ -661,7 +661,7 @@ export default class RightToolBox extends Component {
 		const { filterValue } = this.state;
 		let ret = [];
 		if (this.hasSubString(SHAPE_TYPES.PRICE)) {
-			ret = bindFields.filter(item => item.indexOf('Price') > -1);
+			ret = bindFields.filter(item => item.indexOf('Price') > -1 && item.toLowerCase().indexOf('description') === -1);
 		}
 		if (this.hasSubString(SHAPE_TYPES.CODE_V) || this.hasSubString(SHAPE_TYPES.CODE_H)) {
 			ret = bindFields.filter(item => item.indexOf('BarCode') > -1);
@@ -671,7 +671,7 @@ export default class RightToolBox extends Component {
 		}
 		if (this.hasSubString(SHAPE_TYPES.TEXT)) {
 			ret = bindFields.filter(
-				item => item.indexOf('Price') === -1
+				item => item.indexOf('Price') === -1 || item.toLowerCase().indexOf('description') > -1
 			);
 		}
 
