@@ -9,7 +9,7 @@ import { FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK, PRODUCT_SEQ_EXIST, PRODUCT_PLU_EXIST } from '@/constants/errorCode';
 import ProductCUBasic from './ProductCU-Basic';
 import ProductCUWeight from './ProductCU-Weight';
-import ProductCUPrice from './ProductCU-Price';
+// import ProductCUPrice from './ProductCU-Price';
 import ExtraInfo from './ProductCU-ExtraInfo';
 import ExtraPrice from './ProductCU-ExtraPrice';
 import ExtraCustom from './ProductCU-ExtraCustom';
@@ -85,7 +85,7 @@ const ExtraCustomInfoFields = [
 	'customText17',
 	'customText18',
 	'customText19',
-	'customText20' ,
+	'customText20',
 	'customInt1',
 	'customInt2',
 	'customInt3',
@@ -112,7 +112,7 @@ const ExtraCustomInfoFields = [
 		clearState: () => dispatch({ type: 'basicDataProduct/clearState' }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
-	})
+	}),
 )
 @Form.create()
 class ProductCU extends Component {
@@ -137,7 +137,7 @@ class ProductCU extends Component {
 			});
 			if (response && response.code === ERROR_OK) {
 				const result = map([{ from: 'Type', to: 'type' }])(
-					format('toCamel')(response.data || {})
+					format('toCamel')(response.data || {}),
 				);
 				console.log('response.data', response.data);
 				// console.log(result);
@@ -174,7 +174,7 @@ class ProductCU extends Component {
 
 	formatSubmitValue = values => {
 		let formattedValue = {
-			...values
+			...values,
 		};
 		const { weighInfo } = formattedValue;
 
@@ -269,7 +269,7 @@ class ProductCU extends Component {
 							return data;
 						},
 					},
-				])
+				]),
 			);
 		}
 
@@ -280,7 +280,7 @@ class ProductCU extends Component {
 				{ from: 'price', to: 'price', rule: data => data || -1 },
 				{ from: 'promotePrice', to: 'promotePrice', rule: data => data || -1 },
 				{ from: 'memberPrice', to: 'memberPrice', rule: data => data || -1 },
-			])
+			]),
 		);
 
 		return formattedValue;
@@ -323,13 +323,13 @@ class ProductCU extends Component {
 				submitValue.extraPriceInfo = {};
 				ExtraPriceInfoFields.forEach(field => {
 					if (submitValue[field]) {
-					    if (field === 'promoteDate') {
-						    submitValue.extraPriceInfo.promoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
-						    submitValue.extraPriceInfo.promoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
+						if (field === 'promoteDate') {
+							submitValue.extraPriceInfo.promoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
+							submitValue.extraPriceInfo.promoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
 						} else if (field === 'memberPromoteDate') {
-						    submitValue.extraPriceInfo.memberPromoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
-						    submitValue.extraPriceInfo.memberPromoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
-					    } else {
+							submitValue.extraPriceInfo.memberPromoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
+							submitValue.extraPriceInfo.memberPromoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
+						} else {
 							submitValue.extraPriceInfo[field] = submitValue[field];
 						}
 					}
@@ -364,7 +364,7 @@ class ProductCU extends Component {
 								new Error(
 									formatMessage({
 										id: 'basicData.weightProduct.pluCode.exist',
-									})
+									}),
 								),
 							],
 						},
@@ -394,7 +394,7 @@ class ProductCU extends Component {
 	};
 
 	render() {
-		const { productBasicExtra, productPriceExtra, productType } = this.state;
+		const { productBasicExtra, productType } = this.state;
 		const {
 			form,
 			product: { productInfo },
@@ -424,14 +424,14 @@ class ProductCU extends Component {
 
 					{productType === 1 && <ProductCUWeight {...{ form, productInfo, action }} />}
 
-					<ProductCUPrice
-						{...{
-							form,
-							productInfo,
-							productPriceExtra,
-							remove: this.extraInfoRemove,
-						}}
-					/>
+					{/* <ProductCUPrice */}
+					{/* {...{ */}
+					{/* form, */}
+					{/* productInfo, */}
+					{/* productPriceExtra, */}
+					{/* remove: this.extraInfoRemove, */}
+					{/* }} */}
+					{/* /> */}
 					<ExtraInfo
 						{...{
 							form,

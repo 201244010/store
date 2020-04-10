@@ -36,6 +36,9 @@ const ProductCUBasic = props => {
 		// form,
 		productInfo: {
 			seqNum = '',
+			price = -1,
+			promotePrice = -1,
+			memberPrice = -1,
 			barCode = '',
 			name = '',
 			alias = '',
@@ -45,7 +48,6 @@ const ProductCUBasic = props => {
 			area = '',
 			level = '',
 			brand = '',
-			expireTime = '',
 			qrCode = '',
 			status = '',
 			description = '',
@@ -83,6 +85,71 @@ const ProductCUBasic = props => {
 					</Form.Item>
 				</Col>
 				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.product.name' })}>
+						{getFieldDecorator('name', {
+							initialValue: name,
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({ id: 'product.name.isEmpty' }),
+								},
+							],
+						})(<Input maxLength={MAX_LENGTH['100']} />)}
+					</Form.Item>
+				</Col>
+			</Row>
+
+			<Row>
+				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.product.price' })}>
+						{getFieldDecorator('price', {
+							initialValue:
+								parseInt(price, 10) < 0 ? null : parseFloat(price).toFixed(2),
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									required: true,
+									message: formatMessage({ id: 'product.price.isEmpty' }),
+								},
+								{
+									validator: (rule, value, callback) =>
+										customValidate({
+											field: 'price',
+											rule,
+											value,
+											callback,
+										}),
+								},
+							],
+						})(<Input />)}
+					</Form.Item>
+				</Col>
+				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.product.type' })}>
+						{getFieldDecorator('type', {
+							initialValue: type,
+						})(
+							<Select onChange={onSelectChange}>
+								{productTypes.map(item => (
+									<Select.Option key={item.key} value={item.value}>
+										{formatMessage({
+											id: `basicData.product.type.${item.key}`,
+										})}
+									</Select.Option>
+								))}
+							</Select>
+						)}
+					</Form.Item>
+				</Col>
+				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.product.alias' })}>
+						{getFieldDecorator('alias', {
+							initialValue: alias,
+						})(<Input maxLength={MAX_LENGTH['100']} />)}
+					</Form.Item>
+				</Col>
+				<Col span={12}>
 					<Form.Item label={formatMessage({ id: 'basicData.product.barCode' })}>
 						{getFieldDecorator('barCode', {
 							initialValue: barCode,
@@ -105,47 +172,6 @@ const ProductCUBasic = props => {
 
 			<Row>
 				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.name' })}>
-						{getFieldDecorator('name', {
-							initialValue: name,
-							validateTrigger: 'onBlur',
-							rules: [
-								{
-									required: true,
-									message: formatMessage({ id: 'product.name.isEmpty' }),
-								},
-							],
-						})(<Input maxLength={MAX_LENGTH['100']} />)}
-					</Form.Item>
-				</Col>
-				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.alias' })}>
-						{getFieldDecorator('alias', {
-							initialValue: alias,
-						})(<Input maxLength={MAX_LENGTH['100']} />)}
-					</Form.Item>
-				</Col>
-			</Row>
-
-			<Row>
-				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.type' })}>
-						{getFieldDecorator('type', {
-							initialValue: type,
-						})(
-							<Select onChange={onSelectChange}>
-								{productTypes.map(item => (
-									<Select.Option key={item.key} value={item.value}>
-										{formatMessage({
-											id: `basicData.product.type.${item.key}`,
-										})}
-									</Select.Option>
-								))}
-							</Select>
-						)}
-					</Form.Item>
-				</Col>
-				<Col span={12}>
 					<Form.Item label={formatMessage({ id: 'basicData.product.unit' })}>
 						{getFieldDecorator('unit', {
 							initialValue: unit || undefined,
@@ -164,9 +190,6 @@ const ProductCUBasic = props => {
 						)}
 					</Form.Item>
 				</Col>
-			</Row>
-
-			<Row>
 				<Col span={12}>
 					<Form.Item label={formatMessage({ id: 'basicData.product.spec' })}>
 						{getFieldDecorator('spec', {
@@ -174,6 +197,9 @@ const ProductCUBasic = props => {
 						})(<Input maxLength={MAX_LENGTH['20']} />)}
 					</Form.Item>
 				</Col>
+			</Row>
+
+			<Row>
 				<Col span={12}>
 					<Form.Item label={formatMessage({ id: 'basicData.product.area' })}>
 						{getFieldDecorator('area', {
@@ -181,9 +207,6 @@ const ProductCUBasic = props => {
 						})(<Input maxLength={MAX_LENGTH['20']} />)}
 					</Form.Item>
 				</Col>
-			</Row>
-
-			<Row>
 				<Col span={12}>
 					<Form.Item label={formatMessage({ id: 'basicData.product.level' })}>
 						{getFieldDecorator('level', {
@@ -191,40 +214,14 @@ const ProductCUBasic = props => {
 						})(<Input maxLength={MAX_LENGTH['20']} />)}
 					</Form.Item>
 				</Col>
+			</Row>
+
+			<Row>
 				<Col span={12}>
 					<Form.Item label={formatMessage({ id: 'basicData.product.brand' })}>
 						{getFieldDecorator('brand', {
 							initialValue: brand,
 						})(<Input maxLength={MAX_LENGTH['20']} />)}
-					</Form.Item>
-				</Col>
-			</Row>
-
-			<Row>
-				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.expireTime' })}>
-						{getFieldDecorator('expireTime', {
-							initialValue: expireTime > 0 ? expireTime : '',
-							validateTrigger: 'onBlur',
-							rules: [
-								{
-									validator: (rule, value, callback) =>
-										customValidate({
-											field: 'expire_time',
-											rule,
-											value,
-											callback,
-										}),
-								},
-							],
-						})(
-							<Input
-								suffix={formatMessage({
-									id: 'basicData.product.expire_time.day',
-								})}
-								maxLength={MAX_LENGTH['4']}
-							/>
-						)}
 					</Form.Item>
 				</Col>
 				<Col span={12}>
@@ -253,10 +250,54 @@ const ProductCUBasic = props => {
 			</Row>
 			<Row>
 				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.product.promotePrice' })}>
+						{getFieldDecorator('promotePrice', {
+							initialValue:
+								parseInt(promotePrice, 10) < 0
+									? null
+									: parseFloat(promotePrice).toFixed(2),
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) =>
+										customValidate({
+											field: 'promote_price',
+											rule,
+											value,
+											callback,
+										}),
+								},
+							],
+						})(<Input />)}
+					</Form.Item>
+				</Col>
+				<Col span={12}>
 					<Form.Item label={formatMessage({ id: 'basicData.product.promotePriceDescription' })}>
 						{getFieldDecorator('promotePriceDescription', {
 							initialValue: promotePriceDescription,
 						})(<Input maxLength={MAX_LENGTH['200']} />)}
+					</Form.Item>
+				</Col>
+				<Col span={12}>
+					<Form.Item label={formatMessage({ id: 'basicData.product.memberPrice' })}>
+						{getFieldDecorator('memberPrice', {
+							initialValue:
+								parseInt(memberPrice, 10) < 0
+									? null
+									: parseFloat(memberPrice).toFixed(2),
+							validateTrigger: 'onBlur',
+							rules: [
+								{
+									validator: (rule, value, callback) =>
+										customValidate({
+											field: 'member_price',
+											rule,
+											value,
+											callback,
+										}),
+								},
+							],
+						})(<Input />)}
 					</Form.Item>
 				</Col>
 				<Col span={12}>
