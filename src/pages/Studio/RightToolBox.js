@@ -67,16 +67,12 @@ const bindFieldsLocaleMap = {
 	productCustomPrice2: formatMessage({id: 'basicData.product.extra.price.customPrice2'}),
 	productCustomPrice3: formatMessage({id: 'basicData.product.extra.price.customPrice3'}),
 	productCustomPrice1Description: formatMessage({id: 'basicData.product.extra.price.customPrice1Description'}),
-	productCustomPrice2Description: formatMessage({id: 'basicData.product.extra.price.customPrice1Description'}),
-	productCustomPrice3Description: formatMessage({id: 'basicData.product.extra.price.customPrice1Description'}),
+	productCustomPrice2Description: formatMessage({id: 'basicData.product.extra.price.customPrice2Description'}),
+	productCustomPrice3Description: formatMessage({id: 'basicData.product.extra.price.customPrice3Description'}),
 	productPromoteStartDate: formatMessage({id: 'basicData.product.extra.price.promoteStartDate'}),
-	productPromoteStartTime: formatMessage({id: 'basicData.product.extra.price.promoteStartTime'}),
 	productPromoteEndDate: formatMessage({id: 'basicData.product.extra.price.promoteEndDate'}),
-	productPromoteEndTime: formatMessage({id: 'basicData.product.extra.price.promoteEndTime'}),
 	productMemberPromoteStartDate: formatMessage({id: 'basicData.product.extra.price.memberPromoteStartDate'}),
-	productMemberPromoteStartTime: formatMessage({id: 'basicData.product.extra.price.memberPromoteStartTime'}),
 	productMemberPromoteEndDate: formatMessage({id: 'basicData.product.extra.price.memberPromoteEndDate'}),
-	productMemberPromoteEndTime: formatMessage({id: 'basicData.product.extra.price.memberPromoteEndTime'}),
 	productMemberPoint: formatMessage({id: 'basicData.product.extra.price.memberPoint'}),
 	productPromoteReason: formatMessage({id: 'basicData.product.extra.price.promoteReason'}),
 	productPromoteFlag: formatMessage({id: 'basicData.product.extra.price.promoteFlag'}),
@@ -675,7 +671,7 @@ export default class RightToolBox extends Component {
 			);
 		}
 
-		return ret.filter(item => item.indexOf(filterValue) > -1 || bindFieldsLocaleMap[item].indexOf(filterValue) > -1);
+		return ret.filter(item => item.indexOf(filterValue) > -1 || (bindFieldsLocaleMap[item] || '').indexOf(filterValue) > -1);
 	};
 
 	hasSubString = type => {
