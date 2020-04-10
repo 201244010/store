@@ -332,7 +332,7 @@ export const PREVIEW_MAP = {
 		1: 348,
 		2: 442,
 		3: 510,
-		4: 740
+		4: 710
 	},
 	SCREEN_ID_STYLE: {
 		1: 'img-213',

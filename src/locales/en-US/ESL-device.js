@@ -292,6 +292,7 @@ export default {
 	'esl.device.led.update.config.error': 'Configuration Update Failed',
 	'esl-template-colour-BW': 'Black & White',
 	'esl-template-colour-BWR': 'Black & White & Red',
+	'esl-screen-1.54': '1.54 inch',
 	'esl-screen-2.13': '2.13 inch',
 	'esl-screen-2.6': '2.6 inch',
 	'esl-screen-4.2': '4.2 inch',
