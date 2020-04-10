@@ -22,7 +22,7 @@ export default class PreviewList extends Component {
 									const screen = SCREEN_TYPE[screenType];
 									return (
 										<Col span={6} key={id} className={styles.mb20}>
-											<h4>{name}</h4>
+											<h4>{formatedMessage(name)}</h4>
 											<Card
 												style={{ width: '100%' }}
 												cover={
