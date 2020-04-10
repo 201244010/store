@@ -3,6 +3,7 @@
 import React from 'react';
 import { Input, Checkbox, Button, Form, message, Spin, Card } from 'antd';
 import { connect } from 'dva';
+import _ from 'lodash';
 import { formatMessage } from 'umi/locale';
 import { idDecode } from '@/utils/utils';
 // import { normalInput } from '@/constants/regexp';
@@ -127,7 +128,7 @@ class RoleModify extends React.Component {
 		} = this.props;
 
 		const per = permissionList.find(permission => permission.group === item.group);
-		const myPer = roleInfo.permissionList.find(permission => permission.group === item.group);
+		const myPer = _.cloneDeep(roleInfo.permissionList.find(permission => permission.group === item.group));
 
 		if (myPer) {
 			myPer.valueList = checklist;
@@ -157,7 +158,8 @@ class RoleModify extends React.Component {
 			roleInfo.permissionList = [];
 		}
 		const per = permissionList.find(permission => permission.group === item.group);
-		const myPer = roleInfo.permissionList.find(permission => permission.group === item.group);
+		const myPer = _.cloneDeep(roleInfo.permissionList.find(permission => permission.group === item.group));
+
 		if (myPer) {
 			myPer.checkAll = e.target.checked;
 			myPer.indeterminate = false;
@@ -180,7 +182,7 @@ class RoleModify extends React.Component {
 				permissionList,
 				roleInfo: {
 					name,
-					// permissionList: pList
+					permissionList: pList
 				},
 			},
 			loading,
@@ -255,8 +257,7 @@ class RoleModify extends React.Component {
 								})(
 									<div>
 										{permissionList.map((item, key) => {
-											// const finalList = action === 'modify' ? pList : permissionList;
-											const finalList = permissionList;
+											const finalList = action === 'modify' ? pList : permissionList;
 											const mappedItem = finalList.find(p => p.group === item.group) || {};
 											return (
 												<div key={key} style={{ marginBottom: '30px' }}>
@@ -266,7 +267,6 @@ class RoleModify extends React.Component {
 														}
 														indeterminate={action === 'create' ? false : mappedItem.indeterminate}
 														checked={action === 'create' ? true : mappedItem.checkAll}
-														disabled
 													>
 														{item.checkedList.label}
 													</Checkbox>
@@ -283,7 +283,6 @@ class RoleModify extends React.Component {
 																	item.checkedList.permissionList
 																}
 																value={mappedItem.valueList}
-																disabled
 															/>
 														)}
 													</div>

@@ -708,7 +708,7 @@ class SearchResult extends Component {
 					]}
 				>
 					<div className={styles['preview-img']}>
-						<img className={`${styles['wrap-img}']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[curRecord.screen_type]]}`} src={PREVIEW_MAP.SCREEN_ID_IMAGE[curRecord.screen_type]} alt="" />
+						<img className={`${styles['wrap-img']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[curRecord.screen_type]]}`} src={PREVIEW_MAP.SCREEN_ID_IMAGE[curRecord.screen_type]} alt="" />
 						<img className={`${styles['content-img']} ${styles[PREVIEW_MAP.SCREEN_ID_STYLE[curRecord.screen_type]]}`} src={curRecord.address} alt="" />
 					</div>
 				</Modal>
