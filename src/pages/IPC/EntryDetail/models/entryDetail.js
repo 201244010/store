@@ -1,6 +1,6 @@
+import { ERROR_OK } from '@/constants/errorCode';
 import { getFaceLogList } from '../../services/faceLog';
 import { getArrivalList, deleteArrivalItem } from '../../services/entryDetail';
-import { ERROR_OK } from '@/constants/errorCode';
 
 
 export default {
@@ -37,7 +37,7 @@ export default {
 				});
 			}
 		},
-		*readArrivalList({ payload }, { put, select }) {
+		*readArrivalList({ payload }, { put }) {
 			const { deviceId, faceId, pageNum, pageSize } = payload;
 			const response = yield getArrivalList({
 				deviceId,
@@ -48,7 +48,9 @@ export default {
 
 			const { code, data: { historyList = [], totalCount } } = response;
 
-			const shopList = yield select(state => state.entryDetail.shopList); 
+			const shopList = yield put.resolve({
+				type: 'global/getShopListFromStorage',
+			});
 
 			const arrivalList = historyList.map((item) => {
 				let shopName = '';
