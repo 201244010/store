@@ -135,7 +135,7 @@ class TopPassengerDataBoard extends React.Component {
 			},
 		];
 
-		this.shopListOptions = JSON.parse(localStorage.getItem('__shop_list__'));
+		// this.shopListOptions = JSON.parse(localStorage.getItem('__shop_list__'));
 	}
 
 	async componentDidMount() {
@@ -151,8 +151,8 @@ class TopPassengerDataBoard extends React.Component {
 
 	toggleShop = shopInfo => {
 		const { shopId } = shopInfo;
-		const { shopListOptions } = this;
-		const hasAdmin = shopListOptions.find(shop => shop.shopId === shopId);
+		const { headPassenger: { shopList } } = this.props;
+		const hasAdmin = shopList.find(shop => shop.shopId === shopId);
 		// const { goToPath } = this.props;
 		if (hasAdmin) {
 			Modal.confirm({
@@ -417,7 +417,7 @@ class TopPassengerDataBoard extends React.Component {
 				byFrequencyArray,
 				earlyByFrequencyArray,
 				// byGenderArray,
-				// shopList,
+				shopList = [],
 				passengerCount,
 				earlyPassengerCount,
 				passHeadCount,
@@ -644,7 +644,7 @@ class TopPassengerDataBoard extends React.Component {
 														initialValue: [],
 													})(
 														<Select mode="multiple" showArrow>
-															{this.shopListOptions.map(item => (
+															{shopList.map(item => (
 																<Option
 																	value={item.shopId}
 																	key={item.shopId}
