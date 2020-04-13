@@ -227,7 +227,7 @@ export default {
 	'basicData.product.extra.info.manufacturer': '生产商名称',
 	'basicData.product.extra.info.manufacturerAddress': '生产商地址',
 	'basicData.product.extra.info.expiryDate': '过期日期',
-	'basicData.product.extra.info.expiryTime': '保质期限',
+	'basicData.product.extra.info.expireTime': '保质期限',
 	'basicData.product.extra.info.shelfLife': '已上架时间',
 	'basicData.product.extra.info.ingredientTable': '配料表',
 	'basicData.product.extra.info.freshItemCode': '生鲜商品码',
