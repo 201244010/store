@@ -30,7 +30,7 @@ const ProductInfoExtraInfo = props => {
 		manufacturer = '',
 		manufacturerAddress = '',
 		expiryDate = '',
-		expireTime = '',
+		// expireTime = '',
 		shelfLife = '',
 		ingredientTable = '',
 		freshItemCode = '',
@@ -118,10 +118,10 @@ const ProductInfoExtraInfo = props => {
 			label: formatMessage({ id: 'basicData.product.extra.info.expiryDate' }),
 			value: expiryDate ? moment.unix(expiryDate).format('YYYY-MM-DD') : '',
 		},
-		{
-			label: formatMessage({ id: 'basicData.product.extra.info.expireTime' }),
-			value: expireTime,
-		},
+		// {
+		// 	label: formatMessage({ id: 'basicData.product.extra.info.expireTime' }),
+		// 	value: expireTime,
+		// },
 		{
 			label: formatMessage({ id: 'basicData.product.extra.info.shelfLife' }),
 			value: shelfLife,
