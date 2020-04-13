@@ -15,7 +15,14 @@ const ProductInfoBasic = props => {
 							{formatMessage({ id: product.label })}：
 						</span>
 						<span className={styles['item-content']}>
-							{!['expireTime', 'type'].includes(product.key) && product.value}
+							{['price', 'promotePrice', 'memberPrice'].includes(product.key) && (
+								<span>
+									{parseInt(product.value, 10) < 0
+										? ''
+										: parseFloat(product.value).toFixed(2)}
+								</span>
+							)}
+							{!['expireTime', 'type', 'price', 'promotePrice', 'memberPrice'].includes(product.key) && product.value}
 							{product.key === 'expireTime' &&
 								(product.value < 0 ? (
 									''

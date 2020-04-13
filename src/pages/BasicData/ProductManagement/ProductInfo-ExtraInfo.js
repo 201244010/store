@@ -30,6 +30,7 @@ const ProductInfoExtraInfo = props => {
 		manufacturer = '',
 		manufacturerAddress = '',
 		expiryDate = '',
+		expiryTime = '',
 		shelfLife = '',
 		ingredientTable = '',
 		freshItemCode = '',
@@ -118,6 +119,10 @@ const ProductInfoExtraInfo = props => {
 			value: expiryDate ? moment.unix(expiryDate).format('YYYY-MM-DD') : '',
 		},
 		{
+			label: formatMessage({ id: 'basicData.product.extra.info.expiryTime' }),
+			value: expiryTime,
+		},
+		{
 			label: formatMessage({ id: 'basicData.product.extra.info.shelfLife' }),
 			value: shelfLife,
 		},
@@ -146,36 +151,36 @@ const ProductInfoExtraInfo = props => {
 			value: categoryLevel1Code,
 		},
 		{
-			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel2Code' }),
-			value: categoryLevel2Code,
-		},
-		{
-			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel3Code' }),
-			value: categoryLevel3Code,
-		},
-		{
-			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel4Code' }),
-			value: categoryLevel4Code,
-		},
-		{
-			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel5Code' }),
-			value: categoryLevel5Code,
-		},
-		{
 			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel1Name' }),
 			value: categoryLevel1Name,
+		},
+		{
+			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel2Code' }),
+			value: categoryLevel2Code,
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel2Name' }),
 			value: categoryLevel2Name,
 		},
 		{
+			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel3Code' }),
+			value: categoryLevel3Code,
+		},
+		{
 			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel3Name' }),
 			value: categoryLevel3Name,
 		},
 		{
+			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel4Code' }),
+			value: categoryLevel4Code,
+		},
+		{
 			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel4Name' }),
 			value: categoryLevel4Name,
+		},
+		{
+			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel5Code' }),
+			value: categoryLevel5Code,
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel5Name' }),

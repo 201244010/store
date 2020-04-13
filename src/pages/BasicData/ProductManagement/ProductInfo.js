@@ -5,7 +5,7 @@ import { formatMessage } from 'umi/locale';
 import { getLocationParam, idDecode, idEncode } from '@/utils/utils';
 import ProductInfoBasic from './ProductInfo-Basic';
 import ProductInfoWeight from './ProductInfo-Weight';
-import ProductInfoPrice from './ProductInfo-Price';
+// import ProductInfoPrice from './ProductInfo-Price';
 import ProductInfoExtraCustom from './ProductInfo-ExtraCustom';
 import ProductInfoExtraInfo from './ProductInfo-ExtraInfo';
 import ProductInfoExtraPrice from './ProductInfo-ExtraPrice';
@@ -13,22 +13,24 @@ import * as styles from './ProductManagement.less';
 
 const PRODUCT_BASIC = {
 	seqNum: null,
-	barCode: null,
 	name: null,
-	alias: null,
+	price: null,
 	// 特殊 因为 type 在 GO 中关键字
+	barCode: null,
 	type: null,
+	alias: null,
 	unit: null,
 	spec: null,
 	area: null,
 	level: null,
 	brand: null,
-	expireTime: null,
 	qrCode: null,
 	status: null,
 	description: null,
+	promotePrice: null,
 	promotePriceDescription: null,
-	memberPriceDescription: null
+	memberPrice: null,
+	memberPriceDescription: null,
 };
 
 const PRODUCT_WEIGHT = {
@@ -58,12 +60,6 @@ const PRODUCT_WEIGHT = {
 	limitDays: null,
 };
 
-const PRODUCT_PRICE = {
-	price: null,
-	promotePrice: null,
-	memberPrice: null,
-};
-
 const MESSAGE_PREFIX = {
 	product: 'basicData.product',
 	weight: 'basicData.weightProduct',
@@ -80,7 +76,7 @@ const MESSAGE_PREFIX = {
 			dispatch({ type: 'basicDataProduct/getProductDetail', payload }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
-	})
+	}),
 )
 class ProductInfo extends Component {
 	componentDidMount() {
@@ -141,7 +137,7 @@ class ProductInfo extends Component {
 				productInfo: {
 					type = 0,
 					extra_info: productBasicExtra,
-					extra_price_info: productPriceExtra,
+					// extra_price_info: productPriceExtra,
 				},
 			},
 		} = this.props;
@@ -153,7 +149,7 @@ class ProductInfo extends Component {
 			productWeight = this.formatProductInfo(productInfo.weighInfo, PRODUCT_WEIGHT, 'weight');
 		}
 
-		const productPrice = this.formatProductInfo(productInfo, PRODUCT_PRICE);
+		// const productPrice = this.formatProductInfo(productInfo, PRODUCT_PRICE);
 
 		return (
 			<Card bordered={false} loading={loading.effects['basicDataProduct/getProductDetail']}>
@@ -170,12 +166,12 @@ class ProductInfo extends Component {
 						}}
 					/>
 				)}
-				<ProductInfoPrice
-					{...{
-						productPrice,
-						productPriceExtra,
-					}}
-				/>
+				{/* <ProductInfoPrice */}
+				{/* {...{ */}
+				{/* productPrice, */}
+				{/* productPriceExtra, */}
+				{/* }} */}
+				{/* /> */}
 				<ProductInfoExtraInfo
 					{...{
 						productInfo,
