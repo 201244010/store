@@ -62,11 +62,11 @@ class SearchForm extends Component {
 						<Col {...SEARCH_FORM_COL.ONE_THIRD} />
 						<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 							<Form.Item className={styles['query-item']}>
-								<Button type="primary" onClick={this.search}>
-									{formatMessage({ id: 'btn.query' })}
-								</Button>
-								<Button style={{ marginLeft: '20px' }} onClick={this.handleReset}>
+								<Button className={styles['btn-reset']} onClick={this.handleReset}>
 									{formatMessage({ id: 'storeManagement.list.buttonReset' })}
+								</Button>
+								<Button className={styles['btn-save']} type="primary" onClick={this.search}>
+									{formatMessage({ id: 'btn.query' })}
 								</Button>
 							</Form.Item>
 						</Col>

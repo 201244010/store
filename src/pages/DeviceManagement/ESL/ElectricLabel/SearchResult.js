@@ -388,12 +388,17 @@ class SearchResult extends Component {
 				esl_id_list: selectedRowKeys,
 			},
 		});
-	}
+	};
 
 	batchChangeTemplate = async () => {
 		const { selectedRows } = this.state;
 		const { fetchTemplatesByESLCode } = this.props;
 		const modelIds = new Set(selectedRows.map(item => item.model_id));
+		const noTemplate = selectedRows.filter(item => !item.template_id);
+		if (noTemplate.length) {
+			message.warning(formatMessage({id: 'esl.device.esl.batch.toggle.template.no.template.warning'}));
+			return;
+		}
 		if (modelIds.size === 1) {
 			await fetchTemplatesByESLCode({
 				options: {
@@ -583,7 +588,7 @@ class SearchResult extends Component {
 								</Menu>
 							}
 						>
-							<a className="ant-dropdown-link" href="javascript: void (0)">
+							<a className="ant-dropdown-link">
 								{formatMessage({ id: 'list.action.more' })}
 							</a>
 						</Dropdown>
@@ -726,7 +731,7 @@ class SearchResult extends Component {
 								>
 									{templates4ESL.map(template => (
 										<Select.Option key={template.id} value={template.id}>
-											{template.name}
+											{formatedMessage(template.name)}
 										</Select.Option>
 									))}
 								</Select>
@@ -737,7 +742,7 @@ class SearchResult extends Component {
 				<Modal
 					title={formatMessage({ id: 'esl.device.esl.page.toggle' })}
 					visible={toggleVisible}
-					width={500}
+					width={700}
 					onCancel={() => this.closeToggle()}
 					footer={[
 						<Button
@@ -782,7 +787,7 @@ class SearchResult extends Component {
 								>
 									{(screenInfo || []).map(screen => (
 										<Select.Option key={screen.screen_num} value={screen.screen_num}>
-											{formatMessage({id: screen.screen_name})}
+											{formatedMessage(screen.screen_name)}
 										</Select.Option>
 									))}
 								</Select>
@@ -824,7 +829,7 @@ class SearchResult extends Component {
 								>
 									{templates4ESL.map(template => (
 										<Select.Option key={template.id} value={template.id}>
-											{template.name}
+											{formatedMessage(template.name)}
 										</Select.Option>
 									))}
 								</Select>

@@ -5,9 +5,9 @@ import { formatMessage } from 'umi/locale';
 import { unixSecondToDate, getLocationParam } from '@/utils/utils';
 import { DEFAULT_PAGE_LIST_SIZE, DEFAULT_PAGE_SIZE } from '@/constants';
 import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
-
-import styles from './index.less';
 import global from '@/styles/common.less';
+import styles from './index.less';
+
 
 const PURCHASECODE = {
 	ALL: '0',
@@ -129,7 +129,7 @@ class OrderDetail extends Component {
 
 		// 展开订单无详情时拉取一次
 		if (!record.detail || !record.detail[0]) {
-			this.getDetailList(record.orderId);
+			this.getDetailList(record.id);
 		}
 	};
 
@@ -170,7 +170,8 @@ class OrderDetail extends Component {
 		list.forEach(item => {
 			const obj = {};
 			obj.key = item.id;
-			obj.orderId = item.id;
+			obj.orderId = item.orderNo;
+			obj.id = item.id;
 			obj.orderType = item.orderType;
 			obj.orderTypeId = item.orderTypeId;
 			obj.purchaseType = item.purchaseType;

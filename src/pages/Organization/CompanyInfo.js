@@ -23,6 +23,8 @@ const { Option } = Select;
 	state => ({
 		loading: state.loading,
 		companyInfo: state.companyInfo,
+		role: state.role,
+		store: state.store
 	}),
 	dispatch => ({
 		createOrganization: payload => dispatch({ type: 'companyInfo/createOrganization', payload }),
@@ -38,7 +40,6 @@ const { Option } = Select;
 		getPathId: (path) =>
 			dispatch({ type: 'menu/getPathId', payload: { path } }),
 		getCurrentHeight: orgId => dispatch({ type: 'companyInfo/getCurrentHeight', orgId }),
-		getOrgName: orgId => dispatch({ type: 'companyInfo/getOrgName', orgId }),
 	})
 )
 @Form.create()
@@ -58,6 +59,9 @@ class CompanyInfo extends React.Component {
 	}
 
 	async componentDidMount() {
+		const { form:{ resetFields } } = this.props;
+		resetFields();
+		await this.getPagePathId();
 		await this.init();
 	}
 
@@ -71,28 +75,29 @@ class CompanyInfo extends React.Component {
 		}
 	}
 
+	getPagePathId = async () => {
+		const { getPathId } = this.props;
+		const {
+			location: { pathname },
+		} = window;
+		this.pathId = await getPathId(pathname);
+	};
+
 	init = async() => {
-		const { getShopTypeList, getRegionList, getOrganizationInfo, getOrganizationTreeByCompanyInfo, getAllOrgName, clearState, getCurrentHeight, getPathId } = this.props;
+		const { getShopTypeList, getRegionList, getOrganizationInfo, getOrganizationTreeByCompanyInfo, getAllOrgName, clearState, getCurrentHeight } = this.props;
 		let treeData = {};
 		let isDisabled = true;
-		let orgPidParams;
+
 		getAllOrgName();
 		const [action = 'create', orgId, orgPid] = [
 			getLocationParam('action'),
 			Number(getLocationParam('orgId')),
 			Number(getLocationParam('orgPid')),
 		];
-		const {
-			location: { pathname },
-		} = window;
-		const pathId = await getPathId(pathname);
-		if(pathId === 'newSubOrganization') {
-			orgPidParams = orgPid;
-		}
+
+		const orgPidParams = orgPid;
 
 		// 获得当前操作类型和organizationId
-
-
 		if(action === 'create') {
 			clearState();
 			treeData = await getOrganizationTreeByCompanyInfo({
@@ -129,7 +134,7 @@ class CompanyInfo extends React.Component {
 			orgId,
 			action,
 		});
-	}
+	};
 
 	onTypeChangeHandler = (value) => {
 		this.setState({
@@ -328,6 +333,8 @@ class CompanyInfo extends React.Component {
 		const companyId = CookieUtil.getCookieByKey(CookieUtil.COMPANY_ID_KEY);
 		const {
 			form: { validateFields },
+			store: { storeList },
+			role: { permissionList },
 			createOrganization,
 			updateOrganization,
 			getPathId
@@ -367,7 +374,6 @@ class CompanyInfo extends React.Component {
 				} = window;
 				const pathId = await getPathId(pathname);
 
-
 				let response = null;
 				if (action === 'edit') {
 					response = await updateOrganization({ options });
@@ -391,6 +397,11 @@ class CompanyInfo extends React.Component {
 					response = await createOrganization({ options });
 					const { code } = response;
 					if(code === ERROR_OK){
+						const isCompanyView = permissionList.find(item => item.path === '/companyView');
+						if (isCompanyView && (storeList.length > 1)) {
+							goToPath('root', {}, 'href');
+							return;
+						}
 						if(pathId === 'newSubOrganization') {
 							const { orgPidParams } = this.state;
 							goToPath('detail', {
@@ -426,7 +437,6 @@ class CompanyInfo extends React.Component {
 				orgNameList,
 				orgInfo: {
 					orgName = undefined,
-					orgPid = undefined,
 					typeOne = null,
 					typeTwo = null,
 					businessStatus,
@@ -550,7 +560,7 @@ class CompanyInfo extends React.Component {
 						<FormItem label={formatMessage({ id: 'companyInfo.org.parent.label' })}>
 							{getFieldDecorator('orgPid', {
 							// validateTrigger: 'onSelect',
-								initialValue: treeData && treeData.value &&(orgPidParams || orgPid),
+								initialValue: orgPidParams === undefined ? '' : (orgPidParams || 0),
 								rules: [
 									{
 										required: true,
@@ -559,7 +569,7 @@ class CompanyInfo extends React.Component {
 								],
 							})(
 								<TreeSelect
-									disabled={!!orgPidParams}
+									disabled={this.pathId === 'newSubOrganization'}
 									onBlur={this.blurHandler}
 									onSelect={this.onSelectHandler}
 									onChange={(e) => this.submitButtonDisableHandler(e, 'orgPid')}

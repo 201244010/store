@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Divider, Modal, Table, Button } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { CustomSkeleton } from '@/components/Skeleton';
-import AuthKey from '@/pages/AuthKey';
+// import AuthKey from '@/pages/AuthKey';
 import { idEncode, unixSecondToDate } from '@/utils/utils';
 import * as CookieUtil from '@/utils/cookies';
 import * as styles from './ProductManagement.less';
@@ -141,7 +141,7 @@ class SearchResult extends Component {
 						>
 							{formatMessage({ id: 'list.action.detail' })}
 						</a>
-						{!isBind && (
+						{!false && (
 							<>
 								<Divider type="vertical" />
 								<a
@@ -197,7 +197,7 @@ class SearchResult extends Component {
 									{formatMessage({ id: 'btn.delete' })}
 								</Button>
 							)}
-							<AuthKey className={styles['btn-margin-left']} />
+							{/* <AuthKey className={styles['btn-margin-left']} /> */}
 							<Button
 								className={styles['function-btn']}
 								onClick={() => this.toPath('excelUpload')}

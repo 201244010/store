@@ -4,7 +4,11 @@ const router = [
 		// component: '../layouts/SunmiLayout',
 		id: 'userProtocol',
 		routes: [
-			{ path: '/userProtocol/serviceProtocol', component: './IPC/CloudStorage/protocol.js', id: 'serviceProtocol' }
+			{
+				path: '/userProtocol/serviceProtocol',
+				component: './IPC/CloudStorage/protocol.js',
+				id: 'serviceProtocol',
+			},
 		],
 	},
 	{
@@ -45,7 +49,7 @@ const router = [
 		path: '/show',
 		component: '../layouts/BlankLayout',
 		id: 'show',
-		routes: [{ path: '/show', redirect: '/showcase/login' },],
+		routes: [{ path: '/show', redirect: '/showcase/login' }],
 	},
 
 	{
@@ -77,151 +81,12 @@ const router = [
 						path: '/dashboard',
 						id: 'dashboard',
 						hideInMenu: true,
-						component: './DashBoard',
+						component: './DataBoard',
 					},
-					{
-						path: '/dashboard/detail',
-						id: 'orderDetail',
-						name: 'orderDetail',
-						hideInMenu: true,
-						component: './DashBoard/OrderDetail',
-					},
-				],
-			},
-			{
-				path: '/application',
-				name: 'application',
-				icon: 'blank',
-				routes: [
-					{ path: '/application', redirect: '/application/cashVerify' },
-					{
-						path: '/application/cashVerify',
-						name: 'cashVerify',
-						id: 'cashVerify',
-						routes: [
-							{
-								path: '/application/cashVerify/posList',
-								name: 'bindPOSDevice',
-								id: 'posList',
-								hideInMenu: true,
-								component: './IPC/POSManagement/POSList.js',
-							},
-							{
-								path: '/application/cashVerify/bindPOSDevice',
-								name: 'bindPOSDevice',
-								id: 'bindPOSDevice',
-								hideInMenu: true,
-								component: './IPC/POSManagement/BindPOS.js',
-							},
-							{
-								path: '/application/cashVerify/videos',
-								name: 'videos',
-								id: 'videos',
-								hideInMenu: true,
-								component: './IPC/TradeVideos/index.js',
-							},
-							{
-								path: '/application/cashVerify',
-								redirect: '/application/cashVerify/posList',
-							},
-						],
-					},
-					{
-						path:'/application/cloudStorage',
-						name:'cloudStorageService',
-						routes:[
-							{
-								path:'/application/cloudStorage/subscriptionSuccess',
-								name:'subscriptionSuccess',
-								id:'subscriptionSuccess',
-								hideInMenu: true,
-								component: './IPC/CloudStorage/subscriptionSuccess.js'
-							},
-							{
-								path:'/application/cloudStorage/orderSubmission',
-								name:'orderSubmission',
-								hideInMenu: true,
-								routes: [
-									{
-										path: '/application/cloudStorage/orderSubmission/qrpay',
-										name:'qrpay',
-										id: 'qrpay',
-										hideInMenu: true,
-										component: './IPC/CloudStorage/OrderSubmission/QRCodePayment.js',
-									},
-									{
-										path:'/application/cloudStorage/orderSubmission/paymentPage',
-										name:'paymentPage',
-										id:'paymentPage',
-										hideInMenu: true,
-										component: './IPC/CloudStorage/OrderSubmission/paymentPage.js'
-									},
-									{
-										path: '/application/cloudStorage/orderSubmission',
-										id: 'orderSubmission',
-										hideInMenu: true,
-										component: './IPC/CloudStorage/OrderSubmission/orderSubmission.js'
-									}
-								]
-							},
-							{
-								path: '/application/cloudStorage',
-								id: 'cloudStorage',
-								component: './IPC/CloudStorage/cloudStorage.js',
-							}
-						]
-					},
-					// {
-					// 	path: '/application/trade',
-					// 	name: 'trade',
-					// 	routes: [
-					// 		{
-					// 			path: '/application/trade',
-					// 			id: 'trade',
-					// 			hideInMenu: true,
-					// 			component: './Trade',
-					// 		},
-					// 		{
-					// 			path: '/application/trade/qrpay',
-					// 			id: 'qrpay',
-					// 			hideInMenu: true,
-					// 			component: './Trade/QRCodePayment',
-					// 		},
-					// 		{
-					// 			path: '/application/trade/result',
-					// 			id: 'tradeResult',
-					// 			hideInMenu: true,
-					// 			component: './Trade/TradeResult',
-					// 		},
-					// 	],
-					// },
-					{
-						path: '/application/serviceManagement',
-						id: 'serviceManagement',
-						component: './ServiceManagement/ServiceList',
-						name: 'serviceManagement',
-					},
-					{
-						path: '/application/orderManagement',
-						id: 'orderManagement',
-						name: 'orderManagement',
-						routes:[
-							{
-								path: '/application/orderManagement',
-								id: 'orderManagement',
-								component: './OrderManagement/OrderList'
-							},
-							{
-								path: '/application/orderManagement/orderDetail',
-								id: 'serviceOrderDetail',
-								component: './OrderManagement/OrderDetail',
-								hideInMenu: true
-							}
-						]
-					}
 				],
 			},
 
+			// 客流
 			{
 				path: '/dataAnalyze',
 				icon: 'blank',
@@ -237,158 +102,403 @@ const router = [
 				],
 			},
 
+			// 监控
 			{
-				path: '/devices',
+				path: '/storeMonitor',
 				icon: 'blank',
-				name: 'devices',
-				id: 'devices',
+				name: 'storeMonitor',
+				routes: [
+					{ path: '/storeMonitor', redirect: '/storeMonitor/motionMessage' },
+					{
+						path: '/storeMonitor/motionMessage',
+						name: 'motionMessage',
+						id: 'motionMessage',
+						component: './IPC/MotionList/index.js',
+					},
+					{
+						path: '/storeMonitor/liveReplay',
+						id: 'liveReplay',
+						name: 'liveReplay',
+						routes: [
+							{
+								path: '/storeMonitor/liveReplay',
+								name: 'liveDeviceList',
+								hideInMenu: true,
+								id: 'liveDeviceList',
+								component: './IPC/IPCList/index.js',
+							},
+							{
+								path: '/storeMonitor/liveReplay/live',
+								name: 'liveReplayLive',
+								id: 'liveReplayLive',
+								hideInMenu: true,
+								component: './IPC/Live/Live.js',
+							},
+							{
+								path: '/storeMonitor/liveReplay/ipcManagement',
+								name: 'liveReplayManagement',
+								id: 'liveReplayManagement',
+								hideInMenu: true,
+								component: './IPC/IPCManagement/IPCManagement.js',
+							},
+						],
+					},
+					{
+						path: '/storeMonitor/cloudStorage',
+						name: 'cloudStorage',
+						id: 'cloudStorage',
+						component: './IPC/CloudStorage/cloudStorage.js',
+					},
+					{
+						path: '/storeMonitor/cloudStorage/subscriptionSuccess',
+						name: 'subscriptionSuccess',
+						id: 'subscriptionSuccess',
+						hideInMenu: true,
+						component: './IPC/CloudStorage/subscriptionSuccess.js',
+					},
+					{
+						path: '/storeMonitor/cloudStorage/orderSubmission',
+						name: 'orderSubmission',
+						hideInMenu: true,
+						routes: [
+							{
+								path: '/storeMonitor/cloudStorage/orderSubmission/qrpay',
+								name: 'qrpay',
+								id: 'qrpay',
+								hideInMenu: true,
+								component: './IPC/CloudStorage/OrderSubmission/QRCodePayment.js',
+							},
+							{
+								path: '/storeMonitor/cloudStorage/orderSubmission/paymentPage',
+								name: 'paymentPage',
+								id: 'paymentPage',
+								hideInMenu: true,
+								component: './IPC/CloudStorage/OrderSubmission/paymentPage.js',
+							},
+							{
+								path: '/storeMonitor/cloudStorage/orderSubmission',
+								id: 'orderSubmission',
+								hideInMenu: true,
+								component: './IPC/CloudStorage/OrderSubmission/orderSubmission.js',
+							},
+						],
+					},
+				],
+			},
+
+			// 商品
+			{
+				path: '/productManagement',
+				icon: 'blank',
+				name: 'productManagement',
 				routes: [
 					{
-						path: '/devices/ipcList',
+						path: '/productManagement',
+						redirect: '/productManagement/list',
+					},
+					{
+						path: '/productManagement/list',
+						name: 'list',
+						id: 'productList',
+						component: './BasicData/ProductManagement',
+					},
+					{
+						path: '/productManagement/list/productCreate',
+						name: 'list',
+						id: 'productCreate',
+						hideInMenu: true,
+						component: './BasicData/ProductManagement/ProductCU',
+					},
+					{
+						path: '/productManagement/list/productUpdate',
+						name: 'list',
+						id: 'productUpdate',
+						hideInMenu: true,
+						component: './BasicData/ProductManagement/ProductCU',
+					},
+					{
+						path: '/productManagement/list/productInfo',
+						name: 'list',
+						id: 'productInfo',
+						hideInMenu: true,
+						component: './BasicData/ProductManagement/ProductInfo',
+					},
+					{
+						path: '/productManagement/list/erpImport',
+						name: 'list',
+						id: 'erpImport',
+						hideInMenu: true,
+						component: './BasicData/ProductManagement/ERPImport',
+					},
+					{
+						path: '/productManagement/list/excelUpload',
+						name: 'list',
+						id: 'excelUpload',
+						hideInMenu: true,
+						component: './BasicData/ProductManagement/ExcelUpload',
+					},
+				],
+			},
+
+			// 交易
+			{
+				path: '/transManagement',
+				icon: 'blank',
+				name: 'transManagement',
+				routes: [
+					{
+						path: '/transManagement',
+						redirect: '/transManagement/cashVerify',
+					},
+					{
+						path: '/transManagement/cashVerify',
+						name: 'posList',
+						id: 'posList',
+						component: './IPC/POSManagement/POSList.js',
+					},
+					{
+						path: '/transManagement/orderDetail',
+						id: 'orderDetail',
+						name: 'orderDetail',
+						component: './DashBoard/OrderDetail',
+					},
+					{
+						path: '/transManagement/cashVerify/bindPOSDevice',
+						name: 'bindPOSDevice',
+						id: 'bindPOSDevice',
+						hideInMenu: true,
+						component: './IPC/POSManagement/BindPOS.js',
+					},
+					{
+						path: '/transManagement/cashVerify/videos',
+						name: 'videos',
+						id: 'videos',
+						hideInMenu: true,
+						component: './IPC/TradeVideos/index.js',
+					},
+				],
+			},
+
+			// 服务
+			{
+				path: '/serviceManagement',
+				name: 'serviceManagement',
+				icon: 'blank',
+				routes: [
+					{
+						path: '/serviceManagement',
+						redirect: '/serviceManagement/list',
+					},
+					{
+						path: '/serviceManagement/list',
+						id: 'serviceList',
+						name: 'serviceList',
+						component: './ServiceManagement/ServiceList',
+					},
+					{
+						path: '/serviceManagement/orderManagement',
+						id: 'orderManagement',
+						name: 'orderManagement',
+						component: './OrderManagement/OrderList'
+					},
+					{
+						path: '/serviceManagement/orderManagement/orderDetail',
+						id: 'serviceOrderDetail',
+						component: './OrderManagement/OrderDetail',
+						hideInMenu: true
+					},
+				],
+			},
+
+			// 设备
+			{
+				path: '/deviceManagement',
+				name: 'deviceManagement',
+				icon: 'blank',
+				routes: [
+					{
+						path: '/deviceManagement',
+						redirect: '/deviceManagement/ipcList',
+					},
+					// 智能摄像机
+					{
+						path: '/deviceManagement/ipcList',
+						icon: 'blank',
+						id: 'ipcList',
 						name: 'ipcList',
 						routes: [
 							{
-								path: '/devices/ipcList/live',
+								path: '/deviceManagement/ipcList',
+								redirect: '/deviceManagement/ipcList/deviceList',
+							},
+							{
+								path: '/deviceManagement/ipcList/deviceList',
+								name: 'deviceList',
+								id: 'deviceList',
+								component: './IPC/IPCList/index.js',
+							},
+							{
+								path: '/deviceManagement/ipcList/deviceList/live',
 								name: 'live',
 								id: 'live',
 								hideInMenu: true,
 								component: './IPC/Live/Live.js',
 							},
 							{
-								path: '/devices/ipcList/ipcManagement',
+								path: '/deviceManagement/ipcList/deviceList/ipcManagement',
 								name: 'ipcManagement',
 								id: 'ipcManagement',
 								hideInMenu: true,
 								component: './IPC/IPCManagement/IPCManagement.js',
 							},
+						],
+					},
+					// 电子价签
+					{
+						path: '/deviceManagement/esl',
+						name: 'esl',
+						id: 'esl',
+						icon: 'blank',
+						routes: [
+							{ path: '/deviceManagement/esl', redirect: '/deviceManagement/esl/electricLabel' },
 							{
-								path: '/devices/ipcList',
-								// name: 'ipcList',
-								id: 'deviceList',
-								component: './IPC/IPCList/index.js',
+								path: '/deviceManagement/esl/electricLabel',
+								name: 'electricLabel',
+								id: 'electricLabel',
+								component: './DeviceManagement/ESL/ElectricLabel',
+							},
+							{
+								path: '/deviceManagement/esl/template',
+								name: 'template',
+								id: 'template',
+								component: './Template',
+							},
+							{
+								path: '/deviceManagement/esl/commRecord',
+								hideInMenu: true,
+								name: 'commRecord',
+								id: 'commRecord',
+								component: './DeviceManagement/ESL/CommRecord',
+							},
+							{
+								path: '/deviceManagement/esl/baseStation',
+								name: 'baseStation',
+								id: 'baseStation',
+								component: './DeviceManagement/ESL/BaseStation',
+							},
+							{
+								path: '/deviceManagement/esl/deviceUpgrade',
+								name: 'deviceUpgrade',
+								id: 'deviceUpgrade',
+								routes: [
+									{
+										path: '/deviceManagement/esl/deviceUpgrade',
+										name: 'overview',
+										id: 'deviceUpgradeOverview',
+										hideInMenu: true,
+										component: './DeviceManagement/ESL/DeviceUpgrade',
+									},
+									{
+										path: '/deviceManagement/esl/deviceUpgrade/deviceESL',
+										name: 'deviceESL',
+										id: 'deviceESL',
+										hideInMenu: true,
+										component: './DeviceManagement/ESL/DeviceESL',
+									},
+									{
+										path: '/deviceManagement/esl/deviceUpgrade/deviceAP',
+										name: 'deviceAP',
+										id: 'deviceAP',
+										hideInMenu: true,
+										component: './DeviceManagement/ESL/DeviceAP',
+									},
+								],
+							},
+							{
+								path: '/deviceManagement/esl/systemConfig',
+								name: 'systemConfig',
+								id: 'systemConfig',
+								component: './DeviceManagement/ESL/SystemConfig',
+							},
+							{
+								path: '/deviceManagement/esl/advSystemConfig',
+								name: 'advancedSystemConfig',
+								id: 'advancedSystemConfig',
+								component: './DeviceManagement/ESL/SystemConfig/Advanced',
+								hideInMenu: true,
+							},
+						],
+					},
+					// 网络设备
+					{
+						path: '/deviceManagement/network',
+						name: 'network',
+						id: 'network',
+						icon: 'blank',
+						routes: [
+							{ path: '/deviceManagement/network', redirect: '/deviceManagement/network/list' },
+							{
+								path: '/deviceManagement/network/list',
+								name: 'networkList',
+								id: 'networkList',
+								component: './DeviceManagement/Network/NetworkOverview',
+							},
+							{
+								path: '/deviceManagement/network/list/detail',
+								name: 'detail',
+								id: 'networkDetail',
+								hideInMenu: true,
+								component: './DeviceManagement/Network/NetworkOverview/NetworkDetail',
+							},
+							{
+								path: '/deviceManagement/network/configManagement',
+								name: 'configManagement',
+								id: 'configManagement',
+								// hideInMenu: true,
+								component: './DeviceManagement/Network/NetworkConfig',
+							},
+							{
+								path: '/deviceManagement/network/list/clientList',
+								name: 'clientList',
+								id: 'clientList',
+								hideInMenu: true,
+								component: './DeviceManagement/Network/NetworkOverview/ClientList',
 							},
 						],
 					},
 					{
-						path: '/devices/motionMessage',
-						name: 'motionMessage',
-						id: 'motionMessage',
-						component: './IPC/MotionList/index.js',
-					},
-					{
-						path: '/devices',
-						redirect: '/devices/ipcList',
-					},
-				],
-			},
-
-			{
-				path: '/esl',
-				name: 'esl',
-				id: 'esl',
-				icon: 'blank',
-				routes: [
-					{
-						path: '/esl/electricLabel',
-						name: 'electricLabel',
-						id: 'electricLabel',
-						component: './DeviceManagement/ESL/ElectricLabel',
-					},
-					{
-						path: '/esl/template',
-						name: 'template',
-						id: 'template',
-						component: './Template',
-					},
-					{
-						path: '/esl/commRecord',
-						hideInMenu: true,
-						name: 'commRecord',
-						id: 'commRecord',
-						component: './DeviceManagement/ESL/CommRecord',
-					},
-					{
-						path: '/esl/baseStation',
-						name: 'baseStation',
-						id: 'baseStation',
-						component: './DeviceManagement/ESL/BaseStation',
-					},
-					{
-						path: '/esl/deviceUpgrade',
-						name: 'deviceUpgrade',
-						id: 'deviceUpgrade',
+						path: '/deviceManagement/iotAccess',
+						name: 'iotAccess',
+						id: 'iotAccess',
+						icon: 'blank',
 						routes: [
 							{
-								path: '/esl/deviceUpgrade',
-								name: 'overview',
-								id: 'deviceUpgradeOverview',
-								hideInMenu: true,
-								component: './DeviceManagement/ESL/DeviceUpgrade',
-							},
-							{
-								path: '/esl/deviceUpgrade/deviceESL',
-								name: 'deviceESL',
-								id: 'deviceESL',
-								hideInMenu: true,
-								component: './DeviceManagement/ESL/DeviceESL',
-							},
-							{
-								path: '/esl/deviceUpgrade/deviceAP',
-								name: 'deviceAP',
-								id: 'deviceAP',
-								hideInMenu: true,
-								component: './DeviceManagement/ESL/DeviceAP',
+								path: '/deviceManagement/iotAccess/posAccess',
+								name: 'posAccess',
+								id: 'posAccess',
+								routes: [
+									{
+										path: '/deviceManagement/iotAccess/posAccess',
+										name: 'posAccessOverview',
+										id: 'posAccessOverview',
+										hideInMenu: true,
+										component: './IotAccess/PosAccess',
+									},
+									{
+										path: '/deviceManagement/iotAccess/posAccess/detail',
+										name: 'detail',
+										id: 'posAccessDetail',
+										hideInMenu: true,
+										component: './IotAccess/PosAccessDetail',
+									},
+								]
 							},
 						],
 					},
-					{
-						path: '/esl/systemConfig',
-						name: 'systemConfig',
-						id: 'systemConfig',
-						component: './DeviceManagement/ESL/SystemConfig',
-					},
-					{ path: '/esl', redirect: '/esl/electricLabel' },
 				],
 			},
 
-			{
-				path: '/network',
-				name: 'network',
-				id: 'network',
-				icon: 'blank',
-				routes: [
-					{ path: '/network', redirect: '/network/list' },
-					{
-						path: '/network/list',
-						name: 'list',
-						id: 'networkList',
-						// hideInMenu: true,
-						component: './DeviceManagement/Network/NetworkOverview',
-					},
-					{
-						path: '/network/detail',
-						name: 'detail',
-						id: 'networkDetail',
-						hideInMenu: true,
-						component: './DeviceManagement/Network/NetworkOverview/NetworkDetail',
-					},
-					{
-						path: '/network/configManagement',
-						name: 'configManagement',
-						id: 'configManagement',
-						// hideInMenu: true,
-						component: './DeviceManagement/Network/NetworkConfig',
-					},
-					{
-						path: '/network/clientList',
-						name: 'clientList',
-						id: 'clientList',
-						hideInMenu: true,
-						component: './DeviceManagement/Network/NetworkOverview/ClientList',
-					},
-				],
-			},
-
+			// 基础管理
 			{
 				path: '/basicData',
 				name: 'basicData',
@@ -397,7 +507,27 @@ const router = [
 				routes: [
 					{
 						path: '/basicData',
-						redirect: '/basicData/merchantManagement/view',
+						redirect: '/basicData/merchantManagement',
+					},
+					{
+						path: '/basicData/merchantManagement',
+						name: 'merchantManagement',
+						routes: [
+							{
+								path: '/basicData/merchantManagement',
+								name: 'view',
+								id: 'merchantView',
+								hideInMenu: true,
+								component: './MerchantManagement/MerchantView',
+							},
+							{
+								path: '/basicData/merchantManagement/modify',
+								name: 'modify',
+								id: 'merchantModify',
+								hideInMenu: true,
+								component: './MerchantManagement/MerchantModify',
+							},
+						],
 					},
 					{
 						path: '/basicData/organizationManagement',
@@ -430,7 +560,8 @@ const router = [
 										hideInMenu: true,
 									},
 									{
-										path: '/basicData/organizationManagement/detail/newSubOrganization',
+										path:
+											'/basicData/organizationManagement/detail/newSubOrganization',
 										name: 'newSubOrganization',
 										id: 'newSubOrganization',
 										component: './Organization/CompanyInfo',
@@ -441,77 +572,15 @@ const router = [
 										id: 'detail',
 										component: './Organization/OrgDetail',
 									},
-								]
+								],
 							},
 							{
 								path: '/basicData/organizationManagement',
 								id: 'organizationList',
 								component: './Organization/OrganizationList',
-							}
-						],
-					},
-					{
-						path: '/basicData/merchantManagement',
-						name: 'merchantManagement',
-						routes: [
-							{
-								path: '/basicData/merchantManagement',
-								redirect: '/basicData/merchantManagement/view',
-							},
-							{
-								path: '/basicData/merchantManagement/view',
-								name: 'view',
-								id: 'merchantView',
-								hideInMenu: true,
-								component: './MerchantManagement/MerchantView',
-							},
-							{
-								path: '/basicData/merchantManagement/modify',
-								name: 'modify',
-								id: 'merchantModify',
-								hideInMenu: true,
-								component: './MerchantManagement/MerchantModify',
 							},
 						],
 					},
-					// {
-					// 	path: '/basicData/storeManagement',
-					// 	name: 'storeManagement',
-					// 	routes: [
-					// 		{
-					// 			path: '/basicData/storeManagement',
-					// 			redirect: '/basicData/storeManagement/list',
-					// 		},
-					// 		{
-					// 			path: '/basicData/storeManagement/list',
-					// 			name: 'list',
-					// 			id: 'storeList',
-					// 			component: './StoreManagement',
-					// 			hideInMenu: true,
-					// 		},
-					// 		{
-					// 			path: '/basicData/storeManagement/createStore',
-					// 			component: './StoreManagement/CreateStore.js',
-					// 			name: 'createStore',
-					// 			id: 'storeCreate',
-					// 			hideInMenu: true,
-					// 		},
-					// 		{
-					// 			path: '/basicData/storeManagement/storeInformation',
-					// 			component: './StoreManagement/StoreInformation.js',
-					// 			name: 'storeManagement',
-					// 			id: 'storeInfo',
-					// 			hideInMenu: true,
-					// 		},
-					// 		{
-					// 			path: '/basicData/storeManagement/alterStore',
-					// 			component: './StoreManagement/CreateStore.js',
-					// 			name: 'storeManagement',
-					// 			id: 'storeUpdate',
-					// 			hideInMenu: true,
-					// 		},
-					// 	],
-					// },
 					{
 						path: '/basicData/employeeManagement',
 						name: 'employeeManagement',
@@ -519,10 +588,6 @@ const router = [
 						routes: [
 							{
 								path: '/basicData/employeeManagement',
-								redirect: '/basicData/employeeManagement/list',
-							},
-							{
-								path: '/basicData/employeeManagement/list',
 								name: 'employeeList',
 								id: 'employeeList',
 								component: './BasicData/Employee',
@@ -565,10 +630,6 @@ const router = [
 						routes: [
 							{
 								path: '/basicData/roleManagement',
-								redirect: '/basicData/roleManagement/roleList',
-							},
-							{
-								path: '/basicData/roleManagement/roleList',
 								name: 'roleList',
 								id: 'roleList',
 								component: './RoleManagement/RoleList',
@@ -598,58 +659,46 @@ const router = [
 						],
 					},
 					{
-						path: '/basicData/productManagement',
-						name: 'productManagement',
+						path: '/basicData/faceidLibrary',
+						name: 'faceidLibrary',
+						id: 'faceidLibrary',
+						// component: './index.js',
 						routes: [
 							{
-								path: '/basicData/productManagement',
-								redirect: '/basicData/productManagement/list',
+								path: '/basicData/faceidLibrary',
+								id: 'faceidLibraryList',
+								component: './IPC/FaceidLibrary/LibraryList.js',
+								hideInMenu: true,
 							},
 							{
-								path: '/basicData/productManagement/list',
-								name: 'list',
-								id: 'productList',
+								path: '/basicData/faceidLibrary/photoManagement',
+								name: 'photoManagement',
+								id: 'photoList',
+								component: './IPC/PhotoManagement/PhotoManagement.js',
 								hideInMenu: true,
-								component: './BasicData/ProductManagement',
 							},
-							{
-								path: '/basicData/productManagement/list/productCreate',
-								name: 'list',
-								id: 'productCreate',
-								hideInMenu: true,
-								component: './BasicData/ProductManagement/ProductCU',
-							},
-							{
-								path: '/basicData/productManagement/list/productUpdate',
-								name: 'list',
-								id: 'productUpdate',
-								hideInMenu: true,
-								component: './BasicData/ProductManagement/ProductCU',
-							},
-							{
-								path: '/basicData/productManagement/list/productInfo',
-								name: 'list',
-								id: 'productInfo',
-								hideInMenu: true,
-								component: './BasicData/ProductManagement/ProductInfo',
-							},
-							{
-								path: '/basicData/productManagement/list/erpImport',
-								name: 'list',
-								id: 'erpImport',
-								hideInMenu: true,
-								component: './BasicData/ProductManagement/ERPImport',
-							},
-							{
-								path: '/basicData/productManagement/list/excelUpload',
-								name: 'list',
-								id: 'excelUpload',
-								hideInMenu: true,
-								component: './BasicData/ProductManagement/ExcelUpload',
-							},
-							{ path: '/basicData', redirect: '/basicData/productManagement' },
 						],
 					},
+					{
+						path: '/basicData/faceLog',
+						name: 'faceLog',
+						routes: [
+							{
+								path: '/basicData/faceLog',
+								name: 'faceLog',
+								id: 'faceLog',
+								component: './IPC/FaceLog/index.js',
+							},
+							{
+								path: '/basicData/faceLog/entryDetail',
+								name: 'entryDetail',
+								id: 'entryDetail',
+								hideInMenu: true,
+								component: './IPC/EntryDetail/index.js',
+							},
+						],
+					},
+
 				],
 			},
 
@@ -711,108 +760,8 @@ const router = [
 					},
 				],
 			},
-
-			// 不在 menu 中显示的路由 end
-			// {
-			// 	path: '/live',
-			// 	component: './IPC/Live/Live.js',
-			// },
-
-			{
-				path: '/faceidLibrary',
-				name: 'faceidLibrary',
-				id: 'faceidLibrary',
-				icon: 'blank',
-				// component: './index.js',
-				routes: [
-					{ path: '/faceidLibrary', redirect: '/faceidLibrary/faceidLibraryList' },
-					{
-						path: '/faceidLibrary/faceidLibraryList',
-						name: 'list',
-						routes: [
-							{
-								path: '/faceidLibrary/faceidLibraryList/photoManagement',
-								name: 'photoManagement',
-								hideInMenu: true,
-								id: 'photoList',
-								component: './IPC/PhotoManagement/PhotoManagement.js',
-							},
-							{
-								path: '/faceidLibrary/faceidLibraryList',
-								id: 'faceidLibraryList',
-								component: './IPC/FaceidLibrary/LibraryList.js',
-							},
-						],
-					},
-					{
-						path: '/faceidLibrary/faceLog',
-						name: 'faceLog',
-						// id: 'faceLog',
-						// component: './IPC/FaceLog/index.js',
-						routes: [
-							{
-								path: '/faceidLibrary/faceLog/entryDetail',
-								name: 'entryDetail',
-								id: 'entryDetail',
-								hideInMenu: true,
-								component: './IPC/EntryDetail/index.js',
-							},
-							{
-								path: '/faceidLibrary/faceLog',
-								// name: 'faceLog',
-								id: 'faceLog',
-								component: './IPC/FaceLog/index.js',
-							},
-						],
-					},
-
-					// {
-					// 	path: '/faceidLibrary/entryDetail',
-					// 	name: 'entryDetail',
-					// 	id: 'entryDetail',
-					// 	hideInMenu: true,
-					// 	component: './IPC/EntryDetail/index.js',
-					// },
-					// {
-					// 	path: '/faceidLibrary/createLibrary',
-					// 	// name: 'faceidLibrary.create',
-					// 	id: 'createLibrary',
-					// 	component: './IPC/FaceidLibrary/CreateLibrary.js',
-					// },
-				],
-			},
-			{
-				path: '/iotAccess',
-				name: 'iotAccess',
-				id: 'iotAccess',
-				icon: 'blank',
-				routes: [
-					{
-						path: '/iotAccess/posAccess',
-						name: 'posAccess',
-						id: 'posAccess',
-						routes: [
-							{
-								path: '/iotAccess/posAccess',
-								name: 'posAccessOverview',
-								id: 'posAccessOverview',
-								hideInMenu: true,
-								component: './IotAccess/PosAccess',
-							},
-							{
-								path: '/iotAccess/posAccess/detail',
-								name: 'detail',
-								id: 'posAccessDetail',
-								hideInMenu: true,
-								component: './IotAccess/PosAccessDetail',
-							},
-						]
-					},
-				],
-			},
 		],
 	},
-
 ];
 
 // export default router;

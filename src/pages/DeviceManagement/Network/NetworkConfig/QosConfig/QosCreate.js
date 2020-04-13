@@ -183,9 +183,7 @@ class QosCreate extends React.PureComponent {
 						},
 					});
 				});
-				if (selectedRowKeys.length === 0) {
-					await getQosList();
-				}
+				getQosList();
 			}
 		});
 	};

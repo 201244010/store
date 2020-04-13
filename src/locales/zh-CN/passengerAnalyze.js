@@ -4,7 +4,7 @@ export default {
 	'passengerAnalyze.regular': '进店熟客',
 	'passengerAnalyze.member': '进店会员数',
 	'passengerAnalyze.trend': '客流变化趋势',
-	'passengerAnalyze.analyze': '客群分析',
+	'passengerAnalyze.analyze': '客流分析',
 	'passengerAnalyze.analyzing': '数据正在分析中，请稍候...',
 	'passenger.total': '全部',
 	'passenger.regular': '熟客',

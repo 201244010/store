@@ -149,15 +149,17 @@ export default {
 			const { code , data } = response;
 			if(code === ERROR_OK) {
 				const { deviceList } = data;
-				const { status, validTime, activeStatus } = deviceList[0];
-				return {
-					code,
-					data: {
-						status,
-						validTime,
-						activeStatus
-					}
-				};
+				if(deviceList) {
+					const { status, validTime, activeStatus } = deviceList[0];
+					return {
+						code,
+						data: {
+							status,
+							validTime,
+							activeStatus
+						}
+					};
+				}
 			}
 			return {
 				code

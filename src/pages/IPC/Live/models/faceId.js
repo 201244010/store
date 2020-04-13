@@ -1,10 +1,9 @@
-
 // import { listen } from '@/services/mqtt';
 // import moment from 'moment';
 import { formatMessage } from 'umi/locale';
-import { getRange } from '../../services/photoLibrary';
 import { ERROR_OK } from '@/constants/errorCode';
 import { getLocationParam } from '@/utils/utils';
+import { getRange } from '../../services/photoLibrary';
 
 const OPCODE = {
 	FACE_ID_STATUS: '0x4202',
@@ -130,8 +129,6 @@ export default {
 			 });
 		},
 		*changeFaceidPushStatus ({ payload: { sn, status }}, { put }) {
-			console.log('changeFaceidPushStatus sn=', sn);
-			console.log('changeFaceidPushStatus status=', status);
 			// 直播页人脸加框开关
 			const deviceType = yield put.resolve({
 				type: 'ipcList/getDeviceType',
@@ -194,7 +191,24 @@ export default {
 					}
 				}
 			});
-		}
+		},
+		// *test(_, { put }) {
+		// 	console.log('testtttttt');
+		// 	yield put({
+		// 		type: 'mapFaceInfo',
+		// 		payload: {
+		// 			timestamp: '',
+		// 			name: 'tony',
+		// 			id: 1,
+		// 			libraryId: 1,
+		// 			libraryName: 'stranger',
+		// 			age: 0,
+		// 			ageRangeCode: 8,
+		// 			gender: 1,
+		// 			pic: ''
+		// 		}
+		// 	});
+		// }
 	},
 	subscriptions: {
 		mqtt ({ dispatch }) {

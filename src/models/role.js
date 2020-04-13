@@ -121,7 +121,8 @@ export default {
 			}
 		},
 
-		*getRoleInfo({ payload = {} }, { put, call }) {
+		*getRoleInfo({ payload = {} }, { put, call, select }) {
+			const { permissionList: allPermissionList } = yield select(state => state.role);
 			const { roleId } = payload;
 			const response = yield call(
 				Actions.handleRoleManagement,
@@ -135,16 +136,31 @@ export default {
 				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
 					permissionList.find(permission => permission.name === `/${menu}`)
 				).filter(item => !!item);
+				// 滤除后台脏数据
+				const basicData = sortedPermission.find(item => item.name === '/basicData');
+				if (basicData && basicData.permissionList.length) {
+					const index = basicData.permissionList.findIndex(item => item.path.indexOf('storeManagement') > -1);
+					if (index >= 0) {
+						basicData.permissionList.splice(index, 1);
+					}
+				}
+
 				forData.permissionList = formatData(sortedPermission).map(item => {
 					const formatResult = formatPath(item);
+					const valueList = formatResult.permissionList
+						? formatResult.permissionList.map(items => items.value)
+						: [formatResult.value];
+					const matchedPermission = (allPermissionList.find(a => a.group === item.label) || {}).valueList || 0;
+					const indeterminate =
+						valueList.length === 0 ?
+							false :
+							valueList.length < matchedPermission.length;
 					return {
 						checkedList: formatResult,
-						indeterminate: formatResult.permissionList && true,
-						checkAll: false,
+						indeterminate,
+						checkAll: valueList.length === matchedPermission.length,
 						group: formatResult.label,
-						valueList: formatResult.permissionList
-							? formatResult.permissionList.map(items => items.value)
-							: [formatResult.value],
+						valueList,
 					};
 				});
 				yield put({
@@ -165,14 +181,24 @@ export default {
 		*getPermissionList({ payload = {} }, { put, call, select }) {
 			const { type } = payload;
 			const response = yield call(Actions.handleRoleManagement, 'getPermissionList');
+			let retPermissionList = [];
 			if (response && response.code === ERROR_OK) {
 				const roleInfo = yield select(state => state.role.roleInfo);
 				const { data = {} } = response;
 				const { permissionList = [] } = format('toCamel')(data) || {};
 
+				retPermissionList = permissionList;
 				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
 					permissionList.find(permission => permission.name === `/${menu}`)
 				).filter(item => !!item);
+				// 滤除后台脏数据
+				const basicData = sortedPermission.find(item => item.name === '/basicData');
+				if (basicData && basicData.permissionList.length) {
+					const index = basicData.permissionList.findIndex(item => item.path.indexOf('storeManagement') > -1);
+					if (index >= 0) {
+						basicData.permissionList.splice(index, 1);
+					}
+				}
 
 				const tmpList = formatData(sortedPermission).map(item => {
 					const formatResult = formatPath(item);
@@ -188,11 +214,9 @@ export default {
 						// 	type === 'modify'
 						// 		? getInitStatus(formatResult, roleInfo).valueList
 						// 		: [],
-						valueList: permissionList
-							.map(permission => permission.permissionList.map(items => items.id))
-							.join()
-							.split(',')
-							.map(number => Number(number)),
+						valueList: formatResult.permissionList
+							? formatResult.permissionList.map(items => items.value)
+							: [formatResult.value],
 					};
 				});
 				yield put({
@@ -202,6 +226,8 @@ export default {
 					},
 				});
 			}
+
+			return retPermissionList;
 		},
 
 		*creatRole({ payload = {} }, { call }) {
@@ -249,6 +275,16 @@ export default {
 				type: 'updateState',
 				payload: {
 					payload,
+				},
+			});
+		},
+
+		*updateRoleInfo({ payload = {} }, { put }) {
+			const { roleInfo } = payload;
+			yield put({
+				type: 'updateState',
+				payload: {
+					roleInfo,
 				},
 			});
 		},

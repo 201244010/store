@@ -7,14 +7,15 @@ const {
 export const { env, country } = sysEnv;
 
 export const FIRST_MENU_ORDER = [
+	'company',
 	'dashboard',
-	'dataAnalyze',
-	'application',
-	'devices',
-	'esl',
-	'network',
+	'customerCenter',
+	'storeMonitor',
+	'productManagement',
+	'transManagement',
+	'serviceManagement',
+	'deviceManagement',
 	'basicData',
-	'faceidLibrary',
 ];
 
 export const HTTP_PREFIX = {

@@ -60,4 +60,8 @@ export default {
 	previewTemplate: genTemplateService('preview'),
 	realTimePreview: genTemplateService('realTimePreview'),
 	fetchPreviewList: genTemplateService('getPreviewList'),
+	getFontList: genTemplateService('getFontList'),
+	uploadFont: genTemplateService('uploadFont'),
+	getCustomTemplateConfig: genTemplateService('getCustomTemplateConf'),
+	updateCustomTemplateConfig: genTemplateService('updateCustomTemplateConf'),
 };
