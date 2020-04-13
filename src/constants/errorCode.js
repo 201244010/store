@@ -55,6 +55,9 @@ export const ORGANIZATION_NO_DESABLED = 5440;
 export const ORGANIZATION_LEVEL_LIMITED = 5442;
 export const ORGANIZATION_DISABLED = 5443;
 
+export const ERR_INVALID_SAAS_SHOP = 5046;
+export const ERR_INVALID_PRODUCT = 5015;
+
 export const ALERT_NOTICE_MAP = {
 	'2': 'alert.code.error',
 	'3': 'alert.code.send.fast',
