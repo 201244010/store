@@ -99,7 +99,7 @@ export default {
 	'basicData.erp.import.fail': '数据导入失败',
 	'basicData.erp.import.task.failed': 'ERP对接的配置信息输入错误，请重新输入',
 	'basicData.erp.import.task.unfinished': '商品正在导入，请勿重复操作',
-	'basicData.erp.import.task.notExist': '门店不存在',
+	'basicData.erp.import.task.notExist': 'Saas门店信息不可用',
 	'basicData.erp.import.task.import.shop.fail': '导入商品失败',
 	'basicData.erp.import.shop.conflict': '输入的ERP对接配置信息已被其他门店使用',
 	'basicData.erp.common.key.error': 'key或者secret错误，请重新输入',
