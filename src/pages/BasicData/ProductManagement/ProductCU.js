@@ -9,8 +9,95 @@ import { FORM_ITEM_LAYOUT } from '@/constants/form';
 import { ERROR_OK, PRODUCT_SEQ_EXIST, PRODUCT_PLU_EXIST } from '@/constants/errorCode';
 import ProductCUBasic from './ProductCU-Basic';
 import ProductCUWeight from './ProductCU-Weight';
-import ProductCUPrice from './ProductCU-Price';
+// import ProductCUPrice from './ProductCU-Price';
+import ExtraInfo from './ProductCU-ExtraInfo';
+import ExtraPrice from './ProductCU-ExtraPrice';
+import ExtraCustom from './ProductCU-ExtraCustom';
 import * as styles from './ProductManagement.less';
+
+const ExtraInfoFields = [
+	'packSize',
+	'stock',
+	'safetyStock',
+	'dailyMeanSales',
+	'todaySalesQty',
+	'cumulatedSalesQty',
+	'onOrderQty',
+	'shelfQty',
+	'shelfCode',
+	'shelfTier',
+	'shelfColumn',
+	'displayLocation',
+	'supplierCode',
+	'supplierName',
+	'manufacturer',
+	'manufacturerAddress',
+	'expiryDate',
+	'shelfLife',
+	'ingredientTable',
+	'freshItemCode',
+	'supervisedBy',
+	'supervisionHotline',
+	'pricingStaff',
+	'categoryLevel1Code',
+	'categoryLevel2Code',
+	'categoryLevel3Code',
+	'categoryLevel4Code',
+	'categoryLevel5Code',
+	'categoryLevel1Name',
+	'categoryLevel2Name',
+	'categoryLevel3Name',
+	'categoryLevel4Name',
+	'categoryLevel5Name',
+];
+
+const ExtraPriceInfoFields = [
+	'customPrice1',
+	'customPrice2',
+	'customPrice3',
+	'customPrice1Description',
+	'customPrice2Description',
+	'customPrice3Description',
+	'promoteDate',
+	'memberPromoteDate',
+	'memberPoint',
+	'promoteReason',
+	'promoteFlag',
+];
+
+const ExtraCustomInfoFields = [
+	'customText1',
+	'customText2',
+	'customText3',
+	'customText4',
+	'customText5',
+	'customText6',
+	'customText7',
+	'customText8',
+	'customText9',
+	'customText10',
+	'customText11',
+	'customText12',
+	'customText13',
+	'customText14',
+	'customText15',
+	'customText16',
+	'customText17',
+	'customText18',
+	'customText19',
+	'customText20',
+	'customInt1',
+	'customInt2',
+	'customInt3',
+	'customInt4',
+	'customInt5',
+	'customDec1',
+	'customDec2',
+	'customDec3',
+	'customDec4',
+	'customDec5',
+	'others',
+];
 
 @connect(
 	state => ({
@@ -25,7 +112,7 @@ import * as styles from './ProductManagement.less';
 		clearState: () => dispatch({ type: 'basicDataProduct/clearState' }),
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
-	})
+	}),
 )
 @Form.create()
 class ProductCU extends Component {
@@ -50,7 +137,7 @@ class ProductCU extends Component {
 			});
 			if (response && response.code === ERROR_OK) {
 				const result = map([{ from: 'Type', to: 'type' }])(
-					format('toCamel')(response.data || {})
+					format('toCamel')(response.data || {}),
 				);
 				// console.log(result);
 				this.setState({
@@ -85,9 +172,10 @@ class ProductCU extends Component {
 	};
 
 	formatSubmitValue = values => {
-		const { weighInfo } = values;
-
-		let formattedValue = values;
+		let formattedValue = {
+			...values,
+		};
+		const { weighInfo } = formattedValue;
 
 		if (weighInfo) {
 			formattedValue = shake(formattedValue)(
@@ -132,7 +220,7 @@ class ProductCU extends Component {
 						rule: data => {
 							const {
 								weighInfo: { packDays },
-							} = values;
+							} = formattedValue;
 							if (data && moment.isMoment(packDays)) {
 								return packDays.format('YYYY-MM-DD');
 							}
@@ -150,7 +238,7 @@ class ProductCU extends Component {
 						rule: data => {
 							const {
 								weighInfo: { usebyType, usebyDays },
-							} = values;
+							} = formattedValue;
 							if (data && moment.isMoment(usebyDays)) {
 								return usebyType === '2'
 									? usebyDays.format('YYYY-MM-DD')
@@ -170,7 +258,7 @@ class ProductCU extends Component {
 						rule: data => {
 							const {
 								weighInfo: { limitType, limitDays },
-							} = values;
+							} = formattedValue;
 
 							if (data && moment.isMoment(limitDays)) {
 								return limitType === '2'
@@ -180,7 +268,7 @@ class ProductCU extends Component {
 							return data;
 						},
 					},
-				])
+				]),
 			);
 		}
 
@@ -191,7 +279,7 @@ class ProductCU extends Component {
 				{ from: 'price', to: 'price', rule: data => data || -1 },
 				{ from: 'promotePrice', to: 'promotePrice', rule: data => data || -1 },
 				{ from: 'memberPrice', to: 'memberPrice', rule: data => data || -1 },
-			])
+			]),
 		);
 
 		return formattedValue;
@@ -220,6 +308,39 @@ class ProductCU extends Component {
 			// console.log(values);
 			if (!err) {
 				const submitValue = this.formatSubmitValue(values);
+				submitValue.extraInfo = {};
+				ExtraInfoFields.forEach(field => {
+					if (submitValue[field]) {
+						if (field === 'expiryDate') {
+							submitValue.extraInfo[field] = values[field] ? values[field].unix() : undefined;
+						} else {
+							submitValue.extraInfo[field] = submitValue[field];
+						}
+					}
+					delete submitValue[field];
+				});
+				submitValue.extraPriceInfo = {};
+				ExtraPriceInfoFields.forEach(field => {
+					if (submitValue[field]) {
+						if (field === 'promoteDate') {
+							submitValue.extraPriceInfo.promoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
+							submitValue.extraPriceInfo.promoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
+						} else if (field === 'memberPromoteDate') {
+							submitValue.extraPriceInfo.memberPromoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
+							submitValue.extraPriceInfo.memberPromoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
+						} else {
+							submitValue.extraPriceInfo[field] = submitValue[field];
+						}
+					}
+					delete submitValue[field];
+				});
+				submitValue.extraCustomInfo = {};
+				ExtraCustomInfoFields.forEach(field => {
+					if (submitValue[field]) {
+						submitValue.extraCustomInfo[field] = submitValue[field];
+					}
+					delete submitValue[field];
+				});
 				const response = await submitFunction[action]({
 					options: {
 						...submitValue,
@@ -242,7 +363,7 @@ class ProductCU extends Component {
 								new Error(
 									formatMessage({
 										id: 'basicData.weightProduct.pluCode.exist',
-									})
+									}),
 								),
 							],
 						},
@@ -272,7 +393,7 @@ class ProductCU extends Component {
 	};
 
 	render() {
-		const { productBasicExtra, productPriceExtra, productType } = this.state;
+		const { productBasicExtra, productType } = this.state;
 		const {
 			form,
 			product: { productInfo },
@@ -302,15 +423,32 @@ class ProductCU extends Component {
 
 					{productType === 1 && <ProductCUWeight {...{ form, productInfo, action }} />}
 
-					<ProductCUPrice
+					{/* <ProductCUPrice */}
+					{/* {...{ */}
+					{/* form, */}
+					{/* productInfo, */}
+					{/* productPriceExtra, */}
+					{/* remove: this.extraInfoRemove, */}
+					{/* }} */}
+					{/* /> */}
+					<ExtraInfo
 						{...{
 							form,
 							productInfo,
-							productPriceExtra,
-							remove: this.extraInfoRemove,
 						}}
 					/>
-
+					<ExtraPrice
+						{...{
+							form,
+							productInfo,
+						}}
+					/>
+					<ExtraCustom
+						{...{
+							form,
+							productInfo,
+						}}
+					/>
 					<Card title={null} bordered={false}>
 						<Row>
 							<Col span={12}>

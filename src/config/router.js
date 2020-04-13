@@ -419,7 +419,6 @@ const router = [
 								name: 'systemConfig',
 								id: 'systemConfig',
 								component: './DeviceManagement/ESL/SystemConfig',
-								hideInMenu: true,
 							},
 							{
 								path: '/deviceManagement/esl/advSystemConfig',
