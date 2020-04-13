@@ -10,6 +10,8 @@ const MODE = {
 const COMMON_ERROR = {
 	5042: formatMessage({ id: 'basicData.erp.import.shop.conflict' }),
 	5093: formatMessage({ id: 'basicData.erp.import.task.unfinished' }),
+	5046: formatMessage({ id: 'basicData.erp.import.task.notExist' }),
+	5015: formatMessage({ id: 'basicData.erp.import.task.import.shop.fail' }),
 	default: formatMessage({ id: 'basicData.erp.import.task.failed' }),
 };
 
