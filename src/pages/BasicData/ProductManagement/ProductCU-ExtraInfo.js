@@ -33,6 +33,7 @@ const ExtraInfo = props => {
 		manufacturer = '',
 		manufacturerAddress = '',
 		expiryDate = '',
+		expiryTime = '',
 		shelfLife = '',
 		ingredientTable = '',
 		freshItemCode = '',
@@ -252,6 +253,19 @@ const ExtraInfo = props => {
 			},
 			{
 				colSpan: 12,
+				label: formatMessage({ id: 'basicData.product.extra.info.expiryTime' }),
+				type: 'InputNumber',
+				getFieldName: 'expiryTime',
+				value: expiryTime,
+				required: false,
+				message: '',
+				validator: true,
+				field: '',
+			},
+		],
+		[
+			{
+				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.shelfLife' }),
 				type: 'InputNumber',
 				precision: 0,
@@ -262,8 +276,6 @@ const ExtraInfo = props => {
 				validator: true,
 				field: '',
 			},
-		],
-		[
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.ingredientTable' }),
@@ -274,6 +286,8 @@ const ExtraInfo = props => {
 				validator: false,
 				field: '',
 			},
+		],
+		[
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.freshItemCode' }),
@@ -284,8 +298,6 @@ const ExtraInfo = props => {
 				validator: false,
 				field: '',
 			},
-		],
-		[
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.supervisedBy' }),
@@ -296,6 +308,8 @@ const ExtraInfo = props => {
 				validator: false,
 				field: '',
 			},
+		],
+		[
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.supervisionHotline' }),
@@ -306,8 +320,6 @@ const ExtraInfo = props => {
 				validator: false,
 				field: '',
 			},
-		],
-		[
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.pricingStaff' }),
@@ -318,11 +330,23 @@ const ExtraInfo = props => {
 				validator: false,
 				field: '',
 			},
+		],
+		[
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel1Code' }),
 				getFieldName: 'categoryLevel1Code',
 				value: categoryLevel1Code,
+				required: false,
+				message: '',
+				validator: false,
+				field: '',
+			},
+			{
+				colSpan: 12,
+				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel1Name' }),
+				getFieldName: 'categoryLevel1Name',
+				value: categoryLevel1Name,
 				required: false,
 				message: '',
 				validator: false,
@@ -342,50 +366,6 @@ const ExtraInfo = props => {
 			},
 			{
 				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel3Code' }),
-				getFieldName: 'categoryLevel3Code',
-				value: categoryLevel3Code,
-				required: false,
-				message: '',
-				validator: false,
-				field: '',
-			},
-		],
-		[
-			{
-				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel4Code' }),
-				getFieldName: 'categoryLevel4Code',
-				value: categoryLevel4Code,
-				required: false,
-				message: '',
-				validator: false,
-				field: '',
-			},
-			{
-				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel5Code' }),
-				getFieldName: 'categoryLevel5Code',
-				value: categoryLevel5Code,
-				required: false,
-				message: '',
-				validator: false,
-				field: '',
-			},
-		],
-		[
-			{
-				colSpan: 12,
-				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel1Name' }),
-				getFieldName: 'categoryLevel1Name',
-				value: categoryLevel1Name,
-				required: false,
-				message: '',
-				validator: false,
-				field: '',
-			},
-			{
-				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel2Name' }),
 				getFieldName: 'categoryLevel2Name',
 				value: categoryLevel2Name,
@@ -394,13 +374,31 @@ const ExtraInfo = props => {
 				validator: false,
 				field: '',
 			},
-		],
-		[
+			{
+				colSpan: 12,
+				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel3Code' }),
+				getFieldName: 'categoryLevel3Code',
+				value: categoryLevel3Code,
+				required: false,
+				message: '',
+				validator: false,
+				field: '',
+			},
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel3Name' }),
 				getFieldName: 'categoryLevel3Name',
 				value: categoryLevel3Name,
+				required: false,
+				message: '',
+				validator: false,
+				field: '',
+			},
+			{
+				colSpan: 12,
+				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel4Code' }),
+				getFieldName: 'categoryLevel4Code',
+				value: categoryLevel4Code,
 				required: false,
 				message: '',
 				validator: false,
@@ -418,6 +416,16 @@ const ExtraInfo = props => {
 			},
 		],
 		[
+			{
+				colSpan: 12,
+				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel5Code' }),
+				getFieldName: 'categoryLevel5Code',
+				value: categoryLevel5Code,
+				required: false,
+				message: '',
+				validator: false,
+				field: '',
+			},
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.info.categoryLevel5Name' }),

@@ -1,15 +1,15 @@
 // ref: https://umijs.org/config/
 import {primaryColor} from '../src/defaultSettings';
 import routers from '../src/config/router';
-import uatRouters from '../src/config/router.uat';
+// import uatRouters from '../src/config/router.uat';
 import sysConfig from '../src/config/env';
 // import routers from './router';
 
 const {env} = sysConfig;
 
 const ROUTERS = {
-	uat: uatRouters,
-	onl: uatRouters,
+	uat: routers,
+	onl: routers,
 	default: routers
 };
 
