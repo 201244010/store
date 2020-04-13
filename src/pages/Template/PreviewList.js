@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Row, Col, Card, Pagination } from 'antd';
+import _ from 'lodash';
 import { formatMessage } from 'umi/locale';
 import formatedMessage from '@/constants/templateNames';
 import { SCREEN_TYPE } from '@/constants/studio';
@@ -8,7 +9,7 @@ import * as styles from './index.less';
 export default class PreviewList extends Component {
 	render() {
 		const {data, loading, pagination, onPreview, onEdit, onApply, onClone, onDelete, onChange} = this.props;
-		const sortedData = data.sort((a, b) => (a.screen_type - b.screen_type));
+		const sortedData = _.cloneDeep(data).sort((a, b) => (a.screen_type - b.screen_type));
 		const splitData = [sortedData.slice(0, 4), sortedData.slice(4, 8)];
 
 		return (
@@ -21,7 +22,7 @@ export default class PreviewList extends Component {
 									const screen = SCREEN_TYPE[screenType];
 									return (
 										<Col span={6} key={id} className={styles.mb20}>
-											<h4>{name}</h4>
+											<h4>{formatedMessage(name)}</h4>
 											<Card
 												style={{ width: '100%' }}
 												cover={
@@ -31,7 +32,7 @@ export default class PreviewList extends Component {
 													</div>
 												}
 												actions={[
-													<div onClick={() => onPreview({id, screen_type: screenType})}>{formatMessage({id: 'list.action.preview'})}</div>,
+													<div onClick={() => onPreview({id, screen_type: screenType, name})}>{formatMessage({id: 'list.action.preview'})}</div>,
 													<div onClick={() => onEdit({id, screen_type: screenType})}>{formatMessage({id: 'list.action.edit'})}</div>,
 													<div onClick={() => onApply({id})}>{formatMessage({id: 'list.action.apply'})}</div>,
 													<div onClick={() => onClone({id, screen_type_name: formatedMessage(screenTypeName), colour_name: formatedMessage(colourName), screen_type: screenType})}>{formatMessage({id: 'list.action.clone'})}</div>,
