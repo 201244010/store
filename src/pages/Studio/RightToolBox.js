@@ -8,23 +8,105 @@ import * as RegExp from '@/constants/regexp';
 import * as styles from './index.less';
 
 const { Option } = Select;
+const { Option: AutoOption } = AutoComplete;
 
 const bindFieldsLocaleMap = {
-	productSeqNum: 'basicData.product.seqNum',
-	productName: 'basicData.product.name',
-	productSpec: 'basicData.product.spec',
-	productLevel: 'basicData.product.level',
-	productExpireTime: 'basicData.product.expireTime',
-	productBarCode: 'basicData.product.barCode',
-	productAlias: 'basicData.product.alias',
-	productUnit: 'basicData.product.unit',
-	productProductionArea: 'basicData.product.area',
-	productBrand: 'basicData.product.brand',
-	productQrCode: 'basicData.product.qrCode',
-	productPrice: 'basicData.product.price',
-	productPromotePrice: 'basicData.product.promotePrice',
-	productMemberPrice: 'basicData.product.memberPrice',
-	productPicture: 'basicData.product.image',
+	productSeqNum: formatMessage({id: 'basicData.product.seqNum'}),
+	productName: formatMessage({id: 'basicData.product.name'}),
+	productSpec: formatMessage({id: 'basicData.product.spec'}),
+	productLevel: formatMessage({id: 'basicData.product.level'}),
+	productExpireTime: formatMessage({id: 'basicData.product.expireTime'}),
+	productBarCode: formatMessage({id: 'basicData.product.barCode'}),
+	productAlias: formatMessage({id: 'basicData.product.alias'}),
+	productUnit: formatMessage({id: 'basicData.product.unit'}),
+	productProductionArea: formatMessage({id: 'basicData.product.area'}),
+	productBrand: formatMessage({id: 'basicData.product.brand'}),
+	productQrCode: formatMessage({id: 'basicData.product.qrCode'}),
+	productPrice: formatMessage({id: 'basicData.product.price'}),
+	productPromotePrice: formatMessage({id: 'basicData.product.promotePrice'}),
+	productMemberPrice: formatMessage({id: 'basicData.product.memberPrice'}),
+	productPicture: formatMessage({id: 'basicData.product.image'}),
+	productStatus: formatMessage({id: 'basicData.product.status'}),
+	productDescription: formatMessage({id: 'basicData.product.description'}),
+	productPromotePriceDescription: formatMessage({id: 'basicData.product.promotePriceDescription'}),
+	productMemberPriceDescription: formatMessage({id: 'basicData.product.memberPriceDescription'}),
+	productPackSize: formatMessage({id: 'basicData.product.extra.info.packSize'}),
+	productStock: formatMessage({id: 'basicData.product.extra.info.stock'}),
+	productSafetyStock: formatMessage({id: 'basicData.product.extra.info.safetyStock'}),
+	productDailyMeanSales: formatMessage({id: 'basicData.product.extra.info.dailyMeanSales'}),
+	productTodaySalesQty: formatMessage({id: 'basicData.product.extra.info.todaySalesQty'}),
+	productCumulatedSalesQty: formatMessage({id: 'basicData.product.extra.info.cumulatedSalesQty'}),
+	productOnOrderQty: formatMessage({id: 'basicData.product.extra.info.onOrderQty'}),
+	productShelfQty: formatMessage({id: 'basicData.product.extra.info.shelfQty'}),
+	productShelfCode: formatMessage({id: 'basicData.product.extra.info.shelfCode'}),
+	productShelfTier: formatMessage({id: 'basicData.product.extra.info.shelfTier'}),
+	productShelfColumn: formatMessage({id: 'basicData.product.extra.info.shelfColumn'}),
+	productDisplayLocation: formatMessage({id: 'basicData.product.extra.info.displayLocation'}),
+	productSupplierCode: formatMessage({id: 'basicData.product.extra.info.supplierCode'}),
+	productSupplierName: formatMessage({id: 'basicData.product.extra.info.supplierName'}),
+	productManufacturer: formatMessage({id: 'basicData.product.extra.info.manufacturer'}),
+	productManufacturerAddress: formatMessage({id: 'basicData.product.extra.info.manufacturerAddress'}),
+	productExpiryDate: formatMessage({id: 'basicData.product.extra.info.expiryDate'}),
+	productShelfLife: formatMessage({id: 'basicData.product.extra.info.shelfLife'}),
+	productIngredientTable: formatMessage({id: 'basicData.product.extra.info.ingredientTable'}),
+	productFreshItemCode: formatMessage({id: 'basicData.product.extra.info.freshItemCode'}),
+	productSupervisedBy: formatMessage({id: 'basicData.product.extra.info.supervisedBy'}),
+	productSupervisionHotline: formatMessage({id: 'basicData.product.extra.info.supervisionHotline'}),
+	productPricingStaff: formatMessage({id: 'basicData.product.extra.info.pricingStaff'}),
+	productCategoryLevel1Code: formatMessage({id: 'basicData.product.extra.info.categoryLevel1Code'}),
+	productCategoryLevel2Code: formatMessage({id: 'basicData.product.extra.info.categoryLevel2Code'}),
+	productCategoryLevel3Code: formatMessage({id: 'basicData.product.extra.info.categoryLevel3Code'}),
+	productCategoryLevel4Code: formatMessage({id: 'basicData.product.extra.info.categoryLevel4Code'}),
+	productCategoryLevel5Code: formatMessage({id: 'basicData.product.extra.info.categoryLevel5Code'}),
+	productCategoryLevel1Name: formatMessage({id: 'basicData.product.extra.info.categoryLevel1Name'}),
+	productCategoryLevel2Name: formatMessage({id: 'basicData.product.extra.info.categoryLevel2Name'}),
+	productCategoryLevel3Name: formatMessage({id: 'basicData.product.extra.info.categoryLevel3Name'}),
+	productCategoryLevel4Name: formatMessage({id: 'basicData.product.extra.info.categoryLevel4Name'}),
+	productCategoryLevel5Name: formatMessage({id: 'basicData.product.extra.info.categoryLevel5Name'}),
+	productCustomPrice1: formatMessage({id: 'basicData.product.extra.price.customPrice1'}),
+	productCustomPrice2: formatMessage({id: 'basicData.product.extra.price.customPrice2'}),
+	productCustomPrice3: formatMessage({id: 'basicData.product.extra.price.customPrice3'}),
+	productCustomPrice1Description: formatMessage({id: 'basicData.product.extra.price.customPrice1Description'}),
+	productCustomPrice2Description: formatMessage({id: 'basicData.product.extra.price.customPrice2Description'}),
+	productCustomPrice3Description: formatMessage({id: 'basicData.product.extra.price.customPrice3Description'}),
+	productPromoteStartDate: formatMessage({id: 'basicData.product.extra.price.promoteStartDate'}),
+	productPromoteEndDate: formatMessage({id: 'basicData.product.extra.price.promoteEndDate'}),
+	productMemberPromoteStartDate: formatMessage({id: 'basicData.product.extra.price.memberPromoteStartDate'}),
+	productMemberPromoteEndDate: formatMessage({id: 'basicData.product.extra.price.memberPromoteEndDate'}),
+	productMemberPoint: formatMessage({id: 'basicData.product.extra.price.memberPoint'}),
+	productPromoteReason: formatMessage({id: 'basicData.product.extra.price.promoteReason'}),
+	productPromoteFlag: formatMessage({id: 'basicData.product.extra.price.promoteFlag'}),
+	productCustomText1: formatMessage({id: 'basicData.product.extra.custom.text1'}),
+	productCustomText2: formatMessage({id: 'basicData.product.extra.custom.text2'}),
+	productCustomText3: formatMessage({id: 'basicData.product.extra.custom.text3'}),
+	productCustomText4: formatMessage({id: 'basicData.product.extra.custom.text4'}),
+	productCustomText5: formatMessage({id: 'basicData.product.extra.custom.text5'}),
+	productCustomText6: formatMessage({id: 'basicData.product.extra.custom.text6'}),
+	productCustomText7: formatMessage({id: 'basicData.product.extra.custom.text7'}),
+	productCustomText8: formatMessage({id: 'basicData.product.extra.custom.text8'}),
+	productCustomText9: formatMessage({id: 'basicData.product.extra.custom.text9'}),
+	productCustomText10: formatMessage({id: 'basicData.product.extra.custom.text10'}),
+	productCustomText11: formatMessage({id: 'basicData.product.extra.custom.text11'}),
+	productCustomText12: formatMessage({id: 'basicData.product.extra.custom.text12'}),
+	productCustomText13: formatMessage({id: 'basicData.product.extra.custom.text13'}),
+	productCustomText14: formatMessage({id: 'basicData.product.extra.custom.text14'}),
+	productCustomText15: formatMessage({id: 'basicData.product.extra.custom.text15'}),
+	productCustomText16: formatMessage({id: 'basicData.product.extra.custom.text16'}),
+	productCustomText17: formatMessage({id: 'basicData.product.extra.custom.text17'}),
+	productCustomText18: formatMessage({id: 'basicData.product.extra.custom.text18'}),
+	productCustomText19: formatMessage({id: 'basicData.product.extra.custom.text19'}),
+	productCustomText20: formatMessage({id: 'basicData.product.extra.custom.text20'}),
+	productCustomInt1: formatMessage({id: 'basicData.product.extra.custom.integer1'}),
+	productCustomInt2: formatMessage({id: 'basicData.product.extra.custom.integer2'}),
+	productCustomInt3: formatMessage({id: 'basicData.product.extra.custom.integer3'}),
+	productCustomInt4: formatMessage({id: 'basicData.product.extra.custom.integer4'}),
+	productCustomInt5: formatMessage({id: 'basicData.product.extra.custom.integer5'}),
+	productCustomDec1: formatMessage({id: 'basicData.product.extra.custom.decimal1'}),
+	productCustomDec2: formatMessage({id: 'basicData.product.extra.custom.decimal2'}),
+	productCustomDec3: formatMessage({id: 'basicData.product.extra.custom.decimal3'}),
+	productCustomDec4: formatMessage({id: 'basicData.product.extra.custom.decimal4'}),
+	productCustomDec5: formatMessage({id: 'basicData.product.extra.custom.decimal5'}),
+	productOthers: formatMessage({id: 'basicData.product.extra.custom.others'}),
 };
 
 const fontSizes = [{
@@ -77,7 +159,8 @@ export default class RightToolBox extends Component {
 			x: 'o',
 			y: 'o',
 			fontSize: '',
-			smallFontSize: ''
+			smallFontSize: '',
+			filterValue: ''
 		};
 	}
 
@@ -91,7 +174,10 @@ export default class RightToolBox extends Component {
 	}
 
 	componentWillUnmount() {
+		const { componentsDetail, selectedShapeName } = this.props;
+		const detail = componentsDetail[selectedShapeName];
 		document.removeEventListener('keydown', this.handleFontSizeEnter);
+		this.handleBlurBindFields(detail.bindField);
 	}
 
 	handleFontSizeEnter = (ev) => {
@@ -148,7 +234,7 @@ export default class RightToolBox extends Component {
 			const detail = componentsDetail[selectedShapeName];
 			let canUpdate = true;
 			if (key === 'bindField' && selectedShapeName.indexOf(SHAPE_TYPES.TEXT) > -1) {
-				newDetail.content = formatMessage({ id: bindFieldsLocaleMap[value] || 'studio.action.text.db.click'});
+				newDetail.content = bindFieldsLocaleMap[value] || formatMessage({ id: 'studio.action.text.db.click'});
 			}
 			if (key === 'content' && selectedShapeName.indexOf(SHAPE_TYPES.PRICE) > -1) {
 				if (value === '') {
@@ -170,6 +256,30 @@ export default class RightToolBox extends Component {
 				});
 			}
 		}
+	};
+
+	handleSearchBindFields = (value) => {
+		this.setState({
+			filterValue: value
+		});
+	};
+
+	handleBlurBindFields = (value) => {
+		const { updateComponentsDetail, selectedShapeName } = this.props;
+		const bindFields = this.getRealBindFields();
+
+		this.setState({
+			filterValue: ''
+		});
+		const newDetail = {
+			bindField: bindFields.find(item => item === value || bindFieldsLocaleMap[item] === value) || 'no'
+		};
+
+		updateComponentsDetail({
+			isStep: true,
+			nowShapeName: selectedShapeName,
+			[selectedShapeName]: newDetail,
+		});
 	};
 
 	handleFontSize = (value) => {
@@ -544,9 +654,10 @@ export default class RightToolBox extends Component {
 
 	getRealBindFields = () => {
 		const { bindFields } = this.props;
+		const { filterValue } = this.state;
 		let ret = [];
 		if (this.hasSubString(SHAPE_TYPES.PRICE)) {
-			ret = bindFields.filter(item => item.indexOf('Price') > -1);
+			ret = bindFields.filter(item => item.indexOf('Price') > -1 && item.toLowerCase().indexOf('description') === -1);
 		}
 		if (this.hasSubString(SHAPE_TYPES.CODE_V) || this.hasSubString(SHAPE_TYPES.CODE_H)) {
 			ret = bindFields.filter(item => item.indexOf('BarCode') > -1);
@@ -556,11 +667,11 @@ export default class RightToolBox extends Component {
 		}
 		if (this.hasSubString(SHAPE_TYPES.TEXT)) {
 			ret = bindFields.filter(
-				item => item.indexOf('Price') === -1
+				item => item.indexOf('Price') === -1 || item.toLowerCase().indexOf('description') > -1
 			);
 		}
 
-		return ret;
+		return ret.filter(item => item.indexOf(filterValue) > -1 || (bindFieldsLocaleMap[item] || '').indexOf(filterValue) > -1);
 	};
 
 	hasSubString = type => {
@@ -627,23 +738,33 @@ export default class RightToolBox extends Component {
 				{menuMap.hasBindData ? (
 					<div className={styles['tool-box-block']}>
 						<h4>{formatMessage({ id: 'studio.tool.title.bind.field' })}</h4>
-						<Select
+						<AutoComplete
 							placeholder={formatMessage({ id: 'studio.placeholder.bind.field' })}
-							value={detail.bindField}
 							style={{ width: 220 }}
+							value={detail.bindField}
+							dataSource={
+								[
+									<Option key="no" value="no">
+										{formatMessage({ id: 'basicData.product.not.bind' })}
+									</Option>,
+									...(bindFields.map(field =>
+										<AutoOption key={field} value={field}>
+											{bindFieldsLocaleMap[field]}
+										</AutoOption>
+									))
+								]
+
+							}
 							onChange={value => {
 								this.handleDetail('bindField', value);
 							}}
-						>
-							<Option key="" value="">
-								{formatMessage({ id: 'basicData.product.not.bind' })}
-							</Option>
-							{bindFields.map(field => (
-								<Option key={field} value={field}>
-									{formatMessage({ id: bindFieldsLocaleMap[field] })}
-								</Option>
-							))}
-						</Select>
+							onSearch={value => {
+								this.handleSearchBindFields(value);
+							}}
+							onBlur={value => {
+								this.handleBlurBindFields(value);
+							}}
+						/>
 					</div>
 				) : null}
 				<div className={styles['tool-box-block']}>
