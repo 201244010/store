@@ -150,10 +150,9 @@ class TopPassengerDataBoard extends React.Component {
 		this.initGetData(startTime, 1);
 	}
 
-	toggleShop = shopInfo => {
-		const { shopId } = shopInfo;
-		const { shopListOptions } = this;
-		const hasAdmin = shopListOptions.find(shop => shop.shopId === shopId);
+	toggleShop = () => {
+		const { headPassenger: { shopList } } = this.props;
+		const hasAdmin = shopList.find(shop => shop.shopId === shopId);
 		// const { goToPath } = this.props;
 		if (hasAdmin) {
 			Modal.confirm({
@@ -419,7 +418,7 @@ class TopPassengerDataBoard extends React.Component {
 				byFrequencyArray,
 				earlyByFrequencyArray,
 				// byGenderArray,
-				// shopList,
+				shopList = [],
 				passengerCount,
 				earlyPassengerCount,
 				passHeadCount,
@@ -656,7 +655,7 @@ class TopPassengerDataBoard extends React.Component {
 														initialValue: [],
 													})(
 														<Select mode="multiple" showArrow>
-															{this.shopListOptions.map(item => (
+															{shopList.map(item => (
 																<Option
 																	value={item.shopId}
 																	key={item.shopId}
