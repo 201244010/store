@@ -150,7 +150,8 @@ class TopPassengerDataBoard extends React.Component {
 		this.initGetData(startTime, 1);
 	}
 
-	toggleShop = () => {
+	toggleShop = shopInfo => {
+		const { shopId } = shopInfo;
 		const { headPassenger: { shopList } } = this.props;
 		const hasAdmin = shopList.find(shop => shop.shopId === shopId);
 		// const { goToPath } = this.props;
