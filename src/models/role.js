@@ -59,6 +59,7 @@ export default {
 		roleInfo: {
 			name: '',
 			permissionList: [],
+			permissionCount: 0,
 		},
 		permissionList: [],
 		userPermissionList: Storage.get(USER_PERMISSION_LIST, 'local') || [],
@@ -139,42 +140,51 @@ export default {
 				// 滤除后台脏数据
 				const basicData = sortedPermission.find(item => item.name === '/basicData');
 				if (basicData && basicData.permissionList.length) {
-					const index = basicData.permissionList.findIndex(item => item.path.indexOf('storeManagement') > -1);
+					const index = basicData.permissionList.findIndex(
+						item => item.path.indexOf('storeManagement') > -1
+					);
 					if (index >= 0) {
 						basicData.permissionList.splice(index, 1);
 					}
 				}
-
-				forData.permissionList = formatData(sortedPermission).map(item => {
+				forData.permissionList = formatData(sortedPermission).map((item, index) => {
 					const formatResult = formatPath(item);
 					const valueList = formatResult.permissionList
 						? formatResult.permissionList.map(items => items.value)
 						: [formatResult.value];
-					const matchedPermission = (allPermissionList.find(a => a.group === item.label) || {}).valueList || 0;
+					const matchedPermission =
+						(allPermissionList.find(a => a.group === item.label) || {}).valueList || 0;
 					const indeterminate =
-						valueList.length === 0 ?
-							false :
-							valueList.length < matchedPermission.length;
+						valueList.length === 0
+							? false
+							: valueList.length < matchedPermission.length;
 					return {
 						checkedList: formatResult,
 						indeterminate,
 						checkAll: valueList.length === matchedPermission.length,
 						group: formatResult.label,
 						valueList,
+						key: `0-${index}`,
 					};
 				});
+				forData.checkedList = forData.permissionList.reduce(
+					(pre, cur) => [...pre, ...cur.valueList],
+					[]
+				);
+				forData.permissionCount = forData.checkedList.length;
+
 				yield put({
 					type: 'updateState',
 					payload: {
 						roleInfo: forData,
 					},
 				});
-				yield put({
-					type: 'getPermissionList',
-					payload: {
-						type: 'modify',
-					},
-				});
+				// yield put({
+				// 	type: 'getPermissionList',
+				// 	payload: {
+				// 		type: 'modify',
+				// 	},
+				// });
 			}
 		},
 
@@ -194,7 +204,9 @@ export default {
 				// 滤除后台脏数据
 				const basicData = sortedPermission.find(item => item.name === '/basicData');
 				if (basicData && basicData.permissionList.length) {
-					const index = basicData.permissionList.findIndex(item => item.path.indexOf('storeManagement') > -1);
+					const index = basicData.permissionList.findIndex(
+						item => item.path.indexOf('storeManagement') > -1
+					);
 					if (index >= 0) {
 						basicData.permissionList.splice(index, 1);
 					}
