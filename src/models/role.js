@@ -59,9 +59,11 @@ export default {
 		roleInfo: {
 			name: '',
 			permissionList: [],
+			permissionCount: 0,
 		},
 		permissionList: [],
 		userPermissionList: Storage.get(USER_PERMISSION_LIST, 'local') || [],
+		permissionListByRoleList: [],
 	},
 	effects: {
 		*getAllRoles(_, { put, call }) {
@@ -81,7 +83,11 @@ export default {
 					payload: {
 						roleSelectList: roleList
 							.filter(role => !role.isDefault)
-							.map(role => ({ id: role.id, name: role.name })),
+							.map(role => ({
+								id: role.id,
+								name: role.name,
+								permissionList: role.permissionList,
+							})),
 					},
 				});
 			}
@@ -139,42 +145,51 @@ export default {
 				// 滤除后台脏数据
 				const basicData = sortedPermission.find(item => item.name === '/basicData');
 				if (basicData && basicData.permissionList.length) {
-					const index = basicData.permissionList.findIndex(item => item.path.indexOf('storeManagement') > -1);
+					const index = basicData.permissionList.findIndex(
+						item => item.path.indexOf('storeManagement') > -1
+					);
 					if (index >= 0) {
 						basicData.permissionList.splice(index, 1);
 					}
 				}
-
-				forData.permissionList = formatData(sortedPermission).map(item => {
+				forData.permissionList = formatData(sortedPermission).map((item, index) => {
 					const formatResult = formatPath(item);
 					const valueList = formatResult.permissionList
 						? formatResult.permissionList.map(items => items.value)
 						: [formatResult.value];
-					const matchedPermission = (allPermissionList.find(a => a.group === item.label) || {}).valueList || 0;
+					const matchedPermission =
+						(allPermissionList.find(a => a.group === item.label) || {}).valueList || 0;
 					const indeterminate =
-						valueList.length === 0 ?
-							false :
-							valueList.length < matchedPermission.length;
+						valueList.length === 0
+							? false
+							: valueList.length < matchedPermission.length;
 					return {
 						checkedList: formatResult,
 						indeterminate,
 						checkAll: valueList.length === matchedPermission.length,
 						group: formatResult.label,
 						valueList,
+						key: `0-${index}`,
 					};
 				});
+				forData.checkedList = forData.permissionList.reduce(
+					(pre, cur) => [...pre, ...cur.valueList],
+					[]
+				);
+				forData.permissionCount = forData.checkedList.length;
+
 				yield put({
 					type: 'updateState',
 					payload: {
 						roleInfo: forData,
 					},
 				});
-				yield put({
-					type: 'getPermissionList',
-					payload: {
-						type: 'modify',
-					},
-				});
+				// yield put({
+				// 	type: 'getPermissionList',
+				// 	payload: {
+				// 		type: 'modify',
+				// 	},
+				// });
 			}
 		},
 
@@ -194,7 +209,9 @@ export default {
 				// 滤除后台脏数据
 				const basicData = sortedPermission.find(item => item.name === '/basicData');
 				if (basicData && basicData.permissionList.length) {
-					const index = basicData.permissionList.findIndex(item => item.path.indexOf('storeManagement') > -1);
+					const index = basicData.permissionList.findIndex(
+						item => item.path.indexOf('storeManagement') > -1
+					);
 					if (index >= 0) {
 						basicData.permissionList.splice(index, 1);
 					}
@@ -340,6 +357,37 @@ export default {
 			});
 
 			return response;
+		},
+
+		// 根据角色列表计算权限列表,返回一个valueList
+		*getPermissionListByRoleList({ payload = {} }, { put, call, all }) {
+			const { roleList } = payload;
+			const responseList = yield all(
+				roleList.map(roleId =>
+					call(Actions.handleRoleManagement, 'getInfo', format('toSnake')({ roleId }))
+				)
+			);
+			const listSource = responseList.reduce((last, res) => {
+				const { data = {} } = res;
+				const forData = format('toCamel')(data) || {};
+				// eslint-disable-next-line arrow-body-style
+				const idList = forData.permissionList.reduce((list, menu) => {
+					// console.log();
+					return [...list, ...menu.permissionList.map(i => i.id)];
+				}, []);
+				return [...last, ...idList];
+			}, []);
+
+			const listMerge = Array.from(new Set(listSource));
+			// const listMerge = groupBy(listSource, 'name').reduce((last,firstMenu)=>{
+			// 	firstMenu.
+			// },[]);
+			yield put({
+				type: 'updateState',
+				payload: {
+					permissionListByRoleList: listMerge,
+				},
+			});
 		},
 	},
 	reducers: {

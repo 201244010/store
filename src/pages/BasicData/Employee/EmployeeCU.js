@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
-import { Card, Form, Input, Button, Radio, message } from 'antd';
-import OrgnizationSelect from './OrgnizationSelect';
+import { Card, Form, Input, Button, Radio, message, Col, Row } from 'antd';
 import { getLocationParam } from '@/utils/utils';
-import { HEAD_FORM_ITEM_LAYOUT } from '@/constants/form';
+import { FORM_ITEM_LAYOUT_EMPLOYEE } from '@/constants/form';
 import { ERROR_OK, USER_EXIST, EMPLOYEE_BINDED } from '@/constants/errorCode';
 import * as RegExp from '@/constants/regexp';
+import OrgnizationSelect from './OrgnizationSelect';
 import {
 	EMPLOYEE_NUMBER_LIMIT,
 	EMPLOYEE_NAME_LIMIT,
@@ -26,7 +26,7 @@ import styles from './Employee.less';
 		getShopListFromStorage: () => dispatch({ type: 'global/getShopListFromStorage' }),
 		getOrgnazationTree: () => dispatch({ type: 'store/getOrgnazationTree' }),
 		getCompanyListFromStorage: () => dispatch({ type: 'global/getCompanyListFromStorage' }),
-		getOrgLayer: () => dispatch({ type: 'store/getOrgLayer'}),
+		getOrgLayer: () => dispatch({ type: 'store/getOrgLayer' }),
 		checkUsernameExist: ({ username }) =>
 			dispatch({ type: 'employee/checkUsernameExist', payload: { username } }),
 		checkSsoBinded: ({ ssoUsername }) =>
@@ -57,11 +57,12 @@ class EmployeeCU extends Component {
 	constructor(props) {
 		super(props);
 
-		[this.employeeId, this.action, this.from, this.orgId] = [
+		[this.employeeId, this.action, this.from, this.orgId, this.isDefault] = [
 			getLocationParam('employeeId') || null,
 			getLocationParam('action') || 'create',
 			getLocationParam('from') || 'list',
 			getLocationParam('orgId') || undefined,
+			Boolean(+getLocationParam('isDefault')) || undefined,
 		];
 
 		this.state = {
@@ -75,7 +76,7 @@ class EmployeeCU extends Component {
 		const shopList = await getShopListFromStorage();
 		const shopIdList = shopList.map(item => item.orgId);
 		this.setState({
-			shopIdList
+			shopIdList,
 		});
 		getAllRoles();
 		if (this.employeeId && this.action === 'edit') {
@@ -87,7 +88,7 @@ class EmployeeCU extends Component {
 
 	traversalTreeData = (originalList, targetList, companyId) => {
 		if (originalList instanceof Array) {
-			originalList.forEach((item) => {
+			originalList.forEach(item => {
 				const { orgName, orgId, orgStatus } = item;
 				const target = {
 					title: orgName,
@@ -97,7 +98,7 @@ class EmployeeCU extends Component {
 					children: [],
 				};
 				targetList.push(target);
-				if(item.children && item.children.length) {
+				if (item.children && item.children.length) {
 					this.traversalTreeData(item.children, target.children, companyId);
 				}
 			});
@@ -124,7 +125,7 @@ class EmployeeCU extends Component {
 		// 	}, []);
 		const originalTree = await getOrgnazationTree();
 		const targetTree = [];
-		if(originalTree && originalTree.length) {
+		if (originalTree && originalTree.length) {
 			this.traversalTreeData(originalTree, targetTree, currentCompanyId);
 		}
 		console.log('------originalTree----', targetTree);
@@ -133,9 +134,7 @@ class EmployeeCU extends Component {
 				title: companyInfo.companyName,
 				value: companyInfo.companyId,
 				key: companyInfo.companyId,
-				children: [
-					...targetTree,
-				],
+				children: [...targetTree],
 			},
 		];
 		this.setState({
@@ -334,126 +333,161 @@ class EmployeeCU extends Component {
 		if (this.action === 'edit') {
 			decodedMapList = this.decodeMappingList(mappingList);
 		}
+		const LAYOUT_GUTTER = { xs: 8, sm: 8, md: 8, lg: 16, xl: 32 };
+		const LAYOUT_COL = { md: 12, lg: 8 };
 		return (
-			<Card bordered={false} loading={loading.effects['employee/getEmployeeInfo']}>
-				<h3>
-					{this.action === 'create'
-						? formatMessage({ id: 'employee.create' })
-						: formatMessage({ id: 'employee.alter' })}
-				</h3>
-				<Form {...HEAD_FORM_ITEM_LAYOUT}>
-					<Form.Item label={formatMessage({ id: 'employee.number' })}>
-						{getFieldDecorator('number', {
-							initialValue: this.action === 'edit' ? number : '',
-							validateTrigger: 'onBlur',
-							rules: [
-								{
-									required: true,
-									message: formatMessage({ id: 'employee.number.isEmpty' }),
-								},
-								{
-									validator: (rule, value, callback) => {
-										if (value && !RegExp.employeeNumber.test(value)) {
-											callback(
-												formatMessage({ id: 'employee.number.formatError' })
-											);
-										} else {
-											callback();
-										}
-									},
-								},
-							],
-						})(
-							<Input
-								maxLength={EMPLOYEE_NUMBER_LIMIT}
-								className={styles['uppercase-input']}
-							/>
-						)}
-					</Form.Item>
-					<Form.Item label={formatMessage({ id: 'employee.name' })}>
-						{getFieldDecorator('name', {
-							initialValue: this.action === 'edit' ? name : '',
-							validateTrigger: 'onBlur',
-							rules: [
-								{
-									required: true,
-									message: formatMessage({ id: 'employee.name.isEmpty' }),
-								},
-							],
-						})(<Input maxLength={EMPLOYEE_NAME_LIMIT} />)}
-					</Form.Item>
-					<Form.Item label={formatMessage({ id: 'employee.gender' })}>
-						{getFieldDecorator('gender', {
-							initialValue: this.action === 'edit' ? gender : '',
-							rules: [
-								{
-									required: true,
-									message: formatMessage({ id: 'employee.gender.isEmpty' }),
-								},
-								{
-									validator: (rule, value, callback) => {
-										if (value === '') {
-											callback();
-										}
+			<Form {...FORM_ITEM_LAYOUT_EMPLOYEE}>
+				<Card
+					className={styles['baseInfo-wrapper']}
+					title="基础信息"
+					loading={loading.effects['employee/getEmployeeInfo']}
+				>
+					<Row gutter={LAYOUT_GUTTER}>
+						<Col {...LAYOUT_COL}>
+							<Form.Item label={formatMessage({ id: 'employee.number' })}>
+								{getFieldDecorator('number', {
+									initialValue: this.action === 'edit' ? number : '',
+									validateTrigger: 'onBlur',
+									rules: [
+										{
+											required: true,
+											message: formatMessage({
+												id: 'employee.number.isEmpty',
+											}),
+										},
+										{
+											validator: (rule, value, callback) => {
+												if (value && !RegExp.employeeNumber.test(value)) {
+													callback(
+														formatMessage({
+															id: 'employee.number.formatError',
+														})
+													);
+												} else {
+													callback();
+												}
+											},
+										},
+									],
+								})(
+									<Input
+										maxLength={EMPLOYEE_NUMBER_LIMIT}
+										className={styles['uppercase-input']}
+									/>
+								)}
+							</Form.Item>
+						</Col>
+						<Col {...LAYOUT_COL}>
+							<Form.Item label={formatMessage({ id: 'employee.name' })}>
+								{getFieldDecorator('name', {
+									initialValue: this.action === 'edit' ? name : '',
+									validateTrigger: 'onBlur',
+									rules: [
+										{
+											required: true,
+											message: formatMessage({ id: 'employee.name.isEmpty' }),
+										},
+									],
+								})(<Input maxLength={EMPLOYEE_NAME_LIMIT} />)}
+							</Form.Item>
+						</Col>
+						<Col {...LAYOUT_COL}>
+							<Form.Item label={formatMessage({ id: 'employee.gender' })}>
+								{getFieldDecorator('gender', {
+									initialValue: this.action === 'edit' ? gender : '',
+									rules: [
+										{
+											required: true,
+											message: formatMessage({
+												id: 'employee.gender.isEmpty',
+											}),
+										},
+										{
+											validator: (rule, value, callback) => {
+												if (value === '') {
+													callback();
+												}
 
-										if (value === 0) {
-											callback(formatMessage({ id: 'employee.gender.isEmpty' }));
-										}
+												if (value === 0) {
+													callback(
+														formatMessage({
+															id: 'employee.gender.isEmpty',
+														})
+													);
+												}
 
-										callback();
-									},
-								},
-							],
-						})(
-							<Radio.Group>
-								<Radio value={1}>
-									{formatMessage({ id: 'employee.gender.male' })}
-								</Radio>
-								<Radio value={2}>
-									{formatMessage({ id: 'employee.gender.female' })}
-								</Radio>
-							</Radio.Group>
-						)}
-					</Form.Item>
-					<Form.Item label={formatMessage({ id: 'employee.phone.or.email' })}>
-						{getFieldDecorator('username', {
-							initialValue: this.action === 'edit' ? username : '',
-							validateTrigger: 'onBlur',
-							rules: [
-								{
-									required: true,
-									message: formatMessage({
-										id: 'employee.phone.or.email.isEmpty',
-									}),
-								},
-								{
-									validator: (rule, value, callback) => {
-										if (
-											value &&
-											!RegExp.phone.test(value) &&
-											!RegExp.mail.test(value)
-										) {
-											callback(
-												formatMessage({ id: 'employee.phone.formatError' })
-											);
-										} else {
-											this.getUserInfoByUsername(value);
-											callback();
-										}
-									},
-								},
-							],
-						})(<Input maxLength={EMPLOYEE_PHONE_EMAIL_LIMIT} />)}
-					</Form.Item>
-					<Form.Item label={formatMessage({ id: 'employee.sso.account' })}>
-						{getFieldDecorator('ssoUsername', {
-							initialValue: this.action === 'edit' ? ssoUsername : '',
-						})(<Input disabled />)}
-					</Form.Item>
+												callback();
+											},
+										},
+									],
+								})(
+									<Radio.Group>
+										<Radio value={1}>
+											{formatMessage({ id: 'employee.gender.male' })}
+										</Radio>
+										<Radio value={2}>
+											{formatMessage({ id: 'employee.gender.female' })}
+										</Radio>
+									</Radio.Group>
+								)}
+							</Form.Item>
+						</Col>
+					</Row>
+
+					<Row gutter={LAYOUT_GUTTER}>
+						<Col {...LAYOUT_COL}>
+							<Form.Item label={formatMessage({ id: 'employee.phone.or.email' })}>
+								{getFieldDecorator('username', {
+									initialValue: this.action === 'edit' ? username : '',
+									validateTrigger: 'onBlur',
+									rules: [
+										{
+											required: true,
+											message: formatMessage({
+												id: 'employee.phone.or.email.isEmpty',
+											}),
+										},
+										{
+											validator: (rule, value, callback) => {
+												if (
+													value &&
+													!RegExp.phone.test(value) &&
+													!RegExp.mail.test(value)
+												) {
+													callback(
+														formatMessage({
+															id: 'employee.phone.formatError',
+														})
+													);
+												} else {
+													this.getUserInfoByUsername(value);
+													callback();
+												}
+											},
+										},
+									],
+								})(<Input maxLength={EMPLOYEE_PHONE_EMAIL_LIMIT} />)}
+							</Form.Item>
+						</Col>
+						<Col {...LAYOUT_COL}>
+							<Form.Item label={formatMessage({ id: 'employee.sso.account' })}>
+								{getFieldDecorator('ssoUsername', {
+									initialValue: this.action === 'edit' ? ssoUsername : '',
+								})(<Input disabled />)}
+							</Form.Item>
+						</Col>
+					</Row>
+				</Card>
+				<Card
+					title={formatMessage({ id: 'employee.info.companyRole' })}
+					loading={loading.effects['employee/getEmployeeInfo']}
+					className={styles['orgInfo-wrapper']}
+				>
 					<Form.Item
-						label={formatMessage({ id: 'employee.orgnization' })}
-						labelCol={{ md: { span: 4 }, xxl: { span: 2 } }}
-						wrapperCol={{ md: { span: 16 }, xxl: { span: 12 } }}
+						// label={formatMessage({ id: 'employee.orgnization' })}
+						// labelCol={{ md: { span: 4 }, xxl: { span: 2 } }}
+						// wrapperCol={{ md: { span: 16 }, xxl: { span: 12 } }}
+						wrapperCol={{ span: 24 }}
 					>
 						{getFieldDecorator('mappingList', {
 							initialValue: this.action === 'edit' ? decodedMapList : [],
@@ -476,7 +510,12 @@ class EmployeeCU extends Component {
 												const { orgnization = null, role = [] } = value[
 													key
 												];
-												return (!orgnization && shopIdList.indexOf(Number(this.orgId)) === -1) || role.length === 0;
+												return (
+													(!orgnization &&
+														shopIdList.indexOf(Number(this.orgId)) ===
+															-1) ||
+													role.length === 0
+												);
 											});
 											let isSame = false;
 											objectKeys.forEach((item, index) => {
@@ -511,28 +550,37 @@ class EmployeeCU extends Component {
 									},
 								},
 							],
-						})(<OrgnizationSelect {...{ orgnizationTree, roleSelectList, orgId: this.orgId }} />)}
+						})(
+							<OrgnizationSelect
+								{...{
+									orgnizationTree,
+									roleSelectList,
+									orgId: this.orgId,
+									isDefault: this.isDefault,
+								}}
+							/>
+						)}
 					</Form.Item>
-
-					<Form.Item label=" " colon={false}>
-						<Button
-							type="primary"
-							onClick={this.handleSubmit}
-							loading={
-								loading.effects['employee/createEmployee'] ||
-								loading.effects['employee/updateEmployee']
-							}
-						>
-							{this.action === 'create'
-								? formatMessage({ id: 'btn.create' })
-								: formatMessage({ id: 'btn.alter' })}
-						</Button>
-						<Button style={{ marginLeft: '20px' }} onClick={this.handleCancel}>
-							{formatMessage({ id: 'btn.cancel' })}
-						</Button>
-					</Form.Item>
-				</Form>
-			</Card>
+				</Card>
+				<Card className={styles['button-wrapper']}>
+					<Button onClick={this.handleCancel}>
+						{formatMessage({ id: 'btn.cancel' })}
+					</Button>
+					<Button
+						type="primary"
+						style={{ marginLeft: '20px' }}
+						onClick={this.handleSubmit}
+						loading={
+							loading.effects['employee/createEmployee'] ||
+							loading.effects['employee/updateEmployee']
+						}
+					>
+						{this.action === 'create'
+							? formatMessage({ id: 'btn.create' })
+							: formatMessage({ id: 'btn.alter' })}
+					</Button>
+				</Card>
+			</Form>
 		);
 	}
 }

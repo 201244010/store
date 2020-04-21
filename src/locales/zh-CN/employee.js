@@ -39,4 +39,11 @@ export default {
 	'employee.info.binded.error': '员工工号/手机/邮箱/商米账号已被绑定',
 	'employee.create.success': '员工创建成功',
 	'employee.update.success': '员工修改成功',
+	'employee.info.permission.has': '查看已分配权限',
+	'employee.info.permission.tip': '赋予用户本层权限后，将默认获取本组织中下层组织的相同权限',
+	'employee.info.role': '角色',
+	'employee.info.companyRole': '所属组织&角色',
+	'employee.list.total': '共计',
+	'employee.list.memberCount': '名员工',
+	'employee.search.place.name': '请输入姓名进行查询',
 };

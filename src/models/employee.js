@@ -71,7 +71,7 @@ export default {
 				type: 'updateState',
 				payload: {
 					searchValue: initStatus,
-					getInfoValue: initStatus
+					getInfoValue: initStatus,
 				},
 			});
 		},
@@ -79,8 +79,14 @@ export default {
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { getInfoValue, pagination } = yield select(state => state.employee);
 			const { storeList } = yield select(state => state.store);
-			const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].shopId || '';
-			const { current = 1, pageSize = 10, roleId = -1, shopIdList: shopIdListParams = [] } = payload;
+			const shopId =
+				CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].shopId || '';
+			const {
+				current = 1,
+				pageSize = 10,
+				roleId = -1,
+				shopIdList: shopIdListParams = [],
+			} = payload;
 			const tmpShopIdList = yield put.resolve({
 				type: 'global/getShopListFromStorage',
 			});
@@ -127,7 +133,11 @@ export default {
 							},
 						])(employee)
 					)
-					.map(e => ({ ...e, username: e.phone || e.email }))
+					.map(e => ({
+						...e,
+						username: e.phone || e.email,
+						roleList: Array.from(new Set(e.mappingList.map(i => i.roleName))),
+					}))
 					.sort((a, b) => b.createTime - a.createTime);
 
 				yield put({
@@ -147,7 +157,8 @@ export default {
 
 		*getEmployeeInfo({ payload: { employeeId = null } = {} }, { call, put, select }) {
 			const { storeList } = yield select(state => state.store);
-			const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].orgId || '';
+			const shopId =
+				CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].orgId || '';
 
 			const response = yield call(
 				Action.handleEmployee,
@@ -212,7 +223,7 @@ export default {
 					gender: gender || 0,
 					ssoUsername,
 					mappingList,
-					shopId: mappingList[0].shopId || storeList[0].shopId
+					shopId: mappingList[0].shopId || storeList[0].shopId,
 				})
 			);
 
@@ -234,7 +245,7 @@ export default {
 					username,
 					gender,
 					mappingList,
-					shopId: mappingList[0].shopId || storeList[0].shopId
+					shopId: mappingList[0].shopId || storeList[0].shopId,
 				})
 			);
 
