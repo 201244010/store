@@ -1,6 +1,6 @@
+import { ERROR_OK } from '@/constants/errorCode';
 import { getTradeVideos, getVideo , getPaymentDetailList } from '../pages/IPC/services/tradeVideos';
 import { getPOSList } from '../pages/IPC/services/posList';
-import { ERROR_OK } from '@/constants/errorCode';
 
 export default {
 	namespace: 'tradeVideos',
@@ -82,24 +82,31 @@ export default {
 			});
 			if (response.code === ERROR_OK) {
 				const { data: { list=[], total } } = response;
-				const orderNoList = list.map(item => item.orderNo);
+				// const orderNoList = list.map(item => item.orderNo);
 
-				if (orderNoList.length > 0) {
-					const { code, data } = yield call(getVideo, {orderNoList});
+				// if (orderNoList.length > 0) {
+				const { code, data } = yield call(getVideo, {
+					deviceId: ipcId,
+					timeRangeStart: startTime,
+					timeRangeEnd: endTime,
+					// 筛选条件不一致，pageNum & pageSize不准确
+					// pageNum: currentPage,
+					// pageSize,
+				});
 
-					if (code === ERROR_OK) {
-						const vList = data.list;
-						list.forEach(item => {
-							vList.every(videoInfo => {
-								if (item.orderNo === videoInfo.orderNo) {
-									item.url = videoInfo.url;
-									return false;
-								}
-								return true;
-							});
+				if (code === ERROR_OK) {
+					const { auditVideoList = [] } = data;
+					list.forEach(item => {
+						auditVideoList.every(videoInfo => {
+							if (item.orderNo === videoInfo.orderNo) {
+								item.url = videoInfo.videoUrl;
+								return false;
+							}
+							return true;
 						});
-					}
+					});
 				}
+				// }
 
 				// const tradevideoList = list.map(item => {
 				// 	const ipcName = item.ipcName === ''? 'My Camera': item.ipcName;

@@ -310,36 +310,35 @@ class ProductCU extends Component {
 				const submitValue = this.formatSubmitValue(values);
 				submitValue.extraInfo = {};
 				ExtraInfoFields.forEach(field => {
-					if (submitValue[field]) {
-						if (field === 'expiryDate') {
-							submitValue.extraInfo[field] = values[field] ? values[field].unix() : undefined;
-						} else {
-							submitValue.extraInfo[field] = submitValue[field];
-						}
+					if (field === 'expiryDate') {
+						submitValue.extraInfo[field] = values[field] ? values[field].unix() : undefined;
+					} else if(field === 'packSize' || field === 'stock' || field === 'safetyStock' || field === 'dailyMeanSales' || field === 'todaySalesQty' || field === 'cumulatedSalesQty' || field === 'onOrderQty' || field === 'shelfQty') {
+						submitValue.extraInfo[field] = submitValue[field]? submitValue[field]: -1;
+					} else {
+						submitValue.extraInfo[field] = submitValue[field];
 					}
-					delete submitValue[field];
 				});
 				submitValue.extraPriceInfo = {};
 				ExtraPriceInfoFields.forEach(field => {
-					if (submitValue[field]) {
-						if (field === 'promoteDate') {
-							submitValue.extraPriceInfo.promoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
-							submitValue.extraPriceInfo.promoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
-						} else if (field === 'memberPromoteDate') {
-							submitValue.extraPriceInfo.memberPromoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
-							submitValue.extraPriceInfo.memberPromoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
-						} else {
-							submitValue.extraPriceInfo[field] = submitValue[field];
-						}
+					if (field === 'promoteDate') {
+						submitValue.extraPriceInfo.promoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
+						submitValue.extraPriceInfo.promoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
+					} else if (field === 'memberPromoteDate') {
+						submitValue.extraPriceInfo.memberPromoteStartDate = values[field][0] ? values[field][0].unix() : undefined;
+						submitValue.extraPriceInfo.memberPromoteEndDate = values[field][1] ? values[field][1].unix() : undefined;
+					}else if(field === 'customPrice1' || field === 'customPrice2' || field === 'customPrice3' || field === 'memberPoint' || field === 'promoteFlag') {
+						submitValue.extraPriceInfo[field] = submitValue[field]? submitValue[field]: -1;
+					} else {
+						submitValue.extraPriceInfo[field] = submitValue[field];
 					}
-					delete submitValue[field];
 				});
 				submitValue.extraCustomInfo = {};
 				ExtraCustomInfoFields.forEach(field => {
-					if (submitValue[field]) {
+					if (field === 'customInt1' || field === 'customInt2' || field === 'customInt3' || field === 'customInt4' || field === 'customInt5' || field === 'customDec1' || field === 'customDec2' || field === 'customDec3' || field === 'customDec4' || field === 'customDec5') {
+						submitValue.extraCustomInfo[field] = submitValue[field]? submitValue[field]: -1;
+					} else {
 						submitValue.extraCustomInfo[field] = submitValue[field];
 					}
-					delete submitValue[field];
 				});
 				const response = await submitFunction[action]({
 					options: {
