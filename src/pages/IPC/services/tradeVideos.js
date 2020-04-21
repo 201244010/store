@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { format } from '@konata9/milk-shake';
 import { customizeFetch } from '@/utils/fetch';
 import { ERROR_OK } from '@/constants/errorCode';
 
@@ -128,37 +129,19 @@ export const getPaymentDetailList = async (params) => {
 
 // 	return info;
 // };
-const videoInfoFormatter = (list) => {
-	const data = list.map(item => ({
-		orderNo: item.order_no,
-		url: item.address
-	}));
-	return data;
-};
 
-export const getVideo = async ({ orderNoList }) => {
-	const info = requestVideo('getVideo',{
-		body:{
-			order_no_list: orderNoList
+export const getVideo = (params) => 
+	// params:{ deviceId } or params:{}
+	// getStorageList
+	requestVideo('video/getList', { 
+		body: format('toSnake')(params)
+	}).then(
+		async response => {
+			const result = await response.json();
+			return format('toCamel')(result);
 		}
-	}).then(async(response) => {
-		const { data, code } = await response.json();
-		if (code === ERROR_OK){
-			// console.log(data);
-			return {
-				code: ERROR_OK,
-				data: {
-					list: videoInfoFormatter(data)
-				}
-			};
-		}
-		return {
-			code
-		};
-	});
+	);
 
-	return info;
-};
 
 export const getPaymentDeviceList = async (params) =>{
 	const { ipcDeviceId } = params;
