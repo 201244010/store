@@ -7,9 +7,9 @@ const {
 export const { env, country } = sysEnv;
 
 export const FIRST_MENU_ORDER = [
-	'company',
+	'companyView',
 	'dashboard',
-	'customerCenter',
+	'dataAnalyze',
 	'storeMonitor',
 	'productManagement',
 	'transManagement',
