@@ -179,9 +179,8 @@ export const FORM_ITEM_LAYOUT_BUSINESS = {
 	wrapperCol: { span: 6 },
 };
 
-
 export const FORM_ITEM_LAYOUT_QOS = {
-	labelCol: { span: 3},
+	labelCol: { span: 3 },
 	wrapperCol: { span: 10 },
 };
 
@@ -234,23 +233,23 @@ export const SEARCH_FORM_COL = {
 	OFFSET_ONE_THIRD: {
 		sm: {
 			offset: 0,
-			span: 24
+			span: 24,
 		},
 		md: {
 			offset: 8,
-			span: 8
-		}
+			span: 8,
+		},
 	},
 	OFFSET_TWO_THIRD: {
 		sm: {
 			offset: 0,
-			span: 24
+			span: 24,
 		},
 		md: {
 			offset: 16,
-			span: 8
-		}
-	}
+			span: 8,
+		},
+	},
 };
 export const FORM_ITEM_LAYOUT_MANAGEMENT = {
 	labelCol: {
@@ -263,3 +262,16 @@ export const FORM_ITEM_LAYOUT_MANAGEMENT = {
 	},
 };
 
+export const FORM_ITEM_LAYOUT_EMPLOYEE = {
+	labelCol: {
+		xs: { span: 24 },
+		sm: { span: 10 },
+		xl: { span: 8 },
+		xxl: { span: 8 },
+	},
+	wrapperCol: {
+		xs: { span: 24 },
+		sm: { span: 14 },
+		xl: { span: 16 },
+	},
+};
