@@ -105,7 +105,7 @@ class RoleModify extends React.Component {
 		const {
 			role: {
 				permissionList,
-				roleInfo: { name, checkedList },
+				roleInfo: { name, checkedList, isDefault },
 			},
 			loading,
 			form: { getFieldDecorator },
@@ -113,7 +113,7 @@ class RoleModify extends React.Component {
 			visible,
 			closeModal,
 		} = this.props;
-
+		const disabled = isDefault === 1;
 		return (
 			<Modal
 				title={formatMessage({ id: 'roleManagement.role.editRole' })}
@@ -133,6 +133,7 @@ class RoleModify extends React.Component {
 						: loading.effects['role/creatRole']
 				}
 				destroyOnClose
+				okButtonProps={{ disabled }}
 			>
 				{/* <Card> */}
 				<Spin
@@ -203,6 +204,7 @@ class RoleModify extends React.Component {
 										placeholder={formatMessage({
 											id: 'roleManagement.modify.name.placeholder',
 										})}
+										disabled={disabled}
 									/>
 								)}
 							</Form.Item>
@@ -235,6 +237,7 @@ class RoleModify extends React.Component {
 											const { title } = node.props;
 											return title.indexOf(input) > -1;
 										}}
+										disabled={disabled}
 									>
 										{permissionList.map((firstMenu, index) => (
 											<TreeNode

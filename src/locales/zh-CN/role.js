@@ -40,4 +40,5 @@ export default {
 	'roleManagement.role.search.keyword': '请输入角色名称进行搜索',
 	'roleManagement.modify.name.placeholder': '请输入角色名称',
 	'roleManagement.permission.search.placeholder': '请输入权限名称进行搜索',
+	'roleManagement.role.delete': '角色删除',
 };

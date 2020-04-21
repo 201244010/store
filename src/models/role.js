@@ -63,6 +63,7 @@ export default {
 		},
 		permissionList: [],
 		userPermissionList: Storage.get(USER_PERMISSION_LIST, 'local') || [],
+		permissionListByRoleList: [],
 	},
 	effects: {
 		*getAllRoles(_, { put, call }) {
@@ -82,7 +83,11 @@ export default {
 					payload: {
 						roleSelectList: roleList
 							.filter(role => !role.isDefault)
-							.map(role => ({ id: role.id, name: role.name })),
+							.map(role => ({
+								id: role.id,
+								name: role.name,
+								permissionList: role.permissionList,
+							})),
 					},
 				});
 			}
@@ -352,6 +357,37 @@ export default {
 			});
 
 			return response;
+		},
+
+		// 根据角色列表计算权限列表,返回一个valueList
+		*getPermissionListByRoleList({ payload = {} }, { put, call, all }) {
+			const { roleList } = payload;
+			const responseList = yield all(
+				roleList.map(roleId =>
+					call(Actions.handleRoleManagement, 'getInfo', format('toSnake')({ roleId }))
+				)
+			);
+			const listSource = responseList.reduce((last, res) => {
+				const { data = {} } = res;
+				const forData = format('toCamel')(data) || {};
+				// eslint-disable-next-line arrow-body-style
+				const idList = forData.permissionList.reduce((list, menu) => {
+					// console.log();
+					return [...list, ...menu.permissionList.map(i => i.id)];
+				}, []);
+				return [...last, ...idList];
+			}, []);
+
+			const listMerge = Array.from(new Set(listSource));
+			// const listMerge = groupBy(listSource, 'name').reduce((last,firstMenu)=>{
+			// 	firstMenu.
+			// },[]);
+			yield put({
+				type: 'updateState',
+				payload: {
+					permissionListByRoleList: listMerge,
+				},
+			});
 		},
 	},
 	reducers: {

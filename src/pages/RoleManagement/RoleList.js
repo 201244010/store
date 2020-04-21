@@ -92,7 +92,9 @@ class RoleList extends React.Component {
 								this.modifyRoleInfo({ id: record.id, action: 'modify' });
 							}}
 						>
-							{formatMessage({ id: 'list.action.edit' })}
+							{record.isDefault
+								? formatMessage({ id: 'list.action.view' })
+								: formatMessage({ id: 'list.action.edit' })}
 						</a>
 						{record.isDefault ? (
 							// checkAdmin ? (
@@ -360,19 +362,21 @@ class RoleList extends React.Component {
 					}}
 				/>
 				<Modal
-					title="角色删除"
+					title={formatMessage({ id: 'roleManagement.role.delete' })}
 					visible={visibleDeleteRole}
 					closable={false}
-					okText="删除"
+					okText={formatMessage({ id: 'btn.delete' })}
 					onOk={this.deleteRole}
 					confirmLoading={loading.effects['role/deleteRole']}
 					onCancel={() => this.setState({ visibleDeleteRole: false })}
 				>
-					{`${formatMessage({ id: 'roleManagement.role.deleteRole.one' })}${{
-						permissionCount,
-					}}${formatMessage({ id: 'roleManagement.role.deleteRole.two' })}${{
-						userCount,
-					}}${formatMessage({ id: 'roleManagement.role.deleteRole.three' })}`}
+					{`${formatMessage({
+						id: 'roleManagement.role.deleteRole.one',
+					})}${permissionCount}${formatMessage({
+						id: 'roleManagement.role.deleteRole.two',
+					})}${userCount}${formatMessage({
+						id: 'roleManagement.role.deleteRole.three',
+					})}`}
 				</Modal>
 				<Modal
 					visible={visible}
