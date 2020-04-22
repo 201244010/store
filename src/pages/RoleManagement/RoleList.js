@@ -1,23 +1,12 @@
 import React from 'react';
-import {
-	Input,
-	Button,
-	Table,
-	Popconfirm,
-	Icon,
-	Divider,
-	Form,
-	Row,
-	Col,
-	message,
-	Modal,
-	Card,
-} from 'antd';
+import { Input, Button, Table, Divider, Form, Row, Col, message, Modal, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
 import { unixSecondToDate, idEncode } from '@/utils/utils';
 import { SEARCH_FORM_COL, FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { ERROR_OK, ALERT_NOTICE_MAP, ALERT_ROLE_MAP } from '@/constants/errorCode';
+import RoleModify from './RoleCreateModify';
+import PermissionList from './PermissionList';
 
 import styles from './Role.less';
 
@@ -37,15 +26,24 @@ const FormItem = Form.Item;
 		goToPath: (pathId, urlParams = {}) =>
 			dispatch({ type: 'menu/goToPath', payload: { pathId, urlParams } }),
 		getUserInfo: () => dispatch({ type: 'user/getUserInfo' }),
+		getRoleInfo: payload => dispatch({ type: 'role/getRoleInfo', payload }),
+		updateRoleInfo: payload => dispatch({ type: 'role/updateRoleInfo', payload }),
+		getPermissionList: payload => dispatch({ type: 'role/getPermissionList', payload }),
 	})
 )
 @Form.create()
 class RoleList extends React.Component {
 	constructor(props) {
 		super(props);
-		const { loading } = this.props;
+		const { getRoleInfo, goToPath } = this.props;
 		this.state = {
 			visible: false,
+			visiblePermissionList: false,
+			visibleDeleteRole: false,
+			roleModify: {
+				action: null, // modify create copy
+				id: null,
+			},
 		};
 		this.columns = [
 			{
@@ -62,7 +60,13 @@ class RoleList extends React.Component {
 					) : (
 						<a
 							href="javascript:void(0);"
-							onClick={() => this.goPath(record, 'employee')}
+							onClick={() => {
+								const roleId = record.id ? idEncode(record.id) : null;
+								goToPath('employeeTable', {
+									role: record.name,
+									roleId,
+								});
+							}}
 						>
 							{record.userCount}
 						</a>
@@ -88,8 +92,15 @@ class RoleList extends React.Component {
 					// } = this.props;
 					// return (
 					<div>
-						<a href="javascript:void(0);" onClick={() => this.goPath(record, 'view')}>
-							{formatMessage({ id: 'list.action.view' })}
+						<a
+							href="javascript:void(0);"
+							onClick={() => {
+								this.modifyRoleInfo({ id: record.id, action: 'modify' });
+							}}
+						>
+							{record.isDefault
+								? formatMessage({ id: 'list.action.view' })
+								: formatMessage({ id: 'list.action.edit' })}
 						</a>
 						{record.isDefault ? (
 							// checkAdmin ? (
@@ -130,32 +141,24 @@ class RoleList extends React.Component {
 							<span>
 								<Divider type="vertical" />
 								<a
-									href="javascript:void(0);"
-									onClick={() => this.goPath(record, 'modify')}
-								>
-									{formatMessage({ id: 'list.action.edit' })}
-								</a>
-								<Divider type="vertical" />
-								<Popconfirm
-									title={formatMessage({
-										id: 'roleManagement.role.deleteRole',
-									})}
-									icon={
-										<Icon
-											theme="filled"
-											style={{ color: 'red' }}
-											type="close-circle"
-										/>
-									}
-									onConfirm={() => this.deleteRole(record)}
-									okButtonProps={{
-										loading: loading.effects['role/deleteRole'],
+									// href="javascript:void(0);"
+									onClick={() => {
+										this.modifyRoleInfo({ id: record.id, action: 'copy' });
 									}}
 								>
-									<a href="javascript:void(0);">
-										{formatMessage({ id: 'list.action.delete' })}
-									</a>
-								</Popconfirm>
+									{formatMessage({ id: 'list.action.copy' })}
+								</a>
+								<Divider type="vertical" />
+								<a
+									// href="javascript:void(0);"
+									onClick={async () => {
+										this.rowSelected = record;
+										await getRoleInfo({ roleId: record.id });
+										this.setState({ visibleDeleteRole: true });
+									}}
+								>
+									{formatMessage({ id: 'list.action.delete' })}
+								</a>
 							</span>
 						)}
 					</div>
@@ -166,14 +169,19 @@ class RoleList extends React.Component {
 	}
 
 	async componentDidMount() {
-		const { getRoleList, checkAdmin } = this.props;
+		const { getRoleList, checkAdmin, getPermissionList } = this.props;
 		await checkAdmin();
 		await getRoleList();
+		await getPermissionList();
 	}
 
-	deleteRole = async rowDetail => {
+	deleteRole = async () => {
 		const { deleteRole, getRoleList } = this.props;
-		const response = await deleteRole({ roleId: rowDetail.id });
+		const {
+			rowSelected: { id: roleId },
+		} = this;
+		const response = await deleteRole({ roleId });
+		this.setState({ visibleDeleteRole: false });
 		if (response && response.code === ERROR_OK) {
 			message.success(formatMessage({ id: 'roleManagement.role.deleteSuccess' }));
 			getRoleList();
@@ -219,41 +227,6 @@ class RoleList extends React.Component {
 		});
 	};
 
-	goPath = (rowDetail, path) => {
-		const { goToPath } = this.props;
-		const encodeID = rowDetail.id ? idEncode(rowDetail.id) : null;
-		const urlMap = {
-			modify: {
-				pathId: 'roleModify',
-				urlParams: {
-					action: 'modify',
-					id: encodeID,
-				},
-			},
-			view: {
-				pathId: 'roleInfo',
-				urlParams: { id: encodeID },
-			},
-			create: {
-				pathId: 'roleCreate',
-				urlParams: {
-					action: 'create',
-				},
-			},
-			employee: {
-				pathId: 'employeeTable',
-				urlParams: {
-					role: rowDetail.name,
-					roleId: encodeID,
-				},
-			},
-		};
-
-		const { pathId, urlParams = {} } = urlMap[path] || {};
-		goToPath(pathId, urlParams);
-		// router.push(`${urlMap[path]}`);
-	};
-
 	handleSubmit = () => {
 		const {
 			getRoleList,
@@ -278,54 +251,93 @@ class RoleList extends React.Component {
 		});
 	};
 
+	modifyRoleInfo = async ({ id, action }) => {
+		const { getRoleInfo } = this.props;
+		id && (await getRoleInfo({ roleId: id }));
+		this.setState({
+			roleModify: { id, action },
+		});
+	};
+
 	render() {
 		const {
-			role: { roleList, pagination },
+			role: {
+				roleList,
+				pagination,
+				roleInfo: { permissionCount },
+				permissionList,
+			},
 			form: { getFieldDecorator },
 			loading,
+			updateRoleInfo,
 		} = this.props;
-		const { visible } = this.state;
+		const {
+			visible,
+			visiblePermissionList,
+			roleModify: { id, action },
+			visibleDeleteRole,
+		} = this.state;
+		const { userCount = null } = this.rowSelected || {};
+		// const { Search } = Input;
+
 		return (
 			<Card bordered={false}>
 				<div className={styles.wrapper}>
 					<div className={styles['search-bar']}>
-						<Form layout="inline">
-							<Row gutter={FORM_FORMAT.gutter}>
-								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
-									<FormItem
-										label={formatMessage({
-											id: 'roleManagement.role.roleName',
-										})}
-									>
+						<Row gutter={FORM_FORMAT.gutter}>
+							<Col {...SEARCH_FORM_COL.ONE_HALF}>
+								<Form layout="inline" className={styles['search-form']}>
+									<FormItem className="search-keyword-wrapper">
 										{getFieldDecorator('keyword', {})(
 											<Input
 												maxLength={40}
 												placeholder={formatMessage({
-													id: 'esl.device.upload.device.version.input',
+													id: 'roleManagement.role.search.keyword',
 												})}
 											/>
 										)}
 									</FormItem>
-								</Col>
-								<Col {...SEARCH_FORM_COL.ONE_THIRD} />
-								<Col {...SEARCH_FORM_COL.ONE_THIRD}>
 									<Form.Item className={styles['query-item']}>
 										<Button type="primary" onClick={this.handleSubmit}>
 											{formatMessage({ id: 'btn.query' })}
 										</Button>
 									</Form.Item>
-								</Col>
-							</Row>
-						</Form>
+								</Form>
+							</Col>
+							<Col {...SEARCH_FORM_COL.ONE_HALF} className={styles['right-wrapper']}>
+								<Button
+									type="primary"
+									icon="plus"
+									// onClick={() => this.goPath({}, 'create')}
+									onClick={() => {
+										updateRoleInfo({
+											roleInfo: {
+												name: '',
+												permissionList: [],
+												permissionCount: 0,
+											},
+										});
+										this.setState({
+											roleModify: {
+												action: 'create',
+												id: null,
+											},
+										});
+									}}
+									className={styles['add-role']}
+								>
+									{formatMessage({ id: 'roleManagement.role.addRole' })}
+								</Button>
+								<a
+									onClick={() => {
+										this.setState({ visiblePermissionList: true });
+									}}
+								>
+									{formatMessage({ id: 'roleManagement.role.allPermission' })}
+								</a>
+							</Col>
+						</Row>
 					</div>
-					<Button
-						type="primary"
-						icon="plus"
-						onClick={() => this.goPath({}, 'create')}
-						className={styles['add-role']}
-					>
-						{formatMessage({ id: 'roleManagement.role.addRole' })}
-					</Button>
 					<Table
 						rowKey="id"
 						loading={loading.effects['role/getRoleList']}
@@ -335,6 +347,43 @@ class RoleList extends React.Component {
 						onChange={this.onTableChange}
 					/>
 				</div>
+				<PermissionList
+					visible={visiblePermissionList}
+					data={permissionList}
+					closeModal={() => {
+						this.setState({ visiblePermissionList: false });
+					}}
+				/>
+				<RoleModify
+					action={action}
+					id={id}
+					visible={Boolean(action)}
+					closeModal={() => {
+						this.setState({
+							roleModify: {
+								id: null,
+								action: null,
+							},
+						});
+					}}
+				/>
+				<Modal
+					title={formatMessage({ id: 'roleManagement.role.delete' })}
+					visible={visibleDeleteRole}
+					closable={false}
+					okText={formatMessage({ id: 'btn.delete' })}
+					onOk={this.deleteRole}
+					confirmLoading={loading.effects['role/deleteRole']}
+					onCancel={() => this.setState({ visibleDeleteRole: false })}
+				>
+					{`${formatMessage({
+						id: 'roleManagement.role.deleteRole.one',
+					})}${permissionCount}${formatMessage({
+						id: 'roleManagement.role.deleteRole.two',
+					})}${userCount}${formatMessage({
+						id: 'roleManagement.role.deleteRole.three',
+					})}`}
+				</Modal>
 				<Modal
 					visible={visible}
 					title={formatMessage({ id: 'roleManagement.role.changeRole' })}
