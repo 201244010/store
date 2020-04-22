@@ -241,19 +241,17 @@ class RoleModify extends React.Component {
 									>
 										{permissionList.map((firstMenu, index) => (
 											<TreeNode
-												title={firstMenu.checkedList.label}
+												title={firstMenu.label}
 												value={`0-${index}`}
 												key={`0-${index}`}
 											>
-												{firstMenu.checkedList.permissionList.map(
-													secondMenu => (
-														<TreeNode
-															title={secondMenu.label}
-															value={secondMenu.value}
-															key={secondMenu.value}
-														/>
-													)
-												)}
+												{firstMenu.permissionList.map(secondMenu => (
+													<TreeNode
+														title={secondMenu.label}
+														value={secondMenu.value}
+														key={secondMenu.value}
+													/>
+												))}
 											</TreeNode>
 										))}
 									</TreeSelect>

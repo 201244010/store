@@ -676,7 +676,8 @@ export const downloadFileByClick = downloadUrl => {
 
 export const hasCompanyViewPermission = (permissionList = [], storeList = []) => {
 	const isCompanyView = permissionList.find(
-		item => item.name === '/company' || item.path === '/companyView'
+		item =>
+			item.name === '/company' || item.path === '/companyView' || item.permission === '/companyView'
 	);
 
 	return isCompanyView && storeList.length > 1;

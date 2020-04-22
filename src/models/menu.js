@@ -167,7 +167,7 @@ export default {
 				type: 'role/getUserPermissionList',
 			});
 
-			if ( permissionResult && permissionResult.code === ERROR_OK ) {
+			if (permissionResult && permissionResult.code === ERROR_OK) {
 				const { data: permissionData = {} } = permissionResult || {};
 				const { permissionList = [] } = format('toCamel')(permissionData);
 				console.log('permissionList, ', permissionList);
@@ -181,8 +181,9 @@ export default {
 						formattedPermissionList = CompanyView;
 					} else {
 						formattedPermissionList = permissionList.map(item => ({
-							base: ((item.path || '').slice(1).split('/') || [])[0],
-							path: item.path,
+							base: ((item.path || item.permission || '').slice(1).split('/') ||
+								[])[0],
+							path: item.path || item.permission,
 						}));
 						if (storeList.length === 1) {
 							CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeList[0].shopId);

@@ -65,11 +65,8 @@ export default class PermissionList extends React.PureComponent {
 					// }}
 				>
 					{dataFormat.map(subMenu => (
-						<TreeNode
-							title={subMenu.checkedList.label}
-							key={`0-${subMenu.checkedList.label}`}
-						>
-							{subMenu.checkedList.permissionList.map(secondMenu => (
+						<TreeNode title={subMenu.label} key={`0-${subMenu.label}`}>
+							{subMenu.permissionList.map(secondMenu => (
 								<TreeNode title={secondMenu.label} key={secondMenu.value} />
 							))}
 						</TreeNode>
