@@ -69,7 +69,7 @@ class UserCenter extends Component {
 					}}
 				/>
 				{userPermissionList.find(
-					permission => permission.path === ROLE_MAPPING.COMPANY_LIST
+					permission => permission.permission === ROLE_MAPPING.COMPANY_LIST
 				) && <Store />}
 			</div>
 		);
