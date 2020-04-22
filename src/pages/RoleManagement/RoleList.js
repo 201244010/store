@@ -2,7 +2,7 @@ import React from 'react';
 import { Input, Button, Table, Divider, Form, Row, Col, message, Modal, Card } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { connect } from 'dva';
-import { unixSecondToDate } from '@/utils/utils';
+import { unixSecondToDate, idEncode } from '@/utils/utils';
 import { SEARCH_FORM_COL, FORM_FORMAT, FORM_ITEM_LAYOUT_COMMON } from '@/constants/form';
 import { ERROR_OK, ALERT_NOTICE_MAP, ALERT_ROLE_MAP } from '@/constants/errorCode';
 import RoleModify from './RoleCreateModify';
@@ -35,7 +35,7 @@ const FormItem = Form.Item;
 class RoleList extends React.Component {
 	constructor(props) {
 		super(props);
-		const { getRoleInfo } = this.props;
+		const { getRoleInfo, goToPath } = this.props;
 		this.state = {
 			visible: false,
 			visiblePermissionList: false,
@@ -60,7 +60,13 @@ class RoleList extends React.Component {
 					) : (
 						<a
 							href="javascript:void(0);"
-							onClick={() => this.goPath(record, 'employee')}
+							onClick={() => {
+								const roleId = record.id ? idEncode(record.id) : null;
+								goToPath('employeeTable', {
+									role: record.name,
+									roleId,
+								});
+							}}
 						>
 							{record.userCount}
 						</a>

@@ -26,7 +26,6 @@ class OrgnizationSelect extends Component {
 		this.state = {
 			orgnizationRoleList: value.length > 0 ? value : [{ orgnization: null, role: [] }],
 			orgId: props.orgId,
-			// rolePermissionList: [],
 		};
 	}
 
@@ -63,13 +62,6 @@ class OrgnizationSelect extends Component {
 
 	handleSelectChange = (item, index, value) => {
 		const { orgnizationRoleList } = this.state;
-		// const { roleSelectList } = this.props;
-		// rolePermissionList[index] = Array.from(
-		// 	new Set(
-		// 		roleSelectList.permissionList.reduce((last, current) => [...last, ...current], [])
-		// 	)
-		// );
-		// this.setState({ rolePermissionList });
 		item.role = value;
 		orgnizationRoleList.splice(index, 1, item);
 		this.setState({
@@ -94,42 +86,39 @@ class OrgnizationSelect extends Component {
 		this.handleOnchange();
 	};
 
-	getPermissionAssign = async index => {
+	permissionTree = index => {
+		const { permissionList, roleSelectList: roleList } = this.props;
 		const { orgnizationRoleList } = this.state;
-		const { getPListByRole } = this.props;
-		const { role: roleList } = orgnizationRoleList[index];
-		await getPListByRole({ roleList });
-		// const { valueList } = this.props;
-		// console.log('getPermissionAssign', valueList, permissionList);
-	};
+		const roleSelectd = orgnizationRoleList[index] && orgnizationRoleList[index].role;
+		if (roleSelectd.length) {
+			const valueList = roleSelectd.reduce((vList, roleId) => {
+				const role = roleList.find(i => i.id === roleId) || {};
+				return [...vList, ...(role.permissionList || [])];
+			}, []);
 
-	permissionTree = () => {
-		const { permissionList, valueList } = this.props;
-		return valueList.length ? (
-			<Tree defaultExpandAll>
-				{permissionList.reduce((last, p, index) => {
-					const {
-						checkedList: { permissionList: pList, label },
-					} = p;
-					if (p.valueList.find(i => valueList.includes(i))) {
-						const treeNode = (
-							<TreeNode title={label} key={`0-${index}`}>
-								{pList
-									.filter(i => valueList.includes(i.value))
-									// eslint-disable-next-line arrow-body-style
-									.map(item => {
-										return <TreeNode title={item.name} key={item.value} />;
-									})}
-							</TreeNode>
-						);
-						return [...last, treeNode];
-					}
-					return [...last];
-				}, [])}
-			</Tree>
-		) : (
-			<></>
-		);
+			return (
+				<Tree defaultExpandAll>
+					{permissionList.reduce((last, p, key) => {
+						const { permissionList: pList, label } = p;
+						if (p.valueList.find(i => valueList.includes(i))) {
+							const treeNode = (
+								<TreeNode title={label} key={`0-${key}`}>
+									{pList
+										.filter(i => valueList.includes(i.value))
+										// eslint-disable-next-line arrow-body-style
+										.map(item => {
+											return <TreeNode title={item.label} key={item.value} />;
+										})}
+								</TreeNode>
+							);
+							return [...last, treeNode];
+						}
+						return [...last];
+					}, [])}
+				</Tree>
+			);
+		}
+		return <></>;
 	};
 
 	render() {
@@ -205,12 +194,8 @@ class OrgnizationSelect extends Component {
 							<Popover
 								overlayClassName={styles.popup}
 								placement="right"
-								// title="xxx"
-								content={this.permissionTree()}
+								content={this.permissionTree(index)}
 								trigger="click"
-								onVisibleChange={visible => {
-									visible && this.getPermissionAssign(index);
-								}}
 							>
 								<a href="#">
 									{formatMessage({ id: 'employee.info.permission.has' })}
