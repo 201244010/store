@@ -213,6 +213,7 @@ export default {
 	subscriptions: {
 		mqtt ({ dispatch }) {
 			const listeners = [
+				/*
 				{
 					opcode: '0x4100',
 					type: 'event',
@@ -240,12 +241,14 @@ export default {
 							}
 						});
 					}
-				}, {
+				},
+				*/
+				{
 					opcode: '0x4101',
 					type: 'event',
 					handler: (topic, message) => {
 						const { data } = message;
-						console.log('data',data);
+						console.log('0x4101 data=',data);
 						dispatch({
 							// type: 'updateList',
 							type:'mapFaceInfo',
@@ -286,6 +289,7 @@ export default {
 							const sn = getLocationParam('sn');
 
 							// 开启直播人脸框
+							/*
 							dispatch({
 								type:'changeFaceidPushStatus',
 								payload: {
@@ -293,6 +297,7 @@ export default {
 									status: true
 								}
 							});
+							*/
 
 							// 开启右侧进店
 							dispatch({
