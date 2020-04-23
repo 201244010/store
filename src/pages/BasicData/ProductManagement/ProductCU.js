@@ -312,7 +312,7 @@ class ProductCU extends Component {
 				ExtraInfoFields.forEach(field => {
 					if (field === 'expiryDate') {
 						submitValue.extraInfo[field] = values[field] ? values[field].unix() : undefined;
-					} else if(field === 'packSize' || field === 'stock' || field === 'safetyStock' || field === 'dailyMeanSales' || field === 'todaySalesQty' || field === 'cumulatedSalesQty' || field === 'onOrderQty' || field === 'shelfQty') {
+					} else if(field === 'packSize' || field === 'stock' || field === 'safetyStock' || field === 'dailyMeanSales' || field === 'todaySalesQty' || field === 'cumulatedSalesQty' || field === 'onOrderQty' || field === 'shelfQty' || field === 'shelfLife') {
 						submitValue.extraInfo[field] = submitValue[field]? submitValue[field]: -1;
 					} else {
 						submitValue.extraInfo[field] = submitValue[field];
