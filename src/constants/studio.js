@@ -2,7 +2,8 @@ export const SCREEN_TYPE = {
 	1: '2.13',
 	2: '2.6',
 	3: '4.2',
-	4: '7.5'
+	4: '7.5',
+	5: '1.54',
 };
 
 export const COLOR_TYPE = {
@@ -280,6 +281,11 @@ const screenMap = {
 		width: 640,
 		height: 384,
 		zoomScale: 1,
+	},
+	5: {
+		width: 152,
+		height: 152,
+		zoomScale: 3,
 	},
 };
 export const imgPathMap = {
