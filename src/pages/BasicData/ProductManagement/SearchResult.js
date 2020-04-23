@@ -141,7 +141,7 @@ class SearchResult extends Component {
 						>
 							{formatMessage({ id: 'list.action.detail' })}
 						</a>
-						{!false && (
+						{!isBind && (
 							<>
 								<Divider type="vertical" />
 								<a
