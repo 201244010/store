@@ -56,14 +56,13 @@ export default {
 			});
 		},
 
-		*companyCreate({ payload }, { put, call }) {
+		*companyCreate({ payload }, { put, call, take }) {
 			yield put({
 				type: 'updateState',
 				payload: { loading: true },
 			});
 			const response = yield call(Actions.companyCreate, payload);
 			if (response && response.code === ERROR_OK) {
-				message.success(formatMessage({ id: 'create.success' }));
 				const { data = {} } = format('toCamel')(response);
 				const { companyId } = data;
 
@@ -74,8 +73,19 @@ export default {
 
 				yield put({
 					type: 'updateState',
-					payload: { loading: false, currentCompanyId: companyId },
+					payload: { currentCompanyId: companyId },
 				});
+
+				yield put({
+					type: 'initSetupAfterCreate',
+				});
+
+				yield take('initialCompany/@@end');
+				yield put({
+					type: 'updateState',
+					payload: { loading: false },
+				});
+				message.success(formatMessage({ id: 'create.success' }));
 			} else {
 				yield put({
 					type: 'updateState',
@@ -249,6 +259,22 @@ export default {
 					linkType: 'href',
 				},
 			});
+		},
+
+		*initSetupAfterCreate(_, { call, put }) {
+			const res = yield call(Actions.getCompanyList);
+			if (res && res.code === ERROR_OK) {
+				const { data = {} } = res || {};
+				const { companyList = [] } = format('toCamel')(data);
+				yield put({
+					type: 'initialCompany',
+					payload: {
+						options: {
+							companyIdList: companyList.map(company => company.companyId),
+						},
+					},
+				});
+			}
 		},
 	},
 
