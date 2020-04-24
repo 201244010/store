@@ -28,6 +28,8 @@ class LivePlayer extends React.Component{
 		this.toPause = false;	// patch 方式拖拽后更新state导致进度条跳变；
 
 		this.isPlaying = false; // video是否正在播放
+
+		this.bufferGap = 0; // 当前播放帧离缓存中最新帧的间隔时间(ms)
 	}
 
 	componentDidMount () {
@@ -343,7 +345,6 @@ class LivePlayer extends React.Component{
 	}
 
 	onTimeUpdate = (timestamp) => {
-		/* const { getCurrentTimestamp } = this.props;  */
 		// console.log('onTimeUpdate timestamp=', timestamp); // 即ReVideo.js中的player.currentTime()单位s
 		// console.log('onTimeUpdate: ', this.toPause);
 		if (this.toPause) {
@@ -358,21 +359,28 @@ class LivePlayer extends React.Component{
 				currentTimestamp
 			});
 
-			/* const gap = (Math.round((timestamp - this.lastMetadataTimestamp)*1000*1000))/1000; */
-			// console.log('this.relativeTimestamp + gap=', this.relativeTimestamp + gap);
-			// console.log('player current时间=', moment(this.baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
-			/* getCurrentTimestamp(this.relativeTimestamp + gap); */
+			const { hasFaceInVideo } = this.props;
 
-			// lastMetadataTimestamp：metadata到来时，video此时的播放进度时间；ms
-			// relativeTimestamp：metadata传过来的相对时间，ms
+			if (!hasFaceInVideo) {
+				console.log('no hasFaceInVideo=', hasFaceInVideo);
+				const { getCurrentTimestamp } = this.props;
+				const gap = (Math.round((timestamp - this.lastMetadataTimestamp)*1000*1000))/1000;
+				// console.log('this.relativeTimestamp + gap=', this.relativeTimestamp + gap);
+				// console.log('player current时间=', moment(this.baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
+				console.log('this.bufferGap=', this.bufferGap);
+				getCurrentTimestamp(this.relativeTimestamp - this.bufferGap + gap);
 
-			// console.log('relativeTimestamp: ', this.relativeTimestamp, 'timestamp: ', timestamp, 'lastMetadataTimestamp: ', this.lastMetadataTimestamp, 'gap: ', gap,  'total: ', this.relativeTimestamp + gap);
+				// lastMetadataTimestamp：metadata到来时，video此时的播放进度时间；ms
+				// relativeTimestamp：metadata传过来的相对时间，ms
+
+				// console.log('relativeTimestamp: ', this.relativeTimestamp, 'timestamp: ', timestamp, 'lastMetadataTimestamp: ', this.lastMetadataTimestamp, 'gap: ', gap,  'total: ', this.relativeTimestamp + gap);
+			}
 		}
 
 	}
 
 	onMetadataArrived = (metadata) => {
-		/* const { onMetadataArrived, updateBasetime, getCurrentTimestamp } = this.props; */
+		const { onMetadataArrived, updateBasetime, getCurrentTimestamp, hasFaceInVideo } = this.props;
 		const { isLive } = this.state;
 		const { videoplayer: { player } } = this;
 
@@ -387,23 +395,7 @@ class LivePlayer extends React.Component{
 				this.lastMetadataTimestamp = player.currentTime();
 			}
 
-			if (metadata.baseTime !== undefined && metadata.relativeTime !== undefined) {
-				const baseTime = metadata.baseTime * 1000;
-				const { relativeTime } = metadata;
-				const videoTime = moment(baseTime + relativeTime).format('YYYY-MM-DD HH:mm:ss.SSS');
-				const now = moment();
-
-				// this.baseTime= baseTime;
-
-				console.log('系统时间=', now.format('YYYY-MM-DD HH:mm:ss.SSS'));
-				console.log('视频帧时间=', videoTime);
-				console.log('系统时间-视频帧画面时间=', now.valueOf() - (baseTime + relativeTime));
-
-				/* const gap = (Math.round((player.currentTime() - this.lastMetadataTimestamp)*1000*1000))/1000; */
-				// console.log('player.currentTime()=', player.currentTime());
-				// console.log('player current时间=', moment(baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
-				/* getCurrentTimestamp(this.relativeTimestamp + gap); */
-			}
+			let timeGap = 0;
 
 			// const { player } = this.videoplayer;
 
@@ -420,18 +412,45 @@ class LivePlayer extends React.Component{
 				console.log('startTime=', startTime);
 				console.log('endTime-startTime=', endTime-startTime);
 
+				timeGap = (endTime - curTime) * 1000;
+
 				// 离缓存间隔太小，会导致loading
 				if (endTime - 2 > curTime) {
 					console.log('endTime-curTime=', endTime - curTime);
 					player.currentTime(endTime - 2);
 					console.log('after player.currentTime()=', player.currentTime());
+
+					timeGap = 2 * 1000;
 				}
 			}
 
-			/*
-			onMetadataArrived(metadata.relativeTime);
-			updateBasetime(metadata.baseTime);
-			*/
+			if (this.metadataCount === 2) {
+				this.bufferGap = timeGap;
+			}
+
+			if (metadata.baseTime !== undefined && metadata.relativeTime !== undefined) {
+				const baseTime = metadata.baseTime * 1000;
+				const { relativeTime } = metadata;
+				const videoTime = moment(baseTime + relativeTime).format('YYYY-MM-DD HH:mm:ss.SSS');
+				const now = moment();
+
+				// this.baseTime= baseTime;
+
+				console.log('系统时间=', now.format('YYYY-MM-DD HH:mm:ss.SSS'));
+				console.log('视频帧时间=', videoTime);
+				console.log('系统时间-视频帧画面时间=', now.valueOf() - (baseTime + relativeTime));
+
+				if (!hasFaceInVideo) {
+					console.log('no hasFaceInVideo=', hasFaceInVideo);
+					const gap = (Math.round((player.currentTime() - this.lastMetadataTimestamp)*1000*1000))/1000;
+					// console.log('player.currentTime()=', player.currentTime());
+					// console.log('player current时间=', moment(baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
+					getCurrentTimestamp(this.relativeTimestamp - this.bufferGap + gap);
+
+					onMetadataArrived(metadata.relativeTime - timeGap); // 用于清除人脸框
+					updateBasetime(metadata.baseTime);
+				}
+			}
 		} else {
 			const { creationdate } = metadata;
 			const timestamp = moment(creationdate.substring(0, creationdate.length - 4)).unix();

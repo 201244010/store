@@ -6,11 +6,13 @@ import { List, Avatar, Card, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { UNBIND_CODE, ERROR_OK } from '@/constants/errorCode';
-/* import Faceid from '@/components/VideoPlayer/Faceid'; */
+import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 import manImage from '@/assets/imgs/male.png';
 import womanImage from '@/assets/imgs/female.png';
 import styles from './Live.less';
+import { comperareVersion } from '@/utils/utils';
+import ipcTypes from '@/constants/ipcTypes';
 
 const statusCode = {
 	opened: 1,
@@ -105,7 +107,6 @@ const statusCode = {
 			console.log('stopHistoryPlay done.');
 		});
 	},
-	/*
 	clearRects(timestamp) {
 		dispatch({
 			type: 'faceid/clearRects',
@@ -114,7 +115,6 @@ const statusCode = {
 			}
 		});
 	},
-	*/
 	navigateTo: (pathId, urlParams) => dispatch({
 		type: 'menu/goToPath',
 		payload: {
@@ -158,7 +158,6 @@ const statusCode = {
 			}
 		});
 	},
-	/*
 	changeFaceidPushStatus({ sn, status }) {
 		dispatch({
 			type: 'faceid/changeFaceidPushStatus',
@@ -168,7 +167,6 @@ const statusCode = {
 			}
 		});
 	},
-	*/
 	changeFaceComparePushStatus({ sn, status }) {
 		dispatch({
 			type: 'faceid/changeFaceComparePushStatus',
@@ -210,7 +208,27 @@ const statusCode = {
 			}
 		});
 		return result;
-	}
+	},
+	getDeviceType: async(sn) => {
+		const result = await dispatch({
+			type: 'ipcList/getDeviceType',
+			payload: {sn}
+		});
+		return result;
+	},
+	getCurrentVersion: async(sn) => {
+		const result = await dispatch({
+			type: 'ipcList/getCurrentVersion',
+			payload: {sn}
+		});
+		return result;
+	},
+	mqttListenerFace: async(hasFaceInVideo) => {
+		await dispatch({
+			type: 'faceid/mqttListener',
+			payload: {hasFaceInVideo}
+		});
+	},
 }))
 class Live extends React.Component{
 	constructor(props) {
@@ -220,12 +238,13 @@ class Live extends React.Component{
 			deviceInfo: {
 				pixelRatio: '16:9'
 			},
-			/* liveTimestamp: 0, */
+			liveTimestamp: 0,
 			sdStatus: false,
 			cloudStatus: '',
-			/* baseTime: '', // 视频直播baseTime */
+			baseTime: '', // 视频直播baseTime
 			historyPPI: '',
 			isOnline: true,
+			hasFaceInVideo: false, // 视频中是否有人脸框
 		};
 		this.timeInterval = 0; // 定时清空store中的人脸框
 	}
@@ -257,6 +276,24 @@ class Live extends React.Component{
 					sdStatus = true;
 					this.startFaceComparePush();
 				}
+
+				const { getDeviceType, getCurrentVersion } = this.props;
+
+				const ipcType = await getDeviceType(sn) || 'FM020';
+				const currentVersion = await getCurrentVersion(sn);
+
+				const { leastVersion } = ipcTypes[ipcType].hasFaceInVideo;
+
+				const hasFaceInVideo = comperareVersion(currentVersion, leastVersion) >= 0;
+				console.log('ipcType=', ipcType);
+				console.log('currentVersion=', currentVersion);
+				console.log('leastVersion=', leastVersion);
+				console.log('hasFaceInVideo=', hasFaceInVideo);
+
+				this.setState({
+					hasFaceInVideo,
+				});
+
 			}
 			if(hasCloud) {
 				cloudStatus = await getCloudInfo(sn);
@@ -282,7 +319,7 @@ class Live extends React.Component{
 
 			const hasFaceid = this.hasFaceid();
 			if (hasFaceid) {
-				/* this.stopFaceidPush(); */
+				this.stopFaceidPush();
 				this.stopFaceComparePush();
 			}
 		}
@@ -303,29 +340,24 @@ class Live extends React.Component{
 		return result;
 	}
 
-	/*
 	updateBasetime = (timestamp) => {
 		this.setState({
 			baseTime: timestamp
 		});
 	}
-	*/
 
-	/*
 	onMetadataArrived = (timestamp) => {
 		const { clearRects } = this.props;
 		clearRects(timestamp);
 	}
-	*/
 
-	/*
+
 	syncLiveTimestamp = (timestamp) => {
-		// console.log(timestamp);
+		console.log('syncLiveTimestamp timestamp=', timestamp);
 		this.setState({
 			liveTimestamp: timestamp
 		});
 	}
-	*/
 
 	getSN = () => {
 		const { location: { query } } = this.props;
@@ -350,7 +382,6 @@ class Live extends React.Component{
 		requestMetadata({ sn });
 	}
 
-	/*
 	startFaceidPush = () => {
 		const { changeFaceidPushStatus, clearRects } = this.props;
 		const sn = this.getSN();
@@ -382,7 +413,6 @@ class Live extends React.Component{
 		});
 		clearInterval(this.timeInterval);
 	}
-	*/
 
 	startFaceComparePush = () => {
 		const { changeFaceComparePushStatus } = this.props;
@@ -417,12 +447,10 @@ class Live extends React.Component{
 			isOnline,
 		});
 
-		/*
 		const hasFaceid = this.hasFaceid();
 		if (hasFaceid) {
 			this.startFaceidPush();
 		}
-		*/
 
 		const url = await getLiveUrl({ sn });
 		return url;
@@ -442,13 +470,11 @@ class Live extends React.Component{
 
 		const url = await getHistoryUrl({ sn, timestamp });
 
-		/*
 		const hasFaceid = this.hasFaceid();
 
 		if (hasFaceid) {
 			this.stopFaceidPush();
 		}
-		*/
 		this.setState({
 			historyPPI: '1080'
 		});
@@ -507,9 +533,9 @@ class Live extends React.Component{
 	}
 
 	render() {
-		const { timeSlots, /* faceidRects, */ faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
+		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
-		const { deviceInfo: { pixelRatio, hasFaceid }, /* liveTimestamp, */ sdStatus, cloudStatus, historyPPI, isOnline } = this.state;
+		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus, historyPPI, isOnline, hasFaceInVideo } = this.state;
 
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
@@ -524,6 +550,8 @@ class Live extends React.Component{
 			1: manImage,
 			2: womanImage
 		};
+
+		console.log('Live.js hasFaceInVideo=', hasFaceInVideo);
 
 
 		return(
@@ -548,7 +576,8 @@ class Live extends React.Component{
 
 						timeSlots={timeSlots}
 
-						/*
+						hasFaceInVideo={hasFaceInVideo}
+
 						plugin={
 							<Faceid
 								faceidRects={
@@ -559,16 +588,29 @@ class Live extends React.Component{
 								currentPPI={currentPPI}
 							/>
 						}
-						*/
 
-						/* getCurrentTimestamp={this.syncLiveTimestamp} */
+						// plugin={
+						// 	!hasFaceInVideo ?
+						// 		<Faceid
+						// 			faceidRects={
+						// 				hasFaceid ? faceidRects : []
+						// 			}
+						// 			current={liveTimestamp}
+						// 			pixelRatio={pixelRatio}
+						// 			currentPPI={currentPPI}
+						// 		/>
+						// 		:
+						// 		''
+						// }
+
+						getCurrentTimestamp={this.syncLiveTimestamp}
 						onTimeChange={this.onTimeChange}
-						/* onMetadataArrived={this.onMetadataArrived} */
+						onMetadataArrived={this.onMetadataArrived}
 						isOnline={isOnline}
 						cloudStatus={cloudStatus === 'payClosed' || cloudStatus === 'freeClosed' ? 'closed' : cloudStatus}
 						navigateTo={navigateTo}
 						sn={sn}
-						/* updateBasetime={this.updateBasetime} */
+						updateBasetime={this.updateBasetime}
 					/>
 
 				</div>
