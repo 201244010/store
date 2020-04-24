@@ -34,20 +34,20 @@ const ProductInfoExtraPrice = props => {
 			value: customPrice1,
 		},
 		{
-			label: formatMessage({ id: 'basicData.product.extra.price.customPrice2' }),
-			value: customPrice2,
-		},
-		{
-			label: formatMessage({ id: 'basicData.product.extra.price.customPrice3' }),
-			value: customPrice3,
-		},
-		{
 			label: formatMessage({ id: 'basicData.product.extra.price.customPrice1Description' }),
 			value: customPrice1Description,
 		},
 		{
+			label: formatMessage({ id: 'basicData.product.extra.price.customPrice2' }),
+			value: customPrice2,
+		},
+		{
 			label: formatMessage({ id: 'basicData.product.extra.price.customPrice2Description' }),
 			value: customPrice2Description,
+		},
+		{
+			label: formatMessage({ id: 'basicData.product.extra.price.customPrice3' }),
+			value: customPrice3,
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.price.customPrice3Description' }),
