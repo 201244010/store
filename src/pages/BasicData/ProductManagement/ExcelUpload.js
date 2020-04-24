@@ -187,8 +187,7 @@ class ExcelUpload extends Component {
 				</Form.Item>
 				<Form.Item label={formatMessage({id: 'product.excel.import.desc.title'})}>
 					<p className={styles['upload-desc']}>1.{formatMessage({id: 'product.excel.import.tip.desc1'})}</p>
-					<p className={styles['upload-desc']}>2.{formatMessage({id: 'product.excel.import.tip.desc2'})}</p>
-					<p className={styles['upload-desc']}>3.{formatMessage({id: 'product.excel.import.tip.desc3'})}</p>
+					<p className={styles['upload-desc']}>2.{formatMessage({id: 'product.excel.import.tip.desc3'})}</p>
 				</Form.Item>
 				<Form.Item wrapperCol={{span: 12, offset: 6}}>
 					<Button type="primary" onClick={this.nextStep} disabled={disabled}>
