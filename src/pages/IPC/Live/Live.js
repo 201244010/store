@@ -10,9 +10,9 @@ import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 import manImage from '@/assets/imgs/male.png';
 import womanImage from '@/assets/imgs/female.png';
-import styles from './Live.less';
 import { comperareVersion } from '@/utils/utils';
 import ipcTypes from '@/constants/ipcTypes';
+import styles from './Live.less';
 
 const statusCode = {
 	opened: 1,
