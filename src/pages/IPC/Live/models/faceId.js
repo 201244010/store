@@ -34,7 +34,7 @@ export default {
 			const rectangles = [];
 
 			state.rectangles.forEach(item => {
-				if (item.timestamp > timestamp - 2000) {
+				if (item.timestamp > timestamp - 5000) {
 					rectangles.push(item);
 				}
 			});
@@ -240,12 +240,13 @@ export default {
 							}
 						});
 					}
-				}, {
+				},
+				{
 					opcode: '0x4101',
 					type: 'event',
 					handler: (topic, message) => {
 						const { data } = message;
-						console.log('data',data);
+						console.log('data=',data);
 						dispatch({
 							// type: 'updateList',
 							type:'mapFaceInfo',

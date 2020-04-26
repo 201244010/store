@@ -6,6 +6,9 @@ export  default {
 		hasNVR: {
 			leastVersion: '1.2.2'
 		},
+		hasFaceInVideo: {
+			leastVersion: '9.9.9'
+		},
 		pixelRatio: '16:9',
 		leastVersion: '1.1.3',
 		rotate: [{
@@ -42,6 +45,9 @@ export  default {
 		hasCloud: false,
 		hasNVR: {
 			leastVersion: '1.2.2'
+		},
+		hasFaceInVideo: {
+			leastVersion: '9.9.9'
 		},
 		pixelRatio: '16:9',
 		leastVersion: '1.1.3',
