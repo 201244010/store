@@ -60,7 +60,6 @@ const ProductCUBasic = props => {
 		description = '',
 		promotePriceDescription = '',
 		memberPriceDescription = '',
-		expireTime = '',
 	} = normalizeInfo(productInfo || {});
 
 	return (
@@ -309,15 +308,6 @@ const ProductCUBasic = props => {
 					<Form.Item label={formatMessage({ id: 'basicData.product.memberPriceDescription' })}>
 						{getFieldDecorator('memberPriceDescription', {
 							initialValue: memberPriceDescription,
-						})(<Input maxLength={MAX_LENGTH['200']} />)}
-					</Form.Item>
-				</Col>
-			</Row>
-			<Row>
-				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.expireTime' })}>
-						{getFieldDecorator('expireTime', {
-							initialValue: expireTime,
 						})(<Input maxLength={MAX_LENGTH['200']} />)}
 					</Form.Item>
 				</Col>

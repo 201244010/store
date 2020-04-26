@@ -330,7 +330,6 @@ class Live extends React.Component{
 		clearRects(timestamp);
 	}
 
-
 	syncLiveTimestamp = (timestamp) => {
 		console.log('syncLiveTimestamp timestamp=', timestamp);
 		this.setState({

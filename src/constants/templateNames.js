@@ -32,6 +32,10 @@ const templates =  {
 	'esl-default-template-promotion-2.6': '2.6寸促销模板',
 	'esl-default-template-normal-4.2': '4.2寸正常模板',
 	'esl-default-template-promotion-4.2': '4.2寸促销模板',
+	'esl-default-template-BWR-1.54': '1.54寸黑白红模板',
+	'esl-default-template-BW-1.54': '1.54寸黑白模板',
+	'esl-default-template-normal-1.54': '1.54寸正常模板',
+	'esl-default-template-promotion-1.54': '1.54寸促销模板',
 };
 
 export default function formatedMessage(id) {

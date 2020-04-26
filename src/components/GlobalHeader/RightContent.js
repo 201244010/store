@@ -92,8 +92,11 @@ export default class GlobalHeaderRight extends PureComponent {
 	handleStoreChange = storeId => {
 		const { goToPath } = this.props;
 		CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeId);
-		goToPath('root', {}, 'href');
-		// window.location.reload();
+		if (storeId) {
+			window.location.reload();
+		} else {
+			goToPath('root', {}, 'href');
+		}
 	};
 
 	showTopViewTip = () => {

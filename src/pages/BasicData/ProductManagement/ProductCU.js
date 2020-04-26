@@ -33,6 +33,7 @@ const ExtraInfoFields = [
 	'manufacturer',
 	'manufacturerAddress',
 	'expiryDate',
+	'storageLife',
 	'shelfLife',
 	'ingredientTable',
 	'freshItemCode',

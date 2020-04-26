@@ -246,7 +246,7 @@ export default {
 					type: 'event',
 					handler: (topic, message) => {
 						const { data } = message;
-						console.log('0x4101 data=',data);
+						console.log('data=',data);
 						dispatch({
 							// type: 'updateList',
 							type:'mapFaceInfo',
