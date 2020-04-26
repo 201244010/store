@@ -320,15 +320,15 @@ export const PREVIEW_MAP = {
 		'esl-screen-2.13': 348,
 		'esl-screen-2.6': 442,
 		'esl-screen-4.2': 510,
-		'esl-screen-7.5': 703,
-		'esl-screen-1.54': 258,
+		'esl-screen-7.5': 746,
+		'esl-screen-1.54': 308,
 	},
 	SCREEN_ID_WIDTH: {
 		1: 348,
 		2: 442,
 		3: 510,
-		4: 703,
-		5: 268
+		4: 746,
+		5: 308
 	},
 	TYPE_NAME_STYLE: {
 		'esl-screen-2.13': 'img-213',
