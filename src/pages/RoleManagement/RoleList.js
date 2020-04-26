@@ -49,17 +49,26 @@ class RoleList extends React.Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.roleName' }),
 				dataIndex: 'name',
-				render: (_, record) => <div>{record.name || '--'}</div>,
+				render: (_, record) => (
+					<a
+						href="#"
+						onClick={() => {
+							this.modifyRoleInfo({ id: record.id, action: 'modify' });
+						}}
+					>
+						{record.name || '--'}
+					</a>
+				),
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.userCount' }),
 				dataIndex: 'userCount',
 				render: (_, record) =>
-					record.isDefault ? (
+					record.isDefault || !record.userCount ? (
 						'--'
 					) : (
 						<a
-							href="javascript:void(0);"
+							href="#"
 							onClick={() => {
 								const roleId = record.id ? idEncode(record.id) : null;
 								goToPath('employeeTable', {
@@ -93,7 +102,7 @@ class RoleList extends React.Component {
 					// return (
 					<div>
 						<a
-							href="javascript:void(0);"
+							href="#"
 							onClick={() => {
 								this.modifyRoleInfo({ id: record.id, action: 'modify' });
 							}}
@@ -126,7 +135,7 @@ class RoleList extends React.Component {
 							// 				loading: loading.effects['role/deleteRole'],
 							// 			}}
 							// 		>
-							// 			<a href="javascript:void(0);">
+							// 			<a href="#">
 							// 				{formatMessage({
 							// 					id: 'roleManagement.role.changeRole',
 							// 				})}
@@ -141,7 +150,7 @@ class RoleList extends React.Component {
 							<span>
 								<Divider type="vertical" />
 								<a
-									// href="javascript:void(0);"
+									// href="#"
 									onClick={() => {
 										this.modifyRoleInfo({ id: record.id, action: 'copy' });
 									}}
@@ -150,7 +159,7 @@ class RoleList extends React.Component {
 								</a>
 								<Divider type="vertical" />
 								<a
-									// href="javascript:void(0);"
+									// href="#"
 									onClick={async () => {
 										this.rowSelected = record;
 										await getRoleInfo({ roleId: record.id });
@@ -277,7 +286,7 @@ class RoleList extends React.Component {
 			roleModify: { id, action },
 			visibleDeleteRole,
 		} = this.state;
-		const { userCount = null } = this.rowSelected || {};
+		// const { userCount = null } = this.rowSelected || {};
 		// const { Search } = Input;
 
 		return (
@@ -343,7 +352,15 @@ class RoleList extends React.Component {
 						loading={loading.effects['role/getRoleList']}
 						columns={this.columns}
 						dataSource={roleList}
-						pagination={{ ...pagination }}
+						pagination={{
+							...pagination,
+							showTotal: total =>
+								`${formatMessage({
+									id: 'roleManagement.list.total',
+								})}${total}${formatMessage({
+									id: 'roleManagement.list.count',
+								})}`,
+						}}
 						onChange={this.onTableChange}
 					/>
 				</div>
@@ -375,13 +392,12 @@ class RoleList extends React.Component {
 					onOk={this.deleteRole}
 					confirmLoading={loading.effects['role/deleteRole']}
 					onCancel={() => this.setState({ visibleDeleteRole: false })}
+					className={styles['role-delete-tip']}
 				>
 					{`${formatMessage({
 						id: 'roleManagement.role.deleteRole.one',
-					})}${permissionCount}${formatMessage({
+					})} ${permissionCount} ${formatMessage({
 						id: 'roleManagement.role.deleteRole.two',
-					})}${userCount}${formatMessage({
-						id: 'roleManagement.role.deleteRole.three',
 					})}`}
 				</Modal>
 				<Modal

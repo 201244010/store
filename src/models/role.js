@@ -5,7 +5,7 @@ import * as Actions from '@/services/role';
 import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_SIZE, USER_PERMISSION_LIST } from '@/constants';
-import { FIRST_MENU_ORDER } from '@/config';
+import { FIRST_MENU_ORDER, SECOND_MENU_ORDER } from '@/config';
 
 // 权限列表平铺结构转换树状结构
 // eslint-disable-next-line arrow-body-style
@@ -18,8 +18,40 @@ const formatPList = data => {
 		};
 		firstMenu.permissionList = data.reduce((pList, permissionInfo) => {
 			const { id, permission: path } = permissionInfo;
-			const menuName = path.split('/')[1];
-			if (menu === menuName) {
+			const pathList = path.split('/');
+			const firstMenuPath = pathList[1];
+			const secondMenuPath = pathList[2];
+			// 如果有二级菜单, 添加permissionList
+			if (menu === firstMenuPath && SECOND_MENU_ORDER.includes(secondMenuPath)) {
+				const pItemFirst = pList.find(
+					item => item.path === `/${menu}/${secondMenuPath}`
+				) || {
+					permissionList: [],
+					label: formatMessage({
+						id: `menu${path
+							.split('/')
+							.slice(0, 3)
+							.join('.')}`,
+					}),
+					path: `/${menu}/${secondMenuPath}`,
+				};
+				pItemFirst.permissionList = [
+					...pItemFirst.permissionList,
+					{
+						id,
+						value: id,
+						name: path,
+						path,
+						label: formatMessage({
+							id: `menu${path.split('/').join('.')}`,
+						}),
+					},
+				];
+				const hasExit = pItemFirst.permissionList.length > 1;
+				// 已有列表中有二级菜单，不新增，否则新增
+				return hasExit ? pList : [...pList, pItemFirst];
+			}
+			if (menu === firstMenuPath) {
 				return [
 					...pList,
 					{
@@ -135,6 +167,7 @@ export default {
 				// 拿到pList 生成list TODO
 				// 滤除后台脏数据
 				const sortedPermission = formatPList(permissionList);
+				console.log('formatPList,', sortedPermission);
 				const basicData = sortedPermission.find(item => item.path === '/basicData');
 				if (basicData && basicData.permissionList.length) {
 					const index = basicData.permissionList.findIndex(
@@ -156,10 +189,7 @@ export default {
 						key: `0-${index}`,
 					};
 				});
-				forData.checkedList = forData.permissionList.reduce(
-					(pre, cur) => [...pre, ...cur.valueList],
-					[]
-				);
+				forData.checkedList = permissionList.reduce((pre, cur) => [...pre, cur.id], []);
 				forData.permissionCount = forData.checkedList.length;
 
 				yield put({
@@ -181,6 +211,7 @@ export default {
 				// 拿到pList 生成list TODO
 				retPermissionList = permissionList;
 				const sortedPermission = formatPList(permissionList);
+				console.log('formatPList,', sortedPermission);
 				// 滤除后台脏数据
 				const basicData = sortedPermission.find(item => item.path === '/basicData');
 				if (basicData && basicData.permissionList.length) {
