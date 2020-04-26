@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Form, Row, Col, Button, Table, DatePicker, TreeSelect } from 'antd';
+import { Card, Form, Row, Col, Button, Table, DatePicker, TreeSelect, message } from 'antd';
 import { connect } from 'dva';
 import { formatMessage } from 'umi/locale';
 import moment from 'moment';
@@ -185,11 +185,15 @@ class BusinessDaily extends React.Component {
 					: Object.keys(getShopList(this.originalTree))
 				: [this.shopId];
 		setPagination({ current: 1 });
-		getBusinessData({
-			shopIdList: shopList,
-			startTime: startTime.format('YYYY-MM-DD'),
-			endTime: endTime.format('YYYY-MM-DD'),
-		});
+		if (endTime.valueOf() - startTime.valueOf() > 90000 * 86400) {
+			message.error(formatMessage({ id: 'businessDaily.message.tip' }));
+		} else {
+			getBusinessData({
+				shopIdList: shopList,
+				startTime: startTime.format('YYYY-MM-DD'),
+				endTime: endTime.format('YYYY-MM-DD'),
+			});
+		}
 	};
 
 	onChange = value => {
@@ -203,6 +207,8 @@ class BusinessDaily extends React.Component {
 		const { setPagination } = this.props;
 		setPagination({ current });
 	};
+
+	disabledDate = current => current && current > moment().endOf('day') - 1000 * 86400;
 
 	handleReset = () => {
 		const { getBusinessData, setPagination } = this.props;
@@ -259,6 +265,7 @@ class BusinessDaily extends React.Component {
 										format="YYYY-MM-DD"
 										allowClear={false}
 										onChange={this.changeTimeRange}
+										disabledDate={this.disabledDate}
 									/>
 								</Form.Item>
 							</Col>
