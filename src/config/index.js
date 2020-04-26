@@ -7,9 +7,9 @@ const {
 export const { env, country } = sysEnv;
 
 export const FIRST_MENU_ORDER = [
-	'company',
+	'companyView',
 	'dashboard',
-	'customerCenter',
+	'dataAnalyze',
 	'storeMonitor',
 	'productManagement',
 	'transManagement',
@@ -17,6 +17,8 @@ export const FIRST_MENU_ORDER = [
 	'deviceManagement',
 	'basicData',
 ];
+
+export const SECOND_MENU_ORDER = ['ipcList', 'esl', 'network', 'iotAccess'];
 
 export const HTTP_PREFIX = {
 	'http:': 'https:',
