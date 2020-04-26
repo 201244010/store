@@ -44,7 +44,7 @@ export default class BoardHeader extends Component {
 
 		this.setState({
 			editing: true,
-			templateName: templateInfo.name,
+			templateName: formatedMessage(templateInfo.name),
 		});
 	};
 
