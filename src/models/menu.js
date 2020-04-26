@@ -171,14 +171,6 @@ export default {
 				const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
 				if (permissionList.length === 0) {
 					filteredMenuData = [];
-					if (shopId === 0 && storeList.length >= 1) {
-						// 无该总部组织权限，跳转子门店视角
-						CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeList[0].shopId);
-						yield put({
-							type: 'goToPath',
-							payload: { pathId: 'root', urlParams: {}, linkType: 'href' },
-						});
-					}
 				} else {
 					let formattedPermissionList = [];
 					if (shopId === 0 && storeList.length !== 1) {
@@ -213,6 +205,19 @@ export default {
 					console.log('formattedPermissionList: ', formattedPermissionList);
 					if (formattedPermissionList.length > 0) {
 						filteredMenuData = checkMenuAuth(menuData, formattedPermissionList);
+					} else {
+						filteredMenuData = [];
+					}
+				}
+
+				if (filteredMenuData.length === 0) {
+					if (shopId === 0 && storeList.length >= 1) {
+						// 权限列表为空时 无该总部组织权限，跳转子门店视角
+						CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeList[0].shopId);
+						yield put({
+							type: 'goToPath',
+							payload: { pathId: 'root', urlParams: {}, linkType: 'href' },
+						});
 					}
 				}
 			}

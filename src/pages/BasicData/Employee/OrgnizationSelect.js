@@ -185,7 +185,6 @@ class OrgnizationSelect extends Component {
 										id: 'employee.info.select.role',
 									})}
 									onChange={value => this.handleSelectChange(item, index, value)}
-									disabled={isDefault}
 								>
 									{roleSelectList.map((role, i) => (
 										<Select.Option key={i} value={role.id}>
