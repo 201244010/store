@@ -18,6 +18,8 @@ export const FIRST_MENU_ORDER = [
 	'basicData',
 ];
 
+export const SECOND_MENU_ORDER = ['ipcList', 'esl', 'network', 'iotAccess'];
+
 export const HTTP_PREFIX = {
 	'http:': 'https:',
 	'https:': 'https:',

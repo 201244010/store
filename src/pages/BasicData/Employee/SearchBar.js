@@ -46,7 +46,7 @@ const SearchBar = ({
 	// };
 
 	return (
-		<div className={styles['search-bar']}>
+		<div className={`${styles['search-bar']} ${styles['employee-list']}`}>
 			<Form layout="inline">
 				<Row gutter={FORM_FORMAT.gutter}>
 					<Col {...SEARCH_FORM_COL.ONE_THIRD}>
