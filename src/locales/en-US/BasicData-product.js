@@ -5,7 +5,7 @@ export default {
 	'basicData.product.label.add': 'Add a field',
 	'basicData.product.price.add': 'Add a price',
 	'basicData.product.total': ' category(s) in total',
-	'basicData.product.selected': 'selected',
+	'basicData.product.selected': ', selected',
 	'basicData.product.pagination.unit': 'class',
 	'basicData.product.seqNum': 'Product ID',
 	'basicData.product.name': 'Name',
