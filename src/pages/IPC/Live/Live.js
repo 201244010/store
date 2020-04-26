@@ -6,7 +6,7 @@ import { List, Avatar, Card, message } from 'antd';
 import { formatMessage } from 'umi/locale';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { UNBIND_CODE, ERROR_OK } from '@/constants/errorCode';
-/* import Faceid from '@/components/VideoPlayer/Faceid'; */
+import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 import manImage from '@/assets/imgs/male.png';
 import womanImage from '@/assets/imgs/female.png';
@@ -105,7 +105,6 @@ const statusCode = {
 			console.log('stopHistoryPlay done.');
 		});
 	},
-	/*
 	clearRects(timestamp) {
 		dispatch({
 			type: 'faceid/clearRects',
@@ -114,7 +113,6 @@ const statusCode = {
 			}
 		});
 	},
-	*/
 	navigateTo: (pathId, urlParams) => dispatch({
 		type: 'menu/goToPath',
 		payload: {
@@ -158,7 +156,6 @@ const statusCode = {
 			}
 		});
 	},
-	/*
 	changeFaceidPushStatus({ sn, status }) {
 		dispatch({
 			type: 'faceid/changeFaceidPushStatus',
@@ -168,7 +165,6 @@ const statusCode = {
 			}
 		});
 	},
-	*/
 	changeFaceComparePushStatus({ sn, status }) {
 		dispatch({
 			type: 'faceid/changeFaceComparePushStatus',
@@ -220,10 +216,10 @@ class Live extends React.Component{
 			deviceInfo: {
 				pixelRatio: '16:9'
 			},
-			/* liveTimestamp: 0, */
+			liveTimestamp: 0,
 			sdStatus: false,
 			cloudStatus: '',
-			/* baseTime: '', // 视频直播baseTime */
+			baseTime: '', // 视频直播baseTime
 			historyPPI: '',
 			isOnline: true,
 		};
@@ -282,7 +278,7 @@ class Live extends React.Component{
 
 			const hasFaceid = this.hasFaceid();
 			if (hasFaceid) {
-				/* this.stopFaceidPush(); */
+				this.stopFaceidPush();
 				this.stopFaceComparePush();
 			}
 		}
@@ -303,29 +299,23 @@ class Live extends React.Component{
 		return result;
 	}
 
-	/*
 	updateBasetime = (timestamp) => {
 		this.setState({
 			baseTime: timestamp
 		});
 	}
-	*/
 
-	/*
 	onMetadataArrived = (timestamp) => {
 		const { clearRects } = this.props;
 		clearRects(timestamp);
 	}
-	*/
 
-	/*
 	syncLiveTimestamp = (timestamp) => {
 		// console.log(timestamp);
 		this.setState({
 			liveTimestamp: timestamp
 		});
 	}
-	*/
 
 	getSN = () => {
 		const { location: { query } } = this.props;
@@ -350,7 +340,6 @@ class Live extends React.Component{
 		requestMetadata({ sn });
 	}
 
-	/*
 	startFaceidPush = () => {
 		const { changeFaceidPushStatus, clearRects } = this.props;
 		const sn = this.getSN();
@@ -382,7 +371,6 @@ class Live extends React.Component{
 		});
 		clearInterval(this.timeInterval);
 	}
-	*/
 
 	startFaceComparePush = () => {
 		const { changeFaceComparePushStatus } = this.props;
@@ -417,12 +405,10 @@ class Live extends React.Component{
 			isOnline,
 		});
 
-		/*
 		const hasFaceid = this.hasFaceid();
 		if (hasFaceid) {
 			this.startFaceidPush();
 		}
-		*/
 
 		const url = await getLiveUrl({ sn });
 		return url;
@@ -442,13 +428,11 @@ class Live extends React.Component{
 
 		const url = await getHistoryUrl({ sn, timestamp });
 
-		/*
 		const hasFaceid = this.hasFaceid();
 
 		if (hasFaceid) {
 			this.stopFaceidPush();
 		}
-		*/
 		this.setState({
 			historyPPI: '1080'
 		});
@@ -507,9 +491,9 @@ class Live extends React.Component{
 	}
 
 	render() {
-		const { timeSlots, /* faceidRects, */ faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
+		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
-		const { deviceInfo: { pixelRatio, hasFaceid }, /* liveTimestamp, */ sdStatus, cloudStatus, historyPPI, isOnline } = this.state;
+		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus, historyPPI, isOnline } = this.state;
 
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
@@ -548,7 +532,6 @@ class Live extends React.Component{
 
 						timeSlots={timeSlots}
 
-						/*
 						plugin={
 							<Faceid
 								faceidRects={
@@ -559,16 +542,15 @@ class Live extends React.Component{
 								currentPPI={currentPPI}
 							/>
 						}
-						*/
 
-						/* getCurrentTimestamp={this.syncLiveTimestamp} */
+						getCurrentTimestamp={this.syncLiveTimestamp}
 						onTimeChange={this.onTimeChange}
-						/* onMetadataArrived={this.onMetadataArrived} */
+						onMetadataArrived={this.onMetadataArrived}
 						isOnline={isOnline}
 						cloudStatus={cloudStatus === 'payClosed' || cloudStatus === 'freeClosed' ? 'closed' : cloudStatus}
 						navigateTo={navigateTo}
 						sn={sn}
-						/* updateBasetime={this.updateBasetime} */
+						updateBasetime={this.updateBasetime}
 					/>
 
 				</div>
