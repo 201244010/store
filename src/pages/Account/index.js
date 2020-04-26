@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { ROLE_MAPPING } from '@/constants/mapping';
 import BasicInfo from './BasicInfo';
 import Security from './Security';
 import Store from './Store';
@@ -11,7 +10,6 @@ import * as styles from './Account.less';
 		user: state.user,
 		sso: state.sso,
 		merchant: state.merchant,
-		role: state.role,
 	}),
 	dispatch => ({
 		logout: () => dispatch({ type: 'user/logout' }),
@@ -36,7 +34,6 @@ class UserCenter extends Component {
 		const {
 			user,
 			sso,
-			role: { userPermissionList = [] } = {},
 			updateUsername,
 			changePassword,
 			updatePhone,
@@ -68,9 +65,7 @@ class UserCenter extends Component {
 						logout,
 					}}
 				/>
-				{userPermissionList.find(
-					permission => permission.permission === ROLE_MAPPING.COMPANY_LIST
-				) && <Store />}
+				<Store />
 			</div>
 		);
 	}
