@@ -276,24 +276,6 @@ class Live extends React.Component{
 					sdStatus = true;
 					this.startFaceComparePush();
 				}
-
-				const { getDeviceType, getCurrentVersion } = this.props;
-
-				const ipcType = await getDeviceType(sn) || 'FM020';
-				const currentVersion = await getCurrentVersion(sn);
-
-				const { leastVersion } = ipcTypes[ipcType].hasFaceInVideo;
-
-				const hasFaceInVideo = comperareVersion(currentVersion, leastVersion) >= 0;
-				console.log('ipcType=', ipcType);
-				console.log('currentVersion=', currentVersion);
-				console.log('leastVersion=', leastVersion);
-				console.log('hasFaceInVideo=', hasFaceInVideo);
-
-				this.setState({
-					hasFaceInVideo,
-				});
-
 			}
 			if(hasCloud) {
 				cloudStatus = await getCloudInfo(sn);
@@ -318,8 +300,11 @@ class Live extends React.Component{
 			});
 
 			const hasFaceid = this.hasFaceid();
+			const  { hasFaceInVideo } = this.state;
 			if (hasFaceid) {
-				this.stopFaceidPush();
+				if (!hasFaceInVideo) {
+					this.stopFaceidPush();
+				}
 				this.stopFaceComparePush();
 			}
 		}
@@ -435,20 +420,31 @@ class Live extends React.Component{
 	}
 
 	getLiveUrl = async () => {
-		const { getLiveUrl, checkOnlineStatus } = this.props;
+		const { getLiveUrl, checkOnlineStatus, getDeviceType, getCurrentVersion } = this.props;
 		const { isOnline: online } = this.state;
 		let isOnline = online;
 		const sn = this.getSN();
 		if(!online) {
 			isOnline = await checkOnlineStatus(sn);
 		}
+
+		const ipcType = await getDeviceType(sn) || 'FM020';
+		const currentVersion = await getCurrentVersion(sn);
+		const { leastVersion } = ipcTypes[ipcType].hasFaceInVideo;
+		const hasFaceInVideo = comperareVersion(currentVersion, leastVersion) >= 0;
+
+		console.log('currentVersion=', currentVersion);
+		console.log('leastVersion=', leastVersion);
+		console.log('hasFaceInVideo=', hasFaceInVideo);
+
 		this.setState({
 			historyPPI: '',
 			isOnline,
+			hasFaceInVideo,
 		});
 
 		const hasFaceid = this.hasFaceid();
-		if (hasFaceid) {
+		if (hasFaceid && !hasFaceInVideo) {
 			this.startFaceidPush();
 		}
 
