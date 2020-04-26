@@ -110,11 +110,12 @@ class BusinessDaily extends React.Component {
 	}
 
 	async componentDidMount() {
-		const { getOrgnazationTree, getBusinessData } = this.props;
+		const { getOrgnazationTree, getBusinessData, setPagination } = this.props;
 		const {
 			timeRange: [startTime, endTime],
 		} = this.state;
 		this.originalTree = await getOrgnazationTree();
+		await setPagination({ current: 1, pageSize: 10 });
 		getBusinessData({
 			shopIdList:
 				this.shopId === 0 ? Object.keys(getShopList(this.originalTree)) : [this.shopId],
@@ -184,7 +185,7 @@ class BusinessDaily extends React.Component {
 					? shopIdList
 					: Object.keys(getShopList(this.originalTree))
 				: [this.shopId];
-		setPagination({ current: 1 });
+		setPagination({ current: 1, pageSize: 10 });
 		if (endTime.valueOf() - startTime.valueOf() > 90000 * 86400) {
 			message.error(formatMessage({ id: 'businessDaily.message.tip' }));
 		} else {
@@ -203,9 +204,9 @@ class BusinessDaily extends React.Component {
 	};
 
 	onTableChange = table => {
-		const { current } = table;
+		const { current, pageSize } = table;
 		const { setPagination } = this.props;
-		setPagination({ current });
+		setPagination({ current, pageSize });
 	};
 
 	disabledDate = current => current && current > moment().endOf('day') - 1000 * 86400;
@@ -216,7 +217,7 @@ class BusinessDaily extends React.Component {
 			shopIdList: [],
 			timeRange: [moment(this.date), moment(this.date)],
 		});
-		setPagination({ current: 1 });
+		setPagination({ current: 1, pageSize: 10 });
 		getBusinessData({
 			shopIdList:
 				this.shopId === 0 ? Object.keys(getShopList(this.originalTree)) : [this.shopId],
