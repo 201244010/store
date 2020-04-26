@@ -99,6 +99,12 @@ const router = [
 						id: 'passengerAnalyze',
 						component: './PassengerAnalyze',
 					},
+					{
+						path: '/dataAnalyze/businessDaily',
+						name: 'businessDaily',
+						id: 'businessDaily',
+						component: './DataBoard/BusinessDaily',
+					},
 				],
 			},
 
