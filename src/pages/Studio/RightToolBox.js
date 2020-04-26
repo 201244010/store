@@ -15,7 +15,7 @@ const bindFieldsLocaleMap = {
 	productName: formatMessage({id: 'basicData.product.name'}),
 	productSpec: formatMessage({id: 'basicData.product.spec'}),
 	productLevel: formatMessage({id: 'basicData.product.level'}),
-	productExpireTime: formatMessage({id: 'basicData.product.expireTime'}),
+	productStorageLife: formatMessage({id: 'basicData.product.expireTime'}),
 	productBarCode: formatMessage({id: 'basicData.product.barCode'}),
 	productAlias: formatMessage({id: 'basicData.product.alias'}),
 	productUnit: formatMessage({id: 'basicData.product.unit'}),
@@ -233,9 +233,9 @@ export default class RightToolBox extends Component {
 			};
 			const detail = componentsDetail[selectedShapeName];
 			let canUpdate = true;
-			if (key === 'bindField' && selectedShapeName.indexOf(SHAPE_TYPES.TEXT) > -1) {
-				newDetail.content = bindFieldsLocaleMap[value] || formatMessage({ id: 'studio.action.text.db.click'});
-			}
+			// if (key === 'bindField' && selectedShapeName.indexOf(SHAPE_TYPES.TEXT) > -1) {
+			// 	newDetail.content = bindFieldsLocaleMap[value] || formatMessage({ id: 'studio.action.text.db.click'});
+			// }
 			if (key === 'content' && selectedShapeName.indexOf(SHAPE_TYPES.PRICE) > -1) {
 				if (value === '') {
 					canUpdate = true;
