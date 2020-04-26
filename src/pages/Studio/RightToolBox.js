@@ -233,9 +233,9 @@ export default class RightToolBox extends Component {
 			};
 			const detail = componentsDetail[selectedShapeName];
 			let canUpdate = true;
-			// if (key === 'bindField' && selectedShapeName.indexOf(SHAPE_TYPES.TEXT) > -1) {
-			// 	newDetail.content = bindFieldsLocaleMap[value] || formatMessage({ id: 'studio.action.text.db.click'});
-			// }
+			if (key === 'bindField' && selectedShapeName.indexOf(SHAPE_TYPES.TEXT) > -1) {
+				newDetail.content = bindFieldsLocaleMap[value] || formatMessage({ id: 'studio.action.text.db.click'});
+			}
 			if (key === 'content' && selectedShapeName.indexOf(SHAPE_TYPES.PRICE) > -1) {
 				if (value === '') {
 					canUpdate = true;
