@@ -10,6 +10,8 @@ export default {
 		pagination: {
 			current: 1,
 			pageSize: DEFAULT_PAGE_SIZE,
+			showSizeChanger: true,
+			showQuickJumper: true,
 			total: 0,
 		},
 		countList: [],
