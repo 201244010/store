@@ -43,7 +43,7 @@ export default {
 	'employee.info.permission.tip': '赋予用户本层权限后，将默认获取本组织中下层组织的相同权限',
 	'employee.info.role': '角色',
 	'employee.info.companyRole': '所属组织&角色',
-	'employee.list.total': '共计',
+	'employee.list.total': '共',
 	'employee.list.memberCount': '名员工',
 	'employee.search.place.name': '请输入姓名进行查询',
 };

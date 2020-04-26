@@ -5,7 +5,7 @@ import { getUserInfoByUsername } from '@/services/user';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
-import { getLocationParam } from '@/utils/utils';
+// import { getLocationParam } from '@/utils/utils';
 
 export default {
 	namespace: 'employee',
@@ -87,22 +87,23 @@ export default {
 				roleId = -1,
 				shopIdList: shopIdListParams = [],
 			} = payload;
-			const tmpShopIdList = yield put.resolve({
-				type: 'global/getShopListFromStorage',
-			});
-			const adminResponse = yield put.resolve({
-				type: 'role/checkAdmin',
-			});
-			const orgId = Number(getLocationParam('orgId'));
-			let tmpShopList = [];
-			const { shopIdList } = getInfoValue;
-			if (shopIdList.length) {
-				tmpShopList = shopIdList;
-			} else if (adminResponse && adminResponse.code !== ERROR_OK) {
-				tmpShopList = tmpShopIdList.map(item => item.shopId);
-			} else if (orgId) {
-				tmpShopList = [orgId];
-			}
+			// 去掉总部组织下的员工列表查询逻辑
+			// const tmpShopIdList = yield put.resolve({
+			// 	type: 'global/getShopListFromStorage',
+			// });
+			// const adminResponse = yield put.resolve({
+			// 	type: 'role/checkAdmin',
+			// });
+			// const orgId = Number(getLocationParam('orgId'));
+			// let tmpShopList = [];
+			// const { shopIdList } = getInfoValue;
+			// if (shopIdList.length) {
+			// 	tmpShopList = shopIdList;
+			// } else if (adminResponse && adminResponse.code !== ERROR_OK) {
+			// 	tmpShopList = tmpShopIdList.map(item => item.shopId);
+			// } else if (orgId) {
+			// 	tmpShopList = [orgId];
+			// }
 
 			const options = {
 				...getInfoValue,
@@ -110,7 +111,7 @@ export default {
 				pageSize,
 				roleId,
 				shopId,
-				shopIdList: shopIdListParams.length > 0 ? shopIdListParams : tmpShopList,
+				shopIdList: shopIdListParams.length > 0 ? shopIdListParams : [],
 			};
 
 			const response = yield call(

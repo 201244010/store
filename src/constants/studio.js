@@ -320,8 +320,15 @@ export const PREVIEW_MAP = {
 		'esl-screen-2.13': 348,
 		'esl-screen-2.6': 442,
 		'esl-screen-4.2': 510,
-		'esl-screen-7.5': 712,
-		'esl-screen-1.54': 250,
+		'esl-screen-7.5': 703,
+		'esl-screen-1.54': 258,
+	},
+	SCREEN_ID_WIDTH: {
+		1: 348,
+		2: 442,
+		3: 510,
+		4: 703,
+		5: 268
 	},
 	TYPE_NAME_STYLE: {
 		'esl-screen-2.13': 'img-213',
@@ -336,13 +343,6 @@ export const PREVIEW_MAP = {
 		'esl-screen-4.2': require('@/assets/studio/4.2.png'),
 		'esl-screen-7.5': require('@/assets/studio/7.5.png'),
 		'esl-screen-1.54': require('@/assets/studio/1.54.png'),
-	},
-	SCREEN_ID_WIDTH: {
-		1: 348,
-		2: 442,
-		3: 510,
-		4: 703,
-		5: 268
 	},
 	SCREEN_ID_STYLE: {
 		1: 'img-213',

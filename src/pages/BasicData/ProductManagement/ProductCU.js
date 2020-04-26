@@ -450,7 +450,12 @@ class ProductCU extends Component {
 							productInfo,
 						}}
 					/>
-					<Card title={null} bordered={false}>
+					<Card
+						title={null}
+						bordered={false}
+						style={{position: 'fixed', left: 282, bottom: 0, right: 24}}
+						bodyStyle={{padding: 0}}
+					>
 						<Row>
 							<Col span={12}>
 								<Form.Item label=" " colon={false}>
