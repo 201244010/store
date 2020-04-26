@@ -19,23 +19,9 @@ class Faceid extends React.Component{
 			// if (item.timestamp + 300 < current && current < item.timestamp + 900) {
 			// 	return true;
 			// }
-			// if (item.timestamp < current - 300 && current - 900 < item.timestamp) {
-			// 	return true;
-			// }
-
-			// if (item.timestamp < current + 300 && current - 300 < item.timestamp) {
-			// 	return true;
-			// }
 			if (item.timestamp < current + 100 && current - 500 < item.timestamp) {
 				return true;
 			}
-			// if (item.timestamp < current + 200 && current - 400 < item.timestamp) {
-			// 	return true;
-			// }
-
-			// if (item.timestamp < current + 110 && current - 490 < item.timestamp) {
-			// 	return true;
-			// }
 			return false;
 		});
 
