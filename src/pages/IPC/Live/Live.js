@@ -223,12 +223,6 @@ const statusCode = {
 		});
 		return result;
 	},
-	mqttListenerFace: async(hasFaceInVideo) => {
-		await dispatch({
-			type: 'faceid/mqttListener',
-			payload: {hasFaceInVideo}
-		});
-	},
 }))
 class Live extends React.Component{
 	constructor(props) {
