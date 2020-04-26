@@ -17,6 +17,7 @@ const { check } = Authorized;
 const CompanyView = [
 	{ base: 'dashboard', path: '/dashboard' },
 	{ base: 'dataAnalyze', path: '/dataAnalyze/passenger' },
+	{ base: 'dataAnalyze', path: '/dataAnalyze/businessDaily' },
 	{ base: 'basicData', path: '/basicData/merchantManagement' },
 	{ base: 'basicData', path: '/basicData/organizationManagement' },
 	{ base: 'basicData', path: '/basicData/roleManagement' },
