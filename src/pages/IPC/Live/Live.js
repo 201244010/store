@@ -10,6 +10,8 @@ import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 import manImage from '@/assets/imgs/male.png';
 import womanImage from '@/assets/imgs/female.png';
+import { comperareVersion } from '@/utils/utils';
+import ipcTypes from '@/constants/ipcTypes';
 import styles from './Live.less';
 
 const statusCode = {
@@ -206,7 +208,21 @@ const statusCode = {
 			}
 		});
 		return result;
-	}
+	},
+	getDeviceType: async(sn) => {
+		const result = await dispatch({
+			type: 'ipcList/getDeviceType',
+			payload: {sn}
+		});
+		return result;
+	},
+	getCurrentVersion: async(sn) => {
+		const result = await dispatch({
+			type: 'ipcList/getCurrentVersion',
+			payload: {sn}
+		});
+		return result;
+	},
 }))
 class Live extends React.Component{
 	constructor(props) {
@@ -222,6 +238,7 @@ class Live extends React.Component{
 			baseTime: '', // 视频直播baseTime
 			historyPPI: '',
 			isOnline: true,
+			hasFaceInVideo: false, // 视频中是否有人脸框
 		};
 		this.timeInterval = 0; // 定时清空store中的人脸框
 	}
@@ -277,8 +294,11 @@ class Live extends React.Component{
 			});
 
 			const hasFaceid = this.hasFaceid();
+			const  { hasFaceInVideo } = this.state;
 			if (hasFaceid) {
-				this.stopFaceidPush();
+				if (!hasFaceInVideo) {
+					this.stopFaceidPush();
+				}
 				this.stopFaceComparePush();
 			}
 		}
@@ -311,7 +331,7 @@ class Live extends React.Component{
 	}
 
 	syncLiveTimestamp = (timestamp) => {
-		// console.log(timestamp);
+		console.log('syncLiveTimestamp timestamp=', timestamp);
 		this.setState({
 			liveTimestamp: timestamp
 		});
@@ -393,20 +413,31 @@ class Live extends React.Component{
 	}
 
 	getLiveUrl = async () => {
-		const { getLiveUrl, checkOnlineStatus } = this.props;
+		const { getLiveUrl, checkOnlineStatus, getDeviceType, getCurrentVersion } = this.props;
 		const { isOnline: online } = this.state;
 		let isOnline = online;
 		const sn = this.getSN();
 		if(!online) {
 			isOnline = await checkOnlineStatus(sn);
 		}
+
+		const ipcType = await getDeviceType(sn) || 'FM020';
+		const currentVersion = await getCurrentVersion(sn);
+		const { leastVersion } = ipcTypes[ipcType].hasFaceInVideo;
+		const hasFaceInVideo = comperareVersion(currentVersion, leastVersion) >= 0;
+
+		console.log('currentVersion=', currentVersion);
+		console.log('leastVersion=', leastVersion);
+		console.log('hasFaceInVideo=', hasFaceInVideo);
+
 		this.setState({
 			historyPPI: '',
 			isOnline,
+			hasFaceInVideo,
 		});
 
 		const hasFaceid = this.hasFaceid();
-		if (hasFaceid) {
+		if (hasFaceid && !hasFaceInVideo) {
 			this.startFaceidPush();
 		}
 
@@ -493,7 +524,7 @@ class Live extends React.Component{
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
-		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus, historyPPI, isOnline } = this.state;
+		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus, historyPPI, isOnline, hasFaceInVideo } = this.state;
 
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
@@ -508,6 +539,8 @@ class Live extends React.Component{
 			1: manImage,
 			2: womanImage
 		};
+
+		console.log('Live.js hasFaceInVideo=', hasFaceInVideo);
 
 
 		return(
@@ -533,14 +566,17 @@ class Live extends React.Component{
 						timeSlots={timeSlots}
 
 						plugin={
-							<Faceid
-								faceidRects={
-									hasFaceid ? faceidRects : []
-								}
-								current={liveTimestamp}
-								pixelRatio={pixelRatio}
-								currentPPI={currentPPI}
-							/>
+							!hasFaceInVideo ?
+								<Faceid
+									faceidRects={
+										hasFaceid ? faceidRects : []
+									}
+									current={liveTimestamp}
+									pixelRatio={pixelRatio}
+									currentPPI={currentPPI}
+								/>
+								:
+								''
 						}
 
 						getCurrentTimestamp={this.syncLiveTimestamp}

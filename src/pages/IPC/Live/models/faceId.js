@@ -34,7 +34,7 @@ export default {
 			const rectangles = [];
 
 			state.rectangles.forEach(item => {
-				if (item.timestamp > timestamp - 2000) {
+				if (item.timestamp > timestamp - 5000) {
 					rectangles.push(item);
 				}
 			});
