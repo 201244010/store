@@ -565,32 +565,19 @@ class Live extends React.Component{
 
 						timeSlots={timeSlots}
 
-						hasFaceInVideo={hasFaceInVideo}
-
 						plugin={
-							<Faceid
-								faceidRects={
-									hasFaceid ? faceidRects : []
-								}
-								current={liveTimestamp}
-								pixelRatio={pixelRatio}
-								currentPPI={currentPPI}
-							/>
+							!hasFaceInVideo ?
+								<Faceid
+									faceidRects={
+										hasFaceid ? faceidRects : []
+									}
+									current={liveTimestamp}
+									pixelRatio={pixelRatio}
+									currentPPI={currentPPI}
+								/>
+								:
+								''
 						}
-
-						// plugin={
-						// 	!hasFaceInVideo ?
-						// 		<Faceid
-						// 			faceidRects={
-						// 				hasFaceid ? faceidRects : []
-						// 			}
-						// 			current={liveTimestamp}
-						// 			pixelRatio={pixelRatio}
-						// 			currentPPI={currentPPI}
-						// 		/>
-						// 		:
-						// 		''
-						// }
 
 						getCurrentTimestamp={this.syncLiveTimestamp}
 						onTimeChange={this.onTimeChange}
