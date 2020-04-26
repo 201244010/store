@@ -16,9 +16,9 @@ const PRODUCT_BASIC = {
 	name: null,
 	price: null,
 	// 特殊 因为 type 在 GO 中关键字
-	barCode: null,
 	type: null,
 	alias: null,
+	barCode: null,
 	unit: null,
 	spec: null,
 	area: null,

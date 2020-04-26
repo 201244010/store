@@ -39,6 +39,7 @@ import orgnization from './zh-CN/organization';
 import orgDetail from './zh-CN/orgDetail';
 
 import dataBoard from './zh-CN/dataBoard';
+import businessDaily from './zh-CN/businessDaily';
 
 export default {
 	'navBar.lang': '语言',
@@ -87,4 +88,5 @@ export default {
 	...orgnization,
 	...orgDetail,
 	...dataBoard,
+	...businessDaily
 };

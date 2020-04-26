@@ -33,6 +33,7 @@ const ExtraInfoFields = [
 	'manufacturer',
 	'manufacturerAddress',
 	'expiryDate',
+	'storageLife',
 	'shelfLife',
 	'ingredientTable',
 	'freshItemCode',
@@ -139,7 +140,6 @@ class ProductCU extends Component {
 				const result = map([{ from: 'Type', to: 'type' }])(
 					format('toCamel')(response.data || {}),
 				);
-				console.log('response.data', response.data);
 				// console.log(result);
 				this.setState({
 					productType: result.type || 0,

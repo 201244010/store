@@ -17,6 +17,7 @@ const { check } = Authorized;
 const CompanyView = [
 	{ base: 'dashboard', path: '/dashboard' },
 	{ base: 'dataAnalyze', path: '/dataAnalyze/passenger' },
+	{ base: 'dataAnalyze', path: '/dataAnalyze/businessDaily' },
 ];
 
 // Conversion router to menu.

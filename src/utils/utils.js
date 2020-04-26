@@ -677,7 +677,9 @@ export const downloadFileByClick = downloadUrl => {
 export const hasCompanyViewPermission = (permissionList = [], storeList = []) => {
 	const isCompanyView = permissionList.find(
 		item =>
-			item.name === '/company' || item.path === '/companyView' || item.permission === '/companyView'
+			item.name === '/company' ||
+			item.path === '/companyView' ||
+			item.permission === '/companyView'
 	);
 
 	return isCompanyView && storeList.length > 1;
@@ -707,4 +709,18 @@ export const omitTooLongString = (input, length, showEllipsis) => {
 		}
 	}
 	return input;
+};
+
+/**
+ * 递归获取组织结构中的shopList全集，集合为shopId
+ * @param {Array} organizaTree 数组
+ */
+export const getShopList = (data, result = {}) => {
+	data.map(item => {
+		result[[item.orgId]] = item.orgName;
+		if (item.children.length) {
+			getShopList(item.children, result);
+		}
+	});
+	return result;
 };

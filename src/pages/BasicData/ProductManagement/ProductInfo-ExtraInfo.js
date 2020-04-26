@@ -30,7 +30,7 @@ const ProductInfoExtraInfo = props => {
 		manufacturer = '',
 		manufacturerAddress = '',
 		expiryDate = '',
-		expireTime = '',
+		storageLife = '',
 		shelfLife = '',
 		ingredientTable = '',
 		freshItemCode = '',
@@ -120,7 +120,7 @@ const ProductInfoExtraInfo = props => {
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.info.expireTime' }),
-			value: expireTime,
+			value: storageLife,
 		},
 		{
 			label: formatMessage({ id: 'basicData.product.extra.info.shelfLife' }),

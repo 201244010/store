@@ -3,6 +3,7 @@ import { Card, Col, Form, Input, Row, Select } from 'antd';
 import { formatMessage } from 'umi/locale';
 import { customValidate } from '@/utils/customValidate';
 import { MAX_LENGTH } from '@/constants/form';
+import { normalizeInfo } from '@/utils/utils';
 // import EditableFormItem from '@/components/EditableFormItem';
 
 // const productTypes = [{ key: 'normal', value: 0 }, { key: 'weight', value: 1 }];
@@ -34,30 +35,33 @@ const ProductCUBasic = props => {
 	const {
 		form: { getFieldDecorator },
 		// form,
-		productInfo: {
-			seqNum = '',
-			price = -1,
-			promotePrice = -1,
-			memberPrice = -1,
-			barCode = '',
-			name = '',
-			alias = '',
-			type = 0,
-			unit = undefined,
-			spec = '',
-			area = '',
-			level = '',
-			brand = '',
-			qrCode = '',
-			status = '',
-			description = '',
-			promotePriceDescription = '',
-			memberPriceDescription = '',
-		},
+		productInfo,
 		onSelectChange,
 		// productBasicExtra,
 		// remove,
 	} = props;
+
+	const {
+		seqNum = '',
+		price = -1,
+		promotePrice = -1,
+		memberPrice = -1,
+		barCode = '',
+		name = '',
+		alias = '',
+		type = 0,
+		unit = undefined,
+		spec = '',
+		area = '',
+		level = '',
+		brand = '',
+		qrCode = '',
+		status = '',
+		description = '',
+		promotePriceDescription = '',
+		memberPriceDescription = '',
+	} = normalizeInfo(productInfo || {});
+
 	return (
 		<Card title={formatMessage({ id: 'basicData.product.detail.title' })} bordered={false}>
 			<Row>
