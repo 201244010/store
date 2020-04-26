@@ -64,7 +64,7 @@ class BusinessDaily extends React.Component {
 				title: formatMessage({ id: 'businessDaily.price' }),
 				render: (_, record) => {
 					const { orderTotalAmount, orderTotalCount } = record;
-					return orderTotalCount ? (orderTotalAmount / orderTotalCount).toFixed(0) : '--';
+					return orderTotalCount ? (orderTotalAmount / orderTotalCount).toFixed(2) : '--';
 				},
 			},
 			{
