@@ -189,7 +189,13 @@ export default {
 						key: `0-${index}`,
 					};
 				});
-				forData.checkedList = permissionList.reduce((pre, cur) => [...pre, cur.id], []);
+				forData.checkedList = permissionList
+					.filter(
+						i =>
+							FIRST_MENU_ORDER.includes(i.permission.split('/')[1]) &&
+							i.permission.indexOf('storeManagement') === -1
+					)
+					.reduce((pre, cur) => [...pre, cur.id], []);
 				forData.permissionCount = forData.checkedList.length;
 
 				yield put({
