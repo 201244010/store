@@ -479,6 +479,10 @@ const router = [
 						icon: 'blank',
 						routes: [
 							{
+								path: '/deviceManagement/iotAccess',
+								redirect: '/deviceManagement/iotAccess/posAccess',
+							},
+							{
 								path: '/deviceManagement/iotAccess/posAccess',
 								name: 'posAccess',
 								id: 'posAccess',
