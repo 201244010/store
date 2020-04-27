@@ -268,9 +268,10 @@ class BusinessDaily extends React.Component {
 										onChange={this.changeTimeRange}
 										disabledDate={this.disabledDate}
 									/>
+									<div>{formatMessage({ id: 'businessDaily.tip' })}</div>
 								</Form.Item>
 							</Col>
-							<Col {...searchCol}>
+							<Col {...searchCol} className={styles['button-left']}>
 								<Form.Item className={styles['query-item']}>
 									<Button type="primary" onClick={this.handleQuery}>
 										{formatMessage({ id: 'btn.query' })}
