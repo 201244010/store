@@ -6,6 +6,23 @@ const {
 
 export const { env, country } = sysEnv;
 
+/**
+ * 总部下展示的菜单
+ */
+export const CompanyPermission = {
+	companyView: [
+		{ base: 'dashboard', path: '/dashboard' },
+		{ base: 'dataAnalyze', path: '/dataAnalyze/passenger' },
+		{ base: 'dataAnalyze', path: '/dataAnalyze/businessDaily' },
+	],
+	basicData: [
+		'merchantManagement',
+		'organizationManagement',
+		'employeeManagement',
+		'roleManagement',
+	],
+};
+
 export const FIRST_MENU_ORDER = [
 	'companyView',
 	'dashboard',
