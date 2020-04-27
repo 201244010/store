@@ -1,48 +1,74 @@
-import { map, format } from '@konata9/milk-shake';
+import { format } from '@konata9/milk-shake';
 import { formatMessage } from 'umi/locale';
 import Storage from '@konata9/storage.js';
 import * as Actions from '@/services/role';
 import * as CookieUtil from '@/utils/cookies';
 import { ERROR_OK } from '@/constants/errorCode';
 import { DEFAULT_PAGE_SIZE, USER_PERMISSION_LIST } from '@/constants';
-import { FIRST_MENU_ORDER } from '@/config';
+import { FIRST_MENU_ORDER, SECOND_MENU_ORDER } from '@/config';
 
-const getInitStatus = (permissionList, roleInfo) => {
-	const rolePermissionList = roleInfo.permissionList;
-	const initResult = {};
-	rolePermissionList.forEach(item => {
-		if (item.group === permissionList.label) {
-			initResult.valueList = item.valueList;
-			initResult.checkAll = item.checkAll;
-		}
+// 权限列表平铺结构转换树状结构
+// eslint-disable-next-line arrow-body-style
+const formatPList = data => {
+	return FIRST_MENU_ORDER.map(menu => {
+		const firstMenu = {
+			path: `/${menu}`,
+			permissionList: [],
+			label: formatMessage({ id: `menu${`/${menu}`.split('/').join('.')}` }),
+		};
+		firstMenu.permissionList = data.reduce((pList, permissionInfo) => {
+			const { id, permission: path } = permissionInfo;
+			const pathList = path.split('/');
+			const firstMenuPath = pathList[1];
+			const secondMenuPath = pathList[2];
+			// 如果有二级菜单, 添加permissionList
+			if (menu === firstMenuPath && SECOND_MENU_ORDER.includes(secondMenuPath)) {
+				const pItemFirst = pList.find(
+					item => item.path === `/${menu}/${secondMenuPath}`
+				) || {
+					permissionList: [],
+					label: formatMessage({
+						id: `menu${path
+							.split('/')
+							.slice(0, 3)
+							.join('.')}`,
+					}),
+					path: `/${menu}/${secondMenuPath}`,
+				};
+				pItemFirst.permissionList = [
+					...pItemFirst.permissionList,
+					{
+						id,
+						value: id,
+						name: path,
+						path,
+						label: formatMessage({
+							id: `menu${path.split('/').join('.')}`,
+						}),
+					},
+				];
+				const hasExit = pItemFirst.permissionList.length > 1;
+				// 已有列表中有二级菜单，不新增，否则新增
+				return hasExit ? pList : [...pList, pItemFirst];
+			}
+			if (menu === firstMenuPath) {
+				return [
+					...pList,
+					{
+						id,
+						value: id,
+						name: path,
+						path,
+						label: formatMessage({
+							id: `menu${path.split('/').join('.')}`,
+						}),
+					},
+				];
+			}
+			return pList;
+		}, []);
+		return firstMenu;
 	});
-	// console.log('initResult', initResult);
-	return initResult;
-};
-
-const formatData = data => {
-	let tmp = [...data];
-	tmp = tmp.map(item => map([{ from: 'id', to: 'value' }, { from: 'name', to: 'label' }])(item));
-	tmp = tmp.map(item => {
-		if (item.permissionList) {
-			item.permissionList = item.permissionList.map(items =>
-				map([{ from: 'id', to: 'value' }, { from: 'path', to: 'label' }])(items)
-			);
-		}
-		return item;
-	});
-	return tmp;
-};
-
-const formatPath = data => {
-	data.label = formatMessage({ id: `menu${data.label.split('/').join('.')}` });
-	data.permissionList.forEach(
-		item =>
-			(item.label = formatMessage({
-				id: `menu${item.label.split('/').join('.')}`,
-			}))
-	);
-	return data;
 };
 
 export default {
@@ -59,9 +85,11 @@ export default {
 		roleInfo: {
 			name: '',
 			permissionList: [],
+			permissionCount: 0,
 		},
 		permissionList: [],
 		userPermissionList: Storage.get(USER_PERMISSION_LIST, 'local') || [],
+		permissionListByRoleList: [],
 	},
 	effects: {
 		*getAllRoles(_, { put, call }) {
@@ -81,7 +109,11 @@ export default {
 					payload: {
 						roleSelectList: roleList
 							.filter(role => !role.isDefault)
-							.map(role => ({ id: role.id, name: role.name })),
+							.map(role => ({
+								id: role.id,
+								name: role.name,
+								permissionList: role.permissionList.map(i => i.id),
+							})),
 					},
 				});
 			}
@@ -121,8 +153,7 @@ export default {
 			}
 		},
 
-		*getRoleInfo({ payload = {} }, { put, call, select }) {
-			const { permissionList: allPermissionList } = yield select(state => state.role);
+		*getRoleInfo({ payload = {} }, { put, call }) {
 			const { roleId } = payload;
 			const response = yield call(
 				Actions.handleRoleManagement,
@@ -133,92 +164,78 @@ export default {
 				const { data = {} } = response;
 				const forData = format('toCamel')(data) || {};
 				const { permissionList = [] } = forData || {};
-				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
-					permissionList.find(permission => permission.name === `/${menu}`)
-				).filter(item => !!item);
+				// 拿到pList 生成list TODO
 				// 滤除后台脏数据
-				const basicData = sortedPermission.find(item => item.name === '/basicData');
+				const sortedPermission = formatPList(permissionList);
+				console.log('formatPList,', sortedPermission);
+				const basicData = sortedPermission.find(item => item.path === '/basicData');
 				if (basicData && basicData.permissionList.length) {
-					const index = basicData.permissionList.findIndex(item => item.path.indexOf('storeManagement') > -1);
+					const index = basicData.permissionList.findIndex(
+						item => item.path.indexOf('storeManagement') > -1
+					);
 					if (index >= 0) {
 						basicData.permissionList.splice(index, 1);
 					}
 				}
-
-				forData.permissionList = formatData(sortedPermission).map(item => {
-					const formatResult = formatPath(item);
-					const valueList = formatResult.permissionList
-						? formatResult.permissionList.map(items => items.value)
-						: [formatResult.value];
-					const matchedPermission = (allPermissionList.find(a => a.group === item.label) || {}).valueList || 0;
-					const indeterminate =
-						valueList.length === 0 ?
-							false :
-							valueList.length < matchedPermission.length;
+				// 权限列表format 添加字段
+				forData.permissionList = sortedPermission.map((item, index) => {
+					const valueList = item.permissionList
+						? item.permissionList.map(items => items.value)
+						: [item.value];
 					return {
-						checkedList: formatResult,
-						indeterminate,
-						checkAll: valueList.length === matchedPermission.length,
-						group: formatResult.label,
+						permissionList: item.permissionList,
+						group: item.label,
 						valueList,
+						key: `0-${index}`,
 					};
 				});
+				forData.checkedList = permissionList
+					.filter(
+						i =>
+							FIRST_MENU_ORDER.includes(i.permission.split('/')[1]) &&
+							i.permission.indexOf('storeManagement') === -1
+					)
+					.reduce((pre, cur) => [...pre, cur.id], []);
+				forData.permissionCount = forData.checkedList.length;
+
 				yield put({
 					type: 'updateState',
 					payload: {
 						roleInfo: forData,
 					},
 				});
-				yield put({
-					type: 'getPermissionList',
-					payload: {
-						type: 'modify',
-					},
-				});
 			}
 		},
 
-		*getPermissionList({ payload = {} }, { put, call, select }) {
-			const { type } = payload;
+		// 获取所有权限列表
+		*getPermissionList(_, { put, call }) {
 			const response = yield call(Actions.handleRoleManagement, 'getPermissionList');
 			let retPermissionList = [];
 			if (response && response.code === ERROR_OK) {
-				const roleInfo = yield select(state => state.role.roleInfo);
 				const { data = {} } = response;
 				const { permissionList = [] } = format('toCamel')(data) || {};
-
+				// 拿到pList 生成list TODO
 				retPermissionList = permissionList;
-				const sortedPermission = FIRST_MENU_ORDER.map(menu =>
-					permissionList.find(permission => permission.name === `/${menu}`)
-				).filter(item => !!item);
+				const sortedPermission = formatPList(permissionList);
+				console.log('formatPList,', sortedPermission);
 				// 滤除后台脏数据
-				const basicData = sortedPermission.find(item => item.name === '/basicData');
+				const basicData = sortedPermission.find(item => item.path === '/basicData');
 				if (basicData && basicData.permissionList.length) {
-					const index = basicData.permissionList.findIndex(item => item.path.indexOf('storeManagement') > -1);
+					const index = basicData.permissionList.findIndex(
+						item => item.path.indexOf('storeManagement') > -1
+					);
 					if (index >= 0) {
 						basicData.permissionList.splice(index, 1);
 					}
 				}
 
-				const tmpList = formatData(sortedPermission).map(item => {
-					const formatResult = formatPath(item);
-					return {
-						checkedList: formatResult,
-						indeterminate: formatResult.permissionList && true,
-						checkAll:
-							type === 'modify'
-								? getInitStatus(formatResult, roleInfo).checkAll
-								: false,
-						group: formatResult.label,
-						// valueList:
-						// 	type === 'modify'
-						// 		? getInitStatus(formatResult, roleInfo).valueList
-						// 		: [],
-						valueList: formatResult.permissionList
-							? formatResult.permissionList.map(items => items.value)
-							: [formatResult.value],
-					};
-				});
+				const tmpList = sortedPermission.map(item => ({
+					permissionList: item.permissionList,
+					label: item.label,
+					valueList: item.permissionList
+						? item.permissionList.map(items => items.value)
+						: [item.value],
+				}));
 				yield put({
 					type: 'updateState',
 					payload: {
@@ -340,6 +357,36 @@ export default {
 			});
 
 			return response;
+		},
+
+		// 根据角色列表计算权限列表,返回一个valueList
+		*getPermissionListByRoleList({ payload = {} }, { put, call, all }) {
+			const { roleList } = payload;
+			const responseList = yield all(
+				roleList.map(roleId =>
+					call(Actions.handleRoleManagement, 'getInfo', format('toSnake')({ roleId }))
+				)
+			);
+			const listSource = responseList.reduce((last, res) => {
+				const { data = {} } = res;
+				const forData = format('toCamel')(data) || {};
+				const idList = forData.permissionList.reduce(
+					(list, menu) => [...list, ...menu.permissionList.map(i => i.id)],
+					[]
+				);
+				return [...last, ...idList];
+			}, []);
+
+			const listMerge = Array.from(new Set(listSource));
+			// const listMerge = groupBy(listSource, 'name').reduce((last,firstMenu)=>{
+			// 	firstMenu.
+			// },[]);
+			yield put({
+				type: 'updateState',
+				payload: {
+					permissionListByRoleList: listMerge,
+				},
+			});
 		},
 	},
 	reducers: {

@@ -45,6 +45,7 @@ class MerchantView extends Component {
 					contact_person: contactPerson,
 					created_time: createTime,
 					modified_time: modifyTime,
+					sunmi_company_no: sunmiCompanyNo
 				},
 			},
 		} = this.props;
@@ -53,6 +54,12 @@ class MerchantView extends Component {
 				<h1>{formatMessage({ id: 'merchantManagement.merchant.view' })}</h1>
 				<div className={styles['form-content']}>
 					<Form {...FORM_ITEM_LAYOUT_BUSINESS}>
+						<Form.Item
+							className={styles['clear-margin']}
+							label={formatMessage({ id: 'merchantManagement.merchant.number' })}
+						>
+							<span>{sunmiCompanyNo || '--'}</span>
+						</Form.Item>
 						<Form.Item
 							className={styles['clear-margin']}
 							label={formatMessage({ id: 'merchantManagement.merchant.name' })}

@@ -38,12 +38,12 @@ class EmployeeTable extends Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.companyNumber' }),
 				dataIndex: 'number',
-				render: number => number || '--'
+				render: number => number || '--',
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.name' }),
 				dataIndex: 'name',
-				render: name => name || '--'
+				render: name => name || '--',
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.gender' }),
@@ -53,7 +53,7 @@ class EmployeeTable extends Component {
 			{
 				title: formatMessage({ id: 'roleManagement.role.employeePhone' }),
 				dataIndex: 'phone',
-				render: phone => phone || '--'
+				render: phone => phone || '--',
 			},
 			{
 				title: formatMessage({ id: 'roleManagement.role.authorName' }),
@@ -93,7 +93,7 @@ class EmployeeTable extends Component {
 		const {
 			getEmployeeList,
 			query: { roleId },
-			setGetInfoValue
+			setGetInfoValue,
 		} = this.props;
 		setGetInfoValue();
 		getEmployeeList({ roleId: idDecode(roleId) });
@@ -211,7 +211,15 @@ class EmployeeTable extends Component {
 						dataSource={employeeList}
 						columns={this.columns}
 						loading={loading.effects['employee/getEmployeeList']}
-						pagination={pagination}
+						pagination={{
+							...pagination,
+							showTotal: total =>
+								`${formatMessage({
+									id: 'employee.list.total',
+								})}${total}${formatMessage({
+									id: 'employee.list.memberCount',
+								})}`,
+						}}
 						onChange={this.onTableChange}
 					/>
 				</div>

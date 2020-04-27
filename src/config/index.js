@@ -6,10 +6,26 @@ const {
 
 export const { env, country } = sysEnv;
 
+/**
+ * 总部下展示的菜单
+ */
+export const CompanyPermission = {
+	companyView: [
+		{ base: 'dashboard', path: '/dashboard' },
+		{ base: 'dataAnalyze', path: '/dataAnalyze/passenger' },
+	],
+	basicData: [
+		'merchantManagement',
+		'organizationManagement',
+		'employeeManagement',
+		'roleManagement',
+	],
+};
+
 export const FIRST_MENU_ORDER = [
-	'company',
+	'companyView',
 	'dashboard',
-	'customerCenter',
+	'dataAnalyze',
 	'storeMonitor',
 	'productManagement',
 	'transManagement',
@@ -17,6 +33,8 @@ export const FIRST_MENU_ORDER = [
 	'deviceManagement',
 	'basicData',
 ];
+
+export const SECOND_MENU_ORDER = ['ipcList', 'esl', 'network', 'iotAccess'];
 
 export const HTTP_PREFIX = {
 	'http:': 'https:',
