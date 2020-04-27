@@ -13,6 +13,7 @@ export const CompanyPermission = {
 	companyView: [
 		{ base: 'dashboard', path: '/dashboard' },
 		{ base: 'dataAnalyze', path: '/dataAnalyze/passenger' },
+		{ base: 'dataAnalyze', path: '/dataAnalyze/businessDaily' }
 	],
 	basicData: [
 		'merchantManagement',
