@@ -288,24 +288,24 @@ class POSList extends React.Component {
 								<a href="javascript:void(0)" onClick={() => this.toPath('videos', {sn, ipcId})}>
 									{formatMessage({ id: 'posList.records' })}
 								</a>
-								<Divider type="veritcal" />
+								{/* <Divider type="veritcal" /> */}
 								{/* <Link
 									className={styles['row-operation']}
 									to={`/cashVerify/bindPOSDevice?sn=${ipcSN}&posList=${sn}&edit=1`}
 								>
 									{formatMessage({ id: 'posList.adjustScreen' })}
 								</Link> */}
-								<a href="javascript:void(0)" onClick={() => this.toPath('bindPOSDevice', {ipcSN, sn})}>
+								{/* <a href="javascript:void(0)" onClick={() => this.toPath('bindPOSDevice', {ipcSN, sn})}>
 									{formatMessage({ id: 'posList.adjustScreen' })}
-								</a>
+								</a> */}
 								{/* <a
 									className={styles['row-operation']}
 									href="javascript:void(0);"
 								>
 									{ formatMessage({id: 'posList.adjustScreen'}) }
 								</a> */}
-								<Divider type="veritcal" />
-								<Popconfirm
+								{/* <Divider type="veritcal" /> */}
+								{/* <Popconfirm
 									icon={
 										<Icon type="close-circle" theme="filled" style={{ color: 'red' }} />
 									}
@@ -331,7 +331,7 @@ class POSList extends React.Component {
 									>
 										{formatMessage({ id: 'posList.unbind' })}
 									</a>
-								</Popconfirm>
+								</Popconfirm> */}
 							</div>
 						);
 					}
@@ -582,19 +582,19 @@ class POSList extends React.Component {
 							>
 								<a
 									href='javascript:void(0);'
-									onClick={() => {
-										this.currentIpcSN = item.sn;
-										this.setState({
-											snList: [
-												{
-													sn: ''
-												}
-											],
-											inputVisible: true,
-										});
-									}}
+									// onClick={() => {
+									// 	this.currentIpcSN = item.sn;
+									// 	this.setState({
+									// 		snList: [
+									// 			{
+									// 				sn: ''
+									// 			}
+									// 		],
+									// 		inputVisible: true,
+									// 	});
+									// }}
 								>
-									{`+ ${formatMessage({ id: 'posList.addPOS' })}`}
+									{formatMessage({ id: 'posList.addPOS.tips' })}
 								</a>
 								{/* <Link
 									to={`/cashVerify/bindPOSDevice?sn=${item.sn}`}
