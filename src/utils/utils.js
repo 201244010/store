@@ -605,7 +605,7 @@ export const checkAnchor = (anchor = null) => {
 	return null;
 };
 
-export const normalizeInfo = (info) => {
+export const normalizeInfo = info => {
 	const copyInfo = JSON.parse(JSON.stringify(info));
 	Object.keys(copyInfo).forEach(key => {
 		if (Number(copyInfo[key]) === -1) {
@@ -643,30 +643,30 @@ export const getCountDown = (seconds, level = 'hour') => {
 	};
 };
 
-export const comperareVersion = (l,r) => {
+export const comperareVersion = (l, r) => {
 	l = l ? l.trim() : '';
 	r = r ? r.trim() : '';
-	if(l === r){
+	if (l === r) {
 		return 0;
 	}
 	const lVers = l.split('.');
 	const rVers = r.split('.');
 	const length = Math.min(lVers.length, rVers.length);
-	for(let i = 0; i < length; i++){
-		if(lVers[i] !== rVers[i]){
+	for (let i = 0; i < length; i++) {
+		if (lVers[i] !== rVers[i]) {
 			return parseInt(lVers[i], 0) - parseInt(rVers[i], 0);
 		}
 	}
-	const  temp = lVers.length < rVers.length ? rVers : lVers;
-	for(let i = length; i < temp.length; i++){
-		if(parseInt(temp[i], 0) !== 0){
+	const temp = lVers.length < rVers.length ? rVers : lVers;
+	for (let i = length; i < temp.length; i++) {
+		if (parseInt(temp[i], 0) !== 0) {
 			return lVers.length < rVers.length ? -1 : 1;
 		}
 	}
 	return 0;
 };
 
-export const downloadFileByClick = (downloadUrl) => {
+export const downloadFileByClick = downloadUrl => {
 	const element = document.createElement('a');
 	element.href = downloadUrl;
 	document.body.appendChild(element);
@@ -674,11 +674,53 @@ export const downloadFileByClick = (downloadUrl) => {
 	document.body.removeChild(element);
 };
 
-export const hasCompanyViewPermission = (
-	permissionList = [],
-	storeList = [],
-) => {
-	const isCompanyView = permissionList.find(item => (item.name === '/company' || item.path === '/companyView'));
+export const hasCompanyViewPermission = (permissionList = [], storeList = []) => {
+	const isCompanyView = permissionList.find(
+		item =>
+			item.name === '/company' ||
+			item.path === '/companyView' ||
+			item.permission === '/companyView'
+	);
 
-	return isCompanyView && (storeList.length > 1);
+	return isCompanyView && storeList.length > 1;
+};
+
+/**
+ * 截断指定长度
+ * @param {string} input 字符串
+ * @param {number} length 保留中字符串长度
+ * @param {bool}  showEllipsis 截断部分显示...
+ */
+export const omitTooLongString = (input, length, showEllipsis) => {
+	let len = 0;
+	let res;
+	for (let i = 0; i < input.length; i++) {
+		if (input.charCodeAt(i) > 127 || input.charCodeAt(i) === 94) {
+			len += 2;
+		} else {
+			len++;
+		}
+		if (len >= length) {
+			res = input.substring(0, i + 1);
+			if (showEllipsis) {
+				res += '...';
+			}
+			return res;
+		}
+	}
+	return input;
+};
+
+/**
+ * 递归获取组织结构中的shopList全集，集合为shopId
+ * @param {Array} organizaTree 数组
+ */
+export const getShopList = (data, result = {}) => {
+	data.map(item => {
+		result[[item.orgId]] = item.orgName;
+		if (item.children.length) {
+			getShopList(item.children, result);
+		}
+	});
+	return result;
 };

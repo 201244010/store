@@ -5,7 +5,7 @@ import { getUserInfoByUsername } from '@/services/user';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { ERROR_OK } from '@/constants/errorCode';
 import * as CookieUtil from '@/utils/cookies';
-import { getLocationParam } from '@/utils/utils';
+// import { getLocationParam } from '@/utils/utils';
 
 export default {
 	namespace: 'employee',
@@ -71,7 +71,7 @@ export default {
 				type: 'updateState',
 				payload: {
 					searchValue: initStatus,
-					getInfoValue: initStatus
+					getInfoValue: initStatus,
 				},
 			});
 		},
@@ -79,24 +79,31 @@ export default {
 		*getEmployeeList({ payload = {} }, { call, select, put }) {
 			const { getInfoValue, pagination } = yield select(state => state.employee);
 			const { storeList } = yield select(state => state.store);
-			const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].shopId || '';
-			const { current = 1, pageSize = 10, roleId = -1, shopIdList: shopIdListParams = [] } = payload;
-			const tmpShopIdList = yield put.resolve({
-				type: 'global/getShopListFromStorage',
-			});
-			const adminResponse = yield put.resolve({
-				type: 'role/checkAdmin',
-			});
-			const orgId = Number(getLocationParam('orgId'));
-			let tmpShopList = [];
-			const { shopIdList } = getInfoValue;
-			if (shopIdList.length) {
-				tmpShopList = shopIdList;
-			} else if (adminResponse && adminResponse.code !== ERROR_OK) {
-				tmpShopList = tmpShopIdList.map(item => item.shopId);
-			} else if (orgId) {
-				tmpShopList = [orgId];
-			}
+			const shopId =
+				CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].shopId || '';
+			const {
+				current = 1,
+				pageSize = 10,
+				roleId = -1,
+				shopIdList: shopIdListParams = [],
+			} = payload;
+			// 去掉总部组织下的员工列表查询逻辑
+			// const tmpShopIdList = yield put.resolve({
+			// 	type: 'global/getShopListFromStorage',
+			// });
+			// const adminResponse = yield put.resolve({
+			// 	type: 'role/checkAdmin',
+			// });
+			// const orgId = Number(getLocationParam('orgId'));
+			// let tmpShopList = [];
+			// const { shopIdList } = getInfoValue;
+			// if (shopIdList.length) {
+			// 	tmpShopList = shopIdList;
+			// } else if (adminResponse && adminResponse.code !== ERROR_OK) {
+			// 	tmpShopList = tmpShopIdList.map(item => item.shopId);
+			// } else if (orgId) {
+			// 	tmpShopList = [orgId];
+			// }
 
 			const options = {
 				...getInfoValue,
@@ -104,7 +111,7 @@ export default {
 				pageSize,
 				roleId,
 				shopId,
-				shopIdList: shopIdListParams.length > 0 ? shopIdListParams : tmpShopList,
+				shopIdList: shopIdListParams.length > 0 ? shopIdListParams : [],
 			};
 
 			const response = yield call(
@@ -127,7 +134,11 @@ export default {
 							},
 						])(employee)
 					)
-					.map(e => ({ ...e, username: e.phone || e.email }))
+					.map(e => ({
+						...e,
+						username: e.phone || e.email,
+						roleList: Array.from(new Set(e.mappingList.map(i => i.roleName))),
+					}))
 					.sort((a, b) => b.createTime - a.createTime);
 
 				yield put({
@@ -147,7 +158,8 @@ export default {
 
 		*getEmployeeInfo({ payload: { employeeId = null } = {} }, { call, put, select }) {
 			const { storeList } = yield select(state => state.store);
-			const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].orgId || '';
+			const shopId =
+				CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY) || storeList[0].orgId || '';
 
 			const response = yield call(
 				Action.handleEmployee,
@@ -212,7 +224,7 @@ export default {
 					gender: gender || 0,
 					ssoUsername,
 					mappingList,
-					shopId: mappingList[0].shopId || storeList[0].shopId
+					shopId: mappingList[0].shopId || storeList[0].shopId,
 				})
 			);
 
@@ -234,7 +246,7 @@ export default {
 					username,
 					gender,
 					mappingList,
-					shopId: mappingList[0].shopId || storeList[0].shopId
+					shopId: mappingList[0].shopId || storeList[0].shopId,
 				})
 			);
 

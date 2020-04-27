@@ -17,10 +17,7 @@ const { check } = Authorized;
 const CompanyView = [
 	{ base: 'dashboard', path: '/dashboard' },
 	{ base: 'dataAnalyze', path: '/dataAnalyze/passenger' },
-	{ base: 'basicData', path: '/basicData/merchantManagement' },
-	{ base: 'basicData', path: '/basicData/organizationManagement' },
-	{ base: 'basicData', path: '/basicData/roleManagement' },
-	{ base: 'basicData', path: '/basicData/employeeManagement' },
+	{ base: 'dataAnalyze', path: '/dataAnalyze/businessDaily' },
 ];
 
 // Conversion router to menu.
@@ -167,24 +164,41 @@ export default {
 				type: 'role/getUserPermissionList',
 			});
 
-			if ( permissionResult && permissionResult.code === ERROR_OK ) {
+			if (permissionResult && permissionResult.code === ERROR_OK) {
 				const { data: permissionData = {} } = permissionResult || {};
 				const { permissionList = [] } = format('toCamel')(permissionData);
 				console.log('permissionList, ', permissionList);
 
+				const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
 				if (permissionList.length === 0) {
 					filteredMenuData = [];
 				} else {
-					const shopId = CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY);
-					let formattedPermissionList;
-					if (hasCompanyViewPermission(permissionList, storeList) && shopId === 0) {
-						formattedPermissionList = CompanyView;
+					let formattedPermissionList = [];
+					if (shopId === 0 && storeList.length !== 1) {
+						// 选择在总部层级，且拥有超过1家门店
+						// 有总部视角权限——> 添加 数据页，报表
+						if (hasCompanyViewPermission(permissionList, storeList)) {
+							formattedPermissionList = CompanyView;
+						}
+						// 添加基础管理路由
+						formattedPermissionList = formattedPermissionList.concat(
+							permissionList
+								.filter(item => item.permission.split('/')[1] === 'basicData')
+								.map(item => ({
+									base: ((item.path || item.permission || '')
+										.slice(1)
+										.split('/') || [])[0],
+									path: item.path || item.permission,
+								}))
+						);
 					} else {
+						// 单门店视角 或 只有一家门店的shopId=0
 						formattedPermissionList = permissionList.map(item => ({
-							base: ((item.path || '').slice(1).split('/') || [])[0],
-							path: item.path,
+							base: ((item.path || item.permission || '').slice(1).split('/') ||
+								[])[0],
+							path: item.path || item.permission,
 						}));
-						if (storeList.length === 1) {
+						if (shopId === 0 && storeList.length === 1) {
 							CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeList[0].shopId);
 						}
 						console.log('shopId', CookieUtil.getCookieByKey(CookieUtil.SHOP_ID_KEY));
@@ -192,6 +206,19 @@ export default {
 					console.log('formattedPermissionList: ', formattedPermissionList);
 					if (formattedPermissionList.length > 0) {
 						filteredMenuData = checkMenuAuth(menuData, formattedPermissionList);
+					} else {
+						filteredMenuData = [];
+					}
+				}
+
+				if (filteredMenuData.length === 0) {
+					if (shopId === 0 && storeList.length >= 1) {
+						// 权限列表为空时 无该总部组织权限，跳转子门店视角
+						CookieUtil.setCookieByKey(CookieUtil.SHOP_ID_KEY, storeList[0].shopId);
+						yield put({
+							type: 'goToPath',
+							payload: { pathId: 'root', urlParams: {}, linkType: 'href' },
+						});
 					}
 				}
 			}

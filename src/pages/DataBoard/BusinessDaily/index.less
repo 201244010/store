@@ -1,0 +1,21 @@
+@import '~@/styles/common.less';
+
+.title {
+	font-weight: 500;
+}
+.range-picker {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+.business-daily {
+	:global(.ant-table-pagination.ant-pagination .ant-pagination-total-text) {
+		float: none !important;
+	}
+}
+:global {
+	.ant-calendar-today {
+		.ant-calendar-date {
+			border: 1px solid rgb(245, 245, 245) !important;
+		}
+	}
+}
