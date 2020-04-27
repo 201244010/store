@@ -10,15 +10,10 @@ import { ERROR_OK } from '@/constants/errorCode';
 // import routeConfig from '@/config/devRouter';
 import routeConfig from '@/config/router';
 import { hasCompanyViewPermission } from '@/utils/utils';
+import { CompanyPermission } from '@/config/index';
 import * as CookieUtil from '@/utils/cookies';
 
 const { check } = Authorized;
-
-const CompanyView = [
-	{ base: 'dashboard', path: '/dashboard' },
-	{ base: 'dataAnalyze', path: '/dataAnalyze/passenger' },
-	{ base: 'dataAnalyze', path: '/dataAnalyze/businessDaily' },
-];
 
 // Conversion router to menu.
 function formatter(data, parentAuthority, parentName) {
@@ -178,12 +173,19 @@ export default {
 						// 选择在总部层级，且拥有超过1家门店
 						// 有总部视角权限——> 添加 数据页，报表
 						if (hasCompanyViewPermission(permissionList, storeList)) {
-							formattedPermissionList = CompanyView;
+							formattedPermissionList = CompanyPermission.companyView;
 						}
 						// 添加基础管理路由
 						formattedPermissionList = formattedPermissionList.concat(
 							permissionList
-								.filter(item => item.permission.split('/')[1] === 'basicData')
+								.filter(item => {
+									const pathList = item.permission.split('/');
+									return (
+										pathList &&
+										pathList[1] === 'basicData' &&
+										CompanyPermission.basicData.includes(pathList[2])
+									);
+								})
 								.map(item => ({
 									base: ((item.path || item.permission || '')
 										.slice(1)
