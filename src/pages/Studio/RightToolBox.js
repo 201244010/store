@@ -15,7 +15,7 @@ const bindFieldsLocaleMap = {
 	productName: formatMessage({id: 'basicData.product.name'}),
 	productSpec: formatMessage({id: 'basicData.product.spec'}),
 	productLevel: formatMessage({id: 'basicData.product.level'}),
-	productExpireTime: formatMessage({id: 'basicData.product.expireTime'}),
+	productStorageLife: formatMessage({id: 'basicData.product.expireTime'}),
 	productBarCode: formatMessage({id: 'basicData.product.barCode'}),
 	productAlias: formatMessage({id: 'basicData.product.alias'}),
 	productUnit: formatMessage({id: 'basicData.product.unit'}),

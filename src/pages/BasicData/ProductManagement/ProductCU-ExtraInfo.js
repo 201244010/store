@@ -33,7 +33,7 @@ const ExtraInfo = props => {
 		manufacturer = '',
 		manufacturerAddress = '',
 		expiryDate = '',
-		// expireTime = '',
+		storageLife = '',
 		shelfLife = '',
 		ingredientTable = '',
 		freshItemCode = '',
@@ -251,17 +251,16 @@ const ExtraInfo = props => {
 				validator: false,
 				field: '',
 			},
-			// {
-			// 	colSpan: 12,
-			// 	label: formatMessage({ id: 'basicData.product.extra.info.expireTime' }),
-			// 	type: 'InputNumber',
-			// 	getFieldName: 'expireTime',
-			// 	value: expireTime,
-			// 	required: false,
-			// 	message: '',
-			// 	validator: true,
-			// 	field: '',
-			// },
+			{
+				colSpan: 12,
+				label: formatMessage({ id: 'basicData.product.extra.info.expireTime' }),
+				getFieldName: 'storageLife',
+				value: storageLife,
+				required: false,
+				message: '',
+				validator: false,
+				field: '',
+			},
 		],
 		[
 			{
@@ -465,7 +464,7 @@ const ExtraInfo = props => {
 								}
 								if (item.type === 'InputNumber') {
 									const numProps = {};
-									if (item.min) {
+									if (item.min || item.min === 0) {
 										numProps.min = item.min;
 									}
 									if (item.max) {

@@ -682,3 +682,17 @@ export const hasCompanyViewPermission = (
 
 	return isCompanyView && (storeList.length > 1);
 };
+
+/**
+ * 递归获取组织结构中的shopList全集，集合为shopId
+ * @param {Array} organizaTree 数组
+ */
+export const getShopList = (data, result = {}) => {
+	data.map(item => {
+		result[[item.orgId]] = item.orgName;
+		if (item.children.length) {
+			getShopList(item.children, result);
+		}
+	});
+	return result;
+};
