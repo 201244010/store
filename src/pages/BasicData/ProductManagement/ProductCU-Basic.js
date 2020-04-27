@@ -8,28 +8,6 @@ import { normalizeInfo } from '@/utils/utils';
 
 // const productTypes = [{ key: 'normal', value: 0 }, { key: 'weight', value: 1 }];
 const productTypes = [{ key: 'normal', value: 0 }];
-const productUnits = [
-	{ key: 'box', value: 0, tempValue: formatMessage({ id: 'basicData.product.unit.box' }) },
-	{ key: 'pack', value: 1, tempValue: formatMessage({ id: 'basicData.product.unit.pack' }) },
-	{ key: 'bottle', value: 2, tempValue: formatMessage({ id: 'basicData.product.unit.bottle' }) },
-	{ key: 'can', value: 3, tempValue: formatMessage({ id: 'basicData.product.unit.can' }) },
-	{ key: 'piece', value: 4, tempValue: formatMessage({ id: 'basicData.product.unit.piece' }) },
-	{ key: 'case', value: 5, tempValue: formatMessage({ id: 'basicData.product.unit.case' }) },
-	{ key: 'axe', value: 6, tempValue: formatMessage({ id: 'basicData.product.unit.axe' }) },
-	{ key: 'kg', value: 7, tempValue: formatMessage({ id: 'basicData.product.unit.kg' }) },
-	{ key: 'g', value: 8, tempValue: formatMessage({ id: 'basicData.product.unit.g' }) },
-	{ key: 'each', value: 9, tempValue: formatMessage({ id: 'basicData.product.unit.each' }) },
-	{ key: 'single', value: 10, tempValue: formatMessage({ id: 'basicData.product.unit.single' }) },
-	{ key: 'bag', value: 11, tempValue: formatMessage({ id: 'basicData.product.unit.bag' }) },
-	{ key: 'list', value: 12, tempValue: formatMessage({ id: 'basicData.product.unit.list' }) },
-	{ key: 'role', value: 13, tempValue: formatMessage({ id: 'basicData.product.unit.role' }) },
-	{ key: 'pair', value: 14, tempValue: formatMessage({ id: 'basicData.product.unit.pair' }) },
-	{ key: 'l', value: 15, tempValue: formatMessage({ id: 'basicData.product.unit.l' }) },
-	{ key: 'ml', value: 16, tempValue: formatMessage({ id: 'basicData.product.unit.ml' }) },
-	{ key: 'handle', value: 17, tempValue: formatMessage({ id: 'basicData.product.unit.handle' }) },
-	{ key: 'group', value: 18, tempValue: formatMessage({ id: 'basicData.product.unit.group' }) },
-	{ key: 'branch', value: 19, tempValue: formatMessage({ id: 'basicData.product.unit.branch' }) },
-];
 
 const ProductCUBasic = props => {
 	const {
@@ -60,7 +38,6 @@ const ProductCUBasic = props => {
 		description = '',
 		promotePriceDescription = '',
 		memberPriceDescription = '',
-		expireTime = '',
 	} = normalizeInfo(productInfo || {});
 
 	return (
@@ -180,19 +157,7 @@ const ProductCUBasic = props => {
 					<Form.Item label={formatMessage({ id: 'basicData.product.unit' })}>
 						{getFieldDecorator('unit', {
 							initialValue: unit || undefined,
-						})(
-							<Select
-								placeholder={formatMessage({ id: 'basicData.product.unit.select' })}
-							>
-								{productUnits.map(unitItem => (
-									<Select.Option key={unitItem.key} value={unitItem.tempValue}>
-										{formatMessage({
-											id: `basicData.product.unit.${unitItem.key}`,
-										})}
-									</Select.Option>
-								))}
-							</Select>
-						)}
+						})(<Input maxLength={MAX_LENGTH['20']} />)}
 					</Form.Item>
 				</Col>
 				<Col span={12}>
@@ -309,15 +274,6 @@ const ProductCUBasic = props => {
 					<Form.Item label={formatMessage({ id: 'basicData.product.memberPriceDescription' })}>
 						{getFieldDecorator('memberPriceDescription', {
 							initialValue: memberPriceDescription,
-						})(<Input maxLength={MAX_LENGTH['200']} />)}
-					</Form.Item>
-				</Col>
-			</Row>
-			<Row>
-				<Col span={12}>
-					<Form.Item label={formatMessage({ id: 'basicData.product.expireTime' })}>
-						{getFieldDecorator('expireTime', {
-							initialValue: expireTime,
 						})(<Input maxLength={MAX_LENGTH['200']} />)}
 					</Form.Item>
 				</Col>

@@ -31,7 +31,6 @@ const PRODUCT_BASIC = {
 	promotePriceDescription: null,
 	memberPrice: null,
 	memberPriceDescription: null,
-	expireTime: null,
 };
 
 const PRODUCT_WEIGHT = {
