@@ -11,5 +11,6 @@ export default {
 	'businessDaily.InRate': '进店率',
 	'businessDaily.trageTransfer': '交易转化率',
 	'businessDaily.total.item': '总共##total##个项目',
+	'businessDaily.tip': '选择日期区间不超过90天',
 	'businessDaily.message.tip': '选择日期区间不超过90天, 请重新选择日期',
 };
