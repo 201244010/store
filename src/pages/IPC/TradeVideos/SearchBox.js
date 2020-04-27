@@ -5,8 +5,8 @@ import { formatMessage } from 'umi/locale';
 
 import { SEARCH_FORM_COL, SEARCH_FORM_GUTTER } from '@/constants/form';
 
-import styles from './TradeVideos.less';
 import global from '@/styles/common.less';
+import styles from './TradeVideos.less';
 
 const { Option } = Select;
 // const { Search } = Input;
@@ -28,7 +28,7 @@ class SearchBox extends React.Component{
 
 	disabledDate = value => {
 		if (!value) return false;
-		return value.valueOf() > moment().valueOf();
+		return value.valueOf() > moment().endOf('day').valueOf();
 	};
 
 	render() {
