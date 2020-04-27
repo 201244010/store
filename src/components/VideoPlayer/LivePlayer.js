@@ -440,11 +440,6 @@ class LivePlayer extends React.Component{
 				// console.log('player current时间=', moment(baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
 				getCurrentTimestamp(this.relativeTimestamp - this.bufferGap + gap);
 			}
-<<<<<<< HEAD
-
-
-=======
->>>>>>> test
 			onMetadataArrived(metadata.relativeTime - timeGap); // 用于清除人脸框
 			updateBasetime(metadata.baseTime);
 		} else {
