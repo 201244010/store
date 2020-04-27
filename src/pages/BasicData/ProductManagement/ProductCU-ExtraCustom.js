@@ -431,7 +431,7 @@ const ExtraCustom = props => {
 								}
 								if (item.type === 'InputNumber') {
 									const numProps = {};
-									if (item.min) {
+									if (item.min || item.precision === 0) {
 										numProps.min = item.min;
 									}
 									if (item.max) {

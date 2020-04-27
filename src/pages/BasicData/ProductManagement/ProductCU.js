@@ -33,6 +33,7 @@ const ExtraInfoFields = [
 	'manufacturer',
 	'manufacturerAddress',
 	'expiryDate',
+	'storageLife',
 	'shelfLife',
 	'ingredientTable',
 	'freshItemCode',
@@ -404,6 +405,7 @@ class ProductCU extends Component {
 			<Card
 				className={styles['content-container']}
 				loading={loading.effects['basicDataProduct/getProductDetail']}
+				style={{marginBottom: 80}}
 			>
 				<Form
 					{...{
@@ -448,10 +450,15 @@ class ProductCU extends Component {
 							productInfo,
 						}}
 					/>
-					<Card title={null} bordered={false}>
+					<Card
+						title={null}
+						bordered={false}
+						style={{position: 'fixed', left: 0, bottom: 0, right: 0}}
+						bodyStyle={{padding: 0}}
+					>
 						<Row>
-							<Col span={12}>
-								<Form.Item label=" " colon={false}>
+							<Col span={4} offset={19}>
+								<Form.Item label=" " colon={false} style={{marginTop: 12, marginBottom: 12}}>
 									<Button
 										type="primary"
 										onClick={this.onSubmit}

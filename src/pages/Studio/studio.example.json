@@ -1,106 +1,1469 @@
 {
   "encoding": "UTF-8",
-  "type": "BWR-2.13",
-  "backgroundColor": "white",                   //始终为white
-  "layers": [{
-    "type": "text",                             //文本元件
-    "backgroundColor": "black",                      //背景色，背景black，字体white即为反显
-    "startX": 408,                              //元件左上角起点X位置
-    "startY": 331,                              //元件左上角起点Y位置
-    "width": 450,                               //元件宽度
-    "height": 150,                              //元件高度
-    "rotation": 0,                              //顺时针旋转角度，只能直角旋转
-    "fontFamily": "Microsoft Yahei",            //字体
-    "fontSize": 14,                             //字号
-    "fontColor": "black",                       //颜色
-    "bold": false,                              //加粗
-    "italic": false,                            //倾斜
-    "underline": false,                         //下划线
-    "strikethrough": false,                     //删除线
-    "align": "left",                            //对齐 "center" "left" "right"
-    "content": "商品名称",                        //未绑定数据显示内容
-    "bindField": "{{goods_name}}"               //绑定的数据
-  }, {
-    "type": "rect",                           //矩形元件
-    "backgroundColor": "red",
-    "startX": 408,
-    "startY": 331,
-    "width": 450,
-    "height": 150,
-    "strokeWidth": 3,                         //边框宽度
-    "strokeColor": "black",                   //边框颜色
-    "cornerRadius": 0,                        //圆角弧度
-    "rotation": 0
-  },
+  "type": "BWR-4.2",
+  "backgroundColor": "white",
+  "fillFields": [
+    "productSeqNum",
+    "productName",
+    "productSpec",
+    "productLevel",
+    "productStorageLife",
+    "productBarCode",
+    "productAlias",
+    "productUnit",
+    "productProductionArea",
+    "productBrand",
+    "productQrCode",
+    "productPrice",
+    "productPromotePrice",
+    "productMemberPrice"
+  ],
+  "layers": [
     {
-      "type": "price",                          //价格元件
-      "subType": "super sub",                         //上标还是下标
-      "backgroundColor": "red",
-      "startX": 408,
-      "startY": 331,
-      "width": 450,
-      "height": 150,
-      "strokeWidth": 3,                         //边框宽度
-      "strokeColor": "black",                   //边框颜色
-      "precision": 2,                           //价格精度
+      "x": 149.99999999999994,
+      "y": 143.99999999999997,
+      "screenType": "3",
+      "type": "rect@fix",
+      "fill": "white",
+      "width": 680.0000000000001,
+      "height": 510.00000000000006,
+      "cornerRadius": 0,
+      "strokeWidth": 0,
+      "stroke": "black",
+      "scaleX": 1,
+      "scaleY": 1,
       "rotation": 0,
-      "fontFamily": "Microsoft Yahei",          //字体
-      "fontSize": 14,                           //字号
-      "fontColor": "black",                     //颜色
-      "bold": false,                            //加粗
-      "italic": false,                          //倾斜
-      "underline": false,                       //下划线
-      "strikethrough": false,                   //删除线
-      "align": "left",                          //对齐 "center" "left" "right"
-      "bindField": "{{goods_name}}"             //绑定的数据
+      "name": "rect@fix1",
+      "lines": [
+        [
+          149.99999999999994,
+          0,
+          149.99999999999994,
+          10000
+        ],
+        [
+          830,
+          0,
+          830,
+          10000
+        ],
+        [
+          0,
+          143.99999999999997,
+          10000,
+          143.99999999999997
+        ],
+        [
+          0,
+          654,
+          10000,
+          654
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "backWidth": 100,
+      "backHeight": 50,
+      "content": ""
     },
     {
-      "startX": 473,
-      "startY": 396,
-      "type": "hLine",
+      "x": 129.35714285714278,
+      "y": 139.14285714285714,
+      "type": "rect",
+      "fill": "red",
+      "width": 170.00000000000003,
+      "cornerRadius": 0,
+      "fontSize": "",
+      "strokeWidth": 0,
+      "stroke": "black",
+      "fontFamily": "",
+      "scaleX": 4.244957983193277,
+      "scaleY": 1.1983193277310922,
+      "rotation": 0,
+      "name": "rect2",
+      "height": 85.00000000000001,
+      "lines": [
+        [
+          129.35714285714278,
+          0,
+          129.35714285714278,
+          10000
+        ],
+        [
+          851,
+          0,
+          851,
+          10000
+        ],
+        [
+          0,
+          139.14285714285714,
+          10000,
+          139.14285714285714
+        ],
+        [
+          0,
+          241,
+          10000,
+          241
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "backStartX": "-12",
+      "backStartY": "-3",
+      "backType": "text",
+      "backBg": "red",
+      "backWidth": 424,
+      "backHeight": 60,
+      "content": ""
+    },
+    {
+      "x": 144.54602788922614,
+      "y": 153.49999999999997,
+      "type": "text",
+      "fill": "white",
+      "text": "商品名称",
+      "width": 170.00000000000003,
+      "fontSize": 36,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "center",
+      "fontFamily": "Zfull-GB",
+      "textBg": "red",
+      "scaleX": 4.043846894769257,
+      "scaleY": 2.5,
+      "rotation": 0,
+      "name": "text3",
+      "height": 30.6,
+      "lines": [
+        [
+          144.54602788922614,
+          0,
+          144.54602788922614,
+          10000
+        ],
+        [
+          832,
+          0,
+          832,
+          10000
+        ],
+        [
+          0,
+          153.49999999999997,
+          10000,
+          153.49999999999997
+        ],
+        [
+          0,
+          229.99999999999997,
+          10000,
+          229.99999999999997
+        ]
+      ],
+      "bindField": "productName",
+      "zoomScale": 1.7000000000000002,
+      "content": "{{productName}}",
+      "backStartX": "-3",
+      "backStartY": "6",
+      "backType": "text",
+      "backBg": "red",
+      "backWidth": 404,
+      "backHeight": 45
+    },
+    {
+      "x": 176.80579710144883,
+      "y": 269.4797101449277,
+      "type": "rect",
+      "fill": "red",
+      "width": 170.00000000000003,
+      "cornerRadius": 0,
+      "fontSize": "",
+      "strokeWidth": 0,
+      "stroke": "black",
+      "fontFamily": "",
+      "scaleX": 0.48349531116794797,
+      "scaleY": 0.9,
+      "rotation": 0,
+      "name": "rect4",
+      "height": 85.00000000000001,
+      "lines": [
+        [
+          176.80579710144883,
+          0,
+          176.80579710144883,
+          10000
+        ],
+        [
+          259,
+          0,
+          259,
+          10000
+        ],
+        [
+          0,
+          269.4797101449277,
+          10000,
+          269.4797101449277
+        ],
+        [
+          0,
+          345.9797101449277,
+          10000,
+          345.9797101449277
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "backStartX": "16",
+      "backStartY": "74",
+      "backType": "text",
+      "backBg": "red",
+      "backWidth": 48,
+      "backHeight": 45,
+      "content": ""
+    },
+    {
+      "x": 181.8530020703933,
+      "y": 273.66811594202926,
+      "type": "text",
+      "fill": "white",
+      "text": "限时",
+      "width": 170.00000000000003,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "center",
+      "fontFamily": "Zfull-GB",
+      "textBg": "red",
+      "scaleX": 0.4269151138716356,
+      "scaleY": 1.1610305958132048,
+      "rotation": 0,
+      "name": "text5",
+      "height": 30.6,
+      "lines": [
+        [
+          181.8530020703933,
+          0,
+          181.8530020703933,
+          10000
+        ],
+        [
+          254.4285714285714,
+          0,
+          254.4285714285714,
+          10000
+        ],
+        [
+          0,
+          273.66811594202926,
+          10000,
+          273.66811594202926
+        ],
+        [
+          0,
+          309.19565217391334,
+          10000,
+          309.19565217391334
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "限时",
+      "backStartX": "19",
+      "backStartY": "76",
+      "backType": "text",
+      "backBg": "red",
+      "backWidth": 43,
+      "backHeight": 21
+    },
+    {
+      "x": 182.09937888198755,
+      "y": 306.2391304347824,
+      "type": "text",
+      "fill": "white",
+      "text": "打折",
+      "width": 170.00000000000003,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "center",
+      "fontFamily": "Zfull-GB",
+      "textBg": "red",
+      "scaleX": 0.404037267080745,
+      "scaleY": 1.1610305958132048,
+      "rotation": 0,
+      "name": "text6",
+      "height": 30.6,
+      "lines": [
+        [
+          182.09937888198755,
+          0,
+          182.09937888198755,
+          10000
+        ],
+        [
+          250.78571428571422,
+          0,
+          250.78571428571422,
+          10000
+        ],
+        [
+          0,
+          306.2391304347824,
+          10000,
+          306.2391304347824
+        ],
+        [
+          0,
+          341.7666666666665,
+          10000,
+          341.7666666666665
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "打折",
+      "backStartX": "19",
+      "backStartY": "95",
+      "backType": "text",
+      "backBg": "red",
+      "backWidth": 40,
+      "backHeight": 21
+    },
+    {
+      "x": 268.26086956521743,
+      "y": 271.5,
+      "type": "text",
       "fill": "black",
-      "width": 50,
-      "height": 1,
-      "strokeWidth": 1,
-      "strokeColor": "black",
-      "rotation": 0
+      "text": "2019.06.1--2019.08.01",
+      "width": 140,
+      "fontSize": 16,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 2.0900621118012417,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "text7",
+      "height": 25.2,
+      "lines": [
+        [
+          307.3913043478262,
+          0,
+          307.3913043478262,
+          10000
+        ],
+        [
+          600,
+          0,
+          600,
+          10000
+        ],
+        [
+          0,
+          294,
+          10000,
+          294
+        ],
+        [
+          0,
+          319.2,
+          10000,
+          319.2
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "2019.06.1--2019.08.01",
+      "backStartX": "70",
+      "backStartY": "75",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 209,
+      "backHeight": 18
     },
     {
-      "type": "barcode",                        //条形码元件
-      "subType": "vertical",                    //横向还是竖向
-      "startX": 9,
-      "startY": 85,
-      "width": 95,
-      "height": 14,
+      "x": 269.73913043478285,
+      "y": 311,
+      "type": "text",
+      "fill": "black",
+      "text": "促销价：",
+      "width": 170.00000000000003,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 1.6260869565217386,
+      "scaleY": 1,
       "rotation": 0,
-      "codec": "EAN13",                         //条形码编码规则："EAN13"、"Code128"...
-      "content": "1234561234567",
-      "bindField": "{{bar_code}}"
+      "name": "text8",
+      "height": 30.6,
+      "lines": [
+        [
+          269.73913043478285,
+          0,
+          269.73913043478285,
+          10000
+        ],
+        [
+          546.1739130434785,
+          0,
+          546.1739130434785,
+          10000
+        ],
+        [
+          0,
+          311,
+          10000,
+          311
+        ],
+        [
+          0,
+          341.6,
+          10000,
+          341.6
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "促销价：",
+      "backStartX": "70",
+      "backStartY": "98",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 163,
+      "backHeight": 18
     },
     {
-      "type": "barcode",                        //条形码元件
-      "subType": "qr",                          //二维码
-      "startX": 9,
-      "startY": 85,
-      "width": 95,
-      "height": 14,
+      "x": 213.35403726708074,
+      "y": 385.43167701863365,
+      "type": "text",
+      "fill": "black",
+      "text": "￥",
+      "width": 140,
+      "fontSize": 20,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.23478260869565237,
+      "scaleY": 1.1111111111111112,
       "rotation": 0,
-      "barcodeID": 1,                           //条形码号
-      "codec": "EAN13",                         //条形码编码规则："EAN13"、"Code128"...
-      "content": "1234561234567",
-      "bindField": "{{bar_code}}"
+      "name": "text9",
+      "height": 25.2,
+      "lines": [
+        [
+          262.17391304347825,
+          0,
+          262.17391304347825,
+          10000
+        ],
+        [
+          295.04347826086956,
+          0,
+          295.04347826086956,
+          10000
+        ],
+        [
+          0,
+          387.82608695652186,
+          10000,
+          387.82608695652186
+        ],
+        [
+          0,
+          415.82608695652186,
+          10000,
+          415.82608695652186
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "￥",
+      "backStartX": "37",
+      "backStartY": "142",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 23,
+      "backHeight": 20
     },
     {
-      "type": "image",                          //图片元件
-      "imgPath": "1561536587780_10.jpeg",       //图片存放位置，需讨论
-      "startX": 753,
-      "startY": 346,
-      "width": 240,
-      "height": 135,
+      "x": 263.66770186335447,
+      "y": 374,
+      "type": "price@super@black",
+      "fill": "red",
+      "text": "99.00",
+      "width": 102.00000000000001,
+      "fontSize": 72,
+      "smallFontSize": 42,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 3.3975155279503055,
+      "scaleY": 4,
       "rotation": 0,
-      "codec": "jpeg",                          //图片编码方式：jpeg、png
-      "content": ""                             //绑定内容待定义
+      "name": "price@super@black10",
+      "height": 30.6,
+      "lines": [
+        [
+          263.66770186335447,
+          0,
+          263.66770186335447,
+          10000
+        ],
+        [
+          610.2142857142857,
+          0,
+          610.2142857142857,
+          10000
+        ],
+        [
+          0,
+          374,
+          10000,
+          374
+        ],
+        [
+          0,
+          496.4,
+          10000,
+          496.4
+        ]
+      ],
+      "bindField": "productPromotePrice",
+      "zoomScale": 1.7000000000000002,
+      "content": "{{productPromotePrice}}",
+      "backStartX": "67",
+      "backStartY": "135",
+      "backType": "price",
+      "backIntStartX": 67,
+      "backIntStartY": 135,
+      "backSmallStartX": 164,
+      "backSmallStartY": 135,
+      "backBg": "white",
+      "backWidth": 204,
+      "backHeight": 72,
+      "precision": 2
+    },
+    {
+      "x": 182.09937888198758,
+      "y": 540.3006211180128,
+      "type": "text",
+      "fill": "black",
+      "text": "原价：",
+      "width": 170.00000000000003,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "opacity",
+      "scaleX": 0.6562111801242231,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "text12",
+      "height": 30.6,
+      "lines": [
+        [
+          182.09937888198758,
+          0,
+          182.09937888198758,
+          10000
+        ],
+        [
+          293.65527950310553,
+          0,
+          293.65527950310553,
+          10000
+        ],
+        [
+          0,
+          540.3006211180128,
+          10000,
+          540.3006211180128
+        ],
+        [
+          0,
+          570.9006211180129,
+          10000,
+          570.9006211180129
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "原价：",
+      "backStartX": "19",
+      "backStartY": "233",
+      "backType": "text",
+      "backBg": "opacity",
+      "backWidth": 66,
+      "backHeight": 18
+    },
+    {
+      "x": 269.99999999999994,
+      "y": 540.3006211180129,
+      "type": "price@normal@white",
+      "fill": "black",
+      "text": "99.00",
+      "width": 102.00000000000001,
+      "fontSize": 18,
+      "smallFontSize": 12,
+      "fontStyle": "normal",
+      "textDecoration": "line-through",
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 1.260110840419257,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "price@normal@white13",
+      "height": 30.6,
+      "lines": [
+        [
+          269.99999999999994,
+          0,
+          269.99999999999994,
+          10000
+        ],
+        [
+          398.53130572276416,
+          0,
+          398.53130572276416,
+          10000
+        ],
+        [
+          0,
+          540.3006211180129,
+          10000,
+          540.3006211180129
+        ],
+        [
+          0,
+          570.900621118013,
+          10000,
+          570.900621118013
+        ]
+      ],
+      "bindField": "productPrice",
+      "zoomScale": 1.7000000000000002,
+      "content": "{{productPrice}}",
+      "backStartX": "71",
+      "backStartY": "233",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 76,
+      "backHeight": 18,
+      "precision": 2
+    },
+    {
+      "x": 667.0818429905755,
+      "y": 504.3349525190981,
+      "type": "barcode@qr",
+      "image": {},
+      "imageType": "default",
+      "scaleX": 1.9630082192438096,
+      "scaleY": 1.9630082192438096,
+      "rotation": 0,
+      "codec": "qrcode",
+      "name": "barcode@qr15",
+      "width": 68,
+      "height": 68,
+      "lines": [
+        [
+          667.0818429905755,
+          0,
+          667.0818429905755,
+          10000
+        ],
+        [
+          800.5664018991546,
+          0,
+          800.5664018991546,
+          10000
+        ],
+        [
+          0,
+          504.3349525190981,
+          10000,
+          504.3349525190981
+        ],
+        [
+          0,
+          637.8195114276772,
+          10000,
+          637.8195114276772
+        ]
+      ],
+      "bindField": "productQrCode",
+      "zoomScale": 1.7000000000000002,
+      "content": "{{productQrCode}}",
+      "backStartX": "304",
+      "backStartY": "212",
+      "backType": "barcode",
+      "backWidth": 79,
+      "backHeight": 79
+    },
+    {
+      "x": 144.54602788922614,
+      "y": 596.6985409456163,
+      "type": "barcode@h",
+      "image": {},
+      "imageType": "default",
+      "scaleX": 1.5726642590311946,
+      "scaleY": 1.5726642590311943,
+      "rotation": 0,
+      "codec": "ean13",
+      "name": "barcode@h16",
+      "width": 161.50000000000003,
+      "height": 23.800000000000004,
+      "lines": [
+        [
+          144.54602788922614,
+          0,
+          144.54602788922614,
+          10000
+        ],
+        [
+          398.5313057227641,
+          0,
+          398.5313057227641,
+          10000
+        ],
+        [
+          0,
+          596.6985409456163,
+          10000,
+          596.6985409456163
+        ],
+        [
+          0,
+          634.1279503105587,
+          10000,
+          634.1279503105587
+        ]
+      ],
+      "bindField": "productBarCode",
+      "zoomScale": 1.7000000000000002,
+      "content": "{{productBarCode}}",
+      "backStartX": "-3",
+      "backStartY": "266",
+      "backType": "barcode",
+      "backWidth": 149,
+      "backHeight": 22
+    },
+    {
+      "x": 621.1428571428573,
+      "y": 501.7391304347826,
+      "type": "text",
+      "fill": "black",
+      "text": "扫",
+      "width": 140,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.20149493956389888,
+      "scaleY": 1.219574634202545,
+      "rotation": 0,
+      "name": "text17",
+      "height": 25.2,
+      "lines": [
+        [
+          598,
+          0,
+          598,
+          10000
+        ],
+        [
+          626.2092915389459,
+          0,
+          626.2092915389459,
+          10000
+        ],
+        [
+          0,
+          483.60869565217394,
+          10000,
+          483.60869565217394
+        ],
+        [
+          0,
+          514.3419764340781,
+          10000,
+          514.3419764340781
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "扫",
+      "backStartX": "277",
+      "backStartY": "210",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 20,
+      "backHeight": 22
+    },
+    {
+      "x": 621.1428571428573,
+      "y": 537.3757763975153,
+      "type": "text",
+      "fill": "black",
+      "text": "码",
+      "width": 140,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.20236438210659644,
+      "scaleY": 1.2248370495925565,
+      "rotation": 0,
+      "name": "text18",
+      "height": 25.2,
+      "lines": [
+        [
+          598,
+          0,
+          598,
+          10000
+        ],
+        [
+          626.3310134949235,
+          0,
+          626.3310134949235,
+          10000
+        ],
+        [
+          0,
+          512.9565217391303,
+          10000,
+          512.9565217391303
+        ],
+        [
+          0,
+          543.8224153888627,
+          10000,
+          543.8224153888627
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "码",
+      "backStartX": "277",
+      "backStartY": "231",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 20,
+      "backHeight": 22
+    },
+    {
+      "x": 621.1428571428573,
+      "y": 570.9006211180129,
+      "type": "text",
+      "fill": "black",
+      "text": "溯",
+      "width": 140,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.19635635662596884,
+      "scaleY": 1.1884726848413896,
+      "rotation": 0,
+      "name": "text19",
+      "height": 25.2,
+      "lines": [
+        [
+          598,
+          0,
+          598,
+          10000
+        ],
+        [
+          625.4898899276357,
+          0,
+          625.4898899276357,
+          10000
+        ],
+        [
+          0,
+          540.5652173913045,
+          10000,
+          540.5652173913045
+        ],
+        [
+          0,
+          570.5147290493074,
+          10000,
+          570.5147290493074
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "溯",
+      "backStartX": "277",
+      "backStartY": "251",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 20,
+      "backHeight": 21
+    },
+    {
+      "x": 621.1428571428573,
+      "y": 605.5869565217392,
+      "type": "text",
+      "fill": "black",
+      "text": "源",
+      "width": 140,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.19081553350797695,
+      "scaleY": 1.1549361238640703,
+      "rotation": 0,
+      "name": "text20",
+      "height": 25.2,
+      "lines": [
+        [
+          598,
+          0,
+          598,
+          10000
+        ],
+        [
+          624.7141746911168,
+          0,
+          624.7141746911168,
+          10000
+        ],
+        [
+          0,
+          569.1304347826087,
+          10000,
+          569.1304347826087
+        ],
+        [
+          0,
+          598.2348251039833,
+          10000,
+          598.2348251039833
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "源",
+      "backStartX": "277",
+      "backStartY": "272",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 19,
+      "backHeight": 21
+    },
+    {
+      "x": 411.0714285714286,
+      "y": 603.5279503105587,
+      "type": "text",
+      "fill": "black",
+      "text": "监督电话: 12358",
+      "width": 170.00000000000003,
+      "fontSize": 14,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "center",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 1.1714285714285715,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "text22",
+      "height": 30.6,
+      "lines": [
+        [
+          411.0714285714286,
+          0,
+          411.0714285714286,
+          10000
+        ],
+        [
+          610.2142857142858,
+          0,
+          610.2142857142858,
+          10000
+        ],
+        [
+          0,
+          603.5279503105587,
+          10000,
+          603.5279503105587
+        ],
+        [
+          0,
+          634.1279503105587,
+          10000,
+          634.1279503105587
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "监督电话: 12358",
+      "backStartX": "154",
+      "backStartY": "270",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 117,
+      "backHeight": 18
+    },
+    {
+      "x": 621.5652173913037,
+      "y": 271.86956521739137,
+      "type": "text",
+      "fill": "black",
+      "text": "单位:",
+      "width": 150,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.49037267080745517,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "text23",
+      "height": 27,
+      "lines": [
+        [
+          606.0869565217389,
+          0,
+          606.0869565217389,
+          10000
+        ],
+        [
+          679.6428571428571,
+          0,
+          679.6428571428571,
+          10000
+        ],
+        [
+          0,
+          286.82608695652175,
+          10000,
+          286.82608695652175
+        ],
+        [
+          0,
+          313.82608695652175,
+          10000,
+          313.82608695652175
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "单位:",
+      "backStartX": "277",
+      "backStartY": "75",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 49,
+      "backHeight": 18
+    },
+    {
+      "x": 706.6708074534158,
+      "y": 271.86956521739137,
+      "type": "text",
+      "fill": "black",
+      "text": "个",
+      "width": 140,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.652173913043478,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "text24",
+      "height": 25.2,
+      "lines": [
+        [
+          668.4347826086953,
+          0,
+          668.4347826086953,
+          10000
+        ],
+        [
+          759.7391304347822,
+          0,
+          759.7391304347822,
+          10000
+        ],
+        [
+          0,
+          294.30434782608694,
+          10000,
+          294.30434782608694
+        ],
+        [
+          0,
+          319.5043478260869,
+          10000,
+          319.5043478260869
+        ]
+      ],
+      "bindField": "productUnit",
+      "zoomScale": 1.7000000000000002,
+      "content": "{{productUnit}}",
+      "backStartX": "327",
+      "backStartY": "75",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 65,
+      "backHeight": 18
+    },
+    {
+      "x": 620.8260869565215,
+      "y": 326.19565217391306,
+      "type": "text",
+      "fill": "black",
+      "text": "规格:",
+      "width": 140,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.4875776397515536,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "text25",
+      "height": 25.2,
+      "lines": [
+        [
+          597.7391304347825,
+          0,
+          597.7391304347825,
+          10000
+        ],
+        [
+          666,
+          0,
+          666,
+          10000
+        ],
+        [
+          0,
+          339.0434782608695,
+          10000,
+          339.0434782608695
+        ],
+        [
+          0,
+          364.2434782608695,
+          10000,
+          364.2434782608695
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "规格:",
+      "backStartX": "277",
+      "backStartY": "107",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 49,
+      "backHeight": 18
+    },
+    {
+      "x": 620.8260869565215,
+      "y": 378.6739130434783,
+      "type": "text",
+      "fill": "black",
+      "text": "产地:",
+      "width": 140,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.46614906832298225,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "text26",
+      "height": 25.2,
+      "lines": [
+        [
+          597.7391304347825,
+          0,
+          597.7391304347825,
+          10000
+        ],
+        [
+          663,
+          0,
+          663,
+          10000
+        ],
+        [
+          0,
+          382.2608695652174,
+          10000,
+          382.2608695652174
+        ],
+        [
+          0,
+          407.46086956521737,
+          10000,
+          407.46086956521737
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "产地:",
+      "backStartX": "277",
+      "backStartY": "138",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 47,
+      "backHeight": 18
+    },
+    {
+      "x": 620.8260869565215,
+      "y": 429.67391304347825,
+      "type": "text",
+      "fill": "black",
+      "text": "等级:",
+      "width": 140,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.4875776397515535,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "text27",
+      "height": 25.2,
+      "lines": [
+        [
+          597.7391304347825,
+          0,
+          597.7391304347825,
+          10000
+        ],
+        [
+          666,
+          0,
+          666,
+          10000
+        ],
+        [
+          0,
+          424.26086956521726,
+          10000,
+          424.26086956521726
+        ],
+        [
+          0,
+          449.46086956521725,
+          10000,
+          449.46086956521725
+        ]
+      ],
+      "zoomScale": 1.7000000000000002,
+      "content": "等级:",
+      "backStartX": "277",
+      "backStartY": "168",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 49,
+      "backHeight": 18
+    },
+    {
+      "x": 704.2422360248438,
+      "y": 324.7173913043479,
+      "type": "text",
+      "fill": "black",
+      "text": "500g",
+      "width": 140,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.6695652173913041,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "text28",
+      "height": 25.2,
+      "lines": [
+        [
+          666.4347826086953,
+          0,
+          666.4347826086953,
+          10000
+        ],
+        [
+          760.1739130434778,
+          0,
+          760.1739130434778,
+          10000
+        ],
+        [
+          0,
+          337.82608695652175,
+          10000,
+          337.82608695652175
+        ],
+        [
+          0,
+          363.02608695652174,
+          10000,
+          363.02608695652174
+        ]
+      ],
+      "bindField": "productSpec",
+      "zoomScale": 1.7000000000000002,
+      "content": "{{productSpec}}",
+      "backStartX": "326",
+      "backStartY": "106",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 67,
+      "backHeight": 18
+    },
+    {
+      "x": 704.2422360248438,
+      "y": 377.4596273291923,
+      "type": "text",
+      "fill": "black",
+      "text": "上海",
+      "width": 140,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.652173913043478,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "text29",
+      "height": 25.2,
+      "lines": [
+        [
+          666.4347826086953,
+          0,
+          666.4347826086953,
+          10000
+        ],
+        [
+          757.7391304347822,
+          0,
+          757.7391304347822,
+          10000
+        ],
+        [
+          0,
+          381.2608695652174,
+          10000,
+          381.2608695652174
+        ],
+        [
+          0,
+          406.46086956521737,
+          10000,
+          406.46086956521737
+        ]
+      ],
+      "bindField": "productProductionArea",
+      "zoomScale": 1.7000000000000002,
+      "content": "{{productProductionArea}}",
+      "backStartX": "326",
+      "backStartY": "137",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 65,
+      "backHeight": 18
+    },
+    {
+      "x": 704.7173913043471,
+      "y": 428.1956521739129,
+      "type": "text",
+      "fill": "black",
+      "text": "正品",
+      "width": 140,
+      "fontSize": 18,
+      "fontStyle": "normal",
+      "textDecoration": "",
+      "letterSpacing": 0,
+      "align": "left",
+      "fontFamily": "Zfull-GB",
+      "textBg": "white",
+      "scaleX": 0.6304347826086955,
+      "scaleY": 1,
+      "rotation": 0,
+      "name": "text30",
+      "height": 25.2,
+      "lines": [
+        [
+          666.8260869565215,
+          0,
+          666.8260869565215,
+          10000
+        ],
+        [
+          755.0869565217389,
+          0,
+          755.0869565217389,
+          10000
+        ],
+        [
+          0,
+          423.0434782608695,
+          10000,
+          423.0434782608695
+        ],
+        [
+          0,
+          448.2434782608695,
+          10000,
+          448.2434782608695
+        ]
+      ],
+      "bindField": "productLevel",
+      "zoomScale": 1.7000000000000002,
+      "content": "{{productLevel}}",
+      "backStartX": "326",
+      "backStartY": "167",
+      "backType": "text",
+      "backBg": "white",
+      "backWidth": 63,
+      "backHeight": 18
     }
   ],
-  "layerCount": 5
+  "layerCount": 27
 }

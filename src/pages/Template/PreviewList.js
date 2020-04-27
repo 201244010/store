@@ -8,7 +8,7 @@ import * as styles from './index.less';
 
 export default class PreviewList extends Component {
 	render() {
-		const {data, loading, pagination, onPreview, onEdit, onApply, onClone, onDelete, onChange} = this.props;
+		const {data, loading, pagination, onEdit, onApply, onClone, onDelete, onChange} = this.props;
 		const sortedData = _.cloneDeep(data).sort((a, b) => (a.screen_type - b.screen_type));
 		const splitData = [sortedData.slice(0, 4), sortedData.slice(4, 8)];
 
@@ -20,6 +20,7 @@ export default class PreviewList extends Component {
 							{
 								rowData.map(({id, name, preview_addr: previewUrl, screen_type: screenType, screen_type_name: screenTypeName, colour_name: colourName, is_default: isDefault, esl_num: eslNum}) => {
 									const screen = SCREEN_TYPE[screenType];
+
 									return (
 										<Col span={6} key={id} className={styles.mb20}>
 											<h4>{formatedMessage(name)}</h4>
@@ -28,11 +29,10 @@ export default class PreviewList extends Component {
 												cover={
 													<div className={styles['cover-wrapper']}>
 														<img className={styles['cover-img']} src={require(`@/assets/studio/${screen}.png`)} alt="" />
-														<img className={styles['cover-img-0']} src={previewUrl} alt=""  />
+														<img className={`${styles['cover-img-0']} ${Number(screenType) === 5 ? styles['cover-img-154'] : ''}`} src={previewUrl} alt=""  />
 													</div>
 												}
 												actions={[
-													<div onClick={() => onPreview({id, screen_type: screenType, name})}>{formatMessage({id: 'list.action.preview'})}</div>,
 													<div onClick={() => onEdit({id, screen_type: screenType})}>{formatMessage({id: 'list.action.edit'})}</div>,
 													<div onClick={() => onApply({id})}>{formatMessage({id: 'list.action.apply'})}</div>,
 													<div onClick={() => onClone({id, screen_type_name: formatedMessage(screenTypeName), colour_name: formatedMessage(colourName), screen_type: screenType})}>{formatMessage({id: 'list.action.clone'})}</div>,

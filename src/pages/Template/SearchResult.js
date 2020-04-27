@@ -20,6 +20,7 @@ const COLOR_NAME = {
 	BW: formatMessage({ id: 'esl-template-colour-BW' }),
 };
 const SCREEN_NAME = {
+	'1.54': formatMessage({ id: 'esl-screen-1.54' }),
 	'2.13': formatMessage({ id: 'esl-screen-2.13' }),
 	'2.6': formatMessage({ id: 'esl-screen-2.6' }),
 	'4.2': formatMessage({ id: 'esl-screen-4.2' }),
