@@ -61,7 +61,7 @@ const SearchResult = props => {
 	};
 
 	// eslint-disable-next-line arrow-body-style
-	const listRole = list => {
+	const listOrg = list => {
 		const listUniq = uniqWith(
 			list,
 			(now, other) => now.companyId === other.companyId && now.shopId === other.shopId
@@ -100,7 +100,7 @@ const SearchResult = props => {
 			dataIndex: 'mappingList',
 			render: (list, record) => {
 				const [first] = list.filter(role => role.roleId !== 0) || [];
-				const content = listRole(list.filter(role => role.roleId !== 0) || []);
+				const content = listOrg(list.filter(role => role.roleId !== 0) || []);
 				const { companyName = null, shopName = null } = first || {};
 				const text = shopName ? `${companyName}(${shopName})` : `${companyName}`;
 				return (
@@ -117,7 +117,7 @@ const SearchResult = props => {
 								{/* {rest.length > 0 && (
 									<Popover
 										placement="rightTop"
-										content={listRole(rest)}
+										content={listOrg(rest)}
 										title={null}
 									>
 										<a href="#" style={{ marginLeft: '10px' }}>
@@ -136,8 +136,13 @@ const SearchResult = props => {
 			dataIndex: 'roleList',
 			render: (roleList, record) => {
 				const text = roleList.reduce((pre, cur) => `${pre}、${cur}`);
+				const content = roleList.map((role, key) => (
+					<div key={key}>
+						<span>{role}</span>
+					</div>
+				));
 				return (
-					<Popover onClick={() => alterDetail(record)} content={text}>
+					<Popover onClick={() => alterDetail(record)} content={content}>
 						<a href="#" onClick={() => alterDetail(record)}>
 							{omitTooLongString(text, 20, true)}
 						</a>
