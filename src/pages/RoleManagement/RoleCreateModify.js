@@ -46,7 +46,7 @@ class RoleModify extends React.Component {
 		} = this.props;
 
 		validateFields(async (err, values) => {
-			if (values.content.length === 0) {
+			if (!values.content || values.content.length === 0) {
 				message.error(formatMessage({ id: 'roleManagement.role.roleRootEmpty' }));
 				return;
 			}
@@ -61,6 +61,7 @@ class RoleModify extends React.Component {
 						message.success(formatMessage({ id: 'roleManagement.role.modifySuccess' }));
 						resetFields();
 						closeModal();
+						getRoleList();
 						// goToPath('roleList');
 						// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 					} else {
@@ -101,6 +102,38 @@ class RoleModify extends React.Component {
 		// router.push(`${MENU_PREFIX.ROLE}/roleList`);
 	};
 
+	renderTreeNode = data => {
+		let level = 0;
+		// eslint-disable-next-line arrow-body-style
+		const renderChild = list => {
+			return list.map((menu, i) => {
+				if (!menu.permissionList) {
+					level = 0;
+					return <TreeNode title={menu.label} value={menu.value} key={menu.value} />;
+				}
+				const deep = level++;
+				return (
+					<TreeNode
+						title={menu.label}
+						value={`${deep}-${i}-${menu.label}`}
+						key={`${deep}-${i}-${menu.label}`}
+					>
+						{renderChild(menu.permissionList)}
+					</TreeNode>
+				);
+			});
+		};
+		return renderChild(data);
+	};
+
+	buttonDisable = () => {
+		const {
+			form: { getFieldsValue },
+		} = this.props;
+		const { name = '', content = [] } = getFieldsValue();
+		return !(name.length && content.length);
+	};
+
 	render() {
 		const {
 			role: {
@@ -114,9 +147,14 @@ class RoleModify extends React.Component {
 			closeModal,
 		} = this.props;
 		const disabled = isDefault === 1;
+		const buttonDisable = this.buttonDisable();
 		return (
 			<Modal
-				title={formatMessage({ id: 'roleManagement.role.editRole' })}
+				title={
+					action === 'modify'
+						? formatMessage({ id: 'roleManagement.role.editRole' })
+						: formatMessage({ id: 'roleManagement.role.createRole' })
+				}
 				visible={visible}
 				closable={false}
 				width={600}
@@ -133,7 +171,7 @@ class RoleModify extends React.Component {
 						: loading.effects['role/creatRole']
 				}
 				destroyOnClose
-				okButtonProps={{ disabled }}
+				okButtonProps={{ disabled: disabled || buttonDisable }}
 			>
 				{/* <Card> */}
 				<Spin
@@ -239,21 +277,7 @@ class RoleModify extends React.Component {
 										}}
 										disabled={disabled}
 									>
-										{permissionList.map((firstMenu, index) => (
-											<TreeNode
-												title={firstMenu.label}
-												value={`0-${index}`}
-												key={`0-${index}`}
-											>
-												{firstMenu.permissionList.map(secondMenu => (
-													<TreeNode
-														title={secondMenu.label}
-														value={secondMenu.value}
-														key={secondMenu.value}
-													/>
-												))}
-											</TreeNode>
-										))}
+										{this.renderTreeNode(permissionList)}
 									</TreeSelect>
 								)}
 							</Form.Item>

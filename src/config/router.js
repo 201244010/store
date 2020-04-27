@@ -99,6 +99,12 @@ const router = [
 						id: 'passengerAnalyze',
 						component: './PassengerAnalyze',
 					},
+					{
+						path: '/dataAnalyze/businessDaily',
+						name: 'businessDaily',
+						id: 'businessDaily',
+						component: './DataBoard/BusinessDaily',
+					},
 				],
 			},
 
@@ -472,6 +478,10 @@ const router = [
 						id: 'iotAccess',
 						icon: 'blank',
 						routes: [
+							{
+								path: '/deviceManagement/iotAccess',
+								redirect: '/deviceManagement/iotAccess/posAccess',
+							},
 							{
 								path: '/deviceManagement/iotAccess/posAccess',
 								name: 'posAccess',

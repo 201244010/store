@@ -107,3 +107,5 @@ export const TIME = {
 	DAY: 24 * 60 * 60,
 	HALF_HOUR: 30 * 60,
 };
+
+export const ONE_DAY_TIMESTAMP = 1000 * 60 * 60 * 24;

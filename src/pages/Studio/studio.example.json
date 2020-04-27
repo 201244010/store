@@ -7,7 +7,7 @@
     "productName",
     "productSpec",
     "productLevel",
-    "productExpireTime",
+    "productStorageLife",
     "productBarCode",
     "productAlias",
     "productUnit",

@@ -13,24 +13,52 @@ export default class PermissionList extends React.PureComponent {
 		};
 	}
 
-	filterList = data => {
+	filterList = list => {
 		const { searchValue } = this.state;
-		if (!searchValue) return data;
-		return data.reduce((pList, firstMenu) => {
-			const {
-				checkedList: { label, permissionList },
-			} = firstMenu;
-			const list = permissionList.filter(item => item.label.indexOf(searchValue) > -1);
-			list.length > 0 &&
-				pList.push({
-					checkedList: {
-						label,
-						permissionList: list,
-					},
-				});
-			return pList;
+		if (!searchValue) return list;
+		return list.reduce((result, child) => {
+			if (this.showItem(child, searchValue)) {
+				// 如果有子节点
+				if (child.permissionList) {
+					const { label, path, permissionList } = child;
+					return [
+						...result,
+						{ label, path, permissionList: this.filterList(permissionList) },
+					];
+				}
+				return [...result, child];
+			}
+			return result;
 		}, []);
 	};
+
+	/** 筛选时判断当前节点是否显示
+	 * item为Object
+	 * 返回值 boolean
+	 */
+	showItem = (item, value) => {
+		const hasVal = item.label.indexOf(value) > -1;
+		if (hasVal) {
+			return hasVal;
+		}
+		// 当前节点没有value，则向子节点查找
+		if (item.permissionList) {
+			return item.permissionList.some(child => this.showItem(child, value));
+		}
+		return hasVal;
+	};
+
+	renderChildNode = list =>
+		list.map(menu => {
+			if (!menu.permissionList) {
+				return <TreeNode title={menu.label} key={menu.value} />;
+			}
+			return (
+				<TreeNode title={menu.label} key={`0-${menu.label}`}>
+					{this.renderChildNode(menu.permissionList)}
+				</TreeNode>
+			);
+		});
 
 	render() {
 		const { visible, closeModal, data } = this.props;
@@ -57,20 +85,8 @@ export default class PermissionList extends React.PureComponent {
 					}}
 					className={styles['search-input']}
 				/>
-				<Tree
-					className={styles.content}
-					defaultExpandAll
-					// filterTreeNode={node => {
-					// 	console.log(node);
-					// }}
-				>
-					{dataFormat.map(subMenu => (
-						<TreeNode title={subMenu.label} key={`0-${subMenu.label}`}>
-							{subMenu.permissionList.map(secondMenu => (
-								<TreeNode title={secondMenu.label} key={secondMenu.value} />
-							))}
-						</TreeNode>
-					))}
+				<Tree className={styles.content} defaultExpandAll>
+					{this.renderChildNode(dataFormat)}
 				</Tree>
 			</Modal>
 		);

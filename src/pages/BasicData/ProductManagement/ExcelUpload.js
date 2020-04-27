@@ -4,7 +4,7 @@ import {connect} from 'dva';
 import router from 'umi/router';
 import { formatMessage } from 'umi/locale';
 import { downloadFileByClick } from '@/utils/utils';
-import { ERROR_OK, PRODUCT_EXCEL_WRONG } from '@/constants/errorCode';
+import { ERROR_OK, PRODUCT_EXCEL_WRONG, PRODUCT_EXCEL_EMPTY, PRODUCT_EXCEL_LACK_FIELD } from '@/constants/errorCode';
 import * as styles from './ExcelUpload.less';
 
 const {Step} = Steps;
@@ -89,7 +89,7 @@ class ExcelUpload extends Component {
 				}
 			}, 500);
 		}
-		if (response && response.code === PRODUCT_EXCEL_WRONG) {
+		if (response && [PRODUCT_EXCEL_WRONG, PRODUCT_EXCEL_EMPTY, PRODUCT_EXCEL_LACK_FIELD].includes(response.code)) {
 			this.setState({
 				percent: 0,
 				current: 2,
@@ -187,8 +187,7 @@ class ExcelUpload extends Component {
 				</Form.Item>
 				<Form.Item label={formatMessage({id: 'product.excel.import.desc.title'})}>
 					<p className={styles['upload-desc']}>1.{formatMessage({id: 'product.excel.import.tip.desc1'})}</p>
-					<p className={styles['upload-desc']}>2.{formatMessage({id: 'product.excel.import.tip.desc2'})}</p>
-					<p className={styles['upload-desc']}>3.{formatMessage({id: 'product.excel.import.tip.desc3'})}</p>
+					<p className={styles['upload-desc']}>2.{formatMessage({id: 'product.excel.import.tip.desc3'})}</p>
 				</Form.Item>
 				<Form.Item wrapperCol={{span: 12, offset: 6}}>
 					<Button type="primary" onClick={this.nextStep} disabled={disabled}>

@@ -358,6 +358,7 @@ const ExtraCustom = props => {
 			{
 				colSpan: 12,
 				label: formatMessage({ id: 'basicData.product.extra.custom.decimal3' }),
+				type: 'InputNumber',
 				getFieldName: 'customDec3',
 				value: customDec3,
 				required: false,

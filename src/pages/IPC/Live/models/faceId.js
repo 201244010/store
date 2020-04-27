@@ -240,12 +240,13 @@ export default {
 							}
 						});
 					}
-				}, {
+				},
+				{
 					opcode: '0x4101',
 					type: 'event',
 					handler: (topic, message) => {
 						const { data } = message;
-						console.log('data',data);
+						console.log('data=',data);
 						dispatch({
 							// type: 'updateList',
 							type:'mapFaceInfo',

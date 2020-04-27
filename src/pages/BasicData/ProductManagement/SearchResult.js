@@ -141,7 +141,7 @@ class SearchResult extends Component {
 						>
 							{formatMessage({ id: 'list.action.detail' })}
 						</a>
-						{!false && (
+						{!isBind && (
 							<>
 								<Divider type="vertical" />
 								<a
@@ -172,22 +172,6 @@ class SearchResult extends Component {
 									{formatMessage({ id: 'btn.create' })}
 								</Button>
 							)}
-
-							{/* <Button className={styles['function-btn']}> */}
-							{/* {formatMessage({ id: 'btn.import' })} */}
-							{/* </Button> */}
-							<Button
-								className={styles['function-btn']}
-								onClick={() => this.toPath('erpImport')}
-							>
-								{formatMessage({ id: 'btn.erp.import' })}
-							</Button>
-							{/* <Button */}
-							{/* className={styles['function-btn']} */}
-							{/* disabled={selectedRowKeys.length <= 0} */}
-							{/* > */}
-							{/* {formatMessage({ id: 'btn.multi.edit' })} */}
-							{/* </Button> */}
 							{!isBind && (
 								<Button
 									className={styles['function-btn']}
@@ -197,12 +181,28 @@ class SearchResult extends Component {
 									{formatMessage({ id: 'btn.delete' })}
 								</Button>
 							)}
+
+							{/* <Button className={styles['function-btn']}> */}
+							{/* {formatMessage({ id: 'btn.import' })} */}
+							{/* </Button> */}
+							{/* <Button */}
+							{/* className={styles['function-btn']} */}
+							{/* disabled={selectedRowKeys.length <= 0} */}
+							{/* > */}
+							{/* {formatMessage({ id: 'btn.multi.edit' })} */}
+							{/* </Button> */}
 							{/* <AuthKey className={styles['btn-margin-left']} /> */}
 							<Button
 								className={styles['function-btn']}
 								onClick={() => this.toPath('excelUpload')}
 							>
 								{formatMessage({ id: 'btn.excel.upload' })}
+							</Button>
+							<Button
+								className={styles['function-btn']}
+								onClick={() => this.toPath('erpImport')}
+							>
+								{formatMessage({ id: 'btn.erp.import' })}
 							</Button>
 						</>
 					)}

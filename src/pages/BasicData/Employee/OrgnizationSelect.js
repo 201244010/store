@@ -86,37 +86,55 @@ class OrgnizationSelect extends Component {
 		this.handleOnchange();
 	};
 
+	filterList = (list, valueList) => {
+		if (!valueList) return list;
+		return list.reduce((result, child) => {
+			if (this.showTreeNode(child, valueList)) {
+				// 如果有子节点
+				if (child.permissionList) {
+					const { label, path, permissionList } = child;
+					return [
+						...result,
+						{ label, path, permissionList: this.filterList(permissionList, valueList) },
+					];
+				}
+				return [...result, child];
+			}
+			return result;
+		}, []);
+	};
+
+	renderChildNode = list =>
+		list.map(menu => {
+			if (!menu.permissionList) {
+				return <TreeNode title={menu.label} key={menu.value} />;
+			}
+			return (
+				<TreeNode title={menu.label} key={`0-${menu.label}`}>
+					{this.renderChildNode(menu.permissionList)}
+				</TreeNode>
+			);
+		});
+
+	showTreeNode = (item, valueList) => {
+		if (item.permissionList) {
+			return item.permissionList.some(child => this.showTreeNode(child, valueList));
+		}
+		return valueList.includes(item.id);
+	};
+
 	permissionTree = index => {
 		const { permissionList, roleSelectList: roleList } = this.props;
 		const { orgnizationRoleList } = this.state;
 		const roleSelectd = orgnizationRoleList[index] && orgnizationRoleList[index].role;
 		if (roleSelectd.length) {
+			// 角色已选权限
 			const valueList = roleSelectd.reduce((vList, roleId) => {
 				const role = roleList.find(i => i.id === roleId) || {};
 				return [...vList, ...(role.permissionList || [])];
 			}, []);
-
-			return (
-				<Tree defaultExpandAll>
-					{permissionList.reduce((last, p, key) => {
-						const { permissionList: pList, label } = p;
-						if (p.valueList.find(i => valueList.includes(i))) {
-							const treeNode = (
-								<TreeNode title={label} key={`0-${key}`}>
-									{pList
-										.filter(i => valueList.includes(i.value))
-										// eslint-disable-next-line arrow-body-style
-										.map(item => {
-											return <TreeNode title={item.label} key={item.value} />;
-										})}
-								</TreeNode>
-							);
-							return [...last, treeNode];
-						}
-						return [...last];
-					}, [])}
-				</Tree>
-			);
+			const dataSource = this.filterList(permissionList, valueList);
+			return <Tree defaultExpandAll>{this.renderChildNode(dataSource)}</Tree>;
 		}
 		return <></>;
 	};
@@ -150,7 +168,6 @@ class OrgnizationSelect extends Component {
 									treeData={orgnizationTree}
 									dropdownStyle={{ maxHeight: '40vh' }}
 									onChange={value => this.handleTreeChange(item, index, value)}
-									disabled={isDefault}
 								/>
 							</Form.Item>
 						</Col>
@@ -168,7 +185,6 @@ class OrgnizationSelect extends Component {
 										id: 'employee.info.select.role',
 									})}
 									onChange={value => this.handleSelectChange(item, index, value)}
-									disabled={isDefault}
 								>
 									{roleSelectList.map((role, i) => (
 										<Select.Option key={i} value={role.id}>
@@ -201,9 +217,7 @@ class OrgnizationSelect extends Component {
 									{formatMessage({ id: 'employee.info.permission.has' })}
 								</a>
 							</Popover>
-							{!isDefault && (
-								<span>{formatMessage({ id: 'employee.info.permission.tip' })}</span>
-							)}
+							<span>{formatMessage({ id: 'employee.info.permission.tip' })}</span>
 						</Col>
 					</Row>
 				))}

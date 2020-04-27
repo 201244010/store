@@ -2,7 +2,8 @@ export const SCREEN_TYPE = {
 	1: '2.13',
 	2: '2.6',
 	3: '4.2',
-	4: '7.5'
+	4: '7.5',
+	5: '1.54',
 };
 
 export const COLOR_TYPE = {
@@ -281,6 +282,11 @@ const screenMap = {
 		height: 384,
 		zoomScale: 1,
 	},
+	5: {
+		width: 152,
+		height: 152,
+		zoomScale: 3,
+	},
 };
 export const imgPathMap = {
 	[SHAPE_TYPES.IMAGE]: require('@/assets/studio/image.svg'),
@@ -314,36 +320,42 @@ export const PREVIEW_MAP = {
 		'esl-screen-2.13': 348,
 		'esl-screen-2.6': 442,
 		'esl-screen-4.2': 510,
-		'esl-screen-7.5': 712,
+		'esl-screen-7.5': 746,
+		'esl-screen-1.54': 308,
+	},
+	SCREEN_ID_WIDTH: {
+		1: 348,
+		2: 442,
+		3: 510,
+		4: 746,
+		5: 308
 	},
 	TYPE_NAME_STYLE: {
 		'esl-screen-2.13': 'img-213',
 		'esl-screen-2.6': 'img-26',
 		'esl-screen-4.2': 'img-42',
 		'esl-screen-7.5': 'img-75',
+		'esl-screen-1.54': 'img-154',
 	},
 	TYPE_NAME_IMAGE: {
 		'esl-screen-2.13': require('@/assets/studio/2.13.png'),
 		'esl-screen-2.6': require('@/assets/studio/2.6.png'),
 		'esl-screen-4.2': require('@/assets/studio/4.2.png'),
 		'esl-screen-7.5': require('@/assets/studio/7.5.png'),
-	},
-	SCREEN_ID_WIDTH: {
-		1: 348,
-		2: 442,
-		3: 510,
-		4: 710
+		'esl-screen-1.54': require('@/assets/studio/1.54.png'),
 	},
 	SCREEN_ID_STYLE: {
 		1: 'img-213',
 		2: 'img-26',
 		3: 'img-42',
-		4: 'img-75'
+		4: 'img-75',
+		5: 'img-154'
 	},
 	SCREEN_ID_IMAGE: {
 		1: require('@/assets/studio/2.13.png'),
 		2: require('@/assets/studio/2.6.png'),
 		3: require('@/assets/studio/4.2.png'),
 		4: require('@/assets/studio/7.5.png'),
+		5: require('@/assets/studio/1.54.png'),
 	},
 };
