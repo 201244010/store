@@ -68,9 +68,10 @@ class LivePlayer extends React.Component{
 
 	src = (src) => {
 		const { videoplayer } = this;
+		const { hasAudio } = this.props;
 		this.currentSrc = src;
 		if (videoplayer) {
-			videoplayer.src(src);
+			videoplayer.src(src, hasAudio);
 		}
 	}
 
@@ -222,14 +223,14 @@ class LivePlayer extends React.Component{
 	}
 
 	ppiChange = async (ppi) => {
-		const { changePPI } = this.props;
+		const { changePPI, hasAudio } = this.props;
 		const { videoplayer } = this;
 
 		this.pause();
 		const url = await changePPI(ppi);
 
 		if (url) {
-			videoplayer.src(url);
+			videoplayer.src(url, hasAudio);
 
 			this.setState({
 				ppiChanged: true
@@ -369,7 +370,7 @@ class LivePlayer extends React.Component{
 			const gap = (Math.round((timestamp - this.lastMetadataTimestamp)*1000*1000))/1000;
 			// console.log('this.relativeTimestamp + gap=', this.relativeTimestamp + gap);
 			// console.log('player current时间=', moment(this.baseTime + this.relativeTimestamp + gap).format('YYYY-MM-DD HH:mm:ss.SSS'));
-			console.log('this.bufferGap=', this.bufferGap);
+			// console.log('this.bufferGap=', this.bufferGap);
 			getCurrentTimestamp(this.relativeTimestamp - this.bufferGap + gap);
 
 			// lastMetadataTimestamp：metadata到来时，video此时的播放进度时间；ms
@@ -563,7 +564,7 @@ class LivePlayer extends React.Component{
 	}
 
 	render () {
-		const { timeSlots, plugin, currentPPI, isOnline, cloudStatus, navigateTo, sn, pixelRatio } = this.props;
+		const { timeSlots, plugin, currentPPI, isOnline, cloudStatus, navigateTo, sn, pixelRatio, hasAudio } = this.props;
 		const { currentTimestamp, isLive, ppiChanged, playBtnDisabled } = this.state;
 
 		return (
@@ -602,6 +603,8 @@ class LivePlayer extends React.Component{
 				sn={sn}
 
 				pixelRatio={pixelRatio}
+
+				hasAudio={hasAudio}
 
 				progressbar={
 					<Timebar

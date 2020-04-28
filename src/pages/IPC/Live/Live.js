@@ -10,7 +10,7 @@ import Faceid from '@/components/VideoPlayer/Faceid';
 import LivePlayer from '@/components/VideoPlayer/LivePlayer';
 import manImage from '@/assets/imgs/male.png';
 import womanImage from '@/assets/imgs/female.png';
-import { comperareVersion } from '@/utils/utils';
+import { comperareVersion, judgeHasAudio } from '@/utils/utils';
 import ipcTypes from '@/constants/ipcTypes';
 import styles from './Live.less';
 
@@ -332,7 +332,7 @@ class Live extends React.Component{
 	}
 
 	syncLiveTimestamp = (timestamp) => {
-		console.log('syncLiveTimestamp timestamp=', timestamp);
+		// console.log('syncLiveTimestamp timestamp=', timestamp);
 		this.setState({
 			liveTimestamp: timestamp
 		});
@@ -433,10 +433,16 @@ class Live extends React.Component{
 		console.log('currentVersion=', currentVersion);
 		console.log('hasFaceInVideo=', hasFaceInVideo);
 
+		const hasAudio = judgeHasAudio({
+			deviceVision: currentVersion,
+			deviceType: ipcType
+		});
+
 		this.setState({
 			historyPPI: '',
 			isOnline,
 			hasFaceInVideo,
+			hasAudio,
 		});
 
 		const hasFaceid = this.hasFaceid();
@@ -527,7 +533,7 @@ class Live extends React.Component{
 	render() {
 		const { timeSlots, faceidRects, faceidList, currentPPI, ppiChanged, navigateTo } = this.props;
 
-		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus, historyPPI, isOnline, hasFaceInVideo } = this.state;
+		const { deviceInfo: { pixelRatio, hasFaceid }, liveTimestamp, sdStatus, cloudStatus, historyPPI, isOnline, hasFaceInVideo, hasAudio } = this.state;
 
 		const genders = {
 			0: formatMessage({ id: 'live.genders.unknown' }),
@@ -543,7 +549,7 @@ class Live extends React.Component{
 			2: womanImage
 		};
 
-		console.log('Live.js hasFaceInVideo=', hasFaceInVideo);
+		// console.log('Live.js hasFaceInVideo=', hasFaceInVideo);
 
 
 		return(
@@ -590,6 +596,7 @@ class Live extends React.Component{
 						navigateTo={navigateTo}
 						sn={sn}
 						updateBasetime={this.updateBasetime}
+						hasAudio={hasAudio}
 					/>
 
 				</div>
