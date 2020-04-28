@@ -1,5 +1,5 @@
 export default {
-	'posList.addPOS.tips': '您可通过【商米助手App】绑定摄像头，并关联收银设备',
+	'posList.addPOS.tips': '您可通过【商米助手App】绑定摄像头，并订阅收银审计服务',
 	'posList.addPOS':'添加收银设备',
 	'posList.addButton':'手动添加',
 	'posList.searchFail':'抱歉，未搜索出任何收银设备',
