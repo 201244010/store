@@ -43,7 +43,7 @@ export default {
 			rectangles.sort((a,b) => b.timestamp - a.timestamp);
 
 			if (rectangles.length > 800) {
-				rectangles = rectangles.slice(-800);
+				rectangles = rectangles.slice(0, 800);
 			}
 
 			state.rectangles = [
