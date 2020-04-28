@@ -30,6 +30,8 @@ class LivePlayer extends React.Component{
 		this.isPlaying = false; // video是否正在播放
 
 		this.bufferGap = 0; // 当前播放帧离缓存中最新帧的间隔时间(ms)
+
+		this.lastRelativeTime = 0; // 上一次metadata的相对时间
 	}
 
 	componentDidMount () {
@@ -67,7 +69,9 @@ class LivePlayer extends React.Component{
 	src = (src) => {
 		const { videoplayer } = this;
 		this.currentSrc = src;
-		videoplayer.src(src);
+		if (videoplayer) {
+			videoplayer.src(src);
+		}
 	}
 
 	playLive = async () => {
@@ -203,7 +207,9 @@ class LivePlayer extends React.Component{
 
 	showLoadingSpinner = () => {
 		const { videoplayer } = this;
-		videoplayer.showLoadingSpinner();
+		if (videoplayer) {
+			videoplayer.showLoadingSpinner();
+		}
 
 		this.setState({
 			playBtnDisabled: true
@@ -384,6 +390,14 @@ class LivePlayer extends React.Component{
 
 		if (isLive) {
 
+			if (this.metadataCount > 2
+				&& this.lastRelativeTime !== 0
+				&& this.lastRelativeTime === metadata.relativeTime) {
+				// 收到重复的relativeTime时，重新获取新的流
+				this.onFlvMediaError();
+			}
+			this.lastRelativeTime = metadata.relativeTime;
+
 			if (this.metadataCount === 2) {
 				// 只使用第二次到达的metadata
 				this.relativeTimestamp = metadata.relativeTime;
@@ -501,6 +515,15 @@ class LivePlayer extends React.Component{
 		};
 
 		replay(2);
+	}
+
+	// 视频流异常时的处理（视频流一直发同一帧数据，画面卡住）
+	onFlvMediaError = async () => {
+		const { isLive } = this.state;
+		if (isLive) {
+			await this.playLive();
+		}
+		console.log('this.onFlvMediaError isLive=', isLive);
 	}
 
 	// 回放异常处理
