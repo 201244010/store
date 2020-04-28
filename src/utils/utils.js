@@ -724,3 +724,14 @@ export const getShopList = (data, result = {}) => {
 	});
 	return result;
 };
+
+/**
+ * 判断当前固件视频中是否有音频
+ * @param {object} object.deviceType 设备类型 object.deviceVision设备版本
+ */
+export const judgeHasAudio = ({ deviceType, deviceVision }) => {
+	if ((deviceType === 'FM010' || deviceType === 'SS1') && deviceVision === '10.3.4') {
+		return false;
+	}
+	return true;
+};

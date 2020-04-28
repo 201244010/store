@@ -97,16 +97,26 @@ class VideoPlayer extends React.Component{
 		}
 	}
 
-	src = (src) => {
+	src = (src, hasAudio) => {
 		const { player } = this;
 		player.pause();
 
 		this.showLoadingSpinner();
 
-		player.src({
-			src,
-			type: 'video/flv'
-		});
+		console.log('videoPlayer hasAudio=', hasAudio);
+
+		if (hasAudio !== undefined && hasAudio !== '') {
+			player.src({
+				src,
+				type: 'video/flv',
+				hasAudio
+			});
+		} else {
+			player.src({
+				src,
+				type: 'video/flv'
+			});
+		}
 
 		player.load();
 
@@ -376,7 +386,7 @@ class VideoPlayer extends React.Component{
 			onTimeUpdate, onMetadataArrived, onPlay, onError, onPause, onEnd, onCanPlay, onCanplayThrough, onDateChange, playHandler,
 			playBtnDisabled, showDatePicker, canPPIChange, showBackToLive, ppiChange, backToLive,
 			current, plugin, isOnline, cloudStatus, navigateTo, sn, fullScreenFlagShow,
-			detailVisible, paymentInfo = {}
+			detailVisible, paymentInfo = {}, hasAudio,
 		} = this.props;
 
 		const { playing, fullScreen, noMedia, volume,
@@ -406,6 +416,7 @@ class VideoPlayer extends React.Component{
 						onError={onError || this.onError}
 						onMetadataArrived={onMetadataArrived || this.onMetadataArrived}
 						onTimeUpdate={onTimeUpdate || this.onTimeUpdate}
+						hasAudio={hasAudio}
 					/>
 
 

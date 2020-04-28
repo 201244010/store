@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 
 import { DEFAULT_PAGE_SIZE } from '@/constants';
+import { judgeHasAudio } from '@/utils/utils';
 import SearchBox from './SearchBox';
 import TradeVideosTable from './TradeVideosTable';
 // import ModalPlayer from '@/components/VideoPlayer/ModalPlayer';
@@ -111,7 +112,21 @@ import styles from './TradeVideos.less';
 					orderId,
 				}
 			});
-		}
+		},
+		getDeviceType: async(sn) => {
+			const result = await dispatch({
+				type: 'ipcList/getDeviceType',
+				payload: {sn}
+			});
+			return result;
+		},
+		getCurrentVersion: async(sn) => {
+			const result = await dispatch({
+				type: 'ipcList/getCurrentVersion',
+				payload: {sn}
+			});
+			return result;
+		},
 
 	})
 )
@@ -126,6 +141,7 @@ class TradeVideos extends React.Component {
 		expandedRowKeys: [],
 		currentPage: 1,
 		pageSize: DEFAULT_PAGE_SIZE,
+		hasAudio: '',
 	};
 
 	async componentDidMount() {
@@ -265,6 +281,26 @@ class TradeVideos extends React.Component {
 	};
 
 	watchVideoHandler = async (sn, url, key) => {
+		const { location: { query }, ipcList, getCurrentVersion, getDeviceType } = this.props;
+		const { ipcId } = query;
+		let ipcSn = '';
+		for (let i = 0; i < ipcList.length; i += 1) {
+			if (`${ipcList[i].deviceId}` === ipcId) {
+				ipcSn = ipcList[i].sn;
+				console.log('true ipcSn=', ipcSn);
+				break;
+			}
+		}
+		// console.log('ipcId=', ipcId);
+		// console.log('ipcList=', ipcList);
+		const ipcType = await getDeviceType(ipcSn);
+		const currentVersion = await getCurrentVersion(ipcSn);
+		const hasAudio = judgeHasAudio({
+			deviceVision: currentVersion,
+			deviceType: ipcType
+		});
+		console.log('hasAudio=', hasAudio);
+
 		if (url) {
 			const { getDeviceInfoByPosSN /* , getTradeVideo */, getPaymentInfo } = this.props;
 			const { tradeVideos: { tradeVideos } } = this.props;
@@ -278,10 +314,15 @@ class TradeVideos extends React.Component {
 			this.setState({
 				videoUrl: url,
 				isWatchVideo: true,
-				deviceInfo
+				deviceInfo,
+				hasAudio,
 				// ipcType: type,
 			// 	paymentDeviceSelected: item.paymentDeviceId,
 			// 	ipcSelected: item.ipcId
+			});
+		} else {
+			this.setState({
+				hasAudio
 			});
 		}
 	};
@@ -338,9 +379,10 @@ class TradeVideos extends React.Component {
 			currentPage,
 			pageSize,
 			expandedRowKeys,
-			detailVisible
+			detailVisible,
+			hasAudio,
 		} = this.state;
-		// console.log('tradeVideo', tradeVideos);
+		// console.log('tradeVideo ipcList=', ipcList);
 		return(
 			<Card bordered={false}>
 				<div
@@ -388,6 +430,7 @@ class TradeVideos extends React.Component {
 					pixelRatio={pixelRatio}
 					detailVisible={detailVisible}
 					showPaymentInfo={this.showPaymentInfo}
+					hasAudio={hasAudio}
 				/>
 			</Card>
 		);

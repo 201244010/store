@@ -7,8 +7,8 @@ import styles from './Faceid.less';
 class Faceid extends React.Component{
 	render () {
 		const { current, faceidRects } = this.props;
-		console.log('faceidRects=', faceidRects);
-		console.log('current=', current); // current约每250ms更新一次
+		// console.log('faceidRects=', faceidRects);
+		// console.log('current=', current); // current约每250ms更新一次
 		// const currentVideoTime = moment(baseTime*1000 + Math.round(current)).format('YYYY-MM-DD HH:mm:ss.SSS');
 		// console.log('currentVideoTime=', currentVideoTime);
 		const tmp = faceidRects.filter(item => {
@@ -48,7 +48,7 @@ class Faceid extends React.Component{
 			}
 		});
 
-		console.log('finally rects=', rects);
+		// console.log('finally rects=', rects);
 		// console.log('finally hash=', hash);
 
 		return (

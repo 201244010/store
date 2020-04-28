@@ -14,18 +14,22 @@ class TrackPlayer extends React.Component{
 	}
 
 	componentDidMount = () => {
-		const { url } = this.props;
+		const { url, hasAudio } = this.props;
 		const { videoplayer } = this;
 
-		videoplayer.src(url);
+		videoplayer.src(url, hasAudio);
 	}
 
 	componentDidUpdate = (oldProps) => {
-		const { url } = this.props;
+		const { url, hasAudio } = this.props;
 		const { videoplayer } = this;
 
-		if (url && oldProps.url !== url) {
-			videoplayer.src(url);
+		if (
+			url
+			&& (oldProps.url !== url || hasAudio !== oldProps.hasAudio)
+		   ) {
+			console.log('更新播放器');
+			videoplayer.src(url, hasAudio);
 		}
 	}
 
