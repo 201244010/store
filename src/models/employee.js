@@ -95,11 +95,12 @@ export default {
 			// 	type: 'role/checkAdmin',
 			// });
 			// const orgId = Number(getLocationParam('orgId'));
-			// let tmpShopList = [];
-			// const { shopIdList } = getInfoValue;
-			// if (shopIdList.length) {
-			// 	tmpShopList = shopIdList;
-			// } else if (adminResponse && adminResponse.code !== ERROR_OK) {
+			let tmpShopList = [];
+			const { shopIdList } = getInfoValue;
+			if (shopIdList.length) {
+				tmpShopList = shopIdList;
+			}
+			// else if (adminResponse && adminResponse.code !== ERROR_OK) {
 			// 	tmpShopList = tmpShopIdList.map(item => item.shopId);
 			// } else if (orgId) {
 			// 	tmpShopList = [orgId];
@@ -111,7 +112,7 @@ export default {
 				pageSize,
 				roleId,
 				shopId,
-				shopIdList: shopIdListParams.length > 0 ? shopIdListParams : [],
+				shopIdList: shopIdListParams.length > 0 ? shopIdListParams : tmpShopList,
 			};
 
 			const response = yield call(
