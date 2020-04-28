@@ -31,13 +31,21 @@ export default {
 
 		},
 		clearRects(state, { payload: { timestamp }}) {
-			const rectangles = [];
+			let rectangles = [];
 
 			state.rectangles.forEach(item => {
 				if (item.timestamp > timestamp - 5000) {
 					rectangles.push(item);
 				}
 			});
+
+			// 按时间戳从大到小排序
+			rectangles.sort((a,b) => b.timestamp - a.timestamp);
+
+			if (rectangles.length > 800) {
+				rectangles = rectangles.slice(0, 800);
+			}
+
 			state.rectangles = [
 				...rectangles
 			];

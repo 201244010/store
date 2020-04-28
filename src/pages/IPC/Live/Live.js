@@ -54,6 +54,7 @@ const statusCode = {
 		if( code === UNBIND_CODE) {
 			message.warning(formatMessage({ id: 'live.nobind' }));
 		}
+		window._videoUrl = url;
 		return url;
 	},
 	// stopLive({ sn, streamId }) {
@@ -235,7 +236,7 @@ class Live extends React.Component{
 			liveTimestamp: 0,
 			sdStatus: false,
 			cloudStatus: '',
-			baseTime: '', // 视频直播baseTime
+			baseTime: 0, // 视频直播baseTime
 			historyPPI: '',
 			isOnline: true,
 			hasFaceInVideo: false, // 视频中是否有人脸框
@@ -373,11 +374,9 @@ class Live extends React.Component{
 		// 定时清除store中的人脸框，避免内存不断增加
 		this.timeInterval = setInterval(() => {
 			const { baseTime } = this.state;
-			if (baseTime) {
-				clearRects({
-					timestamp: moment().valueOf() - baseTime - 30 * 1000
-				});
-			}
+			clearRects({
+				timestamp: moment().valueOf() - baseTime - 30 * 1000
+			});
 		}, 10 * 1000);
 	}
 
@@ -423,11 +422,15 @@ class Live extends React.Component{
 
 		const ipcType = await getDeviceType(sn) || 'FM020';
 		const currentVersion = await getCurrentVersion(sn);
-		const { leastVersion } = ipcTypes[ipcType].hasFaceInVideo;
-		const hasFaceInVideo = comperareVersion(currentVersion, leastVersion) >= 0;
+
+		let hasFaceInVideo = false;
+		if (ipcTypes[ipcType].hasFaceInVideo) {
+			const { leastVersion } = ipcTypes[ipcType].hasFaceInVideo;
+			console.log('leastVersion=', leastVersion);
+			hasFaceInVideo = comperareVersion(currentVersion, leastVersion) >= 0;
+		}
 
 		console.log('currentVersion=', currentVersion);
-		console.log('leastVersion=', leastVersion);
 		console.log('hasFaceInVideo=', hasFaceInVideo);
 
 		this.setState({
