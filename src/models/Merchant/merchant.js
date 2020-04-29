@@ -56,7 +56,7 @@ export default {
 			});
 		},
 
-		*companyCreate({ payload }, { put, call, take }) {
+		*companyCreate({ payload }, { put, call }) {
 			yield put({
 				type: 'updateState',
 				payload: { loading: true },
@@ -76,11 +76,10 @@ export default {
 					payload: { currentCompanyId: companyId },
 				});
 
-				yield put({
+				yield put.resolve({
 					type: 'initSetupAfterCreate',
 				});
 
-				yield take('initialCompany/@@end');
 				yield put({
 					type: 'updateState',
 					payload: { loading: false },
@@ -175,7 +174,7 @@ export default {
 				payload: { loading: true },
 			});
 			if (response && response.code === ERROR_OK) {
-				const result =  format('toCamel')(response.data) || {};
+				const result = format('toCamel')(response.data) || {};
 				yield put({
 					type: 'updateState',
 					payload: { companyInfo: result, loading: false },
@@ -206,7 +205,7 @@ export default {
 				});
 				yield put({
 					type: 'store/updateCompany',
-					payload: options
+					payload: options,
 				});
 				yield put({
 					type: 'menu/goToPath',
@@ -266,7 +265,7 @@ export default {
 			if (res && res.code === ERROR_OK) {
 				const { data = {} } = res || {};
 				const { companyList = [] } = format('toCamel')(data);
-				yield put({
+				yield put.resolve({
 					type: 'initialCompany',
 					payload: {
 						options: {
